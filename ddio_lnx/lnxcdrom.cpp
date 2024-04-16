@@ -717,7 +717,7 @@ void system_cdroms::QueryDefaultDevice(void) {
   }
 
 #if 0 // rcg10052000  BAD! BADBADBAD!
-        // see if there's a default dir for mounting this thing.
+      // see if there's a default dir for mounting this thing.
     if (checkDevMount(device, "/etc/fstab", m_MountedDir) == false)
     {
         	// otherwise, we'll make a mountpoint and mount it

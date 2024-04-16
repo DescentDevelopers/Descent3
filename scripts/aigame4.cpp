@@ -876,8 +876,8 @@ void MercEndBoss::DoFrame(int me) {
                DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_LARGE | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
                0.0f, 0.0f);
       //			Obj_Kill(me, OBJECT_HANDLE_NONE, 1000.0f,
-      //DF_BREAKS_APART|DF_BLAST_RING|DF_LOSES_ANTIGRAV|DF_EXPL_LARGE|DF_CONTACT_BREAKS_APART|DF_CONTACT_BLAST_RING|DF_DEBRIS_SMOKES|DF_DEBRIS_FIREBALL|DF_DEBRIS_BLAST_RING,
-      //0.0f, 0.0f);
+      // DF_BREAKS_APART|DF_BLAST_RING|DF_LOSES_ANTIGRAV|DF_EXPL_LARGE|DF_CONTACT_BREAKS_APART|DF_CONTACT_BLAST_RING|DF_DEBRIS_SMOKES|DF_DEBRIS_FIREBALL|DF_DEBRIS_BLAST_RING,
+      // 0.0f, 0.0f);
       Obj_Kill(memory->turret_object, OBJECT_HANDLE_NONE, 1000.0f,
                DF_BREAKS_APART | DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_LARGE | DF_CONTACT_BREAKS_APART |
                    DF_CONTACT_BLAST_RING | DF_DEBRIS_SMOKES | DF_DEBRIS_FIREBALL | DF_DEBRIS_BLAST_RING,
@@ -979,7 +979,8 @@ void MercEndBoss::DoFrame(int me) {
               //						else
               //						{
               //							vector bf_pos = ray.hit_point + (orient.fvec
-              //* 9.0f); 							Obj_Create(OBJ_POWERUP, memory->wallhit_id, 76, &bf_pos);
+              //* 9.0f); 							Obj_Create(OBJ_POWERUP,
+              //memory->wallhit_id, 76, &bf_pos);
               ///							//mprintf(0, "HERE X\n");
               //						}
             }

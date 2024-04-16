@@ -1682,7 +1682,7 @@ bool InitMissionScript() {
   //@@	fp = cfopen(DEFAULT_SCROBJ_NAME, "rb");
   //@@	if (!fp) {
   //@@		DoMessageBox("Error", "Unable to find mission script.", MSGBOX_OK, UICOL_WINDOW_TITLE,
-  //UICOL_TEXT_NORMAL);
+  // UICOL_TEXT_NORMAL);
   //@@		mprintf((0, "Unable to open default script. Loading null script...\n"));
   //@@		return false;
   //@@	}
@@ -1690,7 +1690,7 @@ bool InitMissionScript() {
   //@@		Current_mission.d3xmod = D3XLoadProgram(fp);
   //@@		if (!Current_mission.d3xmod) {
   //@@			DoMessageBox("Error", "Unable to find mission script.", MSGBOX_OK, UICOL_WINDOW_TITLE,
-  //UICOL_TEXT_NORMAL);
+  // UICOL_TEXT_NORMAL);
   //@@			mprintf((0, "Unable to open default script. Loading null script...\n"));
   //@@			return false;
   //@@		}

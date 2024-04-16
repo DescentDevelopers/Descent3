@@ -2076,7 +2076,7 @@ void Osiris_DisableCreateEvents(void) { Osiris_create_events_disabled = true; }
 //	Purpose:
 //		Enables any events involved when an object is created.  This is to be used for
 //	Loading games/viewing demos, as so not to re-initialize good data. (call when done with
-//Osiris_DisableCreateEvents())
+// Osiris_DisableCreateEvents())
 void Osiris_EnableCreateEvents(void) { Osiris_create_events_disabled = false; }
 
 //	Osiris_IsEventEnabled
@@ -3380,8 +3380,10 @@ void Osiris_OMMS_Detach(OMMSHANDLE handle);
 //	Only has affect if you are attached to the memory.  Memory will _ONLY_ be deleted when the
 //	following conditions are meant for the shared memory block:
 //	1) The reference count for the global memory is at 0 (OMMS_Attach() adds to reference count, OMMS_Detach()
-//subtracts). 	2) OMMS_Free() has been called for the block of global memory. 	The conditions can happen in any order, but
-//as soon as both are satisfied, the memory 	becomes deleted and any pointer returned by OMMS_Attach() becomes invalid.
+// subtracts). 	2) OMMS_Free() has been called for the block of global memory. 	The conditions can happen in any order,
+// but
+// as soon as both are satisfied, the memory 	becomes deleted and any pointer returned by OMMS_Attach() becomes
+// invalid.
 //
 //	handle : the value returned by OMMS_Malloc()
 void Osiris_OMMS_Free(OMMSHANDLE handle);
@@ -3817,8 +3819,10 @@ void Osiris_OMMS_Detach(OMMSHANDLE handle) {
 //	Only has affect if you are attached to the memory.  Memory will _ONLY_ be deleted when the
 //	following conditions are meant for the shared memory block:
 //	1) The reference count for the global memory is at 0 (OMMS_Attach() adds to reference count, OMMS_Detach()
-//subtracts). 	2) OMMS_Free() has been called for the block of global memory. 	The conditions can happen in any order, but
-//as soon as both are satisfied, the memory 	becomes deleted and any pointer returned by OMMS_Attach() becomes invalid.
+// subtracts). 	2) OMMS_Free() has been called for the block of global memory. 	The conditions can happen in any order,
+// but
+// as soon as both are satisfied, the memory 	becomes deleted and any pointer returned by OMMS_Attach() becomes
+// invalid.
 //
 //	handle : the value returned by OMMS_Malloc()
 void Osiris_OMMS_Free(OMMSHANDLE handle) {

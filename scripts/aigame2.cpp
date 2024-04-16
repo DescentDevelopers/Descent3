@@ -981,8 +981,8 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
     //@@			if ((rand() % 100) < 60) {
     //@@				set_state(me_handle, STATE_SNIPE);
     //@@			}
-    //@@			memory->timer = Game_GetTime() + 2.0f + (rand() % 6)*0.5f;				// use timer to switch
-    //states.
+    //@@			memory->timer = Game_GetTime() + 2.0f + (rand() % 6)*0.5f;				// use timer to
+    //switch states.
     //@@		}
     break;
 
@@ -1385,7 +1385,7 @@ retry_set_state:
     circle_dist = 40.0f;
     AI_Value(me_handle, VF_SET, AIV_F_CIRCLE_DIST, &circle_dist);
     //		AI_AddGoal(me_handle, AIG_WANDER_AROUND, 3, 1.0f, -1, GF_ORIENT_VELOCITY | GF_NOTIFIES |
-    //GF_KEEP_AT_COMPLETION, &pos, room_number);
+    // GF_KEEP_AT_COMPLETION, &pos, room_number);
     AI_AddGoal(me_handle, AIG_MOVE_RELATIVE_OBJ, 2, 1.0f, -1, GF_KEEP_AT_COMPLETION | GF_OBJ_IS_TARGET, NULL, 0);
 
     flags = AIF_DISABLE_MELEE;

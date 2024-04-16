@@ -1021,8 +1021,8 @@ typedef struct {
 } tOSIRISEVTCREATED; // struct for EVT_CREATED data
 
 typedef struct {
-  ubyte is_dying; // if this is !=0 than the event is coming because it is
-                  // really being destroyed.  Else it is due to the level ending.
+  ubyte is_dying;    // if this is !=0 than the event is coming because it is
+                     // really being destroyed.  Else it is due to the level ending.
 } tOSIRISEVTDESTROY; // struct for EVT_DESTROY data
 
 typedef struct {

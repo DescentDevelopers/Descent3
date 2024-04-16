@@ -1729,8 +1729,8 @@ int check_vector_to_object(vector *intp, float *col_dist, vector *p0, vector *p1
   // if obj is player, and bumping into other player or a weapon of another coop player, reduce radius
   //	if (obj->type == OBJ_PLAYER &&
   //		 	((otherobj->type == OBJ_PLAYER) ||
-  //	 		((Game_mode&GM_MULTI_COOP) && otherobj->type == OBJ_WEAPON && otherobj->ctype.laser_info.parent_type ==
-  //OBJ_PLAYER))) 		size = size/2;
+  //	 		((Game_mode&GM_MULTI_COOP) && otherobj->type == OBJ_WEAPON && otherobj->ctype.laser_info.parent_type
+  //== OBJ_PLAYER))) 		size = size/2;
 
   // This accounts for relative position vs. relative velocity
   if (fvi_objnum != -1 && still_obj->movement_type == MT_PHYSICS && Objects[fvi_objnum].movement_type == MT_PHYSICS) {
@@ -2510,7 +2510,7 @@ void make_trigger_face_list(int last_sim_faces) {
       vertex_ptr_list[count] = &cur_room->verts[cur_room->faces[i].face_verts[count]];
 
     //		mprintf((0, "FVI:In trigger %f to %f crossed %f\n", fvi_query_ptr->p0->z, fvi_hit_data_ptr->hit_pnt.z,
-    //vertex_ptr_list[0]->z));
+    // vertex_ptr_list[0]->z));
 
     face_normal = cur_room->faces[i].normal;
 
@@ -2733,7 +2733,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
         if (s_hit_type != HIT_NONE) {
           //					mprintf((0, "Hit %d at %f, %f, %f\n", s_hit_type,
-          //XYZ(&fvi_new_hit_data.hit_pnt)));
+          // XYZ(&fvi_new_hit_data.hit_pnt)));
           break;
         }
 
@@ -3428,14 +3428,15 @@ void check_hit_obj(int objnum) {
                   goto sphere_sphere;
 
                 //									pos = obj->pos +
-                //obj->anim_sphere_offset; 									dist = vm_VectorDistance(&pos, &fvi_anim_sphere_p0); 									size =
-                //Poly_models[obj->rtype.pobj_info.model_num].anim_size;
+                // obj->anim_sphere_offset; 									dist = vm_VectorDistance(&pos,
+                // &fvi_anim_sphere_p0); 									size =
+                // Poly_models[obj->rtype.pobj_info.model_num].anim_size;
 
                 //									if((dist <= size +
-                //fvi_anim_sphere_rad)
-                //										|| check_vector_to_object(&hit_point,
-                //&cur_dist, &fvi_anim_sphere_p0,&fvi_anim_sphere_p1, fvi_anim_sphere_rad, &Objects[objnum],
-                //&Objects[fvi_query_ptr->thisobjnum])
+                // fvi_anim_sphere_rad)
+                //										||
+                //check_vector_to_object(&hit_point, &cur_dist, &fvi_anim_sphere_p0,&fvi_anim_sphere_p1,
+                //fvi_anim_sphere_rad, &Objects[objnum], &Objects[fvi_query_ptr->thisobjnum])
                 //									{
                 fvi_curobj = objnum;
                 fvi_moveobj = m_obj_index;
@@ -3905,8 +3906,8 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
                                  &fvi_hit_data_ptr->hit_pnt, &face_normal, vertex_ptr_list, 3, fvi_query_ptr->rad);
         }
 
-        //				if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) mprintf((0, "Y = %f\n",
-        //Objects[fvi_query_ptr->thisobjnum].pos.y));
+        //				if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) mprintf((0, "Y =
+        //%f\n", Objects[fvi_query_ptr->thisobjnum].pos.y));
         //
 
         // chrisnote - closest hit should be tracked...  So, we can call BBPI once with
@@ -4365,8 +4366,8 @@ void fvi_rooms_objs(void) {
 // Determines if a face draws with alpha blending
 // Parameters:	fp - pointer to the face in question
 //					bm_handle - the handle for the bitmap for this frame, or -1 if don't care about
-//transparence Returns:		bitmask describing the alpha blending for the face 					the return bits are the ATF_ flags in
-//renderer.h
+// transparence Returns:		bitmask describing the alpha blending for the face 					the return
+// bits are the ATF_ flags in renderer.h
 inline int GetFaceAlpha(face *fp, int bm_handle) {
   int ret = AT_ALWAYS;
   if (GameTextures[fp->tmap].flags & TF_SATURATE) {

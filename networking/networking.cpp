@@ -2577,7 +2577,7 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
 
   //	if (NetDebugFile)
   //		cfprintf (NetDebugFile,"nw_SendWithID packet of id=%d type %d at %f
-  //seconds.\n",id,data[0],timer_GetTime());
+  // seconds.\n",id,data[0],timer_GetTime());
 
 // mprintf((0,"Sending packet for id %d.\n",id));
 #ifdef WIN32
@@ -2926,8 +2926,8 @@ void nw_ReliableResend(void) {
             send_address.connection_type = NP_TCP;
 
             int len = RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i];
-            NetStatistics.tcp_total_packets_sent--; // decrement because we are going to inc
-                                                    // in nw_SendWithID
+            NetStatistics.tcp_total_packets_sent--;    // decrement because we are going to inc
+                                                       // in nw_SendWithID
             NetStatistics.tcp_total_bytes_sent -= len; // see above
             NetStatistics.tcp_total_packets_resent++;
             NetStatistics.tcp_total_bytes_resent += len;
@@ -2948,8 +2948,8 @@ void nw_ReliableResend(void) {
             send_address.connection_type = NP_IPX;
 
             int len = RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i];
-            NetStatistics.spx_total_packets_sent--; // decrement because we are going to inc
-                                                    // in nw_SendWithID
+            NetStatistics.spx_total_packets_sent--;    // decrement because we are going to inc
+                                                       // in nw_SendWithID
             NetStatistics.spx_total_bytes_sent -= len; // see above
             NetStatistics.spx_total_packets_resent++;
             NetStatistics.spx_total_bytes_resent += len;
@@ -2992,8 +2992,8 @@ void nw_ReliableResend(void) {
           send_address.connection_type = NP_TCP;
 
           int len = RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i];
-          NetStatistics.tcp_total_packets_sent--; // decrement because we are going to inc
-                                                  // in nw_SendWithID
+          NetStatistics.tcp_total_packets_sent--;    // decrement because we are going to inc
+                                                     // in nw_SendWithID
           NetStatistics.tcp_total_bytes_sent -= len; // see above
           NetStatistics.tcp_total_packets_resent++;
           NetStatistics.tcp_total_bytes_resent += len;
@@ -3014,8 +3014,8 @@ void nw_ReliableResend(void) {
           send_address.connection_type = NP_IPX;
 
           int len = RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i];
-          NetStatistics.spx_total_packets_sent--; // decrement because we are going to inc
-                                                  // in nw_SendWithID
+          NetStatistics.spx_total_packets_sent--;    // decrement because we are going to inc
+                                                     // in nw_SendWithID
           NetStatistics.spx_total_bytes_sent -= len; // see above
           NetStatistics.spx_total_packets_resent++;
           NetStatistics.spx_total_bytes_resent += len;

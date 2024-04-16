@@ -4761,7 +4761,7 @@ bool GuideBot::SetMode(int me, char mode) {
     memory->next_ambient_time = Game_GetTime() + 1.2f;
 
     //			AI_AddGoal(me, AIG_MOVE_RELATIVE_OBJ_VEC, 0, 1.0f, -1, GF_KEEP_AT_COMPLETION, memory->my_player,
-    //GST_FVEC); 			AI_SetGoalCircleDist(me, 0, 40.0f);
+    // GST_FVEC); 			AI_SetGoalCircleDist(me, 0, 40.0f);
 
     pos += orient.fvec * 200.0f;
 
@@ -7821,9 +7821,9 @@ void BarnSwallow::ComputeNextNestPnt(int me, vector *pos) {
   *pos += memory->nest_center;
 }
 
-//#define BSCOMM_FOLLOW_ME								0 // send a percent chance so we can have a
-//line sometimes #define BSCOMM_FOLLOW_CANCEL_FROM_FOLLOWER		2 #define BSCOMM_FOLLOW_CANCEL_FROM_LEADER
-//3 #define BSCOMM_ATTACK_MY_TARGET						4
+//#define BSCOMM_FOLLOW_ME								0 // send a percent chance so we can have
+//a line sometimes #define BSCOMM_FOLLOW_CANCEL_FROM_FOLLOWER		2 #define BSCOMM_FOLLOW_CANCEL_FROM_LEADER 3
+// #define BSCOMM_ATTACK_MY_TARGET						4
 // BSCOMM_ARE_YOU_IN_MODE
 
 bool BarnSwallow::ReceiveCommand(int me, int it, gb_com *command) {

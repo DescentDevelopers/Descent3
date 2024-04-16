@@ -1124,7 +1124,7 @@ void SetPolymodelProperties(bsp_info *subobj, char *props) {
     subobj->flags |= SOF_TURRET;
     subobj->fov = fov_angle / 720.0f; // 720 = 360 * 2 and we want to make fov the amount we can move in either
                                       // direction it has a minimum value of (0.0) to [0.5]
-    subobj->rps = 1.0 / turret_spr; // convert spr to rps (rotations per second)
+    subobj->rps = 1.0 / turret_spr;   // convert spr to rps (rotations per second)
     subobj->think_interval = reaction_time;
 
     return;

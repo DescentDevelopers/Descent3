@@ -1451,7 +1451,7 @@ public:
   // DMFCBase::GetPlayerRecord
   //
   //	Returns a pointer to the player record at the given slot (passed in slot must be in the range
-  //0<=slot<MAX_PLAYER_RECORDS)
+  // 0<=slot<MAX_PLAYER_RECORDS)
   player_record *GetPlayerRecord(int slot);
 
   // DMFCBase::GetPlayerRecordByPnum
@@ -2490,7 +2490,7 @@ private:
 #define DTXT_IC_BANLIST DTXT(102) //"banlist"
 #define DTXT_IC_BANLISTD                                                                                               \
   DTXT(103) //"[Dedicated Server Only]\nLists the players banned from the game along with their ban number, which can be
-            //used to remove the ban.\nUsage: \"$banlist\""
+            // used to remove the ban.\nUsage: \"$banlist\""
 #define DTXT_IC_CHANGETEAM DTXT(104) //"changeteam"
 #define DTXT_IC_CHANGETEAMD                                                                                            \
   DTXT(105) //"[Server Only]\nForces a player to a team.\nUsage: \"$changeteam <pnum> <team_name>\""
@@ -2501,8 +2501,8 @@ private:
 #define DTXT_IC_HUDNAME DTXT(110)   //"hudnames"
 #define DTXT_IC_HUDNAMED                                                                                               \
   DTXT(111) //"Sets your personal level for the HUD name filter.\nUsage: \"$hudnames <full/team/none>\"\nNOTE: You can
-            //only set your HUD Callsign level up to the level that the server is.  So if the server is only allowing up
-            //to teammates, you won't be able to set to full"
+            // only set your HUD Callsign level up to the level that the server is.  So if the server is only allowing
+            // up to teammates, you won't be able to set to full"
 #define DTXT_IC_KICK DTXT(112)          //"kick"
 #define DTXT_IC_KICKD DTXT(113)         //"[Server Only]\nKicks a player from the game.\nUsage: \"$kick <pnum>\""
 #define DTXT_IC_KILLMSGFILTER DTXT(114) //"killmsgfilter"
@@ -2514,7 +2514,7 @@ private:
 #define DTXT_IC_OBSERVER DTXT(118)     //"observer"
 #define DTXT_IC_OBSERVERD                                                                                              \
   DTXT(119) //"If you pass specify 'on', it puts you into observer mode, else it will return you back to normal
-            //mode.\nUsage: \"$observer <on/off>\""
+            // mode.\nUsage: \"$observer <on/off>\""
 #define DTXT_IC_PIGGYBACK DTXT(120)   //"piggyback"
 #define DTXT_IC_PIGGYBACKD DTXT(121)  //"Puts you into Piggyback Observer mode.\"$piggyback <pnum>\""
 #define DTXT_IC_PLAYERINFO DTXT(122)  //"playerinfo"
@@ -2526,7 +2526,7 @@ private:
 #define DTXT_IC_REHASH DTXT(126) //"rehash"
 #define DTXT_IC_REHASHD                                                                                                \
   DTXT(127) //"[Server Only]\nRehashes the hosts.allow and hosts.deny files.  First it flushes the old, and reloads
-            //them.\nUsages: \"$rehash\""
+            // them.\nUsages: \"$rehash\""
 #define DTXT_IC_REMOVEBAN DTXT(128) //"removeban"
 #define DTXT_IC_REMOVEBAND                                                                                             \
   DTXT(129) //"[Dedicated Server Only]\nRemoves a ban from a player, given the number associated with them from
@@ -2724,7 +2724,7 @@ private:
 #define DTXT_IC_REMOTEADMINLOGOUT DTXT(304) //"remoteadminlogout"
 #define DTXT_IC_REMOTEADMINLOGOUTD                                                                                     \
   DTXT(305) //"[Server Only]\nhandles seeing who is logged in, and allows the server to log them out\nIf no parameter is
-            //given it lists all the players logged in.\nTo log out a player give the login-id as a parameter\nUsage:
+            // given it lists all the players logged in.\nTo log out a player give the login-id as a parameter\nUsage:
             //\"$remoteadminlogout [login-id]\""
 #define DTXT_IC_REMOTEADMINPASS DTXT(306) //"remoteadminpass"
 #define DTXT_IC_REMOTEADMINPASSD                                                                                       \
@@ -2733,8 +2733,8 @@ private:
 #define DTXT_IC_WAIT DTXT(308) //"wait"
 #define DTXT_IC_WAITD                                                                                                  \
   DTXT(309) //"[Dedicated Server Only]\nhandles a request to make all clients wait/or stop waiting.  If a time is
-            //giving, the server will wait that long each level until it lets clients to play.\nUsage: \"$wait <on/off
-            //or time-in-seconds>\""
+            // giving, the server will wait that long each level until it lets clients to play.\nUsage: \"$wait <on/off
+            // or time-in-seconds>\""
 
 #define GAME_DLL_INTERFACE 9
 

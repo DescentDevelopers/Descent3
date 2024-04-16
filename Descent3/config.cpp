@@ -1077,8 +1077,8 @@ struct toggles_menu {
     sheet->AddRadioButton(TXT_LEFT);
     //@@		sheet->AddRadioButton(TXT_CENTER);
     sheet->AddRadioButton(TXT_RIGHT);
-    //@@		*missile_view = (Missile_camera_window==SVW_LEFT) ? 1 : (Missile_camera_window==SVW_CENTER) ? 2 :
-    //(Missile_camera_window==SVW_RIGHT) ? 3 : 0;
+    //@@		*missile_view = (Missile_camera_window==SVW_LEFT) ? 1 : (Missile_camera_window==SVW_CENTER) ? 2
+    //: (Missile_camera_window==SVW_RIGHT) ? 3 : 0;
     *missile_view = (Missile_camera_window == SVW_LEFT) ? 1 : (Missile_camera_window == SVW_RIGHT) ? 2 : 0;
 
 #ifndef MACINTOSH
@@ -1124,8 +1124,8 @@ struct toggles_menu {
     Default_player_room_leveling = *mine_autolevel;
 
     iTemp = (*missile_view);
-    //@@		Missile_camera_window = (iTemp==1) ? SVW_LEFT : (iTemp==2) ? SVW_CENTER : (iTemp==3) ? SVW_RIGHT :
-    //-1;
+    //@@		Missile_camera_window = (iTemp==1) ? SVW_LEFT : (iTemp==2) ? SVW_CENTER : (iTemp==3) ? SVW_RIGHT
+    //: -1;
     Missile_camera_window = (iTemp == 1) ? SVW_LEFT : (iTemp == 2) ? SVW_RIGHT : -1;
 #ifndef MACINTOSH
     Current_pilot.read_controller = (*joy_enabled) ? READF_JOY : 0;

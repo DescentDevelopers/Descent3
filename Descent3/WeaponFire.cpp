@@ -1337,7 +1337,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
 
           obj->ctype.laser_info.hit_status = WPC_HIT_WALL;
           //					mprintf((0, "WPC: Hit r%d rw%d w%d (%f,%f,%f)\n", hit_info.hit_room,
-          //hit_info.hit_face_room[0], hit_info.hit_face[0], XYZ(&hit_info.hit_wallnorm[0])));
+          // hit_info.hit_face_room[0], hit_info.hit_face[0], XYZ(&hit_info.hit_wallnorm[0])));
         } else {
           obj->ctype.laser_info.hit_status = WPC_NO_COLLISIONS;
           //					mprintf((0, "WPC: No collisions\n"));

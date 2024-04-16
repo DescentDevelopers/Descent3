@@ -399,7 +399,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   //.000001)
   //	{
   //		if(!(fabs(rotvel->x) > .000001 || fabs(rotvel->y) > .000001 || fabs(rotvel->z) > .000001 || *turnroll !=
-  //0))
+  // 0))
   //		{
   //			return false;
   //		}
@@ -631,7 +631,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
             }
 
             //						PhysicsApplyConstRotForce(*obj, level_rotthrust, *rotvel,
-            //frame_time);
+            // frame_time);
           }
         }
       }
@@ -668,7 +668,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   }
 
   //	mprintf((0, " a %f, %f, %f,\n%f, %f, %f,\n%f %f %f\n\n", XYZ(&obj->orient.fvec), XYZ(&obj->orient.rvec),
-  //XYZ(&obj->orient.uvec)));
+  // XYZ(&obj->orient.uvec)));
 
   // Make sure the new orientation is valid
   vm_Orthogonalize(orient);
@@ -1250,7 +1250,7 @@ void do_physics_sim(object *obj) {
 
         //				mprintf((0, "Obj %d Flew backwards!\n", OBJNUM(obj)));
         //				mprintf((0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n", XYZ(&start_pos),
-        //XYZ(&obj->pos))); don't change position or sim_time_remaining
+        // XYZ(&obj->pos))); don't change position or sim_time_remaining
 
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
@@ -1272,7 +1272,7 @@ void do_physics_sim(object *obj) {
         if (sim_time_remaining > old_sim_time_remaining) {
           //					mprintf((0,"PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old =
           //%15.13f\nAttempted d = %15.13f, actual = %15.13f\n",sim_time_remaining,old_sim_time_remaining,
-          //attempted_dist, actual_dist));
+          // attempted_dist, actual_dist));
           // Int3();
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
@@ -1465,15 +1465,16 @@ void do_physics_sim(object *obj) {
             //						if(!f_forcefield && !(f_volatile && obj->type == OBJ_PLAYER))
             //						{
             //							if(obj->mtype.phys_info.coeff_restitution != 1.0f)
-            //								obj->mtype.phys_info.velocity -= (obj->mtype.phys_info.velocity * (1.0f -
-            //obj->mtype.phys_info.coeff_restitution));
+            //								obj->mtype.phys_info.velocity -= (obj->mtype.phys_info.velocity * (1.0f
+            //- obj->mtype.phys_info.coeff_restitution));
             //						}
 
             //						if(!f_forcefield && !(f_volatile && obj->type == OBJ_PLAYER))
             //							bump_obj_against_fixed(obj, &hit_info.hit_face_pnt[0],
             //&hit_info.hit_wallnorm[0]);
             //
-            //						if(hit_info.hit_wallnorm[0].y > .4 && (vm_GetMagnitude(&obj->mtype.phys_info.velocity) < .001f
+            //						if(hit_info.hit_wallnorm[0].y > .4 && (vm_GetMagnitude(&obj->mtype.phys_info.velocity) <
+            //.001f
             //|| obj->mtype.phys_info.velocity * hit_info.hit_wallnorm[0] <= 0.0f))
             //						{
             //							mprintf((0, "At Rest!\n"));
@@ -1785,7 +1786,7 @@ void do_physics_sim(object *obj) {
         f_continue_sim = true;
 
         //					if((obj->type == OBJ_CLUTTER)&&(Objects[hit_info.hit_object[0]].type ==
-        //OBJ_CLUTTER))
+        // OBJ_CLUTTER))
         //					{
         //						f_continue_sim = false;
         //					}
@@ -1819,7 +1820,7 @@ void do_physics_sim(object *obj) {
       obj->mtype.phys_info.velocity = Zero_vector;
     } else {
       //			mprintf((0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-      //objnum, init_room, obj->roomnum)); 			obj->flags |= OF_DEAD;
+      // objnum, init_room, obj->roomnum)); 			obj->flags |= OF_DEAD;
 
       //			obj->mtype.phys_info.velocity /= 2.0f;
       //			obj->mtype.phys_info.rotvel /= 2.0f;
@@ -2477,7 +2478,7 @@ void do_walking_sim(object *obj) {
 
         mprintf((0, "Obj %d Walked backwards!\n", OBJNUM(obj)));
         //				mprintf((0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n", XYZ(&start_pos),
-        //XYZ(&obj->pos))); don't change position or sim_time_remaining
+        // XYZ(&obj->pos))); don't change position or sim_time_remaining
 
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
@@ -2582,7 +2583,7 @@ void do_walking_sim(object *obj) {
 
             bounced = 1; // this object bounced
             //							mprintf((0, "(%f, %f, %f) before bounce\n",
-            //XYZ(&obj->mtype.phys_info.velocity)));
+            // XYZ(&obj->mtype.phys_info.velocity)));
             obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0] * (wall_part * -1.0f);
 
             if (obj->mtype.phys_info.coeff_restitution != 1.0f)
@@ -2817,7 +2818,7 @@ void do_walking_sim(object *obj) {
       mprintf((0, "PHYSICS NOTE: Too many collisions for player!\n"));
     } else {
       //			mprintf((0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-      //objnum, init_room, obj->roomnum)); 			obj->flags |= OF_DEAD;
+      // objnum, init_room, obj->roomnum)); 			obj->flags |= OF_DEAD;
 
       //			obj->mtype.phys_info.velocity /= 2.0f;
       //			obj->mtype.phys_info.rotvel /= 2.0f;

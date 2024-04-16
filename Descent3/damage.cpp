@@ -1455,9 +1455,10 @@ void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum);
 
 // Break the specified (glass) face into shards
 // Parameters:	rp, facenum - the face to break.  The face must be a portal face.
-//					hitpnt - the point on the face where the face shatters.  If NULL, uses center point of
-//face 					hitvec - the direction in which the thing that's breaking the glass is moving.  If NULL, 						uses the negative of the
-//surface normal
+//					hitpnt - the point on the face where the face shatters.  If NULL, uses center point
+//of
+// face 					hitvec - the direction in which the thing that's breaking the glass is moving.  If
+// NULL, 						uses the negative of the surface normal
 void BreakGlassFace(room *rp, int facenum, vector *hitpnt, vector *hitvec) {
   int roomnum;
   vector t_hitpnt, t_hitvec;

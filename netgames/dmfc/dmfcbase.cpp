@@ -2633,7 +2633,7 @@ void *DMFCBase::GetPlayerRecordData(int pnum) {
 // DMFCBase::GetPlayerRecord
 //
 //	Returns a pointer to the player record at the given slot (passed in slot must be in the range
-//0<=slot<MAX_PLAYER_RECORDS)
+// 0<=slot<MAX_PLAYER_RECORDS)
 player_record *DMFCBase::GetPlayerRecord(int slot) { return PRec_GetPRecord(slot); }
 
 // DMFCBase::GetPlayerRecordByPnum

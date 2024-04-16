@@ -97,7 +97,7 @@ void NewPyroShieldGauge(tGauge *gauge, tGaugePos *pos) {
   //@@		parentvp->set_text_color(GR_RGB(255,128,128));
   //@@		parentvp->set_text_spacing(0);
   //@@		rend_SetCharacterParameters (parentvp->get_text_color(), parentvp->get_text_color(),
-  //parentvp->get_text_color(), parentvp->get_text_color());
+  // parentvp->get_text_color(), parentvp->get_text_color());
   //@@		sprintf(str, "%d", (int)Players[Player_num].shields);
   //@@		x = cx - (parentvp->get_text_line_width(str)/2);
   //@@		y = cy - (parentvp->get_current_font_height()/2);
@@ -227,7 +227,7 @@ void NewPyroEnergyDigitalGauge(tGauge *gauge, tGaugePos *pos) {
   //@@		parentvp->set_text_color(GR_RGB(192,192,128));
   //@@		parentvp->set_text_spacing(0);
   //@@		rend_SetCharacterParameters (parentvp->get_text_color(), parentvp->get_text_color(),
-  //parentvp->get_text_color(), parentvp->get_text_color());
+  // parentvp->get_text_color(), parentvp->get_text_color());
   //@@		sprintf(str, "%d", (int)Players[Player_num].energy);
   //@@		x = cx - (parentvp->get_text_line_width(str)/2);
   //@@		y = cy - (parentvp->get_current_font_height()/2);
@@ -309,7 +309,7 @@ void NewPyroPrimaryWeaponGauge(tGauge *gauge, tGaugePos *pos) {
   //@@			parentvp->set_text_color(GR_RGB(0,192,0));
   //@@			parentvp->set_text_spacing(0);
   //@@			rend_SetCharacterParameters (parentvp->get_text_color(), parentvp->get_text_color(),
-  //parentvp->get_text_color(), parentvp->get_text_color());
+  // parentvp->get_text_color(), parentvp->get_text_color());
   //@@			sprintf(str, "%s", Weapons[Players[Player_num].primary_weapon].name);
   //@@			x = cx - (parentvp->get_text_line_width(str)/3);
   //@@			y = cy - (parentvp->get_current_font_height()/3);
@@ -388,7 +388,7 @@ void NewPyroSecondaryWeaponGauge(tGauge *gauge, tGaugePos *pos) {
   //@@			parentvp->set_text_color(GR_RGB(0,192,0));
   //@@			parentvp->set_text_spacing(0);
   //@@			rend_SetCharacterParameters (parentvp->get_text_color(), parentvp->get_text_color(),
-  //parentvp->get_text_color(), parentvp->get_text_color());
+  // parentvp->get_text_color(), parentvp->get_text_color());
   //@@			sprintf(str, "%s", Weapons[Players[Player_num].secondary_weapon].name);
   //@@			x = cx - (parentvp->get_text_line_width(str)/1.5f);
   //@@			y = cy - (parentvp->get_current_font_height()/3);

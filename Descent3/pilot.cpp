@@ -2269,8 +2269,8 @@ bool CreateCRCFileName(const char *src, char *base, char *newfilename) {
 //	FindAllFiles
 //
 //	Retrieves the files in the current directory that match the pattern given.	Call FindAllFilesSize() to
-//determine 	how much memory will be needed for the buffer. 	pattern	=	wildcard pattern to use to match 	list
-//=	buffer of memory that will be filled in with the filenames (each seperated by a \0)
+// determine 	how much memory will be needed for the buffer. 	pattern	=	wildcard pattern to use to match
+// list =	buffer of memory that will be filled in with the filenames (each seperated by a \0)
 //	size	=	size of memory allocated for list parm
 //	filecount = filled in with the number of files it found
 int FindAllFiles(const char *pattern, char *list, int size, int *filecount) {

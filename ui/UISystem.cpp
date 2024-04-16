@@ -279,7 +279,7 @@ bool ui_MousePoll(bool buttons) {
     // if bX_count is 0, then repeat processing can occur, otherwise only real mouse events are processed.
     if (ddio_MouseGetEvent(&msebtn, &state)) {
       //			mprintf((2, "mouse #%d state %d at %04d %04d\n", msebtn, UI_input.b1_status,
-      //UI_input.mx, UI_input.my));
+      // UI_input.mx, UI_input.my));
       if (msebtn == 0) {
         UI_input.b1_last_status = UI_input.b1_status;
         UI_input.b1_status = state ? UIMSEBTN_PRESSED : UIMSEBTN_RELEASED;

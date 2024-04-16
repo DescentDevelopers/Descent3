@@ -948,7 +948,8 @@ sbyte lnxgameController::get_button_controller(ubyte btn) {
 
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   for (int i = 2; i < m_NumControls; i++)
-    //@@		if (((unsigned)btn < m_ControlList[i].buttons) && !(m_ControlList[i].btnmask & mask) && (m_ControlList[i].id
+    //@@		if (((unsigned)btn < m_ControlList[i].buttons) && !(m_ControlList[i].btnmask & mask) &&
+    //(m_ControlList[i].id
     //!= CTID_INVALID)) {
     if (((unsigned)btn < m_ControlList[i].buttons) && (m_ControlList[i].id != CTID_INVALID)) {
       //@@			m_ControlList[i].btnmask |= mask;

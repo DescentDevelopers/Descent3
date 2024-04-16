@@ -184,9 +184,9 @@ void OnTimerKill(void);                             // timer callback: on a flag
 void DisplayWelcomeMessage(int player_num);         // displays a welcome message to the player when he joins
 void SortTeamScores(int *sortedindex, int *scores); // sorts an array of team scores, filling in the sorted index
                                                     // numbers
-void DisplayHUDScores(struct tHUDItem *hitem); // callback when the HUD info is to be drawn
-void ReceiveGameState(ubyte *data);            // callback when a gamestate packet is received from the server
-void SendGameState(int playernum);             // called when the server is to send gamestate packet to a client
+void DisplayHUDScores(struct tHUDItem *hitem);      // callback when the HUD info is to be drawn
+void ReceiveGameState(ubyte *data);                 // callback when a gamestate packet is received from the server
+void SendGameState(int playernum);                  // called when the server is to send gamestate packet to a client
 void SetColoredBalls(
     int playernum,
     bool reset = false); // sets the colored balls around a player (determined by what is in their inventory)
@@ -202,7 +202,7 @@ int GetFlagCountForPlayer(int pnum);
 ubyte GetFlagMaskForPlayer(int pnum);
 //	adds a flag to a player, as a precaution, it will go through all the players and makes sure that no one
 //	has the flag that is being added.  If they are adding the flag, than remove that flag from whoever we thought
-//had it 	it will return false if it had to remove a flag from a player
+// had it 	it will return false if it had to remove a flag from a player
 bool GivePlayerFlag(int pnum, ubyte team);
 // this function takes a flag away from the player, useful for when he scores, spews, disconnects, or observer modes
 void LoseFlagForPlayer(int pnum, ubyte team, bool remove_from_inven = true);
@@ -2486,7 +2486,7 @@ ubyte GetFlagMaskForPlayer(int pnum) {
 
 //	adds a flag to a player, as a precaution, it will go through all the players and makes sure that no one
 //	has the flag that is being added.  If they are adding the flag, than remove that flag from whoever we thought
-//had it 	it will return false if it had to remove a flag from a player
+// had it 	it will return false if it had to remove a flag from a player
 bool GivePlayerFlag(int pnum, ubyte team) {
   // 1st check the player num, make sure it is valid
   if (!DMFCBase->CheckPlayerNum(pnum)) {

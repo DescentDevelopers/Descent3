@@ -178,8 +178,10 @@ void cf_Close() {
 }
 // Specify a directory to look in for files
 // Parameters:	path - the directory path.  Can be relative to the current cur (the full path will be stored)
-//					ext - if NULL, look in this dir for all files.  If non-null, it is a NULL-terminated
-//list of 								file extensions, & the dir will only be searched for files with a matching extension Returns:		true if
+//					ext - if NULL, look in this dir for all files.  If non-null, it is a
+//NULL-terminated
+// list of 								file extensions, & the dir will only be searched for files with a
+// matching extension Returns:		true if
 // directory added, else false
 int cf_SetSearchPath(const char *path, char *ext, ...) {
   if (strlen(path) >= _MAX_PATH)

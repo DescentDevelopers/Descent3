@@ -1805,9 +1805,9 @@ void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_
       //	blow up, blowing up all the children.  So I remove it.  MK, 09/11/94
       //			if ( (hit_obj_ptr!=explode_obj_ptr) && !(hit_obj_ptr->flags&OF_DEAD) &&
       //((hit_obj_ptr->type==OBJ_WEAPON /*&& (hit_obj_ptr->id==PROXIMITY_ID || hit_obj_ptr->id==SUPERPROX_ID ||
-      //hit_obj_ptr->id==PMINE_ID)*/) || (hit_obj_ptr->type == OBJ_CNTRLCEN) || (hit_obj_ptr->type==OBJ_PLAYER) ||
+      // hit_obj_ptr->id==PMINE_ID)*/) || (hit_obj_ptr->type == OBJ_CNTRLCEN) || (hit_obj_ptr->type==OBJ_PLAYER) ||
       //((hit_obj_ptr->type==OBJ_ROBOT) && ((Objects[parent].type != OBJ_ROBOT) || (Objects[parent].id !=
-      //hit_obj_ptr->id))))) {
+      // hit_obj_ptr->id))))) {
       hit_obj_ptr = &Objects[i];
       // Check for types that get concussive force
       if (!((hit_obj_ptr->type == OBJ_WEAPON) || (hit_obj_ptr->type == OBJ_ROBOT) ||

@@ -592,7 +592,7 @@ float gameMacController::get_axis_value(sbyte controller, ubyte axis, ct_format 
     break;
   }
   //	mprintf((2, "x %d y %d z %d p %d h %d r %d\n",
-  //is_joy[kNeed_MoveX],is_joy[kNeed_MoveY],is_joy[kNeed_MoveZ],is_joy[kNeed_Pitch],is_joy[kNeed_Yaw],is_joy[kNeed_Roll]));
+  // is_joy[kNeed_MoveX],is_joy[kNeed_MoveY],is_joy[kNeed_MoveZ],is_joy[kNeed_Pitch],is_joy[kNeed_Yaw],is_joy[kNeed_Roll]));
 
   return axisval;
 }

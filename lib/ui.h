@@ -590,7 +590,7 @@ protected:
   //	typically this function is called by a child class when we want
   //	to tell the caller that this gadget was selected for something.
   //	virtual void OnSelect();						// override: behavior when gadget is
-  //selected.
+  // selected.
 };
 
 //	check boxes use most of the behavior of default buttons.

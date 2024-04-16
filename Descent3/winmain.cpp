@@ -362,7 +362,7 @@ bool SupportsCPUID() {
     _asm {
 			pushad
 			__emit 0x0f // CPUID
-			__emit 0xa2        // CPUID
+			__emit 0xa2 // CPUID
 			popad
     }
   } __except (1) {
@@ -511,7 +511,7 @@ void getcpudata(cpuinfo *info) {
 			and al,240; // mask model
 			shr al,4;
 			mov model,al;
-			and cl,15;  // mask mask revision
+			and cl,15; // mask mask revision
 			mov mask,cl;
 			mov capability,edx;
 

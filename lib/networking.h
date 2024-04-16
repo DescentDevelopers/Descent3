@@ -484,8 +484,8 @@ int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpi
 
 // This is all the reliable UDP stuff...
 #define MAXNETBUFFERS                                                                                                  \
-  150 // Maximum network buffers (For between network and upper level functions, which is
-      // required in case of out of order packets
+  150                    // Maximum network buffers (For between network and upper level functions, which is
+                         // required in case of out of order packets
 #define NETRETRYTIME .75 // Time after sending before we resend
 #define MIN_NET_RETRYTIME .2
 #define NETTIMEOUT 300        // Time after receiving the last packet before we drop that user

@@ -222,8 +222,8 @@ inline bool FaceIsRenderable(room *rp, face *fp) {
 // Determines if a face draws with alpha blending
 // Parameters:	fp - pointer to the face in question
 //					bm_handle - the handle for the bitmap for this frame, or -1 if don't care about
-//transparence Returns:		bitmask describing the alpha blending for the face 					the return bits are the ATF_ flags in
-//renderer.h
+// transparence Returns:		bitmask describing the alpha blending for the face 					the return
+// bits are the ATF_ flags in renderer.h
 inline int GetFaceAlpha(face *fp, int bm_handle) {
   int ret = AT_ALWAYS;
   if (GameTextures[fp->tmap].flags & TF_SATURATE) {

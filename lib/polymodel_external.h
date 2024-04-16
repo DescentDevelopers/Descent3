@@ -144,7 +144,7 @@ typedef struct bsp_info {
   vector pnt;              // point for sep plane
   vector geometric_center; // geometric center of this subobject.  In the same Frame Of
                            // Reference as all other vertices in this submodel. (Relative to pivot point)
-  float rad; // radius for each submodel
+  float rad;               // radius for each submodel
 
   vector *verts; // vertices for the submodel (NEWSTYLE)
   vector *vertnorms;

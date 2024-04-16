@@ -763,7 +763,8 @@ void compute_terrain_region_info() {
         //				if(region != 0)
         //				{
         //					BOA_connect[0][BOA_num_connect[region]].roomnum =
-        //Rooms[i].portals[j].croom; 					BOA_connect[0][BOA_num_connect[region]].portal = Rooms[i].portals[j].cportal;
+        // Rooms[i].portals[j].croom; 					BOA_connect[0][BOA_num_connect[region]].portal =
+        // Rooms[i].portals[j].cportal;
         //				}
 
         if (!(Rooms[Rooms[i].portals[j].croom].flags & RF_EXTERNAL)) {
@@ -2766,10 +2767,10 @@ void ComputeAABB(bool f_full) {
 
             int diff[3];
             //					mprintf((0, "Split plane results r %d s %d n %d\n", i, j,
-            //rp->num_bbf[j]));
+            // rp->num_bbf[j]));
             for (sp = 0; sp < 3; sp++) {
               //						mprintf((0, "%d %d %d\n", num_faces[sp][0],
-              //num_faces[sp][1], num_faces[sp][2]));
+              // num_faces[sp][1], num_faces[sp][2]));
 
               if (abs(num_faces[sp][0] - num_faces[sp][1]) > abs(num_faces[sp][1] - num_faces[sp][2]))
                 diff[sp] = abs(num_faces[sp][0] - num_faces[sp][1]);

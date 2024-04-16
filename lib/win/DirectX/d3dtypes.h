@@ -1139,10 +1139,10 @@ typedef enum _D3DTEXTUREOP {
                           // = Arg1 + (1-Arg1)*Arg2
 
   // Linear alpha blend: Arg1*(Alpha) + Arg2*(1-Alpha)
-  D3DTOP_BLENDDIFFUSEALPHA = 12, // iterated alpha
-  D3DTOP_BLENDTEXTUREALPHA = 13, // texture alpha
-  D3DTOP_BLENDFACTORALPHA = 14,  // alpha from D3DRENDERSTATE_TEXTUREFACTOR
-                                // Linear alpha blend with pre-multiplied arg1 input: Arg1 + Arg2*(1-Alpha)
+  D3DTOP_BLENDDIFFUSEALPHA = 12,   // iterated alpha
+  D3DTOP_BLENDTEXTUREALPHA = 13,   // texture alpha
+  D3DTOP_BLENDFACTORALPHA = 14,    // alpha from D3DRENDERSTATE_TEXTUREFACTOR
+                                   // Linear alpha blend with pre-multiplied arg1 input: Arg1 + Arg2*(1-Alpha)
   D3DTOP_BLENDTEXTUREALPHAPM = 15, // texture alpha
   D3DTOP_BLENDCURRENTALPHA = 16,   // by alpha of current color
 

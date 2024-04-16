@@ -335,7 +335,8 @@ bool DoFileDialog(const char *title, const char *search_path, const char *ext, c
 //	save_dialog = is this dialog being used to save file, or load a file.  If save, than pass true
 //	path =	on entry is the initial path to start in (must be set...set to 0 length string to go to root directory)
 //			on exit it is the absolute path to selected file on return (if return is true) must be at least
-//_MAX_PATH in size 	title = Title of the dialog 	wildc = semicolon seperated list of wildcards ("*.txt;*.doc;*.exe")
+//_MAX_PATH in size 	title = Title of the dialog 	wildc = semicolon seperated list of wildcards
+//("*.txt;*.doc;*.exe")
 bool DoPathFileDialog(bool save_dialog, char *path, char *title, char *wildc, int flags);
 
 //////////////////////////////////////////////////////////////////////////////

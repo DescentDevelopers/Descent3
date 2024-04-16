@@ -3225,7 +3225,7 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
       rand_vec = (-rand_vec) * (magnitude * 25.0f);
       phys_apply_force(obj, &rand_vec);
       //	mprintf((0, "Breakoff fireball size: %f, lifeleft: %f\n", Objects[objnum].size,
-      //Objects[objnum].lifeleft));
+      // Objects[objnum].lifeleft));
     }
   }
 

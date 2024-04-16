@@ -225,7 +225,7 @@ void HelpDisplay(void) {
   //	quit_hot.Create(&help_wnd, UID_CANCEL, 0, &UITextItem(TXT_PRESSESCRET, UICOL_HOTSPOT_LO,UIALPHA_HOTSPOT_LO),
   //									&UITextItem(TXT_PRESSESCRET,UICOL_HOTSPOT_HI,UIALPHA_HOTSPOT_HI),
   //									HELP_X_KEY_POS, WND_HELP_H - OKCANCEL_YOFFSET,
-  //0,0,UIF_FIT|UIF_CENTER);
+  // 0,0,UIF_FIT|UIF_CENTER);
   help_wnd.Open();
 
   while (!exit_menu) {

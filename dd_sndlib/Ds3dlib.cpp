@@ -480,7 +480,7 @@ inline void sb_adjust_properties_3d(sound_buffer_info *sb, float f_volume, pos_s
       f_volume = 1.0f;
     A3D_SetSourceVolume(sb->m_snd_obj, f_volume);
     //		A3D_SetMinMaxDistance(sb->m_snd_obj, Sounds[sb->m_sound_index].min_distance,
-    //Sounds[sb->m_sound_index].max_distance);
+    // Sounds[sb->m_sound_index].max_distance);
     A3D_SetMinMaxDistance(sb->m_snd_obj, 30.0f, Sounds[sb->m_sound_index].max_distance);
     //		A3D_SetSourceCone(sb->m_snd_obj, x,y,z);
     A3D_SetSourceOrientation(sb->m_snd_obj, &pos->orient->fvec, &pos->orient->uvec);
@@ -1033,11 +1033,11 @@ void StreamMixer(char *ptr, int len) {
             cur_buf->play_info->m_stream_data = (*cur_buf->play_info->m_stream_cback)(
                 cur_buf->play_info->user_data, cur_buf->play_info->m_stream_handle, &cur_buf->play_info->m_stream_size);
             //						cur_buf->s->current_position = (char
-            //*)cur_buf->play_info->m_stream_data; 						mprintf((0, "%x %d\n", cur_buf->play_info->m_stream_data,
-            //cur_buf->play_info->m_stream_size));
+            //*)cur_buf->play_info->m_stream_data; 						mprintf((0, "%x %d\n",
+            //cur_buf->play_info->m_stream_data, cur_buf->play_info->m_stream_size));
             ASSERT(!(cur_buf->play_info->m_stream_data && cur_buf->play_info->m_stream_size <= 0));
-            //						mprintf((0, "Data %X, length %d\n", cur_buf->play_info->m_stream_data,
-            //cur_buf->play_info->m_stream_size));
+            //						mprintf((0, "Data %X, length %d\n",
+            //cur_buf->play_info->m_stream_data, cur_buf->play_info->m_stream_size));
 
             if (cur_buf->play_info->m_stream_data) {
               switch (cur_buf->play_info->m_stream_format) {
@@ -2116,7 +2116,7 @@ short win_llsSystem::FindFreeSoundSlot(float volume, int priority)
       sb = &m_sound_mixer.m_sound_cache[throw_out_slot];
       win_llsSystem::StopSound(sb->m_unique_id, SKT_HOLD_UNTIL_STOP);
       //	mprintf((0, "DDSNDLIB: Replace sound (p:%d) with sound (p:%d) in slot %d\n", sb->play_info->priority,
-      //priority, throw_out_slot));
+      // priority, throw_out_slot));
       return throw_out_slot;
     }
   }
@@ -3070,7 +3070,7 @@ int win_llsSystem::PlaySound3d(play_information *play_info, int sound_index, pos
     }
 
     //		mprintf((0, "SL Play sound on slot %d, TP = %d UI = %X\n", sound_slot, TotalSoundsPlayed,
-    //m_sound_mixer.m_sound_cache[sound_slot].m_unique_id));
+    // m_sound_mixer.m_sound_cache[sound_slot].m_unique_id));
   }
 
   m_sound_mixer.m_cur_sounds_played++;

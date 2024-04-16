@@ -922,8 +922,8 @@ void DoKeyboardMovement(game_controls *controls) {
   // check keyboard controls first.
 
   //	do thrust and orientation controls.  since packet contains time since last call, frametime is taken into
-  //account. 	note that the ctDigital packets are for those rare cases where a key is down, but there is no key down time
-  //	registered as of yet, which happens on some systems.
+  // account. 	note that the ctDigital packets are for those rare cases where a key is down, but there is no key down
+  // time 	registered as of yet, which happens on some systems.
   dx = (key_x1.value - key_x0.value);
   dy = (key_y1.value - key_y0.value);
   dz = (key_z1.value - key_z0.value);

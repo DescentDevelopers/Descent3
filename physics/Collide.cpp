@@ -939,7 +939,7 @@ void bump_this_object(object *objp, object *other_objp, vector *force, vector *c
 */
 
 //#define DAMAGE_SCALE 		128	//	Was 32 before 8:55 am on Thursday, September 15, changed by MK, walls
-//were hurting me more than robots! #define DAMAGE_THRESHOLD 	(F1_0/3) #define WALL_LOUDNESS_SCALE (20)
+// were hurting me more than robots! #define DAMAGE_THRESHOLD 	(F1_0/3) #define WALL_LOUDNESS_SCALE (20)
 
 // float force_force = 50.0;
 
@@ -2023,7 +2023,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
 
   //	force = object0->mtype.phys_info.velocity - object1->mtype.phys_info.velocity;
   //	force *= 2*(object0->mtype.phys_info.mass * object1->mtype.phys_info.mass)/(object0->mtype.phys_info.mass +
-  //object1->mtype.phys_info.mass);
+  // object1->mtype.phys_info.mass);
 
   //	if(!(object1->mtype.phys_info.flags & PF_PERSISTENT))
   //		bump_this_object(object1, object0, &force, collision_point, damage_flag);

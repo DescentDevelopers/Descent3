@@ -1978,8 +1978,8 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
               }
             }
 
-            //						mprintf((0, "Dist %f %f (%d, %d)\n", dist, scale, facelist[i].room_index,
-            //facelist[i].face_index));
+            //						mprintf((0, "Dist %f %f (%d, %d)\n", dist, scale,
+            //facelist[i].room_index, facelist[i].face_index));
 
             if (dist < closest_dist) {
               closest_dist = dist;
@@ -2999,8 +2999,8 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
     {
       if (!(Game_mode & GM_MULTI)) {
         for (i = 0; i < AI_NumRendered; i++) {
-          //						mprintf((0, "I know that I could dodge, if I was aware, says robot %d.\n",
-          //AI_RenderedList[i]));
+          //						mprintf((0, "I know that I could dodge, if I was aware, says robot
+          //%d.\n", AI_RenderedList[i]));
 
           if (!BOA_IsVisible(Objects[AI_RenderedList[i]].roomnum, other_obj->roomnum))
             continue;
@@ -3037,7 +3037,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
       } else {
         for (i = 0; i <= Highest_object_index; i++) {
           //				mprintf((0, "I know that I could dodge, if I was aware, says robot %d.\n",
-          //AI_RenderedList[i]));
+          // AI_RenderedList[i]));
           if (Objects[i].control_type != CT_AI || Objects[i].type == OBJ_NONE)
             continue;
 
@@ -3058,7 +3058,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
 
                   if (to_weapon * fov_vec >= Objects[i].ai_info->fov) {
                     //						mprintf((0, "I am fired upon says robot %d\n",
-                    //AI_RenderedList[i]));
+                    // AI_RenderedList[i]));
                     if (ai_info->notify_flags & (0x00000001 << notify_type)) {
                       ai_info->memory[0].num_enemy_shots_dodged++;
                       GoalAddGoal(&Objects[i], AIG_DODGE_OBJ, (void *)&obj->handle, ACTIVATION_BLEND_LEVEL, 1.0f,
@@ -4976,11 +4976,11 @@ void ai_move(object *obj) {
 
             int g_status = cur_goal->status_reg;
 
-            //							if((ai_info->ai_type == AIT_MELEE1) && (ai_info->status_reg &
-            //AISR_MELEE))
+            //							if((ai_info->ai_type == AIT_MELEE1) && (ai_info->status_reg
+            //& AISR_MELEE))
             //							{
-            //								AIMoveTowardsPosition(obj, &ai_info->last_see_target_pos,
-            //ai_info->attack_vel_percent);
+            //								AIMoveTowardsPosition(obj,
+            //&ai_info->last_see_target_pos, ai_info->attack_vel_percent);
             //							}
             //							else
 
@@ -5299,7 +5299,7 @@ void ai_fire(object *obj) {
                       pm->poly_wb[i].gp_index[aiming_gp_index]);
 
         //			mprintf((0, "Weapon %f, %f, %f and normal %f, %f, %f\n", XYZ(&gun_point),
-        //XYZ(&gun_normal)));
+        // XYZ(&gun_normal)));
 
         target_dir[WB_MOVE_STILL] = ai_info->last_see_target_pos - gun_point[WB_MOVE_STILL];
         target_dir[WB_MOVE_RIGHT] = ai_info->last_see_target_pos - gun_point[WB_MOVE_RIGHT];

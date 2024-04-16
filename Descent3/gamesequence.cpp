@@ -1920,8 +1920,8 @@ void EndLevel(int state) {
 
     // report the information to the pilot's mission data
     CurrentPilotUpdateMissionStatus();
-    //		Sound_system.StopAllSounds();		-- moved to below because bug was reported that sounds were playing in
-    //performance screen
+    //		Sound_system.StopAllSounds();		-- moved to below because bug was reported that sounds were playing
+    //in performance screen
 
     // save our shields (in case this call is due to starting a new level
     // in InitPlayerNewLevel, we'll determine if we should restore them

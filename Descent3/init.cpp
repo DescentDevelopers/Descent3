@@ -1934,7 +1934,7 @@ void UpdateInitMessage(float amount) {
     return;
   InitMessage(Init_messagebar_text, (amount * Init_messagebar_portion) + Init_messagebar_offset);
   //	mprintf((0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n", amount, Init_messagebar_portion,
-  //Init_messagebar_offset, (amount*Init_messagebar_portion)+Init_messagebar_offset));
+  // Init_messagebar_offset, (amount*Init_messagebar_portion)+Init_messagebar_offset));
 }
 
 void InitMessage(char *c, float progress) {

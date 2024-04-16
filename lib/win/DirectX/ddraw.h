@@ -413,13 +413,13 @@ typedef struct _DDCAPS_DX5 {
   /* 88*/ DWORD dwMinOverlayStretch; // minimum overlay stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 8c*/ DWORD dwMaxOverlayStretch; // maximum overlay stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 90*/ DWORD
-      dwMinLiveVideoStretch; // minimum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMinLiveVideoStretch; // minimum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 94*/ DWORD
-      dwMaxLiveVideoStretch; // maximum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMaxLiveVideoStretch; // maximum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 98*/ DWORD
-      dwMinHwCodecStretch; // minimum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMinHwCodecStretch; // minimum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 9c*/ DWORD
-      dwMaxHwCodecStretch;     // maximum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMaxHwCodecStretch;         // maximum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* a0*/ DWORD dwReserved1;   // reserved
   /* a4*/ DWORD dwReserved2;   // reserved
   /* a8*/ DWORD dwReserved3;   // reserved
@@ -478,13 +478,13 @@ typedef struct _DDCAPS_DX6 {
   /* 88*/ DWORD dwMinOverlayStretch; // minimum overlay stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 8c*/ DWORD dwMaxOverlayStretch; // maximum overlay stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 90*/ DWORD
-      dwMinLiveVideoStretch; // minimum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMinLiveVideoStretch; // minimum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 94*/ DWORD
-      dwMaxLiveVideoStretch; // maximum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMaxLiveVideoStretch; // maximum live video stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 98*/ DWORD
-      dwMinHwCodecStretch; // minimum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMinHwCodecStretch; // minimum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* 9c*/ DWORD
-      dwMaxHwCodecStretch;     // maximum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
+  dwMaxHwCodecStretch;         // maximum hardware codec stretch factor multiplied by 1000, eg 1000 == 1.0, 1300 == 1.3
   /* a0*/ DWORD dwReserved1;   // reserved
   /* a4*/ DWORD dwReserved2;   // reserved
   /* a8*/ DWORD dwReserved3;   // reserved

@@ -318,7 +318,7 @@ void Osiris_DisableCreateEvents(void);
 //	Purpose:
 //		Enables any events involved when an object is created.  This is to be used for
 //	Loading games/viewing demos, as so not to re-initialize good data. (call when done with
-//Osiris_DisableCreateEvents())
+// Osiris_DisableCreateEvents())
 void Osiris_EnableCreateEvents(void);
 
 #endif

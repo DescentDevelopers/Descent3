@@ -401,7 +401,7 @@ char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_inde
         SoundFiles[sound_file_index].np_sample_length = cksize / 2;
 
         //					SoundFiles[sound_file_index].sample_16bit = (short *)
-        //mem_malloc(2*cksize);
+        // mem_malloc(2*cksize);
         SoundFiles[sound_file_index].sample_16bit = (short *)mem_malloc(cksize);
         cf_ReadBytes((unsigned char *)SoundFiles[sound_file_index].sample_16bit, cksize, cfptr);
 

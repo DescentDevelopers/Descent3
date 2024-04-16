@@ -715,7 +715,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
       if (m_sound_objects[i].m_obj_type_flags & SIF_TOO_FAR) {
         if (m_sound_objects[i].m_obj_type_flags & SIF_LOOPING) {
           //					while(m_sound_objects[i].play_info.m_samples_played >=
-          //Sounds[m_sound_objects[i].m_sound_index].loop_end)
+          // Sounds[m_sound_objects[i].m_sound_index].loop_end)
           //					{
           //						m_sound_objects[i].play_info.m_samples_played -=
           //(Sounds[m_sound_objects[i].m_sound_index].loop_end - Sounds[m_sound_objects[i].m_sound_index].loop_start);

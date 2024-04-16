@@ -645,8 +645,8 @@ typedef struct {
            // being displayed).  The stat manager will only display
            // (*MaxNumberDisplayed) stats (checked each frame).
 #define DSIF_SHOW_OBSERVERICON                                                                                         \
-  0x00000008 // if this flag is given, the observer mode icon will be
-             // displayed as the first item in the column
+  0x00000008                           // if this flag is given, the observer mode icon will be
+                                       // displayed as the first item in the column
 #define DSIF_NOLASTKILLER 0x00000010   // don't display the "Last Killer"
 #define DSIF_NOLASTVICTIM 0x00000020   // don't display the "Last Victim"
 #define DSIF_NODETAILEDINFO 0x00000040 // don't display the detailed stats

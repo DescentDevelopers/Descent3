@@ -96,8 +96,8 @@ typedef struct {
 } texs_texpoint;
 
 // For the following enum table: LIN=Linear, PER=Perspective, NON=No Transparency, LIT = Shaded,
-//								 COLORED=Colored lighting, TRANS=Transparency ALPHA=Alpha
-//renderer
+//								 COLORED=Colored lighting, TRANS=Transparency
+//ALPHA=Alpha renderer
 
 #define MAX_RENDER_TYPES 15
 

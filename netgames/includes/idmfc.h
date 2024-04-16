@@ -1030,7 +1030,7 @@ public:
   // DMFCBase::GetPlayerRecord
   //
   //	Returns a pointer to the player record at the given slot (passed in slot must be in the range
-  //0<=slot<MAX_PLAYER_RECORDS)
+  // 0<=slot<MAX_PLAYER_RECORDS)
   virtual player_record *GetPlayerRecord(int slot) = 0;
 
   // DMFCBase::GetPlayerRecordByPnum

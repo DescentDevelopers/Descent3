@@ -909,7 +909,7 @@ void DisplayHotSpots(hotspotmap_t *hsmap, windowmap_t *wndmap) {
   //@@		{
   //@@			Game_viewport->hline(GR_RGB(0,0,255),curr_hotspot->x[scanline_count].start,
   //@@
-  //curr_hotspot->x[scanline_count].end,curr_y+scanline_count);
+  // curr_hotspot->x[scanline_count].end,curr_y+scanline_count);
   //@@		}
   //@@	}
   //@@
@@ -919,24 +919,24 @@ void DisplayHotSpots(hotspotmap_t *hsmap, windowmap_t *wndmap) {
   //@@		{
   //@@			Game_viewport->fillrect(GR_RGB(255,0,0), wndmap->wm[count].x,wndmap->wm[count].y,
   //@@
-  //wndmap->wm[count].x+wndmap->wm[count].width-1,wndmap->wm[count].y+wndmap->wm[count].height-1);
+  // wndmap->wm[count].x+wndmap->wm[count].width-1,wndmap->wm[count].y+wndmap->wm[count].height-1);
   //@@			//if there is a writeable area, display it
   //@@			if(wndmap->wm[count].t_top_y!=-1)
   //@@			{
   //@@				Game_viewport->fillrect(GR_RGB(128,128,128),
-  //wndmap->wm[count].l_start_x,wndmap->wm[count].t_top_y,
+  // wndmap->wm[count].l_start_x,wndmap->wm[count].t_top_y,
   //@@					wndmap->wm[count].l_end_x,wndmap->wm[count].t_bottom_y);
   //@@				Game_viewport->fillrect(GR_RGB(128,128,128),
-  //wndmap->wm[count].r_start_x,wndmap->wm[count].t_top_y,
+  // wndmap->wm[count].r_start_x,wndmap->wm[count].t_top_y,
   //@@					wndmap->wm[count].r_end_x,wndmap->wm[count].t_bottom_y);
   //@@			}
   //@@			if(wndmap->wm[count].b_top_y!=-1)
   //@@			{
   //@@				Game_viewport->fillrect(GR_RGB(128,128,128),
-  //wndmap->wm[count].l_start_x,wndmap->wm[count].b_top_y,
+  // wndmap->wm[count].l_start_x,wndmap->wm[count].b_top_y,
   //@@					wndmap->wm[count].l_end_x,wndmap->wm[count].b_bottom_y);
   //@@				Game_viewport->fillrect(GR_RGB(128,128,128),
-  //wndmap->wm[count].r_start_x,wndmap->wm[count].b_top_y,
+  // wndmap->wm[count].r_start_x,wndmap->wm[count].b_top_y,
   //@@					wndmap->wm[count].r_end_x,wndmap->wm[count].b_bottom_y);
   //@@			}
   //@@

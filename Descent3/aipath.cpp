@@ -800,7 +800,7 @@ void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_info *aip,
 }
 
 //	if(ROOMNUM_OUTSIDE(next_room) && ROOMNUM_OUTSIDE(*end_room) && (TERRAIN_REGION(next_room) ==
-//TERRAIN_REGION(*end_room) || 		TERRAIN_REGION(*end_room) == 0 || TERRAIN_REGION(next_room) == 0))
+// TERRAIN_REGION(*end_room) || 		TERRAIN_REGION(*end_room) == 0 || TERRAIN_REGION(next_room) == 0))
 //	{
 //		next_room = *end_room;
 //	}
@@ -1006,7 +1006,7 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
   AIPathFreePath(aip);
 
   //	if(ai_info->awareness <= AWARE_NONE && !(ai_info->flags & AIF_PERSISTANT))  // chrishack -- scalar max_nodes in
-  //path by awareness 		return false;
+  // path by awareness 		return false;
 
   aip->goal_index = (goal *)goal_ptr - ai_info->goals;
   aip->goal_uid = ((goal *)goal_ptr)->goal_uid;

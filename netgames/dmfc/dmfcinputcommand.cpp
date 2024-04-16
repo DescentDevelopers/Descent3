@@ -180,7 +180,7 @@ void DMFCInputCommand_Team(char *input_string) {
 
 //	handle the server wanting to change the team for a player
 //	Usage: "$changeteam <int pnum> <string team_name>" where pnum is the playernum, and team_name is the name of the
-//team
+// team
 void DMFCInputCommand_ChangeTeam(char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;

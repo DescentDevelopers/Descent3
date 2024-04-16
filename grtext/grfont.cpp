@@ -289,7 +289,7 @@ int grfont_Load(char *fname) {
 
   //	mprintf((0, "%s font.\n", fname));
   //	mprintf((0, "  <ht %d>::<min %d>::<max %d>::<base %d>", fnt.height, fnt.min_ascii, fnt.max_ascii,
-  //fnt.baseline));
+  // fnt.baseline));
   num_char = fnt.max_ascii - fnt.min_ascii + 1;
 
   if (fnt.max_ascii < 'a') {
@@ -739,12 +739,11 @@ int grfont_BltChar(int font, tCharBlt *cbi) {
                            ft->ch_wf[cbi->ch], ft->ch_hf[cbi->ch]);
     return (cbi->x + (int)(cbi->sw * cbi->dsw));
     //@@		rend_DrawFontCharacter (ft->bmps[ft->ch_bmp[cbi->ch]], cbi->x,cbi->y,
-    //@@											cbi->x+ft->ch_w[cbi->ch],
-    //cbi->y+ft->ch_h[cbi->ch],
+    //@@ cbi->x+ft->ch_w[cbi->ch], cbi->y+ft->ch_h[cbi->ch],
     //@@											ft->ch_uf[cbi->ch],
-    //ft->ch_vf[cbi->ch],
+    // ft->ch_vf[cbi->ch],
     //@@											ft->ch_wf[cbi->ch],
-    //ft->ch_hf[cbi->ch]);
+    // ft->ch_hf[cbi->ch]);
     //@@		return (cbi->x + ft->ch_w[cbi->ch] - 1);
   } else {
     rend_DrawFontCharacter(

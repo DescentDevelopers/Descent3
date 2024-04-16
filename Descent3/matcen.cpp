@@ -1437,8 +1437,8 @@ void matcen::DoRenderFrame() {
   // Useful status members:
   // MSTAT_CREATE_OBJ_FRAME
 
-  // DAJ	FIXES YET ANOTHER BUG WHERE THE ARRAY INDEX IS NOT CHECKED BEFORE USE (m_prod_type[m_cached_prod_index] ==
-  // -1)
+  // DAJ	FIXES YET ANOTHER BUG WHERE THE ARRAY INDEX IS NOT CHECKED BEFORE USE (m_prod_type[m_cached_prod_index]
+  // == -1)
   if (!(m_cached_prod_index >= 0 && m_cached_prod_index < m_num_prod_types && m_prod_type[m_cached_prod_index] >= 0 &&
         m_prod_type[m_cached_prod_index] <= MAX_OBJECT_TYPES &&
         Object_info[m_prod_type[m_cached_prod_index]].type != OBJ_NONE))

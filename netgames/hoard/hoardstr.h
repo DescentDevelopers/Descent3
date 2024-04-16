@@ -54,7 +54,7 @@ char *GetStringFromTable(int index);
 #define TXT_SAVESTATSB TXT(41)     //"Current Level Rankings\r\n"
 #define TXT_SAVESTATSC                                                                                                 \
   TXT(42) //"[Rank] [Name]                     [Score]     [Kills]     [Deaths]   [Suicides] [Highest Goal] [Time In
-          //Game]"
+          // Game]"
 #define TXT_SAVESTATSD TXT(43)     //"\r\nIndividual Stats\r\n"
 #define TXT_TIMEINGAME TXT(44)     //"Total Time In Game: %s"
 #define TXT_SAVESTATSE TXT(45)     //"Callsign:                     Kills:    Deaths:"

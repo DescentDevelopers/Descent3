@@ -447,7 +447,7 @@ bool mod_LoadModule(module *handle, char *imodfilename, int flags) {
   }
   err = GetDiskFragment(&SLSpec, 0, 0, NULL, 5, &connID, (Ptr *)NULL, NULL);
   //	err = GetDiskFragment(&SLSpec, 0, kCFragGoesToEOF, toolName, kPrivateCFragCopy, &connID, (Ptr*)&myMainAddr,
-  //errName);
+  // errName);
   if (err) {
     mprintf((2, "could not get disk fragmet %s\n", modfilename));
     //		Int3();;

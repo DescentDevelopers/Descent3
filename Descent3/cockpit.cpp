@@ -535,7 +535,7 @@ float KeyframeAnimateCockpit() {
   newkeyframe = Cockpit_info.this_keyframe + (Cockpit_info.next_keyframe - Cockpit_info.this_keyframe) *
                                                  (Cockpit_info.frame_time / COCKPIT_ANIM_TIME);
   //	mprintf((0, "this=%.1f next=%.1f ft=%.1f\n", Cockpit_info.this_keyframe, Cockpit_info.next_keyframe,
-  //Cockpit_info.frame_time)); 	going up in keyframes
+  // Cockpit_info.frame_time)); 	going up in keyframes
   if (Cockpit_info.this_keyframe < Cockpit_info.next_keyframe) {
     if (newkeyframe >= Cockpit_info.next_keyframe) {
       Cockpit_info.frame_time = 0.0f;
