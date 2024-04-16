@@ -2082,9 +2082,9 @@ int PlayerChooseDeathFate(int slot, float damage, bool melee) {
   else
     is_moving = false;
 
-  fate = (damage <= DEATH_BREAKUP_THRESHOLD && is_moving && !melee && OBJECT_OUTSIDE(playerobj))
-             ? DEATH_BREAKUP
-             : (damage <= DEATH_EXPLODE_THRESHOLD || melee) ? DEATH_FALL : DEATH_INSTANT;
+  fate = (damage <= DEATH_BREAKUP_THRESHOLD && is_moving && !melee && OBJECT_OUTSIDE(playerobj)) ? DEATH_BREAKUP
+         : (damage <= DEATH_EXPLODE_THRESHOLD || melee)                                          ? DEATH_FALL
+                                                                                                 : DEATH_INSTANT;
 
   if (fate == DEATH_BREAKUP) {
     if ((ps_rand() % 4) < 2)

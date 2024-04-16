@@ -37,12 +37,12 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/stat.h>
-//#include <linux/keyboard.h>
+// #include <linux/keyboard.h>
 #include <sys/ioctl.h>
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
-//#include <linux/unistd.h>
+// #include <linux/unistd.h>
 #include <termios.h>
 #include <term.h>
 
@@ -50,9 +50,9 @@
 #include "ddio.h"
 #include "mono.h"
 
-//##########################################################
-// raw Interface Functions
-//##########################################################
+// ##########################################################
+//  raw Interface Functions
+// ##########################################################
 void ddio_raw_EmergencyQuit(int id);
 void ddio_raw_InternalKeyInit(void);
 void ddio_raw_KeyBoardEventHandler(int scancode, int press);
@@ -63,7 +63,7 @@ void init_keyboard();
 void close_keyboard();
 int kbhit();
 int readch();
-//##########################################################
+// ##########################################################
 
 extern volatile struct tLnxKeys {
   union {
@@ -137,9 +137,9 @@ void ddio_normal_InternalResetKey(ubyte key) {
   LKeys[key].status = false;
 }
 
-//#################################################
-// raw Interface Functions
-//#################################################
+// #################################################
+//  raw Interface Functions
+// #################################################
 void (*kb_event_handler)(int scancode, int press);
 void ddio_raw_InternalKeyInit(void) {
   static bool first_time = true;

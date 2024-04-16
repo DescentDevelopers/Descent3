@@ -1715,18 +1715,18 @@ void opengl_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
         colorp->a = alpha;
       } else
 
-          // Do lighting based on intesity (MONO) or colored (RGB)
-          if (OpenGL_state.cur_color_model == CM_MONO) {
-        colorp->r = pnt->p3_l;
-        colorp->g = pnt->p3_l;
-        colorp->b = pnt->p3_l;
-        colorp->a = alpha;
-      } else {
-        colorp->r = pnt->p3_r;
-        colorp->g = pnt->p3_g;
-        colorp->b = pnt->p3_b;
-        colorp->a = alpha;
-      }
+        // Do lighting based on intesity (MONO) or colored (RGB)
+        if (OpenGL_state.cur_color_model == CM_MONO) {
+          colorp->r = pnt->p3_l;
+          colorp->g = pnt->p3_l;
+          colorp->b = pnt->p3_l;
+          colorp->a = alpha;
+        } else {
+          colorp->r = pnt->p3_r;
+          colorp->g = pnt->p3_g;
+          colorp->b = pnt->p3_b;
+          colorp->a = alpha;
+        }
     } else {
       colorp->r = 1;
       colorp->g = 1;

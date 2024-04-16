@@ -15,7 +15,7 @@ typedef void(GLFUNCCALL *PFNGLACTIVETEXTUREARBPROC)(GLenum texture);
 typedef void(GLFUNCCALL *PFNGLCLIENTACTIVETEXTUREARBPROC)(GLenum texture);
 typedef void(GLFUNCCALL *PFNGLMULTITEXCOORD4FARBPROC)(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
 // end ryan's add.
-//#include <GL/glx.h>
+// #include <GL/glx.h>
 #else
 #define GLFUNCCALL
 #endif

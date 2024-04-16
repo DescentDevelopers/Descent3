@@ -813,9 +813,9 @@ void gameMacController::set_axis_sensitivity(ct_type axis_type, ubyte axis, floa
     Int3();
   }
 }
-//#ifndef MACINTOSH
+// #ifndef MACINTOSH
 //	toggles use of deadzone for controllers. ctl can be 0 to ???
-// dead zone is from 0.0 to 0.5
+//  dead zone is from 0.0 to 0.5
 void gameMacController::set_controller_deadzone(int ctl, float deadzone) {
   if (deadzone < 0.0)
     deadzone = 0.0;
@@ -828,7 +828,7 @@ float gameMacController::get_controller_deadzone(int ctl) {
   return val;
 }
 
-//#endif
+// #endif
 char Ctltext_AxisBindings[][16] = {"", "X-axis", "Y-axis", "Z-axis", "R-axis", "U-axis", "V-axis"};
 char Ctltext_BtnBindings[][16] = {"",      "btn1",  "btn2",  "btn3",  "btn4",  "btn5",  "btn6",  "btn7",  "btn8",
                                   "btn9",  "btn10", "btn11", "btn12", "btn13", "btn14", "btn15", "btn16", "btn17",

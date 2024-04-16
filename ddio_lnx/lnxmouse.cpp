@@ -72,7 +72,7 @@
 #include "ddio_lnx.h"
 #include "application.h"
 #include "args.h"
-//#include "../lib/linux/dyna_xwin.h"
+// #include "../lib/linux/dyna_xwin.h"
 #include "SDL.h"
 
 bool ddio_mouseGrabbed = false;

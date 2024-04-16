@@ -158,10 +158,10 @@
 #include <string.h>
 
 #ifdef MACINTOSH
-//#define __MACBUILD__
+// #define __MACBUILD__
 #include "adecode.h"
 #endif
-//#include "samirlog.h"
+// #include "samirlog.h"
 #define LOGFILE(_s)
 
 #if defined(__LINUX__)
@@ -1016,7 +1016,7 @@ void *AudioStream::StreamCallback(int *size) {
 
   if (!CHECK_FLAG(m_buffer[nextbuffer].flags, STRM_BUFF_USED)) {
     //		mprintf((0, "**> stream %d (nextbuffer %d) (flags %x) unused stoping!! \n", m_sbufidx, nextbuffer,
-    //m_buffer[nextbuffer].flags)); 	mprintf((0, "STRM[%d]: Playing onetime buffer?\n",m_curid));
+    // m_buffer[nextbuffer].flags)); 	mprintf((0, "STRM[%d]: Playing onetime buffer?\n",m_curid));
 
     m_state = STRM_STOPPED;
     *size = 0;
@@ -1041,7 +1041,7 @@ void *AudioStream::StreamCallback(int *size) {
   *size = m_buffer[m_sbufidx].nbytes;
   //	mprintf((0, "cb size %x\n", m_buffer[m_sbufidx].nbytes));
   //	mprintf((0, "callback: m_buffer[%d] nbytes 0x%x data 0x%X\n", m_sbufidx, m_buffer[m_sbufidx].nbytes,
-  //m_buffer[m_sbufidx].data));
+  // m_buffer[m_sbufidx].data));
 
   if (CHECK_FLAG(m_buffer[m_sbufidx].flags, STRM_BUFF_TERMINAL)) {
     //		mprintf((0, "STRMAUD: reached end of stream (%d bytes).\n", (*size)));

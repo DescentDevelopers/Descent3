@@ -422,9 +422,9 @@ extern float AI_last_time_room_noise_alert_time[MAX_ROOMS + 8];
 #define AIC_STATIC 0
 #define AIC_PURE_PATH 1
 #define AIC_AIS_FULL 2
-//#define AIC_DYNAMIC				3
-//#define AIC_AIS_MOVEMENT			4
-//#define AIC_AIS_FIRING			5
+// #define AIC_DYNAMIC				3
+// #define AIC_AIS_MOVEMENT			4
+// #define AIC_AIS_FIRING			5
 
 // AI Action -- What is it doing?
 

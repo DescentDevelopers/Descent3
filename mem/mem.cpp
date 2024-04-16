@@ -194,10 +194,10 @@
 #include "mem.h"
 #include "pserror.h"
 #include "pstypes.h"
-//#include "args.h"
-//#include "ddio.h"
+// #include "args.h"
+// #include "ddio.h"
 //
-//#define MEM_DEBUG
+// #define MEM_DEBUG
 
 #ifdef MEM_USE_RTL
 #pragma message("mem.cpp: Compiling For Run-Time Library usage")
@@ -295,7 +295,7 @@ int MacDynamicStartMem = 0;
 #define FAILSAFE_SIZE 2048
 
 #ifdef DAJ_DEBUG
-//#define MEM_LOGFILE
+// #define MEM_LOGFILE
 #endif
 #define USE_MALLOC
 
@@ -473,9 +473,9 @@ bool mem_dumpmallocstofile(char *filename) { return false; }
 // Windows memory management
 
 // Uncomment this to detect memory leaks and memory overwrites. Slows down mallocs and frees a little.
-//#define MEM_DEBUG	1
+// #define MEM_DEBUG	1
 // Uncomment this if you want everything written to "memory.out"
-//#define MEM_LOGFILE	1
+// #define MEM_LOGFILE	1
 
 #ifdef MEM_USE_RTL
 #undef MEM_DEBUG

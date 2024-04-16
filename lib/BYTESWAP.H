@@ -73,7 +73,7 @@ inline float SWAPFLOAT(float x)
 #define MOTOROLA_FLOAT(x)	SWAPFLOAT(Endian_SwapFloat(x))
 */
 #define SWAPSHORT(x) (short)(0xFFFF & (((x) << 8) | (((ushort)(x)) >> 8)))
-#define SWAPINT(x) (int)(((x) << 24) | (((ulong)(x)) >> 24) | (((x)&0x0000ff00) << 8) | (((x)&0x00ff0000) >> 8))
+#define SWAPINT(x) (int)(((x) << 24) | (((ulong)(x)) >> 24) | (((x) & 0x0000ff00) << 8) | (((x) & 0x00ff0000) >> 8))
 
 // Stupid function to trick the compiler into letting me byteswap a float
 inline float SWAPFLOAT(float x) {

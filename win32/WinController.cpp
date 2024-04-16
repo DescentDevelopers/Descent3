@@ -533,56 +533,50 @@ ct_config_data gameWinController::get_controller_value(ct_type type_req) {
       unsigned ctl = CONTROLLER_CTL_INFO(i, NULL_CONTROLLER);
 
       if (m_ControlList[i].flags & CTF_V_AXIS) {
-        limit =
-            (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.5f)
-                ? 0.95f
-                : (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.0f) ? 0.80f : (m_ControlList[i].sens[CT_V_AXIS - 1] / 2);
+        limit = (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.5f)   ? 0.95f
+                : (m_ControlList[i].sens[CT_V_AXIS - 1] > 1.0f) ? 0.80f
+                                                                : (m_ControlList[i].sens[CT_V_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_V_AXIS, ctAnalog);
         mprintf((0, "pos=%.2f\n", pos));
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_V_AXIS, NULL_BINDING));
       }
       if (m_ControlList[i].flags & CTF_U_AXIS) {
-        limit =
-            (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.5f)
-                ? 0.95f
-                : (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.0f) ? 0.80f : (m_ControlList[i].sens[CT_U_AXIS - 1] / 2);
+        limit = (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.5f)   ? 0.95f
+                : (m_ControlList[i].sens[CT_U_AXIS - 1] > 1.0f) ? 0.80f
+                                                                : (m_ControlList[i].sens[CT_U_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_U_AXIS, ctAnalog);
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_U_AXIS, NULL_BINDING));
       }
       if (m_ControlList[i].flags & CTF_R_AXIS) {
-        limit =
-            (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.5f)
-                ? 0.95f
-                : (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.0f) ? 0.80f : (m_ControlList[i].sens[CT_R_AXIS - 1] / 2);
+        limit = (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.5f)   ? 0.95f
+                : (m_ControlList[i].sens[CT_R_AXIS - 1] > 1.0f) ? 0.80f
+                                                                : (m_ControlList[i].sens[CT_R_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_R_AXIS, ctAnalog);
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_R_AXIS, NULL_BINDING));
       }
       if (m_ControlList[i].flags & CTF_Z_AXIS) {
-        limit =
-            (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.5f)
-                ? 0.95f
-                : (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.0f) ? 0.80f : (m_ControlList[i].sens[CT_Z_AXIS - 1] / 2);
+        limit = (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.5f)   ? 0.95f
+                : (m_ControlList[i].sens[CT_Z_AXIS - 1] > 1.0f) ? 0.80f
+                                                                : (m_ControlList[i].sens[CT_Z_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_Z_AXIS, ctAnalog);
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Z_AXIS, NULL_BINDING));
       }
       if (m_ControlList[i].flags & CTF_Y_AXIS) {
-        limit =
-            (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.5f)
-                ? 0.95f
-                : (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.0f) ? 0.80f : (m_ControlList[i].sens[CT_Y_AXIS - 1] / 2);
+        limit = (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.5f)   ? 0.95f
+                : (m_ControlList[i].sens[CT_Y_AXIS - 1] > 1.0f) ? 0.80f
+                                                                : (m_ControlList[i].sens[CT_Y_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_Y_AXIS, ctAnalog);
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_Y_AXIS, NULL_BINDING));
       }
       if (m_ControlList[i].flags & CTF_X_AXIS) {
-        limit =
-            (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.5f)
-                ? 0.95f
-                : (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.0f) ? 0.80f : (m_ControlList[i].sens[CT_X_AXIS - 1] / 2);
+        limit = (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.5f)   ? 0.95f
+                : (m_ControlList[i].sens[CT_X_AXIS - 1] > 1.0f) ? 0.80f
+                                                                : (m_ControlList[i].sens[CT_X_AXIS - 1] / 2);
         pos = get_axis_value(i, CT_X_AXIS, ctAnalog);
         if (fabs(pos) > limit)
           val = MAKE_CONFIG_DATA(ctl, CONTROLLER_CTL_VALUE(CT_X_AXIS, NULL_BINDING));

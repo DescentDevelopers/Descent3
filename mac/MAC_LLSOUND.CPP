@@ -335,19 +335,19 @@ int mac_llsSystem::PlaySound3d(play_information *play_info, int sound_index, pos
   channel_priority[channel] = volume * sound_priority[channel];
 //	mprintf((2, "ply %d chn %d vol %f pri %d\n", file_index, channel, volume, play_info->priority));
 //	mprintf((1, "3d%4d L%d %16s dist %.5f (%.5f,%.5f) pri %d, vol %.5f\n", file_index, f_looped,
-//SoundFiles[file_index].name, dist, min, max, 		play_info->priority, volume));
+// SoundFiles[file_index].name, dist, min, max, 		play_info->priority, volume));
 #ifdef SPROCKET17
   if (m_sound_quality == SQT_HIGH) {
     //		mprintf((1, "SRC %.5f %.5f %.5f  ",cur_pos->position->x, cur_pos->position->y, cur_pos->position->z));
     //		mprintf((1, "LST %.5f %.5f %.5f\n", m_emulated_listener.position.x, m_emulated_listener.position.y,
-    //m_emulated_listener.position.z));
+    // m_emulated_listener.position.z));
     SSpSource_SetPosition3f(m_sr[channel], cur_pos->position->x, cur_pos->position->y, cur_pos->position->z);
     SSpSource_SetOrientation3f(m_sr[channel], cur_pos->orient->fvec.x, cur_pos->orient->fvec.y,
                                cur_pos->orient->fvec.z);
     SSpSource_SetUpVector3f(m_sr[channel], cur_pos->orient->uvec.x, cur_pos->orient->uvec.y, cur_pos->orient->uvec.z);
     SSpSource_SetVelocity3f(m_sr[channel], 0, 0, 0);
     //		SSpSource_SetVelocity3f(m_sr[channel], cur_pos->velocity->x, cur_pos->velocity->y,
-    //cur_pos->velocity->z);
+    // cur_pos->velocity->z);
     SSpSource_SetReferenceDistance(m_sr[channel], (max) / DIST_SCALE);
 
     SSpSource_CalcLocalization(m_sr[channel], m_lr, &snd_localization[m_sound_quality]);
@@ -438,7 +438,7 @@ void mac_llsSystem::AdjustSound(int sound_uid, pos_state *cur_pos, float adjuste
 
       //			if(volume <= 0.01) {
       //				mprintf((2, "SMALL VOL %d %.3f dist %.3f (%.3f %.3f)\n", sound_uid, volume,
-      //dist, min, max)); 				StopSound(sound_uid); 				continue;
+      // dist, min, max)); 				StopSound(sound_uid); 				continue;
       //			}
       channel_priority[channel] = volume * sound_priority[channel];
 #ifdef SPROCKET17
@@ -781,7 +781,7 @@ bool mac_llsSystem::CheckAndForceSoundDataAlloc(int sound_uid) {
     return true;
   // If not, get the sound data
   //	result = SoundLoadWaveFile(SoundFiles[sound_file_index].name, Sounds[sound_uid].import_volume, sound_file_index,
-  //SQT_HIGH, true);
+  // SQT_HIGH, true);
   result = SoundLoadWaveFile(SoundFiles[sound_file_index].name, Sounds[sound_uid].import_volume, sound_file_index,
                              (m_sound_quality > 0) ? 1 : 0, true);
   // Why would it load once (table load time) and not now?
@@ -823,8 +823,8 @@ int mac_llsSystem::FindFreeChannel(float volume, int priority) {
   }
 
   if (min_chan != -1) {
-    //		mprintf((1, "\nK %d snd %d pri %.5f > %.5f\n", min_chan, snd_channel[min_chan]->userInfo, weighted_priority,
-    //channel_priority[min_chan]));
+    //		mprintf((1, "\nK %d snd %d pri %.5f > %.5f\n", min_chan, snd_channel[min_chan]->userInfo,
+    // weighted_priority, channel_priority[min_chan]));
     StopSound(snd_channel[min_chan]->userInfo);
     return (min_chan);
   }

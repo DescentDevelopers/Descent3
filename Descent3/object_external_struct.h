@@ -99,13 +99,13 @@
 #define ROOMNUM_CELLNUM_MASK 0x7fffffff
 
 // Get a cell number from a room number
-#define CELLNUM(roomnum) ((roomnum)&ROOMNUM_CELLNUM_MASK)
+#define CELLNUM(roomnum) ((roomnum) & ROOMNUM_CELLNUM_MASK)
 
 // Make a room number from a cell number
 #define MAKE_ROOMNUM(cellnum) ((cellnum) | ROOMNUM_CELLNUM_FLAG)
 
 // Determine if a roomnum is really a cell number
-#define ROOMNUM_OUTSIDE(roomnum) (((roomnum)&ROOMNUM_CELLNUM_FLAG) != 0)
+#define ROOMNUM_OUTSIDE(roomnum) (((roomnum) & ROOMNUM_CELLNUM_FLAG) != 0)
 
 // Determine if an object is outside
 #define OBJECT_OUTSIDE(objp) ROOMNUM_OUTSIDE((objp)->roomnum)
@@ -322,14 +322,14 @@ typedef struct physics_info {
   int num_bounces;       // Number of bounces before exploding (PHYSICS_UNLIMITED_BOUNCE is for unlimited bouncing)
 
   float coeff_restitution; // What percent of velocity is kept after a bounce
-  float mass;              // The mass of this object							     -- what about moving
-              // into type info
+  float mass;              // The mass of this object							     -- what about
+                           // moving into type info
   float
       drag;      // How fast this slows down						     -- what about moving into type info
   float rotdrag; // How much resistance to a change in spin rate   -- what about moving into type info
   union {
-    float full_thrust; // Maximum thrust magnitude						     -- what about moving
-                       // into type info
+    float full_thrust; // Maximum thrust magnitude						     -- what about
+                       // moving into type info
     float max_velocity;
   };
   union {
@@ -340,8 +340,8 @@ typedef struct physics_info {
   float turnroll_ratio;    // How much roll for a given turning rate		     -- what about moving into type info
   float
       wiggle_amplitude;  // The amplitude of an object's wiggle			     -- what about moving into type info
-  float wiggles_per_sec; // How fast something wiggles						     -- what about moving into
-                         // type info
+  float wiggles_per_sec; // How fast something wiggles						     -- what about
+                         // moving into type info
 
   vector dest_pos; // destination position for interpolating velocity (for multiplayer only)
 

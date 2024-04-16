@@ -394,79 +394,79 @@ int SlewFrame(object *obj, int movement_limitations) {
       new_room = obj->roomnum;
     } else
 #endif
-        // NOTE LINK TO ABOVE IF
-        if (outside_mine) { // starting outside the mine?
+      // NOTE LINK TO ABOVE IF
+      if (outside_mine) { // starting outside the mine?
 
-      // See if we've moved back into a room
-      new_room = FindPointRoom(&new_pos);
+        // See if we've moved back into a room
+        new_room = FindPointRoom(&new_pos);
 
-      if (new_room != -1) { // back in the mine
-        outside_mine = 0;
-        mprintf((0, "SLEW: Re-entered mine at room %d\n", new_room));
-      } else // not back in the mine
-        new_room = obj->roomnum;
-    } else {
-      bool was_outside = (ROOMNUM_OUTSIDE(obj->roomnum) != 0);
+        if (new_room != -1) { // back in the mine
+          outside_mine = 0;
+          mprintf((0, "SLEW: Re-entered mine at room %d\n", new_room));
+        } else // not back in the mine
+          new_room = obj->roomnum;
+      } else {
+        bool was_outside = (ROOMNUM_OUTSIDE(obj->roomnum) != 0);
 
-      // Limit new position to terrain bounds if outside
-      if (was_outside) {
-        if (new_pos.x < 1.0)
-          new_pos.x = 1.0;
-        if (new_pos.x > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
-          new_pos.x = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
-        if (new_pos.z < 1.0)
-          new_pos.z = 1.0;
-        if (new_pos.z > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
-          new_pos.z = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
-      }
+        // Limit new position to terrain bounds if outside
+        if (was_outside) {
+          if (new_pos.x < 1.0)
+            new_pos.x = 1.0;
+          if (new_pos.x > TERRAIN_WIDTH * TERRAIN_SIZE - 1.0)
+            new_pos.x = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+          if (new_pos.z < 1.0)
+            new_pos.z = 1.0;
+          if (new_pos.z > TERRAIN_DEPTH * TERRAIN_SIZE - 1.0)
+            new_pos.z = TERRAIN_WIDTH * TERRAIN_SIZE - 1.0;
+        }
 
-      // Call FVI up get updated room number
-      fq.p0 = &obj->pos;
-      fq.startroom = obj->roomnum;
-      fq.p1 = &new_pos;
-      fq.rad = 0;
-      fq.thisobjnum = OBJNUM(obj);
-      fq.ignore_obj_list = NULL;
-      fq.flags = FQ_IGNORE_RENDER_THROUGH_PORTALS;
-      fate = fvi_FindIntersection(&fq, &hit_info);
+        // Call FVI up get updated room number
+        fq.p0 = &obj->pos;
+        fq.startroom = obj->roomnum;
+        fq.p1 = &new_pos;
+        fq.rad = 0;
+        fq.thisobjnum = OBJNUM(obj);
+        fq.ignore_obj_list = NULL;
+        fq.flags = FQ_IGNORE_RENDER_THROUGH_PORTALS;
+        fate = fvi_FindIntersection(&fq, &hit_info);
 
-      // If bad room, don't move
-      if ((fate == HIT_OUT_OF_TERRAIN_BOUNDS) || (hit_info.hit_room == -1)) {
-        new_room = obj->roomnum;
-        new_pos = obj->pos;
-      } else
-        new_room = hit_info.hit_room;
+        // If bad room, don't move
+        if ((fate == HIT_OUT_OF_TERRAIN_BOUNDS) || (hit_info.hit_room == -1)) {
+          new_room = obj->roomnum;
+          new_pos = obj->pos;
+        } else
+          new_room = hit_info.hit_room;
 
-      // The object hit a wall, and maybe went outside the mine.
-      if (fate == HIT_WALL) {
-        int t;
+        // The object hit a wall, and maybe went outside the mine.
+        if (fate == HIT_WALL) {
+          int t;
 
-        mprintf((0, "SLEW: hit wall\n"));
+          mprintf((0, "SLEW: hit wall\n"));
 
-        // Check if we're in a room
-        t = FindPointRoom(&new_pos);
+          // Check if we're in a room
+          t = FindPointRoom(&new_pos);
 
-        if (t != -1) { // We're in a room
-          new_room = t;
-          mprintf((0, "SLEW: still in mine in room %d\n", new_room));
-        } else { // Not in a room.  Set a special flag
-          outside_mine = 1;
-          mprintf((0, "SLEW: left mine from room %d\n", new_room));
+          if (t != -1) { // We're in a room
+            new_room = t;
+            mprintf((0, "SLEW: still in mine in room %d\n", new_room));
+          } else { // Not in a room.  Set a special flag
+            outside_mine = 1;
+            mprintf((0, "SLEW: left mine from room %d\n", new_room));
+          }
+        }
+
+        if (new_room != obj->roomnum) { // if we've changed rooms, say so
+          if (ROOMNUM_OUTSIDE(new_room))
+            if (was_outside)
+              mprintf((0, "SLEW: Moved to cell %d, BOA TR %d\n", CELLNUM(new_room), TERRAIN_REGION(new_room)));
+            else
+              mprintf((0, "SLEW: Moved outside to cell %d\n", CELLNUM(new_room)));
+          else if (was_outside)
+            mprintf((0, "SLEW: Moved inside to room %d\n", new_room));
+          else
+            mprintf((0, "SLEW: Moved into room %d\n", new_room));
         }
       }
-
-      if (new_room != obj->roomnum) { // if we've changed rooms, say so
-        if (ROOMNUM_OUTSIDE(new_room))
-          if (was_outside)
-            mprintf((0, "SLEW: Moved to cell %d, BOA TR %d\n", CELLNUM(new_room), TERRAIN_REGION(new_room)));
-          else
-            mprintf((0, "SLEW: Moved outside to cell %d\n", CELLNUM(new_room)));
-        else if (was_outside)
-          mprintf((0, "SLEW: Moved inside to room %d\n", new_room));
-        else
-          mprintf((0, "SLEW: Moved into room %d\n", new_room));
-      }
-    }
 
     // Now we have the new room, so update the object position
     ObjSetPos(obj, &new_pos, new_room, NULL, false);

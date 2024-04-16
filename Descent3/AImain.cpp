@@ -1979,7 +1979,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
             }
 
             //						mprintf((0, "Dist %f %f (%d, %d)\n", dist, scale,
-            //facelist[i].room_index, facelist[i].face_index));
+            // facelist[i].room_index, facelist[i].face_index));
 
             if (dist < closest_dist) {
               closest_dist = dist;
@@ -2999,8 +2999,8 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
     {
       if (!(Game_mode & GM_MULTI)) {
         for (i = 0; i < AI_NumRendered; i++) {
-          //						mprintf((0, "I know that I could dodge, if I was aware, says robot
-          //%d.\n", AI_RenderedList[i]));
+          //						mprintf((0, "I know that I could dodge, if I was aware, says
+          // robot %d.\n", AI_RenderedList[i]));
 
           if (!BOA_IsVisible(Objects[AI_RenderedList[i]].roomnum, other_obj->roomnum))
             continue;
@@ -4976,8 +4976,8 @@ void ai_move(object *obj) {
 
             int g_status = cur_goal->status_reg;
 
-            //							if((ai_info->ai_type == AIT_MELEE1) && (ai_info->status_reg
-            //& AISR_MELEE))
+            //							if((ai_info->ai_type == AIT_MELEE1) &&
+            //(ai_info->status_reg & AISR_MELEE))
             //							{
             //								AIMoveTowardsPosition(obj,
             //&ai_info->last_see_target_pos, ai_info->attack_vel_percent);

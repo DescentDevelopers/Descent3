@@ -590,8 +590,8 @@ typedef struct {
 
 #define MIF_INCLUDENONE                                                                                                \
   0x01 // for MIT_PSTATE, this will place a <None> at the top, it will send a -1 to the function, if selected
-//#define MIF_IGNORESERVER	0x02	//for MIT_PSTATE, this will keep the server out of the list
-//#define MIF_IGNOREME		0x04	//for MIT_PSTATE, this will keep your pnum out of the list
+// #define MIF_IGNORESERVER	0x02	//for MIT_PSTATE, this will keep the server out of the list
+// #define MIF_IGNOREME		0x04	//for MIT_PSTATE, this will keep your pnum out of the list
 
 #define MAX_COLUMN_TITLE_SIZE 15
 

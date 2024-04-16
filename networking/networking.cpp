@@ -302,7 +302,7 @@ typedef int socklen_t;
 #endif
 
 #include "descent.h"
-//#include "../manage/shippage.h"
+// #include "../manage/shippage.h"
 #include "appdatabase.h"
 
 #include "pstypes.h"
@@ -2307,8 +2307,8 @@ int CDECLCALL gethostbynameworker(void *parm);
 #include "SDL_thread.h"
 
 // rcg06192000 use SDL threads.
-//#include <pthread.h>
-//#include <dlfcn.h>
+// #include <pthread.h>
+// #include <dlfcn.h>
 // typedef int (*pthread_create_fp)(pthread_t *__thread,__const pthread_attr_t *__attr,void *(*__start_routine) (void
 // *),void *__arg); typedef int (*pthread_detach_fp)(pthread_t __th); typedef pthread_t (*pthread_self_fp)(void); static
 // pthread_create_fp dpthread_create = NULL; static pthread_detach_fp dpthread_detach = NULL; static pthread_self_fp

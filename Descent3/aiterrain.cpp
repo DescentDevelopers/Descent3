@@ -68,12 +68,12 @@ void ait_terrain_clean() {
     ai_terrain_check_list[CELLNUM(ai_segs_checked[i]) >> 3] = 0;
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	for(i = 0; i < ((TERRAIN_WIDTH*TERRAIN_DEPTH)>>3)+1; i++)
   //	{
   //		ASSERT(ai_terrain_check_list[i] == 0);
   //	}
-  //#endif
+  // #endif
 
   ai_num_segs_checked = 0;
 }

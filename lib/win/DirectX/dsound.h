@@ -615,9 +615,9 @@ DECLARE_INTERFACE_(IDirectSoundNotify, IUnknown) {
 #define IDirectSoundNotify_SetNotificationPositions(p, a, b) (p)->SetNotificationPositions(a, b)
 #endif // !defined(__cplusplus) || defined(CINTERFACE)
 
-  //
-  // IKsPropertySet
-  //
+//
+// IKsPropertySet
+//
 
 #ifndef _IKsPropertySet_
 #define _IKsPropertySet_
@@ -667,9 +667,9 @@ DECLARE_INTERFACE_(IKsPropertySet, IUnknown) {
 
 #endif // _IKsPropertySet_
 
-  //
-  // Return Codes
-  //
+//
+// Return Codes
+//
 
 #define DS_OK 0
 
@@ -724,9 +724,9 @@ DECLARE_INTERFACE_(IKsPropertySet, IUnknown) {
 // The requested COM interface is not available
 #define DSERR_NOINTERFACE E_NOINTERFACE
 
-  //
-  // Flags
-  //
+//
+// Flags
+//
 
 #define DSCAPS_PRIMARYMONO 0x00000001
 #define DSCAPS_PRIMARYSTEREO 0x00000002

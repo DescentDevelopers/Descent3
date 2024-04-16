@@ -1433,8 +1433,9 @@ void CtlConfig(int mode) {
   cfg_cb_data.wpncfg = &wpncfg;
   cfg_cb_data.curcfg = NULL;
   menu.AddSimpleOption(UID_CANCEL, TXT_GEN_EXIT);
-  menu.SetCurrentOption((mode == CTLCONFIG_WPNSEL) ? IDV_WPNSEL
-                                                   : (mode == CTLCONFIG_CONTROLLER) ? IDV_CCONFIG : IDV_KCONFIG);
+  menu.SetCurrentOption((mode == CTLCONFIG_WPNSEL)       ? IDV_WPNSEL
+                        : (mode == CTLCONFIG_CONTROLLER) ? IDV_CCONFIG
+                                                         : IDV_KCONFIG);
   menu.SetOnOptionSwitchCB(CtlConfigSwitchCB, (void *)&cfg_cb_data);
 
   //	if(mode==CTLCONFIG_CONTROLLER) {

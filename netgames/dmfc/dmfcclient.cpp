@@ -280,7 +280,7 @@ char *DMFCGetString(int d);
 $$TABLE_SOUND "PlayerDeath"
 */
 
-//######################### Client allowed event handlers############################
+// ######################### Client allowed event handlers############################
 
 // DMFCBase::OnClientPlayerKilled (Only called if server tells client to execute)
 //

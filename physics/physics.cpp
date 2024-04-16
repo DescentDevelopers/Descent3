@@ -1465,7 +1465,8 @@ void do_physics_sim(object *obj) {
             //						if(!f_forcefield && !(f_volatile && obj->type == OBJ_PLAYER))
             //						{
             //							if(obj->mtype.phys_info.coeff_restitution != 1.0f)
-            //								obj->mtype.phys_info.velocity -= (obj->mtype.phys_info.velocity * (1.0f
+            //								obj->mtype.phys_info.velocity -=
+            //(obj->mtype.phys_info.velocity * (1.0f
             //- obj->mtype.phys_info.coeff_restitution));
             //						}
 
@@ -1473,8 +1474,8 @@ void do_physics_sim(object *obj) {
             //							bump_obj_against_fixed(obj, &hit_info.hit_face_pnt[0],
             //&hit_info.hit_wallnorm[0]);
             //
-            //						if(hit_info.hit_wallnorm[0].y > .4 && (vm_GetMagnitude(&obj->mtype.phys_info.velocity) <
-            //.001f
+            //						if(hit_info.hit_wallnorm[0].y > .4 &&
+            //(vm_GetMagnitude(&obj->mtype.phys_info.velocity) < .001f
             //|| obj->mtype.phys_info.velocity * hit_info.hit_wallnorm[0] <= 0.0f))
             //						{
             //							mprintf((0, "At Rest!\n"));

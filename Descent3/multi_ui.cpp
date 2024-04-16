@@ -312,7 +312,7 @@
 #include "ConfigItem.h"
 #include "appdatabase.h"
 
-//#define USE_DIRECTPLAY
+// #define USE_DIRECTPLAY
 
 #ifdef USE_DIRECTPLAY
 #include "directplay.h"

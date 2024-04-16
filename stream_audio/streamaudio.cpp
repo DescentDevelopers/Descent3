@@ -154,7 +154,7 @@
 #include "ddio.h"
 #include <stdlib.h>
 #include <string.h>
-//#include "samirlog.h"
+// #include "samirlog.h"
 #define LOGFILE(_s)
 #if defined(MACINTOSH)
 typedef unsigned ReadFunction(void *data, void *buf, unsigned qty);

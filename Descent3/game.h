@@ -256,8 +256,8 @@ extern renderer_preferred_state Render_preferred_state;
 extern int Render_preferred_bitdepth;
 
 #define GM_SINGLE 1 // Single player game.
-//#define GM_SERIAL	2								// You are in serial mode (Jason doesn't
-//like this.)
+// #define GM_SERIAL	2								// You are in serial mode (Jason
+// doesn't like this.)
 #define GM_NETWORK 4 // You are in network mode
 #define GM_MODEM 32  // You are in a modem (serial) game
 

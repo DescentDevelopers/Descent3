@@ -419,7 +419,7 @@ char Descent3_temp_directory[_MAX_PATH]; // temp directory to put temp files
 //	Descent3: Choke 1
 //		Initializes game elements and invokes the MainLoop
 //	---------------------------------------------------------------------------
-//#define BETA
+// #define BETA
 
 #if (defined(OEM) || defined(DEMO))
 void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
@@ -568,7 +568,7 @@ void Descent3() {
 //		Otherwise this should be called from the main function.
 //	---------------------------------------------------------------------------
 
-//#ifdef GAMEGAUGE
+// #ifdef GAMEGAUGE
 extern int frames_one_second;
 extern int min_one_second;
 extern int max_one_second;
@@ -577,7 +577,7 @@ extern int gamegauge_total_frames;
 extern float gamegauge_total_time;
 extern short gamegauge_fpslog[GAMEGAUGE_MAX_LOG];
 
-//#endif
+// #endif
 
 void MainLoop() {
   int exit_game = 0;
@@ -610,7 +610,7 @@ void MainLoop() {
       Credits_Display();
       Function_mode = MENU_MODE;
       break;
-      //#ifdef GAMEGAUGE
+      // #ifdef GAMEGAUGE
     case GAMEGAUGE_MODE: {
       int c;
       for (c = 0; c < GAMEGAUGE_MAX_LOG; c++)
@@ -619,7 +619,7 @@ void MainLoop() {
       PlayGame();
       // exit_game = 1;
     } break;
-    //#endif
+    // #endif
 #ifdef EDITOR
     case EDITOR_GAME_MODE: // run level and then instead of menus, go to editor.
       QuickPlayGame();

@@ -1184,18 +1184,18 @@ DECLARE_INTERFACE_(IA3dMaterial, IUnknown) {
 #define IA3dMaterial_GetTransmittance(p, a, b) (p)->GetTransmittance(a, b)
 #endif // !defined(__cplusplus) || defined(CINTERFACE)
 
-  //===================================================================
-  // Error Codes
-  //
-  // Use macros A3DERROR_CODE(code) for errors and A3DSUCCESS_CODE(code)
-  // for success codes or predefined universal COM success and failure
-  // code.
-  //
-  // All success codes should be mutally exclusive to all other success other.
-  //
-  // All error codes should be mutually exclusive to all other error codes.
-  //
-  //===================================================================
+//===================================================================
+// Error Codes
+//
+// Use macros A3DERROR_CODE(code) for errors and A3DSUCCESS_CODE(code)
+// for success codes or predefined universal COM success and failure
+// code.
+//
+// All success codes should be mutally exclusive to all other success other.
+//
+// All error codes should be mutually exclusive to all other error codes.
+//
+//===================================================================
 
 #define A3DERROR_CODE(code) MAKE_HRESULT(1, FACILITY_ITF, code)
 #define A3DSUCCESS_CODE(code) MAKE_HRESULT(0, FACILITY_ITF, code)

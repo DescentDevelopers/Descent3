@@ -1418,9 +1418,9 @@ void SetCurrentLevel(int level) {
 
 void StartLevelSounds();
 
-//#ifdef GAMEGAUGE
+// #ifdef GAMEGAUGE
 extern float gamegauge_start_time;
-//#endif
+// #endif
 
 // Get rid of any viewer objects in the level
 void ClearViewerObjects() {
@@ -1620,9 +1620,9 @@ void StartLevel() {
   Gametime = 0.0f;
   // Start the clock
   InitFrameTime();
-  //#ifdef GAMEGAUGE
+  // #ifdef GAMEGAUGE
   gamegauge_start_time = timer_GetTime();
-  //#endif
+  // #endif
   LoadLevelProgress(LOAD_PROGRESS_DONE, 0);
 
 #ifdef MACINTOSH
@@ -1920,8 +1920,8 @@ void EndLevel(int state) {
 
     // report the information to the pilot's mission data
     CurrentPilotUpdateMissionStatus();
-    //		Sound_system.StopAllSounds();		-- moved to below because bug was reported that sounds were playing
-    //in performance screen
+    //		Sound_system.StopAllSounds();		-- moved to below because bug was reported that sounds were
+    // playing in performance screen
 
     // save our shields (in case this call is due to starting a new level
     // in InitPlayerNewLevel, we'll determine if we should restore them
@@ -2084,15 +2084,15 @@ void RunGameMenu() {
       //			#endif
     } break;
     case GAME_TELCOM_CARGO: {
-      //#ifndef DEMO
+      // #ifndef DEMO
       DoWaitPopup(true, TXT_TELCOMLOAD);
       ui_ShowCursor();
       TelComShow(TS_CARGO);
       ui_HideCursor();
       DoWaitPopup(false);
-      //#else
+      // #else
       //	DoMessageBox(TXT_ERROR, TXT_WRONGVERSION, MSGBOX_OK);
-      //#endif
+      // #endif
     } break;
     case GAME_TELCOM_BRIEFINGS: {
       DoWaitPopup(true, TXT_TELCOMLOAD);
@@ -2102,15 +2102,15 @@ void RunGameMenu() {
       DoWaitPopup(false);
     } break;
     case GAME_TELCOM_AUTOMAP: {
-      //#ifndef DEMO
+      // #ifndef DEMO
       DoWaitPopup(true, TXT_TELCOMLOAD);
       ui_ShowCursor();
       TelComShow(TS_MAP);
       ui_HideCursor();
       DoWaitPopup(false);
-      //#else
+      // #else
       //	DoMessageBox(TXT_ERROR, TXT_WRONGVERSION, MSGBOX_OK);
-      //#endif
+      // #endif
     } break;
     case GAME_PAUSE_INTERFACE:
       if (Game_mode & GM_MULTI)
@@ -2371,7 +2371,7 @@ extern int need_to_page_in;
 extern int need_to_page_num;
 int paged_in_num = 0;
 
-//#define PAGED_IN_CALC paged_in_count ? (float)paged_in_count/(float)need_to_page_in : 0.0f
+// #define PAGED_IN_CALC paged_in_count ? (float)paged_in_count/(float)need_to_page_in : 0.0f
 #define PAGED_IN_CALC paged_in_num ? (float)paged_in_num / (float)need_to_page_num : 0.0f
 void PageInShip(int id) {
   int i, t;

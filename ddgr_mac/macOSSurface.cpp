@@ -53,7 +53,7 @@
  * $NoKeywords: $
  */
 
-//#define check
+// #define check
 
 //	---------------------------------------------------------------------------
 //	Macintosh Headers
@@ -208,13 +208,13 @@ ddgr_error ddgr_os_surf_InitVideo(ddgr_surface *sf) {
     if (macErr)
       throw(CMacOSSurfErr("Error while fading in monitor ", macErr, DDGRERR_DRIVERINIT));
 
-    //¥ All's well!
+    // ¥ All's well!
     gFullScreenData.m_video_initted = true;
   } catch (CMacOSSurfErr theCaughtError) {
     mprintf((0, theCaughtError.m_ErrStr));
     mprintf((0, "DSp MacOS Error: %d\n", theCaughtError.m_MacErr));
     if (gFullScreenData.m_context) {
-      //¥ The monitor might be faded out so fade it back in and release the context
+      // ¥ The monitor might be faded out so fade it back in and release the context
       DSpContext_FadeGammaIn(gFullScreenData.m_context, NULL);
       DSpContext_Release(gFullScreenData.m_context);
       gFullScreenData.m_context = nil;
@@ -259,13 +259,13 @@ void ddgr_os_surf_CloseVideo(ddgr_surface *sf) {
   }
 
   if (gFullScreenData.m_context) {
-    //¥ The monitor might be faded out so fade it back in and release the context
+    // ¥ The monitor might be faded out so fade it back in and release the context
     DSpContext_FadeGammaIn(gFullScreenData.m_context, NULL);
     DSpContext_Release(gFullScreenData.m_context);
     gFullScreenData.m_context = nil;
   }
 
-  //¥ Video is deinitialized!
+  // ¥ Video is deinitialized!
   gFullScreenData.m_video_initted = false;
 }
 
@@ -811,9 +811,9 @@ ddgr_error ddgr_os_surf_AttachHandle(ddgr_surface *sf, unsigned handle) {
   return err;
 }
 
-//¥======================================================
+// ¥======================================================
 //	MacOS Full Screen Graphics routines
-//¥======================================================
+// ¥======================================================
 
 //	Initialize the macintosh for full screen graphics
 ddgr_error ddgr_os_surf_fullscreen_Init(ddgr_init_info *info) {

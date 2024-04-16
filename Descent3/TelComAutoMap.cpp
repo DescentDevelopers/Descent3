@@ -509,7 +509,7 @@ void TCAMRenderRoom(int roomnum) {
 
         int r = (texel >> 10) & 0x1f;
         int g = (texel >> 5) & 0x1f;
-        int b = (texel)&0x1f;
+        int b = (texel) & 0x1f;
 
         p->p3_r = lm_red[r];
         p->p3_g = lm_green[g];

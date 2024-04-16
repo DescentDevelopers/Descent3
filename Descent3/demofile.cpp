@@ -1400,10 +1400,10 @@ void DemoReadCollideGenericWeapon(void) {
 }
 
 bool LoadDemoDialog() {
-  //#ifdef DEMO
+  // #ifdef DEMO
   //	DoMessageBox(TXT_ERROR, TXT_WRONGVERSION, MSGBOX_OK);
   //	return false;
-  //#else
+  // #else
 
   char file[_MAX_PATH * 2];
 
@@ -1414,7 +1414,7 @@ bool LoadDemoDialog() {
     return true;
   }
   return false;
-  //#endif
+  // #endif
 }
 
 // This function aborts the demo recording or playback, regardless of the state

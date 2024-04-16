@@ -53,7 +53,7 @@
 
 #ifdef USE_PROFILER
 #include <profiler.h>
-//#include "SpotlightAPI.h"
+// #include "SpotlightAPI.h"
 #endif
 #ifdef NEEDED
 // =========================
@@ -320,7 +320,7 @@ int main(int argc, char *argv[]) {
 
   Descent = d3;
 
-  //¥ Initialize Metrowerks Code Profiler
+  // ¥ Initialize Metrowerks Code Profiler
   bool profilerInitted = false;
 #ifdef USE_PROFILER
   if (!ProfilerInit(collectDetailed, PPCTimeBase, 1024, 50)) {
@@ -332,13 +332,13 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
-  //¥ Here we go!!!
+  // ¥ Here we go!!!
   PreInitD3Systems();
 
   d3->init();
   d3->run();
 
-//¥ Close the Metrowerks Code Profiler
+// ¥ Close the Metrowerks Code Profiler
 #ifdef USE_PROFILER
   if (profilerInitted) {
     mprintf((2, "Dumping profiler results and closing profiler\n"));

@@ -1375,7 +1375,7 @@ void WriteAllDoorways(CFILE *ofile);
 // Macro to translate old file handles (pre-version 94) to new ones
 #define OLD_HANDLE_OBJNUM_MASK 0x3ff     // to mask off the object number part of the handle
 #define OLD_HANDLE_COUNT_MASK 0xfffffc00 // to maks off the count part of the handle
-#define XLATE_HANDLE(handle) ((((handle)&OLD_HANDLE_COUNT_MASK) << 1) + ((handle)&OLD_HANDLE_OBJNUM_MASK))
+#define XLATE_HANDLE(handle) ((((handle) & OLD_HANDLE_COUNT_MASK) << 1) + ((handle) & OLD_HANDLE_OBJNUM_MASK))
 
 /*
 

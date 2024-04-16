@@ -9,7 +9,7 @@ extern ubyte ingame_difficulty;
 
 // DAJ static global instead of subroutine call for speed
 #define DIFF_LEVEL (((Game_mode & GM_MULTI)) ? Netgame.difficulty : ingame_difficulty)
-//#define DIFF_LEVEL (((Game_mode & GM_MULTI))?Netgame.difficulty:dCurrentPilotDifficulty())
+// #define DIFF_LEVEL (((Game_mode & GM_MULTI))?Netgame.difficulty:dCurrentPilotDifficulty())
 
 extern float Diff_ai_dodge_percent[5];   //
 extern float Diff_ai_dodge_speed[5];     //

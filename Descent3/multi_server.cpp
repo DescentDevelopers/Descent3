@@ -621,7 +621,7 @@
 #include "game2dll.h"
 #include "stringtable.h"
 
-//#define USE_DIRECTPLAY
+// #define USE_DIRECTPLAY
 
 #ifdef USE_DIRECTPLAY
 #include "directplay.h"
@@ -629,7 +629,7 @@
 
 #include "dedicated_server.h"
 #include "damage.h"
-//#include "gamespy.h"
+// #include "gamespy.h"
 #include "multi_world_state.h"
 #include "ObjScript.h"
 #include "marker.h"
@@ -2981,9 +2981,9 @@ void GetNewRankings(object *killed, object *killer) {
   float killed_rank;
   float killer_rank;
 
-  //#ifdef OEM
+  // #ifdef OEM
   //	return;
-  //#endif
+  // #endif
 
 #ifdef DEMO
   return;

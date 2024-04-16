@@ -883,7 +883,7 @@ bool LoadMission(const char *mssn) {
 #endif
 #else
 
-  //#endif
+  // #endif
   tLevelNode *lvls = NULL; // Temporary storage for level data.
   tMission *msn;
   CFILE *fp = NULL; // Mission file

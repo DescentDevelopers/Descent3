@@ -3120,7 +3120,7 @@ void d3d_SetFrameBufferCopyState(bool state) {
     for (int i = 0; i < 32768; i++) {
       int r = (i >> 10) & 0x1f;
       int g = (i >> 5) & 0x1f;
-      int b = (i)&0x1f;
+      int b = (i) & 0x1f;
 
       if (bit15 == false) {
         g <<= 1;

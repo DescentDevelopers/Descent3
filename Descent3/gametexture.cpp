@@ -767,7 +767,7 @@ void BuildTextureBumpmaps(int texhandle) {
 
       int red = ((color >> 10) & 0x1f) << 3;
       int green = ((color >> 5) & 0x1f) << 3;
-      int blue = ((color)&0x1f) << 3;
+      int blue = ((color) & 0x1f) << 3;
 
       buffer[i * w + t] = (sbyte)(0.29 * red + 0.60 * green + 0.11 * blue);
     }

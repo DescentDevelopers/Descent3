@@ -6280,9 +6280,9 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
     i = rand() % numThiefableItems;
     gen_perc = ((float)rand()) / ((float)(RAND_MAX));
 
-    perc_chance = (attempt_num == 1)
-                      ? ThiefableItems[i].attempt_one
-                      : (f_last_success) ? ThiefableItems[i].attempt_two : ThiefableItems[i].attempt_two_no_one;
+    perc_chance = (attempt_num == 1) ? ThiefableItems[i].attempt_one
+                  : (f_last_success) ? ThiefableItems[i].attempt_two
+                                     : ThiefableItems[i].attempt_two_no_one;
 
     if (attempted_steals[i]) {
       // we already tried this one, try another
@@ -7821,10 +7821,11 @@ void BarnSwallow::ComputeNextNestPnt(int me, vector *pos) {
   *pos += memory->nest_center;
 }
 
-//#define BSCOMM_FOLLOW_ME								0 // send a percent chance so we can have
-//a line sometimes #define BSCOMM_FOLLOW_CANCEL_FROM_FOLLOWER		2 #define BSCOMM_FOLLOW_CANCEL_FROM_LEADER 3
-// #define BSCOMM_ATTACK_MY_TARGET						4
-// BSCOMM_ARE_YOU_IN_MODE
+// #define BSCOMM_FOLLOW_ME								0 // send a percent chance so we
+// can have a line sometimes #define BSCOMM_FOLLOW_CANCEL_FROM_FOLLOWER		2 #define
+// BSCOMM_FOLLOW_CANCEL_FROM_LEADER 3
+//  #define BSCOMM_ATTACK_MY_TARGET						4
+//  BSCOMM_ARE_YOU_IN_MODE
 
 bool BarnSwallow::ReceiveCommand(int me, int it, gb_com *command) {
   bool f_ok = true;

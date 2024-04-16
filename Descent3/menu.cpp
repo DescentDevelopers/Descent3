@@ -725,9 +725,9 @@ int MainMenu() {
   main_menu.Create();
   main_menu.AddItem(IDV_NEWGAME, KEY_N, TXT_MENUNEWGAME, MM_STARTMENU_TYPE);
   main_menu.AddItem(IDV_LOADGAME, KEY_L, TXT_LOADGAME);
-  //#ifndef DEMO
+  // #ifndef DEMO
   main_menu.AddItem(IDV_PLAYDEMO, KEY_D, TXT_VIEWDEMO);
-  //#endif
+  // #endif
   main_menu.AddItem(IDV_OPTIONS, KEY_O, TXT_MENUOPTIONS);
   main_menu.AddItem(IDV_PILOT, KEY_P, TXT_MENUPILOTS);
   main_menu.AddItem(IDV_MULTIPLAYER, KEY_M, TXT_MENUMULTIPLAYER);
@@ -1230,7 +1230,7 @@ bool MenuNewGame() {
   i = generate_mission_listbox(msn_lb, n_missions, filelist, LocalLevelsDir, "*.msn");
 #endif
   i += generate_mission_listbox(msn_lb, n_missions - i, filelist + i, D3MissionsDir, "*.mn3");
-  //#ifdef RELEASE
+  // #ifdef RELEASE
   int k;
   for (k = 0; k < n_missions; k++) {
     if (!filelist[k])
@@ -1249,7 +1249,7 @@ bool MenuNewGame() {
     msn_lb->AddItem(TXT_MAINMISSION);
     n_missions++;
   }
-//#endif
+// #endif
 #else
 #define OEM_MISSION_NAME "Descent 3: Sol Ascent"
 #define OEM_TRAINING_NAME "Pilot Training "

@@ -103,11 +103,11 @@
 
 #define MAX_SHIPS 30
 
-//#ifdef DEMO //Demo2 will use GL
-//#define DEFAULT_SHIP "Pyro-SE"
-//#else
+// #ifdef DEMO //Demo2 will use GL
+// #define DEFAULT_SHIP "Pyro-SE"
+// #else
 #define DEFAULT_SHIP "Pyro-GL"
-//#endif
+// #endif
 
 // Ship fire flags
 #define SFF_FUSION 1 // fires like fusion

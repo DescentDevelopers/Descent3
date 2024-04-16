@@ -147,9 +147,9 @@ void os_ConsolePrintf(int n, int row, int col, char *format, ...);
 //	---------------------------------------------------------------------------
 //	Operating system includes
 //	---------------------------------------------------------------------------
-//#if defined(WIN32)
+// #if defined(WIN32)
 //	#include "win\oewin_os.h"
-//#elif defined(MACINTOSH)		// JCA: not needed
+// #elif defined(MACINTOSH)		// JCA: not needed
 //	#include "oemac_os.h"
-//#endif
+// #endif
 #endif

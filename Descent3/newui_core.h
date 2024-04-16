@@ -301,7 +301,7 @@ private:
       newuiHotspot *hot;
     } obj;
     void *internal; // internal info.
-  } * m_gadgetlist;
+  } *m_gadgetlist;
 
   UIWindow *m_parent;
   int m_ngadgets, m_gadgetlimit;

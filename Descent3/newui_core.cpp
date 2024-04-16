@@ -1445,7 +1445,9 @@ void newuiSheet::Realize() {
       hot = new newuiHotspot;
       bval = desc->internal ? true : false;
       hot->Create(m_parent, desc->id, desc->title, gx, gy, desc->parm.s[0], desc->parm.s[1],
-                  (bval && !hotspot_group) ? UIF_GROUP_START : (bval && hotspot_group) ? UIF_GROUP_END : 0);
+                  (bval && !hotspot_group)  ? UIF_GROUP_START
+                  : (bval && hotspot_group) ? UIF_GROUP_END
+                                            : 0);
 
       if (bval && !hotspot_group) {
         hotspot_group = true;

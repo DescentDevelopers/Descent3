@@ -62,7 +62,7 @@ bool oeMacApplication::first_time = true;
 CGrafPtr pWin;
 // short numDevices = 0;
 //	Creates the window handle and instance
-oeMacApplication::oeMacApplication(const char *name, unsigned flags) //:oeApplication()
+oeMacApplication::oeMacApplication(const char *name, unsigned flags) //: oeApplication()
 {
   Rect rect;
 
@@ -102,7 +102,7 @@ oeMacApplication::oeMacApplication(const char *name, unsigned flags) //:oeApplic
   m_WasCreated = true;
   m_DeferFunc = NULL;
 #ifndef DAJ_DEBUG
-  //#if 0
+  // #if 0
   SetupScreen(&m_hWnd);
 #else
 #ifdef USE_OPENGL
@@ -143,7 +143,7 @@ oeMacApplication::~oeMacApplication() {
   if (m_WasCreated) {
     if (m_hWnd) {
 #ifndef DAJ_DEBUG
-      //#if 1
+      // #if 1
       ShutdownScreen(&m_hWnd);
 #else
 #ifdef USE_OPENGL
@@ -189,7 +189,7 @@ void oeMacApplication::set_sizepos(int x, int y, int w, int h) {
 // real defer code.
 #define DEFER_PROCESS_ACTIVE 1     // process is still active
 #define DEFER_PROCESS_INPUT_IDLE 2 // process input from os not pending.
-//#include "ddio.h"
+// #include "ddio.h"
 int oeMacApplication::defer_block() {
   // IDLE PROCESSING
   if (m_DeferFunc)

@@ -32,12 +32,12 @@
  */
 
 #include "subtitles.h"
-//#include "gamefont.h"
-//#include "grtext.h"
-//#include "renderer.h"
+// #include "gamefont.h"
+// #include "grtext.h"
+// #include "renderer.h"
 #include "pserror.h"
 #include "ddio.h"
-//#include "ddvid.h"
+// #include "ddvid.h"
 #include "manage.h"
 #include "application.h"
 #include "mem.h"

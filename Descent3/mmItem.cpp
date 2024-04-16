@@ -101,7 +101,7 @@
 #include "d3music.h"
 
 #include "ddio.h"
-//#include <malloc.h>
+// #include <malloc.h>
 #include "mem.h"
 
 #include <string.h>
@@ -359,9 +359,10 @@ bool mmInterface::AddItem(int id, int key, const char *text, int type) {
   }
 
   m_menuitems[m_nmenu_items].Create(id, key, MMITEM_X, MMITEM_Y + (m_nmenu_items * 20), text,
-                                    (type == 1) ? UIF_GROUP_START
-                                                : (type == 2) ? UIF_GROUP_END
-                                                              : (type == 3) ? (UIF_GROUP_START + UIF_GROUP_END) : 0);
+                                    (type == 1)   ? UIF_GROUP_START
+                                    : (type == 2) ? UIF_GROUP_END
+                                    : (type == 3) ? (UIF_GROUP_START + UIF_GROUP_END)
+                                                  : 0);
   m_nmenu_items++;
 
   return true;

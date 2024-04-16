@@ -44,7 +44,7 @@
 #define PROC_SIZE 128
 #define TABSIZE 256
 #define TABMASK (TABSIZE - 1)
-#define PERM(x) perm[(x)&TABMASK]
+#define PERM(x) perm[(x) & TABMASK]
 #define INDEX(ix, iy) PERM((ix) + PERM((iy)))
 #define RANDNBR ((prand()) / (float)RAND_MAX)
 #define LERP(t, x0, x1) ((x0) + (t) * ((x1) - (x0)))
@@ -151,7 +151,7 @@ void InitProcedurals() {
   for (i = 0; i < 32768; i++) {
     int r = (i >> 10) & 0x1f;
     int g = (i >> 5) & 0x1f;
-    int b = (i)&0x1f;
+    int b = (i) & 0x1f;
     r = __max(0, r - 1);
     g = __max(0, g - 1);
     b = __max(0, b - 1);
@@ -1196,7 +1196,7 @@ void EvaluateWaterProcedural(int handle) {
       float cur_frametime = gametime / frametime;
       int int_frame = cur_frametime;
 
-      int_frame %= ((diff)*2);
+      int_frame %= ((diff) * 2);
       if (int_frame >= diff)
         int_frame = (diff - 1) - (int_frame % diff);
       else

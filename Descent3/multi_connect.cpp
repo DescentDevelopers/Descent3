@@ -241,7 +241,7 @@
 #include "game.h"
 #include "ddio.h"
 #include "Mission.h"
-//#include "gametrack.h"
+// #include "gametrack.h"
 #include "stringtable.h"
 #include "pilot.h"
 #include "ship.h"
@@ -252,7 +252,7 @@
 #include "multi_dll_mgr.h"
 
 #include "LoadLevel.h"
-//#define USE_DIRECTPLAY
+// #define USE_DIRECTPLAY
 
 #ifdef USE_DIRECTPLAY
 #include "directplay.h"

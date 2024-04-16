@@ -492,10 +492,10 @@ extern bool Multi_bail_ui_menu;
 #elif defined(OEM)
 #define MULTI_VERSION 5
 #else
-//#define MULTI_VERSION	4
-// Patch 1.1!
-//#define MULTI_VERSION	6
-// Patch 1.3
+// #define MULTI_VERSION	4
+//  Patch 1.1!
+// #define MULTI_VERSION	6
+//  Patch 1.3
 #define MULTI_VERSION 10
 #endif
 

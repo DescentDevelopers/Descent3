@@ -7,7 +7,7 @@
 #endif
 
 #if defined(__LINUX__) || defined(MACINTOSH)
-//#if defined(__LINUX__)
+// #if defined(__LINUX__)
 #ifdef USE_RTP
 #undef USE_RTP // no rtp for now
 #endif

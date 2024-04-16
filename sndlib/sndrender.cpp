@@ -318,7 +318,7 @@ void aureal_test() {
   OutrageMessageBox("Please terminate debug viewer");
 #endif
   Sound_system.SetSoundMixer(old_mixer);
-#endif //#ifdef WIN32
+#endif // #ifdef WIN32
 }
 
 /////////////////////////////////////////////////////////////////////////////

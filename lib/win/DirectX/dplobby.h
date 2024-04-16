@@ -303,11 +303,11 @@ DECLARE_INTERFACE_(IDirectPlayLobby3, IDirectPlayLobby) {
   STDMETHOD(WaitForConnectionSettings)(THIS_ DWORD) PURE;
 };
 
-  /****************************************************************************
-   *
-   * IDirectPlayLobby interface macros
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlayLobby interface macros
+ *
+ ****************************************************************************/
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 

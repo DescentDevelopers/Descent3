@@ -408,7 +408,7 @@ void Credits_Display(void) {
   D3MusicStop();
   ddio_KeyFlush();
 //	ddio_MouseReset();				// -mouse shouldn't be reset.   ui system gets hosed
-//unfortunately under NT.
+// unfortunately under NT.
 #endif
 }
 

@@ -114,7 +114,7 @@
 #ifndef IDNO
 #define IDNO 7
 #endif
-//#define DEBUG_LEVEL 0		//DAJ
+// #define DEBUG_LEVEL 0		//DAJ
 #if defined(WIN32) || defined(__LINUX__)
 static const int OSMBOX_OK = 1;
 static const int OSMBOX_YESNO = 2;
@@ -161,7 +161,7 @@ void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window);
   } while (0)
 #elif defined(__LINUX__)
 void ddio_InternalKeyClose();
-//#define debug_break() do{__asm__ __volatile__ ( "int $3" );}while(0)
+// #define debug_break() do{__asm__ __volatile__ ( "int $3" );}while(0)
 #ifndef MACOSXPPC
 #define debug_break()                                                                                                  \
   do {                                                                                                                 \
