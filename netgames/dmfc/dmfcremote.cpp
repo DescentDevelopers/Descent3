@@ -87,9 +87,7 @@ int FilterNonRemoteCommands(char *command);
 // Initializes the remote administration system
 void Remote_Initialize(void) {
   // initialize encryption keys
-  void *data = malloc(1);
-  srand((uint)data);
-  free(data);
+  srand((unsigned int)time(0));
 
   int i, j;
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
