@@ -38,7 +38,7 @@
 
 //	Movie Cinematic
 typedef struct tCinematic {
-  unsigned mvehandle;
+  intptr_t mvehandle;
   int filehandle;
   chunked_bitmap frame_chunk; // used internally, don't access.
 } tCinematic;

@@ -663,7 +663,7 @@ void CallbackShowFrame(unsigned char *buf, unsigned int bufw, unsigned int bufh,
 }
 #endif
 
-unsigned int mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app, bool looping) {
+intptr_t mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app, bool looping) {
 #ifndef NO_MOVIES
 
   int hfile = open(mvename, O_RDONLY | O_BINARY);
@@ -686,20 +686,20 @@ unsigned int mve_SequenceStart(const char *mvename, int *fhandle, oeApplication 
   rend_SetFrameBufferCopyState(true);
 
   *fhandle = hfile;
-  return (unsigned int)MVE_frOpen(CallbackFileRead, hfile, NULL);
+  return (intptr_t)MVE_frOpen(CallbackFileRead, hfile, NULL);
 #else
   return 0;
 #endif
 }
 
-unsigned int mve_SequenceFrame(unsigned int handle, int fhandle, bool sequence, int *bm_handle) {
+intptr_t mve_SequenceFrame(intptr_t handle, int fhandle, bool sequence, int *bm_handle) {
 #ifndef NO_MOVIES
   if (bm_handle) {
     *bm_handle = -1;
   }
 
   if (handle == -1) {
-    return (unsigned int)(-1);
+    return -1;
   }
 
   static unsigned sw = 0, sh = 0, hicolor = 0;
@@ -739,18 +739,18 @@ reread_frame:
 #else
     lseek(fhandle, 0, SEEK_SET);
 #endif
-    handle = (unsigned int)MVE_frOpen(CallbackFileRead, fhandle, NULL);
+    handle = (intptr_t)MVE_frOpen(CallbackFileRead, fhandle, NULL);
     sequence = true;
     goto reread_frame;
   }
 
-  return (unsigned int)(-1);
+  return -1;
 #else
-  return (unsigned int)(-1);
+  return -1;
 #endif
 }
 
-bool mve_SequenceClose(unsigned int hMovie, int hFile) {
+bool mve_SequenceClose(intptr_t hMovie, int hFile) {
 #ifndef NO_MOVIES
   if (hMovie == -1)
     return false;

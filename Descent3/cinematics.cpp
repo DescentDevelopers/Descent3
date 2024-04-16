@@ -131,7 +131,7 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
   SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
   int filehandle;
-  unsigned int hMovie = mve_SequenceStart(filename, &filehandle, Descent, looping);
+  intptr_t hMovie = mve_SequenceStart(filename, &filehandle, Descent, looping);
   if (hMovie == 0)
     return NULL;
 
@@ -147,8 +147,8 @@ bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
     return false;
 
   int bm_handle;
-  unsigned int hNewMovie = mve_SequenceFrame(mve->mvehandle, mve->filehandle, sequence, &bm_handle);
-  if (hNewMovie != (unsigned int)(-1)) {
+  intptr_t hNewMovie = mve_SequenceFrame(mve->mvehandle, mve->filehandle, sequence, &bm_handle);
+  if (hNewMovie != -1) {
     // we must have looped, we have a new handle
     mve->mvehandle = hNewMovie;
   }
@@ -167,7 +167,7 @@ bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
     rend_CopyBitmapToFramebuffer(bm_handle, x, y);
   }
 
-  return (hNewMovie != (unsigned int)(-1));
+  return (hNewMovie != -1);
 }
 
 void EndMovie(tCinematic *mve) {
