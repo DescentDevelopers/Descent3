@@ -208,6 +208,7 @@ bool Debug_ConsoleInit()
 		else 
 			Mono_initialized = 0;
 	}
+#ifdef OLD
 	else {
 		_outp( 0x3b4, 0x0f );
 		_outp( 0x3b4+1, 0x55 );
@@ -224,6 +225,7 @@ bool Debug_ConsoleInit()
 		}
 		Mono_screen = (mono_element (*)[25][80])0xB0000;
 	}
+#endif
 
 	if (Mono_initialized) 
 		OPEN=1;
@@ -603,10 +605,12 @@ void con_setcursor(int row, int col)
 		return;
 	}
 
+#ifdef OLD
 	_outp( 0x3b4, 15 );
 	_outp( 0x3b5, pos & 0xFF );
 	_outp( 0x3b4, 14 );
 	_outp( 0x3b5, (pos >> 8) & 0xff );
+#endif
 }
 
 
