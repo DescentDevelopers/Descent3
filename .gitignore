@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# IDEA stuff
+.idea/
+cmake-build-*
+
