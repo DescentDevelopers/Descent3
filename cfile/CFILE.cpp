@@ -182,7 +182,7 @@ void cf_Close() {
 // NULL-terminated
 // list of 								file extensions, & the dir will only be searched
 // for files with a matching extension Returns:		true if directory added, else false
-int cf_SetSearchPath(const char *path, char *ext, ...) {
+int cf_SetSearchPath(const char *path, ...) {
   if (strlen(path) >= _MAX_PATH)
     return 0;
   if (N_paths >= MAX_PATHS)
@@ -190,22 +190,27 @@ int cf_SetSearchPath(const char *path, char *ext, ...) {
   // Get & store full path
   ddio_GetFullPath(paths[N_paths].path, path);
   // Set extenstions for this path
+  va_list exts;
+  va_start(exts, path);
+  const char *ext = va_arg(exts, const char *);
   if (ext == NULL)
     paths[N_paths].specific = 0;
   else {
-    char **ep = &ext;
     paths[N_paths].specific = 1;
-    while (*ep != NULL) {
-      if (N_extensions >= MAX_EXTENSIONS)
+    while (ext != NULL) {
+      if (N_extensions >= MAX_EXTENSIONS) {
+        va_end(exts);
         return 0;
-      strncpy(extensions[N_extensions].ext, *ep, _MAX_EXT);
+      }
+      strncpy(extensions[N_extensions].ext, ext, _MAX_EXT);
       extensions[N_extensions].pathnum = N_paths;
       N_extensions++;
-      ep++;
+      ext = va_arg(exts, const char *);
     }
   }
   // This path successfully set
   N_paths++;
+  va_end(exts);
   return 1;
 }
 
