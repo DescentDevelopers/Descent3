@@ -14,7 +14,7 @@ PROJECT(Descent3)
 IF (UNIX)
 SET (D3_GAMEDIR "~/Descent3/")
 
-  SET(CMAKE_CXX_FLAGS "-O0 -g -Wno-write-strings -Wno-multichar -Wno-address-of-temporary")
+  SET(CMAKE_CXX_FLAGS "-std=c++98 -O0 -g -Wno-write-strings -Wno-multichar -Wno-address-of-temporary")
   SET(CMAKE_C_FLAGS "-O0 -g")
   IF (NOT APPLE)
     STRING(APPEND CMAKE_CXX_FLAGS " -m32")
