@@ -106,8 +106,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libacm", "libacm\libacm.vcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioEncode", "AudioEncode\AudioEncode.vcproj", "{437ECD7F-A465-4011-88FE-013EB3EBF87E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AngelScript", "AngelScript\AngelScript.vcproj", "{14BD4CCC-DF5A-4DDA-8AE4-D10153143713}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -254,10 +252,6 @@ Global
 		{437ECD7F-A465-4011-88FE-013EB3EBF87E}.Debug|Win32.Build.0 = Debug|Win32
 		{437ECD7F-A465-4011-88FE-013EB3EBF87E}.Release|Win32.ActiveCfg = Release|Win32
 		{437ECD7F-A465-4011-88FE-013EB3EBF87E}.Release|Win32.Build.0 = Release|Win32
-		{14BD4CCC-DF5A-4DDA-8AE4-D10153143713}.Debug|Win32.ActiveCfg = Debug|Win32
-		{14BD4CCC-DF5A-4DDA-8AE4-D10153143713}.Debug|Win32.Build.0 = Debug|Win32
-		{14BD4CCC-DF5A-4DDA-8AE4-D10153143713}.Release|Win32.ActiveCfg = Release|Win32
-		{14BD4CCC-DF5A-4DDA-8AE4-D10153143713}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
