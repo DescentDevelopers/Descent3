@@ -1,0 +1,33 @@
+name: Descent 3 Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [windows-latest]
+        build_type: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -A "Win32"
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
+
+    - name: 'Upload Artifacts'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build_${{matrix.build_type}}
+        path: ${{github.workspace}}/build/Descent3/${{matrix.build_type}}
