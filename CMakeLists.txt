@@ -5,6 +5,8 @@ MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
 # allow more human readable "if then else" constructs
 SET( CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE )
 
+# TODO: Apple Silicon (arm64) later
+SET( CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "" FORCE)
 
 
 PROJECT(Descent3)
@@ -12,14 +14,20 @@ PROJECT(Descent3)
 IF (UNIX)
 SET (D3_GAMEDIR "~/Descent3/")
 
-  SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wno-write-strings -m32")
   SET(CMAKE_CXX_COMPILER "g++")
-  SET(CMAKE_CXX_FLAGS "-O0 -g -Wno-write-strings -Wno-multichar -m32")
-  SET(CMAKE_C_FLAGS "-O0 -g -m32")
+  SET(CMAKE_CXX_FLAGS "-O0 -g -Wno-write-strings -Wno-multichar -Wno-address-of-temporary")
+  SET(CMAKE_C_FLAGS "-O0 -g")
   SET(CMAKE_C_COMPILER "gcc")
-  SET(CMAKE_FIND_LIBRARY_PREFIXES "lib")
-  SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+  IF (NOT APPLE)
+    LIST(APPEND CMAKE_CXX_FLAGS "-m32")
+    LIST(APPEND CMAKE_C_FLAGS "-m32")
+  ENDIF()
   FIND_PACKAGE( SDL REQUIRED )
+  IF (APPLE)
+    # Provide FIND_PACKAGE( SDL_image ) below with an include dir and library that work with brew-installed sdl2_image
+    FIND_PATH(SDL_IMAGE_INCLUDE_DIR SDL_image.h PATH_SUFFIXES include/SDL2)
+    FIND_LIBRARY(SDL_IMAGE_LIBRARY SDL2_image)
+  ENDIF()
   FIND_PACKAGE( SDL_image REQUIRED )
 MESSAGE( "SDL Include Dir is " ${SDL_INCLUDE_DIR} )
 ENDIF()

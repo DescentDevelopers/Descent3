@@ -1888,7 +1888,7 @@ void rend_DrawPolygon2D(int, g3Point **, int, int) {}
 #else
 
 static inline float __recip(float x) {
-#if MACOSX
+#if MACOSX && __i386__
   __asm__ __volatile__("fres %0, %1  \n\t" : "=f"(x) : "f"(x));
   return (x);
 #else

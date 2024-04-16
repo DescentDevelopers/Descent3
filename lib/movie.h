@@ -20,16 +20,16 @@ int mve_PlayMovie(const char *mvename, oeApplication *app);
 
 // used to copy movie data to a pointer, looping will loop, fhandle will be a pointer to a file handle to be returned
 // handle to movie sequence is returned by function.
-unsigned int mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app, bool looping = false);
+intptr_t mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app, bool looping = false);
 
 //	frames movies started with SequenceStart.  Optionally, pass a pointer to a variable which will receive
 //	bitmap handle containing data, nx and ny will contain adjusted x and y coordinates if needed.
 //	passing -1 to x and y centers the frame on that axis
 //	handle is the movie handle returned by mve_Sequence start
 //	returned value is the handle passed into mve_SequenceFrame or new one if movie looped.
-unsigned int mve_SequenceFrame(unsigned int handle, int fhandle, bool sequence, int *bm_handle);
+intptr_t mve_SequenceFrame(intptr_t handle, int fhandle, bool sequence, int *bm_handle);
 
-bool mve_SequenceClose(unsigned int handle, int fhandle);
+bool mve_SequenceClose(intptr_t handle, int fhandle);
 
 //	sets render frame boundaries.
 void mve_SetRenderProperties(short x, short y, short w, short h, renderer_type type, bool hicolor);

@@ -90,13 +90,9 @@ FOREACH( SCRIPT ${SCRIPTS})
 
 ENDFOREACH()
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE)
   SET(HOGBUILDCMD "${CMAKE_SOURCE_DIR}/scripts/hogutils/hogUtils-i686")
   SET(HOGARCH "linux")
-  IF(APPLE)
-    SET(HOGBUILDCMD "${CMAKE_SOURCE_DIR}/scripts/hogutils/hogUtils-macosx")
-    SET(HOGARCH "osx")
-  ENDIF()
 
 
   ADD_CUSTOM_TARGET("FullLinuxHog"
