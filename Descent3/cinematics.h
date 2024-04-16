@@ -36,6 +36,8 @@
 #include "renderer.h"
 #include "bitmap.h"
 
+#include <cstdint>
+
 //	Movie Cinematic
 typedef struct tCinematic {
   intptr_t mvehandle;

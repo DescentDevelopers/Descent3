@@ -27,8 +27,8 @@
 
 // Returns 1 if string contains globbing characters in it
 int PSGlobHasPattern(char *string) {
-  register char *p = string;
-  register char c;
+  char *p = string;
+  char c;
   int open = 0;
 
   while ((c = *p++) != '\0') {
@@ -70,8 +70,8 @@ int PSGlobHasPattern(char *string) {
 //	8) If dot_special is not zero, '*' and '?' do not match '.' at the beginning of text
 //	9) If case_sensitive is 0, than case does not matter for the non-pattern characters
 int PSGlobMatch(char *pattern, char *text, int case_sensitive, int dot_special) {
-  register char *p = pattern, *t = text;
-  register char c;
+  char *p = pattern, *t = text;
+  char c;
 
   while ((c = *p++) != '\0') {
     switch (c) {
@@ -90,7 +90,7 @@ int PSGlobMatch(char *pattern, char *text, int case_sensitive, int dot_special) 
         return 0;
       return PSGlobMatchAfterStar(p, case_sensitive, t);
     case '[': {
-      register char c1 = *t++;
+      char c1 = *t++;
       int invert;
 
       if (!c1)
@@ -102,7 +102,7 @@ int PSGlobMatch(char *pattern, char *text, int case_sensitive, int dot_special) 
       c = *p++;
 
       while (1) {
-        register char cstart = c, cend = c;
+        char cstart = c, cend = c;
         if (c == '\\') {
           cstart = *p++;
           cend = cstart;
@@ -162,8 +162,8 @@ int PSGlobMatch(char *pattern, char *text, int case_sensitive, int dot_special) 
 
 // Like PSGlobMatch, but match pattern against any final segment of text
 int PSGlobMatchAfterStar(char *pattern, int case_sensitive, char *text) {
-  register char *p = pattern, *t = text;
-  register char c, c1;
+  char *p = pattern, *t = text;
+  char c, c1;
 
   while ((c = *p++) == '?' || c == '*') {
     if (c == '?' && *t++ == '\0')
