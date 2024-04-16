@@ -1,48 +1,34 @@
 /*
-* $Logfile: /DescentIII/Main/linux/lnxtask.cpp $
-* $Revision: 1.1.1.1 $
-* $Date: 2000/04/18 00:00:39 $
-* $Author: icculus $
-*
-* Linux multitasking routines
-*
-* $Log: lnxtask.cpp,v $
-* Revision 1.1.1.1  2000/04/18 00:00:39  icculus
-* initial checkin
-*
- * 
+ * $Logfile: /DescentIII/Main/linux/lnxtask.cpp $
+ * $Revision: 1.1.1.1 $
+ * $Date: 2000/04/18 00:00:39 $
+ * $Author: icculus $
+ *
+ * Linux multitasking routines
+ *
+ * $Log: lnxtask.cpp,v $
+ * Revision 1.1.1.1  2000/04/18 00:00:39  icculus
+ * initial checkin
+ *
+ *
  * 3     7/14/99 9:09p Jeff
  * added comment header
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #include "DDAccess.h"
 #include "TaskSystem.h"
 #include "pserror.h"
 
-osMutex::osMutex()
-{
-}
+osMutex::osMutex() {}
 
-osMutex::~osMutex()
-{
-	Destroy();
-}
+osMutex::~osMutex() { Destroy(); }
 
-bool osMutex::Create()
-{
-	return false;
-}
+bool osMutex::Create() { return false; }
 
-void osMutex::Destroy()
-{
-}
+void osMutex::Destroy() {}
 
-bool osMutex::Acquire(int timeout)
-{
-}
+bool osMutex::Acquire(int timeout) {}
 
-void osMutex::Release()
-{
-}
+void osMutex::Release() {}

@@ -28,7 +28,6 @@
    andreas@angelcode.com
 */
 
-
 //
 // as_config.h
 //
@@ -37,8 +36,6 @@
 
 #ifndef AS_CONFIG_H
 #define AS_CONFIG_H
-
-
 
 //
 // Features
@@ -78,16 +75,13 @@
 // AS_DOUBLEBYTE_CHARSET
 // When this flag is defined, the parser will treat all characters in strings
 // that are greater than 127 as lead characters and automatically include the
-// next character in the script without checking its value. This should be 
-// compatible with common encoding schemes, e.g. Big5. Shift-JIS is not compatible 
-// though as it encodes some single byte characters above 127. 
+// next character in the script without checking its value. This should be
+// compatible with common encoding schemes, e.g. Big5. Shift-JIS is not compatible
+// though as it encodes some single byte characters above 127.
 //
 // If support for international text is desired, it is recommended that UTF-8
 // is used as this is supported natively by the compiler without the use for this
 // preprocessor flag.
-
-
-
 
 //
 // Library usage
@@ -104,15 +98,12 @@
 // This flag should be defined when using AngelScript as a dll with manual
 // loading of the library.
 
-
-
-
 //
 // Compiler differences
 //-----------------------------------------
 
 // asVSNPRINTF(a,b,c,d)
-// Some compilers use different names for this function. You must 
+// Some compilers use different names for this function. You must
 // define this macro to map to the proper function.
 
 // ASM_AT_N_T or ASM_INTEL
@@ -133,8 +124,6 @@
 // AS_NO_MEMORY_H
 // Some compilers don't come with the memory.h header file.
 
-
-
 //
 // How to identify different compilers
 //-----------------------------------------
@@ -149,8 +138,6 @@
 
 // GNU C based compilers
 //  __GNUC__   is defined
-
-
 
 //
 // CPU differences
@@ -191,12 +178,10 @@
 // Use assembler code for the ARM CPU family
 
 // AS_64BIT_PTR
-// Define this to make the engine store all pointers in 64bit words. 
+// Define this to make the engine store all pointers in 64bit words.
 
 // AS_BIG_ENDIAN
 // Define this for CPUs that use big endian memory layout, e.g. PPC
-
-
 
 //
 // Target systems
@@ -220,9 +205,6 @@
 // AS_WII     - Nintendo Wii
 // AS_IPHONE  - Apple IPhone
 // AS_ANDROID - Android
-
-
-
 
 //
 // Calling conventions
@@ -263,7 +245,6 @@
 // CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
 // Specifies the minimum size in dwords a class/struct needs to be to be passed in memory
 
-
 // CALLEE_POPS_HIDDEN_RETURN_POINTER
 // This constant should be defined if the callee pops the hidden return pointer,
 // used when returning an object in memory.
@@ -284,336 +265,332 @@
 
 // SPLIT_OBJS_BY_MEMBER_TYPES
 // On some platforms objects with primitive members are split over different
-// register types when passed by value to functions. 
-
-
-
-
+// register types when passed by value to functions.
 
 //
 // Detect compiler
 //------------------------------------------------
 
-#define VALUE_OF_BOOLEAN_TRUE  1
+#define VALUE_OF_BOOLEAN_TRUE 1
 #define STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 0
 #define CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 0
 #define THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 0
 
 // Microsoft Visual C++
 #if defined(_MSC_VER) && !defined(__MWERKS__)
-	#define MULTI_BASE_OFFSET(x) (*((asDWORD*)(&x)+1))
-	#define HAVE_VIRTUAL_BASE_OFFSET
-	#define VIRTUAL_BASE_OFFSET(x) (*((asDWORD*)(&x)+3))
-	#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-	#define THISCALL_PASS_OBJECT_POINTER_IN_ECX
-	#if _MSC_VER < 1500 // MSVC++ 9 (aka MSVC++ .NET 2008)
-		#define asVSNPRINTF(a, b, c, d) _vsnprintf(a, b, c, d)
-	#else
-		#define asVSNPRINTF(a, b, c, d) vsnprintf_s(a, b, _TRUNCATE, c, d)
-	#endif
-	#define THISCALL_CALLEE_POPS_ARGUMENTS
-	#define STDCALL __stdcall
-	#define AS_SIZEOF_BOOL 1
-	#define AS_WINDOWS_THREADS
+#define MULTI_BASE_OFFSET(x) (*((asDWORD *)(&x) + 1))
+#define HAVE_VIRTUAL_BASE_OFFSET
+#define VIRTUAL_BASE_OFFSET(x) (*((asDWORD *)(&x) + 3))
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define THISCALL_PASS_OBJECT_POINTER_IN_ECX
+#if _MSC_VER < 1500 // MSVC++ 9 (aka MSVC++ .NET 2008)
+#define asVSNPRINTF(a, b, c, d) _vsnprintf(a, b, c, d)
+#else
+#define asVSNPRINTF(a, b, c, d) vsnprintf_s(a, b, _TRUNCATE, c, d)
+#endif
+#define THISCALL_CALLEE_POPS_ARGUMENTS
+#define STDCALL __stdcall
+#define AS_SIZEOF_BOOL 1
+#define AS_WINDOWS_THREADS
 
-	#define ASM_INTEL  // Intel style for inline assembly on microsoft compilers
+#define ASM_INTEL // Intel style for inline assembly on microsoft compilers
 
-	#if defined(WIN32)
-		#define AS_WIN
-	#endif
+#if defined(WIN32)
+#define AS_WIN
+#endif
 
-	#if _XBOX_VER >= 200
-		// 360 uses a Xenon processor (which is a modified 64bit PPC)
-		#define AS_XBOX360
-		#define AS_XENON
-		#define AS_BIG_ENDIAN
-	#else
-		// Support native calling conventions on x86, but not 64bit yet
-		#if defined(_XBOX) || (defined(_M_IX86) && !defined(__LP64__))
-			#define AS_X86
-		#endif
-	#endif
+#if _XBOX_VER >= 200
+// 360 uses a Xenon processor (which is a modified 64bit PPC)
+#define AS_XBOX360
+#define AS_XENON
+#define AS_BIG_ENDIAN
+#else
+// Support native calling conventions on x86, but not 64bit yet
+#if defined(_XBOX) || (defined(_M_IX86) && !defined(__LP64__))
+#define AS_X86
+#endif
+#endif
 
-	#if _MSC_VER <= 1200 // MSVC++ 6
-		#define I64(x) x##l
-	#else
-		#define I64(x) x##ll
-	#endif
+#if _MSC_VER <= 1200 // MSVC++ 6
+#define I64(x) x##l
+#else
+#define I64(x) x##ll
+#endif
 
-    #ifdef _ARM_
-        #define AS_ALIGN
-        #define AS_ARM
-        #define CDECL_RETURN_SIMPLE_IN_MEMORY
-        #define STDCALL_RETURN_SIMPLE_IN_MEMORY
-        #define COMPLEX_OBJS_PASSED_BY_REF
-        #define COMPLEX_MASK asOBJ_APP_CLASS_ASSIGNMENT
-    #else
-        #define COMPLEX_MASK (asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR | asOBJ_APP_CLASS_ASSIGNMENT)
-    #endif
+#ifdef _ARM_
+#define AS_ALIGN
+#define AS_ARM
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+#define COMPLEX_OBJS_PASSED_BY_REF
+#define COMPLEX_MASK asOBJ_APP_CLASS_ASSIGNMENT
+#else
+#define COMPLEX_MASK (asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR | asOBJ_APP_CLASS_ASSIGNMENT)
+#endif
 
-	#define UNREACHABLE_RETURN
+#define UNREACHABLE_RETURN
 #endif
 
 // Metrowerks CodeWarrior (experimental, let me know if something isn't working)
-#if defined(__MWERKS__) && !defined(EPPC) // JWC -- If Wii DO NOT use this even when using Metrowerks Compiler. Even though they are called Freescale...
-	#define MULTI_BASE_OFFSET(x) (*((asDWORD*)(&x)+1))
-	#define HAVE_VIRTUAL_BASE_OFFSET
-	#define VIRTUAL_BASE_OFFSET(x) (*((asDWORD*)(&x)+3))
-	#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-	#define THISCALL_PASS_OBJECT_POINTER_IN_ECX
-	#define asVSNPRINTF(a, b, c, d) _vsnprintf(a, b, c, d)
-	#define THISCALL_CALLEE_POPS_ARGUMENTS
-	#define COMPLEX_MASK (asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR | asOBJ_APP_CLASS_ASSIGNMENT)
-	#define AS_SIZEOF_BOOL 1
-	#define AS_WINDOWS_THREADS
-	#define STDCALL __stdcall
+#if defined(__MWERKS__) && !defined(EPPC) // JWC -- If Wii DO NOT use this even when using Metrowerks Compiler. Even
+                                          // though they are called Freescale...
+#define MULTI_BASE_OFFSET(x) (*((asDWORD *)(&x) + 1))
+#define HAVE_VIRTUAL_BASE_OFFSET
+#define VIRTUAL_BASE_OFFSET(x) (*((asDWORD *)(&x) + 3))
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define THISCALL_PASS_OBJECT_POINTER_IN_ECX
+#define asVSNPRINTF(a, b, c, d) _vsnprintf(a, b, c, d)
+#define THISCALL_CALLEE_POPS_ARGUMENTS
+#define COMPLEX_MASK (asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR | asOBJ_APP_CLASS_ASSIGNMENT)
+#define AS_SIZEOF_BOOL 1
+#define AS_WINDOWS_THREADS
+#define STDCALL __stdcall
 
-	// Support native calling conventions on x86, but not 64bit yet
-	#if defined(_M_IX86) && !defined(__LP64__)
-		#define AS_X86
-		#define ASM_INTEL  // Intel style for inline assembly
-	#endif
+// Support native calling conventions on x86, but not 64bit yet
+#if defined(_M_IX86) && !defined(__LP64__)
+#define AS_X86
+#define ASM_INTEL // Intel style for inline assembly
+#endif
 
-	#if _MSC_VER <= 1200 // MSVC++ 6
-		#define I64(x) x##l
-	#else
-		#define I64(x) x##ll
-	#endif
+#if _MSC_VER <= 1200 // MSVC++ 6
+#define I64(x) x##l
+#else
+#define I64(x) x##ll
+#endif
 
-	#define UNREACHABLE_RETURN
+#define UNREACHABLE_RETURN
 #endif
 
 // SN Systems ProDG (also experimental, let me know if something isn't working)
 #if defined(__SNC__) || defined(SNSYS)
-	#define GNU_STYLE_VIRTUAL_METHOD
-	#define MULTI_BASE_OFFSET(x) (*((asDWORD*)(&x)+1))
-	#define CALLEE_POPS_HIDDEN_RETURN_POINTER
-	#define COMPLEX_OBJS_PASSED_BY_REF
-	#define ASM_AT_N_T  // AT&T style inline assembly
-	#define COMPLEX_MASK (asOBJ_APP_CLASS_DESTRUCTOR)
-	#define AS_SIZEOF_BOOL 1
-	#define asVSNPRINTF(a, b, c, d) vsnprintf(a, b, c, d)
+#define GNU_STYLE_VIRTUAL_METHOD
+#define MULTI_BASE_OFFSET(x) (*((asDWORD *)(&x) + 1))
+#define CALLEE_POPS_HIDDEN_RETURN_POINTER
+#define COMPLEX_OBJS_PASSED_BY_REF
+#define ASM_AT_N_T // AT&T style inline assembly
+#define COMPLEX_MASK (asOBJ_APP_CLASS_DESTRUCTOR)
+#define AS_SIZEOF_BOOL 1
+#define asVSNPRINTF(a, b, c, d) vsnprintf(a, b, c, d)
 
-	// SN doesnt seem to like STDCALL.
-	// Maybe it can work with some fiddling, but I can't imagine linking to
-	// any STDCALL functions with a console anyway...
-	#define STDCALL
+// SN doesnt seem to like STDCALL.
+// Maybe it can work with some fiddling, but I can't imagine linking to
+// any STDCALL functions with a console anyway...
+#define STDCALL
 
-	// Linux specific
-	#ifdef __linux__
-		#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-		#define CDECL_RETURN_SIMPLE_IN_MEMORY
-		#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-	#endif
+// Linux specific
+#ifdef __linux__
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+#endif
 
-	// Support native calling conventions on x86, but not 64bit yet
-	#if defined(i386) && !defined(__LP64__)
-		#define AS_X86
-	#endif
+// Support native calling conventions on x86, but not 64bit yet
+#if defined(i386) && !defined(__LP64__)
+#define AS_X86
+#endif
 
-	#define I64(x) x##ll
+#define I64(x) x##ll
 
-	#define UNREACHABLE_RETURN
+#define UNREACHABLE_RETURN
 #endif
 
 // GNU C (and MinGW on Windows)
 #if (defined(__GNUC__) && !defined(__SNC__)) || defined(EPPC) // JWC -- use this instead for Wii
-	#define GNU_STYLE_VIRTUAL_METHOD
-#if !defined( __amd64__ )
-	#define MULTI_BASE_OFFSET(x) (*((asDWORD*)(&x)+1))
+#define GNU_STYLE_VIRTUAL_METHOD
+#if !defined(__amd64__)
+#define MULTI_BASE_OFFSET(x) (*((asDWORD *)(&x) + 1))
 #else
-	#define MULTI_BASE_OFFSET(x) (*((asQWORD*)(&x)+1))
+#define MULTI_BASE_OFFSET(x) (*((asQWORD *)(&x) + 1))
 #endif
-	#define asVSNPRINTF(a, b, c, d) vsnprintf(a, b, c, d)
-	#define CALLEE_POPS_HIDDEN_RETURN_POINTER
-	#define COMPLEX_OBJS_PASSED_BY_REF
-	#define COMPLEX_MASK (asOBJ_APP_CLASS_DESTRUCTOR)
-	#define AS_NO_MEMORY_H
-	#define AS_SIZEOF_BOOL 1
-	#define STDCALL __attribute__((stdcall))
-	#define ASM_AT_N_T
+#define asVSNPRINTF(a, b, c, d) vsnprintf(a, b, c, d)
+#define CALLEE_POPS_HIDDEN_RETURN_POINTER
+#define COMPLEX_OBJS_PASSED_BY_REF
+#define COMPLEX_MASK (asOBJ_APP_CLASS_DESTRUCTOR)
+#define AS_NO_MEMORY_H
+#define AS_SIZEOF_BOOL 1
+#define STDCALL __attribute__((stdcall))
+#define ASM_AT_N_T
 
-	// MacOSX and IPhone
-	#ifdef __APPLE__
+// MacOSX and IPhone
+#ifdef __APPLE__
 
-		// Is this a Mac or an IPhone?
-		#ifdef TARGET_OS_IPHONE
-			#define AS_IPHONE
-		#else
-			#define AS_MAC
-		#endif
-
-		// The sizeof bool is different depending on the target CPU
-		#undef AS_SIZEOF_BOOL
-		#if defined(__ppc__)
-			#define AS_SIZEOF_BOOL 4
-			// STDCALL is not available on PPC
-			#undef STDCALL
-			#define STDCALL
-		#else
-			#define AS_SIZEOF_BOOL 1
-		#endif
-
-		#if defined(i386) && !defined(__LP64__)
-			// Support native calling conventions on Mac OS X + Intel 32bit CPU
-			#define AS_X86
-		#elif (defined(__ppc__) || defined(__PPC__)) && !defined(__LP64__)
-			// Support native calling conventions on Mac OS X + PPC 32bit CPU
-			#define AS_PPC
-			#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-			#define CDECL_RETURN_SIMPLE_IN_MEMORY
-			#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-		#elif (defined(__ppc__) || defined(__PPC__)) && defined(__LP64__)
-			#define AS_PPC_64
-		#elif (defined(_ARM_) || defined(__arm__))
-			// The IPhone use an ARM processor
-			#define AS_ARM
-			#define AS_IPHONE
-			#define AS_ALIGN
-			#define CDECL_RETURN_SIMPLE_IN_MEMORY
-			#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-			#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-
-			#undef THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
-			#undef CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
-			#undef STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
-
-			#define THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
-			#define CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
-			#define STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
-			#define COMPLEX_OBJS_PASSED_BY_REF
-			#undef COMPLEX_MASK
-			#define COMPLEX_MASK asOBJ_APP_CLASS_DESTRUCTOR
-		#else
-			// Unknown CPU type
-			#define AS_MAX_PORTABILITY
-		#endif
-		#define AS_POSIX_THREADS
- 
-	// Windows
-	#elif defined(WIN32)
-		// On Windows the simple classes are returned in the EAX:EDX registers
-		//#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-		//#define CDECL_RETURN_SIMPLE_IN_MEMORY
-		//#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-
-		#if defined(i386) && !defined(__LP64__)
-			// Support native calling conventions on Intel 32bit CPU
-			#define AS_X86
-		#else
-			// No support for native calling conventions yet
-			#define AS_MAX_PORTABILITY
-			// STDCALL is not available on 64bit Linux
-			#undef STDCALL
-			#define STDCALL
-		#endif
-        #define AS_WIN
-        #define AS_WINDOWS_THREADS
-
-	// Linux
-	#elif defined(__linux__)
-		#if defined(i386) && !defined(__LP64__)
-			#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-			#define CDECL_RETURN_SIMPLE_IN_MEMORY
-			#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-
-			// Support native calling conventions on Intel 32bit CPU
-			#define AS_X86
-		#else
-			#define AS_X64_GCC
-			#define HAS_128_BIT_PRIMITIVES
-			#define SPLIT_OBJS_BY_MEMBER_TYPES
-			// STDCALL is not available on 64bit Linux
-			#undef STDCALL
-			#define STDCALL
-		#endif
-       	#define AS_LINUX
-       	#define AS_POSIX_THREADS
-
-		#if !( ( (__GNUC__ == 4) && (__GNUC_MINOR__ >= 1) || __GNUC__ > 4) )
-			// Only with GCC 4.1 was the atomic instructions available
-			#define AS_NO_ATOMIC
-		#endif
-
-	// Free BSD
-	#elif __FreeBSD__
-		#define AS_BSD
-		#if defined(i386) && !defined(__LP64__)
-			#define AS_X86
-		#else
-			#define AS_MAX_PORTABILITY
-		#endif
-		#define AS_POSIX_THREADS
-		#if !( ( (__GNUC__ == 4) && (__GNUC_MINOR__ >= 1) || __GNUC__ > 4) )
-			// Only with GCC 4.1 was the atomic instructions available
-			#define AS_NO_ATOMIC
-		#endif
-
-	// PSP and PS2
-	#elif defined(__PSP__) || defined(__psp__) || defined(_EE_) || defined(_PSP) || defined(_PS2)
-		// Support native calling conventions on MIPS architecture
-		#if (defined(_MIPS_ARCH) || defined(_mips) || defined(__MIPSEL__)) && !defined(__LP64__)
-			#define AS_MIPS
-		#else
-			#define AS_MAX_PORTABILITY
-		#endif
-
-	// PS3
-	#elif (defined(__PPC__) || defined(__ppc__)) && defined(__PPU__)
-		// Support native calling conventions on PS3
-		#define AS_PS3
-		#define AS_PPC_64
-		#define SPLIT_OBJS_BY_MEMBER_TYPES
-		#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-		#define CDECL_RETURN_SIMPLE_IN_MEMORY
-		#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-		// PS3 doesn't have STDCALL
-		#undef STDCALL
-		#define STDCALL
-
-	// Dreamcast
-	#elif __SH4_SINGLE_ONLY__
-		// Support native calling conventions on Dreamcast
-		#define AS_DC
-		#define AS_SH4
-
-	// Wii JWC - Close to PS3 just no PPC_64 and AS_PS3
-	#elif defined(EPPC)
-		#define AS_WII
-		#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-		#define CDECL_RETURN_SIMPLE_IN_MEMORY
-		#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-		#undef STDCALL
-		#define STDCALL
-
-    // Android
-	#elif defined(ANDROID)
-		#define AS_ANDROID
-		#define AS_NO_ATOMIC
-
-		#define CDECL_RETURN_SIMPLE_IN_MEMORY
-		#define STDCALL_RETURN_SIMPLE_IN_MEMORY
-		#define THISCALL_RETURN_SIMPLE_IN_MEMORY
-
-		#undef THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
-		#undef CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
-		#undef STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
-
-		#define THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
-		#define CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
-		#define STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
-
-		#if (defined(_ARM_) || defined(__arm__))
-		    #define AS_ARM
-			#define AS_ALIGN
-		#endif
-	#endif
-
-	#define I64(x) x##ll
-
-	#define UNREACHABLE_RETURN
+// Is this a Mac or an IPhone?
+#ifdef TARGET_OS_IPHONE
+#define AS_IPHONE
+#else
+#define AS_MAC
 #endif
 
+// The sizeof bool is different depending on the target CPU
+#undef AS_SIZEOF_BOOL
+#if defined(__ppc__)
+#define AS_SIZEOF_BOOL 4
+// STDCALL is not available on PPC
+#undef STDCALL
+#define STDCALL
+#else
+#define AS_SIZEOF_BOOL 1
+#endif
+
+#if defined(i386) && !defined(__LP64__)
+// Support native calling conventions on Mac OS X + Intel 32bit CPU
+#define AS_X86
+#elif (defined(__ppc__) || defined(__PPC__)) && !defined(__LP64__)
+// Support native calling conventions on Mac OS X + PPC 32bit CPU
+#define AS_PPC
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+#elif (defined(__ppc__) || defined(__PPC__)) && defined(__LP64__)
+#define AS_PPC_64
+#elif (defined(_ARM_) || defined(__arm__))
+// The IPhone use an ARM processor
+#define AS_ARM
+#define AS_IPHONE
+#define AS_ALIGN
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+
+#undef THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
+#undef CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
+#undef STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
+
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
+#define CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
+#define COMPLEX_OBJS_PASSED_BY_REF
+#undef COMPLEX_MASK
+#define COMPLEX_MASK asOBJ_APP_CLASS_DESTRUCTOR
+#else
+// Unknown CPU type
+#define AS_MAX_PORTABILITY
+#endif
+#define AS_POSIX_THREADS
+
+// Windows
+#elif defined(WIN32)
+// On Windows the simple classes are returned in the EAX:EDX registers
+//#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+//#define CDECL_RETURN_SIMPLE_IN_MEMORY
+//#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+
+#if defined(i386) && !defined(__LP64__)
+// Support native calling conventions on Intel 32bit CPU
+#define AS_X86
+#else
+// No support for native calling conventions yet
+#define AS_MAX_PORTABILITY
+// STDCALL is not available on 64bit Linux
+#undef STDCALL
+#define STDCALL
+#endif
+#define AS_WIN
+#define AS_WINDOWS_THREADS
+
+// Linux
+#elif defined(__linux__)
+#if defined(i386) && !defined(__LP64__)
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+
+// Support native calling conventions on Intel 32bit CPU
+#define AS_X86
+#else
+#define AS_X64_GCC
+#define HAS_128_BIT_PRIMITIVES
+#define SPLIT_OBJS_BY_MEMBER_TYPES
+// STDCALL is not available on 64bit Linux
+#undef STDCALL
+#define STDCALL
+#endif
+#define AS_LINUX
+#define AS_POSIX_THREADS
+
+#if !(((__GNUC__ == 4) && (__GNUC_MINOR__ >= 1) || __GNUC__ > 4))
+// Only with GCC 4.1 was the atomic instructions available
+#define AS_NO_ATOMIC
+#endif
+
+// Free BSD
+#elif __FreeBSD__
+#define AS_BSD
+#if defined(i386) && !defined(__LP64__)
+#define AS_X86
+#else
+#define AS_MAX_PORTABILITY
+#endif
+#define AS_POSIX_THREADS
+#if !(((__GNUC__ == 4) && (__GNUC_MINOR__ >= 1) || __GNUC__ > 4))
+// Only with GCC 4.1 was the atomic instructions available
+#define AS_NO_ATOMIC
+#endif
+
+// PSP and PS2
+#elif defined(__PSP__) || defined(__psp__) || defined(_EE_) || defined(_PSP) || defined(_PS2)
+// Support native calling conventions on MIPS architecture
+#if (defined(_MIPS_ARCH) || defined(_mips) || defined(__MIPSEL__)) && !defined(__LP64__)
+#define AS_MIPS
+#else
+#define AS_MAX_PORTABILITY
+#endif
+
+// PS3
+#elif (defined(__PPC__) || defined(__ppc__)) && defined(__PPU__)
+// Support native calling conventions on PS3
+#define AS_PS3
+#define AS_PPC_64
+#define SPLIT_OBJS_BY_MEMBER_TYPES
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+// PS3 doesn't have STDCALL
+#undef STDCALL
+#define STDCALL
+
+// Dreamcast
+#elif __SH4_SINGLE_ONLY__
+// Support native calling conventions on Dreamcast
+#define AS_DC
+#define AS_SH4
+
+// Wii JWC - Close to PS3 just no PPC_64 and AS_PS3
+#elif defined(EPPC)
+#define AS_WII
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+#undef STDCALL
+#define STDCALL
+
+// Android
+#elif defined(ANDROID)
+#define AS_ANDROID
+#define AS_NO_ATOMIC
+
+#define CDECL_RETURN_SIMPLE_IN_MEMORY
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY
+
+#undef THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
+#undef CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
+#undef STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE
+
+#define THISCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
+#define CDECL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
+#define STDCALL_RETURN_SIMPLE_IN_MEMORY_MIN_SIZE 2
+
+#if (defined(_ARM_) || defined(__arm__))
+#define AS_ARM
+#define AS_ALIGN
+#endif
+#endif
+
+#define I64(x) x##ll
+
+#define UNREACHABLE_RETURN
+#endif
 
 //
 // Detect target hardware
@@ -621,105 +598,104 @@
 
 // X86, Intel, AMD, etc, i.e. most PCs
 #if defined(__i386__) || defined(_M_IX86)
-	// Nothing special here
+// Nothing special here
 #endif
 
 // MIPS architecture (generally PS2 and PSP consoles, potentially supports N64 as well)
-#if defined(_MIPS_ARCH) || defined(_mips) || defined(__MIPSEL__) || defined(__PSP__) || defined(__psp__) || defined(_EE_) || defined(_PSP) || defined(_PS2)
-	#define AS_ALIGN				// align datastructures
-	#define AS_USE_DOUBLE_AS_FLOAT	// use 32bit floats instead of doubles
+#if defined(_MIPS_ARCH) || defined(_mips) || defined(__MIPSEL__) || defined(__PSP__) || defined(__psp__) ||            \
+    defined(_EE_) || defined(_PSP) || defined(_PS2)
+#define AS_ALIGN               // align datastructures
+#define AS_USE_DOUBLE_AS_FLOAT // use 32bit floats instead of doubles
 #endif
 
 // PowerPC, e.g. Mac, GameCube, PS3, XBox 360, Wii
 #if defined(__PPC__) || defined(__ppc__) || defined(_PPC_) || defined(EPPC)
-	#define AS_BIG_ENDIAN
+#define AS_BIG_ENDIAN
 
-	// Gamecube
-	#if defined(_GC)
-		#define AS_ALIGN
-		#define AS_USE_DOUBLE_AS_FLOAT
-	#endif
-	// XBox 360
-	#if (_XBOX_VER >= 200 )
-		#define AS_ALIGN
-	#endif
-	// PS3
-	#if defined(__PPU__)
-		#define AS_ALIGN
-	#endif
-	// Wii
-	#if defined(EPPC)
-		#define AS_ALIGN
-	#endif
+// Gamecube
+#if defined(_GC)
+#define AS_ALIGN
+#define AS_USE_DOUBLE_AS_FLOAT
+#endif
+// XBox 360
+#if (_XBOX_VER >= 200)
+#define AS_ALIGN
+#endif
+// PS3
+#if defined(__PPU__)
+#define AS_ALIGN
+#endif
+// Wii
+#if defined(EPPC)
+#define AS_ALIGN
+#endif
 #endif
 
 // Dreamcast console
 #ifdef __SH4_SINGLE_ONLY__
-	#define AS_ALIGN				// align datastructures
-	#define AS_USE_DOUBLE_AS_FLOAT	// use 32bit floats instead of doubles
+#define AS_ALIGN               // align datastructures
+#define AS_USE_DOUBLE_AS_FLOAT // use 32bit floats instead of doubles
 #endif
 
 // Is the target a 64bit system?
 #if defined(__LP64__) || defined(__amd64__) || defined(_M_X64)
-	#ifndef AS_64BIT_PTR
-		#define AS_64BIT_PTR
-	#endif
+#ifndef AS_64BIT_PTR
+#define AS_64BIT_PTR
+#endif
 #endif
 
 // If there are no current support for native calling
 // conventions, then compile with AS_MAX_PORTABILITY
-#if (!defined(AS_X86) && !defined(AS_SH4) && !defined(AS_MIPS) && !defined(AS_PPC) && !defined(AS_PPC_64) && !defined(AS_XENON) && !defined(AS_X64_GCC) && !defined(AS_ARM))
-	#ifndef AS_MAX_PORTABILITY
-		#define AS_MAX_PORTABILITY
-	#endif
+#if (!defined(AS_X86) && !defined(AS_SH4) && !defined(AS_MIPS) && !defined(AS_PPC) && !defined(AS_PPC_64) &&           \
+     !defined(AS_XENON) && !defined(AS_X64_GCC) && !defined(AS_ARM))
+#ifndef AS_MAX_PORTABILITY
+#define AS_MAX_PORTABILITY
+#endif
 #endif
 
 // If the form of threads to use hasn't been chosen
 // then the library will be compiled without support
 // for multithreading
 #if !defined(AS_POSIX_THREADS) && !defined(AS_WINDOWS_THREADS)
-	#define AS_NO_THREADS
+#define AS_NO_THREADS
 #endif
-
 
 // The assert macro
 #include <assert.h>
 #define asASSERT(x) assert(x)
-
-
 
 //
 // Internal defines (do not change these)
 //----------------------------------------------------------------
 
 #ifdef AS_ALIGN
-	#define	ALIGN(b) (((b)+3)&(~3))
+#define ALIGN(b) (((b) + 3) & (~3))
 #else
-	#define	ALIGN(b) (b)
+#define ALIGN(b) (b)
 #endif
 
-#define	ARG_W(b)    ((asWORD*)&b)
-#define	ARG_DW(b)   ((asDWORD*)&b)
-#define	ARG_QW(b)   ((asQWORD*)&b)
-#define	BCARG_W(b)  ((asWORD*)&(b)[1])
-#define	BCARG_DW(b) ((asDWORD*)&(b)[1])
-#define	BCARG_QW(b) ((asQWORD*)&(b)[1])
+#define ARG_W(b) ((asWORD *)&b)
+#define ARG_DW(b) ((asDWORD *)&b)
+#define ARG_QW(b) ((asQWORD *)&b)
+#define BCARG_W(b) ((asWORD *)&(b)[1])
+#define BCARG_DW(b) ((asDWORD *)&(b)[1])
+#define BCARG_QW(b) ((asQWORD *)&(b)[1])
 
 #ifdef AS_64BIT_PTR
-	#define AS_PTR_SIZE  2
-	#define asPTRWORD    asQWORD
-	#define asBC_RDSPTR  asBC_RDS8
+#define AS_PTR_SIZE 2
+#define asPTRWORD asQWORD
+#define asBC_RDSPTR asBC_RDS8
 #else
-	#define AS_PTR_SIZE  1
-	#define asPTRWORD    asDWORD
-	#define asBC_RDSPTR  asBC_RDS4
+#define AS_PTR_SIZE 1
+#define asPTRWORD asDWORD
+#define asBC_RDSPTR asBC_RDS4
 #endif
-#define ARG_PTR(b)   ((asPTRWORD*)&b)
-#define BCARG_PTR(b) ((asPTRWORD*)&(b)[1])
+#define ARG_PTR(b) ((asPTRWORD *)&b)
+#define BCARG_PTR(b) ((asPTRWORD *)&(b)[1])
 
 // This macro is used to avoid warnings about unused variables.
 // Usually where the variables are only used in debug mode.
-#define UNUSED_VAR(x) (x)=(x)
+#define UNUSED_VAR(x) (x) = (x)
 
 #include "../include/angelscript.h"
 #include "as_memory.h"

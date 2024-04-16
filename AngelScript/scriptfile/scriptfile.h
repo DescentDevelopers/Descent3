@@ -22,9 +22,6 @@
 #define AS_WRITE_OPS 1
 #endif
 
-
-
-
 //---------------------------
 // Declaration
 //
@@ -36,40 +33,39 @@ BEGIN_AS_NAMESPACE
 
 class CScriptString;
 
-class CScriptFile
-{
+class CScriptFile {
 public:
-    CScriptFile();
+  CScriptFile();
 
-    void AddRef();
-    void Release();
+  void AddRef();
+  void Release();
 
-	// TODO: Implement the "r+", "w+" and "a+" modes
-	// mode = "r" -> open the file for reading
-	//        "w" -> open the file for writing (overwrites existing file)
-	//        "a" -> open the file for appending
-    int  Open(const std::string &filename, const std::string &mode);
-    int  Close();
-    int  GetSize() const;
-	bool IsEOF() const;
+  // TODO: Implement the "r+", "w+" and "a+" modes
+  // mode = "r" -> open the file for reading
+  //        "w" -> open the file for writing (overwrites existing file)
+  //        "a" -> open the file for appending
+  int Open(const std::string &filename, const std::string &mode);
+  int Close();
+  int GetSize() const;
+  bool IsEOF() const;
 
-    // Reading
-    int ReadString(unsigned int length, std::string &str);
-	int ReadLine(std::string &str);
+  // Reading
+  int ReadString(unsigned int length, std::string &str);
+  int ReadLine(std::string &str);
 
-    // Writing
-    int WriteString(const std::string &str);
+  // Writing
+  int WriteString(const std::string &str);
 
-    // Cursor
-	int GetPos() const;
-    int SetPos(int pos);
-    int MovePos(int delta);
+  // Cursor
+  int GetPos() const;
+  int SetPos(int pos);
+  int MovePos(int delta);
 
 protected:
-    ~CScriptFile();
+  ~CScriptFile();
 
-    int   refCount;
-    FILE *file;
+  int refCount;
+  FILE *file;
 };
 
 // This function will determine the configuration of the engine

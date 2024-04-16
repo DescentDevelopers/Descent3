@@ -25,8 +25,8 @@
 #endif
 // Call this function to provide hooks into your memory management.
 typedef void *(mve_cb_alloc)(unsigned size);
-typedef void (mve_cb_free)(void *p);
-void MVE_memCallbacks( mve_cb_alloc *fn_alloc, mve_cb_free *fn_free );
+typedef void(mve_cb_free)(void *p);
+void MVE_memCallbacks(mve_cb_alloc *fn_alloc, mve_cb_free *fn_free);
 
 // This function remains from the DOS version of mvelib.
 // It allows you to provide a preallocated buffer for file I/O,
@@ -78,7 +78,8 @@ void MVE_dsbSetPan(long lPan);
 // Under windows, the information provided by this function
 // is just used for window centering and for determining
 // how and when to do palette callbacks.
-void MVE_sfSVGA( unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr, unsigned long WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
+                unsigned long WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
 
 // This function alters the display from 640x480 or 640x400 to 640x350 resolution.
 void MVE_ForceVres350(void);
@@ -95,9 +96,9 @@ void MVE_ForceVresHalf(void);
 //	 or modify which portions of the screen are updated.
 // This function replaces calls to the default MVE_ShowFrame function
 //  with calls to your function, which can itself call MVE_ShowFrame.
-typedef void (*mve_cb_ShowFrame)(unsigned char *buf, unsigned int bufw, unsigned int bufh,
-							unsigned int sx, unsigned int sy, unsigned int w, unsigned int h,
-							unsigned int dstx, unsigned int dsty, unsigned int hicolor);
+typedef void (*mve_cb_ShowFrame)(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int sx,
+                                 unsigned int sy, unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty,
+                                 unsigned int hicolor);
 void MVE_sfCallbacks(mve_cb_ShowFrame fn_ShowFrame);
 
 typedef void mve_cb_SetPalette(unsigned char *p, unsigned start, unsigned count);
@@ -134,11 +135,11 @@ typedef int mve_cb_ctl(void);
 void MVE_rmCallbacks(mve_cb_ctl *fn_ctl);
 
 // Specify playback fastmode option (default is MVE_RM_NORMAL).
-#define MVE_RM_NORMAL 0		// Normal playback
-#define MVE_RM_HALF 1		// Half height (even lines only)
-#define MVE_RM_DITHERED 2	// Half height (dither between lines)
-#define MVE_RM_HALF_2 5 	// Full height, even lines only
-#define MVE_RM_DITHERED_2 6	// Full height, dither, even lines only
+#define MVE_RM_NORMAL 0     // Normal playback
+#define MVE_RM_HALF 1       // Half height (even lines only)
+#define MVE_RM_DITHERED 2   // Half height (dither between lines)
+#define MVE_RM_HALF_2 5     // Full height, even lines only
+#define MVE_RM_DITHERED_2 6 // Full height, dither, even lines only
 
 void MVE_rmFastMode(int mode);
 
@@ -208,7 +209,8 @@ typedef struct _MVE_frstream *MVE_frStream;
 //
 //  If the movie file is invalid or the call otherwise fails,
 //    NULL is returned.
-MVE_frStream MVE_frOpen( unsigned (*fn_read)(int handle, void *buf, unsigned count), int handle, int (*fr_callback)(unsigned op, unsigned subop, void *buf) );
+MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned count), int handle,
+                        int (*fr_callback)(unsigned op, unsigned subop, void *buf));
 
 // MVE_frGet
 //  Returns the next frame from the specified frame reader stream
@@ -217,7 +219,7 @@ MVE_frStream MVE_frOpen( unsigned (*fn_read)(int handle, void *buf, unsigned cou
 //  If successful, MVE_frGet(frs, &buf, &w, &h) returns a pointer
 //  to a surface containing the frame in pBuf,
 //  and its width and height in w and h.
-int MVE_frGet(MVE_frStream frs,unsigned char **pBuf,unsigned int *width, unsigned int *height, unsigned int *hicolor);
+int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned int *width, unsigned int *height, unsigned int *hicolor);
 
 // MVE_frPal
 //  After each successful call to MVE_frGet(), this call may be used to
@@ -248,24 +250,24 @@ void MVE_frClose(MVE_frStream frs);
 void MVE_ReleaseMem(void);
 
 // Return string corresponding to MVE_RunMovie result code.
-char* MVE_strerror(int code);
+char *MVE_strerror(int code);
 
 // RunMovie callback control code and result codes.
 // Codes > 1 are user defined.
-#define MVE_CTL_HOLD -1     // Returned by rmCtl() to hold current frame
-#define MVE_CTL_EXIT 1	    // Returned by rmCtl() to end movie
+#define MVE_CTL_HOLD -1 // Returned by rmCtl() to hold current frame
+#define MVE_CTL_EXIT 1  // Returned by rmCtl() to end movie
 
-#define MVE_ERR_EOF -1	    // Returned by StepMovie() for end of movie
-#define MVE_ERR_IO -2	    // File I/O error or unable to alloc memory.
+#define MVE_ERR_EOF -1      // Returned by StepMovie() for end of movie
+#define MVE_ERR_IO -2       // File I/O error or unable to alloc memory.
 #define MVE_ERR_SYNC -3     // Timer error.
-#define MVE_ERR_SND -4	    // Unable to allocate memory for sound
-#define MVE_ERR_NF -5	    // Unable to allocate memory for video
+#define MVE_ERR_SND -4      // Unable to allocate memory for sound
+#define MVE_ERR_NF -5       // Unable to allocate memory for video
 #define MVE_ERR_GFX_FIT -6  // Screen size too small for movie
 #define MVE_ERR_GFX_FAIL -7 // Failed to set desired graphics mode
 #define MVE_ERR_BADFMT -8   // Not a MVE file or unacceptable version
 #define MVE_ERR_GFX_CLR -9  // Incorrect screen color mode
 #define MVE_ERR_PREP -10    // StepMovie() without PrepMovie()
-#define MVE_ERR_LD -11	    // Unable to initialize Draw system (DirectDraw, etc)
+#define MVE_ERR_LD -11      // Unable to initialize Draw system (DirectDraw, etc)
 #define MVE_ERR_LOST -12    // Direct Draw Surface Lost
 
 #define MVE_ERR_LAST -12

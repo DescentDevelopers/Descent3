@@ -3,7 +3,7 @@
 #include "Macros.h"
 #include <ctype.h>
 // Constants
-#define MACINTOSH	1
+#define MACINTOSH 1
 #define USE_GLIDE
 #undef USE_OPENGL
 #define NUM_MIP_LEVELS 5
@@ -12,25 +12,25 @@
 #undef SOUND_ON
 #define DAJ_DEBUG
 //#pragma options align packed
-#define MEM_USE_RTL	1
-#define and	andVar
-#define or	orVar
-#define _fstat		fstat
-#define _filelength	filelength
+#define MEM_USE_RTL 1
+#define and andVar
+#define or orVar
+#define _fstat fstat
+#define _filelength filelength
 #define __cdecl
-#define _MAX_PATH	1024
-#define _MAX_FNAME	64	/* max. length of path component*/
-#define _MAX_EXT	64 /* max. length of extension component*/
-#define TRANSPARENT_COLOR	0
+#define _MAX_PATH 1024
+#define _MAX_FNAME 64 /* max. length of path component*/
+#define _MAX_EXT 64   /* max. length of extension component*/
+#define TRANSPARENT_COLOR 0
 // These are other error types defined in Visual C++.
 // The values are made up and hopefullydon't conflict JCA
-#define EACCES			102
-#define EDEADLOCK		104
-#define EMFILE			105
-#define ENOENT			106
-#define ENFILE			107
-#define ENOSPC			108
-#define ENOSYS			112
+#define EACCES 102
+#define EDEADLOCK 104
+#define EMFILE 105
+#define ENOENT 106
+#define ENFILE 107
+#define ENOSPC 108
+#define ENOSYS 112
 
 #if 0
 ///////////////////////////
@@ -39,39 +39,39 @@
 /*
  * Address families.
  */
-#define AF_UNSPEC       0               /* unspecified */
-#define AF_UNIX         1               /* local to host (pipes, portals) */
-#define AF_INET         2               /* internetwork: UDP, TCP, etc. */
-#define AF_IMPLINK      3               /* arpanet imp addresses */
-#define AF_PUP          4               /* pup protocols: e.g. BSP */
-#define AF_CHAOS        5               /* mit CHAOS protocols */
-#define AF_IPX          6               /* IPX and SPX */
-#define AF_NS           6               /* XEROX NS protocols */
-#define AF_ISO          7               /* ISO protocols */
-#define AF_OSI          AF_ISO          /* OSI is ISO */
-#define AF_ECMA         8               /* european computer manufacturers */
-#define AF_DATAKIT      9               /* datakit protocols */
-#define AF_CCITT        10              /* CCITT protocols, X.25 etc */
-#define AF_SNA          11              /* IBM SNA */
-#define AF_DECnet       12              /* DECnet */
-#define AF_DLI          13              /* Direct data link interface */
-#define AF_LAT          14              /* LAT */
-#define AF_HYLINK       15              /* NSC Hyperchannel */
-#define AF_APPLETALK    16              /* AppleTalk */
-#define AF_NETBIOS      17              /* NetBios-style addresses */
-#define AF_VOICEVIEW    18              /* VoiceView */
-#define AF_FIREFOX      19              /* FireFox */
-#define AF_UNKNOWN1     20              /* Somebody is using this! */
-#define AF_BAN          21              /* Banyan */
-#define AF_MAX          22
+#define AF_UNSPEC 0     /* unspecified */
+#define AF_UNIX 1       /* local to host (pipes, portals) */
+#define AF_INET 2       /* internetwork: UDP, TCP, etc. */
+#define AF_IMPLINK 3    /* arpanet imp addresses */
+#define AF_PUP 4        /* pup protocols: e.g. BSP */
+#define AF_CHAOS 5      /* mit CHAOS protocols */
+#define AF_IPX 6        /* IPX and SPX */
+#define AF_NS 6         /* XEROX NS protocols */
+#define AF_ISO 7        /* ISO protocols */
+#define AF_OSI AF_ISO   /* OSI is ISO */
+#define AF_ECMA 8       /* european computer manufacturers */
+#define AF_DATAKIT 9    /* datakit protocols */
+#define AF_CCITT 10     /* CCITT protocols, X.25 etc */
+#define AF_SNA 11       /* IBM SNA */
+#define AF_DECnet 12    /* DECnet */
+#define AF_DLI 13       /* Direct data link interface */
+#define AF_LAT 14       /* LAT */
+#define AF_HYLINK 15    /* NSC Hyperchannel */
+#define AF_APPLETALK 16 /* AppleTalk */
+#define AF_NETBIOS 17   /* NetBios-style addresses */
+#define AF_VOICEVIEW 18 /* VoiceView */
+#define AF_FIREFOX 19   /* FireFox */
+#define AF_UNKNOWN1 20  /* Somebody is using this! */
+#define AF_BAN 21       /* Banyan */
+#define AF_MAX 22
 /*
  * Types
  */
-#define SOCK_STREAM     1               /* stream socket */
-#define SOCK_DGRAM      2               /* datagram socket */
-#define SOCK_RAW        3               /* raw-protocol interface */
-#define SOCK_RDM        4               /* reliably-delivered message */
-#define SOCK_SEQPACKET  5               /* sequenced packet stream */
+#define SOCK_STREAM 1    /* stream socket */
+#define SOCK_DGRAM 2     /* datagram socket */
+#define SOCK_RAW 3       /* raw-protocol interface */
+#define SOCK_RDM 4       /* reliably-delivered message */
+#define SOCK_SEQPACKET 5 /* sequenced packet stream */
 /*
  * Basic system type definitions, taken from the BSD file sys/types.h.
  */
@@ -97,17 +97,17 @@ struct in_addr {
                 struct { u_short s_w1,s_w2; } S_un_w;
                 u_long S_addr;
         } S_un;
-#define s_addr  S_un.S_addr
+#define s_addr S_un.S_addr
                                 /* can be used for most tcp & ip code */
-#define s_host  S_un.S_un_b.s_b2
+#define s_host S_un.S_un_b.s_b2
                                 /* host on imp */
-#define s_net   S_un.S_un_b.s_b1
+#define s_net S_un.S_un_b.s_b1
                                 /* network */
-#define s_imp   S_un.S_un_w.s_w2
+#define s_imp S_un.S_un_w.s_w2
                                 /* imp */
 #define s_impno S_un.S_un_b.s_b4
                                 /* imp # */
-#define s_lh    S_un.S_un_b.s_b3
+#define s_lh S_un.S_un_b.s_b3
                                 /* logical host */
 };
 struct sockaddr_in {
@@ -125,25 +125,22 @@ typedef Fixed fix;
 typedef long long INT64;
 typedef void *HGLOBAL;
 // Function Definitions
-#define _finite(a)			finite(a)
-#define strcmpi(a,b)		stricmp(a,b)
-#define strcmpni(a,b,c)		strnicmp(a,b,c)
-#define _vsnprintf(a,b,c,d) vsnprintf(a,b,c,d)
-#define HeapSize(a,b,c)		0
+#define _finite(a) finite(a)
+#define strcmpi(a, b) stricmp(a, b)
+#define strcmpni(a, b, c) strnicmp(a, b, c)
+#define _vsnprintf(a, b, c, d) vsnprintf(a, b, c, d)
+#define HeapSize(a, b, c) 0
 #define HeapDestroy(a)
 int stricmp(const char *inX, const char *inY);
 int strnicmp(const char *inX, const char *inY, int len);
 char *strdup(const char *str);
 void GlobalFree(void *);
-void *GlobalAlloc(int flags,int size);
+void *GlobalAlloc(int flags, int size);
 void *GlobalLock(HGLOBAL hMem);
 void Sleep(int millis);
-char *itoa(int value,char *string,int radix);
+char *itoa(int value, char *string, int radix);
 char *strupr(char *string);
-inline int finite(double a)
-{
-	return(a != HUGE_VAL);
-}
+inline int finite(double a) { return (a != HUGE_VAL); }
 
 #if 0
 ///////////////////////////

@@ -1,30 +1,28 @@
 /*
-* $Logfile: /DescentIII/Main/lib/psendian.h $
-* $Revision: 1 $
-* $Date: 5/05/99 5:26a $
-* $Author: Jeff $
-*
-* Big/Little Endian detection and functions
-*
-* $Log: /DescentIII/Main/lib/psendian.h $
- * 
+ * $Logfile: /DescentIII/Main/lib/psendian.h $
+ * $Revision: 1 $
+ * $Date: 5/05/99 5:26a $
+ * $Author: Jeff $
+ *
+ * Big/Little Endian detection and functions
+ *
+ * $Log: /DescentIII/Main/lib/psendian.h $
+ *
  * 1     5/05/99 5:26a Jeff
- * 
+ *
  * 3     5/01/99 8:47p Jeff
  * removed 2 useless functions, use externC for linux compile
- * 
+ *
  * 2     5/01/99 2:52p Jeff
  * added automatic endian detection of the system
-*
-* $NoKeywords: $
-*/
-
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __ENDIAN_H___
 #define __ENDIAN_H___
 
-extern "C"
-{
+extern "C" {
 // Endian_IsLittleEndian
 //
 //	Returns true if the machine is Little Endian (i.e. 80x86)

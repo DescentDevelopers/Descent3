@@ -7,19 +7,19 @@
  *	Video library.
  *
  * $Log: /DescentIII/Main/lib/ddvid.h $
- * 
+ *
  * 4     12/29/97 5:50p Samir
  * Added ability to close ddvid system.
- * 
+ *
  * 3     12/22/97 7:13p Samir
  * Moved constants to grdefs.h
- * 
+ *
  * 2     12/22/97 6:58p Samir
  * Restored type ddgr_color
- * 
+ *
  * 1     12/22/97 12:45p Samir
  * Initial revision
- * 
+ *
  * $NoKeywords: $
  */
 
@@ -54,7 +54,6 @@ void ddvid_UnlockFrameBuffer();
 //	flips screen if there's a back buffer
 void ddvid_VideoFlip();
 
-
 // only available to DD_ACCESS libraries.
 #if defined(DD_ACCESS_RING)
 #if defined(WIN32)
@@ -63,9 +62,8 @@ void ddvid_VideoFlip();
 //	dds_obj is the DIRECTDRAWSURFACE OBJECT for the screen
 void ddvid_GetVideoDDrawProps(uint *dd_obj, uint *dds_obj);
 
-#endif	// WIN32
+#endif // WIN32
 
-#endif	// DD_ACCESS
-
+#endif // DD_ACCESS
 
 #endif

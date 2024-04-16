@@ -1,18 +1,18 @@
 /*
-* $Logfile: /DescentIII/Main/rocknride.h $
-* $Revision: 2 $
-* $Date: 5/10/99 9:25p $
-* $Author: Jeff $
-*
-* Rock 'n' Ride
-*
-* $Log: /DescentIII/Main/rocknride.h $
- * 
+ * $Logfile: /DescentIII/Main/rocknride.h $
+ * $Revision: 2 $
+ * $Date: 5/10/99 9:25p $
+ * $Author: Jeff $
+ *
+ * Rock 'n' Ride
+ *
+ * $Log: /DescentIII/Main/rocknride.h $
+ *
  * 2     5/10/99 9:25p Jeff
  * first phase of Rock 'n' Ride support added
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __ROCK_N_RIDE_H_
 #define __ROCK_N_RIDE_H_
@@ -23,25 +23,22 @@
 
 extern bool RocknRide_enabled;
 
-#define RNRP_POSITION	0x00	//Rock 'n' Ride Position Packet
-#define RNRP_HIT		0x01	//Rock 'n' Ride Hit Packet
-#define RNRP_GAMESTATUS	0x02	//Rock 'n' Ride Game Status Packet
-typedef struct
-{
-	ubyte packet_type;
-	union
-	{
-		struct
-		{
-			ubyte x,y;
-		}pos;
-		ubyte status;
-	};
-}tRocknride_packet;
+#define RNRP_POSITION 0x00   // Rock 'n' Ride Position Packet
+#define RNRP_HIT 0x01        // Rock 'n' Ride Hit Packet
+#define RNRP_GAMESTATUS 0x02 // Rock 'n' Ride Game Status Packet
+typedef struct {
+  ubyte packet_type;
+  union {
+    struct {
+      ubyte x, y;
+    } pos;
+    ubyte status;
+  };
+} tRocknride_packet;
 
-//Rock 'n' Ride Game Status codes
-#define RNRGSC_PLAYERDIES	0	// The player has died
-#define RNRGSC_INMENU		1	// The player is in a UI menu
+// Rock 'n' Ride Game Status codes
+#define RNRGSC_PLAYERDIES 0 // The player has died
+#define RNRGSC_INMENU 1     // The player is in a UI menu
 
 // RNR_Initialize
 //
@@ -62,12 +59,12 @@ void RNR_UpdateControllerInfo(game_controls *controls);
 //	RNR_UpdateForceFeedbackInfo
 //
 //	Updates any Force Feedback effects
-void RNR_UpdateForceFeedbackInfo(float magnitude,vector *direction);
+void RNR_UpdateForceFeedbackInfo(float magnitude, vector *direction);
 
 //	RNR_UpdateForceFeedbackInfo
 //
 //	Updates any Force Feedback effects
-void RNR_UpdateForceFeedbackInfo(float magnitude,int *direction);
+void RNR_UpdateForceFeedbackInfo(float magnitude, int *direction);
 
 //	RNR_UpdateGameStatus
 //
@@ -75,4 +72,3 @@ void RNR_UpdateForceFeedbackInfo(float magnitude,int *direction);
 void RNR_UpdateGameStatus(ubyte status);
 
 #endif
-

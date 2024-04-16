@@ -1,209 +1,205 @@
 /*
-* $Logfile: /DescentIII/Main/lib/forcefeedback.h $
-* $Revision: 15 $
-* $Date: 7/28/99 3:23p $
-* $Author: Kevin $
-*
-* Low-Level ForceFeedback header
-*
-* $Log: /DescentIII/Main/lib/forcefeedback.h $
- * 
+ * $Logfile: /DescentIII/Main/lib/forcefeedback.h $
+ * $Revision: 15 $
+ * $Date: 7/28/99 3:23p $
+ * $Author: Kevin $
+ *
+ * Low-Level ForceFeedback header
+ *
+ * $Log: /DescentIII/Main/lib/forcefeedback.h $
+ *
  * 15    7/28/99 3:23p Kevin
  * Macintosh
- * 
+ *
  * 14    4/16/99 8:28p Jeff
  * moved placement of #endif
- * 
+ *
  * 13    4/15/99 1:44a Jeff
  * changes for linux compile
- * 
+ *
  * 12    1/30/99 11:27p Jeff
  * added immersion support
- * 
+ *
  * 11    1/28/99 12:09p Jeff
  * added force feedback to player shake...fixed spelling error in define
  * for forcefeedback
- * 
+ *
  * 10    1/13/99 6:48a Jeff
  * made file linux friendly (removed dinput specific stuff to ifdef)
- * 
+ *
  * 8     11/10/98 5:16p Jeff
  * updated forcefeedback system...pretty complete now
- * 
+ *
  * 7     11/06/98 7:00p Jeff
  * first round of new force feedback installed
- * 
+ *
  * 6     11/03/98 6:43p Jeff
  * new low-level & high level Force Feedback system implemented, handles
  * window losing focus, etc.
- * 
+ *
  * 5     10/12/98 3:49p Jeff
  * struct changes
- * 
+ *
  * 4     9/21/98 11:10a Jeff
  * general update, new low level, small high level implementation
- * 
+ *
  * 3     9/18/98 7:38p Jeff
  * creation of low-level forcefeedback and beginning of high-level
  * forcefeedback
- * 
+ *
  * 2     9/15/98 12:05p Jeff
  * initial creation of low-level forcefeedback
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 #ifndef __DDIO_FORCEFEEDBACK_H_
 #define __DDIO_FORCEFEEDBACK_H_
 #include "pstypes.h"
 #include "string.h"
-#define kMAX_Str			80
-#define kInfinite_Duration	0xFFFFFF
-#define FF_USEENVELOPE		0x01
-#define HZ_to_uS(hz)		((int)(1000000.0/(double)(hz) + 0.5))
-#define DDIO_FF_MAXEFFECTS	30
+#define kMAX_Str 80
+#define kInfinite_Duration 0xFFFFFF
+#define FF_USEENVELOPE 0x01
+#define HZ_to_uS(hz) ((int)(1000000.0 / (double)(hz) + 0.5))
+#define DDIO_FF_MAXEFFECTS 30
 #if defined(WIN32)
-//WINDOWS
+// WINDOWS
 #include "win/DirectX/dinput.h"
-#define FF_DEGREES			DI_DEGREES
-#define FF_NOMINALMAX		DI_FFNOMINALMAX
-#define FF_SECONDS			DI_SECONDS
+#define FF_DEGREES DI_DEGREES
+#define FF_NOMINALMAX DI_FFNOMINALMAX
+#define FF_SECONDS DI_SECONDS
 #elif defined(__LINUX__) || defined(MACINTOSH)
-//LINUX
-#define FF_DEGREES			360		//fake value
-#define FF_NOMINALMAX		10000	//fake value
-#define FF_SECONDS			1000	//fake value
+// LINUX
+#define FF_DEGREES 360      // fake value
+#define FF_NOMINALMAX 10000 // fake value
+#define FF_SECONDS 1000     // fake value
 #endif
-#define FORCEPROJECT	void *
-typedef enum{
-	kJoy1=0,
-	kJoy2,
-	kJoy3,
-	kJoy4,
-	kJoy5,
-	kJoy6,
-	kJoy7,
-	kJoy8,
-	kJoy9,
-	kJoy10,
-	kJoy11,
-	kJoy12,
-	kJoy13,
-	kJoy14,
-	kJoy15,
-	kJoy16,
-	kMaxJoy,
-	kMouse,
-	kKeyBoard,
-	kAllDevices
-}tDevice;
-typedef enum{
-	kNoButton=-1,
-	kButton0=0,
-	kButton1,
-	kButton2,
-	kButton3,
-	kButton4,
-	kButton5,
-	kButton6,
-	kButton7,
-	kButton8,
-	kButton9,
-	kButton10,
-	kButton31=31,
-	kButtonMax
-}tJoyButtons;
-typedef enum{
-	kStick  = 1<<0,
-	kWheel  = 1<<1,
-	kGamePad= 1<<2,
-}tDeviceMask;
-typedef struct{
-	int 					ButtonMask;
-	int						AxisMask;
-	tDeviceMask				DevType;
-	char					Name[kMAX_Str];
-}tFFJoyInfo;
-typedef enum{
-	kDontPlayNow=0,
-	kPlayNow,
-	kPlayNowIfModified,
-}tLoadEffect;
+#define FORCEPROJECT void *
 typedef enum {
-	kConstant=0,
-	kRamp,
-	kCustom,
-	kWave_Square,
-	kWave_Sine,
-	kWave_Triangle,
-	kWave_SawUp,
-	kWave_SawDown,
-	kCondition_Spring,
-	kCondition_Damper,
-	kCondition_Inertia,
-	kCondition_Friction,
-	kMaxEffectSubTypes
-}tEffType;
-typedef struct tEffectConstant{
-	long  Mag;					// +- 10,000
-}tEffConstant;
-typedef struct tEffectRamp{
-   long  Start;					// +- 10,000
-   long  End;					// +- 10,000
-}tEffRamp;
-typedef struct tEffectWave{
-	unsigned long Mag;			// 0 to 10,000
-	long  Offset;				// +- 10,000
-	unsigned long Phase;		// 0 to 35,999
-	unsigned long Period;		
-}tEffWave;
-typedef struct tEffectCondition{
-	long  Offset;						// +- 10,000
-	long  PositiveCoefficient;			// +- 10,000
-	long  NegativeCoefficient;			// +- 10,000
-	unsigned long PositiveSaturation;	// 0 to 10,000
-	unsigned long NegativeSaturation;	// 0 to 10,000
-	long  DeadBand;						// 0 to 10,000
-}tEffCondition;
-typedef struct tEffectCustom{
-    int 	Channels;
-    int	Period;
-    int	Samples;
-    long *ForceData;
-}tEffCustom;
-typedef union tEffectInfo{
-   tEffConstant   Constant;
-   tEffRamp       Ramp;
-   tEffWave       Wave;
-   tEffCondition  Condition;
-   tEffCustom     Custom;
-}tEffInfo;
-typedef struct tEffectEnvelope{
-	unsigned long AttackLevel; 
-	unsigned long AttackTime; 
-	unsigned long FadeLevel; 
-	unsigned long FadeTime; 
-}tEffEnvelope;
-typedef enum{
-	kXAxisOnly,
-	kYAxisOnly,
-	kBothAxes
-}tEffAxis;
-typedef struct tFFB_Effect{
-	int					Flags;
-	tEffType			Type;
-	//tEffInfo			TypeInfo[2];
-	tEffInfo			TypeInfo;
-	unsigned long		Duration;
-	unsigned long		Gain;				// 0-10000 -- scales all magnitudes and envelope
-	unsigned long		Period;
-	tEffAxis			Axis;
-	tJoyButtons			Trigger;
-	unsigned long		TriggerRepeatTime;
-	long				Direction;			// 0 to 360 deg.
-	tEffEnvelope		Envelope;
-}tFFB_Effect;
-extern bool ddForce_found;	//a Force Feedback device was found
-extern bool ddForce_enabled;	//Force Feedback is ready and can be used
+  kJoy1 = 0,
+  kJoy2,
+  kJoy3,
+  kJoy4,
+  kJoy5,
+  kJoy6,
+  kJoy7,
+  kJoy8,
+  kJoy9,
+  kJoy10,
+  kJoy11,
+  kJoy12,
+  kJoy13,
+  kJoy14,
+  kJoy15,
+  kJoy16,
+  kMaxJoy,
+  kMouse,
+  kKeyBoard,
+  kAllDevices
+} tDevice;
+typedef enum {
+  kNoButton = -1,
+  kButton0 = 0,
+  kButton1,
+  kButton2,
+  kButton3,
+  kButton4,
+  kButton5,
+  kButton6,
+  kButton7,
+  kButton8,
+  kButton9,
+  kButton10,
+  kButton31 = 31,
+  kButtonMax
+} tJoyButtons;
+typedef enum {
+  kStick = 1 << 0,
+  kWheel = 1 << 1,
+  kGamePad = 1 << 2,
+} tDeviceMask;
+typedef struct {
+  int ButtonMask;
+  int AxisMask;
+  tDeviceMask DevType;
+  char Name[kMAX_Str];
+} tFFJoyInfo;
+typedef enum {
+  kDontPlayNow = 0,
+  kPlayNow,
+  kPlayNowIfModified,
+} tLoadEffect;
+typedef enum {
+  kConstant = 0,
+  kRamp,
+  kCustom,
+  kWave_Square,
+  kWave_Sine,
+  kWave_Triangle,
+  kWave_SawUp,
+  kWave_SawDown,
+  kCondition_Spring,
+  kCondition_Damper,
+  kCondition_Inertia,
+  kCondition_Friction,
+  kMaxEffectSubTypes
+} tEffType;
+typedef struct tEffectConstant {
+  long Mag; // +- 10,000
+} tEffConstant;
+typedef struct tEffectRamp {
+  long Start; // +- 10,000
+  long End;   // +- 10,000
+} tEffRamp;
+typedef struct tEffectWave {
+  unsigned long Mag;   // 0 to 10,000
+  long Offset;         // +- 10,000
+  unsigned long Phase; // 0 to 35,999
+  unsigned long Period;
+} tEffWave;
+typedef struct tEffectCondition {
+  long Offset;                      // +- 10,000
+  long PositiveCoefficient;         // +- 10,000
+  long NegativeCoefficient;         // +- 10,000
+  unsigned long PositiveSaturation; // 0 to 10,000
+  unsigned long NegativeSaturation; // 0 to 10,000
+  long DeadBand;                    // 0 to 10,000
+} tEffCondition;
+typedef struct tEffectCustom {
+  int Channels;
+  int Period;
+  int Samples;
+  long *ForceData;
+} tEffCustom;
+typedef union tEffectInfo {
+  tEffConstant Constant;
+  tEffRamp Ramp;
+  tEffWave Wave;
+  tEffCondition Condition;
+  tEffCustom Custom;
+} tEffInfo;
+typedef struct tEffectEnvelope {
+  unsigned long AttackLevel;
+  unsigned long AttackTime;
+  unsigned long FadeLevel;
+  unsigned long FadeTime;
+} tEffEnvelope;
+typedef enum { kXAxisOnly, kYAxisOnly, kBothAxes } tEffAxis;
+typedef struct tFFB_Effect {
+  int Flags;
+  tEffType Type;
+  // tEffInfo			TypeInfo[2];
+  tEffInfo TypeInfo;
+  unsigned long Duration;
+  unsigned long Gain; // 0-10000 -- scales all magnitudes and envelope
+  unsigned long Period;
+  tEffAxis Axis;
+  tJoyButtons Trigger;
+  unsigned long TriggerRepeatTime;
+  long Direction; // 0 to 360 deg.
+  tEffEnvelope Envelope;
+} tFFB_Effect;
+extern bool ddForce_found;   // a Force Feedback device was found
+extern bool ddForce_enabled; // Force Feedback is ready and can be used
 // ===================================================================
 //									Function Prototypes
 // ===================================================================
@@ -248,7 +244,7 @@ int ddio_ffjoy_Init(void);
 //    Acquires a direct input device for use.
 //
 // Input:
-//    The device to acquire (use kDI_MaxJoy to acquire all available 
+//    The device to acquire (use kDI_MaxJoy to acquire all available
 //    joysticks).
 //
 // Return:
@@ -266,7 +262,7 @@ int ddio_ff_Acquire(tDevice dev);
 //    Unacquires a direct input device
 //
 // Input:
-//    The device to unacquire (use kDI_MaxJoy to unacquire all available 
+//    The device to unacquire (use kDI_MaxJoy to unacquire all available
 //    joysticks).
 //
 // Return:
@@ -288,10 +284,10 @@ static int ddio_ff_SetCoopLevel(tDevice dev, int coop_level);
 //    Besides checking what buttons/axis are available, this function
 //    also checks for force feedback support.
 // -------------------------------------------------------------------
-int ddio_ffjoy_Query(int dev, int* but_flags, int* axis_flags);
+int ddio_ffjoy_Query(int dev, int *but_flags, int *axis_flags);
 /*
 ========================================================================
-				Force Feedback Effect Functions
+                                Force Feedback Effect Functions
 ========================================================================
 */
 // -------------------------------------------------------------------
@@ -300,7 +296,7 @@ int ddio_ffjoy_Query(int dev, int* but_flags, int* axis_flags);
 //		Returns information about the current state of the low-level
 //	Force Feedback system.
 // -------------------------------------------------------------------
-void ddio_ff_GetInfo(bool *ff_found,bool *ff_enabled);
+void ddio_ff_GetInfo(bool *ff_found, bool *ff_enabled);
 // -------------------------------------------------------------------
 // ddio_ffb_Pause
 // Purpose:
@@ -318,7 +314,7 @@ void ddio_ffb_Continue(tDevice dev);
 // -------------------------------------------------------------------
 // ddio_ffb_Enable
 // Purpose:
-//    Must be called after initialization in order to activate the 
+//    Must be called after initialization in order to activate the
 //    device.
 //    Use ddio_ffb_Pause & ddio_ffb_Continue if you want disable forces
 //    temporarily and resume later.
@@ -336,7 +332,7 @@ void ddio_ffb_Disable(tDevice dev);
 //    Create a single effect for future playback.
 //    Effect is given a logical ID
 // -------------------------------------------------------------------
-int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect* eff);
+int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect *eff);
 // -------------------------------------------------------------------
 // ddio_ffb_DestroyAll
 //	Purpose:
@@ -374,25 +370,27 @@ void ddio_ffb_effectUnload(short eID);
 //    Modifies a single effect, only if the given parameters are
 //    different from what's currently loaded.
 // -------------------------------------------------------------------
-void ddio_ffb_effectModify(short eID, int*	Direction, unsigned int* Duration, unsigned int* Gain, unsigned int* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope);
+void ddio_ffb_effectModify(short eID, int *Direction, unsigned int *Duration, unsigned int *Gain, unsigned int *Period,
+                           tEffInfo *TypeInfo, tEffEnvelope *Envelope);
 // -------------------------------------------------------------------
 // ddio_ffb_GetEffectData
 // Purpose:
 //    Retrieves affect data for the given parameters, pass NULL for those you don't want
 // -------------------------------------------------------------------
-void ddio_ffb_GetEffectData(short eID, int*	Direction, unsigned int* Duration, unsigned int* Gain, unsigned int* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope);
+void ddio_ffb_GetEffectData(short eID, int *Direction, unsigned int *Duration, unsigned int *Gain, unsigned int *Period,
+                            tEffInfo *TypeInfo, tEffEnvelope *Envelope);
 // -------------------------------------------------------------------
 // ddio_ffjoy_EnableAutoCenter
 // Purpose:
 //	Disables/Enables the autocentering of the joystick
 // -------------------------------------------------------------------
-void ddio_ffjoy_EnableAutoCenter(tDevice dev,bool enable);
+void ddio_ffjoy_EnableAutoCenter(tDevice dev, bool enable);
 // -------------------------------------------------------------------
 // ddio_ffjoy_SetGain
 // Purpose:
 //	Sets the gain for joystick, pass a value of 0-1
 // -------------------------------------------------------------------
-void ddio_ffjoy_SetGain(tDevice dev,float value);
+void ddio_ffjoy_SetGain(tDevice dev, float value);
 // -------------------------------------------------------------------
 // ddio_ffjoy_IsAutoCentered
 // Purpose:
@@ -407,7 +405,7 @@ bool ddio_ffjoy_IsAutoCentered(tDevice dev);
 bool ddio_ffjoy_SupportAutoCenter(tDevice dev);
 /*
 ===========================================================================
-			Private Functions
+                        Private Functions
 ===========================================================================
 */
 #if defined(WIN32)
@@ -436,11 +434,11 @@ BOOL CALLBACK FFEnumCallback(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef);
 //	for it.  It returns a handle to that resource.
 //	If it returns NULL, then it couldn't load the project.
 //	Make sure device is aquired before calling.
-FORCEPROJECT ddio_ForceLoadProject(char *filename,tDevice dev);
+FORCEPROJECT ddio_ForceLoadProject(char *filename, tDevice dev);
 //	Unloads a FORCEPROJECT file
 void ddio_ForceUnloadProject(FORCEPROJECT prj);
 //	Given a handle to a resource, and the name of the effect to load
 //	it will load that effect.  Returns the effect ID, or -1 if it couldn't
 //	be created
-int ddio_CreateForceFromProject(FORCEPROJECT project,char *forcename);
+int ddio_CreateForceFromProject(FORCEPROJECT project, char *forcename);
 #endif

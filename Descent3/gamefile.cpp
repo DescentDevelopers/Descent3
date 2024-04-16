@@ -8,109 +8,94 @@
 #include "game.h"
 #include "gamefile.h"
 
-
 gamefile Gamefiles[MAX_GAMEFILES];
-int Num_gamefiles=0;
+int Num_gamefiles = 0;
 
 // Sets all gamefiles to unused
-void InitGamefiles()
-{
-	for (int i=0;i<MAX_GAMEFILES;i++)
-	{
-		Gamefiles[i].used=0;
-		Gamefiles[i].name[0]=0;
-	}
-	Num_gamefiles=0;
-
+void InitGamefiles() {
+  for (int i = 0; i < MAX_GAMEFILES; i++) {
+    Gamefiles[i].used = 0;
+    Gamefiles[i].name[0] = 0;
+  }
+  Num_gamefiles = 0;
 }
 
 // Allocs a gamefile for use, returns -1 if error, else index on success
-int AllocGamefile ()
-{
-	for (int i=0;i<MAX_GAMEFILES;i++)
-	{
-		if (Gamefiles[i].used==0)
-		{
-			memset(&Gamefiles[i], 0, sizeof(gamefile));
-			Gamefiles[i].used=1;
-			Num_gamefiles++;
-			return i;
-		}
-	}
+int AllocGamefile() {
+  for (int i = 0; i < MAX_GAMEFILES; i++) {
+    if (Gamefiles[i].used == 0) {
+      memset(&Gamefiles[i], 0, sizeof(gamefile));
+      Gamefiles[i].used = 1;
+      Num_gamefiles++;
+      return i;
+    }
+  }
 
-	Int3();		 // No gamefiles free!
-	return -1;
+  Int3(); // No gamefiles free!
+  return -1;
 }
 
 // Frees gamefile index n and all associated images
-void FreeGamefile (int n)
-{
-	ASSERT (Gamefiles[n].used>0);
+void FreeGamefile(int n) {
+  ASSERT(Gamefiles[n].used > 0);
 
-	Gamefiles[n].used=0;
-	Gamefiles[n].name[0]=0;
-	Num_gamefiles--;
+  Gamefiles[n].used = 0;
+  Gamefiles[n].name[0] = 0;
+  Num_gamefiles--;
 }
 
 // Gets next gamefile from n that has actually been alloced
-int GetNextGamefile (int n)
-{
-	int i;
+int GetNextGamefile(int n) {
+  int i;
 
-	ASSERT (n>=0 && n<MAX_GAMEFILES);
+  ASSERT(n >= 0 && n < MAX_GAMEFILES);
 
-	if (Num_gamefiles==0)
-		return -1;
+  if (Num_gamefiles == 0)
+    return -1;
 
-	for (i=n+1;i<MAX_GAMEFILES;i++)
-		if (Gamefiles[i].used)
-			return i;
-	for (i=0;i<n;i++)
-		if (Gamefiles[i].used)
-			return i;
+  for (i = n + 1; i < MAX_GAMEFILES; i++)
+    if (Gamefiles[i].used)
+      return i;
+  for (i = 0; i < n; i++)
+    if (Gamefiles[i].used)
+      return i;
 
-	// this is the only one
+  // this is the only one
 
-	return n;
+  return n;
 }
 
 // Gets previous gamefile from n that has actually been alloced
-int GetPrevGamefile (int n)
-{
-	int i;
+int GetPrevGamefile(int n) {
+  int i;
 
-	ASSERT (n>=0 && n<MAX_GAMEFILES);
+  ASSERT(n >= 0 && n < MAX_GAMEFILES);
 
-	if (Num_gamefiles==0)
-		return -1;
+  if (Num_gamefiles == 0)
+    return -1;
 
-	for (i=n-1;i>=0;i--)
-	{
-		if (Gamefiles[i].used)
-			return i;
-	}
-	for (i=MAX_GAMEFILES-1;i>n;i--)
-	{
-		if (Gamefiles[i].used)
-			return i;
-	}
+  for (i = n - 1; i >= 0; i--) {
+    if (Gamefiles[i].used)
+      return i;
+  }
+  for (i = MAX_GAMEFILES - 1; i > n; i--) {
+    if (Gamefiles[i].used)
+      return i;
+  }
 
-	// this is the only one
-	return n;
-
+  // this is the only one
+  return n;
 }
 // Searches thru all gamefiles for a specific name, returns -1 if not found
 // or index of gamefile with name
-int FindGamefileName (char *name)
-{
-	int i;
+int FindGamefileName(char *name) {
+  int i;
 
-	ASSERT (name!=NULL);
+  ASSERT(name != NULL);
 
-	for (i=0;i<MAX_GAMEFILES;i++)
-		if (Gamefiles[i].used && !stricmp (name,Gamefiles[i].name))
-			return i;
+  for (i = 0; i < MAX_GAMEFILES; i++)
+    if (Gamefiles[i].used && !stricmp(name, Gamefiles[i].name))
+      return i;
 
-	return -1;
+  return -1;
 }
-

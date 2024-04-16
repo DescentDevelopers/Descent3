@@ -4,19 +4,19 @@
  * $Author: Jeff $
  * $Date: 3/15/99 4:32p $
  *
- * 
+ *
  *
  * $Log: /DescentIII/Main/music/tracklist.cpp $
- * 
+ *
  * 4     3/15/99 4:32p Jeff
  * fixed code so mem library compiles correctly
- * 
+ *
  * 3     12/11/98 4:03p Samir
  * error checking.
- * 
+ *
  * 2     11/13/98 2:27p Samir
  * created.
- * 
+ *
  */
 
 #include "music.h"
@@ -27,99 +27,82 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-oms_tracklist::oms_tracklist()
-{
-	m_fnamelist = NULL;
-	m_symlist = NULL;
-	m_numtracks = 0;
-	m_maxtracks = 0;
-	m_init = false;
+oms_tracklist::oms_tracklist() {
+  m_fnamelist = NULL;
+  m_symlist = NULL;
+  m_numtracks = 0;
+  m_maxtracks = 0;
+  m_init = false;
 }
 
-
-oms_tracklist::~oms_tracklist()
-{
-	oms_tracklist::free();
-}
-
+oms_tracklist::~oms_tracklist() { oms_tracklist::free(); }
 
 // initializes track list system
-void oms_tracklist::init(short maxtracks)
-{
-	if (!m_init) {
-		m_maxtracks = maxtracks;
-		m_numtracks = 0;
+void oms_tracklist::init(short maxtracks) {
+  if (!m_init) {
+    m_maxtracks = maxtracks;
+    m_numtracks = 0;
 
-		m_fnamelist = new char*[m_maxtracks];
-		m_symlist = new char*[m_maxtracks];
-		m_init = true;
-	}
+    m_fnamelist = new char *[m_maxtracks];
+    m_symlist = new char *[m_maxtracks];
+    m_init = true;
+  }
 }
-
 
 // frees track list system
-void oms_tracklist::free()
-{
-	if (m_init) {
-		oms_tracklist::reset();
-		delete[] m_symlist;
-		delete[] m_fnamelist;
+void oms_tracklist::free() {
+  if (m_init) {
+    oms_tracklist::reset();
+    delete[] m_symlist;
+    delete[] m_fnamelist;
 
-		m_init = false;
-	}
+    m_init = false;
+  }
 }
-
 
 // resets track list to 0
-void oms_tracklist::reset()
-{
-	int i;
+void oms_tracklist::reset() {
+  int i;
 
-	if (!m_init)
-		return;
+  if (!m_init)
+    return;
 
-	for (i = 0; i < m_numtracks; i++)
-	{
-		::mem_free(m_fnamelist[i]);
-		::mem_free(m_symlist[i]);
-	}
+  for (i = 0; i < m_numtracks; i++) {
+    ::mem_free(m_fnamelist[i]);
+    ::mem_free(m_symlist[i]);
+  }
 
-	m_numtracks = 0;
+  m_numtracks = 0;
 }
-
 
 // adds a track to list.
-bool oms_tracklist::add(const char *fname, const char *sym)
-{
-	if (!m_init)
-		return false;
+bool oms_tracklist::add(const char *fname, const char *sym) {
+  if (!m_init)
+    return false;
 
-	if (m_numtracks == m_maxtracks) {
-		Int3();
-		return false;
-	}
+  if (m_numtracks == m_maxtracks) {
+    Int3();
+    return false;
+  }
 
-// add symbol and track name
-	m_fnamelist[m_numtracks] = mem_strdup(fname);
-	m_symlist[m_numtracks] = mem_strdup(sym);
-	m_numtracks++;
+  // add symbol and track name
+  m_fnamelist[m_numtracks] = mem_strdup(fname);
+  m_symlist[m_numtracks] = mem_strdup(sym);
+  m_numtracks++;
 
-	return true;
+  return true;
 }
 
-
 // returns a track filename.
-const char *oms_tracklist::get(const char *sym)
-{
-	int i;
+const char *oms_tracklist::get(const char *sym) {
+  int i;
 
-	if (sym) {
-		for (i = 0; i < m_numtracks; i++)
-		{
-			if (strcmp(m_symlist[i],sym)==0)
-				return m_fnamelist[i];
-		}
-	}
+  if (sym) {
+    for (i = 0; i < m_numtracks; i++) {
+      if (strcmp(m_symlist[i], sym) == 0)
+        return m_fnamelist[i];
+    }
+  }
 
-	return NULL;
+  return NULL;
 }

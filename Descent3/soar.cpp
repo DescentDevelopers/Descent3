@@ -7,7 +7,7 @@
  *
  *
  * $Log: /DescentIII/main/soar.cpp $
- * 
+ *
  * 4     4/16/99 12:33a Matt
  * Disable Soar on non-Windows systems.
  *
@@ -19,4 +19,4 @@
 
 bool Soar_active = false;
 
-#endif	//ifdef SOAR_ENABLED
+#endif // ifdef SOAR_ENABLED

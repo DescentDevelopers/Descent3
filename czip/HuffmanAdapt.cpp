@@ -1,22 +1,20 @@
 /*
-* $Logfile: /DescentIII/Main/czip/HuffmanAdapt.cpp $
-* $Revision: 2 $
-* $Date: 8/27/98 3:26p $
-* $Author: Jeff $
-*
-* Huffman-Adaptive compression functions
-*
-* $Log: /DescentIII/Main/czip/HuffmanAdapt.cpp $
- * 
+ * $Logfile: /DescentIII/Main/czip/HuffmanAdapt.cpp $
+ * $Revision: 2 $
+ * $Date: 8/27/98 3:26p $
+ * $Author: Jeff $
+ *
+ * Huffman-Adaptive compression functions
+ *
+ * $Log: /DescentIII/Main/czip/HuffmanAdapt.cpp $
+ *
  * 2     8/27/98 3:26p Jeff
  * intial creation
- * 
+ *
  * 1     8/27/98 3:26p Jeff
-*
-* $NoKeywords: $
-*/
-
-
+ *
+ * $NoKeywords: $
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,275 +22,255 @@
 #include <ctype.h>
 #include "CZip.h"
 
-#define END_OF_STREAM		256
-#define ESCAPE				257
-#define ROOT_NODE			0
-#define MAX_WEIGHT			0x8000
+#define END_OF_STREAM 256
+#define ESCAPE 257
+#define ROOT_NODE 0
+#define MAX_WEIGHT 0x8000
 
-
-//void calculate_rows(tHATree *tree,int node,int level);
-//int calculate_columns(tHATree *tree,int node,int starting_guess);
-//int find_minimum_column(tHATree *tree,int node,int max_row);
-//void rescale_columns(int factor);
+// void calculate_rows(tHATree *tree,int node,int level);
+// int calculate_columns(tHATree *tree,int node,int starting_guess);
+// int find_minimum_column(tHATree *tree,int node,int max_row);
+// void rescale_columns(int factor);
 
 /////////////////////////////////////////////
-int CZip::ha_CompressFile(tVirtualFile *input,BITFILE *output)
-{
-	int original_pos = VFtell(output->file);
-	int c;
-	ha_InitializeTree(&Tree);
-	while((c=VFgetc(input))!=EOF){
-		ha_EncodeSymbol(&Tree,c,output);
-		ha_UpdateModel(&Tree,c);
-	}
-	ha_EncodeSymbol(&Tree,END_OF_STREAM,output);
-	FlushOutputBitFile(output);
-	int size = VFtell(output->file) - original_pos;
-	return size;
+int CZip::ha_CompressFile(tVirtualFile *input, BITFILE *output) {
+  int original_pos = VFtell(output->file);
+  int c;
+  ha_InitializeTree(&Tree);
+  while ((c = VFgetc(input)) != EOF) {
+    ha_EncodeSymbol(&Tree, c, output);
+    ha_UpdateModel(&Tree, c);
+  }
+  ha_EncodeSymbol(&Tree, END_OF_STREAM, output);
+  FlushOutputBitFile(output);
+  int size = VFtell(output->file) - original_pos;
+  return size;
 }
 
-void CZip::ha_PrepareCompress(void)
-{
-	ok_to_raw_write = true;
-	ha_InitializeTree(&Tree);
+void CZip::ha_PrepareCompress(void) {
+  ok_to_raw_write = true;
+  ha_InitializeTree(&Tree);
 }
 
-void CZip::ha_WriteRawByte(ubyte data,BITFILE *output)
-{
-	if(!ok_to_raw_write)
-		return;
-	ha_EncodeSymbol(&Tree,data,output);
-	ha_UpdateModel(&Tree,data);
+void CZip::ha_WriteRawByte(ubyte data, BITFILE *output) {
+  if (!ok_to_raw_write)
+    return;
+  ha_EncodeSymbol(&Tree, data, output);
+  ha_UpdateModel(&Tree, data);
 }
 
-void CZip::ha_CloseRawCompress(BITFILE *output)
-{
-	ha_EncodeSymbol(&Tree,END_OF_STREAM,output);
-	FlushOutputBitFile(output);
-	ok_to_raw_write = false;
+void CZip::ha_CloseRawCompress(BITFILE *output) {
+  ha_EncodeSymbol(&Tree, END_OF_STREAM, output);
+  FlushOutputBitFile(output);
+  ok_to_raw_write = false;
 }
 
-void CZip::ha_ExpandFile(BITFILE *input,tVirtualFile *output)
-{
-	int c;
-	ha_InitializeTree(&Tree);
-	while((c=ha_DecodeSymbol(&Tree,input))!=END_OF_STREAM){
-		if(VFputc(c,output)==EOF){
-			//fatal error
-		}
-		ha_UpdateModel(&Tree,c);
-	}
+void CZip::ha_ExpandFile(BITFILE *input, tVirtualFile *output) {
+  int c;
+  ha_InitializeTree(&Tree);
+  while ((c = ha_DecodeSymbol(&Tree, input)) != END_OF_STREAM) {
+    if (VFputc(c, output) == EOF) {
+      // fatal error
+    }
+    ha_UpdateModel(&Tree, c);
+  }
 }
 
-void CZip::ha_PrepareDecompress(void)
-{
-	ok_to_raw_read = true;
-	ha_InitializeTree(&Tree);
+void CZip::ha_PrepareDecompress(void) {
+  ok_to_raw_read = true;
+  ha_InitializeTree(&Tree);
 }
 
-bool CZip::ha_ReadRawByte(ubyte *data,BITFILE *input)
-{
-	if(!ok_to_raw_read)
-		return false;
+bool CZip::ha_ReadRawByte(ubyte *data, BITFILE *input) {
+  if (!ok_to_raw_read)
+    return false;
 
-	int c;
-	c = ha_DecodeSymbol(&Tree,input);
-	
-	if(c==END_OF_STREAM){
-		ok_to_raw_read =false;
-		return false;
-	}
-	ha_UpdateModel(&Tree,c);
-	*data = c;
-	return true;
+  int c;
+  c = ha_DecodeSymbol(&Tree, input);
+
+  if (c == END_OF_STREAM) {
+    ok_to_raw_read = false;
+    return false;
+  }
+  ha_UpdateModel(&Tree, c);
+  *data = c;
+  return true;
 }
 
-void CZip::ha_CloseRawDecompress(void)
-{
-	ok_to_raw_read = false;
+void CZip::ha_CloseRawDecompress(void) { ok_to_raw_read = false; }
+
+void CZip::ha_InitializeTree(tHATree *tree) {
+  int i;
+
+  tree->nodes[ROOT_NODE].child = ROOT_NODE + 1;
+  tree->nodes[ROOT_NODE].child_is_leaf = false;
+  tree->nodes[ROOT_NODE].weight = 2;
+  tree->nodes[ROOT_NODE].parent = -1;
+
+  tree->nodes[ROOT_NODE + 1].child = END_OF_STREAM;
+  tree->nodes[ROOT_NODE + 1].child_is_leaf = true;
+  tree->nodes[ROOT_NODE + 1].weight = 1;
+  tree->nodes[ROOT_NODE + 1].parent = ROOT_NODE;
+  tree->leaf[END_OF_STREAM] = ROOT_NODE + 1;
+
+  tree->nodes[ROOT_NODE + 2].child = ESCAPE;
+  tree->nodes[ROOT_NODE + 2].child_is_leaf = true;
+  tree->nodes[ROOT_NODE + 2].weight = 1;
+  tree->nodes[ROOT_NODE + 2].parent = ROOT_NODE;
+  tree->leaf[ESCAPE] = ROOT_NODE + 2;
+  tree->next_free_node = ROOT_NODE + 3;
+  for (i = 0; i < END_OF_STREAM; i++)
+    tree->leaf[i] = -1;
 }
 
+void CZip::ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output) {
+  ulong code;
+  ulong current_bit;
+  int code_size;
+  int current_node;
 
-void CZip::ha_InitializeTree(tHATree *tree)
-{
-	int i;
-
-	tree->nodes[ROOT_NODE].child			= ROOT_NODE + 1;
-	tree->nodes[ROOT_NODE].child_is_leaf	= false;
-	tree->nodes[ROOT_NODE].weight			= 2;
-	tree->nodes[ROOT_NODE].parent			= -1;
-
-	tree->nodes[ROOT_NODE+1].child			= END_OF_STREAM;
-	tree->nodes[ROOT_NODE+1].child_is_leaf	= true;
-	tree->nodes[ROOT_NODE+1].weight			= 1;
-	tree->nodes[ROOT_NODE+1].parent			= ROOT_NODE;
-	tree->leaf[END_OF_STREAM]				= ROOT_NODE+1;
-
-	tree->nodes[ROOT_NODE+2].child			= ESCAPE;
-	tree->nodes[ROOT_NODE+2].child_is_leaf	= true;
-	tree->nodes[ROOT_NODE+2].weight			= 1;
-	tree->nodes[ROOT_NODE+2].parent			= ROOT_NODE;
-	tree->leaf[ESCAPE]						= ROOT_NODE+2;
-	tree->next_free_node					= ROOT_NODE+3;
-	for(i=0;i<END_OF_STREAM;i++)
-		tree->leaf[i] = -1;
+  code = 0;
+  current_bit = 1;
+  code_size = 0;
+  current_node = tree->leaf[c];
+  if (current_node == -1)
+    current_node = tree->leaf[ESCAPE];
+  while (current_node != ROOT_NODE) {
+    if ((current_node & 1) == 0)
+      code |= current_bit;
+    current_bit <<= 1;
+    code_size++;
+    current_node = tree->nodes[current_node].parent;
+  }
+  OutputBits(output, code, code_size);
+  if (tree->leaf[c] == -1) {
+    OutputBits(output, (ulong)c, 8);
+    ha_add_new_node(tree, c);
+  }
 }
 
-void CZip::ha_EncodeSymbol(tHATree *tree,uint c,BITFILE *output)
-{
-	ulong code;
-	ulong current_bit;
-	int code_size;
-	int current_node;
+int CZip::ha_DecodeSymbol(tHATree *tree, BITFILE *input) {
+  int current_node;
+  int c;
 
-	code = 0;
-	current_bit = 1;
-	code_size = 0;
-	current_node = tree->leaf[c];
-	if(current_node==-1)
-		current_node = tree->leaf[ESCAPE];
-	while(current_node!=ROOT_NODE){
-		if((current_node&1)==0)
-			code |= current_bit;
-		current_bit <<= 1;
-		code_size++;
-		current_node = tree->nodes[current_node].parent;
-	}
-	OutputBits(output,code,code_size);
-	if(tree->leaf[c]==-1){
-		OutputBits(output,(ulong)c,8);
-		ha_add_new_node(tree,c);
-	}
+  current_node = ROOT_NODE;
+  while (!tree->nodes[current_node].child_is_leaf) {
+    current_node = tree->nodes[current_node].child;
+    current_node += InputBit(input);
+  }
+  c = tree->nodes[current_node].child;
+  if (c == ESCAPE) {
+    c = (int)InputBits(input, 8);
+    ha_add_new_node(tree, c);
+  }
+  return c;
 }
 
+void CZip::ha_UpdateModel(tHATree *tree, int c) {
+  int current_node;
+  int new_node;
 
-int CZip::ha_DecodeSymbol(tHATree *tree,BITFILE *input)
-{
-	int current_node;
-	int c;
-
-	current_node = ROOT_NODE;
-	while(!tree->nodes[current_node].child_is_leaf){
-		current_node = tree->nodes[current_node].child;
-		current_node += InputBit(input);
-	}
-	c = tree->nodes[current_node].child;
-	if(c==ESCAPE){
-		c = (int)InputBits(input,8);
-		ha_add_new_node(tree,c);
-	}
-	return c;
+  if (tree->nodes[ROOT_NODE].weight == MAX_WEIGHT)
+    ha_RebuildTree(tree);
+  current_node = tree->leaf[c];
+  while (current_node != -1) {
+    tree->nodes[current_node].weight++;
+    for (new_node = current_node; new_node > ROOT_NODE; new_node--) {
+      if (tree->nodes[new_node - 1].weight >= tree->nodes[current_node].weight)
+        break;
+    }
+    if (current_node != new_node) {
+      ha_swap_nodes(tree, current_node, new_node);
+      current_node = new_node;
+    }
+    current_node = tree->nodes[current_node].parent;
+  }
 }
 
-void CZip::ha_UpdateModel(tHATree *tree,int c)
-{
-	int current_node;
-	int new_node;
+void CZip::ha_RebuildTree(tHATree *tree) {
+  int i, j, k;
+  uint weight;
+  j = tree->next_free_node - 1;
+  for (i = j; i >= ROOT_NODE; i--) {
+    if (tree->nodes[i].child_is_leaf) {
+      tree->nodes[j] = tree->nodes[i];
+      tree->nodes[j].weight = (tree->nodes[j].weight + 1) / 2;
+      j--;
+    }
+  }
 
-	if(tree->nodes[ROOT_NODE].weight==MAX_WEIGHT)
-		ha_RebuildTree(tree);
-	current_node = tree->leaf[c];
-	while(current_node!=-1){
-		tree->nodes[current_node].weight++;
-		for(new_node = current_node;new_node>ROOT_NODE;new_node--){
-			if(tree->nodes[new_node-1].weight >= tree->nodes[current_node].weight)
-				break;
-		}
-		if(current_node!=new_node){
-			ha_swap_nodes(tree,current_node,new_node);
-			current_node = new_node;
-		}
-		current_node = tree->nodes[current_node].parent;
-	}
+  for (i = tree->next_free_node - 2; j >= ROOT_NODE; i -= 2, j--) {
+    k = i + 1;
+    tree->nodes[j].weight = tree->nodes[i].weight + tree->nodes[k].weight;
+    weight = tree->nodes[j].weight;
+    tree->nodes[j].child_is_leaf = false;
+    for (k = j + 1; weight < tree->nodes[k].weight; k++)
+      ;
+    k--;
+    memmove(&tree->nodes[j], &tree->nodes[j + 1], (k - j) * sizeof(tHANode));
+    tree->nodes[k].weight = weight;
+    tree->nodes[k].child = i;
+    tree->nodes[k].child_is_leaf = false;
+  }
+
+  for (i = tree->next_free_node - 1; i >= ROOT_NODE; i--) {
+    if (tree->nodes[i].child_is_leaf) {
+      k = tree->nodes[i].child;
+      tree->leaf[k] = i;
+    } else {
+      k = tree->nodes[i].child;
+      tree->nodes[k].parent = tree->nodes[k + 1].parent = i;
+    }
+  }
 }
 
-void CZip::ha_RebuildTree(tHATree *tree)
-{
-	int i,j,k;
-	uint weight;
-	j = tree->next_free_node - 1;
-	for(i=j;i>=ROOT_NODE;i--){
-		if(tree->nodes[i].child_is_leaf){
-			tree->nodes[j] = tree->nodes[i];
-			tree->nodes[j].weight = (tree->nodes[j].weight+1)/2;
-			j--;
-		}
-	}
+void CZip::ha_swap_nodes(tHATree *tree, int i, int j) {
+  tHANode temp;
 
-	for(i=tree->next_free_node-2;j>=ROOT_NODE;i-=2,j--){
-		k = i+1;
-		tree->nodes[j].weight = tree->nodes[i].weight+tree->nodes[k].weight;
-		weight = tree->nodes[j].weight;
-		tree->nodes[j].child_is_leaf = false;
-		for(k=j+1;weight<tree->nodes[k].weight;k++);
-		k--;
-		memmove(&tree->nodes[j],&tree->nodes[j+1],(k-j)*sizeof(tHANode));
-		tree->nodes[k].weight = weight;
-		tree->nodes[k].child = i;
-		tree->nodes[k].child_is_leaf = false;
-	}
+  if (tree->nodes[i].child_is_leaf)
+    tree->leaf[tree->nodes[i].child] = j;
+  else {
+    tree->nodes[tree->nodes[i].child].parent = j;
+    tree->nodes[tree->nodes[i].child + 1].parent = j;
+  }
 
-	for(i=tree->next_free_node-1;i>=ROOT_NODE;i--){
-		if(tree->nodes[i].child_is_leaf){
-			k = tree->nodes[i].child;
-			tree->leaf[k] = i;
-		}else{
-			k = tree->nodes[i].child;
-			tree->nodes[k].parent = tree->nodes[k+1].parent = i;
-		}
-	}
+  if (tree->nodes[j].child_is_leaf)
+    tree->leaf[tree->nodes[j].child] = i;
+  else {
+    tree->nodes[tree->nodes[j].child].parent = i;
+    tree->nodes[tree->nodes[j].child + 1].parent = i;
+  }
+
+  temp = tree->nodes[i];
+  tree->nodes[i] = tree->nodes[j];
+  tree->nodes[i].parent = temp.parent;
+  temp.parent = tree->nodes[j].parent;
+  tree->nodes[j] = temp;
 }
 
-void CZip::ha_swap_nodes(tHATree *tree,int i,int j)
-{
-	tHANode temp;
+void CZip::ha_add_new_node(tHATree *tree, int c) {
+  int lightest_node, new_node, zero_weight_node;
 
-	if(tree->nodes[i].child_is_leaf)
-		tree->leaf[tree->nodes[i].child] = j;
-	else{
-		tree->nodes[tree->nodes[i].child].parent = j;
-		tree->nodes[tree->nodes[i].child+1].parent = j;
-	}
+  lightest_node = tree->next_free_node - 1;
+  new_node = tree->next_free_node;
+  zero_weight_node = tree->next_free_node + 1;
+  tree->next_free_node += 2;
 
-	if(tree->nodes[j].child_is_leaf)
-		tree->leaf[tree->nodes[j].child] = i;
-	else{
-		tree->nodes[tree->nodes[j].child].parent = i;
-		tree->nodes[tree->nodes[j].child+1].parent = i;
-	}
+  tree->nodes[new_node] = tree->nodes[lightest_node];
+  tree->nodes[new_node].parent = lightest_node;
+  tree->leaf[tree->nodes[new_node].child] = new_node;
 
-	temp = tree->nodes[i];
-	tree->nodes[i] = tree->nodes[j];
-	tree->nodes[i].parent = temp.parent;
-	temp.parent = tree->nodes[j].parent;
-	tree->nodes[j] = temp;
+  tree->nodes[lightest_node].child = new_node;
+  tree->nodes[lightest_node].child_is_leaf = false;
+
+  tree->nodes[zero_weight_node].child = c;
+  tree->nodes[zero_weight_node].child_is_leaf = true;
+  tree->nodes[zero_weight_node].weight = 0;
+  tree->nodes[zero_weight_node].parent = lightest_node;
+  tree->leaf[c] = zero_weight_node;
 }
 
-void CZip::ha_add_new_node(tHATree *tree,int c)
-{
-	int lightest_node,new_node,zero_weight_node;
-
-	lightest_node = tree->next_free_node - 1;
-	new_node = tree->next_free_node;
-	zero_weight_node = tree->next_free_node + 1;
-	tree->next_free_node += 2;
-
-	tree->nodes[new_node] = tree->nodes[lightest_node];
-	tree->nodes[new_node].parent = lightest_node;
-	tree->leaf[tree->nodes[new_node].child] = new_node;
-
-	tree->nodes[lightest_node].child = new_node;
-	tree->nodes[lightest_node].child_is_leaf = false;
-	
-	tree->nodes[zero_weight_node].child = c;
-	tree->nodes[zero_weight_node].child_is_leaf = true;
-	tree->nodes[zero_weight_node].weight = 0;
-	tree->nodes[zero_weight_node].parent = lightest_node;
-	tree->leaf[c] = zero_weight_node;
-
-}
-
-//void calculate_rows(tHATree *tree,int node,int level);
-//int calculate_columns(tHATree *tree,int node,int starting_guess);
-//int find_minimum_column(tHATree *tree,int node,int max_row);
-//void rescale_columns(int factor);
+// void calculate_rows(tHATree *tree,int node,int level);
+// int calculate_columns(tHATree *tree,int node,int starting_guess);
+// int find_minimum_column(tHATree *tree,int node,int max_row);
+// void rescale_columns(int factor);

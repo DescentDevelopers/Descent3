@@ -1,29 +1,29 @@
 /*
-* $Logfile: /DescentIII/Main/lib/textaux.h $
-* $Revision: 4 $
-* $Date: 11/03/98 7:04p $
-* $Author: Samir $
-*
-* Auxillary Text functions (helper function, not necessarily belonging to grtext)
-*
-* $Log: /DescentIII/Main/lib/textaux.h $
- * 
+ * $Logfile: /DescentIII/Main/lib/textaux.h $
+ * $Revision: 4 $
+ * $Date: 11/03/98 7:04p $
+ * $Author: Samir $
+ *
+ * Auxillary Text functions (helper function, not necessarily belonging to grtext)
+ *
+ * $Log: /DescentIII/Main/lib/textaux.h $
+ *
  * 4     11/03/98 7:04p Samir
  * made Grtext_spacing global so word wrapper could access it.
- * 
+ *
  * 3     7/14/98 2:47p Jeff
  * added textaux_ClipString
- * 
+ *
  * 2     7/14/98 11:53a Samir
- * moved textaux to it's own libtary again.  
- * 
+ * moved textaux to it's own libtary again.
+ *
  * 1     7/13/98 4:41p Samir
- * 
+ *
  * 2     7/11/98 9:14p Jeff
  * initial creation (moved from TelCom)
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef TEXTAUX_H
 #define TEXTAUX_H
@@ -33,7 +33,7 @@
 //		Given a buffer of text, and an empty buffer of same size
 //	it will break the source buffer up into lines (seperated by /n) of size width or smaller (in pixels).
 //	All /n within the source buffer are preserved.  Source buffer is also not changed.
-void textaux_WordWrap(const char *src,char *dest,int width,int font);
+void textaux_WordWrap(const char *src, char *dest, int width, int font);
 
 // textaux_CopyTextLine
 //
@@ -42,7 +42,7 @@ void textaux_WordWrap(const char *src,char *dest,int width,int font);
 //  or NULL if it's done with the buffer (it hit a /0).
 //
 //	Example of use:
-//	
+//
 //	char *nextline;
 //	char linebuffer[256];
 //	int y = INITIAL_Y;
@@ -57,16 +57,16 @@ void textaux_WordWrap(const char *src,char *dest,int width,int font);
 //		nextline = CopyTextLine(nextline,linebuffer);
 //	}
 //	grtext_Printf(x,y,linebuffer);
-char *textaux_CopyTextLine(char *src,char *dest);
+char *textaux_CopyTextLine(char *src, char *dest);
 
 //	textaux_ClipString
 //	   Given a width (in pixels), and a string, this function will truncate the string
 //	to at most width pixels.  If the end parameter is not 0, then that char is attached to
-//  the end of the string if it has to clip(the char's width is taken into consideration).  
+//  the end of the string if it has to clip(the char's width is taken into consideration).
 //  It is based off the current font.  if horizont_ratio is given it is used to correct for
 //  possible different sized hud fonts.  For instance, if this string is going to be printed on
 //  the hud, then you should always pass (DEFAULT_HUD_WIDTH/((float)*Game_window_w)) as the
 //  horizont_ratio paramter.
-void textaux_ClipString(int width,char *string,float horizont_ratio=1,char end=0);
+void textaux_ClipString(int width, char *string, float horizont_ratio = 1, char end = 0);
 
 #endif

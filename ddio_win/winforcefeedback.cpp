@@ -1,78 +1,77 @@
 /*
-* $Logfile: /DescentIII/Main/ddio_win/winforcefeedback.cpp $
-* $Revision: 19 $
-* $Date: 4/09/99 12:02p $
-* $Author: Samir $
-*
-* Low-level force feedback
-*
-* $Log: /DescentIII/Main/ddio_win/winforcefeedback.cpp $
- * 
+ * $Logfile: /DescentIII/Main/ddio_win/winforcefeedback.cpp $
+ * $Revision: 19 $
+ * $Date: 4/09/99 12:02p $
+ * $Author: Samir $
+ *
+ * Low-level force feedback
+ *
+ * $Log: /DescentIII/Main/ddio_win/winforcefeedback.cpp $
+ *
  * 19    4/09/99 12:02p Samir
  * joystick changes (Win32 DirectInput support)
- * 
+ *
  * 18    3/28/99 5:53p Jeff
  * fixed iforce crashes
- * 
+ *
  * 17    3/11/99 5:52p Jeff
  * always compile in immersion support
- * 
+ *
  * 16    1/31/99 11:11p Jeff
  * made immersion support as a dynamically loadable dll, and compiled in
  * by default
- * 
+ *
  * 15    1/30/99 11:27p Jeff
  * added immersion support
- * 
+ *
  * 14    1/28/99 12:09p Jeff
  * added force feedback to player shake...fixed spelling error in define
  * for forcefeedback
- * 
+ *
  * 13    11/18/98 5:50p Jeff
  * added some cheap recoil effects for ForceFeedback...not fully
  * implemented
- * 
+ *
  * 12    11/10/98 5:16p Jeff
  * updated forcefeedback system...pretty complete now
- * 
+ *
  * 11    11/06/98 7:00p Jeff
  * first round of new force feedback installed
- * 
+ *
  * 10    11/03/98 6:43p Jeff
  * new low-level & high level Force Feedback system implemented, handles
  * window losing focus, etc.
- * 
+ *
  * 9     11/01/98 1:58a Jeff
  * converted the vsprintf calls to use the Pvsprintf, which is a safe
  * vsprintf, no buffer overflows allowed
- * 
+ *
  * 8     10/16/98 1:54p Kevin
  * Changes for Demo Beta 4
- * 
+ *
  * 7     10/12/98 3:49p Jeff
  * struct changes
- * 
+ *
  * 6     10/02/98 12:04p Jeff
  * fixed forcefeedback bug if it couldn't disable autocenter
- * 
+ *
  * 5     9/22/98 3:55p Samir
  * ifdef out stuff for non-debug version.
- * 
+ *
  * 4     9/21/98 11:10a Jeff
  * general update, new low level, small high level implementation
- * 
+ *
  * 3     9/18/98 7:38p Jeff
  * creation of low-level forcefeedback and beginning of high-level
  * forcefeedback
- * 
+ *
  * 2     9/15/98 12:05p Jeff
  * initial creation of low-level forcefeedback
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #if 0
-
 
 #include "DDAccess.h"
 #include <stdlib.h>
@@ -1457,97 +1456,51 @@ void PrintDirectInputErrorString( HRESULT hr,char *format, ... )
 
 #include "forcefeedback.h"
 
-void ddio_ff_GetInfo(bool *ff_found,bool *ff_enabled)
-{
-	if( ff_found )
-	{
-		*ff_found = false;
-	}
-	
-	if( ff_enabled )
-	{
-		*ff_enabled = false;
-	}
+void ddio_ff_GetInfo(bool *ff_found, bool *ff_enabled) {
+  if (ff_found) {
+    *ff_found = false;
+  }
+
+  if (ff_enabled) {
+    *ff_enabled = false;
+  }
 }
 
-void ddio_ffb_Pause(tDevice dev)
-{
-}
+void ddio_ffb_Pause(tDevice dev) {}
 
-void ddio_ffb_Continue(tDevice dev)
-{
-}
+void ddio_ffb_Continue(tDevice dev) {}
 
-int ddio_ff_Acquire(tDevice dev)
-{
-	return 0;
-}
+int ddio_ff_Acquire(tDevice dev) { return 0; }
 
-void ddio_ffjoy_EnableAutoCenter(tDevice dev,bool enable)
-{
-}
+void ddio_ffjoy_EnableAutoCenter(tDevice dev, bool enable) {}
 
-void ddio_ffjoy_SetGain(tDevice dev,float value)
-{
-}
+void ddio_ffjoy_SetGain(tDevice dev, float value) {}
 
-bool ddio_ffjoy_SupportAutoCenter(tDevice dev)
-{
-	return false;
-}
+bool ddio_ffjoy_SupportAutoCenter(tDevice dev) { return false; }
 
-void ddio_ffb_DestroyAll(void)
-{
-}
+void ddio_ffb_DestroyAll(void) {}
 
-void ddio_ffb_effectPlay(short eID)
-{
-}
+void ddio_ffb_effectPlay(short eID) {}
 
-void ddio_ffb_effectModify(short eID, int*	Direction, unsigned int* Duration, unsigned int* Gain, unsigned int* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
-{
-}
+void ddio_ffb_effectModify(short eID, int *Direction, unsigned int *Duration, unsigned int *Gain, unsigned int *Period,
+                           tEffInfo *TypeInfo, tEffEnvelope *Envelope) {}
 
-int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect* eff)
-{
-	return -1;
-}
+int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect *eff) { return -1; }
 
-int ddio_CreateForceFromProject(FORCEPROJECT project,char *forcename)
-{
-	return -1;
-}
+int ddio_CreateForceFromProject(FORCEPROJECT project, char *forcename) { return -1; }
 
-void ddio_ForceUnloadProject(FORCEPROJECT prj)
-{
-}
+void ddio_ForceUnloadProject(FORCEPROJECT prj) {}
 
-FORCEPROJECT ddio_ForceLoadProject(char *filename,tDevice dev)
-{
-	return NULL;
-}
+FORCEPROJECT ddio_ForceLoadProject(char *filename, tDevice dev) { return NULL; }
 
-int ddio_ffjoy_Init(void)
-{
-	return 0;
-}
+int ddio_ffjoy_Init(void) { return 0; }
 
-int ddio_ff_Init(void)
-{
-	return 0;
-}
+int ddio_ff_Init(void) { return 0; }
 
-void ddio_ff_AttachForce(void)
-{
-}
+void ddio_ff_AttachForce(void) {}
 
-void ddio_ff_DetachForce(void)
-{
-}
+void ddio_ff_DetachForce(void) {}
 
-LPDIRECTINPUTDEVICE2 ddio_ff_get_joystick_obj(tDevice dev)
-{
-	return NULL;
-}
+LPDIRECTINPUTDEVICE2 ddio_ff_get_joystick_obj(tDevice dev) { return NULL; }
 
 #endif

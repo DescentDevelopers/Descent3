@@ -1,74 +1,74 @@
 /*
-* $Logfile: /DescentIII/main/D3ForceFeedback.cpp $
-* $Revision: 19 $
-* $Date: 5/10/99 9:25p $
-* $Author: Jeff $
-*
-* High level force-feedback implementation
-*
-* $Log: /DescentIII/main/D3ForceFeedback.cpp $
- * 
+ * $Logfile: /DescentIII/main/D3ForceFeedback.cpp $
+ * $Revision: 19 $
+ * $Date: 5/10/99 9:25p $
+ * $Author: Jeff $
+ *
+ * High level force-feedback implementation
+ *
+ * $Log: /DescentIII/main/D3ForceFeedback.cpp $
+ *
  * 19    5/10/99 9:25p Jeff
  * first phase of Rock 'n' Ride support added
- * 
+ *
  * 18    4/24/99 7:45p Jeff
  * fixed recoil
- * 
+ *
  * 17    4/21/99 11:05a Kevin
  * new ps_rand and ps_srand to replace rand & srand
- * 
+ *
  * 16    4/15/99 1:38a Jeff
  * changes for linux compile
- * 
+ *
  * 15    4/12/99 1:06p Jeff
  * hooked force feedback into recoil of weapon struct
- * 
+ *
  * 14    3/28/99 5:53p Jeff
  * fixed iforce crashes
- * 
+ *
  * 13    2/09/99 3:32p Jeff
  * table file parser takes quotes strings for force keywords
- * 
+ *
  * 12    2/05/99 7:04p Jeff
  * table file parsing macros put in
- * 
+ *
  * 11    1/30/99 11:27p Jeff
  * added immersion support
- * 
+ *
  * 10    1/28/99 12:09p Jeff
  * added force feedback to player shake...fixed spelling error in define
  * for forcefeedback
- * 
+ *
  * 9     1/25/99 7:28p Jeff
  * fixed alt-tab bug (finally)...wasn't releasing effects on alt-tab out,
  * and re-creating them on restart
- * 
+ *
  * 8     11/18/98 5:50p Jeff
  * added some cheap recoil effects for ForceFeedback...not fully
  * implemented
- * 
+ *
  * 7     11/10/98 5:16p Jeff
  * updated forcefeedback system...pretty complete now
- * 
+ *
  * 6     11/06/98 7:00p Jeff
  * first round of new force feedback installed
- * 
+ *
  * 5     11/03/98 6:43p Jeff
  * new low-level & high level Force Feedback system implemented, handles
  * window losing focus, etc.
- * 
+ *
  * 4     10/12/98 3:49p Jeff
  * struct changes
- * 
+ *
  * 3     9/21/98 11:09a Jeff
  * general update, new low level, small high level implementation
- * 
+ *
  * 2     9/18/98 7:38p Jeff
  * creation of low-level forcefeedback and beginning of high-level
  * forcefeedback
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #include <stdlib.h>
 
@@ -83,28 +83,27 @@
 
 extern float Gametime;
 
-//D3Force_init
-//true if ForceInit() has been called, meaning hi-level ForceFeedback has been initialized
-//and any of the Hi-Level ForceFeedback commands can be called.
+// D3Force_init
+// true if ForceInit() has been called, meaning hi-level ForceFeedback has been initialized
+// and any of the Hi-Level ForceFeedback commands can be called.
 bool D3Force_init = false;
 
-//D3Force_pause
-//true if the ForceFeedback effects are currently being paused. ForceContinue() must be called
-//before any other ForceFeedback functions are called.
+// D3Force_pause
+// true if the ForceFeedback effects are currently being paused. ForceContinue() must be called
+// before any other ForceFeedback functions are called.
 bool D3Force_pause = false;
 
-//D3Force_auto_center
-//true if the user wants his joystick to be autocentered (if available)
+// D3Force_auto_center
+// true if the user wants his joystick to be autocentered (if available)
 bool D3Force_auto_center = false;
 
-//D3Force_gain
-//the gain setting of the ForceFeedback system
+// D3Force_gain
+// the gain setting of the ForceFeedback system
 float D3Force_gain = 1.0f;
 
-//D3Use_force_feedback
-//true if the user wants force feedback during play (if available)
+// D3Use_force_feedback
+// true if the user wants force feedback during play (if available)
 bool D3Use_force_feedback = true;
-
 
 int Force_hi_to_low_map[DDIO_FF_MAXEFFECTS];
 
@@ -114,57 +113,56 @@ int Force_hi_to_low_map[DDIO_FF_MAXEFFECTS];
 //		Initializes the Hi-Level Force Feedback system, creating all
 //	of the effects so they are ready to be used.
 // -----------------------------------------------------------------
-void ForceInit(void)
-{
-	static bool first_call = true;
+void ForceInit(void) {
+  static bool first_call = true;
 
-	ASSERT(!D3Force_init);
+  ASSERT(!D3Force_init);
 
-	bool dd_found,dd_enabled;
-	ddio_ff_GetInfo(&dd_found,&dd_enabled);
+  bool dd_found, dd_enabled;
+  ddio_ff_GetInfo(&dd_found, &dd_enabled);
 
-	if (dd_found){
-		D3Force_init = true;
-		D3Force_pause = false;
+  if (dd_found) {
+    D3Force_init = true;
+    D3Force_pause = false;
 
-		mprintf ((0,"Force: High Level Force Feedback system initialized\n"));
-	}else{
-		D3Force_init = false;
-		D3Force_pause = false;
+    mprintf((0, "Force: High Level Force Feedback system initialized\n"));
+  } else {
+    D3Force_init = false;
+    D3Force_pause = false;
 
-		mprintf ((0,"Force: Force Feedback System Not Found\n"));
-	}
+    mprintf((0, "Force: Force Feedback System Not Found\n"));
+  }
 
-	for( int i=0; i<DDIO_FF_MAXEFFECTS; i++ ){
-		Force_hi_to_low_map[i] = -1;
-	}
+  for (int i = 0; i < DDIO_FF_MAXEFFECTS; i++) {
+    Force_hi_to_low_map[i] = -1;
+  }
 
-	ForceEffectsInit();
+  ForceEffectsInit();
 
-	if(D3Force_init){
-		// Enable/Disable the force feedback
-		// ---------------------------------
-		if(D3Use_force_feedback)
-			ForceEnable();
-		else
-			ForceDisable();
+  if (D3Force_init) {
+    // Enable/Disable the force feedback
+    // ---------------------------------
+    if (D3Use_force_feedback)
+      ForceEnable();
+    else
+      ForceDisable();
 
-		// Enable/Disable AutoCentering
-		// ----------------------------
-		if(D3Force_auto_center)
-			ForceEnableAutoCenter();
-		else
-			ForceDisableAutoCenter();
+    // Enable/Disable AutoCentering
+    // ----------------------------
+    if (D3Force_auto_center)
+      ForceEnableAutoCenter();
+    else
+      ForceDisableAutoCenter();
 
-		// Set ForceFeedback Gain
-		// ----------------------
-		ForceSetGain(D3Force_gain);
-	}
+    // Set ForceFeedback Gain
+    // ----------------------
+    ForceSetGain(D3Force_gain);
+  }
 
-	if(first_call){
-		first_call = false;
-		atexit(ForceClose);
-	}
+  if (first_call) {
+    first_call = false;
+    atexit(ForceClose);
+  }
 }
 
 // -----------------------------------------------------------------
@@ -172,20 +170,19 @@ void ForceInit(void)
 //	Purpose:
 //		Shutsdown the Hi-Level Force Feedback system
 // -----------------------------------------------------------------
-void ForceClose(void)
-{
-	if(!D3Force_init)
-		return;
+void ForceClose(void) {
+  if (!D3Force_init)
+    return;
 
-	D3Force_pause = false;
-	D3Force_init = false;
+  D3Force_pause = false;
+  D3Force_init = false;
 
-	mprintf((0,"Force: Shutting down high level force feedback\n"));
-	ForceEffectsClose();
+  mprintf((0, "Force: Shutting down high level force feedback\n"));
+  ForceEffectsClose();
 
-	for( int i=0; i<DDIO_FF_MAXEFFECTS; i++ ){
-		Force_hi_to_low_map[i] = -1;
-	}
+  for (int i = 0; i < DDIO_FF_MAXEFFECTS; i++) {
+    Force_hi_to_low_map[i] = -1;
+  }
 }
 
 // -----------------------------------------------------------------
@@ -194,15 +191,14 @@ void ForceClose(void)
 //		Puts the Force Feedback system on pause while the application
 //	is doing other things (like it lost focus)
 // -----------------------------------------------------------------
-void ForceShutdown(void)
-{
-	D3Force_pause = true;
+void ForceShutdown(void) {
+  D3Force_pause = true;
 
-	ForceClose();
-	if (D3Force_init){
-		mprintf ((0,"Force: Shutting down Force Feedback System\n"));	
-		ddio_ffb_Pause(kJoy1);
-	}
+  ForceClose();
+  if (D3Force_init) {
+    mprintf((0, "Force: Shutting down Force Feedback System\n"));
+    ddio_ffb_Pause(kJoy1);
+  }
 }
 
 // ------------------------------------------------------------------
@@ -211,35 +207,34 @@ void ForceShutdown(void)
 //		Restores the Force Feedback system that has been put on pause
 //	from ForceShutdown.
 // ------------------------------------------------------------------
-void ForceRestart(void)
-{
-	D3Force_pause = false;
+void ForceRestart(void) {
+  D3Force_pause = false;
 
-	if (D3Force_init){
-		mprintf ((0,"Force: Restarting Force Feedback System\n"));
-		ddio_ff_Acquire(kJoy1);
-		ddio_ffb_Continue(kJoy1);
+  if (D3Force_init) {
+    mprintf((0, "Force: Restarting Force Feedback System\n"));
+    ddio_ff_Acquire(kJoy1);
+    ddio_ffb_Continue(kJoy1);
 
-		// Enable/Disable the force feedback
-		// ---------------------------------
-		if(D3Use_force_feedback)
-			ForceEnable();
-		else
-			ForceDisable();
+    // Enable/Disable the force feedback
+    // ---------------------------------
+    if (D3Use_force_feedback)
+      ForceEnable();
+    else
+      ForceDisable();
 
-		// Enable/Disable AutoCentering
-		// ----------------------------
-		if(D3Force_auto_center)
-			ForceEnableAutoCenter();
-		else
-			ForceDisableAutoCenter();
+    // Enable/Disable AutoCentering
+    // ----------------------------
+    if (D3Force_auto_center)
+      ForceEnableAutoCenter();
+    else
+      ForceDisableAutoCenter();
 
-		// Set ForceFeedback Gain
-		// ----------------------
-		ForceSetGain(D3Force_gain);
-	}
+    // Set ForceFeedback Gain
+    // ----------------------
+    ForceSetGain(D3Force_gain);
+  }
 
-	ForceInit();
+  ForceInit();
 }
 
 // ------------------------------------------------------------------
@@ -247,13 +242,12 @@ void ForceRestart(void)
 //	Purpose:
 //		Disables Force Feedback on a Force Feedback system
 // ------------------------------------------------------------------
-void ForceDisable(void)
-{
-	if (D3Force_init){
-		mprintf ((0,"Force: Disabling Force Feedback System\n"));
-		//@@ddio_ffb_Disable(kJoy1);
-		D3Use_force_feedback = false;
-	}
+void ForceDisable(void) {
+  if (D3Force_init) {
+    mprintf((0, "Force: Disabling Force Feedback System\n"));
+    //@@ddio_ffb_Disable(kJoy1);
+    D3Use_force_feedback = false;
+  }
 }
 
 // ------------------------------------------------------------------
@@ -261,13 +255,12 @@ void ForceDisable(void)
 //	Purpose:
 //		Enables Force Feedback that has been previously disabled
 // ------------------------------------------------------------------
-void ForceEnable(void)
-{
-	if (D3Force_init){
-		mprintf ((0,"Force: Enabling Force Feedback System\n"));
-		//@@ddio_ffb_Enable(kJoy1);
-		D3Use_force_feedback = true;
-	}
+void ForceEnable(void) {
+  if (D3Force_init) {
+    mprintf((0, "Force: Enabling Force Feedback System\n"));
+    //@@ddio_ffb_Enable(kJoy1);
+    D3Use_force_feedback = true;
+  }
 }
 
 // ------------------------------------------------------------------
@@ -275,13 +268,12 @@ void ForceEnable(void)
 //	Purpose:
 //		Disables autocentering on the joystick
 // ------------------------------------------------------------------
-void ForceDisableAutoCenter(void)
-{
-	if (D3Force_init){
-		D3Force_auto_center = false;
+void ForceDisableAutoCenter(void) {
+  if (D3Force_init) {
+    D3Force_auto_center = false;
 
-		ddio_ffjoy_EnableAutoCenter(kJoy1,false);
-	}
+    ddio_ffjoy_EnableAutoCenter(kJoy1, false);
+  }
 }
 
 // ------------------------------------------------------------------
@@ -289,13 +281,12 @@ void ForceDisableAutoCenter(void)
 //	Purpose:
 //		Enables autocentering on the joystick
 // ------------------------------------------------------------------
-void ForceEnableAutoCenter(void)
-{
-	if (D3Force_init){
-		D3Force_auto_center = true;
+void ForceEnableAutoCenter(void) {
+  if (D3Force_init) {
+    D3Force_auto_center = true;
 
-		ddio_ffjoy_EnableAutoCenter(kJoy1,true);
-	}
+    ddio_ffjoy_EnableAutoCenter(kJoy1, true);
+  }
 }
 
 // ------------------------------------------------------------------
@@ -303,33 +294,28 @@ void ForceEnableAutoCenter(void)
 //	Purpose:
 //		Returns true if Force Feedback is enabled on the system
 // ------------------------------------------------------------------
-bool ForceIsEnabled(void)
-{
-	return D3Use_force_feedback;
-}
+bool ForceIsEnabled(void) { return D3Use_force_feedback; }
 
 // ------------------------------------------------------------------
 //	ForceIsAutoCenter
 //	Purpose:
 //		Returns true if Force Feedback joystick is autocentering
 // ------------------------------------------------------------------
-bool ForceIsAutoCenter(void)
-{
-	return D3Force_auto_center;
-}
+bool ForceIsAutoCenter(void) { return D3Force_auto_center; }
 
 // ------------------------------------------------------------------
 //	ForceSetGain
 //	Purpose:
 //		Sets the gain of the ForceFeedback system (0 -> 1)
 // ------------------------------------------------------------------
-void ForceSetGain(float val)
-{
-	if(val<0.0f) val = 0.0f;
-	if(val>1.0f) val = 1.0f;
+void ForceSetGain(float val) {
+  if (val < 0.0f)
+    val = 0.0f;
+  if (val > 1.0f)
+    val = 1.0f;
 
-	D3Force_gain = val;
-	ddio_ffjoy_SetGain(kJoy1,D3Force_gain);
+  D3Force_gain = val;
+  ddio_ffjoy_SetGain(kJoy1, D3Force_gain);
 }
 
 // ------------------------------------------------------------------
@@ -337,10 +323,7 @@ void ForceSetGain(float val)
 //	Purpose:
 //		Returns the current gain setting of the ForceFeedback system (0-1)
 // ------------------------------------------------------------------
-float ForceGetGain(void)
-{
-	return D3Force_gain;
-}
+float ForceGetGain(void) { return D3Force_gain; }
 
 /*
 =============================================================================
@@ -351,325 +334,306 @@ float ForceGetGain(void)
 //	Purpose:
 //		Destroys all the effects created
 // -----------------------------------------------------------------
-void ForceEffectsClose(void)
-{
-	ddio_ffb_DestroyAll();
-}
+void ForceEffectsClose(void) { ddio_ffb_DestroyAll(); }
 
 // -----------------------------------------------------------------
 //	ForceEffectsPlay
 //	Purpose:
 //		Plays an effect
 // -----------------------------------------------------------------
-void ForceEffectsPlay(int id,float *scale,int *direction)
-{
-	if(RocknRide_enabled && direction)
-	{
-		RNR_UpdateForceFeedbackInfo((scale)?*scale:1.0f,direction);
-	}
+void ForceEffectsPlay(int id, float *scale, int *direction) {
+  if (RocknRide_enabled && direction) {
+    RNR_UpdateForceFeedbackInfo((scale) ? *scale : 1.0f, direction);
+  }
 
-	if (!D3Force_init || !D3Use_force_feedback )
-		return;
+  if (!D3Force_init || !D3Use_force_feedback)
+    return;
 
-	if(id<0 || id>=DDIO_FF_MAXEFFECTS)
-		return;
+  if (id < 0 || id >= DDIO_FF_MAXEFFECTS)
+    return;
 
-	int low_id = Force_hi_to_low_map[id];
-	if(low_id==-1)
-		return;
+  int low_id = Force_hi_to_low_map[id];
+  if (low_id == -1)
+    return;
 
-	if(scale || direction){
-		unsigned int *ns = NULL;
-		unsigned int new_gain;
+  if (scale || direction) {
+    unsigned int *ns = NULL;
+    unsigned int new_gain;
 
-		if(scale){
-			new_gain = (unsigned int)(10000.0f * (*scale));
-			ns = &new_gain;
-		}
-		
-		ddio_ffb_effectModify(low_id,direction,NULL,ns,NULL,NULL,NULL);
-	}
+    if (scale) {
+      new_gain = (unsigned int)(10000.0f * (*scale));
+      ns = &new_gain;
+    }
 
-	ddio_ffb_effectPlay(low_id);
+    ddio_ffb_effectModify(low_id, direction, NULL, ns, NULL, NULL, NULL);
+  }
+
+  ddio_ffb_effectPlay(low_id);
 }
-void ForceEffectsPlay(int id,float *scale,vector *direction)
-{
-	if(RocknRide_enabled && direction)
-	{
-		RNR_UpdateForceFeedbackInfo((scale)?*scale:1.0f,direction);
-	}
-	
-	if (!D3Force_init || !D3Use_force_feedback )
-		return;
+void ForceEffectsPlay(int id, float *scale, vector *direction) {
+  if (RocknRide_enabled && direction) {
+    RNR_UpdateForceFeedbackInfo((scale) ? *scale : 1.0f, direction);
+  }
 
-	if(id<0 || id>=DDIO_FF_MAXEFFECTS)
-		return;
+  if (!D3Force_init || !D3Use_force_feedback)
+    return;
 
-	int low_id = Force_hi_to_low_map[id];
-	if(low_id==-1)
-		return;
+  if (id < 0 || id >= DDIO_FF_MAXEFFECTS)
+    return;
 
-	int new_dir = -1;
+  int low_id = Force_hi_to_low_map[id];
+  if (low_id == -1)
+    return;
 
-	if(direction){
-		matrix mat = Identity_matrix;
-		angvec ag;
+  int new_dir = -1;
 
-		vm_VectorToMatrix(&mat,direction);
-		vm_ExtractAnglesFromMatrix(&ag,&mat);
+  if (direction) {
+    matrix mat = Identity_matrix;
+    angvec ag;
 
-		new_dir = ((((float)ag.h)/65535.0f)*360.0f);
+    vm_VectorToMatrix(&mat, direction);
+    vm_ExtractAnglesFromMatrix(&ag, &mat);
 
-		new_dir = (new_dir) * FF_DEGREES;
+    new_dir = ((((float)ag.h) / 65535.0f) * 360.0f);
 
-		
-	}
+    new_dir = (new_dir)*FF_DEGREES;
+  }
 
-	if(scale || direction){
-		int *d = NULL;
-		unsigned int *ns = NULL;
-		unsigned int new_gain;
+  if (scale || direction) {
+    int *d = NULL;
+    unsigned int *ns = NULL;
+    unsigned int new_gain;
 
-		if(direction)
-			d = &new_dir;
+    if (direction)
+      d = &new_dir;
 
-		if(scale){
-			new_gain = (unsigned int)(10000.0f * (*scale));
-			ns = &new_gain;
-		}
-		
-		ddio_ffb_effectModify(low_id,d,NULL,ns,NULL,NULL,NULL);
-	}
+    if (scale) {
+      new_gain = (unsigned int)(10000.0f * (*scale));
+      ns = &new_gain;
+    }
 
-	ddio_ffb_effectPlay(low_id);
+    ddio_ffb_effectModify(low_id, d, NULL, ns, NULL, NULL, NULL);
+  }
+
+  ddio_ffb_effectPlay(low_id);
 }
 
+void DoForceForWeapon(object *me_obj, object *it_obj, vector *force_vec) {
+  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
+    return;
 
-void DoForceForWeapon(object *me_obj,object *it_obj,vector *force_vec)
-{
-	if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback) )
-		return;
+  if (it_obj->id < 0 || it_obj->id >= MAX_WEAPONS)
+    return;
 
-	if(it_obj->id<0 || it_obj->id>=MAX_WEAPONS)
-		return;
+  weapon *weap = &Weapons[it_obj->id];
 
-	weapon *weap = &Weapons[it_obj->id];
+  if (weap->flags & WF_MICROWAVE) {
+    vector local_norm, v;
+    float scale = 1.00f;
+    v.x = ps_rand() % 10;
+    v.y = 0;
+    v.z = ps_rand() % 10;
+    vm_NormalizeVector(&v);
+    vm_MatrixMulVector(&local_norm, &v, &me_obj->orient);
 
-	if(weap->flags&WF_MICROWAVE){
-		vector local_norm,v;
-		float scale = 1.00f;
-		v.x = ps_rand()%10;
-		v.y = 0;
-		v.z = ps_rand()%10;
-		vm_NormalizeVector(&v);
-		vm_MatrixMulVector (&local_norm,&v,&me_obj->orient);
+    local_norm *= -1.0f;
 
-		local_norm *= -1.0f;
-
-		ForceEffectsPlay(FORCE_MICROWAVE,&scale,&local_norm);
-		return;
-	}
-
+    ForceEffectsPlay(FORCE_MICROWAVE, &scale, &local_norm);
+    return;
+  }
 }
 
-void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *wall_normal)
-{
-	if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback) )
-		return;
+void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *wall_normal) {
+  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
+    return;
 
-	vector local_norm;
-	float scale = 1.00f;
+  vector local_norm;
+  float scale = 1.00f;
 
-	if(hitspeed<20)
-		return;
+  if (hitspeed < 20)
+    return;
 
-	scale = hitspeed/80.0f;
-	if(scale<0.0f) scale = 0.0f;
-	if(scale>1.0f) scale = 1.0f;
+  scale = hitspeed / 80.0f;
+  if (scale < 0.0f)
+    scale = 0.0f;
+  if (scale > 1.0f)
+    scale = 1.0f;
 
+  vm_MatrixMulVector(&local_norm, wall_normal, &playerobj->orient);
+  local_norm *= -1.0f;
 
-	vm_MatrixMulVector (&local_norm,wall_normal,&playerobj->orient);
-	local_norm *= -1.0f;
-
-	ForceEffectsPlay(FORCE_WALLHIT,&scale,&local_norm);	
+  ForceEffectsPlay(FORCE_WALLHIT, &scale, &local_norm);
 }
 
-void DoForceForRecoil(object *playerobj,object *weap)
-{
-	if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback) )
-		return;
-	
-	weapon *w_ptr = &Weapons[weap->id];
+void DoForceForRecoil(object *playerobj, object *weap) {
+  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
+    return;
 
-	vector local_norm;
-	float scale;
-#define MIN_RECOIL	1000.0f
-#define MAX_RECOIL	5000.0f
-#define RECOIL_THRESHOLD	1100.0f
+  weapon *w_ptr = &Weapons[weap->id];
 
-	if(w_ptr->recoil_force<RECOIL_THRESHOLD)
-		return;
+  vector local_norm;
+  float scale;
+#define MIN_RECOIL 1000.0f
+#define MAX_RECOIL 5000.0f
+#define RECOIL_THRESHOLD 1100.0f
 
-	vector offset = weap->pos - playerobj->pos;
-	vm_MatrixMulVector(&local_norm,&offset,&playerobj->orient);
+  if (w_ptr->recoil_force < RECOIL_THRESHOLD)
+    return;
 
-	if(weap->movement_type!=MT_PHYSICS)
-		return;
+  vector offset = weap->pos - playerobj->pos;
+  vm_MatrixMulVector(&local_norm, &offset, &playerobj->orient);
 
-	ASSERT( w_ptr->recoil_force>=MIN_RECOIL && w_ptr->recoil_force<=MAX_RECOIL);
-	scale = (w_ptr->recoil_force - MIN_RECOIL)/(MAX_RECOIL-MIN_RECOIL);
+  if (weap->movement_type != MT_PHYSICS)
+    return;
 
-	ForceEffectsPlay(FORCE_WEAPON_RECOIL,&scale,&local_norm);	
+  ASSERT(w_ptr->recoil_force >= MIN_RECOIL && w_ptr->recoil_force <= MAX_RECOIL);
+  scale = (w_ptr->recoil_force - MIN_RECOIL) / (MAX_RECOIL - MIN_RECOIL);
+
+  ForceEffectsPlay(FORCE_WEAPON_RECOIL, &scale, &local_norm);
 }
 
 float Force_time_since_last_shake;
-#define SHAKE_TIME	0.2f
-void DoForceForShake(float magnitude)
-{
-	if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback) )
-		return;
+#define SHAKE_TIME 0.2f
+void DoForceForShake(float magnitude) {
+  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
+    return;
 
-	if( Force_time_since_last_shake + SHAKE_TIME > Gametime ){
-		if (Force_time_since_last_shake < Gametime){
-			return;
-		}
-	}
+  if (Force_time_since_last_shake + SHAKE_TIME > Gametime) {
+    if (Force_time_since_last_shake < Gametime) {
+      return;
+    }
+  }
 
-	Force_time_since_last_shake = Gametime;
+  Force_time_since_last_shake = Gametime;
 
-	vector local_norm;
+  vector local_norm;
 
-	if(magnitude<0.0f) magnitude = 0.0f;
-	if(magnitude>1.0f) magnitude = 1.0f;
+  if (magnitude < 0.0f)
+    magnitude = 0.0f;
+  if (magnitude > 1.0f)
+    magnitude = 1.0f;
 
-	local_norm.x = (ps_rand()%5);
-	local_norm.y = (ps_rand()%5);
-	local_norm.z = (ps_rand()%5);
-	vm_NormalizeVector(&local_norm);
+  local_norm.x = (ps_rand() % 5);
+  local_norm.y = (ps_rand() % 5);
+  local_norm.z = (ps_rand() % 5);
+  vm_NormalizeVector(&local_norm);
 
-	ForceEffectsPlay(FORCE_SHIPSHAKE,&magnitude,&local_norm);	
+  ForceEffectsPlay(FORCE_SHIPSHAKE, &magnitude, &local_norm);
 }
 
 //************************************************************************
 
-void FFECreate_Test(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
-	
-	ef->Type = kConstant;
-	ef->TypeInfo.Constant.Mag = FF_NOMINALMAX;
-	ef->Duration = 0.1*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+void FFECreate_Test(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
+
+  ef->Type = kConstant;
+  ef->TypeInfo.Constant.Mag = FF_NOMINALMAX;
+  ef->Duration = 0.1 * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 }
 
-void FFECreate_Microwave(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
+void FFECreate_Microwave(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
 
-	ef->Flags = FF_USEENVELOPE;
-	ef->Type = kWave_Sine;
-	ef->TypeInfo.Wave.Mag = FF_NOMINALMAX;
-	ef->TypeInfo.Wave.Offset = 0;
-	ef->TypeInfo.Wave.Phase = 0;
-	ef->TypeInfo.Wave.Period = 0.2*FF_SECONDS;
+  ef->Flags = FF_USEENVELOPE;
+  ef->Type = kWave_Sine;
+  ef->TypeInfo.Wave.Mag = FF_NOMINALMAX;
+  ef->TypeInfo.Wave.Offset = 0;
+  ef->TypeInfo.Wave.Phase = 0;
+  ef->TypeInfo.Wave.Period = 0.2 * FF_SECONDS;
 
-	ef->Duration = 0.6*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+  ef->Duration = 0.6 * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 
-	ef->Envelope.AttackLevel = FF_NOMINALMAX*0.5f;
-	ef->Envelope.AttackTime = 0;
-	ef->Envelope.FadeLevel = FF_NOMINALMAX*0.1f;
-	ef->Envelope.FadeTime = 0.6*FF_SECONDS;
+  ef->Envelope.AttackLevel = FF_NOMINALMAX * 0.5f;
+  ef->Envelope.AttackTime = 0;
+  ef->Envelope.FadeLevel = FF_NOMINALMAX * 0.1f;
+  ef->Envelope.FadeTime = 0.6 * FF_SECONDS;
 }
 
-void FFECreate_Wallhit(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
-	
-	ef->Type = kConstant;
-	ef->TypeInfo.Constant.Mag = FF_NOMINALMAX;
-	ef->Duration = 0.1*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+void FFECreate_Wallhit(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
+
+  ef->Type = kConstant;
+  ef->TypeInfo.Constant.Mag = FF_NOMINALMAX;
+  ef->Duration = 0.1 * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 }
 
-void FFECreate_WeaponRecoil(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
-	
-	ef->Type = kConstant;
-	ef->TypeInfo.Constant.Mag = FF_NOMINALMAX;
-	ef->Duration = 0.1*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+void FFECreate_WeaponRecoil(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
+
+  ef->Type = kConstant;
+  ef->TypeInfo.Constant.Mag = FF_NOMINALMAX;
+  ef->Duration = 0.1 * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 }
 
-void FFECreate_VaussRecoil(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
+void FFECreate_VaussRecoil(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
 
-	ef->Type = kWave_Square;
-	ef->TypeInfo.Wave.Mag = FF_NOMINALMAX;
-	ef->TypeInfo.Wave.Offset = 0;
-	ef->TypeInfo.Wave.Phase = 0;
-	ef->TypeInfo.Wave.Period = 0.05*FF_SECONDS;
+  ef->Type = kWave_Square;
+  ef->TypeInfo.Wave.Mag = FF_NOMINALMAX;
+  ef->TypeInfo.Wave.Offset = 0;
+  ef->TypeInfo.Wave.Phase = 0;
+  ef->TypeInfo.Wave.Period = 0.05 * FF_SECONDS;
 
-	ef->Duration = 0.2*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+  ef->Duration = 0.2 * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 }
 
-void FFECreate_Afterburner(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
+void FFECreate_Afterburner(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
 
-	ef->Type = kWave_Square;
-	ef->TypeInfo.Wave.Mag = FF_NOMINALMAX;
-	ef->TypeInfo.Wave.Offset = 0;
-	ef->TypeInfo.Wave.Phase = 0;
-	ef->TypeInfo.Wave.Period = 0.05*FF_SECONDS;
+  ef->Type = kWave_Square;
+  ef->TypeInfo.Wave.Mag = FF_NOMINALMAX;
+  ef->TypeInfo.Wave.Offset = 0;
+  ef->TypeInfo.Wave.Phase = 0;
+  ef->TypeInfo.Wave.Period = 0.05 * FF_SECONDS;
 
-	ef->Duration = 0.2*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+  ef->Duration = 0.2 * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 }
 
-void FFECreate_ShipShake(tFFB_Effect *ef)
-{
-	memset(ef,0,sizeof(tFFB_Effect));
+void FFECreate_ShipShake(tFFB_Effect *ef) {
+  memset(ef, 0, sizeof(tFFB_Effect));
 
-	ef->Type = kWave_Sine;
-	ef->TypeInfo.Wave.Mag = (FF_NOMINALMAX/3);
-	ef->TypeInfo.Wave.Offset = 0;
-	ef->TypeInfo.Wave.Phase = 0;
-	ef->TypeInfo.Wave.Period = (SHAKE_TIME/2)*FF_SECONDS;
+  ef->Type = kWave_Sine;
+  ef->TypeInfo.Wave.Mag = (FF_NOMINALMAX / 3);
+  ef->TypeInfo.Wave.Offset = 0;
+  ef->TypeInfo.Wave.Phase = 0;
+  ef->TypeInfo.Wave.Period = (SHAKE_TIME / 2) * FF_SECONDS;
 
-	ef->Duration = SHAKE_TIME*FF_SECONDS;
-	ef->Gain = FF_NOMINALMAX;
-	ef->Period = 0;
-	ef->Axis = kBothAxes;
-	ef->Trigger = kNoButton;
-	ef->Direction = 0;
+  ef->Duration = SHAKE_TIME * FF_SECONDS;
+  ef->Gain = FF_NOMINALMAX;
+  ef->Period = 0;
+  ef->Axis = kBothAxes;
+  ef->Trigger = kNoButton;
+  ef->Direction = 0;
 }
 
 //*************************************************************
@@ -678,78 +642,74 @@ void FFECreate_ShipShake(tFFB_Effect *ef)
 //	Purpose:
 //		Initializes the force feedback effects for Descent 3
 // ------------------------------------------------------------------
-void ForceEffectsInit(void)
-{
-	tFFB_Effect eff;
-	int lowid;
-	Force_time_since_last_shake = 0;
-	FORCEPROJECT prj;
-	char path[_MAX_PATH];
+void ForceEffectsInit(void) {
+  tFFB_Effect eff;
+  int lowid;
+  Force_time_since_last_shake = 0;
+  FORCEPROJECT prj;
+  char path[_MAX_PATH];
 
-	if(cfexist("D3Force.ifr"))
-	{
-		ddio_MakePath(path,LocalD3Dir,"custom","cache","D3Force.ifr",NULL);
-		cf_CopyFile(path,"D3Force.ifr",0);
-		prj = ddio_ForceLoadProject(IGNORE_TABLE(path),kJoy1);
-	}else
-	{
-		prj = NULL;
-	}
-/*
-$$TABLE_GAMEFILE "D3Force.ifr"
-*/
-	lowid = ddio_CreateForceFromProject(prj,"Test");
-	if(lowid==-1){
-		FFECreate_Test(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_TEST_FORCE] = lowid;
+  if (cfexist("D3Force.ifr")) {
+    ddio_MakePath(path, LocalD3Dir, "custom", "cache", "D3Force.ifr", NULL);
+    cf_CopyFile(path, "D3Force.ifr", 0);
+    prj = ddio_ForceLoadProject(IGNORE_TABLE(path), kJoy1);
+  } else {
+    prj = NULL;
+  }
+  /*
+  $$TABLE_GAMEFILE "D3Force.ifr"
+  */
+  lowid = ddio_CreateForceFromProject(prj, "Test");
+  if (lowid == -1) {
+    FFECreate_Test(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_TEST_FORCE] = lowid;
 
-	lowid = ddio_CreateForceFromProject(prj,"Microwave");
-	if(lowid==-1){
-		FFECreate_Microwave(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_MICROWAVE] = lowid;
+  lowid = ddio_CreateForceFromProject(prj, "Microwave");
+  if (lowid == -1) {
+    FFECreate_Microwave(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_MICROWAVE] = lowid;
 
-	lowid = ddio_CreateForceFromProject(prj,"WallHit");
-	if(lowid==-1){
-		FFECreate_Wallhit(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_WALLHIT] = lowid;
+  lowid = ddio_CreateForceFromProject(prj, "WallHit");
+  if (lowid == -1) {
+    FFECreate_Wallhit(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_WALLHIT] = lowid;
 
-	lowid = ddio_CreateForceFromProject(prj,"Recoil");
-	if(lowid==-1){
-		FFECreate_WeaponRecoil(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_WEAPON_RECOIL] = lowid;
+  lowid = ddio_CreateForceFromProject(prj, "Recoil");
+  if (lowid == -1) {
+    FFECreate_WeaponRecoil(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_WEAPON_RECOIL] = lowid;
 
-	lowid = ddio_CreateForceFromProject(prj,"VaussRecoil");
-	if(lowid==-1){
-		FFECreate_VaussRecoil(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_VAUSS_RECOIL] = lowid;
+  lowid = ddio_CreateForceFromProject(prj, "VaussRecoil");
+  if (lowid == -1) {
+    FFECreate_VaussRecoil(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_VAUSS_RECOIL] = lowid;
 
-	lowid = ddio_CreateForceFromProject(prj,"Afterburner");
-	if(lowid==-1){
-		FFECreate_Afterburner(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_AFTERBURNER] = lowid;
+  lowid = ddio_CreateForceFromProject(prj, "Afterburner");
+  if (lowid == -1) {
+    FFECreate_Afterburner(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_AFTERBURNER] = lowid;
 
-	lowid = ddio_CreateForceFromProject(prj,"ShipShake");
-	if(lowid==-1){
-		FFECreate_ShipShake(&eff);
-		lowid = ddio_ffb_effectCreate(kJoy1,&eff);
-	}
-	Force_hi_to_low_map[FORCE_SHIPSHAKE] = lowid;
+  lowid = ddio_CreateForceFromProject(prj, "ShipShake");
+  if (lowid == -1) {
+    FFECreate_ShipShake(&eff);
+    lowid = ddio_ffb_effectCreate(kJoy1, &eff);
+  }
+  Force_hi_to_low_map[FORCE_SHIPSHAKE] = lowid;
 
-	ddio_ForceUnloadProject(prj);
-	if(cfexist(path))
-	{
-		ddio_DeleteFile(path);
-	}
+  ddio_ForceUnloadProject(prj);
+  if (cfexist(path)) {
+    ddio_DeleteFile(path);
+  }
 }

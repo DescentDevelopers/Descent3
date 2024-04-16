@@ -1,19 +1,18 @@
 #ifndef __CZIPFILE_H_
 #define __CZIPFILE_H_
 
-
-#define OCF_VERSION			0x01
+#define OCF_VERSION 0x01
 
 ////////////////////////////////////////
 // Compression Types
-#define COMPT_NONE			255	//No compression, just stored (Not Implemented Yet)
-#define COMPT_SHANFANO		0	//Shannon-Fano Compression
-#define COMPT_HUFFBAS		1	//Huffman Encoding, Basic
-#define COMPT_HUFFADAPT_0	2	//Huffman Encoding, Adaptive Order 0
+#define COMPT_NONE 255      // No compression, just stored (Not Implemented Yet)
+#define COMPT_SHANFANO 0    // Shannon-Fano Compression
+#define COMPT_HUFFBAS 1     // Huffman Encoding, Basic
+#define COMPT_HUFFADAPT_0 2 // Huffman Encoding, Adaptive Order 0
 
 // Virtual file (disk or memory files)
-#define VFT_FILE	0
-#define VFT_MEM		1
+#define VFT_FILE 0
+#define VFT_MEM 1
 
 /*
  *File Formats:
@@ -45,7 +44,7 @@
  *		4	-	Magic Number		(0x52415743)
  *		1	-	Compression Type (see above)
  *		x	-	Compressed Data
- *		
+ *
  */
 
 #define ubyte unsigned char
@@ -53,214 +52,211 @@
 #define ushort unsigned short
 #define ulong unsigned long
 
-typedef struct{
-	ubyte type;
-	int count;
-	int size;	//only used for memory...size allocated for buffer
-	int file_size;	//max count we reached
-	union{
-		FILE *file;
-		ubyte *memory;
-	};
-}tVirtualFile;
-
+typedef struct {
+  ubyte type;
+  int count;
+  int size;      // only used for memory...size allocated for buffer
+  int file_size; // max count we reached
+  union {
+    FILE *file;
+    ubyte *memory;
+  };
+} tVirtualFile;
 
 ////////////////////////////
 // BitIO			//////
 ////////////////////////
-typedef struct tBitFile{
-	tVirtualFile *file;
-	ubyte mask;
-	int rack;
-}BITFILE;
+typedef struct tBitFile {
+  tVirtualFile *file;
+  ubyte mask;
+  int rack;
+} BITFILE;
 
 /////////////////////////////
 // HuffmanBasic		///////
 /////////////////////////
-typedef struct tHuffman0TreeNode{
-	uint count;
-	uint saved_count;
-	int child0,child1;
-}tH0Node;
+typedef struct tHuffman0TreeNode {
+  uint count;
+  uint saved_count;
+  int child0, child1;
+} tH0Node;
 
-typedef struct{
-	uint code;
-	int code_bits;
-}tH0Code;
+typedef struct {
+  uint code;
+  int code_bits;
+} tH0Code;
 
 ///////////////////////////
 // Huffman Adaptive	//////
 /////////////////////////
-#define SYMBOL_COUNT		258
-#define NODE_TABLE_COUNT	((SYMBOL_COUNT*2)-1)
-typedef struct tHANode{
-	uint weight;
-	int parent;
-	bool child_is_leaf;
-	int child;
-}tHANode;
+#define SYMBOL_COUNT 258
+#define NODE_TABLE_COUNT ((SYMBOL_COUNT * 2) - 1)
+typedef struct tHANode {
+  uint weight;
+  int parent;
+  bool child_is_leaf;
+  int child;
+} tHANode;
 
-typedef struct tHATree{
-	int leaf[SYMBOL_COUNT];
-	int next_free_node;
-	tHANode nodes[NODE_TABLE_COUNT];
-}tHATree;
+typedef struct tHATree {
+  int leaf[SYMBOL_COUNT];
+  int next_free_node;
+  tHANode nodes[NODE_TABLE_COUNT];
+} tHATree;
 
-typedef struct{
-	char filename[_MAX_PATH];	//filename
-	int lo_time,hi_time;		//filetime
-	int	compressed_size;		//
-	int expanded_size;			//
-}tFileInfo;
-
+typedef struct {
+  char filename[_MAX_PATH]; // filename
+  int lo_time, hi_time;     // filetime
+  int compressed_size;      //
+  int expanded_size;        //
+} tFileInfo;
 
 ////////////////////////////////////////////////
 //	CZip Class Header				//////////
 ////////////////////////////////////////////
-class CZip
-{
+class CZip {
 public:
-	CZip();
-	~CZip();
+  CZip();
+  ~CZip();
 
-	// Opens an archive file for reading	
-	//	open_raw = if this is true, then the file MUST be of the raw compressed type.  You cannot
-	//			open an OCF by raw.  If a raw type archive is opened, you may only use the read
-	//			byte type functions (ReadRaw*())
-	//	returns true on success
-	bool OpenInputArchive(char *filename,bool open_raw=false);
+  // Opens an archive file for reading
+  //	open_raw = if this is true, then the file MUST be of the raw compressed type.  You cannot
+  //			open an OCF by raw.  If a raw type archive is opened, you may only use the read
+  //			byte type functions (ReadRaw*())
+  //	returns true on success
+  bool OpenInputArchive(char *filename, bool open_raw = false);
 
-	// Opens an archive file for writing
-	//	open_raw = if this is true, then the output archive will be of the raw compressed type.
-	//			You must used the write byte type functions (WriteRaw*())
-	//	compression_type = You only need to specify this if you opened raw
-	//	returns true on success
-	bool OpenOutputArchive(char *filename,bool open_raw=false,int compression_type=-1);
+  // Opens an archive file for writing
+  //	open_raw = if this is true, then the output archive will be of the raw compressed type.
+  //			You must used the write byte type functions (WriteRaw*())
+  //	compression_type = You only need to specify this if you opened raw
+  //	returns true on success
+  bool OpenOutputArchive(char *filename, bool open_raw = false, int compression_type = -1);
 
-	// Closes an archive that was opened for input
-	void CloseInputArchive(void);
+  // Closes an archive that was opened for input
+  void CloseInputArchive(void);
 
-	// Closes an archive that was opened for output
-	void CloseOutputArchive(void);
+  // Closes an archive that was opened for output
+  void CloseOutputArchive(void);
 
-	//	Adds a given file to the archive
-	//	You may only add files to OCF files (you passed false for open_raw when you opened)
-	//	compression_type = what type of compression you want to use
-	bool AddFileToArchive(char *filename,int compression_type=COMPT_HUFFADAPT_0);
+  //	Adds a given file to the archive
+  //	You may only add files to OCF files (you passed false for open_raw when you opened)
+  //	compression_type = what type of compression you want to use
+  bool AddFileToArchive(char *filename, int compression_type = COMPT_HUFFADAPT_0);
 
-	//	Extracts a file from an OCF archive
-	//	filename = The filename specified within the archive
-	//	destfilename = The output filename (what it should get extracted to) pass NULL if it
-	//				is the same as the original filename
-	bool ExtractFileFromArchive(char *filename,char *destfilename=NULL);
+  //	Extracts a file from an OCF archive
+  //	filename = The filename specified within the archive
+  //	destfilename = The output filename (what it should get extracted to) pass NULL if it
+  //				is the same as the original filename
+  bool ExtractFileFromArchive(char *filename, char *destfilename = NULL);
 
-	//	Gets a list of files in the OCF, make sure you free up the array after use
-	//	returns the number of files in the OCF
-	//	0 or -1 on error (-1 is out of memory)
-	int GetFileList(tFileInfo **info);
+  //	Gets a list of files in the OCF, make sure you free up the array after use
+  //	returns the number of files in the OCF
+  //	0 or -1 on error (-1 is out of memory)
+  int GetFileList(tFileInfo **info);
 
-	/////////////////////////////////////////
-	//	Raw type compressed files operations only
-	int ReadBytes(char *data,int count);
-	void WriteBytes(char *data,int count);
-	ubyte ReadRawByte(void);
-	ushort ReadRawShort(void);
-	uint ReadRawInt(void);
-	float ReadRawFloat(void);
-	void WriteRawByte(ubyte value);
-	void WriteRawShort(ushort value);
-	void WriteRawInt(uint value);
-	void WriteRawFloat(float value);
-	bool RawEOF(void);
+  /////////////////////////////////////////
+  //	Raw type compressed files operations only
+  int ReadBytes(char *data, int count);
+  void WriteBytes(char *data, int count);
+  ubyte ReadRawByte(void);
+  ushort ReadRawShort(void);
+  uint ReadRawInt(void);
+  float ReadRawFloat(void);
+  void WriteRawByte(ubyte value);
+  void WriteRawShort(ushort value);
+  void WriteRawInt(uint value);
+  void WriteRawFloat(float value);
+  bool RawEOF(void);
+
 private:
-	////////////////////////////////
-	// CZip Variables
-	BITFILE *bfile;
-	tVirtualFile *file;
-	bool	m_bRawType;
-	int		m_iCompressionType;
-	tFileInfo	current_file;
-	//	Reads in a Raw type file header
-	//	returns true on succes, if so, compr_type contains the compression type
-	bool ReadRawHeader(tVirtualFile *file,ubyte *compr_type);
-	//	Writes out a Raw type file header
-	//	returns true on succes
-	bool WriteRawHeader(tVirtualFile *file,ubyte compr_type);
-	//	Reads in an OCF header
-	//	returns true on success, info is filled in the appropriate values,compr_type is compression type
-	bool ReadOCFHeader(tVirtualFile *file,tFileInfo *info,ubyte *compr_type);
-	//	Writes out an OCF header
-	//	returns true on success
-	bool WriteOCFHeader(tVirtualFile *file,tFileInfo *info,ubyte compr_type,int header_pos);
-	//	Writes out a 'dummy' OCF header, just give what the final filename is
-	//	you must call this before you compress data, then when done, call the read WriteOCFHeader
-	bool WriteDummyOCFHeader(tVirtualFile *file,char *filename);
-	//	Searches through the opened OCF looking for filename, returns the file position
-	//	of the file if found, or -1 if not.
-	int FindFileInOCF(tVirtualFile *file,char *filename);
-	//	Gets a list of files in the OCF, make sure you free up the array after use
-	//	returns the number of files in the OCF
-	//	0 or -1 on error (-1 is out of memory)
-	int GetOCFFileList(BITFILE *file,tFileInfo **info);
-	//	Prepares one of the decompressors for raw reading
-	void PrepareDecompressor(BITFILE *bfile);
-	//	Prepares one of the compressors for raw reading
-	void PrepareCompressor(BITFILE *bfile);
+  ////////////////////////////////
+  // CZip Variables
+  BITFILE *bfile;
+  tVirtualFile *file;
+  bool m_bRawType;
+  int m_iCompressionType;
+  tFileInfo current_file;
+  //	Reads in a Raw type file header
+  //	returns true on succes, if so, compr_type contains the compression type
+  bool ReadRawHeader(tVirtualFile *file, ubyte *compr_type);
+  //	Writes out a Raw type file header
+  //	returns true on succes
+  bool WriteRawHeader(tVirtualFile *file, ubyte compr_type);
+  //	Reads in an OCF header
+  //	returns true on success, info is filled in the appropriate values,compr_type is compression type
+  bool ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type);
+  //	Writes out an OCF header
+  //	returns true on success
+  bool WriteOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte compr_type, int header_pos);
+  //	Writes out a 'dummy' OCF header, just give what the final filename is
+  //	you must call this before you compress data, then when done, call the read WriteOCFHeader
+  bool WriteDummyOCFHeader(tVirtualFile *file, char *filename);
+  //	Searches through the opened OCF looking for filename, returns the file position
+  //	of the file if found, or -1 if not.
+  int FindFileInOCF(tVirtualFile *file, char *filename);
+  //	Gets a list of files in the OCF, make sure you free up the array after use
+  //	returns the number of files in the OCF
+  //	0 or -1 on error (-1 is out of memory)
+  int GetOCFFileList(BITFILE *file, tFileInfo **info);
+  //	Prepares one of the decompressors for raw reading
+  void PrepareDecompressor(BITFILE *bfile);
+  //	Prepares one of the compressors for raw reading
+  void PrepareCompressor(BITFILE *bfile);
 
+  ////////////////////////////////////////////
+  // BitIO
+  BITFILE *OpenInputBitFile(char *filename);
+  BITFILE *OpenOutputBitFile(char *filename);
+  void OutputBit(BITFILE *bfile, int bit);
+  void OutputBits(BITFILE *bfile, ulong code, int count);
+  int InputBit(BITFILE *bfile);
+  ulong InputBits(BITFILE *bfile, int bitcount);
+  void CloseInputBitFile(BITFILE *bfile);
+  void CloseOutputBitFile(BITFILE *bfile);
+  void FilePrintBinary(FILE *file, uint code, int bits);
+  tVirtualFile *VFopen(char *filename, char *flags, int size = 0);
+  int VFclose(tVirtualFile *f);
+  int VFputc(int value, tVirtualFile *file);
+  int VFgetc(tVirtualFile *file);
+  int VFwrite(void *buffer, int size, int count, tVirtualFile *file);
+  int VFread(void *buffer, int size, int count, tVirtualFile *file);
+  int VFtell(tVirtualFile *file);
+  int VFseek(tVirtualFile *file, int offset, int origin);
+  void FlushOutputBitFile(BITFILE *bfile);
 
-	////////////////////////////////////////////
-	//BitIO
-	BITFILE *OpenInputBitFile(char *filename);
-	BITFILE *OpenOutputBitFile(char *filename);
-	void OutputBit(BITFILE *bfile,int bit);
-	void OutputBits(BITFILE *bfile,ulong code,int count);
-	int InputBit(BITFILE *bfile);
-	ulong InputBits(BITFILE *bfile,int bitcount);
-	void CloseInputBitFile(BITFILE *bfile);
-	void CloseOutputBitFile(BITFILE *bfile);
-	void FilePrintBinary(FILE *file,uint code,int bits);
-	tVirtualFile *VFopen(char *filename,char *flags,int size=0);
-	int VFclose(tVirtualFile *f);
-	int VFputc(int value,tVirtualFile *file);
-	int VFgetc(tVirtualFile *file);
-	int VFwrite(void *buffer,int size,int count,tVirtualFile *file);
-	int VFread(void *buffer,int size,int count,tVirtualFile *file);
-	int VFtell(tVirtualFile *file);
-	int VFseek(tVirtualFile *file,int offset,int origin);
-	void FlushOutputBitFile(BITFILE *bfile);
+  //////////////////////////////////////////////
+  // HuffmanBase
+  int hb_CompressFile(tVirtualFile *input, BITFILE *output);
+  bool hb_ExpandFile(BITFILE *input, tVirtualFile *output);
+  void hb_compress_data(tVirtualFile *input, BITFILE *output, tH0Code *codes);
+  void hb_expand_data(BITFILE *input, tVirtualFile *output, tH0Node *nodes, int root_node);
+  void hb_count_bytes(tVirtualFile *input, ulong *long_counts);
+  void hb_scale_counts(ulong *long_counts, tH0Node *nodes);
+  int hb_build_tree(tH0Node *nodes);
+  void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint code_so_far, int bits, int node);
+  void hb_output_counts(BITFILE *output, tH0Node *nodes);
+  void hb_input_counts(BITFILE *input, tH0Node *nodes);
 
-	//////////////////////////////////////////////
-	//HuffmanBase
-	int hb_CompressFile(tVirtualFile *input,BITFILE *output);
-	bool hb_ExpandFile(BITFILE *input,tVirtualFile *output);
-	void hb_compress_data(tVirtualFile *input,BITFILE *output,tH0Code *codes);
-	void hb_expand_data(BITFILE *input,tVirtualFile *output,tH0Node *nodes,int root_node);
-	void hb_count_bytes(tVirtualFile *input,ulong *long_counts);
-	void hb_scale_counts(ulong *long_counts,tH0Node *nodes);
-	int hb_build_tree(tH0Node *nodes);
-	void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes,uint code_so_far,int bits,int node);
-	void hb_output_counts(BITFILE *output,tH0Node *nodes);
-	void hb_input_counts(BITFILE *input,tH0Node *nodes);
-
-	//////////////////////////////////////////////
-	// Huffman Adaptive
-	tHATree Tree;
-	bool ok_to_raw_write,ok_to_raw_read;
-	int ha_CompressFile(tVirtualFile *input,BITFILE *output);
-	void ha_ExpandFile(BITFILE *input,tVirtualFile *output);
-	void ha_InitializeTree(tHATree *tree);
-	void ha_EncodeSymbol(tHATree *tree,uint c,BITFILE *output);
-	int ha_DecodeSymbol(tHATree *tree,BITFILE *input);
-	void ha_UpdateModel(tHATree *tree,int c);
-	void ha_RebuildTree(tHATree *tree);
-	void ha_swap_nodes(tHATree *tree,int i,int j);
-	void ha_add_new_node(tHATree *tree,int c);
-	void ha_CloseRawDecompress(void);
-	bool ha_ReadRawByte(ubyte *data,BITFILE *input);
-	void ha_PrepareDecompress(void);
-	void ha_CloseRawCompress(BITFILE *output);
-	void ha_WriteRawByte(ubyte data,BITFILE *output);
-	void ha_PrepareCompress(void);
+  //////////////////////////////////////////////
+  // Huffman Adaptive
+  tHATree Tree;
+  bool ok_to_raw_write, ok_to_raw_read;
+  int ha_CompressFile(tVirtualFile *input, BITFILE *output);
+  void ha_ExpandFile(BITFILE *input, tVirtualFile *output);
+  void ha_InitializeTree(tHATree *tree);
+  void ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output);
+  int ha_DecodeSymbol(tHATree *tree, BITFILE *input);
+  void ha_UpdateModel(tHATree *tree, int c);
+  void ha_RebuildTree(tHATree *tree);
+  void ha_swap_nodes(tHATree *tree, int i, int j);
+  void ha_add_new_node(tHATree *tree, int c);
+  void ha_CloseRawDecompress(void);
+  bool ha_ReadRawByte(ubyte *data, BITFILE *input);
+  void ha_PrepareDecompress(void);
+  void ha_CloseRawCompress(BITFILE *output);
+  void ha_WriteRawByte(ubyte data, BITFILE *output);
+  void ha_PrepareCompress(void);
 };
 
 #endif

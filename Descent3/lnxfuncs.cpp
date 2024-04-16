@@ -14,9 +14,10 @@
 // (in case you want to pre-allocate a buffer to load them all into memory).
 typedef unsigned ReadFunction(void *data, void *buf, unsigned qty);
 typedef struct {bool empty;} AudioDecoder;
-AudioDecoder *Create_AudioDecoder(ReadFunction *reader, void *data,unsigned *pChannels, unsigned *pSampleRate,long *pSampleCount)
+AudioDecoder *Create_AudioDecoder(ReadFunction *reader, void *data,unsigned *pChannels, unsigned *pSampleRate,long
+*pSampleCount)
 {
-	return malloc(sizeof(AudioDecoder));	
+        return malloc(sizeof(AudioDecoder));
 }
 
 // Read from audio decoder at most the specified qty of bytes
@@ -29,7 +30,7 @@ unsigned AudioDecoder_Read(AudioDecoder *ad, void *buf, unsigned qty)
 // Close audio decoder
 void AudioDecoder_Close(AudioDecoder *ad)
 {
-	if(ad) free(ad);
+        if(ad) free(ad);
 }
 
 // Optional interface for supplying your own malloc and free functions

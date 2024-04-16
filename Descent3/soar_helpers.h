@@ -7,12 +7,11 @@
  * Header for soar_helpers.cpp
  *
  * $Log: /DescentIII/main/soar_helpers.h $
- * 
+ *
  * 4     4/16/99 12:33a Matt
  * Disable Soar on non-Windows systems.
  *
  */
-
 
 #ifndef SOAR_HELPERS_H_
 #define SOAR_HELPERS_H_
@@ -63,12 +62,15 @@ bool DSGetDoorStatus(int n, int *status);
 void DSSoarInit();
 void DSSoarEnd();
 
-#else		//ifdef SOAR_ENABLED
+#else // ifdef SOAR_ENABLED
 
-#define DSSoarInit() do {} while (0)
-#define DSSoarEnd() do {} while (0)
+#define DSSoarInit()                                                                                                   \
+  do {                                                                                                                 \
+  } while (0)
+#define DSSoarEnd()                                                                                                    \
+  do {                                                                                                                 \
+  } while (0)
 
-#endif	//ifdef SOAR_ENABLED
-
+#endif // ifdef SOAR_ENABLED
 
 #endif

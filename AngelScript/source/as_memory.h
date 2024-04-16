@@ -28,15 +28,12 @@
    andreas@angelcode.com
 */
 
-
 //
 // as_memory.h
 //
 // Overload the default memory management functions so that we
 // can let the application decide how to do it.
 //
-
-
 
 #ifndef AS_MEMORY_H
 #define AS_MEMORY_H
@@ -46,27 +43,37 @@
 BEGIN_AS_NAMESPACE
 
 extern asALLOCFUNC_t userAlloc;
-extern asFREEFUNC_t  userFree;
+extern asFREEFUNC_t userFree;
 
 // We don't overload the new operator as that would affect the application as well
 
 #ifndef AS_DEBUG
 
-	#define asNEW(x)        new(userAlloc(sizeof(x))) x
-	#define asDELETE(ptr,x) {void *tmp = ptr; (ptr)->~x(); userFree(tmp);}
+#define asNEW(x) new (userAlloc(sizeof(x))) x
+#define asDELETE(ptr, x)                                                                                               \
+  {                                                                                                                    \
+    void *tmp = ptr;                                                                                                   \
+    (ptr)->~x();                                                                                                       \
+    userFree(tmp);                                                                                                     \
+  }
 
-	#define asNEWARRAY(x,cnt)  (x*)userAlloc(sizeof(x)*cnt)
-	#define asDELETEARRAY(ptr) userFree(ptr)
+#define asNEWARRAY(x, cnt) (x *)userAlloc(sizeof(x) * cnt)
+#define asDELETEARRAY(ptr) userFree(ptr)
 
 #else
 
-	typedef void *(*asALLOCFUNCDEBUG_t)(size_t, const char *, unsigned int);
+typedef void *(*asALLOCFUNCDEBUG_t)(size_t, const char *, unsigned int);
 
-	#define asNEW(x)        new(((asALLOCFUNCDEBUG_t)(userAlloc))(sizeof(x), __FILE__, __LINE__)) x
-	#define asDELETE(ptr,x) {void *tmp = ptr; (ptr)->~x(); userFree(tmp);}
+#define asNEW(x) new (((asALLOCFUNCDEBUG_t)(userAlloc))(sizeof(x), __FILE__, __LINE__)) x
+#define asDELETE(ptr, x)                                                                                               \
+  {                                                                                                                    \
+    void *tmp = ptr;                                                                                                   \
+    (ptr)->~x();                                                                                                       \
+    userFree(tmp);                                                                                                     \
+  }
 
-	#define asNEWARRAY(x,cnt)  (x*)((asALLOCFUNCDEBUG_t)(userAlloc))(sizeof(x)*cnt, __FILE__, __LINE__)
-	#define asDELETEARRAY(ptr) userFree(ptr)
+#define asNEWARRAY(x, cnt) (x *)((asALLOCFUNCDEBUG_t)(userAlloc))(sizeof(x) * cnt, __FILE__, __LINE__)
+#define asDELETEARRAY(ptr) userFree(ptr)
 
 #endif
 
@@ -78,24 +85,23 @@ END_AS_NAMESPACE
 
 BEGIN_AS_NAMESPACE
 
-class asCMemoryMgr
-{
+class asCMemoryMgr {
 public:
-	asCMemoryMgr();
-	~asCMemoryMgr();
+  asCMemoryMgr();
+  ~asCMemoryMgr();
 
-	void FreeUnusedMemory();
+  void FreeUnusedMemory();
 
-	void *AllocScriptNode();
-	void FreeScriptNode(void *ptr);
+  void *AllocScriptNode();
+  void FreeScriptNode(void *ptr);
 
-	void *AllocByteInstruction();
-	void FreeByteInstruction(void *ptr);
+  void *AllocByteInstruction();
+  void FreeByteInstruction(void *ptr);
 
 protected:
-	DECLARECRITICALSECTION(cs);
-	asCArray<void *> scriptNodePool;
-	asCArray<void *> byteInstructionPool;
+  DECLARECRITICALSECTION(cs);
+  asCArray<void *> scriptNodePool;
+  asCArray<void *> byteInstructionPool;
 };
 
 END_AS_NAMESPACE

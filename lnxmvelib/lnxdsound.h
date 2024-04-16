@@ -2,83 +2,78 @@
 #define __LNX_DSOUND_H_
 
 // Max&Min values for settings
-#define LNXSND_VOLUME_MAX                    0
-#define LNXSND_VOLUME_MIN               -10000
-#define LNXSND_PAN_LEFT                 -10000
-#define LNXSND_PAN_RIGHT                 10000
+#define LNXSND_VOLUME_MAX 0
+#define LNXSND_VOLUME_MIN -10000
+#define LNXSND_PAN_LEFT -10000
+#define LNXSND_PAN_RIGHT 10000
 
 // Status/Buffer flags
-#define LNXSND_PLAYING                  0x0001
-#define LNXSND_LOOPING                  0x0002
+#define LNXSND_PLAYING 0x0001
+#define LNXSND_LOOPING 0x0002
 
 // Buffer lock flags
-#define LNXSND_LOCK_FROMWRITECURSOR     0x0001
-#define LNXSND_LOCK_ENTIREBUFFER        0x0002
+#define LNXSND_LOCK_FROMWRITECURSOR 0x0001
+#define LNXSND_LOCK_ENTIREBUFFER 0x0002
 
 // Capability flags
-#define LNXSND_CAPS_PRIMARYBUFFER       0x0001
-#define LNXSND_CAPS_CTRLVOLUME          0x0002
-#define LNXSND_CAPS_CTRLPAN             0x0004
-#define LNXSND_CAPS_CTRLFREQUENCY       0x0008
-#define LNXSND_CAPS_CTRLDEFAULT         0x000E
-#define LNXSND_CAPS_LOCSOFTWARE         0x0010
+#define LNXSND_CAPS_PRIMARYBUFFER 0x0001
+#define LNXSND_CAPS_CTRLVOLUME 0x0002
+#define LNXSND_CAPS_CTRLPAN 0x0004
+#define LNXSND_CAPS_CTRLFREQUENCY 0x0008
+#define LNXSND_CAPS_CTRLDEFAULT 0x000E
+#define LNXSND_CAPS_LOCSOFTWARE 0x0010
 
-typedef struct
-{
-	int sound_device;            // file device handle for sound
-	unsigned int bps;            // (bytes per second) channels*freq*bit_depth/8
-	unsigned int freq;           // frequency (22050, etc.)
-	unsigned int bit_depth;      // 8 or 16
-	unsigned int channels;       // 1 or 2 (mono or stereo)
-}LnxSoundDevice;
+typedef struct {
+  int sound_device;       // file device handle for sound
+  unsigned int bps;       // (bytes per second) channels*freq*bit_depth/8
+  unsigned int freq;      // frequency (22050, etc.)
+  unsigned int bit_depth; // 8 or 16
+  unsigned int channels;  // 1 or 2 (mono or stereo)
+} LnxSoundDevice;
 
-typedef struct 
-{
-	unsigned short wFormatTag; 
-	unsigned short nChannels; 
-	unsigned int   nSamplesPerSec; 
-	unsigned int   nAvgBytesPerSec; 
-	unsigned short nBlockAlign; 
-	unsigned short wBitsPerSample; 
-	unsigned short cbSize; 
+typedef struct {
+  unsigned short wFormatTag;
+  unsigned short nChannels;
+  unsigned int nSamplesPerSec;
+  unsigned int nAvgBytesPerSec;
+  unsigned short nBlockAlign;
+  unsigned short wBitsPerSample;
+  unsigned short cbSize;
 } WAVEFORMATEX; // Taken from Windows for porting
-#define WAVE_FORMAT_PCM                   0x01
+#define WAVE_FORMAT_PCM 0x01
 
-typedef struct
-{
-	unsigned int dwFlags;
-	unsigned int dwBufferBytes;
-}LinuxSoundCaps;
+typedef struct {
+  unsigned int dwFlags;
+  unsigned int dwBufferBytes;
+} LinuxSoundCaps;
 
-typedef struct
-{
-	WAVEFORMATEX *lpwfxFormat;
-	unsigned int dwBufferBytes;
-	unsigned int dwFlags;
+typedef struct {
+  WAVEFORMATEX *lpwfxFormat;
+  unsigned int dwBufferBytes;
+  unsigned int dwFlags;
 } LnxBufferDesc;
 
-typedef struct
-{
-	int freq_adjustment;
-	int bps;
-	unsigned int buffer_len;
-	unsigned int play_cursor;
-	unsigned int write_cursor;
-	unsigned int flags;
-	unsigned long left_vol,right_vol;
+typedef struct {
+  int freq_adjustment;
+  int bps;
+  unsigned int buffer_len;
+  unsigned int play_cursor;
+  unsigned int write_cursor;
+  unsigned int flags;
+  unsigned long left_vol, right_vol;
 
-	unsigned char *buffer;
+  unsigned char *buffer;
 
-	signed long volume;
-	signed long pan;
+  signed long volume;
+  signed long pan;
 
-	WAVEFORMATEX wfx;
+  WAVEFORMATEX wfx;
 
-	LnxBufferDesc lbdesc;
+  LnxBufferDesc lbdesc;
 
-	unsigned short freq;
-	char playing;
-	char __pad;	
+  unsigned short freq;
+  char playing;
+  char __pad;
 } LnxSoundBuffer;
 
 ///////////////////////////////
@@ -90,7 +85,7 @@ typedef struct
 //       -1 : Invalid Parameter
 //       -2 : Out of memory
 //        0 : Ok!
-int LnxSound_CreateSoundBuffer(LnxSoundDevice *dev,LnxBufferDesc *lbdesc,LnxSoundBuffer **lsndb);
+int LnxSound_CreateSoundBuffer(LnxSoundDevice *dev, LnxBufferDesc *lbdesc, LnxSoundBuffer **lsndb);
 
 ////////////////////////////
 // LnxSoundBuffer_Release
@@ -112,7 +107,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff);
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff,signed long vol);
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol);
 
 ///////////////////////////
 // LnxSoundBuffer_SetPan
@@ -123,7 +118,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff,signed long vol);
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff,signed long pan);
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed long pan);
 
 /////////////////////////
 // LnxSoundBuffer_Stop
@@ -144,7 +139,7 @@ int LnxSoundBuffer_Stop(LnxSoundBuffer *buff);
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Play(LnxSoundBuffer *buff,unsigned int flags);
+int LnxSoundBuffer_Play(LnxSoundBuffer *buff, unsigned int flags);
 
 ////////////////////////////
 // LnxSoundBuffer_GetCaps
@@ -155,7 +150,7 @@ int LnxSoundBuffer_Play(LnxSoundBuffer *buff,unsigned int flags);
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_GetCaps(LnxSoundBuffer *buff,LinuxSoundCaps *caps);
+int LnxSoundBuffer_GetCaps(LnxSoundBuffer *buff, LinuxSoundCaps *caps);
 
 //////////////////////////////
 // LnxSoundBuffer_GetStatus
@@ -165,7 +160,7 @@ int LnxSoundBuffer_GetCaps(LnxSoundBuffer *buff,LinuxSoundCaps *caps);
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_GetStatus(LnxSoundBuffer *buff,unsigned int *status);
+int LnxSoundBuffer_GetStatus(LnxSoundBuffer *buff, unsigned int *status);
 
 ///////////////////////////////////////
 // LnxSoundBuffer_GetCurrentPosition
@@ -175,7 +170,7 @@ int LnxSoundBuffer_GetStatus(LnxSoundBuffer *buff,unsigned int *status);
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_GetCurrentPosition(LnxSoundBuffer *buff,unsigned int *ppos,unsigned int *wpos);
+int LnxSoundBuffer_GetCurrentPosition(LnxSoundBuffer *buff, unsigned int *ppos, unsigned int *wpos);
 
 ///////////////////////////////////////
 // LnxSoundBuffer_SetCurrentPosition
@@ -185,7 +180,7 @@ int LnxSoundBuffer_GetCurrentPosition(LnxSoundBuffer *buff,unsigned int *ppos,un
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff,unsigned int pos);
+int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff, unsigned int pos);
 
 /////////////////////////
 // LnxSoundBuffer_Lock
@@ -196,15 +191,8 @@ int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff,unsigned int pos);
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Lock(
-				LnxSoundBuffer *buff,
-				unsigned int pos,
-				unsigned int numbytes,
-				void **ptr1,
-				unsigned int *numbytes1,
-				void **ptr2,
-				unsigned int *numbytes2,
-				unsigned int flags);
+int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, unsigned int pos, unsigned int numbytes, void **ptr1,
+                        unsigned int *numbytes1, void **ptr2, unsigned int *numbytes2, unsigned int flags);
 
 ///////////////////////////
 // LnxSoundBuffer_Unlock
@@ -214,11 +202,6 @@ int LnxSoundBuffer_Lock(
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Unlock(
-				LnxSoundBuffer *buff,
-				void *ptr1,
-				unsigned int num1,
-				void *ptr2,
-				unsigned int num2);
+int LnxSoundBuffer_Unlock(LnxSoundBuffer *buff, void *ptr1, unsigned int num1, void *ptr2, unsigned int num2);
 
 #endif

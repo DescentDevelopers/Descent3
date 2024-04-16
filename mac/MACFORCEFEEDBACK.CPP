@@ -1,32 +1,32 @@
 /*
-* $Logfile: /DescentIII/Main/mac/MACFORCEFEEDBACK.CPP $
-* $Revision: 1.1.1.1 $
-* $Date: 2003/08/26 03:58:15 $
-* $Author: kevinb $
-*
-* Linux force feedback stub
-*
-* $Log: MACFORCEFEEDBACK.CPP,v $
-* Revision 1.1.1.1  2003/08/26 03:58:15  kevinb
-* initial 1.5 import
-*
- * 
+ * $Logfile: /DescentIII/Main/mac/MACFORCEFEEDBACK.CPP $
+ * $Revision: 1.1.1.1 $
+ * $Date: 2003/08/26 03:58:15 $
+ * $Author: kevinb $
+ *
+ * Linux force feedback stub
+ *
+ * $Log: MACFORCEFEEDBACK.CPP,v $
+ * Revision 1.1.1.1  2003/08/26 03:58:15  kevinb
+ * initial 1.5 import
+ *
+ *
  * 2     10/21/99 1:55p Kevin
  * Mac Merge!
- * 
+ *
  * 1     7/28/99 2:31p Kevin
  * Mac only stuff
- * 
+ *
  * 3     4/16/99 8:28p Jeff
  * created more stub functions
- * 
+ *
  * 2     4/14/99 1:57a Jeff
  * fixed case mismatched #includes
- * 
+ *
  * 1     1/18/99 12:13a Jeff
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 #include "DDAccess.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -40,15 +40,15 @@
 #include "mem.h"
 #include "object.h"
 
-void ForceInit(void) {};
-void ForceShutdown(void) {};
+void ForceInit(void){};
+void ForceShutdown(void){};
 bool ForceIsEnabled(void) { return false; };
-void DoForceForRecoil(object *playerobj,object *weap) {};
-void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *wall_normal) {};
-void DoForceForWeapon(object *me_obj,object *it_obj,vector *force_vec) {};
-void ForceEffectsPlay(int id,float *scale,int *direction) {};
-void ForceEffectsPlay(int id,float *scale,vector *direction) {};
-void DoForceForShake(float magnitude) {};
+void DoForceForRecoil(object *playerobj, object *weap){};
+void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *wall_normal){};
+void DoForceForWeapon(object *me_obj, object *it_obj, vector *force_vec){};
+void ForceEffectsPlay(int id, float *scale, int *direction){};
+void ForceEffectsPlay(int id, float *scale, vector *direction){};
+void DoForceForShake(float magnitude){};
 
 #if 0
 bool ddForce_found;	//a Force Feedback device was found

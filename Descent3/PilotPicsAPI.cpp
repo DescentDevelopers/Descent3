@@ -1,28 +1,28 @@
 /*
-* $Logfile: /DescentIII/main/PilotPicsAPI.cpp $
-* $Revision: 9 $
-* $Date: 10/21/99 9:28p $
-* $Author: Jeff $
-*
-* API implementation for Pilot Pictures
-*
-* $Log: /DescentIII/main/PilotPicsAPI.cpp $
- * 
+ * $Logfile: /DescentIII/main/PilotPicsAPI.cpp $
+ * $Revision: 9 $
+ * $Date: 10/21/99 9:28p $
+ * $Author: Jeff $
+ *
+ * API implementation for Pilot Pictures
+ *
+ * $Log: /DescentIII/main/PilotPicsAPI.cpp $
+ *
  * 9     10/21/99 9:28p Jeff
  * B.A. Macintosh code merge
- * 
+ *
  * 8     4/14/99 3:57a Jeff
  * fixed case mismatch in #includes
- * 
+ *
  * 7     3/30/99 4:26a Jeff
  * reset variable when closing down system
- * 
+ *
  * 6     3/29/99 7:19p Jeff
  * increased buffer for importing pilot pics
- * 
+ *
  * 5     2/05/99 7:04p Jeff
  * table file parsing macros put in
- * 
+ *
  * 4     1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
  * into seperate header files so that multiplayer dlls don't require major
@@ -30,15 +30,15 @@
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
  * manage.h and multi.h
- * 
+ *
  * 3     11/24/98 5:16p Jeff
  * fixed bugs in the api during initial testing
- * 
+ *
  * 2     11/23/98 6:30p Jeff
  * initial creation
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -52,15 +52,14 @@
 #include "PilotPicsAPI.h"
 #include "mem.h"
 
-#define PILOTPIC_DATABASE_HOG	"PPics.Hog"
-#define PILOTPIC_DATABASE_INDEX	"PPics.idx"
+#define PILOTPIC_DATABASE_HOG "PPics.Hog"
+#define PILOTPIC_DATABASE_INDEX "PPics.idx"
 
-CFILE	*PilotPic_database_index_handle = NULL;
-int		PilotPic_database_hog_handle = 0;
-int		PilotPic_find_offset;
-char	PilotPic_find_name[PILOT_STRING_SIZE];
-bool	PilotPic_init = false;
-
+CFILE *PilotPic_database_index_handle = NULL;
+int PilotPic_database_hog_handle = 0;
+int PilotPic_find_offset;
+char PilotPic_find_name[PILOT_STRING_SIZE];
+bool PilotPic_init = false;
 
 // -----------------------------------------------
 // PPic_BuildDatabase
@@ -86,7 +85,7 @@ int PPic_JumpToPilot(char *pilot_name);
 // -------------------------------------
 // PPic_GetIndexFromID
 //	Purpose:
-//		Returns the file index into the Pilot_id_to_offset 
+//		Returns the file index into the Pilot_id_to_offset
 //	list for the given id, -1 if not found.
 // -------------------------------------
 int PPic_GetIndexFromID(int id);
@@ -105,64 +104,63 @@ int PPic_GetOffsetByID(ushort pilot_id);
 //		Initializes the database for the pictures.  Call before
 //	any other Pilot Picture function
 // ---------------------------------------------------------
-bool PPic_InitDatabase(void)
-{
-	if(PilotPic_init){
-		mprintf((0,"PPIC: InitDatabase already called\n"));
-		return true;
-	}
+bool PPic_InitDatabase(void) {
+  if (PilotPic_init) {
+    mprintf((0, "PPIC: InitDatabase already called\n"));
+    return true;
+  }
 
-	// attempt to open the hog database
-	// --------------------------------
-#if defined (MACINTOSH) && !(defined (_DEBUG) || defined (DEMO))
-	char *fullpath;
-	fullpath = GetMultiCDPath(PILOTPIC_DATABASE_HOG);
+  // attempt to open the hog database
+  // --------------------------------
+#if defined(MACINTOSH) && !(defined(_DEBUG) || defined(DEMO))
+  char *fullpath;
+  fullpath = GetMultiCDPath(PILOTPIC_DATABASE_HOG);
 #else
-	char fullpath[_MAX_PATH];
-	ddio_MakePath(fullpath,LocalD3Dir,PILOTPIC_DATABASE_HOG,NULL);
+  char fullpath[_MAX_PATH];
+  ddio_MakePath(fullpath, LocalD3Dir, PILOTPIC_DATABASE_HOG, NULL);
 #endif
-	PilotPic_database_hog_handle = cf_OpenLibrary(fullpath);
+  PilotPic_database_hog_handle = cf_OpenLibrary(fullpath);
 
-	if(PilotPic_database_hog_handle==0){
-		// there was an error opening the hog database
-		// -----------------------------------------
-		mprintf((0,"PPIC: Error opening %s database\n",PILOTPIC_DATABASE_HOG));
-		PilotPic_database_index_handle = NULL;
-		return false;
-	}
+  if (PilotPic_database_hog_handle == 0) {
+    // there was an error opening the hog database
+    // -----------------------------------------
+    mprintf((0, "PPIC: Error opening %s database\n", PILOTPIC_DATABASE_HOG));
+    PilotPic_database_index_handle = NULL;
+    return false;
+  }
 
-	// attempt to open the pilotpicture database index
-	// -----------------------------------------------
-	PilotPic_database_index_handle = cfopen(PILOTPIC_DATABASE_INDEX,"rb");
+  // attempt to open the pilotpicture database index
+  // -----------------------------------------------
+  PilotPic_database_index_handle = cfopen(PILOTPIC_DATABASE_INDEX, "rb");
 
-	if(PilotPic_database_index_handle==NULL){
-		// there was an error opening the database index
-		// ---------------------------------------------
-		mprintf((0,"PPIC: Error opening database index '%s'\n",PILOTPIC_DATABASE_INDEX));
-		cf_CloseLibrary(PilotPic_database_hog_handle);
-		PilotPic_database_hog_handle = 0;
-		return false;
-	}
+  if (PilotPic_database_index_handle == NULL) {
+    // there was an error opening the database index
+    // ---------------------------------------------
+    mprintf((0, "PPIC: Error opening database index '%s'\n", PILOTPIC_DATABASE_INDEX));
+    cf_CloseLibrary(PilotPic_database_hog_handle);
+    PilotPic_database_hog_handle = 0;
+    return false;
+  }
 
-	// when we get to this point, all of our files have been opened successfully, so to
-	// make searching, etc fast, we'll build some databases in memory, for quick lookup
-	// ---------------------------------------------------------------------------------
-	if(!PPic_BuildDatabases()){
-		// there was an error building the databases
-		// -----------------------------------------
-		mprintf((0,"PPIC: Error building databases\n"));
-		cfclose(PilotPic_database_index_handle);
-		PilotPic_database_index_handle = NULL;
-		cf_CloseLibrary(PilotPic_database_hog_handle);
-		PilotPic_database_hog_handle = 0;
-		return false;
-	}
+  // when we get to this point, all of our files have been opened successfully, so to
+  // make searching, etc fast, we'll build some databases in memory, for quick lookup
+  // ---------------------------------------------------------------------------------
+  if (!PPic_BuildDatabases()) {
+    // there was an error building the databases
+    // -----------------------------------------
+    mprintf((0, "PPIC: Error building databases\n"));
+    cfclose(PilotPic_database_index_handle);
+    PilotPic_database_index_handle = NULL;
+    cf_CloseLibrary(PilotPic_database_hog_handle);
+    PilotPic_database_hog_handle = 0;
+    return false;
+  }
 
-	PilotPic_init = true;
+  PilotPic_init = true;
 
-	atexit(PPic_CloseDatabase);
+  atexit(PPic_CloseDatabase);
 
-	return true;
+  return true;
 }
 
 // ---------------------------------------------------------
@@ -170,26 +168,25 @@ bool PPic_InitDatabase(void)
 //	Purpose:
 //		Closes down the picture database.
 // ---------------------------------------------------------
-void PPic_CloseDatabase(void)
-{
-	if(!PilotPic_init)
-		return;
+void PPic_CloseDatabase(void) {
+  if (!PilotPic_init)
+    return;
 
-	//close up the database
-	PPic_FreeDatabase();
+  // close up the database
+  PPic_FreeDatabase();
 
-	//close up files
-	if(PilotPic_database_index_handle){
-		cfclose(PilotPic_database_index_handle);
-		PilotPic_database_index_handle = NULL;
-	}
+  // close up files
+  if (PilotPic_database_index_handle) {
+    cfclose(PilotPic_database_index_handle);
+    PilotPic_database_index_handle = NULL;
+  }
 
-	if(PilotPic_database_hog_handle){
-		cf_CloseLibrary(PilotPic_database_hog_handle);
-		PilotPic_database_hog_handle = 0;
-	}
+  if (PilotPic_database_hog_handle) {
+    cf_CloseLibrary(PilotPic_database_hog_handle);
+    PilotPic_database_hog_handle = 0;
+  }
 
-	PilotPic_init = false;
+  PilotPic_init = false;
 }
 
 // ---------------------------------------------------------
@@ -198,53 +195,52 @@ void PPic_CloseDatabase(void)
 //		Given a pilot callsign it will search the database
 //	and return the number of pilots that match the name
 // ---------------------------------------------------------
-ushort PPic_QueryPilot(char *pilot_name)
-{
-	if(!PilotPic_init)
-		return 0;
+ushort PPic_QueryPilot(char *pilot_name) {
+  if (!PilotPic_init)
+    return 0;
 
-	int letter_offset = PPic_JumpToPilot(pilot_name);
-	if(letter_offset==-1)
-		return 0;
+  int letter_offset = PPic_JumpToPilot(pilot_name);
+  if (letter_offset == -1)
+    return 0;
 
-	int count = 0;
-	bool done = false;
-	char name_buffer[PILOT_STRING_SIZE];
-	CFILE	*file = PilotPic_database_index_handle;
-	
-	//now read through the pilots until we don't get a match anymore
-	while(!done){
-		//first read in the pilot name
-		ubyte name_size;
-		name_size = cf_ReadByte(file);
+  int count = 0;
+  bool done = false;
+  char name_buffer[PILOT_STRING_SIZE];
+  CFILE *file = PilotPic_database_index_handle;
 
-		if(cfeof(file)){
-			done = true;
-			continue;
-		}
-		cf_ReadBytes((ubyte *)name_buffer,name_size,file);
-		name_buffer[name_size]='\0';
+  // now read through the pilots until we don't get a match anymore
+  while (!done) {
+    // first read in the pilot name
+    ubyte name_size;
+    name_size = cf_ReadByte(file);
 
-		//next read in pilot_id
-		ushort pilot_id;
-		pilot_id = (ushort)cf_ReadShort(file);
+    if (cfeof(file)) {
+      done = true;
+      continue;
+    }
+    cf_ReadBytes((ubyte *)name_buffer, name_size, file);
+    name_buffer[name_size] = '\0';
 
-		//next read past the bitmap name
-		ubyte bmp_size;
-		bmp_size = cf_ReadByte(file);
-		cfseek(file,bmp_size,SEEK_CUR);
+    // next read in pilot_id
+    ushort pilot_id;
+    pilot_id = (ushort)cf_ReadShort(file);
 
-		if(stricmp(name_buffer,pilot_name)){
-			//we're done
-			done = true;
-		}else
-			count++;
+    // next read past the bitmap name
+    ubyte bmp_size;
+    bmp_size = cf_ReadByte(file);
+    cfseek(file, bmp_size, SEEK_CUR);
 
-		if(cfeof(file))
-			done = true;
-	}
+    if (stricmp(name_buffer, pilot_name)) {
+      // we're done
+      done = true;
+    } else
+      count++;
 
-	return count;
+    if (cfeof(file))
+      done = true;
+  }
+
+  return count;
 }
 
 // ---------------------------------------------------------
@@ -255,48 +251,47 @@ ushort PPic_QueryPilot(char *pilot_name)
 //	if it couldn't find any pilots matching.  It returns
 //	the pilot id.
 // ----------------------------------------------------------
-bool PPic_FindFirst(char *pilot_name,ushort *pilot_id)
-{
-	if(!PilotPic_init)
-		return false;
+bool PPic_FindFirst(char *pilot_name, ushort *pilot_id) {
+  if (!PilotPic_init)
+    return false;
 
-	*pilot_id = 65535;
+  *pilot_id = 65535;
 
-	int letter_offset = PPic_JumpToPilot(pilot_name);
-	if(letter_offset==-1)
-		return false;
+  int letter_offset = PPic_JumpToPilot(pilot_name);
+  if (letter_offset == -1)
+    return false;
 
-	strcpy(PilotPic_find_name,pilot_name);
+  strcpy(PilotPic_find_name, pilot_name);
 
-	char name_buffer[PILOT_STRING_SIZE];
-	CFILE	*file = PilotPic_database_index_handle;
+  char name_buffer[PILOT_STRING_SIZE];
+  CFILE *file = PilotPic_database_index_handle;
 
-	//first read in the pilot name
-	ubyte name_size;
-	name_size = cf_ReadByte(file);
-	if(cfeof(file)){
-		return false;
-	}
-	cf_ReadBytes((ubyte *)name_buffer,name_size,file);
-	name_buffer[name_size]='\0';
+  // first read in the pilot name
+  ubyte name_size;
+  name_size = cf_ReadByte(file);
+  if (cfeof(file)) {
+    return false;
+  }
+  cf_ReadBytes((ubyte *)name_buffer, name_size, file);
+  name_buffer[name_size] = '\0';
 
-	//next read in pilot_id
-	ushort pid;
-	pid = (ushort)cf_ReadShort(file);
+  // next read in pilot_id
+  ushort pid;
+  pid = (ushort)cf_ReadShort(file);
 
-	//next read past the bitmap name
-	ubyte bmp_size;
-	bmp_size = cf_ReadByte(file);
-	cfseek(file,bmp_size,SEEK_CUR);
+  // next read past the bitmap name
+  ubyte bmp_size;
+  bmp_size = cf_ReadByte(file);
+  cfseek(file, bmp_size, SEEK_CUR);
 
-	if(stricmp(name_buffer,pilot_name)){
-		return false;	//weird
-	}
+  if (stricmp(name_buffer, pilot_name)) {
+    return false; // weird
+  }
 
-	*pilot_id = pid;
-	PilotPic_find_offset = cftell(file);
+  *pilot_id = pid;
+  PilotPic_find_offset = cftell(file);
 
-	return true;
+  return true;
 }
 
 // ----------------------------------------------------------
@@ -307,47 +302,46 @@ bool PPic_FindFirst(char *pilot_name,ushort *pilot_id)
 //	an initial call to PPic_FindFirst().  It returns the
 //	pilot id.
 // ----------------------------------------------------------
-bool PPic_FindNext(ushort *pilot_id)
-{
-	if(!PilotPic_init)
-		return false;
+bool PPic_FindNext(ushort *pilot_id) {
+  if (!PilotPic_init)
+    return false;
 
-	*pilot_id = 65535;
-	
-	char name_buffer[PILOT_STRING_SIZE];
-	CFILE	*file = PilotPic_database_index_handle;
+  *pilot_id = 65535;
 
-	cfseek(file,PilotPic_find_offset,SEEK_SET);
-	if(cfeof(file)){
-		return false;
-	}
+  char name_buffer[PILOT_STRING_SIZE];
+  CFILE *file = PilotPic_database_index_handle;
 
-	//first read in the pilot name
-	ubyte name_size;
-	name_size = cf_ReadByte(file);
-	if(cfeof(file)){
-		return false;
-	}
-	cf_ReadBytes((ubyte *)name_buffer,name_size,file);
-	name_buffer[name_size]='\0';
+  cfseek(file, PilotPic_find_offset, SEEK_SET);
+  if (cfeof(file)) {
+    return false;
+  }
 
-	//next read in pilot_id
-	ushort pid;
-	pid = (ushort)cf_ReadShort(file);
+  // first read in the pilot name
+  ubyte name_size;
+  name_size = cf_ReadByte(file);
+  if (cfeof(file)) {
+    return false;
+  }
+  cf_ReadBytes((ubyte *)name_buffer, name_size, file);
+  name_buffer[name_size] = '\0';
 
-	//next read past the bitmap name
-	ubyte bmp_size;
-	bmp_size = cf_ReadByte(file);
-	cfseek(file,bmp_size,SEEK_CUR);
+  // next read in pilot_id
+  ushort pid;
+  pid = (ushort)cf_ReadShort(file);
 
-	if(stricmp(name_buffer,PilotPic_find_name)){
-		return false;	//we're done
-	}
+  // next read past the bitmap name
+  ubyte bmp_size;
+  bmp_size = cf_ReadByte(file);
+  cfseek(file, bmp_size, SEEK_CUR);
 
-	*pilot_id = pid;
-	PilotPic_find_offset = cftell(file);
+  if (stricmp(name_buffer, PilotPic_find_name)) {
+    return false; // we're done
+  }
 
-	return true;
+  *pilot_id = pid;
+  PilotPic_find_offset = cftell(file);
+
+  return true;
 }
 
 // ----------------------------------------------------------
@@ -355,51 +349,49 @@ bool PPic_FindNext(ushort *pilot_id)
 //	Purpose:
 //		Stops a PPic_FindFirst/PPic_FindNext session
 // ----------------------------------------------------------
-void PPic_FindClose(void)
-{
-	PilotPic_find_offset = 0;
-	PilotPic_find_name[0] = 0;
+void PPic_FindClose(void) {
+  PilotPic_find_offset = 0;
+  PilotPic_find_name[0] = 0;
 }
 
 // ----------------------------------------------------------
 // PPic_GetPilot
 //	Purpose:
-//		Given a pilot id, it will return the pilot name of 
+//		Given a pilot id, it will return the pilot name of
 //	the pilot name.  Returns false if it's an invalid pilot id.
 // ----------------------------------------------------------
-bool PPic_GetPilot(ushort pilot_id,char *pilot_name,int buffersize)
-{
-	if(!PilotPic_init)
-		return false;
+bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize) {
+  if (!PilotPic_init)
+    return false;
 
-	int oldoffset = cftell(PilotPic_database_index_handle);
+  int oldoffset = cftell(PilotPic_database_index_handle);
 
-	int offset = PPic_GetOffsetByID(pilot_id);
-	if(offset==-1)
-		return false;
-	
-	// jump to the offset
-	// ------------------
-	cfseek(PilotPic_database_index_handle,offset,SEEK_SET);
-	if(cfeof(PilotPic_database_index_handle)){
-		cfseek(PilotPic_database_index_handle,oldoffset,SEEK_SET);
-		return false;
-	}
+  int offset = PPic_GetOffsetByID(pilot_id);
+  if (offset == -1)
+    return false;
 
-	// read in the pilot name
-	// ----------------------
-	ubyte name_size;
-	name_size = cf_ReadByte(PilotPic_database_index_handle);
-	if(cfeof(PilotPic_database_index_handle)){
-		cfseek(PilotPic_database_index_handle,oldoffset,SEEK_SET);
-		return false;
-	}
-	int toread = min(name_size,buffersize-1);
-	cf_ReadBytes((ubyte *)pilot_name,toread,PilotPic_database_index_handle);
-	pilot_name[toread] = '\0';
+  // jump to the offset
+  // ------------------
+  cfseek(PilotPic_database_index_handle, offset, SEEK_SET);
+  if (cfeof(PilotPic_database_index_handle)) {
+    cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
+    return false;
+  }
 
-	cfseek(PilotPic_database_index_handle,oldoffset,SEEK_SET);
-	return true;
+  // read in the pilot name
+  // ----------------------
+  ubyte name_size;
+  name_size = cf_ReadByte(PilotPic_database_index_handle);
+  if (cfeof(PilotPic_database_index_handle)) {
+    cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
+    return false;
+  }
+  int toread = min(name_size, buffersize - 1);
+  cf_ReadBytes((ubyte *)pilot_name, toread, PilotPic_database_index_handle);
+  pilot_name[toread] = '\0';
+
+  cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
+  return true;
 }
 
 // ----------------------------------------------------------
@@ -410,69 +402,68 @@ bool PPic_GetPilot(ushort pilot_id,char *pilot_name,int buffersize)
 //	bm_FreeBitmap().  Returns -1 if it was an illegal pilot id.
 //	Returns BAD_BITMAP_HANDLE if it couldn't open the bitmap.
 // ----------------------------------------------------------
-int PPic_GetBitmapHandle(ushort pilot_id)
-{
-	if(!PilotPic_init)
-		return -1;
+int PPic_GetBitmapHandle(ushort pilot_id) {
+  if (!PilotPic_init)
+    return -1;
 
-	int oldoffset = cftell(PilotPic_database_index_handle);
+  int oldoffset = cftell(PilotPic_database_index_handle);
 
-	int offset = PPic_GetOffsetByID(pilot_id);
-	if(offset==-1)
-		return -1;
-	
-	// jump to the offset
-	// ------------------
-	cfseek(PilotPic_database_index_handle,offset,SEEK_SET);
-	if(cfeof(PilotPic_database_index_handle)){
-		cfseek(PilotPic_database_index_handle,oldoffset,SEEK_SET);
-		return -1;
-	}
+  int offset = PPic_GetOffsetByID(pilot_id);
+  if (offset == -1)
+    return -1;
 
-	// read in the pilot name
-	// ----------------------
-	ubyte name_size;
-	char name_buffer[PILOT_STRING_SIZE];
-	name_size = cf_ReadByte(PilotPic_database_index_handle);
-	if(cfeof(PilotPic_database_index_handle)){
-		cfseek(PilotPic_database_index_handle,oldoffset,SEEK_SET);
-		return -1;
-	}
-	cf_ReadBytes((ubyte *)name_buffer,name_size,PilotPic_database_index_handle);
-	name_buffer[name_size]='\0';
+  // jump to the offset
+  // ------------------
+  cfseek(PilotPic_database_index_handle, offset, SEEK_SET);
+  if (cfeof(PilotPic_database_index_handle)) {
+    cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
+    return -1;
+  }
 
-	//next read in pilot_id
-	ushort pid;
-	pid = (ushort)cf_ReadShort(PilotPic_database_index_handle);
+  // read in the pilot name
+  // ----------------------
+  ubyte name_size;
+  char name_buffer[PILOT_STRING_SIZE];
+  name_size = cf_ReadByte(PilotPic_database_index_handle);
+  if (cfeof(PilotPic_database_index_handle)) {
+    cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
+    return -1;
+  }
+  cf_ReadBytes((ubyte *)name_buffer, name_size, PilotPic_database_index_handle);
+  name_buffer[name_size] = '\0';
 
-	//next read past the bitmap name
-	ubyte bmp_size;
-	char bitmap_name[_MAX_PATH];
-	bmp_size = cf_ReadByte(PilotPic_database_index_handle);
-	cf_ReadBytes((ubyte *)bitmap_name,bmp_size,PilotPic_database_index_handle);
-	bitmap_name[bmp_size]='\0';
+  // next read in pilot_id
+  ushort pid;
+  pid = (ushort)cf_ReadShort(PilotPic_database_index_handle);
 
-	cfseek(PilotPic_database_index_handle,oldoffset,SEEK_SET);
+  // next read past the bitmap name
+  ubyte bmp_size;
+  char bitmap_name[_MAX_PATH];
+  bmp_size = cf_ReadByte(PilotPic_database_index_handle);
+  cf_ReadBytes((ubyte *)bitmap_name, bmp_size, PilotPic_database_index_handle);
+  bitmap_name[bmp_size] = '\0';
 
-	int bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(bitmap_name),0);
-	if(bm_handle<=BAD_BITMAP_HANDLE)
-		return BAD_BITMAP_HANDLE;
+  cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
 
-	return bm_handle;
+  int bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(bitmap_name), 0);
+  if (bm_handle <= BAD_BITMAP_HANDLE)
+    return BAD_BITMAP_HANDLE;
+
+  return bm_handle;
 }
 
 // ===============================================================================
 
-//this maps a pilot_id to an index file offset 
-typedef struct{
-	int offset;
-	ushort id;
-}tPilotPicIdOffset;
+// this maps a pilot_id to an index file offset
+typedef struct {
+  int offset;
+  ushort id;
+} tPilotPicIdOffset;
 tPilotPicIdOffset *Pilot_id_to_offset = NULL;
 ushort *Sorted_Pilot_id_to_offset = NULL;
 int PilotPic_count = 0;
 
-//this maps the alphabet to an index file offset (first pilot_name that begins with the letter)
+// this maps the alphabet to an index file offset (first pilot_name that begins with the letter)
 int Alphabet_to_offset[27];
 
 // -----------------------------------------------
@@ -481,115 +472,114 @@ int Alphabet_to_offset[27];
 //		Builds up some databases for fast access
 //	based off the index file.
 // -----------------------------------------------
-bool PPic_BuildDatabases(void)
-{
-	CFILE *file = PilotPic_database_index_handle;
-	if(!file)
-		return false;
+bool PPic_BuildDatabases(void) {
+  CFILE *file = PilotPic_database_index_handle;
+  if (!file)
+    return false;
 
-	// first rewind to the beginning and find out how many pilots we have
-	// -------------------------------------------------------------------
-	cf_Rewind(file);
+  // first rewind to the beginning and find out how many pilots we have
+  // -------------------------------------------------------------------
+  cf_Rewind(file);
 
-	PilotPic_count = cf_ReadInt(file);
-	if(PilotPic_count<0){
-		//hmm a negative!
-		mprintf((0,"PPIC: Invalid number of pilot pictures (%d)\n",PilotPic_count));
-		Int3();
-		PilotPic_count = 0;
-		cf_Rewind(file);
-		return false;
-	}
-	if(PilotPic_count>65535){
-		//too many!!!!
-		mprintf((0,"PPIC: Invalid number of pilot pictures (%d)\n",PilotPic_count));
-		Int3();
-		PilotPic_count = 0;
-		cf_Rewind(file);
-		return false;
-	}
+  PilotPic_count = cf_ReadInt(file);
+  if (PilotPic_count < 0) {
+    // hmm a negative!
+    mprintf((0, "PPIC: Invalid number of pilot pictures (%d)\n", PilotPic_count));
+    Int3();
+    PilotPic_count = 0;
+    cf_Rewind(file);
+    return false;
+  }
+  if (PilotPic_count > 65535) {
+    // too many!!!!
+    mprintf((0, "PPIC: Invalid number of pilot pictures (%d)\n", PilotPic_count));
+    Int3();
+    PilotPic_count = 0;
+    cf_Rewind(file);
+    return false;
+  }
 
-	// allocate all the memory we're going to need
-	// -------------------------------------------
-	Pilot_id_to_offset = (tPilotPicIdOffset *)mem_malloc(sizeof(tPilotPicIdOffset)*PilotPic_count);
-	Sorted_Pilot_id_to_offset = (ushort *)mem_malloc(sizeof(ushort)*PilotPic_count);
-	if(!Pilot_id_to_offset){
-		//out of memory!!!
-		mprintf((0,"PPIC: Out of memory allocating index database\n"));
-		Int3();
-		PilotPic_count = 0;
-		cf_Rewind(file);
-		return false;
-	}
+  // allocate all the memory we're going to need
+  // -------------------------------------------
+  Pilot_id_to_offset = (tPilotPicIdOffset *)mem_malloc(sizeof(tPilotPicIdOffset) * PilotPic_count);
+  Sorted_Pilot_id_to_offset = (ushort *)mem_malloc(sizeof(ushort) * PilotPic_count);
+  if (!Pilot_id_to_offset) {
+    // out of memory!!!
+    mprintf((0, "PPIC: Out of memory allocating index database\n"));
+    Int3();
+    PilotPic_count = 0;
+    cf_Rewind(file);
+    return false;
+  }
 
-	// now it is time to go through the index file and build the databases
-	// -------------------------------------------------------------------
-	int count;
-	char name_buffer[256];
+  // now it is time to go through the index file and build the databases
+  // -------------------------------------------------------------------
+  int count;
+  char name_buffer[256];
 
-	for(count = 0; count < 27; count++) Alphabet_to_offset[count] = -1;
+  for (count = 0; count < 27; count++)
+    Alphabet_to_offset[count] = -1;
 
-	for(count = 0; count < PilotPic_count; count++ ){
+  for (count = 0; count < PilotPic_count; count++) {
 
-		//get the current file position, we'll need it
-		int file_pos;
-		file_pos = cftell(file);
+    // get the current file position, we'll need it
+    int file_pos;
+    file_pos = cftell(file);
 
-		//first read in the pilot name
-		ubyte name_size;
-		name_size = cf_ReadByte(file);
-		cf_ReadBytes((ubyte *)name_buffer,name_size,file);
-		name_buffer[name_size]='\0';
-		if(name_size>=PILOT_STRING_SIZE)
-		{
-			mprintf((0,"PPIC: Too big: (%s)%d %d",name_buffer,count,name_size));
-		}
+    // first read in the pilot name
+    ubyte name_size;
+    name_size = cf_ReadByte(file);
+    cf_ReadBytes((ubyte *)name_buffer, name_size, file);
+    name_buffer[name_size] = '\0';
+    if (name_size >= PILOT_STRING_SIZE) {
+      mprintf((0, "PPIC: Too big: (%s)%d %d", name_buffer, count, name_size));
+    }
 
-		//next read in pilot_id
-		ushort pilot_id;
-		pilot_id = (ushort)cf_ReadShort(file);
+    // next read in pilot_id
+    ushort pilot_id;
+    pilot_id = (ushort)cf_ReadShort(file);
 
-		//next read past the bitmap name
-		ubyte bmp_size;
-		bmp_size = cf_ReadByte(file);
-		cfseek(file,bmp_size,SEEK_CUR);
+    // next read past the bitmap name
+    ubyte bmp_size;
+    bmp_size = cf_ReadByte(file);
+    cfseek(file, bmp_size, SEEK_CUR);
 
-		//add the info to the database
-		Pilot_id_to_offset[count].offset = file_pos;
-		Pilot_id_to_offset[count].id = pilot_id;
+    // add the info to the database
+    Pilot_id_to_offset[count].offset = file_pos;
+    Pilot_id_to_offset[count].id = pilot_id;
 
-		char let_pos;
-		if(isalpha(name_buffer[0])){
-			let_pos = toupper(name_buffer[0]) - 'A';			
-		}else{
-			let_pos = 26;//not alpha letter
-		}
+    char let_pos;
+    if (isalpha(name_buffer[0])) {
+      let_pos = toupper(name_buffer[0]) - 'A';
+    } else {
+      let_pos = 26; // not alpha letter
+    }
 
-		if(Alphabet_to_offset[let_pos]==-1){
-			Alphabet_to_offset[let_pos] = file_pos;
-		}
-	}
+    if (Alphabet_to_offset[let_pos] == -1) {
+      Alphabet_to_offset[let_pos] = file_pos;
+    }
+  }
 
-	//now sort the pilot ids
-	int i,t,j;
+  // now sort the pilot ids
+  int i, t, j;
 
-	for(i=0;i<PilotPic_count;i++){
-		Sorted_Pilot_id_to_offset[i] = i;
-	}
+  for (i = 0; i < PilotPic_count; i++) {
+    Sorted_Pilot_id_to_offset[i] = i;
+  }
 
-	for(i=1;i<=PilotPic_count-1;i++){
-		t=Sorted_Pilot_id_to_offset[i];
-		// Shift elements down until
-		// insertion point found.
-		for(j=i-1;j>=0 && (Pilot_id_to_offset[Sorted_Pilot_id_to_offset[j]].id<Pilot_id_to_offset[t].id); j--){
-			Sorted_Pilot_id_to_offset[j+1] = Sorted_Pilot_id_to_offset[j];
-		}
-		// insert
-		Sorted_Pilot_id_to_offset[j+1] = t;
-	}
+  for (i = 1; i <= PilotPic_count - 1; i++) {
+    t = Sorted_Pilot_id_to_offset[i];
+    // Shift elements down until
+    // insertion point found.
+    for (j = i - 1; j >= 0 && (Pilot_id_to_offset[Sorted_Pilot_id_to_offset[j]].id < Pilot_id_to_offset[t].id); j--) {
+      Sorted_Pilot_id_to_offset[j + 1] = Sorted_Pilot_id_to_offset[j];
+    }
+    // insert
+    Sorted_Pilot_id_to_offset[j + 1] = t;
+  }
 
-	cf_Rewind(file);
-	return true;
+  cf_Rewind(file);
+  return true;
 }
 
 // -----------------------------------------------
@@ -597,22 +587,21 @@ bool PPic_BuildDatabases(void)
 //	Purpose:
 //		Frees up memory associated with the databases
 // ------------------------------------------------
-void PPic_FreeDatabase(void)
-{
+void PPic_FreeDatabase(void) {
 
-	for(int i=0;i<27;i++)
-		Alphabet_to_offset[i] = -1;
+  for (int i = 0; i < 27; i++)
+    Alphabet_to_offset[i] = -1;
 
-	if(Pilot_id_to_offset){
-		mem_free(Pilot_id_to_offset);
-		Pilot_id_to_offset = NULL;
-	}
-	if(Sorted_Pilot_id_to_offset){
-		mem_free(Sorted_Pilot_id_to_offset);
-		Sorted_Pilot_id_to_offset = NULL;
-	}
+  if (Pilot_id_to_offset) {
+    mem_free(Pilot_id_to_offset);
+    Pilot_id_to_offset = NULL;
+  }
+  if (Sorted_Pilot_id_to_offset) {
+    mem_free(Sorted_Pilot_id_to_offset);
+    Sorted_Pilot_id_to_offset = NULL;
+  }
 
-	PilotPic_count = 0;
+  PilotPic_count = 0;
 }
 
 // -------------------------------------------------
@@ -622,81 +611,80 @@ void PPic_FreeDatabase(void)
 //	the first pilot that matches pilot_name is. -1
 //	is returned if no match
 // --------------------------------------------------
-int PPic_JumpToPilot(char *pilot_name)
-{
-	int lett_offset;
-	int let_pos;
+int PPic_JumpToPilot(char *pilot_name) {
+  int lett_offset;
+  int let_pos;
 
-	if(isalpha(pilot_name[0])){
-		let_pos = toupper(pilot_name[0]) - 'A';
-	}else{
-		let_pos = 26;
-	}
+  if (isalpha(pilot_name[0])) {
+    let_pos = toupper(pilot_name[0]) - 'A';
+  } else {
+    let_pos = 26;
+  }
 
-	lett_offset = Alphabet_to_offset[let_pos];
-	if(lett_offset==-1){
-		//no pilot names begin with this letter
-		return -1;
-	}
+  lett_offset = Alphabet_to_offset[let_pos];
+  if (lett_offset == -1) {
+    // no pilot names begin with this letter
+    return -1;
+  }
 
-	CFILE *file = PilotPic_database_index_handle;
+  CFILE *file = PilotPic_database_index_handle;
 
-	//jump to that position of the file
-	cfseek(file,lett_offset,SEEK_SET);
+  // jump to that position of the file
+  cfseek(file, lett_offset, SEEK_SET);
 
-	//now try to find the pilot
-	bool done = false;
-	int file_pos;
-	char name_buffer[PILOT_STRING_SIZE];
+  // now try to find the pilot
+  bool done = false;
+  int file_pos;
+  char name_buffer[PILOT_STRING_SIZE];
 
-	while(!done){
+  while (!done) {
 
-		//save the file position
-		file_pos = cftell(file);
+    // save the file position
+    file_pos = cftell(file);
 
-		//first read in the pilot name
-		ubyte name_size;
-		name_size = cf_ReadByte(file);
-		if(cfeof(file)){
-			done = true;
-			continue;
-		}
-		cf_ReadBytes((ubyte *)name_buffer,name_size,file);
-		name_buffer[name_size]='\0';
+    // first read in the pilot name
+    ubyte name_size;
+    name_size = cf_ReadByte(file);
+    if (cfeof(file)) {
+      done = true;
+      continue;
+    }
+    cf_ReadBytes((ubyte *)name_buffer, name_size, file);
+    name_buffer[name_size] = '\0';
 
-		//next read in pilot_id
-		ushort pilot_id;
-		pilot_id = (ushort)cf_ReadShort(file);
+    // next read in pilot_id
+    ushort pilot_id;
+    pilot_id = (ushort)cf_ReadShort(file);
 
-		//next read past the bitmap name
-		ubyte bmp_size;
-		bmp_size = cf_ReadByte(file);
-		cfseek(file,bmp_size,SEEK_CUR);
+    // next read past the bitmap name
+    ubyte bmp_size;
+    bmp_size = cf_ReadByte(file);
+    cfseek(file, bmp_size, SEEK_CUR);
 
-		int strcmpret = stricmp(name_buffer,pilot_name);
+    int strcmpret = stricmp(name_buffer, pilot_name);
 
-		switch(strcmpret){
-		case 0:
-			//we found a match
-			cfseek(file,file_pos,SEEK_SET);
-			return file_pos;
-		default:
-			if((let_pos==25) && !isalpha(name_buffer[0])){
-				//we're searching the z's and moved to let_pos 26
-				return -1;
-			}
+    switch (strcmpret) {
+    case 0:
+      // we found a match
+      cfseek(file, file_pos, SEEK_SET);
+      return file_pos;
+    default:
+      if ((let_pos == 25) && !isalpha(name_buffer[0])) {
+        // we're searching the z's and moved to let_pos 26
+        return -1;
+      }
 
-			if(strcmpret>0){
-				//we can stop reading/searching
-				return -1;
-			}
-		}
+      if (strcmpret > 0) {
+        // we can stop reading/searching
+        return -1;
+      }
+    }
 
-		if(cfeof(file))
-			done = true;
-	}
+    if (cfeof(file))
+      done = true;
+  }
 
-	return -1;
+  return -1;
 }
 
 // -------------------------------------
@@ -704,45 +692,42 @@ int PPic_JumpToPilot(char *pilot_name)
 //	Purpose:
 //		Returns the file offset of the given pilot id. -1 if not found
 // -------------------------------------
-int PPic_GetOffsetByID(ushort pilot_id)
-{
-	int index = PPic_GetIndexFromID(pilot_id);
-	if(index==-1)
-		return -1;
-	return Pilot_id_to_offset[index].offset;
+int PPic_GetOffsetByID(ushort pilot_id) {
+  int index = PPic_GetIndexFromID(pilot_id);
+  if (index == -1)
+    return -1;
+  return Pilot_id_to_offset[index].offset;
 }
-
 
 // -------------------------------------
 // PPic_GetIndexFromID
 //	Purpose:
-//		Returns the file index into the Pilot_id_to_offset 
+//		Returns the file index into the Pilot_id_to_offset
 //	list for the given id, -1 if not found.
 // -------------------------------------
-int PPic_GetIndexFromID(int id)
-{
-	//do a binary search for the id,return -1 if not found
-	int min = 0,max = PilotPic_count-1;
-	int index_to_check;
-	int sort_index,sorted_val;
-	
-	while(1){
-		index_to_check = (min+max)/2;
-		sort_index = Sorted_Pilot_id_to_offset[index_to_check];
-		sorted_val = Pilot_id_to_offset[sort_index].id;
+int PPic_GetIndexFromID(int id) {
+  // do a binary search for the id,return -1 if not found
+  int min = 0, max = PilotPic_count - 1;
+  int index_to_check;
+  int sort_index, sorted_val;
 
-		if(sorted_val==id){
-			//found it!
-			return sort_index;
-		}
+  while (1) {
+    index_to_check = (min + max) / 2;
+    sort_index = Sorted_Pilot_id_to_offset[index_to_check];
+    sorted_val = Pilot_id_to_offset[sort_index].id;
 
-		if (min >= max)	//exhausted search
-			break;
+    if (sorted_val == id) {
+      // found it!
+      return sort_index;
+    }
 
-		if (sorted_val>id)				//search key after check key
-			min = index_to_check+1;
-		else						//search key before check key
-			max = index_to_check-1;
-	}
-	return -1;
+    if (min >= max) // exhausted search
+      break;
+
+    if (sorted_val > id) // search key after check key
+      min = index_to_check + 1;
+    else // search key before check key
+      max = index_to_check - 1;
+  }
+  return -1;
 }

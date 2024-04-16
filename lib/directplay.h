@@ -3,43 +3,40 @@
  * $Revision: 5 $
  * $Date: 9/02/98 6:54p $
  * $Author: Kevin $
- *	
+ *
  *	Directplay API header
  *
  * $Log: /DescentIII/Main/lib/directplay.h $
- * 
+ *
  * 5     9/02/98 6:54p Kevin
  * Fixed general directplay support up, and got modem-modem working
- * 
+ *
  * 4     8/24/98 10:55a Kevin
  * new directplay stuff
- * 
+ *
  * 3     8/14/98 4:54p Kevin
  * More directplay stuff
- * 
+ *
  * 2     8/13/98 6:32p Kevin
  * Initial implementation of directplay API
- * 
+ *
  * 1     8/13/98 6:25p Kevin
- * 
-*/
+ *
+ */
 #ifndef _OUTRAGE_DIRECTPLAY_HEADER
 #define _OUTRAGE_DIRECTPLAY_HEADER
-
 
 #include "dplay.h"
 #include "dplobby.h"
 
-typedef struct _modem_list
-{
-	char name[200];
-}modem_list;
+typedef struct _modem_list {
+  char name[200];
+} modem_list;
 
-
-#define MAX_MODEMS	15
-#define MAX_DP_GAMES	32
-#define MAX_DIRECTPLAY_CONNECTIONS	10
-#define MAX_PENDING_NEW_CONNECTIONS	10
+#define MAX_MODEMS 15
+#define MAX_DP_GAMES 32
+#define MAX_DIRECTPLAY_CONNECTIONS 10
+#define MAX_PENDING_NEW_CONNECTIONS 10
 
 extern bool Use_DirectPlay;
 extern bool Directplay_lobby_launched_game;
@@ -59,13 +56,13 @@ void dp_EndGame();
 int dp_ListDirectPlayGames();
 
 //	Send a packet to a direct play user
-int dp_DirectPlaySend(network_address *who_to,ubyte *data,int len,bool reliable);
+int dp_DirectPlaySend(network_address *who_to, ubyte *data, int len, bool reliable);
 
 // This function will look for incoming messages, and dispatch them accordingly
 void dp_DirectPlayDispatch();
 
 // Initialize stuff
-int dp_InitDirectPlay(char *conn_name, void *parms = NULL,int num_elements = 0);
+int dp_InitDirectPlay(char *conn_name, void *parms = NULL, int num_elements = 0);
 
 // Shutdown things
 void dp_ShutdownDirectPlay();
@@ -76,12 +73,11 @@ void dp_DirectPlayDestroyPlayer(DPID who);
 // Join a network game
 int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session);
 
-//Call this function with size set to 0, and it will fill in size with
-//the amount of buffer space you need
-//Otherwise, it will fill in the buffer with a bunch of null delimited 
-//strings, with a double null at the end.
-int dp_GetModemChoices(char *buffer,unsigned long *size);
-
+// Call this function with size set to 0, and it will fill in size with
+// the amount of buffer space you need
+// Otherwise, it will fill in the buffer with a bunch of null delimited
+// strings, with a double null at the end.
+int dp_GetModemChoices(char *buffer, unsigned long *size);
 
 // Register a DirectPlay lobby aware application
 // Use this so a directplay lobby provider such as zone.com can launch the game
@@ -93,7 +89,8 @@ int dp_GetModemChoices(char *buffer,unsigned long *size);
 //	arguments	Any command line arguments the app needs
 //	workingdir	The Working directory for the application
 //	description	Localized description of the application
-void dp_RegisterLobbyApplication(char *appname,char *exefile,char *exepath,char *arguments,char *workingdir,char *description);
+void dp_RegisterLobbyApplication(char *appname, char *exefile, char *exepath, char *arguments, char *workingdir,
+                                 char *description);
 
 // Returns TRUE if the game was launched from a lobby
 bool dp_DidLobbyLaunchGame();

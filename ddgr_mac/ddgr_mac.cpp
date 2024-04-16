@@ -10,23 +10,23 @@
  * Revision 1.1.1.1  2003/08/26 03:56:53  kevinb
  * initial 1.5 import
  *
- * 
+ *
  * 6     5/19/97 2:51 PM Jeremy
  * added default values to constructor
- * 
+ *
  * 5     5/15/97 1:47 AM Jeremy
  * changed mprintf's to be standard (with newline at end)
- * 
+ *
  * 4     5/11/97 8:01 PM Jeremy
  * implemented call to ddgr_os_surf_GetAspectRatio
- * 
+ *
  * 3     5/9/97 7:13 PM Jeremy
  * some bug fixes in initialization code
- * 
+ *
  * 2     4/15/97 7:02 PM Jeremy
  * initial implementation of initialization and closing of ddgr mac
  * library.  also added c version of scale bitmap16
- * 
+ *
  * 1     4/9/97 7:16 PM Jeremy
  * initial check in
  *
@@ -71,9 +71,8 @@ void ddgr_Close(void);
 #include "ddgr_mac.h"
 
 //	---------------------------------------------------------------------------
-//	Public Globals 
+//	Public Globals
 //	---------------------------------------------------------------------------
-
 
 //	----------------------------------------------------
 //	This object stores the data for the graphics library
@@ -87,41 +86,25 @@ ddgr_mac_lib Mac_DDGR_Lib;
 //	---------------------------------------------------------------------------
 //	Mac data library implementations
 //	---------------------------------------------------------------------------
-ddgr_mac_lib::ddgr_mac_lib(void)
-{
-	m_initted			= false;
-	m_windowed_mode		= false;
-	m_color_key			= 0;
+ddgr_mac_lib::ddgr_mac_lib(void) {
+  m_initted = false;
+  m_windowed_mode = false;
+  m_color_key = 0;
 }
 
-ddgr_mac_lib::~ddgr_mac_lib(void)
-{
-	;
-}
+ddgr_mac_lib::~ddgr_mac_lib(void) { ; }
 
-void ddgr_mac_lib::SetWindowedMode(bool inWindowMode)
-{
-	m_windowed_mode = inWindowMode;
-}
+void ddgr_mac_lib::SetWindowedMode(bool inWindowMode) { m_windowed_mode = inWindowMode; }
 
-bool ddgr_mac_lib::IsWindowed(void)
-{
-	return m_windowed_mode;
-}
+bool ddgr_mac_lib::IsWindowed(void) { return m_windowed_mode; }
 
-bool ddgr_mac_lib::IsInitted(void)
-{
-	return m_initted;
-}
+bool ddgr_mac_lib::IsInitted(void) { return m_initted; }
 
-void ddgr_mac_lib::SetInitted(bool inInitState)
-{
-	m_initted = inInitState;
-}
+void ddgr_mac_lib::SetInitted(bool inInitState) { m_initted = inInitState; }
 
 /*void ddgr_mac_lib::SetDefaultColorKey(ddgr_color inColor)
 {
-	m_color_key = inColor;
+        m_color_key = inColor;
 }
 */
 
@@ -129,7 +112,7 @@ void ddgr_mac_lib::SetInitted(bool inInitState)
 //	ddgr_Init
 //		info->hwnd = window handle
 //		info->windowed = are screens windowed or fullscreen.
-//		info->debug = debug mode 
+//		info->debug = debug mode
 //			0 = no debug
 //			1 = full debug
 //	note;
@@ -137,134 +120,112 @@ void ddgr_mac_lib::SetInitted(bool inInitState)
 //		function as many times as you want.  You can switch from
 //		windowed to full screen, debug to nodebug.
 //	------------------------------------------------------------
-ddgr_error ddgr_Init(ddgr_init_info *info)
-{
-	ddgr_error 	err = DDGRERR_SUCCESS;
-	OSErr		macErr = noErr;
-	static int	firstTime = true;
+ddgr_error ddgr_Init(ddgr_init_info *info) {
+  ddgr_error err = DDGRERR_SUCCESS;
+  OSErr macErr = noErr;
+  static int firstTime = true;
 
-	//	If we're reinitializing the graphics system, then close the current graphic driver
-	if (Mac_DDGR_Lib.IsInitted())
-	{
-		ddgr_Close();
-	}
-	
-	if (firstTime)
-	{
-		//	first time initialization!
-		atexit(ddgr_Close);
-		firstTime = false;
-	}
-	
-	// Inititializing mac os video graphics system
-	if (info->windowed)
-	{
-		Mac_DDGR_Lib.SetWindowedMode(true);
-		mprintf((0, "Attempting to initialize ddgr in windowed mode.\n"));
+  //	If we're reinitializing the graphics system, then close the current graphic driver
+  if (Mac_DDGR_Lib.IsInitted()) {
+    ddgr_Close();
+  }
 
-		mprintf((0, "Windowed mode currently not implemented.\n"));
-		err = DDGRERR_DRIVERINIT;
-	}
-	else
-	{
-		Mac_DDGR_Lib.SetWindowedMode(false);
-		mprintf((0, "Attempting to initialize ddgr in full screen mode.\n"));
-		
-		err = ddgr_os_surf_fullscreen_Init(info);
-	}
+  if (firstTime) {
+    //	first time initialization!
+    atexit(ddgr_Close);
+    firstTime = false;
+  }
 
-	// Success!!
-	if (!err)
-	{
-		Mac_DDGR_Lib.SetInitted(true);		
-		mprintf((0, "DDGR Initialized\n"));
-	}
+  // Inititializing mac os video graphics system
+  if (info->windowed) {
+    Mac_DDGR_Lib.SetWindowedMode(true);
+    mprintf((0, "Attempting to initialize ddgr in windowed mode.\n"));
 
-	return err;
+    mprintf((0, "Windowed mode currently not implemented.\n"));
+    err = DDGRERR_DRIVERINIT;
+  } else {
+    Mac_DDGR_Lib.SetWindowedMode(false);
+    mprintf((0, "Attempting to initialize ddgr in full screen mode.\n"));
+
+    err = ddgr_os_surf_fullscreen_Init(info);
+  }
+
+  // Success!!
+  if (!err) {
+    Mac_DDGR_Lib.SetInitted(true);
+    mprintf((0, "DDGR Initialized\n"));
+  }
+
+  return err;
 }
 
-void ddgr_Close()
-{
-	ddgr_error err = DDGRERR_SUCCESS;
+void ddgr_Close() {
+  ddgr_error err = DDGRERR_SUCCESS;
 
-	if (Mac_DDGR_Lib.IsInitted())
-	{
-		// Closing mac os video graphics system
-		if (Mac_DDGR_Lib.IsWindowed())
-		{
-			mprintf((0, "Attempting to close ddgr in windowed mode.\n"));
-			mprintf((0, "Windowed mode currently not implemented.\n"));
-		}
-		else
-		{
-			mprintf((0, "Attempting to close ddgr in fullscreen mode.\n"));
-			ddgr_os_surf_fullscreen_Close();
-		}
+  if (Mac_DDGR_Lib.IsInitted()) {
+    // Closing mac os video graphics system
+    if (Mac_DDGR_Lib.IsWindowed()) {
+      mprintf((0, "Attempting to close ddgr in windowed mode.\n"));
+      mprintf((0, "Windowed mode currently not implemented.\n"));
+    } else {
+      mprintf((0, "Attempting to close ddgr in fullscreen mode.\n"));
+      ddgr_os_surf_fullscreen_Close();
+    }
 
-		Mac_DDGR_Lib.SetInitted(false);		
-		mprintf((0, "DDGR is closed.\n"));
-	}
-	else
-	{
-		mprintf((0, "Attempted closing *uninitialized* Mac DDGR!\n"));
-	}
+    Mac_DDGR_Lib.SetInitted(false);
+    mprintf((0, "DDGR is closed.\n"));
+  } else {
+    mprintf((0, "Attempted closing *uninitialized* Mac DDGR!\n"));
+  }
 }
 
 //	GetAspectRatio
 //		returns aspect ratio calculated in video screen initialization
-float ddgr_GetAspectRatio()
-{
-	return ddgr_os_surf_GetAspectRatio();
-}
+float ddgr_GetAspectRatio() { return ddgr_os_surf_GetAspectRatio(); }
 
 //	Set's the surface color key in ddgr_color format
-void ddgr_SetSurfColorKey(ddgr_color color)
-{
-	Mac_DDGR_Lib.SetDefaultColorKey(color);
-}
+void ddgr_SetSurfColorKey(ddgr_color color) { Mac_DDGR_Lib.SetDefaultColorKey(color); }
 
 // A C version of a scaled bitmap blitter
-void ddgr_ScaleBitmap16 (ushort *dest_data,int dest_width,int x1,int y1,int x2,int y2,
-					      int bm,fix u0,fix v0,fix u1,fix v1)
-				   
+void ddgr_ScaleBitmap16(ushort *dest_data, int dest_width, int x1, int y1, int x2, int y2, int bm, fix u0, fix v0,
+                        fix u1, fix v1)
+
 {
-	int screen_width=(x2-x1);		// The size of bitmap on the screen
-	int screen_height=(y2-y1);
-	
-	ushort *perm_src_data=bm_data (bm,0);
-	ushort *src_data=perm_src_data;
-	int src_w=bm_w(bm,0);
+  int screen_width = (x2 - x1); // The size of bitmap on the screen
+  int screen_height = (y2 - y1);
 
-	// Set up our initial coordinates
+  ushort *perm_src_data = bm_data(bm, 0);
+  ushort *src_data = perm_src_data;
+  int src_w = bm_w(bm, 0);
 
-	if (screen_width==0 || screen_height==0)
-		return;
+  // Set up our initial coordinates
 
-	dest_data+=(dest_width*y1+x1);
+  if (screen_width == 0 || screen_height == 0)
+    return;
 
-	fix xstep=(u1-u0)/(screen_width);
-	fix ystep=(v1-v0)/(screen_height);
+  dest_data += (dest_width * y1 + x1);
 
-	fix fx_u= u0;
-	fix fx_v= v0;
+  fix xstep = (u1 - u0) / (screen_width);
+  fix ystep = (v1 - v0) / (screen_height);
 
-	fix u;
-	int y=y1;
-	int x,t;
+  fix fx_u = u0;
+  fix fx_v = v0;
 
-	for (int i=0;i<screen_height;i++,y++,fx_v+=ystep)
-	{
-		for (x=x1,t=0,u=fx_u;t<screen_width;t++,x++,u+=xstep)
-		{
-			ushort pix=src_data[FixToInt(fx_v)*src_w+FixToInt(u)];
-			if (pix!=TRANSPARENT_COLOR)
-				*dest_data++=pix;
-			else
-				dest_data++;
-		}
+  fix u;
+  int y = y1;
+  int x, t;
 
-		dest_data+=(dest_width-screen_width);
-	}
+  for (int i = 0; i < screen_height; i++, y++, fx_v += ystep) {
+    for (x = x1, t = 0, u = fx_u; t < screen_width; t++, x++, u += xstep) {
+      ushort pix = src_data[FixToInt(fx_v) * src_w + FixToInt(u)];
+      if (pix != TRANSPARENT_COLOR)
+        *dest_data++ = pix;
+      else
+        dest_data++;
+    }
+
+    dest_data += (dest_width - screen_width);
+  }
 }
 
 //¥======================================================

@@ -14,196 +14,173 @@
 #include <string.h>
 
 #ifdef DEBUG
-static struct
-{
-	float last_frame_time;
-	float frame_interval_time;
-	float fps;
-}MovieCallbackData;
+static struct {
+  float last_frame_time;
+  float frame_interval_time;
+  float fps;
+} MovieCallbackData;
 #endif
 
 static bool Cinematic_lib_init = false;
 static int Cinematic_x = 0, Cinematic_y = 0, Cinematic_w = 0, Cinematic_h = 0;
 
-void CinematicCallback( int mve_x, int mve_y, int frame_num );
-
+void CinematicCallback(int mve_x, int mve_y, int frame_num);
 
 ///////////////////////////////////////////////////////////////////////////////
 //	functions
 
-bool InitCinematics()
-{
-	if (Dedicated_server)
-	{
-		Cinematic_lib_init = false;
-		return true;
-	}
+bool InitCinematics() {
+  if (Dedicated_server) {
+    Cinematic_lib_init = false;
+    return true;
+  }
 
-	char path[_MAX_PATH];
-	ddio_MakePath(path, Base_directory, "movies", NULL);
+  char path[_MAX_PATH];
+  ddio_MakePath(path, Base_directory, "movies", NULL);
 
-	if( mve_Init(path, Sound_card_name) != MVELIB_NOERROR )
-		return false;
+  if (mve_Init(path, Sound_card_name) != MVELIB_NOERROR)
+    return false;
 
-	mve_SetCallback( CinematicCallback );
+  mve_SetCallback(CinematicCallback);
 
-	Cinematic_lib_init = true;
+  Cinematic_lib_init = true;
 
-	return true;
+  return true;
 }
 
-void SetMovieProperties(int x, int y, int w, int h, renderer_type type)
-{
-	const bool kHiColorEnabled = true;
-	Cinematic_x = x;
-	Cinematic_y = y;
-	Cinematic_w = w;
-	Cinematic_h = h;
-	mve_SetRenderProperties( x, y, w, h, type, kHiColorEnabled );
+void SetMovieProperties(int x, int y, int w, int h, renderer_type type) {
+  const bool kHiColorEnabled = true;
+  Cinematic_x = x;
+  Cinematic_y = y;
+  Cinematic_w = w;
+  Cinematic_h = h;
+  mve_SetRenderProperties(x, y, w, h, type, kHiColorEnabled);
 }
 
-bool PlayMovie(const char *moviename)
-{
-	if( !Cinematic_lib_init )
-		return false;
+bool PlayMovie(const char *moviename) {
+  if (!Cinematic_lib_init)
+    return false;
 
-	// get in the right directory
-	char filename[PSPATHNAME_LEN];
-	strncpy( filename, moviename, sizeof(filename) - 1 );
-	filename[ sizeof(filename) - 1 ] = 0;
+  // get in the right directory
+  char filename[PSPATHNAME_LEN];
+  strncpy(filename, moviename, sizeof(filename) - 1);
+  filename[sizeof(filename) - 1] = 0;
 
-	// check extension
-	const char* extension = strrchr( filename, '.' );
-	if( extension == NULL || ( stricmp( extension, ".mve" ) != 0 && stricmp( extension, ".mv8" ) != 0 ) )
-	{
-		// we need an extension
-		strncat( filename, ".mve", sizeof( filename ) - 1 );
-		filename[ sizeof(filename) - 1 ] = 0;
-	}
-	
-	// shutdown sound.
-	bool sound_sys_active = Sound_system.IsActive();
-	if (sound_sys_active)
-	{
-		Sound_system.KillSoundLib( false );
-	}
+  // check extension
+  const char *extension = strrchr(filename, '.');
+  if (extension == NULL || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
+    // we need an extension
+    strncat(filename, ".mve", sizeof(filename) - 1);
+    filename[sizeof(filename) - 1] = 0;
+  }
 
-	//	start movie.
+  // shutdown sound.
+  bool sound_sys_active = Sound_system.IsActive();
+  if (sound_sys_active) {
+    Sound_system.KillSoundLib(false);
+  }
+
+  //	start movie.
 #ifdef DEBUG
-	MovieCallbackData.last_frame_time     = timer_GetTime();
-	MovieCallbackData.frame_interval_time = 1.0f;
-	MovieCallbackData.fps                 = 0.0f;
+  MovieCallbackData.last_frame_time = timer_GetTime();
+  MovieCallbackData.frame_interval_time = 1.0f;
+  MovieCallbackData.fps = 0.0f;
 #endif
 
-	// Initializes the subtitles for a given movie file
-	SubtInitSubtitles( moviename );
+  // Initializes the subtitles for a given movie file
+  SubtInitSubtitles(moviename);
 
-	SetMovieProperties( 0, 0, Max_window_w, Max_window_h, Renderer_type );
+  SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
-	int mveerr = mve_PlayMovie( filename, Descent );
+  int mveerr = mve_PlayMovie(filename, Descent);
 
-	// Shutdown the subtitle system
-	SubtCloseSubtitles();
+  // Shutdown the subtitle system
+  SubtCloseSubtitles();
 
-	bool retval = true;
-	if( mveerr != MVELIB_NOERROR )
-	{
-		mprintf((1, "Movie error %d.\n", mveerr));
-		retval = false;
-	}
+  bool retval = true;
+  if (mveerr != MVELIB_NOERROR) {
+    mprintf((1, "Movie error %d.\n", mveerr));
+    retval = false;
+  }
 
-	//	startup D3 sound.
-	if( sound_sys_active )
-	{
-		Sound_system.InitSoundLib( Descent, Sound_mixer, Sound_quality, false );
-	}
+  //	startup D3 sound.
+  if (sound_sys_active) {
+    Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
+  }
 
-	return retval;
+  return retval;
 }
 
-tCinematic *StartMovie( const char *moviename, bool looping )
-{
-	if( !Cinematic_lib_init )
-		return NULL;
+tCinematic *StartMovie(const char *moviename, bool looping) {
+  if (!Cinematic_lib_init)
+    return NULL;
 
-	// get in the right directory
-	char filename[_MAX_PATH];
-	strncpy( filename, moviename, sizeof(filename) - 1 );
-	filename[ sizeof(filename) - 1 ] = 0;
+  // get in the right directory
+  char filename[_MAX_PATH];
+  strncpy(filename, moviename, sizeof(filename) - 1);
+  filename[sizeof(filename) - 1] = 0;
 
-	// check extension
-	const char* extension = strrchr( filename, '.' );
-	if( extension == NULL || ( stricmp( extension, ".mve" ) != 0 && stricmp( extension, ".mv8" ) != 0 ) )
-	{
-		// we need an extension
-		strncat( filename, ".mve", sizeof( filename ) - 1 );
-		filename[ sizeof(filename) - 1 ] = 0;
-	}
+  // check extension
+  const char *extension = strrchr(filename, '.');
+  if (extension == NULL || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
+    // we need an extension
+    strncat(filename, ".mve", sizeof(filename) - 1);
+    filename[sizeof(filename) - 1] = 0;
+  }
 
-	SetMovieProperties( 0, 0, Max_window_w, Max_window_h, Renderer_type );
+  SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
-	int filehandle;
-	unsigned int hMovie = mve_SequenceStart( filename, &filehandle, Descent, looping );
-	if( hMovie == 0 )
-		return NULL;
+  int filehandle;
+  unsigned int hMovie = mve_SequenceStart(filename, &filehandle, Descent, looping);
+  if (hMovie == 0)
+    return NULL;
 
-	tCinematic *mve = new tCinematic;
-	mve->mvehandle            = hMovie;
-	mve->filehandle           = filehandle;
-	mve->frame_chunk.bm_array = NULL;
-	return mve;
+  tCinematic *mve = new tCinematic;
+  mve->mvehandle = hMovie;
+  mve->filehandle = filehandle;
+  mve->frame_chunk.bm_array = NULL;
+  return mve;
 }
 
-bool FrameMovie( tCinematic *mve, int x, int y, bool sequence )
-{
-	if( !Cinematic_lib_init || mve == NULL )
-		return false;
+bool FrameMovie(tCinematic *mve, int x, int y, bool sequence) {
+  if (!Cinematic_lib_init || mve == NULL)
+    return false;
 
-	int bm_handle;
-	unsigned int hNewMovie = mve_SequenceFrame( mve->mvehandle, mve->filehandle, sequence, &bm_handle );
-	if( hNewMovie != (unsigned int)(-1) )
-	{
-		// we must have looped, we have a new handle
-		mve->mvehandle = hNewMovie;
-	}
+  int bm_handle;
+  unsigned int hNewMovie = mve_SequenceFrame(mve->mvehandle, mve->filehandle, sequence, &bm_handle);
+  if (hNewMovie != (unsigned int)(-1)) {
+    // we must have looped, we have a new handle
+    mve->mvehandle = hNewMovie;
+  }
 
-	//	do chunk conversion and blt if absolutely necessary.
-	if( bm_handle > -1) 
-	{
-		if (x == -1)
-		{
-			x = ( Cinematic_w - bm_w(bm_handle,0) ) / 2;
-		}
+  //	do chunk conversion and blt if absolutely necessary.
+  if (bm_handle > -1) {
+    if (x == -1) {
+      x = (Cinematic_w - bm_w(bm_handle, 0)) / 2;
+    }
 
-		if (y == -1)
-		{
-			y = ( Cinematic_h - bm_h(bm_handle,0) ) / 2;
-		}
+    if (y == -1) {
+      y = (Cinematic_h - bm_h(bm_handle, 0)) / 2;
+    }
 
-		rend_SetAlphaType(AT_ALWAYS);
-		rend_CopyBitmapToFramebuffer( bm_handle, x, y );
-	}
+    rend_SetAlphaType(AT_ALWAYS);
+    rend_CopyBitmapToFramebuffer(bm_handle, x, y);
+  }
 
-	return ( hNewMovie != (unsigned int)(-1) );
+  return (hNewMovie != (unsigned int)(-1));
 }
 
+void EndMovie(tCinematic *mve) {
+  if (mve == NULL || !Cinematic_lib_init)
+    return;
 
-void EndMovie( tCinematic *mve )
-{
-	if( mve == NULL || !Cinematic_lib_init )
-		return;
+  mve_SequenceClose(mve->mvehandle, mve->filehandle);
 
-	mve_SequenceClose( mve->mvehandle, mve->filehandle );
+  if (mve->frame_chunk.bm_array) {
+    bm_DestroyChunkedBitmap(&mve->frame_chunk);
+  }
 
-	if( mve->frame_chunk.bm_array )
-	{
-		bm_DestroyChunkedBitmap( &mve->frame_chunk );
-	}
-
-	delete mve;
+  delete mve;
 }
 
-void CinematicCallback( int mveX, int mveY, int frameNum )
-{
-	SubtDrawSubtitles( frameNum );
-}
+void CinematicCallback(int mveX, int mveY, int frameNum) { SubtDrawSubtitles(frameNum); }

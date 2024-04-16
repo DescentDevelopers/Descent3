@@ -4,13 +4,11 @@
 #include "pstypes.h"
 #include "pserror.h"
 
-typedef struct listnode 
-{
-	void            *data;
-	struct listnode *next;
-	struct listnode *prev;
+typedef struct listnode {
+  void *data;
+  struct listnode *next;
+  struct listnode *prev;
 } listnode, list;
-
 
 // Allocates space for a new list node
 listnode *NewListNode(void);

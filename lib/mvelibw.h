@@ -177,11 +177,11 @@ void __cdecl MVE_rmCallbacks(mve_cb_ctl *fn_ctl);
 
 /* Specify playback fastmode option (default is MVE_RM_NORMAL).
 */
-#define MVE_RM_NORMAL 0		/* Normal playback */
-#define MVE_RM_HALF 1		/* Half height (even lines only) */
-#define MVE_RM_DITHERED 2	/* Half height (dither between lines) */
-#define MVE_RM_HALF_2 5 	/* Full height, even lines only */
-#define MVE_RM_DITHERED_2 6	/* Full height, dither, even lines only */
+#define MVE_RM_NORMAL 0     /* Normal playback */
+#define MVE_RM_HALF 1       /* Half height (even lines only) */
+#define MVE_RM_DITHERED 2   /* Half height (dither between lines) */
+#define MVE_RM_HALF_2 5     /* Full height, even lines only */
+#define MVE_RM_DITHERED_2 6 /* Full height, dither, even lines only */
 
 void __cdecl MVE_rmFastMode(int mode);
 
@@ -320,20 +320,20 @@ char* __cdecl MVE_strerror(int code);
 ** Codes > 1 are user defined.
 */
 
-#define MVE_CTL_HOLD -1     /* Returned by rmCtl() to hold current frame */
-#define MVE_CTL_EXIT 1	    /* Returned by rmCtl() to end movie */
+#define MVE_CTL_HOLD -1 /* Returned by rmCtl() to hold current frame */
+#define MVE_CTL_EXIT 1  /* Returned by rmCtl() to end movie */
 
-#define MVE_ERR_EOF -1	    /* Returned by StepMovie() for end of movie */
-#define MVE_ERR_IO -2	    /* File I/O error or unable to alloc memory. */
+#define MVE_ERR_EOF -1      /* Returned by StepMovie() for end of movie */
+#define MVE_ERR_IO -2       /* File I/O error or unable to alloc memory. */
 #define MVE_ERR_SYNC -3     /* Timer error. */
-#define MVE_ERR_SND -4	    /* Unable to allocate memory for sound */
-#define MVE_ERR_NF -5	    /* Unable to allocate memory for video */
+#define MVE_ERR_SND -4      /* Unable to allocate memory for sound */
+#define MVE_ERR_NF -5       /* Unable to allocate memory for video */
 #define MVE_ERR_GFX_FIT -6  /* Screen size too small for movie */
 #define MVE_ERR_GFX_FAIL -7 /* Failed to set desired graphics mode */
 #define MVE_ERR_BADFMT -8   /* Not a MVE file or unacceptable version */
 #define MVE_ERR_GFX_CLR -9  /* Incorrect screen color mode */
 #define MVE_ERR_PREP -10    /* StepMovie() without PrepMovie() */
-#define MVE_ERR_DD -11	    /* Unable to initialize DirectDraw */
+#define MVE_ERR_DD -11      /* Unable to initialize DirectDraw */
 #define MVE_ERR_LOST -12    /* Direct Draw Surface Lost */
 
 #define MVE_ERR_LAST -12

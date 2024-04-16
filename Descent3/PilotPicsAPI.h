@@ -1,19 +1,18 @@
 /*
-* $Logfile: /DescentIII/Main/PilotPicsAPI.h $
-* $Revision: 2 $
-* $Date: 11/23/98 6:30p $
-* $Author: Jeff $
-*
-* API header file for Pilot Pictures
-*
-* $Log: /DescentIII/Main/PilotPicsAPI.h $
- * 
+ * $Logfile: /DescentIII/Main/PilotPicsAPI.h $
+ * $Revision: 2 $
+ * $Date: 11/23/98 6:30p $
+ * $Author: Jeff $
+ *
+ * API header file for Pilot Pictures
+ *
+ * $Log: /DescentIII/Main/PilotPicsAPI.h $
+ *
  * 2     11/23/98 6:30p Jeff
  * initial creation
-*
-* $NoKeywords: $
-*/
-
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef _PILOTPICS_H__
 #define _PILOTPICS_H__
@@ -49,7 +48,7 @@ ushort PPic_QueryPilot(char *pilot_name);
 //	if it couldn't find any pilots matching.  It returns
 //	the pilot id.
 // ----------------------------------------------------------
-bool PPic_FindFirst(char *pilot_name,ushort *pilot_id);
+bool PPic_FindFirst(char *pilot_name, ushort *pilot_id);
 
 // ----------------------------------------------------------
 // PPic_FindNext
@@ -71,10 +70,10 @@ void PPic_FindClose(void);
 // ----------------------------------------------------------
 // PPic_GetPilot
 //	Purpose:
-//		Given a pilot id, it will return the pilot name of 
+//		Given a pilot id, it will return the pilot name of
 //	the pilot name.  Returns false if it's an invalid pilot id.
 // ----------------------------------------------------------
-bool PPic_GetPilot(ushort pilot_id,char *pilot_name,int buffersize);
+bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize);
 
 // ----------------------------------------------------------
 // PPic_GetBitmapHandle
@@ -85,6 +84,5 @@ bool PPic_GetPilot(ushort pilot_id,char *pilot_name,int buffersize);
 //	Returns BAD_BITMAP_HANDLE if it couldn't open the bitmap.
 // ----------------------------------------------------------
 int PPic_GetBitmapHandle(ushort pilot_id);
-
 
 #endif

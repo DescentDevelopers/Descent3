@@ -1,11 +1,11 @@
 /*
-	This is the C++ implementation of the MD5 Message-Digest
-	Algorithm desrcipted in RFC 1321.
-	I translated the C code from this RFC to C++.
-	There is now warranty.
+        This is the C++ implementation of the MD5 Message-Digest
+        Algorithm desrcipted in RFC 1321.
+        I translated the C code from this RFC to C++.
+        There is now warranty.
 
-	Feb. 12. 2005
-	Benjamin Grüdelbach
+        Feb. 12. 2005
+        Benjamin Grüdelbach
 */
 
 /* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
@@ -43,34 +43,31 @@ typedef struct _context_md5_t {
 
 typedef context_md5_t MD5_CTX;
 
-class MD5
-{
+class MD5 {
 
-	private:
-  
+private:
   MD5_CTX ctx;
-	void MD5Transform(uint32_t buf[4], uint32_t const in[16]);
-	void Encode (unsigned char*, unsigned int*, unsigned int);
-	void Decode (unsigned int*, unsigned char*, unsigned int);
-	void MD5_memcpy (POINTER, POINTER, unsigned int);
-	void MD5_memset (POINTER, int, unsigned int);
+  void MD5Transform(uint32_t buf[4], uint32_t const in[16]);
+  void Encode(unsigned char *, unsigned int *, unsigned int);
+  void Decode(unsigned int *, unsigned char *, unsigned int);
+  void MD5_memcpy(POINTER, POINTER, unsigned int);
+  void MD5_memset(POINTER, int, unsigned int);
 
-	public:
-	
-	void MD5Init ();
-	
-	void MD5Update (unsigned char*, unsigned int);
-	void MD5Update (float val);
-	void MD5Update (int val);
-	void MD5Update (unsigned int val);
-	void MD5Update (unsigned char val);
-	void MD5Update (short val);
+public:
+  void MD5Init();
 
-	void MD5Final (unsigned char [16]);
+  void MD5Update(unsigned char *, unsigned int);
+  void MD5Update(float val);
+  void MD5Update(int val);
+  void MD5Update(unsigned int val);
+  void MD5Update(unsigned char val);
+  void MD5Update(short val);
 
-	~MD5();
-	MD5(){};
+  void MD5Final(unsigned char[16]);
 
-	MD5* Clone();
-	static void Destroy(MD5 *obj);
+  ~MD5();
+  MD5(){};
+
+  MD5 *Clone();
+  static void Destroy(MD5 *obj);
 };

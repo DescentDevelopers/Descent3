@@ -1,43 +1,43 @@
 /*
-* $Logfile: /DescentIII/main/D3ForceFeedback.h $
-* $Revision: 9 $
-* $Date: 1/28/99 12:09p $
-* $Author: Jeff $
-*
-* High Level Force Feedback implementation
-*
-* $Log: /DescentIII/main/D3ForceFeedback.h $
- * 
+ * $Logfile: /DescentIII/main/D3ForceFeedback.h $
+ * $Revision: 9 $
+ * $Date: 1/28/99 12:09p $
+ * $Author: Jeff $
+ *
+ * High Level Force Feedback implementation
+ *
+ * $Log: /DescentIII/main/D3ForceFeedback.h $
+ *
  * 9     1/28/99 12:09p Jeff
  * added force feedback to player shake...fixed spelling error in define
  * for forcefeedback
- * 
+ *
  * 8     11/18/98 5:50p Jeff
  * added some cheap recoil effects for ForceFeedback...not fully
  * implemented
- * 
+ *
  * 7     11/10/98 5:16p Jeff
  * updated forcefeedback system...pretty complete now
- * 
+ *
  * 6     11/06/98 7:00p Jeff
  * first round of new force feedback installed
- * 
+ *
  * 5     11/03/98 6:43p Jeff
  * new low-level & high level Force Feedback system implemented, handles
  * window losing focus, etc.
- * 
+ *
  * 4     10/12/98 3:49p Jeff
  * struct changes
- * 
+ *
  * 3     9/21/98 11:10a Jeff
  * general update, new low level, small high level implementation
- * 
+ *
  * 2     9/18/98 7:38p Jeff
  * creation of low-level forcefeedback and beginning of high-level
  * forcefeedback
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __D3FORCEFEEDBACK_H_
 #define __D3FORCEFEEDBACK_H_
@@ -46,23 +46,23 @@
 #include "vecmat.h"
 #include "object.h"
 
-//D3Use_force_feedback
-//true if the user wants force feedback during play (if available)
+// D3Use_force_feedback
+// true if the user wants force feedback during play (if available)
 extern bool D3Use_force_feedback;
-//D3Force_auto_center
-//true if the user wants his joystick to be autocentered (if available)
+// D3Force_auto_center
+// true if the user wants his joystick to be autocentered (if available)
 extern bool D3Force_auto_center;
-//D3Force_gain
-//the gain setting of the ForceFeedback system
+// D3Force_gain
+// the gain setting of the ForceFeedback system
 extern float D3Force_gain;
 
-#define FORCE_TEST_FORCE	0
-#define FORCE_MICROWAVE		1
-#define FORCE_WALLHIT		2
+#define FORCE_TEST_FORCE 0
+#define FORCE_MICROWAVE 1
+#define FORCE_WALLHIT 2
 #define FORCE_WEAPON_RECOIL 3
-#define FORCE_VAUSS_RECOIL	4
-#define FORCE_AFTERBURNER	5
-#define FORCE_SHIPSHAKE		6
+#define FORCE_VAUSS_RECOIL 4
+#define FORCE_AFTERBURNER 5
+#define FORCE_SHIPSHAKE 6
 
 // -----------------------------------------------------------------
 //	ForceInit
@@ -170,13 +170,12 @@ void ForceEffectsClose(void);
 //	Purpose:
 //		Plays an effect
 // -----------------------------------------------------------------
-void ForceEffectsPlay(int id,float *scale,int *direction);
-void ForceEffectsPlay(int id,float *scale,vector *direction);
+void ForceEffectsPlay(int id, float *scale, int *direction);
+void ForceEffectsPlay(int id, float *scale, vector *direction);
 
-
-void DoForceForWeapon(object *me_obj,object *it_obj,vector *force);
+void DoForceForWeapon(object *me_obj, object *it_obj, vector *force);
 void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *wall_normal);
-void DoForceForRecoil(object *playerobj,object *weap);
+void DoForceForRecoil(object *playerobj, object *weap);
 void DoForceForShake(float magnitude);
 
 extern bool D3Use_force_feedback;

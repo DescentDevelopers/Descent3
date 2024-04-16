@@ -28,13 +28,11 @@
    andreas@angelcode.com
 */
 
-
 //
 // as_context.h
 //
 // This class handles the execution of the byte code
 //
-
 
 #ifndef AS_CONTEXT_H
 #define AS_CONTEXT_H
@@ -51,158 +49,158 @@ BEGIN_AS_NAMESPACE
 class asCScriptFunction;
 class asCScriptEngine;
 
-// TODO: The context should be renamed to something that better describes it, e.g. asIVirtualMachine, asIExecuter, asIProcessor, asIScriptThread, or something like that
+// TODO: The context should be renamed to something that better describes it, e.g. asIVirtualMachine, asIExecuter,
+// asIProcessor, asIScriptThread, or something like that
 
-class asCContext : public asIScriptContext
-{
+class asCContext : public asIScriptContext {
 public:
-	// From asIScriptContext
-	int  AddRef();
-	int  Release();
+  // From asIScriptContext
+  int AddRef();
+  int Release();
 
-	asIScriptEngine *GetEngine();
+  asIScriptEngine *GetEngine();
 
-	asEContextState GetState();
+  asEContextState GetState();
 
-	int  Prepare(int functionID);
-	int  Unprepare();
+  int Prepare(int functionID);
+  int Unprepare();
 
-	int SetArgByte(asUINT arg, asBYTE value);
-	int SetArgWord(asUINT arg, asWORD value);
-	int SetArgDWord(asUINT arg, asDWORD value);
-	int SetArgQWord(asUINT arg, asQWORD value);
-	int SetArgFloat(asUINT arg, float value);
-	int SetArgDouble(asUINT arg, double value);
-	int SetArgAddress(asUINT arg, void *addr);
-	int SetArgObject(asUINT arg, void *obj);
-	void *GetAddressOfArg(asUINT arg);
+  int SetArgByte(asUINT arg, asBYTE value);
+  int SetArgWord(asUINT arg, asWORD value);
+  int SetArgDWord(asUINT arg, asDWORD value);
+  int SetArgQWord(asUINT arg, asQWORD value);
+  int SetArgFloat(asUINT arg, float value);
+  int SetArgDouble(asUINT arg, double value);
+  int SetArgAddress(asUINT arg, void *addr);
+  int SetArgObject(asUINT arg, void *obj);
+  void *GetAddressOfArg(asUINT arg);
 
-	int SetObject(void *obj);
+  int SetObject(void *obj);
 
-	asBYTE  GetReturnByte();
-	asWORD  GetReturnWord();
-	asDWORD GetReturnDWord();
-	asQWORD GetReturnQWord();
-	float   GetReturnFloat();
-	double  GetReturnDouble();
-	void   *GetReturnAddress();
-	void   *GetReturnObject();
-	void   *GetAddressOfReturnValue();
+  asBYTE GetReturnByte();
+  asWORD GetReturnWord();
+  asDWORD GetReturnDWord();
+  asQWORD GetReturnQWord();
+  float GetReturnFloat();
+  double GetReturnDouble();
+  void *GetReturnAddress();
+  void *GetReturnObject();
+  void *GetAddressOfReturnValue();
 
-	int  Execute();
-	int  Abort();
-	int  Suspend();
+  int Execute();
+  int Abort();
+  int Suspend();
 
-	int  GetCurrentLineNumber(int *column);
-	int  GetCurrentFunction();
+  int GetCurrentLineNumber(int *column);
+  int GetCurrentFunction();
 
-	int  SetException(const char *descr);
-	int  GetExceptionLineNumber(int *column);
-	int  GetExceptionFunction();
-	const char *GetExceptionString();
+  int SetException(const char *descr);
+  int GetExceptionLineNumber(int *column);
+  int GetExceptionFunction();
+  const char *GetExceptionString();
 
-	int  SetLineCallback(asSFuncPtr callback, void *obj, int callConv);
-	void ClearLineCallback();
-	int  SetExceptionCallback(asSFuncPtr callback, void *obj, int callConv);
-	void ClearExceptionCallback();
+  int SetLineCallback(asSFuncPtr callback, void *obj, int callConv);
+  void ClearLineCallback();
+  int SetExceptionCallback(asSFuncPtr callback, void *obj, int callConv);
+  void ClearExceptionCallback();
 
-	int GetCallstackSize();
-	int GetCallstackFunction(int index);
-	int GetCallstackLineNumber(int index, int *column);
+  int GetCallstackSize();
+  int GetCallstackFunction(int index);
+  int GetCallstackLineNumber(int index, int *column);
 
-	int         GetVarCount(int stackLevel);
-	const char *GetVarName(int varIndex, int stackLevel);
-	const char *GetVarDeclaration(int varIndex, int stackLevel);
-	int         GetVarTypeId(int varIndex, int stackLevel);
-	void       *GetAddressOfVar(int varIndex, int stackLevel);
-	int         GetThisTypeId(int stackLevel);
-    void       *GetThisPointer(int stackLevel);
+  int GetVarCount(int stackLevel);
+  const char *GetVarName(int varIndex, int stackLevel);
+  const char *GetVarDeclaration(int varIndex, int stackLevel);
+  int GetVarTypeId(int varIndex, int stackLevel);
+  void *GetAddressOfVar(int varIndex, int stackLevel);
+  int GetThisTypeId(int stackLevel);
+  void *GetThisPointer(int stackLevel);
 
-	void *SetUserData(void *data);
-	void *GetUserData();
+  void *SetUserData(void *data);
+  void *GetUserData();
 
 public:
-	// Internal public functions
-	asCContext(asCScriptEngine *engine, bool holdRef);
-	virtual ~asCContext();
+  // Internal public functions
+  asCContext(asCScriptEngine *engine, bool holdRef);
+  virtual ~asCContext();
 
 #ifdef AS_DEPRECATED
-// Deprecated since 2009-12-08, 2.18.0
-	int  SetExecuteStringFunction(asCScriptFunction *func);
+  // Deprecated since 2009-12-08, 2.18.0
+  int SetExecuteStringFunction(asCScriptFunction *func);
 #endif
 
-//protected:
-	friend class asCScriptEngine;
+  // protected:
+  friend class asCScriptEngine;
 
-	void CallLineCallback();
-	void CallExceptionCallback();
+  void CallLineCallback();
+  void CallExceptionCallback();
 
-	int  CallGeneric(int funcID, void *objectPointer);
+  int CallGeneric(int funcID, void *objectPointer);
 
-	void DetachEngine();
+  void DetachEngine();
 
-	void ExecuteNext();
-	void CleanStack();
-	void CleanStackFrame();
-	void CleanReturnObject();
+  void ExecuteNext();
+  void CleanStack();
+  void CleanStackFrame();
+  void CleanReturnObject();
 
-	void PushCallState();
-	void PopCallState();
-	void CallScriptFunction(asCScriptFunction *func);
-	void CallInterfaceMethod(asCScriptFunction *func);
+  void PushCallState();
+  void PopCallState();
+  void CallScriptFunction(asCScriptFunction *func);
+  void CallInterfaceMethod(asCScriptFunction *func);
 
-	void SetInternalException(const char *descr);
+  void SetInternalException(const char *descr);
 
-	// Must be protected for multiple accesses
-	asCAtomic refCount;
+  // Must be protected for multiple accesses
+  asCAtomic refCount;
 
-	bool holdEngineRef;
-	asCScriptEngine *engine;
+  bool holdEngineRef;
+  asCScriptEngine *engine;
 
-	asEContextState status;
-	bool doSuspend;
-	bool doAbort;
-	bool externalSuspendRequest;
-	bool isCallingSystemFunction;
+  asEContextState status;
+  bool doSuspend;
+  bool doAbort;
+  bool externalSuspendRequest;
+  bool isCallingSystemFunction;
 
-	asCScriptFunction *currentFunction;
-	bool isStackMemoryNotAllocated;
+  asCScriptFunction *currentFunction;
+  bool isStackMemoryNotAllocated;
 
-	asCArray<size_t> callStack;
-	asCArray<asDWORD *> stackBlocks;
-	int stackBlockSize;
-	int stackIndex;
+  asCArray<size_t> callStack;
+  asCArray<asDWORD *> stackBlocks;
+  int stackBlockSize;
+  int stackIndex;
 
-	bool inExceptionHandler;
-	asCString exceptionString;
-	int exceptionFunction;
-	int exceptionLine;
-	int exceptionColumn;
+  bool inExceptionHandler;
+  asCString exceptionString;
+  int exceptionFunction;
+  int exceptionLine;
+  int exceptionColumn;
 
-	int returnValueSize;
-	int argumentsSize;
+  int returnValueSize;
+  int argumentsSize;
 
 #ifdef AS_DEPRECATED
-// Deprecated since 2009-12-08, 2.18.0
-	// String function
-	asCScriptFunction *stringFunction;
+  // Deprecated since 2009-12-08, 2.18.0
+  // String function
+  asCScriptFunction *stringFunction;
 #endif
 
-	asCScriptFunction *initialFunction;
+  asCScriptFunction *initialFunction;
 
-	// callbacks
-	bool lineCallback;
-	asSSystemFunctionInterface lineCallbackFunc;
-	void *lineCallbackObj;
+  // callbacks
+  bool lineCallback;
+  asSSystemFunctionInterface lineCallbackFunc;
+  void *lineCallbackObj;
 
-	bool exceptionCallback;
-	asSSystemFunctionInterface exceptionCallbackFunc;
-	void *exceptionCallbackObj;
+  bool exceptionCallback;
+  asSSystemFunctionInterface exceptionCallbackFunc;
+  void *exceptionCallbackObj;
 
-	void *userData;
+  void *userData;
 
-	// Registers available to JIT compiler functions
-	asSVMRegisters regs;
+  // Registers available to JIT compiler functions
+  asSVMRegisters regs;
 };
 
 END_AS_NAMESPACE

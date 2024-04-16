@@ -7,24 +7,24 @@
 #include "osiris_common.h"
 #include "osiris_vector.h"
 
-#ifdef _MSC_VER		//Visual C++ Build
-#define STDCALL		__stdcall
-#define STDCALLPTR	*STDCALL
-#else				//Non-Visual C++ Build
+#ifdef _MSC_VER // Visual C++ Build
+#define STDCALL __stdcall
+#define STDCALLPTR *STDCALL
+#else // Non-Visual C++ Build
 #define STDCALL __attribute__((stdcall))
-#define STDCALLPTR	STDCALL*
+#define STDCALLPTR STDCALL *
 #endif
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
-char	STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
-void	STDCALL ShutdownDLL(void);
-int     STDCALL GetGOScriptID(char *name,ubyte isdoor);
-void	STDCALLPTR CreateInstance(int id);
-void	STDCALL DestroyInstance(int id,void *ptr);
-short	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);
-int		STDCALL SaveRestoreState( void *file_ptr, ubyte saving_state );
+char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
+void STDCALL ShutdownDLL(void);
+int STDCALL GetGOScriptID(char *name, ubyte isdoor);
+void STDCALLPTR CreateInstance(int id);
+void STDCALL DestroyInstance(int id, void *ptr);
+short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -33,111 +33,91 @@ int String_table_size = 0;
 char **String_table = NULL;
 static char *_Error_string = "!!ERROR MISSING STRING!!";
 static char *_Empty_string = "";
-char *GetStringFromTable(int index)
-{
-	if( (index<0) || (index>=String_table_size) )
-		return _Error_string;
-	if(!String_table[index])
-		return _Empty_string;
-		return String_table[index];
+char *GetStringFromTable(int index) {
+  if ((index < 0) || (index >= String_table_size))
+    return _Error_string;
+  if (!String_table[index])
+    return _Empty_string;
+  return String_table[index];
 }
 #define TXT(x) GetStringFromTable(x)
 
-#define ID_FRAGCRATE	0
-#define ID_NAPALMBARREL	1
-#define ID_ALIENCUPLINK	2
-#define ID_TNTHIGHYIELD	3
-#define ID_TNTMEDYIELD	4
-#define ID_FALLINGROCK	5
-#define ID_LAVAROCK		6
+#define ID_FRAGCRATE 0
+#define ID_NAPALMBARREL 1
+#define ID_ALIENCUPLINK 2
+#define ID_TNTHIGHYIELD 3
+#define ID_TNTMEDYIELD 4
+#define ID_FALLINGROCK 5
+#define ID_LAVAROCK 6
 
-typedef struct
-{
-	int id;
-	char *name;
-}tScriptInfo;
+typedef struct {
+  int id;
+  char *name;
+} tScriptInfo;
 
-tScriptInfo ScriptIDs[] = 
-{
-	{ID_FRAGCRATE,"fragcrate"},
-	{ID_NAPALMBARREL,"napalmbarrel"},
-	{ID_ALIENCUPLINK,"Aliencuplink"},
-	{ID_TNTHIGHYIELD,"TNTCrateHighYield"},
-	{ID_TNTMEDYIELD,"TNTCrateMediumYield"},
-	{ID_FALLINGROCK,"FallingRock"},
-	{ID_LAVAROCK,"LavaRock"}
-};
+tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
+                           {ID_NAPALMBARREL, "napalmbarrel"},
+                           {ID_ALIENCUPLINK, "Aliencuplink"},
+                           {ID_TNTHIGHYIELD, "TNTCrateHighYield"},
+                           {ID_TNTMEDYIELD, "TNTCrateMediumYield"},
+                           {ID_FALLINGROCK, "FallingRock"},
+                           {ID_LAVAROCK, "LavaRock"}};
 
+int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
 
-int NumScriptIDs = sizeof(ScriptIDs)/sizeof(tScriptInfo);
-
-class ClutterScript
-{
+class ClutterScript {
 public:
-	virtual short CallEvent(int event,tOSIRISEventInfo *data)
-	{
-		return CONTINUE_CHAIN|CONTINUE_DEFAULT;
-	}
+  virtual short CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 };
 
-class FragCrate : public ClutterScript
-{
+class FragCrate : public ClutterScript {
 public:
-	short CallEvent(int event,tOSIRISEventInfo *data);
+  short CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class NapalmBarrel : public ClutterScript
-{
+class NapalmBarrel : public ClutterScript {
 public:
-	short CallEvent(int event,tOSIRISEventInfo *data);
+  short CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-class AliencuplinkScript : public ClutterScript
-{
+class AliencuplinkScript : public ClutterScript {
 public:
-	short CallEvent(int event,tOSIRISEventInfo *data);
+  short CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-typedef struct
-{
-	vector last_vel;
-	float lifetime;
-}tTNTHighYield;
-class TNTHighYield : public ClutterScript
-{
+typedef struct {
+  vector last_vel;
+  float lifetime;
+} tTNTHighYield;
+class TNTHighYield : public ClutterScript {
 public:
-	TNTHighYield(){memory = NULL;}
-	short CallEvent(int event,tOSIRISEventInfo *data);
-	tTNTHighYield *memory;
+  TNTHighYield() { memory = NULL; }
+  short CallEvent(int event, tOSIRISEventInfo *data);
+  tTNTHighYield *memory;
 };
 
-class TNTMedYield : public ClutterScript
-{
+class TNTMedYield : public ClutterScript {
 public:
-	TNTMedYield(){memory = NULL;}
-	short CallEvent(int event,tOSIRISEventInfo *data);
-	float *memory;
+  TNTMedYield() { memory = NULL; }
+  short CallEvent(int event, tOSIRISEventInfo *data);
+  float *memory;
 };
 
-typedef struct
-{
-	float lifeleft;
-}tFallingRock;
-class FallingRock : public ClutterScript
-{
+typedef struct {
+  float lifeleft;
+} tFallingRock;
+class FallingRock : public ClutterScript {
 public:
-	FallingRock(){memory=NULL;}
-	short CallEvent(int event,tOSIRISEventInfo *data);
-	tFallingRock *memory;
+  FallingRock() { memory = NULL; }
+  short CallEvent(int event, tOSIRISEventInfo *data);
+  tFallingRock *memory;
 };
-class LavaRock : public ClutterScript
-{
+class LavaRock : public ClutterScript {
 public:
-	LavaRock(){memory=NULL;}
-	short CallEvent(int event,tOSIRISEventInfo *data);
-	tFallingRock *memory;
+  LavaRock() { memory = NULL; }
+  short CallEvent(int event, tOSIRISEventInfo *data);
+  tFallingRock *memory;
 };
-
 
 //	InitializeDLL
 //	Purpose:
@@ -147,18 +127,16 @@ public:
 //	functions.  However, you can alloc some memory or whatever in this function, and free it in ShutdownDLL().
 //	Note: You cannot call any imported functions until osicommon_Initialize() is called.
 //	Returns 1 if initialization went ok, 0 if there was an error and the DLL should not be loaded.
-char STDCALL InitializeDLL(tOSIRISModuleInit *func_list)
-{
-	osicommon_Initialize((tOSIRISModuleInit *)func_list);
-	String_table_size = func_list->string_count;
-	String_table = func_list->string_table;
-	if(func_list->game_checksum!=CHECKSUM)
-	{ 
-		mprintf(0,"Game-Checksum FAIL!!! (%ul!=%ul)\n",func_list->game_checksum,CHECKSUM);
-		mprintf(0,"RECOMPILE YOUR SCRIPTS!!!\n");
-		return 0;
-	}
-	return 1;
+char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
+  osicommon_Initialize((tOSIRISModuleInit *)func_list);
+  String_table_size = func_list->string_count;
+  String_table = func_list->string_table;
+  if (func_list->game_checksum != CHECKSUM) {
+    mprintf(0, "Game-Checksum FAIL!!! (%ul!=%ul)\n", func_list->game_checksum, CHECKSUM);
+    mprintf(0, "RECOMPILE YOUR SCRIPTS!!!\n");
+    return 0;
+  }
+  return 1;
 }
 
 //	ShutdownDLL
@@ -168,9 +146,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list)
 //	of scripts, as they will all be automatically destroyed before this function is called.  The
 //	same goes for any memory allocated with Scrpt_MemAlloc(), as this will automatically be freed
 //	when a scripts instance is destroyed.
-void STDCALL ShutdownDLL(void)
-{
-}
+void STDCALL ShutdownDLL(void) {}
 
 //	GetGOScriptID
 //	Purpose:
@@ -183,18 +159,15 @@ void STDCALL ShutdownDLL(void)
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(char *name,ubyte isdoor)
-{
-	if(!isdoor)
-	{
-		for(int i=0;i<NumScriptIDs;i++)
-		{
-			if(!stricmp(name,ScriptIDs[i].name))
-				return ScriptIDs[i].id;
-		}
-	}
-	
-	return -1;
+int STDCALL GetGOScriptID(char *name, ubyte isdoor) {
+  if (!isdoor) {
+    for (int i = 0; i < NumScriptIDs; i++) {
+      if (!stricmp(name, ScriptIDs[i].name))
+        return ScriptIDs[i].id;
+    }
+  }
+
+  return -1;
 }
 
 //	CreateInstance
@@ -203,65 +176,61 @@ int STDCALL GetGOScriptID(char *name,ubyte isdoor)
 //	particular script (by allocating and initializing memory, etc.).  A pointer to this instance
 //	is to be returned back to Descent 3.  This pointer will be passed around, along with the ID
 //	for CallInstanceEvent() and DestroyInstance().  Return NULL if there was an error.
-void STDCALLPTR CreateInstance(int id)
-{
-	switch(id)
-	{
-	case ID_FRAGCRATE:
-		return new FragCrate;
-		break;
-	case ID_NAPALMBARREL:
-		return new NapalmBarrel;
-		break;
-	case ID_ALIENCUPLINK:
-		return new AliencuplinkScript;
-		break;
-	case ID_TNTHIGHYIELD:
-		return new TNTHighYield;
-		break;
-	case ID_TNTMEDYIELD:
-		return new TNTMedYield;
-		break;
-	case ID_FALLINGROCK:
-		return new FallingRock;
-		break;
-	case ID_LAVAROCK:
-		return new LavaRock;
-		break;
-	};
-	return NULL;
+void STDCALLPTR CreateInstance(int id) {
+  switch (id) {
+  case ID_FRAGCRATE:
+    return new FragCrate;
+    break;
+  case ID_NAPALMBARREL:
+    return new NapalmBarrel;
+    break;
+  case ID_ALIENCUPLINK:
+    return new AliencuplinkScript;
+    break;
+  case ID_TNTHIGHYIELD:
+    return new TNTHighYield;
+    break;
+  case ID_TNTMEDYIELD:
+    return new TNTMedYield;
+    break;
+  case ID_FALLINGROCK:
+    return new FallingRock;
+    break;
+  case ID_LAVAROCK:
+    return new LavaRock;
+    break;
+  };
+  return NULL;
 }
 
 //	DestroyInstance
 //	Purpose:
 //		Given an ID, and a pointer to a particular instance of a script, this function will delete and
 //	destruct all information associated with that script, so it will no longer exist.
-void STDCALL DestroyInstance(int id,void *ptr)
-{
-	switch(id)
-	{
-	case ID_FRAGCRATE:
-		delete ((FragCrate *)ptr);
-		break;
-	case ID_NAPALMBARREL:
-		delete ((NapalmBarrel *)ptr);
-		break;
-	case ID_ALIENCUPLINK:
-		delete ((AliencuplinkScript *)ptr);
-		break;
-	case ID_TNTHIGHYIELD:
-		delete ((TNTHighYield *)ptr);
-		break;
-	case ID_TNTMEDYIELD:
-		delete ((TNTMedYield *)ptr);
-		break;
-	case ID_FALLINGROCK:
-		delete ((FallingRock *)ptr);
-		break;
-	case ID_LAVAROCK:
-		delete ((LavaRock *)ptr);
-		break;
-	};
+void STDCALL DestroyInstance(int id, void *ptr) {
+  switch (id) {
+  case ID_FRAGCRATE:
+    delete ((FragCrate *)ptr);
+    break;
+  case ID_NAPALMBARREL:
+    delete ((NapalmBarrel *)ptr);
+    break;
+  case ID_ALIENCUPLINK:
+    delete ((AliencuplinkScript *)ptr);
+    break;
+  case ID_TNTHIGHYIELD:
+    delete ((TNTHighYield *)ptr);
+    break;
+  case ID_TNTMEDYIELD:
+    delete ((TNTMedYield *)ptr);
+    break;
+  case ID_FALLINGROCK:
+    delete ((FallingRock *)ptr);
+    break;
+  case ID_LAVAROCK:
+    delete ((LavaRock *)ptr);
+    break;
+  };
 }
 
 //	CallInstanceEvent
@@ -277,9 +246,8 @@ void STDCALL DestroyInstance(int id,void *ptr)
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)
-{
-	return ((ClutterScript *)ptr)->CallEvent(event,data);
+short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+  return ((ClutterScript *)ptr)->CallEvent(event, data);
 }
 
 //	SaveRestoreState
@@ -292,401 +260,358 @@ short STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *dat
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState( void *file_ptr, ubyte saving_state )
-{
-	return 0;
+int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+
+int GetObjectType(int object) {
+  msafe_struct ms;
+  ms.objhandle = object;
+  MSafe_GetValue(MSAFE_OBJECT_TYPE, &ms);
+
+  return ms.type;
 }
 
-int GetObjectType(int object)
-{
-	msafe_struct ms;
-	ms.objhandle = object;
-	MSafe_GetValue(MSAFE_OBJECT_TYPE,&ms);
+int GetObjectID(int object) {
+  msafe_struct ms;
+  ms.objhandle = object;
+  MSafe_GetValue(MSAFE_OBJECT_ID, &ms);
 
-	return ms.type;
+  return ms.id;
 }
 
-int GetObjectID(int object)
-{
-	msafe_struct ms;
-	ms.objhandle = object;
-	MSafe_GetValue(MSAFE_OBJECT_ID,&ms);
+short FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_DESTROY:
+    vector pos;
+    float mag;
+    int weapon_id;
+    int handle;
+    int i;
+    int room;
 
-	return ms.id;
-}
+    Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
+    Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
+    weapon_id = Wpn_FindID("fragbarrel");
 
+    handle = Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, data->me_handle);
 
-short FragCrate::CallEvent(int event,tOSIRISEventInfo *data)
-{
-	switch(event)
-	{
-	case EVT_DESTROY:
-		vector pos;
-		float mag;
-		int weapon_id;
-		int handle;
-		int i;
-		int room;
-
-		Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
-		Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);			
-		weapon_id = Wpn_FindID("fragbarrel");
-
-		handle = Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, NULL, data->me_handle);
-		
-		break;
-	}
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
-}
-
-short NapalmBarrel::CallEvent(int event,tOSIRISEventInfo *data)
-{
-	switch(event)
-	{
-	case EVT_DESTROY:
-		vector pos;
-		float mag;
-		int weapon_id;
-		int handle;
-		int i;
-		int room;
-		matrix o,orient;
-
-		Obj_Value(data->me_handle, VF_GET, OBJV_M_ORIENT, &o);
-		Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
-		Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
-
-		orient.uvec = o.fvec;
-		orient.rvec = o.rvec;
-		orient.fvec = -o.uvec;
-
-		weapon_id = Wpn_FindID("napalmbarrel");
-		//weapon_id = Wpn_FindID("napalmrocket");
-
-		handle = Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, &orient, data->me_handle);
-
-		// Set direction
-		vector v;
-		float amount_r,amount_u;
-		amount_r = (float(rand())-float(RAND_MAX)/2.0f)/float(RAND_MAX);
-		amount_u = (float(rand())-float(RAND_MAX)/2.0f)/float(RAND_MAX);
-		v = amount_r*orient.rvec + amount_u*orient.uvec + orient.fvec;
-		vm_VectorNormalize(&v);
-		v *= 30.0f;
-		//v = orient.fvec*30.0f;
-		Obj_Value(handle,VF_SET,OBJV_V_VELOCITY,&v);
-		
-		break;
-	}
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
-}
-
-short AliencuplinkScript::CallEvent(int event,tOSIRISEventInfo *data)
-{
-  switch(event) 
-  {
-  case EVT_AI_INIT:
-	  int handle,id,room;
-	  vector pos;
-	  id = Obj_FindID("Aliencuplinkhousing");
-
-	  if(id!=-1)
-	  {
-		  Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
-		  Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
-	
-		  handle = Obj_Create(OBJ_CLUTTER,id,room,&pos,NULL,data->me_handle);
-		  
-		  Obj_AttachObjectAP(data->me_handle,0,handle,0,1);
-	  }
-	break;
+    break;
   }
-  return CONTINUE_CHAIN|CONTINUE_DEFAULT;
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-void ObjectDamage(int object,float amount,int killer=OBJECT_HANDLE_NONE);
-void ObjectDamage(int object,float amount,int killer)
-{
-	msafe_struct mstruct;
+short NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_DESTROY:
+    vector pos;
+    float mag;
+    int weapon_id;
+    int handle;
+    int i;
+    int room;
+    matrix o, orient;
 
-	mstruct.objhandle = object;
-	mstruct.killer_handle = killer;
-	mstruct.damage_type = GD_SCRIPTED;
-	mstruct.amount = amount;
+    Obj_Value(data->me_handle, VF_GET, OBJV_M_ORIENT, &o);
+    Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
+    Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
 
-	MSafe_CallFunction(MSAFE_OBJECT_DAMAGE_OBJECT, &mstruct);
+    orient.uvec = o.fvec;
+    orient.rvec = o.rvec;
+    orient.fvec = -o.uvec;
+
+    weapon_id = Wpn_FindID("napalmbarrel");
+    // weapon_id = Wpn_FindID("napalmrocket");
+
+    handle = Obj_Create(OBJ_WEAPON, weapon_id, room, &pos, &orient, data->me_handle);
+
+    // Set direction
+    vector v;
+    float amount_r, amount_u;
+    amount_r = (float(rand()) - float(RAND_MAX) / 2.0f) / float(RAND_MAX);
+    amount_u = (float(rand()) - float(RAND_MAX) / 2.0f) / float(RAND_MAX);
+    v = amount_r * orient.rvec + amount_u * orient.uvec + orient.fvec;
+    vm_VectorNormalize(&v);
+    v *= 30.0f;
+    // v = orient.fvec*30.0f;
+    Obj_Value(handle, VF_SET, OBJV_V_VELOCITY, &v);
+
+    break;
+  }
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-float GetObjectShields(int object)
-{
-	msafe_struct mstruct;
+short AliencuplinkScript::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_AI_INIT:
+    int handle, id, room;
+    vector pos;
+    id = Obj_FindID("Aliencuplinkhousing");
 
-	mstruct.objhandle = object;
-	MSafe_GetValue(MSAFE_OBJECT_SHIELDS,&mstruct);
+    if (id != -1) {
+      Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &room);
+      Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
 
-	return mstruct.shields;
+      handle = Obj_Create(OBJ_CLUTTER, id, room, &pos, NULL, data->me_handle);
+
+      Obj_AttachObjectAP(data->me_handle, 0, handle, 0, 1);
+    }
+    break;
+  }
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TNTMedYield::CallEvent(int event,tOSIRISEventInfo *data)
-{
-	switch(event) 
-	{
-	case EVT_CREATED:
-		{
-			int i;
-			tOSIRISMEMCHUNK ch;
-			ch.id = 4;
-			ch.size = sizeof(float);
-			ch.my_id.type = OBJECT_SCRIPT;
-			ch.my_id.objhandle = data->me_handle;
+void ObjectDamage(int object, float amount, int killer = OBJECT_HANDLE_NONE);
+void ObjectDamage(int object, float amount, int killer) {
+  msafe_struct mstruct;
 
-			memory = (float *)Scrpt_MemAlloc(&ch);
-			*memory = -1.0f;
-		}break;
+  mstruct.objhandle = object;
+  mstruct.killer_handle = killer;
+  mstruct.damage_type = GD_SCRIPTED;
+  mstruct.amount = amount;
 
-	case EVT_MEMRESTORE:
-		{
-			memory = (float *)data->evt_memrestore.memory_ptr;
-		}break;
-
-
-	case EVT_INTERVAL:
-		{
-			vector vel;
-			float vel_val;
-			float last_vel;
-			float delta_vel;
-			float frametime;
-			float accel;
-
-			Obj_Value(data->me_handle,VF_GET,OBJV_V_VELOCITY,&vel);
-			vel_val = vm_GetMagnitude(&vel);
-
-			frametime = Game_GetFrameTime();
-			last_vel = *memory;
-
-			if(last_vel!=-1.0f)
-			{
-				delta_vel = vel_val - last_vel;
-				accel = delta_vel / frametime;
-
-				if(accel<=0.0002f)
-				{
-					//blow him up
-					Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f, DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES, 0.0f, 0.0f);
-				}
-			}
-			
-			*memory = vel_val;
-		}break;
-	}
-
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
+  MSafe_CallFunction(MSAFE_OBJECT_DAMAGE_OBJECT, &mstruct);
 }
 
+float GetObjectShields(int object) {
+  msafe_struct mstruct;
 
-short TNTHighYield::CallEvent(int event,tOSIRISEventInfo *data)
-{
-	switch(event) 
-	{
-	case EVT_CREATED:
-		{
-			int i;
-			tOSIRISMEMCHUNK ch;
-			ch.id = 4;
-			ch.size = sizeof(tTNTHighYield);
-			ch.my_id.type = OBJECT_SCRIPT;
-			ch.my_id.objhandle = data->me_handle;
+  mstruct.objhandle = object;
+  MSafe_GetValue(MSAFE_OBJECT_SHIELDS, &mstruct);
 
-			memory = (tTNTHighYield *)Scrpt_MemAlloc(&ch);
-			vm_MakeZero(&memory->last_vel);
-			memory->lifetime = 0;
-
-		}break;
-
-	case EVT_MEMRESTORE:
-		{
-			memory = (tTNTHighYield *)data->evt_memrestore.memory_ptr;
-		}break;
-
-	case EVT_INTERVAL:
-		{
-			vector vel;
-			vector diff_vel;
-			float vel_val;
-			float delta_vel;
-			float frametime;
-			float accel;
-
-			Obj_Value(data->me_handle,VF_GET,OBJV_V_VELOCITY,&vel);
-			vel_val = vm_GetMagnitude(&vel);
-
-			frametime = Game_GetFrameTime();
-			diff_vel = vel - (memory->last_vel);
-			memory->lifetime += frametime;
-
-			delta_vel = vm_GetMagnitude(&diff_vel);
-			
-			accel = fabs(delta_vel / frametime);
-
-			bool case1 = (accel>=40.0f && vel_val>35.0f && memory->last_vel.y<-6.0f)?true:false;
-			bool case2 = (accel>100.0f && vel_val>50.0f)?true:false;
-			bool case3 = (accel>1500.0f && memory->last_vel.y<-5.0f)?true:false;
-
-			if( case1 || case2 || case3 )
-			{
-				if(case1)
-					mprintf(0,"Case 1\n");
-				if(case2)
-					mprintf(0,"Case 2\n");
-				if(case3)
-					mprintf(0,"Case 3\n");
-
-				//blow him up
-				mprintf(0,"accel: %.2f vel: %.2f\n",accel,vel_val);
-				if(memory->lifetime >= 7.0f)
-				{
-					Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f, DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES, 0.0f, 0.0f);
-				}
-			}
-			
-			memory->last_vel = vel;
-		}break;
-
-	case EVT_DESTROY:
-		{
-			//see if we are within distance of the rock pile to destroy
-			int close_obj_list[32];
-			int roomnum;
-			int rockpile_id;
-			float amount;
-			vector pos;
-
-			Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &roomnum);
-			Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
-			int num_objects = AI_GetNearbyObjs(&pos,roomnum,30.0f,close_obj_list,32,false,false,false,true);
-
-			rockpile_id = Obj_FindID("TNTrockwall");
-
-			for(int i=0;i<num_objects;i++)
-			{
-				int type,id;
-
-				type = GetObjectType(close_obj_list[i]);
-				id = GetObjectID(close_obj_list[i]);
-
-				if(type == OBJ_CLUTTER && id == rockpile_id )
-				{
-					//destroy the wall
-					Obj_Kill(close_obj_list[i], data->me_handle, 1000.0f, DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES, 0.0f, 0.0f);
-				}
-			}
-			
-		}break;
-	}
-
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
-
+  return mstruct.shields;
 }
 
-short FallingRock::CallEvent(int event,tOSIRISEventInfo *data)
-{
-	switch(event) 
-	{
-	case EVT_CREATED:
-		{
-			int i;
-			tOSIRISMEMCHUNK ch;
-			ch.id = 4;
-			ch.size = sizeof(tFallingRock);
-			ch.my_id.type = OBJECT_SCRIPT;
-			ch.my_id.objhandle = data->me_handle;
+short TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_CREATED: {
+    int i;
+    tOSIRISMEMCHUNK ch;
+    ch.id = 4;
+    ch.size = sizeof(float);
+    ch.my_id.type = OBJECT_SCRIPT;
+    ch.my_id.objhandle = data->me_handle;
 
-			memory = (tFallingRock *)Scrpt_MemAlloc(&ch);
-			memory->lifeleft = 10.0f;
-		}break;
+    memory = (float *)Scrpt_MemAlloc(&ch);
+    *memory = -1.0f;
+  } break;
 
-	case EVT_MEMRESTORE:
-		{
-			memory = (tFallingRock *)data->evt_memrestore.memory_ptr;
-		}break;
+  case EVT_MEMRESTORE: {
+    memory = (float *)data->evt_memrestore.memory_ptr;
+  } break;
 
+  case EVT_INTERVAL: {
+    vector vel;
+    float vel_val;
+    float last_vel;
+    float delta_vel;
+    float frametime;
+    float accel;
 
-	case EVT_INTERVAL:
-		{
-			if(memory)
-			{
-				memory->lifeleft -= data->evt_interval.frame_time;
+    Obj_Value(data->me_handle, VF_GET, OBJV_V_VELOCITY, &vel);
+    vel_val = vm_GetMagnitude(&vel);
 
-				if(memory->lifeleft<=0)
-				{
-					//destroy the wall
-					Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f, DF_EXPL_SMALL | DF_FIREBALL | DF_DEBRIS_SMOKES, 0.0f, 0.0f);
-				}
-			}
-		}break;
-	}
+    frametime = Game_GetFrameTime();
+    last_vel = *memory;
 
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
+    if (last_vel != -1.0f) {
+      delta_vel = vel_val - last_vel;
+      accel = delta_vel / frametime;
+
+      if (accel <= 0.0002f) {
+        // blow him up
+        Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f,
+                 DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
+                 0.0f, 0.0f);
+      }
+    }
+
+    *memory = vel_val;
+  } break;
+  }
+
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short LavaRock::CallEvent(int event,tOSIRISEventInfo *data)
-{
-	switch(event) 
-	{
-	case EVT_CREATED:
-		{
-			int i;
-			tOSIRISMEMCHUNK ch;
-			ch.id = 4;
-			ch.size = sizeof(tFallingRock);
-			ch.my_id.type = OBJECT_SCRIPT;
-			ch.my_id.objhandle = data->me_handle;
+short TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_CREATED: {
+    int i;
+    tOSIRISMEMCHUNK ch;
+    ch.id = 4;
+    ch.size = sizeof(tTNTHighYield);
+    ch.my_id.type = OBJECT_SCRIPT;
+    ch.my_id.objhandle = data->me_handle;
 
-			memory = (tFallingRock *)Scrpt_MemAlloc(&ch);
-			memory->lifeleft = 20.0f;
+    memory = (tTNTHighYield *)Scrpt_MemAlloc(&ch);
+    vm_MakeZero(&memory->last_vel);
+    memory->lifetime = 0;
 
-			// Set it on fire!
-			msafe_struct mstruct;
-			mstruct.objhandle = data->me_handle;
-			mstruct.longevity = 25.0f;
-			mstruct.interval = 0.0f;
-			mstruct.ithandle = OBJECT_HANDLE_NONE;
-			MSafe_CallFunction(MSAFE_OBJECT_SETONFIRE,&mstruct);
+  } break;
 
-		}break;
+  case EVT_MEMRESTORE: {
+    memory = (tTNTHighYield *)data->evt_memrestore.memory_ptr;
+  } break;
 
-	case EVT_MEMRESTORE:
-		{
-			memory = (tFallingRock *)data->evt_memrestore.memory_ptr;
-		}break;
+  case EVT_INTERVAL: {
+    vector vel;
+    vector diff_vel;
+    float vel_val;
+    float delta_vel;
+    float frametime;
+    float accel;
 
-	case EVT_COLLIDE:
-		{
-			// Set it on fire!
-			msafe_struct mstruct;
-			mstruct.objhandle = data->evt_collide.it_handle;
-			mstruct.longevity = 2.0f;
-			mstruct.interval = 2.0f;
-			mstruct.ithandle = data->me_handle;
-			MSafe_CallFunction(MSAFE_OBJECT_SETONFIRE,&mstruct);
+    Obj_Value(data->me_handle, VF_GET, OBJV_V_VELOCITY, &vel);
+    vel_val = vm_GetMagnitude(&vel);
 
-		}break;
+    frametime = Game_GetFrameTime();
+    diff_vel = vel - (memory->last_vel);
+    memory->lifetime += frametime;
 
-	case EVT_INTERVAL:
-		{
-			if(memory)
-			{
-				memory->lifeleft -= data->evt_interval.frame_time;
+    delta_vel = vm_GetMagnitude(&diff_vel);
 
-				if(memory->lifeleft<=0)
-				{
-					//destroy the wall
-					Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f, DF_EXPL_SMALL | DF_FIREBALL | DF_DEBRIS_SMOKES, 0.0f, 0.0f);
-				}
-			}
-		}break;
-	}
+    accel = fabs(delta_vel / frametime);
 
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
+    bool case1 = (accel >= 40.0f && vel_val > 35.0f && memory->last_vel.y < -6.0f) ? true : false;
+    bool case2 = (accel > 100.0f && vel_val > 50.0f) ? true : false;
+    bool case3 = (accel > 1500.0f && memory->last_vel.y < -5.0f) ? true : false;
+
+    if (case1 || case2 || case3) {
+      if (case1)
+        mprintf(0, "Case 1\n");
+      if (case2)
+        mprintf(0, "Case 2\n");
+      if (case3)
+        mprintf(0, "Case 3\n");
+
+      // blow him up
+      mprintf(0, "accel: %.2f vel: %.2f\n", accel, vel_val);
+      if (memory->lifetime >= 7.0f) {
+        Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f,
+                 DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
+                 0.0f, 0.0f);
+      }
+    }
+
+    memory->last_vel = vel;
+  } break;
+
+  case EVT_DESTROY: {
+    // see if we are within distance of the rock pile to destroy
+    int close_obj_list[32];
+    int roomnum;
+    int rockpile_id;
+    float amount;
+    vector pos;
+
+    Obj_Value(data->me_handle, VF_GET, OBJV_I_ROOMNUM, &roomnum);
+    Obj_Value(data->me_handle, VF_GET, OBJV_V_POS, &pos);
+    int num_objects = AI_GetNearbyObjs(&pos, roomnum, 30.0f, close_obj_list, 32, false, false, false, true);
+
+    rockpile_id = Obj_FindID("TNTrockwall");
+
+    for (int i = 0; i < num_objects; i++) {
+      int type, id;
+
+      type = GetObjectType(close_obj_list[i]);
+      id = GetObjectID(close_obj_list[i]);
+
+      if (type == OBJ_CLUTTER && id == rockpile_id) {
+        // destroy the wall
+        Obj_Kill(close_obj_list[i], data->me_handle, 1000.0f,
+                 DF_BLAST_RING | DF_LOSES_ANTIGRAV | DF_EXPL_MEDIUM | DF_FIREBALL | DF_BREAKS_APART | DF_DEBRIS_SMOKES,
+                 0.0f, 0.0f);
+      }
+    }
+
+  } break;
+  }
+
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
+}
+
+short FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_CREATED: {
+    int i;
+    tOSIRISMEMCHUNK ch;
+    ch.id = 4;
+    ch.size = sizeof(tFallingRock);
+    ch.my_id.type = OBJECT_SCRIPT;
+    ch.my_id.objhandle = data->me_handle;
+
+    memory = (tFallingRock *)Scrpt_MemAlloc(&ch);
+    memory->lifeleft = 10.0f;
+  } break;
+
+  case EVT_MEMRESTORE: {
+    memory = (tFallingRock *)data->evt_memrestore.memory_ptr;
+  } break;
+
+  case EVT_INTERVAL: {
+    if (memory) {
+      memory->lifeleft -= data->evt_interval.frame_time;
+
+      if (memory->lifeleft <= 0) {
+        // destroy the wall
+        Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f, DF_EXPL_SMALL | DF_FIREBALL | DF_DEBRIS_SMOKES, 0.0f,
+                 0.0f);
+      }
+    }
+  } break;
+  }
+
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
+}
+
+short LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
+  switch (event) {
+  case EVT_CREATED: {
+    int i;
+    tOSIRISMEMCHUNK ch;
+    ch.id = 4;
+    ch.size = sizeof(tFallingRock);
+    ch.my_id.type = OBJECT_SCRIPT;
+    ch.my_id.objhandle = data->me_handle;
+
+    memory = (tFallingRock *)Scrpt_MemAlloc(&ch);
+    memory->lifeleft = 20.0f;
+
+    // Set it on fire!
+    msafe_struct mstruct;
+    mstruct.objhandle = data->me_handle;
+    mstruct.longevity = 25.0f;
+    mstruct.interval = 0.0f;
+    mstruct.ithandle = OBJECT_HANDLE_NONE;
+    MSafe_CallFunction(MSAFE_OBJECT_SETONFIRE, &mstruct);
+
+  } break;
+
+  case EVT_MEMRESTORE: {
+    memory = (tFallingRock *)data->evt_memrestore.memory_ptr;
+  } break;
+
+  case EVT_COLLIDE: {
+    // Set it on fire!
+    msafe_struct mstruct;
+    mstruct.objhandle = data->evt_collide.it_handle;
+    mstruct.longevity = 2.0f;
+    mstruct.interval = 2.0f;
+    mstruct.ithandle = data->me_handle;
+    MSafe_CallFunction(MSAFE_OBJECT_SETONFIRE, &mstruct);
+
+  } break;
+
+  case EVT_INTERVAL: {
+    if (memory) {
+      memory->lifeleft -= data->evt_interval.frame_time;
+
+      if (memory->lifeleft <= 0) {
+        // destroy the wall
+        Obj_Kill(data->me_handle, OBJECT_HANDLE_NONE, 1000.0f, DF_EXPL_SMALL | DF_FIREBALL | DF_DEBRIS_SMOKES, 0.0f,
+                 0.0f);
+      }
+    }
+  } break;
+  }
+
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }

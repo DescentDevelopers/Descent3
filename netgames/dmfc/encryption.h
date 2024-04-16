@@ -1,21 +1,21 @@
 /*
-* $Logfile: /DescentIII/Main/dmfc/encryption.h $
-* $Revision: 1.1.1.1 $
-* $Date: 2003/08/26 03:57:21 $
-* $Author: kevinb $
-*
-* header file for ICE encryption class
-*
-* $Log: encryption.h,v $
-* Revision 1.1.1.1  2003/08/26 03:57:21  kevinb
-* initial 1.5 import
-*
- * 
+ * $Logfile: /DescentIII/Main/dmfc/encryption.h $
+ * $Revision: 1.1.1.1 $
+ * $Date: 2003/08/26 03:57:21 $
+ * $Author: kevinb $
+ *
+ * header file for ICE encryption class
+ *
+ * $Log: encryption.h,v $
+ * Revision 1.1.1.1  2003/08/26 03:57:21  kevinb
+ * initial 1.5 import
+ *
+ *
  * 2     7/08/99 2:37a Jeff
  * created encryption class based off of ICE encryption
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __ICEENCRYPT_H_
 #define __ICEENCRYPT_H_
@@ -24,26 +24,25 @@
 
 class IceSubkey;
 
-class IceKey
-{
+class IceKey {
 public:
-	IceKey(int n);
-	~IceKey();
+  IceKey(int n);
+  ~IceKey();
 
-	void set(const ubyte *key);
+  void set(const ubyte *key);
 
-	void encrypt(const ubyte *plaintext,ubyte *ciphertext) const;
-	void decrypt(const ubyte *ciphertext,ubyte *plaintext) const;
-	
-	int keySize(void) const;
-	int	blockSize(void) const;
+  void encrypt(const ubyte *plaintext, ubyte *ciphertext) const;
+  void decrypt(const ubyte *ciphertext, ubyte *plaintext) const;
+
+  int keySize(void) const;
+  int blockSize(void) const;
 
 private:
-	void scheduleBuild(ushort *k,int n,const int *keyrot);
+  void scheduleBuild(ushort *k, int n, const int *keyrot);
 
-	int	_size;
-	int	_rounds;
-	IceSubkey *_keysched;
+  int _size;
+  int _rounds;
+  IceSubkey *_keysched;
 };
 
 #endif

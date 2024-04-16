@@ -3,51 +3,45 @@
 #ifndef UISYS_H
 #define UISYS_H
 
-
 /////////////////////////////////////////////////////////////////////////////
 //	DEFINITIONS
 
-#define UIMSEBTN_PRESSED			1
-#define UIMSEBTN_RELEASED			2
-#define UIMSEBTN_CLICKED			3
+#define UIMSEBTN_PRESSED 1
+#define UIMSEBTN_RELEASED 2
+#define UIMSEBTN_CLICKED 3
 
-#define UIKEY_PRESSED				1
-#define UIKEY_RELEASED				2
-#define UIKEY_CLICKED				3
+#define UIKEY_PRESSED 1
+#define UIKEY_RELEASED 2
+#define UIKEY_CLICKED 3
 
 //	variables (OnMouseDown, etc)
-#define UILMSEBTN						1
-#define UIRMSEBTN						2
+#define UILMSEBTN 1
+#define UIRMSEBTN 2
 
 // mouse click properties
 #ifdef MACINTOSH
-#define UI_DBLCLICK_DELAY			1.20f
+#define UI_DBLCLICK_DELAY 1.20f
 #else
-#define UI_DBLCLICK_DELAY			0.60f
+#define UI_DBLCLICK_DELAY 0.60f
 #endif
-#define UI_DBLCLICK_MSEDELTA		4
+#define UI_DBLCLICK_MSEDELTA 4
 
+typedef struct tUIInitInfo {
+  int window_font; // default font for windows
+  int w, h;        // width and height of screen.
+} tUIInitInfo;
 
-typedef struct tUIInitInfo
-{
-	int window_font;									// default font for windows
-	int w, h;											// width and height of screen.
-}
-tUIInitInfo;
+typedef struct tUIInput {
+  int mx, my, last_mx, last_my;
+  int b1_status, b1_last_status;
+  int b1_count;
+  int key, last_key;
+  int key_status, last_key_status;
+  float cur_time;
 
-typedef struct tUIInput
-{
-	int mx, my, last_mx, last_my;
-	int b1_status, b1_last_status;
-	int b1_count;
-	int key, last_key;
-	int key_status, last_key_status;
-	float cur_time;
-
-	bool key_first_press;							// if the key was really pressed or just held down.
-	bool printscreen;
-}
-tUIInput;
+  bool key_first_press; // if the key was really pressed or just held down.
+  bool printscreen;
+} tUIInput;
 
 //	user interface frame time
 extern float UIFrameTime;
@@ -58,67 +52,49 @@ extern int UI_screen_width, UI_screen_height;
 
 class oeApplication;
 
-
 //////////////////////////////////////////////////////////////////////////////
 //	MACROS
 
-#define ISKEYPRESSED(_k) ((UI_input.key == (_k) && (UI_input.key_status == UIKEY_PRESSED || UI_input.key_status == UIKEY_CLICKED)) ? true : false)
+#define ISKEYPRESSED(_k)                                                                                               \
+  ((UI_input.key == (_k) && (UI_input.key_status == UIKEY_PRESSED || UI_input.key_status == UIKEY_CLICKED)) ? true     \
+                                                                                                            : false)
 #define ISKEYRELEASED(_k) ((UI_input.key == (_k) && UI_input.key_status == UIKEY_RELEASED) ? true : false)
 
-
 //	inlined supporter functions
-inline bool PT_IN_GADGET(UIWindow *wnd, UIGadget *gadget, int x, int y)
-{
-	int gl, gt, gr, gb;
-	gl = wnd->X() + gadget->X();
-	gt = wnd->Y() + gadget->Y();
-	gr = wnd->X() + gadget->X() + gadget->W();
-	gb = wnd->Y() + gadget->Y() + gadget->H();
+inline bool PT_IN_GADGET(UIWindow *wnd, UIGadget *gadget, int x, int y) {
+  int gl, gt, gr, gb;
+  gl = wnd->X() + gadget->X();
+  gt = wnd->Y() + gadget->Y();
+  gr = wnd->X() + gadget->X() + gadget->W();
+  gb = wnd->Y() + gadget->Y() + gadget->H();
 
-	if (x >= gl && x < gr)
-		if (y >= gt && y < gb)
-			return true;
+  if (x >= gl && x < gr)
+    if (y >= gt && y < gb)
+      return true;
 
-	return false;
+  return false;
 }
 
-inline bool PT_IN_RECT(int x, int y, int l, int t, int w, int h)
-{
-	if (x >= l && x < (l+w) && y >= t && y < (t+h)) 
-		return true;
-	else
-		return false;
-}					 
-
-inline int SCREEN_TO_WND_X(UIWindow *wnd, int x)
-{
-	return (x - wnd->X());
+inline bool PT_IN_RECT(int x, int y, int l, int t, int w, int h) {
+  if (x >= l && x < (l + w) && y >= t && y < (t + h))
+    return true;
+  else
+    return false;
 }
 
-inline int SCREEN_TO_WND_Y(UIWindow *wnd, int y)
-{
-	return (y - wnd->Y());
-}
+inline int SCREEN_TO_WND_X(UIWindow *wnd, int x) { return (x - wnd->X()); }
 
-inline int SCREEN_TO_GAD_X(UIGadget *gad, int x)
-{
-	return (SCREEN_TO_WND_X(gad->GetWindow(), x) - gad->X());
-}
+inline int SCREEN_TO_WND_Y(UIWindow *wnd, int y) { return (y - wnd->Y()); }
 
-inline int SCREEN_TO_GAD_Y(UIGadget *gad, int y)
-{
-	return (SCREEN_TO_WND_Y(gad->GetWindow(), y) - gad->Y());
-}
+inline int SCREEN_TO_GAD_X(UIGadget *gad, int x) { return (SCREEN_TO_WND_X(gad->GetWindow(), x) - gad->X()); }
+
+inline int SCREEN_TO_GAD_Y(UIGadget *gad, int y) { return (SCREEN_TO_WND_Y(gad->GetWindow(), y) - gad->Y()); }
 
 #define LOCK_FOCUS(_gadget) (_gadget)->LockFocus();
 
 #define UNLOCK_FOCUS(_gadget) (_gadget)->UnlockFocus();
 
-inline float UI_TIME()
-{
-	return UI_input.cur_time;
-}
-
+inline float UI_TIME() { return UI_input.cur_time; }
 
 //////////////////////////////////////////////////////////////////////////////
 //	FUNCTIONS
@@ -142,24 +118,23 @@ void ui_RemoveAllWindows();
 void ui_RemoveWindow(UIWindow *wnd);
 
 //	does a ui frame given a list of windows. returns result list.
-int ui_DoFrame(bool input=true);
+int ui_DoFrame(bool input = true);
 
 //	does a ui frame and gets mouse and key information.
-int ui_DoFrame(tUIInput *input, bool doinput=true);
+int ui_DoFrame(tUIInput *input, bool doinput = true);
 
 //	ability to load/use mouse cursors
 void ui_UseCursor(char *fname);
 
 //	hide and show cursor. effects are cumulative (returns whether the cursor was already shown or hidden.)
-bool ui_ShowCursor();							// return value false if cursor is currently visible.
-bool ui_HideCursor();							// return value true if cursor was already hidden
-bool ui_IsCursorVisible();						// is the cursor visible?
+bool ui_ShowCursor();      // return value false if cursor is currently visible.
+bool ui_HideCursor();      // return value true if cursor was already hidden
+bool ui_IsCursorVisible(); // is the cursor visible?
 
 //	frees ui input cache
 void ui_Flush();
 
 // does screen shot
 void ui_DoScreenshot();
-
 
 #endif

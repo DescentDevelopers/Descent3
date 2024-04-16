@@ -6,14 +6,15 @@
 #include "object.h"
 #include "ship.h"
 
-void FireOnOffWeapon (object *obj);
+void FireOnOffWeapon(object *obj);
 
 void WBSetupFireAnim(object *obj, otype_wb_info *static_wb, int wb_index);
 void WBFireAnimFrame(object *obj, otype_wb_info *static_wb, int wb_index);
 
 bool WBIsBatteryReady(object *obj, otype_wb_info *static_wb, int wb_index);
 void WBFireBattery(object *obj, otype_wb_info *static_wb, int wb_index);
-void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int dynamic_wb_index,float damage_scalar=1.0);
+void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int dynamic_wb_index,
+                   float damage_scalar = 1.0);
 
 void WBClearInfo(object *obj);
 void WBClearInfo(otype_wb_info static_wb[]);

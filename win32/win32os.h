@@ -9,9 +9,8 @@
 #include "gameos.h"
 
 typedef struct win32oss_info {
-	HWND hwnd;
-	HINSTANCE hinst;
+  HWND hwnd;
+  HINSTANCE hinst;
 } win32oss_info;
 
-
-#endif	
+#endif

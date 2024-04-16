@@ -16,7 +16,7 @@ extern "C" {
 
 extern HRESULT A3dInitialize(void);
 extern void    A3dUninitialize(void);
-extern HRESULT A3dCreate(GUID *,void **,IUnknown FAR *,DWORD); 
+extern HRESULT A3dCreate(GUID *,void **,IUnknown FAR *,DWORD);
 extern HRESULT A3dRegister(void);
 
 #ifdef __cplusplus

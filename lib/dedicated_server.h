@@ -1,71 +1,67 @@
 #ifndef DEDICATED_SERVER_H
 #define DEDICATED_SERVER_H
 
-#define CVAR_GAMEINIT	0x0001	//this variable can be set/changed during server init
-#define CVAR_GAMEPLAY	0x0002	//this variable can be set/changed during game play
+#define CVAR_GAMEINIT 0x0001 // this variable can be set/changed during server init
+#define CVAR_GAMEPLAY 0x0002 // this variable can be set/changed during game play
 
-typedef enum
-{
-	CVAR_TYPE_INT,
-	CVAR_TYPE_FLOAT,
-	CVAR_TYPE_STRING,
-	CVAR_TYPE_NONE,
+typedef enum {
+  CVAR_TYPE_INT,
+  CVAR_TYPE_FLOAT,
+  CVAR_TYPE_STRING,
+  CVAR_TYPE_NONE,
 } cvar_type;
 
-typedef struct
-{
-	char *varname;
-	cvar_type type;
-	void *dest_variable;
-	int var_min,var_max;
-	short permissions;
+typedef struct {
+  char *varname;
+  cvar_type type;
+  void *dest_variable;
+  int var_min, var_max;
+  short permissions;
 } cvar_entry;
 
 extern bool Dedicated_server;
 
 // Sets the value for a cvar INT type
-void SetCVarInt (int index,int val);
+void SetCVarInt(int index, int val);
 
 // Sets the value for a cvar FLOAT type
-void SetCVarFloat (int index,float val);
+void SetCVarFloat(int index, float val);
 
 // Sets the value for a cvar string type
-void SetCVarString (int index,char *val);
+void SetCVarString(int index, char *val);
 
 // The accessor function that sets the value of a cvar
-void SetCVar (char *cvar_string,char *cvar_argument,bool in_game_init);
+void SetCVar(char *cvar_string, char *cvar_argument, bool in_game_init);
 
 // The accessor function that sets the value of a cvar...INT only
-void SetCVar (char *cvar_string,int cvar_argument);
+void SetCVar(char *cvar_string, int cvar_argument);
 
 // The accessor function that sets the value of a cvar...FLOAT only
-void SetCVar (char *cvar_string,float cvar_argument);
-
+void SetCVar(char *cvar_string, float cvar_argument);
 
 // Starts a dedicated server and loads the server config file
-void StartDedicatedServer ();
+void StartDedicatedServer();
 
 // Reads in the server config file for a dedicated server
 // Returns true if everything is ok
-int  LoadServerConfigFile ();
+int LoadServerConfigFile();
 
 // Called once per frame for the dedicated server
-void DoDedicatedServerFrame ();
+void DoDedicatedServerFrame();
 
 // Prints a message to the console if the dedicated server is active
 void PrintDedicatedMessage(const char *fmt, ...);
 
-
-//Reads incoming data from the telnet connection to the server
+// Reads incoming data from the telnet connection to the server
 void DedicatedReadTelnet(void);
 
-//Sends a string to all connected and logged in clients
+// Sends a string to all connected and logged in clients
 void DedicatedSocketputs(char *str);
 
-//Look for incoming connections 
-void ListenDedicatedSocket (void);
+// Look for incoming connections
+void ListenDedicatedSocket(void);
 
-//Init the socket and start listening
+// Init the socket and start listening
 void InitDedicatedSocket(ushort port);
 
 #endif

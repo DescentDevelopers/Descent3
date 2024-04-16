@@ -4,9 +4,9 @@
 #include "object.h"
 
 // Draws a splinter object
-void DrawSplinterObject (object *obj);
+void DrawSplinterObject(object *obj);
 
-//do whatever needs to be done for this piece of splinter for this frame
+// do whatever needs to be done for this piece of splinter for this frame
 void DoSplinterFrame(object *obj);
 
 #endif

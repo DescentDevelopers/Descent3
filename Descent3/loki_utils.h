@@ -22,4 +22,3 @@ const char *loki_getprefpath(void);
 #endif
 
 #endif
-

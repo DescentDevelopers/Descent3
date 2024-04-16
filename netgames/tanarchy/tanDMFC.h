@@ -6,7 +6,7 @@
 
 //!!!!!!!ADD YOUR EVENT HANDLER OVERRIDES HERE!!!!!!!!!!!
 void OnGameStateRequest(int pnum);
-void OnClientPlayerKilled(object *killer_obj,int victim_pnum);
+void OnClientPlayerKilled(object *killer_obj, int victim_pnum);
 void OnServerGameCreated(void);
 void OnClientLevelStart(void);
 void OnClientLevelEnd(void);
@@ -21,17 +21,16 @@ extern IDMFC *DMFCBase;
 
 // These next two function prototypes MUST appear in the extern "C" block if called
 // from a CPP file.
-extern "C"
-{
-	DLLEXPORT void DLLFUNCCALL DLLGameInit (int *api_func,ubyte *all_ok,int num_teams_to_use);
-	DLLEXPORT void DLLFUNCCALL DLLGameCall (int eventnum,dllinfo *data);
-	DLLEXPORT void DLLFUNCCALL DLLGameClose ();
-	DLLEXPORT void DLLFUNCCALL DLLGetGameInfo (tDLLOptions *options);
-	DLLEXPORT int DLLFUNCCALL GetGOScriptID(char *name,ubyte isdoor);
-	DLLEXPORT void DLLFUNCCALLPTR CreateInstance(int id);
-	DLLEXPORT void DLLFUNCCALL DestroyInstance(int id,void *ptr);
-	DLLEXPORT short DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);
-	DLLEXPORT int DLLFUNCCALL SaveRestoreState( void *file_ptr, ubyte saving_state );
+extern "C" {
+DLLEXPORT void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use);
+DLLEXPORT void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data);
+DLLEXPORT void DLLFUNCCALL DLLGameClose();
+DLLEXPORT void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options);
+DLLEXPORT int DLLFUNCCALL GetGOScriptID(char *name, ubyte isdoor);
+DLLEXPORT void DLLFUNCCALLPTR CreateInstance(int id);
+DLLEXPORT void DLLFUNCCALL DestroyInstance(int id, void *ptr);
+DLLEXPORT short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int DLLFUNCCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 }
 
 #ifdef MACINTOSH
@@ -39,13 +38,12 @@ extern "C"
 #endif
 
 // The main entry point where the game calls the dll
-void DLLFUNCCALL DLLGameCall (int eventnum,dllinfo *data)
-{
-	if((eventnum<EVT_CLIENT_INTERVAL) && (DMFCBase->GetLocalRole()!=LR_SERVER)){
-		return;
-	}
+void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {
+  if ((eventnum < EVT_CLIENT_INTERVAL) && (DMFCBase->GetLocalRole() != LR_SERVER)) {
+    return;
+  }
 
-	DMFCBase->TranslateEvent(eventnum,data);
+  DMFCBase->TranslateEvent(eventnum, data);
 }
 
 //	GetGOScriptID
@@ -59,10 +57,7 @@ void DLLFUNCCALL DLLGameCall (int eventnum,dllinfo *data)
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int DLLFUNCCALL GetGOScriptID(char *name,ubyte isdoor)
-{
-	return -1;
-}
+int DLLFUNCCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
 
 //	CreateInstance
 //	Purpose:
@@ -70,18 +65,13 @@ int DLLFUNCCALL GetGOScriptID(char *name,ubyte isdoor)
 //	particular script (by allocating and initializing memory, etc.).  A pointer to this instance
 //	is to be returned back to Descent 3.  This pointer will be passed around, along with the ID
 //	for CallInstanceEvent() and DestroyInstance().  Return NULL if there was an error.
-void DLLFUNCCALLPTR CreateInstance(int id)
-{
-	return NULL;
-}
+void DLLFUNCCALLPTR CreateInstance(int id) { return NULL; }
 
 //	DestroyInstance
 //	Purpose:
 //		Given an ID, and a pointer to a particular instance of a script, this function will delete and
 //	destruct all information associated with that script, so it will no longer exist.
-void DLLFUNCCALL DestroyInstance(int id,void *ptr)
-{
-}
+void DLLFUNCCALL DestroyInstance(int id, void *ptr) {}
 
 //	CallInstanceEvent
 //	Purpose:
@@ -96,9 +86,8 @@ void DLLFUNCCALL DestroyInstance(int id,void *ptr)
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)
-{
-	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
+short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+  return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
 //	SaveRestoreState
@@ -111,13 +100,9 @@ short DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo 
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int DLLFUNCCALL SaveRestoreState( void *file_ptr, ubyte saving_state )
-{
-	return 0;
-}
+int DLLFUNCCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
 #ifdef MACINTOSH
 #pragma export off
 #endif
-
 
 #endif

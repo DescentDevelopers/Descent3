@@ -1,20 +1,20 @@
 /*
-* $Logfile: /DescentIII/main/Lib/psglob.h $
-* $Revision: 2 $
-* $Date: 1/07/99 10:51p $
-* $Author: Jeff $
-*
-* string globbing function header
-*
-* $Log: /DescentIII/main/Lib/psglob.h $
- * 
+ * $Logfile: /DescentIII/main/Lib/psglob.h $
+ * $Revision: 2 $
+ * $Date: 1/07/99 10:51p $
+ * $Author: Jeff $
+ *
+ * string globbing function header
+ *
+ * $Log: /DescentIII/main/Lib/psglob.h $
+ *
  * 2     1/07/99 10:51p Jeff
  * added psglob and support to do find in files for hog files
- * 
+ *
  * 1     1/07/99 7:28p Jeff
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __PSGLOB_H_
 #define __PSGLOB_H_
@@ -41,7 +41,7 @@ int PSGlobHasPattern(char *string);
 //	9) If case_sensitive is 0, than case does not matter for the non-pattern characters
 int PSGlobMatch(char *pattern, char *text, int case_sensitive, int dot_special);
 
-//Like PSGlobMatch, but match pattern against any final segment of text
+// Like PSGlobMatch, but match pattern against any final segment of text
 int PSGlobMatchAfterStar(char *pattern, int case_sensitive, char *text);
 
 #endif

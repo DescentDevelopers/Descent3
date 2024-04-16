@@ -7,58 +7,58 @@
  * Aureal enhancements to sound library.
  *
  * $Log: /DescentIII/Main/dd_sndlib/aureal3d.cpp $
- * 
+ *
  * 18    8/19/99 10:25a Samir
  * tweaks for Aureal as requested by Aureal.
- * 
+ *
  * 17    8/13/99 2:00p Samir
  * more aureal and geometry fixes.
- * 
+ *
  * 16    8/11/99 3:12p Samir
  * fixes for aureal support.
- * 
+ *
  * 15    7/30/99 5:03p Samir
  * an attempt to get some aureal reflection support working.
- * 
+ *
  * 14    7/20/99 4:09p Samir
  * fixed reflection support.  tag polygons for reuse.
- * 
+ *
  * 13    5/03/99 12:35p Samir
  * added config file support for aureal features.
- * 
+ *
  * 12    5/03/99 3:12a Samir
  * added event management routines.
- * 
+ *
  * 11    4/29/99 3:01p Samir
  * added some more functions.
- * 
+ *
  * 10    4/23/99 7:51p Samir
- * added flush function 
- * 
+ * added flush function
+ *
  * 9     4/13/99 4:09p Samir
  * more priority stuff.
- * 
+ *
  * 8     4/06/99 8:30p Samir
  * added reflection support.
- * 
+ *
  * 7     4/01/99 4:28p Samir
  * added some error checking.
- * 
+ *
  * 6     3/29/99 10:53a Samir
  * added new Aureal 2.0 sdk support.
- * 
+ *
  * 5     1/14/99 6:10p Samir
  * added DirectSound buffer duplication code.
- * 
+ *
  * 4     1/08/99 6:31p Samir
  * added reverb
- * 
+ *
  * 3     1/08/99 11:36a Samir
  * implemented basic Aureal 2.0 support.
- * 
+ *
  * 2     12/23/98 11:48a Samir
  * basic functionality.
- * 
+ *
  * 1     7/02/98 4:38p Samir
  * Initial revision.
  *
@@ -66,7 +66,6 @@
  */
 
 #if 0
-
 
 #include "auddev.h"
 
@@ -112,15 +111,14 @@ int A3D_buffers_allocated=0;
 
 void A3D_FinalShutdown();
 
-
-#define A3DCMD_NUM	7
-#define A3DCMD_GAIN		0
-#define A3DCMD_OCC		1
-#define A3DCMD_REF		2
-#define A3DCMD_REFINT	3
-#define A3DCMD_REFTIME	4
-#define A3DCMD_REFSCALE	5
-#define A3DCMD_REFGAIN	6
+#define A3DCMD_NUM 7
+#define A3DCMD_GAIN 0
+#define A3DCMD_OCC 1
+#define A3DCMD_REF 2
+#define A3DCMD_REFINT 3
+#define A3DCMD_REFTIME 4
+#define A3DCMD_REFSCALE 5
+#define A3DCMD_REFGAIN 6
 
 const char *A3DCommands[A3DCMD_NUM] = {
 	"gain",

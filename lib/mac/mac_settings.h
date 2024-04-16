@@ -9,10 +9,10 @@
  * Revision 1.1.1.1  2003/08/26 03:58:13  kevinb
  * initial 1.5 import
  *
- * 
+ *
  * 1     2/27/97 5:04 PM Jeremy
  * macintosh settings for the compiler
- * 
+ *
  * $NoKeywords: $
  */
 

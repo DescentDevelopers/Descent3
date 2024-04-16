@@ -7,21 +7,20 @@
 
 void FreeTempPoint(g3Point *p);
 void InitFreePoints(void);
-void ClipLine(g3Point **p0,g3Point **p1,ubyte codes_or);
+void ClipLine(g3Point **p0, g3Point **p1, ubyte codes_or);
 
-//Verify that all the temp points are free, and free them it they are not.
+// Verify that all the temp points are free, and free them it they are not.
 #ifdef _DEBUG
 void CheckTempPoints();
 #else
 #define CheckTempPoints()
 #endif
 
-
-extern int Window_width,Window_height;		//the actual integer width & height
-extern float Window_w2,Window_h2;	  		//width,height/2
+extern int Window_width, Window_height; // the actual integer width & height
+extern float Window_w2, Window_h2;      // width,height/2
 extern float View_zoom;
-extern vector View_position,Matrix_scale;
-extern matrix View_matrix,Unscaled_matrix;
+extern vector View_position, Matrix_scale;
+extern matrix View_matrix, Unscaled_matrix;
 extern float Far_clip_z;
 
 // For custom clipping plane

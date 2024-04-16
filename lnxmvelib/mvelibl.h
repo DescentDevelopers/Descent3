@@ -27,11 +27,10 @@ extern "C" {
 #endif
 
 /* Call this function to provide hooks into your memory management.
-*/
+ */
 typedef void *(mve_cb_alloc)(unsigned size);
-typedef void (mve_cb_free)(void *p);
-void MVE_memCallbacks(mve_cb_alloc *fn_alloc,
-		              mve_cb_free *fn_free);
+typedef void(mve_cb_free)(void *p);
+void MVE_memCallbacks(mve_cb_alloc *fn_alloc, mve_cb_free *fn_free);
 
 /* This function remains from the DOS version of mvelib.
 ** It allows you to provide a preallocated buffer for file I/O,
@@ -40,7 +39,7 @@ void MVE_memCallbacks(mve_cb_alloc *fn_alloc,
 void MVE_memIO(void *p, unsigned size);
 
 /* Call this function to provide hook into your file io.
-*/
+ */
 typedef unsigned mve_cb_read(int handle, void *buf, unsigned count);
 void MVE_ioCallbacks(mve_cb_read *fn_read);
 
@@ -60,7 +59,6 @@ void MVE_sndInit(LnxSoundDevice *lpDS);
 */
 void MVE_dsbSetVolume(long lVolume);
 void MVE_dsbSetPan(long lPan);
-
 
 /* Only call this function to configure software to work with a Super VGA
 **  mode if you do not have VESA support.
@@ -91,13 +89,11 @@ void MVE_dsbSetPan(long lPan);
 ** is just used for window centering and for determining
 ** how and when to do palette callbacks.
 */
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth,
-	   unsigned WriteWin, unsigned char *WriteWinPtr,
-	   unsigned long WinSize, unsigned WinGran,
-	   void *SetBank, unsigned hicolor);
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
+                unsigned long WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
 
 /* This function alters the display from 640x480 or 640x400 to 640x350 resolution.
-*/
+ */
 void MVE_ForceVres350(void);
 
 /* This function alters the display from 640x480/400/350 to
@@ -117,13 +113,11 @@ void MVE_ForceVresHalf(void);
 ** This function replaces calls to the default MVE_ShowFrame function
 **  with calls to your function, which can itself call MVE_ShowFrame.
 */
-typedef void mve_cb_ShowFrame (unsigned char *buf, unsigned bufw, unsigned bufh,
-							unsigned sx, unsigned sy, unsigned w, unsigned h,
-							unsigned dstx, unsigned dsty, unsigned hicolor);
+typedef void mve_cb_ShowFrame(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+                              unsigned h, unsigned dstx, unsigned dsty, unsigned hicolor);
 void MVE_sfCallbacks(mve_cb_ShowFrame *fn_ShowFrame);
 
-typedef void mve_cb_SetPalette
-		  (unsigned char *p, unsigned start, unsigned count);
+typedef void mve_cb_SetPalette(unsigned char *p, unsigned start, unsigned count);
 void MVE_palCallbacks(mve_cb_SetPalette *fn_SetPalette);
 
 /* I'm pulling this, since it removes a C/C++ name mangling conflict - AH
@@ -136,7 +130,7 @@ void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
 unsigned MVE_gfxMode(short mode);
 
 /* Reset the screen to text mode (usually done before exiting a program).
-*/
+ */
 void MVE_gfxReset(void);
 
 /* Set line for split screen graphics */
@@ -155,27 +149,25 @@ void MVE_sfAutoDoubleBuffer(unsigned on);
 /* Wait for video retrace off (0) or on (1) */
 void MVE_gfxWaitRetrace(unsigned state);
 
-
 /*---------------------------------------------*/
 /* Establish link to a graphics window
-*/
+ */
 void MVE_rmWindow(LnxWindow *wnd);
-
 
 /*---------------------------------------------*/
 
 /* Establish callback for user control of movie playback.
-*/
+ */
 typedef int mve_cb_ctl(void);
 void MVE_rmCallbacks(mve_cb_ctl *fn_ctl);
 
 /* Specify playback fastmode option (default is MVE_RM_NORMAL).
-*/
-#define MVE_RM_NORMAL 0		/* Normal playback */
-#define MVE_RM_HALF 1		/* Half height (even lines only) */
-#define MVE_RM_DITHERED 2	/* Half height (dither between lines) */
-#define MVE_RM_HALF_2 5 	/* Full height, even lines only */
-#define MVE_RM_DITHERED_2 6	/* Full height, dither, even lines only */
+ */
+#define MVE_RM_NORMAL 0     /* Normal playback */
+#define MVE_RM_HALF 1       /* Half height (even lines only) */
+#define MVE_RM_DITHERED 2   /* Half height (dither between lines) */
+#define MVE_RM_HALF_2 5     /* Full height, even lines only */
+#define MVE_RM_DITHERED_2 6 /* Full height, dither, even lines only */
 
 void MVE_rmFastMode(int mode);
 
@@ -186,11 +178,11 @@ void MVE_rmFastMode(int mode);
 void MVE_rmHScale(int hscale);
 
 /* Get frame count and number of dropped frames from last movie played.
-*/
+ */
 void MVE_rmFrameCounts(unsigned *FrameCount, unsigned *FrameDropCount);
 
 /* Dump timing statistics (if enabled).
-*/
+ */
 void MVE_logDumpStats(void);
 
 /* Run a compressed movie by reading data starting at the current
@@ -255,11 +247,8 @@ typedef struct _MVE_frstream *MVE_frStream;
 **  If the movie file is invalid or the call otherwise fails,
 **    NULL is returned.
 */
-MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf,
-						    unsigned count),
-			        int handle,
-				int (*fr_callback)(unsigned op, unsigned subop,
-		        				   void *buf));
+MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned count), int handle,
+                        int (*fr_callback)(unsigned op, unsigned subop, void *buf));
 
 /* MVE_frGet
 **  Returns the next frame from the specified frame reader stream
@@ -269,7 +258,7 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf,
 **  to a direct draw surface containing the frame in buf,
 **  and its width and height in w and h.
 */
-int MVE_frGet(MVE_frStream frs,unsigned char **pBuf,unsigned *width, unsigned *height);
+int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned *height);
 
 /* MVE_frPal
 **  After each successful call to MVE_frGet(), this call may be used to
@@ -285,10 +274,9 @@ int MVE_frGet(MVE_frStream frs,unsigned char **pBuf,unsigned *width, unsigned *h
 **  with the standard player interface, except that this interface requires
 **  polling each frame instead, and must be passed pointers to the variables where
 **  the values will be returned.
-**  
+**
 */
-void MVE_frPal(MVE_frStream frs,
-					   unsigned char **pPaltbl, unsigned *pStart, unsigned *pCount);
+void MVE_frPal(MVE_frStream frs, unsigned char **pPaltbl, unsigned *pStart, unsigned *pCount);
 
 /* MVE_frClose
 **  Closes the specified Frame Reader Stream frs.
@@ -299,33 +287,32 @@ void MVE_frPal(MVE_frStream frs,
 */
 void MVE_frClose(MVE_frStream frs);
 
-
 /* Release any memory dynamically allocated by MVE_RunMovie.
-*/
+ */
 void MVE_ReleaseMem(void);
 
 /* Return string corresponding to MVE_RunMovie result code.
-*/
-char* MVE_strerror(int code);
+ */
+char *MVE_strerror(int code);
 
 /* RunMovie callback control code and result codes.
 ** Codes > 1 are user defined.
 */
 
-#define MVE_CTL_HOLD -1     /* Returned by rmCtl() to hold current frame */
-#define MVE_CTL_EXIT 1	    /* Returned by rmCtl() to end movie */
+#define MVE_CTL_HOLD -1 /* Returned by rmCtl() to hold current frame */
+#define MVE_CTL_EXIT 1  /* Returned by rmCtl() to end movie */
 
-#define MVE_ERR_EOF -1	    /* Returned by StepMovie() for end of movie */
-#define MVE_ERR_IO -2	    /* File I/O error or unable to alloc memory. */
+#define MVE_ERR_EOF -1      /* Returned by StepMovie() for end of movie */
+#define MVE_ERR_IO -2       /* File I/O error or unable to alloc memory. */
 #define MVE_ERR_SYNC -3     /* Timer error. */
-#define MVE_ERR_SND -4	    /* Unable to allocate memory for sound */
-#define MVE_ERR_NF -5	    /* Unable to allocate memory for video */
+#define MVE_ERR_SND -4      /* Unable to allocate memory for sound */
+#define MVE_ERR_NF -5       /* Unable to allocate memory for video */
 #define MVE_ERR_GFX_FIT -6  /* Screen size too small for movie */
 #define MVE_ERR_GFX_FAIL -7 /* Failed to set desired graphics mode */
 #define MVE_ERR_BADFMT -8   /* Not a MVE file or unacceptable version */
 #define MVE_ERR_GFX_CLR -9  /* Incorrect screen color mode */
 #define MVE_ERR_PREP -10    /* StepMovie() without PrepMovie() */
-#define MVE_ERR_LD -11	    /* Unable to initialize LinuxDraw */
+#define MVE_ERR_LD -11      /* Unable to initialize LinuxDraw */
 #define MVE_ERR_LOST -12    /* Direct Draw Surface Lost */
 
 #define MVE_ERR_LAST -12
@@ -335,4 +322,3 @@ char* MVE_strerror(int code);
 };
 #endif
 #endif
-

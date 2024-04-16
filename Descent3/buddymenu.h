@@ -3,5 +3,4 @@
 
 void BuddyDisplay(void);
 
-
 #endif

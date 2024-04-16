@@ -3,7 +3,6 @@
  * $NoKeywords: $
  */
 
-
 #ifndef DDIO_LNX_H
 #define DDIO_LNX_H
 
@@ -14,20 +13,20 @@ extern oeLnxApplication *Lnx_app_obj;
 
 /*
 typedef struct dinput_data {
-	oeWin32Application *app;
-	HWND hwnd;
-	LPDIRECTINPUT lpdi;
-	
-	LPDIRECTINPUTDEVICE lpkeydev;
-	HHOOK hkeyhook;
-	BOOL key_acquired;
-	bool preemptive;
+        oeWin32Application *app;
+        HWND hwnd;
+        LPDIRECTINPUT lpdi;
 
-	LPDIRECTINPUTDEVICE lpmsedev;
-	HHOOK hmsehook;
-	BOOL mse_acquired;
-	int num_mse_buttons;
-	int num_mse_axes;
+        LPDIRECTINPUTDEVICE lpkeydev;
+        HHOOK hkeyhook;
+        BOOL key_acquired;
+        bool preemptive;
+
+        LPDIRECTINPUTDEVICE lpmsedev;
+        HHOOK hmsehook;
+        BOOL mse_acquired;
+        int num_mse_buttons;
+        int num_mse_axes;
 } dinput_data;
 
 extern dinput_data DInputData;
@@ -52,5 +51,3 @@ void ddio_MouseHandler(MSG *msg);
 
 */
 #endif
-
-

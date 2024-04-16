@@ -1,68 +1,66 @@
 /*
-* $Logfile: /DescentIII/Main/Dmfc/dmfcinputcommands.h $
-* $Revision: 1.1.1.1 $
-* $Date: 2003/08/26 03:57:20 $
-* $Author: kevinb $
-*
-* header for input command function handlers
-*
-* $Log: dmfcinputcommands.h,v $
-* Revision 1.1.1.1  2003/08/26 03:57:20  kevinb
-* initial 1.5 import
-*
- * 
+ * $Logfile: /DescentIII/Main/Dmfc/dmfcinputcommands.h $
+ * $Revision: 1.1.1.1 $
+ * $Date: 2003/08/26 03:57:20 $
+ * $Author: kevinb $
+ *
+ * header for input command function handlers
+ *
+ * $Log: dmfcinputcommands.h,v $
+ * Revision 1.1.1.1  2003/08/26 03:57:20  kevinb
+ * initial 1.5 import
+ *
+ *
  * 16    7/09/99 6:18p Jeff
  * added $remoteadminlogout and $wait commands
- * 
+ *
  * 15    7/08/99 2:39a Jeff
  * rough implementation of remote administration checked in.  Still needs
  * some polishing, but should work basically.
- * 
+ *
  * 14    4/30/99 10:53p Jeff
  * added $warp command
- * 
+ *
  * 13    3/17/99 12:24p Jeff
  * converted DMFC to be COM interface
- * 
+ *
  * 12    1/06/99 12:53a Jeff
  * put in support for $piggyback and $observer
- * 
+ *
  * 11    1/04/99 12:21p Jeff
  * added support for hosts.allow/deny and updates stats manager a little
- * 
+ *
  * 10    11/16/98 5:35p Jeff
  * removed log functions, added support for changing team names, fixed ctf
  * to work better with different team names
- * 
+ *
  * 9     11/01/98 1:59a Jeff
  * made a $help inputcommand for help in a dedicated server environment
- * 
+ *
  * 8     10/20/98 12:16p Jeff
  * added death message filter, hud callsign filter
- * 
+ *
  * 7     10/15/98 1:34p Jeff
  * added scrollable onscreen menu.  Remove ban in dmfc.  prejoin event
- * 
+ *
  * 6     10/08/98 3:37p Jeff
  * general improvements (Netgame info things, save to registry).  Changes
  * so it would send packets on NETSEQ_OBJECTS
- * 
+ *
  * 5     10/05/98 2:50p Jeff
- * 
+ *
  * 4     9/30/98 3:50p Jeff
  * general improvements (many)
- * 
+ *
  * 3     9/23/98 4:17p Jeff
  * basic changes/improvements, started changing death messages
- * 
+ *
  * 2     9/21/98 7:11p Jeff
  * made InputCommand interface API and moved existing input commands to
  * the interface.  Changed mprintf/ASSERT so they are valid in DMFC
-*
-* $NoKeywords: $
-*/
-
-
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __DMFC_INPUTCOMMANDS_H_
 #define __DMFC_INPUTCOMMANDS_H_
@@ -71,7 +69,8 @@
 //	Usage: "$team <string team_name>" where team_name is the name of the team you want to change to
 void DMFCInputCommand_Team(char *input_string);
 //	handle the server wanting to change the team for a player
-//	Usage: "$changeteam <int pnum> <string team_name>" where pnum is the playernum, and team_name is the name of the team
+//	Usage: "$changeteam <int pnum> <string team_name>" where pnum is the playernum, and team_name is the name of the
+//team
 void DMFCInputCommand_ChangeTeam(char *input_string);
 //	handle the client requesting playerinfo for a player
 //	Usage: "$playerinfo <int pnum>" where pnum is the playernum

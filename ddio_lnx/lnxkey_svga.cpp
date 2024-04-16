@@ -1,24 +1,24 @@
 /*
-* $Logfile: /DescentIII/Main/ddio_lnx/lnxkey_svga.cpp $
-* $Revision: 1.2 $
-* $Date: 2000/04/27 11:17:53 $
-* $Author: icculus $
-*
-* Linux SVGALIB routines
-*
-* $Log: lnxkey_svga.cpp,v $
-* Revision 1.2  2000/04/27 11:17:53  icculus
-* Added #if 0 fence.
-*
-* Revision 1.1.1.1  2000/04/18 00:00:33  icculus
-* initial checkin
-*
- * 
+ * $Logfile: /DescentIII/Main/ddio_lnx/lnxkey_svga.cpp $
+ * $Revision: 1.2 $
+ * $Date: 2000/04/27 11:17:53 $
+ * $Author: icculus $
+ *
+ * Linux SVGALIB routines
+ *
+ * $Log: lnxkey_svga.cpp,v $
+ * Revision 1.2  2000/04/27 11:17:53  icculus
+ * Added #if 0 fence.
+ *
+ * Revision 1.1.1.1  2000/04/18 00:00:33  icculus
+ * initial checkin
+ *
+ *
  * 5     7/14/99 9:06p Jeff
  * added comment header
-*
-* $NoKeywords: $
-*/
+ *
+ * $NoKeywords: $
+ */
 
 // Keyboard handler for SVGAlib
 
@@ -420,4 +420,3 @@ static int ddio_SVGA_TransKey(int sym)
 }
 
 #endif
-

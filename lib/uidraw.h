@@ -4,7 +4,7 @@
 #define UIDRAW_H
 
 //	Graphics Primatives.
-void ui_StartDraw(int left, int top, int right, int bottom );
+void ui_StartDraw(int left, int top, int right, int bottom);
 void ui_EndDraw();
 
 //	sets text clipping within the startdraw region
@@ -31,8 +31,8 @@ void ui_SetCharAlpha(ubyte alpha);
 int ui_GetTextWidth(const char *text);
 int ui_GetTextHeight(const char *text);
 
-#define UI_TEXTTYPE_SATURATE		1
-#define UI_TEXTTYPE_SHADOW			2
+#define UI_TEXTTYPE_SATURATE 1
+#define UI_TEXTTYPE_SHADOW 2
 void ui_DrawSetTextType(int type);
 
 //	draws a line of text.

@@ -17,13 +17,13 @@
  * Revision 1.1.1.1  2000/04/18 00:00:32  icculus
  * initial checkin
  *
- * 
+ *
  * 2     4/15/99 1:39a Jeff
  * changes for linux compile
- * 
+ *
  * 1     4/14/99 7:51p Jeff
- * 
- * 
+ *
+ *
  * $NoKeywords: $
  */
 
@@ -31,8 +31,8 @@
 #define LINUX_FIX_H_
 #if defined(__LINUX__)
 
-#define stricmp(x,y) strcasecmp(x,y)
-#define _vsnprintf(a,b,c,d) vsnprintf(a,b,c,d)
+#define stricmp(x, y) strcasecmp(x, y)
+#define _vsnprintf(a, b, c, d) vsnprintf(a, b, c, d)
 
 extern bool Dedicated_server;
 #endif

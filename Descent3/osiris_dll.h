@@ -1,45 +1,45 @@
 /*
-* $Logfile: /DescentIII/main/osiris_dll.h $
-* $Revision: 22 $
-* $Date: 4/14/99 3:57a $
-* $Author: Jeff $
-*
-* OSIRIS system header
-*
-* $Log: /DescentIII/main/osiris_dll.h $
- * 
+ * $Logfile: /DescentIII/main/osiris_dll.h $
+ * $Revision: 22 $
+ * $Date: 4/14/99 3:57a $
+ * $Author: Jeff $
+ *
+ * OSIRIS system header
+ *
+ * $Log: /DescentIII/main/osiris_dll.h $
+ *
  * 22    4/14/99 3:57a Jeff
  * fixed case mismatch in #includes
- * 
+ *
  * 21    3/10/99 6:21p Jeff
  * many fixes to demo system.  Fixed IGC so cameras move...fixed osiris to
  * be restored correctly, and it handles errors on restore
- * 
+ *
  * 20    3/05/99 5:25p Jeff
  * fixed saving demos in multiplayer...required adding a parameter to
  * Osiris_LoadMissionModule() to pass in the name of the d3m file (for
  * storage)
- * 
+ *
  * 19    2/28/99 8:52p Jeff
  * added functions to enable/disable creation events
- * 
+ *
  * 18    2/18/99 11:06a Jeff
  * added event masks (so you can enable/disable object/trigger/level
  * events)
- * 
+ *
  * 17    2/17/99 3:27a Jeff
  * added game checksum function to handle out-of-sync dlls
- * 
+ *
  * 16    2/10/99 3:29p Jeff
  * extracted dll manager knows the difference between game hogs and
  * mission hogs
- * 
+ *
  * 15    1/22/99 8:54p Jeff
  * added custom-default script overrides
- * 
+ *
  * 14    1/22/99 5:15p Jeff
  * added a key to toggle osiris debug messages
- * 
+ *
  * 13    1/21/99 11:15p Jeff
  * pulled out some structs and defines from header files and moved them
  * into seperate header files so that multiplayer dlls don't require major
@@ -47,50 +47,49 @@
  * time.  Also cleaned up some header file #includes that weren't needed.
  * This affected polymodel.h, object.h, player.h, vecmat.h, room.h,
  * manage.h and multi.h
- * 
+ *
  * 12    1/16/99 10:39a Jeff
  * added mission memory management to Osiris...only slightly tested.  Need
  * to solve game save/restore problem still
- * 
+ *
  * 11    1/08/99 1:50p Jeff
  * finished support on loading scripts from hogs
- * 
+ *
  * 10    1/04/99 12:23p Jeff
  * added to evt_use and support for mission module scripts
- * 
+ *
  * 9     12/31/98 7:33p Jeff
  * improved Osiris timers to have unique IDs, along with adding an
  * EVT_TIMERCANCEL and a new flag to autodestruct the timer if a given
- * object handle dies.  
- * 
+ * object handle dies.
+ *
  * 8     12/18/98 10:42a Jeff
  * added timer support and auto-save memory manager for new osiris.  New
  * events evt_memrestore state added also
- * 
+ *
  * 7     12/17/98 7:26p Jeff
  * added memory manager for autosaving script data
- * 
+ *
  * 6     12/17/98 5:43p Jeff
  * created timer system for osiris and save restore events
- * 
+ *
  * 5     12/17/98 12:08p Jeff
  * first checkin of new implementation of OSIRIS (old OSIRIS no longer
  * works)
- * 
+ *
  * 4     12/16/98 10:16p Jeff
  * added functions to call level and trigger events
- * 
+ *
  * 3     12/16/98 10:58a Jeff
  * checked in so Jason can use
- * 
+ *
  * 2     12/14/98 11:32a Jeff
  * started work on osiris load and bind functions
- * 
+ *
  * 1     12/13/98 9:10p Jeff
-*
-* $NoKeywords: $
-*/
-
+ *
+ * $NoKeywords: $
+ */
 
 #ifndef __OSIRIS_H_
 #define __OSIRIS_H_
@@ -127,7 +126,7 @@ int Osiris_FindLoadedModule(char *filename);
 //	Purpose:
 //		Given a module name, it will attempt to load the module as a level module.  If it succeeds
 //	it will return the id of the module where it has been loaded.  If the module was already loaded
-//	before calling this function, it will return the id to where the module is, and will not reload 
+//	before calling this function, it will return the id to where the module is, and will not reload
 //	the module.  Returns -1 if the module does not exist.  Returns -2 if the module couldn't initialize.
 //	Returns -3 if the module is not a level module. Returns -4 if no module slots are available.
 int Osiris_LoadLevelModule(char *module_name);
@@ -143,7 +142,7 @@ void Osiris_UnloadLevelModule(void);
 //	Purpose:
 //		Given a module name, it will attempt to load the module as a game module.  If it succeeds
 //	it will return the id of the module where it has been loaded.  If the module was already loaded
-//	before calling this function, it will return the id to where the module is, and will not reload 
+//	before calling this function, it will return the id to where the module is, and will not reload
 //	the module.  Returns -1 if the module does not exist.  Returns -2 if the module couldn't initialize.
 //	Returns -3 if the module is not a game module. Returns -4 if no module slots are available.
 int Osiris_LoadGameModule(char *module_name);
@@ -158,12 +157,12 @@ void Osiris_UnloadModule(int module_id);
 //	Purpose:
 //		It will attempt to load the module as a game module.  If it succeeds
 //	it will return the id of the module where it has been loaded.  If the module was already loaded
-//	before calling this function, it will return the id to where the module is, and will not reload 
+//	before calling this function, it will return the id to where the module is, and will not reload
 //	the module.  Returns -1 if the module does not exist.  Returns -2 if the module couldn't initialize.
 //	Returns -3 if the module is not a game module. Returns -4 if no module slots are available.
 //	This technically doesn't load a mission module, as it should already be loaded by
 //	Descent 3 prior.
-int Osiris_LoadMissionModule(module *module_handle,char *filename);
+int Osiris_LoadMissionModule(module *module_handle, char *filename);
 
 //	Osiris_UnloadMissionModule
 //	Purpose:
@@ -194,19 +193,19 @@ void Osiris_DetachScriptsFromObject(object *obj);
 //	object (as long as they are available) in the order: custom script, level script,
 //	mission script, and finally it's default script.  The chain breaks if one of the scripts
 //	returns false on the call to their CallInstanceEvent().
-bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data );
+bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data);
 
 //	Osiris_CallLevelEvent
 //	Purpose:
 //		Triggers an event for a level script.  Returns true if the default action should continue
 //	to process.
-bool Osiris_CallLevelEvent(int event, tOSIRISEventInfo *data );
+bool Osiris_CallLevelEvent(int event, tOSIRISEventInfo *data);
 
 //	Osiris_CallTriggerEvent
 //	Purpose:
 //		Triggers an event for a trigger script.  Returns true if the default action should continue
 //	to process.
-bool Osiris_CallTriggerEvent(int trignum,int event,tOSIRISEventInfo *ei);
+bool Osiris_CallTriggerEvent(int trignum, int event, tOSIRISEventInfo *ei);
 
 //	Osiris_ProcessTimers
 //	Purpose:
@@ -284,12 +283,12 @@ void Osiris_SaveMemoryChunks(CFILE *file);
 //	Osiris_ExtractScriptsFromHog
 //	Given the handle of a loaded hog file, this extracts all the scripts out to a temp directory
 //	Pass false for the second parameter if it's a game hog (d3.hog for example)
-int Osiris_ExtractScriptsFromHog(int library_handle,bool is_mission_hog=true);
+int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog = true);
 
 //	Osiris_ClearExtractedScripts
 //	Deletes the temp files created when the scripts where extracted from the hog
 //	Pass false if you want it to remove _all_ extracted hogs...else only mission related ones
-void Osiris_ClearExtractedScripts(bool misson_only=true);
+void Osiris_ClearExtractedScripts(bool misson_only = true);
 
 // Initializes the Osiris Mission Memory System
 void Osiris_InitOMMS(void);
@@ -298,9 +297,9 @@ void Osiris_CloseOMMS(void);
 
 extern bool Show_osiris_debug;
 
-#define OEM_OBJECTS		0x01
-#define OEM_TRIGGERS	0x02
-#define OEM_LEVELS		0x04
+#define OEM_OBJECTS 0x01
+#define OEM_TRIGGERS 0x02
+#define OEM_LEVELS 0x04
 //	Osiris_EnableEvents
 //	Purpose:
 //		Enables the passed in mask of event types to be called
@@ -318,8 +317,8 @@ void Osiris_DisableCreateEvents(void);
 //	Osiris_EnablesCreateEvents
 //	Purpose:
 //		Enables any events involved when an object is created.  This is to be used for
-//	Loading games/viewing demos, as so not to re-initialize good data. (call when done with Osiris_DisableCreateEvents())
+//	Loading games/viewing demos, as so not to re-initialize good data. (call when done with
+//Osiris_DisableCreateEvents())
 void Osiris_EnableCreateEvents(void);
-
 
 #endif

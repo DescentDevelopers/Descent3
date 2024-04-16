@@ -7,53 +7,52 @@ BEGIN_AS_NAMESPACE
 
 struct SArrayBuffer;
 
-class CScriptArray
-{
+class CScriptArray {
 public:
-	CScriptArray(asUINT length, asIObjectType *ot);
-	virtual ~CScriptArray();
+  CScriptArray(asUINT length, asIObjectType *ot);
+  virtual ~CScriptArray();
 
-	void AddRef();
-	void Release();
+  void AddRef();
+  void Release();
 
-	// Type information
-	asIObjectType *GetArrayObjectType() const;
-	int            GetArrayTypeId() const;
-	int            GetElementTypeId() const;
+  // Type information
+  asIObjectType *GetArrayObjectType() const;
+  int GetArrayTypeId() const;
+  int GetElementTypeId() const;
 
-	void   Resize(asUINT numElements);
-	asUINT GetSize();
+  void Resize(asUINT numElements);
+  asUINT GetSize();
 
-	// Get a pointer to an element. Returns 0 if out of bounds
-	void  *At(asUINT index);
+  // Get a pointer to an element. Returns 0 if out of bounds
+  void *At(asUINT index);
 
-	CScriptArray &operator=(const CScriptArray&);
+  CScriptArray &operator=(const CScriptArray &);
 
-	// TODO: Add methods Sort, Reverse, Find, PopLast, PushLast, InsertAt, RemoveAt, etc
+  // TODO: Add methods Sort, Reverse, Find, PopLast, PushLast, InsertAt, RemoveAt, etc
 
-	// GC methods
-	int  GetRefCount();
-	void SetFlag();
-	bool GetFlag();
-	void EnumReferences(asIScriptEngine *engine);
-	void ReleaseAllHandles(asIScriptEngine *engine);
+  // GC methods
+  int GetRefCount();
+  void SetFlag();
+  bool GetFlag();
+  void EnumReferences(asIScriptEngine *engine);
+  void ReleaseAllHandles(asIScriptEngine *engine);
 
 protected:
-	int            refCount;
-	bool           gcFlag;
-	asIObjectType *objType;
-	SArrayBuffer  *buffer;
-	bool           isArrayOfHandles;
-	int            elementSize;
+  int refCount;
+  bool gcFlag;
+  asIObjectType *objType;
+  SArrayBuffer *buffer;
+  bool isArrayOfHandles;
+  int elementSize;
 
-	bool CheckMaxSize(asUINT numElements);
+  bool CheckMaxSize(asUINT numElements);
 
-	void CreateBuffer(SArrayBuffer **buf, asUINT numElements);
-	void DeleteBuffer(SArrayBuffer *buf);
-	void CopyBuffer(SArrayBuffer *dst, SArrayBuffer *src);
+  void CreateBuffer(SArrayBuffer **buf, asUINT numElements);
+  void DeleteBuffer(SArrayBuffer *buf);
+  void CopyBuffer(SArrayBuffer *dst, SArrayBuffer *src);
 
-	void Construct(SArrayBuffer *buf, asUINT start, asUINT end);
-	void Destruct(SArrayBuffer *buf, asUINT start, asUINT end);
+  void Construct(SArrayBuffer *buf, asUINT start, asUINT end);
+  void Destruct(SArrayBuffer *buf, asUINT start, asUINT end);
 };
 
 void RegisterScriptArray(asIScriptEngine *engine);
