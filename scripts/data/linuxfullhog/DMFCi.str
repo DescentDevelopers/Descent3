@@ -1,0 +1,2065 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!========================= HUD Death Messages =================================================
+!/! Note: if it states that victim is first, then the first %s will be replaced by the nickname of the victim,
+!/! else the first nickname will be the name of the killer.
+
+!/!0:%s was killed by %s	(victim first)
+!=!%s was killed by %s
+!G!%s wurde von %s getötet
+!S!%s es abatido por %s
+!I!%s è stato ucciso da %s
+!F!%s a été tué par %s.
+
+!/!1:%s spins out of control!		(suicide message)
+!=!%s spins out of control!
+!G!%s gerät ausser Kontrolle!
+!S!%s ha perdido el control
+!I!%s perde il controllo
+!F!%s a perdu le contrôle !
+
+!/! ======================= The following appear on the on-screen menu (F6) =====================
+
+!/!2:Server Commands
+!=!Server Commands
+!G!Server-Befehle
+!S!Comandos del servidor
+!I!Comandi server
+!F!Commandes Serveur
+
+!/!3:Kick
+!=!Kick
+!G!Rauswerfen
+!S!Expulsar
+!I!Espelli
+!F!Expulser
+
+!/!4:Ban
+!=!Ban
+!G!Ausschliessen
+!S!Vetar
+!I!Vieta
+!F!Bannir
+
+!/!5:End Level
+!=!End Level
+!G!Levelende
+!S!Terminar nivel
+!I!Fine livello
+
+!F!Fin de niveau
+
+!/!6:Team Control
+!=!Team Control
+!G!Teamkontrolle
+!S!Control de equipo
+!I!Controllo squadra
+!F!Contrôle Equipe
+
+!/!7:Balance Teams
+!=!Balance Teams
+!G!Teams ausgleichen
+!S!Equipos equilibrados
+!I!Equilibra squadre
+!F!Equilibrer Equipes
+
+!/!8:AutoTeam Balance
+!=!AutoTeam Balance
+!G!Team auto ausgl.
+!S!Equilibrio autoequipo
+!I!Equilibrio autosquadre
+!F!Répartition automatique
+
+!/!9:Allow Team Changing
+!=!Allow Team Changing
+!G!Teamwechsel zulassen
+!S!Permitir cambios de equipo
+!I!Consenti cambio di squadra
+!F!Autoriser Changement d'Equipe
+
+!/!10:On
+!=!On
+!G!Ein
+!S!On
+!I!Attivato
+!F!On
+
+!/!11:Off
+!=!Off
+!G!Aus
+!S!Off
+!I!Disattivato
+!F!Off
+
+!/!12:Get Player Info
+!=!Get Player Info
+!G!Spielerinfos bekommen
+!S!Obetener información de jugador
+!I!Ottieni informazioni giocatore
+!F!Obtenir Info Joueur
+
+!/!13:Observer Mode
+!=!Observer Mode
+!G!Beobachter-Modus
+!S!Modo observador
+!I!Modalità osservatore
+!F!Mode d'observation
+
+!/!14:Change Teams
+!=!Change Teams
+!G!Team wechseln
+!S!Cambiar de equipo
+!I!Cambia squadra
+!F!Changer d'équipe
+
+!/! ====================  The follow 4 are the team names ==========================
+
+!/!15:Red
+!=!Red
+!G!Rot
+!S!Rojo
+!I!Rosso
+!F!Rouge
+
+!/!16:Blue
+!=!Blue
+!G!Blau
+!S!Azul
+!I!Azzurro
+!F!Bleue
+
+!/!17:Green
+!=!Green
+!G!Grün
+!S!Verde
+!I!Verde
+!F!Verte
+
+!/!18:Yellow
+!=!Yellow
+!G!Gelb
+!S!Amarillo
+!I!Giallo
+!F!Jaune
+
+!/! ========================== The following can be found when getting a player info from menu =============
+
+!/!19:Server
+!=!Server
+!G!Server
+!S!Servidor
+!I!Server
+!F!Serveur
+
+!/!20:Client
+!=!Client
+!G!Client
+!S!Cliente
+!I!Client
+!F!Client
+
+!/!21:Team: %s
+!=!Team: %s
+!G!Team: %s 
+!S!Equipo: %s
+!I!Squadra: %s
+!F!Equipe: %s
+
+!/!22:PlayerNum: %d
+!=!PlayerNum: %d
+!G!Spielernummer: %d
+!S!Nº de jugador: %d
+!I!Giocatore N°: %d
+!F!N° du joueur: %d
+
+!/!23:TCP/IP Address: %s
+!=!TCP/IP Address: %s
+!G!TCP/IP Adresse: %s 
+!S!Dirección TCP/IP: %s
+!I!Indirizzo TCP/IP: %s
+!F!Adresse TCP/IP: %s
+
+!/!24:Ship: %s
+!=!Ship: %s
+!G!Schiff: %s 
+!S!Nave: %s
+!I!Nave: %s
+!F!Vaisseau: %s
+
+!/!25:%s was killed	(death message when someone is killed by something other than player or robot)
+!=!%s was killed
+!G!%s wurde getötet
+!S!%s ha muerto
+!I!%s è stato ucciso
+!F!%s a été tué
+
+!/!26:Loner
+!=!Loner
+!G!Einzelgänger
+!S!Solitario
+!I!Solitario
+!F!Solitaire
+
+!/!27:Save Stats To File		(in On-Screen Menu)
+!=!Save Stats To File
+!G!Statistik in Datei speichern
+!S!Guardar estadísticas en archivo
+!I!Salva statistiche
+!F!Enregistrer Stats
+
+!/!28:%s was killed by a robot	(death message when someone is killed by a robot)
+!=!%s was killed by a robot
+!G!%s wurde von einem Roboter getötet
+!S!un robot ha matado a %s
+!I!%s è stato ucciso da un robot
+!F!%s a été tué par un robot
+
+!/!29:HUD Callsign Level		(in On-Screen Menu)
+!=!HUD Callsign Level
+!G!CPA Erkennungsnamen-Stufe
+!S!Nivel de aviso de presentador
+!I!Livello avviso collimatore
+!F!Niveau Collimateur  
+
+!/!30:You've Been Kicked From The Game	(HUD Message)
+!=!You've Been Kicked From The Game
+!G!Sie wurden aus dem Spiel geworfen
+!S!Te han expulsado de la partida
+
+!I!Sei stato espulso dal gioco
+!F!Vous avez été expulsé de la partie.
+
+!/!31:You've Been Banned From This Game	(HUD Message)
+!=!You've Been Banned From This Game
+!G!Sie wurden von diesem Spiel ausgeschlossen
+!S!Te han vetado en esta partida
+!I!Sei stato escluso da questo gioco
+!F!Vous avez été banni de cette partie.
+
+!/!32:Max HUD Callsign Level		(in On-Screen Menu)
+!=!Max HUD Callsign Level
+!G!Max. CPA Erkennungsnamen-Stufe
+!S!Nivel máx de aviso de presentador
+!I!Livello max avviso collimatore
+!F!Niveau Indicatif Collimateur Max
+
+!/!33:<None>				(OnScreen Menu)
+!=!<None>
+!G!<Keine>
+!S!<ninguno>
+!I!<Nessuno>
+!F!<Aucun>
+
+!/!34:Laser death message (killer first)
+!=!%s's Laser blasts %s to smithereens
+!G!%ss Laser reisst %s in Fetzen
+!S!%s funde con el láser la nave de %s
+!I!%s distrugge col laser %s
+!F!Le Laser de %s réduit %s en miettes.
+
+!/!35: Vauss death message (killer first)
+!=!%s punctures %s's ship with the Vauss
+!G!%s durchsiebt %ss Schiff mit der Vauss
+!S!%s hace una brecha en la nave de %s con el Vauss
+!I!%s perfora la nave di %s col cannone Vauss
+!F!%s perfore le vaisseau de %s au Vauss.
+
+!/!36: Microwave death message (victim first)
+!=!%s is vaporized by %s's Microwave beam
+!G!%s verdampft durch %ss Mikrowellenstrahl
+!S!%s es vaporizado por el rayo de microondas de %s 
+!I!%s è vaporizzato dal raggio a microonde di %s
+!F!%s essuye l'attaque au micro-ondes de %s.
+
+!/!37: Plasma death message (killer first)
+!=!%s pulverizes %s with Plasma power
+!G!%s Pulverisiert %s mit Plasmakraft
+!S!%s pulveriza a %s con el plasma
+!I!%s polverizza %s con l'energia al plasma
+!F!%s pulvérise %s avec son plasma.
+
+!/!38: Fusion death message (killer first)
+!=!%s disintigrates %s's hull with the fusion
+!G!%s zerstückelt %ss Rumpf mit der Fusion
+!S!%s desintegra el casco de %s con fusión
+!I!%s disintegra lo scafo di %s con la fusione
+!F!%s désintègre la coque de %s.
+
+!/!39: Super laser death message (killer first)
+!=!%s's Super Laser blasts %s to smithereens
+!G!%ss Superlaser reisst %s in Fetzen
+!S!El superláser de %s derrite a %s
+!I!Il superlaser di %s distrugge %s
+!F!Le super laser de %s réduit %s en miettes.
+
+!/!40: Mass Driver death message (killer first)
+!=!%s targets %s for Mass destruction
+!G!%s zielt auf %s, um Masse zu zertören
+!S!%s apunta a %s con el Lanzamasa
+!I!%s punta il distruttore di massa su %s
+!F!%s bouffe les particules de %s à en mourir.
+
+!/!41: Napalm death message (killer first)
+!=!%s's Napalm burns %s beyond recognition
+!G!%ss Napalm verbrennt %s bis zur Unkenntlichkeit
+!S!%s achicharra con napalm a %s hasta hacerlo irreconocible
+!I!%s carbonizza %s col napalm fino a renderlo irriconoscibile
+!F!Le Napalm de %s carbonise %s.
+
+!/!42: EMD death message (killer first)
+!=!%s's EMD electrocutes %s!
+!G!%ss EMD richtet %s elektrisch hin!
+!S!El IEM de %s electrocuta a %s
+!I!L'EMD di %s folgora %s
+!F!Le DEM de %s électrocute %s !
+
+!/!43: Omega death message (killer first)
+!=!%s's Omega peels off %s's shields
+!G!%ss Omega pellt %ss Schutzschilde ab
+!S!El Omega de %s destroza los escudos de %s
+!I!Il cannone Omega di %s distrugge gli scudi di %s
+!F!L'Oméga de %s épluche les boucliers de %s.
+
+!/!44: Concussion death message (victim first)
+!=!%s takes a pounding from %s's Concussion
+!G!%s Wird von %ss Erschütterungsgeschossen zermetzelt 
+!S!%s recibe una embestida del cohete S-1 de %s
+!I!%s riceve una colpo dal missile esplosivo di %s
+!F!%s se fait exploser les méninges par %s !
+
+!/!45: Homing missile death message (killer first)
+!=!%s's Homer swoops down on %s for the kill
+!G!%ss Zielpeiler stürzt sich todbringend auf %s
+!S!El misil buscador de %s baja en picado hacia %s
+!I!Il missile autoguidato di %s è lanciato su %s
+!F!Le missile de %s fonce droit sur %s !
+
+!/!46: Smart missile death message (victim first)
+!=!%s can't shake %s's Smart missile
+!G!%s kann %ss Smart nicht entkommen
+!S!%s no puede librarse del misil inteligente de %s
+!I!%s non riesce a evitare il missile intelligente di %s
+!F!%s n'évitera pas le Smart de %s !
+
+!/!47: Mega death message (killer first)
+!=!%s's Mega reduces %s to smoldering scrap
+!G!%ss Mega verwandelt %s in einen Aschehaufen
+!S!El Mega de %s reduce a %s a restos humeantes
+!I!Il Mega missile di %s riduce %s in ceneri fumanti
+!F!Le Mega %s a pulvérisé %s !! 
+
+!/!48: Frag death message (victim first)
+!=!%s catches shrapnel from %s's Frag
+!G!%s wird von einem Schrapnell von %ss Frag erwischt
+!S!%s recibe metralla del misil fragmentario de %s
+!I!%s è colpito dal missile frammentatore di %s
+!F!%s ne fait pas le poids face au Frag de %s !
+
+!/!49: Guided missile death message (killer first)
+!=!%s's Guided hunts down %s
+!G!%ss Fernlenkgeschoss bringt %s zur Strecke
+!S!El misil guiado de %s persigue a %s
+!I!Il missile teleguidato di %s abbatte %s
+!F!%s chasse et achève %s !
+
+!/!50: Napalm Rocket death message (victim first)
+!=!%s is incinerated by %s's Napalm Rocket
+!G!%s wird durch %ss Napalmrakete verbrannt
+!S!%s ha sido incinerado por el cohete de napalm de %s
+!I!%s è incenerito dal razzo napalm di %s
+!F!%s est incinéré par le Napalm de %s !
+
+!/!51: Cyclone missile death message (killer first)
+!=!%s's Cyclone overwhelms %s's defenses
+!G!%ss Zyklon überwältigt %ss Abwehrschutz
+!S!El Ciclón de %s destroza las defensas de %s
+!I!Il ciclone di %s annienta le difese di %s
+!F!Le Cyclone de %s engloutit les défenses de %s
+
+!/!52: Flare death message (killer first)
+!=!%s's Flare ignites %s's fuel leak
+!G!%ss Leuchtgeschoss entzündet %ss Treibstoffleck
+!S!La bengala de %s incendia la fuga de combustible de %s
+!I!Il bengala di %s incendia la fuga di carburante di %s
+!F!La Fusée de %s fait exploser %s !
+
+!/!53: On-Screen menu option to remove ban
+!=!Remove Ban
+!G!Ausschluss aufheben
+!S!Eliminar veto
+!I!Cancella divieto
+!F!Annuler Ban
+
+!/!54: On-Screen menu option to reload ban/allow lists
+!=!Rehash Allow/Deny List
+!G!Zulassungsliste erneut laden
+!S!Actualizar lista Permisos/vetos
+!I!Aggiorna elenco Permessi/Divieti
+!F!Remanier Liste Autoriser/Interdire
+
+!/!55: On-Screen menu option to set the HUD name level filter
+!=!Max HUD Name Level
+!G!Max. CPA Namen-Stufe
+!S!Nivel máx de nombre de presentador
+!I!Max livello del collimatore
+!F!affichage max. des noms
+
+!/!56: On-Screen menu "None" option (keep 1 word)
+!=!None
+!G!Keine
+!S!Ninguno
+!I!Nessuno
+!F!Aucun
+
+!/!57: On-Screen menu "Team Only" option
+!=!Team Only
+!G!Nur Team
+!S!Sólo equipo
+!I!Solo squadra
+!F!Equipe Seule
+
+!/!58: On-Screen menu "Full" option ('all the way set')
+!=!Full
+!G!Alle
+!S!Total
+!I!Totale
+!F!Total
+
+!/!59: On-Screen menu option to bring up team configuration dialog
+!=!Show Team Config Dialog
+!G!Teamkonfig. dialog anz.
+!S!Mostrar cuadro de diálogo config equipo
+!I!Mostra finestra di dialogo config squadra
+!F!Configurer Dialogue Equipe
+
+!/!60: Piggy back On-Screen menu option
+!=!PiggyBack Observer
+!G!Huckepack-Beobachter
+!S!Observador a cuestas
+!I!Osservatore
+!F!Observateur en escorte
+
+!/!61: On-Screen menu for turning on/off the on-screen menu background
+!=!OnScreen Menu Background
+!G!Bildschirm-Menühintergrund
+
+!S!Fondo del menú en pantalla
+!I!Sfondo Menu su schermo
+!F!Arrière Plan Menu à l'écran
+
+!/!62: On-Screen menu option for the hud-name level
+!=!HUD Name Level
+!G!CPA Namen-Stufe
+!S!Nivel de nombre de presentador
+!I!Livello nome collimatore
+!F!afficher les noms
+
+!/!63: On-Screen menu option to turn on/off ship logo displaying
+!=!Ship Logos
+!G!Schiffslogos
+!S!Emblemas de naves
+!I!Emblemi della nave
+!F!emblèmes vaisseau
+
+!/!64: On-Screen menu option to save stats to file
+!=!Game Stats To File
+!G!Spielstatistik speichern
+!S!Guardar estadísticas de partida en archivo
+!I!Salva statistiche di gioco
+!F!enregistrer stats
+
+!/!65: On-Screen menu option to turn on/off auto save of stats at end of level
+!=!AutoSave On Level End
+!G!AutoSpeichern Levelende
+!S!Guardado automático al terminar nivel
+!I!Salvataggio automatico a fine livello
+!F!AutoSauve en Fin de Niveau
+
+!/!66: On-Screen menu option to turn on/off auto save of stats on disconnect
+!=!AutoSave On Disconnect
+!G!AutoSpeichern Verb. Verlust 
+!S!Guardado automático al desconectar
+!I!Salvataggio automatico alla disconnessione
+!F!AutoSauve sur Déconnexion
+
+!/!67: On-Screen menu option to turn on/off netgame info display
+!=!NetGame Info
+!G!Netzspiel-Infos
+!S!Info partida en red
+!I!Info gioco in rete
+!F!Infos Jeu Réseau
+
+!/!68: On-Screen menu option to change the hud message filters
+!=!HUD Message Filters
+!G!CPA Nachrichtenfilter
+!S!Filtros de mensaje de presentador
+!I!Filtri messaggi collimatore
+!F!Filtre Messages Collimateur
+
+!/!69: On-Screen sub-menu of Hud Message filters
+!=!Kill Messages
+!G!Abschussmeldungen
+!S!Mensajes de bajas
+!I!Messaggi uccisioni
+!F!Messages de mort
+
+!/!70: On-Screen menu option for 'simple' hud messages (keep 1 word)
+!=!Simple
+!G!Einfach
+!S!Sencillos
+!I!Semplice
+!F!Simple
+
+!/!71: On-Screen sub-menu of Hud Message filters
+!=!Statistical Messages
+!G!Statistische Meldungen
+!S!Mensajes estadísticos
+!I!Messaggi statistici
+!F!Messages statistiques
+
+!/!72: On-Screen menu option to quit on-screen menu
+!=!Exit Menu
+!G!Menü verlassen
+!S!Salir del menú
+!I!Esci dal menu
+!F!Quitter Menu
+
+!/!73: In Player Info display, time in game
+!=!Total Time In Game: %s\n
+!G!Gesamte Spielzeit: %s\n
+!S!Tiempo total en partida: %s\n
+!I!Tempo totale partita: %s\n
+!F!Durée de la partie: %s\n
+
+!/!74: Message displayed when changing a team name
+!=!%s changed team name to %s
+!G!%s änderte Teamnamen in %s
+!S!%s ha cambiado el nombre del equipo a %s
+!I!%s ha modificato il nome della squadra in %s
+!F!%s a appelé l'équipe %s
+
+!/!75: Hud message when hud level is set to full
+!=!Personal HUD Name Level: Full
+!G!Persönliche CPA Namen-Stufe: Alle
+!S!Nivel de nombre de cabina personal: Total
+!I!Livello nome collimatore personale: Totale
+!F!affichage du nom: pour tous
+
+!/!76: Hud message when hud level is set to team only
+!=!Personal HUD Name Level: Team Only
+!G!Persönliche CPA Namen-Stufe: Nur Team
+!S!Nivel de nombre de cabina personal: Sólo equipo
+!I!Livello nome collimatore personale: Solo squadra
+!F!affichage du nom: pour l'équipe
+
+!/!77: Hud message when hud level is set to none
+!=!Personal HUD Name Level: None
+!G!Persönliche CPA Namen-Stufe: Keine
+!S!Nivel de nombre de cabina personal: ninguno
+!I!Livello nome collimatore personale: nessuno
+!F!aucun affichage du nom à l'écran
+
+!/!78: Hud message when server hud level is set to full
+!=!Server Max HUD Name Level: Full
+!G!Server Max. CPA Namen-Stufe: Alle
+!S!Nivel máx de nombre de presentador del servidor: Total
+!I!Livello max nome collimatore del server: Totale
+!F!affichage du nom serveur: pour tous
+
+!/!79: Hud message when server hud level is set to team only
+!=!Server Max HUD Name Level: Team Only
+!G!Server Max. CPA Namen-Stufe: Nur Team
+!S!Nivel máx de nombre de presentador del servidor: Sólo equipo
+!I!Livello max nome collimatore del server: Solo squadra
+
+!F!affichage du nom serveur: pour l'équipe
+
+!/!80: Hud message when server hud level is set to none
+!=!Server Max HUD Name Level: None
+!G!Server Max. CPA Namen-Stufe: Keine
+!S!Nivel máx de nombre de presentador del servidor: Ninguno
+!I!Livello max nome collimatore del server: Nessuno
+!F!aucun affichage du nom sur serveur 
+
+!/!81: Header for when game stats are written out...must keep column alignment, meaning:
+!/!Callsign starts at column 0
+!/!Kills starts at column 30
+!/!Deaths starts at column 40
+!=!Callsign:                     Kills:    Deaths:
+!G!Erkennungsname:               Abschüsse: Verl. Leben:
+!S!Llamada:                      Bajas:    Muertes:
+!I!Chiamata                      Ucc       Morti
+!F!Indicatif:			   Victimes: Morts:	
+
+!/!82: Message (Dedicated server) when banning a player
+!=!Banning %s\n
+!G!Ausschluss: %s\n
+!S!Vetando a %s\n
+!I!Viene escluso %s\n
+!F!%s banni\n
+
+!/!83: Message when there was an error banning the player
+!=!Unable to ban player...pnum not valid\n
+!G!Ausschluss unmöglich. S. Nr. ungültig\n
+!S!No se puede vetar a... nº jugador no válido\n
+!I!Impossibile escludere il giocatore... N° giocat non valido\n
+!F!ban impossible: n° de joueur incorrect\n
+
+!/!84: Time string when the time is exactly 1 hour
+!=!01:00:00 hour
+!G!01:00:00 Stunde
+!S!01:OO:00 horas
+!I!01:00:00 ora
+!F!01:00:00 heure
+
+!/!85: Time format string when the time is more than 1 hour
+!/! 1st %d is hours
+!/! 2nd .2%d is minutes
+!/! 3rd .2%d is seconds
+!=!%d:%.2d:%.2d hours
+!G!%d:%.2d:%.2d Stunden 
+!S!%d:%.2d:%.2d horas
+!I!%d:%.2d:%.2d ore
+!F!%d:%.2d:%.2d heures
+
+!/!86: Time string when the time is exactly 1 minute
+!=!1:00 minute
+!G!1:00 Minute 
+!S!1:00 minutos
+!I!1:00 minuto
+!F!1:00 minute
+
+!/!87: Time format string when the time is more than 1 minute
+!/! 1st %d is minutes
+!/! 2nd .2%d is seconds
+!=!%d:%.2d minutes
+!G!%d:%.2d Minuten 
+!S!%d:%.2d minutos
+!I!%d:%.2d minuti
+!F!%d:%.2d minutes
+
+!/!88: Time string when the time is exactly 1 second
+!=!1 second
+!G!1 Sekunde
+!S!1 segundo
+!I!1 secondo
+!F!1 seconde
+
+!/!89: Time format string when the time is more than 1 second
+!/! %d is seconds
+!=!%d seconds
+!G!%d Sekunden
+!S!%d segundos
+!I!%d secondi
+!F!%d secondes
+
+!/! ------------------------------------------------------------------------------------
+!/! The following are Input commands, the first string is the name of the input command (dedicated server commmand)
+!/! The second string is a description for the command.  The first string can't have any
+!/! spaces!
+
+!=!allowteamchange
+!G!allowteamchange 
+!S!allowteamchange
+!I!allowteamchange
+!F!allowteamchange
+!=![Server Only]\nTurns off/on allowing clients to change their team.\nUsage: "$allowteamchange <off/on>"
+!G![Nur Server]\nEin/Ausschalten: Clienten Teamwechsel zulassen.\nVerwendung: "$allowteamchange <off/on>"
+!S![Sólo servidor]\nActiva/desactiva la opción de permitir que los clientes cambien de equipo.\nUso: "$allowteamchange <off/on>"
+!I![Solo server]\nAttiva/Disattiva opzione client per cambio di squadra.\nUso: "$allowteamchange <off/on>"
+!F![Serveur Uniquement]\nAutorise ou non les clients à changer d'équipe.\nSyntaxe:"$allowteamchange<off/on>" 
+
+!=!autobalance
+!G!autobalance 
+!S!autobalance
+!I!autobalance
+!F!autobalance
+!=![Server Only]\nTurns off/on allowing the automatic team placement of new players by the server.\nUsage: "$autobalance <off/on>"
+!G![Nur Server]\nEin/Ausschalten: automatische Teamplazierung neuer Spieler durch den Server zulassen.\nVerwendung: "$autobalance <off/on>"
+!S![Sólo servidor]\nActiva/desactiva la colocación automática de equipo de nuevos jugadores por parte del servidor.\nUso: "$autobalance <off/on>"
+!I![Solo server]\nAttiva/Disattiva la collocazione automatica in squadra di nuovi giocatori via server. nUso: "$autobalance <off/on>"
+!F![Serveur Uniquement]\nAutorise ou non l'attribution automatique des nouveaux joueurs par le serveur.\nSyntaxe: "$autobalance <off/on>"
+
+!=!autosavedisconnect
+!G!autosavedisconnect 
+!S!autosavedisconnect
+!I!autosavedisconnect
+!F!autosavedisconnect
+!=!Enables/Disables the automatic saving of the game stats if you disconnect from the server.\nUsage: "$autosavedisconnect <on/off>"
+!G!Aktivieren/Deaktivieren: automatisches Speichern der Spielstatistik bei Verbindungsabbruch.\nVerwendung: "$autosavedisconnect <on/off>"
+!S!Permite/impide guardar automáticamente las estadísticas al desconectarse del servidor.\nUso: "$autosavedisconnect <off/on>"
+!I!Attiva/Disattiva il salvataggio automatico delle statistiche di gioco se ci si scollega dal server.\nUso: "$autosavedisconnect <off/on>"
+!F!Active/Désactive les sauvegardes automatiques de stats si vous êtes déconnecté du serveur.\nSyntaxe: "$autosavedisconnect <on/off>"
+
+!=!autosavelevel
+!G!autosavelevel 
+!S!autosavelevel
+!I!autosavelevel
+!F!autosavelevel
+!=!Enables/Disables the automatic saving of the game stats when the level ends.\nUsage: "$autosavelevel <on/off>"
+!G!Aktivieren/Deaktivieren: Automatisches Speichern der Spielstatistik am Levelende.\nVerwendung: "$autosavelevel <on/off>"
+!S!Permite/impide guardar automáticamente las estadísticas al terminar el nivel.\nUso: "$autosavlevel <off/on>"
+!I!Attiva/Disattiva il salvataggio automatico delle statistiche di gioco a termine livello. \nUso: "$autosavlevel <off/on>"
+!F!Active/désactive la sauvegarde automatique des stats quand le niveau est achevé.\nSyntaxe "$autosavelevel <on/off>"
+
+!=!balance
+!G!balance 
+!S!balance
+!I!balance 
+!F!balance
+!=![Server Only]\nAutomatically balances the teams, based on senority.\nUsage: "$balance"
+!G![Nur Server]\nAutomatisches Ausgleichen der Teams, auf Erfahrung basierend.\nVerwendung: "$balance"
+!S![Sólo servidor]\nEquilibra automáticamente los equipos, basándose en la experiencia.\nUso:"$balance"
+!I![Solo server]\nEquilibra automaticamene le squadre in base all'esperienza.\nUso:"$balance"
+!F![Serveur Seulement]\nEquilibre automatiquement les équipes, selon l'expérience.\nSyntaxe: "$balance"
+
+!=!ban
+!G!ban
+!S!ban
+!I!ban
+!F!ban
+!=![Server Only]\nBans a player from the game.\nUsage: "$ban <pnum>"
+!G![Nur Server]\nAusschluss eines Spielers aus dem Spiel.\nVerwendung: "$ban <Spielernummer>"
+!S![Sólo servidor]\nVeta a un jugador de la partida.\nUso:"$ban <nº jugador>"
+!I![Solo server]\nEsclude un giocatore dalla partita.\Uso: "$ban <nº giocatore>"
+!F![Serveur Uniquement]\nBannit un joueur de la partie.\nSyntaxe :"$ban <pnum>"
+
+!=!banlist
+!G!banlist 
+!S!banlist
+!I!banlist
+!F!banlist
+!=![Dedicated Server Only]\nLists the players banned from the game along with their ban number, which can be used to remove the ban.\nUsage: "$banlist"
+!G![Nur dedizierter Server]\nAuflistung der vom Spiel ausgeschlossenen Spieler mit Ausschlussnummer, die zur Ausschlussaufhebung verwendet werden kann.\nVerwendung: "$banlist"
+!S![Sólo servidor exclusivo]\nEnumera los jugadores vetados en la partida y el número del veto, que puede utilizarse para eliminar el veto.\nUso:"$banlist"
+!I![Solo server esclusivo]\nElenca i giocatori esclusi dalla partita e il loro numero di esclusione, che può essere utilizzato per togliere il divieto.\nUso:"$banlist"
+!F![Serveur Dédié Uniquement]\nListe les joueurs bannis de la partie avec leur numéro, qui peut être utilisé pour lever le ban.\nSyntaxe: "$banlist"
+
+!=!changeteam
+!G!changeteam
+!S!changeteam
+!I!changeteam 
+!F!changeteam
+!=![Server Only]\nForces a player to a team.\nUsage: "$changeteam <pnum> <team_name>"
+!G![Nur Server]\nZwingt einen Spieler in ein Team.\nVerwendung: "$changeteam <Spielernummer> <Teamname>"
+!S![Sólo servidor]\nObliga a un jugador a ingresar en un equipo.\nUso:"$changeteam <nombre> <nombre equipo>"
+!I![Solo server]\n Obbliga un giocatore a entrare in una squadra.\nUso: "$changeteam <numero> <nome squadra>"
+!F![Serveur Uniquement]\nForce un joueur dans une équipe.\nSyntaxe "$changeteam <pnum> <team_name>"
+
+!=!endlevel
+!G!endlevel 
+!S!endlevel
+!I!endlevel
+!F!endlevel
+!=![Server Only]\nEnds the level.\nUsage: "$endlevel"
+!G![Nur Server]\nBeendet den Level.\nVerwendung: "$endlevel"
+!S!(Sólo servidor)\nTermina el nivel.\nUso:"$endlevel"
+!I![Solo erver]\nTermina il livello.\nUso: "$endlevel"
+!F![Serveur Uniquement]\nMet fin au niveau.\Syntaxe: "$endlevel"
+
+!=!help
+!G!help
+!S!help
+!I!help
+!F!help
+!=!Displays help information for the input commands.\nUsage: "$help [command]"
+!G!Zeigt Hilfe Infos für die Eingabebefehle an.\nVerwendung: "$help [Befehl]"
+!S!Muestra información de ayuda para los comandos.\nUso:$help[comando]"
+!I!Visualizza info di aiuto per i comandi di input.\nUso:$help[comando]"
+!F!Affiche l'aide sur les commandes.\nSyntaxe: "$help [commande]"
+
+!=!hudnames
+!G!hudnames
+!S!hudnames
+!I!hudnames
+!F!hudnames
+!=!Sets your personal level for the HUD name filter.\nUsage: "$hudnames <full/team/none>"\nNOTE: You can only set your HUD Callsign level up to the level that the server is.  So if the server is only allowing up to teammates, you won't be able to set to full
+!G!Legt Ihre persönliche Stufe für den CPA Namenfilter fest.\nVerwendung: "$hudnames <full/team/none>"\nBEMERKUNG: Sie können Ihre CPA Erkennungsnamenstufe nur bis zur Stufe des Servers festlegen. Wenn der Server nur bis zu 'team' (nur Team) erlaubt, ist die Einstellung auf 'full' (alle) nicht möglich. 
+!S!Establece un nivel personal para el filtro de nombre de presentador.\nUso:"$hudnames <full/team/none>" \nNota: Sólo se puede establecer el nivel de llamada de presentador en el nivel en el que se encuentre el servidor. Si sólo permite compañeros de equipo, no podrás establecerlo en modo total.
+!I!Imposta un livello personale per il filtro del nome del collimatore.\nUso:"$hudnames <completo/squadra/nessuno>"\nNota: si può impostare un livello di chiamata del collimatore solo pari al livello del server. Quindi se il server consente solo compagni di squadra, non si potrà impostare la modalità totale. 
+!F!Fixe votre niveau personnel pour le filtre de noms HUD.\nSyntaxe: "$hudnames <full/team/none>"\nVous ne pouvez fixer votre niveau d'Indicatif collimateur que dans les limites de celui du serveur.
+
+!=!kick
+!G!kick
+!S!kick
+!I!kick
+!F!kick
+!=![Server Only]\nKicks a player from the game.\nUsage: "$kick <pnum>"
+!G![Nur Server]\nWirft einen Spieler aus dem Spiel.\nVerwendung: "$kick <Spielernummer>"
+!S![Sólo servidor]\nExpulsa a un jugador de la partida.\nUso:"$kick <nº jugador>"
+!I![Solo server]\nEspelle un giocatore dalla partita.\nUso: "$kick <n° giocatore>"
+!F![Serveur Uniquement]\nExpulse un joueur de la partie.\nSyntaxe: "$kick <pnum>"
+
+!=!killmsgfilter
+!G!killmsgfilter 
+!S!killmsgfilter
+!I!killmsgfilter
+!F!killmsgfilter
+!=!Sets the kill message filter, for what style of messages you want.\nUsage: "$killmsgfilter <full/simple/none>"
+!G!Setzt den Abschussnachrichtenfilter auf gewünschten Nachrichtenstil.\nVerwendung: "$killmsgfilter <full/simple/none>"
+!S!Establece el filtro de mensajes de bajas, para el estilo de mensajes deseado.\nUso:"$killmsgfilter <full/simple/none>"
+!I!Imposta il filtro dei messaggi di uccisione in base al tipo di messaggi desiderato.\nUso: "$killmsgfilter <completo/semplice/nessuno>"
+!F!Règle le filtre de messages de mort, selon le style de messages que vous désirez.\nSyntaxe: "$killmsgfilter <full/simple/none>"
+
+!=!netgameinfo
+!G!netgameinfo 
+!S!netgameinfo
+!I!netgameinfo
+!F!netgameinfo
+!=!Displays information about the net game.\nUsage: "$netgameinfo"
+!G!Zeigt Netzspiel-Infos an.\nVerwendung: "$netgameinfo"
+!S!Muestra información sobre la partida en red.\nUso:"$netgameinfo"
+!I!Visualizza informazioni sulla partita in rete.\nUso: "$netgameinfo"
+!F!Affiche des informations sur la partie réseau.\nSyntaxe: "$netgameinfo"
+
+!=!observer
+!G!observer 
+!S!observer
+!I!observer
+!F!observer
+!=!If you pass specify 'on', it puts you into observer mode, else it will return you back to normal mode.\nUsage: "$observer <on/off>"
+!G!Auf ‚on' gestellt, kommt man in den Beobachtungsmodus, ansonsten kommt man in den normalen Modus zurück.\nVerwendung: "$observer <on/off>"
+!S!Si no especificas "on", te mantienes en modo de observador; de lo contrario, regresas al modo normal.\nUso:"$observer <on/off>"
+!I!Se non specifichi 'on', ti colloca in modalità osservatore, altrimenti ti riporta in modalità normale.\nUso: "$observer <on/off>"
+!F!Si vous spécifiez 'on', vous devenez un observateur, sinon vous retournez au mode normal.\nSyntaxe: "$observer <on/off>"
+
+!=!piggyback
+!G!piggyback 
+!S!piggyback
+!I!piggyback
+!F!escorte
+!=!Puts you into Piggyback Observer mode."$piggyback <pnum>"
+!G!Setzt Sie in den ‚Huckepackbeobachter-Modus. Verwendung: "$piggyback <Spielernummer>"
+!S!Coloca al jugador en modo observador a cuestas. "$piggyback <nº jugador>"
+!I!Ti colloca in modalità osservatore."$piggyback <n° giocatore>"
+!F!Vous place en mode Escorte.\nSyntaxe "$piggyback <pnum>"
+
+!=!playerinfo
+!G!playerinfo 
+!S!playerinfo
+!I!playerinfo
+!F!playerinfo
+!=!Displays information about a player.\nUsage: "$playerinfo <pnum>"
+!G!Zeigt Informationen über einen Spieler an.\nVerwendung: "$playerinfo <Spielernummer>"
+!S!Muestra información sobre un jugador determinado.\Uso:"$playerinfo <nº jugador>"
+!I!Visualizza informazioni su un giocatore.\nUso: "$playerinfo <n° giocatore>"
+!F!Affiche les informations sur un joueur.\nSyntaxe: "$playerinfo <pnum>"
+
+!=!players
+!G!players 
+!S!players
+!I!players
+!F!players
+!=![Dedicated Server Only]\nDisplays a list of the players in the game, with their player numbers.\nUsage: "$players"
+!G![Nur dedizierter Server]\nZeigt eine Liste der Spieler des Spiels mit deren Spielernummern an.\nVerwendung: "$players"
+!S![Sólo servidor exclusivo]\nMuestra una lista de los jugadores de la partida, con sus números.\nUso:"$players"
+!I![Solo server dedicato]\nVisualizza un elenco dei giocatori partecipanti con i rispettivi numeri.\nUso: "$players"
+!F![Serveur Dédié Uniquement]\nAffiche la liste des joueurs de la partie, avec leur numéro de joueur.\nSyntaxe: "$players"
+
+!=!rehash
+!G!rehash 
+!S!rehash
+!I!rehash
+!F!rehash
+!=![Server Only]\nRehashes the hosts.allow and hosts.deny files.  First it flushes the old, and reloads them.\nUsages: "$rehash"
+!G![Nur Server]\nLädt die Dateien hosts.allow und hosts.deny. Die alten werden erst geleert und dann neu geladen.\nVerwendung: "$rehash"
+!S![Sólo servidor]\nActualiza los archivos hosts.allow y hosts.deny. Borra los antiguos y los vuelve a cargar.\nUso: "$rehash"
+!I![Solo server]\nAggiorna i file hosts.allow e hosts.deny. Prima elimina i vecchi file, poi li ricarica. \nUso: "$rehash"
+!F![Serveur Uniquement]\nRemanie les fichiers hosts.allow et hosts.deny. Il efface les vieux fichiers et les recharge.\nSyntaxe: "$rehash"
+
+!=!removeban
+!G!removeban
+!S!removeban
+!I!removeban
+!F!removeban
+!=![Dedicated Server Only]\nRemoves a ban from a player, given the number associated with them from $banlist.\nUsage: "$removeban <player>"
+!G![Nur dedizierter Server]\nHebt den Ausschluss eines Spielers auf, mit der zugeordneten Nummer aus der $banlist.\nVerwendung: "$removeban <Spieler>"
+!S![Sólo servidor exclusivo]\nElimina el veto de un jugador a partir del número asociado en $banlist.\nUso: "$removeban <jugador>"
+!I![Solo server dedicato]\nCancella il divieto per un giocatore in base al numero associato presente in $banlist.\nUso: "$removeban <giocatore>"
+!F![Serveur Dédié Uniquement]\nEnlève un ban d'un joueur, en donnant le nombre associé de la $banlist.\nSyntaxe: "$removeban <joueur>"
+
+!=!savestats
+!G!savestats 
+!S!savestats
+!I!savestats
+!F!savestats
+!=!Saves the game stats to file immediatly.\nUsage: "$savestats"
+!G!Speichert die Spielstatistik sofort in der Datei.\nVerwendung: "$savestats"
+!S!Guarda en disco inmediatamente las estadísticas.\nUso: "$savestats"
+!I!Salva immediatamente le statistiche del gioco.\nUso: "$savestats"
+!F!Sauvegarde les stats de jeu immédiatement.\nSyntaxe: "$savestats"
+
+!=!scores
+!G!scores 
+!S!scores
+!I!scores
+!F!scores
+!=!Displays the scores or stats of the game.\nUsage: "$scores"
+!G!Zeigt die Punkte oder Statistik des Spiels an.\nVerwendung: "$scores"
+!S!Muestra la puntuación o la estadística de la partida.\nUso: "$scores"
+!I!Visualizza i punteggi o le statistiche di gioco.\nUso: "$scores"
+!F!Affiche les scores ou stats de la partie.\nSyntaxe: "$scores"
+
+!=!serverhudnames
+!G!serverhudnames 
+!S!serverhudnames
+!I!serverhudnames
+!F!serverhudnames
+!=![Server Only]\nSets the highest HUD name filter permitted for the clients.\nUsage: "$serverhudnames <full/team/none>"
+!G![Nur Server]\nLegt den höchsten für Clienten zugelassenen CPA Namenfilter fest.\nVerwendung: "$serverhudnames <full/team/none>"
+!S![Sólo servidor]\nEstablece el máximo filtro de nombre de presentador permitido para los clientes.\nUso: "$serverhudnames <full/team/none>"
+!I![Solo server]\nImposta il massimo filtro del nome del collimatore permesso per i client.\nUso: "$serverhudnames <completo/semplice/nessuno>"
+!F![Serveur Uniquement]\nFixe le filtre de noms le plus élevé pour les clients.\nUsage: "$serverhudnames <full/team/none>"
+
+!=!setgoallimit
+!G!setgoallimit 
+!S!setgoallimit
+!I!setgoallimit
+!F!setgoallimit
+!=![Server Only]\nChanges the goal limit for the level.\nUsage: "$setgoallimit <points>"
+!G![Nur Server]\nÄndert das Ziellimit für den Level.\nVerwendung: "$setgoallimit <Punkte>"
+!S![Sólo servidor]\Cambia el límite de objetivo del nivel.\nUso: "$setgoallimit <puntos>"
+!I![Solo server]\nModifica il limite dell'obiettivo del livello.\nUso: "$setgoallimit <punti>"
+!F![Serveur Uniquement]\nChange l'objectif limite pour le niveau.\nSyntaxe: "$setgoallimit <points>"
+
+!=!setmaxplayers
+!G!setmaxplayers 
+!S!setmaxplayers
+!I!setmaxplayers
+!F!setmaxplayers
+!=![Server Only]\nSets the maximum number of players allowed in the game.\nUsage: "$setmaxplayers <count>"
+!G![Nur Server]\nLegt die maximal zugelassene Spieleranzahl im Spiel fest.\nVerwendung: "$setmaxplayers <Anzahl>"
+!S![Sólo servidor]\nEstablece el máximo de jugadores permitidos en la partida.\nUso: "$setmaxplayers <nº>"
+!I![Solo server]\nImposta il numero max di giocatori che possono partecipare alla partita.\nUso: "$setmaxplayers <totale>"
+!F![Serveur Uniquement]\nFixe le nombre maximum de joueurs autorisés dans la partie.\nSyntaxe: "$setmaxplayers <count>"
+
+!=!setpps
+!G!setpps
+!S!setpps
+!I!setpps
+!F!setpps
+!=![Server Only]\nChanges the Packets Per Second (PPS) threshold of the game\nUsage: "$setpps <pps>"
+!G![Nur Server]\nÄndert die Pakete pro Sekunde (PPS)-Grenze des Spieles\nVerwendung: "$setpps <pps>"
+!S![Sólo servidor]\nCambia el umbral de paquetes por segundo (PPS) de la partida\nUso: "$setpps <pps>"
+!I![Solo server]\nModifica il limite dei pacchetti al secondo (PPS) della partita\nUso: "$setpps <pps>"
+!F![Serveur Uniquement]\nChange le seuil de Paquets Par Secondes (PPS) pour la partie\nSyntaxe: "$setpps <pps>"
+
+!=!setrespawntime
+!G!setrespawntime
+!S!setrespawntime
+!I!setrespawntime
+!F!setrespawntime
+!=![Server Only]\nChanges the respawn time of the powerups in the level.\nUsage: "$setrespawntime <seconds>"
+!G![Nur Server]\nÄndert die Zurückbringrate der Powerups in dem Level.\nVerwendung: "$setrespawntime <Sekunden>"
+!S![Sólo servidor]\nCambia el tiempo de resurrección para el nivel.\nUso: "$setrespawntime <segundos>"
+!I![Solo server]\nModifica il tempo di ricomparsa dei bonus nel livello.\nUso: "$setrespawntime <secondi>"
+!F![Serveur Uniquement]\nChange le temps de réapparition des recharges dans le niveau.\nSyntaxe: "$setrespawntime <seconds>"
+
+!=!setteamname
+!G!setteamname
+!S!setteamname
+!I!setteamname
+!F!setteamname
+!=![Server Only]\nChanges the name of a team.\nUsage: "$setteamname <team_num> <new_team_name>"
+!G![Nur Server]\nÄndert den Namen des Teams.\nVerwendung: "$setteamname <teamnummer> <neuer_Teamname>"
+!S![Sólo servidor]\nCambia el nombre de un equipo.\nUso: "$setteamname <nº equipo> <nuevo nombre>"
+!I![Solo server]\nModifica il nome della squadra.\nUso: "$setteamname <n° squadra> <nuovo nome>"
+!F![Serveur Uniquement]\nChange le nom d'une équipe.\nSyntaxe: "$setteamname <num_équipe> <nouveau_nom>"
+
+!=!settimelimit
+!G!settimelimit 
+!S!settimelimit
+!I!settimelimit
+!F!settimelimit
+!=![Server Only]\nChanges the time limit for the level.\nUsage: "$settimelimit <minutes>"
+!G![Nur Server]\nÄndert das Zeitlimit für den Level.\nVerwendung: "$settimelimit <Minuten>"
+!S![Sólo servidor]\nCambia el límite de tiempo del nivel.\nUso: "$settimelimit <minutos>"
+!I![Solo server]\nModifica il limite di tempo del livello.\nUso: "$settimelimit <minuti>"
+!F![Serveur Uniquement]\nChange la limite de temps  pour le niveau.\nSyntaxe: "$settimelimit <minutes>"
+
+!=!statmsgs
+!G!statmsgs 
+!S!statmsgs
+!I!statmsgs
+!F!statmsgs
+!=!Enables/Disables random statistical messages.\nUsage: "$statmsgs <on/off>"
+!G!Aktivieren/Deaktivieren: Zufällige statistische Nachrichten.\nVerwendung: "$statmsgs <on/off>"
+!S!Activa/desactiva los mensajes de estadísticas aleatorios.\nUso: "$statmsgs <on/off>"
+!I!Attiva/Disattiva i messaggi statisitici casuali.\nUso: "$statmsgs <on/off>"
+!F!Active/désactive les messages statistiques aléatoires.\nSyntaxe: "$statmsgs <on/off>"
+
+!=!team
+!G!team
+!S!team
+!I!team
+!F!team
+!=!Change teams for yourself.\nUsage: "$team <team_name>"
+!G!Wechseln Sie selbst das Team.\nVerwendung: "$team <Teamname>"
+!S!Cambia de equipo.\nUso: "$team <nombre de equipo>"
+!I!Cambia le squadre.\nUso: "$team <nome squadra>"
+!F!Vous fait changer d'équipe.\nSyntaxe: "$team <nom_équipe>"
+
+!/! ------------------------------------------------------------------------------------
+
+!/!152:Header for when displaying the input commands in the dedicated server
+!=!Input Command List:\n
+!G!Liste der Eingabebefehle:\n 
+!S!Lista de comandos:\n
+!I!Elenco dei comandi di input:\n
+!F!Liste de commandes:\n
+
+!/!153:Instructions for InputCommands
+!=!Prefix a '$' before the commands listed below.  To get more detailed help\nabout a command, type '$help <command>'\n
+!G!Vor den unten aufgeführten Befehlen '$' eingeben. Für detaillierte Hilfe zu\neinem Befehl '$hilfe <Befehl>' eingeben\n 
+!S!Antepone "$" a los siguientes comandos. Si quieres más detalles sobre un\ncomando, escribe "$help <comando>"\n
+!I!Anteponi "$" ai comandi sotto elencati. Per maggiori particolari su\n un comando, scrivi "$help <comando>"\n
+!F!Préfixez les commandes ci-dessous avec un '$'. Pour avoir plus d'informations\nsur une commande, tapez '$help <command>'\n
+
+!/!154:DIsplayed when there is no additional info
+!=!No additional information is available\n
+!G!Keine weiteren Infos verfügbar\n
+!S!No hay más información disponible\n
+!I!Non sono disponibili altre informazioni\n
+!F!Pas d'infos supplémentaires\n
+
+!/!155: Displayed when the given command is not found
+!=!Command not found\n
+!G!Befehl nicht gefunden\n
+!S!Comando no encontrado\n
+!I!Comando non trovato\n
+!F!Commande introuvable\n
+
+!/!156: Shortened for Sunday
+!=!Sun
+!G!Son
+!S!Dom
+!I!Dom
+!F!Dim
+
+!/!157: Shortened for Monday
+!=!Mon
+!G!Mon
+!S!Lun
+!I!Lun
+!F!Lun
+
+!/!158: Shortened for Tuesday
+!=!Tue
+!G!Die
+!S!Mar
+!I!Mar
+!F!Mar
+
+!/!159: Shortened for Wednesday
+!=!Wed
+!G!Mit
+!S!Mié
+!I!Mer
+!F!Mer
+
+!/!160: Shortened for Thursday
+!=!Thur
+!G!Don
+!S!Jue
+!I!Gio
+!F!Jeu
+
+!/!161: Shortened for Friday
+!=!Fri
+!G!Fre
+!S!Vie
+!I!Ven
+!F!Ven
+
+!/!162: Shortened for Saturday
+!=!Sat
+!G!Sam
+!S!Sáb
+!I!Sab
+!F!Sam
+
+!/!163-174:	Shortened months
+!=!Jan
+!G!Jan
+!S!Ene
+!I!Gen
+!F!Jan
+!=!Feb
+!G!Feb
+!S!Feb
+!I!Feb
+!F!Fév
+!=!March
+!G!März
+!S!Marzo
+!I!Marzo
+!F!Mars
+!=!April
+!G!April
+!S!Abril
+!I!Aprile
+!F!Avril
+!=!May
+!G!Mai
+!S!Mayo
+!I!Maggio
+!F!Mai
+!=!June
+!G!Juni
+!S!Junio
+!I!Giugno
+!F!Juin
+!=!July
+!G!Juli
+!S!Julio
+!I!Luglio
+!F!Juil
+!=!Aug
+!G!Aug
+!S!Ago
+!I!Ago
+!F!Août
+!=!Sept
+!G!Sept
+!S!Sept
+!I!Set
+!F!Sept
+!=!Oct
+!G!Okt
+!S!Oct
+!I!Ott
+!F!Oct
+!=!Nov
+!G!Nov
+!S!Nov
+!I!Nov
+!F!Nov
+!=!Dec
+!G!Dez
+!S!Dic
+!I!Dic
+!F!Déc
+
+!/!175:	This string gets concattenated at the end of the filename if when generating the
+!/!	filename for an end-of-level stats
+!=!End_Of_Level_
+!G!Levelende_
+!S!Fin_de_nivel_
+!I!Fine_livello
+!F!Fin_Niveau_
+
+!/!176: Heading for Netgame Info display
+!=!NetGame Information\n
+!G!Netzspiel-Infos\n
+!S!Info partida en red\n
+!I!Info gioco in rete\n
+!F!Informations Partie Réseau\n
+
+!/!177-> : The following are labels found in the Netgame Info
+!=!Game Name: %s\n
+!G!Spielname: %s\n 
+!S!Nombre partida: %s\n
+!I!Nome partita: %s\n
+!F!Nom Partie %s\n
+!=!Mission Name: %s\n
+!G!Missionsname: %s\n
+!S!Nombre misión: %s\n
+!I!Nome missione: %s\n
+!F!Nom Mission %s\n
+!=!Script Name: %s\n
+!G!Skriptname: %s\n
+!S!Nombre guión: %s\n
+!I!Nome script: %s\n
+!F!Nom Script %s\n
+!=!PPS: %d\n
+!G!PPS: %d\n
+!S!PPS: %d\n
+!I!PPS: %d\n
+!F!PPS: %d\n
+!=!PPS (Server/You): %d/%d\n
+!G!PPS (Server/Sie): %d/%d\n 
+!S!PPS (Servidor/tú): %d/%d\n
+!I!PPS:(Server/Tu): %d/%d\n 
+
+!F!PPS (Serveur/Vous): %d/%d\n
+!=!Max Players: %d\n
+!G!Max. Spieler: %d\n
+!S!Máx jugadores: %d\n
+!I!Num max giocatori: %d\n 
+!F!Nb Joueurs Max %d\n
+!=!Accurate Weapon Collisions: %s\n
+!G!Genaue Waffenkollisionen: %s\n
+!S!Colisiones de armas exactas: %s\n
+!I!Collisioni di armi precise: %s\n 
+!F!Collisions d'armes précises: %s\n
+!=!Send Rotational Velocity: %s\n
+!G!Drehgeschwindigkeit senden: %s\n
+!S!Enviar velocidad de rotación: %s\n
+!I!Invia velocità di rotazione: %s\n
+!F!Envoyer Vélocité Rotationnelle: %s\n
+!=!Time Limit: %d %s\n
+!G!Zeitlimit: %d %s\n
+!S!Límite de tiempo: %d %s\n
+!I!Limite di tempo: %d %s\n 
+!F!Temps limite: %d %s\n
+!=!minute
+!G!Minute
+!S!minuto
+!I!minuto
+!F!minute
+!=!minutes
+!G!Minuten
+!S!minutos
+!I!minuti
+!F!minutes
+!=!Time Left: %s\n
+!G!Restzeit: %s\n
+!S!Tiempo restante: %s\n
+!I!Tempo rimasto: %s\n 
+!F!Temps restant: %s\n
+!=!Time Limit: None\n
+!G!Zeitlimit: Keines\n
+!S!Límite de tiempo: Ninguno\n
+!I!Limite di tempo: nessuno\n
+!F!Temps Limite: Aucun\n
+!=!Goal: %d points\n
+!G!Ziel: %d Punkte\n
+!S!Objetivo: %d points\n
+!I!Obiettivo: %d punti\n
+!F!Objectif: %d points\n
+!=!Goal: None\n
+!G!Ziel: Keines\n
+!S!Objetivo: Ninguno\n
+!I!Obiettivo: nessuno\n
+!F!Objectif: Aucun\n
+!=!Respawn Time: %s\n
+!G!Zurückbringrate: %s\n
+!S!Tiempo resurrección: %s\n
+!I!Tempo di ricomparsa: %s\n
+!F!Temps de réapparition: %s\n
+!=!Packet Loss: N/A\n
+!G!Paketverlust: k.A.\n
+!S!Pérdida paquete: N.P\n
+!I!Perdita pacchetti: N.D.\n
+!F!Perte de Paquets : N/A\n
+!=!Packet Loss: %.1f%%\n
+!G!Paketverlust: %.1f%%\n 
+!S!Pérdida paquete: %.1f%%\n
+!I!Perdita pacchetti: %.1f%%\n 
+!F!Perte de Paquets: %.1f%%\n 
+!=!Network Model: %s\n
+!G!Netzwerkmodell: %s\n
+!S!Modelo de red: %s\n
+!I!Modello di rete: %s\n
+!F!Modèle Réseau: %s\n
+!=!Peer-To-Peer
+!G!Peer-to-Peer
+!S!De igual a igual
+!I!Paritetica
+!F!Homologue
+!=!Client/Server
+!G!Client/Server
+!S!Cliente/Servidor
+!I!Client/Server
+!F!Client/Réseau
+!=!Movement Smoothing: %s\n
+!G!Bewegungsglättung: %s\n
+!S!Movimiento suavizado: %s\n
+!I!Scioltezza di movimenti %s\n
+!F!Lissage Mouvements: %s\n
+
+!/!199: Hud message when changing teams was denied
+!=!Team Change Was Denied
+!G!Teamwechsel wurde nicht zugelassen
+!S!Denegado cambio de equipo
+!I!Cambio di squadra negato
+!F!Changement d'équipe refusé
+
+!/!200-202: Kill message filter string settings, full, simple, none
+!=!Kill Message Filter: Full
+!G!Abschussnachrichtenfilter: Komplett
+!S!Filtro de mensaje de bajas: Completo
+!I!Filtro messaggio uccisioni: Completo
+!F!Filtre Messages de mort: Complet
+!=!Kill Message Filter: Simple
+!G!Abschussnachrichtenfilter: Einfach
+!S!Filtro de mensaje de bajas: Sencillo
+!I!Filtro messaggio uccisioni: Semplice
+!F!Filtre Messages de mort: Simple
+!=!Kill Message Filter: None
+!G!Abschussnachrichtenfilter: Keine
+!S!Filtro de mensaje de bajas: Ninguno
+!I!Filtro messaggio uccisioni: Nessuno
+!F!Filtre Messages de mort: Aucun
+
+!/!203: Message displayed on screen while waiting for the server to start a game
+!=!Waiting For Server...
+!G!Warte auf Server...
+!S!Esperando servidor...
+!I!In attesa del server...
+!F!Attente Du Serveur...
+
+!/!204: Message on Post Level Results screen for screenshot
+!=!Press PrintScreen For A ScreenShot
+!G!Für Screenshot 'Print Screen/Druck' drücken
+!S!Pulsa Impr Pant para sacar captura
+!I!Premi Stamp per catturare la schermata
+!F!Appuyez sur Impr.Ecran pour une capture d'écran.
+
+!/!205: Hud message displayed when a player changes teams
+!=!%s changes teams to the %s team\n
+!G!%s wechselt zum %sen Team\n
+!S!%s se cambia al equipo %s\n
+!I!%s passa alla squadra %s\n
+!F!%s change et rejoint l'équipe %s\n
+
+!/!206: Hud message displayed when a player is killed, but the killer can't be determined
+!=!%s was killed
+!G!%s wurde getötet
+!S!%s ha muerto
+!I!%s è stato ucciso
+!F!%s a été tué
+
+!/!207: A Simple suicide message
+!=!%s went suicidal
+!G!%s beging Selbstmord
+!S!%s se ha suicidado
+!I!%s si è suicidato
+!F!%s s'est suicidé
+
+!/!208: # of kills in a row stat msg
+!=!That's %d kills in a row for %s!
+!G!%d Abschüsse in Folge für %s!
+!S!Son %d bajas de golpe para %s
+!I!Raggiunte %d uccisioni di seguito per %s
+!F!%d victimes à la suite pour %s !
+
+!/!209: # of deaths in a row stat msg
+!=!That's %d deaths in a row for %s!
+!G!%d Tode in Folge für %s!
+!S!Son %d muertes de golpe para %s
+!I!Raggiunti %d morti di seguito per %s
+!F!%d morts à la suite pour %s !
+
+!/!210: time since last kill stat msg
+!=!It's %s's first kill in %s
+!G!%ss erster Abschuss in %s
+!S!Es la primera baja de %s en %s
+!I!È la prima uccisione di %s in %s
+!F!Première victime de %s depuis %s
+
+!/!211: time since last death stat msg
+!=!%s lasted %s without being killed!
+!G!%s währte %s ohne das Leben zu verlieren!
+!S!%s ha aguantado %s sin morir
+!I!%s ha resistito %s senza venire ucciso!
+!F!%s a survécu %s !
+
+!/!212: Excellent effeciency stat
+!=!%s has an awesome efficiency of %.2f!!
+!G!%s legt eine Superleistung von %.2f hin!!
+!S!%s tiene la asombrosa eficacia de %.2f
+!I!%s vanta un'incredibile efficienza di %.2f!
+!F!%s a une efficacité incroyable de %.2f !
+
+!/!213: Good effeciency stats
+!=!%s has an efficiency of %.2f
+!G!%s hat eine Leistung von %.2f
+!S!%s tiene una eficacia de %.2f
+!I!%s ha un'efficienza di %.2f
+!F!%s a une efficacité de %.2f
+
+!/!214: Number of times killed
+!=!%s has killed %s %d times!
+!G!%s hat %s %d Mal abgeschossen
+!S!%s ha matado a %s %d veces
+!I!%s ha ucciso %s %d volte!
+!F!%s a tué %s %d fois !
+
+!/!215: Revenge stat message
+!=!%s got revenge on %s!
+!G!%s hat sich an %s gerächt!
+!S!%s se ha vengado de %s
+!I!%s si è vendicato di %s!
+!F!%s s'est vengé de %s !
+
+!/!216: Hud message displayed when you attempt to change teams
+!=!Attempting to change teams to %s team
+!G!Versuche, zum %sen Team zu wechseln
+!S!Intentando cambiar al equipo %s
+!I!Tentativo di passare alla squadra %s
+!F!Tentative de passage à l'équipe %s
+
+!/!217: Hud message displayed when the server is changing a player to another team
+!=!Attempting to change %s to %s team
+!G!Server versucht, %s zum %sen Team zu wechseln
+!S!Intentando cambiar a %s al equipo %s
+!I!Tentativo di trasferire %s alla squadra %s
+!F!Tentative de transfert de %s à l'équipe %s
+
+!/!218: Hud message displayed when you get player information on someone
+!=!Getting Playerinfo for %s
+!G!Spielerinfos über %s bekommen
+!S!Información sobre el jugador %s
+!I!Informazioni sul giocatore %s
+!F!Réception des données sur %s
+
+!/!219: Hud message displayed when the server auto-balances the teams
+!=!Balancing Teams
+!G!Server gleicht Teams aus
+!S!Equilibrando equipos
+!I!Riequilibrio squadre
+!F!Répartition des équipes
+
+!/!220: Hud message displayed when the server turns on/off auto-team balancing
+!=!Auto Team Balance: %s
+!G!Automtischer Teamausgleich: %s
+!S!Equilibrado automático: %s
+!I!Riequilibrio automatico: %s
+!F!Répartition Auto. des Equipes:  %s
+
+!/!221: Hud message displayed when the server enables/disables team changing
+!=!Allow Team Changing: %s
+!G!Teamwechsel zulassen: %s
+!S!Permitir cambio de equipo: %s
+!I!Cambio di squadra: %s
+!F!Changement d'Equipe: %s
+
+!/!222: Hud message displayed when you kick someone from the game
+!=!Kicking %s from game
+!G!%s wird aus dem Spiel geworfen
+!S!Expulsando a %s de la partida
+!I!Espulsione di %s dalla partita
+!F!%s a été expulsé.
+
+!/!223: Hud message displayed when you ban someone from the game
+!=!Banning %s from game
+!G!%s wird aus dem Spiel ausgeschlossen
+!S!Vetando a %s en la partida
+!I!Esclusione di %s dalla partita
+!F!%s a été exclu de la partie.
+
+!/!224: Hud message displayed when you end the level
+!=!Ending the level
+!G!Beende Level
+!S!Finalizando nivel
+!I!Fine del livello
+!F!Fin de niveau
+
+!/!225: Hud message when you change your statistical hud message level
+!=!Statistical Messages: %s
+!G!Statistische Meldungen: %s
+!S!Mensajes estadísticos: %s
+!I!Messaggi statistici: %s
+!F!Messages statistiques: %s
+
+!/!226: Hud message when you change the auto-save on level end setting
+!=!AutoSave Stats on Level End: %s
+!G!AutoSpeichern am Levelende: %s
+!S!Guardado automático de estadísticas al terminar nivel: %s
+!I!Salvataggio automatico delle statistiche a fine livello: %s
+!F!Stats de Sauvegarde Auto. Fin de Niveau: %s
+
+!/!227: Hud message when you change the auto-save on disconnect setting
+!=!AutoSave Stats on Disconnect: %s
+!G!AutoSpeichern bei Verbindungsverlust: %s
+!S!Guardado automático de estadísticas al desconectar: %s
+!I!Salvataggio automatico delle statistiche alla disconnessione: %s
+!F!Stats de Sauvegarde Auto. sur Déconnexion: %s
+
+!/!228: Hud message for when you change the time limit
+!=!Time Limit: %d
+!G!Zeitlimit: %d
+!S!Límite de tiempo: %d
+!I!Limite di tempo: %d
+!F!Temps Limite: %d
+
+!/!229: Hud message for when you turn off the time limit
+!=!Time Limit: Off
+!G!Zeitlimit: aus
+!S!Límite de tiempo: desactivado
+!I!Limite di tempo: Disattivato
+!F!Temps Limite: Arrêt
+
+!/!230: Hud message for when you set the goal limit
+!=!Goal Limit: %d
+!G!Ziellimit: %d
+!S!Límite de objetivo: %d
+!I!Limite dell'obiettivo: %d
+!F!objectif limite: %d
+
+!/!231: Hud message for when you turn off the goal limit
+!=!Goal Limit: None
+!G!Ziellimit: Kein
+!S!Límite de objetivo: ninguno
+!I!Limite dell'obiettivo: Nessuno
+!F!objectif limite: Aucun
+
+!/!232: Hud message for when you set the max players
+!=!Max Players: %d
+!G!Max. Spieler: %d
+!S!Máx jugadores: %d
+!I!Num max giocatori: %d
+!F!Nb Max de Joueurs: %d
+
+!/!233: Hud message for when you set the respawn time
+!=!Respawn Time: %d
+!G!Zurückbringrate: %d
+!S!Tiempo resurrección: %d
+!I!Tempo di ricomparsa: %d
+!F!Temps Réapparition: %d
+
+!/!234: Hud message for when you change the pps setting
+!=!Max PPS: %d
+!G!Max. PPS: %d
+!S!PPS máx: %d
+!I!PPS max: %d
+!F!PPS Max: %d
+
+!/!235: Hud message for when a ban was successfully removed
+!=!Ban Removed\n
+!G!Ausschluss aufgehoben\n
+!S!Veto eliminado\n
+!I!Divieto cancellato\n
+!F!Ban Supprimé\n
+
+!/!236: Hud message for when a ban was not removed
+!=!Couldn't remove ban\n
+!G!Ausschluss wurde nicht aufgehoben werden\n
+!S!No se puede eliminar veto\n
+!I!Impossibile cancellare divieto\n
+!F!Echec Supression du ban\n
+
+!/!237: Hud message for when a given command isn't supported for dedicated server
+!=!Command Not Available To Dedicated Server\n
+!G!Befehl für dedizierten Server nicht verfügbar\n
+!S!Comando no disponible para servidor exclusivo\n
+!I!Comando non disponibile per server dedicato\n
+!F!Commande non disponible sur les serveurs dédiés\n
+
+!/!238: Message for when Observer mode has been denied
+!=!Observer mode request denied
+!G!Beoachtermodus nicht zugelassen
+!S!Solicitud de modo de observador denegada
+!I!Richiesta modalità osservatore negata
+!F!Demande de mode Observateur refusée
+
+!/!239: Message given if the given playernum was invalid
+!=!Invalid Player Number
+!G!Ungültige Spielernummer
+!S!Nº de jugador no válido
+!I!N° del giocatore non valido
+!F!Numéro Joueur Invalide
+
+!/!240: Heading printed out on the dedicated server when listing the players, try to keep
+!/!column position
+!=!PNum Name\n
+!G!SNum Name\n
+!S!Nº jug Nombre\n
+!I!N°gioc Nome\n
+!F!N° Joueur\n
+
+!/!241:Hud message displayed if an invalid team number is given
+!=!Invalid Team, Must be between 0 and %d
+!G!Ungültiges Team. Nr. muss zwischen 0 und %d liegen
+!S!Equipo no válido, debe estar entre 0 y %d
+!I!Squadra non valida, deve essere compresa tra 0 e %d
+!F!Equipe incorrecte. Doit être entre 0 et %d
+
+!/!242:Hud message displayed if the server tries to kick themself
+!=!Server can't kick themself\n
+!G!Server kann sich nicht selbst rauswerfen\n
+!S!El servidor no puede expulsarse\n
+!I!Il server non può espellersi\n
+!F!Le serveur ne peut s'expulser\n
+
+!/!243:Hud messaged displayed if the server tries to ban themself
+!=!Server can't ban themself\n
+!G!Server kann sich nicht selbst ausschliessen\n
+!S!El servidor no puede vetarse\n
+!I!Il server non può escludersi\n
+!F!Le serveur ne peut se bannir\n
+
+!/!244:Message displayed when 'auto balancing' occurs
+!=!Balancing Teams\n
+!G!Teams werden ausgeglichen\n
+!S!Equilibrando equipos\n
+
+!I!Riequilibrio squadre\n
+!F!Répartition des équipes\n
+
+!/!245: Hud message displayed if the dedicated server tries to change teams
+!=!Dedicated Server Can't Change Teams\n
+!G!Der dedizierte Server kann das Team nicht wechseln\n
+!S!El servidor dedicado no puede cambiar de equipo\n
+!I!Il server dedicato non può modificare le squadre\n
+!F!Le Serveur dédié ne peut changer d'équipe\n
+
+!/!246: Hud message displayed if you try to change teams to the same team
+!=!You're already on the %s team\n
+!G!Sie sind bereits im %sen Team\n
+!S!Ya estás en el equipo %s\n
+!I!Sei già nella squadra %s\n 
+!F!Vous êtes déjà dans l'équipe %s\n
+
+!/!247: Hud message displayed showing whether Ship logos are enabled or not
+!=!Ship Logos: %s
+!G!Schiffslogos: %s
+!S!Emblemas de naves: %s
+!I!Emblemi delle navi: %s
+!F!Emblèmes Vaisseau: %s
+
+!/!248: used to report enabled items
+!=!Enabled
+!G!Aktiviert
+!S!Activado
+!I!Attivato
+!F!Activé
+
+!/!249: used to report disabled items
+!=!Disabled
+!G!Deaktiviert
+!S!Desactivado
+!I!Disattivato
+!F!Désactivé
+
+!/!250: Hud message displayed when flushing and re-reading hosts.allow and hosts.deny files
+!=!Rehashing Hosts.allow and Hosts.deny
+!G!Lade Dateien Hosts.allow und Hosts.deny erneut
+!S!Actualizando Hosts.allow y Hosts.deny
+!I!Aggiornamento di hosts.allow e hosts.deny
+!F!Remaniement Hosts.allow et Hosts.deny
+
+!/!251: Status label for in-game stats screen
+!=!Status:
+!G!Status:
+!S!Estado:
+!I!Stato:
+!F!Statut:
+
+!/!252: Team label for in-game stats screen
+!=!Team:
+!G!Team:
+!S!Equipo:
+!I!Squadra:
+!F!Equipe:
+
+!/!253: Playtime label for in-game stats screen
+!=!Play Time:
+!G!Spielzeit:
+!S!Tiempo de partida:
+!I!Tempo di gioco:
+!F!Temps de Jeu:
+
+!/!254: Streak label (how many kills or deaths in a row) for in-game stats screen
+!=!Streak:
+!G!Serie:
+!S!Racha:
+!I!Serie:
+!F!Série:
+
+!/!255: Last victim label for in-game stats screen
+!=!Last Victim:
+!G!Letztes Opfer:
+!S!Última víctima:
+!I!Ultima vittima:
+!F!Dernière victime:
+
+!/!256: Last killer label for in-game stats screen
+!=!Last Killer:
+!G!Letzter Killer:
+!S!Última baja de:
+!I!Ultima uccisione di:
+!F!Dernier tueur:
+
+!/!257,258,259,260: status: server/observing/playing for in-game stats screen
+!=!Server
+!G!Server
+!S!Servidor
+!I!Server
+!F!Serveur
+!=!Observing
+!G!Beobachte
+!S!Observando
+!I!Osservatore
+!F!Observe
+!=!Playing
+!G!Spiele
+
+!S!Jugando
+!I!Giocatore
+!F!joue
+!=!Disconnected
+!G!Getrennt
+!S!Desconectado
+!I!Scollegato
+!F!Déconnecté
+
+!/!261: singular form of kills (if there is one, else use whatever would be for "1 kill")
+!=!Kill
+!G!Abschuss
+!S!Baja
+!I!Uccisione
+!F!Victime
+!/!262: plural form of kills
+!=!Kills
+!G!Zerstörte
+!S!Bajas
+!I!Uccisioni
+!F!Victimes
+
+!/!263: singular form of deaths (if there is one, else use whatever would be for "1 death")
+!=!Death
+!G!Verlorenes Leben
+!S!Muerte
+!I!Morte
+!F!Mort
+!/!264: plural form of deaths
+!=!Deaths
+!G!Verlorene Leben
+!S!Muertes
+!I!Morti
+!F!Morts
+
+!/!265: pilot name label/heading for in-game stats screen
+!=!Pilot Name
+!G!Pilotenname
+!S!Nombre de piloto
+!I!Nome del pilota
+!F!Nom du Pilote
+
+!/!266: hotspot/button label on team config dialog to start the game
+!=!Start Game
+!G!Spiel starten
+!S!Iniciar
+
+!I!Inizio partita
+!F!demarrer partie
+
+!/!267: hotspot/button label on team config dialog to return to the game
+!=!Return to Game
+!G!Zurück zum Spiel
+!S!Volver a partida
+!I!Ripresa del gioco
+!F!retour à la partie
+
+!/!268: hotspot/checkbox label on team config dialog for having the clients wait until the
+!/!server is done with the dialog
+!=!Make Clients Wait
+!G!Clients warten lassen
+!S!Hacer esperar a clientes
+!I!Fai aspettare i client
+!F!Faire Attendre Clients
+
+!/!269: window title for team config dialog
+!=!Team Setup
+!G!Teamkonfiguration
+!S!Config equipo
+!I!Configurazione squadra
+!F!Configurer Equipe
+
+!/!270: window title for wait to join screen
+!=!Waiting For Players
+!G!Auf Spieler warten
+!S!Esperando jugadores
+!I!Attesa giocatori
+!F!Attente des Joueurs
+
+!/!271: hotspot/button label on wait screen to kick a player in the list
+!=!Kick Player
+!G!Rauswurf
+!S!Expulsar jugador
+!I!Espelli giocatore
+!F!Expulser
+
+!/!272: hotspot/button label on wait screen to ban a player in the list
+!=!Ban Player
+!G!Ausschluss
+!S!Vetar jugador
+!I!Escludi giocatore
+!F!Bannir
+
+!/!273: On-Screen menu option for audio taunts
+!=!Audio Taunts
+!G!Audio-Hohn
+!S!Sonidos de provocación
+!I!Provocazioni audio
+!F!Railleries audio
+
+!/!274: HUD message when audio taunts are toggled
+!=!Audio Taunts: %s
+!G!Audio-Hohn: %s
+!S!Sonidos de provocación: %s
+!I!Provocazioni audio: %s
+!F!Railleries Audio: %s
+
+!/!275: Rank label in stats screen
+!=!Rank:
+!G!Rang:
+!S!Rango:
+!I!Posizione:
+!F!Grade:
+
+!/!276: Network packet loss HUD indicator text
+!=!Network Loss
+!G!Netzwerk-Verlust
+!S!Pérdida de red
+!I!Perdita di rete
+!F!Perte Réseau
+
+!/!277: Network ping HUD indicator text
+!=!Network Ping
+!G!Netzwerk-Ping
+!S!Ping de red
+!I!Ping di rete
+!F!Ping Réseau
+
+!/!278: On-Screen menu title for HUD indicators
+!=!Loss/Ping HUD Indicator
+!G!Verlust/Ping CPA Indikator
+!S!Indicador de presentador de pérdida/ping
+!I!Indicatore collimatore di perdita/ping
+!F!Indicateur de perte/ping
+
+!/!279: HUD message when HUD indicator is enabled/disabled
+!=!Loss/Ping Indicator: %s
+!G!Verlust/Ping Indikator: %s
+!S!Indicador pérdida/ping: %s
+!I!Indicatore perdita/ping: %s
+!F!Indicateur de perte/ping: %s
+
+!/!280: Network model type in Netgame info display
+!=!Permissable C/S
+!G!C/S zulässig
+!S!C/S permisible
+!I!C/S permesso
+!F!C/S Permis
+
+!/!281: input command for warp
+!=!warp
+!G!
+!S!
+!I!
+!F!
+
+!/!282: description for warp command
+!=![Server Only]\nChanges the current level to another level in the mission.\nUsage: "$warp <level>"
+!G!
+!S!
+!I!
+!F!
+
+!/!283: HUD Message when a remote administrator logs out (for the client)
+!=!Remote Admin Logged Out
+!G!Fernverwalter abgemeldet
+!S!Administrador remoto desconectado
+!I!Amministrazione remota scollegata
+!F!Administrateur Distant DTconnectT
+
+!/!284: HUD Message when a remote administrator logs out (for the server)
+!=!==%s has logged out==
+!G!==%s hat sich abgemeldet==
+!S!==%s se ha desconectado==
+!I!==%s si F scollegato==
+!F!==%s Administrateur Distant DTconnectT==
+
+!/!285: HUD Message when someone starts remote administrating (for the server)
+!=!==%s is remote administrating==
+!G!==%s fernverwaltet==
+!S!==%s es el administrador remoto==
+!I!==%s gestisce l'amministrazione remota ==
+!F!==%s est l'administrateur distant==
+
+!/!286: HUD Message when you start remote administrating (for the client)
+!=!Remote Admin Logged In
+!G!Fernverwalter angemeldet
+!S!Administrador remoto conectado
+!I!Amministrazione remota collegata
+!F!Administrateur Distant ConnectT
+
+!/!287: HUD Message when a client executes a command
+!=!==%s executed "%s"
+!G!==%s fnhrte "%s" aus
+!S!==%s ha ejecutado"%s"
+!I!==%s ha eseguito"%s"
+!F!==%s a exTcutT "%s"
+
+!/!288: HUD Message for a client when the command was successful
+!=!Remote Command Successful
+!G!Fernanweisung erfolgreich
+!S!Ejecutado comando remoto
+!I!Il comando remoto ha funzionato
+!F!Commande Distante RTussie
+
+!/!289: HUD Message for a client when a command is not successful
+!=!Remote Command Not Successful
+!G!Fernanweisung nicht erfolgreich
+!S!No ejecutado comando remoto
+!I!Il comando remoto non ha funzionato
+!F!La Commande Distante A EchouT
+
+!/!290: HUD Message for a client when a command is not allowed remotely
+!=!Remote Command Not Allowed
+!G!Fernanweisung nicht erlaubt
+!S!Comando remoto no permitido
+!I!Comando remoto non ammesso
+!F!Commande Distante Non AutorisTe
+
+!/!291: HUD Message for a client when a command is not found
+!=!Remote Command Not Found
+!G!Fernanweisung nicht gefunden
+!S!No se encuentra comando remoto
+!I!Comando remoto non trovato
+!F!Commande Distante Non TrouvTe
+
+!/!292: HUD Message for server when remote administration can't be set
+!=!Unable to enable remote administration (no password?)
+!G!Fernverwalter aktivieren nicht möglich (kein Pa¯wort?)
+!S!No es posible activar administración remota (+contraseña?)
+!I!Impossibile attivare amministrazione remota (manca password?)
+!F!Administrateur distant non autorisT (mot de passe?)
+
+!/!293: HUD Message when remote administration is enabled/disabled
+!=!Remote Administration: %s
+!G!Fernverwalter: %s
+!S!Administración remota: %s
+!I!Amministrazione remota %s
+!F!Administrateur Distant: %s
+
+!/!294: HUD Message when a remote admin password is set
+!=!Remote Administration Password Set
+!G!Fernverwalter-Pa¯wort gesetzt
+!S!Establecida contraseña de administración remota
+!I!Impostata password amministrazione remota
+!F!Mot de Passe Administrateur Distant ActivT
+
+!/!295: Dedicated server message when a time is set to make clients wait a certain
+!/!amount of time before they can start playing (%.2f is replaced by a number of seconds)
+!=!Making Clients Wait %.2f seconds\n
+!G!Clients mnssen %.2f Sekunden warten\n
+!S!Hacer esperar a clientes %.2f segundos\n
+!I!Sto facendo attendere i client %.2f secondi\n
+!F!Attente Clients pendant %.2f secondes\n
+
+!/!296: Dedicated server message when the wait time is disabled
+!=!Turning Off Client Wait Time\n
+!G!Client-Wartezeit ausgeschaltet\n
+!S!Desactivando espera de clientes\n
+!I!Disattivazione tempo d'attesa client\n
+!F!Temps Attente Client dTsactivT\n
+
+!/!297: Dedicated server message when clients are forced to wait
+!=!Making Clients Wait\n
+!G!Clients warten lassen\n
+!S!Haciendo esperar a clientes\n
+!I!Attivazione tempo d'attesa client\n
+!F!Attente Clients ImposTe\n
+
+!/!298: Dedicated server message when clients no longer are forced to wait
+!=!No Longer Making Clients Wait\n
+!G!Clients nicht mehr warten lassen\n
+!S!Ya no se hace esperar a clientes\n
+!I!Non faccio piú attendere i client\n
+!F!Attente Clients ImposTe\n
+
+!/!299: Label in the F7 screen (multiplayer) for team games, %s is replaced with
+the team name
+!=!%s Team:
+!G!%s Team:
+!S!Equipo %s:
+!I!Squadra %s
+!F!Equipe %s:
+
+!/!300: Dedicated server command to send a remote command 
+!=!remote
+!G!remote
+!S!remote
+!I!remote
+!F!remote
+
+!/!301: Help description for remote command
+!=![Client Only]\nhandles a remote admin command\nUsage: "$remote <command> <option parms> <...>"
+!G![Nur Client]\nverarbeitet eine Fernverwalteranweisung\nVerwendung: "$remote <Kommando> <Option parms> <...>"
+!S![Sólo cliente]\ngestiona comandos de administración remota\nUso: "$remote <comando> <parám opción> <...>"
+!I![Solo client]\ngestisce un comando di amministrazione remota\nUso: "$remote <comando> <param opzioni> <...>"
+!F![Client Uniquement]\ngFre une commande administrateur distant\nSyntaxe: "$remote <command> <option parms> <...>"
+
+!/!302: Dedicated server command to enable/disable remote administration (doesn't really have to be localized)
+!=!remoteadmin
+!G!remoteadmin
+!S!remoteadmin
+!I!remoteadmin
+!F!remoteadmin
+
+!/!303: Help description for remoteadmin command
+!=![Server Only]\nhandles enable/disable remote administration\nUsage: "$remoteadmin <on/off>""
+!G![Nur Server]\n Fernverwalter aktivieren/deaktivieren\nVerwendung: "$remoteadmin <ein/aus>""
+!S![Sólo servidor]\nactiva y desactiva administración remota\nUso: "$remoteadmin <on/off>""
+!I![Solo server]\ngestisce l'attivazione/disattivazione dell'amministrazione remota\nUso: "$remoteadmin <on/off>""
+!F![Serveur Uniquement]\nactive/dTsactive une commande administrateur distant\nSyntaxe: "$remoteadmin <on/off>""
+
+!/!304: Dedicated server command to logout of remote admin (doesn't really have to be localized)
+!=!remoteadminlogout
+!G!remoteadminlogout
+!S!remoteadminlogout
+!I!remoteadminlogout
+!F!remoteadminlogout
+
+!/!305: Help description for remotelogout command
+!=![Server Only]\nhandles seeing who is logged in, and allows the server to log them out\nIf no parameter is given it lists all the players logged in.\nTo log out a player give the login-id as a parameter\nUsage: "$remoteadminlogout [login-id]"
+!G![Nur Server]\nermöglicht Anzeige der Angemeldeten und ermöglicht dem Server, diese abzumelden\nFalls kein Parameter angegeben ist, werden alle angemeldeten Spieler aufgelistet.\nUm einen Spieler abzumelden, geben Sie als Parameter den Benutzername (Login-ID) ein\nVerwendung: "$remoteadminlogout [Login-ID]"
+!S![Sólo servidor]\nmuestra los clientes conectados y permite al servidor desconectarlos\nSin parámetros, enumera los jugadores conectados.\nPara desconectar a un jugador, use su identificación como parámetro\nUso: "$remoteadminlogout [id jugador]"
+!I![Solo server]\ngestisce il riconoscimento di chi F collegato, e permette al server di scollegarlo\nSe non viene fornito alcun parametro elenca tutti ió giocatori collegati.\nPer scollegare un giocatore, fornire come parametro l'id di collegamento\nUso: "$remoteadminlogout [id di colleg]"
+!F![Serveur Uniquement]\npermet de voir qui est connectT, et permet au serveur de les dTconnecter\nSans paramFtre on obtient la liste de tous les joueurs connectTs.\nPour dTconnecter un joueur, entrer son login comme paramFtre\nSyntaxe: "$remoteadminlogout [login]"
+
+!/!306: Dedicated server command to set remote admin password (doesn't really have to be localized)
+!=!remoteadminpass
+!G!remoteadminpass
+!S!remoteadminpass
+!I!remoteadminpass
+!F!remoteadminpass
+
+!/!307: Help description for remoteadminpass command
+!=![Server Only]\nhandles setting/changing the remote administration password\nUsage: "$remoteadminpass <password>"
+!G![Nur Server]\nermöglicht das Setzen/Ändern des Fernverwalter-Pa¯worts\nVerwendung: "$remoteadminpass <Pa¯word>"
+!S![Sólo servidor]\nestablece y cambia la contraseña de administración remota\nUso: "$remoteadminpass <contraseña>"
+!I![Solo server]\ngestisce impostazione/modifica password amministrazione remota\nUso: "$remoteadminpass <password>"
+!F![Serveur Uniquement]\npermet d'activer/changer le mot de passe de l'administrateur distant\nSyntaxe: "$remoteadminpass <mot de passe>"
+
+!/!308: Dedicated server command to force clients to wait 
+!=!wait
+!G!wait
+!S!wait
+!I!wait
+!F!wait
+
+!/!309: Help description for wait command
+!=![Dedicated Server Only]\nhandles a request to make all clients wait/or stop waiting.  If a time is giving, the server will wait that long each level until it lets clients to play.\nUsage: "$wait <on/off or time-in-seconds>"
+!G![Nur öffentlicher Server]\nermöglicht die Anfrage, alle Clients warten bzw. nicht mehr warten zu lassen. Wenn eine Zeit angegeben ist, wird der Server in jedem Level gemS¯ dieser Zeitangabe warten, bis er Clients spielen lS¯t.\nVerwendung: "$wait <ein/aus oder Zeit-in-Sekunden>"
+!S![Sólo servidor exclusivo]\nsolicitud para hacer a todos los clientes esperar o dejar de esperar. Si se establece un periodo, el servidor espera ese tiempo en cada nivel para dejar jugar a los clientes.\nUso: "$wait <on/off o tiempo en segundos>"
+!I![Solo server dedicato]\ngestisce una richiesta per mettere in attesa i client/o interrompere l'attesa. Se viene specificato un tempo, il server aspettera di conseguenza. ó
+!F![Serveur DTdiT Uniquement]\ngFre une requOte permettant de faire attendre ou non tous les clients. Si un temps est indiquT, le serveur les fera attendre pendant cette durTe avant de les laisser jouer.\nSyntaxe: "$wait <on/off ou durTe-en-secondes>"

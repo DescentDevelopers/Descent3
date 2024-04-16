@@ -1,0 +1,992 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !*!  == english version of string (optional)
+!/!   !=!  == string as it should appear in the game
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!0: Guidebot Menu
+!=!Rename GB Unit
+!F!Renommer Guidebot
+!S!Renombrar al RG
+!G!GB-Einheit umbenennen
+!I!Rinomina RG
+
+!/!1: Guidebot Menu
+!=!Repair GB
+!F!Réparer Guidebot
+!S!Reparar RG
+!G!GB-Einheit reparieren
+!I!Ripara RG
+
+!/!2: Guidebot Menu
+!=!Exit ship
+!F!Quitte le vaisseau
+!S!Salir de la nave
+!G!Ausdocken
+!I!Esci dalla nave
+
+!/!3: Guidebot Menu
+!=!P0
+!F!P0
+!S!P0
+!G!P0
+!I!P0
+
+!/!4: Guidebot Menu
+!=!P1
+!F!P1
+!S!P1
+!G!P1
+!I!P1
+
+!/!5: Guidebot Menu
+!=!P2
+!F!P2
+!S!P2
+!G!P2
+!I!P2
+
+!/!6: Guidebot Menu
+!=!P3
+!F!P3
+!S!P3
+!G!P3
+!I!P3
+
+!/!7: Guidebot Menu
+!=!P4
+!F!P4
+!S!P4
+!G!P4
+!I!P4
+
+!/!8: Guidebot Menu
+!=!P5
+!F!P5
+!S!P5
+!G!P5
+!I!P5
+
+
+!/!9: Guidebot Menu
+!=!P6
+!F!P6
+!S!P6
+!G!P6
+!I!P6
+
+!/!10: Guidebot Menu
+!=!P7
+!F!P7
+!S!P7
+!G!P7
+!I!P7
+
+!/!11: Guidebot Menu
+!=!S0
+!F!S0
+!S!S0
+!G!S0!I!S0
+
+!/!12: Guidebot Menu
+!=!S1
+!F!S1
+!S!S1
+!G!S1
+!I!S1
+
+!/!13: Guidebot Menu
+!=!S2
+!F!S2
+!S!S2
+!G!S2
+!I!S2
+
+!/!14: Guidebot Menu
+!=!S3
+!F!S3
+!S!S3
+!G!S3
+!I!S3
+
+!/!15: Guidebot Menu
+!=!S4
+!F!S4
+!S!S4
+!G!S4
+!I!S4
+
+!/!16: Guidebot Menu
+!=!S5
+!F!S5
+!S!S5
+!G!S5
+!I!S5
+
+!/!17: Guidebot Menu
+!=!S6
+!F!S6!S!S6
+!G!S6
+!I!S6
+
+!/!18: Guidebot Menu
+!=!S7
+!F!S7
+!S!S7
+!G!S7
+!I!S7
+
+!/!19: Guidebot Menu
+!=!Find my powerups
+!F!Trouve mes recharges
+!S!Buscar mis bonificadores
+!G!Finde meine Powerups 
+!I!Cerca miei bonus
+
+!/!20: Guidebot Menu
+!=!Find powerup
+!F!Trouve une recharge
+!S!Buscar bonificador
+!G!Finde Powerup
+!I!Cerca bonus
+
+!/!21: Guidebot Menu
+!=!Find energy
+!F!Trouve de l'energie
+!S!Buscar energía
+!G!Finde Energie 
+!I!Cerca energia
+
+!/!22: Guidebot Menu
+!=!Find robot
+!F!Trouve les robots
+!S!Buscar robot
+!G!Finde Roboter
+!I!Cerca robot
+
+!/!23: Guidebot Menu
+!=!Find Thief
+!F!Trouve le Voleur
+!S!Buscar ladrón
+!G!Finde Dieb
+!I!Localizza ladro
+
+!/!24: Guidebot Menu
+!=!Find an exit to the mine
+!F!Trouve une sortie
+!S!Buscar una salida de la mina
+!G!Finde Ausgang aus der Mine
+!I!Cerca l'uscita
+
+!/!25: Guidebot Menu
+!=!Find a mine
+!F!Trouve une mine
+!S!Buscar una mina
+!G!Finde eine Mine
+!I!Cerca una miniera
+
+!/!26: Guidebot Menu
+!=!Find closest marker
+!F!Trouve le marqueur le plus proche
+!S!Buscar el marcador más cercano
+!G!Finde nächste Markierung
+!I!Cerca il segnale più vicino
+
+!/!27: Guidebot Menu
+!=!Find Marker 0
+!F!Trouve le marqueur 0
+!S!Buscar el marcador 0
+!G!Finde Markierung 0
+!I!Cerca il segnale 0
+
+!/!28: Guidebot Menu
+!=!Find Marker 1
+!F!Trouve le marqueur 1
+!S!Buscar el marcador 1
+!G!Finde Markierung 1
+!I!Cerca il segnale 1
+
+!/!29: Guidebot Menu
+!=!Find Marker 2
+!F!Trouve le marqueur 2
+!S!Buscar el marcador 2
+!G!Finde Markierung 2 
+!I!Cerca il segnale 2
+
+!/!30: Guidebot Menu
+!=!Find Marker 3
+!F!Trouve le marqueur 3
+!S!Buscar el marcador 3
+!G!Finde Markierung 3
+!I!Cerca il segnale 3
+
+!/!31: Guidebot Menu
+!=!Find Marker 4
+!F!Trouve le marqueur 4
+!S!Buscar el marcador 4
+!G!Finde Markierung 4
+!I!Cerca il segnale 4
+
+!/!32: Guidebot Menu
+!=!Find Marker 5
+!F!Trouve le marqueur 5
+!S!Buscar el marcador 5
+!G!Finde Markierung 5
+!I!Cerca il segnale 5
+
+!/!33: Guidebot Menu
+!=!Find Marker 6
+!F!Trouve le marqueur 6
+!S!Buscar el marcador 6
+!G!Finde Markierung 6
+!I!Cerca il segnale 6
+
+!/!34: Guidebot Menu
+!=!Find Marker 7
+!F!Trouve le marqueur 7
+!S!Buscar el marcador 7
+!G!Finde Markierung 7
+!I!Cerca il segnale 7
+
+!/!35: Guidebot Menu
+!=!Escort ship
+!F!Escorte le vaisseau
+!S!Escoltar la nave
+!G!Begleite das Schiff
+!I!Scorta nave
+
+!/!36: Guidebot Menu
+!=!Use fire extinguisher
+!F!Utilise un extincteur
+!S!Usar el extintor de fuego
+!G!Verwende Feuerlöscher
+!I!Usa estintore
+
+!/!37: Guidebot Menu
+!=!Use Go Wingnut Powerup
+!F!Utilise le Papillon
+!S!Usar bonificador Al Ataque
+!G!Verwende Wingnut Powerup
+!I!Usa bonus All'attacco
+
+!/!38: Guidebot Menu
+!=!Use Manual Pilot Powerup
+!F!Utilise la recharge manuelle
+!S!Usar bonificador piloto manual
+!G!Verwende Manualsteuerung
+!I!Usa bonus Pilota manuale
+
+!/!39: Guidebot Menu
+!=!Use Guardian Powerup
+!F!Utilise le Gardien
+!S!Usar bonificador Guardián
+!G!Verwende Wächter Powerup
+!I!Usa bonus Difensore
+
+!/!40: Guidebot Menu
+!=!Use Anti-Virus Powerup
+!F!Utilise l'Anti-Virus
+!S!Usar bonificador Antivirus
+!G!Verwende Anti-Virus Powerup
+!I!Usa bonus Anti-virus
+
+!/!41: Guidebot Menu
+!=!Allow GB chatter
+!F!Messagerie G.B. active
+!S!Permitir charla de RG
+!G!GB-Nachrichten anzeigen
+!I!Accetta comunicazioni RG
+
+!/!42: Guidebot Menu
+!=!Disallow GB chatter
+!F!Refuser les messages du G.B.
+!S!Vetar charla de RG
+!G!GB-Nachrichten deaktvieren
+!I!Respingi comunicazioni RG
+
+!/!43: Guidebot Menu
+!=!Return to ship
+!F!Reviens au vaisseau
+!S!Volver a la nave
+!G!Zurueck zum Schiff
+!I!Ritorna alla nave
+
+!/!44: Guidebot message
+!=!Entering ship!
+!F!Je suis à bord !
+!S!Entrando en la nave
+!G!Komme ins Schiff!
+!I!Salgo a bordo!
+
+!/!45: Guidebot message
+!=!HELP! I am about to die...
+!F!AU SECOURS ! Je vais mourir...
+!S!¡SOCORRO! Estoy a punto de morir...
+!G!HILFE! Ich bin am Sterben...
+!I!AIUTO! Sto per morire...
+
+!/!46: Guidebot message
+!=!This goal is not location based.
+!F!Cet objectif est trop loin.
+!S!Este objetivo no está basado en una ubicación
+!G!Dieses Ziel ist nicht ortsgebunden.
+!I!Obiettivo non basato su posizione
+
+!/!47: Guidebot message
+!=!I do not have nav. data on this goal.
+!F!Je n'ai aucune donnée de nav. sur cet objectif.
+!S!No tengo datos de navegación sobre este objetivo.
+!G!Keine Navigationsdaten fuer dieses Ziel.
+!I!Dati di navigazione non disponibili per l'obiettivo.
+
+!/!48: Guidebot message
+!=!On my way!
+!F!J'y vais !
+!S!¡En camino!
+!G!Bin auf dem Weg!
+!I!Sto andando!
+
+!/!49: Guidebot message
+!=!The goal isn't currently reachable.
+!F!Objectif inaccessible pour le moment.
+!S!El objetivo no es alcanzable actualmente.
+!G!Das Ziel ist zur Zeit nicht erreichbar.
+!I!Obiettivo non raggiungibile.
+
+!/!50: Guidebot message
+!=!Returning to ship.
+!F!Je reviens au vaisseau.
+!S!Volviendo a la nave.
+!G!Komme zum Schiff zurück.
+!I!Torno alla nave.
+
+!/!51: Guidebot message
+!=!Escorting ship...
+!F!En mode escorte...
+!S!Escoltando la nave...
+!G!Begleite Schiff...
+!I!Nave sotto scorta...
+
+!/!52: Gudiebot message
+!=!Finding a robot.
+!F!Je pars chercher un robot...
+!S!Buscando un robot.
+!G!Suche Roboter.
+!I!Ricerca robot in corso...
+
+!/!53: Guidebot message
+!=!No robots are reachable.
+!F!Aucun robot aux alentours...
+!S!No hay robots al alcance.
+!G!Keine Roboter erreichbar.
+!I!Nessun robot individuato.
+
+!/!54: Guidebot message
+!=!Finding a powerup.
+!F!je pars chercher une recharge...
+!S!Buscando un bonificador.
+!G!Suche Powerup.
+!I!Ricerca bonus in corso.
+
+!/!55: Guidebot message
+!=!No powerups are reachable.
+!F!Aucune recharge aux alentours.
+!S!No hay bonificadores al alcance.
+!G!Keine Powerups erreichbar.
+!I!Nessun bonus individuato.
+
+!/!56: Guidebot message
+!=!Going to the '%s' marker.
+!F!En route vers le marqueur '%s'.
+!S!Yendo al marcador '%s'.
+!G!Fliege zur '%s'-Markierung.
+!I!Vado al segnale '%s'.
+
+!/!57: Guidebot message
+!=!None of your markers are reachable.
+!F!Aucun marqueur n'est accessible.
+!S!Ninguno de tus marcadores está al alcance.
+!G!Keine Ihrer Markierungen ist erreichbar.
+!I!Nessun segnale è raggiungibile.
+
+!/!58: Guidebot message
+!=!The marker is not reachable.
+!F!Le marqueur n'est pas accessible.
+!S!El marcador no está al alcance.
+!G!Die Markierung ist nicht erreichbar.
+!I!Segnale non raggiungibile.
+
+!/!59: Guidebot message
+!=!Finding the Thief.
+!F!je pars chercher le Voleur...
+!S!Buscando al ladrón.
+!G!Suche den Dieb.
+!I!Ricerca ladro in corso.
+
+!/!60: Guidebot message
+!=!Let's get him!
+!F!Attrapons-le !
+!S!¡Vamos por él!
+!G!Den kriegen wir!
+!I!Prendiamolo!
+
+!/!61: Guidebot message
+!=!The Thief is not reachable.
+!F!Accès au Voleur impossible.
+!S!El ladrón no está al alcance.
+!G!Der Dieb ist nicht erreichbar.
+!I!Il ladro non è raggiungibile.
+
+!/!62: Guidebot message
+!=!Finding your powerups.
+!F!Je pars chercher vos recharges.
+!S!Buscando tus bonificadores.
+!G!Suche Ihre Powerups.
+!I!Ricerca dei tuoi bonus in corso.
+
+!/!63: Guidebot message
+!=!No spew reachable.
+!F!Accès à vos recharges impossible.
+!S!Nada soltado alcanzable.
+!G!Keine Ihrer Powerups erreichbar.
+!I!Nessun bonus è raggiungibile.
+
+!/!64: Guidebot message
+!=!Message Processor off.
+!F!Processeur de message coupé.
+!S!Procesador de mensajes desactivado.
+!G!Nachrichtenprozessor aus.
+!I!Elaboratore messaggi disattivato.
+
+!/!65: Guidebot message
+!=!Message Processor On.
+!F!Processeur de message alimenté.
+!S!Procesador de mensajes activado.
+!G!Nachrichtenprozessor ein.
+!I!Elaboratore messaggi attivato.
+
+!/!66: Guidebot message
+!=!Finding energy.
+!F!je pars chercher de l'énergie.
+!S!Buscando energía.
+!G!Suche Energie.
+!I!Ricerca energia in corso.
+
+!/!67: Guidebot message
+!=!No energy centers are reachable.
+!F!Aucun centre d'énergie accessible.
+!S!No hay centros de energía al alcance.
+!G!Keine Energiezentren erreichbar.
+!I!Nessun centro di energia è raggiungibile.
+
+!/!68: Guidebot message
+!=!Thank you for repairing me!
+!F!Merci pour la réparation !
+!S!¡Gracias por repararme!
+!G!Danke fürs Reparieren!
+!I!Grazie per la riparazione!
+
+!/!69: Guidebot message
+!=!NOt eNougH shIelDs to do rePAir...
+!F!PAs aSSez dE BoUclIErs PouR La RéPARatiON...
+!S!¡No hAy eScuDo suFicieNte pAra rEpaRar...
+!G!Nicht gEnuG SchIldE zUm rePArieREn...
+!I!NUMeRo dI sCUdI insuFFIcieNte per la RiParazIOne.
+
+!/!70: Guidebot message
+!=!Thank you for the new name!
+!F!Merci, j'aime bien ce nouveau nom !
+!S!Gracias por el nuevo nombre.
+!G!Danke fuer den neuen Namen!
+!I!Grazie per il nuovo nome!
+
+!/!71: Guidebot message
+!=!No way!
+!F!Pas question !
+!S!¡Ni hablar!
+!G!Keinesfalls!
+!I!Proprio no!
+
+!/!72: Guidebot message
+!=!I am on strike!  I won't do task %d
+!F!Je fais la grève ! Je ne ferai pas ça (%d).
+!S!¡Estoy en huelga! No haré la tarea %d.
+!G!Ich streike! Ich verweigere den Auftrag: %d 
+!I!Mi rifiuto! Non lo farò mai (%d).
+
+!/!73: Guidebot menu title
+!=!GB Command Menu
+!F!contrôle du guidebot
+!S!Menú de comandos del RG
+!G!GB-Befehlsmenue
+!I!Menu dei comandi di RG
+
+!/!74: Guidebot menu item
+!=!Find marker: '%s'
+!F!Trouve le marqueur: '%s'
+!S!Buscar marcador: '%s'
+!G!Markierung '%s' finden 
+!I!Cerca segnale: '%s'
+
+!/!75: Guidebot menu item
+!=!Get to %s
+!F!Va au %s
+!S!Acude a %s
+!G!Finde %s
+!I!Vai a %s
+
+
+!/!76: Guidebot menu item (for repair)
+!=! (%d shields)
+!F! (%d boucliers)
+!S! (%d escudo)
+!G! (%d Schilde)
+!I! (%d scudi)
+
+!/!77: Guidebot menu
+!=!Enter GuideBot name:
+!F!Nom du GuideBot:
+!S!Introduce el nombre del Roboguía:
+!G!Guide-Bot Namen eingeben:
+!I!Scrivi il nome del Robot-Guida:
+
+!/!78: Guidebot message
+!=!Stop shooting me!
+!F!Arrêtez de me tirer dessus !
+!S!¡Deja de dispararme!
+!G!Hoeren Sie auf, auf mich zu schiessen!
+!I!Smetti di spararmi!
+
+!/!79: Guidebot message
+!=!You hit me!
+!F!Vous m'avez touché !
+!S!¡Me has dado!
+!G!Sie haben mich getroffen!
+!I!Mi hai colpito
+
+!/!80: Guidebot message
+!=!Stop it!
+!F!Arrêtez !
+!S!¡Déjalo ya!
+!G!Aufhoeren!
+!I!Smettila!
+
+!/!81: Guidebot message
+!=!Im getting attacked!
+!F!On m'attaque !
+!S!¡Me están atacando!
+!G!Ich werde angegriffen!
+!I!Vengo attaccato!
+
+!/!82: Guidebot message
+!=!Ouch!
+!F!Aïe !
+!S!¡Ay!
+!G!Aua!
+!I!Ahi!
+
+!/!83: Guidebot (damaged) message
+!=!T?o Dama.xgf.ed to exit.  NExfvD rEpair.
+!F!Tr?x txhfuché pour sortir. BESOkljN rEpaRatioN.
+!S!Dfemasi.adfo dañfdo para salir. NeCeasto rEparaciones.
+!G!Z?u BeschÄd.xgf.igt, um auszukoppeln. BrXauCHe rEpAraTUr.
+!I!Tr?op.i da.nxw.iy per uscire.  SExrvE rIparaZione.
+
+!/!84: Guidebot message
+!=!Oops...  Sorry about that!
+!F!Oho... Désolé !
+!S!¡Uuuy... lo siento!
+!G!Ups... das tut mir leid!
+!I!Oh... Spiacente!
+
+!/!85: Guidebot message (shoot robot)
+!=!Take that!
+!F!Prends ça !
+!S!¡Toma esto!
+!G!Nimm das!
+!I!Prendi questo!
+
+!/!86: Guidebot message
+!=!I am at the goal, coming back to get you.
+!F!Je suis sur l'objectif. Je reviens vous chercher.
+!S!¡Estoy en el objetivo, volviendo por ti.
+!G!Ich bin am Ziel, ich komme zurueck, um Sie zu holen.
+!I!Sono sull'obiettivo. Torno a prenderti.
+
+!/!87: Guidebot message
+!=!Come on!
+!F!Allez, venez !
+!S!¡Vamos!
+!G!Folgen Sie mir!
+!I!Su!
+
+!/!88: Guidebot message
+!=!Let's go!
+!F!On y va !
+!S!¡Vamos!
+!G!Folgen Sie mir!
+!I!Andiamo!
+
+!/!89: Guidebot message
+!=!I am coming back to get you.
+!F!Je reviens vous chercher.
+!S!Vuelvo por ti.
+!G!Ich komme zurueck, um Sie zu holen.
+!I!Torno a prenderti!
+
+!/!90: Message when thief takes something
+!=!The thief stole your %s!
+!F!Le voleur vous a pris votre %s !
+!S!El ladrón ha robado tu %s.
+!G!Der Dieb stahl %s!
+!I!Il ladro ti ha rubato il %s!
+
+!/!91: Message when thief takes something
+!=!The thief stole a %s!
+!F!Le voleur a pris un(e) %s !
+!S!El ladrón ha robado un %s.
+!G!Der Dieb stahl %s!
+!I!Il ladro ti ha rubato un %s!
+
+!/!92: Message when the thief takes multiple somethings
+!=!The thief stole %d of your %ss!
+!F!Le Voleur a volé %d de vos %s !
+!S!El ladrón ha robado %d de tus %ss
+!G!%d %s wurden Ihnen vom Dieb gestohlen!
+!I!Il ladro ti ha rubato %d dei tuoi %s!
+
+!/!93: Hud message
+!=!This powerup is for the GuideBot.
+!F!Cette recharge est pour le GuideBot.
+!S!Este bonificador es para el Roboguía
+!G!Dieser Powerup ist für den Guide-Bot.
+!I!Questo è un bonus per il Robot-Guida.
+
+!/!94: hud message
+!=!The Super Thief stole a %s!
+!F!Le SuperVoleur a volé un(e) %s !
+!S!El superladrón ha robado un %s.
+!G!Der Superdieb hat Ihnen entwendet: %s
+!I!Il SuperLadro ha rubato un %s.
+
+!/!95: hud message
+!=!The Super Thief stole %d of your %ss!
+!F!Le SuperVoleur a volé %d de vos %s !
+!S!El superladrón ha robado %d de tus %ss
+!G!Der Superdieb hat Ihnen entwendet: %d %s
+!I!Il ladro ha rubato %d dei tuoi %s.
+
+!/!96: Guidebot powerup HUD messages
+!=!Putting out fires!
+!F!Extinction des incendies !
+!S!¡Apagando el fuego!
+!G!Lösche Feuer!
+!I!Spegnimento incendio!
+
+!/!97: Guidebot powerup HUD messages
+!=!Cowabunga!
+!F!Génial !
+!S!¡Genial!
+!G!Genial!!
+!I!Geniale!
+
+!/!98: Guidebot powerup HUD messages
+!=!Be gental...
+!F!Du calme...
+!S!Con delicadez...
+!G!Immer langsam...
+!I!Delicatamente!
+
+!/!99: Guidebot powerup HUD messages
+!=!Let's do it!
+!F!Au boulot !
+!S!¡Hagámoslo!
+!G!Lassen Sie's uns anpacken!
+!I!Facciamolo!
+
+!/!100: Guidebot powerup HUD messages
+!=!I will convert the infidal!
+!F!Je vais convertir les infidèles !
+!S!¡Convertiré a los infieles!
+!G!Ich werde den Ungläubigen bekehren!
+!I!Convertirò gli infedeli!
+
+!/!101: Guidebot powerup HUD messages
+!=!Accelerator!!!!!!!
+!F!Accélérateur !!!!
+!S!¡¡¡Acelerador!!!
+!G!Beschleuniger!!!!!!!
+!I!Acceleratore!!!
+
+!/!102: Guidebot powerup HUD messages
+!=!No fires to put out!
+!F!Aucun feu à éteindre !
+!S!No hay fuegos que apagar.
+!G!Kein Feuer zum Löschen!
+!I!Nessun incendio da spegnere!
+
+!/!103: Guidebot powerup HUD messages
+!=!I don't want to fight!
+!F!Je ne veux pas me battre !
+!S!¡No quiero luchar!
+!G!Ich möchte nicht kämpfen!
+!I!Non voglio combattere!
+
+!/!104: Guidebot powerup HUD messages
+!=!Manual control cannot be enabled...
+!F!Le pilotage manuel ne peut être activé...
+!S!El control manual no se puede activar...
+!G!Manuelle Steuerung kann nicht aktiviert werden...
+!I!Impossibile attivare il controllo manuale...
+
+!/!105: Guidebot powerup HUD messages
+!=!I am too far away!
+!F!Je suis trop loin !
+!S!¡Estoy demasiado lejos!
+!G!Ich bin zu weit weg!
+!I!Sono troppo lontano
+
+!/!106: Guidebot powerup HUD messages
+!=!No enemies are near and visible from here!
+!F!Il n'y a apparemment aucun ennemi par ici !
+!S!No hay enemigos cerca o visibles desde aquí.
+!G!Es sind keine Feinde von hier aus zu sehen!
+!I!Non sembra ci siano nemici nelle vicinanze!
+
+!/!107: Guidebot powerup HUD messages
+!=!I am sick of coffee...
+!F!j'en ai marre du café....
+!S!Estoy harto del café...
+!G!Ich hab' genug von Kaffee...
+!I!Basta caffè...
+
+!/!108: Guidebot powerup pickup HUD messages
+!=!I got an extinguisher!
+!F!J'ai trouvé un extincteur !
+!S!¡Tengo un extintor!
+!G!Ich habe einen Feuerlöscher!
+!I!Ho trovato un estintore!
+
+!/!109: Guidebot powerup pickup HUD messages
+!=!I got the Wingnut Powerup!
+!F!J'ai trouvé le Papillon !
+!S!¡Tengo el bonificador Al Ataque!
+!G!Ich habe den Wingnut Powerup!
+!I!Ho trovato il bonus All'attacco!
+
+!/!110: Guidebot powerup pickup HUD messages
+!=!I got the Manual Control Powerup!
+!F!J'ai le pilotage manuel !
+!S!¡Tengo el bonificador de control manual!
+!G!Ich habe den manuellen Steuerungs-Powerup!
+!I!Ho trovato il bonus Pilota manuale!
+
+!/!111: Guidebot powerup pickup HUD messages
+!=!I got the Guardian Powerup!
+!F!J'ai trouvé le Gardien !
+!S!¡Tengo el bonificador guardián
+!G!Ich habe den Wächter Powerup!
+!I!Ho trovato il bonus Difensore
+
+!/!112: Guidebot powerup pickup HUD messages
+!=!I got a temporary Anti-Virus!
+!F!J'ai un Anti-Virus temporaire !
+!S!¡Tengo un antivirus temporal!
+!G!Ich habe einen temporären Anti-Virus!
+!I!Ho trovato l'Anti-virus temporaneo!
+
+!/!113: Guidebot powerup pickup HUD messages
+!=!I got the Accelerator!!!!!!
+!F!J'ai trouvé l'accélérateur !!
+!S!¡¡¡Tengo el acelerador!!!
+!G!Ich habe den Beschleuniger!!!!!!
+!I!Ho trovato l'Acceleratore!!!
+
+!/!114 - 140 Thiefable item names
+!=!Lasers
+!F!Lasers
+!S!Lásers
+!G!Laser
+!I!Laser
+!=!Vauss Cannon
+!F!Canon Vauss
+!S!Cañón Vauss
+!G!Vauss
+!I!Cannone Vauss
+!=!Microwave Cannon
+!F!Canon à micro-ondes
+!S!Cañón microondas
+!G!Mikrowellenkanone
+!I!Cannone a microonde
+!=!Plasma
+!F!Plasma
+!S!Plasma 
+!G!Plasma
+!I!Plasma
+!=!Fusion
+!F!Fusion
+!S!Fusión
+!G!Fusion
+!I!Fusione
+!=!Super Lasers
+!F!Super Lasers
+!S!Super lásers
+!G!Superlaser
+!I!Super Laser
+!=!Mass Driver
+!F!Canon à particules
+!S!Lanzamasa
+!G!Massetreiber
+!I!Lanciamassa
+!=!Napalm
+!F!Napalm
+!S!Napalm
+!G!Napalm
+!I!Napalm
+!=!EMD Gun
+!F!Canon DEM
+!S!Cañón IEM
+!G!EMD-Kanone
+!I!Cannone EMD
+!=!Omega Cannon
+!F!Canon Oméga
+!S!Cañón omega
+!G!Omega-Kanone
+!I!Cannone Omega
+!=!Concussion missile
+!F!Missile à explosions
+!S!Cohete S-1 
+!G!Erschütterungsgeschoss
+!I!Missile esplosivo
+!=!Homing missile
+!F!Missile auto-guidé
+!S!Misil buscador 
+!G!Zielpeilgeschoss
+!I!Missile autoguidato
+!=!Impact Mortar
+!F!Mortier d'impact
+!S!Mortero de impacto 
+!G!Granatwerfer
+!I!Mortaio d'impatto
+!=!Smart missile
+!F!Missile Smart
+!S!Misil inteligente 
+!G!Smart-Geschoss
+!I!Missile inteligente
+!=!Mega
+!F!Méga
+!S!Mega
+!G!Mega
+!I!Mega
+!=!Frag
+!F!Frag
+!S!Fragmentario
+!G!Frag
+!I!Frammentatore
+!=!Guided
+!F!Guidé
+!S!Guiado
+!G!Fernlenk
+!I!Teleguidato
+
+!=!Napalm Rocket
+!F!Roquette Napalm
+!S!Cohete de napalm
+!G!Napalmrakete
+!I!Razzo Napalm
+!=!Cyclone
+!F!Cyclone
+!S!Ciclón
+!G!Zyklon
+!I!Ciclone
+!=!Black Shark
+!F!Requin Noir
+!S!Tiburón negro
+!G!Black Shark
+!I!Squalo Nero
+!=!Automap
+!F!Autocarte
+!S!Auto-Mapa
+!G!Automatische Karte
+!I!Automappa
+!=!Headlight
+!F!Phare
+!S!Faro delantero
+!G!Scheinwerfer
+!I!Fanale
+!=!Energy-to-shields Converter
+!F!Convertisseur énergie/bouclier
+!S!Convertidor de energía a escudos
+!G!Energie-zu-Schutzschild Umwandler
+!I!Convertitore di energia in scudi
+!=!Cloak
+!F!Camouflage
+!S!Camuflaje
+!G!Tarnvorrichtung
+!I!Invisibilità
+!=!Invulnerability
+!F!Invulnérabilité
+!S!Invulnerabilidad
+!G!Unverwundbarkeit
+!I!Invulnerabilità
+!=!RapidFire
+!F!Tir Rapide
+!S!Fuego rápido
+!G!Schnellfeuer
+!I!Fuoco rapido
+!=!Quad Lasers
+!F!Lasers Quad
+!S!Lásers cuádruples
+!G!Quadrolaser
+!I!Laser quadruplo
+
+!/!141:GB Text for 15 seconds into the Go Wingnut powerup
+!=!15 seconds left!
+!F!Plus que 15 secondes !
+!S!¡Quedan 15 segundos! 
+!G!Noch 15 Sekunden!
+!I!Restano 15 secondi!
+
+!/!142:Powerup ran out
+!=!Powerup Depleted!
+!F!Recharge épuisée !
+!S!¡Bonificador agotado! 
+!G!Powerup erschöpft!
+!I!Bonus esauriti!
+
+!/!143:Acc almost depleted
+!=!Accelerator!
+!F!Accélérateur !
+!S!¡Acelerador! 
+!G!Beschleuniger!
+!I!Acceleratore!
+
+!/!144:For when the GB doesn't have a powerup and the player asks him to use one
+!=!I do not have that powerup.
+!F!Je n'ai pas cette recharge.
+!S!No tengo ese bonificador. 
+!G!Ich habe diesen Powerup nicht.
+!I!Bonus richiesto non disponibile.
+
+!/!145:GB found one of his powerups and is going after it
+!=!One moment...  I see one of my powerups!
+!F!Attends, j'ai repéré une de mes recharges !!
+!S!Un momento... ¡Veo uno de mis bonificadores!
+!G!Einen Moment... Ich sehe einen meiner Powerups!
+!I!Un momento... Individuato uno dei miei bonus
+

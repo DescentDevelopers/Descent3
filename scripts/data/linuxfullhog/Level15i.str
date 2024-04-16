@@ -1,0 +1,149 @@
+!/!Level strings for Level15.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I! = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Locate Dravis' secret stronghold
+!G!Die geheime Festung von Dravis ausfindig machen
+!S!Localiza el escondite secreto de Dravis
+!I!Localizza il nascondiglio segreto di Dravis
+!F!Localiser la forteresse secrète de Dravis
+
+!/!Goal 0 Item Name
+!=!Dravis' stronghold
+!G!Festung von Dravis
+!S!Escondite de Dravis
+!I!Il nascondiglio di Dravis
+!F!Forteresse de Dravis
+
+!/!Goal 0 Description
+!=!Dravis has hidden himself away in the ruins of PTMC Nickel-Iron Mine MN0101.  You'll have to find a way into the mine first, before you can locate his stronghold.
+!G!Dravis hat sich in den Ruinen der PTMC Nickel-Eisen-Mine MN0101 verschanzt. Sie müssen zuerst einen Weg in die Mine finden, bevor Sie seine Festung ausfindig machen.
+!S!Dravis se ha escondido en las ruinas de la mina de hierro y níquel PTMC MN0101. Para localizar su escondite tendrás que encontrar antes una forma de entrar en la mina.
+!I!Dravis si è nascosto tra le rovine della miniera di nickel-ferro MN0101 del PTMC. Dovrai trovare il modo di entrare nella miniera per poi localizzare il suo nascondiglio.
+!F!Dravis s'est caché dans les ruines de l'ancienne mine MN0101 de fer-nickel de la PTMC. Trouver tout d'abord un moyen d'accéder à la mine pour pouvoir localiser sa forteresse.
+
+!/!Goal 1 Name
+!=!Locate the Inner Stronghold Passkey
+!G!Den Hauptschlüssel zum Inneren der verborgenen Festung finden
+!S!Localiza la llave de acceso al escondite interior
+!I!Localizza il Pass per arrivare al nascondiglio interno
+!F!Trouver le passe de la forteresse intérieure
+
+!/!Goal 1 Item Name
+!=!Geothermal Capacitor Chamber
+!G!Geothermalkondensator-Kammer
+!S!Sala del rompecabezas de lava
+!I!Sala del condensatore geotermico
+!F!Salle du condensateur géothermique
+
+!/!Goal 1 Description
+!=!You must find the Inner Stronghold Passkey in order to unlock the door leading to Dravis.
+!G!Sie müssen den Hauptschlüssel zum Inneren der verborgenen Festung finden, um die Tür, die zu Dravis führt, zu öffnen.
+!S!Tienes que encontrar la llave de acceso al escondite interior para abrir la puerta que lleva a Dravis.
+!I!Devi avere il Pass del nascondiglio per aprire la porta che conduce da Dravis.
+!F!Vous devez trouver le passe de la forteresse intérieure pour déverrouiller la porte menant à Dravis.
+
+!/!Goal 2 Name
+!=!Find the reactor's replacement fuse
+!G!Die Ersatzsicherung des Reaktors finden
+!S!Encuentra el reactor para activar los centros de energía.
+!I!Trova il fusibile di ricambio per il reattore.
+!F!Trouver le fusible de rechange du réacteur
+
+!/!Goal 2 Item Name
+!=!Replacement fuse 
+!G!Ersatzsicherung
+!S!Núcleo del reactor
+!I!Fusibile di ricambio
+!F!fusible de rechange
+
+!/!Goal 2 Description
+!=!In order to activate tne energy centers, you'll need to find its replacement fuse first.
+!G!Um den Reaktor reparieren zu können, müssen Sie zuerst seine Ersatzsicherung finden.
+!S!Para activar los centros de energía primero tendrás que encontrar el fusible de reemplazo.
+!I!Prima di poter attivare i centri d'energia, dovrai trovare il fusibile di ricambio.
+!F!Vous devrez trouver le fusible de rechange pour activer les centres d'énergie.
+
+!/!Goal 3 Name
+!=!Repair the Reactor
+!G!Den Reaktor reparieren
+!S!Repara los centros de energía
+!I!Ripara il reattore
+!F!Réparer le réacteur
+
+!/!Goal 3 Item Name
+!=!Back-up Reactor
+!G!Reservereaktor
+!S!Núcleo del reactor
+!I!Reattore ausiliario
+!F!Réacteur de secours
+
+!/!Goal 3 Description
+!=!The last step to fixing the reactor is to insert the fuse and turn on the reactor.  Just shoot the switch when you have the fuse.
+!G!Der letzte Reparaturschritt ist das Einlegen der Sicherung und das Einschalten des Reaktors. Schiessen Sie einfach auf den Schalter, wenn Sie die Sicherung haben.
+!S!Para usar los centros de energía tienes que repararlos primero.
+!I!Per concludere la riparazione, dovrai inserire il fusibile e accendere il reattore. Spara all'interruttore non appena trovi il fusibile.
+!F!Pour terminer la réparation du réacteur, insérez le fusible et allumez le réacteur. Vous n'aurez qu'à tirer sur l'interrupteur lorsque vous aurez le fusible.
+
+!/!Goal 4 Name
+!=!Locate the Back-up Reactor
+!G!Den Reservereaktor finden
+!S!Encuentra el fusible de repuesto del reactor
+!I!Trova il fusibile di ricambio per il reattore
+!F!Trouver le réacteur de secours
+
+!/!Goal 4 Item Name
+!=!Power Source
+!G!Energiequelle
+!S!Fusible de repuesto
+!I!Fusibile di ricambio
+!F!Source d'énergie
+
+!/!Goal 4 Description
+!=!Most of these old mines had a back-up reactor that could be used to generate energy in an emergency.  Your Guidebot should be able to trace the old powerlines to their source.
+!G!Die meisten dieser alten Minen hatten Reservereaktoren für die Energieversorgung in Notfällen. Ihr Guide-Bot sollte die alten Stromkabel zu Ihrer Quelle zurückverfolgen können.
+!S!Para reaparar el reactor tienes que encontrar primero el fusible de repuesto.
+!I!Molte di queste vecchie miniere avevano un reattore ausiliario che veniva utilizzato per generare corrente in situazioni di emergenza. Il Robot-Guida dovrebbe essere in grado di risalire le vecchie linee elettriche fino alla loro origine.
+!F!La plupart de ces vieilles mines disposait d'un réacteur de secours pour produire de l'énergie en cas d'urgence. Votre guidebot devrait pouvoir remonter les vieilles lignes électriques jusqu'à leur source.

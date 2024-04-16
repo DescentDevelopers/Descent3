@@ -1,0 +1,104 @@
+/*
+* $Logfile: /DescentIII/main/hotspotmap.h $
+* $Revision: 10 $
+* $Date: 4/17/99 6:15p $
+* $Author: Samir $
+*
+* Hotspot stuff for TelCom
+*
+* $Log: /DescentIII/main/hotspotmap.h $
+ * 
+ * 10    4/17/99 6:15p Samir
+ * replaced gr.h with grdefs.h and fixed resulting compile bugs.
+ * 
+ * 9     3/23/98 2:18p Jeff
+ * Moved structures from telcom.h to here to make less dependent
+ * 
+ * 8     3/23/98 9:55a Jeff
+ * Made changes to remove old telcom
+ * 
+ * 7     3/18/98 8:00p Jeff
+ * Added some functionality for text and using the monitor borders
+ * correctly in the new Telcom
+ * 
+ * 6     3/12/98 3:56p Jeff
+ * Added header comments to file
+*
+* $NoKeywords: $
+*/
+
+
+
+#ifndef __HOTSPOTMAP_H_
+#define __HOTSPOTMAP_H_
+
+#include "grdefs.h"
+
+//for the next two defines this is how they work when converting the alpha values into hotspots/windows
+//0 to MAX_HOTSPOTS-1 = HotSpot (button)
+//MAX_HOTSPOTS to 255 = Window Display
+//The NO_ALPHA value is which value (0-255) means it's neither HotSpot or Window
+#define MAX_HOTSPOTS	128					
+#define NO_ALPHA		255					
+#define WRITEABLE_ALPHA	254
+#define MAX_MAP_WIDTH	640					//Max hotspot map width
+#define MAX_MAP_HEIGHT	480					//Max hotspot map height
+#define TELCOM_MAX_ALPHA	130
+
+
+//structure for a hotspot scanline
+typedef struct scanline
+{
+	int start,end;
+}scanline;
+
+//structure for 1 hotspot
+typedef struct hotspot
+{
+	int starting_y;
+	int scanlines;
+	scanline *x;
+}hotspot;
+
+//structure for all hotspots
+typedef struct hotspotmap_t
+{
+	char num_of_hotspots;
+	hotspot *hs;
+}hotspotmap_t;
+
+//structure for 1 window
+typedef struct window_box
+{
+	int x,y;	//leftmost x, topmost y
+	int width,height;
+
+	int l_start_x,l_end_x,r_start_x,r_end_x,t_top_y,t_bottom_y,b_top_y,b_bottom_y;
+	bool on_left,on_top;//used for creating window
+	char *lt,*rt,*lb,*rb;//used for holding the transparent information of the corners
+	int lt_bmp, rt_bmp, lb_bmp, rb_bmp;
+}window_box;
+
+//structure for all the windows
+typedef struct windowmap_t
+{
+	int num_of_windows;
+	window_box *wm;
+}windowmap_t;
+
+// Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
+int menutga_alloc_file (char *name,char *hsmap[],int *w,int *h);
+//Given a filename and a HotSpotMap structure, it saves it to disk (.HSM)
+void menutga_SaveHotSpotMap(char *filename,hotspotmap_t *hsmap,windowmap_t *wndmap);
+//Given a filename and a HotSpotMap structure, it loads the hotspot map (.HSM)
+void menutga_LoadHotSpotMap(int back_bmp, char *filename,hotspotmap_t *hsmap,windowmap_t *wndmap);
+//This function (given a filename) loads a TGA file, extracts a hotspot map, and saves the hotspot map
+bool menutga_ConvertTGAtoHSM(char *filename);
+
+void ExportHotSpot(char *filename,hotspotmap_t *hsmap);	//Exports a hotspotmap to an ASCII file, nice and readable
+void DisplayHotSpots(hotspotmap_t *hsmap,windowmap_t *wndmap);	//Displays the hotspots of the given hotspot map to the screen (in blue)
+void FreeHotSpotMapInternals(hotspotmap_t *hsmap);	//Deletes allocated memory within a hotspotmap struct
+ushort menutga_translate_pixel (int pixel,char *alpha_value);
+
+
+#endif

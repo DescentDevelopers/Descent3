@@ -1,0 +1,5 @@
+SET (HEADERS )
+SET (CPPS
+		module.cpp)
+
+ADD_LIBRARY(module STATIC ${HEADERS} ${CPPS})

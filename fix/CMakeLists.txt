@@ -1,0 +1,5 @@
+SET (HEADERS )
+SET (CPPS
+		fix.cpp)
+
+ADD_LIBRARY(fix STATIC ${HEADERS} ${CPPS})

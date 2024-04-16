@@ -1,0 +1,5 @@
+SET (HEADERS )
+SET (CPPS
+		mem.cpp)
+
+ADD_LIBRARY(mem STATIC ${HEADERS} ${CPPS})

@@ -1,0 +1,13 @@
+//////////////////////////////////////////////
+// D.A.L.L.A.S. Generated Message Table File
+//////////////////////////////////////////////
+
+NEXT_MESSAGE_ID_NUMBER     7
+
+// Message List
+Explosion=TubbsHitBlast
+Prize1=Cloak
+Prize2=Mega
+Prize3=Invulnerability
+Prize4=Blackshark
+TubbsName=Tubbs

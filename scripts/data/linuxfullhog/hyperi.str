@@ -1,0 +1,234 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!========================= HUD Death Messages =================================================
+!/! Note: if it states that victim is first, then the first %s will be replaced by the nickname of the victim,
+!/! else the first nickname will be the name of the killer.
+
+!/!0:%s got butchered by %s	(victim first)
+!=!%s got butchered by %s
+!G!%s wurde von %s abgeschlachtet
+!S!%s masacrado por %s
+!I!%s viene massacrato da %s
+!F!%s a été massacré par %s.
+
+!/! ---------------------------- Suicide Messages --------------------------------------
+
+!/!1:%s shags himself
+!=!%s shags himself
+!G!%s vernichtet sich selbst
+!S!%s se mata
+!I!%s si uccide
+!F!%s se débrouille seul.
+
+!/!2:Pilot		(Stats column label)
+!=!Pilot
+!G!Pilot
+!S!Piloto
+!I!Pilota
+!F!Pilote
+
+!/!3:Kills		(Stats column label)
+!=!Kills
+!G!Abschüsse
+!S!Bajas
+!I!Uccisioni
+!F!Victimes
+
+!/!4:Deaths		(Stats column label)
+!=!Deaths
+!G!Verlorene Leben
+!S!Muertes
+!I!Morti
+!F!Morts
+
+!/!5:Suicides	(Stats column label)
+!=!Suicides
+!G!Selbstmorde
+!S!Suicidios
+!I!Suicidi
+!F!Suicides
+
+!/!6:Score		(Stats column label)
+!=!Score
+!G!Punkte
+!S!Puntuación
+!I!Punteggio
+!F!Score
+
+!/!7:%s Lost The HyperOrb!!!	(HUD Message)
+!=!%s Lost The HyperOrb!!!
+!G!%s hat die Hyperkugel verloren!!!
+!S!%s ha perdido el hiperorbe
+!I!%s Ha perso l'iperglobo!!!
+!F!%s a perdu l'HyperGlobe !
+
+!/!8:%s Has The HyperOrb!!!		(HUD Message)
+!=!%s Has The HyperOrb!!!
+!G!%s hat die Hyperkugel!!!
+!S!%s tiene el hiperorbe
+!I!%s Ha l'iperglobo!!!
+!F!%s a l'HyperGlobe !!
+
+!/!9:%s racks up another %d points!	(HUD Message)
+!=!%s racks up another %d points!
+!G!%s erzielt weitere %d Punkte!
+!S!%s ha conseguido %d puntos más
+!I!%s ha guadagnato altri %d punti!
+!F!%s ramasse %d points de plus !
+
+!/!10:Stats	(Stats column label)
+!=!Stats
+!G!Statistik
+!S!Estadísticas
+!I!Statistiche
+!F!Stats
+
+!/!11:Welcome to Hyper Anarchy %s!	(HUD Message)
+!=!Welcome to Hyper Anarchy %s!
+!G!Willkommen zur Hyperanarchie, %s!
+!S!Bienbenido a Hiperanarquía, %s
+!I!Benvenuto nell'Iper Anarchia, %s!
+!F!Bienvenue dans l'Hyper Anarchie %s!
+
+!/!12:%s has joined the Hyper Anarchy!	(HUD Message)
+!=!%s has joined the Hyper Anarchy!
+!G!%s hat sich der Hyperanarchie angeschlossen!
+!S!%s se ha unido a Hiperanarquía
+!I!%s è entrato nell'Iper Anarchia!
+!F!%s a rejoint l'Hyper Anarchie !
+
+!/!13: Name of the game (shouldn't be localized probably)
+!=!Hyper-Anarchy
+!G!Hyperanarchie
+!S!Hiperanarquía
+!I!Iper Anarchia
+!F!Hyper Anarchie
+
+!/!14: Name of the game in the stats screen
+!=!Anarchy
+!G!Anarchie
+!S!Anarquía
+!I!Anarchia
+!F!Anarchie
+
+!/!15: Ping label
+!=!Ping
+!G!Ping
+!S!Ping
+!I!Ping
+!F!ping
+
+!/!16: on-screen menu option for hud score colors
+!=!HUD Score Colors
+!G!CPA Farbe der Punkte
+!S!Colores de puntuación del presentador
+!I!Colori del punteggio del collimatore
+!F!Couleurs Score
+
+!/!17: on-screen menu sub-option to use player ship colors
+!=!Player Colors
+!G!Spielerfarben
+!S!Colores del jugador
+!I!Colori del giocatore
+!F!Couleurs Joueur
+
+!/!18: On screen menu sub-option to use normal colors
+!=!Normal
+!G!Normal
+!S!Normal
+!I!Normale
+!F!Normal
+
+!/!19: Saved game stats header
+!=!Hyper-Anarchy\r\nGame: %s\r\nLevel: %d\r\n
+!G!Hyperanarchie\r\nSpiel: %s\r\nLevel: %d\r\n 
+!S!Hiperanarquía\r\nPartida: %s\r\nNivel: %d\r\n
+!I!Iper Anarchia\r\nPartita: %s\r\nLivello: %d\r\n
+!F!Hyper Anarchie\r\nPartie: %s\s\nNiveau: %d\r\n
+
+!/!20: Saved game stats header
+!=!Current Level Rankings\r\n
+!G!Derzeitiger Rang\r\n 
+!S!Clasificaciones del nivel actual\r\n
+!I!Classifica del livello corrente\r\n
+!F!Classement Niveau Courant\r\n
+
+!/!21: Saved game stats header
+!=![Rank] [Name]                     [Score]     [Kills]     [Deaths]   [Suicides] [Time In Game]
+!G![Rang] [Name]                     [Punkte]    [Abschüsse] [Verl. Leben]    [Selbstmorde] [Spielzeit]
+!S![Rango][Nombre]                   [Puntuación][Bajas]     [Muertes]  [Suicidios][Tiempo de partida]
+!I![Pos] [Nome]                     [Punt]       [Ucc]     [Morti]     [Suicidi]    [Tempo gioco]
+!F![Rang] [Nom]                      [Score]     [Victimes]  [Morts]   [Suicides] [Durée de jeu]
+
+!/!22: Saved game stats header
+!=!\r\nIndividual Stats\r\n
+!G!\r\nIndividuelle Statistik\r\n 
+!S!\r\nEstadísticas individuales\r\n
+!I!\r\nStatistiche individuali\r\n
+!F!\r\nStats Personnelles\r\n
+
+!/!23: Time in game string (%s is built and already localized from dmfc.str)
+!=!Total Time In Game: %s
+!G!Gesamte Spielzeit: %s 
+!S!Tiempo total de partida: %s
+!I!Tempo totale partita: %s
+!F!Durée de la partie: %s
+
+!/!24: Saved game stats header
+!=!Callsign:                     Kills:    Deaths:
+!G!Erkennungsname:               Abschüsse: Verl. Leben:
+!S!Llamada:                      Bajas:    Muertes:
+!I!Chiamata:                    Ucc     Morti
+!F!Indicatif:                    Victimes: Morts:
+
+!/!25: Hud message when the game stats are saved
+!=!Stats saved to file
+!G!Statistik in Datei gespeichert 
+!S!Estadísticas guardadas en archivo
+!I!Statistiche salvate
+!F!Stats enregistrées
+
+!/!26: Shortened Kills
+!=!K
+!G!K
+!S!K
+!I!K
+!F!K
+
+!/!27: Shortened Deaths
+!=!D
+!G!D
+!S!D
+!I!D
+!F!D
+
+!/!28: Shortened Suicides
+!=!S
+!G!S
+!S!S
+!I!S
+!F!S

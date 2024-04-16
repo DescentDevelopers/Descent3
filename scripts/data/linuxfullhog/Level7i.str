@@ -1,0 +1,215 @@
+!/!Level strings for Level7.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I!  = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Disable surface defenses
+!G!Die Oberflächenverteidigung deaktivieren
+!S!Desactivar defensas de superficie
+!I!Disattiva le difese di superficie
+!F!Désactiver les défenses extérieures
+
+!/!Goal 0 Item Name
+!=!Control Center
+!G!Kontrollzentrum
+!S!Centro de control
+!I!Centro di controllo
+!F!Centre de Contrôle
+
+!/!Goal 0 Description
+!=!Enable the primary control core and destroy it to disable all surface defense systems
+!G!Aktivieren Sie den primären Steuerungskern und zerstören Sie ihn, um alle Oberflächenverteidigungssysteme zu deaktivieren
+!S!Activar el núcleo de control principal y destruirlo para desactivar sistemas de defensa de superficie
+!I!Attiva il nucleo di controllo principale e distruggilo per disattivare tutti i sistemi difensivi di superficie
+!F!Activez le centre de contrôle principal et détruisez-le. Vous désactiverez ainsi toutes les défenses extérieures.
+
+!/!Goal 1 Name
+!=!Enable descending accelerator
+!G!Abwärtsführenden Beschleuniger aktivieren
+!S!Activar acelerador de descenso
+!I!Attiva l'acceleratore di discesa
+!F!Activer l'accélérateur de descente
+
+!/!Goal 1 Item Name
+!=!Magnetic Accelerator Entrance
+!G!Eingang zum magnetischen Beschleuniger
+!S!Control de acelerador magnético
+!I!Ingresso dell'acceleratore magnetico
+!F!Entrée de l'accélérateur magnétique
+
+!/!Goal 1 Description
+!=!Activate the Acclerator control to allow access to the secret research bunker
+!G!Aktivieren Sie die Beschleunigersteuerung, um Zugang zum geheimen Forschungsbunker zu erhalten
+!S!Activar el control de acelerador para permitir el acceso a búnker de investigación secreta
+!I!Attiva il controllo dell'acceleratore per permettere l'accesso al bunker segreto delle ricerche
+!F!Activez la commande de l'accélérateur pour avoir accès au bunker secret de recherche.
+
+!/!Goal 2 Name
+!=!Get security key
+!G!Den Sicherheitsschlüssel beschaffen
+!S!Conseguir llave de seguridad
+!I!Procurati la chiave di sicurezza
+!F!Récupérer la clé de sécurité
+
+!/!Goal 2 Item Name
+!=!Security Key
+!G!Sicherheitsschlüssel
+!S!Llave de seguridad
+!I!Chiave di sicurezza
+!F!Clé de sécurité
+
+!/!Goal 2 Description
+!=!Pickup the Security Key
+!G!Nehmen Sie den Sicherheitsschlüssel mit
+!S!Recoger llave de seguridad
+!I!Raccogli la chiave di sicurezza
+!F!Ramassez la clé de sécurité.
+
+!/!Goal 3 Name
+!=!Disable containment forcefields
+!G!Eindämmungskraftfelder deaktivieren
+!S!Desconectar campos de fuerza de contención
+!I!Disattiva i campi di forza di contenimento
+!F!Désactiver les Champs de Confinement
+
+!/!Goal 3 Item Name
+!=!Forcefield Control Switches
+!G!Kraftfeld-Kontrollschalter
+!S!Dispositivos de control de campo de fuerza
+!I!Interruttori di controllo del campo di forza
+!F!Interrupteurs de commande de champ de force
+
+!/!Goal 3 Description
+!=!Disable the virus containment forcefields
+!G!Deaktivieren Sie die Virus-Eindämmungskraftfelder 
+!S!Desactivar los campos de fuerza de contención del virus
+!I!Disattiva i campi di forza di contenimento del virus
+!F!Désactivez le champ de confinement du virus.
+
+!/!Goal 4 Name
+!=!Get both virus samples
+!G!Beide Virusproben mitnehmen
+!S!Conseguir las dos muestras del virus
+!I!Procurati entrambi i campioni di virus
+!F!Récupérer les deux échantillons de virus
+
+!/!Goal 4 Item Name
+!=!Virus Samples
+!G!Virusproben
+!S!Virus
+!I!Campioni di virus
+!F!Echantillons du virus
+
+!/!Goal 4 Description
+!=!Gather both virus samples
+!G!Nehmen Sie beide Virusproben mit
+!S!Obtener las dos muestras del virus
+!I!Raccogli entrambi i campioni di virus
+!F!Rassemblez les deux échantillons de virus.
+
+!/!Goal 5 Name
+!=!Steal the Virus Samples
+!G!Die Virusproben stehlen
+!S!Robar las dos muestras del virus
+!I!Ruba i campioni di virus
+!F!Voler les échantillons de virus
+
+!/!Goal 5 Item Name
+!=!Virus Samples
+!G!Virusproben
+!S!Virus
+!I!Campioni di virus
+!F!Echantillons du virus
+
+!/!Goal 5 Description
+!=!Infiltrate the hidden research bunker and steal the Virus samples being stored there
+!G!Dringen Sie in das verborgene Forschungszentrum ein und stehlen Sie die dort gelagerten Virusproben
+!S!Infiltrarse en el búnker de investigación secreta y robar las muestras del virus que se guardan en él
+!I!Infiltrati nel bunker nascosto delle ricerche e ruba e i campioni di virus che vi sono conservati.
+!F!Infiltrez-vous dans le bunker de recherche secret et volez les échantillons de virus qui y sont stockés.
+
+!/!Goal 6 Name
+!=!Return to the Surface
+!G!An die Oberfläche zurückkehren 
+!S!Regresa a la superficie
+!I!Torna in superficie
+!F!Retourner dehors
+
+!/!Goal 6 Item Name
+!=!Ascending Elevator
+!G!Aufwärtsführender Fahrstuhl 
+!S!Ascensor
+!I!Ascensore che sale
+!F!Ascenseur montant
+
+!/!Goal 6 Description
+!=!Use the ascending elevator to return to the surface
+!G!Benutzen Sie den aufwärtsführenden Fahrstuhl, um an die Oberfläche zu gelangen. 
+!S!Utiliza el ascensor para regresar a la superficie.
+!I!Usa l'ascensore per tornare in superficie
+!F!Utilisez l'ascenseur pour remonter à la surface.
+
+
+!/!Goal 7 Name
+!=!Activate the Ascending Elevator
+!G!Den Fahrstuhl aktivieren 
+!S!Activa el ascensor
+!I!Avvia l'ascensore
+!F!Mettre l'ascenseur en marche.
+
+
+!/!Goal 7 Item Name
+!=!Elevator Control
+!G!Fahrstuhlsteuerung 
+!S!Control del ascensor
+!I!Comandi dell'ascensore
+!F!Commande de l'ascenseur
+
+
+!/!Goal 7 Description
+!=!Turn on the ascending elevator
+!G!Schalten Sie den aufwärtsführenden Fahrstuhl ein. 
+!S!Activa el ascensor
+!I!Avvia l'ascensore
+!F!Mettez l'ascenseur en marche.

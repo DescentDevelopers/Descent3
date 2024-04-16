@@ -1,0 +1,155 @@
+!/!Level strings for Level13.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I! = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Destroy StormTrooper Leader
+!G!Den Anführer der StormTrooper vernichten
+!S!Destruye al líder de las tropas de asalto
+!I!Annienta il comandante delle truppe d'assalto
+!F!Détruire le Chef des troupes d'assaut
+
+!/!Goal 0 Item Name
+!=!StormTrooper Leader
+!G!Anführer der StormTrooper
+!S!Líder de tropas de asalto
+!I!Comandante delle truppe d'assalto
+!F!Chef des troupes d'assaut
+
+!/!Goal 0 Description
+!=!Find and destroy the leader of the Storm Troopers.
+!G!Finden und zerstören Sie den Anführer der StormTrooper
+!S!Encuentra y destruye al líder de las tropas de asalto.
+!I!Trova e distruggi il comandante delle truppe d'assalto.
+!F!Trouvez et éliminez le chef des troupes d'assaut.
+
+
+!/!Goal 1 Name
+!=!Disable Aft Matcen
+!G!Hinteres Matcen deaktivieren
+!S!Destactiva Aft Matcen
+!I!Disattiva Aft Matcen
+!F!Désactiver le robogène arrière 
+
+!/!Goal 1 Item Name
+!=!Aft Matcen
+!G!Hinteres Matcen
+!S!Aft Matcen
+!I!Aft Matcen
+!F!robogène arrière
+
+!/!Goal 1 Description
+!=!Disable the Aft matcen by triggering the control switch.
+!G!Deaktivieren Sie das hintere Matcen, indem Sie den Steuerungsschalter betätigen.
+!S!Desactiva al Aft matcen utilizando el conmutador.
+!I!Disattiva Aft Matcen mediante l'interruttore di controllo.
+!F!Désactivez le robogène arrière en déclenchant l'interrupteur de contrôle.
+
+
+!/!Goal 2 Name
+!=!Shut down Engine Core
+!G!Maschinenkern abschalten
+!S!Desactiva el núcle del motor
+!I!Ferma il nucleo motore
+!F!Arrêter le coeur du réacteur
+
+!/!Goal 2 Item Name
+!=!Engine Surge Chamber
+!G!Maschinen-Spannungskammer
+!S!Sala de sobrecarga del motor
+!I!Sala della pompa del motore
+!F!Salle du réacteur
+
+!/!Goal 2 Description
+!=!Fly through Engine Surge Chamber into Engine Core and  Shut down Reactor
+!G!Fliegen Sie durch die Maschinen-Spannungskammer in den Maschinenkern und schalten Sie den Reaktor ab.
+!S!Vuela atravez de la sala de sobrecarga y desactiva el reactor
+!I!Vola attraverso la sala della pompa fino al nucleo del motore e ferma il reattore
+!F!Volez à travers la salle du réacteur jusqu'au coeur de la machine et arrêtez le réacteur.
+
+
+!/!Goal 3 Name
+!=!Eliminate Remaining StormTroopers
+!G!Die übrigen StormTrooper eliminieren
+!S!Elimana al resto de las tropas de asalto
+!I!Elimina gli assaltatori superstiti
+!F!Eliminer les troupes d'assaut restantes
+
+
+!/!Goal 3 Item Name
+!=!StormTrooper
+!G!StormTrooper
+!S!Agente de asalto
+!I!Assaltatore
+!F!agent d'assaut
+
+!/!Goal 3 Description
+!=!Eliminate as many infected StormTroopers as possible.  Use the ship's Recon Interface to monitor your progress.
+!G!Eliminieren sie so viele StormTrooper wie möglich. Benutzen Sie das Aufklärungs-Interface, um Ihren Fortschritt zu verfolgen.
+!S!Elimana todas las tropas de asalto posibles. Utiliza la interfaz de reconocimiento para seguir tu progreso.
+!I!Elimina più Assaltatori infetti che puoi. L'interfaccia di riconoscimento ti permetterà di controllare il tuo stato.
+!F!Vous devez éliminer le plus possible d'agents d'assaut infectés. L'interface de reconnaissance vous aidera à suivre votre progression.
+
+!/!Goal 4 Name
+!=!Reduce Infected Robot Threat
+!G!Die Bedrohung durch infizierte Roboter reduzieren
+!S!Reduce el número de robots infectados
+!I!Riduci il numero di robot infetti
+!F!Réduire le nombre de robots infectés
+
+!/!Goal 4 Item Name
+!=!Infected Robots
+!G!Infizierte Roboter
+!S!Robots infectados
+!I!Robot infetti
+!F!robots infectés 
+
+!/!Goal 4 Description
+!=!Reduce the threat posed by the infected robots by destroying the StormTrooper leader and as many infected StormTroopers as possible.
+!G!Reduzieren Sie die Bedrohung, die von den infizierten Robotern ausgeht, indem Sie den Anführer der StormTrooper und so viele StormTrooper wie möglich zerstören.
+!S!Reduce el número de robots infectados destruyendo al líder de las tropas de asalto y couantos agentes de asalto sean posibles.
+!I!Ridimensiona la minaccia rappresentata dai robot infetti eliminando il comandante delle truppe d'assalto e più assaltatori che puoi.
+!F!Minimisez la menace posée par les robots infectés en détruisant le chef des troupes d'assaut ainsi que le plus possible de robots infectés.
+
+

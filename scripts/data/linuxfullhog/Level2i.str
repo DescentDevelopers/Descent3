@@ -1,0 +1,427 @@
+!/!Level strings for level2.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I!  = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Eliminate Perimeter Defenses
+!G!Die Peripherieverteidigung eliminieren 
+!S!Elimina las defensas del perímetro
+!I!Elimina le difese perimetrali
+!F!Détruire les systèmes de défense du périmètre 
+
+!/!Goal 0 Item Name
+!=!Anti-aircraft battery
+!G!Luftabwehrbatterie
+!S!Batería antiaérea
+!I!Batteria antiaerea
+!F!Batterie antiaérienne 
+
+!/!Goal 0 Description
+!=!To enable the Rescue Shuttle to approach the Main Prison Tower, you'll need to eliminate the perimeter defenses set up to knock down threatening aircraft.  Scanner readings indicate that there are five such mini-towers topped with anti-aircraft laser batteries which must be destroyed.
+!G!Um dem Rettungs-Shuttle die Annäherung an den Hauptgefängnisturm zu ermöglichen, müssen Sie die Peripherieverteidigung, die zur Vernichtung angreifender Schiffe installiert wurde, beseitigen. Eine Radarabtastung liess fünf solcher mit Luftabwehrbatterien besetzte Mini-Türme erkennen.
+!S!Tendrás que eliminar las defensas del perímetro, pensadas para derribar a cualquier avión que suponga una amenaza, para permitir que la nave de rescate se aproxime a la torre principal de la prisión. Las lecturas de los sensores indican que hay cinco minitorres equipadas con baterías antiaéreas láser, que hay que destruir.
+!I!Se vuoi che la navetta di salvataggio raggiunga la torre principale della prigione, devi eliminare le difese perimetrali erette come difesa dagli aerei nemici. I rilevatori segnalano che ci sono cinque minitorri che montano batterie laser antiaeree che devono essere distrutte.
+!F!Pour permettre à la navette de secours d'atteindre la tour principale de la prison, vous devrez éliminer toutes les défenses antiaériennes du périmètre. Les scanners indiquent qu'il y a cinq petites tours coiffées de batteries laser antiaériennes à détruire.
+
+!/!Goal 1 Name
+!=!Gain entry to the Supply Hangar
+!G!Zugang zum Versorgungshangar erlangen
+!S!Consigue entrar en el hangar de suministros
+!I!Entra nell'hangar di rifornimento
+!F!Pénétrer dans le hangar de ravitaillement 
+
+!/!Goal 1 Item Name
+!=!Supply Hangar
+!G!Versorgungshangar
+!S!Hangar de suministros
+!I!Hangar di rifornimento
+!F!Hangar de ravitaillement 
+
+!/!Goal 1 Description
+!=!All the damage done to the perimeter security systems seems to have caused a forcefield to burn out, leaving the entrance to the Supply Hangar wide open.  While it's a ways away from the Main Tower, there may be a way to infiltrate the Tower from within the Hangar.
+!G!Der am Peripherieverteidigungssystem verursachte Schaden scheint eines der Kraftfelder kurzgeschlossen zu haben, so dass der Eingang zum Versorgungshangar jetzt offen steht. Obwohl der Hauptturm weit entfernt ist, besteht vielleicht die Möglichkeit, vom Versorgungshangar aus in den Turm einzudringen.
+!S!Los daños causados a los sistemas de seguridad del perímetro parecen haber provocado un cortocircuito en el campo de fuerza, y la entrada al hangar de suministros se encuentra abierta. Anque se encuentra bastante lejos de la Torre principal, puede que exista un modo de entrar en la torre desde el hangar.
+!I!I danni ai sistemi di sicurezza perimetrali hanno forse provocato un cortocircuito nel campo di forza e la porta dell'hangar è spalancata. Anche se l'hangar è molto distante dalla torre principale, deve esserci il modo di penetrare nella torre da qui.
+!F!Les dégâts causés aux systèmes de sécurité du périmètre ont l'air d'avoir créé un court-circuit dans un champ de force, ouvrant en grand l'accès au hangar de ravitaillement. Bien que la tour principale en soit assez éloignée, vous devriez pouvoir y entrer par le hangar.
+
+!/!Goal 2 Name
+!=!Get Security Pass R-1
+!G!Den Sicherheitspass R-1 finden 
+!S!Consigue el pase de seguridad R-1
+!I!Procurati il Pass R-1
+!F!Trouver le passe de sécurité R-1 
+
+!/!Goal 2 Item Name
+!=!R-1 Security Pass
+!G!Sicherheitspass R-1 
+!S!Pase de seguridad R-1
+!I!Pass R-1
+!F!Passe de sécurité R-1
+
+!/!Goal 2 Description
+!=!Apparently the Prisons internal Security systems operate on a series of Security Passes.  You'll want to gather them from thier dispensers whenever possible.  You may need proof of authorization to gain access to certain areas of the Prison later on.
+!G!Offensichtlich wird das interne Gefängnis-Sicherheitssystem mit einer Reihe von Sicherheitspässen betrieben, die Sie sich, wann immer möglich, aus den Automaten nehmen sollten. Möglicherweise werden Sie einen Berechtigungsnachweis benötigen, um später Zutritt zu bestimmten Gebieten des Gefängnisses zu bekommen.
+!S!Al parecer, los sistemas de seguridad internos de la prisión funcionan con una serie de pases de seguridad. Tendrás que conseguirlos de los expendedores que los emiten siempre que sea posible. Puede que necesites autorización, más tarde, para acceder a ciertas zonas de la prisión.
+!I!Il sistema di sicurezza interno delle prigioni sembra funzionare in base a una serie di Pass che potrai trovare negli appositi distributori. Più avanti, per potere accedere a certe zone della prigione potrebbe servirti un'autorizzazione.
+!F!Les systèmes de sécurité à l'intérieur de la prison impliquent manifestement une série de passes. Essayez d'en récupérer auprès de leurs distributeurs chaque fois que possible. Il vous faudra par la suite montrer patte blanche pour accéder à certaines zones de la prison.
+
+!/!Goal 3 Name
+!=!Infiltrate the Main Prison Tower
+!G!In den Hauptgefängnisturm eindringen 
+!S!Infíltrate en la torre principal de la prisión
+!I!Penetra nella torre principale della prigione
+!F!Infiltrer la tour principale de la prison 
+
+!/!Goal 3 Item Name
+!=!Prison Tower Maintenance Entrance
+!G!Gefängnisturm Wartungseingang
+!S!Entrada de la torre de mantenimiento de la prisión
+!I!Entrata di servizio della torre della prigione
+!F!Accès de service à la Tour de la Prison 
+
+!/!Goal 3 Description
+!=!Built upon the porous, acid-eaten rock of the moons surface, Novak Corporate Prison is undermined with a maze of twisting caverns.  One particular such cave runs the distance between the Supply Hangar and the Maintenance/Waste Disposal system of the Main Tower.  Navigating this labyrinth is sure to get you inside the Tower itself--just be cautious around the pools of ship-melting acid.
+!G!Unter dem Novak Firmengefängnis, das auf dem porösen, von Säure zerfressenen Gestein der Mondoberfläche gebaut wurde, befindet sich ein Labyrinth aus kurvigen Höhlen. Eine der Höhlen erstreckt sich vom Versorgungshangar bis zum Wartungs- und Müllentsorgungssystem des Hauptturms. Wenn Sie diese Höhle durchfliegen, gelangen Sie zwar in den Turm, achten Sie aber auf die mit schiffszerfressender Säure gefüllten Teiche. 
+!S!Edificada sobre la roca porosa y carcomida por el ácido de la superficie lunar, la prisión de Novak Corporate está atravesada por multitud de serpenteantes cavernas. Uno de esos túneles, en particular, cubre la distancia que separa el sistema de mantenimiento y retirada desperdicios y el hangar de suministros de la torre principal. Si avanzas por ese laberinto conseguirás entrar en la torre, pero ten cuidado con las lagunas de ácido, que pueden consumir una nave.
+!I!La prigione della società Novak è costruita su roccia porosa, corrosa dagli acidi della superficie lunare. Sotto di essa si snoda un labirinto di caverne. Di queste, una in particolare va dall'hangar dei rifornimenti al sistema di manutenzione e smaltimento rifiuti della torre principale. Questo labirinto ti offre la possibilità di entrare senza problemi nella torre... Sta' attento solo a evitare le pozze di acido che possono corrodere la nave.
+!F!Construite sur la roche poreuse et rongée par l'acide de la surface lunaire, la Prison de Novack Corporate est sapée en sous-sol par un dédale tortueux de cavernes. L'une d'entre elles relie le hangar de ravitaillement au système de traitement des ordures de la tour principale. Par ce labyrinthe, vous atteindrez la tour elle même -mais faites attention aux mares d'acides qui détruiront indubitablement votre vaisseau !
+
+!/!Goal 4 Name
+!=!Get Security Pass G-1
+!G!Den Sicherheitspass G-1 finden
+!S!Busca el pase de seguridad G-1
+!I!Procurati il Pass di sicurezza G-1
+!F!Obtenir le passe de sécurite G-1
+
+
+!/!Goal 4 Item Name
+!=!G-1 Security Pass
+!G!Den Sicherheitspass G-1 finden
+!S!Consigue el pase de seguridad G-1
+!I!Procurati un Pass G-1
+!F!Trouver le passe de sécurité G-1
+
+!/!Goal 4 Description
+!=!Using the proper Security Pass should get you through any Security Checkpoints you encounter.  To use a Pass, you'll need to fly up to the Pass Reception Port at the Checkpoint, and select the Pass from your Inventory, and Use it while within the Port.
+!G!Die Verwendung des richtigen Sicherheitspasses sollte Sie durch alle Sicherheitskontrollpunkte bringen, auf die Sie stossen werden. Um einen Pass zu benutzen, müssen Sie in die Passaufnahmenische am Kontrollpunkt fliegen, den Pass aus Ihrem Inventar auswählen, und ihn in der Nische benutzen.
+!S!Si usas el pase de seguridad adecuado podrás pasar por todos los controles de seguridad que te encuentres. Para usar un pase, tendrás que dirigirte al Puerto de Recepción de pases, en el control, seleccionar el pase en el inventario y utilizarlo cuando te encuentres en el puerto.
+!I!Col Pass giusto riuscirai a superare tutti i punti di controllo del sistema di vigilanza. Per utilizzare un Pass dovrai volare fino al Porto Ricezione Pass, selezionare il Pass nel tuo arsenale e utilizzarlo all'interno del porto.
+!F!Avec le passe de sécurité approprié, vous devriez franchir tous les postes de contrôle. Pour utiliser un passe, allez jusqu'au récepteur de passe du poste de contrôle, sélectionnez le passe dans votre inventaire, et utilisez-le ; il sera automatiquement identifié par le lecteur de passe.
+
+!/!Goal 5 Name
+!=!Enter the Minimum Security Level
+!G!In die Minimal-Sicherheitsebene vordringen
+!S!Entra en el nivel de mínima seguridad
+!I!Penetra nel livello di minima protezione
+!F!Accéder au quartier - sécurité minimum 
+
+!/!Goal 5 Item Name
+!=!Minimum Security Checkpoint
+!G!Minimal-Sicherheits-Kontrollpunkt
+!S!Control de seguridad mínima
+!I!Punto di controllo a sicurezza minima
+!F!Poste de contrôle placé sous sécurité minimum 
+
+!/!Goal 5 Description
+!=!Security Checkpoints are prepared to handle almost any breach of security when it is detected.  The key to getting past them besides using the proper Pass, is to try to remain calm and not draw attention to yourself.  Fly casual.
+!G!Sicherheitskontrollpunkte sind darauf vorbereitet, mit fast allen Arten von Sicherheitsverstössen fertig zu werden, wenn sie entdeckt werden. Um an ihnen vorbeizukommen sollten Sie, neben der Benutzung des richtigen Passes, Ruhe bewahren und keine Aufmerksamkeit auf sich ziehen. Fliegen Sie entspannt.
+!S!Los controles de seguridad están preparados para enfrentarse a casi todas las rupturas del sistema de seguridad cuando se detectan. La clave para pasar los controles con el pase adecuado es conservar la calma y no llamar la atención. Compórtate con naturalidad.
+!I!I punti di controllo devono far fronte a qualsiasi violazione dei sistemi di sicurezza. Per superarli occorre utilizzare il Pass giusto, ma anche rimanere calmi e non attirare l'attenzione. Vola in maniera tranquilla.
+!F!Les postes de contrôle de sécurité sont prêts à faire face à toute faille. Pour les passer sans incident, il faut bien sûr avoir le bon passe, mais aussi rester calme et de ne pas attirer l'attention. En deux mots : volez décontracté !
+
+!/!Goal 6 Name
+!=!Get Security Pass X-1
+!G!Den Sicherheitspass X-1 finden
+!S!Consigue el pase de seguridad X-1
+!I!Procurati il Pass X-1
+!F!Trouver le passe de sécurité X-1
+
+!/!Goal 6 Item Name
+!=!X-1 Security Pass
+!G!Sicherheitspass X-1
+!S!Pase de seguridad x-1
+!I!Pass di sicurezza X-1
+!F!Passe de sécurité X-1
+
+!/!Goal 6 Description
+!=!If you happen to use the wrong Security Pass at a Checkpoint, you'll probably have to try to convince the on-duty Security Personnel that it was an honest mistake.  It may not be easy, but he'll probably agree with a little persuasion.
+!G!Sollten Sie an einem Kontrollpunkt den falschen Sicherheitspass verwenden, werden Sie wahrscheinlich das diensthabende Sicherheitspersonal davon überzeugen müssen, dass es nur ein Versehen war. Das ist nicht einfach, aber mit ein bisschen Überzeugungskraft wird man Ihnen sicher glauben.
+!S!Si por alguna razón utilizas un pase de seguridad equivocado en un control, es posible que tengas que convencer al personal de seguridad que se encuentre de servicio de que se trata de un error normal. Puede que no sea fácil, pero es posible que acepten la excusa si eres persuasivo.
+!I!Se per caso usi il Pass sbagliato al punto di controllo, dovrai cercare di convincere il responsabile della sorveglianza che hai commesso un errore in buona fede. Non sarà facile, ma con un po' di persuasione potrai farcela.
+!F!Si vous vous trompez de passe de sécurité au poste de contrôle, il vous faudra sûrement convaincre l'agent de sécurité qu'il s'agit d'une simple erreur. Ce n'est pas évident mais vous pouvez probablement le persuader.
+
+!/!Goal 7 Name
+!=!Get Security Pass Y-1
+!G!Den Sicherheitspass Y-1 finden
+!S!Consigue el pase de seguridad Y-1
+!I!Procurati il Pass di sicurezza Y-1
+!F!Trouver le passe de sécurité Y-1
+
+
+!/!Goal 7 Item Name
+!=!Y-1 Security Pass
+!G!Sicherheitspass Y-1
+!S!Pase de seguridad Y-1
+!I!Pass di sicurezza Y-1
+!F!Passe de sécurité Y-1
+
+!/!Goal 7 Description
+!=!Worst case scenario:  you not only have to take out the gaurd, but you make the same mistake again, and use the wrong Security Pass.  If this happens, the Security System itself takes over and you can bet that there'll be company on the way.
+!G!Schlimmstes anzunehmendes Unglück: Sie müssen nicht nur die Wache eliminieren, sondern machen denselben Fehler nochmal, und verwenden den falschen Sicherheitspass. Wenn das passiert, übernimmt das Sicherheitssystem selbst und Sie können darauf wetten, dass Sie Gesellschaft bekommen werden.
+!S!La peor situación posible: no sólo has eliminado al guardia, sino que has vuelto a cometer el mismo error y has utilizado un pase de seguridad equivocado. Si esto sucede, el sistema de seguridad se activará y puedes dar por seguro que enviarán refuerzos.
+!I!È il caso peggiore. Non solo dovrai eliminare la guardia, ma ripeti lo stesso errore e utilizzi il Pass sbagliato. In questa eventualità il sistema di sicurezza interviene e sta' sicuro che avrai compagnia al ritorno.
+!F!Scénario catastrophe : vous vous débarrassez du garde, mais vous refaites la même erreur en réutilisant le mauvais passe de sécurité. Si cela vous arrivait, préparez-vous à recevoir de la compagnie car c'est le système de sécurité qui prend la relève !
+
+!/!Goal 8 Name
+!=!Enter the Medium Security Level
+!G!In die mittlere Sicherheitsebene vordringen 
+!S!Entra en el nivel de seguridad media
+!I!Penetra nel livello di media sicurezza
+!F!Accéder au quartier placé sous sécurité intermédiaire
+
+!/!Goal 8 Item Name
+!=!Medium Security Checkpoint
+!G!Mittlerer Sicherheits-Kontrollpunkt 
+!S!Nivel de seguridad media
+!I!Punto di controllo di media sicurezza
+!F!Poste de contrôle - sécurité intermédiaire
+
+!/!Goal 8 Description
+!=!Security Checkpoints are prepared to handle almost any breach of security when it is detected.  The key to getting past them besides using the proper Pass, is to try to remain calm and not draw attention to yourself.  Fly casual.
+!G!Sicherheitskontrollpunkte sind darauf vorbereitet, mit fast allen Arten von Sicherheitsverstössen fertig zu werden, wenn sie entdeckt werden. Um an ihnen vorbeizukommen sollten Sie, neben der Benutzung des richtigen Passes, Ruhe bewahren und keine Aufmerksamkeit auf sich ziehen. Fliegen Sie entspannt.
+!S! Los controles de seguridad están preparados para enfrentarse a casi todas las rupturas del sistema de seguridad cuando se detectan. La clave para pasar los controles con el pase adecuado es conservar la calma y no llamar la atención. Compórtate con naturalidad.
+!I!I punti di controllo devono far fronte a qualsiasi violazione dei sistemi di sicurezza. Per superarli occorre utilizzare il Pass giusto, ma anche rimanere calmi e non attirare l'attenzione. Vola in maniera tranquilla.
+!F!Les postes de contrôle de sécurité sont prêts à faire face à toute faille. Pour les passer sans incident, il faut biensûr avoir le bon passe, mais aussi rester calme et de ne pas attirer l'attention. En deux mots : volez décontracté !
+
+!/!Goal 9 Name
+!=!Enter the Maximum Security Level
+!G!In die Hochsicherheitsebene vordringen
+!S!Entra en el nivel de máxima seguridad
+!I!Penetra nel livello di massima sicurezza
+!F!Accéder au quartier placé sous haute sécurité 
+
+!/!Goal 9 Item Name
+!=!Maximum Security Checkpoint
+!G!Hochsicherheits-Kontrollpunkt
+!S!Control de máxima seguridad
+!I!Punto di controllo di massima sicurezza
+!F!Poste de contrôle - haute sécurité 
+
+!/!Goal 9 Description
+!=!Security Checkpoints are prepared to handle almost any breach of security when it is detected.  The key to getting past them besides using the proper Pass, is to try to remain calm and not draw attention to yourself.  Fly casual.
+!G!Sicherheitskontrollpunkte sind darauf vorbereitet, mit fast allen Arten von Sicherheitsverstössen fertig zu werden, wenn sie entdeckt werden. Um an ihnen vorbeizukommen sollten Sie, neben der Benutzung des richtigen Passes, Ruhe bewahren und keine Aufmerksamkeit auf sich ziehen. Fliegen Sie entspannt.
+!S!Los controles de seguridad están preparados para enfrentarse a casi todas las rupturas del sistema de seguridad cuando se detectan. La clave para pasar los controles con el pase adecuado es conservar la calma y no llamar la atención. Compórtate con naturalidad.
+!I!I punti di controllo devono far fronte a qualsiasi violazione dei sistemi di sicurezza. Per superarli occorre utilizzare il Pass giusto, ma anche rimanere calmi e non attirare l'attenzione. Vola in maniera tranquilla.
+!F!Les postes de contrôle de sécurité sont prêts à faire face à toute faille. Pour les passer sans incident, il faut biensûr avoir le bon passe, mais aussi rester calme et de ne pas attirer l'attention. En deux mots : volez décontracté !
+
+!/!Goal 10 Name
+!=!Locate Dr. Sweitzer's Cell
+!G!Dr. Schweitzers Zelle finden 
+!S!Localiza la celda del doctor Sweitzer
+!I!Localizza la cella del dottor Sweitzer
+!F!Localiser la cellule du Dr. Sweitzer 
+
+!/!Goal 10 Item Name
+!=!Dr. Sweitzer
+!G!Dr. Schweitzer
+!S!Doctor Sweitzer
+!I!Dottor Sweitzer
+!F!Dr. Sweitzer 
+
+!/!Goal 10 Description
+!=!Find out which Maximum Security Cell Dr. Sweitzer is in and contact the Rescue Shuttle for further instructions.
+!G!Finden Sie heraus, in welcher Hochsicherheitszelle sich Dr. Schweitzer befindet, und nehmen Sie Kontakt mit dem Rettungs-Shuttle auf, um weitere Anweisungen zu erhalten.
+!S!Busca la celda del nivel de máxima seguridad en la que se encuentra el doctor Sweitzar y ponte en contacto con la nave de rescate para recibir más instrucciones.
+!I!Scopri in quale cella di massima sicurezza si trova il dottor Sweitzer e contatta la navetta di salvataggio per ulteriori istruzioni
+!F!Trouvez la cellule du quartier placé sous haute sécurité où le Dr. Sweitzer est retenu prisonnier et contactez la navette de sauvetage pour intructions.
+
+!/!Goal 11 Name
+!=!Get Sweitzer transferred to Minimum Security
+!G!Schweitzers Verlegung zur Minimal-Sicherheitsebene erreichen
+!S!Consigue que transfieran a Sweitzer al nivel de mínima seguridad
+!I!Fa' trasferire Sweitzer al livello di minima sicurezza
+!F!Faire transférer le Dr. Sweitzer au quartier sécurité minimum.
+
+!/!Goal 11 Item Name
+!=!Maintenance Gate
+!G!Verwaltungs-Tor
+!S!Puerta de servicio
+!I!Porta di servizio
+!F!Porte de service
+
+!/!Goal 11 Description
+!=!Getting Dr. Sweitzer transferred to Minimum Security sounds pretty impossible... you'd need access codes, prisoner transfer authorization and probably someone's signature.  Unless... you could somehow create a disaster forcing everyone to be evacuated...
+!G!Dr. Schweitzer zur Minimal-Sicherheit verlegen zu lassen klingt ziemlich unmöglich...man braucht Zugangscodes, eine Verlegungsgenehmigung und wahrscheinlich auch eine Unterschrift. Ausser... wenn man irgendwie eine Katastrophe erzeugen könnte, die jedermanns Evakuierung erfordern würde...
+!S!Hacer que transfieran al doctor Sweitzer al nivel de mínima seguridad parece una tarea imposible. Tendrás que conseguir códigos de acceso, una autorización para transferir al prisionero y probablemente la firma de alguien. A menos que puedas ocasionar, de algún modo, un desastre que les obligue a evacuar a todo mundo.
+!I!Sembra impresa impossibile trasferire il dottor Sweitzer al livello di minima sicurezza. Ti servirebbero codici di accesso, autorizzazioni per il trasferimento del prigioniero e probabilmente qualche firma. A meno che... non riesci a provocare un disastro costringendo tutti a un'evacuazione forzata.
+!F!Obtenir le transfert du  Dr. Sweitzer dans le quartier de sécurité minimum semble relever de l'impossible... Il vous faudrait des codes d'accès, une autorisation de transfert et certainement une signature. A moins de ... créer un quelconque désastre forçant tout le monde à évacuer...
+
+!/!Goal 12 Name
+!=!Find Sweitzer's Minimum Security Cell
+!G!Schweitzers Minimal-Sicherheitszelle finden
+!S!Encuentra la celda de mínima seguridad de Sweitzer
+!I!Trova la cella di minima sicurezza di Sweitzer.
+!F!Trouver la cellule de sécurité minimum de Sweitzer 
+
+!/!Goal 12 Item Name
+!=!Sweitzer again
+!G!Nochmal Schweitzer
+!S!Sweitzer otra vez
+!I!Ancora Sweitzer
+!F!Sweitzer à nouveau 
+
+!/!Goal 12 Description
+!=!Well, now that the whole place is on alert, it seems we actually got Dr. Sweitzer transferred to that Minimum Security Cell afterall.  Now if you can just find him again without getting killed, we can get on with the Mission.
+!G!Da sich das ganze Gefängnis jetzt im Alarmzustand befindet, scheint es, dass wir Dr. Schweitzers Verlegung in eine Minimal-Sicherheitszelle erreicht haben. Wenn Sie ihn jetzt nochmal finden können, ohne getötet zu werden, können wir mit der Mission fortfahren.
+!S!Ahora que toda la prisión se encuentra en alerta, parece que hemos conseguido transferir al doctor Sweitzer a una celda del nivel de mínima seguridad. Si consigues encontrarlo otra vez sin que te maten, continuaremos con la misión.
+!I!Adesso che la prigione è in stato d'allerta, sembra che siamo riusciti a fare trasferire il dottor Sweitzer in una cella di minima sicurezza. Se riuscirai a trovarlo senza farti uccidere, potremo proseguire con la missione.
+!F!Bon, maintenant que toute la prison est en état d'alerte, il semble que le Dr. Sweitzer ait été finalement transféré dans une cellule de sécurité minimum. Si vous pouviez encore trouver où il est, sans vous faire tuer, on pourrait en finir avec cette mission.
+
+!/!Goal 13 Name
+!=!Deactivate the Main Tower Hangar Forcefield
+!G!Das Hangarkraftfeld im Hauptturm deaktivieren 
+!S!Desactiva el campo de fuerza del hangar de la torre principal
+!I!Disattiva il campo di forza dell'hangar della torre principale
+!F!Désactiver le champ de force du hangar de la tour principale 
+
+!/!Goal 13 Item Name
+!=!Hangar Forcefield
+!G!Hangarkraftfeld
+!S!Campo de fuerza del hangar
+!I!Campo di forza dell'hangar
+!F!Champ de force du hangar 
+
+!/!Goal 13 Description
+!=!Unfortunately, the Rescue Shuttle has run into another hang-up, and needs you to deactivate a forcefield which prevents it from entering the Prison.  Deactivate this and everything should be in place for Sweitzer's rescue attempt.
+!G!Leider ist das Rettungs-Shuttle auf ein weiteres Hindernis gestossen. Helfen Sie dem Shuttle, indem Sie das Kraftfeld deaktivieren, das es am Eindringen in das Gefängnis hindert. Dann sollte Schweitzers Befreiungsversuch nichts mehr im Wege stehen.
+!S!Por desgracia, la nave de rescate se ha encontrado con otro problema y es necesario que desactives un campo de fuerza que impide el paso a la prisión. Desactívalo y todo estará preparado para intentar el rescate de Sweitzer.
+!I!Purtroppo la navetta di salvataggio ha incontrato un altro problema ed è necessario disattivare il campo di forza che impedisce di entrare nella prigione. Disattivalo e non dovrebbero esserci altri ostacoli alla liberazione di Sweitzer.
+!F!La navette de sauvetage est malheureusement coincée et a besoin que vous désactiviez le champ de force qui l'empêche d'accéder à la prison. Désactivez-le et tout sera en place pour tenter le sauvetage de Sweitzer.
+
+
+!/!Goal 14 Name
+!=!Rescue Dr. Sweitzer
+!G!Dr. Schweitzer befreien
+!S!Rescata al Dr. Sweitzer
+!I!Salva il dottor Sweitzer
+!F!Délivrer le Dr. Sweitzer 
+
+!/!Goal 14 Item Name
+!=!Dr. Sweitzer
+!G!Dr. Schweitzer
+!S!doctor Sweitzer
+!I!Dottor Sweitzer
+!F!Dr. Sweitzer 
+
+!/!Goal 14 Description
+!=!Our Mission is to break Dr. Karl Sweitzer out of Novak Corporate Prison.
+!G!Unsere Mission ist es, Dr. Karl Schweitzer aus dem Novak Firmengefängnis zu befreien.
+!S!Nuestra misión consiste en liberar al doctor Karl Sweitzer de la prisión de Novak Corporate
+!I!La nostra missione è di liberare il dottor Karl Sweitzer dalla prigione della società Novak.
+!F!Notre mission : faire évader le Dr. Karl Sweitzer de la Prison de la Novack Corporate. 
+
+!/!Goal 15 Name
+!=!Exit the Prison
+!G!Das Gefängnis verlassen
+!S!Sal de la prisión
+!I!Esci dalla prigione
+!F!Quitter la prison 
+
+!/!Goal 15 Item Name
+!=!the nearest exit
+!G!der nächste Ausgang
+!S!la salida más cercana
+!I!L'uscita più vicina
+!F!la sortie la plus proche 
+
+!/!Goal 15 Description
+!=!Now that we've got Sweitzer, it's imperitive that we get him out alive.  Go, now!
+!G!Jetzt, da wir Schweitzer haben, müssen wir ihn hier unbedingt lebend rausbringen. Auf geht's! Beeilung!
+!S!Ahora que tenemos a Sweitzer, es esencial que lo saquemos vivo. ¡Vamos, hazlo ahora!
+!I!Adesso che abbiamo Sweitzer è essenziale tirarlo fuori di lì vivo! Muoviti!
+!F!Maintenant que nous avons Sweitzer, il est impératif de le ramener vivant.  Allez-y !
+
+!/!Goal 16 Name
+!=!Destroy all Prison Records Databanks
+!G!Alle Gefängnisdatenbanken zerstören 
+!S!Destruye todos archivos de la base de datos de la prisión
+!I!Distruggi tutti gli archivi della prigione
+!F!Détruire les banques de données des dossiers de la prison 
+
+!/!Goal 16 Item Name
+!=!Prison Records
+!G!Gefängnisdatenbanken
+!S!Archivos de la prisión
+!I!Archivi della prigione
+!F!Dossiers de la prison 
+
+!/!Goal 16 Description
+!=!Destroying Novak's Prison Records will leave them effectively blind to Dr. Sweitzer's disappearance.  It will be some time until they put all the pieces together and realize that he's escaped.
+!G!Durch die Zerstörung von Novaks Gefängnisdatenbanken wird Schweitzers Verschwinden nicht auffallen. Es wird einige Zeit dauern, bis sie alle Daten wieder beisammen haben und bemerken, dass er entkommen ist.
+!S!La destrucción de los archivos de la prisión de Novak impedirá que se enteren de que el doctor Sweitzer ha desaparecido. Tardarán cierto tiempo en encajar todas las piezas y comprender que ha escapado.
+!I!La distruzione degli archivi della prigione di Novak creerà grande confusione. Ci metteranno parecchio tempo a capire cos'è successo e a scoprire la fuga del dottor Sweitzer.
+!F!La destruction des dossiers de la Prison Novack camouflera la disparition du Dr. Sweitzer. Il leur faudra un petit moment pour comprendre qu'il a disparu...
+
+
+!/!Goal 17 Name
+!=!Find the Rescue Shuttle
+!G!Das Rettungs-Shuttle finden
+!S!Encuentra el transbordador de rescate
+!I!Trova la navetta di salvataggio
+!F!Trouver la navette de secours
+
+
+!/!Goal 17 Item Name
+!=!Rescue Shuttle
+!G!Rettungs-Shuttle
+!S!Transbordador de rescate
+!I!Navetta di salvataggio 
+!F!navette de secours
+
+!/!Goal 17 Description
+!=!Use the Guidebot to locate the Rescue Shuttle in times of need.
+!G!Verwenden Sie den Guide-Bot, um das Rettungs-Shuttle zu finden, wenn Sie ihn brauchen sollten.
+!S!Utiliza al Roboguía para localizar al transbordador de rescate.
+!I!Usa il Robot-Guida per localizzare la navetta di salvataggio in caso di bisogno.
+!F!En cas de besoin, utilisez le guidebot pour trouver la navette de secours.

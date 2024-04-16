@@ -1,0 +1,192 @@
+!/!Level strings for Level9.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I!  = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Escort the Covert Cargo Ship
+!G!Das Frachtschiff eskortieren
+!S!Escoltar la nave de transporte encubierta
+!I!Scorta la nave da carico camuffata
+!F!Escorter le Transporteur
+
+!/!Goal 0 Item Name
+!=!Covert Cargo Ship
+!G!Frachtschiff
+!S!Nave de transporte encubierta
+!I!Nave da carico camuffata
+!F!Transporteur
+
+!/!Goal 0 Description
+!=!Protect the covert cargo ship as it collects components for a new fighter ship
+!G!Beschützen Sie das Frachtschiff während es Komponenten für ein neues Kampfschiff sammelt
+!S!Protege la nave de transporte encubierta mientras recoge los componentes para un nuevo caza
+!I!Proteggi la nave da carico camuffata mentre raccoglie componenti per una nuova nave da combattimento
+!F!Protégez le transporteur pendant qu'il récupère des pièces pour un nouveau chasseur.
+
+!/!Goal 1 Name
+!=!Collect Seismic Disruptors
+!G!Seismische Unterbrecher sammeln
+!S!Recoger disruptores sísmicos
+!I!Raccogli i disruttori sismici
+!F!Récupérer Disrupteurs Sismiques
+
+!/!Goal 1 Item Name
+!=!Control Center
+!G!Kontrollzentrum
+!S!Centro de control
+!I!Centro di controllo
+!F!Centre de Contrôle
+
+!/!Goal 1 Description
+!=!Find and collect all four seismic disruptors
+!G!Finden und sammeln Sie alle vier seismischen Unterbrecher ein.
+!S!Busca y recoge los cuatro disruptores sísmicos
+!I!Trova e raccogli i quattro disruttori sismici
+!F!Touvez et récupérez les quatre disrupteurs sismiques.
+
+!/!Goal 2 Name
+!=!Disrupt Storage Seismic Stabilizer
+!G!Seismischen Stabilisator des Lagerzentrums unterbrechen
+!S!Avería el estabilizador sísmico del almacén
+!I!Sabota lo stabilizzatore sismico del magazzino
+!F!Débrayer stabilisateur sismique de l'entrepôt
+
+!/!Goal 2 Item Name
+!=!Storage Seismic Stabilizer
+!G!Seismischer Stabilisator des Lagerzentrums
+!S!Estabilizador sísmico del almacén
+!I!Stabilizzatore sismico del magazzino
+!F!Stabilisateur sismique de l'entrepôt
+
+!/!Goal 2 Description
+!=!Disrupt the storage facility seismic stabilizer
+!G!Unterbrechen Sie den seismischen Stabilisator des Lagerzentrums
+!S!Avería el estabilizador sísmico de instalaciones de almacenamiento
+!I!Sabota lo stabilizzatore sismico delle installazioni di magazzinaggio
+!F!Débrayez le stabilisateur sismique de l'entrepôt.
+
+!/!Goal 3 Name
+!=!Disrupt Factory Seismic Stabilizer
+!G!Den seismischen Stabilisator der Fabrik unterbrechen
+!S!Avería el estabilizador sísmico de la fábrica
+!I!Sabota lo stabilizzatore sismico della fabbrica
+!F!Débrayer le stabilisateur sismique de l'usine
+
+!/!Goal 3 Item Name
+!=!Factory Seismic Stabilizer
+!G!Seismischer Stabilisator der Fabrik
+!S!Estabilizador sísmico de la fábrica
+!I!Stabilizzatore sismico della fabbrica
+!F!Stabilisateur sismique de l'usine
+
+!/!Goal 3 Description
+!=!Disrupt the main factory seismic stabilizer
+!G!Unterbrechen Sie den seismischen Stabilisator der Fabrik
+!S!Avería el estabilizador sísmico la fábrica principal
+!I!Sabota lo stabilizzatore sismico principale della fabbrica
+!F!Débrayez le stabilisateur sismique de l'usine principale.
+
+!/!Goal 4 Name
+!=!Disrupt Assembly Seismic Stabilizer
+!G!Den seismischen Stabilisator des Montagezentrums unterbrechen
+!S!Avería el estabilizador sísmico de la cadena de montaje
+!I!Sabota lo stabilizzatore sismico della catena di montaggio
+!F!Débrayer le stabilisateur sismique de l'assemblage
+
+!/!Goal 4 Item Name
+!=!Assembly Seismic Stabilizer
+!G!Seismischer Stabilisator des Montagezentrums
+!S!Estabilizador sísmico de la cadena de montaje 
+!I!Stabilizzatore sismico della catena di montaggio
+!F!Stabilisateur sismique de l'assemblage
+
+!/!Goal 4 Description
+!=!Disrupt the assembly plant seismic stabilizer
+!G!Unterbrechen Sie den seismischen Stabilisator des Montagezentrums
+!S!Avería el estabilizador sísmico de la planta de montaje 
+!I!Sabota lo stabilizzatore sismico dello stabilimento di montaggio
+!F!Débrayez le stabilisateur sismique de l'usine d'assemblage.
+
+!/!Goal 5 Name
+!=!Disrupt Control Seismic Stabilizer
+!G!Den seismischen Stabilisator des Kontrollzentrums unterbrechen
+!S!Avería el estabilizador sísmico de control
+!I!Sabota lo stabilizzatore sismico di controllo
+!F!Débrayer Stabilisateur Sismique du centre de contrôle
+
+!/!Goal 5 Item Name
+!=!Control Seismic Stabilizer
+!G!Seismischer Stabilisator des Kontrollzentrums
+!S!Estabilizador sísmico de control 
+!I!Stabilizzatore sismico di controllo
+!F!Stabilisateur sismique du centre de contrôle 
+
+!/!Goal 5 Description
+!=!Disrupt the control center seismic stabilizer
+!G!Unterbrechen Sie den seismischen Stabilisator des Kontrollzentrums
+!S!Avería el estabilizador sísmico del centro de control 
+!I!Sabota lo stabilizzatore sismico del centro di controllo
+!F!Débrayez le stabilisateur sismique du centre de contrôle.
+
+!/!Goal 6 Name
+!=!Disrupt All Four Seismic Stabilizers
+!G!Alle vier seismischen Stabilisatoren unterbrechen
+!S!Avería los cuatro estabilizadores sísmicos
+!I!Sabota i quattro stabilizzatore sismici
+!F!Débrayer les quatre stabilisateurs sismiques
+
+!/!Goal 6 Item Name
+!=!Seismic Stabilizers
+!G!Seismische Stabilisatoren
+!S!Estabilizadores sísmicos
+!I!Stabilizzatori sismici
+!F!Stabilisateurs sismiques
+
+!/!Goal 6 Description
+!=!Disrupt the stabilizers to create a distraction and divert attention from the covert cargo ship
+!G!Unterbrechen Sie die Stabilisatoren, um die Aufmerksamkeit vom Frachtschiff abzulenken
+!S!Avería los estabilizadores para ocasionar una distracción y desviar la atención de la nave de transporte encubierta
+!I!Sabota gli stabilizzatori per creare una diversione e distrarre l'attenzione dalla nave da carico camuffato
+!F!Débrayez les stabilisateurs sismiques pour créer une diversion et masquer la présence du transporteur.
+

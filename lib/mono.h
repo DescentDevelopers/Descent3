@@ -1,0 +1,65 @@
+/*
+ * $Source: f:/miner/source/bios/rcs/mono.h $
+ * $Revision: 9 $
+ * $Author: Kevin $
+ * $Date: 7/28/99 3:16p $
+ *
+ * Header for monochrome/mprintf functions
+ *
+ * $Log: /DescentIII/Main/lib/mono.h $
+ * 
+ * 9     7/28/99 3:16p Kevin
+ * Mac Stuff
+ * 
+ * 8     1/26/99 9:44p Jeff
+ * moved tcplog functions to mono library
+ * 
+ * 7     1/09/99 4:39p Jeff
+ * added some ifdefs and fixes to get files to compile under Linux
+ * 
+ * 6     10/18/98 8:54p Matt
+ * Fixed macro which used an if statement not inside of a do..while block
+ * 
+ * 5     10/13/98 12:03p Kevin
+ * Changed use of preprocessors for debug, etc.
+ * 
+ * 4     10/09/98 12:52p Samir
+ * mono define also defines mprintf.
+ * 
+ * 3     4/22/98 3:50p Chris
+ * Added DebugBlockPrint
+ * 
+ * 2     9/16/97 5:06p Matt
+ * Disable mprintf() & mprintf_at() when _DEBUG not set
+ * 
+ * 1     6/23/97 9:25p Samir
+ * added because source safe sucks
+ * 
+ * 3     6/11/97 1:11p Samir
+ * Implemented new Debug system
+ * 
+ * 2     3/10/97 12:29p Samir
+ * Moved mono code and altered lowlevel console interface to machine
+ * library.
+ *
+ */
+#ifndef _MONO_H
+#define _MONO_H
+#include "debug.h"
+void nw_InitTCPLogging(char *ip,unsigned short port);
+void nw_TCPPrintf(int n, char * format, ... );
+#if (!defined(RELEASE)) && defined(MONO)
+	extern bool Debug_print_block;
+	// Prints a formatted string to the debug window
+	#define mprintf(args) Debug_ConsolePrintf args
+	// Prints a formatted string on window n at row, col.
+	#define mprintf_at(args) Debug_ConsolePrintf args
+	#define DebugBlockPrint(args) do { if(Debug_print_block)mprintf_at((1,5,51,args)); } while (0)
+#else		//ifdef _DEBUG
+#ifndef MACINTOSH
+	#define mprintf(args)	//DAJ defined in target headers
+#endif
+	#define mprintf_at(args)
+	#define DebugBlockPrint(args)
+#endif	//ifdef _DEBUG
+#endif

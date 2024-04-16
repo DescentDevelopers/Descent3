@@ -1,0 +1,186 @@
+[theme file]
+
+stream=MenuMain.osf$MenuMain
+stream=MenuMainSubAA.osf$MenuMainSubAA
+stream=MenuMainSubAA2.osf$MenuMainSubAA2
+stream=MenuMainSubAA3.osf$MenuMainSubAA3
+stream=MenuMainSubB.osf$MenuMainSubB
+stream=MenuMainSubC.osf$MenuMainSubC
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ MainMenu Region
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+region MainMenu
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ idle Theme
+section idle
+seti 0
+
+@ default_idle Subtheme
+label default_idle_start
+ifi 0;llpt MenuMain;lplc 0
+play
+label default_idle_handler
+bnif default_idle_handler
+inci
+ifi 1; seti 0
+goto default_idle_start
+
+endsection
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ death Theme
+section death
+seti 0
+
+@ default_death Subtheme
+label default_death_start
+play
+label default_death_handler
+bnif default_death_handler
+inci
+ifi 0; seti 0; goto default_death_end
+goto default_death_start
+label default_death_end
+
+endsection
+endregion
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ NewGame Region
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+region NewGame
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ idle Theme
+section idle
+seti 0
+
+@ default_idle Subtheme
+label default_idle_start
+ifi 0;llpt MenuMainSubAA;lplc 1
+ifi 1;llpt MenuMainSubAA2;lplc 10
+ifi 2;llpt MenuMainSubAA3;lplc 1
+play
+label default_idle_handler
+bnif default_idle_handler
+inci
+ifi 3; seti 0
+goto default_idle_start
+
+endsection
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ death Theme
+section death
+seti 0
+
+@ default_death Subtheme
+label default_death_start
+play
+label default_death_handler
+bnif default_death_handler
+inci
+ifi 0; seti 0; goto default_death_end
+goto default_death_start
+label default_death_end
+
+endsection
+endregion
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ OptionsMenu Region
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+region OptionsMenu
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ idle Theme
+section idle
+seti 0
+
+@ default_idle Subtheme
+label default_idle_start
+ifi 0;llpt MenuMainSubB;lplc 0
+play
+label default_idle_handler
+bnif default_idle_handler
+inci
+ifi 1; seti 0
+goto default_idle_start
+
+endsection
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ death Theme
+section death
+seti 0
+
+@ default_death Subtheme
+label default_death_start
+play
+label default_death_handler
+bnif default_death_handler
+inci
+ifi 0; seti 0; goto default_death_end
+goto default_death_start
+label default_death_end
+
+endsection
+endregion
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ Multiplayer Region
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+region Multiplayer
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ idle Theme
+section idle
+seti 0
+
+@ default_idle Subtheme
+label default_idle_start
+ifi 0;llpt MenuMainSubC;lplc 0
+play
+label default_idle_handler
+bnif default_idle_handler
+inci
+ifi 1; seti 0
+goto default_idle_start
+
+endsection
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@
+@ death Theme
+section death
+seti 0
+
+@ default_death Subtheme
+label default_death_start
+play
+label default_death_handler
+bnif default_death_handler
+inci
+ifi 0; seti 0; goto default_death_end
+goto default_death_start
+label default_death_end
+
+endsection
+endregion

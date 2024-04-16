@@ -1,0 +1,548 @@
+;Game credits file
+; ';' is a comment
+; '*' defines movement data (x1 y1 x2 y2 timedelay)
+; '!' defines a heading
+; '$' defines text color
+; '^' defines heading color
+; END signifies the end of the credits
+; any other line is regular text
+*320 200 320 200 5
+$255 0 0
+!Descent 3
+
+by
+
+Outrage Entertainment
+
+$0 128 255
+
+
+
+*250 100 450 100 8
+!ART & DESIGN
+Sean Lynn, Lead
+Mark Dinse
+Dan McMillan
+Josh Foreman
+Matt Long
+Luke Schneider
+
+
+*450 100 250 100 8
+!PROGRAMMING
+Matt Toschlog, Lead
+Jason Leighton
+Chris Pfeiffer
+Samir Sinha
+Kevin Bentley
+Nate Goudie
+Jeff Slutter
+
+
+*150 300 150 100 8
+!ANIMATION
+Doug Brooks, Lead
+Chris Claflin
+Chris Hayes
+Dan McMillan
+
+
+*400 300 400 200 8
+!SOUND EFFECTS & MUSIC
+Jerry Berlongieri
+
+
+*220 250 220 150 8
+!PRODUCER
+Craig Derrick
+
+
+*420 150 420 250 8
+!PROJECT DIRECTOR
+Matt Toschlog
+
+
+*320 250 320 100 8
+!TESTING
+Andy Crosby, Lead
+Steve Buckley
+Demian Linn
+Shawn McMillan
+
+
+*320 200 320 200 8
+!ADMINISTRATIVE SUPPORT
+Laurie Ford
+
+
+*320 200 320 200 8
+!SYSTEMS SUPPORT
+Jay Crispen
+
+
+*320 200 320 200 8
+!ADDITIONAL MODELS & ART
+Brent Feeman
+Vector Graphics
+Infografica
+
+
+*320 200 320 200 8
+!EXTERNAL BETA TESTERS
+Heiko "HHSoft" Herrmann
+Kevin "SickOne" Murphy
+Matt "Dorsola" Kellner
+Steve "Stinger" Klinger
+Jeff "ZappaFan" Guynn
+Alexander "Assassin" Streule
+Mark "Vyper" Redman
+Stephan "Data" Kneipp
+Martin "McFly" Roeder
+
+
+
+*320 200 320 200 8
+! 
+$0 255 0
+Visit Outrage Entertainment at:
+http://www.outrage.com
+
+
+
+*320 200 320 200 5
+$255 0 0
+!Linux version
+
+Published and Distributed by
+Loki Entertainment Software
+
+$0 128 255
+
+*450 100 250 100 8
+!PROGRAMMING
+Ryan C. Gordon, Lead
+Jeff Slutter
+Bernd Kreimeier
+Michael Vance
+Sam Lantinga
+Daniel Vogel
+
+*320 250 320 100 8
+!QUALITY ASSURANCE
+Andy Mecham, Lead
+Mike Phillips
+
+*320 250 320 100 8
+!PRINTED MANUAL EDITOR
+Kayt Sorhaindo
+
+*320 250 320 100 8
+!INSTALLER
+Sam Lantinga
+Stephane Peter
+
+*320 250 320 100 8
+!TECHNICAL SUPPORT
+Nate Ashford
+Brad Barton
+
+*320 250 320 100 8
+!SYSTEM ADMINISTRATION
+Rafael Barrero
+
+*420 150 420 250 8
+!PRESIDENT
+Scott Draeker
+
+*320 250 320 100 8
+!OFFICE MANAGEMENT
+Brandon Carter
+Lance Colvin
+
+*320 250 320 100 8
+!DAY CARE SERVICES
+nerf
+
+
+*320 200 320 200 8
+! 
+$0 255 0
+Visit Loki Entertainment at:
+http://www.lokigames.com
+
+
+
+$0 128 255
+*320 10 320 10 10
+!OUTRAGE THANKS:
+Volition, Inc.
+Leaping Lizard Software
+Sonic Foundry
+Chris Hecker
+Brian Hook
+Alisa Baker
+Mark Jolley
+Bob Seestadt
+Michael Gold, Doug Rogers, & Sim Dietrich
+Howard Jacob & Eddie Banks
+Nora Belavic
+Clavia Musical Instruments
+Armadillo Enterprises
+Chris Moulios
+TJ Martin
+Jonathan Hoffberg
+Heiko Herrmann and the Beta Testers
+Victoria Green
+Kate Oleksiak
+Carol Breznai
+William Calhoun & Dennis Calhoun
+Anissa Pelchat, Mike & Connie Lynn
+John Anderson
+The 8-Ball Saloon
+Diana Taur-McMillan
+Niel Lockhart
+Bill Spencer
+Stacie Foreman and Lelia Foreman
+Emily Glowacki
+Tom & Deb Smith
+ImsaDudes
+Leigha Lafleur
+Schrodinger T. Cat
+Jocelyn Lloyd
+Sandy, Randy, Donna, Adolph, and Hazel Jedryczka
+Christopher Karath
+Dianna Bentley
+Zabrina Goudie
+Dave Regelsky
+Allison Reidler
+Johnnie, Camile, and Edison Brooks
+The Claflin family and Erin McLarney
+The Hayes family
+Joe, Elly & Kate Crosby
+Kay & Jack Harris
+Kimberly Hamilton
+
+3Dfx, AMD, ATI, 
+Canopus, Creative Labs, 
+Diamond Multimedia, Dolby Labs, 
+Intel, MadCatz, Matrox,
+Metabyte, Microsoft, NEC, Nvidia, 
+S3, Saitek, Wicked3D
+
+
+*320 60 320 60 8
+!FOR INTERPLAY PRODUCTIONS:
+
+
+$255 0 0
+!V.P. of Product Development
+$0 128 255
+Trish Wright
+
+
+$255 0 0
+!Tantrum Executive Producer
+$0 128 255
+Alan Pavlish
+
+
+$255 0 0
+!Producers
+$0 128 255
+Jeff Barnhart
+Bill Dugan
+Raphael Hernandez
+
+
+$255 0 0
+!Line Producers
+$0 128 255
+Brandon Lang
+Chris Benson
+
+
+$255 0 0
+!Quality Assurance Project Supervisor
+!and Compatibility Manager
+$0 128 255
+Darrell "The Maestro" Jones
+
+
+$255 0 0
+!Multiplayer Coordinator
+$0 128 255
+Erick "Vampire" Lujan
+
+
+$255 0 0
+!Testers
+$0 128 255
+Tim "Cthulhu" Anderson
+Primo "Proxi" Pulanco 
+Tony "Wardog" Piccoli
+David "Streaker" Fleischmann
+Galacio "Mofs" Ramirez
+Henry "Guyver" Lee
+Jeremy "Sweeney" Seely
+Matt "Gollem" Golembiewski
+Mark "Fezzik" Pfeiffer
+Warren "Dutch" Schultz
+Joe "Mystic" Isip
+Bradley "Tim" Dutton
+Monica "Target" Vallejo
+Amy "Stinky" Presnell
+John "Psy" Kirkland
+Ismael "Ishtar" Quijano
+Kris "Substance" Giampa
+Eric "Fillabuster" Fong
+Gabriel "RA" Dibble
+Jason "Johnny" Holmes
+Nicholas "Longshot" Hidalgo
+Larry "Dawnrazor" Smith
+Bill "Solo" Delk
+Tom "Major" Quast
+Edward "Rev. Maynard" Hyland
+
+
+$255 0 0
+!Linux Testers
+$0 128 255
+Adrian "Toastee" Neill
+Terry "Keerf" Warner
+Jason "Ghent" Lundy
+Evan "ntropy" Webb
+Bill "Stargazer" Wright
+Lee "gr00vy" Anderson
+Kris "KY_Jello" Kundert
+Gregory "Centove" McLean
+Nacho "Cureless" Solis
+Vojtech "Wizard" Pavlik
+Joseph "Archimedes" Cooper
+Christian "Phoenix" Zander
+Asten "Caanon" Rathbun
+Jeff "Judecca" Mrochuk
+Rikard "bosna" Bosnjakovic
+Paul "CedarLUG" Gray
+Carl "DuckWing" Constantine
+Stephen "ss2chef" Smith
+Scott "blaine" Bowden
+Fionn "Fear" Behrens
+Michael "tuxgames" Simms
+David "NeoTron" Hedbor
+Jon "Railroad" Revie
+Thomas "m0nkyman" McVeigh
+Matt "Shabadoo" Matthews
+William "Fugue" Kelly III
+Brion "Colkurtz42" Vibber
+Larry "Gadget" Hignight
+Mark "Chief" Stingley
+Michael "M00k3y" Ritner
+Pierre-Luc "Silence" Lesperance
+Jeremy "CDN_Gehn" Nickurak
+Andreas "andz" Niehoff
+Gary "Chunky Kibbles" Briggs
+Mark "Shamgar" Bainter
+
+
+$255 0 0
+!Compatibility Technicians
+$0 128 255
+Jack Parker
+Derek Gibbs
+David "LD" Parkyn
+Josh "Crow" Walters
+
+
+$255 0 0
+!Director of QA
+$0 128 255
+Jeremy Barnes
+
+
+$255 0 0
+!QA Managers
+$0 128 255
+Greg Baumeister
+Mike Motoda
+
+
+
+$255 0 0
+!Marketing Manager
+$0 128 255
+Stacy Bremmer
+
+
+$255 0 0
+!Public Relations
+$0 128 255
+Lisa Bucek
+
+
+$255 0 0
+!Traffic Manager
+$0 128 255
+Sherry LaVertu
+
+
+$255 0 0
+!Manual Design and Layout
+$0 128 255
+Sandie Minguez
+
+
+*320 10 320 10 8
+!AUDIO FOR CINEMATICS
+$255 0 0
+Supervising Sound Design
+and Re-Recording mixer
+$0 128 255
+Charles Deenen
+
+
+$255 0 0
+!Sound Design/Editing
+$0 128 255
+David Farmer
+Ann Scibelli
+Eric Lindemann
+
+
+$255 0 0
+!Music
+$0 128 255
+Tim Jones
+
+
+$255 0 0
+!Additional music supervision
+$0 128 255
+Rick Jackson
+
+
+$255 0 0
+!Foley Artists
+$0 128 255
+Sean Rowe
+
+
+$255 0 0
+!Foley Editing
+$0 128 255
+Caron Weidner
+
+
+$255 0 0
+!Foley mixer
+$0 128 255
+Eric Thompson
+
+
+$255 0 0
+!VO direction/casting
+$0 128 255
+Chris Borders
+
+
+$255 0 0
+!VO direction
+$0 128 255
+Andrea Romano
+
+
+$255 0 0
+!VO editing
+$0 128 255
+Stephen Miller
+Chris Borders
+
+
+$255 0 0
+!Additional sound editing
+$0 128 255
+Adam Levenson
+
+
+$255 0 0
+!Audio Administrator
+$0 128 255
+Gloria Soto
+
+
+$255 0 0
+!Foreign Dialog mixing
+$0 128 255
+Craig Duman
+
+
+$255 0 0
+!Video Services
+$0 128 255
+Dan Williams
+Bill Stoudt
+Dave Cravens
+
+
+*320 100 320 100 8
+!CAST
+$0 128 255
+George Del Hoyo
+David Warner
+Adrienne Barbeau
+Maurice La Marche
+Carol Bilger
+Danny Wells
+Charlie Rockett
+Britta Hudson
+Tackyong Kim
+Sara Grosky
+Eric Block
+Christina M. Morus
+Decky Alexander
+Wallace Bridges
+Brendan B. Kelly
+Jim Rankin
+
+
+*320 10 320 10 8
+!INTERPLAY THANKS
+Kendra Namekawa
+Valerie Jones
+Bama
+KoolBear
+Solidair
+MasterDescent
+EyeRate
+Eagle
+Mad
+10m
+serpent7
+Dr Payne
+Kuman
+Sup
+Tetrad
+Merlin
+CajunAce
+Solr_Flare 
+Descenter
+Cathrope
+
+
+*320 100 320 100 8
+!LOKI THANKS
+Matt Toschlog
+Jeff Slutter
+Brian Paul
+Gregory S. Read
+Andy "Yoda" Mecham
+Mike "Heimdall" Phillips
+Rafael "Raistlin" Barrero
+Andrew "Prometheus" Henderson
+Emmett Plant
+Vojtech Pavlik
+Dustin "Crusader" Reyes
+Matt "JJJ_Shabadoo" Matthews
+The #loki gang at irc.openprojects.net
+Bofa and Wendy from down at The Center
+
+END

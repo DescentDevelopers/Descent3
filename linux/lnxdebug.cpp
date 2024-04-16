@@ -1,0 +1,88 @@
+/*
+* $Logfile: /DescentIII/Main/linux/lnxdebug.cpp $
+* $Revision: 1.1.1.1 $
+* $Date: 2000/04/18 00:00:39 $
+* $Author: icculus $
+*
+* Linux debugging routines
+*
+* $Log: lnxdebug.cpp,v $
+* Revision 1.1.1.1  2000/04/18 00:00:39  icculus
+* initial checkin
+*
+ * 
+ * 8     7/22/99 1:21p Jeff
+ * added 3rd debugging window
+ * 
+ * 7     7/14/99 9:09p Jeff
+ * added comment header
+*
+* $NoKeywords: $
+*/
+
+#include "debug.h"
+#include "mono.h"
+#include <assert.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool Debug_break=false;
+bool Debug_mono=false;
+
+char *Debug_DumpInfo();
+
+//	if we are running under a debugger, then pass true
+bool Debug_Init(bool debugger, bool mono_debug)
+{
+#ifndef RELEASE
+	Debug_break = debugger;
+
+	if (mono_debug) {
+		Debug_ConsoleInit();
+		Debug_ConsoleOpen( 0, 9, 1, 78, 15, "Debug Spew");
+		Debug_ConsoleOpen( 1, 1, 1, 58,  6, "Warnings");
+		Debug_ConsoleOpen( 2, 1,61, 18,  6, "Stats");
+
+		mprintf((0, "Linux system.\n"));
+	}
+
+	if (Debug_break)
+		mprintf((0, "Debug Break enabled.\n"));
+
+#endif	//ifndef RELEASE
+
+	return true;
+}
+
+//Does a messagebox with a stack dump
+//Messagebox shows topstring, then stack dump, then bottomstring
+//Return types are the same as the Windows return values
+int Debug_ErrorBox(int type,const char *topstring, const char *title,const char *bottomstring)
+{
+	int answer = 0;
+	char *dumptext = Debug_DumpInfo();
+
+	fprintf(stderr,"\r\n%s(%s)\r\n\n%s\r\n\n%s\r\n",title,topstring,dumptext,bottomstring);
+
+	debug_break();
+
+	return answer;
+}
+
+// displays an message box 
+// Returns the same values as the Win32 MessageBox() function
+int Debug_MessageBox(int type, const char *title, const char *str)
+{
+	return Debug_ErrorBox(type,str,"Descent 3 Message","");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+char *Debug_DumpInfo(void)
+{
+	static char e[]= "System Error";
+	return e;
+} 

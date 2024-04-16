@@ -1,0 +1,85 @@
+//////////////////////////////////////////////
+// D.A.L.L.A.S. Generated Message Table File
+//////////////////////////////////////////////
+
+NEXT_MESSAGE_ID_NUMBER     83
+
+// Message List
+BallFanPuzzleHint=GUIDEBOT: "We need to find a way to take out one of those fans..."
+BallMade=GUIDEBOT: "A ball?  I suppose it must be used for something..."
+Bomb=Bomb
+Bomb2=Bomb (2)
+Bomb3=Bomb (3)
+BombAlreadyPlanted=GUIDEBOT: "You already planted a bomb at this cooling junction!"
+BombDontPlantHere=GUIDEBOT: "You can't plant a bomb here!"
+BombPlanted=GUIDEBOT: "Bomb planted!"
+BunkerStart=GUIDEBOT: "Now what is that thing up to?"
+BunkerWarmup=GUIDEBOT: "What's going on in there?"
+CaptainAndTrooper=Inter-station communication is off-line.|Reports from the hangar indicate anomalous activity.|
+CaptainAndTrooper2=Assess the situation and report back to me.|
+CaptainText=The Captain|
+DataArmOff=GUIDEBOT: "Both Pole Keys must be verified before the Data Arm will function."
+DataArmUsed=GUIDEBOT: "Station Databanks Downloaded!"
+DataKeyCaptain=Captain's Data Key
+DataKeyFirstMate=First Mate's Data Key
+DataKeyNoUse1=GUIDEBOT: "You can't use the Captain's Key here!"
+DataKeyNoUse2=GUIDEBOT: "You can't use the First Mate's Key here!"
+DataKeysVerified=GUIDEBOT: "The keys have been verified.  Time to get that data..."
+DataKeyWrong1=GUIDEBOT: "Only the Captain's key works at this data port!"
+DataKeyWrong2=GUIDEBOT: "Only the First Mate's Key works at this data port!"
+DatalinkKey1=Datalink Key
+DatalinkKeyIsFull=Datalink key already full!
+DatalinkKeyUsed1=Datalink Key (Full)
+DoorUnlockedMaint=GUIDEBOT: "Maintenance just unlocked the Cooling Junction's entry door!"
+EmptyMessage=
+EnteredBunker=GUIDEBOT: "It's time to make sure the captain goes down with the ship..."
+EnteredHangar1A=GUIDEBOT: "Ok, let's get out of here and find Hangar 2A..."
+EnteredHangar2A=GUIDEBOT: "Good, now do the same thing and get us to Hangar 3A..."
+EscapeDoorLocked=GUIDEBOT: "We can't leave until the bombs are in place and we have the data!"
+ExitLevelLong=ALERT: Security has discovered that the captain and first mate are no longer functional...  The station is now on full Red Alert status.
+ExitTheLevel=Station Alert Message Received (Shift-F8)...
+FanDisabled=GUIDEBOT: "Reactor cooling fan disabled!"
+FirstMateText=The First Mate|
+ForcefieldDown=GUIDEBOT: "Forcefield deactivated!"
+GetOut=GUIDEBOT: "Bombs planted and data retrieved!  Let's get out of here!"
+GotDatalinkKey=Captain's Datalink Key
+GotDatalinkKey2=First Mate's Datalink Key
+Hangar1ADecompCancelMsg=Hanger 1 decompression sequence terminated
+Hangar1ADecompMsg=Hangar 1 decompression sequence starting...
+Hangar2ADecompCancelMsg=Hanger 2 decompression sequence terminated
+Hangar2ADecompMsg=Hangar 2 decompression sequence starting...
+Hangar2AFlamePurge=Hangar 2 flame purge activated!
+Hangar2AFlamePurgeStop=Hangar 2 flame purge deactivated!
+Hangar3ADecompMsg=Hangar 3 decompression sequence starting...
+Hangar3ADecompMsgCancel=Hanger 2 decompression sequence terminated
+HangarPrimaryLocked=Hangar primary bay door in lockdown mode!
+HazardGadget1Line=We have an intruder.  Alert the Captain.|
+HazardGadget1Line2=Acknowledged.|Maintain the force field until communication is online.|
+HazardGadget2Line=Inter-station communication is off-line|due to the meteor storm.|
+HazardousStorageHint=GUIDEBOT: "There must be some way to activate that forcefield switch from here..."
+HenchmanHint=GUIDEBOT: "Time to show the Captain what we think of his message..."
+HenchmanSays=The Captain sent me to deliver a message...|
+IncomingTransmit=Incoming transmission...
+IntroCinematicMsg=CED Deep Space Tracking Station
+IntruderAlert=Maintenance: Intruder Alert!
+IntruderAlertR0=GUIDEBOT: "The Sector-R0 Guard spotted us!"
+IntruderAlertR1=GUIDEBOT: "The Sector-R1 guard spotted us!"
+IntruderAlertR2=GUIDEBOT: "The Sector-R2 guard spotted us!"
+IntruderAlertR3=GUIDEBOT: "The Sector-R3 guard spotted us!"
+MaintenanceWarning=Maintenance Alert Message Received (Shift-F8)
+MaintenanceWarningLong=ALERT: The station is now on a Yellow alert.  Maintenance has detected something unusual in the cooling junction systems...
+MBotDied=GUIDEBOT: "I guess we're gonna need a new maintenance bot..."
+MBotSpottedUs=GUIDEBOT: "That little maintenance bot spotted us!"
+MBotSummon=GUIDEBOT: "The maintenance bot alerted security!"
+MBotSwitch=GUIDEBOT: "Maybe maintenance can be our ticket inside..."
+NoDatalinkTerminal=There's no accessible datalink terminal nearby!
+NoEndLevel=Level not done...
+PoleDatalinkLock=GUIDEBOT: "Data access lockdown initiated!  All key(s) ejected."
+PoleDatalinkWarning=GUIDEBOT: "Key verified!  We now have %d seconds to get the other key verified..."
+PowerJunction1A=Power Junction 1A
+SecuirtyR3=GUIDEBOT: "Security in Sector-R3 has been activated!"
+SecurityR0=GUIDEBOT: "Security in Sector-R0 has been activated!"
+SecurityR1=GUIDEBOT: "Security in Sector-R1 has been activated!"
+SecurityR2=GUIDEBOT: "Security in Sector-R2 has been activated!"
+TestMessage=Gadget at matcen
+WindFanPuzzleHint=GUIDEBOT: "We won't be getting down this hallway while that fan is operational..."

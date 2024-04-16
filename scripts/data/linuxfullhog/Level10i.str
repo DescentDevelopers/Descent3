@@ -1,0 +1,317 @@
+!/!Level strings for Level10.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I! = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Infiltrate the Lunar Command Center
+!G!In das Mond-Kommandozentrum eindringen
+!S!Infíltrate en el centro de mando lunar
+!I!Infiltrati nel centro di comando lunare
+!F!Infiltrer le Centre de Commandement Lunaire
+
+!/!Goal 0 Item Name
+!=!Command Center
+!G!Kommandozentrum
+!S!Desconocido
+!I!Centro di comando
+!F!Centre de commandement
+
+!/!Goal 0 Description
+!=!You must find a way to get inside the CED's Lunar Command Center.  It is recommended that you maintain a low profile when outside.  This will minimize the resistance that you are likely to encounter once inside the base.  To help you out, we will attempt to jam as much surface radio communincation as possible.  This will not necessarily prevent determined guards from alerting the base.
+!G!Sie müssen einen Weg in das Mond-Kommandozentrum der KEV finden. Es wird empfohlen, sich draussen unauffällig zu verhalten. Das wird den Widerstand minimieren, auf den Sie voraussichtlich innerhalb der Basis treffen werden. Um Ihnen herauszuhelfen, werden wir versuchen, den Funkverkehr zu stören. Allerdings wird das zielstrebige Wachen nicht unbedingt vom Alarmieren der Basis abhalten.
+!S!Tienes que encontrar la forma de entrar en el centro de mando lunar de la  CDT. Te recomendamos que mantengas un perfil bajo en el exterior; de este modo encontrarás menos resistencia en el interior de la base. Intentaremos crear todas las interferencias posibles en las comunicaciones de radio de la superficie, para ayudarte. Pero es posible que esto no evite que algunos guardias pongan sobre aviso a la base.
+!I!Devi trovare il modo di entrare nel centro di comando lunare del CDT. È preferibile non mettersi troppo in vista all'esterno. Così ridurrai al minimo la probabile resistenza all'interno della base. Per aiutarti a uscire, cercheremo di disturbare il più possibile le comunicazioni radio di superficie. Ricorda però che una guardia determinata potrebbe trovare comunque il modo di avvertire la base.
+!F!Trouvez un moyen de vous infiltrer dans le Centre de Commandement Lunaire de la CDT. Essayez de ne pas vous faire repérer lorsque vous serez dehors ; les forces de résistance que vous rencontrerez une fois à l'intérieur en seront ainsi plus réduites. Pour vous aider, nous nous efforcerons de brouiller les communications radio en surface autant que possible - mais notre action n'empêchera probablement pas certains gardes d'alerter la base.
+
+!/!Goal 1 Name
+!=!Obtain a Data Vault Key
+!G!Einen Datenraum-Schlüssel beschaffen
+!S!Consigue la llave de la cámara acorazada de datos
+!I!Procurati la chiave della sala dati
+!F!Obtenir une clé de la salle des données
+
+!/!Goal 1 Item Name
+!=!Data Vault Key
+!G!Datenraum-Schlüssel
+!S!Desconocido
+!I!Chiave della sala dati
+!F!Clé de la chambre des données
+
+!/!Goal 1 Description
+!=!You must locate a key that will unlock the Data Vault's entry door.
+!G!Sie müssen einen Schlüssel finden, mit dem sich die Tür zum Datenraum aufschliessen lässt.
+!S!Tienes que localizar la llave que abre la puerta de la cámara acorazada de datos
+!I!Devi localizzare la chiave che apre la porta della sala dati
+!F!vous devez trouver une clé qui ouvre la porte d'entrée de la salle des données.
+
+!/!Goal 2 Name
+!=!Enter through the Data Vault
+!G!In den Datenraum eindringen 
+!S!Entra en la cámara acorazada de datos
+!I!Entra nella sala dati
+!F!Entrer dans la salle des données
+
+!/!Goal 2 Item Name
+!=!Data Vault
+!G!Datenraum
+!S!Cámara acorazada de datos
+!I!Sala dati
+!F!Salle des données
+
+!/!Goal 2 Description
+!=!You must enter the Command Center via the Data Vault's main entry door.
+!G!Sie müssen das Kommandozentrum durch die Haupteingangstür des Datenraums betreten.
+!S!Debes entrar en el centro de mando, por la entrada principal de la cámara acorazada de datos.
+!I!Devi entrare nel centro di comando passando per l'ingresso principale della sala dati.
+!F!vous devez entrer dans le Centre de Commandement par la porte principale de la salle des données.
+
+!/!Goal 3 Name
+!=!Upload Virus Information
+!G!Virus-Informationen übertragen
+!S!Carga la información del virus
+!I!Carica le informazioni sul virus
+!F!Télécharger les informations sur le virus 
+
+!/!Goal 3 Item Name
+!=!Data Uplink Room
+!G!Datenübertragungsraum
+!S!Sala 1 de enlace de datos
+!I!Sala trasmissione dati
+!F!Salle de transfert de donnees
+
+!/!Goal 3 Description
+!=!You must locate the Data Uplink Center and upload the virus information so that the CED knows you are on their side.  The exact upload process is unknown, so you will have to learn what you can from the base itself.
+!G!Sie müssen das Datenübertragungszentrum ausfindig machen und die Virus-Informationen übertragen, damit die KEV weiss, dass Sie auf ihrer Seite stehen. Der genaue Ladevorgang ist unbekannt, daher müssen Sie direkt an der Basis lernen, was möglich ist.
+!S!Debes localizar el centro de enlace de datos y cargar la información del virus para que la CDT crea que estás de su parte. No sabemos cómo funciona exactamente el proceso de carga, así que tendrás que averiguar lo que puedas en la base.
+!I!Devi individuare il centro di trasmissione dati e caricare le informazioni sul virus affinché il CDT capisca che stai dalla loro parte. Non conosciamo l'esatto processo di caricamento per cui dovrai scoprire tutto quello che puoi all'interno della base stessa.
+!F!Vous devez localiser le centre de transfert des données et charger les informations concernant le virus pour convaincre la CDT que vous êtes de leur côté. Le procédé de téléchargement est inconnu ; vous devrez donc apprendre ce que vous pouvez de la base elle-même.
+
+!/!Goal 4 Name
+!=!Acquire a Data Interface
+!G!Eine Datenschnittstelle beschaffen 
+!S!Consigue una interfaz de datos
+!I!Procurati un'interfaccia dati
+!F!Obtenir une interface de données
+
+!/!Goal 4 Item Name
+!=!Data Interface
+!G!Datenschnittstelle
+!S!Desconocido
+!I!Interfaccia dati
+!F!Interface de données
+
+!/!Goal 4 Description
+!=!You must locate a Data Interface for your ship so that you can communicate with the CED's mainframe via their Data Uplink.
+!G!Sie müssen eine Datenschnittstelle für Ihr Schiff finden, damit Sie mit dem Grossrechner der KEV über deren Datenübertragungsmodul kommunizieren können.
+!S!Debes encontrar una interfaz de datos para tu nave, para poder comunicarte con el ordenador principal de la CDT por medio del enlace de datos.
+!I!Devi localizzare un'interfaccia dati per la nave in modo da poter comunicare con il computer centrale del CDT attraverso il loro sistema di trasmissione dati.
+!F!Pour communiquer avec l'ordinateur central de la CDT via leur liaison de données, vous devez trouver une interface de données pour votre vaisseau.
+
+!/!Goal 5 Name
+!=!Initialize Data Interface
+!G!Datenschnittstelle initialisieren 
+!S!Inicializa la interfaz de datos
+!I!Inizializza l'interfaccia dati
+!F!Initialiser l'interface de données
+
+!/!Goal 5 Item Name
+!=!Interface Initialization Hub
+!G!Schnittstellen-Initialisierungszentrum
+!S!Sala de preparación
+!I!Centro di inizializzazione dell'interfaccia
+!F!Centre d'initialisation de l'interface 
+
+!/!Goal 5 Description
+!=!You must initialize your ship's Data Interface before any information can be uploaded through it.
+!G!Sie müssen die Datenschnittstelle Ihres Schiffs initialisieren, bevor Informationen darüber übertragen werden können.
+!S!Tienes que inicializar la interfaz de datos de tu nave antes de utilizarla para cargar la información.
+!I!Devi inizializzare l'interfaccia dati della nave prima di poterla usare per caricare informazioni.
+!F!Vous devez initialiser l'interface de données de votre vaisseau avant que toute information ne puisse être téléchargée.
+
+!/!Goal 6 Name
+!=!Connect to Data Uplink
+!G!Mit Datenübertragungsmodul verbinden
+!S!Conéctate al enlace de datos
+!I!Collegati al sistema di trasmissione dati
+!F!Se connecter à la liaison de données
+
+!/!Goal 6 Item Name
+!=!Data Uplink Room
+!G!Datenübertragungsraum
+!S!Sala del enlace de datos
+!I!Sala trasmissione dati
+!F!Liaison de données
+
+!/!Goal 6 Description
+!=!You must connect to the Data Uplink by hovering directly between its two plasma cells.  The Data Interface should do the rest.  It is likely, however, that other steps will be required for the upload to be successful.
+!G!Sie müssen die Verbindung mit dem Übertragungsmodul herstellen, indem Sie direkt zwischen den beiden Plasmazellen schweben. Die Datenschnittstelle sollte dann den Rest erledigen. Es ist jedoch anzunehmen, dass für eine erfolgreiche Übertragung noch andere Schritte notwendig sind.
+!S!Para poder conectarte al enlace de datos debes introducirte directamente entre sus dos células de plasma. La interfaz de datos se encargará del resto. Sin embargo, es posible que tengas que hacer algo más para que la carga se realice con éxito.
+!I!Devi collegarti al sistema di trasmissione dati introducendoti tra due sue celle al plasma. L'interfaccia dati dovrebbe fare il resto. È probabile tuttavia che occorrano altri interventi per effettuare il caricamento.
+!F!Vous devez vous connecter à la liaison de données en vous maintenant en vol stationnaire entre ses deux cellules de plasma. L'interface de données s'occupera du reste. D'autres opérations devront sans doute être exécutées pour que le téléchargement réussisse.
+
+!/!Goal 7 Name
+!=!Activate Uplink Docking Control
+!G!Die Andocksteuerung aktivieren
+!S!Activa el enlace de datos del control de atracadero
+!I!Attiva comando di agganciamento per trasmissione dati
+!F!Activer la commande d'amarrage
+
+!/!Goal 7 Item Name
+!=!Docking Control Panel
+!G!Schalttafel der Andocksteuerung 
+!S!Control de atracadero
+!I!Pannello di controllo di agganciamento
+!F!Panneau de contrôle d'amarrage
+
+!/!Goal 7 Description
+!=!You must find a way to manually activate Uplink Docking Control.
+!G!Finden Sie einen Weg, die Andocksteuerung des Übertragungsmoduls manuell zu aktivieren.
+!S!Debes encontrar la manera de activar el enlace de datos del atracadero manualmente
+!I!Devi trovare un modo per attivare manualmente i comandi di agganciamento per la trasmissione dei dati
+!F!Trouvez un moyen d'activer la commande d'amarrage au dispositif de transfert de données.
+
+!/!Goal 8 Name
+!=!Enable Uplink Control Power
+!G!Die Energieversorgung des Übertragungsmoduls aktivieren 
+!S!Activa el interruptor del control
+!I!Attiva l'interruttore di controllo
+!F!Activer l'interrupteur de contrôle
+
+!/!Goal 8 Item Name
+!=!Control Power Switch
+!G!Energieversorgungsschalter
+!S!Interruptor de control
+!I!Interruttore di controllo
+!F!Interrupteur de contrôle
+
+!/!Goal 8 Description
+!=!You must turn on the power to the Uplink Control Panel.
+!G!Sie müssen die Energieversorgung der Schalttafel aktivieren. 
+!S!Debes activar proveer energía al control de enlace de datos.
+!I!Devi fornire l'alimentazione al pannello di controllo per il trasferimento dati.
+!F!Vous devez alimenter le panneau de contrôle du dispositif de transfert de données.
+
+!/!Goal 9 Name
+!=!Disable Nano Plasma Defenses
+!G!Die Nanoplasma-Abwehr deaktivieren
+!S!Desactiva las defensas de nanoplasma
+!I!Disattiva le difese al nanoplasma
+!F!Désactiver les défenses à nanoplasma
+
+!/!Goal 9 Item Name
+!=!Nano Plasma Switch
+!G!Nanoplasme-Schalter
+!S!Interruptor de nanoplasma
+!I!Interruttore al nanoplasma
+!F!Interrupteur à nanoplasma
+
+!/!Goal 9 Description
+!=!You must disable the Data Uplink's Nano Plasma Defense system.
+!G!Sie müssen das Nanoplasma-Abwehrsystem des Datenübertragungsmoduls ausser Betrieb setzen.
+!S!Debes desactivar el systema de defensa de nanoplasma del enlace de datos
+!I!Devi disattivare il sistema difensivo al nanoplasma di trasferimento dati.
+!F!Vous devez désactiver le système de défense à nanoplasma du dispositif de transfert des données.
+
+!/!Goal 10 Name
+!=!Activate Uplink Plasma Supply
+!G!Die Plasmaversorgung des Moduls aktivieren
+!S!Activa el recargador de plasma
+!I!Attiva la ricarica al plasma
+!F!Activer la recharge en plasma
+
+!/!Goal 10 Item Name
+!=!Uplink Plasma Switch
+!G!Plasma-Schalter
+!S!Interruptor de plasma
+!I!Interruttore del plasma
+!F!Interrupteur de plasma
+
+!/!Goal 10 Description
+!=!You must activate the Data Uplink's Plasma Supply.
+!G!Sie müssen die Plasmaversorgung des Datenübertragungsmoduls aktivieren.
+!S!Debes activar el recargador de plasma del enlace de datos.
+!I!Devi attivare la ricarica al plasma del sistema di trasferimento dati.
+!F!Vous devez activer la recharge en plasma du dispositif de transfert de données.
+
+!/!Goal 11 Name
+!=!Enable Memory Plasma Generation
+!G!Die Herstellung von Memoryplasma ermöglichen
+!S!Activa la generación de plasma de memoria
+!I!Attiva la generazione del plasma di memoria
+!F!Permettre la génération de plasma
+
+!/!Goal 11 Item Name
+!=!Memory Plasma Switch
+!G!Memoryplasma-Schalter
+!S!Interruptor de plasma de memoria
+!I!Interrutore del plasma di memoria
+!F!Interrupteur du plasma à mémoire
+
+!/!Goal 11 Description
+!=!You must find a way to enable the generation of Memory Plasma charges.
+!G!Sie müssen einen Weg finden, die Herstellung von Memoryplasma zu ermöglichen.
+!S!Debes encontrar la manera de generar cargas de plasma de memoria.
+!I!Devi trovare il modo per generare le cariche del plasma di memoria.
+!F!Trouvez un moyen de générer du plasma à mémoire. 
+
+!/!Goal 12 Name
+!=!Acquire Memory Plasma Charge
+!G!Eine Memoryplasma-Ladung bekommen
+!S!Obten carga de plasma de memoria
+!I!Ottieni carica del plasma di memoria
+!F!Obtenir une recharge de plasma à mémoire
+
+!/!Goal 12 Item Name
+!=!Memory Plasma Charge
+!G!Memoryplasma-Ladung
+!S!Carga de plasma de memoria
+!I!Carica del plasma di memoria
+!F!Recharge de plasma à mémoire
+
+!/!Goal 12 Description
+!=!You must acquire a sufficient charge of Memory Plasma.
+!G!Sie müssen eine ausreichende Menge an Memoryplasma-Ladung bekommen.
+!S!Debes adquirir la suficiente carga de plasma de memoria.
+!I!Devi acquisire una sufficiente carica di plasma di memoria.
+!F!Vous devez obtenir une recharge suffisante de plasma à mémoire.

@@ -1,0 +1,170 @@
+!/!Level strings for level4.d3l
+
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I!  = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+
+!/!Goal 0 Name
+!=!Get to the Train Station
+!F!Aller à la gare
+!S!Acude a la estación de tren
+!G!Zur U-Bahnstation gelangen
+!I!Vai alla stazione ferroviaria
+
+!/!Goal 0 Item Name
+!=!Train Station
+!F!Gare
+!S!Estación de tren
+!G!U-Bahnstation
+!I!Stazione ferroviaria
+
+!/!Goal 0 Description
+!=!Get past the subway trains and to the train station
+!F!Passez les métros et allez jusqu'à la gare.
+!S!Pasa por delante de los trenes del metro y ve a la estación de tren
+!G!Gelangen Sie an den U-Bahnen vorbei zur Bahnstation.
+!I!Oltrepassa la metropolitana e vai alla stazione ferroviaria
+
+!/!Goal 1 Name
+!=!Find the entrance to the Sewers
+!F!Trouver l'entrée des égouts
+!S!Busca la entrada a las cloacas
+!G!Den Eingang zur Kanalisation finden
+!I!Cerca l'ingresso delle fogne
+
+!/!Goal 1 Item Name
+!=!Sewer Entrance
+!F!Entrée des égouts
+!S!Entrada a las cloacas
+!G!Eingang zur Kanalisation
+!I!Ingresso delle fogne
+
+!/!Goal 1 Description
+!=!Find the Sewer Entrance somewhere in the city
+!F!Trouvez l'entrée des égouts quelque part dans la ville.
+!S!Busca en alguna parte de la ciudad la entrada a las cloacas
+!G!Finden Sie den Eingang zur Kanalisation irgendwo in der Stadt.
+!I!Trova l'ingresso delle fogne in qualche punto della città
+
+!/!Goal 2 Name
+!=!Find PTMC Tower
+!F!Trouver la tour de la PTMC
+!S!Busca la torre del PTMC
+!G!Den PTMC-Turm finden
+!I!Trova la torre PTMC
+
+!/!Goal 2 Item Name
+!=!PTMC Tower
+!F!Tour de la PTMC
+!S!Torre del PTMC
+!G!PTMC-Turm
+!I!Torre PTMC
+
+!/!Goal 2 Description
+!=!Find the PTMC Tower where you can upload the data
+!F!Trouvez la Tour de la PTMC d'où vous pourrez transférez les données.
+!S!Busca la torre del PTMC donde puedes transmitir los datos
+!G!Finden Sie den PTMC-Turm. Sie können dort die Daten einspielen.
+!I!Trova la torre PTMC dove potrai trasmettere i dati
+
+!/!Goal 3 Name
+!=!Upload the data to Suzuki
+!F!Transférer les données à Suzuki
+!S!Transmite los datos a Suzuki
+!G!Die Daten an Suzuki übertragen
+!I!Trasmetti i dati a Suzuki
+
+!/!Goal 3 Item Name
+!=!Upload Interface
+!F!Interface de transfert
+!S!Interfaz de transmisión
+!G!Übertragungsschnittstelle
+!I!Interfaccia di trasferimento
+
+!/!Goal 3 Description
+!=!Place the data cartridge in the Upload Interface to upload the data to Suzuki
+!F!Placez la cartouche de données dans l'interface de données pour transférer les données à Suzuki.
+!S!Coloca el cartucho de datos en la interfaz de transmisión y transmite los datos a Suzuki
+!G!Plazieren Sie die Datenkassette in der Übertragungsschnittstelle, um die Daten an Suzuki zu überspielen.
+!I!Colloca la cartuccia dati nell'interfaccia di trasferimento per trasmettere i dati a Suzuki
+
+!/!Goal 4 Name
+!=!Give the Data to Suzuki and Return Safely
+!F!Apporter les données à Suzuki et rentrer 
+!S!Dale a Suzuki los datos y regresa a salvo
+!G!Die Daten an Suzuki übergeben
+!I!Passa i dati a Suzuki e torna indietro
+
+!/!Goal 4 Item Name
+!=!PTMC Tower
+!F!Tour de la PTMC
+!S!Torre PTMC
+!G!PTMC-Turm
+!I!Torre PTMC
+
+!/!Goal 4 Description
+!=!Give the Dr. Sweitzer's Research Data to Suzuki as proof of PTMC's plan
+!F!Donnez les données de recherche du Dr. Sweitzer à Suzuki.
+!S!Dale a Suzuki los datos de la investigación del Dr. Sweitzer como prueba del plan del PTMC
+!G!Übergeben Sie Schweitzers Forschungsdaten als Beweis für den Plan der PTMC an Suzuki.
+!I!Passa i dati delle ricerche del dottor Swetzer a Suzuki come prova del piano del PTMC
+
+!/!Goal 5 Name
+!=!Defeat the PTMC Mercenaries
+!F!Battre les soldats de la PTMC
+!S!Derrota a los mercenarios de la PTMC
+!G!Die PTMC-Söldner besiegen
+!I!Sconfiggi i mercenari del PTMC
+
+!/!Goal 5 Item Name
+!=!PTMC Mercenaries
+!F!soldats de la PTMC
+!S!Mercenarios de la PTMC
+!G!PTMC-Söldner
+!I!Mercenari del PTMC 
+
+!/!Goal 5 Description
+!=!Destroy the PTMC Mercenaries to avoid getting captured
+!F!Détruisez les soldats de la PTMC pour éviter d'être capturé.
+!S!Destruye a los mercenarios de la PTMC para evitar que te capturen
+!G!Zerstören Sie die PTMC-Söldner, um eine Gefangennahme zu vermeiden.
+!I!Distruggi i mercenari del PTMC e cerca di non farti catturare
