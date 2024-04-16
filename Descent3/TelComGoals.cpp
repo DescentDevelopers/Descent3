@@ -87,6 +87,8 @@
 #include "Macros.h"
 #include "hlsoundlib.h"
 
+#include <algorithm>
+
 #define TITLE_X 30 + TGminx
 #define VALUE_X 400 + TGminx
 int TGminx, TGmaxx, TGminy, TGmaxy;
@@ -287,13 +289,13 @@ void TCGoalsRenderCallback(void) {
   float alpha_amount;
   while (alpha_change > 0) {
     if (active_alpha_in) {
-      alpha_amount = min(ACTIVE_ALPHA_MAX - active_alpha, alpha_change);
+      alpha_amount = std::min(ACTIVE_ALPHA_MAX - active_alpha, alpha_change);
       active_alpha += alpha_amount;
 
       if (active_alpha > (ACTIVE_ALPHA_MAX - 1.0f))
         active_alpha_in = false;
     } else {
-      alpha_amount = min(alpha_change, active_alpha - ACTIVE_ALPHA_MIN);
+      alpha_amount = std::min(alpha_change, active_alpha - ACTIVE_ALPHA_MIN);
       active_alpha -= alpha_amount;
 
       if (active_alpha < (ACTIVE_ALPHA_MIN + 1.0f))
@@ -570,18 +572,18 @@ void TCGoalsRenderCallback(void) {
   // adjust box
   if (TG_TT_curr.w > TG_TT_dest.w) {
     // shrinking
-    TG_TT_curr.w -= min(TG_TT_curr.w - TG_TT_dest.w, (int)(TOOLTIP_SPEED * last_frametime));
+    TG_TT_curr.w -= std::min(TG_TT_curr.w - TG_TT_dest.w, (int)(TOOLTIP_SPEED * last_frametime));
   } else {
     // enlarging
-    TG_TT_curr.w += min(TG_TT_dest.w - TG_TT_curr.w, (int)(TOOLTIP_SPEED * last_frametime));
+    TG_TT_curr.w += std::min(TG_TT_dest.w - TG_TT_curr.w, (int)(TOOLTIP_SPEED * last_frametime));
   }
 
   if (TG_TT_curr.h > TG_TT_dest.h) {
     // shrinking
-    TG_TT_curr.h -= min(TG_TT_curr.h - TG_TT_dest.h, (int)(TOOLTIP_SPEED * last_frametime));
+    TG_TT_curr.h -= std::min(TG_TT_curr.h - TG_TT_dest.h, (int)(TOOLTIP_SPEED * last_frametime));
   } else {
     // enlarging
-    TG_TT_curr.h += min(TG_TT_dest.h - TG_TT_curr.h, (int)(TOOLTIP_SPEED * last_frametime));
+    TG_TT_curr.h += std::min(TG_TT_dest.h - TG_TT_curr.h, (int)(TOOLTIP_SPEED * last_frametime));
   }
 
   // rend_SetAlphaType (AT_CONSTANT_TEXTURE);

@@ -154,6 +154,8 @@
 #include <stdlib.h>
 #endif
 
+#include <algorithm>
+
 IDMFC *DMFCBase = NULL;
 IDmfcStats *dstat = NULL;
 room *dRooms;
@@ -2012,8 +2014,8 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
 
   new_vel /= mag;
 
-  mag = min(mag, 20);
-  mag = max(mag, 10);
+  mag = std::min(mag, 20.0f);
+  mag = std::max(mag, 10.0f);
 
   new_vel *= mag;
 

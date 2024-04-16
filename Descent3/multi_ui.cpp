@@ -326,6 +326,8 @@
 
 #include "multi_save_settings.h"
 
+#include <algorithm>
+
 #define MAIN_MULTI_MENU_W 384
 #define MAIN_MULTI_MENU_H 256
 #define MAIN_MULTI_MENU_X 320 - (MAIN_MULTI_MENU_W / 2)
@@ -779,7 +781,7 @@ void DoMultiAllowed(void) {
   bool shipsallowed[MAX_SHIPS];
   bool objsallowed[MAX_OBJECTS];
   ConfigItem **ship_list = NULL;
-  char *str = (char *)mem_malloc(max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3);
+  char *str = (char *)mem_malloc(std::max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3);
 
   // Create Text Items and Window
   UITextItem cancel_on_text(TXT_CANCEL, UICOL_HOTSPOT_HI);

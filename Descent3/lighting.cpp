@@ -26,6 +26,8 @@
 #include "objinfo.h"
 #include "Macros.h"
 
+#include <algorithm>
+
 #define NUM_DYNAMIC_CLASSES 7
 #define MAX_DYNAMIC_FACES 2000
 #define MAX_DYNAMIC_CELLS 1500
@@ -482,26 +484,26 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
 
         if (red_scale < 0) {
           // we are subtracting light
-          r = max(0, r + (scalar * red_scale * 31));
+          r = std::max<float>(0, r + (scalar * red_scale * 31));
         } else {
           if (r < red_limit)
-            r = min(red_limit, r + (scalar * red_scale * 31));
+            r = std::min<float>(red_limit, r + (scalar * red_scale * 31));
         }
 
         if (green_scale < 0) {
           // we are subtracting light
-          g = max(0, g + (scalar * green_scale * 31));
+          g = std::max<float>(0, g + (scalar * green_scale * 31));
         } else {
           if (g < green_limit)
-            g = min(green_limit, g + (scalar * green_scale * 31));
+            g = std::min<float>(green_limit, g + (scalar * green_scale * 31));
         }
 
         if (blue_scale < 0) {
           // we are subtracting light
-          b = max(0, b + (scalar * blue_scale * 31));
+          b = std::max<float>(0, b + (scalar * blue_scale * 31));
         } else {
           if (b < blue_limit)
-            b = min(blue_limit, b + (scalar * blue_scale * 31));
+            b = std::min<float>(blue_limit, b + (scalar * blue_scale * 31));
         }
 
         lightmap_texel = OPAQUE_FLAG | (r << 10) | (g << 5) | b;
@@ -830,24 +832,24 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
         int b = lightmap_texel & 0x1f;
 
         if (red_scale < 0) {
-          r = max(0, r + (scalar * red_scale * 31));
+          r = std::max<float>(0, r + (scalar * red_scale * 31));
         } else {
           if (r < red_limit)
-            r = min(red_limit, r + (scalar * red_scale * 31));
+            r = std::min<float>(red_limit, r + (scalar * red_scale * 31));
         }
 
         if (green_scale < 0) {
-          g = max(0, g + (scalar * green_scale * 31));
+          g = std::max<float>(0, g + (scalar * green_scale * 31));
         } else {
           if (g < green_limit)
-            g = min(green_limit, g + (scalar * green_scale * 31));
+            g = std::min<float>(green_limit, g + (scalar * green_scale * 31));
         }
 
         if (blue_scale < 0) {
-          b = max(0, b + (scalar * blue_scale * 31));
+          b = std::max<float>(0, b + (scalar * blue_scale * 31));
         } else {
           if (b < blue_limit)
-            b = min(blue_limit, b + (scalar * blue_scale * 31));
+            b = std::min<float>(blue_limit, b + (scalar * blue_scale * 31));
         }
 
         lightmap_texel = OPAQUE_FLAG | (r << 10) | (g << 5) | b;
@@ -883,7 +885,7 @@ red_scale,float green_scale,float blue_scale)
                 sf->strength=0;
         }
 
-        float norm=min(1.0,(light_dist/dist_from_plane)*2.0);
+        float norm=std::min(1.0,(light_dist/dist_from_plane)*2.0);
         float strength=((red_scale*.33)+(green_scale*.33)+(blue_scale*.33))*light_dist;
 
         if (strength>sf->strength)
@@ -949,9 +951,9 @@ void ApplyVolumeLightToObject(vector *pos, object *obj, float light_dist, float 
   }
 
   if (obj->effect_info->type_flags & EF_VOLUME_LIT) {
-    obj->effect_info->dynamic_red = min(1, obj->effect_info->dynamic_red + (scalar * red_scale));
-    obj->effect_info->dynamic_green = min(1, obj->effect_info->dynamic_green + (scalar * green_scale));
-    obj->effect_info->dynamic_blue = min(1, obj->effect_info->dynamic_blue + (scalar * blue_scale));
+    obj->effect_info->dynamic_red = std::min<float>(1, obj->effect_info->dynamic_red + (scalar * red_scale));
+    obj->effect_info->dynamic_green = std::min<float>(1, obj->effect_info->dynamic_green + (scalar * green_scale));
+    obj->effect_info->dynamic_blue = std::min<float>(1, obj->effect_info->dynamic_blue + (scalar * blue_scale));
   }
 }
 
@@ -1287,28 +1289,28 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
 
         if (red_scale < 0) {
           // we are subtracting light
-          r = max(0, r + (scalar * red_scale * 31));
+          r = std::max<float>(0, r + (scalar * red_scale * 31));
         } else {
           // we are adding light
           if (r < red_limit)
-            r = min(red_limit, r + (scalar * red_scale * 31));
+            r = std::min<float>(red_limit, r + (scalar * red_scale * 31));
         }
 
         if (green_scale < 0) {
           // we are subtracting light
-          g = max(0, g + (scalar * green_scale * 31));
+          g = std::max<float>(0, g + (scalar * green_scale * 31));
         } else {
           // we are adding light
           if (g < green_limit)
-            g = min(green_limit, g + (scalar * green_scale * 31));
+            g = std::min<float>(green_limit, g + (scalar * green_scale * 31));
         }
 
         if (blue_scale < 0) {
           // we are subtracting light
-          b = max(0, b + (scalar * blue_scale * 31));
+          b = std::max<float>(0, b + (scalar * blue_scale * 31));
         } else {
           if (b < blue_limit)
-            b = min(blue_limit, b + (scalar * blue_scale * 31));
+            b = std::min<float>(blue_limit, b + (scalar * blue_scale * 31));
         }
 
         lightmap_texel = OPAQUE_FLAG | (r << 10) | (g << 5) | b;
@@ -1538,26 +1540,26 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
 
     if (red_scale < 0) {
       // we are subtracting light
-      tseg->r = max(0, r + (scalar * red_scale * 255));
+      tseg->r = std::max<float>(0, r + (scalar * red_scale * 255));
     } else {
       if (r < red_limit)
-        tseg->r = min(red_limit, r + (scalar * red_scale * 255));
+        tseg->r = std::min<float>(red_limit, r + (scalar * red_scale * 255));
     }
 
     if (green_scale < 0) {
       // we are subtracting light
-      tseg->g = max(0, g + (scalar * green_scale * 255));
+      tseg->g = std::max<float>(0, g + (scalar * green_scale * 255));
     } else {
       if (g < green_limit)
-        tseg->g = min(green_limit, g + (scalar * green_scale * 255));
+        tseg->g = std::min<float>(green_limit, g + (scalar * green_scale * 255));
     }
 
     if (blue_scale < 0) {
       // we are subtracting light
-      tseg->b = max(0, b + (scalar * blue_scale * 255));
+      tseg->b = std::max<float>(0, b + (scalar * blue_scale * 255));
     } else {
       if (b < blue_limit)
-        tseg->b = min(blue_limit, b + (scalar * blue_scale * 255));
+        tseg->b = std::min<float>(blue_limit, b + (scalar * blue_scale * 255));
     }
 
     ushort color = OPAQUE_FLAG | GR_RGB16(tseg->r, tseg->g, tseg->b);
@@ -1734,9 +1736,9 @@ incident_norm=element_vec-SpecialFaces[fp->special_handle].spec_instance[i].brig
                                         g*=val*gscale;
                                         b*=val*bscale;
 
-                                        r=min(31,old_r+r);
-                                        g=min(31,old_g+g);
-                                        b=min(31,old_b+b);
+                                        r=std::min(31,old_r+r);
+                                        g=std::min(31,old_g+g);
+                                        b=std::min(31,old_b+b);
 
 
                                         dest_data[lightmap_texel_num]=OPAQUE_FLAG|(r<<10)|(g<<5)|(b);
@@ -1940,9 +1942,9 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                                         g*=val*base_g;
                                         b*=val*base_b;
 
-                                        r=min(31,old_r+r);
-                                        g=min(31,old_g+g);
-                                        b=min(31,old_b+b);
+                                        r=std::min(31,old_r+r);
+                                        g=std::min(31,old_g+g);
+                                        b=std::min(31,old_b+b);
 
 
                                         dest_data[lightmap_texel_num]=OPAQUE_FLAG|(r<<10)|(g<<5)|(b);
@@ -1977,8 +1979,8 @@ void DestroyLight(int roomnum, int facenum) {
   b = GameTextures[destroy_fp->tmap].b * mul;
 
   // Get highest component
-  float rmax = max(r, g);
-  rmax = max(rmax, b);
+  float rmax = std::max(r, g);
+  rmax = std::max(rmax, b);
 
   // Get the normalized color that this face emits
   float red_scale = r / rmax;
@@ -2163,13 +2165,13 @@ void DestroyLight(int roomnum, int facenum) {
         int b = lightmap_texel & 0x1f;
 
         if (r > 0)
-          r = max(0, r - (scalar * red_scale * 31));
+          r = std::max<float>(0, r - (scalar * red_scale * 31));
 
         if (g > 0)
-          g = max(0, g - (scalar * green_scale * 31));
+          g = std::max<float>(0, g - (scalar * green_scale * 31));
 
         if (b > 0)
-          b = max(0, b - (scalar * blue_scale * 31));
+          b = std::max<float>(0, b - (scalar * blue_scale * 31));
 
         lightmap_texel = OPAQUE_FLAG | (r << 10) | (g << 5) | b;
 

@@ -6,11 +6,12 @@
 #include "bitmap.h"
 #include "mono.h"
 #include "mem.h"
-#ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
-#else
+#ifndef __LINUX__
 #include "Macros.h"
 #endif
+
+#include <algorithm>
+
 int Num_of_lightmaps = 0;
 static ushort Free_lightmap_list[MAX_LIGHTMAPS];
 bms_lightmap GameLightmaps[MAX_LIGHTMAPS];
@@ -61,7 +62,7 @@ int lm_AllocLightmap(int w, int h) {
   GameLightmaps[n].flags = LF_CHANGED;
   // Figure out square size
   // Find power of 2 number
-  int res = max(w, h);
+  int res = std::max(w, h);
   int lightmap_res = 2;
   for (int i = 0; i <= 7; i++) {
     int low_num = 1 < i;

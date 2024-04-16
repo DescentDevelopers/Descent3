@@ -38,6 +38,9 @@
 #include "idmfc.h"
 #include "Anarchy.h"
 #include "anarchystr.h"
+
+#include <algorithm>
+
 IDMFC *DMFCBase = NULL;
 IDmfcStats *dstat = NULL;
 
@@ -816,7 +819,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
     int w_kill, w_death, max_w;
     w_kill = DLLgrtext_GetTextLineWidth(TXT_KILLS);
     w_death = DLLgrtext_GetTextLineWidth(TXT_DEATHS);
-    max_w = max(w_kill, w_death);
+    max_w = std::max(w_kill, w_death);
 
     x = DMFCBase->GetGameWindowW() - DMFCBase->GetGameWindowW() * 0.0078125f;
     DLLgrtext_SetColor(GR_GREEN);

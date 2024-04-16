@@ -297,6 +297,8 @@
 
 #include "Macros.h"
 
+#include <algorithm>
+
 #define BM_FILETYPE_TGA 1
 #define BM_FILETYPE_PCX 2
 #define BM_FILETYPE_IFF 3
@@ -1626,7 +1628,7 @@ bool bm_CreateChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
   float fopt = 128.0f;
   int iopt;
   // find the smallest dimension and base off that
-  int smallest = min(bw, bh);
+  int smallest = std::min(bw, bh);
   if (smallest <= 32)
     fopt = 32;
   else if (smallest <= 64)

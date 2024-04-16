@@ -570,6 +570,8 @@
 #include "psrand.h"
 #include "vibeinterface.h"
 
+#include <algorithm>
+
 // Shake variables
 static matrix Old_player_orient;
 float Shake_magnitude = 0.0;
@@ -594,7 +596,7 @@ void SetNapalmDamageEffect(object *obj, object *killer, int weapon_id) {
     else
       obj->effect_info->damage_time += (MAX_NAPALM_DAMAGE_TIME / 1.5f);
 
-    obj->effect_info->damage_time = min(MAX_NAPALM_DAMAGE_TIME, obj->effect_info->damage_time);
+    obj->effect_info->damage_time = std::min(MAX_NAPALM_DAMAGE_TIME, obj->effect_info->damage_time);
 
     if (obj->type == OBJ_PLAYER)
       obj->effect_info->damage_per_second = Weapons[weapon_id].player_damage;
@@ -983,7 +985,7 @@ void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time) {
           float extra_time = obj->rtype.pobj_info.anim_time *
                              (obj->rtype.pobj_info.anim_end_frame - obj->rtype.pobj_info.anim_frame) /
                              (obj->rtype.pobj_info.anim_end_frame - obj->rtype.pobj_info.anim_start_frame);
-          extra_time = min(extra_time, 3.0); // limit extra time to 3 seconds
+          extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
           *delay_time = Object_info[obj->id].anim[obj->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;
           // Walkers last a little longer
           if (obj->movement_type == MT_WALKING)
@@ -1134,7 +1136,7 @@ float GetDeathAnimTime(object *objp) {
       float extra_time = objp->rtype.pobj_info.anim_time *
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_frame) /
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_start_frame);
-      extra_time = min(extra_time, 3.0); // limit extra time to 3 seconds
+      extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
       mprintf((0, "extra_time = %2f\n", extra_time));
 
       death_time = Object_info[objp->id].anim[objp->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;

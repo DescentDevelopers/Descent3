@@ -59,6 +59,8 @@
 #include <process.h>
 #include <stdio.h>
 
+#include <algorithm>
+
 #define CON_SCROLL_ROWS 25
 #define CON_SCROLL_COLS 80
 
@@ -331,13 +333,13 @@ int con_KeyDown(HWND hWnd, UINT vkey) {
 
   switch (vkey) {
   case VK_LEFT: // Left arrow
-    Con_col = max(Con_col - 1, 0);
-    Con_inp_pos = max(Con_inp_pos - 1, 0);
+    Con_col = std::max(Con_col - 1, 0);
+    Con_inp_pos = std::max(Con_inp_pos - 1, 0);
     break;
 
   case VK_RIGHT: // Right arrow
-    Con_col = min(Con_col + 1, CON_SCROLL_COLS - 1);
-    Con_inp_pos = min(Con_inp_pos + 1, CON_SCROLL_COLS - 1);
+    Con_col = std::min(Con_col + 1, CON_SCROLL_COLS - 1);
+    Con_inp_pos = std::min(Con_inp_pos + 1, CON_SCROLL_COLS - 1);
     break;
 
   case VK_UP: // Up arrow

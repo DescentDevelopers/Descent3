@@ -88,9 +88,7 @@
 #include "object_external_struct.h" //for ROOMNUM_OUTSIDE macro
 #include "psrand.h"
 
-#ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b) // where is linux max()??
-#endif
+#include <algorithm>
 
 // Structure for storing scorch marks
 typedef struct {
@@ -186,7 +184,7 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
 
     // Increment count, and stop drawing if hit limit
     if (sp->roomface == roomface) { // Found one!
-      count += __max((int)size, 1); // count large marks more
+      count += std::max((int)size, 1); // count large marks more
       if (count >= MAX_VIS_COUNT)
         return;
     }

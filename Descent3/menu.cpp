@@ -662,7 +662,10 @@ bool Directplay_lobby_launched_game = false;
 #include "multi_dll_mgr.h"
 #include "d3music.h"
 #include "newui_core.h"
+
 #include <string.h>
+#include <algorithm>
+
 #define IDV_QUIT 0xff
 //	Menu Item Defines
 #define IDV_NEWGAME 10
@@ -1329,7 +1332,7 @@ redo_newgame_menu:
       highest = Current_mission.num_levels;
 #else
       highest = PilotGetHighestLevelAchieved(&Current_pilot, Current_mission.name);
-      highest = min(highest + 1, Current_mission.num_levels);
+      highest = std::min(highest + 1, Current_mission.num_levels);
 #endif
       if (highest > 1) {
         int start_level;

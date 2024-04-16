@@ -157,11 +157,11 @@
 #include "psrand.h"
 #include "demofile.h"
 
-#ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
-#elif defined(MACINTOSH)
+#if defined(MACINTOSH)
 #include "Macros.h"
 #endif
+
+#include <algorithm>
 
 // Beginning of the real file
 #define LEVEL_DATA_MATCEN_VERSION 1
@@ -1613,7 +1613,7 @@ void matcen::DoRenderFrame() {
             vis->lifeleft = 1;
             vis->lifetime = 1;
             vis->flags = VF_USES_LIFELEFT | VF_EXPAND | VF_LINK_TO_VIEWER;
-            vis->billboard_info.width = max(1, size / 2);
+            vis->billboard_info.width = std::max<float>(1, size / 2);
             vis->billboard_info.texture = 1;
             vis->velocity.x = 1;
             vis->velocity.y = 1;

@@ -10,6 +10,9 @@
 #include <stdlib.h>
 
 #include "psrand.h"
+
+#include <algorithm>
+
 // Given an object, renders the representation of this splinter
 void DrawSplinterObject(object *obj) {
   ASSERT(obj->type == OBJ_SPLINTER);
@@ -22,7 +25,7 @@ void DrawSplinterObject(object *obj) {
   g3Point pnts[MAX_VERTS_PER_SPLINTER];
   g3Point *pntlist[MAX_VERTS_PER_SPLINTER];
 
-  int limit = min(MAX_VERTS_PER_SPLINTER, sm->faces[facenum].nverts);
+  int limit = std::min<int>(MAX_VERTS_PER_SPLINTER, sm->faces[facenum].nverts);
   float lifenorm = 1.0 - ((obj->lifetime - obj->lifeleft) / obj->lifetime);
 
   rend_SetLighting(LS_NONE);

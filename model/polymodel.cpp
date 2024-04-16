@@ -597,9 +597,7 @@
 #include "robotfire.h"
 #include "mem.h"
 
-#ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
-#endif
+#include <algorithm>
 
 int Num_poly_models = 0;
 poly_model Poly_models[MAX_POLY_MODELS];
@@ -1888,7 +1886,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
   }
 
   // Set the greater of keyframe of positions or keyframe angles to to be max keyframes
-  pm->max_keys = max(pm->num_key_pos, pm->num_key_angles);
+  pm->max_keys = std::max(pm->num_key_pos, pm->num_key_angles);
 
   // Build animation keyframe matrices
 

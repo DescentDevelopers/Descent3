@@ -87,6 +87,9 @@
 #include "idmfc.h"
 #include "coop.h"
 #include "coopstr.h"
+
+#include <algorithm>
+
 IDMFC *DMFCBase = NULL;
 IDmfcStats *dstat = NULL;
 player *dPlayers;
@@ -221,7 +224,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
 
   netgame_info *netgameinfo = DMFCBase->GetNetgameInfo();
   netgameinfo->flags |= (NF_USE_ROBOTS | NF_RESPAWN_WAYPOINT | NF_ALLOWGUIDEBOT | NF_COOP);
-  netgameinfo->max_players = min(4, netgameinfo->max_players);
+  netgameinfo->max_players = std::min(4, netgameinfo->max_players);
   DMFCBase->SetMaxPlayerHardLimit(4);
 
   // Initialize the Stats Manager
@@ -557,7 +560,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   if (players_in_game <= 0)
     return;
 
-  players_in_game = min(players_in_game, 8);
+  players_in_game = std::min(players_in_game, 8);
 
   start_y = (DMFCBase->GetGameWindowH() / 2) - ((players_in_game * 5) / 2);
   // determine coordinates to use here
