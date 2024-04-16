@@ -1,6 +1,6 @@
 # Descent 3
 
-This is the latest version of the Descent 3 source code. This includes the '1.5' patch that Jeff Slutter and Kevin Bentley several years ago. At the time, it worked for Windows, Linux, and Mac. 
+This is the latest version of the Descent 3 source code. This includes the '1.5' patch that Jeff Slutter and Kevin Bentley wrote several years ago. At the time, it worked for Windows, Linux, and Mac. 
 
 Some proprietary sound and video libraries from Interplay have been stripped out (the ACM and MVE format). I have that code if someone wants to help make a converter so the old cutscenes work. It'll take some effort to stub out that code so it compiles. 
 
