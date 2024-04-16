@@ -178,7 +178,7 @@ void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
   //	mprintf((0, "end crash loop\n"));
 
   // Reverse the list (so it is what we want)
-  for (i = 0; i<BNode_PathNumNodes> > 1; i++) {
+  for (i = 0; i < (BNode_PathNumNodes >> 1); i++) {
     int temp;
 
     temp = BNode_Path[i];

@@ -33,7 +33,7 @@ void AIUpdatePathInfo(q_item **node_list, int start, int end) {
   //	mprintf((0, "end crash loop\n"));
 
   // Reverse the list (so it is what we want)
-  for (i = 0; i<AIAltPathNumNodes> > 1; i++) {
+  for (i = 0; i < (AIAltPathNumNodes >> 1); i++) {
     int temp;
 
     temp = AIAltPath[i];
