@@ -14,7 +14,6 @@ PROJECT(Descent3)
 IF (UNIX)
 SET (D3_GAMEDIR "~/Descent3/")
 
-  SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wno-write-strings -m32")
   SET(CMAKE_CXX_COMPILER "g++")
   SET(CMAKE_CXX_FLAGS "-O0 -g -Wno-write-strings -Wno-multichar -m32 -Wno-address-of-temporary")
   SET(CMAKE_C_FLAGS "-O0 -g -m32")
