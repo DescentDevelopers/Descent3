@@ -2631,12 +2631,12 @@ void ObjDoFrame(object *obj) {
   if (obj->flags & OF_USES_LIFELEFT)
     obj->lifeleft -= Frametime;
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Process the control for this object
   switch (obj->control_type) {
@@ -2701,12 +2701,12 @@ void ObjDoFrame(object *obj) {
     break;
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Update cycled animation
   if ((obj->control_type != CT_AI) && (obj->control_type != CT_DYING_AND_AI) && (obj->control_type != CT_DEBRIS) &&
@@ -2718,24 +2718,24 @@ void ObjDoFrame(object *obj) {
     }
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Do freeze stuff on AI controlled robots
   if ((obj->type == OBJ_ROBOT || obj->type == OBJ_BUILDING) && obj->control_type == CT_AI && obj->effect_info &&
       (obj->effect_info->type_flags & EF_FREEZE))
     obj->mtype.phys_info.velocity *= obj->effect_info->freeze_scalar;
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Check for object dead of old age
   if ((obj->flags & OF_USES_LIFELEFT) && (obj->lifeleft < 0)) {
@@ -2767,12 +2767,12 @@ void ObjDoFrame(object *obj) {
     }
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // If object is dead, don't do any more processing on it
   if (obj->flags & OF_DEAD) {
@@ -2780,12 +2780,12 @@ void ObjDoFrame(object *obj) {
     return;
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Do the movement for this object
   switch (obj->movement_type) {
@@ -2831,12 +2831,12 @@ void ObjDoFrame(object *obj) {
     Int3(); // unknown movement type
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Do special effects stuff to object
   if (obj->effect_info) {
@@ -2845,12 +2845,12 @@ void ObjDoFrame(object *obj) {
     RTP_ENDINCTIME(obj_doeffect_time);
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Deal with special player movement stuff
   if (obj->type == OBJ_PLAYER) {
@@ -2859,12 +2859,12 @@ void ObjDoFrame(object *obj) {
     RTP_ENDINCTIME(obj_move_player_time);
   }
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   //	Handle interval event for script.
   do {
@@ -2878,12 +2878,12 @@ void ObjDoFrame(object *obj) {
   } while (0); // this do{}while(0) is here because the RTP_STARTINCTIME/RTP_ENDINCTIME must be in the same scope
                // and not share scope with another RTP_STARTINCTIME
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Cast light
   do {
@@ -2893,23 +2893,23 @@ void ObjDoFrame(object *obj) {
   } while (0); // this do{}while(0) is here because the RTP_STARTINCTIME/RTP_ENDINCTIME must be in the same scope
                // and not share scope with another RTP_STARTINCTIME
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // if this object is walking/rolling on the terrain, make it not LOD at that point
   if (obj->movement_type == MT_WALKING && (obj->flags & OF_RENDERED) && OBJECT_OUTSIDE(obj))
     TurnOffLODForCell(CELLNUM(obj->roomnum));
 
-  //#ifdef _DEBUG
+  // #ifdef _DEBUG
   //	if(Physics_player_verbose)
   //	{
   //		debug_check_terrain_objects();
   //	}
-  //#endif _DEBUG
+  // #endif _DEBUG
 
   // Mark object as not rendered for this frame
   obj->flags &= ~OF_RENDERED;

@@ -1,7 +1,7 @@
 #ifndef __LNX__DD_SOUND_H_
 #define __LNX__DD_SOUND_H_
 
-//#include <pthread.h>
+// #include <pthread.h>
 #include "SDL_thread.h"
 
 // Sound Library Internal Error Codes

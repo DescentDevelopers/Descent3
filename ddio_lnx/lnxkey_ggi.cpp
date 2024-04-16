@@ -24,9 +24,9 @@
 #include "ddio.h"
 #include "mono.h"
 
-//##########################################################
-// GGI Interface Functions
-//##########################################################
+// ##########################################################
+//  GGI Interface Functions
+// ##########################################################
 void ddio_ggi_EmergencyQuit(int id);
 void ddio_ggi_InternalKeyInit(void);
 static int ddio_ggi_TranslateKey(int c, int code);
@@ -35,7 +35,7 @@ void ddio_ggi_InternalClose(void);
 void ddio_ggi_KeyHandler(void);
 gii_input_t GGI_input_handle;
 void ddio_ggi_KeyBoardEventHandler(int transkey, int press);
-//##########################################################
+// ##########################################################
 
 volatile struct tLnxKeys {
   union {
@@ -145,9 +145,9 @@ int ddio_KeyToAscii(int code) {
   return out;
 }
 
-//#################################################
-// ggi Interface Functions
-//#################################################
+// #################################################
+//  ggi Interface Functions
+// #################################################
 void ddio_ggi_InternalKeyInit(void) {
   static bool first_time = true;
 

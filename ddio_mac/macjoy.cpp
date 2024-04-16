@@ -153,8 +153,8 @@ bool joy_InitRemoteStick(tJoystick joy, char *server_adr, tJoystickRecord *stick
     // start packet read thread.
     //@@		Thread_running[(int)joy] = false;
     //@@		unsigned thread_id;
-    //@@		unsigned long thread_handle = _beginthreadex(NULL, 0, joy_ReadRemotePacket, &Joysticks[(int)joy],
-  1, &thread_id);
+    //@@		unsigned long thread_handle = _beginthreadex(NULL, 0, joy_ReadRemotePacket,
+  &Joysticks[(int)joy], 1, &thread_id);
     //@@		if (thread_handle == 0) {
     //@@			Error("Remote joystick thread creation failed.");
     //@@		}

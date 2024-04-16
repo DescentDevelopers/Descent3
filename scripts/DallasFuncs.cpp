@@ -697,8 +697,8 @@
 #include "osiris_vector.h"
 
 // These should really be included, I think, but there's a problem with osiris_import.h being included twice
-//#include "osiris_import.h"
-//#include "osiris_common.h"
+// #include "osiris_import.h"
+// #include "osiris_common.h"
 
 /*
 
@@ -5475,7 +5475,7 @@ int qObjRoom(int objref) {
 
 // These should be in object_external.h
 #define ROOMNUM_CELLNUM_FLAG 0x80000000
-#define ROOMNUM_OUTSIDE(roomnum) (((roomnum)&ROOMNUM_CELLNUM_FLAG) != 0)
+#define ROOMNUM_OUTSIDE(roomnum) (((roomnum) & ROOMNUM_CELLNUM_FLAG) != 0)
 
 /*
 $$QUERY

@@ -1,8 +1,8 @@
 #ifndef __LNXDRAW_H_
 #define __LNXDRAW_H_
 
-//#include "dyna_xwin.h"
-//#include "dyna_xext.h"
+// #include "dyna_xwin.h"
+// #include "dyna_xext.h"
 
 #include <SDL.h>
 
@@ -23,7 +23,7 @@ typedef struct {
   //	Window *pre_created_window; // Window already created
   //	XVisualInfo pre_created_visinfo;
 } LnxWindowDesc;
-//#define LNXDRAWF_USEPRECREATEDWIN	0x01
+// #define LNXDRAWF_USEPRECREATEDWIN	0x01
 
 typedef struct {
   //	XSizeHints      *lpSizeHints;

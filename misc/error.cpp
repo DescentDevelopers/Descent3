@@ -210,7 +210,7 @@ void AssertionFailed(char *expstr, char *file, int line) {
 
   if (DebugBreak_callback_resume)
     (*DebugBreak_callback_resume)();
-#endif //#ifndef RELEASE
+#endif // #ifndef RELEASE
 }
 
 //	error message output function

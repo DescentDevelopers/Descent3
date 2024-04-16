@@ -43,16 +43,16 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <termios.h>
-//#include <linux/kd.h>
-//#include <linux/vt.h>
+// #include <linux/kd.h>
+// #include <linux/vt.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-//#include <linux/keyboard.h>
+// #include <linux/keyboard.h>
 #include <sys/ioctl.h>
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
-//#include <linux/unistd.h>
+// #include <linux/unistd.h>
 
 volatile struct tLnxKeys {
   union {

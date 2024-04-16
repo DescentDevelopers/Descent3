@@ -51,7 +51,7 @@
 #include "editor\d3edit.h"
 #endif
 
-//#define KATMAI
+// #define KATMAI
 
 // Katmai enhanced rotate only in a release build, because not
 // everyone has the intel compiler!
@@ -222,8 +222,8 @@ inline bool FaceIsRenderable(room *rp, face *fp) {
 // Determines if a face draws with alpha blending
 // Parameters:	fp - pointer to the face in question
 //					bm_handle - the handle for the bitmap for this frame, or -1 if don't care about
-// transparence Returns:		bitmask describing the alpha blending for the face 					the return
-// bits are the ATF_ flags in renderer.h
+// transparence Returns:		bitmask describing the alpha blending for the face
+// the return bits are the ATF_ flags in renderer.h
 inline int GetFaceAlpha(face *fp, int bm_handle) {
   int ret = AT_ALWAYS;
   if (GameTextures[fp->tmap].flags & TF_SATURATE) {
@@ -1350,7 +1350,7 @@ void RenderSpecularFacesFlat(room *rp) {
       texel = data[int_v * w + int_u];
       r = (texel >> 10) & 0x1f;
       g = (texel >> 5) & 0x1f;
-      b = (texel)&0x1f;
+      b = (texel) & 0x1f;
       vr = lm_red[r];
       vg = lm_green[g];
       vb = lm_blue[b];
@@ -1859,7 +1859,7 @@ void RenderFace(room *rp, int facenum) {
         ushort texel = data[int_v * w + int_u];
         int r = (texel >> 10) & 0x1f;
         int g = (texel >> 5) & 0x1f;
-        int b = (texel)&0x1f;
+        int b = (texel) & 0x1f;
         p->p3_r = p->p3_l * lm_red[r];
         p->p3_g = p->p3_l * lm_green[g];
         p->p3_b = p->p3_l * lm_blue[b];

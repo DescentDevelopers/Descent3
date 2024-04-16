@@ -237,7 +237,7 @@ inline tMusicVal QUANTIZE_MUSICVAL(float fval) { return (fval * 255); }
 
 //	OMS Events
 #define OMSEVT_MAKE(_evt, _priority) (((_evt) << 2) + (_priority & 0x03))
-#define OMSEVT_PRIORITY(_evt) ((_evt)&0x3)
+#define OMSEVT_PRIORITY(_evt) ((_evt) & 0x3)
 
 #define OMS_EVT_NONE OMSEVT_MAKE(0, 0)
 #define OMS_EVT_SONGENDED OMSEVT_MAKE(32, 0)  // music completed (parm tells us what theme)

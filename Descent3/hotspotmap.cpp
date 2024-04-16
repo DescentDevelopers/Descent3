@@ -102,7 +102,7 @@ void makecorner(int corner_bmp, int back_bmp, char *tmap, int l, int t, int r, i
 ushort menutga_translate_pixel(int pixel, char *alpha_value) {
   int red = ((pixel >> 16) & 0xFF);
   int green = ((pixel >> 8) & 0xFF);
-  int blue = ((pixel)&0xFF);
+  int blue = ((pixel) & 0xFF);
   int alpha = ((pixel >> 24) & 0xFF);
 
   *alpha_value = alpha;

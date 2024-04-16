@@ -124,7 +124,7 @@ static volatile char already_tried_signal_cleanup = 0;
 #define GAME_VERS_EXT ""
 #endif
 
-//#define DEDICATED
+// #define DEDICATED
 namespace {
 extern "C" {
 char game_version_buffer[150];

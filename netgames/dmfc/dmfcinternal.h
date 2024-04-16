@@ -246,8 +246,8 @@
 #define DMFC_VERSION_MINOR 0
 
 // DEMO 1.0
-//#define DMFC_VERSION_MAJOR	0
-//#define DMFC_VERSION_MINOR	60
+// #define DMFC_VERSION_MAJOR	0
+// #define DMFC_VERSION_MINOR	60
 
 class DMFCBase;
 
@@ -566,7 +566,7 @@ public:
   DMFCBase(void);
   ~DMFCBase(void);
 
-  //##################Setup and processing functions#######################
+  // ##################Setup and processing functions#######################
 
   // DMGFBase::LoadFunctions
   //
@@ -586,7 +586,7 @@ public:
   //   DMFCApp::GameClose, make sure that you put a call to this somewhere in the override
   void GameClose(void);
 
-  //###################Server Only functions################################
+  // ###################Server Only functions################################
 
   // DMFCBase::OnServerPlayerKilled
   //
@@ -694,7 +694,7 @@ public:
   //	Not automatically sent to clients
   virtual void OnServerObjectDestroyed(object *obj);
 
-  //######################### Client allowed event handlers############################
+  // ######################### Client allowed event handlers############################
 
   // DMFCBase::OnClientPlayerKilled (Only called if server tells client to execute)
   //
@@ -2767,7 +2767,7 @@ private:
 #define UIID_WAITFORPLAYERS 0xEEE1
 
 // Uncomment the following define to put a black background on the in-game menus
-//#define DMFC_MENUBACKGROUND
+// #define DMFC_MENUBACKGROUND
 
 #define PINFO_CLEAR -2
 #define PINFO_INUSE -1

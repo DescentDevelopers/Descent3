@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdarg.h>
-//#include <assert.h>
+// #include <assert.h>
 
 // Mac Headers
 #include <Files.h>
@@ -851,7 +851,7 @@ void macify_dospath(const char *dos_path, char *mac_path) {
 }
 
 #include <Errors.h>
-//#include <Files.h>
+// #include <Files.h>
 #include <Script.h>
 #include "file_io.h"
 

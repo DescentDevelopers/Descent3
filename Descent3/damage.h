@@ -135,10 +135,10 @@ void UnshakePlayer();
 
 // Break the specified (glass) face into shards
 // Parameters:	rp, facenum - the face to break
-//					hitpnt - the point on the face where the face shatters.  If NULL, uses center point
-//of
-// face 					hitvec - the direction in which the thing that's breaking the glass is moving.  If
-// NULL, 						uses the negative of the surface normal
+//					hitpnt - the point on the face where the face shatters.  If NULL, uses center
+// point of
+// face 					hitvec - the direction in which the thing that's breaking the glass is
+// moving.  If NULL, 						uses the negative of the surface normal
 void BreakGlassFace(room *rp, int facenum, vector *hitpnt = NULL, vector *hitvec = NULL);
 
 #endif

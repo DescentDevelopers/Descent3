@@ -1205,8 +1205,9 @@ struct hud_menu {
     sel = (stat & (STAT_SHIELDS + STAT_ENERGY)) ? 1 : (grstat & (STAT_SHIELDS + STAT_ENERGY)) ? 2 : 0;
     y = add_hud_option(TXT_HUDSHIELDENERGY, &shield_energy, y, sel, true);
 
-    sel = (stat & (STAT_PRIMARYLOAD + STAT_SECONDARYLOAD)) ? 1
-                                                           : (grstat & (STAT_PRIMARYLOAD + STAT_SECONDARYLOAD)) ? 2 : 0;
+    sel = (stat & (STAT_PRIMARYLOAD + STAT_SECONDARYLOAD))     ? 1
+          : (grstat & (STAT_PRIMARYLOAD + STAT_SECONDARYLOAD)) ? 2
+                                                               : 0;
     y = add_hud_option(TXT_HUDWEAPONS, &weapon_loads, y, sel, true);
 
     sel = (stat & STAT_AFTERBURN) ? 1 : (grstat & STAT_AFTERBURN) ? 2 : 0;

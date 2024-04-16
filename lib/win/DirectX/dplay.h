@@ -584,11 +584,11 @@ DECLARE_INTERFACE_(IDirectPlay2, IUnknown) {
   STDMETHOD(SetSessionDesc)(THIS_ LPDPSESSIONDESC2, DWORD) PURE;
 };
 
-  /****************************************************************************
-   *
-   * IDirectPlay2 interface macros
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlay2 interface macros
+ *
+ ****************************************************************************/
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 
@@ -662,11 +662,11 @@ DECLARE_INTERFACE_(IDirectPlay2, IUnknown) {
 
 #endif
 
-  /****************************************************************************
-   *
-   * IDirectPlay3 (and IDirectPlay3A) Interface
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlay3 (and IDirectPlay3A) Interface
+ *
+ ****************************************************************************/
 
 #undef INTERFACE
 #define INTERFACE IDirectPlay3
@@ -723,11 +723,11 @@ DECLARE_INTERFACE_(IDirectPlay3, IDirectPlay2) {
   STDMETHOD(GetPlayerFlags)(THIS_ DPID, LPDWORD) PURE;
 };
 
-  /****************************************************************************
-   *
-   * IDirectPlay3 interface macros
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlay3 interface macros
+ *
+ ****************************************************************************/
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 
@@ -831,11 +831,11 @@ DECLARE_INTERFACE_(IDirectPlay3, IDirectPlay2) {
 
 #endif
 
-  /****************************************************************************
-   *
-   * IDirectPlay4 (and IDirectPlay4A) Interface
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlay4 (and IDirectPlay4A) Interface
+ *
+ ****************************************************************************/
 
 #undef INTERFACE
 #define INTERFACE IDirectPlay4
@@ -899,11 +899,11 @@ DECLARE_INTERFACE_(IDirectPlay4, IDirectPlay3) {
   STDMETHOD(CancelPriority)(THIS_ DWORD, DWORD, DWORD) PURE;
 };
 
-  /****************************************************************************
-   *
-   * IDirectPlayX interface macros (for IDirectPlay4 and beyond)
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlayX interface macros (for IDirectPlay4 and beyond)
+ *
+ ****************************************************************************/
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 
@@ -1172,25 +1172,25 @@ DECLARE_INTERFACE_(IDirectPlay4, IDirectPlay3) {
  */
 #define DPENUMSESSIONS_ALL 0x00000002
 
-  /*
-   * Start an asynchronous enum sessions
-   */
+/*
+ * Start an asynchronous enum sessions
+ */
 #define DPENUMSESSIONS_ASYNC 0x00000010
 
-  /*
-   * Stop an asynchronous enum sessions
-   */
+/*
+ * Stop an asynchronous enum sessions
+ */
 #define DPENUMSESSIONS_STOPASYNC 0x00000020
 
-  /*
-   * Enumerate sessions even if they require a password
-   */
+/*
+ * Enumerate sessions even if they require a password
+ */
 #define DPENUMSESSIONS_PASSWORDREQUIRED 0x00000040
 
-  /*
-   * Return status about progress of enumeration instead of
-   * showing any status dialogs.
-   */
+/*
+ * Return status about progress of enumeration instead of
+ * showing any status dialogs.
+ */
 #define DPENUMSESSIONS_RETURNSTATUS 0x00000080
 
 /****************************************************************************
@@ -1241,10 +1241,10 @@ DECLARE_INTERFACE_(IDirectPlay4, IDirectPlay3) {
  */
 #define DPOPEN_CREATE 0x00000002
 
-  /*
-   * Return status about progress of open instead of showing
-   * any status dialogs.
-   */
+/*
+ * Return status about progress of open instead of showing
+ * any status dialogs.
+ */
 #define DPOPEN_RETURNSTATUS DPENUMSESSIONS_RETURNSTATUS
 
 /****************************************************************************
@@ -1929,11 +1929,11 @@ DECLARE_INTERFACE_(IDirectPlay, IUnknown) {
   STDMETHOD(SetPlayerName)(THIS_ DPID, LPSTR, LPSTR) PURE;
 };
 
-  /****************************************************************************
-   *
-   * IDirectPlay interface macros
-   *
-   ****************************************************************************/
+/****************************************************************************
+ *
+ * IDirectPlay interface macros
+ *
+ ****************************************************************************/
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 

@@ -600,9 +600,9 @@ void TelComMain(bool ingame, bool SelectShip) {
   TelcomStartSound(TCSND_RUNNING);
   TelcomStopSound(TCSND_STARTUP);
 
-  //#ifdef DEMO
+  // #ifdef DEMO
   //	Telcom_system.current_status = TS_MISSION;
-  //#endif
+  // #endif
 
   // initialize this to -1 so we get events right away
   Telcom_mouse_last_effect = -1;
@@ -1211,7 +1211,7 @@ bool TelComMainMenu(tTelComInfo *tcs) {
       }
       break;
     case TCCARGO:
-      //#if (defined DEMO)||(defined OEM)
+      // #if (defined DEMO)||(defined OEM)
       MMButtons[mm].enabled = false;
       MMButtons[mm].system = TS_OFF;
       /*

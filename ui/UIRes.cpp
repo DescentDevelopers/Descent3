@@ -184,9 +184,9 @@ bool UISnazzyTextItem::draw(int x, int y, tUIDrawClass draw_class) {
   if (m_flags & UISNAZZYTEXTF_BLINKING) {
     int r, r2, g, g2, b, b2;
     if (m_flags & UISTIF_INCREASING)
-      m_data.f += ((UIFrameTime)*1.5f);
+      m_data.f += ((UIFrameTime) * 1.5f);
     else
-      m_data.f -= ((UIFrameTime)*1.5f);
+      m_data.f -= ((UIFrameTime) * 1.5f);
 
     if (m_data.f < 0.0f) {
       m_data.f = 0.0;

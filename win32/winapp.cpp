@@ -715,8 +715,11 @@ bool oeWin32Application::GetSystemSpecs(const char *fname) {
   os = oeWin32Application::version(&maj, &min, &build, desc);
 
   fprintf(0, "OS: %s %d.%d.%d %s\n",
-          (os == Win9x) ? "Win9x" : (os == WinNT) ? "WinNT" : (os == WinCE) ? "WinCE" : "Non standard Win32", maj, min,
-          build, desc);
+          (os == Win9x)   ? "Win9x"
+          : (os == WinNT) ? "WinNT"
+          : (os == WinCE) ? "WinCE"
+                          : "Non standard Win32",
+          maj, min, build, desc);
 
   // get system memory info
   MEMORYSTATUS mem_stat;

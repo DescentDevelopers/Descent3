@@ -257,7 +257,7 @@ typedef struct {
   int roomnum;
 } pos_state;
 
-//#define MAX_EFFECT_OFFSETS 5
+// #define MAX_EFFECT_OFFSETS 5
 
 //	sound priority values.
 #define SND_PRIORITY_CRITICAL 5 // usually streams have this priority, bumps off any other sounds.

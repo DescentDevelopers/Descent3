@@ -173,7 +173,7 @@ inline short tga_read_short() {
 ushort bm_tga_translate_pixel(int pixel, int format) {
   int red = ((pixel >> 16) & 0xFF);
   int green = ((pixel >> 8) & 0xFF);
-  int blue = ((pixel)&0xFF);
+  int blue = ((pixel) & 0xFF);
   int alpha = ((pixel >> 24) & 0xFF);
   ushort newpix;
 

@@ -180,10 +180,10 @@ static struct tWinKeyData {
   HHOOK winhook;               // windows hook
   unsigned long thread;        // thread id
                                //	osMutex keyframe_mutex;							// mutex between
-                        //internal key frame and key thread.
-  bool nextframe;     // used for mutexing between keyframe and thread.
-  bool acquired;      // device acquired?
-  bool thread_active; // used in thread.
+                               // internal key frame and key thread.
+  bool nextframe;              // used for mutexing between keyframe and thread.
+  bool acquired;               // device acquired?
+  bool thread_active;          // used in thread.
   bool suspended;
 } WKD = {NULL, NULL, NULL, 0xffffffff, false, false, false, true};
 

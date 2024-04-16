@@ -315,8 +315,8 @@ extern float Hud_aspect_x;
 extern float Hud_aspect_y;
 
 //	normalize hud coordinates
-#define HUD_X(_x) ((float)(_x)*Hud_aspect_x)
-#define HUD_Y(_y) ((float)(_y)*Hud_aspect_y)
+#define HUD_X(_x) ((float)(_x) * Hud_aspect_x)
+#define HUD_Y(_y) ((float)(_y) * Hud_aspect_y)
 
 //	number of shield frames in gauge
 #define NUM_SHIELD_GAUGE_FRAMES 5

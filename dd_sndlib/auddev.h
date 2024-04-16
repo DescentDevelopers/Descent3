@@ -67,7 +67,7 @@
 #define SOUND_DECAY_MAXTIME 100.0f
 #define SOUND_GAIN_MAXSCALAR 1.0f
 
-//#define SUPPORT_AUREAL
+// #define SUPPORT_AUREAL
 
 // Creative labs Environmental Audio Extension Interface
 

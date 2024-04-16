@@ -415,17 +415,17 @@
 // Renderers for Windows version.  Mac gets these through a global include file.
 #if defined(WIN32)
 #define USE_OPENGL
-//#define USE_GLIDE
+// #define USE_GLIDE
 #define USE_D3D
-//#define USE_SOFTWARE
+// #define USE_SOFTWARE
 #endif
 
 // Renderers for Linux version
 #if defined(__LINUX__)
 #define USE_OPENGL
 #define USE_GLIDE
-//#define USE_D3D
-//#define USE_SOFTWARE
+// #define USE_D3D
+// #define USE_SOFTWARE
 #endif
 
 #ifdef USE_SOFTWARE
@@ -595,7 +595,7 @@ int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state 
   return retval;
 #else
   return 0;
-#endif //#ifdef DEDICATED_ONLY
+#endif // #ifdef DEDICATED_ONLY
 }
 void rend_Close() {
   mprintf((0, "CLOSE:Renderer init is set to %d\n", Renderer_initted));
@@ -664,7 +664,7 @@ void rend_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
     Int3();
     break;
   }
-#endif //#ifdef DEDICATED_ONLY
+#endif // #ifdef DEDICATED_ONLY
 }
 void rend_SetFlatColor(ddgr_color color) {
   switch (Renderer_type) {

@@ -543,7 +543,7 @@ int mng_IsNetworkUp() {
   return 1;
 }
 void ReorderPages(int);
-//#define JASONS_REORDERING
+// #define JASONS_REORDERING
 void Read256TextureNames();
 // Sets up our table files, get their filenames, etc.
 // Returns 1 on success, zero on error
@@ -1639,9 +1639,9 @@ void mng_TransferPages() {
 done:;
   mem_free(local_tracklocks);
 }
-//#define DELETING_PAGELOCKS	1
-//#define CLEANING_PAGELOCKS	1
-// Given a list of names and a pagetype, unlocks the ones already inside the lock file
+// #define DELETING_PAGELOCKS	1
+// #define CLEANING_PAGELOCKS	1
+//  Given a list of names and a pagetype, unlocks the ones already inside the lock file
 int mng_UnlockPagelockSeries(char *names[], int *pagetypes, int num);
 // Goes through the pagelock table and deletes all duplicate entries
 int mng_DeleteDuplicatePagelocks();

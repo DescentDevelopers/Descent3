@@ -1,5 +1,5 @@
 #include "list.h"
-//#include <malloc.h>
+// #include <malloc.h>
 #include "mem.h"
 
 // Allocates space for a new list node, returning the pointer to it

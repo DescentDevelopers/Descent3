@@ -302,7 +302,7 @@
 #include "module.h"
 #include "mem.h"
 #include "args.h"
-//#define USE_DIRECTPLAY
+// #define USE_DIRECTPLAY
 
 #ifdef USE_DIRECTPLAY
 #include "directplay.h"

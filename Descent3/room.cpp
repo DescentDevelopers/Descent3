@@ -976,23 +976,23 @@ void GetIJ(const vector *normal, int *ii, int *jj) {
       }
     }
   else // y > x
-      if (fabs(normal->y) > fabs(normal->z)) {
-    if (normal->y > 0) {
-      *ii = 0;
-      *jj = 2; // y > x, y > z
+    if (fabs(normal->y) > fabs(normal->z)) {
+      if (normal->y > 0) {
+        *ii = 0;
+        *jj = 2; // y > x, y > z
+      } else {
+        *ii = 2;
+        *jj = 0;
+      }
     } else {
-      *ii = 2;
-      *jj = 0;
+      if (normal->z > 0) {
+        *ii = 1;
+        *jj = 0; // z > y > x
+      } else {
+        *ii = 0;
+        *jj = 1;
+      }
     }
-  } else {
-    if (normal->z > 0) {
-      *ii = 1;
-      *jj = 0; // z > y > x
-    } else {
-      *ii = 0;
-      *jj = 1;
-    }
-  }
 }
 
 // 2d cross product

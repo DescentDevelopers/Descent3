@@ -91,7 +91,7 @@ extern char *_DMFCErrorString;
 extern DMFCBase *basethis;
 char *DMFCGetString(int d);
 
-//###################Server Only functions################################
+// ###################Server Only functions################################
 
 // DMFCBase::OnServerPlayerKilled
 //

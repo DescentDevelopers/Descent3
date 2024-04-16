@@ -65,7 +65,7 @@
 
 #include "ui.h"
 
-//#define ubyte unsigned char
+// #define ubyte unsigned char
 
 #define TRACKER_MENU_W 256
 #define TRACKER_MENU_H 256

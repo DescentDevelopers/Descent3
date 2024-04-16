@@ -255,7 +255,7 @@
 #endif
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls
-//#define DEMO	1
+// #define DEMO	1
 
 // localization info
 char **StringTable;

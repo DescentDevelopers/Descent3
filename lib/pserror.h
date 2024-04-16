@@ -256,7 +256,7 @@ inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
     if (DebugBreak_callback_resume)                                                                                    \
       (*DebugBreak_callback_resume)();                                                                                 \
   } while (0)
-///#define ASSERT(x) assert(x)
+/// #define ASSERT(x) assert(x)
 #define ASSERT(x)                                                                                                      \
   do {                                                                                                                 \
     if (!(unsigned)(x)) {                                                                                              \

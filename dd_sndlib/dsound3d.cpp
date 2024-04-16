@@ -385,8 +385,8 @@ bool sb_stream_element_init(sound_buffer_info *sb, char *sample_ptr, int sound_l
                             }
                     }
                     else {
-                            Int3();												// unimplemented for
-       normal DirectSound CloseHandle(sb->s->hEvent); sb->s->hEvent = NULL;
+                            Int3();
+       // unimplemented for normal DirectSound CloseHandle(sb->s->hEvent); sb->s->hEvent = NULL;
                     }
     */
   }

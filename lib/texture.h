@@ -97,7 +97,7 @@ typedef struct {
 
 // For the following enum table: LIN=Linear, PER=Perspective, NON=No Transparency, LIT = Shaded,
 //								 COLORED=Colored lighting, TRANS=Transparency
-//ALPHA=Alpha renderer
+// ALPHA=Alpha renderer
 
 #define MAX_RENDER_TYPES 15
 

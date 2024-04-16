@@ -27,7 +27,7 @@
 #include "mono.h"
 
 #define SWAPSHORT(x) ((0xffff & ((x) << 8) | (((unsigned short)(x)) >> 8)))
-#define SWAPINT(x) (((x) << 24) | (((unsigned long)(x)) >> 24) | (((x)&0x0000ff00) << 8) | (((x)&0x00ff0000) >> 8))
+#define SWAPINT(x) (((x) << 24) | (((unsigned long)(x)) >> 24) | (((x) & 0x0000ff00) << 8) | (((x) & 0x00ff0000) >> 8))
 inline float SWAPFLOAT(float x) {
   int i = SWAPINT(*((int *)&(x)));
   return *((float *)&(i));

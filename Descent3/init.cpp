@@ -960,7 +960,7 @@
 #include "d3music.h"
 #include "PilotPicsAPI.h"
 #include "osiris_dll.h"
-//#include "gamespy.h"
+// #include "gamespy.h"
 #include "mem.h"
 #include "multi.h"
 #include "marker.h"
@@ -970,7 +970,7 @@
 #include "vibeinterface.h"
 
 // Uncomment this for all non-US versions!!
-//#define LASERLOCK
+// #define LASERLOCK
 
 // Uncomment this to allow all languages
 #define ALLOW_ALL_LANG 1
@@ -2020,7 +2020,7 @@ void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_tim
 #endif
 
 void IntroScreen() {
-//#if (defined(OEM) || defined(DEMO) )
+// #if (defined(OEM) || defined(DEMO) )
 #ifdef DEMO
 #ifdef MACINTOSH
   ShowStaticScreen("graphsim.ogf", true, 3.0);

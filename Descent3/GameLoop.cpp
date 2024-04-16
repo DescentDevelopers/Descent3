@@ -845,7 +845,7 @@
 #include "rtperformance.h"
 #include "demofile.h"
 #include "d3music.h"
-//#include "gamespy.h"
+// #include "gamespy.h"
 #include "osiris_dll.h"
 #include "aiambient.h"
 #include "marker.h"
@@ -908,7 +908,7 @@ bool Rendering_main_view = false;
 bool Skip_render_game_frame = false;
 bool Menu_interface_mode = false;
 
-//#ifdef GAMEGAUGE
+// #ifdef GAMEGAUGE
 int frames_one_second = 0;
 int min_one_second = 0x7fffffff;
 int max_one_second = 0;
@@ -921,7 +921,7 @@ short gamegauge_fpslog[GAMEGAUGE_MAX_LOG];
 
 bool Game_gauge_do_time_test = false;
 char Game_gauge_usefile[_MAX_PATH] = "gg.dem";
-//#endif
+// #endif
 
 longlong last_timer = 0;
 
@@ -1005,7 +1005,7 @@ void ShrinkWindow() {
 #define CV_MARKER7 8   // Last marker view
 #define CV_MARKER8 9   // Last marker view
 #define CV_GUIDEBOT 10 // Guide-Bot
-//#define CV_COOP		3		//View from a coop player
+// #define CV_COOP		3		//View from a coop player
 
 #define NUM_CAMERA_VIEWS 3
 
@@ -1281,16 +1281,16 @@ void ProcessNormalKey(int key) {
     Clear_screen = 4; // clears screen.
     break;
 
-    //#ifndef DEMO
+    // #ifndef DEMO
   case KEY_F5:
     Game_interface_mode = GAME_TOGGLE_DEMO;
     return;
   case KEY_ALTED + KEY_F5:
     DemoAbort(true);
     return;
-    //#endif
-    // case KEY_SHIFTED+KEY_LAPOSTRO:	Game_interface_mode = GAME_TELCOM_CARGO;return;
-    // case KEY_ALTED+KEY_LAPOSTRO: Game_interface_mode = GAME_TELCOM_BRIEFINGS; return;
+    // #endif
+    //  case KEY_SHIFTED+KEY_LAPOSTRO:	Game_interface_mode = GAME_TELCOM_CARGO;return;
+    //  case KEY_ALTED+KEY_LAPOSTRO: Game_interface_mode = GAME_TELCOM_BRIEFINGS; return;
   case KEY_SHIFTED + KEY_TAB:
     Game_interface_mode = GAME_TELCOM_BRIEFINGS;
     return;
@@ -2474,9 +2474,9 @@ void ProcessKeys() {
     ProcessTestKeys(key);
 #endif
 
-    //#ifdef DEMO
+    // #ifdef DEMO
     DemoCheats(key);
-    //#endif
+    // #endif
   }
 }
 
@@ -2719,11 +2719,11 @@ void GameRenderFrame(void) {
 
   // Increment frame count
   FrameCount++;
-  //#ifdef GAMEGAUGE
+  // #ifdef GAMEGAUGE
   frames_one_second++;
   gamegauge_total_frames++;
-  //#endif
-  // Update our glows
+  // #endif
+  //  Update our glows
   PostUpdateAllLightGlows();
 
   // Reset our powerup sparkle time if it has overflowed

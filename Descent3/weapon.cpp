@@ -341,7 +341,7 @@
 #include "CFILE.H"
 #include "AIMain.h"
 
-//#include "samirlog.h"
+// #include "samirlog.h"
 #define LOGFILE(_s)
 
 weapon Weapons[MAX_WEAPONS];

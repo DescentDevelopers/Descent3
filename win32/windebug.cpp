@@ -321,7 +321,7 @@ int Debug_MessageBox(int type, const char *title, const char *str) {
 //	This CODE SHOULD ONLY BE USED IN A DEBUGGABLE VERSION.
 
 #define SHOW_CALL_STACK // Uncomment SHOW_CALL_STACK to show the call stack in terminal cases
-//#define DUMPRAM
+// #define DUMPRAM
 
 #ifdef SHOW_CALL_STACK
 

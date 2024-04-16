@@ -10,12 +10,12 @@
 #include "pilot.h"
 #include "macapp.h"
 
-//#ifndef DAJ_DEBUG	//REMOVE
+// #ifndef DAJ_DEBUG	//REMOVE
 #define USE_MOUSE
-//#endif
-//#define MOUSE_MAX		32768.0f
+// #endif
+// #define MOUSE_MAX		32768.0f
 #define MOUSE_MAX 48000.0f
-//#define MOUSE_MAX		65336.0f
+// #define MOUSE_MAX		65336.0f
 #undef USE_KEYBOARD // NOT on you life
 Boolean iSprocket_inited = false;
 

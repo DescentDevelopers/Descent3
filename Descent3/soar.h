@@ -16,9 +16,9 @@
 #ifndef SOAR_H_
 #define SOAR_H_
 
-//#ifdef _WIN32
-//#define SOAR_ENABLED
-//#endif
+// #ifdef _WIN32
+// #define SOAR_ENABLED
+// #endif
 
 #ifdef SOAR_ENABLED
 

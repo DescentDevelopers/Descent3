@@ -85,7 +85,7 @@ fix FloatToFixFast(float num);
 
 // Conversion macros
 //??#define FloatToFix(num) Round((num) * FLOAT_SCALER)
-#define FloatToFix(num) ((fix)((num)*FLOAT_SCALER))
+#define FloatToFix(num) ((fix)((num) * FLOAT_SCALER))
 #define IntToFix(num) ((num) << FIX_SHIFT)
 #define ShortToFix(num) (((long)(num)) << FIX_SHIFT)
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)

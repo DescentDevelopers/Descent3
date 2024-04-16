@@ -200,9 +200,9 @@
 #ifndef __ds3dlib_h__
 #define __ds3dlib_h__
 
-//#include <windows.h>
-//#include <mmsystem.h>		// Multi-media system support
-//#include "dsound.h"			// Direct sound header file
+// #include <windows.h>
+// #include <mmsystem.h>		// Multi-media system support
+// #include "dsound.h"			// Direct sound header file
 
 #include "ssl_lib.h" // Shared sound header (between high and low-levels)
 #include "vecmat.h"

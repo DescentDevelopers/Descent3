@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #undef EGA
-//#include <vga.h>
+// #include <vga.h>
 typedef struct {
   int width, height, bytesperpixel, linewidth;
 } tinfo;

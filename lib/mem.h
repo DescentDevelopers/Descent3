@@ -56,7 +56,7 @@
 #ifndef MEM_H
 #define MEM_H
 
-//#define MEM_USE_RTL	1
+// #define MEM_USE_RTL	1
 
 #ifdef MACINTOSH
 #undef MEM_USE_RTL

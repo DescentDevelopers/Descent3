@@ -980,7 +980,7 @@ void MercEndBoss::DoFrame(int me) {
               //						{
               //							vector bf_pos = ray.hit_point + (orient.fvec
               //* 9.0f); 							Obj_Create(OBJ_POWERUP,
-              //memory->wallhit_id, 76, &bf_pos);
+              // memory->wallhit_id, 76, &bf_pos);
               ///							//mprintf(0, "HERE X\n");
               //						}
             }

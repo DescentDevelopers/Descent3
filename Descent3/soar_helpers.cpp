@@ -272,11 +272,11 @@ bool DSIsDoorOpenable(int n, int *is_openable) {
 }
 
 //	doorway state
-//#define DOORWAY_CLOSED			0	// door is closed
-//#define DOORWAY_OPENING			1	// door is opening
-//#define DOORWAY_WAITING			2	// door is waiting to be closed
-//#define DOORWAY_CLOSING			3	// door is closing
-//#define DOORWAY_OPEN				4	// door is open, that's it.
+// #define DOORWAY_CLOSED			0	// door is closed
+// #define DOORWAY_OPENING			1	// door is opening
+// #define DOORWAY_WAITING			2	// door is waiting to be closed
+// #define DOORWAY_CLOSING			3	// door is closing
+// #define DOORWAY_OPEN				4	// door is open, that's it.
 
 bool DSGetDoorStatus(int n, int *status) {
   if (n < 0 || n > Highest_object_index || Objects[n].type != OBJ_DOOR)

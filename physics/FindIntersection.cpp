@@ -844,7 +844,7 @@
 #include "pserror.h"
 #include "collide.h"
 #include "terrain.h"
-//#include "bspfi.h"
+// #include "bspfi.h"
 #include "3d.h"
 #include "room.h"
 #include "descent.h"
@@ -1729,7 +1729,8 @@ int check_vector_to_object(vector *intp, float *col_dist, vector *p0, vector *p1
   // if obj is player, and bumping into other player or a weapon of another coop player, reduce radius
   //	if (obj->type == OBJ_PLAYER &&
   //		 	((otherobj->type == OBJ_PLAYER) ||
-  //	 		((Game_mode&GM_MULTI_COOP) && otherobj->type == OBJ_WEAPON && otherobj->ctype.laser_info.parent_type
+  //	 		((Game_mode&GM_MULTI_COOP) && otherobj->type == OBJ_WEAPON &&
+  // otherobj->ctype.laser_info.parent_type
   //== OBJ_PLAYER))) 		size = size/2;
 
   // This accounts for relative position vs. relative velocity
@@ -3428,15 +3429,15 @@ void check_hit_obj(int objnum) {
                   goto sphere_sphere;
 
                 //									pos = obj->pos +
-                // obj->anim_sphere_offset; 									dist = vm_VectorDistance(&pos,
-                // &fvi_anim_sphere_p0); 									size =
-                // Poly_models[obj->rtype.pobj_info.model_num].anim_size;
+                // obj->anim_sphere_offset; 									dist =
+                // vm_VectorDistance(&pos, &fvi_anim_sphere_p0);
+                // size = Poly_models[obj->rtype.pobj_info.model_num].anim_size;
 
                 //									if((dist <= size +
                 // fvi_anim_sphere_rad)
                 //										||
-                //check_vector_to_object(&hit_point, &cur_dist, &fvi_anim_sphere_p0,&fvi_anim_sphere_p1,
-                //fvi_anim_sphere_rad, &Objects[objnum], &Objects[fvi_query_ptr->thisobjnum])
+                // check_vector_to_object(&hit_point, &cur_dist, &fvi_anim_sphere_p0,&fvi_anim_sphere_p1,
+                // fvi_anim_sphere_rad, &Objects[objnum], &Objects[fvi_query_ptr->thisobjnum])
                 //									{
                 fvi_curobj = objnum;
                 fvi_moveobj = m_obj_index;
@@ -4366,8 +4367,8 @@ void fvi_rooms_objs(void) {
 // Determines if a face draws with alpha blending
 // Parameters:	fp - pointer to the face in question
 //					bm_handle - the handle for the bitmap for this frame, or -1 if don't care about
-// transparence Returns:		bitmask describing the alpha blending for the face 					the return
-// bits are the ATF_ flags in renderer.h
+// transparence Returns:		bitmask describing the alpha blending for the face
+// the return bits are the ATF_ flags in renderer.h
 inline int GetFaceAlpha(face *fp, int bm_handle) {
   int ret = AT_ALWAYS;
   if (GameTextures[fp->tmap].flags & TF_SATURATE) {

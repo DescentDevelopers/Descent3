@@ -938,8 +938,9 @@ void bump_this_object(object *objp, object *other_objp, vector *force, vector *c
 }
 */
 
-//#define DAMAGE_SCALE 		128	//	Was 32 before 8:55 am on Thursday, September 15, changed by MK, walls
-// were hurting me more than robots! #define DAMAGE_THRESHOLD 	(F1_0/3) #define WALL_LOUDNESS_SCALE (20)
+// #define DAMAGE_SCALE 		128	//	Was 32 before 8:55 am on Thursday, September 15, changed by MK,
+// walls
+//  were hurting me more than robots! #define DAMAGE_THRESHOLD 	(F1_0/3) #define WALL_LOUDNESS_SCALE (20)
 
 // float force_force = 50.0;
 
@@ -1114,14 +1115,14 @@ bool collide_weapon_and_wall(object *weapon, fix hitspeed, int hitseg, int hitwa
   bool f_volatile, f_lava, f_water;
   // mprintf((0, "Weapon hit wall, how nice.\n"));
 
-  //#ifndef RELEASE
+  // #ifndef RELEASE
   if ((stricmp(Weapons[weapon->id].name, "Yellow flare") == 0) && (weapon->parent_handle == Player_object->handle) &&
       (KEY_STATE(KEY_LAPOSTRO)))
     if (ROOMNUM_OUTSIDE(hitseg))
       AddHUDMessage("Terrain cell %d", CELLNUM(hitseg));
     else
       AddHUDMessage("Room %d face %d", hitseg, hitwall);
-  //#endif
+  // #endif
 
   // Check if forcefield
   int tmap;

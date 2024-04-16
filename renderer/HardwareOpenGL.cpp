@@ -1860,7 +1860,7 @@ int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state 
   return retval;
 #else
   return 0;
-#endif //#ifdef DEDICATED_ONLY
+#endif // #ifdef DEDICATED_ONLY
 }
 
 void rend_Close(void) {

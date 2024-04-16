@@ -12,9 +12,9 @@
 #include "Macros.h"
 
 #define RELEASE
-//#define mprintf(args) //Debug_ConsolePrintf args
+// #define mprintf(args) //Debug_ConsolePrintf args
 
-//#pragma options align packed
+// #pragma options align packed
 #define MEM_USE_RTL 1
 #define and andVar
 #define or orVar

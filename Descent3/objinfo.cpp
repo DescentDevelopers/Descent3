@@ -33,11 +33,11 @@ int Num_object_ids[MAX_OBJECT_TYPES];
 
 // Objects that must be remapped so we can reference by index
 // If you change this array then you must change the defines in the header file
-//#ifdef _WIN32
+// #ifdef _WIN32
 // char *Static_object_names[]={TBL_GENERIC("GuideBot"),TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
-//#else
+// #else
 char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk")};
-//#endif
+// #endif
 
 #define NUM_STATIC_OBJECTS (sizeof(Static_object_names) / sizeof(*Static_object_names))
 

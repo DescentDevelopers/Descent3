@@ -601,7 +601,7 @@ void grSurface::xlat16_16(char *data, int w, int h, int format) {
         int temp_pix = sptr[(FixToInt(fv) * w) + FixToInt(fu)];
         int r = (temp_pix >> 8) & 0xf;
         int g = (temp_pix >> 4) & 0xf;
-        int b = (temp_pix)&0xf;
+        int b = (temp_pix) & 0xf;
 
         r <<= 4;
         g <<= 4;

@@ -30,7 +30,7 @@ typedef struct {
   float fDamping;            // 0 to 1
 } EAX_REVERBPROPERTIES;
 
-//#define EAX_MAX_ENVIRONMENT (EAX_ENVIRONMENT_COUNT - 1)
+// #define EAX_MAX_ENVIRONMENT (EAX_ENVIRONMENT_COUNT - 1)
 
 // presets
 #define EAX_PRESET_GENERIC EAX_ENVIRONMENT_GENERIC, 0.5F, 1.493F, 0.5F

@@ -1665,7 +1665,7 @@
 #include "BOA.h"
 #include "attach.h"
 #include "mission_download.h"
-//#include "gamespy.h"
+// #include "gamespy.h"
 #include "multi_world_state.h"
 #include "ObjScript.h"
 #include "audiotaunts.h"
@@ -1702,7 +1702,7 @@ player_pos_suppress Player_pos_fix[MAX_PLAYERS];
 
 // Define this if you want to have secondaries be sent as reliable packets
 //(not recommended - talk to Jason)
-//#define RELIABLE_SECONDARIES
+// #define RELIABLE_SECONDARIES
 
 // If this is true, PXO games won't save the kills, deaths, etc.
 bool Multi_no_stats_saved = false;
@@ -9505,7 +9505,7 @@ void MultiDoMSafePowerup(ubyte *data);
     if (sequence < s || sequence > e)                                                                                  \
       return;                                                                                                          \
   }
-//#define ACCEPT_CONDITION(s,e)
+// #define ACCEPT_CONDITION(s,e)
 
 // Takes the individual packet types and passes their data to the appropriate routines
 void MultiProcessData(ubyte *data, int len, int slot, network_address *from_addr) {

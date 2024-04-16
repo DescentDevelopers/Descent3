@@ -11,7 +11,7 @@
 #define SOUND_ON
 #undef STEALTH
 #undef DAJ_DEBUG
-//#pragma options align packed
+// #pragma options align packed
 #define MEM_USE_RTL 1
 #define and andVar
 #define or orVar

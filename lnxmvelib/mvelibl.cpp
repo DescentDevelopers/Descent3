@@ -283,7 +283,9 @@ static unsigned int snd_write_cursor;
 
 enum { snd_queue_max = 60 };
 
-static struct _snd_queue { unsigned ptr; } snd_queue[snd_queue_max];
+static struct _snd_queue {
+  unsigned ptr;
+} snd_queue[snd_queue_max];
 static unsigned snd_fill, snd_empty;
 static int snd_pad;
 

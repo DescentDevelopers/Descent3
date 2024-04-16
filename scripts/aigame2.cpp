@@ -981,8 +981,8 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
     //@@			if ((rand() % 100) < 60) {
     //@@				set_state(me_handle, STATE_SNIPE);
     //@@			}
-    //@@			memory->timer = Game_GetTime() + 2.0f + (rand() % 6)*0.5f;				// use timer to
-    //switch states.
+    //@@			memory->timer = Game_GetTime() + 2.0f + (rand() % 6)*0.5f;
+    //// use timer to switch states.
     //@@		}
     break;
 

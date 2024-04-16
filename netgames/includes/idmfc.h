@@ -191,7 +191,7 @@ public:
   //   DMFCApp::GameClose, make sure that you put a call to this somewhere in the override
   virtual void GameClose(void) = 0;
 
-  //###################Server Only functions################################
+  // ###################Server Only functions################################
 
   // DMFCBase::OnServerPlayerKilled
   //
@@ -299,7 +299,7 @@ public:
   //	Not automatically sent to clients
   virtual void OnServerObjectDestroyed(object *obj) = 0;
 
-  //######################### Client allowed event handlers############################
+  // ######################### Client allowed event handlers############################
 
   // DMFCBase::OnClientPlayerKilled (Only called if server tells client to execute)
   //
@@ -1695,7 +1695,7 @@ public:
   virtual bool CanScrollUp() = 0;
 };
 
-#endif //#ifdef USECLASSES
+#endif // #ifdef USECLASSES
 
 //===========================================================================================
 #ifdef __cplusplus

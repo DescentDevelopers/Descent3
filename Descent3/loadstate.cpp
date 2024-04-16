@@ -1702,8 +1702,8 @@ int LGSSnapshot(CFILE *fp) {
 //@@				PageInVClip (Weapons[op->id].fire_image_handle);
 //@@				break;
 //@@			}
-//@@		case RT_POLYOBJ:					// be sure to use translated handles for polyobjs
-//and textures
+//@@		case RT_POLYOBJ:					// be sure to use translated handles for
+// polyobjs and textures
 //@@			gs_ReadShort(fp, sindex);
 //@@			new_model = (sindex > -1) ? gs_Xlates->model_handles[sindex] : -1;
 //@@			if (new_model != pobji->model_num)

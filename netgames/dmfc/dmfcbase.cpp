@@ -610,7 +610,7 @@ DMFCBase::~DMFCBase(void) {
   SPRoot = NULL;
 }
 
-//##################Setup and processing functions#######################
+// ##################Setup and processing functions#######################
 
 // DMFCBase::InitializeForLevel
 //
