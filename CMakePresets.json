@@ -23,5 +23,13 @@
                 , "rhs": "Darwin"
             }
         }
+        , {
+            "name": "linux"
+            , "condition": {
+                "type": "equals"
+                , "lhs": "${hostSystemName}"
+                , "rhs": "Linux"
+            }
+        }
     ]
 }

@@ -11,7 +11,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [{runner: windows-latest, preset: win}, {runner: macos-latest, preset: mac}]
+        os:
+          - {runner: windows-latest, preset: win}
+          - {runner: macos-latest, preset: mac}
+          - {runner: ubuntu-latest, preset: linux}
         build_type: [Debug, Release]
 
     runs-on: ${{ matrix.os.runner }}
@@ -24,6 +27,18 @@ jobs:
         run: |
           # Install packages from Homebrew
           brew bundle install
+
+      - name: Install Linux dependencies
+        if: ${{ matrix.os.preset == 'linux' }}
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y --no-install-recommends \
+            make cmake g++ libsdl1.2-dev libsdl-image1.2-dev \
+            libaudio-dev libaa1-dev libdirectfb-dev \
+            libncurses-dev \
+            libxext6:i386  # for ./scripts/hogutils/hogUtils-i686 binary
+          mkdir ~/Descent3
 
       - name: Configure CMake
         run: cmake --preset ${{ matrix.os.preset }} -B ${{ github.workspace }}/build
