@@ -2054,7 +2054,9 @@ void MVE_gfxWaitRetrace(int state);
 void MVE_gfxSetSplit(unsigned line);
 
 #if defined(__LINUX__)
-#ifndef MACOSXPPC
+
+#if !defined(MACOSXPPC) && !defined(__arm64__)
+
 #define int3 __asm__ __volatile__("int $3");
 #else
 #define int3

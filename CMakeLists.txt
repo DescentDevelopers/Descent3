@@ -5,9 +5,6 @@ MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
 # allow more human readable "if then else" constructs
 SET( CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE )
 
-# TODO: Apple Silicon (arm64) later
-SET( CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "" FORCE)
-
 
 PROJECT(Descent3)
 

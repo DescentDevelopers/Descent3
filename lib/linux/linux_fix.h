@@ -2,6 +2,7 @@
 #define __LINUX_FIX_H_
 
 #include <sys/stat.h>
+#include <math.h>
 
 #define LOKI_VERSION ""
 
@@ -46,7 +47,11 @@ inline int _filelength(int fd) {
 #define strcmpi(a, b) stricmp(a, b)
 #define strcmpni(a, b, c) strnicmp(a, b, c)
 #define _chmod(a, b) chmod(a, b)
+#if defined(__arm64__)
+#define _finite(a) isfinite(a)
+#else
 #define _finite(a) finite(a)
+#endif
 #define _min(a, b) min(a, b)
 #define _max(a, b) max(a, b)
 #define __min(a, b) min(a, b)
