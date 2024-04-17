@@ -50,12 +50,14 @@ jobs:
 
     - name: Install Dependencies (macOS)
       run: |
+        brew install ninja
+        # Note this is x86_64 Homebrew
         /usr/local/bin/brew install sdl12-compat sdl2_image
         curl --output-dir /tmp -fsSLO https://github.com/XQuartz/XQuartz/releases/download/XQuartz-2.8.5/XQuartz-2.8.5.pkg
         sudo installer -pkg /tmp/XQuartz-2.8.5.pkg -target LocalSystem
 
     - name: Configure CMake (macOS)
-      run: cmake --preset mac -B ${{github.workspace}}/build
+      run: cmake --preset ${{matrix.os.preset}} -B ${{github.workspace}}/build
 
     - name: Build (macOS)
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
