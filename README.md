@@ -1,5 +1,22 @@
 # Descent 3
 
+## Update 04/16/2024
+
+I'm so happy to see the amount of interest and participation here! 
+
+Please join the Descent Developer Discord, there's an active community there already. 
+
+[https://discord.gg/GNy5CUQ](https://discord.gg/GNy5CUQ)
+
+You can expect some big commits coming soon. We'll be merging in some code that other developers did in parallel and/or after this code was archived.
+
+## Direction and Decisions
+
+1. We will support c++17 going forward
+2. We are using clang in LLVM mode for code formatting. Please run clang-format before submitting a PR
+   
+
+## Original Release
 This is the latest version of the Descent 3 source code. This includes the '1.5' patch that Jeff Slutter and Kevin Bentley wrote several years ago. At the time, it worked for Windows, Linux, and Mac. 
 
 Some proprietary sound and video libraries from Interplay have been stripped out (the ACM and MVE format). I have that code if someone wants to help make a converter so the old cutscenes work. It'll take some effort to stub out that code so it compiles. 

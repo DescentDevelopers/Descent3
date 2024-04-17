@@ -682,14 +682,14 @@ bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn);
 void mn3_Close();
 
 inline bool IS_MN3_FILE(const char *fname) {
-  char name[PSFILENAME_LEN];
-  char ext[PSFILENAME_LEN];
+  char name[PSFILENAME_LEN + 1];
+  char ext[PSFILENAME_LEN + 1];
   ddio_SplitPath(fname, NULL, name, ext);
   return (strcmpi(ext, ".mn3") == 0) ? true : false;
 }
 
 inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
-  char fname[PSFILENAME_LEN];
+  char fname[PSFILENAME_LEN + 1];
   ddio_SplitPath(mn3name, NULL, fname, NULL);
 
   if (stricmp(fname, "d3_2") == 0) {
@@ -888,15 +888,15 @@ bool LoadMission(const char *mssn) {
   tMission *msn;
   CFILE *fp = NULL; // Mission file
   char errtext[80]; // Stores error if unable to read mission
-  char msnfname[PSFILENAME_LEN];
-  char mission[_MAX_PATH * 2];
+  char msnfname[PSPATHNAME_LEN];
+  char mission[PSPATHNAME_LEN];
   int srclinenum = 0; // Current line of source.
   int curlvlnum;      // Current level number
   int numlevels;      // Number of levels required to read in.
   int cur_objective;  // current objective reading.
   bool indesc;        // are we in a multi-line block
   bool res = false;   // used to specify if no error has occurred.
-  char pathname[_MAX_PATH * 2];
+  char pathname[PSPATHNAME_LEN];
   ResetMission(); // Reset everything.
                   // open MN3 if filename passed was an mn3 file.
 
@@ -1639,7 +1639,7 @@ bool Skip_next_movie = false;
 //	---------------------------------------------------------------------------
 //	 play movie
 void DoMissionMovie(char *movie) {
-  char temppath[PSPATHNAME_LEN + PSFILENAME_LEN];
+  char temppath[PSPATHNAME_LEN];
   if (PROGRAM(windowed)) {
     mprintf((0, "Skipping movie...can't do in windowed mode!\n"));
     return;
@@ -1829,13 +1829,17 @@ int Mission_voice_hog_handle = 0;
 //	MN3 based mission functions.
 // loads the msn file from the mn3 file specified, specifies the hog and table file.
 bool mn3_Open(const char *mn3file) {
-  char pathname[PSPATHNAME_LEN + PSFILENAME_LEN];
-  char filename[PSFILENAME_LEN];
+  char pathname[PSPATHNAME_LEN];
+  char filename[PSFILENAME_LEN + 1];
   char ext[PSFILENAME_LEN];
   int mn3_handle;
   // concatanate the mn3 extension if it isn't there.
+  char tempMn3File[PSPATHNAME_LEN];
   if (!IS_MN3_FILE(mn3file)) {
-    strcat(filename, ".mn3");
+  	strncpy(tempMn3File, mn3file, sizeof(tempMn3File) - 1);
+  	tempMn3File[sizeof(tempMn3File) - 1] = 0;
+    strcat(tempMn3File, ".mn3");
+    mn3file = tempMn3File;
   }
 
   char *p = GetMultiCDPath((char *)mn3file);
@@ -1874,8 +1878,8 @@ bool mn3_Open(const char *mn3file) {
 bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn) {
   int handle;
   bool retval;
-  char pathname[PSPATHNAME_LEN + PSFILENAME_LEN];
-  char filename[PSFILENAME_LEN];
+  char pathname[PSPATHNAME_LEN];
+  char filename[PSFILENAME_LEN + 1];
 
   if (strcmpi(mn3file, "d3.mn3") == 0) {
     char *p = GetMultiCDPath((char *)mn3file);

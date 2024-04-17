@@ -1145,7 +1145,7 @@ bool MenuNewGame() {
 
     FirstGame = true;
 
-    char temppath[PSFILENAME_LEN * 2];
+    char temppath[PSPATHNAME_LEN];
     char *moviepath;
     moviepath = GetMultiCDPath("level1.mve");
     if (moviepath) {
