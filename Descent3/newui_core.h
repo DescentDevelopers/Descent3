@@ -140,14 +140,14 @@ class newuiHotspot;
 
 #define DEFAULT_NEWUID -5
 
-typedef enum tAlignment { NEWUI_ALIGN_VERT, NEWUI_ALIGN_HORIZ };
+enum tAlignment { NEWUI_ALIGN_VERT, NEWUI_ALIGN_HORIZ };
 
 #define SLIDER_UNITS_INT 0
 #define SLIDER_UNITS_PERCENT 1
 #define SLIDER_UNITS_FLOAT 2
 
 // used optionally for sliders.
-typedef struct tSliderSettings {
+struct tSliderSettings {
   union {
     int i;
     float f;
@@ -157,7 +157,7 @@ typedef struct tSliderSettings {
     float f;
   } max_val;
   int type; // enumerated above in SLIDER_UNITS
-} tSliderStruct;
+};
 
 #define NEWUI_EDIT_CANCELED_STR "\1" // if a newuiEditbox returns this, then we cancelled. invalid string
 

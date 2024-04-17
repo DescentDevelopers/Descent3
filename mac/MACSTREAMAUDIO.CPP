@@ -475,7 +475,6 @@ bool AudioStream::Open(const char *filename, int open_flags) {
       return false;
     }
 
-    m_loopmutex.Create();
     AudioStream::SetLoopCount(1);
     m_laststate = m_state;
     mprintf((1, "opening: STRM[%d]: STOPPED sof %d\n", this->m_curid, m_start_on_frame));
@@ -497,7 +496,6 @@ void AudioStream::Close() {
     // stop the stream, close the archive, close the decoder.
     AudioStream::Stop();
     m_archive.Close();
-    m_loopmutex.Destroy();
     m_curid = -1;
 
     // free streaming buffers and decoder if we need to.

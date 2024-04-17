@@ -73,32 +73,4 @@ public:
   void resume();  // resumes task
 };
 
-//	This establishes a mutual exclusion object.  once one thread locks the object,
-//	any code in another thread that contains a mutex check will block or skip that code until
-//	the locking thread unlocks it.
-class osMutex {
-#if defined(DD_ACCESS_RING)
-public:
-#else
-private:
-#endif
-
-#if defined(WIN32)
-  unsigned mutex_os_handle;
-#endif
-
-public:
-  osMutex();
-  ~osMutex();
-
-  bool Create();  // creates a mutex object.
-  void Destroy(); // destroys a mutex object
-
-  // calling thread will attempt to acquire mutex (wait until timeout in ms.) if timeout == -1, wait forever...
-  bool Acquire(int timeout = -1);
-
-  // calling thread releases control of mutex.
-  void Release();
-};
-
 #endif

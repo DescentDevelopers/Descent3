@@ -3,7 +3,6 @@ SET (CPPS
   lnxcon.cpp
   lnxcon_raw.cpp
   lnxdebug.cpp
-  lnxtask.cpp
   lnxapp.cpp
   lnxcon_null.cpp
   lnxdata.cpp
