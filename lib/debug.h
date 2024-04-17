@@ -153,37 +153,13 @@ void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window);
 //	DEBUGGING MACROS
 // Break into the debugger, if this feature was enabled in Debug_init()
 #if !defined(RELEASE)
+#include "debugbreak.h"
 #if defined(WIN32)
-#define debug_break()                                                                                                  \
-  do {                                                                                                                 \
-    if (Debug_break)                                                                                                   \
-      __asm int 3                                                                                                      \
-  } while (0)
 #elif defined(__LINUX__)
 void ddio_InternalKeyClose();
-// #define debug_break() do{__asm__ __volatile__ ( "int $3" );}while(0)
-#ifndef MACOSXPPC
-#define debug_break()                                                                                                  \
-  do {                                                                                                                 \
-    ddio_InternalKeyClose();                                                                                           \
-    __asm__ __volatile__("int $3");                                                                                    \
-  } while (0)
-#else
-#define debug_break()                                                                                                  \
-  do {                                                                                                                 \
-    ddio_InternalKeyClose(); /*nop*/                                                                                   \
-  } while (0)
-#endif
 #elif defined(MACINTOSH)
 extern void SuspendControls();
 extern void ResumeControls();
-#define debug_break()                                                                                                  \
-  do {                                                                                                                 \
-    if (Debug_break)                                                                                                   \
-      SuspendControls();                                                                                               \
-    Debugger();                                                                                                        \
-    ResumeControls();                                                                                                  \
-  } while (0)
 #else
 #define debug_break()
 #endif

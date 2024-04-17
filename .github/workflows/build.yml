@@ -23,10 +23,8 @@ jobs:
     - name: Install macOS dependencies
       if: ${{ matrix.os.preset == 'mac' }}
       run: |
-        # Note this is x86_64 Homebrew
-        /usr/local/bin/brew install sdl12-compat sdl2_image
-        curl --output-dir /tmp -fsSLO https://github.com/XQuartz/XQuartz/releases/download/XQuartz-2.8.5/XQuartz-2.8.5.pkg
-        sudo installer -pkg /tmp/XQuartz-2.8.5.pkg -target LocalSystem
+        # Install packages from Homebrew
+        brew bundle install
 
     - name: Configure CMake
       run: cmake --preset ${{matrix.os.preset}} -B ${{github.workspace}}/build
