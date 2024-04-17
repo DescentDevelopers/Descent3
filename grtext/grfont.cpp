@@ -486,7 +486,7 @@ bool grfont_LoadTemplate(char *fname, tFontTemplate *ft) {
   ft->newstyle = (ft_flags & FT_FMT4444) ? true : false;
   ft->ffi2 = (ft_flags & FT_FFI2) ? true : false;
 
-  ft->ch_tracking = (sbyte)ffi2.tracking;
+  ft->ch_tracking = (sbyte)((ft_flags & FT_FFI2) ? ffi2.tracking : 0);
 
   CLOSE_FONT(ff);
 

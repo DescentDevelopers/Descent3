@@ -51,7 +51,7 @@ private:
 
   struct sym_info // full runtime symbol
   {
-    char name[PSFILENAME_LEN + 1];
+    char name[PSPATHNAME_LEN];
     char *text;
   };
 

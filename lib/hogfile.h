@@ -44,8 +44,9 @@
 
 #include "pstypes.h"
 
-#define HOG_HDR_SIZE 64
+#define HOG_HDR_SIZE (64)
 #define HOG_TAG_STR "HOG2"
+#define HOG_FILENAME_LEN (36)
 
 typedef struct tHogHeader {
   unsigned nfiles;           // number of files in header
@@ -53,7 +54,7 @@ typedef struct tHogHeader {
 } tHogHeader;
 
 typedef struct tHogFileEntry {
-  char name[PSFILENAME_LEN + 1]; // file name
+  char name[HOG_FILENAME_LEN];   // file name
   unsigned flags;                // extra info
   unsigned len;                  // length of file
   unsigned long timestamp;       // time of file.

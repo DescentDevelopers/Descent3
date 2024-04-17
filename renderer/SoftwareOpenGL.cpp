@@ -820,7 +820,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     OpenGL_multitexture = false;
 
   if (OpenGL_packed_pixels) {
-    opengl_packed_Upload_data = (ushort *)mem_malloc(256 * 256 * 2);
+    opengl_packed_Upload_data = (ushort *)mem_malloc(2048 * 2048 * 2);
     opengl_packed_Translate_table = (ushort *)mem_malloc(65536 * 2);
     opengl_packed_4444_translate_table = (ushort *)mem_malloc(65536 * 2);
 

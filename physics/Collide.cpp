@@ -985,7 +985,7 @@ void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum) {
   vec1.j = pnt[2].j - pnt[1].j;
 
   k1 = -((cross(&checkp, &vec0) + cross(&vec0, &pnt[1])) / cross(&vec0, &vec1));
-  if (abs((int)vec0.i) > abs((int)vec0.j))
+  if (fabsf(vec0.i) > fabsf(vec0.j))
     k0 = ((-k1 * vec1.i) + checkp.i - pnt[1].i) / vec0.i;
   else
     k0 = ((-k1 * vec1.j) + checkp.j - pnt[1].j) / vec0.j;
