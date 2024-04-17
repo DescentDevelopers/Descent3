@@ -6,7 +6,7 @@ I'm so happy to see the amount of interest and participation here!
 
 Please join the Descent Developer Discord, there's an active community there already. 
 
-[https://discord.gg/GNy5CUQ](https://discord.gg/GNy5CUQ)
+<https://discord.gg/GNy5CUQ>
 
 You can expect some big commits coming soon. We'll be merging in some code that other developers did in parallel and/or after this code was archived.
 
