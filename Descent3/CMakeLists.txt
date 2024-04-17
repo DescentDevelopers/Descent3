@@ -285,9 +285,8 @@ SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WIN
 ENDIF()
 
 IF (UNIX AND NOT APPLE)
-SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${SDL_LIBRARY} caca asound audio esd aa directfb m dl GLU)
+SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${SDL_LIBRARY} caca asound audio aa directfb m dl GLU ncurses pulse-simple)
 SET (PLATFORM_CPPS loki_utils.c lnxmain.cpp)
-SET(CMAKE_EXE_LINKER_FLAGS "/usr/lib/libpulse-simple.so.0")
 ENDIF()
 	
 IF (APPLE)
