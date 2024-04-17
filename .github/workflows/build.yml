@@ -46,6 +46,7 @@ jobs:
           libaudio-dev libaa1-dev libdirectfb-dev \
           libncurses-dev \
           libxext6:i386  # for ./scripts/hogutils/hogUtils-i686 binary
+        mkdir ~/Descent3
 
     - name: Configure CMake
       run: cmake --preset ${{matrix.os.preset}} -B ${{github.workspace}}/build
