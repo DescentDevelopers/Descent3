@@ -15,5 +15,13 @@
                 }
             }
         }
+        , {
+            "name": "mac"
+            , "condition": {
+                "type": "equals"
+                , "lhs": "${hostSystemName}"
+                , "rhs": "Darwin"
+            }
+        }
     ]
 }
