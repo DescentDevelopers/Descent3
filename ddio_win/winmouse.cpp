@@ -44,9 +44,6 @@ typedef struct t_mse_event {
 bool rawInputOpened = false;
 bool handlerCalled = false;
 
-// These are needed to keep the mouse smooth in UIs
-float xCoord, yCoord;
-
 // ----------------------------------------------------------------------------
 
 static bool DDIO_mouse_init = 0;
@@ -134,9 +131,6 @@ void ddio_MouseReset() {
   DDIO_mouse_state.cz = 0;
   DDIO_mouse_state.x_aspect = 1.0f;
   DDIO_mouse_state.y_aspect = 1.0f;
-
-  xCoord = DDIO_mouse_state.x;
-  yCoord = DDIO_mouse_state.y;
 
   // reset button states
   ddio_MouseQueueFlush();
@@ -344,30 +338,23 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
         // DDIO_mouse_state.btn_mask = buttons;
       }
 
-      // if (DDIO_mouse_state.mode == MOUSE_STANDARD_MODE)
-      {
-        // if in standard mode, don't use x,y,z retreived from dimouse_GetDeviceData
-        xCoord += (float)rawinput->data.mouse.lLastX;
-        yCoord += (float)rawinput->data.mouse.lLastY;
+      DDIO_mouse_state.x += rawinput->data.mouse.lLastX;
+      DDIO_mouse_state.y += rawinput->data.mouse.lLastY;
+      DDIO_mouse_state.z = 0;
 
-        DDIO_mouse_state.x = (int)xCoord;
-        DDIO_mouse_state.y = (int)yCoord;
-        DDIO_mouse_state.z = 0;
-
-        //      check bounds of mouse cursor.
-        if (DDIO_mouse_state.x < DDIO_mouse_state.brect.left)
-          xCoord = DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.left;
-        if (DDIO_mouse_state.x >= DDIO_mouse_state.brect.right)
-          xCoord = DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.right - 1;
-        if (DDIO_mouse_state.y < DDIO_mouse_state.brect.top)
-          yCoord = DDIO_mouse_state.y = (short)DDIO_mouse_state.brect.top;
-        if (DDIO_mouse_state.y >= DDIO_mouse_state.brect.bottom)
-          yCoord = DDIO_mouse_state.y = (short)DDIO_mouse_state.brect.bottom - 1;
-        if (DDIO_mouse_state.z > DDIO_mouse_state.zmax)
-          DDIO_mouse_state.z = (short)DDIO_mouse_state.zmax;
-        if (DDIO_mouse_state.z < DDIO_mouse_state.zmin)
-          DDIO_mouse_state.z = (short)DDIO_mouse_state.zmin;
-      }
+      //      check bounds of mouse cursor.
+      if (DDIO_mouse_state.x < DDIO_mouse_state.brect.left)
+        DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.left;
+      if (DDIO_mouse_state.x >= DDIO_mouse_state.brect.right)
+        DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.right - 1;
+      if (DDIO_mouse_state.y < DDIO_mouse_state.brect.top)
+        DDIO_mouse_state.y = (short)DDIO_mouse_state.brect.top;
+      if (DDIO_mouse_state.y >= DDIO_mouse_state.brect.bottom)
+        DDIO_mouse_state.y = (short)DDIO_mouse_state.brect.bottom - 1;
+      if (DDIO_mouse_state.z > DDIO_mouse_state.zmax)
+        DDIO_mouse_state.z = (short)DDIO_mouse_state.zmax;
+      if (DDIO_mouse_state.z < DDIO_mouse_state.zmin)
+        DDIO_mouse_state.z = (short)DDIO_mouse_state.zmin;
     }
 
     free(buf);
