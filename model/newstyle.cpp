@@ -1158,7 +1158,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
     vector max_xyz;
     bool first_pnt = true;
 
-    for(frame_index = start_frame; frame_index <= end_frame; frame_index++) {
+    for (frame_index = start_frame; frame_index <= end_frame; frame_index++) {
       // Because size changes with animation, we need the worst case point -- so, check every keyframe
       // NOTE:  This code does not currently account for all $turret and $rotate positions
 
@@ -1166,11 +1166,11 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
 
       SetModelAnglesAndPos(pm, normalized_time);
 
-      for (model_index = 0;model_index < pm->n_models; model_index++) {
+      for (model_index = 0; model_index < pm->n_models; model_index++) {
         bsp_info *sm = &pm->submodel[model_index];
 
         // For every vertex
-        for(sm_vert_index = 0; sm_vert_index < sm->nverts; sm_vert_index++) {
+        for (sm_vert_index = 0; sm_vert_index < sm->nverts; sm_vert_index++) {
           vector pnt;
           int mn;
 
@@ -1228,7 +1228,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
     *offset_ptr = geometric_center;
   }
 
-  for(frame_index = start_frame; frame_index <= end_frame; frame_index++) {
+  for (frame_index = start_frame; frame_index <= end_frame; frame_index++) {
     // Because size changes with animation, we need the worst case point -- so, check every keyframe
     // NOTE:  This code does not currently account for all $turret and $rotate positions
 
@@ -1236,11 +1236,11 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
 
     SetModelAnglesAndPos(pm, normalized_time);
 
-    for(model_index = 0; model_index < pm->n_models; model_index++) {
+    for (model_index = 0; model_index < pm->n_models; model_index++) {
       bsp_info *sm = &pm->submodel[model_index];
 
       // For every vertex
-      for(sm_vert_index = 0; sm_vert_index < sm->nverts; sm_vert_index++) {
+      for (sm_vert_index = 0; sm_vert_index < sm->nverts; sm_vert_index++) {
         vector pnt;
         int mn;
 

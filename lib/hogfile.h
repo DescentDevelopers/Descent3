@@ -54,10 +54,10 @@ typedef struct tHogHeader {
 } tHogHeader;
 
 typedef struct tHogFileEntry {
-  char name[HOG_FILENAME_LEN];   // file name
-  unsigned flags;                // extra info
-  unsigned len;                  // length of file
-  unsigned long timestamp;       // time of file.
+  char name[HOG_FILENAME_LEN]; // file name
+  unsigned flags;              // extra info
+  unsigned len;                // length of file
+  unsigned long timestamp;     // time of file.
 } tHogFileEntry;
 
 #define HOGMAKER_ERROR 0       // Incorrect number of files passed in

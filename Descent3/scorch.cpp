@@ -183,7 +183,7 @@ void AddScorch(int roomnum, int facenum, vector *pos, int texture_handle, float 
     float size = (float)sp->size / 16.0;
 
     // Increment count, and stop drawing if hit limit
-    if (sp->roomface == roomface) { // Found one!
+    if (sp->roomface == roomface) {    // Found one!
       count += std::max((int)size, 1); // count large marks more
       if (count >= MAX_VIS_COUNT)
         return;

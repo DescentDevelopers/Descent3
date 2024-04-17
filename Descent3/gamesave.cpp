@@ -321,7 +321,7 @@ void QuickSaveGame() {
     SaveGameDialog();
   } else {
     // verify savegame still exists in the appropriate slot, if not just run dialog, if so then save
-    char filename[PSFILENAME_LEN+1];
+    char filename[PSFILENAME_LEN + 1];
     char pathname[PSPATHNAME_LEN];
     char desc[GAMESAVE_DESCLEN + 1];
     FILE *fp;

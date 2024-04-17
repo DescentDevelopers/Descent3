@@ -1836,8 +1836,8 @@ bool mn3_Open(const char *mn3file) {
   // concatanate the mn3 extension if it isn't there.
   char tempMn3File[PSPATHNAME_LEN];
   if (!IS_MN3_FILE(mn3file)) {
-  	strncpy(tempMn3File, mn3file, sizeof(tempMn3File) - 1);
-  	tempMn3File[sizeof(tempMn3File) - 1] = 0;
+    strncpy(tempMn3File, mn3file, sizeof(tempMn3File) - 1);
+    tempMn3File[sizeof(tempMn3File) - 1] = 0;
     strcat(tempMn3File, ".mn3");
     mn3file = tempMn3File;
   }
