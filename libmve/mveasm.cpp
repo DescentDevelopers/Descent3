@@ -584,9 +584,9 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
     /////////////////////////////////////////////////////////////////////////////
     // Note: this is all you should have to tweak
     bool opcodesToProcess[16] = {true, true, true,  true,  // 0  - 3
-                                 false, false, false, false,  // 4  - 7
-                                 false, false, false, true,  // 8  - 11
-                                 true, true, true, true}; // 12 - 15
+                                 true, true, true,  true,  // 4  - 7
+                                 true, true, false, true,  // 8  - 11
+                                 true, true, true,  true}; // 12 - 15
     if (!opcodesToProcess[opcode_to_use]) {
       opcode_to_use = SkipOpcode(opcode_to_use, hiColor, esi, bcomp, edi);
     }
@@ -756,11 +756,17 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         const int max_repcount = 8;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           const unsigned char *color_idx = lookupTable + (esi[rep_count + kOffset] * 4);
+#ifdef OUTRAGE_BIG_ENDIAN
+          unsigned int w1 = colors[color_idx[3]];
+          unsigned int w2 = colors[color_idx[2]];
+          unsigned int w3 = colors[color_idx[1]];
+          unsigned int w4 = colors[color_idx[0]];
+#else
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
           unsigned int w4 = colors[color_idx[3]];
-
+#endif
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w1;
             *(unsigned int *)(edi + 4) = w2;
@@ -814,10 +820,17 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           }
 
           const unsigned char *color_idx = lookupTable + (idx * 4);
+#ifdef OUTRAGE_BIG_ENDIAN
+          unsigned int w1 = colors[color_idx[3]];
+          unsigned int w2 = colors[color_idx[2]];
+          unsigned int w3 = colors[color_idx[1]];
+          unsigned int w4 = colors[color_idx[0]];
+#else
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
           unsigned int w4 = colors[color_idx[3]];
+#endif
 
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w1;
@@ -909,10 +922,17 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = repLookup[rep_count];
           const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+#ifdef OUTRAGE_BIG_ENDIAN
+          unsigned int w1 = colors[color_idx[3]];
+          unsigned int w2 = colors[color_idx[2]];
+          unsigned int w3 = colors[color_idx[1]];
+          unsigned int w4 = colors[color_idx[0]];
+#else
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
           unsigned int w4 = colors[color_idx[3]];
+#endif
 
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w1;
@@ -1115,11 +1135,17 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = repLookupTable[rep_count];
           const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+#ifdef OUTRAGE_BIG_ENDIAN
+          unsigned int w1 = colors[color_idx[3]];
+          unsigned int w2 = colors[color_idx[2]];
+          unsigned int w3 = colors[color_idx[1]];
+          unsigned int w4 = colors[color_idx[0]];
+#else
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
           unsigned int w4 = colors[color_idx[3]];
-
+#endif
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w1;
             *(unsigned int *)(edi + 4) = w2;
@@ -1216,6 +1242,25 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           unsigned int w4 = colors[color_idx[3]];
 
           if (rep_count & 1) {
+#ifdef OUTRAGE_BIG_ENDIAN
+            if (hiColor) {
+              *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(unsigned int *)(edi + nf_width + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+
+              *(unsigned int *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(unsigned int *)(edi + nf_width + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+            } else {
+              *(unsigned char *)(edi + 4) = w4;
+              *(unsigned char *)(edi + 5) = w3;
+              *(unsigned char *)(edi + 6) = w2;
+              *(unsigned char *)(edi + 7) = w1;
+
+              *(unsigned char *)(edi + nf_width + 4) = w4;
+              *(unsigned char *)(edi + nf_width + 5) = w3;
+              *(unsigned char *)(edi + nf_width + 6) = w2;
+              *(unsigned char *)(edi + nf_width + 7) = w1;
+            }
+#else
             if (hiColor) {
               *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
@@ -1233,17 +1278,25 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
               *(unsigned char *)(edi + nf_width + 6) = w3;
               *(unsigned char *)(edi + nf_width + 7) = w4;
             }
-
+#endif
             edi += nf_width * 2;
           } else {
             if (hiColor) {
+#ifdef OUTRAGE_BIG_ENDIAN
+              *(unsigned int *)(edi + 0) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
+              *(unsigned int *)(edi + nf_width) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
+
+              *(unsigned int *)(edi + 4) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
+              *(unsigned int *)(edi + nf_width + 4) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
+#else
               *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
 
               *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+#endif
             } else {
-              const unsigned int value = ( w4 << 24 ) | ( w3 << 16 ) | ( w2 << 8 ) | w1;
+              const unsigned int value = IntelSwapper((unsigned int)(w4 << 24) | (w3 << 16) | (w2 << 8) | w1);
               *(unsigned int *)(edi) = value;
               *(unsigned int *)(edi + nf_width) = value;
             }
@@ -1281,6 +1334,23 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
           unsigned int w4 = colors[color_idx[3]];
+#ifdef OUTRAGE_BIG_ENDIAN
+          if (hiColor) {
+            *(unsigned int *)(edi + 0) = w4;
+            *(unsigned int *)(edi + 4) = w3;
+            *(unsigned int *)(edi + 8) = w2;
+            *(unsigned int *)(edi + 12) = w1;
+          } else {
+            *(unsigned char *)(edi + 0) = w4;
+            *(unsigned char *)(edi + 1) = w4;
+            *(unsigned char *)(edi + 2) = w3;
+            *(unsigned char *)(edi + 3) = w3;
+            *(unsigned char *)(edi + 4) = w2;
+            *(unsigned char *)(edi + 5) = w2;
+            *(unsigned char *)(edi + 6) = w1;
+            *(unsigned char *)(edi + 7) = w1;
+          }
+#else
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w1;
             *(unsigned int *)(edi + 4) = w2;
@@ -1297,6 +1367,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             *(unsigned char *)(edi + 7) = w4;
           }
 
+#endif
           edi += nf_width;
         }
 
@@ -1332,6 +1403,16 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           unsigned int w4 = colors[color_idx[3]];
 
           if (hiColor) {
+#ifdef OUTRAGE_BIG_ENDIAN
+            *(unsigned int *)(edi + 0) = w4;
+            *(unsigned int *)(edi + nf_width) = w4;
+            *(unsigned int *)(edi + 4) = w3;
+            *(unsigned int *)(edi + nf_width + 4) = w3;
+            *(unsigned int *)(edi + 8) = w2;
+            *(unsigned int *)(edi + nf_width + 8) = w2;
+            *(unsigned int *)(edi + 12) = w1;
+            *(unsigned int *)(edi + nf_width + 12) = w1;
+#else
             *(unsigned int *)(edi + 0) = w1;
             *(unsigned int *)(edi + nf_width) = w1;
             *(unsigned int *)(edi + 4) = w2;
@@ -1340,9 +1421,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             *(unsigned int *)(edi + nf_width + 8) = w3;
             *(unsigned int *)(edi + 12) = w4;
             *(unsigned int *)(edi + nf_width + 12) = w4;
+#endif
           } else {
-            unsigned int c0 = ( w2 << 24 ) | ( w2 << 16 ) | ( w1 << 8 ) | w1;
-            unsigned int c1 = ( w4 << 24 ) | ( w4 << 16 ) | ( w3 << 8 ) | w3;
+            unsigned int c0 = IntelSwapper((unsigned int)(w2 << 24) | (w2 << 16) | (w1 << 8) | w1);
+            unsigned int c1 = IntelSwapper((unsigned int)(w4 << 24) | (w4 << 16) | (w3 << 8) | w3);
             *(unsigned int *)(edi + 0) = c0;
             *(unsigned int *)(edi + nf_width) = c0;
             *(unsigned int *)(edi + 4) = c1;
@@ -1383,19 +1465,29 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 
           if (rep_count & 1) {
             if (hiColor) {
+#ifdef OUTRAGE_BIG_ENDIAN
+              *(unsigned int *)(edi + 8) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
+              *(unsigned int *)(edi + 12) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
+#else
               *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+#endif
             } else {
-              *(unsigned int*)(edi + 4) = ( w4 << 24 ) | ( w3 << 16 ) | ( w2 << 8 ) | w1;
+              *(unsigned int *)(edi + 4) = IntelSwapper((unsigned int)(w4 << 24) | (w3 << 16) | (w2 << 8) | w1);
             }
 
             edi += nf_width;
           } else {
             if (hiColor) {
+#ifdef OUTRAGE_BIG_ENDIAN
+              *(unsigned int *)(edi + 0) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
+              *(unsigned int *)(edi + 4) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
+#else
               *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+#endif
             } else {
-              *(unsigned int*)(edi + 0) = ( w4 << 24 ) | ( w3 << 16 ) | ( w2 << 8 ) | w1;
+              *(unsigned int *)(edi + 0) = IntelSwapper((unsigned int)(w4 << 24) | (w3 << 16) | (w2 << 8) | w1);
             }
           }
         }
@@ -1477,28 +1569,44 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 
         if (!do42) {
           if (hiColor) {
-            *(unsigned int *)(edi+0) = (w1&0xFFFF)|((w2&0xFFFF)<<16);
-            *(unsigned int *)(edi+4) = (w3&0xFFFF)|((w4&0xFFFF)<<16);
+#ifdef OUTRAGE_BIG_ENDIAN
+            *(unsigned int *)(edi + 0) = ((unsigned int)(w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16));
+            *(unsigned int *)(edi + 4) = ((unsigned int)(w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16));
+#else
+            *(unsigned int *)(edi + 0) = ((unsigned int)(w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16));
+            *(unsigned int *)(edi + 4) = ((unsigned int)(w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16));
+#endif
           } else {
-            *(unsigned int *)(edi+0) = (w4 << 24) | (w3 << 16) | (w2 << 8) | w1;
+            *(unsigned int *)(edi + 0) = IntelSwapper((unsigned int)(w4 << 24) | (w3 << 16) | (w2 << 8) | w1);
           }
           edi += nf_width;
         } else {
           // 42
           if (rep_count & 1) {
             if (hiColor) {
-              *(unsigned int *)(edi+8) = (w1&0xFFFF)|((w2&0xFFFF)<<16);
-              *(unsigned int *)(edi+12) = (w3&0xFFFF)|((w4&0xFFFF)<<16);
+#ifdef OUTRAGE_BIG_ENDIAN
+              *(unsigned int *)(edi + 8) = ((unsigned int)(w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16));
+              *(unsigned int *)(edi + 12) = ((unsigned int)(w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16));
+#else
+
+              *(unsigned int *)(edi + 8) = ((unsigned int)(w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16));
+              *(unsigned int *)(edi + 12) = ((unsigned int)(w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16));
+#endif
             } else {
-              *(unsigned int *)(edi+4) = (w4 << 24) | (w3 << 16) | (w2 << 8) | w1;
+              *(unsigned int *)(edi + 4) = IntelSwapper((unsigned int)(w4 << 24) | (w3 << 16) | (w2 << 8) | w1);
             }
             edi += nf_width;
           } else {
             if (hiColor) {
-              *(unsigned int *)(edi+0) = (w1&0xFFFF)|((w2&0xFFFF)<<16);
-              *(unsigned int *)(edi+4) = (w3&0xFFFF)|((w4&0xFFFF)<<16);
+#ifdef OUTRAGE_BIG_ENDIAN
+              *(unsigned int *)(edi + 0) = ((unsigned int)(w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16));
+              *(unsigned int *)(edi + 4) = ((unsigned int)(w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16));
+#else
+              *(unsigned int *)(edi + 0) = ((unsigned int)(w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16));
+              *(unsigned int *)(edi + 4) = ((unsigned int)(w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16));
+#endif
             } else {
-              *(unsigned int *)(edi+0) = (w4 << 24) | (w3 << 16) | (w2 << 8) | w1;
+              *(unsigned int *)(edi + 0) = IntelSwapper((unsigned int)(w4 << 24) | (w3 << 16) | (w2 << 8) | w1);
             }
           }
         }

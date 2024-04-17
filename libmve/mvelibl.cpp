@@ -231,8 +231,10 @@ static bool ioReset(int h) {
 
   io_handle = h;
   hdr = (mve_hdr *)ioRead(sizeof(mve_hdr) + sizeof(ioHdrRec));
+  if (!hdr)
+    return false;
   hdr->SwapBytes();
-  if (!hdr || strcmp(hdr->FileType, MVE_FILE_TYPE) != 0 || hdr->id != ~hdr->version + 0x1234 ||
+  if (strcmp(hdr->FileType, MVE_FILE_TYPE) != 0 || hdr->id != ~hdr->version + 0x1234 ||
       // The following two checks may eventually be weakened.
       hdr->version != MVE_FILE_VERSION || hdr->HdrSize != sizeof(mve_hdr))
     return false;
