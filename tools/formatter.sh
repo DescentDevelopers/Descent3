@@ -18,7 +18,14 @@
 for file in $(find ./ -depth -name *\.\c -o -name *\.\cpp -o -name -o -name *\.\h -o -name *\.\hpp -o -name *\.\js -o -name *\.\json -o -name *\.\java -o -name *\.\cs);
 do
 {
+  clang-format-14 --style=LLVM $file > $file;
+  clang-format-15 --style=LLVM $file > $file;
 	clang-format-16 --style=LLVM $file > $file;
+	clang-format-17 --style=LLVM $file > $file;
+	clang-format-18 --style=LLVM $file > $file;
+	clang-format-19 --style=LLVM $file > $file;
+	clang-format-20 --style=LLVM $file > $file;
+	clang-format-21 --style=LLVM $file > $file;
 	echo $file;
 }
 done;
