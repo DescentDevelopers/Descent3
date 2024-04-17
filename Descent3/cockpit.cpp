@@ -199,12 +199,12 @@
 #define BUFFET_PERIOD 0.25f
 #define COCKPIT_SHIFT_DELTA 0.02f
 typedef struct tCockpitCfgInfo {
-  char modelname[PSFILENAME_LEN+1];
-  char shieldrings[NUM_SHIELD_GAUGE_FRAMES][PSFILENAME_LEN+1];
-  char shipimg[PSFILENAME_LEN+1];
-  char burnimg[PSFILENAME_LEN+1];
-  char energyimg[PSFILENAME_LEN+1];
-  char invpulseimg[PSFILENAME_LEN+1];
+  char modelname[PSFILENAME_LEN + 1];
+  char shieldrings[NUM_SHIELD_GAUGE_FRAMES][PSFILENAME_LEN + 1];
+  char shipimg[PSFILENAME_LEN + 1];
+  char burnimg[PSFILENAME_LEN + 1];
+  char energyimg[PSFILENAME_LEN + 1];
+  char invpulseimg[PSFILENAME_LEN + 1];
 } tCockpitCfgInfo;
 typedef struct tCockpitInfo {
   int state;                          // current state of cockpit on screen.
