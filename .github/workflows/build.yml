@@ -2,12 +2,19 @@ name: Descent 3 Build
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
   build:
+
+    # In forks - all pushes and pull requests
+    # In main repo - only pushes and pull requests to the main branch
+    if: ( github.repository != 'kevinbentley/Descent3' )
+     || ( github.repository == 'kevinbentley/Descent3'
+          && ( github.ref == 'refs/heads/main'
+            || github.event_name == 'pull_request' ) )
+
     strategy:
       fail-fast: false
 
