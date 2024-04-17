@@ -7,9 +7,6 @@
 #include "osiris_common.h"
 
 #ifdef __LINUX__
-#ifndef MACOSX
-typedef unsigned int size_t;
-#endif
 #include <stdarg.h>
 void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext);
 int _vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
