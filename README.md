@@ -1,5 +1,12 @@
 # Descent 3
 
+## Update 04/17/2024
+
+Thank you for your contributions after only a little over 24 hours! The current short-term roadmap is code cleanup and build verification. As described below, the original release includes the '1.5' patch that never made it to retail. At the time it was written, 
+it worked--this may or may not be the case at present. We are aiming to clean up the source for improved readability and standards, as well as playability. In short: we'd like to reach a good baseline "vanilla" source.
+
+We've had several contributions towards this end already. Please remember to check for duplicate issues and pull requests before submitting!
+
 ## Update 04/16/2024
 
 I'm so happy to see the amount of interest and participation here! 
