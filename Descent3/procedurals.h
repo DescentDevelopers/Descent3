@@ -1,4 +1,4 @@
-#ifndef PROCEDRUALS_H
+#ifndef PROCEDURALS_H
 #define PROCEDURALS_H
 
 #include "pstypes.h"
