@@ -1135,7 +1135,7 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
   poly_model *pm;
   matrix m;
   float normalized_time[MAX_SUBOBJECTS];
-  int i, j, n;
+  int model_index, sm_vert_index, frame_index;
   float cur_dist;
   float size = 0.0;
   int start_frame = 0;
@@ -1156,26 +1156,27 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
   if (offset_ptr) {
     vector min_xyz;
     vector max_xyz;
+    bool first_pnt = true;
 
-    for (n = start_frame; n <= end_frame; n++) {
+    for(frame_index = start_frame; frame_index <= end_frame; frame_index++) {
       // Because size changes with animation, we need the worst case point -- so, check every keyframe
       // NOTE:  This code does not currently account for all $turret and $rotate positions
 
-      SetNormalizedTimeAnim(n, normalized_time, pm);
+      SetNormalizedTimeAnim(frame_index, normalized_time, pm);
 
       SetModelAnglesAndPos(pm, normalized_time);
 
-      for (i = 0; i < pm->n_models; i++) {
-        bsp_info *sm = &pm->submodel[i];
+      for (model_index = 0;model_index < pm->n_models; model_index++) {
+        bsp_info *sm = &pm->submodel[model_index];
 
         // For every vertex
-        for (j = 0; j < sm->nverts; j++) {
+        for(sm_vert_index = 0; sm_vert_index < sm->nverts; sm_vert_index++) {
           vector pnt;
           int mn;
 
           // Get the point and its current sub-object
-          pnt = sm->verts[j];
-          mn = i;
+          pnt = sm->verts[sm_vert_index];
+          mn = model_index;
 
           // Instance up the tree
           while (mn != -1) {
@@ -1200,7 +1201,8 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
           //				*gun_point += obj->pos;
 
           // Find the min_xyz and max_xyz
-          if (n == start_frame && i == 0 && j == 0) {
+          if (first_pnt) {
+            first_pnt = false;
             min_xyz = max_xyz = pnt;
           } else {
             if (pnt.x < min_xyz.x)
@@ -1226,25 +1228,25 @@ float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bo
     *offset_ptr = geometric_center;
   }
 
-  for (n = start_frame; n <= end_frame; n++) {
+  for(frame_index = start_frame; frame_index <= end_frame; frame_index++) {
     // Because size changes with animation, we need the worst case point -- so, check every keyframe
     // NOTE:  This code does not currently account for all $turret and $rotate positions
 
-    SetNormalizedTimeAnim(n, normalized_time, pm);
+    SetNormalizedTimeAnim(frame_index, normalized_time, pm);
 
     SetModelAnglesAndPos(pm, normalized_time);
 
-    for (i = 0; i < pm->n_models; i++) {
-      bsp_info *sm = &pm->submodel[i];
+    for(model_index = 0; model_index < pm->n_models; model_index++) {
+      bsp_info *sm = &pm->submodel[model_index];
 
       // For every vertex
-      for (j = 0; j < sm->nverts; j++) {
+      for(sm_vert_index = 0; sm_vert_index < sm->nverts; sm_vert_index++) {
         vector pnt;
         int mn;
 
         // Get the point and its current sub-object
-        pnt = sm->verts[j];
-        mn = i;
+        pnt = sm->verts[sm_vert_index];
+        mn = model_index;
 
         // Instance up the tree
         while (mn != -1) {

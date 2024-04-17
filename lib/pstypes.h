@@ -1,6 +1,8 @@
 #ifndef _TYPES_H
 #define _TYPES_H
 
+#include <stdlib.h>
+
 // define unsigned types;
 typedef unsigned char ubyte;
 typedef signed char sbyte;
@@ -24,7 +26,7 @@ typedef long long longlong;
 
 // The maximum length of a path (or path+filename).  The seems (from looking at the code) to
 // include the terminating NULL. lengthened to 512 to prevent problems with some long pathnames.
-#define PSPATHNAME_LEN 512
+#define PSPATHNAME_LEN _MAX_PATH
 
 #if !defined(__APPLE__)
 #define HOST_BIGENDIAN @HOST_BIGENDIAN @

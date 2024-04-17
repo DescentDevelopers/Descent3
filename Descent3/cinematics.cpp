@@ -62,7 +62,7 @@ bool PlayMovie(const char *moviename) {
     return false;
 
   // get in the right directory
-  char filename[PSPATHNAME_LEN];
+  char filename[_MAX_PATH];
   strncpy(filename, moviename, sizeof(filename) - 1);
   filename[sizeof(filename) - 1] = 0;
 

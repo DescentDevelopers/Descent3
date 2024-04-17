@@ -1252,7 +1252,7 @@ const char *NewUIFileDialog::GetFilename() { return m_NewPath; }
 
 void NewUIFileDialog::UpdateList() {
   char search_str[PSPATHNAME_LEN];
-  char filename[PSFILENAME_LEN + 1];
+  char filename[PSPATHNAME_LEN];
 
   // remove items from listbox, free them.
   while (m_ListBox.GetNumItems()) {
@@ -1303,7 +1303,7 @@ bool NewUIFileDialog::DoModal() {
     case UID_FILELIST:
       index = m_ListBox.GetSelectedIndex();
       filename = ((UITextItem *)m_ListBox.GetItem(index))->GetBuffer();
-      ASSERT(strlen(filename) < (PSPATHNAME_LEN - 1));
+      ASSERT(strlen(filename) < (PSPATHNAME_LEN));
       strcpy(m_NewPath, filename);
       return_value = true;
       exit_menu = true;
