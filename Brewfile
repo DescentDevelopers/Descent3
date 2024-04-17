@@ -7,3 +7,5 @@ cask "xquartz"
 # SDL
 brew "sdl12-compat"
 brew "sdl2_image"
+
+brew "ninja"
