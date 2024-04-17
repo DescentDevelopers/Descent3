@@ -23,6 +23,8 @@
 #include "editor\d3edit.h"
 #endif
 
+#include <algorithm>
+
 #define SKY_RADIUS 2500.0
 #define DEFAULT_LIGHT_SOURCE                                                                                           \
   { 0, TERRAIN_SIZE * 100, 0 }
@@ -370,14 +372,14 @@ void DeformTerrainPoint(int x, int z, int change_height) {
 
   change_height += tseg->ypos;
 
-  change_height = min(255, change_height);
-  change_height = max(0, change_height);
+  change_height = std::min(255, change_height);
+  change_height = std::max(0, change_height);
 
   tseg->ypos = change_height;
   tseg->y = tseg->ypos * TERRAIN_HEIGHT_INCREMENT;
 
-  int sx = max(0, x - 1);
-  int sz = max(0, z - 1);
+  int sx = std::max(0, x - 1);
+  int sz = std::max(0, z - 1);
 
   // Update min/max
   for (i = 0; i < 7; i++) {
@@ -451,10 +453,10 @@ void DeformTerrain(vector *pos, int depth, float size) {
   endx = (pos->x / TERRAIN_SIZE) + (size / TERRAIN_SIZE);
   endz = (pos->z / TERRAIN_SIZE) + (size / TERRAIN_SIZE);
 
-  startx = max(0, startx);
-  startz = max(0, startz);
-  endx = min(TERRAIN_WIDTH - 1, endx);
-  endz = min(TERRAIN_DEPTH - 1, endz);
+  startx = std::max(0, startx);
+  startz = std::max(0, startz);
+  endx = std::min(TERRAIN_WIDTH - 1, endx);
+  endz = std::min(TERRAIN_DEPTH - 1, endz);
 
   int i, t;
 
@@ -486,9 +488,9 @@ void DeformTerrain(vector *pos, int depth, float size) {
 
       DeformTerrainPoint(t, i, height_change);
 
-      tseg->r = max(0, tseg->r + light_change);
-      tseg->g = max(0, tseg->g + light_change);
-      tseg->b = max(0, tseg->b + light_change);
+      tseg->r = std::max(0, tseg->r + light_change);
+      tseg->g = std::max(0, tseg->g + light_change);
+      tseg->b = std::max(0, tseg->b + light_change);
 
       int which = ((i / 128) * 2) + (t / 128);
       changed[which] = 1;
@@ -731,8 +733,8 @@ void SetupSky(float radius, int flags, ubyte randit) {
     float ynorm = starvec.y / (Terrain_sky.radius * 500);
 
     float color_norm = ynorm * 2;
-    color_norm = min(1.0, color_norm);
-    color_norm = max(.2, color_norm);
+    color_norm = std::min<float>(1.0, color_norm);
+    color_norm = std::max<float>(.2, color_norm);
     int color = ps_rand() % 6;
     int r, g, b;
 

@@ -24,6 +24,8 @@
 #include <Macros.h>
 #include "CZip.h"
 
+#include <algorithm>
+
 BITFILE *CZip::OpenInputBitFile(char *filename) {
   BITFILE *bit_file;
   bit_file = (BITFILE *)malloc(sizeof(BITFILE));
@@ -284,7 +286,7 @@ int CZip::VFwrite(void *buf, int size, int count, tVirtualFile *file) {
   ubyte *buffer = (ubyte *)buf;
   if (file->type) {
     // memory
-    int c = __min(count, (file->size - file->count) / size);
+    int c = std::min(count, (file->size - file->count) / size);
     for (int i = 0; i < c; i++) {
       memcpy(&file->memory[file->count], buffer, size);
       file->count += size;
@@ -303,7 +305,7 @@ int CZip::VFread(void *buf, int size, int count, tVirtualFile *file) {
   ubyte *buffer = (ubyte *)buf;
   if (file->type) {
     // memory
-    int c = __min(count, (file->size - file->count) / size);
+    int c = std::min(count, (file->size - file->count) / size);
     for (int i = 0; i < c; i++) {
       memcpy(buffer, &file->memory[file->count], size);
       file->count += size;

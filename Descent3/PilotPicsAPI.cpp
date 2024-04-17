@@ -52,6 +52,8 @@
 #include "PilotPicsAPI.h"
 #include "mem.h"
 
+#include <algorithm>
+
 #define PILOTPIC_DATABASE_HOG "PPics.Hog"
 #define PILOTPIC_DATABASE_INDEX "PPics.idx"
 
@@ -386,7 +388,7 @@ bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize) {
     cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
     return false;
   }
-  int toread = min(name_size, buffersize - 1);
+  int toread = std::min<int>(name_size, buffersize - 1);
   cf_ReadBytes((ubyte *)pilot_name, toread, PilotPic_database_index_handle);
   pilot_name[toread] = '\0';
 

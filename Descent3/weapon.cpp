@@ -341,6 +341,8 @@
 #include "CFILE.H"
 #include "AIMain.h"
 
+#include <algorithm>
+
 // #include "samirlog.h"
 #define LOGFILE(_s)
 
@@ -826,7 +828,7 @@ int AddWeaponToPlayer(int slot, int weap_index, int ammo) {
   // if secondary or primary that uses ammo, then use the ammo
   if ((weap_index >= SECONDARY_INDEX) || wb->ammo_usage) {
     // figure out much ammo to add
-    int added = min(ship->max_ammo[weap_index] - Players[slot].weapon_ammo[weap_index], ammo);
+    int added = std::min(ship->max_ammo[weap_index] - Players[slot].weapon_ammo[weap_index], ammo);
 
     // now add it
     Players[slot].weapon_ammo[weap_index] += (ushort)added;

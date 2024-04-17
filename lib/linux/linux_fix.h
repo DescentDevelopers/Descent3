@@ -52,9 +52,5 @@ inline int _filelength(int fd) {
 #else
 #define _finite(a) finite(a)
 #endif
-#define _min(a, b) min(a, b)
-#define _max(a, b) max(a, b)
-#define __min(a, b) min(a, b)
-#define __max(a, b) max(a, b)
 
 #endif

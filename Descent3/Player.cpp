@@ -1119,6 +1119,8 @@
 #include "Macros.h"
 #endif
 
+#include <algorithm>
+
 player Players[MAX_PLAYERS];
 int Player_num;
 extern bool IsCheater;
@@ -1449,7 +1451,7 @@ void InitPlayerNewLevel(int slot) {
   ship *ship = &Ships[player->ship_index];
   for (int i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     if ((i >= SECONDARY_INDEX) || ship->static_wb[i].ammo_usage)
-      player->weapon_ammo[i] = min(ship->max_ammo[i], player->weapon_ammo[i]);
+      player->weapon_ammo[i] = std::min<float>(ship->max_ammo[i], player->weapon_ammo[i]);
   }
 
 #ifdef E3_DEMO
@@ -2933,7 +2935,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
     id = Ships[playp->ship_index].spew_powerup[playp->weapon[PW_SECONDARY].index];
     if (id != -1) {
       ASSERT(Object_info[id].type == OBJ_POWERUP);
-      int count = __min(playp->weapon_ammo[playp->weapon[PW_SECONDARY].index], MAX_SECONDARY_SPEW);
+      int count = std::min<int>(playp->weapon_ammo[playp->weapon[PW_SECONDARY].index], MAX_SECONDARY_SPEW);
       for (int t = 0; t < count; t++)
         PlayerSpewObject(obj, OBJ_POWERUP, id, 2, NULL);
     }
@@ -2954,7 +2956,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
             object *objp = &Objects[objnum];
             ASSERT(objp->control_type == CT_POWERUP);
             if (Game_mode & GM_MULTI)
-              objp->ctype.powerup_info.count = max(objp->ctype.powerup_info.count / 4, playp->weapon_ammo[w]);
+              objp->ctype.powerup_info.count = std::max<int>(objp->ctype.powerup_info.count / 4, playp->weapon_ammo[w]);
             else
               objp->ctype.powerup_info.count = playp->weapon_ammo[w];
           }
@@ -2978,7 +2980,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
             if (objnum != -1)
               Objects[objnum].ctype.powerup_info.count = playp->weapon_ammo[w];
           } else {
-            int count = __min(playp->weapon_ammo[w], MAX_SECONDARY_SPEW);
+            int count = std::min<int>(playp->weapon_ammo[w], MAX_SECONDARY_SPEW);
             for (int t = 0; t < count; t++)
               PlayerSpewObject(obj, OBJ_POWERUP, id, 0, NULL);
           }
@@ -3055,7 +3057,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
   for (i = 0; i < count && !done; i++) {
     if (count < 2 || (ps_rand() % 2)) {
       int limit = playp->counter_measures.GetPosCount();
-      limit = min(2, limit);
+      limit = std::min(2, limit);
       for (int t = 0; t < limit; t++) {
         playp->counter_measures.GetAuxPosTypeID(type, id);
         playp->counter_measures.GetPosInfo(inven_flags, object_flags);
@@ -3724,8 +3726,8 @@ void DoEnergyToShields(int pnum) {
     return;
   }
 
-  amount = min(Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY);
-  amount = min(amount, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE);
+  amount = std::min(Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY);
+  amount = std::min(amount, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE);
 
   Players[pnum].energy -= amount;
 

@@ -925,6 +925,8 @@
 #include "BOA.h"
 #include "vibeinterface.h"
 
+#include <algorithm>
+
 bool AreObjectsAttached(const object *obj1, const object *obj2) {
   const bool f_o1_a = (obj1->flags & OF_ATTACHED) != 0;
   const bool f_o2_a = (obj2->flags & OF_ATTACHED) != 0;
@@ -1664,7 +1666,7 @@ void WeaponDoFrame(object *obj) {
       float extras = (mag * 4) + .5;
       int int_extras = extras + 1;
 
-      int_extras = min(int_extras, 2);
+      int_extras = std::min(int_extras, 2);
 
       delta_vec /= int_extras;
       delta_time /= int_extras;
@@ -2340,7 +2342,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, ubyte wb_index) {
 
         int extras = fextras;
 
-        extras = min(extras, 8);
+        extras = std::min(extras, 8);
 
         for (int t = 0; t < extras; t++) {
 

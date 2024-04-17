@@ -51,6 +51,8 @@
 #include "editor\d3edit.h"
 #endif
 
+#include <algorithm>
+
 // #define KATMAI
 
 // Katmai enhanced rotate only in a release build, because not
@@ -1003,10 +1005,10 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
           CheckFogPortalExtents(croom, pp->cportal);
         }
         // Combine the two windows
-        new_wnd.left = __max(wnd->left, new_wnd.left);
-        new_wnd.right = __min(wnd->right, new_wnd.right);
-        new_wnd.top = __max(wnd->top, new_wnd.top);
-        new_wnd.bot = __min(wnd->bot, new_wnd.bot);
+        new_wnd.left = std::max(wnd->left, new_wnd.left);
+        new_wnd.right = std::min(wnd->right, new_wnd.right);
+        new_wnd.top = std::max(wnd->top, new_wnd.top);
+        new_wnd.bot = std::min(wnd->bot, new_wnd.bot);
         if (clipped) { // Free up temp points
           g3_FreeTempPoints(pl, nv);
           clipped = 0;
@@ -1035,10 +1037,10 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
               Room_depth_list[External_room_list[i]] = 255;
             }
             // Combine the two windows
-            Terrain_portal_left = __min(new_wnd.left, Terrain_portal_left);
-            Terrain_portal_right = __max(new_wnd.right, Terrain_portal_right);
-            Terrain_portal_top = __min(new_wnd.top, Terrain_portal_top);
-            Terrain_portal_bottom = __max(new_wnd.bot, Terrain_portal_bottom);
+            Terrain_portal_left = std::min<float>(new_wnd.left, Terrain_portal_left);
+            Terrain_portal_right = std::max<float>(new_wnd.right, Terrain_portal_right);
+            Terrain_portal_top = std::min<float>(new_wnd.top, Terrain_portal_top);
+            Terrain_portal_bottom = std::max<float>(new_wnd.bot, Terrain_portal_bottom);
           }
         } else {
           MarkFacesForRendering(croom, &new_wnd);
@@ -1401,9 +1403,9 @@ void RenderSpecularFacesFlat(room *rp) {
             float cr = (float)((color >> 10) & 0x1f) / 31.0;
             float cg = (float)((color >> 5) & 0x1f) / 31.0;
             float cb = (float)(color & 0x1f) / 31.0;
-            rv = min(1.0, (rv + (scalar * cr)));
-            gv = min(1.0, (gv + (scalar * cg)));
-            bv = min(1.0, (bv + (scalar * cb)));
+            rv = std::min<float>(1.0, (rv + (scalar * cr)));
+            gv = std::min<float>(1.0, (gv + (scalar * cg)));
+            bv = std::min<float>(1.0, (bv + (scalar * cb)));
           }
         }
       } else {
@@ -1442,9 +1444,9 @@ void RenderSpecularFacesFlat(room *rp) {
           Smooth_verts[fp->face_verts[vn]].b += bv;
         }
       } else {
-        rv = min(1.0, rv * vr * 4.0);
-        gv = min(1.0, gv * vg * 4.0);
-        bv = min(1.0, bv * vb * 4.0);
+        rv = std::min(1.0, rv * vr * 4.0);
+        gv = std::min(1.0, gv * vg * 4.0);
+        bv = std::min(1.0, bv * vb * 4.0);
         pointbuffer[vn] = World_point_buffer[rp->wpb_index + fp->face_verts[vn]];
         g3Point *p = &pointbuffer[vn];
         pointlist[vn] = p;
@@ -1490,9 +1492,9 @@ void RenderSpecularFacesFlat(room *rp) {
       p->p3_uvl.u = fp->face_uvls[vn].u;
       p->p3_uvl.v = fp->face_uvls[vn].v;
       p->p3_a = 1.0;
-      p->p3_r = min(1.0, Smooth_verts[fp->face_verts[vn]].r * reflect);
-      p->p3_g = min(1.0, Smooth_verts[fp->face_verts[vn]].g * reflect);
-      p->p3_b = min(1.0, Smooth_verts[fp->face_verts[vn]].b * reflect);
+      p->p3_r = std::min<float>(1.0, Smooth_verts[fp->face_verts[vn]].r * reflect);
+      p->p3_g = std::min<float>(1.0, Smooth_verts[fp->face_verts[vn]].g * reflect);
+      p->p3_b = std::min<float>(1.0, Smooth_verts[fp->face_verts[vn]].b * reflect);
       p->p3_flags |= PF_RGBA | PF_UV;
     }
 
@@ -2434,14 +2436,14 @@ void RenderSingleLightGlow(int index) {
   }
 
   facing_scalar *= LightGlows[index].scalar;
-  facing_scalar = min(facing_scalar, 1.0);
+  facing_scalar = std::min<float>(facing_scalar, 1.0);
   // Take into effect pulsing
   ComputeRoomPulseLight(rp);
   facing_scalar *= Room_light_val;
   rend_SetAlphaValue(facing_scalar * .4 * 255);
 
-  float maxc = max(texp->r, texp->g);
-  maxc = max(texp->b, maxc);
+  float maxc = std::max(texp->r, texp->g);
+  maxc = std::max(texp->b, maxc);
   float r, g, b;
   if (maxc > 1.0) {
     r = texp->r / maxc;
@@ -2485,8 +2487,8 @@ void RenderSingleLightGlow2(int index) {
     first = 0;
   }
   rend_SetAlphaValue(.4 * 255);
-  float maxc = max(texp->r, texp->g);
-  maxc = max(texp->b, maxc);
+  float maxc = std::max(texp->r, texp->g);
+  maxc = std::max(texp->b, maxc);
   float r, g, b;
   if (maxc > 1.0) {
     r = texp->r / maxc;
@@ -2752,10 +2754,10 @@ void BuildMirroredRoomListSub(int start_room_num, clip_wnd *wnd) {
         }
 
         // Combine the two windows
-        new_wnd.left = __max(wnd->left, new_wnd.left);
-        new_wnd.right = __min(wnd->right, new_wnd.right);
-        new_wnd.top = __max(wnd->top, new_wnd.top);
-        new_wnd.bot = __min(wnd->bot, new_wnd.bot);
+        new_wnd.left = std::max(wnd->left, new_wnd.left);
+        new_wnd.right = std::min(wnd->right, new_wnd.right);
+        new_wnd.top = std::max(wnd->top, new_wnd.top);
+        new_wnd.bot = std::min(wnd->bot, new_wnd.bot);
         if (clipped) { // Free up temp points
           g3_FreeTempPoints(pl, nv);
           clipped = 0;
@@ -2858,10 +2860,10 @@ void BuildMirroredRoomList() {
     if (y > new_wnd.bot)
       new_wnd.bot = y;
   }
-  new_wnd.left = __max(wnd.left, new_wnd.left);
-  new_wnd.right = __min(wnd.right, new_wnd.right);
-  new_wnd.top = __max(wnd.top, new_wnd.top);
-  new_wnd.bot = __min(wnd.bot, new_wnd.bot);
+  new_wnd.left = std::max(wnd.left, new_wnd.left);
+  new_wnd.right = std::min(wnd.right, new_wnd.right);
+  new_wnd.top = std::max(wnd.top, new_wnd.top);
+  new_wnd.bot = std::min(wnd.bot, new_wnd.bot);
   /*rend_SetTextureType (TT_FLAT);
   rend_SetAlphaType (AT_CONSTANT);
   rend_SetAlphaValue (255);
@@ -3056,12 +3058,12 @@ void GetRoomDynamicScalar(vector *pos, room *rp, float *r, float *g, float *b) {
   float fl_x = (pos->x - rp->min_xyz.x) / VOLUME_SPACING;
   float fl_y = (pos->y - rp->min_xyz.y) / VOLUME_SPACING;
   float fl_z = (pos->z - rp->min_xyz.z) / VOLUME_SPACING;
-  fl_x = max(fl_x, 0);
-  fl_y = max(fl_y, 0);
-  fl_z = max(fl_z, 0);
-  fl_x = min(fl_x, rp->volume_width - 1);
-  fl_y = min(fl_y, rp->volume_height - 1);
-  fl_z = min(fl_z, rp->volume_depth - 1);
+  fl_x = std::max<float>(fl_x, 0);
+  fl_y = std::max<float>(fl_y, 0);
+  fl_z = std::max<float>(fl_z, 0);
+  fl_x = std::min<float>(fl_x, rp->volume_width - 1);
+  fl_y = std::min<float>(fl_y, rp->volume_height - 1);
+  fl_z = std::min<float>(fl_z, rp->volume_depth - 1);
   int int_x = fl_x;
   int int_y = fl_y;
   int int_z = fl_z;
@@ -3071,9 +3073,9 @@ void GetRoomDynamicScalar(vector *pos, room *rp, float *r, float *g, float *b) {
   int next_x = int_x + 1;
   int next_y = int_y + 1;
   int next_z = int_z + 1;
-  next_x = min(rp->volume_width - 1, next_x);
-  next_y = min(rp->volume_height - 1, next_y);
-  next_z = min(rp->volume_depth - 1, next_z);
+  next_x = std::min(rp->volume_width - 1, next_x);
+  next_y = std::min(rp->volume_height - 1, next_y);
+  next_z = std::min(rp->volume_depth - 1, next_z);
 
   float left_norm_r, left_norm_g, left_norm_b;
   float right_norm_r, right_norm_g, right_norm_b;

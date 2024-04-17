@@ -44,6 +44,8 @@
 #include "ObjScript.h"
 #include "args.h"
 
+#include <algorithm>
+
 void SelectNextCameraView(int window);
 #define NUM_CAMERA_VIEWS 3
 extern int Camera_view_mode[NUM_CAMERA_VIEWS];
@@ -820,14 +822,14 @@ bool GetDLLNumTeamInfo(char *name, int *mint, int *maxt) {
     *maxt = 1;
     return false;
   }
-  *maxt = (dllo.max_teams == 0 || dllo.max_teams == 1 || dllo.max_teams < 0) ? 1 : min(dllo.max_teams, 4);
+  *maxt = (dllo.max_teams == 0 || dllo.max_teams == 1 || dllo.max_teams < 0) ? 1 : std::min(dllo.max_teams, 4);
   if ((*maxt) == 1) {
     *mint = 1;
   } else {
     *mint = 2;
   }
   if (dllo.flags & DOF_MINTEAMS && dllo.min_teams >= 0) {
-    *mint = (dllo.min_teams == 0 || dllo.min_teams == 1) ? 1 : min(*maxt, dllo.min_teams);
+    *mint = (dllo.min_teams == 0 || dllo.min_teams == 1) ? 1 : std::min(*maxt, dllo.min_teams);
   }
   return ((*maxt) == 1) ? false : true;
 }

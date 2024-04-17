@@ -120,6 +120,8 @@
 #include <stdlib.h>
 #endif
 
+#include <algorithm>
+
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
 extern char *_DMFCErrorString;
@@ -502,7 +504,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
   while (units > 0) {
     if (m_AlphaDir) {
       // find the amount to adjust
-      ubyte amount = min(255 - a, units);
+      ubyte amount = std::min<int>(255 - a, units);
       units -= amount;
       a += amount;
       if (a >= 255) {
@@ -511,7 +513,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
       }
     } else {
       // find the amount to adjust
-      ubyte amount = min(a, units);
+      ubyte amount = std::min<int>(a, units);
       units -= amount;
       a -= amount;
       if (a <= 0) {
@@ -631,7 +633,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
   } break;
   }
 
-  int end_index = min(SubMenuCount, m_iTopIndex + ((400 - y) / height));
+  int end_index = std::min(SubMenuCount, m_iTopIndex + ((400 - y) / height));
   int num_teams = basethis->GetNumTeams();
 
   if (SubMenuCount && bmp > BAD_BITMAP_HANDLE) {

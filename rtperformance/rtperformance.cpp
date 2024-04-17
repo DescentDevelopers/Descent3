@@ -52,6 +52,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <algorithm>
+
 float rtp_startlog_time;
 
 // maximum number of samples before we stop and autoflush
@@ -82,7 +84,7 @@ void rtp_WriteBufferLog(void) {
   unsigned int counter;
   char buffer[4096];
 
-  Num_frames = min(Runtime_performance_counter, MAX_RTP_SAMPLES);
+  Num_frames = std::min<unsigned>(Runtime_performance_counter, MAX_RTP_SAMPLES);
 
   // Open the log file for writing
   ddio_MakePath(buffer, LocalD3Dir, "D3Performance.txt", NULL);

@@ -805,6 +805,9 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain, b
 #include "Macros.h"
 #include "psrand.h"
 #include "player.h"
+
+#include <algorithm>
+
 #define TERRAIN_PERSPECTIVE_TEXTURE_DEPTH 1 * TERRAIN_SIZE
 #define LOD_ROW_SIZE (MAX_LOD_SIZE + 1)
 int DrawTerrainTrianglesSoftware(int index, int bm_handle, int upper_left, int lower_right);
@@ -2124,8 +2127,8 @@ void DrawSky(vector *veye, matrix *vorient) {
       float str = Terrain_sky.satellite_r[i];
       float stg = Terrain_sky.satellite_g[i];
       float stb = Terrain_sky.satellite_b[i];
-      float maxc = max(str, stg);
-      maxc = max(stb, maxc);
+      float maxc = std::max(str, stg);
+      maxc = std::max(stb, maxc);
       float r, g, b;
       if (maxc > 1.0) {
         r = str / maxc;

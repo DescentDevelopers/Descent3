@@ -651,6 +651,8 @@
 #include "init.h"
 #include "../md5/md5.h"
 
+#include <algorithm>
+
 void MultiProcessShipChecksum(MD5 *md5, int ship_index);
 
 int GameDLLGetConnectingPlayersTeam(int slot);
@@ -1385,7 +1387,7 @@ void MultiSendJoinObjects(int slot) {
   int objects_to_go = total_objects;
 
   while (objects_to_go > 0) {
-    int num_objects_this_packet = min(MAX_OBJECTS_PER_PACKET, objects_to_go);
+    int num_objects_this_packet = std::min(MAX_OBJECTS_PER_PACKET, objects_to_go);
     int overflow = 0;
 
     count = 0;
@@ -2010,8 +2012,8 @@ void MultiSendPositionalUpdates(int to_slot) {
             dp=fabs(dp);
 
             pps_check_time=((float)pps_check_time/2.0)+((dp*((float)pps_check_time/2.0))+(dp*.9));
-            pps_check_time=max (pps_check_time,6.0);
-            pps_check_time=min (pps_check_time,20.0);
+            pps_check_time=std::max(pps_check_time,6.0);
+            pps_check_time=std::min(pps_check_time,20.0);
 
             int pps=pps_check_time;
             pps_check_time=pps;

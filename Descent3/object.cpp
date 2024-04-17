@@ -1172,6 +1172,8 @@
 #include "editor\d3edit.h"
 #endif
 
+#include <algorithm>
+
 /*
  *  Global variables
  */
@@ -2210,7 +2212,7 @@ void DoPlayerAfterburnControl(game_controls *controls, object *objp) {
           useage = Frametime;
 
         Players[slot].afterburn_time_left += useage;
-        Players[slot].afterburn_time_left = min(AFTERBURN_TIME, Players[slot].afterburn_time_left);
+        Players[slot].afterburn_time_left = std::min<float>(AFTERBURN_TIME, Players[slot].afterburn_time_left);
 
         Players[slot].energy -= (useage);
       }

@@ -83,6 +83,8 @@
 #include "weapon.h"
 #include "hlsoundlib.h"
 
+#include <algorithm>
+
 #define TCBACK_BUTTON_X 500
 #define TCBACK_BUTTON_Y 350
 #define TCFORW_BUTTON_X 532
@@ -98,10 +100,6 @@
 #define LID_SECONDARIES 3
 #define LID_COUNTERMEASURES 4
 #define LID_INVENTORY 5
-
-#ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
-#endif
 
 typedef struct {
   ubyte type;
@@ -142,7 +140,7 @@ int TCCargoCreateLine(int id, int y, char *title, int type) {
     grtext_SetFont(SM_FONT);
 
     float shields = Player_object->shields;
-    shields = max(shields, 0);
+    shields = std::max<float>(shields, 0);
     int perc = (int)((shields / INITIAL_SHIELDS) * 100.0f);
     grtext_Printf(TITLE_X, y, title);
     grtext_Printf(VALUE_X, y, "%d%c", perc, '%');
@@ -154,7 +152,7 @@ int TCCargoCreateLine(int id, int y, char *title, int type) {
     grtext_SetFont(SM_FONT);
 
     float energy = Players[Player_num].energy;
-    energy = max(energy, 0);
+    energy = std::max<float>(energy, 0);
     int perc = (int)((energy / INITIAL_ENERGY) * 100.0f);
     grtext_Printf(TITLE_X, y, title);
     grtext_Printf(VALUE_X, y, "%d%c", perc, '%');
