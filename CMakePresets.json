@@ -1,0 +1,27 @@
+{
+    "version": 3
+    , "configurePresets": [
+        {
+            "name": "win"
+            , "condition": {
+                "type": "equals"
+                , "lhs": "${hostSystemName}"
+                , "rhs": "Windows"
+            }
+            , "cacheVariables": {
+                "CMAKE_GENERATOR_PLATFORM": {
+                    "type": "STRING"
+                    , "value": "Win32"
+                }
+            }
+        }
+        , {
+            "name": "mac"
+            , "condition": {
+                "type": "equals"
+                , "lhs": "${hostSystemName}"
+                , "rhs": "Darwin"
+            }
+        }
+    ]
+}
