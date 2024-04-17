@@ -10,7 +10,6 @@ jobs:
   build:
     strategy:
       fail-fast: false
-
       matrix:
         os: [{runner: windows-latest, preset: win}, {runner: macos-latest, preset: mac}]
         build_type: [Debug, Release]
@@ -18,22 +17,22 @@ jobs:
     runs-on: ${{ matrix.os.runner }}
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install macOS dependencies
-      if: ${{ matrix.os.preset == 'mac' }}
-      run: |
-        # Install packages from Homebrew
-        brew bundle install
+      - name: Install macOS dependencies
+        if: ${{ matrix.os.preset == 'mac' }}
+        run: |
+          # Install packages from Homebrew
+          brew bundle install
 
-    - name: Configure CMake
-      run: cmake --preset ${{matrix.os.preset}} -B ${{github.workspace}}/build
+      - name: Configure CMake
+        run: cmake --preset ${{ matrix.os.preset }} -B ${{ github.workspace }}/build
 
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }}
 
-    - name: 'Upload Artifacts'
-      uses: actions/upload-artifact@v4
-      with:
-        name: build_${{matrix.platform}}_${{matrix.build_type}}
-        path: ${{github.workspace}}/build/Descent3/${{matrix.build_type}}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_${{ matrix.os.preset }}_${{ matrix.build_type }}
+          path: ${{ github.workspace }}/build/Descent3/${{ matrix.build_type }}
