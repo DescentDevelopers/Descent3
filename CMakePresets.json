@@ -17,6 +17,7 @@
         }
         , {
             "name": "mac"
+            , "generator": "Ninja Multi-Config"
             , "condition": {
                 "type": "equals"
                 , "lhs": "${hostSystemName}"
