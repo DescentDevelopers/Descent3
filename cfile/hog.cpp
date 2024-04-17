@@ -144,7 +144,7 @@ bool ReadHogHeader(FILE *fp, tHogHeader *header) {
 }
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
   int res = 0;
-  res = fread(entry->name, sizeof(char), PSFILENAME_LEN + 1, fp);
+  res = fread(entry->name, sizeof(char), HOG_FILENAME_LEN, fp);
   res = fread(&entry->flags, sizeof(entry->flags), 1, fp);
   entry->flags = INTEL_INT(entry->flags);
   res = fread(&entry->len, sizeof(entry->len), 1, fp);
@@ -160,7 +160,7 @@ bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
 
 bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry) {
   int res = 0;
-  res = fwrite(entry->name, sizeof(char), PSFILENAME_LEN + 1, fp);
+  res = fwrite(entry->name, sizeof(char), HOG_FILENAME_LEN, fp);
   res = fwrite(&entry->flags, sizeof(entry->flags), 1, fp);
   res = fwrite(&entry->len, sizeof(entry->len), 1, fp);
   res = fwrite(&entry->timestamp, sizeof(entry->timestamp), 1, fp);

@@ -590,7 +590,7 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
     return p ? 1 : 0;
   }
 
-  char pathname[PSFILENAME_LEN * 2];
+  char pathname[PSPATHNAME_LEN];
   ddio_MakePath(pathname, D3MissionsDir, filename, NULL);
   if (cfexist(filename) || cfexist(pathname)) {
     return 1;
@@ -840,7 +840,7 @@ int CheckGetD3M(char *d3m) {
 
   char modurl[MAX_MISSION_URL_LEN + 1];
   char *lowurl;
-  char pathname[PSFILENAME_LEN * 2];
+  char pathname[PSPATHNAME_LEN];
   char *fixedd3m = NULL;
 
   ddio_MakePath(pathname, LocalD3Dir, "Netgames", d3m, NULL);
