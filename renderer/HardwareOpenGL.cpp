@@ -9,8 +9,8 @@
 #include "linux/linux_fix.h"
 #include "linux/dyna_xext.h"
 #include "lnxscreenmode.h"
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #else
 #endif
 
@@ -1606,7 +1606,7 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
     /*
     vertp->x=pnt->p3_sx+x_add;
     vertp->y=pnt->p3_sy+y_add;
-    vertp->z = -max(0,min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
+    vertp->z = -MAX(0,MIN(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
     */
     *vertp = pnt->p3_vecPreRot;
   }
@@ -1672,7 +1672,7 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
 
     /*
     // Finally, specify a vertex
-    float z = max(0,min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
+    float z = MAX(0,MIN(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
     dglVertex3f (pnt->p3_sx+x_add,pnt->p3_sy+y_add,-z);
     */
     dglVertex3f(pnt->p3_vecPreRot.x, pnt->p3_vecPreRot.y, pnt->p3_vecPreRot.z);
@@ -1702,7 +1702,7 @@ void opengl_SetGammaValue(float val) {
 
     newval *= 65535;
 
-    newval = min(65535, newval);
+    newval = MIN(65535, newval);
 
     rampvals[i] = newval;
     rampvals[i + 256] = newval;
@@ -1738,7 +1738,7 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
   int iopt;
 
   // find the smallest dimension and base off that
-  int smallest = min(bw, bh);
+  int smallest = MIN(bw, bh);
 
   if (smallest <= 32)
     fopt = 32;
@@ -2050,7 +2050,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     vertp->x=pnt->p3_sx+x_add;
     vertp->y=pnt->p3_sy+y_add;
 
-    float z = max(0,min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
+    float z = MAX(0,MIN(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
     vertp->z=-z;
     */
     *vertp = pnt->p3_vecPreRot;
@@ -2841,7 +2841,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
     }
 
     // Finally, specify a vertex
-    float z = max(0, min(1.0, 1.0 - (1.0 / (pnt->p3_z + Z_bias))));
+    float z = MAX(0, MIN(1.0, 1.0 - (1.0 / (pnt->p3_z + Z_bias))));
     dglVertex3f(pnt->p3_sx + x_add, pnt->p3_sy + y_add, -z);
   }
 

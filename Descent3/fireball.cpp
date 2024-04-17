@@ -595,7 +595,7 @@
 #include <string.h>
 #include "psrand.h"
 #ifdef __LINUX__
-#define min(a, b) ((a < b) ? a : b)
+#define MIN(a, b) ((a < b) ? a : b)
 #elif defined(MACINTOSH)
 #include "Macros.h"
 #endif
@@ -748,7 +748,7 @@ void DrawFireballObject(object *obj) {
       if (norm_time < .5) // Ramp up quickly
       {
         float temp_norm = norm_time / .2;
-        temp_norm = min(1.0, temp_norm);
+        temp_norm = MIN(1.0, temp_norm);
         size *= temp_norm;
       } else // ramp down slowly
       {
@@ -958,7 +958,7 @@ void CreateExtraFireballs(object *obj, float size_scale) {
   if (obj->type == OBJ_BUILDING && OBJECT_OUTSIDE(obj))
     extras += 4;
   // Cap at 12
-  extras = min(12, extras);
+  extras = MIN(12, extras);
   // mprintf ((0,"Creating %d extra explosions\n",extras));
   CreateRandomSparks(extras, &obj->pos, obj->roomnum);
   for (i = 0; i < extras; i++) {
@@ -1040,7 +1040,7 @@ void CreateSplintersFromBody(object *obj, float explosion_mag, float lifetime) {
       num_splinters++;
     }
   } else {
-    int limit = min(sm->num_faces, MAX_SPLINTERS_PER_OBJECT);
+    int limit = MIN(sm->num_faces, MAX_SPLINTERS_PER_OBJECT);
     for (i = 0; i < limit; i++) {
       facenums[i] = ps_rand() % sm->num_faces;
       num_splinters++;
@@ -1050,7 +1050,7 @@ void CreateSplintersFromBody(object *obj, float explosion_mag, float lifetime) {
   for (i = 0; i < num_splinters; i++) {
     int facenum = facenums[i];
     vector dest, center;
-    int num_verts = min(sm->faces[facenum].nverts, MAX_VERTS_PER_SPLINTER);
+    int num_verts = MIN(sm->faces[facenum].nverts, MAX_VERTS_PER_SPLINTER);
 
     vm_MakeZero(&dest);
     vm_MakeZero(&center);
@@ -1429,7 +1429,7 @@ void DoDyingFrame(object *objp) {
   // If sparking death, do sparks
   if (death_flags & DF_DELAY_SPARKS) {
     float dying_norm = objp->ctype.dying_info.delay_time / ELECTRICAL_DEATH_TIME;
-    dying_norm = min(dying_norm, 1.0);
+    dying_norm = MIN(dying_norm, 1.0);
     // Do deform stuff
     objp->effect_info->type_flags |= EF_DEFORM;
     objp->effect_info->deform_time = 1.0;

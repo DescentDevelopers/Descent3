@@ -832,7 +832,7 @@ bool Cinematic_StartCine(tGameCinematic *info, char *text_string, int camera_obj
       int cur_path = camera->ai_info->path.cur_path;
       int cur_node = camera->ai_info->path.cur_node;
       int end_node = camera->ai_info->path.path_end_node[cur_path];
-      int next_node = min(cur_node + 1, end_node);
+      int next_node = MIN(cur_node + 1, end_node);
       int path_num = camera->ai_info->path.path_id[cur_path];
 
       if (cur_node != next_node) {
@@ -1109,7 +1109,7 @@ void Cinematic_Frame(void) {
     int cur_path = camera->ai_info->path.cur_path;
     int cur_node = camera->ai_info->path.cur_node;
     int end_node = camera->ai_info->path.path_end_node[cur_path];
-    int next_node = min(cur_node + 1, end_node);
+    int next_node = MIN(cur_node + 1, end_node);
     int path_num = camera->ai_info->path.path_id[cur_path];
 
     if (cur_node != next_node) {

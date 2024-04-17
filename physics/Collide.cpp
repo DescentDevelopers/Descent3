@@ -843,7 +843,7 @@
 #include "psrand.h"
 
 #ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
 #endif
 
 #define PLAYER_ROTATION_BY_FORCE_SCALAR 0.12f
@@ -2243,7 +2243,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
 
         dest_obj->effect_info->type_flags |= EF_NAPALMED;
 
-        dest_obj->effect_info->damage_time = max(1.0, src_obj->effect_info->damage_time / 3.0);
+        dest_obj->effect_info->damage_time = MAX(1.0, src_obj->effect_info->damage_time / 3.0);
         dest_obj->effect_info->damage_per_second = src_obj->effect_info->damage_per_second;
 
         // We need this cap (as the gb burns forever

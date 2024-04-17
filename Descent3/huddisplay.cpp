@@ -81,7 +81,7 @@
  * shrinking hud fixes.
  *
  * 38    4/16/99 10:54p Jeff
- * fixed min() for Linux
+ * fixed MIN() for Linux
  *
  * 37    4/06/99 6:02p Matt
  * Added score system
@@ -222,7 +222,7 @@
 #include <stdarg.h>
 
 #ifdef __LINUX__
-#define min(a, b) ((a < b) ? a : b) // why can't I find a min in Linux at all!?
+#define MIN(a, b) ((a < b) ? a : b) // why can't I find a min in Linux at all!?
 #elif defined(MACINTOSH)
 #include "Macros.h"
 #endif
@@ -962,7 +962,7 @@ void RenderHUDScore(tHUDItem *item) {
     int text_height = grfont_GetHeight(HUD_FONT);
     sprintf(buf, "%d   ", Score_added);
     w = RenderHUDGetTextLineWidth(buf); // * win_w/Game_window_w;
-    ubyte alpha = min(HUD_ALPHA, HUD_ALPHA * 4 * Score_added_timer / SCORE_ADDED_TIME);
+    ubyte alpha = MIN(HUD_ALPHA, HUD_ALPHA * 4 * Score_added_timer / SCORE_ADDED_TIME);
     RenderHUDText(item->color, alpha, 0, item->x - w - win_w, item->y + text_height, buf);
     Score_added_timer -= Frametime;
   }

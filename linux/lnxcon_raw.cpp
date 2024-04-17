@@ -35,8 +35,8 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#define min(x, y) (((x) < (y)) ? (x) : (y))
-#define max(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 static char *Con_raw_read_buf = NULL;                     // The next buffer of text from user input
 static char *Con_raw_inp_buf = NULL, Con_raw_inp_pos = 0; // Currently updating input buffer of text (and it's position)

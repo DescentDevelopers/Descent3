@@ -164,7 +164,7 @@ void D3MusicResume() { Music_seq.Resume(); }
 float D3MusicGetVolume() { return Music_volume; }
 
 void D3MusicSetVolume(float vol) {
-  const float kEpsilon = std::numeric_limits<float>::min();
+  const float kEpsilon = std::numeric_limits<float>::MIN();
   if (vol <= kEpsilon) {
     Music_seq.Stop();
     MusicAI.was_toggled_on = false;

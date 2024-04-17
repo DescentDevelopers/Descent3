@@ -1664,7 +1664,7 @@ void WeaponDoFrame(object *obj) {
       float extras = (mag * 4) + .5;
       int int_extras = extras + 1;
 
-      int_extras = min(int_extras, 2);
+      int_extras = MIN(int_extras, 2);
 
       delta_vec /= int_extras;
       delta_time /= int_extras;
@@ -2340,7 +2340,7 @@ void DoSprayEffect(object *obj, otype_wb_info *static_wb, ubyte wb_index) {
 
         int extras = fextras;
 
-        extras = min(extras, 8);
+        extras = MIN(extras, 8);
 
         for (int t = 0; t < extras; t++) {
 

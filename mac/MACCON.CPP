@@ -203,12 +203,12 @@ int con_KeyDown(WindowPtr hWnd, int vkey) {
   char *ptr = &Con_buffer[Con_row * (CON_SCROLL_COLS + 1)];
   switch (vkey) {
   case VK_LEFT: // Left arrow
-    Con_col = max(Con_col - 1, 0);
-    Con_inp_pos = max(Con_inp_pos - 1, 0);
+    Con_col = MAX(Con_col - 1, 0);
+    Con_inp_pos = MAX(Con_inp_pos - 1, 0);
     break;
   case VK_RIGHT: // Right arrow
-    Con_col = min(Con_col + 1, CON_SCROLL_COLS - 1);
-    Con_inp_pos = min(Con_inp_pos + 1, CON_SCROLL_COLS - 1);
+    Con_col = MIN(Con_col + 1, CON_SCROLL_COLS - 1);
+    Con_inp_pos = MIN(Con_inp_pos + 1, CON_SCROLL_COLS - 1);
     break;
   case VK_UP: // Up arrow
     // Replace the current buffer that is being typed with the last completed command (if there was one)

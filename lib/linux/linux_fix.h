@@ -47,9 +47,9 @@ inline int _filelength(int fd) {
 #define strcmpni(a, b, c) strnicmp(a, b, c)
 #define _chmod(a, b) chmod(a, b)
 #define _finite(a) finite(a)
-#define _min(a, b) min(a, b)
-#define _max(a, b) max(a, b)
-#define __min(a, b) min(a, b)
-#define __max(a, b) max(a, b)
+#define _min(a, b) MIN(a, b)
+#define _max(a, b) MAX(a, b)
+#define __min(a, b) MIN(a, b)
+#define __max(a, b) MAX(a, b)
 
 #endif

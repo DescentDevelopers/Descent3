@@ -101,8 +101,8 @@ WINDOW *Con_main_wnd_ptr = NULL, *Con_input_wnd_ptr = NULL; // Window handles fo
 #endif
 #define mem_malloc(x) malloc(x)
 #define mem_free(x) free(x)
-#define min(x, y) (((x) < (y)) ? (x) : (y))
-#define max(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 //////////////////////////////////////////////////
 // Prototypes
@@ -410,14 +410,14 @@ void con_DoKeyboard(void) {
     // we got a key...handle it
     switch (keypressed) {
     case 0xCB: // KEY_LEFT:       // Left arrow
-      Con_inp_pos = max(Con_inp_pos - 1, 0);
+      Con_inp_pos = MAX(Con_inp_pos - 1, 0);
       con_Update(CON_INPUTWND);
       break;
 
     case 0xCD: // KEY_RIGHT:      // Right arrow
     {
       int len = strlen(Con_inp_buf);
-      Con_inp_pos = min(Con_inp_pos + 1, len);
+      Con_inp_pos = MIN(Con_inp_pos + 1, len);
       con_Update(CON_INPUTWND);
     } break;
 

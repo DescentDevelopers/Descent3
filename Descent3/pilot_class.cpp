@@ -615,7 +615,7 @@ void pilot::set_name(char *n) {
   }
   if (n) {
     int length = strlen(n);
-    int size = min(PILOT_STRING_SIZE - 1, length);
+    int size = MIN(PILOT_STRING_SIZE - 1, length);
     name = (char *)mem_malloc(size + 1);
     if (name) {
       strncpy(name, n, size);
@@ -641,7 +641,7 @@ void pilot::set_ship(char *ship) {
   }
   if (ship) {
     int length = strlen(ship);
-    int size = min(PAGENAME_LEN - 1, length);
+    int size = MIN(PAGENAME_LEN - 1, length);
     ship_model = (char *)mem_malloc(size + 1);
     if (ship_model) {
       strncpy(ship_model, ship, size);

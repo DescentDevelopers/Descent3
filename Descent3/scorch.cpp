@@ -18,7 +18,7 @@
  * new ps_rand and ps_srand to replace rand & srand
  *
  * 17    4/16/99 11:31p Jeff
- * added max() for Linux
+ * added MAX() for Linux
  *
  * 16    1/26/99 5:06p Jason
  * no scorch marks on procedurals
@@ -89,7 +89,7 @@
 #include "psrand.h"
 
 #ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b) // where is linux max()??
+#define MAX(a, b) ((a > b) ? a : b) // where is linux MAX()??
 #endif
 
 // Structure for storing scorch marks

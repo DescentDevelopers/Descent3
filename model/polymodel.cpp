@@ -598,7 +598,7 @@
 #include "mem.h"
 
 #ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
 #endif
 
 int Num_poly_models = 0;
@@ -1888,7 +1888,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
   }
 
   // Set the greater of keyframe of positions or keyframe angles to to be max keyframes
-  pm->max_keys = max(pm->num_key_pos, pm->num_key_angles);
+  pm->max_keys = MAX(pm->num_key_pos, pm->num_key_angles);
 
   // Build animation keyframe matrices
 

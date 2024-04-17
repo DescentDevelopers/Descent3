@@ -61,7 +61,7 @@ static bool Mono_use_real = false;
 static bool Mono_use_window_remote = false;
 static int Debug_logfile = 0;
 bool Debug_print_block = false;
-#define min(a, b) ((a < b) ? a : b)
+#define MIN(a, b) ((a < b) ? a : b)
 
 // ===============================
 // pthread library functions
@@ -519,7 +519,7 @@ void Debug_ConsolePrintf(int n, char *format, ...) {
   */
 
   // create the packet and send it off
-  text_len = min(text_len, 512);
+  text_len = MIN(text_len, 512);
   unsigned char packet[518];
   packet[0x00] = 0x03; // control code
   packet[0x01] = n;    // window_handle
@@ -558,7 +558,7 @@ void Debug_ConsolePrintf(int n, int row, int col, char *format, ...) {
   */
   // create the packet and send it off
   unsigned char packet[518];
-  text_len = min(text_len, 512);
+  text_len = MIN(text_len, 512);
   packet[0x00] = 0x04; // control code
   packet[0x01] = n;    // window_handle
   packet[0x02] = row;  // row

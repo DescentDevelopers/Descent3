@@ -2012,8 +2012,8 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
 
   new_vel /= mag;
 
-  mag = min(mag, 20);
-  mag = max(mag, 10);
+  mag = MIN(mag, 20);
+  mag = MAX(mag, 10);
 
   new_vel *= mag;
 

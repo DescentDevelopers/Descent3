@@ -1449,7 +1449,7 @@ void InitPlayerNewLevel(int slot) {
   ship *ship = &Ships[player->ship_index];
   for (int i = 0; i < MAX_PLAYER_WEAPONS; i++) {
     if ((i >= SECONDARY_INDEX) || ship->static_wb[i].ammo_usage)
-      player->weapon_ammo[i] = min(ship->max_ammo[i], player->weapon_ammo[i]);
+      player->weapon_ammo[i] = MIN(ship->max_ammo[i], player->weapon_ammo[i]);
   }
 
 #ifdef E3_DEMO
@@ -2954,7 +2954,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
             object *objp = &Objects[objnum];
             ASSERT(objp->control_type == CT_POWERUP);
             if (Game_mode & GM_MULTI)
-              objp->ctype.powerup_info.count = max(objp->ctype.powerup_info.count / 4, playp->weapon_ammo[w]);
+              objp->ctype.powerup_info.count = MAX(objp->ctype.powerup_info.count / 4, playp->weapon_ammo[w]);
             else
               objp->ctype.powerup_info.count = playp->weapon_ammo[w];
           }
@@ -3055,7 +3055,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
   for (i = 0; i < count && !done; i++) {
     if (count < 2 || (ps_rand() % 2)) {
       int limit = playp->counter_measures.GetPosCount();
-      limit = min(2, limit);
+      limit = MIN(2, limit);
       for (int t = 0; t < limit; t++) {
         playp->counter_measures.GetAuxPosTypeID(type, id);
         playp->counter_measures.GetPosInfo(inven_flags, object_flags);
@@ -3724,8 +3724,8 @@ void DoEnergyToShields(int pnum) {
     return;
   }
 
-  amount = min(Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY);
-  amount = min(amount, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE);
+  amount = MIN(Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY);
+  amount = MIN(amount, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE);
 
   Players[pnum].energy -= amount;
 

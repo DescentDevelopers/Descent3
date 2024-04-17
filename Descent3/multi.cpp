@@ -1693,7 +1693,7 @@
 void MultiProcessShipChecksum(MD5 *md5, int ship_index);
 
 #ifdef __LINUX__
-#define min(a, b) ((a < b) ? a : b)
+#define MIN(a, b) ((a < b) ? a : b)
 #elif defined(MACINTOSH)
 #include "Macros.h"
 #endif
@@ -4034,7 +4034,7 @@ void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
 
   len = MultiGetByte(data, &count);
 
-  fixed_len = min(NETGAME_NAME_LEN, len);
+  fixed_len = MIN(NETGAME_NAME_LEN, len);
 
   memcpy(name, &data[count], fixed_len);
   name[fixed_len - 1] = 0;
@@ -4042,7 +4042,7 @@ void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
 
   mission_len = MultiGetByte(data, &count);
 
-  fixed_len = min(MSN_NAMELEN, mission_len);
+  fixed_len = MIN(MSN_NAMELEN, mission_len);
 
   memcpy(mission, &data[count], fixed_len);
   mission[fixed_len - 1] = 0;
@@ -4050,7 +4050,7 @@ void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
 
   mission_name_len = MultiGetByte(data, &count);
 
-  fixed_len = min(MISSION_NAME_LEN, mission_name_len);
+  fixed_len = MIN(MISSION_NAME_LEN, mission_name_len);
 
   memcpy(mission_name, &data[count], fixed_len);
   mission_name[fixed_len - 1] = 0;
@@ -4058,7 +4058,7 @@ void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
 
   script_len = MultiGetByte(data, &count);
 
-  fixed_len = min(NETGAME_SCRIPT_LEN, script_len);
+  fixed_len = MIN(NETGAME_SCRIPT_LEN, script_len);
 
   memcpy(scriptname, &data[count], fixed_len);
   scriptname[fixed_len - 1] = 0;
@@ -5854,7 +5854,7 @@ void MultiSendWeaponsLoad() {
 
   for (int i = 0; i < (MAX_SECONDARY_WEAPONS); i++) {
     int num = Players[Player_num].weapon_ammo[MAX_PRIMARY_WEAPONS + i];
-    num = min(num, 255);
+    num = MIN(num, 255);
 
     MultiAddUbyte(num, data, &count);
   }

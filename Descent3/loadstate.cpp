@@ -845,11 +845,11 @@ int LGSObjects(CFILE *fp, int version) {
   int num_read_max_dynamic_paths = cf_ReadInt(fp);
   int num_read_max_nodes = cf_ReadInt(fp);
 
-  int num_dp_to_read = min(MAX_DYNAMIC_PATHS, num_read_max_dynamic_paths);
+  int num_dp_to_read = MIN(MAX_DYNAMIC_PATHS, num_read_max_dynamic_paths);
   int num_dp_to_skip =
       (MAX_DYNAMIC_PATHS < num_read_max_dynamic_paths) ? num_read_max_dynamic_paths - MAX_DYNAMIC_PATHS : 0;
 
-  int num_n_to_read = min(MAX_NODES, num_read_max_nodes);
+  int num_n_to_read = MIN(MAX_NODES, num_read_max_nodes);
   int num_n_to_skip = (MAX_NODES < num_read_max_nodes) ? num_read_max_nodes - MAX_NODES : 0;
 
   int s;
@@ -894,7 +894,7 @@ int LGSObjects(CFILE *fp, int version) {
   }
 
   int num_read_rooms = cf_ReadInt(fp);
-  int num_r_to_read = min(MAX_ROOMS, num_read_rooms);
+  int num_r_to_read = MIN(MAX_ROOMS, num_read_rooms);
   int num_r_to_skip = (MAX_ROOMS < num_read_rooms) ? num_read_rooms - MAX_ROOMS : 0;
 
   AIAltPathNumNodes = cf_ReadInt(fp);

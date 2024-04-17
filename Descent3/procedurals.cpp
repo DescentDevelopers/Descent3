@@ -167,8 +167,8 @@ void InitProcedurals() {
   // Do lower part of table
   for (i = 0; i < (NUM_WATER_SHADES); i++) {
     float norm = ((float)i / (float)(NUM_WATER_SHADES - 1));
-    float lo_norm = min((norm / .5) * 1.0, 1.0);
-    float hi_norm = max(((norm - .5) / .5) * 1.0, 0);
+    float lo_norm = MIN((norm / .5) * 1.0, 1.0);
+    float hi_norm = MAX(((norm - .5) / .5) * 1.0, 0);
 
     for (int rcount = 0; rcount < 32; rcount++) {
       for (int gcount = 0; gcount < 4; gcount++) {
@@ -178,7 +178,7 @@ void InitProcedurals() {
 
         float fr = r;
 
-        r = min(fr * lo_norm + (31.0 * hi_norm), 31);
+        r = MIN(fr * lo_norm + (31.0 * hi_norm), 31);
 
         WaterProcTableHi[i][index] = OPAQUE_FLAG | (r << 10);
       }
@@ -189,7 +189,7 @@ void InitProcedurals() {
         int index = gcount * 32 + bcount;
 
         float fb = b;
-        b = min(fb * lo_norm + (31.0 * hi_norm), 31);
+        b = MIN(fb * lo_norm + (31.0 * hi_norm), 31);
 
         WaterProcTableLo[i][index] = b;
       }
@@ -198,7 +198,7 @@ void InitProcedurals() {
     int gcount;
     for (gcount = 0; gcount < 8; gcount++) {
       float fg = gcount;
-      int g = min((fg * lo_norm) + (7.0 * hi_norm), 7);
+      int g = MIN((fg * lo_norm) + (7.0 * hi_norm), 7);
       for (t = 0; t < 32; t++) {
         int index = gcount * 32 + t;
         WaterProcTableLo[i][gcount * 32 + t] |= (g << 5);
@@ -206,7 +206,7 @@ void InitProcedurals() {
     }
     for (gcount = 0; gcount < 4; gcount++) {
       float fg = gcount * 8;
-      int g = min((fg * lo_norm) + (24.0 * hi_norm), 24);
+      int g = MIN((fg * lo_norm) + (24.0 * hi_norm), 24);
 
       for (t = 0; t < 32; t++) {
         int index = t * 4 + gcount;
@@ -1040,7 +1040,7 @@ void AddProcRaindrops(static_proc_element *proc, int handle) {
   ubyte y1 = proc->y1;
   proc->frequency = 0;
   proc->size = (ps_rand() % 3) + 1;
-  proc->speed = max(0, proc_speed + ((ps_rand() % 10) - 5));
+  proc->speed = MAX(0, proc_speed + ((ps_rand() % 10) - 5));
   proc->x1 = x1 + (ps_rand() % (proc_size * 2)) - (proc_size);
   proc->y1 = y1 + (ps_rand() % (proc_size * 2)) - (proc_size);
   AddProcHeightBlob(proc, handle);
@@ -1061,7 +1061,7 @@ void AddProcBlobdrops(static_proc_element *proc, int handle) {
   ubyte y1 = proc->y1;
   proc->frequency = 0;
   proc->size = (ps_rand() % 6) + 4;
-  proc->speed = max(0, proc_speed + ((ps_rand() % 50) - 25));
+  proc->speed = MAX(0, proc_speed + ((ps_rand() % 50) - 25));
   proc->x1 = x1 + (ps_rand() % (proc_size * 2)) - (proc_size);
   proc->y1 = y1 + (ps_rand() % (proc_size * 2)) - (proc_size);
   AddProcHeightBlob(proc, handle);

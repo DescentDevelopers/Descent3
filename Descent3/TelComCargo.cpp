@@ -100,7 +100,7 @@
 #define LID_INVENTORY 5
 
 #ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
 #endif
 
 typedef struct {
@@ -142,7 +142,7 @@ int TCCargoCreateLine(int id, int y, char *title, int type) {
     grtext_SetFont(SM_FONT);
 
     float shields = Player_object->shields;
-    shields = max(shields, 0);
+    shields = MAX(shields, 0);
     int perc = (int)((shields / INITIAL_SHIELDS) * 100.0f);
     grtext_Printf(TITLE_X, y, title);
     grtext_Printf(VALUE_X, y, "%d%c", perc, '%');
@@ -154,7 +154,7 @@ int TCCargoCreateLine(int id, int y, char *title, int type) {
     grtext_SetFont(SM_FONT);
 
     float energy = Players[Player_num].energy;
-    energy = max(energy, 0);
+    energy = MAX(energy, 0);
     int perc = (int)((energy / INITIAL_ENERGY) * 100.0f);
     grtext_Printf(TITLE_X, y, title);
     grtext_Printf(VALUE_X, y, "%d%c", perc, '%');

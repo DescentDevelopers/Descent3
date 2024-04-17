@@ -1872,7 +1872,7 @@ void d3d_DrawFlatPolygon(g3Point **p, int nv) {
     g3Point *pnt = p[i];
     TVerts[i].x = pnt->p3_sx + D3D_state.clip_x1;
     TVerts[i].y = pnt->p3_sy + D3D_state.clip_y1;
-    TVerts[i].z = max(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
+    TVerts[i].z = MAX(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
     TVerts[i].w = 1.0 / (pnt->p3_z + Z_bias + d3d_WBias);
 
     TVerts[i].u1 = pnt->p3_u;
@@ -1955,7 +1955,7 @@ int d3d_DrawBumpmappedPolygon(g3Point **p, int nv, int handle) {
 
     tvert->x = pnt->p3_sx + D3D_state.clip_x1;
     tvert->y = pnt->p3_sy + D3D_state.clip_y1;
-    tvert->z = max(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
+    tvert->z = MAX(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
     tvert->w = 1.0 / (pnt->p3_z + Z_bias + d3d_WBias);
 
     tvert->u1 = pnt->p3_u;
@@ -2068,7 +2068,7 @@ void d3d_DrawMultiTexturePolygon(g3Point **p, int nv, int handle, int map_type) 
 
     tvert->x = pnt->p3_sx + D3D_state.clip_x1;
     tvert->y = pnt->p3_sy + D3D_state.clip_y1;
-    tvert->z = max(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
+    tvert->z = MAX(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
     tvert->w = 1.0 / (pnt->p3_z + Z_bias + d3d_WBias);
 
     tvert->u1 = pnt->p3_u + UV_diff;
@@ -2209,7 +2209,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
     tvert_ptr = &TVerts[i];
     tvert_ptr->x = pnt->p3_sx + D3D_state.clip_x1;
     tvert_ptr->y = pnt->p3_sy + D3D_state.clip_y1;
-    tvert_ptr->z = max(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
+    tvert_ptr->z = MAX(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
     tvert_ptr->w = 1.0 / (pnt->p3_z + Z_bias + d3d_WBias);
 
     tvert_ptr->u1 = pnt->p3_u + UV_diff;
@@ -2854,8 +2854,8 @@ void d3d_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 
     FlatVerts[i].x = pnt->p3_sx + D3D_state.clip_x1;
     FlatVerts[i].y = pnt->p3_sy + D3D_state.clip_y1;
-    // FlatVerts[i].z=min(1.0,(pnt->p3_z+(Z_bias+d3d_WBias))/D3D_state.cur_far_z);
-    FlatVerts[i].z = max(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
+    // FlatVerts[i].z=MIN(1.0,(pnt->p3_z+(Z_bias+d3d_WBias))/D3D_state.cur_far_z);
+    FlatVerts[i].z = MAX(0, 1.0 - (1.0 / (pnt->p3_z + (Z_bias + d3d_WBias))));
     FlatVerts[i].w = 1.0 / (pnt->p3_z + Z_bias + d3d_WBias);
 
     if (D3D_state.cur_alpha_type & ATF_VERTEX)
@@ -2983,8 +2983,8 @@ void d3d_SetGammaValue(float val) {
 
     newval *= 65535;
 
-    newval = min(65535, newval);
-    newval = max(0, newval);
+    newval = MIN(65535, newval);
+    newval = MAX(0, newval);
 
     rampvals.red[i] = newval;
     rampvals.green[i] = newval;
@@ -3224,9 +3224,9 @@ void d3d_Screenshot(int bm_handle) {
             int g = (pix >> 5 & 0x3f) << 2;
             int b = (pix & 0x1f) << 3;
 
-            r = min(255, (float)r * 1.4f);
-            g = min(255, (float)g * 1.4f);
-            b = min(255, (float)b * 1.4f);
+            r = MIN(255, (float)r * 1.4f);
+            g = MIN(255, (float)g * 1.4f);
+            b = MIN(255, (float)b * 1.4f);
 
             pix = GR_RGB16(r, g, b);
 
@@ -3244,9 +3244,9 @@ void d3d_Screenshot(int bm_handle) {
             int g = (pix >> 5 & 0x1f) << 3;
             int b = (pix & 0x1f) << 3;
 
-            r = min(255, (float)r * 1.4f);
-            g = min(255, (float)g * 1.4f);
-            b = min(255, (float)b * 1.4f);
+            r = MIN(255, (float)r * 1.4f);
+            g = MIN(255, (float)g * 1.4f);
+            b = MIN(255, (float)b * 1.4f);
 
             pix = GR_RGB16(r, g, b);
 
@@ -3272,9 +3272,9 @@ void d3d_Screenshot(int bm_handle) {
           int g = (pix >> 8 & 0xff);
           int b = (pix & 0xff);
 
-          r = min(255, (float)r * 1.4f);
-          g = min(255, (float)g * 1.4f);
-          b = min(255, (float)b * 1.4f);
+          r = MIN(255, (float)r * 1.4f);
+          g = MIN(255, (float)g * 1.4f);
+          b = MIN(255, (float)b * 1.4f);
 
           short short_pix = GR_RGB16(r, g, b);
 

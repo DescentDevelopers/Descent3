@@ -386,7 +386,7 @@ bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize) {
     cfseek(PilotPic_database_index_handle, oldoffset, SEEK_SET);
     return false;
   }
-  int toread = min(name_size, buffersize - 1);
+  int toread = MIN(name_size, buffersize - 1);
   cf_ReadBytes((ubyte *)pilot_name, toread, PilotPic_database_index_handle);
   pilot_name[toread] = '\0';
 

@@ -3894,7 +3894,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           ubyte buf[1000];
           int n = chunk_size, r;
           while (n) {
-            r = cf_ReadBytes(buf, min(n, sizeof(buf)), ifile);
+            r = cf_ReadBytes(buf, MIN(n, sizeof(buf)), ifile);
             cf_WriteBytes(buf, r, ofile);
             n -= r;
           }

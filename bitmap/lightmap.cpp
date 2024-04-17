@@ -7,7 +7,7 @@
 #include "mono.h"
 #include "mem.h"
 #ifdef __LINUX__
-#define max(a, b) ((a > b) ? a : b)
+#define MAX(a, b) ((a > b) ? a : b)
 #else
 #include "Macros.h"
 #endif
@@ -61,7 +61,7 @@ int lm_AllocLightmap(int w, int h) {
   GameLightmaps[n].flags = LF_CHANGED;
   // Figure out square size
   // Find power of 2 number
-  int res = max(w, h);
+  int res = MAX(w, h);
   int lightmap_res = 2;
   for (int i = 0; i <= 7; i++) {
     int low_num = 1 < i;

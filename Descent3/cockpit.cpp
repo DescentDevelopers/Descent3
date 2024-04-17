@@ -182,7 +182,7 @@
 #include "soundload.h"
 #include "sounds.h"
 #ifdef __LINUX__
-#define min(a, b) ((a < b) ? a : b) // make Linux happy about min()
+#define MIN(a, b) ((a < b) ? a : b) // make Linux happy about MIN()
 #elif defined(MACINTOSH)
 #include "Macros.h"
 #endif
@@ -480,9 +480,9 @@ void RenderCockpit() {
   light_scalar_b *= .8f;
 
   if (player_obj->effect_info) {
-    light_scalar_r = min(1.0, light_scalar_r + (player_obj->effect_info->dynamic_red));
-    light_scalar_g = min(1.0, light_scalar_g + (player_obj->effect_info->dynamic_green));
-    light_scalar_b = min(1.0, light_scalar_b + (player_obj->effect_info->dynamic_blue));
+    light_scalar_r = MIN(1.0, light_scalar_r + (player_obj->effect_info->dynamic_red));
+    light_scalar_g = MIN(1.0, light_scalar_g + (player_obj->effect_info->dynamic_green));
+    light_scalar_b = MIN(1.0, light_scalar_b + (player_obj->effect_info->dynamic_blue));
   }
   if (Players[player_obj->id].flags & PLAYER_FLAGS_HEADLIGHT) {
     light_scalar_r = 1.0;
