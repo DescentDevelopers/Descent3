@@ -3,6 +3,8 @@
 
 #include "renderer.h"
 
+#include <cstdint>
+
 #define MVELIB_NOERROR 0
 #define MVELIB_FILE_ERROR -1
 #define MVELIB_NOTINIT_ERROR -2

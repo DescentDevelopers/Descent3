@@ -8,7 +8,7 @@
 
 #ifdef __LINUX__
 #ifndef MACOSX
-typedef unsigned int size_t;
+// typedef unsigned int size_t;
 #endif
 #include <stdarg.h>
 void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext);

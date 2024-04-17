@@ -234,7 +234,7 @@ extern bool FVI_always_check_ceiling;
 inline bool FastVectorBBox(const float *min, const float *max, const float *origin, const float *dir) {
   bool f_inside = true;
   char quad[3];
-  register int i;
+  int i;
   float max_t[3];
   float can_plane[3];
   int which_plane;
