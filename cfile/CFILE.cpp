@@ -15,7 +15,7 @@
 // Linux Build Includes
 #include "linux/linux_fix.h"
 #endif
-#include "BYTESWAP.H"
+#include "byteswap.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"

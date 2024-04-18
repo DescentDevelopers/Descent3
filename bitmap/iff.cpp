@@ -55,7 +55,7 @@
 
 #include "mem.h"
 #include "iff.h"
-#include "BYTESWAP.H"
+#include "byteswap.h"
 #include "CFILE.H"
 #include "pserror.h"
 #include "pstypes.h"

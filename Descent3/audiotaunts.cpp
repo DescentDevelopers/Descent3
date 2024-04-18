@@ -8,7 +8,7 @@
 #include "audiotaunts.h"
 #include "CFILE.H"
 #include "audio_encode.h"
-#include "BYTESWAP.H"
+#include "byteswap.h"
 #include "mem.h"
 #include "ddio.h"
 #include "manage.h"

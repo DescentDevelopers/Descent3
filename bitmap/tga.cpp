@@ -121,7 +121,7 @@
 #include "mono.h"
 #include "grdefs.h"
 #include "texture.h"
-#include "BYTESWAP.H"
+#include "byteswap.h"
 #include <string.h>
 #include "mem.h"
 

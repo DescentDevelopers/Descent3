@@ -13,7 +13,7 @@
 #error No platform defined
 #endif
 
-#include "BYTESWAP.H"
+#include "byteswap.h"
 //--------------------------------
 // Compressed Video Constants
 //--------------------------------

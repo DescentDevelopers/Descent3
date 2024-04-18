@@ -67,7 +67,7 @@
 #include "grdefs.h"
 #include "polymodel.h"
 #include "gametexture.h"
-#include "BYTESWAP.H"
+#include "byteswap.h"
 #include "renderer.h"
 #include "lighting.h"
 #include "game.h"

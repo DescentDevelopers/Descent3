@@ -87,7 +87,7 @@
 #include "mem.h"
 #include "pserror.h"
 #include <string.h>
-#include "BYTESWAP.H"
+#include "byteswap.h"
 
 sound_info Sounds[MAX_SOUNDS];
 sound_file_info SoundFiles[MAX_SOUND_FILES];
