@@ -12,13 +12,12 @@ SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 IF (UNIX)
   SET (D3_GAMEDIR "~/Descent3/")
-  IF (APPLE)
-    SET(EXTRA_CXX_FLAGS "-Wno-address-of-temporary")
-  ELSE()
-    SET(EXTRA_CXX_FLAGS "-fpermissive")
+
+  IF (UNIX AND NOT APPLE)
+    SET(EXTRA_CXX_FLAGS "-fpermissive ")
   ENDIF()
 
-  STRING(APPEND CMAKE_CXX_FLAGS " -Wno-write-strings -Wno-multichar ${BITS} ${EXTRA_CXX_FLAGS}")
+  STRING(APPEND CMAKE_CXX_FLAGS " -Wno-write-strings -Wno-multichar -Wno-address-of-temporary ${BITS} ${EXTRA_CXX_FLAGS}")
   STRING(APPEND CMAKE_C_FLAGS " ${BITS}")
 
   FIND_PACKAGE(SDL REQUIRED)
