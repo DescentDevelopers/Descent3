@@ -132,3 +132,25 @@ ENDIF()
 IF( NOT CMAKE_BUILD_TYPE )
 SET( CMAKE_BUILD_TYPE "Debug" )
 ENDIF()
+
+# Targets to run clang-format
+ADD_CUSTOM_TARGET(fmt
+    COMMAND tools/clang-formatter.sh --modified
+    VERBATIM
+    USES_TERMINAL
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+ADD_CUSTOM_TARGET(fmtall
+    COMMAND tools/clang-formatter.sh
+    VERBATIM
+    USES_TERMINAL
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+ADD_CUSTOM_TARGET(checkfmt
+    COMMAND tools/clang-formatter.sh --check --quiet
+    VERBATIM
+    USES_TERMINAL
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)

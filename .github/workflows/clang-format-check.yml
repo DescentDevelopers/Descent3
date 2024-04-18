@@ -10,4 +10,5 @@ jobs:
       - name: Run clang-format style check for C/C++/Protobuf programs.
         uses: jidicula/clang-format-action@v4.11.0
         with:
+          # note: this version number is extracted by tools/clang-formatter.sh for the cmake fmt target
           clang-format-version: '18'
