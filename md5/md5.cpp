@@ -5,7 +5,7 @@
         There is now warranty.
 
         Feb. 12. 2005
-        Benjamin Grüdelbach
+        Benjamin GrÃ¼delbach
 */
 
 /*
@@ -33,7 +33,7 @@
 
 // md5 class include
 #include "md5.h"
-#include <BYTESWAP.H>
+#include <byteswap.h>
 #include <string.h>
 
 #include "stdio.h"

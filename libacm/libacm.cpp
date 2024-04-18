@@ -24,7 +24,7 @@
 #endif
 #include <cstring>
 #include "pserror.h"
-#include "BYTESWAP.H"
+#include "byteswap.h"
 using namespace AudioDecoder;
 
 namespace {
