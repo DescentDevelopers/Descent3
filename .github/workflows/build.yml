@@ -49,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build_${{ matrix.os.runner }}_${{ matrix.build_type }}
-          path: ${{ github.workspace }}/build/Descent3/${{ matrix.build_type }}
+          path: ${{ github.workspace }}/build/Descent3/${{ matrix.os.preset == 'linux' ? '':matrix.build_type }}
