@@ -123,11 +123,11 @@ int cf_OpenLibrary(const char *libname);
 void cf_CloseLibrary(int handle);
 
 // Specify a directory to look in for files
-// if ext==NULL, look in this directory for all files.  If ext is non-null,
-// it is a NULL-terminated list of file extensions.  If extensions are
-// specifed, the directory will only be searched for files that match
+// Variable arguments is a NULL-terminated list of extensions
+// If no extensions are specified, look in this directory for all files.
+// Otherwise, the directory will only be searched for files that match
 // one of the listed extensions.
-int cf_SetSearchPath(const char *path, char *ext, ...);
+int cf_SetSearchPath(const char *path, ...);
 
 // Removes all search paths that have been added by cf_SetSearchPath
 void cf_ClearAllSearchPaths(void);
