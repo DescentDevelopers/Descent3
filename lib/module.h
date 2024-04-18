@@ -76,17 +76,24 @@
 #define CPPEXTERN extern
 #endif
 
+#ifdef _MSC_VER // MSVC Build
+# define STDCALL __stdcall
+# define STDCALLPTR *STDCALL
+#else // Non-MS compilers
+# if defined(__i386__) || defined(_X86_) || defined(__THW_INTEL__)
+#  define STDCALL __attribute__((stdcall))
+# else
+#  define STDCALL
+# endif
+# define STDCALLPTR STDCALL *
+#endif
+
+# define DLLFUNCCALL STDCALL
+# define DLLFUNCCALLPTR STDCALLPTR
+
 #ifdef WIN32
 //=========================Windows Definition============================
 #include "windows.h"
-
-#ifdef _MSC_VER // Visual C++ Build
-#define DLLFUNCCALL __stdcall
-#define DLLFUNCCALLPTR *DLLFUNCCALL
-#else // Non-Visual C++ Build
-#define DLLFUNCCALL __attribute__((stdcall))
-#define DLLFUNCCALLPTR DLLFUNCCALL *
-#endif
 
 #define MODPROCADDRESS FARPROC
 #define DLLFUNCEXPORT __declspec(dllexport)
@@ -101,8 +108,6 @@ typedef struct {
 #include <dlfcn.h>
 
 #define MODPROCADDRESS void *
-#define DLLFUNCCALL __attribute__((stdcall))
-#define DLLFUNCCALLPTR DLLFUNCCALL *
 #define DLLFUNCEXPORT
 #define DLLFUNCIMPORT
 #define DLLEXPORT CPPEXTERN
@@ -114,8 +119,6 @@ typedef struct {
 #elif defined(MACINTOSH)
 //==========================Mac Definitions============================
 #define MODPROCADDRESS void *
-#define DLLFUNCCALL
-#define DLLFUNCCALLPTR DLLFUNCCALL *
 #define DLLFUNCEXPORT
 #define DLLFUNCIMPORT
 #define DLLEXPORT
