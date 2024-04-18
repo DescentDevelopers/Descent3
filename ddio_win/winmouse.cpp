@@ -372,7 +372,7 @@ bool InitNewMouse() {
     rawInputDevice.usUsage = 0x0002;
     rawInputDevice.usUsagePage = 0x0001;
     //TODO: This code should be renabled when some solution for mouse capturing is decided on.
-    // The game should free the capture when
+    // The game should free the capture when the cursor is visible, and recapture it when it isn't visible.
     // Account for the original mode.
     //if (DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE)
       rawInputDevice.dwFlags = RIDEV_CAPTUREMOUSE | RIDEV_NOLEGACY;
