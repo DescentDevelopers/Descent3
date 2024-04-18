@@ -898,11 +898,11 @@ int _get_full_path_to_module(char *module_name, char *fullpath, char *basename) 
 
   int exist = cfexist(modfilename);
   switch (exist) {
-  case CF_ON_DISK:
+  case CFES_ON_DISK:
     ddio_MakePath(fullpath, LocalScriptDir, modfilename, NULL);
     return -1;
     break;
-  case CF_IN_LIBRARY: {
+  case CFES_IN_LIBRARY: {
     ASSERT(OSIRIS_Extracted_script_dir);
     if (!OSIRIS_Extracted_script_dir)
       return -2;

@@ -110,15 +110,15 @@ typedef struct {
 
 // Flags for CFILE struct
 enum CFileFlags {
-  CF_TEXT = 1, // if this bit set, file is text
-  CF_WRITING,  // if bit set, file opened for writing
+  CFF_TEXT = 1, // if this bit set, file is text
+  CFF_WRITING,  // if bit set, file opened for writing
 };
 
 // return values for cfexist()
 enum CFileExitStatus {
-  CF_NOT_FOUND = 0,
-  CF_ON_DISK,
-  CF_IN_LIBRARY,
+  CFES_NOT_FOUND = 0,
+  CFES_ON_DISK,
+  CFES_IN_LIBRARY,
 };
 
 // See if a file is in a hog

@@ -726,9 +726,9 @@ CFILE *cfopen(const char *filename, const char *mode) {
 got_file:;
   if (cfile) {
     if (mode[0] == 'w')
-      cfile->flags |= CF_WRITING;
+      cfile->flags |= CFF_WRITING;
     if (mode[1] == 't')
-      cfile->flags |= CF_TEXT;
+      cfile->flags |= CFF_TEXT;
   }
   return cfile;
 }
@@ -782,7 +782,7 @@ int cfgetc(CFILE *cfp) {
     // do special newline handling for text files:
     //  if CR or LF by itself, return as newline
     //  if CR/LF pair, return as newline
-    if (cfp->flags & CF_TEXT) {
+    if (cfp->flags & CFF_TEXT) {
       if (c == 10) // return LF as newline
         c = '\n';
       else if (c == 13) { // check for CR/LF pair
@@ -840,12 +840,12 @@ int cfexist(const char *filename) {
   cfp = cfopen(filename, "rb");
   if (!cfp) {            // Didn't get file.  Why?
     if (errno == EACCES) // File exists, but couldn't open it
-      return CF_ON_DISK; // so say it exists on the disk
+      return CFES_ON_DISK; // so say it exists on the disk
                          // DAJ		if (errno != ENOENT)			//Check if error is "file not found"
     // DAJ			Int3();						//..warn if not
-    return CF_NOT_FOUND; // Say we didn't find the file
+    return CFES_NOT_FOUND; // Say we didn't find the file
   }
-  ret = cfp->lib_offset ? CF_IN_LIBRARY : CF_ON_DISK;
+  ret = cfp->lib_offset ? CFES_IN_LIBRARY : CFES_ON_DISK;
   cfclose(cfp);
   return ret;
 }
@@ -857,7 +857,7 @@ int cfexist(const char *filename) {
 int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
   int i;
   char *error_msg = eof_error; // default error
-  ASSERT(!(cfp->flags & CF_TEXT));
+  ASSERT(!(cfp->flags & CFF_TEXT));
   if (cfp->position + count <= cfp->size) {
     i = fread(buf, 1, count, cfp->file);
     if (i == count) {
@@ -957,7 +957,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
       break;
     }
 
-    if ((!(cfp->flags & CF_TEXT) && (c == 0)) || ((cfp->flags & CF_TEXT) && (c == '\n')))
+    if ((!(cfp->flags & CFF_TEXT) && (c == 0)) || ((cfp->flags & CFF_TEXT) && (c == '\n')))
       break;           // end-of-string
     if (count < n - 1) // store char if room in buffer
       *bp++ = c;
@@ -972,7 +972,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 int cf_WriteBytes(const ubyte *buf, int count, CFILE *cfp) {
   int i;
-  if (!(cfp->flags & CF_WRITING))
+  if (!(cfp->flags & CFF_WRITING))
     return 0;
   ASSERT(count > 0);
   i = fwrite(buf, 1, count, cfp->file);
@@ -994,7 +994,7 @@ int cf_WriteString(CFILE *cfp, const char *buf) {
   if (len != 0) // write string
     cf_WriteBytes((ubyte *)buf, len, cfp);
   // Terminate with newline (text file) or NULL (binary file)
-  cf_WriteByte(cfp, (cfp->flags & CF_TEXT) ? '\n' : 0);
+  cf_WriteByte(cfp, (cfp->flags & CFF_TEXT) ? '\n' : 0);
   return len + 1;
 }
 
@@ -1035,7 +1035,7 @@ void cf_WriteByte(CFILE *cfp, int8_t b) {
     ThrowCFileError(CFE_WRITING, cfp, strerror(errno));
   cfp->position++;
   // If text file & writing newline, increment again for LF
-  if ((cfp->flags & CF_TEXT) && (b == '\n')) // check for text mode newline
+  if ((cfp->flags & CFF_TEXT) && (b == '\n')) // check for text mode newline
     cfp->position++;
 }
 

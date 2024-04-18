@@ -933,7 +933,7 @@ void PilotSelect(void) {
   int res = -1;
   bool done = false;
 
-  if (cfexist(Default_pilot) != CF_NOT_FOUND) {
+  if (cfexist(Default_pilot) != CFES_NOT_FOUND) {
     // ok so the default pilot file is around, mark this as the current pilot
     Current_pilot.set_filename(Default_pilot);
     PltReadFile(&Current_pilot);
@@ -984,7 +984,7 @@ void PilotSelect(void) {
 
   // use this in case they cancel out
   Current_pilot.get_filename(pfilename);
-  if (cfexist(pfilename) != CF_NOT_FOUND) {
+  if (cfexist(pfilename) != CFES_NOT_FOUND) {
     strcpy(old_file, pfilename);
   } else {
     old_file[0] = '\0';
@@ -1040,7 +1040,7 @@ void PilotSelect(void) {
 
     case UID_CANCEL: {
       // Cancel out
-      bool found_old = (cfexist(old_file) != CF_NOT_FOUND);
+      bool found_old = (cfexist(old_file) != CFES_NOT_FOUND);
       bool display_error;
 
       if (filecount && found_old)
@@ -1494,7 +1494,7 @@ void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected,
 
     list->SetCurrentIndex(selected);
 
-    if (filename && (cfexist(filename) != CF_NOT_FOUND)) {
+    if (filename && (cfexist(filename) != CFES_NOT_FOUND)) {
       // get the selected pilot from the filename
       mprintf((0, "Looking for Pilot: %s\n", filename));
       for (int d = 0; d < filecount; d++) {
@@ -2212,7 +2212,7 @@ bool CreateCRCFileName(const char *src, char *dest) {
   ASSERT(src);
   ASSERT(dest);
 
-  if (cfexist(src) != CF_ON_DISK)
+  if (cfexist(src) != CFES_ON_DISK)
     return false;
 
   unsigned int crc_value = cf_GetfileCRC((char *)src);
@@ -2243,7 +2243,7 @@ bool CreateCRCFileName(const char *src, char *base, char *newfilename) {
   ASSERT(base);
   ASSERT(newfilename);
 
-  if (cfexist(src) != CF_ON_DISK)
+  if (cfexist(src) != CFES_ON_DISK)
     return false;
 
   unsigned int crc_value = cf_GetfileCRC((char *)src);
@@ -2345,7 +2345,7 @@ float getdist(angle ang, float height) {
 //	newfile		=	on return true is the filename of the new bitmap
 bool ImportGraphic(char *pathname, char *newfile) {
   ASSERT(pathname);
-  if (cfexist(pathname) != CF_ON_DISK) {
+  if (cfexist(pathname) != CFES_ON_DISK) {
     mprintf((0, "'%s' not found\n", pathname));
     return false;
   }
