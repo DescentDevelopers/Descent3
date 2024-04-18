@@ -11,8 +11,6 @@ SET(CMAKE_CXX_EXTENSIONS OFF)
 SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 IF (UNIX)
-  SET (D3_GAMEDIR "~/Descent3/")
-
   IF (UNIX AND NOT APPLE)
     SET(EXTRA_CXX_FLAGS "-fpermissive ")
   ENDIF()
@@ -40,14 +38,12 @@ IF (UNIX AND NOT APPLE)
 ENDIF()
 
 IF (APPLE)
-	SET(D3_GAMEDIR "~/Descent3X")	
   MESSAGE("Building for MAC OSX")
   ADD_DEFINITIONS(-D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -DMACOSX=1 -D_USE_OGL_ACTIVE_TEXTURES)
   SET(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR} "/usr/X11/include" )
 ENDIF()
 
 IF (WIN32)
-	SET(D3_GAMEDIR "c:/games/Descent3/")	
 	set (CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "lib/win" "lib/win/directx")
 	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /RTC1 /W3 /nologo /c /Zi /TP /errorReport:prompt")
 	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL /FD /EHsc /W3 /nologo /c /Zi /TP /errorReport:prompt")
@@ -79,8 +75,6 @@ IF (WIN32)
 		add_compile_options("/we4834")  # discarding return value of function with [[nodiscard]] attribute
 	endif()
 ENDIF ()
-
-MESSAGE("Install will copy files to ${D3_GAMEDIR}")
 
 include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
 

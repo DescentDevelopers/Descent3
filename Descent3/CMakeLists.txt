@@ -303,7 +303,6 @@ target_link_libraries(Descent3
 	fix grtext manage mem misc model module movie stream_audio
 	music networking physics renderer rtperformance sndlib ui unzip vecmat md5
 	${PLATFORM_LIBS})
-install(TARGETS Descent3 DESTINATION ${D3_GAMEDIR})
 
 if (WIN32)
 	set_target_properties(Descent3 PROPERTIES WIN32_EXECUTABLE ON)
