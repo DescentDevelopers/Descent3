@@ -34,9 +34,7 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            make cmake g++ libsdl1.2-dev libsdl-image1.2-dev \
-            libaudio-dev libaa1-dev libdirectfb-dev \
-            libncurses-dev \
+            make cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev \
             libxext6:i386  # for ./scripts/hogutils/hogUtils-i686 binary
           mkdir ~/Descent3
 

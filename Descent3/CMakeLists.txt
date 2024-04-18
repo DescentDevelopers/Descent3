@@ -285,19 +285,17 @@ SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WIN
 ENDIF()
 
 IF (UNIX AND NOT APPLE)
-SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${SDL_LIBRARY} m dl GLU ncurses pulse-simple)
+SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL m ${CMAKE_DL_LIBS} OpenGL::GLU ${CURSES_LIBRARIES})
 SET (PLATFORM_CPPS loki_utils.c lnxmain.cpp)
 ENDIF()
 	
 IF (APPLE)
-SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${SDL_LIBRARY} ncurses )
+SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL ${CURSES_LIBRARIES})
 SET (PLATFORM_CPPS loki_utils.c lnxmain.cpp SDLMain.m)
 SET(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
 ENDIF()
 
 file(GLOB_RECURSE INCS "../lib/*.h")
-	
-
 
 ADD_EXECUTABLE(Descent3 ${HEADERS} ${CPPS} ${PLATFORM_CPPS} ${INCS})
 target_link_libraries(Descent3 

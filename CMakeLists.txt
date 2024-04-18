@@ -1,39 +1,35 @@
-# CMake compatibility issues: don't modify this, please!
-CMAKE_MINIMUM_REQUIRED( VERSION 2.4.6 )
+CMAKE_MINIMUM_REQUIRED(VERSION 3.19)
 
-MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
 # allow more human readable "if then else" constructs
 SET( CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE )
 
+PROJECT(Descent3 VERSION 1.5.500)
 
-PROJECT(Descent3)
+SET(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_EXTENSIONS OFF)
+SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 IF (UNIX)
-SET (D3_GAMEDIR "~/Descent3/")
-
-  SET(CMAKE_CXX_STANDARD 17)
-  SET(CMAKE_CXX_STANDARD_REQUIRED ON)
-  SET(CMAKE_CXX_EXTENSIONS OFF)
-  SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
+  SET (D3_GAMEDIR "~/Descent3/")
   IF (APPLE)
     SET(EXTRA_CXX_FLAGS "-Wno-address-of-temporary")
   ELSE()
     SET(EXTRA_CXX_FLAGS "-fpermissive")
   ENDIF()
 
-  SET(CMAKE_CXX_COMPILER "g++")
-  SET(CMAKE_CXX_FLAGS "-O0 -g -Wno-write-strings -Wno-multichar ${BITS} ${EXTRA_CXX_FLAGS}")
-  SET(CMAKE_C_FLAGS "-O0 -g ${BITS}")
-  SET(CMAKE_C_COMPILER "gcc")
+  SET(CMAKE_CXX_FLAGS "-Wno-write-strings -Wno-multichar ${BITS} ${EXTRA_CXX_FLAGS}")
+  SET(CMAKE_C_FLAGS "${BITS}")
 
-  FIND_PACKAGE( SDL REQUIRED )
+  FIND_PACKAGE(SDL REQUIRED)
   IF (APPLE)
     # Provide FIND_PACKAGE( SDL_image ) below with an include dir and library that work with brew-installed sdl2_image
     FIND_PATH(SDL_IMAGE_INCLUDE_DIR SDL_image.h PATH_SUFFIXES include/SDL2)
     FIND_LIBRARY(SDL_IMAGE_LIBRARY SDL2_image)
   ENDIF()
-  FIND_PACKAGE( SDL_image REQUIRED )
+  FIND_PACKAGE(SDL_image REQUIRED)
+  FIND_PACKAGE(Curses REQUIRED)
+  FIND_PACKAGE(OpenGL REQUIRED)
 MESSAGE( "SDL Include Dir is " ${SDL_INCLUDE_DIR} )
 ENDIF()
 
@@ -77,11 +73,6 @@ MESSAGE("Install will copy files to ${D3_GAMEDIR}")
 include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
 
 # file(GLOB_RECURSE INCS "*.h")
-
-# project version
-SET( ${PROJECT_NAME}_MAJOR_VERSION 1 )
-SET( ${PROJECT_NAME}_MINOR_VERSION 5 )
-SET( ${PROJECT_NAME}_PATCH_LEVEL 500 )
 
 ADD_SUBDIRECTORY (2dlib)
 ADD_SUBDIRECTORY (AudioEncode)
@@ -128,7 +119,7 @@ ADD_SUBDIRECTORY (vecmat)
 ADD_SUBDIRECTORY (libmve)
 ADD_SUBDIRECTORY (md5)
 ADD_SUBDIRECTORY (libacm)
-ADD_SUBDIRECTORY (Descent3 )
+ADD_SUBDIRECTORY (Descent3)
 
 # For now we don't need to build the scripts under windows, so we'll only include
 # the directory when building for linux/osx. In the future we may want to to fix bugs, etc.
