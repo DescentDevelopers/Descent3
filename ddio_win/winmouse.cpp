@@ -92,7 +92,6 @@ void DDIOShowCursor(BOOL show) {
 }
 
 void ddio_MouseMode(int mode) {
-  mprintf((0, "mouse mode set to %d\n", mode));
   if (mode == MOUSE_EXCLUSIVE_MODE) {
     DDIOShowCursor(FALSE);
   } else if (mode == MOUSE_STANDARD_MODE) {
@@ -367,7 +366,6 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
 bool InitNewMouse() {
   int i;
   if (!rawInputOpened) {
-    mprintf((0, "starting up raw input\n"));
     char buf[256];
     RAWINPUTDEVICE rawInputDevice = {};
 
