@@ -1246,8 +1246,9 @@ void joystick_settings_dialog() {
   sheet->NewGroup(TXT_MOUSECONTROL, 210, y);
   msectl = sheet->AddFirstLongRadioButton(TXT_MOUSEFLIGHTSIM);
   sheet->AddLongRadioButton(TXT_MOUSELOOK);
-  *msectl = Current_pilot.mouselook_control ? 1 : 0;
-  y += 50;
+  sheet->AddLongRadioButton(TXT_MOUSEFLIGHTSIM_INVERTED);
+  *msectl = Current_pilot.mouselook_control;
+  y += 75;
   sheet->NewGroup(NULL, 210, y);
   sheet->AddLongButton(TXT_CALIBJOYSTICK, UID_JOYCFG);
   // force feedback stuff
@@ -1298,7 +1299,7 @@ void joystick_settings_dialog() {
       float val = CALC_SLIDER_FLOAT_VALUE(*mse_sens[i], 0.0f, MSE_AXIS_SENS_RANGE, CFG_AXIS_SENS_RANGE);
       Controller->set_axis_sensitivity(ctMouseAxis, i + 1, val);
     }
-    Current_pilot.mouselook_control = (*msectl) ? true : false;
+    Current_pilot.mouselook_control = *msectl;
     // force feedback stuff
     if (ff_enabled) {
       if (*ff_enabled) {

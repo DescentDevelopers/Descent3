@@ -1389,7 +1389,7 @@ void pilot::write_controls(CFILE *file) {
   }
   cf_WriteFloat(file, key_ramping); // 0x29- keyramping
 
-  cf_WriteByte(file, (mouselook_control ? 1 : 0)); // version 0x25 - mouselook
+  cf_WriteByte(file, mouselook_control); // version 0x25 - mouselook
 }
 
 void pilot::read_controls(CFILE *file, bool skip) {
@@ -1475,7 +1475,7 @@ void pilot::read_controls(CFILE *file, bool skip) {
   }
   if (file_version >= PFV_MOUSELOOK) {
     temp_b = cf_ReadByte(file);
-    mouselook_control = temp_b ? true : false;
+    mouselook_control = temp_b;
   }
 }
 

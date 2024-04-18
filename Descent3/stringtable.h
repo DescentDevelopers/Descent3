@@ -912,5 +912,6 @@ char *GetStringFromTable(int index);
 #define TXI_PAGE_DOWN 898              // "Page Down"
 #endif
 
+#define TXT_MOUSEFLIGHTSIM_INVERTED TXT(1000)          // Flight Sim
 // Before adding items search for unused entries!
 #endif

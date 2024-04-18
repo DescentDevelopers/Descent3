@@ -1680,7 +1680,7 @@ int MultiLevelSelection(void) {
 }
 
 bool DoPlayerMouselookCheck(unsigned int flags) {
-  if (Current_pilot.mouselook_control) {
+  if (Current_pilot.mouselook_control == 1) {
     if (flags & NF_ALLOW_MLOOK) {
       return true;
     } else {

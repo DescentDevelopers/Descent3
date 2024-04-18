@@ -898,7 +898,15 @@ float gameWinController::get_axis_value(sbyte controller, ubyte axis, ct_format 
     return val;
   }
 
-  if ((Current_pilot.mouselook_control) && (GAME_MODE == GetFunctionMode())) {
+  if ((Current_pilot.mouselook_control == 2) && (GAME_MODE == GetFunctionMode())) {
+    if (axis == CT_Y_AXIS)
+      val = -val;
+
+    if (invert)
+      val = -val;
+  }
+
+  if ((Current_pilot.mouselook_control == 1) && (GAME_MODE == GetFunctionMode())) {
     // Don't do mouselook controls if they aren't enabled in multiplayer
     if ((Game_mode & GM_MULTI) && (!(Netgame.flags & NF_ALLOW_MLOOK)))
       return val;

@@ -292,7 +292,7 @@ public:
   float joy_sensitivity[N_JOY_AXIS];            // axis sensitivities
   float key_ramping;
   char read_controller;   // do we read the controller port also (beyond keyboard/mouse)
-  bool mouselook_control; // mouselook control.
+  char mouselook_control; // mouselook control.
   bool lrearview_enabled;
   bool rrearview_enabled; // are these small views enabled?
 
