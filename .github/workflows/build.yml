@@ -45,8 +45,16 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }}
 
-      - name: Upload Artifacts
+      - name: Upload Artifacts (Non-Linux)
         uses: actions/upload-artifact@v4
+        if: ${{ matrix.os.preset != 'linux' }}
         with:
           name: build_${{ matrix.os.runner }}_${{ matrix.build_type }}
-          path: ${{ github.workspace }}/build/Descent3/${{ matrix.os.preset == 'linux' ? '':matrix.build_type }}
+          path: ${{ github.workspace }}/build/Descent3/${{ matrix.build_type }}
+
+      - name: Upload Artifacts (Linux)
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os.preset == 'linux' }}
+        with:
+            name: build_${{ matrix.os.runner }}_${{ matrix.build_type }}_Linux
+            path: ${{ github.workspace }}/build/Descent3/
