@@ -202,10 +202,7 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 
 #include "linux/linux_fix.h"
 
-#ifndef SOCKET
 #define SOCKET int
-#endif
-
 #define BOOL bool
 #define SOCKADDR_IN sockaddr_in
 #define SOCKADDR_IPX sockaddr_ipx
@@ -311,8 +308,8 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 
 #include "macsock.h"
 
+#define SOCKET int
 #define BOOL bool
-#define SOCKET unsigned int
 #define SOCKADDR_IN sockaddr_in
 // #define SOCKADDR_IPX sockaddr_ipx
 #define SOCKADDR sockaddr

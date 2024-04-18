@@ -577,7 +577,7 @@ void PaintPLRSinglePlayerText() {
     if (tlen > curpos) {
       line_progress[i] = curpos;
       line_replace[i] = PLRText[i][curpos];
-      PLRText[i][curpos] = NULL;
+      PLRText[i][curpos] = '\0';
       all_done_painting = false;
     }
   }
