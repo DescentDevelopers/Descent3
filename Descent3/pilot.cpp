@@ -563,7 +563,7 @@
 #include "ddio.h"
 #include "descent.h"
 #include "game.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "application.h"
 #include "manage.h"
 #include "newui.h"

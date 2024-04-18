@@ -1,7 +1,7 @@
 #ifndef PSBITMAP_H
 #define PSBITMAP_H
 #include "pstypes.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #ifdef __LINUX__
 #include "linux/linux_fix.h" //needed for stricmp's throughout bitmap lib
 #endif

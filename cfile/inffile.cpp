@@ -2,9 +2,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "InfFile.h"
+#include "cfile/inffile.h"
 
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pstring.h"
 #include "pserror.h"
 

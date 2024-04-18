@@ -3,7 +3,7 @@
 
 #include "manage.h"
 #include "soundload.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pstypes.h"
 
 typedef struct {

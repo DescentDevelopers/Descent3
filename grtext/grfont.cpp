@@ -90,7 +90,7 @@
  */
 
 #include "grtextlib.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "bitmap.h"
 #include "pserror.h"
 #include "renderer.h"

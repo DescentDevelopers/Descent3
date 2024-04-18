@@ -19,7 +19,7 @@
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "hogfile.h" //info about library file
 #include "mem.h"
 // Library structures

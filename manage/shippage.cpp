@@ -183,7 +183,7 @@
 #include <windows.h>
 #endif
 
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "manage.h"
 #include "ship.h"
 #include "shippage.h"

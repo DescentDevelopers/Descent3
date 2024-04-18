@@ -84,7 +84,7 @@
 #include "linux/linux_fix.h"
 #endif
 #include "byteswap.h"
-#include "hogfile.h"
+#include "cfile/hogfile.h"
 #include "pstypes.h"
 #include "Macros.h"
 #include "mem.h"
