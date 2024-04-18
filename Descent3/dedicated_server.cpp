@@ -759,6 +759,7 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 
   va_start(args, fmt);
   Pvsprintf(buf, CON_MAX_STRINGLEN, fmt, args);
+  va_end(args);
 
   con_Printf(buf);
   DedicatedSocketputs(buf);
