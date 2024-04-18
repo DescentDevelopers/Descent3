@@ -47,7 +47,7 @@ inline int _filelength(int fd) {
 #define strcmpi(a, b) stricmp(a, b)
 #define strcmpni(a, b, c) strnicmp(a, b, c)
 #define _chmod(a, b) chmod(a, b)
-#if defined(__arm64__)
+#if defined(__aarch64__)
 #define _finite(a) isfinite(a)
 #else
 #define _finite(a) finite(a)
