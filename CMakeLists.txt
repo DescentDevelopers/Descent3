@@ -18,8 +18,8 @@ IF (UNIX)
     SET(EXTRA_CXX_FLAGS "-fpermissive")
   ENDIF()
 
-  SET(CMAKE_CXX_FLAGS "-Wno-write-strings -Wno-multichar ${BITS} ${EXTRA_CXX_FLAGS}")
-  SET(CMAKE_C_FLAGS "${BITS}")
+  STRING(APPEND CMAKE_CXX_FLAGS " -Wno-write-strings -Wno-multichar ${BITS} ${EXTRA_CXX_FLAGS}")
+  STRING(APPEND CMAKE_C_FLAGS " ${BITS}")
 
   FIND_PACKAGE(SDL REQUIRED)
   IF (APPLE)
