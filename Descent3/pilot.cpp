@@ -2864,11 +2864,13 @@ bool PltSelectShip(pilot *Pilot) {
   taunts_lists.taunt_d = sheet->AddComboBox(-5, 0);
 
   // Ship window
-  ship_win.Create(&window, &UITextItem(""), 290, 50, 180, 140, 0);
+  UITextItem itemShipWindow{""};
+  ship_win.Create(&window, &itemShipWindow, 290, 50, 180, 140, 0);
 
   // Bitmap display of selected logo
   bmpwindow = &bmp_win;
-  bmp_win.Create(&window, &UITextItem(""), UI_BORDERSIZE + 200, 53, 42, 42, 0);
+  UITextItem itemLogo{""};
+  bmp_win.Create(&window, &itemLogo, UI_BORDERSIZE + 200, 53, 42, 42, 0);
 
   // Get all the audio files and put them into the lists
   UpdateAudioTauntBoxes(&cust_snds, taunts_lists.taunt_a, taunts_lists.taunt_b, taunts_lists.taunt_c,
