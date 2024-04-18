@@ -134,7 +134,7 @@ bool FileCopy(FILE *ofp, FILE *ifp, int length) {
   return true;
 }
 bool ReadHogHeader(FILE *fp, tHogHeader *header) {
-  int res = 0;
+  int res;
   res = fread(&header->nfiles, sizeof(header->nfiles), 1, fp);
   header->nfiles = INTEL_INT(header->nfiles);
   res = fread(&header->file_data_offset, sizeof(header->file_data_offset), 1, fp);
@@ -146,7 +146,7 @@ bool ReadHogHeader(FILE *fp, tHogHeader *header) {
     return false;
 }
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
-  int res = 0;
+  int res;
   res = fread(entry->name, sizeof(char), HOG_FILENAME_LEN, fp);
   res = fread(&entry->flags, sizeof(entry->flags), 1, fp);
   entry->flags = INTEL_INT(entry->flags);
@@ -162,7 +162,7 @@ bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
 }
 
 bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry) {
-  int res = 0;
+  int res;
   res = fwrite(entry->name, sizeof(char), HOG_FILENAME_LEN, fp);
   res = fwrite(&entry->flags, sizeof(entry->flags), 1, fp);
   res = fwrite(&entry->len, sizeof(entry->len), 1, fp);
@@ -407,7 +407,7 @@ int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, vo
       return HOGMAKER_OUTFILE;
     }
   }
-  //	cleanup
+  // cleanup
   fclose(hog_fp);
   delete[] table;
   // Setup the update message and send it
