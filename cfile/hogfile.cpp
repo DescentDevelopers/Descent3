@@ -173,127 +173,10 @@ bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry) {
   else
     return false;
 }
-////////////////////////////////////////////////////////////////////////
-//	create new hog file
-int NewHogFile(const char *hogname, int nfiles, const char **filenames) {
-  unsigned i;
-  int table_pos;
-  FILE *hog_fp;
-  tHogHeader header;
-  tHogFileEntry *table;
-  char ext[_MAX_EXT];
-  hogerr_filename[0] = '\0';
-  //	allocate file table
-  if (nfiles <= 0)
-    return HOGMAKER_ERROR;
-  table = new tHogFileEntry[nfiles];
-  if (!table)
-    return HOGMAKER_MEMORY;
-  //	create new file
-  hog_fp = fopen(hogname, "wb");
-  if (hog_fp == NULL) {
-    delete[] table;
-    strcpy(hogerr_filename, hogname);
-    return HOGMAKER_OPENOUTFILE;
-  }
-  // write the tag
-  if (!fwrite(HOG_TAG_STR, strlen(HOG_TAG_STR), 1, hog_fp)) {
-    delete[] table;
-    fclose(hog_fp);
-    strcpy(hogerr_filename, hogname);
-    return HOGMAKER_OUTFILE;
-  }
-  // write number of files
-  ubyte filler = 0xff;
-  header.nfiles = (unsigned)nfiles;
-  header.file_data_offset = strlen(HOG_TAG_STR) + HOG_HDR_SIZE + (sizeof(tHogFileEntry) * header.nfiles);
-  if (!fwrite(&header.nfiles, sizeof(header.nfiles), 1, hog_fp)) {
-    delete[] table;
-    fclose(hog_fp);
-    strcpy(hogerr_filename, hogname);
-    return HOGMAKER_OUTFILE;
-  }
-  if (!fwrite(&header.file_data_offset, sizeof(header.file_data_offset), 1, hog_fp)) {
-    delete[] table;
-    fclose(hog_fp);
-    strcpy(hogerr_filename, hogname);
-    return HOGMAKER_OUTFILE;
-  }
-  // write out filler
-  for (i = 0; i < HOG_HDR_SIZE - sizeof(tHogHeader); i++)
-    if (!fwrite(&filler, sizeof(ubyte), 1, hog_fp)) {
-      delete[] table;
-      fclose(hog_fp);
-      strcpy(hogerr_filename, hogname);
-      return HOGMAKER_OUTFILE;
-    }
-  // save file position of index table and write out dummy table
-  table_pos = strlen(HOG_TAG_STR) + HOG_HDR_SIZE;
-  memset(&table[0], 0, sizeof(table[0]));
-  for (i = 0; i < header.nfiles; i++) {
-    if (!WRITE_FILE_ENTRY(hog_fp, &table[0])) {
-      delete[] table;
-      fclose(hog_fp);
-      strcpy(hogerr_filename, hogname);
-      return HOGMAKER_OUTFILE;
-    }
-  }
-  // write files (& build index)
-  for (i = 0; i < header.nfiles; i++) {
-    FILE *ifp;
-#if defined(__LINUX__) || defined(MACINTOSH)
-    struct stat mystat;
-#else
-    struct _stat32 mystat;
-#endif
-
-    ifp = fopen(filenames[i], "rb");
-    if (ifp == NULL) {
-      delete[] table;
-      fclose(hog_fp);
-      strcpy(hogerr_filename, filenames[i]);
-      return HOGMAKER_INFILE;
-    }
-    // JEFF: make call to ddio lib, linux doesn't have _splitpath
-    //_splitpath(filenames[i],NULL,NULL,table[i].name,ext);
-    ddio_SplitPath(filenames[i], NULL, table[i].name, ext);
-    _fstat32(fileno(ifp), &mystat);
-
-    strcat(table[i].name, ext);
-    table[i].flags = 0;
-#ifdef MACINTOSH
-    table[i].len = mystat.st_size;
-#else
-    table[i].len = _filelength(fileno(ifp));
-#endif
-    table[i].timestamp = mystat.st_mtime;
-    if (!FileCopy(hog_fp, ifp, table[i].len)) {
-      delete[] table;
-      fclose(hog_fp);
-      strcpy(hogerr_filename, filenames[i]);
-      return HOGMAKER_COPY;
-    }
-    fclose(ifp);
-  }
-  // now write the real index
-  fseek(hog_fp, table_pos, SEEK_SET);
-  for (i = 0; i < header.nfiles; i++) {
-    if (!WRITE_FILE_ENTRY(hog_fp, &table[i])) {
-      delete[] table;
-      fclose(hog_fp);
-      strcpy(hogerr_filename, hogname);
-      return HOGMAKER_OUTFILE;
-    }
-  }
-  //	cleanup
-  fclose(hog_fp);
-  delete[] table;
-  return HOGMAKER_OK;
-}
-// A modifed version of NewHogFile()
+// A modified version of NewHogFile()
 // This one also takes a pointer to a function that will perform
 // progress updates (for the user)
-int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *)) {
+int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *)) {
   unsigned i;
   int table_pos;
   FILE *hog_fp;
@@ -301,7 +184,7 @@ int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, vo
   tHogFileEntry *table;
   char ext[_MAX_EXT];
   hogerr_filename[0] = '\0';
-  //	allocate file table
+  // allocate file table
   if (nfiles <= 0)
     return HOGMAKER_ERROR;
   table = new tHogFileEntry[nfiles];
@@ -390,12 +273,13 @@ int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, vo
       return HOGMAKER_COPY;
     }
     fclose(ifp);
-    // Setup the update message and send it
-    char msg[256];
-    int ipct = int(100.0 * (double(i) / double(header.nfiles)));
-    sprintf(msg, "Creating Hog File... (%d%% done)", ipct);
-    if (UpdateFunction != NULL)
+    if (UpdateFunction != nullptr) {
+      // Setup the update message and send it
+      char msg[256];
+      int ipct = int(100.0 * (double(i) / double(header.nfiles)));
+      sprintf(msg, "Creating Hog File... (%d%% done)", ipct);
       UpdateFunction(msg);
+    }
   }
   // now write the real index
   fseek(hog_fp, table_pos, SEEK_SET);
@@ -410,10 +294,11 @@ int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, vo
   // cleanup
   fclose(hog_fp);
   delete[] table;
-  // Setup the update message and send it
-  char msg[256];
-  sprintf(msg, "Done Creating Hog File.");
-  if (UpdateFunction != NULL)
+  if (UpdateFunction != nullptr) {
+    // Setup the update message and send it
+    char msg[256];
+    sprintf(msg, "Done Creating Hog File.");
     UpdateFunction(msg);
+  }
   return HOGMAKER_OK;
 }

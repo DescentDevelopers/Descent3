@@ -17,6 +17,7 @@
 #include <dirent.h>
 #define _GNU_SOURCE
 #include <fnmatch.h>
+#include "cfile/hogfile.h"
 #endif
 
 #include "SDL.h"
@@ -312,8 +313,6 @@ void StartDedicatedServer();
 
 static void hogfileRefresh(const char *x) { printf(" - %s\n", x); } // hogfileRefresh
 
-int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *));
-
 // hack of the century.
 static void buildNewHogFromFileList(char *fileName) {
   setbuf(stdout, NULL);
@@ -404,7 +403,7 @@ static void buildNewHogFromFileList(char *fileName) {
     }   // for
   } while (swapped);
 
-  CreateNewHogFile("new.hog", i, (const char **)files, (void (*)(char *))hogfileRefresh);
+  NewHogFile("new.hog", i, (const char **)files, (void (*)(char *))hogfileRefresh);
 } // buildNewHogFileFromList
 
 #endif

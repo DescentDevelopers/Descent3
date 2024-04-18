@@ -74,13 +74,11 @@ enum HogErrors {
 // Used to return filenames involved in a NewHogFile() error
 extern char hogerr_filename[PSPATHNAME_LEN];
 
-int NewHogFile(const char *hogname, int nfiles, const char **filenames);
+int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *) = nullptr);
 bool ReadHogHeader(FILE *fp, tHogHeader *header);
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry);
 bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry);
 bool FileCopy(FILE *ofp, FILE *ifp, int length);
-
-int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *));
 
 // returns hog cfile info, using a library handle opened via cf_OpenLibrary.
 bool cf_ReadHogFileEntry(int library, const char *filename, tHogFileEntry *entry, int *fileoffset);
