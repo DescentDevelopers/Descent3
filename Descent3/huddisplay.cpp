@@ -580,10 +580,10 @@ void RenderHUDAfterburner(tHUDItem *item) {
     RenderHUDQuad(item->x + item->xa, item->y + item->ya, img_burn_w, img_h, 0, 0, val, 1, HUD_resources.afterburn_bmp,
                   item->alpha, item->saturation_count);
 
-    sprintf(str, "%d%%", (int)(val * 100.0f));
+    snprintf(str, sizeof(str), "%d%%", (int)(val * 100.0f));
     RenderHUDText(item->color, item->alpha, item->saturation_count, item->x + BURNER_NUM_X, item->y, str);
   } else if (item->stat & STAT_SPECIAL) {
-    sprintf(str, "%d%%", (int)(val * 100.0f));
+    snprintf(str, sizeof(str), "%d%%", (int)(val * 100.0f));
     RenderHUDText(item->color, item->alpha, item->saturation_count, item->x, item->y, str);
   } else {
     // TEXT VERSION
@@ -607,9 +607,9 @@ void RenderHUDPrimary(tHUDItem *item) {
   if (wb->ammo_usage) {
     int ammo = Players[Player_num].weapon_ammo[index];
     if (ship->fire_flags[index] & SFF_TENTHS)
-      sprintf(ammo_string, "%d.%d", ammo / 10, ammo % 10);
+      snprintf(ammo_string, sizeof(ammo_string), "%d.%d", ammo / 10, ammo % 10);
     else
-      sprintf(ammo_string, "%d", ammo);
+      snprintf(ammo_string, sizeof(ammo_string), "%d", ammo);
   }
 
   if (item->stat & STAT_GRAPHICAL) {
@@ -950,7 +950,7 @@ void RenderHUDScore(tHUDItem *item) {
     }
   }
 
-  sprintf(buf, "%s: %d ", TXT_SCORE, Players[Player_num].score);
+  snprintf(buf, sizeof(buf), "%s: %d ", TXT_SCORE, Players[Player_num].score);
 
   win_w = (Max_window_w - Game_window_w) * (Hud_aspect_x);
   //	if (Game_video_resolution==RES_512X384) { win_w = win_w + 10; }
@@ -960,7 +960,7 @@ void RenderHUDScore(tHUDItem *item) {
 
   if (Score_added_timer > 0.0) {
     int text_height = grfont_GetHeight(HUD_FONT);
-    sprintf(buf, "%d   ", Score_added);
+    snprintf(buf, sizeof(buf), "%d   ", Score_added);
     w = RenderHUDGetTextLineWidth(buf); // * win_w/Game_window_w;
     ubyte alpha = std::min<float>(HUD_ALPHA, HUD_ALPHA * 4 * Score_added_timer / SCORE_ADDED_TIME);
     RenderHUDText(item->color, alpha, 0, item->x - w - win_w, item->y + text_height, buf);
@@ -990,7 +990,7 @@ void RenderHUDTimer(tHUDItem *item) {
   min = time / 60;
   secs = time - (60 * min);
 
-  sprintf(buf, "T-%d:%02d", min, secs);
+  snprintf(buf, sizeof(buf), "T-%d:%02d", min, secs);
 
   int h = grfont_GetHeight(HUD_FONT);
   RenderHUDTextFlagsNoFormat(HUDTEXT_CENTERED, item->color, HUD_ALPHA, 0, 0, h * 4, buf);

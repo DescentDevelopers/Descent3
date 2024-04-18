@@ -655,15 +655,15 @@ void MainLoop() {
     cfp = cfopen(fpsfile, "wt");
     if (cfp) {
       char szline[200];
-      sprintf(szline, "%.2f Descent3 v%d.%d", gamegauge_total_frames / gamegauge_total_time, (int)Program_version.major,
-              (int)Program_version.minor);
+      snprintf(szline, sizeof(szline), "%.2f Descent3 v%d.%d", gamegauge_total_frames / gamegauge_total_time,
+               (int)Program_version.major, (int)Program_version.minor);
       cf_WriteString(cfp, szline);
-      sprintf(szline, "%d Min", min_one_second);
+      snprintf(szline, sizeof(szline), "%d Min", min_one_second);
       cf_WriteString(cfp, szline);
-      sprintf(szline, "%d Max", max_one_second);
+      snprintf(szline, sizeof(szline), "%d Max", max_one_second);
       cf_WriteString(cfp, szline);
       for (int b = 1; ((b < GAMEGAUGE_MAX_LOG) && (gamegauge_fpslog[b])); b++) {
-        sprintf(szline, "%d Second %d", gamegauge_fpslog[b], b);
+        snprintf(szline, sizeof(szline), "%d Second %d", gamegauge_fpslog[b], b);
         cf_WriteString(cfp, szline);
       }
 
@@ -826,7 +826,7 @@ char *GetCDVolume(int cd_num) {
       strcpy(message_txt, TXT_CDPROMPT);
       message_txt[strlen(message_txt) - 2] = '\0';
 #else
-      sprintf(message_txt, TXT_CDPROMPT, cd_num);
+      snprintf(message_txt, sizeof(message_txt), TXT_CDPROMPT, cd_num);
 #endif
       // We need a background drawn!
 #if defined(LINUX)

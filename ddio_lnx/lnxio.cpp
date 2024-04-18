@@ -91,7 +91,7 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   va_list arglist;
 
   va_start(arglist, fmt);
-  vsprintf(buf, fmt, arglist);
+  vsnprintf(buf, sizeof(buf), fmt, arglist);
   va_end(arglist);
 
   mprintf((0, "%s\n", buf));

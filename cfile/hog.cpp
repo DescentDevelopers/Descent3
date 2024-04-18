@@ -393,7 +393,7 @@ int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, vo
     // Setup the update message and send it
     char msg[256];
     int ipct = int(100.0 * (double(i) / double(header.nfiles)));
-    sprintf(msg, "Creating Hog File... (%d%% done)", ipct);
+    snprintf(msg, sizeof(msg), "Creating Hog File... (%d%% done)", ipct);
     if (UpdateFunction != NULL)
       UpdateFunction(msg);
   }
@@ -412,7 +412,7 @@ int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, vo
   delete[] table;
   // Setup the update message and send it
   char msg[256];
-  sprintf(msg, "Done Creating Hog File.");
+  snprintf(msg, sizeof(msg), "Done Creating Hog File.");
   if (UpdateFunction != NULL)
     UpdateFunction(msg);
   return HOGMAKER_OK;

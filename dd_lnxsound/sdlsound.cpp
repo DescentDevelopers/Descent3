@@ -772,7 +772,7 @@ void lnxsound_ErrorText(char *fmt, ...) {
   char buffer[384];
   va_list args;
   va_start(args, fmt);
-  vsprintf(buffer, fmt, args);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
   va_end(args);
 
   ll_sound_ptr->ErrorText(buffer);

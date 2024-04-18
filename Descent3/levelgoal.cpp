@@ -181,7 +181,7 @@ void lgoal::GoalComplete(int handle, bool announce) {
     int y = Game_window_h / 4;
     //		AddPersistentHUDMessage(GOAL_MESSAGE_COLOR,HUD_MSG_PERSISTENT_CENTER,y,GOAL_MESSAGE_TIME,m_completion_message);
     char message[200];
-    sprintf(message, "%s %s", TXT_COMPLETED_HUD, m_name);
+    snprintf(message, sizeof(message), "%s %s", TXT_COMPLETED_HUD, m_name);
     if (Demo_flags == DF_RECORDING) {
       DemoWritePersistantHUDMessage(GOAL_MESSAGE_COLOR, HUD_MSG_PERSISTENT_CENTER, GOAL_MESSAGE_TIME, GOAL_MESSAGE_TIME,
                                     HPF_FADEOUT + HPF_FREESPACE_DRAW, SOUND_GOAL_COMPLETE, message);

@@ -177,10 +177,10 @@ int SerialCheck(void) {
 
 #ifdef DEMO
   char ver[10];
-  sprintf(ver, "Beta %d.%d.%d", D3_MAJORVER, D3_MINORVER, D3_BUILD);
-  sprintf(buffer, regstr, ver, name, d3_serialnum);
+  snprintf(ver, sizeof(ver), "Beta %d.%d.%d", D3_MAJORVER, D3_MINORVER, D3_BUILD);
+  snprintf(buffer, sizeof(buffer), regstr, ver, name, d3_serialnum);
 #else
-  sprintf(buffer, regstr, name, d3_serialnum);
+  snprintf(buffer, sizeof(buffer), regstr, name, d3_serialnum);
 #endif
 
   Debug_MessageBox(OSMBOX_OK, PRODUCT_NAME, buffer);

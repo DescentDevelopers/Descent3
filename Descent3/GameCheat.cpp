@@ -307,7 +307,7 @@ char *oldjcrypt(char *plainstring) {
 // Tells others that we are cheating
 void SendCheaterAttemptText() {
   char str[255];
-  sprintf(str, TXT_CHEATATTEMPT, Players[Player_num].callsign);
+  snprintf(str, sizeof(str), TXT_CHEATATTEMPT, Players[Player_num].callsign);
 
   if (Netgame.local_role == LR_SERVER)
     MultiSendMessageFromServer(GR_RGB(255, 0, 0), str);

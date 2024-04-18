@@ -988,11 +988,11 @@ void mng_DisplayLockList(char *name) {
   }
 
   // Make a large string with all the info in it
-  sprintf(str, "User %s has the following pages locked:\n\n", TableUser);
+  snprintf(str, sizeof(str), "User %s has the following pages locked:\n\n", TableUser);
   for (i = 0; i < num; i++) {
-    sprintf(temp, "%s:%s", PageNames[list[i].pagetype], list[i].name);
-    strcat(str, temp);
-    strcat(str, "\n");
+    snprintf(temp, sizeof(temp), "%s:%s", PageNames[list[i].pagetype], list[i].name);
+    strncat(str, temp, sizeof(str) - strlen(str) - 1);
+    strncat(str, "\n", sizeof(str) - strlen(str) - 1);
     length += strlen(temp);
     if (length > 5000 - 100)
       break;
@@ -1626,11 +1626,11 @@ void mng_TransferPages() {
   cfclose(outfile);
 
   if (remove(TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem deleting the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     goto done;
   }
   if (rename(TempTableLockFilename, TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem renaming the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     goto done;
   }

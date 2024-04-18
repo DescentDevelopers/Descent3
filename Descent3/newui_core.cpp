@@ -2527,16 +2527,16 @@ void newuiSlider::OnDraw() {
 
     switch (m_unit_settings.type) {
     case SLIDER_UNITS_INT:
-      sprintf(str, "%d",
-              m_unit_settings.min_val.i +
-                  (int)floor((m_unit_settings.max_val.i - m_unit_settings.min_val.i) * percent_full + 0.5f));
+      snprintf(str, sizeof(str), "%d",
+               m_unit_settings.min_val.i +
+                   (int)floor((m_unit_settings.max_val.i - m_unit_settings.min_val.i) * percent_full + 0.5f));
       break;
     case SLIDER_UNITS_FLOAT:
-      sprintf(str, "%.2f",
-              m_unit_settings.min_val.f + (m_unit_settings.max_val.f - m_unit_settings.min_val.f) * percent_full);
+      snprintf(str, sizeof(str), "%.2f",
+               m_unit_settings.min_val.f + (m_unit_settings.max_val.f - m_unit_settings.min_val.f) * percent_full);
       break;
     case SLIDER_UNITS_PERCENT:
-      sprintf(str, "%d%%", (int)((percent_full * 100.0f) + 0.5f));
+      snprintf(str, sizeof(str), "%d%%", (int)((percent_full * 100.0f) + 0.5f));
       break;
     default:
       Int3();

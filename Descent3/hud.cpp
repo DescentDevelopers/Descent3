@@ -1819,7 +1819,7 @@ void InitReticle(int primary_slots, int secondary_slots) {
     char filename[PSFILENAME_LEN + 1];
 
     if (Reticle_image_names[i][0] && primary_slots >= 0) {
-      sprintf(filename, "%s%s", Reticle_prefix, Reticle_image_names[i][0]);
+      snprintf(filename, sizeof(filename), "%s%s", Reticle_prefix, Reticle_image_names[i][0]);
       Reticle_elem_array[i].bmp_off = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
       if (Reticle_elem_array[i].bmp_off <= BAD_BITMAP_HANDLE) {
         Reticle_elem_array[i].bmp_off = -1;
@@ -1830,7 +1830,7 @@ void InitReticle(int primary_slots, int secondary_slots) {
     }
 
     if (Reticle_image_names[i][1] && primary_slots >= 0) {
-      sprintf(filename, "%s%s", Reticle_prefix, Reticle_image_names[i][1]);
+      snprintf(filename, sizeof(filename), "%s%s", Reticle_prefix, Reticle_image_names[i][1]);
       Reticle_elem_array[i].bmp_on = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
       if (Reticle_elem_array[i].bmp_on <= BAD_BITMAP_HANDLE) {
         mprintf((0, "Unable to load %s reticle image.\n", filename));
@@ -2063,7 +2063,7 @@ void RenderZoomReticle() {
 
   RenderHUDTextFlags(HUDTEXT_CENTERED, GR_RED, HUD_ALPHA, 0, 10, cy - 50, TXT_HUD_ZOOM);
 
-  sprintf(str, TXT_HUD_ZOOM_UNITS, Players[Player_num].zoom_distance);
+  snprintf(str, sizeof(str), TXT_HUD_ZOOM_UNITS, Players[Player_num].zoom_distance);
 
   RenderHUDTextFlags(HUDTEXT_CENTERED, GR_RED, HUD_ALPHA, 0, 10, cy - 50 + text_height, str);
   grtext_Flush();

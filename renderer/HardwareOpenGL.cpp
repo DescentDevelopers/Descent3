@@ -637,7 +637,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
     if (success == false) {
       char buffer[512];
-      sprintf(buffer, "Failed to load library [%s].\n", gl_library);
+      snprintf(buffer, sizeof(buffer), "Failed to load library [%s].\n", gl_library);
       fprintf(stderr, "%s", buffer);
       rend_SetErrorMessage(buffer);
       return 0;

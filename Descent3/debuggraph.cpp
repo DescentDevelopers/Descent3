@@ -495,7 +495,7 @@ void DebugGraph_DisplayOptions(void) {
       }
     }
 
-    sprintf(buffer, "%s (%s)", node->name, GraphColors[i].color_name);
+    snprintf(buffer, sizeof(buffer), "%s (%s)", node->name, GraphColors[i].color_name);
     bool_values[i] = sheet->AddLongCheckBox(buffer);
     if (bool_values[i]) {
       *bool_values[i] = (bool)((graph_mask & bit) != 0);

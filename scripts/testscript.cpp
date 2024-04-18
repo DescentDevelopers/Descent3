@@ -218,7 +218,7 @@ short ShieldOrb::CallEvent(int event, tOSIRISEventInfo *data) {
 
           mo.slot = mo.id;
           mo.color = GR_RGB(0, 255, 0);
-          sprintf(mo.message, "Shields boosted to %d", (int)mo.shields);
+          snprintf(mo.message, sizeof(mo.message), "Shields boosted to %d", (int)mo.shields);
           MSafe_CallFunction(MSAFE_MISC_HUD_MESSAGE, &mo);
           called = true;
         }
@@ -263,7 +263,7 @@ short ShieldOrb::CallEvent(int event, tOSIRISEventInfo *data) {
     MSafe_GetValue(MSAFE_OBJECT_ID, &mo);
     mo.slot = mo.id;
     mo.color = GR_RGB(0, 255, 0);
-    sprintf(mo.message, "TIMER: HIT COUNT %d", (info) ? info->hitcount : -1);
+    snprintf(mo.message, sizeof(mo.message), "TIMER: HIT COUNT %d", (info) ? info->hitcount : -1);
     MSafe_CallFunction(MSAFE_MISC_HUD_MESSAGE, &mo);
   } break;
   }
@@ -295,7 +295,7 @@ short EnergyOrb::CallEvent(int event, tOSIRISEventInfo *data) {
 
           mo.slot = mo.id;
           mo.color = GR_RGB(0, 255, 0);
-          sprintf(mo.message, "Energy boosted to %d", (int)mo.energy);
+          snprintf(mo.message, sizeof(mo.message), "Energy boosted to %d", (int)mo.energy);
           MSafe_CallFunction(MSAFE_MISC_HUD_MESSAGE, &mo);
           called = true;
         }

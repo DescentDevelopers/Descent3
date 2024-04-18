@@ -189,7 +189,7 @@ void CRegistry::ExportKey(tKey *key, FILE *file) {
   curr = next = key->records;
   // write out name
   char buffer[258];
-  sprintf(buffer, "[%s]\n", key->name);
+  snprintf(buffer, sizeof(buffer), "[%s]\n", key->name);
   fputs(buffer, file);
   while (curr) {
     next = curr->next;
@@ -205,11 +205,11 @@ void CRegistry::ExportRecord(tRecord *record, FILE *file) {
   switch (record->type) {
   case REGT_STRING: {
     st = (char *)record->data;
-    sprintf(buffer, "\"%s\"=\"%s\"\n", record->name, st);
+    snprintf(buffer, sizeof(buffer), "\"%s\"=\"%s\"\n", record->name, st);
   } break;
   case REGT_DWORD: {
     dw = (int *)record->data;
-    sprintf(buffer, "\"%s\"=dword:%X\n", record->name, *dw);
+    snprintf(buffer, sizeof(buffer), "\"%s\"=dword:%X\n", record->name, *dw);
   } break;
   };
   fputs(buffer, file);

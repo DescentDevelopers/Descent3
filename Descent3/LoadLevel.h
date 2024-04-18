@@ -729,7 +729,7 @@ inline char *GetCurrentSumString() {
   char bytestr[10] = "";
   // Do level checksum
   for (int i = 0; i < 16; i++) {
-    sprintf(bytestr, "%.2x", digest[i]);
+    snprintf(bytestr, sizeof(bytestr), "%.2x", digest[i]);
     strcat(output_buf, bytestr);
   }
   MD5::Destroy(checksum);

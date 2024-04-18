@@ -2465,12 +2465,12 @@ void MultiDoRequestWorldStates(ubyte *data) {
   char gotstr[50] = "";
   for (int j = 0; j < 16; j++) {
     char bstr[10];
-    sprintf(bstr, "%.2x", rxdigest[j] & 0xff);
+    snprintf(bstr, sizeof(bstr), "%.2x", rxdigest[j] & 0xff);
     strcat(gotstr, bstr);
-    sprintf(bstr, "%.2x", NetPlayers[slot].digest[j] & 0xff);
+    snprintf(bstr, sizeof(bstr), "%.2x", NetPlayers[slot].digest[j] & 0xff);
     strcat(expectedstr, bstr);
   }
-  sprintf(dbgmsg, "Expected %s for the digest, got %s for player %d\n", expectedstr, gotstr, slot);
+  snprintf(dbgmsg, sizeof(dbgmsg), "Expected %s for the digest, got %s for player %d\n", expectedstr, gotstr, slot);
 
   for (int i = 0; i < 16; i++) {
     // We got the digest from the player previously. Now see if it matches.
@@ -7620,7 +7620,7 @@ void MultiAskForFile(ushort file_id, ushort file_who, ushort who) {
       char file[_MAX_PATH];
 
       ddio_SplitPath(p, path, file, ext);
-      sprintf(szcrc, "_%.8x", cf_GetfileCRC(p));
+      snprintf(szcrc, sizeof(szcrc), "_%.8x", cf_GetfileCRC(p));
       // See if the the CRC is already in the filename
       if (strnicmp(szcrc, file + (strlen(file) - 9), 9) != 0) {
         mprintf((0, "Bad CRC on file %s! It must be corrupt! File will not be used, and is being deleted!\n", p));
@@ -7955,12 +7955,13 @@ void MultiSendClientCustomData(int slot, int whoto) {
     if (slot == Player_num) {
       char szcrc[_MAX_PATH];
       ddio_SplitPath(NetPlayers[slot].ship_logo, path, file, ext);
-      sprintf(szcrc, "_%.8x", cf_GetfileCRC(NetPlayers[slot].ship_logo));
+      snprintf(szcrc, sizeof(szcrc), "_%.8x", cf_GetfileCRC(NetPlayers[slot].ship_logo));
       // See if the the CRC is already in the filename
       if (strnicmp(szcrc, file + (strlen(file) - 9), 9) == 0) {
-        sprintf(csum_filename, "%s%s", file, ext);
+        snprintf(csum_filename, sizeof(csum_filename), "%s%s", file, ext);
       } else {
-        sprintf(csum_filename, "%s_%.8x%s", file, cf_GetfileCRC(NetPlayers[slot].ship_logo), ext);
+        snprintf(csum_filename, sizeof(csum_filename), "%s_%.8x%s", file, cf_GetfileCRC(NetPlayers[slot].ship_logo),
+                 ext);
       }
     } else {
       strcpy(csum_filename, NetPlayers[slot].ship_logo);
@@ -7995,12 +7996,12 @@ void MultiSendClientCustomData(int slot, int whoto) {
       if (slot == Player_num) {
         char szcrc[_MAX_PATH];
         ddio_SplitPath(filename, path, file, ext);
-        sprintf(szcrc, "_%.8x", cf_GetfileCRC(filename));
+        snprintf(szcrc, sizeof(szcrc), "_%.8x", cf_GetfileCRC(filename));
         // See if the the CRC is already in the filename
         if (strnicmp(szcrc, file + (strlen(file) - 9), 9) == 0) {
-          sprintf(csum_filename, "%s%s", file, ext);
+          snprintf(csum_filename, sizeof(csum_filename), "%s%s", file, ext);
         } else {
-          sprintf(csum_filename, "%s_%.8x%s", file, cf_GetfileCRC(filename), ext);
+          snprintf(csum_filename, sizeof(csum_filename), "%s_%.8x%s", file, cf_GetfileCRC(filename), ext);
         }
       } else {
         strcpy(csum_filename, filename);

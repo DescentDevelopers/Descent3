@@ -742,9 +742,9 @@ void TCAMDrawMenu() {
   grtext_SetAlpha(250);
   grtext_SetColor(GR_RGB(255, 255, 255));
 
-  sprintf(str, TXT_TCAM_TERRAIN, AM_terrain ? TXT_STRING_OFF : TXT_STRING_ON);
+  snprintf(str, sizeof(str), TXT_TCAM_TERRAIN, AM_terrain ? TXT_STRING_OFF : TXT_STRING_ON);
   grtext_CenteredPrintf(0, AM_tcs->Monitor_coords[MONITOR_MAIN].bottom - (fontheight * 3) + (fontheight / 2), str);
-  sprintf(str, TXT_TCAM_INSTRUCTIONS);
+  snprintf(str, sizeof(str), "%s", TXT_TCAM_INSTRUCTIONS);
   grtext_CenteredPrintf(0, AM_tcs->Monitor_coords[MONITOR_MAIN].bottom - (fontheight * 2) + (fontheight / 2), str);
 
   // Use HUD font for part that overlays the 3D
@@ -752,14 +752,14 @@ void TCAMDrawMenu() {
   grtext_SetFont(HUD_FONT);
   grtext_SetColor(HUD_COLOR);
 
-  sprintf(str, "%s", Level_info.name);
+  snprintf(str, sizeof(str), "%s", Level_info.name);
   grtext_CenteredPrintf(0, AM_tcs->Monitor_coords[MONITOR_MAIN].top + (fontheight / 2), str);
 
   if (AM_current_marker != -1) {
     int markernum = (Game_mode & GM_MULTI) ? (Player_num * 2 + AM_current_marker) : AM_current_marker;
-    sprintf(str, TXT_VIEW_MARKER, AM_current_marker + 1);
-    strcat(str, ": ");
-    strcat(str, MarkerMessages[markernum]);
+    snprintf(str, sizeof(str), TXT_VIEW_MARKER, AM_current_marker + 1);
+    strncat(str, ": ", sizeof(str) - strlen(str) - 1);
+    strncat(str, MarkerMessages[markernum], sizeof(str) - strlen(str) - 1);
     grtext_CenteredPrintf(0, AM_tcs->Monitor_coords[MONITOR_MAIN].top + (fontheight / 2) + fontheight, str);
   }
 

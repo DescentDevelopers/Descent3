@@ -813,7 +813,7 @@ void aUpdateBypassConnDisplay(char *text, int level) {
   msafe_struct mstruct;
 
   mstruct.color = GR_RGB(0, 255, 0);
-  sprintf(mstruct.message, text, level);
+  snprintf(mstruct.message, sizeof(mstruct.message), text, level);
   MSafe_CallFunction(MSAFE_MISC_UPDATE_HUD_ITEM, &mstruct);
 }
 

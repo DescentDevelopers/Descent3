@@ -1089,7 +1089,7 @@ void DMFCBase::OnGetTokenString(char *src, char *dest, int dest_size) {
     // energy
     char buffer[64];
     int mypnum = GetPlayerNum();
-    sprintf(buffer, "%.0f", Players[mypnum].energy);
+    snprintf(buffer, sizeof(buffer), "%.0f", Players[mypnum].energy);
     strncpy(dest, buffer, dest_size - 1);
     dest[dest_size - 1] = '\0';
     return;
@@ -1099,7 +1099,7 @@ void DMFCBase::OnGetTokenString(char *src, char *dest, int dest_size) {
     // shields
     char buffer[64];
     int mypnum = GetPlayerNum();
-    sprintf(buffer, "%.0f", Objects[Players[mypnum].objnum].shields);
+    snprintf(buffer, sizeof(buffer), "%.0f", Objects[Players[mypnum].objnum].shields);
     strncpy(dest, buffer, dest_size - 1);
     dest[dest_size - 1] = '\0';
     return;

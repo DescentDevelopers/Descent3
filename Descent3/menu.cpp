@@ -1379,12 +1379,12 @@ int DisplayLevelWarpDlg(int max_level) {
   if (max_level != -1) {
     hwnd.Create(TXT_LEVELSELECT, MSGBOX_OKCANCEL);
     highest_allowed = max_level;
-    sprintf(buffer, TXT_LEVELSELECTB, highest_allowed);
+    snprintf(buffer, sizeof(buffer), TXT_LEVELSELECTB, highest_allowed);
   } else {
     // level warp
     hwnd.Create(TXT_LEVELWARP, MSGBOX_OKCANCEL);
     highest_allowed = Current_mission.num_levels;
-    sprintf(buffer, TXT_LEVELWARPB, Current_mission.num_levels);
+    snprintf(buffer, sizeof(buffer), TXT_LEVELWARPB, Current_mission.num_levels);
   }
   sheet->NewGroup(buffer, 0, 0);
   input_text = sheet->AddEditBox(NULL, 4, 64, IDV_QUIT, UIED_NUMBERS);
@@ -1396,7 +1396,7 @@ redo_level_choose:
   if (res == UID_OK || res == IDV_QUIT) {
     chosen_level = atoi(input_text);
     if (chosen_level < 1 || chosen_level > highest_allowed) {
-      sprintf(buffer, TXT_CHOOSELEVEL, highest_allowed);
+      snprintf(buffer, sizeof(buffer), TXT_CHOOSELEVEL, highest_allowed);
       DoMessageBox(TXT_ERROR, buffer, MSGBOX_OK);
       goto redo_level_choose;
     }

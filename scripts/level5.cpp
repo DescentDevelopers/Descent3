@@ -666,7 +666,7 @@ void aCustomReactorDisplayUpdate() {
 
   if (update) {
     mstruct.color = GR_RGB(255, 0, 0);
-    sprintf(mstruct.message, Reactor_text);
+    snprintf(mstruct.message, sizeof(mstruct.message), "%s", Reactor_text);
     char *t = mstruct.message + strlen(mstruct.message);
     for (i = 0; i < NUM_REACTORS; i++)
       t += sprintf(t, "\n  %d: %d%%", i + 1, Reactor_shields_percent[i]);

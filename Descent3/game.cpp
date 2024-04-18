@@ -857,7 +857,7 @@ bool InitGameScript() {
     //@@		char d3xname[255];
     char dllname[255];
 
-    sprintf(dllname, "%s", Gamemode_info.scriptname);
+    snprintf(dllname, sizeof(dllname), "%s", Gamemode_info.scriptname);
 
     if (!LoadGameDLL(dllname, Gamemode_info.requested_num_teams)) {
       if (!Dedicated_server) {
@@ -1309,7 +1309,7 @@ void DoScreenshot() {
   // Find a valid filename
   count = 1;
   while (!done) {
-    sprintf(str, "Screenshot%.3d.tga", count);
+    snprintf(str, sizeof(str), "Screenshot%.3d.tga", count);
     ddio_MakePath(filename, Base_directory, str, NULL);
     infile = (CFILE *)cfopen(filename, "rb");
     if (infile == NULL) {

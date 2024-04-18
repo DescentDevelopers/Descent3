@@ -147,7 +147,7 @@ void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_si
   }
   tPlayerStat *stat = (tPlayerStat *)pr->user_info;
 
-  sprintf(buffer, "%d", stat->Score[DSTAT_LEVEL]);
+  snprintf(buffer, buffer_size, "%d", stat->Score[DSTAT_LEVEL]);
 }
 
 // This function gets called by the game when it wants to learn some info about the game
@@ -636,7 +636,7 @@ void SaveStatsToFile(char *filename) {
 
   sprintf(buffer,TXT_SAVE_HEADERB);
   DLLcf_WriteString(file,buffer);
-  sprintf(buffer,"-----------------------------------------------------------------------------------");
+  strcpy(buffer,"-----------------------------------------------------------------------------------");
   DLLcf_WriteString(file,buffer);
 
 

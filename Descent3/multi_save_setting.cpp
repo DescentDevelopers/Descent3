@@ -63,45 +63,46 @@ int MultiSaveSettings(char *filename) {
   cf = cfopen(filename, "wt");
   if (!cf)
     return 0;
-  sprintf(szoutput, "NAME\t%s", Netgame.name);
+  snprintf(szoutput, sizeof(szoutput), "NAME\t%s", Netgame.name);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "MISSION\t%s", Netgame.mission);
+  snprintf(szoutput, sizeof(szoutput), "MISSION\t%s", Netgame.mission);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "SCRIPT\t%s", Netgame.scriptname);
+  snprintf(szoutput, sizeof(szoutput), "SCRIPT\t%s", Netgame.scriptname);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "PPS\t%d", Netgame.packets_per_second);
+  snprintf(szoutput, sizeof(szoutput), "PPS\t%d", Netgame.packets_per_second);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "PEERPEER\t%s", (Netgame.flags & NF_PEER_PEER) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "PEERPEER\t%s", (Netgame.flags & NF_PEER_PEER) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "PERMISSABLE\t%s", (Netgame.flags & NF_PERMISSABLE) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "PERMISSABLE\t%s", (Netgame.flags & NF_PERMISSABLE) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "RANDOMIZERESPAWN\t%s", (Netgame.flags & NF_RANDOMIZE_RESPAWN) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "RANDOMIZERESPAWN\t%s",
+           (Netgame.flags & NF_RANDOMIZE_RESPAWN) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "ROTVEL\t%s", (Netgame.flags & NF_SENDROTVEL) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "ROTVEL\t%s", (Netgame.flags & NF_SENDROTVEL) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "USESMOOTHING\t%s", (Netgame.flags & NF_USE_SMOOTHING) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "USESMOOTHING\t%s", (Netgame.flags & NF_USE_SMOOTHING) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "BRIGHTPLAYERS\t%s", (Netgame.flags & NF_BRIGHT_PLAYERS) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "BRIGHTPLAYERS\t%s", (Netgame.flags & NF_BRIGHT_PLAYERS) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "MAXPLAYERS\t%d", Netgame.max_players);
+  snprintf(szoutput, sizeof(szoutput), "MAXPLAYERS\t%d", Netgame.max_players);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "RESPAWNTIME\t%d", Netgame.respawn_time);
+  snprintf(szoutput, sizeof(szoutput), "RESPAWNTIME\t%d", Netgame.respawn_time);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "KILLGOAL\t%d", Netgame.killgoal);
+  snprintf(szoutput, sizeof(szoutput), "KILLGOAL\t%d", Netgame.killgoal);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "TIMELIMIT\t%d", Netgame.timelimit);
+  snprintf(szoutput, sizeof(szoutput), "TIMELIMIT\t%d", Netgame.timelimit);
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "ACCWEAP\t%s", (Netgame.flags & NF_USE_ACC_WEAP) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "ACCWEAP\t%s", (Netgame.flags & NF_USE_ACC_WEAP) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "MLOOK\t%s", (Netgame.flags & NF_ALLOW_MLOOK) ? "TRUE" : "FALSE");
+  snprintf(szoutput, sizeof(szoutput), "MLOOK\t%s", (Netgame.flags & NF_ALLOW_MLOOK) ? "TRUE" : "FALSE");
   cf_WriteString(cf, szoutput);
-  sprintf(szoutput, "DIFFICULTY\t%d", Netgame.difficulty);
+  snprintf(szoutput, sizeof(szoutput), "DIFFICULTY\t%d", Netgame.difficulty);
   cf_WriteString(cf, szoutput);
 
   for (i = 0; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type == OBJ_POWERUP) {
       if (!Object_info[i].multi_allowed) {
-        sprintf(szoutput, "OBJBAN\t%s", Object_info[i].name);
+        snprintf(szoutput, sizeof(szoutput), "OBJBAN\t%s", Object_info[i].name);
         cf_WriteString(cf, szoutput);
       }
     }
@@ -109,7 +110,7 @@ int MultiSaveSettings(char *filename) {
   for (i = 0; i < MAX_SHIPS; i++) {
     if (Ships[i].used) {
       if (!PlayerIsShipAllowed(0, i)) {
-        sprintf(szoutput, "SHIPBAN\t%s", Ships[i].name);
+        snprintf(szoutput, sizeof(szoutput), "SHIPBAN\t%s", Ships[i].name);
         cf_WriteString(cf, szoutput);
       }
     }

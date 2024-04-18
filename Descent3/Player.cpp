@@ -1187,7 +1187,7 @@ void InitPlayers() {
 
     ASSERT(index >= 0);
     GameTextures[index].bm_handle = 0;
-    sprintf(GameTextures[index].name, "Player %d texture", i);
+    snprintf(GameTextures[index].name, sizeof(GameTextures[index].name), "Player %d texture", i);
     Players[i].custom_texture_handle = index;
   }
   PlayerResetShipPermissions(-1, true);

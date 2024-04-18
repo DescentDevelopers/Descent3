@@ -497,10 +497,11 @@ int MainMultiplayerMenu() {
           }
 
           DLLmprintf((0, "Found game: %s\n", DLLNetwork_games[k].name));
-          sprintf(fmtline, "%.20s\t\x02\x02b%s %.10s\x02\x45%.15s\x02\x63%d\x02\x6d%d/%d\x02\x7e%.3f",
-                  DLLNetwork_games[k].name, server_mode, DLLNetwork_games[k].scriptname,
-                  DLLNetwork_games[k].mission_name, DLLNetwork_games[k].level_num, DLLNetwork_games[k].curr_num_players,
-                  DLLNetwork_games[k].max_num_players, DLLNetwork_games[k].server_response_time);
+          snprintf(fmtline, sizeof(fmtline), "%.20s\t\x02\x02b%s %.10s\x02\x45%.15s\x02\x63%d\x02\x6d%d/%d\x02\x7e%.3f",
+                   DLLNetwork_games[k].name, server_mode, DLLNetwork_games[k].scriptname,
+                   DLLNetwork_games[k].mission_name, DLLNetwork_games[k].level_num,
+                   DLLNetwork_games[k].curr_num_players, DLLNetwork_games[k].max_num_players,
+                   DLLNetwork_games[k].server_response_time);
 
           if (DLLNetwork_games[k].dedicated_server) {
             net_game_txt_items[k] = DLLCreateNewUITextItem(fmtline, GR_WHITE);

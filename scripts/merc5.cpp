@@ -771,7 +771,7 @@ void cFogRegion(int region, float r, float g, float b, float depth) {
   do {
     char room_name[32];
 
-    sprintf(room_name, "%s%c", RegionList[region], (i <= 9) ? (char)('0' + i) : ('A' + i - 10));
+    snprintf(room_name, sizeof(room_name), "%s%c", RegionList[region], (i <= 9) ? (char)('0' + i) : ('A' + i - 10));
     ri = Scrpt_FindRoomName(room_name);
     if (ri >= 0) {
       aRoomSetFog(ri, r, g, b, depth);
@@ -801,7 +801,7 @@ void cChangeFogRegion(int region, float r, float g, float b, float depth, float 
   do {
     char room_name[32];
 
-    sprintf(room_name, "%s%c", RegionList[region], (i <= 9) ? (char)('0' + i) : ('A' + i - 10));
+    snprintf(room_name, sizeof(room_name), "%s%c", RegionList[region], (i <= 9) ? (char)('0' + i) : ('A' + i - 10));
     ri = Scrpt_FindRoomName(room_name);
     if (ri >= 0) {
       aRoomChangeFog(ri, r, g, b, depth, time);
@@ -830,7 +830,7 @@ void cRegionSetLightingFlicker(int state, int region) {
   do {
     char room_name[32];
 
-    sprintf(room_name, "%s%c", RegionList[region], (i <= 9) ? (char)('0' + i) : ('A' + i - 10));
+    snprintf(room_name, sizeof(room_name), "%s%c", RegionList[region], (i <= 9) ? (char)('0' + i) : ('A' + i - 10));
     ri = Scrpt_FindRoomName(room_name);
     if (ri >= 0) {
       aRoomSetLightingFlicker(state, ri);
@@ -1420,7 +1420,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    sprintf(english_filename, "%s.msg", filename);
+    snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
     lang_type = Game_GetLanguage();
     if (lang_type == LANGUAGE_FRENCH)
       strcat(filename, "_FRN");

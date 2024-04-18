@@ -552,7 +552,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
     if (m_cType == MIT_NORMAL) {
       maxx += (x + 10);
     } else {
-      sprintf(checked, "%c ", CHAR_RIGHT_ARROW);
+      snprintf(checked, sizeof(checked), "%c ", CHAR_RIGHT_ARROW);
       // maxx += (x + 10 + (useratio * ((float)DLLRenderHUDGetTextLineWidth(checked))));
       // maxx += (x + 10 + DLLRenderHUDGetTextLineWidth(checked));
       maxx += (x + 10 + DLLgrtext_GetTextLineWidth(checked));
@@ -701,7 +701,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
     if (i == m_iTopIndex && m_iTopIndex > 0) {
       // we need to draw the UP arrow
       char b[2];
-      sprintf(b, "%c", CHAR_UP_ARROW);
+      snprintf(b, sizeof(b), "%c", CHAR_UP_ARROW);
       // DLLRenderHUDText(color,al,0,(maxx-x)/2+x,y,b);
       DLLgrtext_SetColor(color);
       DLLgrtext_SetAlpha(al);
@@ -712,7 +712,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
     if (m_bMoreToScroll && i == (end_index - 1)) {
       // we need to draw the DOWN arrow
       char b[2];
-      sprintf(b, "%c", CHAR_DOWN_ARROW);
+      snprintf(b, sizeof(b), "%c", CHAR_DOWN_ARROW);
       // DLLRenderHUDText(color,al,0,(maxx-x)/2+x,y,b);
       DLLgrtext_SetColor(color);
       DLLgrtext_SetAlpha(al);
@@ -744,11 +744,11 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
             strcpy(buffer, DTXT_NONE);
           } else {
             // do the regular
-            sprintf(buffer, "%s[%d]", basethis->Players[Pnums[i - 1]].callsign, Pnums[i - 1]);
+            snprintf(buffer, sizeof(buffer), "%s[%d]", basethis->Players[Pnums[i - 1]].callsign, Pnums[i - 1]);
           }
         } else {
           // do the regular
-          sprintf(buffer, "%s[%d]", basethis->Players[Pnums[i]].callsign, Pnums[i]);
+          snprintf(buffer, sizeof(buffer), "%s[%d]", basethis->Players[Pnums[i]].callsign, Pnums[i]);
         }
 
         // DLLRenderHUDText(color,al,0,x,y,buffer);
@@ -761,7 +761,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
         if (m_cmInfo.GetItem) {
           char *ptr = (*m_cmInfo.GetItem)(i);
           if (ptr) {
-            sprintf(buffer, "%s", ptr);
+            snprintf(buffer, sizeof(buffer), "%s", ptr);
             // DLLRenderHUDText(color,al,0,x,y,buffer);
             DLLgrtext_SetColor(color);
             DLLgrtext_SetAlpha(al);
@@ -917,7 +917,7 @@ char *GetBannedPlayerString(int index) {
   static char r[MAX_CALLSIGN_SIZE + 8];
   char *ptr = basethis->GetBannedPlayerCallsign(index);
   if (ptr) {
-    sprintf(r, "[%d]%s", index, ptr);
+    snprintf(r, sizeof(r), "[%d]%s", index, ptr);
     return r;
   } else
     return NULL;

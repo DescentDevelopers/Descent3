@@ -449,49 +449,49 @@ void SinglePlayerPostLevelResults() {
   // strcpy(PLRHeader,PLR_success?"Mission Successfull":"Mission Failed");
   strcpy(PLRHeader, PLR_success ? TXT_PLR_MSN_SUCCESS : TXT_PLR_MSN_FAILED);
 
-  sprintf(PLRLevel, "%s", Level_info.name);
-  sprintf(PLRText[curline], "%s", TXT_PLTDIFFICULT);
+  snprintf(PLRLevel, sizeof(PLRLevel), "%s", Level_info.name);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLTDIFFICULT);
   ubyte dif;
   Current_pilot.get_difficulty(&dif);
-  sprintf(PLRVal[curline], "%s", difficulty_levels[dif]);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%s", difficulty_levels[dif]);
   curline++;
   curline++;
 
-  sprintf(PLRText[curline], "%s", TXT_SCORE);
-  sprintf(PLRVal[curline], "%d", Players[Player_num].score);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_SCORE);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%d", Players[Player_num].score);
   curline++;
   curline++;
 
-  sprintf(PLRText[curline], "%s", TXT_PLRTIME);
-  sprintf(PLRVal[curline], "%d:%.2d", PLR.time_min, PLR.time_sec);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLRTIME);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%d:%.2d", PLR.time_min, PLR.time_sec);
   curline++;
   curline++;
 
-  sprintf(PLRText[curline], "%s", TXT_PLRENEMIESKILL);
-  sprintf(PLRVal[curline], "%d", Players[Player_num].num_kills_level);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLRENEMIESKILL);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%d", Players[Player_num].num_kills_level);
   curline++;
   curline++;
 
   if (Players[Player_num].friendly_kills_level) {
-    sprintf(PLRText[curline], "%s", TXT_PLRFRIENDSKILL);
-    sprintf(PLRVal[curline], "%d", Players[Player_num].friendly_kills_level);
+    snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLRFRIENDSKILL);
+    snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%d", Players[Player_num].friendly_kills_level);
     curline++;
     curline++;
   }
 
-  sprintf(PLRText[curline], "%s", TXT_PLRSHIELD);
-  sprintf(PLRVal[curline], "%.0f", PLR.shield_rating);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLRSHIELD);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%.0f", PLR.shield_rating);
   curline++;
-  sprintf(PLRText[curline], "%s", TXT_PLRENERGY);
-  sprintf(PLRVal[curline], "%.0f", PLR.energy_rating);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLRENERGY);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%.0f", PLR.energy_rating);
   curline++;
   curline++;
 
-  sprintf(PLRText[curline], "%s", TXT_NUMDEATHS);
-  sprintf(PLRVal[curline], "%d", Players[Player_num].num_deaths_level);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_NUMDEATHS);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%d", Players[Player_num].num_deaths_level);
   curline++;
-  sprintf(PLRText[curline], "%s", TXT_PLRSAVERESRAT);
-  sprintf(PLRVal[curline], "%d", Times_game_restored);
+  snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLRSAVERESRAT);
+  snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%d", Times_game_restored);
   curline++;
   curline++;
 
@@ -508,7 +508,7 @@ void SinglePlayerPostLevelResults() {
   }
 
   if (has_objectives) {
-    sprintf(PLRText[curline], TXT_OBJECTIVES1);
+    snprintf(PLRText[curline], sizeof(PLRText[curline]), TXT_OBJECTIVES1);
     curline++;
     curline++;
   }
@@ -523,11 +523,11 @@ void SinglePlayerPostLevelResults() {
         char txt[64];
         Level_goals.GoalGetName(j, txt, sizeof(txt));
         if (goal_status & LGF_COMPLETED) {
-          sprintf(PLRText[curline], "   %s:", txt);
-          sprintf(PLRVal[curline], "%s", TXT_COMPLETED);
+          snprintf(PLRText[curline], sizeof(PLRText[curline]), "   %s:", txt);
+          snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%s", TXT_COMPLETED);
         } else {
-          sprintf(PLRText[curline], "   %s:", txt);
-          sprintf(PLRVal[curline], "%s", TXT_NOTCOMPLETEDYET);
+          snprintf(PLRText[curline], sizeof(PLRText[curline]), "   %s:", txt);
+          snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%s", TXT_NOTCOMPLETEDYET);
         }
         curline++;
       }

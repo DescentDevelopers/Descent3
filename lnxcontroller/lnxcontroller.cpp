@@ -156,7 +156,7 @@ const char *lnxgameController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
     ASSERT(bind < NUM_AXISBINDSTRINGS);
     str = Ctltext_AxisBindings[bind];
     if ((ctrl - 2) > 0) {
-      sprintf(binding_text, "J%d:%s", (ctrl - 2) + 1, str);
+      snprintf(binding_text, sizeof(binding_text), "J%d:%s", (ctrl - 2) + 1, str);
     } else {
       return str;
     }
@@ -172,7 +172,7 @@ const char *lnxgameController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
     ASSERT(bind < NUM_BTNBINDSTRINGS);
     str = Ctltext_BtnBindings[bind];
     if ((ctrl - 2) > 0) {
-      sprintf(binding_text, "J%d:%s", (ctrl - 2) + 1, str);
+      snprintf(binding_text, sizeof(binding_text), "J%d:%s", (ctrl - 2) + 1, str);
     } else {
       return str;
     }
@@ -207,13 +207,13 @@ const char *lnxgameController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
       str = Ctltext_PovBindings[0];
     if ((ctrl - 2) > 0) {
       if (pov_n) {
-        sprintf(binding_text, "J%d:%s%d", (ctrl - 2) + 1, str, pov_n);
+        snprintf(binding_text, sizeof(binding_text), "J%d:%s%d", (ctrl - 2) + 1, str, pov_n);
       } else {
-        sprintf(binding_text, "J%d:%s", (ctrl - 2) + 1, str);
+        snprintf(binding_text, sizeof(binding_text), "J%d:%s", (ctrl - 2) + 1, str);
       }
     } else {
       if (pov_n) {
-        sprintf(binding_text, "%s%d", str, pov_n);
+        snprintf(binding_text, sizeof(binding_text), "%s%d", str, pov_n);
       } else {
         return str;
       }

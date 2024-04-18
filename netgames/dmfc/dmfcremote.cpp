@@ -261,10 +261,10 @@ void Remote_ListLogins(void) {
           curlen = 0;
         }
         if (*buffer != '\0') {
-          strcat(buffer, ":");
+          strncat(buffer, ":", sizeof(buffer) - strlen(buffer) - 1);
         }
-        sprintf(temp, "%s[%d]", pr->callsign, prec);
-        strcat(buffer, temp);
+        snprintf(temp, sizeof(temp), "%s[%d]", pr->callsign, prec);
+        strncat(buffer, temp, sizeof(buffer) - strlen(buffer) - 1);
         curlen = strlen(buffer);
       }
     }

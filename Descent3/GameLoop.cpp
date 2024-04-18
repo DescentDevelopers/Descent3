@@ -1073,7 +1073,7 @@ void SelectNextCameraView(int window) {
 
         if (i <= Highest_object_index) {
           char buf[25];
-          sprintf(buf, TXT_VIEW_MARKER, num + 1);
+          snprintf(buf, sizeof(buf), TXT_VIEW_MARKER, num + 1);
 
           CreateSmallView(window, Objects[i].handle, 0, 0.0, D3_DEFAULT_ZOOM, -1, buf);
           Camera_view_mode[window] = CV_MARKER1 + num;
@@ -1546,7 +1546,7 @@ void SendCheaterText() {
   // only send the message for some keys.
   if (Game_mode & GM_MULTI) {
     char str[255];
-    sprintf(str, TXT_CHEATER, Players[Player_num].callsign);
+    snprintf(str, sizeof(str), TXT_CHEATER, Players[Player_num].callsign);
 
     if (Netgame.local_role == LR_SERVER)
       MultiSendMessageFromServer(GR_RGB(255, 0, 0), str);
@@ -1693,7 +1693,7 @@ void ProcessTestKeys(int key) {
             {
                     char dmb_msg[100];
                     mprintf((0,"Current Gametime is %f\n",Gametime));
-                    sprintf(dmb_msg,"Current Gametime is %f\n",Gametime);
+                    snprintf(dmb_msg,sizeof(dmb_msg),"Current Gametime is %f\n",Gametime);
                     AddHUDMessage(dmb_msg);
             }
             break;*/
@@ -2690,13 +2690,13 @@ void GameRenderFrame(void) {
       StartFrame(0, 0, Game_window_w, Game_window_h);
       rend_StartFrame(0, 0, Game_window_w, Game_window_h, 0);
       height = grfont_GetHeight(HUD_FONT) + 1;
-      sprintf(buffer, "Polys=%d", stats.poly_count);
+      snprintf(buffer, sizeof(buffer), "Polys=%d", stats.poly_count);
       RenderHUDText(GR_RGB(255, 40, 40), 255, 1, x, y, buffer);
       y += height;
-      sprintf(buffer, "Verts=%d", stats.vert_count);
+      snprintf(buffer, sizeof(buffer), "Verts=%d", stats.vert_count);
       RenderHUDText(GR_RGB(255, 40, 40), 255, 1, x, y, buffer);
       y += height;
-      sprintf(buffer, "Uploads=%d", stats.texture_uploads);
+      snprintf(buffer, sizeof(buffer), "Uploads=%d", stats.texture_uploads);
       RenderHUDText(GR_RGB(255, 40, 40), 255, 1, x, y, buffer);
       y += height;
       grtext_Flush();

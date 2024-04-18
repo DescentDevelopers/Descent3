@@ -602,7 +602,7 @@ int MainMultiplayerMenu() {
         lists->GetCurrentItem(def, 256);
 
         Database->write("DefaultNetConn", def, strlen(def) + 1);
-        sprintf(fmtmsg, TXT_SETDEFAULT, def);
+        snprintf(fmtmsg, sizeof(fmtmsg), TXT_SETDEFAULT, def);
         DoMessageBox(TXT_MENUMULTIPLAYER, fmtmsg, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
         break;
       }
@@ -623,7 +623,7 @@ void DisplayNetDLLHelp(const char *topic) {
   SetScreenMode(SM_MENU);
 
   // Create our buttons
-  sprintf(str, "%s: %s", TXT_REALHELP, topic);
+  snprintf(str, sizeof(str), "%s: %s", TXT_REALHELP, topic);
 
   menu_wnd.Create(str, 0, 0, HELP_MULTI_MENU_W, HELP_MULTI_MENU_H);
   sheet = menu_wnd.GetSheet();
@@ -781,7 +781,8 @@ void DoMultiAllowed(void) {
   bool shipsallowed[MAX_SHIPS];
   bool objsallowed[MAX_OBJECTS];
   ConfigItem **ship_list = NULL;
-  char *str = (char *)mem_malloc(std::max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3);
+  size_t strMax = std::max(strlen(TXT_ALLOW), strlen(TXT_DISALLOW)) + 3;
+  char *str = (char *)mem_malloc(strMax);
 
   // Create Text Items and Window
   UITextItem cancel_on_text(TXT_CANCEL, UICOL_HOTSPOT_HI);
@@ -790,11 +791,11 @@ void DoMultiAllowed(void) {
   UITextItem exit_on_text(TXT_DONE, UICOL_HOTSPOT_HI);
   UITextItem exit_off_text(TXT_DONE, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "\x18 %s", TXT_ALLOW);
+  snprintf(str, strMax, "\x18 %s", TXT_ALLOW);
   UITextItem add_on(str, UICOL_HOTSPOT_HI);
   UITextItem add_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%s \x1a", TXT_DISALLOW);
+  snprintf(str, strMax, "%s \x1a", TXT_DISALLOW);
   UITextItem remove_on(str, UICOL_HOTSPOT_HI);
   UITextItem remove_off(str, UICOL_HOTSPOT_LO);
   mem_free(str);
@@ -1178,67 +1179,67 @@ void MultiGameOptionsMenu(int alloptions) {
   UIHotspot cs_mode_hs;
   UIHotspot pp_mode_hs;
   UIHotspot pcs_mode_hs;
-  sprintf(str, "%c %s", CHAR_CHECKBOX_ON, TXT_GEN_USEROTVEL);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_ON, TXT_GEN_USEROTVEL);
   UITextItem rot_vel_sel_txt_on(str, UICOL_HOTSPOT_LO);
   UITextItem rot_vel_sel_txt_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_OFF, TXT_GEN_USEROTVEL);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_OFF, TXT_GEN_USEROTVEL);
   UITextItem rot_vel_unsel_txt_on(str, UICOL_HOTSPOT_LO);
   UITextItem rot_vel_unsel_txt_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_ON, TXT_GEN_BRIGHT_PLAYERS);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_ON, TXT_GEN_BRIGHT_PLAYERS);
   UITextItem bright_players_sel_on(str, UICOL_HOTSPOT_LO);
   UITextItem bright_players_sel_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_OFF, TXT_GEN_BRIGHT_PLAYERS);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_OFF, TXT_GEN_BRIGHT_PLAYERS);
   UITextItem bright_players_unsel_on(str, UICOL_HOTSPOT_LO);
   UITextItem bright_players_unsel_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_RADIO_ON, TXT_GEN_CLIENTSERVER);
+  snprintf(str, sizeof(str), "%c %s", CHAR_RADIO_ON, TXT_GEN_CLIENTSERVER);
   UITextItem cs_mode_sel_text_on(str, UICOL_HOTSPOT_HI);
   UITextItem cs_mode_sel_text_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_RADIO_OFF, TXT_GEN_CLIENTSERVER);
+  snprintf(str, sizeof(str), "%c %s", CHAR_RADIO_OFF, TXT_GEN_CLIENTSERVER);
   UITextItem cs_mode_unsel_text_on(str, UICOL_HOTSPOT_HI);
   UITextItem cs_mode_unsel_text_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_RADIO_ON, TXT_GEN_PEERPEER);
+  snprintf(str, sizeof(str), "%c %s", CHAR_RADIO_ON, TXT_GEN_PEERPEER);
   UITextItem pp_mode_sel_text_on(str, UICOL_HOTSPOT_HI);
   UITextItem pp_mode_sel_text_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_RADIO_OFF, TXT_GEN_PEERPEER);
+  snprintf(str, sizeof(str), "%c %s", CHAR_RADIO_OFF, TXT_GEN_PEERPEER);
   UITextItem pp_mode_unsel_text_on(str, UICOL_HOTSPOT_HI);
   UITextItem pp_mode_unsel_text_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_RADIO_ON, TXT_GEN_PERMISSABLE_CS);
+  snprintf(str, sizeof(str), "%c %s", CHAR_RADIO_ON, TXT_GEN_PERMISSABLE_CS);
   UITextItem pcs_mode_sel_text_on(str, UICOL_HOTSPOT_HI);
   UITextItem pcs_mode_sel_text_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, "%c %s", CHAR_RADIO_OFF, TXT_GEN_PERMISSABLE_CS);
+  snprintf(str, sizeof(str), "%c %s", CHAR_RADIO_OFF, TXT_GEN_PERMISSABLE_CS);
   UITextItem pcs_mode_unsel_text_on(str, UICOL_HOTSPOT_HI);
   UITextItem pcs_mode_unsel_text_off(str, UICOL_HOTSPOT_LO);
 
-  sprintf(str, TXT_GEN_ACC_WEAP_COLL, CHAR_CHECKBOX_ON);
+  snprintf(str, sizeof(str), TXT_GEN_ACC_WEAP_COLL, CHAR_CHECKBOX_ON);
   UITextItem acc_weap_coll_sel_off(str, UICOL_HOTSPOT_LO);
   UITextItem acc_weap_coll_sel_on(str, UICOL_HOTSPOT_HI);
 
-  sprintf(str, TXT_GEN_ACC_WEAP_COLL, CHAR_CHECKBOX_OFF);
+  snprintf(str, sizeof(str), TXT_GEN_ACC_WEAP_COLL, CHAR_CHECKBOX_OFF);
   UITextItem acc_weap_coll_unsel_off(str, UICOL_HOTSPOT_LO);
   UITextItem acc_weap_coll_unsel_on(str, UICOL_HOTSPOT_HI);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_ON, TXT_RANDOMPOWERUPRESPAWN);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_ON, TXT_RANDOMPOWERUPRESPAWN);
   UITextItem powerup_respawn_sel_off(str, UICOL_HOTSPOT_LO);
   UITextItem powerup_respawn_sel_on(str, UICOL_HOTSPOT_HI);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_OFF, TXT_RANDOMPOWERUPRESPAWN);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_OFF, TXT_RANDOMPOWERUPRESPAWN);
   UITextItem powerup_respawn_unsel_off(str, UICOL_HOTSPOT_LO);
   UITextItem powerup_respawn_unsel_on(str, UICOL_HOTSPOT_HI);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_ON, TXT_ALLOWMLOOK);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_ON, TXT_ALLOWMLOOK);
   UITextItem mouselookers_sel_off(str, UICOL_HOTSPOT_LO);
   UITextItem mouselookers_sel_on(str, UICOL_HOTSPOT_HI);
 
-  sprintf(str, "%c %s", CHAR_CHECKBOX_OFF, TXT_ALLOWMLOOK);
+  snprintf(str, sizeof(str), "%c %s", CHAR_CHECKBOX_OFF, TXT_ALLOWMLOOK);
   UITextItem mouselookers_unsel_off(str, UICOL_HOTSPOT_LO);
   UITextItem mouselookers_unsel_on(str, UICOL_HOTSPOT_HI);
 
@@ -1431,28 +1432,28 @@ void MultiGameOptionsMenu(int alloptions) {
   // Bash some values
 
   if (Netgame.flags & NF_TIMER)
-    sprintf(str, "%d", Netgame.timelimit);
+    snprintf(str, sizeof(str), "%d", Netgame.timelimit);
   else
-    sprintf(str, "%d", 0);
+    snprintf(str, sizeof(str), "%d", 0);
 
   time_limit_edit.SetText(str);
 
   if (Netgame.flags & NF_KILLGOAL)
-    sprintf(str, "%d", Netgame.killgoal);
+    snprintf(str, sizeof(str), "%d", Netgame.killgoal);
   else
-    sprintf(str, "%d", 0);
+    snprintf(str, sizeof(str), "%d", 0);
 
   kill_goal_edit.SetText(str);
 
-  sprintf(str, "%d", Netgame.packets_per_second);
+  snprintf(str, sizeof(str), "%d", Netgame.packets_per_second);
   pps_edit.SetText(str);
 
-  sprintf(str, "%d", Netgame.max_players);
+  snprintf(str, sizeof(str), "%d", Netgame.max_players);
   if (alloptions) {
     max_players_edit.SetText(str);
   }
 
-  sprintf(str, "%d", Netgame.respawn_time);
+  snprintf(str, sizeof(str), "%d", Netgame.respawn_time);
   respawn_edit.SetText(str);
 
   main_wnd.LoadBackgroundImage("multimain.ogf");
@@ -1728,11 +1729,11 @@ void ShowNetgameInfo(network_game *game) {
 
   sheet->NewGroup(game->name, GAME_INFO_COL1, cury);
   cury += 15;
-  sprintf(str, TXT_GINFO_MISSION, game->mission_name);
+  snprintf(str, sizeof(str), TXT_GINFO_MISSION, game->mission_name);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, TXT_PLAYERS_X_OF_X, game->curr_num_players, game->max_num_players);
+  snprintf(str, sizeof(str), TXT_PLAYERS_X_OF_X, game->curr_num_players, game->max_num_players);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
@@ -1758,7 +1759,7 @@ void ShowNetgameInfo(network_game *game) {
     szdiff = TXT_ERROR;
   }
 
-  sprintf(str, "%s: %s", TXT_PLTDIFFICULT, szdiff);
+  snprintf(str, sizeof(str), "%s: %s", TXT_PLTDIFFICULT, szdiff);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
@@ -1772,35 +1773,35 @@ void ShowNetgameInfo(network_game *game) {
   }
 
   if (game->dedicated_server)
-    sprintf(str, TXT_DEDICATED_SERVER, mode);
+    snprintf(str, sizeof(str), TXT_DEDICATED_SERVER, mode);
   else
-    sprintf(str, TXT_NONDEDICATED_SERVER, mode);
+    snprintf(str, sizeof(str), TXT_NONDEDICATED_SERVER, mode);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, TXT_GINFO_ALLOWMOUSELOOK, (game->flags & NF_ALLOW_MLOOK) ? TXT_DOES : TXT_DOESNOT);
+  snprintf(str, sizeof(str), TXT_GINFO_ALLOWMOUSELOOK, (game->flags & NF_ALLOW_MLOOK) ? TXT_DOES : TXT_DOESNOT);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, "%s: %s", TXT_GEN_BRIGHT_PLAYERS, (game->flags & NF_BRIGHT_PLAYERS) ? TXT_ON : TXT_OFF);
+  snprintf(str, sizeof(str), "%s: %s", TXT_GEN_BRIGHT_PLAYERS, (game->flags & NF_BRIGHT_PLAYERS) ? TXT_ON : TXT_OFF);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, TXT_GINFO_ACC_WEAPCOLL, (game->flags & NF_USE_ACC_WEAP) ? TXT_ON : TXT_OFF);
+  snprintf(str, sizeof(str), TXT_GINFO_ACC_WEAPCOLL, (game->flags & NF_USE_ACC_WEAP) ? TXT_ON : TXT_OFF);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, TXT_USE_ROTATIONAL_VEL, (game->flags & NF_SENDROTVEL) ? TXT_ON : TXT_OFF);
+  snprintf(str, sizeof(str), TXT_USE_ROTATIONAL_VEL, (game->flags & NF_SENDROTVEL) ? TXT_ON : TXT_OFF);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, TXT_RANDOMIZEPOWERUPSPAWN, (game->flags & NF_RANDOMIZE_RESPAWN) ? TXT_ON : TXT_OFF);
+  snprintf(str, sizeof(str), TXT_RANDOMIZEPOWERUPSPAWN, (game->flags & NF_RANDOMIZE_RESPAWN) ? TXT_ON : TXT_OFF);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
   // GAME_INFO_GOTO_NEXT_LINE;
 
-  sprintf(str, "%s:", TXT_GAMEINFOPLAYERSTITLE);
+  snprintf(str, sizeof(str), "%s:", TXT_GAMEINFOPLAYERSTITLE);
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 

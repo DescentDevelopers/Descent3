@@ -118,8 +118,8 @@ extern char LocalCustomSoundsDir[];
 
 extern char TempTableFilename[];
 extern char TempTableLockFilename[];
-extern char ErrorString[];
-extern char InfoString[];
+extern char ErrorString[INFO_STRING_LEN];
+extern char InfoString[INFO_STRING_LEN];
 extern char TableUser[];
 extern char LockerFile[];
 extern char VersionFile[];

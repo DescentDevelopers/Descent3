@@ -145,9 +145,9 @@ void UIComboBox::OnDraw() {
   if (!m_nItems)
     return;
 
-  sprintf(arrowbuf, "%c", UI_UP_ARROW_CHAR);
+  snprintf(arrowbuf, sizeof(arrowbuf), "%c", UI_UP_ARROW_CHAR);
   uarrow = UITextItem(arrowbuf, m_ItemList[m_Index]->get_color(), 255);
-  sprintf(arrowbuf, "%c", UI_DOWN_ARROW_CHAR);
+  snprintf(arrowbuf, sizeof(arrowbuf), "%c", UI_DOWN_ARROW_CHAR);
   darrow = UITextItem(arrowbuf, m_ItemList[m_Index]->get_color(), 255);
 
   ui_SetTextClip(m_CX, m_CY, m_CX2, m_CY2);

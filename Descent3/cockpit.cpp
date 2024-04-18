@@ -315,7 +315,7 @@ bool CockpitFileParse(const char *command, const char *operand, void *data) {
     char buf[16];
     int i;
     for (i = 0; i < NUM_SHIELD_GAUGE_FRAMES; i++) {
-      sprintf(buf, "shieldimg%d", i);
+      snprintf(buf, sizeof(buf), "shieldimg%d", i);
       if (!strcmpi(command, buf)) {
         if (cfginf)
           strcpy(cfginf->shieldrings[i], operand);
