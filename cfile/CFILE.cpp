@@ -971,6 +971,7 @@ int cfprintf(CFILE *cfp, const char *format, ...) {
   int count;
   va_start(args, format);
   count = vfprintf(cfp->file, format, args);
+  va_end(args);
   cfp->position += count + 1; // count doesn't include terminator
   return count;
 #endif
