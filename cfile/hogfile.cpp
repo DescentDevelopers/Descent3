@@ -161,7 +161,7 @@ bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
     return false;
 }
 
-bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry) {
+bool WriteHogEntry(FILE *fp, tHogFileEntry *entry) {
   int res;
   res = fwrite(entry->name, sizeof(char), HOG_FILENAME_LEN, fp);
   res = fwrite(&entry->flags, sizeof(entry->flags), 1, fp);
@@ -173,6 +173,7 @@ bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry) {
   else
     return false;
 }
+
 // A modified version of NewHogFile()
 // This one also takes a pointer to a function that will perform
 // progress updates (for the user)
@@ -232,7 +233,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*U
   table_pos = strlen(HOG_TAG_STR) + HOG_HDR_SIZE;
   memset(&table[0], 0, sizeof(table[0]));
   for (i = 0; i < header.nfiles; i++) {
-    if (!WRITE_FILE_ENTRY(hog_fp, &table[0])) {
+    if (!WriteHogEntry(hog_fp, &table[0])) {
       delete[] table;
       fclose(hog_fp);
       strcpy(hogerr_filename, hogname);
@@ -284,7 +285,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*U
   // now write the real index
   fseek(hog_fp, table_pos, SEEK_SET);
   for (i = 0; i < header.nfiles; i++) {
-    if (!WRITE_FILE_ENTRY(hog_fp, &table[i])) {
+    if (!WriteHogEntry(hog_fp, &table[i])) {
       delete[] table;
       fclose(hog_fp);
       strcpy(hogerr_filename, hogname);

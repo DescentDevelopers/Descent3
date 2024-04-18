@@ -77,7 +77,7 @@ extern char hogerr_filename[PSPATHNAME_LEN];
 int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *) = nullptr);
 bool ReadHogHeader(FILE *fp, tHogHeader *header);
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry);
-bool WRITE_FILE_ENTRY(FILE *fp, tHogFileEntry *entry);
+bool WriteHogEntry(FILE *fp, tHogFileEntry *entry);
 bool FileCopy(FILE *ofp, FILE *ifp, int length);
 
 // returns hog cfile info, using a library handle opened via cf_OpenLibrary.
