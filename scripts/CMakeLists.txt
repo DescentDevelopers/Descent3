@@ -65,29 +65,23 @@ SET (SCRIPTS
 	TrainingMission
 	Y2K)
 
-SET (SCRIPTTARGETS )
-
-FOREACH( SCRIPT ${SCRIPTS})
+FOREACH(SCRIPT ${SCRIPTS})
  
-  ADD_LIBRARY(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
-  set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
-  SET(SCRIPTTARGETS ${SCRIPTTARGETS} ${SCRIPT})
-    IF(UNIX)
-      GET_TARGET_PROPERTY(SCRIPT_LIB ${SCRIPT} LOCATION)
-      ADD_CUSTOM_COMMAND(
-	TARGET ${SCRIPT}
-	POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy ${SCRIPT_LIB} "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/"
-	COMMENT "Copying file ${SCRIPT_LIB} to hogfile directory..."
-	)
-      ADD_CUSTOM_COMMAND(
-	TARGET ${SCRIPT}
-	POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy ${SCRIPT_LIB} "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/"
-	)
-
-    ENDIF()
-
+	ADD_LIBRARY(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
+	set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
+	IF(UNIX)
+		ADD_CUSTOM_COMMAND(
+			TARGET ${SCRIPT}
+			POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/"
+			COMMENT "Copying file ${SCRIPT} to hogfile directory..."
+		)
+		ADD_CUSTOM_COMMAND(
+			TARGET ${SCRIPT}
+			POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/"
+		)
+	ENDIF()
 ENDFOREACH()
 
 IF(UNIX AND NOT APPLE)
@@ -103,7 +97,7 @@ IF(UNIX AND NOT APPLE)
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3-${HOGARCH}.hog" "${D3_GAMEDIR}"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/new.hog"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/"
-    DEPENDS ${SCRIPTTARGETS}
+    DEPENDS ${SCRIPTS}
     COMMENT "Building platform specific hog."
     )
   ADD_CUSTOM_TARGET("DemoLinuxHog"
@@ -113,7 +107,7 @@ IF(UNIX AND NOT APPLE)
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/new.hog" "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/d3-${HOGARCH}.hog"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/new.hog"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/"
-    DEPENDS ${SCRIPTTARGETS}
+    DEPENDS ${SCRIPTS}
     COMMENT "Building platform specific hog."
     )
 ENDIF()
