@@ -401,3 +401,10 @@ FodyWeavers.xsd
 .idea/
 cmake-build-*
 
+# Linux stuff
+build
+*.so
+
+
+# D3 specific
+*.hog
