@@ -338,11 +338,12 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
         // DDIO_mouse_state.btn_mask = buttons;
       }
 
-      DDIO_mouse_state.x += rawinput->data.mouse.lLastX;
+      DDIO_mouse_state.x += (float)rawinput->data.mouse.lLastX;
+      ;
       DDIO_mouse_state.y += rawinput->data.mouse.lLastY;
       DDIO_mouse_state.z = 0;
 
-      //      check bounds of mouse cursor.
+      // check bounds of mouse cursor.
       if (DDIO_mouse_state.x < DDIO_mouse_state.brect.left)
         DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.left;
       if (DDIO_mouse_state.x >= DDIO_mouse_state.brect.right)
@@ -366,21 +367,22 @@ bool InitNewMouse() {
   int i;
   if (!rawInputOpened) {
     char buf[256];
-    UINT nDevices;
-    PRAWINPUTDEVICELIST pRawInputDeviceList, selectedDevice = nullptr;
-    RID_DEVICE_INFO deviceInfo = {};
-    UINT deviceInfoSize = deviceInfo.cbSize = sizeof(RID_DEVICE_INFO);
     RAWINPUTDEVICE rawInputDevice = {};
 
     rawInputDevice.usUsage = 0x0002;
     rawInputDevice.usUsagePage = 0x0001;
-    rawInputDevice.dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;
+    //TODO: This code should be renabled when some solution for mouse capturing is decided on.
+    // The game should free the capture when the cursor is visible, and recapture it when it isn't visible.
+    // Account for the original mode.
+    //if (DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE)
+      rawInputDevice.dwFlags = RIDEV_CAPTUREMOUSE | RIDEV_NOLEGACY;
+    //else
+    //  rawInputDevice.dwFlags = 0;
+
     rawInputDevice.hwndTarget = DInputData.hwnd;
 
     if (RegisterRawInputDevices(&rawInputDevice, 1, sizeof(rawInputDevice)) == FALSE) {
-      // free(pRawInputDeviceList);
-      snprintf(buf, 255, "HID Registration failed: %d", GetLastError());
-      MessageBoxA(nullptr, buf, "Error", MB_ICONERROR);
+      Error("InitNewMouse: HID Registration failed: %d", GetLastError());
       return false;
     }
 
@@ -394,18 +396,15 @@ bool InitNewMouse() {
 
     DInputData.app->add_handler(WM_INPUT, (tOEWin32MsgCallback)&RawInputHandler);
 
-    //*pDDIO_mouse_init = true;
-    DDIO_mouse_state.suspended = false;
     DDIO_mouse_state.timer = timer_GetTime();
     DDIO_mouse_state.naxis = 2;
     DDIO_mouse_state.nbtns = N_DIMSEBTNS + 2; // always have a mousewheel
     for (i = 0; i < DDIO_mouse_state.nbtns; i++) {
       DDIO_mouse_state.btn_flags |= (1 << i);
     }
-    ddio_MouseMode(MOUSE_STANDARD_MODE);
-    ddio_MouseReset();
 
     memset(&DIM_buttons, 0, sizeof(t_mse_button_info));
+    rawInputOpened = true;
   }
   return true;
 }
@@ -443,9 +442,23 @@ void ddio_MouseClose() {
   if (!DDIO_mouse_init)
     return;
 
-  // TODO: The InjectD3 mouse code never uninitializes
-  // DInputData.app->remove_handler(WM_INPUT, (tOEWin32MsgCallback)&RawInputHandler);
-  // rawInputOpened = false;
+  if (rawInputOpened) {
+    char buf[256];
+    RAWINPUTDEVICE rawInputDevice = {};
+
+    rawInputDevice.usUsage = 0x0002;
+    rawInputDevice.usUsagePage = 0x0001;
+    rawInputDevice.dwFlags = RIDEV_REMOVE;
+    rawInputDevice.hwndTarget = 0; // not sure why?
+
+    if (RegisterRawInputDevices(&rawInputDevice, 1, sizeof(rawInputDevice)) == FALSE) {
+      rawInputOpened = false;
+      DDIO_mouse_init = false;
+      Error("ddio_MouseClose: HID Registration failed: %d", GetLastError());
+    }
+    DInputData.app->remove_handler(WM_INPUT, (tOEWin32MsgCallback)&RawInputHandler);
+    rawInputOpened = false;
+  }
 
   DDIO_mouse_init = false;
 }
