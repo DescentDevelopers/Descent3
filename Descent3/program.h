@@ -177,13 +177,13 @@ void ProgramVersion(int version_type, ubyte major, ubyte minor, const char *git_
 // Function to get Git HEAD information
 void getGitHead(char *head, int size) {
     FILE *fp;
-    fp = popen("git rev-parse --short HEAD", "r");
+    fp = std::popen("git rev-parse --short HEAD", "r");
     if (fp == NULL) {
-        printf("Failed to run command\n");
-        exit(1);
+        std::printf("Failed to run command\n");
+        std::exit(1);
     }
-    fgets(head, size, fp);
-    pclose(fp);
+    std::fgets(head, size, fp);
+    std::pclose(fp);
 }
 
 #endif
