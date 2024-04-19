@@ -1641,7 +1641,7 @@ void InitIOSystems(bool editor) {
     int len = strlen(Base_directory);
     for (int i = (len - 1); i >= 0; i--) {
       if (i == '\\') {
-        Base_directory[i] = NULL;
+        Base_directory[i] = '\0';
       }
     }
     mprintf((0, "Using working directory of %s\n", Base_directory));
@@ -2210,7 +2210,7 @@ void InitD3Systems1(bool editor) {
       strcpy(ipparse, GameArgs[tcplogarg + 1]);
       pport = strchr(ipparse, ':');
       if (pport) {
-        *pport = NULL;
+        *pport = '\0';
         pport++;
         port = atoi(pport);
       }

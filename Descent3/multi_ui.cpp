@@ -672,7 +672,7 @@ int AutoConnectPXO() {
   char *port = strchr(Auto_login_addr, ':');
   if (port) {
     // terminate the hostname
-    *port = NULL;
+    *port = '\0';
     // Increment to the first character of the port name
     port++;
     // get the port number
@@ -682,7 +682,7 @@ int AutoConnectPXO() {
     if (portarg) {
       strcpy(Auto_login_port, GameArgs[portarg + 1]);
     } else {
-      Auto_login_port[0] = NULL;
+      Auto_login_port[0] = '\0';
     }
   }
 
@@ -708,7 +708,7 @@ int AutoConnectLANIP() {
     char *port = strchr(Auto_login_addr, ':');
     if (port) {
       // terminate the hostname
-      *port = NULL;
+      *port = '\0';
       // Increment to the first character of the port name
       port++;
       // get the port number
@@ -721,7 +721,7 @@ int AutoConnectLANIP() {
     if (portarg) {
       strcpy(Auto_login_port, GameArgs[portarg + 1]);
     } else {
-      Auto_login_port[0] = NULL;
+      Auto_login_port[0] = '\0';
     }
   }
   // ddio_MakePath(seldll,Base_directory,"online","Direct TCP~IP Game.d3c",NULL);
@@ -746,7 +746,7 @@ int AutoConnectHeat() {
     char *port = strchr(Auto_login_addr, ':');
     if (port) {
       // terminate the hostname
-      *port = NULL;
+      *port = '\0';
       // Increment to the first character of the port name
       port++;
       // get the port number
@@ -759,7 +759,7 @@ int AutoConnectHeat() {
     if (portarg) {
       strcpy(Auto_login_port, GameArgs[portarg + 1]);
     } else {
-      Auto_login_port[0] = NULL;
+      Auto_login_port[0] = '\0';
     }
   }
   if (LoadMultiDLL("HEAT.NET")) {

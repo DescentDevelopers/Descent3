@@ -1207,7 +1207,7 @@ int bm_w(int handle, int miplevel) {
   }
   if (GameBitmaps[handle].flags & BF_NOT_RESIDENT)
     if (!bm_MakeBitmapResident(handle))
-      return NULL;
+      return 0;
   if (!(GameBitmaps[handle].flags & BF_MIPMAPPED))
     miplevel = 0;
   w = GameBitmaps[handle].width;
@@ -1224,7 +1224,7 @@ int bm_h(int handle, int miplevel) {
   // If this bitmap is not page in, do so!
   if (GameBitmaps[handle].flags & BF_NOT_RESIDENT)
     if (!bm_MakeBitmapResident(handle))
-      return NULL;
+      return 0;
   if (!(GameBitmaps[handle].flags & BF_MIPMAPPED))
     miplevel = 0;
   h = GameBitmaps[handle].height;
@@ -1245,7 +1245,7 @@ int bm_miplevels(int handle) {
   // If this bitmap is not page in, do so!
   if (GameBitmaps[handle].flags & BF_NOT_RESIDENT)
     if (!bm_MakeBitmapResident(handle))
-      return NULL;
+      return 0;
   if (GameBitmaps[handle].flags & BF_MIPMAPPED) {
     for (int tmp = GameBitmaps[handle].width; tmp > 0; tmp = tmp >> 1) {
       levels++;
@@ -1264,7 +1264,7 @@ int bm_mipped(int handle) {
   // If this bitmap is not page in, do so!
   if (GameBitmaps[handle].flags & BF_NOT_RESIDENT)
     if (!bm_MakeBitmapResident(handle))
-      return NULL;
+      return 0;
   if (GameBitmaps[handle].flags & BF_MIPMAPPED)
     return 1;
   return 0;
@@ -1752,6 +1752,6 @@ int bm_format(int handle) {
   }
   if (GameBitmaps[handle].flags & BF_NOT_RESIDENT)
     if (!bm_MakeBitmapResident(handle))
-      return NULL;
+      return 0;
   return (GameBitmaps[handle].format);
 }

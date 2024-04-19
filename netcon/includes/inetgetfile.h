@@ -91,7 +91,7 @@
 #define BOOL bool
 
 #ifndef SOCKET
-#define SOCKET unsigned int
+#define SOCKET int
 #endif
 
 #define SOCKADDR_IN sockaddr_in

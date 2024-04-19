@@ -402,7 +402,7 @@ bool CZip::AddFileToArchive(char *filename, int compression_type) {
 
   // Add to the end of the file, so we need to move to the end, back up sizeof(int) to remove
   // header
-  VFseek(bfile->file, 0 - sizeof(int), SEEK_END);
+  VFseek(bfile->file, int(0 - sizeof(int)), SEEK_END);
 
   int compressed_size = -1;
   int header_start = VFtell(bfile->file);

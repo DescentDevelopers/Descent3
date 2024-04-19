@@ -124,10 +124,6 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 
-#ifndef MACINTOSH
-#define IGNORE_TABLE(x) x
-#endif
-
 tceffect TCEffects[MAX_TCEFFECTS];
 int Screen_roots[MAX_TELCOM_SCREENS];
 bool Screen_has_effect_with_focus[MAX_TELCOM_SCREENS];

@@ -578,7 +578,7 @@ bool InitGameModule(char *name, module *mod) {
   if (!cf_OpenLibrary(lib_name)) {
     ddio_MakePath(tmp_dll_name, Base_directory, "netgames", name, NULL);
     strcat(tmp_dll_name, ".d3m");
-    Multi_game_dll_name[0] = NULL;
+    Multi_game_dll_name[0] = '\0';
     goto loaddll;
   }
   // get a temp file name

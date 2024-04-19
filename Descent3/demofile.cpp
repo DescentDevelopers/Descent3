@@ -322,14 +322,14 @@ void PageInAllData(void);
 // Prompts user for filename and starts recording if successfull
 void DemoToggleRecording() {
   char szfile[_MAX_PATH * 2];
-  szfile[0] = NULL;
+  szfile[0] = '\0';
   if (Demo_flags == DF_RECORDING) {
     // Stop recording and close the file
     cfclose(Demo_cfp);
     Demo_flags = DF_NONE;
     AddBlinkingHUDMessage(TXT_DEMOSAVED);
 
-    Demo_fname[0] = NULL;
+    Demo_fname[0] = '\0';
     return;
   } else if (Demo_flags == DF_PLAYBACK) {
     // We can't record a demo while we are playing back a demo
@@ -360,7 +360,7 @@ void DemoToggleRecording() {
     } else {
       // cfopen failed
       AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
-      Demo_fname[0] = NULL;
+      Demo_fname[0] = '\0';
       return;
     }
   }
@@ -1429,7 +1429,7 @@ void DemoAbort(bool deletefile) {
     Demo_flags = DF_NONE;
     if (deletefile)
       ddio_DeleteFile(Demo_fname);
-    Demo_fname[0] = NULL;
+    Demo_fname[0] = '\0';
     return;
   }
 }

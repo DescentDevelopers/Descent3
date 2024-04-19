@@ -751,7 +751,7 @@ int http_gethostbynameworker(void *parm)
   if (he == NULL) {
     lookup->error = true;
 #ifdef __LINUX__
-    return NULL;
+    return 0;
 #else
     return;
 #endif
@@ -763,6 +763,6 @@ int http_gethostbynameworker(void *parm)
   mem_free(lookup);
 
 #ifdef __LINUX__
-  return NULL;
+  return 0;
 #endif
 }

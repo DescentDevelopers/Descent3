@@ -898,7 +898,7 @@ char *GetMultiCDPath(char *file) {
 
   // Clear out any old path
   // memset(filepath,0,_MAX_PATH*2);
-  filepath[0] = NULL;
+  filepath[0] = '\0';
 
   for (i = 0; i < num_cd_files; i++) {
     char *vol_filename;

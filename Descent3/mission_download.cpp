@@ -628,7 +628,7 @@ void msn_ClipURLToWidth(int width, char *string) {
 
   int size = 0;
   char save = string[0];
-  string[0] = NULL;
+  string[0] = '\0';
   while (size < string_length) {
     if ((grtext_GetTextLineWidth(string)) >= width) {
       return;
@@ -637,7 +637,7 @@ void msn_ClipURLToWidth(int width, char *string) {
     string[size] = save;
     size++;
     save = string[size];
-    string[size] = NULL;
+    string[size] = '\0';
   }
 }
 
@@ -648,7 +648,7 @@ char *msn_SecondsToString(int time_sec) {
   int minutes;
   int seconds;
   int i;
-  fmttime[0] = NULL;
+  fmttime[0] = '\0';
   hours = time_sec / 3600;
   i = time_sec % 3600;
   minutes = i / 60;
