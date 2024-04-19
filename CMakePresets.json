@@ -26,7 +26,7 @@
         }
         , {
             "name": "linux"
-            , "generator": "Ninja Multi-Config",
+            , "generator": "Ninja Multi-Config"
             , "condition": {
                 "type": "equals"
                 , "lhs": "${hostSystemName}"
