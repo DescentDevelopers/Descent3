@@ -919,7 +919,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
       for (i = 0; i < num_points; i++) {
         g3_ProjectPoint(&Combined_portal_points[i]);
       }
-      int left, top, right, bottom;
+      int left = 0, top = 0, right = 0, bottom = 0;
       clip_wnd combine_wnd;
       combine_wnd.right = combine_wnd.bot = 0.0;
       combine_wnd.left = Render_width;
@@ -1567,7 +1567,7 @@ void RenderFogFaces(room *rp) {
       g3Point *p = &pointbuffer[vn];
       pointlist[vn] = p;
 
-      float mag;
+      float mag = 0;
 
       if (Room_fog_plane_check == 0) {
         // Outside of the room

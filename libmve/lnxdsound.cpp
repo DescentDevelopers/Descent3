@@ -596,7 +596,7 @@ static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, unsigned char *buf, uns
 }
 
 static unsigned int LinuxSoundMixNormalize(LnxSoundBuffer *dsb, unsigned char *buf, unsigned int len) {
-  unsigned int i, size, ipos, ilen, fieldL, fieldR;
+  unsigned int i, size, ipos, ilen, fieldL = 0, fieldR = 0;
   unsigned char *ibp, *obp;
   unsigned int iAdvance = dsb->wfx.nBlockAlign;
   unsigned int oAdvance = LnxBuffers[0]->wfx.nBlockAlign;

@@ -722,9 +722,9 @@ bool levelgoals::SaveLevelGoalInfo(CFILE *fptr) {
     int len;
     int num_items;
     int j;
-    int priority;
-    char g_list;
-    int status;
+    int priority = 0;
+    char g_list = 0;
+    int status = 0;
 
     Level_goals.GoalStatus(i, LO_GET_SPECIFIED, &status);
     cf_WriteInt(fptr, status);
@@ -767,7 +767,7 @@ bool levelgoals::SaveLevelGoalInfo(CFILE *fptr) {
     num_items = Level_goals.GoalGetNumItems(i);
     cf_WriteShort(fptr, num_items);
     for (j = 0; j < num_items; j++) {
-      char type;
+      char type = 0;
       int handle;
       bool f_done;
 

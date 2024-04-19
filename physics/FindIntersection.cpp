@@ -2710,8 +2710,8 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
       // Number of whole subdivisions
       int num_subdivisions = vm_VectorDistance(fq->p0, fq->p1) / MIN_LONG_RAY;
-      vector sub_dir; // Direction and magnitude of each subdivision
-      int s_hit_type; // Sub-divided hit type
+      vector sub_dir;     // Direction and magnitude of each subdivision
+      int s_hit_type = 0; // Sub-divided hit type
 
       sub_dir = *fq->p1 - *fq->p0;  // Direction of movement
       vm_NormalizeVector(&sub_dir); // Normalize it

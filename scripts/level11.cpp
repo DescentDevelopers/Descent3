@@ -2612,6 +2612,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
   switch (id) {
   case ID_LEVEL_0000:
     delete ((LevelScript_0000 *)ptr);
+    break;
   case ID_CUSTOM_OBJECT_0985:
     delete ((CustomObjectScript_0985 *)ptr);
     break;

@@ -702,8 +702,8 @@ void ParseLine(char *srcline, char *command, char *operand, int cmdlen, int oprl
 // Called once per frame for the dedicated server
 void DoDedicatedServerFrame() {
   char str[255];
-  char command[255]; // operand
-  char operand[255]; // operand
+  char command[255] = {}; // operand
+  char operand[255];      // operand
 
   ListenDedicatedSocket();
   DedicatedReadTelnet();
@@ -973,8 +973,8 @@ void DedicatedReadTelnet(void) {
           }
           send(conn->sock, "\r\n", strlen("\r\n"), 0);
           if (conn->validated) {
-            char command[255]; // operand
-            char operand[255]; // operand
+            char command[255] = {}; // operand
+            char operand[255];      // operand
 
             if (!stricmp(conn->input, "logout")) {
               // log the connection out

@@ -2506,7 +2506,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
     rp->mirror_face = -1;
 
   if ((rp->flags & RF_DOOR)) {
-    int doornum, flags = 0, keys = 0, position = 0.0;
+    int doornum = 0, flags = 0, keys = 0, position = 0.0;
 
     if (version >= 28 && version <= 32) {
       doornum = door_xlate[cf_ReadInt(ifile)];
@@ -2747,7 +2747,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
 
   int nummaps;
   int i, t;
-  ushort *ded_dummy_data;
+  ushort *ded_dummy_data = NULL;
 
   if (Dedicated_server) {
     ded_dummy_data = (ushort *)mem_malloc(128 * 128 * 2);

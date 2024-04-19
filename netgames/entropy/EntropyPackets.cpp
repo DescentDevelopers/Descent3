@@ -143,7 +143,7 @@ void ReceivePickupVirus(ubyte *data) {
 #define RT_BLUENG 5
 
 void SendRoomInfo(int pnum) {
-  char *room_info;
+  char *room_info = NULL;
   int flags, r, i;
   room_info = (char *)malloc(sizeof(char) * RoomCount);
   if (!room_info)

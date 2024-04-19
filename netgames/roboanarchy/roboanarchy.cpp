@@ -848,7 +848,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
     DLLgrtext_Printf(x - (max_w / 2) - (lwidth / 2), y, buffer);
   }
 
-  int ESortedPlayers[DLLMAX_PLAYERS];
+  int ESortedPlayers[DLLMAX_PLAYERS] = {};
 
   switch (Anarchy_hud_display) {
   case AHD_NONE:

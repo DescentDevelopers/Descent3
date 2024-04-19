@@ -134,6 +134,7 @@ bool gr_mem_surf_Create(ddgr_surface *sf) {
   mem_bitmap *bm;
 
   bm = new mem_bitmap;
+  memset(bm, 0, sizeof(mem_bitmap));
 
   switch (sf->bpp) {
   case BPP_16:

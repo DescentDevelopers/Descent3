@@ -494,7 +494,7 @@ void key_cfg_screen::process(int res) {
 }
 void key_cfg_screen::realize() {
   // create controls
-  int i, x, y;
+  int i, x = 0, y;
   t_cfg_element *cfg_elem = &Cfg_key_elements[0];
   m_reset_btn.Create(m_menu, UID_RESETDEFAULTS, TXT_RESETTODEFAULT, KEYCFG_EXTRAS_X + m_sheet->X(),
                      KEYCFG_EXTRAS_Y + m_sheet->Y(), NEWUI_BTNF_LONG);
@@ -657,7 +657,7 @@ void joy_cfg_screen::process(int res) {
 }
 
 void joy_cfg_screen::realize() {
-  int i, x, y;
+  int i, x = 0, y;
   t_cfg_element *cfg_elem = &Cfg_joy_elements[0];
 #ifdef MACINTOSH
 #else

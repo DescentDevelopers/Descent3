@@ -351,7 +351,7 @@ void RenderHUDInventory(tHUDItem *item) {
     return;
 
   int y;
-  float img_w;
+  float img_w = 0;
 
   if (cur_sel != -1) {
     ASSERT(cur_sel < MAX_UNIQUE_INVEN_ITEMS);
@@ -689,7 +689,7 @@ void RenderHUDSecondary(tHUDItem *item) {
 
 void RenderHUDShipStatus(tHUDItem *item) {
   float clk_time_frame, inv_time_frame;
-  ubyte clk_alpha, inv_alpha;
+  ubyte clk_alpha = 0, inv_alpha;
 
   //	render text status
   if (Objects[Players[Player_num].objnum].effect_info->type_flags & EF_CLOAKED) {

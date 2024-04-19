@@ -205,7 +205,7 @@ BOOL InetGetFile::IsConnecting() {
 }
 
 BOOL InetGetFile::IsReceiving() {
-  int state;
+  int state = 0;
   if (m_bUseHTTP) {
     state = http->GetStatus();
   } else if (ftp) {
@@ -219,7 +219,7 @@ BOOL InetGetFile::IsReceiving() {
 }
 
 BOOL InetGetFile::IsFileReceived() {
-  int state;
+  int state = 0;
   if (m_bUseHTTP) {
     state = http->GetStatus();
   } else if (ftp) {

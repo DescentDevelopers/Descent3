@@ -2207,7 +2207,7 @@ float Last_fusion_damage_time = 0;
 // Does that crazy fusion effect, including damaging/shaking your ship
 void DoFusionEffect(object *objp, int weapon_type) {
   float norm;
-  int move;
+  int move = 0;
 
   ASSERT(objp->type == OBJ_PLAYER);
   ASSERT((weapon_type == PW_PRIMARY) || (weapon_type == PW_SECONDARY));

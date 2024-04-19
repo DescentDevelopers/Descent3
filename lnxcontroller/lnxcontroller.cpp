@@ -1091,7 +1091,7 @@ float lnxgameController::get_button_value(sbyte controller, ct_format format, ub
 float lnxgameController::get_axis_value(sbyte controller, ubyte axis, ct_format format, bool invert) {
   struct lnxgameController::t_controller *ctldev;
   float val = (float)0.0;
-  float normalizer, axisval, nullzone; //, senszone;
+  float normalizer, axisval = 0, nullzone; //, senszone;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
     return 0.0f;

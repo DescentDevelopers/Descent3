@@ -125,7 +125,7 @@ int InfFile::ParseLine(char *operand, int oprlen) {
 
   //	tokenize line.
   char command[32]; // Command read from line.
-  char *opr, *cmd;
+  char *opr = NULL, *cmd;
   int retval = INFFILE_NULL;
 
   if (strlen(m_lineptr) == 0)
