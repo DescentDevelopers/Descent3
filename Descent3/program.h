@@ -138,8 +138,6 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
-#pragma once
-
 #include "pstypes.h"
 #include "buildno.h"
 #include <stdio.h>
