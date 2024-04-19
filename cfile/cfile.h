@@ -212,11 +212,11 @@ int8_t cf_ReadByte(CFILE *cfp);
 
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-float_t cf_ReadFloat(CFILE *cfp);
+float cf_ReadFloat(CFILE *cfp);
 
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-double_t cf_ReadDouble(CFILE *cfp);
+double cf_ReadDouble(CFILE *cfp);
 
 // Reads a string from a CFILE.  If the file is type binary, this
 // function reads until a NULL or EOF is found.  If the file is text,

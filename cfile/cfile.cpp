@@ -922,8 +922,8 @@ int8_t cf_ReadByte(CFILE *cfp) {
 }
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-float_t cf_ReadFloat(CFILE *cfp) {
-  float_t f;
+float cf_ReadFloat(CFILE *cfp) {
+  float f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
 #ifdef MACINTOSH
   float e = INTEL_FLOAT(f); // DAJ bash to zero if reads a NaN
@@ -936,8 +936,8 @@ float_t cf_ReadFloat(CFILE *cfp) {
 }
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-double_t cf_ReadDouble(CFILE *cfp) {
-  double_t f;
+double cf_ReadDouble(CFILE *cfp) {
+  double f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
 #ifdef OUTRAGE_BIG_ENDIAN
   {
