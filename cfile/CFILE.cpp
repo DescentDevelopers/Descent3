@@ -893,7 +893,7 @@ float cf_ReadFloat(CFILE *cfp) {
 double cf_ReadDouble(CFILE *cfp) {
   double f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
-#ifdef BIG_ENDIAN
+#ifdef OUTRAGE_BIG_ENDIAN
   {
     double t;
     int *sp = (int *)&f;
@@ -1015,7 +1015,7 @@ void cf_WriteFloat(CFILE *cfp, float f) {
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteDouble(CFILE *cfp, double d) {
-#ifdef BIG_ENDIAN
+#ifdef OUTRAGE_BIG_ENDIAN
   {
     double t;
     int *sp = (int *)&d;
