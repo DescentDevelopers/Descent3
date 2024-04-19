@@ -1,0 +1,377 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""res\\musicutils.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\musicutils.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 217, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About musicutils"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "musicutils Version 1.0",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 1998",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,32,14,WS_GROUP
+END
+
+IDD_MUSICUTILS_DIALOG DIALOGEX 0, 0, 436, 277
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Outrage Music Utilities."
+MENU IDR_MUSICMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Tree1",IDC_THEME_TREE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | WS_BORDER | WS_TABSTOP,
+                    5,5,425,265,WS_EX_CLIENTEDGE
+END
+
+IDD_RAWCVTDLG DIALOG DISCARDABLE  0, 0, 336, 141
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "RAW->Stream File Parameters"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,279,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,279,24,50,14
+    GROUPBOX        "Resolution",IDC_STATIC,10,5,120,25
+    GROUPBOX        "Channels",IDC_STATIC,10,40,120,25
+    GROUPBOX        "Frequency",IDC_STATIC,10,75,120,55
+    GROUPBOX        "Compression options (16-bit)",IDC_STATIC,145,5,120,60
+    CONTROL         "8-bit",IDC_8BIT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | 
+                    WS_TABSTOP,15,15,45,10
+    CONTROL         "16-bit",IDC_16BIT,"Button",BS_AUTORADIOBUTTON,75,15,45,
+                    10
+    CONTROL         "Mono",IDC_MONO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | 
+                    WS_TABSTOP,15,50,34,10
+    CONTROL         "Stereo",IDC_STEREO,"Button",BS_AUTORADIOBUTTON,75,50,37,
+                    10
+    CONTROL         "11025 hz",IDC_11khz,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED | WS_GROUP | WS_TABSTOP,15,85,45,10
+    CONTROL         "22050 hz",IDC_22khz,"Button",BS_AUTORADIOBUTTON,15,100,
+                    45,10
+    CONTROL         "44100 hz",IDC_44khz,"Button",BS_AUTORADIOBUTTON,15,115,
+                    45,10
+    LTEXT           "Volume scalar",IDC_STATIC,155,20,45,10
+    EDITTEXT        IDC_VOLSCALEEDIT,205,20,25,12,ES_AUTOHSCROLL | ES_NUMBER | 
+                    NOT WS_TABSTOP
+    GROUPBOX        "Stream info",IDC_STATIC,145,75,120,55
+    EDITTEXT        IDC_STREAM_NAME,180,85,80,12,ES_AUTOHSCROLL
+    LTEXT           "Transforms",IDC_STATIC,155,35,45,10
+    CONTROL         "Slider1",IDC_XFORMSLIDER,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | WS_TABSTOP,200,35,55,10
+    LTEXT           "Name",IDC_STATIC,150,85,19,10
+    EDITTEXT        IDC_MEASURE,180,105,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Measure",IDC_STATIC,150,105,30,10
+END
+
+IDD_PLAYSONG DIALOG DISCARDABLE  0, 0, 242, 90
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Play song"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Stop",IDOK,95,65,50,14
+    CONTROL         "Progress1",IDC_PLAYPROGRESS,"msctls_progress32",
+                    WS_BORDER,10,30,220,20
+    LTEXT           "",IDC_STATUS_TEXT,10,10,220,20
+END
+
+IDD_INSERT_SONG DIALOG DISCARDABLE  0, 0, 297, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Insert song"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,240,10,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,240,30,50,14
+    EDITTEXT        IDC_EDIT,35,20,125,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BROWSE,165,20,50,14
+    LTEXT           "Name",IDC_STATIC,15,20,20,10
+    GROUPBOX        "Song file",IDC_STATIC,5,5,220,40
+END
+
+IDD_ROOMLINK DIALOG DISCARDABLE  0, 0, 197, 26
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Link to room"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,125,5,31,14
+    PUSHBUTTON      "Cancel",IDCANCEL,160,5,31,14
+    EDITTEXT        IDC_ROOMLINK,65,5,45,12,ES_AUTOHSCROLL | ES_WANTRETURN | 
+                    ES_NUMBER | WS_DISABLED
+    CONTROL         "Room",IDC_DOROOMLINK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,5,50,10
+END
+
+IDD_TRUEFALSE DIALOG DISCARDABLE  0, 0, 186, 26
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,115,5,31,14
+    PUSHBUTTON      "Cancel",IDCANCEL,150,5,31,14
+    CONTROL         "True",IDC_TRUE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,
+                    10,5,39,15
+    CONTROL         "False",IDC_FALSE,"Button",BS_AUTORADIOBUTTON,55,5,39,15
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "musicutils MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "musicutils\0"
+            VALUE "LegalCopyright", "Copyright (C) 1998\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "musicutils.EXE\0"
+            VALUE "ProductName", "musicutils Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_MUSICUTILS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 429
+        VERTGUIDE, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 270
+    END
+
+    IDD_RAWCVTDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 329
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 134
+    END
+
+    IDD_PLAYSONG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 235
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+
+    IDD_INSERT_SONG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 290
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_ROOMLINK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 190
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 19
+    END
+
+    IDD_TRUEFALSE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 19
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MUSICMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "New theme",                   IDC_FILE_NEW
+        MENUITEM "Open theme...",               ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "Save",                        ID_FILE_SAVE
+        MENUITEM "Save as...",                  ID_FILE_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "&Quit",                       IDC_FILE_QUIT
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "Outrage Stream Converter",    IDC_TOOLS_MAKESTREAM
+        MENUITEM "OSF Player",                  IDC_TOOLS_PLAYSONG
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About musicutils..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDC_FILE_NEW            "Create a new theme file."
+    IDC_FILE_QUIT           "Quit Outrage Music Utilities"
+    ID_FILE_SAVEAS          "Save theme with specified filename."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_OPEN            "Opens a preexisting theme file."
+    ID_FILE_SAVE            "Save theme."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "res\musicutils.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

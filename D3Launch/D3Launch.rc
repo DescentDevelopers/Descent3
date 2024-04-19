@@ -1,0 +1,990 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""res\\D3Launch.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\D3Launch.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_D3LAUNCH_DIALOG DIALOGEX 0, 0, 373, 258
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "PLAY",IDC_BTN_PLAY,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_TABSTOP,35,63,85,14
+    CONTROL         "SETUP",IDC_BTN_SETUP,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_TABSTOP,35,94,85,15
+    CONTROL         "UPDATE",IDC_BTN_UPDATE,"Button",BS_OWNERDRAW | 
+                    BS_BITMAP | WS_TABSTOP,35,125,86,14
+    CONTROL         "OUTRAGE",IDC_BTN_WEBPAGE,"Button",BS_OWNERDRAW | 
+                    BS_BITMAP | WS_TABSTOP,42,161,85,15
+    CONTROL         "README",IDC_BTN_README,"Button",BS_OWNERDRAW | 
+                    BS_BITMAP | WS_TABSTOP,224,63,85,15
+    CONTROL         "DIRECTX",IDC_BTN_DIRECTX,"Button",BS_OWNERDRAW | 
+                    BS_BITMAP | WS_TABSTOP,224,94,87,14
+    CONTROL         "UNINSTALL",IDC_BTN_UNINSTALL,"Button",BS_OWNERDRAW | 
+                    BS_BITMAP | WS_TABSTOP,224,125,86,14
+    CONTROL         "PXO",IDC_BTN_PXO,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_TABSTOP,214,161,86,14
+    CONTROL         "HELP",ID_HELP,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_TABSTOP,167,188,27,14
+    CONTROL         "QUIT",IDC_BTN_QUIT,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_TABSTOP,273,237,55,8
+    CONTROL         "LIGHT",IDC_BTN_LIGHT,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_DISABLED,263,3,50,14
+    CONTROL         "ANIM",IDC_ANIM_BUTTON,"Button",BS_OWNERDRAW | BS_BITMAP | 
+                    WS_DISABLED,164,91,24,14
+END
+
+IDD_UPDATE_DIALOG DIALOGEX 0, 0, 312, 253
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Descent 3 Auto-Update"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDYES,157,232,48,14
+    PUSHBUTTON      "Cancel",IDCANCEL,207,232,48,14
+    PUSHBUTTON      "Help",ID_HELP,257,232,48,14
+    CONTROL         "Progress1",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,
+                    42,66,263,14
+    RTEXT           "Progress:",IDC_STATIC,5,68,31,8
+    LISTBOX         IDC_LIST1,7,85,298,125,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | 
+                    WS_HSCROLL
+    CTEXT           "A new version of Descent 3 is available!  Would you like to download it?",
+                    IDC_USERMSG,7,216,298,12,0,WS_EX_TRANSPARENT
+    LTEXT           "Status:",IDC_STATIC,7,236,23,8
+    LTEXT           "Waiting...",IDC_STATUSBAR,34,236,113,8
+    EDITTEXT        IDC_MOTD_EDIT,7,14,234,45,ES_MULTILINE | ES_READONLY | 
+                    ES_WANTRETURN | WS_VSCROLL | NOT WS_TABSTOP
+    LTEXT           "Message of the Day:",IDC_STATIC,7,3,66,8
+    EDITTEXT        IDC_YOUR_VERSION_EDIT,252,15,53,14,ES_CENTER | 
+                    ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
+    EDITTEXT        IDC_LATEST_VERSION_EDIT,252,45,53,14,ES_CENTER | 
+                    ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
+    LTEXT           "Latest Version:",IDC_STATIC,253,33,48,8
+    LTEXT           "Your Version:",IDC_STATIC,253,3,43,8
+END
+
+IDD_PROPPAGE_JOYSTICK DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Controls"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Enable Force Feedback (for current joystick)",
+                    IDC_FF_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,
+                    48,189,10
+    PUSHBUTTON      "Joystick Calibration / Settings",IDC_BTN_CALIBRATE,7,
+                    120,207,15
+    PUSHBUTTON      "Redetect Current Joystick",IDC_BTN_DETECT,7,137,207,15
+    EDITTEXT        IDC_PRIMARY_JOYSTICK_TEXT,7,17,207,13,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    LTEXT           "Current Joystick:",IDC_STATIC,7,7,53,8
+    COMBOBOX        IDC_JOYSTICK_LIST,186,7,28,90,CBS_DROPDOWNLIST | 
+                    CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Controller Options",IDC_STATIC,7,36,207,49
+    LTEXT           "NOTE:",IDC_STATIC,7,90,23,8
+    LTEXT           "If you wish to view or change the settings for the joysticks on your system, click on the Joystick Calibration/Settings button below.",
+                    IDC_STATIC,34,89,180,28
+    CONTROL         "Enable CH Flightstick Pro Mode (only if you have one)",
+                    IDC_CHFLIGHT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    14,59,189,10
+    CONTROL         "Enable Logitech Mouseman Mode (only if you have one)",
+                    IDC_MOUSEMAN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    14,71,189,10
+END
+
+IDD_PROPPAGE_VIDEO DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Video"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_VIDEOCARD_LIST,6,17,208,79,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Redetect Available Rendering Devices",
+                    IDC_VIDEOCARD_DETECT,6,108,208,15
+    LTEXT           "Currently Selected Rendering Device:",IDC_STATIC,6,7,
+                    120,8
+    LTEXT           "NOTE:",IDC_STATIC,6,39,23,8
+    LTEXT           "A 3D Accelerated Rendering Device must be selected in order for Descent 3 to run.  Select your desired renderer from the above drop-down list.",
+                    IDC_STATIC,34,39,180,31
+    LTEXT           "If your video card supports 3Dfx Glide, we strongly recommend that you choose it as your Rendering Device.",
+                    IDC_STATIC,34,72,180,27
+END
+
+IDD_PROPPAGE_AUDIO DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Audio"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_AUDIO_LIST,7,17,207,90,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Software",IDC_MIXER_SOFTWARE,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,16,49,113,10
+    CONTROL         "DirectSound",IDC_MIXER_DS8BIT,"Button",
+                    BS_AUTORADIOBUTTON,16,62,55,10
+    CONTROL         "DirectSound 3D",IDC_MIXER_DS3D,"Button",
+                    BS_AUTORADIOBUTTON,16,75,91,10
+    CONTROL         "Aureal 3D Sound",IDC_MIXER_AUREAL,"Button",
+                    BS_AUTORADIOBUTTON,16,88,102,10
+    CONTROL         "Creative EAX",IDC_MIXER_EAX,"Button",BS_AUTORADIOBUTTON,
+                    16,101,58,10
+    CONTROL         "Enable Sound in the D3 Launcher",IDC_LAUNCHER_SND_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,122,131,10
+    PUSHBUTTON      "Redetect All Available Sound Devices",
+                    IDC_BTN_AUDIO_DETECT,7,138,207,14
+    LTEXT           "Currently Selected Sound Device:",IDC_STATIC,7,7,108,8
+    CONTROL         "DirectSound (16 Bit)",IDC_MIXER_DS16BIT,"Button",
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE,135,121,79,10
+    LTEXT           "NOTE:",IDC_STATIC,146,40,23,8
+    LTEXT           "Select the sound device you wish to use from the pull-down box above, and then select an available mixer from the list to the left.",
+                    IDC_STATIC,146,51,68,56
+    GROUPBOX        "Available Mixers for Device",IDC_STATIC,7,36,130,80
+END
+
+IDD_PROPPAGE_SPEED DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Speed"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_SPEED_LIST,7,17,207,95,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Detect System Properties",IDC_BTN_SPEED_DETECT,7,138,
+                    207,14
+    LTEXT           "Default Detail Level",IDC_STATIC,7,7,63,8
+    LTEXT           "CPU Type:",IDC_STATIC,15,50,80,8
+    LTEXT           "CPU Speed:",IDC_STATIC,15,60,80,8
+    LTEXT           "Total RAM:",IDC_STATIC,15,70,80,8
+    LTEXT           "VRAM Transfer Rate:",IDC_STATIC,15,90,80,8
+    LTEXT           "3D Graphics Accelerator*:",IDC_STATIC,15,100,85,8
+    LTEXT           "",IDC_CPU_TYPE,105,50,85,8
+    LTEXT           "",IDC_CPU_SPEED,105,60,85,8
+    LTEXT           "",IDC_TOTAL_RAM,105,70,85,8
+    LTEXT           "RAM Transfer Rate:",IDC_STATIC,15,80,80,8
+    LTEXT           "",IDC_RAM_SPEED,105,80,85,8
+    LTEXT           "",IDC_VRAM_SPEED,105,90,85,8
+    LTEXT           "",IDC_3D_GRAPHICS_ACCELERATOR,105,100,85,8
+    GROUPBOX        "System Properties",IDC_STATIC,7,37,207,78
+    LTEXT           "* Configured in the ""Video"" tab.",IDC_STATIC,7,121,
+                    207,8
+END
+
+IDD_PROPPAGE_NETWORK DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Network"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "None",IDC_NONE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,
+                    14,19,33,10
+    CONTROL         "Dialup Networking",IDC_DIALUP,"Button",
+                    BS_AUTORADIOBUTTON,14,29,74,10
+    CONTROL         "LAN/Direct Connection (and AOL)",IDC_LAN,"Button",
+                    BS_AUTORADIOBUTTON,14,39,142,10
+    CONTROL         "28.8K Modem",IDC_28K_CONNECTION,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,14,67,60,10
+    CONTROL         "33.6K Modem",IDC_33K_CONNECTION,"Button",
+                    BS_AUTORADIOBUTTON,14,78,106,10
+    CONTROL         "56K Modem",IDC_56K_CONNECTION,"Button",
+                    BS_AUTORADIOBUTTON,14,89,155,10
+    CONTROL         "Single Channel ISDN",IDC_SINGLE_ISDN_CONNECTION,"Button",
+                    BS_AUTORADIOBUTTON,14,100,83,10
+    CONTROL         "Dual Channel ISDN, Cable Modems",IDC_CABLE_CONNECTION,
+                    "Button",BS_AUTORADIOBUTTON,14,111,155,10
+    CONTROL         "T1, ADSL, T3, etc.",IDC_FAST_CONNECTION,"Button",
+                    BS_AUTORADIOBUTTON,14,122,95,10
+    GROUPBOX        "Internet Connection",IDC_CONNECT_TYPE_GROUP,7,7,207,46
+    GROUPBOX        "Connection Speed",IDC_CONNECT_SPEED_GROUP,7,57,207,77
+    LTEXT           "NOTE:  Inaccurate settings will hinder game performance!  ",
+                    IDC_STATIC,7,141,207,11
+END
+
+IDD_WAIT_DIALOG DIALOG DISCARDABLE  0, 0, 122, 31
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Please Wait"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Checking system properties...",IDC_STATIC,15,10,95,10
+END
+
+IDD_PROPPAGE_KEYBOARD DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Misc."
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_LANGUAGE_COMBO,15,18,189,84,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "United States (Standard)",IDC_US_KEYBOARD,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,15,52,93,10
+    CONTROL         "French",IDC_FRENCH_KEYBOARD,"Button",BS_AUTORADIOBUTTON,
+                    15,62,38,10
+    CONTROL         "German",IDC_GERMAN_KEYBOARD,"Button",BS_AUTORADIOBUTTON,
+                    15,72,142,10
+    EDITTEXT        IDC_COMMANDLINE_EDIT,15,131,189,14,ES_AUTOHSCROLL
+    GROUPBOX        "Keyboard Type",IDC_STATIC,7,42,207,43
+    GROUPBOX        "Optional D3 Command-line Switches",IDC_STATIC,7,121,207,
+                    31
+    GROUPBOX        "Language",IDC_STATIC,7,7,207,31
+    GROUPBOX        "Performance Options",IDC_STATIC,7,88,207,29
+    CONTROL         "Always disable FindFast when running Descent 3",
+                    IDC_FINDFAST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    15,100,189,10
+END
+
+IDD_MESSAGE_WINDOW DIALOGEX 0, 0, 129, 69
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CTEXT           "",IDC_WND_MSG_MAIN,10,6,110,16
+    CTEXT           "",IDC_WND_MSG_STATUS,10,31,110,8
+    PUSHBUTTON      "Cancel",IDC_BTN_CANCEL,40,48,50,14
+END
+
+IDD_SITE_SELECTION_DIALOG DIALOGEX 0, 0, 324, 138
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Patch Download Site Selection"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "List1",IDC_SITE_LIST,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,6,16,311,95,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "Begin Download",IDOK,59,117,94,14
+    PUSHBUTTON      "Cancel",IDCANCEL,170,117,98,14
+    LTEXT           "Select the site you wish to download from:",IDC_STATIC,
+                    6,4,247,8
+END
+
+IDD_MOTD_DIALOG DIALOG DISCARDABLE  0, 0, 261, 117
+STYLE DS_MODALFRAME | DS_CENTER | WS_CAPTION | WS_SYSMENU
+CAPTION "Descent 3 Message of the Day"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Close",IDOK,87,98,87,14
+    LISTBOX         IDC_LIST1,6,6,249,85,NOT LBS_NOTIFY | 
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | 
+                    WS_HSCROLL | WS_TABSTOP
+END
+
+IDD_PROPPAGE_DIRECTX DIALOG DISCARDABLE  0, 0, 221, 159
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "DirectX"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Visit Microsoft's DirectX Download Page",IDC_GET_DX,7,
+                    138,207,14
+    LTEXT           "Your DirectX Version:",IDC_STATIC,17,21,69,12,
+                    SS_CENTERIMAGE
+    CTEXT           "Unknown or Not Installed",IDC_DX_VERSION,91,21,111,12,
+                    SS_CENTERIMAGE | SS_SUNKEN
+    LTEXT           "NOTE:",IDC_STATIC,7,68,23,8
+    LTEXT           "Descent 3 requires DirectX 3.0 (or greater).  DirectX 6.0 is required for Direct3D, Force Feedback, Direct Play, and Direct Sound 3D.  You can install DirectX 6.1 from the Descent 3 CD by clicking the ""Install Drivers"" button on the main launcher window.",
+                    IDC_STATIC,34,68,180,42
+    GROUPBOX        "DirectX Version Information",IDC_STATIC,7,7,207,54
+    CTEXT           "Needs Updating (see below)",IDC_DX_STATUS,91,38,111,12,
+                    SS_CENTERIMAGE | SS_SUNKEN
+    LTEXT           "Your Version Status:",IDC_STATIC,17,38,69,12,
+                    SS_CENTERIMAGE
+    LTEXT           "You can also download DirectX 6.1 from Microsoft's DirectX Web Page (the button below will take you there).",
+                    IDC_STATIC,34,114,180,18
+END
+
+IDD_MSG_DLG DIALOGEX 0, 0, 111, 37
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CTEXT           "Scanning System Devices",IDC_SCANNING_TEXT,7,7,97,8
+    CTEXT           "Please Wait...",IDC_WAIT_TEXT,7,22,97,8
+END
+
+IDD_VIDEODETECT_DLG DIALOGEX 0, 0, 189, 116
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_CLIENTEDGE
+CAPTION "Video Device Detection"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Scan for the Selected Video Devices",IDOK,7,95,175,14
+    CONTROL         "Direct3D",IDC_DIRECT3D_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,18,19,44,10
+    CONTROL         "3Dfx Glide",IDC_GLIDE_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,18,32,49,10
+    CONTROL         "OpenGL",IDC_OPENGL_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,18,45,43,10
+    LTEXT           "Select the video devices to detect on your system:",
+                    IDC_STATIC,7,7,175,10
+    LTEXT           "NOTE:",IDC_STATIC,7,64,23,8
+    LTEXT           "If you experience any problems while scanning, refer to the Troubleshooting section of the ReadMe file for help.",
+                    IDC_STATIC,36,63,146,26
+END
+
+IDD_DRIVERS_DIALOG DIALOG DISCARDABLE  0, 0, 199, 114
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Driver Installation Menu"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Return to Launcher",IDOK,7,92,131,15
+    PUSHBUTTON      "Help",ID_HELP,142,92,50,15
+    PUSHBUTTON      "Install Microsoft DirectX 6.1",IDC_DIRECTX_BUTTON,14,20,
+                    171,21,BS_FLAT
+    PUSHBUTTON      "Install OpenGL drivers with GLSetup Beta",
+                    IDC_GLSETUP_BUTTON,14,44,171,21,BS_FLAT
+    GROUPBOX        "Options",IDC_STATIC,7,7,185,67
+END
+
+IDD_GLSETUP_DIALOG DIALOGEX 0, 0, 209, 179
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CLIENTEDGE
+CAPTION "GLSetup Beta"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,7,154,195,18
+    PUSHBUTTON      "Install using Public Beta v0.99",IDC_INSTALL_BUTTON,7,
+                    114,195,18
+    PUSHBUTTON      "Visit the GLSetup Web Site",IDC_VISIT_BUTTON,7,134,195,
+                    18
+    LTEXT           "Before installing OpenGL drivers you should have DirectX 6.0 or higher installed on your machine.  If you do not have DirectX 6.0 installed, exit now and install it.",
+                    IDC_INFO_STATIC,7,7,195,31
+    LTEXT           "This version of GLSetup (v0.99) is a public beta.  You should check the GLSetup web site (http://www.glsetup.com) to see if the release version is available before installing.",
+                    IDC_INFO2_STATIC,7,42,195,31
+    LTEXT           "Please see the GLSetup readme (in the README.TXT in the /GLSetup directory of Descent 3 CD 1) for information on reporting a problem with GLSetup.",
+                    IDC_INFO3_STATIC,7,78,195,29
+END
+
+IDD_FINDFASTDLG DIALOG DISCARDABLE  0, 0, 214, 146
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "FindFast Detected"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Yes",IDOK,50,125,50,14
+    PUSHBUTTON      "No",IDCANCEL,112,125,50,14
+    CONTROL         "Always disable FindFast when running Descent 3",
+                    IDC_FINDFASTCHKBOX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    7,103,170,10
+    LTEXT           "We have determined that your computer is running FindFast.  This program can have a negative effect on the performance of Descent 3 and we STRONGLY recommend that you not run FindFast while playing Descent 3.  ",
+                    IDC_STATIC,7,7,200,35
+    LTEXT           "If you terminate FindFast, it may take your computer slightly longer to to open files, but everything else will work normally. FindFast will be reenabled the next time you restart your computer.\n\nWould you like to terminate FindFast?",
+                    IDC_STATIC,7,45,200,50
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "D3Launch MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "D3Launch\0"
+            VALUE "LegalCopyright", "Copyright (C) 1998\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "D3Launch.EXE\0"
+            VALUE "ProductName", "D3Launch Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_D3LAUNCH_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 366
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 251
+    END
+
+    IDD_UPDATE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 305
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 246
+    END
+
+    IDD_PROPPAGE_JOYSTICK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_PROPPAGE_VIDEO, DIALOG
+    BEGIN
+        LEFTMARGIN, 6
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_PROPPAGE_AUDIO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_PROPPAGE_SPEED, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_PROPPAGE_NETWORK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_WAIT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 115
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 24
+    END
+
+    IDD_PROPPAGE_KEYBOARD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_MESSAGE_WINDOW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 122
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 62
+    END
+
+    IDD_SITE_SELECTION_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 317
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 131
+    END
+
+    IDD_MOTD_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 254
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 110
+    END
+
+    IDD_PROPPAGE_DIRECTX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 214
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    IDD_MSG_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 104
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 30
+    END
+
+    IDD_VIDEODETECT_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 182
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 109
+    END
+
+    IDD_DRIVERS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 192
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_GLSETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 202
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
+
+    IDD_FINDFASTDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 207
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 139
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_D3LAUNCH_BG         BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+PLAYU                   BITMAP  DISCARDABLE     "res\\Play.bmp"
+PLAYD                   BITMAP  DISCARDABLE     "res\\PlayD.bmp"
+PLAYM                   BITMAP  DISCARDABLE     "res\\PlayM.bmp"
+QUITU                   BITMAP  DISCARDABLE     "res\\QuitU.bmp"
+QUITD                   BITMAP  DISCARDABLE     "res\\QuitD.bmp"
+QUITM                   BITMAP  DISCARDABLE     "res\\QuitM.bmp"
+LIGHTU                  BITMAP  DISCARDABLE     "res\\LightU.BMP"
+LIGHTM                  BITMAP  DISCARDABLE     "res\\LightM.BMP"
+LIGHTD                  BITMAP  DISCARDABLE     "res\\LightD.BMP"
+OUTRAGED                BITMAP  DISCARDABLE     "res\\OutrageD.BMP"
+OUTRAGEM                BITMAP  DISCARDABLE     "res\\OutrageM.BMP"
+OUTRAGEU                BITMAP  DISCARDABLE     "res\\OutrageU.BMP"
+PXOD                    BITMAP  DISCARDABLE     "res\\Pxod.bmp"
+PXOM                    BITMAP  DISCARDABLE     "res\\Pxom.bmp"
+PXOU                    BITMAP  DISCARDABLE     "res\\Pxou.bmp"
+PLAYX                   BITMAP  DISCARDABLE     "res\\PlayX.BMP"
+READMED                 BITMAP  DISCARDABLE     "res\\ReadMeD.BMP"
+READMEM                 BITMAP  DISCARDABLE     "res\\ReadMeM.BMP"
+READMEU                 BITMAP  DISCARDABLE     "res\\ReadMeU.BMP"
+READMEX                 BITMAP  DISCARDABLE     "res\\ReadMeX.BMP"
+SETUPD                  BITMAP  DISCARDABLE     "res\\SetupD.bmp"
+SETUPM                  BITMAP  DISCARDABLE     "res\\SetupM.bmp"
+SETUPU                  BITMAP  DISCARDABLE     "res\\SetupU.bmp"
+SETUPX                  BITMAP  DISCARDABLE     "res\\SetupX.bmp"
+UPDATEM                 BITMAP  DISCARDABLE     "res\\UpdateM.bmp"
+UPDATEX                 BITMAP  DISCARDABLE     "res\\UpdateX.bmp"
+DIRECTXD                BITMAP  DISCARDABLE     "res\\DirectxD.bmp"
+DIRECTXM                BITMAP  DISCARDABLE     "res\\DirectxM.bmp"
+DIRECTXU                BITMAP  DISCARDABLE     "res\\DirectxU.bmp"
+DIRECTXX                BITMAP  DISCARDABLE     "res\\DirectxX.bmp"
+UNINSTALLD              BITMAP  DISCARDABLE     "res\\UninstallD.bmp"
+UNINSTALLM              BITMAP  DISCARDABLE     "res\\UninstallM.bmp"
+UNINSTALLU              BITMAP  DISCARDABLE     "res\\UninstallU.bmp"
+UNINSTALLX              BITMAP  DISCARDABLE     "res\\UninstallX.bmp"
+UPDATEU                 BITMAP  DISCARDABLE     "res\\UpdateU.BMP"
+UPDATED                 BITMAP  DISCARDABLE     "res\\UpdateD.bmp"
+ANIM0                   BITMAP  DISCARDABLE     "res\\Anim0.BMP"
+ANIM1                   BITMAP  DISCARDABLE     "res\\Anim1.BMP"
+ANIM2                   BITMAP  DISCARDABLE     "res\\Anim2.BMP"
+ANIM3                   BITMAP  DISCARDABLE     "res\\Anim3.BMP"
+ANIM4                   BITMAP  DISCARDABLE     "res\\Anim4.bmp"
+ANIM5                   BITMAP  DISCARDABLE     "res\\Anim5.bmp"
+ANIM6                   BITMAP  DISCARDABLE     "res\\Anim6.bmp"
+ANIM7                   BITMAP  DISCARDABLE     "res\\Anim7.bmp"
+ANIM8                   BITMAP  DISCARDABLE     "res\\Anim8.bmp"
+HELPD                   BITMAP  DISCARDABLE     "res\\HelpD.bmp"
+HELPM                   BITMAP  DISCARDABLE     "res\\HelpM.bmp"
+HELPU                   BITMAP  DISCARDABLE     "res\\HelpU.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UPDATEDLG_USERMSG1  "A new version of Descent 3 is available!!!  Press the OK button to download it."
+    IDS_UPDATEDLG_USERMSG2  "Received %d bytes out of %d bytes (%d%%)."
+    IDS_D3LAUNCH_DLGTITLE   "Descent 3 Launcher"
+    IDS_D3LAUNCH_URL_ERR1   "The operating system is out of memory or resources."
+    IDS_D3LAUNCH_URL_ERR2   "The .EXE file is invalid (non-Win32 .EXE or error in .EXE image)."
+    IDS_D3LAUNCH_URL_ERR3   "The operating system denied access to the specified file."
+    IDS_D3LAUNCH_URL_ERR4   "The filename association is incomplete or invalid.\r\n(You need to have a default Internet browser installed)"
+    IDS_D3LAUNCH_URL_ERR5   "The DDE transaction could not be completed because other DDE transactions were being processed."
+    IDS_D3LAUNCH_URL_ERR6   "The DDE transaction failed."
+    IDS_D3LAUNCH_URL_ERR7   "The DDE transaction could not be completed because the request timed out."
+    IDS_D3LAUNCH_URL_ERR8   "The specified dynamic-link library was not found."
+    IDS_D3LAUNCH_URL_ERR9   "There was not enough memory to complete the operation."
+    IDS_D3LAUNCH_URL_ERR10  "A sharing violation occurred."
+    IDS_D3LAUNCH_URL_ERR11  "No web browser found.  There isn't one installed or if \r\none is installed, it isn't set to be the default browser.\r\n"
+    IDS_D3LAUNCH_URL_ERR12  "Unknown error occurred."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_D3LAUNCHDLG_NODD    "DirectDraw could not be initialized on your system.  DirectDraw v6.0 or higher\nis required in order to play Descent 3."
+    IDS_D3LAUNCHDLG_NODDT   "Attention!"
+    IDS_D3LAUNCHDLG_SETUP   "Descent 3 Setup"
+    IDS_D3LAUNCHDLG_RM_ERR  "Error Loading README.TXT"
+    IDS_D3LAUNCHDLG_LNCH_ERR "Error Launching Descent 3"
+    IDS_3D_DETECT_NO3D      "No device selected"
+    IDS_AUDIOTAB_A3D1       "Aureal sound card detected, but you need updated drivers.\n  Download them from www.a3d.com"
+    IDS_AUDIOTAB_A3D2       "This is non-Aureal-certified A3D!\nPlease upgrade your drivers at www.a3d.com"
+    IDS_AUDIOTAB_NO_SOUND   "No Sound"
+    IDS_JOYSTICKTAB_ERR1    "Error loading Joy.cpl"
+    IDS_JOYSTICKTAB_NONE    "None"
+    IDS_UPDATEDLG_GVN_MSG1  "Attempting to Initialize Winsock"
+    IDS_UPDATEDLG_NO_CON    "Cannot connect to patch server, may be down.\n Verify that you have an active internet connection and try again later."
+    IDS_UPDATEDLG_ERROR     "Error!"
+    IDS_UPDATEDLG_GVN_MSG2  "Downloading Version Info File"
+    IDS_UPDATEDLG_NO_DL     "Couldn't download Version File!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UPDATEDLG_NO_FIND   "Couldn't parse Version file!"
+    IDS_UPDATEDLG_WAIT      "Waiting for User"
+    IDS_UPDATEDLG_SRV       "Successfully Read Version Info"
+    IDS_UPDATEDLG_UTD       "Your Descent 3 version %d.%d.%d is currently up to date."
+    IDS_UPDATEDLG_UTDT      "Determination: No Update Necessary"
+    IDS_UPDATEDLG_YES_ERR1  "Error opening version.nfo file - please try re-updating"
+    IDS_UPDATEDLG_PF_ERR1   "Couldn't Download Patchfile.  Verify you have enough diskspace."
+    IDS_UPDATEDLG_PATCHING  "Patching Descent 3 to version %d.%d.%d"
+    IDS_UPDATEDLG_GET_FILE  "Getting File: %s"
+    IDS_UPDATEDLG_CANT_PATCH "Couldn't Process Patchfile"
+    IDS_UPDATEDLG_SKIPPING  "Skipping: %s"
+    IDS_UPDATEDLG_PATCH_OK  "Patching Process Successful."
+    IDS_UPDATEDLG_SUCCESS   "Success!"
+    IDS_UPDATEDLG_NO_PATCH_LIB 
+                            "Patch Library not found.  Cannot Patch Descent 3."
+    IDS_UPDATEDLG_DL_FILE   "Downloading File..."
+    IDS_UPDATEDLG_INIT_CON  "Initializing Connection..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UPDATEDLG_WS_ERR    "Error loading Winsock!"
+    IDS_UPDATEDLG_CON_OK    "Connecting..."
+    IDS_UPDATEDLG_CON_SHUTDOWN "Shutting down connection..."
+    IDS_UPDATEDLG_WAITING   "Waiting..."
+    IDS_SPEEDTAB_LOW        "Low  (Example system: 200 MHz, 32 MB RAM, Direct3D)"
+    IDS_SPEEDTAB_MEDIUM     "Medium  (Example system: 300 MHz, 32 MB RAM, Glide)"
+    IDS_SPEEDTAB_HIGH       "High  (Example system: 300 MHz, 64 MB RAM, Glide)"
+    IDS_SPEEDTAB_VERY_HIGH  "Very High (Example system: 400 MHz, 128 MB RAM, Glide)"
+    IDS_UPDATEDLG_LNCH_UPD1 "The Descent 3 Launcher needs to be updated to a newer version.\nIt will now be shutdown, modified, and then restarted.\n\nThis may take several seconds..."
+    IDS_UPDATEDLG_LNCH_UPD2 "The Descent 3 Launcher needs to be updated to a newer version.\nHowever, the Update Launcher executable could not be found (or could not be accessed).\n\nTherefore, the Launcher cannot be updated at this time."
+    IDS_UPDATEDLG_LNCH_UPD3 "The Descent 3 Launcher needs to be updated to a newer version.\nHowever, the replacement executable or patch file could not be accessed.\n\nTherefore, the Launcher cannot be updated at this time."
+    IDS_UPDATEDLG_LNCH_UPD_TITLE "Launcher Update"
+    IDS_UPDATEDLG_BEG_PATCH "Beginning Patching..."
+    IDS_UPDATEDLG_PATCH_COMPLETE "Patching Complete!"
+    IDS_UPDATEDLG_PATCH_FAILED "Patching Failed!"
+    IDS_UPDATEDLG_PATCH_ERROR "Patching Error"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UPDATEDLG_PROCESSING "Processing %s"
+    IDS_UPDATEDLG_FILE_COMPLETE "File Complete!"
+    IDS_UPDATEDLG_SEARCHING "Searching for systems to update..."
+    IDS_UPDATEDLG_WNDMSG_MAIN "Now connecting to the Descent 3 Patch Server."
+    IDS_UPDATEDLG_WNDMSG_STATUS "Please wait..."
+    IDS_UPDATEDLG_USERMSG3  "Now updating Descent 3 to Version %d.%d.%d"
+    IDS_SITESELECTDLG_SITE_NAME "Site Name"
+    IDS_SITESELECTDLG_SITE_ADDRESS "URL"
+    IDS_SITESELECTDLG_SITE_LOCATION "Location"
+    IDS_SITESELECTDLG_MUST_SELECT "You must select a download site."
+    IDS_SITESELECTDLG_SELECT_TITLE "Site Selection"
+    IDS_UPDATEDLG_BADPARMS  "Bad parameters were given.\n\nRemote file path: \t%s\nLocal file path: \t%s\n"
+    IDS_UPDATEDLG_CANT_WRITE_FILE "Could not write out to the file (%s)."
+    IDS_UPDATEDLG_CANT_PARSE_URL "Could not parse the given URL (%s)."
+    IDS_UPDATEDLG_BAD_FILE_OR_DIR 
+                            "A bad file or directory was encountered.\n\nRemote file path: \t%s\nLocal file path: \t%s\n"
+    IDS_UPDATEDLG_HOST_NOT_FOUND "The host could not be located (%s)."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UPDATEDLG_NO_MEMORY "Out of memory!"
+    IDS_UPDATEDLG_CANCELLED "The update has been cancelled."
+    IDS_UPDATEDLG_UNKNOWN_ERROR 
+                            "The launcher was unable to contact the server.  Please verify that your network connection is valid and working properly."
+    IDS_UPDATEDLG_DOWNLOAD_ERROR "File Download Message"
+    IDS_SITESELECTDLG_PARSE_ERROR 
+                            "The site info file could not be opened and parsed."
+    IDS_UPDATEDLG_DONE_UPDATING "Done Updating."
+    IDS_UPDATEDLG_CONTINUE_MSG 
+                            "Patching complete!  Press the OK button to exit."
+    IDS_UPDATEDLG_NO_MOTD   "Sorry, there is no message of the day."
+    IDS_UPDATEDLG_DL_MOTD   "Downloading the Message of the Day"
+    IDS_UPDATEDLG_GOT_MOTD  "Successfully Read the Message of the Day"
+    IDS_UPDATEDLG_NODL_MOTD "Could Not Download the Message of the Day"
+    IDS_AUDIOTAB_CARD_MISSING 
+                            "Your currently selected device (%s)\ncould not be detected.\n\nYou must select another device."
+    IDS_AUDIOTAB_WARNING    "Warning!"
+    IDS_DIRECTXTAB_OK       "Ok"
+    IDS_D3LAUNCH_NO_CD      "Descent 3 CD not located.  Please insert Descent 3 CD #1 and select OK to continue."
+    IDS_D3LAUNCH_CD_ERROR   "Error Reading CD."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DIRECTXTAB_NTMSG    "Windows NT has DirectX built in.  If you are running NT 4.0 you should have Service Pack 3 (SP3) installed.  For detailed information on SP3 (including download links), go to:\n\nhttp://www.microsoft.com/support/winnt/nt4sp3.htm"
+    IDS_DIRECTXTAB_NTNOTICE "Windows NT Notice"
+    IDS_DIRECTXTAB_LOAD_ERROR "Error loading DirectX 6.1"
+    IDS_D3LAUNCHDLG_NO_UNINSTALL "No uninstall information found."
+    IDS_D3LAUNCHDLG_COULDNT_UNINSTALL "Couldn't Uninstall"
+    IDS_D3LAUNCHDLG_WARNING_PROMPT 
+                            "Are you sure you want to delete '%s' and all of its components?"
+    IDS_D3LAUNCHDLG_WARNING_TITLE "Confirm File Deletion"
+    IDS_D3LAUNCHDLG_UNINSTALL_ERROR "Error Launching Uninstaller"
+    IDS_D3LAUNCHDLG_PLAY_BTN "Play"
+    IDS_D3LAUNCHDLG_SETUP_BTN "Setup"
+    IDS_D3LAUNCHDLG_UPDATE_BTN "Auto-Update"
+    IDS_D3LAUNCHDLG_README_BTN "View Readme"
+    IDS_D3LAUNCHDLG_DIRECTX_BTN "Install Drivers"
+    IDS_D3LAUNCHDLG_UNINSTALL_BTN "Uninstall"
+    IDS_D3LAUNCHDLG_INSTALL_BTN "Install"
+    IDS_D3LAUNCHDLG_STRAIGHTTOSETUP_MSG 
+                            "Since this is your first time running Descent 3, you will now be automatically taken to the Setup window.  \n\nIMPORTANT NOTE:\nIt is important that you view each section of the Setup window and configure it appropriately.  Press the Help button if you have questions about a particular section.  Once you are satisfied with your settings, select the OK button at the bottom of the Setup window to save them."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_D3LAUNCHDLG_STRAIGHTTOSETUP_TITLE "Welcome to Descent 3!"
+    IDS_D3LAUNCHDLG_PLAY_WARNING_MSG 
+                            "Before playing Descent 3, it is highly recommended that you fully configure your game from Setup (this means configuring each of the Setup Tabs before pressing the OK button).\n\nDo you wish to proceed and play Descent 3 anyway?"
+    IDS_D3LAUNCHDLG_FILE_NOT_FOUND "File Not Found Error"
+    IDS_D3LAUNCH_NO_HELP    "The following help file could not be located:\n\n%s"
+    IDS_SPEEDTAB_SPEED_PROMPT 
+                            "Setup has determined a default detail level for your computer that is different from the one currently selected.  If you decide to use this new setting, one or more of Descent 3's detail options will be altered to better suit the speed of your system.\n\nDo you wish to use the new detail level?"
+    IDS_SPEEDTAB_SPEED_TITLE "New Detail Level Determined"
+    IDS_D3LAUNCHDLG_WEBPAGE_BTN "Visit us!"
+    IDS_D3LAUNCHDLG_PXO_BTN "Play online!"
+    IDS_D3LAUNCHDLG_NO_RENDERER_MSG 
+                            "You must select a rendering device before playing Descent 3.  This can be easily done by pressing the Setup button and then selecting the Video Tab.  From there, you can detect all the devices available on your system and choose one."
+    IDS_D3LAUNCHDLG_NO_RENDERER_TITLE "No Rendering Device Selected!"
+    IDS_D3LAUNCHDLG_DEMO_ONLY_MSG 
+                            "Sorry, this option is not available in the demo version.\n\nDirectX 6.1 can be downloaded directly from Microsoft:\nhttp://www.microsoft.com/directx/download.asp"
+    IDS_D3LAUNCHDLG_DEMO_ONLY_TITLE "Not Available In Demo"
+    IDS_D3LAUNCH_DEMO_DLGTITLE "Descent 3 Demo Launcher"
+    IDS_VIDEOTAB_DXVERSION_TITLE "DirectX 6.0 Required"
+    IDS_VIDEOTAB_DXVERSION_MSG 
+                            "In order to play Descent 3 using Direct3D, you must have DirectX 6.0 installed.  Click on the DirectX Setup Tab for information on obtaining DirectX 6.0."
+    IDS_D3LAUNCHDLG_DXVERSION_TITLE "DirectX 3.0 Required"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_D3LAUNCHDLG_DXVERSION_MSG 
+                            "In order to play Descent 3, you must have DirectX 3.0 or greater installed on your system.\n\n For information on obtaining DirectX, select the Setup button and then click on the DirectX Tab."
+    IDS_D3LAUNCHDLG_NOMEM_TITLE "Low Memory!"
+    IDS_D3LAUNCHDLG_NOMEM_MSG 
+                            "Your system may not have enough memory to reliably play Descent 3.  It is reccomended that you free some disk space and reboot before trying to play.\n\nDo you want to continue anyway?"
+    IDS_PLEASE_WAIT_MSG     "Please Wait..."
+    IDS_VIDEOTAB_SCANNING   "Scanning Video Devices"
+    IDS_AUDIOTAB_SCANNING   "Scanning Audio Devices"
+    IDS_JOYSTICKTAB_SCANNING "Scanning Input Devices"
+    IDS_VIDEOTAB_MTOD_MSG   "More than one rendering device has been detected.\n\nYou need to select one of them from the Rendering Device drop-down list box."
+    IDS_VIDEOTAB_MTOD_TITLE "Multiple Video Devices Detected"
+    IDS_SPEEDTAB_NOT_DETECTED "Not detected"
+    IDS_UPDATEDLG_NOREGVER_MSG 
+                            "The Descent 3 Auto-Update program could not find your current game Version in the system registry.\n\nThis should be corrected by starting up the game, exiting the game, and then running the Auto-Update program."
+    IDS_UPDATEDLG_NOREGVER_TITLE "Unable to Determine User's Version"
+    IDS_DIRECTXTAB_UPD_REC  "Update Recommended"
+    IDS_SPEEDTAB_CUSTOM     "Custom"
+    IDS_D3LAUNCHDLG_SPD_MSG "You must allow Setup to configure your Default Detail Level setting before playing Descent 3 for the first time.\n\nTo do this, simply press the Setup button from the main menu and click on the Speed Tab.  Then, press the ""Detect System Properties"" button to determine the recommended detail level setting for your system (answer ""Yes"" if prompted about changing your settings)."
+    IDS_D3LAUNCHDLG_SPD_TITLE "Detail Level Setting Not Configured"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_D3LAUNCHDLG_LAUNCH_ERRMSG 
+                            "The following error occurred while trying to launch ""%s"":\n\n"
+    IDS_D3LAUNCHDLG_CONTEST_MSG 
+                            "Based on the date your computer is set to, it appears that the $50,000 Descent 3 tournament is still running.\n\nFor more information, visit the Tournament Web Page at:\n%s\n\nWould you like to go to this page right now?"
+    IDS_D3LAUNCHDLG_CONTEST_TITLE 
+                            "The Descent 3 Tournament Is Still Running! "
+    IDS_D3LAUNCHDLG_DXERR_SUCCESS "The setup finished successfully."
+    IDS_D3LAUNCHDLG_DXERR_SUCCESS_RESTART 
+                            "The setup finished successfully.\n\nHowever, you must reboot your machine for the changes to take effect."
+    IDS_D3LAUNCHDLG_DXERR_BADSOURCESIZE 
+                            "The setup failed because a file's size could not be verified or was incorrect."
+    IDS_D3LAUNCHDLG_DXERR_BADSOURCETIME 
+                            "The setup failed because a file's date and time could not be verified or were incorrect."
+    IDS_D3LAUNCHDLG_DXERR_BADWINDOWSVERSION 
+                            "DirectX does not support the Windows version on this system."
+    IDS_D3LAUNCHDLG_DXERR_CANTFINDDIR 
+                            "The setup program could not find the working directory."
+    IDS_D3LAUNCHDLG_DXERR_CANTFINDINF 
+                            "ERROR: A required .inf file could not be found."
+    IDS_D3LAUNCHDLG_DXERR_INTERNAL "An internal error has occurred."
+    IDS_D3LAUNCHDLG_DXERR_NOCOPY 
+                            "The setup failed because a file's version could not be verified or was incorrect."
+    IDS_D3LAUNCHDLG_DXERR_NOTPREINSTALLEDONNT 
+                            "The version of Windows NT/Windows 2000 on this system does not contain the current version of DirectX.  An older version of DirectX may be present, or DirectX may be absent all together."
+    IDS_D3LAUNCHDLG_DXERR_OUTOFDISKSPACE 
+                            "The setup program failed because it ran out of disk space during the installation."
+    IDS_D3LAUNCHDLG_DXERR_SOURCEFILENOTFOUND 
+                            "The setup failed because one of the required source files could not be found."
+    IDS_D3LAUNCHDLG_DXERR_UNKNOWNOS 
+                            "The operating system on this system is not currently supported."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_D3LAUNCHDLG_DXERR_USERHITCANCEL 
+                            "The Cancel button was pressed before the application was fully installed."
+    IDS_D3LAUNCHDLG_DXERR_TITLE "DirectX Setup"
+    IDS_D3LAUNCHDLG_DSETUP_ERR_MSG1 "Could not locate dsetup.dll"
+    IDS_D3LAUNCHDLG_DSETUP_ERR_MSG2 
+                            "Could not obtain DirectXSetup from dsetup.dll"
+    IDS_D3LAUNCHDLG_DSETUP_ERR_TITLE "DirectSetup Error!"
+    IDS_GLSETUP_ERROR       "Error Running GLSetup"
+    IDS_LANG_ENGLISH        "English"
+    IDS_LANG_FRENCH         "French"
+    IDS_LANG_GERMAN         "German"
+    IDS_LANG_ITALIAN        "Italian"
+    IDS_LANG_SPANISH        "Spanish"
+    IDS_D3LAUNCH_OEMV3_DLGTITLE "Descent 3: SOL ASCENT for Voodoo3 Launcher"
+    IDS_D3LAUNCH_OEMA2_DLGTITLE "Descent 3: SOL ASCENT for Aureal Launcher"
+    IDS_D3LAUNCH_OEMKM_DLGTITLE 
+                            "Descent 3: SOL ASCENT for Pentium III Launcher"
+    IDS_D3LAUNCHDLG_UPDPRMT_MSG 
+                            "From time to time new versions of Descent 3 are made available that contain bug fixes and other improvements. Therefore we suggest you periodically check for updates by clicking on the Auto-Update button.\n\nWould you like to check for updates now?"
+    IDS_D3LAUNCHDLG_UPDPRMT_TITLE "Update Prompt"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_D3LAUNCH_OEM_DLGTITLE "Descent 3: SOL ASCENT Launcher"
+    IDS_D3LAUNCH_DEMO2_DLGTITLE "Descent 3 Demo 2 Launcher"
+    IDS_OPENGL_WARNING_MSG  "WARNING:  We have found many OpenGL drivers to be incomplete or buggy.  If you are using a card with a Voodoo chipset, we strongly recommend you select Glide.  For other cards, we suggest you try Direct3D if you experience problems running under OpenGL.\n"
+    IDS_OPENGL_WARNING_TITLE "OpenGL Warning"
+    IDS_NOTGLIDE_TITLE      "Renderer Selection Warning"
+    IDS_NOTGLIDE_MSG        "WARNING: If you are using a card with a Voodoo chipset, we strongly recommend you choose 3Dfx Glide as your Selected Renderer."
+    IDS_PROFANITY_MSG       "Would you like to enable certain features of Descent 3 that would help prevent you from receiving profane or indecent messages from other players in a multiplayer game?\n\nNOTE: You can change these settings later if you wish."
+    IDS_PROFANITY_TITLE     "Multiplayer Profanity Filter Settings"
+    IDS_GLSETUP_EXPIRED_MSG "This version of GLSetup has expired.  Please visit the GLSetup web site at http://www.glsetup.com to download the release version of GLSetup."
+    IDS_FINDFAST_MSG        "Descent 3 was unable to shut down FindFast on your computer.\n\nWould you like to run Descent 3 anyway?"
+    IDS_FINDFAST_TITLE      "FindFast Shutdown Failed"
+    IDS_OK                  "OK"
+    IDS_CANCEL              "Cancel"
+    IDS_HELP                "Help"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "res\D3Launch.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

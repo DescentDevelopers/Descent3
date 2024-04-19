@@ -1,0 +1,4 @@
+// Microsoft Developer Studio generated Help ID include file.
+// Used by editor.rc
+//
+#define HIDC_STATIC                     0x80bfffff    // IDD_ROBOT_WEAPON_DIALOG
