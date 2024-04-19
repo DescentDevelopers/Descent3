@@ -537,7 +537,7 @@ void sb_buffered_loop_step(win_llsSystem *lls, sound_buffer_info *sb, int force_
 
   pos_state old_pos_state;
   float old_pan;
-  float old_volume;
+  float old_volume = 0.0f;
 
   ASSERT(lls->m_mixer_type != SOUND_MIXER_SOFTWARE_16 && lls->m_mixer_type != SOUND_MIXER_NONE);
 

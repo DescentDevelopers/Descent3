@@ -577,7 +577,7 @@ void grFont::translate_mono_char(grSurface *sf, int x, int y, int index, gr_font
 
 int grFont::draw_char(grSurface *sf, int x, int y, int ch, tCharProperties *chprop) {
   gr_font_record *ft;
-  int next_x, width, index;
+  int next_x = 0, width, index;
 
   ASSERT(m_FontHandle > -1);
   if ((ch < min_ascii()) || (ch > max_ascii()))
@@ -615,7 +615,7 @@ int grFont::draw_char(grSurface *sf, int x, int y, int ch, tCharProperties *chpr
 
 int grFont::draw_char(grSurface *sf, int x, int y, int ch, int sx, int sy, int sw, int sh, tCharProperties *chprop) {
   gr_font_record *ft;
-  int next_x, width, index;
+  int next_x = 0, width, index;
 
   ASSERT(m_FontHandle > -1);
   if ((ch < min_ascii()) || (ch > max_ascii()))
