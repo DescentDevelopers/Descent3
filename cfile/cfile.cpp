@@ -914,11 +914,11 @@ int16_t cf_ReadShort(CFILE *cfp) {
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int8_t cf_ReadByte(CFILE *cfp) {
-  int8_t i;
+  int i;
   i = cfgetc(cfp);
   if (i == EOF)
     ThrowCFileError(CFE_READING, cfp, cfeof(cfp) ? eof_error : strerror(errno));
-  return (sbyte)i;
+  return (int8_t)i;
 }
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
