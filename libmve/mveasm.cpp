@@ -583,10 +583,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 
     /////////////////////////////////////////////////////////////////////////////
     // Note: this is all you should have to tweak
-    bool opcodesToProcess[16] = {true, true, true,  true,  // 0  - 3
-                                 true, true, true,  true,  // 4  - 7
-                                 true, true, false, true,  // 8  - 11
-                                 true, true, true,  true}; // 12 - 15
+    bool opcodesToProcess[16] = {true, true, true, true,  // 0  - 3
+                                 true, true, true, true,  // 4  - 7
+                                 true, true, true, true,  // 8  - 11
+                                 true, true, true, true}; // 12 - 15
     if (!opcodesToProcess[opcode_to_use]) {
       opcode_to_use = SkipOpcode(opcode_to_use, hiColor, esi, bcomp, edi);
     }
@@ -2054,7 +2054,9 @@ void MVE_gfxWaitRetrace(int state);
 void MVE_gfxSetSplit(unsigned line);
 
 #if defined(__LINUX__)
-#ifndef MACOSXPPC
+
+#if !defined(MACOSXPPC) && !defined(__aarch64__)
+
 #define int3 __asm__ __volatile__("int $3");
 #else
 #define int3
