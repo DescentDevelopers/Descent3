@@ -77,7 +77,7 @@
 #include "ddio.h"
 #include "gamefont.h"
 #include "multi_ui.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "mem.h"
 #include "game.h"
 #include "stringtable.h"

@@ -338,7 +338,7 @@
 #include "sounds.h"
 #include "stringtable.h"
 #include "Macros.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "AIMain.h"
 
 #include <algorithm>

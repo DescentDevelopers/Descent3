@@ -278,7 +278,7 @@
 #include "cinematics.h"
 #include "hlsoundlib.h"
 #include "terrain.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "mem.h"
 #include "lighting.h"
 #include "PHYSICS.H"

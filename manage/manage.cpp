@@ -438,7 +438,7 @@
 #include "mono.h"
 #include "object.h"
 #include "ddio.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "appdatabase.h"
 #include "genericpage.h"
 #include "mem.h"

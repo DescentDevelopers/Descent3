@@ -33,7 +33,7 @@
  */
 
 #include "streamaudio.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pserror.h"
 #include <string.h>
 

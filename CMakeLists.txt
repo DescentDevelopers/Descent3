@@ -69,7 +69,7 @@ ENDIF ()
 
 MESSAGE("Install will copy files to ${D3_GAMEDIR}")
 
-include_directories("${CMAKE_SOURCE_DIR}" "lib" "Descent3" ${PLATFORM_INCLUDES})
+include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
 
 # file(GLOB_RECURSE INCS "*.h")
 

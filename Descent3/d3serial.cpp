@@ -65,7 +65,7 @@
 #include "descent.h"
 #include <time.h>
 #include "mono.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "program.h"
 
 #include <fcntl.h>

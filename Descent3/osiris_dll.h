@@ -98,7 +98,7 @@
 #include "object_external_struct.h"
 #include "osiris_share.h"
 #include "module.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 
 extern uint Osiris_game_checksum;
 

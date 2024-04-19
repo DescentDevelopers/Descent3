@@ -3,7 +3,7 @@
 
 #include "manage.h"
 #include "ship.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pstypes.h"
 
 typedef struct {

@@ -164,7 +164,7 @@
 #define __INVENTORY_H__
 
 #include "pstypes.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 
 struct object;
 

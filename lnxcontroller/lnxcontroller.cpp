@@ -29,7 +29,7 @@
 #include "ddio.h"
 #include "pserror.h"
 #include "joystick.h"
-#include "cfile/inffile.h"
+#include "InfFile.h"
 
 // Sorry! This is needed for the semi-hacky mouselook support
 #include "descent.h"

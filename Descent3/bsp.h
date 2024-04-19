@@ -25,7 +25,7 @@
 
 #include "list.h"
 #include "vecmat.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 
 #define BSP_IN_FRONT 1
 #define BSP_BEHIND 2

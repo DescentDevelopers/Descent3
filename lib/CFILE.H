@@ -76,9 +76,7 @@
 #ifndef CFILE_H
 #define CFILE_H
 
-#include <cmath>
-#include <cstdint>
-#include <cstdio>
+#include <stdio.h>
 
 #include "pstypes.h"
 
@@ -96,10 +94,8 @@ typedef struct CFILE {
 } CFILE;
 
 // Defines for cfile_error
-enum CFileError {
-  CFE_READING = 1,
-  CFE_WRITING,
-};
+#define CFE_READING 1
+#define CFE_WRITING 2
 
 // The structure thrown by a cfile error
 typedef struct {
@@ -109,17 +105,8 @@ typedef struct {
 } cfile_error;
 
 // Flags for CFILE struct
-enum CFileFlags {
-  CFF_TEXT = 1, // if this bit set, file is text
-  CFF_WRITING,  // if bit set, file opened for writing
-};
-
-// return values for cfexist()
-enum CFileExitStatus {
-  CFES_NOT_FOUND = 0,
-  CFES_ON_DISK,
-  CFES_IN_LIBRARY,
-};
+#define CF_TEXT 1    // if this bit set, file is text
+#define CF_WRITING 2 // if bit set, file opened for writing
 
 // See if a file is in a hog
 bool cf_IsFileInHog(char *filename, char *hogname);
@@ -143,7 +130,7 @@ void cf_CloseLibrary(int handle);
 int cf_SetSearchPath(const char *path, ...);
 
 // Removes all search paths that have been added by cf_SetSearchPath
-void cf_ClearAllSearchPaths();
+void cf_ClearAllSearchPaths(void);
 
 // Opens a file for reading or writing
 // If a path is specified, will try to open the file only in that path.
@@ -180,6 +167,11 @@ int cftell(CFILE *cfp);
 // Returns true if at EOF
 int cfeof(CFILE *cfp);
 
+// return values for cfexist()
+#define CF_NOT_FOUND 0
+#define CF_ON_DISK 1
+#define CF_IN_LIBRARY 2
+
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
@@ -200,23 +192,23 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp);
 
 // Read and return an integer (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int32_t cf_ReadInt(CFILE *cfp);
+int cf_ReadInt(CFILE *cfp);
 
 // Read and return a short (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int16_t cf_ReadShort(CFILE *cfp);
+short cf_ReadShort(CFILE *cfp);
 
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int8_t cf_ReadByte(CFILE *cfp);
+sbyte cf_ReadByte(CFILE *cfp);
 
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-float_t cf_ReadFloat(CFILE *cfp);
+float cf_ReadFloat(CFILE *cfp);
 
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-double_t cf_ReadDouble(CFILE *cfp);
+double cf_ReadDouble(CFILE *cfp);
 
 // Reads a string from a CFILE.  If the file is type binary, this
 // function reads until a NULL or EOF is found.  If the file is text,
@@ -254,23 +246,23 @@ int cfprintf(CFILE *cfp, const char *format, ...);
 
 // Write an integer (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteInt(CFILE *cfp, int32_t i);
+void cf_WriteInt(CFILE *cfp, int i);
 
 // Write a short (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteShort(CFILE *cfp, int16_t s);
+void cf_WriteShort(CFILE *cfp, short s);
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteByte(CFILE *cfp, int8_t b);
+void cf_WriteByte(CFILE *cfp, sbyte b);
 
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteFloat(CFILE *cfp, float_t f);
+void cf_WriteFloat(CFILE *cfp, float f);
 
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteDouble(CFILE *cfp, double_t d);
+void cf_WriteDouble(CFILE *cfp, double d);
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write
@@ -287,17 +279,17 @@ void cf_CopyFileTime(char *dest, const char *src);
 // Changes a files attributes (ie read/write only)
 void cf_ChangeFileAttributes(const char *name, int attr);
 
-// rewinds cfile position
+//	rewinds cfile position
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
 unsigned int cf_GetfileCRC(char *src);
 unsigned int cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
-// the following cf_LibraryFind function are similar to the ddio_Find functions as they look
-// for files that match the wildcard passed in, however, this is to be used for hog files.
+//	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
+//	for files that match the wildcard passed in, however, this is to be used for hog files.
 bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer);
 bool cf_LibraryFindNext(char *buffer);
-void cf_LibraryFindClose();
+void cf_LibraryFindClose(void);
 
 #endif

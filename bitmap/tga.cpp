@@ -114,7 +114,7 @@
  * $NoKeywords: $
  */
 
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pserror.h"
 #include "pstypes.h"
 #include "bitmap.h"

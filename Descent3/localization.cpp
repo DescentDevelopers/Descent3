@@ -73,7 +73,7 @@
 #include "game.h"
 #include "descent.h"
 #include "mono.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "localization.h"
 #include "mem.h"
 #include "ddio.h"

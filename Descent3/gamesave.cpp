@@ -248,7 +248,7 @@
 #include "gamesave.h"
 #include "descent.h"
 #include "newui.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "Mission.h"
 #include "gamesequence.h"
 #include "gameevent.h"

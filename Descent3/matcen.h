@@ -1,7 +1,7 @@
 #ifndef _MATCEN_H_
 #define _MATCEN_H_
 
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "vecmat.h"
 #include "matcen_external.h"
 
