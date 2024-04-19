@@ -861,8 +861,9 @@ int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_
     if (min_teams != max_teams) {
       char a_num_teams[5];
       char team_count_msg[300];
-      sprintf(a_num_teams, "%d", min_teams);
-      sprintf(team_count_msg, "%s %s (%d - %d)", TXT_TEAMCOUNTPROMPT, script, min_teams, max_teams);
+      snprintf(a_num_teams, sizeof(a_num_teams), "%d", min_teams);
+      snprintf(team_count_msg, sizeof(team_count_msg), "%s %s (%d - %d)", TXT_TEAMCOUNTPROMPT, script, min_teams,
+               max_teams);
     retry_team_count:
       int res = DoEditDialog(team_count_msg, a_num_teams, 4);
       if (res) {
@@ -2968,10 +2969,12 @@ void ChangeRankIndex(int old_index, int pnum) {
 
   if (old_index < new_index) // promoted
   {
-    sprintf(str, "%s %s %s %s!", Players[pnum].callsign, TXT_HAS_BEEN, TXT_PROMOTED, TXT(TXT_MULTI_RANKS + new_index));
+    snprintf(str, sizeof(str), "%s %s %s %s!", Players[pnum].callsign, TXT_HAS_BEEN, TXT_PROMOTED,
+             TXT(TXT_MULTI_RANKS + new_index));
     goodnews = 1;
   } else {
-    sprintf(str, "%s %s %s %s!", Players[pnum].callsign, TXT_HAS_BEEN, TXT_DEMOTED, TXT(TXT_MULTI_RANKS + new_index));
+    snprintf(str, sizeof(str), "%s %s %s %s!", Players[pnum].callsign, TXT_HAS_BEEN, TXT_DEMOTED,
+             TXT(TXT_MULTI_RANKS + new_index));
     goodnews = 0;
   }
 

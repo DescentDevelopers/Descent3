@@ -955,14 +955,14 @@ void ExportHotSpot(char *filename, hotspotmap_t *hsmap) {
   char buffer[256];
 
   int i, j;
-  sprintf(buffer, "Number of HotSpots = %d", hsmap->num_of_hotspots);
+  snprintf(buffer, sizeof(buffer), "Number of HotSpots = %d", hsmap->num_of_hotspots);
   cf_WriteString(file, buffer);
   for (i = 0; i < hsmap->num_of_hotspots; i++) {
-    sprintf(buffer, "\n-%d-Scanlines = %d", i, hsmap->hs[i].scanlines);
+    snprintf(buffer, sizeof(buffer), "\n-%d-Scanlines = %d", i, hsmap->hs[i].scanlines);
     cf_WriteString(file, buffer);
     for (j = 0; j < hsmap->hs[i].scanlines; j++) {
-      sprintf(buffer, "----Y=%d StartX=%d EndX=%d", hsmap->hs[i].starting_y + j, hsmap->hs[i].x[j].start,
-              hsmap->hs[i].x[j].end);
+      snprintf(buffer, sizeof(buffer), "----Y=%d StartX=%d EndX=%d", hsmap->hs[i].starting_y + j,
+               hsmap->hs[i].x[j].start, hsmap->hs[i].x[j].end);
       cf_WriteString(file, buffer);
     }
   }

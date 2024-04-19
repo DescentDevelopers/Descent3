@@ -580,7 +580,7 @@ void UpdateFileList(newuiListBox *lb, const char *path, char *wildcards) {
     char tempbuffer[5];
     for (int i = 0; i < rootcount; i++) {
       if (roots[i]) {
-        sprintf(tempbuffer, " [%s]", roots[i]);
+        snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", roots[i]);
         lb->AddItem(tempbuffer);
         mem_free(roots[i]);
       }
@@ -763,7 +763,7 @@ wildcard_err:
 
   for (i = 0; i < dircount; i++) {
     if (dirs[i]) {
-      sprintf(tempbuffer, " [%s]", dirs[i]);
+      snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", dirs[i]);
       lb->AddItem(tempbuffer);
       mem_free(dirs[i]);
     }

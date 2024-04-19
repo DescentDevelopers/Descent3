@@ -897,9 +897,9 @@ void wpnsel_cfg_screen::realize() {
     if (wpnidx != WPNSEL_INVALID) {
       if (wpnidx & WPNSEL_SKIP) {
         wpnidx &= (~WPNSEL_SKIP);
-        sprintf(str, TXT_WPNSELBTN, TXT(Static_weapon_names_msg[wpnidx]));
+        snprintf(str, sizeof(str), TXT_WPNSELBTN, TXT(Static_weapon_names_msg[wpnidx]));
       } else {
-        sprintf(str, "%s", TXT(Static_weapon_names_msg[wpnidx]));
+        snprintf(str, sizeof(str), "%s", TXT(Static_weapon_names_msg[wpnidx]));
       }
       m_primary_disables[i].Create(m_menu, UID_PRIMARY_DIS + i, "X", WPNSEL_PRIMARY_X, WPNSEL_PRIMARY_Y + i * 12);
       m_primary_buttons[i].Create(m_menu, UID_PRIMARY_WPN + i, str, WPNSEL_PRIMARY_X + 28, WPNSEL_PRIMARY_Y + i * 12,
@@ -909,9 +909,9 @@ void wpnsel_cfg_screen::realize() {
     if (wpnidx != WPNSEL_INVALID) {
       if (wpnidx & WPNSEL_SKIP) {
         wpnidx &= (~WPNSEL_SKIP);
-        sprintf(str, TXT_WPNSELBTN, TXT(Static_weapon_names_msg[wpnidx]));
+        snprintf(str, sizeof(str), TXT_WPNSELBTN, TXT(Static_weapon_names_msg[wpnidx]));
       } else {
-        sprintf(str, "%s", TXT(Static_weapon_names_msg[wpnidx]));
+        snprintf(str, sizeof(str), "%s", TXT(Static_weapon_names_msg[wpnidx]));
       }
       m_secondary_disables[i].Create(m_menu, UID_SECONDARY_DIS + i, "X", WPNSEL_SECONDARY_X,
                                      WPNSEL_SECONDARY_Y + i * 12);
@@ -1073,7 +1073,7 @@ void ctl_cfg_element_options_dialog(short fnid) {
   clear_binding[0] = NULL;
   inv_binding[0] = NULL;
   if (cfgparts.ctrl_0 != NULL_CONTROLLER) {
-    sprintf(str, TXT_CFG_BIND_1, cfg_binding_text(ctype_fn[0], cfgparts.ctrl_0, cfgparts.bind_0));
+    snprintf(str, sizeof(str), TXT_CFG_BIND_1, cfg_binding_text(ctype_fn[0], cfgparts.ctrl_0, cfgparts.bind_0));
     sheet->NewGroup(str, 0, y, NEWUI_ALIGN_HORIZ);
     clear_binding[0] = sheet->AddCheckBox(TXT_CFG_CLEAR);
     if (ctype_fn[0] == ctAxis || ctype_fn[0] == ctMouseAxis) {
@@ -1088,7 +1088,7 @@ void ctl_cfg_element_options_dialog(short fnid) {
   clear_binding[1] = NULL;
   inv_binding[1] = NULL;
   if (cfgparts.ctrl_1 != NULL_CONTROLLER) {
-    sprintf(str, TXT_CFG_BIND_2, cfg_binding_text(ctype_fn[1], cfgparts.ctrl_1, cfgparts.bind_1));
+    snprintf(str, sizeof(str), TXT_CFG_BIND_2, cfg_binding_text(ctype_fn[1], cfgparts.ctrl_1, cfgparts.bind_1));
     sheet->NewGroup(str, 0, y, NEWUI_ALIGN_HORIZ);
     clear_binding[1] = sheet->AddCheckBox(TXT_CFG_CLEAR);
     if (ctype_fn[1] == ctAxis || ctype_fn[1] == ctMouseAxis) {
@@ -1154,9 +1154,9 @@ int weapon_select_dialog(int wpn, bool is_secondary) {
     if (wpnidx != WPNSEL_INVALID) {
       if (wpnidx & WPNSEL_SKIP) {
         wpnidx &= (~WPNSEL_SKIP);
-        sprintf(str, TXT_WPNSELBTN, TXT(Static_weapon_names_msg[wpnidx]));
+        snprintf(str, sizeof(str), TXT_WPNSELBTN, TXT(Static_weapon_names_msg[wpnidx]));
       } else {
-        sprintf(str, "%s", TXT(Static_weapon_names_msg[wpnidx]));
+        snprintf(str, sizeof(str), "%s", TXT(Static_weapon_names_msg[wpnidx]));
       }
       lbox->AddItem(str);
     } else {
@@ -1219,7 +1219,7 @@ void joystick_settings_dialog() {
     slider_set.max_val.f = JOY_AXIS_SENS_RANGE;
     slider_set.type = SLIDER_UNITS_FLOAT;
     curpos = CALC_SLIDER_POS_FLOAT(val, &slider_set, CFG_AXIS_SENS_RANGE);
-    sprintf(str, TXT_CONTAXIS, axis_str[i]);
+    snprintf(str, sizeof(str), TXT_CONTAXIS, axis_str[i]);
     joy_sens[i] = sheet->AddSlider(str, CFG_AXIS_SENS_RANGE, curpos, &slider_set);
   }
 #ifndef MACINTOSH // DAJ
@@ -1232,7 +1232,7 @@ void joystick_settings_dialog() {
     slider_set.max_val.f = MSE_AXIS_SENS_RANGE;
     slider_set.type = SLIDER_UNITS_FLOAT;
     curpos = CALC_SLIDER_POS_FLOAT(val, &slider_set, CFG_AXIS_SENS_RANGE);
-    sprintf(str, TXT_CONTAXIS, axis_str[i]);
+    snprintf(str, sizeof(str), TXT_CONTAXIS, axis_str[i]);
     mse_sens[i] = sheet->AddSlider(str, CFG_AXIS_SENS_RANGE, curpos, &slider_set);
   }
   //	joystick and mouse enabled

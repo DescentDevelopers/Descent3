@@ -736,7 +736,7 @@ void DMFCInputCommand_BanList(char *input_string) {
   for (int i = 0; i < size; i++) {
     char *ptr = basethis->GetBannedPlayerCallsign(i);
     if (ptr) {
-      sprintf(buffer, "[%d]%s\n", i, ptr);
+      snprintf(buffer, sizeof(buffer), "[%d]%s\n", i, ptr);
       DPrintf(buffer);
     }
   }

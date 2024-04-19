@@ -44,7 +44,7 @@ void con_null_Printf(const char *fmt, ...) {
   char buffer[1024];
   va_list args;
   va_start(args, fmt);
-  vsprintf(buffer, fmt, args);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
   va_end(args);
   con_null_Puts(0, buffer);
 }

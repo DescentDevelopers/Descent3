@@ -590,7 +590,7 @@ redisplay_list:
       }
 
       if (m_TeamCallback) {
-        sprintf(buffer, DTXT_TEAMLABEL, basethis->GetTeamString(pr->team));
+        snprintf(buffer, sizeof(buffer), DTXT_TEAMLABEL, basethis->GetTeamString(pr->team));
         int length = strlen(buffer);
         buffer[length] = ' '; // lose the \0
 
@@ -627,41 +627,42 @@ redisplay_list:
       if (!is_dedicated_server || m_PLColInfo[c].type == DSCOL_PILOT_NAME || m_PLColInfo[c].type == DSCOL_BLANK) {
         switch (m_PLColInfo[c].type) {
         case DSCOL_KILLS_LEVEL:
-          sprintf(buffer, "%d", pr->dstats.kills[DSTAT_LEVEL]);
+          snprintf(buffer, sizeof(buffer), "%d", pr->dstats.kills[DSTAT_LEVEL]);
           break;
         case DSCOL_KILLS_OVERALL:
-          sprintf(buffer, "%d", pr->dstats.kills[DSTAT_OVERALL]);
+          snprintf(buffer, sizeof(buffer), "%d", pr->dstats.kills[DSTAT_OVERALL]);
           break;
         case DSCOL_KILLS_BOTH:
-          sprintf(buffer, "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
+          snprintf(buffer, sizeof(buffer), "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
           break;
         case DSCOL_DEATHS_LEVEL:
-          sprintf(buffer, "%d", pr->dstats.deaths[DSTAT_LEVEL]);
+          snprintf(buffer, sizeof(buffer), "%d", pr->dstats.deaths[DSTAT_LEVEL]);
           break;
         case DSCOL_DEATHS_OVERALL:
-          sprintf(buffer, "%d", pr->dstats.deaths[DSTAT_OVERALL]);
+          snprintf(buffer, sizeof(buffer), "%d", pr->dstats.deaths[DSTAT_OVERALL]);
           break;
         case DSCOL_DEATHS_BOTH:
-          sprintf(buffer, "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
+          snprintf(buffer, sizeof(buffer), "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
           break;
         case DSCOL_SUICIDES_LEVEL:
-          sprintf(buffer, "%d", pr->dstats.suicides[DSTAT_LEVEL]);
+          snprintf(buffer, sizeof(buffer), "%d", pr->dstats.suicides[DSTAT_LEVEL]);
           break;
         case DSCOL_SUICIDES_OVERALL:
-          sprintf(buffer, "%d", pr->dstats.suicides[DSTAT_OVERALL]);
+          snprintf(buffer, sizeof(buffer), "%d", pr->dstats.suicides[DSTAT_OVERALL]);
           break;
         case DSCOL_SUICIDES_BOTH:
-          sprintf(buffer, "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL], pr->dstats.suicides[DSTAT_OVERALL]);
+          snprintf(buffer, sizeof(buffer), "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL],
+                   pr->dstats.suicides[DSTAT_OVERALL]);
           break;
         case DSCOL_PILOT_NAME:
           strcpy(buffer, pr->callsign);
           break;
         case DSCOL_PILOT_TEAM:
-          sprintf(buffer, "%s", basethis->GetTeamString(pr->team));
+          snprintf(buffer, sizeof(buffer), "%s", basethis->GetTeamString(pr->team));
           break;
         case DSCOL_PING:
           if (pr->state == STATE_INGAME)
-            sprintf(buffer, "%.0f", basethis->NetPlayers[pr->pnum].ping_time * 1000.0f);
+            snprintf(buffer, sizeof(buffer), "%.0f", basethis->NetPlayers[pr->pnum].ping_time * 1000.0f);
           else
             strcpy(buffer, "N/A");
           break;
@@ -768,7 +769,7 @@ redisplay_list:
       teams_displayed++;
 
       if (m_TeamCallback) {
-        sprintf(buffer, DTXT_TEAMLABEL, basethis->GetTeamString(i));
+        snprintf(buffer, sizeof(buffer), DTXT_TEAMLABEL, basethis->GetTeamString(i));
         int length = strlen(buffer);
         buffer[length] = ' '; // lose the \0
 
@@ -985,13 +986,15 @@ redisplay_list:
   if (!is_dedicated_server) {
     switch (streak_type) {
     case 1: // kills in a row
-      sprintf(buffer, "%d %s", ei->kills_in_a_row, (ei->kills_in_a_row == 1) ? DTXT_STAT_KILL : DTXT_STAT_KILLS);
+      snprintf(buffer, sizeof(buffer), "%d %s", ei->kills_in_a_row,
+               (ei->kills_in_a_row == 1) ? DTXT_STAT_KILL : DTXT_STAT_KILLS);
       basethis->ClipString(width_to_clip, buffer, false);
       DLLRenderHUDText(GR_WHITE, m_alpha, 0, x_to_use, curr_y, buffer);
       curr_y += (m_font_height + ROW_PIXEL_GAP);
       break;
     case 2: // deaths in a row
-      sprintf(buffer, "%d %s", ei->deaths_in_a_row, (ei->deaths_in_a_row == 1) ? DTXT_STAT_DEATH : DTXT_STAT_DEATHS);
+      snprintf(buffer, sizeof(buffer), "%d %s", ei->deaths_in_a_row,
+               (ei->deaths_in_a_row == 1) ? DTXT_STAT_DEATH : DTXT_STAT_DEATHS);
       basethis->ClipString(width_to_clip, buffer, false);
       DLLRenderHUDText(GR_WHITE, m_alpha, 0, x_to_use, curr_y, buffer);
       curr_y += (m_font_height + ROW_PIXEL_GAP);
@@ -1061,41 +1064,42 @@ redisplay_list:
     if (!is_dedicated_server || m_DColInfo[c].type == DSCOL_PILOT_NAME || m_DColInfo[c].type == DSCOL_BLANK) {
       switch (m_DColInfo[c].type) {
       case DSCOL_KILLS_LEVEL:
-        sprintf(buffer, "%d", pr->dstats.kills[DSTAT_LEVEL]);
+        snprintf(buffer, sizeof(buffer), "%d", pr->dstats.kills[DSTAT_LEVEL]);
         break;
       case DSCOL_KILLS_OVERALL:
-        sprintf(buffer, "%d", pr->dstats.kills[DSTAT_OVERALL]);
+        snprintf(buffer, sizeof(buffer), "%d", pr->dstats.kills[DSTAT_OVERALL]);
         break;
       case DSCOL_KILLS_BOTH:
-        sprintf(buffer, "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
+        snprintf(buffer, sizeof(buffer), "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
         break;
       case DSCOL_DEATHS_LEVEL:
-        sprintf(buffer, "%d", pr->dstats.deaths[DSTAT_LEVEL]);
+        snprintf(buffer, sizeof(buffer), "%d", pr->dstats.deaths[DSTAT_LEVEL]);
         break;
       case DSCOL_DEATHS_OVERALL:
-        sprintf(buffer, "%d", pr->dstats.deaths[DSTAT_OVERALL]);
+        snprintf(buffer, sizeof(buffer), "%d", pr->dstats.deaths[DSTAT_OVERALL]);
         break;
       case DSCOL_DEATHS_BOTH:
-        sprintf(buffer, "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
+        snprintf(buffer, sizeof(buffer), "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
         break;
       case DSCOL_SUICIDES_LEVEL:
-        sprintf(buffer, "%d", pr->dstats.suicides[DSTAT_LEVEL]);
+        snprintf(buffer, sizeof(buffer), "%d", pr->dstats.suicides[DSTAT_LEVEL]);
         break;
       case DSCOL_SUICIDES_OVERALL:
-        sprintf(buffer, "%d", pr->dstats.suicides[DSTAT_OVERALL]);
+        snprintf(buffer, sizeof(buffer), "%d", pr->dstats.suicides[DSTAT_OVERALL]);
         break;
       case DSCOL_SUICIDES_BOTH:
-        sprintf(buffer, "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL], pr->dstats.suicides[DSTAT_OVERALL]);
+        snprintf(buffer, sizeof(buffer), "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL],
+                 pr->dstats.suicides[DSTAT_OVERALL]);
         break;
       case DSCOL_PILOT_NAME:
         strcpy(buffer, pr->callsign);
         break;
       case DSCOL_PILOT_TEAM:
-        sprintf(buffer, "%s", basethis->GetTeamString(pr->team));
+        snprintf(buffer, sizeof(buffer), "%s", basethis->GetTeamString(pr->team));
         break;
       case DSCOL_PING:
         if (pr->state == STATE_INGAME)
-          sprintf(buffer, "%.0f", basethis->NetPlayers[pr->pnum].ping_time * 1000.0f);
+          snprintf(buffer, sizeof(buffer), "%.0f", basethis->NetPlayers[pr->pnum].ping_time * 1000.0f);
         else
           strcpy(buffer, "---");
         break;
@@ -1205,11 +1209,11 @@ redisplay_list:
           basethis->ClipString(colw_callsign - 5, buffer, false);
           DLLRenderHUDText(color, m_alpha, 0, col_callsign, curr_y, buffer);
 
-          sprintf(buffer, "%d", stat.kills);
+          snprintf(buffer, sizeof(buffer), "%d", stat.kills);
           basethis->ClipString(colw_kills - 5, buffer, false);
           DLLRenderHUDText(color, m_alpha, 0, col_kills, curr_y, buffer);
 
-          sprintf(buffer, "%d", stat.deaths);
+          snprintf(buffer, sizeof(buffer), "%d", stat.deaths);
           basethis->ClipString(colw_deaths - 5, buffer, false);
           DLLRenderHUDText(color, m_alpha, 0, col_deaths, curr_y, buffer);
 
@@ -1233,11 +1237,11 @@ redisplay_list:
             basethis->ClipString(colw_callsign - 5, buffer, false);
             DLLRenderHUDText(color, m_alpha, 0, col_callsign, curr_y, buffer);
 
-            sprintf(buffer, "%d", stat.kills);
+            snprintf(buffer, sizeof(buffer), "%d", stat.kills);
             basethis->ClipString(colw_kills - 5, buffer, false);
             DLLRenderHUDText(color, m_alpha, 0, col_kills, curr_y, buffer);
 
-            sprintf(buffer, "%d", stat.deaths);
+            snprintf(buffer, sizeof(buffer), "%d", stat.deaths);
             basethis->ClipString(colw_deaths - 5, buffer, false);
             DLLRenderHUDText(color, m_alpha, 0, col_deaths, curr_y, buffer);
 

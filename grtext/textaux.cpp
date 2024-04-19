@@ -156,7 +156,7 @@ void textaux_ClipString(int width, char *string, float horizont_ratio, char end)
   int arrow_length = 0;
 
   if (end) {
-    sprintf(arrow_string, "%c", end);
+    snprintf(arrow_string, sizeof(arrow_string), "%c", end);
     arrow_length = (int)(ratio * ((float)grtext_GetTextLineWidth(arrow_string)));
   }
 

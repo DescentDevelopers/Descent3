@@ -117,7 +117,7 @@ void Error(char *fmt, ...) {
 #ifdef MACINTOSH
   Debug_ErrorBox(OSMBOX_OK, "Fatal Error", Exit_message, "");
 #else
-  sprintf(Exit_title_str, "%s Error", App_title);
+  snprintf(Exit_title_str, sizeof(Exit_title_str), "%s Error", App_title);
 #endif
   mprintf((0, "%s\n", Exit_message));
 
@@ -171,8 +171,8 @@ void Int3MessageBox(char *file, int line) {
   char title[128], message[500];
   int answer;
 
-  sprintf(title, "%s Debug Break", App_title);
-  sprintf(message, "Int3 in %s at line %d.", file, line);
+  snprintf(title, sizeof(title), "%s Debug Break", App_title);
+  snprintf(message, sizeof(message), "Int3 in %s at line %d.", file, line);
 
   if (DebugBreak_callback_stop)
     (*DebugBreak_callback_stop)();
@@ -195,8 +195,8 @@ void AssertionFailed(char *expstr, char *file, int line) {
   char title[128], message[500];
   int answer;
 
-  sprintf(title, "%s Assertion Failed", App_title);
-  sprintf(message, "Assertion failed: (%s)\n\nFile %s at line %d.", expstr, file, line);
+  snprintf(title, sizeof(title), "%s Assertion Failed", App_title);
+  snprintf(message, sizeof(message), "Assertion failed: (%s)\n\nFile %s at line %d.", expstr, file, line);
 
   if (DebugBreak_callback_stop)
     (*DebugBreak_callback_stop)();

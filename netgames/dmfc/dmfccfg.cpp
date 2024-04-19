@@ -296,7 +296,7 @@ void CRegistry::ExportKey(tKey *key, CFILE *file) {
 
   // write out name
   char buffer[258];
-  sprintf(buffer, "[%s]", key->name);
+  snprintf(buffer, sizeof(buffer), "[%s]", key->name);
   DLLcf_WriteString(file, buffer);
   while (curr) {
     next = curr->next;
@@ -312,11 +312,11 @@ void CRegistry::ExportRecord(tRecord *record, CFILE *file) {
   switch (record->type) {
   case REGT_STRING: {
     st = (char *)record->data;
-    sprintf(buffer, "\"%s\"=\"%s\"", record->name, st);
+    snprintf(buffer, sizeof(buffer), "\"%s\"=\"%s\"", record->name, st);
   } break;
   case REGT_DWORD: {
     dw = (int *)record->data;
-    sprintf(buffer, "\"%s\"=dword:%X", record->name, *dw);
+    snprintf(buffer, sizeof(buffer), "\"%s\"=dword:%X", record->name, *dw);
   } break;
   };
   DLLcf_WriteString(file, buffer);

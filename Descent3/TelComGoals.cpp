@@ -358,7 +358,7 @@ void TCGoalsRenderCallback(void) {
 
   // Print out Heading
   char level_string[32];
-  sprintf(level_string, TXT_LEVELSTRING, Current_mission.cur_level);
+  snprintf(level_string, sizeof(level_string), TXT_LEVELSTRING, Current_mission.cur_level);
   grtext_SetFont(BG_FONT);
   grtext_SetColor(GR_RGB(255, 255, 255));
   int level_name_x = TGmaxx - grtext_GetTextLineWidth(level_string) - 15;

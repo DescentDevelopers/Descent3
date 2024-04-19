@@ -654,17 +654,17 @@ char *msn_SecondsToString(int time_sec) {
   minutes = i / 60;
   seconds = time_sec % 60;
   if (hours) {
-    sprintf(fmttemp, TXT_FMTTIMEHOUR, hours);
+    snprintf(fmttemp, sizeof(fmttemp), TXT_FMTTIMEHOUR, hours);
     strcat(fmttime, " ");
     strcat(fmttime, fmttemp);
   }
   if (minutes) {
-    sprintf(fmttemp, TXT_FMTTIMEMIN, minutes);
+    snprintf(fmttemp, sizeof(fmttemp), TXT_FMTTIMEMIN, minutes);
     strcat(fmttime, " ");
     strcat(fmttime, fmttemp);
   }
   if (seconds) {
-    sprintf(fmttemp, TXT_FMTTIMESEC, seconds);
+    snprintf(fmttemp, sizeof(fmttemp), TXT_FMTTIMESEC, seconds);
     strcat(fmttime, fmttemp);
   }
   return fmttime;
@@ -733,14 +733,15 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
       else
         rfile = ze->name;
 
-      sprintf(buffer, "%s %s...", (ze->compression_method == 0x0000) ? "Extracting" : "Inflating", rfile);
+      snprintf(buffer, sizeof(buffer), "%s %s...", (ze->compression_method == 0x0000) ? "Extracting" : "Inflating",
+               rfile);
       console.puts(GR_GREEN, buffer);
 
       // create the filename for this file
       _get_zipfilename(output_filename, mission_directory, ze->name);
 
       if (cfexist(output_filename)) {
-        sprintf(buffer, "%s already exists. Overwrite?", output_filename);
+        snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename);
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
           mprintf((0, "Deleting %s\n", zipfilename));
@@ -766,10 +767,10 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
         if (ret < 0) {
           if (ret == -9) {
             mprintf((0, " Error writing to file\n"));
-            sprintf(buffer, "\nError writing to file (Out of space?)");
+            snprintf(buffer, sizeof(buffer), "\nError writing to file (Out of space?)");
           } else {
             mprintf((0, " Error %d extracting file\n", ret));
-            sprintf(buffer, "\nError %d extracting file", ret);
+            snprintf(buffer, sizeof(buffer), "\nError %d extracting file", ret);
           }
           console.puts(GR_GREEN, buffer);
           if (cfexist(output_filename)) {

@@ -46,8 +46,9 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   // then close the database
 
   char *prefPath = (char *)loki_getprefpath();
-  char fileName[strlen(prefPath) + strlen(REGISTRY_FILENAME) + 2];
-  sprintf(fileName, "%s/%s", prefPath, REGISTRY_FILENAME);
+  size_t fileLen = strlen(prefPath) + strlen(REGISTRY_FILENAME) + 2;
+  char fileName[fileLen];
+  snprintf(fileName, fileLen, "%s/%s", prefPath, REGISTRY_FILENAME);
 
   database = new CRegistry(fileName);
   database->Import();

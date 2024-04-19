@@ -154,10 +154,10 @@ void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_si
 
   if (column_num == 2) {
     // Score
-    sprintf(buffer, "%d[%d]", stat->Score[DSTAT_LEVEL], stat->Score[DSTAT_OVERALL]);
+    snprintf(buffer, buffer_size, "%d[%d]", stat->Score[DSTAT_LEVEL], stat->Score[DSTAT_OVERALL]);
   } else {
     // Highest Score
-    sprintf(buffer, "%d[%d]", stat->HighestScore[DSTAT_LEVEL], stat->HighestScore[DSTAT_OVERALL]);
+    snprintf(buffer, buffer_size, "%d[%d]", stat->HighestScore[DSTAT_LEVEL], stat->HighestScore[DSTAT_OVERALL]);
   }
 }
 
@@ -529,7 +529,7 @@ void OnPrintScores(int level) {
       if (DMFCBase->IsPlayerDedicatedServer(pr))
         continue; // skip dedicated server
 
-      sprintf(name, "%s%s:", (pr->state == STATE_DISCONNECTED) ? "*" : "", pr->callsign);
+      snprintf(name, sizeof(name), "%s%s:", (pr->state == STATE_DISCONNECTED) ? "*" : "", pr->callsign);
       name[19] = '\0';
 
       tPlayerStat *stat = (tPlayerStat *)pr->user_info;
@@ -537,21 +537,22 @@ void OnPrintScores(int level) {
       memset(buffer, ' ', 256);
       t = strlen(name);
       memcpy(&buffer[pos[0]], name, (t < len[0]) ? t : len[0]);
-      sprintf(name, "%d[%d]", (stat) ? stat->Score[DSTAT_LEVEL] : 0, (stat) ? stat->Score[DSTAT_OVERALL] : 0);
+      snprintf(name, sizeof(name), "%d[%d]", (stat) ? stat->Score[DSTAT_LEVEL] : 0,
+               (stat) ? stat->Score[DSTAT_OVERALL] : 0);
       t = strlen(name);
       memcpy(&buffer[pos[1]], name, (t < len[1]) ? t : len[1]);
-      sprintf(name, "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
+      snprintf(name, sizeof(name), "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
       t = strlen(name);
       memcpy(&buffer[pos[2]], name, (t < len[2]) ? t : len[2]);
-      sprintf(name, "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
+      snprintf(name, sizeof(name), "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
       t = strlen(name);
       memcpy(&buffer[pos[3]], name, (t < len[3]) ? t : len[3]);
-      sprintf(name, "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL], pr->dstats.suicides[DSTAT_OVERALL]);
+      snprintf(name, sizeof(name), "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL], pr->dstats.suicides[DSTAT_OVERALL]);
       t = strlen(name);
       memcpy(&buffer[pos[4]], name, (t < len[4]) ? t : len[4]);
 
       if (pr->state == STATE_INGAME)
-        sprintf(name, "%.0f", (DMFCBase->GetNetPlayers())[pr->pnum].ping_time * 1000.0f);
+        snprintf(name, sizeof(name), "%.0f", (DMFCBase->GetNetPlayers())[pr->pnum].ping_time * 1000.0f);
       else
         strcpy(name, "---");
       t = strlen(name);
@@ -747,9 +748,11 @@ void OnClientPlayerChangeSegment(int player_num, int newseg, int oldseg) {
 
   char buffer[100];
   if (score == 1)
-    sprintf(buffer, TXT_SCOREONE, dPlayers[player_num].callsign, (stat) ? stat->Score[DSTAT_LEVEL] : 0);
+    snprintf(buffer, sizeof(buffer), TXT_SCOREONE, dPlayers[player_num].callsign,
+             (stat) ? stat->Score[DSTAT_LEVEL] : 0);
   else
-    sprintf(buffer, TXT_SCOREMULTI, dPlayers[player_num].callsign, score, (stat) ? stat->Score[DSTAT_LEVEL] : 0);
+    snprintf(buffer, sizeof(buffer), TXT_SCOREMULTI, dPlayers[player_num].callsign, score,
+             (stat) ? stat->Score[DSTAT_LEVEL] : 0);
   int sound = DLLFindSoundName("PwrHoardScore");
   if (sound != -1)
     DLLPlay3dSound(sound, &dObjects[dPlayers[DMFCBase->GetPlayerNum()].objnum], 1, 0);
@@ -1030,15 +1033,16 @@ void SaveStatsToFile(char *filename) {
   SortPlayerScores(sortedslots, MAX_PLAYER_RECORDS);
   count = 1;
 
-  sprintf(buffer, TXT_STATSSAVEA, (DMFCBase->GetNetgameInfo())->name, (DMFCBase->GetCurrentMission())->cur_level);
+  snprintf(buffer, sizeof(buffer), TXT_STATSSAVEA, (DMFCBase->GetNetgameInfo())->name,
+           (DMFCBase->GetCurrentMission())->cur_level);
   DLLcf_WriteString(file, buffer);
 
-  sprintf(buffer, "%s", TXT_SAVESTATSB);
+  snprintf(buffer, sizeof(buffer), "%s", TXT_SAVESTATSB);
   DLLcf_WriteString(file, buffer);
 
-  sprintf(buffer, "%s", TXT_SAVESTATSC);
+  snprintf(buffer, sizeof(buffer), "%s", TXT_SAVESTATSC);
   DLLcf_WriteString(file, buffer);
-  sprintf(
+  strcpy(
       buffer,
       "-------------------------------------------------------------------------------------------------------------");
   DLLcf_WriteString(file, buffer);
@@ -1054,34 +1058,38 @@ void SaveStatsToFile(char *filename) {
 
       ps = (tPlayerStat *)pr->user_info;
 
-      sprintf(tempbuffer, "%d)", count);
+      snprintf(tempbuffer, sizeof(tempbuffer), "%d)", count);
       memcpy(&buffer[0], tempbuffer, strlen(tempbuffer));
 
-      sprintf(tempbuffer, "%s%s", (pr->state == STATE_INGAME) ? "" : "*", pr->callsign);
+      snprintf(tempbuffer, sizeof(tempbuffer), "%s%s", (pr->state == STATE_INGAME) ? "" : "*", pr->callsign);
       memcpy(&buffer[7], tempbuffer, strlen(tempbuffer));
 
       if (ps) {
-        sprintf(tempbuffer, "%d[%d]", ps->Score[DSTAT_LEVEL], ps->Score[DSTAT_OVERALL]);
+        snprintf(tempbuffer, sizeof(tempbuffer), "%d[%d]", ps->Score[DSTAT_LEVEL], ps->Score[DSTAT_OVERALL]);
         memcpy(&buffer[35], tempbuffer, strlen(tempbuffer));
       }
 
-      sprintf(tempbuffer, "%d[%d]", pr->dstats.kills[DSTAT_LEVEL], pr->dstats.kills[DSTAT_OVERALL]);
+      snprintf(tempbuffer, sizeof(tempbuffer), "%d[%d]", pr->dstats.kills[DSTAT_LEVEL],
+               pr->dstats.kills[DSTAT_OVERALL]);
       memcpy(&buffer[47], tempbuffer, strlen(tempbuffer));
 
-      sprintf(tempbuffer, "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL], pr->dstats.deaths[DSTAT_OVERALL]);
+      snprintf(tempbuffer, sizeof(tempbuffer), "%d[%d]", pr->dstats.deaths[DSTAT_LEVEL],
+               pr->dstats.deaths[DSTAT_OVERALL]);
       memcpy(&buffer[59], tempbuffer, strlen(tempbuffer));
 
       int pos;
 
-      sprintf(tempbuffer, "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL], pr->dstats.suicides[DSTAT_OVERALL]);
+      snprintf(tempbuffer, sizeof(tempbuffer), "%d[%d]", pr->dstats.suicides[DSTAT_LEVEL],
+               pr->dstats.suicides[DSTAT_OVERALL]);
       memcpy(&buffer[70], tempbuffer, strlen(tempbuffer));
 
       if (ps) {
-        sprintf(tempbuffer, "%d[%d]", ps->HighestScore[DSTAT_LEVEL], ps->HighestScore[DSTAT_OVERALL]);
+        snprintf(tempbuffer, sizeof(tempbuffer), "%d[%d]", ps->HighestScore[DSTAT_LEVEL],
+                 ps->HighestScore[DSTAT_OVERALL]);
         memcpy(&buffer[81], tempbuffer, strlen(tempbuffer));
       }
 
-      sprintf(tempbuffer, "%s", DMFCBase->GetTimeString(DMFCBase->GetTimeInGame(sortedslots[p])));
+      snprintf(tempbuffer, sizeof(tempbuffer), "%s", DMFCBase->GetTimeString(DMFCBase->GetTimeInGame(sortedslots[p])));
       memcpy(&buffer[96], tempbuffer, strlen(tempbuffer));
 
       pos = 96 + strlen(tempbuffer) + 1;
@@ -1106,7 +1114,7 @@ void SaveStatsToFile(char *filename) {
         continue; // skip dedicated server
 
       // Write out header
-      sprintf(buffer, "%d) %s%s", count, (pr->state == STATE_INGAME) ? "" : "*", pr->callsign);
+      snprintf(buffer, sizeof(buffer), "%d) %s%s", count, (pr->state == STATE_INGAME) ? "" : "*", pr->callsign);
       DLLcf_WriteString(file, buffer);
       length = strlen(buffer);
       memset(buffer, '=', length);
@@ -1114,11 +1122,11 @@ void SaveStatsToFile(char *filename) {
       DLLcf_WriteString(file, buffer);
 
       // time in game
-      sprintf(buffer, TXT_TIMEINGAME, DMFCBase->GetTimeString(DMFCBase->GetTimeInGame(p)));
+      snprintf(buffer, sizeof(buffer), TXT_TIMEINGAME, DMFCBase->GetTimeString(DMFCBase->GetTimeInGame(p)));
       DLLcf_WriteString(file, buffer);
 
       if (DMFCBase->FindPInfoStatFirst(p, &stat)) {
-        sprintf(buffer, "%s", TXT_SAVESTATSE);
+        snprintf(buffer, sizeof(buffer), "%s", TXT_SAVESTATSE);
         DLLcf_WriteString(file, buffer);
 
         if (stat.slot != p) {
@@ -1127,13 +1135,13 @@ void SaveStatsToFile(char *filename) {
           int pos;
 
           if (dpr) {
-            sprintf(tempbuffer, "%s", dpr->callsign);
+            snprintf(tempbuffer, sizeof(tempbuffer), "%s", dpr->callsign);
             memcpy(buffer, tempbuffer, strlen(tempbuffer));
 
-            sprintf(tempbuffer, "%d", stat.kills);
+            snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.kills);
             memcpy(&buffer[30], tempbuffer, strlen(tempbuffer));
 
-            sprintf(tempbuffer, "%d", stat.deaths);
+            snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.deaths);
             memcpy(&buffer[40], tempbuffer, strlen(tempbuffer));
 
             pos = 40 + strlen(tempbuffer) + 1;
@@ -1151,13 +1159,13 @@ void SaveStatsToFile(char *filename) {
             memset(buffer, ' ', BUFSIZE);
             dpr = DMFCBase->GetPlayerRecord(stat.slot);
             if (dpr) {
-              sprintf(tempbuffer, "%s", dpr->callsign);
+              snprintf(tempbuffer, sizeof(tempbuffer), "%s", dpr->callsign);
               memcpy(buffer, tempbuffer, strlen(tempbuffer));
 
-              sprintf(tempbuffer, "%d", stat.kills);
+              snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.kills);
               memcpy(&buffer[30], tempbuffer, strlen(tempbuffer));
 
-              sprintf(tempbuffer, "%d", stat.deaths);
+              snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.deaths);
               memcpy(&buffer[40], tempbuffer, strlen(tempbuffer));
 
               pos = 40 + strlen(tempbuffer) + 1;
@@ -1343,7 +1351,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   // draw the hoard orb count
   int w = DLLbm_w(HoardOrbIcon, 0);
   char buffer[4];
-  sprintf(buffer, "%d", DLLInvGetTypeIDCount(DMFCBase->GetPlayerNum(), OBJ_POWERUP, HoardID));
+  snprintf(buffer, sizeof(buffer), "%d", DLLInvGetTypeIDCount(DMFCBase->GetPlayerNum(), OBJ_POWERUP, HoardID));
   int x1, x2, y1, y2;
   x1 = DMFCBase->GetGameWindowW() - 5 - DLLbm_w(HoardOrbIcon, 0);
   y1 = 25;

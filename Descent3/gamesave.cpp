@@ -329,7 +329,7 @@ void QuickSaveGame() {
 
     i = Quicksave_game_slot;
 
-    sprintf(filename, "saveg00%d", i);
+    snprintf(filename, sizeof(filename), "saveg00%d", i);
     ddio_MakePath(pathname, Base_directory, "savegame", filename, NULL);
 
 #ifdef MACINTOSH
@@ -402,7 +402,7 @@ void SaveGameDialog() {
     FILE *fp;
     bool ingroup = (i == 0 || i == (N_SAVE_SLOTS - 1)) ? true : false;
 
-    sprintf(filename, "saveg00%d", i);
+    snprintf(filename, sizeof(filename), "saveg00%d", i);
     ddio_MakePath(pathname, savegame_dir, filename, NULL);
 
     occupied_slot[i] = false;
@@ -476,7 +476,7 @@ void SaveGameDialog() {
             occupied_slot[slot] ? (DoMessageBox(TXT_WARNING, TXT_OVERWRITESAVE, MSGBOX_YESNO) ? true : false) : true;
 
         if (do_save) {
-          sprintf(filename, "saveg00%d", slot);
+          snprintf(filename, sizeof(filename), "saveg00%d", slot);
           ddio_MakePath(pathname, savegame_dir, filename, NULL);
           if (!SaveGameState(pathname, desc)) {
             DoMessageBox("", TXT_SAVEGAMEFAILED, MSGBOX_OK);
@@ -533,7 +533,7 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
     mprintf((0, "savegame slot=%d\n", id - SAVE_HOTSPOT_ID));
 
     ddio_MakePath(savegame_dir, Base_directory, "savegame", NULL);
-    sprintf(filename, "saveg00%d", (id - SAVE_HOTSPOT_ID));
+    snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
     ddio_MakePath(pathname, savegame_dir, filename, NULL);
 
     if (GetGameStateInfo(pathname, desc, &bm_handle)) {
@@ -602,7 +602,7 @@ bool LoadGameDialog() {
     FILE *fp;
     bool ingroup = (i == 0 || i == (N_SAVE_SLOTS - 1)) ? true : false;
 
-    sprintf(filename, "saveg00%d", i);
+    snprintf(filename, sizeof(filename), "saveg00%d", i);
     ddio_MakePath(pathname, savegame_dir, filename, NULL);
 
     occupied_slot[i] = false;
@@ -671,7 +671,7 @@ bool LoadGameDialog() {
       int slot = res - SAVE_HOTSPOT_ID;
 
       if (occupied_slot[slot]) {
-        sprintf(filename, "saveg00%d", slot);
+        snprintf(filename, sizeof(filename), "saveg00%d", slot);
         ddio_MakePath(pathname, savegame_dir, filename, NULL);
         strcpy(LGS_Path, pathname);
         SetGameState(GAMESTATE_LOADGAME);

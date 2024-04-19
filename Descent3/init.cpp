@@ -1098,7 +1098,7 @@ void PreGameCdCheck() {
     if (!CD_inserted) {
 #if defined(WIN32)
       char message_txt[50];
-      sprintf(message_txt, TXT_CDPROMPT, 1);
+      snprintf(message_txt, sizeof(message_txt), TXT_CDPROMPT, 1);
       ShowCursor(true);
       HWND dwnd = FindWindow(NULL, PRODUCT_NAME);
       if (MessageBox(dwnd, message_txt, PRODUCT_NAME, MB_OKCANCEL) == IDCANCEL) {
@@ -1226,19 +1226,19 @@ void SaveGameSettings() {
   char tempbuffer[TEMPBUFFERSIZE];
   int tempint;
 
-  sprintf(tempbuffer, "%f", Render_preferred_state.gamma);
+  snprintf(tempbuffer, sizeof(tempbuffer), "%f", Render_preferred_state.gamma);
   Database->write("RS_gamma", tempbuffer, strlen(tempbuffer) + 1);
 
-  sprintf(tempbuffer, "%f", Sound_system.GetMasterVolume());
+  snprintf(tempbuffer, sizeof(tempbuffer), "%f", Sound_system.GetMasterVolume());
   Database->write("SND_mastervol", tempbuffer, strlen(tempbuffer) + 1);
 
-  sprintf(tempbuffer, "%f", D3MusicGetVolume());
+  snprintf(tempbuffer, sizeof(tempbuffer), "%f", D3MusicGetVolume());
   Database->write("MUS_mastervol", tempbuffer, strlen(tempbuffer) + 1);
 
-  sprintf(tempbuffer, "%f", Detail_settings.Pixel_error);
+  snprintf(tempbuffer, sizeof(tempbuffer), "%f", Detail_settings.Pixel_error);
   Database->write("RS_pixelerror", tempbuffer, strlen(tempbuffer) + 1);
 
-  sprintf(tempbuffer, "%f", Detail_settings.Terrain_render_distance / ((float)TERRAIN_SIZE));
+  snprintf(tempbuffer, sizeof(tempbuffer), "%f", Detail_settings.Terrain_render_distance / ((float)TERRAIN_SIZE));
   Database->write("RS_terraindist", tempbuffer, strlen(tempbuffer) + 1);
 
   Database->write("Dynamic_Lighting", Detail_settings.Dynamic_lighting);
@@ -2648,13 +2648,13 @@ bool CheckCdForValidity(int cd) {
       // Look for a non-overburned cd
       if (a < 696000000) {
         // char dbg[300];
-        // sprintf(dbg,"Disk too small (%d).",a);
+        // snprintf(dbg,sizeof(dbg),"Disk too small (%d).",a);
         // MessageBox(NULL,dbg,"Grr...",MB_OK);
         return false;
       }
     } else {
       // char dbg[300];
-      // sprintf(dbg,"Can't get disk info. (%s).",p);
+      // snprintf(dbg,sizeof(dbg),"Can't get disk info. (%s).",p);
       // MessageBox(NULL,dbg,"Grr...",MB_OK);
       return false;
     }

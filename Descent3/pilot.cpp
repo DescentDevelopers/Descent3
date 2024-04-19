@@ -1094,7 +1094,7 @@ void PilotSelect(void) {
         char pname[PILOT_STRING_SIZE];
         temp_pilot.get_name(pname);
 
-        sprintf(buff, TXT_PLTOKDEL, pname);
+        snprintf(buff, sizeof(buff), TXT_PLTOKDEL, pname);
         if (DoMessageBox(TXT_PLTDELCONF, buff, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           PltDelete(&temp_pilot);
         }
@@ -2220,7 +2220,7 @@ bool CreateCRCFileName(const char *src, char *dest) {
     mprintf((0, "CRC WARNING: A CRC of 0 HAS BEEN GENERATED!\n"));
   }
   char hex_string[10];
-  sprintf(hex_string, "_%08X", crc_value);
+  snprintf(hex_string, sizeof(hex_string), "_%08X", crc_value);
 
   char ext[256];
   ddio_SplitPath(src, NULL, NULL, ext);
@@ -2251,7 +2251,7 @@ bool CreateCRCFileName(const char *src, char *base, char *newfilename) {
     mprintf((0, "CRC WARNING: A CRC of 0 HAS BEEN GENERATED!\n"));
   }
   char hex_string[10];
-  sprintf(hex_string, "_%08X", crc_value);
+  snprintf(hex_string, sizeof(hex_string), "_%08X", crc_value);
 
   char ext[256];
   ddio_SplitPath(base, NULL, NULL, ext);
@@ -2738,7 +2738,7 @@ void DoPilotTauntScreen(pilot *plt) {
   for (i = 0; i < MAX_PILOT_TAUNTS; i++) {
     char str[70];
 
-    sprintf(str, "%s%d", TXT_TAUNT_NUMBER, i + 1);
+    snprintf(str, sizeof(str), "%s%d", TXT_TAUNT_NUMBER, i + 1);
     sheet->NewGroup(str, 10, cury);
 
     taunt_edit[i] = sheet->AddEditBox(str, PILOT_TAUNT_SIZE, TAUNT_EDIT_WIDTH);
@@ -3167,7 +3167,7 @@ bool PltSelectShip(pilot *Pilot) {
             if (cfilelength(file) > MAX_AUDIOTAUNTSIZE) {
               // file too big!!!!!!
               char message[256];
-              sprintf(message, TXT_COMPRESSTOOBIG, MAX_AUDIOTAUNTSIZE / 1024);
+              snprintf(message, sizeof(message), TXT_COMPRESSTOOBIG, MAX_AUDIOTAUNTSIZE / 1024);
               DoMessageBox(TXT_WARNING, message, MSGBOX_OK);
             }
             cfclose(file);
@@ -3283,7 +3283,7 @@ bool PltSelectShip(pilot *Pilot) {
             if (cfilelength(file) > MAX_AUDIOTAUNTSIZE) {
               // file too big!!!!!!
               char message[256];
-              sprintf(message, TXT_COMPRESSTOOBIG, MAX_AUDIOTAUNTSIZE / 1024);
+              snprintf(message, sizeof(message), TXT_COMPRESSTOOBIG, MAX_AUDIOTAUNTSIZE / 1024);
               DoMessageBox(TXT_WARNING, message, MSGBOX_OK);
             }
 
@@ -3515,7 +3515,7 @@ void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb) {
 
   // delete custom_filename, we don't want it....
   char buffer[512];
-  sprintf(buffer, TXT_PLTOKDEL, custom_logoname);
+  snprintf(buffer, sizeof(buffer), TXT_PLTOKDEL, custom_logoname);
   if (DoMessageBox(TXT_PLTDELCONF, buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     mprintf((0, "Deleting pilot logo %s (%s)\n", custom_logoname, custom_filename));
 
@@ -3565,7 +3565,7 @@ void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboB
 
   // delete custom_filename, we don't want it....
   char buffer[512];
-  sprintf(buffer, TXT_PLTOKDEL, custom_logoname);
+  snprintf(buffer, sizeof(buffer), TXT_PLTOKDEL, custom_logoname);
   if (DoMessageBox(TXT_PLTDELCONF, buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     mprintf((0, "Deleting audio taunt %s (%s)\n", custom_logoname, custom_filename));
 

@@ -1103,7 +1103,7 @@ int StartMultiplayerGameMenu() {
   CurrentPilotName(pilot_name);
 
   strcpy(DLLMPlayers[DLLPlayer_num].callsign, pilot_name);
-  sprintf(str, "%s's Game", DLLMPlayers[DLLPlayer_num].callsign);
+  snprintf(str, sizeof(str), "%s's Game", DLLMPlayers[DLLPlayer_num].callsign);
   DLLEditSetText(mission_name_edit, str);
 
   DLLNetgame->max_players = 8;

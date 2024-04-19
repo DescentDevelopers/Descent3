@@ -663,7 +663,7 @@ void bm_ChangeEndName(const char *src, char *dest) {
   filename[limit] = 0;
 Start:
   if (curnum != -1)
-    sprintf(namedest, "%s%d", filename, curnum);
+    snprintf(namedest, sizeof(namedest), "%s%d", filename, curnum);
   else
     strcpy(namedest, filename);
   // Now, make sure there are no other bitmaps with this name
@@ -1492,7 +1492,7 @@ int bm_AllocLoadIFFAnim(const char *filename, int *dest_index, int mipped) {
         bm_FreeBitmap(src_bm);
       }
     }
-    sprintf(str, "%s%d", name, i);
+    snprintf(str, sizeof(str), "%s%d", name, i);
     strcpy(GameBitmaps[n].name, str);
     dest_index[i] = n;
     bm_FreeBitmap(src_bm);

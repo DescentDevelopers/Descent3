@@ -1286,7 +1286,7 @@ void collide_player_and_marker(object *playerobj, object *marker_obj, vector *co
                                bool f_reverse_normal, fvi_info *hit_info) {
   if (playerobj->id == Player_num) {
     char str[100];
-    sprintf(str, "Marker: %s", MarkerMessages[marker_obj->id]);
+    snprintf(str, sizeof(str), "Marker: %s", MarkerMessages[marker_obj->id]);
     AddHUDMessage(str);
   }
 }

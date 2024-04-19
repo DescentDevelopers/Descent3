@@ -148,15 +148,8 @@ void con_Printf(const char *fmt, ...) {
 
   //	filter out messages
   va_start(args, fmt);
-  vsprintf(buf, fmt, args);
+  vsnprintf(buf, sizeof(buf), fmt, args);
   va_end(args);
-
-  int len = strlen(buf);
-  if (len >= CON_MAX_STRINGLEN) {
-    // we overflowed our buffer!!!
-    // we need to do some sort of error here!!!!
-    buf[CON_MAX_STRINGLEN - 1] = '\0';
-  }
 
   //	filter out unprintable characters
   char *p, *fp, filter_buf[CON_MAX_STRINGLEN];

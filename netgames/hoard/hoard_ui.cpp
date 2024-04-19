@@ -71,7 +71,7 @@ void DisplayHoardConfigDialog(tGameConfig *config) {
   // ---------------------
   bool exit_menu = false;
   char buffer[10];
-  sprintf(buffer, "%d", config->min_hoard);
+  snprintf(buffer, sizeof(buffer), "%d", config->min_hoard);
 
   // text items
   // ----------
@@ -125,7 +125,7 @@ void DisplayHoardConfigDialog(tGameConfig *config) {
       DLLRemoveUITextItem(slider_val_ti);
       char buff[10];
       int val = DLLSliderGetPos(count_slider);
-      sprintf(buff, "%d", val + 1);
+      snprintf(buff, sizeof(buff), "%d", val + 1);
       slider_val_ti = DLLCreateNewUITextItem(buff, UICOL_TEXT_NORMAL, -1);
       DLLTextSetTitle(slider_val, slider_val_ti);
     } break;

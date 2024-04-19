@@ -70,7 +70,7 @@ bool PlayMovie(const char *moviename) {
   const char *extension = strrchr(filename, '.');
   if (extension == NULL || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
     // we need an extension
-    strncat(filename, ".mve", sizeof(filename) - 1);
+    strncat(filename, ".mve", sizeof(filename) - strlen(filename) - 1);
     filename[sizeof(filename) - 1] = 0;
   }
 
@@ -124,7 +124,7 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
   const char *extension = strrchr(filename, '.');
   if (extension == NULL || (stricmp(extension, ".mve") != 0 && stricmp(extension, ".mv8") != 0)) {
     // we need an extension
-    strncat(filename, ".mve", sizeof(filename) - 1);
+    strncat(filename, ".mve", sizeof(filename) - strlen(filename) - 1);
     filename[sizeof(filename) - 1] = 0;
   }
 

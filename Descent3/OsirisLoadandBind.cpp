@@ -735,8 +735,9 @@ void Osiris_DumpLoadedObjects(char *file) {
       // uh oh! scripts were not completely decremented
       tRefObj *node = OSIRIS_loaded_modules[j].RefRoot;
       while (node) {
-        sprintf(buffy, "Module: \"%s\" Objnum: %d Type: %d%s Id:%d\n", OSIRIS_loaded_modules[j].module_name,
-                node->objnum, node->type, (node->dummy) ? "(Dummy)" : "", node->id);
+        snprintf(buffy, sizeof(buffy), "Module: \"%s\" Objnum: %d Type: %d%s Id:%d\n",
+                 OSIRIS_loaded_modules[j].module_name, node->objnum, node->type, (node->dummy) ? "(Dummy)" : "",
+                 node->id);
         cf_WriteString(f, buffy);
         node = node->next;
       }

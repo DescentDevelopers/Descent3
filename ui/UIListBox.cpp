@@ -619,9 +619,9 @@ void UIListBox::OnDraw() {
   y = m_TextOffY;
 
   if (m_NumItems) {
-    sprintf(arrowbuf, "%c", UI_UP_ARROW_CHAR);
+    snprintf(arrowbuf, sizeof(arrowbuf), "%c", UI_UP_ARROW_CHAR);
     uarrow = UITextItem(arrowbuf, m_ItemList[m_Index]->get_color(), 255);
-    sprintf(arrowbuf, "%c", UI_DOWN_ARROW_CHAR);
+    snprintf(arrowbuf, sizeof(arrowbuf), "%c", UI_DOWN_ARROW_CHAR);
     darrow = UITextItem(arrowbuf, m_ItemList[m_Index]->get_color(), 255);
 
     // reset these

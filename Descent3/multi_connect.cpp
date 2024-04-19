@@ -355,7 +355,7 @@ int TryToJoinServer(network_address *addr) {
     if (!AskToJoin(addr)) {
       if (Ok_to_join != -1) {
         char str[255];
-        sprintf(str, TXT(Join_response_strings[Ok_to_join]));
+        snprintf(str, sizeof(str), TXT(Join_response_strings[Ok_to_join]));
         ShowProgressScreen(str);
         Sleep(2000);
       } else {

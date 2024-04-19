@@ -821,7 +821,7 @@ void SendOffHUDInputMessage() {
       CallGameDLL(EVT_CLIENT_INPUT_STRING, &DLLInfo);
     } else {
       char str[255];
-      sprintf(str, TXT_HUDSAY, Players[Player_num].callsign, HudInputMessage);
+      snprintf(str, sizeof(str), TXT_HUDSAY, Players[Player_num].callsign, HudInputMessage);
 
       switch (Doing_input_message) {
       case HUD_MESSAGE_GENERAL: {
@@ -832,11 +832,11 @@ void SendOffHUDInputMessage() {
         if (to_who != MULTI_SEND_MESSAGE_ALL) {
           if (to_who < 0) {
             // to a team
-            sprintf(str, "[%s]: %s", Players[Player_num].callsign, colon_pos);
+            snprintf(str, sizeof(str), "[%s]: %s", Players[Player_num].callsign, colon_pos);
           } else {
             // to a player
             // cut out what's after the colon
-            sprintf(str, "<%s>:%s", Players[Player_num].callsign, colon_pos);
+            snprintf(str, sizeof(str), "<%s>:%s", Players[Player_num].callsign, colon_pos);
             AddHUDMessage("Sent private message to %s", Players[to_who].callsign);
           }
         }
@@ -864,7 +864,7 @@ void SendOffHUDInputMessage() {
         }
 
         if (team != MULTI_SEND_MESSAGE_ALL) {
-          sprintf(str, "[%s]: %s", Players[Player_num].callsign, HudInputMessage);
+          snprintf(str, sizeof(str), "[%s]: %s", Players[Player_num].callsign, HudInputMessage);
         }
 
         if (Netgame.local_role == LR_SERVER)
@@ -1008,12 +1008,12 @@ void RenderHUDInputMessage() {
   grtext_SetColor(text_color);
 
   if (Doing_input_message == HUD_MESSAGE_TEAM) {
-    sprintf(message, TXT_HUD_TEAMSAY, HudInputMessage);
+    snprintf(message, sizeof(message), TXT_HUD_TEAMSAY, HudInputMessage);
   } else {
     if (Marker_message)
-      sprintf(message, TXT_HUD_MARKER, HudInputMessage);
+      snprintf(message, sizeof(message), TXT_HUD_MARKER, HudInputMessage);
     else
-      sprintf(message, TXT_MESSAGE, HudInputMessage);
+      snprintf(message, sizeof(message), TXT_MESSAGE, HudInputMessage);
   }
 
   grtext_SetAlpha(HUD_ALPHA);
@@ -1548,7 +1548,7 @@ bool tMsgList::add(const char *msg, ubyte lvl, ubyte hr, ubyte min, ubyte sec) {
   }
 
   if (lvl > 0) {
-    sprintf(buf, "[%d.%d.%d.%d] %s", lvl, hr, min, sec, msg);
+    snprintf(buf, sizeof(buf), "[%d.%d.%d.%d] %s", lvl, hr, min, sec, msg);
     m_msg[m_nmsg++] = mem_strdup(buf);
   } else {
     m_msg[m_nmsg++] = mem_strdup(msg);

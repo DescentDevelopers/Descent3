@@ -1166,7 +1166,7 @@ bool LoadMission(const char *mssn) {
           lvls[curlvlnum - 1].flags |= LVLFLAG_FINAL;
         }
       } else {
-        sprintf(errtext, TXT_MSN_ILLEGALCMD, command);
+        snprintf(errtext, sizeof(errtext), TXT_MSN_ILLEGALCMD, command);
         goto msnfile_error;
       }
     }
@@ -1184,7 +1184,7 @@ bool LoadMission(const char *mssn) {
 msnfile_error:
   if (!res) {
     char str_text[128];
-    sprintf(str_text, "%s\nline %d.", errtext, srclinenum);
+    snprintf(errtext, sizeof(errtext), "%s\nline %d.", errtext, srclinenum);
     if (!Dedicated_server) {
       DoMessageBox(TXT_ERROR, str_text, MSGBOX_OK);
     } else {
@@ -1277,7 +1277,7 @@ bool LoadMissionLevel(int level) {
   LoadLevelProgress(LOAD_PROGRESS_START, 0);
   if (!LoadLevel(Current_mission.levels[level - 1].filename, NULL)) {
     char buf[128];
-    sprintf(buf, TXT_MSNERROR, Current_mission.levels[level - 1].filename);
+    snprintf(buf, sizeof(buf), TXT_MSNERROR, Current_mission.levels[level - 1].filename);
     SetUICallback(DEFAULT_UICALLBACK);
     DoMessageBox(TXT_ERROR, buf, MSGBOX_OK);
     LoadLevelProgress(LOAD_PROGRESS_DONE, 0);
@@ -1293,7 +1293,7 @@ bool LoadMissionLevel(int level) {
     terrain = false;
 
   if (!boa) {
-    sprintf(str, "BOA NOT VALID! %s", terrain ? "" : "TERRAINOCC NOT VALID!");
+    snprintf(str, sizeof(str), "BOA NOT VALID! %s", terrain ? "" : "TERRAINOCC NOT VALID!");
     ShowProgressScreen(str, NULL, true);
     Sleep(2000);
   }
@@ -1407,15 +1407,15 @@ void LoadLevelProgress(int step, float percent, char *chunk) {
       PrintDedicatedMessage(tbuffer);
     }
     char levelname[100];
-    sprintf(levelname, "%s level %d", Current_mission.name, Current_mission.cur_level);
+    snprintf(levelname, sizeof(levelname), "%s level %d", Current_mission.name, Current_mission.cur_level);
     if (lvl_percent_loaded < 1.0f) {
-      sprintf(tbuffer1, TXT_DS_LEVELLOADSTATUS, levelname, lvl_percent_loaded * 100.0f);
-      sprintf(tbuffer, "%s%s", TXT_LOADINGLEVEL, tbuffer1);
+      snprintf(tbuffer1, sizeof(tbuffer1), TXT_DS_LEVELLOADSTATUS, levelname, lvl_percent_loaded * 100.0f);
+      snprintf(tbuffer, sizeof(tbuffer), "%s%s", TXT_LOADINGLEVEL, tbuffer1);
       PrintDedicatedMessage(tbuffer);
       dedicated_last_string_len = strlen(tbuffer);
     } else {
-      sprintf(tbuffer1, TXT_DS_LEVELLOADSTATUS, levelname, pag_percent_loaded * 100.0f);
-      sprintf(tbuffer, "%s%s", TXT_LL_PAGINGDATA, tbuffer1);
+      snprintf(tbuffer1, sizeof(tbuffer1), TXT_DS_LEVELLOADSTATUS, levelname, pag_percent_loaded * 100.0f);
+      snprintf(tbuffer, sizeof(tbuffer), "%s%s", TXT_LL_PAGINGDATA, tbuffer1);
       PrintDedicatedMessage(tbuffer);
       dedicated_last_string_len = strlen(tbuffer);
     }
@@ -1551,7 +1551,7 @@ void LoadLevelProgress(int step, float percent, char *chunk) {
   extern int Data_error_count;
   if (Data_error_count) {
     char buf[1024];
-    sprintf(buf, "This mission has %d data errors", Data_error_count);
+    snprintf(buf, sizeof(buf), "This mission has %d data errors", Data_error_count);
     int y = 200 + 40;
     int x = 320 - (grtext_GetLineWidth(buf) / 2);
     grtext_Printf(x, y, buf);
@@ -1571,7 +1571,7 @@ void LoadLevelProgress(int step, float percent, char *chunk) {
   if ((pag_percent_loaded > 0.0) && step != LOAD_PROGRESS_PREPARE) {
     char str[255];
 
-    sprintf(str, "\"%s\"", Level_info.name);
+    snprintf(str, sizeof(str), "\"%s\"", Level_info.name);
     grtext_SetFont(BIG_BRIEFING_FONT);
     grtext_SetColor(GR_WHITE);
 

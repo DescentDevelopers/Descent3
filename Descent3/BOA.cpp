@@ -1354,7 +1354,7 @@ void ValidateRoomPathPoint(int room, char *message, int len) {
     mprintf((0, "Room %d has a bad center point\n", room));
   else {
     char new_message[300];
-    sprintf(new_message, "Room %d has a bad center point\n", room);
+    snprintf(new_message, sizeof(new_message), "Room %d has a bad center point\n", room);
 
     if (strlen(message) + strlen(new_message) < (unsigned int)len) {
       strcat(message, new_message);

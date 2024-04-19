@@ -272,11 +272,11 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
       if (killernum == victimnum) {
 
         char temp[150];
-        sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+        snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
 
         if (m_iDeathMessageFilter == DM_FILTER_SIMPLE) {
           // do the simple message
-          sprintf(buffer, DTXT_SUICIDE1, temp);
+          snprintf(buffer, sizeof(buffer), DTXT_SUICIDE1, temp);
         } else {
           // do the detailed message
           int msg = (int)(((float)m_iSuicideMsgCount) * (((float)rand()) / ((float)RAND_MAX)));
@@ -284,7 +284,7 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
             // we shouldn't have gotten here, but display the first message since there is one guaranteed
             msg = 0;
           }
-          sprintf(buffer, SuicideMsgs[msg].message, temp);
+          snprintf(buffer, sizeof(buffer), SuicideMsgs[msg].message, temp);
         }
       } else {
 
@@ -292,9 +292,9 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
           // do the simple message
           char temp[150], temp2[150];
           // victim = temp, killer = temp2
-          sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
-          sprintf(temp2, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[it->id].callsign);
-          sprintf(buffer, DTXT_KILLED1, temp, temp2);
+          snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+          snprintf(temp2, sizeof(temp2), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[it->id].callsign);
+          snprintf(buffer, sizeof(buffer), DTXT_KILLED1, temp, temp2);
         } else {
           // do the detailed message
           bool vfirst;
@@ -303,13 +303,13 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
           if (wm) {
             // victim = temp, killer = temp2
             char temp[150], temp2[150];
-            sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
-            sprintf(temp2, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[it->id].callsign);
+            snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+            snprintf(temp2, sizeof(temp2), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[it->id].callsign);
 
             if (vfirst)
-              sprintf(buffer, wm, temp, temp2);
+              snprintf(buffer, sizeof(buffer), wm, temp, temp2);
             else
-              sprintf(buffer, wm, temp2, temp);
+              snprintf(buffer, sizeof(buffer), wm, temp2, temp);
 
           } else {
             int msg = (int)(((float)m_iDeathMsgCount) * (((float)rand()) / ((float)RAND_MAX)));
@@ -320,15 +320,15 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
 
             // victim = temp, killer = temp2
             char temp[150], temp2[150];
-            sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
-            sprintf(temp2, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[it->id].callsign);
+            snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+            snprintf(temp2, sizeof(temp2), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[it->id].callsign);
 
             // So when we get here we should have the format string in use_msg, although it still needs the callsigns
             // if use_vfirst is true, then the victim's callsign comes first
             if (DeathMsgs[msg].victim_first)
-              sprintf(buffer, DeathMsgs[msg].message, temp, temp2);
+              snprintf(buffer, sizeof(buffer), DeathMsgs[msg].message, temp, temp2);
             else
-              sprintf(buffer, DeathMsgs[msg].message, temp2, temp);
+              snprintf(buffer, sizeof(buffer), DeathMsgs[msg].message, temp2, temp);
           }
         }
         do_statistical = true;
@@ -341,8 +341,8 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
       int cpnum = GetCounterMeasureOwner(it);
       if (!CheckPlayerNum(cpnum)) {
         // it was a real robot
-        sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
-        sprintf(buffer, DTXT_ROBOTKILL, temp);
+        snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+        snprintf(buffer, sizeof(buffer), DTXT_ROBOTKILL, temp);
       } else {
         // nope we have a player's counter measure
         DoRandomDeathMessage(Players[cpnum].objnum, Players[me->id].objnum);
@@ -350,8 +350,8 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
       }
     } else {
       // we have a non-player killer
-      sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
-      sprintf(buffer, DTXT_STRAYFIREFORM, temp);
+      snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+      snprintf(buffer, sizeof(buffer), DTXT_STRAYFIREFORM, temp);
     }
   } else {
     // either me or it doesn't exist
@@ -360,8 +360,8 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
 
     if (me) {
       // only the killer doesn't exist
-      sprintf(temp, "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
-      sprintf(buffer, DTXT_NOKILLERDEATHMSG, temp);
+      snprintf(temp, sizeof(temp), "\x01\x64\xFF\x64%s\x01\x01\xFF\x01", Players[me->id].callsign);
+      snprintf(buffer, sizeof(buffer), DTXT_NOKILLERDEATHMSG, temp);
     }
   }
 
@@ -429,13 +429,13 @@ death_retry:
   {
     if (kei->kills_in_a_row <= 2)
       goto death_retry;
-    sprintf(buffer, DTXT_HM_KILLSINAROW, kei->kills_in_a_row, kpr->callsign);
+    snprintf(buffer, sizeof(buffer), DTXT_HM_KILLSINAROW, kei->kills_in_a_row, kpr->callsign);
   } break;
   case 1: // Deaths in a row
   {
     if (vei->deaths_in_a_row <= 2)
       goto death_retry;
-    sprintf(buffer, DTXT_HM_DEATHSINAROW, vei->deaths_in_a_row, vpr->callsign);
+    snprintf(buffer, sizeof(buffer), DTXT_HM_DEATHSINAROW, vei->deaths_in_a_row, vpr->callsign);
   } break;
   case 2: // Time since last kill
   {
@@ -445,7 +445,7 @@ death_retry:
     float a = ((RealGametime) - (kei->last_kill_time));
     if (a < 60.0f)
       goto death_retry;
-    sprintf(buffer, DTXT_HM_TIMESINCELASTKILL, kpr->callsign, GetTimeString(a));
+    snprintf(buffer, sizeof(buffer), DTXT_HM_TIMESINCELASTKILL, kpr->callsign, GetTimeString(a));
   } break;
   case 3: // Time since last death
   {
@@ -455,7 +455,7 @@ death_retry:
     float a = ((RealGametime) - (vei->last_death_time));
     if (a < 60.0f)
       goto death_retry;
-    sprintf(buffer, DTXT_HM_TIMESINCELASTDEATH, vpr->callsign, GetTimeString(a));
+    snprintf(buffer, sizeof(buffer), DTXT_HM_TIMESINCELASTDEATH, vpr->callsign, GetTimeString(a));
   } break;
   case 4: // Efficiency
   {
@@ -470,9 +470,9 @@ death_retry:
       goto death_retry;
 
     if (a > 75.0f)
-      sprintf(buffer, DTXT_HM_HIGHEFFICENCY, kpr->callsign, a);
+      snprintf(buffer, sizeof(buffer), DTXT_HM_HIGHEFFICENCY, kpr->callsign, a);
     else
-      sprintf(buffer, DTXT_HM_GOODEFFICENCY, kpr->callsign, a);
+      snprintf(buffer, sizeof(buffer), DTXT_HM_GOODEFFICENCY, kpr->callsign, a);
   } break;
   case 5: // Ranking
   {
@@ -485,7 +485,7 @@ death_retry:
 
     if (ki->kills < 3)
       goto death_retry;
-    sprintf(buffer, DTXT_HM_TIMESKILLED, kpr->callsign, vpr->callsign, ki->kills);
+    snprintf(buffer, sizeof(buffer), DTXT_HM_TIMESKILLED, kpr->callsign, vpr->callsign, ki->kills);
   } break;
   case 8: { // revenge death
     int kslot = PRec_GetPlayerSlot(knum);
@@ -495,7 +495,7 @@ death_retry:
 
     if (vei->last_kill_num == kslot && kei->last_death_num == vslot && !kei->got_revenge) {
       // there has been revenge
-      sprintf(buffer, DTXT_HM_REVENGE, kpr->callsign, vpr->callsign);
+      snprintf(buffer, sizeof(buffer), DTXT_HM_REVENGE, kpr->callsign, vpr->callsign);
       kei->got_revenge = 1;
     } else
       goto death_retry;

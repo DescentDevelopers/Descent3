@@ -314,8 +314,8 @@ void ChttpGet::WorkerThread() {
     fclose(LOCALFILE);
     return;
   }
-  sprintf(szCommand, "GET %s%s HTTP/1.1\nAccept: */*\nAccept-Encoding: deflate\nHost: %s\n\n\n",
-          m_ProxyEnabled ? "" : "/", m_ProxyEnabled ? m_URL : m_szDir, m_szHost);
+  snprintf(szCommand, sizeof(szCommand), "GET %s%s HTTP/1.1\nAccept: */*\nAccept-Encoding: deflate\nHost: %s\n\n\n",
+           m_ProxyEnabled ? "" : "/", m_ProxyEnabled ? m_URL : m_szDir, m_szHost);
   send(m_DataSock, szCommand, strlen(szCommand), 0);
   p = GetHTTPLine();
   if (p && strnicmp("HTTP/", p, 5) == 0) {

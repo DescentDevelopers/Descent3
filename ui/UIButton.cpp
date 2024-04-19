@@ -338,14 +338,14 @@ void UIRadioButton::OnDraw() {
     if (m_Flags & UIRB_NOBUTTON)
       strcpy(btnstr, " ");
     else
-      sprintf(btnstr, "%c ", UI_RADIO_OFF_CHAR);
+      snprintf(btnstr, sizeof(btnstr), "%c ", UI_RADIO_OFF_CHAR);
     break;
   case UI_BTS_ACTIVATED:
     iterations = 1;
     if (m_Flags & UIRB_NOBUTTON)
       strcpy(btnstr, " ");
     else
-      sprintf(btnstr, "%c ", UI_RADIO_ON_CHAR);
+      snprintf(btnstr, sizeof(btnstr), "%c ", UI_RADIO_ON_CHAR);
     break;
 
   default:
@@ -370,7 +370,7 @@ void UIRadioButton::OnFormat() {
     if (m_Flags & UIRB_NOBUTTON)
       strcpy(btnstr, " ");
     else
-      sprintf(btnstr, "%c ", UI_RADIO_OFF_CHAR);
+      snprintf(btnstr, sizeof(btnstr), "%c ", UI_RADIO_OFF_CHAR);
 
     UITextItem btn(btnstr, GetStateItem(m_State)->get_color(), GetStateItem(m_State)->get_alpha());
 
@@ -470,11 +470,11 @@ void UICheckBox::OnDraw() {
     iterations = 2;
   case UI_BTS_INACTIVE:
   case UI_BTS_DISABLED:
-    sprintf(btnstr, "%c ", UI_CHECKBOX_OFF_CHAR);
+    snprintf(btnstr, sizeof(btnstr), "%c ", UI_CHECKBOX_OFF_CHAR);
     break;
   case UI_BTS_ACTIVATED:
     iterations = 2;
-    sprintf(btnstr, "%c ", UI_CHECKBOX_ON_CHAR);
+    snprintf(btnstr, sizeof(btnstr), "%c ", UI_CHECKBOX_ON_CHAR);
     break;
 
   default:
@@ -495,7 +495,7 @@ void UICheckBox::OnDraw() {
 void UICheckBox::OnFormat() {
   if (m_Flags & UIF_FIT) {
     char btnstr[3];
-    sprintf(btnstr, "%c ", UI_CHECKBOX_OFF_CHAR);
+    snprintf(btnstr, sizeof(btnstr), "%c ", UI_CHECKBOX_OFF_CHAR);
 
     UITextItem btn(btnstr, GetStateItem(m_State)->get_color(), GetStateItem(m_State)->get_alpha());
 

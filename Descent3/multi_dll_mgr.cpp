@@ -596,11 +596,11 @@ int LoadMultiDLL(char *name) {
   strcat(lib_name, ".d3c");
 // Make the dll filename
 #if defined(WIN32)
-  sprintf(dll_name, "%s.dll", name);
+  snprintf(dll_name, sizeof(dll_name), "%s.dll", name);
 #elif defined(MACINTOSH)
   sprintf(dll_name, "%s.msl", name);
 #else
-  sprintf(dll_name, "%s.so", name);
+  snprintf(dll_name, sizeof(dll_name), "%s.so", name);
 #endif
 
   // Open the hog file

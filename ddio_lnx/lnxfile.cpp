@@ -816,7 +816,7 @@ bool ddio_GetTempFileName(char *basedir, char *prefix, char *filename) {
         // we hit the size of our max, see if we generated a unique filename
         char t[_MAX_PATH];
         randname[9] = '\0';
-        sprintf(t, "%s%s.tmp", prefix, randname);
+        snprintf(t, sizeof(t), "%s%s.tmp", prefix, randname);
 
         // see if we can find this file
         FILE *fd = fopen(t, "rb");
@@ -862,11 +862,12 @@ int ddio_CheckLockFile(const char *dir) {
   //		return -1;
 
   // rcg 06092000 The buffer stuff throughout is my add.
-  char buffer[strlen(dir) + strlen(".lock") + 2];
+  size_t bufferLen = strlen(dir) + strlen(".lock") + 2;
+  char buffer[bufferLen];
   bool found_lock_file_in_dir = false;
   FILE *file;
 
-  sprintf(buffer, "%s/%s", dir, ".lock");
+  snprintf(buffer, bufferLen, "%s/%s", dir, ".lock");
   mprintf((0, "LockFile: Checking [%s]...", buffer));
   chmod(buffer, S_IREAD | S_IWRITE);
   file = fopen(buffer, "rb");

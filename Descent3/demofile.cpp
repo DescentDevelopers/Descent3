@@ -1524,13 +1524,13 @@ void DemoPostPlaybackMenu(void) {
   wndtitle.Create(&window, &UITextItem(TXT_DEMO_PLAY_OPTIONS), 0, cury, UIF_CENTER | UIF_FIT);
   cury += 30;
   if (Demo_play_fast) {
-    sprintf(sztemp, TXT_MINFPS, (float)1 / Max_frametime);
+    snprintf(sztemp, sizeof(sztemp), TXT_MINFPS, (float)1 / Max_frametime);
     fps_min.Create(&window, &UITextItem(sztemp), 0, cury, UIF_CENTER | UIF_FIT);
     cury += 20;
-    sprintf(sztemp, TXT_MAXFPS, (float)1 / Min_frametime);
+    snprintf(sztemp, sizeof(sztemp), TXT_MAXFPS, (float)1 / Min_frametime);
     fps_max.Create(&window, &UITextItem(sztemp), 0, cury, UIF_CENTER | UIF_FIT);
     cury += 20;
-    sprintf(sztemp, TXT_AVGFSP, (float)1 / (Avg_frametime / Frames_counted));
+    snprintf(sztemp, sizeof(sztemp), TXT_AVGFSP, (float)1 / (Avg_frametime / Frames_counted));
     fps_avg.Create(&window, &UITextItem(sztemp), 0, cury, UIF_CENTER | UIF_FIT);
     cury += 20;
   }

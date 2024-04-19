@@ -270,7 +270,7 @@ unsigned int CFtpGet::GetFile() {
   char szCommandString[200];
   int rcode;
 
-  sprintf(szCommandString, "TYPE I\r\n");
+  snprintf(szCommandString, sizeof(szCommandString), "TYPE I\r\n");
   rcode = SendFTPCommand(szCommandString);
   if (rcode >= 400) {
     m_State = FTP_STATE_UNKNOWN_ERROR;
@@ -279,7 +279,7 @@ unsigned int CFtpGet::GetFile() {
   if (m_Aborting)
     return 0;
   if (m_szDir[0]) {
-    sprintf(szCommandString, "CWD %s\r\n", m_szDir);
+    snprintf(szCommandString, sizeof(szCommandString), "CWD %s\r\n", m_szDir);
     rcode = SendFTPCommand(szCommandString);
     if (rcode >= 400) {
       m_State = FTP_STATE_DIRECTORY_INVALID;
@@ -294,7 +294,7 @@ unsigned int CFtpGet::GetFile() {
   }
   if (m_Aborting)
     return 0;
-  sprintf(szCommandString, "RETR %s\r\n", m_szFilename);
+  snprintf(szCommandString, sizeof(szCommandString), "RETR %s\r\n", m_szFilename);
   rcode = SendFTPCommand(szCommandString);
   if (rcode >= 400) {
     m_State = FTP_STATE_FILE_NOT_FOUND;
@@ -380,8 +380,8 @@ unsigned int CFtpGet::IssuePort() {
 
   S_un.S_addr = (unsigned int)listenaddr.sin_addr.s_addr;
   // Format the PORT command with the correct numbers.
-  sprintf(szCommandString, "PORT %d,%d,%d,%d,%d,%d\r\n", S_un.S_un_b.s_b1, S_un.S_un_b.s_b2, S_un.S_un_b.s_b3,
-          S_un.S_un_b.s_b4, nLocalPort & 0xFF, nLocalPort >> 8);
+  snprintf(szCommandString, sizeof(szCommandString), "PORT %d,%d,%d,%d,%d,%d\r\n", S_un.S_un_b.s_b1, S_un.S_un_b.s_b2,
+           S_un.S_un_b.s_b3, S_un.S_un_b.s_b4, nLocalPort & 0xFF, nLocalPort >> 8);
 #endif
 
   // Tell the server which port to use for data.
@@ -440,13 +440,13 @@ int CFtpGet::LoginHost() {
   char szLoginString[200];
   int rcode;
 
-  sprintf(szLoginString, "USER %s\r\n", m_szUserName);
+  snprintf(szLoginString, sizeof(szLoginString), "USER %s\r\n", m_szUserName);
   rcode = SendFTPCommand(szLoginString);
   if (rcode >= 400) {
     m_State = FTP_STATE_LOGIN_ERROR;
     return 0;
   }
-  sprintf(szLoginString, "PASS %s\r\n", m_szPassword);
+  snprintf(szLoginString, sizeof(szLoginString), "PASS %s\r\n", m_szPassword);
   rcode = SendFTPCommand(szLoginString);
   if (rcode >= 400) {
     m_State = FTP_STATE_LOGIN_ERROR;

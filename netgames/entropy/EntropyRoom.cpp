@@ -133,7 +133,7 @@ void DoServerConfigureDialog(void) {
       DLLHotSpotCreate(main_wnd, UID_OK, K_ENTER, start_game_text_off, start_game_text_on, 40, cury, 130, 15, 0);
   cury += 20;
 
-  sprintf(tempbuffer, "%d", 2);
+  snprintf(tempbuffer, sizeof(tempbuffer), "%d", 2);
   DLLEditSetText(virus_pk_edit, tempbuffer);
 
   DLLNewUIGameWindowOpen(main_wnd);

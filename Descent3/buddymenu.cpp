@@ -107,9 +107,9 @@ void BuddyDisplay(void) {
   for (index = 0; index < Guidebot_menu_data.num_commands; index++) {
     char buf[256], buf2[256];
     if (index < 9) {
-      sprintf(buf, "%d. %s", index + 1, Guidebot_menu_data.command_text[index]);
+      snprintf(buf, sizeof(buf), "%d. %s", index + 1, Guidebot_menu_data.command_text[index]);
     } else {
-      sprintf(buf, "%c. %s", 'A' + (index - 9), Guidebot_menu_data.command_text[index]);
+      snprintf(buf, sizeof(buf), "%c. %s", 'A' + (index - 9), Guidebot_menu_data.command_text[index]);
     }
 
     textaux_WordWrap(buf, buf2, BUDDYMENU_ITEM_W, MONITOR9_NEWUI_FONT);

@@ -560,9 +560,9 @@ void ConfigItem::UpdateSlider(int index, bool call_callback) {
     m_iCurrentValue = (int)(((float)m_sList[index]->GetPos()) * m_fUnit + m_fMin + 0.5f);
     if (m_iCurrentValue > m_fMax)
       m_iCurrentValue = m_fMax;
-    sprintf(temp, "%d", m_iCurrentValue);
+    snprintf(temp, sizeof(temp), "%d", m_iCurrentValue);
     if (m_iFlags & CIF_PERCENT)
-      strcat(temp, "%");
+      strncat(temp, "%", sizeof(temp) - strlen(temp) - 1);
     if (m_iCallback && call_callback)
       (*m_iCallback)(m_iCurrentValue);
     break;
@@ -571,11 +571,11 @@ void ConfigItem::UpdateSlider(int index, bool call_callback) {
     if (m_fCurrentValue > m_fMax)
       m_fCurrentValue = m_fMax;
     if (m_iFlags & CIF_NODECIMAL)
-      sprintf(temp, "%.0f", m_fCurrentValue);
+      snprintf(temp, sizeof(temp), "%.0f", m_fCurrentValue);
     else
-      sprintf(temp, "%.2f", m_fCurrentValue);
+      snprintf(temp, sizeof(temp), "%.2f", m_fCurrentValue);
     if (m_iFlags & CIF_PERCENT)
-      strcat(temp, "%");
+      strncat(temp, "%", sizeof(temp) - strlen(temp) - 1);
     if (m_fCallback && call_callback)
       (*m_fCallback)(m_fCurrentValue);
     break;
@@ -722,17 +722,17 @@ void ConfigItem::Add(int count, ...) {
     char temp[10];
     switch (m_iValueType) {
     case CIV_INT:
-      sprintf(temp, "%d", m_iInitial);
+      snprintf(temp, sizeof(temp), "%d", m_iInitial);
       if (m_iFlags & CIF_PERCENT)
-        strcat(temp, "%");
+        strncat(temp, "%", sizeof(temp) - strlen(temp) - 1);
       break;
     case CIV_FLOAT:
       if (m_iFlags & CIF_NODECIMAL)
-        sprintf(temp, "%.0f", m_fInitial);
+        snprintf(temp, sizeof(temp), "%.0f", m_fInitial);
       else
-        sprintf(temp, "%.2f", m_fInitial);
+        snprintf(temp, sizeof(temp), "%.2f", m_fInitial);
       if (m_iFlags & CIF_PERCENT)
-        strcat(temp, "%");
+        strncat(temp, "%", sizeof(temp) - strlen(temp) - 1);
       break;
     }
     m_tLabel2.Create(m_hWnd, &UITextItem(temp, UICOL_TEXT_NORMAL), m_X + 155, m_Y + 7, UIF_FIT);
@@ -873,10 +873,10 @@ void ConfigItem::Add(int count, ...) {
     m_iID[0] = GetUniqueID();
     // allocate text items
     char buffer[256];
-    sprintf(buffer, "%c %s", UI_CHECKBOX_OFF_CHAR, ((UITextItem *)m_tLabel.GetItem())->GetBuffer());
+    snprintf(buffer, sizeof(buffer), "%c %s", UI_CHECKBOX_OFF_CHAR, ((UITextItem *)m_tLabel.GetItem())->GetBuffer());
     m_tiList[0] = new UITextItem(buffer, UICOL_HOTSPOT_LO);
     m_tiList[1] = new UITextItem(buffer, UICOL_HOTSPOT_HI);
-    sprintf(buffer, "%c %s", UI_CHECKBOX_ON_CHAR, ((UITextItem *)m_tLabel.GetItem())->GetBuffer());
+    snprintf(buffer, sizeof(buffer), "%c %s", UI_CHECKBOX_ON_CHAR, ((UITextItem *)m_tLabel.GetItem())->GetBuffer());
     m_tiList[2] = new UITextItem(buffer, UICOL_HOTSPOT_LO);
     m_tiList[3] = new UITextItem(buffer, UICOL_HOTSPOT_HI);
     // make sure allocation ok

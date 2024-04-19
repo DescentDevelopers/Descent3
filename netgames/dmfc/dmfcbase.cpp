@@ -1127,18 +1127,18 @@ void DMFCBase::SetPlayerInfo(int pnum) {
   bool display_addr = false;
 
   // Print out callsign
-  sprintf(buffer, "%s (%s)", Players[pnum].callsign, (0 == pnum) ? DTXT_SERVER : DTXT_CLIENT);
+  snprintf(buffer, sizeof(buffer), "%s (%s)", Players[pnum].callsign, (0 == pnum) ? DTXT_SERVER : DTXT_CLIENT);
   strcpy(DMFCPlayerInfo[index], buffer);
   index++;
 
   if (m_iNumTeams > 1 && Players[pnum].team != -1) {
-    sprintf(buffer, DTXT_TEAMFORMAT, GetTeamString(GetPlayerTeam(pnum)));
+    snprintf(buffer, sizeof(buffer), DTXT_TEAMFORMAT, GetTeamString(GetPlayerTeam(pnum)));
     strcpy(DMFCPlayerInfo[index], buffer);
     index++;
   }
 
   // Print out playernum
-  sprintf(buffer, DTXT_PLRNUMFORMAT, pnum);
+  snprintf(buffer, sizeof(buffer), DTXT_PLRNUMFORMAT, pnum);
   strcpy(DMFCPlayerInfo[index], buffer);
   index++;
 
@@ -1176,7 +1176,7 @@ void DMFCBase::SetPlayerInfo(int pnum) {
   }
 
   // Print out Ship info
-  sprintf(buffer, DTXT_SHIPFORM, Ships[Players[pnum].ship_index].name);
+  snprintf(buffer, sizeof(buffer), DTXT_SHIPFORM, Ships[Players[pnum].ship_index].name);
   strcpy(DMFCPlayerInfo[index], buffer);
   index++;
 
@@ -1247,7 +1247,7 @@ void DMFCBase::DisplayPlayerInfo(int background_bmp, bool dedicated_server) {
   int precindex = translate_precptr_to_index(pr);
   float ti = GetTimeInGame(precindex);
 
-  sprintf(temp, DTXT_PI_TIMEINGAME, GetTimeString(ti));
+  snprintf(temp, sizeof(temp), DTXT_PI_TIMEINGAME, GetTimeString(ti));
   // DLLRenderHUDText(color,255,0,x,y,temp); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
@@ -1768,7 +1768,7 @@ void DMFCBase::ClipString(int width, char *string, bool arrow) {
   int string_length = strlen(string);
   char arrow_string[2];
   int arrow_length = 0;
-  sprintf(arrow_string, "%c", CHAR_RIGHT_ARROW);
+  snprintf(arrow_string, sizeof(arrow_string), "%c", CHAR_RIGHT_ARROW);
   if (arrow) {
     // arrow_length = ratio * ((float)DLLRenderHUDGetTextLineWidth(arrow_string));
     arrow_length = DLLgrtext_GetTextLineWidth(arrow_string);
@@ -2249,7 +2249,7 @@ void DMFCBase::WriteDMFCStatsToFile(CFILE *file) {
     pr = GetPlayerRecord(p);
     if (pr && pr->state != STATE_EMPTY) {
       // Write out header
-      sprintf(buffer, "%d) %s%s", count, (pr->state == STATE_INGAME) ? "" : "*", pr->callsign);
+      snprintf(buffer, sizeof(buffer), "%d) %s%s", count, (pr->state == STATE_INGAME) ? "" : "*", pr->callsign);
       DLLcf_WriteString(file, buffer);
       length = strlen(buffer);
       memset(buffer, '=', length);
@@ -2258,18 +2258,18 @@ void DMFCBase::WriteDMFCStatsToFile(CFILE *file) {
 
       if (FindPInfoStatFirst(p, &stat)) {
         char tempbuffer[25];
-        sprintf(buffer, DTXT_DMFC_STAT_HEADER);
+        snprintf(buffer, sizeof(buffer), DTXT_DMFC_STAT_HEADER);
         DLLcf_WriteString(file, buffer);
         memset(buffer, ' ', BUFSIZE);
         dpr = GetPlayerRecord(stat.slot);
 
-        sprintf(tempbuffer, "%s", dpr->callsign);
+        snprintf(tempbuffer, sizeof(tempbuffer), "%s", dpr->callsign);
         memcpy(buffer, tempbuffer, strlen(tempbuffer));
 
-        sprintf(tempbuffer, "%d", stat.kills);
+        snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.kills);
         memcpy(&buffer[30], tempbuffer, strlen(tempbuffer));
 
-        sprintf(tempbuffer, "%d", stat.deaths);
+        snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.deaths);
         memcpy(&buffer[40], tempbuffer, strlen(tempbuffer));
 
         int pos;
@@ -2284,13 +2284,13 @@ void DMFCBase::WriteDMFCStatsToFile(CFILE *file) {
           memset(buffer, ' ', BUFSIZE);
           dpr = GetPlayerRecord(stat.slot);
 
-          sprintf(tempbuffer, "%s", dpr->callsign);
+          snprintf(tempbuffer, sizeof(tempbuffer), "%s", dpr->callsign);
           memcpy(buffer, tempbuffer, strlen(tempbuffer));
 
-          sprintf(tempbuffer, "%d", stat.kills);
+          snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.kills);
           memcpy(&buffer[30], tempbuffer, strlen(tempbuffer));
 
-          sprintf(tempbuffer, "%d", stat.deaths);
+          snprintf(tempbuffer, sizeof(tempbuffer), "%d", stat.deaths);
           memcpy(&buffer[40], tempbuffer, strlen(tempbuffer));
 
           int pos;
@@ -2933,19 +2933,19 @@ char *DMFCBase::GetTimeString(float sec) {
   // now form our string hh:mm:ss
   if (hours) {
     if (hours == 1 && minutes == 0 && seconds == 0)
-      sprintf(buffer, DTXT_TIME_HOUR);
+      snprintf(buffer, sizeof(buffer), "%s", DTXT_TIME_HOUR);
     else
-      sprintf(buffer, DTXT_TIME_HOURS, hours, minutes, seconds);
+      snprintf(buffer, sizeof(buffer), DTXT_TIME_HOURS, hours, minutes, seconds);
   } else if (minutes) {
     if (minutes == 1 && seconds == 0)
-      sprintf(buffer, DTXT_TIME_MINUTE);
+      snprintf(buffer, sizeof(buffer), "%s", DTXT_TIME_MINUTE);
     else
-      sprintf(buffer, DTXT_TIME_MINUTES, minutes, seconds);
+      snprintf(buffer, sizeof(buffer), DTXT_TIME_MINUTES, minutes, seconds);
   } else {
     if (seconds == 1)
-      sprintf(buffer, DTXT_TIME_SECOND);
+      snprintf(buffer, sizeof(buffer), "%s", DTXT_TIME_SECOND);
     else
-      sprintf(buffer, DTXT_TIME_SECONDS, seconds);
+      snprintf(buffer, sizeof(buffer), DTXT_TIME_SECONDS, seconds);
   }
   return buffer;
 }
@@ -3501,9 +3501,10 @@ void DMFCBase::GenerateStatFilename(char *filename, char *root, bool end_of_leve
     break;
   }
 
-  sprintf(timestr, "%s._%s._%d_%d_%02d%02d", day, month, newtime->tm_mday, newtime->tm_year + 1900, newtime->tm_hour,
-          newtime->tm_min);
-  sprintf(fname, "%s_%s_%d_%s%s.stats", root, name, level, (end_of_level) ? DTXT_ENDOFLEVELCONCAT : "", timestr);
+  snprintf(timestr, sizeof(timestr), "%s._%s._%d_%d_%02d%02d", day, month, newtime->tm_mday, newtime->tm_year + 1900,
+           newtime->tm_hour, newtime->tm_min);
+  snprintf(fname, sizeof(fname), "%s_%s_%d_%s%s.stats", root, name, level, (end_of_level) ? DTXT_ENDOFLEVELCONCAT : "",
+           timestr);
 
   // remove all spaces (convert to _)
   char *p = fname;
@@ -3578,7 +3579,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_HEADING); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_HEADING);
+  snprintf(fullbuffer, sizeof(fullbuffer), "%s", DTXT_NGI_HEADING);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   maxx = (w > maxx) ? w : maxx;
@@ -3593,7 +3594,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_GAMENAME,Netgame->name); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_GAMENAME, Netgame->name);
+  snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_GAMENAME, Netgame->name);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   maxx = (w > maxx) ? w : maxx;
@@ -3606,7 +3607,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_MISSIONNAME,Netgame->mission); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_MISSIONNAME, Netgame->mission);
+  snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_MISSIONNAME, Netgame->mission);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   maxx = (w > maxx) ? w : maxx;
@@ -3619,7 +3620,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_SCRIPTNAME,Netgame->scriptname); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_SCRIPTNAME, Netgame->scriptname);
+  snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_SCRIPTNAME, Netgame->scriptname);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   maxx = (w > maxx) ? w : maxx;
@@ -3633,7 +3634,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
     // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_PPS,Netgame->packets_per_second); y+=height;
     DLLgrtext_SetColor(color);
     DLLgrtext_SetAlpha(255);
-    sprintf(fullbuffer, DTXT_NGI_PPS, Netgame->packets_per_second);
+    snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_PPS, Netgame->packets_per_second);
     DLLgrtext_Printf(x, y, fullbuffer);
     w = DLLgrtext_GetTextLineWidth(fullbuffer);
     maxx = (w > maxx) ? w : maxx;
@@ -3646,7 +3647,8 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
     // y+=height;
     DLLgrtext_SetColor(color);
     DLLgrtext_SetAlpha(255);
-    sprintf(fullbuffer, DTXT_NGI_PPSSERVER, Netgame->packets_per_second, NetPlayers[GetPlayerNum()].pps);
+    snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_PPSSERVER, Netgame->packets_per_second,
+             NetPlayers[GetPlayerNum()].pps);
     DLLgrtext_Printf(x, y, fullbuffer);
     w = DLLgrtext_GetTextLineWidth(fullbuffer);
     maxx = (w > maxx) ? w : maxx;
@@ -3660,7 +3662,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_MAXPLAYERS,Netgame->max_players); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_MAXPLAYERS, Netgame->max_players);
+  snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_MAXPLAYERS, Netgame->max_players);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   maxx = (w > maxx) ? w : maxx;
@@ -3674,7 +3676,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_ACCURATECOLL,(use_acc_weap)?DTXT_MNUON:DTXT_MNUOFF); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_ACCURATECOLL, (use_acc_weap) ? DTXT_MNUON : DTXT_MNUOFF);
+  snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_ACCURATECOLL, (use_acc_weap) ? DTXT_MNUON : DTXT_MNUOFF);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   maxx = (w > maxx) ? w : maxx;
@@ -3692,7 +3694,7 @@ void DMFCBase::DisplayNetGameInfo(int background_bmp, bool dedicated_server) {
   // DLLRenderHUDText(color,255,0,x,y,DTXT_NGI_SENDROTATIONAL,(rot_vel_sent)?DTXT_MNUON:DTXT_MNUOFF); y+=height;
   DLLgrtext_SetColor(color);
   DLLgrtext_SetAlpha(255);
-  sprintf(fullbuffer, DTXT_NGI_SENDROTATIONAL, (rot_vel_sent) ? DTXT_MNUON : DTXT_MNUOFF);
+  snprintf(fullbuffer, sizeof(fullbuffer), DTXT_NGI_SENDROTATIONAL, (rot_vel_sent) ? DTXT_MNUON : DTXT_MNUOFF);
   DLLgrtext_Printf(x, y, fullbuffer);
   w = DLLgrtext_GetTextLineWidth(fullbuffer);
   y += height;
@@ -4347,7 +4349,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
         } else {
           value = 255;
         }
-        sprintf(temp_str, "%d", value);
+        snprintf(temp_str, sizeof(temp_str), "%d", value);
         strcat(s_mask, temp_str);
         if (count != 3)
           strcat(s_mask, ".");
@@ -4358,7 +4360,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
         } else {
           value = atoi(ptr);
         }
-        sprintf(temp_str, "%d", value);
+        snprintf(temp_str, sizeof(temp_str), "%d", value);
         strcat(s_ip, temp_str);
         if (count != 3)
           strcat(s_ip, ".");
@@ -4975,7 +4977,7 @@ void DMFCBase::DisplayTimelimitCountdown(void) {
   DLLgrtext_SetAlpha(255);
 
   char buffer[256];
-  sprintf(buffer, "Time Left: T - %d", (int)time_left);
+  snprintf(buffer, sizeof(buffer), "Time Left: T - %d", (int)time_left);
 
   int font_height = DLLgrfont_GetHeight(Game_fonts[HUD_FONT_INDEX]);
   DLLgrtext_CenteredPrintf(0, font_height * 10, buffer);

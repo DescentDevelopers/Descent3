@@ -350,7 +350,7 @@ int mng_CheckIfPageLocked(mngs_Pagelock *pl) {
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
   if (infile == NULL) {
-    sprintf(ErrorString, "There was a problem opening the table lock file for reading.");
+    strcpy(ErrorString, "There was a problem opening the table lock file for reading.");
     return -1;
   }
 
@@ -366,7 +366,7 @@ int mng_CheckIfPageLocked(mngs_Pagelock *pl) {
           if (!stricmp(testlock.holder, "UNLOCKED"))
             r = 0;
           else {
-            sprintf(InfoString, "User %s already has this page locked.", testlock.holder);
+            snprintf(InfoString, sizeof(InfoString), "User %s already has this page locked.", testlock.holder);
             if (!stricmp(testlock.holder, TableUser))
               r = 0;
             else
@@ -393,7 +393,7 @@ int mng_CheckIfPageOwned(mngs_Pagelock *pl, char *owner) {
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
   if (infile == NULL) {
-    sprintf(ErrorString, "There was a problem opening the table lock file for reading.");
+    strcpy(ErrorString, "There was a problem opening the table lock file for reading.");
     Int3();
     return -1;
   }
@@ -409,7 +409,7 @@ int mng_CheckIfPageOwned(mngs_Pagelock *pl, char *owner) {
         if (!stricmp(testlock.holder, owner))
           r = 1;
         else {
-          sprintf(InfoString, "User %s does not have this page locked.", owner);
+          snprintf(InfoString, sizeof(InfoString), "User %s does not have this page locked.", owner);
           r = 0;
         }
         done = 1;
@@ -522,7 +522,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
     time_t t;
     t = time(NULL);
     strftime(date, 254, "[%a %m/%d/%y %H:%M:%S]", localtime(&t));
-    sprintf(str, "%s Page %s (%s) last touched by %s\n", date, name, PageNames[pl->pagetype], TableUser);
+    snprintf(str, sizeof(str), "%s Page %s (%s) last touched by %s\n", date, name, PageNames[pl->pagetype], TableUser);
     fwrite(str, 1, strlen(str), logfile);
     fflush(logfile);
     fclose(logfile);
@@ -570,11 +570,11 @@ int mng_DeletePagelock(char *name, int pagetype) {
   }
 
   if (remove(TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem deleting the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
   if (rename(TempTableLockFilename, TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem renaming the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
   }
@@ -624,11 +624,11 @@ int mng_DeletePagelockSeries(char *names[], int num, int pagetype) {
   cfclose(outfile);
 
   if (remove(TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem deleting the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
   if (rename(TempTableLockFilename, TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem renaming the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
   }
@@ -761,11 +761,11 @@ int mng_UnlockPagelockSeries(char *names[], int *pagetypes, int num) {
   mprintf((0, "Unlocked %d pages\n", total));
 
   if (remove(TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem deleting the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     return (0);
   }
   if (rename(TempTableLockFilename, TableLockFilename)) {
-    sprintf(ErrorString, "There was a problem renaming the temp file - errno %d", errno);
+    snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     return (0);
   }

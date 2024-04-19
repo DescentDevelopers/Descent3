@@ -302,7 +302,7 @@ int CBriefParse::ParseBriefing(char *filename) {
   int current_screen = -1;
   char title[100];
 
-  sprintf(title, " ");
+  strcpy(title, " ");
 
   mprintf((0, "Parsing <%s>\n", filename));
 
