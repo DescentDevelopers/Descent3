@@ -446,8 +446,9 @@ void Descent3() {
 #endif
 
   // Call getGitHead() to retrieve the Git HEAD information
-  char git_head[40];
+  char git_head[41];
   getGitHead(git_head, sizeof(git_head));
+  git_head[40] = '\0';
   ProgramVersion(type, D3_MAJORVER, D3_MINORVER, git_head);
 
   // Catch cfile errors
