@@ -445,7 +445,10 @@ void Descent3() {
   type |= DEMO_VERSION;
 #endif
 
-  ProgramVersion(type, D3_MAJORVER, D3_MINORVER, D3_BUILD);
+  // Call getGitHead() to retrieve the Git HEAD information
+  char git_head[40];
+  getGitHead(git_head, sizeof(git_head));
+  ProgramVersion(type, D3_MAJORVER, D3_MINORVER, git_head);
 
   // Catch cfile errors
   try {
