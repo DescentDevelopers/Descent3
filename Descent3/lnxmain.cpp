@@ -522,7 +522,10 @@ int main(int argc, char *argv[]) {
 
   GatherArgs(argv);
 
-  snprintf(game_version_buffer, sizeof(game_version_buffer), "%d.%d.%d%s%s", D3_MAJORVER, D3_MINORVER, D3_BUILD,
+  char git_head[41];
+  getGitHead(git_head, sizeof(git_head));
+  git_head[40] = '\0';
+  snprintf(game_version_buffer, sizeof(game_version_buffer), "%d.%d.%d%s%s", D3_MAJORVER, D3_MINORVER, git_head,
            LOKI_VERSION, GAME_VERS_EXT);
 
   loki_setgamename("descent3" GAME_NAME_EXT, game_version_buffer, "Descent 3");
