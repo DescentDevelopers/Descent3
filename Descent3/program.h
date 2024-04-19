@@ -138,9 +138,12 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
-#include "pstypes.h"
+#pragma once
 
+#include "pstypes.h"
 #include "buildno.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #define D3_MAJORVER 0x1 // DESCENT 3 VERSION NUMBER
 #define D3_MINORVER 0x5
@@ -161,6 +164,7 @@ typedef struct t_program_version {
   bool editor : 1;   // editor code?
   bool windowed : 1; // runs in a window?
   bool demo : 1;     // demo?
+  char git_head[40]; // Git HEAD information
 } program_version;
 
 //	Program state available to everyone
@@ -170,6 +174,18 @@ extern program_version Program_version;
 #define PROGRAM(_c) Program_version._c
 
 //	functions
-void ProgramVersion(int version_type, ubyte major, ubyte minor, ubyte build);
+void ProgramVersion(int version_type, ubyte major, ubyte minor, const char *git_head);
+
+// Function to get Git HEAD information
+void getGitHead(char *head, int size) {
+    FILE *fp;
+    fp = popen("git rev-parse --short HEAD", "r");
+    if (fp == NULL) {
+        printf("Failed to run command\n");
+        exit(1);
+    }
+    fgets(head, size, fp);
+    pclose(fp);
+}
 
 #endif
