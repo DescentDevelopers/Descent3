@@ -99,6 +99,7 @@
 #include "networking.h"
 #include "descent.h" //for MSN_NAMELEN
 #include "byteswap.h"
+#include <cassert>
 
 #define NETGAME_NAME_LEN 32
 #define NETGAME_SCRIPT_LEN 32
@@ -286,9 +287,10 @@ inline void MultiAddFloat(float element, ubyte *data, int *count) {
 }
 
 inline void MultiAddString(char *str, ubyte *data, int *count) {
-  ubyte len = strlen(str) + 1;
+  size_t len = strlen(str) + 1;
+  assert(len <= 0xFF);
 
-  MultiAddByte(len, data, count);
+  MultiAddByte((ubyte)len, data, count);
   memcpy(&data[*count], str, len);
   *count += len;
 }

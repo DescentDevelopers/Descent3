@@ -49,7 +49,7 @@ ENDIF()
 IF (WIN32)
 	SET(D3_GAMEDIR "c:/games/Descent3/")	
 	set (CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "lib/win" "lib/win/directx")
-	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Gm /EHsc /RTC1 /W3 /nologo /c /ZI /TP /errorReport:prompt")
+	SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /RTC1 /W3 /nologo /c /Zi /TP /errorReport:prompt")
 	SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL /FD /EHsc /W3 /nologo /c /Zi /TP /errorReport:prompt")
 	
 	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
@@ -65,6 +65,19 @@ IF (WIN32)
 	FIND_LIBRARY(DINPUT_LIBRARY NAMES dinput "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
 	FIND_LIBRARY(DXGUID_LIBRARY NAMES dxguid "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
 	FIND_LIBRARY(DDRAW_LIBRARY NAMES ddraw "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+
+	if (MSVC AND CMAKE_CXX_SIMULATE_ID STREQUAL "")
+		add_compile_options("/we4150")  # deletion of pointer to incomplete type 'type'; no destructor called
+#		add_compile_options("/we4305")  # truncation from 'X' to 'Y'
+		add_compile_options("/we4474")  # too many arguments passed for format string
+		add_compile_options("/we4700")  # uninitialized local variable 'X' used
+		add_compile_options("/we4804")  # unsafe use of type 'bool' in operation
+		add_compile_options("/we4806")  # unsafe operation: no value of type 'bool' promoted to type 'int' can equal the given constant
+		add_compile_options("/we4473")  # not enough arguments passed for format string
+		add_compile_options("/we4477")  # format string requires argument of type X but variadic argument Y has type Z
+		add_compile_options("/we4715")  # 'function' : not all control paths return a value
+		add_compile_options("/we4834")  # discarding return value of function with [[nodiscard]] attribute
+	endif()
 ENDIF ()
 
 MESSAGE("Install will copy files to ${D3_GAMEDIR}")

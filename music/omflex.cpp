@@ -306,7 +306,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
 
       case OMFCMD_COMPARE: {
         tMusicVal val;
-        sscanf(operand, "r%d", &val);
+        sscanf(operand, "r%hd", &val);
         ADD_NEW_INS_NUM(OMFCMD_COMPARE, val);
         break;
       }
