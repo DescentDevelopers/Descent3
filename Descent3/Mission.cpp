@@ -640,7 +640,7 @@
 #include "3d.h"
 #include "LoadLevel.h"
 #include "pserror.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "gamefont.h"
 #include "grdefs.h"
 #include "descent.h"

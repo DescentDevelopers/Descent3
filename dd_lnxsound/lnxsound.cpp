@@ -108,7 +108,7 @@
 #include <linux/soundcard.h>
 #include <stdarg.h>
 #include <errno.h>
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pserror.h"
 #include "mono.h"
 #include "soundload.h"

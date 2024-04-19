@@ -73,7 +73,7 @@
 
 #include "music.h"
 #include "musiclib.h"
-#include "InfFile.h"
+#include "cfile/inffile.h"
 #include "mem.h"
 
 #include <string.h>

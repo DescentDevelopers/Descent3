@@ -21,7 +21,7 @@
 
 #include "manage.h"
 #include "robot.h"
-#include "cfile.h"
+#include "cfile/cfile.h"
 #include "pstypes.h"
 #include "objinfo.h"
 

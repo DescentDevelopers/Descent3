@@ -22,7 +22,7 @@
 
 #include "manage.h"
 #include "weapon.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pstypes.h"
 
 typedef struct {

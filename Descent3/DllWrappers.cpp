@@ -19,7 +19,7 @@
 #include "DllWrappers.h"
 #include "pserror.h"
 #include "pstring.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "gamefont.h"
 #include "grdefs.h"
 #include "descent.h"

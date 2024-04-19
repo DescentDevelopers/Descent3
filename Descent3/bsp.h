@@ -43,7 +43,7 @@
 
 #include "list.h"
 #include "vecmat.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 
 #define BSP_IN_FRONT 1
 #define BSP_BEHIND 2

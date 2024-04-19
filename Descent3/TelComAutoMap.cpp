@@ -151,7 +151,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "bitmap.h"

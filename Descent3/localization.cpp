@@ -91,7 +91,7 @@
 #include "game.h"
 #include "descent.h"
 #include "mono.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "localization.h"
 #include "mem.h"
 #include "ddio.h"

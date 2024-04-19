@@ -456,7 +456,7 @@
 #include "mono.h"
 #include "object.h"
 #include "ddio.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "appdatabase.h"
 #include "genericpage.h"
 #include "mem.h"

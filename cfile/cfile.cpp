@@ -33,13 +33,15 @@
 // Linux Build Includes
 #include "linux/linux_fix.h"
 #endif
+
 #include "byteswap.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"
-#include "CFILE.H"
-#include "hogfile.h" //info about library file
+#include "cfile/cfile.h"
+#include "cfile/hogfile.h" //info about library file
 #include "mem.h"
+
 // Library structures
 typedef struct {
   char name[PSFILENAME_LEN + 1]; // just the filename part
@@ -48,25 +50,30 @@ typedef struct {
   ulong timestamp;               // time and date of file
   int flags;                     // misc flags
 } library_entry;
+
 typedef struct library {
   char name[_MAX_PATH]; // includes path + filename
   int nfiles;
   library_entry *entries;
   struct library *next;
-  int handle; // indentifier for this lib
+  int handle; // identifier for this lib
   FILE *file; // pointer to file for this lib, if no one using it
 } library;
+
 // entry in extension->path table
 typedef struct {
   char ext[_MAX_EXT];
   ubyte pathnum;
 } ext_entry;
+
 // entry in list of paths
 typedef struct {
   char path[_MAX_PATH];
   ubyte specific; // if non-zero, only for specific extensions
 } path_entry;
+
 #define MAX_PATHS 100
+
 path_entry paths[MAX_PATHS];
 int N_paths = 0;
 #define MAX_EXTENSIONS 100
@@ -74,11 +81,12 @@ ext_entry extensions[MAX_EXTENSIONS];
 int N_extensions;
 library *Libraries = NULL;
 int lib_handle = 0;
-void cf_Close();
+
 // Structure thrown on disk error
 cfile_error cfe;
 // The message for unexpected end of file
 char *eof_error = "Unexpected end of file";
+
 // Generates a cfile error
 void ThrowCFileError(int type, CFILE *file, char *msg) {
   cfe.read_write = type;
@@ -86,6 +94,9 @@ void ThrowCFileError(int type, CFILE *file, char *msg) {
   cfe.file = file;
   throw &cfe;
 }
+
+void cf_Close();
+
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
 // Parameters:  libname - the path & filename of the HOG file
 // NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
@@ -101,7 +112,7 @@ int cf_OpenLibrary(const char *libname) {
   tHogFileEntry entry;
 
   fp = fopen(libname, "rb");
-  if (fp == NULL)
+  if (fp == nullptr)
     return 0; // CF_NO_FILE;
   fread(id, strlen(HOG_TAG_STR), 1, fp);
   if (strncmp(id, HOG_TAG_STR, strlen(HOG_TAG_STR))) {
@@ -166,10 +177,13 @@ int cf_OpenLibrary(const char *libname) {
   // Sucess.  Return the handle
   return lib->handle;
 }
-// Closes a library file.
-// Parameters:  handle: the handle returned by cf_OpenLibrary()
+
+/**
+ * Closes a library file.
+ * @param handle the handle returned by cf_OpenLibrary()
+ */
 void cf_CloseLibrary(int handle) {
-  library *lib, *prev = NULL;
+  library *lib, *prev = nullptr;
   for (lib = Libraries; lib; prev = lib, lib = lib->next) {
     if (lib->handle == handle) {
       if (prev)
@@ -180,10 +194,11 @@ void cf_CloseLibrary(int handle) {
         fclose(lib->file);
       mem_free(lib->entries);
       mem_free(lib);
-      return; // sucessful close
+      return; // successful close
     }
   }
 }
+
 // Closes down the CFILE system, freeing up all data, etc.
 void cf_Close() {
   library *next;
@@ -232,16 +247,23 @@ int cf_SetSearchPath(const char *path, ...) {
   return 1;
 }
 
-// Removes all search paths that have been added by cf_SetSearchPath
-void cf_ClearAllSearchPaths(void) {
+/**
+ * Removes all search paths that have been added by cf_SetSearchPath
+ */
+void cf_ClearAllSearchPaths() {
   N_paths = 0;
   N_extensions = 0;
 }
 
-// Opens a file for reading in a library, given the library id
+/**
+ * Opens a file for reading in a library, given the library id
+ * @param filename
+ * @param libhandle
+ * @return
+ */
 CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   if (libhandle <= 0)
-    return NULL;
+    return nullptr;
 
   library *lib;
   CFILE *cfile;
@@ -254,9 +276,9 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
     lib = lib->next;
   }
 
-  if (NULL == lib) {
+  if (nullptr == lib) {
     // couldn't find the library handle
-    return NULL;
+    return nullptr;
   }
 
   // now do a binary search for the file entry
@@ -276,10 +298,10 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
       first = i + 1;
     else // search key before check key
       last = i - 1;
-  } while (1);
+  } while (true);
 
   if (!found)
-    return NULL; // file not in library
+    return nullptr; // file not in library
 
   // open the file for reading
   FILE *fp;
@@ -287,13 +309,13 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   // See if there's an available FILE
   if (lib->file) {
     fp = lib->file;
-    lib->file = NULL;
+    lib->file = nullptr;
   } else {
     fp = fopen(lib->name, "rb");
     if (!fp) {
       mprintf((1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name, filename, errno));
       Int3();
-      return NULL;
+      return nullptr;
     }
   }
   cfile = (CFILE *)mem_malloc(sizeof(*cfile));
@@ -333,20 +355,20 @@ CFILE *open_file_in_lib(const char *filename) {
         first = i + 1;
       else // search key before check key
         last = i - 1;
-    } while (1);
+    } while (true);
     if (found) {
       FILE *fp;
       int r;
       // See if there's an available FILE
       if (lib->file) {
         fp = lib->file;
-        lib->file = NULL;
+        lib->file = nullptr;
       } else {
         fp = fopen(lib->name, "rb");
         if (!fp) {
           mprintf((1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name, filename, errno));
           Int3();
-          return NULL;
+          return nullptr;
         }
       }
       cfile = (CFILE *)mem_malloc(sizeof(*cfile));
@@ -365,7 +387,7 @@ CFILE *open_file_in_lib(const char *filename) {
     }
     lib = lib->next;
   }
-  return NULL;
+  return nullptr;
 }
 
 #ifdef __LINUX__
@@ -382,7 +404,7 @@ public:
 
   bool Start(const char *wildcard, char *namebuf);
   bool Next(char *namebuf);
-  void Close(void);
+  void Close();
 
 private:
   int globindex;
@@ -411,7 +433,7 @@ bool CFindFiles::Start(const char *wildcard, char *namebuf) {
 
   globindex = 0;
   char ext[256];
-  ddio_SplitPath(ffres.gl_pathv[0], NULL, namebuf, ext);
+  ddio_SplitPath(ffres.gl_pathv[0], nullptr, namebuf, ext);
   strcat(namebuf, ext);
   return true;
 }
@@ -425,12 +447,12 @@ bool CFindFiles::Next(char *namebuf) {
     return false;
 
   char ext[256];
-  ddio_SplitPath(ffres.gl_pathv[globindex], NULL, namebuf, ext);
+  ddio_SplitPath(ffres.gl_pathv[globindex], nullptr, namebuf, ext);
   strcat(namebuf, ext);
   return true;
 }
 
-void CFindFiles::Close(void) {
+void CFindFiles::Close() {
   if (globindex == -1)
     return;
   globindex = -1;
@@ -467,7 +489,7 @@ bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *fname,
       mprintf((1, "CFILE: Found directory \"%s\" in filename, new filename is \"%s\"\n", real_dir, real_file));
     } else {
       use_dir = false;
-      real_dir = NULL;
+      real_dir = nullptr;
       real_file = (char *)fname;
     }
   }
@@ -574,7 +596,7 @@ FILE *open_file_in_directory_case_sensitive(const char *directory, const char *f
   if (cf_FindRealFileNameCaseInsenstive(directory, filename, new_filename)) {
     // we have a file, open it open and use it
     char full_path[_MAX_PATH * 2];
-    if (directory != NULL) {
+    if (directory != nullptr) {
       ddio_MakePath(full_path, directory, new_filename, NULL);
     } else {
       strcpy(full_path, new_filename);
@@ -583,7 +605,7 @@ FILE *open_file_in_directory_case_sensitive(const char *directory, const char *f
     return fopen(full_path, mode);
   }
 
-  return NULL;
+  return nullptr;
 }
 #endif
 
@@ -593,7 +615,7 @@ CFILE *open_file_in_directory(const char *filename, const char *mode, const char
   CFILE *cfile;
   char path[_MAX_PATH * 2];
   char tmode[3] = "rb";
-  if (directory != NULL) {
+  if (directory != nullptr) {
     // Make a full path
     ddio_MakePath(path, directory, filename, NULL);
   } else // no directory specified, so just use filename passed
@@ -634,7 +656,7 @@ CFILE *open_file_in_directory(const char *filename, const char *mode, const char
     fp = open_file_in_directory_case_sensitive(directory, filename, tmode, using_filename);
     if (!fp) {
       // no dice
-      return NULL;
+      return nullptr;
     } else {
       // found a version of the file!
       mprintf((0, "CFILE: Unable to find %s, but using %s instead\n", filename, using_filename));
@@ -692,9 +714,9 @@ CFILE *cfopen(const char *filename, const char *mode) {
   ddio_SplitPath(filename, path, fname, ext);
   // if there is a path specified, use it instead of the libraries, search dirs, etc.
   // if the file is writable, just open it, instead of looking in libs, etc.
-  if (strlen(path) || (mode[0] == 'w')) {                 // found a path
-    cfile = open_file_in_directory(filename, mode, NULL); // use path specified with file
-    goto got_file;                                        // don't look in libs, etc.
+  if (strlen(path) || (mode[0] == 'w')) {                    // found a path
+    cfile = open_file_in_directory(filename, mode, nullptr); // use path specified with file
+    goto got_file;                                           // don't look in libs, etc.
   }
   //@@ Don't look in current dir.  mt, 3-12-97
   //@@	//first look in current directory
@@ -722,15 +744,17 @@ CFILE *cfopen(const char *filename, const char *mode) {
 got_file:;
   if (cfile) {
     if (mode[0] == 'w')
-      cfile->flags |= CF_WRITING;
+      cfile->flags |= CFF_WRITING;
     if (mode[1] == 't')
-      cfile->flags |= CF_TEXT;
+      cfile->flags |= CFF_TEXT;
   }
   return cfile;
 }
+
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
 int cfilelength(CFILE *cfp) { return cfp->size; }
+
 // Closes an open CFILE.
 // Parameters:  cfile - the file pointer returned by cfopen()
 void cfclose(CFILE *cfp) {
@@ -740,9 +764,9 @@ void cfclose(CFILE *cfp) {
     for (lib = Libraries; lib; lib = lib->next) {
       if (lib->handle == cfp->lib_handle) { // found the library
         // if library doesn't already have a file, give it this one
-        if (lib->file == NULL) {
+        if (lib->file == nullptr) {
           lib->file = cfp->file;
-          cfp->file = NULL;
+          cfp->file = nullptr;
         }
         break;
       }
@@ -757,6 +781,7 @@ void cfclose(CFILE *cfp) {
   // free the cfile struct
   mem_free(cfp);
 }
+
 // Just like stdio fgetc(), except works on a CFILE
 // Returns a char or EOF
 int cfgetc(CFILE *cfp) {
@@ -775,7 +800,7 @@ int cfgetc(CFILE *cfp) {
     // do special newline handling for text files:
     //  if CR or LF by itself, return as newline
     //  if CR/LF pair, return as newline
-    if (cfp->flags & CF_TEXT) {
+    if (cfp->flags & CFF_TEXT) {
       if (c == 10) // return LF as newline
         c = '\n';
       else if (c == 13) { // check for CR/LF pair
@@ -816,10 +841,13 @@ int cfseek(CFILE *cfp, long int offset, int where) {
   cfp->position = ftell(cfp->file) - cfp->lib_offset;
   return c;
 }
+
 // Just like stdio ftell(), except works on a CFILE
 int cftell(CFILE *cfp) { return cfp->position; }
+
 // Returns true if at EOF
 int cfeof(CFILE *cfp) { return (cfp->position >= cfp->size); }
+
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
@@ -830,12 +858,12 @@ int cfexist(const char *filename) {
   cfp = cfopen(filename, "rb");
   if (!cfp) {            // Didn't get file.  Why?
     if (errno == EACCES) // File exists, but couldn't open it
-      return CF_ON_DISK; //..so say it exists on the disk
+      return CFES_ON_DISK; // so say it exists on the disk
                          // DAJ		if (errno != ENOENT)			//Check if error is "file not found"
     // DAJ			Int3();						//..warn if not
-    return CF_NOT_FOUND; // Say we didn't find the file
+    return CFES_NOT_FOUND; // Say we didn't find the file
   }
-  ret = cfp->lib_offset ? CF_IN_LIBRARY : CF_ON_DISK;
+  ret = cfp->lib_offset ? CFES_IN_LIBRARY : CFES_ON_DISK;
   cfclose(cfp);
   return ret;
 }
@@ -847,7 +875,7 @@ int cfexist(const char *filename) {
 int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
   int i;
   char *error_msg = eof_error; // default error
-  ASSERT(!(cfp->flags & CF_TEXT));
+  ASSERT(!(cfp->flags & CFF_TEXT));
   if (cfp->position + count <= cfp->size) {
     i = fread(buf, 1, count, cfp->file);
     if (i == count) {
@@ -871,22 +899,22 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
 // to be present.
 // Read and return an integer (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int cf_ReadInt(CFILE *cfp) {
-  int i;
+int32_t cf_ReadInt(CFILE *cfp) {
+  int32_t i;
   cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
   return INTEL_INT(i);
 }
 // Read and return a short (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-short cf_ReadShort(CFILE *cfp) {
-  short i;
+int16_t cf_ReadShort(CFILE *cfp) {
+  int16_t i;
   cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
   return INTEL_SHORT(i);
 }
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-sbyte cf_ReadByte(CFILE *cfp) {
-  int i;
+int8_t cf_ReadByte(CFILE *cfp) {
+  int8_t i;
   i = cfgetc(cfp);
   if (i == EOF)
     ThrowCFileError(CFE_READING, cfp, cfeof(cfp) ? eof_error : strerror(errno));
@@ -894,8 +922,8 @@ sbyte cf_ReadByte(CFILE *cfp) {
 }
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-float cf_ReadFloat(CFILE *cfp) {
-  float f;
+float_t cf_ReadFloat(CFILE *cfp) {
+  float_t f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
 #ifdef MACINTOSH
   float e = INTEL_FLOAT(f); // DAJ bash to zero if reads a NaN
@@ -908,8 +936,8 @@ float cf_ReadFloat(CFILE *cfp) {
 }
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-double cf_ReadDouble(CFILE *cfp) {
-  double f;
+double_t cf_ReadDouble(CFILE *cfp) {
+  double_t f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
 #ifdef OUTRAGE_BIG_ENDIAN
   {
@@ -947,7 +975,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
       break;
     }
 
-    if ((!(cfp->flags & CF_TEXT) && (c == 0)) || ((cfp->flags & CF_TEXT) && (c == '\n')))
+    if ((!(cfp->flags & CFF_TEXT) && (c == 0)) || ((cfp->flags & CFF_TEXT) && (c == '\n')))
       break;           // end-of-string
     if (count < n - 1) // store char if room in buffer
       *bp++ = c;
@@ -962,7 +990,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 int cf_WriteBytes(const ubyte *buf, int count, CFILE *cfp) {
   int i;
-  if (!(cfp->flags & CF_WRITING))
+  if (!(cfp->flags & CFF_WRITING))
     return 0;
   ASSERT(count > 0);
   i = fwrite(buf, 1, count, cfp->file);
@@ -984,9 +1012,10 @@ int cf_WriteString(CFILE *cfp, const char *buf) {
   if (len != 0) // write string
     cf_WriteBytes((ubyte *)buf, len, cfp);
   // Terminate with newline (text file) or NULL (binary file)
-  cf_WriteByte(cfp, (cfp->flags & CF_TEXT) ? '\n' : 0);
+  cf_WriteByte(cfp, (cfp->flags & CFF_TEXT) ? '\n' : 0);
   return len + 1;
 }
+
 // Just like stdio fprintf(), except works on a CFILE
 int cfprintf(CFILE *cfp, const char *format, ...) {
 #ifndef MACINTOSH
@@ -999,40 +1028,45 @@ int cfprintf(CFILE *cfp, const char *format, ...) {
   return count;
 #endif
 }
+
 // The following functions write numeric vales to a CFILE.  All values are
 // stored to the file in Intel (little-endian) format.
 // All these throw an exception if there's an error on write.
 // Write an integer (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteInt(CFILE *cfp, int i) {
+void cf_WriteInt(CFILE *cfp, int32_t i) {
   int t = INTEL_INT(i);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
+
 // Write a short (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteShort(CFILE *cfp, short s) {
+void cf_WriteShort(CFILE *cfp, int16_t s) {
   short t = INTEL_SHORT(s);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
+
 // Write a byte (8 bits).
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteByte(CFILE *cfp, sbyte b) {
+void cf_WriteByte(CFILE *cfp, int8_t b) {
   if (fputc(b, cfp->file) == EOF)
     ThrowCFileError(CFE_WRITING, cfp, strerror(errno));
   cfp->position++;
   // If text file & writing newline, increment again for LF
-  if ((cfp->flags & CF_TEXT) && (b == '\n')) // check for text mode newline
+  if ((cfp->flags & CFF_TEXT) && (b == '\n')) // check for text mode newline
     cfp->position++;
 }
+
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteFloat(CFILE *cfp, float f) {
+void cf_WriteFloat(CFILE *cfp, float_t f) {
   float t = INTEL_FLOAT(f);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
+
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteDouble(CFILE *cfp, double d) {
+void cf_WriteDouble(CFILE *cfp, double_t d) {
 #ifdef OUTRAGE_BIG_ENDIAN
   {
     double t;
@@ -1045,19 +1079,20 @@ void cf_WriteDouble(CFILE *cfp, double d) {
 #endif
   cf_WriteBytes((ubyte *)&d, sizeof(d), cfp);
 }
+
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write
 bool cf_CopyFile(char *dest, const char *src, int copytime) {
   CFILE *infile, *outfile;
   if (!stricmp(dest, src))
-    return 1; // don't copy files if they are the same
+    return true; // don't copy files if they are the same
   infile = (CFILE *)cfopen(src, "rb");
   if (!infile)
-    return 0;
+    return false;
   outfile = (CFILE *)cfopen(dest, "wb");
   if (!outfile) {
     cfclose(infile);
-    return 0;
+    return false;
   }
   int progress = 0;
   int readcount = 0;
@@ -1083,13 +1118,16 @@ bool cf_CopyFile(char *dest, const char *src, int copytime) {
   if (!infile_lib_offset && copytime) {
     cf_CopyFileTime(dest, src);
   }
-  return 1;
+  return true;
 }
+
 // Checks to see if two files are different.
 // Returns TRUE if the files are different, or FALSE if they are the same.
 bool cf_Diff(const char *a, const char *b) { return (ddio_FileDiff(a, b)); }
+
 // Copies the file time from one file to another
 void cf_CopyFileTime(char *dest, const char *src) { ddio_CopyFileTime(dest, src); }
+
 // Changes a files attributes (ie read/write only)
 void cf_ChangeFileAttributes(const char *name, int attr) {
 #ifdef MACINTOSH
@@ -1099,6 +1137,7 @@ void cf_ChangeFileAttributes(const char *name, int attr) {
     Int3(); // Get Jason or Matt, file not found!
 #endif
 }
+
 //	rewinds cfile position
 void cf_Rewind(CFILE *fp) {
   if (fp->lib_offset) {
@@ -1109,7 +1148,8 @@ void cf_Rewind(CFILE *fp) {
   }
   fp->position = 0;
 }
-// Calculates a 32 bit CRC for the specified file. a return code of -1 means file note found
+
+// Calculates a 32-bit CRC for the specified file. a return code of -1 means file note found
 #define CRC32_POLYNOMIAL 0xEDB88320L
 #define CRC_BUFFER_SIZE 5000
 
@@ -1174,7 +1214,7 @@ unsigned int cf_GetfileCRC(char *src) {
 }
 
 char cfile_search_wildcard[256];
-library *cfile_search_library = NULL;
+library *cfile_search_library = nullptr;
 int cfile_search_curr_index = 0;
 bool cfile_search_ispattern = false;
 //	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
@@ -1220,6 +1260,7 @@ bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer) {
   // we didn't find a match
   return false;
 }
+
 bool cf_LibraryFindNext(char *buffer) {
   while (cfile_search_curr_index < cfile_search_library->nfiles) {
     if (cfile_search_ispattern) {
@@ -1240,8 +1281,9 @@ bool cf_LibraryFindNext(char *buffer) {
   }
   return false;
 }
-void cf_LibraryFindClose(void) {
-  cfile_search_library = NULL;
+
+void cf_LibraryFindClose() {
+  cfile_search_library = nullptr;
   cfile_search_curr_index = 0;
   cfile_search_ispattern = false;
 }
@@ -1277,7 +1319,7 @@ bool cf_ReadHogFileEntry(int libr, const char *filename, tHogFileEntry *entry, i
         else // search key before check key
           last = i - 1;
 
-      } while (1);
+      } while (true);
 
       if (found) {
         strcpy(entry->name, lib->entries[i].name);

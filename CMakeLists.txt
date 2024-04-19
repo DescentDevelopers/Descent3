@@ -104,7 +104,7 @@ if(LOGGER)
   add_definitions(-DLOGGER)
 endif()
 
-include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
+include_directories("${CMAKE_SOURCE_DIR}" "lib" "Descent3" ${PLATFORM_INCLUDES})
 
 # file(GLOB_RECURSE INCS "*.h")
 

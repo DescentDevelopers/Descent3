@@ -160,7 +160,7 @@
 #include "pserror.h"
 #include "bitmap.h"
 #include "vclip.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "mono.h"
 #include "ddio.h"
 #include "gametexture.h"

@@ -266,7 +266,7 @@
  */
 
 #include <stdio.h>
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "objinfo.h"
 #include "ship.h"
 #include "ui.h"
