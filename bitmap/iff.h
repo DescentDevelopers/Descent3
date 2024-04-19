@@ -1,7 +1,7 @@
 #ifndef _IFF_H
 #define _IFF_H
 
-#include "CFILE.H"
+#include "cfile/cfile.h"
 
 // Error codes for read & write routines
 

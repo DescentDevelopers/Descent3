@@ -1,7 +1,6 @@
-SET (HEADERS )
-SET (CPPS
-		CFILE.cpp
-		hog.cpp
-		InfFile.cpp)
+set(CPPS
+	cfile.cpp
+	hogfile.cpp
+	inffile.cpp)
 
-ADD_LIBRARY(cfile STATIC ${HEADERS} ${CPPS})
+add_library(cfile STATIC ${CPPS})

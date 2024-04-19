@@ -2,7 +2,7 @@
 #include <windows.h>
 #endif
 
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "manage.h"
 #include "mono.h"
 #include "pserror.h"

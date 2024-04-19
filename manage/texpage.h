@@ -2,7 +2,7 @@
 #define TEXPAGE_H
 
 #include "manage.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pstypes.h"
 #include "procedurals.h"
 

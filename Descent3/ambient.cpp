@@ -138,7 +138,6 @@ void InitAmbientSounds() {
 }
 
 #include "ddio.h"
-#include "CFILE.H"
 #include "soundload.h"
 #include "descent.h"
 #include "mem.h"

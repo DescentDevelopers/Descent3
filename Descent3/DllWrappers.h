@@ -2,7 +2,7 @@
 #define DLLWRAPPERS_H_
 
 #include "pserror.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "gamefont.h"
 #include "grdefs.h"
 #include "descent.h"

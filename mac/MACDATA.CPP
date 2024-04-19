@@ -8,7 +8,7 @@
 #include "appdatabase.h"
 #include <string.h>
 #include "mem.h"
-#include "cfile.h"
+#include "cfile/cfile.h"
 #include "ddio.h"
 #include "ddio_mac.h"
 #include "descent.h"

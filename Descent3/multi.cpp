@@ -7613,7 +7613,7 @@ void MultiAskForFile(ushort file_id, ushort file_who, ushort who) {
   // Check to see if this file exists already
   char *p = GetFileNameFromPlayerAndID(file_who, file_id);
   if (*p) {
-    if (CF_ON_DISK == cfexist(p)) {
+    if (CFES_ON_DISK == cfexist(p)) {
       char szcrc[_MAX_PATH];
       char path[_MAX_PATH];
       char ext[_MAX_PATH];

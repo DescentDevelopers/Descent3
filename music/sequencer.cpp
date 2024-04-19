@@ -132,7 +132,7 @@
 #include "pserror.h"
 #include "ddio.h"
 #include "Macros.h"
-#include "InfFile.h"
+#include "cfile/inffile.h"
 #include "streamaudio.h"
 #include "mem.h"
 #include <string.h>

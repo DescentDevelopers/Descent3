@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 // #include <process.h>
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "pserror.h"
 #include "mono.h"
 #include "soundload.h"

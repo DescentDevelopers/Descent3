@@ -95,7 +95,7 @@
 
 #include "pstypes.h"
 #include "manage_external.h"
-#include "CFILE.H"
+#include "cfile/cfile.h"
 #include "networking.h"
 #include "descent.h" //for MSN_NAMELEN
 #include "byteswap.h"

@@ -1230,7 +1230,7 @@
 
 #include "LoadLevel.h"
 
-#include "CFILE.H"
+#include "cfile/cfile.h"
 
 #include "descent.h"
 #include "object.h"
