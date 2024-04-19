@@ -140,8 +140,8 @@
 
 #include "pstypes.h"
 #include "buildno.h"
-#include <cstdio.h>
-#include <cstdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #define D3_MAJORVER 0x1 // DESCENT 3 VERSION NUMBER
 #define D3_MINORVER 0x5
