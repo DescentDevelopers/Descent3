@@ -658,7 +658,7 @@
 #include "cinematics.h"
 #include "SmallViews.h"
 #include "Mission.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "gameloop.h"
 #include "cockpit.h"
 #include "game2dll.h"

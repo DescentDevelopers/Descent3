@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pserror.h"
 #include "game.h"
 #include "mem.h"
@@ -224,7 +224,7 @@ int ReadFullLine(char **data, CFILE *ifile) {
     // read in a byte
     c = cfgetc(ifile);
 
-    if ((c == EOF) || (!(ifile->flags & CFF_TEXT) && (c == 0)) || ((ifile->flags & CFF_TEXT) && (c == '\n'))) {
+    if ((c == EOF) || (!(ifile->flags & CF_TEXT) && (c == 0)) || ((ifile->flags & CF_TEXT) && (c == '\n'))) {
       // we've hit the end of the line
       done = true;
     } else {

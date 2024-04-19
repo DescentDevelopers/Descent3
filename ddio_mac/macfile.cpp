@@ -64,7 +64,7 @@
 #include "ddio_mac.h"
 #include "psglob.h"
 #include "mem.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 //	---------------------------------------------------------------------------
 //	File Level Globals
 //	---------------------------------------------------------------------------

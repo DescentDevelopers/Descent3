@@ -55,7 +55,7 @@
 
 #include "music.h"
 #include "musiclib.h"
-#include "cfile/inffile.h"
+#include "InfFile.h"
 #include "mem.h"
 
 #include <string.h>

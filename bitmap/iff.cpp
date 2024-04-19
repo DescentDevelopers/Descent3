@@ -56,7 +56,7 @@
 #include "mem.h"
 #include "iff.h"
 #include "byteswap.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pserror.h"
 #include "pstypes.h"
 #include "bitmap.h"

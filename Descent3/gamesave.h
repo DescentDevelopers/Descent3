@@ -67,7 +67,7 @@
 #define GAMESAVE_H
 
 #include "pstypes.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "object.h"
 #include "objinfo.h"
 

@@ -337,7 +337,7 @@
 #include <windows.h>
 #endif
 
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "manage.h"
 #include "genericpage.h"
 #include "soundpage.h"

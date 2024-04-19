@@ -83,7 +83,7 @@
 #else
 #include <malloc.h>
 #endif
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "mem.h"
 #include "pserror.h"
 #include <string.h>

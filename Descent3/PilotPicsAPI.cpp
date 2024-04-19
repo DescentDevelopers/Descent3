@@ -45,7 +45,7 @@
 #include "bitmap.h"
 #include "player.h"
 #include "pilot.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "mono.h"
 #include "ddio.h"
 #include "manage.h"

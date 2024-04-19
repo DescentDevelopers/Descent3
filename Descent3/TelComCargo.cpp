@@ -64,7 +64,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pserror.h"
 #include "ddio.h"
 #include "bitmap.h"

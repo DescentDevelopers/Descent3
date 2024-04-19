@@ -3,7 +3,7 @@
 #define MANAGE_H
 
 #include <stdio.h>
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "bitmap.h"
 #include "manage_external.h"
 

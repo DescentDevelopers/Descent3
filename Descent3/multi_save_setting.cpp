@@ -50,7 +50,7 @@
  */
 
 #include <stdio.h>
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "multi.h"
 #include "objinfo.h"
 #include "ship.h"

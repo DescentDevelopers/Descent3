@@ -216,7 +216,7 @@
 #include <string.h>
 #include "ssl_lib.h"
 #include "object.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "ddio.h"
 #include "soundload.h"
 #include "weapon.h"

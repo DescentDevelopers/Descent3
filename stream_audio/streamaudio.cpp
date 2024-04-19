@@ -148,7 +148,7 @@
  */
 #include "streamaudio.h"
 #include "pserror.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "mem.h"
 #include "Macros.h"
 #include "ddio.h"

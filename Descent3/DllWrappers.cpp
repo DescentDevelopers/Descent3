@@ -1,7 +1,7 @@
 #include "DllWrappers.h"
 #include "pserror.h"
 #include "pstring.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "gamefont.h"
 #include "grdefs.h"
 #include "descent.h"

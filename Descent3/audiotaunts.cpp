@@ -6,7 +6,7 @@
 #include "pserror.h"
 #include "pstypes.h"
 #include "audiotaunts.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "audio_encode.h"
 #include "byteswap.h"
 #include "mem.h"

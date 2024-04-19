@@ -160,7 +160,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "manage.h"
 #include "pstypes.h"
 #include "pserror.h"

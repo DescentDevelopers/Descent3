@@ -248,7 +248,7 @@
  */
 
 #include <stdio.h>
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "objinfo.h"
 #include "ship.h"
 #include "ui.h"

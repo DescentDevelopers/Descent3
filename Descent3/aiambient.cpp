@@ -1,7 +1,7 @@
-#include <stdlib.h>
 #include "aiambient.h"
 #include "string.h"
 #include "objinfo.h"
+#include <stdlib.h>
 #include "game.h"
 #include "psrand.h"
 

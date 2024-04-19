@@ -2,7 +2,7 @@
 #define GAMEFILEPAGE_H
 
 #include "manage.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "pstypes.h"
 #include "gamefile.h"
 

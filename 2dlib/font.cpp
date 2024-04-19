@@ -102,7 +102,7 @@
 #include "renderer.h"
 #include "gr.h"
 #include "mono.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "bitmap.h"
 #include "mem.h"
 

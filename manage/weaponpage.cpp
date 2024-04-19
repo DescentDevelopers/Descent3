@@ -272,7 +272,7 @@
 #include <windows.h>
 #endif
 
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "manage.h"
 #include "weapon.h"
 #include "weaponpage.h"

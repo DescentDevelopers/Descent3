@@ -425,7 +425,7 @@
  * $NoKeywords: $
  */
 
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "room.h"
 
 // Chunk types

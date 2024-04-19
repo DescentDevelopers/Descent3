@@ -156,7 +156,7 @@
 #define __OSIRIS_PREDEF_H_
 
 #include "osiris_dll.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 
 //	osipf_CallObjectEvent
 //	Sends an event to an object.  Returns true if the default action should

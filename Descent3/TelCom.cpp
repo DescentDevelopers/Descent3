@@ -483,7 +483,7 @@
 #include "ddio.h"
 #include "descent.h"
 #include "game.h"
-#include "cfile/cfile.h"
+#include "CFILE.H"
 #include "application.h"
 #include "TelCom.h"
 #include "TelComEffects.h"
