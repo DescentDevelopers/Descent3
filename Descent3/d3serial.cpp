@@ -177,6 +177,13 @@ int SerialCheck(void) {
 
 #ifdef DEMO
   char ver[10];
+  /*
+  // Not sure this is needed for demo since open source, or might break things if applied
+  char git_head[41];
+  getGitHead(git_head, sizeof(git_head));
+  git_head[40] = '\0';
+  sprintf(ver, "Beta %d.%d.%d", D3_MAJORVER, D3_MINORVER, git_head);
+  */
   sprintf(ver, "Beta %d.%d.%d", D3_MAJORVER, D3_MINORVER, D3_BUILD);
   sprintf(buffer, regstr, ver, name, d3_serialnum);
 #else
