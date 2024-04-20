@@ -4280,11 +4280,13 @@ int do_fvi_terrain() {
         // Check the current node for collisions -- chrishack -- This can be made iterative
         cur_node = y * TERRAIN_DEPTH + new_x;
 
-        if ((fvi_terrain_visit_list[cur_node >> 3] & (0x01 << (cur_node % 8))) == 0)
-          if (counter < -delta_ter_check || counter > delta_ter_check)
+        if ((fvi_terrain_visit_list[cur_node >> 3] & (0x01 << (cur_node % 8))) == 0) {
+          if (counter < -delta_ter_check || counter > delta_ter_check) {
             check_terrain_node(cur_node, false, false);
-          else
+          } else {
             check_terrain_node(cur_node, false, true);
+          }
+        }
       }
 
       i++;
@@ -4320,11 +4322,13 @@ int do_fvi_terrain() {
         // Check the current node for collisions -- chrishack -- This can be made iterative
         cur_node = new_y * TERRAIN_DEPTH + x;
 
-        if ((fvi_terrain_visit_list[cur_node >> 3] & (0x01 << (cur_node % 8))) == 0)
-          if (counter < -delta_ter_check || counter > delta_ter_check)
+        if ((fvi_terrain_visit_list[cur_node >> 3] & (0x01 << (cur_node % 8))) == 0) {
+          if (counter < -delta_ter_check || counter > delta_ter_check) {
             check_terrain_node(cur_node, false, false);
-          else
+          } else {
             check_terrain_node(cur_node, false, true);
+          }
+        }
       }
 
       i++;
