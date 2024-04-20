@@ -409,7 +409,7 @@ bool matcen::DoObjProd() {
 
       if (Game_mode & GM_MULTI) {
         // ASSERT (Netgame.local_role==LR_SERVER);
-        if ((Netgame.local_role == LR_SERVER)) {
+        if (Netgame.local_role == LR_SERVER) {
           MultiSendObject(&Objects[objnum], 0);
         }
       }

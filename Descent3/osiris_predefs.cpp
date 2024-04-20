@@ -2597,7 +2597,7 @@ int osipf_ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matri
 
     if (Game_mode & GM_MULTI) {
       // ASSERT (Netgame.local_role==LR_SERVER);
-      if ((Netgame.local_role == LR_SERVER)) {
+      if (Netgame.local_role == LR_SERVER) {
         MultiSendObject(obj, 0);
       }
     }
