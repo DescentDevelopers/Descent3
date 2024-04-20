@@ -1,7 +1,7 @@
-SET (HEADERS sndrender.h )
-SET (CPPS
+set(HEADERS sndrender.h )
+set(CPPS
 		hlsoundlib.cpp
 		sndrender.cpp
 		soundload.cpp)
 
-ADD_LIBRARY(sndlib STATIC ${HEADERS} ${CPPS})
+add_library(sndlib STATIC ${HEADERS} ${CPPS})

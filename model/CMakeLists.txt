@@ -1,6 +1,6 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		newstyle.cpp
 		polymodel.cpp)
 
-ADD_LIBRARY(model STATIC ${HEADERS} ${CPPS})
+add_library(model STATIC ${HEADERS} ${CPPS})

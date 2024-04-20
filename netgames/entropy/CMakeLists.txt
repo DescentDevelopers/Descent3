@@ -1,9 +1,9 @@
-SET (HEADERS Entropy.h Entropystr.h EntropyAux.h)
-SET (CPPS EntropyBase.cpp EntropyPackets.cpp EntropyRoom.cpp)
+set(HEADERS Entropy.h Entropystr.h EntropyAux.h)
+set(CPPS EntropyBase.cpp EntropyPackets.cpp EntropyRoom.cpp)
 
-SET (NETGAME_MODULE entropy)
+set(NETGAME_MODULE entropy)
 
-ADD_LIBRARY(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
+add_library(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 

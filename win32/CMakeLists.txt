@@ -1,5 +1,5 @@
-SET (HEADERS win32os.h )
-SET (CPPS
+set(HEADERS win32os.h )
+set(CPPS
 		winapp.cpp
 		wincon.cpp
 		WinController.cpp
@@ -8,4 +8,4 @@ SET (CPPS
 		winmono.cpp
 		wintask.cpp)
 
-ADD_LIBRARY(win32 STATIC ${HEADERS} ${CPPS})
+add_library(win32 STATIC ${HEADERS} ${CPPS})

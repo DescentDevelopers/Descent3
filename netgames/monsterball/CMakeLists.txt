@@ -1,9 +1,9 @@
-SET (HEADERS monsterball.h monsterstr.h)
-SET (CPPS monsterball.cpp)
+set(HEADERS monsterball.h monsterstr.h)
+set(CPPS monsterball.cpp)
 
-SET (NETGAME_MODULE monsterball)
+set(NETGAME_MODULE monsterball)
 
-ADD_LIBRARY(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
+add_library(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 

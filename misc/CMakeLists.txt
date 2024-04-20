@@ -1,5 +1,5 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		endian.cpp
 		error.cpp
 		logfile.cpp
@@ -7,4 +7,4 @@ SET (CPPS
 		psrand.cpp
 		pstring.cpp)
 
-ADD_LIBRARY(misc STATIC ${HEADERS} ${CPPS})
+add_library(misc STATIC ${HEADERS} ${CPPS})

@@ -1,8 +1,8 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		BitIO.cpp
 		CZip.cpp
 		HuffmanAdapt.cpp
 		HuffmanBasic.cpp)
 
-ADD_LIBRARY(czip STATIC ${HEADERS} ${CPPS})
+add_library(czip STATIC ${HEADERS} ${CPPS})

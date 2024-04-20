@@ -1,4 +1,4 @@
-SET (HEADERS infblock.h
+set(HEADERS infblock.h
 		infcodes.h
 		inffast.h
 		inffixed.h
@@ -7,7 +7,7 @@ SET (HEADERS infblock.h
 		zconf.h
 		zlib.h
 		zutil.h )
-SET (CPPS
+set(CPPS
 		unzip.cpp
 		adler32.c
 		infblock.c
@@ -18,4 +18,4 @@ SET (CPPS
 		infutil.c
 		)
 
-ADD_LIBRARY(unzip STATIC ${HEADERS} ${CPPS})
+add_library(unzip STATIC ${HEADERS} ${CPPS})

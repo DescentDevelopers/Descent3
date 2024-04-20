@@ -1,6 +1,6 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		d3movie.cpp)
 
-ADD_LIBRARY(movie STATIC ${HEADERS} ${CPPS})
+add_library(movie STATIC ${HEADERS} ${CPPS})
 target_link_libraries(movie libmve)

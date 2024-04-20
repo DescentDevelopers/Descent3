@@ -1,5 +1,5 @@
-SET (HEADERS UIlib.h )
-SET (CPPS
+set(HEADERS UIlib.h)
+set(CPPS
 		UIButton.cpp
 		UICombo.cpp
 		UIConsole.cpp
@@ -16,4 +16,4 @@ SET (CPPS
 		UISystem.cpp
 		UIWindow.cpp)
 
-ADD_LIBRARY(ui STATIC ${HEADERS} ${CPPS})
+add_library(ui STATIC ${HEADERS} ${CPPS})

@@ -1,10 +1,10 @@
-SET (HEADERS dmfcdllinit.h
+set(HEADERS dmfcdllinit.h
   dmfcinputcommands.h
   dmfcinternal.h
   encryption.h
 )
 
-SET (CPPS 
+set(CPPS 
   dmfcbase.cpp
   dmfccfg.cpp
   dmfcclient.cpp
@@ -25,6 +25,6 @@ SET (CPPS
   encryption.cpp 
   dmfcinterface.cpp)
 
-ADD_DEFINITIONS(-DOUTRAGE_VERSION -DDMFC_DLL)
+add_definitions(-DOUTRAGE_VERSION -DDMFC_DLL)
 
-ADD_LIBRARY(dmfc STATIC ${HEADERS} ${CPPS})
+add_library(dmfc STATIC ${HEADERS} ${CPPS})

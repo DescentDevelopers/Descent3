@@ -1,9 +1,9 @@
-SET (HEADERS ctf.h CTFstr.h)
-SET (CPPS ctf.cpp)
+set(HEADERS ctf.h CTFstr.h)
+set(CPPS ctf.cpp)
 
-SET (NETGAME_MODULE ctf)
+set(NETGAME_MODULE ctf)
 
-ADD_LIBRARY(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
+add_library(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 

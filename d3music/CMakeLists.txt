@@ -1,5 +1,5 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS)
+set(CPPS
 		musicapi.cpp)
 
-ADD_LIBRARY(d3music STATIC ${HEADERS} ${CPPS})
+add_library(d3music STATIC ${HEADERS} ${CPPS})

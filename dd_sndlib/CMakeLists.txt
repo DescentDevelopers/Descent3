@@ -1,4 +1,4 @@
-SET (HEADERS 
+set(HEADERS 
 		auddev.h
 		ds3dlib_internal.h
 		eax.h
@@ -6,7 +6,7 @@ SET (HEADERS
 		ia3dapi.h
 		Ia3dutil.h
 		vmanpset.h)
-SET (CPPS
+set(CPPS
 		aureal3d.cpp
 		ddsoundload.cpp
 		Ds3dlib.cpp
@@ -15,4 +15,4 @@ SET (CPPS
 		geometry.cpp
 		ssl_lib.cpp)
 
-ADD_LIBRARY(dd_sndlib STATIC ${HEADERS} ${CPPS})
+add_library(dd_sndlib STATIC ${HEADERS} ${CPPS})

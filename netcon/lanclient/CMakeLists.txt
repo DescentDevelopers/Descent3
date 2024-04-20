@@ -1,9 +1,9 @@
-SET (HEADERS lanclient.h)
-SET (CPPS lanclient.cpp)
+set(HEADERS lanclient.h)
+set(CPPS lanclient.cpp)
 
-SET (NETGAME_MODULE "TCP_IP")
+set(NETGAME_MODULE "TCP_IP")
 
-ADD_LIBRARY(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
+add_library(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3c")
 target_link_libraries(${NETGAME_MODULE} inetfile)

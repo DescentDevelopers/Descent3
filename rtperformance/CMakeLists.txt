@@ -1,5 +1,5 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS)
+set(CPPS
 		rtperformance.cpp)
 
-ADD_LIBRARY(rtperformance STATIC ${HEADERS} ${CPPS})
+add_library(rtperformance STATIC ${HEADERS} ${CPPS})
