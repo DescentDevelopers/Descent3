@@ -40,13 +40,13 @@ jobs:
           mkdir ~/Descent3
 
       - name: Configure CMake
-        run: cmake --preset ${{ matrix.os.preset }} -B ${{ github.workspace }}/build
+        run: cmake --preset ${{ matrix.os.preset }}
 
       - name: Build
-        run: cmake --build ${{ github.workspace }}/build --config ${{ matrix.build_type }}
+        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build_${{ matrix.os.runner }}_${{ matrix.build_type }}
-          path: ${{ github.workspace }}/build/Descent3/${{ matrix.build_type }}
+          path: "${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/${{ matrix.build_type }}"
