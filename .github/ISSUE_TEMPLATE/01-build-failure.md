@@ -24,17 +24,7 @@ State what host platform (Microsoft Windows, Mac OS X, or Linux) you tried.  If 
 * [ ] Microsoft Windows (32-bit)
 * [ ] Microsoft Windows (64-bit)
 * [ ] Mac OS X
-<!--
-* For Linux, give the name of the distribution. Add versions as needed.
--->
-* Ubuntu
-  * [ ] Ubuntu 16.04 LTS (Xenial Xerus)
-  * [ ] Ubuntu 18.04 LTS (Bionic Beaver)
-  * [ ] Ubuntu 18.10 (Cosmic Cuttlefish)
-  * [ ] Ubuntu 19.04 (Disco Dingo)
-  * [ ] Ubuntu 19.10 (Eoan Ermine)
-  * [ ] Ubuntu 20.04 LTS (Focal Fossa)
-  * [ ] Ubuntu 22.04 LTS (Jammy Jellyfish)
+* [ ] Linux: <specify distribution and version>
 
 #### CPU Environment
 <!--
@@ -45,6 +35,7 @@ If unsure, omit this section.  Generally, if you are on an architecture that req
 * [ ] x86\_64 (64-bit Intel/AMD)
 * [ ] ARM (32-bit)
 * [ ] ARM64 (64-bit; sometimes called AArch64)
+* [ ] Other (RISC V, PPC...)
 
 ### Description
 <!--
