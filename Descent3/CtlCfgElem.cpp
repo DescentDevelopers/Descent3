@@ -296,7 +296,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   "",
                                   "",
                                   "",
-                                  "padƒ\0\0\0\0\0\0",
+                                  "padï¿½\0\0\0\0\0\0",
 #ifdef MACINTOSH
                                   "ctrl\0\0\0\0\0",
 #else
@@ -828,6 +828,8 @@ bool cfg_element::Configure(ct_type *new_elem_type, ubyte *controller, ubyte *ne
 
   // check if we can configure this slot.
   switch (ctype_fn[slot]) {
+  case ctNone:
+    break;
   case ctKey:
     configure = true;
     break;
@@ -886,6 +888,8 @@ void cfg_element_ui::Create(const char *title, ct_type type, ubyte controller, u
   newuiSheet *sheet = newuiMessageBox::GetSheet();
 
   switch (type) {
+  case ctNone:
+    break;
   case ctKey:
     sheet->AddText(TXT_CTLBINDHELP1);
     break;

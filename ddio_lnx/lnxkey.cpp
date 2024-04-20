@@ -319,6 +319,8 @@ void ddio_InternalResetKey(ubyte key) {
 
 bool ddio_KeyFrame() {
   switch (Keyboard_mode) {
+  case Input_sdl:
+    break;
   case Input_normal:
     return ddio_normal_KeyFrame();
   case Input_null:

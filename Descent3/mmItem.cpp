@@ -258,6 +258,8 @@ void mmItem::OnDraw() {
   if ((UI_TIME() - m_last_frametime) >= m_process_speed) {
     // process special fx.
     switch (m_curfx) {
+    case mmItemFXNull:
+      break;
     case mmItemFXNormal:
       m_alpha = MMITEM_ALPHA;
       m_satcount = MMITEM_SAT;
