@@ -295,7 +295,7 @@ int PRec_GetFreeSlot(void) {
     // go through all the records and remove this guy as a victim
     for (int p = 0; p < MAX_PLAYER_RECORDS; p++) {
       if ((p != old_player) && (Player_records[p].pinfo)) {
-        ((PInfo *)Player_records[p].pinfo)->RemoveKiller(old_player);
+        Player_records[p].pinfo->RemoveKiller(old_player);
       }
     }
 
@@ -417,7 +417,7 @@ void PRec_LevelReset(void) {
     stat->deaths[DSTAT_LEVEL] = 0;
     stat->suicides[DSTAT_LEVEL] = 0;
     if (Player_records[i].pinfo)
-      ((PInfo *)Player_records[i].pinfo)->ResetAll();
+      Player_records[i].pinfo->ResetAll();
   }
 }
 
@@ -488,7 +488,7 @@ void PRec_SendPRecToPlayer(int pnum) {
       callsignlen = strlen(Player_records[i].callsign);
 
       if (Player_records[i].pinfo)
-        pinfo_size = ((PInfo *)Player_records[i].pinfo)->GetSizeOfData();
+        pinfo_size = Player_records[i].pinfo->GetSizeOfData();
       else
         pinfo_size = 0;
 
@@ -540,7 +540,7 @@ void PRec_SendPRecToPlayer(int pnum) {
       // PInfo stuff
       MultiAddInt(pinfo_size, data, &count);
       if (pinfo_size > 0) {
-        ((PInfo *)Player_records[i].pinfo)->PackData(&data[count]);
+        Player_records[i].pinfo->PackData(&data[count]);
         count += pinfo_size;
       }
 
@@ -610,7 +610,6 @@ void PRec_ReceivePRecFromServer(ubyte *data) {
 
   if (pr->pinfo) {
     delete pr->pinfo;
-    pr->pinfo = NULL;
   }
   pr->pinfo = new PInfo(slot);
 
@@ -618,11 +617,11 @@ void PRec_ReceivePRecFromServer(ubyte *data) {
   pinfo_size = MultiGetInt(data, &count);
   if (pinfo_size > 0) {
     if (pr->pinfo)
-      ((PInfo *)pr->pinfo)->UnpackData(&data[count], pinfo_size);
+      pr->pinfo->UnpackData(&data[count], pinfo_size);
     count += pinfo_size;
   } else {
     if (pr->pinfo)
-      ((PInfo *)pr->pinfo)->ResetAll();
+      pr->pinfo->ResetAll();
   }
 
   if (pr->pnum != 255) {

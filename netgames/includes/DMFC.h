@@ -569,6 +569,8 @@ typedef struct {
   int kills[2], deaths[2], suicides[2];
 } t_dstat;
 
+struct PInfo;
+
 typedef struct {
   slot_state state;                 // state of this slot
   char callsign[MAX_CALLSIGN_SIZE]; // Player's callsign
@@ -584,8 +586,8 @@ typedef struct {
   void *user_info;          // Multiplayer Mod user defined struct pointer
   int user_info_size;       // Size of user_info;
 
-  sbyte team;  // The player's team (for when they reconnect)
-  void *pinfo; // Pointer to player info (who killed whom)
+  sbyte team;   // The player's team (for when they reconnect)
+  PInfo *pinfo; // Pointer to player info (who killed whom)
 } player_record;
 
 #define MIF_INCLUDENONE                                                                                                \
