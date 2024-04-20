@@ -1646,7 +1646,7 @@ void newuiSheet::Unrealize() {
 
 //	refreshes gadget states with values passed to the pointers returned by the below functions.
 void newuiSheet::UpdateChanges() {
-  int i, first_radio_index;
+  int i, first_radio_index = 0;
 
   ASSERT(m_realized);
 

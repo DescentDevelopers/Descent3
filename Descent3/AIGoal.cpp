@@ -1399,7 +1399,7 @@ bool GoalIsGoalEnabled(object *obj, int goal_index) {
   ASSERT(goal_index >= 0 && goal_index < MAX_GOALS);
 
   if (OBJGOAL(cur_goal)) {
-    object *gobj;
+    object *gobj = NULL;
 
     if (cur_goal->flags & GF_OBJ_IS_TARGET) {
       gobj = ObjGet(obj->ai_info->target_handle);

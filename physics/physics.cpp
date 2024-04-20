@@ -348,7 +348,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   matrix rotmat;
   physics_info *pi;
   bool f_leveling = false;
-  float max_tilt_angle;
+  float max_tilt_angle = 0;
   bool f_newbie_leveling = false;
 
   if (frame_time <= 0.0)

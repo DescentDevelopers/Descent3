@@ -218,7 +218,7 @@ void ChttpGet::PrepSocket(char *URL) {
   // then keep reading until you find the first /
   // when you found it, you have the host and dir
   char *filestart = NULL;
-  char *dirstart;
+  char *dirstart = NULL;
   for (int i = strlen(pURL); i >= 0; i--) {
     if (pURL[i] == '/') {
       if (!filestart) {
@@ -586,7 +586,7 @@ char *ChttpGet::GetHTTPLine() {
 
 unsigned int ChttpGet::ReadDataChannel() {
   char sDataBuffer[4096]; // Data-storage buffer for the data channel
-  int nBytesRecv;         // Bytes received from the data channel
+  int nBytesRecv = 0;     // Bytes received from the data channel
 
   fd_set wfds;
 

@@ -295,7 +295,7 @@ int CBriefParse::ParseBriefing(char *filename) {
   // here until a $endtext is hit
   char title_buf[128];
   bool reading_text = false;
-  tTextBufferDesc text_buffer_desc;
+  tTextBufferDesc text_buffer_desc = {};
   text_buffer_desc.text_id = -1; // id # for current textblock
   text_buffer_desc.teffect = tfxNONE;
 

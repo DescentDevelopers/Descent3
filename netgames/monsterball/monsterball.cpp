@@ -812,7 +812,7 @@ void OnClientCollide(object *me_obj, object *it_obj, vector *point, vector *norm
     if (it_obj->type == OBJ_PLAYER) {
       // case 1: me_obj = monsterball it_obj = player
       // Result: The player is to pickup the monsterball (as long as it has no owner)
-      int p;
+      int p = 0;
       if (!ValidateOwner(&p, NULL) && p != it_obj->id) {
         ASSERT(it_obj->type == OBJ_PLAYER);
         // HandlePickupPowerball(it_obj);

@@ -1331,7 +1331,7 @@ int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
   int done = 0;
   char command;
   ushort len;
-  int i, temp, version, t;
+  int i, temp, version = 0, t;
 
   if (!Old_table_method)
     return mng_ReadNewGenericPage(infile, genericpage);

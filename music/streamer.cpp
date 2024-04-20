@@ -51,7 +51,7 @@ oms_stream::~oms_stream() {}
 
 // processes a stream's events.
 void oms_stream::Process(float frmtime) {
-  oms_q_evt evt, evt2; // event for use
+  oms_q_evt evt, evt2 = {}; // event for use
 
   if (m_timer > 0.0f)
     m_timer -= frmtime;

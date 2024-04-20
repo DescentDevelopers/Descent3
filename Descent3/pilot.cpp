@@ -2431,7 +2431,7 @@ bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, char *s
   // get a list of custom textures
   int count = 0;
   bool ok_to_get_files;
-  int total_files;
+  int total_files = 0;
 
   // build list
   char oldpath[_MAX_PATH];

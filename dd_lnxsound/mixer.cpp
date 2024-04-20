@@ -126,7 +126,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
       int samples_played = cur_buf->play_info->m_samples_played;
       short *sample_16bit;
       unsigned char *sample_8bit;
-      int np_sample_length;
+      int np_sample_length = 0;
       int sample_length;
       int loop_start;
       int loop_end;

@@ -116,7 +116,7 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
       if (BOA_LockedDoor(obj, next_room))
         continue;
 
-      int next_portal;
+      int next_portal = 0;
 
       if (BOA_INDEX(next_room) != BOA_INDEX(cur_node->roomnum)) {
         next_portal = BOA_DetermineStartRoomPortal(BOA_INDEX(next_room), NULL, BOA_INDEX(cur_node->roomnum), NULL,
@@ -757,7 +757,7 @@ done:
 
 void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_info *aip, int *slot, int *cur_node, int handle) {
   int x;
-  vector *pos;
+  vector *pos = NULL;
 
   for (x = 0; x < AIAltPathNumNodes - 1; x++) {
     int cur_room = AIAltPath[x];

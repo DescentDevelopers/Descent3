@@ -116,7 +116,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
   int weapon_obj;
   int must_send = 0;
   int first = 1;
-  int saved_weapon_id;
+  int saved_weapon_id = 0;
 
   unsigned char fire_mask;
 

@@ -164,7 +164,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
   // then keep reading until you find the first /
   // when you found it, you have the host and dir
   char *filestart = NULL;
-  char *dirstart;
+  char *dirstart = NULL;
   for (int i = strlen(pURL); i >= 0; i--) {
     if (pURL[i] == '/') {
       if (!filestart) {

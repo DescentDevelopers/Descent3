@@ -249,7 +249,7 @@ void OutrageMessageBox(char *str, ...) {
 int OutrageMessageBox(int type, char *str, ...) {
   char buf[BUF_LEN];
   va_list arglist;
-  int os_flags;
+  int os_flags = 0;
   int nchars;
 
   va_start(arglist, str);

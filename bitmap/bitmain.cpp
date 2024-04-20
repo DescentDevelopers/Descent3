@@ -707,7 +707,7 @@ int bm_AllocLoadFileBitmap(const char *fname, int mipped, int format) {
   }
 
   char name[BITMAP_NAME_LEN];
-  int n, src_bm;
+  int n, src_bm = 0;
   int old_used;
   int overlay = 0;
 
@@ -1317,7 +1317,7 @@ void bm_GenerateMipMaps(int handle) {
 
         int rsum, gsum, bsum, asum;
         rsum = gsum = bsum = asum = 0;
-        ushort destpix;
+        ushort destpix = 0;
         if (GameBitmaps[handle].format == BITMAP_FORMAT_1555) {
           for (int y = 0; y < 2; y++)
             for (int x = 0; x < 2; x++) {

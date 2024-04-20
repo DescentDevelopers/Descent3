@@ -109,7 +109,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
   char operand[INFFILE_LINELEN]; // operand
   int theme_type;
   music_ins temp_ins_buf[MAX_MUSIC_INSTRUCTIONS];
-  int temp_ins_idx;
+  int temp_ins_idx = 0;
   short cur_region;
   struct {
     char *name;

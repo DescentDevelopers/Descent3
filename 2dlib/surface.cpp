@@ -452,7 +452,7 @@ char *grSurface::lock(int *rowsize) {
 
 /* do lock based off of x,y offsets */
 char *grSurface::lock(int x, int y, int *rowsize) {
-  bool grerr;
+  bool grerr = false;
 
   ASSERT(m_SurfInit);
 

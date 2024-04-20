@@ -301,7 +301,7 @@ int ClassifyPolygon(bspplane *plane, bsppolygon *poly) {
 // Tries to split a polygon across a plane
 int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, bsppolygon **backpoly) {
   float dists[256], t;
-  int numvert, numfront, numback, i, codes[256];
+  int numvert, numfront, numback, i, codes[256] = {};
   vector *frontvert[256], *backvert[256], *polyvert[256];
   vector *vertptr1, *vertptr2;
   vector delta, *newvert[256];

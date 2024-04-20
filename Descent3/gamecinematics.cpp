@@ -1264,7 +1264,7 @@ void Cinematic_DrawText(void) {
   case GCF_TEXT_WIPEIN: {
     // first 1/3 is alpha in
     // last 2/3 is solid
-    ubyte alpha;
+    ubyte alpha = 0;
 
     if (perc > 0.33f) {
       // middle 1/3

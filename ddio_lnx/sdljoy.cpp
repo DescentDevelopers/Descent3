@@ -229,7 +229,7 @@ void joy_GetRawPos(tJoystick joy, tJoyPos *pos) {
 }
 
 static inline unsigned int map_hat(Uint8 value) {
-  unsigned int mapped;
+  unsigned int mapped = 0;
 
   switch (value) {
   case SDL_HAT_CENTERED:

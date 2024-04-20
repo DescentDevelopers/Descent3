@@ -870,7 +870,7 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
   vector sound_pos;
   m_sound_objects[sound_obj_index].play_info.sample_skip_interval = 0;
   vector dir_to_sound;
-  float dist;
+  float dist = 0;
   if (m_master_volume <= 0.0)
     return false;
 
