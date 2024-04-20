@@ -4,7 +4,6 @@ set(CPPS
   wincon.cpp
   WinController.cpp
   windata.cpp
-  windebug.cpp
   winmono.cpp
   wintask.cpp)
 

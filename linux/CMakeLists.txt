@@ -2,7 +2,6 @@ set(HEADERS registry.h)
 set(CPPS
   lnxcon.cpp
   lnxcon_raw.cpp
-  lnxdebug.cpp
   lnxapp.cpp
   lnxcon_null.cpp
   lnxdata.cpp

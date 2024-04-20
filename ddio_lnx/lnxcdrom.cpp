@@ -99,7 +99,7 @@
 #include "mem.h"
 #include "mono.h"
 #include "ddio.h"
-#include "debug.h"
+#include "ddebug/debug.h"
 #include "pserror.h"
 #include "loki_utils.h"
 

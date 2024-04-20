@@ -79,7 +79,7 @@
 
 #include "d3serial.h"
 #include "game.h"
-#include "debug.h"
+#include "ddebug/debug.h"
 #include "descent.h"
 #include <time.h>
 #include "mono.h"

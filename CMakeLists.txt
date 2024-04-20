@@ -154,6 +154,7 @@ if(UNIX)
 endif()
 
 add_subdirectory(ddio_common)
+add_subdirectory(ddebug)
 add_subdirectory(fix)
 add_subdirectory(manage)
 add_subdirectory(grtext)

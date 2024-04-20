@@ -19,7 +19,7 @@
 
 #ifndef RELEASE
 
-#include "Debug.h"
+#include "ddebug/debug.h"
 #include "pstring.h"
 #include "networking.h"
 

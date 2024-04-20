@@ -72,7 +72,7 @@
 #include "mono.h"
 #include "pserror.h"
 #include "pstring.h"
-#include "debug.h"
+#include "ddebug/debug.h"
 #include "application.h"
 
 #define MAX_MSG_LEN 2000

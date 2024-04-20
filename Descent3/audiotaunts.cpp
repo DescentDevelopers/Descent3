@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 #include "mono.h"
-#include "debug.h"
+#include "ddebug/debug.h"
 #include "pserror.h"
 #include "pstypes.h"
 #include "audiotaunts.h"

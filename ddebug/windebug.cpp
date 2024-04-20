@@ -188,7 +188,7 @@
  * $NoKeywords: $
  */
 
-#include "Debug.h"
+#include "ddebug/debug.h"
 #include "mono.h"
 
 #define WIN32_LEAN_AND_MEAN

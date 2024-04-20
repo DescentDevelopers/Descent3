@@ -44,7 +44,7 @@
  * $NoKeywords: $
  */
 
-#include "debug.h"
+#include "ddebug/debug.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
