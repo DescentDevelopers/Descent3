@@ -4829,7 +4829,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
         fvi_query_ptr = temp_query;
 
         // Make sure we register the hit
-        if (hit_data_terrain.hit_type != HIT_NONE)
+        if (hit_data_terrain.hit_type[0] != HIT_NONE)
           *fvi_hit_data_ptr = hit_data_terrain;
       }
     }
