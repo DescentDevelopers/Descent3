@@ -50,7 +50,7 @@
 //	Keyboard Interface
 // ----------------------------------------------------------------------------
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio.h"
 #include "ddio_lnx.h"
 #include "application.h"

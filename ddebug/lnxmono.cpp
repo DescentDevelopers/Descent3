@@ -44,7 +44,8 @@
  * $NoKeywords: $
  */
 
-#include "ddebug/debug.h"
+#include "debug.h"
+#include "mono.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -368,6 +369,8 @@ void Debug_ConsoleExit() {
 extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 int FindArg(char *which);
 
+#ifdef MONO
+
 bool Debug_ConsoleInit() {
   int n = 0;
 
@@ -594,3 +597,4 @@ void Debug_ConsolePrintfAt(int n, int row, int col, char *format, ...) {
     // nw_SendMonoPacket(packet,text_len+6);
   }
 }
+#endif

@@ -453,7 +453,7 @@
 #include "shippage.h"
 #include "weaponpage.h"
 #include "gamefilepage.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "object.h"
 #include "ddio.h"
 #include "cfile.h"

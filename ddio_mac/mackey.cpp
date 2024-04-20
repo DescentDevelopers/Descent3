@@ -85,7 +85,7 @@
 #include <Retrace.h>
 // Descent 3 Headers
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio.h"
 #include "ddio_common.h"
 #include "ddio_mac.h"
@@ -220,7 +220,7 @@ bool MacKeyboardHandler(void) {
 // ----------------------------------------------------------------------------
 bool ddio_InternalKeyInit(ddio_init_info *init_info) {
   bool result = true;
-  // ¥ Make is so we can get key ups
+  // ï¿½ Make is so we can get key ups
   SetEventMask(everyEvent);
   LMSetSysEvtMask(everyEvent);
 
@@ -230,7 +230,7 @@ bool ddio_InternalKeyInit(ddio_init_info *init_info) {
   return result;
 }
 void ddio_InternalKeyClose() {
-  // ¥ Restore the normal event mask
+  // ï¿½ Restore the normal event mask
   SetEventMask(everyEvent - keyUpMask);
   LMSetSysEvtMask(everyEvent - keyUpMask);
 }

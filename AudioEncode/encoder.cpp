@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "audio_encode.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "Aencode.h"
 
 long aenc_ReadSamp(void *data) {

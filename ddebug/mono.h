@@ -64,9 +64,10 @@
 #ifndef _MONO_H
 #define _MONO_H
 #include "ddebug/debug.h"
-void nw_InitTCPLogging(char *ip, unsigned short port);
-void nw_TCPPrintf(int n, char *format, ...);
 #if (!defined(RELEASE)) && defined(LOGGER)
+bool nw_InitTCPLogging(char *ip, unsigned short port);
+void nw_TCPPrintf(int n, char *format, ...);
+
 extern bool Debug_print_block;
 // Prints a formatted string to the debug window
 #define mprintf(args) Debug_ConsolePrintf args

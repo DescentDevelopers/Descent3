@@ -56,7 +56,7 @@
 #include <sioux.h>
 // Descent 3 Headers
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio.h"
 // ----------------------------------------------------------------------------
 //	File Level Constants

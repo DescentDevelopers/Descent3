@@ -295,7 +295,9 @@ void ddio_AddKeyToQueue(int key) {
 #ifdef _DEBUG
   if (DDIO_key_state[KEY_DEBUG])
     keycode |= KEY_DEBUGGED;
+#ifdef MONO
   if (keycode == (KEY_DEBUGGED + KEY_SHIFTED + KEY_M)) {
+
     static int current_virtual_window = 1;
 
     current_virtual_window++;
@@ -307,6 +309,7 @@ void ddio_AddKeyToQueue(int key) {
     }
     Debug_ConsoleRedirectMessages(current_virtual_window, 1);
   }
+#endif
 #endif
 
   temp = DDIO_key_queue.tail + 1;

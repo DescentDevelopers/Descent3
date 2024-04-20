@@ -911,7 +911,8 @@
 
 #include <stdlib.h>
 
-#include "mono.h"
+#include "ddebug/debug.h"
+#include "ddebug/mono.h"
 #include "application.h"
 #include "gametexture.h"
 #include "object.h"
@@ -2232,7 +2233,7 @@ void InitD3Systems1(bool editor) {
         pport++;
         port = atoi(pport);
       }
-#if !defined(RELEASE) && !defined(MACINTOSH)
+#if !defined(RELEASE) && !defined(MACINTOSH) && defined(MONO)
       nw_InitTCPLogging(ipparse, port);
 #endif
     }

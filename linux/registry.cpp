@@ -53,7 +53,7 @@
 #include <ctype.h>
 // #include "local_malloc.h"
 #include "registry.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 
 // Convert a string that represents a hex value into an int
 int hextoi(char *p) {

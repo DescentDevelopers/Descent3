@@ -21,7 +21,8 @@
 #include "bumpmap.h"
 #include "pstypes.h"
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
+#include "renderer.h"
 #include "mem.h"
 
 int Num_of_bumpmaps = 0;

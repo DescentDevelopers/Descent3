@@ -100,7 +100,7 @@
 #include "gameos.h"
 #include "pserror.h"
 #include "mem.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio_mac.h"
 #include "ddio.h"
 #include "maccontroller.h"
@@ -138,15 +138,15 @@ const char *French_strings[] = {
     "Votre processeur et votre systFme doivent prendre en charge Katmai pour exTcuter ce jeu."};
 
 const char *German_strings[] = {
-    "Descent3 unter Windows NT ben÷tigt fnr die Ausfnhrung die NT-Version 4.0 oder h÷her",
-    "Descent 3 ben÷tigt fnr die Ausfnhrung Windows 9x, NT 4.0 oder h÷her.",
+    "Descent3 unter Windows NT benï¿½tigt fnr die Ausfnhrung die NT-Version 4.0 oder hï¿½her",
+    "Descent 3 benï¿½tigt fnr die Ausfnhrung Windows 9x, NT 4.0 oder hï¿½her.",
     "",
     "Sie mnssen DirectX nber den Descent 3 Starter installieren, bevor Sie fortsetzen.",
-    "Sie mnssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausfnhren zu k÷nnen.",
+    "Sie mnssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausfnhren zu kï¿½nnen.",
     "Die DirectX Version konnte nicht abgerufen werden.",
-    "Descent 3 ben÷tigt DirectX 3 oder h÷her auf diesem Computer.",
-    "In dieser Windows NT Version ist DirectX 3 oder h÷her nicht installiert.",
-    "Ihr Prozessor und System mu¯ Katmai unterstntzen, um dieses Spiel auszufnhren."};
+    "Descent 3 benï¿½tigt DirectX 3 oder hï¿½her auf diesem Computer.",
+    "In dieser Windows NT Version ist DirectX 3 oder hï¿½her nicht installiert.",
+    "Ihr Prozessor und System muï¿½ Katmai unterstntzen, um dieses Spiel auszufnhren."};
 
 const char *Italian_strings[] = {
     "Descent 3 per Windows NT richiede la versione NT 4.0 o superiore.",
@@ -164,9 +164,9 @@ const char *Spanish_strings[] = {"Descent 3 bajo Windows NT requiere version 4.0
                                  "",
                                  "Debe instalar DirectX desde el lanzador de Descent 3 antes de continuar.",
                                  "Debe instalar por lo menos Service Pack 3 para correr Descent 3 bajo Windows NT 4.0.",
-                                 "Falla en la detección de la versión de DirectX.",
+                                 "Falla en la detecciï¿½n de la versiï¿½n de DirectX.",
                                  "Descent 3 requiere DirectX 3 o mejor en el ordenador.",
-                                 "Esta versión de Windows NT no tiene DirectX 3 o mejor instalado.",
+                                 "Esta versiï¿½n de Windows NT no tiene DirectX 3 o mejor instalado.",
                                  "Vuestro procesador y ordenador deben soportar Katmai para correr este juego."};
 
 //	---------------------------------------------------------------------------
@@ -338,7 +338,7 @@ int main(int argc, char *argv[]) {
 
   Descent = d3;
 
-  // ¥ Initialize Metrowerks Code Profiler
+  // ï¿½ Initialize Metrowerks Code Profiler
   bool profilerInitted = false;
 #ifdef USE_PROFILER
   if (!ProfilerInit(collectDetailed, PPCTimeBase, 1024, 50)) {
@@ -350,13 +350,13 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
-  // ¥ Here we go!!!
+  // ï¿½ Here we go!!!
   PreInitD3Systems();
 
   d3->init();
   d3->run();
 
-// ¥ Close the Metrowerks Code Profiler
+// ï¿½ Close the Metrowerks Code Profiler
 #ifdef USE_PROFILER
   if (profilerInitted) {
     mprintf((2, "Dumping profiler results and closing profiler\n"));

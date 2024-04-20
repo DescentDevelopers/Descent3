@@ -412,7 +412,7 @@
 #include "ddio.h"
 #include "joystick.h"
 #include "descent.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "weapon.h"
 #include "Controller.h"
 #include "Macros.h"

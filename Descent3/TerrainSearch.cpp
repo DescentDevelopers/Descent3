@@ -218,7 +218,7 @@
 
 #include "terrain.h"
 #include "3d.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "vecmat.h"
 #include "pserror.h"
 #include "pstypes.h"

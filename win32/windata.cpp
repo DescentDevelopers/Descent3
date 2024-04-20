@@ -74,7 +74,7 @@
 #include <windows.h>
 #include <assert.h>
 
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "pserror.h"
 
 //	Construction and destruction.

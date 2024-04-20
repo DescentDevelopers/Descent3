@@ -397,7 +397,7 @@
  */
 
 #include "room.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "vecmat.h"
 #include "gametexture.h"
 #include "manage.h"
@@ -1088,7 +1088,7 @@ int CheckTransparentPoint(const vector *pnt, const room *rp, const int facenum) 
 
 // Computes a bounding sphere for the current room
 // Parameters: center - filled in with the center point of the sphere
-//		rp - the room we’re bounding
+//		rp - the room weï¿½re bounding
 // Returns: the radius of the bounding sphere
 float ComputeRoomBoundingSphere(vector *center, room *rp) {
   // This algorithm is from Graphics Gems I.  There's a better algorithm in Graphics Gems III that

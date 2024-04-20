@@ -17,7 +17,7 @@
 */
 
 #include "args.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include <string.h>
 #ifdef __LINUX__
 #include "lnxfix.h"

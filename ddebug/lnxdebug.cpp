@@ -38,7 +38,7 @@
  * $NoKeywords: $
  */
 
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "mono.h"
 #include <assert.h>
 #include <stdarg.h>
@@ -58,11 +58,12 @@ bool Debug_Init(bool debugger, bool mono_debug) {
   Debug_break = debugger;
 
   if (mono_debug) {
+#ifdef MONO
     Debug_ConsoleInit();
     Debug_ConsoleOpen(0, 9, 1, 78, 15, "Debug Spew");
     Debug_ConsoleOpen(1, 1, 1, 58, 6, "Warnings");
     Debug_ConsoleOpen(2, 1, 61, 18, 6, "Stats");
-
+#endif
     mprintf((0, "Linux system.\n"));
   }
 

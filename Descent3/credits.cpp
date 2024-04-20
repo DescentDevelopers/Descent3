@@ -77,7 +77,7 @@
  * $NoKeywords: $
  */
 
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "pstypes.h"
 #include "ddio.h"
 #include "grtext.h"

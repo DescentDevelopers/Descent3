@@ -205,7 +205,7 @@
 #include "vecmat.h"
 #include "ddio.h"
 #include "object.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "game.h"
 #include "joystick.h"
 #include "findintersection.h"

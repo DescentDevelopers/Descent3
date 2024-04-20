@@ -602,7 +602,7 @@
 #include "polymodel.h"
 #include "pserror.h"
 #include "3d.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "bitmap.h"
 #include "renderer.h"
 #include "manage.h"

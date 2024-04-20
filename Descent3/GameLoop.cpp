@@ -806,7 +806,7 @@
 #include "render.h"
 #include "descent.h"
 #include "slew.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "doorway.h"
 #include "weapon.h"
 #include "hlsoundlib.h"

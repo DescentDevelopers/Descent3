@@ -188,7 +188,7 @@
  * $NoKeywords: $
  */
 
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "mono.h"
 
 #define WIN32_LEAN_AND_MEAN
@@ -234,6 +234,7 @@ bool Debug_Init(bool debugger, bool con_debug) {
   Debug_break = debugger;
 
   if (con_debug) {
+#ifdef MONO
     Debug_ConsoleInit();
     Debug_ConsoleOpen(0, 9, 1, 78, 15, "Debug Spew");
     Debug_ConsoleOpen(1, 1, 1, 58, 6, "Warnings");
@@ -244,6 +245,7 @@ bool Debug_Init(bool debugger, bool con_debug) {
     } else {
       mprintf((0, "WinNT system.\n"));
     }
+#endif
   }
 
   if (Debug_break) {

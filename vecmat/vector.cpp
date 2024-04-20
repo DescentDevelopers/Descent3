@@ -151,7 +151,7 @@
 #include <math.h>
 
 #include "vecmat.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "pserror.h"
 #include "psrand.h"
 

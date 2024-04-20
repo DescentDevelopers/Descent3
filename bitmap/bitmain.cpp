@@ -305,7 +305,7 @@
 #include "bitmap.h"
 #include "pstypes.h"
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "iff.h"
 #include "ddio.h"
 #include "lightmap.h"

@@ -91,7 +91,7 @@
 #include "newui.h"
 #include "application.h"
 #include "descent.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio.h"
 #include "gamefont.h"
 #include "multi_ui.h"

@@ -4,7 +4,6 @@ set(CPPS
   wincon.cpp
   WinController.cpp
   windata.cpp
-  winmono.cpp
   wintask.cpp)
 
 add_library(win32 STATIC ${HEADERS} ${CPPS})

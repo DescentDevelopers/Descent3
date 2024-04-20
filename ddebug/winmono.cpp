@@ -19,7 +19,7 @@
 
 #ifndef RELEASE
 
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "pstring.h"
 #include "networking.h"
 
@@ -128,12 +128,14 @@ SOCKET tcp_log_sock;
 SOCKADDR_IN tcp_log_addr;
 char tcp_log_buffer[MAX_TCPLOG_LEN];
 
-void nw_InitTCPLogging(char *ip, unsigned short port) {
+#ifdef MONO
+
+bool nw_InitTCPLogging(char *ip, unsigned short port) {
   unsigned long argp = 1;
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {
-    return;
+    return false;
   }
 
   memset(&tcp_log_addr, 0, sizeof(SOCKADDR_IN));
@@ -142,13 +144,15 @@ void nw_InitTCPLogging(char *ip, unsigned short port) {
   tcp_log_addr.sin_port = 0;
 
   if (SOCKET_ERROR == bind(tcp_log_sock, (SOCKADDR *)&tcp_log_addr, sizeof(sockaddr))) {
-    return;
+    return false;
   }
   ioctlsocket(tcp_log_sock, FIONBIO, &argp);
 
   tcp_log_addr.sin_addr.s_addr = inet_addr(ip);
   tcp_log_addr.sin_port = htons(port);
   connect(tcp_log_sock, (SOCKADDR *)&tcp_log_addr, addrlen);
+
+  return true;
 }
 
 void nw_TCPPrintf(int n, char *format, ...) {
@@ -274,35 +278,6 @@ void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window) {
 
   Mono_virtual_window_list[virtual_window] = physical_window;
   con_clear(physical_window);
-}
-
-void Debug_LogClose();
-
-bool Debug_Logfile(const char *filename) {
-  if (Debug_logfile == -1) {
-    Debug_logfile = _open(filename, _O_CREAT | _O_WRONLY | _O_TEXT, _S_IREAD | _S_IWRITE);
-    if (Debug_logfile == -1) {
-      Debug_MessageBox(OSMBOX_OK, "Debug", "FYI Logfile couldn't be created.");
-      return false;
-    }
-    atexit(Debug_LogClose);
-  }
-  Debug_LogWrite("BEGINNING LOG\n\n");
-
-  return true;
-}
-
-void Debug_LogWrite(const char *str) {
-  if (Debug_logfile > -1)
-    _write(Debug_logfile, str, strlen(str));
-}
-
-void Debug_LogClose() {
-  if (Debug_logfile > -1) {
-    Debug_LogWrite("\nEND LOG");
-    _close(Debug_logfile);
-    Debug_logfile = -1;
-  }
 }
 
 void Debug_ConsoleOpen(int n, int row, int col, int width, int height, char *title) {
@@ -450,6 +425,37 @@ void Debug_ConsolePrintf(int n, int row, int col, char *format, ...) {
 
   if (n == 0)
     OutputDebugString(Mono_buffer);
+}
+
+#endif // MONO
+
+void Debug_LogClose();
+
+bool Debug_Logfile(const char *filename) {
+  if (Debug_logfile == -1) {
+    Debug_logfile = _open(filename, _O_CREAT | _O_WRONLY | _O_TEXT, _S_IREAD | _S_IWRITE);
+    if (Debug_logfile == -1) {
+      Debug_MessageBox(OSMBOX_OK, "Debug", "FYI Logfile couldn't be created.");
+      return false;
+    }
+    atexit(Debug_LogClose);
+  }
+  Debug_LogWrite("BEGINNING LOG\n\n");
+
+  return true;
+}
+
+void Debug_LogWrite(const char *str) {
+  if (Debug_logfile > -1)
+    _write(Debug_logfile, str, strlen(str));
+}
+
+void Debug_LogClose() {
+  if (Debug_logfile > -1) {
+    Debug_LogWrite("\nEND LOG");
+    _close(Debug_logfile);
+    Debug_logfile = -1;
+  }
 }
 
 void con_mputc(int n, char c) {

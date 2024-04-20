@@ -205,7 +205,7 @@
 #include "manage.h"
 #include "ship.h"
 #include "shippage.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "pserror.h"
 #include "polymodel.h"
 #include "ddio.h"

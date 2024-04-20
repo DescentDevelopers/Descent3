@@ -97,7 +97,7 @@
 #include <unistd.h>
 #include <SDL.h>
 #include "mem.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio.h"
 #include "ddebug/debug.h"
 #include "pserror.h"

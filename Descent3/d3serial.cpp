@@ -82,7 +82,7 @@
 #include "ddebug/debug.h"
 #include "descent.h"
 #include <time.h>
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "cfile.h"
 #include "program.h"
 

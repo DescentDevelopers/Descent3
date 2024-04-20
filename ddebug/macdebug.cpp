@@ -56,7 +56,7 @@
  * $NoKeywords: $
  */
 
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "mono.h"
 #include <assert.h>
 #include <stdarg.h>

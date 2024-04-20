@@ -19,8 +19,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "mono.h"
 #include "ddebug/debug.h"
+#include "ddebug/mono.h"
 #include "pserror.h"
 #include "pstypes.h"
 #include "audiotaunts.h"

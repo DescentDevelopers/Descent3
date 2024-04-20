@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 
 #define MAX_TIMER_HOOKS 4
 #define TIMER_CLOCK_RATE 100 // ms

@@ -97,7 +97,7 @@ void InvReset(int playernum, bool reset_all) {
 
 // mprintf
 void MonoPrintf(int n, char *format, ...) {
-#ifndef RELEASE
+#if (!defined(RELEASE) && defined(MONO))
   char tempbuffer[300];
 
   va_list ap;

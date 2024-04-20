@@ -87,7 +87,7 @@
 #include <assert.h>
 #include "pstring.h"
 #include "gr.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "renderer.h"
 
 #define CLIP_LEFT (vp_InitLeft + vp_Left)

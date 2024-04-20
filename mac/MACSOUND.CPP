@@ -27,7 +27,7 @@
 // #include <process.h>
 #include "cfile.h"
 #include "pserror.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "soundload.h"
 #include "ssl_lib.h"
 #include "mem.h"

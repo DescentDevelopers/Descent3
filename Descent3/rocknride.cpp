@@ -40,7 +40,7 @@
  *
  * $NoKeywords: $
  */
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "ddio.h"
 #include "ddebug/debug.h"
 #include "game.h"

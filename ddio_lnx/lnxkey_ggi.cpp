@@ -40,7 +40,7 @@
 
 #include "ddio_common.h"
 #include "ddio.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 
 // ##########################################################
 //  GGI Interface Functions

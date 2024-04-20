@@ -23,7 +23,7 @@
 #endif
 #include "vecmat.h"
 #include "object.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "terrain.h"
 #include "pserror.h"
 #include "texture.h"

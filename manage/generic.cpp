@@ -360,7 +360,7 @@
 #include "genericpage.h"
 #include "soundpage.h"
 #include "weaponpage.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "pserror.h"
 #include "polymodel.h"
 #include "ddio.h"

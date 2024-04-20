@@ -53,7 +53,7 @@
  */
 
 #include "help.h"
-#include "mono.h"
+#include "ddebug/mono.h"
 #include "renderer.h"
 #include "render.h"
 #include "ddio.h"
