@@ -94,7 +94,7 @@ IF(UNIX AND NOT APPLE)
     COMMAND ${HOGBUILDCMD} "--makehog" "d3linuxfullhog.txt" 
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3-${HOGARCH}.hog"
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/new.hog" "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3-${HOGARCH}.hog"
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3-${HOGARCH}.hog" "${D3_GAMEDIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3-${HOGARCH}.hog" "${CMAKE_BINARY_DIR}"
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/new.hog"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/"
     DEPENDS ${SCRIPTS}
