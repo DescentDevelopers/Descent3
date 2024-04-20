@@ -1,37 +1,55 @@
 {
-    "version": 3
-    , "configurePresets": [
-        {
-            "name": "win"
-            , "condition": {
-                "type": "equals"
-                , "lhs": "${hostSystemName}"
-                , "rhs": "Windows"
-            }
-            , "cacheVariables": {
-                "CMAKE_GENERATOR_PLATFORM": {
-                    "type": "STRING"
-                    , "value": "Win32"
-                }
-            }
-        }
-        , {
-            "name": "mac"
-            , "generator": "Ninja Multi-Config"
-            , "condition": {
-                "type": "equals"
-                , "lhs": "${hostSystemName}"
-                , "rhs": "Darwin"
-            }
-        }
-        , {
-            "name": "linux"
-            , "generator": "Ninja Multi-Config"
-            , "condition": {
-                "type": "equals"
-                , "lhs": "${hostSystemName}"
-                , "rhs": "Linux"
-            }
-        }
-    ]
+	"version": 3,
+	"configurePresets": [
+		{
+			"name": "defaults",
+			"hidden": true,
+			"binaryDir": "${sourceDir}/builds/${presetName}"
+		},
+		{
+			"name": "win",
+			"inherits": "defaults",
+			"generator": "Visual Studio 17 2022",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Windows"
+			},
+			"architecture": "Win32"
+		},
+		{
+			"name": "mac",
+			"inherits": "defaults",
+			"generator": "Ninja Multi-Config",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Darwin"
+			}
+		},
+		{
+			"name": "linux",
+			"inherits": "defaults",
+			"generator": "Ninja Multi-Config",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "win",
+			"configurePreset": "win"
+		},
+		{
+			"name": "mac",
+			"configurePreset": "mac"
+		},
+		{
+			"name": "linux",
+			"configurePreset": "linux"
+		}
+	]
 }
