@@ -1,6 +1,6 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 	aencode.cpp
 	libacm.cpp)
 
-ADD_LIBRARY(libacm STATIC ${HEADERS} ${CPPS})
+add_library(libacm STATIC ${HEADERS} ${CPPS})

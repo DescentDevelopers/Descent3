@@ -1,8 +1,8 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		Collide.cpp
 		FindIntersection.cpp
 		newstyle_fi.cpp
 		physics.cpp)
 
-ADD_LIBRARY(physics STATIC ${HEADERS} ${CPPS})
+add_library(physics STATIC ${HEADERS} ${CPPS})

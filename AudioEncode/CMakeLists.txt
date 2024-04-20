@@ -1,6 +1,6 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		encoder.cpp)
 
-ADD_LIBRARY(AudioEncode STATIC ${HEADERS} ${CPPS})
+add_library(AudioEncode STATIC ${HEADERS} ${CPPS})
 target_link_libraries(AudioEncode libacm)

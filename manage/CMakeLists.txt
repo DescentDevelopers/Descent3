@@ -1,4 +1,4 @@
-SET (HEADERS doorpage.h
+set(HEADERS doorpage.h
 		gamefilepage.h
 		genericpage.h
 		megapage.h
@@ -8,7 +8,7 @@ SET (HEADERS doorpage.h
 		soundpage.h
 		texpage.h
 		weaponpage.h )
-SET (CPPS
+set(CPPS
 		doorpage.cpp
 		gamefilepage.cpp
 		generic.cpp
@@ -20,4 +20,4 @@ SET (CPPS
 		texpage.cpp
 		weaponpage.cpp)
 
-ADD_LIBRARY(manage STATIC ${HEADERS} ${CPPS})
+add_library(manage STATIC ${HEADERS} ${CPPS})

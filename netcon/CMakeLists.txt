@@ -1,3 +1,3 @@
 include_directories("includes")
-ADD_SUBDIRECTORY(inetfile)
-ADD_SUBDIRECTORY(lanclient)
+add_subdirectory(inetfile)
+add_subdirectory(lanclient)

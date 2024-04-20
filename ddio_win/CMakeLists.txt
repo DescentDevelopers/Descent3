@@ -1,5 +1,5 @@
-SET (HEADERS ddio_win.h )
-SET (CPPS
+set(HEADERS ddio_win.h )
+set(CPPS
 		serial.cpp
 		winfile.cpp
 		winforcefeedback.cpp
@@ -9,4 +9,4 @@ SET (CPPS
 		winmouse.cpp
 		wintimer.cpp)
 
-ADD_LIBRARY(ddio_win STATIC ${HEADERS} ${CPPS})
+add_library(ddio_win STATIC ${HEADERS} ${CPPS})

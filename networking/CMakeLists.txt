@@ -1,11 +1,11 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		networking.cpp)
 
-SET (PLATFORMCPPS )
+set(PLATFORMCPPS)
 
-IF(WIN32)
-SET (PLATFORMCPPS "directplay.cpp")
-ENDIF()
+if(WIN32)
+	set(PLATFORMCPPS "directplay.cpp")
+endif()
 
-ADD_LIBRARY(networking STATIC ${HEADERS} ${CPPS} ${PLATFORMCPPS})
+add_library(networking STATIC ${HEADERS} ${CPPS} ${PLATFORMCPPS})

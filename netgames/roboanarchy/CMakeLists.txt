@@ -1,9 +1,9 @@
-SET (HEADERS roboAnarchy.h roboanarchystr.h)
-SET (CPPS roboanarchy.cpp)
+set(HEADERS roboAnarchy.h roboanarchystr.h)
+set(CPPS roboanarchy.cpp)
 
-SET (NETGAME_MODULE roboanarchy)
+set(NETGAME_MODULE roboanarchy)
 
-ADD_LIBRARY(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
+add_library(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 

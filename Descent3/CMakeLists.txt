@@ -1,4 +1,4 @@
-SET (HEADERS 
+set(HEADERS 
 		aiambient.h
 		AIGoal.h
 		AIMain.h
@@ -143,7 +143,8 @@ SET (HEADERS
 		weapon.h
 		weapon_external.h
 		weather.h)
-SET (CPPS
+
+set (CPPS
 		aiambient.cpp
 		AIGoal.cpp
 		AImain.cpp
@@ -276,28 +277,27 @@ SET (CPPS
 	)
 
 
-IF (WIN32)
-SET (PLATFORM_LIBS dd_sndlib dd_grwin32 dd_vidwin32 ddio_win win32 wsock32.lib winmm.lib Glu32.lib
-	${DSOUND_LIBRARY} ${DINPUT_LIBRARY} ${DXGUID_LIBRARY} ${DDRAW_LIBRARY})
-SET (PLATFORM_CPPS winmain.cpp )
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
+if (WIN32)
+	set (PLATFORM_LIBS dd_sndlib dd_grwin32 dd_vidwin32 ddio_win win32 wsock32.lib winmm.lib Glu32.lib
+		${DSOUND_LIBRARY} ${DINPUT_LIBRARY} ${DXGUID_LIBRARY} ${DDRAW_LIBRARY})
+	set(PLATFORM_CPPS winmain.cpp )
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
+endif()
 
-ENDIF()
-
-IF (UNIX AND NOT APPLE)
-SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL m ${CMAKE_DL_LIBS} OpenGL::GLU ${CURSES_LIBRARIES})
-SET (PLATFORM_CPPS loki_utils.c lnxmain.cpp)
-ENDIF()
+if (UNIX AND NOT APPLE)
+	set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL m ${CMAKE_DL_LIBS} OpenGL::GLU ${CURSES_LIBRARIES})
+	set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
+endif()
 	
-IF (APPLE)
-SET (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL ${CURSES_LIBRARIES})
-SET (PLATFORM_CPPS loki_utils.c lnxmain.cpp SDLMain.m)
-SET(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
-ENDIF()
+if (APPLE)
+	set (PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL ${CURSES_LIBRARIES})
+	set (PLATFORM_CPPS loki_utils.c lnxmain.cpp SDLMain.m)
+	set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
+endif()
 
 file(GLOB_RECURSE INCS "../lib/*.h")
 
-ADD_EXECUTABLE(Descent3 ${HEADERS} ${CPPS} ${PLATFORM_CPPS} ${INCS})
+add_executable(Descent3 ${HEADERS} ${CPPS} ${PLATFORM_CPPS} ${INCS})
 target_link_libraries(Descent3 
 	2dlib AudioEncode bitmap cfile czip d3music ddio_common libmve libacm
 	fix grtext manage mem misc model module movie stream_audio

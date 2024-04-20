@@ -1,5 +1,5 @@
-SET (HEADERS iff.h)
-SET (CPPS
+set(HEADERS iff.h)
+set(CPPS
 		bitmain.cpp
 		bumpmap.cpp
 		iff.cpp
@@ -7,4 +7,4 @@ SET (CPPS
 		pcx.cpp
 		tga.cpp)
 
-ADD_LIBRARY(bitmap STATIC ${HEADERS} ${CPPS})
+add_library(bitmap STATIC ${HEADERS} ${CPPS})

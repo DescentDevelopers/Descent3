@@ -1,8 +1,8 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS)
+set(CPPS
 		omflex.cpp
 		sequencer.cpp
 		streamer.cpp
 		tracklist.cpp)
 
-ADD_LIBRARY(music STATIC ${HEADERS} ${CPPS})
+add_library(music STATIC ${HEADERS} ${CPPS})

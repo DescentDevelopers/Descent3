@@ -1,5 +1,5 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		vector.cpp)
 
-ADD_LIBRARY(vecmat STATIC ${HEADERS} ${CPPS})
+add_library(vecmat STATIC ${HEADERS} ${CPPS})

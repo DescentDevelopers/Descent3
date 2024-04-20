@@ -1,6 +1,6 @@
-SET (HEADERS  )
-SET (CPPS
+set (HEADERS  )
+set (CPPS
   lnxcontroller.cpp
 )
 
-ADD_LIBRARY(lnxcontroller STATIC ${HEADERS} ${CPPS})
+add_library(lnxcontroller STATIC ${HEADERS} ${CPPS})

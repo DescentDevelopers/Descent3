@@ -1,7 +1,7 @@
-SET (HEADERS )
-SET (CPPS
+set(HEADERS )
+set(CPPS
 		osfarchive.cpp
 		streamaudio.cpp)
 
-ADD_LIBRARY(stream_audio STATIC ${HEADERS} ${CPPS})
+add_library(stream_audio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(stream_audio libacm)

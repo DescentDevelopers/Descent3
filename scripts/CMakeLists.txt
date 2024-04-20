@@ -1,13 +1,13 @@
 
-ADD_DEFINITIONS (-DCHECKSUM=2273873307UL)
-SET (HEADERS )
-SET (CPPS )
-IF(UNIX)
-SET (CPPS
-	linux_lib.cpp)
-ENDIF()
+add_definitions (-DCHECKSUM=2273873307UL)
+set(HEADERS)
+set(CPPS)
+if(UNIX)
+	set (CPPS
+		linux_lib.cpp)
+endif()
 
-SET (SCRIPTS
+set(SCRIPTS
 	aigame2
 	AIGame3
 	aigame4
@@ -65,31 +65,29 @@ SET (SCRIPTS
 	TrainingMission
 	Y2K)
 
-FOREACH(SCRIPT ${SCRIPTS})
- 
-	ADD_LIBRARY(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
+foreach(SCRIPT ${SCRIPTS})
+	add_library(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
 	set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
-	IF(UNIX)
-		ADD_CUSTOM_COMMAND(
+	if(UNIX)
+		add_custom_command(
 			TARGET ${SCRIPT}
 			POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/"
 			COMMENT "Copying file ${SCRIPT} to hogfile directory..."
 		)
-		ADD_CUSTOM_COMMAND(
+		add_custom_command(
 			TARGET ${SCRIPT}
 			POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/"
 		)
-	ENDIF()
-ENDFOREACH()
+	endif()
+endforeach()
 
-IF(UNIX AND NOT APPLE)
-  SET(HOGBUILDCMD "${CMAKE_SOURCE_DIR}/scripts/hogutils/hogUtils-i686")
-  SET(HOGARCH "linux")
+if(UNIX AND NOT APPLE)
+  set(HOGBUILDCMD "${CMAKE_SOURCE_DIR}/scripts/hogutils/hogUtils-i686")
+  set(HOGARCH "linux")
 
-
-  ADD_CUSTOM_TARGET("FullLinuxHog"
+  add_custom_target("FullLinuxHog"
     ALL
     COMMAND ${HOGBUILDCMD} "--makehog" "d3linuxfullhog.txt" 
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3-${HOGARCH}.hog"
@@ -100,7 +98,7 @@ IF(UNIX AND NOT APPLE)
     DEPENDS ${SCRIPTS}
     COMMENT "Building platform specific hog."
     )
-  ADD_CUSTOM_TARGET("DemoLinuxHog"
+  add_custom_target("DemoLinuxHog"
     ALL
     COMMAND ${HOGBUILDCMD} "--makehog" "d3linuxdemohog.txt" 
     COMMAND ${CMAKE_COMMAND} -E remove "${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog/d3-${HOGARCH}.hog"
@@ -110,4 +108,4 @@ IF(UNIX AND NOT APPLE)
     DEPENDS ${SCRIPTS}
     COMMENT "Building platform specific hog."
     )
-ENDIF()
+endif()

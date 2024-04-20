@@ -1,4 +1,4 @@
-SET (HEADERS ddlnxsound.h )
-SET (CPPS mixer.cpp sdlsound.cpp ../dd_sndlib/ssl_lib.cpp ../dd_sndlib/ddsoundload.cpp)
+set(HEADERS ddlnxsound.h )
+set(CPPS mixer.cpp sdlsound.cpp ../dd_sndlib/ssl_lib.cpp ../dd_sndlib/ddsoundload.cpp)
 
-ADD_LIBRARY(dd_lnxsound STATIC ${HEADERS} ${CPPS})
+add_library(dd_lnxsound STATIC ${HEADERS} ${CPPS})

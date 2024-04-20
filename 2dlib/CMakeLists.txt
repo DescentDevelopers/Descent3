@@ -1,5 +1,5 @@
-SET (HEADERS lib2d.h)
-SET (CPPS
+set(HEADERS lib2d.h)
+set(CPPS
 	font.cpp
 	hardsurf.cpp
 	memsurf.cpp
@@ -9,5 +9,5 @@ SET (CPPS
 	surface.cpp
 	viewport.cpp)
 
-ADD_LIBRARY(2dlib STATIC ${HEADERS} ${CPPS})
+add_library(2dlib STATIC ${HEADERS} ${CPPS})
     

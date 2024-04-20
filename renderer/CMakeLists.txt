@@ -1,9 +1,9 @@
-SET (HEADERS 
+set(HEADERS 
 		dyna_gl.h
 		HardwareInternal.h
 		RendererConfig.h
 		SoftwareInternal.h)
-SET (CPPS
+set(CPPS
 		HardwareClipper.cpp
 		HardwareDraw.cpp
 		HardwareGlobalVars.cpp
@@ -22,15 +22,13 @@ SET (CPPS
 		SoftwarePoints.cpp
 		SoftwareSetup.cpp)
 
-IF(UNIX)
-
-  SET (CPPS ${CPPS} lnxscreenmode.cpp)
-
-ENDIF()
+if(UNIX)
+  set (CPPS ${CPPS} lnxscreenmode.cpp)
+endif()
 
 # These are excluded.
 #opengl.cpp
 #renderer.cpp
 #Direct3D.cpp
 
-ADD_LIBRARY(renderer STATIC ${HEADERS} ${CPPS})
+add_library(renderer STATIC ${HEADERS} ${CPPS})

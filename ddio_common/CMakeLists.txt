@@ -1,6 +1,5 @@
-SET (HEADERS  )
-SET (CPPS
+set(HEADERS)
+set(CPPS
 		ddio.cpp
 		key.cpp)
-
-ADD_LIBRARY(ddio_common STATIC ${HEADERS} ${CPPS})
+add_library(ddio_common STATIC ${HEADERS} ${CPPS})

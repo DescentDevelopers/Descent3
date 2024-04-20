@@ -1,5 +1,5 @@
-SET (HEADERS registry.h )
-SET (CPPS
+set(HEADERS registry.h )
+set(CPPS
   lnxcon.cpp
   lnxcon_raw.cpp
   lnxdebug.cpp
@@ -9,4 +9,4 @@ SET (CPPS
   lnxmono.cpp
   registry.cpp)
 #  DynXLib.cpp
-ADD_LIBRARY(linux STATIC ${HEADERS} ${CPPS})
+add_library(linux STATIC ${HEADERS} ${CPPS})
