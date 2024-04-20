@@ -604,8 +604,8 @@ void DoWaitPopup(bool enable, char *message) {
         grtext_SetFont(MONITOR9_NEWUI_FONT);
         w = grtext_GetTextLineWidth(msg);
         h = grtext_GetTextHeight(msg);
-        text.Create(msgbox, &UITextItem(MONITOR9_NEWUI_FONT, msg, NEWUI_MONITORFONT_COLOR), (msgbox->W() - w) / 2,
-                    (msgbox->H() - h) / 2);
+        UITextItem item{MONITOR9_NEWUI_FONT, msg, NEWUI_MONITORFONT_COLOR};
+        text.Create(msgbox, &item, (msgbox->W() - w) / 2, (msgbox->H() - h) / 2);
 
         //				sheet->NewGroup(NULL, , 25);
         //				sheet->AddText(msg);
@@ -855,7 +855,8 @@ NewUIWindow::NewUIWindow() : UIWindow() {}
 //	initializes the window
 void NewUIWindow::Create(int x, int y, int w, int h, int flags) {
   UIWindow::Create(x, y, w, h, flags);
-  UIWindow::SetBackItem(&UIPrimativeItem(GR_BLACK, NewUIWindow_alpha));
+  UIPrimativeItem item{GR_BLACK, NewUIWindow_alpha};
+  UIWindow::SetBackItem(&item);
   memset(&m_Chunk, 0, sizeof(m_Chunk));
 }
 
@@ -1254,10 +1255,13 @@ void NewUIFileDialog::Create(const char *title, int x, int y, int w, int h, cons
   list_h = h - 64;
   list_y = 24;
 
-  m_TitleStr.Create(this, &UITextItem((char *)title), 0, 5, UIF_CENTER);
+  UITextItem itemTitle{(char *)title};
+  m_TitleStr.Create(this, &itemTitle, 0, 5, UIF_CENTER);
   m_ListBox.Create(this, UID_FILELIST, 0, list_y, list_w, list_h, UIF_CENTER);
-  m_Ok.Create(this, UID_OK, &UITextItem(TXT_OK), 32, m_H - 32, 0, 0, UIF_FIT);
-  m_Cancel.Create(this, UID_CANCEL, &UITextItem(TXT_CANCEL), m_W - m_Ok.W() - 32, m_H - 32, 0, 0, UIF_FIT);
+  UITextItem itemList{TXT_OK};
+  m_Ok.Create(this, UID_OK, &itemList, 32, m_H - 32, 0, 0, UIF_FIT);
+  UITextItem itemCancel{TXT_CANCEL};
+  m_Cancel.Create(this, UID_CANCEL, &itemCancel, m_W - m_Ok.W() - 32, m_H - 32, 0, 0, UIF_FIT);
 
   m_FileItems = NULL;
 

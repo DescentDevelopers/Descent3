@@ -278,7 +278,8 @@ UIConsole::~UIConsole() {}
 //	font = console font, NOT GADGET FONT.   This font is used to proportion window
 void UIConsole::Create(int x, int y, int font, int cols, int rows) {
   UIWindow::Create(x, y, 10, 10);
-  UIWindow::SetBackItem(&UIPrimativeItem(GR_BLACK));
+  UIPrimativeItem item{GR_BLACK};
+  UIWindow::SetBackItem(&item);
 
   m_Console.Create(this, -1, 0, 0, font, cols, rows);
 

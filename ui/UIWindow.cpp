@@ -694,7 +694,8 @@ void UITitledWindow::Create(UITextItem &title, int x, int y, int w, int h) {
   m_CaptionColor = GR_DARKGRAY;
 
   UIWindow::Create(x, y, w, h);
-  UIWindow::SetBackItem(&UIPrimativeItem(GR_LIGHTGRAY));
+  UIPrimativeItem item{GR_LIGHTGRAY};
+  UIWindow::SetBackItem(&item);
 }
 
 //	inheritable actions

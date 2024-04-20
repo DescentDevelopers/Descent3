@@ -10,11 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if (UNIX)
   set(D3_GAMEDIR "~/Descent3/")
 
-  if (UNIX AND NOT APPLE)
-    set(EXTRA_CXX_FLAGS "-fpermissive ")
-  endif()
-
-  string(APPEND CMAKE_CXX_FLAGS " -Wno-write-strings -Wno-multichar -Wno-address-of-temporary ${BITS} ${EXTRA_CXX_FLAGS}")
+  string(APPEND CMAKE_CXX_FLAGS " -Wno-write-strings -Wno-multichar ${BITS} ${EXTRA_CXX_FLAGS}")
   string(APPEND CMAKE_C_FLAGS " ${BITS}")
 
   find_package(SDL REQUIRED)
