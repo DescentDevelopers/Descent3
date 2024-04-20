@@ -122,6 +122,8 @@ add_subdirectory(md5)
 add_subdirectory(libacm)
 add_subdirectory(Descent3)
 
+add_subdirectory(tools)
+
 # For now we don't need to build the scripts under windows, so we'll only include
 # the directory when building for linux/osx. In the future we may want to to fix bugs, etc.
 if(UNIX)
