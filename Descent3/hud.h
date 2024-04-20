@@ -542,6 +542,9 @@ void FreeHUDItem(int item);
 // Updates the customtext2 item, if there is one
 void UpdateCustomtext2HUDItem(char *text);
 
+// Returns the item number if there's a customtext2 item, else -1
+int FindCustomtext2HUDItem();
+
 //	resets hud
 void ResetHUD();
 

@@ -2168,7 +2168,7 @@ PInfo *DMFCBase::FindPInfo(int pnum) {
   player_record *pr = GetPlayerRecordByPnum(pnum);
   if (!pr)
     return NULL;
-  return (PInfo *)pr->pinfo;
+  return pr->pinfo;
 }
 
 // DMFCBase::UpdatePInfo
@@ -2226,7 +2226,7 @@ void DMFCBase::ResetPInfo(void) {
   for (int i = 0; i < MAX_PLAYER_RECORDS; i++) {
     player_record *pr = GetPlayerRecord(i);
     if (pr && pr->pinfo) {
-      ((PInfo *)pr->pinfo)->ResetAll();
+      pr->pinfo->ResetAll();
     }
   }
 }
@@ -2344,7 +2344,7 @@ bool DMFCBase::FindPInfoStatFirst(int slot, tPInfoStat *stat) {
   if (!pr || pr->state == STATE_EMPTY || !pr->pinfo)
     return false;
 
-  killer = ((PInfo *)pr->pinfo)->GetFirstKiller();
+  killer = pr->pinfo->GetFirstKiller();
   victim = NULL;
 
   if (!killer) {
@@ -2412,7 +2412,7 @@ bool DMFCBase::FindPInfoStatNext(tPInfoStat *stat) {
   if (!pr || pr->state == STATE_EMPTY || !pr->pinfo)
     return false;
 
-  killer = ((PInfo *)pr->pinfo)->GetNextKiller();
+  killer = pr->pinfo->GetNextKiller();
   victim = NULL;
 
   if (!killer) {
@@ -2446,7 +2446,7 @@ bool DMFCBase::FindPInfoStatNext(tPInfoStat *stat) {
   deaths = 0;
   dpr = GetPlayerRecord(killer->slot);
   if (dpr && dpr->state != STATE_EMPTY && dpr->pinfo) {
-    victim = ((PInfo *)dpr->pinfo)->GetKillerInfo(slot);
+    victim = dpr->pinfo->GetKillerInfo(slot);
   }
 
   if (victim)
@@ -3379,7 +3379,7 @@ void DMFCBase::CheckPInfo() {
       tPKillerInfo *node;
 
       ASSERT(pr->pinfo != NULL);
-      node = ((PInfo *)pr->pinfo)->GetFirstKiller();
+      node = pr->pinfo->GetFirstKiller();
 
       while (node) {
         ASSERT(node->slot >= 0 && node->slot < 64);

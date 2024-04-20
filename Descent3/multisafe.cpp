@@ -2099,7 +2099,6 @@ void msafe_CallFunction(ubyte type, msafe_struct *mstruct) {
     break;
   }
   case MSAFE_MISC_UPDATE_HUD_ITEM:
-    int FindCustomtext2HUDItem();
     // If item not added yet, add it now
     if (FindCustomtext2HUDItem() == -1) {
       tHUDItem huditem;
