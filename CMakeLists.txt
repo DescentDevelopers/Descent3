@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
 
-# allow more human readable "if then else" constructs
-set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE )
-
 project(Descent3 VERSION 1.5.500)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -26,6 +23,7 @@ if (UNIX)
     find_path(SDL_IMAGE_INCLUDE_DIR SDL_image.h PATH_SUFFIXES include/SDL2)
     find_library(SDL_IMAGE_LIBRARY SDL2_image)
   endif()
+
   find_package(SDL_image REQUIRED)
   find_package(Curses REQUIRED)
   find_package(OpenGL REQUIRED)
@@ -89,11 +87,11 @@ add_subdirectory(czip)
 add_subdirectory(d3music)
 
 if (WIN32)
-add_subdirectory(dd_grwin32)
-add_subdirectory(dd_vidwin32)
-add_subdirectory(win32)
-add_subdirectory(dd_sndlib)
-add_subdirectory(ddio_win)
+	add_subdirectory(dd_grwin32)
+	add_subdirectory(dd_vidwin32)
+	add_subdirectory(win32)
+	add_subdirectory(dd_sndlib)
+	add_subdirectory(ddio_win)
 endif()
 
 if (UNIX)
