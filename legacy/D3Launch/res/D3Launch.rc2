@@ -1,0 +1,19 @@
+//
+// D3LAUNCH.RC2 - resources Microsoft Visual C++ does not edit directly
+//
+
+#ifdef APSTUDIO_INVOKED
+	#error this file is not editable by Microsoft Visual C++
+#endif //APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Add manually edited resources here...
+
+/////////////////////////////////////////////////////////////////////////////
+StartupSnd			WAVE res\running.wav
+BulbFlickerSnd		WAVE res\bulbstc.wav
+NormalBtnPressedSnd	WAVE res\breath.wav
+NormalBtnLitSnd		WAVE res\briefingtype1.wav
+PowerBtnPressedSnd	WAVE res\breath.wav
+PowerBtnLitSnd		WAVE res\fanE.wav
