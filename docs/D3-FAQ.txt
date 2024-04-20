@@ -1,0 +1,2119 @@
+ +-------------------------------------------------------------------+ 
+ Ý                                                                   Ý 
+ Ý                   The "official" Descent 3 FAQ                    Ý 
+ Ý                        v. 1.4 - 05/11/2000                        Ý 
+ Ý                                                                   Ý 
+ Ý       latest version @ http://www.descent-3.com/faq/d3faq/        Ý 
+ Ý   send additions, comments, corrections to Moon@Uni-Duisburg.de   Ý 
+ Ý                                                                   Ý 
+ Ý-------------------------------------------------------------------Ý 
+ Ý                                                                   Ý 
+ Ý                          (C) 98-2000                              Ý 
+ Ý                                                                   Ý 
+ Ý Originally written by:                 Recompiled and extended by Ý 
+ Ý ----------------------                 -------------------------- Ý 
+ Ý "Chris "Gwar" LedwithÝ                       Joerg "Moon" Reibert Ý 
+ Ý Ken "Prescience" Ito                      Kevin "Sick_One" Murphy Ý 
+ Ý Scott "fathom" Roberts                           to accompany the Ý 
+ Ý Wesley "Arsentia" Fok                           1.4 patch release Ý 
+ Ý                                                                   Ý 
+ +-------------------------------------------------------------------+
+
+
+ ===================
+  Table Of Contents
+ ===================
+ 
+ 1. General Information
+ 
+  1.1 What is Descent 3 (henceforth called D3)?
+  1.2 Why didn't Parallax Software develop D3?
+  1.3 Wasn't Descent: Freespace supposed to be D3?
+  1.4 Do I need a 3D accelerator like Voodoo?
+  1.5 Is a D3 demo available?
+  1.6 What is D3 Sol Ascent?
+  1.7 What is D3 Mercenary?
+  1.8 Will there be a Mac/Linux/etc. port?
+  1.9 Is there a demo recording system in D3?
+
+
+ 2. Troubleshooting
+
+      -> above all: update your system to the latest drivers! <-
+ 
+  2.1  Starting the game brings up the message "Sorry, your computer 
+       has a language not supported by this version of Descent 3" and 
+       the game stops. What gives? 
+  2.2  How can I check my framerate?
+  2.3  How do I know which Video API or Sound mixer to use?
+  2.4  My framerate gets choppy when there is a lot of action, what 
+       can I do?    
+  2.5  My framerate is always 50 fps, I hear others say they have over
+       100? 
+  2.6  I can't see through transparent windows with my ATI Rage Pro 
+       Turbo AGP!
+  2.7  D3 hangs whenever I ALT-TAB out of the game into Windows on my 
+       Voodoo 3!
+  2.8  What is the best configuration for my modem?
+  2.9  What can I do to improve my modem connection?
+  2.10 My in-game loss meter shows loss like 100% sometimes!    
+  2.11 Help, I can't start Mercenary: 'redbuddybot.oof not found'!
+  2.12 I have a joystick that isn't working too well.
+
+ 3. Gameplay
+
+  3.1  What ships are available in D3?
+  3.2  What about the Guidebot and it's objectives?
+  3.3  What's this 'use item' feature I heard about?
+  3.4  What's this mouselook feature I noticed some discussion about?
+  3.5  What's a so-called 'X-Factor' that's been introduced with D3?
+  3.6  How do countermeasures work?
+  3.7  What are the new weapons in D3?
+  3.8  Where can I enter command-line parameters?
+  3.9  How can I skip the intro movie?
+  3.10 What are wind tunnels?
+  3.11 What's wrong with the new automap?
+
+
+ 4. Single-Player
+
+  4.1  What are the cheat codes and how do I activate them?
+  4.2  How many (secret) levels does D3 feature?
+  4.3  Are there any teleports and if not, how do I get to the secret 
+       levels?
+  4.4  How do I free Dr. Sweitzer in level 2?
+  4.5  Help, I can't enter Dr. Sweitzer's lab in level 3.
+  4.6  Those level 4 trains keep shredding me to bits, any hints?
+  4.7  I'm not worthy to get the Priest's Icon on level 6!
+  4.8  I can't escape the firetrap at the beginning of level 12.
+  4.9  How do I disable the Aft Matcen/where are the Stormtroopers in
+       level 13?
+  4.10 Where's the trigger to activate the beam emitter in level 14?
+  4.11 Where is the key to Dravis' stronghold in level 15?
+  4.12 How can I disable the primary cooling fan in Mercenary lvl 3?
+  4.13 What about the Manual Pilot Powerup for the Guidebot?
+  4.14 I heard you could meet Jeff Slutter & Nate Goudie in Mercenary 
+       level 4?
+  4.15 Help, I keep getting smacked by an invisible force in Sol 
+       Ascent lvl 3!
+
+
+ 5. Multiplayer 
+
+  5.1  What network protocols are supported?
+  5.2  Are dedicated servers required for multiplayer games?
+  5.3  What is the maximum number of players D3 can support?
+  5.4  What Network Architecture does D3 use?
+  5.5  What is the minimum connection or modem required for play?
+  5.6  What Multiplayer modes are available?
+  5.7  How do I chat in a game?
+  5.8  How do I use text taunts?
+  5.9  How do I create and use audio taunts? 
+  5.10 How do I create and use a ship Logo?
+  5.11 How do I get my pilot picture to show like I see some pilots
+       have? 
+  5.12 How do I select a ship and why can't I select the Black Pyro?
+  5.13 Why do my Custom\Graphics and Sound Directories have so many 
+       files?    
+  5.14 What about Lag and Loss while playing?
+  5.15 What packet per second setting should I use? 
+  5.16 What is triple-chording and how does it effect my gameplay?
+  5.17 What's the Piggyback/observer mode?
+  5.18 Is there a way to bypass the PXO GUI?
+
+
+ 6. Dedicated Servers
+    
+  6.1  What sort of system is required to run a dedicated server?
+  6.2  How much bandwidth do I need to run a server?
+  6.3  What sort of settings should I use in general?
+  6.4  Some people say I should disallow all the mines, why?
+  6.5  How do I know what server commands are available?
+  6.6  Can I talk to players on my dedicated server?
+  6.7  How do I get a message to appear to the players as they enter 
+       the game?
+  6.8  When I use the $scores command it runs off screen, I can't see
+       anything!
+  6.9  Can I run more than one server on a single computer?
+  6.10 Can I do remote administration, if so how?
+  6.11 Can I do administration from within the game, if so how?
+  6.12 What is the MultiSettingsFile command all about?
+  6.13 Can I disallow certain ships, if so how?
+
+
+ 7. Development/MODs
+    
+  7.1 I wanna make my own levels, is an editor available?
+  7.2 Is a converter available so I can play my favourite D1/D2 
+      levels in D3?   
+  7.3 What assistance can I get to make my own D3 MODs?
+  7.4 What MODs are currently available and where can I get them?
+
+
+ 8. Other online sources of information
+
+  8.1 Offical Sites
+  8.2 Playing D3 via Internet
+  8.3 Support, Tools, Developers & Levels
+  8.4 Forums & Discussion
+  8.5 Descent News & Headlines
+  8.6 Tactics & How-To's
+  8.7 Miscellaneous
+
+
+ 9. Credits
+
+
+
+ =========================
+  [1] General Information
+ =========================
+
+
+ [1.1] What is Descent 3 (henceforth called D3)?
+ -----------------------------------------------
+
+ D3 is the third title in the Descent series, the line of award-
+ winning computer games created by Outrage Entertainment (former 
+ Parallax Software). Like it's predecessors, D3 is an intense action-
+ oriented game set in a 3D environment which received rave reviews 
+ around the planet. 
+
+
+ [1.2] Why didn't Parallax Software develop D3?
+ ----------------------------------------------
+
+ Although it may not appear to be so, Parallax Software DID produce D3 
+ - or rather, one half of it. Parallax Software, when originally  
+ formed in 1993, had people in two locations (Ann Arbor, Michigan and 
+ Champaign, Illinois). 
+
+ For Descent, work was done in Champaign while the company searched 
+ for a mutual central location. After failing to find one, it was  
+ decided to reorganize Parallax into two companies, Outrage (Ann 
+ Arbor) and Volition Inc.  (Champaign). Both companies still maintain 
+ strong links to each other.
+
+
+ [1.3] Wasn't Descent: Freespace supposed to be D3?
+ --------------------------------------------------
+
+ No! Volition Inc. planned to release their new space-flightsim-combat-
+ game under the name Freespace but a disk compression utility had the 
+ name already registered in North America.
+ 
+ So Volition changed the name to Descent: Freespace which has been 
+ altered to Conflict: Freespace in Europe since Descent  
+ (incomprehensibly enough) did not sell so well in Europe.
+
+
+ [1.4] Do I need a 3d accelerator like Voodoo?
+ ---------------------------------------------
+  
+ As minimum requirements state, you will need a Direct3D compatible 
+ 3D accelerator with at least 4 MB of onboard memory. In other words, 
+ you'll need a 3D accelerator card, and a fairly good one too - a  
+ Voodoo card is a good place to start, and was the target accelerator 
+ for D3. 
+ 
+ However, you do not need a Voodoo card if you already have a 3D 
+ accelerator that meets the minimum system requirements (i.e. a  
+ Riva128 video card). Other 3D accelerators such as the RivaTNT/Geforce
+ and such also work fine with D3 as they are Direct3D compatible. 
+ 
+ D3 supports Direct3D, OpenGL, and Glide APIs (Glide is a 3Dfx-
+ specific API, so if you have a Voodoo you'd probably use that).  
+ 
+
+ [1.5] Is a D3 demo available?
+ -----------------------------
+ 
+ Yes, there are even two of them which are approx. 35 MB each (MAC: 
+ one demo of approx. 48 MB). 
+
+ Demo 1 features level 3, Piccu Station of the full version plus 2 
+ multiplayer levels, The Core (2-8 players) and Polaris (16+ players). 
+ Demo 2 features level 1, Deimos of the retail version, both multi- 
+ player levels of Demo 1 plus an additional very cool multiplayer 
+ level called Taurus (4-16 players). 
+ 
+ It's your decision which to try out. You can get them from the 
+ following locations:
+
+ PC
+ http://descent-3.com/shareware/d3/
+ http://www.outrage.com/4_downloads.html#d3_demos
+ http://www.interplay.com/descent3/fdemos.html
+
+ MAC
+ http://www.imgmagazine.com/downloads/demos/99/descent3/
+ 
+ 
+ [1.6] What is D3 Sol Ascent?
+ ----------------------------
+
+ D3 Sol Ascent is an OEM version (i.e. commercial version, no demo) of
+ the D3 retail. It features levels 1-5 of the retail version whereas 
+ level 1: Deimos is also available for download as D3 Demo 2 and  
+ level 3: Piccu Station as D3 Demo 1. Sol Ascent also covers the multi-
+ player levels of both D3 demos: The Core, Polaris & Taurus. However, 
+ this OEM-version version is only available bundled with Voodoo 3 
+ (3000 not 2000!) boards and does *not* run on other boards!
+
+ There've been some unconfirmed rumours that this version has been 
+ bundled with other hardware recently which would indicate that you  
+ could run it on other graphics boards as well. However, I personally 
+ doubt it and if you're interested in playtesting the game I'd still 
+ recommend the demos since Sol Ascent is very buggy and Outrage will 
+ not release any patches for it.
+
+
+ [1.7] What is D3 Mercenary?
+ ---------------------------
+
+ Mercenary is an offical addon to D3 from the Outrage developers 
+ themselves. It features 7 gigantic single-player levels and a bunch 
+ of really weird  multiplayer levels. As well you pilot a new ship:  
+ the Black Pyro which fires 2 missiles at once but can't fire  
+ secondaries when there's only 1 missile (of Concs, Homing or  
+ Cyclone) left. As well it features a different storyline, this 
+ time your a Mercenary that's working for Dravis.
+
+ Some people complained about this one as a cheap ripoff with not 
+ enough new features but I must say that levels 3 and 4 are the 
+ coolest Descent levels I've ever played.
+
+
+ [1.8] Will there be a Mac/Linux/etc. port?
+ ------------------------------------------
+
+ Yes, the Mac port has been released already and you can download a 
+ Linux dedicated server. As well, it's definite that there will be a  
+ Linux client! It's not sure when it will be released though.
+
+ Get the Linux server here: http://www.outrage.com/4_downloads.html.
+
+
+ [1.9] Is there a demo recording system in D3?
+ ---------------------------------------------
+
+ Yes! D3 has a new demo recording system, so you can continue to watch
+ the exploits of your friends blasting robots (or yourself blasting 
+ your friends or yourself getting blasted by your friends) into  
+ oblivion. However, due to the way the system works it's recommended 
+ to record and playback the demo on the same framerate. Otherwise 
+ you'd get really weird results, e.g. a demo  recorded on 30 fps 
+ (frames per second) and played back on 90 fps would look as if 
+ someone would hold down the fast forward key.
+
+ A good compromise would be to record the demo on 50 fps which should
+ be achievable on any system that is capable of making D3 run at an 
+ acceptable speed; as well the demo does not get too large  
+ (nevertheless always zip it before sending it to someone!). This is 
+ the default fps setting so you do not have to change anything unless 
+ you didn't fiddled with the framecap parameter (which in that case 
+ would have to be adjusted as explained in section [3.8]).
+
+
+ ======================
+  [2] Troubleshooting
+ ======================
+
+ [2.1] Starting the game brings up the message "Sorry, your computer 
+ ----- has a language not supported by this version of Descent 3" 
+       and the game stops. 
+ 
+ 
+ Update the game to the latest patch, this will remove the language 
+ check.
+
+
+ [2.2] How can I check my framerate?
+ -----------------------------------
+
+ D3 allows a few options for checking and testing performance.
+
+ While in the game to see a real time framerate meter simply type 
+ "frametime" or "framelength" (without the quotes). A framerate meter  
+ will appear in the upper left corner of the screen (reenter to turn 
+ it off).
+
+ To test your system's performance and framerate against other systems
+ a command line option (see section [3.8] on where to add them) is  
+ available for use.
+ 
+ The -timetest <filename.dem> command allows D3 to run through a pre-
+ recorded  demo file, and places the full results in the D3 directory 
+ in a file called fps.txt. In the command line box enter
+ 
+ -timetest <filename>.dem  (don't forget the hyphen!)
+
+ <filename> is any valid demo file. D3 includes a demo file called 
+ secret2.dem. This file does not include any outdoor areas, but  
+ serves as a basic test. For example, in the command line enter
+
+ -timetest secret2.dem -framecap 999  
+
+ Then click the 'OK' button, and  click 'Play'. It is important to 
+ include the -framecap 999 command. If this is not done the demo will 
+ run at the maximum default framecap of 50fps.
+ 
+ D3 will run the demo and create the file fps.txt.
+
+ For a more advanced and complex standard file which includes some 
+ outdoor areas, and is likely a better indicator of performance, 
+ check the D3 performance tests site http://www.descent-3.com/support/
+ fpstest.
+
+
+ [2.3] How do I know which Video API or Sound mixer to use?
+ ----------------------------------------------------------
+
+ Always try to use the best video API and sound mixer for your system.
+ This will vary depending on the amount of RAM, speed of the CPU, the 
+ type of video card, and sound card in the system.
+
+ If the 3D game card is from the 3DFX Voodoo line then Glide (Voodoo 
+ family) will always offer the best performance. Other video cards  
+ that don't support Glide normally support a minimum of Direct3D (as 
+ a subset of Direct X). Some cards may also support OpenGl. In 
+ general Direct3D will work the best although some people find better 
+ performance using OpenGl. This varies from card to card, and even 
+ between driver revisions. The choice of which graphics API the game 
+ will use is found in the setup menu under the video tab.
+
+ Choose a graphics detail level in the game that makes sense. If you 
+ are running D3 on a Pentium 233, don't expect good performance at a 
+ high resolution with high detail. Choose an appropriate resolution 
+ for the game.
+
+ D3 also offers a variety of 'sound mixers'. These are found in the 
+ setup menu under the audio tab. The mixer types supported are:
+
+ Software Mixer: This is generally the best choice for performance. It
+ mixes the sound internally and passes the mixed sounds to the sound 
+ card.
+
+ Direct Sound: This is another common choice, and in some case will 
+ improve performance if the system does not have enough RAM. In this  
+ case the sounds are sent individually and the sound card mixes them.  
+ This reduces the required RAM and reduces the CPU load slightly, but 
+ will cause more transactions on the bus to the sound card.
+
+ Direct Sound 3D: This is the Direct X version of 3D sound. If the 
+ card supports the feature it offers a slightly more 3D effect. It  
+ will also require more CPU power. On a lower end system this is not a 
+ good choice.
+
+ Aureal 3D Sound: This is Aureal's proprietary 3D sound. If you have a
+ sound card that supports the feature it offers a fairly good 3D sound 
+ effect. It will however use the most CPU overhead of any of the  
+ mixers. If you choose this option, please visit Aureal's web site and 
+ get the latest drivers. They have reduced CPU overhead quite a bit.
+
+ Creative EAX: This is Creative labs proprietary 3D sound. It also 
+ offers fairly good 3D sound. It requires less CPU overhead than the 
+ Aureal, but is still power hungry.
+
+ In general most systems will find that either the software mixer or 
+ the Direct sound will offer the best performance. The different 3D 
+ sound mixers offer a slighly more interesting experience, but at a 
+ cost. Unless you have a powerful system stick with a basic mixer.
+
+
+ [2.4] My framerate gets choppy when there is a lot of action, 
+ ----- what can I do?
+ 
+
+ Make sure all the video and sound card driver are up to date.  
+
+ If you find that during game play, and heavy battles the video and/or
+ sound get choppy or slows down, make sure you are using either the 
+ Software or Direct sound mixer. Also you may consider adding more 
+ RAM.
+
+ Try reducing screen resolution to 640 x 480, or even 512 x 384. 
+ Disable some of the 'eye candy' in the details menu.
+
+ Try using the command line options -lowmem or -superlowmem. These can
+ be very helpful if the system doesn't have much RAM. As a rule of 
+ thumb a realistic minimum system is a 333MHz cpu with 64megs of RAM, 
+ and a Voodoo 2 or TNT card. For truly good performace a 500MHz+ CPU, 
+ 128 megs of RAM, and a Voodoo 3 or TNT2 is a good starting point.
+
+
+ [2.5] My framerate is always 50 fps, I hear others say they have 
+ ----- over 100?
+ 
+ D3 has a default framerate cap of 50 fps. This is done to help 
+ slower computers maintain a more constant framerate during play. In 
+ short, by only trying to render a maximum of 50 fps more power is  
+ left for each frame.
+
+ If you have a powerful system you can uncap the framerate, or you 
+ may want to alter the maximum framecap. For example on a low end 
+ system you may want to use 30. A high end system maybe 100, or have 
+ removed the cap altogether.
+
+ The framecap is controlled with the -framecap xxx command. Where xxx 
+ is the desired cap. For example  -framecap 30, or -framcap 80. If the
+ number used is 999, the framecap is removed altogether (see section  
+ [3.8] on how to enter these).
+
+ Many players also find that the video seems smoother if Vsync is 
+ disabled in the video options of the main menu.
+
+
+ [2.6] I can't see through transparent windows with my ATI Rage Pro 
+ ----- Turbo AGP!
+  
+ This is a known bug with some ATI Rage Pro Turbo AGP graphic boards 
+ (and even some others) which is related to the board's drivers.  
+ Since the 1.1 patch Outrage used a workaround: add the command line 
+ switch -NoRenderWindows (as explained in section [3.8]) which makes 
+ those windows become fully transparent.
+
+
+ [2.7] D3 hangs whenever I ALT-TAB out of the game into Windows on my 
+ ----- Voodoo 3! 
+ 
+ This is a bug in the Voodoo drivers, update to the latest drivers! 
+ However, in some cases and system configurations this may still be a 
+ problem.
+
+
+ [2.8] What is the best configuration for my modem?
+ --------------------------------------------------
+
+ Always set the modem correctly according to the type you have. Trying
+ to force more packets per second than the modem can handle will never 
+ help.
+
+ Insure that any modem drivers are up to date. Insure that the modem 
+ is properly configured for windows. Note: See the following section 
+ for possible modem configuration and tips.
+
+
+ [2.9] What can I do to improve my modem connection?
+ ---------------------------------------------------
+
+ There are a number of different types and brands of analog dial in 
+ modems. Many computers come with 'software' modems such as the 
+ USRobtics Winmodem. Many if not most other brands offer a software 
+ modem of some kind. They are not a good choice for gaming.
+
+ Basically they depend on the computer to handle many of the modem 
+ tasks in  software rather than having dedicated hardware for the 
+ purpose. They are less expensive than a hardware based modem, but 
+ tend to have higher loss, and higher pings. A hardware based modem is 
+ always better. In many cases it will shave 100ms off ping times. The 
+ preferred modem is the USRobotics Sportster or their new Gaming 
+ modem. 
+
+ A digital connection is of course the best: ISDN, xDSL, or a cable 
+ modem.
+
+ If you have an analog modem, there are some things that you can try 
+ to improve gameplay. Some of the suggestions may seem contrary to 
+ what you might think, but prove true for many players, especially if 
+ using a software based modem. There are certain settings that can be 
+ found in the windows control panel under the modem icon.
+
+ In Win98 for example, but similar in all win9x version:
+   - Select the modem
+   - Select Properties
+   - Set the 'Maximum speed' to 57600 rather than 115200
+     (this is the speed the computer talks to the modem, not the 
+      connection speed of the modem)
+
+   - Select the connection Tab
+   - Click 'Port settings'
+   - Set the Transmit Buffer FIFO to 3/4 setting rather than the 
+     default FULL (both Rx/Tx should be at 3/4)
+   - Click OK
+
+   - Click the 'Advanced' Button 
+   - In the upper left area is a check box for 'Compress data' 
+   - In most cases games will play best with this disabled, you need 
+     to test  both ways, default is enabled. Enabled is clearly      
+     better for downloading and web browsing. In the case of games,
+     sending a lot of small packets it will tend to be smoother play
+     if it is disabled.
+
+
+ [2.10] My in-game loss meter shows loss like 100% sometimes!
+ ------------------------------------------------------------
+
+ The in game loss meter is an indicator, and nothing more. Due to the
+ method used it will sometimes give an inaccurate number. These seem 
+ to be a few specific numbers. So if from time to time the loss is 
+ reported as one of the following percentages it is likely a false 
+ indicator.
+
+ 11%, 14%, 25% 33%, 50%, 66%, 75%, 83% 100%. There may be a few 
+ others, but these are known. It is also a clear indication when you 
+ see for example 0% loss, then 100%, then 0% most of the time, that  
+ the 100% loss is false. If the loss was accurate you would notice 
+ that all other players 'floated' during the prior 3 seconds, that you 
+ were unable to gather powerups, etc.
+
+ The way D3 determines the loss, is that over a 3 second period the 
+ client keeps track of how many packets/bytes it received. At the end 
+ of that 3 second period the server will send a packet telling the  
+ client how many packets/bytes were actually sent. The client  
+ determines the loss and then displays the percentage of loss from 
+ that period until the next 3 second sample replaces it. 
+
+ True loss will tend to have a much greater variety of percentage 
+ displayed and be more constant. For example if the diplay shows 8%, 
+ then 3% then 12%, etc. it is likely true loss.
+
+
+ [2.11] Help, I can't start Mercenary: 'redbuddybot.oof not found'!
+ ------------------------------------------------------------------
+ 
+ There seem to be a variety of problems with installing Mercenary
+ for some people. In some cases it will install fine. In others
+ it will install but generate an error when you attempt to run it.
+
+ Two possible solutions:
+
+ 1) Uninstall Descent 3, you can save your pilot files and such.
+ Then do a clean install of Descent 3 version 1.0 from the CD's.
+ Start the game and configure the video, audio and other options.
+ Then install Mercenary. This will work for many.
+
+ 2) If the first option does not work try a clean 1.0 installation 
+ of D3, and patch the game to at least 1.2. Configure the 
+ setup in the D3 launcher and after that install Mercenary over it 
+ which patches the game to 1.3 in the process (unless you hadn't 
+ already started from 1.3 certainly).
+ 
+
+ [2.12] I have a joystick that isn't working too well.
+ -----------------------------------------------------
+ 
+ Make sure you have it configured and calibrated properly in the control
+ panel. Some sticks have various driver settings and there are older
+ and newer sticks that respond differently to the operating system so
+ sometimes tweaks are in order. If your stick isn't working, adding
+ the -alternatejoy command line argument is the first place to look.
+ 
+ Some sticks like the Cyborg 3d require some extra configuration in
+ the setup of profiles for the stick. In the command center, set
+ up your keyboard settings for Descent 3, and setup the utilites to
+ reference descent3.sai when they are starting.
+
+
+ 
+ ==============
+  [3] Gameplay
+ ==============
+
+
+ [3.1] What ships are available in D3?
+ ------------------------------------- 
+
+ There are 4 ships in total in D3 whereas the Black Pyro is only available to 
+ owners of the Mercenary addon. In the single-player storyline you start out 
+ with the Pyro-GL, a modified version of the Pyro-GX of Descent 1/2. It 
+ performs much like the old ship.
+
+ 
+ The second ship available is the Phoenix that you got to find at the end of 
+ level 6 and start to use in level 7. The third ship is the Magnum-AHT, which 
+ enters the single-player storyline in level 9 and can be used in level 10 for 
+ the first time. 
+ 
+ Once you've played the game through you can choose whatever ship you like on
+ starting a new game (also see section [5.12]).
+ 
+ 
+ [3.2] What about the Guidebot and it's objectives?
+ --------------------------------------------------
+ 
+ Contrary to it's predecessors D3 develops a storyline as you advance 
+ through the levels. In the briefing at the beginning of each level 
+ you're given a short overview on what has to be done to advance to  
+ the next level. Your mission is split into several objectives that 
+ can be reviewed in-game by using your TelCom-system (SHIFT+TAB).
+ 
+ In addition you got to use the Guidebot which now has a far larger 
+ influence on your way of completing the game. It always knows what 
+ to do next to fulfill the current objective. If you're not sure what 
+ to do next, take a look at the first command on the GB's menu; it 
+ will show you how to go on.
+
+
+ [3.3] What's this 'use item' feature I heard about?
+ ---------------------------------------------------
+
+ Unlike to D1/D2 you now have to use some items (keys and stuff) 
+ explicitely by pressing the 'use item'-key. When you run over a key 
+ or a data cartridge it's automatically placed into your inventory 
+ and you can cycle through these items. The default keys for 'use 
+ item' and 'cycle item' depend on the language version your're 
+ playing so check your config.
+
+ Additionally you should enable the inventory listing in the HUD 
+ settings, so you can see whether the item you need is currently 
+ selected; if it's not just cycle through the items you've picked up. 
+
+
+ [3.4] What's this mouselook feature I noticed some discussion about? 
+ --------------------------------------------------------------------
+
+ As with Quake you are now able to use the mouse to make the ship 
+ face any direction your pointing the mouse at immediately. This gives 
+ mouselookers a certain advantage since they can turn and aim faster 
+ than you could usually in Descent. As well you need less skill to 
+ control your ship which is one reason why this feature has been 
+ widely regarded as a bad move.
+
+ However, it is turned off by default so you don't have to worry about 
+ it  whenever you host a multiplayer game.
+
+ 
+ [3.5] What's a so-called 'X-Factor' that's been introduced with D3?
+ -------------------------------------------------------------------
+
+ It's a feature of the advanced AI that's been developed for D3. Every 
+ robot has a certain kind of behaviour/attribute about it; eg. the 
+ Barnswallow collects powerups and puts them into it's net, the Orbot 
+ is highly inflammable... Summed up: the AI is frightening realistic.  
+
+ 
+ [3.6] How do countermeasures work?
+ ----------------------------------
+
+ Countermeasures add a third weapons tier to D3. Instead of lumping 
+ the dropped  weapons (e.g. proximity bombs) in with the secondary 
+ weapons, they have been grouped into their own new category. As with 
+ the 'use item'-feature (also see section [3.3]) you need to define 
+ certain keys for using and cycling  countermeasures (check your 
+ config).
+
+
+ [3.7] What are the new weapons in D3?
+ -------------------------------------
+
+ primary
+ =======
+
+ Vauss Cannon
+ A dual-fire machine gun in the tradition of the Vulcan and Gauss 
+ Cannons. It's weaker than the Gauss, but stronger than the Vulcan.
+
+ Napalm Cannon
+ Your standard flamethrower. Burn baby, burn!
+
+ Microwave Cannon
+ Deforms the viewpoint of anything it hits, including players (cool 
+ effect!). 
+
+ EMD Gun
+ Arcing electro-magnetic energy at your enemy like a homing weapon but 
+ without causing the typical alert sound. They never know what hit 
+ them.
+
+ Mass Driver
+ The perfect sniper weapon. It's telescopic range finder zooms in on 
+ your enemy to make you place the perfect shot. Calculate some reload 
+ time though.
+
+
+ secondary
+ =========
+
+ Napalm Missile
+ Ejects Napalm upon impact and burns for ten seconds while dripping 
+ down onto the ground. Good for ambushes in tunnels. 
+
+ Frag Missile
+ Much like the Smart Missile, the Frag Missile releases shrapnel upon
+ impact but the smaller shrapnels do not home in on your target. 
+ Nevertheless very useful to seal some tube when enemies follow close 
+ behind. 
+ 
+ Cyclone Missile
+ Seperates in-flight into six smaller homing missiles from the main 
+ missile body. You'll need some distance to your target though.
+
+ Impact Mortar  Needs quite some timing due to it's comparatively slow 
+ travelling speed. Once released it'll go straight ahead and detonate 
+ in a huge explosion with a large blast radius after approx. 3 
+ seconds.
+
+ Blackshark Missile
+ Keep quite some distance to your target since this missile creates a 
+ whirling maelstrom upon impact dragging everything in close range 
+ into it before the explosion of a dying star shredds the victims to 
+ bits.
+ 
+ 
+ countermeasures
+ ===============
+
+ Bouncing Betty
+ A pack of bouncing bomb which are difficult to avoid.
+
+ Seeker Mines
+ A mine that will seek out players, comparatively slow but dangerous 
+ in numbers. 
+
+ Gunboy
+ Floating turret bomb. Not actually powerful but very distracting 
+ which gives you some extra moments to finish off your target. As 
+ well very useful as an alarm system in multiplayer games that  
+ notifies you of your opponent's position in the mine. 
+
+ Chaff Burst
+ Doesn't do any damage but attracts homing missiles so you better have
+ some handy.
+
+
+ [3.8] Where can I enter command-line parameters?
+ ------------------------------------------------
+ 
+ Open the D3 launcher and select setup | misc | optional D3 command line  
+ switches and add them with one blank space in between e.g. 
+ -framecap30 -nomovie (don't forget the hyphen).
+ 
+ 
+ [3.9] How can I skip the intro movie?
+ -------------------------------------
+ 
+ Add the line -nointro to the command-line parameters (see above).
+ 
+ 
+ [3.10] What are wind tunnels?
+ -----------------------------
+ 
+ These are cool one-way tubes that catapult your ship from one end to the other 
+ very fast. Actually they are rather fun to ride especially in Mercenary level  
+ 3 or the Multiplayer level Taurus. Some people also refer to them as gravity 
+ tubes. View the secret2.dem that gets installed with D3 to see what it feels  
+ like.
+ 
+ In single play you should get the Guidebot back into your ship before you use 
+ them since you don't know wether you'll be able to get back to pick him up.
+ 
+ 
+ [3.11] What's wrong with the new automap?
+ -----------------------------------------
+ 
+ Well, everyone would agree that the new autompap looks terrribly 
+ cool! 
+ 
+ Unfortunately it does not color unvisited parts of the mines 
+ differently when you've picked up the full map powerup! Instead 
+ you'll be shown the whole map in it's normal colors. Thus to prevent 
+ losing orientation avoid the full map so you can recognize unvisited 
+ rooms by a blinking portal (= connection between two rooms).
+
+ Curiously enough secret areas do not show up on the (full) map unless
+ you have visited them. Till then you'll only see a black portal  
+ indicating that something will be behind.
+
+
+
+ ===================
+  [4] Single-Player 
+ ===================
+
+
+ Following are brief answers to some scenes most single-players seem
+ to have problems with. In case you need more thorough help like 
+ walkthroughs, map screenshots and how-to demos (or help on things 
+ not mentioned below) please visit http://www.gamesdomain.co.uk/
+ moonglow/.
+
+
+ [4.1] What are the cheat codes and how do I activate them?
+ ----------------------------------------------------------
+
+ Simply enter any of the following cheat codes during the game (i.e. 
+ wherever you are in a level) but note that your shields and energy 
+ will get reduced to zero. This also happens when you use codes from 
+ the predecessors (after all this is not ID Software!).
+
+ Note: these codes do NOT work in multiplayer! The codes are not case 
+ sensitive  and you only need to type in the last 8 characters, the 
+ full names listed below are easier to remember though. German players 
+ please note that 'Z' is 'Y' and vice versa.
+
+ The codes followed by an asterisk (*) are no cheat codes in the usual
+ sense so they do not reduce your shields/energy and some of them do   
+ work in multiplay.
+
+
+ all versions (*):
+   
+     Frametime:       displays the Frames per second (FPS) - reenter 
+                      to turn off
+     WeirdTexture:    displays textures at random (even the map is 
+                      messed up)
+
+ demos 1 & 2:
+     
+     BlimPieBest:     full shield, energy, demo weapons plus 500 of 
+                      each missile 
+     FreeItUp:        all enemies killed 
+     LongChimp (*):   play in chase view mode (cool)
+     MightyAphrodite: Cloaking Device 
+     YummyFunYon:     Invulnerability 
+     ZodIsGod:        kills you
+
+ Sol Ascent:
+
+     BlackDove:       Kills all enemies (even your Gunboys)
+     ChowYunFat:      full shields/energy, every weapon + 500 of each 
+                      missile 
+     MonkeyDance(*):  play in chase view mode (cool)
+     Mortality:       invulnerable 
+     Nosferatu:       "Zod strikes revenge"; shields get reduced 
+     PandorasBox:     level jump
+     Phantasm:        Cloaking Device 
+
+ retail 1.4:
+
+     ByeByeMonkey(*): play in chase view mode (cool)
+     BurgerGod:       invulnerability 
+     DeadOfNight:     kills all bots 
+     FrameLength:     frametime display 
+     IveGotIt:        all weapons, energy, shields 
+     MoreClang:       level jump 
+     OutlinEm(*):     outlines each polygon displayed (for level 
+                      designers)
+     RenderStat(*):   shows no of polys, vertices, and uploaded 
+                      textures (ditto)
+     Shananigans(*):  shows the Outrage default texture (ditto) 
+     Teletubbies:     turns a sun (outdoor level) into a Teletubbies
+                      face (ack!)
+     Testicus:        Cloaking Device
+     TreeSquid:       full map 
+     Tuberacer:       210 damage (ouch!)
+
+
+ [4.2] How many (secret) levels does D3 feature? 
+ -----------------------------------------------
+
+ 15 levels + 2 secret levels. This may not sound very impressive 
+ compared to D1/D2 but please note that the D3 levels are about 3-4 
+ times larger!
+
+
+ [4.3] Are there any teleports and if not, how do I get to the secret
+ ----- levels?
+  
+ There aren't any teleports (except in Mercenary level 4). To reach a
+ secret level you got to find a hidden data cartridge in levels 8 and 
+ 12. Once you picked it up and fisnished the level the usual way (by 
+ completing all primary objectives) you'll come out in the secret 
+ level.
+
+
+ [4.4] How do I free Dr. Sweitzer in level 2?
+ --------------------------------------------
+
+ You've got to create a diversion to make him get shifted to a lower 
+ security level where he can be picked up by the shuttle.
+ 
+ After having gained entrance to the higher security levels by the 
+ using (see section [3.3]) several keys, let the GB lead you to the 
+ Maintenance Gate. Shoot the grate to enter the service tunnel and 
+ use the right way till you come into a room with an acid vat. Try 
+ the levers, read the signs and you'll get the point.
+
+
+ [4.5] Help, I can't enter Dr. Sweitzer's lab in level 3.
+ --------------------------------------------------------
+
+ As said in the manual: use Vauss or missiles to destroy windows(!).
+
+
+ [4.6] Those level 4 trains keep shredding me to bits, any hints?
+ -----------------------------------------------------------------
+
+ Each train has a certain pattern you got to memorize. Watch the 
+ trains till you find the gap and afterburn to the next intermission. 
+ Keep checking the map so you can see which direction to go to.
+
+
+ [4.7] I'm not worthy to get the Priest's Icon on level 6!
+ ---------------------------------------------------------
+
+ Watch the floor or ceiling (turn on your headlight) for visual clues
+ that show you the right path. Note that you'll need to pass one  
+ square twice in different directions.
+
+
+ [4.8] I can't escape the firetrap at the beginning of level 12.
+ ---------------------------------------------------------------
+
+ Shoot each tong as soon as it opens. After that shoot the forcefields
+ with your Laser in such an angle that the reflected shots hit the 
+ generators on both sides of your ship (as you could see in the short 
+ cutscene at the beginning of this level).
+
+
+ [4.9] How do I disable the Aft Matcen/where are the Stormtroopers in
+ ----- level 13?
+ 
+ Shoot a Frag or Guided Missile down the shaft to hit the trigger 
+ inside (as seen in the cutscene at the beginning of this level).
+ 
+ The Stormtroopers are spread over the level and cannot be looked for 
+ by the Guidebot. Thus you should let the GB look for robots or 
+ powerups so he will lead you into parts of the level you haven't 
+ visited before. Do NOT pickup the full map as explained in section 
+ [3.11].
+ 
+ You should take the Aft Matcen as the first objective since it's 
+ deactivation stops the production of further Stormtroopers. It's 
+ also quite good to visit the engine surge chamber early!
+
+
+ [4.10] Where's the trigger to activate the beam emitter in level 14?
+ --------------------------------------------------------------------
+ 
+ Again the logs will help you out here: "I searched for an hour before
+ somebody said, 'just remember who you work for'". You do now work for 
+ the CED so the hidden trigger must be (and is) the small CED sign 
+ under the generators in the large room where you placed the lens.
+
+ Instead of shooting it simply bump into it with your ship and the 
+ beam gets activated.
+
+
+ [4.11] Where is the key to Dravis' stronghold in level 15?
+ ----------------------------------------------------------
+
+ Left of the hall with the large lave tanks there's a control room 
+ with three wheels. Shoot the left one to drain the left lava pool and 
+ rush inside through the door at the ground of it. On the inside above 
+ the door you just emerged from is the trigger to open the room on 
+ the opposite side with the key.
+
+
+ [4.12] How can I disable the primary cooling fan in Mercenary lvl 3?
+ --------------------------------------------------------------------
+ 
+ Use the same technique as with the harzardous storage forcefield: 
+ place yourself as close as possible to the first forcefield and 
+ shoot the middle of it. With a bit of luck the shots bounce off the 
+ other forcefields and destroy the generator at the end of the 
+ tunnel.
+
+
+ [4.13] What about the Manual Pilot Powerup for the Guidebot?
+ ------------------------------------------------------------
+
+ Actually this is already to be found in the original D3 Retribution 
+ HOG but it has not been used in any of these levels. As well, the 
+ occurance in Mercenary level 4 seems to be a bug since the use of 
+ it does not have any effect. Presumably the scripting routines just 
+ weren't finished in time and someone accidently placed this powerup 
+ instead of a working one in Mercenary level 4.
+
+ Anyway, here's how to get it: there's one room with four large 
+ pillars that connects three levels of the planetoid. Fly up to the 
+ top level and then go straight ahead through the middle tunnel and  
+ over a small pond. Pass an insectoid generator to your left and shoot
+ the second 'mirror forcefield' on the left side. In the room behind 
+ you'll find the 'new' GB powerup (which has some striking similarity 
+ to a joystick <g>) as well as an invaluable energy to shield  
+ converter.
+  
+ 
+ [4.14] I heard you could meet Jeff Slutter & Nate Goudie in Mercenary
+ ------ level 4?
+ 
+ Well yes, but they are hard to find! Exit the honeycomb mentioned 
+ above and take a close look at the texures on the opposite wall. 
+ There's a flythrough texture you should examine to give both of them 
+ a yell ;)
+
+
+ [4.15] Help, I keep getting smacked by an invisible force in Sol  
+ ------ Ascent level 3! 
+ 
+ This is the bug as confirmed by some of the programmers. Sometimes 
+ you'll encounter those dudes which suddenly can become visible which 
+ is the only time where you can shoot and hit them. When they are 
+ invisble you can't hit them at all even if you know where they are. 
+ You can only keep moving to stay alive. As said before there will be 
+ no patch to fix this.
+
+
+ 
+ =================
+  [5] Multiplayer
+ =================
+
+
+ [5.1] What network protocols are supported?
+ -------------------------------------------
+
+ D3 supports a variety of protocols and online services: TCP/IP, IPX, 
+ Direct Serial, Modem to Modem, PXO, and HEAT.
+
+ PXO is a free service provided by Outrage which allows you start or 
+ join existing games online via virtually any internet connection. A 
+ chat interface is provided. You will find a large variety of  
+ dedicated servers and games variations.
+
+ HEAT.NET provides another online gaming service with Dedicated 
+ servers on demand (DOD). It does however not support third party  
+ levels at this time.
+
+ TCP/IP is supported for LAN and Direct Internet play.
+
+ IPX is provided for LAN as well as Internet play with the use of 
+ programs such as Kali and Kahn.
+ 
+ Modem to Modem play is available for 2 player games via direct modem 
+ to modem connections.
+
+ Direct serial may be used to connect two computers with a simple 
+ serial cable.
+ 
+
+ [5.2] Are dedicated servers required for multiplayer games?
+ -----------------------------------------------------------
+
+ No, a dedicated server is not required though it will provide the 
+ best game play. D3 allows games to be hosted so that for small games 
+ a player may start (host) a game. It is always best in this case to 
+ have the player with the best connection (most bandwidth) host the 
+ game.
+
+ Also see the section [5.14] referring to lag and loss and section [6]   
+ referring to setting up dedicated servers.
+
+
+ [5.3] What is the maximum number of players D3 can support?
+ -----------------------------------------------------------
+ 
+ D3 can support a maximum of 32 players. In the case of a dedicated
+ server, the server itself counts as one player. So only 31 actual 
+ clients may join the game. In a hosted game, since the host is also 
+ a client, it is possible to actually have 32 players. Keep in mind 
+ this would require a very powerful computer to handle the client as 
+ well as manage a 32 player server.
+
+
+ [5.4] What Network Architecture does D3 use?
+ --------------------------------------------
+
+ D3 is based around a Client/Server architecture. This means there is
+ always a server of some kind, whether a dedicated server or a listen 
+ server. A listen server is a hosted game, where the client is  
+ running on top of the server on a single computer. D3 offers a 
+ number of variations.
+
+ A Dedicated C/S game is one where a computer acts as a dedicated  
+ server for all  clients. The server is used to determine the action 
+ of the game, such as whether a shot hit another client, a door  
+ opened, etc. In simple terms, this model will offer the best game 
+ play. Since the client talks to the server rather than the other 
+ players, a player's ping (lag) is constant to all other players.
+
+ A Hosted C/S (a listen server) acts the same as a dedicated server.
+ The main difference being that the computer hosting the game will 
+ have zero ping to the server. On a LAN (Local Area Network) this is 
+ not important. In an online game this can offer a substantial 
+ advantage to the Hosting Client. The ping or lag to all other players 
+ will be constant as with a dedicated server.
+
+ A Permissible C/S server model is also available. It may be used 
+ with either a dedicated server or a hosted C/S game. It is the same 
+ as the C/S models in every way with one exception: the shots are 
+ sent in a permissible fashion. This means that when you fire a 
+ weapon the shot is delayed by the amount of lag between you and the 
+ server. The obvious disadvantage is that in games with much lag it 
+ can be very difficult to deal with. The advantage is that if you 
+ see a shot hit a target, you are certain it did hit. This is not a 
+ good choice for most online games, but may be a good option in LAN 
+ games.
+
+ A Peer to Peer game is a combination of two architectures. The person 
+ who starts the game acts as a host, or server but position and fire 
+ packets are sent directly between clients. In this model, clients 
+ also determine locally whether they were hit by incoming weapons. The 
+ host or server keeps track of powerups, level events such as doors, 
+ and actual damage and deaths. The ping to each player will vary, 
+ much as the true peer to peer model of Descent 1 and 2. All players 
+ other than the host will also experience some lag when picking up 
+ powerups, opening doors, etc.
+
+ A Dedicated Peer to Peer has basically the same characteristics as a 
+ simple Peer to Peer game. The only difference being that the server 
+ functions are provided by a dedicated computer rather than a hosting 
+ client.
+
+
+ [5.5] What is the minimum connection or modem required for play?
+ ----------------------------------------------------------------
+
+ D3 requires a minimum of a 28.8 analog modem. Basically, the faster 
+ the better. A high speed connect such as ISDN, xDSL, or Cable modem 
+ will make the game much more enjoyable.
+
+
+ [5.6] What Multiplayer modes are available?
+ -------------------------------------------
+
+ Out of the box D3 supports a number of types of Multiplayer.
+
+ - Anarchy:          A free for all kill fest. Each player for 
+                     themself.
+ - Team Anarchy:     Two teams compete against each other.
+ - Hyper Anarchy:    A mode for advanced scoring if you possess the 
+                     HyperOrb.
+ - Robo Anarchy:     Similar to Anarchy with enemy Robots.
+ - Hoard:            Hoards are collected after a kill, points are 
+                     scored only by placing those orbs in a goal. 
+                     The more orbs you place at once the more points 
+                     you receive.
+ - Capture the Flag: A team based game where points are scored by 
+                     capturing the opponent's flag, and placing it in 
+                     your goal.
+ - Mosterball:       Points are scored by moving a 'Mosterball' with 
+                     weapon's fire or even ship bumping into a goal.
+ - Co-Op:            A mode where you work as a team with other 
+                     players against the robots.
+
+
+ [5.7] How do I chat in a game?
+ ------------------------------
+
+ To chat or send a message in a game, simply press the F8 key. Then 
+ type your message and hit <enter>. While typing a 'keyboard' icon 
+ will appear over your ship in the game to alert the other players you 
+ are typing. It is considered bad form to shoot at or kill a player 
+ who is typing although accidents happen ;)
+ 
+ To send a private message in a game, you can enter the other player's
+ (or team's) name followed by a colon (:) and then your message. That  
+ message will be sent only to that player or team. It is only 
+ necesary to enter enough of the  name to distinguish the player or 
+ team. 
+
+ For example: (if a player named Pilot is in the game)
+
+ <F8> Pilot:This is a private message<enter> or
+ <F8> Pi:This is a private message<enter>
+
+ will work just as well as long as no other players have names 
+ beginning with the letters Pi.
+
+
+ [5.8] How do I use text taunts?
+ -------------------------------
+
+ D3 allows the use of eight preconfigured text taunt macros or 
+ messages. While in the game, these can be sent to the other players 
+ by pressing the 'Ctrl' key and a number key 1 through 8 (not those 
+ on the numeric keypad).
+
+ To configure or customize the macros, enter the pilot configuration 
+ screen. This is done from the main menu of D3 by selecting The 
+ 'Pilots' menu. Then select the Pilot name you wish to configure 
+ macros for, and click 'Configure' followed by clicking 'Ship  
+ Configuration'. Then Click the 'Set Taunt Macros' button. At this 
+ point simply enter the text for each macro you would like to 
+ change. The top line is 'Ctrl 1' macro, the bottom the 'Ctrl 8'  
+ macro.
+
+
+ [5.9] How do I create and use audio taunts?
+ -------------------------------------------
+
+ D3 allows the use of up to four audio taunts. These can be created 
+ with a simple tool like Windows Sound Recorder, or a variety of WAV 
+ studio apps. The file MUST be recorded in the 8 Bit, Mono, 22KHz 
+ format. Then it must be imported into D3 as a .OSF. In the process 
+ of importing and converting to an .OSF file Descent 3 will attempt 
+ to compress the sound file.
+ 
+ After compression the resulting .OSF file must be no larger than 32 
+ KBytes. In some cases it will seem to import and test correctly, but 
+ other players will be unable to hear the taunts, even though you hear 
+ them locally. This would indicate that the .OSF file is larger than 
+ 32 KBytes.
+
+ To import a .WAV file go to main menu of D3 and select the 'Pilots' 
+ menu. Then select the Pilot name you wish to add the audio taunt 
+ file to, and click 'Configure' followed by clicking 'Ship 
+ Configuration'. Then Click the 'Import Sound' button. In the box 
+ that by default will read 'C:\Games\Descent3' enter the full path and 
+ file name of the .WAV file. Then click 'Open'. D3 will import and 
+ convert the file to the .OSF format used by D3.
+
+ Then from on the lower left of the screen use the up and down arrows
+ in each of the selection boxes named 'Audio Taunt #1 through #4'. 
+ After selecting you can test the audio taunt by clicking the 'Play' 
+ button next to it.
+
+ Click the 'OK' button at the lower right to return to the prior menu.
+ Then click the 'Configure Keyboard' or the 'Configure Controller' 
+ button depending on which you would like to use to send the audio 
+ taunts. In the lower left section of the screen assign a key or 
+ controller button for each of the four audio taunts you wish to use. 
+
+ You may also use taunts that have been imported/downloaded to your 
+ system when you have joined games where they were used.
+
+
+ [5.10] How do I create and use a ship Logo?
+ -------------------------------------------
+
+ D3 allows a custom logo to be shown on your ship's wing. The logo 
+ can be created using a tool like Tycoon's Descent III logo editor 
+ (see section [7.3]), or a program such as Photoshop or Paintshop 
+ Pro. The logo must be a 64 x 64 pixel image in .TGA format. Once an 
+ image is created, you will need to import it to D3, and configure it 
+ for use. Several other file formats are also supported.
+
+ Importing a logo is simple and straight forward. This is done from 
+ the main menu of D3 by selecting The 'Pilots' menu. Then select the 
+ Pilot name you wish to add the logo to, and click 'Configure' 
+ followed by clicking 'Ship Configuration'. Then Click the 'Import 
+ Graphic' button. In the box that by default will read 'c:\Games\
+ Descent3' enter the full path and file name of the logo file. Then 
+ click 'Open'. D3 will import and convert the file to the .OGF format 
+ used by D3.
+
+ Then from the 'Custom Textures' Menu in the upper left portion of the 
+ screen simply select the logo. It will appear in the preview box. 
+ You may also choose  a logo that has been imported to your graphics 
+ directory (Descent3\custom\graphics). These are imported or down-
+ loaded each time you join multiplayer game where logos are being 
+ used.
+
+ A number of web sites also offer a variety of logos.
+
+
+ [5.11] How do I get my pilot picture to show like I see some pilots 
+ ------ have?
+ 
+ The Pilot pictures were done as a promotion prior to the release of 
+ D3. It required that a picture was submitted to Interplay by a 
+ certain date. There is no way to add new pictures, nor does Descent 
+ 3 have a method for transmitting them to other players.
+
+ If your picture was submitted it may be selected in the pilot 
+ configuration menu by using the 'Choose Pilot Picture' Button. The 
+ pilot name must match the name of the picture. Otherwise an error 
+ message will inform you that no pictures are available for that 
+ pilot.
+
+
+ [5.12] How do I select a ship and why can't I select the Black Pyro?
+ --------------------------------------------------------------------
+
+ Different ships may be selected in the pilot configuration menu, by
+ clicking the 'Ship Configuration' button. In the upper left corner 
+ the selection is made by using the up and down arrow keys in the 
+ 'Default Ship' selection box.
+
+ There are 3 basic ships, and one special add on ship.
+
+ Pyro-GL:    This ship offers a good balance of speed, weapons, and 
+             maneuverability
+
+ Phoenix:    This ship offers high speed and maneuverability, but can 
+             carry less weapons, and has weaker shields.
+
+ Magnum-AHT: This ship offers the highest weapons payload, and the 
+             strongest shields as a trade-off for less speed and            
+             maneuverability.
+
+ Black Pyro: The Black Pyro is only available with the D3 Mercenary 
+             addon pack. Much like the Pyro-GL in speed and payload. 
+             It offers the ability to fire certain missiles in pairs, 
+             as well as a version of the Plasma Cannon that pulses. 
+             Besides you have a Microwave Cannon with three beams.
+
+
+ [5.13] Why do my Custom\Graphics and Sound Directories have so many
+ ------ files?
+ 
+ Each time a player enters a multiplayer game, the server will send 
+ any logo and audio taunt files that are being used in the game. This 
+ way when someone sends an audio taunt for example rather than  
+ transmitting the audio each time only a signal packet is required to 
+ tell your system which file to play.
+
+ When you join a game, only files you don't already have will be sent.
+
+ Versions prior to 1.4 had a flaw that allowed many files to be sent 
+ over and over causing duplication. This has been fixed in version 
+ 1.4. So it is a good idea to trim away the extra and duplicate 
+ files.
+
+
+ [5.14] What about Lag and Loss while playing?
+ ---------------------------------------------
+
+ Lag and packet loss are always a problem with online gaming. It is 
+ the nature of the internet. Some information is delayed, and some is 
+ lost. A complete description and discussion would take many pages. 
+ We will offer a brief overview and try to relay the concepts 
+ involved.
+
+ A fairly long discussion is offered at the link below. It is centered 
+ around  Descent 2, which works significantly different than D3, but 
+ still can offer a good deal of information on the subject and 
+ concepts.
+
+ http://www.myrkul.org/descent.html 
+
+ D3, being a server based game means that the server decides what 
+ was 'real'. The only variation to this is the peer to peer model, 
+ where each client determines if they were hit by an incoming shot. 
+ In the Dedicated C/S and the hosted C/S, the server will always make 
+ the decision. 
+ 
+ This means that lag and packet loss effect what you see, what you 
+ aim at, and what the server does.
+
+ In short, Lag is the time it takes for data to make a round trip from 
+ the client (player) to the server and back again. The longer this  
+ period is the more lag there is, and the more difficult it can be to 
+ play and hit your target. The player needs to adjust for this period 
+ by leading the target. That is to aim in front of the target, where 
+ it will be in say 250 ms for example. Since by the time your shot 
+ reaches the server that is how far the target may have moved this 
+ can be very difficult against a good pilot. A good pilot will move 
+ often and in an erratic manner, making it very difficult to judge 
+ where to fire.
+
+ Loss, or packet loss is when information being sent or recieved is 
+ lost due to data error or internet problems. This can cause some  
+ strange effects such as seeing ships 'skipping' or 'warping' from 
+ one point to another. Things such as shots that should have been a 
+ direct hit doing no damage.
+
+ For example, if you fire a laser at a target, and the packet to the 
+ server is  dropped then the server never receives the shot, and no 
+ damage is done. Even though on your screen you saw the laser hit the 
+ target.
+
+ This is also true in the peer to peer model. It may appear that a 
+ shot should  have hit the target, when in fact the packet was lost. 
+ The best way to know you have hit a target is when you see the blue 
+ shield sphere around the ship glow. That shows that it is taking 
+ damage.
+
+ D3 uses two basic types of packets. We will cover both briefly.
+
+ Unreliable Packets:
+ Are used to send ship position and weapons fire packets. As the name
+ implies, this information is sent without any form of checks. It is 
+ assumed that the data was delivered. These packets are sent at a rate 
+ which can be altered by the server at start up. This is done with the 
+ pps (packets per second) setting.
+ 
+ As an example, if a game is configured for 7pps, which is a common 
+ setting for online games then once every 143ms the server will send  
+ position information to the client. At the same rate the client will 
+ send position information to the server.
+
+ If the fire rate of a weapon or battle exceeds the setting it is 
+ effectively increased. In other words, each time a fire packet needs 
+ to be send, it is sent. Each fire packet contains position 
+ information as well. If a fire packet fills the need for that 
+ periods position information then no posistion-only packet will be 
+ sent. This helps to reduce bandwidth requirements.
+
+ If a client connects to a server that is set for 7pps, and the client 
+ is using a 28.8 modem for example, it will inform the server and the 
+ server will alter the rate for that client to 5pps.
+
+ Reliable Packets: Are used to send all other types of information. 
+ Such as damage, deaths, powerup spawns, powerup pickups, level events 
+ such as doors.
+
+ As the name implies these packets are checked by means of an 
+ acknowledgement.  If a packet fails it will be resent. These packets 
+ are sent as needed, but at a maximum rate of 10 per second, or once 
+ every 100ms. The reliable packet will wait (2 * ping time) for a 
+ response, then assume it was lost and resend.
+
+
+ [5.15] What packet per second setting should I use?
+ ---------------------------------------------------
+
+ The packets per second setting has two sides, the server and the 
+ client. The server or host setting determines the maximum pps that 
+ will be used by any client. For a server the determination is based 
+ on the bandwidth of the connection the server has, and the number of 
+ players in the game. As a rule of thumb using 7 or 8 pps seems best 
+ for online games. When setting up a server allow for 30 to 40 
+ kilobits per second per client. As an example, if a game was to have 
+ 4 players the server should have at least 128kbits per second upload 
+ ability.
+
+ It is also important to remember when starting a server or hosted 
+ game that items like mines (proximity mines, seeker mines, bouncing 
+ betties) greatly increase the required bandwidth for servers and 
+ players. They are best left out of online games.
+
+ The client setting is determined in the setup screen of D3 under the 
+ network tab. It offers six possible settings, and should be set 
+ according to the type of connection or modem you have. The settings 
+ are,
+
+ 28.8K Modem  ....................... 5pps
+ 33.6K Modem  ....................... 6pps
+ 28.8K Modem  ....................... 7pps
+ Single Channel ISDN ................ 8pps
+ Dual Channel ISDN, Cable Modems .... 9pps
+ T1, ADSL, 3, etc. .................. 12pps
+
+ If you have a 56k modem that commonly only connects at 28.8 for 
+ example, then you should select the 28.8 setting. Also D3 will 
+ automatically adjust the pps of a client if it detects to much 
+ packet loss during a game.
+
+
+ [5.16] What is triple chording and how does it affect my gameplay?
+ ------------------------------------------------------------------
+
+ Triple chording is a method used to increase the effective speed of 
+ the ship. The ships allow for travel in three directions,  
+ forward/reverse, slide up/down, and slide left/right. By combining 
+ any three directions you effectively increase the speed of the ship 
+ to 1.7x. If only two directions are used then the increase is 1.4x. 
+
+ For example, if you move forward while sliding up and to the right 
+ you will move at a much higher speed than forward alone. This 
+ requires that you tilt the ship, in this case down and to the left to 
+ continue toward your target. This requires a bit of practice, but can 
+ be the difference between life and death in a multiplayer game.
+
+
+ [5.17] What's the Piggyback/observer mode?
+ ------------------------------------------
+
+ D3 allows a player to enter one of two modes of observer. These 
+ modes are selected by pressing the F6 key while in a multiplayer 
+ game followed by using the arrow keys to select observer from the 
+ menu.
+
+ The first mode, known simply as observer mode allows the player to 
+ fly as a 'ghost'. The player is allowed to wander freely about the 
+ level, observing the game or exploring the level. In this mode you 
+ can not be seen by any other players nor can you fire at or damage 
+ other players. In this mode the ship will also be able to move faster 
+ than normal to aid in watching battles and things.
+
+ The second mode is known as piggyback mode. In this mode you attach 
+ yourself to another player in the game as if you are looking through 
+ his eyes. In this mode a screen update is sent only at the rate of 
+ the packets per second setting. This can give a rather choppy view. 
+ For example in a game set for 7pps, you will only see 7 frames per 
+ second.
+
+ Both of these can be useful when learning the game, to see what 
+ other players do, what tricks and techniques they use.
+
+
+ [5.18] Is there a way to bypass the PXO GUI?
+ --------------------------------------------
+ 
+ Yes, you can get a tool called 'Gate' @ http://www.frontnet.org/~m0l/
+ which will provide you with an interface you're used to from other 
+ chat clients like mIRC or KALI. It allows multiple private chat 
+ windows, game listings from chat, and many other user friendly 
+ items.
+
+
+ =======================
+  [6] Dedicated Servers
+ =======================
+
+
+ [6.1] What sort of system is required to run a dedicated server?
+ ----------------------------------------------------------------
+
+ At a minimum a Pentium 133 with 40 megs of RAM. A safer bet is a 
+ minimum of a Pentium 166 or better with 64 megs of RAM. The faster 
+ the better. Some people have servers on lesser systems, such as a 
+ Pentium 75 with 32 megs. This will work, and likely play ok for 
+ smaller games.
+
+
+ [6.2] How much bandwidth do I need to run a server?
+ ---------------------------------------------------
+
+ The upstream bandwidth is most important for a dedicated server. That
+ is the speed at which your connection can upload data to the  
+ internet.
+
+ A good rule of thumb is 30 to 40 kilobits per second per player. So 
+ for example if your connection is an ADSL line with 128kbit upload, 
+ then you can run a 3 or 4 player dedicated server. If you do not 
+ allow enough bandwidth the game will be bad for everyone.
+
+
+ [6.3] What sort of settings should I use in general?
+ ----------------------------------------------------
+
+ A good setup for an online server is to use 7 or 8 pps (packets per 
+ second). Also 'AccurateCollisions' sould be disabled, as it is by 
+ default. Rotational Velocity 'SendRotVel' should also be disabled, 
+ as it is by default, since it makes the position packets larger.
+
+ A common config file might look like this:
+
+ [server config file]
+ PPS=7
+ Maxplayers=4
+ TimeLimit=60
+ KillGoal=0
+ RespawnTime=30
+ GameName=My Game
+ MissionName=fury.mn3
+ Scriptname=Anarchy
+ ConnectionName=Parallax Online
+ PXOUsername=<username>
+ PXOPassword=<password>
+ SetDifficulty=3
+ AccurateCollions=0
+ SendRotVel=0
+
+ The last two commands are by default set to zero (off) so if they 
+ are not included that is fine.
+
+
+ [6.4] Some people say I should disallow all the mines, why?
+ -----------------------------------------------------------
+
+ This is true for online games. Mines of all kinds, including 
+ Proximity Mines, Seeker Mines, Bouncing Betties are all handled as 
+ robots, so they send out position packets just like a robot or 
+ another player. This can and will quickly overload an online  
+ connection.
+
+ These can be removed, or disallowed from any server by including
+ the commands in the config file.
+
+ Example:
+
+ DisallowPowerUp=Betty4Pack
+ DisallowPowerUp=ProxMinePowerup
+ DisallowPowerUp=Seeker3Pack
+
+
+ [6.5] How do I know what server commands are available?
+ -------------------------------------------------------
+
+ The manual offers a list and description of the most common commands. 
+ You can also type $help  from the server console to get a list. 
+ Additionaly you can type $help <command name> to get a little more 
+ detail.
+
+ Example:
+
+ $help kick   will diplay the info on the kick command.
+
+
+ [6.6] Can I talk to players on my dedicated server?
+ ---------------------------------------------------
+
+ Yes, it is very simple. Just place the word 'say' in front of any 
+ messages. The '$' is not required, and should not be used for this 
+ command. You can also send private messages to a player or team by 
+ using the the player's name.
+
+ Examples:
+
+ say hi I am the server (will send "Hi I am the server" to all 
+ players).  say bigboy:Hi this is a private message (sent only to the 
+ pilot bigboy). say bi:Hi this is a private message (sent only to the 
+ pilot bigboy, or any pilots whose names begin with the letters 'bi').
+
+
+ [6.7] How do I get a message to appear to the players as they enter 
+ ----- the game?
+ 
+ A Message Of The Day may be added to the dedicated config file which 
+ will   display for a few seconds to each player when they enter/join 
+ the server. This is useful to give a contact email address to report 
+ problems, or the like.
+
+ This is done using the undocemented command MOTD. In the dedicated 
+ config just add a line such as MOTD=My Message.
+
+ Example:
+
+
+ MOTD=Report any problem to JohnDoe@Email.com
+
+
+ [6.8] When I use the $scores command it runs off screen, I can't see
+ ----- anything!
+ 
+ The $scores command allows an additional parameter to be added. This
+ allows the server operator to see only top portion of the list. This 
+ is useful for many things, including seeing the pings of the active 
+ players.
+
+ Example:
+
+ $scores 10<enter>
+ Will display only the top 10 lines of the scores screen.
+
+
+ [6.9] Can I do remote administration, if so how?
+ ------------------------------------------------
+
+ Yes. D3 allows you to TelNet into a server remotely and do any of the
+ tasks or commands allowed locally. To do this you will need to add a 
+ couple of lines to the dedicated config file as follows.
+
+ AllowRemoteConsole=1          (enables the function)
+ ConsolePassword=<password>    (login password)
+
+ Example:
+
+ AllowRemoteConsole=1
+ ConsolePassword=secret
+
+ Then with a TelNet program, such as that included with Windows you 
+ enter the IP address of the remote server, and a port number which by 
+ default is 2092. You will be prompted for the (case sensitive) login 
+ password, simply enter it. You can then enter any console command 
+ such as $help.
+
+ If you would like to use an alternate port for control, or are 
+ running multiple servers on a single system which will require 
+ alternate ports for each server, add the command 'RemoteConsolePort' 
+ to assign the port in the dedicated config 
+ file.
+
+ Example:
+
+ RemoteConsolePort=2093
+
+
+ [6.10] Can I run more than one server on a single computer?
+ -----------------------------------------------------------
+
+ Yes, with a few extra commands it can be done. Keep in mind that a
+ more powerful computer is required. For example to run 2 servers on 
+ one compter it should be a 400MHz+ system with 128Megs of RAM.
+
+ You will need to use the '-useport' command to assign an alternate 
+ game port. You will need to use the '-tempdir' command to assign an 
+ alternate temp dir. Also you should not alter the default framecap 
+ when running multiple servers.
+
+ As an example, we can step through the requirements. We will assume 
+ you want to run two servers on one system. The first server can/will 
+ use all of the default ports and directories. So it would be launched 
+ as follows.
+
+ From the D3 Launcher command line (under Setup, Misc):
+
+ -dedicated server1.cfg
+
+ To launch from the command line in the D3 directory it would be:
+
+ main -launched -dedicated server1.cfg
+
+ This server will use game port 2092, and remote admin port 2092, as 
+ well as the D3 default temp directory.
+
+ The second server will require a temp directory, so create one. For 
+ example create a directery call d3temp in the root of C: (i.e. MD 
+ C:\d3temp).
+
+ From the D3 Launcher command line (under Setup, Misc):
+
+ -dedicated server2.cfg -useport 2093 -tempdir C:\d3temp
+
+ To launch from the command line in the D3 directory it would be:
+
+ main -launched -dedicated server2.cfg -useport 2093 -tempdir 
+ C:\d3temp 
+
+ This server will use game port 2093, and temp directory C:\d3temp.
+
+ If you want to be able to TelNet in using remote admin, you will need
+ to include a line in server2.cfg. For example, 
+ RemoteConsolePort=2093. Then the remote admin functions of both 
+ servers are available, one at port 2092, one at port 2093.
+
+
+ [6.11] Can I do administration from within the game, if so how?
+ ---------------------------------------------------------------
+
+ Yes, limited or basic admin is allowed from with in the game, i.e. 
+ when you are in the game as a client/player. This requires that a 
+ simple text file be written and placed in the D3 directory, and 
+ that a command option be added at launch time.
+
+ A file named <filename>.dmfc must be created that contains the 
+ following lines:
+
+ remoteadminpass <password>
+ remoteadmin on
+
+ For example a file called ingame.dmfc might be created that reads:
+
+ remoteadminpass secret
+ remoteadmin on
+
+ When launching D3 simply add the command -autoexec ingame.dmfc.
+ 
+ When playing in a game, you can then login and enter basic commands.
+
+ To login while in the game,
+
+ Press F8 (the chat key)
+ type "$remote login <password>" (in this case 'secret' without the 
+ quotes)
+
+ You will see a message indicating that login was sucessful.
+
+ You can then enter commands by again pressing the F8 key, and 
+ preceeding each command with "$remote" (without the quotes).
+
+ Example:
+
+ $remote $setmaxplayers 5    would change the max number of player to
+                             5 (which is the server + four clients).
+
+
+ [6.12] What is the MultiSettingsFile command all about?
+ -------------------------------------------------------
+ 
+ The MultiSettingsFile command allows you save a game setup config 
+ created via the 'Start'Game' menu. Then call that config file when 
+ starting a dedicated  server. It is used by entering the command 
+ along with a path and file name.
+
+ MultiSettingsFile=<drive:\path\filename.mps>
+
+ The default path of these settings files is C:\Games\Descent3\Custom\
+ Settings.
+
+ The file is created by the following steps:
+
+ - Enter the Multiplayer menu
+ - Select a connection type (even if it is different from what you will want in
+   the dedicated server, as that can be overridden). Direct TCP/IP is the   
+   simplest choice.
+ - Click 'Start New Game'
+ - Select the game type, game name, mission, etc.
+ - Select Multiplayer options menu and set the pps, timelimit, respawn, etc.
+ 
+  - Select Configure allowed Ships/Items if you like to remove items 
+   you do not  want in the game.
+ - Click 'Done'
+ - Click 'Save Settings'
+ - In the line that by default reads 'C:\Games\Descent3\Custom\Settings' add the
+   filename you wish to save this configuration as. For example: 
+   'C:\Games\Descent3\Custom\Settings\Mysetup.mps'
+ - Click Save.
+
+ There is now a file called 'Mysetup.mps' in the settings directory.
+ To use this as a basis for starting dedicated servers simply include 
+ it as the first command in the dedicated config file. It should be 
+ first so that any other commands can override settings you want 
+ changed. For example:
+
+ [server config file]
+ MultiSettingsFile=C:\Games\Descent3\Custom\Settings\Mysetup.mps
+ PPS=7
+ Maxplayers=4
+ ConnectionName=Parallax Online
+ PXOUsername=<username>
+ PXOPassword=<password>
+ 
+ The commands that follow override those contained in the MPS file. 
+ So the connection type, pps, etc. can be altered.
+
+ The command is very useful if there a group of weapons you always 
+ wish to exclude from games for example, without having to use the  
+ DisAllowPowerUp command line after line.
+
+
+ [6.13] Can I disallow certain ships, if so how?
+ -----------------------------------------------
+
+ This can be done. It requires that an MPS file be created. MPS stands
+ for MultiPlayerSettings. See the section above on the use and  
+ creation of MPS files.
+
+ To disallow a ship or ships, simply disallow them in the screen for 
+ 'Configure allowed Ships/Items' when creating an MPS file. When a 
+ player enters a game with a disallowed ship, it will be forced to a 
+ PyroGL.
+
+
+ [6.14] I understand 'DisallowPowerUp', why is there an AllowPowerUp
+ ------ command?
+
+ The AllowPowerUp command is the opposite of DisAllowPowerUp. It is 
+ mainly used to add items back that may have been disallowed with the 
+ use of an MPS file.
+
+ As an example you may base a number of dedicated server files off of 
+ a single  MPS file. That MPS file may disallow the Napalm Cannon. Yet 
+ in one of the  dedicated server configs you want the Napalm Cannon. 
+ So you would simply add the AllowPowerUp command after the 
+ MultiSettingsFile command.
+
+ Example:
+
+ [server config file]
+ MultiSettingsFile=C:\Games\Descent3\Custom\Settings\Mysetup.mps
+ AllowPowerUp=Napalm
+
+ The AllowPowerUp command must follow the MultiSettingsFile command, 
+ since all it is doing is resetting the variable found in the MPS 
+ file.
+
+
+ [6.15] What does -framecap have to do with a server?
+ ----------------------------------------------------
+
+ The server, just like the client runs at a default framerate of 
+ 50fps. Although the server does not actually render video of the 
+ game, it does all of the server calculations such as missile tracking 
+ for example.
+ 
+ If the server is dedicated to running a single game, and nothing else
+ this framecap can be removed. It may make for a more accurate game, 
+ particularly on LAN. This is done by simply adding the command '-
+ framecap 999' (without the quotes) to the launch command. As with 
+ the client you can also choose a different framecap.
+
+ This should not be done if the system running the computer has 
+ multiple servers running, or is running any other tasks.
+
+
+
+ ======================
+  [7] Development/MODs
+ ======================
+ 
+  
+ [7.1] I wanna make my own levels, is an editor available?
+ ---------------------------------------------------------
+ 
+ YES! At http://d3edit.tricordnet.com you can get the latest version 
+ of D3 Edit. As D3 has a new, more complex engine the editor is kinda 
+ complex and more difficult to use than the old DMB2. However, at the 
+ aforementioned address you'll get some really helpful tutorials on 
+ building your first levels so it's definitely worth checking out.
+ 
+
+ [7.2] Is a converter available so I can play my favourite D1/D2 
+ ----- levels in D3?  
+ 
+ Currently not. Though rumours have been confirmed that such a 
+ converter exists, the author almost definitely does not plan to 
+ release it to prevent tons of unapproved ports of original D1/D2 
+ levels.
+ 
+ A possible way to port a certain level (after having received the 
+ author's permission, certainly) is to get the Descent Manager tool 
+ 'Levelview' from http://www.descent2.com/descman/ and convert the 
+ level to the dxf-format. After that you can convert it to the 
+ Outrage room format with dxf2orf 
+ (http://www.tricordnet.com/2orf/dxf2orf.zip).
+
+ Now you've got the whole level as a room file that can be imported 
+ into D3 Edit. However, you got to flip most of the normals manually 
+ as well as retexture the whole level plus add all the scripting and 
+ stuff which is quite a lot of work...
+
+
+ [7.3] What assistance can I get to make my own D3 MODs? 
+ -------------------------------------------------------
+ 
+ Well, currently some MOD's are already available (see section [8.3])
+ and others in are the works. Possibly the best place to start for 
+ you if you wanna work on MODs yourself is the D3sdk Webpage @ 
+ http://d3sdk.warpcore.org/. As they say:
+
+ 'This should be one of the most extensive resources for making D3 
+  Mods on the web. We have several great minds at work to help  
+  everyone get the creative juices flowing. Hopefully we can help 
+  you unlock and create the most mind blowing mods to ever hit the 
+  multiplayer scene. The Sky is the Limit and we're here to help you 
+  get there.'
+ 
+ Another fairly good resource is http://www.xtremebuilder.com/ with 
+ lots of tutorials and professional stuff as well. Go and see for 
+ yourself! 
+ 
+
+ [7.4] What MODs are currently available and where can I get them? 
+ -----------------------------------------------------------------
+
+ Please see section [8.3]. 
+
+
+
+ =========================================
+  [8] Other online sources of information 
+ =========================================
+
+
+ [8.1] Offical Sites
+ -------------------
+
+ http://www.pxsoftware.com
+   Where it all began!
+
+ http://www.outrage.com/
+   The guys who made it happen!
+
+ http://www.volition-inc.com 
+   The saga continues... (hopefully)
+
+ http://www.graphsim.com/~macdescent
+   D3 for the Mac
+
+ 
+ [8.2] Playing D3 via Internet
+ -----------------------------
+
+ http://www.pxo.net
+   Free online gaming service - meet your opponents here
+
+ http://www.kali.net
+   Join server -> Descent <- to meet tons of hardcore Descenters
+
+ http://www.myrkul.org/descent.html
+   Tips on how to reduce lag
+
+ http://d3shiva.dhs.org 
+   Shiva's SOD site with the servers, etc. and Linux support
+
+
+ [8.3] Support, Tools, Developers & Levels
+ -----------------------------------------
+
+ http://www.descent-3.com/support/full14
+   Support, Patches, Tools, Developer & Goodies
+
+ http://d3edit.tricordnet.com
+   Forums, Tutorials & Help on the D3 level editor
+
+ http://www.warpcore.org/~d3sdk/
+   The source for MOD-developers
+ 
+ http://www.xtremebuilder.com/ 
+   Another great source for MODers
+
+ http://www.planetdescent.com/d-section/products/dh2e11/
+   Tycoon's D3 logo editor
+
+ http://www.descent2.com/lists/ddl
+   DDL - Descent Developer's Mailing List 
+
+ http://www.wildcards.org/zappafan/
+   1000+ cool reviews & download of custom-made Descent levels
+
+ http://www.consensualrealities.com/
+   D3 Team Hoard MOD
+
+ http://www.xtremebuilder.com/fragtag/
+   Fag Tag MOD
+   
+
+ [8.4] Forums & Discussion
+ -------------------------
+
+ http://www.DescentBB.net/
+   THE place to talk about everything Descent
+
+ http://feedback.interplay.com/descent3/
+   Unmoderated fan talk
+
+ alt.games.descent
+   Usenet
+
+ #300baud, #descent on EFFNET 
+   IRC
+
+ [8.5] Descent News & Headlines
+ ------------------------------
+
+ http://www.descent3d.com/
+   News & Stuff
+
+ http://www.planetdescent.com/
+   News & Stuff
+
+ http://www.descent4.net/
+   News on the upcoming Descent 4 by Volition Inc.
+
+
+ [8.6] Tactics & How-To's
+ ------------------------
+
+ http://descent2.com/hoppe/
+   Descent Dogfight Tactics
+
+ http://www.weenie.com/descent/
+   Multiplayer Tactics Galore
+
+ http://www.gamesdomain.co.uk/moonglow/
+   Walkthroughs, Map-Screenshots & How-To-Demos on Descent 1-3
+
+ http://www.descent3d.com/articles/tetrad-entropy.shtml
+   Tetrad's Entropy Guide
+
+ http://www.descent3d.com/articles/hattr-mball.shtml
+   MadHattr's Monsterball Guide 
+
+
+
+ [8.7] Miscellaneous
+ -------------------
+
+ http://www.pyropimps.com
+   Online RealAudio shows
+
+ http://www.midnightsquadron.com/pyroplay/
+   Another RealAudio show dedicated to Descent
+
+ http://www.descentants.com/
+   D3 Team Play and the D3 Teams League
+
+ http://www.earth-one.net
+   Peter Telep's books based on the Descent Saga
+
+ http://www.Descent-3.de 
+   German Fan site (yes, in German!)
+
+
+
+ =============
+  [9] Credits
+ =============
+
+ Thanks to the orginal authors as mentioned above in the copyright.
+
+ Thanks also to all contributers of the Descent community on the 
+ DBB & in alt.games.descent who raised, discussed and answered a 
+ good deal of the questions and answers we used in this FAQ - you know 
+ who you are!
+
+ Thanks to HH-Soft for offering webspace for the FAQ on his ever 
+ growing D-NET.
+
+ And above all kudos to Parallax and Outrage without whom the whole 
+ stuff just  would not have been possible. We owe you, guys!
+
+
+--EOF--

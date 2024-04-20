@@ -1,0 +1,282 @@
+
+                      INTERNET GAMING NOTES FOR 
+                            DESCENT (TM) 3 
+                             Version 1.0
+
+                  ___________________________________
+
+                      See the file README.TXT for
+                   general information on Descent 3.
+                  ___________________________________
+
+
+                         ______________________
+
+                           TABLE of CONTENTS
+                         ______________________
+
+
+                        1.  Introduction
+                        2.  Frequently-Asked Questions
+                        3.  Architecture Types 
+                        4.  Other Multiplayer Options
+                        5.  Dedicated Servers
+
+
+
+                          ______________________
+
+                             1. INTRODUCTION
+                          ______________________
+
+
+This document contains information about playing Descent 3 over the
+Internet.  It explains the various Internet-related options available
+in Descent 3, and provides information about getting the best
+performance when playing Descent 3 over the Internet.
+
+
+                      _______________________________
+
+                       2. FREQUENTLY-ASKED QUESTIONS
+                      _______________________________
+
+
+Q: What is a server?  What is a client?
+
+A: In a client/server system, there is one central computer, called
+the server, that all the other computers "talk" to.  When a player's 
+computer wants to send out a message, it sends it just to the server,
+which then forwards the message to all the other players.  The
+machines other than the server are called clients.
+  
+The main alternative to a client/server system is a peer-to-peer
+system, in which each computer talks directly to each other computer.
+
+In Descent 3's client/server mode, a server can either be a player in
+the game, or can be machine set up only to host games.  The latter is
+known as a "dedicated server".
+
+
+Q: What is lag?  
+
+A: Lag is the difference in time between when one computer sends out
+a message and another computer receives that message.  Lag is
+measured in milliseconds and is commonly referred to as "ping".  A
+ping of 300 means that it takes 300 milliseconds for a message to
+travel from your computer to the other computer and back again.  If
+you have a ping of 300ms to the server in your game, this means that
+your computer is 150ms "behind" the server.  The less lag between two
+computers in a multiplayer game, the better.
+
+
+Q: What causes lag? 
+
+A: Lag is caused by a number of factors: The speed of the computers
+involved, the types of Internet connections the machines have, the
+physical distance between the machines, the amount of network
+traffic, and any number of other things.  The best netgame
+experiences are to be had by finding a server that has a low ping; 
+you can find these servers by using connection services such as
+PXO or GameSpy.
+
+
+Q: What is loss?
+
+A: Packet loss is when your machine drops information packets that the
+server has sent to you.  The server attempts to keep your game synced
+up by constantly sending you a stream of packets.  If you drop some
+of these packets, objects may appear to jump around.
+
+
+Q: What causes loss?
+
+A: The most common cause of loss is a modem that cannot keep up with
+the demands that Descent 3 places on it, causing the modem to get
+flooded and drop packets.  The faster your modem, the less loss
+you'll experience.  Loss can also occur if your Internet Service
+Provider (ISP) is overloaded.
+
+
+Q: How does Descent 3 deal with lag and loss?
+
+A: To help provide a good Internet gaming experience, Descent 3
+compensates for lag and loss in several ways.  The most significant
+of these is by providing three different multiplayer "architectures",
+or ways the computers in a multiplayer game use to communicate.  Each
+architecture has its own strengths and weaknesses; you should choose
+a mode that works best for you.  See the next section for details.
+
+Descent 3 sends data to other computers at a rate determined by the
+Connection Speed value you select in the Descent 3 Setup.  (To set
+this, run Descent 3, click on Setup, and select the Network tab.) 
+It's important that you select the most accurate value for this
+setting.  Selecting a too-fast connection speed will cause you to
+lose packets; selecting a too-slow connection speed will cause your
+game to be less smooth than it needs to be.
+
+The default connection speed is a 56k modem, which you should change
+if you have a different connection.
+
+Descent 3 also allows the server to setup certain parameters that
+limit the amount of bandwidth the game will use.  See section 4 for
+details.
+
+                        _________________________
+
+                          3. ARCHITECTURE TYPES
+                        _________________________
+
+
+There are three different multiplayer architectures supported
+by Descent 3:  Client/Server, Peer-to-Peer, and Permissible
+Client/Server.
+
+Here are the major differences between the three architectures.
+
+
+CLIENT/SERVER:
+
+This is the default mode for Descent 3.  In Descent 3's client/server
+mode, the server computer controls the position of most of the objects
+in the game and determines when a weapon collides with a robot or
+player.  So that players are able to move smoothly and to fire
+instantly, all player movement and firing is controlled by the local
+computer.
+
+In a client/server game, each player communicates only with the
+server computer, so your performance is only affected by the speed of
+your connection, and not by those of other players.
+
+
+Strengths:
+
+  When you choose to fire a weapon, it fires immediately on your
+  computer.
+
+  Client/Server is generally more fair, because one machine makes 
+  decisions for every player.
+
+Weaknesses:
+
+  It will be hard for a player with a low connection to hit others
+  players.
+
+  A player on the server machine will have an advantage over other
+  players, because she or he will have no lag to the server.
+
+  The server gets a lot more network traffic, because it has to
+  communicate with every player.
+
+  Because you are able to fire instantly you will have to lead your
+  shots slightly to compensate for network lag.
+
+
+PEER-TO-PEER:
+
+This is the architecture that Descent and Descent II used, and is
+made available for gamers who prefer that networking mode.  In
+peer-to-peer mode, each local computer determines when that player is
+hit by a weapon.
+
+Strengths:
+
+  Since each player determines when his or her own ship is hit, 
+  players with slow connections are not at a disadvantage.
+
+  No one machine handles more network traffic than any other.
+
+Weaknesses:
+
+  Since each player determines when his or her own ship is hit, it 
+  can be hard to hit a player with a slow connection.
+
+  Since there isn't a server to determine who hit whom, peer-to-
+  peer games are more vulnerable to cheating.
+
+
+PERMISSIBLE CLIENT/SERVER:
+
+This is like Descent 3's normal client/server mode, but requires that
+each player get "permission" from the server to fire a weapon.  This
+means that when you choose to fire a weapon, your computer will send
+a message to the server; the server will create the weapon and send a
+message back informing your computer of the position of that weapon.
+
+Strengths:
+
+  If a weapon collides with an object on your screen, the chances 
+  are high that it actually collided on the server as well.
+
+Weaknesses:
+
+  There may be a noticeable delay between when your press your fire
+  button and when the weapon actually appears on your screen.
+
+
+                      _______________________________
+
+                       4. OTHER MULTIPLAYER OPTIONS
+                      _______________________________
+
+These multiplayer options, selectable when you start a multiplayer
+game in Descent 3, may also affect performance over the Internet.
+These settings are only available to the computer starting a
+multiplayer game.
+
+Packets Per Second:
+
+  This sets the maximum rate at which the server and the clients 
+  communicate with each other.  Since clients can individually set
+  their own rate in the Setup/Network screen, this setting should be
+  based on the connection speed of the server.  The higher this number,
+  the smoother your game will be. However, setting this number too high
+  may result in packet loss because your connection and/or your clients
+  connection may not be able to handle the high stream of data.  As a
+  baseline value we recommend 10 packets per second.
+
+Max number of players:
+
+  This value is the number of players who may join your game.  Each
+  additional player results in more network traffic, so you may get
+  better performance by limiting the number of players in a game.  If
+  your machine or connection is not of high quality you might want to
+  reduce this number to six or lower.
+    
+Rotational velocity:
+
+  This checkbox determines whether or not rotational velocity is sent
+  over with the player ship positions.  Rotational velocity will make
+  the ships appear to turn more smoothly but uses a bit more bandwidth.
+  It defaults to off.
+  
+Restrictive collisions:
+
+  This checkbox will cause Descent 3 to use polygon accurate collision
+  detection.  While this makes for a more realistic gaming experience,
+  it also makes it very difficult to hit an opponent if you are playing
+  over the Internet.  We recommend only setting this checkbox on when
+  you are playing over a LAN.
+
+                       ___________________________
+
+                           5. DEDICATED SERVERS
+                       ___________________________
+
+
+A dedicated server is a computer that is running Descent 3 for the
+sole purpose of hosting multiplayer games.  A dedicated server, if
+it is running on a computer with a fast Internet connection, can
+provide the best and most fair Internet gaming experience.
+
+You can find dedicated servers by using a game finder service such as
+PXO or GameSpy.
+
+A Descent 3 dedicated server can be run on a computer running
+either Windows or Linux.  For general information on setting up
+a dedicated server, see the Descent 3 manual.  For information
+on setting up a Linux dedicated server, see the file Readme.txt
+in the /Dedicated/Linux/ directory of Descent 3 CD 1.
+
+
+
