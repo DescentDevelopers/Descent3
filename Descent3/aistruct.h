@@ -417,17 +417,17 @@ extern vector ai_lkplayer_velocity;
 extern float ai_lkplayer_time;
 
 #define MAX_AI_INIT_CLASSES 3
-extern char *Ai_class_strings[MAX_AI_INIT_CLASSES];
+extern const char *const Ai_class_strings[MAX_AI_INIT_CLASSES];
 
 #define MAX_AI_INIT_TYPES 9
-extern char *Ai_type_strings[MAX_AI_INIT_TYPES];
+extern const char *const Ai_type_strings[MAX_AI_INIT_TYPES];
 
 #define MAX_AI_INIT_MOVEMENT_TYPES 4
-extern char *Ai_movement_type_strings[MAX_AI_INIT_MOVEMENT_TYPES];
+extern const char *const Ai_movement_type_strings[MAX_AI_INIT_MOVEMENT_TYPES];
 
 #define MAX_AI_INIT_MOVEMENT_SUBTYPES 7
-extern char *Ai_movement_subtype_flying_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES];
-extern char *Ai_movement_subtype_walking_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES];
+extern const char *const Ai_movement_subtype_flying_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES];
+extern const char *const Ai_movement_subtype_walking_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES];
 
 extern float AI_last_time_room_noise_alert_time[MAX_ROOMS + 8];
 

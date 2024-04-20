@@ -394,7 +394,7 @@ typedef int (*Obj_Create_fp)(ubyte type, ushort id, int roomnum, vector *pos, co
                              vector *initial_velocity);
 OSIRISEXTERN Obj_Create_fp Obj_CreateFP;
 inline int Obj_Create(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient = NULL,
-                      int parent_handle = NULL, vector *initial_velocity = NULL) {
+                      int parent_handle = 0, vector *initial_velocity = NULL) {
   return Obj_CreateFP(type, id, roomnum, pos, orient, parent_handle, initial_velocity);
 }
 // float Game_GetTime() (void)
