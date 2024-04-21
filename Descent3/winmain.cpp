@@ -615,8 +615,10 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
 
 #ifndef GAMEGAUGE
 if (!FindArg("-launched") && !FindArg("-dedicated") && !FindArg("-timetest")) {
-    int result = MessageBox(NULL, "Bypassing the launcher might break some settings. Launch anyway?", PRODUCT_NAME " Error", MB_YESNO);
+    int result = MessageBox(NULL, "Bypassing the launcher might break some settings. Launch as administrator?", PRODUCT_NAME " Error", MB_YESNO);
     if (result == IDYES) {
+        // Restart the application with elevated privileges
+        ShellExecute(NULL, "runas", GetCommandLine(), NULL, NULL, SW_SHOWNORMAL);
     } else {
         return 0;
     }
