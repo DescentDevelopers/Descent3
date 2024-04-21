@@ -33,8 +33,11 @@ std::ostream &operator<<(std::ostream &output, HogHeader &header) {
 }
 
 std::ostream &operator<<(std::ostream &output, HogFileEntry &entry) {
+  // Prevent buffer overflow
+  char outBytes[36] = {0};
   auto tmp = entry.name.c_str();
-  output.write((char *)&tmp[0], 36);
+  strcpy(outBytes, tmp);
+  output.write(outBytes, 36);
   bin_write(output, entry.flags);
   bin_write(output, entry.len);
   bin_write(output, entry.timestamp);
