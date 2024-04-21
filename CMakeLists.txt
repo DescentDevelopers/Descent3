@@ -111,6 +111,8 @@ if(WIN32)
   endif()
 endif()
 
+find_package(ZLIB REQUIRED)
+
 if(LOGGER)
   message("Enabling Logging")
   add_definitions(-DLOGGER)

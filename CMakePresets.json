@@ -15,7 +15,8 @@
 				"lhs": "${hostSystemName}",
 				"rhs": "Windows"
 			},
-			"architecture": "Win32"
+			"architecture": "Win32",
+			"toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
 		},
 		{
 			"name": "mac",

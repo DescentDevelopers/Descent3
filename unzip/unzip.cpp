@@ -38,7 +38,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "zlib.h"
+
+#include <zlib.h>
+
 #include "unzip.h"
 
 #include <algorithm>
