@@ -103,17 +103,19 @@ InternalAudioDecoder::~InternalAudioDecoder() {
 //    amount: How much data to read
 // Returns the number of bytes read - zero when we're at the end of the file
 uint32 InternalAudioDecoder::Read(void *pBuffer, uint32 amount) {
-  const int bigendianp = 0; // we want little endian samples
+  const int bigendianp = 0; // we want little endian samples - TODO: or only on little endian platforms?
   const int wordlen = 2;    // the only supported value
   const int sgned = 1;      // we want signed samples
   uint32 totalBytesRead = 0;
+  uint8 *pBuf = reinterpret_cast<uint8 *>(pBuffer);
 
   while (totalBytesRead < amount) {
-    int numRead = acm_read(m_acm, pBuffer, amount, bigendianp, wordlen, sgned);
+    int numRead = acm_read(m_acm, pBuf, amount - totalBytesRead, bigendianp, wordlen, sgned);
     // numRead < 0: error, numRead == 0: EOF, numRead > 0: amount of bytes read
     if (numRead <= 0)
       break;
     totalBytesRead += numRead;
+    pBuf += numRead;
   }
 
   return totalBytesRead;
