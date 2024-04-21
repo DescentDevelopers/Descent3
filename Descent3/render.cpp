@@ -808,7 +808,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
   }
 
   ASSERT(N_render_rooms < MAX_RENDER_ROOMS);
-#ifdef _DEBUG
+#ifndef RELEASE
   Mine_depth++;
 #endif
   Rooms_visited[start_room_num] = 1;
