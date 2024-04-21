@@ -157,6 +157,7 @@ private:
 
 private:
   int defer_block(); // real defer code.
+  void change_window(); // Adjusts the window based on style
 
 public:
   //	Creates the window handle
@@ -187,6 +188,8 @@ public:
 
   //	Sizes the displayable region of the app (the window)
   void set_sizepos(int x, int y, int w, int h);
+
+  void set_flags(int newflags);
 
   //	returns -1 if we pass to default window handler.
   virtual int WndProc(HWnd hwnd, unsigned msg, unsigned wParam, long lParam);

@@ -451,6 +451,8 @@ typedef struct {
 
   int clip_x1, clip_x2, clip_y1, clip_y2;
   int screen_width, screen_height;
+  // [ISB] Size of the true view. These names should maybe be flipped?
+  int view_width, view_height;
 
 } rendering_state;
 
@@ -461,6 +463,9 @@ typedef struct {
   ubyte bit_depth;
   int width, height;
   ubyte vsync_on;
+  // [ISB]
+  bool fullscreen;                 // Informs the window system that fullscreen should be used.
+  int window_width, window_height; // Size of the game window, may != width/height.
 } renderer_preferred_state;
 
 typedef struct {

@@ -323,31 +323,42 @@
 
 #define STAT_SCORE STAT_TIMER
 
-#ifdef MACINTOSH
-#include "macdisplays.h"
+// [ISB] A list of common video resolutions.
+// This should be expandable somehow, but it doesn't make sense to query resolutions,
+// since it's being used to control the size of the window. 
+struct newVideoResolution {
+  int width;
+  int height;
+  const char *name;
+} New_video_res_list[] = {{512, 384, "512x384"},
+                          {640, 480, "640x480"},
+                          {800, 600, "800x600"},
+                          {960, 720, "960x720"},
+                          {1024, 768, "1024x768"},
+                          {1280, 960, "1280x960"},
+                          {1600, 1200, "1600x1200"},
+                          // 16:9
+                          {1280, 720, "1280x720"},
+                          {1366, 768, "1366x768"},
+                          {1368, 768, "1368x768"},
+                          {1920, 1080, "1920x1080"},
+                          {2560, 1440, "2560x1440"},
+                          {3840, 2160, "3840x2160"},
+                          // 16:10
+                          {1280, 800, "1280x800"},
+                          {1920, 1200, "1920x1200"},
+                          {2560, 1600, "2560x1600"},
+                          // Ultrawide
+                          {2560, 1080, "2560x1080"},
+                          {2880, 1200, "2800x1200"},
+                          {3440, 1440, "3440x1440"},
+                          {3840, 1600, "3840x1600"}};
 
-tVideoResolution Video_res_list[N_SUPPORTED_VIDRES] = {
-#ifdef USE_OPENGL
-    {640, 480},
-    {800, 600},
-    {1024, 768},
-//	{1152,870},
-//	{1280,960}
-#else
-    //	{512,384},
-    {640, 480},
-    {800, 600},
-    {960, 720},
-//	{1024,768}
-#endif
-};
-#else
-tVideoResolution Video_res_list[N_SUPPORTED_VIDRES] = {
-    {512, 384}, {640, 480}, {800, 600}, {960, 720}, {1024, 768}, {1280, 960}, {1600, 1200}, {640, 480} // custom
-};
-#endif
+#define NUM_RESOLUTION sizeof(New_video_res_list) / sizeof(New_video_res_list[0])
 
 int Game_video_resolution = 1;
+int Game_window_res_width = 640, Game_window_res_height = 480;
+bool Game_fullscreen = false;
 
 tDetailSettings Detail_settings;
 int Default_detail_level = DETAIL_LEVEL_MED;
@@ -713,6 +724,9 @@ void config_gamma() {
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
 //
+#define RESBUFFER_SIZE 50
+#define IDV_CHANGEWINDOW 10
+#define UID_RESOLUTION 110
 struct video_menu {
   newuiSheet *sheet;
 
@@ -721,7 +735,10 @@ struct video_menu {
   bool *vsync;
 
   int *bitdepth;   // bitdepths
-  int *resolution; // all resolutions
+
+  int window_width, window_height;
+  bool *fullscreen;
+  char *buffer;
 
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
@@ -729,40 +746,12 @@ struct video_menu {
     sheet = menu->AddOption(IDV_VCONFIG, TXT_OPTVIDEO, NEWUIMENU_MEDIUM);
 
     // video resolution
-    iTemp = Game_video_resolution;
-    sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-#ifdef MACINTOSH
-#ifdef USE_OPENGL
-    resolution = sheet->AddFirstLongRadioButton("640x480");
-    if (gDSpContext[DSP_800x600])
-      sheet->AddLongRadioButton("800x600");
-    if (gDSpContext[DSP_1024x768])
-      sheet->AddLongRadioButton("1024x768");
-      //		if(gDSpContext[DSP_1152x870])
-      //			sheet->AddLongRadioButton("1152x870");
-      //		if(gDSpContext[DSP_1280x960])
-      //			sheet->AddLongRadioButton("1280x960");
-#else
-    //		resolution = sheet->AddFirstLongRadioButton("512x384");
-    //		sheet->AddLongRadioButton("640x480");
-    resolution = sheet->AddFirstLongRadioButton("640x480");
-    extern int Glide_num_texelfx;
-    if (Glide_num_texelfx > 1) {
-      sheet->AddLongRadioButton("800x600");
-      sheet->AddLongRadioButton("960x720");
-    }
-    //		sheet->AddLongRadioButton("1024x768");
-#endif
-#else
-    resolution = sheet->AddFirstLongRadioButton("512x384");
-    sheet->AddLongRadioButton("640x480");
-    sheet->AddLongRadioButton("800x600");
-    sheet->AddLongRadioButton("960x720");
-    sheet->AddLongRadioButton("1024x768");
-    sheet->AddLongRadioButton("1280x960");
-    sheet->AddLongRadioButton("1600x1200");
-#endif
-    *resolution = iTemp;
+    window_width = Game_window_res_width;
+    window_height = Game_window_res_height;
+    buffer = sheet->AddChangeableText(RESBUFFER_SIZE);
+    snprintf(buffer, RESBUFFER_SIZE, "%d x %d", Game_window_res_width, Game_window_res_height);
+    sheet->AddLongButton("Change...", IDV_CHANGEWINDOW);
+    fullscreen = sheet->AddLongCheckBox("Fullscreen", Game_fullscreen);
 
 #if !(defined(MACINTOSH) || defined(__LINUX__))
     // renderer bit depth
@@ -819,20 +808,14 @@ struct video_menu {
       rend_SetPreferredState(&Render_preferred_state);
     }
 
-    if ((*resolution) != Game_video_resolution) {
-      // if in game, do resolution change.
-      int temp_w, temp_h;
-      int old_sm = GetScreenMode();
-
-      Game_video_resolution = *resolution;
-
-      if (old_sm == SM_GAME) {
-        SetScreenMode(SM_NULL);
-        SetScreenMode(old_sm, true);
-      }
-      temp_w = Video_res_list[Game_video_resolution].width;
-      temp_h = Video_res_list[Game_video_resolution].height;
-      Current_pilot.set_hud_data(NULL, NULL, NULL, &temp_w, &temp_h);
+	if (window_width != Game_window_res_width || window_height != Game_window_res_height ||
+        *fullscreen != Game_fullscreen) {
+      Game_fullscreen = *fullscreen;
+      Game_window_res_width = window_width;
+      Game_window_res_height = window_height;
+      //Doing this will update the game window. 
+      SetScreenMode(GetScreenMode(), true);
+      Current_pilot.set_hud_data(NULL, NULL, NULL, &window_width, &window_height);
     }
 
     sheet = NULL;
@@ -840,15 +823,64 @@ struct video_menu {
 
   // process
   void process(int res) {
+    switch (res) {
+    case IDV_CHANGEWINDOW: {
+      newuiTiledWindow menu;
+      newuiSheet *select_sheet;
+      newuiListBox *resolution_list;
+
+      menu.Create("Resolution", 0, 0, 300, 384);
+      select_sheet = menu.GetSheet();
+      select_sheet->NewGroup(NULL, 10, 0);
+      resolution_list = select_sheet->AddListBox(208, 256, UID_RESOLUTION, UILB_NOSORT);
+      select_sheet->NewGroup(NULL, 100, 280, NEWUI_ALIGN_HORIZ);
+      select_sheet->AddButton(TXT_OK, UID_OK);
+      select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
+      for (int i = 0; i < NUM_RESOLUTION; i++) {
+        resolution_list->AddItem(New_video_res_list[i].name);
+      }
+
+      menu.Open();
+
+      // I think this needs to be done after the sheet is realized.
+      for (int i = 0; i < NUM_RESOLUTION; i++) {
+        if (Game_window_res_width == New_video_res_list[i].width &&
+            Game_window_res_height == New_video_res_list[i].height) {
+          resolution_list->SetCurrentIndex(i);
+          break;
+        }
+      }
+
+      int res;
+      do {
+        res = menu.DoUI();
+      } while (res != UID_OK && res != UID_CANCEL);
+
+      if (res == UID_OK) {
+        int newindex = resolution_list->GetCurrentIndex();
+        if (newindex < NUM_RESOLUTION) // for custom items
+        {
+          newVideoResolution &res = New_video_res_list[resolution_list->GetCurrentIndex()];
+          window_width = res.width;
+          window_height = res.height;
+        }
+
+        snprintf(buffer, RESBUFFER_SIZE, "%d x %d", window_width, window_height);
+      }
+
+      menu.Close();
+      menu.Destroy();
+
+    } break;
 #ifndef __LINUX__
 #if !(defined(MACINTOSH) && defined(USE_OPENGL))
-    switch (res) {
     case IDV_AUTOGAMMA:
       config_gamma();
       break;
+#endif
+#endif
     }
-#endif
-#endif
   };
 };
 

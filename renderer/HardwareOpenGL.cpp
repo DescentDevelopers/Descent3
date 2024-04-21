@@ -198,6 +198,10 @@ bool opengl_Blending_on = 0;
 
 static oeApplication *ParentApplication = NULL;
 
+//[ISB] mapping of the screen at render resolution to the true resolution. 
+unsigned int framebuffer_blit_x, framebuffer_blit_y, framebuffer_blit_w, framebuffer_blit_h;
+
+
 #if 0
 int checkForGLErrors( char *file, int line )
 {
@@ -731,6 +735,83 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 }
 #endif
 
+#if defined(WIN32)
+static void opengl_UpdateWindow() {
+  int width, height;
+  if (!OpenGL_preferred_state.fullscreen) {
+    OpenGL_state.view_width = OpenGL_preferred_state.window_width;
+    OpenGL_state.view_height = OpenGL_preferred_state.window_height;
+    width = OpenGL_preferred_state.width;
+    height = OpenGL_preferred_state.height;
+
+    //[ISB] center window
+    int mWidth = GetSystemMetrics(SM_CXSCREEN);
+    int mHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    int orgX = (mWidth / 2 - OpenGL_state.view_width / 2);
+    int orgY = (mHeight / 2 - OpenGL_state.view_height / 2);
+    RECT rect = {orgX, orgY, orgX + OpenGL_state.view_width, orgY + OpenGL_state.view_height};
+    AdjustWindowRectEx(&rect, WS_CAPTION, FALSE, 0);
+    ParentApplication->set_sizepos(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+    ParentApplication->set_flags(OEAPP_WINDOWED);
+  } else {
+    ParentApplication->set_flags(OEAPP_FULLSCREEN);
+
+    RECT rect;
+    GetWindowRect((HWND)hOpenGLWnd, &rect);
+    mprintf((0, "rect=%d %d %d %d\n", rect.top, rect.right, rect.bottom, rect.left));
+
+    OpenGL_state.view_width = rect.right - rect.left;
+    OpenGL_state.view_height = rect.bottom - rect.top;
+
+    width = OpenGL_preferred_state.width;
+    height = OpenGL_preferred_state.height;
+  }
+
+  float baseAspect = width / (float)height;
+  float trueAspect = OpenGL_state.view_width / (float)OpenGL_state.view_height;
+
+  if (baseAspect < trueAspect) // base screen is less wide, so pillarbox it
+  {
+    framebuffer_blit_h = OpenGL_state.view_height;
+    framebuffer_blit_y = 0;
+    framebuffer_blit_w = OpenGL_state.view_height * baseAspect;
+    framebuffer_blit_x = (OpenGL_state.view_width - framebuffer_blit_w) / 2;
+  } else // base screen is more wide, so letterbox it
+  {
+    framebuffer_blit_w = OpenGL_state.view_width;
+    framebuffer_blit_x = 0;
+    framebuffer_blit_h = OpenGL_state.view_width / baseAspect;
+    framebuffer_blit_y = (OpenGL_state.view_height - framebuffer_blit_h) / 2;
+  }
+
+  OpenGL_state.screen_width = width;
+  OpenGL_state.screen_height = height;
+
+  //Clear the screen to ensure pillarboxes are correct
+  //Account for potential tripper buffering. 
+  if (dglClear) {
+    dglClear(GL_COLOR_BUFFER_BIT);
+    SwapBuffers((HDC)hOpenGLDC);
+    dglClear(GL_COLOR_BUFFER_BIT);
+    SwapBuffers((HDC)hOpenGLDC);
+    dglClear(GL_COLOR_BUFFER_BIT);
+    SwapBuffers((HDC)hOpenGLDC);
+  }
+  
+}
+#endif
+
+// [ISB] Remaps a virtual screen rectangle to a true screen rectangle.
+static void opengl_RemapVirtualRectToTrueRect(int &lx, int &ty, int &width, int &height) {
+  float xscale = (float)framebuffer_blit_w / OpenGL_preferred_state.width;
+  float yscale = (float)framebuffer_blit_h / OpenGL_preferred_state.height;
+  lx = lx * xscale + framebuffer_blit_x;
+  ty = ty * yscale + framebuffer_blit_y;
+  width *= xscale;
+  height *= yscale;
+}
+
 // Sets up our OpenGL rendering context
 // Returns 1 if ok, 0 if something bad
 int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
@@ -759,49 +840,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     hwnd = static_cast<HWnd>(reinterpret_cast<oeWin32Application *>(ParentApplication)->m_hWnd);
   }
 
-  if (!WindowGL) {
-    // First set our display mode
-    // Create direct draw surface
-
-    DEVMODE devmode;
-
-    devmode.dmSize = sizeof(devmode);
-    devmode.dmBitsPerPel = 16;
-    // devmode.dmBitsPerPel=OpenGL_preferred_state.bit_depth;
-    devmode.dmPelsWidth = OpenGL_preferred_state.width;
-    devmode.dmPelsHeight = OpenGL_preferred_state.height;
-    devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-
-#ifdef CHANGE_RESOLUTION_IN_FULLSCREEN
-    int retval = ChangeDisplaySettings(&devmode, 0);
-#else
-    int retval = DISP_CHANGE_SUCCESSFUL;
-#endif
-    if (retval != DISP_CHANGE_SUCCESSFUL) {
-      mprintf((0, "Display mode change failed (err=%d), trying default!\n", retval));
-      retval = -1;
-      devmode.dmBitsPerPel = 16;
-      devmode.dmPelsWidth = 640;
-      devmode.dmPelsHeight = 480;
-      devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-
-      retval = ChangeDisplaySettings(&devmode, 0);
-      if (retval != DISP_CHANGE_SUCCESSFUL) {
-        mprintf((0, "OpenGL_INIT:Change display setting failed failed!\n"));
-        rend_SetErrorMessage("OGL: ChangeDisplaySettings failed.  Make sure your desktop is set to 16bit mode!");
-        ChangeDisplaySettings(NULL, 0);
-        opengl_Close();
-        return 0;
-      } else {
-        OpenGL_preferred_state.bit_depth = 16;
-        OpenGL_preferred_state.width = 640;
-        OpenGL_preferred_state.height = 480;
-      }
-    } else {
-      mprintf((0, "Setdisplaymode to %d x %d (%d bits) is successful!\n", OpenGL_preferred_state.width,
-               OpenGL_preferred_state.height, OpenGL_preferred_state.bit_depth));
-    }
-  }
+  opengl_UpdateWindow();
 
   memset(&OpenGL_state, 0, sizeof(rendering_state));
 
@@ -1415,6 +1454,23 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
   }
 
   CHECK_ERROR(8)
+}
+
+// [ISB] hack for 2D images. They'll be scaled up, but filtering breaks UIs composed of small images. 
+void opengl_ForceNearestFilter(int handle, int tn) 
+{
+#if (defined(_USE_OGL_ACTIVE_TEXTURES))
+  if (UseMultitexture && Last_texel_unit_set != tn) {
+    oglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+    Last_texel_unit_set = tn;
+  }
+#endif
+
+  if (GET_FILTER_STATE(OpenGL_bitmap_states[handle]) != 0) {
+    dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    SET_FILTER_STATE(OpenGL_bitmap_states[handle], 0)
+  }
 }
 
 // Chooses the correct filter type for the currently bound texture
@@ -2114,7 +2170,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   // make sure our bitmap is ready to be drawn
   opengl_MakeBitmapCurrent(handle, MAP_TYPE_BITMAP, 0);
   opengl_MakeWrapTypeCurrent(handle, MAP_TYPE_BITMAP, 0);
-  opengl_MakeFilterTypeCurrent(handle, MAP_TYPE_BITMAP, 0);
+  opengl_ForceNearestFilter(handle, 0);
 
   float alpha = Alpha_multiplier * OpenGL_Alpha_factor;
 
@@ -2543,14 +2599,10 @@ void rend_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
   y1 += OpenGL_state.clip_y1;
 
   dglEnable(GL_SCISSOR_TEST);
-  dglScissor(x1, OpenGL_state.screen_height - (height + y1), width, height);
+  opengl_RemapVirtualRectToTrueRect(x1, y1, width, height);
+  dglScissor(x1, OpenGL_state.view_height - (height + y1), width, height);
   dglClearColor((float)r / 255.0, (float)g / 255.0, (float)b / 255.0, 0);
   dglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  width = OpenGL_state.clip_x2 - OpenGL_state.clip_x1;
-  height = OpenGL_state.clip_y2 - OpenGL_state.clip_y1;
-
-  dglScissor(OpenGL_state.clip_x1, OpenGL_state.screen_height - (OpenGL_state.clip_y1 + height), width, height);
   dglDisable(GL_SCISSOR_TEST);
 }
 
@@ -3037,23 +3089,17 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state) {
 
   OpenGL_preferred_state = *pref_state;
   if (OpenGL_state.initted) {
-    int reinit = 0;
     mprintf((0, "Inside pref state!\n"));
 
-    // Change gamma if needed
+    // [ISB] Don't reinitialize the OpenGL renderer every time something happens.
+    // This sets the transform to passthrough, but it should hopefully work because this happens between frames. 
     if (pref_state->width != OpenGL_state.screen_width || pref_state->height != OpenGL_state.screen_height ||
-        old_state.bit_depth != pref_state->bit_depth) {
-      reinit = 1;
+        pref_state->window_width != OpenGL_state.view_width || pref_state->window_height != OpenGL_state.view_height ||
+        pref_state->fullscreen != old_state.fullscreen) {
+      opengl_UpdateWindow();
+      rend_TransformSetToPassthru();
     }
 
-    if (reinit) {
-      opengl_Close();
-      retval = opengl_Init(NULL, &OpenGL_preferred_state);
-    } else {
-      if (old_state.gamma != pref_state->gamma) {
-        opengl_SetGammaValue(pref_state->gamma);
-      }
-    }
   } else {
     OpenGL_preferred_state = *pref_state;
   }
@@ -3190,7 +3236,7 @@ void rend_TransformSetToPassthru(void) {
   dglOrtho((GLfloat)0.0f, (GLfloat)(width), (GLfloat)(height), (GLfloat)0.0f, 0.0f, 1.0f);
 
   // Viewport
-  dglViewport(0, 0, width, height);
+  dglViewport(framebuffer_blit_x, framebuffer_blit_y, framebuffer_blit_w, framebuffer_blit_h);
 
   // ModelView
   dglMatrixMode(GL_MODELVIEW);
@@ -3198,7 +3244,8 @@ void rend_TransformSetToPassthru(void) {
 }
 
 void rend_TransformSetViewport(int lx, int ty, int width, int height) {
-  dglViewport(lx, OpenGL_state.screen_height - (ty + height - 1), width, height);
+  opengl_RemapVirtualRectToTrueRect(lx, ty, width, height);
+  dglViewport(lx, OpenGL_state.view_height - (ty + height - 1), width, height);
 }
 
 void rend_TransformSetProjection(float trans[4][4]) {

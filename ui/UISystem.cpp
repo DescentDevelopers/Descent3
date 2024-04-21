@@ -558,6 +558,7 @@ bool ui_ShowCursor() {
   ::HideCursor();
 #endif
   if (!UI_cursor_show) {
+    ddio_MouseMode(MOUSE_STANDARD_MODE);
     UI_cursor_show = 1;
     return false;
   }
@@ -565,6 +566,7 @@ bool ui_ShowCursor() {
 }
 bool ui_HideCursor() {
   if (UI_cursor_show) {
+    ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
     UI_cursor_show = 0;
     return false;
   }

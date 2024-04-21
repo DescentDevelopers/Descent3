@@ -30,6 +30,9 @@
 #include "init.h"
 #include "dedicated_server.h"
 #include "resource.h"
+#include "ddio.h"
+#include "game.h"
+#include "config.h"
 
 const char *English_strings[] = {"Descent 3 under Windows NT requires version 4.0 or greater of NT to run.",
                                  "Descent 3 requires  Windows 9x, NT 4.0 or greater to run.",
@@ -160,6 +163,16 @@ public:
     }
 
     switch (msg) {
+        //[ISB] handle alt-tab more gracefully. 
+    case WM_KILLFOCUS:
+      ddio_MouseMode(MOUSE_STANDARD_MODE);
+      ddio_KeyFlush();
+      return 0;
+    case WM_SETFOCUS:
+      if (!(flags() & OEAPP_CONSOLE))
+        ddio_MouseMode(ShouldCaptureMouse() ? MOUSE_EXCLUSIVE_MODE : MOUSE_STANDARD_MODE);
+      return 0;
+        /*
     case WM_ACTIVATEAPP: {
       if (wParam == false) {
         this->deactivate();
@@ -178,7 +191,7 @@ public:
           shutdown = false;
         }
       }
-    } break;
+    } break;*/
     }
 
     return oeWin32Application::WndProc(hwnd, msg, wParam, lParam);
@@ -624,8 +637,16 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
   if (Dedicated_server) {
     d3 = new oeD3Win32App(OEAPP_CONSOLE, (HInstance)hInst);
   } else {
+    // [ISB] Reading this setting needs to be done before creating any windows. 
+    int temp;
+    Database->read_int("RS_fullscreen", &temp);
+    Game_fullscreen = !!temp;
+
+    if (FindArg("-windowed"))
+      Game_fullscreen = false;
+
     unsigned int flags = OEAPP_FULLSCREEN;
-    if (FindArg("-windowed")) {
+    if (!Game_fullscreen) {
       // switch to windowed mode instead
       flags = OEAPP_WINDOWED;
     }

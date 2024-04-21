@@ -352,4 +352,7 @@ void SetGamemodeScript(const char *scrfilename, int num_requested_teams = -1);
 // Does a screenshot and tells the bitmap lib to save out the picture as a tga
 void DoScreenshot();
 
+// [ISB] Returns true if the mouse should be captured upon returning to the game.
+bool ShouldCaptureMouse();
+
 #endif

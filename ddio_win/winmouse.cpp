@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // ----------------------------------------------------------------------------
 //      Mouse Interface
@@ -99,17 +99,40 @@ void DDIOShowCursor(BOOL show) {
   if (show) {
     if (DDIO_mouse_state.cursor_count == -1) {
       ShowCursor(TRUE);
+      if (rawInputOpened) {
+        RAWINPUTDEVICE rawInputDevice = {};
+        rawInputDevice.usUsage = 0x0002;
+        rawInputDevice.usUsagePage = 0x0001;
+        rawInputDevice.dwFlags = 0;
+        rawInputDevice.hwndTarget = DInputData.hwnd;
+
+        if (RegisterRawInputDevices(&rawInputDevice, 1, sizeof(rawInputDevice)) == FALSE) {
+          Int3();
+        }
+      }
     }
     DDIO_mouse_state.cursor_count = 0;
   } else {
     if (DDIO_mouse_state.cursor_count == 0) {
       ShowCursor(FALSE);
+      if (rawInputOpened) {
+        RAWINPUTDEVICE rawInputDevice = {};
+        rawInputDevice.usUsage = 0x0002;
+        rawInputDevice.usUsagePage = 0x0001;
+        rawInputDevice.dwFlags = RIDEV_NOLEGACY | RIDEV_CAPTUREMOUSE;
+        rawInputDevice.hwndTarget = DInputData.hwnd;
+
+        if (RegisterRawInputDevices(&rawInputDevice, 1, sizeof(rawInputDevice)) == FALSE) {
+          Int3();
+        }
+      }
     }
     DDIO_mouse_state.cursor_count = -1;
   }
 }
 
 void ddio_MouseMode(int mode) {
+  mprintf((0, "mouse mode set to %d\n", mode));
   if (mode == MOUSE_EXCLUSIVE_MODE) {
     DDIOShowCursor(FALSE);
   } else if (mode == MOUSE_STANDARD_MODE) {
@@ -356,9 +379,45 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
         // DDIO_mouse_state.btn_mask = buttons;
       }
 
-      DDIO_mouse_state.x += (float)rawinput->data.mouse.lLastX;
-      ;
-      DDIO_mouse_state.y += rawinput->data.mouse.lLastY;
+      // In standard mode, sync the software cursor to the hardware cursor
+      if (DDIO_mouse_state.mode == MOUSE_STANDARD_MODE) {
+        POINT mousept;
+        if (!GetCursorPos(&mousept))
+          Int3();
+        if (!ScreenToClient(hWnd, &mousept))
+          Int3();
+        // Get the client rectangle of the window and map brect to it.
+        RECT clientrect;
+        if (!GetClientRect(hWnd, &clientrect))
+          Int3();
+
+        int brectwidth = DDIO_mouse_state.brect.right - DDIO_mouse_state.brect.left;
+        int brectheight = DDIO_mouse_state.brect.bottom - DDIO_mouse_state.brect.top;
+        int clientrectwidth = clientrect.right - clientrect.left;
+        int clientrectheight = clientrect.bottom - clientrect.top;
+
+        float brectaspect = (float)brectwidth / brectheight;
+        float clientrectaspect = (float)clientrectwidth / clientrectheight;
+
+        int xoffset, yoffset;
+        float scale;
+        if (brectaspect < clientrectaspect) // base screen is less wide, so pillarbox it
+        {
+          yoffset = 0;
+          scale = (float)brectheight / clientrectheight;
+          xoffset = (clientrectwidth - (clientrectheight * brectaspect)) / 2;
+        } else // base screen is more wide, so letterbox it
+        {
+          xoffset = 0;
+          scale = (float)brectwidth / clientrectwidth;
+          yoffset = (clientrectheight - (clientrectwidth / brectaspect)) / 2;
+        }
+        DDIO_mouse_state.x = ((mousept.x - xoffset) * scale);
+        DDIO_mouse_state.y = ((mousept.y - yoffset) * scale);
+      } else {
+        DDIO_mouse_state.x += rawinput->data.mouse.lLastX;
+        DDIO_mouse_state.y += rawinput->data.mouse.lLastY;
+      }
       DDIO_mouse_state.z = 0;
 
       // check bounds of mouse cursor.
@@ -384,18 +443,17 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
 bool InitNewMouse() {
   int i;
   if (!rawInputOpened) {
+    mprintf((0, "starting up raw input\n"));
     char buf[256];
     RAWINPUTDEVICE rawInputDevice = {};
 
     rawInputDevice.usUsage = 0x0002;
     rawInputDevice.usUsagePage = 0x0001;
-    //TODO: This code should be renabled when some solution for mouse capturing is decided on.
-    // The game should free the capture when the cursor is visible, and recapture it when it isn't visible.
     // Account for the original mode.
-    //if (DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE)
+    if (DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE)
       rawInputDevice.dwFlags = RIDEV_CAPTUREMOUSE | RIDEV_NOLEGACY;
-    //else
-    //  rawInputDevice.dwFlags = 0;
+    else
+      rawInputDevice.dwFlags = 0;
 
     rawInputDevice.hwndTarget = DInputData.hwnd;
 

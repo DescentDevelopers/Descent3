@@ -1288,6 +1288,9 @@ void SaveGameSettings() {
   Database->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
 
   Database->write("RS_resolution", Game_video_resolution);
+  Database->write("RS_windowwidth", Game_window_res_width);
+  Database->write("RS_windowheight", Game_window_res_height);
+  Database->write("RS_fullscreen", Game_fullscreen);
 
   Database->write("RS_bitdepth", Render_preferred_bitdepth);
   Database->write("RS_bilear", Render_preferred_state.filtering);
@@ -1457,6 +1460,8 @@ void LoadGameSettings() {
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &Game_video_resolution);
   Database->read_int("RS_bilear", &Render_preferred_state.filtering);
+  Database->read_int("RS_windowwidth", &Game_window_res_width);
+  Database->read_int("RS_windowheight", &Game_window_res_height);
   Database->read_int("RS_mipping", &Render_preferred_state.mipping);
   Database->read_int("RS_color_model", &Render_state.cur_color_model);
   Database->read_int("RS_light", &Render_state.cur_light_state);
@@ -1551,16 +1556,6 @@ void LoadGameSettings() {
 
   Database->read_int("PredefDetailSetting", &level);
   ConfigSetDetailLevel(level);
-  int widtharg = FindArg("-Width");
-  int heightarg = FindArg("-Height");
-  if (widtharg) {
-    Video_res_list[N_SUPPORTED_VIDRES - 1].width = atoi(GameArgs[widtharg + 1]);
-    Game_video_resolution = N_SUPPORTED_VIDRES - 1;
-  }
-  if (heightarg) {
-    Video_res_list[N_SUPPORTED_VIDRES - 1].height = atoi(GameArgs[heightarg + 1]);
-    Game_video_resolution = N_SUPPORTED_VIDRES - 1;
-  }
 
   // Motion blur
   Use_motion_blur = 0;
@@ -1680,7 +1675,7 @@ void InitIOSystems(bool editor) {
     Error("I/O initialization failed.");
   }
 
-  if (!editor && !FindArg("-windowed")) {
+  if (!editor) {
     if (Dedicated_server) {
       ddio_MouseMode(MOUSE_STANDARD_MODE);
     } else {
@@ -2553,7 +2548,7 @@ void RestartD3() {
     Error("I/O initialization failed.");
   }
 
-  if (!FindArg("-windowed")) {
+  if (ShouldCaptureMouse()) {
     if (Dedicated_server) {
       ddio_MouseMode(MOUSE_STANDARD_MODE);
     } else {
