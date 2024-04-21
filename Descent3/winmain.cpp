@@ -62,7 +62,7 @@ const char *German_strings[] = {
     "Die DirectX Version konnte nicht abgerufen werden.",
     "Descent 3 benötigt DirectX 3 oder höher auf diesem Computer.",
     "In dieser Windows NT Version ist DirectX 3 oder höher nicht installiert.",
-    "Ihr Prozessor und System muss Katmai unterstützen, um dieses Spiel ausführen zu können."}
+    "Ihr Prozessor und System muss Katmai unterstützen, um dieses Spiel ausführen zu können."};
 
 const char *Italian_strings[] = {
     "Descent 3 per Windows NT richiede la versione NT 4.0 o superiore.",
@@ -73,7 +73,7 @@ const char *Italian_strings[] = {
     "Versione di DirectX non trovata.",
     "Descent 3 richiede l'installazione di DirectX 3 o superiore.",
     "DirectX 3 o superiore non trovato in questa versione di Windows NT.",
-    "Per questo gioco occorrono un processore e un sistema che supportino Katmai."}
+    "Per questo gioco occorrono un processore e un sistema che supportino Katmai."};
 
 const char *Spanish_strings[] = {
     "Descent 3 bajo Windows NT requiere versión 4.0 o mejor para correr.",
@@ -84,7 +84,7 @@ const char *Spanish_strings[] = {
     "Falla en la detección de la versión de DirectX.",
     "Descent 3 requiere DirectX 3 o mejor en el ordenador.",
     "Esta versión de Windows NT no tiene DirectX 3 o mejor instalado.",
-    "Vuestro procesador y ordenador deben soportar Katmai para correr este juego."}
+    "Vuestro procesador y ordenador deben soportar Katmai para correr este juego."};
 
 #if 0
 const char *Polish_strings[] = {
