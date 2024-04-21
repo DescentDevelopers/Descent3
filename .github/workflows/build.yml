@@ -42,10 +42,10 @@ jobs:
         run: cmake --preset ${{ matrix.os.preset }}
 
       - name: Debug Build
-        run: cmake --build --preset ${{ matrix.os.preset }} --config Debug
+        run: cmake --build --preset ${{ matrix.os.preset }} --config Debug --verbose
 
       - name: Release Build
-        run: cmake --build --preset ${{ matrix.os.preset }} --config Release
+        run: cmake --build --preset ${{ matrix.os.preset }} --config Release --verbose
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
