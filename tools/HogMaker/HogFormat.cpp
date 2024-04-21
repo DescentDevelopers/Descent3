@@ -20,6 +20,7 @@
 #include "IOOps.h"
 
 #include <fstream>
+#include <cstring>
 
 namespace D3 {
 
