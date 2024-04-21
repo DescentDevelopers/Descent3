@@ -748,6 +748,7 @@ struct video_menu {
     // video resolution
     window_width = Game_window_res_width;
     window_height = Game_window_res_height;
+    sheet->NewGroup(TXT_RESOLUTION, 0, 0);
     buffer = sheet->AddChangeableText(RESBUFFER_SIZE);
     snprintf(buffer, RESBUFFER_SIZE, "%d x %d", Game_window_res_width, Game_window_res_height);
     sheet->AddLongButton("Change...", IDV_CHANGEWINDOW);
