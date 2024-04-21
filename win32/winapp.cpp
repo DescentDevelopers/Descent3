@@ -251,7 +251,13 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
   } else {
     //	initialize main window and display it.
 #ifdef RELEASE
-    SetRect(&rect, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+    // TODO: Fix custom window resolution when original code below is active.
+    // After the change to properly set RELEASE for Release builds, this call
+    // breaks resolution of menu screens, videos and ingame huds.
+    // So for now, we keep the debug version of this call that was active before
+    // that change and works consistently at least.
+    //SetRect(&rect, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+    SetRect(&rect, 0, 0, 640, 480);
 #else
     SetRect(&rect, 0, 0, 640, 480);
 #endif
