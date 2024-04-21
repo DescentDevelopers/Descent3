@@ -1051,11 +1051,14 @@ bool ObjectsAreRelated(int o1, int o2) {
 
   //	Here is the 09/07/94 change -- Siblings must be identical, others can hurt each other
   // See if they're siblings...
-  if (obj1->parent_handle == obj2->parent_handle)
-    if ((obj1->mtype.phys_info.flags & PF_HITS_SIBLINGS) || (obj2->mtype.phys_info.flags & PF_HITS_SIBLINGS))
+  if (obj1->parent_handle == obj2->parent_handle) {
+    if ((obj1->mtype.phys_info.flags & PF_HITS_SIBLINGS) || (obj2->mtype.phys_info.flags & PF_HITS_SIBLINGS)) {
       return false; // if either is proximity, then can blow up, so say not related
-    else
+    }
+    else {
       return true;
+    }
+  }
 
   // Otherwise, it is two weapons and by default, they should not collide
   return true;

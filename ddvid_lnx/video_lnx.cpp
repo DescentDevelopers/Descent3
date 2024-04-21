@@ -201,7 +201,7 @@ void ddvid_LockFrameBuffer(ubyte **data, int *pitch) {
       return;
     }
 
-    //*data = vga_getgraphmem();
+    // *data = vga_getgraphmem();
     *pitch = DDVideo_info.info->linewidth;
   */
 }

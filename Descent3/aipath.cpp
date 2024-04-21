@@ -84,7 +84,7 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
 
   PQPath.push(start_node);
 
-  while (cur_node = PQPath.pop()) {
+  while ((cur_node = PQPath.pop())) {
     node_list[BOA_INDEX(cur_node->roomnum)] = cur_node;
     ASSERT(BOA_INDEX(cur_node->roomnum) >= 0 && BOA_INDEX(cur_node->roomnum) <= Highest_room_index + 8);
 

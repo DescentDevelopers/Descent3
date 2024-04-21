@@ -1161,6 +1161,14 @@ bool GameSequencer() {
 
   // interpret current function mode.
   switch (GetFunctionMode()) {
+  case INIT_MODE:
+  case GAME_MODE:
+  case EDITOR_MODE:
+  case EDITOR_GAME_MODE:
+  case MENU_MODE:
+  case QUIT_MODE:
+  case CREDITS_MODE:
+    break;
   case RESTORE_GAME_MODE:
   case LOADDEMO_MODE:
   case GAMEGAUGE_MODE:
@@ -1173,6 +1181,8 @@ bool GameSequencer() {
     old_game_state = Game_state;
 
     switch (Game_state) {
+    case GAMESTATE_IDLE:
+      break;
     case GAMESTATE_NEW:
       StartNewGame();
       SetGameState(GAMESTATE_LVLSTART);

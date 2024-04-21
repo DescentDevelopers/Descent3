@@ -4152,7 +4152,7 @@ inline bool IsTargetLocal(object *obj, object *target) {
   int i;
 
   // If they are in the same room
-  if (target_room = obj->roomnum) {
+  if ((target_room = obj->roomnum)) {
     return true;
   }
 

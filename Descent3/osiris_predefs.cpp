@@ -1931,7 +1931,7 @@ int osipf_AIFindObjOfType(int objhandle, int type, int id, bool f_ignore_init_ro
     return OBJECT_HANDLE_NONE;
   }
 
-  if (f_obj = AIFindObjOfType(obj, type, id, f_ignore_init_room, parent_handle))
+  if ((f_obj = AIFindObjOfType(obj, type, id, f_ignore_init_room, parent_handle)))
     return f_obj->handle;
 
   return OBJECT_HANDLE_NONE;
@@ -2597,7 +2597,7 @@ int osipf_ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matri
 
     if (Game_mode & GM_MULTI) {
       // ASSERT (Netgame.local_role==LR_SERVER);
-      if ((Netgame.local_role == LR_SERVER)) {
+      if (Netgame.local_role == LR_SERVER) {
         MultiSendObject(obj, 0);
       }
     }
