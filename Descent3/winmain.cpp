@@ -53,15 +53,15 @@ const char *French_strings[] = {
     "Votre processeur et votre systFme doivent prendre en charge Katmai pour exTcuter ce jeu."};
 
 const char *German_strings[] = {
-    "Descent3 unter Windows NT ben÷tigt fnr die Ausfnhrung die NT-Version 4.0 oder h÷her",
-    "Descent 3 ben÷tigt fnr die Ausfnhrung Windows 9x, NT 4.0 oder h÷her.",
+    "Descent3 unter Windows NT benÃ·tigt fnr die Ausfnhrung die NT-Version 4.0 oder hÃ·her",
+    "Descent 3 benÃ·tigt fnr die Ausfnhrung Windows 9x, NT 4.0 oder hÃ·her.",
     "",
     "Sie mnssen DirectX nber den Descent 3 Starter installieren, bevor Sie fortsetzen.",
-    "Sie mnssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausfnhren zu k÷nnen.",
+    "Sie mnssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausfnhren zu kÃ·nnen.",
     "Die DirectX Version konnte nicht abgerufen werden.",
-    "Descent 3 ben÷tigt DirectX 3 oder h÷her auf diesem Computer.",
-    "In dieser Windows NT Version ist DirectX 3 oder h÷her nicht installiert.",
-    "Ihr Prozessor und System mu¯ Katmai unterstntzen, um dieses Spiel auszufnhren."};
+    "Descent 3 benÃ·tigt DirectX 3 oder hÃ·her auf diesem Computer.",
+    "In dieser Windows NT Version ist DirectX 3 oder hÃ·her nicht installiert.",
+    "Ihr Prozessor und System muÂ¯ Katmai unterstntzen, um dieses Spiel auszufnhren."};
 
 const char *Italian_strings[] = {
     "Descent 3 per Windows NT richiede la versione NT 4.0 o superiore.",
@@ -79,22 +79,22 @@ const char *Spanish_strings[] = {"Descent 3 bajo Windows NT requiere version 4.0
                                  "",
                                  "Debe instalar DirectX desde el lanzador de Descent 3 antes de continuar.",
                                  "Debe instalar por lo menos Service Pack 3 para correr Descent 3 bajo Windows NT 4.0.",
-                                 "Falla en la detección de la versión de DirectX.",
+                                 "Falla en la detecciÃ³n de la versiÃ³n de DirectX.",
                                  "Descent 3 requiere DirectX 3 o mejor en el ordenador.",
-                                 "Esta versión de Windows NT no tiene DirectX 3 o mejor instalado.",
+                                 "Esta versiÃ³n de Windows NT no tiene DirectX 3 o mejor instalado.",
                                  "Vuestro procesador y ordenador deben soportar Katmai para correr este juego."};
 
 #if 0
 const char *Polish_strings[] = {
-	"Aby uruchomi‘ grˆ Descent 3 potrzebujesz Windows NT w wersji 4.0 lub nowszej.",
+	"Aby uruchomiâ€˜ grË† Descent 3 potrzebujesz Windows NT w wersji 4.0 lub nowszej.",
 	"Descent 3 wymaga Windows 9x albo Windows NT w wersji 4.0 lub nowszej.",
 	"",
-	"Zanim uruchomisz grˆ, musisz zainstalowa‘ DirectX przy u¨yciu programu startowego.",
-	"Musisz zainstalowa‘ co najmniej Service Pack 3, aby uruchomi‘ grˆ Descent 3 pod Windows NT 4.0.",
-	"Nie uda3o siˆ odczyta‘ numeru wersji sterownik¢w DirectX.",
-	"Descent 3 wymaga sterownik¢w DirectX 3 lub nowszych.",
-	"Ta wersja Windows NT nie ma zainstalowanych sterownik¢w DirectX 3 lub nowszych.",
-	"Tw¢j procesor musi obs3ugiwa‘ rozkazy Katmai, aby uruchomi‘ grˆ."
+	"Zanim uruchomisz grË†, musisz zainstalowaâ€˜ DirectX przy uÂ¨yciu programu startowego.",
+	"Musisz zainstalowaâ€˜ co najmniej Service Pack 3, aby uruchomiâ€˜ grË† Descent 3 pod Windows NT 4.0.",
+	"Nie uda3o siË† odczytaâ€˜ numeru wersji sterownikÂ¢w DirectX.",
+	"Descent 3 wymaga sterownikÂ¢w DirectX 3 lub nowszych.",
+	"Ta wersja Windows NT nie ma zainstalowanych sterownikÂ¢w DirectX 3 lub nowszych.",
+	"TwÂ¢j procesor musi obs3ugiwaâ€˜ rozkazy Katmai, aby uruchomiâ€˜ grË†."
 };
 #endif
 
@@ -614,11 +614,13 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
 #endif
 
 #ifndef GAMEGAUGE
-  if (!FindArg("-launched") && !FindArg("-dedicated") && !FindArg("-timetest")) {
-    MessageBox(NULL, "You cannot run this program directly.  Please run \"" PRODUCT_NAME ".exe\".",
-               PRODUCT_NAME " Error", MB_OK);
-    return 0; // pre init return
-  }
+if (!FindArg("-launched") && !FindArg("-dedicated") && !FindArg("-timetest")) {
+    int result = MessageBox(NULL, "Bypassing the launcher might break some settings. Launch anyway?", PRODUCT_NAME " Error", MB_YESNO);
+    if (result == IDYES) {
+    } else {
+        return 0;
+    }
+}
 #endif
 
   if (Dedicated_server) {
