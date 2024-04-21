@@ -36,7 +36,8 @@ std::ostream &operator<<(std::ostream &output, HogFileEntry &entry) {
   // Prevent buffer overflow
   char outBytes[36] = {0};
   auto tmp = entry.name.c_str();
-  strcpy(outBytes, tmp);
+  // FIXME: better conversion under Windows
+  strcpy(outBytes, (const char *)&tmp[0]);
   output.write(outBytes, 36);
   bin_write(output, entry.flags);
   bin_write(output, entry.len);
