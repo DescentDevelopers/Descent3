@@ -50,11 +50,6 @@ typedef sint32 (*ReadDataFunction)(void *pData, void *pBuffer, unsigned int amou
 IAudioDecoder *CreateDecoder(ReadDataFunction reader, void *pData, uint32 &numChannels, uint32 &sampleRate,
                              uint32 &sampleCount);
 
-// Optional interface for supplying your own malloc and free functions
-// Default is to use standard malloc and free.
-typedef void *(*MemoryAllocFunc)(uint32 size);
-typedef void (*MemoryFreeFunc)(void *p);
-void RegisterMemoryFunctions(MemoryAllocFunc memAlloc, MemoryFreeFunc memFree);
 } // namespace AudioDecoder
 
 #endif

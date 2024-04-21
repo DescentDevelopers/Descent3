@@ -28,11 +28,6 @@
 using namespace AudioDecoder;
 
 namespace {
-// default memory allocation function
-void *DefaultMalloc(uint32 size) { return malloc(size); }
-
-// default memory release function
-void DefaultFree(void *pPtr) { free(pPtr); }
 
 // Constants
 const uint32 kBitBufferSize = 64 * 1024;
@@ -69,10 +64,6 @@ public:
   // Returns the number of bytes read - zero when we're at the end of the file
   uint32 Read(void *pBuffer, uint32 amount);
 
-  // Operator overloads
-  void *operator new(size_t numBytes);
-  void operator delete(void *pPtr);
-
   // Unpackers
   static bool UnpackZeroFill(InternalAudioDecoder &decoder, uint32 id, uint32 col, bool &atEOF);
   static bool UnpackIgnore(InternalAudioDecoder &decoder, uint32 id, uint32 col, bool &atEOF);
@@ -88,8 +79,6 @@ public:
   static bool UnpackT15(InternalAudioDecoder &decoder, uint32 id, uint32 col, bool &atEOF);
   static bool UnpackT27(InternalAudioDecoder &decoder, uint32 id, uint32 col, bool &atEOF);
   static bool UnpackT37(InternalAudioDecoder &decoder, uint32 id, uint32 col, bool &atEOF);
-
-  static void SetMemoryFunctions(MemoryAllocFunc memAlloc, MemoryFreeFunc memFree);
 
 private:
   // Read data from the read function
@@ -132,8 +121,6 @@ private:
 
   // Memory management
   void *m_pMemoryBuffer;
-  static MemoryAllocFunc s_Malloc;
-  static MemoryFreeFunc s_Free;
 };
 
 // Tables
@@ -173,12 +160,6 @@ const uint8 gMul2x11[121] = {
 /*                   Interface Functions                      */
 /**************************************************************/
 
-// Optional interface for supplying your own malloc and free functions
-// Default is to use standard malloc and free.
-void RegisterMemoryFunctions(MemoryAllocFunc memAlloc, MemoryFreeFunc memFree) {
-  InternalAudioDecoder::SetMemoryFunctions(memAlloc, memFree);
-}
-
 // Create an audio decoder
 // You supply a function for reading bytes from the compressed data via a
 // void* pData handle, and the handle itself (typically a FILE *).
@@ -212,30 +193,6 @@ IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction, void
 }
 
 /**************************************************************/
-/*                      Memory Management                     */
-/**************************************************************/
-
-// Static memory
-MemoryAllocFunc InternalAudioDecoder::s_Malloc = DefaultMalloc;
-MemoryFreeFunc InternalAudioDecoder::s_Free = DefaultFree;
-
-void InternalAudioDecoder::SetMemoryFunctions(MemoryAllocFunc memAlloc, MemoryFreeFunc memFree) {
-  if ((memAlloc && !memFree) || (!memAlloc && memFree))
-    return;
-
-  s_Malloc = (memAlloc) ? memAlloc : DefaultMalloc;
-  s_Free = (memFree) ? memFree : DefaultFree;
-}
-
-void *InternalAudioDecoder::operator new(size_t numBytes) { return s_Malloc(static_cast<uint32>(numBytes)); }
-
-void InternalAudioDecoder::operator delete(void *pPtr) {
-  if (pPtr) {
-    s_Free(pPtr);
-  }
-}
-
-/**************************************************************/
 /*                         Construction                       */
 /**************************************************************/
 
@@ -250,7 +207,7 @@ InternalAudioDecoder::InternalAudioDecoder(ReadDataFunction readerFunction, void
 // Initialize the decoder
 bool InternalAudioDecoder::Initialize() {
   // Allocate the bit buffer before we start reading it
-  m_pFileBitBuffer = reinterpret_cast<uint8 *>(s_Malloc(kBitBufferSize));
+  m_pFileBitBuffer = reinterpret_cast<uint8 *>(malloc(kBitBufferSize));
   if (!m_pFileBitBuffer)
     return false;
 
@@ -310,7 +267,7 @@ bool InternalAudioDecoder::Initialize() {
   const size_t wrapMemSize = m_wrapBufferLength * sizeof(uint32);
   const size_t ampMemSize = kNumAmpSamples * sizeof(uint32);
   const size_t totalMemSize = blockMemSize + wrapMemSize + ampMemSize;
-  m_pMemoryBuffer = s_Malloc(static_cast<uint32>(totalMemSize));
+  m_pMemoryBuffer = malloc(static_cast<uint32>(totalMemSize));
   if (m_pMemoryBuffer == NULL)
     return false;
 
@@ -333,11 +290,11 @@ bool InternalAudioDecoder::Initialize() {
 
 InternalAudioDecoder::~InternalAudioDecoder() {
   if (m_pMemoryBuffer) {
-    s_Free(m_pMemoryBuffer);
+    free(m_pMemoryBuffer);
   }
 
   if (m_pFileBitBuffer) {
-    s_Free(m_pFileBitBuffer);
+    free(m_pFileBitBuffer);
   }
 }
 
