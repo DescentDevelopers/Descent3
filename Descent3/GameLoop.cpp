@@ -885,8 +885,8 @@
 extern bool Display_renderer_stats;
 
 // Current zoom factor (this is the tan of 29.25, which is half our FOV of 58.5)
-float Render_FOV = D3_DEFAULT_FOV;
-float Render_zoom = D3_DEFAULT_ZOOM;
+float Render_FOV = newfov;
+float Render_zoom = newzoom;
 
 // How long (in seconds) the last frame took
 float Frametime = .1f;
@@ -1040,7 +1040,7 @@ void SelectNextCameraView(int window) {
   switch (current) {
   case CV_NONE:
     Camera_view_mode[window] = CV_REARVIEW;
-    CreateSmallView(window, Player_object->handle, SVF_REARVIEW, 0.0, D3_DEFAULT_ZOOM, -1, TXT_VIEW_REAR);
+    CreateSmallView(window, Player_object->handle, SVF_REARVIEW, 0.0, newzoom, -1, TXT_VIEW_REAR);
     if (window == 0)
       Current_pilot.lrearview_enabled = true; // set to true.
     else if (window == 2)
@@ -1056,7 +1056,7 @@ void SelectNextCameraView(int window) {
 
     if (objp && objp->type == OBJ_ROBOT) { // Not hidden
       Camera_view_mode[window] = CV_GUIDEBOT;
-      CreateSmallView(window, objp->handle, 0, 0.0, D3_DEFAULT_ZOOM, -1, TXT_VIEW_GUIDEBOT);
+      CreateSmallView(window, objp->handle, 0, 0.0, newzoom, -1, TXT_VIEW_GUIDEBOT);
       break;
     }
     // If no GB, then fall into next case
@@ -1093,7 +1093,7 @@ void SelectNextCameraView(int window) {
           char buf[25];
           snprintf(buf, sizeof(buf), TXT_VIEW_MARKER, num + 1);
 
-          CreateSmallView(window, Objects[i].handle, 0, 0.0, D3_DEFAULT_ZOOM, -1, buf);
+          CreateSmallView(window, Objects[i].handle, 0, 0.0, newzoom, -1, buf);
           Camera_view_mode[window] = CV_MARKER1 + num;
 
           break;
@@ -1118,7 +1118,7 @@ void InitCameraViews(bool total_reset) {
       Camera_view_mode[i] = CV_NONE;
     } else { // is rear view, so keep it
       Camera_view_mode[i] = CV_REARVIEW;
-      CreateSmallView(i, Player_object->handle, SVF_REARVIEW, 0.0, D3_DEFAULT_ZOOM, -1, TXT_VIEW_REAR);
+      CreateSmallView(i, Player_object->handle, SVF_REARVIEW, 0.0, newzoom, -1, TXT_VIEW_REAR);
     }
   }
 }
@@ -1127,13 +1127,13 @@ void RestoreCameraRearviews() {
   if (Camera_view_mode[0] != CV_REARVIEW) {
     if (Current_pilot.lrearview_enabled) {
       Camera_view_mode[0] = CV_REARVIEW;
-      CreateSmallView(0, Player_object->handle, SVF_REARVIEW, 0.0, D3_DEFAULT_ZOOM, -1, TXT_VIEW_REAR);
+      CreateSmallView(0, Player_object->handle, SVF_REARVIEW, 0.0, newzoom, -1, TXT_VIEW_REAR);
     }
   }
   if (Camera_view_mode[2] != CV_REARVIEW) {
     if (Current_pilot.rrearview_enabled) {
       Camera_view_mode[2] = CV_REARVIEW;
-      CreateSmallView(2, Player_object->handle, SVF_REARVIEW, 0.0, D3_DEFAULT_ZOOM, -1, TXT_VIEW_REAR);
+      CreateSmallView(2, Player_object->handle, SVF_REARVIEW, 0.0, newzoom, -1, TXT_VIEW_REAR);
     }
   }
 }

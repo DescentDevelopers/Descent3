@@ -2686,7 +2686,7 @@ void DoZoomStay() {
     if (Zoom_fov_time < 0) {
       Zoom_fov_time = 0;
       Players[Player_num].flags &= ~PLAYER_FLAGS_ZOOMED;
-      Render_FOV = D3_DEFAULT_FOV;
+      Render_FOV = newfov;
     }
   }
 }
@@ -2695,7 +2695,7 @@ void DoZoomStay() {
 void DoZoomEffect(player_weapon *pw, ubyte clear) {
   if (pw->firing_time < .5) {
     Players[Player_num].turn_scalar = 1.0;
-    Render_FOV = D3_DEFAULT_FOV;
+    Render_FOV = newfov;
 
     if (!clear)
       DoZoomStay();
@@ -2744,7 +2744,7 @@ void DoZoomEffect(player_weapon *pw, ubyte clear) {
   // calculate zoom effect
   float norm = (pw->firing_time - .5) * 2;
 
-  Render_FOV = (ZOOM_FOV_TARGET * norm) + ((1.0 - norm) * D3_DEFAULT_FOV);
+  Render_FOV = (ZOOM_FOV_TARGET * norm) + ((1.0 - norm) * newfov);
 
   return;
 }

@@ -3758,7 +3758,7 @@ void TCSSSCallback(void) {
 
   grtext_Flush();
   StartFrame(325, 142, 535, 280);
-  g3_StartFrame(&viewer_eye, &viewer_orient, D3_DEFAULT_ZOOM);
+  g3_StartFrame(&viewer_eye, &viewer_orient, newzoom);
   rend_SetFlatColor(0);
 
   float normalized_time[MAX_SUBOBJECTS];

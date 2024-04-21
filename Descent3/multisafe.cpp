@@ -2083,7 +2083,7 @@ void msafe_CallFunction(ubyte type, msafe_struct *mstruct) {
     break;
   case MSAFE_MISC_POPUP_CAMERA: {
     CreateSmallView(SVW_LEFT, mstruct->objhandle, SVF_POPUP + SVF_BIGGER, mstruct->interval,
-                    D3_DEFAULT_ZOOM / mstruct->scalar, mstruct->gunpoint);
+                    newzoom / mstruct->scalar, mstruct->gunpoint);
     break;
   }
   case MSAFE_MISC_CLOSE_POPUP:

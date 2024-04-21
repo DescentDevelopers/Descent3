@@ -224,7 +224,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
       if (!Game_toggles.guided_mainview && obj->id == Player_num) {
         int window = (Missile_camera_window < 0) ? SVW_LEFT : Missile_camera_window;
         CreateSmallView(window, Objects[weapon_obj].handle, SVF_POPUP + SVF_BIGGER + SVF_CROSSHAIRS, 0.0,
-                        D3_DEFAULT_ZOOM, -1, TXT_HUD_GUIDED);
+                        newzoom, -1, TXT_HUD_GUIDED);
       }
     }
   }

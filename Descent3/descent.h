@@ -174,9 +174,9 @@ extern bool Descent_overrided_intro;
 #define GAMEGAUGE_MAX_LOG 1000
 
 // This is the default FOV
-#define D3_DEFAULT_FOV 90.0
+#define D3_DEFAULT_FOV 72.0
 // This is the default zoom factor to be used for the game 3D view.
-#define D3_DEFAULT_ZOOM 0.580f
+#define D3_DEFAULT_ZOOM 0.726f
 
 // How long the a mission name can be
 #define MSN_NAMELEN 32
@@ -192,6 +192,8 @@ extern oeApplication *Descent;                  // The Descent object
 extern oeAppDatabase *Database;                 // The Database
 extern char Descent3_temp_directory[_MAX_PATH]; // temp directory to put temp files
 extern bool Katmai;                             // whether or not katmai is detected
+extern float newfov;
+extern float newzoom;
 //	---------------------------------------------------------------------------
 //	Functions
 

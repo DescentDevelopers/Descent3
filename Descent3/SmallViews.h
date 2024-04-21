@@ -93,7 +93,7 @@ extern bool Guided_missile_smallview;
 //					gun_num - which gun to view from. if -1, use viewer's center and orientation.
 //					label - the label for the window
 // Returns:		which window was opened, or -1 if window couldn't be created
-int CreateSmallView(int window, int objhandle, int flags = 0, float time = 0.0, float zoom = D3_DEFAULT_ZOOM,
+int CreateSmallView(int window, int objhandle, int flags = 0, float time = 0.0, float zoom = newzoom,
                     int gun_num = -1, char *label = NULL);
 
 // Called to get rid of all the small views & init system

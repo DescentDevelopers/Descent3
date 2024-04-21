@@ -1588,7 +1588,7 @@ void StartLevel() {
   SetHUDMode(GetHUDMode()); // what does this do?
 
   // Init zoom
-  Render_zoom = D3_DEFAULT_ZOOM;
+  Render_zoom = newzoom;
 
   // flush controller system.
 #ifndef MACINTOSH

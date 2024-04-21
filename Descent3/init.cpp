@@ -1050,6 +1050,8 @@ const float kAnglesPerDegree = 65536.0f / 360.0f;
 int CD_inserted = 0;
 float Mouselook_sensitivity = kAnglesPerDegree * kDefaultMouselookSensitivity;
 float Mouse_sensitivity = 1.0f;
+float newfov = 72.0;
+float newzoom = 0.726f;
 
 int IsLocalOk(void) {
 #ifdef WIN32
@@ -1560,6 +1562,20 @@ void LoadGameSettings() {
   if (heightarg) {
     Video_res_list[N_SUPPORTED_VIDRES - 1].height = atoi(GameArgs[heightarg + 1]);
     Game_video_resolution = N_SUPPORTED_VIDRES - 1;
+  }
+
+  // Field of View
+  int fovarg = FindArg("-fov");
+  if (fovarg) {
+  float newfov = atof(GameArgs[fovarg + 1]);
+    if (newfov >= 72.0 && newfov <= 120.0) {
+      // Calculate the new zoom factor
+	  float newzoom = 0.726f;
+    } 	
+    else {
+      // Handle invalid FOV value (e.g., print an error message)
+      printf("Error: Invalid FOV value. Using default FOV.\n");
+    }
   }
 
   // Motion blur

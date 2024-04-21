@@ -2441,7 +2441,7 @@ void DoFOVEvent(int eventnum, void *data) {
   new_time -= Frametime;
 
   if (new_time < 0) {
-    Render_zoom = D3_DEFAULT_ZOOM;
+    Render_zoom = newzoom;
   } else {
 
     float num = (Render_FOV / 2) + (norm * (TARGET_DEGREE - (Render_FOV / 2)));

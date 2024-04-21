@@ -3615,7 +3615,7 @@ void UI3DWindow::OnDraw() {
 
   //	3d start frame
   //@@@@@StartFrame(m_X,m_Y,m_X+m_W-1,m_Y+m_H-1);
-  g3_StartFrame(&viewer_eye, &viewer_orient, D3_DEFAULT_ZOOM);
+  g3_StartFrame(&viewer_eye, &viewer_orient, newzoom);
   rend_SetFlatColor(0);
 
   if (ship_model == -1) {

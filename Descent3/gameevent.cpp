@@ -94,7 +94,7 @@ void ClearAllEvents() {
   }
 
   SpewInit();
-  Render_zoom = D3_DEFAULT_ZOOM;
+  Render_zoom = newzoom;
 }
 
 // Returns an index of an allocated event
