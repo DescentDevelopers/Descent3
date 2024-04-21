@@ -40,7 +40,7 @@ cmake --build --preset mac --config [Debug/Release]
 ```
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build make cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386
 cmake --preset linux
 cmake --build --preset linux --config [Debug/Release]
 ```
