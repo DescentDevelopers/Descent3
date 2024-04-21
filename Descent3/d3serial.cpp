@@ -83,7 +83,7 @@
 #include "descent.h"
 #include <time.h>
 #include "mono.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "program.h"
 
 #include <fcntl.h>

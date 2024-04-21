@@ -10,4 +10,6 @@ set(CPPS
   viewport.cpp)
 
 add_library(2dlib STATIC ${HEADERS} ${CPPS})
-
+target_link_libraries(2dlib PRIVATE
+  cfile
+)

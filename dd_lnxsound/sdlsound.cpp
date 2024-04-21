@@ -30,7 +30,7 @@
 #include <dlfcn.h>
 #include <stdarg.h>
 #include <errno.h>
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "pserror.h"
 #include "mono.h"
 #include "soundload.h"

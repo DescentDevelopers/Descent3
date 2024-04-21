@@ -385,7 +385,7 @@
 #include "pserror.h"
 #include "grdefs.h"
 #include "mono.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 
 #include "init.h"
 #include "game.h"

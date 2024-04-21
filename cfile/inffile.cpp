@@ -20,9 +20,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "cfile/inffile.h"
+#include "inffile.h"
 
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "pstring.h"
 #include "pserror.h"
 

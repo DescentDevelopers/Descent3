@@ -20,7 +20,7 @@
 #include <windows.h>
 #endif
 
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "manage.h"
 #include "mono.h"
 #include "pserror.h"

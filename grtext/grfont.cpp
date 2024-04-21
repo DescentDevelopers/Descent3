@@ -108,7 +108,7 @@
  */
 
 #include "grtextlib.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "bitmap.h"
 #include "pserror.h"
 #include "renderer.h"

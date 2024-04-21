@@ -6,3 +6,6 @@ set(CPPS
   tracklist.cpp)
 
 add_library(music STATIC ${HEADERS} ${CPPS})
+target_link_libraries(music
+  cfile
+)

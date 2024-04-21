@@ -22,3 +22,6 @@ set(CPPS
   weaponpage.cpp)
 
 add_library(manage STATIC ${HEADERS} ${CPPS})
+target_link_libraries(manage PRIVATE
+  cfile
+)

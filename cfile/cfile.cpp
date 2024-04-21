@@ -38,8 +38,8 @@
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"
-#include "cfile/cfile.h"
-#include "cfile/hogfile.h" //info about library file
+#include "cfile.h"
+#include "hogfile.h" //info about library file
 #include "mem.h"
 
 // Library structures

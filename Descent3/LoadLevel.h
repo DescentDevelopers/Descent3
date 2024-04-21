@@ -443,7 +443,7 @@
  * $NoKeywords: $
  */
 
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "room.h"
 
 // Chunk types

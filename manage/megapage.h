@@ -21,7 +21,7 @@
 
 #include "manage.h"
 #include "megacell.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "pstypes.h"
 
 typedef struct {

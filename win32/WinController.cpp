@@ -320,7 +320,7 @@
 #include "ddio.h"
 #include "joystick.h"
 #include "Macros.h"
-#include "cfile/inffile.h"
+#include "inffile.h"
 
 // Sorry! This is needed for the semi-hacky mouselook support
 #include "descent.h"

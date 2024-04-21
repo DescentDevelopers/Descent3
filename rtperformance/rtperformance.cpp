@@ -64,7 +64,7 @@
 #include "descent.h"
 #include "manage.h"
 #include "ddio.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 
 #include <stdlib.h>
 #include <stdio.h>

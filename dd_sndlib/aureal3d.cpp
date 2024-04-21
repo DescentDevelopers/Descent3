@@ -98,7 +98,7 @@
 #include "pserror.h"
 #include "logfile.h"
 #include "Macros.h"
-#include "cfile/inffile.h"
+#include "inffile.h"
 
 typedef struct tA3D
 {

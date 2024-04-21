@@ -102,7 +102,7 @@
 #include "linux/linux_fix.h"
 #endif
 #include "byteswap.h"
-#include "cfile/hogfile.h"
+#include "hogfile.h"
 #include "pstypes.h"
 #include "Macros.h"
 #include "mem.h"

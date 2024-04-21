@@ -178,7 +178,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "manage.h"
 #include "pstypes.h"
 #include "pserror.h"

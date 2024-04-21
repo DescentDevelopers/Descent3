@@ -68,7 +68,7 @@
  */
 
 #include <stdio.h>
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "multi.h"
 #include "objinfo.h"
 #include "ship.h"

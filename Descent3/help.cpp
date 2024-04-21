@@ -132,7 +132,7 @@
 #include "ddio.h"
 #include "descent.h"
 #include "game.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "application.h"
 #include <stdlib.h>
 #include <string.h>

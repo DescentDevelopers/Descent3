@@ -35,7 +35,7 @@
 #include <dirent.h>
 #define _GNU_SOURCE
 #include <fnmatch.h>
-#include "cfile/hogfile.h"
+#include "hogfile.h"
 #endif
 
 #include "SDL.h"

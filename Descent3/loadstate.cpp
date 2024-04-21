@@ -181,7 +181,7 @@
 
 #include "gamesave.h"
 #include "descent.h"
-#include "cfile/cfile.h"
+#include "cfile.h"
 #include "Mission.h"
 #include "gamesequence.h"
 #include "gameevent.h"
