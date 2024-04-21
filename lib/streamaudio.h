@@ -244,12 +244,9 @@ public:
 #define STRM_BUFF_LOOPEND 0x4  // marks last buffer in measure
 class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
-#ifdef OLD_LIBACM
-  AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
-#else
   ACMStream *m_acm;
   acm_io_callbacks m_io;
-#endif
+
 #ifdef MACINTOSH
   SndDoubleBufferHeader doubleHeader;
   SndChannelPtr strm_channel;
