@@ -1,4 +1,4 @@
-set(HEADERS registry.h )
+set(HEADERS registry.h)
 set(CPPS
   lnxcon.cpp
   lnxcon_raw.cpp

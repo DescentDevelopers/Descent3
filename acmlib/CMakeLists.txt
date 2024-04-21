@@ -1,5 +1,5 @@
-set(HEADERS )
+set(HEADERS)
 set(CPPS
-	acmlib.cpp)
+  acmlib.cpp)
 
 add_library(acmlib STATIC ${HEADERS} ${CPPS})

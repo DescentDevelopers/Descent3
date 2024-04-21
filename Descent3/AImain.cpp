@@ -1573,20 +1573,20 @@ bool compute_dodge_dir(/* vector *dodge_dir, */ object *obj, object *dodge_obj);
 
 // Inside walkers will suck resources
 
-extern char *Ai_class_strings[MAX_AI_INIT_CLASSES] = {"Static", "Pure Path", "Fully AIS"};
+const char *const Ai_class_strings[MAX_AI_INIT_CLASSES] = {"Static", "Pure Path", "Fully AIS"};
 
-extern char *Ai_type_strings[MAX_AI_INIT_TYPES] = {
+const char *const Ai_type_strings[MAX_AI_INIT_TYPES] = {
     "Fly Lander", "Stalker", "Evader 1", "Evader 2", "Stationary Turret", "AIS", "Melee1", "Bird Flock 1", "Herd 1"};
 
-extern char *Ai_movement_type_strings[MAX_AI_INIT_MOVEMENT_TYPES] = {"Standing", "Flying", "Rolling", "Walking"};
+const char *const Ai_movement_type_strings[MAX_AI_INIT_MOVEMENT_TYPES] = {"Standing", "Flying", "Rolling", "Walking"};
 
 // AI Movement flying types
-extern char *Ai_movement_subtype_flying_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES] = {
+const char *const Ai_movement_subtype_flying_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES] = {
     "Normal", "Path", "Helicopter", "Hovercraft", "Jet", "Player", "Buddy"};
 
 // AI Movement walking types
 
-extern char *Ai_movement_subtype_walking_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES] = {
+const char *const Ai_movement_subtype_walking_strings[MAX_AI_INIT_MOVEMENT_SUBTYPES] = {
     "Restricted Flat", "Restricted Low-angle", "Restricted High_angle", "Non-restricted", "Water Only", "", ""};
 
 #define AI_MAX_MELEE_RANGE 5.0f

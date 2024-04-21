@@ -1,39 +1,49 @@
 # Descent 3
+This is the Descent 3 open source engine, licensed under [GPL-3.0](https://github.com/DescentDevelopers/Descent3?tab=GPL-3.0-1-ov-file). It includes the '1.5' patch written by Kevin Bentley and Jeff Slutter several years ago and brought to a stable condition by the Descent community. 
 
-## Update 04/17/2024
+In order to use this, you must provide your own game files. See the **Usage** section for details.
 
-Thank you for your contributions after only a little over 24 hours! The current short-term roadmap is code cleanup and build verification. As described below, the original release includes the '1.5' patch that never made it to retail. At the time it was written, 
-it worked--this may or may not be the case at present. We are aiming to clean up the source for improved readability and standards, as well as playability. In short: we'd like to reach a good baseline "vanilla" source.
+## Version 1.5 Notes
+There is no "release" yet. The current milestone is "1.5 Stable", which is meant to more or less be Descent 3 as it might have been if the 1.5 patch had made it to retail years ago. Artifacts can be downloaded from the [Actions](https://github.com/DescentDevelopers/Descent3/actions) tab. 
+The milestone needs testing on all platforms. Please report issues when found.
 
-We've had several contributions towards this end already. Please remember to check for duplicate issues and pull requests before submitting!
+## Usage
+Purchase Descent 3 from a reputable source and install it, then replace the main binary with your build. See your platform below:
 
-## Update 04/16/2024
+#### Windows
+In the install folder, rename `main.exe` to `main.old` and take your built `Descent3.exe`, name it `main.exe`, and add it to the install folder.
 
-I'm so happy to see the amount of interest and participation here! 
+#### MacOS
+Right-click Descent3.app, click Show Package Contents. Back up your `Descent3` binary and drop your built `Descent3` binary into the install (Contents/MacOS) folder.
 
-Please join the Descent Developer Discord, there's an active community there already. 
+#### Linux
+Back up your `Descent3` binary and drop your built `Descent3` binary into the install folder.
 
-<https://discord.gg/GNy5CUQ>
+## Building
+Build steps below assume you have already cloned the repository and entered it locally.
 
-You can expect some big commits coming soon. We'll be merging in some code that other developers did in parallel and/or after this code was archived.
+#### Building - Windows
+Requires Visual Studio C++ Tools (cmake and nmake)
+```
+cmake --preset win
+cmake --build --preset win --config [Debug/Release]
+```
 
-## Direction and Decisions
+#### Building - MacOS
+```
+brew bundle install
+cmake --preset mac
+cmake --build --preset mac --config [Debug/Release]
+```
 
-1. We will support c++17 going forward
-2. We are using clang in LLVM mode for code formatting. Please run clang-format before submitting a PR
-   
+#### Building - Linux
+```
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386
+cmake --preset linux
+cmake --build --preset linux --config [Debug/Release]
+```
 
-## Original Release
-This is the latest version of the Descent 3 source code. This includes the '1.5' patch that Jeff Slutter and Kevin Bentley wrote several years ago. At the time, it worked for Windows, Linux, and Mac. 
-
-Some proprietary sound and video libraries from Interplay have been stripped out (the ACM and MVE format). I have that code if someone wants to help make a converter so the old cutscenes work. It'll take some effort to stub out that code so it compiles. 
-
-The first thing I want to do is get everything compiling again, and ideally some CI/CD actions. After that, the code needs to be cleaned up some, to remove old version control comments, etc. A lot of this code was written by a really great team, but keep in mind we were much younger and less experienced back then.
-
-If you're interested in helping maintain it, please send me a message. Otherwise, I'm happy to take pull requests.
-
-This is the last update I put out there showing different architectures playing along. Yikes, that was a long time ago, sorry we never released a 1.5 patch. Some logistics got in the way!
-
-[![Descent3 1.5 Patch Development update](https://img.youtube.com/vi/oasEAoPHk7I/0.jpg)](https://www.youtube.com/watch?v=oasEAoPHk7I)
-
-Thanks to Jeff Slutter, who did most of the work modernizing the code from the 90's. I'm looking forward to seeing what the community does with it!
+## Contributing
+Anyone can contribute! We have an active Discord presence at [Descent Developer Network](https://discord.gg/GNy5CUQ). If you are interested in maintaining the project on a regular basis, please contact Kevin Bentley.

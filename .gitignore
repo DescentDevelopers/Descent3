@@ -28,6 +28,7 @@ x86/
 #[Aa][Rr][Mm]64/
 bld/
 [Bb]in/
+[Bb]uilds/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
@@ -404,8 +405,4 @@ cmake-build-*
 
 # Linux stuff
 build
-*.so
-
-
-# D3 specific
-*.hog
+builds
