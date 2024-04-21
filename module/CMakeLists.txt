@@ -1,5 +1,5 @@
-set(HEADERS )
+set(HEADERS)
 set(CPPS
-		module.cpp)
+  module.cpp)
 
 add_library(module STATIC ${HEADERS} ${CPPS})
