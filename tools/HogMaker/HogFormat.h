@@ -46,10 +46,10 @@ struct HogHeader {
 };
 
 struct HogFileEntry {
-  std::filesystem::path name; // file name (36 char max)
-  uint32_t flags;             // extra info
-  uint32_t len;               // length of file
-  uint32_t timestamp;         // time of file.
+  std::vector<char> name = std::vector<char>(36, 0); // file name (36 char max)
+  uint32_t flags;                                    // extra info
+  uint32_t len;                                      // length of file
+  uint32_t timestamp;                                // time of file.
 };
 
 class HogFormat {

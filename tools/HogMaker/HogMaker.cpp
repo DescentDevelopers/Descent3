@@ -85,7 +85,8 @@ int main(int argc, char *argv[]) {
   for (const auto &i : input_files) {
     try {
       D3::HogFileEntry entry;
-      entry.name = i.filename();
+      auto name = i.filename().u8string();
+      std::copy(name.begin(), name.end(), entry.name.begin());
       entry.flags = 0;
       entry.len = (uint32_t)file_size(i);
       entry.timestamp = (uint32_t)to_time_t(last_write_time(i));

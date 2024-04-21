@@ -33,8 +33,7 @@ std::ostream &operator<<(std::ostream &output, HogHeader &header) {
 }
 
 std::ostream &operator<<(std::ostream &output, HogFileEntry &entry) {
-  auto tmp = entry.name.c_str();
-  output.write((char *)&tmp[0], 36);
+  output.write((char *)&entry.name[0], 36);
   bin_write(output, entry.flags);
   bin_write(output, entry.len);
   bin_write(output, entry.timestamp);
