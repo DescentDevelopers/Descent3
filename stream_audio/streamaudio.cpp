@@ -614,8 +614,6 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
     m_playbytesleft -= m_buffer[m_fbufidx].nbytes;
     //		mprintf((0, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
     LOGFILE((_logfp, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
-    if(4284756==m_playbytesleft)
-      printf("!!!");
     if (m_playbytesleft <= (m_bufsize / 4)) {
       	mprintf((0, "STRM[%d]: ", m_curid));
       if (m_buffer[m_fbufidx].nbytes == 0) {
@@ -961,8 +959,7 @@ void AudioStream::UpdateData() {
     //		mprintf((0, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
     LOGFILE((_logfp, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
     mprintf((0, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
-    if(m_playbytesleft==4284756)
-      printf("!!!!");
+
     if (m_playbytesleft <= (m_bufsize / 4)) {
       //	mprintf((0, "STRM[%d]: ", m_curid));
       if (m_buffer[m_fbufidx].nbytes == 0) {
