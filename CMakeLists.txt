@@ -71,6 +71,8 @@ if(WIN32)
   endif()
 endif()
 
+add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
+
 include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
 
 # file(GLOB_RECURSE INCS "*.h")
