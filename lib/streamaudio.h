@@ -143,9 +143,15 @@
 #include "ssl_lib.h"
 #include "TaskSystem.h"
 
+extern "C" {
+#include "libacm.h"
+}
+
 void *AudioStreamCB(void *user_data, int handle, int *size);
 int ADecodeFileRead(void *data, void *buf, unsigned int qty);
 int StreamPlay(const char *filename, float volume, int flags);
+
+int acm_read(ACMStream *acm, void *dst, unsigned numbytes, int bigendianp, int wordlen, int sgned);
 void StreamStop(int handle);
 int StreamGetSoundHandle(int handle);
 
@@ -238,7 +244,12 @@ public:
 #define STRM_BUFF_LOOPEND 0x4  // marks last buffer in measure
 class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
+#ifdef OLD_LIBACM
   AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
+#else
+  ACMStream *m_acm;
+  acm_io_callbacks m_io;
+#endif
 #ifdef MACINTOSH
   SndDoubleBufferHeader doubleHeader;
   SndChannelPtr strm_channel;
@@ -279,6 +290,7 @@ class AudioStream {
 private:
   friend void *AudioStreamCB(void *user_data, int handle, int *size);
   friend int ADecodeFileRead(void *data, void *buf, unsigned int qty);
+  friend int _acm_read(void *ptr, int size, int n, void *arg);
   void *StreamCallback(int *size);        // invoked by omsStreamCB.
   int ReadFileData(int buf, int len);     // reads in decompressed raw data.
   int ReadFileDirect(char *buf, int len); // reads in decompressed raw data.

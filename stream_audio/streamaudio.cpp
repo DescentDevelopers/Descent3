@@ -172,7 +172,12 @@
 #include "ddio.h"
 #include <stdlib.h>
 #include <string.h>
-// #include "samirlog.h"
+
+extern "C" {
+#include "libacm.h"
+}
+
+
 #define LOGFILE(_s)
 #if defined(MACINTOSH)
 typedef unsigned ReadFunction(void *data, void *buf, unsigned qty);
@@ -182,6 +187,8 @@ unsigned AudioDecoder_Read(AudioDecoder *ad, void *buf, unsigned qty);
 void AudioDecoder_Close(AudioDecoder *ad);
 void AudioDecoder_MallocFree(MemoryAllocFunc *fn_malloc, MemoryFreeFunc *fn_free);
 #endif
+
+
 //	this stream is for everyone (used by the StreamPlay interface)
 static AudioStream User_audio_stream;
 llsSystem *AudioStream::m_ll_sndsys = NULL;
@@ -190,6 +197,49 @@ int AudioStream::m_thisid = -1;
 #define SAMPLES_PER_STREAM_SHORT_BUF 22050
 #define SAMPLES_PER_STREAM_BUF 44100
 //	sets the low-level sound object
+
+#ifndef OLD_LIBACM
+static int _acm_close(void *acm)
+{
+  AudioStream *stream = (AudioStream *)acm;
+  stream->Close();
+	return 0;
+}
+                                                                                
+static int _acm_seek(void *acm, int offset, int whence)
+{
+  AudioStream *stream = (AudioStream *)acm;
+  
+	return 0;
+}
+
+static int _acm_get_length(void *acm)
+{
+	AudioStream *stream = (AudioStream *)acm;
+  int len = stream->GetLength();
+	return len;
+}
+
+int _acm_read(void *ptr, int size, int n, void *arg)
+{
+  AudioStream *stream = (AudioStream *)arg;
+  int iqty = (int)n;
+
+  if (iqty > stream->m_bytesleft) {
+    iqty = stream->m_bytesleft;
+    stream->m_bytesleft = 0;
+  } else {
+    stream->m_bytesleft -= iqty;
+  }
+
+  int res = stream->m_archive.Read((ubyte *)ptr, iqty);
+  if(res==0)
+    printf("No stream data remaining.");
+  return res;
+}
+#endif
+
+
 void AudioStream::InitSystem(llsSystem *sndsys) {
   int i;
   AudioStream::m_ll_sndsys = sndsys;
@@ -302,7 +352,11 @@ void AudioStream::ResumeAll() {
 //	AudioStream object Interface
 //		allows dynamic playing of streams
 AudioStream::AudioStream() {
+#ifdef OLD_LIBACM
   m_decoder = NULL; // audio decomp object
+#else
+  m_acm = NULL;
+#endif
   m_llshandle = -1; // snd system handle
   m_sbufidx = 0;    // stream position markers for synching.
   m_fbufidx = 0;
@@ -317,7 +371,7 @@ AudioStream::AudioStream() {
   m_playcount = 0;
   m_curid = -1;
   m_nbufs = 0;
-  m_start_on_frame = false;
+  m_start_on_frame = false; 
 }
 AudioStream::~AudioStream() { AudioStream::Close(); }
 // sets flags for playback (STRM_OPNF_XXX)
@@ -412,10 +466,19 @@ void AudioStream::Close() {
       }
     }
 
+#ifdef OLD_LIBACM
     if (m_decoder) {
       delete m_decoder;
       m_decoder = NULL;
     }
+#else
+    if(m_acm) {
+      memset(&m_acm->io, 0, sizeof(m_acm->io));
+      m_acm->io_arg = NULL;
+      acm_close(m_acm);
+      m_acm = NULL;
+    }
+#endif
   }
   m_playcount = 0;
   m_nbufs = 0;
@@ -447,22 +510,43 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
   m_readahead = false;
 
   // free current decoder.
+#ifdef OLD_LIBACM
   if (m_decoder) {
     delete m_decoder;
     m_decoder = NULL;
   }
-
+#else
+  if(m_acm) {
+    memset(&m_acm->io, 0, sizeof(m_acm->io));
+    m_acm->io_arg = NULL;
+    acm_close(m_acm);
+    m_acm = NULL;
+  }
+#endif
   // instatiate decompression facility or use raw source data
   unsigned int sample_count = 0;
   unsigned int channels = 0;
   if (m_archive.StreamComp() == OSF_DIGIACM_STRM) {
     unsigned int sample_rate;
+
+#ifdef OLD_LIBACM
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
     if (!m_decoder) {
-      delete m_decoder;
-      m_decoder = NULL;
       return false;
     }
+#else
+    int err;
+    m_io.read_func = _acm_read;
+    m_io.close_func = _acm_close;
+    m_io.get_length_func = _acm_get_length;
+    m_io.seek_func = _acm_seek;
+    if ((err = acm_open_decoder(&m_acm, this, m_io, 0)) < 0) {
+      return false;
+    }
+    channels = m_acm->info.acm_channels;
+    sample_count = m_acm->total_values;
+#endif
+
   } else {
     return false;
   }
@@ -557,14 +641,16 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
     m_playbytesleft -= m_buffer[m_fbufidx].nbytes;
     //		mprintf((0, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
     LOGFILE((_logfp, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
+    if(4284756==m_playbytesleft)
+      printf("!!!");
     if (m_playbytesleft <= (m_bufsize / 4)) {
-      //	mprintf((0, "STRM[%d]: ", m_curid));
+      	mprintf((0, "STRM[%d]: ", m_curid));
       if (m_buffer[m_fbufidx].nbytes == 0) {
         memset(m_buffer[m_fbufidx].data, 0, 4);
         m_buffer[m_fbufidx].nbytes = 4;
         mprintf((0, "making empty buffer and"));
       }
-      //	mprintf((0, "TERMINAL buffer.\n"));
+      mprintf((0, "STRM[%d] TERMINAL buffer.\n", m_curid));
       LOGFILE((_logfp, "STRM[%d] TERMINAL buffer. ", m_curid));
       m_buffer[m_fbufidx].flags |= STRM_BUFF_TERMINAL;
       m_readahead = false;
@@ -752,6 +838,7 @@ void AudioStream::Reset() {
   m_curmeasure = 0;
   m_readahead = true;
   m_playbytesleft = m_playbytestotal;
+#ifdef OLD_LIBACM
   if (m_decoder) {
     delete m_decoder;
 
@@ -760,6 +847,16 @@ void AudioStream::Reset() {
     unsigned int sample_count;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
   }
+#else
+    int err;
+    m_io.read_func = _acm_read;
+    m_io.close_func = _acm_close;
+    m_io.get_length_func = _acm_get_length;
+    m_io.seek_func = _acm_seek;
+    if ((err = acm_open_decoder(&m_acm, this, m_io, 0)) < 0) {
+      return;
+    }
+#endif
 }
 //////////////////////////////////////////////////////////////////////////////
 // invoked by AudioStreamCB.
@@ -837,11 +934,31 @@ void *AudioStream::StreamCallback(int *size) {
 int AudioStream::ReadFileData(int buf, int len) {
   if (!m_archive.Opened())
     return 0;
-
+#ifdef OLD_LIBACM
   if (m_decoder) {
     // We have a compressed stream
     return m_decoder->Read(m_buffer[buf].data, len);
-  }
+    }
+  #else
+    int big_endian = 0;
+    #if OUTRAGE_BIG_ENDIAN
+    big_endian = 1;
+    #endif
+    int len_requested = len;
+    mprintf((0,"Reading stream: len=%d bytes_read=0,len_requested=%d\n",len,len_requested));
+    int bytes_read = acm_read(m_acm,m_buffer[buf].data,len_requested,big_endian,2,1);
+    while(bytes_read < len_requested)
+    {
+      len_requested -= bytes_read;
+      mprintf((0,"Reading stream: len=%d bytes_read=%d,len_requested=%d\n",len,bytes_read,len_requested));
+      int read_len = acm_read(m_acm,m_buffer[buf].data+bytes_read,len_requested,big_endian,2,1);
+      bytes_read += read_len;      
+    }
+    if(bytes_read==0)
+      printf("Empty audio buffer!\n");
+    return bytes_read;
+  #endif
+  
 
   // We have a non-compressed stream
   if (len > m_bytesleft) {
@@ -888,6 +1005,9 @@ void AudioStream::UpdateData() {
     m_playbytesleft -= m_buffer[m_fbufidx].nbytes;
     //		mprintf((0, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
     LOGFILE((_logfp, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
+    mprintf((0, "[%d]:pbytesleft=%d\n", m_curid, m_playbytesleft));
+    if(m_playbytesleft==4284756)
+      printf("!!!!");
     if (m_playbytesleft <= (m_bufsize / 4)) {
       //	mprintf((0, "STRM[%d]: ", m_curid));
       if (m_buffer[m_fbufidx].nbytes == 0) {
@@ -917,6 +1037,8 @@ void AudioStream::UpdateData() {
 }
 
 #pragma optimize("", on)
+
+#ifdef OLD_LIBACM
 ///////////////////////////////////////////////////////////////////////////////
 //	decoder
 int ADecodeFileRead(void *data, void *buf, unsigned qty) {
@@ -932,6 +1054,9 @@ int ADecodeFileRead(void *data, void *buf, unsigned qty) {
 
   return stream->m_archive.Read((ubyte *)buf, iqty);
 }
+
+#endif
+
 
 //	Router for stream callbacks.
 //		Invoked by sound system
