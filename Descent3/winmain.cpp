@@ -615,10 +615,22 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
 
 #ifndef GAMEGAUGE
 if (!FindArg("-launched") && !FindArg("-dedicated") && !FindArg("-timetest")) {
-    int result = MessageBox(NULL, "Bypassing the launcher might break some settings. Launch as administrator?", PRODUCT_NAME " Error", MB_YESNO);
+    int result = MessageBox(NULL, "Bypassing the launcher might break some settings. Do you want to continue?", PRODUCT_NAME " Error", MB_YESNO);
     if (result == IDYES) {
-        // Restart the application with elevated privileges
-        ShellExecute(NULL, "runas", GetCommandLine(), NULL, NULL, SW_SHOWNORMAL);
+        // Check if ShellExecute with "runas" is available
+        HINSTANCE hShell32 = LoadLibrary("Shell32.dll");
+        if (hShell32 != NULL) {
+            FARPROC pfnShellExecute = GetProcAddress(hShell32, "ShellExecuteA");
+            if (pfnShellExecute != NULL) {
+                // ShellExecute with "runas" is available, use it
+                ShellExecute(NULL, "runas", GetCommandLine(), NULL, NULL, SW_SHOWNORMAL);
+                FreeLibrary(hShell32);
+                return 0;
+            }
+            FreeLibrary(hShell32);
+        }
+        // ShellExecute is not available, run the application with standard privileges
+        return 0;
     } else {
         return 0;
     }
