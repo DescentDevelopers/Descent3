@@ -1,5 +1,5 @@
 set(HEADERS)
 set(CPPS
-		musicapi.cpp)
+  musicapi.cpp)
 
 add_library(d3music STATIC ${HEADERS} ${CPPS})

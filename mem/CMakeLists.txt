@@ -1,5 +1,5 @@
-set(HEADERS )
+set(HEADERS)
 set(CPPS
-		mem.cpp)
+  mem.cpp)
 
 add_library(mem STATIC ${HEADERS} ${CPPS})
