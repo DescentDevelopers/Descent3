@@ -31,12 +31,9 @@ jobs:
       - name: Install Linux dependencies
         if: ${{ matrix.os.preset == 'linux' }}
         run: |
-          sudo dpkg --add-architecture i386
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev \
-            libxext6:i386  # for ./scripts/hogutils/hogUtils-i686 binary
-          mkdir ~/Descent3
+            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev
 
       - name: Configure CMake
         run: cmake --preset ${{ matrix.os.preset }}
