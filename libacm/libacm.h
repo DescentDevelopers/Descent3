@@ -19,6 +19,10 @@
 #ifndef __LIBACM_H
 #define __LIBACM_H
 
+#ifdef __cplusplus // DG: added extern "C", will try to get it upstream
+extern "C" {
+#endif
+
 #define LIBACM_VERSION "1.3"
 
 #define ACM_ID		0x032897
@@ -112,6 +116,10 @@ int acm_read_loop(ACMStream *acm, void *dst, unsigned len,
 int acm_seek_pcm(ACMStream *acm, unsigned pcm_pos);
 int acm_seek_time(ACMStream *acm, unsigned pos_ms);
 const char *acm_strerror(int err);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif
 
