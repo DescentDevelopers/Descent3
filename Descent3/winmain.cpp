@@ -31,71 +31,72 @@
 #include "dedicated_server.h"
 #include "resource.h"
 
-const char *English_strings[] = {"Descent 3 under Windows NT requires version 4.0 or greater of NT to run.",
-                                 "Descent 3 requires  Windows 9x, NT 4.0 or greater to run.",
-                                 "",
-                                 "You must install DirectX through the Descent 3 Launcher before continuing.",
-                                 "You must install at least Service Pack 3 to run Descent 3 under Windows NT 4.0.",
-                                 "Failed to retrieve DirectX version.",
-                                 "Descent 3 requires DirectX 3 or greater on this machine.",
-                                 "This version of Windows NT doesn't have DirectX 3 or greater installed.",
-                                 "Your processor and system must support Katmai to run this game."};
+const char *English_strings[] = {
+     "Descent 3 under Windows NT requires version 4.0 or greater of NT to run.",
+     "Descent 3 requires  Windows 9x, NT 4.0 or greater to run.",
+     "",
+     "You must install DirectX through the Descent 3 Launcher before continuing.",
+     "You must install at least Service Pack 3 to run Descent 3 under Windows NT 4.0.",
+     "Failed to retrieve DirectX version.",
+     "Descent 3 requires DirectX 3 or greater on this machine.",
+     "This version of Windows NT doesn't have DirectX 3 or greater installed.",
+     "Your processor and system must support Katmai to run this game."};
 
 const char *French_strings[] = {
-    "L'exTcution de Descent 3 sous Windows NT nTcessite la version 4.0 ou ultTrieure de NT.",
-    "L'exTcution de Descent 3 nTcessite Windows 9x, NT 4.0 ou ultTrieur.",
+    "L'exécution de Descent 3 sous Windows NT nécessite la version 4.0 ou ultérieure de NT.",
+    "L'exécution de Descent 3 nécessite Windows 9x, NT 4.0 ou ultérieur.",
     "",
-    "Vous devez installer DirectX a partir de l'installateur Descent 3 avant de continuer.",
-    "Vous devez installer au moins Service Pack 3 pour exTcuter Descent 3 sous Windows NT 4.0.",
-    "+chec de la rTcupTration de DirectX.",
-    "Descent 3 nTcessite DirectX 3 ou ultTrieur sur ce systFme.",
-    "Cette version de Windows NT n'est pas munie de DirectX 3 ou ultTrieur.",
-    "Votre processeur et votre systFme doivent prendre en charge Katmai pour exTcuter ce jeu."};
+    "Vous devez installer DirectX à partir de l'installateur Descent 3 avant de continuer.",
+    "Vous devez installer au moins Service Pack 3 pour exécuter Descent 3 sous Windows NT 4.0.",
+    "Échec de la récupération de DirectX.",
+    "Descent 3 nécessite DirectX 3 ou ultérieur sur ce système.",
+    "Cette version de Windows NT n'est pas munie de DirectX 3 ou ultérieur.",
+    "Votre processeur et votre système doivent prendre en charge Katmai pour exécuter ce jeu."};
 
 const char *German_strings[] = {
-    "Descent3 unter Windows NT ben÷tigt fnr die Ausfnhrung die NT-Version 4.0 oder h÷her",
-    "Descent 3 ben÷tigt fnr die Ausfnhrung Windows 9x, NT 4.0 oder h÷her.",
+    "Descent3 unter Windows NT benötigt für die Ausführung die NT-Version 4.0 oder höher.",
+    "Descent 3 benötigt für die Ausführung Windows 9x, NT 4.0 oder höher.",
     "",
-    "Sie mnssen DirectX nber den Descent 3 Starter installieren, bevor Sie fortsetzen.",
-    "Sie mnssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausfnhren zu k÷nnen.",
+    "Sie müssen DirectX über den Descent 3 Starter installieren, bevor Sie fortsetzen.",
+    "Sie müssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausführen zu können.",
     "Die DirectX Version konnte nicht abgerufen werden.",
-    "Descent 3 ben÷tigt DirectX 3 oder h÷her auf diesem Computer.",
-    "In dieser Windows NT Version ist DirectX 3 oder h÷her nicht installiert.",
-    "Ihr Prozessor und System mu¯ Katmai unterstntzen, um dieses Spiel auszufnhren."};
+    "Descent 3 benötigt DirectX 3 oder höher auf diesem Computer.",
+    "In dieser Windows NT Version ist DirectX 3 oder höher nicht installiert.",
+    "Ihr Prozessor und System muss Katmai unterstützen, um dieses Spiel ausführen zu können."}
 
 const char *Italian_strings[] = {
     "Descent 3 per Windows NT richiede la versione NT 4.0 o superiore.",
     "Descent 3 funziona solo con Windows 9x, NT 4.0 o superiore.",
     "",
-    "Prima di prosegure installare DirectX per mezzo di Descent 3 Launcher.",
+    "Prima di proseguire installare DirectX per mezzo di Descent 3 Launcher.",
     "Per utilizzare Descent 3 sotto Windows NT 4.0 occorre installare Service Pack 3 o sup.",
     "Versione di DirectX non trovata.",
     "Descent 3 richiede l'installazione di DirectX 3 o superiore.",
     "DirectX 3 o superiore non trovato in questa versione di Windows NT.",
-    "Per questo gioco occorrono un processore e un sistema che supportino Katmai."};
+    "Per questo gioco occorrono un processore e un sistema che supportino Katmai."}
 
-const char *Spanish_strings[] = {"Descent 3 bajo Windows NT requiere version 4.0 o mejor para correr.",
-                                 "Descent 3 requiere Windows 9x, NT 4.0 o mejor para correr.",
-                                 "",
-                                 "Debe instalar DirectX desde el lanzador de Descent 3 antes de continuar.",
-                                 "Debe instalar por lo menos Service Pack 3 para correr Descent 3 bajo Windows NT 4.0.",
-                                 "Falla en la detección de la versión de DirectX.",
-                                 "Descent 3 requiere DirectX 3 o mejor en el ordenador.",
-                                 "Esta versión de Windows NT no tiene DirectX 3 o mejor instalado.",
-                                 "Vuestro procesador y ordenador deben soportar Katmai para correr este juego."};
+const char *Spanish_strings[] = {
+    "Descent 3 bajo Windows NT requiere versión 4.0 o mejor para correr.",
+    "Descent 3 requiere Windows 9x, NT 4.0 o mejor para correr.",
+    "",
+    "Debe instalar DirectX desde el lanzador de Descent 3 antes de continuar.",
+    "Debe instalar por lo menos Service Pack 3 para correr Descent 3 bajo Windows NT 4.0.",
+    "Falla en la detección de la versión de DirectX.",
+    "Descent 3 requiere DirectX 3 o mejor en el ordenador.",
+    "Esta versión de Windows NT no tiene DirectX 3 o mejor instalado.",
+    "Vuestro procesador y ordenador deben soportar Katmai para correr este juego."}
 
 #if 0
 const char *Polish_strings[] = {
-	"Aby uruchomi‘ grˆ Descent 3 potrzebujesz Windows NT w wersji 4.0 lub nowszej.",
-	"Descent 3 wymaga Windows 9x albo Windows NT w wersji 4.0 lub nowszej.",
-	"",
-	"Zanim uruchomisz grˆ, musisz zainstalowa‘ DirectX przy u¨yciu programu startowego.",
-	"Musisz zainstalowa‘ co najmniej Service Pack 3, aby uruchomi‘ grˆ Descent 3 pod Windows NT 4.0.",
-	"Nie uda3o siˆ odczyta‘ numeru wersji sterownik¢w DirectX.",
-	"Descent 3 wymaga sterownik¢w DirectX 3 lub nowszych.",
-	"Ta wersja Windows NT nie ma zainstalowanych sterownik¢w DirectX 3 lub nowszych.",
-	"Tw¢j procesor musi obs3ugiwa‘ rozkazy Katmai, aby uruchomi‘ grˆ."
-};
+    "Aby uruchomić grę Descent 3 potrzebujesz Windows NT w wersji 4.0 lub nowszej.",
+    "Descent 3 wymaga Windows 9x albo Windows NT w wersji 4.0 lub nowszej.",
+    "",
+    "Zanim uruchomisz grę, musisz zainstalować DirectX przy użyciu programu startowego.",
+    "Musisz zainstalować co najmniej Service Pack 3, aby uruchomić grę Descent 3 pod Windows NT 4.0.",
+    "Nie udało się odczytać numeru wersji sterowników DirectX.",
+    "Descent 3 wymaga sterowników DirectX 3 lub nowszych.",
+    "Ta wersja Windows NT nie ma zainstalowanych sterowników DirectX 3 lub nowszych.",
+    "Twój procesor musi obsługiwać rozkazy Katmai, aby uruchomić grę."};
 #endif
 
 static int m_resource_language = 0;
