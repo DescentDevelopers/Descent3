@@ -1483,6 +1483,11 @@ void ObjUnlink(int objnum) {
 
   ASSERT(objnum != -1);
 
+  // If object is already unlinked, do nothing
+  if (obj->roomnum == -1) {
+    return;
+  }
+
   if (obj->flags & OF_BIG_OBJECT) {
     BigObjRemove(objnum);
   }
