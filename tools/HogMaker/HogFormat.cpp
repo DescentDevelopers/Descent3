@@ -20,7 +20,6 @@
 #include "IOOps.h"
 
 #include <fstream>
-#include <cstring>
 
 namespace D3 {
 
@@ -34,12 +33,10 @@ std::ostream &operator<<(std::ostream &output, HogHeader &header) {
 }
 
 std::ostream &operator<<(std::ostream &output, HogFileEntry &entry) {
+  std::string name_copy = entry.name.u8string();
   // Prevent buffer overflow
-  char outBytes[36] = {0};
-  auto tmp = entry.name.c_str();
-  // FIXME: better conversion under Windows
-  strcpy(outBytes, (const char *)&tmp[0]);
-  output.write(outBytes, 36);
+  name_copy.resize(36, '\0');
+  output.write(name_copy.c_str(), 36);
   bin_write(output, entry.flags);
   bin_write(output, entry.len);
   bin_write(output, entry.timestamp);
