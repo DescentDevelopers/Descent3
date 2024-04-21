@@ -32,7 +32,6 @@ cmake --build --preset win --config [Debug/Release]
 #### Building - MacOS
 ```
 brew bundle install
-brew install cmake
 cmake --preset mac
 cmake --build --preset mac --config [Debug/Release]
 ```
