@@ -1,9 +1,8 @@
 set(HEADERS)
 
-set(CPPS 
+set(CPPS
   CFtp.cpp
   Chttpget.cpp
-  inetgetfile.cpp
-)
+  inetgetfile.cpp)
 
 add_library(inetfile STATIC ${HEADERS} ${CPPS})

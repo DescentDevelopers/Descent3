@@ -1,7 +1,7 @@
 set(HEADERS md5.h)
 set(CPPS
-    md5.cpp)
+  md5.cpp)
 
-set(PLATFORMCPPS )
+set(PLATFORMCPPS)
 
 add_library(md5 STATIC ${HEADERS} ${CPPS} ${PLATFORMCPPS})
