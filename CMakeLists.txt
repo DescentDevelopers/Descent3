@@ -28,13 +28,13 @@ endif()
 
 if(UNIX AND NOT APPLE)
   message("Building for Linux")
-  add_definitions( -D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -D__32BIT__ -DHAVEALLOCA_H -D_USE_OGL_ACTIVE_TEXTURES)
+  add_definitions(-D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -D__32BIT__ -DHAVEALLOCA_H -D_USE_OGL_ACTIVE_TEXTURES)
   set(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR})
 endif()
 
 if(APPLE)
   message("Building for MAC OSX")
-  add_definitions(-D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -DMACOSX=1 -D_USE_OGL_ACTIVE_TEXTURES)
+  add_definitions(-D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -DMACOSX=1 -D_USE_OGL_ACTIVE_TEXTURES)
   set(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR} "/usr/X11/include")
 endif()
 
@@ -72,6 +72,7 @@ if(WIN32)
 endif()
 
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
+add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
 include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
 
