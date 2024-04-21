@@ -2052,7 +2052,7 @@ extern int paged_in_num;
 int LoadPolyModel(char *filename, int pageable) {
   char name[256];
   char fname[256], pname[256], extname[256];
-  int i, polynum;
+  int i, polynum = -1;
   CFILE *infile = NULL;
   int overlay = 0;
 
