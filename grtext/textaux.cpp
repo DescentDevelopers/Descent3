@@ -132,7 +132,7 @@ char *textaux_CopyTextLine(char *src, char *dest) {
   if (!dest)
     return NULL;
   // see if we are at the end of the src
-  if ((src[0] == '\0')) {
+  if (src[0] == '\0') {
     dest[0] = '\0';
     return NULL;
   }

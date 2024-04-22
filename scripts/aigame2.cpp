@@ -946,7 +946,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
         int roll = (rand() % 100);
         if (roll <= 50) {
           find_targets(data->me_handle, false);
-          memory->timer = Game_GetTime() + (memory->target_handle == OBJECT_HANDLE_NONE) ? 5.0f : 2.0f;
+          memory->timer = Game_GetTime() + ((memory->target_handle == OBJECT_HANDLE_NONE) ? 5.0f : 2.0f);
         }
       }
     }

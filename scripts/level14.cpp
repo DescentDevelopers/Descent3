@@ -706,7 +706,6 @@ $$CATEGORIES
 Custom
 $$END
 
-/*
 $$ACTION
 Custom
 Set texture on monitors to [u:Texture]

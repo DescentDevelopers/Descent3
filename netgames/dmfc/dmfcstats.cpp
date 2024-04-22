@@ -644,6 +644,8 @@ redisplay_list:
 
       if (!is_dedicated_server || m_PLColInfo[c].type == DSCOL_PILOT_NAME || m_PLColInfo[c].type == DSCOL_BLANK) {
         switch (m_PLColInfo[c].type) {
+        case DSCOL_BMP:
+          break;
         case DSCOL_KILLS_LEVEL:
           snprintf(buffer, sizeof(buffer), "%d", pr->dstats.kills[DSTAT_LEVEL]);
           break;
@@ -1081,6 +1083,8 @@ redisplay_list:
     buffer[0] = '\0';
     if (!is_dedicated_server || m_DColInfo[c].type == DSCOL_PILOT_NAME || m_DColInfo[c].type == DSCOL_BLANK) {
       switch (m_DColInfo[c].type) {
+      case DSCOL_BMP:
+        break;
       case DSCOL_KILLS_LEVEL:
         snprintf(buffer, sizeof(buffer), "%d", pr->dstats.kills[DSTAT_LEVEL]);
         break;

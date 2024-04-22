@@ -2,10 +2,36 @@ cmake_minimum_required(VERSION 3.19)
 
 project(Descent3 VERSION 1.5.500)
 
+if(NOT MSVC) # GCC/clang or compatible, hopefully
+  option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(NOT MSVC)
+  # check if this is some kind of clang (Clang, AppleClang, whatever)
+  # (convert compiler ID to lowercase so we match Clang, clang, AppleClang etc, regardless of case)
+  string(TOLOWER ${CMAKE_CXX_COMPILER_ID} compiler_id_lower)
+  if(compiler_id_lower MATCHES ".*clang.*")
+    message(STATUS "Compiler \"${CMAKE_CXX_COMPILER_ID}\" detected as some kind of clang")
+    set(D3_COMPILER_IS_CLANG TRUE)
+    set(D3_COMPILER_IS_GCC_OR_CLANG TRUE)
+  elseif(CMAKE_COMPILER_IS_GNUCC)
+    set(D3_COMPILER_IS_GCC_OR_CLANG TRUE)
+  endif()
+  unset(compiler_id_lower)
+
+  if(FORCE_COLORED_OUTPUT)
+    if(CMAKE_COMPILER_IS_GNUCC)
+      add_compile_options (-fdiagnostics-color=always)
+    elseif(D3_COMPILER_IS_CLANG)
+      add_compile_options (-fcolor-diagnostics)
+    endif ()
+  endif ()
+endif()
 
 if(UNIX)
   set(D3_GAMEDIR "~/Descent3/")
@@ -121,6 +147,8 @@ add_subdirectory(libmve)
 add_subdirectory(md5)
 add_subdirectory(libacm)
 add_subdirectory(Descent3)
+
+add_subdirectory(tools)
 
 # For now we don't need to build the scripts under windows, so we'll only include
 # the directory when building for linux/osx. In the future we may want to to fix bugs, etc.

@@ -234,7 +234,7 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
 
   PQPath.push(start_node);
 
-  while (cur_node = PQPath.pop()) {
+  while ((cur_node = PQPath.pop())) {
     node_list[cur_node->node] = cur_node;
 
     if (cur_node->node == j) {
@@ -255,7 +255,7 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
       //			if(!BOA_PassablePortal(cur_node->roomnum, counter, false, false))
       //				continue;
 
-      if (next_node = bnlist->nodes[cur_node->node].edges[counter].end_room != start_room)
+      if ((next_node = bnlist->nodes[cur_node->node].edges[counter].end_room != start_room))
         continue;
 
       next_node = bnlist->nodes[cur_node->node].edges[counter].end_index;

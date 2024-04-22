@@ -1591,7 +1591,7 @@ int FreeObjectSlots(int num_used) {
     return original_num_to_free;
 
   for (i = 0; i < num_to_free; i++)
-    if ((Objects[obj_list[i]].type == OBJ_WEAPON)) {
+    if (Objects[obj_list[i]].type == OBJ_WEAPON) {
       num_to_free--;
       mprintf((0, "Freeing   WEAPON object %3i\n", obj_list[i]));
       SetObjectDeadFlag(&Objects[obj_list[i]]);
