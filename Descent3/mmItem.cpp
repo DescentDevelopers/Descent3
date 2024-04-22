@@ -337,6 +337,15 @@ void mmInterface::Create() {
     char filename[_MAX_PATH];
     ddio_MakePath(filename, Base_directory, "movies", "mainmenu", NULL);
     m_movie = StartMovie(filename, true);
+
+    if (!m_movie) //[ISB] Didn't find the menu movie?
+    {
+      if (!LoadLargeBitmap("mainmenu.ogf", &m_art)) {
+        Error("Unable to load main menu art mainmenu.ogf.");
+      } else {
+        static_menu_background = true;
+      }
+    }
   }
 #endif
 
