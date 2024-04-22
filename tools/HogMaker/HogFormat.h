@@ -17,6 +17,7 @@
  */
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <filesystem>
 #include <vector>
@@ -39,17 +40,17 @@ FILE NFILES-1		[filelen(NFILES -1)]
 */
 
 struct HogHeader {
-  std::vector<char> tag = {'H', 'O', 'G', '2'};           // "HOG2"
-  uint32_t nfiles = 0;                                    // number of files in header
-  uint32_t file_data_offset = 68;                         // offset in file to filedata.
-  std::vector<char> reserved = std::vector<char>(56, -1); // filled with 0xff
+  std::array<char, 4> tag = {'H', 'O', 'G', '2'}; // "HOG2"
+  uint32_t nfiles = 0;                            // number of files in header
+  uint32_t file_data_offset = 68;                 // offset in file to filedata.
+  std::array<char, 56> reserved = {};             // filled with 0xff
 };
 
 struct HogFileEntry {
-  std::filesystem::path name; // file name (36 char max)
-  uint32_t flags;             // extra info
-  uint32_t len;               // length of file
-  uint32_t timestamp;         // time of file.
+  std::array<char, 36> name = {}; // file name (36 char max)
+  uint32_t flags = 0;              // extra info
+  uint32_t len = 0;                // length of file
+  uint32_t timestamp = 0;          // time of file.
 };
 
 class HogFormat {
