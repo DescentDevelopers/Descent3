@@ -12,7 +12,7 @@ body:
     id: issue-description
     attributes:
       label: Content
-      description: Provide a pasted copy of your markdown content. This is in addition to your attachment.
+      description: Provide a pasted copy of your markdown content using three backticks ` before and after to encase it in a code block. In a comment, attach the file.
     validations:
       required: true
   - type: input
