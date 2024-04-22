@@ -51,8 +51,8 @@ if(UNIX)
   find_package(SDL REQUIRED)
   if(APPLE)
     # Provide FIND_PACKAGE( SDL_image ) below with an include dir and library that work with brew-installed sdl2_image
-    find_path(SDL_IMAGE_INCLUDE_DIR SDL_image.h PATH_SUFFIXES include/SDL2)
-    find_library(SDL_IMAGE_LIBRARY SDL2_image)
+    find_path(SDL_IMAGE_INCLUDE_DIR NAMES SDL_image.h PATH_SUFFIXES include/SDL2)
+    find_library(SDL_IMAGE_LIBRARY NAMES SDL2_image)
   endif()
 
   find_package(SDL_image REQUIRED)
@@ -87,10 +87,10 @@ if(WIN32)
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 
-  find_library(DSOUND_LIBRARY NAMES dsound "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DINPUT_LIBRARY NAMES dinput "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DXGUID_LIBRARY NAMES dxguid "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DDRAW_LIBRARY NAMES ddraw "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+  find_library(DSOUND_LIBRARY NAMES dsound REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+  find_library(DINPUT_LIBRARY NAMES dinput REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+  find_library(DXGUID_LIBRARY NAMES dxguid REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+  find_library(DDRAW_LIBRARY NAMES ddraw REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
 
   if(MSVC AND CMAKE_CXX_SIMULATE_ID STREQUAL "")
     add_compile_options("/we4150")  # deletion of pointer to incomplete type 'type'; no destructor called
