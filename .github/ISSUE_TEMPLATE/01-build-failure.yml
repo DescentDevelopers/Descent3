@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this template if the code in main fails to build for you. If your problem happens at runtime, please use the issue template `Runtime Crash` or the issue template `Runtime Bug`, as appropriate. Please use a descriptive title. Include in the title the _first_ error message. Attach your buildlog if possible.
+        Use this template if the code in main fails to build for you. If your problem happens at runtime, please use the issue template "Runtime Issue". Please use a descriptive title. Include in the title the _first_ error message. Attach your buildlog if possible.
   - type: input
     id: build-version
     attributes:
