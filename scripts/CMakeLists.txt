@@ -73,10 +73,13 @@ add_custom_target(HogFull-copy
 #)
 
 foreach(SCRIPT ${SCRIPTS})
-  add_library(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
+  add_library(${SCRIPT} MODULE ${CPPS} "${SCRIPT}.cpp")
   target_link_libraries(${SCRIPT} fix)
   add_dependencies(${SCRIPT} HogFull-copy) #  HogDemo-copy
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
+  if (APPLE)
+    set_target_properties(${SCRIPT} PROPERTIES SUFFIX ".dylib")
+  endif ()
   if (UNIX)
     add_custom_command(
       TARGET ${SCRIPT}
