@@ -3,7 +3,7 @@ set(CPPS ctf.cpp)
 
 set(NETGAME_MODULE ctf)
 
-add_library(${NETGAME_MODULE} SHARED ${CPPS} ${HEADERS})
+add_library(${NETGAME_MODULE} MODULE ${CPPS} ${HEADERS})
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 
