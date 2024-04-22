@@ -27,6 +27,7 @@ std::ostream &operator<<(std::ostream &output, HogHeader &header) {
   output.write((char *)&header.tag[0], 4);
   bin_write(output, header.nfiles);
   bin_write(output, header.file_data_offset);
+  header.reserved.fill(-1);
   output.write((char *)&header.reserved[0], 56);
 
   return output;
