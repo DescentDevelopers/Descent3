@@ -5,4 +5,4 @@
 NEXT_MESSAGE_ID_NUMBER     2
 
 // Message List
-Polar=Magnetische Polarit‰t umgekehrt!
+Polar=Magnetische Polarit√§t umgekehrt!

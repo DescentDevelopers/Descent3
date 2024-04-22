@@ -1,5 +1,5 @@
 // ===========================================================================
-//	MacHeaders.c				©1995-1998 Metrowerks Inc. All rights reserved.
+//	MacHeaders.c				Â©1995-1998 Metrowerks Inc. All rights reserved.
 // ===========================================================================
 //
 //	Includes used to generate the 'MacHeaders' precompiled header for

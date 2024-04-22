@@ -21,15 +21,15 @@
 
 !/!00: Message printed on Hud when a door is locked when it is attempted to be opened
 !=!Door Locked!
-!G!Tür verschlossen!
+!G!TÃ¼r verschlossen!
 !S!Puerta cerrada
 !I!Porta bloccata!
-!F!Porte verrouillée!
+!F!Porte verrouillÃ©e!
 
 !/!01: Hud message printed when Rapid fire is picked up
 !=!Rapid Fire!
 !G!Schnellfeuer!
-!S!Fuego rápido
+!S!Fuego rÃ¡pido
 !I!Fuoco rapido!
 !F!Tir rapide !
 
@@ -42,21 +42,21 @@
 
 !/!03: Hud message for when the Force Wall is released
 !=!Force Wall Ejected!
-!G!Kraftmauer ausgelöst!
+!G!Kraftmauer ausgelÃ¶st!
 !S!Pared de fuerza soltada
 !I!Parete di forza liberata!
-!F!Force-Mur éjecté !
+!F!Force-Mur Ã©jectÃ© !
 
 !/!04: Hud message for when the Force Wall has expireed
 !=!Force Wall Done!
 !G!Kraftmauer beendet!
 !S!Pared de fuerza finalizada
 !I!Fine parete di forza!
-!F!Force-Mur écoulé !
+!F!Force-Mur Ã©coulÃ© !
 
 !/!05: Hud message for when the GoWingNut is picked up
 !=!WingNut!
 !G!WingNut!
-!S!¡Al Ataque!
+!S!Â¡Al Ataque!
 !I!All'attacco!
 !F!Papillon !

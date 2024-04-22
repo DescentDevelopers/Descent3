@@ -13,53 +13,53 @@ NEXT_MESSAGE_ID_NUMBER     27
 
 // Message List
 
-AccessDenied=GUIDEBOT: "AccËs RefusÈ !  Passe nÈcessaire."
+AccessDenied=GUIDEBOT: "Acc√®s Refus√© !  Passe n√©cessaire."
 
 Blank=
 
-BossData=SUJET:  Mech d'Assaut AvancÈ. STATUT:  Niveau R&D atteint.  DÈbut de production ‡ venir.  NOTES:  (secrËtes) Production doublÈe comme demandÈ .  --SD
+BossData=SUJET:  Mech d'Assaut Avanc√©. STATUT:  Niveau R&D atteint.  D√©but de production √† venir.  NOTES:  (secr√®tes) Production doubl√©e comme demand√© .  --SD
 
-BothFireSwitches=GUIDEBOT: "Chambre de Combustion dÈsactivÈe."
+BothFireSwitches=GUIDEBOT: "Chambre de Combustion d√©sactiv√©e."
 
-CEDData=SUJET:  Contrat de la CoopÈration de DÈfense Terrienne  STATUT:  Contrat Interceptor Phoenix rempli.  Missiles Requin Noir en cours de dÈveloppement.  NOTES:  (secrËtes)  Arrivage ‡ la date prÈvue.  -SD
+CEDData=SUJET:  Contrat de la Coop√©ration de D√©fense Terrienne  STATUT:  Contrat Interceptor Phoenix rempli.  Missiles Requin Noir en cours de d√©veloppement.  NOTES:  (secr√®tes)  Arrivage √† la date pr√©vue.  -SD
 
-ClassifiedAccessPass=Passe d'accËs rÈservÈ
+ClassifiedAccessPass=Passe d'acc√®s r√©serv√©
 
-ConsoleCrash=GUIDEBOT: "Le systËme semble avoir subi une erreur irrÈcupÈrable."
+ConsoleCrash=GUIDEBOT: "Le syst√®me semble avoir subi une erreur irr√©cup√©rable."
 
-DravisData=SUJET:  Dravis, Samuel, Jr.  Directeur du Centre SpÈcial de Gestion de Crise et d'Information  STATUT: en visite de presse ‡ la D.A.R.S.  NOTES:  (secrËtes) La promotion demandÈe a ÈtÈ refusÈe.  -Suzuki
+DravisData=SUJET:  Dravis, Samuel, Jr.  Directeur du Centre Sp√©cial de Gestion de Crise et d'Information  STATUT: en visite de presse √† la D.A.R.S.  NOTES:  (secr√®tes) La promotion demand√©e a √©t√© refus√©e.  -Suzuki
 
-EmergencySwitch=GUIDEBOT: "Interrupteur Ouverture de Secours actuellement verrouillÈ."
+EmergencySwitch=GUIDEBOT: "Interrupteur Ouverture de Secours actuellement verrouill√©."
 
-EmergencySwitchOpen=GUIDEBOT: " Interrupteur Ouverture de Secours activÈ."
+EmergencySwitchOpen=GUIDEBOT: " Interrupteur Ouverture de Secours activ√©."
 
 EndLevel=
 
-FirstForcefield=Champ de force dÈsactivÈ!
+FirstForcefield=Champ de force d√©sactiv√©!
 
 IntroMessage=Deimos - Centre d'Information de la PTMC
 
-LeftConsoleSwitch=GUIDEBOT: "Recherche Base de DonnÈes des Plans de Production..."
+LeftConsoleSwitch=GUIDEBOT: "Recherche Base de Donn√©es des Plans de Production..."
 
-LockDown=GUIDEBOT: "Le b‚timent a ÈtÈ armÈ d'un Verrouillage de SÈcuritÈ !"
+LockDown=GUIDEBOT: "Le b√¢timent a √©t√© arm√© d'un Verrouillage de S√©curit√© !"
 
-MDData=SUJET:  DÈfenseur de la MatiËre ID No. 1032  STATUT: Disparu prËs de Tycho BrahÈ.  NOTES: (secrËtes): DÈfaillance matÈrielle de l'intermix probable.  -SD
+MDData=SUJET:  D√©fenseur de la Mati√®re ID No. 1032  STATUT: Disparu pr√®s de Tycho Brah√©.  NOTES: (secr√®tes): D√©faillance mat√©rielle de l'intermix probable.  -SD
 
-PrimaryLoginSwitch=GUIDEBOT: "Recherche Base de DonnÈes du Personnel..."
+PrimaryLoginSwitch=GUIDEBOT: "Recherche Base de Donn√©es du Personnel..."
 
-PTMCdisconnected=GUIDEBOT: "Vous avez ÈtÈ DECONNECTE..."
+PTMCdisconnected=GUIDEBOT: "Vous avez √©t√© DECONNECTE..."
 
 RightConsoleSwitch=GUIDEBOT: "Recherche Fichiers Administratifs..."
 
-SECRETAREA=Vous avez trouvÈ une zone secrËte !
+SECRETAREA=Vous avez trouv√© une zone secr√®te !
 
-SecurityAlert=GUIDEBOT: "Mon accËs non autorisÈ ‡ la base de donnÈes a ÈtÈ dÈtectÈ ! Mesures de sÈcuritÈ activÈes !"
+SecurityAlert=GUIDEBOT: "Mon acc√®s non autoris√© √† la base de donn√©es a √©t√© d√©tect√© ! Mesures de s√©curit√© activ√©es !"
 
-ShipMessageLog=DonnÈes transfÈrÈes dans le Journal de Messages du Vaisseau (SHIFT-F8)
+ShipMessageLog=Donn√©es transf√©r√©es dans le Journal de Messages du Vaisseau (SHIFT-F8)
 
-SingleFireSwitch=GUIDEBOT: "Interrupteur Chambre de Combustion activÈ."
+SingleFireSwitch=GUIDEBOT: "Interrupteur Chambre de Combustion activ√©."
 
-SRADLabData=NOTES: Un accident rÈcent au Labo de la D.A.R.S. a causÈ la mort de dix-sept scientifiques. L'emploi du Dr. Sweitzer est rÈsiliÈ.  -SD
+SRADLabData=NOTES: Un accident r√©cent au Labo de la D.A.R.S. a caus√© la mort de dix-sept scientifiques. L'emploi du Dr. Sweitzer est r√©sili√©.  -SD
 
-SweitzerData=SUJET:  Dr. Karl Sweitzer, Officier de Recherche en Chef du Labo de la D.A.R.S sur la planËte Tiris.  STATUT: RÈsiliÈ.  NOTES: emprisonnÈ ‡ la Novak Corporate sur Phobos.  -SD
+SweitzerData=SUJET:  Dr. Karl Sweitzer, Officier de Recherche en Chef du Labo de la D.A.R.S sur la plan√®te Tiris.  STATUT: R√©sili√©.  NOTES: emprisonn√© √† la Novak Corporate sur Phobos.  -SD
 

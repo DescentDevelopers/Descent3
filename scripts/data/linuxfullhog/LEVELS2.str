@@ -45,155 +45,155 @@
 
 !/!Goal 0 Name
 !=!Destroy the Research Center
-!G!Das Forschungszentrum zerstören
-!F!Détruire le Centre de Recherches
-!S!Destruir el Centro de Investigación
+!G!Das Forschungszentrum zerstÃ¶ren
+!F!DÃ©truire le Centre de Recherches
+!S!Destruir el Centro de InvestigaciÃ³n
 !I!Distruggi il Centro di ricerca
 
 !/!Goal 0 Item Name
 !=!Research Center
 !G!Forschungszentrum
 !F!centre de recherches
-!S!Centro de Investigación
+!S!Centro de InvestigaciÃ³n
 !I!Centro di ricerca
 
 !/!Goal 0 Description
 !=!Destroy the Weapons Research Center and escape!
-!F!Détruisez le Centre de Recherches sur les Armes et échappez-vous !
-!G!Zerstören Sie das Waffenforschungszentrum und flüchten Sie!
-!S!¡Destruye el Centro de Investigación de Armas y escapa!
+!F!DÃ©truisez le Centre de Recherches sur les Armes et Ã©chappez-vous !
+!G!ZerstÃ¶ren Sie das Waffenforschungszentrum und flÃ¼chten Sie!
+!S!Â¡Destruye el Centro de InvestigaciÃ³n de Armas y escapa!
 !I!Distruggi il Centro di ricerca sulle armi e fuggi
 
 !/!Goal 1 Name
 !=!Destroy Blue Key Forcefield Generators
-!F!Détruire les générateurs
-!G!Die 'Blauer Schlüssel'-Kraftfeldgeneratoren zerstören
+!F!DÃ©truire les gÃ©nÃ©rateurs
+!G!Die 'Blauer SchlÃ¼ssel'-Kraftfeldgeneratoren zerstÃ¶ren
 !S!Destruye el generador del campo de fuerza de la llave azul
 !I!Distruggi i generatori del campo di forza della chiave azzurra
 
 !/!Goal 1 Item Name
 !=!Forcefield Generators
-!F!Générateurs du champ de force
+!F!GÃ©nÃ©rateurs du champ de force
 !G!Kraftfeldgeneratoren
 !S!Generadores del campo de fuerza
 !I!Generatori del campo di forza
 
 !/!Goal 1 Description
 !=!Destroy the Blue Key Forcefield Generators to gain access to the Blue Key
-!F!Détruisez les générateurs du champ de force qui renferme la clé bleue pour accéder à la clé bleue.
-!G!Zerstören Sie die 'Blauer Schlüssel'-Kraftfeldgeneratoren, um zum blauen Schlüssel zu kommen
+!F!DÃ©truisez les gÃ©nÃ©rateurs du champ de force qui renferme la clÃ© bleue pour accÃ©der Ã  la clÃ© bleue.
+!G!ZerstÃ¶ren Sie die 'Blauer SchlÃ¼ssel'-Kraftfeldgeneratoren, um zum blauen SchlÃ¼ssel zu kommen
 !S!Destruye los generadores del campo de fuerza de la llave azul para tomar la llave.
 !I!Distruggi i generatori del campo di forza e recupera la chiave azzurra
 
 !/!Goal 2 Name
 !=!Destroy Red Key Forcefield Generators
-!F!Détruire les générateurs
-!G!Die 'Roter Schlüssel'-Kraftfeldgeneratoren zerstören
+!F!DÃ©truire les gÃ©nÃ©rateurs
+!G!Die 'Roter SchlÃ¼ssel'-Kraftfeldgeneratoren zerstÃ¶ren
 !S!Destruye los generadores del campo de fuerza de la llave roja
 !I!Distruggi i generatori del campo di forza della chiave rossa
 
 !/!Goal 2 Item Name
 !=!Forcefield Generators
-!F!Générateurs du champ de force
+!F!GÃ©nÃ©rateurs du champ de force
 !G!Kraftfeldgeneratoren
 !S!Generadores del campo de fuerza
 !I!Generatori del campo di forza
 
 !/!Goal 2 Description
 !=!Destroy the Red Key Forcefield Generators to gain access to the Red Key
-!F!Détruisez les générateurs du champ de force qui renferme la clé rouge pour accéder à la clé rouge.
-!G!Zerstören Sie die 'Roter Schlüssel'-Kraftfeldgeneratoren, um zum roten Schlüssel zu kommen
+!F!DÃ©truisez les gÃ©nÃ©rateurs du champ de force qui renferme la clÃ© rouge pour accÃ©der Ã  la clÃ© rouge.
+!G!ZerstÃ¶ren Sie die 'Roter SchlÃ¼ssel'-Kraftfeldgeneratoren, um zum roten SchlÃ¼ssel zu kommen
 !S!Destruye los generadores del campo de fuerza de la llave roja para tomar la llave.
 !I!Distruggi i generatori del campo di forza e recupera la chiave rossa
 
 !/!Goal 3 Name
 !=!Acquire the Blue Key
-!F!prendre la clé bleue
-!G!Den blauen Schlüssel beschaffen
+!F!prendre la clÃ© bleue
+!G!Den blauen SchlÃ¼ssel beschaffen
 !S!Obten la llave azul
 !I!Recupera la chiave azzurra
 
 !/!Goal 3 Item Name
 !=!Blue Key
-!F!clé bleue
-!G!Blauer Schlüssel
+!F!clÃ© bleue
+!G!Blauer SchlÃ¼ssel
 !S!Llave azul
 !I!Chiave azzurra
 
 !/!Goal 3 Description
 !=!Acquire the Blue Key
-!F!prendre la clé bleue
-!G!Beschaffen Sie den blauen Schlüssel
+!F!prendre la clÃ© bleue
+!G!Beschaffen Sie den blauen SchlÃ¼ssel
 !S!Obten la llave azul
 !I!Recupera la chiave azzurra
 
 !/!Goal 4 Name
 !=!Acquire the Red Key
-!F!prendre la clé rouge
-!G!Den roten Schlüssel beschaffen
+!F!prendre la clÃ© rouge
+!G!Den roten SchlÃ¼ssel beschaffen
 !S!Obten la llave roja
 !I!Recupera la chiave rossa
 
 !/!Goal 4 Item Name
 !=!Red Key
-!F!clé rouge
-!G!Roter Schlüssel
+!F!clÃ© rouge
+!G!Roter SchlÃ¼ssel
 !S!Llave roja
 !I!Chiave rossa
 
 !/!Goal 4 Description
 !=!Acquire the Red Key
-!F!Prenez la clé rouge.
-!G!Beschaffen Sie den roten Schlüssel
+!F!Prenez la clÃ© rouge.
+!G!Beschaffen Sie den roten SchlÃ¼ssel
 !S!Obten la llave roja
 !I!Recupera la chiave rossa
 
 !/!Goal 5 Name
 !=!Destroy Reactor Forcefield Generators
-!F!Détruire les générateurs du champ de force
-!G!Die Reaktor-Kraftfeldgeneratoren zerstören
+!F!DÃ©truire les gÃ©nÃ©rateurs du champ de force
+!G!Die Reaktor-Kraftfeldgeneratoren zerstÃ¶ren
 !S!Destruye los generadores del campo de fuerza del reactor
 !I!Distruggi i generatori del campo di forza del reattore
 
 !/!Goal 5 Item Name
 !=!Forcefield Generators
-!F!Générateurs du champ de force
+!F!GÃ©nÃ©rateurs du champ de force
 !G!Kraftfeldgeneratoren
 !S!Generadores del campo de fuerza
 !I!Generatori del campo di forza
 
 !/!Goal 5 Description
 !=!Destroy the Reactor Forcefield Generators to gain access to the Reactor
-!F!Détruisez les générateurs du champ de force pour accéder au réacteur.
-!G!Zerstören Sie die Reaktor-Kraftfeldgeneratoren, um zum Reaktor zu kommen
+!F!DÃ©truisez les gÃ©nÃ©rateurs du champ de force pour accÃ©der au rÃ©acteur.
+!G!ZerstÃ¶ren Sie die Reaktor-Kraftfeldgeneratoren, um zum Reaktor zu kommen
 !S!Destruye los generadores del campo de fuerza del reactor para llegar al reactor.
 !I!Distruggi i generatori del campo di forza e accedi al reattore
 
 !/!Goal 6 Name
 !=!Destroy the Reactor
-!F!Détruire le réacteur
-!G!Den Reaktor zerstören
+!F!DÃ©truire le rÃ©acteur
+!G!Den Reaktor zerstÃ¶ren
 !S!Destruye el reactor
 !I!Distruggi il reattore
 
 !/!Goal 6 Item Name
 !=!Reactor Core
-!F!coeur du réacteur
+!F!coeur du rÃ©acteur
 !G!Reaktorkern
-!S!Núcleo del reactor
+!S!NÃºcleo del reactor
 !I!Nucleo del reattore
 
 !/!Goal 6 Description
 !=!Destroy the Reactor to begin the self-destruct sequence of the Weapons Research Center
-!F!Détruisez le réacteur pour déclencher la séquence d'auto-destruction du Centre de Recherches sur les Armes.
-!G!Zerstören Sie den Reaktor, um die Selbstzerstörungssequenz des Waffenforschungszentrums zu starten
-!S!Destruye el reactor para iniciar la secuencia de autodestrucción del Centro de Investigaciones de Armas
+!F!DÃ©truisez le rÃ©acteur pour dÃ©clencher la sÃ©quence d'auto-destruction du Centre de Recherches sur les Armes.
+!G!ZerstÃ¶ren Sie den Reaktor, um die SelbstzerstÃ¶rungssequenz des Waffenforschungszentrums zu starten
+!S!Destruye el reactor para iniciar la secuencia de autodestrucciÃ³n del Centro de Investigaciones de Armas
 !I!Distruggi il reattore per avviare la sequenza di autodistruzione del Centro di ricerca sulle armi
 
 !/!Goal 7 Name
 !=!Escape the Research Center
 !F!Quitter le Centre de Recherches
-!G!Aus dem Forschungszentrum flüchten
+!G!Aus dem Forschungszentrum flÃ¼chten
 !S!Escapa del Centro de Investigaciones
 !I!Scappa dal Centro di ricerca
 
@@ -208,6 +208,6 @@
 !/!Goal 7 Description
 !=!Escape from the Research Center
 !F!Quitter le Centre de Recherches
-!G!Flüchten Sie aus dem Forschungszentrum
+!G!FlÃ¼chten Sie aus dem Forschungszentrum
 !S!Escapa del Centro de Investigaciones
 !I!Scappa dal Centro di ricerca

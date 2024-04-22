@@ -31,23 +31,23 @@
 !/!0: Name of the Entropy game (might not want to Localize)
 !=!Entropy
 !G!Entropie
-!S!Entropía
+!S!EntropÃ­a
 !I!Entropia
 !F!Entropie
 
 !/!1: Kill message
 !=!%s was killed by %s
-!G!%s wurde von %s getötet
+!G!%s wurde von %s getÃ¶tet
 !S!%s ha sido asesinado por %s
-!I!%s è stato ucciso da
-!F!%s a été tué par %s.
+!I!%s Ã¨ stato ucciso da
+!F!%s a Ã©tÃ© tuÃ© par %s.
 
 !/!2: suicide message
 !=!%s killed himself
 !G!%s vernichtete sich selbst
 !S!%s se ha suicidado
-!I!%s si è suicidato
-!F!%s s'est tué.
+!I!%s si Ã¨ suicidato
+!F!%s s'est tuÃ©.
 
 !/!3: pilot label
 !=!Pilot
@@ -59,13 +59,13 @@
 !/!4: score label
 !=!Score
 !G!Punkte
-!S!Puntuación
+!S!PuntuaciÃ³n
 !I!Punteggio
 !F!Score
 
 !/!5: Kills label
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -93,31 +93,31 @@
 
 !/!9: hud message displayed when you don't have enough kills to pickup a virus
 !=!You can't carry this virus yet
-!G!Sie können den Virus noch nicht aufnehmen
-!S!Aún no puedes llevarte este virus
+!G!Sie kÃ¶nnen den Virus noch nicht aufnehmen
+!S!AÃºn no puedes llevarte este virus
 !I!Non puoi ancora raccogliere questo virus
 !F!Vous ne pouvez pas encore prendre ce virus. 
 
 !/!10: hud message when you destroy a virus
 !=!Virus Destroyed
-!G!Virus zerstört
+!G!Virus zerstÃ¶rt
 !S!Virus destruido
 !I!Virus distrutto
-!F!Virus détruit
+!F!Virus dÃ©truit
 
 !/!11: Hud message displayed if you can't kill the virus
 !=!You can't kill this virus
-!G!Sie können den Virus nicht vernichten
+!G!Sie kÃ¶nnen den Virus nicht vernichten
 !S!No puedes matar el virus
 !I!Non puoi eliminare questo virus
 !F!Vous ne pouvez pas tuer ce virus.
 
 !/!12: Hud message when a team takes over another teams room (first %s is player name, second %s is team name and third %s is the type of room)
 !=!%s Took Over A %s Team's %s Room
-!G!%s übernimmt vom %sen Team einen %s-Raum
+!G!%s Ã¼bernimmt vom %sen Team einen %s-Raum
 !S!%s ha conquistado al equipo %s una sala %s
 !I!%s ha tolto alla squadra %s una sala %s 
-!F!%s a volé à l'équipe %s la salle %s 
+!F!%s a volÃ© Ã  l'Ã©quipe %s la salle %s 
 
 !/!13: The stand-in name used in the above string (for the first %s) if the pilot isn't known
 !=!Someone
@@ -136,7 +136,7 @@
 !/!15: Header string for save game stats file (first %s will be the name of the game, %d is the level number)
 !=!Entropy\nGame: %s\nLevel: %d\n
 !G!Entropie\nSpiel: %s\nLevel: %d\n 
-!S!Entropía\nPartida: %s\nNivel: %d\n
+!S!EntropÃ­a\nPartida: %s\nNivel: %d\n
 !I!Entropia\nPartita: %s\nLivello: %d\n
 !F!Entropie\nPartie: %s\nNiveau: %d\n
 
@@ -150,21 +150,21 @@
 !/!17: Current level rankings in the save stats
 !=!Current Level Rankings\n
 !G!Derzeitiger Rang\n 
-!S!Clasificación de nivel actual\n
+!S!ClasificaciÃ³n de nivel actual\n
 !I!Classifica livello corrente\n
 !F!Classement Niveau Actuel\n
 
 !/!18: Scores in the saved stats header
 !=!Rank Name                         Score       Kills       Deaths     Suicides
-!G!Rang Name                         Punkte      Abschüsse   Verl. Leben Selbstmorde 
-!S!Nombre de rango                   Puntuación  Bajas       Muertes    Suicidios
+!G!Rang Name                         Punkte      AbschÃ¼sse   Verl. Leben Selbstmorde 
+!S!Nombre de rango                   PuntuaciÃ³n  Bajas       Muertes    Suicidios
 !I!Pos Nome                          Punteggio   Ucc         Morti      Suicidi
 !F!Rang Nom                          Score       Victimes    Morts      Suicides
 
 !/!19: Individual stats in the save game stats header
 !=!\nIndividual Stats\n
 !G!\nIndividuelle Statistik\n
-!S!\nEstadísticas individuales\n
+!S!\nEstadÃ­sticas individuales\n
 !I!\nStatisiche individuali\n
 !F!\Stats personnelles\n
 
@@ -173,11 +173,11 @@
 !G!Gesamte Spielzeit: %s 
 !S!Tiempo total de partida:%s
 !I!Tempo totale partita: %s
-!F!Durée de la partie: %s
+!F!DurÃ©e de la partie: %s
 
 !/!21: Individual save stats header
 !=!Callsign:                     Kills:    Deaths:
-!G!Erkennungsname:               Abschüsse: Verl. Leben:
+!G!Erkennungsname:               AbschÃ¼sse: Verl. Leben:
 !S!Llamada:                      Bajas:    Muertes:
 !I!Chiamato:                     Ucc       Morti
 !F!Indicatif:                    Victimes:  Morts:
@@ -199,30 +199,30 @@
 !/!24: Welcome message when you join the game
 !=!Welcome To Entropy, %s
 !G!Willkommen zu Entropie, %s 
-!S!Bienvenido a Entropía, %s
+!S!Bienvenido a EntropÃ­a, %s
 !I!Benvenuto a Entropia, %s
-!F!Bienvenue à Entropie, %s
+!F!Bienvenue Ã  Entropie, %s
 
 !/!25: Join message telling you what team you are on
 !=!You're on the %s Team
 !G!Sie sind im %sen Team
-!S!Estás en el equipo %s
+!S!EstÃ¡s en el equipo %s
 !I!Sei nella squadra %s
-!F!Vous êtes dans l'équipe %s
+!F!Vous Ãªtes dans l'Ã©quipe %s
 
 !/!26: Hud message when a player joins the game
 !=!%s Has Joined The %s Team
 !G!%s hat sich dem %sen Team angeschlossen
 !S!%s se ha unido al equipo %s
-!I!%s è entrato nella squadra %s
-!F!%s a rejoint l'équipe %s
+!I!%s Ã¨ entrato nella squadra %s
+!F!%s a rejoint l'Ã©quipe %s
 
 !/!27: Hud message displayed when you save the stats
 !=!Stats saved
 !G!Statistik gespeichert!
-!S!Estadísticas guardadas!
+!S!EstadÃ­sticas guardadas!
 !I!Satistiche salvate!
-!F!Stats enregistrées
+!F!Stats enregistrÃ©es
 
 !/!28: Start game hotspot in game config
 !=!Start Game
@@ -234,14 +234,14 @@
 !/!29: Virus credit->kill ratio in game config
 !=!Virus Credit/Kill
 !G!Virus Credit/Abschuss
-!S!Créditos/Bajas de virus
+!S!CrÃ©ditos/Bajas de virus
 !I!Crediti/Uccisioni del virus
-!F!Crédits/Victimes du Virus
+!F!CrÃ©dits/Victimes du Virus
 
 !/!30: name of the game in the stats screen
 !=!Entropy
 !G!Entropie
-!S!Entropía
+!S!EntropÃ­a
 !I!Entropia
 !F!Entropie
 
@@ -254,10 +254,10 @@
 
 !/!32: HUD message when you pickup a virus
 !=!You picked up a virus
-!F!Vous avez attrapé un virus
+!F!Vous avez attrapÃ© un virus
 !I!Hai raccolto un virus
 !G!Sie haben einen Virus aufgehoben
-!S!Habéis recogido un virus
+!S!HabÃ©is recogido un virus
 
 !/!Shorted versions of Kills,Deaths,Suicides
 !=!K

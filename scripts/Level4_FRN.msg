@@ -15,21 +15,21 @@ NEXT_MESSAGE_ID_NUMBER     11
 
 BPDefeated=GUIDEBOT: "Mercenaires de la PTMC battus !"
 
-CartridgeError=GUIDEBOT: "Vous ne pouvez pas laisser la cartouche de données ici !"
+CartridgeError=GUIDEBOT: "Vous ne pouvez pas laisser la cartouche de donnÃ©es ici !"
 
 CinematicAmbush=Mercenaires de la PTMC 
 
-CinematicDataCart=Transfert de Données vers Suzuki en cours...
+CinematicDataCart=Transfert de DonnÃ©es vers Suzuki en cours...
 
 CinematicEndCam=
 
-CinematicIntroCam=Terre - Séoul, Corée
+CinematicIntroCam=Terre - SÃ©oul, CorÃ©e
 
-Debug1=Réglage Difficulté : %f
+Debug1=RÃ©glage DifficultÃ© : %f
 
 Debug2=Ca devrait SECOUER!
 
-GetOut=GUIDEBOT: "Transfert réussi !  Suzuki doit avoir les données !"
+GetOut=GUIDEBOT: "Transfert rÃ©ussi !  Suzuki doit avoir les donnÃ©es !"
 
-PutTheCartridge=GUIDEBOT: "Placez la cartouche de données au milieu de la salle de transfert !"
+PutTheCartridge=GUIDEBOT: "Placez la cartouche de donnÃ©es au milieu de la salle de transfert !"
 

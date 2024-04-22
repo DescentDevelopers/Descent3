@@ -17,7 +17,7 @@ AllDone=Bel lavoro! Adesso vola attraverso la porta aperta per terminare l'addes
 
 AllRotateIntro=Tutti i controlli di rotazione sono attivati. Testali.
 
-AlmostDoneDodge=Hai quasi finito! Continua cosÏ che vai bene!
+AlmostDoneDodge=Hai quasi finito! Continua cos√¨ che vai bene!
 
 BankIntro=I comandi di virata sono attivati. Testali virando a sinistra e a destra.
 
@@ -27,7 +27,7 @@ CantSeeBot= Il robot non si vede!
 
 ContinueToCourse=Prosegui l'imbardata in basso per iniziare la nuova fase.
 
-CourseInstructions=Ora esercitati nel tunnel usando al meglio le tue capacit‡.
+CourseInstructions=Ora esercitati nel tunnel usando al meglio le tue capacit√†.
 
 DestroyFollowbot=Via, distruggi il robot.
 
@@ -37,7 +37,7 @@ DodgeIntro=Ora dovrai imparare a evitare il nemico.
 
 ExitManuveur=Passa da quella porta aperta e entra nella sala accanto.
 
-FinalSessionIntro=Ora passa all'ultima e pi˘ impegnativa prova. Trova e distruggi gli ultimi cinque robot.
+FinalSessionIntro=Ora passa all'ultima e pi√π impegnativa prova. Trova e distruggi gli ultimi cinque robot.
 
 FollowInstructions=Mantieni uno dei robot sullo schermo per 20 secondi e completa questa fase utilizzando solo i comandi di rotazione.
 
@@ -45,7 +45,7 @@ FollowIntro=Ora usa le funzioni di rotazione appena apprese per inseguire uno de
 
 GalleryIntro=Ora i comandi di movimento sono disattivati. Distruggi rapidamente i robot che ti vengono incontro.
 
-GalleryStage2Intro=Ora hai la completa manovrabilit‡ dell'astronave. Distruggi i 2 robot superstiti.
+GalleryStage2Intro=Ora hai la completa manovrabilit√† dell'astronave. Distruggi i 2 robot superstiti.
 
 GBExtra=Richiamare il Robot-Guida premendo F4 e selezionando "Ritorna alla nave". Andare alla zona successiva al suo ritorno.
 
@@ -57,17 +57,17 @@ GetCameraMonitor=Premere F4 e selezionare il articolo 1.  Volare sopra il oggett
 
 GoBackwards=Usa la chiave reverse per tornare al punto di partenza!
 
-GoDown=Ora plana in basso finchÈ non sarai tornato nella posizione di partenza..
+GoDown=Ora plana in basso finch√© non sarai tornato nella posizione di partenza..
 
-GoForward=Avanza finchÈ non ti fermi.
+GoForward=Avanza finch√© non ti fermi.
 
-GoLeft=Ora va a sinistra finchÈ non ti fermi.
+GoLeft=Ora va a sinistra finch√© non ti fermi.
 
 GoodJob=Ottimo!
 
 GoRight=Ora plana a destra fino a tornare nella posizione iniziale.
 
-GoUp=Ora scivola in alto finchÈ non ti fermi.
+GoUp=Ora scivola in alto finch√© non ti fermi.
 
 HeadingIntro=Ora sono attivati i comandi direzionali. Provali ruotando a sinistra e destra.
 
@@ -79,17 +79,17 @@ KillBotIntro=Puoi contare solo sulle tue forze in questa sala. Ci sono 4 robot e
 
 KillBot2=Alcune parti di questa zona sono molto buie. Accendi le luci o spara dei razzi per vedere. Usa il Robot-Guida se ti serve aiuto per trovare un robot o un potenziamento.
 
-LeaveDodge=Ora utilizza la tua abilit‡ di volo per procedere fino alla luce verde lampeggiante.
+LeaveDodge=Ora utilizza la tua abilit√† di volo per procedere fino alla luce verde lampeggiante.
 
 ManuverIntro=Ora imparerai gli altri comandi: beccheggio, impostazione dell'angolo di rotta e virata..
 
 Movingbotintro=Ora distruggi altri due robot. Questa volta saranno in movimento.
 
-PitchIntro=Ora sono attivati i comandi per il beccheggio. Provali beccheggiando su e gi˘
+PitchIntro=Ora sono attivati i comandi per il beccheggio. Provali beccheggiando su e gi√π
 
 PowerupIntro=Ora apprenderai l'uso degli energizzanti. In questa sala ce ne sono due. Trovali e raccoglili passandoci sopra..
 
-ProceedtoLastRoom=Ora procedi attraverso la porta che si Ë aperta per iniziare l'ultima fase dell'addestramento.
+ProceedtoLastRoom=Ora procedi attraverso la porta che si √® aperta per iniziare l'ultima fase dell'addestramento.
 
 Repeat=Ripetiamo l'esercizio appena fatto.
 

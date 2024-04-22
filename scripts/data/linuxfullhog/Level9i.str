@@ -59,134 +59,134 @@
 
 !/!Goal 0 Description
 !=!Protect the covert cargo ship as it collects components for a new fighter ship
-!G!Beschützen Sie das Frachtschiff während es Komponenten für ein neues Kampfschiff sammelt
+!G!BeschÃ¼tzen Sie das Frachtschiff wÃ¤hrend es Komponenten fÃ¼r ein neues Kampfschiff sammelt
 !S!Protege la nave de transporte encubierta mientras recoge los componentes para un nuevo caza
 !I!Proteggi la nave da carico camuffata mentre raccoglie componenti per una nuova nave da combattimento
-!F!Protégez le transporteur pendant qu'il récupère des pièces pour un nouveau chasseur.
+!F!ProtÃ©gez le transporteur pendant qu'il rÃ©cupÃ¨re des piÃ¨ces pour un nouveau chasseur.
 
 !/!Goal 1 Name
 !=!Collect Seismic Disruptors
 !G!Seismische Unterbrecher sammeln
-!S!Recoger disruptores sísmicos
+!S!Recoger disruptores sÃ­smicos
 !I!Raccogli i disruttori sismici
-!F!Récupérer Disrupteurs Sismiques
+!F!RÃ©cupÃ©rer Disrupteurs Sismiques
 
 !/!Goal 1 Item Name
 !=!Control Center
 !G!Kontrollzentrum
 !S!Centro de control
 !I!Centro di controllo
-!F!Centre de Contrôle
+!F!Centre de ContrÃ´le
 
 !/!Goal 1 Description
 !=!Find and collect all four seismic disruptors
 !G!Finden und sammeln Sie alle vier seismischen Unterbrecher ein.
-!S!Busca y recoge los cuatro disruptores sísmicos
+!S!Busca y recoge los cuatro disruptores sÃ­smicos
 !I!Trova e raccogli i quattro disruttori sismici
-!F!Touvez et récupérez les quatre disrupteurs sismiques.
+!F!Touvez et rÃ©cupÃ©rez les quatre disrupteurs sismiques.
 
 !/!Goal 2 Name
 !=!Disrupt Storage Seismic Stabilizer
 !G!Seismischen Stabilisator des Lagerzentrums unterbrechen
-!S!Avería el estabilizador sísmico del almacén
+!S!AverÃ­a el estabilizador sÃ­smico del almacÃ©n
 !I!Sabota lo stabilizzatore sismico del magazzino
-!F!Débrayer stabilisateur sismique de l'entrepôt
+!F!DÃ©brayer stabilisateur sismique de l'entrepÃ´t
 
 !/!Goal 2 Item Name
 !=!Storage Seismic Stabilizer
 !G!Seismischer Stabilisator des Lagerzentrums
-!S!Estabilizador sísmico del almacén
+!S!Estabilizador sÃ­smico del almacÃ©n
 !I!Stabilizzatore sismico del magazzino
-!F!Stabilisateur sismique de l'entrepôt
+!F!Stabilisateur sismique de l'entrepÃ´t
 
 !/!Goal 2 Description
 !=!Disrupt the storage facility seismic stabilizer
 !G!Unterbrechen Sie den seismischen Stabilisator des Lagerzentrums
-!S!Avería el estabilizador sísmico de instalaciones de almacenamiento
+!S!AverÃ­a el estabilizador sÃ­smico de instalaciones de almacenamiento
 !I!Sabota lo stabilizzatore sismico delle installazioni di magazzinaggio
-!F!Débrayez le stabilisateur sismique de l'entrepôt.
+!F!DÃ©brayez le stabilisateur sismique de l'entrepÃ´t.
 
 !/!Goal 3 Name
 !=!Disrupt Factory Seismic Stabilizer
 !G!Den seismischen Stabilisator der Fabrik unterbrechen
-!S!Avería el estabilizador sísmico de la fábrica
+!S!AverÃ­a el estabilizador sÃ­smico de la fÃ¡brica
 !I!Sabota lo stabilizzatore sismico della fabbrica
-!F!Débrayer le stabilisateur sismique de l'usine
+!F!DÃ©brayer le stabilisateur sismique de l'usine
 
 !/!Goal 3 Item Name
 !=!Factory Seismic Stabilizer
 !G!Seismischer Stabilisator der Fabrik
-!S!Estabilizador sísmico de la fábrica
+!S!Estabilizador sÃ­smico de la fÃ¡brica
 !I!Stabilizzatore sismico della fabbrica
 !F!Stabilisateur sismique de l'usine
 
 !/!Goal 3 Description
 !=!Disrupt the main factory seismic stabilizer
 !G!Unterbrechen Sie den seismischen Stabilisator der Fabrik
-!S!Avería el estabilizador sísmico la fábrica principal
+!S!AverÃ­a el estabilizador sÃ­smico la fÃ¡brica principal
 !I!Sabota lo stabilizzatore sismico principale della fabbrica
-!F!Débrayez le stabilisateur sismique de l'usine principale.
+!F!DÃ©brayez le stabilisateur sismique de l'usine principale.
 
 !/!Goal 4 Name
 !=!Disrupt Assembly Seismic Stabilizer
 !G!Den seismischen Stabilisator des Montagezentrums unterbrechen
-!S!Avería el estabilizador sísmico de la cadena de montaje
+!S!AverÃ­a el estabilizador sÃ­smico de la cadena de montaje
 !I!Sabota lo stabilizzatore sismico della catena di montaggio
-!F!Débrayer le stabilisateur sismique de l'assemblage
+!F!DÃ©brayer le stabilisateur sismique de l'assemblage
 
 !/!Goal 4 Item Name
 !=!Assembly Seismic Stabilizer
 !G!Seismischer Stabilisator des Montagezentrums
-!S!Estabilizador sísmico de la cadena de montaje 
+!S!Estabilizador sÃ­smico de la cadena de montaje 
 !I!Stabilizzatore sismico della catena di montaggio
 !F!Stabilisateur sismique de l'assemblage
 
 !/!Goal 4 Description
 !=!Disrupt the assembly plant seismic stabilizer
 !G!Unterbrechen Sie den seismischen Stabilisator des Montagezentrums
-!S!Avería el estabilizador sísmico de la planta de montaje 
+!S!AverÃ­a el estabilizador sÃ­smico de la planta de montaje 
 !I!Sabota lo stabilizzatore sismico dello stabilimento di montaggio
-!F!Débrayez le stabilisateur sismique de l'usine d'assemblage.
+!F!DÃ©brayez le stabilisateur sismique de l'usine d'assemblage.
 
 !/!Goal 5 Name
 !=!Disrupt Control Seismic Stabilizer
 !G!Den seismischen Stabilisator des Kontrollzentrums unterbrechen
-!S!Avería el estabilizador sísmico de control
+!S!AverÃ­a el estabilizador sÃ­smico de control
 !I!Sabota lo stabilizzatore sismico di controllo
-!F!Débrayer Stabilisateur Sismique du centre de contrôle
+!F!DÃ©brayer Stabilisateur Sismique du centre de contrÃ´le
 
 !/!Goal 5 Item Name
 !=!Control Seismic Stabilizer
 !G!Seismischer Stabilisator des Kontrollzentrums
-!S!Estabilizador sísmico de control 
+!S!Estabilizador sÃ­smico de control 
 !I!Stabilizzatore sismico di controllo
-!F!Stabilisateur sismique du centre de contrôle 
+!F!Stabilisateur sismique du centre de contrÃ´le 
 
 !/!Goal 5 Description
 !=!Disrupt the control center seismic stabilizer
 !G!Unterbrechen Sie den seismischen Stabilisator des Kontrollzentrums
-!S!Avería el estabilizador sísmico del centro de control 
+!S!AverÃ­a el estabilizador sÃ­smico del centro de control 
 !I!Sabota lo stabilizzatore sismico del centro di controllo
-!F!Débrayez le stabilisateur sismique du centre de contrôle.
+!F!DÃ©brayez le stabilisateur sismique du centre de contrÃ´le.
 
 !/!Goal 6 Name
 !=!Disrupt All Four Seismic Stabilizers
 !G!Alle vier seismischen Stabilisatoren unterbrechen
-!S!Avería los cuatro estabilizadores sísmicos
+!S!AverÃ­a los cuatro estabilizadores sÃ­smicos
 !I!Sabota i quattro stabilizzatore sismici
-!F!Débrayer les quatre stabilisateurs sismiques
+!F!DÃ©brayer les quatre stabilisateurs sismiques
 
 !/!Goal 6 Item Name
 !=!Seismic Stabilizers
 !G!Seismische Stabilisatoren
-!S!Estabilizadores sísmicos
+!S!Estabilizadores sÃ­smicos
 !I!Stabilizzatori sismici
 !F!Stabilisateurs sismiques
 
 !/!Goal 6 Description
 !=!Disrupt the stabilizers to create a distraction and divert attention from the covert cargo ship
 !G!Unterbrechen Sie die Stabilisatoren, um die Aufmerksamkeit vom Frachtschiff abzulenken
-!S!Avería los estabilizadores para ocasionar una distracción y desviar la atención de la nave de transporte encubierta
+!S!AverÃ­a los estabilizadores para ocasionar una distracciÃ³n y desviar la atenciÃ³n de la nave de transporte encubierta
 !I!Sabota gli stabilizzatori per creare una diversione e distrarre l'attenzione dalla nave da carico camuffato
-!F!Débrayez les stabilisateurs sismiques pour créer une diversion et masquer la présence du transporteur.
+!F!DÃ©brayez les stabilisateurs sismiques pour crÃ©er une diversion et masquer la prÃ©sence du transporteur.
 

@@ -19,11 +19,11 @@ ContainmentDoorUnlocked=Porta di contenimento sbloccata.
 
 Controller=ROBOT-GUIDA: "Instradamento delle difese di superficie ausiliarie verso il sistema primario!"
 
-ControlVulnerable=ROBOT-GUIDA: "Il controller primario del sistema di superficie è ora vulnerabile!"
+ControlVulnerable=ROBOT-GUIDA: "Il controller primario del sistema di superficie Ã¨ ora vulnerabile!"
 
 CoolersAllGone=ROBOT-GUIDA: "Avaria del sistema centrale di raffreddamento. Attivare condizionamento d'emergenza."
 
-DoThis=ROBOT-GUIDA: "Trova i campioni di virus ed esci di lì il più rapidamente possibile!"
+DoThis=ROBOT-GUIDA: "Trova i campioni di virus ed esci di lÃ¬ il piÃ¹ rapidamente possibile!"
 
 FFDisable1=ROBOT-GUIDA: "Blocco dell'alimentazione ausiliaria ai campi di forza di contenimento!"
 

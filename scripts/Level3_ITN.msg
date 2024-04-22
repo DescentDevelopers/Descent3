@@ -21,7 +21,7 @@ DataFinal=ROBOT-GUIDA: "La cartuccia contiene i dati che ci servono! Ritorna in 
 
 DataNodes=ROBOT-GUIDA: "Inserisci la cartuccia dati tra i nodi di trasferimento!"
 
-DataOriginal=ROBOT-GUIDA: "La cartuccia è vuota! Cerca i nodi di trasferimento dati e inserisci la cartuccia tra di loro!"
+DataOriginal=ROBOT-GUIDA: "La cartuccia Ã¨ vuota! Cerca i nodi di trasferimento dati e inserisci la cartuccia tra di loro!"
 
 DestroyedSuper=ROBOT-GUIDA: "Super Ladro distrutto! Ora la cartuccia dovrebbe contenere i dati!"
 
@@ -37,11 +37,11 @@ IntroMessage=Tiris - Centro Stazione PTMC Piccu | & Laboratorio SRAD Beta Ceti
 
 KillSuper=ROBOT-GUIDA: "Distruggi il Super Ladro per recuperare la cartuccia dati!"
 
-LTSelfDestruct=ROBOT-GUIDA: "La torre di illuminazione non può scaricarsi e si sta audistruggendo!"
+LTSelfDestruct=ROBOT-GUIDA: "La torre di illuminazione non puÃ² scaricarsi e si sta audistruggendo!"
 
 MainKeyCard=Chiave di sicurezza
 
-PlaceCartridge=ROBOT-GUIDA: "La cartuccia dati è pronta per il trasferimento dati! Cerca i comandi per i dati!"
+PlaceCartridge=ROBOT-GUIDA: "La cartuccia dati Ã¨ pronta per il trasferimento dati! Cerca i comandi per i dati!"
 
 RadioRoomFirst=ROBOT-GUIDA: "Accoppiamento primario energia funzionante!"
 

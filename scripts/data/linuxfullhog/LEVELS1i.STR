@@ -45,50 +45,50 @@
 
 !/!Goal 0 Name
 !=!Explore the hidden facility
-!F!Explorer le b‚timent cachÈ
-!S!Explorar la instalaciÛn oculta
+!F!Explorer le b√¢timent cach√©
+!S!Explorar la instalaci√≥n oculta
 !G!Die versteckte Anlage erforschen 
 !I!Esplora la base nascosta
 
 !/!Goal 0 Item Name
 !=!Origin Zero
-!F!Origine ZÈro
+!F!Origine Z√©ro
 !S!Origen cero
 !G!Nullpunkt
 !I!Origine zero
 
 !/!Goal 0 Description
 !=!Explore the facility.
-!F!Explorez le b‚timent
-!S!Explorar la instalaciÛn
+!F!Explorez le b√¢timent
+!S!Explorar la instalaci√≥n
 !G!Erforschen Sie die Anlage.
 !I!Esplora la base
 
 !/!Goal 1 Name
 !=!Find Area 3
 !F!Trouver la zone 3
-!S!Encontrar el ·rea 3
+!S!Encontrar el √°rea 3
 !G!Bereich 3 finden
 !I!Trova l'area 3
 
 !/!Goal 1 Item Name
 !=!Area 3
 !F!Zone 3
-!S!¡rea 3
+!S!√Årea 3
 !G!Bereich 3
 !I!Area 3
 
 !/!Goal 1 Description
 !=!Explore the base and find Area 3
 !F!Explorez la base et trouvez la zone 3.
-!S!Explorar la base y encontrar el ·rea 3
+!S!Explorar la base y encontrar el √°rea 3
 !G!Erforschen Sie die Basis und finden Sie Bereich 3
 !I!Esplora la base e trova l'area 3
 
 !/!Goal 2 Name
 !=!Find Area 2
 !F!Trouver la zone 2
-!S!Encontrar el ·rea 2
+!S!Encontrar el √°rea 2
 !G!Bereich 2 finden
 !I!Trova l'area 2
 
@@ -102,14 +102,14 @@
 !/!Goal 2 Description
 !=!Explore the base and find Area 2
 !F!Explorez la base et trouvez la zone 2.
-!S!Explorar la base y encontrar el ·rea 2
+!S!Explorar la base y encontrar el √°rea 2
 !G!Erforschen Sie die Basis und finden Sie Bereich 2
 !I!Esplora la base e trova l'area 2
 
 !/!Goal 3 Name
 !=!Find Area 1
 !F!Trouver la Zone 1
-!S!Encontrar el ·rea 1
+!S!Encontrar el √°rea 1
 !G!Bereich 1 finden
 !I!Trova l'area 1
 
@@ -123,6 +123,6 @@
 !/!Goal 3 Description
 !=!Explore the base and find Area 1
 !F!Explorez la base et trouvez la zone 1.
-!S!Explorar la base y encontrar el ·rea 1
+!S!Explorar la base y encontrar el √°rea 1
 !G!Erforschen Sie die Basis und finden Sie Bereich 1
 !I!Esplora la base e trova l'area 1

@@ -23,7 +23,7 @@ Bay62Door=ROBOT-GUIDA: "Porta d'accesso ad attracco 62 bloccata.  Trovare un'alt
 
 Bay62Fuse=ROBOT-GUIDA: "Attracco 62 Matcen disattivato."
 
-Bay62Game=11:37.04.04.3750 LIBRO DI BORDO BADGE ID COMANDANTE M. KELLY 62 STORMO COMBATTIMENTO: "I nostri sforzi sono inutili. Sappiamo che hanno il controllo di almeno due caccia StarHawk! L'infezione si Ë diffusa ai meccanoidi operai... procedo all'evacuazione dei miei uomini."
+Bay62Game=11:37.04.04.3750 LIBRO DI BORDO BADGE ID COMANDANTE M. KELLY 62 STORMO COMBATTIMENTO: "I nostri sforzi sono inutili. Sappiamo che hanno il controllo di almeno due caccia StarHawk! L'infezione si √® diffusa ai meccanoidi operai... procedo all'evacuazione dei miei uomini."
 
 Bay62Hud= Libro di bordo Attracco 62 scaricato... (MAIUSC-F8)
 
@@ -59,9 +59,9 @@ GotReconInterface=Interfaccia ricognizione
 
 IntroText=Orbita di Marte - Portanavi| ammiraglia Expediator del CDT
 
-JeffriesID=ROBOT-GUIDA: "Tubo Jeffries di poppa. Da qui si puÚ arrivare alla sezione di poppa."
+JeffriesID=ROBOT-GUIDA: "Tubo Jeffries di poppa. Da qui si pu√≤ arrivare alla sezione di poppa."
 
-LandingDoor62=ROBOT-GUIDA: "La porta principale di accesso all'attracco 62 Ë bloccata. Trovare un'altra via!"
+LandingDoor62=ROBOT-GUIDA: "La porta principale di accesso all'attracco 62 √® bloccata. Trovare un'altra via!"
 
 LeaderCinema=Cercare e distruggere il comandante della Legione Vittoriosa
 
@@ -69,7 +69,7 @@ LeaderTaunt1=RADIO CDT: "Qui il comandante della Legione Vittoriosa..."
 
 LeaderTaunt2=RADIO CDT: "Stiamo assumendo il controllo dell'Expediator."
 
-LeaderTaunt3=CED RADIO: "Annienteremo qualsiasi unit‡ che non si arrenda immediatamente."
+LeaderTaunt3=CED RADIO: "Annienteremo qualsiasi unit√† che non si arrenda immediatamente."
 
 LeaderTaunt4=RADIO CDT: "Non siamo feriti quindi con enfatizziamo."
 
@@ -83,13 +83,13 @@ LevelObjtives2=2. Cerca e distruggi il| Comandante della Legione Vittoriosa.
 
 LevelObjtives3=Neutralizzare minaccia di conquista ostile: | RIDURRE | Rosso, Verde, Bianco | LEGIONE TRUPPE D'ASSALTO DIFESA.
 
-MainDeckGame=11:22.04.04.3750 STATO DELLA NAVE LIBRO DI BORDO CORAZZATA EXPEDIATOR DEL CDT: "Virus sconosciuto ha contaminato i sistemi difensivi della nave comprese unit‡ TA. Abbiamo isolato tutta la sezione di poppa. Fortunatamente tutti hanno abbandonato la nave in tempo! Stiamo studiando le possibili soluzioni."
+MainDeckGame=11:22.04.04.3750 STATO DELLA NAVE LIBRO DI BORDO CORAZZATA EXPEDIATOR DEL CDT: "Virus sconosciuto ha contaminato i sistemi difensivi della nave comprese unit√† TA. Abbiamo isolato tutta la sezione di poppa. Fortunatamente tutti hanno abbandonato la nave in tempo! Stiamo studiando le possibili soluzioni."
 
 MainDeckHud= Libro di bordo astronave scaricato... (MAIUSC-F8)
 
 NoEntry=QUARANTENA! Vietato procedere oltre questo punto.
-NoEntry62=Questa Porta di Accesso all'Hangar Ë stata sigillata. Devi trovare un'altra via.
-PplDoors1=L'accesso al personale Ë momentaneamente precluso.
+NoEntry62=Questa Porta di Accesso all'Hangar √® stata sigillata. Devi trovare un'altra via.
+PplDoors1=L'accesso al personale √® momentaneamente precluso.
 
 PrimaryObjB=Comando CDT: "Congratulazioni! Hai portato a termine l'obiettivo secondario."
 
@@ -102,9 +102,9 @@ SecondaryObjective=EMERGENZA!!! | MOTORE IN AVARIA...|
 ShipInfo1=Libro di bordo astronave scaricato... 
 (MAIUSC-F8)
 
-ShipInfo2=10:59.04.04.3750: "Questa Ë una registrazione d'emergenza del macchinista capo di poppa Kalmer. Dopo avere montato le parti di ricambio ricevute con l'ordine 47632-09 il Matcen Ë condannato. Ora produce Assaltatori infetti! Impossibile escluderli!!! Stiamo facendo evacuare gli addetti alla riparazione."
+ShipInfo2=10:59.04.04.3750: "Questa √® una registrazione d'emergenza del macchinista capo di poppa Kalmer. Dopo avere montato le parti di ricambio ricevute con l'ordine 47632-09 il Matcen √® condannato. Ora produce Assaltatori infetti! Impossibile escluderli!!! Stiamo facendo evacuare gli addetti alla riparazione."
 
-SpyPlead=MECCANOIDE CACCIATORE: "Vi prego, se non mi uccidete non farÚ nulla. Io non sono come gli altri!"
+SpyPlead=MECCANOIDE CACCIATORE: "Vi prego, se non mi uccidete non far√≤ nulla. Io non sono come gli altri!"
 
 StormtroopersCine=Fateli fuori...| Prima che loro facciano fuori voi!
 

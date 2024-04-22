@@ -17,81 +17,81 @@ BLANK=
 
 BossIntroductionText=L'Homunculus|
 
-BuilderCollectorsCorrectlyPlaced=GUIDEBOT: "Une porte a été déverrouillée."
+BuilderCollectorsCorrectlyPlaced=GUIDEBOT: "Une porte a Ã©tÃ© dÃ©verrouillÃ©e."
 
 Builders3secondsleft=GUIDEBOT: "Il vous reste trois secondes !"
 
-BuildersDoorMessage=GUIDEBOT: "Vous êtes un Agent des Collecteurs, vous pouvez donc passer."
+BuildersDoorMessage=GUIDEBOT: "Vous Ãªtes un Agent des Collecteurs, vous pouvez donc passer."
 
-BuildersPuzzhint=GUIDEBOT: "Puits de ventilation détecté."
+BuildersPuzzhint=GUIDEBOT: "Puits de ventilation dÃ©tectÃ©."
 
 BuildersPuzzMessage=GUIDEBOT: "Il faut aller vite !"
 
-BuildersPuzzMessage2=GUIDEBOT: "L'icône des constructeurs couronne la voie choisie !"
+BuildersPuzzMessage2=GUIDEBOT: "L'icÃ´ne des constructeurs couronne la voie choisie !"
 
-BuildersTimerExpired=GUIDEBOT: "Délai expiré !"
+BuildersTimerExpired=GUIDEBOT: "DÃ©lai expirÃ© !"
 
-CollectorsDoorMessage=GUIDEBOT: "Vous êtes un agent des constructeurs, vous pouvez donc passer."
+CollectorsDoorMessage=GUIDEBOT: "Vous Ãªtes un agent des constructeurs, vous pouvez donc passer."
 
 EndPath=GUIDEBOT: "Fin du Passage !"
 
-EnterPriestPuzzle=GUIDEBOT: "Vous venez d'entrer dans Le Puzzle du Prêtre."
+EnterPriestPuzzle=GUIDEBOT: "Vous venez d'entrer dans Le Puzzle du PrÃªtre."
 
-ExitPriestPuzzle=GUIDEBOT: " Vous avez quitté Le Puzzle du Prêtre."
+ExitPriestPuzzle=GUIDEBOT: " Vous avez quittÃ© Le Puzzle du PrÃªtre."
 
-FirstPickupBuilder=L'Icône des Constucteurs
+FirstPickupBuilder=L'IcÃ´ne des Constucteurs
 
-FirstPickupCollector=L'Icône des Collecteurs
+FirstPickupCollector=L'IcÃ´ne des Collecteurs
 
-FirstPickupPriest=L'Icône du Prêtre
+FirstPickupPriest=L'IcÃ´ne du PrÃªtre
 
 IntroLevelMessage=Mars - Canyons Noctis Labyrinthus|
 
-InvGame=Vous pouvez choisir des objets dans votre inventaire par les touches par défaut, ^ et $[EC2]$.  Pour utiliser ou déployer un objet, la touche par défaut est 'Entrée'[E3].
+InvGame=Vous pouvez choisir des objets dans votre inventaire par les touches par dÃ©faut, ^ et $[EC2]$.  Pour utiliser ou dÃ©ployer un objet, la touche par dÃ©faut est 'EntrÃ©e'[E3].
 
-InvHUD=GUIDEBOT: "N'oubliez pas d'utiliser votre inventaire avec les icônes... SHIFT-F8."
+InvHUD=GUIDEBOT: "N'oubliez pas d'utiliser votre inventaire avec les icÃ´nes... SHIFT-F8."
 
 KeyAlreadyThere=GUIDEBOT: "Deux en un ne font pas trois..."
 
-PlaceBuildersKey=GUIDEBOT: "Vous avez placé l'icône des constructeurs."
+PlaceBuildersKey=GUIDEBOT: "Vous avez placÃ© l'icÃ´ne des constructeurs."
 
-PlaceCollectorsKey=GUIDEBOT: "Vous avez placé l'icône des collecteurs."
+PlaceCollectorsKey=GUIDEBOT: "Vous avez placÃ© l'icÃ´ne des collecteurs."
 
-PlacePriestKey=GUIDEBOT: "Vous avez placé l'icône du prêtre."
+PlacePriestKey=GUIDEBOT: "Vous avez placÃ© l'icÃ´ne du prÃªtre."
 
-PriestGalleryDoorLocked=GUIDEBOT: "Vous n'êtes pas digne."
+PriestGalleryDoorLocked=GUIDEBOT: "Vous n'Ãªtes pas digne."
 
-PriestHallDoorLocked=GUIDEBOT: "Le Grand Prêtre ne vous laissera pas entrer !"
+PriestHallDoorLocked=GUIDEBOT: "Le Grand PrÃªtre ne vous laissera pas entrer !"
 
 PriestKeyCorrectlyPlaced=GUIDEBOT: "L'Homunculus attend !"
 
-PriestPuzzleEnter=GUIDEBOT: "Le long des colonnes marche le Prêtre Elu."
+PriestPuzzleEnter=GUIDEBOT: "Le long des colonnes marche le PrÃªtre Elu."
 
-PriestPuzzleGoofed=GUIDEBOT: "Vous n'êtes pas l'élu !"
+PriestPuzzleGoofed=GUIDEBOT: "Vous n'Ãªtes pas l'Ã©lu !"
 
-PriestPuzzleSolved=GUIDEBOT: "Vous avez prouvé votre dignité !"
+PriestPuzzleSolved=GUIDEBOT: "Vous avez prouvÃ© votre dignitÃ© !"
 
 Test=Test
 
 Testing=
 
-ThisDoorDoesNotAnswer=GUIDEBOT: "Cette porte ne veut pas vous répondre."
+ThisDoorDoesNotAnswer=GUIDEBOT: "Cette porte ne veut pas vous rÃ©pondre."
 
-TugMessage1=REMORQUEUR: "On dirait qu'on a trouvé le vaisseau ! Il a l'air en pas trop mauvais état, vu d'ici."
+TugMessage1=REMORQUEUR: "On dirait qu'on a trouvÃ© le vaisseau ! Il a l'air en pas trop mauvais Ã©tat, vu d'ici."
 
-TugMessage2=REMORQUEUR: "On attendra ici pendant que vous faites le ménage..."
+TugMessage2=REMORQUEUR: "On attendra ici pendant que vous faites le mÃ©nage..."
 
-TugMessage3=REMORQUEUR: "Euh, on a un champ de force qui nous bloque le passage... Vous pourriez pas nous en débarrasser assez vite ?"
+TugMessage3=REMORQUEUR: "Euh, on a un champ de force qui nous bloque le passage... Vous pourriez pas nous en dÃ©barrasser assez vite ?"
 
 TugMessage4=REMORQUEUR: "On dirait que le boulot n'est pas fini ! Attention !"
 
-TugMessage5=REMORQUEUR: "Dépêchez-vous de détruire ce truc qu'on puisse se tirer d'ici !"
+TugMessage5=REMORQUEUR: "DÃ©pÃªchez-vous de dÃ©truire ce truc qu'on puisse se tirer d'ici !"
 
-TugMessage6=REMORQUEUR: "Bon, à nous de jouer maintenant."
+TugMessage6=REMORQUEUR: "Bon, Ã  nous de jouer maintenant."
 
-TugMessageShipPickUp=REMORQUEUR: "OK. Le champ de force est coupé. On va aller le chercher ce vaisseau..."
+TugMessageShipPickUp=REMORQUEUR: "OK. Le champ de force est coupÃ©. On va aller le chercher ce vaisseau..."
 
-TugMessageStart=REMORQUEUR: "Vous êtes tout seul à partir d'ici..."
+TugMessageStart=REMORQUEUR: "Vous Ãªtes tout seul Ã  partir d'ici..."
 
 TugStartMessage2=REMORQUEUR: "On va garder le silence radio tant qu'on aura pas de visuel du vaisseau."
 
@@ -99,9 +99,9 @@ XsecsOntheClock=REMORQUEUR: ""%.0f secondes chrono !"
 
 YoucantUseKeyHere=
 
-[EC1]Vérifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les même. 
-[EC2]Vérifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les même. 
-[E3]Vérifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les même.
+[EC1]VÃ©rifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les mÃªme. 
+[EC2]VÃ©rifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les mÃªme. 
+[E3]VÃ©rifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les mÃªme.
 
-[E4]Vérifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les même.
+[E4]VÃ©rifiez le mapping des touches pour le clavier francais. Les touches ne sont vraisemblablement pas les mÃªme.
 

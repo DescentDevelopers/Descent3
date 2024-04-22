@@ -27,28 +27,28 @@
 !/!0:This is the Local Area Network Client
 !=!This is the Local Area Network Client
 !G!Dies ist der lokale Netzwerk-Client
-!S!Éste es el cliente de la red local
-!I!Questo è il client della LAN
-!F!Ceci est le client réseau local.
+!S!Ã‰ste es el cliente de la red local
+!I!Questo Ã¨ il client della LAN
+!F!Ceci est le client rÃ©seau local.
 
 !/!1:Use this to play games via TCP/IP
 !=!Use this to play games via TCP/IP
-!G!Verwenden Sie diesen, um Spiele über TCP/IP zu spielen
+!G!Verwenden Sie diesen, um Spiele Ã¼ber TCP/IP zu spielen
 !S!Usa esto para jugar con el protocolo TCP/IP
 !I!da usare per giocare via TCP/IP
 !F!Utilisez-le pour jouer en TCP/IP.
 
 !/!2:Return to main menu
 !=!Return to main menu
-!G!Zurück zum Hauptmenü
-!S!Regresar al menú principal
+!G!ZurÃ¼ck zum HauptmenÃ¼
+!S!Regresar al menÃº principal
 !I!Torna al menu principale
 !F!Retour au menu principal
 
 !/!3:Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
 !=!Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
 !G!Spielname\002\43Spielart\02\69Mission\02\96Level\02\109Spieler\02\126Ping
-!S!Nombre de juego\002\43Tipo de partida\02\69Misión\02\96Nivel\02\109Jugadores\02\126Ping
+!S!Nombre de juego\002\43Tipo de partida\02\69MisiÃ³n\02\96Nivel\02\109Jugadores\02\126Ping
 !I!Nome della partita\002\43Tipo di partita\02\69Missione\02\96Livello\02\109Giocatori\02\126Ping
 !F!Nom Partie\002\43Type\02\69Mission\02\96Niveau\02\109Joueurs\02\126Ping
 
@@ -83,9 +83,9 @@
 !/!8:Search for Games at Address:
 !=!Search for Games at Address:
 !G!Spiele unter dieser Adresse suchen:
-!S!Buscar partidas en la dirección:
+!S!Buscar partidas en la direcciÃ³n:
 !I!Cerca partite all'indirizzo:
-!F!chercher parties à l'adresse :
+!F!chercher parties Ã  l'adresse :
 
 !/!9:Scan for Local Games
 !=!Scan for Local Games
@@ -104,7 +104,7 @@
 !/!11:Mission Name:
 !=!Mission Name:
 !G!Missionsname:
-!S!Nombre de la misión:
+!S!Nombre de la misiÃ³n:
 !I!Nome della missione:
 !F!Nom de la mission :
 
@@ -139,14 +139,14 @@
 !/!16:Time Limit
 !=!Time Limit
 !G!Zeitlimit
-!S!Límite de tiempo
+!S!LÃ­mite de tiempo
 !I!Limite di tempo
 !F!Limite de temps
 
 !/!17:Goal Limit
 !=!Goal Limit
 !G!Ziellimit
-!S!Límite de objetivo
+!S!LÃ­mite de objetivo
 !I!Limite dell'obiettivo
 !F!objectif limite
 
@@ -162,13 +162,13 @@
 !G!Konfigurieren zugelassener Schiffe/Objekte
 !S!Configurar naves/objetos permitidos
 !I!Configura navi/oggetti consentiti
-!F!Configurer vaisseaux/objets autorisés
+!F!Configurer vaisseaux/objets autorisÃ©s
 
 !/!20:Server mode
 !=!Server mode
 !G!Server-Modus
 !S!Modalidad de servidor
-!I!Modalità server
+!I!ModalitÃ  server
 !F!Mode serveur
 
 !/!21:Client/Server
@@ -190,14 +190,14 @@
 !G!Zugelassene Schiffe:
 !S!Naves permitidas:
 !I!Navi consentite:
-!F!Vaisseaux autorisés:
+!F!Vaisseaux autorisÃ©s:
 
 !/!24:Respawn Rate
 !=!Respawn Rate
 !G!Wiedereinstiegsrate
-!S!Velocidad de resurrección
-!I!Velocità di ricomparsa:
-!F!Taux de régénération
+!S!Velocidad de resurrecciÃ³n
+!I!VelocitÃ  di ricomparsa:
+!F!Taux de rÃ©gÃ©nÃ©ration
 
 !/!25:Error
 !=!Error
@@ -210,43 +210,43 @@
 !=!TCP/IP is not active on your system!
 !G!TCP/IP ist auf Ihrem System nicht aktiviert!
 !S!TCP/IP no se encuentra activo en el sistema
-!I!Il protocollo TCP/IP non è presente sul tuo sistema!
-!F!TCP/IP n'est pas actif sur votre système !
+!I!Il protocollo TCP/IP non Ã¨ presente sul tuo sistema!
+!F!TCP/IP n'est pas actif sur votre systÃ¨me !
 
 !/!27:Save Settings
 !=!Save Settings
 !G!Einstellungen speichern
-!S!Guardar configuración
+!S!Guardar configuraciÃ³n
 !I!Salva impostazioni
-!F!Enregistrer paramètres
+!F!Enregistrer paramÃ¨tres
 
 !/!28:Load Settings
 !=!Load Settings
 !G!Einstellungen laden
-!S!Cargar configuración
+!S!Cargar configuraciÃ³n
 !I!Carica impostazioni
-!F!Charger paramètres
+!F!Charger paramÃ¨tres
 
 !/!29:Use rotational velocity
 !=!Use rotational velocity
 !G!Drehgeschwindigkeit verwenden
-!S!Utilizar velocidad de rotación
-!I!Usa la velocità di rotazione
+!S!Utilizar velocidad de rotaciÃ³n
+!I!Usa la velocitÃ  di rotazione
 !F!Utiliser vitesse rotationnelle
 
 !/!30:Movement averaging
 !=!Movement averaging
-!G!Bewegungsschätzung
-!S!Cálculo del movimiento
+!G!BewegungsschÃ¤tzung
+!S!CÃ¡lculo del movimiento
 !I!Calcolo del movimento
 !F!Lissage mouvement
 
 !/!31:No game was selected to join!
 !=!No game was selected to join!
-!G!Es wurde kein Spiel zum Teilnehmen ausgewählt!
+!G!Es wurde kein Spiel zum Teilnehmen ausgewÃ¤hlt!
 !S!No se ha seleccionado una partida a la que unirse
-!I!Non è stata selezionata una partita a cui partecipare
-!F!Sélectionnez la partie que vous souhaitez rejoindre !
+!I!Non Ã¨ stata selezionata una partita a cui partecipare
+!F!SÃ©lectionnez la partie que vous souhaitez rejoindre !
 
 !/!32:Direct TCP/IP Games
 !=!Direct TCP/IP Games
@@ -265,7 +265,7 @@
 !/!34:Max. Players
 !=!Max. Players
 !G!Max. Spieleranzahl
-!S!Máximo de juegadores
+!S!MÃ¡ximo de juegadores
 !I!Num max giocatori
 !F!Nb max de joueurs
 
@@ -274,7 +274,7 @@
 !G!%c Exakte Waffenkollisionen verwenden 
 !S!%c Utilizar colisiones exactas de armas
 !I!%c Utilizza collisioni di armi precise
-!F!%c Utiliser collisions d'arme précises
+!F!%c Utiliser collisions d'arme prÃ©cises
 
 !/!36:Bright player ships
 !=!Bright player ships

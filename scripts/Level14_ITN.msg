@@ -13,17 +13,17 @@ NEXT_MESSAGE_ID_NUMBER     59
 
 // Message List
 
-BeamIgnited=ROBOT-GUIDA: "Raggio emettitore attivato! Proteggere la trasmissione finchÈ sar‡ finita..."
+BeamIgnited=ROBOT-GUIDA: "Raggio emettitore attivato! Proteggere la trasmissione finch√© sar√† finita..."
 
-BeamIgniteError1=ROBOT-GUIDA: "ERRORE: Il sistema trasmittente Ë off-line."
+BeamIgniteError1=ROBOT-GUIDA: "ERRORE: Il sistema trasmittente √® off-line."
 
 BeamIgniteError2=ROBOT-GUIDA: "ERRORE: Non sono stati trasferiti dati."
 
-BeamIgniteError3=ROBOT-GUIDA: "ERRORE: L'energia fornita Ë insufficiente."
+BeamIgniteError3=ROBOT-GUIDA: "ERRORE: L'energia fornita √® insufficiente."
 
-BeamIgniteError4=ROBOT-GUIDA: "ERRORE: Il trasmettitore della rete difensiva Ë off-line."
+BeamIgniteError4=ROBOT-GUIDA: "ERRORE: Il trasmettitore della rete difensiva √® off-line."
 
-BeamIgniteError5=ROBOT-GUIDA: "ERRORE: Lo scudo antiraggio Ë attivo."
+BeamIgniteError5=ROBOT-GUIDA: "ERRORE: Lo scudo antiraggio √® attivo."
 
 BeamIgniteError6=ROBOT-GUIDA: "ERRORE: Individuati nodi dello specchio disallineati."
 
@@ -59,11 +59,11 @@ JournalBeamGame=GIORNALE: "Alcuni dei nuovi arrivati pensano sia dura. Il primo 
 
 JournalBeamHUD=Trovato Giornale del controllore del raggio... (MAIUSC-F8)
 
-JournalDialGame=REPORT: "Il nuovo sistema di selezione dell'output del trasmettitore Ë pronto. Possiamo mirare a una particolare rete con le nostre trasmissioni radio. Il meccanismo di selezione Ë un quadrante simile a un orologio che si trova nella sala macchine inferiore."
+JournalDialGame=REPORT: "Il nuovo sistema di selezione dell'output del trasmettitore √® pronto. Possiamo mirare a una particolare rete con le nostre trasmissioni radio. Il meccanismo di selezione √® un quadrante simile a un orologio che si trova nella sala macchine inferiore."
 
 JournalDialHUD=Trovato Report sala macchine... (MAIUSC-F8)
 
-JournalPowerGame=GIORNALE: "Dopo quanto avvenuto la notte scorsa, ho disattivato l'alimentazione della stazione. CosÏ ho interrotto la generazione dei robot infetti, ma l'emittitore non funziona pi˘. Presto o tardi dovremo riattivare l'alimentazione..."
+JournalPowerGame=GIORNALE: "Dopo quanto avvenuto la notte scorsa, ho disattivato l'alimentazione della stazione. Cos√¨ ho interrotto la generazione dei robot infetti, ma l'emittitore non funziona pi√π. Presto o tardi dovremo riattivare l'alimentazione..."
 
 JournalPowerHUD=Trovato Giornale dell'ingegnere della stazione... (MAIUSC-F8)
 
@@ -71,7 +71,7 @@ JournalRobotGame=GIORNALE: "L'ultima volta che abbiamo provato a effettuare una 
 
 JournalRobotHUD=Trovato Giornale del servizio di sicurezza al raggio... (MAIUSC-F8)
 
-JournalShieldGame=CODICE: "La sequenza di disattivazione dello scudo antiraggio Ë criptata come specificato nel regolamento S897 del CDT:  NO - SE - O - NE."
+JournalShieldGame=CODICE: "La sequenza di disattivazione dello scudo antiraggio √® criptata come specificato nel regolamento S897 del CDT:  NO - SE - O - NE."
 
 JournalShieldHUD=Codice di disattivazione dello scudo antiraggio ricevuto... (MAIUSC - F8)
 
@@ -79,35 +79,35 @@ JournalVirusGame=GIORNALE: "Oggi ho cercato di riparare uno dei collegamenti dat
 
 JournalVirusHUD=Trovato Giornale del tecnico dati...  (MAIUSC-F8)
 
-LensDestroyed=ROBOT-GUIDA: "Il robot ha distrutto la lente! Occorrer‡ sostituirla..."
+LensDestroyed=ROBOT-GUIDA: "Il robot ha distrutto la lente! Occorrer√† sostituirla..."
 
 LensRobotWarning=ROBOT-GUIDA: "Un robot sta dirigendosi verso la lente!"
 
-MirrorNodesUnaligned=ROBOT-GUIDA: "I nodi dello specchio non sono pi˘ allineati!"
+MirrorNodesUnaligned=ROBOT-GUIDA: "I nodi dello specchio non sono pi√π allineati!"
 
 OmnicronDisplayed=ROBOT-GUIDA: "Trasferimento dati completato.  Attendo selezione trasmettitore..."
 
-PowerInsufficient=ROBOT-GUIDA: "L'energia fornita all'attivatore dei raggi Ë insufficiente!"
+PowerInsufficient=ROBOT-GUIDA: "L'energia fornita all'attivatore dei raggi √® insufficiente!"
 
-PowerOffline=L'Alimentatore %d Ë ora off-line.
+PowerOffline=L'Alimentatore %d √® ora off-line.
 
-PowerOnline= L'Alimentatore %d Ë on-line.
+PowerOnline= L'Alimentatore %d √® on-line.
 
 ShieldCodeIncorrect=ROBOT-GUIDA: "ERRORE: Errata sequenza codice scudo."
 
-ShieldCodeSeqReset=ROBOT-GUIDA: "» scaduto il tempo per inserire la sequenza del codice."
+ShieldCodeSeqReset=ROBOT-GUIDA: "√à scaduto il tempo per inserire la sequenza del codice."
 
 ShieldCodeSeqStart=ROBOT-GUIDA: "Sequenza di disattivazione dello scudo antiraggio in corso.  Hai 15 secondi."
 
-ShieldDeactivated=ROBOT-GUIDA: "Lo scudo antiraggio Ë stato disattivato!"
+ShieldDeactivated=ROBOT-GUIDA: "Lo scudo antiraggio √® stato disattivato!"
 
 ShuttleFreed=ROBOT-GUIDA: "Hai liberato la navetta per la fuga!"
 
-SystemStarted=ROBOT-GUIDA: "Il sistema trasmittente Ë pronto."
+SystemStarted=ROBOT-GUIDA: "Il sistema trasmittente √® pronto."
 
 SystemStarting=ROBOT-GUIDA: "Il sistema trasmittente si sta attivando!"
 
-TransmissionComplete=ROBOT-GUIDA: "Il programma antivirus Ë stato trasmesso. Bel lavoro!"
+TransmissionComplete=ROBOT-GUIDA: "Il programma antivirus √® stato trasmesso. Bel lavoro!"
 
 UploadError=ROBOT-GUIDA: "ERRORE: Sistema trasmittente off-line."
 
@@ -119,5 +119,5 @@ UseLensCompleted=ROBOT-GUIDA: "Lenti di ricambio in posizione! Riprendo la trasm
 
 UseLensFailed1=ROBOT-GUIDA: "Sei troppo lontano per montare le lenti!"
 
-UseLensFailed2=ROBOT-GUIDA: "Una lente Ë gi‡ montata!"
+UseLensFailed2=ROBOT-GUIDA: "Una lente √® gi√† montata!"
 

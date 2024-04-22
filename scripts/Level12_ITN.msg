@@ -85,15 +85,15 @@ Level3Key= Chiave Livello  3
 
 Level4Key= Chiave Livello 4 
 
-LevelStarted=ROBOT-GUIDA: "Raggiungi al pi˘ presto possibile la Zona test! » la tua unica possibilit‡ di fuga!  Apriti la strada verso la superficie!"
+LevelStarted=ROBOT-GUIDA: "Raggiungi al pi√π presto possibile la Zona test! √à la tua unica possibilit√† di fuga!  Apriti la strada verso la superficie!"
 
-MainFFDeactivated=ROBOT-GUIDA: "Principali concorrenti dell'arena eliminati. Ora puÚ entrare nell'Arena l'ultimo concorrente!"
+MainFFDeactivated=ROBOT-GUIDA: "Principali concorrenti dell'arena eliminati. Ora pu√≤ entrare nell'Arena l'ultimo concorrente!"
 
 MainGuards=ROBOT-GUIDA: "Prima di qualificarti per l'arena dei campionati dovrai eliminare i tutti gli avversari
 
 RecoveredSecret=RECUPERO: Vecchia cartuccia dati. Robot-Guida cerca informazioni utili...
 
-RedUnitsArmed=ROBOT-GUIDA: "Unit‡ di controllo armate e pronte all'esplosione!"
+RedUnitsArmed=ROBOT-GUIDA: "Unit√† di controllo armate e pronte all'esplosione!"
 
 RepairActivated=ROBOT-GUIDA: "Centri riparazione attivati!"
 
@@ -101,7 +101,7 @@ RepairDeactivated=ROBOT-GUIDA: " Centri riparazione disattivati!"
 
 RepairingShip=Sto riparando gli schermi di protezione della tua nave| per riportarla in piena efficienza!
 
-SecretData=Questa cartuccia Ë consunta e arrugginita, ma il Robot-Guida riesce ad estrarre alcuni dati che potrebbero rivelarsi utili. I dati si riferiscono a un Complesso industriale Segreto che non compare sulle carte di navigazione. Forse varr‡ la pena di indagare pi˘ avanti.
+SecretData=Questa cartuccia √® consunta e arrugginita, ma il Robot-Guida riesce ad estrarre alcuni dati che potrebbero rivelarsi utili. I dati si riferiscono a un Complesso industriale Segreto che non compare sulle carte di navigazione. Forse varr√† la pena di indagare pi√π avanti.
 
-SrepairInit=ROBOT-GUIDA: "Calibrazione unit‡ di riparazione interrotta. Reinizializzare, prego!"
+SrepairInit=ROBOT-GUIDA: "Calibrazione unit√† di riparazione interrotta. Reinizializzare, prego!"
 

@@ -13,69 +13,69 @@ NEXT_MESSAGE_ID_NUMBER     39
 
 // Message List
 
-1Switch=GUIDEBOT: "Pour contourner les champs de force primaires, trouvez et actionnez les neuf interrupteurs pour déverrouiller la porte de l'ascenseur !"
+1Switch=GUIDEBOT: "Pour contourner les champs de force primaires, trouvez et actionnez les neuf interrupteurs pour dÃ©verrouiller la porte de l'ascenseur !"
 
-2Switch=GUIDEBOT: "Deux interrupteurs secondaires actionnés !"
+2Switch=GUIDEBOT: "Deux interrupteurs secondaires actionnÃ©s !"
 
-3Switch=GUIDEBOT: "Trois interrupteurs secondaires actionnés !"
+3Switch=GUIDEBOT: "Trois interrupteurs secondaires actionnÃ©s !"
 
-4Switch=GUIDEBOT: "Quatre interrupteurs secondaires actionnés !"
+4Switch=GUIDEBOT: "Quatre interrupteurs secondaires actionnÃ©s !"
 
-5Switch=GUIDEBOT: "Quatre interrupteurs secondaires de plus à trouver!"
+5Switch=GUIDEBOT: "Quatre interrupteurs secondaires de plus Ã  trouver!"
 
-6Switch=GUIDEBOT: "Plus que trois interrupteurs secondaires à trouver!"
+6Switch=GUIDEBOT: "Plus que trois interrupteurs secondaires Ã  trouver!"
 
-7Switch=GUIDEBOT: "Encore deux interrupteurs secondaires pour déverrouiller la porte de l'ascenseur!"
+7Switch=GUIDEBOT: "Encore deux interrupteurs secondaires pour dÃ©verrouiller la porte de l'ascenseur!"
 
-8Switch=GUIDEBOT: "1 dernier interrupteur secondaire dans la série!"
+8Switch=GUIDEBOT: "1 dernier interrupteur secondaire dans la sÃ©rie!"
 
-9Switch=GUIDEBOT: "Séquence secondaire terminée ! Porte de l'ascenseur abandonné déverrouillée !"
+9Switch=GUIDEBOT: "SÃ©quence secondaire terminÃ©e ! Porte de l'ascenseur abandonnÃ© dÃ©verrouillÃ©e !"
 
-All6Deactive=GUIDEBOT: "Les six routeurs d'énergie sont désactivés !  Les générateurs de champ de force de secours sont activés !"
+All6Deactive=GUIDEBOT: "Les six routeurs d'Ã©nergie sont dÃ©sactivÃ©s !  Les gÃ©nÃ©rateurs de champ de force de secours sont activÃ©s !"
 
-DestroyThese=Trouvez un moyen de mettre en| route les générateurs de secours avant| de les détruire et de réduire les champs de force !
+DestroyThese=Trouvez un moyen de mettre en| route les gÃ©nÃ©rateurs de secours avant| de les dÃ©truire et de rÃ©duire les champs de force !
 
-DoorUnlocked=Porte déverrouillée!
+DoorUnlocked=Porte dÃ©verrouillÃ©e!
 
 DoThis=
 
-ExitAbort=Le vaisseau capturé étant retenu aux portes, ce niveau s'achèvera automatiquement dans cinq secondes !
+ExitAbort=Le vaisseau capturÃ© Ã©tant retenu aux portes, ce niveau s'achÃ¨vera automatiquement dans cinq secondes !
 
-FirstCamera=Ils sont peut-être petits, mais même| leurs amis prennent leurs jambes à leur cou !|  Restez hors de leur vue si vous tenez à la vie.
+FirstCamera=Ils sont peut-Ãªtre petits, mais mÃªme| leurs amis prennent leurs jambes Ã  leur cou !|  Restez hors de leur vue si vous tenez Ã  la vie.
 
-ForcefieldDisabled=Champ de force désactivé !
+ForcefieldDisabled=Champ de force dÃ©sactivÃ© !
 
-ForcefieldFirst=GUIDEBOT: "Champ de force primaire désactivé. Activation du générateur de secours !"
+ForcefieldFirst=GUIDEBOT: "Champ de force primaire dÃ©sactivÃ©. Activation du gÃ©nÃ©rateur de secours !"
 
-ForcefieldsDisabled=Champs de force désactivé !
+ForcefieldsDisabled=Champs de force dÃ©sactivÃ© !
 
-FreeAtLast=PILOT: "Merci pour le sauvetage, Défenseur de la Matière !  Allons-nous en ! Suivez-moi !"
+FreeAtLast=PILOT: "Merci pour le sauvetage, DÃ©fenseur de la MatiÃ¨re !  Allons-nous en ! Suivez-moi !"
 
-GoalComplete=Objectif réussi !
+GoalComplete=Objectif rÃ©ussi !
 
-GotHim=Merci d'être tombé droit dans notre| piège, Défenseur de la Matière !
+GotHim=Merci d'Ãªtre tombÃ© droit dans notre| piÃ¨ge, DÃ©fenseur de la MatiÃ¨re !
 
-GoUpLeft=PILOT: "Ces tubes d'évacuation sont synchro-verrouillés.  Prenez par la gauche et moi par la droite ! Rendez-vous dehors!"
+GoUpLeft=PILOT: "Ces tubes d'Ã©vacuation sont synchro-verrouillÃ©s.  Prenez par la gauche et moi par la droite ! Rendez-vous dehors!"
 
-MainDestroyed=GUIDEBOT: "Générateurs de champs de force primaires détruits."
+MainDestroyed=GUIDEBOT: "GÃ©nÃ©rateurs de champs de force primaires dÃ©truits."
 
 NextGoal=En Patrouille 3
 
-PathCaptured=Capturé
+PathCaptured=CapturÃ©
 
 PathIntroCam=IntroCam
 
 PathIntroShip=IntroShip
 
-PickupKey=GUIDEBOT: "Accès au centre secondaire accordé !  Toutes portes du centre primaire déveouillées !"
+PickupKey=GUIDEBOT: "AccÃ¨s au centre secondaire accordÃ© !  Toutes portes du centre primaire dÃ©veouillÃ©es !"
 
-PipeDemo=Les conduits sont vulnérables quand ils| sont actifs. Sinon, ne gâchez pas vos munitions.
+PipeDemo=Les conduits sont vulnÃ©rables quand ils| sont actifs. Sinon, ne gÃ¢chez pas vos munitions.
 
-Reroute=GUIDEBOT: "Routeur d'énergie désactivé !"
+Reroute=GUIDEBOT: "Routeur d'Ã©nergie dÃ©sactivÃ© !"
 
-SecretArea=Vous avez trouvé une zone secrète !
+SecretArea=Vous avez trouvÃ© une zone secrÃ¨te !
 
-Spotted=WARNING: Alerte à l'envahisseur !  Tourelle de défense activée !
+Spotted=WARNING: Alerte Ã  l'envahisseur !  Tourelle de dÃ©fense activÃ©e !
 
 Work=Titan - Installation de Stockage de la PTMC
 

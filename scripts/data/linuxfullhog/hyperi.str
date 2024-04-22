@@ -33,7 +33,7 @@
 !G!%s wurde von %s abgeschlachtet
 !S!%s masacrado por %s
 !I!%s viene massacrato da %s
-!F!%s a été massacré par %s.
+!F!%s a Ã©tÃ© massacrÃ© par %s.
 
 !/! ---------------------------- Suicide Messages --------------------------------------
 
@@ -42,7 +42,7 @@
 !G!%s vernichtet sich selbst
 !S!%s se mata
 !I!%s si uccide
-!F!%s se débrouille seul.
+!F!%s se dÃ©brouille seul.
 
 !/!2:Pilot		(Stats column label)
 !=!Pilot
@@ -53,7 +53,7 @@
 
 !/!3:Kills		(Stats column label)
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -75,7 +75,7 @@
 !/!6:Score		(Stats column label)
 !=!Score
 !G!Punkte
-!S!Puntuación
+!S!PuntuaciÃ³n
 !I!Punteggio
 !F!Score
 
@@ -96,42 +96,42 @@
 !/!9:%s racks up another %d points!	(HUD Message)
 !=!%s racks up another %d points!
 !G!%s erzielt weitere %d Punkte!
-!S!%s ha conseguido %d puntos más
+!S!%s ha conseguido %d puntos mÃ¡s
 !I!%s ha guadagnato altri %d punti!
 !F!%s ramasse %d points de plus !
 
 !/!10:Stats	(Stats column label)
 !=!Stats
 !G!Statistik
-!S!Estadísticas
+!S!EstadÃ­sticas
 !I!Statistiche
 !F!Stats
 
 !/!11:Welcome to Hyper Anarchy %s!	(HUD Message)
 !=!Welcome to Hyper Anarchy %s!
 !G!Willkommen zur Hyperanarchie, %s!
-!S!Bienbenido a Hiperanarquía, %s
+!S!Bienbenido a HiperanarquÃ­a, %s
 !I!Benvenuto nell'Iper Anarchia, %s!
 !F!Bienvenue dans l'Hyper Anarchie %s!
 
 !/!12:%s has joined the Hyper Anarchy!	(HUD Message)
 !=!%s has joined the Hyper Anarchy!
 !G!%s hat sich der Hyperanarchie angeschlossen!
-!S!%s se ha unido a Hiperanarquía
-!I!%s è entrato nell'Iper Anarchia!
+!S!%s se ha unido a HiperanarquÃ­a
+!I!%s Ã¨ entrato nell'Iper Anarchia!
 !F!%s a rejoint l'Hyper Anarchie !
 
 !/!13: Name of the game (shouldn't be localized probably)
 !=!Hyper-Anarchy
 !G!Hyperanarchie
-!S!Hiperanarquía
+!S!HiperanarquÃ­a
 !I!Iper Anarchia
 !F!Hyper Anarchie
 
 !/!14: Name of the game in the stats screen
 !=!Anarchy
 !G!Anarchie
-!S!Anarquía
+!S!AnarquÃ­a
 !I!Anarchia
 !F!Anarchie
 
@@ -145,7 +145,7 @@
 !/!16: on-screen menu option for hud score colors
 !=!HUD Score Colors
 !G!CPA Farbe der Punkte
-!S!Colores de puntuación del presentador
+!S!Colores de puntuaciÃ³n del presentador
 !I!Colori del punteggio del collimatore
 !F!Couleurs Score
 
@@ -166,7 +166,7 @@
 !/!19: Saved game stats header
 !=!Hyper-Anarchy\r\nGame: %s\r\nLevel: %d\r\n
 !G!Hyperanarchie\r\nSpiel: %s\r\nLevel: %d\r\n 
-!S!Hiperanarquía\r\nPartida: %s\r\nNivel: %d\r\n
+!S!HiperanarquÃ­a\r\nPartida: %s\r\nNivel: %d\r\n
 !I!Iper Anarchia\r\nPartita: %s\r\nLivello: %d\r\n
 !F!Hyper Anarchie\r\nPartie: %s\s\nNiveau: %d\r\n
 
@@ -179,15 +179,15 @@
 
 !/!21: Saved game stats header
 !=![Rank] [Name]                     [Score]     [Kills]     [Deaths]   [Suicides] [Time In Game]
-!G![Rang] [Name]                     [Punkte]    [Abschüsse] [Verl. Leben]    [Selbstmorde] [Spielzeit]
-!S![Rango][Nombre]                   [Puntuación][Bajas]     [Muertes]  [Suicidios][Tiempo de partida]
+!G![Rang] [Name]                     [Punkte]    [AbschÃ¼sse] [Verl. Leben]    [Selbstmorde] [Spielzeit]
+!S![Rango][Nombre]                   [PuntuaciÃ³n][Bajas]     [Muertes]  [Suicidios][Tiempo de partida]
 !I![Pos] [Nome]                     [Punt]       [Ucc]     [Morti]     [Suicidi]    [Tempo gioco]
-!F![Rang] [Nom]                      [Score]     [Victimes]  [Morts]   [Suicides] [Durée de jeu]
+!F![Rang] [Nom]                      [Score]     [Victimes]  [Morts]   [Suicides] [DurÃ©e de jeu]
 
 !/!22: Saved game stats header
 !=!\r\nIndividual Stats\r\n
 !G!\r\nIndividuelle Statistik\r\n 
-!S!\r\nEstadísticas individuales\r\n
+!S!\r\nEstadÃ­sticas individuales\r\n
 !I!\r\nStatistiche individuali\r\n
 !F!\r\nStats Personnelles\r\n
 
@@ -196,11 +196,11 @@
 !G!Gesamte Spielzeit: %s 
 !S!Tiempo total de partida: %s
 !I!Tempo totale partita: %s
-!F!Durée de la partie: %s
+!F!DurÃ©e de la partie: %s
 
 !/!24: Saved game stats header
 !=!Callsign:                     Kills:    Deaths:
-!G!Erkennungsname:               Abschüsse: Verl. Leben:
+!G!Erkennungsname:               AbschÃ¼sse: Verl. Leben:
 !S!Llamada:                      Bajas:    Muertes:
 !I!Chiamata:                    Ucc     Morti
 !F!Indicatif:                    Victimes: Morts:
@@ -208,9 +208,9 @@
 !/!25: Hud message when the game stats are saved
 !=!Stats saved to file
 !G!Statistik in Datei gespeichert 
-!S!Estadísticas guardadas en archivo
+!S!EstadÃ­sticas guardadas en archivo
 !I!Statistiche salvate
-!F!Stats enregistrées
+!F!Stats enregistrÃ©es
 
 !/!26: Shortened Kills
 !=!K

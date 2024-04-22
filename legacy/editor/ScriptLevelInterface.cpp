@@ -416,7 +416,7 @@ void CScriptLevelInterface::OnEditscript()
 			strcpy(buffer,"The specified path was not found.");
 			break;
 		case ERROR_BAD_FORMAT:  
-			strcpy(buffer,"The .exe file is invalid (non-Win32® .exe or error in .exe image).");
+			strcpy(buffer,"The .exe file is invalid (non-Win32Â® .exe or error in .exe image).");
 			break;
 		case SE_ERR_ACCESSDENIED:  
 			strcpy(buffer,"The operating system denied access to the specified file.");

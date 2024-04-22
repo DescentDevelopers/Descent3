@@ -5,11 +5,11 @@
 NEXT_MESSAGE_ID_NUMBER     14
 
 // Message List
-Area1=ROBOGUÍA: "Área 1"
-Area2=ROBOGUÍA: "Área 2"
-Area3=ROBOGUÍA: "Área 3"
-EndLevelMessage=BEAGLE: Defensor... Estamos perdiendo tu señal. ¿Pasa algo raro ahí abajo?
-EntranceDoorMessage=ROBOGUÍA: "Protocolo de pruebas activado."
-IntroBriefingMessage=BEAGLE: No sé muy bien qué te vas a encontrar aquí. Explora la zona y presenta un informe en la base.
-IntroHUDmessage=Recibiendo transmisión del Beagle... (MAYÚS+F8)
+Area1=ROBOGUÃA: "Ãrea 1"
+Area2=ROBOGUÃA: "Ãrea 2"
+Area3=ROBOGUÃA: "Ãrea 3"
+EndLevelMessage=BEAGLE: Defensor... Estamos perdiendo tu seÃ±al. Â¿Pasa algo raro ahÃ­ abajo?
+EntranceDoorMessage=ROBOGUÃA: "Protocolo de pruebas activado."
+IntroBriefingMessage=BEAGLE: No sÃ© muy bien quÃ© te vas a encontrar aquÃ­. Explora la zona y presenta un informe en la base.
+IntroHUDmessage=Recibiendo transmisiÃ³n del Beagle... (MAYÃšS+F8)
 Nothing=

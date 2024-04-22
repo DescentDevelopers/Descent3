@@ -5,15 +5,15 @@
 NEXT_MESSAGE_ID_NUMBER     13
 
 // Message List
-BlueDoor=Sie haben den blauen Schlüssel nicht!
-BlueKeyFF='Blauer Schlüssel'-Kraftfeld deaktiviert!
+BlueDoor=Sie haben den blauen SchlÃ¼ssel nicht!
+BlueKeyFF='Blauer SchlÃ¼ssel'-Kraftfeld deaktiviert!
 EndLevel=
 FlameDeactivated=Brennkammer deaktiviert!
-IntroCam=Forschungszentrum für Hochgeschwindigkeitswaffen 
-NameBlueKey=Blauer Schlüssel
-NameRedKey=Roter Schlüssel 
-ReactorDestroyed=Primärreaktor zerstört! Selbstzerstörungssequenz aktiviert!
-ReactorFF=Reaktorkraftfeld entschärft!
-ReactorPrimed=GUIDEBOT: "Der Reaktor hat seine eigene Abwehr ausser Kraft gesetzt!  Zerstören Sie ihn!"
-RedDoor=Sie haben den roten Schlüssel nicht!
-RedKeyFF='Roter Schlüssel'-Kraftfeld deaktiviert!
+IntroCam=Forschungszentrum fÃ¼r Hochgeschwindigkeitswaffen 
+NameBlueKey=Blauer SchlÃ¼ssel
+NameRedKey=Roter SchlÃ¼ssel 
+ReactorDestroyed=PrimÃ¤rreaktor zerstÃ¶rt! SelbstzerstÃ¶rungssequenz aktiviert!
+ReactorFF=Reaktorkraftfeld entschÃ¤rft!
+ReactorPrimed=GUIDEBOT: "Der Reaktor hat seine eigene Abwehr ausser Kraft gesetzt!  ZerstÃ¶ren Sie ihn!"
+RedDoor=Sie haben den roten SchlÃ¼ssel nicht!
+RedKeyFF='Roter SchlÃ¼ssel'-Kraftfeld deaktiviert!

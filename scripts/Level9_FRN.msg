@@ -13,13 +13,13 @@ NEXT_MESSAGE_ID_NUMBER     37
 
 // Message List
 
-AllDone=GUIDEBOT: "Objectifs réussis ! Echappez-vous de l'usine pour achever votre mission! "
+AllDone=GUIDEBOT: "Objectifs rÃ©ussis ! Echappez-vous de l'usine pour achever votre mission! "
 
-AllStabsDone=GUIDEBOT: "Les quatre stabilisateurs ont été débrayés !"
+AllStabsDone=GUIDEBOT: "Les quatre stabilisateurs ont Ã©tÃ© dÃ©brayÃ©s !"
 
 Blank=
 
-CovDamaged=TRANSPORTEUR: Aidez-nous SVP !  Nous sommes sérieusement touchés !
+CovDamaged=TRANSPORTEUR: Aidez-nous SVP !  Nous sommes sÃ©rieusement touchÃ©s !
 
 CovDanger=TRANSPORTEUR: Nous sommes en danger !
 
@@ -31,60 +31,60 @@ CovFFHelp=TRANSPORTEUR: Nous avons besoin de votre aide pour passer ces champs d
 
 CovGettingPummeled=TRANSPORTEUR: Les forces de la PTMC nous assaillent ! A l'aide !
 
-CovInClear=TRANSPORTEUR: Pas de problème pour l'instant !
+CovInClear=TRANSPORTEUR: Pas de problÃ¨me pour l'instant !
 
-CovLeaveMeAlone=TRANSPORTEUR: Regardez où vous visez !
+CovLeaveMeAlone=TRANSPORTEUR: Regardez oÃ¹ vous visez !
 
 CovLeaving=TRANSPORTEUR: Notre boulot est fini !  Merci de votre aide !
 
 CovPickup=TRANSPORTEUR: Ramassage composant vaisseau.
 
-CovRepaired=TRANSPORTEUR: Réparation terminée.  Nous reprenons la mission !
+CovRepaired=TRANSPORTEUR: RÃ©paration terminÃ©e.  Nous reprenons la mission !
 
-CovShutDown=TRANSPORTEUR: Trop de dégâts ! Arrêt moteurs pour réparation !
+CovShutDown=TRANSPORTEUR: Trop de dÃ©gÃ¢ts ! ArrÃªt moteurs pour rÃ©paration !
 
 CovStillStuckFF=TRANSPORTEUR: Nous ne pouvons toujours pas passer ce champ de force !  Demandons assistance !
 
 CovThanksFF=TRANSPORTEUR: Merci de votre aide !
 
-DestroyedAnt=GUIDEBOT: "Antenne de transmission détruite !"
+DestroyedAnt=GUIDEBOT: "Antenne de transmission dÃ©truite !"
 
-DestroyedRadar=GUIDEBOT: "Radar de surveillance détruit !"
+DestroyedRadar=GUIDEBOT: "Radar de surveillance dÃ©truit !"
 
 Disruptor=Disrupteur sismique
 
-DoStabs=GUIDEBOT: "Débrayez les stabilisateurs pour terminer votre mission !"
+DoStabs=GUIDEBOT: "DÃ©brayez les stabilisateurs pour terminer votre mission !"
 
 EndLevel=
 
 IntroCam=Mercure - Usine de Vaisseaux Spatiaux de la PTMC
 
-StabAssemblyDone=Stabilisateur Sismique de l'usine| d'assemblage débrayé !
+StabAssemblyDone=Stabilisateur Sismique de l'usine| d'assemblage dÃ©brayÃ© !
 
 
 StabAssemblyPower=GUIDEBOT "Passage du stabilisateur de l'usine d'assemblage au  mode passif !"
 
-StabControlDone=Stabilisateur Sismique du Centre| de Contrôle débrayé !
+StabControlDone=Stabilisateur Sismique du Centre| de ContrÃ´le dÃ©brayÃ© !
 
-StabControlPower=GUIDEBOT: "Passage du stabilisateur du Centre de Contrôle au mode passif !"
+StabControlPower=GUIDEBOT: "Passage du stabilisateur du Centre de ContrÃ´le au mode passif !"
 
-StabFactoryDone=Stabilisateur Sismique de l'Usine| Principale débrayé!
+StabFactoryDone=Stabilisateur Sismique de l'Usine| Principale dÃ©brayÃ©!
 
 StabFactoryPower=GUIDEBOT: "Passage du  stabilisateur de l'usine principale au mode passif !"
 
-StabStoreDone=Stabilisateur sismique du Centre de Stockage| débrayé!
+StabStoreDone=Stabilisateur sismique du Centre de Stockage| dÃ©brayÃ©!
 
 StabStorePower=GUIDEBOT: "Passage du stabilisateur du Centre de Stockage au mode passif!"
 
 
 
-TempGoal=GUIDEBOT: "Débrayez les stabilisateurs pour créer une diversion pendant que le transporteur récupère les composants!"
+TempGoal=GUIDEBOT: "DÃ©brayez les stabilisateurs pour crÃ©er une diversion pendant que le transporteur rÃ©cupÃ¨re les composants!"
 
 Testing=Niveau de Distraction: %f
 
 Testing2=Niveau de Bouclier: %f
 
-Transmitter=Réception d'une transmission encodée...
+Transmitter=RÃ©ception d'une transmission encodÃ©e...
 
-TransmitterHave=GUIDEBOT: "Pour recevoir une transmission vidéo du transporteur, utilisez votre Transmetteur Espion!"
+TransmitterHave=GUIDEBOT: "Pour recevoir une transmission vidÃ©o du transporteur, utilisez votre Transmetteur Espion!"
 

@@ -13,5 +13,5 @@ NEXT_MESSAGE_ID_NUMBER     2
 
 // Message List
 
-Polar=Polarit‡ magnetica invertita!
+Polar=Polarit√† magnetica invertita!
 

@@ -33,14 +33,14 @@
 !G!Coop
 !S!Coop
 !I!Cooperazione
-!F!Coopé
+!F!CoopÃ©
 
 !/!1: Name of the coop game in the stats menu screen
 !=!Co-op Descent 3
 !G!Co-op Descent 3
 !S!Descent 3 Coop 
 !I!Descent 3 in cooperazione
-!F!Coopé Descent 3
+!F!CoopÃ© Descent 3
 
 !/!2: Pilot column label in the stats screen
 !=!Pilot
@@ -51,7 +51,7 @@
 
 !/!3: Kills label
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -82,13 +82,13 @@
 !G!Willkommen beim Co-Op Spiel %s
 !S!Bienvenido a la partida cooperativa %s 
 !I!Benvenuto al gioco in cooperativa %s
-!F!Bienvenue à la partie en coopé %s
+!F!Bienvenue Ã  la partie en coopÃ© %s
 
 !/!8: Joined message when a player joins the game
 !=!%s has joined the game
 !G!%s hat sich dem Spiel angeschlossen
 !S!%s se ha unido a la partida
-!I!%s è entrato nella partita
+!I!%s Ã¨ entrato nella partita
 !F!%s a rejoint la partie.
 
 !/!9: Post Level results

@@ -29,7 +29,7 @@ NEXT_MESSAGE_ID_NUMBER     39
 
 8Switch=ROBOT-GUIDA: "Rimane ancora 1 interruttore alternativo nella sequenza!"
 
-9Switch=ROBOT-GUIDA: "Sequenza alternativa completata! La porta dell'ascensore abbandonato Ë sbloccata!"
+9Switch=ROBOT-GUIDA: "Sequenza alternativa completata! La porta dell'ascensore abbandonato √® sbloccata!"
 
 All6Deactive=ROBOT-GUIDA: "Tutti e 6 gli instradatori d'energia disattivati!"
 
@@ -39,7 +39,7 @@ DoorUnlocked=Porta sbloccata!
 
 DoThis=
 
-ExitAbort=Nave catturata Ë bloccata tra le porte. Questo livello si autodistrugger‡ tra 5 secondi!
+ExitAbort=Nave catturata √® bloccata tra le porte. Questo livello si autodistrugger√† tra 5 secondi!
 
 FirstCamera=Saranno piccoli, ma i loro amici |dispongono di una notevole potenza! Rimani fuori| dalla loro visuale se vuoi sopravvivere.
 

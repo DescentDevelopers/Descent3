@@ -5,29 +5,29 @@
 NEXT_MESSAGE_ID_NUMBER     30
 
 // Message List
-CameraActivation=GUIDEBOT: "Empfange Bild von ‹berwachungskamera..."
-ContainmentDoorUnlocked=Eind‰mmungst¸r entriegelt.
-Controller=GUIDEBOT: "Reserve-Oberfl‰chenverteidigungsysteme werden an das Prim‰rsystem gekoppelt."
-ControlVulnerable=GUIDEBOT: "Die prim‰re Oberfl‰chensystemsteuerung ist jetzt ungesch¸tzt!"
-CoolersAllGone=GUIDEBOT: "Hauptk¸hlsystem ausgefallen.  Notfall-K¸hlsystem wird aktiviert."
-DoThis=GUIDEBOT: "Finden Sie die Virusproben, und verlassen Sie die Einrichtung so schnell wie mˆglich!"
-FFDisable1=GUIDEBOT: "Hilfsenergie der Eind‰mmungskraftfelder abgeschaltet!"
-FFDisabled=GUIDEBOT: "Kraftfelder deaktiviert!  Zugang zum Virus-Eind‰mmungsraum gew‰hrt."
-FFKeyPickup=GUIDEBOT: "Zugang zur Sicherheitssystemsteuerung gew‰hrt."
+CameraActivation=GUIDEBOT: "Empfange Bild von √úberwachungskamera..."
+ContainmentDoorUnlocked=Eind√§mmungst√ºr entriegelt.
+Controller=GUIDEBOT: "Reserve-Oberfl√§chenverteidigungsysteme werden an das Prim√§rsystem gekoppelt."
+ControlVulnerable=GUIDEBOT: "Die prim√§re Oberfl√§chensystemsteuerung ist jetzt ungesch√ºtzt!"
+CoolersAllGone=GUIDEBOT: "Hauptk√ºhlsystem ausgefallen.  Notfall-K√ºhlsystem wird aktiviert."
+DoThis=GUIDEBOT: "Finden Sie die Virusproben, und verlassen Sie die Einrichtung so schnell wie m√∂glich!"
+FFDisable1=GUIDEBOT: "Hilfsenergie der Eind√§mmungskraftfelder abgeschaltet!"
+FFDisabled=GUIDEBOT: "Kraftfelder deaktiviert!  Zugang zum Virus-Eind√§mmungsraum gew√§hrt."
+FFKeyPickup=GUIDEBOT: "Zugang zur Sicherheitssystemsteuerung gew√§hrt."
 Finished=
 IntroMessage=Asteroid Ceres - Geheimer PTMC | Forschungs-Bunker C4
-MagnetActivated=GUIDEBOT: "Abw‰rtsf¸hrender magnetischer Beschleuniger aktiviert.  Sicherheitst¸ren entriegelt."
+MagnetActivated=GUIDEBOT: "Abw√§rtsf√ºhrender magnetischer Beschleuniger aktiviert.  Sicherheitst√ºren entriegelt."
 MagnetTube1=GUIDEBOT: "Kontrollraumschloss 1 von 2 deaktiviert!"
-MagnetTubeDoorUnlock=GUIDEBOT: "Kontrollraumzugang gew‰hrt!  T¸r entriegelt!"
-ManualActivation=GUIDEBOT: "Dieses Ger‰t benˆtigt eine direkte Aktivierung."
+MagnetTubeDoorUnlock=GUIDEBOT: "Kontrollraumzugang gew√§hrt!  T√ºr entriegelt!"
+ManualActivation=GUIDEBOT: "Dieses Ger√§t ben√∂tigt eine direkte Aktivierung."
 NeedFFKey=GUIDEBOT: "Sie sind nicht befugt, dieses Steuerungssystem zu verwenden."
 PathEnd=EndLevel
 SecretArea=Sie haben einen geheimen Bereich gefunden!
 SteamRelease=GUIDEBOT: "Dampfausstoss aktiviert."
-SuperHeaterShutdown=GUIDEBOT: "Hochtemperatur-Viruseind‰mmungsger‰t funktionsunf‰hig."
-TurretsDeactivated=GUIDEBOT: "Prim‰re Systemsteuerung zerstˆrt!  Oberfl‰chenverteidigungssysteme ausser Kraft gesetzt!"
-TurretsInvuln=GUIDEBOT: "Die grossen Gefechtst¸rme sind zu robust, um sie einfach zu zerschiessen!  Sie m¸ssen sie auf eine andere Weise bew‰ltigen!"
-UpperTubeActivate=GUIDEBOT: "Abw‰rtsf¸hrende Fahrstuhlrˆhre aktiviert."
+SuperHeaterShutdown=GUIDEBOT: "Hochtemperatur-Viruseind√§mmungsger√§t funktionsunf√§hig."
+TurretsDeactivated=GUIDEBOT: "Prim√§re Systemsteuerung zerst√∂rt!  Oberfl√§chenverteidigungssysteme ausser Kraft gesetzt!"
+TurretsInvuln=GUIDEBOT: "Die grossen Gefechtst√ºrme sind zu robust, um sie einfach zu zerschiessen!  Sie m√ºssen sie auf eine andere Weise bew√§ltigen!"
+UpperTubeActivate=GUIDEBOT: "Abw√§rtsf√ºhrende Fahrstuhlr√∂hre aktiviert."
 Virus1Collected=Sie haben einen Virus!
 Virus2Collected=Grossartige Arbeit!  Sie haben beide Virusproben eingesammelt.
 VirusDescription=GUIDEBOT: "Sammeln Sie beide Proben ein, und verlassen Sie schnellstens diese Einrichtung!"

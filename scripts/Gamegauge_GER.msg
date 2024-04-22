@@ -8,4 +8,4 @@ NEXT_MESSAGE_ID_NUMBER     7
 DisableMatcen=Materialisierungszentrum deaktiviert!
 Intro=Mit Vorsicht vorgehen.|  Sicherheitsalarmstufe 3 in Kraft!
 WeatherControl=Blitzkontrollsystem aktiviert.
-WindThing=Magnetischer Generatorkern zerstört!
+WindThing=Magnetischer Generatorkern zerstÃ¶rt!

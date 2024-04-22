@@ -45,113 +45,113 @@
 
 !/!Goal 0 Name
 !=!Activate the Cooling System
-!G!Das Kühlsystem aktivieren
-!S!Activar sistema de refrigeración
+!G!Das KÃ¼hlsystem aktivieren
+!S!Activar sistema de refrigeraciÃ³n
 !I!Attiva il sistema di raffreddamento
-!F!Activer le système de refoidissement
+!F!Activer le systÃ¨me de refoidissement
 
 !/!Goal 0 Item Name
 !=!Thermal Regulator
-!G!Wärmeregler
-!S!Regulador térmico
+!G!WÃ¤rmeregler
+!S!Regulador tÃ©rmico
 !I!Regolatore termico
-!F!Régulateur Thermique
+!F!RÃ©gulateur Thermique
 
 !/!Goal 0 Description
 !=!To gain entry to the Heat Sink domes, you'll need to enter the facility and locate the Thermal Regulator.  This will activate the Refinery's cooling system, and open the external intake ports on each of the domes, allowing you to fly inside.
-!G!Um in die Kühlkuppeln zu gelangen, müssen Sie in die Anlage eindringen und den Wärmeregler finden und betätigen. Das wird das Kühlsystem der Raffinerie aktivieren und die externen Lufteinlasstore auf jeder der Kuppeln öffnen, was Ihnen ermöglicht, hineinzufliegen.
-!S!Para entrar en las bóvedas de los disipadores térmicos tendrás que localizar y activar el regulador térmico. De esta forma se activa el sistema de refrigeración de la refinería y se abren los muelles externos de entrada de las bóvedas; así podrás volar al interior.
-!I!Per entrare nelle cupole di dissipazione del calore, dovrai localizzare il regolatore termico. Questo attiverà il sistema di raffreddamento della raffineria e aprirà le bocche di aspirazione esterne delle cupole, da dove potrai penetrare all'interno.
-!F!Pour accéder aux dômes des puits thermique, vous devrez entrer dans le bâtiment et trouver le régulateur thermique. Cela activera les systèmes de refroidissement de la Raffinerie, et ouvrira sur chaque dôme les panneaux extérieurs d'admission, vous permettant ainsi d'entrer.
+!G!Um in die KÃ¼hlkuppeln zu gelangen, mÃ¼ssen Sie in die Anlage eindringen und den WÃ¤rmeregler finden und betÃ¤tigen. Das wird das KÃ¼hlsystem der Raffinerie aktivieren und die externen Lufteinlasstore auf jeder der Kuppeln Ã¶ffnen, was Ihnen ermÃ¶glicht, hineinzufliegen.
+!S!Para entrar en las bÃ³vedas de los disipadores tÃ©rmicos tendrÃ¡s que localizar y activar el regulador tÃ©rmico. De esta forma se activa el sistema de refrigeraciÃ³n de la refinerÃ­a y se abren los muelles externos de entrada de las bÃ³vedas; asÃ­ podrÃ¡s volar al interior.
+!I!Per entrare nelle cupole di dissipazione del calore, dovrai localizzare il regolatore termico. Questo attiverÃ  il sistema di raffreddamento della raffineria e aprirÃ  le bocche di aspirazione esterne delle cupole, da dove potrai penetrare all'interno.
+!F!Pour accÃ©der aux dÃ´mes des puits thermique, vous devrez entrer dans le bÃ¢timent et trouver le rÃ©gulateur thermique. Cela activera les systÃ¨mes de refroidissement de la Raffinerie, et ouvrira sur chaque dÃ´me les panneaux extÃ©rieurs d'admission, vous permettant ainsi d'entrer.
 
 !/!Goal 1 Name
 !=!Destroy the Outer Heat Sink
-!G!Die Aussenkühlung zerstören
-!S!Destruir el disipador térmico exterior
+!G!Die AussenkÃ¼hlung zerstÃ¶ren
+!S!Destruir el disipador tÃ©rmico exterior
 !I!Distruggi il dissipatore di calore esterno
-!F!Détruire le puits thermique extérieur
+!F!DÃ©truire le puits thermique extÃ©rieur
 
 !/!Goal 1 Item Name
 !=!Outer Heat Sink
-!G!Aussenkühlung
-!S!Disipador térmico exterior
+!G!AussenkÃ¼hlung
+!S!Disipador tÃ©rmico exterior
 !I!Dissipatore del calore esterno
-!F!Puits thermique extérieur
+!F!Puits thermique extÃ©rieur
 
 !/!Goal 1 Description
 !=!To begin the chain reaction which will ultimately result in a Refinery Core meltdown, you'll need to destroy all three of the Thermal Heat Sinks.  These machines draw the heat away from the Refinery Core using the cold of the icy environment, with the support of a wide array of fans and ice tunnels.  Destroying them will cause the temperature to rise throughout the Refinery, jeopardizing the millions of gallons of liquid hydrogen fuel produced here.
-!G!Um die Kettenreaktion auszulösen, die in einer Raffinerie-Kernschmelze enden wird, müssen sie alle drei thermischen Kühlungen zerstören. Diese Maschinen ziehen mit der Kälte der eisigen Umgebung die Wärme aus dem Raffineriekern mit Hilfe einer Reihe von Ventilatoren und Eistunnel. Diese Zerstörung wird eine Temperaturerhöhung in der gesamten Raffinerie verursachen, unter Gefährdung der Millionen Liter an hier produziertem flüssigem Wasserstoff.
-!S!Para iniciar la reacción en cadena que ocasionará la fusión del núcleo de la refinería tendrás que destruir los tres disipadores térmicos. Estas máquinas disipan el calor del núcleo de la refinería mediante el frío del entorno helado y con la ayuda de una amplia gama de ventiladores y túneles de hielo. Cuando los destruyas subirá la temperatura de toda la refinería, lo que pondrá en peligro los millones de litros de hidrógeno líquido que se producen en ella.
-!I!Per avviare la reazione a catena che porterà alla fusione del nucleo della raffineria dovrai distruggere tutti e tre i dissipatori di calore. Queste macchine disperdono il calore del nucleo della raffineria usando il freddo dell'ambiente ghiacciato, col supporto di una serie di ventilatori e tunnel di ghiaccio. La loro distruzione farà salire la temperatura di tutta la raffineria, mettendo a rischio i milioni di litri di idrogeno liquido che vi sono prodotti.
-!F!Pour déclencher la réaction en chaîne qui entraînera la fusion du coeur de la raffinerie, vous devrez détruire les trois puits de chaleur. Ces installations dissipent la chaleur du coeur de la raffinerie en tirant parti de l'environnement glacé, grâce à un gigantesque réseau de ventilateurs et de galeries de glace. Leur destruction entraînera une augmentation de la température dans toute la raffinerie, mettant ainsi en péril les millions de litres d'hydrogène liquide qui y sont produits.
+!G!Um die Kettenreaktion auszulÃ¶sen, die in einer Raffinerie-Kernschmelze enden wird, mÃ¼ssen sie alle drei thermischen KÃ¼hlungen zerstÃ¶ren. Diese Maschinen ziehen mit der KÃ¤lte der eisigen Umgebung die WÃ¤rme aus dem Raffineriekern mit Hilfe einer Reihe von Ventilatoren und Eistunnel. Diese ZerstÃ¶rung wird eine TemperaturerhÃ¶hung in der gesamten Raffinerie verursachen, unter GefÃ¤hrdung der Millionen Liter an hier produziertem flÃ¼ssigem Wasserstoff.
+!S!Para iniciar la reacciÃ³n en cadena que ocasionarÃ¡ la fusiÃ³n del nÃºcleo de la refinerÃ­a tendrÃ¡s que destruir los tres disipadores tÃ©rmicos. Estas mÃ¡quinas disipan el calor del nÃºcleo de la refinerÃ­a mediante el frÃ­o del entorno helado y con la ayuda de una amplia gama de ventiladores y tÃºneles de hielo. Cuando los destruyas subirÃ¡ la temperatura de toda la refinerÃ­a, lo que pondrÃ¡ en peligro los millones de litros de hidrÃ³geno lÃ­quido que se producen en ella.
+!I!Per avviare la reazione a catena che porterÃ  alla fusione del nucleo della raffineria dovrai distruggere tutti e tre i dissipatori di calore. Queste macchine disperdono il calore del nucleo della raffineria usando il freddo dell'ambiente ghiacciato, col supporto di una serie di ventilatori e tunnel di ghiaccio. La loro distruzione farÃ  salire la temperatura di tutta la raffineria, mettendo a rischio i milioni di litri di idrogeno liquido che vi sono prodotti.
+!F!Pour dÃ©clencher la rÃ©action en chaÃ®ne qui entraÃ®nera la fusion du coeur de la raffinerie, vous devrez dÃ©truire les trois puits de chaleur. Ces installations dissipent la chaleur du coeur de la raffinerie en tirant parti de l'environnement glacÃ©, grÃ¢ce Ã  un gigantesque rÃ©seau de ventilateurs et de galeries de glace. Leur destruction entraÃ®nera une augmentation de la tempÃ©rature dans toute la raffinerie, mettant ainsi en pÃ©ril les millions de litres d'hydrogÃ¨ne liquide qui y sont produits.
 
 !/!Goal 2 Name
 !=!Destroy the Middle Heat Sink
-!G!Die mittlere Kühlung zerstören
-!S!Destruir el disipador térmico intermedio
+!G!Die mittlere KÃ¼hlung zerstÃ¶ren
+!S!Destruir el disipador tÃ©rmico intermedio
 !I!Distruggi il dissipatore di calore intermedio
-!F!Détruire le puits thermique central
+!F!DÃ©truire le puits thermique central
 
 !/!Goal 2 Item Name
 !=!Middle Heat Sink
-!G!Mittlere Kühlung
-!S!Disipador térmico intermedio 
+!G!Mittlere KÃ¼hlung
+!S!Disipador tÃ©rmico intermedio 
 !I!Dissipatore di calore intermedio
 !F!Puits thermique central
 
 !/!Goal 2 Description
 !=!To begin the chain reaction which will ultimately result in a Refinery Core meltdown, you'll need to destroy all three of the Thermal Heat Sinks.  These machines draw the heat away from the Refinery Core using the cold of the icy environment, with the support of a wide array of fans and ice tunnels.  Destroying them will cause the temperature to rise throughout the Refinery, jeopardizing the millions of gallons of liquid hydrogen fuel produced here.
-!G!Um die Kettenreaktion auszulösen, die in einer Raffinerie-Kernschmelze enden wird, müssen sie alle drei thermischen Kühlungen zerstören. Diese Maschinen ziehen mit der Kälte der eisigen Umgebung die Wärme aus dem Raffineriekern mit Hilfe einer Reihe von Ventilatoren und Eistunnel. Diese Zerstörung wird eine Temperaturerhöhung in der gesamten Raffinerie verursachen, unter Gefährdung der Millionen Liter an hier produziertem flüssigem Wasserstoff.
-!S!Para iniciar la reacción en cadena que ocasionará la fusión del núcleo de la refinería tendrás que destruir los tres disipadores térmicos. Estas máquinas disipan el calor del núcleo de la refinería mediante el frío del entorno helado y con la ayuda de una amplia gama de ventiladores y túneles de hielo. Cuando los destruyas subirá la temperatura de toda la refinería, lo que pondrá en peligro los millones de litros de hidrógeno líquido que se producen en ella.
-!I!Per avviare la reazione a catena che porterà alla fusione del nucleo della raffineria dovrai distruggere tutti e tre i dissipatori di calore. Queste macchine disperdono il calore del nucleo della raffineria usando il freddo dell'ambiente ghiacciato, col supporto di una serie di ventilatori e tunnel di ghiaccio. La loro distruzione farà salire la temperatura di tutta la raffineria, mettendo a rischio i milioni di litri di idrogeno liquido che vi sono prodotti.
-!F!Pour déclencher la réaction en chaîne qui entraînera la fusion du coeur de la raffinerie, vous devrez détruire totalement les trois puits thermiques.  Ces installations dissipent la chaleur du coeur de la raffinerie en tirant parti de l'environnement glacé, grâce à un gigantesque réseau de ventilateurs et de galeries de glace. Leur destruction entraînera une augmentation de la température dans toute la raffinerie, mettant ainsi en péril les millions de litres d'hydrogène liquide qui y sont produits.
+!G!Um die Kettenreaktion auszulÃ¶sen, die in einer Raffinerie-Kernschmelze enden wird, mÃ¼ssen sie alle drei thermischen KÃ¼hlungen zerstÃ¶ren. Diese Maschinen ziehen mit der KÃ¤lte der eisigen Umgebung die WÃ¤rme aus dem Raffineriekern mit Hilfe einer Reihe von Ventilatoren und Eistunnel. Diese ZerstÃ¶rung wird eine TemperaturerhÃ¶hung in der gesamten Raffinerie verursachen, unter GefÃ¤hrdung der Millionen Liter an hier produziertem flÃ¼ssigem Wasserstoff.
+!S!Para iniciar la reacciÃ³n en cadena que ocasionarÃ¡ la fusiÃ³n del nÃºcleo de la refinerÃ­a tendrÃ¡s que destruir los tres disipadores tÃ©rmicos. Estas mÃ¡quinas disipan el calor del nÃºcleo de la refinerÃ­a mediante el frÃ­o del entorno helado y con la ayuda de una amplia gama de ventiladores y tÃºneles de hielo. Cuando los destruyas subirÃ¡ la temperatura de toda la refinerÃ­a, lo que pondrÃ¡ en peligro los millones de litros de hidrÃ³geno lÃ­quido que se producen en ella.
+!I!Per avviare la reazione a catena che porterÃ  alla fusione del nucleo della raffineria dovrai distruggere tutti e tre i dissipatori di calore. Queste macchine disperdono il calore del nucleo della raffineria usando il freddo dell'ambiente ghiacciato, col supporto di una serie di ventilatori e tunnel di ghiaccio. La loro distruzione farÃ  salire la temperatura di tutta la raffineria, mettendo a rischio i milioni di litri di idrogeno liquido che vi sono prodotti.
+!F!Pour dÃ©clencher la rÃ©action en chaÃ®ne qui entraÃ®nera la fusion du coeur de la raffinerie, vous devrez dÃ©truire totalement les trois puits thermiques.  Ces installations dissipent la chaleur du coeur de la raffinerie en tirant parti de l'environnement glacÃ©, grÃ¢ce Ã  un gigantesque rÃ©seau de ventilateurs et de galeries de glace. Leur destruction entraÃ®nera une augmentation de la tempÃ©rature dans toute la raffinerie, mettant ainsi en pÃ©ril les millions de litres d'hydrogÃ¨ne liquide qui y sont produits.
 
 !/!Goal 3 Name
 !=!Destroy the Inner Heat Sink
-!G!Die innere Kühlung zerstören
-!S!Destruir el disipador térmico interior
+!G!Die innere KÃ¼hlung zerstÃ¶ren
+!S!Destruir el disipador tÃ©rmico interior
 !I!Distruggi ildissipatore di calore interno
-!F!Détruire le puits thermique intérieur
+!F!DÃ©truire le puits thermique intÃ©rieur
 
 !/!Goal 3 Item Name
 !=!Inner Heat Sink
-!G!Innere Kühlung
-!S!Disipador térmico interior
+!G!Innere KÃ¼hlung
+!S!Disipador tÃ©rmico interior
 !I!Dissipatore di calore interno
-!F!Puits thermique intérieur
+!F!Puits thermique intÃ©rieur
 
 !/!Goal 3 Description
 !=!To begin the chain reaction which will ultimately result in a Refinery Core meltdown, you'll need to destroy all three of the Thermal Heat Sinks.  These machines draw the heat away from the Refinery Core using the cold of the icy environment, with the support of a wide array of fans and ice tunnels.  Destroying them will cause the temperature to rise throughout the Refinery, jeopardizing the millions of gallons of liquid hydrogen fuel produced here.
-!G!Um die Kettenreaktion auszulösen, die in einer Raffinerie-Kernschmelze enden wird, müssen sie alle drei thermischen Kühlungen zerstören. Diese Maschinen ziehen mit der Kälte der eisigen Umgebung die Wärme aus dem Raffineriekern mit Hilfe einer Reihe von Ventilatoren und Eistunnel. Diese Zerstörung wird eine Temperaturerhöhung in der gesamten Raffinerie verursachen, unter Gefährdung der Millionen Liter an hier produziertem flüssigem Wasserstoff.
-!S!Para iniciar la reacción en cadena que ocasionará la fusión del núcleo de la refinería tendrás que destruir los tres disipadores térmicos. Estas máquinas disipan el calor del núcleo de la refinería mediante el frío del entorno helado y con la ayuda de una amplia gama de ventiladores y túneles de hielo. Cuando los destruyas subirá la temperatura de toda la refinería, lo que pondrá en peligro los millones de litros de hidrógeno líquido que se producen en ella.
-!I!Per avviare la reazione a catena che porterà alla fusione del nucleo della raffineria dovrai distruggere tutti e tre i dissipatori di calore. Queste macchine disperdono il calore del nucleo della raffineria usando il freddo dell'ambiente ghiacciato, col supporto di una serie di ventilatori e tunnel di ghiaccio. La loro distruzione farà salire la temperatura di tutta la raffineria, mettendo a rischio i milioni di litri di idrogeno liquido che vi sono prodotti.
-!F!Pour déclencher la réaction en chaîne qui entraînera la fusion du coeur de la raffinerie, vous devrez détruire totalement les trois puits thermiques.  Ces installations dissipent la chaleur du coeur de la raffinerie en tirant parti de l'environnement glacé, grâce à un gigantesque réseau de ventilateurs et de galeries de glace. Leur destruction entraînera une augmentation de la température dans toute la raffinerie, mettant ainsi en péril les millions de litres d'hydrogène liquide qui y sont produits. 
+!G!Um die Kettenreaktion auszulÃ¶sen, die in einer Raffinerie-Kernschmelze enden wird, mÃ¼ssen sie alle drei thermischen KÃ¼hlungen zerstÃ¶ren. Diese Maschinen ziehen mit der KÃ¤lte der eisigen Umgebung die WÃ¤rme aus dem Raffineriekern mit Hilfe einer Reihe von Ventilatoren und Eistunnel. Diese ZerstÃ¶rung wird eine TemperaturerhÃ¶hung in der gesamten Raffinerie verursachen, unter GefÃ¤hrdung der Millionen Liter an hier produziertem flÃ¼ssigem Wasserstoff.
+!S!Para iniciar la reacciÃ³n en cadena que ocasionarÃ¡ la fusiÃ³n del nÃºcleo de la refinerÃ­a tendrÃ¡s que destruir los tres disipadores tÃ©rmicos. Estas mÃ¡quinas disipan el calor del nÃºcleo de la refinerÃ­a mediante el frÃ­o del entorno helado y con la ayuda de una amplia gama de ventiladores y tÃºneles de hielo. Cuando los destruyas subirÃ¡ la temperatura de toda la refinerÃ­a, lo que pondrÃ¡ en peligro los millones de litros de hidrÃ³geno lÃ­quido que se producen en ella.
+!I!Per avviare la reazione a catena che porterÃ  alla fusione del nucleo della raffineria dovrai distruggere tutti e tre i dissipatori di calore. Queste macchine disperdono il calore del nucleo della raffineria usando il freddo dell'ambiente ghiacciato, col supporto di una serie di ventilatori e tunnel di ghiaccio. La loro distruzione farÃ  salire la temperatura di tutta la raffineria, mettendo a rischio i milioni di litri di idrogeno liquido che vi sono prodotti.
+!F!Pour dÃ©clencher la rÃ©action en chaÃ®ne qui entraÃ®nera la fusion du coeur de la raffinerie, vous devrez dÃ©truire totalement les trois puits thermiques.  Ces installations dissipent la chaleur du coeur de la raffinerie en tirant parti de l'environnement glacÃ©, grÃ¢ce Ã  un gigantesque rÃ©seau de ventilateurs et de galeries de glace. Leur destruction entraÃ®nera une augmentation de la tempÃ©rature dans toute la raffinerie, mettant ainsi en pÃ©ril les millions de litres d'hydrogÃ¨ne liquide qui y sont produits. 
 
 !/!Goal 4 Name
 !=!Make your way through the Refinery Core
 !G!Durch den Raffineriekern fliegen
-!S!Buscar una forma de salir de la instalación
+!S!Buscar una forma de salir de la instalaciÃ³n
 !I!Vola attraverso il nucleo della raffineria
-!F!Voler à travers le coeur de la raffinerie
+!F!Voler Ã  travers le coeur de la raffinerie
 
 !/!Goal 4 Item Name
 !=!Security Tower
 !G!Sicherheitsturm
 !S!Salir
 !I!Torre di sicurezza
-!F!Tourelle de sécurité
+!F!Tourelle de sÃ©curitÃ©
 
 !/!Goal 4 Description
 !=!Through the Refinery Core far below the icy surface of Europa, you must now navigate the shuddering facility on your way to the Main Hangar. 
-!G!Sie müssen jetzt durch den Raffineriekern fliegen, der sich weit unter der eisigen Oberfläche Europas befindet, um zum Haupthangar zu gelangen. 
-!S!Ahora debes desplazarte por la estremecedora instalación, desde el núcleo de la refinería que se encuentra bajo la helada superficie de Europa, y ascender hacia la salida más cercana para huir.
+!G!Sie mÃ¼ssen jetzt durch den Raffineriekern fliegen, der sich weit unter der eisigen OberflÃ¤che Europas befindet, um zum Haupthangar zu gelangen. 
+!S!Ahora debes desplazarte por la estremecedora instalaciÃ³n, desde el nÃºcleo de la refinerÃ­a que se encuentra bajo la helada superficie de Europa, y ascender hacia la salida mÃ¡s cercana para huir.
 !I!Partendo dal nucleo della raffineria al di sotto della superficie ghiacciata di Europa, devi navigare attraverso questa installazione e salire verso l'hangar principale.
-!F!Depuis le coeur de la raffinerie enfouie profondément sous la surface glacée d'Europa, vous devez maintenant parcourir le bâtiment instable et rejoindre le hangar principal.
+!F!Depuis le coeur de la raffinerie enfouie profondÃ©ment sous la surface glacÃ©e d'Europa, vous devez maintenant parcourir le bÃ¢timent instable et rejoindre le hangar principal.
 
 !/!Goal 5 Name
 !=!Find a way out of the facility
 !G!Einen Ausgang aus der Anlage finden
-!S!Buscar una forma de salir de la instalación
+!S!Buscar una forma de salir de la instalaciÃ³n
 !I!Trova il modo di uscire dall'installazione
 !F!Trouver une sortie
 
@@ -164,49 +164,49 @@
 
 !/!Goal 5 Description
 !=!Ascend from the icy core to the Main Hangar for your final escape as the facility undergoes a chain reaction due to overheating.
-!G!Die Überhitzung hat eine Kettenreaktion in der Anlage ausgelöst. Steigen Sie vom eisigen Kern zum Haupthangar auf, um zu entkommen. 
-!S!Ahora debes desplazarte por la estremecedora instalación, desde el núcleo de la refinería que se encuentra bajo la helada superficie de Europa, y ascender hacia la salida más cercana para huir.
+!G!Die Ãœberhitzung hat eine Kettenreaktion in der Anlage ausgelÃ¶st. Steigen Sie vom eisigen Kern zum Haupthangar auf, um zu entkommen. 
+!S!Ahora debes desplazarte por la estremecedora instalaciÃ³n, desde el nÃºcleo de la refinerÃ­a que se encuentra bajo la helada superficie de Europa, y ascender hacia la salida mÃ¡s cercana para huir.
 !I!Per fuggire, esci dal nucleo ghiacciato dell'hangar principale prima che nell'installazione si inneschi la reazione a catena dovuta al surriscaldamento. 
-!F!Depuis le coeur glacé de la raffinerie, remontez jusqu'à la surface pour échapper à l'explosion. 
+!F!Depuis le coeur glacÃ© de la raffinerie, remontez jusqu'Ã  la surface pour Ã©chapper Ã  l'explosion. 
 
 !/!Goal 6 Name
 !=!Locate an Authorization Passkey
-!G!Berechtigungsschlüssel finden
-!S!Buscar un pase de autorización
+!G!BerechtigungsschlÃ¼ssel finden
+!S!Buscar un pase de autorizaciÃ³n
 !I!Trova un pass di autorizzazione
-!F!Trouver un passe d'accès autorisé
+!F!Trouver un passe d'accÃ¨s autorisÃ©
 
 !/!Goal 6 Item Name
 !=!Passkey
-!G!Schlüssel
+!G!SchlÃ¼ssel
 !S!Pase
 !I!Pass
-!F!Passe d'accès autorisé
+!F!Passe d'accÃ¨s autorisÃ©
 
 !/!Goal 6 Description
 !=!One way to override the security forcefield in the Main Hangar is to use an Authorization Passkey.  This will operate the switch to deactivate the forcefield so you can escape.
-!G!Eine Möglichkeit, das Sicherheitskraftfeld ausser Kraft zu setzen, ist die Verwendung eines Berechtigungsschlüssels. Er wird Ihnen ermöglichen, den Schalter zu betätigen, der das Kraftfeld deaktiviert, so dass Sie entkommen können.
-!S!La única forma de evitar el campo de fuerza consiste en utilizar un pase de autorización. El pase desactivará el campo de fuerza y podrás escapar.
-!I!Per evitare il campo di forza si può utilizzare un pass di autorizzazione. Questo disattiverà il campo di forza e potrai fuggire.
-!F!Pour outrepasser le champ de force qui se trouve dans le hangar principal, vous pouvez avoir recours à un passe d'accès autorisé. Ce passe désactivera le champ de force et vous pourrez vous enfuir.
+!G!Eine MÃ¶glichkeit, das Sicherheitskraftfeld ausser Kraft zu setzen, ist die Verwendung eines BerechtigungsschlÃ¼ssels. Er wird Ihnen ermÃ¶glichen, den Schalter zu betÃ¤tigen, der das Kraftfeld deaktiviert, so dass Sie entkommen kÃ¶nnen.
+!S!La Ãºnica forma de evitar el campo de fuerza consiste en utilizar un pase de autorizaciÃ³n. El pase desactivarÃ¡ el campo de fuerza y podrÃ¡s escapar.
+!I!Per evitare il campo di forza si puÃ² utilizzare un pass di autorizzazione. Questo disattiverÃ  il campo di forza e potrai fuggire.
+!F!Pour outrepasser le champ de force qui se trouve dans le hangar principal, vous pouvez avoir recours Ã  un passe d'accÃ¨s autorisÃ©. Ce passe dÃ©sactivera le champ de force et vous pourrez vous enfuir.
 
 !/!Goal 7 Name
 !=!Rescue medical frigate Nightingale
 !G!Die Krankenfregatte Nightingale retten
-!S!Fragata de rescate médico "Ruiseñor" 
+!S!Fragata de rescate mÃ©dico "RuiseÃ±or" 
 !I!Fregata di soccorso medico Nightingale
-!F!Secourir la frégate médicale Rossignol
+!F!Secourir la frÃ©gate mÃ©dicale Rossignol
 
 !/!Goal 7 Item Name
 !=!Nightingale
 !G!Nightingale
-!S!Ruiseñor
+!S!RuiseÃ±or
 !I!Nightingale 
 !F!Rossignol
 
 !/!Goal 7 Description
 !=!Apparently the structural damage done during the Core meltdown is wreaking havoc with power supplies to systems such as the hangar refueling claws.  The medical frigate Nightingale is unable to free itself and will probably be destroyed if and when the fuel pumping system explodes.  Help out. 
-!G!Scheinbar hat der während der Kernschmelze erfolgte Strukturschaden die Kraftversorgung unter anderem des Klammersystems der Hangartankstelle durcheinander gebracht. Die Krankenfregatte Nightingale kann sich nicht selbst befreien und wird wahrscheinlich zerstört, wenn das Ölpumpsystem explodiert. Helfen Sie ihr!
-!S!Al parecer, el daño estructural causado durante la fusión del núcleo ha averiado las instalaciones que utilizan energía, como los dispositivos de carga de combustible del hangar. La fragata médica "Ruiseñor" no se puede liberar, y probablemente resultará destruida si estalla el sistema de vávulas. No están
-!I!I danni strutturali prodotti durante la fusione del nucleo stanno provocando un disastro nell'alimentazione dei sistemi, come il dispositivo di carica del carburante dell'hangar. La fregata ospedale Nightingale non è in grado di liberarsi e verrà probabilmente distrutta se e quando esploderà il sistema di pompaggio del carburante. Sta a te salvarla.
-!F!Les dégâts occasionnés durant la fusion du réacteur ont visiblement entraîné de terribles ravages aussi bien sur les générateurs que sur des systèmes tels que les prises des hangars de ravitaillement. La frégate médicale Rossignol ne peut se dégager et va probablement être détruite si les pompes de ravitaillement en carburant explosent. A vous de l'aider à se sortir de là !
+!G!Scheinbar hat der wÃ¤hrend der Kernschmelze erfolgte Strukturschaden die Kraftversorgung unter anderem des Klammersystems der Hangartankstelle durcheinander gebracht. Die Krankenfregatte Nightingale kann sich nicht selbst befreien und wird wahrscheinlich zerstÃ¶rt, wenn das Ã–lpumpsystem explodiert. Helfen Sie ihr!
+!S!Al parecer, el daÃ±o estructural causado durante la fusiÃ³n del nÃºcleo ha averiado las instalaciones que utilizan energÃ­a, como los dispositivos de carga de combustible del hangar. La fragata mÃ©dica "RuiseÃ±or" no se puede liberar, y probablemente resultarÃ¡ destruida si estalla el sistema de vÃ¡vulas. No estÃ¡n
+!I!I danni strutturali prodotti durante la fusione del nucleo stanno provocando un disastro nell'alimentazione dei sistemi, come il dispositivo di carica del carburante dell'hangar. La fregata ospedale Nightingale non Ã¨ in grado di liberarsi e verrÃ  probabilmente distrutta se e quando esploderÃ  il sistema di pompaggio del carburante. Sta a te salvarla.
+!F!Les dÃ©gÃ¢ts occasionnÃ©s durant la fusion du rÃ©acteur ont visiblement entraÃ®nÃ© de terribles ravages aussi bien sur les gÃ©nÃ©rateurs que sur des systÃ¨mes tels que les prises des hangars de ravitaillement. La frÃ©gate mÃ©dicale Rossignol ne peut se dÃ©gager et va probablement Ãªtre dÃ©truite si les pompes de ravitaillement en carburant explosent. A vous de l'aider Ã  se sortir de lÃ  !

@@ -5,13 +5,13 @@
 NEXT_MESSAGE_ID_NUMBER     11
 
 // Message List
-BPDefeated=GUIDEBOT: "PTMC-Söldner besiegt!"
-CartridgeError=GUIDEBOT: "Sie können die Datenkassette hier nicht ablegen!"
-CinematicAmbush=PTMC-Söldner
-CinematicDataCart=Daten werden an Suzuki übertragen
+BPDefeated=GUIDEBOT: "PTMC-SÃ¶ldner besiegt!"
+CartridgeError=GUIDEBOT: "Sie kÃ¶nnen die Datenkassette hier nicht ablegen!"
+CinematicAmbush=PTMC-SÃ¶ldner
+CinematicDataCart=Daten werden an Suzuki Ã¼bertragen
 CinematicEndCam=
 CinematicIntroCam=Erde - Seoul, Korea
 Debug1=Anpassungsschwierigkeit: %f
-Debug2=Das sollte SCHÜTTELN!
-GetOut=GUIDEBOT: "Übertragung erfolgreich!  Suzuki sollte die Daten jetzt haben!"
-PutTheCartridge=GUIDEBOT: "Legen Sie die Datenkassette in der Mitte des Übertragungsraums ab!"
+Debug2=Das sollte SCHÃœTTELN!
+GetOut=GUIDEBOT: "Ãœbertragung erfolgreich!  Suzuki sollte die Daten jetzt haben!"
+PutTheCartridge=GUIDEBOT: "Legen Sie die Datenkassette in der Mitte des Ãœbertragungsraums ab!"

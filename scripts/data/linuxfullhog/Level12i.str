@@ -48,61 +48,61 @@
 !G!Der Feuerfalle entkommen 
 !S!Escapa de la trampa de fuego
 !I!Fuggi dalla trappola di fuoco
-!F!Fuir le piège de feu
+!F!Fuir le piÃ¨ge de feu
 
 !/!Goal 0 Item Name
 !=!Firetrap Room
 !G!Feuerfallen-Raum
 !S!Sala de la trampa de fuego
 !I!Sala della trappola di fuoco
-!F!Salle du piège de feu
+!F!Salle du piÃ¨ge de feu
 
 !/!Goal 0 Description
 !=!Figure out how to avoid getting burnt to death
 !G!Finden Sie einen Ausweg, um nicht zu Tode verbrannt zu werden.
 !S!Encuentra el modo de salvarte de morir abrasado
 !I!Escogita una maniera per non morire bruciato 
-!F!Trouvez un moyen de ne pas mourir carbonisé.
+!F!Trouvez un moyen de ne pas mourir carbonisÃ©.
 
 !/!Goal 1 Name
 !=!Disable the security forcefield
 !G!Sicherheitskraftfeld deaktivieren 
 !S!Desactiva el campo de fuerza de seguridad
 !I!Disattiva il campo di forza di sicurezza
-!F!Désactiver le champ de force de sécurité
+!F!DÃ©sactiver le champ de force de sÃ©curitÃ©
 
 !/!Goal 1 Item Name
 !=!Security control center
 !G!Sicherheits-Kontrollzentrum
 !S!Centro de control de seguridad
 !I!Centro di controllo di sicurezza
-!F!Centre de contrôle de sécurité 
+!F!Centre de contrÃ´le de sÃ©curitÃ© 
 
 !/!Goal 1 Description
 !=!Disable the security forcefield that leads to PTMC proving grounds
-!G!Deaktivieren Sie das Sicherheitskraftfeld, das zum PTMC-Testgelände führt.
+!G!Deaktivieren Sie das Sicherheitskraftfeld, das zum PTMC-TestgelÃ¤nde fÃ¼hrt.
 !S!Desactiva el campo de fuerza de seguridad que lleva a los campos de prueba de la PTMC
 !I!Disattiva il campo di forza di sicurezza che porta ai campi di prova del PTMC
-!F!Désactivez le champ de force qui protège l'accès au champ des défis de la PTMC.
+!F!DÃ©sactivez le champ de force qui protÃ¨ge l'accÃ¨s au champ des dÃ©fis de la PTMC.
 
 !/!Goal 2 Name
 !=!Defeat Level 1 Arena
 !G!Arena auf Level 1 bezwingen 
 !S!Vence en la arena del nivel 1
 !I!Vinci nell'arena del Livello 1
-!F!Survivez aux épreuves de l'arène du Niveau 1
+!F!Survivez aux Ã©preuves de l'arÃ¨ne du Niveau 1
 
 !/!Goal 2 Item Name
 !=!Arena 1 Entrance
 !G!Eingang zu Arena 1
 !S!Entrada a la arena
 !I!Entra nell'arena 1
-!F!Entrée de l'arène 1
+!F!EntrÃ©e de l'arÃ¨ne 1
 
 !/!Goal 2 Description
 !=!Defeat the champion of Level 1 
 !G!Besiegen Sie den Meister von Level 1
-!S!Derrota al campeón del nivel 1
+!S!Derrota al campeÃ³n del nivel 1
 !I!Sconfiggi il campione del Livello 1
 !F!Eliminez le champion du Niveau 1.
 
@@ -111,19 +111,19 @@
 !G!Arena auf Level 2 bezwingen 
 !S!Vence en la arena del nivel 2
 !I!Vinci nell'arena del Livello 2
-!F!Survivre aux épreuves de l'arène du Niveau 2.
+!F!Survivre aux Ã©preuves de l'arÃ¨ne du Niveau 2.
 
 !/!Goal 3 Item Name
 !=!Arena 2 Entrance
 !G!Eingang zu Arena 2
 !S!Entrada a la arena
 !I!Entrata dell'arena 2
-!F!Entrée de l'arène 2
+!F!EntrÃ©e de l'arÃ¨ne 2
 
 !/!Goal 3 Description
 !=!Defeat the champion of Level 2
 !G!Besiegen Sie den Meister von Level 2
-!S!Derrota al campeón del nivel 2
+!S!Derrota al campeÃ³n del nivel 2
 !I!Sconfiggi il campione del Livello 2
 !F!Eliminez le champion du Niveau 2.
 
@@ -132,19 +132,19 @@
 !G!Arena auf Level 3 bezwingen 
 !S!Vence en la arena del nivel 3
 !I!Vinci nell'arena del Livello 3
-!F!Survivre aux épreuves de l'arène du Niveau 3
+!F!Survivre aux Ã©preuves de l'arÃ¨ne du Niveau 3
 
 !/!Goal 4 Item Name
 !=!Arena 3 Entrance
 !G!Eingang zu Arena 3
 !S!Entrada a la arena
 !I!Entrata dell'arena 3
-!F!Entrée de l'arène 3
+!F!EntrÃ©e de l'arÃ¨ne 3
 
 !/!Goal 4 Description
 !=!Defeat the champion of Level 3
 !G!Besiegen Sie den Meister von Level 3
-!S!Derrota al campeón del nivel 3
+!S!Derrota al campeÃ³n del nivel 3
 !I!Sconfiggi il campione del Livello 3
 !F!Eliminez le champion du Niveau 3.
 
@@ -153,19 +153,19 @@
 !G!Arena auf Level 4 bezwingen 
 !S!Vence en la arena del nivel 4
 !I!Vinci nell'arena del Livello 4
-!F!Survivre aux épreuves de l'arène du Niveau 4.
+!F!Survivre aux Ã©preuves de l'arÃ¨ne du Niveau 4.
 
 !/!Goal 5 Item Name
 !=!Arena 4 Entrance
 !G!Eingang zu Arena 4
 !S!Entrada a la arena
 !I!Entrata dell'arena 4
-!F!Entrée de l'arène 4
+!F!EntrÃ©e de l'arÃ¨ne 4
 
 !/!Goal 5 Description
 !=!Defeat the champion of Level 4
 !G!Besiegen Sie den Champion von Level 4
-!S!Derrota al campeón del nivel 4
+!S!Derrota al campeÃ³n del nivel 4
 !I!Sconfiggi il campione del Livello 4
 !F!Eliminez le champion du Niveau 4.
 
@@ -181,137 +181,137 @@
 !G!Meisterschaftsarena-Eingang
 !S!Entrada a la arena del campeonato
 !I!Entrata nell'arena del campionato
-!F!Entrée de l'arène du championnat
+!F!EntrÃ©e de l'arÃ¨ne du championnat
 
 !/!Goal 6 Description
 !=!Destroy the competition so you can face the Proving Grounds Champion
-!G!Vernichten Sie die Rivalen, damit Sie sich dem Champion des Testgeländes stellen können.
-!S!Destruye a los competidores para poder enfrentarte al campeón del campo de prueba
+!G!Vernichten Sie die Rivalen, damit Sie sich dem Champion des TestgelÃ¤ndes stellen kÃ¶nnen.
+!S!Destruye a los competidores para poder enfrentarte al campeÃ³n del campo de prueba
 !I!Distruggi i concorrenti per poi affrontare il campione del campo prova
-!F!Débarrassez-vous de tous les concurrents afin de pouvoir affronter le grand champion du champ des défis.
+!F!DÃ©barrassez-vous de tous les concurrents afin de pouvoir affronter le grand champion du champ des dÃ©fis.
 
 !/!Goal 7 Name
 !=!Defeat the Proving Grounds Champion
-!G!Den Champion des Testgeländes besiegen
-!S!Derrota al campeón del campo de prueba
+!G!Den Champion des TestgelÃ¤ndes besiegen
+!S!Derrota al campeÃ³n del campo de prueba
 !I!Sconfiggi il campione del campo prova
-!F!Vaincre le champion du champ des défis.
+!F!Vaincre le champion du champ des dÃ©fis.
 
 !/!Goal 7 Item Name
 !=!Proving Grounds Champion
-!G!Champion des Testgeländes
-!S!Campeón del campo de prueba
+!G!Champion des TestgelÃ¤ndes
+!S!CampeÃ³n del campo de prueba
 !I!Campione del campo prova
-!F!Champion du champ des défis
+!F!Champion du champ des dÃ©fis
 
 !/!Goal 7 Description
 !=!Defeat the Proving Grounds Champion to gain freedom to the surface
-!G!Besiegen Sie den Champion des Testgeländes, um an die Oberfläche zu entkommen.
-!S!Derrota al campeón del campo de prueba para poder salir a la superficie
+!G!Besiegen Sie den Champion des TestgelÃ¤ndes, um an die OberflÃ¤che zu entkommen.
+!S!Derrota al campeÃ³n del campo de prueba para poder salir a la superficie
 !I!Sconfiggi il campione del campo prova, quindi sali libero in superficie
-!F!Eliminez le champion du champ des défis. Vous pourrez alors regagner la surface et la liberté.
+!F!Eliminez le champion du champ des dÃ©fis. Vous pourrez alors regagner la surface et la libertÃ©.
 
 !/!Goal 8 Name
 !=!Escape from the Proving Grounds
-!G!Vom Testgelände entkommen
+!G!Vom TestgelÃ¤nde entkommen
 !S!Huye de los campos de prueba
 !I!Fuggi dal campo prova
-!F!Fuir le champ des défis
+!F!Fuir le champ des dÃ©fis
 
 !/!Goal 8 Item Name
 !=!Proving Grounds
-!G!Testgelände
+!G!TestgelÃ¤nde
 !S!Campo de prueba
 !I!Campo prova
-!F!Champ des défis 
+!F!Champ des dÃ©fis 
 
 !/!Goal 8 Description
 !=!Work your way through the Proving Grounds to escape from PTMC
-!G!Kämpfen Sie sich durch das Testgelände hindurch, um der PTMC zu entkommen.
+!G!KÃ¤mpfen Sie sich durch das TestgelÃ¤nde hindurch, um der PTMC zu entkommen.
 !S!Atraviesa los campos de prueba para escapar del PTMC
 !I!Attraversa il campo prova per fuggire dal PTMC
-!F!Traversez le champ des défis pour fuir à la PTMC.
+!F!Traversez le champ des dÃ©fis pour fuir Ã  la PTMC.
 
 !/!Goal 9 Name
 !=!Acquire Level 1 Key
-!G!Den Schlüssel zu Level 1 bekommen
+!G!Den SchlÃ¼ssel zu Level 1 bekommen
 !S!Obten la llave del nivel 1
 !I!Trova la chiave del livello 1
-!F!Obtenir la clé du niveau 1
+!F!Obtenir la clÃ© du niveau 1
 
 !/!Goal 9 Item Name
 !=!Level 1 Key
-!G!Schlüssel zu Level 1
+!G!SchlÃ¼ssel zu Level 1
 !S!Llave del nivel 1
 !I!Chiave del livello 1
-!F!Clé du niveau 1
+!F!ClÃ© du niveau 1
 
 !/!Goal 9 Description
 !=!Get the Level 1 Key
-!G!Nehmen Sie den Schlüssel zu Level 1 in Besitz.
+!G!Nehmen Sie den SchlÃ¼ssel zu Level 1 in Besitz.
 !S!Obten la llave del nivel 1
 !I!Ottieni la chiave del livello 1
-!F!Obtenez la clé du niveau 1.
+!F!Obtenez la clÃ© du niveau 1.
 
 !/!Goal 10 Name
 !=!Acquire Level 2 Key
-!G!Den Schlüssel zu Level 2 bekommen
+!G!Den SchlÃ¼ssel zu Level 2 bekommen
 !S!Obten la llave del nivel 2
 !I!Trova la chiave del livello 2
-!F!Obtenir la clé du niveau 2
+!F!Obtenir la clÃ© du niveau 2
 
 !/!Goal 10 Item Name
 !=!Level 2 Key
-!G!Schlüssel zu Level 2
+!G!SchlÃ¼ssel zu Level 2
 !S!Llave del nivel 2
 !I!Chiave del livello 2
-!F!Clé du niveau 2
+!F!ClÃ© du niveau 2
 
 !/!Goal 10 Description
 !=!Get the Level 2 Key
-!G!Nehmen Sie den Schlüssel zu Level 2 in Besitz.
+!G!Nehmen Sie den SchlÃ¼ssel zu Level 2 in Besitz.
 !S!Obten la llave del nivel 2
 !I!Ottieni la chiave del livello 2
-!F!Obtenez la clé du niveau 2.
+!F!Obtenez la clÃ© du niveau 2.
 
 !/!Goal 11 Name
 !=!Acquire Level 3 Key
-!G!Den Schlüssel zu Level 3 bekommen
+!G!Den SchlÃ¼ssel zu Level 3 bekommen
 !S!Obten la llave del nivel 3
 !I!Trova la chiave del livello 3
-!F!Obtenir la clé du niveau 3
+!F!Obtenir la clÃ© du niveau 3
 
 !/!Goal 11 Item Name
 !=!Level 3 Key
-!G!Schlüssel zu Level 3
+!G!SchlÃ¼ssel zu Level 3
 !S!Llave del nivel 3
 !I!Chiave del livello 3
-!F!Clé du niveau 3
+!F!ClÃ© du niveau 3
 
 !/!Goal 11 Description
 !=!Get the Level 3 Key
-!G!Nehmen Sie den Schlüssel zu Level 3 in Besitz.
+!G!Nehmen Sie den SchlÃ¼ssel zu Level 3 in Besitz.
 !S!Obten la llave del nivel 3
 !I!Ottieni la chiave del livello 3
-!F!Obtenez la clé du niveau 3.
+!F!Obtenez la clÃ© du niveau 3.
 
 !/!Goal 12 Name
 !=!Acquire Level 4 Key
-!G!Den Schlüssel zu Level 4 bekommen
+!G!Den SchlÃ¼ssel zu Level 4 bekommen
 !S!Obten la llave del nivel 4
 !I!Trova la chiave del livello 4
-!F!Obtenir la clé du niveau 4
+!F!Obtenir la clÃ© du niveau 4
 
 !/!Goal 12 Item Name
 !=!Level 4 Key
-!G!Schlüssel zu Level 4
+!G!SchlÃ¼ssel zu Level 4
 !S!Llave del nivel 4
 !I!Chiave del livello 4
-!F!Clé du niveau 4
+!F!ClÃ© du niveau 4
 
 !/!Goal 12 Description
 !=!Get the Level 4 Key
-!G!Nehmen Sie den Schlüssel zu Level 4 in Besitz.
+!G!Nehmen Sie den SchlÃ¼ssel zu Level 4 in Besitz.
 !S!Obten la llave del nivel 4
 !I!Ottieni la chiave del livello 4
-!F!Obtenez la clé du niveau 4.
+!F!Obtenez la clÃ© du niveau 4.

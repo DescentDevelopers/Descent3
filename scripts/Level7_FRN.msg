@@ -5,30 +5,30 @@
 NEXT_MESSAGE_ID_NUMBER     30
 
 // Message List
-CameraActivation=GUIDEBOT: "Transmission du signal des caméras de sécurité..."
-ContainmentDoorUnlocked=Porte de confinement déverrouillée.
-Controller=GUIDEBOT: "Routage secours des systèmes de défenses de surface de soutien sur système primaire !"
-ControlVulnerable=GUIDEBOT: "Le contrôleur primaire due système de surface est désormais vulnérable !"
-CoolersAllGone=GUIDEBOT: "Défaillance du système de refroidissement principal.  Activation contrôle commande de secours manuelle d'urgence due refroidissement."
-DoThis=GUIDEBOT: "Trouvez les échantillons de virus et sortez d'ici le plus vite possible !"
+CameraActivation=GUIDEBOT: "Transmission du signal des camÃ©ras de sÃ©curitÃ©..."
+ContainmentDoorUnlocked=Porte de confinement dÃ©verrouillÃ©e.
+Controller=GUIDEBOT: "Routage secours des systÃ¨mes de dÃ©fenses de surface de soutien sur systÃ¨me primaire !"
+ControlVulnerable=GUIDEBOT: "Le contrÃ´leur primaire due systÃ¨me de surface est dÃ©sormais vulnÃ©rable !"
+CoolersAllGone=GUIDEBOT: "DÃ©faillance du systÃ¨me de refroidissement principal.  Activation contrÃ´le commande de secours manuelle d'urgence due refroidissement."
+DoThis=GUIDEBOT: "Trouvez les Ã©chantillons de virus et sortez d'ici le plus vite possible !"
 FFDisable1=GUIDEBOT: "Extinction Coupure de l'alimentation auxiliaire des champs de confinementforce !"
-FFDisabled=GUIDEBOT: "Champs de forces force désactivés ! Accès à la chambre de confinement du virus autorisé."
-FFKeyPickup=GUIDEBOT: "Autorisation Cpour les contrôles de sécurité accordése."
+FFDisabled=GUIDEBOT: "Champs de forces force dÃ©sactivÃ©s ! AccÃ¨s Ã  la chambre de confinement du virus autorisÃ©."
+FFKeyPickup=GUIDEBOT: "Autorisation Cpour les contrÃ´les de sÃ©curitÃ© accordÃ©se."
 Finished=
-IntroMessage=Asteroïde Cérès - Bunker de Bunker PTMC Secret | PTMC Bunker de Recherches C4 de la PTMC 
-MagnetActivated=GUIDEBOT: "Accélérateur magnétique de descente activé.  Portes de sécurité activéesdéverrouillées."
-MagnetTube1=GUIDEBOT: "Verrou 1 sur 2 de la salle de contrôle désactivés !"
-MagnetTubeDoorUnlock=GUIDEBOT: "Accès à la salle de contrôle accordé !  Porte déverrouillée !"
-ManualActivation=GUIDEBOT: "Ce dispositif doit être activé directement."
-NeedFFKey=GUIDEBOT: "Vous n'êtes pas autorisé à utiliser ces commandes."
+IntroMessage=AsteroÃ¯de CÃ©rÃ¨s - Bunker de Bunker PTMC Secret | PTMC Bunker de Recherches C4 de la PTMC 
+MagnetActivated=GUIDEBOT: "AccÃ©lÃ©rateur magnÃ©tique de descente activÃ©.  Portes de sÃ©curitÃ© activÃ©esdÃ©verrouillÃ©es."
+MagnetTube1=GUIDEBOT: "Verrou 1 sur 2 de la salle de contrÃ´le dÃ©sactivÃ©s !"
+MagnetTubeDoorUnlock=GUIDEBOT: "AccÃ¨s Ã  la salle de contrÃ´le accordÃ© !  Porte dÃ©verrouillÃ©e !"
+ManualActivation=GUIDEBOT: "Ce dispositif doit Ãªtre activÃ© directement."
+NeedFFKey=GUIDEBOT: "Vous n'Ãªtes pas autorisÃ© Ã  utiliser ces commandes."
 PathEnd=EndLevel
-SecretArea=Vous Avez Trouvé Une Zone Secrète !
-SteamRelease=GUIDEBOT: "Soupape de Vapeur activée."
-SuperHeaterShutdown=GUIDEBOT: "Dispositif à haute température de confinement à super chaleur de confinement du virus désactivé."
-TurretsDeactivated=GUIDEBOT: Commandes primaires désactivéesdétruites !  Systèmes de défenses de surface désactivés !"
-TurretsInvuln=GUIDEBOT: "Ces grosses tourelles sont trop puissantes massives pour être exploséessoufflées !  Trouvez une autre manièreautre chose pour vous en débarrasser !"
-UpperTubeActivate=GUIDEBOT: "Tube d'accélérateur vertical activé."
+SecretArea=Vous Avez TrouvÃ© Une Zone SecrÃ¨te !
+SteamRelease=GUIDEBOT: "Soupape de Vapeur activÃ©e."
+SuperHeaterShutdown=GUIDEBOT: "Dispositif Ã  haute tempÃ©rature de confinement Ã  super chaleur de confinement du virus dÃ©sactivÃ©."
+TurretsDeactivated=GUIDEBOT: Commandes primaires dÃ©sactivÃ©esdÃ©truites !  SystÃ¨mes de dÃ©fenses de surface dÃ©sactivÃ©s !"
+TurretsInvuln=GUIDEBOT: "Ces grosses tourelles sont trop puissantes massives pour Ãªtre explosÃ©essoufflÃ©es !  Trouvez une autre maniÃ¨reautre chose pour vous en dÃ©barrasser !"
+UpperTubeActivate=GUIDEBOT: "Tube d'accÃ©lÃ©rateur vertical activÃ©."
 Virus1Collected=Vous avez un virus !
-Virus2Collected=Excellent travailSuper !  Vous avez recueilli les deux échantillons de virus.
-VirusDescription=GUIDEBOT: "Recueillez les deux échantillons et partez sortez rapidement !"
+Virus2Collected=Excellent travailSuper !  Vous avez recueilli les deux Ã©chantillons de virus.
+VirusDescription=GUIDEBOT: "Recueillez les deux Ã©chantillons et partez sortez rapidement !"
 

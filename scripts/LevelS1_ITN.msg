@@ -19,7 +19,7 @@ Area2=ROBOT-GUIDA: "Area 2"
 
 Area3=ROBOT-GUIDA: "Area 3"
 
-EndLevelMessage=BEAGLE: Difensore della Materia... Stiamo perdendo il tuo segnale! Noti niente di strano laggiù?
+EndLevelMessage=BEAGLE: Difensore della Materia... Stiamo perdendo il tuo segnale! Noti niente di strano laggiÃ¹?
 
 EntranceDoorMessage=ROBOT-GUIDA: "Protocollo di prova attivato!"
 

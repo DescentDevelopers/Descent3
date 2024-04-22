@@ -5,29 +5,29 @@
 NEXT_MESSAGE_ID_NUMBER     27
 
 // Message List
-AccessDenied=GUIDEBOT: "Zugang verweigert! Pass wird benötigt."
+AccessDenied=GUIDEBOT: "Zugang verweigert! Pass wird benÃ¶tigt."
 Blank=
-BossData=THEMA:  Modernisierter Angriffsmech.  STATUS:  F&E Fristen eingehalten.  Produktion beginnt in Kürze.  ANMERKUNGEN:  (klassifiziert) Produktionanzahlen wie gewünscht verdoppelt.  --SD
+BossData=THEMA:  Modernisierter Angriffsmech.  STATUS:  F&E Fristen eingehalten.  Produktion beginnt in KÃ¼rze.  ANMERKUNGEN:  (klassifiziert) Produktionanzahlen wie gewÃ¼nscht verdoppelt.  --SD
 BothFireSwitches=GUIDEBOT: "Brennkammer deaktiviert."
-CEDData=THEMA:  Vertrag mit Kollektiver Erdverteidigung  STATUS:  Phoenix Abfangjäger Vertrag erfüllt. Blackshark Geschoss in Entwicklung.  ANMERKUNGEN:  (klassifiziert)  Neue Lieferung wird planmässig eintreffen.  --SD
-ClassifiedAccessPass=Zugangsberechtigungsschlüssel
+CEDData=THEMA:  Vertrag mit Kollektiver Erdverteidigung  STATUS:  Phoenix AbfangjÃ¤ger Vertrag erfÃ¼llt. Blackshark Geschoss in Entwicklung.  ANMERKUNGEN:  (klassifiziert)  Neue Lieferung wird planmÃ¤ssig eintreffen.  --SD
+ClassifiedAccessPass=ZugangsberechtigungsschlÃ¼ssel
 ConsoleCrash=GUIDEBOT: "Das System scheint einen nichtregenerierbaren Fehler erlitten zu haben."
-DravisData=THEMA:  Dravis, Samuel, Jr.  Direktor für Krisenfall-Management und Öffentlichkeitsarbeit  STATUS:  auf SAFA-Presse Tour  ANMERKUNGEN:  (klassifiziert)  Erbetene Beförderung wurde abgelehnt.  --Suzuki
-EmergencySwitch=GUIDEBOT: "Notfallauslöseschalter zur Zeit gesperrt."
-EmergencySwitchOpen=GUIDEBOT: "Notfallauslöseschalter aktiviert."
+DravisData=THEMA:  Dravis, Samuel, Jr.  Direktor fÃ¼r Krisenfall-Management und Ã–ffentlichkeitsarbeit  STATUS:  auf SAFA-Presse Tour  ANMERKUNGEN:  (klassifiziert)  Erbetene BefÃ¶rderung wurde abgelehnt.  --Suzuki
+EmergencySwitch=GUIDEBOT: "NotfallauslÃ¶seschalter zur Zeit gesperrt."
+EmergencySwitchOpen=GUIDEBOT: "NotfallauslÃ¶seschalter aktiviert."
 EndLevel=
 FirstForcefield=Kraftfeld deaktiviert!
 IntroMessage=Deimos - PTMC Datenspeicherungszentrum
 LeftConsoleSwitch=GUIDEBOT: "Durchsuche Produktionsplan-Datenbank ..."
 LockDown=GUIDEBOT: "Die Anlage hat die Sicherheitssperrung abgeschlossen!"
-MDData=THEMA:  Materialverteidiger ID Nr. 1032  STATUS:  In der Nähe von Tycho Brahe verschollen.  ANMERKUNGEN:  (klassifiziert)  Warpkern-Hardwarefehler vermutet.  --SD
+MDData=THEMA:  Materialverteidiger ID Nr. 1032  STATUS:  In der NÃ¤he von Tycho Brahe verschollen.  ANMERKUNGEN:  (klassifiziert)  Warpkern-Hardwarefehler vermutet.  --SD
 PrimaryLoginSwitch=GUIDEBOT: "Durchsuche Personaldatenbank..."
 PTMCdisconnected=GUIDEBOT: "Die Verbindung wurde GETRENNT..."
 RightConsoleSwitch=GUIDEBOT: "Durchsuche Verwaltungsdateien..."
 SECRETAREA=Sie haben einen geheimen Bereich gefunden!
 SecurityAlert=GUIDEBOT: "Mein unbefugter Datenbankzugriff wurde entdeckt! Sicherheitsmassnahmen wurden aktiviert!"
-ShipMessageLog=Daten wurden zum Schiffscomputerlogbuch übertragen (SHIFT- F8)
-SingleFireSwitch=GUIDEBOT: "Brennkammerschalter ausgelöst."
-SRADLabData=ANMERKUNGEN:  Jüngstes SAFA-Laborunglück kostete 17 Spitzenwissenschaftlern das Leben.  Dr. Schweitzers Beschäftigungsverhältnis beendet.  --SD
-SweitzerData=THEMA:  Dr. Schweitzer, Karl  Forschungsleiter des SAFA Labors auf dem Planeten Tiris.  STATUS:  Entlassen.  ANMERKUNGEN:  Sitzt im Novak Firmengefängnis auf Phobos ein.  --SD
+ShipMessageLog=Daten wurden zum Schiffscomputerlogbuch Ã¼bertragen (SHIFT- F8)
+SingleFireSwitch=GUIDEBOT: "Brennkammerschalter ausgelÃ¶st."
+SRADLabData=ANMERKUNGEN:  JÃ¼ngstes SAFA-LaborunglÃ¼ck kostete 17 Spitzenwissenschaftlern das Leben.  Dr. Schweitzers BeschÃ¤ftigungsverhÃ¤ltnis beendet.  --SD
+SweitzerData=THEMA:  Dr. Schweitzer, Karl  Forschungsleiter des SAFA Labors auf dem Planeten Tiris.  STATUS:  Entlassen.  ANMERKUNGEN:  Sitzt im Novak FirmengefÃ¤ngnis auf Phobos ein.  --SD
 

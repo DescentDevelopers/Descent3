@@ -32,22 +32,22 @@
 !=!%s is out-gunned by %s
 !G!%s wurde von %s umgelegt 
 !S!%s es machacado por %s
-!I!%s è falciato da %s
-!F!%s est perforé par %s.
+!I!%s Ã¨ falciato da %s
+!F!%s est perforÃ© par %s.
 
 !/!1:%s gets shot down by %s (victim first)
 !=!%s gets shot down by %s
 !G!%s wurde von %s abgeschossen
 !S!%s es abatido por %s
-!I!%s è colpito da %s
+!I!%s Ã¨ colpito da %s
 !F!%s est abattu par %s.
 
 !/!2:%s tags %s's toe (killer first)
 !=!%s tags %s's toe
-!G!%s zerstört %s 
+!G!%s zerstÃ¶rt %s 
 !S!%s destroza a %s
 !I!%s colpisce le dita di %s
-!F!%s écrase %s.
+!F!%s Ã©crase %s.
 
 !/!3:%s downs %s! (killer first)
 !=!%s downs %s!
@@ -59,44 +59,44 @@
 !/!4:%s can't outmaneuver %s! (victim first)
 !=!%s can't outmaneuver %s!
 !G!%s wird %s nicht los!
-!S!¡%s no puede librarse de %s!
+!S!Â¡%s no puede librarse de %s!
 !I!%s non riesce a liberarsi di %s
-!F!%s agonie face à %s !
+!F!%s agonie face Ã  %s !
 
 !/!5:%s becomes another statistic for %s! (victim first)
 !=!%s becomes another statistic for %s!
 !G!%s ist ein Weiterer auf %ss Liste!
-!S!¡%s se ha convertido en otra dato estadístico para %s!
+!S!Â¡%s se ha convertido en otra dato estadÃ­stico para %s!
 !I!%s diventa un altro numero per %s
-!F!%s vient s'ajouter à la liste de %s !
+!F!%s vient s'ajouter Ã  la liste de %s !
 
 !/!6:%s takes out %s! (killer first)
 !=!%s takes out %s!
-!G!%s löscht %s aus!
+!G!%s lÃ¶scht %s aus!
 !S!%s acaba con %s
 !I!%s elimina %s
-!F!%s éjecte %s !
+!F!%s Ã©jecte %s !
 
 !/!7:%s was no match for %s (victim first)
 !=!%s was no match for %s
 !G!%s war %s nicht gewachsen 
 !S!%s no estaba a la altura de %s
 !I!%s non era all'altezza di %s
-!F!%s n'égalait pas %s.
+!F!%s n'Ã©galait pas %s.
 
 !/!8:%s wishes he was as good as %s (victim first)
 !=!%s wishes he was as good as %s
-!G!%s wünschte, er wäre so gut wie %s 
-!S!A %s le gustaría ser tan bueno como %s
+!G!%s wÃ¼nschte, er wÃ¤re so gut wie %s 
+!S!A %s le gustarÃ­a ser tan bueno como %s
 !I!%s vorrebbe essere in gamba come %s
-!F!%s aimerait être aussi bon que %s.
+!F!%s aimerait Ãªtre aussi bon que %s.
 
 !/!9:%s gets destroyed by %s (victim first)
 !=!%s gets destroyed by %s
-!G!%s wird von %s zerstört 
+!G!%s wird von %s zerstÃ¶rt 
 !S!%s es destruido por %s
 !I!%s viene annientato da %s
-!F!%s se fait détruire par %s.
+!F!%s se fait dÃ©truire par %s.
 
 
 !/! ------------------------ Suicide Messages ---------------------------------
@@ -106,58 +106,58 @@
 !G!%s verliert die Kontrolle!
 !S!%s ha perdido el control
 !I!%s perde il controllo!
-!F!%s perd le contrôle !
+!F!%s perd le contrÃ´le !
 
 !/!11:%s has a major malfunction!
 !=!%s has a major malfunction!
-!G!%s hat eine erhebliche Störung!
-!S!¡%s tiene una avería grave!
-!I!%s è in grave avaria!
-!F!%s a des problèmes techniques !
+!G!%s hat eine erhebliche StÃ¶rung!
+!S!Â¡%s tiene una averÃ­a grave!
+!I!%s Ã¨ in grave avaria!
+!F!%s a des problÃ¨mes techniques !
 
 !/!12:%s experiences technical difficulties
 !=!%s experiences technical difficulties
 !G!%s hat technische Schwierigkeiten 
-!S!%s tiene dificultades técnicas
-!I!%s ha difficoltà tecniche
-!F!%s a des problèmes techniques.
+!S!%s tiene dificultades tÃ©cnicas
+!I!%s ha difficoltÃ  tecniche
+!F!%s a des problÃ¨mes techniques.
 
 !/!13:%s fumbles for the pilots manual!
 !=!%s fumbles for the pilots manual!
 !G!%s tastet nach dem Pilotenhandbuch!
 !S!%s necesita el manual del piloto
 !I!%s cerca il manuale del pilota!
-!F!%s s'est trompé de bouton !
+!F!%s s'est trompÃ© de bouton !
 
 !/!14:%s pushes the red button!
 !=!%s pushes the red button!
-!G!%s drückt den roten Knopf!
-!S!%s pulsa el botón rojo
+!G!%s drÃ¼ckt den roten Knopf!
+!S!%s pulsa el botÃ³n rojo
 !I!%s preme il pulsante rosso!
-!F!%s se repent de ses péchés !
+!F!%s se repent de ses pÃ©chÃ©s !
 
 !/!15:%s pushes the envelope!
 !=!%s pushes the envelope!
-!G!%s drückt die Abdeckung!
+!G!%s drÃ¼ckt die Abdeckung!
 !S!%s sobrepasa los limites de la nave
 !I!%s preme la copertura! 
-!F!%s a trop tiré sur la corde !
+!F!%s a trop tirÃ© sur la corde !
 
 !/! -------------------------------------------------
 
 !/!16:%s Team Scores %d Points [%d]		(HUD Message on score, %s will be replaced by a team string (red,blue,etc))
 !=!%s Team Scores %d Points [%d]
 !G!Das %se Team erzielt %d Punkte [%d]
-!S!El equipo %s tiene una puntuación de %d puntos (%d)
+!S!El equipo %s tiene una puntuaciÃ³n de %d puntos (%d)
 !I!La squadra %s ha totalizzato %d punti [%d]
-!F!L'équipe %s marque %d points [%d]
+!F!L'Ã©quipe %s marque %d points [%d]
 
 !/!17:%s (%s) finds the %s Flag among some debris!	(HUD Message when someone picks up a flag, first %s is player name, second %s replaced by their team string, third is what team string got picked up)
 !=!%s (%s) finds the %s Flag among some debris!
-!G!%s (%s) findet die %se Flagge zwischen Trümmern! 
+!G!%s (%s) findet die %se Flagge zwischen TrÃ¼mmern! 
 !S!%s (%s) encuentra la bandera %s entre los escombros
 !I!%s (%s) trova la bandiera di %s tra le macerie!
-!F!%s (%s) trouve le drapeau %s parmi des débris !
+!F!%s (%s) trouve le drapeau %s parmi des dÃ©bris !
 
 !/!18:%s (%s) picks up the %s Flag			(HUD Message when someone picks up a flag, first %s is player name, second %s replaced by their team string, third is what team string got picked up)
 !=!%s (%s) picks up the %s Flag
@@ -169,7 +169,7 @@
 !/!19:Stats		(Stats screen column label)
 !=!Stats
 !G!Statistik
-!S!Estadísticas
+!S!EstadÃ­sticas
 !I!Statistiche
 !F!Stats
 
@@ -192,13 +192,13 @@
 !G!Willkommen zur Eroberung der Flagge, %s!
 !S!Bienvenido a Capturar la bandera, %s
 !I!Benvenuto alla cattura della bandiera %s
-!F!Bienvenue à la Capture du Drapeau %s !
+!F!Bienvenue Ã  la Capture du Drapeau %s !
 
 !/!23:%s has joined CTF					(HUD Message on Join)
 !=!%s has joined CTF
 !G!%s hat sich der EDF angeschlossen
 !S!%s se ha unido a CLB
-!I!%s si è unito a CLB
+!I!%s si Ã¨ unito a CLB
 !F!%s a rejoint la CDD.
 
 !/!24:Pilot	(Stats screen column label)
@@ -210,7 +210,7 @@
 
 !/!25:Kills	(Stats screen column label)
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -255,14 +255,14 @@
 !G!%s hat einen Hat Trick geschafft!!!
 !S!%s ha conseguido un Hat Trick
 !I!%s ha guadagnato un Hat Trick
-!F!%s a exécuté le Coup du Chapeau !
+!F!%s a exÃ©cutÃ© le Coup du Chapeau !
 
 !/!32: hud message when a person is the first to get a hat trick
 !=!%s is the first to get a Hat Trick!!!
 !G!%s ist der Erste, der einen Hat Trick geschafft hat!!!
 !S!%s ha sido el primero en conseguir un Hat Trick
-!I!%s è stato il primo a guadagnare un Hat Trick!!!
-!F!%s est le premier à réussir un Coup de Chapeau !
+!I!%s Ã¨ stato il primo a guadagnare un Hat Trick!!!
+!F!%s est le premier Ã  rÃ©ussir un Coup de Chapeau !
 
 !/!33: hud message when a player captures another team's flag
 !=!%s (%s) captures the %s Flag!
@@ -287,10 +287,10 @@
 
 !/!36: hud message when a player returns a flag
 !=!%s (%s) returns the %s Flag!
-!G!%s (%s) bringt die %se Flagge zurück!
+!G!%s (%s) bringt die %se Flagge zurÃ¼ck!
 !S!%s (%s) devuelve la bandera %s
 !I!%s (%s) restituisce la bandiera di %s
-!F!%s (%s) ramène le drapeau %s !
+!F!%s (%s) ramÃ¨ne le drapeau %s !
 
 !/!37: saved stats heading 1
 !=!Capture The Flag\r\nGame: %s\r\nLevel: %d\r\n
@@ -301,15 +301,15 @@
 
 !/!38: saved stats heading 2, keep column positions at the same spot
 !=!Rank Team   Name                         Score       Kills       Deaths     Suicides  Time In Game
-!G!Rang Team   Name                         Punkte      Abschüsse   Verl. Leben     Selbstmorde Spielzeit 
-!S!Rango Equipo  Nombre                     Puntuación  Bajas       Muertes    Suicidios Tiempo de partida
+!G!Rang Team   Name                         Punkte      AbschÃ¼sse   Verl. Leben     Selbstmorde Spielzeit 
+!S!Rango Equipo  Nombre                     PuntuaciÃ³n  Bajas       Muertes    Suicidios Tiempo de partida
 !I!Pos Squadra  Nome                        Punt         Ucc        Morti        Suicidi   Tempo di gioco
 !F!Rang Equipe Nom				  Score	  Victimes	  Morts	 Suicides  Temps de Jeu
 
 !/!39: saved stats heading 3
 !=!\r\nIndividual Stats\r\n
 !G!\r\nIndividuelle Statistik\r\n 
-!S!\r\nEstadísticas individuales\r\n
+!S!\r\nEstadÃ­sticas individuales\r\n
 !I!\r\nStatistiche individuali\r\n
 !F!\r\nStats personnelles\r\n
 
@@ -318,11 +318,11 @@
 !G!Gesamte Spielzeit: %s 
 !S!Tiempo total en partida: %s
 !I!Tempo totale partita: %s
-!F!Durée de la partie: %s
+!F!DurÃ©e de la partie: %s
 
 !/!41: saved stats individual player heading...keep column positions at the same spot
 !=!Callsign:                     Kills:    Deaths:
-!G!Rufname:                      Abschüsse: Verl. Leben:
+!G!Rufname:                      AbschÃ¼sse: Verl. Leben:
 !S!Llamada:                      Bajas:    Muertes:
 !I!Chiamata:                     Ucc:      Morti:
 !F!Indicatif:			   Victimes: Morts:
@@ -330,9 +330,9 @@
 !/!42: hud message when stats are saved
 !=!Stats saved to file
 !G!Statistik in Datei gespeichert
-!S!Estadísticas guardadas en archivo
+!S!EstadÃ­sticas guardadas en archivo
 !I!Statistiche salvate
-!F!Stats enregistrées
+!F!Stats enregistrÃ©es
 
 !/!Shorted versions of Kills,Deaths,Suicides
 !=!K

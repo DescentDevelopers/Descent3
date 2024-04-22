@@ -5,7 +5,7 @@
 NEXT_MESSAGE_ID_NUMBER     7
 
 // Message List
-DisableMatcen=Centro de materialización desactivado.
-Intro=Ten precaución.| Nos encontramos en alerta de seguridad de nivel 3.
-WeatherControl=Centro de control de iluminación activado.
-WindThing=Núcleo del generador magnético destruido.
+DisableMatcen=Centro de materializaciÃ³n desactivado.
+Intro=Ten precauciÃ³n.| Nos encontramos en alerta de seguridad de nivel 3.
+WeatherControl=Centro de control de iluminaciÃ³n activado.
+WindThing=NÃºcleo del generador magnÃ©tico destruido.

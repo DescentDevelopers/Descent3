@@ -48,14 +48,14 @@
 !G!Reaktor 1 in Betrieb halten
 !S!Mantener reactor 1 encendido
 !I!Mantieni il reattore 1 in funzione
-!F!Protéger le réacteur 1
+!F!ProtÃ©ger le rÃ©acteur 1
 
 !/!Goal 0 Item Name
 !=!Reactor 1
 !G!Reaktor 1
 !S!Reactor 1
 !I!Reattore 1
-!F!Réacteur 1
+!F!RÃ©acteur 1
 
 !/!Goal 0 Description
 !=!
@@ -69,14 +69,14 @@
 !G!Reaktor 2 in Betrieb halten 
 !S!Mantener reactor 2 encendido
 !I!Mantieni il reattore 2 in funzione
-!F!Protéger le réacteur 2
+!F!ProtÃ©ger le rÃ©acteur 2
 
 !/!Goal 1 Item Name
 !=!Reactor 2
 !G!Reaktor 2
 !S!Reactor 2
 !I!Reattore 2
-!F!Réacteur 2
+!F!RÃ©acteur 2
 
 !/!Goal 1 Description
 !=!
@@ -90,14 +90,14 @@
 !G!Reaktor 3 in Betrieb halten 
 !S!Mantener reactor 3 encendido
 !I!Mantieni il reattore 3 in funzione
-!F!Protéger le réacteur 3
+!F!ProtÃ©ger le rÃ©acteur 3
 
 !/!Goal 2 Item Name
 !=!Reactor 3
 !G!Reaktor 3
 !S!Reactor 3
 !I!Reattore 3
-!F!Réacteur 3
+!F!RÃ©acteur 3
 
 !/!Goal 2 Description
 !=!
@@ -111,14 +111,14 @@
 !G!Reaktor 4 in Betrieb halten 
 !S!Mantener reactor 4 encendido
 !I!Mantieni il reattore 4 in funzione
-!F!Protéger le réacteur 4
+!F!ProtÃ©ger le rÃ©acteur 4
 
 !/!Goal 3 Item Name
 !=!Reactor 4
 !G!Reaktor 4
 !S!Reactor 4
 !I!Reattore 4
-!F!Réacteur 4
+!F!RÃ©acteur 4
 
 !/!Goal 3 Description
 !=!
@@ -133,14 +133,14 @@
 !G!Reaktor 5 in Betrieb halten 
 !S!Mantener reactor 5 encendido
 !I!Mantieni il reattore 5 in funzione
-!F!Protéger le réacteur 5
+!F!ProtÃ©ger le rÃ©acteur 5
 
 !/!Goal 4 Item Name
 !=!Reactor 5
 !G!Reaktor 5
 !S!Reactor 4
 !I!Reattore 5
-!F!Réacteur 5
+!F!RÃ©acteur 5
 
 !/!Goal 4 Description
 !=!
@@ -152,50 +152,50 @@
 
 !/!Goal 5 Name
 !=!Defend Red Acropolis and Escape
-!G!Die Rote Akropolis verteidigen und flüchten
-!S!Defiende a Acrópolis Rojo y escapa
+!G!Die Rote Akropolis verteidigen und flÃ¼chten
+!S!Defiende a AcrÃ³polis Rojo y escapa
 !I!Difendi Red Acropolis e fuggi
-!F!défendre l'Acropole Rouge et fuir
+!F!dÃ©fendre l'Acropole Rouge et fuir
 
 !/!Goal 5 Item Name
 !=!Red Acropolis 
 !G!Rote Akropolis
-!S!Acrópolis Rojo
+!S!AcrÃ³polis Rojo
 !I!Red Acropolis
 !F!Acropole Rouge
 
 !/!Goal 5 Description
 !=!Enable and defend the power grid of Red Acropolis  
 !G!Aktivieren und verteidigen Sie das Energienetz der Roten Akropolis  
-!S!Activar y defender la red eléctrica de Red Acrópolis
+!S!Activar y defender la red elÃ©ctrica de Red AcrÃ³polis
 !I!Attiva e difendi la rete elettrica di Red Acropolis
-!F!Activez et défendez le réseau d'énergie de l'Acropole Rouge.
+!F!Activez et dÃ©fendez le rÃ©seau d'Ã©nergie de l'Acropole Rouge.
 
 !/!Goal 6 Name
 !=!Keep 3 of the 5 reactors alive
 !G!3 der 5 Reaktoren in Betrieb halten 
 !S!Manten activos a 3 de los 5 reactores
 !I!Mantieni 3 reattori su 5 in funzione 
-!F!garder 3 des 5 réacteurs opérationnels
+!F!garder 3 des 5 rÃ©acteurs opÃ©rationnels
 
 !/!Goal 6 Item Name
 !=!Red Acropolis Power Grid
 !G!Rote Akropolis Energienetz
-!S!Red eléctrica de Red Acrópolis
+!S!Red elÃ©ctrica de Red AcrÃ³polis
 !I!Rete elettrica di Red Acropolis
-!F!Réseau d'énergie de l'Acropole Rouge 
+!F!RÃ©seau d'Ã©nergie de l'Acropole Rouge 
 
 !/!Goal 6 Description
 !=!Keep theat least 3 of the 5 reactors running to enable the escape of fleeing personnel.
-!G!Erhalten Sie mindestens 3 der 5 Reaktoren in Betrieb, um die Flucht des Personals zu ermöglichen.
+!G!Erhalten Sie mindestens 3 der 5 Reaktoren in Betrieb, um die Flucht des Personals zu ermÃ¶glichen.
 !S! Manten activos a 3 de los 5 reactores para que escape todo el personal
 !I!Mantieni 3 reattori su 5 in funzione per permettere al personale di scappare
-!F!Assurez-vous qu'au moins 3 des 5 réacteurs restent allumés pour permettre au personnel de s'enfuir.
+!F!Assurez-vous qu'au moins 3 des 5 rÃ©acteurs restent allumÃ©s pour permettre au personnel de s'enfuir.
 
 !/!Goal 7 Name
 !=!Escape from Red Acropolis
-!G!Aus der Roten Akropolis flüchten
-!S!Escape de Acrópolis Rojo
+!G!Aus der Roten Akropolis flÃ¼chten
+!S!Escape de AcrÃ³polis Rojo
 !I!Scappa da Red Acropolis
 !F!Fuir l'Acropole Rouge
 
@@ -208,8 +208,8 @@
 
 !/!Goal 7 Description
 !=!Escape before the self-destruct sequence activates
-!G!Flüchten Sie, bevor sich die Selbstzerstörung aktiviert.
-!S!Escapa antes de que se active la secuencia de autodestrucción
+!G!FlÃ¼chten Sie, bevor sich die SelbstzerstÃ¶rung aktiviert.
+!S!Escapa antes de que se active la secuencia de autodestrucciÃ³n
 !I!Scappa prima che venga attivata la sequenza di autodistruzione
-!F!Fuyez avant que la séquence d'auto-destruction ne soit activée.
+!F!Fuyez avant que la sÃ©quence d'auto-destruction ne soit activÃ©e.
 

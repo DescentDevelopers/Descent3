@@ -21,9 +21,9 @@ AnotherTurretGone=ROBOT-GUIDA: "Distrutta torretta di difesa del perimetro."
 
 ChemicalReactionAlert=ROBOT-GUIDA: "PERICOLO!  Contaminazione vasca acidi! Allarme rischio biologico livello 4! Evacuare livello massima sicurezza!"
 
-ChemicalReactionSwitches=ROBOT-GUIDA: "È stato attuato blocco di sicurezza chimica."
+ChemicalReactionSwitches=ROBOT-GUIDA: "Ãˆ stato attuato blocco di sicurezza chimica."
 
-ComputerDestroyed=ROBOT-GUIDA: "Il supercomputer con la documentazione della prigione Novak è stato distrutto!"
+ComputerDestroyed=ROBOT-GUIDA: "Il supercomputer con la documentazione della prigione Novak Ã¨ stato distrutto!"
 
 
 
@@ -33,9 +33,9 @@ EndLevel=
 
 EscortShuttle=NAVETTA: "In questo momento mi servirebbe proprio una scorta."
 
-ForcefieldDown=NAVETTA: "Il campo di forza è disattivato: vi copro le spalle mentre andate a prendere il dottor Sweitzer."
+ForcefieldDown=NAVETTA: "Il campo di forza Ã¨ disattivato: vi copro le spalle mentre andate a prendere il dottor Sweitzer."
 
-ForcefieldDownEarly=ROBOT-GUIDA: "Il campo di forza dell'hangar trasferimento prigionieri è stato disattivato."
+ForcefieldDownEarly=ROBOT-GUIDA: "Il campo di forza dell'hangar trasferimento prigionieri Ã¨ stato disattivato."
 
 G1MinSecurityPassB=Pass di Sicurezza G-1
 
@@ -46,7 +46,7 @@ InnerTowerForcefields=ROBOT-GUIDA: "Campi di forza disattivati."
 
 IntroMessage=Phobos - Prigione aziendale Novak
 
-LoadedSweitzer=NAVETTA:  "Sweitzer è a bordo. Possiamo squagliarcela. Coprimi!"
+LoadedSweitzer=NAVETTA:  "Sweitzer Ã¨ a bordo. Possiamo squagliarcela. Coprimi!"
 
 LoadingSweitzer=NAVETTA:  "Portiamo il dottore a bordo."
 
@@ -56,7 +56,7 @@ MediumSecurityClearance=PUNTO DI CONTROLLO: "Concessa autorizzazione medio livel
 
 MinimumSecurityClearance=PUNTO DI CONTROLLO: "Concessa autorizzazione minimo livello di sicurezza."
 
-OneTurretDown=NAVETTA: "Bene, una torretta del perimetro è caduta. Ne mancano quattro. Rimarremo nascosti in un canalone fin quando la zona non sarà sicura. Buona fortuna."
+OneTurretDown=NAVETTA: "Bene, una torretta del perimetro Ã¨ caduta. Ne mancano quattro. Rimarremo nascosti in un canalone fin quando la zona non sarÃ  sicura. Buona fortuna."
 
 R1MaxSecurityPassC=Pass di sicurezza R-1 
 
@@ -64,13 +64,13 @@ RecordsNodeDestroyed=ROBOT-GUIDA: "Distrutto il nodo ausiliario della documentaz
 
 SECRETAREA=Hai trovato un'area segreta!
 
-SecurityPassNotUsableHere=ROBOT-GUIDA: "Questo pass di sicurezza non è utilizzabile."
+SecurityPassNotUsableHere=ROBOT-GUIDA: "Questo pass di sicurezza non Ã¨ utilizzabile."
 
-SecurityPassReturned=ROBOT-GUIDA: "Il pass di sicurezza è stato restituito all'erogatore."
+SecurityPassReturned=ROBOT-GUIDA: "Il pass di sicurezza Ã¨ stato restituito all'erogatore."
 
-ShuttleMoveToTower=NAVETTA: "Le difese perimetrali sembrano abbassate e i campi di forza dell'hangar rifornimenti sono deboli. Mi dirigo verso la torre principale in attesa del segnale che Sweitzer è stato individuato. Sembra che l'hangar sia l'unico punto possibile per entrare."
+ShuttleMoveToTower=NAVETTA: "Le difese perimetrali sembrano abbassate e i campi di forza dell'hangar rifornimenti sono deboli. Mi dirigo verso la torre principale in attesa del segnale che Sweitzer Ã¨ stato individuato. Sembra che l'hangar sia l'unico punto possibile per entrare."
 
-ShuttleUnderAttack=NAVETTA: "Ah, qui c'è un problema, serve un fuoco di copertura! Ho le forze di sicurezza addosso!"
+ShuttleUnderAttack=NAVETTA: "Ah, qui c'Ã¨ un problema, serve un fuoco di copertura! Ho le forze di sicurezza addosso!"
 
 SPUDhasTheBall=MECCANOIDE MPS: "Trasporto di capsula chimica."
 
@@ -84,13 +84,13 @@ SupplyAlarm=ROBOT-GUIDA: "Uno dei robot ha azionato un allarme locale!"
 
 SupplyAlarmPlayer=ROBOT-GUIDA: "Disattivare limitazioni a personale non autorizzato."
 
-SweitzerMAX=NAVETTA:  "Splendido, hai trovato il dottor Sweitzer. Ma con questa vecchia bagnarola non si può penetrare nella zona di massima sicurezza. Devi trovare il modo di trasferire il dottore in un luogo più adatto... preferibilmente di minima sicurezza.."
+SweitzerMAX=NAVETTA:  "Splendido, hai trovato il dottor Sweitzer. Ma con questa vecchia bagnarola non si puÃ² penetrare nella zona di massima sicurezza. Devi trovare il modo di trasferire il dottore in un luogo piÃ¹ adatto... preferibilmente di minima sicurezza.."
 
 
 
-SweitzerMINLockedOut=NAVETTA:  "Bel lavoro. Mi spiace insistere, ma qui c'è un altro problema. C'è un campo di forza in cima alla torre e posso entrare solo se sarà disattivato. Mi spiace."
+SweitzerMINLockedOut=NAVETTA:  "Bel lavoro. Mi spiace insistere, ma qui c'Ã¨ un altro problema. C'Ã¨ un campo di forza in cima alla torre e posso entrare solo se sarÃ  disattivato. Mi spiace."
 
-WhatTheHell=NAVETTA: "Ehi, tutto bene laggiù?! Non so che cosa hai fatto, ma sembra che la prigione sia in allarme rosso. A giudicare dal traffico radio è in atto un'evacuazione di emergenza."
+WhatTheHell=NAVETTA: "Ehi, tutto bene laggiÃ¹?! Non so che cosa hai fatto, ma sembra che la prigione sia in allarme rosso. A giudicare dal traffico radio Ã¨ in atto un'evacuazione di emergenza."
 
 X1OldSecurityPassD=Pass di Sicurezza X-1
 

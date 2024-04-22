@@ -45,133 +45,133 @@
 
 !/!Goal 0 Name
 !=!Find the crashed CED ship
-!G!Das abgestürzte K.E.V.-Schiff finden
+!G!Das abgestÃ¼rzte K.E.V.-Schiff finden
 !S!Buscar nave CED estrellada
 !I!Trova la nave del CDT naufragata 
-!F!Trouver le vaisseau écrasé de la CDT 
+!F!Trouver le vaisseau Ã©crasÃ© de la CDT 
 
 !/!Goal 0 Item Name
 !=!Homunculus Lair
-!G!Homunkulus-Höhle
-!S!Cavernas de los Nómadas
+!G!Homunkulus-HÃ¶hle
+!S!Cavernas de los NÃ³madas
 !I!Tana dell'Homunculus
 !F!repaire du Homunculus 
 
 !/!Goal 0 Description
 !=!Navigate the underground caverns of the nomads and find the crashed CED ship that they have hidden within.
-!G!Fliegen Sie durch die unterirdischen Nomadenhöhlen und finden Sie das abgestürzte K.E.V.-Schiff, das sie dort versteckt halten.
-!S!Navegar por las cavernas subterráneas de los nómadas y encontrar la nave CED estrellada que han ocultado en su interior.
+!G!Fliegen Sie durch die unterirdischen NomadenhÃ¶hlen und finden Sie das abgestÃ¼rzte K.E.V.-Schiff, das sie dort versteckt halten.
+!S!Navegar por las cavernas subterrÃ¡neas de los nÃ³madas y encontrar la nave CED estrellada que han ocultado en su interior.
 !I!Naviga nelle caverne sotterranee dei nomadi e trova la nave naufragata del CDT che hanno nascosto all'interno
-!F!Parcourez les cavernes souterraines des Nomades à la recherche du vaisseau écrasé de la CDT.
+!F!Parcourez les cavernes souterraines des Nomades Ã  la recherche du vaisseau Ã©crasÃ© de la CDT.
 
 !/!Goal 1 Name
 !=!Find the Collectors' Icon
 !G!Finde das Sammler-Symbol
 !S!Buscar icono de los colectores
 !I!Trova l'icona dei Raccoglitori
-!F!Trouver l'Icône des Collecteurs
+!F!Trouver l'IcÃ´ne des Collecteurs
 
 !/!Goal 1 Item Name
 !=!Collectors' Icon
 !G!Sammler-Symbol
 !S!Icono de los colectores
 !I!Icona dei raccoglitori
-!F!Icône des Collecteurs
+!F!IcÃ´ne des Collecteurs
 
 !/!Goal 1 Description
 !=!The nomads control access to their caverns by the keepers of the icons
-!G!Die Nomaden kontrollieren den Zugang zu den Höhlen durch die Wächter der Symbole
-!S!Los nómadas controlan el acceso a sus cavernas mediante los guardianes de los iconos
+!G!Die Nomaden kontrollieren den Zugang zu den HÃ¶hlen durch die WÃ¤chter der Symbole
+!S!Los nÃ³madas controlan el acceso a sus cavernas mediante los guardianes de los iconos
 !I!I nomadi controllano l'accesso alle caverne mediante i custodi delle icone
-!F!Les Nomades contrôlent l'accès à leurs cavernes grâce aux gardiens des icônes.
+!F!Les Nomades contrÃ´lent l'accÃ¨s Ã  leurs cavernes grÃ¢ce aux gardiens des icÃ´nes.
 
 !/!Goal 2 Name
 !=!Find the Builders' Icon
 !G!Das Baumeister-Symbol finden
 !S!Buscar icono de los constructores
 !I!Trova l'icona dei Costruttori
-!F!Trouver l'Icône des Constructeurs
+!F!Trouver l'IcÃ´ne des Constructeurs
 
 !/!Goal 2 Item Name
 !=!Builders'  Icon
 !G!Baumeister-Symbol 
 !S!Icono de los constructores
 !I!Icona dei Costruttori
-!F!Icône des Constructeurs
+!F!IcÃ´ne des Constructeurs
 
 !/!Goal 2 Description
 !=!The nomads control access to their caverns by the keepers of the icons
-!G!Die Nomaden kontrollieren den Zugang zu den Höhlen durch die Wächter der Symbole 
-!S!Los nómadas controlan el acceso a sus cavernas mediante los guardianes de los iconos
+!G!Die Nomaden kontrollieren den Zugang zu den HÃ¶hlen durch die WÃ¤chter der Symbole 
+!S!Los nÃ³madas controlan el acceso a sus cavernas mediante los guardianes de los iconos
 !I!I nomadi controllano l'accesso alle caverne mediante i custodi delle icone
-!F!Les Nomades contrôlent l'accès à leurs cavernes grâce aux gardiens des icônes.
+!F!Les Nomades contrÃ´lent l'accÃ¨s Ã  leurs cavernes grÃ¢ce aux gardiens des icÃ´nes.
 
 !/!Goal 3 Name
 !=!Use the icons
 !G!Die Symbole verwenden
 !S!Usa los iconos
 !I!Usa le icone
-!F!Utiliser les icônes
+!F!Utiliser les icÃ´nes
 
 !/!Goal 3 Item Name
 !=!Priest Hall Entrance
 !G!Eingang zur Priesterhalle
-!S!Vestíbulo del sacerdote
+!S!VestÃ­bulo del sacerdote
 !I!Atrio del sacerdote
-!F!L'antichambre du Prêtre
+!F!L'antichambre du PrÃªtre
 
 !/!Goal 3 Description
 !=!Use the icons in your inventory to gain access to deeper parts of the nomad caverns
-!G!Verwenden Sie die Symbole aus Ihrem Inventars, um in verborgenere Teile der Nomadenhöhlen zu kommen
-!S!Utiliza los iconos del inventario para acceder a las partes más profundas de las cavernas de los nómadas
-!I!Utilizza le icone che hai nell'inventario per accedere alle parti più profonde delle caverne dei nomadi
-!F!Utilisez les icônes de votre inventaire pour accéder aux labyrinthes les plus profonds des cavernes des Nomades.
+!G!Verwenden Sie die Symbole aus Ihrem Inventars, um in verborgenere Teile der NomadenhÃ¶hlen zu kommen
+!S!Utiliza los iconos del inventario para acceder a las partes mÃ¡s profundas de las cavernas de los nÃ³madas
+!I!Utilizza le icone che hai nell'inventario per accedere alle parti piÃ¹ profonde delle caverne dei nomadi
+!F!Utilisez les icÃ´nes de votre inventaire pour accÃ©der aux labyrinthes les plus profonds des cavernes des Nomades.
 
 !/!Goal 4 Name
 !=!Find the Priest's Icon
 !G!Das Priester-Symbol finden
 !S!Buscar el icono del sacerdote
 !I!Trova l'icona del sacerdote
-!F!Trouver l'icône du prêtre
+!F!Trouver l'icÃ´ne du prÃªtre
 
 !/!Goal 4 Item Name
 !=!Priest's Icon
 !G!Priester-Symbol
 !S!Icono del sacerdote
 !I!Icona del sacerdote
-!F!Icône du Prêtre
+!F!IcÃ´ne du PrÃªtre
 
 !/!Goal 4 Description
 !=!An Icon is needed for access to Priest's inner sanctuary
-!G!Ein Symbol wird benötigt, um in die heilige Priesterstätte zu kommen
+!G!Ein Symbol wird benÃ¶tigt, um in die heilige PriesterstÃ¤tte zu kommen
 !S!Necesitas un icono para acceder al santuario del sacerdote
 !I!Occorre un'icona per accedere al santuario del sacerdote
-!F!Vous aurez besoin d'une icône pour accéder au sanctuaire du prêtre.
+!F!Vous aurez besoin d'une icÃ´ne pour accÃ©der au sanctuaire du prÃªtre.
 
 !/!Goal 5 Name
 !=!Use the Priest's Icon
 !G!Das Priester-Symbol verwenden
 !S!Utiliza el icono del sacerdote
 !I!Utilizza l'icona del sacerdote
-!F!Utiliser l'icône du prêtre
+!F!Utiliser l'icÃ´ne du prÃªtre
 
 !/!Goal 5 Item Name
 !=!Priest Inner Sanctum
-!G!Heilige Priesterstätte
-!S!Vestíbulo del santuario
+!G!Heilige PriesterstÃ¤tte
+!S!VestÃ­bulo del santuario
 !I!Santuario del sacerdote
-!F!Sanctuaire du prêtre
+!F!Sanctuaire du prÃªtre
 
 !/!Goal 5 Description
 !=!Use Priest's Icon in the inventory to gain access to the Priest's Inner Sanctum
-!G!Verwenden Sie das Priester-Symbol aus Ihrem Inventar, um in die heilige Priesterstätte zu gelangen
+!G!Verwenden Sie das Priester-Symbol aus Ihrem Inventar, um in die heilige PriesterstÃ¤tte zu gelangen
 !S!Utiliza el icono del sacerdote del inventario para acceder al santuario del sacerdote
 !I!Utilizza l'icona del sacerdote che hai nell'inventario per accedere al santuario del sacerdote
-!F!Utilisez l'icône du prêtre pour accéder au sanctuaire du prêtre.
+!F!Utilisez l'icÃ´ne du prÃªtre pour accÃ©der au sanctuaire du prÃªtre.
 
 !/!Goal 6 Name
 !=!Enter the Nomad Caverns
-!G!Die Nomadenhöhlen betreten
+!G!Die NomadenhÃ¶hlen betreten
 !S!Entra a la cavernas de los nomadas
 !I!Entra nelle caverne dei nomadi
 !F!Entrer dans les cavernes
@@ -179,13 +179,13 @@
 !/!Goal 6 Item Name
 !=!Salvage Platform
 !G!Ladeplattform 
-!S!Plataforma de recuperación
+!S!Plataforma de recuperaciÃ³n
 !I!Piattaforma di salvataggio
 !F!Plate-forme de sauvetage
 
 !/!Goal 6 Description
 !=!Search the terrain and enter the nomad caverns.
-!G!Suchen Sie das Gelände ab und betreten Sie die Nomadenhöhlen. 
-!S!Patrullea el perímetro y entra a las cavernas de los nomadas.
+!G!Suchen Sie das GelÃ¤nde ab und betreten Sie die NomadenhÃ¶hlen. 
+!S!Patrullea el perÃ­metro y entra a las cavernas de los nomadas.
 !I!Perlustra il terreno ed entra nelle caverne dei nomadi.
-!F!Patrouillez le périmètre et entrez dans les cavernes des Nomades.
+!F!Patrouillez le pÃ©rimÃ¨tre et entrez dans les cavernes des Nomades.

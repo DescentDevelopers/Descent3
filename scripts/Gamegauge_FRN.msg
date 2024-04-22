@@ -13,11 +13,11 @@ NEXT_MESSAGE_ID_NUMBER     7
 // Message List
 // Message List
 DisableMatcen=Materialization Center disabled!
-DisableMatcen=Robogène désactivé !
+DisableMatcen=RobogÃ¨ne dÃ©sactivÃ© !
 Intro=Proceed with caution.|  Security alert level 3 in effect!
-Intro=Faites bien attention.|  Alerte de sécurité au niveau 3 !
+Intro=Faites bien attention.|  Alerte de sÃ©curitÃ© au niveau 3 !
 WeatherControl=Lightning control system activated.
-WeatherControl=Système anti-foudre désactivé.
+WeatherControl=SystÃ¨me anti-foudre dÃ©sactivÃ©.
 WindThing=Magnetic generator core destroyed!
-WindThing=Coeur du générateur magnétique détruit !
+WindThing=Coeur du gÃ©nÃ©rateur magnÃ©tique dÃ©truit !
 

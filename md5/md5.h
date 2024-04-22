@@ -23,7 +23,7 @@
         There is now warranty.
 
         Feb. 12. 2005
-        Benjamin Grüdelbach
+        Benjamin GrÃ¼delbach
 */
 
 /* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All

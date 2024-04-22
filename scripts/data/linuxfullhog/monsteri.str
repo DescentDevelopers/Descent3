@@ -33,17 +33,17 @@
 
 !/!1: Death message (victim first)
 !=!%s was killed by %s
-!G!%s wurde von %s getötet
+!G!%s wurde von %s getÃ¶tet
 !S!%s ha sido asesinado por %s
-!I!%s è stato ucciso da %s
-!F!%s a été tué(e) par %s.
+!I!%s Ã¨ stato ucciso da %s
+!F!%s a Ã©tÃ© tuÃ©(e) par %s.
 
 !/!2: Suicide message
 !=!%s lost control
 !G!%s verlor die Kontrolle
 !S!%s ha perdido el control
 !I!%s ha perso il controllo
-!F!%s a perdu le contrôle.
+!F!%s a perdu le contrÃ´le.
 
 !/!3: pilot label
 !=!Pilot
@@ -99,7 +99,7 @@
 !G!%ses Team erzielt einen Punkt!
 !S!El equipo %s ha conseguido 1 punto
 !I!La squadra %s ha guadagnato 1 punto!
-!F!L'équipe %s marque 1 point.
+!F!L'Ã©quipe %s marque 1 point.
 
 !/!11: Hud message when a team scores >1 points
 !=!%s Team Scores %d points!!
@@ -107,34 +107,34 @@
 
 !S!El equipo %s ha conseguido %d puntos
 !I!La squadra %s ha guadagnato %d punti!
-!F!L'équipe %s marque %d points !
+!F!L'Ã©quipe %s marque %d points !
 
 !/!12: Hud message when a player commits a blunder and scores for the other team
 !=!%s accidently scores a point for the %s team!
-!G!%s erzielt aus Versehen einen Punkt für das %se Team!
+!G!%s erzielt aus Versehen einen Punkt fÃ¼r das %se Team!
 !S!%s ha conseguido accidentalmente un punto para el equipo %s
 !I!%s ha guadagnato accidentalmente un punto per la squadra %s!
-!F!%s marque un point involontaire pour l'équipe %s !
+!F!%s marque un point involontaire pour l'Ã©quipe %s !
 
 !/!13: Hud message when a player accidently scores >1 points for the other team
 !=!%s accidently scores %d points for the %s team!
-!G!%s erzielt aus Versehen %d Punkte für das %se Team!
+!G!%s erzielt aus Versehen %d Punkte fÃ¼r das %se Team!
 !S!%s ha conseguido accidentalmente %d puntos para el equipo %s
 !I!%s ha guadagnato accidentalmente %d punti per la squadra %s!
-!F!%s marque %d points par mégarde pour l'équipe %s !
+!F!%s marque %d points par mÃ©garde pour l'Ã©quipe %s !
 
 !/!14: Hud message when a player scores for their team
 !=!%s (%s) knocks the ball in for a point!
 !G!%s (%s) gewinnt einen Punkt!
 !S!%s (%s) ha conseguido un punto
-!I!%s (%s) si è aggiudicato un punto!
+!I!%s (%s) si Ã¨ aggiudicato un punto!
 !F!%s (%s) marque un point !
 
 !/!15: Hud message when a player scores >1 points for their team (first %s is player name, second is team)
 !=!%s (%s) knocks the ball in for %d points!
 !G!%s (%s) gewinnt %d Punkte!
 !S!%s (%s) ha conseguido %d puntos
-!I!%s (%s) si è aggiudicato %d punti!
+!I!%s (%s) si Ã¨ aggiudicato %d punti!
 !F!%s (%s) marque %d points !
 
 !/!16: Hud score display string
@@ -146,7 +146,7 @@
 
 !/!17: Kills label
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -188,7 +188,7 @@
 
 !/!23: Saved game stats header
 !=!Rank Name                         Points  Blunders     Kills       Deaths     Suicides
-!G!Rang Name                         Punkte  Eigentore    Abschüsse   Verl. Leben     Selbstmorde
+!G!Rang Name                         Punkte  Eigentore    AbschÃ¼sse   Verl. Leben     Selbstmorde
 !S!Nombre de rango                   Puntos  Tantos en propia puerta   Bajas       Muertes    Suicidios
 !I!Pos Nome                          Punti    Errori       Ucc        Morti       Suicidi
 !F!Rang Nom                          Points  Bourdes      Victimes    Morts      Suicides
@@ -196,7 +196,7 @@
 !/!24: Saved game stats header
 !=!\r\nIndividual Stats\r\n
 !G!\r\nIndividuelle Statistik\r\n 
-!S!\r\nEstadísticas individuales\r\n
+!S!\r\nEstadÃ­sticas individuales\r\n
 !I!\r\nStatistiche individuali\r\n
 !F!\r\nStats Personnelles\r\n
 
@@ -205,11 +205,11 @@
 !G!Gesamte Spielzeit: %s
 !S!Tiempo total en partida: %s
 !I!Tempo totale partita: %s
-!F!Durée de la partie: %s
+!F!DurÃ©e de la partie: %s
 
 !/!26: Saved game stats header
 !=!Team: Callsign:                     Kills:    Deaths:
-!G!Team: Erkennungsname:               Abschüsse: Verl. Leben:
+!G!Team: Erkennungsname:               AbschÃ¼sse: Verl. Leben:
 !S!Equipo: Llamada:                    Bajas:    Muertes:
 !I!Sqd:  Chiamata:                     Ucc:      Morti:
 !F!Equ.: Indicatif:                    Victimes: Morts:
@@ -217,9 +217,9 @@
 !/!27: Hud message when the stats are saved
 !=!Stats saved to file
 !G!Statistik in Datei gespeichert
-!S!Estadísticas guardadas en archivo
+!S!EstadÃ­sticas guardadas en archivo
 !I!Statistiche salvate
-!F!Stats enregistrées
+!F!Stats enregistrÃ©es
 
 !/!28: Hud scores display
 !=![%d]%s Team
@@ -238,16 +238,16 @@
 !/!30: Hud message when you join telling you what team you are on
 !=!You're On The %s Team
 !G!Sie sind im %sen Team
-!S!Estás en el equipo %s
+!S!EstÃ¡s en el equipo %s
 !I!Sei nella squadra %s
-!F!Vous êtes dans l'équipe %s
+!F!Vous Ãªtes dans l'Ã©quipe %s
 
 !/!31: Hud message when a player joins a game
 !=!%s Has Joined The %s Team
 !G!%s ist dem %sen Team beigetreten
 !S!%s se ha unido al equipo %s
-!I!%s è entrato nella squadra %s
-!F!%s a rejoint l'équipe %s
+!I!%s Ã¨ entrato nella squadra %s
+!F!%s a rejoint l'Ã©quipe %s
 
 !/!32: name of the game in the stats screen
 !=!Monsterball

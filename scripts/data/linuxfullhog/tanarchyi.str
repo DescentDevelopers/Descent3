@@ -32,49 +32,49 @@
 !=!%s got blasted by %s
 !G!%s wurde von %s abgeschossen 
 !S!%s ha sido abatido por %s
-!I!%s è stato abbattuto da %s
-!F!%s a été détruit par %s.
+!I!%s Ã¨ stato abbattuto da %s
+!F!%s a Ã©tÃ© dÃ©truit par %s.
 
 !/!1:%s knows %s is his god (victim first)
 !=!%s knows %s is his god
-!G!%s weiss, dass %s ihm überlegen ist 
+!G!%s weiss, dass %s ihm Ã¼berlegen ist 
 !S!%s sabe que %s es su dios
-!I!%s sa che %s è il suo dio
-!F!%s vénère %s comme son dieu.
+!I!%s sa che %s Ã¨ il suo dio
+!F!%s vÃ©nÃ¨re %s comme son dieu.
 
 !/!2:%s sucks %s's milk (victim first)
 !=!%s sucks %s's milk
-!G!%s muss %ss Füsse lecken 
+!G!%s muss %ss FÃ¼sse lecken 
 !S!%s muerde el polvo gracias a %s
 !I!%s morde la polvere grazie a %s 
-!F!%s lèche les pompes de %s.
+!F!%s lÃ¨che les pompes de %s.
 
 !/!3:%s realizes %s's power (victim first)
 !=!%s realizes %s's power
 !G!%s bemerkt %ss Macht 
 !S!%s es consciente del poder de %s
-!I!%s è conscio della forza di %s
+!I!%s Ã¨ conscio della forza di %s
 !F!%s sous-estimait %s.
 
 !/!4:%s got killed by %s (victim first)
 !=!%s got killed by %s
-!G!%s wurde von %s getötet 
+!G!%s wurde von %s getÃ¶tet 
 !S!%s ha sido asesinado por %s
-!I!%s è stato ucciso da %s
-!F!%s a été tué par %s.
+!I!%s Ã¨ stato ucciso da %s
+!F!%s a Ã©tÃ© tuÃ© par %s.
 
 !/!5:%s begs for %s's mercy (victim first)
 !=!%s begs for %s's mercy
 !G!%s bittet %s um Gnade
 !S!%s pide piedad a %s
-!I!%s chiede pietà a %s
-!F!%s supplie %s de l'épargner.
+!I!%s chiede pietÃ  a %s
+!F!%s supplie %s de l'Ã©pargner.
 
 !/!6:%s realizes %s is a better player (victim first)
 !=!%s realizes %s is a better player
 !G!%s erkennt, dass %s ein besserer Spieler ist
 !S!%s comprende que %s es mejor jugador
-!I!%s si rende conto che %s è un giocatore migliore
+!I!%s si rende conto che %s Ã¨ un giocatore migliore
 !F!%s admet que %s est le meilleur.
 
 !/!7:%s was no match for %s (victim first)
@@ -86,17 +86,17 @@
 
 !/!8:%s wishes he was as good as %s (victim first)
 !=!%s wishes he was as good as %s
-!G!%s wünschte, er wäre so gut wie %s 
-!S!A %s le gustaría ser tan bueno como %s
+!G!%s wÃ¼nschte, er wÃ¤re so gut wie %s 
+!S!A %s le gustarÃ­a ser tan bueno como %s
 !I!%s vorrebbe essere in gamba quanto %s
-!F!%s aimerait être aussi bon que %s.
+!F!%s aimerait Ãªtre aussi bon que %s.
 
 !/!9:%s got messed up by %s (victim first)
 !=!%s got messed up by %s
 !G!%s wurde von %s bearbeitet 
 !S!%s se ha metido en problemas por culpa de %s
-!I!%s si è messo nei guai per colpa di %s
-!F!%s s'est fait oblitérer par %s.
+!I!%s si Ã¨ messo nei guai per colpa di %s
+!F!%s s'est fait oblitÃ©rer par %s.
 
 !/! ----------------------- Suicide Messages -------------------------
 
@@ -105,34 +105,34 @@
 !G!%s vernichtet sich selbst 
 !S!%s se vuela por los aires
 !I!%s si fa saltare in aria
-!F!%s s'est suicidé.
+!F!%s s'est suicidÃ©.
 
 !/!11:%s Bursts his own bubble
 !=!%s Bursts his own bubble
-!G!%s bricht sich die eigenen Flügel 
+!G!%s bricht sich die eigenen FlÃ¼gel 
 !S!%s hace estallar su propia burbuja
 !I!%s fa scoppiare la propria bolla
 !F!%s s'est roussi le caillou.
 
 !/!12:%s doesn't know his own strength
 !=!%s doesn't know his own strength
-!G!%s kennt die eigene Stärke nicht 
+!G!%s kennt die eigene StÃ¤rke nicht 
 !S!%s no es consciente de su propia fuerza
-!I!%s non è conscio della propria forza
-!F!%s ne connaît pas sa propre force.
+!I!%s non Ã¨ conscio della propria forza
+!F!%s ne connaÃ®t pas sa propre force.
 
 !/!13:No prize for %s
 !=!No prize for %s
-!G!Keine Prämie für %s 
+!G!Keine PrÃ¤mie fÃ¼r %s 
 !S!No hay premio para %s
 !I!Niente premio per %s
 !F!Pas de prix pour %s.
 
 !/!14:%s doesn't wish to live anymore
 !=!%s doesn't wish to live anymore
-!G!%s möchte nicht mehr leben 
+!G!%s mÃ¶chte nicht mehr leben 
 !S!%s no quiere seguir viviendo
-!I!%s è stanco di vivere
+!I!%s Ã¨ stanco di vivere
 !F!%s veut en finir avec la vie.
 
 !/!15:%s SUCKS!
@@ -147,7 +147,7 @@
 !/!16:Stats		(Column label in stats screen)
 !=!Stats
 !G!Statistik
-!S!Estadísticas
+!S!EstadÃ­sticas
 !I!Statistiche
 !F!Stats
 
@@ -168,23 +168,23 @@
 !/!19:Welcome to Team Anarchy %s!	(HUD Message on join)
 !=!Welcome to Team Anarchy %s!
 !G!Willkommen zu Team Anarchie, %s!
-!S!Bienvenido al equipo %s de Anarquía 
+!S!Bienvenido al equipo %s de AnarquÃ­a 
 !I!Benvenuto nella squadra Anarchy, %s
 !F!Bienvenue dans l'Anarchie Collective, %s !
 
 !/!20:You're on the %s Team			(HUD Message on join)
 !=!You're on the %s Team
 !G!Sie sind im %sen Team
-!S!Estás en el equipo %s
+!S!EstÃ¡s en el equipo %s
 !I!Sei nella squadra %s
-!F!Vous êtes dans l'équipe %s.
+!F!Vous Ãªtes dans l'Ã©quipe %s.
 
 !/!21:%s has joined the %s Team		(HUD Message on join)
 !=!%s has joined the %s Team
 !G!%s hat sich dem %sen Team angeschlossen
 !S!%s se ha unido al equipo %s
-!I!%s è entrato nella squadra %s
-!F!%s a rejoint l'équipe %s.
+!I!%s Ã¨ entrato nella squadra %s
+!F!%s a rejoint l'Ã©quipe %s.
 
 !/!22:Pilot		(Column label in stats screen)
 !=!Pilot
@@ -195,7 +195,7 @@
 
 !/!23:Kills		(Column label in stats screen)
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -224,14 +224,14 @@
 !/!27: Name of the game (shouldn't be localized probably)
 !=!Team Anarchy
 !G!Team Anarchie
-!S!Equipo Anarquía
+!S!Equipo AnarquÃ­a
 !I!Squadra Anarchia
 !F!Anarchie Collective
 
 !/!28: Score label
 !=!Score
 !G!Punkte
-!S!Puntuación
+!S!PuntuaciÃ³n
 !I!Punteggio
 !F!Score
 
@@ -245,7 +245,7 @@
 !/!30: Saved game stats header
 !=!Team Anarchy\nGame: %s\nLevel: %d\n
 !G!Team Anarchie\nSpiel: %s\nLevel: %d\n 
-!S!Equipo Anarquía\nPartida: %s\nNivel: %d\n
+!S!Equipo AnarquÃ­a\nPartida: %s\nNivel: %d\n
 !I!Squadra Anarchia \nPartita: %s\nLivello: %d\n
 !F!Anarchie Collective\nPartie: %s\nNiveau: %d\n
 
@@ -258,15 +258,15 @@
 
 !/!32: Saved game stats header
 !=!Rank Name                         Score       Kills       Deaths     Suicides
-!G!Rang Name                         Punkte      Abschüsse   Verl. Leben   Selbstmorde 
-!S!Nombre de rango                   Puntuación  Bajas       Muertes    Suicidios
+!G!Rang Name                         Punkte      AbschÃ¼sse   Verl. Leben   Selbstmorde 
+!S!Nombre de rango                   PuntuaciÃ³n  Bajas       Muertes    Suicidios
 !I!Pos Nome                          Punt         Ucc        Morti      Suicidi
 !F!Rang Nom                          Score       Victimes    Morts      Suicides
 
 !/!33: Saved game stats header
 !=!\nIndividual Stats\n
 !G!\nIndividuelle Statistik\n 
-!S!\nEstadísticas individuales\n
+!S!\nEstadÃ­sticas individuales\n
 !I!\nStatistiche individuali\n
 !F!\nStats Personnelles\n
 
@@ -275,11 +275,11 @@
 !G!Gesamte Spielzeit: %s
 !S!Total de tiempo en partida: %s
 !I!Tempo totale partita; %s
-!F!Durée de la partie: %s
+!F!DurÃ©e de la partie: %s
 
 !/!35: Saved game stats header
 !=!Callsign:                     Kills:    Deaths:
-!G!Erkennungsname:               Abschüsse: Verl. Leben:
+!G!Erkennungsname:               AbschÃ¼sse: Verl. Leben:
 !S!Llamada:                      Bajas:    Muertes:
 !I!Chiamata:                     Ucc:      Morti:
 !F!Indicatif:                    Victimes: Morts:
@@ -287,14 +287,14 @@
 !/!36: Hud message when stats are saved
 !=!Stats saved
 !G!Statistik gespeichert
-!S!Estadísticas guardadas
+!S!EstadÃ­sticas guardadas
 !I!Statistiche salvate
-!F!Stats enregistrées
+!F!Stats enregistrÃ©es
 
 !/!37: Name of the game used in stats screen
 !=!Team Anarchy
 !G!Team Anarchie
-!S!Equipo Anarquía
+!S!Equipo AnarquÃ­a
 !I!Squadra Anarchia
 !F!Anarchie Collective
 

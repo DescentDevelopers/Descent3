@@ -13,5 +13,5 @@ NEXT_MESSAGE_ID_NUMBER     2
 
 // Message List
 
-Polar=Polarité magnétique inversée !
+Polar=PolaritÃ© magnÃ©tique inversÃ©e !
 

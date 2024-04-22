@@ -13,95 +13,95 @@ NEXT_MESSAGE_ID_NUMBER     52
 
 // Message List
 
-ActivatedMatcen=GUIDEBOT: "Robogène Activé !"
+ActivatedMatcen=GUIDEBOT: "RobogÃ¨ne ActivÃ© !"
 
-Arena1Defeated=GUIDEBOT: "Arène Niveau 1 vaincue. Vous pouvez passer au Niveau 2 !"
+Arena1Defeated=GUIDEBOT: "ArÃ¨ne Niveau 1 vaincue. Vous pouvez passer au Niveau 2 !"
 
-Arena1Enter=Arène Niveau 1| Préparez-vous au combat!
+Arena1Enter=ArÃ¨ne Niveau 1| PrÃ©parez-vous au combat!
 
-Arena2Defeated=GUIDEBOT: "Arène Niveau 2 vaincue. Vous pouvez passer au Niveau 3 !"
+Arena2Defeated=GUIDEBOT: "ArÃ¨ne Niveau 2 vaincue. Vous pouvez passer au Niveau 3 !"
 
-Arena2Enter= Arène Niveau 2| Préparez-vous au combat !
+Arena2Enter= ArÃ¨ne Niveau 2| PrÃ©parez-vous au combat !
 
-Arena3Defeated=GUIDEBOT: "Arène Niveau 3 vaincue. Vous pouvez passer au niveau 4 !"
+Arena3Defeated=GUIDEBOT: "ArÃ¨ne Niveau 3 vaincue. Vous pouvez passer au niveau 4 !"
 
-Arena3Enter= Arène Niveau 3| Préparez-vous au combat !
+Arena3Enter= ArÃ¨ne Niveau 3| PrÃ©parez-vous au combat !
 
-Arena4Defeated=GUIDEBOT: "Arène Niveau 4 vaincue. Vous pouvez passer à l'Arène du Championnat !"
+Arena4Defeated=GUIDEBOT: "ArÃ¨ne Niveau 4 vaincue. Vous pouvez passer Ã  l'ArÃ¨ne du Championnat !"
 
-Arena4Defeated2=GUIDEBOT: Accès accordé à toutes les zones !"
+Arena4Defeated2=GUIDEBOT: AccÃ¨s accordÃ© Ã  toutes les zones !"
 
-Arena4Enter= Arène Niveau 4| Préparez-vous au combat !
+Arena4Enter= ArÃ¨ne Niveau 4| PrÃ©parez-vous au combat !
 
-Arena4Enter2= Arène Niveau 2 Partie 2| Préparez-vous au combat !
+Arena4Enter2= ArÃ¨ne Niveau 2 Partie 2| PrÃ©parez-vous au combat !
 
-ArenaChamp=GUIDEBOT: "Le champion des champ des défis est vaincu !  Accès à la surface accordé !"
+ArenaChamp=GUIDEBOT: "Le champion des champ des dÃ©fis est vaincu !  AccÃ¨s Ã  la surface accordÃ© !"
 
-CowFFDisable=GUIDEBOT: "Séquence de champ de force terminée !"
+CowFFDisable=GUIDEBOT: "SÃ©quence de champ de force terminÃ©e !"
 
-CowPipeActive=GUIDEBOT: "Générateur de contrôle actif !"
+CowPipeActive=GUIDEBOT: "GÃ©nÃ©rateur de contrÃ´le actif !"
 
-DoorUnlocked=Porte déverrouillée !
+DoorUnlocked=Porte dÃ©verrouillÃ©e !
 
-EmergencyOverride=GUIDEBOT: "Coupure d'urgence activée. Tous les champs de force de sécurité sont désactivés."
+EmergencyOverride=GUIDEBOT: "Coupure d'urgence activÃ©e. Tous les champs de force de sÃ©curitÃ© sont dÃ©sactivÃ©s."
 
-EndBossBegin=Arène Championnat| Préparez-vous au combat !
+EndBossBegin=ArÃ¨ne Championnat| PrÃ©parez-vous au combat !
 
 EndLevel=
 
-EscapedDestroyed=GUIDEBOT: "Il reste un générateur à détruire !"
+EscapedDestroyed=GUIDEBOT: "Il reste un gÃ©nÃ©rateur Ã  dÃ©truire !"
 
-EscapedDestroyed2=GUIDEBOT: "Vous vous êtes échappé du mécanisme de retenue !"
+EscapedDestroyed2=GUIDEBOT: "Vous vous Ãªtes Ã©chappÃ© du mÃ©canisme de retenue !"
 
-EscapedTorture=GUIDEBOT: "Mécanisme de torture détruit !"
+EscapedTorture=GUIDEBOT: "MÃ©canisme de torture dÃ©truit !"
 
-EscapeTorture2=GUIDEBOT: "Les générateurs de champ de force devraient être vulnérables maintenant !"
+EscapeTorture2=GUIDEBOT: "Les gÃ©nÃ©rateurs de champ de force devraient Ãªtre vulnÃ©rables maintenant !"
 
-Forcefield=Champs de force désactivés !
+Forcefield=Champs de force dÃ©sactivÃ©s !
 
-GonnaClean=ATTENTION: Générateurs de contrôle détruits ! Activation système de nettoyage à chaud !
+GonnaClean=ATTENTION: GÃ©nÃ©rateurs de contrÃ´le dÃ©truits ! Activation systÃ¨me de nettoyage Ã  chaud !
 
-Guards1=Un concurrent éliminé !
+Guards1=Un concurrent Ã©liminÃ© !
 
-Guards2=Il reste deux concurrents à éliminer !
+Guards2=Il reste deux concurrents Ã  Ã©liminer !
 
-Guards3=Il reste un concurrent à éliminer !
+Guards3=Il reste un concurrent Ã  Ã©liminer !
 
-IntroMessage=Charon - Champ des défis de la PTMC 
+IntroMessage=Charon - Champ des dÃ©fis de la PTMC 
 
-L1Door=Clé Niveau 1 Nécessaire !
+L1Door=ClÃ© Niveau 1 NÃ©cessaire !
 
-L2Door=Clé Niveau 2 Nécessaire !
+L2Door=ClÃ© Niveau 2 NÃ©cessaire !
 
-L3Door=Clé Niveau 3 Nécessaire !
+L3Door=ClÃ© Niveau 3 NÃ©cessaire !
 
-L4Door=Clé Niveau 4 Nécessaire !
+L4Door=ClÃ© Niveau 4 NÃ©cessaire !
 
-Level1Key=Clé Niveau 1
+Level1Key=ClÃ© Niveau 1
 
-Level2Key=Clé Niveau 2
+Level2Key=ClÃ© Niveau 2
 
-Level3Key=Clé Niveau 3
+Level3Key=ClÃ© Niveau 3
 
-Level4Key=Clé Niveau 4
+Level4Key=ClÃ© Niveau 4
 
-LevelStarted=GUIDEBOT: "Rendez-vous au plus vite au champ des défis ! C'est votre seule chance de vous en sortir ! Battez-vous pour rejoindre la surface !"
+LevelStarted=GUIDEBOT: "Rendez-vous au plus vite au champ des dÃ©fis ! C'est votre seule chance de vous en sortir ! Battez-vous pour rejoindre la surface !"
 
-MainFFDeactivated=GUIDEBOT: "Concurrents de l'arène principale éliminés.  L'adversaire final peut maintenant entrer dans l'arène du championnat !"
+MainFFDeactivated=GUIDEBOT: "Concurrents de l'arÃ¨ne principale Ã©liminÃ©s.  L'adversaire final peut maintenant entrer dans l'arÃ¨ne du championnat !"
 
-MainGuards=GUIDEBOT: "Vous allez devoir éliminer tous les concurrents avant de vous qualifier pour l'Arène du Championnat !"
+MainGuards=GUIDEBOT: "Vous allez devoir Ã©liminer tous les concurrents avant de vous qualifier pour l'ArÃ¨ne du Championnat !"
 
-RecoveredSecret=RECUPEREE: Vieille cartouche de données. Guidebot en recherche d'informations...
+RecoveredSecret=RECUPEREE: Vieille cartouche de donnÃ©es. Guidebot en recherche d'informations...
 
-RedUnitsArmed=GUIDEBOT: "Unités de Contrôle armées et prêtes pour l'explosion !"
+RedUnitsArmed=GUIDEBOT: "UnitÃ©s de ContrÃ´le armÃ©es et prÃªtes pour l'explosion !"
 
-RepairActivated=GUIDEBOT: "Installations de réparation réactivées !"
+RepairActivated=GUIDEBOT: "Installations de rÃ©paration rÃ©activÃ©es !"
 
-RepairDeactivated=GUIDEBOT: Installations de réparation désactivées !"
+RepairDeactivated=GUIDEBOT: Installations de rÃ©paration dÃ©sactivÃ©es !"
 
-RepairingShip=Réparation des boucliers de votre vaisseau| Retour à un niveau de protection maximal !
+RepairingShip=RÃ©paration des boucliers de votre vaisseau| Retour Ã  un niveau de protection maximal !
 
-SecretData=Cette cartouche est vraiment usée et complètement rouillée, mais votre Guidebot arrive à en extraire des données qui pourraient être utiles. Elles font état d'une sorte de Complexe Industriel Secret qui n'apparaît pas sur vos cartes de navigation. Ca vaudrait le coup de vérifier ça plus tard.
+SecretData=Cette cartouche est vraiment usÃ©e et complÃ¨tement rouillÃ©e, mais votre Guidebot arrive Ã  en extraire des donnÃ©es qui pourraient Ãªtre utiles. Elles font Ã©tat d'une sorte de Complexe Industriel Secret qui n'apparaÃ®t pas sur vos cartes de navigation. Ca vaudrait le coup de vÃ©rifier Ã§a plus tard.
 
-SRepairInit=GUIDEBOT: "Unité de Réparation décalibrée. Veuillez réinitialiser !"
+SRepairInit=GUIDEBOT: "UnitÃ© de RÃ©paration dÃ©calibrÃ©e. Veuillez rÃ©initialiser !"
 

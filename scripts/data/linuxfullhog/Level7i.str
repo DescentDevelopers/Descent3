@@ -45,73 +45,73 @@
 
 !/!Goal 0 Name
 !=!Disable surface defenses
-!G!Die Oberflächenverteidigung deaktivieren
+!G!Die OberflÃ¤chenverteidigung deaktivieren
 !S!Desactivar defensas de superficie
 !I!Disattiva le difese di superficie
-!F!Désactiver les défenses extérieures
+!F!DÃ©sactiver les dÃ©fenses extÃ©rieures
 
 !/!Goal 0 Item Name
 !=!Control Center
 !G!Kontrollzentrum
 !S!Centro de control
 !I!Centro di controllo
-!F!Centre de Contrôle
+!F!Centre de ContrÃ´le
 
 !/!Goal 0 Description
 !=!Enable the primary control core and destroy it to disable all surface defense systems
-!G!Aktivieren Sie den primären Steuerungskern und zerstören Sie ihn, um alle Oberflächenverteidigungssysteme zu deaktivieren
-!S!Activar el núcleo de control principal y destruirlo para desactivar sistemas de defensa de superficie
+!G!Aktivieren Sie den primÃ¤ren Steuerungskern und zerstÃ¶ren Sie ihn, um alle OberflÃ¤chenverteidigungssysteme zu deaktivieren
+!S!Activar el nÃºcleo de control principal y destruirlo para desactivar sistemas de defensa de superficie
 !I!Attiva il nucleo di controllo principale e distruggilo per disattivare tutti i sistemi difensivi di superficie
-!F!Activez le centre de contrôle principal et détruisez-le. Vous désactiverez ainsi toutes les défenses extérieures.
+!F!Activez le centre de contrÃ´le principal et dÃ©truisez-le. Vous dÃ©sactiverez ainsi toutes les dÃ©fenses extÃ©rieures.
 
 !/!Goal 1 Name
 !=!Enable descending accelerator
-!G!Abwärtsführenden Beschleuniger aktivieren
+!G!AbwÃ¤rtsfÃ¼hrenden Beschleuniger aktivieren
 !S!Activar acelerador de descenso
 !I!Attiva l'acceleratore di discesa
-!F!Activer l'accélérateur de descente
+!F!Activer l'accÃ©lÃ©rateur de descente
 
 !/!Goal 1 Item Name
 !=!Magnetic Accelerator Entrance
 !G!Eingang zum magnetischen Beschleuniger
-!S!Control de acelerador magnético
+!S!Control de acelerador magnÃ©tico
 !I!Ingresso dell'acceleratore magnetico
-!F!Entrée de l'accélérateur magnétique
+!F!EntrÃ©e de l'accÃ©lÃ©rateur magnÃ©tique
 
 !/!Goal 1 Description
 !=!Activate the Acclerator control to allow access to the secret research bunker
 !G!Aktivieren Sie die Beschleunigersteuerung, um Zugang zum geheimen Forschungsbunker zu erhalten
-!S!Activar el control de acelerador para permitir el acceso a búnker de investigación secreta
+!S!Activar el control de acelerador para permitir el acceso a bÃºnker de investigaciÃ³n secreta
 !I!Attiva il controllo dell'acceleratore per permettere l'accesso al bunker segreto delle ricerche
-!F!Activez la commande de l'accélérateur pour avoir accès au bunker secret de recherche.
+!F!Activez la commande de l'accÃ©lÃ©rateur pour avoir accÃ¨s au bunker secret de recherche.
 
 !/!Goal 2 Name
 !=!Get security key
-!G!Den Sicherheitsschlüssel beschaffen
+!G!Den SicherheitsschlÃ¼ssel beschaffen
 !S!Conseguir llave de seguridad
 !I!Procurati la chiave di sicurezza
-!F!Récupérer la clé de sécurité
+!F!RÃ©cupÃ©rer la clÃ© de sÃ©curitÃ©
 
 !/!Goal 2 Item Name
 !=!Security Key
-!G!Sicherheitsschlüssel
+!G!SicherheitsschlÃ¼ssel
 !S!Llave de seguridad
 !I!Chiave di sicurezza
-!F!Clé de sécurité
+!F!ClÃ© de sÃ©curitÃ©
 
 !/!Goal 2 Description
 !=!Pickup the Security Key
-!G!Nehmen Sie den Sicherheitsschlüssel mit
+!G!Nehmen Sie den SicherheitsschlÃ¼ssel mit
 !S!Recoger llave de seguridad
 !I!Raccogli la chiave di sicurezza
-!F!Ramassez la clé de sécurité.
+!F!Ramassez la clÃ© de sÃ©curitÃ©.
 
 !/!Goal 3 Name
 !=!Disable containment forcefields
-!G!Eindämmungskraftfelder deaktivieren
-!S!Desconectar campos de fuerza de contención
+!G!EindÃ¤mmungskraftfelder deaktivieren
+!S!Desconectar campos de fuerza de contenciÃ³n
 !I!Disattiva i campi di forza di contenimento
-!F!Désactiver les Champs de Confinement
+!F!DÃ©sactiver les Champs de Confinement
 
 !/!Goal 3 Item Name
 !=!Forcefield Control Switches
@@ -122,17 +122,17 @@
 
 !/!Goal 3 Description
 !=!Disable the virus containment forcefields
-!G!Deaktivieren Sie die Virus-Eindämmungskraftfelder 
-!S!Desactivar los campos de fuerza de contención del virus
+!G!Deaktivieren Sie die Virus-EindÃ¤mmungskraftfelder 
+!S!Desactivar los campos de fuerza de contenciÃ³n del virus
 !I!Disattiva i campi di forza di contenimento del virus
-!F!Désactivez le champ de confinement du virus.
+!F!DÃ©sactivez le champ de confinement du virus.
 
 !/!Goal 4 Name
 !=!Get both virus samples
 !G!Beide Virusproben mitnehmen
 !S!Conseguir las dos muestras del virus
 !I!Procurati entrambi i campioni di virus
-!F!Récupérer les deux échantillons de virus
+!F!RÃ©cupÃ©rer les deux Ã©chantillons de virus
 
 !/!Goal 4 Item Name
 !=!Virus Samples
@@ -146,14 +146,14 @@
 !G!Nehmen Sie beide Virusproben mit
 !S!Obtener las dos muestras del virus
 !I!Raccogli entrambi i campioni di virus
-!F!Rassemblez les deux échantillons de virus.
+!F!Rassemblez les deux Ã©chantillons de virus.
 
 !/!Goal 5 Name
 !=!Steal the Virus Samples
 !G!Die Virusproben stehlen
 !S!Robar las dos muestras del virus
 !I!Ruba i campioni di virus
-!F!Voler les échantillons de virus
+!F!Voler les Ã©chantillons de virus
 
 !/!Goal 5 Item Name
 !=!Virus Samples
@@ -165,30 +165,30 @@
 !/!Goal 5 Description
 !=!Infiltrate the hidden research bunker and steal the Virus samples being stored there
 !G!Dringen Sie in das verborgene Forschungszentrum ein und stehlen Sie die dort gelagerten Virusproben
-!S!Infiltrarse en el búnker de investigación secreta y robar las muestras del virus que se guardan en él
+!S!Infiltrarse en el bÃºnker de investigaciÃ³n secreta y robar las muestras del virus que se guardan en Ã©l
 !I!Infiltrati nel bunker nascosto delle ricerche e ruba e i campioni di virus che vi sono conservati.
-!F!Infiltrez-vous dans le bunker de recherche secret et volez les échantillons de virus qui y sont stockés.
+!F!Infiltrez-vous dans le bunker de recherche secret et volez les Ã©chantillons de virus qui y sont stockÃ©s.
 
 !/!Goal 6 Name
 !=!Return to the Surface
-!G!An die Oberfläche zurückkehren 
+!G!An die OberflÃ¤che zurÃ¼ckkehren 
 !S!Regresa a la superficie
 !I!Torna in superficie
 !F!Retourner dehors
 
 !/!Goal 6 Item Name
 !=!Ascending Elevator
-!G!Aufwärtsführender Fahrstuhl 
+!G!AufwÃ¤rtsfÃ¼hrender Fahrstuhl 
 !S!Ascensor
 !I!Ascensore che sale
 !F!Ascenseur montant
 
 !/!Goal 6 Description
 !=!Use the ascending elevator to return to the surface
-!G!Benutzen Sie den aufwärtsführenden Fahrstuhl, um an die Oberfläche zu gelangen. 
+!G!Benutzen Sie den aufwÃ¤rtsfÃ¼hrenden Fahrstuhl, um an die OberflÃ¤che zu gelangen. 
 !S!Utiliza el ascensor para regresar a la superficie.
 !I!Usa l'ascensore per tornare in superficie
-!F!Utilisez l'ascenseur pour remonter à la surface.
+!F!Utilisez l'ascenseur pour remonter Ã  la surface.
 
 
 !/!Goal 7 Name
@@ -209,7 +209,7 @@
 
 !/!Goal 7 Description
 !=!Turn on the ascending elevator
-!G!Schalten Sie den aufwärtsführenden Fahrstuhl ein. 
+!G!Schalten Sie den aufwÃ¤rtsfÃ¼hrenden Fahrstuhl ein. 
 !S!Activa el ascensor
 !I!Avvia l'ascensore
 !F!Mettez l'ascenseur en marche.

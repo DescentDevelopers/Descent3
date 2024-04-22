@@ -45,24 +45,24 @@
 
 !/!Goal 0 Name
 !=!Get Security Key
-!G!Den Sicherheitsschlüssel finden
+!G!Den SicherheitsschlÃ¼ssel finden
 !S!Consigue la llave de seguridad
 !I!Procurati la chiave di sicurezza
-!F!Obtenir la clé de sécurité
+!F!Obtenir la clÃ© de sÃ©curitÃ©
 
 !/!Goal 0 Item Name
 !=!Security Key
-!G!Sicherheitsschlüssel
+!G!SicherheitsschlÃ¼ssel
 !S!Llave de seguridad
 !I!Chiave di sicurezza
-!F!Clé de sécurité
+!F!ClÃ© de sÃ©curitÃ©
 
 !/!Goal 0 Description
 !=!Find and pickup the security key
-!G!Finden und nehmen Sie den Sicherheitschlüssel mit
+!G!Finden und nehmen Sie den SicherheitschlÃ¼ssel mit
 !S!Encuentra y recoge la llave de seguridad
 !I!Trova e raccogli la chiave di sicurezza
-!F!Trouvez et emparez-vous de la clé de sécurité.
+!F!Trouvez et emparez-vous de la clÃ© de sÃ©curitÃ©.
 
 !/!Goal 1 Name
 !=!Find Sweitzer's Lab
@@ -90,186 +90,186 @@
 !G!Die Datenkassette beschaffen
 !S!Consigue el cartucho de datos
 !I!Prendi la cartuccia dati
-!F!Trouver la cartouche de données
+!F!Trouver la cartouche de donnÃ©es
 
 !/!Goal 2 Item Name
 !=!Data Cartridge
 !G!Datenkassette
 !S!Cartucho de datos
 !I!Cartuccia dati
-!F!Cartouche de données
+!F!Cartouche de donnÃ©es
 
 !/!Goal 2 Description
 !=!Acquire the data cartridge containing Sweitzer's data
 !G!Nehmen Sie die Datenkassette mit Schweitzers Daten in Besitz
 !S!Consigue el cartucho de datos que contiene los datos de Sweitzer
 !I!Prendi la cartuccia contenente i dati di Sweitzer
-!F!Trouvez la cartouche de données qui contient les données de Sweitzer.
+!F!Trouvez la cartouche de donnÃ©es qui contient les donnÃ©es de Sweitzer.
 
 !/!Goal 3 Name
 !=!Activate Datlink
 !G!Datlink aktivieren
 !S!Activa el Datalink
 !I!Attiva il sistema di trasmissione dati
-!F!Activer la liaison de données.
+!F!Activer la liaison de donnÃ©es.
 
 !/!Goal 3 Item Name
 !=!Datlink room
 !G!Datlink-Raum
 !S!Sala del Datalink
 !I!Sala sistema di trasmissione dati
-!F!Salle de la liaison de données
+!F!Salle de la liaison de donnÃ©es
 
 !/!Goal 3 Description
 !=!Activate the datlink communication center
 !G!Aktivieren Sie das Datlink-Kommunikationszentrum
-!S!Activa el centro de comunicación del Datalink
+!S!Activa el centro de comunicaciÃ³n del Datalink
 !I!Attiva il centro di trasmissione dati
-!F!Activez le centre de communication de la liaison de données.
+!F!Activez le centre de communication de la liaison de donnÃ©es.
 
 !/!Goal 4 Name
 !=!Destroy Lightning Control Tower
-!G!Den Blitz-Kontrollturm zerstören 
-!S!Destruye la torre de control de relámpagos
+!G!Den Blitz-Kontrollturm zerstÃ¶ren 
+!S!Destruye la torre de control de relÃ¡mpagos
 !I!Distruggi la torre di controllo illuminazione
-!F!Détruire la tour de contrôle anti-foudre.
+!F!DÃ©truire la tour de contrÃ´le anti-foudre.
 
 !/!Goal 4 Item Name
 !=!Lightning Control Tower
 !G!Blitz-Kontrollturm
-!S!Torre de control de relámpagos
+!S!Torre de control de relÃ¡mpagos
 !I!Torre di controllo illuminazione
-!F!Tour de contrôle anti-foudre
+!F!Tour de contrÃ´le anti-foudre
 
 !/!Goal 4 Description
 !=!Find a way to destroy the lightning control tower
-!G!Finden Sie einen Weg, den Blitz-Kontrollturm zu zerstören
-!S!Encuentra el modo de destruir la torre de control de relámpagos
+!G!Finden Sie einen Weg, den Blitz-Kontrollturm zu zerstÃ¶ren
+!S!Encuentra el modo de destruir la torre de control de relÃ¡mpagos
 !I!Trova il modo di distruggere la torre di controllo illuminazione
-!F!Trouvez un moyen de détruire la tour de contrôle anti-foudre.
+!F!Trouvez un moyen de dÃ©truire la tour de contrÃ´le anti-foudre.
 
 !/!Goal 5 Name
 !=!Retrieve the Data Cartridge
 !G!Die Datenkassette beschaffen
 !S!Consigue el cartucho de datos
 !I!Prendi la cartuccia dati
-!F!Récupérer la cartouche de données
+!F!RÃ©cupÃ©rer la cartouche de donnÃ©es
 
 !/!Goal 5 Item Name
 !=!Data Cartridge
 !G!Datenkassette
 !S!Cartucho de datos
 !I!Cartuccia dati
-!F!Cartouche de données
+!F!Cartouche de donnÃ©es
 
 !/!Goal 5 Description
 !=!Retrieve the data cartridge from Sweitzer's former laboratory
 !G!Beschaffen Sie die Datenkassette aus Schweitzers ehemaligem Labor
 !S!Consigue el cartucho de datos del antiguo laboratorio de Sweitzer
 !I!Prendi la cartuccia dati dal vecchio laboratorio di Sweitzer
-!F!Récupérez la cartouche de données de l'ancien laboratoire de Sweitzer.
+!F!RÃ©cupÃ©rez la cartouche de donnÃ©es de l'ancien laboratoire de Sweitzer.
 
 !/!Goal 6 Name
 !=!Disable Access Forcefield
 !G!Das Zugangskraftfeld deaktivieren
 !S!Desactiva el campo de fuerza del acceso
 !I!Disattiva il campo di forza d'accesso
-!F!Désactiver le champ de force d'accès.
+!F!DÃ©sactiver le champ de force d'accÃ¨s.
 
 !/!Goal 6 Item Name
 !=!Access Forcefield
 !G!Zugangskraftfeld
 !S!Campo de fuerza del acceso
 !I!Campo di forza d'accesso
-!F!Champ de force d'accès
+!F!Champ de force d'accÃ¨s
 
 !/!Goal 6 Description
 !=!Disable the access forcefield
 !G!Schalten Sie das Zugangskraftfeld ab
 !S!Desactiva el campo de fuerza del acceso
 !I!Disattiva il campo di forza d'accesso
-!F!Désactivez le champ de force d'accès.
+!F!DÃ©sactivez le champ de force d'accÃ¨s.
 
 !/!Goal 7 Name
 !=!Place the Cartridge between Upload Nodes
 !G!Die Kassette zwischen Upload-Knoten plazieren
-!S!Sitúa el cartucho entre los nodos de carga
+!S!SitÃºa el cartucho entre los nodos de carga
 !I!Colloca la cartuccia tra i nodi di caricamento
-!F!Placer la cartouche entre les noeuds de téléchargement.
+!F!Placer la cartouche entre les noeuds de tÃ©lÃ©chargement.
 
 !/!Goal 7 Item Name
 !=!Upload Nodes
 !G!Upload-Knoten
 !S!Nodos de carga
 !I!Nodi di caricamento
-!F!Noeuds de téléchargement
+!F!Noeuds de tÃ©lÃ©chargement
 
 !/!Goal 7 Description
 !=!Use the data cartridge while between the data nodes to prepare it for data uploading
-!G!Benutzen Sie die Datenkassette whärend Sie sich zwischen den Ladeknoten befinden, um das Einladen der Daten vorzubereiten
+!G!Benutzen Sie die Datenkassette whÃ¤rend Sie sich zwischen den Ladeknoten befinden, um das Einladen der Daten vorzubereiten
 !S!Usa el cartucho de datos cuando te encuentres entre los nodos de carga para prepararlo para la descarga de datos
 !I!Utilizza la cartuccia dati quando ti trovi tra i nodi per predisporre il caricamento dei dati
-!F!Utilisez la cartouche pendant que vous vous trouvez entre les deux noeuds de chargement pour la préparer au téléchargement des données.
+!F!Utilisez la cartouche pendant que vous vous trouvez entre les deux noeuds de chargement pour la prÃ©parer au tÃ©lÃ©chargement des donnÃ©es.
 
 !/!Goal 8 Name
 !=!Activate Data Upload
 !G!Daten-Upload aktivieren
 !S!Activa la descarga de datos
 !I!Attiva il caricamento dei dati
-!F!Téléchargement des données
+!F!TÃ©lÃ©chargement des donnÃ©es
 
 !/!Goal 8 Item Name
 !=!Data Switch
 !G!Datenschalter
 !S!Conmutador de datos
 !I!Commutatore dati
-!F!Interrupteur des données
+!F!Interrupteur des donnÃ©es
 
 !/!Goal 8 Description
 !=!Activate the data upload
 !G!Aktivieren Sie den Daten-Upload
 !S!Activa la descarga de datos
 !I!Attiva il caricamento dei dati
-!F!Activez le téléchargement des données.
+!F!Activez le tÃ©lÃ©chargement des donnÃ©es.
 
 !/!Goal 9 Name
 !=!Reacquire the Data Cartridge
-!G!Die Datenkassette zurückgewinnen
+!G!Die Datenkassette zurÃ¼ckgewinnen
 !S!Vuelve a conseguir el cartucho de datos
 !I!Recupera la cartuccia dati
-!F!Récupérer la cartouche de données.
+!F!RÃ©cupÃ©rer la cartouche de donnÃ©es.
 
 !/!Goal 9 Item Name
 !=!Full Data Cartridge
 !G!Volle Datenkassette
-!S!Superladrón
+!S!SuperladrÃ³n
 !I!Superladro
-!F!Cartouche de données complète
+!F!Cartouche de donnÃ©es complÃ¨te
 
 !/!Goal 9 Description
 !=!Destroy the SuperThief and reacquire the data cartridge
-!G!Zerstören Sie den SuperDieb und gewinnen Sie die Datenkassette zurück
-!S!Destruye al Superladrón y vuelve a conseguir el cartucho de datos
+!G!ZerstÃ¶ren Sie den SuperDieb und gewinnen Sie die Datenkassette zurÃ¼ck
+!S!Destruye al SuperladrÃ³n y vuelve a conseguir el cartucho de datos
 !I!Distruggi il Superladro e recupera la cartuccia dati
-!F!Détruisez le SuperVoleur et récupérez la cartouche de données.
+!F!DÃ©truisez le SuperVoleur et rÃ©cupÃ©rez la cartouche de donnÃ©es.
 
 !/!Goal 10 Name
 !=!Return to Surface
-!G!An die Oberfläche zurückkehren 
+!G!An die OberflÃ¤che zurÃ¼ckkehren 
 !S!Regresa a la superficie
 !I!Torna in superficie
 !F!Retourner dehors
 
 !/!Goal 10 Item Name
 !=!Surface
-!G!Oberfläche 
+!G!OberflÃ¤che 
 !S!Superficie
 !I!Superficie
 !F!Surface
 
 !/!Goal 10 Description
 !=!Return to the surface to complete the mission
-!G!Keheren Sie an die Oberfläche zurück, um die Mission erfolgreich zu beenden. 
-!S!Regresa a la superficie para terminar la misión
+!G!Keheren Sie an die OberflÃ¤che zurÃ¼ck, um die Mission erfolgreich zu beenden. 
+!S!Regresa a la superficie para terminar la misiÃ³n
 !I!Torna in superficie per completare la missione 
-!F!Retournez à la surface pour terminer votre mission.
+!F!Retournez Ã  la surface pour terminer votre mission.

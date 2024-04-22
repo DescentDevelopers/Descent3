@@ -13,27 +13,27 @@ NEXT_MESSAGE_ID_NUMBER     13
 
 // Message List
 
-BlueDoor=Vous n'avez pas la clé bleue !
+BlueDoor=Vous n'avez pas la clÃ© bleue !
 
-BlueKeyFF=Champ de force de la clé bleue désactivé !
+BlueKeyFF=Champ de force de la clÃ© bleue dÃ©sactivÃ© !
 
 EndLevel=
 
-FlameDeactivated=Salle de la Flamme désactivée !
+FlameDeactivated=Salle de la Flamme dÃ©sactivÃ©e !
 
-IntroCam=Centre de Recherches sur les Armes à Haute Vélocité
+IntroCam=Centre de Recherches sur les Armes Ã  Haute VÃ©locitÃ©
 
-NameBlueKey=Clé bleue
+NameBlueKey=ClÃ© bleue
 
-NameRedKey=Clé rouge
+NameRedKey=ClÃ© rouge
 
-ReactorDestroyed=Réacteur primaire détruit ! Séquence d'auto-destruction activée !
+ReactorDestroyed=RÃ©acteur primaire dÃ©truit ! SÃ©quence d'auto-destruction activÃ©e !
 
-ReactorFF=Champ de force du réacteur désactivé !
+ReactorFF=Champ de force du rÃ©acteur dÃ©sactivÃ© !
 
-ReactorPrimed=GUIDEBOT: "Le Réacteur a désactivé ses propres systèmes de défense ! Achevez-le !"
+ReactorPrimed=GUIDEBOT: "Le RÃ©acteur a dÃ©sactivÃ© ses propres systÃ¨mes de dÃ©fense ! Achevez-le !"
 
-RedDoor=Vous n'avez pas la clé rouge !
+RedDoor=Vous n'avez pas la clÃ© rouge !
 
-RedKeyFF=Champ de force de la clé rouge désactivé !
+RedKeyFF=Champ de force de la clÃ© rouge dÃ©sactivÃ© !
 

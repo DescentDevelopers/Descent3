@@ -45,45 +45,45 @@
 
 !/!Goal 0 Name
 !=!Get to the Train Station
-!F!Aller à la gare
-!S!Acude a la estación de tren
+!F!Aller Ã  la gare
+!S!Acude a la estaciÃ³n de tren
 !G!Zur U-Bahnstation gelangen
 !I!Vai alla stazione ferroviaria
 
 !/!Goal 0 Item Name
 !=!Train Station
 !F!Gare
-!S!Estación de tren
+!S!EstaciÃ³n de tren
 !G!U-Bahnstation
 !I!Stazione ferroviaria
 
 !/!Goal 0 Description
 !=!Get past the subway trains and to the train station
-!F!Passez les métros et allez jusqu'à la gare.
-!S!Pasa por delante de los trenes del metro y ve a la estación de tren
+!F!Passez les mÃ©tros et allez jusqu'Ã  la gare.
+!S!Pasa por delante de los trenes del metro y ve a la estaciÃ³n de tren
 !G!Gelangen Sie an den U-Bahnen vorbei zur Bahnstation.
 !I!Oltrepassa la metropolitana e vai alla stazione ferroviaria
 
 !/!Goal 1 Name
 !=!Find the entrance to the Sewers
-!F!Trouver l'entrée des égouts
+!F!Trouver l'entrÃ©e des Ã©gouts
 !S!Busca la entrada a las cloacas
 !G!Den Eingang zur Kanalisation finden
 !I!Cerca l'ingresso delle fogne
 
 !/!Goal 1 Item Name
 !=!Sewer Entrance
-!F!Entrée des égouts
+!F!EntrÃ©e des Ã©gouts
 !S!Entrada a las cloacas
 !G!Eingang zur Kanalisation
 !I!Ingresso delle fogne
 
 !/!Goal 1 Description
 !=!Find the Sewer Entrance somewhere in the city
-!F!Trouvez l'entrée des égouts quelque part dans la ville.
+!F!Trouvez l'entrÃ©e des Ã©gouts quelque part dans la ville.
 !S!Busca en alguna parte de la ciudad la entrada a las cloacas
 !G!Finden Sie den Eingang zur Kanalisation irgendwo in der Stadt.
-!I!Trova l'ingresso delle fogne in qualche punto della città
+!I!Trova l'ingresso delle fogne in qualche punto della cittÃ 
 
 !/!Goal 2 Name
 !=!Find PTMC Tower
@@ -101,37 +101,37 @@
 
 !/!Goal 2 Description
 !=!Find the PTMC Tower where you can upload the data
-!F!Trouvez la Tour de la PTMC d'où vous pourrez transférez les données.
+!F!Trouvez la Tour de la PTMC d'oÃ¹ vous pourrez transfÃ©rez les donnÃ©es.
 !S!Busca la torre del PTMC donde puedes transmitir los datos
-!G!Finden Sie den PTMC-Turm. Sie können dort die Daten einspielen.
+!G!Finden Sie den PTMC-Turm. Sie kÃ¶nnen dort die Daten einspielen.
 !I!Trova la torre PTMC dove potrai trasmettere i dati
 
 !/!Goal 3 Name
 !=!Upload the data to Suzuki
-!F!Transférer les données à Suzuki
+!F!TransfÃ©rer les donnÃ©es Ã  Suzuki
 !S!Transmite los datos a Suzuki
-!G!Die Daten an Suzuki übertragen
+!G!Die Daten an Suzuki Ã¼bertragen
 !I!Trasmetti i dati a Suzuki
 
 !/!Goal 3 Item Name
 !=!Upload Interface
 !F!Interface de transfert
-!S!Interfaz de transmisión
-!G!Übertragungsschnittstelle
+!S!Interfaz de transmisiÃ³n
+!G!Ãœbertragungsschnittstelle
 !I!Interfaccia di trasferimento
 
 !/!Goal 3 Description
 !=!Place the data cartridge in the Upload Interface to upload the data to Suzuki
-!F!Placez la cartouche de données dans l'interface de données pour transférer les données à Suzuki.
-!S!Coloca el cartucho de datos en la interfaz de transmisión y transmite los datos a Suzuki
-!G!Plazieren Sie die Datenkassette in der Übertragungsschnittstelle, um die Daten an Suzuki zu überspielen.
+!F!Placez la cartouche de donnÃ©es dans l'interface de donnÃ©es pour transfÃ©rer les donnÃ©es Ã  Suzuki.
+!S!Coloca el cartucho de datos en la interfaz de transmisiÃ³n y transmite los datos a Suzuki
+!G!Plazieren Sie die Datenkassette in der Ãœbertragungsschnittstelle, um die Daten an Suzuki zu Ã¼berspielen.
 !I!Colloca la cartuccia dati nell'interfaccia di trasferimento per trasmettere i dati a Suzuki
 
 !/!Goal 4 Name
 !=!Give the Data to Suzuki and Return Safely
-!F!Apporter les données à Suzuki et rentrer 
+!F!Apporter les donnÃ©es Ã  Suzuki et rentrer 
 !S!Dale a Suzuki los datos y regresa a salvo
-!G!Die Daten an Suzuki übergeben
+!G!Die Daten an Suzuki Ã¼bergeben
 !I!Passa i dati a Suzuki e torna indietro
 
 !/!Goal 4 Item Name
@@ -143,28 +143,28 @@
 
 !/!Goal 4 Description
 !=!Give the Dr. Sweitzer's Research Data to Suzuki as proof of PTMC's plan
-!F!Donnez les données de recherche du Dr. Sweitzer à Suzuki.
-!S!Dale a Suzuki los datos de la investigación del Dr. Sweitzer como prueba del plan del PTMC
-!G!Übergeben Sie Schweitzers Forschungsdaten als Beweis für den Plan der PTMC an Suzuki.
+!F!Donnez les donnÃ©es de recherche du Dr. Sweitzer Ã  Suzuki.
+!S!Dale a Suzuki los datos de la investigaciÃ³n del Dr. Sweitzer como prueba del plan del PTMC
+!G!Ãœbergeben Sie Schweitzers Forschungsdaten als Beweis fÃ¼r den Plan der PTMC an Suzuki.
 !I!Passa i dati delle ricerche del dottor Swetzer a Suzuki come prova del piano del PTMC
 
 !/!Goal 5 Name
 !=!Defeat the PTMC Mercenaries
 !F!Battre les soldats de la PTMC
 !S!Derrota a los mercenarios de la PTMC
-!G!Die PTMC-Söldner besiegen
+!G!Die PTMC-SÃ¶ldner besiegen
 !I!Sconfiggi i mercenari del PTMC
 
 !/!Goal 5 Item Name
 !=!PTMC Mercenaries
 !F!soldats de la PTMC
 !S!Mercenarios de la PTMC
-!G!PTMC-Söldner
+!G!PTMC-SÃ¶ldner
 !I!Mercenari del PTMC 
 
 !/!Goal 5 Description
 !=!Destroy the PTMC Mercenaries to avoid getting captured
-!F!Détruisez les soldats de la PTMC pour éviter d'être capturé.
+!F!DÃ©truisez les soldats de la PTMC pour Ã©viter d'Ãªtre capturÃ©.
 !S!Destruye a los mercenarios de la PTMC para evitar que te capturen
-!G!Zerstören Sie die PTMC-Söldner, um eine Gefangennahme zu vermeiden.
+!G!ZerstÃ¶ren Sie die PTMC-SÃ¶ldner, um eine Gefangennahme zu vermeiden.
 !I!Distruggi i mercenari del PTMC e cerca di non farti catturare

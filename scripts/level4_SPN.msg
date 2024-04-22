@@ -5,25 +5,25 @@
 NEXT_MESSAGE_ID_NUMBER     8
 
 // Message List
-BlackPyroKey=ROBOGUÕA: "El ˙ltimo Pyro negro ha dejado caer una llave."
+BlackPyroKey=ROBOGU√çA: "El √∫ltimo Pyro negro ha dejado caer una llave."
 Empty=
 EndGameHud=
-EndGameMess=Has facilitado la informaciÛn.
+EndGameMess=Has facilitado la informaci√≥n.
 EndLevelText=
 GotSuzukiKey=Llave del edificio Suzuki
-IntroMsg=Vete al edificio Suzuki| y entrega el expediente sobre la conspiraciÛn al seÒor Suzuki
+IntroMsg=Vete al edificio Suzuki| y entrega el expediente sobre la conspiraci√≥n al se√±or Suzuki
 
 NEXT_MESSAGE_ID_NUMBER     11
 
 // Message List
-BPDefeated=GUIDEBOT: "°Mercenarios de la PTMC vencidos!"
-CartridgeError=GUIDEBOT: "No puedes soltar aquÌ el cartucho de datos."
+BPDefeated=GUIDEBOT: "¬°Mercenarios de la PTMC vencidos!"
+CartridgeError=GUIDEBOT: "No puedes soltar aqu√≠ el cartucho de datos."
 CinematicAmbush=Mercenarios de la PTMC
 CinematicDataCart=Transmitiendo datos a Suzuki
 CinematicEndCam=
-CinematicIntroCam=Tierra - Se˙l, Corea
+CinematicIntroCam=Tierra - Se√∫l, Corea
 Debug1=Ajuste de dificultad: %f
-Debug2=°Esto es fuerte!
-GetOut=ROBOGUÕA: "°TransmisiÛn correcta! Ahora Suzuki debe tener los datos."
-PutTheCartridge=ROBOGUÕA: "Coloca el cartucho de datos en el centro de la sala de transmisiones."
+Debug2=¬°Esto es fuerte!
+GetOut=ROBOGU√çA: "¬°Transmisi√≥n correcta! Ahora Suzuki debe tener los datos."
+PutTheCartridge=ROBOGU√çA: "Coloca el cartucho de datos en el centro de la sala de transmisiones."
 

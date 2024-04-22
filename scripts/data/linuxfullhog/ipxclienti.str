@@ -27,28 +27,28 @@
 !/!0:This is the Local Area Network Client
 !=!This is the Local Area Network Client
 !G!Dies ist der lokale Netzwerk Client
-!S!Éste es el cliente local de red
-!I!Questo è il client della LAN
-!F!Ceci est le Client Réseau Local
+!S!Ã‰ste es el cliente local de red
+!I!Questo Ã¨ il client della LAN
+!F!Ceci est le Client RÃ©seau Local
 
 !/!1:Use this to play games via IPX
 !=!Use this to play games via IPX
-!G!Verwenden Sie dies, um Spiele über IPX zu spielen 
-!S!Úsalo para jugar partidas IPX
+!G!Verwenden Sie dies, um Spiele Ã¼ber IPX zu spielen 
+!S!Ãšsalo para jugar partidas IPX
 !I!da usare per giocare via IPX
 !F!Utilisez-le pour jouer sur IPX.
 
 !/!2:Return to main menu
 !=!Return to main menu
-!G!Zurück zum Hauptmenü
-!S!Volver a menú principal
+!G!ZurÃ¼ck zum HauptmenÃ¼
+!S!Volver a menÃº principal
 !I!Torna al menu principale
 !F!Retour au menu principal
 
 !/!3:Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
 !=!Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
 !G!Spielname\002\43Spielart\02\69Mission\02\96Level\02\109Spieler\02\126Ping 
-!S!Nombre de juego\002\Tipo de partida43\02\Misión69\02\Nivel96\02\Jugadores109\02\Pin126
+!S!Nombre de juego\002\Tipo de partida43\02\MisiÃ³n69\02\Nivel96\02\Jugadores109\02\Pin126
 !I!Nome della partita\002\43Tipo di partita\02\69Missione\02\96Livellol\02\109Giocatori\02\126Ping
 !F!Nom Partie\002\43Type Partie\02\69Mission\02\96Niveau\02\109Joueurs\02Ping
 
@@ -69,9 +69,9 @@
 !/!6:Join Selected
 !=!Join Selected
 !G!Teilnehmen
-!S!Seleccionada opción Unirse a partida
+!S!Seleccionada opciÃ³n Unirse a partida
 !I!Entra nella partita selezionata
-!F!Joindre la partie sélectionnée
+!F!Joindre la partie sÃ©lectionnÃ©e
 
 !/!7:Start a New Game
 !=!Start a New Game
@@ -83,9 +83,9 @@
 !/!8:Search for Games at Address:
 !=!Search for Games at Address:
 !G!Spiele unter folgender Adresse suchen:
-!S!Buscar partidas en la dirección:
+!S!Buscar partidas en la direcciÃ³n:
 !I!Cerca partite all'indirizzo:
-!F!Chercher des parties à l'adresse suivante :
+!F!Chercher des parties Ã  l'adresse suivante :
 
 !/!9:Scan for Local Games
 !=!Scan for Local Games
@@ -104,7 +104,7 @@
 !/!11:Mission Name:
 !=!Mission Name:
 !G!Missionsname:
-!S!Nombre de la Misión:
+!S!Nombre de la MisiÃ³n:
 !I!Nome della missione:
 !F!Nom de la mission
 
@@ -120,7 +120,7 @@
 !G!Spiel starten 
 !S!Empezar Partida
 !I!Inizia partita
-!F!deémarrer partie
+!F!deÃ©marrer partie
 
 !/!14:Multiplayer Options
 !=!Multiplayer Options
@@ -139,14 +139,14 @@
 !/!16:Time Limit
 !=!Time Limit
 !G!Zeitlimit 
-!S!Límite de tiempo
+!S!LÃ­mite de tiempo
 !I!Limite di tempo
 !F!Temps Limite
 
 !/!17:Goal Limit
 !=!Goal Limit
 !G!Ziellimit 
-!S!Límite Obj.
+!S!LÃ­mite Obj.
 !I!Limite dell'obiettivo
 !F!objectif limite 
 
@@ -162,13 +162,13 @@
 !G!Konfigurieren zugelassener Schiffe/Objekte 
 !S!Config. naves/objetos permitidos
 !I!Configura navi/oggetti consentiti
-!F!Configuration des Vaisseaux/Equipements Autorisés
+!F!Configuration des Vaisseaux/Equipements AutorisÃ©s
 
 !/!20:Server mode
 !=!Server mode
 !G!Server-Modus 
 !S!Modo servidor
-!I!Modalità server
+!I!ModalitÃ  server
 !F!Mode Serveur
 
 !/!21:Client/Server
@@ -190,13 +190,13 @@
 !G!Zugelassene Schiffe:
 !S!Naves permitidas:
 !I!Navi consentite:
-!F!Vaisseaux Autorisés
+!F!Vaisseaux AutorisÃ©s
 
 !/!24:Respawn Rate:
 !=!Respawn Rate:
-!G!Zurückbringrate:
-!S!Velocidad de resurrección:
-!I!Velocità di ricomparsa:
+!G!ZurÃ¼ckbringrate:
+!S!Velocidad de resurrecciÃ³n:
+!I!VelocitÃ  di ricomparsa:
 !F!Taux d'apparition
 
 !/!25:Error
@@ -209,34 +209,34 @@
 !/!26:IPX is not active on your system!
 !=!IPX is not active on your system!
 !G!IPX ist auf Ihrem System nicht aktiviert!
-!S!IPX no está activo en tu sistema
-!I!Il protocollo IPX non è attivo sul tuo sistema
-!F!IPX n'est pas actif sur votre système !
+!S!IPX no estÃ¡ activo en tu sistema
+!I!Il protocollo IPX non Ã¨ attivo sul tuo sistema
+!F!IPX n'est pas actif sur votre systÃ¨me !
 
 !/!27:Save Settings
 !=!Save Settings
 !G!Einstellungen speichern 
-!S!Guardar configuración
+!S!Guardar configuraciÃ³n
 !I!Salva impostazioni
 !F!Enregistrer la configuration
 
 !/!28:Load Settings
 !=!Load Settings
 !G!Einstellungen laden 
-!S!Cargar configuración
+!S!Cargar configuraciÃ³n
 !I!Carica impostazioni
 !F!Charger la configuration
 
 !/!29:Use rotational velocity
 !=!Use rotational velocity
 !G!Drehgeschwindigkeit verwenden
-!S!Utilizar velocidad de rotación
-!I!Utilizza velocità di rotazione
-!F!Utiliser vélocité rotationnelle
+!S!Utilizar velocidad de rotaciÃ³n
+!I!Utilizza velocitÃ  di rotazione
+!F!Utiliser vÃ©locitÃ© rotationnelle
 
 !/!30:Movement averaging
 !=!Movement averaging
-!G!Bewegungsschätzung
+!G!BewegungsschÃ¤tzung
 !S!Movimiento equilibrado
 !I!Calcolo del movimento
 !F!Lissage mouvement
@@ -250,10 +250,10 @@
 
 !/!32:No game was selected to join!
 !=!No game was selected to join!
-!G!Kein Spiel zum Teilnehmen ausgewählt!
+!G!Kein Spiel zum Teilnehmen ausgewÃ¤hlt!
 !S!No se ha seleccionado una partida a la que unirse
-!I!Non è stata selezionata una partita a cui partecipare
-!F!Sélectionnez la partie à rejoindre !
+!I!Non Ã¨ stata selezionata una partita a cui partecipare
+!F!SÃ©lectionnez la partie Ã  rejoindre !
 
 !/!33:Cancel
 !=!Cancel
@@ -274,7 +274,7 @@
 !G!%c Exakte Waffenkollisionen verwenden
 !S!%c Utilizar colisiones de armas exactas
 !I!%c Utilizza collisioni di armi precise
-!F!%c Utilise collisions Armes Précises
+!F!%c Utilise collisions Armes PrÃ©cises
 
 !/!36:Bright player ships
 !=!Bright player ships

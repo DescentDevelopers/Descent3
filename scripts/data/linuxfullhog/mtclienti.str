@@ -28,27 +28,27 @@
 !=!Parallax Online is a Free Service where you
 !G!Parallax Online ist ein kostenloser Service, bei
 !S!Parallax Online es un servicio gratuito en el que
-!I!Parallax Online è un servizio gratuito mediante il quale
+!I!Parallax Online Ã¨ un servizio gratuito mediante il quale
 !F!Parallax Online est un service gratuit. Vous
 
 !/!1:can find people to play Descent 3 against.
 !=!can find people to play Descent 3 against.
-!G!dem man Mitspieler für Descent 3 finden kann.
+!G!dem man Mitspieler fÃ¼r Descent 3 finden kann.
 !S!puedes encontrar personas con las que jugar a Descent 3.
 !I!puoi trovare qualcuno con cui giocare a Descent 3.
-!F!y trouverez des gens pour jouer à Descent 3.
+!F!y trouverez des gens pour jouer Ã  Descent 3.
 
 !/!2:Return to main menu
 !=!Return to main menu
-!G!Zurück zum Hauptmenü
-!S!Volver al menú principal
+!G!ZurÃ¼ck zum HauptmenÃ¼
+!S!Volver al menÃº principal
 !I!Torna al menu principale
 !F!Retour au menu principal
 
 !/!3:Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
 !=!Game Name\002\43Game Type\02\69Mission\02\96Level\02\109Players\02\126Ping
 !G!Spielname\002\43Spielart\02\69Mission\02\96Level\02\109Spieler\02\126Ping
-!S!Nombre de juego\002\43Tipo de partida\02\69Misión\02\96Nivel\02\109Jugadores\02\126Ping
+!S!Nombre de juego\002\43Tipo de partida\02\69MisiÃ³n\02\96Nivel\02\109Jugadores\02\126Ping
 !I!Nome della partita\002\43Tipo di partita \02\69Missione\02\96Livello\02\109Giocatori\02\126Ping
 !F!Nom Partie\002\43Type Jeu\02\69Mission\02\96Niveau\02\109Joueurs\02\126Ping
 
@@ -69,9 +69,9 @@
 !/!6:Join Selected
 !=!Join Selected
 !G!Teilnehmen
-!S!Opción Unirse a partida seleccionada
+!S!OpciÃ³n Unirse a partida seleccionada
 !I!Entra nella partita selezionata
-!F!Joindre la partie sélectionnée
+!F!Joindre la partie sÃ©lectionnÃ©e
 
 !/!7:Start a New Game
 !=!Start a New Game
@@ -83,9 +83,9 @@
 !/!8:Search for Games at Address:
 !=!Search for Games at Address:
 !G!Spiele unter folgender Adresse suchen:
-!S!Buscar partidas en la dirección:
+!S!Buscar partidas en la direcciÃ³n:
 !I!Cerca partite all'indirizzo:
-!F!Chercher des parties à l'adresse suivante
+!F!Chercher des parties Ã  l'adresse suivante
 
 !/!9:Scan for Local Games
 !=!Scan for Local Games
@@ -104,7 +104,7 @@
 !/!11:Mission Name:
 !=!Mission Name:
 !G!Missionsname:
-!S!Nombre de misión:
+!S!Nombre de misiÃ³n:
 !I!Nome della missione
 !F!Nom de la Mission
 
@@ -139,14 +139,14 @@
 !/!16:Time Limit
 !=!Time Limit
 !G!Zeitlimit 
-!S!Límite de tiempo
+!S!LÃ­mite de tiempo
 !I!Limite di tempo
 !F!Temps limite
 
 !/!17:Goal Limit
 !=!Goal Limit
 !G!Ziellimit 
-!S!Límite de objetivo
+!S!LÃ­mite de objetivo
 !I!Limite dell'obiettivo
 !F!objectif limite 
 
@@ -162,13 +162,13 @@
 !G!Konfigurieren zugelassener Schiffe/Objekte 
 !S!Configurar naves/objetos permitidos
 !I!Configura navi/oggetti consentiti
-!F!Sélection des vaisseaux/équipements autorisés
+!F!SÃ©lection des vaisseaux/Ã©quipements autorisÃ©s
 
 !/!20:Server mode
 !=!Server mode
 !G!Server-Modus 
 !S!Modo servidor
-!I!Modalità server
+!I!ModalitÃ  server
 !F!Mode Serveur
 
 !/!21:Client/Server
@@ -190,13 +190,13 @@
 !G!Zugelassene Schiffe:
 !S!Naves permitidas:
 !I!Navi consentite:
-!F!Vaisseaux autorisés
+!F!Vaisseaux autorisÃ©s
 
 !/!24:Respawn Rate:
 !=!Respawn Rate:
-!G!Zurückbringrate 
-!S!Velocidad de resurrección:
-!I!Velocità di ricomparsa:
+!G!ZurÃ¼ckbringrate 
+!S!Velocidad de resurrecciÃ³n:
+!I!VelocitÃ  di ricomparsa:
 !F!Taux d'apparition
 
 !/!25:http://www.parallaxonline.com/register.html
@@ -209,14 +209,14 @@
 !/!26:You can also chat with them and look at their
 !=!You can also chat with them and look at their
 !G!Man kann auch mit ihnen chatten und ihren Rang
-!S!También puedes charlar con ellos y ver su
+!S!TambiÃ©n puedes charlar con ellos y ver su
 !I!Puoi anche chiacchierare con loro e guardare i loro
 !F!Vous pouvez discuter avec eux et voir leurs
 
 !/!27:rankings.
 !=!rankings.
 !G!sehen.
-!S!puntuación.
+!S!puntuaciÃ³n.
 !I!punteggi.
 !F!classements.
 
@@ -225,14 +225,14 @@
 !G!Verbinde mit PXO...
 !S!Conectando a PXO...
 !I!Collegamento a PXO in corso...
-!F!Connexion à PXO...
+!F!Connexion Ã  PXO...
 
 !/!29:Unable to connect to PXO.
 !=!Unable to connect to PXO.
-!G!Mit PXO verbinden nicht möglich.
+!G!Mit PXO verbinden nicht mÃ¶glich.
 !S!No se puede conectar a PXO.
 !I!Impossibile collegarsi a PXO.
-!F!Connexion à PXO impossible.
+!F!Connexion Ã  PXO impossible.
 
 !/!30:Parallax Online
 !=!Parallax Online
@@ -243,17 +243,17 @@
 
 !/!31:Unable to Auto-Validate.
 !=!Unable to Auto-Validate.
-!G!Automatische Bestätigung nicht möglich.
-!S!No se puede utilizar validación automática.
+!G!Automatische BestÃ¤tigung nicht mÃ¶glich.
+!S!No se puede utilizar validaciÃ³n automÃ¡tica.
 !I!Impossibile utilizzare validazione automatica
 !F!Echec de l'auto-validation.
 
 !/!32:Login to PXO
 !=!Login to PXO
 !G!Bei PXO einloggen
-!S!Inicio de sesión en PXO
+!S!Inicio de sesiÃ³n en PXO
 !I!Login a PXO
-!F!Connexion à PXO
+!F!Connexion Ã  PXO
 
 !/!33:Cancel
 !=!Cancel
@@ -265,14 +265,14 @@
 !/!34:Login
 !=!Login
 !G!Einloggen
-!S!Inicio de sesión 
+!S!Inicio de sesiÃ³n 
 !I!Login
 !F!Connexion
 
 !/!35:Login ID
 !=!Login ID
 !G!Login ID
-!S!ID de inicio de sesión
+!S!ID de inicio de sesiÃ³n
 !I!ID del login
 !F!ID de connexion
 
@@ -286,7 +286,7 @@
 !/!37:Password
 !=!Password
 !G!Passwort
-!S!Contraseña
+!S!ContraseÃ±a
 !I!Password
 !F!Mot de passe
 
@@ -295,40 +295,40 @@
 !G!Neues Profil erstellen
 !S!Crear perfil nuevo
 !I!Crea nuovo profilo
-!F!Créer Nouveau Profile
+!F!CrÃ©er Nouveau Profile
 
 !/!39:Invalid Login or Password
 !=!Invalid Login or Password
-!G!Ungültiger Login oder Passwort
-!S!Nombre de usuario o contraseña no válido
+!G!UngÃ¼ltiger Login oder Passwort
+!S!Nombre de usuario o contraseÃ±a no vÃ¡lido
 !I!Login o password non validi
 !F!Mot de passe ou Login incorrect
 
 !/!40:Timeout from PXO
 !=!Timeout from PXO
-!G!Zeitüberschreitung von PXO
+!G!ZeitÃ¼berschreitung von PXO
 !S!Se ha sobrepasado el tiempo de PXO
 !I!Timeout da PXO
-!F!Délai dépassé par PXO
+!F!DÃ©lai dÃ©passÃ© par PXO
 
 !/!41:Send Private Message
 !=!Send Private Message
 !G!Private Nachricht senden
 !S!Enviar mensaje privado
 !I!Invia messaggio privato
-!F!Envoyer Message Privé
+!F!Envoyer Message PrivÃ©
 
 !/!42:Join Private Lobby
 !=!Join Private Lobby
 !G!An privater Gruppe teilnehmen
-!S!Unirse al vestíbulo privado
+!S!Unirse al vestÃ­bulo privado
 !I!Entra nel gruppo privato
-!F!Rejoindre Lobby Privé 
+!F!Rejoindre Lobby PrivÃ© 
 
 !/!43:Join Lobby
 !=!Join Lobby
 !G!An Gruppe teilnehmen 
-!S!Unirse al vestíbulo
+!S!Unirse al vestÃ­bulo
 !I!Entra nel gruppo
 !F!Rejoindre Lobby
 
@@ -342,7 +342,7 @@
 !/!45:Get Pilot Info
 !=!Get Pilot Info
 !G!Piloteninfos
-!S!Obtener información de piloto
+!S!Obtener informaciÃ³n de piloto
 !I!Ottieni info sul pilota
 !F!Obtenir Info Pilote
 
@@ -356,16 +356,16 @@
 !/!47:Entered lobby %s!
 !=!Entered lobby %s!
 !G!Teilnahme an Gruppe %s!
-!S!Has entrado en el vestíbulo %s
-!I!Si è unito al gruppo %s
-!F!Accès au Lobby %s
+!S!Has entrado en el vestÃ­bulo %s
+!I!Si Ã¨ unito al gruppo %s
+!F!AccÃ¨s au Lobby %s
 
 !/!48:Writing data to PXO...
 !=!Writing data to PXO...
 !G!Schreibe Daten an PXO...
 !S!Escribiendo datos en PXO...
 !I!Sto scrivendo i dati su PXO...
-!F!Envoi de données à PXO...
+!F!Envoi de donnÃ©es Ã  PXO...
 
 !/!49:Sending Game Over...
 !=!Sending Game Over...
@@ -377,14 +377,14 @@
 !/!50:Entering Lobby...
 !=!Entering Lobby...
 !G!An Gruppe teilnehmen...
-!S!Entrando en el vestíbulo...
+!S!Entrando en el vestÃ­bulo...
 !I!Sto entrando nel gruppo...
-!F!Accès au Lobby...
+!F!AccÃ¨s au Lobby...
 
 !/!51:Unable to join lobby %s!
 !=!Unable to join lobby %s!
-!G!An Gruppe %s teilnehmen nicht möglich!
-!S!No te puedes unir al vestíbulo %s
+!G!An Gruppe %s teilnehmen nicht mÃ¶glich!
+!S!No te puedes unir al vestÃ­bulo %s
 !I!Impossibile unirsi al gruppo %s
 !F!Impossible de joindre le Lobby %s !
 
@@ -393,7 +393,7 @@
 !G!Private Nachricht
 !S!Mensaje privado
 !I!Messaggio privato
-!F!Message Privé
+!F!Message PrivÃ©
 
 !/!53:Send
 !=!Send
@@ -426,7 +426,7 @@
 !/!57:Lobby name:
 !=!Lobby name:
 !G!Gruppenname:
-!S!Nombre de vestíbulo:
+!S!Nombre de vestÃ­bulo:
 !I!Nome del gruppo:
 !F!Nom du Lobby:
 
@@ -449,19 +449,19 @@
 !G!**%s befindet sich in %s
 !S!**%s se encuentra en %s
 !I!**%s si trova in %s
-!F!**%s joignable à %s
+!F!**%s joignable Ã  %s
 
 !/!61:Getting pilot statistics...
 !=!Getting pilot statistics...
 !G!Erhalte Pilotenstatistik...
-!S!Obteniendo estadísticas de piloto...
+!S!Obteniendo estadÃ­sticas de piloto...
 !I!Ricezione in corso delle statistiche sul pilota...
-!F!Réception des stats du pilote...
+!F!RÃ©ception des stats du pilote...
 
 !/!62:Pilot Statistics
 !=!Pilot Statistics
 !G!Pilotenstatistiken
-!S!Estadísticas de piloto
+!S!EstadÃ­sticas de piloto
 !I!Statistiche sul pilota
 !F!Stats du pilote
 
@@ -474,7 +474,7 @@
 
 !/!64:Total Kills: %d
 !=!Total Kills: %d
-!G!Abschüsse gesamt: %d
+!G!AbschÃ¼sse gesamt: %d
 !S!Total de bajas: %d
 !I!Totale uccisioni: %d
 !F!Victimes: %d
@@ -488,7 +488,7 @@
 
 !/!66:Total Self-Destructs: %d
 !=!Total Self-Destructs: %d
-!G!Selbstzerstörungen gesamt: %d
+!G!SelbstzerstÃ¶rungen gesamt: %d
 !S!Total de suicidios: %d
 !I!Totale suicidi: %d
 !F!Auto-destructions: %d
@@ -510,65 +510,65 @@
 !/!69:\1\255\1\1**Error: %s is not on PXO chat.
 !=!\1\255\1\1**Error: %s is not on PXO chat.
 !G!\1\255\1\1**Fehler: %s ist nicht im PXO-Chat.
-!S!\1\255\1\1**Error: %s no está en la charla de PXO.
+!S!\1\255\1\1**Error: %s no estÃ¡ en la charla de PXO.
 !I!\1\255\1\1**Errore: %s non sta chiacchierando via PXO.
 !F!\1\255\1\1**Erreur: %s n'est pas sur le 'chat' de PXO.
 
 !/!70:\1\255\0\0Your nickname contains invalid characters
 !=!\1\255\0\0Your nickname contains invalid characters
-!G!\1\255\0\0Ihr Name enthält ungültige Zeichen 
-!S!\1\255\0\0Tu contraseña tiene caracteres no válidos
+!G!\1\255\0\0Ihr Name enthÃ¤lt ungÃ¼ltige Zeichen 
+!S!\1\255\0\0Tu contraseÃ±a tiene caracteres no vÃ¡lidos
 !I!\1\255\0\0Il tuo nome contiene caratteri non validi
-!F!\1\255\0\0Votre nom contient des caractères incorrects.
+!F!\1\255\0\0Votre nom contient des caractÃ¨res incorrects.
 
 !/!71:\1\255\255\1Private Message to <%s>: %s
 !=!\1\255\255\1Private Message to <%s>: %s
 !G!\1\255\255\1Private Nachricht an <%s>: %s 
 !S!\1\255\255\1Mensaje privado a <%s>: %s
 !I!\1\255\255\1Messaggio privato a <%s>: %s
-!F!\1\255\255\1Message Privé pour <%s>: %s
+!F!\1\255\255\1Message PrivÃ© pour <%s>: %s
 
 !/!72:\1\255\255\1Private Message from <%s>: %s
 !=!\1\255\255\1Private Message from <%s>: %s
 !G!\1\255\255\1Private Nachricht von <%s>: %s
 !S!\1\255\255\1Mensaje privado de <%s>: %s
 !I!\1\255\255\1Messaggio privato da <%s>: %s
-!F!\1\255\255\1Message Privé de <%s>: %s
+!F!\1\255\255\1Message PrivÃ© de <%s>: %s
 
 !/!73:Connection to the chat server has been lost!
 !=!Connection to the chat server has been lost!
 !G!Verbindung zum Chat-Server wurde unterbrochen!
-!S!Se ha perdido la conexión con el servidor de charla
-!I!Si è persa la connessione con il server delle chat!
-!F!La connexion au serveur de conversation a été perdue.
+!S!Se ha perdido la conexiÃ³n con el servidor de charla
+!I!Si Ã¨ persa la connessione con il server delle chat!
+!F!La connexion au serveur de conversation a Ã©tÃ© perdue.
 
 !/!74:You are in lobby %s.
 !=!You are in lobby %s.
 !G!Sie sind in Gruppe %s.
-!S!Estás en el vestíbulo %s.
+!S!EstÃ¡s en el vestÃ­bulo %s.
 !I!Sei nel gruppo %s.
-!F!Vous êtes dans le Lobby %s.
+!F!Vous Ãªtes dans le Lobby %s.
 
 !/!75:%c Make this screen the default
 !=!%c Make this screen the default
-!G!%c Als Standardfenster wählen
+!G!%c Als Standardfenster wÃ¤hlen
 !S!%c Predeterminar esta pantalla
 !I!%c Imposta questa schermata come predefinita
-!F!%c Définir cet écran par défault
+!F!%c DÃ©finir cet Ã©cran par dÃ©fault
 
 !/!76:Return to the chat screen
 !=!Return to the chat screen
-!G!Zurück zum Chat-Fenster
+!G!ZurÃ¼ck zum Chat-Fenster
 !S!Volver a la pantalla de charla
 !I!Torna alla schermata delle chat
-!F!Retour à l'écran de conversation
+!F!Retour Ã  l'Ã©cran de conversation
 
 !/!77:TCP/IP is not active on your system!
 !=!TCP/IP is not active on your system!
 !G!TCP/IP ist auf Ihrem System nicht aktiviert!
 !S!TCP/IP no se encuentra activo en tu sistema
-!I!Il protocollo TCP/IP non è attivo sul sistema!
-!F!TCP/IP n'est pas activé sur votre système !
+!I!Il protocollo TCP/IP non Ã¨ attivo sul sistema!
+!F!TCP/IP n'est pas activÃ© sur votre systÃ¨me !
 
 !/!78:Error
 !=!Error
@@ -580,34 +580,34 @@
 !/!79:Save Settings
 !=!Save Settings
 !G!Einstellungen speichern
-!S!Guardar configuración
+!S!Guardar configuraciÃ³n
 !I!Salva impostazioni
 !F!Enregistrer la configuration
 
 !/!80:Load Settings
 !=!Load Settings
 !G!Einstellungen laden
-!S!Cargar configuración
+!S!Cargar configuraciÃ³n
 !I!Carica impostazioni
 !F!Charger Configuration
 
 !/!81:%s is not currently logged on to PXO
 !=!%s is not currently logged on to PXO
 !G!%s ist zur Zeit nicht bei PXO eingeloggt
-!S!%s no está conectado actualmente a PXO
-!I!%s non è attualmente collegato a PXO
-!F!%s n'est pas connecté à PXO.
+!S!%s no estÃ¡ conectado actualmente a PXO
+!I!%s non Ã¨ attualmente collegato a PXO
+!F!%s n'est pas connectÃ© Ã  PXO.
 
 !/!82:Use rotational velocity
 !=!Use rotational velocity
 !G!Drehgeschwindigkeit verwenden
-!S!Utilizar velocidad de rotación
-!I!Utilizza velocità di rotazione
-!F!Utiliser la vélocité rotationnelle
+!S!Utilizar velocidad de rotaciÃ³n
+!I!Utilizza velocitÃ  di rotazione
+!F!Utiliser la vÃ©locitÃ© rotationnelle
 
 !/!83:Movement averaging
 !=!Movement averaging
-!G!Bewegungsschätzung 
+!G!BewegungsschÃ¤tzung 
 !S!Media de movimiento
 !I!Calcolo del movimento
 !F!Lissage Mouvement
@@ -621,15 +621,15 @@
 
 !/!85:No game was selected to join!
 !=!No game was selected to join!
-!G!Es wurde kein Spiel zum Teilnehmen ausgewählt!
+!G!Es wurde kein Spiel zum Teilnehmen ausgewÃ¤hlt!
 !S!No has seleccionado una partida para unirte
-!I!Non è stata selezionata una partita a cui partecipare
-!F!Sélectionnez la partie à rejoindre !
+!I!Non Ã¨ stata selezionata una partita a cui partecipare
+!F!SÃ©lectionnez la partie Ã  rejoindre !
 
 !/!86:Max. Players
 !=!Max. Players
 !G!Max. Spieler 
-!S!Jugadores máximos
+!S!Jugadores mÃ¡ximos
 !I!Num max giocatori
 !F!Nb Max Joueurs 
 
@@ -638,7 +638,7 @@
 !G!%c Genaue Waffenkollisionen verwenden 
 !S!%c Utilizar colisiones de armas exactas
 !I!%c Utilizza collisioni di armi precise
-!F!%c Utiliser collisions d'armes précises
+!F!%c Utiliser collisions d'armes prÃ©cises
 
 !/!88:Bright player ships
 !=!Bright player ships
@@ -657,7 +657,7 @@
 !/!90: Ranks
 !=!Ensign
 !G!Unteroffizier 
-!S!Alférez
+!S!AlfÃ©rez
 !I!Guardiamarina
 !F!Enseigne
 
@@ -685,7 +685,7 @@
 !/!94: Ranks
 !=!Captain
 !G!Hauptmann
-!S!Capitán
+!S!CapitÃ¡n
 !I!Capitano
 !F!Capitaine
 
@@ -713,7 +713,7 @@
 !/!98: Ranks
 !=!Demigod
 !G!Halbgott
-!S!Semidiós
+!S!SemidiÃ³s
 !I!Semidio
 !F!Demi-dieu
 
@@ -734,7 +734,7 @@
 !/!101:Mission
 !=!Mission
 !G!Mission
-!S!Misión
+!S!MisiÃ³n
 !I!Missione 
 !F!Mission
 

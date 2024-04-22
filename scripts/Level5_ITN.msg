@@ -23,19 +23,19 @@ Critical=Livello critico Schermo di protezione!
 
 DefendReactorsShort= ROBOT-GUIDA: "Difendi i reattori per 12 minuti e poi scappa!"
 
-DefendThoseReactors2=RED ACROPOLIS: "Siamo attaccati!  Difendi tre reattori su cinque finchÈ non ti daremo il segnale. Tutto il personale deve raggiungere le navette d'evacuazione entro 12 minuti. Una volta in orbita, faremo esplodere i reattori per cancellare le prove!"
+DefendThoseReactors2=RED ACROPOLIS: "Siamo attaccati!  Difendi tre reattori su cinque finch√© non ti daremo il segnale. Tutto il personale deve raggiungere le navette d'evacuazione entro 12 minuti. Una volta in orbita, faremo esplodere i reattori per cancellare le prove!"
 
-Destroyed=ROBOT-GUIDA: "Il reattore Ë stato disattivato!"
+Destroyed=ROBOT-GUIDA: "Il reattore √® stato disattivato!"
 
 EnergyConvertedToShields=ROBOT-GUIDA: "Trasferimento di energia agli schermi del reattore in atto!"
 
-EnergytoShield=RED ACROPOLIS: "Troverai in ogni reattore un convertitore energia/schermo. Basta sparargli contro con le armi ad energia per attivare gli schermi di protezione dagli attacchi. Se serve maggiore energia, c'Ë un centro di energia a met‡ del tunnel 3."
+EnergytoShield=RED ACROPOLIS: "Troverai in ogni reattore un convertitore energia/schermo. Basta sparargli contro con le armi ad energia per attivare gli schermi di protezione dagli attacchi. Se serve maggiore energia, c'√® un centro di energia a met√† del tunnel 3."
 
-EntranceDoorMessage=ROBOT-GUIDA: "Il blocco d'emergenza di Red Acropolis Ë attivo!"
+EntranceDoorMessage=ROBOT-GUIDA: "Il blocco d'emergenza di Red Acropolis √® attivo!"
 
 ExitOnly=ROBOT-GUIDA: "Solo uscita d'emergenza!"
 
-GetThoseReactorsMore=RED ACROPOLIS: "Qui Harper. » necessario far ripartire i reattori. Colpisci le pompe a fusione alla base di ogni reattore. Avremo bisogno di almeno 3 reattori in attivit‡ per avere energia sufficiente per la fuga. L'evacuazione completa richieder‡ circa 12 minuti: cerca di farci guadagnare tempo!"
+GetThoseReactorsMore=RED ACROPOLIS: "Qui Harper. √à necessario far ripartire i reattori. Colpisci le pompe a fusione alla base di ogni reattore. Avremo bisogno di almeno 3 reattori in attivit√† per avere energia sufficiente per la fuga. L'evacuazione completa richieder√† circa 12 minuti: cerca di farci guadagnare tempo!"
 
 Health25=Livello schermo 25 per cento...
 
@@ -51,31 +51,31 @@ IntroMessage=Marte - Centro di Ricerche di Red Acropolis|
 
 OOPS=RED ACROPOLIS: "Stiamo perdendo energia dalla griglia! I sistemi di evacuazione d'emergenza cedono! Temo che ci resti solo la resa."
 
-Reactor1Started=ROBOT-GUIDA: "Il reattore 1 Ë ora operativo."
+Reactor1Started=ROBOT-GUIDA: "Il reattore 1 √® ora operativo."
 
 Reactor1Status=Stato del reattore 1 :
 
-Reactor2Started=ROBOT-GUIDA: "Il reattore 2 Ë ora operativo."
+Reactor2Started=ROBOT-GUIDA: "Il reattore 2 √® ora operativo."
 
 Reactor2Status=Stato del reattore 2 :
 
-Reactor3Started=ROBOT-GUIDA: "Il reattore 3 Ë ora operativo."
+Reactor3Started=ROBOT-GUIDA: "Il reattore 3 √® ora operativo."
 
 Reactor3Status=Stato del reattore 3 :
 
-Reactor4Started=ROBOT-GUIDA: "Il reattore 4 Ë ora operativo."
+Reactor4Started=ROBOT-GUIDA: "Il reattore 4 √® ora operativo."
 
 Reactor4Status=Stato del reattore 4 :
 
-Reactor5Started=ROBOT-GUIDA: "Il reattore 5 Ë ora operativo."
+Reactor5Started=ROBOT-GUIDA: "Il reattore 5 √® ora operativo."
 
 Reactor5Status=Stato del reattore 5 :
 
-ReactorDisabled=ROBOT-GUIDA: "Il reattore Ë disattivato!
+ReactorDisabled=ROBOT-GUIDA: "Il reattore √® disattivato!
 
 ReactorHUDLabel=Reattori:
 
-ReactorsOnline=ROBOT-GUIDA: "Tutti e 5 i reattori sono in attivit‡."
+ReactorsOnline=ROBOT-GUIDA: "Tutti e 5 i reattori sono in attivit√†."
 
 SelfDestruct=RED ACROPOLIS: "Stiamo inizializzando la sequenza del conto alla rovescia per fare esplodere i reattori... Hai 90 secondi per guadagnare la distanza minima di sicurezza prima che arrivino allo stato critico! Scappa... PRESTO!"
 
@@ -89,5 +89,5 @@ StartTimer=Avvia il temporizzatore!
 
 Testing=Prova!
 
-WereGettinOut=RED ACROPOLIS: " Bel lavoro! Tutto il personale presente e le navette sono pronte al decollo. L'autodistruzione dei reattori avverr‡ in 90 secondi, perciÚ scappate subito! Correte all'uscita presso il fulcro principale!"
+WereGettinOut=RED ACROPOLIS: " Bel lavoro! Tutto il personale presente e le navette sono pronte al decollo. L'autodistruzione dei reattori avverr√† in 90 secondi, perci√≤ scappate subito! Correte all'uscita presso il fulcro principale!"
 

@@ -27,21 +27,21 @@
 !/!0:This is the Modem Client
 !=!This is the Modem Client
 !G!Dies ist der Modem Client
-!S!Éste es el cliente de módem
-!I!Questo è il client del modem
+!S!Ã‰ste es el cliente de mÃ³dem
+!I!Questo Ã¨ il client del modem
 !F!Le Modem Client 
 
 !/!1:Use this to play games via a modem directly
 !=!Use this to play games via a modem directly
-!G!Verwenden Sie dies, um direkt über das Modem zu spielen 
-!S!Usa esto para jugar partidas directamente a través del módem
+!G!Verwenden Sie dies, um direkt Ã¼ber das Modem zu spielen 
+!S!Usa esto para jugar partidas directamente a travÃ©s del mÃ³dem
 !I!Da usare per giocare direttamente via modem
 !F!Utilisez-le pour jouer par modem direct
 
 !/!2:Return to main menu
 !=!Return to main menu
-!G!Zurück zum Hauptmenü
-!S!Volver al menú principal
+!G!ZurÃ¼ck zum HauptmenÃ¼
+!S!Volver al menÃº principal
 !I!Ritorna al menu principale
 !F!Retour au menu principal
 
@@ -50,7 +50,7 @@
 !G!Mit anderem Spieler verbunden
 !S!Conectar con otro jugador
 !I!Collegato ad altro giocatore
-!F!Connecté à un autre joueur
+!F!ConnectÃ© Ã  un autre joueur
 
 !/!4:
 !=!
@@ -71,7 +71,7 @@
 !G!Teilnehmen 
 !S!Seleccionado Unirse a partida
 !I!Entra nella partita selezionata
-!F!Joindre la partie sélectionnée
+!F!Joindre la partie sÃ©lectionnÃ©e
 
 !/!7:Start a New Game
 !=!Start a New Game
@@ -83,9 +83,9 @@
 !/!8:Search for Games at Address:
 !=!Search for Games at Address:
 !G!Spiele unter folgender Adresse suchen:
-!S!Buscar partidas en dirección:
+!S!Buscar partidas en direcciÃ³n:
 !I!Cerca partite all'indirizzo:
-!F!Chercher des parties à l'adresse suivante
+!F!Chercher des parties Ã  l'adresse suivante
 
 !/!9:Scan for Local Games
 !=!Scan for Local Games
@@ -104,7 +104,7 @@
 !/!11:Mission Name:
 !=!Mission Name:
 !G!Missionsname
-!S!Nombre de misión:
+!S!Nombre de misiÃ³n:
 !I!Nome della missione:
 !F!Nom de la Mission
 
@@ -139,14 +139,14 @@
 !/!16:Time Limit
 !=!Time Limit
 !G!Zeitlimit 
-!S!Límite de tiempo
+!S!LÃ­mite de tiempo
 !I!Limite di tempo
 !F!Temps limite 
 
 !/!17:Goal Limit
 !=!Goal Limit
 !G!Ziellimit 
-!S!Límite de objetivo
+!S!LÃ­mite de objetivo
 !I!Limite dell'obiettivo
 !F!objectif limite 
 
@@ -162,13 +162,13 @@
 !G!Konfigurieren zugelassener Schiffe/Objekte 
 !S!Configurar naves/objetos permitidos
 !I!Configura navi/oggetti consentiti
-!F!Configuration des vaisseaux/équipements autorisés
+!F!Configuration des vaisseaux/Ã©quipements autorisÃ©s
 
 !/!20:Server mode
 !=!Server mode
 !G!Server-Modus 
 !S!Modo del servidor
-!I!Modalità server
+!I!ModalitÃ  server
 !F!Mode serveur
 
 !/!21:Client/Server
@@ -190,28 +190,28 @@
 !G!Zugelassene Schiffe:
 !S!Naves permitidas:
 !I!Navi consentite:
-!F!Vaisseaux autorisés
+!F!Vaisseaux autorisÃ©s
 
 !/!24:Respawn Rate:
 !=!Respawn Rate:
-!G!Zurückbringrate:
-!S!Velocidad de resurrección:
-!I!Velocità di ricomparsa:
+!G!ZurÃ¼ckbringrate:
+!S!Velocidad de resurrecciÃ³n:
+!I!VelocitÃ  di ricomparsa:
 !F!Taux d'apparition
 
 !/!25:Please choose a modem:
 !=!Please choose a modem:
-!G!Wählen Sie bitte ein Modem aus:
-!S!Eelige un módem:
+!G!WÃ¤hlen Sie bitte ein Modem aus:
+!S!Eelige un mÃ³dem:
 !I!Scegli un modem:
 !F!Choisissez un modem
 
 !/!26:Number to Dial:
 !=!Number to Dial:
-!G!Zu wählende Nummer:
-!S!Número para marcar:
+!G!Zu wÃ¤hlende Nummer:
+!S!NÃºmero para marcar:
 !I!Numero da comporre:
-!F!Numéro à composer
+!F!NumÃ©ro Ã  composer
 
 !/!27:Dial..
 !=!Dial..
@@ -223,9 +223,9 @@
 !/!28:Answer modem/Host game
 !=!Answer modem/Host game
 !G!Antworte Modem/Host Spiel 
-!S!Responder partida módem/anfitrión
+!S!Responder partida mÃ³dem/anfitriÃ³n
 !I!Rispondi modem/Ospita partita
-!F!Réponse modem/Accueillir Partie
+!F!RÃ©ponse modem/Accueillir Partie
 
 !/!29:Error
 !=!Error
@@ -237,13 +237,13 @@
 !/!30:No modems were detected.
 !=!No modems were detected.
 !G!Kein Modem gefunden.
-!S!No se detecta ningún módem.
+!S!No se detecta ningÃºn mÃ³dem.
 !I!Modem non trovato
-!F!Aucun modem détecté.
+!F!Aucun modem dÃ©tectÃ©.
 
 !/!31:Unable to join game.
 !=!Unable to join game.
-!G!Spielteilnahme nicht möglich.
+!G!Spielteilnahme nicht mÃ¶glich.
 !S!No es posible unirse a la partida.
 !I!Impossibile partecipare alla partita. 
 !F!Impossible de joindre la partie.
@@ -257,21 +257,21 @@
 
 !/!33:Unable to connect.
 !=!Unable to connect.
-!G!Verbinden nicht möglich.
+!G!Verbinden nicht mÃ¶glich.
 !S!No se puede conectar.
 !I!Impossibile collegarsi.
 !F!Connexion impossible.
 
 !/!34:Unable to initialize DirectPlay.
 !=!Unable to initialize DirectPlay.
-!G!DirectPlay Initialisierung nicht möglich.
+!G!DirectPlay Initialisierung nicht mÃ¶glich.
 !S!No se puede inicializar DirectPlay.
 !I!Impossibile inizializzare DirectPlay.
 !F!Impossible d'initialiser DirectPlay
 
 !/!35:Dialing...
 !=!Dialing...
-!G!Wähle...
+!G!WÃ¤hle...
 !S!Marcando...
 !I!Composizione in corso...
 !F!Appel...
@@ -279,14 +279,14 @@
 !/!36:Save Settings
 !=!Save Settings
 !G!Save Settings
-!S!Guardar configuración
+!S!Guardar configuraciÃ³n
 !I!Salva impostazioni
 !F!Enregistrer la configuration
 
 !/!37:Load Settings
 !=!Load Settings
 !G!Einstellungen laden 
-!S!Cargar configuración
+!S!Cargar configuraciÃ³n
 !I!Carica impostazioni
 !F!Charger Configuration
 
@@ -302,7 +302,7 @@
 !G!%c Exakte Waffenkollisionen verwenden 
 !S!%c Utilizar colisiones de armas exactas
 !I!%c Utilizza collisioni di armi precise
-!F!%c Utiliser collisions d'armes précises
+!F!%c Utiliser collisions d'armes prÃ©cises
 
 !/!40:Modem Game
 !=!Modem Game

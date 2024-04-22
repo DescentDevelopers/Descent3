@@ -27,30 +27,30 @@
 !/!0:This is the DirectPlay Serial Network Client
 !=!This is the DirectPlay Serial Network Client
 !G!Dies ist der serielle DirectPlay Netzwerk Client 
-!S!Éste es el cliente de red de serie DirectPlay
-!I!Questo è il client di rete seriale di DirectPlay
-!F!Le Client Réseau Série DirectPlay
+!S!Ã‰ste es el cliente de red de serie DirectPlay
+!I!Questo Ã¨ il client di rete seriale di DirectPlay
+!F!Le Client RÃ©seau SÃ©rie DirectPlay
 
 !/!1:Use this to play games via DirectPlay using direct
 !=!Use this to play games via DirectPlay using direct
-!G!Verwenden Sie dies, um direkt über DirectPlay zu spielen 
-!S!Utilízalo para jugar partidas por medio de DirectPlay con direct
+!G!Verwenden Sie dies, um direkt Ã¼ber DirectPlay zu spielen 
+!S!UtilÃ­zalo para jugar partidas por medio de DirectPlay con direct
 !I!da usare per giocare via DirectPlay.
 !F!A utiliser pour les parties via DirectPlay.
 
 !/!2:Return to main menu
 !=!Return to main menu
-!G!Zurück zum Hauptmenü 
-!S!Volver al menú principal
+!G!ZurÃ¼ck zum HauptmenÃ¼ 
+!S!Volver al menÃº principal
 !I!Torna al menu principale
 !F!Retour au menu principal
 
 !/!3:serial connections (null modem)
 !=!serial connections (null modem)
 !G!Serielle Verbindung (Nullmodem)
-!S!conexiones de serie (cable módem nulo)
+!S!conexiones de serie (cable mÃ³dem nulo)
 !I!connessioni seriali (cavo null modem)
-!F!connexion série (câble 'null modem')
+!F!connexion sÃ©rie (cÃ¢ble 'null modem')
 
 !/!4:
 !=!
@@ -83,9 +83,9 @@
 !/!8:Search for Games at Address:
 !=!Search for Games at Address:
 !G!Spiele unter folgender Adresse suchen:
-!S!Buscar partidas en la dirección:
+!S!Buscar partidas en la direcciÃ³n:
 !I!Cerca partite all'indirizzo:
-!F!Chercher des parties à l'adresse suivante :
+!F!Chercher des parties Ã  l'adresse suivante :
 
 !/!9:Scan for Local Games
 !=!Scan for Local Games
@@ -104,7 +104,7 @@
 !/!11:Mission Name:
 !=!Mission Name:
 !G!Missionsname:
-!S!Nombre de misión:
+!S!Nombre de misiÃ³n:
 !I!Nome della missione:
 !F!Nom de la mission
 
@@ -120,7 +120,7 @@
 !G!Spiel starten 
 !S!Comenzar partida
 !I!Inizia partita:
-!F!Démarrer Partie
+!F!DÃ©marrer Partie
 
 !/!14:Multiplayer Options
 !=!Multiplayer Options
@@ -139,14 +139,14 @@
 !/!16:Time Limit
 !=!Time Limit
 !G!Zeitlimit 
-!S!Límite de tiempo
+!S!LÃ­mite de tiempo
 !I!Limite di tempo
 !F!Temps Limite
 
 !/!17:Goal Limit
 !=!Goal Limit
 !G!Ziellimit 
-!S!Límite de objetivo
+!S!LÃ­mite de objetivo
 !I!Limite dell'obiettivo
 !F!Limite d'Objectif
 
@@ -162,13 +162,13 @@
 !G!Konfigurieren zugelassener Schiffe/Objekte 
 !S!Configurar naves/objetos permitidos
 !I!Configura navi/oggetti consentiti
-!F!Configuration des Vaisseaux/Equipements Autorisés
+!F!Configuration des Vaisseaux/Equipements AutorisÃ©s
 
 !/!20:Server mode
 !=!Server mode
 !G!Server-Modus
 !S!Modo de servidor
-!I!Modalità server
+!I!ModalitÃ  server
 !F!Mode Serveur
 
 !/!21:Client/Server
@@ -190,13 +190,13 @@
 !G!Zugelassene Schiffe:
 !S!Naves permitidas:
 !I!Navi consentite:
-!F!Vaisseaux autorisés
+!F!Vaisseaux autorisÃ©s
 
 !/!24:Respawn Rate:
 !=!Respawn Rate:
 !G!Wiederbringrate:
-!S!Velocidad de resurrección:
-!I!Velocità di ricomparsa:
+!S!Velocidad de resurrecciÃ³n:
+!I!VelocitÃ  di ricomparsa:
 !F!Taux d'apparition
 
 !/!25:Error
@@ -208,7 +208,7 @@
 
 !/!26:Unable to join game.
 !=!Unable to join game.
-!G!Spielteilnahme nicht möglich.
+!G!Spielteilnahme nicht mÃ¶glich.
 !S!No es posible unirse a la partida.
 !I!Impossibile partecipare alla partita.
 !F!Impossible de joindre la partie.
@@ -222,14 +222,14 @@
 
 !/!28:Unable to connect.
 !=!Unable to connect.
-!G!Verbinden nicht möglich.
+!G!Verbinden nicht mÃ¶glich.
 !S!No es posible conectar.
 !I!Impossibile collegarsi.
 !F!Connexion impossible.
 
 !/!29:Unable to initialize DirectPlay.
 !=!Unable to initialize DirectPlay.
-!G!DirectPlay Initialisierung nicht möglich.
+!G!DirectPlay Initialisierung nicht mÃ¶glich.
 !S!No se puede inicializar DirectPlay.
 !I!Impossibile inizializzare DirectPlay.
 !F!Impossible d'initialiser DirectPlay.
@@ -308,41 +308,41 @@
 !=!Baud Rate
 !G!Baud Rate 
 !S!Velocidad en baudios
-!I!Velocità in baud
-!F!Débit en bauds
+!I!VelocitÃ  in baud
+!F!DÃ©bit en bauds
 
 !/!41:Stop Bits
 !=!Stop Bits
 !G!Stopbits
 !S!Bits de parada
 !I!Bit di stop
-!F!Bits d'arrêt
+!F!Bits d'arrÃªt
 
 !/!42:Parity
 !=!Parity
-!G!Parität
+!G!ParitÃ¤t
 !S!Paridad
-!I!Parità
-!F!Parité
+!I!ParitÃ 
+!F!ParitÃ©
 
 !/!43:Flow Control
 !=!Flow Control
 !G!Datenflusskontrolle
 !S!Control de flujo
 !I!Controllo di flusso
-!F!Contrôle de Flux
+!F!ContrÃ´le de Flux
 
 !/!44:Save Settings
 !=!Save Settings
 !G!Einstellungen speichern
-!S!Guardar configuración
+!S!Guardar configuraciÃ³n
 !I!Salva impostazioni
 !F!Enregistrer la configuration
 
 !/!45:Load Settings
 !=!Load Settings
 !G!Einstellungen laden
-!S!Cargar configuración
+!S!Cargar configuraciÃ³n
 !I!Carica impostazioni
 !F!Charger la configuration 
 
@@ -358,7 +358,7 @@
 !G!%c Exakte Waffenkollisionen verwenden 
 !S!%c Utilizar colisiones de armas exactas
 !I!%c Utilizza collisioni di armi precise
-!F!%c collisions d'armes précises
+!F!%c collisions d'armes prÃ©cises
 
 !/!48:Serial Game (title)
 !=!Serial Game

@@ -13,25 +13,25 @@ NEXT_MESSAGE_ID_NUMBER     45
 
 // Message List
 
-1ReactorOn=GUIDEBOT: "Un réacteur sur cinq réactivé. Convertisseurs d'énergie disponibles."
+1ReactorOn=GUIDEBOT: "Un rÃ©acteur sur cinq rÃ©activÃ©. Convertisseurs d'Ã©nergie disponibles."
 
 BLANK=
 
 Critical=Niveau Bouclier Critique !
 
-DefendThoseReactors2=ACROPOLE ROUGE: "On nous attaque ! Protégez trois des cinq réacteurs jusqu'à notre signal.  Tous les personnels doivent rejoindre les navettes d'évacuation dans les douze prochaines minutes. Nous détruirons les réacteurs depuis l'orbite  dès que tout le monde sera à l'abri."
+DefendThoseReactors2=ACROPOLE ROUGE: "On nous attaque ! ProtÃ©gez trois des cinq rÃ©acteurs jusqu'Ã  notre signal.  Tous les personnels doivent rejoindre les navettes d'Ã©vacuation dans les douze prochaines minutes. Nous dÃ©truirons les rÃ©acteurs depuis l'orbite  dÃ¨s que tout le monde sera Ã  l'abri."
 
-Destroyed=GUIDEBOT: "Réacteur Désactivé !"
+Destroyed=GUIDEBOT: "RÃ©acteur DÃ©sactivÃ© !"
 
-EnergyConvertedToShields=GUIDEBOT: "Transfert d'énergie aux boucliers du réacteur !"
+EnergyConvertedToShields=GUIDEBOT: "Transfert d'Ã©nergie aux boucliers du rÃ©acteur !"
 
-EnergytoShield=ACROPOLE ROUGE: "Vous trouverez un convertisseur d'énergie en bouclier sur chaque réacteur. Tirez dessus avec vos armes à énergie pour renforcer le bouclier d'un réacteur s'il est attaqué. Si vous avez besoin de plus d'énergie, il y a un centre d'énergie au milieu du tunnel 3."
+EnergytoShield=ACROPOLE ROUGE: "Vous trouverez un convertisseur d'Ã©nergie en bouclier sur chaque rÃ©acteur. Tirez dessus avec vos armes Ã  Ã©nergie pour renforcer le bouclier d'un rÃ©acteur s'il est attaquÃ©. Si vous avez besoin de plus d'Ã©nergie, il y a un centre d'Ã©nergie au milieu du tunnel 3."
 
-EntranceDoorMessage=GUIDEBOT: "Verrouillage Sécurité de Secours de l'Acropole Rouge actif !"
+EntranceDoorMessage=GUIDEBOT: "Verrouillage SÃ©curitÃ© de Secours de l'Acropole Rouge actif !"
 
 ExitOnly=GUIDEBOT: "Sortie de Secours uniquement !"
 
-GetThoseReactorsMore=ACROPOLE ROUGE: "Ici Harper.  Vous devez redémarrer les réacteurs. Touchez les pompes à Fusion à la base de chaque réacteur.  Il nous faut au moins 3 réacteurs en ligne pour pouvoir partir.  L'évacuation complète nous prendra à peu près 12 minutes - Donnez-nous du temps !"
+GetThoseReactorsMore=ACROPOLE ROUGE: "Ici Harper.  Vous devez redÃ©marrer les rÃ©acteurs. Touchez les pompes Ã  Fusion Ã  la base de chaque rÃ©acteur.  Il nous faut au moins 3 rÃ©acteurs en ligne pour pouvoir partir.  L'Ã©vacuation complÃ¨te nous prendra Ã  peu prÃ¨s 12 minutes - Donnez-nous du temps !"
 
 Health25=Niveau Bouclier 25 %
 
@@ -39,55 +39,55 @@ Health50=Niveau Bouclier 50 %
 
 Health75=Niveau Bouclier 70 %
 
-HITPOINTS=Points Réacteur : %f
+HITPOINTS=Points RÃ©acteur : %f
 
 IncomingMessage=Message en provenance de l'Acropole Rouge... (SHIFT-F8)
 
 IntroMessage=Mars - Centre de Recherches de l'Acropole Rouge|
 
-OOPS=ACROPOLE ROUGE: "Nous perdons de la l'énergie sur tout le réseau ! Les systèmes d'évacuation de secours sont en panne ! Je crois qu'il n'y a plus rien à faire... sinon se rendre."
+OOPS=ACROPOLE ROUGE: "Nous perdons de la l'Ã©nergie sur tout le rÃ©seau ! Les systÃ¨mes d'Ã©vacuation de secours sont en panne ! Je crois qu'il n'y a plus rien Ã  faire... sinon se rendre."
 
-Reactor1Started=GUIDEBOT: "Le Réacteur 1 est maintenant opérationnel."
+Reactor1Started=GUIDEBOT: "Le RÃ©acteur 1 est maintenant opÃ©rationnel."
 
-Reactor1Status=Statut Réacteur 1:
+Reactor1Status=Statut RÃ©acteur 1:
 
-Reactor2Started=GUIDEBOT: "Le Réacteur 2 est maintenant opérationnel."
+Reactor2Started=GUIDEBOT: "Le RÃ©acteur 2 est maintenant opÃ©rationnel."
 
-Reactor2Status=Statut Réacteur 2:
+Reactor2Status=Statut RÃ©acteur 2:
 
-Reactor3Started=GUIDEBOT: Le Réacteur 3 est maintenant opérationnel."
+Reactor3Started=GUIDEBOT: Le RÃ©acteur 3 est maintenant opÃ©rationnel."
 
-Reactor3Status=Statut Réacteur 3:
+Reactor3Status=Statut RÃ©acteur 3:
 
-Reactor4Started=GUIDEBOT: "Le Réacteur 4 est maintenant opérationnel."
+Reactor4Started=GUIDEBOT: "Le RÃ©acteur 4 est maintenant opÃ©rationnel."
 
-Reactor4Status=Statut Réacteur 4:
+Reactor4Status=Statut RÃ©acteur 4:
 
-Reactor5Started=GUIDEBOT: "Le Réacteur 5 est maintenant opérationnel."
+Reactor5Started=GUIDEBOT: "Le RÃ©acteur 5 est maintenant opÃ©rationnel."
 
-Reactor5Status=Statut Réacteur 5 :
+Reactor5Status=Statut RÃ©acteur 5 :
 
-ReactorDisabled=GUIDEBOT: "Réacteur désactivé !"
+ReactorDisabled=GUIDEBOT: "RÃ©acteur dÃ©sactivÃ© !"
 
-ReactorsOnline=GUIDEBOT: "Les cinq réacteurs sont maintenant en ligne."
+ReactorsOnline=GUIDEBOT: "Les cinq rÃ©acteurs sont maintenant en ligne."
 
-SelfDestruct=ACROPOLE ROUGE: "Nous commençons le compte à rebours avant l'auto-destruction des réacteurs. Vous avez quatre-vingt dix secondes pour vous mettre en lieu sûr avant leur fusion ! Evacuez !! IMMEDIATEMENT !!"
+SelfDestruct=ACROPOLE ROUGE: "Nous commenÃ§ons le compte Ã  rebours avant l'auto-destruction des rÃ©acteurs. Vous avez quatre-vingt dix secondes pour vous mettre en lieu sÃ»r avant leur fusion ! Evacuez !! IMMEDIATEMENT !!"
 
 Shake=Nettoyez la mine !
 
 ShieldsAtMax=GUIDEBOT: "Niveau Maximum des Boucliers atteint !"
 
-StartTimer=Démarrez le Chrono maintenant !
+StartTimer=DÃ©marrez le Chrono maintenant !
 
 Testing=Test !
 
-WereGettinOut=ACROPOLE ROUGE: "Tous les agents sont présents, et les navettes ont reçu l'autorisation de décoller. Les réacteurs s'auto-détruiront dans 90 secondes alors ne traînons pas ! Vous devriez pouvoir trouver une sortie à partie du centre principal !"
+WereGettinOut=ACROPOLE ROUGE: "Tous les agents sont prÃ©sents, et les navettes ont reÃ§u l'autorisation de dÃ©coller. Les rÃ©acteurs s'auto-dÃ©truiront dans 90 secondes alors ne traÃ®nons pas ! Vous devriez pouvoir trouver une sortie Ã  partie du centre principal !"
 
-30SecondsLeft=GUIDEBOT: "Plus que 30 secondes pour évacuer !  Vite !"
+30SecondsLeft=GUIDEBOT: "Plus que 30 secondes pour Ã©vacuer !  Vite !"
 
-DefendReactorsShort=GUIDEBOT: "Protégez les réacteurs pendant 12 minutes et évacuez les lieux !"
+DefendReactorsShort=GUIDEBOT: "ProtÃ©gez les rÃ©acteurs pendant 12 minutes et Ã©vacuez les lieux !"
 
-ReactorHUDLabel=Réacteurs :
+ReactorHUDLabel=RÃ©acteurs :
 
-SelfDestruct=GUIDEBOT: "Ils en sont sortis vivants. Sortez d'ici avant que la séquence d'auto-destruction ne soit activée !"
+SelfDestruct=GUIDEBOT: "Ils en sont sortis vivants. Sortez d'ici avant que la sÃ©quence d'auto-destruction ne soit activÃ©e !"
 

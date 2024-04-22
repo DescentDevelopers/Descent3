@@ -32,19 +32,19 @@
 !=!%s got blasted by %s
 !G!%s wurde von %s geschlagen
 !S!%s ha sido abatido por %s
-!I!%s è stato colpito da %s
-!F!%s a été éliminé par %s.
+!I!%s Ã¨ stato colpito da %s
+!F!%s a Ã©tÃ© Ã©liminÃ© par %s.
 
 !/!1:%s knows %s is his god (victim first)
 !=!%s knows %s is his god
-!G!%s weiss, dass %s ihm überlegen ist
+!G!%s weiss, dass %s ihm Ã¼berlegen ist
 !S!%s sabe que %s es su dios
-!I!%s sa che %s è il suo dio
+!I!%s sa che %s Ã¨ il suo dio
 !F!%s sait que %s est son dieu.
 
 !/!2:%s sucks %s's milk (victim first)
 !=!%s sucks %s's milk
-!G!%s leckt %ss Füsse
+!G!%s leckt %ss FÃ¼sse
 !S!%s muerde el polvo gracias a %s
 !I!%s morde la polvere grazie a %s
 !F!%s prend tout ce que lui donne %s.
@@ -58,45 +58,45 @@
 
 !/!4:%s got killed by %s (victim first)
 !=!%s got killed by %s
-!G!%s wurde von %s getötet
+!G!%s wurde von %s getÃ¶tet
 !S!%s ha sido asesinado por %s
-!I!%s è stato ucciso da %s
+!I!%s Ã¨ stato ucciso da %s
 !F!%s s'est fait tuer par %s.
 
 !/!5:%s becomes another statistic for %s! (victim first)
 !=!%s becomes another statistic for %s!
 !G!%s ist ein Weiterer auf %ss Erfolgsliste!
-!S!%s se ha convertido en otra estadística para %s
-!I!%s è solo un altro numero per %s
+!S!%s se ha convertido en otra estadÃ­stica para %s
+!I!%s Ã¨ solo un altro numero per %s
 !F!%s n'est plus qu'un nom sur la liste de %s.
 
 !/!6:%s realizes %s is a better player (victim first)
 !=!%s realizes %s is a better player
 !G!%s erkennt, dass %s ein besserer Spieler ist
 !S!%s comprende que %s es mejor jugador
-!I!%s si rende conto che %s è un giocatore migliore
+!I!%s si rende conto che %s Ã¨ un giocatore migliore
 !F!%s sait bien que %s joue mieux que lui.
 
 !/!7:%s was no match for %s (victim first)
 !=!%s was no match for %s
 !G!%s war %s nicht gewachsen 
 !S!%s no estaba a la altura de %s
-!I!%s non è all'altezza di %s
+!I!%s non Ã¨ all'altezza di %s
 !F!%s ne peut pas lutter contre %s.
 
 !/!8:%s wishes he was as good as %s (victim first)
 !=!%s wishes he was as good as %s
-!G!%s wünschte, genauso gut zu sein wie %s 
-!S!A %s le gustaría ser tan bueno como %s
+!G!%s wÃ¼nschte, genauso gut zu sein wie %s 
+!S!A %s le gustarÃ­a ser tan bueno como %s
 !I!%s vorrebbe essere in gamba quanto %s
-!F!%s aimerait être aussi bon que %s.
+!F!%s aimerait Ãªtre aussi bon que %s.
 
 !/!9:%s got messed up by %s (victim first)
 !=!%s got messed up by %s
 !G!%s wurde von %s bearbeitet
 !S!%se ha metido en problemas por culpa de %s
-!I!%s è nei guai per colpa di %s
-!F!%s s'est fait oblitérer par %s.
+!I!%s Ã¨ nei guai per colpa di %s
+!F!%s s'est fait oblitÃ©rer par %s.
 
 !/! ===================== Suicide Messages ==========================
 
@@ -105,34 +105,34 @@
 !G!%s vernichtet sich selbst
 !S!%s se vuela por los aires
 !I!%s si fa saltare in aria
-!F!%s s'éclate tout seul.
+!F!%s s'Ã©clate tout seul.
 
 !/!11:%s Bursts his own bubble
 !=!%s Bursts his own bubble
-!G!%s bricht sich die eigenen Flügel
+!G!%s bricht sich die eigenen FlÃ¼gel
 !S!%s hace estallar su propia burbuja
 !I!%s fa scoppiare la propria bolla
-!F!%s se pète la bulle.
+!F!%s se pÃ¨te la bulle.
 
 !/!12:%s doesn't know his own strength
 !=!%s doesn't know his own strength
-!G!%s kennt die eigenen Stärken nicht
+!G!%s kennt die eigenen StÃ¤rken nicht
 !S!%s no es consciente de su propia fuerza
-!I!%s non è conscio della propria forza
-!F!%s ne connaît pas sa force.
+!I!%s non Ã¨ conscio della propria forza
+!F!%s ne connaÃ®t pas sa force.
 
 !/!13:No prize for %s
 !=!No prize for %s
-!G!Keine Prämie für %s
+!G!Keine PrÃ¤mie fÃ¼r %s
 !S!No hay premio para %s
 !I!Nessun premio per %s
 !F!Pas de prix pour %s.
 
 !/!14:%s doesn't wish to live anymore
 !=!%s doesn't wish to live anymore
-!G!%s möchte nicht mehr leben
+!G!%s mÃ¶chte nicht mehr leben
 !S!%s no quiere seguir viviendo
-!I!%s è stanco di vivere
+!I!%s Ã¨ stanco di vivere
 !F!%s ne voulait plus vivre.
 
 !/!15:%s SUCKS!
@@ -161,11 +161,11 @@
 !G!Sie haben eine Vorratskugel bekommen
 !S!Has conseguido un orbe de la horda
 !I!Hai guadagnato un globo
-!F!Vous avez un globe précieux.
+!F!Vous avez un globe prÃ©cieux.
 
 !/!19:You've got all the orbs you can handle	(HUD Message when you try to pickup an orb, but have max)
 !=!You've got all the orbs you can handle
-!G!Sie haben alle Kugeln, die Sie nehmen können
+!G!Sie haben alle Kugeln, die Sie nehmen kÃ¶nnen
 !S!Tienes todos los orbes que puedes llevar
 !I!Non puoi prendere altri globi
 !F!Vous ne pouvez pas avoir plus de globes.
@@ -207,7 +207,7 @@
 
 !/!25:Kills		(Stats column label)
 !=!Kills
-!G!Abschüsse
+!G!AbschÃ¼sse
 !S!Bajas
 !I!Uccisioni
 !F!Victimes
@@ -237,13 +237,13 @@
 !=!%s has joined the Hoard
 !G!%s hat sich dem Hort angeschlossen
 !S!%s se ha unido a la Horda
-!I!%s è entrato nel Mucchio
+!I!%s Ã¨ entrato nel Mucchio
 !F!%s a rejoint le Magot
 
 !/!30:Stats		(Stats column label)
 !=!Stats
 !G!Statistik
-!S!Estadísticas
+!S!EstadÃ­sticas
 !I!Statistiche
 !F!Stats
 !/!31: Name of the game (maybe don't localize)
@@ -256,13 +256,13 @@
 !/!32: Score label
 !=!Score
 !G!Punkte
-!S!Puntuación
+!S!PuntuaciÃ³n
 !I!Punteggio
 !F!Score
 
 !/!33: Highest score label
 !=!Highest
-!G!Höchster
+!G!HÃ¶chster
 !S!Mayor
 !I!Migliore
 !F!Meilleur
@@ -277,7 +277,7 @@
 !/!35: HUD Score colors option in on-screen menu
 !=!HUD Score Colors
 !G!CPA Farbe der Punkte
-!S!Colores de puntuación del presentador
+!S!Colores de puntuaciÃ³n del presentador
 !I!Colori del punteggio del collimatore
 !F!Couleurs de Score
 
@@ -298,7 +298,7 @@
 !/!38: Game configuration option in on-screen menu
 !=!Game Configuration
 !G!Spielkonfiguration
-!S!Configuración de partida
+!S!ConfiguraciÃ³n de partida
 !I!Configurazione del gioco
 !F!Configuration Jeu
 
@@ -325,15 +325,15 @@
 
 !/!42: Save stats header
 !=![Rank] [Name]                     [Score]     [Kills]     [Deaths]   [Suicides] [Highest Goal] [Time In Game]
-!G![Rang] [Name]                     [Punkte]    [Abschüsse] [Verl. Leben]    [Selbstmorde] [Höchstes Ziel] [Spielzeit]
-!S![Rango][Nombre]                   [Puntuación][Bajas]     [Muertes]  [Suicidios] [Objetivo más alto][Tiempo en partida]
+!G![Rang] [Name]                     [Punkte]    [AbschÃ¼sse] [Verl. Leben]    [Selbstmorde] [HÃ¶chstes Ziel] [Spielzeit]
+!S![Rango][Nombre]                   [PuntuaciÃ³n][Bajas]     [Muertes]  [Suicidios] [Objetivo mÃ¡s alto][Tiempo en partida]
 !I![Pos][Nome]                     [Punt]       [Ucc]      [Morti]     [Suicidi]   [Obiettivo superiore] [Tempo in partita]
-!F![Rang] [Nom]                      [Score]     [Victimes]	 [Morts]   [Suicides] [Meilleur Obj.][Durée de Jeu]
+!F![Rang] [Nom]                      [Score]     [Victimes]	 [Morts]   [Suicides] [Meilleur Obj.][DurÃ©e de Jeu]
 
 !/!43: Save stats header
 !=!\r\nIndividual Stats\r\n
 !G!\r\nIndividuelle Statistik\r\n
-!S!r\n\Estadísticas individuales\r\n
+!S!r\n\EstadÃ­sticas individuales\r\n
 !I!r\n\Statistiche individuali\r\n
 !F!\r\nStats Personnelles\r\n
 
@@ -342,11 +342,11 @@
 !G!Gesamte Spielzeit: %s
 !S!Tiempo total en partida: %s
 !I!Tempo totale partita: %s
-!F!Durée de la partie: %s
+!F!DurÃ©e de la partie: %s
 
 !/!45: Save stats header
 !=!Callsign:                     Kills:    Deaths:
-!G!Erkennungsname:               Abschüsse: Verl. Leben:
+!G!Erkennungsname:               AbschÃ¼sse: Verl. Leben:
 !S!Llamada:                      Bajas:    Muertes:
 !I!Chiamata:                     Ucc       Morti:
 !F!Indicatif:                    Victimes: Morts:
@@ -354,9 +354,9 @@
 !/!46: Hud message when the stats are saved
 !=!Stats saved to file
 !G!Statistik in Datei gespeichert
-!S!Estadísticas guardadas en archivo
+!S!EstadÃ­sticas guardadas en archivo
 !I!Statistiche salvate
-!F!Stats enregistrées
+!F!Stats enregistrÃ©es
 
 !/!47: Name of the game in the stats screen
 !=!Hoard
@@ -366,17 +366,17 @@
 !F!Le Magot
 !/!48: Return to game option in game config
 !=!Back to Game
-!G!Zurück zum Spiel
+!G!ZurÃ¼ck zum Spiel
 !S!Volver a la partida
 !I!Riprendi partita
-!F!Retour à la partie
+!F!Retour Ã  la partie
 
 !/!49: label for the minimum number of orbs needed to score
 !=!Minimum Hoard Orbs To Score
 !G!Mindestanzahl an Vorratskugeln, um zu punkten
-!S!Orbes de la horda mínimos para puntuar
+!S!Orbes de la horda mÃ­nimos para puntuar
 !I!Num min di globi per fare punti
-!F!Nb mini de globes précieux pour Marquer
+!F!Nb mini de globes prÃ©cieux pour Marquer
 
 !/!50: Shortened Kills
 !=!K

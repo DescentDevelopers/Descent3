@@ -25,7 +25,7 @@ CinematicEndCam=
 
 CinematicIntroCam=Terra - Seul. Corea
 
-Debug1=Rettifica difficolt‡: %f
+Debug1=Rettifica difficolt√†: %f
 
 Debug2=Occorre SHAKE!
 

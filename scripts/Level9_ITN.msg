@@ -35,7 +35,7 @@ CovInClear=NAVE CARGO: Per il momento siamo salvi!
 
 CovLeaveMeAlone=NAVE CARGO: Attenti a dove mirate!
 
-CovLeaving=NAVE CARGO: Il nostro lavoro qui Ë finito! Grazie dell'aiuto! 
+CovLeaving=NAVE CARGO: Il nostro lavoro qui √® finito! Grazie dell'aiuto! 
 
 CovPickup=NAVE CARGO: Sto raccogliendo un componente della nave.
 
@@ -59,21 +59,21 @@ EndLevel=
 
 IntroCam=Mercurio - Fabbrica astronavi del PTMC 
 
-StabAssemblyDone=Lo stabilizzatore sismico della fabbrica di montaggio Ë stato distrutto!
+StabAssemblyDone=Lo stabilizzatore sismico della fabbrica di montaggio √® stato distrutto!
 
-StabAssemblyPower=ROBOT-GUIDA "Stabilizzatore fabbrica di montaggio commutato in modalit‡ passiva!" 
+StabAssemblyPower=ROBOT-GUIDA "Stabilizzatore fabbrica di montaggio commutato in modalit√† passiva!" 
 
-StabControlDone=Lo stabilizzatore sismico del centro di controllo Ë stato distrutto!
+StabControlDone=Lo stabilizzatore sismico del centro di controllo √® stato distrutto!
 
-StabControlPower=ROBOT-GUIDA: "Stabilizzatore centro di controllo commutato in modalit‡ passiva!" 
+StabControlPower=ROBOT-GUIDA: "Stabilizzatore centro di controllo commutato in modalit√† passiva!" 
 
-StabFactoryDone=Lo stabilizzatore sismico della fabbrica principale Ë stato distrutto!
+StabFactoryDone=Lo stabilizzatore sismico della fabbrica principale √® stato distrutto!
 
-StabFactoryPower=ROBOT-GUIDA: "Stabilizzatore fabbrica principale commutato in modalit‡ passiva!"
+StabFactoryPower=ROBOT-GUIDA: "Stabilizzatore fabbrica principale commutato in modalit√† passiva!"
 
-StabStoreDone= Lo stabilizzatore sismico del centro di magazzinaggio Ë stato distrutto!
+StabStoreDone= Lo stabilizzatore sismico del centro di magazzinaggio √® stato distrutto!
 
-StabStorePower=ROBOT-GUIDA: "Stabilizzatore centro di archiviazione commutato in modalit‡ passiva!"
+StabStorePower=ROBOT-GUIDA: "Stabilizzatore centro di archiviazione commutato in modalit√† passiva!"
 
 
 

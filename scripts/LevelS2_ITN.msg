@@ -21,7 +21,7 @@ EndLevel=
 
 FlameDeactivated=Camera fiamme disattivata!
 
-IntroCam=Centro ricerche armi ad alta velocit‡
+IntroCam=Centro ricerche armi ad alta velocit√†
 
 NameBlueKey=Chiave azzurra
 
