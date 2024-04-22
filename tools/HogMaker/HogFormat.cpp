@@ -19,32 +19,33 @@
 #include "HogFormat.h"
 #include "IOOps.h"
 
+#include <algorithm>
 #include <fstream>
+#include <iterator>
 
 namespace D3 {
 
-std::ostream &operator<<(std::ostream &output, HogHeader &header) {
-  output.write((char *)&header.tag[0], 4);
+std::ostream &operator<<(std::ostream &output, const HogHeader &header) {
+  std::copy(header.tag.begin(), header.tag.end(), std::ostream_iterator<char>(output));
   bin_write(output, header.nfiles);
   bin_write(output, header.file_data_offset);
-  header.reserved.fill(-1);
-  output.write((char *)&header.reserved[0], 56);
+  std::copy(header.reserved.begin(), header.reserved.end(), std::ostream_iterator<char>(output));
 
   return output;
 }
 
-std::ostream &operator<<(std::ostream &output, HogFileEntry &entry) {
-  output.write((char *)&entry.name[0], 36);
+std::ostream &operator<<(std::ostream &output, const HogFileEntry &entry) {
+  std::copy(entry.name.begin(), entry.name.end(), std::ostream_iterator<char>(output));
   bin_write(output, entry.flags);
   bin_write(output, entry.len);
   bin_write(output, entry.timestamp);
   return output;
 }
 
-std::ostream &operator<<(std::ostream &output, HogFormat &format) {
+std::ostream &operator<<(std::ostream &output, const HogFormat &format) {
   output << format.m_header;
-  for (auto i : format.m_file_entries) {
-    output << i;
+  for (const HogFileEntry &entry : format.m_file_entries) {
+    output << entry;
   }
 
   return output;
