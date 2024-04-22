@@ -1,0 +1,69 @@
+name: Build Failure
+description: Report a failure to build current code in any supported configuration.
+title: "[Build Failure]: "
+labels: ["build-failure"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template if the code in main fails to build for you. If your problem happens at runtime, please use the issue template "Runtime Issue". Please use a descriptive title. Include in the title the _first_ error message. Attach your buildlog if possible.
+  - type: input
+    id: build-version
+    attributes:
+      label: Build Version
+      description: If you fetched the source from Git, state the Git commit you used, preferably as the full 40-digit commit hash.  Please do **not** say "HEAD", "current", or similar relative references. The meaning of relative references can change as contributors publish new code.  The 40-digit commit hash will not change.
+      placeholder: v1.5 <commit hash>
+    validations:
+      required: true
+  - type: checkboxes
+    id: os-environment
+    attributes:
+      label: Operating System Environment
+      description: State what host platform (Microsoft Windows, Mac OS X, or Linux) you tried. If you tried multiple, list all of them.
+      options:
+        - label: Microsoft Windows (32-bit)
+          required: false
+        - label: Microsoft Windows (64-bit)
+          required: false
+        - label: Mac OS X
+          required: false
+        - label: Linux (specify distribution and version below)
+          required: false
+  - type: checkboxes
+    id: cpu-environment
+    attributes:
+      label: CPU Environment
+      description: Indicate which CPU families were targeted. Some bugs are only visible on certain architectures, since other architectures hide the consequences of the mistake. If unsure, omit this section. Generally, if you are on an architecture that requires special consideration, you will know your architecture.
+      options:
+        - label: x86 (32-bit Intel/AMD)
+          required: false
+        - label: x86\_64 (64-bit Intel/AMD)
+          required: false
+        - label: ARM (32-bit)
+          required: false
+        - label: ARM64 (64-bit; sometimes called AArch64)
+          required: false
+        - label: Other (RISC V, PPC...)
+          required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Description
+      description: Describe the issue here.
+    validations:
+      required: true
+  - type: textarea
+    id: regression-status
+    attributes:
+      label: Regression Status
+      description: What is the oldest Git commit known to present the problem?  What is the newest Git commit known not to present the problem? If you don't know, say "I don't know".
+    validations:
+      required: false
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: If you performed build steps outside of the build steps listed in the README.md file, please list them here.
+    validations:
+      required: false

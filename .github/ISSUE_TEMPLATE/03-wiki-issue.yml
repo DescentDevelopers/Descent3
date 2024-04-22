@@ -1,0 +1,24 @@
+name: Wiki Contribution
+description: Report an issue related to the Descent 3 wiki, including modifications, additions, or corrections to existing pages, or requests for new pages.
+title: "[Wiki]: "
+labels: ["wiki"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If you have suggestions, modifications, or additions to the Descent 3 wiki, please provide details below. You can also report issues with existing pages or request new pages. Please use the GitHub Markdown format.
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Content
+      description: Provide a pasted copy of your markdown content using three backticks ` before and after to encase it in a code block. In a comment, attach the file.
+    validations:
+      required: true
+  - type: input
+    id: affected-page
+    attributes:
+      label: Affected Page
+      description: Specify the name or URL of the page on the Descent3 wiki that is affected by this issue, or where the new content should be added.
+    validations:
+      required: false
