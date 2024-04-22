@@ -5,18 +5,30 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
-project(Descent3 VERSION 1.5.500)
+project(Descent3
+LANGUAGES C CXX
+VERSION 1.5.500
+)
 
-if(NOT MSVC) # GCC/clang or compatible, hopefully
-  option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
-endif()
-
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 option(LOGGER "Enable logging to the terminal" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(FORCE_COLORED_OUTPUT)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    set(CMAKE_COLOR_DIAGNOSTICS ON)
+  else()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      add_compile_options (-fdiagnostics-color=always)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      add_compile_options (-fcolor-diagnostics)
+    endif()
+  endif()
+endif()
 
 if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
   message(STATUS "Big Endian system detected.")
@@ -28,32 +40,6 @@ if(BUILD_TESTING)
   enable_testing()
   include(GoogleTest)
   add_subdirectory(tests)
-endif()
-
-if(NOT MSVC)
-  # check if this is some kind of clang (Clang, AppleClang, whatever)
-  # (convert compiler ID to lowercase so we match Clang, clang, AppleClang etc, regardless of case)
-  string(TOLOWER ${CMAKE_CXX_COMPILER_ID} compiler_id_lower)
-  if(compiler_id_lower MATCHES ".*clang.*")
-    message(STATUS "Compiler \"${CMAKE_CXX_COMPILER_ID}\" detected as some kind of clang")
-    set(D3_COMPILER_IS_CLANG TRUE)
-    set(D3_COMPILER_IS_GCC_OR_CLANG TRUE)
-  elseif(CMAKE_COMPILER_IS_GNUCC)
-    set(D3_COMPILER_IS_GCC_OR_CLANG TRUE)
-  endif()
-  unset(compiler_id_lower)
-
-  if(FORCE_COLORED_OUTPUT)
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
-      set(CMAKE_COLOR_DIAGNOSTICS ON)
-    else ()
-      if(CMAKE_COMPILER_IS_GNUCC)
-        add_compile_options (-fdiagnostics-color=always)
-      elseif(D3_COMPILER_IS_CLANG)
-        add_compile_options (-fcolor-diagnostics)
-      endif ()
-    endif ()
-  endif ()
 endif()
 
 if(UNIX)
