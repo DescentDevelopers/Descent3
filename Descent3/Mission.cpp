@@ -1671,20 +1671,9 @@ void DoMissionMovie(char *movie) {
   return;
 #endif
   if (movie && *movie) {
-    char *moviepath;
-
-    if (Current_mission.filename &&
-        !(!stricmp(Current_mission.filename, "d3.mn3") || !stricmp(Current_mission.filename, "d3_2.mn3"))) {
-      char mpath[_MAX_PATH];
-      ddio_MakePath(mpath, LocalD3Dir, "movies", movie, NULL);
-      PlayMovie(mpath);
-    } else {
-      moviepath = GetMultiCDPath(movie);
-      if (moviepath) {
-        strcpy(temppath, moviepath);
-        PlayMovie(temppath);
-      }
-    }
+    char mpath[_MAX_PATH];
+    ddio_MakePath(mpath, LocalD3Dir, "movies", movie, NULL);
+    PlayMovie(mpath);
   }
   // PlayMovie(movie);
 }
