@@ -55,9 +55,9 @@ template <typename T> constexpr T convert_le(T val) {
 }
 
 template <class T>
-inline std::ostream &bin_write(std::ostream &output, T &value, bool is_little_endian = true, size_t n = sizeof(T)) {
+inline std::ostream &bin_write(std::ostream &output, T value, bool is_little_endian = true, size_t n = sizeof(T)) {
   value = is_little_endian ? convert_le(value) : convert_be(value);
-  output.write(reinterpret_cast<char *>(&value), n);
+  output.write(reinterpret_cast<const char *>(&value), n);
 
   return output;
 }

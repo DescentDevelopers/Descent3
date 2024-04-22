@@ -39,11 +39,17 @@ FILE 1			[filelen(FILE 1)]
 FILE NFILES-1		[filelen(NFILES -1)]
 */
 
+inline std::array<char, 56> array_with(char val) {
+  std::array<char, 56> arr;
+  arr.fill(val);
+  return arr;
+}
+
 struct HogHeader {
   std::array<char, 4> tag = {'H', 'O', 'G', '2'}; // "HOG2"
   uint32_t nfiles = 0;                            // number of files in header
   uint32_t file_data_offset = 68;                 // offset in file to filedata.
-  std::array<char, 56> reserved = {};             // filled with 0xff
+  std::array<char, 56> reserved = array_with(-1); // filled with 0xff
 };
 
 struct HogFileEntry {
@@ -65,7 +71,7 @@ public:
     m_header.file_data_offset += 48;
   };
 
-  friend std::ostream &operator<<(std::ostream &output, HogFormat &format);
+  friend std::ostream &operator<<(std::ostream &output, const HogFormat &format);
 };
 
 } // namespace D3

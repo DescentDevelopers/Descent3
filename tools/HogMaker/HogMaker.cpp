@@ -36,12 +36,6 @@ std::string str_tolower(std::string s) {
   return s;
 }
 
-struct {
-  bool operator()(const std::filesystem::path &a, const std::filesystem::path &b) const {
-    return (str_tolower(a.u8string()) < str_tolower(b.u8string()));
-  }
-} customLess;
-
 int main(int argc, char *argv[]) {
   std::vector<std::filesystem::path> input_files;
 
@@ -78,6 +72,11 @@ int main(int argc, char *argv[]) {
     std::cout << "Exception: " << e.what() << std::endl;
     return 1;
   }
+
+  auto customLess = [](const std::filesystem::path &a, const std::filesystem::path &b) {
+    return (str_tolower(a.u8string()) < str_tolower(b.u8string()));
+  };
+
   std::sort(input_files.begin(), input_files.end(), customLess);
 
   D3::HogFormat hog_table;
