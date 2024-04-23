@@ -1,20 +1,21 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ * Copyright (C) 2024 Descent Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/lib/BYTESWAP.H $
@@ -61,72 +62,53 @@
  * $NoKeywords: $
  */
 
-#ifndef _BYTESWAP_H
-#define _BYTESWAP_H
+#ifndef BYTESWAP_H
+#define BYTESWAP_H
 
-#include "pstypes.h"
+#include <cstdint>
+#include <cstdlib>
 
-/*
-#include "psendian.h"
+namespace D3 {
 
-#define SWAPSHORT(x)	(	((x) << 8) | (((ushort)(x)) >> 8) )
-#define SWAPINT(x)	(	((x) << 24) | (((ulong)(x)) >> 24) | (((x) & 0x0000ff00) << 8) | (((x) & 0x00ff0000) >>
-8)	)
-
-//Stupid function to trick the compiler into letting me byteswap a float
-inline float SWAPFLOAT(float x)
-{
-        int i = SWAPINT(*((int *) &(x)));
-        return *((float *) &(i));
+// std::byteswap from C++23
+template <typename T> constexpr T byteswap(T n) {
+  T m;
+  for (size_t i = 0; i < sizeof(T); i++)
+    reinterpret_cast<uint8_t *>(&m)[i] = reinterpret_cast<uint8_t *>(&n)[sizeof(T) - 1 - i];
+  return m;
 }
 
-// INTEL_ assumes the returned value will be in "Little Endian Format"
-#define INTEL_INT(x)		Endian_SwapInt(x)
-#define INTEL_SHORT(x)		Endian_SwapShort(x)
-#define INTEL_FLOAT(x)		Endian_SwapFloat(x)
-
-// MOTOROLA_ assumes the returned value will be in "Big Endian Format"
-#define MOTOROLA_INT(x)		SWAPINT(Endian_SwapInt(x))
-#define MOTOROLA_SHORT(x)	SWAPSHORT(Endian_SwapShort(x))
-#define MOTOROLA_FLOAT(x)	SWAPFLOAT(Endian_SwapFloat(x))
-*/
-#define SWAPSHORT(x) (short)(0xFFFF & (((x) << 8) | (((ushort)(x)) >> 8)))
-#define SWAPINT(x) (int)(((x) << 24) | (((ulong)(x)) >> 24) | (((x) & 0x0000ff00) << 8) | (((x) & 0x00ff0000) >> 8))
-
-// Stupid function to trick the compiler into letting me byteswap a float
-inline float SWAPFLOAT(float x) {
-  int i = SWAPINT(*((int *)&(x)));
-  return *((float *)&(i));
-}
-
-// Default is little endian, so change for Macintosh
-#if (MACOSX && MACOSXPPC)
-#define OUTRAGE_BIG_ENDIAN
-#endif
-
-#if (defined __LINUX__) && (!defined(MACOSX))
-#include <endian.h>
-
-#if BYTE_ORDER == BIG_ENDIAN
-#define OUTRAGE_BIG_ENDIAN
-#endif
-#endif
-
+/**
+ * Convert integer to/from BE order
+ */
+template <typename T> constexpr T convert_be(T val) {
 #ifndef OUTRAGE_BIG_ENDIAN
-
-#define INTEL_INT(x) x
-#define INTEL_SHORT(x) x
-#define INTEL_FLOAT(x) x
-#define MOTOROLA_INT(x) SWAPINT(x)
-#define MOTOROLA_SHORT(x) SWAPSHORT(x)
-#define MOTOROLA_FLOAT(x) SWAPFLOAT(x)
+  return byteswap(val);
 #else
-#define INTEL_INT(x) SWAPINT(x)
-#define INTEL_SHORT(x) SWAPSHORT(x)
-#define INTEL_FLOAT(x) SWAPFLOAT(x)
-#define MOTOROLA_INT(x) x
-#define MOTOROLA_SHORT(x) x
-#define MOTOROLA_FLOAT(x) x
+  return (val);
 #endif
+}
+
+/**
+ * Convert integer to/from LE order
+ */
+template <typename T> constexpr T convert_le(T val) {
+#ifndef OUTRAGE_BIG_ENDIAN
+  return (val);
+#else
+  return byteswap(val);
+#endif
+}
+
+} // namespace D3
+
+// Compatibility macros. Use D3::convert_le / D3::convert_be when possible
+
+#define INTEL_INT(x) D3::convert_le(x)
+#define INTEL_SHORT(x) D3::convert_le(x)
+#define INTEL_FLOAT(x) D3::convert_le(x)
+#define MOTOROLA_INT(x) D3::convert_be(x)
+#define MOTOROLA_SHORT(x) D3::convert_be(x)
+#define MOTOROLA_FLOAT(x) D3::convert_be(x)
 
 #endif
