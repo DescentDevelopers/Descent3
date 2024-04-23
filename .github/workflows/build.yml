@@ -3,8 +3,16 @@ name: Descent 3 Build
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '**/README.md'
+      - '**/LICENSE'
+      - '**/.github/**'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - '**/README.md'
+      - '**/LICENSE'
+      - '**/.github/**'
 
 jobs:
   build:
@@ -12,11 +20,26 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - {runner: windows-latest, preset: win}
-          - {runner: macos-12, preset: mac}       # This is supposed to be Intel for now, and what macos-latest is defaulting to for some reason (as of 04/2024)
-          - {runner: macos-14, preset: mac}       # This is supposed to be M1
-          - {runner: ubuntu-latest, preset: linux}
-        build_type: [Debug, Release]
+          - runner: windows-latest
+            preset: win
+            cc: cl
+            cxx: cl
+          - runner: macos-12 # This is supposed to be Intel for now, and what macos-latest is defaulting to for some reason (as of 04/2024)
+            preset: mac
+            cc: cc
+            cxx: c++
+          - runner: macos-14 # This is supposed to be M1
+            preset: mac
+            cc: cc
+            cxx: c++
+          - runner: ubuntu-latest
+            preset: linux
+            cc: gcc
+            cxx: g++
+          - runner: ubuntu-latest
+            preset: linux
+            cc: clang
+            cxx: clang++
 
     runs-on: ${{ matrix.os.runner }}
 
@@ -32,21 +55,26 @@ jobs:
       - name: Install Linux dependencies
         if: ${{ matrix.os.preset == 'linux' }}
         run: |
-          sudo dpkg --add-architecture i386
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev \
-            libxext6:i386  # for ./scripts/hogutils/hogUtils-i686 binary
-          mkdir ~/Descent3
+            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev
 
       - name: Configure CMake
+        env:
+          CC: ${{ matrix.os.cc }}
+          CXX: ${{ matrix.os.cxx }}
         run: cmake --preset ${{ matrix.os.preset }}
 
-      - name: Build
-        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }}
+      - name: Debug Build
+        run: cmake --build --preset ${{ matrix.os.preset }} --config Debug --verbose
+
+      - name: Release Build
+        run: cmake --build --preset ${{ matrix.os.preset }} --config Release --verbose
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build_${{ matrix.os.runner }}_${{ matrix.build_type }}
-          path: "${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/${{ matrix.build_type }}"
+          name: build_${{ matrix.os.runner }}_${{ matrix.os.cxx }}
+          path: |
+            ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/Debug/
+            ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/Release/

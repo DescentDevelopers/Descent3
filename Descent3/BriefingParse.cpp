@@ -820,13 +820,15 @@ int CBriefParse::ParseBriefing(char *filename) {
 
 done_parsing:;
 
-  if (abort)
+  if (abort) {
     mprintf((0, "Parse aborted\n"));
-  else if (!parse_error)
-    if (reading_text)
+  } else if (!parse_error) {
+    if (reading_text) {
       ParseError("Missing '$endtext'");
-    else
+    } else {
       mprintf((0, "Parse sucessful\n"));
+    }
+  }
 
   // Close the file
   cfclose(ifile);

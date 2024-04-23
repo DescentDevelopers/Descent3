@@ -1954,7 +1954,6 @@ $$FLAG DeathFlags
 524288:Debris Death: Remains
 $$END
 
-/*
 $$ACTION
 Objects
 Kill object [o:Object]; delay type = [e:DeathDelayType], explosion size = [e:DeathExplosionSize], death flags =

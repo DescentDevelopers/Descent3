@@ -258,6 +258,8 @@ void mmItem::OnDraw() {
   if ((UI_TIME() - m_last_frametime) >= m_process_speed) {
     // process special fx.
     switch (m_curfx) {
+    case mmItemFXNull:
+      break;
     case mmItemFXNormal:
       m_alpha = MMITEM_ALPHA;
       m_satcount = MMITEM_SAT;
@@ -335,6 +337,15 @@ void mmInterface::Create() {
     char filename[_MAX_PATH];
     ddio_MakePath(filename, Base_directory, "movies", "mainmenu", NULL);
     m_movie = StartMovie(filename, true);
+
+    if (!m_movie) //[ISB] Didn't find the menu movie?
+    {
+      if (!LoadLargeBitmap("mainmenu.ogf", &m_art)) {
+        Error("Unable to load main menu art mainmenu.ogf.");
+      } else {
+        static_menu_background = true;
+      }
+    }
   }
 #endif
 

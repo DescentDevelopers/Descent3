@@ -1133,11 +1133,13 @@ bool collide_weapon_and_wall(object *weapon, fix hitspeed, int hitseg, int hitwa
 
   // #ifndef RELEASE
   if ((stricmp(Weapons[weapon->id].name, "Yellow flare") == 0) && (weapon->parent_handle == Player_object->handle) &&
-      (KEY_STATE(KEY_LAPOSTRO)))
-    if (ROOMNUM_OUTSIDE(hitseg))
+      (KEY_STATE(KEY_LAPOSTRO))) {
+    if (ROOMNUM_OUTSIDE(hitseg)) {
       AddHUDMessage("Terrain cell %d", CELLNUM(hitseg));
-    else
+    } else {
       AddHUDMessage("Room %d face %d", hitseg, hitwall);
+    }
+  }
   // #endif
 
   // Check if forcefield

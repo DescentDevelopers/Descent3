@@ -674,7 +674,7 @@ OutrageMusicSeq::music_stream *OutrageMusicSeq::AddToList(short region, short th
 void OutrageMusicSeq::FreeList() {
   tListNode<music_stream> *node;
 
-  while (node = m_music_list.start()) {
+  while ((node = m_music_list.start())) {
     node = m_music_list.unlink();
     delete[] node;
   }

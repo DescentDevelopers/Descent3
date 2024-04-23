@@ -30,13 +30,7 @@
 #include "osiris_common.h"
 #include "DallasFuncs.cpp"
 
-#ifdef _MSC_VER // Visual C++ Build
-#define STDCALL __stdcall
-#define STDCALLPTR *STDCALL
-#else // Non-Visual C++ Build
-#define STDCALL __attribute__((stdcall))
-#define STDCALLPTR STDCALL *
-#endif
+#include "module.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -706,7 +700,6 @@ $$CATEGORIES
 Custom
 $$END
 
-/*
 $$ACTION
 Custom
 Set texture on monitors to [u:Texture]

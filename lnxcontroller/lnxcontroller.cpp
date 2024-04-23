@@ -273,6 +273,8 @@ ct_config_data lnxgameController::get_controller_value(ct_type type_req) {
   switch (type_req) {
     int pov_n;
 
+  case ctNone:
+    break;
   case ctKey:
     val = makeword(0, ddio_KeyInKey());
     break;

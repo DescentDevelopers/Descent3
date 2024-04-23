@@ -1603,7 +1603,7 @@ void do_physics_sim(object *obj) {
                                               w1 = Zero_vector;
                                       }
 
-                                      vector p1 = obj->mtype.phys_info.velocity + w1; //*((2.0f*(float)PI)/65535.0f);
+                                      vector p1 = obj->mtype.phys_info.velocity + w1; // *((2.0f*(float)PI)/65535.0f);
 
                                       if(p1.y < 0.0)
                                       {
@@ -2681,7 +2681,7 @@ void do_walking_sim(object *obj) {
                                               w1 = Zero_vector;
                                       }
 
-                                      vector p1 = obj->mtype.phys_info.velocity + w1; //*((2.0f*(float)PI)/65535.0f);
+                                      vector p1 = obj->mtype.phys_info.velocity + w1; // *((2.0f*(float)PI)/65535.0f);
 
                                       if(p1.y < 0.0)
                                       {

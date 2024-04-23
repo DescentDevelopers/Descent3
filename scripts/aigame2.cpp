@@ -26,13 +26,7 @@
 #include "osiris_vector.h"
 #include "DallasFuncs.cpp"
 
-#ifdef _MSC_VER // Visual C++ Build
-#define STDCALL __stdcall
-#define STDCALLPTR *STDCALL
-#else // Non-Visual C++ Build
-#define STDCALL __attribute__((stdcall))
-#define STDCALLPTR STDCALL *
-#endif
+#include "module.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -946,7 +940,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
         int roll = (rand() % 100);
         if (roll <= 50) {
           find_targets(data->me_handle, false);
-          memory->timer = Game_GetTime() + (memory->target_handle == OBJECT_HANDLE_NONE) ? 5.0f : 2.0f;
+          memory->timer = Game_GetTime() + ((memory->target_handle == OBJECT_HANDLE_NONE) ? 5.0f : 2.0f);
         }
       }
     }

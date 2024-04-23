@@ -1,0 +1,106 @@
+name: Runtime Issue
+description: Report a bug or crash at runtime in any supported configuration.
+title: "[Runtime Issue]: "
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template if the code in main fails to build for you. If your problem happens at compile time please use the "Build Failure" template. Please use a descriptive title. Include in the title the _first_ error message. Attach your buildlog if possible.
+  - type: input
+    id: build-version
+    attributes:
+      label: Build Version
+      description: If you fetched the source from Git, state the Git commit you used, preferably as the full 40-digit commit hash.  Please do **not** say "HEAD", "current", or similar relative references. The meaning of relative references can change as contributors publish new code.  The 40-digit commit hash will not change.
+      placeholder: v1.5 <commit hash>
+    validations:
+      required: true
+  - type: checkboxes
+    id: os-environment
+    attributes:
+      label: Operating System Environment
+      description: State what host platform (Microsoft Windows, Mac OS X, or Linux) you tried. If you tried multiple, list all of them.
+      options:
+        - label: Microsoft Windows (32-bit)
+          required: false
+        - label: Microsoft Windows (64-bit)
+          required: false
+        - label: Mac OS X
+          required: false
+        - label: Linux (specify distribution and version below)
+          required: false
+  - type: checkboxes
+    id: cpu-environment
+    attributes:
+      label: CPU Environment
+      description: Indicate which CPU families were targeted. Some bugs are only visible on certain architectures, since other architectures hide the consequences of the mistake. If unsure, omit this section. Generally, if you are on an architecture that requires special consideration, you will know your architecture.
+      options:
+        - label: x86 (32-bit Intel/AMD)
+          required: false
+        - label: x86\_64 (64-bit Intel/AMD)
+          required: false
+        - label: ARM (32-bit)
+          required: false
+        - label: ARM64 (64-bit; sometimes called AArch64)
+          required: false
+        - label: Other (RISC V, PPC...)
+          required: false
+  - type: checkboxes
+    id: game-modes
+    attributes:
+      label: Game Modes Affected
+      description: State which game modes are affected by the problem.
+      options:
+        - label: Single player
+          required: false
+        - label: Anarchy
+          required: false
+        - label: Hyper-Anarchy
+          required: false
+        - label: Robo-Anarchy
+          required: false
+        - label: Team Anarchy
+          required: false
+        - label: Capture the Flag
+          required: false
+        - label: Bounty
+          required: false
+        - label: Entropy
+          required: false
+        - label: Hoard
+          required: false
+        - label: Monsterball
+          required: false
+        - label: Cooperative
+          required: false
+    validations:
+          required: true
+  - type: textarea
+    id: game-environment
+    attributes:
+      label: Game Environment
+      description: If the issue is specific to a particular mission, give the name of the campaign and the level of the mission within that campaign. If the campaign is not one of the core assets, give a download link to the mission. If the issue occurs at some particular place in the level, give a description how to reach that point from the beginning of the level. Assume that the maintainer  is not familiar with the optimal route to get from the start point to the affected location.
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Description
+      description: Describe the issue here.
+    validations:
+      required: true
+  - type: textarea
+    id: regression-status
+    attributes:
+      label: Regression Status
+      description: What is the oldest Git commit known to present the problem?  What is the newest Git commit known not to present the problem? If you don't know, say "I don't know".
+    validations:
+      required: false
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide expected behavior and observed behavior. If possible, describe the frequency of the problem. Does it happen every time the steps to reproduce are followed? If it is intermittent, are there any events correlated with the error? For in-game problems, indicate whether it happens in single player, multiplayer cooperative, or multiplayer competitive. You do not need to check every combination before filing, but please report which combinations you checked and the results you found for those combinations.
+    validations:
+      required: false
