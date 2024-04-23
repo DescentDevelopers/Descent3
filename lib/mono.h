@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -66,12 +66,12 @@
 #include "debug.h"
 void nw_InitTCPLogging(char *ip, unsigned short port);
 void nw_TCPPrintf(int n, char *format, ...);
-#if (!defined(RELEASE)) && defined(MONO)
+#if (!defined(RELEASE)) && defined(LOGGER)
 extern bool Debug_print_block;
 // Prints a formatted string to the debug window
 #define mprintf(args) Debug_ConsolePrintf args
 // Prints a formatted string on window n at row, col.
-#define mprintf_at(args) Debug_ConsolePrintf args
+#define mprintf_at(args) Debug_ConsolePrintfAt args
 #define DebugBlockPrint(args)                                                                                          \
   do {                                                                                                                 \
     if (Debug_print_block)                                                                                             \

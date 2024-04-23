@@ -6,6 +6,8 @@ if(NOT MSVC) # GCC/clang or compatible, hopefully
   option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 endif()
 
+option(LOGGER "Enable logging to the terminal" OFF)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -95,6 +97,11 @@ if(WIN32)
     add_compile_options("/we4715")  # 'function' : not all control paths return a value
     add_compile_options("/we4834")  # discarding return value of function with [[nodiscard]] attribute
   endif()
+endif()
+
+if(LOGGER)
+  message("Enabling Logging")
+  add_definitions(-DLOGGER)
 endif()
 
 include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
