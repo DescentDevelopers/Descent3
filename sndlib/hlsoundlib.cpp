@@ -922,6 +922,16 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
     sound_seg = m_sound_objects[sound_obj_index].m_link_info.pos_info.segnum;
   }
 
+  // sound_seg == -1 causes crashes when BOA_INDEX() calls TERRAIN_REGION()
+  // with that value (though by pure luck on 32bit platforms the overflow
+  // and truncation will likely use an address that doesn't crash,
+  // but is still invalid). At least one case that could cause this was fixed,
+  // if there are others, the ASSERT should tell us about it
+  // (and if assertions are disabled, return false to handle this gracefully)
+  ASSERT(sound_seg != -1);
+  if (sound_seg == -1)
+    return false;
+
   sound_seg = BOA_INDEX(sound_seg);
   ear_seg = BOA_INDEX(Viewer_object->roomnum);
   if (!BOA_IsSoundAudible(sound_seg, ear_seg))
@@ -1078,6 +1088,11 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   if (sound_index < 0)
     return -1;
   if (sound_index >= MAX_SOUNDS || Sounds[sound_index].used == 0)
+    return -1;
+  // if the position doesn't belong to any valid room or cell,
+  // all this would fail anyway (in Emulate3dSound() -> ComputePlayInfo()),
+  // so might as well give up now
+  if (cur_pos->roomnum == -1)
     return -1;
   // initialize sound.
   Sound_system.CheckAndForceSoundDataAlloc(sound_index);
