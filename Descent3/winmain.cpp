@@ -625,10 +625,12 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
     d3 = new oeD3Win32App(OEAPP_CONSOLE, (HInstance)hInst);
   } else {
     unsigned int flags = OEAPP_FULLSCREEN;
+#ifndef RELEASE // TODO: remove #ifndef when window mode is ready for primetime
     if (FindArg("-windowed")) {
       // switch to windowed mode instead
       flags = OEAPP_WINDOWED;
     }
+#endif
 
     d3 = new oeD3Win32App(flags, (HInstance)hInst);
   }
