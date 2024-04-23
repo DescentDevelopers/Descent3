@@ -98,7 +98,7 @@
  * $NoKeywords: $
  */
 
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "renderer.h"
 #include "render.h"
 #include "grdefs.h"

@@ -123,7 +123,7 @@
 #include "cfile.h"
 #include "manage.h"
 #include "soundpage.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "soundload.h"
 #include "ddio.h"

@@ -423,7 +423,7 @@
 #include <string.h>
 #include "ddvid.h"
 #include "pstypes.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "bitmap.h"

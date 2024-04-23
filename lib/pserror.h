@@ -148,8 +148,8 @@
 #ifndef PSERROR_H
 #define PSERROR_H
 #include <assert.h>
-#include "ddebug/debug.h"
-#include "ddebug/mono.h"
+#include "debug.h"
+#include "mono.h"
 //	initializes error handler.
 bool error_Init(bool debugger, bool mono_debug, const char *app_title);
 //	exits the application and prints out a standard error message

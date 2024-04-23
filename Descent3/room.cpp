@@ -397,7 +397,7 @@
  */
 
 #include "room.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "vecmat.h"
 #include "gametexture.h"
 #include "manage.h"

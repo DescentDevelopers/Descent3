@@ -1137,7 +1137,7 @@
 
 #include "pserror.h"
 #include "vecmat.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 
 #include "descent.h"
 #include "player.h"

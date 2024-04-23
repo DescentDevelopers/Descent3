@@ -51,7 +51,7 @@
 // ----------------------------------------------------------------------------
 #include <stdlib.h>
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "gameos.h"
 #include "ddio_mac.h"
 #include "ddio.h"

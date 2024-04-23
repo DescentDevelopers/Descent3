@@ -40,9 +40,9 @@
  *
  * $NoKeywords: $
  */
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "game.h"
 #include "pserror.h"
 #include "rocknride.h"

@@ -213,7 +213,7 @@
 #include <process.h>
 #include "cfile.h"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "soundload.h"
 #include "mem.h"
 #include "application.h"

@@ -79,10 +79,10 @@
 
 #include "d3serial.h"
 #include "game.h"
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "descent.h"
 #include <time.h>
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "cfile.h"
 #include "program.h"
 

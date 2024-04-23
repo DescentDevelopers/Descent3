@@ -69,10 +69,10 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "pstring.h"
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "application.h"
 
 #define MAX_MSG_LEN 2000

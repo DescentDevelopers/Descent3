@@ -136,7 +136,7 @@
 #include "hud.h"
 #include "mem.h"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "config.h"
 #include "ship.h"
 #include <string.h>

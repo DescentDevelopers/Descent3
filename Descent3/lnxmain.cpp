@@ -40,7 +40,7 @@
 
 #include "SDL.h"
 #include "program.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "descent.h"
 #include "application.h"
 #include "appdatabase.h"

@@ -37,7 +37,7 @@
 #include "ddgrWin32.h"
 #include "ddgrWin32DX.h"
 #include "Application.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 
 tDDGRDXInternalData DDGR_DX_lib_data;

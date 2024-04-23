@@ -97,9 +97,9 @@
 #include <unistd.h>
 #include <SDL.h>
 #include "mem.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "pserror.h"
 #include "loki_utils.h"
 

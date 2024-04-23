@@ -61,7 +61,7 @@ void VIBE_DoLevelEnd(void) {}
 
 #include "intellivibe.h"
 #include "module.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "object_external_struct.h"
 
 static module IntelliVIBE_module = {NULL};

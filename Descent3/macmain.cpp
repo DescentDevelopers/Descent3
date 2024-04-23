@@ -100,7 +100,7 @@
 #include "gameos.h"
 #include "pserror.h"
 #include "mem.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio_mac.h"
 #include "ddio.h"
 #include "maccontroller.h"

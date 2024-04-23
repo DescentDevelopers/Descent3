@@ -67,7 +67,7 @@
 #include "File Utils.h"
 
 // Descent 3 Headers
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "gameos.h"
 

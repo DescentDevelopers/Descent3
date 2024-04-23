@@ -401,7 +401,7 @@
 
 #include "osiris_dll.h"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "cfile.h"
 #include "ddio.h"
 #include "manage.h"

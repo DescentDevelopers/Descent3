@@ -123,6 +123,7 @@ endif()
 
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
+  "ddebug"  # -*-
   "lib"     # TODO: Remove after untying all modules
   "Descent3"
   ${PLATFORM_INCLUDES}

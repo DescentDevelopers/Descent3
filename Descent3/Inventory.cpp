@@ -290,7 +290,7 @@
 
 #include "Inventory.h"
 
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "player.h"
 #include "pserror.h"
 #include "objinfo.h"

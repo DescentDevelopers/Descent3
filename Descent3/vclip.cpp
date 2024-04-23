@@ -161,7 +161,7 @@
 #include "bitmap.h"
 #include "vclip.h"
 #include "cfile.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "gametexture.h"
 #include "texture.h"

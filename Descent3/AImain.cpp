@@ -1509,7 +1509,7 @@
 
 #include <stdlib.h>
 #include "AIMain.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "game.h"
 #include "weapon.h"
 #include "findintersection.h"

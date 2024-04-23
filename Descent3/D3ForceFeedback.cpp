@@ -93,7 +93,7 @@
 #include "forcefeedback.h"
 #include "D3ForceFeedback.h"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "weapon.h"
 #include "ddio.h"
 #include "psrand.h"

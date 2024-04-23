@@ -85,7 +85,7 @@
 #include <string.h>
 #include "pserror.h"
 #include "psclass.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "ddio_lnx.h"
 #include "application.h"

@@ -24,7 +24,7 @@
 #include "object.h"
 #include "terrain.h"
 #include "player.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "hud.h"
 #include "Inventory.h"
 #include "multi_server.h"

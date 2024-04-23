@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include "debuggraph.h"
 #include "grdefs.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include <memory.h>
 #include "pserror.h"
 #include "bitmap.h"

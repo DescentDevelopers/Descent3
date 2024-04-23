@@ -70,7 +70,7 @@
 
 #include "application.h"
 #include "linux/lnxapp.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include <stdlib.h>
 #include "ddio.h"
 // #include "local_malloc.h"

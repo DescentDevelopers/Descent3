@@ -629,7 +629,7 @@
 #include "multi_server.h"
 #include "player.h"
 #include "game.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "hud.h"
 #include "pilot.h"

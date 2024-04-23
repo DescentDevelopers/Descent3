@@ -33,7 +33,7 @@
 #include <string.h>
 #include "descent.h"
 #include "3d.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "gametexture.h"
 #include "texture.h"
 #include "vclip.h"

@@ -4,7 +4,7 @@
 #include <malloc.h>
 #include <ctype.h>
 #include "registry.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 // Convert a string that represents a hex value into an int
 int hextoi(char *p) {
   int value = 0;

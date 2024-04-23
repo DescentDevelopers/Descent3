@@ -433,7 +433,7 @@
 #include <stdarg.h>
 #include "osiris_predefs.h"
 #include "object.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "trigger.h"
 #include "pstypes.h"
 #include "pserror.h"

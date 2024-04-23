@@ -76,7 +76,7 @@
 #include <Strings.h>
 #include <TextUtils.h>
 // Descent 3 Headers
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "ddio_mac.h"

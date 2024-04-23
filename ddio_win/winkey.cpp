@@ -178,7 +178,7 @@
 #include "DDAccess.h"
 
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "ddio_win.h"
 #include "Application.h"

@@ -119,7 +119,7 @@
 #include "pserror.h"
 #include "renderer.h"
 #include "gr.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "cfile.h"
 #include "bitmap.h"
 #include "mem.h"

@@ -10,5 +10,8 @@ set(CPPS
 )
 
 add_library(ddebug STATIC ${CPPS})
-
-export(TARGETS ddebug NAMESPACE D3:: FILE ddebugConfig.cmake)
+target_include_directories(ddebug PUBLIC
+	$<BUILD_INTERFACE:
+	${PROJECT_SOURCE_DIR}/ddebug
+	>
+)

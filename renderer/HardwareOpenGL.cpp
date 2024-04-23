@@ -33,7 +33,7 @@
 #include "DDAccess.h"
 #include "pstypes.h"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "3d.h"
 #include "renderer.h"
 #include "ddvid.h"

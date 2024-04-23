@@ -64,7 +64,7 @@
 #include "player.h"
 #include "pilot.h"
 #include "cfile.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "manage.h"
 #include "PilotPicsAPI.h"

@@ -21,7 +21,7 @@
 #include "bumpmap.h"
 #include "pstypes.h"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "renderer.h"
 #include "mem.h"
 

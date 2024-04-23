@@ -265,7 +265,7 @@
 #include "manage.h"
 #include "gametexture.h"
 #include "bitmap.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "texpage.h"
 #include <string.h>

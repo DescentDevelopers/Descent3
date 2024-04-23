@@ -911,8 +911,8 @@
 
 #include <stdlib.h>
 
-#include "ddebug/debug.h"
-#include "ddebug/mono.h"
+#include "debug.h"
+#include "mono.h"
 #include "application.h"
 #include "gametexture.h"
 #include "object.h"

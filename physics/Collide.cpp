@@ -833,7 +833,7 @@
 #include "collide.h"
 #include "PHYSICS.H"
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "renderer.h"
 #include "object.h"
 #include "player.h"

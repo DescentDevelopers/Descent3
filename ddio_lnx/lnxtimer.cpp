@@ -52,7 +52,7 @@
 #include <unistd.h>
 
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 
 #include "SDL.h"
 

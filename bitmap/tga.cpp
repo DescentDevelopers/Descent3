@@ -136,7 +136,7 @@
 #include "pserror.h"
 #include "pstypes.h"
 #include "bitmap.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "grdefs.h"
 #include "texture.h"
 #include "byteswap.h"

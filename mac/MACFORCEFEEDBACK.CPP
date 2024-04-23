@@ -33,7 +33,7 @@
 #include <math.h>
 #include "pserror.h"
 #include "pstring.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "application.h"
 #include "forcefeedback.h"

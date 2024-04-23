@@ -66,7 +66,7 @@
 
 #include "ddio_common.h"
 #include "ddio.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 
 // ##########################################################
 //  raw Interface Functions

@@ -268,7 +268,7 @@
 #include "grdefs.h"
 #include "pstypes.h"
 #include "gametexture.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "bitmap.h"
 #include "pserror.h"
 #include "vclip.h"

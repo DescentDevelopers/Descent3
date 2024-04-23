@@ -69,7 +69,7 @@
 #include "megacell.h"
 #include "megapage.h"
 #include "texpage.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "polymodel.h"
 #include "ddio.h"

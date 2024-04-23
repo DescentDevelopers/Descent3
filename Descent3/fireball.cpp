@@ -587,7 +587,7 @@
 #include "cockpit.h"
 #include "game.h"
 #include "3d.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "room.h"
 #include "polymodel.h"
 #include "objinfo.h"

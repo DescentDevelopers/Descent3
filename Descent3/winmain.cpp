@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "descent.h"
 #include "texture.h"
 #include "application.h"

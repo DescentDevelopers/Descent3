@@ -90,7 +90,7 @@
 #include <ctype.h>
 #include "game.h"
 #include "descent.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "cfile.h"
 #include "localization.h"
 #include "mem.h"

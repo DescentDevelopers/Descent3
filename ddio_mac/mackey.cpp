@@ -85,7 +85,7 @@
 #include <Retrace.h>
 // Descent 3 Headers
 #include "pserror.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "ddio.h"
 #include "ddio_common.h"
 #include "ddio_mac.h"

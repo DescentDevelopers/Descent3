@@ -384,7 +384,7 @@
 
 #include "pserror.h"
 #include "grdefs.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "cfile.h"
 
 #include "init.h"
@@ -788,7 +788,7 @@ void D3DeferHandler(bool is_active) {
 //	this is called when you hit a debug break!
 //	---------------------------------------------------------------------------
 #ifndef RELEASE
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "renderer.h"
 extern int rend_initted; // from game.cpp
 

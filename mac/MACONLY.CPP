@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <math.h>
 #include <ctype.h>
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "mem.h"
 #include "ddio.h"
 

@@ -294,7 +294,7 @@
 #include "manage.h"
 #include "weapon.h"
 #include "weaponpage.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "vclip.h"
 #include "polymodel.h"

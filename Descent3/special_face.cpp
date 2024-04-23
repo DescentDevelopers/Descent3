@@ -19,7 +19,7 @@
 #include "pstypes.h"
 
 #include "special_face.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include <stdlib.h>
 #include <string.h>
 #include "mem.h"

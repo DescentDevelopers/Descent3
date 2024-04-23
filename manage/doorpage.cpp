@@ -151,7 +151,7 @@
 #include "manage.h"
 #include "door.h"
 #include "doorpage.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 #include "polymodel.h"
 #include <string.h>

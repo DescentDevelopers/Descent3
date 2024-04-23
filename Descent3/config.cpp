@@ -288,7 +288,7 @@
 #include "polymodel.h"
 #include "application.h"
 #include "descent.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "Mission.h"
 #include "ddio.h"
 #include "gamefont.h"

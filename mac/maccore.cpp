@@ -66,7 +66,7 @@
 //	D3 Headers
 // =========================
 #include "gameos.h"
-#include "ddebug/mono.h"
+#include "mono.h"
 #include "pserror.h"
 
 // =========================

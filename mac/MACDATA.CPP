@@ -12,7 +12,7 @@
 #include "ddio.h"
 #include "ddio_mac.h"
 #include "descent.h"
-#include "ddebug/debug.h"
+#include "debug.h"
 #include "pserror.h"
 
 char RECORD_FORMAT_STR[] = ":%s";
