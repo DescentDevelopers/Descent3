@@ -21,7 +21,7 @@
 
 #include "manage.h"
 #include "soundload.h"
-#include "CFILE.H"
+#include "cfile.h"
 #include "pstypes.h"
 
 typedef struct {

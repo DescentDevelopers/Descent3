@@ -104,7 +104,12 @@ if(LOGGER)
   add_definitions(-DLOGGER)
 endif()
 
-include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
+include_directories(
+  "cfile"   # TODO: Remove after untying all modules
+  "lib"     # TODO: Remove after untying all modules
+  "Descent3"
+  ${PLATFORM_INCLUDES}
+)
 
 # file(GLOB_RECURSE INCS "*.h")
 

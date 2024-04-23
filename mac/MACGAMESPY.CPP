@@ -32,7 +32,7 @@
 #include "descent.h"
 #include "ddio.h"
 #include "args.h"
-#include "CFILE.H"
+#include "cfile.h"
 #include "program.h"
 #include <stdlib.h>
 #include <memory.h>

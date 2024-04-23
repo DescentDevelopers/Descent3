@@ -16,3 +16,6 @@ set(CPPS
   ssl_lib.cpp)
 
 add_library(dd_sndlib STATIC ${HEADERS} ${CPPS})
+target_link_libraries(dd_sndlib PRIVATE
+  cfile
+)

@@ -20,7 +20,7 @@
 #define GENERICPAGE_H
 
 #include "manage.h"
-#include "CFILE.H"
+#include "cfile.h"
 #include "pstypes.h"
 #include "objinfo.h"
 #include "robotfirestruct.h"

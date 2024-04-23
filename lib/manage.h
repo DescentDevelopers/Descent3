@@ -21,7 +21,7 @@
 #define MANAGE_H
 
 #include <stdio.h>
-#include "CFILE.H"
+#include "cfile.h"
 #include "bitmap.h"
 #include "manage_external.h"
 

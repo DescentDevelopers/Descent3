@@ -147,7 +147,7 @@
 #include <windows.h>
 #endif
 
-#include "CFILE.H"
+#include "cfile.h"
 #include "manage.h"
 #include "door.h"
 #include "doorpage.h"

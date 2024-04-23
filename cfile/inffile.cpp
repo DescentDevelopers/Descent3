@@ -20,21 +20,21 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "InfFile.h"
+#include "inffile.h"
 
-#include "CFILE.H"
+#include "cfile.h"
 #include "pstring.h"
 #include "pserror.h"
 
 #include <string.h>
 
-#define INFFILE_NULL -1024
+#define INFFILE_NULL (-1024)
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-InfFile::InfFile() { m_fp = NULL; }
+InfFile::InfFile() { m_fp = nullptr; }
 
 InfFile::~InfFile() {
   // close file and free symbol lists
@@ -74,7 +74,7 @@ const char *InfFile::GetSymbolText(const char *name) {
       return (const char *)sym->t.text;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //	opens an inf file, pass in a lexical analyzer that will return a command index.

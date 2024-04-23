@@ -20,8 +20,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_INFFILE_H__D8F94664_216E_11D2_AF2D_0060089A8025__INCLUDED_)
-#define AFX_INFFILE_H__D8F94664_216E_11D2_AF2D_0060089A8025__INCLUDED_
+#ifndef INFFILE_H
+#define INFFILE_H
 
 #if _MSC_VER >= 1000
 #pragma once
@@ -32,12 +32,14 @@
 
 struct CFILE;
 
-#define INFFILE_LINELEN 256
-#define INFFILE_CUSTOM -128
-#define INFFILE_ERROR -1
-#define INFFILE_COMMENT -2
-#define INFFILE_EOL -3
-#define INFFILE_SYMBOL 1024
+enum InfFileError {
+  INFFILE_LINELEN = 256,
+  INFFILE_CUSTOM = -128,
+  INFFILE_ERROR = -1,
+  INFFILE_COMMENT = -2,
+  INFFILE_EOL = -3,
+  INFFILE_SYMBOL = 1024,
+};
 
 class InfFile {
 public:
@@ -86,4 +88,4 @@ public:
   int line() const { return m_line; };
 };
 
-#endif // !defined(AFX_INFFILE_H__D8F94664_216E_11D2_AF2D_0060089A8025__INCLUDED_)
+#endif

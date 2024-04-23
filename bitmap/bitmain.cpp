@@ -300,7 +300,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "CFILE.H"
+#include "cfile.h"
 #include "texture.h"
 #include "bitmap.h"
 #include "pstypes.h"
