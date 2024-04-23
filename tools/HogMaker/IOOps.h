@@ -20,16 +20,62 @@
 #include <cstdint>
 #include <ostream>
 
-#include "byteswap.h"
+#include "portable_endian.h"
 
-namespace D3 {
+namespace D3
+{
+  static inline std::ostream &bin_write(std::ostream &output, int8_t value)
+  {
+    output.write(reinterpret_cast<const char *>(&value), 1);
+    return output;
+  }
 
-template <class T>
-inline std::ostream &bin_write(std::ostream &output, T value, bool is_little_endian = true, size_t n = sizeof(T)) {
-  value = is_little_endian ? convert_le(value) : convert_be(value);
-  output.write(reinterpret_cast<const char *>(&value), n);
+  static inline std::ostream &bin_write(std::ostream &output, uint8_t value)
+  {
+    output.write(reinterpret_cast<const char *>(&value), 1);
+    return output;
+  }
 
-  return output;
-}
+  static inline std::ostream &bin_write(std::ostream &output, int16_t value, bool is_little_endian = true)
+  {
+    value = is_little_endian ? htole16(value) : htobe16(value);
+    output.write(reinterpret_cast<const char *>(&value), sizeof(int16_t));
+    return output;
+  }
+
+  static inline std::ostream &bin_write(std::ostream &output, uint16_t value, bool is_little_endian = true)
+  {
+    value = is_little_endian ? htole16(value) : htobe16(value);
+    output.write(reinterpret_cast<const char *>(&value), sizeof(uint16_t));
+    return output;
+  }
+
+  static inline std::ostream &bin_write(std::ostream &output, int32_t value, bool is_little_endian = true)
+  {
+    value = is_little_endian ? htole32(value) : htobe32(value);
+    output.write(reinterpret_cast<const char *>(&value), sizeof(int32_t));
+    return output;
+  }
+
+  static inline std::ostream &bin_write(std::ostream &output, uint32_t value, bool is_little_endian = true)
+  {
+    value = is_little_endian ? htole32(value) : htobe32(value);
+    output.write(reinterpret_cast<const char *>(&value), sizeof(uint32_t));
+    return output;
+  }
+
+  static inline std::ostream &bin_write(std::ostream &output, int64_t value, bool is_little_endian = true)
+  {
+    value = is_little_endian ? htole64(value) : htobe64(value);
+    output.write(reinterpret_cast<const char *>(&value), sizeof(int64_t));
+    return output;
+  }
+
+  static inline std::ostream &bin_write(std::ostream &output, uint64_t value, bool is_little_endian = true)
+  {
+    value = is_little_endian ? htole64(value) : htobe64(value);
+    output.write(reinterpret_cast<const char *>(&value), sizeof(uint64_t));
+    return output;
+  }
 
 } // namespace D3

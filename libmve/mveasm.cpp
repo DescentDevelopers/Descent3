@@ -278,10 +278,10 @@ public:
     ptr = (signed char *)nfpk_ShiftP1;
     for (y = -8; y != 8; y++) {
       for (x = -8; x != 8; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         ptr[0] = y;
         ptr[1] = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         ptr[0] = x;
         ptr[1] = y;
 #endif
@@ -293,10 +293,10 @@ public:
     ptr = (signed char *)nfpk_ShiftP2;
     for (y = 0; y != 8; y++) {
       for (x = 8; x != 15; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         ptr[0] = y;
         ptr[1] = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         ptr[0] = x;
         ptr[1] = y;
 #endif
@@ -306,10 +306,10 @@ public:
 
     for (y = 8; y != 14; y++) {
       for (x = -14; x != 0; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         ptr[0] = y;
         ptr[1] = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         ptr[0] = x;
         ptr[1] = y;
 #endif
@@ -317,10 +317,10 @@ public:
       }
 
       for (x = 0; x != 15; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         ptr[0] = y;
         ptr[1] = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         ptr[0] = x;
         ptr[1] = y;
 #endif
@@ -328,20 +328,20 @@ public:
       }
     }
     for (x = -14; x != 0; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
       ptr[0] = 14;
       ptr[1] = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
       ptr[0] = x;
       ptr[1] = 14;
 #endif
       ptr += 2;
     }
     for (x = 0; x != 12; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
       ptr[0] = 14;
       ptr[1] = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
       ptr[0] = x;
       ptr[1] = 14;
 #endif
@@ -527,14 +527,14 @@ void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y,
 
 void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned char *comp, const unsigned x,
                     const unsigned y, unsigned w, unsigned h) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
   typedef struct {
     unsigned short hax, ax;
   } reg_word;
   typedef struct {
     signed char hah, hal, ah, al;
   } reg_byte;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
   typedef struct {
     unsigned short ax, hax;
   } reg_word;
@@ -756,12 +756,12 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         const int max_repcount = 8;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           const unsigned char *color_idx = lookupTable + (esi[rep_count + kOffset] * 4);
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
           unsigned int w1 = colors[color_idx[3]];
           unsigned int w2 = colors[color_idx[2]];
           unsigned int w3 = colors[color_idx[1]];
           unsigned int w4 = colors[color_idx[0]];
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
@@ -820,12 +820,12 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           }
 
           const unsigned char *color_idx = lookupTable + (idx * 4);
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
           unsigned int w1 = colors[color_idx[3]];
           unsigned int w2 = colors[color_idx[2]];
           unsigned int w3 = colors[color_idx[1]];
           unsigned int w4 = colors[color_idx[0]];
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
@@ -922,12 +922,12 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = repLookup[rep_count];
           const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
           unsigned int w1 = colors[color_idx[3]];
           unsigned int w2 = colors[color_idx[2]];
           unsigned int w3 = colors[color_idx[1]];
           unsigned int w4 = colors[color_idx[0]];
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
@@ -1135,12 +1135,12 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = repLookupTable[rep_count];
           const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
           unsigned int w1 = colors[color_idx[3]];
           unsigned int w2 = colors[color_idx[2]];
           unsigned int w3 = colors[color_idx[1]];
           unsigned int w4 = colors[color_idx[0]];
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
           unsigned int w1 = colors[color_idx[0]];
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
@@ -1242,7 +1242,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           unsigned int w4 = colors[color_idx[3]];
 
           if (rep_count & 1) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
             if (hiColor) {
               *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
@@ -1260,7 +1260,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
               *(unsigned char *)(edi + nf_width + 6) = w2;
               *(unsigned char *)(edi + nf_width + 7) = w1;
             }
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
             if (hiColor) {
               *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
@@ -1282,13 +1282,13 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             edi += nf_width * 2;
           } else {
             if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
               *(unsigned int *)(edi + 0) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
 
               *(unsigned int *)(edi + 4) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width + 4) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
               *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + nf_width) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
 
@@ -1334,7 +1334,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           unsigned int w2 = colors[color_idx[1]];
           unsigned int w3 = colors[color_idx[2]];
           unsigned int w4 = colors[color_idx[3]];
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w4;
             *(unsigned int *)(edi + 4) = w3;
@@ -1350,7 +1350,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             *(unsigned char *)(edi + 6) = w1;
             *(unsigned char *)(edi + 7) = w1;
           }
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
           if (hiColor) {
             *(unsigned int *)(edi + 0) = w1;
             *(unsigned int *)(edi + 4) = w2;
@@ -1403,7 +1403,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           unsigned int w4 = colors[color_idx[3]];
 
           if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
             *(unsigned int *)(edi + 0) = w4;
             *(unsigned int *)(edi + nf_width) = w4;
             *(unsigned int *)(edi + 4) = w3;
@@ -1412,7 +1412,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             *(unsigned int *)(edi + nf_width + 8) = w2;
             *(unsigned int *)(edi + 12) = w1;
             *(unsigned int *)(edi + nf_width + 12) = w1;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
             *(unsigned int *)(edi + 0) = w1;
             *(unsigned int *)(edi + nf_width) = w1;
             *(unsigned int *)(edi + 4) = w2;
@@ -1465,10 +1465,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 
           if (rep_count & 1) {
             if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
               *(unsigned int *)(edi + 8) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
               *(unsigned int *)(edi + 12) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
               *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
 #endif
@@ -1479,10 +1479,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             edi += nf_width;
           } else {
             if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
               *(unsigned int *)(edi + 0) = (w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16);
               *(unsigned int *)(edi + 4) = (w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16);
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
               *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
               *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
 #endif
@@ -1569,10 +1569,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 
         if (!do42) {
           if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
             *(unsigned int *)(edi + 0) = ((unsigned int)(w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16));
             *(unsigned int *)(edi + 4) = ((unsigned int)(w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16));
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
             *(unsigned int *)(edi + 0) = ((unsigned int)(w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16));
             *(unsigned int *)(edi + 4) = ((unsigned int)(w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16));
 #endif
@@ -1584,11 +1584,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           // 42
           if (rep_count & 1) {
             if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
               *(unsigned int *)(edi + 8) = ((unsigned int)(w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16));
               *(unsigned int *)(edi + 12) = ((unsigned int)(w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16));
-#else
-
+#elif BYTE_ORDER == LITTLE_ENDIAN
               *(unsigned int *)(edi + 8) = ((unsigned int)(w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16));
               *(unsigned int *)(edi + 12) = ((unsigned int)(w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16));
 #endif
@@ -1598,10 +1597,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             edi += nf_width;
           } else {
             if (hiColor) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
               *(unsigned int *)(edi + 0) = ((unsigned int)(w4 & 0xFFFF) | ((w3 & 0xFFFF) << 16));
               *(unsigned int *)(edi + 4) = ((unsigned int)(w2 & 0xFFFF) | ((w1 & 0xFFFF) << 16));
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
               *(unsigned int *)(edi + 0) = ((unsigned int)(w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16));
               *(unsigned int *)(edi + 4) = ((unsigned int)(w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16));
 #endif

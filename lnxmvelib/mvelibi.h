@@ -27,7 +27,7 @@
 #pragma pack(push, 1)
 #endif
 
-#include "byteswap.h"
+#include "portable_endian.h"
 
 //--------------------------------
 // Useful type definitions
@@ -131,7 +131,7 @@ typedef struct _sndConfigure {
                        //  For stereo, there will be two initial 16-bit samples.
                        //   and compressed streams will be interleaved.
                        // unsigned short stereo:1, bits16:1, comp16:1;
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
   unsigned char bitpadder : 5;
 #endif
   unsigned char stereo : 1, bits16 : 1, comp16 : 1;
@@ -164,7 +164,7 @@ typedef struct _nfDecomp {
   unsigned short w;
   unsigned short h;
   // unsigned short advance:1;
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
   unsigned char bitpadder : 7;
 #endif
   unsigned char advance : 1;

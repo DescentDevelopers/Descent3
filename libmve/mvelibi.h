@@ -31,7 +31,7 @@
 #error No platform defined
 #endif
 
-#include "byteswap.h"
+#include "portable_endian.h"
 //--------------------------------
 // Compressed Video Constants
 //--------------------------------
@@ -52,17 +52,17 @@
 
 // some inlines to prevent macro craziness when using incrementers and dereferencing, and so I can use operator
 // overloading
-inline unsigned short IntelSwapper(unsigned short a) { return INTEL_SHORT(a); }
+inline unsigned short IntelSwapper(unsigned short a) { return htole16(a); }
 
-inline short IntelSwapper(short a) { return INTEL_SHORT(a); }
+inline short IntelSwapper(short a) { return htole16(a); }
 
-inline unsigned int IntelSwapper(unsigned int a) { return INTEL_INT(a); }
+inline unsigned int IntelSwapper(unsigned int a) { return htole32(a); }
 
-inline int IntelSwapper(int a) { return INTEL_INT(a); }
+inline int IntelSwapper(int a) { return htole32(a); }
 
-inline unsigned long IntelSwapper(unsigned long a) { return INTEL_INT(a); }
+inline unsigned long IntelSwapper(unsigned long a) { return htole32(a); }
 
-inline long IntelSwapper(long a) { return INTEL_INT(a); }
+inline long IntelSwapper(long a) { return htole32(a); }
 
 typedef struct _mve_hdr {
   char FileType[20];      // MVE_FILE_TYPE
@@ -139,11 +139,11 @@ typedef struct _sndConfigure {
                        //   by remaining compressed 8-bit samples.
                        //  For stereo, there will be two initial 16-bit samples.
                        //   and compressed streams will be interleaved.
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
   unsigned char pad : 5;
   unsigned char stereo : 1, bits16 : 1, comp16 : 1;
   unsigned char pad2;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
   unsigned char stereo : 1, bits16 : 1, comp16 : 1;
   unsigned char pad;
 #endif
@@ -185,11 +185,11 @@ typedef struct _nfDecomp {
   unsigned short y;
   unsigned short w;
   unsigned short h;
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
   unsigned char bitpadder : 7;
   unsigned char advance : 1;
   unsigned char dummy1;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
   unsigned short advance : 1;
   unsigned short pad : 15;
 #endif

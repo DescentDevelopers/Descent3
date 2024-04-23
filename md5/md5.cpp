@@ -51,7 +51,7 @@
 
 // md5 class include
 #include "md5.h"
-#include <byteswap.h>
+#include "portable_endian.h"
 #include <string.h>
 
 #include "stdio.h"
@@ -59,7 +59,7 @@ static FILE *md5log = NULL;
 
 #define MD5_DEBUG_LOG 0
 
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 void byteReverse(unsigned char *buf, unsigned longs) {
   uint32_t t;
   do {
@@ -68,7 +68,7 @@ void byteReverse(unsigned char *buf, unsigned longs) {
     buf += 4;
   } while (--longs);
 }
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
 #define byteReverse(buf, len) /* Nothing */
 #endif
 
@@ -102,7 +102,7 @@ void MD5::MD5Init() {
 }
 
 void MD5::MD5Update(float valin) {
-  float val = INTEL_FLOAT(valin);
+  uint32_t val = htole32(*((uint32_t*)&valin));
   unsigned char *p = (unsigned char *)&val;
 #if MD5_DEBUG_LOG
   if (md5log) {
@@ -113,7 +113,7 @@ void MD5::MD5Update(float valin) {
 }
 
 void MD5::MD5Update(int valin) {
-  int val = INTEL_INT(valin);
+  int val = htole32(valin);
   unsigned char *p = (unsigned char *)&val;
 #if MD5_DEBUG_LOG
   if (md5log) {
@@ -124,7 +124,7 @@ void MD5::MD5Update(int valin) {
 }
 
 void MD5::MD5Update(short valin) {
-  short val = INTEL_SHORT(valin);
+  short val = htole16(valin);
   unsigned char *p = (unsigned char *)&val;
 #if MD5_DEBUG_LOG
   if (md5log) {
@@ -135,7 +135,7 @@ void MD5::MD5Update(short valin) {
 }
 
 void MD5::MD5Update(unsigned int valin) {
-  unsigned int val = INTEL_INT(valin);
+  unsigned int val = htole32(valin);
   unsigned char *p = (unsigned char *)&val;
 #if MD5_DEBUG_LOG
   if (md5log) {
@@ -367,7 +367,7 @@ void MD5::Encode(unsigned char *output, unsigned int *input, unsigned int len) {
   unsigned int i, j;
 
   for (i = 0, j = 0; j < len; i++, j += 4) {
-    unsigned int inp = INTEL_INT(input[i]);
+    unsigned int inp = htole32(input[i]);
     output[j] = (unsigned char)(inp & 0xff);
     output[j + 1] = (unsigned char)((inp >> 8) & 0xff);
     output[j + 2] = (unsigned char)((inp >> 16) & 0xff);
@@ -382,10 +382,10 @@ void MD5::Decode(unsigned int *output, unsigned char *input, unsigned int len) {
   unsigned int i, j;
 
   for (i = 0, j = 0; j < len; i++, j += 4) {
-    unsigned int inp0 = INTEL_INT(input[j]);
-    unsigned int inp1 = INTEL_INT(input[j + 1]);
-    unsigned int inp2 = INTEL_INT(input[j + 2]);
-    unsigned int inp3 = INTEL_INT(input[j + 3]);
+    unsigned int inp0 = htole32(input[j]);
+    unsigned int inp1 = htole32(input[j + 1]);
+    unsigned int inp2 = htole32(input[j + 2]);
+    unsigned int inp3 = htole32(input[j + 3]);
     output[i] = ((unsigned int)inp0) | (((unsigned int)inp1) << 8) | (((unsigned int)inp2) << 16) |
                 (((unsigned int)inp3) << 24);
   }

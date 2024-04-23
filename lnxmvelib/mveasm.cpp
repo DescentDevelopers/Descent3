@@ -18,7 +18,7 @@
 */
 #include "mvelibl.h"
 #include "mvelibi.h"
-#include "byteswap.h"
+#include "portable_endian.h"
 
 // rcg07272000
 // need this for SIGTRAP on non-Intel platforms. Intel uses int $3.
@@ -235,10 +235,10 @@ public:
 
     for (y = -8; y != 8; y++) {
       for (x = -8; x != 8; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         *(ptr) = y;
         *(ptr + 1) = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         *(ptr) = x;
         *(ptr + 1) = y;
 #endif
@@ -251,10 +251,10 @@ public:
 
     for (y = 0; y != 8; y++) {
       for (x = 8; x != 15; x++) {
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         *(ptr) = y;
         *(ptr + 1) = x;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         *(ptr) = x;
         *(ptr + 1) = y;
 #endif
@@ -385,14 +385,14 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       } break;
       case 3: {
         // Near shift from newer part of current buffer
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         typedef struct {
           unsigned short hax, ax;
         } reg_word;
         typedef struct {
           signed char hah, hal, ah, al;
         } reg_byte;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         typedef struct {
           unsigned short ax, hax;
         } reg_word;
@@ -418,14 +418,14 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       } break;
       case 4: {
         // Near shift from previous buffer
-#ifdef OUTRAGE_BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
         typedef struct {
           unsigned short hax, ax;
         } reg_word;
         typedef struct {
           signed char hah, hal, ah, al;
         } reg_byte;
-#else
+#elif BYTE_ORDER == LITTLE_ENDIAN
         typedef struct {
           unsigned short ax, hax;
         } reg_word;

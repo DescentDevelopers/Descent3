@@ -9994,7 +9994,7 @@ void MultiProcessBigData(ubyte *buf, int len, network_address *from_addr) {
 
   while (bytes_processed < len) {
     type = buf[bytes_processed];
-    sub_len = INTEL_SHORT((*(short *)(buf + bytes_processed + 1)));
+    sub_len = htole16((*(int16_t*)(buf + bytes_processed + 1)));
 
     if (sub_len < 3 || type == 0 || (len - bytes_processed) < 2) {
       mprintf((0, "Got a corrupted packet!\n"));

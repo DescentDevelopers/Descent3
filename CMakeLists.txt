@@ -13,11 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
-  message(STATUS "Big Endian system detected.")
-  add_definitions("-DOUTRAGE_BIG_ENDIAN")
-endif()
-
 if(BUILD_TESTING)
   find_package(GTest REQUIRED)
   enable_testing()

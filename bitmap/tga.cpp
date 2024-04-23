@@ -135,11 +135,11 @@
 #include "cfile.h"
 #include "pserror.h"
 #include "pstypes.h"
+#include "portable_endian.h"
 #include "bitmap.h"
 #include "mono.h"
 #include "grdefs.h"
 #include "texture.h"
-#include "byteswap.h"
 #include <string.h>
 #include "mem.h"
 
@@ -171,7 +171,7 @@ inline int tga_read_int() {
   i = *(int *)(Tga_file_data + Fake_pos);
   Fake_pos += 4;
 
-  return INTEL_INT(i);
+  return le32toh(i);
 }
 inline short tga_read_short() {
   short i;
@@ -185,7 +185,7 @@ inline short tga_read_short() {
   i = *(short *)(Tga_file_data + Fake_pos);
   Fake_pos += 2;
 
-  return INTEL_SHORT(i);
+  return le16toh(i);
 }
 
 ushort bm_tga_translate_pixel(int pixel, int format) {

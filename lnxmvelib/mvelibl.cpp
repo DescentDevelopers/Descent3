@@ -40,7 +40,7 @@ static char notice1[] = "(c) 1997 Interplay Productions.  All Rights Reserved.\n
 #include "mvegfx.h"
 #include "mvelibl.h"
 
-#include "byteswap.h"
+#include "portable_endian.h"
 
 static unsigned opt_fastmode = 0; // 0:normal, 1:even lines only, 2:dither between even/odd lines |4 to spread lines
 

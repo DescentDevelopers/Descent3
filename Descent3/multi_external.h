@@ -112,11 +112,11 @@
 #endif
 
 #include "pstypes.h"
+#include "portable_endian.h"
 #include "manage_external.h"
 #include "cfile.h"
 #include "networking.h"
 #include "descent.h" //for MSN_NAMELEN
-#include "byteswap.h"
 #include <cassert>
 
 #define NETGAME_NAME_LEN 32
@@ -280,27 +280,27 @@ inline void MultiAddSbyte(sbyte element, ubyte *data, int *count) {
 }
 
 inline void MultiAddShort(short element, ubyte *data, int *count) {
-  *(short *)(data + *count) = INTEL_SHORT(element);
+  *(short *)(data + *count) = htons(element);
   *count += sizeof(short);
 }
 
 inline void MultiAddUshort(ushort element, ubyte *data, int *count) {
-  *(ushort *)(data + *count) = INTEL_SHORT(element);
+  *(ushort *)(data + *count) = htons(element);
   *count += sizeof(ushort);
 }
 
 inline void MultiAddInt(int element, ubyte *data, int *count) {
-  *(int *)(data + *count) = INTEL_INT(element);
+  *(int *)(data + *count) = htonl(element);
   *count += sizeof(int);
 }
 
 inline void MultiAddUint(uint element, ubyte *data, int *count) {
-  *(uint *)(data + *count) = INTEL_INT(element);
+  *(uint *)(data + *count) = htonl(element);
   *count += sizeof(uint);
 }
 
 inline void MultiAddFloat(float element, ubyte *data, int *count) {
-  *(float *)(data + *count) = INTEL_FLOAT(element);
+  *(float *)(data + *count) = htonf(element);
   *count += sizeof(float);
 }
 
@@ -334,31 +334,31 @@ inline sbyte MultiGetSbyte(ubyte *data, int *count) {
 inline short MultiGetShort(ubyte *data, int *count) {
   short element = (*(short *)(data + *count));
   *count += sizeof(short);
-  return INTEL_SHORT(element);
+  return ntohs(element);
 }
 
 inline ushort MultiGetUshort(ubyte *data, int *count) {
   ushort element = (*(ushort *)(data + *count));
   *count += sizeof(short);
-  return INTEL_SHORT(element);
+  return ntohs(element);
 }
 
 inline int MultiGetInt(ubyte *data, int *count) {
   int element = (*(int *)(data + *count));
   *count += sizeof(int);
-  return INTEL_INT(element);
+  return ntohl(element);
 }
 
 inline uint MultiGetUint(ubyte *data, int *count) {
   uint element = (*(uint *)(data + *count));
   *count += sizeof(int);
-  return INTEL_INT(element);
+  return ntohl(element);
 }
 
 inline float MultiGetFloat(ubyte *data, int *count) {
   float element = (*(float *)(data + *count));
   *count += sizeof(float);
-  return INTEL_FLOAT(element);
+  return ntohf(element);
 }
 
 inline void MultiGetString(char *str, ubyte *data, int *count) {

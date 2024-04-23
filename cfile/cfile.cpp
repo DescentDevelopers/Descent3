@@ -22,10 +22,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdarg.h>
 #include <errno.h>
 #include <ctype.h>
+#include <math.h>
+
 #ifndef __LINUX__
 // Non-Linux Build Includes
 #include <io.h>
@@ -33,8 +36,7 @@
 // Linux Build Includes
 #include "linux/linux_fix.h"
 #endif
-
-#include "byteswap.h"
+#include "portable_endian.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"
@@ -137,7 +139,7 @@ int cf_OpenLibrary(const char *libname) {
     mem_free(lib);
     return 0; // CF_BAD_LIB;
   }
-  // DAJ	lib->nfiles = INTEL_INT(header.nfiles);
+  // DAJ	lib->nfiles = le32toh(header.nfiles);
   lib->nfiles = header.nfiles;
   //	allocate CFILE hog info.
   lib->entries = (library_entry *)mem_malloc(sizeof(library_entry) * lib->nfiles);
@@ -149,7 +151,7 @@ int cf_OpenLibrary(const char *libname) {
   lib->next = Libraries;
   Libraries = lib;
   // set data offset of first file
-  // DAJ	offset = INTEL_INT(header.file_data_offset);
+  // DAJ	offset = le32toh(header.file_data_offset);
   offset = header.file_data_offset;
   // Go to index start
   fseek(fp, strlen(HOG_TAG_STR) + HOG_HDR_SIZE, SEEK_SET);
@@ -404,7 +406,7 @@ public:
 
   bool Start(const char *wildcard, char *namebuf);
   bool Next(char *namebuf);
-  void Close();
+  void Close(void);
 
 private:
   int globindex;
@@ -452,7 +454,7 @@ bool CFindFiles::Next(char *namebuf) {
   return true;
 }
 
-void CFindFiles::Close() {
+void CFindFiles::Close(void) {
   if (globindex == -1)
     return;
   globindex = -1;
@@ -902,14 +904,14 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
 int32_t cf_ReadInt(CFILE *cfp) {
   int32_t i;
   cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
-  return INTEL_INT(i);
+  return le32toh(i);
 }
 // Read and return a short (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int16_t cf_ReadShort(CFILE *cfp) {
   int16_t i;
   cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
-  return INTEL_SHORT(i);
+  return le16toh(i);
 }
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -923,33 +925,28 @@ int8_t cf_ReadByte(CFILE *cfp) {
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 float cf_ReadFloat(CFILE *cfp) {
-  float f;
-  cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
-#ifdef MACINTOSH
-  float e = INTEL_FLOAT(f); // DAJ bash to zero if reads a NaN
-  if (isnan(e))
-    e = 0.0;
-  return e;
-#else
-  return INTEL_FLOAT(f);
-#endif
+  union
+  {
+    float f;
+    uint32_t u32;
+  };
+  cf_ReadBytes((ubyte *)&u32, sizeof(u32), cfp);
+  u32 = le32toh(u32);
+  if(isnan(f)) // DAJ bash to zero if reads a NaN
+    f = 0.0;
+  return f;
 }
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 double cf_ReadDouble(CFILE *cfp) {
-  double f;
-  cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
-#ifdef OUTRAGE_BIG_ENDIAN
+  union
   {
-    double t;
-    int *sp = (int *)&f;
-    int *dp = (int *)&t;
-    dp[0] = SWAPINT(sp[1]);
-    dp[1] = SWAPINT(sp[0]);
-    f = t;
-  }
-#endif
-  return f;
+    double d;
+    uint64_t u64;
+  };
+  cf_ReadBytes((ubyte *)&u64, sizeof(u64), cfp);
+  u64 = le64toh(u64);
+  return d;
 }
 // Reads a string from a CFILE.  If the file is type binary, this
 // function reads until a NULL or EOF is found.  If the file is text,
@@ -1035,14 +1032,14 @@ int cfprintf(CFILE *cfp, const char *format, ...) {
 // Write an integer (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteInt(CFILE *cfp, int32_t i) {
-  int t = INTEL_INT(i);
+  uint32_t t = htole32(i);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Write a short (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteShort(CFILE *cfp, int16_t s) {
-  short t = INTEL_SHORT(s);
+  short t = htole16(s);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
@@ -1060,24 +1057,15 @@ void cf_WriteByte(CFILE *cfp, int8_t b) {
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteFloat(CFILE *cfp, float_t f) {
-  float t = INTEL_FLOAT(f);
+  uint32_t t = htole32(*((uint32_t*)&f));
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteDouble(CFILE *cfp, double_t d) {
-#ifdef OUTRAGE_BIG_ENDIAN
-  {
-    double t;
-    int *sp = (int *)&d;
-    int *dp = (int *)&t;
-    dp[0] = SWAPINT(sp[1]);
-    dp[1] = SWAPINT(sp[0]);
-    d = t;
-  }
-#endif
-  cf_WriteBytes((ubyte *)&d, sizeof(d), cfp);
+  uint64_t t = htole64(*((uint64_t*)&d));
+  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.

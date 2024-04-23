@@ -157,6 +157,7 @@
 #define NETWORKING_H
 
 #include "pstypes.h"
+#include "portable_endian.h"
 
 #if defined(WIN32)
 // Windows includes
@@ -213,6 +214,8 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 #include <errno.h>
 #include <pthread.h>
 #include <fcntl.h>
+
+#include "portable_endian.h"
 
 // rcg06212000 my SDL adds.
 #include "SDL.h"
@@ -375,6 +378,27 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 }
 // #endif // FIXED
 #endif // OS
+
+
+#include "portable_endian.h"
+
+#if BYTE_ORDER == BIG_ENDIAN
+#define ntohf(x) x
+#define htonf(x) x
+#elif BYTE_ORDER == LITTLE_ENDIAN
+static inline float ntohf(float x)
+{
+  union
+  {
+    float anon_float;
+    long anon_long;
+  };
+  anon_float = x;
+  anon_long = ntohl(anon_long);
+  return anon_float;
+}
+#define htonf(x) ntohf(x)
+#endif
 
 #define NWT_UNRELIABLE 1
 #define NWT_RELIABLE 2

@@ -79,13 +79,13 @@
 
 #include "pserror.h"
 #include "pstypes.h"
+#include "portable_endian.h"
 
 #include "3d.h"
 #include "vecmat.h"
 #include "grdefs.h"
 #include "polymodel.h"
 #include "gametexture.h"
-#include "byteswap.h"
 #include "renderer.h"
 #include "lighting.h"
 #include "game.h"

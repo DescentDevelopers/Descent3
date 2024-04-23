@@ -73,10 +73,10 @@
 
 #include "mem.h"
 #include "iff.h"
-#include "byteswap.h"
 #include "cfile.h"
 #include "pserror.h"
 #include "pstypes.h"
+#include "portable_endian.h"
 #include "bitmap.h"
 #include "mono.h"
 #include "grdefs.h"
@@ -162,13 +162,13 @@ int bm_iff_parse_bmhd(CFILE *ifile, uint len, iff_bitmap_header *bmheader) {
   len = len;
 
   bmheader->w = cf_ReadShort(ifile);
-  bmheader->w = MOTOROLA_SHORT(bmheader->w);
+  bmheader->w = be16toh(bmheader->w);
   bmheader->h = cf_ReadShort(ifile);
-  bmheader->h = MOTOROLA_SHORT(bmheader->h);
+  bmheader->h = be16toh(bmheader->h);
   bmheader->x = cf_ReadShort(ifile);
-  bmheader->x = MOTOROLA_SHORT(bmheader->x);
+  bmheader->x = be16toh(bmheader->x);
   bmheader->y = cf_ReadShort(ifile);
-  bmheader->y = MOTOROLA_SHORT(bmheader->y);
+  bmheader->y = be16toh(bmheader->y);
 
   bmheader->nplanes = cf_ReadByte(ifile);
   bmheader->masking = cf_ReadByte(ifile);
@@ -176,7 +176,7 @@ int bm_iff_parse_bmhd(CFILE *ifile, uint len, iff_bitmap_header *bmheader) {
   cf_ReadByte(ifile); /* skip pad */
 
   bmheader->transparentcolor = cf_ReadShort(ifile);
-  bmheader->transparentcolor = MOTOROLA_SHORT(bmheader->transparentcolor);
+  bmheader->transparentcolor = be16toh(bmheader->transparentcolor);
   bmheader->xaspect = cf_ReadByte(ifile);
   bmheader->yaspect = cf_ReadByte(ifile);
 
@@ -368,8 +368,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
 
     sig = bm_iff_get_sig(ifile);
 
-    len = cf_ReadInt(ifile);
-    len = MOTOROLA_INT(len);
+    len = be32toh(cf_ReadInt(ifile));
 
     switch (sig) {
     case IFF_SIG_FORM: {
