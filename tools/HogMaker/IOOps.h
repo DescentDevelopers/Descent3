@@ -20,7 +20,7 @@
 #include <cstdint>
 #include <ostream>
 
-#include "byteswap.h"
+#include "portable_endian.h"
 
 namespace D3 {
 

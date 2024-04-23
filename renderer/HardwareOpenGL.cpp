@@ -19,7 +19,8 @@
 #include "RendererConfig.h"
 #ifndef USE_SOFTWARE_TNL
 
-#include "byteswap.h"
+#include "portable_endian.h"
+
 #if defined(WIN32)
 #include <windows.h>
 #include "ddraw.h"
@@ -937,7 +938,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         pix = (r << 11) | (g << 6) | (b << 1) | 1;
       }
 
-      opengl_packed_Translate_table[i] = INTEL_INT(pix);
+      opengl_packed_Translate_table[i] = htole32(pix);
 
       // 4444 table
       int a = (i >> 12) & 0xf;
@@ -946,7 +947,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       b = i & 0xf;
 
       pix = (r << 12) | (g << 8) | (b << 4) | a;
-      opengl_packed_4444_translate_table[i] = INTEL_INT(pix);
+      opengl_packed_4444_translate_table[i] = htole32(pix);
     }
   } else {
     opengl_Upload_data = (uint *)mem_malloc(2048 * 2048 * 4);
@@ -991,7 +992,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         pix = (255 << 24) | (b << 16) | (g << 8) | (r);
       }
 
-      opengl_Translate_table[i] = INTEL_INT(pix);
+      opengl_Translate_table[i] = htole32(pix);
 
       // Do 4444
       int a = (i >> 12) & 0xf;
@@ -1011,7 +1012,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 
       pix = (a << 24) | (b << 16) | (g << 8) | (r);
 
-      opengl_4444_translate_table[i] = INTEL_INT(pix);
+      opengl_4444_translate_table[i] = htole32(pix);
     }
   }
 
@@ -1266,7 +1267,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
           if (bm_mipped(bm_handle)) {
             for (i = 0; i < w * h; i++)
-              opengl_Upload_data[i] = INTEL_INT((255 << 24)) | opengl_4444_translate_table[bm_ptr[i]];
+              opengl_Upload_data[i] = htole32((255 << 24)) | opengl_4444_translate_table[bm_ptr[i]];
           } else {
             for (i = 0; i < w * h; i++)
               opengl_Upload_data[i] = opengl_4444_translate_table[bm_ptr[i]];

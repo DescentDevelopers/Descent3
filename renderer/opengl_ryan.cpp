@@ -29,7 +29,7 @@
 #include "sdl_utils.h"
 #endif
 
-#include "byteswap.h"
+#include "portable_endian.h"
 
 // #include <X11/Xatom.h>
 

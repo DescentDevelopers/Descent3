@@ -101,7 +101,7 @@
 // Linux Builds
 #include "linux/linux_fix.h"
 #endif
-#include "byteswap.h"
+#include "portable_endian.h"
 #include "hogfile.h"
 #include "pstypes.h"
 #include "Macros.h"
@@ -154,9 +154,9 @@ bool FileCopy(FILE *ofp, FILE *ifp, int length) {
 bool ReadHogHeader(FILE *fp, tHogHeader *header) {
   int res = 0;
   res = fread(&header->nfiles, sizeof(header->nfiles), 1, fp);
-  header->nfiles = INTEL_INT(header->nfiles);
+  header->nfiles = le32toh(header->nfiles);
   res = fread(&header->file_data_offset, sizeof(header->file_data_offset), 1, fp);
-  header->file_data_offset = INTEL_INT(header->file_data_offset);
+  header->file_data_offset = le32toh(header->file_data_offset);
 
   if (res)
     return true;
@@ -167,11 +167,11 @@ bool ReadHogEntry(FILE *fp, tHogFileEntry *entry) {
   int res = 0;
   res = fread(entry->name, sizeof(char), HOG_FILENAME_LEN, fp);
   res = fread(&entry->flags, sizeof(entry->flags), 1, fp);
-  entry->flags = INTEL_INT(entry->flags);
+  entry->flags = le32toh(entry->flags);
   res = fread(&entry->len, sizeof(entry->len), 1, fp);
-  entry->len = INTEL_INT(entry->len);
+  entry->len = le32toh(entry->len);
   res = fread(&entry->timestamp, sizeof(entry->timestamp), 1, fp);
-  entry->timestamp = INTEL_INT(entry->timestamp);
+  entry->timestamp = le32toh(entry->timestamp);
 
   if (res)
     return true;

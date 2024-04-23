@@ -31,7 +31,7 @@
 #error No platform defined
 #endif
 
-#include "byteswap.h"
+#include "portable_endian.h"
 //--------------------------------
 // Compressed Video Constants
 //--------------------------------
@@ -52,17 +52,17 @@
 
 // some inlines to prevent macro craziness when using incrementers and dereferencing, and so I can use operator
 // overloading
-inline unsigned short IntelSwapper(unsigned short a) { return INTEL_SHORT(a); }
+inline unsigned short IntelSwapper(unsigned short a) { return htole16(a); }
 
-inline short IntelSwapper(short a) { return INTEL_SHORT(a); }
+inline short IntelSwapper(short a) { return htole16(a); }
 
-inline unsigned int IntelSwapper(unsigned int a) { return INTEL_INT(a); }
+inline unsigned int IntelSwapper(unsigned int a) { return htole32(a); }
 
-inline int IntelSwapper(int a) { return INTEL_INT(a); }
+inline int IntelSwapper(int a) { return htole32(a); }
 
-inline unsigned long IntelSwapper(unsigned long a) { return INTEL_INT(a); }
+inline unsigned long IntelSwapper(unsigned long a) { return htole32(a); }
 
-inline long IntelSwapper(long a) { return INTEL_INT(a); }
+inline long IntelSwapper(long a) { return htole32(a); }
 
 typedef struct _mve_hdr {
   char FileType[20];      // MVE_FILE_TYPE

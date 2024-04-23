@@ -18,7 +18,7 @@
 */
 #include "mvelibl.h"
 #include "mvelibi.h"
-#include "byteswap.h"
+#include "portable_endian.h"
 
 // rcg07272000
 // need this for SIGTRAP on non-Intel platforms. Intel uses int $3.

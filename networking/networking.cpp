@@ -331,7 +331,7 @@ typedef int socklen_t;
 #include "mem.h"
 #include "game.h"
 #include "args.h"
-#include "byteswap.h"
+#include "portable_endian.h"
 
 #ifdef WIN32
 #include "directplay.h"
@@ -1309,9 +1309,9 @@ int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent)
       memset(&send_address, 0, sizeof(network_address));
 
       memcpy(send_header.data, rsocket->sbuffers[pnum], rsocket->send_len[pnum]);
-      send_header.data_len = INTEL_SHORT(rsocket->send_len[pnum]);
+      send_header.data_len = htons(rsocket->send_len[pnum]);
       send_header.type = RNT_DATA;
-      send_header.send_time = INTEL_FLOAT(timer_GetTime());
+      send_header.send_time = htonf(timer_GetTime());
 
       send_address.connection_type = rsocket->connection_type;
 
@@ -1370,7 +1370,7 @@ int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent)
 
       memcpy(rsocket->sbuffers[i]->buffer, data, length);
 
-      send_header.seq = INTEL_SHORT(rsocket->theirsequence);
+      send_header.seq = htons(rsocket->theirsequence);
       rsocket->ssequence[i] = rsocket->theirsequence;
 
       use_buffer = i;
@@ -1406,9 +1406,9 @@ void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link
   reliable_header ack_header;
   ack_header.type = RNT_ACK;
   // mprintf((0,"Sending ACK for sig %d.\n",sig));
-  ack_header.data_len = INTEL_SHORT((short)sizeof(unsigned int));
-  ack_header.send_time = INTEL_FLOAT(time_sent);
-  sig = INTEL_INT(sig);
+  ack_header.data_len = htons((short)sizeof(unsigned int));
+  ack_header.send_time = htonf(time_sent);
+  sig = htonl(sig);
   memcpy(&ack_header.data, &sig, sizeof(unsigned int));
 
   network_address send_address;
@@ -1473,11 +1473,11 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
 #if (defined(WIN32) || defined(MACINTOSH))
     memcpy(&ipxaddr->sa_nodenum, &naddr->address, 6);
     memcpy(&ipxaddr->sa_netnum, &naddr->net_id, 4);
-    ipxaddr->sa_socket = htons(naddr->port);
+    ipxaddr->sa_socket = ntohs(naddr->port);
 #else
     memcpy(ipxaddr->sipx_node, &naddr->address, 6);
     memcpy(&ipxaddr->sipx_network, &naddr->net_id, 4);
-    ipxaddr->sipx_port = htons(naddr->port);
+    ipxaddr->sipx_port = ntohs(naddr->port);
 #endif
   }
 #endif
@@ -1497,8 +1497,8 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
     reliable_header conn_header;
     // Now send I_AM_HERE packet
     conn_header.type = RNT_I_AM_HERE;
-    conn_header.seq = INTEL_SHORT((short)(~CONNECTSEQ));
-    conn_header.data_len = INTEL_SHORT((short)0);
+    conn_header.seq = ntohs(~CONNECTSEQ);
+    conn_header.data_len = ntohs(0);
     last_sent_iamhere = timer_GetTime();
     network_address send_address;
     memset(&send_address, 0, sizeof(network_address));
@@ -1554,8 +1554,8 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
               // We already have a reliable link to this user, so we will ignore it...
               mprintf((0, "Received duplicate connection request. %d\n", i));
               // reliable_sockets[i].last_packet_received = timer_GetTime();
-              nw_SendReliableAck(&reliable_sockets[i].addr, INTEL_SHORT(rcv_buff.seq), link_type,
-                                 INTEL_FLOAT(rcv_buff.send_time));
+              nw_SendReliableAck(&reliable_sockets[i].addr, ntohs(rcv_buff.seq), link_type,
+                                 htonf(rcv_buff.send_time));
               // We will change this as a hack to prevent later code from hooking us up
               rcv_buff.type = 0xff;
               continue;
@@ -1588,7 +1588,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
           // Int3();//See Kevin
           continue;
         }
-        nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
+        nw_SendReliableAck(&rsocket->addr, ntohs(rcv_buff.seq), link_type, htonf(rcv_buff.send_time));
       }
 
       // Find out if this is a packet from someone we were expecting a packet.
@@ -1618,7 +1618,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
           if ((serverconn != -1)) {
             if (rcv_buff.type == RNT_ACK) {
               int *acknum = (int *)&rcv_buff.data;
-              *acknum = INTEL_INT(*acknum);
+              *acknum = ntohs(*acknum);
               if (*acknum == (~CONNECTSEQ & 0xffff)) {
                 rsocket->status = RNF_CONNECTED;
                 mprintf((0, "Got ACK for IAMHERE!\n"));
@@ -1627,7 +1627,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
             }
           } else if (rcv_buff.type == RNT_I_AM_HERE) {
             rsocket->status = RNF_CONNECTING;
-            nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
+            nw_SendReliableAck(&rsocket->addr, ntohs(rcv_buff.seq), link_type, htonf(rcv_buff.send_time));
             mprintf((0, "Got IAMHERE!\n"));
             continue;
           }
@@ -1650,7 +1650,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
         // Update ping time
         rsocket->num_ping_samples++;
 
-        rsocket->pings[rsocket->ping_pos] = rsocket->last_packet_received - INTEL_FLOAT(rcv_buff.send_time);
+        rsocket->pings[rsocket->ping_pos] = rsocket->last_packet_received - ntohf(rcv_buff.send_time);
         // mprintf((0,"ping time: %f\n",rsocket->pings[rsocket->ping_pos]));
         if (rsocket->num_ping_samples >= MAX_PING_HISTORY) {
           float sort_ping[MAX_PING_HISTORY];
@@ -1667,7 +1667,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
         }
         for (i = 0; i < MAXNETBUFFERS; i++) {
           unsigned int *acksig = (unsigned int *)&rcv_buff.data;
-          *acksig = INTEL_INT(*acksig);
+          *acksig = ntohs(*acksig);
           if (rsocket)
             if (rsocket->sbuffers[i])
               if (rsocket->ssequence[i] == *acksig) {
@@ -1691,7 +1691,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
 
         // If the data is out of order by >= MAXNETBUFFERS-1 ignore that packet for now
         int seqdelta;
-        seqdelta = INTEL_SHORT(rcv_buff.seq) - rsocket->oursequence;
+        seqdelta = ntohs(rcv_buff.seq) - rsocket->oursequence;
         if (seqdelta < 0)
           seqdelta = seqdelta * -1;
         if (seqdelta >= MAXNETBUFFERS - 1) {
@@ -1703,21 +1703,21 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
         int savepacket = 1;
 
         if (rsocket->oursequence < (0xffff - (MAXNETBUFFERS - 1))) {
-          if (rsocket->oursequence > INTEL_SHORT(rcv_buff.seq)) {
-            mprintf((0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq)));
+          if (rsocket->oursequence > ntohs(rcv_buff.seq)) {
+            mprintf((0, "Received old packet with seq of %d\n", ntohs(rcv_buff.seq)));
             savepacket = 0;
           }
 
         } else {
           // Sequence is high, so prepare for wrap around
-          if (((unsigned short)(INTEL_SHORT(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
-            mprintf((0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq)));
+          if (((unsigned short)(ntohs(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
+            mprintf((0, "Received old packet with seq of %d\n", ntohs(rcv_buff.seq)));
             savepacket = 0;
           }
         }
 
         for (i = 0; i < MAXNETBUFFERS; i++) {
-          if ((NULL != rsocket->rbuffers[i]) && (rsocket->rsequence[i] == INTEL_SHORT(rcv_buff.seq))) {
+          if ((NULL != rsocket->rbuffers[i]) && (rsocket->rsequence[i] == ntohs(rcv_buff.seq))) {
             // Received duplicate packet!
             mprintf((0, "Received duplicate packet!\n"));
             savepacket = 0;
@@ -1727,19 +1727,19 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
           for (i = 0; i < MAXNETBUFFERS; i++) {
             if (NULL == rsocket->rbuffers[i]) {
               // mprintf((0,"Got good data seq: %d\n",rcv_buff.seq));
-              if (INTEL_SHORT(rcv_buff.data_len) > max_len)
-                rsocket->recv_len[i] = max_len; // INTEL_SHORT(rcv_buff.data_len);
+              if (ntohs(rcv_buff.data_len) > max_len)
+                rsocket->recv_len[i] = max_len; // ntohs(rcv_buff.data_len);
               else
-                rsocket->recv_len[i] = INTEL_SHORT(rcv_buff.data_len);
+                rsocket->recv_len[i] = ntohs(rcv_buff.data_len);
               rsocket->rbuffers[i] = (reliable_net_rcvbuffer *)mem_malloc(sizeof(reliable_net_rcvbuffer));
               memcpy(rsocket->rbuffers[i]->buffer, rcv_buff.data, rsocket->recv_len[i]);
-              rsocket->rsequence[i] = INTEL_SHORT(rcv_buff.seq);
+              rsocket->rsequence[i] = ntohs(rcv_buff.seq);
               // mprintf((0,"Adding packet to receive buffer in nw_ReceiveReliable().\n"));
               break;
             }
           }
         }
-        nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
+        nw_SendReliableAck(&rsocket->addr, ntohs(rcv_buff.seq), link_type, ntohf(rcv_buff.send_time));
       }
     }
   } while (0); // while((IPX_has_data>0) || (UDP_has_data>0));
@@ -1777,7 +1777,7 @@ void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr
   mprintf((0, "Got a connect response!\n"));
   if (ack_header.type == RNT_ACK) {
     int *acknum = (int *)&ack_header.data;
-    if (INTEL_INT(*acknum) == CONNECTSEQ) {
+    if (ntohs(*acknum) == CONNECTSEQ) {
       // if(memcmp(&rcv_addr,&sockaddr,sizeof(SOCKADDR))==0)
       {
         for (i = 1; i < MAXRELIABLESOCKETS; i++) {
@@ -1795,8 +1795,8 @@ void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr
             mprintf((0, "Succesfully connected to server in nw_ConnectToServer().\n"));
             // Now send I_AM_HERE packet
             conn_header.type = RNT_I_AM_HERE;
-            conn_header.seq = INTEL_SHORT((short)(~CONNECTSEQ));
-            conn_header.data_len = INTEL_SHORT((short)0);
+            conn_header.seq = htons(~CONNECTSEQ);
+            conn_header.data_len = htons(0);
             serverconn = i;
             first_sent_iamhere = timer_GetTime();
             last_sent_iamhere = timer_GetTime();
@@ -1862,7 +1862,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
   }
 
   conn_header.type = RNT_REQ_CONN;
-  conn_header.seq = INTEL_SHORT((short)CONNECTSEQ);
+  conn_header.seq = htons((short)CONNECTSEQ);
   conn_header.data_len = 0;
 
   timeout.tv_sec = 0;
@@ -1951,7 +1951,7 @@ void nw_CloseSocket(SOCKET *sockp) {
     }
   }
   diss_conn_header.type = RNT_DISCONNECT;
-  diss_conn_header.seq = INTEL_SHORT((short)(CONNECTSEQ));
+  diss_conn_header.seq = htons(CONNECTSEQ);
   diss_conn_header.data_len = 0;
   if (*sockp == serverconn)
     serverconn = -1;
@@ -2926,10 +2926,10 @@ void nw_ReliableResend(void) {
           }
           reliable_header send_header;
           // mprintf((0,"Resending reliable packet in nw_WorkReliable().\n"));
-          send_header.send_time = INTEL_FLOAT(timer_GetTime());
-          send_header.seq = INTEL_SHORT(rsocket->ssequence[i]);
+          send_header.send_time = htonf(timer_GetTime());
+          send_header.seq = htons(rsocket->ssequence[i]);
           memcpy(send_header.data, rsocket->sbuffers[i]->buffer, rsocket->send_len[i]);
-          send_header.data_len = INTEL_SHORT(rsocket->send_len[i]);
+          send_header.data_len = htons(rsocket->send_len[i]);
           send_header.type = RNT_DATA;
 
           network_address send_address;
@@ -2992,9 +2992,9 @@ void nw_ReliableResend(void) {
       if ((rsocket->status == RNF_CONNECTED) && ((timer_GetTime() - rsocket->last_packet_sent) > NETHEARTBEATTIME)) {
         reliable_header send_header;
         // mprintf((0,"Resending reliable packet in nw_WorkReliable().\n"));
-        send_header.send_time = INTEL_FLOAT(timer_GetTime());
-        send_header.seq = INTEL_SHORT((short)0);
-        send_header.data_len = INTEL_SHORT((short)0);
+        send_header.send_time = htonf(timer_GetTime());
+        send_header.seq = htons(0);
+        send_header.data_len = htons(0);
         send_header.type = RNT_HEARTBEAT;
 
         rcode = -1;

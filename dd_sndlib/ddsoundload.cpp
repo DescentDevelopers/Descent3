@@ -105,7 +105,7 @@
 #include "mem.h"
 #include "pserror.h"
 #include <string.h>
-#include "byteswap.h"
+#include "portable_endian.h"
 
 sound_info Sounds[MAX_SOUNDS];
 sound_file_info SoundFiles[MAX_SOUND_FILES];
@@ -429,7 +429,7 @@ char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_inde
           //						SoundFiles[sound_file_index].sample_16bit[i++] = tmp_snd;
           //						SoundFiles[sound_file_index].sample_16bit[i++] = tmp_snd;
           SoundFiles[sound_file_index].sample_16bit[i++] =
-              INTEL_SHORT(SoundFiles[sound_file_index].sample_16bit[count]);
+              le16toh(SoundFiles[sound_file_index].sample_16bit[count]);
         }
 #else
 
@@ -448,7 +448,7 @@ char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_inde
         cf_ReadBytes((unsigned char *)SoundFiles[sound_file_index].sample_16bit, cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
           SoundFiles[sound_file_index].sample_16bit[count] =
-              INTEL_SHORT(SoundFiles[sound_file_index].sample_16bit[count]);
+              le16toh(SoundFiles[sound_file_index].sample_16bit[count]);
         }
 
         if (num_needed)

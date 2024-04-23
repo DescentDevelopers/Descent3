@@ -27,7 +27,7 @@
 #pragma pack(push, 1)
 #endif
 
-#include "byteswap.h"
+#include "portable_endian.h"
 
 //--------------------------------
 // Useful type definitions

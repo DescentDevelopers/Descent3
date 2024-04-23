@@ -23,10 +23,10 @@
 #include "debug.h"
 #include "pserror.h"
 #include "pstypes.h"
+#include "portable_endian.h"
 #include "audiotaunts.h"
 #include "CFILE.H"
 #include "audio_encode.h"
-#include "byteswap.h"
 #include "mem.h"
 #include "ddio.h"
 #include "manage.h"
@@ -315,7 +315,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
           //flip bytes(?)..NOTE SPEEDUP WARNING..THIS IS DONE IN WAVE LOAD..REMOVE IT?
           for(int count = 0; count < (int)wavdata.sample_length; count++)
           {
-                  wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
+                  wavdata.sample_16bit[count] = le16toh(wavdata.sample_16bit[count]);
           }
 
           cf_WriteBytes((ubyte *)wavdata.sample_16bit,amount_to_flush,file);
@@ -335,7 +335,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
   // flip bytes(?)..NOTE SPEEDUP WARNING..THIS IS DONE IN WAVE LOAD..REMOVE IT?
   int count;
   for (count = 0; count < (int)wavdata.sample_length; count++) {
-    wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
+    wavdata.sample_16bit[count] = le16toh(wavdata.sample_16bit[count]);
   }
 
   cf_WriteBytes((ubyte *)wavdata.sample_16bit, amount_to_flush, file);
@@ -731,7 +731,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
 
         cf_ReadBytes((ubyte *)wave->sample_16bit, cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
-          wave->sample_16bit[count] = INTEL_SHORT(wave->sample_16bit[count]);
+          wave->sample_16bit[count] = le16toh(wave->sample_16bit[count]);
         }
 
         if (num_needed)

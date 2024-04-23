@@ -122,7 +122,7 @@
 #include "mono.h"
 #include "networking.h"
 #include "mt_net.h"
-#include "byteswap.h"
+#include "portable_endian.h"
 
 #define LOGIN_LEN 33
 #define REAL_NAME_LEN 66
