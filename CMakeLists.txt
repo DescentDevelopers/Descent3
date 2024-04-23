@@ -6,6 +6,8 @@ if(NOT MSVC) # GCC/clang or compatible, hopefully
   option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 endif()
 
+option(LOGGER "Enable logging to the terminal" OFF)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -54,13 +56,13 @@ endif()
 
 if(UNIX AND NOT APPLE)
   message("Building for Linux")
-  add_definitions( -D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -D__32BIT__ -DHAVEALLOCA_H -D_USE_OGL_ACTIVE_TEXTURES -DLOGGER)
+  add_definitions( -D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -D__32BIT__ -DHAVEALLOCA_H -D_USE_OGL_ACTIVE_TEXTURES)
   set(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR})
 endif()
 
 if(APPLE)
   message("Building for MAC OSX")
-  add_definitions(-D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -DMACOSX=1 -D_USE_OGL_ACTIVE_TEXTURES -DLOGGER)
+  add_definitions(-D_DEBUG -D__LINUX__ -DLINUX -D_MAX_PATH=260 -D_MAX_FNAME=256 -D_REENRANT -DMACOSX=1 -D_USE_OGL_ACTIVE_TEXTURES)
   set(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR} "/usr/X11/include")
 endif()
 
@@ -95,6 +97,11 @@ if(WIN32)
     add_compile_options("/we4715")  # 'function' : not all control paths return a value
     add_compile_options("/we4834")  # discarding return value of function with [[nodiscard]] attribute
   endif()
+endif()
+
+if(LOGGER)
+  message("Enabling Logging")
+  add_definitions(-DLOGGER)
 endif()
 
 include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})

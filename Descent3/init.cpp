@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1153,7 +1153,7 @@ void PreInitD3Systems() {
 
   debugging = (FindArg("-debug") != 0);
 
-#ifdef MONO
+#ifdef LOGGER
   console_output = true;
 #endif
 #ifndef MACINTOSH
@@ -2151,7 +2151,7 @@ void InitD3Systems1(bool editor) {
 #if 0
 	//CD Check goes here
 //#if ( defined(RELEASE) && (!defined(DEMO)) && (!defined(GAMEGAUGE)) )
-	if( (!FindArg("-dedicated")) ) 
+	if( (!FindArg("-dedicated")) )
 		PreGameCdCheck();
 #endif
 
