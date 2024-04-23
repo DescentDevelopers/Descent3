@@ -24,36 +24,6 @@
 
 namespace D3 {
 
-// std::byteswap from C++23
-template <typename T> constexpr T byteswap(T n) {
-  T m;
-  for (size_t i = 0; i < sizeof(T); i++)
-    reinterpret_cast<uint8_t *>(&m)[i] = reinterpret_cast<uint8_t *>(&n)[sizeof(T) - 1 - i];
-  return m;
-}
-
-/**
- * Convert integer to/from BE order
- */
-template <typename T> constexpr T convert_be(T val) {
-#ifndef OUTRAGE_BIG_ENDIAN
-  return byteswap(val);
-#else
-  return (val);
-#endif
-}
-
-/**
- * Convert integer to/from LE order
- */
-template <typename T> constexpr T convert_le(T val) {
-#ifndef OUTRAGE_BIG_ENDIAN
-  return (val);
-#else
-  return byteswap(val);
-#endif
-}
-
 template <class T>
 inline std::ostream &bin_write(std::ostream &output, T value, bool is_little_endian = true, size_t n = sizeof(T)) {
   value = is_little_endian ? convert_le(value) : convert_be(value);
