@@ -1,6 +1,7 @@
 name: Descent 3 Build
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
     paths-ignore:
