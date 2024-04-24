@@ -63,20 +63,25 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev
+            ninja-build cmake g++ libgtest-dev libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev
 
       - name: Configure CMake
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
           VCPKG_ROOT: C:/vcpkg
-        run: cmake --preset ${{ matrix.os.preset }}
+        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON
 
       - name: Debug Build
         run: cmake --build --preset ${{ matrix.os.preset }} --config Debug --verbose
 
       - name: Release Build
         run: cmake --build --preset ${{ matrix.os.preset }} --config Release --verbose
+
+      - name: Run Unittests
+        run: |
+          ctest --preset ${{ matrix.os.preset }} -C Debug
+          ctest --preset ${{ matrix.os.preset }} -C Release
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
