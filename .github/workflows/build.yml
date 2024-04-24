@@ -46,7 +46,17 @@ jobs:
             preset: linux
             cc: clang
             cxx: clang++
-            name: Linux-x64-clang
+            name: no_upload
+          - runner: ubuntu-latest
+            preset: linux-32
+            cc: gcc
+            cxx: g++
+            name: Linux-i386
+          - runner: ubuntu-latest
+            preset: linux-32
+            cc: clang
+            cxx: clang++
+            name: no_upload
         build_type:
           - Debug
           - Release
@@ -69,6 +79,14 @@ jobs:
           sudo apt install -y --no-install-recommends \
             ninja-build cmake g++ libgtest-dev libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev
 
+      - name: Install Linux dependencies for 32-bit build
+        if: ${{ matrix.os.preset == 'linux-32' }}
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt update
+          sudo apt install -y --no-install-recommends \
+            ninja-build cmake g++ g++-multilib libgtest-dev:i386 libsdl1.2-dev:i386 libsdl-image1.2-dev:i386 libncurses-dev:i386 zlib1g-dev:i386
+
       - name: Configure CMake
         env:
           CC: ${{ matrix.os.cc }}
@@ -83,6 +101,7 @@ jobs:
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Upload Artifacts
+        if: ${{ matrix.os.name != 'no_upload' }}
         uses: actions/upload-artifact@v4
         with:
           name: Descent3_${{ matrix.build_type }}_${{ matrix.os.name }}

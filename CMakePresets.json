@@ -89,6 +89,12 @@
 			"inherits": "defaults",
 			"description": "Testing under Linux",
 			"configurePreset": "linux"
+		},
+		{
+			"name": "linux-32",
+			"inherits": "defaults",
+			"description": "Testing under Linux (32-bit)",
+			"configurePreset": "linux-32"
 		}
 	]
 }
