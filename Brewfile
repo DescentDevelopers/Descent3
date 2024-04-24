@@ -10,3 +10,6 @@ brew "sdl2_image"
 
 brew "cmake"
 brew "ninja"
+
+# zlib
+brew "zlib"

@@ -57,12 +57,13 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev
+            ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev
 
       - name: Configure CMake
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
+          VCPKG_ROOT: C:/vcpkg
         run: cmake --preset ${{ matrix.os.preset }}
 
       - name: Debug Build
