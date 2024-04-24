@@ -213,7 +213,18 @@ extern terrain_tex_segment Terrain_tex_seg[TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH
 // first object to render after cell has been rendered (only used for SW renderer)
 extern short Terrain_seg_render_objs[];
 
+#ifdef RELEASE
 #define TERRAIN_REGION(x) ((Terrain_seg[0x7FFFFFFF & x].flags & TFM_REGION_MASK) >> 5)
+#else // debug(-ish) builds - check if x is valid
+inline int TERRAIN_REGION(int x) {
+	ASSERT(x != -1 && "invalid/unset room number (-1)!");
+	// Note: due to the 0x7FFFFFFF mask, terrSegIdx will be >= 0
+	int terrSegIdx = 0x7FFFFFFF & x;
+	// catch other invalid cell/segment numbers than -1 as well
+	ASSERT((terrSegIdx < TERRAIN_WIDTH * TERRAIN_DEPTH) && "invalid cellnum!");
+	return (Terrain_seg[terrSegIdx].flags & TFM_REGION_MASK) >> 5;
+}
+#endif
 
 extern terrain_sky Terrain_sky;
 
