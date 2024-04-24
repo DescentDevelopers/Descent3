@@ -332,13 +332,10 @@ extern int MTAVersionCheck(unsigned int oldver, char *URL);
 #pragma export on
 #endif
 
-// These next two function prototypes MUST appear in the extern "C" block if called
-// from a CPP file.
-extern "C" {
+
 DLLEXPORT void DLLFUNCCALL DLLMultiInit(int *api_func);
 DLLEXPORT void DLLFUNCCALL DLLMultiCall(int eventnum);
 DLLEXPORT void DLLFUNCCALL DLLMultiClose();
-}
 
 static bool All_ok = true;
 // Initializes the game function pointers

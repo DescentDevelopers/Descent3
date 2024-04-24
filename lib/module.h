@@ -121,7 +121,7 @@ typedef struct {
 #define MODPROCADDRESS void *
 #define DLLFUNCEXPORT
 #define DLLFUNCIMPORT
-#define DLLEXPORT
+#define DLLEXPORT CPPEXTERN
 
 typedef struct {
   void *handle; // handle to the DLL
