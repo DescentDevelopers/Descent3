@@ -37,6 +37,13 @@
 				"lhs": "${hostSystemName}",
 				"rhs": "Linux"
 			}
+		},
+		{
+			"name": "linux-32",
+			"inherits": "linux",
+                        "cacheVariables": {
+                                "CMAKE_TOOLCHAIN_FILE": "tools/toolchain-32-bit.cmake"
+                        }
 		}
 	],
 	"buildPresets": [
@@ -51,6 +58,10 @@
 		{
 			"name": "linux",
 			"configurePreset": "linux"
+		},
+		{
+			"name": "linux-32",
+			"configurePreset": "linux-32"
 		}
 	],
 	"testPresets": [
