@@ -27,15 +27,15 @@ Build steps below assume you have already cloned the repository and entered it l
 #### Building - Windows
 Requires Visual Studio C++ Tools (cmake and vcpkg)
 ```sh
-cmake --preset win
-cmake --build --preset win --config [Debug|Release] -D LOGGER=[ON|OFF]
+cmake --preset win -D LOGGER=[ON|OFF]
+cmake --build --preset win --config [Debug|Release]
 ```
 
 #### Building - MacOS
 ```sh
 brew bundle install
-cmake --preset mac
-cmake --build --preset mac --config [Debug|Release] -D LOGGER=[ON|OFF]
+cmake --preset mac -D LOGGER=[ON|OFF]
+cmake --build --preset mac --config [Debug|Release]
 ```
 
 #### Building - Linux
@@ -43,8 +43,8 @@ cmake --build --preset mac --config [Debug|Release] -D LOGGER=[ON|OFF]
 sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev
-cmake --preset linux
-cmake --build --preset linux --config [Debug|Release] -D LOGGER=[ON|OFF]
+cmake --preset linux -D LOGGER=[ON|OFF]
+cmake --build --preset linux --config [Debug|Release]
 ```
 
 ## Contributing
