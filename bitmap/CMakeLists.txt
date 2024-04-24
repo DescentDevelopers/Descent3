@@ -8,3 +8,6 @@ set(CPPS
   tga.cpp)
 
 add_library(bitmap STATIC ${HEADERS} ${CPPS})
+target_link_libraries(bitmap PRIVATE
+  cfile
+)

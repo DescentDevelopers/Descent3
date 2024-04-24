@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.20)  # For using CMAKE_<LANG>_BYTE_ORDER
 
 project(Descent3 VERSION 1.5.500)
 
@@ -12,6 +12,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
+  message(STATUS "Big Endian system detected.")
+  add_definitions("-DOUTRAGE_BIG_ENDIAN")
+endif()
+
+if(BUILD_TESTING)
+  find_package(GTest REQUIRED)
+  enable_testing()
+  include(GoogleTest)
+  add_subdirectory(tests)
+endif()
 
 if(NOT MSVC)
   # check if this is some kind of clang (Clang, AppleClang, whatever)
@@ -102,12 +114,19 @@ endif()
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
+find_package(ZLIB REQUIRED)
+
 if(LOGGER)
   message("Enabling Logging")
   add_definitions(-DLOGGER)
 endif()
 
-include_directories("lib" "Descent3" ${PLATFORM_INCLUDES})
+include_directories(
+  "cfile"   # TODO: Remove after untying all modules
+  "lib"     # TODO: Remove after untying all modules
+  "Descent3"
+  ${PLATFORM_INCLUDES}
+)
 
 # file(GLOB_RECURSE INCS "*.h")
 

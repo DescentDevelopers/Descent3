@@ -9,7 +9,7 @@ There is no "release" yet. The current milestone is "1.5 Stable", which is meant
 The milestone needs testing on all platforms. Please report issues when found.
 
 ## Usage
-Purchase Descent 3 from a reputable source and install it, then replace the main binary with the newly build Descent3 binary under `${CMAKE_BINARY_DIR}/Descent3/*/Descent3[.exe]`.
+Purchase Descent 3 from a reputable source and install it, then replace the main binary with the newly built `Descent3` binary under `${CMAKE_BINARY_DIR}/Descent3/*/Descent3[.exe]`.
 See your platform below:
 
 #### Windows
@@ -25,26 +25,26 @@ Back up your `Descent3` binary and drop your built `Descent3` binary into the in
 Build steps below assume you have already cloned the repository and entered it locally.
 
 #### Building - Windows
-Requires Visual Studio C++ Tools (cmake and nmake)
+Requires Visual Studio C++ Tools (cmake and vcpkg)
 ```sh
 cmake --preset win
-cmake --build --preset win --config [Debug/Release] -D LOGGER=[ON|OFF]
+cmake --build --preset win --config [Debug|Release] -D LOGGER=[ON|OFF]
 ```
 
 #### Building - MacOS
 ```sh
 brew bundle install
 cmake --preset mac
-cmake --build --preset mac --config [Debug/Release] -D LOGGER=[ON|OFF]
+cmake --build --preset mac --config [Debug|Release] -D LOGGER=[ON|OFF]
 ```
 
 #### Building - Linux
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev
 cmake --preset linux
-cmake --build --preset linux --config [Debug/Release] -D LOGGER=[ON|OFF]
+cmake --build --preset linux --config [Debug|Release] -D LOGGER=[ON|OFF]
 ```
 
 ## Contributing

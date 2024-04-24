@@ -95,7 +95,7 @@
 #include "ddio.h"
 #include "gamefont.h"
 #include "multi_ui.h"
-#include "CFILE.H"
+#include "cfile.h"
 #include "mem.h"
 #include "game.h"
 #include "stringtable.h"

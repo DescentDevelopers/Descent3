@@ -501,7 +501,7 @@
 #include "ddio.h"
 #include "descent.h"
 #include "game.h"
-#include "CFILE.H"
+#include "cfile.h"
 #include "application.h"
 #include "TelCom.h"
 #include "TelComEffects.h"

@@ -35,6 +35,7 @@
 #include <dirent.h>
 #define _GNU_SOURCE
 #include <fnmatch.h>
+#include "hogfile.h"
 #endif
 
 #include "SDL.h"
@@ -330,8 +331,6 @@ void StartDedicatedServer();
 
 static void hogfileRefresh(const char *x) { printf(" - %s\n", x); } // hogfileRefresh
 
-int CreateNewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *));
-
 // hack of the century.
 static void buildNewHogFromFileList(char *fileName) {
   setbuf(stdout, NULL);
@@ -422,7 +421,7 @@ static void buildNewHogFromFileList(char *fileName) {
     }   // for
   } while (swapped);
 
-  CreateNewHogFile("new.hog", i, (const char **)files, (void (*)(char *))hogfileRefresh);
+  NewHogFile("new.hog", i, (const char **)files, (void (*)(char *))hogfileRefresh);
 } // buildNewHogFileFromList
 
 #endif
@@ -547,8 +546,15 @@ int main(int argc, char *argv[]) {
 
   snprintf(game_version_buffer, sizeof(game_version_buffer),
            "\n\n"
-           "Descent 3 Linux %s v%d.%d.%d%s\n"
+           "Descent 3 %s %s v%d.%d.%d%s\n"
            "Copyright (C) 1999 Outrage Entertainment, Inc.\n",
+
+#if defined(__APPLE__) && defined(__MACH__)
+           "macOS",
+#else
+           "Linux",
+#endif
+
 #ifdef DEDICATED
            "Dedicated Server",
 #elif DEMO

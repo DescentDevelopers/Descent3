@@ -20,7 +20,7 @@
 #define _LEVELGOAL_H_
 
 #include "object.h"
-#include "CFILE.H"
+#include "cfile.h"
 #if defined(MACOSX)
 #include <malloc/malloc.h>
 #else

@@ -19,7 +19,7 @@
 #ifndef _AIAMBIENT_H_
 #define _AIAMBIENT_H_
 
-#include "CFILE.H"
+#include "cfile.h"
 
 #define MAX_AL_TYPES 6
 #define MAX_ALS_PER_TYPE 130

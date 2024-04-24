@@ -101,7 +101,7 @@
 #else
 #include <malloc.h>
 #endif
-#include "CFILE.H"
+#include "cfile.h"
 #include "mem.h"
 #include "pserror.h"
 #include <string.h>

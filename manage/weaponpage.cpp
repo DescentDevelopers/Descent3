@@ -290,7 +290,7 @@
 #include <windows.h>
 #endif
 
-#include "CFILE.H"
+#include "cfile.h"
 #include "manage.h"
 #include "weapon.h"
 #include "weaponpage.h"
