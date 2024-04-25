@@ -16,33 +16,28 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "logfile.h"
-#include "pstring.h"
-#include <stdio.h>
-#include <stdarg.h>
+#include <utility>
 
-#ifdef _DEBUG
+#include "logfile.h"
+
+#ifdef LOGGER
 static bool log_enable = true;
 #else
 static bool log_enable = false;
 #endif
 
-void log_Enable(bool enable) { log_enable = true; }
-
+void log_Enable() { log_enable = true; }
 void log_Disable() { log_enable = false; }
 
-logfile::logfile() { fp = NULL; }
+logfile::~logfile() { logfile::end(); }
 
-logfile::~logfile() { end(); }
-
-// restarts the logfile (opens a new one.)
-void logfile::start(const char *fname, const char *longname) {
+void logfile::start(const char *filename, const char *longname) {
   if (log_enable) {
     try {
-      fp = (FILE *)fopen(fname, "wt");
+      fp = std::fopen(filename, "wt");
       logfile::printf("%s\n", longname);
     } catch (...) {
-      fp = NULL;
+      fp = nullptr;
     }
   }
 }
@@ -50,32 +45,29 @@ void logfile::start(const char *fname, const char *longname) {
 void logfile::end() {
   if (fp) {
     try {
-      fclose((FILE *)fp);
-      fp = NULL;
+      std::fclose(fp);
+      fp = nullptr;
     } catch (...) {
-      fp = NULL;
+      fp = nullptr;
     }
   }
 }
 
-void logfile::printf(const char *fmt, ...) {
-  if (fp && fmt) {
+template <typename... T> void logfile::printf(const char *format, T &&...arguments) {
+  if (fp && format) {
     char msg[256];
-    va_list arglist;
-    va_start(arglist, fmt);
-    Pvsprintf(msg, sizeof(msg), fmt, arglist);
-    va_end(arglist);
+    std::snprintf(msg, sizeof(msg), format, std::forward<T>(arguments)...);
 
     logfile::puts(msg);
   }
 }
 
-void logfile::puts(const char *msg) {
-  if (fp && msg) {
+void logfile::puts(const char *str) {
+  if (fp && str) {
     try {
-      fputs(msg, (FILE *)fp);
+      std::fputs(str, fp);
     } catch (...) {
-      end();
+      logfile::end();
     }
   }
 }
@@ -83,9 +75,9 @@ void logfile::puts(const char *msg) {
 void logfile::update() {
   if (fp) {
     try {
-      fflush((FILE *)fp);
+      std::fflush(fp);
     } catch (...) {
-      end();
+      logfile::end();
     }
   }
 }

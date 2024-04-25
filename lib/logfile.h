@@ -16,26 +16,27 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef LOGFILE_H
 #define LOGFILE_H
 
-void log_Enable(bool enable);
+#include <cstdio>
+
+void log_Enable();
 void log_Disable();
 
 class logfile {
-  void *fp;
-
 public:
-  logfile(); // simple constructor
   ~logfile();
 
-  void start(const char *fname, const char *longname = 0); // restarts the logfile (opens a new one.)
+  void start(const char *filename, const char *longname = nullptr);
   void end();
 
-  void printf(const char *fmt, ...);
-  void puts(const char *msg);
-  void update(); // call to update logfile on disk (done by OS otherwise)
+  template <typename... T> void printf(const char *format, T &&...arguments);
+  void puts(const char *str);
+  void update();
+
+private:
+  std::FILE *fp = nullptr;
 };
 
 #endif
