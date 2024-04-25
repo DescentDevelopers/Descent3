@@ -46,6 +46,9 @@ jobs:
             cc: clang
             cxx: clang++
             name: Linux-x64-clang
+        build_type:
+          - Debug
+          - Release
 
     runs-on: ${{ matrix.os.runner }}
 
@@ -72,21 +75,14 @@ jobs:
           VCPKG_ROOT: C:/vcpkg
         run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON
 
-      - name: Debug Build
-        run: cmake --build --preset ${{ matrix.os.preset }} --config Debug --verbose
+      - name: Build ${{ matrix.build_type }}
+        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
 
-      - name: Release Build
-        run: cmake --build --preset ${{ matrix.os.preset }} --config Release --verbose
-
-      - name: Run Unittests
-        run: |
-          ctest --preset ${{ matrix.os.preset }} -C Debug
-          ctest --preset ${{ matrix.os.preset }} -C Release
+      - name: Run ${{ matrix.build_type }} Unittests
+        run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Descent3_${{ matrix.os.name }}
-          path: |
-            ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/Debug/
-            ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/Release/
+          name: Descent3_${{ matrix.build_type }}_${{ matrix.os.name }}
+          path: ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/${{ matrix.build_type }}/
