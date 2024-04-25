@@ -1,4 +1,10 @@
-add_definitions(-DCHECKSUM=2273873307UL)
+# 64 bit machines have a different game checksum than 32 bit machines
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+  add_definitions(-DCHECKSUM=2273889867UL)
+else ()
+  add_definitions(-DCHECKSUM=2273873307UL)
+endif()
+
 set(HEADERS)
 set(CPPS)
 if (UNIX)
