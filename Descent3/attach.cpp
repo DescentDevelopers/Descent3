@@ -1,22 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "attach.h"
 #include "terrain.h"
@@ -142,8 +140,8 @@ PI); rot_angle = acos(dot);
 
 // Finds the position of a attach point on an object
 // The uvec is optional as most attaching objects don't need at complete orientation set (only an fvec)
-bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
-                    vector *attach_fvec, bool *f_computed_uvec = NULL, vector *attach_uvec = NULL) {
+static bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *attach_pos, bool f_compute_fvec,
+                           vector *attach_fvec, bool *f_computed_uvec = NULL, vector *attach_uvec = NULL) {
   poly_model *pm;
   vector pnt;
   vector normal;
@@ -227,7 +225,7 @@ bool AttachPointPos(object *obj, char ap, bool f_compute_pos, vector *attach_pos
   return true;
 }
 
-void ConvertAxisAmountMatrix(vector *n, float w, matrix *rotmat) {
+static void ConvertAxisAmountMatrix(vector *n, float w, matrix *rotmat) {
   float s;
   float c;
   float t;
@@ -399,7 +397,7 @@ bool AttachDoPosOrient(object *parent, char parent_ap, object *child, char child
 }
 
 // Adds and subtracts from mass from connections and disconnections
-void AttachPropagateMass(object *child, bool f_attach = true) {
+static void AttachPropagateMass(object *child, bool f_attach = true) {
   object *new_parent;
 
   if (!child)
@@ -436,7 +434,7 @@ void AttachPropagateMass(object *child, bool f_attach = true) {
   } while (child->flags & OF_ATTACHED);
 }
 
-inline void ComputeUltimateAttachParent(object *child) {
+static inline void ComputeUltimateAttachParent(object *child) {
   object *cur_obj = child;
 
   do {
@@ -447,7 +445,7 @@ inline void ComputeUltimateAttachParent(object *child) {
   } while (cur_obj->flags & OF_ATTACHED);
 }
 
-void ProprogateUltimateAttachParent(object *parent, int ultimate_handle) {
+static void ProprogateUltimateAttachParent(object *parent, int ultimate_handle) {
   int i;
 
   ASSERT(parent);

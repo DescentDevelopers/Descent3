@@ -59,11 +59,11 @@ typedef struct {
 //	8: invalid samples
 //	9: invalid bit (8 or 16)
 //	10: no data
-char taunt_LoadWaveFile(char *filename, tWaveFile *wave);
+static char taunt_LoadWaveFile(char *filename, tWaveFile *wave);
 
-int TauntLastError = TAUNTIMPERR_NOERROR;
+static int TauntLastError = TAUNTIMPERR_NOERROR;
 bool Audio_taunts_enabled = true;
-float Audio_taunt_delay_time = 5.0f;
+static float Audio_taunt_delay_time = 5.0f;
 
 // taunt_Enable
 //

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/bsp.cpp $
@@ -57,10 +57,11 @@
 
 bsptree MineBSP;
 ubyte BSP_initted = 0;
-int ConvexSubspaces = 0, ConvexPolys = 0;
-int Solids = 0, Empty = 0;
+static int ConvexSubspaces = 0, ConvexPolys = 0;
+static int Solids = 0, Empty = 0;
 
 int BSPChecksum = -1;
+// MTS: Only used here?
 ubyte UseBSP = 0;
 
 // Goes through all the valid points in the indoor engine and returns a unique
@@ -1061,7 +1062,7 @@ void BuildSingleBSPTree(int roomnum) {
 }
 
 // Returns true if the point is inside the min,max
-inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
+static inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
   if (pos->x < min_xyz->x || pos->y < min_xyz->y || pos->z < min_xyz->z || pos->x > max_xyz->x || pos->y > max_xyz->y ||
       pos->z > max_xyz->z)
     return 0;

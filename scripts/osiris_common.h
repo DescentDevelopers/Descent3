@@ -956,7 +956,7 @@ inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b
 #define COM_DO_ACTION 1
 #define COM_REINIT 2
 
-typedef struct {
+typedef struct gb_com {
   int8_t action;
   int8_t index;
   void *ptr;

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/AImain.cpp $
@@ -1916,8 +1916,6 @@ bool goal_do_dodge(object *obj, int goal_index) {
   GoalClearGoal(obj, &ai_info->goals[goal_index], reason);
   return false;
 }
-
-extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 #define MAX_WALL_AVOID_INFLUENCE 0.9f
 #define MAX_TERRAIN_AVOID_INFLUENCE 0.9f
@@ -4404,12 +4402,6 @@ void AIDoOrientDefault(object *obj) {
       AITurnTowardsDir(obj, &to, ai_info->max_turn_rate);
   }
 }
-
-extern bool AIPathAtEnd(ai_path_info *aip);
-extern bool AIPathAtStart(ai_path_info *aip);
-extern bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
-extern bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
-extern bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
 
 void AIDoOrient(object *obj, int g_index) {
   ai_frame *ai_info = obj->ai_info;

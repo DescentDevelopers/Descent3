@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/damage.cpp $
@@ -589,6 +589,17 @@
 #include "vibeinterface.h"
 
 #include <algorithm>
+
+static void SetDeformDamageEffect(object *obj);
+static void ApplyFreezeDamageEffect(object *obj);
+static void DecreasePlayerShields(int slot, float damage);
+static void DoEDrainEffect(int eventnum, void *data);
+static void PlayPlayerDamageSound(object *playerobj, int damage_type);
+static void GenerateDefaultDeath(object *obj, int *death_flags, float *delay_time);
+static void PlayPlayerInvulnerabilitySound(object *playerobj);
+static void SetFlyingPhysics(object *objp, bool tumbles);
+static float GetDeathAnimTime(object *objp);
+static void SetFallingPhysics(object *objp);
 
 // Shake variables
 static matrix Old_player_orient;
@@ -1467,9 +1478,7 @@ void ShakePlayer() {
 void UnshakePlayer() { ObjSetOrient(Player_object, &Old_player_orient); }
 
 #include "terrain.h"
-
-void ComputeCenterPointOnFace(vector *vp, room *rp, int facenum);
-void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum);
+#include "collide.h"
 
 #define SHARD_MAX_EDGE_LEN 3.0f
 

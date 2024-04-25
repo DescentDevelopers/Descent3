@@ -95,7 +95,7 @@
 
 static char name_copy[DESC_ID_LEN];
 
-unsigned int d3_serialnum = 100000;
+static unsigned int d3_serialnum = 100000;
 
 // checks the exectuable (serialization)
 int SerialCheck(void) {

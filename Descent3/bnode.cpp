@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/bnode.cpp $
@@ -172,14 +172,14 @@ public:
   }
 };
 
-float BNode_QuickDist(vector *pos1, vector *pos2) {
+static float BNode_QuickDist(vector *pos1, vector *pos2) {
   return fabs(pos1->x - pos2->x) + fabs(pos1->y - pos2->y) + fabs(pos1->z - pos2->z);
 }
 
 int BNode_Path[MAX_BNODES_PER_ROOM];
 int BNode_PathNumNodes;
 
-void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
+static void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
   int cur_node = end;
   int i;
 
@@ -287,12 +287,13 @@ done:
   return f_found;
 }
 
+// MTS: Unused?
 int BNode_GenerateBestPathThroughRoom(int sroom, int spnt, int croom, int eroom, int eportal, int max_nodes,
                                       vector *pos_list) {
   return -1;
 }
 
-char BNode_vis[MAX_BNODES_PER_ROOM];
+static char BNode_vis[MAX_BNODES_PER_ROOM];
 #define VIS_NO_CHECK 2
 #define VIS_OK 1
 #define VIS_NO 2
@@ -502,6 +503,7 @@ void BNode_ClearBNodeInfo(void) {
   BNode_verified = false;
 }
 
+// Unused?
 bool BNode_MakeSubPath(short sroom, short spnt, short eroom, short epnt, int flags, float size, short *roomlist,
                        short *pnts, int max_elements) {
   return false;

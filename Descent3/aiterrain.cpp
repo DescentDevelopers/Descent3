@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/aiterrain.cpp $
@@ -57,15 +57,15 @@
 
 #define AI_MAX_SEGS_CHECKED 200
 
-int ai_num_segs_checked = 0;
-ubyte ai_terrain_check_list[((TERRAIN_WIDTH * TERRAIN_DEPTH) >> 3) + 1];
-int ai_segs_checked[AI_MAX_SEGS_CHECKED];
+static int ai_num_segs_checked = 0;
+static ubyte ai_terrain_check_list[((TERRAIN_WIDTH * TERRAIN_DEPTH) >> 3) + 1];
+static int ai_segs_checked[AI_MAX_SEGS_CHECKED];
 #ifdef _DEBUG
-int ai_num_checks_since_init = 0;
+static int ai_num_checks_since_init = 0;
 #endif
 
-float ai_rad;
-ground_information *ai_ground_info_ptr;
+static float ai_rad;
+static ground_information *ai_ground_info_ptr;
 
 void ait_Init() {
   ai_num_segs_checked = 0;
@@ -76,7 +76,7 @@ void ait_Init() {
 #endif
 }
 
-void ait_terrain_clean() {
+static void ait_terrain_clean() {
   int i;
 
   assert(ai_num_segs_checked >= 0 && ai_num_segs_checked <= AI_MAX_SEGS_CHECKED);
@@ -96,7 +96,7 @@ void ait_terrain_clean() {
   ai_num_segs_checked = 0;
 }
 
-void ai_check_terrain_node(int cur_node, int f_check_local_nodes) {
+static void ai_check_terrain_node(int cur_node, int f_check_local_nodes) {
   int check_x, check_y;
   int new_node;
   int xcounter, ycounter;

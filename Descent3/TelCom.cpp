@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/TelCom.cpp $
@@ -528,32 +528,33 @@
 
 //------------------------------New TelCom Stuff---------------------------------------
 
-void TelCom_BltToMem(int dest_bmp, int dx, int dy, int src_bmp, int sx, int sy, int sw, int sh, bool trans = true);
-void TelCom_BltToScreen(int dx, int dy, chunked_bitmap *src_bmp);
-void TelCom_BltToScreen(int dx, int dy, chunked_bitmap *src_bmp, int sx, int sy, int sw, int sh);
-void DrawHotSpotOn(int hotspot);
+static void TelCom_BltToMem(int dest_bmp, int dx, int dy, int src_bmp, int sx, int sy, int sw, int sh,
+                            bool trans = true);
+static void TelCom_BltToScreen(int dx, int dy, chunked_bitmap *src_bmp);
+static void TelCom_BltToScreen(int dx, int dy, chunked_bitmap *src_bmp, int sx, int sy, int sw, int sh);
+static void DrawHotSpotOn(int hotspot);
 
 //*************************************************************************************
 
 // Globals---------------------------------------------------------------------------
 
-bool TelCom_init = false; // Whether the TelComInit() function was called
-bool Telcom_first_render = true;
-bool Telcom_exit_to_mainmenu = false;
+static bool TelCom_init = false; // Whether the TelComInit() function was called
+static bool Telcom_first_render = true;
+static bool Telcom_exit_to_mainmenu = false;
 bool Telcom_called_from_game = false;
-int Telcom_mouse_last_effect = -1; // the last efxnum the mouse was over
+static int Telcom_mouse_last_effect = -1; // the last efxnum the mouse was over
 
 hotspotmap_t hotspotmap; // Holds hotspot data (position)
 windowmap_t windowmap;   // Holds window data (position)
 tTelComInfo Telcom_system;
 
 chunked_bitmap Telcom_bitmap; // background bitmap for telcom system
-chunked_bitmap *hotspot_bitmaps;
-int LoadTelcomBitmap(const char *filename, chunked_bitmap *bmp);
-bool TelComMainMenu(tTelComInfo *tcs);
+static chunked_bitmap *hotspot_bitmaps;
+static int LoadTelcomBitmap(const char *filename, chunked_bitmap *bmp);
+static bool TelComMainMenu(tTelComInfo *tcs);
 
-void TelCom_PrepareCustomKeyEvents(void);
-void TelCom_PostProcessCustomKeyEvents(void);
+static void TelCom_PrepareCustomKeyEvents(void);
+static void TelCom_PostProcessCustomKeyEvents(void);
 
 static int Telcom_mouse_x, Telcom_mouse_y;
 
@@ -1361,88 +1362,88 @@ bool TelComMainMenu(tTelComInfo *tcs) {
  */
 /// internal prototypes *************************************
 //	Creates the screen overlays for the main monitor
-void TelcomCreateScreenOverlays(void);
+static void TelcomCreateScreenOverlays(void);
 //	Destroys the screen overlays that were used for the main monitor
-void TelcomDestroyScreenOverlays(void);
+static void TelcomDestroyScreenOverlays(void);
 //	Renders the screen overlays
-void TelcomRenderOverlays(void);
+static void TelcomRenderOverlays(void);
 //	Renders the screen hilights
-void TelcomRenderDrawHiLites(void);
+static void TelcomRenderDrawHiLites(void);
 //	Loads the Hilites for a monitor
-void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff);
+static void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff);
 //	Frees all the memory allocated for the hilites
-void TelcomFreeHiLites(void);
+static void TelcomFreeHiLites(void);
 //	Renders the scanline to be drawn
-void TelcomRenderScanline(void);
+static void TelcomRenderScanline(void);
 //	Creates the scanline
-void TelcomCreateScanLine(void);
+static void TelcomCreateScanLine(void);
 //	Destroys the scanline
-void TelcomDestroyScanLine(void);
+static void TelcomDestroyScanLine(void);
 //	Loads the mouse cursor
-void TelcomLoadMouseCursor(void);
+static void TelcomLoadMouseCursor(void);
 //	Frees the mouse cursor
-void TelcomFreeMouseCursor(void);
+static void TelcomFreeMouseCursor(void);
 //	Renders the mouse cursor
-void TelcomRenderMouse(void);
+static void TelcomRenderMouse(void);
 // draws the telcom background, handles flickering lights, power button etc
-void TelcomDrawScreen(bool poweron, bool powerup);
+static void TelcomDrawScreen(bool poweron, bool powerup);
 // used to display the rounded corners of the monitor screens
-void TelcomDisplayCorners(void);
+static void TelcomDisplayCorners(void);
 //	Frees the bitmaps used for the corners of each monitor
-void TelcomFreeCorners(void);
+static void TelcomFreeCorners(void);
 //	Allocates the bitmaps for corners of each monitor
-void TelcomCreateCorners(void);
+static void TelcomCreateCorners(void);
 //	Displays static on the screen
-void TelcomDisplayStatic(float amount);
+static void TelcomDisplayStatic(float amount);
 //	Frees the static bitmap overlays
-void TelcomFreeStaticOverlays(void);
+static void TelcomFreeStaticOverlays(void);
 //	Creates the static bitmap overlays
-void TelcomCreateStaticOverlays(void);
+static void TelcomCreateStaticOverlays(void);
 //	Initializes the bitmaps, etc needed for power up/down effect
-void TelcomInitPowerEffect(void);
+static void TelcomInitPowerEffect(void);
 //	Frees the bitmaps, etc for power up/down effect
-void TelcomFreePowerEffect(void);
+static void TelcomFreePowerEffect(void);
 //	Draws a frame of the power up/down effect
-void TelcomDoPowerEffect(bool power_down, float frametime);
+static void TelcomDoPowerEffect(bool power_down, float frametime);
 
 /// global variables ****************************************
 // Telcom rendering globals
 static void (*TC_callback)() = NULL;
-int TC_current_screen = DUMMY_SCREEN;
+static int TC_current_screen = DUMMY_SCREEN;
 int TC_cursor = -1;
 
 // Monitor hilight variables
-int TelcomHiLiteCount[MAX_MONITOR];
-int *TelcomHiLites[MAX_MONITOR];
+static int TelcomHiLiteCount[MAX_MONITOR];
+static int *TelcomHiLites[MAX_MONITOR];
 struct {
   int x, y;
 } TelcomHiLiteOffset[MAX_MONITOR];
 // Main monitor scanline info
-float scanline_nexttime, scanline_speed;
-int scanliney, scanline_handle;
-float last_rendertime = 0, last_frametime = 0;
+static float scanline_nexttime, scanline_speed;
+static int scanliney, scanline_handle;
+static float last_rendertime = 0;
+float last_frametime = 0;
 // Monitor corner variables
-chunked_bitmap lt_corners[MAX_MONITOR];
-chunked_bitmap rt_corners[MAX_MONITOR];
-chunked_bitmap lb_corners[MAX_MONITOR];
-chunked_bitmap rb_corners[MAX_MONITOR];
-bool has_corners[MAX_MONITOR];
+static chunked_bitmap lt_corners[MAX_MONITOR];
+static chunked_bitmap rt_corners[MAX_MONITOR];
+static chunked_bitmap lb_corners[MAX_MONITOR];
+static chunked_bitmap rb_corners[MAX_MONITOR];
+static bool has_corners[MAX_MONITOR];
 // Screen variables
-int TCWorking_screen;
+static int TCWorking_screen;
 // Static variables
 #define STATIC_BMPS 12
-int StaticBmps[STATIC_BMPS];
-bool Telcom_show_static = false;
-bool Telcom_static_last_frame = false;
-float Telcom_static_setting = 0;
+static int StaticBmps[STATIC_BMPS];
+static bool Telcom_show_static = false;
+static bool Telcom_static_last_frame = false;
+static float Telcom_static_setting = 0;
 // Glitch variables
-bool Telcom_show_glitch = false;
-bool Telcom_glitch_screen = false;
-float Telcom_glitch_setting = 0;
-extern int glitch_dx, glitch_dy;
-float myrand(float max);
+static bool Telcom_show_glitch = false;
+static bool Telcom_glitch_screen = false;
+static float Telcom_glitch_setting = 0;
+static float myrand(float max);
 // Powereffect variables
-int PowerBmps[2];
+static int PowerBmps[2];
 
 //	Initializes the Telcom rendering engine
 void TelcomRenderInit(void) {
@@ -2388,10 +2389,8 @@ tcpe_adjust:
  ***************************************************
  */
 
-extern tceffect TCEffects[MAX_TCEFFECTS];
-extern int Screen_roots[MAX_TELCOM_SCREENS];
 //	returns the true if there is a next screen (from the current)
-bool TelComIsThereANextScreen(void);
+static bool TelComIsThereANextScreen(void);
 
 /*
  *	Initializes the TelCom Event manager system

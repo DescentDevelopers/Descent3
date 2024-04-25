@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -285,7 +285,7 @@ inline int get_weapon_icon(int player, int type) {
   return HUD_resources.wpn_bmp;
 }
 
-void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *str);
+static void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *str);
 
 //////////////////////////////////////////////////////////////////////////////
 //	Hud item display routines.

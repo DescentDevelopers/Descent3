@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/ctlconfig.cpp $
@@ -403,10 +403,10 @@ t_cfg_element Cfg_joy_elements[] = {{-1, CtlText_WeaponGroup, CCITEM_WPN_X2, CCI
                                     {ctfBANK_RIGHTBUTTON, CtlText_BankRight, 0, 0}};
 #define N_JOY_CFG_FN (sizeof(Cfg_joy_elements) / sizeof(t_cfg_element))
 #define N_KEY_CFG_FN (sizeof(Cfg_key_elements) / sizeof(t_cfg_element))
-void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte controller, ubyte elem, sbyte slot);
-void ctl_cfg_element_options_dialog(short fnid);
+static void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte controller, ubyte elem, sbyte slot);
+static void ctl_cfg_element_options_dialog(short fnid);
 // used for adjusting settings.
-int weapon_select_dialog(int wpn, bool is_secondary);
+static int weapon_select_dialog(int wpn, bool is_secondary);
 #define UID_KEYCFG_ID 0x1000
 #define UID_JOYCFG_ID 0x1100
 #define UID_PRIMARY_WPN 0x1200

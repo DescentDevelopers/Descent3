@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/credits.cpp $
@@ -123,17 +123,17 @@ typedef struct creditline {
   float displaytime;
 } creditline;
 
-void Credits_Render(creditline *, float);
-creditline Creditlines;
+static void Credits_Render(creditline *, float);
+static creditline Creditlines;
 
-ddgr_color CreditTextColor, CreditHeadingColor;
-int CreditStartX, CreditStartY, CreditEndX, CreditEndY;
-float CreditDisplayTime;
-chunked_bitmap Credits_bm;
+static ddgr_color CreditTextColor, CreditHeadingColor;
+static int CreditStartX, CreditStartY, CreditEndX, CreditEndY;
+static float CreditDisplayTime;
+static chunked_bitmap Credits_bm;
 
 #define MAX_CREDIT_LEN 200
 
-bool Credits_IsKeyPressed(void) {
+static bool Credits_IsKeyPressed(void) {
   if (ddio_KeyInKey())
     return true;
 
@@ -142,7 +142,7 @@ bool Credits_IsKeyPressed(void) {
 
 // Parses a credit line
 // Returns 1 if new text was read, else 0
-int Credits_ParseLine(char *line, creditline *credit) {
+static int Credits_ParseLine(char *line, creditline *credit) {
   int line_len = strlen(line);
   int new_text = 0;
 
@@ -239,7 +239,7 @@ int Credits_ParseLine(char *line, creditline *credit) {
 }
 
 // Given a filename, attempts to load that filename as credit text
-bool Credits_LoadCredits(const char *filename) {
+static bool Credits_LoadCredits(const char *filename) {
   CFILE *infile;
   char curline[MAX_CREDIT_LEN];
 
@@ -306,7 +306,7 @@ bool Credits_LoadCredits(const char *filename) {
   return true;
 }
 
-void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
+extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
 
 #define CREDIT_PIXELS_PER_SECOND 22
 

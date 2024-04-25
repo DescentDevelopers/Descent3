@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/ambient.cpp $
@@ -90,10 +90,10 @@ int Num_ambient_sound_patterns = 0;
 
 // Computes a floating-point pseudo-random number.
 // Returns value in the range 0..1, with the precision 1/RAND_MAX
-float randf() { return ((float)ps_rand()) / ((float)RAND_MAX); }
+static float randf() { return ((float)ps_rand()) / ((float)RAND_MAX); }
 
 // Process an Ambient Sound Pattern
-void ProcessASP(asp *asp) {
+static void ProcessASP(asp *asp) {
   // Check for empty ASP
   if (!asp->num_sounds)
     return;
@@ -161,7 +161,7 @@ void InitAmbientSounds() {
 #include "mem.h"
 
 // Close down ambient sound system and free data
-void FreeAmbientSoundData() {
+static void FreeAmbientSoundData() {
   for (int p = 0; p < Num_ambient_sound_patterns; p++)
     if (Ambient_sound_patterns[p].num_sounds)
       mem_free(Ambient_sound_patterns[p].sounds);

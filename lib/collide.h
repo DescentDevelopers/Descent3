@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/lib/collide.h $
@@ -118,6 +118,8 @@ extern void collide_player_and_powerup(object *player, object *powerup, vector *
 // extern int check_effect_blowup(segment *seg,int side,vector *pnt, object *blower, int force_blowup_flag);
 extern void apply_damage_to_controlcen(object *controlcen, float damage, short who);
 extern void bump_one_object(object *obj0, vector *hit_dir, float damage);
+
+extern void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum);
 
 void ConvertEulerToAxisAmount(vector *e, vector *n, float *w);
 void ConvertAxisAmountToEuler(vector *n, float *w, vector *e);

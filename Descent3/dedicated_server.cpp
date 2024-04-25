@@ -144,24 +144,28 @@ typedef int socklen_t;
 
 bool Dedicated_server = false;
 
-int Dedicated_start_level = 1;
-int Dummy_dedicated_var;
-char Dummy_dedicated_string[_MAX_PATH];
+static int Dedicated_start_level = 1;
+static int Dummy_dedicated_var;
+static char Dummy_dedicated_string[_MAX_PATH];
 
 // If true, allow remote connections
-int Dedicated_allow_remote = 0;
-ushort Dedicated_listen_port = 2092;
-char dedicated_telnet_password[65];
-int Dedicated_num_teams = 1;
+static int Dedicated_allow_remote = 0;
+static ushort Dedicated_listen_port = 2092;
+static char dedicated_telnet_password[65];
+static int Dedicated_num_teams = 1;
 
-int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_teams);
+static int RunServerConfigs();
+static int DedicatedServerLex(const char *command);
+static void SetCVarNone(int index);
+
+extern int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_teams);
 
 extern char Multi_message_of_the_day[];
 extern char PXO_hosted_lobby_name[];
 // These define the types of variables that can be set in the code through
 // the dedicated server
 
-cvar_entry CVars[] = {
+static cvar_entry CVars[] = {
     {"PPS", CVAR_TYPE_INT, &Netgame.packets_per_second, 2, 20, CVAR_GAMEINIT}, // 0
     {"TimeLimit", CVAR_TYPE_INT, &Netgame.timelimit, 0, 10000, CVAR_GAMEINIT},
     {"KillGoal", CVAR_TYPE_INT, &Netgame.killgoal, 0, 10000, CVAR_GAMEINIT},
