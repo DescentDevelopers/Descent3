@@ -17,6 +17,7 @@ on:
 
 jobs:
   build:
+    name: ${{ matrix.os.runner }}, ${{ matrix.os.cxx }}, ${{ matrix.build_type }}
     strategy:
       fail-fast: false
       matrix:
