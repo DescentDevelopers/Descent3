@@ -18,6 +18,14 @@ if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
   add_definitions("-DOUTRAGE_BIG_ENDIAN")
 endif()
 
+
+# 64 bit machines have a different game checksum than 32 bit machines
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+  add_definitions(-DCHECKSUM=2273889867UL)
+else()
+  add_definitions(-DCHECKSUM=2273873307UL)
+endif()
+
 if(BUILD_TESTING)
   find_package(GTest REQUIRED)
   enable_testing()

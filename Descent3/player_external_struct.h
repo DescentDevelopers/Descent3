@@ -79,11 +79,10 @@
 #include "vecmat_external.h"
 #include "object_external_struct.h"
 #include "multi_external.h"
+#include "Inventory.h"
 
 #define MAX_PLAYERS MAX_NET_PLAYERS
 #define MAX_TEAMS 4
-
-class Inventory;
 
 #define CALLSIGN_LEN 19
 //	THIS CONSTANT MUST NEVER BE OVER 32!!!
