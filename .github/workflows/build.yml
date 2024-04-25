@@ -25,22 +25,27 @@ jobs:
             preset: win
             cc: cl
             cxx: cl
+            name: Windows-x86
           - runner: macos-12 # This is supposed to be Intel for now, and what macos-latest is defaulting to for some reason (as of 04/2024)
             preset: mac
             cc: cc
             cxx: c++
+            name: macOS-Intel
           - runner: macos-14 # This is supposed to be M1
             preset: mac
             cc: cc
             cxx: c++
+            name: macOS-ARM
           - runner: ubuntu-latest
             preset: linux
             cc: gcc
             cxx: g++
+            name: Linux-x64
           - runner: ubuntu-latest
             preset: linux
             cc: clang
             cxx: clang++
+            name: Linux-x64-clang
 
     runs-on: ${{ matrix.os.runner }}
 
@@ -76,7 +81,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build_${{ matrix.os.runner }}_${{ matrix.os.cxx }}
+          name: Descent3_${{ matrix.os.name }}
           path: |
             ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/Debug/
             ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/Release/
