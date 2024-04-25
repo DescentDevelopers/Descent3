@@ -91,7 +91,8 @@
  * $NoKeywords: $
  */
 
-#include "pstypes.h"
+#include <cstdint>
+
 #include "vecmat_external.h"
 #include "robotfirestruct.h"
 
@@ -134,20 +135,20 @@
 
 // lighting info
 typedef struct {
-  int flags; // see above
+  int32_t flags; // see above
   float light_distance;
   float red_light1, green_light1, blue_light1;
   float red_light2, green_light2, blue_light2;
   float time_interval;
   float flicker_distance;
   float directional_dot;
-  int timebits;
-  ubyte angle;
-  ubyte lighting_render_type;
+  int32_t timebits;
+  uint8_t angle;
+  uint8_t lighting_render_type;
 } light_info;
 
 typedef struct {
-  int type_flags; // see EF_FLAGS above
+  int32_t type_flags; // see EF_FLAGS above
 
   float alpha;        // alpha value
   float deform_range; // how many units to deform when drawing
@@ -163,15 +164,15 @@ typedef struct {
   float damage_time;
   float damage_per_second; // how much damage this object takes per second
   float last_damage_time;  //	last time this object took damage
-  int damage_handle;       // the object handle of the owner of the damage
+  int32_t damage_handle;       // the object handle of the owner of the damage
 
   float volume_change_time;
   vector volume_old_pos;
-  int volume_old_room;
+  int32_t volume_old_room;
 
   // For powerups only
   float last_object_hit_time;
-  int last_object_hit;
+  int32_t last_object_hit;
 
   // For specular lighting
   vector spec_pos;
@@ -179,21 +180,21 @@ typedef struct {
   float spec_r, spec_g, spec_b;
 
   // For dynamic volume lighting
-  ubyte dynamic_this_frame;
+  uint8_t dynamic_this_frame;
   float dynamic_red, dynamic_green, dynamic_blue;
 
   // For liquid object
   float liquid_time_left;
-  ubyte liquid_mag;
+  uint8_t liquid_mag;
 
   // For freeze objects
   float freeze_scalar;
 
   // For attach objects
-  int attach_line_handle; // handle to the object that this object is tethered to
+  int32_t attach_line_handle; // handle to the object that this object is tethered to
 
   // Sound for special effects
-  int sound_handle;
+  int32_t sound_handle;
 
   // For spark effect
   float spark_delay;     // delay between sparks
@@ -205,37 +206,37 @@ typedef struct {
 // Describes the next animation state for a robot
 typedef struct custom_anim {
   float server_time;
-  ushort server_anim_frame;
+  uint16_t server_anim_frame;
 
-  unsigned short anim_start_frame;
-  unsigned short anim_end_frame;
+  uint16_t anim_start_frame;
+  uint16_t anim_end_frame;
   float anim_time;
   float max_speed;
 
-  short anim_sound_index;
-  ubyte flags;
-  char next_anim_type;
+  int16_t anim_sound_index;
+  uint8_t flags;
+  int8_t next_anim_type;
 } custom_anim;
 
 typedef struct multi_turret {
   float time;
   float last_time;
-  ubyte num_turrets;
+  uint8_t num_turrets;
   float *last_keyframes;
   float *keyframes;
-  ubyte flags;
+  uint8_t flags;
 } multi_turret;
 
 // Information specific to objects that render as a polygon model
 typedef struct polyobj_info {
-  short model_num;       // Which polygon model this object is
-  short dying_model_num; // The dying model for this object
+  int16_t model_num;       // Which polygon model this object is
+  int16_t dying_model_num; // The dying model for this object
 
   float anim_start_frame;
   float anim_frame; // The model's current animation frame
   float anim_end_frame;
   float anim_time;
-  uint anim_flags; // Looping/notify at finish/pending
+  uint32_t anim_flags; // Looping/notify at finish/pending
   float max_speed;
 
   union {
@@ -244,8 +245,8 @@ typedef struct polyobj_info {
   };
   multi_turret multi_turret_info;
 
-  uint subobj_flags; // Mask of which subobjects to draw
-  int tmap_override; // If this is not -1, map all faces to this
+  uint32_t subobj_flags; // Mask of which subobjects to draw
+  int32_t tmap_override; // If this is not -1, map all faces to this
 } polyobj_info;
 
 // A shard of, presumably, glass
@@ -253,7 +254,7 @@ typedef struct shard_info_s {
   vector points[3];
   float u[3], v[3];
   vector normal;
-  short tmap;
+  int16_t tmap;
 } shard_info_s;
 
 typedef struct line_info_s {
@@ -262,38 +263,38 @@ typedef struct line_info_s {
 
 typedef struct blast_info_s {
   float max_size;
-  int bm_handle;
+  int32_t bm_handle;
 } blast_info_s;
 
 typedef struct dying_info_s {
-  int death_flags;      // Info about the death
+  int32_t death_flags;      // Info about the death
   float delay_time;     // How long until object dies
-  int killer_playernum; // The player who wille this object, or -1 if not a player
+  int32_t killer_playernum; // The player who wille this object, or -1 if not a player
   float last_spark_time;
   float last_fireball_time;
   float last_smoke_time;
 } dying_info_s;
 
 typedef struct debris_info_s {
-  int death_flags; // a copy of the parent's death flags
+  int32_t death_flags; // a copy of the parent's death flags
   float last_smoke_time;
 } debris_info_s;
 
 typedef struct laser_info_s {
-  short parent_type; // The type of the parent of this object
-  short src_gun_num; // The src gunpoint that this object fired from
+  int16_t parent_type; // The type of the parent of this object
+  int16_t src_gun_num; // The src gunpoint that this object fired from
 
-  int last_hit_handle;   //	For persistent weapons (survive object collision), object it most recently hit.
-  int track_handle;      //	Object this object is tracking.
+  int32_t last_hit_handle;   //	For persistent weapons (survive object collision), object it most recently hit.
+  int32_t track_handle;      //	Object this object is tracking.
   float last_track_time; // Last track time (see if an object is visible)
 
-  int hit_status; // Zero not used
+  int32_t hit_status; // Zero not used
   vector hit_pnt;
   vector hit_wall_pnt;
   vector hit_wall_normal;
-  int hit_room;
-  int hit_pnt_room;
-  short hit_face;
+  int32_t hit_room;
+  int32_t hit_pnt_room;
+  int16_t hit_face;
 
   float multiplier;  //	Power if this is a fusion bolt (or other super weapon to be added).
   float thrust_left; // How many seconds of thrust are left before the weapon stops thrusting
@@ -304,19 +305,19 @@ typedef struct laser_info_s {
 } laser_info_s;
 
 typedef struct powerup_info_s {
-  int count; // how many/much we pick up (vulcan cannon only?)
+  int32_t count; // how many/much we pick up (vulcan cannon only?)
 } powerup_info_s;
 
 typedef struct splinter_info_s {
-  ubyte subobj_num;
-  short facenum;
+  uint8_t subobj_num;
+  int16_t facenum;
   vector verts[MAX_VERTS_PER_SPLINTER];
   vector center;
 } splinter_info_s;
 
 // Data for sourcesource objects
 typedef struct {
-  int sound_index;
+  int32_t sound_index;
   float volume;
 } soundsource_info_s;
 
@@ -337,7 +338,7 @@ typedef struct physics_info {
   };
   angle turnroll;        // Rotation caused by turn banking
   float last_still_time; // The current delta position a wiggle has caused.
-  int num_bounces;       // Number of bounces before exploding (PHYSICS_UNLIMITED_BOUNCE is for unlimited bouncing)
+  int32_t num_bounces;       // Number of bounces before exploding (PHYSICS_UNLIMITED_BOUNCE is for unlimited bouncing)
 
   float coeff_restitution; // What percent of velocity is kept after a bounce
   float mass;              // The mass of this object							     -- what about
@@ -365,32 +366,32 @@ typedef struct physics_info {
 
   union {
     float hit_die_dot;
-    int stuck_room;
+    int32_t stuck_room;
   };
 
   union {
     float max_speed_time;
-    int stuck_portal;
+    int32_t stuck_portal;
   };
 
-  uint flags; // Misc physics flags
+  uint32_t flags; // Misc physics flags
 } physics_info;
 
 typedef struct shockwave_info {
-  uint damaged_list[(MAX_OBJECTS / 32) + 1];
+  uint32_t damaged_list[(MAX_OBJECTS / 32) + 1];
 } shockwave_info;
 
 typedef struct object_link_info {
-  int parent_handle;
-  int sobj_index;
+  int32_t parent_handle;
+  int32_t sobj_index;
   vector fvec;
   vector uvec;
   vector pos;
 } object_link_info;
 
 typedef struct {
-  ushort DLLID;
-  ushort script_id;
+  uint16_t DLLID;
+  uint16_t script_id;
   void *script_instance;
 } tOSIRISScriptNode;
 
@@ -403,28 +404,28 @@ typedef struct {
 
 // The data for an object
 typedef struct object {
-  ubyte type;       // what type of object this is... robot, weapon, hostage, powerup, fireball
-  ubyte dummy_type; // stored type of an OBJ_DUMMY
-  ushort id;        // which form of object...which powerup, robot, etc.
-  ulong flags;
+  uint8_t type;       // what type of object this is... robot, weapon, hostage, powerup, fireball
+  uint8_t dummy_type; // stored type of an OBJ_DUMMY
+  uint16_t id;        // which form of object...which powerup, robot, etc.
+  uint32_t flags;
 
   char *name; // the name of this object, or NULL
 
-  int handle;       //	unique handle for this object.  See defines above
-  short next, prev; // id of next and previous connected object in Objects, -1 = no connection
+  int32_t handle;       //	unique handle for this object.  See defines above
+  int16_t next, prev; // id of next and previous connected object in Objects, -1 = no connection
 
-  ubyte control_type;         // how this object is controlled
-  ubyte movement_type;        // how this object moves
-  ubyte render_type;          //	how this object renders
-  ubyte lighting_render_type; // how this object is lit.  See flags above
+  uint8_t control_type;         // how this object is controlled
+  uint8_t movement_type;        // how this object moves
+  uint8_t render_type;          //	how this object renders
+  uint8_t lighting_render_type; // how this object is lit.  See flags above
 
-  int roomnum; // room number or terrain cell containing object
+  int32_t roomnum; // room number or terrain cell containing object
 
   vector pos;      // absolute x,y,z coordinate of center of object
   matrix orient;   // orientation of object in world
   vector last_pos; // where object was last frame
 
-  ushort renderframe; // framenum this object was last rendered
+  uint16_t renderframe; // framenum this object was last rendered
 
   vector wall_sphere_offset;
   vector anim_sphere_offset;
@@ -432,28 +433,28 @@ typedef struct object {
   float size;    // 3d size of object - for collision detection
   float shields; // Starts at maximum, when <0, object dies..
 
-  sbyte contains_type;  //	Type of object this object contains (eg, spider contains powerup)
-  sbyte contains_id;    //	ID of object this object contains (eg, id = blue type = key)
-  sbyte contains_count; // number of objects of type:id this object contains
-  sbyte pad3;           // keep alignment
+  int8_t contains_type;  //	Type of object this object contains (eg, spider contains powerup)
+  int8_t contains_id;    //	ID of object this object contains (eg, id = blue type = key)
+  int8_t contains_count; // number of objects of type:id this object contains
+  int8_t pad3;           // keep alignment
 
   float creation_time; // absolute time when this object was created
   float lifeleft;      // how long until goes away, if OF_USES_LIFELEFT flag is set
   float lifetime;      // How long this object stays alive (in seconds)
 
-  int parent_handle; // The handle of this object's parent
+  int32_t parent_handle; // The handle of this object's parent
 
-  int attach_ultimate_handle;
-  int attach_parent_handle;
-  int *attach_children; // List of object handles for connected children
+  int32_t attach_ultimate_handle;
+  int32_t attach_parent_handle;
+  int32_t *attach_children; // List of object handles for connected children
 
-  ubyte weapon_fire_flags; // Used to indicate special weapon effects.  See flags above.
+  uint8_t weapon_fire_flags; // Used to indicate special weapon effects.  See flags above.
 
-  char attach_type;
-  short lowest_attached_vis;
+  int8_t attach_type;
+  int16_t lowest_attached_vis;
   union {
     float attach_dist;
-    short attach_index;
+    int16_t attach_index;
   };
 
   // Movement info, determined by MOVEMENT_TYPE
@@ -477,11 +478,11 @@ typedef struct object {
   float impact_force;
 
   // Object change information
-  int change_flags;
+  int32_t change_flags;
 
   // object generic vis flags
-  int generic_nonvis_flags;
-  int generic_sent_nonvis;
+  int32_t generic_nonvis_flags;
+  int32_t generic_sent_nonvis;
 
   lightmap_object lm_object; // The lightmap object for this object
 
@@ -513,7 +514,7 @@ typedef struct object {
 
   // Something to do with multiplayer, possibly, but it's hard to know for sure
   // because some people are incapable of commented their code.
-  ushort position_counter;
+  uint16_t position_counter;
 
   // OSIRIS Script Info (new OSIRIS)
   tOSIRISScript *osiris_script;

@@ -81,6 +81,8 @@
 #ifndef __GAMECINEMATICS_EXTERNAL_H_
 #define __GAMECINEMATICS_EXTERNAL_H_
 
+#include <cstdint>
+
 #include "vecmat_external.h"
 #include "manage_external.h"
 
@@ -95,7 +97,7 @@
 #define CANNED_LEVEL_END_FADE_WHITE 5 // fade the screen to white and end level
 
 typedef struct {
-  int type;
+  int32_t type;
   /*
   CANNED_LEVEL_INTRO:
           camera_pathid
@@ -130,17 +132,17 @@ typedef struct {
           text_to_display
   */
 
-  int camera_pathid;
-  int target_pathid;
+  int32_t camera_pathid;
+  int32_t target_pathid;
   char *text_to_display;
 
-  int target_objhandle;
+  int32_t target_objhandle;
 
-  int room;
+  int32_t room;
 
   float time;
 
-  int object_to_use_for_point;
+  int32_t object_to_use_for_point;
 
   vector pos;
   matrix orient;
@@ -194,18 +196,18 @@ typedef struct {
 } PercentageRange;
 
 typedef struct {
-  unsigned int flags;
+  uint32_t flags;
 
-  int target_objhandle;
+  int32_t target_objhandle;
 
-  int end_transition;
-  int start_transition;
+  int32_t end_transition;
+  int32_t start_transition;
 
   // the name of the path or the position that the camera should be at
-  int pathid;
+  int32_t pathid;
   vector position;
   matrix *orient;
-  int room;
+  int32_t room;
 
   // the total time that the cinematic should play
   float max_time_play;
