@@ -110,11 +110,6 @@ fix FloatToFixFast(float num);
 #define FixToInt(num) ((num) >> FIX_SHIFT)
 #define FixToShort(num) ((short)((num) >> FIX_SHIFT))
 
-// Fixed-point math functions in inline ASM form
-#if   defined(WIN32)
-#include "fixwin32.h"
-#endif
-
 // use this instead of:
 // for:  (int)floor(x+0.5f) use FloatRound(x)
 //       (int)ceil(x-0.5f)  use FloatRound(x)
