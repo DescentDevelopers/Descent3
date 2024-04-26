@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "pserror.h"
 #include "pstypes.h"
@@ -97,7 +97,7 @@ bool fvi_check_param;
 static vector ns_min_xyz;
 static vector ns_max_xyz;
 
-inline void ns_compute_movement_AABB(void) {
+static inline void ns_compute_movement_AABB(void) {
   vector delta_movement = *fvi_query_ptr->p1 - *fvi_query_ptr->p0;
   vector offset_vec;
 
@@ -126,7 +126,7 @@ inline void ns_compute_movement_AABB(void) {
     ns_min_xyz.z += delta_movement.z;
 }
 
-inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz) {
+static inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz) {
   bool overlap = true;
 
   if (max_xyz->y < ns_min_xyz.y || ns_max_xyz.y < min_xyz->y || max_xyz->x < ns_min_xyz.x ||

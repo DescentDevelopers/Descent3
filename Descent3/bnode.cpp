@@ -287,7 +287,7 @@ done:
   return f_found;
 }
 
-// MTS: Unused?
+// TODO: MTS: Unused?
 int BNode_GenerateBestPathThroughRoom(int sroom, int spnt, int croom, int eroom, int eportal, int max_nodes,
                                       vector *pos_list) {
   return -1;

@@ -283,7 +283,7 @@
 #include "args.h"
 #include "mem.h"
 
-// MTS: this is only used in this file.
+// TODO: MTS: this is only used in this file.
 int Num_textures = 0;
 texture GameTextures[MAX_TEXTURES];
 

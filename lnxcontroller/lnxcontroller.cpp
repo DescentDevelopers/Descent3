@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/lnxcontroller/lnxcontroller.cpp $
@@ -149,10 +149,10 @@ void lnxgameController::set_controller_deadzone(int ctl, float deadzone) {
 
 char Ctltext_AxisBindings[][16] = {"", "X-axis", "Y-axis", "Z-axis", "R-axis", "U-axis", "V-axis"};
 
-char Ctltext_BtnBindings[][16] = {"",      "btn1",  "btn2",  "btn3",  "btn4",  "btn5",  "btn6",  "btn7",  "btn8",
-                                  "btn9",  "btn10", "btn11", "btn12", "btn13", "btn14", "btn15", "btn16", "btn17",
-                                  "btn18", "btn19", "btn20", "btn21", "btn22", "btn23", "btn24", "btn25", "btn26",
-                                  "btn27", "btn28", "btn29", "btn30", "btn31", "btn32"};
+static char Ctltext_BtnBindings[][16] = {
+    "",      "btn1",  "btn2",  "btn3",  "btn4",  "btn5",  "btn6",  "btn7",  "btn8",  "btn9",  "btn10",
+    "btn11", "btn12", "btn13", "btn14", "btn15", "btn16", "btn17", "btn18", "btn19", "btn20", "btn21",
+    "btn22", "btn23", "btn24", "btn25", "btn26", "btn27", "btn28", "btn29", "btn30", "btn31", "btn32"};
 
 char Ctltext_PovBindings[][16] = {"", "pov-U", "pov-R", "pov-D", "pov-L"};
 

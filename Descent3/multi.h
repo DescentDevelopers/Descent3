@@ -701,7 +701,7 @@ typedef struct {
   short multi_matrix[9];
 } multi_orientation;
 
-inline void MultiMatrixMakeEndianFriendly(multi_orientation *mmat) {
+static inline void MultiMatrixMakeEndianFriendly(multi_orientation *mmat) {
   for (int i = 0; i < 9; i++) {
     mmat->multi_matrix[i] = INTEL_SHORT(mmat->multi_matrix[i]);
   }

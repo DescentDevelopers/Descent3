@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/physics/FindIntersection.cpp $
@@ -984,8 +984,8 @@ void InitFVI(void) {
 // plane_pnt & plane_norm describe the plane
 // p0 & p1 are the ends of the line
 // Assumes that the initial point is not intersecting the plane
-inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plane_pnt, const vector *plane_norm,
-                                        const vector *p0, const vector *p1, float rad) {
+static inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plane_pnt, const vector *plane_norm,
+                                               const vector *p0, const vector *p1, float rad) {
   vector line_vec;             // Vector from p0 to p1
   vector point_plane_vec;      // Vector from p0 to a point on the plane
   float proj_dist_line;        // Distance projection of line onto the plane normal

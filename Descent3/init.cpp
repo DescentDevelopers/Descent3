@@ -2350,7 +2350,7 @@ static bool Init_ui_cursor_visible;
 static bool Init_was_game_paused = false;
 static pilot Init_old_pilot;
 
-// MTS: Unused in project
+// TODO: MTS: Unused in project
 void ShutdownD3() {
   if (!Init_systems_init)
     return;
@@ -2394,7 +2394,7 @@ void ShutdownD3() {
   ddio_Close();
 }
 
-// MTS: unused in project
+// TODO: MTS: unused in project
 //	This function restarts all game systems
 void RestartD3() {
   ddio_init_info io_info;

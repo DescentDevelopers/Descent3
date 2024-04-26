@@ -966,7 +966,6 @@ void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte ctrl, u
   Controller->set_controller_function(fnid, ctype_fn, ccfgdata_fn, cfgflags_fn);
 }
 // used as a help/options dialog for each controller config element
-extern const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding);
 void ctl_cfg_element_options_dialog(short fnid) {
   newuiTiledWindow wnd;
   newuiSheet *sheet;

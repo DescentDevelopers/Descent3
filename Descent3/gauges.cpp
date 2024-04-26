@@ -255,18 +255,18 @@ static float *Render_normalized_times;
 static bool Render_gauge_moving; // gauge is moving, but temporarily off.
 static bool Render_gauge_reset;  //	set this if gauges will be moving, but are still active
 
-// MTS: function not found
+// TODO: MTS: function not found
 //	loads all shield bitmaps into memory
 static void FreeShieldFrames();
 
-// MTS: function not found
+// TODO: MTS: function not found
 //	loads all ship bitmaps into memory
 static void FreeShipFrames();
 
 //	projects monitor coordinates to screen coordinates
 static void RotateMonitorPosition(tGauge *gauge);
 
-// MTS: function not found
+// TODO: MTS: function not found
 // renders the current inventory item name at the x,y position
 static void InventoryRenderGauge(int x, int y);
 

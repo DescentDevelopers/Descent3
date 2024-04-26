@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/2dlib/font.cpp $
@@ -140,6 +140,13 @@
 //	----------------------------------------------------------------------------
 
 typedef CFILE *FONTFILE;
+
+static inline int READ_FONT_INT(FONTFILE ffile);
+static inline short READ_FONT_SHORT(FONTFILE ffile);
+static inline ubyte READ_FONT_BYTE(FONTFILE ffile);
+static inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem);
+static inline FONTFILE OPEN_FONT(char *filename, bool &success);
+static inline void CLOSE_FONT(FONTFILE ffile);
 
 #define BITS_TO_BYTES(_c) (((_c) + 7) >> 3)
 #define BITS_TO_SHORTS(_c) (((_c) + 15) >> 4)

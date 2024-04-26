@@ -615,7 +615,7 @@ int LGSRooms(CFILE *fp) {
   return retval;
 }
 
-// MTS: unused?
+// TODO: MTS: unused?
 //	loads in and sets these events
 int LGSEvents(CFILE *fp) {
   int retval = LGS_OK;

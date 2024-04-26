@@ -1074,7 +1074,7 @@ bool ProcessCommandLine() {
 #define UID_MSNLB 100
 #define UID_MSNINFO 0x1000
 #define TRAINING_MISSION_NAME "Pilot Training"
-inline int count_missions(const char *pathname, const char *wildcard) {
+static inline int count_missions(const char *pathname, const char *wildcard) {
   int c = 0;
   char fullpath[_MAX_PATH];
   char filename[PSPATHNAME_LEN];
@@ -1106,8 +1106,8 @@ inline int count_missions(const char *pathname, const char *wildcard) {
   }
   return c;
 }
-inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist, const char *pathname,
-                                    const char *wildcard) {
+static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist, const char *pathname,
+                                           const char *wildcard) {
   int c = 0;
   char fullpath[_MAX_PATH];
   char filename[PSPATHNAME_LEN];

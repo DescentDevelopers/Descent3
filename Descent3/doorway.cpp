@@ -150,7 +150,7 @@ int Global_keys;
 //	---------------------------------------------------------------------------
 //	Prototypes
 
-// MTS: none of the following were found
+// TODO: MTS: none of the following were found
 // void DoorwayOpen(room *rp);
 // void DoorwayClose(room *rp);
 // void DoorwayWait(room *rp);

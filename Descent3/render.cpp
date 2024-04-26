@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/render.cpp $
@@ -216,7 +216,7 @@ int Num_mirror_rooms = 0;
 // Determines if a face renders
 // Parameters:	rp - pointer to room that contains the face
 //					fp - pointer to the face in question
-inline bool FaceIsRenderable(room *rp, face *fp) {
+static inline bool FaceIsRenderable(room *rp, face *fp) {
   // Check for a floating trigger, which doesn't get rendered
   if ((fp->flags & FF_FLOATING_TRIG) && (!In_editor_mode || !Render_floating_triggers))
     return 0;
@@ -241,7 +241,7 @@ inline bool FaceIsRenderable(room *rp, face *fp) {
 //					bm_handle - the handle for the bitmap for this frame, or -1 if don't care about
 // transparence Returns:		bitmask describing the alpha blending for the face
 // the return bits are the ATF_ flags in renderer.h
-inline int GetFaceAlpha(face *fp, int bm_handle) {
+static inline int GetFaceAlpha(face *fp, int bm_handle) {
   int ret = AT_ALWAYS;
   if (GameTextures[fp->tmap].flags & TF_SATURATE) {
     ret = AT_SATURATE_TEXTURE;
@@ -260,7 +260,7 @@ inline int GetFaceAlpha(face *fp, int bm_handle) {
 // Parameters:	rp - the room the portal is in
 //					pp - the portal we're checking
 // Returns:		true if you should render the room to which the portal connects
-inline bool RenderPastPortal(room *rp, portal *pp) {
+static inline bool RenderPastPortal(room *rp, portal *pp) {
   // If we don't render the portal's faces, then we see through it
   if (!(pp->flags & PF_RENDER_FACES))
     return 1;
@@ -357,7 +357,7 @@ struct clip_wnd {
   float left, top, right, bot;
 };
 
-inline int clip2d(g3Point *pnt, clip_wnd *wnd) {
+static inline int clip2d(g3Point *pnt, clip_wnd *wnd) {
   int ret = 0;
   if (pnt->p3_codes & CC_BEHIND)
     return CC_BEHIND;
@@ -374,7 +374,7 @@ inline int clip2d(g3Point *pnt, clip_wnd *wnd) {
 }
 
 // Returns true if a line intersects another line
-inline bool LineIntersectsLine(g3Point *ls, g3Point *le, float x1, float y1, float x2, float y2) {
+static inline bool LineIntersectsLine(g3Point *ls, g3Point *le, float x1, float y1, float x2, float y2) {
   float num, denom;
   num = ((ls->p3_sy - y1) * (x2 - x1)) - ((ls->p3_sx - x1) * (y2 - y1));
   denom = ((le->p3_sx - ls->p3_sx) * (y2 - y1)) - ((le->p3_sy - ls->p3_sy) * (x2 - x1));
@@ -389,7 +389,7 @@ inline bool LineIntersectsLine(g3Point *ls, g3Point *le, float x1, float y1, flo
   return false;
 }
 // Returns true if a face intersects the passed in portal in any way
-inline bool FaceIntersectsPortal(room *rp, face *fp, clip_wnd *wnd) {
+static inline bool FaceIntersectsPortal(room *rp, face *fp, clip_wnd *wnd) {
   g3Codes cc;
   int i;
 

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/Controls.cpp $
@@ -469,17 +469,18 @@ static tSpace Key_ramp;
 //	PROTOTYPES
 
 void DoMovement(game_controls *controls);
-void DoKeyboardMovement(game_controls *controls);
-void DoControllerMovement(game_controls *controls);
-void DoWeapons(game_controls *controls);
-void DoKeyboardWeapons(game_controls *controls);
-void DoControllerWeapons(game_controls *controls);
-void DoMisc(game_controls *contols);
-void DoKeyboardMisc(game_controls *controls);
-void DoControllerMisc(game_controls *controls);
+static void DoKeyboardMovement(game_controls *controls);
+static void DoControllerMovement(game_controls *controls);
+static void DoWeapons(game_controls *controls);
+static void DoKeyboardWeapons(game_controls *controls);
+static void DoControllerWeapons(game_controls *controls);
+static void DoMisc(game_controls *contols);
+static void DoKeyboardMisc(game_controls *controls);
+static void DoControllerMisc(game_controls *controls);
+// MTS: no implementation!
 void DoCommands();
 
-void ToggleHeadlightControlState();
+static void ToggleHeadlightControlState();
 
 //	LIST OF NEEDS
 ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
@@ -558,7 +559,7 @@ ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
     {ctfAUDIOTAUNT4_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0}};
 
 // ramping macros
-inline float ramp_control_value(float val, float limit, float &ramp_state, float &old_ramp_delta) {
+static inline float ramp_control_value(float val, float limit, float &ramp_state, float &old_ramp_delta) {
   float sign = val / fabs(val), old_sign = old_ramp_delta / fabs(old_ramp_delta);
   if (sign != old_sign)
     ramp_state = -ramp_state;
@@ -1131,9 +1132,9 @@ void DoMisc(game_controls *controls) {
 }
 
 // use the currently selected inventory item
-bool UseInventoryItem();
+extern bool UseInventoryItem();
 // use the currently selected countermeasure
-bool UseCountermeasure();
+extern bool UseCountermeasure();
 
 // Inventory/CounterMeasure states
 void DoKeyboardMisc(game_controls *controls) {

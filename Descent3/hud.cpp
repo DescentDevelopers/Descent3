@@ -1337,8 +1337,6 @@ void RenderAuxHUDFrame() {
   HUD_msg_con.Draw();
 }
 
-extern const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding);
-
 char *GetControllerBindingText(int fidcont) {
   static char *cont_bind_txt;
   ct_type ctype[CTLBINDS_PER_FUNC];

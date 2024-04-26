@@ -61,7 +61,7 @@ static int ConvexSubspaces = 0, ConvexPolys = 0;
 static int Solids = 0, Empty = 0;
 
 int BSPChecksum = -1;
-// MTS: Only used here?
+// TODO: MTS: Only used here?
 ubyte UseBSP = 0;
 
 // Goes through all the valid points in the indoor engine and returns a unique

@@ -861,7 +861,7 @@ int CreateFireball(vector *pos, int fireball_num, int roomnum, int realtype) {
 
   return objnum;
 }
-// MTS: used only in this file.
+// TODO: MTS: used only in this file.
 // Creates a fireball object with a custom texture/vclip
 int CreateCustomFireballObject(vector *pos, int fireball_num, int tex_handle, int roomnum) {
   int objnum;
@@ -2026,13 +2026,13 @@ int CreateBlastRing(vector *pos, int index, float lifetime, float max_size, int 
 
   return objnum;
 }
-// MTS: only used in this file.
+// TODO: MTS: only used in this file.
 // Creates a standard blast ring for an object
 int CreateObjectBlastRing(object *objp) {
   float ring_size = OBJECT_OUTSIDE(objp) ? (objp->size * 3) : objp->size;
   return CreateBlastRing(&objp->pos, BLAST_RING_INDEX, DAMAGE_RING_TIME, ring_size, objp->roomnum);
 }
-// MTS: Not used?
+// TODO: MTS: Not used?
 // Creates a smolding smoke to be drawn
 int CreateSmolderingObject(vector *pos, int index, float lifetime, float max_size, int roomnum) {
   int objnum;
@@ -2058,7 +2058,7 @@ void DrawColoredDisk(vector *pos, float r, float g, float b, float inner_alpha, 
   DrawColoredRing(pos, r, g, b, inner_alpha, outer_alpha, size, 0, saturate, lod);
   rend_SetZBufferWriteMask(1);
 }
-// MTS: Not used?
+// TODO: MTS: Not used?
 // Draws a glowing cone of light using a bitmap
 void DrawColoredGlow(vector *pos, float r, float g, float b, float size) {
   rend_SetTextureType(TT_LINEAR);
@@ -2149,7 +2149,7 @@ void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, 
   }
 }
 
-// MTS: not used?
+// TODO: MTS: not used?
 // Draws a sphere with the appropriate texture.  If texture=-1, then uses rgb as colors
 void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size, int texture, ubyte saturate) {
   static vector sphere_vecs[16][16];
@@ -2232,7 +2232,7 @@ void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size,
   rend_SetZBufferWriteMask(1);
 }
 #define BLAST_RING_ALPHA 1.0f
-// MTS: only used in this file.
+// TODO: MTS: only used in this file.
 //  Draws a blast ring
 void DrawBlastRingObject(object *obj) {
   vector inner_vecs[30], outer_vecs[30];
@@ -2353,7 +2353,7 @@ void DoBlastRingEvent(int eventnum, void *data) {
   object *obj = (object *)data;
   CreateObjectBlastRing(obj);
 }
-// MTS: only used in this file.
+// TODO: MTS: only used in this file.
 //  Creates an explosion
 void DoExplosionEvent(int eventnum, void *data) {
   float *vals = (float *)data;
@@ -2407,7 +2407,7 @@ int GetRandomExplosion(float size) {
   else
     return GetRandomMediumExplosion();
 }
-// MTS: only found in this file.
+// TODO: MTS: only found in this file.
 // Returns a random medium sized explosion
 int GetRandomMediumExplosion() {
   int choices[] = {MED_EXPLOSION_INDEX, MED_EXPLOSION_INDEX2, MED_EXPLOSION_INDEX3};
@@ -2419,7 +2419,7 @@ int GetRandomSmallExplosion() {
   int pick = ps_rand() % 2;
   return (choices[pick]);
 }
-// MTS: only found in this file.
+// TODO: MTS: only found in this file.
 int GetRandomBillowingExplosion() {
   int choices[] = {BILLOWING_INDEX, MED_EXPLOSION_INDEX2};
   int pick = ps_rand() % 2;

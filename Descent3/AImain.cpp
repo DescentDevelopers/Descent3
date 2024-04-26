@@ -1563,7 +1563,40 @@ bool AI_debug_robot_do = false;
 int AI_debug_robot_index = -2;
 #endif
 
-bool compute_dodge_dir(/* vector *dodge_dir, */ object *obj, object *dodge_obj);
+static bool compute_dodge_dir(/* vector *dodge_dir, */ object *obj, object *dodge_obj);
+static float AIDetermineObjVisLevel(object *obj, object *target);
+static bool move_relative_object_vec(object *obj, vector *vec, object *target, float circle_dist, float scalar,
+                                     bool f_toward, vector *mdir, bool *f_moved);
+static void move_away_from_position(object *obj, vector *pos /*, bool random_evade*/, float scale, vector *mdir,
+                                    bool *f_moved);
+static bool goal_do_dodge(object *obj, int goal_index);
+static bool goal_do_avoid_walls(object *obj, vector *mdir);
+static bool MeleeHitOk(object *obj);
+static bool AiMelee(object *obj);
+static void do_ranged_attack(object *obj);
+static bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float weapon_speed = 0.0f);
+static vector *AIDetermineFovVec(object *obj, vector *fov);
+static void AISeeTarget(object *obj, bool f_see);
+static void ai_do_animation(object *obj, float anim_time);
+static void ObjSetAIInfo(object *objp);
+static void AICheckTargetVis(object *obj);
+static void ai_update_registers(object *obj);
+static bool AiGoalAvoid(vector *adir, object *obj, object *a_obj, float dist);
+static void AIGoalDoRepulse(object *obj, float dist, vector *dir, goal *goal, vector *mdir);
+static void AIGoalDoCohesion(object *obj, object *g_obj, float dist, goal *goal, vector *mdir);
+static void AIGoalDoAlignment(object *obj, float dist, vector *fvec, goal *goal, vector *mdir);
+static void AIDoTrackFrame(object *obj);
+static void AIDoOrientVelocity(object *obj);
+static void AIDoOrientDefault(object *obj);
+static void AIDoOrient(object *obj, int g_index);
+static void AIDetermineSpeed(object *obj, int flags, float *speed);
+static void ai_move(object *obj);
+static void ai_fire(object *obj);
+static int AIGetTeam(object *obj);
+static void AITargetCheck(object *obj, object *target, object **best_obj, float *best_dot, float *best_dist);
+static void AIDetermineTarget(object *obj);
+static void AIDoFreud(object *obj);
+static void AIDoMemFrame(object *obj);
 
 // chrishack -- AI problems
 
@@ -1598,14 +1631,14 @@ int AI_NumHostileAlert = 0;
 
 int Buddy_handle[MAX_PLAYERS];
 
-int AI_FriendNumNear = 0; // Number of friends found
-object *AI_FriendObj[2];  // Friend objects
-float AI_FriendDist[2];   // Distances to the friends
-vector AI_FriendDir[2];   // Direction to the friends
-int AI_EnemyNumNear = 0;  // Number of enemies found
-object *AI_EnemyObj[2];   // Enemy objects
-float AI_EnemyDist[2];    // Distances to the enemies
-vector AI_EnemyDir[2];    // Direction to the enemies
+static int AI_FriendNumNear = 0; // Number of friends found
+static object *AI_FriendObj[2];  // Friend objects
+static float AI_FriendDist[2];   // Distances to the friends
+static vector AI_FriendDir[2];   // Direction to the friends
+static int AI_EnemyNumNear = 0;  // Number of enemies found
+static object *AI_EnemyObj[2];   // Enemy objects
+static float AI_EnemyDist[2];    // Distances to the enemies
+static vector AI_EnemyDir[2];    // Direction to the enemies
 
 #define AIVIS_NONE 0.0f
 #define AIVIS_BARELY 1.0f
@@ -1648,7 +1681,7 @@ float AIDetermineObjVisLevel(object *obj, object *target) {
   return vis_level;
 }
 
-inline bool ai_target_valid(object *obj) {
+static inline bool ai_target_valid(object *obj) {
   ai_frame *ai_info = obj->ai_info;
   bool f_valid = false;
 
@@ -2222,6 +2255,7 @@ bool AITurnTowardsMatrix(object *obj, float turn_rate, matrix *g_orient) {
   return false;
 }
 
+// MTS: Unused?
 void AITurnTowardsPosition(object *obj, /*velocity *new_vel,*/ vector *pos /*, bool remain_level*/) {
   vector goal_dir = *pos - obj->pos;
   ai_frame *ai_info = obj->ai_info;
@@ -2732,7 +2766,7 @@ new_anim_label:
   }
 }
 
-inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, float delta_time) {
+static inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, float delta_time) {
   const vector velocity = objp->mtype.phys_info.velocity;
   const float drag = objp->mtype.phys_info.drag;
   const float mass = objp->mtype.phys_info.mass;
@@ -2742,7 +2776,7 @@ inline void ApplyConstantForce(object *objp, vector *new_pos, vector *force, flo
              (mass / drag) * (velocity - (*force / drag)) * (1 - exp(-(drag / mass) * delta_time));
 }
 
-bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float weapon_speed = 0.0f) {
+bool AIDetermineAimPoint(object *robot, object *target, vector *aim_pt, float weapon_speed) {
   if (DIFF_LEVEL == DIFFICULTY_TRAINEE && ((robot->ai_info->flags & AIF_TEAM_MASK) != AIF_TEAM_REBEL)) {
     *aim_pt = target->pos;
     return true;
@@ -3468,6 +3502,7 @@ done:
 
 #define FRR_MAX_TRIES 15
 
+// MTS: Unused?
 int AIGoalGotoRandomRoom() { return -1; }
 
 int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_room, int min_depth, int max_depth,
@@ -4074,8 +4109,10 @@ bool AIStatusCircleFrame(object *obj, object *g_obj, float dist, float c_dist, i
   }
 }
 
+// MTS: Unused?
 bool ai_target_need_path(object *obj) { return true; }
 
+// MTS: Unused?
 bool ai_move_need_path(object *obj, vector *pos, int roomnum) {
   if (obj->roomnum == roomnum) {
     return false;
@@ -4144,7 +4181,7 @@ bool AiGoalAvoid(vector *adir, object *obj, object *a_obj, float dist) {
   return true;
 }
 
-inline bool IsTargetLocal(object *obj, object *target) {
+static inline bool IsTargetLocal(object *obj, object *target) {
   int target_room = target->roomnum;
   int cur_room = obj->roomnum;
   int i;
@@ -4179,6 +4216,7 @@ inline bool IsTargetLocal(object *obj, object *target) {
 #define COHESION_OPTI2_DIST 90.0f
 #define COHESION_FALL_OFF 110.0f
 
+// MTS: commented out/returns a bool instead of a float
 float AIGoalIsEnabledForDist(goal *goal, float dist) {
   return true; // chrishack -- test code -- temp
 }
@@ -4330,6 +4368,7 @@ void AIDoTrackFrame(object *obj) {
   }
 }
 
+// MTS: unused?
 float AIDetermineGoalInfluence(object *obj, goal *goal) {
   float influence = goal->influence;
   int g_index = goal - obj->ai_info->goals;
@@ -5504,7 +5543,7 @@ void ai_fire(object *obj) {
 #define PERCENT_QUIRK_PER_SEC .1
 #define PERCENT_TAUNT_PER_SEC .1
 
-inline void do_awareness_based_anim_stuff(object *obj) {
+static inline void do_awareness_based_anim_stuff(object *obj) {
   int next_anim;
   ai_frame *ai_info = obj->ai_info;
 
@@ -5549,7 +5588,7 @@ inline void do_awareness_based_anim_stuff(object *obj) {
   }
 }
 
-inline void ai_decrease_awareness(object *obj) {
+static inline void ai_decrease_awareness(object *obj) {
   ai_frame *ai_info = obj->ai_info;
 
   if (ai_info->awareness == AWARE_NONE && !(ai_info->flags & AIF_PERSISTANT)) {
@@ -5575,7 +5614,7 @@ inline void ai_decrease_awareness(object *obj) {
   //	mprintf((0, "Awareness %f", ai_info->awareness));
 }
 
-inline bool ai_do_script_stuff(object *obj) {
+static inline bool ai_do_script_stuff(object *obj) {
   tOSIRISEventInfo ei;
   Osiris_CallEvent(obj, EVT_AI_FRAME, &ei);
   //@$-D3XExecScript(obj, EVT_AI_FRAME, NULL, REF_OBJTYPE, NULL);
@@ -5583,7 +5622,7 @@ inline bool ai_do_script_stuff(object *obj) {
   return true;
 }
 
-inline void ai_walker_stuff(object *obj) {
+static inline void ai_walker_stuff(object *obj) {
   ai_frame *ai_info = obj->ai_info;
 
   // Do standing->walking and walking->standing stuff

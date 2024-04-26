@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/model/newstyle.cpp $
@@ -159,7 +159,7 @@ int Lightmap_debug_subnum = -1;
 int Lightmap_debug_facenum = -1;
 int Lightmap_debug_model = -1;
 
-inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
+static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
 
   g3Point *pointlist[100];
   int bm_handle;
@@ -462,7 +462,7 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
 #endif
 }
 
-inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum) {
+static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
 
   polyface *fp = &sm->faces[facenum];
@@ -496,7 +496,7 @@ inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum
     g3_SetTriangulationTest(0);
 }
 
-inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) {
+static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
   polyface *fp = &sm->faces[facenum];
   int modelnum = sm - pm->submodel;
@@ -547,7 +547,7 @@ inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) 
     g3_SetTriangulationTest(0);
 }
 
-inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum) {
+static inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
   polyface *fp = &sm->faces[facenum];
   int modelnum = sm - pm->submodel;
@@ -882,9 +882,9 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
   }
 }
 
-void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
-void StartLightInstance(vector *, matrix *);
-void DoneLightInstance();
+extern void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
+extern void StartLightInstance(vector *, matrix *);
+extern void DoneLightInstance();
 
 // Rotates all of the points of a submodel, plus supplies color info
 void RotateModelPoints(poly_model *pm, bsp_info *sm) {

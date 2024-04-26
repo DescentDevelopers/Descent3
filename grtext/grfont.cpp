@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/grtext/grfont.cpp $
@@ -156,6 +156,13 @@ static bool Font_init = false;
 
 typedef CFILE *FONTFILE;
 
+static inline int READ_FONT_INT(FONTFILE ffile);
+static inline short READ_FONT_SHORT(FONTFILE ffile);
+static inline ubyte READ_FONT_BYTE(FONTFILE ffile);
+static inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem);
+static inline FONTFILE OPEN_FONT(char *filename);
+static inline void CLOSE_FONT(FONTFILE ffile);
+
 inline int READ_FONT_INT(FONTFILE ffile) { return cf_ReadInt(ffile); }
 
 inline short READ_FONT_SHORT(FONTFILE ffile) { return cf_ReadShort(ffile); }
@@ -191,6 +198,13 @@ inline void CLOSE_FONT(FONTFILE ffile) { cfclose(ffile); }
 
 typedef FILE *FONTFILE2;
 
+static inline int WRITE_FONT_INT(FONTFILE2 ffile, int i);
+static inline int WRITE_FONT_SHORT(FONTFILE2 ffile, short s);
+static inline int WRITE_FONT_BYTE(FONTFILE2 ffile, ubyte c);
+static inline int WRITE_FONT_DATA(FONTFILE2 ffile, void *buf, int size, int nelem);
+static inline FONTFILE2 OPEN_FONT2(char *filename);
+static inline void CLOSE_FONT2(FONTFILE2 ffile);
+
 inline int WRITE_FONT_INT(FONTFILE2 ffile, int i) { return fwrite(&i, sizeof(i), 1, (FILE *)ffile); }
 
 inline int WRITE_FONT_SHORT(FONTFILE2 ffile, short s) { return fwrite(&s, sizeof(s), 1, (FILE *)ffile); }
@@ -221,12 +235,12 @@ inline void CLOSE_FONT2(FONTFILE2 ffile) { fclose((FILE *)ffile); }
 //////////////////////////////////////////////////////////////////////////////
 //	Functions
 
-void grfont_Close();
-void grfont_TranslateToBitmaps(int handle);
-void grfont_XlateMonoChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width);
-void grfont_XlateColorChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width);
-void grfont_XlateColorGrayChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width);
-void grfont_ClearBitmap(int bmp_handle);
+static void grfont_Close();
+static void grfont_TranslateToBitmaps(int handle);
+static void grfont_XlateMonoChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width);
+static void grfont_XlateColorChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width);
+static void grfont_XlateColorGrayChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width);
+static void grfont_ClearBitmap(int bmp_handle);
 
 //	clears out font buffer.
 void grfont_Reset() {
@@ -523,6 +537,7 @@ void grfont_FreeTemplate(tFontTemplate *ft) {
   }
 }
 
+// MTS: unused?
 // sets a template to a font, be careful.
 bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   // okay, load the font manually, set the template members, then save it out.
@@ -674,6 +689,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   return true;
 }
 
+// MTS: Unused?
 // sets a font's template without saving...
 bool grfont_SetKerning(int font, ubyte *kern_data) {
   tFontInfo *oldft = &Fonts[font];
@@ -706,6 +722,7 @@ bool grfont_SetKerning(int font, ubyte *kern_data) {
   return true;
 }
 
+// MTS: Unused?
 // sets a font's tracking
 bool grfont_SetTracking(int font, int tracking) {
   ASSERT(font >= 0 && font < MAX_FONTS);
@@ -1052,6 +1069,7 @@ int grfont_KeyToAscii(int font, int key) {
   return key;
 }
 
+// MTS: Unused?
 // returns the raw bitmap data for a character in a font, its width and height
 // returned data should be in 565 hicolor format if (*mono) is false.  if (*mono) is true,
 //	then a bitmask will be returned, and you should treat a bit as a pixel.

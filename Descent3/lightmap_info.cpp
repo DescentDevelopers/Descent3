@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // Lightmap info
 #include "pstypes.h"
@@ -34,6 +34,8 @@ int Num_of_lightmap_info = 0;
 lightmap_info *LightmapInfo = NULL;
 
 static ushort *Free_lmi_list = NULL;
+
+static void CloseLightmapInfos();
 
 void CloseLightmapInfos() {
   bool final_lightmap = true;
@@ -191,6 +193,7 @@ int lmi_h(int handle) {
   return (LightmapInfo[handle].height);
 }
 
+// TODO: MTS: unused?
 // Softens the edges of lightmaps so there are fewer artifaces
 void ShadeLightmapInfoEdges(int type) {
   int i;
@@ -322,6 +325,7 @@ void ShadeLightmapInfoEdges(int type) {
   }
 }
 
+// TODO: MTS: unused?
 // Blurs the lightmaps so a dithering pattern is less noticeable
 void BlurLightmapInfos(int type) {
   int i;

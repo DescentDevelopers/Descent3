@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/CtlCfgElem.h $
@@ -119,7 +119,7 @@ typedef struct tCfgDataParts {
   ubyte bind_0, bind_1, ctrl_0, ctrl_1;
 } tCfgDataParts;
 
-inline void parse_config_data(tCfgDataParts *parts, ct_type type0, ct_type type1, ct_config_data cfgdata) {
+static inline void parse_config_data(tCfgDataParts *parts, ct_type type0, ct_type type1, ct_config_data cfgdata) {
   switch (type0) {
   case ctKey:
     parts->bind_0 = CONTROLLER_KEY1_VALUE(CONTROLLER_VALUE(cfgdata));
@@ -160,9 +160,11 @@ inline void parse_config_data(tCfgDataParts *parts, ct_type type0, ct_type type1
   parts->ctrl_1 = CONTROLLER_CTL2_INFO(CONTROLLER_INFO(cfgdata));
 }
 
-inline ct_config_data unify_config_data(tCfgDataParts *parts) {
+static inline ct_config_data unify_config_data(tCfgDataParts *parts) {
   return MAKE_CONFIG_DATA(CONTROLLER_CTL_INFO(parts->ctrl_0, parts->ctrl_1),
                           CONTROLLER_CTL_VALUE(parts->bind_0, parts->bind_1));
 }
+
+extern const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding);
 
 #endif
