@@ -5335,8 +5335,6 @@ Parameters:
 $$END
 */
 bool qObjCanSeeObj(int handletarget, int cone, int handlesrc) {
-#define PI 3.141592654
-
   vector vsource, vtarget;
 
   msafe_struct mstruct;
@@ -5383,8 +5381,6 @@ Parameters:
 $$END
 */
 bool qObjCanSeeObjAdvanced(int handletarget, int cone, int handlesrc, int fvi_flags) {
-#define PI 3.141592654
-
   vector vsource, vtarget;
   int sourceroom;
 
