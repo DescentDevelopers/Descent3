@@ -248,7 +248,6 @@ static void LoadCockpitInfo(const char *ckt_file, tCockpitCfgInfo *info);
 //	Initializes the cockpit by loading it in and initializing all it's gauges.
 //	initialization of cockpit.
 void InitCockpit(int ship_index) {
-  extern void FreeReticle();
   tCockpitCfgInfo cfginfo;
   int i;
   mprintf((0, "Initializing cockpit.\n"));

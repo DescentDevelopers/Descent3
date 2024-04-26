@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/lighting.cpp $
@@ -64,36 +64,36 @@ typedef struct {
 
 float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
-ushort *Dynamic_lightmap_memory = NULL;
-float Light_component_scalar[32];
+static ushort *Dynamic_lightmap_memory = NULL;
+static float Light_component_scalar[32];
 float Ubyte_to_float[256];
 
 static ubyte Lmi_spoken_for[MAX_LIGHTMAP_INFOS / 8];
 
-dynamic_lightmap *Dynamic_lightmaps;
-dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
-ushort Specular_face_list[MAX_DYNAMIC_FACES];
-volume_object Dynamic_volume_object_list[MAX_VOLUME_OBJECTS];
-dynamic_cell Dynamic_cell_list[MAX_DYNAMIC_CELLS];
-int Specular_maps[NUM_DYNAMIC_CLASSES];
+static dynamic_lightmap *Dynamic_lightmaps;
+static dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
+static ushort Specular_face_list[MAX_DYNAMIC_FACES];
+static volume_object Dynamic_volume_object_list[MAX_VOLUME_OBJECTS];
+static dynamic_cell Dynamic_cell_list[MAX_DYNAMIC_CELLS];
+static int Specular_maps[NUM_DYNAMIC_CLASSES];
 
-ushort Edges_to_blend[MAX_DYNAMIC_LIGHTMAPS];
-int Num_edges_to_blend = 0;
+static ushort Edges_to_blend[MAX_DYNAMIC_LIGHTMAPS];
+static int Num_edges_to_blend = 0;
 
-int Num_specular_faces = 0;
-int Num_dynamic_faces = 0;
-int Num_dynamic_lightmaps = 0;
-int Cur_dynamic_mem_ptr = 0;
-int Num_volume_objects = 0;
-int Num_dynamic_cells = 0;
-int Num_destroyed_lights_this_frame = 0;
+static int Num_specular_faces = 0;
+static int Num_dynamic_faces = 0;
+static int Num_dynamic_lightmaps = 0;
+static int Cur_dynamic_mem_ptr = 0;
+static int Num_volume_objects = 0;
+static int Num_dynamic_cells = 0;
+static int Num_destroyed_lights_this_frame = 0;
 
 #define MAX_DESTROYED_LIGHTS_PER_FRAME 20
-int Destroyed_light_rooms_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
-int Destroyed_light_faces_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
+static int Destroyed_light_rooms_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
+static int Destroyed_light_faces_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
 
 // Frees memory used by dynamic light structures
-void FreeLighting() {
+static void FreeLighting() {
   if (Dynamic_lightmap_memory)
     mem_free(Dynamic_lightmap_memory);
   if (Dynamic_lightmaps)

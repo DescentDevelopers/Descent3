@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/gauges.cpp $
@@ -255,56 +255,59 @@ static float *Render_normalized_times;
 static bool Render_gauge_moving; // gauge is moving, but temporarily off.
 static bool Render_gauge_reset;  //	set this if gauges will be moving, but are still active
 
+// MTS: function not found
 //	loads all shield bitmaps into memory
-void FreeShieldFrames();
+static void FreeShieldFrames();
 
+// MTS: function not found
 //	loads all ship bitmaps into memory
-void FreeShipFrames();
+static void FreeShipFrames();
 
 //	projects monitor coordinates to screen coordinates
-void RotateMonitorPosition(tGauge *gauge);
+static void RotateMonitorPosition(tGauge *gauge);
 
+// MTS: function not found
 // renders the current inventory item name at the x,y position
-void InventoryRenderGauge(int x, int y);
+static void InventoryRenderGauge(int x, int y);
 
 //	renders the primary monitor gauge
-void RenderPrimaryMonitor(tGauge *gauge, bool modified);
+static void RenderPrimaryMonitor(tGauge *gauge, bool modified);
 
 //	renders the secondary monitor gauge
-void RenderSecondaryMonitor(tGauge *gauge, bool modified);
+static void RenderSecondaryMonitor(tGauge *gauge, bool modified);
 
 //	renders the shield gauge monitor
-void RenderShieldMonitor(tGauge *gauge, bool modified);
+static void RenderShieldMonitor(tGauge *gauge, bool modified);
 
 //	renders the ship gauge monitor
-void RenderShipMonitor(tGauge *gauge, bool modified);
+static void RenderShipMonitor(tGauge *gauge, bool modified);
 
 //	renders the ship gauge monitor
-void RenderEnergyMonitor(tGauge *gauge, int orient, bool modified);
+static void RenderEnergyMonitor(tGauge *gauge, int orient, bool modified);
 
 //	renders the ship gauge monitor
-void RenderAfterburnMonitor(tGauge *gauge, bool modified);
+static void RenderAfterburnMonitor(tGauge *gauge, bool modified);
 
 //	renders a monitor style quad
-void DrawGaugeMonitor(g3Point *pts, int bm, float brightness, float *alphas);
+static void DrawGaugeMonitor(g3Point *pts, int bm, float brightness, float *alphas);
 
 //	renders a square texture onto the screen.
-void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, ubyte alpha, bool saturate);
+static void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, ubyte alpha, bool saturate);
 
 //	renders a square texture onto the screen.
-void DrawGaugeQuad(g3Point *pts, int bm, ubyte alpha = 255, bool saturate = false);
+static void DrawGaugeQuad(g3Point *pts, int bm, ubyte alpha = 255, bool saturate = false);
 
 //	renders a flat poly onto the screen with given color
-void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, ubyte alpha);
+static void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, ubyte alpha);
 
 //	renders a flat poly onto the screen with 4 colors (for each vertex)
-void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, ubyte alpha);
+static void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, ubyte alpha);
 
 // correctly orders monitor vertices based off of UVs
-int GetFirstVert(bsp_info *sm);
+static int GetFirstVert(bsp_info *sm);
 
 //	tells what gauge index is the gauge stat item.
-inline int GAUGE_INDEX(tStatMask mask) {
+static inline int GAUGE_INDEX(tStatMask mask) {
   int i;
 
   for (i = 0; i < NUM_GAUGES; i++)

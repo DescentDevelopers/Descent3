@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/hud.cpp $
@@ -480,25 +480,22 @@ static tHUDItem HUD_array[MAX_HUD_ITEMS];
 struct sHUDResources HUD_resources;
 
 // initializes non configurable hud items.
-void InitDefaultHUDItems();
+static void InitDefaultHUDItems();
 
 //	initializes items based off their type (information, etc.)
-void InitHUDItem(int new_item, tHUDItem *item);
+static void InitHUDItem(int new_item, tHUDItem *item);
 
 //	iterate through entire hud item list to draw.
-void RenderHUDItems(tStatMask stat_mask);
-
-//	frees up reticle bitmaps
-void FreeReticle();
+static void RenderHUDItems(tStatMask stat_mask);
 
 //	renders the reticle
-void RenderReticle();
+static void RenderReticle();
 
 //	renders missile reticle
-void RenderMissileReticle();
+static void RenderMissileReticle();
 
 //	renders zoom reticle
-void RenderZoomReticle();
+static void RenderZoomReticle();
 
 //	hack!
 

@@ -244,31 +244,31 @@
 //	Data
 
 // renders the description for the current inventory item
-void RenderHUDInventory(tHUDItem *item);
+static void RenderHUDInventory(tHUDItem *item);
 
 // renders the shield rating for the ship
-void RenderHUDShieldValue(tHUDItem *item);
+static void RenderHUDShieldValue(tHUDItem *item);
 
 // renders the energy rating for the ship
-void RenderHUDEnergyValue(tHUDItem *item);
+static void RenderHUDEnergyValue(tHUDItem *item);
 
 //	draws the afterburner hud gauge.
-void RenderHUDAfterburner(tHUDItem *item);
+static void RenderHUDAfterburner(tHUDItem *item);
 
 //	draws the primary weapon current in.
-void RenderHUDPrimary(tHUDItem *item);
+static void RenderHUDPrimary(tHUDItem *item);
 
 //	draw secondary weapon current in.
-void RenderHUDSecondary(tHUDItem *item);
+static void RenderHUDSecondary(tHUDItem *item);
 
 //	renders ship status.
-void RenderHUDShipStatus(tHUDItem *item);
+static void RenderHUDShipStatus(tHUDItem *item);
 
 //	renders warnings like system failures or missile locks.
-void RenderHUDWarnings(tHUDItem *item);
+static void RenderHUDWarnings(tHUDItem *item);
 
 // render hud countermeasures
-void RenderHUDCountermeasures(tHUDItem *item);
+static void RenderHUDCountermeasures(tHUDItem *item);
 
 //	returns the weapon's icon.
 inline int get_weapon_icon(int player, int type) {

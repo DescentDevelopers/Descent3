@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/main/help.cpp $
@@ -143,51 +143,51 @@
 #include "stringtable.h"
 
 #define TITLETEXT TXT_HELP
-int HelpText[] = {TXI_ESC,
-                  TXI_HLPQUIT,
+static const int HelpText[] = {TXI_ESC,
+                               TXI_HLPQUIT,
 #ifndef DEMO // Do Not include in the PC Gamer Demo
-                  TXI_HLPALTF2,
-                  TXI_HLPSAVEGAME,
-                  TXI_HLPALTF3,
-                  TXI_HLPLOADGAME,
+                               TXI_HLPALTF2,
+                               TXI_HLPSAVEGAME,
+                               TXI_HLPALTF3,
+                               TXI_HLPLOADGAME,
 #endif
-                  TXI_F2,
-                  TXI_HLPCONFIG,
-                  TXI_F3,
-                  TXI_HLPCOCKPIT,
-                  TXI_HLPF4,
-                  TXI_HLPGUIDEBOT,
-                  TXI_F5,
-                  TXI_TOGGLEDEMO,
-                  TXI_F6,
-                  TXI_MLTMENU,
-                  TXI_F8,
-                  TXI_HLP_MULTIMSG,
-                  TXI_F9,
-                  TXI_HLP_QUIKSAVE,
-                  TXI_F12,
-                  TXI_DROPSMARKER,
-                  TXI_SHFTTAB,
-                  TXI_TCMM,
-                  TXI_HLPPAUSE,
-                  TXI_HLPPAUSEDESC,
-                  TXI_PLUSMINUS,
-                  TXI_HLPSCRNSIZE,
-                  TXI_HLPPRNTSCRN,
-                  TXI_HLPTAKESCRNSHT,
-                  TXI_HLP1_5,
-                  TXI_HLPSELPRIM,
-                  TXI_HLP6_0,
-                  TXI_HLPSELSECN,
-                  TXI_SF1,
-                  TXI_HLPREARLEFT,
-                  TXI_SF2,
-                  TXI_HLPREARRIGHT,
-                  TXI_SHFTF8,
-                  TXI_DISPLAYGAMEMSGCONSOLE,
-                  TXI_SHFTF9,
-                  TXI_DISPLAYHUDMSGCONSOLE,
-                  0};
+                               TXI_F2,
+                               TXI_HLPCONFIG,
+                               TXI_F3,
+                               TXI_HLPCOCKPIT,
+                               TXI_HLPF4,
+                               TXI_HLPGUIDEBOT,
+                               TXI_F5,
+                               TXI_TOGGLEDEMO,
+                               TXI_F6,
+                               TXI_MLTMENU,
+                               TXI_F8,
+                               TXI_HLP_MULTIMSG,
+                               TXI_F9,
+                               TXI_HLP_QUIKSAVE,
+                               TXI_F12,
+                               TXI_DROPSMARKER,
+                               TXI_SHFTTAB,
+                               TXI_TCMM,
+                               TXI_HLPPAUSE,
+                               TXI_HLPPAUSEDESC,
+                               TXI_PLUSMINUS,
+                               TXI_HLPSCRNSIZE,
+                               TXI_HLPPRNTSCRN,
+                               TXI_HLPTAKESCRNSHT,
+                               TXI_HLP1_5,
+                               TXI_HLPSELPRIM,
+                               TXI_HLP6_0,
+                               TXI_HLPSELSECN,
+                               TXI_SF1,
+                               TXI_HLPREARLEFT,
+                               TXI_SF2,
+                               TXI_HLPREARRIGHT,
+                               TXI_SHFTF8,
+                               TXI_DISPLAYGAMEMSGCONSOLE,
+                               TXI_SHFTF9,
+                               TXI_DISPLAYHUDMSGCONSOLE,
+                               0};
 
 #define HELP_X_KEY_POS 60
 #define HELP_X_DESC_POS 160
