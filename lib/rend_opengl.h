@@ -156,10 +156,5 @@ void *opengl_DirectDrawObj();
 // returns rendering statistics for the frame
 void opengl_GetStatistics(tRendererStats *stats);
 
-#ifdef MACINTOSH
-void opengl_DettachContext(void);
-void opengl_AttachContext(CGrafPtr);
-void opengl_ResetContext(void);
-#endif
 
 #endif

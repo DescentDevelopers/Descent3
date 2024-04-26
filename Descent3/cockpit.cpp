@@ -199,9 +199,6 @@
 #include "hlsoundlib.h"
 #include "soundload.h"
 #include "sounds.h"
-#if defined(MACINTOSH)
-#include "Macros.h"
-#endif
 
 #include <string.h>
 

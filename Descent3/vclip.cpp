@@ -360,11 +360,7 @@ void PageInVClip(int vcnum) {
       h = TEXTURE_HEIGHT;
 
 #ifndef EDITOR
-#ifdef MACINTOSH
-      if (Render_state.cur_texture_quality <= 1 || Low_vidmem)
-#else
       if (Mem_low_memory_mode || Low_vidmem)
-#endif
       {
         w = TEXTURE_WIDTH / 2;
         h = TEXTURE_HEIGHT / 2;
@@ -376,11 +372,7 @@ void PageInVClip(int vcnum) {
       h = TEXTURE_HEIGHT / 2;
 
 #ifndef EDITOR
-#ifdef MACINTOSH
-      if (Render_state.cur_texture_quality <= 1 || Low_vidmem)
-#else
       if (Mem_low_memory_mode || Low_vidmem)
-#endif
       {
         w = TEXTURE_WIDTH / 4;
         h = TEXTURE_HEIGHT / 4;
@@ -549,20 +541,12 @@ int AllocLoadIFLVClip(char *filename, int texture_size, int mipped, int format) 
       char bmname[200];
 
       for (i = 0; i < strlen(curline); i++)
-#ifdef MACINTOSH
-        if (curline[i] == ':')
-#else
         if (curline[i] == '\\')
-#endif
           lastslash = i;
 
       if (lastslash == -1) {
         for (i = 0; i < strlen(filename); i++)
-#ifdef MACINTOSH
-          if (filename[i] == ':')
-#else
           if (filename[i] == '\\')
-#endif
             lastslash = i;
 
         ASSERT(lastslash != -1);

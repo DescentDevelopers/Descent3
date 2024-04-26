@@ -80,9 +80,6 @@ typedef int socklen_t;
 #include "inetgetfile.h"
 #endif
 
-#ifdef MACINTOSH
-#include "macsock.h"
-#endif
 
 #include "CFtp.h"
 

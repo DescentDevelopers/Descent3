@@ -89,11 +89,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef MACINTOSH
-#include <stat.h>
-#else
 #include <sys/stat.h>
-#endif
 #ifndef __LINUX__
 // Non-Linux Builds
 #include <io.h>
@@ -279,11 +275,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*U
     _fstat32(fileno(ifp), &mystat);
     strcat(table[i].name, ext);
     table[i].flags = 0;
-#ifdef MACINTOSH
-    table[i].len = mystat.st_size;
-#else
     table[i].len = _filelength(fileno(ifp));
-#endif
     table[i].timestamp = mystat.st_mtime;
     if (!FileCopy(hog_fp, ifp, table[i].len)) {
       delete[] table;

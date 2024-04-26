@@ -16,9 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef MACINTOSH
-#include "ddio_mac.h"
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -625,11 +622,7 @@ CFILE *open_file_in_directory(const char *filename, const char *mode, const char
   // if mode is "w", then open in text or binary as requested.  If "r", alsway open in "rb"
   tmode[1] = (mode[0] == 'w') ? mode[1] : 'b';
   // try to open file
-#ifdef MACINTOSH
-  fp = mac_fopen(path, tmode);
-#else
   fp = fopen(path, tmode);
-#endif
 
 #ifdef __LINUX__
   // for Filesystems with case sensitive files we'll check for different versions of the filename
@@ -925,14 +918,7 @@ int8_t cf_ReadByte(CFILE *cfp) {
 float cf_ReadFloat(CFILE *cfp) {
   float f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
-#ifdef MACINTOSH
-  float e = INTEL_FLOAT(f); // DAJ bash to zero if reads a NaN
-  if (isnan(e))
-    e = 0.0;
-  return e;
-#else
   return INTEL_FLOAT(f);
-#endif
 }
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -1018,7 +1004,6 @@ int cf_WriteString(CFILE *cfp, const char *buf) {
 
 // Just like stdio fprintf(), except works on a CFILE
 int cfprintf(CFILE *cfp, const char *format, ...) {
-#ifndef MACINTOSH
   va_list args;
   int count;
   va_start(args, format);
@@ -1026,7 +1011,6 @@ int cfprintf(CFILE *cfp, const char *format, ...) {
   va_end(args);
   cfp->position += count + 1; // count doesn't include terminator
   return count;
-#endif
 }
 
 // The following functions write numeric vales to a CFILE.  All values are
@@ -1130,12 +1114,8 @@ void cf_CopyFileTime(char *dest, const char *src) { ddio_CopyFileTime(dest, src)
 
 // Changes a files attributes (ie read/write only)
 void cf_ChangeFileAttributes(const char *name, int attr) {
-#ifdef MACINTOSH
-  DebugStr("\pERROR in cf_ChangeFileAttributes: not supported");
-#else
   if (_chmod(name, attr) == -1)
     Int3(); // Get Jason or Matt, file not found!
-#endif
 }
 
 //	rewinds cfile position

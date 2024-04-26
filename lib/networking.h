@@ -317,63 +317,6 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
   *s_b3 = S_un.S_un_b.s_b3;
   *s_b4 = S_un.S_un_b.s_b4;
 }
-#elif defined(MACINTOSH)
-
-#include <OpenTransport.h>
-#include <OpenTptXti.h>
-#include <OpenTptInternet.h>
-#include "otsockets.h"
-
-#include "macsock.h"
-
-#define SOCKET int
-#define BOOL bool
-#define SOCKADDR_IN sockaddr_in
-// #define SOCKADDR_IPX sockaddr_ipx
-#define SOCKADDR sockaddr
-// #define INVALID_SOCKET -1
-// #define NSPROTO_IPX AF_IPX
-#define TRUE true
-#define FALSE false
-#define HOSTENT struct hostent
-// #define SOCKET_ERROR -1
-
-// Winsock = sockets error translation
-// #define WSAEWOULDBLOCK	EWOULDBLOCK
-// #define WSAEINVAL			EINVAL
-// #define WSAENOPROTOOPT	ENOPROTOOPT
-
-extern bool Use_DirectPlay;
-
-// #ifdef FIXED
-//  inline int WSAGetLastError(){return errno;}
-
-// helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->S_un.S_addr = value; }
-inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->S_un.S_addr; }
-inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
-  st->S_un.S_un_w.s_w1 = s_w1;
-  st->S_un.S_un_w.s_w2 = s_w2;
-}
-inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
-  *s_w1 = st->S_un.S_un_w.s_w1;
-  *s_w2 = st->S_un.S_un_w.s_w2;
-}
-inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
-                                unsigned char s_b4) {
-  st->S_un.S_un_b.s_b1 = s_b1;
-  st->S_un.S_un_b.s_b2 = s_b2;
-  st->S_un.S_un_b.s_b3 = s_b3;
-  st->S_un.S_un_b.s_b4 = s_b4;
-}
-inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
-                                unsigned char *s_b4) {
-  *s_b1 = st->S_un.S_un_b.s_b1;
-  *s_b2 = st->S_un.S_un_b.s_b2;
-  *s_b3 = st->S_un.S_un_b.s_b3;
-  *s_b4 = st->S_un.S_un_b.s_b4;
-}
-// #endif // FIXED
 #endif // OS
 
 #define NWT_UNRELIABLE 1

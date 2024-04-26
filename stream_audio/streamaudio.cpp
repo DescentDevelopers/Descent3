@@ -174,14 +174,6 @@
 #include <string.h>
 // #include "samirlog.h"
 #define LOGFILE(_s)
-#if defined(MACINTOSH)
-typedef unsigned ReadFunction(void *data, void *buf, unsigned qty);
-AudioDecoder *Create_AudioDecoder(ReadFunction *reader, void *data, unsigned *pChannels, unsigned *pSampleRate,
-                                  long *pSampleCount);
-unsigned AudioDecoder_Read(AudioDecoder *ad, void *buf, unsigned qty);
-void AudioDecoder_Close(AudioDecoder *ad);
-void AudioDecoder_MallocFree(MemoryAllocFunc *fn_malloc, MemoryFreeFunc *fn_free);
-#endif
 //	this stream is for everyone (used by the StreamPlay interface)
 static AudioStream User_audio_stream;
 llsSystem *AudioStream::m_ll_sndsys = NULL;

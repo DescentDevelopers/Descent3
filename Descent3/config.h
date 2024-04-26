@@ -135,14 +135,6 @@ typedef struct tGameToggles {
 extern tGameToggles Game_toggles;
 
 // this list should match the list in config.cpp to work.
-#ifdef MACINTOSH
-#define N_SUPPORTED_VIDRES 3
-
-#define RES_640X480 0
-#define RES_800X600 1
-#define RES_960X720 2
-#define RES_1024X768 3
-#else
 #define N_SUPPORTED_VIDRES 8
 
 #define RES_512X384 0
@@ -152,7 +144,6 @@ extern tGameToggles Game_toggles;
 #define RES_1024X768 4
 #define RES_1280X960 5
 #define RES_1600X1200 6
-#endif
 // stored resolution list and desired game resolution
 typedef struct tVideoResolution {
   ushort width;

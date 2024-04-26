@@ -74,8 +74,6 @@ void ProgramVersion(int version_type, ubyte major, ubyte minor, ubyte build) {
   oeWin32AppDatabase dbase((oeWin32AppDatabase *)Database);
 #elif defined(__LINUX__)
   oeLnxAppDatabase dbase((oeLnxAppDatabase *)Database);
-#elif defined(MACINTOSH)
-  oeMacAppDatabase dbase((oeMacAppDatabase *)Database);
 #else
   oeAppDatabase dbase(Database); // this will fail without an operating system equiv
 #endif

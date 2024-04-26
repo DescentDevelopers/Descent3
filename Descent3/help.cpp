@@ -169,13 +169,8 @@ int HelpText[] = {TXI_ESC,
                   TXI_DROPSMARKER,
                   TXI_SHFTTAB,
                   TXI_TCMM,
-#ifdef MACINTOSH
-                  TXI_PAGE_DOWN,
-                  TXI_HLPPAUSEDESC,
-#else
                   TXI_HLPPAUSE,
                   TXI_HLPPAUSEDESC,
-#endif
                   TXI_PLUSMINUS,
                   TXI_HLPSCRNSIZE,
                   TXI_HLPPRNTSCRN,

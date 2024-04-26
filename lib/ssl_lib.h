@@ -301,13 +301,11 @@ typedef struct {
   //	internal data.
   int m_samples_played;
 
-#ifndef MACINTOSH
   float samples_per_22khz_sample; // passed in
   float left_volume;
   float right_volume;
 
   float m_ticks;
-#endif // Always incrementing counter (current sample position if no looping)
 } play_information;
 
 typedef struct sound_file_info {
@@ -350,14 +348,8 @@ typedef struct sound_info {
 #define SOUND_MIXER_NONE 5
 
 // Support sound qualities
-#ifdef MACINTOSH
-#define SQT_LOW 0
-#define SQT_NORMAL 1
-#define SQT_HIGH 2
-#else
 #define SQT_NORMAL 0
 #define SQT_HIGH 1
-#endif
 // Parameters of the sound library
 #define SLF_USE_3D 1     // Use 3d effects
 #define SLF_DELTA_FREQ 2 // Use frequency shifts (i.e. water effects)
@@ -537,9 +529,6 @@ public:
 
   // returns interface to sound geometry manipulation if available.
   virtual llsGeometry *GetGeometryInterface() { return m_geometry; };
-#ifdef MACINTOSH
-  virtual void SetNumChannels(ubyte num_chan) = 0;
-#endif
   /////////////////////////////////////////////////////////////////////////////////
   // set auxillary 3d sound properties
   virtual bool SoundPropertySupport() const { return false; };
@@ -552,13 +541,8 @@ public:
 //	HIGH LEVEL SYSTEM - Samir
 
 #ifndef NEWEDITOR
-#ifdef MACINTOSH
-#define MAX_SOUNDS 750
-#define MAX_SOUND_FILES 750
-#else
 #define MAX_SOUNDS 1000
 #define MAX_SOUND_FILES 1000
-#endif
 extern sound_info Sounds[MAX_SOUNDS];
 extern sound_file_info SoundFiles[MAX_SOUND_FILES];
 #else

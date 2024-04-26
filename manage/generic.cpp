@@ -1127,11 +1127,6 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
 
   if (version >= 18) {
     cf_ReadString(genericpage->objinfo_struct.module_name, MAX_MODULENAME_LEN, infile);
-#ifdef MACINTOSH // DAJ
-    char *dot = strchr(genericpage->objinfo_struct.module_name, '.');
-    if (dot)
-      strcpy(dot, ".msl");
-#endif
   } else {
     genericpage->objinfo_struct.module_name[0] = '\0';
   }

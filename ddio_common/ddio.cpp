@@ -131,16 +131,10 @@ void ddio_Close() {
 void ddio_Suspend() {
   ddio_InternalKeySuspend();
   ddio_InternalMouseSuspend();
-#ifdef MACINTOSH
-  ddio_InternalJoySuspend(); // DAJ make sprockets happy
-#endif
 }
 void ddio_Resume() {
   ddio_InternalKeyResume();
   ddio_InternalMouseResume();
-#ifdef MACINTOSH
-  ddio_InternalJoyResume();
-#endif
 }
 // handles buffered input from devices once per frame.
 void ddio_Frame() {

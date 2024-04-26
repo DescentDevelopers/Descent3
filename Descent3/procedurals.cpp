@@ -40,10 +40,6 @@
  *
  * $NoKeywords: $
  */
-#ifdef MACINTOSH
-#include <string.h>
-#include "Macros.h"
-#endif
 #include "procedurals.h"
 #include "bitmap.h"
 #include "gr.h"

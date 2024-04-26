@@ -467,8 +467,6 @@
 
 #if defined(WIN32)
 #include "ds3dlib.h"
-#elif defined(MACINTOSH)
-#include "mac_llsound.h"
 #elif defined(__LINUX__)
 #include "linux/lnxsound.h"
 #endif
@@ -476,19 +474,12 @@
 hlsSystem Sound_system;
 char Sound_quality = SQT_NORMAL;
 char Sound_mixer = SOUND_MIXER_SOFTWARE_16;
-#ifdef MACINTOSH
-char Sound_card_name[] = "";
-#else
 char Sound_card_name[256] = "";
-#endif
 struct tEnvAudioPresets {
   float volume;
   float decay;
   float damping;
 }
-#ifdef MACINTOSH
-EnvAudio_Presets[1] = {{0.0F, 0.0F, 0.0F}};
-#else
 EnvAudio_Presets[N_ENVAUDIO_PRESETS] = {
     {0.0F, 0.0F, 0.0F}, // Use for reverb off.
     {0.25F, 0.1F, 0.0F},      {0.417F, 0.4F, 0.666F},  {0.653F, 1.499F, 0.166F}, {0.208F, 0.478F, 0.0F},
@@ -498,7 +489,6 @@ EnvAudio_Presets[N_ENVAUDIO_PRESETS] = {
     {0.194F, 7.841F, 0.472F}, {1.0F, 1.499F, 0.5F},    {0.097F, 2.767F, 0.224F}, {0.208F, 1.652F, 1.5F},
     {0.652F, 2.886F, 0.25F},  {1.0F, 1.499F, 0.0F},    {0.875F, 8.392F, 1.388F}, {0.139F, 17.234F, 0.666F},
     {0.486F, 7.563F, 0.806F}};
-#endif
 
 //////////////////////////////////////////////////////////////////////////////
 hlsSystem::hlsSystem() {
@@ -521,11 +511,7 @@ void hlsSystem::SetLLSoundQuantity(int n_sounds) {
   n_lls_sounds = n_sounds;
   mprintf((1, "SNDLIB: Allow %d sounds to be mixed.\n", n_sounds));
   if (m_f_hls_system_init) {
-#ifdef MACINTOSH
-    m_ll_sound_ptr->SetNumChannels(n_sounds);
-#else
     InitSoundLib(NULL, Sound_mixer, Sound_quality, false);
-#endif
   }
 }
 int hlsSystem::GetLLSoundQuantity() { return n_lls_sounds; }
@@ -545,8 +531,6 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
   if (m_ll_sound_ptr == NULL)
 #if defined(WIN32)
     m_ll_sound_ptr = new win_llsSystem;
-#elif defined(MACINTOSH)
-    m_ll_sound_ptr = new mac_llsSystem;
 #elif defined(__LINUX__)
     m_ll_sound_ptr = new lnxsound;
 #endif
@@ -644,9 +628,6 @@ void hlsSystem::StopAllSounds() {
     m_sound_objects[i].m_hlsound_uid = -1;
   }
   m_ll_sound_ptr->StopAllSounds();
-#ifdef MACINTOSH
-  StreamStop(0);
-#endif
   BeginSoundFrame(false);
   EndSoundFrame();
 
@@ -938,7 +919,6 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
   if (!BOA_IsSoundAudible(sound_seg, ear_seg))
     return false;
 
-#ifndef MACINTOSH
   if (sound_seg != ear_seg && !(sound_seg == Highest_room_index + 1 && ear_seg > Highest_room_index) &&
       !(ear_seg == Highest_room_index + 1 && sound_seg > Highest_room_index)) {
     int cur_room = sound_seg;
@@ -1004,7 +984,6 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
       vm_NormalizeVector(&dir_to_sound);
     }
   } else
-#endif
   {
     dir_to_sound = sound_pos - Viewer_object->pos;
     dist = vm_NormalizeVector(&dir_to_sound);
@@ -1012,7 +991,6 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
   if (dist >= Sounds[sound_index].max_distance)
     return false;
 
-#ifndef MACINTOSH
   if (*adjusted_volume <= 0.0) {
     *adjusted_volume = 0.0;
     return false;
@@ -1023,7 +1001,6 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
   if ((m_sound_objects[sound_obj_index].play_info.sample_skip_interval == 0) && (*adjusted_volume > 0.0f) &&
       (dir_to_sound * Viewer_object->orient.fvec < -.5))
     m_sound_objects[sound_obj_index].play_info.sample_skip_interval = 1;
-#endif
   *virtual_pos = Viewer_object->pos + (dir_to_sound * dist);
   return true;
 }
@@ -1163,9 +1140,7 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   m_sounds_played++;
   // Initialize the play information to nice values
   memset(&m_sound_objects[i].play_info, 0, sizeof(play_information));
-#ifndef MACINTOSH
   m_sound_objects[i].play_info.samples_per_22khz_sample = 1.0;
-#endif
   m_sound_objects[i].play_info.sample_skip_interval = 0;
   m_sound_objects[i].play_info.priority = priority; // Set sound's priority rating
   m_sound_objects[i].m_hlsound_uid = MakeUniqueId(i);
@@ -1242,9 +1217,7 @@ int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pa
   m_sounds_played++;
   // Initialize the play information to nice values
   memset(&m_sound_objects[i].play_info, 0, sizeof(play_information));
-#ifndef MACINTOSH
   m_sound_objects[i].play_info.samples_per_22khz_sample = 1.0;
-#endif
   m_sound_objects[i].m_hlsound_uid = MakeUniqueId(i);
   m_sound_objects[i].play_info.priority = SND_PRIORITY_NORMAL;
   //	static_skip++;
@@ -1299,10 +1272,8 @@ int hlsSystem::PlayStream(int unique_handle, void *data, int size, int stream_fo
   m_sounds_played++;
   // Initialize the play information to nice values
   memset(&m_sound_objects[i].play_info, 0, sizeof(play_information));
-#ifndef MACINTOSH
   m_sound_objects[i].play_info.samples_per_22khz_sample = 1.0;
   m_sound_objects[i].play_info.left_volume = m_sound_objects[i].play_info.right_volume = volume * m_master_volume;
-#endif
   m_sound_objects[i].play_info.m_stream_cback = stream_callback;
   m_sound_objects[i].play_info.m_stream_data = data;
   m_sound_objects[i].play_info.m_stream_format = stream_format;
@@ -1356,17 +1327,10 @@ void hlsSystem::StopSound(int sound_obj_index, unsigned char f_stop_priority) {
     mprintf((1, "stopSound %d \n", m_sound_objects[sound_obj_index].m_sound_uid));
     m_ll_sound_ptr->StopSound(m_sound_objects[sound_obj_index].m_sound_uid, f_stop_priority);
   }
-#ifdef MACINTOSH
-  m_sound_objects[sound_obj_index].m_sound_uid == -1;
-  m_sound_objects[sound_obj_index].m_obj_type_flags = SIF_UNUSED;
-  m_sound_objects[sound_obj_index].m_hlsound_uid = -1;
-  mprintf((0, "StopSound: %d Unused\n", sound_obj_index));
-#else
   if (f_stop_priority == SKT_STOP_IMMEDIATELY || m_sound_objects[sound_obj_index].m_sound_uid == -1) {
     m_sound_objects[sound_obj_index].m_obj_type_flags = SIF_UNUSED;
     m_sound_objects[sound_obj_index].m_hlsound_uid = -1;
   }
-#endif
 }
 // Stops all sounds attached to an object
 void hlsSystem::StopObjectSound(int objhandle) {
@@ -1441,11 +1405,7 @@ void hlsSystem::SetMasterVolume(float volume) {
     }
   }
   m_master_volume = volume;
-#ifdef MACINTOSH
-  SetLLMasterVolume(volume);
-#else
   StreamVolume(m_master_volume);
-#endif
 }
 
 // Gets the master volume

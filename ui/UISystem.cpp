@@ -226,10 +226,8 @@ void ui_Flush() {
 //	UI_input.last_mx = 0;
 //	UI_input.my = 0;
 //	UI_input.last_my = 0;
-#ifndef MACINTOSH
   UI_input.b1_status = 0;
   UI_input.b1_last_status = 0;
-#endif
   UI_input.b1_count = 0;
   UIFrameTime = 0.0f;
   UI_input.cur_time = timer_GetTime();
@@ -265,27 +263,6 @@ bool ui_MousePoll(bool buttons) {
   static int btn_mask = 0;
   int msebtn;
   bool state;
-#ifdef MACINTOSH
-  btn_mask = ddio_MouseGetState(&mx, &my, NULL, NULL);
-  UI_input.last_mx = UI_input.mx;
-  UI_input.last_my = UI_input.my;
-  UI_input.mx = mx;
-  UI_input.my = my;
-
-  if (btn_mask) {
-    UI_input.b1_status = UIMSEBTN_PRESSED;
-    //		mprintf((2, "mouse %d: %d %d\n", UI_input.b1_status, mx, my));
-    return true;
-  } else {
-    if (UI_input.b1_last_status == UIMSEBTN_PRESSED) {
-      UI_input.b1_status = UIMSEBTN_RELEASED;
-    } else if (UI_input.b1_last_status == UIMSEBTN_RELEASED) {
-      UI_input.b1_status = 0;
-      UI_input.b1_last_status = 0;
-    }
-    return false;
-  }
-#else
   if (!buttons) {
     //	get all input, mouse maintains persistent button info. key doesn't.
     btn_mask = ddio_MouseGetState(&mx, &my, NULL, NULL);
@@ -324,7 +301,6 @@ bool ui_MousePoll(bool buttons) {
     }
   }
   return false;
-#endif
 }
 bool ui_KeyPoll() {
   int key;
@@ -459,17 +435,11 @@ int ui_ProcessFocusedWindow() {
     UI_input.b1_count = 0; // button one state reset.
     ui_KeyPoll();
     ui_MousePoll(true);
-#ifdef MACINTOSH
-    res2 = UIWindowFocus->Process();
-    if (res2 != -1)
-      res = res2;
-#else
     do {
       res2 = UIWindowFocus->Process();
       if (res2 != -1)
         res = res2;
     } while (ui_MousePoll(true));
-#endif
   }
   return res;
 }
@@ -554,9 +524,6 @@ int ui_DoFrame(tUIInput *input, bool doinput) {
 }
 //	hide and show cursor. effects are cumulative
 bool ui_ShowCursor() {
-#if defined(MACINTOSH) && !defined(DAJ_DEBUG)
-  ::HideCursor();
-#endif
   if (!UI_cursor_show) {
     UI_cursor_show = 1;
     return false;

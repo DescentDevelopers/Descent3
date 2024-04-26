@@ -110,9 +110,6 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 
-#ifdef MACINTOSH
-#include <stdlib.h>
-#endif
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;

@@ -196,11 +196,7 @@ void mmItem::OnDestroy() {
 }
 
 void mmItem::OnSelect() {
-#ifdef MACINTOSH
-  PlayMenuSound(m_window->SoundHandles[MM_SELECT_SOUND], false); // why wait?
-#else
   PlayMenuSound(m_window->SoundHandles[MM_SELECT_SOUND], true);
-#endif
   UIGadget::OnSelect();
 }
 

@@ -586,8 +586,6 @@ bool InitGameModule(char *name, module *mod) {
 // Make the dll filename
 #if defined(WIN32)
   snprintf(dll_name, sizeof(dll_name), "%s.dll", name);
-#elif defined(MACINTOSH)
-  sprintf(dll_name, "%s.msl", name);
 #else
   snprintf(dll_name, sizeof(dll_name), "%s.so", name);
 #endif

@@ -923,12 +923,6 @@ char *GetStringFromTable(int index);
 #define TXI_F9 892                           //"F9"
 #define TXI_HLP_MULTIMSG 893                 //	"Send message in multiplayer"
 #define TXI_F8 894                           // "F8"
-#ifdef MACINTOSH
-#define TXT_TEXTURE_QUALITY TXT(895)   // "Texture Quality"
-#define TXT_JOYSTICK_DEADZONE TXT(896) // "Joystick Deadzone"
-#define TXT_SPROCKETS_CONFIG TXT(897)  // "Sprockets Config"
-#define TXI_PAGE_DOWN 898              // "Page Down"
-#endif
 
 // Before adding items search for unused entries!
 #endif

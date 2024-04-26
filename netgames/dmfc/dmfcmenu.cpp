@@ -134,9 +134,6 @@
 #include "gamedll_header.h"
 #include "dmfcinternal.h"
 
-#ifdef MACINTOSH
-#include <stdlib.h>
-#endif
 
 #include <algorithm>
 

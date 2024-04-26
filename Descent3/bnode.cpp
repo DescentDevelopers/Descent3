@@ -97,9 +97,6 @@
  * $NoKeywords: $
  */
 
-#ifdef MACINTOSH
-#include <string.h>
-#endif
 
 #include "memory.h"
 #include "bnode.h"

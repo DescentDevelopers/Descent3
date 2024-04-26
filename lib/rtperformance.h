@@ -42,9 +42,6 @@
 #define INT64 unsigned char
 #endif
 
-#if defined(MACINTOSH)
-#define LARGE_INTEGER long long
-#endif
 
 //		struct of information to be saved per frame (note: use INT64 for timer info)
 // -----------------------------------------------------------------------------------

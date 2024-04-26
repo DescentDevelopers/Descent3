@@ -137,11 +137,7 @@
 #define KEY_QUEUE_SIZE 16
 
 // This is the key used as a debugging modifier
-#ifdef MACINTOSH
-#define KEY_DEBUG KEY_BACKSP
-#else
 #define KEY_DEBUG KEY_DELETE
-#endif
 
 // ----------------------------------------------------------------------------
 //	Data for ddio_common keyboard code.

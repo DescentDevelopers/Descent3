@@ -52,9 +52,6 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 
-#ifdef MACINTOSH
-#include <stdlib.h>
-#endif
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
@@ -156,9 +153,6 @@ int DMFCBase::CFGCreateRecord(char *name, char type, void *data) {
 }
 
 // Convert a string that represents a hex value into an int
-#ifdef MACINTOSH
-static
-#endif
     int
     axtoi(char *p) {
   int value = 0;

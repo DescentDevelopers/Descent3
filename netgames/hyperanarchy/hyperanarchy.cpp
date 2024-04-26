@@ -180,9 +180,6 @@ void OnTimerKill(void);
 void OnTimerFlagReturn(void);
 void OnTimerFlagReturnKill(void);
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -1509,6 +1506,3 @@ void OnTimerFlagReturnKill(void) { HyperMoveTimer = -1; }
 
 void SwitchHUDColor(int i) { HUD_color_model = i; }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif

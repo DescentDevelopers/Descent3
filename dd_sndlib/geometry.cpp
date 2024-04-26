@@ -49,28 +49,21 @@
  *
  */
 
-#ifndef MACINTOSH
 #include "ds3dlib_internal.h"
 #include "auddev.h"
-#else
-#include "ddsndgeometry.h"
-#endif
 #include "pserror.h"
 
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 llsGeometry::llsGeometry() {
-#ifndef MACINTOSH
   m_snd_system = NULL;
   m_snd_mixer = SOUND_MIXER_NONE;
   m_lib_init = false;
-#endif
 }
 
 // specify a sound library to associate geometry with
 bool llsGeometry::Init(llsSystem *snd_sys) {
-#ifndef MACINTOSH
   int i;
 
   if (m_lib_init) {
@@ -97,12 +90,10 @@ bool llsGeometry::Init(llsSystem *snd_sys) {
   }
 
   m_snd_mixer = snd_sys->GetSoundMixer();
-#endif
 
   m_snd_system = snd_sys;
   m_lib_init = true;
 
-#ifndef MACINTOSH
   // create material list.
   for (i = 0; i < SNDGEO_MATERIAL_COUNT; i++) {
     m_snd_materials[i] = NULL;
@@ -113,13 +104,11 @@ bool llsGeometry::Init(llsSystem *snd_sys) {
   CreateMaterial(SNDGEO_MATERIAL_METAL, 0.1f, 0.1f, 0.95f, 0.85f);
 
   mprintf((0, "DDSNDGEO: Initialized.\n"));
-#endif
   return true;
 }
 
 // closes low level geometry system.
 void llsGeometry::Shutdown() {
-#ifndef MACINTOSH
   int i;
 
   if (!m_lib_init) { // damn this shouldn't happen.
@@ -146,23 +135,18 @@ void llsGeometry::Shutdown() {
   m_lib_init = false;
 
   mprintf((0, "DDSNDGEO: Shutdown.\n"));
-#endif
 }
 
 void llsGeometry::StartFrame() {
-#ifndef MACINTOSH
   n_primatives_used = 0;
   n_reflections_used = 0;
   n_materials_used = 0;
-#endif
 }
 
 void llsGeometry::EndFrame() {
-#ifndef MACINTOSH
   mprintf_at((3, 4, 20, "sndpoly=%04d", n_primatives_used));
   mprintf_at((3, 4, 38, "sndmat=%04d", n_materials_used));
   mprintf_at((3, 5, 20, "sndref=%04d", n_reflections_used));
-#endif
 }
 
 // polygon lists
@@ -170,7 +154,6 @@ void llsGeometry::EndFrame() {
 // marks beginning of a list of polygons to render
 //	-1 group if non cached (user doesn't want to reuse this.
 void llsGeometry::StartPolygonGroup(int group) {
-#ifndef MACINTOSH
   ASSERT(m_lib_init);
 
 #ifdef SUPPORT_AUREAL
@@ -182,12 +165,10 @@ void llsGeometry::StartPolygonGroup(int group) {
     break;
   }
 #endif
-#endif
 }
 
 // ends a list of polygons to render.
 void llsGeometry::EndPolygonGroup(int group) {
-#ifndef MACINTOSH
   ASSERT(m_lib_init);
 
 #ifdef SUPPORT_AUREAL
@@ -197,12 +178,10 @@ void llsGeometry::EndPolygonGroup(int group) {
     break;
   }
 #endif
-#endif
 }
 
 // renders a group.
 void llsGeometry::RenderGroup(int group) {
-#ifndef MACINTOSH
   ASSERT(m_lib_init);
 
 #ifdef SUPPORT_AUREAL
@@ -212,11 +191,9 @@ void llsGeometry::RenderGroup(int group) {
     break;
   }
 #endif
-#endif
 }
 
 void llsGeometry::Clear() {
-#ifndef MACINTOSH
   ASSERT(m_lib_init);
 
 #ifdef SUPPORT_AUREAL
@@ -226,13 +203,11 @@ void llsGeometry::Clear() {
     break;
   }
 #endif
-#endif
 }
 
 // primatives
 // 4 verts here.
 void llsGeometry::AddQuad(unsigned tag, vector **verts) {
-#ifndef MACINTOSH
   n_primatives_used++;
 #ifdef SUPPORT_AUREAL
   switch (m_snd_mixer) {
@@ -241,12 +216,10 @@ void llsGeometry::AddQuad(unsigned tag, vector **verts) {
     break;
   }
 #endif
-#endif
 }
 
 // 3 verts here.
 void llsGeometry::AddTriangle(unsigned tag, vector **verts) {
-#ifndef MACINTOSH
   n_primatives_used++;
 #ifdef SUPPORT_AUREAL
   switch (m_snd_mixer) {
@@ -255,11 +228,9 @@ void llsGeometry::AddTriangle(unsigned tag, vector **verts) {
     break;
   }
 #endif
-#endif
 }
 
 void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial material) {
-#ifndef MACINTOSH
   int i, saved_primatives_used; //,p;
   void *matp = NULL;
 
@@ -328,13 +299,11 @@ void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial m
   if (matp) {
     n_reflections_used += (n_primatives_used - saved_primatives_used);
   }
-#endif
 }
 
 // values MUST be from 0 to 1 for gain and highfreq.
 void llsGeometry::CreateMaterial(tSoundMaterial material, float transmit_gain, float transmit_highfreq,
                                  float reflect_gain, float reflect_highfreq) {
-#ifndef MACINTOSH
   if (m_snd_materials[material] || material < 0 || material >= SNDGEO_MATERIAL_COUNT) {
     Int3(); // get samir, trying to intiialize a material in an existing slot.
     return;
@@ -369,11 +338,9 @@ void llsGeometry::CreateMaterial(tSoundMaterial material, float transmit_gain, f
     break;
   }
 #endif
-#endif
 }
 
 void llsGeometry::DestroyMaterial(tSoundMaterial material) {
-#ifndef MACINTOSH
   if (!m_snd_materials[material]) {
     if (material < 0 || material >= SNDGEO_MATERIAL_COUNT) {
       Int3(); // get samir, trying to destroy a material in an nonexisting slot.
@@ -391,5 +358,4 @@ void llsGeometry::DestroyMaterial(tSoundMaterial material) {
 #endif
     m_snd_materials[material] = NULL;
   }
-#endif
 }

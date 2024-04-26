@@ -343,13 +343,6 @@ typedef int socklen_t;
 bool Use_DirectPlay = false;
 #endif
 
-#ifdef MACINTOSH
-#include <OpenTransport.h>
-#include <OpenTptXti.h>
-#include <OpenTptInternet.h>
-#include "otsockets.h"
-#include "OTTCPWillDial.h"
-#endif
 
 #include "module.h" //for some nice defines to use below
 
@@ -576,9 +569,6 @@ void CloseNetworking() {
   }
 #endif
 
-#ifdef MACINTOSH
-  ShutdownOTSockets();
-#endif
 
   Network_initted = 0;
   Sockets_initted = 0;
@@ -602,12 +592,6 @@ void nw_InitNetworking(int iReadBufSizeOverride) {
   WORD ver = MAKEWORD(1, 1);
 #endif
 
-#ifdef MACINTOSH
-  if (!InitOTSockets()) {
-    mprintf((1, "InitOTSockets Unable to intialize\n"));
-    return;
-  }
-#endif
   static char exewithpath[_MAX_PATH * 2];
   static char exefile[_MAX_PATH * 2];
   static char ourargs[_MAX_PATH * 2];
@@ -763,31 +747,6 @@ unsigned short nw_ListenPort = 0;
 
 // Inits the sockets that the application will be using
 void nw_InitSockets(ushort port) {
-#ifdef MACINTOSH
-  OSStatus err;
-  UInt32 willTCPDial;
-
-  err = OTTCPWillDial(&willTCPDial);
-
-  mprintf((1, "nw_InitSockets: willTCPDial %d\n", willTCPDial));
-  if (err == noErr) {
-    switch (willTCPDial) {
-    case kOTTCPDialUnknown:
-      // Just to play it safe we'll try anyway
-      break;
-    case kOTTCPDialTCPDisabled:
-      return; // No TCPIP, so why bother?
-      break;
-    case kOTTCPDialYes:
-      return; // We don't want to do anything to cause the modem to dial.
-      break;
-    case kOTTCPDialNo:
-      // Good to go!
-      break;
-    }
-  }
-
-#endif
 
   nw_ListenPort = port;
   // UDP/TCP socket structure
@@ -870,27 +829,23 @@ tcp_done:
   ret = setsockopt(IPX_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
   if (ret == SOCKET_ERROR) {
     int wserr;
-#ifndef MACINTOSH
     wserr = WSAGetLastError();
     if ((wserr == WSAENOPROTOOPT) || (wserr == WSAEINVAL)) {
       mprintf((0, "Unable to make socket broadcastable!"));
 
       Int3(); // Get Kevin
     }
-#endif
   }
   setsockopt(TCP_socket, SOL_SOCKET, SO_REUSEADDR, (LPSTR)&isocktrue, sizeof(isocktrue));
   ret = setsockopt(TCP_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
   if (ret == SOCKET_ERROR) {
     int wserr;
-#ifndef MACINTOSH
     wserr = WSAGetLastError();
     if ((wserr == WSAENOPROTOOPT) || (wserr == WSAEINVAL)) {
       mprintf((0, "Unable to make socket broadcastable!"));
 
       Int3(); // Get Kevin
     }
-#endif
   }
 
   Sockets_initted = 1;

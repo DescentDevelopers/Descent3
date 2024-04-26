@@ -424,9 +424,6 @@
 #define OSIRISDEBUG
 #endif
 
-#ifdef MACINTOSH
-#pragma opt_dead_code off
-#endif
 
 bool Show_osiris_debug = false;
 
@@ -3152,8 +3149,6 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 #else
   script_extension = "*.so";
 #endif
-#elif defined(MACINTOSH)
-  script_extension = "*.msl";
 #else
   script_extension = "*.dll";
 #endif
@@ -4042,6 +4037,3 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
   }
 }
 
-#ifdef MACINTOSH
-#pragma opt_dead_code on
-#endif

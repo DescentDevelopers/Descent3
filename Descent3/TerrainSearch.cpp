@@ -231,9 +231,6 @@
 #include "config.h"
 #include "dedicated_server.h"
 
-#ifdef MACINTOSH
-#include <string.h>
-#endif
 
 int EvaluateBlock(int x, int z, int lod);
 

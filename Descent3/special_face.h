@@ -24,11 +24,7 @@
 #include "vecmat.h"
 
 #define BAD_SPECIAL_FACE_INDEX -1
-#ifdef MACINTOSH
-#define MAX_SPECIAL_FACES 5000
-#else
 #define MAX_SPECIAL_FACES 13000 // made large enough for Josh's Mercenary level 3
-#endif
 
 // What this special face is used for:
 #define SFT_SPECULAR 1

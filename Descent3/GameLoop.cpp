@@ -1252,9 +1252,6 @@ void ProcessNormalKey(int key) {
   switch (key) {
 
     // ingnore the modifier keys
-#ifdef MACINTOSH
-  case KEY_CMD:
-#endif
   case KEY_LALT:
   case KEY_RALT:
   case KEY_LSHIFT:
@@ -1268,9 +1265,6 @@ void ProcessNormalKey(int key) {
     return;
 
   case KEY_PAUSE:
-#ifdef MACINTOSH
-  case KEY_PAGEDOWN:
-#endif
     Game_interface_mode = GAME_PAUSE_INTERFACE;
     return;
 
@@ -1365,10 +1359,6 @@ void ProcessNormalKey(int key) {
 
   case KEY_PRINT_SCREEN:
   case KEY_SHIFTED + KEY_PRINT_SCREEN:
-#ifdef MACINTOSH
-  case KEY_INSERT:
-  case KEY_SHIFTED + KEY_INSERT:
-#endif
     mprintf((0, "Doing screenshot!\n"));
     DoScreenshot();
     return;
@@ -2002,21 +1992,6 @@ void ProcessTestKeys(int key) {
     }
 
   } break;
-#ifdef MACINTOSH
-    extern int debug_level;
-  case KEY_SHIFTED + KEY_MINUS:
-  case KEY_MINUS:
-    debug_level--;
-    if (debug_level < 0)
-      debug_level = 0;
-    break;
-  case KEY_SHIFTED + KEY_EQUAL:
-  case KEY_EQUAL:
-    debug_level++;
-    if (debug_level > 2)
-      debug_level = 2;
-    break;
-#endif
     /*
     **************************************************
                               Keypad Keys

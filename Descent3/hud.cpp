@@ -916,15 +916,6 @@ int FindCustomtext2HUDItem() {
 void UpdateCustomtext2HUDItem(char *text) {
   int i;
 
-#ifdef MACINTOSH
-  char *p = text;
-  char ch;
-  while (ch = *p) {
-    if (ch == '\r')
-      *p = '\n';
-    p++;
-  }
-#endif
   for (i = 0; i < MAX_HUD_ITEMS; i++) {
     if (HUD_array[i].stat && (HUD_array[i].type == HUD_ITEM_CUSTOMTEXT2)) {
       ASSERT(HUD_array[i].data.text != NULL);

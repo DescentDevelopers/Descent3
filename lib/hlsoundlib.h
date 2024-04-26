@@ -212,15 +212,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 
-#ifdef MACINTOSH
-#define MAX_SOUNDS_MIXED 32
-#define MIN_SOUNDS_MIXED 8
-#define MAX_SOUND_OBJECTS 3000
-#else
 #define MAX_SOUNDS_MIXED 40
 #define MIN_SOUNDS_MIXED 20
 #define MAX_SOUND_OBJECTS 3000
-#endif
 
 extern char Sound_quality;
 extern char Sound_mixer;

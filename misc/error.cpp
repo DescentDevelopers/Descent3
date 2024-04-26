@@ -121,22 +121,14 @@ void Error(char *fmt, ...) {
   va_list arglist;
   int exit_msg_len;
 
-#ifdef MACINTOSH
-  strcpy(Exit_message, "");
-#else
   strcpy(Exit_message, "Error: ");
-#endif
 
   va_start(arglist, fmt);
   exit_msg_len = strlen(Exit_message);
   Pvsprintf(Exit_message + exit_msg_len, MAX_MSG_LEN - exit_msg_len, fmt, arglist);
   va_end(arglist);
 
-#ifdef MACINTOSH
-  Debug_ErrorBox(OSMBOX_OK, "Fatal Error", Exit_message, "");
-#else
   snprintf(Exit_title_str, sizeof(Exit_title_str), "%s Error", App_title);
-#endif
   mprintf((0, "%s\n", Exit_message));
 
 #ifdef _DEBUG
