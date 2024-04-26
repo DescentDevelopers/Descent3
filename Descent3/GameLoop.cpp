@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1867,21 +1867,7 @@ void ProcessTestKeys(int key) {
     break;
 
   case KEY_V:
-    /*
-#ifndef MACINTOSH		//DAJ what does this do??
-    if(Debug_print_block)
-    {
-            AddHUDMessage("No block debug info");
-            Debug_print_block = false;
-    }
-    else
-    {
-            AddHUDMessage("Block debug info on");
-            Debug_print_block = true;
-    }
-    break;
-#endif
-    */
+    // TODO: should this actually be a fallthrough?
 
   case KEY_W:
     if (Weather.flags & WEATHER_FLAGS_LIGHTNING) {
