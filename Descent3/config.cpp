@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -679,7 +679,7 @@ struct video_menu {
     sheet->AddLongRadioButton("1600x1200");
     *resolution = iTemp;
 
-#if !(defined(MACINTOSH) || defined(__LINUX__))
+#if !defined(__LINUX__)
     // renderer bit depth
     switch (Render_preferred_bitdepth) {
     case 16:
@@ -723,7 +723,7 @@ struct video_menu {
       Render_preferred_state.mipping = (*mipmapping) ? 1 : 0;
     if (vsync)
       Render_preferred_state.vsync_on = (*vsync) ? 1 : 0;
-#if !(defined(MACINTOSH) || defined(__LINUX__))
+#if !defined(__LINUX__)
     if (bitdepth)
       Render_preferred_bitdepth = (*bitdepth) == 1 ? 32 : 16;
 #endif
@@ -819,7 +819,7 @@ struct sound_menu {
       fxquantity = NULL;
     }
 
-#if defined(_DEBUG) && !defined(MACINTOSH)
+#if defined(_DEBUG)
     int iTemp;
     // add sound stats group
     sheet->NewGroup("MIXER SETTINGS", 180, 85);
@@ -866,7 +866,7 @@ struct sound_menu {
     int iTemp;
     char mixer_type = SOUND_MIXER_NONE;
 
-#if defined(_DEBUG) && !defined(MACINTOSH)
+#if defined(_DEBUG)
     iTemp = *sndmixer;
 
     switch (iTemp) {

@@ -2018,7 +2018,7 @@ ushort Gameport = D3_DEFAULT_PORT;
 ushort PXOPort = 0;
 // Initialiaze everything before data load
 void InitD3Systems1(bool editor) {
-#if defined(RELEASE) || defined(MACINTOSH)
+#if defined(RELEASE)
   SetDebugBreakHandlers(NULL, NULL);
 #else
   SetDebugBreakHandlers(D3DebugStopHandler, D3DebugResumeHandler);
@@ -2141,7 +2141,7 @@ void InitD3Systems1(bool editor) {
         pport++;
         port = atoi(pport);
       }
-#if !defined(RELEASE) && !defined(MACINTOSH)
+#if !defined(RELEASE)
       nw_InitTCPLogging(ipparse, port);
 #endif
     }

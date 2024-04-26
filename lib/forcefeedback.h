@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@
 #define FF_DEGREES DI_DEGREES
 #define FF_NOMINALMAX DI_FFNOMINALMAX
 #define FF_SECONDS DI_SECONDS
-#elif defined(__LINUX__) || defined(MACINTOSH)
+#elif defined(__LINUX__)
 // LINUX
 #define FF_DEGREES 360      // fake value
 #define FF_NOMINALMAX 10000 // fake value

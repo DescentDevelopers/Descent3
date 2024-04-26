@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -257,7 +257,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*U
   // write files (& build index)
   for (i = 0; i < header.nfiles; i++) {
     FILE *ifp;
-#if defined(__LINUX__) || defined(MACINTOSH)
+#if defined(__LINUX__)
     struct stat mystat;
 #else
     struct _stat32 mystat;

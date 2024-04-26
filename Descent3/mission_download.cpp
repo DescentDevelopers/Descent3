@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -844,7 +844,7 @@ char *_strlwr(char *string) {
 #define MOD_URL_BASEPATH "http://www.descent3.com/mods/" // WAS: "http://www.pxo.net/descent3/mods/"
 
 int CheckGetD3M(char *d3m) {
-#if !(defined(OEM) || defined(MACINTOSH))
+#if !defined(OEM)
 
   char modurl[MAX_MISSION_URL_LEN + 1];
   char *lowurl;

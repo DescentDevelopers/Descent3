@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -71,15 +71,6 @@ fix FloatToFixFast(float num);
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
 #define FixToShort(num) ((short)((num) >> FIX_SHIFT))
-
-/* --NOT NEEDED -JEFF
-//Fixed-point math functions in inline ASM form
-#if defined(MACINTOSH)
-        #include "fixmac.h"
-#elif defined(WIN32)
-        #include "..\..\main\win\fixwin32.h"
-#endif
-*/
 
 // Tables for trig functions
 float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
