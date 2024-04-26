@@ -1,6 +1,5 @@
 set(HEADERS)
 set(CPPS
-  endian.cpp
   error.cpp
   logfile.cpp
   psglob.cpp
