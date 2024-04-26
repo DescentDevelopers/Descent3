@@ -61,7 +61,7 @@
 #ifndef _FIX_H
 #define _FIX_H
 
-#include "math.h"
+#include <cmath>
 
 // Disable the "possible loss of data" warning
 #pragma warning(disable : 4244)
@@ -112,7 +112,7 @@ fix FloatToFixFast(float num);
 
 // Fixed-point math functions in inline ASM form
 #if   defined(WIN32)
-#include "win\fixwin32.h"
+#include "fixwin32.h"
 #endif
 
 // use this instead of:

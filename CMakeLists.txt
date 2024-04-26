@@ -144,6 +144,7 @@ endif()
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
   "ddebug"  # -*-
+  "fix"     # -*-
   "lib"     # TODO: Remove after untying all modules
   "Descent3"
   ${PLATFORM_INCLUDES}
