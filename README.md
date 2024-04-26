@@ -40,12 +40,52 @@ cmake --build --preset mac --config [Debug|Release]
 
 #### Building - Linux
 ```sh
-sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev
+sudo apt install -y --no-install-recommends ninja-build cmake g++ \
+    libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext-dev zlib1g-dev
 cmake --preset linux -D LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
+
+<details>
+<summary>32-bit Linux & other distributions</summary>
+
+**Ubuntu / Debian 32-bit build:**
+
+Note: `libsdl1.2-dev` can not be installed for 64 and 32 bit at the same time, but on Ubuntu 24.04 and Debian 12
+it can be replaced by `libsdl1.2-compat-dev:amd64` and `libsdl1.2-compat-dev:i386`.
+
+```sh
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install -y --no-install-recommends ninja-build cmake g++ g++-multilib \
+    libsdl1.2-dev:i386 libsdl-image1.2-dev:i386 libncurses-dev:i386 libxext6:i386 zlib1g-dev:i386
+
+cmake --preset linux-32 -D LOGGER=[ON|OFF]
+cmake --build --preset linux-32 --config [Debug|Release]
+
+# when not using a preset:
+cmake .. -GNinja -DCMAKE_TOOLCHAIN_FILE=../tools/toolchain-32-bit.cmake
+ninja
+```
+
+**Fedora dependencies:**
+ ```
+ dnf install -y --setopt=install_weak_deps=False \
+     ninja-build sdl12-compat-devel SDL_image-devel ncurses-devel libXext-devel zlib-devel
+ # packages for 32-bit builds:
+    sdl12-compat-devel.i686 SDL_image-devel.i686 ncurses-devel.i686 libXext-devel.i686 glibc-devel.i686 \
+    mesa-libGLU-devel.i686 libglvnd-devel.i686 zlib-devel.i686
+ # for cmake calls, see above
+```
+
+**openSUSE Tumbleweed dependencies:**
+```
+zypper install -y cmake ninja gcc gcc-c++ sdl12_compat-devel libSDL_image-devel libXext-devel ncurses-devel zlib-devel
+# (no 32bit build possible, missing sdl1.2 devel package)
+# for cmake calls, see above
+```
+</details>
 
 ## Contributing
 Anyone can contribute! We have an active Discord presence at [Descent Developer Network](https://discord.gg/GNy5CUQ). If you are interested in maintaining the project on a regular basis, please contact Kevin Bentley.
