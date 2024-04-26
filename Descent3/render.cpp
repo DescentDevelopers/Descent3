@@ -80,9 +80,6 @@
 void RotateRoomPoints(room *rp, vector4 *world_vecs);
 #endif
 
-#ifdef MACINTOSH
-#include "Macros.h"
-#endif
 
 static int Faces_rendered = 0;
 extern float GetFPS();
@@ -1760,20 +1757,6 @@ void RenderFace(room *rp, int facenum) {
   if (!Render_mirror_for_room && Detail_settings.Specular_lighting && (GameTextures[fp->tmap].flags & TF_SPECULAR) &&
       ((fp->special_handle != BAD_SPECIAL_FACE_INDEX) || (rp->flags & RF_EXTERNAL)))
     spec_face = 1;
-#ifdef MACINTOSH
-  // DAJ check for off screen early!
-  for (vn = 0; vn < fp->num_verts; vn++) {
-    face_cc.cc_and &= World_point_buffer[rp->wpb_index + fp->face_verts[vn]].p3_codes;
-  }
-  if (face_cc.cc_and) // This entire face is off the screen
-  {
-    if (spec_face && GameTextures[fp->tmap].flags & TF_SMOOTH_SPECULAR) {
-      fp->flags |= FF_SPEC_INVISIBLE;
-      UpdateSpecularFace(rp, fp);
-    }
-    return;
-  }
-#endif
   // Figure out if there is any texture sliding
   if (GameTextures[fp->tmap].slide_u != 0) {
     int int_time = Gametime / GameTextures[fp->tmap].slide_u;
@@ -1843,7 +1826,6 @@ void RenderFace(room *rp, int facenum) {
       face_cc.cc_or |= p->p3_codes;
     }
   }
-#ifndef MACINTOSH
   if (face_cc.cc_and) // This entire face is off the screen
   {
     if (spec_face && GameTextures[fp->tmap].flags & TF_SMOOTH_SPECULAR) {
@@ -1852,7 +1834,6 @@ void RenderFace(room *rp, int facenum) {
     }
     return;
   }
-#endif
   // Do stupid gouraud shading for lightmap
   if (NoLightmaps) {
     if (first) {
@@ -2419,10 +2400,6 @@ void ComputeRoomPulseLight(room *rp) {
   }
 }
 
-#ifdef MACINTOSH
-// what is this?? -Jeff
-#pragma mark---
-#endif
 
 #define CORONA_DIST_CUTOFF 5.0f
 // Draws a glow around a light

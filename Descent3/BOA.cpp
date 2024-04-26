@@ -630,16 +630,8 @@ void compute_mine_info() {
 void add_terrain_cell(int cell, int t_region, char *checked) {
   int depth = 0;
   int i;
-#ifdef MACINTOSH // JCA: Mac compiler cannot allocate more than 32k on stack as local variables
-  unsigned short *stack;
-  char *on_stack;
-
-  stack = (unsigned short *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(unsigned short));
-  on_stack = (char *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(char));
-#else
   unsigned short stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
   char on_stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
-#endif
 
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++)
     on_stack[i] = false;
@@ -684,23 +676,13 @@ void add_terrain_cell(int cell, int t_region, char *checked) {
       cur_node += next_y_delta;
     }
   }
-#ifdef MACINTOSH
-  mem_free(stack);
-  mem_free(on_stack);
-#endif
 }
 
 void compute_terrain_region_info() {
   int i;
   bool done = false;
   bool f_warning = false;
-#ifdef MACINTOSH // JCA: Mac compiler cannot allocate more than 32k on stack as local variables
-  char *checked;
-
-  checked = (char *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(char));
-#else
   char checked[TERRAIN_WIDTH * TERRAIN_DEPTH];
-#endif
 
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++) {
     Terrain_seg[i].flags &= (~TFM_REGION_MASK);
@@ -802,9 +784,6 @@ void compute_terrain_region_info() {
         "This terrain has too many fly through\nterrain-mine connections!\n\nAI will not work correctly outside!\nIf "
         "you really cannot fly outside\nignore this message.\n\nSee Chris for specific instructions!");
   }
-#endif
-#ifdef MACINTOSH
-  mem_free(checked);
 #endif
 }
 
@@ -1268,17 +1247,9 @@ int BOAGetRoomChecksum(int i) {
       face *fp = &rp->faces[t];
 
       for (k = 0; k < fp->num_verts; k++) {
-#ifdef MACINTOSH
-        float x, y, z;
-        x = floor(rp->verts[fp->face_verts[k]].x);
-        y = floor(rp->verts[fp->face_verts[k]].y);
-        z = floor(rp->verts[fp->face_verts[k]].z);
-        total += x + y + z;
-#else
         total += rp->verts[fp->face_verts[k]].x;
         total += rp->verts[fp->face_verts[k]].y;
         total += rp->verts[fp->face_verts[k]].z;
-#endif
       }
 
       total += fp->num_verts << 4;

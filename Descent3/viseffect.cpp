@@ -488,20 +488,7 @@ void ShutdownVisEffects() {
 // Goes through our array and clears the slots out
 void InitVisEffects() {
   static ushort old_max_vis = 0;
-#ifdef MACINTOSH
-  if (Render_state.cur_texture_quality == 0) {
-    max_vis_effects = 1024;
-  } else if (Render_state.cur_texture_quality == 1) {
-    max_vis_effects = 2048;
-  } else if (Render_state.cur_texture_quality == 2) {
-    max_vis_effects = 4096;
-  } else {
-    mprintf((2, "InitVisEffects: what the is this size\n"));
-    return;
-  }
-#else
   max_vis_effects = MAX_VIS_EFFECTS; // always peg to max on PC
-#endif
 
   if (old_max_vis == max_vis_effects)
     return;

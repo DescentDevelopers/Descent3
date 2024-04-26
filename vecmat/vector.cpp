@@ -161,16 +161,9 @@ const matrix Identity_matrix = IDENTITY_MATRIX;
 void vm_AverageVector(vector *a, int num) {
   // Averages a vector.  ie divides each component of vector a by num
   assert(num != 0);
-#ifdef MACINTOSH
-  float recp = 1.0 / (float)num;
-  a->x = a->x * recp;
-  a->y = a->y * recp;
-  a->z = a->z * recp;
-#else
   a->x = a->x / (float)num;
   a->y = a->y / (float)num;
   a->z = a->z / (float)num;
-#endif
 }
 
 void vm_AddVectors(vector *result, vector *a, vector *b) {
@@ -262,16 +255,9 @@ void vm_DivVector(vector *dest, vector *src, float n) {
   // Dest can equal src
 
   assert(n != 0);
-#ifdef MACINTOSH
-  float recp = 1.0 / n;
-  dest->x = src->x * recp;
-  dest->y = src->y * recp;
-  dest->z = src->z * recp;
-#else
   dest->x = src->x / n;
   dest->y = src->y / n;
   dest->z = src->z / n;
-#endif
 }
 
 void vm_CrossProduct(vector *dest, vector *u, vector *v) {

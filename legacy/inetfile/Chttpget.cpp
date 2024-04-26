@@ -111,9 +111,6 @@
 #include <process.h>
 #endif
 
-#ifdef MACINTOSH
-#include "macsock.h"
-#endif
 
 #include <string.h>
 #include <stdio.h>

@@ -96,9 +96,6 @@ DLLEXPORT short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSI
 DLLEXPORT int DLLFUNCCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 }
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 // The main entry point where the game calls the dll
 void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {
   if ((eventnum < EVT_CLIENT_INTERVAL) && (DMFCBase->GetLocalRole() != LR_SERVER)) {
@@ -163,8 +160,5 @@ short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventIn
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
 int DLLFUNCCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
-#ifdef MACINTOSH
-#pragma export off
-#endif
 
 #endif

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -323,29 +323,9 @@
 
 #define STAT_SCORE STAT_TIMER
 
-#ifdef MACINTOSH
-#include "macdisplays.h"
-
-tVideoResolution Video_res_list[N_SUPPORTED_VIDRES] = {
-#ifdef USE_OPENGL
-    {640, 480},
-    {800, 600},
-    {1024, 768},
-//	{1152,870},
-//	{1280,960}
-#else
-    //	{512,384},
-    {640, 480},
-    {800, 600},
-    {960, 720},
-//	{1024,768}
-#endif
-};
-#else
 tVideoResolution Video_res_list[N_SUPPORTED_VIDRES] = {
     {512, 384}, {640, 480}, {800, 600}, {960, 720}, {1024, 768}, {1280, 960}, {1600, 1200}, {640, 480} // custom
 };
-#endif
 
 int Game_video_resolution = 1;
 
@@ -381,11 +361,7 @@ tGameToggles Game_toggles = { // toggles specified in general settings.
 
 // these are the default settings for each detail level
 #define DL_LOW_TERRAIN_DISTANCE (MINIMUM_RENDER_DIST * TERRAIN_SIZE)
-#ifndef MACINTOSH
 #define DL_LOW_PIXEL_ERROR 25.0
-#else
-#define DL_LOW_PIXEL_ERROR MAXIMUM_TERRAIN_DETAIL
-#endif
 #define DL_LOW_SPECULAR_LIGHT false
 #define DL_LOW_DYNAMIC_LIGHTING false
 #define DL_LOW_FAST_HEADLIGHT true
@@ -399,20 +375,11 @@ tGameToggles Game_toggles = { // toggles specified in general settings.
 #define DL_LOW_SPEC_MAPPING_TYPE 1
 #define DL_LOW_OBJECT_COMPLEXITY 0
 
-#ifndef MACINTOSH
 #define DL_MED_TERRAIN_DISTANCE (90 * TERRAIN_SIZE)
-#else
-#define DL_MED_TERRAIN_DISTANCE                                                                                        \
-  (((MAXIMUM_RENDER_DIST - MINIMUM_RENDER_DIST) * 0.2 + MINIMUM_RENDER_DIST) * TERRAIN_SIZE)
-#endif
 #define DL_MED_PIXEL_ERROR 18.0
 #define DL_MED_SPECULAR_LIGHT false
 #define DL_MED_DYNAMIC_LIGHTING false
-#ifndef MACINTOSH
 #define DL_MED_FAST_HEADLIGHT true
-#else
-#define DL_MED_FAST_HEADLIGHT false
-#endif
 #define DL_MED_MIRRORED_SURFACES false
 #define DL_MED_FOG_ENABLED true
 #define DL_MED_CORONAS_ENABLES true
@@ -423,20 +390,11 @@ tGameToggles Game_toggles = { // toggles specified in general settings.
 #define DL_MED_SPEC_MAPPING_TYPE 1
 #define DL_MED_OBJECT_COMPLEXITY 1
 
-#ifndef MACINTOSH
 #define DL_HIGH_TERRAIN_DISTANCE (100 * TERRAIN_SIZE)
-#else
-#define DL_HIGH_TERRAIN_DISTANCE                                                                                       \
-  (((MAXIMUM_RENDER_DIST - MINIMUM_RENDER_DIST) * 0.4 + MINIMUM_RENDER_DIST) * TERRAIN_SIZE)
-#endif
 #define DL_HIGH_PIXEL_ERROR 12.0
 #define DL_HIGH_SPECULAR_LIGHT false
 #define DL_HIGH_DYNAMIC_LIGHTING true
-#ifndef MACINTOSH
 #define DL_HIGH_FAST_HEADLIGHT true
-#else
-#define DL_HIGH_FAST_HEADLIGHT false
-#endif
 #define DL_HIGH_MIRRORED_SURFACES true
 #define DL_HIGH_FOG_ENABLED true
 #define DL_HIGH_CORONAS_ENABLES true
@@ -447,20 +405,11 @@ tGameToggles Game_toggles = { // toggles specified in general settings.
 #define DL_HIGH_SPEC_MAPPING_TYPE 1
 #define DL_HIGH_OBJECT_COMPLEXITY 2
 
-#ifndef MACINTOSH
 #define DL_VHI_TERRAIN_DISTANCE (120.0 * TERRAIN_SIZE)
 #define DL_VHI_PIXEL_ERROR 10.0
-#else
-#define DL_VHI_TERRAIN_DISTANCE (MAXIMUM_RENDER_DIST * TERRAIN_SIZE)
-#define DL_VHI_PIXEL_ERROR MINIMUM_TERRAIN_DETAIL
-#endif
 #define DL_VHI_SPECULAR_LIGHT true
 #define DL_VHI_DYNAMIC_LIGHTING true
-#ifndef MACINTOSH
 #define DL_VHI_FAST_HEADLIGHT true
-#else
-#define DL_VHI_FAST_HEADLIGHT false
-#endif
 #define DL_VHI_MIRRORED_SURFACES true
 #define DL_VHI_FOG_ENABLED true
 #define DL_VHI_CORONAS_ENABLES true
@@ -473,13 +422,8 @@ tGameToggles Game_toggles = { // toggles specified in general settings.
 
 #define MINIMUM_TERRAIN_DETAIL 4
 #define MAXIMUM_TERRAIN_DETAIL 28
-#ifdef MACINTOSH
-#define MINIMUM_RENDER_DIST 40
-#define MAXIMUM_RENDER_DIST 200
-#else
 #define MINIMUM_RENDER_DIST 80
 #define MAXIMUM_RENDER_DIST 200
-#endif
 
 tDetailSettings DetailPresetLow = {DL_LOW_TERRAIN_DISTANCE,  DL_LOW_PIXEL_ERROR,      DL_LOW_SPECULAR_LIGHT,
                                    DL_LOW_DYNAMIC_LIGHTING,  DL_LOW_FAST_HEADLIGHT,   DL_LOW_MIRRORED_SURFACES,
@@ -538,7 +482,6 @@ void ConfigSetDetailLevel(int level) {
 #define IDV_GAMMAAPPLY 5
 #define IDV_AUTOGAMMA 6
 
-#if !(defined(MACINTOSH) && defined(USE_OPENGL))
 
 void gamma_callback(newuiTiledWindow *wnd, void *data) {
   int bm_handle = *((int *)data);
@@ -704,11 +647,7 @@ void config_gamma() {
     bm_FreeBitmap(gamma_bitmap);
   }
 }
-#endif
 
-#ifdef MACINTOSH
-#pragma mark video --
-#endif
 
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
@@ -731,29 +670,6 @@ struct video_menu {
     // video resolution
     iTemp = Game_video_resolution;
     sheet->NewGroup(TXT_RESOLUTION, 0, 0);
-#ifdef MACINTOSH
-#ifdef USE_OPENGL
-    resolution = sheet->AddFirstLongRadioButton("640x480");
-    if (gDSpContext[DSP_800x600])
-      sheet->AddLongRadioButton("800x600");
-    if (gDSpContext[DSP_1024x768])
-      sheet->AddLongRadioButton("1024x768");
-      //		if(gDSpContext[DSP_1152x870])
-      //			sheet->AddLongRadioButton("1152x870");
-      //		if(gDSpContext[DSP_1280x960])
-      //			sheet->AddLongRadioButton("1280x960");
-#else
-    //		resolution = sheet->AddFirstLongRadioButton("512x384");
-    //		sheet->AddLongRadioButton("640x480");
-    resolution = sheet->AddFirstLongRadioButton("640x480");
-    extern int Glide_num_texelfx;
-    if (Glide_num_texelfx > 1) {
-      sheet->AddLongRadioButton("800x600");
-      sheet->AddLongRadioButton("960x720");
-    }
-    //		sheet->AddLongRadioButton("1024x768");
-#endif
-#else
     resolution = sheet->AddFirstLongRadioButton("512x384");
     sheet->AddLongRadioButton("640x480");
     sheet->AddLongRadioButton("800x600");
@@ -761,10 +677,9 @@ struct video_menu {
     sheet->AddLongRadioButton("1024x768");
     sheet->AddLongRadioButton("1280x960");
     sheet->AddLongRadioButton("1600x1200");
-#endif
     *resolution = iTemp;
 
-#if !(defined(MACINTOSH) || defined(__LINUX__))
+#if !defined(__LINUX__)
     // renderer bit depth
     switch (Render_preferred_bitdepth) {
     case 16:
@@ -794,10 +709,8 @@ struct video_menu {
     sheet->NewGroup(TXT_MONITOR, 0, 180);
     vsync = sheet->AddLongCheckBox(TXT_CFG_VSYNCENABLED, (Render_preferred_state.vsync_on != 0));
 #ifndef __LINUX__
-#if !(defined(MACINTOSH) && defined(USE_OPENGL))
     sheet->AddText("");
     sheet->AddLongButton(TXT_AUTO_GAMMA, IDV_AUTOGAMMA);
-#endif
 #endif
     return sheet;
   };
@@ -810,7 +723,7 @@ struct video_menu {
       Render_preferred_state.mipping = (*mipmapping) ? 1 : 0;
     if (vsync)
       Render_preferred_state.vsync_on = (*vsync) ? 1 : 0;
-#if !(defined(MACINTOSH) || defined(__LINUX__))
+#if !defined(__LINUX__)
     if (bitdepth)
       Render_preferred_bitdepth = (*bitdepth) == 1 ? 32 : 16;
 #endif
@@ -841,20 +754,15 @@ struct video_menu {
   // process
   void process(int res) {
 #ifndef __LINUX__
-#if !(defined(MACINTOSH) && defined(USE_OPENGL))
     switch (res) {
     case IDV_AUTOGAMMA:
       config_gamma();
       break;
     }
 #endif
-#endif
   };
 };
 
-#ifdef MACINTOSH
-#pragma mark sound --
-#endif
 
 //////////////////////////////////////////////////////////////////
 // SOUND MENU
@@ -896,16 +804,9 @@ struct sound_menu {
     // sound fx quality radio list.
     if (GetFunctionMode() != GAME_MODE && GetFunctionMode() != EDITOR_GAME_MODE) {
       sheet->NewGroup(TXT_SNDQUALITY, 0, 95);
-#ifdef MACINTOSH
-      fxquality = sheet->AddFirstRadioButton(TXT_LOW);
-      sheet->AddRadioButton(TXT_CFG_MEDIUM);
-      sheet->AddRadioButton(TXT_CFG_HIGH);
-      *fxquality = Sound_system.GetSoundQuality();
-#else
       fxquality = sheet->AddFirstRadioButton(TXT_SNDNORMAL);
       sheet->AddRadioButton(TXT_SNDHIGH);
       *fxquality = Sound_system.GetSoundQuality() == SQT_HIGH ? 1 : 0;
-#endif
       slider_set.min_val.i = MIN_SOUNDS_MIXED;
       slider_set.max_val.i = MAX_SOUNDS_MIXED;
       slider_set.type = SLIDER_UNITS_INT;
@@ -918,7 +819,7 @@ struct sound_menu {
       fxquantity = NULL;
     }
 
-#if defined(_DEBUG) && !defined(MACINTOSH)
+#if defined(_DEBUG)
     int iTemp;
     // add sound stats group
     sheet->NewGroup("MIXER SETTINGS", 180, 85);
@@ -965,7 +866,7 @@ struct sound_menu {
     int iTemp;
     char mixer_type = SOUND_MIXER_NONE;
 
-#if defined(_DEBUG) && !defined(MACINTOSH)
+#if defined(_DEBUG)
     iTemp = *sndmixer;
 
     switch (iTemp) {
@@ -1012,11 +913,7 @@ struct sound_menu {
     }
 
     if (fxquality) {
-#ifdef MACINTOSH
-      Sound_system.SetSoundQuality(*fxquality);
-#else
       Sound_system.SetSoundQuality((*fxquality == 1) ? SQT_HIGH : SQT_NORMAL);
-#endif
     }
 
     //@@		iTemp = (*powerupvoices);
@@ -1049,9 +946,6 @@ struct sound_menu {
   };
 };
 
-#ifdef MACINTOSH
-#pragma mark toggles --
-#endif
 
 //////////////////////////////////////////////////////////////////
 // GENERAL SETTINGS (TOGGLES) MENU
@@ -1099,7 +993,6 @@ struct toggles_menu {
     //: (Missile_camera_window==SVW_RIGHT) ? 3 : 0;
     *missile_view = (Missile_camera_window == SVW_LEFT) ? 1 : (Missile_camera_window == SVW_RIGHT) ? 2 : 0;
 
-#ifndef MACINTOSH
     sheet->NewGroup(TXT_CONTROL_TOGGLES, 110, 0);
     joy_enabled = sheet->AddLongCheckBox(TXT_JOYENABLED);
     mse_enabled = sheet->AddLongCheckBox(TXT_CFG_MOUSEENABLED);
@@ -1122,15 +1015,6 @@ struct toggles_menu {
     if (ff_found) {
       sheet->AddLongButton(TXT_CFG_CONFIGFORCEFEEDBACK, UID_SHORTCUT_FORCEFEED);
     }
-#else
-    sheet->NewGroup(TXT_TOGGLES, 110, 40);
-    reticle_toggle = sheet->AddLongCheckBox(TXT_TOG_SHOWRETICLE);
-    guided_toggle = sheet->AddLongCheckBox(TXT_TOG_GUIDEDMISSILE);
-    shipsnd_toggle = sheet->AddLongCheckBox(TXT_TOG_SHIPSOUNDS);
-    *reticle_toggle = Game_toggles.show_reticle;
-    *guided_toggle = Game_toggles.guided_mainview;
-    *shipsnd_toggle = Game_toggles.ship_noises;
-#endif
     return sheet;
   };
 
@@ -1145,10 +1029,8 @@ struct toggles_menu {
     //@@		Missile_camera_window = (iTemp==1) ? SVW_LEFT : (iTemp==2) ? SVW_CENTER : (iTemp==3) ? SVW_RIGHT
     //: -1;
     Missile_camera_window = (iTemp == 1) ? SVW_LEFT : (iTemp == 2) ? SVW_RIGHT : -1;
-#ifndef MACINTOSH
     Current_pilot.read_controller = (*joy_enabled) ? READF_JOY : 0;
     Current_pilot.read_controller |= (*mse_enabled) ? READF_MOUSE : 0;
-#endif
     Game_toggles.show_reticle = (*reticle_toggle);
     Game_toggles.guided_mainview = (*guided_toggle);
     Game_toggles.ship_noises = (*shipsnd_toggle);
@@ -1172,9 +1054,6 @@ struct toggles_menu {
   };
 };
 
-#ifdef MACINTOSH
-#pragma mark HUD --
-#endif
 
 //////////////////////////////////////////////////////////////////
 //  HUD CONFIG MENU
@@ -1300,9 +1179,6 @@ struct hud_menu {
   };
 };
 
-#ifdef MACINTOSH
-#pragma mark details --
-#endif
 
 //////////////////////////////////////////////////////////////////
 // DETAILS MENU
@@ -1376,17 +1252,6 @@ struct details_menu {
     sheet->AddRadioButton(TXT_CFG_HIGH);
     *objcomp = Detail_settings.Object_complexity;
 
-#ifdef MACINTOSH
-    if (GetFunctionMode() != GAME_MODE && GetFunctionMode() != EDITOR_GAME_MODE) {
-      sheet->NewGroup(TXT_TEXTURE_QUALITY, 174, 152);
-      Database->read_int("RS_texture_quality", &Render_state.cur_texture_quality);
-      iTemp = Render_state.cur_texture_quality;
-      texture_quality = sheet->AddFirstRadioButton(TXT_LOW);
-      sheet->AddRadioButton(TXT_CFG_MEDIUM);
-      sheet->AddRadioButton(TXT_CFG_HIGH);
-      *texture_quality = Render_state.cur_texture_quality;
-    }
-#endif
     return sheet;
   };
 
@@ -1409,24 +1274,6 @@ struct details_menu {
     Default_detail_level = *detail_level;
     Database->write("PredefDetailSetting", Default_detail_level);
 
-#ifdef MACINTOSH
-    if (GetFunctionMode() != GAME_MODE && GetFunctionMode() != EDITOR_GAME_MODE) {
-      Render_state.cur_texture_quality = *texture_quality;
-      Database->write("RS_texture_quality", Render_state.cur_texture_quality);
-
-      if (Render_state.cur_texture_quality == 0) {
-        Mem_low_memory_mode = true;
-        Mem_superlow_memory_mode = true;
-      } else if (Render_state.cur_texture_quality == 1) {
-        Mem_low_memory_mode = true;
-        Mem_superlow_memory_mode = false;
-      } else if (Render_state.cur_texture_quality == 2) {
-        Mem_low_memory_mode = false;
-        Mem_superlow_memory_mode = false;
-      }
-    }
-    InitVisEffects(); // reset max_vis_effects l
-#endif
     sheet = NULL;
   };
 

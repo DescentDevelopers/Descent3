@@ -54,11 +54,7 @@
 #include "pserror.h"
 #include "vecmat.h"
 
-#ifdef MACINTOSH
-#define MAX_VIS_EFFECTS 4096 // DAJ utb 5000
-#else
 #define MAX_VIS_EFFECTS 5000
-#endif
 
 // types
 #define VIS_NONE 0

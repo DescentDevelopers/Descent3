@@ -381,14 +381,12 @@ bool PostLevelResults(bool success) {
 
     int key = ddio_KeyInKey();
 
-#ifndef MACINTOSH
     tJoyPos jp;
     joy_GetPos((tJoystick)JOYSTICK_1, &jp);
     if (jp.buttons) {
       rval = true;
       break;
     }
-#endif
 
     if ((key == KEY_ENTER) || (key == KEY_SPACEBAR)) {
       rval = true;

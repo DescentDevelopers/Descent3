@@ -299,194 +299,6 @@ int mem_size_sub(void *memblock) {
 }
 bool mem_dumpmallocstofile(char *filename) { return false; }
 #pragma mark -
-#elif defined(MACINTOSH)
-#include "ddio.h"
-#include "ddio_mac.h"
-#include "descent.h"
-#include "gamesave.h"
-#include "renderer.h"
-
-// Macintosh memory management
-int MacTotalMemUsed;
-int MacDynamicStartMem = 0;
-
-#define FAILSAFE_SIZE 2048
-
-#ifdef DAJ_DEBUG
-// #define MEM_LOGFILE
-#endif
-#define USE_MALLOC
-
-// int Mem_next_slot = 0;
-// mem_alloc_info mem_info[MEM_MAX_MALLOCS];
-FILE *mem_out = NULL;
-
-void mem_shutdown(void) {
-  if (Mem_failsafe_block) {
-    mem_free(Mem_failsafe_block);
-    Mem_failsafe_block = NULL;
-  }
-  MacTotalMemUsed = 0;
-  //	Mem_next_slot = 0;
-}
-void mem_Init(void) {
-  if (Mem_failsafe_block)
-    return;
-
-  Mem_failsafe_block = malloc(FAILSAFE_SIZE);
-  if (!Mem_failsafe_block) {
-    Error("No available heap memory.");
-  }
-  MacDynamicStartMem = (int)Mem_failsafe_block;
-  MacTotalMemUsed = 0;
-#ifdef MEM_LOGFILE
-  {
-    mem_out = fopen("memory.out", "wt");
-    ASSERT(mem_out);
-  }
-#endif
-  atexit(mem_shutdown);
-  return;
-}
-int mem_GetTotalMemoryUsed(void) { return MacTotalMemUsed - MacDynamicStartMem; }
-
-void *mem_malloc_sub(int size, const char *file, int line) {
-  void *new_mem;
-
-  if (size <= 0) {
-    mprintf((0, "Warning: Zero byte malloc in %s line %d!\n", file, line));
-    //		Int3();
-    return (void *)MEM_NO_MEMORY_PTR;
-  }
-
-#ifdef USE_MALLOC
-  new_mem = malloc(size);
-#else
-  new_mem = NewPtr(size);
-#endif
-  if (!new_mem) {
-    if (Mem_failsafe_block == NULL) // Been here already!!
-      return NULL;
-
-    mem_free(Mem_failsafe_block);
-    Mem_failsafe_block = NULL;
-
-#ifdef _DEBUG
-    mprintf((0, "Out of memory allocating %d bytes: line %d in %s\n", size, line, file));
-    Debugger();
-#else
-    rend_Close();
-    ::ShowCursor();
-
-    if (GetFunctionMode() == GAME_MODE) {
-      char pathname[PSPATHNAME_LEN];
-      ddio_MakePath(pathname, Base_directory, "savegame", "crash", NULL);
-      SaveGameState(pathname, "crash save");
-
-      ::Alert(129, NULL);
-      //			::Alert(128, NULL);
-    } else {
-      ::Alert(129, NULL);
-    }
-#endif
-
-    //		ShutdownD3();
-
-    exit(0);
-    //		Int3();
-    //		ExitToShell();
-    //		return NULL;
-  }
-
-#ifdef MEM_LOGFILE
-
-  int mem_addr = (int)new_mem;
-  if (mem_addr > MacTotalMemUsed) {
-    MacTotalMemUsed = mem_addr;
-    fprintf(mem_out, "0x%0X %d %d %s:%d\n", mem_addr, MacTotalMemUsed - MacDynamicStartMem, size, file, line);
-  }
-#endif
-  return new_mem;
-}
-void mem_free_sub(void *memblock) {
-  if ((void *)MEM_NO_MEMORY_PTR == memblock) {
-    return;
-  }
-
-  if (memblock) {
-#ifdef USE_MALLOC
-    free(memblock);
-#else
-    DisposePtr((char *)memblock);
-#endif
-  }
-#if 0
-	for(int i=0; i<Mem_next_slot; i++) {
-		if(memblock == mem_info[i].ptr) {
-			fprintf(mem_out, "free %d %s:%d\n", mem_info[i].len, mem_info[i].file, mem_info[i].line);
-		}
-	}
-#endif
-}
-void mem_error_msg(const char *file, int line, int size) {
-  mprintf((0, "Memory error (size=%d) line %d in %s\n", size, line, file));
-  Int3();
-}
-char *mem_strdup_sub(const char *string, char *file, int line) {
-  int len = strlen(string) + 1;
-  char *ret = (char *)mem_malloc(len);
-
-  strcpy(ret, string);
-  return ret;
-}
-void *mem_realloc_sub(void *mem, int size) {
-  void *new_mem;
-
-  if (size <= 0) {
-    //		Int3();
-    return (void *)MEM_NO_MEMORY_PTR;
-  }
-#ifdef USE_MALLOC
-  new_mem = realloc(mem, size);
-#else
-  SetPtrSize((char *)mem, size);
-  new_mem = mem;
-#endif
-  if (!new_mem) {
-    if (Mem_failsafe_block == NULL) // Been here already!!
-      return NULL;
-
-    mem_free(Mem_failsafe_block);
-    Mem_failsafe_block = NULL;
-
-#ifdef _DEBUG
-    mprintf((0, "Out of memory allocating %d bytes\n", size));
-    Debugger();
-#else
-    ::ShowCursor();
-
-    if (GetFunctionMode() == GAME_MODE) {
-      char pathname[PSPATHNAME_LEN];
-      ddio_MakePath(pathname, Base_directory, "savegame", "crash", NULL);
-      SaveGameState(pathname, "crash save");
-
-      ::Alert(128, NULL);
-    } else {
-      ::Alert(129, NULL);
-    }
-#endif
-    //		ShutdownD3();
-
-    exit(0);
-    //		Int3();
-    //		ExitToShell();
-    //		return NULL;
-  }
-  return new_mem;
-}
-int mem_size_sub(void *memblock) { return 0; }
-bool mem_dumpmallocstofile(char *filename) { return false; }
-#pragma mark -
 #else // defined (WIN32)
 // Windows memory management
 
@@ -720,9 +532,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
 #endif
   int errors;
   if (mi->ptr == NULL) {
-#ifndef MACINTOSH
     errors = GetLastError();
-#endif
     mprintf((0, "Unable to alloc memory in mem_malloc_sub()!\n"));
     Int3();
     ASSERT(mi->ptr);
@@ -850,12 +660,7 @@ void *mem_realloc_sub(void *memblock, int size) {
     }
   }
 #endif
-#ifdef MACINTOSH
-  HeapFree(Heap, HEAP_NO_SERIALIZE, memblock);
-  void *retp = HeapAlloc(Heap, HEAP_NO_SERIALIZE, size);
-#else
   void *retp = HeapReAlloc(Heap, 0, memblock, size);
-#endif
   return retp;
 #endif
 }

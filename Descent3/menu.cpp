@@ -1225,15 +1225,6 @@ bool MenuNewGame() {
   n_missions = count_missions(LocalLevelsDir, "*.msn");
 #endif
   n_missions += count_missions(D3MissionsDir, "*.mn3");
-#ifdef MACINTOSH
-  char cdpath[_MAX_PATH];
-  char *cdvol = GetCDVolume(1);
-  if (cdvol) {
-    ddio_MakePath(cdpath, cdvol, "missions", NULL);
-    n_missions += count_missions(cdpath, "*.mn3");
-  }
-  mem_free(cdvol);
-#endif
   if (n_missions) {
     // allocate extra mission slot because of check below which adds a name to the filelist.
     filelist = (char **)mem_malloc(sizeof(char *) * (n_missions + 1));
@@ -1262,11 +1253,7 @@ bool MenuNewGame() {
     }
   }
   if (!found) {
-#ifdef MACINTOSH
-    filelist[n_missions - 1] = mem_strdup("d3.mn3");
-#else
     filelist[n_missions] = mem_strdup("d3.mn3");
-#endif
     msn_lb->AddItem(TXT_MAINMISSION);
     n_missions++;
   }
@@ -1428,11 +1415,7 @@ redo_level_choose:
 // Loads a level and starts the game
 bool MenuLoadLevel(void) {
   char buffer[_MAX_PATH];
-#ifdef MACINTOSH
-  ddio_MakePath(buffer, Base_directory, "data", NULL);
-#else
   buffer[0] = '\0';
-#endif
   if (DoPathFileDialog(false, buffer, "Load Level", "*.d3l", PFDF_FILEMUSTEXIST)) {
     SimpleStartLevel(buffer);
     SetFunctionMode(GAME_MODE);

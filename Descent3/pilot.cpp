@@ -1725,11 +1725,7 @@ bool PltDelete(pilot *Pilot) {
   Pilot->get_filename(pfilename);
 
   if (pfilename[0] != 0) {
-#ifdef MACINTOSH
-    ddio_MakePath(filename, Base_directory, "pilots", pfilename, NULL);
-#else
     ddio_MakePath(filename, Base_directory, pfilename, NULL);
-#endif
     return (ddio_DeleteFile(pfilename) == 1);
   } else {
     Int3(); // this is odd
@@ -1745,11 +1741,7 @@ bool PltDelete(pilot *Pilot) {
 
     strcpy(pfilename, pname);
     strcat(pfilename, PLTEXTENSION);
-#ifdef MACINTOSH
-    ddio_MakePath(filename, Base_directory, "pilots", pfilename, NULL);
-#else
     ddio_MakePath(filename, Base_directory, pfilename, NULL);
-#endif
     return (ddio_DeleteFile(filename) == 1);
   }
 }
@@ -1791,11 +1783,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
     return;
 
     // open and process file
-#ifdef MACINTOSH
-  ddio_MakePath(filename, Base_directory, "pilots", pfilename, NULL);
-#else
   ddio_MakePath(filename, Base_directory, pfilename, NULL);
-#endif
   try {
     file = cfopen(filename, "rb");
     if (!file)
@@ -1868,19 +1856,6 @@ char **PltGetPilots(int *count, char *ignore_filename, int display_default_confi
 
   for (int loop_count = 0; loop_count < loop; loop_count++) {
     switch (display_default_configs) {
-#ifdef MACINTOSH
-    case 0:
-      ASSERT(loop_count == 0);
-      ddio_MakePath(search, Base_directory, "pilots", PLTWILDCARD, NULL);
-      break;
-    case 1:
-      ddio_MakePath(search, Base_directory, "pilots", (loop_count == 0) ? PLTWILDCARD : DPLTWILDCARD, NULL);
-      break;
-    case 2:
-      ASSERT(loop_count == 0);
-      ddio_MakePath(search, Base_directory, "pilots", DPLTWILDCARD, NULL);
-      break;
-#else
     case 0:
       ASSERT(loop_count == 0);
       ddio_MakePath(search, Base_directory, PLTWILDCARD, NULL);
@@ -1892,23 +1867,11 @@ char **PltGetPilots(int *count, char *ignore_filename, int display_default_confi
       ASSERT(loop_count == 0);
       ddio_MakePath(search, Base_directory, DPLTWILDCARD, NULL);
       break;
-#endif
     default:
       Int3();
       break;
     }
 
-#ifdef MACINTOSH
-    // create pilots directory if it didn't exist before.
-    char path[_MAX_PATH];
-    ddio_MakePath(path, Base_directory, "pilots", NULL);
-    if (!ddio_DirExists(path)) {
-      if (!ddio_CreateDir(path)) {
-        DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
-        return;
-      }
-    }
-#endif
 
     if (ddio_FindFileStart(search, buffer)) {
 
@@ -3129,11 +3092,7 @@ bool PltSelectShip(pilot *Pilot) {
       char path[_MAX_PATH];
       char newf[_MAX_FNAME];
       char wildcards[100];
-#if defined(MACINTOSH)
-      ddio_MakePath(path, Base_directory, "custom", "graphics", NULL);
-#else
       path[0] = '\0';
-#endif
       strcpy(wildcards, "*.ogf;*.tga;*.pcx;*.iff");
       if (DoPathFileDialog(false, path, TXT_CHOOSE, wildcards, PFDF_FILEMUSTEXIST)) {
         if (ImportGraphic(path, newf)) {
@@ -3150,11 +3109,7 @@ bool PltSelectShip(pilot *Pilot) {
       char path[_MAX_PATH];
       char opath[_MAX_PATH];
       char wildcards[100];
-#if defined(MACINTOSH)
-      ddio_MakePath(path, Base_directory, "custom", "graphics", NULL);
-#else
       path[0] = '\0';
-#endif
       strcpy(opath, path);
       strcpy(wildcards, "*.ifl");
       if (DoPathFileDialog(false, path, TXT_CHOOSE, wildcards, PFDF_FILEMUSTEXIST)) {
@@ -3275,11 +3230,7 @@ bool PltSelectShip(pilot *Pilot) {
       // and place in custom/sounds.  Then update the audio taunt combo boxes
       char path[_MAX_PATH];
       char wildcards[100];
-#ifdef MACINTOSH
-      ddio_MakePath(path, Base_directory, "custom", "sounds", NULL);
-#else
       path[0] = '\0';
-#endif
       strcpy(wildcards, "*.wav");
       if (DoPathFileDialog(false, path, TXT_CHOOSE, wildcards, PFDF_FILEMUSTEXIST)) {
         char dpath[_MAX_PATH * 2];
@@ -4011,11 +3962,7 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   Pilot->get_filename(pfilename);
 
   // open and process file
-#ifdef MACINTOSH
-  ddio_MakePath(filename, Base_directory, "pilots", pfilename, NULL);
-#else
   ddio_MakePath(filename, Base_directory, pfilename, NULL);
-#endif
   CFILE *file = cfopen(filename, "rb");
   if (!file)
     return;

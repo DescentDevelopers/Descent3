@@ -1504,9 +1504,7 @@ void StartLevel() {
 
   // Initialize a bunch of stuff for this level
   MakeBOA();
-#ifndef MACINTOSH
   ComputeAABB(true);
-#endif
 
   // Clear/reset objects & events
   ClearAllEvents();
@@ -1601,10 +1599,8 @@ void StartLevel() {
   Render_zoom = D3_DEFAULT_ZOOM;
 
   // flush controller system.
-#ifndef MACINTOSH
   ResumeControls();
   Controller->flush();
-#endif
 
   Level_goals.InitLevel();
 
@@ -1653,18 +1649,6 @@ void StartLevel() {
   // #endif
   LoadLevelProgress(LOAD_PROGRESS_DONE, 0);
 
-#ifdef MACINTOSH
-  // flush controller system.
-  ResumeControls();
-  Controller->flush();
-#ifdef USE_OPENGL
-  extern void opengl_ResetContext(void);
-  opengl_ResetContext();
-#endif
-#ifdef USE_PROFILER
-  ProfilerSetStatus(1);
-#endif
-#endif
 }
 
 // Loads a level and starts everything up
@@ -1899,16 +1883,10 @@ void FlushDataCache() {
   }
 
   for (i = 0; i < MAX_SOUNDS; i++) {
-#ifndef MACINTOSH // on Mac, free all sounds
     if (Sounds_to_free[i] != 0)
-#endif
     {
       soundsfreed++;
-#ifndef MACINTOSH
       int index = Sounds[i].sample_index;
-#else
-      int index = i;
-#endif
       if (SoundFiles[index].sample_16bit) {
         GlobalFree(SoundFiles[index].sample_16bit);
         SoundFiles[index].sample_16bit = NULL;
@@ -2076,13 +2054,8 @@ void RunGameMenu() {
 
     if (!(Game_mode & GM_MULTI)) {
       pause_game = true;
-#ifndef MACINTOSH
       PauseGame();
       D3MusicResume();
-#else
-      StopTime(); // DAJ just the time man
-      Game_paused = true;
-#endif
     }
 
     switch (Game_interface_mode) {
@@ -2144,11 +2117,7 @@ void RunGameMenu() {
       if (Game_mode & GM_MULTI)
         AddHUDMessage(TXT_NOPAUSEINMULTI);
       else {
-#ifdef MACINTOSH
-        DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAGEDOWN, NULL);
-#else
         DoMessageBoxAdvanced(TXT(TXI_HLPPAUSE), TXT_PRESSOKTOCONT, TXT_OK, KEY_PAUSE, NULL);
-#endif
         // DoMessageBox(TXT(TXI_HLPPAUSE),TXT_PRESSOKTOCONT, MSGBOX_OK);
       }
       break;
@@ -2247,12 +2216,7 @@ void RunGameMenu() {
     }
 
     if (pause_game) {
-#ifndef MACINTOSH
       ResumeGame();
-#else
-      StartTime(); // DAJ
-      Game_paused = false;
-#endif
       pause_game = false;
     }
 

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -137,9 +137,7 @@
 #include "mission_download.h"
 #include "renderer.h"
 
-#ifndef MACINTOSH
 #include "unzip.h"
-#endif
 
 int Got_url;
 msn_urls msn_URL = {"", {"", "", "", "", ""}};
@@ -613,11 +611,6 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
   if (cfexist(filename) || cfexist(pathname)) {
     return 1;
   }
-#if defined(MACINTOSH)
-  //	DoMessageBox(TXT_ERROR,TXT_FMTCANTDNLD,MSGBOX_OK);
-  DoMessageBox(TXT_ERROR, "The Selected mission is not in the missions folder", MSGBOX_OK);
-  return 0;
-#endif
 
   msn_urls *murls;
 
@@ -701,7 +694,6 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 // return 0 on failure
 // return 1 on success
 int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
-#ifndef MACINTOSH
 
   mprintf((0, "Extracting ZIP File (%s) to missions directory\n", zipfilename));
   if (!cfexist(zipfilename)) {
@@ -836,9 +828,6 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
     return 0;
 
   return 1;
-#else
-  return 0;
-#endif
 }
 
 #ifdef __LINUX__
@@ -855,7 +844,7 @@ char *_strlwr(char *string) {
 #define MOD_URL_BASEPATH "http://www.descent3.com/mods/" // WAS: "http://www.pxo.net/descent3/mods/"
 
 int CheckGetD3M(char *d3m) {
-#if !(defined(OEM) || defined(MACINTOSH))
+#if !defined(OEM)
 
   char modurl[MAX_MISSION_URL_LEN + 1];
   char *lowurl;

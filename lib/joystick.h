@@ -66,13 +66,8 @@
 #define JOYSTICK_H
 
 //	joystick ids.  used to initialize a stick and get its position
-#ifdef MACINTOSH
-#define MAX_JOYSTICKS 1
-#define JOYPOV_NUM 1
-#else
 #define MAX_JOYSTICKS 8
 #define JOYPOV_NUM 4
-#endif
 
 //	these flags tell what axes these controllers control.
 #define JOYFLAG_XVALID 1
@@ -165,8 +160,4 @@ bool joy_IsValid(tJoystick joy);
 void ddio_InternalJoyFrame();
 
 // DAJ Added to support InSprocket
-#ifdef MACINTOSH
-void ddio_InternalJoySuspend(void);
-void ddio_InternalJoyResume(void);
-#endif
 #endif

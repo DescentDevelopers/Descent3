@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 #define USE_RTP
 #endif
 
-#if defined(__LINUX__) || defined(MACINTOSH)
+#if defined(__LINUX__)
 // #if defined(__LINUX__)
 #ifdef USE_RTP
 #undef USE_RTP // no rtp for now
@@ -33,7 +33,7 @@
 
 // use INT64 for 64bit integers
 #ifdef USE_RTP
-#if defined(__LINUX__) || defined(MACINTOSH)
+#if defined(__LINUX__)
 #define INT64 long long
 #else
 #define INT64 signed __int64
@@ -42,9 +42,6 @@
 #define INT64 unsigned char
 #endif
 
-#if defined(MACINTOSH)
-#define LARGE_INTEGER long long
-#endif
 
 //		struct of information to be saved per frame (note: use INT64 for timer info)
 // -----------------------------------------------------------------------------------

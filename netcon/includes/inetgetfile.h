@@ -132,9 +132,6 @@
 inline int WSAGetLastError() { return errno; }
 #endif
 
-#ifdef MACINTOSH
-#include "macsock.h"
-#endif
 
 #include <dlfcn.h>
 // #include <pthread.h>

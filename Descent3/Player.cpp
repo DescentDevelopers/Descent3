@@ -1133,9 +1133,6 @@
 #include "rocknride.h"
 #include "vibeinterface.h"
 
-#ifdef MACINTOSH
-#include "Macros.h"
-#endif
 
 #include <algorithm>
 

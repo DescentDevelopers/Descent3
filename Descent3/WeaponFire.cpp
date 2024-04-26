@@ -3022,11 +3022,7 @@ void FireWeaponFromPlayer(object *objp, int weapon_type, int down_count, bool do
   }
 
   // Update the firing time
-#ifdef MACINTOSH
-  pw->firing_time = down_time;
-#else
   pw->firing_time += down_time;
-#endif
   if (Demo_flags == DF_RECORDING) {
     DemoWriteObjWeapFireFlagChanged(OBJNUM(objp));
   }

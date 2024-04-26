@@ -833,13 +833,11 @@ typedef void DLLFUNCCALL(DLLAVGetVersion_fp)(int *version);
 typedef void DLLFUNCCALL(DLLRunCheck_fp)(char *d3_path);
 #endif
 
-#ifndef MACINTOSH
 DLLAVInit_fp *DLLAVInit = NULL;
 DLLAVCall_fp *DLLAVCall = NULL;
 DLLAVClose_fp *DLLAVClose = NULL;
 DLLAVGetVersion_fp *DLLAVGetVersion = NULL;
 DLLRunCheck_fp *DLLRunCheck = NULL;
-#endif
 
 typedef struct _msn_list {
   char msn_name[_MAX_PATH];

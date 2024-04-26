@@ -76,9 +76,6 @@
 
 // #define MEM_USE_RTL	1
 
-#ifdef MACINTOSH
-#undef MEM_USE_RTL
-#endif
 
 #ifdef MEM_USE_RTL
 #define mem_malloc(d) malloc(d) // Use this if your going to run BoundsChecker

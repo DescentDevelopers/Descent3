@@ -921,11 +921,7 @@ bool LoadMission(const char *mssn) {
   // Correct for mission split hack
 
   if (strcmpi(mssn, "d3_2.mn3") == 0) {
-#ifdef MACINTOSH
-    strcpy(mission, "d3.mn3");
-#else
     strcpy(mission, "d3_2.mn3");
-#endif
     strcpy(pathname, "d3_2.mn3");
 
   } else if (strcmpi(mssn, "d3.mn3") == 0) {
@@ -933,13 +929,6 @@ bool LoadMission(const char *mssn) {
     strcpy(pathname, "d3.mn3");
 
   }
-#ifdef MACINTOSH
-  else if (strcmpi(mssn, "training.mn3") == 0) {
-    strcpy(mission, "training.mn3");
-    strcpy(pathname, "training.mn3");
-
-  }
-#endif
   else if (IS_MN3_FILE(mssn)) {
     strcpy(mission, mssn);
     ddio_MakePath(pathname, D3MissionsDir, mission, NULL);
@@ -1712,8 +1701,6 @@ void InitLevelScript() {
     ddio_SplitPath(Current_level->filename, NULL, filename, ext);
 #if defined(WIN32)
     strcat(filename, ".dll");
-#elif defined(MACINTOSH)
-    strcat(filename, ".msl");
 #else
 #if defined(MACOSX)
     strcat(filename, ".dylib");

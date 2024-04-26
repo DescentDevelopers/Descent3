@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -167,7 +167,5 @@ void os_ConsolePrintf(int n, int row, int col, char *format, ...);
 //	---------------------------------------------------------------------------
 // #if defined(WIN32)
 //	#include "win\oewin_os.h"
-// #elif defined(MACINTOSH)		// JCA: not needed
-//	#include "oemac_os.h"
 // #endif
 #endif

@@ -24,9 +24,7 @@
 #include "linux/linux_fix.h" //needed for stricmp's throughout bitmap lib
 #endif
 #define MAX_BITMAPS 5000
-#ifndef MACINTOSH // DAJ do this in opengl/glide headers
 #define NUM_MIP_LEVELS 5
-#endif
 // It really doesn't matter what these are, as long as its above 10
 #define OUTRAGE_4444_COMPRESSED_MIPPED 121
 #define OUTRAGE_1555_COMPRESSED_MIPPED 122

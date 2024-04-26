@@ -104,8 +104,6 @@ public:
 #include "win\Win32Database.h"
 #elif defined(__LINUX__)
 #include "linux/lnxdatabase.h"
-#elif defined(MACINTOSH)
-#include "macdatabase.h"
 #endif
 
 #endif

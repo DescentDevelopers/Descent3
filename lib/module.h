@@ -116,18 +116,6 @@ typedef struct {
   void *handle; // handle to the DLL
 } module;
 //=======================================================================
-#elif defined(MACINTOSH)
-//==========================Mac Definitions============================
-#define MODPROCADDRESS void *
-#define DLLFUNCEXPORT
-#define DLLFUNCIMPORT
-#define DLLEXPORT
-
-typedef struct {
-  void *handle; // handle to the DLL
-} module;
-//=======================================================================
-
 #endif
 
 // Mod error codes

@@ -176,13 +176,8 @@ class pilot;
 
 #define READF_MOUSE 0x2
 #define READF_JOY 0x1
-#ifdef MACINTOSH
-#define JOY_AXIS_SENS_RANGE 2.0f
-#define MSE_AXIS_SENS_RANGE 2.0f
-#else
 #define JOY_AXIS_SENS_RANGE 4.0f
 #define MSE_AXIS_SENS_RANGE 4.0f
-#endif
 
 // used to set or get axis sensitivity
 #define HEADING_AXIS 0

@@ -77,9 +77,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef MACINTOSH
-#include "macsock.h"
-#endif
 
 // include inetgetfile.h before CFtp.h and Chttpget.h because it has some winsock defines
 // to make Linux happy

@@ -113,7 +113,5 @@ public:
 #include "win\Win32App.h"
 #elif defined(__LINUX__)
 #include "linux/lnxapp.h"
-#elif defined(MACINTOSH)
-#include "macapp.h"
 #endif
 #endif

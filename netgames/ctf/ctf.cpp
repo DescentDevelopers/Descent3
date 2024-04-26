@@ -238,9 +238,6 @@ char *GetString(int d) {
 }
 void SaveStatsToFile(char *filename);
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -2718,6 +2715,3 @@ void OnGetTokenString(char *src, char *dest, int dest_size) {
   DMFCBase->OnGetTokenString(src, dest, dest_size);
 }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif

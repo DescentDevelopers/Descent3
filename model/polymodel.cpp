@@ -2023,11 +2023,6 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
   // adjust positional interpolation frames
 
-#ifdef MACINTOSH
-  // DAJ added check for null data
-  if (pm->model_data)
-    SwapPolymodelData(pm->model_data);
-#endif
 
   FindWBSubobjects(pm);
 

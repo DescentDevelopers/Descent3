@@ -690,9 +690,6 @@ void UpdateGamelist(void *lb)
 
 }
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 
 // These next two function prototypes MUST appear in the extern "C" block if called
@@ -713,9 +710,6 @@ bool MT_Sock_inited = false;
 void DLLFUNCCALL DLLMultiInit (int *api_func)
 {
 	Use_netgame_flags	= 1;
-#ifdef MACINTOSH
-	InitOTSockets();
-#endif
 	#include "mdllinit.h"
 	DLLPXOPort = (ushort)API.vp[32];
 	DLLmprintf((0,"Inside DLLMultiInit...\n"));
@@ -744,9 +738,6 @@ void DLLFUNCCALL DLLMultiClose ()
 	{
 		CloseMTSockets();
 	}
-#ifdef MACINTOSH
-	ShutdownOTSockets();
-#endif
 }
 
 
@@ -922,9 +913,6 @@ void DLLFUNCCALL DLLMultiCall (int eventnum)
 
 }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif
 
 int LoginMasterTracker(void)
 {	

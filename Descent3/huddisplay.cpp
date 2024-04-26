@@ -239,9 +239,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#if defined(MACINTOSH)
-#include "Macros.h"
-#endif
 
 #include <algorithm>
 

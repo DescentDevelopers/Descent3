@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -850,7 +850,7 @@ void MultiCloseGame() {
     return;
   }
 
-#if !(defined(RELEASE) || defined(MACINTOSH))
+#if !defined(RELEASE)
   // Write our packet tracking
   CFILE *outfile;
   outfile = cfopen("PacketTracking", "wt");

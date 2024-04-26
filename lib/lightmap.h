@@ -21,11 +21,7 @@
 
 #include "pstypes.h"
 
-#ifdef MACINTOSH
-#define MAX_LIGHTMAPS (60000)
-#else
 #define MAX_LIGHTMAPS (65534)
-#endif
 #define BAD_LM_INDEX 65535
 
 // lightmap flags

@@ -59,19 +59,16 @@ tSerialPort RocknRide_serial_port;
 //
 //	Shutsdown the Rock 'n' Ride device
 void RNR_Shutdown(void) {
-#ifndef MACINTOSH
   if (!RocknRide_enabled)
     return;
   if (RocknRide_serial_port)
     ddio_SerialClosePort(RocknRide_serial_port);
-#endif
 }
 // RNR_Initialize
 //
 //	Initializes the Rock 'n' Ride device
 //	Pass in the COMM port
 bool RNR_Initialize(int comm_port) {
-#ifndef MACINTOSH
   if (RocknRide_enabled)
     return true;
   static bool called = false;
@@ -86,14 +83,12 @@ bool RNR_Initialize(int comm_port) {
     called = true;
     atexit(RNR_Shutdown);
   }
-#endif
   return true;
 }
 // RNR_SendPacket
 //
 //	Sends off a packet to the Rock 'n' Ride device
 void RNR_SendPacket(tRocknride_packet *packet) {
-#ifndef MACINTOSH
   if (!RocknRide_enabled)
     return;
   ASSERT(packet);
@@ -131,13 +126,11 @@ void RNR_SendPacket(tRocknride_packet *packet) {
         break;
     }
   }
-#endif
 }
 //	RNR_UpdateControllerInfo
 //
 //	Updates any Rock 'n' Ride controller data for the frame (if needed)
 void RNR_UpdateControllerInfo(game_controls *controls) {
-#ifndef MACINTOSH
   if (!RocknRide_enabled)
     return;
   ASSERT(controls);
@@ -158,13 +151,11 @@ void RNR_UpdateControllerInfo(game_controls *controls) {
   packet.pos.x = x_val;
   packet.pos.y = y_val;
   RNR_SendPacket(&packet);
-#endif
 }
 //	RNR_UpdateForceFeedbackInfo
 //
 //	Updates any Force Feedback effects
 void RNR_UpdateForceFeedbackInfo(float magnitude, vector *direction) {
-#ifndef MACINTOSH
   if (!RocknRide_enabled)
     return;
   ASSERT(magnitude >= 0 && magnitude <= 1);
@@ -195,13 +186,11 @@ void RNR_UpdateForceFeedbackInfo(float magnitude, vector *direction) {
   packet.pos.x = x_b;
   packet.pos.y = y_b;
   RNR_SendPacket(&packet);
-#endif
 }
 //	RNR_UpdateForceFeedbackInfo
 //
 //	Updates any Force Feedback effects
 void RNR_UpdateForceFeedbackInfo(float magnitude, int *direction) {
-#ifndef MACINTOSH
   if (!RocknRide_enabled)
     return;
   if (RocknRide_lastforce_update > Gametime) {
@@ -213,13 +202,11 @@ void RNR_UpdateForceFeedbackInfo(float magnitude, int *direction) {
   RocknRide_lastforce_update = Gametime;
 
   Int3(); // I don't think we ever use FF with an int direction
-#endif
 }
 //	RNR_UpdateGameStatus
 //
 //	Updates a game status to a Rock 'n' Ride chair
 void RNR_UpdateGameStatus(ubyte status) {
-#ifndef MACINTOSH
   if (!RocknRide_enabled)
     return;
   tRocknride_packet packet;
@@ -239,5 +226,4 @@ void RNR_UpdateGameStatus(ubyte status) {
   }
   if (send)
     RNR_SendPacket(&packet);
-#endif
 }
