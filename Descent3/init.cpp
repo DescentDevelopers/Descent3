@@ -1671,6 +1671,14 @@ void InitIOSystems(bool editor) {
 
   Descent->set_defer_handler(D3DeferHandler);
 
+  if (!editor && !FindArg("-windowed")) {
+    if (Dedicated_server) {
+      ddio_MouseMode(MOUSE_STANDARD_MODE);
+    } else {
+      ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
+    }
+  }
+
   //	do io init stuff
   io_info.obj = Descent;
   io_info.use_lo_res_time = (bool)(FindArg("-lorestimer") != 0);
@@ -1678,14 +1686,6 @@ void InitIOSystems(bool editor) {
   io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0); WIN95: DirectInput is flaky for some keys.
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
-  }
-
-  if (!editor && !FindArg("-windowed")) {
-    if (Dedicated_server) {
-      ddio_MouseMode(MOUSE_STANDARD_MODE);
-    } else {
-      ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
-    }
   }
 
   int rocknride_arg = FindArg("-rocknride");
@@ -2544,6 +2544,14 @@ void RestartD3() {
 
   mprintf((0, "Restarting D3...\n"));
 
+  if (!FindArg("-windowed")) {
+    if (Dedicated_server) {
+      ddio_MouseMode(MOUSE_STANDARD_MODE);
+    } else {
+      ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
+    }
+  }
+
   // startup io
   io_info.obj = Descent;
   io_info.use_lo_res_time = (bool)(FindArg("-lorestimer") != 0);
@@ -2551,14 +2559,6 @@ void RestartD3() {
   io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
-  }
-
-  if (!FindArg("-windowed")) {
-    if (Dedicated_server) {
-      ddio_MouseMode(MOUSE_STANDARD_MODE);
-    } else {
-      ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
-    }
   }
 
   //	startup screen.
