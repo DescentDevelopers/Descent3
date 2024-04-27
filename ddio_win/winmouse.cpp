@@ -110,15 +110,6 @@ void DDIOShowCursor(BOOL show) {
 }
 
 void ddio_MouseMode(int mode) {
-  if (mode == MOUSE_EXCLUSIVE_MODE) {
-    DDIOShowCursor(FALSE);
-  } else if (mode == MOUSE_STANDARD_MODE) {
-    DDIOShowCursor(TRUE);
-  } else {
-    Int3();
-    return;
-  }
-
   DDIO_mouse_state.mode = mode;
 }
 
@@ -392,10 +383,10 @@ bool InitNewMouse() {
     //TODO: This code should be renabled when some solution for mouse capturing is decided on.
     // The game should free the capture when the cursor is visible, and recapture it when it isn't visible.
     // Account for the original mode.
-    //if (DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE)
+    if (DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE)
       rawInputDevice.dwFlags = RIDEV_CAPTUREMOUSE | RIDEV_NOLEGACY;
-    //else
-    //  rawInputDevice.dwFlags = 0;
+    else
+      rawInputDevice.dwFlags = 0;
 
     rawInputDevice.hwndTarget = DInputData.hwnd;
 
@@ -446,7 +437,7 @@ bool ddio_MouseInit() {
     DDIO_mouse_state.cursor_count = ShowCursor(FALSE);
   }
 
-  ddio_MouseMode(MOUSE_STANDARD_MODE);
+  DDIOShowCursor(DDIO_mouse_state.mode == MOUSE_EXCLUSIVE_MODE ? FALSE : TRUE);
 
   DDIO_mouse_state.suspended = false;
   ddio_MouseReset();
