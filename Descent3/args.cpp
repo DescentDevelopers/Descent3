@@ -19,9 +19,8 @@
 #include "args.h"
 #include "mono.h"
 #include <string.h>
-#ifdef __LINUX__
-#include "lnxfix.h"
-#else
+
+#if defined(_WIN32)
 #define strcasecmp stricmp
 #endif
 
@@ -87,49 +86,51 @@ void GatherArgs(char **argv) {
     mprintf((0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]));
 } // GatherArgs
 
+// Strip '-', '--', and '+' flag prefix, so --foo, -foo, +foo => foo, but pass through - -- + ++
+char *SkipArgPrefix(char *arg) {
+  if (*arg != '\0' && *(arg + 1) != '\0') {
+    if (*arg == '-') {
+      if (*(arg + 1) == '-' && *(arg + 2) != '\0') {
+        return arg + 2;
+      }
+      if (*(arg + 1) != '-') {
+        return arg + 1;
+      }
+    } else if (*arg == '+' && *(arg + 1) != '+') {
+      return arg + 1;
+    }
+  }
+  return arg;
+}
+
 int FindArg(char *which) {
-  if (which == NULL)
-    return (0);
+  if (which == nullptr)
+    return 0;
 
-  char *argBuf = new char[strlen(which) + 3];
-  int i;
+  auto which_matches = [which = SkipArgPrefix(which)](char *arg) -> bool {
+    return strcasecmp(which, SkipArgPrefix(arg)) == 0;
+  };
 
-  argBuf[0] = '\0'; // blank buffer.
+  for (int i = 1; i <= TotalArgs; i++) {
+    if (which_matches(GameArgs[i])) {
+      mprintf((0, "FindArg: Found [%s] at argument index (%d).", which, i));
+      return i;
+    }
+  }
 
-#ifdef __LINUX__
-  if ((*which == '-') || (*which == '+')) // change D3 args to GNU type.
-  {
-    strcpy(argBuf, "--");
-    which++;
-  } // if
-#endif
-
-  strcat(argBuf, which);
-
-  for (i = 1; i <= TotalArgs; i++) {
-    if (strcasecmp(argBuf, GameArgs[i]) == 0) {
-      mprintf((0, "FindArg: Found [%s] at argument index (%d).", argBuf, i));
-      delete[] argBuf;
-      return (i);
-    } // if
-  }   // for
-
-  mprintf((0, "FindArg: Did not find [%s] on command line.", argBuf));
-  delete[] argBuf;
-  return (0);
-} // FindArg
+  mprintf((0, "FindArg: Did not find [%s] on command line.", which));
+  return 0;
+}
 
 // Returns index of argument sought, or 0 if not found
 int FindArgChar(char *which, char singleCharArg) {
-#ifdef __LINUX__
   for (int i = 1; i <= TotalArgs; i++) {
     char *str = GameArgs[i];
-    if ((str[0] == '-') && (str[1] == singleCharArg) && (str[2] == '\0')) {
+    if (str[0] == '-' && str[1] == singleCharArg && str[2] == '\0') {
       mprintf((0, "FindArg: Found [-%c] at argument index (%d).", singleCharArg, i));
-      return (i);
-    } // if
-  }   // for
-#endif
+      return i;
+    }
+  }
 
-  return (FindArg(which));
-} // FindArgChar
+  return FindArg(which);
+}
