@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_CONFIGURATION_TYPES "Debug" "Release" "DebugAsan")
+
 if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
   message(STATUS "Big Endian system detected.")
   add_definitions("-DOUTRAGE_BIG_ENDIAN")
@@ -82,6 +84,9 @@ if(WIN32)
   set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "lib/win" "lib/win/directx")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /EHsc /RTC1 /W3 /nologo /c /Zi /TP /errorReport:prompt")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL /FD /EHsc /W3 /nologo /c /Zi /TP /errorReport:prompt")
+
+  # default cmake options set -fsanitize and other clang/gcc-style parameters, even for windows. override them with normal debug + /fsanitize
+  set(CMAKE_CXX_FLAGS_DEBUGASAN "${CMAKE_CXX_FLAGS_DEBUG} /fsanitize=address")
 
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
   set(CMAKE_MODULE_LINKER_FLAGS "/SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
@@ -187,7 +192,7 @@ if(UNIX)
   add_subdirectory(scripts)
 endif()
 
-# set default cmake build type to Debug (None Debug Release RelWithDebInfo MinSizeRel)
+# set default cmake build type to Debug (Debug Release DebugAsan)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
