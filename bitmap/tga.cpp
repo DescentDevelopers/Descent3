@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/bitmap/tga.cpp $
@@ -145,10 +145,16 @@
 
 #include <stdlib.h>
 
-char *Tga_file_data = NULL;
-int Fake_pos = 0;
-int Bad_tga = 0;
-int Fake_file_size = 0;
+static char *Tga_file_data = NULL;
+static int Fake_pos = 0;
+static int Bad_tga = 0;
+static int Fake_file_size = 0;
+
+static inline char tga_read_byte();
+static inline int tga_read_int();
+static inline short tga_read_short();
+static ushort bm_tga_translate_pixel(int pixel, int format);
+static int bm_tga_read_outrage_compressed16(CFILE *infile, int n, int num_mips, int type);
 
 inline char tga_read_byte() {
   // Check for bad file

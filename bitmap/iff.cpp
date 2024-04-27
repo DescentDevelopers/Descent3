@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/bitmap/iff.cpp $
@@ -129,6 +129,21 @@ short iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is val
 #define IFF_SIG_ANIM 8
 #define IFF_SIG_DELTA 9
 #define IFF_SIG_ANHD 10
+
+static int bm_iff_get_sig(CFILE *f);
+static int bm_iff_parse_bmhd(CFILE *ifile, uint len, iff_bitmap_header *bmheader);
+
+/// the buffer pointed to by raw_data is stuffed with a pointer to decompressed pixel data
+static int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader);
+
+/// the buffer pointed to by raw_data is stuffed with a pointer to bitplane pixel data
+static void bm_iff_skip_chunk(CFILE *ifile, uint len);
+
+/// modify passed bitmap
+static int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader);
+
+static int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_header *prev_bm);
+static void bm_iff_convert_8_to_16(int dest_bm, iff_bitmap_header *iffbm);
 
 int bm_iff_get_sig(CFILE *f) {
   char s[4];

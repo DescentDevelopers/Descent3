@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/bitmap/bitmain.cpp $
@@ -332,12 +332,16 @@ typedef struct bm_Node_ {
   struct bm_Node_ *next; /* next bm_Node */
   bm_T data;             /* data stored in bm_Node */
 } bm_Node;
-bm_Node *bm_findNode(bm_T data);
-void bm_deleteNode(bm_T data);
-bm_Node *bm_insertNode(bm_T data);
-bm_hashTableIndex bm_hash(bm_T data);
-bm_Node **bm_hashTable = NULL;
-int bm_hashTableSize = (MAX_BITMAPS / 2);
+static bm_Node *bm_findNode(bm_T data);
+static void bm_deleteNode(bm_T data);
+static bm_Node *bm_insertNode(bm_T data);
+static bm_hashTableIndex bm_hash(bm_T data);
+static bm_Node **bm_hashTable = NULL;
+static const int bm_hashTableSize = (MAX_BITMAPS / 2);
+static void bm_InitHashTable();
+static void bm_DeleteHashTable();
+static int bm_TestName(const char *src);
+
 void bm_InitHashTable() {
   bm_hashTable = (bm_Node **)mem_malloc(bm_hashTableSize * sizeof(bm_Node *));
   for (int a = 0; a < bm_hashTableSize; a++) {

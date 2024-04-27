@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "d3music.h"
 #include "music.h"
@@ -40,8 +40,8 @@
 #define MUSICAIF_NEWREGION 0x40
 
 // names of themes. (match to music.h THEME_TYPES)
-const char *Music_type_names[] = {"No song",    "Intro song",       "Idle song",       "Combat song",
-                                  "Death song", "Idle-Combat song", "Combat-Idle song"};
+const char *const Music_type_names[] = {"No song",    "Intro song",       "Idle song",       "Combat song",
+                                        "Death song", "Idle-Combat song", "Combat-Idle song"};
 
 // global data
 #ifdef _DEBUG
@@ -68,10 +68,10 @@ static struct {
 } MusicAI;
 
 //	handles operations on current events.
-void D3MusicSongSelector();
+static void D3MusicSongSelector();
 
 // creates music ai struction from music info passed in.
-void D3MusicAI(tMusicSeqInfo *music_info);
+static void D3MusicAI(tMusicSeqInfo *music_info);
 
 ///////////////////////////////////////////////////////////////////////////////
 
