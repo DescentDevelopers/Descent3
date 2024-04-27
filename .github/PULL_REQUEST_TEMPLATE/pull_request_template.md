@@ -2,13 +2,13 @@
 <!-- Please select which type of change this most aligns with. If more than one type fits, please select multiple. -->
 - [ ] GitHub Workflow changes
 - [ ] Documentation or Wiki changes
-- [ ] Build changes
-- [ ] Dependency changes
+- [ ] Build and Dependency changes
 - [ ] Runtime changes
   - [ ] Render changes
   - [ ] Audio changes
   - [ ] Input changes
   - [ ] Network changes
+  - [ ] Other changes
 
 ### Description
 <!-- Below this comment, add a brief overview of the changes introduced by this pull request. Include any relevant context or background information. -->
