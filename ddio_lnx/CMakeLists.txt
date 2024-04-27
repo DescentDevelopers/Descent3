@@ -13,3 +13,6 @@ set(CPPS
   lnxkey_sdl.cpp)
 
 add_library(ddio_lnx STATIC ${HEADERS} ${CPPS})
+target_link_libraries(ddio_lnx
+  ddebug
+)
