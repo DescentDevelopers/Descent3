@@ -133,8 +133,10 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "TelComEffects.h"
-#include "pstring.h"
 #include "mem.h"
 #include "vecmat.h"
 #include <string.h>
@@ -682,9 +684,9 @@ int FindButtonEffectByXY(int x, int y, int screen) {
 char *format(const char *fmt, ...) {
   static char tempbuffer[8192];
 
-  va_list ap;
+  std::va_list ap;
   va_start(ap, fmt);
-  Pvsprintf(tempbuffer, sizeof (tempbuffer), fmt, ap);
+  std::vsnprintf(tempbuffer, sizeof(tempbuffer), fmt, ap);
   va_end(ap);
   return tempbuffer;
 }

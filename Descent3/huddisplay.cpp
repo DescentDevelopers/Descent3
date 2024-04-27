@@ -220,7 +220,9 @@
  * $NoKeywords: $
  */
 
-#include "pstring.h"
+#include <cstdarg>
+#include <cstdio>
+
 #include "hud.h"
 #include "grtext.h"
 #include "gamefont.h"
@@ -235,10 +237,6 @@
 #include "config.h"
 #include "multi.h"
 #include "render.h"
-
-#include <stdio.h>
-#include <stdarg.h>
-
 
 #include <algorithm>
 
@@ -890,11 +888,11 @@ void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, flo
 
 //	renders text, scaled, alphaed, saturated,
 void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   char buf[128];
 
   va_start(arglist, fmt);
-  Pvsprintf(buf, 128, fmt, arglist);
+  std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
 
   RenderHUDTextFlagsNoFormat(0, col, alpha, sat_count, x, y, buf);
@@ -926,12 +924,12 @@ void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_
 
 //	renders text, scaled, alphaed, saturated,
 void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   char buf[128];
   int i;
 
   va_start(arglist, fmt);
-  Pvsprintf(buf, 128, fmt, arglist);
+  std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
 
   grtext_SetAlpha(alpha);

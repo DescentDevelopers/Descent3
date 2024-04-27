@@ -322,12 +322,12 @@
  * $NoKeywords: $
  */
 
-#include <stdio.h>
+#include <cstdarg>
+#include <cstdio>
+
 #include <stdlib.h>
-#include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
-#include "pstring.h"
 #include "grdefs.h"
 #include "hud.h"
 #include "game.h"
@@ -516,13 +516,13 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
 // adds a colored hud message to the list
 // Returns true if message added, or false if message not (because the previous message was the same)
 bool AddColoredHUDMessage(ddgr_color color, const char *format, ...) {
-  va_list args;
+  std::va_list args;
   char *message = NULL;
   char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
-  Pvsprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
+  std::vsnprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
   va_end(args);
 
   if (Demo_flags == DF_RECORDING) {
@@ -552,13 +552,13 @@ bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
   if (Game_mode & GM_MULTI && checked_command_line)
     return false; // filter this message
 
-  va_list args;
+  std::va_list args;
   char *message = NULL;
   char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
-  Pvsprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
+  std::vsnprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
   va_end(args);
 
   if (Demo_flags == DF_RECORDING) {
@@ -588,13 +588,13 @@ bool AddFilteredHUDMessage(const char *format, ...) {
   if (Game_mode & GM_MULTI && checked_command_line)
     return false; // filter this message
 
-  va_list args;
+  std::va_list args;
   char *message = NULL;
   char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
-  Pvsprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
+  std::vsnprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
   va_end(args);
 
   if (Demo_flags == DF_RECORDING) {
@@ -612,13 +612,13 @@ bool AddFilteredHUDMessage(const char *format, ...) {
 // top one and move the others up
 // Returns true if message added, or false if message not (because the previous message was the same)
 bool AddHUDMessage(const char *format, ...) {
-  va_list args;
+  std::va_list args;
   char *message = NULL;
   char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
-  Pvsprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
+  std::vsnprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
   va_end(args);
 
   if (Demo_flags == DF_RECORDING) {
@@ -636,13 +636,13 @@ bool AddHUDMessage(const char *format, ...) {
 // top one and move the others up
 // Returns true if message added, or false if message not (because the previous message was the same)
 bool AddBlinkingHUDMessage(const char *format, ...) {
-  va_list args;
+  std::va_list args;
   char *message = NULL;
   char *last_message = NULL;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   va_start(args, format);
-  Pvsprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
+  std::vsnprintf(temp_message, HUD_MESSAGE_LENGTH * 2, format, args);
   va_end(args);
 
   if (Demo_flags == DF_RECORDING) {
@@ -1387,12 +1387,12 @@ void StartPersistentHUDMessage(ddgr_color color, int x, int y, float time, int f
 // for centering on an axis, set either x or y to -1.
 void AddPersistentHUDMessage(ddgr_color color, int x, int y, float time, int flags, int sound_index, const char *fmt,
                              ...) {
-  va_list args;
+  std::va_list args;
   char temp_message[HUD_MESSAGE_LENGTH * 2];
 
   // start new message
   va_start(args, fmt);
-  Pvsprintf(temp_message, HUD_MESSAGE_LENGTH * 2, fmt, args);
+  std::vsnprintf(temp_message, HUD_MESSAGE_LENGTH * 2, fmt, args);
   va_end(args);
 
   if (Hud_persistent_msg_id != HUD_INVALID_ID) // already one active, so queue the new one

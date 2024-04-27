@@ -146,16 +146,16 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "grtextlib.h"
 
 #include "renderer.h"
 #include "pserror.h"
-#include "pstring.h"
 #include "mem.h"
 
-#include <stdarg.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -407,12 +407,12 @@ void grtext_SetFont(int font_handle) {
 
 //	puts a formatted string in the text buffer
 void grtext_Printf(int x, int y, const char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   int len;
   char buf[512];
 
   va_start(arglist, fmt);
-  len = Pvsprintf(buf, 512, fmt, arglist);
+  len = std::vsnprintf(buf, 512, fmt, arglist);
   va_end(arglist);
   if (len < 0)
     return;
@@ -426,12 +426,12 @@ int grtext_GetFont() { return Grtext_font; }
 //	puts a centered string in the text buffer.
 void grtext_CenteredPrintf(int xoff, int y, const char *fmt, ...) {
   int new_x;
-  va_list arglist;
+  std::va_list arglist;
   int len;
   char buf[512];
 
   va_start(arglist, fmt);
-  len = Pvsprintf(buf, 512, fmt, arglist);
+  len = std::vsnprintf(buf, 512, fmt, arglist);
   va_end(arglist);
   if (len < 0)
     return;

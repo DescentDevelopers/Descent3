@@ -91,13 +91,14 @@
 
 #if 0
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "DDAccess.h"
 #include <stdlib.h>
-#include <stdarg.h>
 #include <math.h>
 
 #include "pserror.h"
-#include "pstring.h"
 #include "mono.h"
 #include "ddio.h"
 #include "ddio_win.h"
@@ -1373,9 +1374,9 @@ void PrintDirectInputErrorString( HRESULT hr,const char *format, ... )
 #endif
 	char buffer[2048];
 
-	va_list marker;
+	std::va_list marker;
 	va_start(marker,format);
-	Pvsprintf(buffer,2048,format,marker); 
+	std::vsnprintf(buffer,2048,format,marker); 
 	va_end(marker);
 	strcat(buffer,": \n");
 
