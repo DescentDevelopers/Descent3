@@ -65,10 +65,8 @@
  */
 
 #include <cmath>
-#include <ctime>
 
 #include "fix.h"
-#include "psrand.h"
 
 // Tables for trig functions
 float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
@@ -99,9 +97,6 @@ void InitMathTables() {
 
   asin_table[256] = asin_table[255];
   acos_table[256] = acos_table[255];
-
-  //	Initialize a random seed.
-  ps_srand(time(nullptr));
 }
 
 // Returns the sine of the given angle.  Linearly interpolates between two entries in a 256-entry table
