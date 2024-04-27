@@ -147,6 +147,8 @@
 
 #define OEAPP_INTERNAL_MODULE
 
+#include <vector>
+
 #include "Application.h"
 #include "AppConsole.h"
 #include "mono.h"
@@ -172,12 +174,13 @@
 
 /* Main Windows Procedure for this OS object
  */
-const int MAX_WIN32APPS = 4;
+constexpr int MAX_WIN32APPS = 4;
 
-static struct tAppNodes {
+struct tAppNodes {
   HWND hWnd;
   oeWin32Application *app;
-} Win32_AppObjects[MAX_WIN32APPS];
+};
+static std::vector<tAppNodes> Win32_AppObjects;
 
 // system mouse info.
 short w32_msewhl_delta = 0; // -val = up, pos val = down, 0 = no change.
@@ -200,7 +203,6 @@ extern LRESULT WINAPI MyConProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam)
 extern void con_Defer();
 
 bool oeWin32Application::os_initialized = false;
-bool oeWin32Application::first_time = true;
 
 //	this is the app's window proc.
 LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam);
@@ -209,15 +211,6 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam);
 oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstance hinst) : oeApplication() {
   WNDCLASS wc;
   RECT rect;
-
-  if (oeWin32Application::first_time) {
-    int i;
-    for (i = 0; i < MAX_WIN32APPS; i++) {
-      Win32_AppObjects[i].hWnd = NULL;
-      Win32_AppObjects[i].app = NULL;
-    }
-    oeWin32Application::first_time = false;
-  }
 
   HICON dicon = ExtractIcon((HINSTANCE)hinst, "descent 3.exe", 0);
   wc.hCursor = NULL;
@@ -628,96 +621,83 @@ void oeWin32Application::delay(float secs) {
 }
 
 LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam) {
-  int i = -1;
-  bool force_default = false;
-
-  for (i = 0; i < MAX_WIN32APPS; i++)
-    if (Win32_AppObjects[i].hWnd == hWnd)
-      break;
-
-  if (i == MAX_WIN32APPS)
-    i = -1;
+  auto appobj = std::find_if(Win32_AppObjects.begin(), Win32_AppObjects.end(),
+      [=](auto const &obj) { return obj.hWnd == hWnd; });
 
   switch (msg) {
-    LPCREATESTRUCT lpCreateStruct;
-  case WM_CREATE:
-    // here we store the this pointer to the app object this instance belongs to.
-    lpCreateStruct = (LPCREATESTRUCT)lParam;
-    for (i = 0; i < MAX_WIN32APPS; i++)
-      if (Win32_AppObjects[i].hWnd == NULL)
-        break;
-    if (i == MAX_WIN32APPS)
-      debug_break();
-    Win32_AppObjects[i].hWnd = hWnd;
-    Win32_AppObjects[i].app = (oeWin32Application *)lpCreateStruct->lpCreateParams;
+    case WM_CREATE: {
+      // here we store the this pointer to the app object this instance belongs to.
+      LPCREATESTRUCT lpCreateStruct = (LPCREATESTRUCT)lParam;
+      if (Win32_AppObjects.size() == MAX_WIN32APPS)
+        debug_break();
+      auto app = static_cast<oeWin32Application *>(lpCreateStruct->lpCreateParams);
+      app->clear_handlers();
 
-    Win32_AppObjects[i].app->clear_handlers();
+      Win32_AppObjects.push_back({hWnd, app});
+      // because we modified the vector, we must reset appobj, but we want this first time to use DefWindowProc
+      appobj = Win32_AppObjects.end();
+    } break;
 
-    force_default = true;
-    break;
+    case WM_DESTROY: {
+      //	get window handle and clear it.
+      if (appobj == Win32_AppObjects.end())
+        debug_break();
+      appobj = Win32_AppObjects.erase(appobj);
+    } break;
+    case WM_SYSCOMMAND: {
+      // bypass screen saver and system menu.
+      unsigned int maskedWParam = wParam & 0xFFF0;
+      if (maskedWParam == SC_SCREENSAVE || maskedWParam == SC_MONITORPOWER)
+        return 0;
+      if (maskedWParam == SC_KEYMENU)
+        return 0;
 
-  case WM_DESTROY:
-    //	get window handle and clear it.
-    if (i == MAX_WIN32APPS)
-      debug_break();
-    Win32_AppObjects[i].hWnd = NULL;
-    Win32_AppObjects[i].app = NULL;
-    i = -1;
-    break;
-
-  case WM_SYSCOMMAND: {
-    // bypass screen saver and system menu.
-    unsigned int maskedWParam = wParam & 0xFFF0;
-    if (maskedWParam == SC_SCREENSAVE || maskedWParam == SC_MONITORPOWER)
-      return 0;
-    if (maskedWParam == SC_KEYMENU)
-      return 0;
-
-    // handle the close button
-    if (maskedWParam == SC_CLOSE) {
-      exit(1);
-      return 0;
-    }
-  } break;
-
-  case WM_SYSKEYDOWN:
-  case WM_SYSKEYUP:
-    if (lParam & 0x20000000)
-      return 0;
-    break;
-
-  case WM_POWERBROADCAST: // Won't allow OS to suspend operation for now.
-    mprintf((0, "WM_POWERBROADCAST=%u,%d\n", wParam, lParam));
-    if (wParam == PBT_APMQUERYSUSPEND) {
-      return BROADCAST_QUERY_DENY;
-    }
-    break;
-
-  case WM_MOUSEWHEEL:
-  case 0xcc41:
-    if (w32_mouseman_hack) {
-      if (msg != 0xcc41) {
-        w32_msewhl_delta = HIWORD(wParam);
-      } else {
-        w32_msewhl_delta = (short)(wParam);
+      // handle the close button
+      if (maskedWParam == SC_CLOSE) {
+        exit(1);
+        return 0;
       }
-    } else if (msg == WM_MOUSEWHEEL) {
-      w32_msewhl_delta = HIWORD(wParam);
-    }
-    break;
+    } break;
+
+    case WM_SYSKEYDOWN:
+      // FALLTHROUGH
+    case WM_SYSKEYUP: {
+      if (lParam & 0x20000000)
+        return 0;
+    } break;
+
+    case WM_POWERBROADCAST: {
+      // Won't allow OS to suspend operation for now.
+      mprintf((0, "WM_POWERBROADCAST=%u,%d\n", wParam, lParam));
+      if (wParam == PBT_APMQUERYSUSPEND) {
+        return BROADCAST_QUERY_DENY;
+      }
+    } break;
+
+    case WM_MOUSEWHEEL:
+      // FALLTHROUGH
+    case 0xcc41: {
+      if (w32_mouseman_hack) {
+        if (msg != 0xcc41) {
+          w32_msewhl_delta = HIWORD(wParam);
+        } else {
+          w32_msewhl_delta = (short)(wParam);
+        }
+      } else if (msg == WM_MOUSEWHEEL) {
+        w32_msewhl_delta = HIWORD(wParam);
+      }
+    } break;
   }
 
-  oeWin32Application *winapp = Win32_AppObjects[i].app;
-
   //	if this window not on list, then run default window proc.
-  if (i == -1 || winapp == NULL || force_default)
+  if (appobj == Win32_AppObjects.end())
     return DefWindowProc(hWnd, msg, wParam, lParam);
 
-  if (!winapp->run_handler((HWnd)hWnd, (unsigned)msg, (unsigned)wParam, (long)lParam))
+  if (!appobj->app->run_handler((HWnd)hWnd, (unsigned)msg, (unsigned)wParam, (long)lParam))
     return 0;
 
   // run user defined window procedure.
-  return (LRESULT)winapp->WndProc((HWnd)hWnd, (unsigned)msg, (unsigned)wParam, (long)lParam);
+  return (LRESULT)appobj->app->WndProc((HWnd)hWnd, (unsigned)msg, (unsigned)wParam, (long)lParam);
 }
 
 // detect if application can handle what we want of it.
