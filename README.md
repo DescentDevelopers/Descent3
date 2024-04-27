@@ -26,6 +26,16 @@ Build steps below assume you have already cloned the repository and entered it l
 
 #### Building - Windows
 Requires Visual Studio C++ Tools (cmake and vcpkg)
+
+Install and configure vcpkg:
+```sh
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg && bootstrap-vcpkg.bat
+setx VCPKG_ROOT="C:\path\to\vcpkg"
+setx PATH=%VCPKG_ROOT%;%PATH%
+```
+
+Build Descent 3:
 ```sh
 cmake --preset win -D LOGGER=[ON|OFF]
 cmake --build --preset win --config [Debug|Release]
