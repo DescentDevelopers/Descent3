@@ -801,18 +801,9 @@ int acm_open_decoder(ACMStream **res, void *arg, acm_io_callbacks io_cb, int for
 	if (read_header(acm) < 0)
 		goto err_out;
 
-	/*
-	 * Overwrite channel info if requested, otherwise
-	 * ignore the channel count on plain ACM files,
-	 * it is frequently wrong, and actual 1-channel
-	 * files are not interising to listen to anyway (samples).
-	 *
-	 * Trust WAVC files, as they seem to be correct?
-	 */
+	/* Overwrite channel info if requested. */
 	if (force_chans > 0)
 		acm->info.channels = force_chans;
-	else if (!acm->wavc_file && acm->info.channels < 2)
-		acm->info.channels = 2;
 
 	/* calculate blocks */
 	acm->info.acm_cols = 1 << acm->info.acm_level;

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -401,9 +401,9 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
   // Fixed rate rotaters
   if (obj->mtype.phys_info.flags & PF_FIXED_ROT_VELOCITY) {
-    tangles.p = rotvel->x * frame_time;
-    tangles.h = rotvel->y * frame_time;
-    tangles.b = rotvel->z * frame_time;
+    tangles.p = (short)(rotvel->x * frame_time);
+    tangles.h = (short)(rotvel->y * frame_time);
+    tangles.b = (short)(rotvel->z * frame_time);
 
     vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
     *orient = *orient * rotmat; // ObjSetOrient below
@@ -665,9 +665,9 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   }
 
   // Apply rotation to the "un-rollbanked" object
-  tangles.p = rotvel->x * frame_time;
-  tangles.h = rotvel->y * frame_time;
-  tangles.b = rotvel->z * frame_time;
+  tangles.p = (short)(rotvel->x * frame_time); // Casting to short is required for aarch64 to avoid FCVTZU instruction which strips the negative sign
+  tangles.h = (short)(rotvel->y * frame_time);
+  tangles.b = (short)(rotvel->z * frame_time);
 
   vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
   *orient = *orient * rotmat; // ObjSetOrient is below
