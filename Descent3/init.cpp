@@ -967,6 +967,7 @@
 #include "stringtable.h"
 #include "hlsoundlib.h"
 #include "player.h"
+#include "psrand.h"
 #include "ambient.h"
 #include "matcen.h"
 #include "dedicated_server.h"
@@ -2113,6 +2114,10 @@ void InitD3Systems1(bool editor) {
 
   // This function needs be called before ANY 3d stuff can get done. I mean it.
   InitMathTables();
+
+  // Initialize a random seed.
+  ps_srand(time(nullptr));
+
 
   // This function has to be done before any sound stuff is called
   InitSounds();
