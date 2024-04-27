@@ -31,6 +31,8 @@
 #error No platform defined
 #endif
 
+#include <cstdint>
+
 #include "byteswap.h"
 //--------------------------------
 // Compressed Video Constants
@@ -53,16 +55,7 @@
 // some inlines to prevent macro craziness when using incrementers and dereferencing, and so I can use operator
 // overloading
 inline unsigned short IntelSwapper(unsigned short a) { return INTEL_SHORT(a); }
-
-inline short IntelSwapper(short a) { return INTEL_SHORT(a); }
-
 inline unsigned int IntelSwapper(unsigned int a) { return INTEL_INT(a); }
-
-inline int IntelSwapper(int a) { return INTEL_INT(a); }
-
-inline unsigned long IntelSwapper(unsigned long a) { return INTEL_INT(a); }
-
-inline long IntelSwapper(long a) { return INTEL_INT(a); }
 
 typedef struct _mve_hdr {
   char FileType[20];      // MVE_FILE_TYPE
@@ -121,7 +114,7 @@ typedef struct _mcmd_hdr {
 
 #define mcmd_syncInit 2
 typedef struct _syncInit {
-  unsigned long period;       // period of quanta
+  uint32_t period;       // period of quanta
   unsigned short wait_quanta; // # of quanta per frame
   void SwapBytes() {
     period = IntelSwapper(period);
@@ -149,7 +142,7 @@ typedef struct _sndConfigure {
 #endif
   unsigned short frequency;
   // Minor opcode 1 extends buflen to be a long
-  unsigned long buflen;
+  uint32_t buflen;
   void SwapBytes() {
     rate = IntelSwapper(rate);
     frequency = IntelSwapper(frequency);

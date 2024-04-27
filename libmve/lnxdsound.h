@@ -19,6 +19,8 @@
 #ifndef __LNX_DSOUND_H_
 #define __LNX_DSOUND_H_
 
+#include <cstdint>
+
 #include "SystemInterfaces.h"
 typedef struct {
   int sound_device;       // file device handle for sound
@@ -43,12 +45,12 @@ typedef struct {
   unsigned int play_cursor;
   unsigned int write_cursor;
   unsigned int flags;
-  unsigned long left_vol, right_vol;
+  uint32_t left_vol, right_vol;
 
   unsigned char *buffer;
 
-  signed long volume;
-  signed long pan;
+  int32_t volume;
+  int32_t pan;
 
   WAVEFORMATEX wfx;
 
@@ -90,7 +92,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff);
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol);
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, int32_t vol);
 
 ///////////////////////////
 // LnxSoundBuffer_SetPan
@@ -101,7 +103,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol);
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed long pan);
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, int32_t pan);
 
 /////////////////////////
 // LnxSoundBuffer_Stop

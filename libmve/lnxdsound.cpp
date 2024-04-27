@@ -236,7 +236,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff) {
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol) {
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, int32_t vol) {
   if (!buff)
     return -1;
 
@@ -278,7 +278,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol) {
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed long pan) {
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, int32_t pan) {
   if (!buff)
     return -1;
 

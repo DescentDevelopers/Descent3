@@ -494,8 +494,8 @@ static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned 
         src += len >> 1;
       } else {
         if (init) {
-          state = IntelSwapper(*(unsigned long *)src);
-          *(unsigned long *)dst = state;
+          state = IntelSwapper(*(uint32_t *)src);
+          *(uint32_t *)dst = state;
           src += 4;
           dst += 4;
           len -= 4;
@@ -1214,7 +1214,7 @@ int MVE_rmStepMovie(void) {
         marg_sndConfigure *arg = (marg_sndConfigure *)p;
         arg->SwapBytes();
         unsigned comp16 = hdr.minor >= 1 ? arg->comp16 : 0;
-        unsigned buflen = arg->buflen;
+        uint32_t buflen = arg->buflen;
         if (hdr.minor == 0)
           buflen &= 0xFFFF;
         if (!sndConfigure(arg->rate, buflen, arg->stereo, arg->frequency, arg->bits16, comp16)) {
