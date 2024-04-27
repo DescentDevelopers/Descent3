@@ -901,40 +901,41 @@ bool FVI_always_check_ceiling = false;
 float Ceiling_height = MAX_TERRAIN_HEIGHT;
 
 // Bit fields for quick 'already-checked' checking
-unsigned char
+static unsigned char
     fvi_visit_list[MAX_ROOMS / 8 + 1]; // This bit-field provides a fast check if a mine segment has been visited
-unsigned char fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
-                                     1]; // This bit-field provides a fast check if a terrain segment has been visited
-unsigned char
+static unsigned char
+    fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
+                           1]; // This bit-field provides a fast check if a terrain segment has been visited
+static unsigned char
     fvi_terrain_obj_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
                                1]; // This bit-field provides a fast check if a terrain segment has been visited
 
 // The number rooms and terrain cells that this fvi call visited.
-int fvi_num_rooms_visited;
-int fvi_num_cells_visited;
-int fvi_num_cells_obj_visited;
+static int fvi_num_rooms_visited;
+static int fvi_num_cells_visited;
+static int fvi_num_cells_obj_visited;
 
 // Should we do a terrain check.  This flag exists because if we do a terrain check, it always does a full check. So,
 // we only have to do it once.
-bool f_check_terrain;
-bool fvi_zero_rad;
+static bool f_check_terrain;
+static bool fvi_zero_rad;
 
 // Unordered list of rooms and terrain cells that this fvi call visited.
 // DAJ changed to ushorts to save memory
-ushort fvi_rooms_visited[MAX_ROOMS];         // This should be a small number (100 to 1000)
-ushort fvi_cells_visited[MAX_CELLS_VISITED]; // Use this so that we do not have to use 256x256 elements
-ushort fvi_cells_obj_visited[MAX_CELLS_VISITED];
+static ushort fvi_rooms_visited[MAX_ROOMS];         // This should be a small number (100 to 1000)
+static ushort fvi_cells_visited[MAX_CELLS_VISITED]; // Use this so that we do not have to use 256x256 elements
+static ushort fvi_cells_obj_visited[MAX_CELLS_VISITED];
 
 // Fvi wall collision stuff
-float fvi_wall_sphere_rad;
-vector fvi_wall_sphere_offset;
-vector fvi_wall_sphere_p0;
-vector fvi_wall_sphere_p1;
+static float fvi_wall_sphere_rad;
+static vector fvi_wall_sphere_offset;
+static vector fvi_wall_sphere_p0;
+static vector fvi_wall_sphere_p1;
 
-float fvi_anim_sphere_rad;
-vector fvi_anim_sphere_offset;
-vector fvi_anim_sphere_p0;
-vector fvi_anim_sphere_p1;
+static float fvi_anim_sphere_rad;
+static vector fvi_anim_sphere_offset;
+static vector fvi_anim_sphere_p0;
+static vector fvi_anim_sphere_p1;
 
 // Fvi information pointers.
 fvi_info *fvi_hit_data_ptr;
@@ -944,13 +945,13 @@ fvi_query *fvi_query_ptr;
 float fvi_collision_dist;
 
 // AABB for the movement
-vector fvi_max_xyz;
-vector fvi_min_xyz;
-vector fvi_movement_delta;
+static vector fvi_max_xyz;
+static vector fvi_min_xyz;
+static vector fvi_movement_delta;
 
 // AABB for the movement
-vector fvi_wall_max_xyz;
-vector fvi_wall_min_xyz;
+static vector fvi_wall_max_xyz;
+static vector fvi_wall_min_xyz;
 
 // CHRISHACK -- Do we still need this????
 int fvi_curobj;
@@ -964,9 +965,34 @@ int Fvi_num_recorded_faces = 0;
 // Some function def's
 //------------------------------------------------------------------------------------------
 
-int do_fvi_terrain();
-int fvi_room(int room_index, int from_portal, int room_obj = -1);
-void do_fvi_rooms(int initial_room_index);
+static int do_fvi_terrain();
+static int fvi_room(int room_index, int from_portal, int room_obj = -1);
+static void do_fvi_rooms(int initial_room_index);
+/// Find the point on the specified plane where the line intersects.
+/// - returns: true if point found, false if line parallel to plane.
+/// - parameter new_pnt: is the found point on the plane.
+/// - parameter plane_pnt: describe the plane.
+/// - parameter plane_norm: describe the plane.
+/// - parameter p0: are the ends of the line.
+/// - parameter p1: are the ends of the line.
+///
+/// Assumes that the initial point is not intersecting the plane.
+static inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plane_pnt, const vector *plane_norm,
+                                               const vector *p0, const vector *p1, float rad);
+static bool IsPointInCylinder(vector *normal, vector *cylinder_pnt, vector *edir, float elen, const float rad,
+                              const vector *pnt, vector *mdir, bool *f_collide);
+
+//! check if a sphere intersects a face -- this can be optimized (only need 2d stuff after rotation)
+static int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector *wall_norm, const vector *p0,
+                                    const vector *p1, float rad, vector *ep0, vector *ep1);
+
+//! check if a sphere intersects a face.
+static int check_sphere_to_face(vector *colp, vector *intp, float *col_dist, vector *wall_norm, const vector *p0,
+                                const vector *p1, vector *face_normal, int nv, float rad, vector **vertex_ptr_list);
+static void fvi_rooms_objs(void);
+static int obj_in_list(int objnum, int *obj_list);
+static void make_trigger_face_list(int last_sim_faces);
+static bool PhysPastPortal(const room *rp, portal *pp);
 
 //------------------------------------------------------------------------------------------
 // FVI FUNCTIONS
@@ -984,8 +1010,8 @@ void InitFVI(void) {
 // plane_pnt & plane_norm describe the plane
 // p0 & p1 are the ends of the line
 // Assumes that the initial point is not intersecting the plane
-static inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plane_pnt, const vector *plane_norm,
-                                               const vector *p0, const vector *p1, float rad) {
+inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plane_pnt, const vector *plane_norm,
+                                        const vector *p0, const vector *p1, float rad) {
   vector line_vec;             // Vector from p0 to p1
   vector point_plane_vec;      // Vector from p0 to a point on the plane
   float proj_dist_line;        // Distance projection of line onto the plane normal
@@ -1062,7 +1088,7 @@ typedef struct vec2d {
 
 // given largest componant of normal, return i & j
 // if largest componant is negative, swap i & j
-int ij_table[3][2] = {
+static const int ij_table[3][2] = {
     {2, 1}, // pos x biggest
     {0, 2}, // pos y biggest
     {1, 0}, // pos z biggest
@@ -2571,8 +2597,6 @@ void make_trigger_face_list(int last_sim_faces) {
   Fvi_num_recorded_faces = num_real_collisions;
 }
 
-void fvi_rooms_objs(void);
-
 // Find out if a vector intersects with anything.
 // Fills in hit_data, an fvi_info structure (see header file).
 // Parms:
@@ -2954,10 +2978,11 @@ int sphere_intersects_wall(vector *pnt, int segnum, float rad) {
   return 0;
 }
 
-int bbox_edges[12][2] = {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {3, 4}, {2, 5},
-                         {5, 4}, {4, 7}, {5, 6}, {7, 6}, {7, 0}, {6, 1}};
+static const int bbox_edges[12][2] = {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {3, 4}, {2, 5},
+                                      {5, 4}, {4, 7}, {5, 6}, {7, 6}, {7, 0}, {6, 1}};
 
-int bbox_faces[6][4] = {{4, 5, 2, 3}, {7, 6, 5, 4}, {0, 1, 6, 7}, {0, 3, 2, 1}, {7, 4, 3, 0}, {1, 2, 5, 3}};
+static const int bbox_faces[6][4] = {{4, 5, 2, 3}, {7, 6, 5, 4}, {0, 1, 6, 7},
+                                     {0, 3, 2, 1}, {7, 4, 3, 0}, {1, 2, 5, 3}};
 /*
 bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *collision_normal, object *obj, vector
 *new_pos, int nv, vector **vertex_ptr_list, vector *face_normal)
@@ -3190,6 +3215,7 @@ vector PointSpeed(object *obj, vector *pos, matrix *orient, vector *rotvel, vect
   return *velocity + w1;
 }
 
+// MTS: only used in this file.
 // Hacked for some initial testing
 bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *collision_normal, object *obj,
                            vector *new_pos, int nv, vector **vertex_ptr_list, vector *face_normal, matrix *orient,
