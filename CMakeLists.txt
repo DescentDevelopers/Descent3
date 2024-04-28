@@ -6,8 +6,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
 endif()
 
 project(Descent3
-LANGUAGES C CXX
-VERSION 1.5.500
+  LANGUAGES C CXX
+  VERSION 1.5.500
 )
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
@@ -32,7 +32,7 @@ endif()
 
 if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
   message(STATUS "Big Endian system detected.")
-  add_definitions("-DOUTRAGE_BIG_ENDIAN")
+  add_compile_definitions("OUTRAGE_BIG_ENDIAN")
 endif()
 
 if(BUILD_TESTING)
@@ -109,7 +109,7 @@ find_package(ZLIB REQUIRED)
 
 if(LOGGER)
   message("Enabling Logging")
-  add_definitions(-DLOGGER)
+  add_compile_definitions(LOGGER)
 endif()
 
 include_directories(
@@ -128,7 +128,7 @@ add_subdirectory(cfile)
 add_subdirectory(czip)
 add_subdirectory(d3music)
 
-if(CMAKE_SYTEM_NAME STREQUAL "Windows")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(dd_grwin32)
   add_subdirectory(dd_vidwin32)
   add_subdirectory(win32)
