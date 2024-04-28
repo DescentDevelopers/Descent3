@@ -125,6 +125,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     add_compile_options("/we4715")  # 'function' : not all control paths return a value
     add_compile_options("/we4834")  # discarding return value of function with [[nodiscard]] attribute
   endif()
+
+  add_compile_options("/MP")  # so msbuild builds with multiple processes
 endif()
 
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
