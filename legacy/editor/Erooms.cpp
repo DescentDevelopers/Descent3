@@ -2203,7 +2203,7 @@ char error_buf[BUF_LEN];
 int error_buf_offset;
 
 //Log an error in the room check process
-void CheckError(char *str,...)
+void CheckError(const char *str,...)
 {
 	va_list arglist;
 	int nchars;

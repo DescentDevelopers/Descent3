@@ -102,7 +102,7 @@ IMenuItem DLLFUNCCALLPTR CreateMenuItem(void) {
   return pfsResult;
 }
 
-IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(char *title, char type, ubyte flags, void (*fp)(int),
+IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, ubyte flags, void (*fp)(int),
                                              tCustomMenu *custom_menu) {
   MenuItem *p;
 

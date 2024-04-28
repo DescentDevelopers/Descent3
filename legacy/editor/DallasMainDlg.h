@@ -1285,7 +1285,7 @@ public:
 	int GetQueryReturnType(int ID, CString &name);	// Returns the Query's return type (parameter type)
 	int GetFunctionCategoryID(char *catname);	// Matches an integer ID to a given category name
 
-	void FunctionFileParseError(int error_code, int linenum, char *filename);		// Handle Parse Errors
+	void FunctionFileParseError(int error_code, int linenum, const char *filename);		// Handle Parse Errors
 	void ParseOutActionVarTypes(char *new_desc, char *old_desc);	// Returns a description copy with the parameter type info removed
 	void ParseOutQueryVarTypes(char *new_desc, char *old_desc);		// Returns a description copy with the parameter type info removed
 	bool ValidateActionNode(HTREEITEM node, int linenum);

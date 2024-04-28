@@ -162,7 +162,7 @@ public:
   void LoadData(CFILE *fptr);
 
   void GetName(char *);
-  bool SetName(char *);
+  bool SetName(const char *);
 
   int GetMaxProd();
   bool SetMaxProd(int max_p);
@@ -201,8 +201,8 @@ public:
 };
 
 extern matcen *Matcen[MAX_MATCENS];
-int FindMatcenIndex(char *name);
-int CreateMatcen(char *name, bool *f_name_changed);
+int FindMatcenIndex(const char *name);
+int CreateMatcen(const char *name, bool *f_name_changed);
 void InitMatcens();
 
 void DestroyAllMatcens();

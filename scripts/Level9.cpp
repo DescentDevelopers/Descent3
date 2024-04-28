@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -843,7 +843,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -911,7 +911,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -930,11 +930,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 0
-char **Door_names = NULL;
+const char **Door_names = NULL;
 int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 28
-char *Object_names[NUM_OBJECT_NAMES] = {"Recovery-2",
+const char *Object_names[NUM_OBJECT_NAMES] = {"Recovery-2",
                                         "Recovery-1",
                                         "DisruptorPowerup1",
                                         "Covert",
@@ -965,11 +965,11 @@ char *Object_names[NUM_OBJECT_NAMES] = {"Recovery-2",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 2
-char *Room_names[NUM_ROOM_NAMES] = {"Forcefield-1", "Forcefield-2"};
+const char *Room_names[NUM_ROOM_NAMES] = {"Forcefield-1", "Forcefield-2"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 19
-char *Trigger_names[NUM_TRIGGER_NAMES] = {
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {
     "Exit-Factory", "Entrance-Factory", "Entrance-Storage", "MStorage-3",  "MStorage-2",  "MStorage-1",  "MFactory-4",
     "MFactory-3",   "MFactory-2",       "MFactory-1",       "MAssembly-4", "MAssembly-3", "MAssembly-2", "MAssembly-1",
     "MControl-5",   "MControl-4",       "MControl-3",       "MControl-2",  "MControl-1"};
@@ -978,16 +978,16 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 6
-char *Sound_names[NUM_SOUND_NAMES] = {
+const char *Sound_names[NUM_SOUND_NAMES] = {
     "AmbSwitch11", "PupC1", "AmbSirenIntense", "AmbSwitch31", "Earthshaker missile firing", "HudMessage"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
-char **Texture_names = NULL;
+const char **Texture_names = NULL;
 int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 22
-char *Path_names[NUM_PATH_NAMES] = {
+const char *Path_names[NUM_PATH_NAMES] = {
     "IntroCam",   "IntroShip",       "Covert-1",         "Covert-2",        "Covert-2-Out",     "Covert-3",
     "Covert-3-2", "Covert-3-3",      "Covert-3-Out",     "Covert-4",        "Covert-4-Out",     "Covert-5-Exit",
     "Recovery",   "ExitCam-Factory", "ExitShip-Factory", "ExitCam-Storage", "ExitShip-Storage", "StabControl",
@@ -995,18 +995,18 @@ char *Path_names[NUM_PATH_NAMES] = {
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 0
-char **Matcen_names = NULL;
+const char **Matcen_names = NULL;
 int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 7
-char *Goal_names[NUM_GOAL_NAMES] = {"Escort the Covert Cargo Ship",       "Disrupt Control Seismic Stabilizer",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Escort the Covert Cargo Ship",       "Disrupt Control Seismic Stabilizer",
                                     "Disrupt Storage Seismic Stabilizer", "Disrupt Assembly Seismic Stabilizer",
                                     "Disrupt Factory Seismic Stabilizer", "Disrupt All Four Seismic Stabilizers",
                                     "Collect Seismic Disruptors"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 32
-char *Message_names[NUM_MESSAGE_NAMES] = {
+const char *Message_names[NUM_MESSAGE_NAMES] = {
     "IntroCam",        "TransmitterHave", "CovEntering",       "CovPickup",        "CovDropOff",
     "CovFFHelp",       "CovStillStuckFF", "CovLeaving",        "EndLevel",         "CovThanksFF",
     "Disruptor",       "StabControlDone", "StabControlPower",  "StabStoreDone",    "StabAssemblyDone",
@@ -1014,7 +1014,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {
     "CovLeaveMeAlone", "Testing2",        "Testing",           "CovRepaired",      "CovGettingPummeled",
     "CovShutDown",     "CovInClear",      "CovDamaged",        "CovDanger",        "DestroyedRadar",
     "DestroyedAnt",    "Transmitter"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1032,7 +1032,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1110,7 +1110,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

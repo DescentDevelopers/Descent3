@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -528,7 +528,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -596,7 +596,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -615,11 +615,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 1
-char *Door_names[NUM_DOOR_NAMES] = {"PlazaEntrance"};
+const char *Door_names[NUM_DOOR_NAMES] = {"PlazaEntrance"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 38
-char *Object_names[NUM_OBJECT_NAMES] = {
+const char *Object_names[NUM_OBJECT_NAMES] = {
     "DataCartridge", "Train1",        "Train2",        "Train3",        "Train4",    "ElectricDown1", "ElectricDown2",
     "ElectricDown3", "ElectricDown4", "ElectricDown5", "ElectricDown6", "Electric1", "Electric2",     "Electric3",
     "Electric4",     "UploadMiddle",  "DataHolder",    "Upload4",       "Upload3",   "Upload2",       "Upload1",
@@ -629,44 +629,44 @@ char *Object_names[NUM_OBJECT_NAMES] = {
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 0
-char **Room_names = NULL;
+const char **Room_names = NULL;
 int *Room_indexes = NULL;
 
 #define NUM_TRIGGER_NAMES 10
-char *Trigger_names[NUM_TRIGGER_NAMES] = {"EnterUpload",   "ExitUpload",    "MTrain",   "MCityFirst-2", "MCityFirst",
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"EnterUpload",   "ExitUpload",    "MTrain",   "MCityFirst-2", "MCityFirst",
                                           "MCitySecond-2", "MCitySecond-1", "MSewer-2", "MSewer-1",     "MSuzukiTower"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 2
-char *Sound_names[NUM_SOUND_NAMES] = {"Lev4TrainTest", "PupC1"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"Lev4TrainTest", "PupC1"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 1
-char *Texture_names[NUM_TEXTURE_NAMES] = {"FunkyEffectAntiV"};
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"FunkyEffectAntiV"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 13
-char *Path_names[NUM_PATH_NAMES] = {"IntroCam",   "IntroShip",   "Train1",     "Train2",     "Train3",
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCam",   "IntroShip",   "Train1",     "Train2",     "Train3",
                                     "Train4",     "UploadWatch", "Merc1Intro", "Merc2Intro", "MercWatch",
                                     "CloakMerc1", "EndCam",      "EndShip"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 6
-char *Matcen_names[NUM_MATCEN_NAMES] = {"Cars-1", "Cars-2", "TrainCen1", "TrainCen2", "TrainCen3", "TrainCen4"};
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"Cars-1", "Cars-2", "TrainCen1", "TrainCen2", "TrainCen3", "TrainCen4"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 3
-char *Goal_names[NUM_GOAL_NAMES] = {"Upload the data to Suzuki", "Defeat the PTMC Mercenaries",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Upload the data to Suzuki", "Defeat the PTMC Mercenaries",
                                     "Give the Data to Suzuki and Return Safely"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 8
-char *Message_names[NUM_MESSAGE_NAMES] = {"CinematicIntroCam", "PutTheCartridge", "CinematicDataCart",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"CinematicIntroCam", "PutTheCartridge", "CinematicDataCart",
                                           "CartridgeError",    "GetOut",          "CinematicAmbush",
                                           "BPDefeated",        "CinematicEndCam"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -684,7 +684,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -762,7 +762,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

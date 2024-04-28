@@ -145,7 +145,7 @@ void d3d_PreUploadTextureToCard(int handle, int map_type);
 void d3d_FreePreUploadedTexture(int handle, int map_type);
 
 // Returns a string describing the passed in error
-char *d3d_ErrorString(int error);
+const char *d3d_ErrorString(int error);
 
 // Takes a screenshot of the frontbuffer and puts it into the passed bitmap handle
 void d3d_Screenshot(int bm_handle);

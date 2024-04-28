@@ -117,7 +117,7 @@ bool error_Init(bool debugger, bool mono_debug, const char *app_title) {
 extern int no_debug_dialog;
 
 //	exits the application and prints out a standard error message
-void Error(char *fmt, ...) {
+void Error(const char *fmt, ...) {
   va_list arglist;
   int exit_msg_len;
 
@@ -176,7 +176,7 @@ void Error(char *fmt, ...) {
 }
 
 // Brings up an error message for an int3
-void Int3MessageBox(char *file, int line) {
+void Int3MessageBox(const char *file, int line) {
 #ifndef RELEASE
   char title[128], message[500];
   int answer;
@@ -200,7 +200,7 @@ void Int3MessageBox(char *file, int line) {
 }
 
 //	prints out an assertion error
-void AssertionFailed(char *expstr, char *file, int line) {
+void AssertionFailed(const char *expstr, const char *file, int line) {
 #ifndef RELEASE
   char title[128], message[500];
   int answer;
@@ -235,12 +235,12 @@ void error_Spew() {
 char Messagebox_title[80] = "Message";
 
 // Sets the title for future OutrageMessageBox() dialogs
-void SetMessageBoxTitle(char *title) { strncpy(Messagebox_title, title, sizeof(Messagebox_title)); }
+void SetMessageBoxTitle(const char *title) { strncpy(Messagebox_title, title, sizeof(Messagebox_title)); }
 
 #define BUF_LEN 1024
 
 // Pops up a dialog box to display a message
-void OutrageMessageBox(char *str, ...) {
+void OutrageMessageBox(const char *str, ...) {
   char buf[BUF_LEN];
   va_list arglist;
   int nchars;
@@ -256,7 +256,7 @@ void OutrageMessageBox(char *str, ...) {
   Debug_MessageBox(OSMBOX_OK, Messagebox_title, buf);
 }
 
-int OutrageMessageBox(int type, char *str, ...) {
+int OutrageMessageBox(int type, const char *str, ...) {
   char buf[BUF_LEN];
   va_list arglist;
   int os_flags = 0;

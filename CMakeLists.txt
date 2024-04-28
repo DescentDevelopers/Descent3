@@ -70,7 +70,7 @@ add_custom_target(get_git_hash ALL
 if(UNIX)
   set(D3_GAMEDIR "~/Descent3/")
 
-  add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-write-strings;-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
+  add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
 
   find_package(SDL REQUIRED)

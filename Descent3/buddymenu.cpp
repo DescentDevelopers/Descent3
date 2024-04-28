@@ -123,7 +123,7 @@ void BuddyDisplay(void) {
   gbcommand_wnd.AddAcceleratorKey(KEY_F4, UID_CANCEL);
 
   for (index = 0; index < Guidebot_menu_data.num_commands; index++) {
-    char buf[256], buf2[256];
+    char buf[256 + 32], buf2[256 + 32];
     if (index < 9) {
       snprintf(buf, sizeof(buf), "%d. %s", index + 1, Guidebot_menu_data.command_text[index]);
     } else {

@@ -249,7 +249,7 @@ void oeLnxApplication::set_sizepos(int x, int y, int w, int h) {
   m_H = h;
 }
 
-char *oeLnxApplication::get_window_name(void) { return "Descent 3"; }
+const char *oeLnxApplication::get_window_name(void) { return "Descent 3"; }
 
 void oeLnxApplication::clear_window(void) {
   SDL_FillRect(SDL_GetVideoSurface(), NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 0, 0));

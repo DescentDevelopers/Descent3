@@ -435,7 +435,7 @@ char PLRVal[MAX_PLR_LINES][PLR_COLS];
 extern int Times_game_restored;
 
 void SinglePlayerPostLevelResults() {
-  char *difficulty_levels[] = {TXT_TRAINEE, TXT_ROOKIE, TXT_HOTSHOT, TXT_ACE, TXT_INSANE};
+  const char *difficulty_levels[] = {TXT_TRAINEE, TXT_ROOKIE, TXT_HOTSHOT, TXT_ACE, TXT_INSANE};
 
   // Setup all the text to display
   // Initialize all the characters
@@ -524,7 +524,7 @@ void SinglePlayerPostLevelResults() {
   }
 
   if (has_objectives) {
-    snprintf(PLRText[curline], sizeof(PLRText[curline]), TXT_OBJECTIVES1);
+    snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_OBJECTIVES1);
     curline++;
     curline++;
   }

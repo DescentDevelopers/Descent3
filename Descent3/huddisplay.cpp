@@ -287,7 +287,7 @@ inline int get_weapon_icon(int player, int type) {
   return HUD_resources.wpn_bmp;
 }
 
-void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *str);
+void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *str);
 
 //////////////////////////////////////////////////////////////////////////////
 //	Hud item display routines.
@@ -830,7 +830,7 @@ void RenderHUDCountermeasures(tHUDItem *item) {
 extern tFontTemplate Hud_font_template; // retain hud font template
 
 // returns scaled line width
-int RenderHUDGetTextLineWidth(char *string) {
+int RenderHUDGetTextLineWidth(const char *string) {
   float aspect_x;
   int str_width_curfont = grtext_GetLineWidth(string);
 
@@ -848,7 +848,7 @@ int RenderHUDGetTextLineWidth(char *string) {
 }
 
 // returns scaled text height
-int RenderHUDGetTextHeight(char *string) {
+int RenderHUDGetTextHeight(const char *string) {
   float aspect_y;
   int str_height_curfont = grtext_GetHeight(string);
 
@@ -889,7 +889,7 @@ void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, flo
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt, ...) {
+void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...) {
   va_list arglist;
   char buf[128];
 
@@ -901,7 +901,7 @@ void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, cha
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *str) {
+void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *str) {
   int i;
 
   grtext_SetAlpha(alpha);
@@ -925,7 +925,7 @@ void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt, ...) {
+void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...) {
   va_list arglist;
   char buf[128];
   int i;

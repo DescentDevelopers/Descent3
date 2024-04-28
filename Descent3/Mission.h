@@ -178,7 +178,7 @@
 #define LOAD_PROGRESS_DONE 200
 
 // Load level progress worker
-void LoadLevelProgress(int step, float percent, char *chunk = NULL);
+void LoadLevelProgress(int step, float percent, const char *chunk = NULL);
 
 //	array constants
 const int MSN_FILENAMELEN = PSPATHNAME_LEN, MSN_URLLEN = 256;
@@ -275,7 +275,7 @@ extern tLevelNode *Current_level;
 extern char D3MissionsDir[];
 
 // Get the name field out of the mission file
-char *GetMissionName(char *mission);
+const char *GetMissionName(const char *mission);
 
 //	initializes mission system.
 void InitMission();
@@ -299,7 +299,7 @@ bool DoMissionBriefing(int level);
 void DoEndMission();
 
 //	does the mission movie stuff
-void DoMissionMovie(char *movie);
+void DoMissionMovie(const char *movie);
 
 //	loads a level and sets it as current level in mission
 bool LoadMissionLevel(int level);
@@ -311,10 +311,10 @@ bool InitMissionScript();
 void CompletedPrimaryObjective();
 
 // Shows text on a background
-void ShowProgressScreen(char *str, char *str2 = NULL, bool flip = true);
+void ShowProgressScreen(const char *str, const char *str2 = NULL, bool flip = true);
 
 // See if a mission file is multiplayer playable.
-bool IsMissionMultiPlayable(char *mission);
+bool IsMissionMultiPlayable(const char *mission);
 
 //	return information about a mission
 bool GetMissionInfo(const char *msnfile, tMissionInfo *msn);
@@ -324,7 +324,7 @@ bool GetMissionInfo(const char *msnfile, tMissionInfo *msn);
 // Return values:
 // -1	Bad match -- this level and this mod shouldn't be played together!
 // MAX_NET_PLAYERS	-- This is playable with any number of teams the mod wants
-int MissionGetKeywords(char *mission, char *keywords);
+int MissionGetKeywords(const char *mission, char *keywords);
 
 #ifdef EDITOR
 //	Used by editor to load all necessary elements for level playing for systems

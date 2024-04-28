@@ -1216,7 +1216,7 @@ Parameters:
   Message:  The message to show
 $$END
 */
-void aShowHUDMessage(char *format, ...) {
+void aShowHUDMessage(const char *format, ...) {
 #if defined(__LINUX__)
 #define _vsnprintf vsnprintf
 #endif
@@ -1246,7 +1246,7 @@ Parameters:
   PlayerObject: The player who sees the object
 $$END
 */
-void aShowHUDMessageObj(char *format, int objhandle, ...) {
+void aShowHUDMessageObj(const char *format, int objhandle, ...) {
   msafe_struct mstruct;
   va_list args;
 
@@ -1276,7 +1276,7 @@ Parameters:
   Message:  The message to show
 $$END
 */
-void aShowColoredHUDMessage(int red, int green, int blue, char *format, ...) {
+void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ...) {
   msafe_struct mstruct;
   va_list args;
 
@@ -1306,7 +1306,7 @@ Parameters:
   PlayerObject: The player who sees the object
 $$END
 */
-void aShowColoredHUDMessageObj(int red, int green, int blue, char *format, int objhandle, ...) {
+void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format, int objhandle, ...) {
   msafe_struct mstruct;
   va_list args;
 
@@ -1334,7 +1334,7 @@ Parameters:
   HUDMessage: The message that's displayed on the HUD
 $$END
 */
-void aAddGameMessage(char *game_message, char *hud_message) {
+void aAddGameMessage(const char *game_message, const char *hud_message) {
   msafe_struct mstruct;
 
   strncpy(mstruct.message, game_message, sizeof(mstruct.message));
@@ -2315,7 +2315,7 @@ Attach new object of type [a:ChildTypeName] attachpoint [i:ChildPoint] to object
 Parameters:
 $$END
 */
-void aAttachObject(char *objtypename, int childpoint, int objref, int parentpoint) {
+void aAttachObject(const char *objtypename, int childpoint, int objref, int parentpoint) {
   int child_handle;
   int child_type = Obj_FindType(objtypename);
   int child_id = Obj_FindID(objtypename);
@@ -2565,7 +2565,7 @@ Parameters:
   Text: Any text (if any) you want to display (pass empty message if you want none)
 $$END
 */
-void aStartEndlevelSequence(int objhandle, int pathid, float time, char *text) {
+void aStartEndlevelSequence(int objhandle, int pathid, float time, const char *text) {
   tCannedCinematicInfo info;
 
   info.object_to_use_for_point = objhandle;
@@ -2591,7 +2591,7 @@ Parameters:
   Text: Any text (if any) you want to display (pass empty message if you want none)
 $$END
 */
-void aStartEndlevelSequencePath(int camerapath, int pathid, float time, char *text) {
+void aStartEndlevelSequencePath(int camerapath, int pathid, float time, const char *text) {
   tCannedCinematicInfo info;
 
   info.camera_pathid = camerapath;
@@ -2615,7 +2615,7 @@ Parameters:
   Text: Any text (if any) you want to display (pass empty message if you want none)
 $$END
 */
-void aFadeWhiteAndEndlevel(float time, char *text) {
+void aFadeWhiteAndEndlevel(float time, const char *text) {
   tCannedCinematicInfo info;
 
   info.text_to_display = text;
@@ -2784,7 +2784,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlaySteaming(char *soundname, float volume) {
+void aSoundPlaySteaming(const char *soundname, float volume) {
   msafe_struct mstruct;
 
   mstruct.state = 0; // all players
@@ -2824,7 +2824,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlaySteamingObj(char *soundname, int objhandle, float volume) {
+void aSoundPlaySteamingObj(const char *soundname, int objhandle, float volume) {
   msafe_struct mstruct;
 
   mstruct.state = 1; // specific player
@@ -3805,7 +3805,7 @@ Parameters:
 
 $$END
 */
-void aCinematicSimple(int pathid, char *Text, int Target, float Seconds, bool FadeIn = false) {
+void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn = false) {
   tGameCinematic info;
 
   info.flags = 0;
@@ -3851,7 +3851,7 @@ ONCE AGAIN, THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD COMPATIBILITY
 ONCE AGAIN, THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD COMPATIBILITY
 $$END
 */
-void aCinematicIntro(int camera_path, char *Text, int NoLongerUserTarget, int PlayerPath, float Seconds) {
+void aCinematicIntro(int camera_path, const char *Text, int NoLongerUserTarget, int PlayerPath, float Seconds) {
   tCannedCinematicInfo info;
 
   info.type = CANNED_LEVEL_INTRO;
@@ -3931,7 +3931,7 @@ Params:
         Seconds: How long cinematic should play
 $$END
 */
-void aComplexCinematicEnd(char *Text, float Seconds) {
+void aComplexCinematicEnd(const char *Text, float Seconds) {
   if (!ccinematic.being_made)
     return;
 
@@ -4220,7 +4220,7 @@ Parameters:
         Ship:	The name of the ship you want to enable
 $$END
 */
-void aEnableShip(char *Ship) {
+void aEnableShip(const char *Ship) {
   // this doesn't have to be multiplayer friendly, since it's a single
   // player only thing
   Game_EnableShip(Ship, true);
@@ -4240,7 +4240,7 @@ Parameters:
 
 $$END
 */
-void aDisableShip(char *Ship) {
+void aDisableShip(const char *Ship) {
   // this doesn't have to be multiplayer friendly, since it's a single
   // player only thing
   Game_EnableShip(Ship, false);
@@ -4309,7 +4309,7 @@ Parameters:
   Spewable: Whether the object should be spewed from the inventory when the player dies
 $$END
 */
-void aAddObjectToInventoryNamed(int Object, int PlayerObject, char *name, bool Spewable) {
+void aAddObjectToInventoryNamed(int Object, int PlayerObject, const char *name, bool Spewable) {
   msafe_struct mstruct;
 
   mstruct.objhandle = PlayerObject;
@@ -4499,7 +4499,7 @@ Parameters:
   Object - the object to fire the flare
 $$END
 */
-void aObjFireWeapon(char *weapon_name, int gun_num, int objhandle) {
+void aObjFireWeapon(const char *weapon_name, int gun_num, int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -4607,7 +4607,7 @@ Parameters:
   RobotID - the name of the group of robots to Spare
 $$END
 */
-void aDestroyAllRobotsSpareType(char *name) {
+void aDestroyAllRobotsSpareType(const char *name) {
   int id = Obj_FindID(name);
 
   if (id != -1) {
@@ -5116,8 +5116,8 @@ Parameters:
   Message: the message for the goal
 $$END
 */
-void aGoalSetCompletionMessage(int goal_index, char *message) {
-  LGoal_Value(VF_SET, LGSV_PC_COMPLETION_MESSAGE, message, goal_index);
+void aGoalSetCompletionMessage(int goal_index, const char *message) {
+  LGoal_Value(VF_SET, LGSV_PC_COMPLETION_MESSAGE, (void *) message, goal_index);
 }
 
 /*
@@ -5863,7 +5863,7 @@ Parameters:
   Yes/No: should the name of the key be shown on the HUD?
 $$END
 */
-void aObjectPlayerGiveKey(int player_handle, int key_handle, int key_num, char *key_name, int show_on_hud) {
+void aObjectPlayerGiveKey(int player_handle, int key_handle, int key_num, const char *key_name, int show_on_hud) {
   msafe_struct mstruct;
 
   mstruct.objhandle = key_handle;
@@ -6425,7 +6425,7 @@ Parameters:
   Ship: The name of the ship you want to query
 $$END
 */
-bool qIsShipEnabled(char *Ship) { return Game_IsShipEnabled(Ship); }
+bool qIsShipEnabled(const char *Ship) { return Game_IsShipEnabled(Ship); }
 
 /*
 $$QUERY
@@ -6502,7 +6502,7 @@ Parameters:
   ObjectIDName: the name of the object ID to count
 $$END
 */
-int qObjCountTypeID(int type, char *idname) {
+int qObjCountTypeID(int type, const char *idname) {
   int id = Obj_FindID(idname);
 
   if (id != -1) {

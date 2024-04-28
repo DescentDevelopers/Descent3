@@ -98,7 +98,7 @@ inline int DDGR_COLOR_BLUE(ddgr_color c) {
 /*	Functions Internal
  */
 
-void ddgr_FatalError(char *fmt, ...);
-void ddgr_PushError(char *fmt, ...);
+void ddgr_FatalError(const char *fmt, ...);
+void ddgr_PushError(const char *fmt, ...);
 
 #endif

@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -1060,7 +1060,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -1128,7 +1128,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -1147,11 +1147,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 3
-char *Door_names[NUM_DOOR_NAMES] = {"AirlockInnerDoor", "AirlockOuterDoor", "DoorWon'tOpenFar"};
+const char *Door_names[NUM_DOOR_NAMES] = {"AirlockInnerDoor", "AirlockOuterDoor", "DoorWon'tOpenFar"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 79
-char *Object_names[NUM_OBJECT_NAMES] = {"TeleporterA1",
+const char *Object_names[NUM_OBJECT_NAMES] = {"TeleporterA1",
                                         "TeleporterA2",
                                         "TeleporterB1",
                                         "TeleporterC1",
@@ -1233,7 +1233,7 @@ char *Object_names[NUM_OBJECT_NAMES] = {"TeleporterA1",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 31
-char *Room_names[NUM_ROOM_NAMES] = {
+const char *Room_names[NUM_ROOM_NAMES] = {
     "AirlockRoom",     "AirlockIDRoom", "AirlockODRoom",      "BossRoomA",        "BossRoomB",         "BossRoomC",
     "BossRoomD",       "BossRoomE",     "ThrusterSwitchRoom", "BossLeftHideRoom", "BossRightHideRoom", "TeleporterA2",
     "TeleporterA1",    "Maw1EntryRoom", "Maw1Room",           "Maw2EntryRoom",    "Maw2Room",          "Maw3EntryRoom",
@@ -1243,7 +1243,7 @@ char *Room_names[NUM_ROOM_NAMES] = {
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 23
-char *Trigger_names[NUM_TRIGGER_NAMES] = {
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {
     "AirlockTrigger",      "LeftOuterShell",    "EnteredHiveArea1", "EnteredHive2",
     "EnteredHive3",        "LeftHiveArea1",     "LeftHive2",        "LeftHive3",
     "ForcefieldRoomTrigg", "LowerQuadTrigger",  "NestTrigger1",     "NestTrigger2",
@@ -1255,27 +1255,27 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 16
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch41",   "EnvSteamEmitG",  "DoorIsLocked",  "EnvSlowCreakD",
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch41",   "EnvSteamEmitG",  "DoorIsLocked",  "EnvSlowCreakD",
                                       "EnvSlowCreakE", "Merc4Vortex",    "Wall fade ???", "AmbMatCenProduce",
                                       "EnvElectricE",  "Powerup pickup", "EnvElectricA",  "AmbSwitch31",
                                       "Merc4Thruster", "Merc4BossDeath", "Merc4Rumble",   "AmbSwitch11"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 4
-char *Texture_names[NUM_TEXTURE_NAMES] = {"CC_JetEngine", "Alien_Forcefield02", "FunkyEffect3", "CC_JetEngineLit"};
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"CC_JetEngine", "Alien_Forcefield02", "FunkyEffect3", "CC_JetEngineLit"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 7
-char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",   "IntroPlayerPath", "BossDeathCam", "BossDeathPath",
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",   "IntroPlayerPath", "BossDeathCam", "BossDeathPath",
                                     "Escape2CamPath", "EscapePath2",     "BossIntroCam2"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 0
-char **Matcen_names = NULL;
+const char **Matcen_names = NULL;
 int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 13
-char *Goal_names[NUM_GOAL_NAMES] = {"Engage Airlock Power",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Engage Airlock Power",
                                     "Enter Outer Shell through Airlock",
                                     "Teleport into Planetoid's Core",
                                     "Disable Alien Forcefield Generators",
@@ -1291,7 +1291,7 @@ char *Goal_names[NUM_GOAL_NAMES] = {"Engage Airlock Power",
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 30
-char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
                                           "AirlockPowerOn",
                                           "AirlockDecompStarted",
                                           "AirlockActive",
@@ -1321,7 +1321,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
                                           "DA1Hud",
                                           "DA2Game",
                                           "DA2Hud"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1339,8 +1339,8 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
-  char english_filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
+  char english_filename[(_MAX_PATH + 32) * 2];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1425,7 +1425,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

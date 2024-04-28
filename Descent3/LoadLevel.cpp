@@ -1412,7 +1412,7 @@ void WriteAllDoorways(CFILE *ofile);
 #define CONV_SINGLE 0x02
 typedef struct {
   int type, id;
-  char *name;
+  const char *name;
   ubyte flag;
 } tConvertObject;
 
@@ -2632,7 +2632,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 }
 
 // Build a translation table for various items
-void BuildXlateTable(CFILE *ifile, int (*lookup_func)(char *), short *xlate_table, int max_items, int type) {
+void BuildXlateTable(CFILE *ifile, int (*lookup_func)(const char *), short *xlate_table, int max_items, int type) {
   char name[PAGENAME_LEN];
   int n;
   int i;
@@ -3519,7 +3519,7 @@ void VerifyObjectList() {
 }
 
 // Data to deal with a bunch of renamed doors
-char *Old_door_names[] = {"markroomdoor.OOF1",
+const char *Old_door_names[] = {"markroomdoor.OOF1",
                           "cellblockdoor.OOF1",
                           "towerringdoor.OOF1",
                           "hangdoorinverse.oof1",
@@ -3542,7 +3542,7 @@ char *Old_door_names[] = {"markroomdoor.OOF1",
                           "PTMC Industrial 1",
                           "PTMC Covert 1"};
 
-char *New_door_names[] = {"MARK'S OLD DOOR",
+const char *New_door_names[] = {"MARK'S OLD DOOR",
                           "SEAN'S NOVAK DOOR 1",
                           "SEAN'S NOVAK DOOR 2",
                           "SEAN'S NOVAK DOOR 3",
@@ -3568,7 +3568,7 @@ char *New_door_names[] = {"MARK'S OLD DOOR",
 #define NUM_RENAMED_DOORS (sizeof(Old_door_names) / sizeof(*Old_door_names))
 
 // Deals with some renamed doors.  Translates the old name to the new name, then looks up the id
-int SpecialFindDoorName(char *name) {
+int SpecialFindDoorName(const char *name) {
   int i, id;
 
   // Look up the old name, and return it if found
@@ -5618,7 +5618,7 @@ void AlmostPageInGeneric(int id) {
   }
 }
 
-extern char *Static_sound_names[];
+extern const char *Static_sound_names[];
 void AlmostPageInAllData() {
   int i;
 

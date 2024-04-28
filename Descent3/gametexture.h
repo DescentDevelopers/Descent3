@@ -329,11 +329,11 @@ int GetPreviousTexture(int n);
 
 // Searches thru all textures for a specific name, returns -1 if not found
 // or index of texture with name
-int FindTextureName(char *name);
+int FindTextureName(const char *name);
 
 // Searches thru all textures for a bitmap of a specific name, returns -1 if not found
 // or index of texture with name
-int FindTextureBitmapName(char *name);
+int FindTextureBitmapName(const char *name);
 
 // Given a texture handle, returns that textures bitmap
 // If the texture is animated, returns framenum mod num_of_frames in the animation
@@ -341,7 +341,7 @@ int GetTextureBitmap(int handle, int framenum, bool force = false);
 
 // Given a filename, loads either the bitmap or vclip found in that file.  If type
 // is not NULL, sets it to 1 if file is animation, otherwise sets it to zero
-int LoadTextureImage(char *filename, int *type, int texture_size, int mipped, int pageable = 0, int format = 0);
+int LoadTextureImage(const char *filename, int *type, int texture_size, int mipped, int pageable = 0, int format = 0);
 
 // Goes through and marks a texture as a tmap2 if its bitmap(s) have transparency
 bool CheckIfTextureIsTmap2(int texnum);

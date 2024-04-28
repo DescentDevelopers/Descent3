@@ -339,14 +339,14 @@ inline float POLY_DEPTH(int model_num) { return Poly_models[model_num].maxs.z - 
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
-int LoadPolyModel(char *filename, int pageable);
+int LoadPolyModel(const char *filename, int pageable);
 
 // gets the filename from a path, plus appends our .pof extension
-void ChangePolyModelName(char *src, char *dest);
+void ChangePolyModelName(const char *src, char *dest);
 
 // Searches thru all polymodels for a specific name, returns -1 if not found
 // or index of polymodel with name
-int FindPolyModelName(char *name);
+int FindPolyModelName(const char *name);
 
 // Draws a polygon model to the viewport
 // Normalized_time is an array of floats from 0 to 1 that represent how far into

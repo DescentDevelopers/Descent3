@@ -176,7 +176,7 @@ typedef struct {
 extern int Num_ships;
 extern ship Ships[MAX_SHIPS];
 
-extern char *AllowedShips[];
+extern const char *AllowedShips[];
 
 // Sets all ships to unused
 void InitShips();
@@ -195,11 +195,11 @@ int GetPrevShip(int n);
 
 // Searches thru all ships for a specific name, returns -1 if not found
 // or index of ship with name
-int FindShipName(char *name);
+int FindShipName(const char *name);
 
 // Given a filename, loads either the model or vclip found in that file.  If type
 // is not NULL, sets it to 1 if file is model, otherwise sets it to zero
-int LoadShipImage(char *filename);
+int LoadShipImage(const char *filename);
 
 // Given a ship handle, returns that ships image for framenum
 int GetShipImage(int handle);

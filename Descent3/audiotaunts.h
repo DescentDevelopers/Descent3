@@ -71,7 +71,7 @@ int taunt_GetError(void);
 
 //	taunt_GetErrorString
 //	Returns a string describing an error code
-char *taunt_GetErrorString(int error);
+const char *taunt_GetErrorString(int error);
 
 //	taunt_ImportWave
 //	Given a fully qualified wave_filename (location of a .wav) and a fully

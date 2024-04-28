@@ -499,7 +499,7 @@ void Descent3() {
         ddio_MakePath(intropath, Base_directory, "movies", "dolby1.mv8", NULL);
 
         if (remote_path || (cfexist(intropath))) {
-          char *t = GetMultiCDPath("dolby1.mv8");
+          const char *t = GetMultiCDPath("dolby1.mv8");
           if (t)
             PlayMovie(t);
         }
@@ -534,7 +534,7 @@ void Descent3() {
         ddio_MakePath(intropath, Base_directory, "movies", intro_movie_name, NULL);
 
         if (remote_path || (cfexist(intropath))) {
-          char *t = GetMultiCDPath(intro_movie_name);
+          const char *t = GetMultiCDPath(intro_movie_name);
           if (t)
             PlayMovie(t);
         }
@@ -803,13 +803,13 @@ void D3DebugResumeHandler() {
 
 void RenderBlankScreen(void);
 
-char *GetCDVolume(int cd_num) {
-  char *p = NULL;
+const char *GetCDVolume(int cd_num) {
+  const char *p = NULL;
 
 #if   !defined(OEM)
-  char volume_labels[3][_MAX_PATH] = {"", "D3_1", "D3_2"};
+  const char volume_labels[3][_MAX_PATH] = {"", "D3_1", "D3_2"};
 #else
-  char volume_labels[3][_MAX_PATH] = {"", "D3OEM_1", ""};
+  const char volume_labels[3][_MAX_PATH] = {"", "D3OEM_1", ""};
 #endif
 
   p = ddio_GetCDDrive("D3_DVD");
@@ -879,7 +879,7 @@ int num_cd_files = sizeof(file_volumes) / sizeof(file_vols);
 // CD or off of the local drive. If it needs to come from a CD, it figures out
 // which CD and prompts the user to enter that CD. If they hit cancel, it
 // returns NULL.
-char *GetMultiCDPath(char *file) {
+const char *GetMultiCDPath(const char *file) {
   static char filepath[_MAX_PATH * 2];
   static char fullpath[_MAX_PATH * 2];
   int volume = 0;
@@ -941,7 +941,7 @@ char *GetMultiCDPath(char *file) {
     return file;
 
   if (volume) {
-    char *p = GetCDVolume(volume);
+    const char *p = GetCDVolume(volume);
     if (p) {
       // If it's DVD, we need to get the proper files for the language
       if ((CD_inserted == 3) && (file_volumes[i].localized)) {

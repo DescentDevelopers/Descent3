@@ -305,7 +305,7 @@ void Debug_LogClose() {
   }
 }
 
-void Debug_ConsoleOpen(int n, int row, int col, int width, int height, char *title) {
+void Debug_ConsoleOpen(int n, int row, int col, int width, int height, const char *title) {
   if (!Mono_initialized)
     return; // error! no mono card
   if (n >= MAX_NUM_WINDOWS)
@@ -369,7 +369,7 @@ void Debug_ConsoleClose(int n) {
   Mono_virtual_window_list[n] = -1;
 }
 
-void Debug_ConsolePrintf(int n, char *format, ...) {
+void Debug_ConsolePrintf(int n, const char *format, ...) {
   static bool newline = false;
   char *ptr = Mono_buffer;
   va_list args;
@@ -411,7 +411,7 @@ void Debug_ConsolePrintf(int n, char *format, ...) {
   }
 }
 
-void Debug_ConsolePrintf(int n, int row, int col, char *format, ...) {
+void Debug_ConsolePrintf(int n, int row, int col, const char *format, ...) {
   char *ptr = Mono_buffer;
   int r, c;
   va_list args;

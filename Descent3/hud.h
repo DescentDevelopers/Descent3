@@ -349,12 +349,12 @@ extern float Hud_aspect_y;
 // Adds a message to the HUD message list.  If the list is already full, punt the
 // top one and move the others up
 // Returns true if message added, or false if message not (because the previous message was the same)
-bool AddHUDMessage(char *format, ...);
-bool AddBlinkingHUDMessage(char *format, ...);
+bool AddHUDMessage(const char *format, ...);
+bool AddBlinkingHUDMessage(const char *format, ...);
 
 // Adds a HUD message (similar to AddHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
-bool AddFilteredHUDMessage(char *format, ...);
+bool AddFilteredHUDMessage(const char *format, ...);
 
 //	initializes other hud stuff
 void SetHUDEnergyImage(const char *energy_img);
@@ -380,11 +380,11 @@ void StartTeamHUDInputMessage();
 
 // Adds a colored message to the hud
 // Returns true if message added, or false if message not (because the previous message was the same)
-bool AddColoredHUDMessage(ddgr_color color, char *format, ...);
+bool AddColoredHUDMessage(ddgr_color color, const char *format, ...);
 
 // Adds a HUD message (similar to AddColoredHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
-bool AddFilteredColoredHUDMessage(ddgr_color color, char *format, ...);
+bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...);
 
 //	Initializes Reticle on Hud.  Usually called when weapon changes.
 void InitReticle(int primary_slots, int secondary_slots);
@@ -419,7 +419,7 @@ void ResetPersistentHUDMessage();
 //		MULTI_SEND_MESSAGE_GREEN_TEAM	= only green team (2) should get this message
 //		MULTI_SEND_MESSAGE_YELLOW_TEAM	= only yellow team (3) should get this message
 //		0-32							= player num of the player to get the message
-char *GetMessageDestination(char *message, int *destination);
+const char *GetMessageDestination(const char *message, int *destination);
 
 // HUD System
 
@@ -583,23 +583,23 @@ void SGSHudState(CFILE *fp);
 bool LGSHudState(CFILE *fp);
 
 // returns scaled line width
-int RenderHUDGetTextLineWidth(char *string);
+int RenderHUDGetTextLineWidth(const char *string);
 
 // returns scaled text height
-int RenderHUDGetTextHeight(char *string);
+int RenderHUDGetTextHeight(const char *string);
 
 //	renders a bitmap onto the hud
 void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, ubyte alpha,
                    int sat_count = 0);
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt, ...);
+void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
 
 //	flags for RenderHudText.
 #define HUDTEXT_CENTERED 1
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt, ...);
+void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
 
 // reset hud messages.
 void ResetHUDMessages();

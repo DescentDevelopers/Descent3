@@ -2498,7 +2498,7 @@ void msafe_DoPowerup(msafe_struct *mstruct) {
 }
 // Data for primary powerups
 struct {
-  char *name;
+  const char *name;
   int weapon_index;
   int pickup_msg, already_have_msg, ammo_msg, full_msg;
 } powerup_data_primary[] = {
@@ -2514,7 +2514,7 @@ struct {
 };
 #define NUM_POWERUP_TYPES_PRIMARY (sizeof(powerup_data_primary) / sizeof(*powerup_data_primary))
 struct {
-  char *name;
+  const char *name;
   int weapon_index;
   int added_one_msg, added_multi_msg, full_msg;
 } powerup_data_secondary[] = {
@@ -2535,7 +2535,7 @@ struct {
 };
 #define NUM_POWERUP_TYPES_SECONDARY (sizeof(powerup_data_secondary) / sizeof(*powerup_data_secondary))
 struct {
-  char *name;
+  const char *name;
   int weapon_index;
   int ammo_msg, full_msg;
 } powerup_data_ammo[] = {{"Vauss clip", VAUSS_INDEX, TXI_MSG_VAUSSAMMO, TXI_MSG_VAUSSFULL},

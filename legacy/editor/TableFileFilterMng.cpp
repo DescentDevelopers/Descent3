@@ -1169,7 +1169,7 @@ void PageDataList::AddGenericPage (int id,int process_type)
 	}
 }
 
-extern char *Static_sound_names[];
+extern const char *Static_sound_names[];
 bool PageDataList::DetermineRequiredPages(int process_type)
 {
 	CWaitCursor wc;

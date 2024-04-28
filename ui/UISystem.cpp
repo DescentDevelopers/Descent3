@@ -340,7 +340,7 @@ bool ui_KeyPoll() {
   return UI_input.key ? true : false;
 }
 //	ability to load/use mouse cursors
-void ui_UseCursor(char *fname) {
+void ui_UseCursor(const char *fname) {
   if (UI_cursor_bm > -1)
     bm_FreeBitmap(UI_cursor_bm);
   UI_cursor_bm = bm_AllocLoadFileBitmap(fname, 0);

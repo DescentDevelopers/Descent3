@@ -47,7 +47,7 @@ typedef struct {
     float fRet;
   };
   float fParam;
-  int iParam;
+  ptrdiff_t iParam;
   game_collide_info collide_info;
   int newseg, oldseg;
 } dllinfo;
@@ -86,27 +86,27 @@ void CallGameDLL(int eventnum, dllinfo *data);
 void FreeGameDLL();
 
 // Loads the game dll.  Returns 1 on success, else 0 on failure
-int LoadGameDLL(char *name, int num_teams_to_use = -1);
+int LoadGameDLL(const char *name, int num_teams_to_use = -1);
 
 // If this function is called than the DLL is to be closed, because there was an error running it
 // if reason is not NULL than that is the reason why
-void DLLFatalError(char *reason = NULL);
+void DLLFatalError(const char *reason = NULL);
 
 // Call this function right after a player connects to the game to see if a player is banned
-bool GameDLLIsAddressBanned(network_address *addr, char *tracker_id);
+bool GameDLLIsAddressBanned(network_address *addr, const char *tracker_id);
 
 // Call this function to get information/options from a unloaded mod
-bool GetDLLGameInfo(char *name, tDLLOptions *options);
+bool GetDLLGameInfo(const char *name, tDLLOptions *options);
 
 // Call this function to get information about the number of teams for the game
 // Returns true if it's a team game...false if it's a non-team game.
 // If it returns true, then min is filled in with the minumum number of teams needed for the game
 // and max is filled in with the maximum number of teams for the game...if they are the same
 // value, then it is the only number of teams supported.
-bool GetDLLNumTeamInfo(char *name, int *mint, int *maxt);
+bool GetDLLNumTeamInfo(const char *name, int *mint, int *maxt);
 
 // Call this function to get the list of requirements that the given module needs in order
 // to be playable.  Returns the number of requirements it needs...-1 on error.
-int GetDLLRequirements(char *name, char *requirements, int buflen);
+int GetDLLRequirements(const char *name, char *requirements, int buflen);
 
 #endif

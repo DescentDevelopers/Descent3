@@ -239,7 +239,7 @@ int Credits_ParseLine(char *line, creditline *credit) {
 }
 
 // Given a filename, attempts to load that filename as credit text
-bool Credits_LoadCredits(char *filename) {
+bool Credits_LoadCredits(const char *filename) {
   CFILE *infile;
   char curline[MAX_CREDIT_LEN];
 

@@ -159,10 +159,10 @@ int GetNextDoor(int n);
 int GetPrevDoor(int n);
 // Searches thru all doors for a specific name, returns -1 if not found
 // or index of door with name
-int FindDoorName(char *name);
+int FindDoorName(const char *name);
 
 // Given a filename, loads the model found in that file
-int LoadDoorImage(char *filename, int pageable = 1);
+int LoadDoorImage(const char *filename, int pageable = 1);
 // Given a door handle, returns an index to that doors model
 int GetDoorImage(int handle);
 

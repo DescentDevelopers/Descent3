@@ -141,8 +141,8 @@ bool Config_displayed = false;
 // localization info
 char **StringTable;
 int StringTableSize = 0;
-char *_ErrorString = "Missing String";
-char *GetStringFromTable(int d) {
+const char *_ErrorString = "Missing String";
+const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
   else
@@ -188,10 +188,10 @@ void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h,
 }
 
 // We import these from DMFC
-bool StringParseNumber(char *string, int *number, char **newpos);
-bool StringParseWord(char *string, char *word, int size, char **newpos);
+bool StringParseNumber(const char *string, int *number, const char **newpos);
+bool StringParseWord(const char *string, char *word, int size, const char **newpos);
 /*
-bool StringParseWord(char *string,char *word,int size,char **newpos)
+bool StringParseWord(const char *string,char *word,int size,const char **newpos)
 {
         *newpos = string;
         word[0] = '\0';
@@ -222,7 +222,7 @@ bool StringParseWord(char *string,char *word,int size,char **newpos)
         return true;
 }
 
-bool StringParseNumber(char *string,int *number,char **newpos)
+bool StringParseNumber(const char *string,int *number,const char **newpos)
 {
         char temp[10];
         bool ret = StringParseWord(string,temp,10,newpos);
@@ -235,7 +235,7 @@ bool StringParseNumber(char *string,int *number,char **newpos)
         return true;
 }
 */
-void DMFCInputCommand_MinCount(char *input_string) {
+void DMFCInputCommand_MinCount(const char *input_string) {
   if (DMFCBase->GetLocalRole() != LR_SERVER)
     return;
   if (!DMFCBase->IAmDedicatedServer())

@@ -60,7 +60,7 @@
 
 #include <algorithm>
 
-int FindArg(char *);
+int FindArg(const char *);
 void rend_SetLightingState(light_state state);
 
 int OpenGL_window_initted = 0;
@@ -219,8 +219,8 @@ dll_error:
 }
 
 // returns true if the passed in extension name is supported
-int opengl_CheckExtension(char *extName) {
-  char *p = (char *)dglGetString(GL_EXTENSIONS);
+int opengl_CheckExtension(const char *extName) {
+  const char *p = (const char *)dglGetString(GL_EXTENSIONS);
   int extNameLen = strlen(extName);
   char *end = p + strlen(p);
 
@@ -3232,10 +3232,10 @@ void rend_PreUploadTextureToCard(int handle, int map_type) {}
 void rend_FreePreUploadedTexture(int handle, int map_type) {}
 
 // Retrieves an error message
-char *rend_GetErrorMessage() { return (char *)Renderer_error_message; }
+const char *rend_GetErrorMessage() { return Renderer_error_message; }
 
 // Sets an error message
-void rend_SetErrorMessage(char *str) {
+void rend_SetErrorMessage(const char *str) {
   ASSERT(strlen(str) < 256);
   strcpy(Renderer_error_message, str);
 }

@@ -210,7 +210,7 @@ extern glVertex3fv_fp dglVertex3fv;
 extern glVertexPointer_fp dglVertexPointer;
 extern glViewport_fp dglViewport;
 
-module *LoadOpenGLDLL(char *dllname);
+module *LoadOpenGLDLL(const char *dllname);
 
 // ryan's add. 10/04/2000
 #ifdef __CHECK_FOR_TOO_SLOW_RENDERING__

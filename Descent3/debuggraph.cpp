@@ -65,7 +65,7 @@ int graph_mask = 0;
 int graph_num_nodes = 0;
 
 typedef struct {
-  char *color_name;
+  const char *color_name;
   ddgr_color color;
 } tGraphColor;
 
@@ -199,7 +199,7 @@ void DebugGraph_Initialize(void) {
   graph_num_nodes = 0;
 }
 
-int DebugGraph_Add(int min, int max, char *name, int flags) {
+int DebugGraph_Add(int min, int max, const char *name, int flags) {
   tAddDebugGraph data;
   tGraphNode *node = DebugGraph_AddNode();
   if (!node)
@@ -217,7 +217,7 @@ int DebugGraph_Add(int min, int max, char *name, int flags) {
   return index;
 }
 
-int DebugGraph_Add(float min, float max, char *name, int flags) {
+int DebugGraph_Add(float min, float max, const char *name, int flags) {
   tAddDebugGraph data;
   tGraphNode *node = DebugGraph_AddNode();
   if (!node)

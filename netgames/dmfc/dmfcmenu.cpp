@@ -139,9 +139,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 MenuItem::MenuItem() {
   m_cPtrs = 0;
@@ -164,7 +164,7 @@ MenuItem::MenuItem() {
   strcpy(m_sTitle, " ");
 }
 
-MenuItem::MenuItem(char *title, char type, ubyte flags, void (*fp)(int), ...) {
+MenuItem::MenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...) {
   m_bMoreToScroll = false;
   m_bAtBottom = false;
   m_iTopIndex = 0;
@@ -812,7 +812,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
 
   DLLgrtext_SetFont(old_font);
 }
-char *MenuItem::GetTitle(void) { return m_sTitle; }
+const char *MenuItem::GetTitle(void) { return m_sTitle; }
 void MenuItem::SetInputFocus(void) {
   // Sets this MenuItem with Input focus, reseting it's Current Sub Menu to 0 if it has a SubMenu
   HasInputFocus = true;

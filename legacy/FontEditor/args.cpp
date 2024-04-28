@@ -39,7 +39,7 @@ static int TotalArgs=0;
 char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
 // Gathers all arguments
-void GatherArgs (char *str)
+void GatherArgs (const char *str)
 {
 	int i,t,curarg=1;
 	int len=strlen(str);
@@ -92,7 +92,7 @@ void GatherArgs (char *str)
 }
  
 // Returns index of argument sought, or 0 if not found
-int FindArg (char *which)
+int FindArg (const char *which)
  {
   int i;
   

@@ -60,7 +60,7 @@ typedef struct {
 } dynamic_proc_element;
 
 extern dynamic_proc_element DynamicProcElements[];
-extern char *ProcNames[], *WaterProcNames[];
+extern const char *ProcNames[], *WaterProcNames[];
 
 extern ushort DefaultProcPalette[];
 

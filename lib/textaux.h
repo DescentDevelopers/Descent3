@@ -75,7 +75,7 @@ void textaux_WordWrap(const char *src, char *dest, int width, int font);
 //		nextline = CopyTextLine(nextline,linebuffer);
 //	}
 //	grtext_Printf(x,y,linebuffer);
-char *textaux_CopyTextLine(char *src, char *dest);
+const char *textaux_CopyTextLine(const char *src, char *dest);
 
 //	textaux_ClipString
 //	   Given a width (in pixels), and a string, this function will truncate the string

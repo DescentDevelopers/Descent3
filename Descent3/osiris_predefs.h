@@ -190,12 +190,12 @@ bool osipf_CallTriggerEvent(int trignum, int event, tOSIRISEventInfo *ei);
 void osipf_SoundTouch(char *str);
 
 // searches for an object id given it's name
-int osipf_ObjectFindID(char *name);
+int osipf_ObjectFindID(const char *name);
 
-int osipf_ObjectFindType(char *name);
+int osipf_ObjectFindType(const char *name);
 
 // searches through the weapons for a name and returns the id
-int osipf_WeaponFindID(char *name);
+int osipf_WeaponFindID(const char *name);
 
 // returns how long an object has lived
 float osipf_ObjectGetTimeLived(int objhandle);
@@ -369,7 +369,7 @@ void osipf_MissionFlagSet(int flag, ubyte value);
 //	flag is what mission flag to get.  Returns 1 if set, 0 if not.
 int osipf_MissionFlagGet(int flag);
 
-void osipf_PlayerAddHudMessage(int handle, char *str);
+void osipf_PlayerAddHudMessage(int handle, const char *str);
 void osipf_ObjGhost(int handle, bool f_ghost);
 void osipf_ObjBurning(int handle, float time, float damage_per_second);
 bool osipf_ObjIsEffect(int handle, int type_flag);
@@ -389,7 +389,7 @@ ubyte osipf_CFeof(CFILE *file);
 void osipf_SoundStop(int s_handle, bool f_immediately = false);
 int osipf_SoundPlay2d(int obj_handle, int s_id, float volume = 1.0f);
 int osipf_SoundPlay3d(int obj_handle, int s_id, float volume = 1.0f);
-int osipf_SoundFindId(char *s_name);
+int osipf_SoundFindId(const char *s_name);
 
 bool osipf_AIIsObjFriend(int obj_handle, int it_handle);
 bool osipf_AIIsObjEnemy(int obj_handle, int it_handle);
@@ -399,17 +399,17 @@ int osipf_AIGetNearbyObjs(vector *pos, int init_roomnum, float rad, int *object_
                           bool f_include_non_collide_objects = false, bool f_stop_at_closed_doors = true);
 char osipf_AIGetCurGoalIndex(int obj_handle);
 
-int osipf_FindSoundName(char *name);
-int osipf_FindRoomName(char *name);
-int osipf_FindTriggerName(char *name);
-int osipf_FindObjectName(char *name);
+int osipf_FindSoundName(const char *name);
+int osipf_FindRoomName(const char *name);
+int osipf_FindTriggerName(const char *name);
+int osipf_FindObjectName(const char *name);
 int osipf_GetTriggerRoom(int trigger_id);
 int osipf_GetTriggerFace(int trigger_id);
-int osipf_FindDoorName(char *name);
-int osipf_FindTextureName(char *name);
-int osipf_FindMatcenName(char *name);
-int osipf_FindPathName(char *name);
-int osipf_FindLevelGoalName(char *name);
+int osipf_FindDoorName(const char *name);
+int osipf_FindTextureName(const char *name);
+int osipf_FindMatcenName(const char *name);
+int osipf_FindPathName(const char *name);
+int osipf_FindLevelGoalName(const char *name);
 
 void osipf_CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int which_index, float force_scalar);
 

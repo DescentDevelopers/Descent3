@@ -104,7 +104,7 @@ enum CFileError {
 // The structure thrown by a cfile error
 typedef struct {
   int read_write; // reading or writing?  See defines.
-  char *msg;      // the error message
+  const char *msg;      // the error message
   CFILE *file;    // the file that got the error
 } cfile_error;
 
@@ -122,7 +122,7 @@ enum CFileExitStatus {
 };
 
 // See if a file is in a hog
-bool cf_IsFileInHog(char *filename, char *hogname);
+bool cf_IsFileInHog(const char *filename, const char *hogname);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
 // Parameters:  libname - the path & filename of the HOG file

@@ -207,7 +207,7 @@ void CZip::FilePrintBinary(FILE *file, uint code, int bits) {
   }
 }
 
-tVirtualFile *CZip::VFopen(char *filename, char *flags, int size) {
+tVirtualFile *CZip::VFopen(const char *filename, const char *flags, int size) {
   tVirtualFile *f;
   f = (tVirtualFile *)malloc(sizeof(tVirtualFile));
   if (!f)

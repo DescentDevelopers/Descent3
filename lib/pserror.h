@@ -153,11 +153,11 @@
 //	initializes error handler.
 bool error_Init(bool debugger, bool mono_debug, const char *app_title);
 //	exits the application and prints out a standard error message
-void Error(char *fmt, ...);
+void Error(const char *fmt, ...);
 //	prints out an assertion error
-void AssertionFailed(char *expstr, char *file, int line);
+void AssertionFailed(const char *expstr, const char *file, int line);
 // Brings up an error message for an int3
-void Int3MessageBox(char *file, int line);
+void Int3MessageBox(const char *file, int line);
 //	Message box functions
 #define MBOX_OK 1
 #define MBOX_YESNO 2
@@ -165,11 +165,11 @@ void Int3MessageBox(char *file, int line);
 #define MBOX_ABORTRETRYIGNORE 4
 #ifndef RELEASE
 //	prints out a standard OS messagebox
-void OutrageMessageBox(char *str, ...);
-int OutrageMessageBox(int type, char *str, ...);
+void OutrageMessageBox(const char *str, ...);
+int OutrageMessageBox(int type, const char *str, ...);
 #endif
 // Sets the title for future OutrageMessageBox() dialogs
-void SetMessageBoxTitle(char *title);
+void SetMessageBoxTitle(const char *title);
 // Write a block of text to the system clipboard
 void DumpTextToClipboard(char *text);
 //////////////////////////////////////////////////////////////////////////////

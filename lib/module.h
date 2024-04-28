@@ -140,7 +140,7 @@ void mod_GetRealModuleName(const char *modfilename, char *realmodfilename);
 // Loads a dynamic module into memory for use.  If no extension is given, the default
 //	system specific extension is used.
 // Returns true on success, false otherwise
-bool mod_LoadModule(module *handle, char *modfilename, int flags = MODF_LAZY);
+bool mod_LoadModule(module *handle, const char *modfilename, int flags = MODF_LAZY);
 
 // Frees a previously loaded module from memory, it can no longer be used
 // Returns true on success, false otherwise
@@ -149,7 +149,7 @@ bool mod_FreeModule(module *handle);
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
-MODPROCADDRESS mod_GetSymbol(module *handle, char *symstr, unsigned char parmbytes);
+MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, unsigned char parmbytes);
 
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
 // calling this function it not only returns the last error, but it removes it, so if you were to call this function

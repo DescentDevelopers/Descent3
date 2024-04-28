@@ -155,7 +155,8 @@ int taunt_GetError(void) { return TauntLastError; }
 
 //	taunt_GetErrorString
 //	Returns a string describing an error code
-char *taunt_GetErrorString(int error) {
+// !!! FIXME: This could just return a string literal and not strcpy it.
+const char *taunt_GetErrorString(int error) {
   static char str[256];
 
   switch (error) {

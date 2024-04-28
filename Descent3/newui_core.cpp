@@ -1720,7 +1720,7 @@ void newuiSheet::UpdateChanges() {
     case GADGET_EDITBOXPASS:
       desc->obj.edit->GetText(sbuftest, EDIT_BUFLEN_MAX);
       if (strcmp(sbuftest, (char *)desc->internal) != 0) {
-        desc->obj.edit->SetText((char *)desc->internal);
+        desc->obj.edit->SetText((const char *) desc->internal);
       }
       break;
 
@@ -2057,7 +2057,7 @@ void newuiSheet::AddBitmap(int bm_handle) {
 //	adds a static text item
 char *newuiSheet::AddChangeableText(int buflen) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_CHANGEABLE_TXT, NULL);
-  gadget->internal = (void *)buflen;
+  gadget->internal = (void *)(size_t)buflen;
   gadget->parm.p = mem_malloc(buflen);
   return (char *)gadget->parm.p;
 }

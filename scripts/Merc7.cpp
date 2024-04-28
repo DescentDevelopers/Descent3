@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -1335,22 +1335,22 @@ static float DC_Time_Since_Last_Create = 0.0f;
 static float DC_Last_Game_Time = 0.0f;
 
 #define DC_N_VALID_EXITS 4
-char *DC_Valid_Exits[DC_N_VALID_EXITS] = {"DCExit-1", "DCExit-2", "DCExit-3", "DCExit-2"};
+const char *DC_Valid_Exits[DC_N_VALID_EXITS] = {"DCExit-1", "DCExit-2", "DCExit-3", "DCExit-2"};
 static int DC_Valid_Exit_Handles[DC_N_VALID_EXITS];
 static int DC_Valid_Exit_RoomHandles[DC_N_VALID_EXITS];
 
 static unsigned DC_Exit_Mask = 0; // used to exclude slots to prevent conflicts
 
-char *DC_Valid_Ends[DC_N_VALID_EXITS] = {"DCEnd-1", "DCEnd-2", "DCEnd-3", "DCEnd-4"};
+const char *DC_Valid_Ends[DC_N_VALID_EXITS] = {"DCEnd-1", "DCEnd-2", "DCEnd-3", "DCEnd-4"};
 static int DC_Valid_End_Handles[DC_N_VALID_EXITS];
 
 #define DC_N_VALID_TERMS 5
-char *DC_Valid_Terms[DC_N_VALID_TERMS] = {"DCPath-1", "DCPath-2", "DCPath-3", "DCPath-4", "DCPath-5"};
+const char *DC_Valid_Terms[DC_N_VALID_TERMS] = {"DCPath-1", "DCPath-2", "DCPath-3", "DCPath-4", "DCPath-5"};
 static int DC_Valid_Term_Handles[DC_N_VALID_TERMS];
 static unsigned DC_Term_Mask = 0; // used to exclude slots to prevent conflicts
 
 #define DC_N_VALID_MATCENS 4
-char *DC_Valid_Matcens[DC_N_VALID_MATCENS] = {"DCMatcen-1", "DCMatcen-2", "DCMatcen-3", "DCMatcen-4"};
+const char *DC_Valid_Matcens[DC_N_VALID_MATCENS] = {"DCMatcen-1", "DCMatcen-2", "DCMatcen-3", "DCMatcen-4"};
 static int DC_Valid_Matcen_Handles[DC_N_VALID_MATCENS];
 static unsigned DC_Matcen_Mask = 0; // used to exclude slots to prevent conflicts
 
@@ -2094,7 +2094,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -2162,7 +2162,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -2181,11 +2181,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 2
-char *Door_names[NUM_DOOR_NAMES] = {"BossDoor", "DroidDoor2"};
+const char *Door_names[NUM_DOOR_NAMES] = {"BossDoor", "DroidDoor2"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 152
-char *Object_names[NUM_OBJECT_NAMES] = {"ParkSpew1",
+const char *Object_names[NUM_OBJECT_NAMES] = {"ParkSpew1",
                                         "ParkSpew2",
                                         "ParkSpew3",
                                         "ParkSpew4",
@@ -2340,14 +2340,14 @@ char *Object_names[NUM_OBJECT_NAMES] = {"ParkSpew1",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 18
-char *Room_names[NUM_ROOM_NAMES] = {"BossRoom",     "HiDnShaft",    "HiUpShaft",    "LoShaft",       "LoEntrance",
+const char *Room_names[NUM_ROOM_NAMES] = {"BossRoom",     "HiDnShaft",    "HiUpShaft",    "LoShaft",       "LoEntrance",
                                     "LoExit",       "HiUpEntrance", "HiUpExit",     "HiDnEntrance",  "HiDnExit",
                                     "FireRoom",     "PreBoss",      "SuzukiOffice", "DroidExplode1", "DroidExplosion",
                                     "DroidCommand", "ElevatorRoom", "PreFireRoom"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 16
-char *Trigger_names[NUM_TRIGGER_NAMES] = {"EnterMaintenence", "MntLifterInit", "StartUpperLifters", "BossRoomEntrance",
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"EnterMaintenence", "MntLifterInit", "StartUpperLifters", "BossRoomEntrance",
                                           "RoboDestroy",      "DestroyMe",     "MusicBoss",         "MusicSuzuki2",
                                           "MusicSuzuki1",     "MusicMid4",     "MusicMid3",         "MusicMid2",
                                           "MusicMid1",        "MusicMaint2",   "MusicMaint1",       "MusicSewer1"};
@@ -2356,15 +2356,15 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 2
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbSirenIntense", "AmbSwitch31"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSirenIntense", "AmbSwitch31"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 3
-char *Texture_names[NUM_TEXTURE_NAMES] = {"MeshGlass1", "FunkyEffectGreen", "FunkyEffect3"};
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"MeshGlass1", "FunkyEffectGreen", "FunkyEffect3"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 57
-char *Path_names[NUM_PATH_NAMES] = {"IntroCam-2",    "IntroCam-1",
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCam-2",    "IntroCam-1",
                                     "IntroCam-Ship", "IntroPlayerPath",
                                     "BST-1",         "BST-2",
                                     "BST-3",         "BST-C6",
@@ -2396,23 +2396,23 @@ char *Path_names[NUM_PATH_NAMES] = {"IntroCam-2",    "IntroCam-1",
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 10
-char *Matcen_names[NUM_MATCEN_NAMES] = {"MntMatcenA",     "MntMatcenB",     "TopLifterMatcen", "BombMatcen",
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"MntMatcenA",     "MntMatcenB",     "TopLifterMatcen", "BombMatcen",
                                         "BomberMatcen-2", "BomberMatcen-1", "DCMatcen-1",      "DCMatcen-2",
                                         "DCMatcen-3",     "DCMatcen-4"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 6
-char *Goal_names[NUM_GOAL_NAMES] = {
+const char *Goal_names[NUM_GOAL_NAMES] = {
     "Destroy the PTMC Assault Bot", "Create a Disturbance to Summon Droids", "Wait for Droids to Open Central Command",
     "Place Bomb on Delivery Pad",   "Get a Safe Distance from Bomb",         "Assasinate President Suzuki of PTMC"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 14
-char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "EmptyMessage",  "BombInventory", "FiremenSummoning",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "EmptyMessage",  "BombInventory", "FiremenSummoning",
                                           "FiremenDone",     "DroidOnlyDoor", "DeliveryReady", "BombPadFull",
                                           "BombDropSuccess", "BombDropFail",  "BossName",      "SafeFromBomb",
                                           "ActivateBomb",    "SuzukiDead"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -2430,8 +2430,8 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
-  char english_filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
+  char english_filename[(_MAX_PATH + 32) * 2];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -2516,7 +2516,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

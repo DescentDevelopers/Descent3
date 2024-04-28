@@ -242,7 +242,7 @@ void PRec_SetDisconnectTime(int slot, float time) {
 //	Returns the PRec slot of a player who matches the given info, -1 if none
 //	addr = network address			(can be NULL)
 //	tracker_id = Mastertracker ID  (can be NULL)
-int PRec_FindPlayer(char *callsign, network_address *addr, char *tracker_id) {
+int PRec_FindPlayer(const char *callsign, network_address *addr, const char *tracker_id) {
   if (!callsign)
     return -1;
 

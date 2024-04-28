@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -950,7 +950,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -1018,7 +1018,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -1037,14 +1037,14 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 12
-char *Door_names[NUM_DOOR_NAMES] = {"CenterUpperSteamDo", "CenterLowerSteamDo", "RightUpperSteamDoo",
+const char *Door_names[NUM_DOOR_NAMES] = {"CenterUpperSteamDo", "CenterLowerSteamDo", "RightUpperSteamDoo",
                                     "RightLowerSteamDoo", "LeftUpperSteamDoor", "LeftLowerSteamDoor",
                                     "FarHeatSinkDoor",    "CoolingDuctEntranc", "InnerHeatSinkDoor",
                                     "MiddleHeatSinkDoor", "BetweenDoor",        "SecurityTowerDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 92
-char *Object_names[NUM_OBJECT_NAMES] = {"WeaponsPlantData",
+const char *Object_names[NUM_OBJECT_NAMES] = {"WeaponsPlantData",
                                         "CenterSteamSpewer",
                                         "RightSteamSpewer",
                                         "LeftSteamSpewer",
@@ -1139,7 +1139,7 @@ char *Object_names[NUM_OBJECT_NAMES] = {"WeaponsPlantData",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 23
-char *Room_names[NUM_ROOM_NAMES] = {
+const char *Room_names[NUM_ROOM_NAMES] = {
     "CenterUpperSteamTu", "CenterUpperSteamDo", "CenterLowerSteamTu", "CenterLowerSteamDo", "RightUpperSteamTub",
     "RightUpperSteamDoo", "RightLowerSteamTub", "RightLowestSteamTu", "RightLowerSteamDoo", "LeftUpperSteamTube",
     "LeftUpperSteamDoor", "LeftLowerSteamTube", "LeftLowerSteamDoor", "RefineryCore",       "ThermalRegulator",
@@ -1148,7 +1148,7 @@ char *Room_names[NUM_ROOM_NAMES] = {
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 25
-char *Trigger_names[NUM_TRIGGER_NAMES] = {
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {
     "EndLevelTrigger", "SecurityTowerGoalTr", "MHangar-1",      "MHeatSink-4",    "MHeatSink-3",
     "MHeatSink-2",     "MHeatSink-1",         "MUnderground-5", "MUnderground-4", "MUnderground-3",
     "MUnderground-2",  "MUnderground-1",      "MSecondary-4",   "MSecondary-3",   "MSecondary-2",
@@ -1159,34 +1159,34 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 5
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbExplosionFarI", "AmbExplosionFarD", "AmbExplosionFarG", "Powerup pickup",
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbExplosionFarI", "AmbExplosionFarD", "AmbExplosionFarG", "Powerup pickup",
                                       "AmbSirenIntense"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 5
-char *Texture_names[NUM_TEXTURE_NAMES] = {"P-MonTempBelo", "Bluedatascrollup", "P-MonCoolingEng", "P-MonTempAbov",
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"P-MonTempBelo", "Bluedatascrollup", "P-MonCoolingEng", "P-MonTempAbov",
                                           "P-MonTempCrit"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 7
-char *Path_names[NUM_PATH_NAMES] = {"IntroCameraPath",    "IntroPlayerPath",        "EndLevelCameraPath",
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCameraPath",    "IntroPlayerPath",        "EndLevelCameraPath",
                                     "EndLevelPlayerPath", "FrigateEscapePart2Path", "ElevatorPath",
                                     "FrigateEscapePath"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 1
-char *Matcen_names[NUM_MATCEN_NAMES] = {"SecurityTowerMatcen"};
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"SecurityTowerMatcen"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 7
-char *Goal_names[NUM_GOAL_NAMES] = {
+const char *Goal_names[NUM_GOAL_NAMES] = {
     "Activate the Cooling System",       "Destroy the Outer Heat Sink",  "Make your way through the Refinery Core",
     "Destroy the Inner Heat Sink",       "Destroy the Middle Heat Sink", "Find a way out of the facility",
     "Rescue medical frigate Nightingale"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 21
-char *Message_names[NUM_MESSAGE_NAMES] = {"IntroCamera",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroCamera",
                                           "EndLevel",
                                           "CoolingSystemEngaged",
                                           "CoolingSystemClock",
@@ -1207,7 +1207,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"IntroCamera",
                                           "WeaponsPlantData",
                                           "FoundSecretData",
                                           "FrigateSaved"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1225,7 +1225,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1303,7 +1303,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

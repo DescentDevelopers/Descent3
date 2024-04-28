@@ -217,7 +217,7 @@ int GetPrevDoor(int n) {
 }
 // Searches thru all doors for a specific name, returns -1 if not found
 // or index of door with name
-int FindDoorName(char *name) {
+int FindDoorName(const char *name) {
   int i;
 
   ASSERT(name != NULL);
@@ -231,7 +231,7 @@ int FindDoorName(char *name) {
 
 // Given a filename, loads the model found in that file
 
-int LoadDoorImage(char *filename, int pageable) {
+int LoadDoorImage(const char *filename, int pageable) {
   int img_handle;
 
   img_handle = LoadPolyModel(filename, pageable);

@@ -172,7 +172,7 @@ void ddgr_GetSubsystem(char *name, bool *fullscreen) {
 static char *DDGR_error_msgs[DDGR_MAX_ERRORS];
 static int DDGR_num_msgs = 0;
 
-void ddgr_FatalError(char *fmt, ...) {
+void ddgr_FatalError(const char *fmt, ...) {
   //	create our error list and flag a system error
   char buf[768];
 
@@ -205,7 +205,7 @@ void ddgr_FatalError(char *fmt, ...) {
   Error(buf);
 }
 
-void ddgr_PushError(char *fmt, ...) {
+void ddgr_PushError(const char *fmt, ...) {
   va_list arglist;
   char buf[128];
 

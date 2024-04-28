@@ -212,7 +212,7 @@ DYNAEXTERN(glTexCoord4fv_fp, dglTexCoord4fv);
 static module OpenGLDLLInst;
 
 #ifdef __LINUX__
-static void *__SDL_mod_GetSymbol(char *funcStr) {
+static void *__SDL_mod_GetSymbol(const char *funcStr) {
   void *retVal = NULL;
 
   mprintf((0, "Looking up GL function [%s]...", funcStr));
@@ -238,7 +238,7 @@ static void *__SDL_mod_GetSymbol(char *funcStr) {
 extern char *__orig_pwd;
 extern char loadedLibrary[_MAX_PATH];
 #endif
-module *LoadOpenGLDLL(char *dllname) {
+module *LoadOpenGLDLL(const char *dllname) {
   mprintf((0, "Loading OpenGL dll...\n"));
 #ifdef __LINUX__
   char *tmp = getcwd(NULL, 0);
@@ -247,7 +247,7 @@ module *LoadOpenGLDLL(char *dllname) {
   chdir(tmp);
   free(tmp);
   if (rc < 0) {
-    char *sdlErr = SDL_GetError();
+    const char *sdlErr = SDL_GetError();
     mprintf((0, "OpenGL: Couldn't open library [%s].\n", dllname));
     mprintf((0, "OpenGL:  SDL error is [%s].", sdlErr));
     return NULL;
@@ -582,7 +582,7 @@ module *LoadOpenGLDLL(char *dllname) {
   extern glVertexPointer_fp dglVertexPointer;
   extern glViewport_fp dglViewport;
 
-  module *LoadOpenGLDLL(char *dllname);
+  module *LoadOpenGLDLL(const char *dllname);
 
 // ryan's add. 10/04/2000
 #ifdef __CHECK_FOR_TOO_SLOW_RENDERING__

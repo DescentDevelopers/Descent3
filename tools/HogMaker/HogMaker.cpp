@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
     auto parent_input_path = input_filename.parent_path();
     for (std::string line; std::getline(input, line);) {
       if (!is_regular_file(parent_input_path / line)) {
-        std::cout << "Warning! File " << line << " from " << input_filename << " does not exists! Skipping..."
+        std::cout << "Warning! File " << line << " from " << input_filename << " does not exist! Skipping..."
                   << std::endl;
       } else if (std::filesystem::path(line).filename().string().size() > 36) {
         std::cout << "Warning! Length of name of file " << line << " is more than 36 symbols! Skipping..." << std::endl;

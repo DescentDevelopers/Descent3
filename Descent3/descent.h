@@ -220,8 +220,8 @@ void DestroyGameViewport(grViewport *vp);
 // CD or off of the local drive. If it needs to come from a CD, it figures out
 // which CD and prompts the user to enter that CD. If they hit cancel, it
 // returns NULL.
-char *GetMultiCDPath(char *file);
-char *GetCDVolume(int cd_num);
+const char *GetMultiCDPath(const char *file);
+const char *GetCDVolume(int cd_num);
 
 inline void CREATE_VIEWPORT(grViewport **vp) { CreateGameViewport(vp); }
 

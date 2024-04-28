@@ -569,11 +569,11 @@ void GetMultiAPI(multi_api *api) {
   api->vp[25] = (int *)&Dedicated_server;
   api->vp[26] = (int *)&TCP_active;
   api->vp[27] = (int *)&IPX_active;
-  api->vp[28] = (int *)nw_ListenPort;
+  api->vp[28] = (int *)(size_t)nw_ListenPort;
   api->vp[29] = (int *)&Multi_Gamelist_changed;
   api->vp[30] = (int *)PXO_hosted_lobby_name;
   api->vp[31] = (int *)&Supports_score_api;
-  api->vp[32] = (int *)PXOPort;
+  api->vp[32] = (int *)(size_t)PXOPort;
   // Jeff: Linux dies if you try to free a DLL/so on
   // atexit, these should be freed during game sequencing
   // anyway.
@@ -595,7 +595,7 @@ void FreeMultiDLL() {
   DLLMultiClose = NULL;
 }
 // Loads the Multi dll.  Returns 1 on success, else 0 on failure
-int LoadMultiDLL(char *name) {
+int LoadMultiDLL(const char *name) {
   static int first = 1;
   char lib_name[_MAX_PATH * 2];
   char dll_name[_MAX_PATH * 2];
@@ -623,7 +623,7 @@ int LoadMultiDLL(char *name) {
   if (!cf_OpenLibrary(lib_name)) {
     ddio_MakePath(tmp_dll_name, Base_directory, "online", name, NULL);
     strcat(tmp_dll_name, ".d3c");
-    Multi_conn_dll_name[0] = NULL;
+    Multi_conn_dll_name[0] = 0;
     goto loaddll;
   }
   // get a temp file name
@@ -735,7 +735,7 @@ void *EditCreate(UIWindow *parentwin, int id, int x, int y, int w, int h, int fl
   newedit->Create(parentwin, id, x, y, w, h, flags);
   return newedit;
 }
-void EditSetText(NewUIEdit *item, char *newtext) { item->SetText(newtext); }
+void EditSetText(NewUIEdit *item, const char *newtext) { item->SetText(newtext); }
 void EditGetText(NewUIEdit *item, char *buff, int len) { item->GetText(buff, len); }
 void *ButtonCreate(UIWindow *parentwin, int id, UITextItem *titleitem, int x, int y, int w, int h, int flags) {
   UIButton *newbutt;
@@ -755,11 +755,11 @@ void ListRemoveAll(UIListBox *item) { item->RemoveAll(); }
 void ListAddItem(UIListBox *item, UITextItem *uitext) { item->AddItem(uitext); }
 void ListRemoveItem(UIListBox *item, UITextItem *txtitem) { item->RemoveItem(txtitem); }
 void ListSelectItem(UIListBox *item, UITextItem *txtitem) { item->SelectItem(txtitem); }
-char *ListGetItem(UIListBox *item, int index) {
+const char *ListGetItem(UIListBox *item, int index) {
   UITextItem *ui_item;
   ui_item = (UITextItem *)item->GetItem(index);
   if (ui_item)
-    return (char *)ui_item->GetBuffer();
+    return ui_item->GetBuffer();
   else {
     mprintf((0, "No listbox item found for index %d\n", index));
     return "";
@@ -832,7 +832,7 @@ int PollUI(void) {
   }
   return result;
 }
-void *CreateNewUITextItem(char *newtext, unsigned int color, int font) {
+void *CreateNewUITextItem(const char *newtext, unsigned int color, int font) {
   UITextItem *new_text_item;
   if (font == -1) {
     new_text_item = new UITextItem(newtext);
@@ -878,7 +878,7 @@ void NewUIMessageBoxDestroy() {}
 void NewUIMessageBoxOpen() { messageb.Open(); }
 void NewUIMessageBoxClose() {}
 static bool splash_screen_up = false;
-void CreateSplashScreen(char *msg, int usecancel) {
+void CreateSplashScreen(const char *msg, int usecancel) {
   if (splash_screen_up)
     return;
   splash_screen_up = true;
@@ -935,10 +935,10 @@ void OldListRemoveAll(UIListBox *item) { item->RemoveAll(); }
 void OldListAddItem(UIListBox *item, UITextItem *uitext) { item->AddItem(uitext); }
 void OldListRemoveItem(UIListBox *item, UITextItem *txtitem) { item->RemoveItem(txtitem); }
 void OldListSelectItem(UIListBox *item, UITextItem *txtitem) { item->SelectItem(txtitem); }
-char *OldListGetItem(UIListBox *item, int index) {
+const char *OldListGetItem(UIListBox *item, int index) {
   UITextItem *ti = (UITextItem *)item->GetItem(index);
   if (ti)
-    return (char *)ti->GetBuffer();
+    return ti->GetBuffer();
   else {
     mprintf((0, "No listbox item found for index %d\n", index));
     return "";
@@ -951,7 +951,7 @@ void *OldEditCreate(UIWindow *parentitem, int id, int x, int y, int w, int h, in
   newoldedit->Create(parentitem, id, x, y, w, h, flags);
   return newoldedit;
 }
-void OldEditSetText(UIEdit *item, char *newtext) { item->SetText(newtext); }
+void OldEditSetText(UIEdit *item, const char *newtext) { item->SetText(newtext); }
 void OldEditGetText(UIEdit *item, char *buff, int len) { item->GetText(buff, len); }
 static void (*DLLInit_old_ui_callback)() = NULL;
 void ToggleUICallback(int state) {
@@ -972,7 +972,7 @@ void SetOldEditBufferLen(UIEdit *item, int len) { item->SetBufferLen(len); }
 void NewUIWindowLoadBackgroundImage(NewUIWindow *item, const char *image_name) {
   item->LoadBackgroundImage(image_name);
 }
-void DeleteUIItem(void *delitem) { delete delitem; }
+void DeleteUIItem(void *delitem) { delete delitem; }   // !!! FIXME: this needs to change, but this deletes a lot of different things...
 void GadgetDestroy(UIGadget *item) { item->Destroy(); }
 void *SliderCreate(UIWindow *parent, int id, int x, int y, int flags) {
   NewUISlider *slid;

@@ -33,7 +33,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte isdoor);
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -44,9 +44,9 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 
 int String_table_size = 0;
 char **String_table = NULL;
-static char *_Error_string = "!!ERROR MISSING STRING!!";
-static char *_Empty_string = "";
-char *GetStringFromTable(int index) {
+static const char *_Error_string = "!!ERROR MISSING STRING!!";
+static const char *_Empty_string = "";
+const char *GetStringFromTable(int index) {
   if ((index < 0) || (index >= String_table_size))
     return _Error_string;
   if (!String_table[index])
@@ -65,7 +65,7 @@ void PortalBreakGlass(int portalnum, int roomnum) {
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
+int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
                     bool f_set_parent = false) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -106,7 +106,7 @@ int CreateAndAttach(int me, char *child_name, ubyte child_type, char parent_ap, 
 
 typedef struct {
   int id;
-  char *name;
+  const char *name;
 } tScriptInfo;
 
 tScriptInfo ScriptInfo[NUM_IDS] = {{ID_MERCENDBOSS, "MercEndBoss"}, {ID_GUN, "Gun"},
@@ -306,7 +306,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;

@@ -26,7 +26,7 @@
 // Returns a pointer to the string at the index location from the string table
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
 
-char *GetStringFromTable(int index);
+const char *GetStringFromTable(int index);
 
 #define TXT_DEATH1 TXT(0)          //"%s got blasted by %s"
 #define TXT_DEATH2 TXT(1)          //"%s knows %s is his god"

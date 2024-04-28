@@ -205,7 +205,7 @@ void ddio_ReinitCDSystem(void) { CDROM_Devices.reinit(); }
 
 // Give a volume label to look for, and if it's found returns a path
 // If it isn't found, return NULL
-char *ddio_GetCDDrive(char *vol) {
+const char *ddio_GetCDDrive(const char *vol) {
   static char drivepath[_MAX_PATH];
 
   /*

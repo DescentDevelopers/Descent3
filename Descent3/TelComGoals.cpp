@@ -440,7 +440,7 @@ void TCGoalsRenderCallback(void) {
     //@@grtext_Printf(x,y,buffer);
     char wrap_buffer[BUFFER_SIZE];
     textaux_WordWrap(buffer, wrap_buffer, width, SM_FONT);
-    char *nextline;
+    const char *nextline;
     char linebuffer[256];
     int wrap_y = y;
 
@@ -565,8 +565,7 @@ void TCGoalsRenderCallback(void) {
       ptr = s_desc_buffer;
 
       // figure out true width
-      char *next_line;
-      next_line = textaux_CopyTextLine(ptr, desc_buffer);
+      const char *next_line = textaux_CopyTextLine(ptr, desc_buffer);
       width = grtext_GetTextLineWidth(desc_buffer);
       int t;
       while (next_line) {
@@ -644,7 +643,7 @@ void TCGoalsRenderCallback(void) {
       grtext_SetColor(GR_WHITE);
       grtext_SetFont(SM_FONT);
 
-      char *next_line;
+      const char *next_line;
       int c_x, c_y;
       c_x = mouse_x + TG_MouseOffset_x + 10;
       c_y = mouse_y + TG_MouseOffset_y + 5;

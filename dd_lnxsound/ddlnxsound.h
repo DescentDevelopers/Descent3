@@ -65,7 +65,7 @@ typedef struct LNXSTREAMTAG {
   int *sound_device;
 
   void (*fp_SetError)(int code);
-  void (*fp_ErrorText)(char *fmt, ...);
+  void (*fp_ErrorText)(const char *fmt, ...);
   int *p_error_code;
 } LNXSTREAM;
 

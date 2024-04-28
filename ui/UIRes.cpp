@@ -50,7 +50,7 @@ char UITextItem::dummy_str[4] = "";
 UITextItem::UITextItem(const char *text, ddgr_color color, ubyte alpha) {
   int slen = strlen(text);
   if (slen > 0) {
-    m_Text = (char *)mem_strdup(text);
+    m_Text = mem_strdup(text);
     if (!m_Text) {
       Error("Memory allocation failed in UITextItem.");
     }
@@ -69,7 +69,7 @@ UITextItem::UITextItem(const char *text, ddgr_color color, ubyte alpha) {
 UITextItem::UITextItem(int font, const char *text, ddgr_color color, ubyte alpha) {
   int slen = strlen(text);
   if (slen > 0) {
-    m_Text = (char *)mem_strdup(text);
+    m_Text = mem_strdup(text);
     if (!m_Text) {
       Error("Memory allocation failed in UITextItem.");
     }

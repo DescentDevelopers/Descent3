@@ -648,10 +648,10 @@ void rend_SetOpenGLWindowState(int state, oeApplication *app, renderer_preferred
 void rend_SetCoplanarPolygonOffset(float factor);
 
 // Gets the error message string
-char *rend_GetErrorMessage();
+const char *rend_GetErrorMessage();
 
 // Sets the error message string
-void rend_SetErrorMessage(char *str);
+void rend_SetErrorMessage(const char *str);
 
 // Preuploads a bitmap to the card
 void rend_PreUploadTextureToCard(int, int);

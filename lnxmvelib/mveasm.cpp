@@ -41,8 +41,8 @@ extern unsigned nf_back_right; // (SHEIGHT-1)*width
 extern signed short snd_8to16[256];
 void nfHPkDecomp(unsigned char *ops, unsigned char *comp, int x, int y, int w, int h);
 void nfPkConfig(void);
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev);
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev);
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
 
 void Trans16Blk(unsigned char *edi, unsigned char *idx);
 void call_hnfxycshift(unsigned int eax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right);
@@ -58,7 +58,7 @@ void call_hnfshift(unsigned int meax, unsigned char **medi, unsigned char **mesi
 // (src is len bytes, dst is len*2 bytes)
 // prev is the previous decompression state or zero.
 // Returns new decompression state.
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
   unsigned int i, eax, ebx;
   if (len == 0)
     return prev;
@@ -83,7 +83,7 @@ unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, uns
 //	(It encodes the 16-bit states of the two stereo channels
 //	in its low and high order 16-bit halves.)
 //	Returns new decompression state.
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
   unsigned re = 0;
   unsigned int eax, edx, ebx, i;
 

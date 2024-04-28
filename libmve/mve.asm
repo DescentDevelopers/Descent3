@@ -9603,7 +9603,7 @@ palLoadCompPalette ENDP
 
 EXTERN snd_8to16: WORD		; short snd_8to16[256];
 
-;unsigned sndDecompM16(unsigned short *dst, unsigned char *src,
+;unsigned sndDecompM16(unsigned short *dst, const unsigned char *src,
 ;			unsigned len, unsigned prev);
 ;
 ;Decompresses a mono stream containing len samples

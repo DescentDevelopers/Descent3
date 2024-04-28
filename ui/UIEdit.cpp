@@ -198,7 +198,7 @@ void UIEdit::SetBufferLen(int length) {
 }
 
 // sets the text buffer.
-void UIEdit::SetText(char *text) {
+void UIEdit::SetText(const char *text) {
   ASSERT(strlen(text) <= (unsigned)m_BufSize);
 
   if (CHECK_FLAG(m_Flags, UIED_NUMBERS)) {

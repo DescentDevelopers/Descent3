@@ -314,7 +314,7 @@ void __cdecl MVE_ReleaseMem(void);
 
 /* Return string corresponding to MVE_RunMovie result code.
 */
-char* __cdecl MVE_strerror(int code);
+const char* __cdecl MVE_strerror(int code);
 
 /* RunMovie callback control code and result codes.
 ** Codes > 1 are user defined.

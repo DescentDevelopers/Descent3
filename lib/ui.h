@@ -794,7 +794,7 @@ public:
 
   //	settings
   void SetBufferLen(int length);       // sets the length of the input buffer.
-  void SetText(char *text);            // sets the text buffer.
+  void SetText(const char *text);            // sets the text buffer.
   void GetText(char *buffer, int len); // retrieve text in edit control.
   void SetFont(int font);              // sets font of control (default is window's font.)
   void SetColor(ddgr_color col);       // sets color of text.

@@ -97,15 +97,15 @@ typedef struct windowmap_t {
 } windowmap_t;
 
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
-int menutga_alloc_file(char *name, char *hsmap[], int *w, int *h);
+int menutga_alloc_file(const char *name, char *hsmap[], int *w, int *h);
 // Given a filename and a HotSpotMap structure, it saves it to disk (.HSM)
-void menutga_SaveHotSpotMap(char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap);
+void menutga_SaveHotSpotMap(const char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap);
 // Given a filename and a HotSpotMap structure, it loads the hotspot map (.HSM)
-void menutga_LoadHotSpotMap(int back_bmp, char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap);
+void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap);
 // This function (given a filename) loads a TGA file, extracts a hotspot map, and saves the hotspot map
-bool menutga_ConvertTGAtoHSM(char *filename);
+bool menutga_ConvertTGAtoHSM(const char *filename);
 
-void ExportHotSpot(char *filename, hotspotmap_t *hsmap); // Exports a hotspotmap to an ASCII file, nice and readable
+void ExportHotSpot(const char *filename, hotspotmap_t *hsmap); // Exports a hotspotmap to an ASCII file, nice and readable
 void DisplayHotSpots(hotspotmap_t *hsmap,
                      windowmap_t *wndmap); // Displays the hotspots of the given hotspot map to the screen (in blue)
 void FreeHotSpotMapInternals(hotspotmap_t *hsmap); // Deletes allocated memory within a hotspotmap struct

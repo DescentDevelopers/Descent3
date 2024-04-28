@@ -280,7 +280,7 @@ void mem_error_msg(const char *file, int line, int size) {
   mprintf((0, "Memory error (size=%d) line %d in %s\n", size, line, file));
   Int3();
 }
-char *mem_strdup_sub(const char *string, char *file, int line) {
+char *mem_strdup_sub(const char *string, const char *file, int line) {
   char *ret = strdup(string);
   if (!ret) {
     mprintf((0, "Out of memory allocating %d bytes: line %d in %s\n", strlen(string) + 1, line, file));
@@ -614,7 +614,7 @@ void mem_error_msg(const char *file, int line, int size) {
   Error("Attempt to allocate %d bytes of memory in %s line %d failed.", size, file, line);
 }
 // int strdup_malloc_line = 0;
-char *mem_strdup_sub(const char *src, char *file, int line) {
+char *mem_strdup_sub(const char *src, const char *file, int line) {
 #if defined(WIN32)
   if (!Heap) {
     return 0;

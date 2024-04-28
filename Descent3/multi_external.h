@@ -304,7 +304,7 @@ inline void MultiAddFloat(float element, ubyte *data, int *count) {
   *count += sizeof(float);
 }
 
-inline void MultiAddString(char *str, ubyte *data, int *count) {
+inline void MultiAddString(const char *str, ubyte *data, int *count) {
   size_t len = strlen(str) + 1;
   assert(len <= 0xFF);
 

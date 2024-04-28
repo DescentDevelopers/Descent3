@@ -53,7 +53,7 @@
 
 #include <algorithm>
 
-extern int FindArg(char *);
+extern int FindArg(const char *);
 
 #if defined(WIN32)
 extern int WindowGL;
@@ -218,8 +218,8 @@ dll_error:
 }
 
 // returns true if the passed in extension name is supported
-int opengl_CheckExtension(char *extName) {
-  char *p = (char *)dglGetString(GL_EXTENSIONS);
+int opengl_CheckExtension(const char *extName) {
+  const char *p = (const char *)dglGetString(GL_EXTENSIONS);
   char *end;
   int extNameLen;
 

@@ -121,7 +121,7 @@
 
 typedef struct {
   ubyte type;
-  char *name;
+  const char *name;
   int id;
 } tLineInfo;
 
@@ -145,7 +145,7 @@ bool TCCPlayerHasWeapon(int weapon_index) {
   return false;
 }
 
-int TCCargoCreateLine(int id, int y, char *title, int type) {
+int TCCargoCreateLine(int id, int y, const char *title, int type) {
   // char buffer[100];
   int small_height = grfont_GetHeight(SM_FONT);
   int big_height = grfont_GetHeight(BG_FONT);

@@ -55,9 +55,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 CRegistry *reg = NULL;
 
@@ -245,7 +245,7 @@ char *CRegistry::ParseToken(char *p, char *buf, int bufsize) {
     ptr = ParseToken(ptr, buf, sizeof(buf));                                                                           \
   } while (0)
 
-CRegistry::CRegistry(char *str) {
+CRegistry::CRegistry(const char *str) {
   currentkey = root = NULL;
   strcpy(name, str);
 }
@@ -428,7 +428,7 @@ bool CRegistry::Import() {
   return true;
 }
 
-void CRegistry::CreateKey(char *name) {
+void CRegistry::CreateKey(const char *name) {
   tKey *curr;
   if (LookupKey(name)) {
     mprintf((0, "Key: %s already exists\n", name));
@@ -458,7 +458,7 @@ void CRegistry::CreateKey(char *name) {
   currentkey = curr;
 }
 
-bool CRegistry::LookupKey(char *name) {
+bool CRegistry::LookupKey(const char *name) {
   tKey *curr;
   curr = root;
   while (curr) {
@@ -472,7 +472,7 @@ bool CRegistry::LookupKey(char *name) {
   return false;
 }
 
-tRecord *CRegistry::LookupRecord(char *record, void *data) {
+tRecord *CRegistry::LookupRecord(const char *record, void *data) {
   if (!currentkey)
     return NULL;
 
@@ -500,7 +500,7 @@ tRecord *CRegistry::LookupRecord(char *record, void *data) {
   return NULL;
 }
 
-int CRegistry::GetDataSize(char *record) {
+int CRegistry::GetDataSize(const char *record) {
   if (!currentkey)
     return false;
   tRecord *curr;
@@ -523,7 +523,7 @@ int CRegistry::GetDataSize(char *record) {
   return 0;
 }
 
-bool CRegistry::CreateRecord(char *name, char type, void *data) {
+bool CRegistry::CreateRecord(const char *name, char type, void *data) {
   if (!currentkey)
     return false;
   tRecord *curr;

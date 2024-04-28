@@ -679,17 +679,17 @@ int FindButtonEffectByXY(int x, int y, int screen) {
 }
 
 /////////////////////////////////////////////////////////////////////////
-char *format(char *format, ...) {
+char *format(const char *fmt, ...) {
   static char tempbuffer[8192];
 
   va_list ap;
-  va_start(ap, format);
-  Pvsprintf(tempbuffer, 8192, format, ap);
+  va_start(ap, fmt);
+  Pvsprintf(tempbuffer, sizeof (tempbuffer), fmt, ap);
   va_end(ap);
   return tempbuffer;
 }
 
-bool CreateTextEffect(LPTCTEXTDESC desc, char *text, int monitor, int screen, int id) {
+bool CreateTextEffect(LPTCTEXTDESC desc, const char *text, int monitor, int screen, int id) {
   ASSERT(desc);
   ASSERT(text);
 
@@ -1023,7 +1023,7 @@ int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id) {
 }
 
 ////////////////////////////////////////////////////////////////////
-bool CreateTextStatic(tceffect *tce, char *text) {
+bool CreateTextStatic(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text)
     return false;
@@ -1047,7 +1047,7 @@ bool CreateTextStatic(tceffect *tce, char *text) {
   return true;
 }
 
-bool CreateTextFade(tceffect *tce, char *text) {
+bool CreateTextFade(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text || text[0] == '\0')
     return false;
@@ -1078,7 +1078,7 @@ bool CreateTextFade(tceffect *tce, char *text) {
   return true;
 }
 
-bool CreateTextType(tceffect *tce, char *text) {
+bool CreateTextType(tceffect *tce, const char *text) {
   ASSERT(text);
   if (!text || text[0] == '\0')
     return false;
@@ -1100,7 +1100,7 @@ bool CreateTextType(tceffect *tce, char *text) {
   return true;
 }
 
-bool CreateBmpStatic(tceffect *tce, char *filename) {
+bool CreateBmpStatic(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
   tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
@@ -1113,7 +1113,7 @@ bool CreateBmpStatic(tceffect *tce, char *filename) {
   return true;
 }
 
-bool CreateBmpBlur(tceffect *tce, char *filename) {
+bool CreateBmpBlur(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
   tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
@@ -1137,7 +1137,7 @@ bool CreateBmpBlur(tceffect *tce, char *filename) {
   return true;
 }
 
-bool CreateBmpScanline(tceffect *tce, char *filename) {
+bool CreateBmpScanline(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
   tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
@@ -1157,7 +1157,7 @@ bool CreateBmpScanline(tceffect *tce, char *filename) {
   return true;
 }
 
-bool CreateBmpInvert(tceffect *tce, char *filename) {
+bool CreateBmpInvert(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
   tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
@@ -1177,7 +1177,7 @@ bool CreateBmpInvert(tceffect *tce, char *filename) {
   return true;
 }
 
-bool CreateBmpStretch(tceffect *tce, char *filename) {
+bool CreateBmpStretch(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
   tce->bmpinfo.chunk_bmp.pw = tce->bmpinfo.chunk_bmp.ph = 0;
@@ -1243,7 +1243,7 @@ bool CreateBmpStretch(tceffect *tce, char *filename) {
   return true;
 }
 
-bool CreateMovie(tceffect *tce, char *filename) {
+bool CreateMovie(tceffect *tce, const char *filename) {
   ASSERT(filename);
 
   tce->movieinfo.handle = NULL;
@@ -1262,7 +1262,7 @@ bool CreateMovie(tceffect *tce, char *filename) {
 
 bool CreateBackground(tceffect *tce) { return true; }
 
-bool CreateSound(tceffect *tce, char *filename) {
+bool CreateSound(tceffect *tce, const char *filename) {
   tce->soundinfo.handle = FindSoundName(IGNORE_TABLE(filename));
   if (tce->soundinfo.handle == -1) {
     mprintf((0, "Unable to find sound '%s'\n", filename));

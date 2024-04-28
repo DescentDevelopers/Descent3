@@ -58,12 +58,12 @@ void FreeStringTables(void);
 
 // Returns a pointer to the string at the index location from the string table
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
-char *GetStringFromTable(int index);
+const char *GetStringFromTable(int index);
 
 // Given a filename, pointer to a char * array and a pointer to an int,
 // it will load the string table and fill in the information
 // returns true on success
-bool CreateStringTable(char *filename, char ***table, int *size);
+bool CreateStringTable(const char *filename, char ***table, int *size);
 // Given a string table and it's count of strings, it will free up it's memory
 void DestroyStringTable(char **table, int size);
 

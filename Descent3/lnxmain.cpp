@@ -60,7 +60,7 @@
 
 extern bool ddio_mouseGrabbed;
 int no_debug_dialog = 0;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 // void *x = (void *) DMFCGetString;   // just force a reference to dmfc.so ...
 
 char *__orig_pwd = NULL;
@@ -68,9 +68,9 @@ char *__orig_pwd = NULL;
 bool linux_permit_gamma = false;
 
 typedef struct {
-  char *lng;
+  const char *lng;
   char sht;
-  char *comment;
+  const char *comment;
 } cmdLineArg;
 
 static cmdLineArg d3ArgTable[] = {

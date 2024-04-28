@@ -152,7 +152,7 @@ public:
   bool GoalGoalList(int goal_index, char operation, char *value);
   bool GoalStatus(int goal_index, char operation, int *value, bool announce = true);
 
-  int GoalFindId(char *goal_name);
+  int GoalFindId(const char *goal_name);
 
   int GoalGetNumItems(int goal_index);
 

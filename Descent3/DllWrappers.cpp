@@ -67,11 +67,10 @@ bool InvCheckItem(int playernum, int type, int id) {
 }
 
 // Inventory AddItemTypeID wrapper
-bool InvAddTypeID(int playernum, int type, int id, int aux_type, int aux_id, int flags, char *description) {
+bool InvAddTypeID(int playernum, int type, int id, int aux_type, int aux_id, int flags, const char *description) {
   ASSERT((playernum >= 0) && (playernum < MAX_PLAYERS));
 
-  return Players[playernum].inventory.Add(type, id, &Objects[Players[playernum].objnum], aux_type, aux_id, flags,
-                                          description);
+  return Players[playernum].inventory.Add(type, id, &Objects[Players[playernum].objnum], aux_type, aux_id, flags, description);
 }
 
 // Inventory Remove wrapper
@@ -119,7 +118,7 @@ void SetObjectDeadFlagDLL(object *obj, bool tell_clients_to_remove, bool tell_cl
   SetObjectDeadFlag(obj, tell_clients_to_remove, tell_clients_to_play_sound);
 }
 
-void assertdll(int x, char *expression, char *file, int line) {
+void assertdll(int x, const char *expression, const char *file, int line) {
 #ifndef RELEASE
   if (!(unsigned)(x)) {
     mprintf((0, "Assertion failed (%s) in %s line %d.\n", expression, file, line));

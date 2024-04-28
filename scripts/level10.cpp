@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -1229,7 +1229,7 @@ Update base alert display
 
 $$END
 */
-void aUpdateBaseAlertDisplay(char *text, int level) {
+void aUpdateBaseAlertDisplay(const char *text, int level) {
   msafe_struct mstruct;
 
   mstruct.color = GR_RGB(0, 255, 0);
@@ -1339,7 +1339,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -1407,7 +1407,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -1426,11 +1426,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 2
-char *Door_names[NUM_DOOR_NAMES] = {"Datavault Door", "Base Access Door"};
+const char *Door_names[NUM_DOOR_NAMES] = {"Datavault Door", "Base Access Door"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 111
-char *Object_names[NUM_OBJECT_NAMES] = {"Memory Plasma Blob",
+const char *Object_names[NUM_OBJECT_NAMES] = {"Memory Plasma Blob",
                                         "Vault HangTurr1",
                                         "Vault HangTurr2",
                                         "Vault Turr3",
@@ -1544,7 +1544,7 @@ char *Object_names[NUM_OBJECT_NAMES] = {"Memory Plasma Blob",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 19
-char *Room_names[NUM_ROOM_NAMES] = {"Hanger Portal",      "Foyer",
+const char *Room_names[NUM_ROOM_NAMES] = {"Hanger Portal",      "Foyer",
                                     "DataStow Room",      "Interface Obs Acce",
                                     "Main Hall",          "Main Hanger",
                                     "Prep Room",          "Mem Plasma Room",
@@ -1557,7 +1557,7 @@ char *Room_names[NUM_ROOM_NAMES] = {"Hanger Portal",      "Foyer",
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 12
-char *Trigger_names[NUM_TRIGGER_NAMES] = {"MMainHub-2",    "MRightArm-2",   "MRightArm-1",   "MLowerEnd-2",
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"MMainHub-2",    "MRightArm-2",   "MRightArm-1",   "MLowerEnd-2",
                                           "MLowerEnd-1",   "MMidSection-4", "MMidSection-3", "MMidSection-2",
                                           "MMidSection-1", "MMainHub-1",    "MOutside-2",    "MOutside1"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
@@ -1565,18 +1565,18 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 9
-char *Sound_names[NUM_SOUND_NAMES] = {"PlayerSpotted",     "BaseAlertedSiren",   "AmbSwitch11",
+const char *Sound_names[NUM_SOUND_NAMES] = {"PlayerSpotted",     "BaseAlertedSiren",   "AmbSwitch11",
                                       "Lev10Laser",        "AmbSwitch31",        "Powerup pickup",
                                       "MemPlasmaChargeOn", "MemPlasmaChargeOff", "HudMessage"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 6
-char *Texture_names[NUM_TEXTURE_NAMES] = {"FunkyEffect7", "FunkyEffect4", "FunkyEffect3",
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"FunkyEffect7", "FunkyEffect4", "FunkyEffect3",
                                           "FunkyEffect2", "FunkyEffect5", "Lightning3"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 28
-char *Path_names[NUM_PATH_NAMES] = {
+const char *Path_names[NUM_PATH_NAMES] = {
     "LandingCamPathA",    "LandingCamPathB",    "NewPlayerIntroCamPath", "NewPlayerIntroPath",
     "IntroLandingPath",   "IntroLandingPathB",  "Space Patrol",          "SkyPatrol2",
     "DVPatrolA",          "DVPatrolB",          "DVGuardPath",           "Jugg Alerted Path",
@@ -1587,7 +1587,7 @@ char *Path_names[NUM_PATH_NAMES] = {
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 20
-char *Matcen_names[NUM_MATCEN_NAMES] = {"Central Matcen", "MemPlasmaMatcen",    "Foyer Matcen1",    "Foyer Matcen2",
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"Central Matcen", "MemPlasmaMatcen",    "Foyer Matcen1",    "Foyer Matcen2",
                                         "HD Matcen1",     "HD Matcen2",         "Aux Matcen1",      "Aux Matcen2",
                                         "Prep Matcen1",   "Prep Matcen2",       "Nano Matcen1",     "Nano Matcen2",
                                         "Nano Matcen3",   "StorageRoomXMatcen", "BigRoomXMatcen1",  "FoyerXMatcen",
@@ -1595,7 +1595,7 @@ char *Matcen_names[NUM_MATCEN_NAMES] = {"Central Matcen", "MemPlasmaMatcen",    
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 13
-char *Goal_names[NUM_GOAL_NAMES] = {
+const char *Goal_names[NUM_GOAL_NAMES] = {
     "Enable Uplink Control Power",     "Enable Memory Plasma Generation", "Activate Uplink Plasma Supply",
     "Obtain a Data Vault Key",         "Enter through the Data Vault",    "Infiltrate the Lunar Command Center",
     "Acquire a Data Interface",        "Initialize Data Interface",       "Disable Nano Plasma Defenses",
@@ -1604,7 +1604,7 @@ char *Goal_names[NUM_GOAL_NAMES] = {
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 65
-char *Message_names[NUM_MESSAGE_NAMES] = {"Empty",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"Empty",
                                           "IntroText",
                                           "ZMegaTrap",
                                           "ZDVSpotted",
@@ -1669,7 +1669,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"Empty",
                                           "CrashedShipGame",
                                           "CrashedShipHud",
                                           "NoEntry"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1687,7 +1687,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1765,7 +1765,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

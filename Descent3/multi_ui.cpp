@@ -1028,7 +1028,7 @@ void DoMultiAllowed(void) {
       if (!selti)
         break;
       p = selti->GetBuffer();
-      objid = FindObjectIDName(IGNORE_TABLE((char *)p));
+      objid = FindObjectIDName(IGNORE_TABLE(p));
       if (objid != -1) {
         ASSERT(Object_info[objid].type == OBJ_POWERUP);
         ASSERT(Object_info[objid].multi_allowed == 0);
@@ -1044,7 +1044,7 @@ void DoMultiAllowed(void) {
       if (!selti)
         break;
       p = selti->GetBuffer();
-      objid = FindObjectIDName(IGNORE_TABLE((char *)p));
+      objid = FindObjectIDName(IGNORE_TABLE(p));
       if (objid != -1) {
         ASSERT(Object_info[objid].type == OBJ_POWERUP);
         ASSERT(Object_info[objid].multi_allowed == 1);
@@ -1755,7 +1755,7 @@ void ShowNetgameInfo(network_game *game) {
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  char *szdiff = TXT_ERROR;
+  const char *szdiff = TXT_ERROR;
 
   switch (game->difficulty) {
   case 0:
@@ -1781,7 +1781,7 @@ void ShowNetgameInfo(network_game *game) {
   sheet->NewGroup(str, GAME_INFO_COL1, cury);
   GAME_INFO_GOTO_NEXT_LINE;
 
-  char *mode;
+  const char *mode;
   if ((game->flags & NF_PEER_PEER)) {
     mode = TXT_GEN_PEERPEER;
   } else if ((game->flags & NF_PERMISSABLE)) {

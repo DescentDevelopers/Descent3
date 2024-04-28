@@ -323,8 +323,8 @@ void CloseUIWindow(UIWindow *wnd);
 //	DoWaitMessage(true,"Please Wait...");
 //	... //some code
 //	DoWaitMessage(false);
-void DoWaitMessage(bool enable, char *message = NULL);
-void DoWaitPopup(bool enable, char *message = NULL);
+void DoWaitMessage(bool enable, const char *message = NULL);
+void DoWaitPopup(bool enable, const char *message = NULL);
 
 //	puts up a message box with a title and message.
 int DoMessageBox(const char *title, const char *msg, int type, ddgr_color title_color = UICOL_WINDOW_TITLE,
@@ -355,12 +355,12 @@ bool DoFileDialog(const char *title, const char *search_path, const char *ext, c
 //			on exit it is the absolute path to selected file on return (if return is true) must be at least
 //_MAX_PATH in size 	title = Title of the dialog 	wildc = semicolon seperated list of wildcards
 //("*.txt;*.doc;*.exe")
-bool DoPathFileDialog(bool save_dialog, char *path, char *title, char *wildc, int flags);
+bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const char *wildc, int flags);
 
 //////////////////////////////////////////////////////////////////////////////
 //	quick and dirty functions
 
-int LoadLargeBitmap(char *filename, tLargeBitmap *bmp);
+int LoadLargeBitmap(const char *filename, tLargeBitmap *bmp);
 void FreeLargeBitmap(tLargeBitmap *bmp);
 void DrawLargeBitmap(tLargeBitmap *bmp, int x, int y, float alpha);
 

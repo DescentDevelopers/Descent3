@@ -122,7 +122,7 @@ void textaux_WordWrap(const char *src, char *dest, int width, int font) {
 //	This function goes hand-in-hand with textaux_WordWrap().  Given a buffer of data it will fill in
 //	the dest buffer until it hits a /n or /0.  It returns a pointer to the start position of the next line,
 //  or NULL if it's done with the buffer (it hit a /0).
-char *textaux_CopyTextLine(char *src, char *dest) {
+const char *textaux_CopyTextLine(const char *src, char *dest) {
   // make sure src and dest are allocated
   if (!src) {
     if (dest)

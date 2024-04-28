@@ -120,7 +120,7 @@ void RenderTextStatic(tceffect *tce, float frametime, int xoff, int yoff, bool o
   int curry = tce->pos_y + yoff;
   int height = grfont_GetHeight(Game_fonts[tce->textinfo.font_index]) + 1;
   char buff[256];
-  char *nextline;
+  const char *nextline;
   int count = 0; // get to the first line of text (scrolling)
   nextline = textaux_CopyTextLine(tce->text_buffer, buff);
   if ((tce->textinfo.line_index) && (nextline)) {
@@ -207,7 +207,7 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   ubyte old_alpha = grtext_GetAlpha();
   grtext_SetFont(Game_fonts[tce->textinfo.font_index]);
   char buff[1024];
-  char *nextline;
+  const char *nextline;
   int height = grfont_GetHeight(Game_fonts[tce->textinfo.font_index]) + 1;
   int curry = tce->pos_y;
   ddgr_color color_to_use = hi_color;
@@ -377,7 +377,7 @@ void RenderTextFade(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   int curry = tce->pos_y;
   int height = grfont_GetHeight(Game_fonts[tce->textinfo.font_index]) + 1;
   char buff[256];
-  char *nextline;
+  const char *nextline;
   int count = 0; // get to the first line of text (scrolling)
   nextline = textaux_CopyTextLine(tce->text_buffer, buff);
   if ((tce->textinfo.line_index) && (nextline)) {

@@ -253,7 +253,7 @@ void FreeVClipResidency(int num) {
 // Saves a given video clip to a file
 // Returns 1 if everything ok, 0 otherwise
 // "num" is index into GameVClip array
-int SaveVClip(char *filename, int num) {
+int SaveVClip(const char *filename, int num) {
   CFILE *outfile;
   vclip *vc = &GameVClips[num];
 
@@ -419,7 +419,7 @@ void PageInVClip(int vcnum) {
 
 // Allocs and loads a vclip from the file named "filename"
 // Returns -1 on error, index into GameVClip array on success
-int AllocLoadVClip(char *filename, int texture_size, int mipped, int pageable, int format) {
+int AllocLoadVClip(const char *filename, int texture_size, int mipped, int pageable, int format) {
   char name[PAGENAME_LEN];
   int i;
 
@@ -471,7 +471,7 @@ int AllocLoadVClip(char *filename, int texture_size, int mipped, int pageable, i
 // Returns -1 on error, else index into GameVClips on success
 // Argument texture means that this vclip is an animated texture and
 // needs to have an 8bit version
-int AllocLoadIFLVClip(char *filename, int texture_size, int mipped, int format) {
+int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int format) {
   CFILE *infile;
   char name[PAGENAME_LEN];
   unsigned int i, done = 0;
@@ -619,7 +619,7 @@ int AllocLoadIFLVClip(char *filename, int texture_size, int mipped, int format) 
 }
 
 // gets the filename from a path, plus appends our .oaf extension
-void ChangeVClipName(char *src, char *dest) {
+void ChangeVClipName(const char *src, char *dest) {
   int limit;
   char path[256], ext[256], filename[256];
 
@@ -634,7 +634,7 @@ void ChangeVClipName(char *src, char *dest) {
 }
 // Searches thru all vclips for a specific name, returns -1 if not found
 // or index of vclip with name
-int FindVClipName(char *name) {
+int FindVClipName(const char *name) {
   int i;
 
   for (i = 0; i < MAX_VCLIPS; i++)
@@ -659,7 +659,7 @@ int GetVClipBitmap(int v, int frame) {
 }
 
 // Loads an animation from an IFF ANIM file
-int AllocLoadIFFAnimClip(char *filename, int texture) {
+int AllocLoadIFFAnimClip(const char *filename, int texture) {
   /*	char name[PAGENAME_LEN];
           int i;
 

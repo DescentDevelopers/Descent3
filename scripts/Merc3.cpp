@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -2037,7 +2037,7 @@ bool qBeamHittingPlayer2(int beam1_handle, int beam2_handle, float radius) {
 
 typedef struct t_exit_room_node {
   short room_number;
-  char *commands;
+  const char *commands;
   char cmdstr[16];
 } t_exit_room_node;
 
@@ -2416,7 +2416,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -2484,7 +2484,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -2503,12 +2503,12 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 9
-char *Door_names[NUM_DOOR_NAMES] = {"EscapeChuteDoor", "Hangar1AExit",     "Hangar2AExit", "J1Door",    "J2Door",
+const char *Door_names[NUM_DOOR_NAMES] = {"EscapeChuteDoor", "Hangar1AExit",     "Hangar2AExit", "J1Door",    "J2Door",
                                     "J3Door",          "CaptainOuterDoor", "CaptainDoor",  "BridgeDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 229
-char *Object_names[NUM_OBJECT_NAMES] = {"BigFan1Engine2",
+const char *Object_names[NUM_OBJECT_NAMES] = {"BigFan1Engine2",
                                         "BigFan1Engine3",
                                         "J1Bomb",
                                         "J2Bomb",
@@ -2740,7 +2740,7 @@ char *Object_names[NUM_OBJECT_NAMES] = {"BigFan1Engine2",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 58
-char *Room_names[NUM_ROOM_NAMES] = {"BallShaft",
+const char *Room_names[NUM_ROOM_NAMES] = {"BallShaft",
                                     "OuterSpace",
                                     "OuterSpace2",
                                     "OuterSpace3",
@@ -2801,7 +2801,7 @@ char *Room_names[NUM_ROOM_NAMES] = {"BallShaft",
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 32
-char *Trigger_names[NUM_TRIGGER_NAMES] = {
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {
     "Hangar1ASuckout",     "LeftHangar1A",        "Hangar2Suckout",      "LeftHangar2A",        "BallPuzzleWin",
     "WarehouseTrigger",    "J3BallTrigger",       "HazardWasteMovie",    "BallFanPuzzleHint",   "GravityRoom1BotDie1",
     "GravityRoom1BotDie2", "GravityRoom1BotDie3", "GravityRoom1BotDie4", "EndFanRoom",          "EndSecurityPuzzle",
@@ -2814,7 +2814,7 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 18
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31",    "Powerup pickup",
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31",    "Powerup pickup",
                                       "Drop bomb",      "EnvSteamEmitC",
                                       "RbtTubbsSeeB",   "Merc2AlertSiren",
                                       "Extra life",     "Cloak off",
@@ -2826,13 +2826,13 @@ char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31",    "Powerup pickup",
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 10
-char *Texture_names[NUM_TEXTURE_NAMES] = {"Merc3MonLock",  "Merc3MonLogo",  "FunkyEffectGreen", "FunkyEffect2",
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"Merc3MonLock",  "Merc3MonLogo",  "FunkyEffectGreen", "FunkyEffect2",
                                           "FunkyEffect1",  "Merc3MonWaitS", "Merc3MonDownL",    "FunkyEffect3",
                                           "Merc3MonWaitN", "Merc3MonNeed"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 28
-char *Path_names[NUM_PATH_NAMES] = {"HazardActorPath1",
+const char *Path_names[NUM_PATH_NAMES] = {"HazardActorPath1",
                                     "HazardActorPath2",
                                     "IntroScene1Real",
                                     "H2SqidSlap",
@@ -2863,13 +2863,13 @@ char *Path_names[NUM_PATH_NAMES] = {"HazardActorPath1",
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 12
-char *Matcen_names[NUM_MATCEN_NAMES] = {"H3STMatcen", "Hangar2AMatcen", "Hangar3AMatcen", "BallPuzzleTreat",
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"H3STMatcen", "Hangar2AMatcen", "Hangar3AMatcen", "BallPuzzleTreat",
                                         "J1Gadget",   "J1BST",          "J2Gadget",       "J2BST",
                                         "J3Ball",     "J3Cloak",        "J3Gadget",       "J3BST"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 26
-char *Goal_names[NUM_GOAL_NAMES] = {"Unlock Hangar 1A Exit Door",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Unlock Hangar 1A Exit Door",
                                     "Proceed to Hangar 2A",
                                     "Unlock Hangar 2A Exit Door",
                                     "Proceed to Hangar 3A",
@@ -2898,7 +2898,7 @@ char *Goal_names[NUM_GOAL_NAMES] = {"Unlock Hangar 1A Exit Door",
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 68
-char *Message_names[NUM_MESSAGE_NAMES] = {"Bomb3",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"Bomb3",
                                           "IntroCinematicMsg",
                                           "EmptyMessage",
                                           "HangarPrimaryLocked",
@@ -2966,7 +2966,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"Bomb3",
                                           "CaptainAndTrooper",
                                           "CaptainAndTrooper2",
                                           "EscapeDoorLocked"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -2984,8 +2984,8 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
-  char english_filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
+  char english_filename[(_MAX_PATH + 32) * 2];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -3070,7 +3070,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

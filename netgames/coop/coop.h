@@ -89,7 +89,7 @@ DLLEXPORT void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_tea
 DLLEXPORT void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data);
 DLLEXPORT void DLLFUNCCALL DLLGameClose();
 DLLEXPORT void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options);
-DLLEXPORT int DLLFUNCCALL GetGOScriptID(char *name, ubyte isdoor);
+DLLEXPORT int DLLFUNCCALL GetGOScriptID(const char *name, ubyte isdoor);
 DLLEXPORT void DLLFUNCCALLPTR CreateInstance(int id);
 DLLEXPORT void DLLFUNCCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -119,7 +119,7 @@ void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int DLLFUNCCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int DLLFUNCCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 //	CreateInstance
 //	Purpose:

@@ -915,10 +915,10 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
 }
 
 // searches for an object id given it's name
-int osipf_ObjectFindID(char *name) { return FindObjectIDName(IGNORE_TABLE(name)); }
+int osipf_ObjectFindID(const char *name) { return FindObjectIDName(IGNORE_TABLE(name)); }
 
 // searches for an object id given it's name
-int osipf_ObjectFindType(char *name) {
+int osipf_ObjectFindType(const char *name) {
   int id = FindObjectIDName(IGNORE_TABLE(name));
 
   if (id >= 0) {
@@ -929,7 +929,7 @@ int osipf_ObjectFindType(char *name) {
 }
 
 // searches through the weapons for a name and returns the id
-int osipf_WeaponFindID(char *name) { return FindWeaponName(IGNORE_TABLE(name)); }
+int osipf_WeaponFindID(const char *name) { return FindWeaponName(IGNORE_TABLE(name)); }
 
 // returns how long an object has lived
 float osipf_ObjectGetTimeLived(int objhandle) {
@@ -2320,7 +2320,7 @@ void osipf_MatcenValue(int matcen_id, char op, char var_handle, void *ptr, int i
     break;
   case MTNSV_I_SPAWN_POINT:
     if (op == VF_GET)
-      Matcen[matcen_id]->SetSpawnPnt(index, *(int *)index);
+      Matcen[matcen_id]->SetSpawnPnt(index, *(int *)ptr);
     else if (op == VF_SET)
       (*(int *)ptr) = Matcen[matcen_id]->GetSpawnPnt(index);
     break;
@@ -2827,7 +2827,7 @@ int osipf_MissionFlagGet(int flag) {
   return 0;
 }
 
-void osipf_PlayerAddHudMessage(int handle, char *str) {
+void osipf_PlayerAddHudMessage(int handle, const char *str) {
   msafe_struct mo;
 
   mo.objhandle = mo.id = handle;
@@ -2953,7 +2953,7 @@ int osipf_SoundPlay3d(int obj_handle, int s_id, float volume) {
   */
 }
 
-int osipf_SoundFindId(char *s_name) { return FindSoundName(IGNORE_TABLE(s_name)); }
+int osipf_SoundFindId(const char *s_name) { return FindSoundName(IGNORE_TABLE(s_name)); }
 
 bool osipf_AIIsObjFriend(int obj_handle, int it_handle) {
   object *me = ObjGet(obj_handle);
@@ -3185,10 +3185,10 @@ void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *
       g_ptr->dist_to_goal = *(float *)ptr;
   } break;
   case AIGV_I_SCRIPTED_DATA_PTR: {
-    if (op == VF_GET)
-      ptr = g_ptr->g_info.scripted_data_ptr;
-    else if (op == VF_SET)
-      g_ptr->g_info.scripted_data_ptr = (void *)(*(int *)ptr);
+	if(op == VF_GET)
+	    *(void **)ptr = g_ptr->g_info.scripted_data_ptr;
+	else if(op == VF_SET)
+	    g_ptr->g_info.scripted_data_ptr = *((void **)ptr);
   } break;
   case AIGV_V_VEC_TO_TARGET: {
     if (op == VF_GET)
@@ -3353,9 +3353,9 @@ char osipf_AIGetCurGoalIndex(int obj_handle) {
   return -1;
 }
 
-int osipf_FindSoundName(char *name) { return FindSoundName(IGNORE_TABLE(name)); }
+int osipf_FindSoundName(const char *name) { return FindSoundName(IGNORE_TABLE(name)); }
 
-int osipf_FindRoomName(char *name) {
+int osipf_FindRoomName(const char *name) {
   for (int i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used && Rooms[i].name) {
       if (!stricmp(name, Rooms[i].name))
@@ -3365,7 +3365,7 @@ int osipf_FindRoomName(char *name) {
   return -1;
 }
 
-int osipf_FindTriggerName(char *name) {
+int osipf_FindTriggerName(const char *name) {
   for (int i = 0; i < Num_triggers; i++) {
     if (Triggers[i].name) {
       if (!stricmp(name, Triggers[i].name))
@@ -3375,7 +3375,7 @@ int osipf_FindTriggerName(char *name) {
   return -1;
 }
 
-int osipf_FindObjectName(char *name) {
+int osipf_FindObjectName(const char *name) {
   for (int i = 0; i < MAX_OBJECTS; i++) {
     if (Objects[i].type != OBJ_NONE && Objects[i].name != NULL) {
       if (!stricmp(name, Objects[i].name))
@@ -3399,7 +3399,7 @@ int osipf_GetTriggerFace(int trigger_id) {
   return Triggers[trigger_id].facenum;
 }
 
-int osipf_FindDoorName(char *name) {
+int osipf_FindDoorName(const char *name) {
   for (int i = 0; i <= MAX_OBJECTS; i++) {
     if (Objects[i].type == OBJ_DOOR && Objects[i].name && !stricmp(Objects[i].name, name)) {
       return Objects[i].handle;
@@ -3408,13 +3408,13 @@ int osipf_FindDoorName(char *name) {
   return OBJECT_HANDLE_NONE;
 }
 
-int osipf_FindTextureName(char *name) { return FindTextureName(IGNORE_TABLE(name)); }
+int osipf_FindTextureName(const char *name) { return FindTextureName(IGNORE_TABLE(name)); }
 
-int osipf_FindMatcenName(char *name) { return FindMatcenIndex(name); }
+int osipf_FindMatcenName(const char *name) { return FindMatcenIndex(name); }
 
-int osipf_FindPathName(char *name) { return FindGamePathName(name); }
+int osipf_FindPathName(const char *name) { return FindGamePathName(name); }
 
-int osipf_FindLevelGoalName(char *name) { return Level_goals.GoalFindId(name); }
+int osipf_FindLevelGoalName(const char *name) { return Level_goals.GoalFindId(name); }
 
 void osipf_CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int which_index, float force_scalar) {
   CreateRandomSparks(num_sparks, pos, roomnum, which_index, force_scalar);

@@ -220,7 +220,7 @@
 #include "Mission.h"
 
 typedef struct {
-  char *name;
+  const char *name;
   int id;
   int length;
 } tBriefingTag;
@@ -279,9 +279,9 @@ void ReplaceHotTag(char *string, int tag) {
 
 // returns true if there were hot tags and it had to allocate memory for dest (so it needs to be freed)
 #define MEMORY_BLOCK 50
-bool ParseForHotTags(char *src, char **dest) {
+bool ParseForHotTags(const char *src, char **dest) {
   bool ret = false;
-  char *curr_ptr = src;
+  const char *curr_ptr = src;
   char *dest_ptr;
   *dest = NULL;
 
@@ -438,51 +438,46 @@ bool PlayBriefing(tTelComInfo *tcs) {
   return true;
 }
 
-void PBAddTextEffect(LPTCTEXTDESC desc, char *text, char *description, int id) {
+void PBAddTextEffect(LPTCTEXTDESC desc, const char *text, const char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
-    char *new_text;
-    bool new_stuff;
+    char *new_text = NULL;
+    const bool new_stuff = ParseForHotTags(text, &new_text);
 
-    new_stuff = ParseForHotTags(text, &new_text);
+    CreateTextEffect(desc, new_stuff ? new_text : text, MONITOR_MAIN, current_screen, id);
 
-    if (!new_stuff)
-      new_text = text;
-
-    CreateTextEffect(desc, new_text, MONITOR_MAIN, current_screen, id);
-
-    if (new_stuff) {
+    if (new_text) {
       mem_free(new_text);
     }
   }
 }
 
-void PBAddBmpEffect(LPTCBMPDESC desc, char *description) {
+void PBAddBmpEffect(LPTCBMPDESC desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateBitmapEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddMovieEffect(LPTCMOVIEDESC desc, char *description) {
+void PBAddMovieEffect(LPTCMOVIEDESC desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateMovieEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddBkgEffect(LPTCBKGDESC desc, char *description) {
+void PBAddBkgEffect(LPTCBKGDESC desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     mprintf((0, "PB: Add Bkg\n"));
   }
 }
 
-void PBAddPolyEffect(LPTCPOLYDESC desc, char *description) {
+void PBAddPolyEffect(LPTCPOLYDESC desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreatePolyModelEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddSoundEffect(LPTCSNDDESC desc, char *description) {
+void PBAddSoundEffect(LPTCSNDDESC desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateSoundEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddButtonEffect(LPTCBUTTONDESC desc, char *description, int id) {
+void PBAddButtonEffect(LPTCBUTTONDESC desc, const char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     desc->x += osb_xoff;
     desc->y += osb_yoff;
@@ -491,7 +486,7 @@ void PBAddButtonEffect(LPTCBUTTONDESC desc, char *description, int id) {
   }
 }
 
-void PBStartScreen(int screen_num, char *description, char *layout, uint mask_set, uint mask_unset) {
+void PBStartScreen(int screen_num, const char *description, const char *layout, uint mask_set, uint mask_unset) {
   if (!IsMissionMaskOK(mask_set, mask_unset)) {
     ok_to_parse_screen = false;
     skipped_screens++;
@@ -566,7 +561,7 @@ bool PBLoopCallback() {
   return ret;
 }
 
-void PBSetTitle(char *title) {
+void PBSetTitle(const char *title) {
   gottitle = true;
   strcpy(pbtitle, title);
 }
@@ -581,9 +576,9 @@ void PBSetGlitch(float amount) {
     TelcomEnableGlitch(amount);
 }
 
-void PBAddVoice(char *filename, int flags, char *description) {}
+void PBAddVoice(const char *filename, int flags, const char *description) {}
 
-bool ParseBriefing(char *filename, tTelComInfo *tcs) {
+bool ParseBriefing(const char *filename, tTelComInfo *tcs) {
   if (!cfexist(filename)) {
     tcs->state = TCS_POWEROFF;
     return false;

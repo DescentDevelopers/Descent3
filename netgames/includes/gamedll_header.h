@@ -99,7 +99,7 @@ typedef struct {
     float fRet;
   };
   float fParam;
-  int iParam;
+  ptrdiff_t iParam;
   game_collide_info collide_info;
   int newseg, oldseg;
 } dllinfo;
@@ -151,10 +151,10 @@ typedef struct {
 typedef void (*GetGameAPI_fp)(game_api *);
 DMFCDLLOUT(GetGameAPI_fp DLLGetGameAPI;)
 
-typedef bool (*AddHUDMessage_fp)(char *format, ...);
+typedef bool (*AddHUDMessage_fp)(const char *format, ...);
 DMFCDLLOUT(AddHUDMessage_fp DLLAddHUDMessage;)
 
-typedef void (*Debug_ConsolePrintf_fp)(int n, char *format, ...);
+typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 DMFCDLLOUT(Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;)
 
 // typedef void( *MultiSendClientExecuteDLL_fp ) (int eventnum,int me_objnum,int it_objnum,int to,dllinfo *info=NULL);
@@ -184,7 +184,7 @@ DMFCDLLOUT(GetGoalRoomForTeam_fp DLLGetGoalRoomForTeam;)
 typedef int (*ObjCreate_fp)(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
 DMFCDLLOUT(ObjCreate_fp DLLObjCreate;)
 
-typedef int (*FindObjectIDName_fp)(char *name);
+typedef int (*FindObjectIDName_fp)(const char *name);
 DMFCDLLOUT(FindObjectIDName_fp DLLFindObjectIDName;)
 
 typedef void (*ObjSetPosNoMark_fp)(object *objp, vector *newpos, int roomnum, matrix *orient,
@@ -204,9 +204,8 @@ DMFCDLLOUT(IncTeamScore_fp DLLIncTeamScore;)
 typedef bool (*InvCheckItem_fp)(int pnum, int type, int id);
 DMFCDLLOUT(InvCheckItem_fp DLLInvCheckItem;)
 
-// typedef bool( *InvAddTypeID_fp ) (int pnum, int type,int id,int aux_type=-1,int aux_id=-1,int flags=0,char
-// *description=NULL);
-typedef bool (*InvAddTypeID_fp)(int pnum, int type, int id, int aux_type, int aux_id, int flags, char *description);
+// typedef bool( *InvAddTypeID_fp ) (int pnum, int type,int id,int aux_type=-1,int aux_id=-1,int flags=0,const char *description=NULL);
+typedef bool (*InvAddTypeID_fp)(int pnum, int type, int id, int aux_type, int aux_id, int flags, const char *description);
 DMFCDLLOUT(InvAddTypeID_fp DLLInvAddTypeID;)
 
 typedef bool (*InvRemove_fp)(int pnum, int type, int id);
@@ -215,7 +214,7 @@ DMFCDLLOUT(InvRemove_fp DLLInvRemove;)
 typedef void (*PlayerSetLighting_fp)(int slot, float dist, float r, float g, float b);
 DMFCDLLOUT(PlayerSetLighting_fp DLLPlayerSetLighting;)
 
-typedef int (*FindShipName_fp)(char *name);
+typedef int (*FindShipName_fp)(const char *name);
 DMFCDLLOUT(FindShipName_fp DLLFindShipName;)
 
 // Sets a wacky rotating ball around the player ship
@@ -233,7 +232,7 @@ DMFCDLLOUT(InvGetTypeIDCount_fp DLLInvGetTypeIDCount;)
 typedef int (*D3W_Play3dSound_fp)(int sound_index, object *cur_obj, float volume, int flags);
 DMFCDLLOUT(D3W_Play3dSound_fp DLLPlay3dSound;)
 
-typedef int (*FindSoundName_fp)(char *str);
+typedef int (*FindSoundName_fp)(const char *str);
 DMFCDLLOUT(FindSoundName_fp DLLFindSoundName;)
 
 typedef int (*SpewCreate_fp)(spewinfo *spew);
@@ -307,7 +306,7 @@ typedef void (*grtext_CenteredPrintf_fp)(int xoff, int y, const char *fmt, ...);
 DMFCDLLOUT(grtext_CenteredPrintf_fp DLLgrtext_CenteredPrintf;)
 
 // Adds a colored message to the hud
-typedef bool (*AddColoredHUDMessage_fp)(ddgr_color color, char *format, ...);
+typedef bool (*AddColoredHUDMessage_fp)(ddgr_color color, const char *format, ...);
 DMFCDLLOUT(AddColoredHUDMessage_fp DLLAddColoredHUDMessage;)
 
 // returns the height of a bitmap
@@ -347,7 +346,7 @@ typedef void (*RenderHUDQuad_fp)(int x, int y, int w, int h, float u0, float v0,
 DMFCDLLOUT(RenderHUDQuad_fp DLLRenderHUDQuad;)
 
 //	renders text, scaled, alphaed, saturated,
-typedef void (*RenderHUDText_fp)(ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt, ...);
+typedef void (*RenderHUDText_fp)(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCDLLOUT(RenderHUDText_fp DLLRenderHUDText;)
 
 // Ends a multiplayer level and goes on to the next, Server only
@@ -528,7 +527,7 @@ DMFCDLLOUT(nw_GetThisIP_fp DLLnw_GetThisIP;)
 // Given a filename, pointer to a char * array and a pointer to an int,
 // it will load the string table and fill in the information
 // returns true on success
-typedef bool (*CreateStringTable_fp)(char *filename, char ***table, int *size);
+typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
 DMFCDLLOUT(CreateStringTable_fp DLLCreateStringTable;)
 
 // Given a string table and it's count of strings, it will free up it's memory
@@ -536,8 +535,7 @@ typedef void (*DestroyStringTable_fp)(char **table, int size);
 DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
 
 //	renders text, scaled, alphaed, saturated,
-typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt,
-                                      ...);
+typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCDLLOUT(RenderHUDTextFlags_fp DLLRenderHUDTextFlags;)
 
 // Sets the FOV range at which the hud names will come on
@@ -561,12 +559,12 @@ typedef void (*SetObjectDeadFlag_fp)(object *obj, bool tell_clients_to_remove, b
 DMFCDLLOUT(SetObjectDeadFlag_fp DLLSetObjectDeadFlag;)
 
 // Call this function if there was an error while running the Multiplayer DLL, it will bail out
-// typedef void (*DLLFatalError_fp)(char *reason=NULL);
-typedef void (*DLLFatalError_fp)(char *reason);
+// typedef void (*DLLFatalError_fp)(const char *reason=NULL);
+typedef void (*DLLFatalError_fp)(const char *reason);
 DMFCDLLOUT(DLLFatalError_fp FatalError;)
 
 // Assert for the DLLs
-typedef void (*assertdll_fp)(int x, char *expression, char *file, int line);
+typedef void (*assertdll_fp)(int x, const char *expression, const char *file, int line);
 DMFCDLLOUT(assertdll_fp DLLassert;)
 
 // Return index of generic that has matching table entry
@@ -579,7 +577,7 @@ DMFCDLLOUT(MultiGetMatchChecksum_fp DLLMultiGetMatchChecksum;)
 
 // Searches thru all weapons for a specific name, returns -1 if not found
 // or index of weapon with name
-typedef int (*FindWeaponName_fp)(char *name);
+typedef int (*FindWeaponName_fp)(const char *name);
 DMFCDLLOUT(FindWeaponName_fp DLLFindWeaponName;)
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
@@ -599,7 +597,7 @@ DMFCDLLOUT(MultiSendRequestToObserve_fp DLLMultiSendRequestToObserve;)
 
 // Searches thru all textures for a specific name, returns -1 if not found
 // or index of texture with name
-typedef int (*FindTextureName_fp)(char *name);
+typedef int (*FindTextureName_fp)(const char *name);
 DMFCDLLOUT(FindTextureName_fp DLLFindTextureName;)
 
 //	Applies damage to a player object, returns false if damage wasn't applied due to things like
@@ -665,7 +663,7 @@ DMFCDLLOUT(ListGetSelectedIndex_fp DLLListGetSelectedIndex;)
 typedef void (*ListSetSelectedIndex_fp)(void *item, int index);
 DMFCDLLOUT(ListSetSelectedIndex_fp DLLListSetSelectedIndex;)
 
-typedef void (*EditSetText_fp)(void *item, char *buff);
+typedef void (*EditSetText_fp)(void *item, const char *buff);
 DMFCDLLOUT(EditSetText_fp DLLEditSetText;)
 
 typedef void (*EditGetText_fp)(void *item, char *buff, int len);
@@ -724,8 +722,8 @@ DMFCDLLOUT(PollUI_fp DLLPollUI;)
 typedef void (*RemoveUITextItem_fp)(void *item);
 DMFCDLLOUT(RemoveUITextItem_fp DLLRemoveUITextItem;)
 
-// typedef void *(*CreateNewUITextItem_fp)(char *newtext,unsigned int color,int font=-1);
-typedef void *(*CreateNewUITextItem_fp)(char *newtext, unsigned int color, int font);
+// typedef void *(*CreateNewUITextItem_fp)(const char *newtext,unsigned int color,int font=-1);
+typedef void *(*CreateNewUITextItem_fp)(const char *newtext, unsigned int color, int font);
 DMFCDLLOUT(CreateNewUITextItem_fp DLLCreateNewUITextItem;)
 
 typedef void (*RemoveUIBmpItem_fp)(void *item);
@@ -765,7 +763,7 @@ DMFCDLLOUT(OldEditCreate_fp DLLOldEditCreate;)
 typedef void (*OldEditGetText_fp)(void *item, char *buff, int len);
 DMFCDLLOUT(OldEditGetText_fp DLLOldEditGetText;)
 
-typedef void (*OldEditSetText_fp)(void *item, char *newtext);
+typedef void (*OldEditSetText_fp)(void *item, const char *newtext);
 DMFCDLLOUT(OldEditSetText_fp DLLOldEditSetText;)
 
 typedef char *(*OldListGetItem_fp)(void *item, int index);
@@ -942,7 +940,7 @@ typedef void (*DebugBreak_callback_stop_fp)(void);
 DMFCDLLOUT(DebugBreak_callback_stop_fp DLLDebugBreak_callback_stop;)
 typedef void (*DebugBreak_callback_resume_fp)(void);
 DMFCDLLOUT(DebugBreak_callback_resume_fp DLLDebugBreak_callback_resume;)
-typedef void (*Int3MessageBox_fp)(char *file, char *line);
+typedef void (*Int3MessageBox_fp)(const char *file, const char *line);
 DMFCDLLOUT(Int3MessageBox_fp DLLInt3MessageBox;)
 
 //	Fills in the non-NULL parameters with the position and size information about
@@ -1178,11 +1176,11 @@ typedef float (*vm_GetCentroidFast_fp)(vector *centroid, vector *src, int nv);
 DMFCDLLOUT(vm_GetCentroidFast_fp DLLvm_GetCentroidFast;)
 
 // returns scaled line width
-typedef int (*RenderHUDGetTextLineWidth_fp)(char *string);
+typedef int (*RenderHUDGetTextLineWidth_fp)(const char *string);
 DMFCDLLOUT(RenderHUDGetTextLineWidth_fp DLLRenderHUDGetTextLineWidth;)
 
 // returns scaled text height
-typedef int (*RenderHUDGetTextHeight_fp)(char *string);
+typedef int (*RenderHUDGetTextHeight_fp)(const char *string);
 DMFCDLLOUT(RenderHUDGetTextHeight_fp DLLRenderHUDGetTextHeight;)
 
 // typedef void (*StartFrame_fp)(int x, int y, int x2, int y2, bool clear=true);
@@ -1597,7 +1595,7 @@ typedef void (*PlayerStopSounds_fp)(int slot);
 DMFCDLLOUT(PlayerStopSounds_fp DLLPlayerStopSounds;)
 
 // Returns index of argument sought, or 0 if not found
-typedef int (*FindArg_fp)(char *which);
+typedef int (*FindArg_fp)(const char *which);
 DMFCDLLOUT(FindArg_fp DLLFindArg;)
 
 // Given an object and a weapon, fires a shot from that object

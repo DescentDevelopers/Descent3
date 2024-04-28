@@ -62,7 +62,7 @@
 
 #include <algorithm>
 
-int FindArg(char *);
+int FindArg(const char *);
 void rend_SetLightingState(light_state state);
 
 #define CHANGE_RESOLUTION_IN_FULLSCREEN
@@ -199,7 +199,7 @@ bool opengl_Blending_on = 0;
 static oeApplication *ParentApplication = NULL;
 
 #if 0
-int checkForGLErrors( char *file, int line )
+int checkForGLErrors( const char *file, int line )
 {
   /*
   int errors = 0 ;
@@ -268,10 +268,10 @@ dll_error:
 }
 
 // returns true if the passed in extension name is supported
-bool opengl_CheckExtension(char *extName) {
-  char *p = (char *)dglGetString(GL_EXTENSIONS);
+bool opengl_CheckExtension(const char *extName) {
+  const char *p = (const char *)dglGetString(GL_EXTENSIONS);
   int extNameLen = strlen(extName);
-  char *end = p + strlen(p);
+  const char *end = p + strlen(p);
 
   while (p < end) {
     int n = strcspn(p, " ");
@@ -614,11 +614,14 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     fullscreen = false;
   }
 
+#if 0  // this was for 3DFx Voodoo cards...probably don't need this anymore.  --ryan 04/27/2024
+
   if (env == NULL) {
     putenv((char *)(fullscreen ? "MESA_GLX_FX=f" : "MESA_GLX_FX=w"));
   }
 
   putenv("FX_GLIDE_NO_SPLASH=1");
+#endif
 
   if (!Already_loaded) {
 #define MAX_ARGS 30
@@ -639,7 +642,10 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     }
 
     mprintf((0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library));
+
+#if 0  // this was for 3DFx Voodoo cards...probably don't need this anymore.  --ryan 04/27/2024
     putenv("MESA_FX_NO_SIGNALS=ihatesegfaults");
+#endif
 
     // ryan's adds. 04/18/2000...SDL stuff on 04/25/2000
     bool success = true;
@@ -3147,10 +3153,10 @@ void rend_PreUploadTextureToCard(int handle, int map_type) {}
 void rend_FreePreUploadedTexture(int handle, int map_type) {}
 
 // Retrieves an error message
-char *rend_GetErrorMessage() { return (char *)Renderer_error_message; }
+const char *rend_GetErrorMessage() { return Renderer_error_message; }
 
 // Sets an error message
-void rend_SetErrorMessage(char *str) {
+void rend_SetErrorMessage(const char *str) {
   ASSERT(strlen(str) < 256);
   strcpy(Renderer_error_message, str);
 }

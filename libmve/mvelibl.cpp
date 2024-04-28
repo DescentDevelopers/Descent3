@@ -60,8 +60,8 @@ extern unsigned sf_ScreenWidth;
 
 #include "snd8to16.h"
 // len always specifies length of destination in bytes.
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned state);
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned state);
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned state);
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned state);
 
 //----------------------------------------------------------------------
 // Memory Management
@@ -472,9 +472,9 @@ static void sndSync(void) {
 
 // For compressed streams, assumes len (which is in bytes) will be in multiples
 //  of 2 for mono and 4 for stereo.
-static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned len, unsigned state, bool init) {
+static unsigned sndAddHelper(unsigned char *dst, const unsigned char **pSrc, unsigned len, unsigned state, bool init) {
 #if SOUND_SUPPORT
-  unsigned char *src;
+  const unsigned char *src;
   src = *pSrc;
   if (!src) {
     memset(dst, (snd_bits16 ? 0 : 0x80), len);
@@ -516,7 +516,7 @@ static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned 
 #endif
 }
 
-static void sndAdd(unsigned char *buf, unsigned len) {
+static void sndAdd(const unsigned char *buf, unsigned len) {
 #if SOUND_SUPPORT
   int dsrval;
   unsigned int play_cursor, write_cursor;
@@ -1476,8 +1476,9 @@ void MVE_ReleaseMem(void) {
 
 //----------------------------------------------------------------------
 
-char *MVE_strerror(int code) {
-  char *errors[] = {"Movie aborted with special code",
+const char *MVE_strerror(int code) {
+  const char *errors[] = {
+                    "Movie aborted with special code",
                     "Movie aborted",
                     "Movie completed normally", // 0
                     "Movie completed normally", //-1
@@ -1492,7 +1493,8 @@ char *MVE_strerror(int code) {
                     "StepMovie() without PrepMovie()",
                     "Unable to initialize Linux Draw System",
                     "Unable to lock window surface",
-                    "Unknown movie error code"};
+                    "Unknown movie error code"
+  };
 
   if (code >= MVE_CTL_EXIT + 1)
     code = MVE_CTL_EXIT + 1;

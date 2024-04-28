@@ -30,7 +30,7 @@ typedef enum {
 } cvar_type;
 
 typedef struct {
-  char *varname;
+  const char *varname;
   cvar_type type;
   void *dest_variable;
   int var_min, var_max;
@@ -46,16 +46,16 @@ void SetCVarInt(int index, int val);
 void SetCVarFloat(int index, float val);
 
 // Sets the value for a cvar string type
-void SetCVarString(int index, char *val);
+void SetCVarString(int index, const char *val);
 
 // The accessor function that sets the value of a cvar
-void SetCVar(char *cvar_string, char *cvar_argument, bool in_game_init);
+void SetCVar(const char *cvar_string, const char *cvar_argument, bool in_game_init);
 
 // The accessor function that sets the value of a cvar...INT only
-void SetCVar(char *cvar_string, int cvar_argument);
+void SetCVar(const char *cvar_string, int cvar_argument);
 
 // The accessor function that sets the value of a cvar...FLOAT only
-void SetCVar(char *cvar_string, float cvar_argument);
+void SetCVar(const char *cvar_string, float cvar_argument);
 
 // Starts a dedicated server and loads the server config file
 void StartDedicatedServer();

@@ -602,7 +602,7 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
   return 1;
 #else
   if ((strcmpi(filename, "d3_2.mn3") == 0) || (strcmpi(filename, "d3.mn3") == 0)) {
-    char *p = GetMultiCDPath(filename);
+    const char *p = GetMultiCDPath(filename);
     return p ? 1 : 0;
   }
 
@@ -703,7 +703,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
 
   char mission_directory[_MAX_PATH];
   char output_filename[_MAX_PATH];
-  char buffer[256];
+  char buffer[256 + 32];
 
   ddio_MakePath(mission_directory, LocalD3Dir, "missions", NULL);
 

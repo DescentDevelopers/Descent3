@@ -282,7 +282,7 @@ void CFtpGet::WorkerThread() {
 unsigned int CFtpGet::GetFile() {
 
   // Start off by changing into the proper dir.
-  char szCommandString[200];
+  char szCommandString[256];
   int rcode;
 
   snprintf(szCommandString, sizeof(szCommandString), "TYPE I\r\n");

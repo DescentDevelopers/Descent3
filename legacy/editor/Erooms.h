@@ -438,7 +438,7 @@ int ComputeRoomShell(room *rp);
 int ComputeAllRoomShells();
 
 //Log an error in the room check process
-void CheckError(char *str,...);
+void CheckError(const char *str,...);
 
 //Checks the normals in a room
 //Returns the number of bad normals

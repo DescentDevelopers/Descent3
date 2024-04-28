@@ -36,9 +36,9 @@ int stricmp(const char *string1, const char *string2);
 
 // ===========================================================
 
-// void mprintf(int n, char *format, ... );
+// void mprintf(int n, const char *format, ... );
 // prints a debug message out to the monochrome monitor
-typedef void (*mprintf_fp)(int n, char *format, ...);
+typedef void (*mprintf_fp)(int n, const char *format, ...);
 OSIRISEXTERN mprintf_fp mprintf;
 
 // The main calling function for multisafe functions
@@ -66,19 +66,19 @@ OSIRISEXTERN Trgr_CallEvent_fp Trgr_CallEvent;
 typedef void (*Sound_TouchFile_fp)(char *sound_name);
 OSIRISEXTERN Sound_TouchFile_fp Sound_TouchFile;
 
-//	int Obj_FindID(char *object_name);
+//	int Obj_FindID(const char *object_name);
 //	searches for an object id given it's name
-typedef int (*Obj_FindID_fp)(char *object_name);
+typedef int (*Obj_FindID_fp)(const char *object_name);
 OSIRISEXTERN Obj_FindID_fp Obj_FindID;
 
-//	int Obj_FindType(char *object_name);
+//	int Obj_FindType(const char *object_name);
 //	searches for an object type given it's name
-typedef int (*Obj_FindType_fp)(char *object_name);
+typedef int (*Obj_FindType_fp)(const char *object_name);
 OSIRISEXTERN Obj_FindType_fp Obj_FindType;
 
-//	int Wpn_FindID(char *weapon_name);
+//	int Wpn_FindID(const char *weapon_name);
 //	searches through the weapons for a name and returns the id
-typedef int (*Wpn_FindID_fp)(char *weapon_name);
+typedef int (*Wpn_FindID_fp)(const char *weapon_name);
 OSIRISEXTERN Wpn_FindID_fp Wpn_FindID;
 
 //	float Obj_GetTimeLived(int objhandle);
@@ -453,7 +453,7 @@ inline void Obj_SetCustomAnim(int handle, float start, float end, float time, ch
   Obj_SetCustomAnimFP(handle, start, end, time, flags, sound_handle, next_anim_type);
 }
 
-typedef void (*Player_AddHudMessage_fp)(int handle, char *str);
+typedef void (*Player_AddHudMessage_fp)(int handle, const char *str);
 OSIRISEXTERN Player_AddHudMessage_fp Player_AddHudMessage;
 
 typedef void (*Obj_Ghost_fp)(int handle, bool f_ghost);
@@ -500,7 +500,7 @@ inline int Sound_Play3d(int obj_handle, int s_id, float volume = 1.0f) {
   return Sound_Play3dFP(obj_handle, s_id, volume);
 }
 
-typedef int (*Sound_FindId_fp)(char *s_name);
+typedef int (*Sound_FindId_fp)(const char *s_name);
 OSIRISEXTERN Sound_FindId_fp Sound_FindId;
 
 typedef bool (*AI_IsObjFriend_fp)(int obj_handle, int it_handle);
@@ -577,7 +577,7 @@ OSIRISEXTERN OMMS_GetInfo_fp OMMS_GetInfo;
 
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
 //	use pipes (|) to seperate lines.
-typedef bool (*Cine_Start_fp)(tGameCinematic *info, char *text_string);
+typedef bool (*Cine_Start_fp)(tGameCinematic *info, const char *text_string);
 OSIRISEXTERN Cine_Start_fp Cine_Start;
 
 //	Stops and clears up a in-game cinematic.
@@ -585,16 +585,16 @@ typedef void (*Cine_Stop_fp)(void);
 OSIRISEXTERN Cine_Stop_fp Cine_Stop;
 
 // Looks up the id's of the sound, room, trigger, object, ect. based on the name
-typedef int (*Scrpt_FindSoundName_fp)(char *name);
+typedef int (*Scrpt_FindSoundName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindSoundName_fp Scrpt_FindSoundName;
 
-typedef int (*Scrpt_FindRoomName_fp)(char *name);
+typedef int (*Scrpt_FindRoomName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindRoomName_fp Scrpt_FindRoomName;
 
-typedef int (*Scrpt_FindTriggerName_fp)(char *name);
+typedef int (*Scrpt_FindTriggerName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindTriggerName_fp Scrpt_FindTriggerName;
 
-typedef int (*Scrpt_FindObjectName_fp)(char *name);
+typedef int (*Scrpt_FindObjectName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindObjectName_fp Scrpt_FindObjectName;
 
 typedef int (*Scrpt_GetTriggerRoom_fp)(int trigger_id);
@@ -603,10 +603,10 @@ OSIRISEXTERN Scrpt_GetTriggerRoom_fp Scrpt_GetTriggerRoom;
 typedef int (*Scrpt_GetTriggerFace_fp)(int trigger_id);
 OSIRISEXTERN Scrpt_GetTriggerFace_fp Scrpt_GetTriggerFace;
 
-typedef int (*Scrpt_FindDoorName_fp)(char *name);
+typedef int (*Scrpt_FindDoorName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindDoorName_fp Scrpt_FindDoorName;
 
-typedef int (*Scrpt_FindTextureName_fp)(char *name);
+typedef int (*Scrpt_FindTextureName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindTextureName_fp Scrpt_FindTextureName;
 
 typedef void (*Game_CreateRandomSparks_fp)(int num_sparks, vector *pos, int roomnum, int which_index,
@@ -622,11 +622,11 @@ typedef void (*Scrpt_CancelTimerID_fp)(int id);
 OSIRISEXTERN Scrpt_CancelTimerID_fp Scrpt_CancelTimerID;
 
 // disable/enable ship
-typedef void (*Game_EnableShip_fp)(char *ship_name, bool enable);
+typedef void (*Game_EnableShip_fp)(const char *ship_name, bool enable);
 OSIRISEXTERN Game_EnableShip_fp Game_EnableShip;
 
 // is ship enabled
-typedef bool (*Game_IsShipEnabled_fp)(char *ship_name);
+typedef bool (*Game_IsShipEnabled_fp)(const char *ship_name);
 OSIRISEXTERN Game_IsShipEnabled_fp Game_IsShipEnabled;
 
 // gets information about a path point
@@ -643,13 +643,13 @@ inline bool Path_GetInformation(int pathid, int point, vector *pos = NULL, int *
 typedef void (*Cine_StartCanned_fp)(tCannedCinematicInfo *info);
 OSIRISEXTERN Cine_StartCanned_fp Cine_StartCanned;
 
-typedef int (*Scrpt_FindMatcenName_fp)(char *name);
+typedef int (*Scrpt_FindMatcenName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindMatcenName_fp Scrpt_FindMatcenName;
 
-typedef int (*Scrpt_FindPathName_fp)(char *name);
+typedef int (*Scrpt_FindPathName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindPathName_fp Scrpt_FindPathName;
 
-typedef int (*Scrpt_FindLevelGoalName_fp)(char *name);
+typedef int (*Scrpt_FindLevelGoalName_fp)(const char *name);
 OSIRISEXTERN Scrpt_FindLevelGoalName_fp Scrpt_FindLevelGoalName;
 
 typedef void (*LGoal_Value_fp)(char op, char vtype, void *ptr, int g_index, int i_index);

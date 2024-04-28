@@ -126,7 +126,7 @@ char *Static_ship_names[1];
 #define SHIP_PHOENIX_ID 1
 #define SHIP_MAGNUM_ID 2
 
-char *AllowedShips[MAX_SHIPS] = {"Pyro-GL", "Phoenix", "Magnum-AHT"};
+const char *AllowedShips[MAX_SHIPS] = {"Pyro-GL", "Phoenix", "Magnum-AHT"};
 
 // Sets all ships to unused
 void InitShips() {
@@ -226,7 +226,7 @@ int GetPrevShip(int n) {
 }
 // Searches thru all ships for a specific name, returns -1 if not found
 // or index of ship with name
-int FindShipName(char *name) {
+int FindShipName(const char *name) {
   int i;
 
   ASSERT(name != NULL);
@@ -238,7 +238,7 @@ int FindShipName(char *name) {
   return -1;
 }
 
-int LoadShipImage(char *filename) {
+int LoadShipImage(const char *filename) {
   int img_handle;
 
   img_handle = LoadPolyModel(filename, 1);

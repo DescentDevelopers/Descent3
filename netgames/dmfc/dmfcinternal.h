@@ -305,7 +305,7 @@ typedef struct tInputCommandNode {
   char *data;
   char *desc;
   tInputCommandNode *next;
-  void (*handler)(char *);
+  void (*handler)(const char *);
   bool allow_remote;
 } tInputCommandNode;
 
@@ -361,7 +361,7 @@ private:
 class MenuItem : public IMenuItem {
 public:
   MenuItem();
-  MenuItem(char *title, char type, ubyte flags, void (*fp)(int), ...); // the last parameters are the state items, which
+  MenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...); // the last parameters are the state items, which
                                                                        // is an int (the number of states), followed by
                                                                        // an int (the initial state), followed by a
                                                                        // a list of char * to the names of the items
@@ -383,7 +383,7 @@ public:
   void LoseInputFocus(void);
   bool GetFocus(void);
 
-  char *GetTitle(void);
+  const char *GetTitle(void);
   int GetCustomSubMenuCount(void);
 
   void CallFunc(int value);
@@ -691,7 +691,7 @@ public:
   // DMFCBase::OnServerIsAddressBanned
   //
   //	Called by the game to determine if the given network address is banned from the game
-  virtual bool OnServerIsAddressBanned(network_address *addr, char *tracker_id);
+  virtual bool OnServerIsAddressBanned(network_address *addr, const char *tracker_id);
 
   // DMFCBase::OnServerWallCollide
   //
@@ -1087,13 +1087,13 @@ public:
   //    This will add a death message to DMFC.
   //    format = string in a "printf" type format (using %s for player callsigns) of the message
   //    victim_first = Set this to true if the victim is listed first in the format
-  void AddDeathMessage(char *string, bool victim_first = true);
+  void AddDeathMessage(const char *string, bool victim_first = true);
 
   // DMFCBase::AddSuicideMessage
   //
   //    This will add a death message to DMFC.
   //    format = string in a "printf" type format (using %s for player callsigns) of the message
-  void AddSuicideMessage(char *string);
+  void AddSuicideMessage(const char *string);
 
   // DMFCBase::DoRandomDeathMessage
   //
@@ -1421,7 +1421,7 @@ public:
   //
   //	Sets a death message for a weapon kill (you only need to pass in one version of the weapon if it
   //  consists of multiple weapons...make sure AddWeaponHash has been called before this for this weapon)
-  bool SetWeaponDeathMessage(char *weapon_name, char *message, bool victim_first);
+  bool SetWeaponDeathMessage(const char *weapon_name, const char *message, bool victim_first);
 
   // DMFCBase::GetWeaponDeathMessage
   //
@@ -1433,14 +1433,14 @@ public:
   //	Since one weapon may actually consist of many weapons, in order to save space you can create
   //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
   //  get the actual weapon.  End list of children with a NULL
-  void AddWeaponHash(char *parent, ...);
+  void AddWeaponHash(const char *parent, ...);
 
   // DMFCBase::AddWeaponHashArray
   //
   //	Since one weapon may actually consist of many weapons, in order to save space you can create
   //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
   //  get the actual weapon.
-  void AddWeaponHashArray(char *parent, int count, char **array);
+  void AddWeaponHashArray(const char *parent, int count, char **array);
 
   // DMFCBase::SetupPlayerRecord
   //
@@ -1497,7 +1497,7 @@ public:
   // DMFCBase::IsAddressBanned
   //
   //	returns true if the given address is banned from the game
-  bool IsAddressBanned(network_address *addr, char *tracker_id);
+  bool IsAddressBanned(network_address *addr, const char *tracker_id);
 
   // DMFCBase::RemoveAllBans
   //
@@ -1597,7 +1597,7 @@ public:
   //	exists. These commands are not case sensitive.
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
-  signed char AddInputCommand(char *command, char *description, void (*handler)(char *), bool allow_remotely = false);
+  signed char AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely = false);
 
   // DMFCBase::CanInputCommandBeUsedRemotely
   //
@@ -1635,7 +1635,7 @@ public:
   //	the recommended filename to save stats to should be.
   //	root = Multiplayer DLL Name (filename will start with this)
   //	end_of_level = pass true if this is the end of a level stats
-  void GenerateStatFilename(char *filename, char *root, bool end_of_level);
+  void GenerateStatFilename(char *filename, const char *root, bool end_of_level);
 
   //	DMFCBase::IsPlayerObserver
   //
@@ -1751,7 +1751,7 @@ public:
   bool IsPlayerDedicatedServer(player_record *pr);
 
   //	Displays dedicated server help
-  void DisplayInputCommandHelp(char *s);
+  void DisplayInputCommandHelp(const char *s);
 
   // DMFCBase::GetPlayerTeam
   //
@@ -1770,7 +1770,7 @@ public:
   //	team:	integer value of the team to change
   //	name:	new name for the team
   //	announce:	if this is true, and we are the server, it will tell all the clients about the change
-  bool SetTeamName(int team, char *name, bool announce);
+  bool SetTeamName(int team, const char *name, bool announce);
 
   // DMFCBase::ConvertHUDCoord
   //
@@ -1822,7 +1822,7 @@ public:
   // If you are going to create submenus you MUST use this function. along with:
   // void SetState(int state);
   // bool SetStateItemList(int count, ... ); for MIT_STATE items
-  MenuItem *CreateMenuItem(char *title, char type, ubyte flags, void (*fp)(int), ...);
+  MenuItem *CreateMenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...);
 
   // DMFCBase::ReadInHostsAllowDeny
   //
@@ -2184,7 +2184,7 @@ public:
   void Set_OnServerLevelStart(void (*callback)(void));
   void Set_OnServerLevelEnd(void (*callback)(void));
   void Set_OnServerObjectShieldsChanged(void (*callback)(object *obj, float amount));
-  void Set_OnServerIsAddressBanned(bool (*callback)(network_address *addr, char *tracker_id));
+  void Set_OnServerIsAddressBanned(bool (*callback)(network_address *addr, const char *tracker_id));
   void Set_OnServerWallCollide(void (*callback)(object *obj, float hitspeed, int hitseg, int hitwall, vector *hitpt,
                                                 vector *wall_normal, float hit_dot));
   void Set_OnServerObjectKilled(void (*callback)(object *obj, object *killer));
@@ -2248,7 +2248,7 @@ public:
   void CallOnServerLevelStart(void);
   void CallOnServerLevelEnd(void);
   void CallOnServerObjectShieldsChanged(object *obj, float amount);
-  bool CallOnServerIsAddressBanned(network_address *addr, char *tracker_id);
+  bool CallOnServerIsAddressBanned(network_address *addr, const char *tracker_id);
   void CallOnServerWallCollide(object *obj, float hitspeed, int hitseg, int hitwall, vector *hitpt, vector *wall_normal,
                                float hit_dot);
   void CallOnServerObjectKilled(object *obj, object *killer);
@@ -2318,7 +2318,7 @@ private:
   void (*UserOnServerLevelStart)(void);
   void (*UserOnServerLevelEnd)(void);
   void (*UserOnServerObjectShieldsChanged)(object *obj, float amount);
-  bool (*UserOnServerIsAddressBanned)(network_address *addr, char *tracker_id);
+  bool (*UserOnServerIsAddressBanned)(network_address *addr, const char *tracker_id);
   void (*UserOnServerWallCollide)(object *obj, float hitspeed, int hitseg, int hitwall, vector *hitpt,
                                   vector *wall_normal, float hit_dot);
   void (*UserOnServerObjectKilled)(object *obj, object *killer);
@@ -2859,7 +2859,7 @@ void Remote_SetPassword(char *password);
 // Sets a clients key
 void Remote_SetMyKey(ubyte key[8]);
 // handles a remote command (client side)
-void Remote_ClientProcess(char *command);
+void Remote_ClientProcess(const char *command);
 // Lists the players logged in
 void Remote_ListLogins(void);
 // Logs a player out from being an administrator
@@ -2882,15 +2882,15 @@ typedef struct tKey {
 
 class CRegistry {
 public:
-  CRegistry(char *name);
+  CRegistry(const char *name);
   ~CRegistry();
   void Export();
   bool Import();
-  void CreateKey(char *name);
-  bool LookupKey(char *name);
-  bool CreateRecord(char *name, char type, void *data);
-  tRecord *LookupRecord(char *record, void *data);
-  int GetDataSize(char *record);
+  void CreateKey(const char *name);
+  bool LookupKey(const char *name);
+  bool CreateRecord(const char *name, char type, void *data);
+  tRecord *LookupRecord(const char *record, void *data);
+  int GetDataSize(const char *record);
 
 private:
   void Destroy(void);
@@ -2940,7 +2940,7 @@ void PRec_SetDisconnectTime(int slot, float time);
 //	Returns the PRec slot of a player who matches the given info, -1 if none
 //	addr = network address			(can be NULL)
 //	tracker_id = Mastertracker ID  (can be NULL)
-int PRec_FindPlayer(char *callsign, network_address *addr, char *tracker_id);
+int PRec_FindPlayer(const char *callsign, network_address *addr, const char *tracker_id);
 
 //	Gets the first available free slot (STATE_EMPTY), if none are available it clears and returns
 //	the oldest disconnected player (STATE_DISCONNECTED)

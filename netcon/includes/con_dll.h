@@ -278,8 +278,8 @@
 // localization info
 char **StringTable;
 int StringTableSize = 0;
-char *_ErrorString = "Missing String";
-char *GetString(int d) {
+const char *_ErrorString = "Missing String";
+const char *GetString(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
   else
@@ -312,7 +312,7 @@ typedef struct {
     float fRet;
   };
   float fParam;
-  int iParam;
+  ptrdiff_t iParam;
 } dllinfo;
 
 typedef struct {
@@ -375,7 +375,7 @@ ListGetItem_fp DLLListGetItem;
 typedef int (*ListGetSelectedIndex_fp)(void *item);
 ListGetSelectedIndex_fp DLLListGetSelectedIndex;
 
-typedef void (*EditSetText_fp)(void *item, char *buff);
+typedef void (*EditSetText_fp)(void *item, const char *buff);
 EditSetText_fp DLLEditSetText;
 
 typedef void (*EditGetText_fp)(void *item, char *buff, int len);
@@ -401,7 +401,7 @@ inline void DLLDoMessageBox(const char *title, const char *msg, int type, ddgr_c
 typedef int (*DoUI_fp)(void);
 DoUI_fp DLLDoUI;
 
-typedef void (*Debug_ConsolePrintf_fp)(int n, char *format, ...);
+typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 
 typedef void (*DedicatedServerPrintf_fp)(char *format, ...);
@@ -481,15 +481,15 @@ HotSpotCreate_fp DLLHotSpotCreate;
 typedef int (*PollUI_fp)(void);
 PollUI_fp DLLPollUI;
 
-typedef char *(*GetMissionName_fp)(char *mission);
+typedef const char *(*GetMissionName_fp)(const char *mission);
 GetMissionName_fp DLLGetMissionName;
 
 typedef void (*RemoveUITextItem_fp)(void *item);
 RemoveUITextItem_fp DLLRemoveUITextItem;
 
-typedef void *(*CreateNewUITextItem_fp)(char *newtext, unsigned int color, int font);
+typedef void *(*CreateNewUITextItem_fp)(const char *newtext, unsigned int color, int font);
 CreateNewUITextItem_fp DLLCreateNewUITextItemFP;
-inline void *DLLCreateNewUITextItem(char *newtext, unsigned int color, int font = -1) {
+inline void *DLLCreateNewUITextItem(const char *newtext, unsigned int color, int font = -1) {
   return DLLCreateNewUITextItemFP(newtext, color, font);
 }
 
@@ -499,7 +499,7 @@ mem_malloc_fp DLLmem_malloc;
 typedef void (*mem_free_fp)(void *memblock);
 mem_free_fp DLLmem_free;
 
-typedef void (*CreateSplashScreen_fp)(char *msg, int usecancel);
+typedef void (*CreateSplashScreen_fp)(const char *msg, int usecancel);
 CreateSplashScreen_fp DLLCreateSplashScreen;
 
 typedef void (*CloseSplashScreen_fp)(void);
@@ -539,7 +539,7 @@ OldListGetItem_fp DLLOldListGetItem;
 typedef int (*OldListGetSelectedIndex_fp)(void *item);
 OldListGetSelectedIndex_fp DLLOldListGetSelectedIndex;
 
-typedef void (*OldEditSetText_fp)(void *item, char *newtext);
+typedef void (*OldEditSetText_fp)(void *item, const char *newtext);
 OldEditSetText_fp DLLOldEditSetText;
 
 typedef void (*OldEditGetText_fp)(void *item, char *buff, int len);
@@ -586,7 +586,7 @@ dp_GetModemChoices_fp DLLdp_GetModemChoices;
 // Given a filename, pointer to a char * array and a pointer to an int,
 // it will load the string table and fill in the information
 // returns true on success
-typedef bool (*CreateStringTable_fp)(char *filename, char ***table, int *size);
+typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
 CreateStringTable_fp DLLCreateStringTable;
 
 // Given a string table and it's count of strings, it will free up it's memory
@@ -635,7 +635,7 @@ MultiDoConfigSave_fp DLLMultiDoConfigSave;
 typedef void (*MultiDoConfigLoad_fp)(void);
 MultiDoConfigLoad_fp DLLMultiDoConfigLoad;
 
-typedef int (*MultiLoadSettings_fp)(char *filename);
+typedef int (*MultiLoadSettings_fp)(const char *filename);
 MultiLoadSettings_fp DLLMultiLoadSettings;
 
 typedef void *(*NetworkReceiveCallback)(ubyte *data, int len, network_address *from);
@@ -660,8 +660,8 @@ MultiGameOptionsMenu_fp DLLMultiGameOptionsMenu;
 
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
-// typedef bool (*mod_LoadModule_fp)(module *handle,char *modfilename,int flags=MODF_NOW);
-typedef bool (*mod_LoadModule_fp)(module *handle, char *modfilename, int flags);
+// typedef bool (*mod_LoadModule_fp)(module *handle,const char *modfilename,int flags=MODF_NOW);
+typedef bool (*mod_LoadModule_fp)(module *handle, const char *modfilename, int flags);
 mod_LoadModule_fp DLLmod_LoadModule;
 
 // Frees a previously loaded module from memory, it can no longer be used
@@ -672,7 +672,7 @@ mod_FreeModule_fp DLLmod_FreeModule;
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
-typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module *handle, char *symstr, unsigned char parmbytes);
+typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module *handle, const char *symstr, unsigned char parmbytes);
 mod_GetSymbol_fp DLLmod_GetSymbol;
 
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
@@ -889,7 +889,7 @@ void RemoveAllMsnItems(void) {
   FirstMsn = NULL;
 }
 
-_msn_list *FindMsnItem(char *name) {
+_msn_list *FindMsnItem(const char *name) {
   CurrMsn = FirstMsn;
   if (CurrMsn) {
     while (CurrMsn->next) {
@@ -1105,7 +1105,7 @@ int StartMultiplayerGameMenu() {
     DLLListAddItem(list_1, mi->ti);
   }
 #endif
-  char *p;
+  const char *p;
 #else
   void *msn_single_ti = DLLCreateNewUITextItem("Polaris", UICOL_LISTBOX_LO);
   void *msn_multi_ti = DLLCreateNewUITextItem("The Core", UICOL_LISTBOX_LO);

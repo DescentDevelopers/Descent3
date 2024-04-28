@@ -515,7 +515,7 @@ bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
 
 // adds a colored hud message to the list
 // Returns true if message added, or false if message not (because the previous message was the same)
-bool AddColoredHUDMessage(ddgr_color color, char *format, ...) {
+bool AddColoredHUDMessage(ddgr_color color, const char *format, ...) {
   va_list args;
   char *message = NULL;
   char *last_message = NULL;
@@ -538,7 +538,7 @@ bool AddColoredHUDMessage(ddgr_color color, char *format, ...) {
 
 // Adds a HUD message (similar to AddColoredHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
-bool AddFilteredColoredHUDMessage(ddgr_color color, char *format, ...) {
+bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
   static signed char checked_command_line = -1;
 
   if (checked_command_line == -1) {
@@ -574,7 +574,7 @@ bool AddFilteredColoredHUDMessage(ddgr_color color, char *format, ...) {
 
 // Adds a HUD message (similar to AddHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
-bool AddFilteredHUDMessage(char *format, ...) {
+bool AddFilteredHUDMessage(const char *format, ...) {
   static signed char checked_command_line = -1;
 
   if (checked_command_line == -1) {
@@ -611,7 +611,7 @@ bool AddFilteredHUDMessage(char *format, ...) {
 // Adds a message to the HUD message list.  If the list is already full, punt the
 // top one and move the others up
 // Returns true if message added, or false if message not (because the previous message was the same)
-bool AddHUDMessage(char *format, ...) {
+bool AddHUDMessage(const char *format, ...) {
   va_list args;
   char *message = NULL;
   char *last_message = NULL;
@@ -635,7 +635,7 @@ bool AddHUDMessage(char *format, ...) {
 // Adds a blinking message to the HUD message list.  If the list is already full, punt the
 // top one and move the others up
 // Returns true if message added, or false if message not (because the previous message was the same)
-bool AddBlinkingHUDMessage(char *format, ...) {
+bool AddBlinkingHUDMessage(const char *format, ...) {
   va_list args;
   char *message = NULL;
   char *last_message = NULL;
@@ -740,12 +740,12 @@ void StartTeamHUDInputMessage() {
 //		MULTI_SEND_MESSAGE_GREEN_TEAM	= only green team (2) should get this message
 //		MULTI_SEND_MESSAGE_YELLOW_TEAM	= only yellow team (3) should get this message
 //		0-32							= player num of the player to get the message
-char *GetMessageDestination(char *message, int *destination) {
+const char *GetMessageDestination(const char *message, int *destination) {
   int to_who = MULTI_SEND_MESSAGE_ALL;
-  char *ret = message;
+  const char *ret = message;
 
   // see if there is a colon in the string, and match that up with a name
-  char *colon_pos = NULL;
+  const char *colon_pos = NULL;
   colon_pos = strchr(message, ':');
   if (colon_pos > message) {
     // this message might be for one person in particular
@@ -845,7 +845,7 @@ void SendOffHUDInputMessage() {
       case HUD_MESSAGE_GENERAL: {
         int to_who;
 
-        char *colon_pos = GetMessageDestination(HudInputMessage, &to_who);
+        const char *colon_pos = GetMessageDestination(HudInputMessage, &to_who);
 
         if (to_who != MULTI_SEND_MESSAGE_ALL) {
           if (to_who < 0) {
@@ -922,7 +922,7 @@ int BreakupHUDInputMessage(char *str) {
   int leftover_size = leftover_len - 1;
   if (leftover_len > 0) {
     int to_who;
-    char *colon_pos = GetMessageDestination(HudInputMessage, &to_who);
+    const char *colon_pos = GetMessageDestination(HudInputMessage, &to_who);
 
     if (to_who != MULTI_SEND_MESSAGE_ALL) {
       char to_who_text[64];
@@ -1361,8 +1361,9 @@ void StartPersistentHUDMessage(ddgr_color color, int x, int y, float time, int f
   if (flags & HPF_FREESPACE_DRAW) {
 
     // Create additional hud item for leading character
+    static char single_char[2] = { 'a', '\0' }; ; // single-character string
     huditem.alpha = 255;
-    huditem.data.text = "a"; // single-character string
+    huditem.data.text = single_char;
     huditem.saturation_count = 2;
     AddHUDItem(&huditem);
     Hud_persistent_msg_id2 = huditem.id;

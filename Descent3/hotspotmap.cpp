@@ -114,7 +114,7 @@
 #include "bitmap.h"
 #include "manage.h"
 
-void makecorner(int corner_bmp, int back_bmp, char *tmap, int l, int t, int r, int b);
+void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b);
 
 // just like the old bm_tga_translate_pixel function, but it stores the alpha in the alpha_value parameter
 ushort menutga_translate_pixel(int pixel, char *alpha_value) {
@@ -142,7 +142,7 @@ ushort menutga_translate_pixel(int pixel, char *alpha_value) {
 #define WINDOW_THERE 2
 #define NOTHING_THERE 0
 
-int CreateHotSpotMap(char *map, int width, int height, hotspotmap_t *hsmap) {
+int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap) {
   // make sure we have a clean struct to work with
   if (hsmap->hs) {
     FreeHotSpotMapInternals(hsmap);
@@ -263,7 +263,7 @@ int CreateHotSpotMap(char *map, int width, int height, hotspotmap_t *hsmap) {
   return window_count;
 }
 
-void CreateWindowMap(char *map, int width, int height, windowmap_t *wndmap) {
+void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap) {
   mprintf((0, "Processing %d windows\n", wndmap->num_of_windows));
   int x, y, count;
   unsigned char alpha;
@@ -505,7 +505,7 @@ void CreateWindowMap(char *map, int width, int height, windowmap_t *wndmap) {
 }
 
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
-int menutga_alloc_file(char *name, char *hsmap[1], int *w, int *h) {
+int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
   ubyte upside_down = 0;
   ushort width, height;
@@ -590,7 +590,7 @@ int menutga_alloc_file(char *name, char *hsmap[1], int *w, int *h) {
 }
 
 // Given a filename and a hotspotmap structure, it saves it to disk (.HSM)
-void menutga_SaveHotSpotMap(char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
+void menutga_SaveHotSpotMap(const char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
   CFILE *file;
   mprintf((0, "Saving HotSpotMap %s ", filename));
   file = (CFILE *)cfopen(filename, "wb");
@@ -663,7 +663,7 @@ void menutga_SaveHotSpotMap(char *filename, hotspotmap_t *hsmap, windowmap_t *wn
 }
 
 // Given a filename and a hotspotmap structure, it loads the hotspot map (.HSM)
-void menutga_LoadHotSpotMap(int back_bmp, char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
+void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
   // start with a clean struct
   if (hsmap->hs) {
     FreeHotSpotMapInternals(hsmap);
@@ -796,7 +796,7 @@ void menutga_LoadHotSpotMap(int back_bmp, char *filename, hotspotmap_t *hsmap, w
   }
 }
 
-void makecorner(int corner_bmp, int back_bmp, char *tmap, int l, int t, int r, int b) {
+void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b) {
   int real_x, real_y, awidth, ax, ay;
   short *backdata, *cornerdata;
   int back_rowsize, corner_rowsize;
@@ -850,7 +850,7 @@ void FreeHotSpotMapInternals(hotspotmap_t *hsmap) {
 }
 
 // This function (given a filename) loads a TGA file, extracts a hotspot map, and saves the hotspot map
-bool menutga_ConvertTGAtoHSM(char *fpath) {
+bool menutga_ConvertTGAtoHSM(const char *fpath) {
   char path[255], filename[255], ext[8];
   ddio_SplitPath(fpath, path, filename, ext);
   mprintf((0, "Extracting hotspots from %s\n", filename));
@@ -966,7 +966,7 @@ void DisplayHotSpots(hotspotmap_t *hsmap, windowmap_t *wndmap) {
 }
 
 // Writes a hotspotmap_t struct to a text file
-void ExportHotSpot(char *filename, hotspotmap_t *hsmap) {
+void ExportHotSpot(const char *filename, hotspotmap_t *hsmap) {
   CFILE *file;
   file = (CFILE *)cfopen(filename, "wt");
   ASSERT(file);

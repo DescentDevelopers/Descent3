@@ -74,7 +74,7 @@
 #include "ship.h"
 #include "multi_save_settings.h"
 
-int MultiSaveSettings(char *filename) {
+int MultiSaveSettings(const char *filename) {
   CFILE *cf;
   char szoutput[MAX_MPS_LINE_LEN];
   int i;
@@ -137,7 +137,7 @@ int MultiSaveSettings(char *filename) {
   return 1;
 }
 
-int MultiLoadSettings(char *filename) {
+int MultiLoadSettings(const char *filename) {
   CFILE *cf;
   char szinput[MAX_MPS_LINE_LEN];
   char *toklabel, *tokval;

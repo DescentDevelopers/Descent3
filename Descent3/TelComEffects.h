@@ -338,30 +338,30 @@ void RenderPolyModel(tceffect *tce, float frametime, int xoff, int yoff, bool ok
 void RenderSound(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render);
 void RenderButton(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render);
 
-bool CreateTextEffect(LPTCTEXTDESC desc, char *text, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateTextEffect(LPTCTEXTDESC desc, const char *text, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreateBitmapEffect(LPTCBMPDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreateMovieEffect(LPTCMOVIEDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreateBackgroundEffect(LPTCBKGDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreatePolyModelEffect(LPTCPOLYDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreateSoundEffect(LPTCSNDDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateTextStatic(tceffect *tce, char *text);
-bool CreateTextFade(tceffect *tce, char *text);
-bool CreateTextType(tceffect *tce, char *text);
-bool CreateBmpStatic(tceffect *tce, char *filename);
-bool CreateBmpBlur(tceffect *tce, char *filename);
-bool CreateBmpScanline(tceffect *tce, char *filename);
-bool CreateBmpInvert(tceffect *tce, char *filename);
-bool CreateBmpStretch(tceffect *tce, char *filename);
-bool CreateMovie(tceffect *tce, char *filename);
+bool CreateTextStatic(tceffect *tce, const char *text);
+bool CreateTextFade(tceffect *tce, const char *text);
+bool CreateTextType(tceffect *tce, const char *text);
+bool CreateBmpStatic(tceffect *tce, const char *filename);
+bool CreateBmpBlur(tceffect *tce, const char *filename);
+bool CreateBmpScanline(tceffect *tce, const char *filename);
+bool CreateBmpInvert(tceffect *tce, const char *filename);
+bool CreateBmpStretch(tceffect *tce, const char *filename);
+bool CreateMovie(tceffect *tce, const char *filename);
 bool CreateBackground(tceffect *tce);
-bool CreateSound(tceffect *tce, char *filename);
+bool CreateSound(tceffect *tce, const char *filename);
 
 void BltBmpToScreen(int dx, int dy, chunked_bitmap *src_bmp);
 void BltBmpToScreen(int dx, int dy, chunked_bitmap *src_bmp, int sx, int sy, int sw, int sh);
 // forces a chunk bitmap to be uploaded
 void UploadChunk(chunked_bitmap *bmp);
 
-char *format(char *format, ...);
+char *format(const char *format, ...);
 
 #endif

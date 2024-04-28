@@ -72,7 +72,7 @@ int allow_self_modification(void) {
     }
   return (1);
 }
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
   sndDecompM16_dst = dst;
   sndDecompM16_src = src;
   sndDecompM16_len = len;
@@ -81,7 +81,7 @@ unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, uns
   return (sndDecompM16_return);
 }
 
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
   sndDecompS16_dst = dst;
   sndDecompS16_src = src;
   sndDecompS16_len = len;

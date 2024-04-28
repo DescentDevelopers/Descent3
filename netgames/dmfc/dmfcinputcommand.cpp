@@ -122,11 +122,11 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
-bool StringParseWord(char *string, char *word, int size, char **newpos) {
+bool StringParseWord(const char *string, char *word, int size, const char **newpos) {
   *newpos = string;
   word[0] = '\0';
 
@@ -157,7 +157,7 @@ bool StringParseWord(char *string, char *word, int size, char **newpos) {
   return true;
 }
 
-bool StringParseNumber(char *string, int *number, char **newpos) {
+bool StringParseNumber(const char *string, int *number, const char **newpos) {
   char temp[10];
   bool ret = StringParseWord(string, temp, 10, newpos);
   if (!ret) {
@@ -171,7 +171,7 @@ bool StringParseNumber(char *string, int *number, char **newpos) {
 
 //	handle the client wishing to change teams
 //	Usage: "$team <string team_name>" where team_name is the name of the team you want to change to
-void DMFCInputCommand_Team(char *input_string) {
+void DMFCInputCommand_Team(const char *input_string) {
   char team[100];
 
   // parse "$team"
@@ -201,7 +201,7 @@ void DMFCInputCommand_Team(char *input_string) {
 //	handle the server wanting to change the team for a player
 //	Usage: "$changeteam <int pnum> <string team_name>" where pnum is the playernum, and team_name is the name of the
 // team
-void DMFCInputCommand_ChangeTeam(char *input_string) {
+void DMFCInputCommand_ChangeTeam(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   char team[100];
@@ -239,7 +239,7 @@ void DMFCInputCommand_ChangeTeam(char *input_string) {
 
 //	handle the client requesting playerinfo for a player
 //	Usage: "$playerinfo <int pnum>" where pnum is the playernum
-void DMFCInputCommand_PlayerInfo(char *input_string) {
+void DMFCInputCommand_PlayerInfo(const char *input_string) {
   int p;
   char temp[20];
 
@@ -268,7 +268,7 @@ void DMFCInputCommand_PlayerInfo(char *input_string) {
 
 //	handle the server requesting an autobalance of teams
 //	Usage: "$balance"
-void DMFCInputCommand_Balance(char *input_string) {
+void DMFCInputCommand_Balance(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   BalanceTeams(0);
@@ -277,7 +277,7 @@ void DMFCInputCommand_Balance(char *input_string) {
 
 //	handle turning off/on allowing the autobalancing of teams by the server
 //	Usage: "$autobalance <off/on>" if off/on is "off" (or equivalent) it will turn it off, else turn it on
-void DMFCInputCommand_AutoBalance(char *input_string) {
+void DMFCInputCommand_AutoBalance(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   char s[20];
@@ -304,7 +304,7 @@ void DMFCInputCommand_AutoBalance(char *input_string) {
 
 //	handle turning off/on allowing clients to change their team
 //	Usage: "$allowteamchange <off/on>" if off/on is "off" (or equivalent) it will turn it off, else turn it on
-void DMFCInputCommand_AllowTeamChange(char *input_string) {
+void DMFCInputCommand_AllowTeamChange(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   char s[20];
@@ -331,7 +331,7 @@ void DMFCInputCommand_AllowTeamChange(char *input_string) {
 
 //	handles kicking a player from the game
 //	Usage: "$kick <int pnum>" where pnum is the playernumber of the player you want to kick
-void DMFCInputCommand_Kick(char *input_string) {
+void DMFCInputCommand_Kick(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int p;
@@ -358,7 +358,7 @@ void DMFCInputCommand_Kick(char *input_string) {
 
 //	handles banning a player from the game
 //	Usage: "$ban <int pnum>" where pnum is the playernumber of the player to ban
-void DMFCInputCommand_Ban(char *input_string) {
+void DMFCInputCommand_Ban(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int p;
@@ -386,7 +386,7 @@ void DMFCInputCommand_Ban(char *input_string) {
 
 //	handles ending the level
 //	Usage: "$endlevel"
-void DMFCInputCommand_EndLevel(char *input_string) {
+void DMFCInputCommand_EndLevel(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   EndMultiLevel(0);
@@ -395,7 +395,7 @@ void DMFCInputCommand_EndLevel(char *input_string) {
 
 //	handles the request to see all the players in the game
 //	Usage: "$players"
-void DMFCInputCommand_Players(char *input_string) {
+void DMFCInputCommand_Players(const char *input_string) {
   // Dedicated server print out of all the players and their player nums
   DPrintf(DTXT_PLAYERLISTHEADER);
   for (int i = 0; i < DLLMAX_PLAYERS; i++) {
@@ -407,7 +407,7 @@ void DMFCInputCommand_Players(char *input_string) {
 
 //	handles a request to see the scores/stats of the game (up to the mod to display the scores on request)
 //	Usage: "$scores"
-void DMFCInputCommand_Scores(char *input_string) {
+void DMFCInputCommand_Scores(const char *input_string) {
   int level;
   char temp[20];
 
@@ -429,7 +429,7 @@ void DMFCInputCommand_Scores(char *input_string) {
 //	Usage: "$hudnames <full/team/none>"  full = everyone   team = only teammates   none = noone
 //  NOTE: You can only set your HUD Callsign level up to the level that the server is
 //	So if the server is only allowing up to team, you won't be able to set to full
-void DMFCInputCommand_HudCallsigns(char *input_string) {
+void DMFCInputCommand_HudCallsigns(const char *input_string) {
   char s[20];
 
   // parse "$hudnames"
@@ -455,7 +455,7 @@ void DMFCInputCommand_HudCallsigns(char *input_string) {
 
 //	handles a request from the server to set the max HUD Callsign level
 //	Usage: "$serverhudnames <full/team/none>" same as $hudname but sets the max level for the server
-void DMFCInputCommand_ServerHudCallsigns(char *input_string) {
+void DMFCInputCommand_ServerHudCallsigns(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
@@ -484,11 +484,11 @@ void DMFCInputCommand_ServerHudCallsigns(char *input_string) {
 
 //	handles a request to save the game stats to file
 //	Usage: "$savestats"
-void DMFCInputCommand_SaveStats(char *input_string) { SaveStatsToFile(0); }
+void DMFCInputCommand_SaveStats(const char *input_string) { SaveStatsToFile(0); }
 
 //	handles a request to enable/disable statistical messages
 //	Usage: "$statmsgs on/off"
-void DMFCInputCommand_StatMsgs(char *input_string) {
+void DMFCInputCommand_StatMsgs(const char *input_string) {
   char s[20];
 
   // parse "$statmsgs"
@@ -512,7 +512,7 @@ void DMFCInputCommand_StatMsgs(char *input_string) {
 
 //	handles a request to enable/disable the autosaving of the game stats on level end
 //	Usage: "$autosavelevel on/off"
-void DMFCInputCommand_AutoSaveLevel(char *input_string) {
+void DMFCInputCommand_AutoSaveLevel(const char *input_string) {
   char s[20];
 
   // parse "$autosavelevel"
@@ -536,7 +536,7 @@ void DMFCInputCommand_AutoSaveLevel(char *input_string) {
 
 //	handles a request to enable/disable the autosaving of the game stats if we disconnect
 //	Usage: "$autosavedisconnect on/off"
-void DMFCInputCommand_AutoSaveDisconnect(char *input_string) {
+void DMFCInputCommand_AutoSaveDisconnect(const char *input_string) {
   char s[20];
 
   // parse the "$autosavedisconnect"
@@ -559,7 +559,7 @@ void DMFCInputCommand_AutoSaveDisconnect(char *input_string) {
 
 //	handles changing the level time limit of a netgame on the fly
 //	Usage: "$settimelimit <int minutes>" where minutes is the number of minutes
-void DMFCInputCommand_SetTimeLimit(char *input_string) {
+void DMFCInputCommand_SetTimeLimit(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int d;
@@ -598,7 +598,7 @@ void DMFCInputCommand_SetTimeLimit(char *input_string) {
 
 //	handles changing the level goal limit of a netgame on the fly
 //	Usage: "$setgoallimit <int goal>" where goal is the number of points
-void DMFCInputCommand_SetGoalLimit(char *input_string) {
+void DMFCInputCommand_SetGoalLimit(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int d;
@@ -635,7 +635,7 @@ void DMFCInputCommand_SetGoalLimit(char *input_string) {
 
 //	handles changing the number of max players in a netgame
 //	Usage: "$setmaxplayers <int max>" where max is the maximum players
-void DMFCInputCommand_SetMaxPlayers(char *input_string) {
+void DMFCInputCommand_SetMaxPlayers(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int d;
@@ -673,7 +673,7 @@ void DMFCInputCommand_SetMaxPlayers(char *input_string) {
 
 //	handles changing the respawn time of the powerups in a level of a netgame
 //	Usage: "$setrespawntime <int seconds>" where seconds is the time in seconds
-void DMFCInputCommand_SetRespawnTime(char *input_string) {
+void DMFCInputCommand_SetRespawnTime(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int d;
@@ -703,7 +703,7 @@ void DMFCInputCommand_SetRespawnTime(char *input_string) {
 
 //	handle the client requesting netgame info
 //	Usage: "$netgameinfo"
-void DMFCInputCommand_NetGameInfo(char *input_string) {
+void DMFCInputCommand_NetGameInfo(const char *input_string) {
   bool display = !basethis->IsDisplayingNetGameInfo();
   basethis->SwitchNetGameInfoDisplay((display) ? 1 : 0);
 
@@ -713,7 +713,7 @@ void DMFCInputCommand_NetGameInfo(char *input_string) {
 
 //	handle the server changing the pps threshold of the game
 //	Usage: "$setpps <int pps>" where pps is the Packets Per Second
-void DMFCInputCommand_SetPPS(char *input_string) {
+void DMFCInputCommand_SetPPS(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   int d;
@@ -744,7 +744,7 @@ void DMFCInputCommand_SetPPS(char *input_string) {
 
 //	handles listing the ban list on a dedicated server (so if you want to remove a player from it)
 //	Usage: "$banlist"
-void DMFCInputCommand_BanList(char *input_string) {
+void DMFCInputCommand_BanList(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
@@ -762,7 +762,7 @@ void DMFCInputCommand_BanList(char *input_string) {
 
 //	handles removing a ban from a player, given the ban index num (see $banlist)
 //	Usage: "$removeban <int bannum>" where bannum is the number corresponding to that given during a $banlist
-void DMFCInputCommand_RemoveBan(char *input_string) {
+void DMFCInputCommand_RemoveBan(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
@@ -792,7 +792,7 @@ void DMFCInputCommand_RemoveBan(char *input_string) {
 
 //	handles changing the filter for death messages
 //	Usage: "$killmsgfilter <full/simple/none>"
-void DMFCInputCommand_KillMsgFilter(char *input_string) {
+void DMFCInputCommand_KillMsgFilter(const char *input_string) {
   char s[20];
 
   //"$killmsgfilter"
@@ -818,7 +818,7 @@ void DMFCInputCommand_KillMsgFilter(char *input_string) {
 
 //	handles the server changing a team's name
 //	Usage: "$setteamname <team_num> <new_team_name>
-void DMFCInputCommand_SetTeamName(char *input_string) {
+void DMFCInputCommand_SetTeamName(const char *input_string) {
   char s[20];
   int team;
 
@@ -851,7 +851,7 @@ void DMFCInputCommand_SetTeamName(char *input_string) {
 
 //	handles a request for help to see a list of commands, dedicated server only
 //	Usage: "$help [command]"
-void DMFCInputCommand_Help(char *input_string) {
+void DMFCInputCommand_Help(const char *input_string) {
   char s[20];
 
   // parse "$help"
@@ -870,7 +870,7 @@ void DMFCInputCommand_Help(char *input_string) {
 
 //	handles a request to rehash the hosts.allow/deny
 //	Usage: "$rehash"
-void DMFCInputCommand_Rehash(char *input_string) {
+void DMFCInputCommand_Rehash(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
@@ -879,7 +879,7 @@ void DMFCInputCommand_Rehash(char *input_string) {
 
 //	handles a request to enter/leave observer mode
 //	Usage: "$observer <on/off>"
-void DMFCInputCommand_Observer(char *input_string) {
+void DMFCInputCommand_Observer(const char *input_string) {
   if (basethis->IAmDedicatedServer()) {
     DPrintf(DTXT_NOTINDEDICATED);
     return;
@@ -918,7 +918,7 @@ void DMFCInputCommand_Observer(char *input_string) {
 
 //	handles a request to piggyback a player
 //	Usage: "$piggyback <pnum>"
-void DMFCInputCommand_Piggyback(char *input_string) {
+void DMFCInputCommand_Piggyback(const char *input_string) {
   if (basethis->IAmDedicatedServer()) {
     DPrintf(DTXT_NOTINDEDICATED);
     return;
@@ -971,7 +971,7 @@ void DMFCInputCommand_Piggyback(char *input_string) {
 
 //	handles a request to warp to another level
 //	Usage: "$warp <level number>"
-void DMFCInputCommand_Warp(char *input_string) {
+void DMFCInputCommand_Warp(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
@@ -996,7 +996,7 @@ void DMFCInputCommand_Warp(char *input_string) {
 //	handles enable/disable remote administration
 //	Usage: "$remoteadmin <on/off>"
 extern bool Use_remote_admin;
-void DMFCInputCommand_RemoteAdmin(char *input_string) {
+void DMFCInputCommand_RemoteAdmin(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   char s[20];
@@ -1030,7 +1030,7 @@ void DMFCInputCommand_RemoteAdmin(char *input_string) {
 
 //	handles setting/changing the remote administration password
 //	Usage: "$remoteadminpass <password>"
-void DMFCInputCommand_RemoteAdminPass(char *input_string) {
+void DMFCInputCommand_RemoteAdminPass(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   char s[64];
@@ -1055,7 +1055,7 @@ void DMFCInputCommand_RemoteAdminPass(char *input_string) {
 //	If no parameter is given it lists all the players logged in.
 //	To log out a player give the login-id as a parameter
 //	Usage: "$remoteadminlogout [login-id]"
-void DMFCInputCommand_RemoteAdminLogout(char *input_string) {
+void DMFCInputCommand_RemoteAdminLogout(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   char s[64];
@@ -1080,7 +1080,7 @@ void DMFCInputCommand_RemoteAdminLogout(char *input_string) {
 
 //	handles a remote admin command
 //	Usage: "$remote <command> <option parms> <...>"
-void DMFCInputCommand_Remote(char *input_string) {
+void DMFCInputCommand_Remote(const char *input_string) {
   if (basethis->GetLocalRole() == LR_SERVER)
     return;
   char s[20];
@@ -1096,7 +1096,7 @@ void DMFCInputCommand_Remote(char *input_string) {
 
 //	handles a request to make all clients wait/or stop waiting
 //	Usage: "$wait <on/off>"
-void DMFCInputCommand_Wait(char *input_string) {
+void DMFCInputCommand_Wait(const char *input_string) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
   if (!basethis->IAmDedicatedServer())

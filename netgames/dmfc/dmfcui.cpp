@@ -121,9 +121,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 typedef struct {
   void *lb[DLLMAX_TEAMS];
@@ -310,8 +310,7 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   int id_list[DLLMAX_TEAMS * (DLLMAX_TEAMS - 1)];
 
   int team_icons[DLLMAX_TEAMS];
-  char *team_icon_names[DLLMAX_TEAMS] = {"toredteamicon.ogf", "toblueteamicon.ogf", "togreenteamicon.ogf",
-                                         "toyellowteamicon.ogf"};
+  const char *team_icon_names[DLLMAX_TEAMS] = {"toredteamicon.ogf", "toblueteamicon.ogf", "togreenteamicon.ogf", "toyellowteamicon.ogf"};
   /*
   $$TABLE_GAMEFILE "toredteamicon.ogf"
   $$TABLE_GAMEFILE "toblueteamicon.ogf"

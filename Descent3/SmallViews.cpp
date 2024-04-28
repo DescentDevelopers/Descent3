@@ -204,7 +204,7 @@ int GetSmallViewer(int window) {
 //					gun_num - which gun to view from. if -1, use viewer's center and orientation.
 //					label - the label for the window
 // Returns:		which window was opened, or -1 if window couldn't be created
-int CreateSmallView(int window, int objhandle, int flags, float time, float zoom, int gun_num, char *label) {
+int CreateSmallView(int window, int objhandle, int flags, float time, float zoom, int gun_num, const char *label) {
   small_view *svp;
 
   // Check for valid window

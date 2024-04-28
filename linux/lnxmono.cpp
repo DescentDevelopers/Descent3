@@ -366,7 +366,7 @@ void Debug_ConsoleExit() {
 #define MAX_ARGS 30
 #define MAX_CHARS_PER_ARG 100
 extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
-int FindArg(char *which);
+int FindArg(const char *which);
 
 bool Debug_ConsoleInit() {
   int n = 0;
@@ -431,7 +431,7 @@ void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window) {
   }
 }
 
-void Debug_ConsoleOpen(int n, int row, int col, int width, int height, char *title) {
+void Debug_ConsoleOpen(int n, int row, int col, int width, int height, const char *title) {
   if (!Mono_initialized)
     return;
 
@@ -507,7 +507,7 @@ void Debug_ConsoleClose(int n) {
 #define MAX_MONO_BUFFER 32
 #endif
 static char Mono_buffer[MAX_MONO_BUFFER];
-void Debug_ConsolePrintf(int n, char *format, ...) {
+void Debug_ConsolePrintf(int n, const char *format, ...) {
   va_list marker;
   va_start(marker, format);
   int text_len = vsnprintf(Mono_buffer, MAX_MONO_BUFFER, format, marker);
@@ -554,7 +554,7 @@ void Debug_ConsolePrintf(int n, char *format, ...) {
   }
 }
 
-void Debug_ConsolePrintfAt(int n, int row, int col, char *format, ...) {
+void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {
   if (!Mono_initialized)
     return;
 

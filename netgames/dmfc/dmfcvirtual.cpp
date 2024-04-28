@@ -176,7 +176,7 @@ void DMFCBase::Set_OnServerObjectShieldsChanged(void (*callback)(object *obj, fl
   UserOnServerObjectShieldsChanged = callback;
 }
 
-void DMFCBase::Set_OnServerIsAddressBanned(bool (*callback)(network_address *addr, char *tracker_id)) {
+void DMFCBase::Set_OnServerIsAddressBanned(bool (*callback)(network_address *addr, const char *tracker_id)) {
   UserOnServerIsAddressBanned = callback;
 }
 
@@ -405,7 +405,7 @@ void DMFCBase::CallOnServerObjectShieldsChanged(object *obj, float amount) {
     OnServerObjectShieldsChanged(obj, amount);
 }
 
-bool DMFCBase::CallOnServerIsAddressBanned(network_address *addr, char *tracker_id) {
+bool DMFCBase::CallOnServerIsAddressBanned(network_address *addr, const char *tracker_id) {
   if (UserOnServerIsAddressBanned)
     return (*UserOnServerIsAddressBanned)(addr, tracker_id);
   else
@@ -942,7 +942,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
 
   case EVT_GAMECHECKBAN: {
     network_address *addr = (network_address *)data->special_data;
-    char *tracker_id = (char *)data->iParam;
+    const char *tracker_id = (const char *) data->iParam;
 
     data->iRet = (CallOnServerIsAddressBanned(addr, tracker_id)) ? 1 : 0;
   } break;
@@ -986,7 +986,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
   case EVT_CLIENT_DECODETEXTMACRO: {
     char *dest_string = (char *)data->special_data;
     char *src_string = data->input_string;
-    int dest_size = data->iParam;
+    const ptrdiff_t dest_size = data->iParam;
 
     TranslateTextMacro(src_string, dest_string, dest_size);
   } break;
