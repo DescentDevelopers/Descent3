@@ -105,11 +105,11 @@
 // the DMFC object, used throughout, and required by all mods
 IDMFC *DMFCBase = NULL;
 // our DmfcStats object, used for the F7 screen
-IDmfcStats *dstat = NULL;
+static IDmfcStats *dstat = NULL;
 // these are some helper pointers, so we don't have to constantly query
 // DMFC for these arrays, we can query once and just save it for just future use.
 object *dObjects;
-player *dPlayers;
+static player *dPlayers;
 room *dRooms;
 
 ////////////////////////////////////////////////////
@@ -142,6 +142,8 @@ typedef struct {
 typedef struct {
   int Score[2];
 } tPlayerStat; // Overall scores (throughout the game)
+static int pack_pstat(tPlayerStat *user_info, ubyte *data);
+static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
 int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
@@ -157,59 +159,59 @@ int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
 }
 
 int TeamOwnedRooms[NUM_TEAMS];
-int TeamVirii[NUM_TEAMS][MAX_VIRII];
+static int TeamVirii[NUM_TEAMS][MAX_VIRII];
 int NumberOfKillsSinceLastDeath[DLLMAX_PLAYERS];
-int SortedPLRPlayers[NUM_TEAMS][MAX_PLAYER_RECORDS];
+static int SortedPLRPlayers[NUM_TEAMS][MAX_PLAYER_RECORDS];
 int TeamScore[NUM_TEAMS];
-int SortedTeams[NUM_TEAMS];
-int SortedPlayers[MAX_PLAYER_RECORDS];
+static int SortedTeams[NUM_TEAMS];
+static int SortedPlayers[MAX_PLAYER_RECORDS];
 int EnergyText[NUM_TEAMS];
 int RepairText[NUM_TEAMS];
 int LabText[NUM_TEAMS];
-tPlayerPos TimeInRoom[DLLMAX_PLAYERS];
-bool DisplayScoreScreen;
+static tPlayerPos TimeInRoom[DLLMAX_PLAYERS];
+static bool DisplayScoreScreen;
 int virus_id = -1;
 int *RoomList = NULL;
 int RoomCount;
-int Highlight_bmp = -1;
-bool display_my_welcome = false;
-float Server_last_play_damage_sound = 0;
-int Player_who_took_over_last_base = -1;
+static int Highlight_bmp = -1;
+static bool display_my_welcome = false;
+static float Server_last_play_damage_sound = 0;
+static int Player_who_took_over_last_base = -1;
 
-int snd_repair_center = -1;
-int snd_energy_center = -1;
-int snd_score = -1;
-int snd_virus_destroy = -1;
-int snd_damage = -1;
-int snd_virus_pickup = -1;
+static int snd_repair_center = -1;
+static int snd_energy_center = -1;
+static int snd_score = -1;
+static int snd_virus_destroy = -1;
+static int snd_damage = -1;
+static int snd_virus_pickup = -1;
 
 // void DisplayScores(void);
-void DisplayHUDScores(struct tHUDItem *hitem);
-void DisplayWelcomeMessage(int player_num);
-void SortTeamScores(int *sortedindex, int *scores);
-void SaveStatsToFile(char *filename);
-void OnLabSpewTimer(void);
+static void DisplayHUDScores(struct tHUDItem *hitem);
+static void DisplayWelcomeMessage(int player_num);
+static void SortTeamScores(int *sortedindex, int *scores);
+static void SaveStatsToFile(char *filename);
+static void OnLabSpewTimer(void);
 void RemoveVirusFromPlayer(int player_num, bool remove_all);
-bool ScanForLaboratory(int team, int *newlab);
-bool CompareDistanceTravel(vector *curr_pos, vector *last_pos);
-void OnDisconnectSaveStatsToFile(void);
-void OnLevelEndSaveStatsToFile(void);
-void OnGetTokenString(char *src, char *dest, int dest_size);
+static bool ScanForLaboratory(int team, int *newlab);
+static bool CompareDistanceTravel(vector *curr_pos, vector *last_pos);
+static void OnDisconnectSaveStatsToFile(void);
+static void OnLevelEndSaveStatsToFile(void);
+static void OnGetTokenString(char *src, char *dest, int dest_size);
 // Player in special room functions
-void DoIntervalPlayerFrame(void);
-void DoPlayerInLab(int pnum, float time);
-void DoPlayerInEnergy(int pnum, float time);
-void DoPlayerInRepair(int pnum, float time);
-void DoPlayerInEnemy(int pnum, float time);
+static void DoIntervalPlayerFrame(void);
+static void DoPlayerInLab(int pnum, float time);
+static void DoPlayerInEnergy(int pnum, float time);
+static void DoPlayerInRepair(int pnum, float time);
+static void DoPlayerInEnemy(int pnum, float time);
 
-void DoServerConfigureDialog(void);
-void OnPrintScores(int level);
+extern void DoServerConfigureDialog(void);
+static void OnPrintScores(int level);
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -217,7 +219,6 @@ const char *GetStringFromTable(int d) {
     return StringTable[d];
 }
 ///////////////////////////////////////////////
-
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -2009,4 +2010,3 @@ void OnPrintScores(int level) {
     }
   }
 }
-

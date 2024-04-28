@@ -109,12 +109,16 @@
 #include <algorithm>
 
 IDMFC *DMFCBase = NULL;
-IDmfcStats *dstat = NULL;
-player *dPlayers;
+static IDmfcStats *dstat = NULL;
+static player *dPlayers;
 
 typedef struct {
   int Score[2];
 } tPlayerStat;
+
+static int pack_pstat(tPlayerStat *user_info, ubyte *data);
+static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
+
 int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
@@ -131,9 +135,9 @@ int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -141,18 +145,19 @@ const char *GetStringFromTable(int d) {
     return StringTable[d];
 }
 ///////////////////////////////////////////////
-int SortedPlayers[MAX_PLAYER_RECORDS];
-bool DisplayScoreScreen = false;
-bool FirstFrame = false;
-bool display_my_welcome = false;
+static int SortedPlayers[MAX_PLAYER_RECORDS];
+static bool DisplayScoreScreen = false;
+static bool FirstFrame = false;
+static bool display_my_welcome = false;
 
-void DisplayWelcomeMessage(int player_num);
-void DisplayHUDScores(struct tHUDItem *hitem);
-int Highlight_bmp = -1;
+static void DisplayWelcomeMessage(int player_num);
+static void DisplayHUDScores(struct tHUDItem *hitem);
+static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
+static bool compare_slots(int a, int b);
+static int Highlight_bmp = -1;
 
-void OnPLRInterval(void);
-void OnPLRInit(void);
-
+static void OnPLRInterval(void);
+static void OnPLRInit(void);
 
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
@@ -792,8 +797,8 @@ void OnPrintScores(int level) {
   */
 }
 
-float PLRElapsedtime = 0.0f;
-float PLRLasttime = 0.0f;
+static float PLRElapsedtime = 0.0f;
+static float PLRLasttime = 0.0f;
 
 void OnPLRInit(void) {
   PLRElapsedtime = 0.0f;
@@ -834,4 +839,3 @@ void OnPLRInterval(void) {
 
   DLLgrtext_Flush();
 }
-

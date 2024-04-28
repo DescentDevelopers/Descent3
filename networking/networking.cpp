@@ -1,20 +1,20 @@
 /*
- * Descent 3
- * Copyright (C) 2024 Parallax Software
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+* Descent 3
+* Copyright (C) 2024 Parallax Software
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 /*
  * $Logfile: /DescentIII/Main/networking/networking.cpp $
@@ -340,7 +340,6 @@ typedef int socklen_t;
 bool Use_DirectPlay = false;
 #endif
 
-
 #include "module.h" //for some nice defines to use below
 
 #define MAX_CONNECT_TRIES 50
@@ -476,12 +475,12 @@ typedef struct {
   ubyte buffer[NETBUFFERSIZE];
 } reliable_net_rcvbuffer;
 
-SOCKET Reliable_UDP_socket = INVALID_SOCKET;
+static SOCKET Reliable_UDP_socket = INVALID_SOCKET;
 
-float first_sent_iamhere = 0;
-float last_sent_iamhere = 0;
+static float first_sent_iamhere = 0;
+static float last_sent_iamhere = 0;
 
-unsigned int serverconn = 0xFFFFFFFF;
+static unsigned int serverconn = 0xFFFFFFFF;
 
 #ifdef WIN32
 #pragma pack(pop, r_udp)
@@ -555,7 +554,6 @@ void CloseNetworking() {
     mprintf((0, "Error closing wsock!\n"));
   }
 #endif
-
 
   Network_initted = 0;
   Sockets_initted = 0;

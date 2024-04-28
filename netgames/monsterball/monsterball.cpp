@@ -168,15 +168,14 @@
 #include <string.h>
 #include "monsterstr.h"
 
-
 #include <algorithm>
 
 IDMFC *DMFCBase = NULL;
-IDmfcStats *dstat = NULL;
-room *dRooms;
-object *dObjects;
-player *dPlayers;
-vis_effect *dVisEffects;
+static IDmfcStats *dstat = NULL;
+static room *dRooms;
+static object *dObjects;
+static player *dPlayers;
+static vis_effect *dVisEffects;
 //////////////////////////////////
 // defines
 #define SPID_NEWPLAYER 0
@@ -207,6 +206,9 @@ typedef struct {
   int Score[2];
   int BadScore[2];
 } tPlayerStat;
+
+static int pack_pstat(tPlayerStat *user_info, ubyte *data);
+static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
 
 int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   int count = 0;
@@ -246,29 +248,29 @@ struct {
 //////////////////////////////////
 // Globals
 
-int SortedPLRPlayers[DLLMAX_TEAMS][MAX_PLAYER_RECORDS];
-int TeamScores[DLLMAX_TEAMS];
-int SortedTeams[DLLMAX_TEAMS];
-int SortedPlayers[MAX_PLAYER_RECORDS];
+static int SortedPLRPlayers[DLLMAX_TEAMS][MAX_PLAYER_RECORDS];
+static int TeamScores[DLLMAX_TEAMS];
+static int SortedTeams[DLLMAX_TEAMS];
+static int SortedPlayers[MAX_PLAYER_RECORDS];
 
-int NumOfTeams = 2;
-int WhoJustScored = -1, WhoJustScoredTimer = -1;
-int GoalRooms[DLLMAX_TEAMS];
-int Highlight_bmp;
-int LastHitPnum = -1;
+static int NumOfTeams = 2;
+static int WhoJustScored = -1, WhoJustScoredTimer = -1;
+static int GoalRooms[DLLMAX_TEAMS];
+static int Highlight_bmp;
+static int LastHitPnum = -1;
 
-bool players_sorted = false; // the Sorted*[] have been sorted
-bool DisplayPowerBBlink = true;
-bool DisplayScoreBlink = true;
-bool DisplayScoreScreen = false;
-bool display_my_welcome = false;
-bool monsterball_info_set = false;
+static bool players_sorted = false; // the Sorted*[] have been sorted
+static bool DisplayPowerBBlink = true;
+static bool DisplayScoreBlink = true;
+static bool DisplayScoreScreen = false;
+static bool display_my_welcome = false;
+static bool monsterball_info_set = false;
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -279,34 +281,35 @@ const char *GetStringFromTable(int d) {
 
 //////////////////////////////////
 // Prototypes
-void DisplayHUDScores(struct tHUDItem *hitem);
-void DisplayStats(void);
-void GetGameStartPacket(ubyte *data);
-void SendGameStartPacket(int pnum);
-bool GetMonsterballInfo(int id);
-void SortTeams(void);
-void DisplayWelcomeMessage(int player_num);
-void OnTimerScore(void);
-void OnTimer(void);
-void OnTimerScoreKill(void);
-void OnTimerKill(void);
-void OnTimerRegen(void);
-void OnTimerRegenKill(void);
-void SaveStatsToFile(char *filename);
-void SortPlayerSlots(int *sorted_list, int count);
-void SendLastHitInfo(void);
-void GetLastHitInfo(ubyte *data);
+static void DisplayHUDScores(struct tHUDItem *hitem);
+static void DisplayStats(void);
+static void GetGameStartPacket(ubyte *data);
+static void SendGameStartPacket(int pnum);
+static bool GetMonsterballInfo(int id);
+static void SortTeams(void);
+static void DisplayWelcomeMessage(int player_num);
+static void OnTimerScore(void);
+static void OnTimer(void);
+static void OnTimerScoreKill(void);
+static void OnTimerKill(void);
+static void OnTimerRegen(void);
+static void OnTimerRegenKill(void);
+static void SaveStatsToFile(char *filename);
+static void SortPlayerSlots(int *sorted_list, int count);
+static void SendLastHitInfo(void);
+static void GetLastHitInfo(ubyte *data);
 
-void HandlePickupPowerball(object *owner);
-void HandleLosePowerball(bool play_sound);
-void HandleMonsterballCollideWithObject(object *ball, object *player, vector *point, vector *normal);
-void HandleMonsterballCollideWithWeapon(object *ball, weapon_collide_info *winfo, vector *point, vector *normal);
-void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos, matrix *orient, float mass, float size,
-                 vector *collision_point, vector *collision_normal, float rot_scale, float vel_scale);
-void DoMonsterballScoreEffect(void);
-void OnClientPlayerEntersGame(int player_num);
+static void HandlePickupPowerball(object *owner);
+static void HandleLosePowerball(bool play_sound);
+static void HandleMonsterballCollideWithObject(object *ball, object *player, vector *point, vector *normal);
+static void HandleMonsterballCollideWithWeapon(object *ball, weapon_collide_info *winfo, vector *point, vector *normal);
+static void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos, matrix *orient, float mass,
+                        float size, vector *collision_point, vector *collision_normal, float rot_scale,
+                        float vel_scale);
+static void DoMonsterballScoreEffect(void);
+static void OnClientPlayerEntersGame(int player_num);
 
-bool ValidateOwner(int *pnum, object **obj);
+static bool ValidateOwner(int *pnum, object **obj);
 
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
@@ -347,7 +350,6 @@ void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h,
     DLLRenderHUDQuad(x + 2, y, 10, 10, 0, 0, 1, 1, Monsterball_info.icon, alpha_to_use, 0);
   }
 }
-
 
 #define NUM_TEAMS 2
 
@@ -2210,4 +2212,3 @@ void DoMonsterballScoreEffect(void) {
     Monsterball->effect_info->fade_max_time = 4.0f;
   }
 }
-

@@ -55,9 +55,6 @@
 #include "EntropyAux.h"
 
 extern IDMFC *DMFCBase;
-extern room *dRooms;
-extern object *dObjects;
-
 
 bool PaintRoomWithTexture(int text, int roomnum) {
   if (ROOMNUM_OUTSIDE(roomnum)) {

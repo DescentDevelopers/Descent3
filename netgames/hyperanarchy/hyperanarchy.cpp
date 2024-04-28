@@ -60,9 +60,9 @@
 #include "HyperAnarchy.h"
 #include "hyperstr.h"
 IDMFC *DMFCBase = NULL;
-IDmfcStats *dstat = NULL;
-object *dObjects;
-player *dPlayers;
+static IDmfcStats *dstat = NULL;
+static object *dObjects;
+static player *dPlayers;
 
 #define SPID_HYPERINFO 0
 #define SPID_HYPERPOS 1
@@ -72,6 +72,9 @@ player *dPlayers;
 typedef struct {
   int Score[2];
 } tPlayerStat;
+
+static int pack_pstat(tPlayerStat *user_info, ubyte *data);
+static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
 
 int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   int count = 0;
@@ -87,26 +90,26 @@ int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
   return count;
 }
 
-int SortedPlayers[MAX_PLAYER_RECORDS];
-bool DisplayScoreScreen;
-int HyperOrbID = -1;
-int WhoHasOrb = -1;
-int KillCount = 0;
-int HyperOrbIcon = -1;
-bool DisplayFlagBlink = true;
-int WhoJustScoredTimer = -1;
-int HyperMoveTimer = -1;
-ubyte HUD_color_model = HCM_PLAYERCOLOR;
-int Highlight_bmp = -1;
-bool display_my_welcome = false;
+static int SortedPlayers[MAX_PLAYER_RECORDS];
+static bool DisplayScoreScreen;
+static int HyperOrbID = -1;
+static int WhoHasOrb = -1;
+static int KillCount = 0;
+static int HyperOrbIcon = -1;
+static bool DisplayFlagBlink = true;
+static int WhoJustScoredTimer = -1;
+static int HyperMoveTimer = -1;
+static ubyte HUD_color_model = HCM_PLAYERCOLOR;
+static int Highlight_bmp = -1;
+static bool display_my_welcome = false;
 
-void OnClientPlayerEntersGame(int player_num);
+static void OnClientPlayerEntersGame(int player_num);
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -115,41 +118,41 @@ const char *GetStringFromTable(int d) {
 }
 ///////////////////////////////////////////////
 
-void SwitchHUDColor(int i);
+static void SwitchHUDColor(int i);
 // handles a Hyper Anarchy Game State packet
-void ReceiveHyperGameState(ubyte *data);
+static void ReceiveHyperGameState(ubyte *data);
 // sends a Hyper Anarchy Game State packet
-void SendHyperGameState(int playernum);
+static void SendHyperGameState(int playernum);
 // Displays HUD scores
-void DisplayHUDScores(struct tHUDItem *hitem);
+static void DisplayHUDScores(struct tHUDItem *hitem);
 // Displays the Stats screen
-void DisplayScores(void);
+static void DisplayScores(void);
 // Sorts based on score
-void SortPlayerScores(int *sortedindex, int size);
+static void SortPlayerScores(int *sortedindex, int size);
 // Updates the effect on all the players
-void UpdateEffect(void);
+static void UpdateEffect(void);
 // Displays the Welcome Screen
-void DisplayWelcomeScreen(int pnum);
+static void DisplayWelcomeScreen(int pnum);
 // Handler for menu item for turning on/off blinking hud
-void SwitchBlinkingHud(int i);
+static void SwitchBlinkingHud(int i);
 // Generates a valid random room
-int GetRandomValidRoom(void);
+static int GetRandomValidRoom(void);
 // Moves the HyperOrb to the center of a random room
 // if objnum is -1, than the HyperOrb is created and moved
-void MoveHyperOrbToRoom(int objnum);
+static void MoveHyperOrbToRoom(int objnum);
 // Given a room the HyperOrb is created and placed in the center of it
-void CreateHyperOrbInRoom(int room);
+static void CreateHyperOrbInRoom(int room);
 // Given the objnum and room it will move the HyperOrb to the center of that room. Objnum better be valid.
-void MoveHyperOrbToRoomCenter(int objnum, int room);
+static void MoveHyperOrbToRoomCenter(int objnum, int room);
 // handles a Hyper Anarchy Object Placement packet
-void ReceiveHyperPos(ubyte *data);
+static void ReceiveHyperPos(ubyte *data);
 // Searches through all the objects and looks for the HyperOrb, returns it's objnum. -1 if it doesn't exist
-int FindHyperObjectNum(void);
+static int FindHyperObjectNum(void);
 // Searches through all the player's inventory, returns the pnum of the player who has the HyperOrb, -1
 // if no one does.
-int FindHyperOrbInInventory(void);
-void ResetTimer(void);
-void SaveStatsToFile(char *filename);
+static int FindHyperOrbInInventory(void);
+static void ResetTimer(void);
+static void SaveStatsToFile(char *filename);
 
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
@@ -179,7 +182,6 @@ void OnTimer(void);
 void OnTimerKill(void);
 void OnTimerFlagReturn(void);
 void OnTimerFlagReturnKill(void);
-
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -1505,4 +1507,3 @@ void OnTimerFlagReturn(void) {
 void OnTimerFlagReturnKill(void) { HyperMoveTimer = -1; }
 
 void SwitchHUDColor(int i) { HUD_color_model = i; }
-

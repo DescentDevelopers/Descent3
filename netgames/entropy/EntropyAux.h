@@ -61,6 +61,7 @@ void ReceiveTakeOverPacket(ubyte *data);
 void DoVirusCreate(ubyte *data);
 void SendVirusCreate(object *obj);
 bool IsPlayerInEnemy(int pnum);
+void RemoveVirusFromPlayer(int player_num, bool remove_all);
 
 // Functions in EntropyRoom.cpp
 int SpewObjectInRoom(int type, int id, int roomnum);
@@ -85,5 +86,7 @@ extern int LabText[NUM_TEAMS];                          // texture handles to La
 extern int virus_id;                                    // Object ID of the Virus object
 extern int *RoomList; // List of room index's that are special for Entropy (i.e. all the labs, repairs and energy rooms)
 extern int RoomCount; // Size of RoomList when it's finally allocated
+extern room *dRooms;
+extern object *dObjects;
 
 #endif
