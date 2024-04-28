@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -693,17 +693,19 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     flags |= SDL_FULLSCREEN;
   }
 
+  // Should we shoot for 32-bpp if available?  !!!
+  SDL_Surface *surface = SDL_SetVideoMode(*width, *height, 32, flags);
+  mprintf((0, "OpenGL: SDL GL surface is %sNULL.", (surface == NULL) ? "" : "NOT "));
+
   if (!FindArg("-nomousecap")) {
     // ShowCursor(0) and input grabbing need to be done before setting
     //  the video mode, or the Voodoo 3 gets a hardware cursor stuck
     //  on the screen.
+    // On modern systems this is not necessary and must be done after to take effect.
     SDL_ShowCursor(0);
     SDL_WM_GrabInput(SDL_GRAB_ON);
+    ddio_mouseGrabbed = true;
   }
-
-  // Should we shoot for 32-bpp if available?  !!!
-  SDL_Surface *surface = SDL_SetVideoMode(*width, *height, 32, flags);
-  mprintf((0, "OpenGL: SDL GL surface is %sNULL.", (surface == NULL) ? "" : "NOT "));
 
   if (ddio_mouseGrabbed == false) {
     SDL_WM_GrabInput(SDL_GRAB_OFF);
