@@ -25,7 +25,7 @@ Back up your `Descent3` binary and drop your built `Descent3` binary into the in
 Build steps below assume you have already cloned the repository and entered it locally.
 
 #### Building - Windows
-Requires Visual Studio C++ Tools (cmake and vcpkg)
+Requires Visual Studio 2022 and C++ Tools (cmake and vcpkg)
 
 Install and configure vcpkg:
 ```sh
