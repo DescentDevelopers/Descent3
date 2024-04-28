@@ -71,11 +71,7 @@ extern lightmap_info *LightmapInfo;
 extern int Num_of_lightmap_info;
 extern int Num_lightmap_infos_read;
 
-#ifdef MACINTOSH
-#define MAX_LIGHTMAP_INFOS (60000)
-#else
 #define MAX_LIGHTMAP_INFOS (65534)
-#endif
 
 // Sets all the lightmaps to unused
 void InitLightmapInfo(int nummaps = 0);

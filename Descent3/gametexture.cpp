@@ -647,14 +647,12 @@ extern int Low_vidmem;
 void PageInTexture(int n, bool resize) {
   static int super_low_mem = -1;
 
-#ifndef MACINTOSH
   if (super_low_mem == -1) {
     if (Mem_superlow_memory_mode || FindArg("-dedicated"))
       super_low_mem = 1;
     else
       super_low_mem = 0;
   }
-#endif
   if (GameTextures[n].used == 0)
     return;
 
@@ -663,11 +661,7 @@ void PageInTexture(int n, bool resize) {
   bm_data(texp->bm_handle, 0);
 
 #ifndef EDITOR
-#ifdef MACINTOSH
-  if (resize == true && (Render_state.cur_texture_quality <= 1 || Low_vidmem))
-#else
   if (resize == true && (Mem_low_memory_mode || Low_vidmem))
-#endif
   {
     if (!(texp->flags & (TF_TEXTURE_32 | TF_TEXTURE_256)) && !(texp->flags & TF_PROCEDURAL)) {
       int bm_handle = texp->bm_handle;
@@ -681,11 +675,7 @@ void PageInTexture(int n, bool resize) {
       w /= 2;
       h /= 2;
 
-#ifdef MACINTOSH
-      if (Render_state.cur_texture_quality == 0)
-#else
       if (super_low_mem)
-#endif
       {
         if (w != 32 || h != 32) {
           w = 32;

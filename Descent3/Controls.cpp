@@ -435,9 +435,6 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#ifdef MACINTOSH
-#include "insprocket.h"
-#endif
 
 float Key_ramp_speed = 0.5f;
 
@@ -487,82 +484,6 @@ void DoCommands();
 void ToggleHeadlightControlState();
 
 //	LIST OF NEEDS
-#ifdef MACINTOSH
-ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
-    {ctfFORWARD_THRUSTAXIS, ctAnalog, ctAxis, ctAxis, CT_Z_AXIS, CT_Z_AXIS, 0, 0}, // DAJ added missing CT_Z_AXIS
-    {ctfFORWARD_THRUSTKEY, ctTime, ctKey, ctKey, KEY_W, 0, 0, 0},
-    {ctfREVERSE_THRUSTKEY, ctTime, ctKey, ctKey, KEY_S, 0, 0, 0},
-    {ctfFORWARD_BUTTON, ctTime, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfREVERSE_BUTTON, ctTime, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfUP_THRUSTAXIS, ctAnalog, ctAxis, ctAxis, CT_V_AXIS, CT_V_AXIS, 0, 0}, // DAJ
-    {ctfUP_BUTTON, ctDigital, ctPOV, ctButton, JOYPOV_UP, 0, 0, 0},
-    {ctfUP_THRUSTKEY, ctTime, ctKey, ctKey, KEY_R, 0, 0, 0},
-    {ctfDOWN_BUTTON, ctDigital, ctPOV, ctButton, JOYPOV_DOWN, 0, 0, 0},
-    {ctfDOWN_THRUSTKEY, ctTime, ctKey, ctKey, KEY_F, 0, 0, 0},
-    {ctfRIGHT_THRUSTAXIS, ctAnalog, ctAxis, ctAxis, CT_U_AXIS, CT_U_AXIS, 0, 0}, // DAJ
-    {ctfRIGHT_BUTTON, ctDigital, ctPOV, ctButton, JOYPOV_RIGHT, 0, 0, 0},
-    {ctfRIGHT_THRUSTKEY, ctTime, ctKey, ctKey, KEY_D, 0, 0, 0},
-    {ctfLEFT_BUTTON, ctDigital, ctPOV, ctButton, JOYPOV_LEFT, 0, 0, 0},
-    {ctfLEFT_THRUSTKEY, ctTime, ctKey, ctKey, KEY_A, 0, 0, 0},
-    {ctfPITCH_DOWNAXIS, ctAnalog, ctAxis, ctMouseAxis, CT_Y_AXIS, CT_Y_AXIS, 0, 0},
-    {ctfPITCH_DOWNKEY, ctTime, ctKey, ctKey, KEY_UP, KEY_PAD8, 0, 0},
-    {ctfPITCH_DOWNBUTTON, ctDigital, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfPITCH_UPKEY, ctTime, ctKey, ctKey, KEY_DOWN, KEY_PAD2, 0, 0},
-    {ctfPITCH_UPBUTTON, ctDigital, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfBANK_RIGHTAXIS, ctAnalog, ctAxis, ctAxis, CT_R_AXIS, CT_R_AXIS, 0, 0}, // DAJ
-    {ctfBANK_RIGHTKEY, ctTime, ctKey, ctKey, KEY_E, KEY_PAD9, 0, 0},
-    {ctfBANK_RIGHTBUTTON, ctDigital, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfBANK_LEFTKEY, ctTime, ctKey, ctKey, KEY_Q, KEY_PAD7, 0, 0},
-    {ctfBANK_LEFTBUTTON, ctDigital, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfHEADING_RIGHTAXIS, ctAnalog, ctAxis, ctMouseAxis, CT_X_AXIS, CT_X_AXIS, 0, 0},
-    {ctfHEADING_RIGHTKEY, ctTime, ctKey, ctKey, KEY_RIGHT, KEY_PAD6, 0, 0},
-    {ctfHEADING_RIGHTBUTTON, ctDigital, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfHEADING_LEFTKEY, ctTime, ctKey, ctKey, KEY_LEFT, KEY_PAD4, 0, 0},
-    {ctfHEADING_LEFTBUTTON, ctDigital, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfFIREPRIMARY_BUTTON, ctTime, ctButton, ctMouseButton, 1, 1, 0, 0},
-    {ctfFIREPRIMARY_KEY, ctTime, ctKey, ctKey, KEY_SPACEBAR, KEY_RCTRL, 0, 0},
-    {ctfFIREPRIMARY_KEY2, ctTime, ctKey, ctKey, 0, 0, 0, 0},
-    {ctfFIRESECONDARY_BUTTON, ctTime, ctButton, ctMouseButton, 2, 2, 0, 0},
-    {ctfFIRESECONDARY_KEY, ctTime, ctKey, ctKey, KEY_V, 0, 0, 0},
-    {ctfTOGGLE_SLIDEBUTTON, ctTime, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfTOGGLE_SLIDEKEY, ctTime, ctKey, ctKey, KEY_LALT, 0, 0, 0},
-    {ctfTOGGLE_BANKBUTTON, ctTime, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfTOGGLE_BANKKEY, ctTime, ctKey, ctKey, 0, 0, 0, 0},
-    {ctfFIREFLARE_BUTTON, ctTime, ctButton, ctMouseButton, 3, 3, 0, 0},
-    {ctfFIREFLARE_KEY, ctDownCount, ctKey, ctKey, KEY_G, 0, 0, 0},
-    {ctfAFTERBURN_BUTTON, ctTime, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfAFTERBURN_KEY, ctTime, ctKey, ctKey, KEY_C, 0, 0, 0},
-    {ctfAUTOMAP_KEY, ctDownCount, ctKey, ctKey, KEY_TAB, 0, 0, 0},
-    {ctfPREV_INVKEY, ctDownCount, ctKey, ctKey, KEY_LBRACKET, 0, 0, 0},
-    {ctfNEXT_INVKEY, ctDownCount, ctKey, ctKey, KEY_RBRACKET, 0, 0, 0},
-    {ctfINV_USEKEY, ctDownCount, ctKey, ctKey, KEY_BACKSLASH, 0, 0, 0},
-    {ctfPREV_CNTMSKEY, ctDownCount, ctKey, ctKey, KEY_SEMICOL, 0, 0, 0},
-    {ctfNEXT_CNTMSKEY, ctDownCount, ctKey, ctKey, KEY_RAPOSTRO, 0, 0, 0},
-    {ctfCNTMS_USEKEY, ctDownCount, ctKey, ctKey, KEY_ENTER, 0, 0, 0},
-    {ctfHEADLIGHT_KEY, ctDownCount, ctKey, ctKey, KEY_H, 0, 0, 0},
-    {ctfHEADLIGHT_BUTTON, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfAUTOMAP_BUTTON, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfPREV_INVBTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfNEXT_INVBTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfINV_USEBTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfPREV_CNTMSBTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfNEXT_CNTMSBTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfCNTMS_USEBTN, ctDownCount, ctButton, ctMouseButton, 4, 4, 0, 0},
-    {ctfWPNSEL_PCYCLEKEY, ctDownCount, ctKey, ctKey, KEY_COMMA, 0, 0, 0},
-    {ctfWPNSEL_PCYCLEBTN, ctDownCount, ctButton, ctMouseButton, 0, 5, 0, 0},
-    {ctfWPNSEL_SCYCLEKEY, ctDownCount, ctKey, ctKey, KEY_PERIOD, 0, 0, 0},
-    {ctfWPNSEL_SCYCLEBTN, ctDownCount, ctButton, ctMouseButton, 0, 6, 0, 0},
-    {ctfREARVIEW_KEY, ctDownCount, ctKey, ctKey, KEY_B, 0, 0, 0},
-    {ctfREARVIEW_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT1_KEY, ctDownCount, ctKey, ctKey, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT1_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT2_KEY, ctDownCount, ctKey, ctKey, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT2_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT3_KEY, ctDownCount, ctKey, ctKey, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT3_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT4_KEY, ctDownCount, ctKey, ctKey, 0, 0, 0, 0},
-    {ctfAUDIOTAUNT4_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0}};
-#else
 ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
     {ctfFORWARD_THRUSTAXIS, ctAnalog, ctAxis, ctAxis, 0, 0, 0, 0},
     {ctfFORWARD_THRUSTKEY, ctTime, ctKey, ctKey, KEY_A, 0, 0, 0},
@@ -637,7 +558,6 @@ ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
     {ctfAUDIOTAUNT3_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0},
     {ctfAUDIOTAUNT4_KEY, ctDownCount, ctKey, ctKey, 0, 0, 0, 0},
     {ctfAUDIOTAUNT4_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0}};
-#endif
 
 // ramping macros
 inline float ramp_control_value(float val, float limit, float &ramp_state, float &old_ramp_delta) {
@@ -679,7 +599,6 @@ void InitControls() {
   Controller->set_axis_sensitivity(ctAxis, CT_U_AXIS, Current_pilot.joy_sensitivity[4]);
   Controller->set_axis_sensitivity(ctAxis, CT_V_AXIS, Current_pilot.joy_sensitivity[5]);
 
-#ifndef MACINTOSH
   int i;
   i = FindArg("-deadzone0");
   if (i > 0) {
@@ -689,7 +608,6 @@ void InitControls() {
   if (i > 0) {
     Controller->set_controller_deadzone(1, atof(GameArgs[i + 1]));
   }
-#endif
 
   Key_ramp_speed = Current_pilot.key_ramping; // DAJ added to restore ramping
 
@@ -705,9 +623,6 @@ void InitControls() {
   Key_ramp.oz = Key_ramp.z = 0.0f;
 
 //	Initialize preemptive controller system for non-positonal data.
-#ifdef MACINTOSH
-  inSprocket_Init();
-#endif
   mprintf((0, "Initialized control system.\n"));
 }
 
@@ -717,9 +632,6 @@ void CloseControls() {
   ResumeControls();
   DestroyController(Controller);
   Controller = NULL;
-#ifdef MACINTOSH
-  inSprocket_Exit();
-#endif
   mprintf((0, "Closing control system.\n"));
   Control_system_init = false;
 }
@@ -744,9 +656,6 @@ void RestoreDefaultControls() {
   Controller->set_axis_sensitivity(ctAxis, CT_R_AXIS, Current_pilot.joy_sensitivity[3]);
   Controller->set_axis_sensitivity(ctAxis, CT_U_AXIS, Current_pilot.joy_sensitivity[4]);
   Controller->set_axis_sensitivity(ctAxis, CT_V_AXIS, Current_pilot.joy_sensitivity[5]);
-#ifdef MACINTOSH
-  Controller->set_controller_deadzone(2, Current_pilot.mouse_sensitivity[0]);
-#endif
 }
 
 void SuspendControls() {
@@ -781,9 +690,6 @@ void ResumeControls() {
   Controller->set_axis_sensitivity(ctAxis, CT_U_AXIS, Current_pilot.joy_sensitivity[4]);
   Controller->set_axis_sensitivity(ctAxis, CT_V_AXIS, Current_pilot.joy_sensitivity[5]);
 
-#ifdef MACINTOSH
-  Controller->set_controller_deadzone(2, Current_pilot.mouse_sensitivity[0]);
-#else
   int i;
   i = FindArg("-deadzone0");
   if (i > 0) {
@@ -793,7 +699,6 @@ void ResumeControls() {
   if (i > 0) {
     Controller->set_controller_deadzone(1, atof(GameArgs[i + 1]));
   }
-#endif
 }
 
 //	INTERFACE FUNCTIONS
@@ -875,7 +780,6 @@ void DoMovement(game_controls *controls) {
   // controller
   DoControllerMovement(controls);
 
-#ifndef MACINTOSH
   //	clip controller values
   if (controls->pitch_thrust > LIMIT_PITCH)
     controls->pitch_thrust = LIMIT_PITCH;
@@ -889,7 +793,6 @@ void DoMovement(game_controls *controls) {
     controls->bank_thrust = LIMIT_BANK;
   if (controls->bank_thrust < -LIMIT_BANK)
     controls->bank_thrust = -LIMIT_BANK;
-#endif
   if (controls->sideways_thrust > LIMIT_HORIZ)
     controls->sideways_thrust = LIMIT_HORIZ;
   if (controls->sideways_thrust < -LIMIT_HORIZ)
@@ -1055,41 +958,6 @@ void DoControllerMovement(game_controls *controls) {
     controls->afterburn_thrust = ((ctl_afterburn.value) / Frametime);
   }
 
-#ifdef MACINTOSH
-  //	do sidways thrust based off of button values.
-  controls->sideways_thrust += ctl_povr.value;
-  controls->sideways_thrust -= ctl_povl.value;
-
-  //	do vertical thrust based off of button values.
-  controls->vertical_thrust += ctl_povu.value;
-  controls->vertical_thrust -= ctl_povd.value;
-  //	do forward thrust based off of button values.
-  controls->forward_thrust += ctl_fb.value;
-  controls->forward_thrust -= ctl_rb.value;
-  //	do button banking
-  if (controls->toggle_bank) {
-    controls->bank_thrust += ctl_hlb.value;
-    controls->bank_thrust -= ctl_hrb.value;
-  } else {
-    controls->bank_thrust += ctl_blb.value;
-    controls->bank_thrust -= ctl_brb.value;
-  }
-
-  // do slide if toggled
-  if (controls->toggle_slide) {
-    controls->sideways_thrust += ctl_hrb.value;
-    controls->sideways_thrust -= ctl_hlb.value;
-    controls->vertical_thrust += ctl_pub.value;
-    controls->vertical_thrust -= ctl_pdb.value;
-  }
-  // do standard pitch and heading.
-  if (!controls->toggle_slide && !controls->toggle_bank) {
-    controls->heading_thrust -= ctl_hlb.value;
-    controls->heading_thrust += ctl_hrb.value;
-    controls->pitch_thrust -= ctl_pub.value;
-    controls->pitch_thrust += ctl_pdb.value;
-  }
-#else
   //	do button heading
   if (ctl_hlb.value)
     controls->heading_thrust += (-1.0f);
@@ -1126,7 +994,6 @@ void DoControllerMovement(game_controls *controls) {
   if (ctl_povl.value) {
     controls->sideways_thrust -= (1.0f);
   }
-#endif
 }
 
 //	---------------------------------------------------------------------------
@@ -1223,11 +1090,7 @@ void DoControllerWeapons(game_controls *controls) {
     controls->fire_primary_down_time = fire_primary_time.value;
   }
   if (fire_secondary_count.value > 0 || fire_secondary_time.value) {
-#ifndef MACINTOSH
     controls->fire_secondary_down_count = (int)fire_secondary_count.value;
-#else
-    controls->fire_secondary_down_count = 1; // DAJ this makes the guided second fire go back to the ship view
-#endif
     controls->fire_secondary_down_time = fire_secondary_time.value;
   }
 
@@ -1510,13 +1373,9 @@ void LoadControlConfig(pilot *plt) {
 
     Controller->set_controller_function(id, type, ccfgdata, flags);
   }
-#ifdef MACINTOSH
-  Controller->set_controller_deadzone(1, plt->mouse_sensitivity[0]);
-#else
   for (j = 0; j < N_MOUSE_AXIS; j++) {
     Controller->set_axis_sensitivity(ctMouseAxis, j + 1, plt->mouse_sensitivity[j]);
   }
-#endif
   for (j = 0; j < N_JOY_AXIS; j++) {
     Controller->set_axis_sensitivity(ctAxis, j + 1, plt->joy_sensitivity[j]);
   }
@@ -1545,14 +1404,10 @@ void SaveControlConfig(pilot *plt) {
     plt->controls[i].flags[1] = flags[1];
   }
 
-#ifdef MACINTOSH
-  plt->mouse_sensitivity[0] = Controller->get_controller_deadzone(2);
-#else
   for (j = 0; j < N_MOUSE_AXIS; j++) {
     float sens = Controller->get_axis_sensitivity(ctMouseAxis, j + 1);
     plt->mouse_sensitivity[j] = sens;
   }
-#endif
   for (j = 0; j < N_JOY_AXIS; j++) {
     float sens = Controller->get_axis_sensitivity(ctAxis, j + 1);
     plt->joy_sensitivity[j] = sens;

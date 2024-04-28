@@ -153,9 +153,6 @@ int Highlight_bmp = -1;
 void OnPLRInterval(void);
 void OnPLRInit(void);
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
@@ -838,6 +835,3 @@ void OnPLRInterval(void) {
   DLLgrtext_Flush();
 }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif

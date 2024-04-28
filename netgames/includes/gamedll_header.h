@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@
 #define CEXTERN(a) extern a
 #endif
 
-#if defined(__LINUX__) || defined(MACINTOSH)
+#if defined(__LINUX__)
 #define DMFCDLLOUT(x) extern "C" x
 #else
 #if defined(DMFC_DLL)

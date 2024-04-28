@@ -298,9 +298,6 @@
 #include "d3music.h"
 #include "weather.h"
 
-#ifdef MACINTOSH
-#include "ddio_mac.h"
-#endif
 // function prototypes.
 
 void SGSSnapshot(CFILE *fp);
@@ -350,11 +347,7 @@ void QuickSaveGame() {
     snprintf(filename, sizeof(filename), "saveg00%d", i);
     ddio_MakePath(pathname, Base_directory, "savegame", filename, NULL);
 
-#ifdef MACINTOSH
-    fp = mac_fopen(pathname, "rb");
-#else
     fp = fopen(pathname, "rb");
-#endif
     if (fp) {
       // slot valid, save here.
       fclose(fp);
@@ -425,11 +418,7 @@ void SaveGameDialog() {
 
     occupied_slot[i] = false;
 
-#ifdef MACINTOSH
-    fp = mac_fopen(pathname, "rb");
-#else
     fp = fopen(pathname, "rb");
-#endif
     if (fp) {
       fclose(fp);
 
@@ -625,11 +614,7 @@ bool LoadGameDialog() {
 
     occupied_slot[i] = false;
 
-#ifdef MACINTOSH
-    fp = mac_fopen(pathname, "rb");
-#else
     fp = fopen(pathname, "rb");
-#endif
     if (fp) {
       int bm_handle;
       int *pbm_handle;
@@ -1354,16 +1339,6 @@ void SGSSnapshot(CFILE *fp) {
   g3_EndFrame();
   EndFrame();
   rend_Flip();
-#ifdef MACINTOSH // DAJ do it again to insure dialog is not snaped
-  // Render the world
-  GameRenderWorld(Viewer_object, &Viewer_object->pos, Viewer_object->roomnum, &Viewer_object->orient, Render_zoom,
-                  false);
-
-  // Done rendering
-  g3_EndFrame();
-  EndFrame();
-  rend_Flip();
-#endif
   bm_handle = bm_AllocBitmap(Max_window_w, Max_window_h, 0);
 
   cf_WriteByte(fp, (bm_handle > 0) ? 1 : 0);

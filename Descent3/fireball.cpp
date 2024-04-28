@@ -612,9 +612,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "psrand.h"
-#if defined(MACINTOSH)
-#include "Macros.h"
-#endif
 
 #include <algorithm>
 

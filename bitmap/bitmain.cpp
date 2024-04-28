@@ -522,13 +522,9 @@ int bm_AllocBitmap(int w, int h, int add_mem) {
   }
   // If we can't find a free slot in which to alloc, bail out
   if (i == MAX_BITMAPS) {
-#ifdef MACINTOSH
-    Error("Couldn't find a free bitmap to alloc!\n");
-#else
     Int3();
     mprintf((0, "ERROR! Couldn't find a free bitmap to alloc!\n"));
     return -1;
-#endif
   }
   memset(&GameBitmaps[n], 0, sizeof(bms_bitmap));
   int ret = bm_AllocateMemoryForIndex(n, w, h, add_mem);
@@ -555,13 +551,9 @@ int bm_AllocNoMemBitmap(int w, int h) {
   }
   // If we can't find a free slot in which to alloc, bail out
   if (i == MAX_BITMAPS) {
-#ifdef MACINTOSH
-    Error("Couldn't find a free bitmap to alloc!\n");
-#else
     Int3();
     mprintf((0, "ERROR! Couldn't find a free bitmap to alloc!\n"));
     return -1;
-#endif
   }
   // If no go on the malloc, bail out with -1
 

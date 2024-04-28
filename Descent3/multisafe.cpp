@@ -670,9 +670,6 @@
 #include "osiris_predefs.h"
 #include "viseffect.h"
 #include "levelgoal.h"
-#ifdef MACINTOSH
-#include "osiris_common.h" //DAJ explicit include so it know its here
-#endif
 
 #include <algorithm>
 

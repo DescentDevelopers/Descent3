@@ -78,9 +78,7 @@ extern bool Debug_print_block;
       mprintf_at((1, 5, 51, args));                                                                                    \
   } while (0)
 #else // ifdef _DEBUG
-#ifndef MACINTOSH
 #define mprintf(args) // DAJ defined in target headers
-#endif
 #define mprintf_at(args)
 #define DebugBlockPrint(args)
 #endif // ifdef _DEBUG

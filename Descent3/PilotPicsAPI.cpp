@@ -132,13 +132,8 @@ bool PPic_InitDatabase(void) {
 
   // attempt to open the hog database
   // --------------------------------
-#if defined(MACINTOSH) && !(defined(_DEBUG) || defined(DEMO))
-  char *fullpath;
-  fullpath = GetMultiCDPath(PILOTPIC_DATABASE_HOG);
-#else
   char fullpath[_MAX_PATH];
   ddio_MakePath(fullpath, LocalD3Dir, PILOTPIC_DATABASE_HOG, NULL);
-#endif
   PilotPic_database_hog_handle = cf_OpenLibrary(fullpath);
 
   if (PilotPic_database_hog_handle == 0) {

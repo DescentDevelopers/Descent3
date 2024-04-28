@@ -203,11 +203,7 @@ void pilot::initialize(void) {
   guidebot_name = mem_strdup("GB");
   picture_id = PPIC_INVALID_ID;
   difficulty = DIFFICULTY_ROOKIE;
-#ifdef MACINTOSH
-  hud_mode = (ubyte)HUD_FULLSCREEN;
-#else
   hud_mode = (ubyte)HUD_COCKPIT;
-#endif
   hud_stat = 0;
   hud_graphical_stat = STAT_STANDARD;
   game_window_w = Video_res_list[Game_video_resolution].width;
@@ -256,11 +252,9 @@ void pilot::initialize(void) {
     }
   }
 
-#ifndef MACINTOSH
   for (i = 0; i < N_MOUSE_AXIS; i++) {
     mouse_sensitivity[i] = 1.0f;
   }
-#endif
 
   for (i = 0; i < N_JOY_AXIS; i++) {
     joy_sensitivity[i] = 1.0f;
@@ -428,11 +422,7 @@ int pilot::flush(bool new_file) {
   char real_filename[_MAX_PATH];
 
   // open and process file
-#ifdef MACINTOSH
-  ddio_MakePath(real_filename, Base_directory, "pilots", filename, NULL);
-#else
   ddio_MakePath(real_filename, Base_directory, filename, NULL);
-#endif
 
   if (new_file && cfexist(real_filename)) {
     // the file already exists, we can't write out
@@ -526,11 +516,7 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
   char real_filename[_MAX_PATH];
 
   // open and process file
-#ifdef MACINTOSH
-  ddio_MakePath(real_filename, Base_directory, "pilots", filename, NULL);
-#else
   ddio_MakePath(real_filename, Base_directory, filename, NULL);
-#endif
 
   if (!cfexist(real_filename)) {
     // the file already exists, we can't write out

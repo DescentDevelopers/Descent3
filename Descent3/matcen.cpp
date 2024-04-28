@@ -175,9 +175,6 @@
 #include "psrand.h"
 #include "demofile.h"
 
-#if defined(MACINTOSH)
-#include "Macros.h"
-#endif
 
 #include <algorithm>
 

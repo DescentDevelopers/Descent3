@@ -111,9 +111,7 @@ fix FloatToFixFast(float num);
 #define FixToShort(num) ((short)((num) >> FIX_SHIFT))
 
 // Fixed-point math functions in inline ASM form
-#if defined(MACINTOSH)
-#include "fixmac.h"
-#elif defined(WIN32)
+#if   defined(WIN32)
 #include "win\fixwin32.h"
 #endif
 

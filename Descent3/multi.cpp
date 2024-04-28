@@ -1710,9 +1710,6 @@
 #include "../md5/md5.h"
 void MultiProcessShipChecksum(MD5 *md5, int ship_index);
 
-#if defined(MACINTOSH)
-#include "Macros.h"
-#endif
 
 #include <algorithm>
 
@@ -2588,12 +2585,6 @@ void MultiDoPlayer(ubyte *data) {
 
   // Put in address
   memcpy(&NetPlayers[slot].addr, data + count, sizeof(network_address));
-#ifdef MACINTOSH // DAJ if the addr is comming from a PC swap it
-  if (NetPlayers[slot].addr.connection_type > NP_DIRECTPLAY) {
-    NetPlayers[slot].addr.port = SWAPSHORT(NetPlayers[slot].addr.port);
-    NetPlayers[slot].addr.connection_type = (network_protocol)SWAPINT(NetPlayers[slot].addr.connection_type);
-  }
-#endif
   char dbg_output[50];
   nw_GetNumbersFromHostAddress(&NetPlayers[slot].addr, dbg_output);
   mprintf((0, "Got player address of: %s\n", dbg_output));
@@ -2704,12 +2695,6 @@ void MultiDoPlayerEnteredGame(ubyte *data) {
 
   // Get the player's network address
   memcpy(&NetPlayers[slot].addr, data + count, sizeof(network_address));
-#ifdef MACINTOSH // DAJ if the addr is comming from a PC swap it
-  if (NetPlayers[slot].addr.connection_type > NP_DIRECTPLAY) {
-    NetPlayers[slot].addr.port = SWAPSHORT(NetPlayers[slot].addr.port);
-    NetPlayers[slot].addr.connection_type = (network_protocol)SWAPINT(NetPlayers[slot].addr.connection_type);
-  }
-#endif
   count += sizeof(network_address);
 
   // Get PPS

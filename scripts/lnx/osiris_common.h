@@ -334,23 +334,6 @@
 #ifndef __OSIRIS_COMMON_H_
 #define __OSIRIS_COMMON_H_
 
-#ifdef MACINTOSH
-#include "vecmat_external.h"
-
-#include "aistruct_external.h"
-#include "object_external.h"
-#include "matcen_external.h"
-#include "robotfirestruct_external.h"
-#include "findintersection_external.h"
-#include "weapon_external.h"
-#include "damage_external.h"
-#include "fireball_external.h"
-#include "levelgoal_external.h"
-#include "deathinfo_external.h"
-#include "difficulty_external.h"
-#include "gamecinematics_external.h"
-#include "player_external.h"
-#else
 #include "../../Main/lib/vecmat_external.h"
 
 #include "../../Main/aistruct_external.h"
@@ -366,7 +349,6 @@
 #include "../../Main/difficulty_external.h"
 #include "../../Main/gamecinematics_external.h"
 #include "../../Main/player_external.h"
-#endif
 
 // =======================================================================
 // Event return values (OR these if needed)

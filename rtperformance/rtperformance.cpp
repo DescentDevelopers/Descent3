@@ -256,9 +256,6 @@ void rtp_Init(void) {
   Runtime_performance_counter = 0;
   Runtime_performance_enabled = 0;
 
-#ifdef MACINTOSH
-  Runtime_performance_clockfreq = 1000000; // micoseconds
-#else
   LARGE_INTEGER freq;
   if (!QueryPerformanceFrequency(&freq)) {
     // there is no hi-res clock available....ummmm
@@ -268,7 +265,6 @@ void rtp_Init(void) {
 
   // Setup the clock freq....we'll need this info later I guess when converting to seconds
   Runtime_performance_clockfreq = freq.QuadPart;
-#endif
   rtp_EnableFlags(RTI_FRAMETIME);
 
   atexit(rtp_Close);
@@ -369,17 +365,9 @@ INT64 rtp_GetClock
 */
 INT64 rtp_GetClock(void) {
 #ifdef USE_RTP
-#ifdef MACINTOSH
-  INT64 currentTimeUI = 0;
-
-  // Get the current time in microseconds
-  Microseconds((UnsignedWide *)(&currentTimeUI));
-  return currentTimeUI;
-#else
   LARGE_INTEGER t;
   QueryPerformanceCounter(&t);
   return (INT64)t.QuadPart;
-#endif
 #else
   return 0;
 #endif

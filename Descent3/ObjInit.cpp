@@ -814,12 +814,7 @@ int ObjInitGeneric(object *objp, bool reinit) {
     poly_model *pm = &Poly_models[objp->rtype.pobj_info.model_num];
     int num_wbs = pm->num_wbs;
 
-#ifndef MACINTOSH
     if ((objp->dynamic_wb != NULL) && ((unsigned int)num_wbs != mem_size(objp->dynamic_wb) / sizeof(dynamic_wb_info)))
-#else
-    // FIXME _msize is not available on the MAC so
-    if ((objp->dynamic_wb != NULL) && ((unsigned int)num_wbs != MAX_WBS_PER_OBJ))
-#endif
     {
       mem_free(objp->dynamic_wb);
       objp->dynamic_wb = NULL;

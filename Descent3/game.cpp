@@ -961,16 +961,10 @@ void SetScreenMode(int sm, bool force_res_change) {
       scr_width = Video_res_list[Game_video_resolution].width;
       scr_height = Video_res_list[Game_video_resolution].height;
       scr_bitdepth = Render_preferred_bitdepth;
-#ifdef MACINTOSH
-      SwitchDSpContex(Game_video_resolution);
-#endif
     } else {
       scr_width = FIXED_SCREEN_WIDTH;
       scr_height = FIXED_SCREEN_HEIGHT;
       scr_bitdepth = 16;
-#ifdef MACINTOSH
-      SwitchDSpContex(0);
-#endif
     }
 
     if (!rend_initted) {

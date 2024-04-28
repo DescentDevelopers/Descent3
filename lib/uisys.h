@@ -37,11 +37,7 @@
 #define UIRMSEBTN 2
 
 // mouse click properties
-#ifdef MACINTOSH
-#define UI_DBLCLICK_DELAY 1.20f
-#else
 #define UI_DBLCLICK_DELAY 0.60f
-#endif
 #define UI_DBLCLICK_MSEDELTA 4
 
 typedef struct tUIInitInfo {

@@ -248,9 +248,6 @@
 #if defined(WIN32) || defined(__LINUX__)
 #include "../manage/soundpage.h"
 #include "../Descent3/sounds.h"
-#elif defined(MACINTOSH)
-#include "sounds.h"
-#include "soundpage.h"
 #endif
 
 int Num_sounds = 0;

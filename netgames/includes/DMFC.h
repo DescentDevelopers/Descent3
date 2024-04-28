@@ -383,44 +383,6 @@
     DEBUG_BREAK();                                                                                                     \
   } while (0)
 #define HEAPCHECK()
-#elif defined(MACINTOSH)
-#ifdef DEBUG_BREAK
-#undef DEBUG_BREAK
-#endif
-#define DEBUG_BREAK()                                                                                                  \
-  do {                                                                                                                 \
-    if (DLLDebugBreak_callback_stop)                                                                                   \
-      DLLDebugBreak_callback_stop();                                                                                   \
-    Debugger();                                                                                                        \
-    if (DebugBreak_callback_resume)                                                                                    \
-      DebugBreak_callback_resume();                                                                                    \
-  } while (0)
-
-#define DLLASSERT(x)                                                                                                   \
-  do {                                                                                                                 \
-    DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
-  } while (0)
-#define DLLmprintf(args) DLLDebug_ConsolePrintf args
-#ifdef ASSERT
-#undef ASSERT
-#endif
-#define ASSERT(x)                                                                                                      \
-  do {                                                                                                                 \
-    DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
-  } while (0)
-
-#ifdef Int3
-#undef Int3
-#endif
-#define Int3()                                                                                                         \
-  do {                                                                                                                 \
-    mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
-    if (DLLDebugBreak_callback_stop)                                                                                   \
-      DLLDebugBreak_callback_stop();                                                                                   \
-    /*		Debugger(); */                                                                                                 \
-    if (DLLDebugBreak_callback_resume)                                                                                 \
-      DLLDebugBreak_callback_resume();                                                                                 \
-  } while (0)
 #else
 #ifdef DEBUG_BREAK
 #undef DEBUG_BREAK

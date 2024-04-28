@@ -21,11 +21,7 @@
 
 #include "pstypes.h"
 
-#ifdef MACINTOSH
-#define MAX_BUMPMAPS 1
-#else
 #define MAX_BUMPMAPS 500
-#endif
 #define BAD_BUMP_INDEX 65535
 
 #define BUMPF_USED 1

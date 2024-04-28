@@ -138,9 +138,6 @@ typedef int socklen_t;
 #include "ship.h"
 #include "hud.h"
 
-#ifdef MACINTOSH
-#include "macsock.h"
-#endif
 
 bool Dedicated_server = false;
 

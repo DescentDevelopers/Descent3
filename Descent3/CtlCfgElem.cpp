@@ -157,11 +157,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   "[",
                                   "]",
                                   "enter\0\0\0\0\0",
-#ifdef MACINTOSH
-                                  "ctrl\0\0\0\0\0",
-#else
                                   "lctrl\0\0\0\0\0",
-#endif
                                   "a",
                                   "s",
                                   "d",
@@ -174,11 +170,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   ";",
                                   "'",
                                   "`",
-#ifdef MACINTOSH
-                                  "shift\0\0\0\0\0",
-#else
                                   "lshft\0\0\0\0\0",
-#endif
                                   "\\",
                                   "z",
                                   "x",
@@ -192,11 +184,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   "/",
                                   "rshft\0\0\0\0\0",
                                   "pad*\0\0\0\0\0",
-#ifdef MACINTOSH
-                                  "opt\0\0\0\0\0",
-#else
                                   "lalt\0\0\0\0\0",
-#endif
                                   "spc\0\0\0\0\0",
                                   "caps\0\0\0\0\0",
                                   "",
@@ -297,11 +285,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   "",
                                   "",
                                   "pad�\0\0\0\0\0\0",
-#ifdef MACINTOSH
-                                  "ctrl\0\0\0\0\0",
-#else
                                   "rctrl\0\0\0\0\0",
-#endif
                                   "",
                                   "",
                                   "",
@@ -328,11 +312,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   "pad/\0\0\0\0\0\0",
                                   "",
                                   "",
-#ifdef MACINTOSH
-                                  "opt\0\0\0\0\0\0",
-#else
                                   "ralt\0\0\0\0\0\0",
-#endif
                                   "",
                                   "",
                                   "",
@@ -372,11 +352,7 @@ char Ctltext_KeyBindings[][16] = {"",
                                   "",
                                   "",
                                   "",
-#ifdef MACINTOSH
-                                  "cmd\0\0\0\0\0\0",
-#else
                                   "",
-#endif
                                   "",
                                   "",
                                   "",
@@ -414,9 +390,6 @@ static short key_binding_indices[] = {
     KEY_PAD4,      KEY_PAD5,     KEY_PAD6,     KEY_PADPLUS,   KEY_PAD1,     KEY_PAD2,   KEY_PAD3,        KEY_PAD0,
     KEY_PADPERIOD, KEY_PADENTER, KEY_RCTRL,    KEY_PADDIVIDE, KEY_RALT,     KEY_HOME,   KEY_UP,          KEY_PAGEUP,
     KEY_LEFT,      KEY_RIGHT,    KEY_END,      KEY_DOWN,      KEY_PAGEDOWN, KEY_INSERT, KEY_DELETE,
-#ifdef MACINTOSH
-    KEY_CMD,       KEY_LBRACKET, KEY_RBRACKET, KEY_BACKSLASH, KEY_PERIOD,   KEY_SLASH, // DAJ for mac international
-#endif
     0xff};
 
 #define NUM_KEYBINDSTRINGS (sizeof(Ctltext_KeyBindings) / sizeof(char *))

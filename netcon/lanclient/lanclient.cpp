@@ -328,9 +328,6 @@ extern int MTAVersionCheck(unsigned int oldver, char *URL);
 /////////////////////////////
 // Defines
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 // These next two function prototypes MUST appear in the extern "C" block if called
 // from a CPP file.
@@ -405,9 +402,6 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
   }
 }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif
 namespace lanclient {
 #define GET_INFO_ID 50
 // The first multiplayer menu that the user will see...all multiplayer stuff is

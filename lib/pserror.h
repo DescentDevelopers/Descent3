@@ -265,35 +265,6 @@ inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
       Int3MessageBox(__FILE__, __LINE__);                                                                              \
   } while (0)
 #define HEAPCHECK()
-#elif defined(MACINTOSH)
-#define DEBUG_BREAK()                                                                                                  \
-  do {                                                                                                                 \
-    if (DebugBreak_callback_stop)                                                                                      \
-      (*DebugBreak_callback_stop)();                                                                                   \
-    debug_break();                                                                                                     \
-    if (DebugBreak_callback_resume)                                                                                    \
-      (*DebugBreak_callback_resume)();                                                                                 \
-  } while (0)
-/// #define ASSERT(x) assert(x)
-#define ASSERT(x)                                                                                                      \
-  do {                                                                                                                 \
-    if (!(unsigned)(x)) {                                                                                              \
-      mprintf((2, "Assertion failed (%s) in %s line %d.\n", #x, __FILE__, __LINE__));                                  \
-      if (Debug_break)                                                                                                 \
-        DEBUG_BREAK();                                                                                                 \
-      else                                                                                                             \
-        AssertionFailed(#x, __FILE__, __LINE__);                                                                       \
-    }                                                                                                                  \
-  } while (0)
-#define Int3()                                                                                                         \
-  do {                                                                                                                 \
-    mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
-    if (Debug_break)                                                                                                   \
-      DEBUG_BREAK();                                                                                                   \
-    else                                                                                                               \
-      Int3MessageBox(__FILE__, __LINE__);                                                                              \
-  } while (0)
-#define HEAPCHECK()
 #endif
 #else
 #define DEBUG_BREAK()

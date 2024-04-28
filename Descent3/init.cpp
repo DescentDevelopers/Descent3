@@ -1083,13 +1083,7 @@ void PreGameCdCheck() {
   CD_inserted = 0;
   do {
     char *p = NULL;
-#if defined(MACINTOSH)
-    p = ddio_GetCDDrive("Descent3");
-    if (p && *p) {
-      CD_inserted = 1;
-      break;
-    }
-#elif defined(OEM)
+#if   defined(OEM)
     p = ddio_GetCDDrive("D3OEM_1");
     if (p && *p) {
       CD_inserted = 1;
@@ -1124,11 +1118,6 @@ void PreGameCdCheck() {
       }
       ShowCursor(false);
 
-#elif defined(MACINTOSH)
-      ::ShowCursor();
-      short action = ::Alert(130, NULL);
-      if (action == 1)
-        ::ExitToShell();
 #elif defined(__LINUX__)
       // ummm what should we do in Linux?
       // right now I'm just going to return this hopefully will be safe, as I think
@@ -1156,10 +1145,8 @@ void PreInitD3Systems() {
 #ifdef LOGGER
   console_output = true;
 #endif
-#ifndef MACINTOSH
   if (FindArg("-logfile"))
     Debug_Logfile("d3.log");
-#endif
 
 #endif
 
@@ -1185,9 +1172,7 @@ void PreInitD3Systems() {
     Mem_low_memory_mode = Mem_superlow_memory_mode = true;
   if (FindArg("-dedicated"))
     Mem_low_memory_mode = true;
-#ifndef MACINTOSH
   mem_Init();
-#endif
   if (FindArg("-himem")) {
     Mem_low_memory_mode = false;
     Mem_superlow_memory_mode = false;
@@ -1300,7 +1285,6 @@ void SaveGameSettings() {
   Database->write("VoiceAll", PlayVoices);
 
   // Write out force feedback
-#ifndef MACINTOSH
   Database->write("EnableJoystickFF", D3Use_force_feedback);
   Database->write("ForceFeedbackAutoCenter", D3Force_auto_center);
   ubyte force_gain;
@@ -1310,7 +1294,6 @@ void SaveGameSettings() {
     D3Force_gain = 1.0f;
   force_gain = (ubyte)((100.0f * D3Force_gain) + 0.5f);
   Database->write("ForceFeedbackGain", force_gain);
-#endif
 
 #ifndef RELEASE // never save this value out in release.
   Database->write("SoundMixer", Sound_mixer);
@@ -1366,43 +1349,20 @@ void LoadGameSettings() {
   Render_preferred_state.gamma = 1.5;
   PreferredRenderer = RENDERER_NONE;
 
-#ifdef MACINTOSH
-
-// DAJ render switch
-#if defined(USE_OPENGL)
-  PreferredRenderer = RENDERER_OPENGL;
-#elif defined(USE_GLIDE)
-  PreferredRenderer = RENDERER_GLIDE;
-#elif defined(USE_SOFTWARE)
-  PreferredRenderer = RENDERER_SOFTWARE_16BIT;
-#else
-  PreferredRenderer = RENDERER_NONE;
-#endif
-
-#endif
 
   Sound_system.SetLLSoundQuantity(MIN_SOUNDS_MIXED + (MAX_SOUNDS_MIXED - MIN_SOUNDS_MIXED) / 2);
   D3MusicSetVolume(0.5f);
   Detail_settings.Pixel_error = 8.0;
-#ifdef MACINTOSH
-  Sound_system.SetMasterVolume(0.7);
-  Detail_settings.Terrain_render_distance = 10.0 * TERRAIN_SIZE; // DAJ
-#else
   Sound_system.SetMasterVolume(1.0);
   Detail_settings.Terrain_render_distance = 70.0 * TERRAIN_SIZE;
   D3Use_force_feedback = true;
   D3Force_gain = 1.0f;
   D3Force_auto_center = true;
-#endif
   Game_video_resolution = RES_640X480;
   PlayPowerupVoice = true;
   PlayVoices = true;
   Sound_mixer = SOUND_MIXER_SOFTWARE_16;
-#ifdef MACINTOSH
-  Sound_quality = SQT_LOW;
-#else
   Sound_quality = SQT_NORMAL;
-#endif
   Missile_camera_window = SVW_LEFT;
   Render_preferred_state.vsync_on = true;
   Detail_settings.Fog_enabled = true;
@@ -1461,18 +1421,6 @@ void LoadGameSettings() {
   Database->read_int("RS_color_model", &Render_state.cur_color_model);
   Database->read_int("RS_light", &Render_state.cur_light_state);
   Database->read_int("RS_texture_quality", &Render_state.cur_texture_quality);
-#ifdef MACINTOSH
-  if (Render_state.cur_texture_quality == 0) {
-    Mem_low_memory_mode = true;
-    Mem_superlow_memory_mode = true;
-  } else if (Render_state.cur_texture_quality == 1) {
-    Mem_low_memory_mode = true;
-    Mem_superlow_memory_mode = false;
-  } else if (Render_state.cur_texture_quality == 2) {
-    Mem_low_memory_mode = false;
-    Mem_superlow_memory_mode = false;
-  }
-#else
   // force feedback stuff
   Database->read("EnableJoystickFF", &D3Use_force_feedback);
   Database->read("ForceFeedbackAutoCenter", &D3Force_auto_center);
@@ -1481,7 +1429,6 @@ void LoadGameSettings() {
   if (force_gain > 100)
     force_gain = 100;
   D3Force_gain = ((float)force_gain) / 100.0f;
-#endif
   Database->read_int("PreferredRenderer", &PreferredRenderer);
   Database->read_int("MissileView", &Missile_camera_window);
   Database->read("FastHeadlight", &Detail_settings.Fast_headlight_on);
@@ -1539,15 +1486,7 @@ void LoadGameSettings() {
   // function)
 
   int level;
-#ifdef MACINTOSH
-#ifdef USE_OPENGL
-  level = DETAIL_LEVEL_LOW;
-#else
-  level = DETAIL_LEVEL_HIGH;
-#endif
-#else
   level = DETAIL_LEVEL_MED;
-#endif
 
   Database->read_int("PredefDetailSetting", &level);
   ConfigSetDetailLevel(level);
@@ -1828,24 +1767,6 @@ void InitIOSystems(bool editor) {
 extern int Num_languages;
 void InitStringTable() {
 
-#if defined(MACINTOSH) && !defined(DAJ_DEBUG)
-  if (cfopen("german.lan", "rt")) {
-    Localization_SetLanguage(LANGUAGE_GERMAN);
-    ddio_SetKeyboardLanguage(KBLANG_GERMAN);
-  } else if (cfopen("spanish.lan", "rt")) {
-    Localization_SetLanguage(LANGUAGE_SPANISH);
-    ddio_SetKeyboardLanguage(KBLANG_AMERICAN);
-  } else if (cfopen("italian.lan", "rt")) {
-    Localization_SetLanguage(LANGUAGE_ITALIAN);
-    ddio_SetKeyboardLanguage(KBLANG_AMERICAN);
-  } else if (cfopen("french.lan", "rt")) {
-    Localization_SetLanguage(LANGUAGE_FRENCH);
-    ddio_SetKeyboardLanguage(KBLANG_FRENCH);
-  } else {
-    Localization_SetLanguage(LANGUAGE_ENGLISH);
-    ddio_SetKeyboardLanguage(KBLANG_AMERICAN);
-  }
-#else
   int language = LANGUAGE_ENGLISH;
   Database->read("LanguageType", &language, sizeof(language));
 
@@ -1855,7 +1776,6 @@ void InitStringTable() {
   }
   Localization_SetLanguage(language);
 
-#endif
   int string_count = LoadStringTables();
 
   if (string_count == 0)
@@ -2040,20 +1960,9 @@ void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_tim
 void IntroScreen() {
 // #if (defined(OEM) || defined(DEMO) )
 #ifdef DEMO
-#ifdef MACINTOSH
-  ShowStaticScreen("graphsim.ogf", true, 3.0);
-#else
   ShowStaticScreen("tantrum.ogf", true, 3.0);
-#endif
   ShowStaticScreen("outrage.ogf", true, 3.0);
 #else
-#ifdef MACINTOSH
-  if (cfopen("publisher.ogf", "rb"))
-    ShowStaticScreen("publisher.ogf", true, 3.0);
-
-  if (cfopen("graphsim.ogf", "rb"))
-    ShowStaticScreen("graphsim.ogf", true, 3.0);
-#endif
 #endif
 
 #ifdef DEMO
@@ -2109,7 +2018,7 @@ ushort Gameport = D3_DEFAULT_PORT;
 ushort PXOPort = 0;
 // Initialiaze everything before data load
 void InitD3Systems1(bool editor) {
-#if defined(RELEASE) || defined(MACINTOSH)
+#if defined(RELEASE)
   SetDebugBreakHandlers(NULL, NULL);
 #else
   SetDebugBreakHandlers(D3DebugStopHandler, D3DebugResumeHandler);
@@ -2232,7 +2141,7 @@ void InitD3Systems1(bool editor) {
         pport++;
         port = atoi(pport);
       }
-#if !defined(RELEASE) && !defined(MACINTOSH)
+#if !defined(RELEASE)
       nw_InitTCPLogging(ipparse, port);
 #endif
     }
@@ -2412,7 +2321,6 @@ void SetupTempDirectory(void) {
 
   mprintf((0, "Temp Directory Set To: \"%s\"\n", Descent3_temp_directory));
 
-#ifndef MACINTOSH
   // Lock the directory
   int lock_res = ddio_CreateLockFile(Descent3_temp_directory);
   switch (lock_res) {
@@ -2449,7 +2357,6 @@ void SetupTempDirectory(void) {
     exit(1);
     break;
   }
-#endif
   // restore working dir
   ddio_SetWorkingDir(Base_directory);
 }
@@ -2465,11 +2372,7 @@ void DeleteTempFiles(void) {
         do {
           ddio_DeleteFile(filename);
         }
-#ifdef MACINTOSH
-        while (ddio_FindFileStart(temp_file_wildcards[i].wildcard, filename));
-#else
         while (ddio_FindNextFile(filename));
-#endif
       }
       ddio_FindFileClose();
     }

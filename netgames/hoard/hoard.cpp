@@ -150,9 +150,6 @@ char *GetStringFromTable(int d) {
 }
 ///////////////////////////////////////////////
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -1513,6 +1510,3 @@ void ShowGameConfigDialog(int i) {
 
 void SwitchHUDColor(int i) { HUD_color_model = i; }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif

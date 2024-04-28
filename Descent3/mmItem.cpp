@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -196,11 +196,7 @@ void mmItem::OnDestroy() {
 }
 
 void mmItem::OnSelect() {
-#ifdef MACINTOSH
-  PlayMenuSound(m_window->SoundHandles[MM_SELECT_SOUND], false); // why wait?
-#else
   PlayMenuSound(m_window->SoundHandles[MM_SELECT_SOUND], true);
-#endif
   UIGadget::OnSelect();
 }
 
@@ -451,7 +447,7 @@ void mmInterface::CopyrightText() {
   grtext_SetFont(BRIEFING_FONT);
   grtext_SetAlpha(192);
   grtext_SetColor(GR_RGB(255, 32, 32));
-#if (defined(MACINTOSH) || (!defined(RELEASE)) || defined(DEMO))
+#if ((!defined(RELEASE)) || defined(DEMO))
   grtext_Printf(x, y, Program_version.build ? "%s %d.%d.%d" : "%s v%d.%d", type, Program_version.major,
                 Program_version.minor, Program_version.build);
 #else

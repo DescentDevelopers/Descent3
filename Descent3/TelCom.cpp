@@ -2095,13 +2095,8 @@ void TelcomRenderMouse(void) {
 
   if (TC_cursor > -1) {
     int mx, my;
-#ifdef MACINTOSH
-    // JEFF: Why is this like this? Why doesn't this use Telcom_mouse_* ?
-    ddio_MouseGetState(&mx, &my, NULL, NULL);
-#else
     mx = Telcom_mouse_x;
     my = Telcom_mouse_y;
-#endif
 
     float u0 = 0.0f, v0 = 0.0f, u1 = 1.0f, v1 = 1.0f;
     int cur_w = bm_w(TC_cursor, 0);

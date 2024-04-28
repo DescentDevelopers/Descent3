@@ -95,9 +95,6 @@
 #include "dmfcinternal.h"
 #include <string.h>
 
-#ifdef MACINTOSH
-#include <stdlib.h>
-#endif
 
 PInfo::PInfo(int slot) {
   m_slot = slot;

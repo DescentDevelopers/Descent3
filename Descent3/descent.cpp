@@ -410,9 +410,6 @@
 #include "multi_dll_mgr.h"
 #include "localization.h"
 #include "mem.h"
-#if defined(MACINTOSH) && defined(GAMERANGER)
-#include "GameRanger.h"
-#endif
 //	---------------------------------------------------------------------------
 //	Variables
 //	---------------------------------------------------------------------------
@@ -562,12 +559,6 @@ void Descent3() {
       SetFunctionMode(GAMEGAUGE_MODE);
     }
 
-#if defined(MACINTOSH) && defined(GAMERANGER)
-    if (GRCheckFileForCmd()) {
-      SetFunctionMode(GAME_MODE);
-      GRGetWaitingCmd();
-    }
-#endif
     MainLoop();
 
     // delete the lock file in the temp directory (as long as it belongs to us)
@@ -815,9 +806,7 @@ void RenderBlankScreen(void);
 char *GetCDVolume(int cd_num) {
   char *p = NULL;
 
-#if defined(MACINTOSH)
-  char volume_labels[3][_MAX_PATH] = {"", "Descent3", "Descent3"};
-#elif !defined(OEM)
+#if   !defined(OEM)
   char volume_labels[3][_MAX_PATH] = {"", "D3_1", "D3_2"};
 #else
   char volume_labels[3][_MAX_PATH] = {"", "D3OEM_1", ""};
@@ -840,12 +829,7 @@ char *GetCDVolume(int cd_num) {
     // prompt them to enter the disk...
     do {
       char message_txt[50];
-#ifdef MACINTOSH
-      strcpy(message_txt, TXT_CDPROMPT);
-      message_txt[strlen(message_txt) - 2] = '\0';
-#else
       snprintf(message_txt, sizeof(message_txt), TXT_CDPROMPT, cd_num);
-#endif
       // We need a background drawn!
 #if defined(LINUX)
       void (*ui_cb)() = GetUICallback();
@@ -886,11 +870,7 @@ file_vols file_volumes[] = {
     // Filename, directory it might be installed on the hard drive, CD number to look for it
     {"d3.mn3", "missions", 1, false},      {"d3_2.mn3", "missions", 2, false},    {"level1.mve", "movies", 1, true},
     {"level5.mve", "movies", 2, true},     {"end.mve", "movies", 2, true},        {"intro.mve", "movies", 1, true},
-#ifdef MACINTOSH
-    {"ppics.hog", "missions", 1, true},    {"training.mn3", "missions", 1, true},
-#else
     {"dolby1.mv8", "movies", 1, true},
-#endif
     {"d3voice1.hog", "missions", 1, true}, {"d3voice2.hog", "missions", 2, true}};
 
 int num_cd_files = sizeof(file_volumes) / sizeof(file_vols);

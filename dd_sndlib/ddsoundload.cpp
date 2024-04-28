@@ -110,11 +110,7 @@
 sound_info Sounds[MAX_SOUNDS];
 sound_file_info SoundFiles[MAX_SOUND_FILES];
 
-#ifdef MACINTOSH
-#define CLIP_ATTENUATION 1.0f
-#else
 #define CLIP_ATTENUATION .5f
-#endif
 
 #define SOUND_FILE_SAMPLE_ALIGNMENT 4
 
@@ -384,21 +380,6 @@ char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_inde
           aligned_size = cksize;
         }
 
-#ifdef MACINTOSH
-        SoundFiles[sound_file_index].sample_length = aligned_size * 2;
-        SoundFiles[sound_file_index].np_sample_length = cksize * 2;
-
-        SoundFiles[sound_file_index].sample_8bit = (unsigned char *)mem_malloc(aligned_size * 2);
-
-        //					cf_ReadBytes ((ubyte
-        //*)SoundFiles[sound_file_index].sample_8bit,cksize,cfptr);
-        sbyte tmp_snd;
-        for (int i = 0, count = 0; count < cksize; count++) {
-          tmp_snd = cf_ReadByte(cfptr);
-          SoundFiles[sound_file_index].sample_8bit[i++] = tmp_snd;
-          SoundFiles[sound_file_index].sample_8bit[i++] = tmp_snd;
-        }
-#else
         SoundFiles[sound_file_index].sample_length = aligned_size;
         SoundFiles[sound_file_index].np_sample_length = cksize;
 
@@ -409,29 +390,8 @@ char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_inde
 
         if (aligned_size != cksize)
           memset(SoundFiles[sound_file_index].sample_8bit + cksize, 128, num_needed);
-#endif
       } else {
         int num_needed = 0;
-#ifdef MACINTOSH
-        //					SoundFiles[sound_file_index].sample_length    = cksize;
-        //					SoundFiles[sound_file_index].np_sample_length =	cksize;
-        SoundFiles[sound_file_index].sample_length = cksize / 2;
-        SoundFiles[sound_file_index].np_sample_length = cksize / 2;
-
-        //					SoundFiles[sound_file_index].sample_16bit = (short *)
-        // mem_malloc(2*cksize);
-        SoundFiles[sound_file_index].sample_16bit = (short *)mem_malloc(cksize);
-        cf_ReadBytes((unsigned char *)SoundFiles[sound_file_index].sample_16bit, cksize, cfptr);
-
-        //					ushort tmp_snd;
-        for (int i = 0, count = 0; count < cksize / 2; count++) {
-          //						tmp_snd = (ushort)cf_ReadShort (cfptr);
-          //						SoundFiles[sound_file_index].sample_16bit[i++] = tmp_snd;
-          //						SoundFiles[sound_file_index].sample_16bit[i++] = tmp_snd;
-          SoundFiles[sound_file_index].sample_16bit[i++] =
-              INTEL_SHORT(SoundFiles[sound_file_index].sample_16bit[count]);
-        }
-#else
 
         SoundFiles[sound_file_index].sample_length = cksize / 2;
         SoundFiles[sound_file_index].np_sample_length = cksize / 2;
@@ -453,7 +413,6 @@ char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_inde
 
         if (num_needed)
           memset(SoundFiles[sound_file_index].sample_16bit + (cksize / 2), 0, num_needed);
-#endif
       }
 
       // We found data, clear format flag

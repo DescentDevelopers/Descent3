@@ -168,9 +168,6 @@
 #include <string.h>
 #include "monsterstr.h"
 
-#ifdef MACINTOSH
-#include <stdlib.h>
-#endif
 
 #include <algorithm>
 
@@ -351,9 +348,6 @@ void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h,
   }
 }
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 #define NUM_TEAMS 2
 
@@ -2217,6 +2211,3 @@ void DoMonsterballScoreEffect(void) {
   }
 }
 
-#ifdef MACINTOSH
-#pragma export off
-#endif

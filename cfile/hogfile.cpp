@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -89,11 +89,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef MACINTOSH
-#include <stat.h>
-#else
 #include <sys/stat.h>
-#endif
 #ifndef __LINUX__
 // Non-Linux Builds
 #include <io.h>
@@ -261,7 +257,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*U
   // write files (& build index)
   for (i = 0; i < header.nfiles; i++) {
     FILE *ifp;
-#if defined(__LINUX__) || defined(MACINTOSH)
+#if defined(__LINUX__)
     struct stat mystat;
 #else
     struct _stat32 mystat;
@@ -279,11 +275,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*U
     _fstat32(fileno(ifp), &mystat);
     strcat(table[i].name, ext);
     table[i].flags = 0;
-#ifdef MACINTOSH
-    table[i].len = mystat.st_size;
-#else
     table[i].len = _filelength(fileno(ifp));
-#endif
     table[i].timestamp = mystat.st_mtime;
     if (!FileCopy(hog_fp, ifp, table[i].len)) {
       delete[] table;

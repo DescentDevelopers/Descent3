@@ -471,9 +471,6 @@ int Old_table_method = 0;
 void mng_WriteNewUnknownPage(CFILE *outfile);
 //	This is for levels
 char LocalLevelsDir[TABLE_NAME_LEN];
-#ifdef MACINTOSH
-char LocalPilotsDir[TABLE_NAME_LEN];
-#endif
 //	This is for pages
 char TableLockFilename[TABLE_NAME_LEN], TableFilename[TABLE_NAME_LEN];
 char TempTableLockFilename[TABLE_NAME_LEN], TempTableFilename[TABLE_NAME_LEN];
@@ -694,10 +691,6 @@ int mng_InitLocalTables() {
   ddio_MakePath(LocalVoiceDir, LocalD3Dir, "data", "voice", NULL);
   ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", NULL);
   cf_SetSearchPath(LocalD3Dir, NULL);
-#ifdef MACINTOSH
-  ddio_MakePath(LocalPilotsDir, LocalD3Dir, "pilots", NULL);
-  cf_SetSearchPath(LocalPilotsDir, "plt", NULL);
-#endif
 #ifndef RELEASE
   cf_SetSearchPath(LocalLevelsDir, NULL);
   cf_SetSearchPath(LocalTableDir, NULL); // Local table directory
@@ -821,12 +814,6 @@ void mng_InitLocalDirectories() {
   ddio_CreateDir(dir);
   ddio_MakePath(dir, LocalD3Dir, "custom", "settings", NULL);
   ddio_CreateDir(dir);
-#ifdef MACINTOSH
-  ddio_MakePath(dir, LocalD3Dir, "pilots", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, LocalD3Dir, "demo", NULL);
-  ddio_CreateDir(dir);
-#endif
   cf_SetSearchPath(LocalCustomGraphicsDir, NULL);
   cf_SetSearchPath(LocalCustomSoundsDir, NULL);
 

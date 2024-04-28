@@ -765,11 +765,9 @@ void DMFCBase::SaveSettings(void) {
 // DMFCBase::LoadFunctions
 //
 //	Initialized all the functions for a multiplayer game...must be first thing called
-#ifndef MACINTOSH
 void DMFCBase::LoadFunctions(int *api_func) {
 #include "dmfcdllinit.h"
 }
-#endif
 
 // DMFCBase::GameInit
 //

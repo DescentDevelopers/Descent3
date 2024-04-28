@@ -290,10 +290,6 @@
 #include "D3ForceFeedback.h"
 #include "hlsoundlib.h"
 #include "ddio.h"
-#ifdef MACINTOSH
-#include "insprocket.h" //DAJ
-#include "maccontroller.h"
-#endif
 #include <string.h>
 //////////////////////////////////////////////////////////////////////////////
 #define IDV_KCONFIG 10
@@ -305,11 +301,6 @@
 #define CFG_AXIS_SENS_RANGE 20
 const short UID_JOYCFG = 0x1000;
 
-#ifdef MACINTOSH
-short *joy_sens[N_JOY_AXIS] = {0, 0, 0, 0, 0, 0};
-float old_sens[N_JOY_AXIS];
-short *deadzone = 0;
-#endif
 
 //	Setup of config screens.
 #define CCITEM_WPN_X 0
@@ -573,72 +564,16 @@ void joy_cfg_screen::setup(newuiLargeMenu *menu) {
   m_menu = menu;
   m_sheet = menu->AddOption(IDV_CCONFIG, TXT_OPTCUSTCONT);
 
-#ifdef MACINTOSH
-  short curpos;
-  tSliderSettings slider_set;
-  int axis_str[N_JOY_AXIS] = {TXI_KB_HEADING,    TXI_KB_PITCH,     TXI_KB_BANK,
-                              TXI_KB_SLIDEHORIZ, TXI_KB_SLIDEVERT, TXI_KB_FORWARD};
-
-  for (i = 0; i < N_JOY_AXIS; i++) {
-    old_sens[i] = Controller->get_axis_sensitivity(ctAxis, i + 1);
-  }
-  m_controller_settings.Create(m_menu, UID_CFGSETTINGS, TXT_SPROCKETS_CONFIG,
-                               KEYCFG_EXTRAS_X + m_sheet->X() + KEYCFG_EXTRAS_W, KEYCFG_EXTRAS_Y + m_sheet->Y(),
-                               NEWUI_BTNF_LONG);
-  // sensitivity sliders for joystick
-  m_sheet->NewGroup(TXT_SENSITIVITY, 80, 60);
-  for (i = 0; i < N_JOY_AXIS; i++) {
-    char str[16];
-    float val = Controller->get_axis_sensitivity(ctAxis, i + 1);
-    slider_set.min_val.f = 0.0f;
-    slider_set.max_val.f = JOY_AXIS_SENS_RANGE;
-    slider_set.type = SLIDER_UNITS_FLOAT;
-    curpos = CALC_SLIDER_POS_FLOAT(val, &slider_set, CFG_AXIS_SENS_RANGE);
-    sprintf(str, "%s", TXT(axis_str[i]));
-    joy_sens[i] = m_sheet->AddSlider(str, CFG_AXIS_SENS_RANGE, curpos, &slider_set);
-  }
-  m_sheet->NewGroup(TXT_JOYSTICK_DEADZONE, 320, 60);
-  int val = Controller->get_controller_deadzone(MC_JOY);
-  slider_set.min_val.i = 0;
-  slider_set.max_val.i = 25;
-  slider_set.type = SLIDER_UNITS_INT;
-  curpos = CALC_SLIDER_POS_INT(val, &slider_set, 25);
-  deadzone = m_sheet->AddSlider("", 25, curpos, &slider_set);
-#else
   // save original settings.
   for (i = 0; i < N_JOY_CFG_FN; i++) {
     Controller->get_controller_function(Cfg_joy_elements[i].fn_id, m_old_controls[i].type, &m_old_controls[i].value,
                                         m_old_controls[i].flags);
   }
-#endif
 }
 void joy_cfg_screen::finish() {}
 void joy_cfg_screen::process(int res) {
   int i;
 
-#ifdef MACINTOSH
-
-  float uval = CALC_SLIDER_FLOAT_VALUE(*deadzone, 0.0, 25, 25);
-  Controller->set_controller_deadzone(MC_JOY, uval);
-  for (i = 0; i < N_JOY_AXIS; i++) {
-    float val = CALC_SLIDER_FLOAT_VALUE(*joy_sens[i], 0.0f, JOY_AXIS_SENS_RANGE, CFG_AXIS_SENS_RANGE);
-    Controller->set_axis_sensitivity(ctAxis, i + 1, val);
-  }
-  switch (res) {
-  case UID_RESETDEFAULTS:
-    for (i = 0; i < N_JOY_AXIS; i++)
-      Controller->set_axis_sensitivity(ctAxis, i + 1, 1.0);
-    break;
-  case UID_CFGSETTINGS:
-    inSprocket_Configure();
-    break;
-  case UID_REVERT:
-    for (i = 0; i < N_JOY_AXIS; i++)
-      Controller->set_axis_sensitivity(ctAxis, i + 1, old_sens[i]);
-    break;
-  }
-
-#else
   for (i = 0; i < N_JOY_CFG_FN; i++) {
     if (m_elem[i].GetID() != -1 && m_elem[i].GetID() == res) {
       // we chose a slot to configure.
@@ -673,14 +608,11 @@ void joy_cfg_screen::process(int res) {
     }
     break;
   }
-#endif
 }
 
 void joy_cfg_screen::realize() {
   int i, x = 0, y;
   t_cfg_element *cfg_elem = &Cfg_joy_elements[0];
-#ifdef MACINTOSH
-#else
   m_reset_btn.Create(m_menu, UID_RESETDEFAULTS, TXT_RESETTODEFAULT, KEYCFG_EXTRAS_X + m_sheet->X(),
                      KEYCFG_EXTRAS_Y + m_sheet->Y(), NEWUI_BTNF_LONG);
   m_controller_settings.Create(m_menu, UID_CFGSETTINGS, TXT_ADJUSTSETTINGS,
@@ -702,14 +634,11 @@ void joy_cfg_screen::realize() {
     y += m_elem[i].H() + 2;
     cfg_elem++;
   }
-#endif
 }
 void joy_cfg_screen::unrealize() {
   // create controls
   int i;
 
-#ifdef MACINTOSH
-#else
   m_controller_settings.Destroy();
   t_cfg_element *cfg_elem = &Cfg_joy_elements[0];
   for (i = 0; i < N_JOY_CFG_FN; i++) {
@@ -720,7 +649,6 @@ void joy_cfg_screen::unrealize() {
   m_help1_txt.Destroy();
   m_reset_btn.Destroy();
   m_revert_btn.Destroy();
-#endif
 }
 //////////////////////////////////////////////////////////////////////////////
 // WEAPON SEL CONFIG
@@ -1242,7 +1170,6 @@ void joystick_settings_dialog() {
     snprintf(str, sizeof(str), TXT_CONTAXIS, axis_str[i]);
     joy_sens[i] = sheet->AddSlider(str, CFG_AXIS_SENS_RANGE, curpos, &slider_set);
   }
-#ifndef MACINTOSH // DAJ
   sheet->NewGroup(TXT_MSESENS, 0, 220);
 
   for (i = 0; i < N_MOUSE_AXIS; i++) {
@@ -1286,10 +1213,6 @@ void joystick_settings_dialog() {
     slider_set.type = SLIDER_UNITS_PERCENT;
     ff_gain = sheet->AddSlider(TXT_CFG_FORCEGAIN, 50, curpos, &slider_set);
   }
-#else
-  sheet->NewGroup(NULL, 210, 20);
-  sheet->AddLongButton("Input Sprocket", UID_JOYCFG);
-#endif
   wnd.Open();
   do {
     res = wnd.DoUI();
@@ -1297,11 +1220,7 @@ void joystick_settings_dialog() {
       break;
     }
     if (res == UID_JOYCFG) {
-#ifdef MACINTOSH
-      inSprocket_Configure();
-#else
       joystick_calibration();
-#endif
     }
   } while (res != UID_OK && res != UID_CANCEL);
   if (res == UID_OK) {
@@ -1312,7 +1231,6 @@ void joystick_settings_dialog() {
       float val = CALC_SLIDER_FLOAT_VALUE(*joy_sens[i], 0.0f, JOY_AXIS_SENS_RANGE, CFG_AXIS_SENS_RANGE);
       Controller->set_axis_sensitivity(ctAxis, i + 1, val);
     }
-#ifndef MACINTOSH
     Current_pilot.read_controller |= (*mse_enabled) ? READF_MOUSE : 0;
     for (i = 0; i < N_MOUSE_AXIS; i++) {
       float val = CALC_SLIDER_FLOAT_VALUE(*mse_sens[i], 0.0f, MSE_AXIS_SENS_RANGE, CFG_AXIS_SENS_RANGE);
@@ -1338,16 +1256,11 @@ void joystick_settings_dialog() {
       f_temp = (*ff_gain) * 0.5f;
       ForceSetGain(f_temp);
     }
-#endif
   }
   wnd.Close();
   wnd.Destroy();
 }
-#ifdef MACINTOSH
-#define CFG_KEY_RAMP_MAX 2.0f
-#else
 #define CFG_KEY_RAMP_MAX 1.0f
-#endif
 #define CFG_KEY_RAMP_RANGE 20
 void key_settings_dialog() {
   newuiTiledWindow wnd;

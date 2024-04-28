@@ -22,11 +22,7 @@
 #include "pstypes.h"
 #include "manage.h"
 
-#ifdef MACINTOSH
-#define MAX_GAMEFILES 1300
-#else
 #define MAX_GAMEFILES 1500
-#endif
 
 typedef struct {
   char name[PAGENAME_LEN];

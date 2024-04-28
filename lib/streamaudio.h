@@ -214,11 +214,7 @@ public:
 };
 //////////////////////////////////////////////////////////////////////////////
 //	streamaudio constants.
-#ifdef MACINTOSH
-#define STRM_BUFCOUNT 2 // MUST be a power of 2.
-#else
 #define STRM_BUFCOUNT 4
-#endif
 #define STRM_BUFSIZE STREAM_BUFFER_SIZE
 #define STRM_LIMIT 4
 #define STRM_STOPPED 0x0
@@ -239,10 +235,6 @@ public:
 class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
   AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
-#ifdef MACINTOSH
-  SndDoubleBufferHeader doubleHeader;
-  SndChannelPtr strm_channel;
-#endif
   struct { // mixing buffers
     ubyte *data;
     int nbytes; // number of bytes of valid data.
@@ -308,11 +300,6 @@ public:
   // called to pause all streams.
   static void PauseAll();
   static void ResumeAll();
-#ifdef MACINTOSH
-  bool IsPlaying(void);
-  int PlayStream(play_information *play_info);
-  void *MyDoubleBackStart(SndChannelPtr channel, SndDoubleBufferPtr doubleBuffer);
-#endif
 public:
   AudioStream();
   ~AudioStream();

@@ -607,9 +607,6 @@
 #include "ship.h"
 #include "psrand.h"
 
-#if defined(MACINTOSH)
-#include "Macros.h"
-#endif
 #include <string.h>
 #ifdef EDITOR
 #include "editor\d3edit.h"

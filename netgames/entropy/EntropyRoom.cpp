@@ -58,9 +58,6 @@ extern IDMFC *DMFCBase;
 extern room *dRooms;
 extern object *dObjects;
 
-#ifdef MACINTOSH
-#pragma export on
-#endif
 
 bool PaintRoomWithTexture(int text, int roomnum) {
   if (ROOMNUM_OUTSIDE(roomnum)) {
@@ -189,6 +186,3 @@ void DoServerConfigureDialog(void) {
   DLLDeleteUIItem(virus_pk_edit);
   DLLDeleteUIItem(start_game_hs);
 }
-#ifdef MACINTOSH
-#pragma export off
-#endif

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -343,13 +343,6 @@ typedef int socklen_t;
 bool Use_DirectPlay = false;
 #endif
 
-#ifdef MACINTOSH
-#include <OpenTransport.h>
-#include <OpenTptXti.h>
-#include <OpenTptInternet.h>
-#include "otsockets.h"
-#include "OTTCPWillDial.h"
-#endif
 
 #include "module.h" //for some nice defines to use below
 
@@ -576,9 +569,6 @@ void CloseNetworking() {
   }
 #endif
 
-#ifdef MACINTOSH
-  ShutdownOTSockets();
-#endif
 
   Network_initted = 0;
   Sockets_initted = 0;
@@ -602,12 +592,6 @@ void nw_InitNetworking(int iReadBufSizeOverride) {
   WORD ver = MAKEWORD(1, 1);
 #endif
 
-#ifdef MACINTOSH
-  if (!InitOTSockets()) {
-    mprintf((1, "InitOTSockets Unable to intialize\n"));
-    return;
-  }
-#endif
   static char exewithpath[_MAX_PATH * 2];
   static char exefile[_MAX_PATH * 2];
   static char ourargs[_MAX_PATH * 2];
@@ -763,31 +747,6 @@ unsigned short nw_ListenPort = 0;
 
 // Inits the sockets that the application will be using
 void nw_InitSockets(ushort port) {
-#ifdef MACINTOSH
-  OSStatus err;
-  UInt32 willTCPDial;
-
-  err = OTTCPWillDial(&willTCPDial);
-
-  mprintf((1, "nw_InitSockets: willTCPDial %d\n", willTCPDial));
-  if (err == noErr) {
-    switch (willTCPDial) {
-    case kOTTCPDialUnknown:
-      // Just to play it safe we'll try anyway
-      break;
-    case kOTTCPDialTCPDisabled:
-      return; // No TCPIP, so why bother?
-      break;
-    case kOTTCPDialYes:
-      return; // We don't want to do anything to cause the modem to dial.
-      break;
-    case kOTTCPDialNo:
-      // Good to go!
-      break;
-    }
-  }
-
-#endif
 
   nw_ListenPort = port;
   // UDP/TCP socket structure
@@ -807,7 +766,7 @@ void nw_InitSockets(ushort port) {
 
   if (IPX_socket != INVALID_SOCKET) {
     memset(&ipx_addr, 0, sizeof(SOCKADDR_IPX));
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     ipx_addr.sa_socket = htons(port);
     ipx_addr.sa_family = AF_IPX;
 #else
@@ -870,27 +829,23 @@ tcp_done:
   ret = setsockopt(IPX_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
   if (ret == SOCKET_ERROR) {
     int wserr;
-#ifndef MACINTOSH
     wserr = WSAGetLastError();
     if ((wserr == WSAENOPROTOOPT) || (wserr == WSAEINVAL)) {
       mprintf((0, "Unable to make socket broadcastable!"));
 
       Int3(); // Get Kevin
     }
-#endif
   }
   setsockopt(TCP_socket, SOL_SOCKET, SO_REUSEADDR, (LPSTR)&isocktrue, sizeof(isocktrue));
   ret = setsockopt(TCP_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
   if (ret == SOCKET_ERROR) {
     int wserr;
-#ifndef MACINTOSH
     wserr = WSAGetLastError();
     if ((wserr == WSAENOPROTOOPT) || (wserr == WSAEINVAL)) {
       mprintf((0, "Unable to make socket broadcastable!"));
 
       Int3(); // Get Kevin
     }
-#endif
   }
 
   Sockets_initted = 1;
@@ -946,7 +901,7 @@ void nw_GetMyAddress(network_address *addr) {
       mprintf((0, "Unable to get sock name for IPX unreliable socket (%d)\n", WSAGetLastError()));
       return;
     }
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     memcpy(My_addr.net_id, ipx_addr.sa_netnum, 4);
     memcpy(My_addr.address, ipx_addr.sa_nodenum, 6);
 #else
@@ -1210,7 +1165,7 @@ int nw_CheckListenSocket(network_address *from_addr) {
       case NP_IPX:
         ipx_addr = (SOCKADDR_IPX *)&reliable_sockets[i].addr;
         memset(from_addr, 0x00, sizeof(network_address));
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
         from_addr->port = ntohs(ipx_addr->sa_socket);
         from_addr->connection_type = NP_IPX;
         memcpy(from_addr->address, ipx_addr->sa_nodenum, 6);
@@ -1325,7 +1280,7 @@ int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent)
 #if __SUPPORT_IPX
       else if (NP_IPX == rsocket->connection_type) {
         SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rsocket->addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
         memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
         memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
         send_address.port = htons(ipxaddr->sa_socket);
@@ -1425,7 +1380,7 @@ void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link
 #if __SUPPORT_IPX
   else if (NP_IPX == link_type) {
     SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)raddr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
     memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
     send_address.port = htons(ipxaddr->sa_socket);
@@ -1470,7 +1425,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
 #if __SUPPORT_IPX
   else if (NP_IPX == naddr->connection_type) {
     SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rcv_addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     memcpy(&ipxaddr->sa_nodenum, &naddr->address, 6);
     memcpy(&ipxaddr->sa_netnum, &naddr->net_id, 4);
     ipxaddr->sa_socket = htons(naddr->port);
@@ -1513,7 +1468,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
 #if __SUPPORT_IPX
     else if (NP_IPX == send_address.connection_type) {
       SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&reliable_sockets[serverconn].addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
       memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
       memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
       send_address.port = htons(ipxaddr->sa_socket);
@@ -1762,7 +1717,7 @@ void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr
 #if __SUPPORT_IPX
   else if (NP_IPX == server_addr->connection_type) {
     SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rcv_addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     memcpy(&ipxaddr->sa_nodenum, &server_addr->address, 6);
     memcpy(&ipxaddr->sa_netnum, &server_addr->net_id, 4);
     ipxaddr->sa_socket = htons(server_addr->port);
@@ -1969,7 +1924,7 @@ void nw_CloseSocket(SOCKET *sockp) {
 #if __SUPPORT_IPX
   else if (NP_IPX == reliable_sockets[*sockp].connection_type) {
     SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&reliable_sockets[*sockp].addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
     memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
     send_address.port = htons(ipxaddr->sa_socket);
@@ -2697,7 +2652,7 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
     switch (who_to->connection_type) {
 #if __SUPPORT_IPX
     case NP_IPX:
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
       ipx_addr.sa_family = AF_IPX;
       ipx_addr.sa_socket = htons(port);
       memcpy(ipx_addr.sa_nodenum, iaddr, 6);
@@ -2764,7 +2719,7 @@ int nw_DoReceiveCallbacks(void) {
 		timeout.tv_usec = 0;
 
 		timeval	timeout;
-		if ( select( TCP_socket+1, &rfds, NULL, NULL, &timeout) == SOCKET_ERROR) 
+		if ( select( TCP_socket+1, &rfds, NULL, NULL, &timeout) == SOCKET_ERROR)
 		{
 			mprintf((0, "Error %d doing a socket select on IP read\n", WSAGetLastError()));
 			break;
@@ -2840,7 +2795,7 @@ int nw_DoReceiveCallbacks(void) {
     }
     memset(&from_addr, 0x00, sizeof(network_address));
     from_addr.connection_type = NP_IPX;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
     from_addr.port = ntohs(ipx_addr.sa_socket);
     memcpy(from_addr.address, &ipx_addr.sa_nodenum, 6);
     memcpy(from_addr.net_id, &ipx_addr.sa_netnum, 4);
@@ -2954,7 +2909,7 @@ void nw_ReliableResend(void) {
 #if __SUPPORT_IPX
           else if (NP_IPX == send_address.connection_type) {
             SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rsocket->addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
             memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
             memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
             send_address.port = htons(ipxaddr->sa_socket);
@@ -3020,7 +2975,7 @@ void nw_ReliableResend(void) {
 #if __SUPPORT_IPX
         else if (NP_IPX == send_address.connection_type) {
           SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rsocket->addr;
-#if (defined(WIN32) || defined(MACINTOSH))
+#if defined(WIN32)
           memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
           memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
           send_address.port = htons(ipxaddr->sa_socket);

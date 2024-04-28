@@ -175,9 +175,6 @@ void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window);
 #if defined(WIN32)
 #elif defined(__LINUX__)
 void ddio_InternalKeyClose();
-#elif defined(MACINTOSH)
-extern void SuspendControls();
-extern void ResumeControls();
 #else
 #define debug_break()
 #endif

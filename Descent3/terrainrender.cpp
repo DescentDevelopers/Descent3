@@ -1627,35 +1627,12 @@ void DrawGouraudSky(void) {
 
   g3Point pnt[4], *pntlist[6];
   g3UVL uvls[10];
-#ifndef MACINTOSH
   if (Terrain_sky.sky_color == Terrain_sky.horizon_color)
     return; // No sense in drawing anything
-#endif
   rend_SetTextureType(TT_FLAT);
   rend_SetColorModel(CM_RGB);
   rend_SetAlphaType(AT_ALWAYS);
   // figure out colors for sky
-#ifdef MACINTOSH
-  //	if(Terrain_sky.dome_texture)
-  {
-    if ((Terrain_sky.flags & TF_FOG) && Detail_settings.Fog_enabled) {
-      sr = (float)GR_COLOR_RED(Terrain_sky.fog_color) / 255.0;
-      sg = (float)GR_COLOR_GREEN(Terrain_sky.fog_color) / 255.0;
-      sb = (float)GR_COLOR_BLUE(Terrain_sky.fog_color) / 255.0;
-      hr = (float)GR_COLOR_RED(Terrain_sky.fog_color) / 255.0;
-      hg = (float)GR_COLOR_GREEN(Terrain_sky.fog_color) / 255.0;
-      hb = (float)GR_COLOR_BLUE(Terrain_sky.fog_color) / 255.0;
-    } else {
-      sr = (float)GR_COLOR_RED(Terrain_sky.sky_color) / 255.0;
-      sg = (float)GR_COLOR_GREEN(Terrain_sky.sky_color) / 255.0;
-      sb = (float)GR_COLOR_BLUE(Terrain_sky.sky_color) / 255.0;
-      hr = (float)GR_COLOR_RED(Terrain_sky.sky_color) / 255.0;
-      hg = (float)GR_COLOR_GREEN(Terrain_sky.sky_color) / 255.0;
-      hb = (float)GR_COLOR_BLUE(Terrain_sky.sky_color) / 255.0;
-    }
-  }
-//	else
-#else
   {
     sr = (float)GR_COLOR_RED(Terrain_sky.sky_color) / 255.0;
     sg = (float)GR_COLOR_GREEN(Terrain_sky.sky_color) / 255.0;
@@ -1664,7 +1641,6 @@ void DrawGouraudSky(void) {
     hg = (float)GR_COLOR_GREEN(Terrain_sky.horizon_color) / 255.0;
     hb = (float)GR_COLOR_BLUE(Terrain_sky.horizon_color) / 255.0;
   }
-#endif
   for (t = 0; t < MAX_HORIZON_PIECES; t++) {
     tw = (t + 1) % MAX_HORIZON_PIECES;
     pnt[0].p3_vec = Temp_sky_vectors[t][4];
@@ -1826,27 +1802,6 @@ void DrawTexturedSky(void) {
   rend_SetAlphaType(AT_ALWAYS);
 
   // figure out colors for sky
-#ifdef MACINTOSH
-  //	if(Terrain_sky.dome_texture)
-  {
-    if ((Terrain_sky.flags & TF_FOG) && Detail_settings.Fog_enabled) {
-      sr = (float)GR_COLOR_RED(Terrain_sky.fog_color) / 255.0;
-      sg = (float)GR_COLOR_GREEN(Terrain_sky.fog_color) / 255.0;
-      sb = (float)GR_COLOR_BLUE(Terrain_sky.fog_color) / 255.0;
-      hr = (float)GR_COLOR_RED(Terrain_sky.fog_color) / 255.0;
-      hg = (float)GR_COLOR_GREEN(Terrain_sky.fog_color) / 255.0;
-      hb = (float)GR_COLOR_BLUE(Terrain_sky.fog_color) / 255.0;
-    } else {
-      sr = (float)GR_COLOR_RED(Terrain_sky.sky_color) / 255.0;
-      sg = (float)GR_COLOR_GREEN(Terrain_sky.sky_color) / 255.0;
-      sb = (float)GR_COLOR_BLUE(Terrain_sky.sky_color) / 255.0;
-      hr = (float)GR_COLOR_RED(Terrain_sky.sky_color) / 255.0;
-      hg = (float)GR_COLOR_GREEN(Terrain_sky.sky_color) / 255.0;
-      hb = (float)GR_COLOR_BLUE(Terrain_sky.sky_color) / 255.0;
-    }
-  }
-//	else
-#else
   {
     sr = (float)GR_COLOR_RED(Terrain_sky.sky_color) / 255.0;
     sg = (float)GR_COLOR_GREEN(Terrain_sky.sky_color) / 255.0;
@@ -1855,7 +1810,6 @@ void DrawTexturedSky(void) {
     hg = (float)GR_COLOR_GREEN(Terrain_sky.horizon_color) / 255.0;
     hb = (float)GR_COLOR_BLUE(Terrain_sky.horizon_color) / 255.0;
   }
-#endif
 
   for (t = 0; t < MAX_HORIZON_PIECES; t++) {
     tw = (t + 1) % MAX_HORIZON_PIECES;
@@ -2280,11 +2234,7 @@ void TerrainDrawCurrentVert(int tcell) {
 }
 #endif
 #if (!defined(RELEASE) || defined(NEWEDITOR))
-#ifndef MACINTOSH
 __inline void DrawTerrainOutline(int tcell, int nverts, g3Point **pointlist)
-#else
-void DrawTerrainOutline(int tcell, int nverts, g3Point **pointlist)
-#endif
 {
   int i;
   g3Point tpnt[256];
