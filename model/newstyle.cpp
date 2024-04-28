@@ -112,7 +112,28 @@ static float Fog_distance, Fog_eye_distance;
 static vector Fog_view_pos, Specular_view_pos, Bump_view_pos;
 static matrix Unscaled_bumpmap_matrix;
 
-static int ModelFaceSortFunc(const short *a, const short *b) {
+static int ModelFaceSortFunc(const short *a, const short *b);
+
+static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum);
+static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum);
+static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum);
+static inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum);
+
+/// Draws a glowing cone of light.
+static void DrawGlowEffect(vector *pos, float r, float g, float b, vector *norm, float size);
+
+/// Draws a glowing cone of light that represents thrusters
+static void DrawThrusterEffect(vector *pos, float r, float g, float b, vector *norm, float size, float length);
+
+static void RenderSubmodelFacesSorted(poly_model *pm, bsp_info *sm);
+static void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm);
+
+/// Rotates all of the points of a submodel, plus supplies color info.
+static void RotateModelPoints(poly_model *pm, bsp_info *sm);
+
+static float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bool f_use_all_frames);
+
+int ModelFaceSortFunc(const short *a, const short *b) {
   float az, bz;
 
   az = face_depth[*a];
@@ -127,7 +148,7 @@ static int ModelFaceSortFunc(const short *a, const short *b) {
 }
 
 #ifdef _DEBUG
-void model_draw_outline(int nverts, g3Point **pointlist) {
+static void model_draw_outline(int nverts, g3Point **pointlist) {
   int i;
 
   for (i = 0; i < nverts - 1; i++)
@@ -136,7 +157,7 @@ void model_draw_outline(int nverts, g3Point **pointlist) {
   g3_DrawLine(GR_RGB(255, 255, 255), pointlist[i], pointlist[0]);
 }
 
-void DrawSubmodelFaceOutline(int nv, g3Point **pointlist) {
+static void DrawSubmodelFaceOutline(int nv, g3Point **pointlist) {
   int i;
   g3Point tpnt[64];
   g3Point *tpnt_list[64];
@@ -159,7 +180,7 @@ int Lightmap_debug_subnum = -1;
 int Lightmap_debug_facenum = -1;
 int Lightmap_debug_model = -1;
 
-static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
+inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
 
   g3Point *pointlist[100];
   int bm_handle;
@@ -462,7 +483,7 @@ static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum)
 #endif
 }
 
-static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum) {
+inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
 
   polyface *fp = &sm->faces[facenum];
@@ -496,7 +517,7 @@ static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int 
     g3_SetTriangulationTest(0);
 }
 
-static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) {
+inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
   polyface *fp = &sm->faces[facenum];
   int modelnum = sm - pm->submodel;
@@ -547,7 +568,7 @@ static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int fa
     g3_SetTriangulationTest(0);
 }
 
-static inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum) {
+inline void RenderSubmodelFaceSpecular(poly_model *pm, bsp_info *sm, int facenum) {
   g3Point *pointlist[100];
   polyface *fp = &sm->faces[facenum];
   int modelnum = sm - pm->submodel;

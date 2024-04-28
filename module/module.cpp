@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/module/module.cpp $
@@ -99,7 +99,7 @@
 #ifdef __LINUX__
 #include <dlfcn.h>
 
-bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *filename, char *new_filename);
+static bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *filename, char *new_filename);
 #endif
 
 #include "module.h"
@@ -113,7 +113,7 @@ bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *filen
 #endif
 #if defined(WIN32) // INSTEAD OF MAKING MODULE HAVE DEPENDENCIES, PUT THE 2 DDIO FUNCTIONS I NEED HERE
 // Split a pathname into its component parts
-void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
+static void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
   char drivename[_MAX_DRIVE], dirname[_MAX_DIR];
   _splitpath(srcPath, drivename, dirname, filename, ext);
   if (path)
@@ -125,7 +125,7 @@ void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
 //						(specified in local file system syntax)
 //  takes a variable number of subdirectories which will be concatenated on to the path
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
+static void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
   const char delimiter = '\\';
   va_list args;
   char *currentDir = NULL;
@@ -160,7 +160,7 @@ void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subD
 }
 #elif defined(__LINUX__)
 // Split a pathname into its component parts
-void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
+static void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
   int pathStart = -1;
   int pathEnd = -1;
   int fileStart = -1;
@@ -237,7 +237,7 @@ void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
 //						(specified in local file system syntax)
 //  takes a variable number of subdirectories which will be concatenated on to the path
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
+static void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
   const char delimiter = '/';
   va_list args;
   char *currentDir = NULL;

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/model/polymodel.cpp $
@@ -657,6 +657,27 @@ lightmap_object *Polylighting_lightmap_object;
 
 vector *Polymodel_light_direction, Polymodel_fog_plane, Polymodel_specular_pos, Polymodel_fog_portal_vert,
     Polymodel_bump_pos;
+
+static inline void RecursiveAssignWB(poly_model *pm, int sm_index, int wb_index);
+static void FindWBSubobjects(poly_model *pm);
+/// Sets aside a polymodel for use.
+/// Errors and returns -1 if none free.
+static int AllocPolyModel();
+static void ReadModelVector(vector *vec, CFILE *infile);
+static void ReadModelStringLen(char *ptr, int len, CFILE *infile);
+/// Given a modelnumber, opens the original pof file and attempts to rematch that
+/// models textures with the bitmaps with have in memory.
+static int ReloadModelTextures(int modelnum);
+static void SetPolymodelProperties(bsp_info *subobj, char *props);
+static void MinMaxSubmodel(poly_model *pm, bsp_info *sm, vector offset);
+static void FindMinMaxForModel(poly_model *pm);
+static int ReadNewModelFile(int polynum, CFILE *infile);
+static void SetNormalizedTimeObjTimed(object *obj, float *normalized_time);
+static void SetNormalizedTimeAnimTimed(float frame, float *normalized_time, poly_model *pm);
+static void FreeAllModels();
+/// Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
+/// position/angle of each corresponding subobject.
+static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subobj_flags);
 
 int findtextbmpname = 0;
 int findtextname = 0;
@@ -2212,6 +2233,7 @@ poly_model *GetPolymodelPointer(int polynum) {
   return (&Poly_models[polynum]);
 }
 
+// MTS: only used in this file.
 // gets the filename from a path
 void ChangePolyModelName(const char *src, char *dest) {
   int limit;
@@ -2736,13 +2758,13 @@ void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint subobj_fl
   }
 }
 
-vector Instance_fog_plane_stack[MAX_SUBOBJECTS];
-vector Instance_fog_portal_vert_stack[MAX_SUBOBJECTS];
-vector Instance_light_stack[MAX_SUBOBJECTS];
-vector Instance_specular_pos[MAX_SUBOBJECTS];
-vector Instance_bump_pos[MAX_SUBOBJECTS];
+static vector Instance_fog_plane_stack[MAX_SUBOBJECTS];
+static vector Instance_fog_portal_vert_stack[MAX_SUBOBJECTS];
+static vector Instance_light_stack[MAX_SUBOBJECTS];
+static vector Instance_specular_pos[MAX_SUBOBJECTS];
+static vector Instance_bump_pos[MAX_SUBOBJECTS];
 
-int Instance_light_cnt = 0;
+static int Instance_light_cnt = 0;
 
 void StartLightInstance(vector *pos, matrix *orient) {
   int gouraud = 0, specular = 0, fogged = 0, bumped = 0;
@@ -3073,6 +3095,7 @@ int InitModels() {
   return 1;
 }
 
+// MTS: used only in this file.
 // Given an actual keyframe number, returns the normalized (0 to 1) position of that
 // keyframe
 // Handle is an index into the Poly_models array
@@ -3109,6 +3132,7 @@ void RemapPolyModels() {
   }
 }
 
+// MTS: not used?
 // Returns the total number of faces in a model
 int CountFacesInPolymodel(poly_model *pm) {
   int i;
