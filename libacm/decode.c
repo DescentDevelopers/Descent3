@@ -169,32 +169,6 @@ static const int map_1bit[] = { -1, +1 };
 static const int map_2bit_near[] = { -2, -1, +1, +2 };
 static const int map_2bit_far[] = { -3, -2, +2, +3 };
 static const int map_3bit[] = { -4, -3, -2, -1, +1, +2, +3, +4 };
-static int mul_3x3[3*3*3];
-static int mul_3x5[5*5*5]; 
-static int mul_2x11[11*11];
-static int tables_generated;
-
-static void generate_tables(void)
-{
-	int x1, x2, x3;
-	if (tables_generated)
-		return;
-	for (x3 = 0; x3 < 3; x3++)
-		for (x2 = 0; x2 < 3; x2++)
-			for (x1 = 0; x1 < 3; x1++)
-				mul_3x3[x1 + x2*3 + x3*3*3] = 
-					x1 + (x2 << 4) + (x3 << 8);
-	for (x3 = 0; x3 < 5; x3++)
-		for (x2 = 0; x2 < 5; x2++)
-			for (x1 = 0; x1 < 5; x1++)
-				mul_3x5[x1 + x2*5 + x3*5*5] = 
-					x1 + (x2 << 4) + (x3 << 8);
-	for (x2 = 0; x2 < 11; x2++)
-		for (x1 = 0; x1 < 11; x1++)
-			mul_2x11[x1 + x2*11] = x1 + (x2 << 4);
-
-	tables_generated = 1;
-}
 
 /* IOW: (r * acm->subblock_len) + c */
 #define set_pos(acm, r, c, idx) do { \
@@ -431,15 +405,18 @@ static int f_k44(ACMStream *acm, unsigned ind, unsigned col)
 static int f_t15(ACMStream *acm, unsigned ind, unsigned col)
 {
 	unsigned i, b;
-	int n1, n2, n3;
+	int n1, n2, n3, tmp;
 	for (i = 0; i < acm->info.acm_rows; i++) {
 		/* b = (x1) + (x2 * 3) + (x3 * 9) */
 		GET_BITS(b, acm, 5);
-		
-		n1 =  (mul_3x3[b] & 0x0F) - 1;
-		n2 = ((mul_3x3[b] >> 4) & 0x0F) - 1;
-		n3 = ((mul_3x3[b] >> 8) & 0x0F) - 1;
-		
+		if (b >= 3 * 3 * 3)
+			return ACM_ERR_CORRUPT;
+
+		n1 = b % 3 - 1;
+		tmp = b / 3;
+		n2 = tmp % 3 - 1;
+		n3 = tmp / 3 - 1;
+
 		set_pos(acm, i++, col, n1);
 		if (i >= acm->info.acm_rows)
 			break;
@@ -454,15 +431,18 @@ static int f_t15(ACMStream *acm, unsigned ind, unsigned col)
 static int f_t27(ACMStream *acm, unsigned ind, unsigned col)
 {
 	unsigned i, b;
-	int n1, n2, n3;
+	int n1, n2, n3, tmp;
 	for (i = 0; i < acm->info.acm_rows; i++) {
 		/* b = (x1) + (x2 * 5) + (x3 * 25) */
 		GET_BITS(b, acm, 7);
+		if (b >= 5 * 5 * 5)
+			return ACM_ERR_CORRUPT;
 
-		n1 =  (mul_3x5[b] & 0x0F) - 2;
-		n2 = ((mul_3x5[b] >> 4) & 0x0F) - 2;
-		n3 = ((mul_3x5[b] >> 8) & 0x0F) - 2;
-		
+		n1 = b % 5 - 2;
+		tmp = b / 5;
+		n2 = tmp % 5 - 2;
+		n3 = tmp / 5 - 2;
+
 		set_pos(acm, i++, col, n1);
 		if (i >= acm->info.acm_rows)
 			break;
@@ -481,10 +461,12 @@ static int f_t37(ACMStream *acm, unsigned ind, unsigned col)
 	for (i = 0; i < acm->info.acm_rows; i++) {
 		/* b = (x1) + (x2 * 11) */
 		GET_BITS(b, acm, 7);
-		
-		n1 =  (mul_2x11[b] & 0x0F) - 5;
-		n2 = ((mul_2x11[b] >> 4) & 0x0F) - 5;
-		
+		if (b >= 11 * 11)
+			return ACM_ERR_CORRUPT;
+
+		n1 = b % 11 - 5;
+		n2 = b / 11 - 5;
+
 		set_pos(acm, i++, col, n1);
 		if (i >= acm->info.acm_rows)
 			break;
@@ -526,7 +508,8 @@ static int fill_block(ACMStream *acm)
 static void juggle(int *wrap_p, int *block_p, unsigned sub_len, unsigned sub_count)
 {
 	unsigned int i, j;
-	int *p, r0, r1, r2, r3;
+	int *p;
+	unsigned int r0, r1, r2, r3;
 	for (i = 0; i < sub_len; i++) {
 		p = block_p;
 		r0 = wrap_p[0];
@@ -612,7 +595,7 @@ static int decode_block(ACMStream *acm)
 		x += val;
 	}
 	for (i = 1, x = -val; i <= count; i++) {
-		acm->midbuf[-i] = x;
+		acm->midbuf[-i] = (unsigned)x;
 		x -= val;
 	}
 
@@ -801,9 +784,19 @@ int acm_open_decoder(ACMStream **res, void *arg, acm_io_callbacks io_cb, int for
 	if (read_header(acm) < 0)
 		goto err_out;
 
-	/* Overwrite channel info if requested. */
+	/*
+	 * Overwrite channel info if requested, if force_chans == 0
+	 * use channel count from the header.
+	 * For force_chans == -1, assume that "plain" ACM files are always stereo
+	 * (there are many plain ACM files in the wild that are really stereo
+	 *  even though the header specifies 1 channel), but still trust the
+	 * header of WAVC ACM files, as those seem to be correct.
+	 */
 	if (force_chans > 0)
 		acm->info.channels = force_chans;
+	else if (force_chans == -1 && !acm->wavc_file && acm->info.channels < 2)
+		acm->info.channels = 2;
+	/* else if force_chans == 0, trust the file's header */
 
 	/* calculate blocks */
 	acm->info.acm_cols = 1 << acm->info.acm_level;
@@ -817,8 +810,6 @@ int acm_open_decoder(ACMStream **res, void *arg, acm_io_callbacks io_cb, int for
 	acm->midbuf = acm->ampbuf + 0x8000;
 
 	memset(acm->wrapbuf, 0, acm->wrapbuf_len * sizeof(int));
-
-	generate_tables();
 
 	*res = acm;
 	return ACM_OK;

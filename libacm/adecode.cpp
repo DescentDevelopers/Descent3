@@ -68,19 +68,11 @@ InternalAudioDecoder::InternalAudioDecoder(ReadDataFunction readerFunction,
 // Initialize the decoder
 bool InternalAudioDecoder::Initialize() {
 
-  acm_io_callbacks io = {
-      AcmReadFunc}; // set the read function, the others are optional
+  // set the read function, the others are optional
+  acm_io_callbacks io = { AcmReadFunc };
 
-  int force_channels =
-      0; // 0 = let libacm figure out how many channels the file has
-  // TODO: the old libacm.cpp was more optimistic about the numbers of channel
-  // from the file header
-  //       than libacm's decode.c, which assumes that channels are always >= 2
-  //       (unless it's WAVC instead of "plain ACM"), i.e. that a file header
-  //       specifying 1 is wrong. If it turns out that we really have ACM files
-  //       with just one channel (not unusual for ingame sounds?), we might have
-  //       to either patch acm_open_decoder() or somehow detect the number of
-  //       channels here and set force_channels accordingly
+  // force_channels 0 means libacm will use number of chans from ACM file header
+  const int force_channels = 0;
   int ret = acm_open_decoder(&m_acm, this, io, force_channels);
   return ret == ACM_OK;
 }
