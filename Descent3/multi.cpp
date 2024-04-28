@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -3680,7 +3680,7 @@ void MultiDoLeaveGame(ubyte *data) {
   if (NetPlayers[slot].file_xfer_flags != NETFILE_NONE) {
     if (NetPlayers[slot].file_xfer_cfile) {
       char delfile[_MAX_PATH * 2];
-      strcpy(delfile, NetPlayers[slot].file_xfer_cfile->name);
+      strcpy(delfile, NetPlayers[slot].file_xfer_cfile->path.c_str());
       cfclose(NetPlayers[slot].file_xfer_cfile);
       NetPlayers[slot].file_xfer_cfile = NULL;
       if (NetPlayers[slot].file_xfer_flags == NETFILE_RECEIVING)
@@ -3720,7 +3720,7 @@ void MultiDoServerQuit(ubyte *data) {
     if (NetPlayers[i].file_xfer_flags != NETFILE_NONE) {
       if (NetPlayers[i].file_xfer_cfile) {
         char delfile[_MAX_PATH * 2];
-        strcpy(delfile, NetPlayers[i].file_xfer_cfile->name);
+        strcpy(delfile, NetPlayers[i].file_xfer_cfile->path.c_str());
         cfclose(NetPlayers[i].file_xfer_cfile);
         NetPlayers[i].file_xfer_cfile = NULL;
         if (NetPlayers[i].file_xfer_flags == NETFILE_RECEIVING)
@@ -3748,7 +3748,7 @@ void MultiDoDisconnect(ubyte *data) {
     if (NetPlayers[slot].file_xfer_flags != NETFILE_NONE) {
       if (NetPlayers[slot].file_xfer_cfile) {
         char delfile[_MAX_PATH * 2];
-        strcpy(delfile, NetPlayers[slot].file_xfer_cfile->name);
+        strcpy(delfile, NetPlayers[slot].file_xfer_cfile->path.c_str());
         cfclose(NetPlayers[slot].file_xfer_cfile);
         NetPlayers[slot].file_xfer_cfile = NULL;
         if (NetPlayers[slot].file_xfer_flags == NETFILE_RECEIVING)
@@ -7941,7 +7941,7 @@ void MultiDoFileCancelled(ubyte *data) {
   mprintf((0, "Got a cancelled packet from %d for %d\n", playernum, filewho));
   if (NetPlayers[filewho].file_xfer_cfile) {
     char delfile[_MAX_PATH * 2];
-    strcpy(delfile, NetPlayers[filewho].file_xfer_cfile->name);
+    strcpy(delfile, NetPlayers[filewho].file_xfer_cfile->path.c_str());
     cfclose(NetPlayers[filewho].file_xfer_cfile);
     NetPlayers[filewho].file_xfer_cfile = NULL;
     ddio_DeleteFile(delfile);

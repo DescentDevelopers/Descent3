@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -576,7 +576,7 @@ void Descent3() {
     // Save settings to registry
     SaveGameSettings();
   } catch (cfile_error *cfe) {
-    Error(TXT_D3ERROR1, (cfe->read_write == CFE_READING) ? TXT_READING : TXT_WRITING, cfe->file->name, cfe->msg);
+    Error(TXT_D3ERROR1, (cfe->read_write == CFE_READING) ? TXT_READING : TXT_WRITING, cfe->file->path.c_str(), cfe->msg);
   }
 }
 

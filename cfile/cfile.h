@@ -79,6 +79,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <filesystem>
 
 #include "pstypes.h"
 
@@ -86,7 +87,7 @@ struct library;
 
 // The structure for a CFILE
 typedef struct CFILE {
-  char *name;     // pointer to filename
+  std::filesystem::path path;
   FILE *file;     // the file itself (on disk) or the HOG
   int lib_handle; // the handle of the library, or -1
   int size;       // length of this file
@@ -129,7 +130,7 @@ bool cf_IsFileInHog(char *filename, char *hogname);
 // NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
 //			be a fully-specified path name, or the current directory must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
-int cf_OpenLibrary(const char *libname);
+int cf_OpenLibrary(std::filesystem::path const& libname);
 
 // Closes a library file.
 // Parameters:  handle: the handle returned by cf_OpenLibrary()
@@ -140,7 +141,8 @@ void cf_CloseLibrary(int handle);
 // If no extensions are specified, look in this directory for all files.
 // Otherwise, the directory will only be searched for files that match
 // one of the listed extensions.
-int cf_SetSearchPath(const char *path, ...);
+// TODO: Kill varargs. path is not a reference, because varargs + ref = UB.
+int cf_SetSearchPath(std::filesystem::path const path, ...);
 
 // Removes all search paths that have been added by cf_SetSearchPath
 void cf_ClearAllSearchPaths();
@@ -151,13 +153,13 @@ void cf_ClearAllSearchPaths();
 // Parameters:	filename - the name if the file, with or without a path
 //					mode - the standard C mode string
 // Returns:		the CFile handle, or NULL if file not opened
-CFILE *cfopen(const char *filename, const char *mode);
+CFILE *cfopen(std::filesystem::path const& filename, const char *mode);
 
 // Opens a file for reading in a library, given the library id.
 // Works just like cfopen, except it assumes "rb" mode and forces the file to be
 // opened from the given library.  Returns the CFILE handle or NULL if file
 // couldn't be found or open.
-CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle);
+CFILE *cf_OpenFileInLibrary(std::filesystem::path const& filename, int libhandle);
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
@@ -183,7 +185,7 @@ int cfeof(CFILE *cfp);
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
-int cfexist(const char *filename);
+int cfexist(std::filesystem::path const& filename);
 
 // Reads the specified number of bytes from a file into the buffer
 // DO NOT USE THIS TO READ STRUCTURES.  This function is for byte
@@ -275,23 +277,23 @@ void cf_WriteDouble(CFILE *cfp, double_t d);
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write
 // If copytime is nonzero, copies the filetime info as well
-bool cf_CopyFile(char *dest, const char *src, int copytime = 0);
+bool cf_CopyFile(std::filesystem::path const& dest, std::filesystem::path const& src, int copytime = 0);
 
 // Checks to see if two files are different.
 // Returns TRUE if the files are different, or FALSE if they are the same.
-bool cf_Diff(const char *a, const char *b);
+bool cf_Diff(std::filesystem::path const& a, std::filesystem::path const& b);
 
 // Copies the file time from one file to another
-void cf_CopyFileTime(char *dest, const char *src);
+void cf_CopyFileTime(std::filesystem::path const& dest, std::filesystem::path const& src);
 
 // Changes a files attributes (ie read/write only)
-void cf_ChangeFileAttributes(const char *name, int attr);
+void cf_ChangeFileAttributes(std::filesystem::path const& name, int attr);
 
 // rewinds cfile position
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
-unsigned int cf_GetfileCRC(char *src);
+unsigned int cf_GetfileCRC(std::filesystem::path const& src);
 unsigned int cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
 // the following cf_LibraryFind function are similar to the ddio_Find functions as they look
