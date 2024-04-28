@@ -21,6 +21,15 @@ Right-click Descent3.app, click Show Package Contents. Back up your `Descent3` b
 #### Linux
 Back up your `Descent3` binary and drop your built `Descent3` binary into the install folder.
 
+## Fetching sources
+For fetching sources you need git.
+
+```shell
+git clone https://github.com/DescentDevelopers/Descent3.git
+cd Descent3
+git submodule init && git submodule update
+```
+
 ## Building
 Build steps below assume you have already cloned the repository and entered it locally.
 

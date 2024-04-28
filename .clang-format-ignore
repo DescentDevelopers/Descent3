@@ -1,5 +1,4 @@
 # 3rd party libs
 lib/debugbreak.h
-libacm/libacm.h
-libacm/decode.c
-libacm/util.c
+third_party
+

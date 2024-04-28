@@ -55,6 +55,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install macOS dependencies
         if: ${{ matrix.os.preset == 'mac' }}

@@ -49,8 +49,7 @@ public:
 
 int AcmReadFunc(void *ptr, int size, int n, void *datasrc) {
   InternalAudioDecoder *iad = reinterpret_cast<InternalAudioDecoder *>(datasrc);
-  int ret =
-      iad->m_readerFunction(iad->m_pReaderData, ptr, (unsigned int)size * n);
+  int ret = iad->m_readerFunction(iad->m_pReaderData, ptr, (unsigned int)size * n);
   // ret < 0: error, ret == 0: EOF, ret > 0: read ret bytes of data
   // apparently acm_io_callbacks::read() expects pretty much the same behavior,
   // except that for > 0 it's not number of bytes but number of items (like in
@@ -61,8 +60,7 @@ int AcmReadFunc(void *ptr, int size, int n, void *datasrc) {
   return ret;
 }
 
-InternalAudioDecoder::InternalAudioDecoder(ReadDataFunction readerFunction,
-                                           void *pReaderData)
+InternalAudioDecoder::InternalAudioDecoder(ReadDataFunction readerFunction, void *pReaderData)
     : m_readerFunction(readerFunction), m_pReaderData(pReaderData) {}
 
 // Initialize the decoder
@@ -72,8 +70,7 @@ bool InternalAudioDecoder::Initialize() {
   acm_io_callbacks io = { AcmReadFunc };
 
   // force_channels 0 means libacm will use number of chans from ACM file header
-  const int force_channels = 0;
-  int ret = acm_open_decoder(&m_acm, this, io, force_channels);
+  int ret = acm_open_decoder(&m_acm, this, io, 0);
   return ret == ACM_OK;
 }
 
@@ -95,9 +92,13 @@ InternalAudioDecoder::~InternalAudioDecoder() {
 //    amount: How much data to read
 // Returns the number of bytes read - zero when we're at the end of the file
 uint32 InternalAudioDecoder::Read(void *pBuffer, uint32 amount) {
-  const int bigendianp = 0; // we want little endian samples - TODO: or only on little endian platforms?
-  const int wordlen = 2;    // the only supported value
-  const int sgned = 1;      // we want signed samples
+#ifdef OUTRAGE_BIG_ENDIAN
+  const int bigendianp = 1;
+#else
+  const int bigendianp = 0;
+#endif
+  const int wordlen = 2; // the only supported value
+  const int sgned = 1;   // we want signed samples
   uint32 totalBytesRead = 0;
   uint8 *pBuf = reinterpret_cast<uint8 *>(pBuffer);
 
@@ -127,14 +128,10 @@ uint32 InternalAudioDecoder::Read(void *pBuffer, uint32 amount) {
 // and also returns the number of channels (1 or 2), the sample rate
 // (e.g. 22050), and the number of samples contained in the compressed file
 // (in case you want to pre-allocate a buffer to load them all into memory).
-IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction,
-                                           void *pReaderData,
-                                           uint32 &numChannels,
-                                           uint32 &sampleRate,
-                                           uint32 &sampleCount) {
+IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction, void *pReaderData, uint32 &numChannels,
+                                           uint32 &sampleRate, uint32 &sampleCount) {
   // allocate our decoder
-  InternalAudioDecoder *pDecoder =
-      new InternalAudioDecoder(readerFunction, pReaderData);
+  InternalAudioDecoder *pDecoder = new InternalAudioDecoder(readerFunction, pReaderData);
   if (pDecoder == nullptr)
     return nullptr;
 
