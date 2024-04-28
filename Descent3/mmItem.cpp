@@ -438,31 +438,19 @@ void mmInterface::CopyrightText() {
   } else if (Program_version.version_type == RELEASE_VERSION) {
     strcat(type, "Ver");
   }
-#ifndef RELEASE
-  int x = Max_window_w - 128, y = Max_window_h - 29; // was -128 and -16
-#else
+
   int x = Max_window_w - 164, y = Max_window_h - 29; // was -128 and -16
-#endif
+
   // attempt to print text nicely.
   grtext_SetFont(BRIEFING_FONT);
   grtext_SetAlpha(192);
   grtext_SetColor(GR_RGB(255, 32, 32));
-#if ((!defined(RELEASE)) || defined(DEMO))
-  grtext_Printf(x, y, Program_version.build ? "%s %d.%d.%d" : "%s v%d.%d", type, Program_version.major,
-                Program_version.minor, Program_version.build);
-#else
-  grtext_Printf(x, y, Program_version.build ? "%s %d.%d.%d Build %d" : "%s v%d.%d", type, Program_version.major,
-                Program_version.minor, Program_version.build, D3_RELEASE_BUILD_NO);
-#endif
-  //	grtext_CenteredPrintf(0, Max_window_h-16, "(c) 1998 Outrage Entertainment, Inc.");
 
-  grtext_SetFlags(GRTEXTFLAG_SATURATE);
-
-  for (i = 0; i < 1; i++) {
-    grtext_Printf(x, y, Program_version.build ? "%s %d.%d.%d" : "%s v%d.%d", type, Program_version.major,
-                  Program_version.minor, Program_version.build);
-    //		grtext_CenteredPrintf(0, Max_window_h-16, "(c) 1998 Outrage Entertainment, Inc.");
-  }
+  grtext_Printf(x, y, "%s %d.%d.%d %s", type, Program_version.major,
+                Program_version.minor, Program_version.build, D3_GIT_HASH);
+  grtext_SetFlags(GRTEXTFLAG_SHADOW);
+  grtext_Printf(x, y, "%s %d.%d.%d %s", type, Program_version.major,
+                Program_version.minor, Program_version.build, D3_GIT_HASH);
 
   grtext_Flush();
 }

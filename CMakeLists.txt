@@ -7,7 +7,7 @@ endif()
 
 project(Descent3
   LANGUAGES C CXX
-  VERSION 1.5.500
+  VERSION 1.5.0
 )
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
@@ -41,6 +41,23 @@ if(BUILD_TESTING)
   include(GoogleTest)
   add_subdirectory(tests)
 endif()
+
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/Descent3/d3_version.h ALL
+  COMMAND ${CMAKE_COMMAND}
+    -D SOURCE_DIR=${PROJECT_SOURCE_DIR}
+    -D TARGET_DIR=${PROJECT_BINARY_DIR}
+    -D PROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    -D PROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    -D PROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+    -P ${PROJECT_SOURCE_DIR}/cmake/CheckGit.cmake
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+# rebuild version.hpp every time
+add_custom_target(get_git_hash ALL
+  DEPENDS ${PROJECT_BINARY_DIR}/Descent3/d3_version.h
+)
 
 if(UNIX)
   set(D3_GAMEDIR "~/Descent3/")

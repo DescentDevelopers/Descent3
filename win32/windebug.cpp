@@ -188,6 +188,7 @@
  * $NoKeywords: $
  */
 
+#include "d3_version.h"
 #include "Debug.h"
 #include "mono.h"
 
@@ -1183,10 +1184,6 @@ const int NumCodeBytes = 16;   // Number of code bytes to record.
 const int MaxStackDump = 2048; // Maximum number of DWORDS in stack dumps.
 const int StackColumns = 8;    // Number of columns in stack dump.
 
-#if (defined(RELEASE) && (!defined(DEMO)) && (!defined(GAMEGAUGE)))
-#include "buildno.h"
-#endif
-
 extern int no_debug_dialog;
 
 int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
@@ -1239,7 +1236,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
     WriteFile(LogFile, callstack, lstrlen(callstack), &NumBytes, 0);
 
 #if (defined(RELEASE) && (!defined(DEMO)) && (!defined(GAMEGAUGE)))
-    wsprintf(callstack, "Descent 3 Release build %d\r\n", D3_RELEASE_BUILD_NO);
+    wsprintf(callstack, "Descent 3 Release build %s\r\n", D3_GIT_HASH);
     WriteFile(LogFile, callstack, lstrlen(callstack), &NumBytes, 0);
 #endif
     RecordSystemInformation(LogFile);
