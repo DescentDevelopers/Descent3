@@ -310,3 +310,7 @@ endif()
 if(WIN32)
   set_target_properties(Descent3 PROPERTIES WIN32_EXECUTABLE ON)
 endif()
+
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
