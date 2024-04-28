@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -192,6 +192,7 @@
 
 class oeApplication;
 
+#include <filesystem>
 #include <stdio.h>
 
 #include "pstypes.h"
@@ -320,45 +321,72 @@ void ddio_MouseSetVCoords(int width, int height);
 //	File Operations
 //	---------------------------------------------------------------------------
 
-//	creates or destroys a directory or folder on disk
-//	This pathname is *RELATIVE* not fully qualified
-bool ddio_CreateDir(const char *path);
-bool ddio_RemoveDir(const char *path);
+//	creates a directory on disk
+inline bool ddio_CreateDir(std::filesystem::path const& path) {
+  std::error_code ec{};
+  std::filesystem::create_directories(path, ec);
+  return !ec;
+}
+
+inline bool ddio_RemoveDir(std::filesystem::path const &path) {
+  std::error_code ec{};
+  std::filesystem::remove(path, ec);
+  return !ec;
+}
 
 // deletes a file.  Returns 1 if successful, 0 on failure
-//	This pathname is *RELATIVE* not fully qualified
-int ddio_DeleteFile(char *name);
-
-// Save/Restore the current working directory
-void ddio_SaveWorkingDir(void);
-void ddio_RestoreWorkingDir(void);
+inline int ddio_DeleteFile(std::filesystem::path const &path) {
+  std::error_code ec{};
+  std::filesystem::remove(path, ec);
+  return ec ? 0 : 1;
+}
 
 //	retrieve the current working folder where file operation will occur.
 //	Note ---> The path in Get/Set working directory is in the *LOCAL* file system's syntax
 //	This pathname is relative *OR* fully qualified
-void ddio_GetWorkingDir(char *path, int len);
-bool ddio_SetWorkingDir(const char *path);
+inline void ddio_GetWorkingDir(char *path, int len) {
+  strncpy(path, std::filesystem::current_path().c_str(), len);
+}
+inline bool ddio_SetWorkingDir(std::filesystem::path const& path) {
+  std::error_code ec{};
+  std::filesystem::current_path(path, ec);
+  return !ec;
+}
 
-// 	Checks if a directory exists (returns 1 if it does, 0 if not)
-//	This pathname is *RELATIVE* not fully qualified
-bool ddio_DirExists(const char *path);
+// 	Checks if a directory exists
+inline bool ddio_DirExists(std::filesystem::path const &path) {
+  return std::filesystem::is_directory(path);
+}
 
 //  get a file length of a FILE
 int ddio_GetFileLength(FILE *filePtr);
 
 //	check if two files are different
 //	This pathname is *RELATIVE* not fully qualified
-bool ddio_FileDiff(const char *fileNameA, const char *fileNameB);
+inline bool ddio_FileDiff(std::filesystem::path const& fileNameA, std::filesystem::path const& fileNameB) {
+  // Note: these variants can throw. BUT, the previous code would just Int3() upon a failure, sooo..
+  return std::filesystem::file_size(fileNameA) != std::filesystem::file_size(fileNameB) ||
+    std::filesystem::last_write_time(fileNameA) != std::filesystem::last_write_time(fileNameB);
+}
 
 //	copies one files timestamp to another
-void ddio_CopyFileTime(char *dest, const char *src);
+inline void ddio_CopyFileTime(std::filesystem::path const& dest, std::filesystem::path const& src) {
+  // Note: these variants can throw. BUT, the previous code would just Int3() upon a failure, sooo..
+  std::filesystem::last_write_time(dest, std::filesystem::last_write_time(src));
+}
 
 // Split a pathname into its component parts
 //	The path in splitpath is in the *LOCAL* file system's syntax
-void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext);
+inline void ddio_SplitPath(std::filesystem::path const& srcPath, char *path, char *filename, char *ext) {
+  strncpy(path, srcPath.parent_path().c_str(), _MAX_PATH);
+  strncpy(filename, srcPath.filename().c_str(), _MAX_PATH);
+  strncpy(ext, srcPath.extension().c_str(), _MAX_PATH);
+}
 
 //	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path);
+inline void ddio_GetRootFromPath(std::filesystem::path const& srcPath, char *root_path) {
+  strncpy(root_path, srcPath.root_path().c_str(), _MAX_PATH);
+}
 
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots);
@@ -396,13 +424,19 @@ bool ddio_GetParentPath(char *dest, const char *srcPath);
 //	srcPath is the original path
 //	dest is the finished cleaned path.
 //		dest should be at least _MAX_PATH in size
-void ddio_CleanPath(char *dest, const char *srcPath);
+inline void ddio_CleanPath(char *dest, std::filesystem::path const& srcPath) {
+  strncpy(dest, std::filesystem::canonical(srcPath).c_str(), _MAX_PATH);
+}
 
 // Finds a full path from a relative path
 // Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
 //					rel_path - a path specification, either relative or absolute
 // Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path);
+inline bool ddio_GetFullPath(char *full_path, std::filesystem::path const& rel_path) {
+  std::error_code ec{};
+  strncpy(full_path, std::filesystem::absolute(rel_path, ec).c_str(), _MAX_PATH);
+  return !ec;
+}
 
 // Generates a temporary filename based on the prefix, and basedir
 // Parameters:
@@ -415,7 +449,11 @@ bool ddio_GetTempFileName(char *basedir, char *prefix, char *filename);
 
 // Renames file
 // Returns true on success or false on an error
-bool ddio_RenameFile(char *oldfile, char *newfile);
+inline bool ddio_RenameFile(std::filesystem::path const& oldpath, std::filesystem::path const& newpath) {
+  std::error_code ec{};
+  std::filesystem::rename(oldpath, newpath, ec);
+  return !ec;
+}
 
 // Give a volume label to look for, and if it's found returns a path
 // If it isn't found, return ""
@@ -432,7 +470,7 @@ char *ddio_GetCDDrive(char *vol);
 //		0		Lock file currently exists in directory
 //		-1		Illegal directory
 //		-2		There is a lock file in the directory, but it is in an illegal format
-int ddio_CheckLockFile(const char *dir);
+int ddio_CheckLockFile(std::filesystem::path const& dir);
 
 // Creates a lock file in the specified directory
 //	Parameters:
@@ -446,7 +484,7 @@ int ddio_CheckLockFile(const char *dir);
 //		-1		Illegal directory
 //		-2		There is a lock file in the directory, but it is in an illegal format
 //		-3		Unable to create lock file
-int ddio_CreateLockFile(const char *dir);
+int ddio_CreateLockFile(std::filesystem::path const& dir);
 
 // Deletes a lock file (for the current process) in the specified directory
 //	Parameters:
@@ -458,6 +496,6 @@ int ddio_CreateLockFile(const char *dir);
 //		-1		Illegal directory
 //		-2		A lock file exists in the directory, but wasn't deleted...illegal format
 //		-3		Unable to delete file
-int ddio_DeleteLockFile(const char *dir);
+int ddio_DeleteLockFile(std::filesystem::path const& dir);
 
 #endif

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -83,31 +83,6 @@
 //	---------------------------------------------------------------------------
 //	File operations
 
-//	creates a directory or folder on disk
-bool ddio_CreateDir(const char *path) { return (mkdir(path, S_IRWXU)) ? false : true; }
-
-//	destroys a directory
-bool ddio_RemoveDir(const char *path) { return (rmdir(path)) ? false : true; }
-
-//	retrieve the current working folder where file operation will occur.
-void ddio_GetWorkingDir(char *path, int len) { getcwd(path, len); }
-
-bool ddio_SetWorkingDir(const char *path) { return (chdir(path)) ? false : true; }
-
-bool ddio_FileDiff(const char *path1, const char *path2) {
-  struct stat abuf, bbuf;
-
-  if (stat(path1, &abuf))
-    Int3(); // error getting stat info
-
-  if (stat(path2, &bbuf))
-    Int3(); // error getting stat info
-
-  if ((abuf.st_size != bbuf.st_size) || (abuf.st_mtime != bbuf.st_mtime))
-    return true;
-  return false;
-}
-
 // get a file's length
 int ddio_GetFileLength(FILE *filePtr) {
   int size = -1;
@@ -122,119 +97,6 @@ int ddio_GetFileLength(FILE *filePtr) {
     Int3();
   }
   return size;
-}
-
-// Split a pathname into its component parts
-void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
-  int pathStart = -1;
-  int pathEnd = -1;
-  int fileStart = -1;
-  int fileEnd = -1;
-  int extStart = -1;
-  int extEnd = -1;
-
-  int totalLen = strlen(srcPath);
-
-  // Check for an extension
-  ///////////////////////////////////////
-  int t = totalLen - 1;
-  while ((srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
-    t--;
-  // see if we are at an extension
-  if ((t >= 0) && (srcPath[t] == '.')) {
-    // we have an extension
-    extStart = t;
-    extEnd = totalLen - 1;
-    if (ext) {
-      strncpy(ext, &(srcPath[extStart]), extEnd - extStart + 1);
-      ext[extEnd - extStart + 1] = '\0';
-    }
-  } else {
-    // no extension
-    if (ext)
-      ext[0] = '\0';
-  }
-
-  // Check for file name
-  ////////////////////////////////////
-  int temp = (extStart != -1) ? (extStart) : (totalLen - 1);
-  while ((temp >= 0) && (srcPath[temp] != '/'))
-    temp--;
-  if (temp < 0)
-    temp = 0;
-  if (srcPath[temp] == '/') {
-    // we have a file
-    fileStart = temp + 1;
-    if (extStart != -1)
-      fileEnd = extStart - 1;
-    else
-      fileEnd = totalLen - 1;
-    if (filename) {
-      strncpy(filename, &(srcPath[fileStart]), fileEnd - fileStart + 1);
-      filename[fileEnd - fileStart + 1] = '\0';
-    }
-    pathStart = 0;
-    pathEnd = fileStart - 2;
-    // Copy the rest into the path name
-    if (path) {
-      strncpy(path, &(srcPath[pathStart]), pathEnd - pathStart + 1);
-      path[pathEnd - pathStart + 1] = 0;
-    }
-  } else {
-    // only file, no path
-    fileStart = 0;
-    if (extStart != -1)
-      fileEnd = extStart - 1;
-    else
-      fileEnd = totalLen - 1;
-
-    if (filename) {
-      strncpy(filename, &(srcPath[fileStart]), fileEnd - fileStart + 1);
-      filename[fileEnd - fileStart + 1] = 0;
-    }
-
-    // Only file no path
-    if (path) {
-      path[0] = 0;
-    }
-  }
-}
-
-void ddio_CopyFileTime(char *destname, const char *srcname) {
-  struct stat abuf;
-
-  if (stat(srcname, &abuf))
-    Int3();
-
-  struct utimbuf bbuf;
-  bbuf.actime = abuf.st_atime;
-  bbuf.modtime = abuf.st_mtime;
-
-  if (utime(destname, &bbuf))
-    Int3();
-}
-
-// deletes a file.  Returns 1 if successful, 0 on failure
-int ddio_DeleteFile(char *name) { return (!unlink(name)); }
-
-// Save/Restore the current working directory
-
-static char SavedWorkingDir[_MAX_DIR];
-
-void ddio_SaveWorkingDir(void) { ddio_GetWorkingDir(SavedWorkingDir, _MAX_DIR); }
-
-void ddio_RestoreWorkingDir(void) { ddio_SetWorkingDir(SavedWorkingDir); }
-
-// Checks if a directory exists (returns 1 if it does, 0 if not)
-// This pathname is *RELATIVE* not fully qualified
-bool ddio_DirExists(const char *path) {
-  bool res;
-
-  ddio_SaveWorkingDir();
-  res = ddio_SetWorkingDir(path);
-  ddio_RestoreWorkingDir();
-
-  return (res) ? true : false;
 }
 
 // rcg06192000 extern "C" is my add, so nettest would link.
@@ -620,126 +482,6 @@ int ddio_GetFileSysRoots(char **roots, int max_roots) {
   return 1;
 }
 
-//	given a path, it cleans it up (if the path is /usr/lib/../src it would make it /usr/src)
-//	srcPath is the original path
-//	dest is the finished cleaned path.
-//		dest should be at least _MAX_PATH in size
-void ddio_CleanPath(char *dest, const char *srcPath) {
-  // NOTE: we may want to use getcwd() here if we don't want symbolic links
-  // but I think we do
-  ////////////////////////////////////////////////////////////////////////
-
-  strcpy(dest, srcPath);
-
-  // break the path into directories
-  char **directories;
-  int dirs;
-  int path_length;
-
-  // make sure the path ends with a / for sanity
-  path_length = strlen(dest);
-
-  if (dest[path_length - 1] != '/') {
-    dest[path_length] = '/';
-    dest[path_length + 1] = '\0';
-    path_length++;
-  }
-
-  // now divide the full path into seperate NULL terminated strings,counting the number
-  // of directories in the process
-  dirs = 0;
-  char *strptr;
-  if (dest[0] == '/')
-    strptr = dest + 1; // skip first / of root dir
-  else
-    strptr = dest;
-
-  while (*strptr != '\0') {
-    if (*strptr == '/') {
-      *strptr = '\0';
-      dirs++;
-    }
-    strptr++;
-  }
-
-  // check to make sure we have a directory, if we don't then return the original path given
-  if (dirs == 0) {
-    strcpy(dest, srcPath);
-    return;
-  }
-
-  // allocate the memory needed for the seperate strings of each directory
-  directories = (char **)mem_malloc(sizeof(char *) * dirs);
-  if (!directories) {
-    strcpy(dest, srcPath);
-    return;
-  }
-
-  // now get all the directories, and place into the individual strings
-  strptr = dest;
-  int count = 0;
-  while (count < dirs) {
-    directories[count] = mem_strdup(strptr);
-    strptr += strlen(strptr) + 1;
-    count++;
-  }
-
-  // now the fun part, figure out the correct order of the directories
-  int *dir_order;
-
-  dir_order = (int *)mem_malloc(sizeof(int) * dirs);
-  if (!dir_order) {
-    strcpy(dest, srcPath);
-    return;
-  }
-
-  for (count = 0; count < dirs; count++)
-    dir_order[count] = -1; // a -1 means the end of the sequence
-
-  // now build the order based on the indicies
-  int curr_index = 0;
-  for (count = 0; count < dirs; count++) {
-
-    if (!stricmp(directories[count], "..")) {
-      // we have to back up a directory
-      curr_index--; // back up
-      if (curr_index < 0)
-        curr_index = 0;           // can't go further than root
-      dir_order[curr_index] = -1; // invalidate current slot
-    } else if (stricmp(directories[count], ".")) {
-      // we have a normal directory, add it's index
-      dir_order[curr_index] = count;
-      curr_index++;
-    }
-  }
-
-  // now rebuild the correct path for use, when we hit -1, we're done
-  dest[0] = '\0';
-  for (count = 0; count < dirs; count++) {
-    if (dir_order[count] == -1)
-      break;
-    else {
-      strcat(dest, directories[dir_order[count]]);
-      strcat(dest, "/");
-    }
-  }
-
-  // now remove trailing / char
-  path_length = strlen(dest);
-  if ((path_length > 0) && (dest[path_length - 1] == '/'))
-    dest[path_length - 1] = '\0';
-
-  // free up all the allocated memory and we're done
-  for (count = 0; count < dirs; count++) {
-    if (directories[count])
-      mem_free(directories[count]);
-  }
-  if (directories)
-    mem_free(directories);
-  if (dir_order)
-    mem_free(dir_order);
-}
-
 //	given a path (with no filename), it will return the parent path
 //	srcPath is the source given path
 //	dest is where the parent path will be placed
@@ -762,35 +504,6 @@ bool ddio_GetParentPath(char *dest, const char *srcPath) {
   ddio_CleanPath(dest, temp);
   mem_free(temp);
   return true;
-}
-
-// Finds a full path from a relative path
-// Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
-//					rel_path - a path specification, either relative or absolute
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path) {
-  char old_path[_MAX_PATH];
-
-  ddio_GetWorkingDir(old_path, sizeof(old_path)); // save old directory
-
-  if (!ddio_SetWorkingDir(rel_path)) // try switching to new directory
-    return 0;                        // couldn't switch, so return error
-
-  ddio_GetWorkingDir(full_path, _MAX_PATH); // get path from the OS
-
-  ddio_SetWorkingDir(old_path); // now restore old path
-
-  return 1;
-}
-
-// Renames file
-// Returns true on success or false on an error
-bool ddio_RenameFile(char *oldfile, char *newfile) {
-  int rcode = rename(oldfile, newfile);
-  if (!rcode)
-    return true;
-  else
-    return false;
 }
 
 // Generates a temporary filename based on the prefix, and basedir
@@ -870,25 +583,16 @@ bool ddio_GetTempFileName(char *basedir, char *prefix, char *filename) {
 //		0		Lock file currently exists in directory
 //		-1		Illegal directory
 //		-2		There is a lock file in the directory, but it is in an illegal format
-int ddio_CheckLockFile(const char *dir) {
+int ddio_CheckLockFile(std::filesystem::path const& dir) {
   pid_t curr_pid = getpid();
 
-  //  rcg 06092000 what's all this working dir shite?
-  //	char old_directory[_MAX_PATH];
-  //	ddio_GetWorkingDir(old_directory,_MAX_PATH);
-  //	if(!ddio_SetWorkingDir(dir))
-  //		return -1;
-
-  // rcg 06092000 The buffer stuff throughout is my add.
-  size_t bufferLen = strlen(dir) + strlen(".lock") + 2;
-  char buffer[bufferLen];
+  auto lockfilepath = dir / ".lock";
   bool found_lock_file_in_dir = false;
   FILE *file;
 
-  snprintf(buffer, bufferLen, "%s/%s", dir, ".lock");
-  mprintf((0, "LockFile: Checking [%s]...", buffer));
-  chmod(buffer, S_IREAD | S_IWRITE);
-  file = fopen(buffer, "rb");
+  mprintf((0, "LockFile: Checking [%s]...", lockfilepath.c_str()));
+  chmod(lockfilepath.c_str(), S_IREAD | S_IWRITE);
+  file = fopen(lockfilepath.c_str(), "rb");
 
   if (!file) {
     // File exists, but couldn't open it
@@ -963,7 +667,7 @@ int ddio_CheckLockFile(const char *dir) {
 
     // the process no longer exists, we can create a lock file if needed
     // we'll delete the useless one now
-    ddio_DeleteFile(".lock");
+    ddio_DeleteFile(lockfilepath);
   }
 
   //	ddio_SetWorkingDir(old_directory);
@@ -982,7 +686,7 @@ int ddio_CheckLockFile(const char *dir) {
 //		-1		Illegal directory
 //		-2		There is a lock file in the directory, but it is in an illegal format
 //		-3		Unable to create lock file
-int ddio_CreateLockFile(const char *dir) {
+int ddio_CreateLockFile(std::filesystem::path const& dir) {
   int result = ddio_CheckLockFile(dir);
   switch (result) {
   case 0:
@@ -1029,7 +733,7 @@ int ddio_CreateLockFile(const char *dir) {
 //		-1		Illegal directory
 //		-2		A lock file exists in the directory, but wasn't deleted...illegal format
 //		-3		Unable to delete file
-int ddio_DeleteLockFile(const char *dir) {
+int ddio_DeleteLockFile(std::filesystem::path const& dir) {
   pid_t curr_pid = getpid();
   char old_directory[_MAX_PATH];
   ddio_GetWorkingDir(old_directory, _MAX_PATH);

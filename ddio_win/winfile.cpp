@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -158,12 +158,6 @@
 //	---------------------------------------------------------------------------
 //	File operations
 
-//	creates a directory or folder on disk
-bool ddio_CreateDir(const char *path) { return (CreateDirectory(path, NULL)) ? true : false; }
-
-//	destroys a directory
-bool ddio_RemoveDir(const char *path) { return (RemoveDirectory(path)) ? true : false; }
-
 //	retrieve the current working folder where file operation will occur.
 void ddio_GetWorkingDir(char *path, int len) { GetCurrentDirectory(len, path); }
 
@@ -233,29 +227,6 @@ try_again:;
 
   CloseHandle(desthandle);
   CloseHandle(srchandle);
-}
-
-// deletes a file.  Returns 1 if successful, 0 on failure
-int ddio_DeleteFile(char *name) { return (DeleteFile(name)); }
-
-// Save/Restore the current working directory
-
-static char SavedWorkingDir[_MAX_DIR];
-
-void ddio_SaveWorkingDir(void) { GetCurrentDirectory(_MAX_DIR, SavedWorkingDir); }
-
-void ddio_RestoreWorkingDir(void) { SetCurrentDirectory(SavedWorkingDir); }
-
-// 	Checks if a directory exists (returns 1 if it does, 0 if not)
-//	This pathname is *RELATIVE* not fully qualified
-bool ddio_DirExists(const char *path) {
-  BOOL res;
-
-  ddio_SaveWorkingDir();
-  res = SetCurrentDirectory(path);
-  ddio_RestoreWorkingDir();
-
-  return (res) ? true : false;
 }
 
 // Constructs a path in the local file system's syntax
@@ -608,16 +579,6 @@ bool ddio_GetFullPath(char *full_path, const char *rel_path) {
   ddio_SetWorkingDir(old_path); // now restore old path
 
   return 1;
-}
-
-// Renames file
-// Returns true on success or false on an error
-bool ddio_RenameFile(char *oldfile, char *newfile) {
-  int rcode = rename(oldfile, newfile);
-  if (!rcode)
-    return true;
-  else
-    return false;
 }
 
 // Give a volume label to look for, and if it's found returns a path
