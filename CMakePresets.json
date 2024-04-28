@@ -52,5 +52,32 @@
 			"name": "linux",
 			"configurePreset": "linux"
 		}
+	],
+	"testPresets": [
+		{
+			"name": "defaults",
+			"hidden": true,
+			"output": {
+				"outputOnFailure": true
+			}
+		},
+		{
+			"name": "win",
+			"inherits": "defaults",
+			"description": "Testing under Windows",
+			"configurePreset": "win"
+		},
+		{
+			"name": "mac",
+			"inherits": "defaults",
+			"description": "Testing under macOS",
+			"configurePreset": "mac"
+		},
+		{
+			"name": "linux",
+			"inherits": "defaults",
+			"description": "Testing under Linux",
+			"configurePreset": "linux"
+		}
 	]
 }
