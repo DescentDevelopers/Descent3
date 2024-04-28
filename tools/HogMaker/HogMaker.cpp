@@ -22,6 +22,7 @@
 #include <fstream>
 #include <string>
 
+#include "d3_version.h"
 #include "HogFormat.h"
 
 // TODO: To our descendants from the future: remove it when code will support C++20
@@ -40,7 +41,8 @@ int main(int argc, char *argv[]) {
   std::vector<std::filesystem::path> input_files;
 
   if (argc != 3) {
-    std::cout << "Usage:\n"
+    std::cout << "HogMaker v" << D3_MAJORVER << "." << D3_MINORVER << "." << D3_BUILD << "-g" << D3_GIT_HASH << "\n"
+              << "Usage:\n"
               << "  " << argv[0] << " <hogfile.hog> <inputfile.txt>\n"
               << std::endl;
     return 1;
