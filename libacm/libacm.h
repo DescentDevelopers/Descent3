@@ -19,7 +19,7 @@
 #ifndef __LIBACM_H
 #define __LIBACM_H
 
-#ifdef __cplusplus // DG: added extern "C", will try to get it upstream
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -39,18 +39,26 @@ extern "C" {
 #define ACM_ERR_NOT_SEEKABLE	-8
 
 typedef struct ACMInfo {
-	unsigned channels;
-	unsigned rate;
+	unsigned channels;		/* number of sound channels (1: mono, 2: stereo */
+	unsigned rate;			/* samplerate */
 	unsigned acm_id;
 	unsigned acm_version;
-	unsigned acm_channels;		/* channels from header (usually wrong) */
+	unsigned acm_channels;		/* channels from header (often wrong) */
 	unsigned acm_level;
 	unsigned acm_cols;		/* 1 << acm_level */
 	unsigned acm_rows;
 } ACMInfo;
 
 typedef struct {
-	/* read bytes */
+	/*
+	 * Read up to "n" items with "size" bytes each into the buf at "ptr",
+	 * kinda like fread().
+	 * "datasrc" is the "io_arg" that was passed to acm_open_decoder()
+	 *
+	 * return the number of items read (not numbytes, but numbytes/size)
+	 *   or 0 on EOF (end of file)
+	 *   or a negative value on error
+	 */
 	int (*read_func)(void *ptr, int size, int n, void *datasrc);
 	/* optional, must support seeking into start*/
 	int (*seek_func)(void *datasrc, int offset, int whence);
@@ -62,7 +70,7 @@ typedef struct {
 
 struct ACMStream {
 	ACMInfo info;
-	unsigned total_values;
+	unsigned total_values;		/* number of sound samples in the ACM file */
 
 	/* acm data stream */
 	void *io_arg;
@@ -93,12 +101,56 @@ struct ACMStream {
 typedef struct ACMStream ACMStream;
 
 /* decode.c */
+
+/*
+ * Open ACMStream from acm_io_callbacks.
+ * - res: if opening the decoder succeeds, the new ACMStream will be assigned to *res
+ * - io_arg: will be passed to the acm_io_callbacks as "datasrc" argument
+ * - io: your custom callbacks to read the data
+ * - force_chans >= 1: force the file to be decoded and played with that
+ *   many channels, regardless of number of channels in the file header
+ * - force_chans == 0: assume the ACM file's header contains the
+ *   correct amount of channels (this is not always the case, stereo
+ *   files tagged as mono exist in some games!)
+ * - force_chans == -1: quirk mode: for plain ACM files stereo
+ *   is assumed, for WAVC files the header's value is used
+ *
+ * returns ACM_OK if opening was successful, otherwise an ACM_ERR_* code
+ */
 int acm_open_decoder(ACMStream **res, void *io_arg, acm_io_callbacks io, int force_chans);
+
+/*
+ * Read up to "nbytes" bytes of audio samples from ACMStream "acm" into buffer "buf".
+ * "bigendianp", "wordlen" and "sgned" specify the format you want the returned samples
+ * to have, for example 0, 2, 1 for "little endian, 16bit (2byte), signed" (s16le).
+ * - bigendianp: 0 for samples in little endian byteorder, 1 for big endian
+ * - wordlen: only 2 for 16bit (2byte) samples is currently supported
+ * - sgned: 1 for signed samples, 0 for unsigned samples
+ *
+ * returns the amount of bytes have been successfully read into buf
+ *   or 0 on EOF (nothing left to read in file)
+ *   or a value < 0 (ACM_ERR_*) on error
+ */
 int acm_read(ACMStream *acm, void *buf, unsigned nbytes,
 		int bigendianp, int wordlen, int sgned);
 void acm_close(ACMStream *acm);
 
 /* util.c */
+
+/*
+ * Open ACMStream from file.
+ * - acm: if opening the decoder succeeds, the new ACMStream will be assigned to *acm
+ * - filename: filename (incl. path) to the ACM file to be opened
+ * - force_chans >= 1: force the file to be decoded and played with that
+ *   many channels, regardless of number of channels in the file header
+ * - force_chans == 0: assume the ACM file's header contains the
+ *   correct amount of channels (this is not always the case, stereo
+ *   files tagged as mono exist in some games!)
+ * - force_chans == -1: quirk mode: for plain ACM files stereo
+ *   is assumed, for WAVC files the header's value is used
+ *
+ * returns ACM_OK if opening was successful, otherwise an ACM_ERR_* code
+ */
 int acm_open_file(ACMStream **acm, const char *filename, int force_chans);
 const ACMInfo *acm_info(ACMStream *acm);
 int acm_seekable(ACMStream *acm);
