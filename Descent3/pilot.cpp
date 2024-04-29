@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -2929,7 +2929,7 @@ bool PltSelectShip(pilot *Pilot) {
           if ((error == ERROR_SUCCESS)) {
             lType = REG_EXPAND_SZ;
 
-            unsigned long len = BUFLEN;
+            unsigned int len = BUFLEN;
             error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
 
             if (error == ERROR_SUCCESS) {

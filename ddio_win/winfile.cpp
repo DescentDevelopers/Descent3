@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -626,12 +626,12 @@ const char *ddio_GetCDDrive(const char *vol) {
 
 #define MAX_FSTYPE_LEN 30
   static char drivepath[10];
-  unsigned long volflags;
+  unsigned int volflags;
   int i;
   char volume[_MAX_PATH];
   char fsname[MAX_FSTYPE_LEN] = "";
-  unsigned long serial;
-  unsigned long component;
+  unsigned int serial;
+  unsigned int component;
 
   strcpy(drivepath, "c:\\");
 

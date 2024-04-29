@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@
 #define ubyte unsigned char
 #define uint unsigned int
 #define ushort unsigned short
-#define ulong unsigned long
+#define ulong unsigned int
 
 typedef struct {
   ubyte type;

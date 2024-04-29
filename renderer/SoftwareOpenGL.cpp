@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1801,8 +1801,8 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
 
     Atom type;
     int format;
-    unsigned long nitems;
-    unsigned long bytes_after;
+    unsigned int nitems;
+    unsigned int bytes_after;
     long *mwmInfo;
 
     XGetWindowProperty(dpy, rootwin, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
@@ -1841,8 +1841,8 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
       // get current hints
       Atom type;
       int format;
-      unsigned long nitems;
-      unsigned long bytes_after;
+      unsigned int nitems;
+      unsigned int bytes_after;
 
       XGetWindowProperty(dpy, window, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
                          (unsigned char **)&xhints);

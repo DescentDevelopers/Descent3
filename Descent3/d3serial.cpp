@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -95,15 +95,15 @@
 
 static char name_copy[DESC_ID_LEN];
 
-unsigned long d3_serialnum = 100000;
+unsigned int d3_serialnum = 100000;
 
 // checks the exectuable (serialization)
 int SerialCheck(void) {
   char name2[] = DESC_ID_TAG "0000000000000000000000000000000000000000";
   char time_str[] = DESC_DEAD_TIME_TAG "00000000";
   int i, found;
-  unsigned long *checksum, test_checksum;
-  unsigned long *serialnum;
+  unsigned int *checksum, test_checksum;
+  unsigned int *serialnum;
   time_t current_time, saved_time;
 
 #ifdef DEMO
@@ -179,7 +179,7 @@ int SerialCheck(void) {
   char *checksum_ptr = desc_id_checksum_str + DESC_CHKSUM_TAG_LEN;
 
   // compare generated checksum with that in the executable
-  checksum = (unsigned long *)&(checksum_ptr[0]);
+  checksum = (unsigned int *)&(checksum_ptr[0]);
   if (test_checksum != *checksum) {
     return SERIAL_BAD_CHECKSUM;
   }
@@ -187,7 +187,7 @@ int SerialCheck(void) {
   static char desc_id_serialnum_str[] = DESC_SERIALNUM_TAG "0000"; // 4-byte serialnum
   char *serialnum_ptr = desc_id_serialnum_str + DESC_SERIALNUM_TAG_LEN;
 
-  serialnum = (unsigned long *)&(serialnum_ptr[0]);
+  serialnum = (unsigned int *)&(serialnum_ptr[0]);
   d3_serialnum = *serialnum;
 
   // this guy is ok, we can exit clean now
@@ -224,4 +224,4 @@ void SerialError(int error) {
   }
 }
 
-unsigned long SerialGetSerialNum(void) { return d3_serialnum; }
+unsigned int SerialGetSerialNum(void) { return d3_serialnum; }

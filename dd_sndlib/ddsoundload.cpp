@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -127,12 +127,12 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
   char format_type[80];       // ASCII name of format type
   unsigned short fmttag = 0;  // Numerical format type
-  unsigned long ckid;         // Current chunk's ID
-  unsigned long cksize;       // Current chunk's size in bytes
-  unsigned long filesize;     // Size of the sound file
-  unsigned long nextseek = 0; // Location of the next seek
+  unsigned int ckid;         // Current chunk's ID
+  unsigned int cksize;       // Current chunk's size in bytes
+  unsigned int filesize;     // Size of the sound file
+  unsigned int nextseek = 0; // Location of the next seek
 
-  unsigned long aligned_size; // Sound files are aligned to SOUND_FILE_SAMPLE_ALIGNMENT samples
+  unsigned int aligned_size; // Sound files are aligned to SOUND_FILE_SAMPLE_ALIGNMENT samples
 
   // Sound format information
   int samples_per_second;
@@ -140,7 +140,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   short number_channels;
 
   // Used to read temporary long values
-  unsigned long temp_long;
+  unsigned int temp_long;
 
   // Flags for if we previously read data or a format
   char f_data, f_fmt = 0;
@@ -174,7 +174,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   paged_in_count += cfilelength(cfptr);
   paged_in_num++;
   // Make sure that it is a RIFF format
-  temp_long = (unsigned long)cf_ReadInt(cfptr);
+  temp_long = (unsigned int)cf_ReadInt(cfptr);
   if (temp_long != 0x46464952) {
     mprintf((0, "SOUND LOADER: %s is not a RIFF format file\n", filename));
     goto error_state;
@@ -185,7 +185,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   filesize += cftell(cfptr);
 
   // Make sure it is a wave file
-  temp_long = (unsigned long)cf_ReadInt(cfptr);
+  temp_long = (unsigned int)cf_ReadInt(cfptr);
   if (temp_long != 0x45564157) {
     mprintf((0, "SOUND LOADER:  %s is not a WAVE file\n", filename));
     goto error_state;

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -370,7 +370,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr);
 
 // Returns internet address format from string address format...ie "204.243.217.14"
 // turns into 1414829242
-unsigned long nw_GetHostAddressFromNumbers(char *str);
+unsigned int nw_GetHostAddressFromNumbers(char *str);
 
 // Fills in the string with the string address from the internet address
 void nw_GetNumbersFromHostAddress(network_address *address, char *str);
@@ -438,7 +438,7 @@ void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from);
 int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from);
 
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpid);
+int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned int dpid);
 
 // This is all the reliable UDP stuff...
 #define MAXNETBUFFERS                                                                                                  \

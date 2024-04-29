@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -471,7 +471,7 @@ inline int sb_get_status(sound_buffer_info *sb) {
 #endif
       if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     LPDIRECTSOUNDBUFFER sound_ptr = sb->m_sound_buffer;
-    unsigned long status;
+    unsigned int status;
 
     if (sound_ptr) {
       sound_ptr->GetStatus(&status);
@@ -2243,7 +2243,7 @@ int win_llsSystem::PlaySound2d(play_information *play_info, int sound_index, flo
 
 void win_llsSystem::LoopStartStreaming(sound_buffer_info *sb, int buffer_type, float volume, float pan,
                                        pos_state *cur_pos) {
-  //	unsigned long thread_handle;
+  //	unsigned int thread_handle;
   int sound_length, buffer_size;
   int determined_method;
   bool f_sample_16bit;

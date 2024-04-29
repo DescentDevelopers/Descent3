@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -2828,7 +2828,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
     return false;
   }
 
-  unsigned long address;
+  unsigned int address;
   tHostsNode *curr;
 
   memcpy(&address, &addr->address, 4);
@@ -4279,8 +4279,8 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
   char save_buffer[256];
 
   char s_ip[16], s_mask[16];
-  unsigned long ip_address;
-  unsigned long mask;
+  unsigned int ip_address;
+  unsigned int mask;
   char *ptr;
 
   while (!DLLcfeof(file)) {

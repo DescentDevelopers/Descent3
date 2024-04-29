@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -854,7 +854,7 @@ void InitDedicatedSocket(ushort port) {
     return;
   }
   // Make the socket non-blocking
-  unsigned long argp = 1;
+  unsigned int argp = 1;
 #if defined(WIN32)
   ioctlsocket(dedicated_listen_socket, FIONBIO, &argp);
 #elif defined(__LINUX__)
@@ -870,7 +870,7 @@ void ListenDedicatedSocket(void) {
   incoming_socket = accept(dedicated_listen_socket, (SOCKADDR *)&conn_addr, &addrlen);
   if (INVALID_SOCKET != incoming_socket) {
     // Make the socket non-blocking
-    unsigned long argp = 1;
+    unsigned int argp = 1;
 #if defined(WIN32)
     ioctlsocket(incoming_socket, FIONBIO, &argp);
 #elif defined(__LINUX__)
@@ -878,7 +878,7 @@ void ListenDedicatedSocket(void) {
 #endif
     if (!Dedicated_allow_remote) {
       // Check to see if this came in from the local address
-      unsigned long localhost = inet_addr("127.0.0.1");
+      unsigned int localhost = inet_addr("127.0.0.1");
       if (memcmp(&localhost, &conn_addr.sin_addr, sizeof(localhost)) != 0) {
         mprintf((0, "Rejecting connection from remote host!\n"));
         PrintDedicatedMessage(TXT_DS_REJECTREMOTE, inet_ntoa(conn_addr.sin_addr));

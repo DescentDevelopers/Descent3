@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ typedef enum {
 
 // use this structure for get/set all properties...
 typedef struct {
-  unsigned long environment; // 0 to EAX_ENVIRONMENT_COUNT-1
+  unsigned int environment; // 0 to EAX_ENVIRONMENT_COUNT-1
   float fVolume;             // 0 to 1
   float fDecayTime_sec;      // seconds, 0.1 to 100
   float fDamping;            // 0 to 1

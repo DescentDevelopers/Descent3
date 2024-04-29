@@ -133,20 +133,20 @@ static int sync_wait_quanta = 0;
 static bool sync_late = false;
 static bool sync_FrameDropped = false;
 
-static void syncReset(unsigned long wait_quanta);
+static void syncReset(unsigned int wait_quanta);
 static void syncRelease(void);
-static bool syncInit(unsigned long period, unsigned wait_quanta);
+static bool syncInit(unsigned int period, unsigned wait_quanta);
 static bool syncWait(void);
 static void syncSync(void);
 
-static void syncReset(unsigned long wait_quanta) {
+static void syncReset(unsigned int wait_quanta) {
   sync_time = wait_quanta - platform_timeGetTime() * 1000;
   sync_active = true;
 }
 
 static void syncRelease(void) { sync_active = false; }
 
-static bool syncInit(unsigned long period, unsigned wait_quanta) {
+static bool syncInit(unsigned int period, unsigned wait_quanta) {
   int new_wait_quanta = -(long)(period * wait_quanta + (wait_quanta >> 1));
 
   // If timer is still running and has same timing
@@ -494,8 +494,8 @@ static unsigned sndAddHelper(unsigned char *dst, const unsigned char **pSrc, uns
         src += len >> 1;
       } else {
         if (init) {
-          state = IntelSwapper(*(unsigned long *)src);
-          *(unsigned long *)dst = state;
+          state = IntelSwapper(*(unsigned int *)src);
+          *(unsigned int *)dst = state;
           src += 4;
           dst += 4;
           len -= 4;
@@ -835,7 +835,7 @@ static unsigned sf_hicolor = 0; // Hicolor mode (0:none,1:normal,2:swapped)
 // Banked screen parameters, Private, see mveliba.asm
 void *sf_SetBank = NULL;
 unsigned sf_WinGran = 0;
-unsigned long sf_WinSize = 0;
+unsigned int sf_WinSize = 0;
 unsigned sf_WinGranPerSize = 0;
 //{sf_WriteWinPtr and sf_WriteWinLimit replace sf_WriteWinSeg, see mveliba.asm}
 unsigned char *sf_WriteWinPtr = NULL;
@@ -868,7 +868,7 @@ void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsi
 //	dx:  Window position in video memory in units of WinGran.
 //     on return, registers AX and DX are destroyed.
 void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned long WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
+                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
   sf_ScreenWidth = w;
   sf_ScreenHeight = h;
   sf_ResolutionWidth = w;

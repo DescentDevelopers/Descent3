@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -192,7 +192,7 @@ typedef struct {
   ubyte sequence; // where we are in the sequence chain
   ubyte pps;
   HANDLE hPlayerEvent;      // player event to use for directplay
-  unsigned long dpidPlayer; // directplay ID of player created
+  unsigned int dpidPlayer; // directplay ID of player created
   float ping_time;
   float last_ping_time;
   ushort pilot_pic_id;

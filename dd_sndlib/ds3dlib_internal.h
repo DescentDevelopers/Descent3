@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -142,7 +142,7 @@ typedef struct DSSTREAMTAG {
   int MaxWriteSamples;
   int MaxWriteBytes;
 
-  unsigned long thread_handle;
+  unsigned int thread_handle;
   //	unsigned thread_id;
   volatile bool thread_request_kill;
   volatile bool thread_alive;

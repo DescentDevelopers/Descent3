@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ FEXTERN XAllocWMHints_fp soXAllocWMHints;
 typedef int (*XCloseDisplay_fp)(Display *);
 FEXTERN XCloseDisplay_fp soXCloseDisplay;
 
-typedef GC (*XCreateGC_fp)(Display *, Drawable, unsigned long, XGCValues *);
+typedef GC (*XCreateGC_fp)(Display *, Drawable, unsigned int, XGCValues *);
 FEXTERN XCreateGC_fp soXCreateGC;
 
 typedef XImage *(*XCreateImage_fp)(Display *, Visual *, unsigned int, int, int, char *, unsigned int, unsigned int, int,
@@ -97,7 +97,7 @@ typedef Cursor (*XCreatePixmapCursor_fp)(Display *, Pixmap, Pixmap, XColor *, XC
 FEXTERN XCreatePixmapCursor_fp soXCreatePixmapCursor;
 
 typedef Window (*XCreateWindow_fp)(Display *, Window, int, int, unsigned int, unsigned int, unsigned int, int,
-                                   unsigned int, Visual *, unsigned long, XSetWindowAttributes *);
+                                   unsigned int, Visual *, unsigned int, XSetWindowAttributes *);
 FEXTERN XCreateWindow_fp soXCreateWindow;
 
 typedef int (*XDefineCursor_fp)(Display *, Window, Cursor);
@@ -160,8 +160,8 @@ FEXTERN XAutoRepeatOn_fp soXAutoRepeatOn;
 typedef int (*XAutoRepeatOff_fp)(Display *);
 FEXTERN XAutoRepeatOff_fp soXAutoRepeatOff;
 
-typedef int (*XGetWindowProperty_fp)(Display *, Window, Atom, long, long, Bool, Atom, Atom *, int *, unsigned long *,
-                                     unsigned long *, unsigned char **);
+typedef int (*XGetWindowProperty_fp)(Display *, Window, Atom, long, long, Bool, Atom, Atom *, int *, unsigned int *,
+                                     unsigned int *, unsigned char **);
 FEXTERN XGetWindowProperty_fp soXGetWindowProperty;
 
 typedef Status (*XQueryTree_fp)(Display *, Window, Window *, Window *, Window **, unsigned int *);
@@ -179,7 +179,7 @@ FEXTERN XRaiseWindow_fp soXRaiseWindow;
 typedef int (*XChangeProperty_fp)(Display *, Window, Atom, Atom, int, int, _Xconst unsigned char *, int);
 FEXTERN XChangeProperty_fp soXChangeProperty;
 
-typedef int (*XChangeWindowAttributes_fp)(Display *, Window, unsigned long, XSetWindowAttributes *);
+typedef int (*XChangeWindowAttributes_fp)(Display *, Window, unsigned int, XSetWindowAttributes *);
 FEXTERN XChangeWindowAttributes_fp soXChangeWindowAttributes;
 
 typedef int (*XMoveResizeWindow_fp)(Display *, Window, int, int, unsigned int, unsigned int);

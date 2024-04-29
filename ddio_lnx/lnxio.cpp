@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ tSerialPort ddio_SerialOpenPort(int port_number, int baud) {
 #else
   char devName[50];
   struct termios newtio;
-  unsigned long _baud;
+  unsigned int _baud;
 
   mprintf((0, "DDIO: ddio_SerialOpenPort(%d) called.", port_number));
 

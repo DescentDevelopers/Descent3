@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ SOCKADDR_IN tcp_log_addr;
 char tcp_log_buffer[MAX_TCPLOG_LEN];
 
 void nw_InitTCPLogging(char *ip, unsigned short port) {
-  unsigned long argp = 1;
+  unsigned int argp = 1;
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {

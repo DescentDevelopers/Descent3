@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -329,7 +329,7 @@ DMFCFUNCTION void (*DLLInitPlayerNewShip)(int slot, int inven_reset);
 DMFCFUNCTION void *(*DLLCheckBoxCreate)(void *parent, int id, void *title, int x, int y, int w, int h, int flags);
 DMFCFUNCTION void (*DLLCheckBoxSetCheck)(void *cb, bool state);
 DMFCFUNCTION bool (*DLLCheckBoxIsChecked)(void *cb);
-DMFCFUNCTION unsigned long (*DLLnw_GetHostAddressFromNumbers)(char *str);
+DMFCFUNCTION unsigned int (*DLLnw_GetHostAddressFromNumbers)(char *str);
 DMFCFUNCTION void (*TableFilesClear)(void);
 DMFCFUNCTION bool (*TableFileAdd)(char *filename);
 DMFCFUNCTION void (*DLLDebugBreak_callback_stop)(void);
