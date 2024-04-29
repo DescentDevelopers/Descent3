@@ -236,7 +236,7 @@ try_again:;
 }
 
 // deletes a file.  Returns 1 if successful, 0 on failure
-int ddio_DeleteFile(char *name) { return (DeleteFile(name)); }
+int ddio_DeleteFile(const char *name) { return (DeleteFile(name)); }
 
 // Save/Restore the current working directory
 
@@ -299,7 +299,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
   va_end(args);
 }
 
-bool ddio_GetTempFileName(char *basedir, char *prefix, char *filename) {
+bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename) {
 
   if (!GetTempFileName(basedir, prefix, 0, filename))
     return false;
@@ -622,7 +622,7 @@ bool ddio_RenameFile(char *oldfile, char *newfile) {
 
 // Give a volume label to look for, and if it's found returns a path
 // If it isn't found, return NULL (used to return "")
-char *ddio_GetCDDrive(char *vol) {
+const char *ddio_GetCDDrive(const char *vol) {
 
 #define MAX_FSTYPE_LEN 30
   static char drivepath[10];

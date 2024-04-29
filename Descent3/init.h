@@ -96,6 +96,6 @@ void ShutdownD3();
 //	This function restarts all game systems
 void RestartD3();
 
-void InitMessage(char *c, float progress = -1);
+void InitMessage(const char *c, float progress = -1);
 
 #endif

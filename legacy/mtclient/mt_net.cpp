@@ -138,8 +138,8 @@ SOCKADDR_IN sockaddr;
 #define NW_AGHBN_LOOKUP		2
 #define NW_AGHBN_READ		3
 
-//extern void DLLDebug_ConsolePrintf  (int n, char *format, ... );
-typedef void( *Debug_ConsolePrintf_fp ) (int n, char *format, ... );
+//extern void DLLDebug_ConsolePrintf  (int n, const char *format, ... );
+typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
 
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 

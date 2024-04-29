@@ -1276,7 +1276,7 @@ void levelgoals::Inform(char type, int comp_type, int handle) {
   }
 }
 
-int levelgoals::GoalFindId(char *goal_name) {
+int levelgoals::GoalFindId(const char *goal_name) {
   int i;
   char cur_name[200];
 

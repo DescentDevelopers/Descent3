@@ -33,7 +33,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte isdoor);
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -44,9 +44,9 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 
 int String_table_size = 0;
 char **String_table = NULL;
-static char *_Error_string = "!!ERROR MISSING STRING!!";
-static char *_Empty_string = "";
-char *GetStringFromTable(int index) {
+static const char *_Error_string = "!!ERROR MISSING STRING!!";
+static const char *_Empty_string = "";
+const char *GetStringFromTable(int index) {
   if ((index < 0) || (index >= String_table_size))
     return _Error_string;
   if (!String_table[index])
@@ -202,7 +202,7 @@ char *GetStringFromTable(int index) {
 #define TXT_GB_I_FOUND_A_GB_POWERUP TXT(145)
 
 // Returns the new child's handle
-int CreateAndAttach(int me, char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
+int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
                     bool f_set_parent = false) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -281,7 +281,7 @@ int CreateAndAttach(int me, char *child_name, ubyte child_type, char parent_ap, 
 
 typedef struct {
   int id;
-  char *name;
+  const char *name;
 } tScriptInfo;
 
 tScriptInfo ScriptInfo[NUM_IDS] = {{ID_PEST, "Pest"},
@@ -1568,7 +1568,7 @@ typedef struct {
 class GuideBot : public BaseObjScript {
 private:
   guidebot_data *memory;
-  void DoMessage(char *str, bool f_high_priority, char *sound_name = NULL, bool f_sound_2d = false);
+  void DoMessage(const char *str, bool f_high_priority, const char *sound_name = NULL, bool f_sound_2d = false);
   //	void InitPowerup(int me, char pow_id);
   //	void DoPowerupFrame(int me);
   void DoPowerupCheck(int me);
@@ -1704,7 +1704,7 @@ typedef struct {
 class Thief : public BaseObjScript {
 private:
   thief_data *memory;
-  void DoMessage(char *str);
+  void DoMessage(const char *str);
 
   void SetMode(int me, int mode);
   void SetSubMode(int me, int submode);
@@ -1734,8 +1734,8 @@ typedef struct {
   int index, autoselect, type;
   float fire_delay;
   int name_idx;
-  char *weapon_name;
-  char *fire_sound;
+  const char *weapon_name;
+  const char *fire_sound;
 } tSuperThiefItems;
 
 tSuperThiefItems SuperThiefableItems[] = {
@@ -2065,8 +2065,8 @@ void SuperThief::FireFlare(int me) {
 
 void SuperThief::CheckAndFireSecondary(int me) {
   int i;
-  char *wname;
-  char *sname;
+  const char *wname;
+  const char *sname;
   int best_select = -1;
   int best_index;
 
@@ -2473,7 +2473,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;
@@ -4593,7 +4593,7 @@ void GuideBot::ReInitAmbient(int me) {
   // AddGetToGoalCommonGoals(me);
 }
 
-void GuideBot::DoMessage(char *str, bool f_high_priority, char *sound_name, bool f_sound_2d) {
+void GuideBot::DoMessage(const char *str, bool f_high_priority, const char *sound_name, bool f_sound_2d) {
   if ((memory->flags & GBF_NO_CHATTER) && !f_high_priority)
     return;
 

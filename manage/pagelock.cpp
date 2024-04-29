@@ -192,7 +192,7 @@
 #endif
 
 #define CURRENT_TABLE_VERSION 22
-extern char *PageNames[];
+extern const char *PageNames[];
 
 void mng_InitPagelocks() {
   // If there is not a pagelock file, create one with a dummy header.
@@ -535,7 +535,7 @@ int mng_ReplacePagelock(char *name, mngs_Pagelock *pl) {
   ddio_MakePath(pathstr, NetD3Dir, "TableLog", NULL);
   FILE *logfile = fopen(pathstr, "at");
   if (logfile) {
-    char str[255];
+    char str[255 + 32];
     char date[255];
     time_t t;
     t = time(NULL);
@@ -720,7 +720,7 @@ int mng_DeleteDuplicatePagelocks() {
 }
 
 // Given a list of names and a pagetype, unlocks the ones already inside the lock file
-int mng_UnlockPagelockSeries(char *names[], int *pagetypes, int num) {
+int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
   ASSERT(num < 500);
 
   ubyte already_done[500];

@@ -24,12 +24,12 @@
 extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
 // Gathers all arguments
-void GatherArgs(char *str);
+void GatherArgs(const char *str);
 void GatherArgs(char **argv);
 
 // Returns index of argument sought, or 0 if not found
-int FindArg(char *which);
-int FindArgChar(char *which, char singleCharArg);
+int FindArg(const char *which);
+int FindArgChar(const char *which, char singleCharArg);
 
 const char *GetArg(int index);
 

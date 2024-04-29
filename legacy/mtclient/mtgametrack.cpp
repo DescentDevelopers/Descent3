@@ -153,7 +153,7 @@ extern nw_DoReceiveCallbacks_fp DLLnw_DoReceiveCallbacks;
 #define DLLmprintf(args)
 #endif
 
-typedef void( *Debug_ConsolePrintf_fp ) (int n, char *format, ... );
+typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
 
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 

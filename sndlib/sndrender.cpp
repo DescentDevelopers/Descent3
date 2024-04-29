@@ -403,7 +403,7 @@ bool render_sound_objects_in_geometry() {
 
 void play_3d_sound(const char *name, object *obj, float vol, int uid) {
   llsSystem *lls = Sound_system.m_ll_sound_ptr;
-  int index = FindSoundName((char *)name);
+  int index = FindSoundName(name);
   pos_state cur_pos;
 
   if (!lls->CheckAndForceSoundDataAlloc(index)) {

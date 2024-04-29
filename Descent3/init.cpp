@@ -1017,7 +1017,7 @@ bool Running_editor = false; // didn't we have a variable like this somewhere
 static bool Init_in_editor = false;
 
 // used to update load bar.
-void SetInitMessageLength(char *c, float amount); // portion of total bar to fill (0 to 1)
+void SetInitMessageLength(const char *c, float amount); // portion of total bar to fill (0 to 1)
 void UpdateInitMessage(float amount);             // amount is 0 to 1
 void SetupTempDirectory(void);
 void DeleteTempFiles(void);
@@ -1082,8 +1082,9 @@ int IsLocalOk(void) {
 void PreGameCdCheck() {
   CD_inserted = 0;
   do {
-    char *p = NULL;
-#if   defined(OEM)
+    const char *p;
+
+#if defined(OEM)
     p = ddio_GetCDDrive("D3OEM_1");
     if (p && *p) {
       CD_inserted = 1;
@@ -1541,7 +1542,7 @@ void LoadGameSettings() {
 }
 
 typedef struct {
-  char *wildcard;
+  const char *wildcard;
 } tTempFileInfo;
 tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
                                        {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
@@ -1857,10 +1858,10 @@ void InitGameSystems(bool editor) {
 
 //////////////////////////////////////////////////////////////////////////////
 static float Init_messagebar_portion = 0.0f, Init_messagebar_offset = 0.0f;
-static char *Init_messagebar_text = NULL;
+static const char *Init_messagebar_text = NULL;
 
 // portion of total bar to fill (0 to 1)
-void SetInitMessageLength(char *c, float amount) {
+void SetInitMessageLength(const char *c, float amount) {
   Init_messagebar_text = c;
   Init_messagebar_offset += Init_messagebar_portion;
   Init_messagebar_portion = amount;
@@ -1875,7 +1876,7 @@ void UpdateInitMessage(float amount) {
   // Init_messagebar_offset, (amount*Init_messagebar_portion)+Init_messagebar_offset));
 }
 
-void InitMessage(char *c, float progress) {
+void InitMessage(const char *c, float progress) {
   int x = Game_window_w / 2 - Title_bitmap.pw / 2;
   int y = Game_window_h / 2 - Title_bitmap.ph / 2;
   int i, rx, ry, rw, rh;
@@ -2508,12 +2509,12 @@ void RestartD3() {
 #if (defined(RELEASE) && defined(WIN32) && (!defined(LASERLOCK)))
 
 #include "io.h"
-char *GetCDVolume(int cd_num);
+const char *GetCDVolume(int cd_num);
 
 #endif
 
 unsigned int checksum = 0x2bad4b0b;
-int DoADir(char *patternp, char *patternn);
+int DoADir(const char *patternp, const char *patternn);
 
 // Checks the checksum of all the files on the directory
 // and returns true if it matches the built in checksum
@@ -2554,7 +2555,7 @@ bool CheckCdForValidity(int cd) {
     return false;
   }
 #endif
-  char *p = GetCDVolume(cd);
+  const char *p = GetCDVolume(cd);
   if (*p) {
     DWORD SectorsPerCluster;     // sectors per cluster
     DWORD BytesPerSector;        // bytes per sector
@@ -2603,7 +2604,7 @@ void AddStringToChecksum(char *str) {
   checksum += localsum;
 }
 
-int DoADir(char *patternp, char *patternn) {
+int DoADir(const char *patternp, const char *patternn) {
   char patternw[_MAX_PATH];
   char npatternp[_MAX_PATH];
   int mfiles;
@@ -2611,9 +2612,9 @@ int DoADir(char *patternp, char *patternn) {
   int nfiles;
   struct _finddata_t fileinfo;
 
-  if (patternp[strlen(patternp) - 1] != '\\')
-    strcat(patternp, "\\");
   strcpy(patternw, patternp);
+  if (patternp[strlen(patternp) - 1] != '\\')
+    strcat(patternw, "\\");
 
   strcat(patternw, patternn);
 
@@ -2654,10 +2655,9 @@ int DoADir(char *patternp, char *patternn) {
         {
           if (fileinfo.name[0] != '.') // ignore . and ..
           {
-            if (patternp[strlen(patternp) - 1] != '\\')
-              strcat(patternp, "\\");
             strcpy(npatternp, patternp);
-            // strcat(npatternp, "\\");
+            if (patternp[strlen(patternp) - 1] != '\\')
+              strcat(npatternp, "\\");
             strcat(npatternp, fileinfo.name);
             nfiles = DoADir(npatternp, patternn);
 

@@ -1623,7 +1623,7 @@ char Editor_error_message[1000]="";
 
 //Set the editor error message.  A function that's going to return a failure
 //code should call this with the error message.
-void SetErrorMessage(char *fmt,...)
+void SetErrorMessage(const char *fmt,...)
 {
 	va_list arglist;
 
@@ -1635,7 +1635,7 @@ void SetErrorMessage(char *fmt,...)
 }
 
 //Get the error message from the last function that returned failure
-char *GetErrorMessage()
+const char *GetErrorMessage()
 {
 	return Editor_error_message;
 }
@@ -2751,7 +2751,7 @@ void CMainFrame::OnTestTest2()
 
 extern char error_buf[];
 extern int error_buf_offset;
-void CheckError(char *str,...);
+void CheckError(const char *str,...);
 uint check_point_to_face(vector *colp, vector* face_normal,int nv,vector **vertex_ptr_list);
 
 void LookForFVICracks()
@@ -3677,7 +3677,7 @@ void CMainFrame::OnObjectSelectByNumber()
 
 #include "manage.h"
 #define MAX_LOCKLIST_ELEMENTS	1000
-extern char *PageNames[];
+extern const char *PageNames[];
 extern void dump_text_to_clipboard(char *text);
 
 void CMainFrame::OnShowAllCheckedOut() 

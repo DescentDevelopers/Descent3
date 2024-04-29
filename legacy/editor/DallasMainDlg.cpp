@@ -6033,7 +6033,7 @@ int CDallasMainDlg::GetFunctionCategoryID(char *catname)
 }
 
 // Handle Parse Errors
-void CDallasMainDlg::FunctionFileParseError(int error_code, int linenum, char *filename)
+void CDallasMainDlg::FunctionFileParseError(int error_code, int linenum, const char *filename)
 {
 	CString err_msg;
 
@@ -7727,7 +7727,7 @@ char *CDallasMainDlg::CreateScriptGlobalCtrName(int ID)
 CString CurrentParsingFilename="<FilenameNotSet>";
 
 // Handle Parse Errors
-void CDallasMainDlg::ScriptFileParseError(int error_code, int linenum, int script_ID, char *name)
+void CDallasMainDlg::ScriptFileParseError(int error_code, int linenum, int script_ID, const char *name)
 {
 	CString err_msg;
 
@@ -9206,7 +9206,7 @@ HTREEITEM CDallasMainDlg::ParseScriptNodeLine_v1U(char *line, int linenum, HTREE
 
 
 // Handle Special Parse Errors (Invalid Named Values)
-void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, char *type_name, char *name)
+void CDallasMainDlg::SpecialScriptFileParseError(int linenum, int script_ID, char *type_name, const char *name)
 {
 	CString err_msg;
 
@@ -9645,7 +9645,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("#endif"));
 	O(("char		STDCALL InitializeDLL(tOSIRISModuleInit *func_list);"));
 	O(("void		STDCALL ShutdownDLL(void);"));
-	O(("int		STDCALL GetGOScriptID(char *name,ubyte is_door);"));
+	O(("int		STDCALL GetGOScriptID(const char *name,ubyte is_door);"));
 	O(("void		STDCALLPTR CreateInstance(int id);"));
 	O(("void		STDCALL DestroyInstance(int id,void *ptr);"));
 	O(("short	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
@@ -9973,7 +9973,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("}"));
 	O((" "));
 	O(("// Find a message"));
-	O(("char *GetMessage(char *name)"));
+	O(("const char *GetMessage(const char *name)"));
 	O(("{"));
 	O(("	// Make sure given name is valid"));
 	O(("	if(name==NULL) return INV_MSGNAME_STRING;"));
@@ -10060,7 +10060,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("// ==============="));
 	O(("// GetGOScriptID()"));
 	O(("// ==============="));
-	O(("int STDCALL GetGOScriptID(char *name,ubyte isdoor)"));
+	O(("int STDCALL GetGOScriptID(const char *name,ubyte isdoor)"));
 	O(("{"));
 	O(("	return -1;"));
 	O(("}"));
@@ -11102,7 +11102,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the door list
 	O(("#define NUM_DOOR_NAMES		%d",m_DoorListSize));
 	if(m_DoorListSize>0) {
-		O(("char *Door_names[NUM_DOOR_NAMES] = {"));
+		O(("const char *Door_names[NUM_DOOR_NAMES] = {"));
 		for(j=0;j<(m_DoorListSize-1);j++)
 			O(("	\"%s\",",m_DoorList[j]));
 		O(("	\"%s\"",m_DoorList[j]));
@@ -11110,7 +11110,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Door_handles[NUM_DOOR_NAMES];"));
 	}
 	else {
-		O(("char **Door_names=NULL;"));
+		O(("const char **Door_names=NULL;"));
 		O(("int *Door_handles=NULL;"));
 	}
 	O((" "));
@@ -11118,7 +11118,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the object list
 	O(("#define NUM_OBJECT_NAMES		%d",m_ObjectListSize));
 	if(m_ObjectListSize>0) {
-		O(("char *Object_names[NUM_OBJECT_NAMES] = {"));
+		O(("const char *Object_names[NUM_OBJECT_NAMES] = {"));
 		for(j=0;j<(m_ObjectListSize-1);j++)
 			O(("	\"%s\",",m_ObjectList[j]));
 		O(("	\"%s\"",m_ObjectList[j]));
@@ -11126,7 +11126,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Object_handles[NUM_OBJECT_NAMES];"));
 	}
 	else {
-		O(("char **Object_names=NULL;"));
+		O(("const char **Object_names=NULL;"));
 		O(("int *Object_handles=NULL;"));
 	}
 	O((" "));
@@ -11134,7 +11134,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the room list
 	O(("#define NUM_ROOM_NAMES		%d",m_RoomListSize));
 	if(m_RoomListSize>0) {
-		O(("char *Room_names[NUM_ROOM_NAMES] = {"));
+		O(("const char *Room_names[NUM_ROOM_NAMES] = {"));
 		for(j=0;j<(m_RoomListSize-1);j++)
 			O(("	\"%s\",",m_RoomList[j]));
 		O(("	\"%s\"",m_RoomList[j]));
@@ -11142,7 +11142,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Room_indexes[NUM_ROOM_NAMES];"));
 	}
 	else {
-		O(("char **Room_names=NULL;"));
+		O(("const char **Room_names=NULL;"));
 		O(("int *Room_indexes=NULL;"));
 	}
 	O((" "));
@@ -11150,7 +11150,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the Trigger list
 	O(("#define NUM_TRIGGER_NAMES		%d",m_TriggerListSize));
 	if(m_TriggerListSize>0) {
-		O(("char *Trigger_names[NUM_TRIGGER_NAMES] = {"));
+		O(("const char *Trigger_names[NUM_TRIGGER_NAMES] = {"));
 		for(j=0;j<(m_TriggerListSize-1);j++)
 			O(("	\"%s\",",m_TriggerList[j]));
 		O(("	\"%s\"",m_TriggerList[j]));
@@ -11160,7 +11160,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Trigger_rooms[NUM_TRIGGER_NAMES];"));
 	}
 	else {
-		O(("char **Trigger_names=NULL;"));
+		O(("const char **Trigger_names=NULL;"));
 		O(("int *Trigger_indexes=NULL;"));
 		O(("int *Trigger_faces=NULL;"));
 		O(("int *Trigger_rooms=NULL;"));
@@ -11170,7 +11170,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the sound list
 	O(("#define NUM_SOUND_NAMES		%d",m_SoundListSize));
 	if(m_SoundListSize>0) {
-		O(("char *Sound_names[NUM_SOUND_NAMES] = {"));
+		O(("const char *Sound_names[NUM_SOUND_NAMES] = {"));
 		for(j=0;j<(m_SoundListSize-1);j++)
 			O(("	\"%s\",",m_SoundList[j]));
 		O(("	\"%s\"",m_SoundList[j]));
@@ -11178,7 +11178,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Sound_indexes[NUM_SOUND_NAMES];"));
 	}
 	else {
-		O(("char **Sound_names=NULL;"));
+		O(("const char **Sound_names=NULL;"));
 		O(("int *Sound_indexes=NULL;"));
 	}
 	O((" "));
@@ -11186,7 +11186,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the texture list
 	O(("#define NUM_TEXTURE_NAMES		%d",m_TextureListSize));
 	if(m_TextureListSize>0) {
-		O(("char *Texture_names[NUM_TEXTURE_NAMES] = {"));
+		O(("const char *Texture_names[NUM_TEXTURE_NAMES] = {"));
 		for(j=0;j<(m_TextureListSize-1);j++)
 			O(("	\"%s\",",m_TextureList[j]));
 		O(("	\"%s\"",m_TextureList[j]));
@@ -11194,7 +11194,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Texture_indexes[NUM_TEXTURE_NAMES];"));
 	}
 	else {
-		O(("char **Texture_names=NULL;"));
+		O(("const char **Texture_names=NULL;"));
 		O(("int *Texture_indexes=NULL;"));
 	}
 	O((" "));
@@ -11202,7 +11202,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the Path list
 	O(("#define NUM_PATH_NAMES		%d",m_PathListSize));
 	if(m_PathListSize>0) {
-		O(("char *Path_names[NUM_PATH_NAMES] = {"));
+		O(("const char *Path_names[NUM_PATH_NAMES] = {"));
 		for(j=0;j<(m_PathListSize-1);j++)
 			O(("	\"%s\",",m_PathList[j]));
 		O(("	\"%s\"",m_PathList[j]));
@@ -11210,7 +11210,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Path_indexes[NUM_PATH_NAMES];"));
 	}
 	else {
-		O(("char **Path_names=NULL;"));
+		O(("const char **Path_names=NULL;"));
 		O(("int *Path_indexes=NULL;"));
 	}
 	O((" "));
@@ -11218,7 +11218,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the Matcen list
 	O(("#define NUM_MATCEN_NAMES		%d",m_MatcenListSize));
 	if(m_MatcenListSize>0) {
-		O(("char *Matcen_names[NUM_MATCEN_NAMES] = {"));
+		O(("const char *Matcen_names[NUM_MATCEN_NAMES] = {"));
 		for(j=0;j<(m_MatcenListSize-1);j++)
 			O(("	\"%s\",",m_MatcenList[j]));
 		O(("	\"%s\"",m_MatcenList[j]));
@@ -11226,7 +11226,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Matcen_indexes[NUM_MATCEN_NAMES];"));
 	}
 	else {
-		O(("char **Matcen_names=NULL;"));
+		O(("const char **Matcen_names=NULL;"));
 		O(("int *Matcen_indexes=NULL;"));
 	}
 	O((" "));
@@ -11234,7 +11234,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the Goal list
 	O(("#define NUM_GOAL_NAMES		%d",m_GoalListSize));
 	if(m_GoalListSize>0) {
-		O(("char *Goal_names[NUM_GOAL_NAMES] = {"));
+		O(("const char *Goal_names[NUM_GOAL_NAMES] = {"));
 		for(j=0;j<(m_GoalListSize-1);j++)
 			O(("	\"%s\",",m_GoalList[j]));
 		O(("	\"%s\"",m_GoalList[j]));
@@ -11242,7 +11242,7 @@ void CDallasMainDlg::WriteNameListArrays(void)
 		O(("int Goal_indexes[NUM_GOAL_NAMES];"));
 	}
 	else {
-		O(("char **Goal_names=NULL;"));
+		O(("const char **Goal_names=NULL;"));
 		O(("int *Goal_indexes=NULL;"));
 	}
 	O((" "));
@@ -11250,16 +11250,16 @@ void CDallasMainDlg::WriteNameListArrays(void)
 	// Write out the message name list
 	O(("#define NUM_MESSAGE_NAMES		%d",m_MessageNameListSize));
 	if(m_MessageNameListSize>0) {
-		O(("char *Message_names[NUM_MESSAGE_NAMES] = {"));
+		O(("const char *Message_names[NUM_MESSAGE_NAMES] = {"));
 		for(j=0;j<(m_MessageNameListSize-1);j++)
 			O(("	\"%s\",",m_MessageNameList[j]));
 		O(("	\"%s\"",m_MessageNameList[j]));
 		O(("};"));
-		O(("char *Message_strings[NUM_MESSAGE_NAMES];"));
+		O(("const char *Message_strings[NUM_MESSAGE_NAMES];"));
 	}
 	else {
-		O(("char **Message_names=NULL;"));
-		O(("char **Message_strings=NULL;"));
+		O(("const char **Message_names=NULL;"));
+		O(("const char **Message_strings=NULL;"));
 	}
 	O((" "));
 }

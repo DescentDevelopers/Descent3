@@ -40,7 +40,7 @@
 
 static oeApplication *ParentApplication;
 
-extern int FindArg(char *);
+extern int FindArg(const char *);
 
 extern oeAppDatabase *Database;
 
@@ -3313,7 +3313,7 @@ void d3d_Screenshot(int bm_handle) {
 }
 
 // Returns a string describing the passed in error
-char *d3d_ErrorString(int error) {
+const char *d3d_ErrorString(int error) {
   switch (error) {
   case DD_OK:
     return "No error.\0";

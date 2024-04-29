@@ -392,7 +392,7 @@ void Inventory::Reset(bool in_game, int reset_stage) {
 }
 
 // adds an object to the inventory (marked by it's objhandle)
-bool Inventory::AddObject(int object_handle, int flags, char *description) {
+bool Inventory::AddObject(int object_handle, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
     mprintf((0, "Max unique count hit on add to inventory\n"));
@@ -500,7 +500,7 @@ bool Inventory::AddObject(int object_handle, int flags, char *description) {
 }
 
 // adds a new type/id item to the inventory
-bool Inventory::Add(int type, int id, object *parent, int aux_type, int aux_id, int flags, char *description) {
+bool Inventory::Add(int type, int id, object *parent, int aux_type, int aux_id, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
     mprintf((0, "Max unique count hit on add to inventory\n"));
@@ -525,7 +525,7 @@ bool Inventory::Add(int type, int id, object *parent, int aux_type, int aux_id, 
 }
 
 // adds a special cased CounterMeasure into the inventory
-bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, char *description) {
+bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS) {
     mprintf((0, "Hit max unique in counter measure add\n"));
@@ -600,7 +600,7 @@ bool Inventory::AddCounterMeasure(int id, int aux_type, int aux_id, int flags, c
 }
 
 // adds an object to the inventory
-bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flags, char *description) {
+bool Inventory::AddObjectItem(int otype, int oid, int oauxt, int oauxi, int flags, const char *description) {
   // make sure we can fit another object
   if (count >= MAX_UNIQUE_INVEN_ITEMS)
     return false;

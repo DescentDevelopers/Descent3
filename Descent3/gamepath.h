@@ -86,6 +86,6 @@ void InitGamePaths();
 
 // searches through GamePath index and returns index of path matching name
 // returns -1 if not found
-int FindGamePathName(char *name);
+int FindGamePathName(const char *name);
 
 #endif

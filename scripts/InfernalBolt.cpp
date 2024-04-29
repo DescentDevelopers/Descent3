@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -257,7 +257,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -325,7 +325,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -344,47 +344,47 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 0
-char **Door_names = NULL;
+const char **Door_names = NULL;
 int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 12
-char *Object_names[NUM_OBJECT_NAMES] = {"Switch",     "Fire1", "Fire2", "Fire3", "Fire4", "Fire5",
+const char *Object_names[NUM_OBJECT_NAMES] = {"Switch",     "Fire1", "Fire2", "Fire3", "Fire4", "Fire5",
                                         "BlueSwitch", "Blue1", "Blue2", "Blue3", "Blue4", "Blue5"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 2
-char *Room_names[NUM_ROOM_NAMES] = {"Inferno", "BlueFireRoom"};
+const char *Room_names[NUM_ROOM_NAMES] = {"Inferno", "BlueFireRoom"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 0
-char **Trigger_names = NULL;
+const char **Trigger_names = NULL;
 int *Trigger_indexes = NULL;
 int *Trigger_faces = NULL;
 int *Trigger_rooms = NULL;
 
 #define NUM_SOUND_NAMES 1
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch11"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch11"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
-char **Texture_names = NULL;
+const char **Texture_names = NULL;
 int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 0
-char **Path_names = NULL;
+const char **Path_names = NULL;
 int *Path_indexes = NULL;
 
 #define NUM_MATCEN_NAMES 0
-char **Matcen_names = NULL;
+const char **Matcen_names = NULL;
 int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 0
-char **Goal_names = NULL;
+const char **Goal_names = NULL;
 int *Goal_indexes = NULL;
 
 #define NUM_MESSAGE_NAMES 0
-char **Message_names = NULL;
-char **Message_strings = NULL;
+const char **Message_names = NULL;
+const char **Message_strings = NULL;
 
 // ===============
 // InitializeDLL()
@@ -402,7 +402,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -480,7 +480,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

@@ -234,13 +234,13 @@ typedef struct tFontTemplate {
 void grfont_Reset();
 
 //	returns a handle to a loaded font.
-int grfont_Load(char *fname);
+int grfont_Load(const char *fname);
 
 //	frees a loaded font
 void grfont_Free(int handle);
 
 // loads a font template
-bool grfont_LoadTemplate(char *fname, tFontTemplate *ft);
+bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft);
 
 // frees a font template
 void grfont_FreeTemplate(tFontTemplate *ft);

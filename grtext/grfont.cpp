@@ -172,7 +172,7 @@ inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem) {
   return i;
 }
 
-inline FONTFILE OPEN_FONT(char *filename) {
+inline FONTFILE OPEN_FONT(const char *filename) {
   FONTFILE fp;
   int file_id;
 
@@ -206,7 +206,7 @@ inline int WRITE_FONT_DATA(FONTFILE2 ffile, void *buf, int size, int nelem) {
   return i;
 }
 
-inline FONTFILE2 OPEN_FONT2(char *filename) {
+inline FONTFILE2 OPEN_FONT2(const char *filename) {
   FONTFILE2 fp;
 
   fp = (FONTFILE2)fopen(filename, "wb");
@@ -258,7 +258,7 @@ void grfont_Close() {
 }
 
 //	returns a handle to a loaded font.
-int grfont_Load(char *fname) {
+int grfont_Load(const char *fname) {
   FONTFILE ff;
   tFontFileInfo fnt;
   char fontname[32];
@@ -439,7 +439,7 @@ void grfont_Free(int handle) {
 }
 
 // loads a font template
-bool grfont_LoadTemplate(char *fname, tFontTemplate *ft) {
+bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
   FONTFILE ff;
   char fontname[32];
   short ft_width, ft_height, ft_flags, ft_minasc, ft_maxasc, num_char, i;
@@ -534,7 +534,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
 
   tFontFileInfo2 ffi2;
 
-  ffin = OPEN_FONT((char *)pathname);
+  ffin = OPEN_FONT(pathname);
   if (!ffin) {
     return false;
   } else if (ffin == (FONTFILE)0xffffffff) {
@@ -616,7 +616,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   fnt.char_widths = ft->ch_widths;
 
   // write out font.
-  ffout = OPEN_FONT2((char *)pathname);
+  ffout = OPEN_FONT2(pathname);
   if (!ffout) {
     return false;
   }

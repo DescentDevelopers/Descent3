@@ -750,7 +750,7 @@ int LGSVisEffects(CFILE *fp) {
       old_vis_effect old_vis;
 
       // Copy new into old
-      memcpy((ubyte *)&old_vis, (ubyte *)&vis, sizeof(old_vis_effect));
+      memcpy((ubyte *)&old_vis, (ubyte *)&vis, sizeof(vis_effect));
 
       // Read extra data from old
       cf_ReadBytes(((ubyte *)&old_vis) + sizeof(vis_effect), sizeof(old_vis_effect) - sizeof(vis_effect), fp);

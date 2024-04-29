@@ -31,7 +31,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte isdoor);
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -48,7 +48,7 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 #define MAX_IDS 0x02       // maximum number of IDs
 typedef struct {
   int id;
-  char *name;
+  const char *name;
 } tScriptInfo;
 
 tScriptInfo ScriptInfo[MAX_IDS] = {{ID_SHIELD_ORB, "Shield"}, {ID_ENERGY_ORB, "Energy"}};
@@ -94,7 +94,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
   for (int i = 0; i < MAX_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;

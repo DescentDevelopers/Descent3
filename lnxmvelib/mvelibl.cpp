@@ -51,8 +51,8 @@ unsigned opt_hscale_adj;
 
 #include "snd8to16.h"
 // len always specifies length of destination in bytes.
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned state);
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned state);
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned state);
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned state);
 
 static LnxWindow *mve_lpWin = NULL;
 
@@ -517,7 +517,7 @@ static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned 
 #endif
 }
 
-static void sndAdd(unsigned char *buf, unsigned len) {
+static void sndAdd(const unsigned char *buf, unsigned len) {
 #if SOUND_SUPPORT
 
   int dsrval;
@@ -1546,7 +1546,7 @@ void MVE_ReleaseMem(void) {
 
 //----------------------------------------------------------------------
 
-char *MVE_strerror(int code) {
+const char *MVE_strerror(int code) {
   char *errors[] = {"Movie aborted with special code",
                     "Movie aborted",
                     "Movie completed normally", // 0

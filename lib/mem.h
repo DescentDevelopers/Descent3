@@ -116,7 +116,7 @@ void mem_free_sub(void *memblock);
 //	prints out a memory error message
 void mem_error_msg(const char *file, int line, int size = -1);
 
-char *mem_strdup_sub(const char *src, char *file, int line);
+char *mem_strdup_sub(const char *src, const char *file, int line);
 
 void *mem_realloc_sub(void *memblock, int size);
 

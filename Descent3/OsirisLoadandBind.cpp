@@ -441,7 +441,7 @@ bool Show_osiris_debug = false;
 #if defined(__LINUX__)
 typedef char DLLFUNCCALL (*InitializeDLL_fp)(tOSIRISModuleInit *function_list);
 typedef void DLLFUNCCALL (*ShutdownDLL_fp)(void);
-typedef int DLLFUNCCALL (*GetGOScriptID_fp)(char *name, ubyte isdoor);
+typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, ubyte isdoor);
 typedef void DLLFUNCCALL *(*CreateInstance_fp)(int id);
 typedef void DLLFUNCCALL (*DestroyInstance_fp)(int id, void *ptr);
 typedef short DLLFUNCCALL (*CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -451,7 +451,7 @@ typedef int DLLFUNCCALL (*SaveRestoreState_fp)(void *file_ptr, ubyte saving_stat
 #else
 typedef char(DLLFUNCCALL *InitializeDLL_fp)(tOSIRISModuleInit *function_list);
 typedef void(DLLFUNCCALL *ShutdownDLL_fp)(void);
-typedef int(DLLFUNCCALL *GetGOScriptID_fp)(char *name, ubyte isdoor);
+typedef int(DLLFUNCCALL *GetGOScriptID_fp)(const char *name, ubyte isdoor);
 typedef void *(DLLFUNCCALL *CreateInstance_fp)(int id);
 typedef void(DLLFUNCCALL *DestroyInstance_fp)(int id, void *ptr);
 typedef short(DLLFUNCCALL *CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -1318,7 +1318,7 @@ int Osiris_LoadGameModule(char *module_name) {
 //	Returns -3 if the module is not a game module. Returns -4 if no module slots are available.
 //	This technically doesn't load a mission module, as it should already be loaded by
 //	Descent 3 prior.
-int Osiris_LoadMissionModule(module *module_handle, char *filename) {
+int Osiris_LoadMissionModule(module *module_handle, const char *filename) {
   if ((Game_mode & GM_MULTI) && (Netgame.local_role != LR_SERVER)) {
     // no scripts for a client!
     return -1;
@@ -3142,7 +3142,7 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   int count = 0;
 
-  char *script_extension;
+  const char *script_extension;
 #if defined(__LINUX__)
 #if defined(MACOSX)
   script_extension = "*.dylib";

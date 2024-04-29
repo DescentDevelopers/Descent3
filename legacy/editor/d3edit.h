@@ -497,9 +497,9 @@ void EndEditorFrame();
 
 //Set the editor error message.  A function that's going to return a failure
 //code should call this with the error message.
-void SetErrorMessage(char *fmt,...);
+void SetErrorMessage(const char *fmt,...);
 
 //Get the error message from the last function that returned failure
-char *GetErrorMessage();
+const char *GetErrorMessage();
 
 #endif

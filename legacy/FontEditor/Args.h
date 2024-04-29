@@ -40,8 +40,8 @@
 extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
 // Gathers all arguments
-void GatherArgs (char *str);
+void GatherArgs (const char *str);
 
 // Returns index of argument sought, or 0 if not found
-int FindArg (char *which);
+int FindArg (const char *which);
 #endif

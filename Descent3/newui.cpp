@@ -482,7 +482,7 @@ void NewUIClose() {
 //	DoWaitMessage(true,"Please Wait...");
 //	... //some code
 //	DoWaitMessage(false);
-void DoWaitMessage(bool enable, char *message) {
+void DoWaitMessage(bool enable, const char *message) {
   static bool opened = false;
   static ubyte cur_pos = 0;
   float curpos_f;
@@ -574,7 +574,7 @@ void DoWaitMessage(bool enable, char *message) {
   rend_Flip();
 }
 
-void DoWaitPopup(bool enable, char *message) {
+void DoWaitPopup(bool enable, const char *message) {
 #define FDWM_HEIGHT 128
 #define FDWM_WIDTH 256
 
@@ -805,7 +805,7 @@ void CloseUIWindow(UIWindow *wnd) {
 ///////////////////////////////////////////////////////////////////////////////
 //	large bitmap library
 
-int LoadLargeBitmap(char *filename, tLargeBitmap *bmp) {
+int LoadLargeBitmap(const char *filename, tLargeBitmap *bmp) {
   chunked_bitmap chunk;
   int bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
   if (bm_handle == -1) {

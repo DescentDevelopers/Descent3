@@ -62,20 +62,20 @@
 #define PBERR_NOERR 0
 
 typedef struct {
-  void (*AddTextEffect)(LPTCTEXTDESC desc, char *text, char *description, int id);
-  void (*AddBmpEffect)(LPTCBMPDESC desc, char *description);
-  void (*AddMovieEffect)(LPTCMOVIEDESC desc, char *description);
-  void (*AddBkgEffect)(LPTCBKGDESC desc, char *description);
-  void (*AddPolyEffect)(LPTCPOLYDESC desc, char *description);
-  void (*AddSoundEffect)(LPTCSNDDESC desc, char *description);
-  void (*AddButtonEffect)(LPTCBUTTONDESC desc, char *description, int id);
-  void (*StartScreen)(int screen_num, char *description, char *layout, uint mask_set, uint mask_unset);
+  void (*AddTextEffect)(LPTCTEXTDESC desc, const char *text, const char *description, int id);
+  void (*AddBmpEffect)(LPTCBMPDESC desc, const char *description);
+  void (*AddMovieEffect)(LPTCMOVIEDESC desc, const char *description);
+  void (*AddBkgEffect)(LPTCBKGDESC desc, const char *description);
+  void (*AddPolyEffect)(LPTCPOLYDESC desc, const char *description);
+  void (*AddSoundEffect)(LPTCSNDDESC desc, const char *description);
+  void (*AddButtonEffect)(LPTCBUTTONDESC desc, const char *description, int id);
+  void (*StartScreen)(int screen_num, const char *description, const char *layout, uint mask_set, uint mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();
-  void (*SetTitle)(char *title);
+  void (*SetTitle)(const char *title);
   void (*SetStatic)(float amount);
   void (*SetGlitch)(float amount);
-  void (*AddVoice)(char *filename, int flags, char *description);
+  void (*AddVoice)(const char *filename, int flags, const char *description);
 } tBriefParseCallbacks;
 
 typedef struct {
@@ -90,34 +90,34 @@ public:
   CBriefParse();
   ~CBriefParse();
   void SetCallbacks(tBriefParseCallbacks *cb);
-  int ParseBriefing(char *filename);
+  int ParseBriefing(const char *filename);
 
 private:
-  void (*AddTextEffect)(LPTCTEXTDESC desc, char *text, char *description, int id);
-  void (*AddBmpEffect)(LPTCBMPDESC desc, char *description);
-  void (*AddMovieEffect)(LPTCMOVIEDESC desc, char *description);
-  void (*AddBkgEffect)(LPTCBKGDESC desc, char *description);
-  void (*AddPolyEffect)(LPTCPOLYDESC desc, char *description);
-  void (*AddSoundEffect)(LPTCSNDDESC desc, char *description);
-  void (*AddButtonEffect)(LPTCBUTTONDESC desc, char *description, int id);
-  void (*StartScreen)(int screen_num, char *desc, char *layout, uint mask_set, uint mask_unset);
+  void (*AddTextEffect)(LPTCTEXTDESC desc, const char *text, const char *description, int id);
+  void (*AddBmpEffect)(LPTCBMPDESC desc, const char *description);
+  void (*AddMovieEffect)(LPTCMOVIEDESC desc, const char *description);
+  void (*AddBkgEffect)(LPTCBKGDESC desc, const char *description);
+  void (*AddPolyEffect)(LPTCPOLYDESC desc, const char *description);
+  void (*AddSoundEffect)(LPTCSNDDESC desc, const char *description);
+  void (*AddButtonEffect)(LPTCBUTTONDESC desc, const char *description, int id);
+  void (*StartScreen)(int screen_num, const char *desc, const char *layout, uint mask_set, uint mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();
-  void (*SetTitle)(char *title);
+  void (*SetTitle)(const char *title);
   void (*SetStatic)(float amount);
   void (*SetGlitch)(float amount);
-  void (*AddVoice)(char *filename, int flags, char *description);
+  void (*AddVoice)(const char *filename, int flags, const char *description);
 
-  void ParseError(char *msg, char *p = NULL);
-  char *ParseComma(char *p);
-  char *ParseFloat(char *p, float *f);
-  char *ParseInt(char *p, int *i);
-  char *ParseString(char *p, char *buf, int bufsize);
-  char *ParseToken(char *p, char *buf, int bufsize);
-  char *SkipWhite(char *p);
-  char *ParseKeyword(char *p, int *keyword_id);
-  bool ParseButtonEffect(char *p);
-  bool ParseTextEffect(char *p, tTextBufferDesc *tbd);
+  void ParseError(const char *msg, const char *p = NULL);
+  const char *ParseComma(const char *p);
+  const char *ParseFloat(const char *p, float *f);
+  const char *ParseInt(const char *p, int *i);
+  const char *ParseString(const char *p, char *buf, int bufsize);
+  const char *ParseToken(const char *p, char *buf, int bufsize);
+  const char *SkipWhite(const char *p);
+  const char *ParseKeyword(const char *p, int *keyword_id);
+  bool ParseButtonEffect(const char *p);
+  bool ParseTextEffect(const char *p, tTextBufferDesc *tbd);
 
   int linenum;
   bool parse_error;

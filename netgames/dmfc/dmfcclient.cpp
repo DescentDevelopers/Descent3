@@ -287,9 +287,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 #define SND_MYTEAM_TEAMMATE_KILLED "PlayerDeath"
 #define SND_NONTEAM_KILL "PlayerDeath"

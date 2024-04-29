@@ -1308,7 +1308,8 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int off
   return found; // successful!
 }
 
-char *Weapon_error = NULL, *Weapon_error_filename = NULL;
+const char *Weapon_error = NULL;
+const char *Weapon_error_filename = NULL;
 
 // First searches through the weapon index to see if the weapon is already
 // loaded.  If not, searches in the table file and loads it.

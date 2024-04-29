@@ -119,7 +119,7 @@ sound_file_info SoundFiles[MAX_SOUND_FILES];
 
 extern int paged_in_count;
 extern int paged_in_num;
-char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_index, bool f_high_quality,
+char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_file_index, bool f_high_quality,
                        bool f_load_sample_data, int *e_type) {
 
   // File pointer to sound file

@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -144,7 +144,7 @@ $$END
 
 // Enter your custom script code here
 typedef struct {
-  char *room_name;
+  const char *room_name;
   int room_id;
   int face_num;
 } tTextureInfo;
@@ -160,7 +160,7 @@ tTextureInfo texture_info[NUM_MONITORS] = {
     {"Room 82", 0, 125},          {"Control DataTerm", 0, 50}};
 
 typedef struct {
-  char *matcen_name;
+  const char *matcen_name;
   int matcen_id;
 } tMatcenInfo;
 
@@ -299,7 +299,7 @@ Update Bypass Connector display
 
 $$END
 */
-void aUpdateBypassConnDisplay(char *text, int level) {
+void aUpdateBypassConnDisplay(const char *text, int level) {
   msafe_struct mstruct;
 
   mstruct.color = GR_RGB(0, 255, 0);
@@ -409,7 +409,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -477,7 +477,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -496,49 +496,49 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 0
-char **Door_names = NULL;
+const char **Door_names = NULL;
 int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 27
-char *Object_names[NUM_OBJECT_NAMES] = {
+const char *Object_names[NUM_OBJECT_NAMES] = {
     "Spew1",  "Spew2",  "Spew3",  "Spew4",  "Spew5",     "Spew6",     "Spew7",     "Spew8",       "Spew9",
     "Spew10", "Spew11", "Spew12", "Spew13", "Spew14",    "Spew15",    "Spew16",    "Spew17",      "Spew18",
     "Spew19", "Spew20", "Spew21", "Spew22", "Big Spew1", "Big Spew2", "Big Spew3", "Repair Unit", "Wind Sound1"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 9
-char *Room_names[NUM_ROOM_NAMES] = {"203", "201", "204", "198", "207", "206", "205", "195", "208"};
+const char *Room_names[NUM_ROOM_NAMES] = {"203", "201", "204", "198", "207", "206", "205", "195", "208"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 0
-char **Trigger_names = NULL;
+const char **Trigger_names = NULL;
 int *Trigger_indexes = NULL;
 int *Trigger_faces = NULL;
 int *Trigger_rooms = NULL;
 
 #define NUM_SOUND_NAMES 3
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbExplosionFarC", "Briefstartup1", "AmbDroneCaveWind"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbExplosionFarC", "Briefstartup1", "AmbDroneCaveWind"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
-char **Texture_names = NULL;
+const char **Texture_names = NULL;
 int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 0
-char **Path_names = NULL;
+const char **Path_names = NULL;
 int *Path_indexes = NULL;
 
 #define NUM_MATCEN_NAMES 0
-char **Matcen_names = NULL;
+const char **Matcen_names = NULL;
 int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 0
-char **Goal_names = NULL;
+const char **Goal_names = NULL;
 int *Goal_indexes = NULL;
 
 #define NUM_MESSAGE_NAMES 0
-char **Message_names = NULL;
-char **Message_strings = NULL;
+const char **Message_names = NULL;
+const char **Message_strings = NULL;
 
 // ===============
 // InitializeDLL()
@@ -556,7 +556,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -634,7 +634,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

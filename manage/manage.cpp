@@ -519,7 +519,7 @@ typedef struct {
 #define MAX_OLDFILE_ELEMENTS 10000
 int Num_old_files = 0;
 old_file *OldFiles;
-char *PageNames[] = {"Unknown",     "Texture", "Weapon",   "Robot", "Powerup",        "Door",
+const char *PageNames[] = {"Unknown",     "Texture", "Weapon",   "Robot", "Powerup",        "Door",
                      "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
 #ifndef RELEASE
 int Network_up = 1;
@@ -1647,11 +1647,11 @@ done:;
 // #define DELETING_PAGELOCKS	1
 // #define CLEANING_PAGELOCKS	1
 //  Given a list of names and a pagetype, unlocks the ones already inside the lock file
-int mng_UnlockPagelockSeries(char *names[], int *pagetypes, int num);
+int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num);
 // Goes through the pagelock table and deletes all duplicate entries
 int mng_DeleteDuplicatePagelocks();
 void ReorderPagelocks() {
-  char *names[] = {"Lava"};
+  const char *names[] = {"Lava"};
   int types[] = {PAGETYPE_SOUND};
   if (!mng_MakeLocker())
     return;
@@ -3080,7 +3080,7 @@ void Read256TextureNames ()
 
 #include "pstring.h"
 
-void DataError(char *fmt, ...) {
+void DataError(const char *fmt, ...) {
   // Got a data error!
   //	Int3();
 

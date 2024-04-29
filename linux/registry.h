@@ -66,17 +66,17 @@ typedef struct tKey {
 
 class CRegistry {
 public:
-  CRegistry(char *name);
+  CRegistry(const char *name);
   ~CRegistry();
   void Export();
   bool Import();
-  void CreateKey(char *name);
-  bool LookupKey(char *name);
-  bool CreateRecord(char *name, char type, void *data);
-  tRecord *LookupRecord(char *record, void *data);
-  int GetDataSize(char *record);
+  void CreateKey(const char *name);
+  bool LookupKey(const char *name);
+  bool CreateRecord(const char *name, char type, void *data);
+  tRecord *LookupRecord(const char *record, void *data);
+  int GetDataSize(const char *record);
   void GetSystemName(char *name);
-  void SetSystemName(char *name);
+  void SetSystemName(const char *name);
 
 private:
   void Destroy(void);

@@ -233,7 +233,7 @@ private:
   void CloseInputBitFile(BITFILE *bfile);
   void CloseOutputBitFile(BITFILE *bfile);
   void FilePrintBinary(FILE *file, uint code, int bits);
-  tVirtualFile *VFopen(char *filename, char *flags, int size = 0);
+  tVirtualFile *VFopen(const char *filename, const char *flags, int size = 0);
   int VFclose(tVirtualFile *f);
   int VFputc(int value, tVirtualFile *file);
   int VFgetc(tVirtualFile *file);

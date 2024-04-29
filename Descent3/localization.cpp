@@ -97,7 +97,7 @@
 #include "ddio.h"
 
 typedef struct {
-  char *tag;
+  const char *tag;
   int length;
 } tLangTag;
 
@@ -118,7 +118,7 @@ int String_table_size = 0;
 char **String_table = NULL;
 
 // list of the string table files, they will be loaded in the order they are listed
-char *String_table_list[] = {"D3.STR", NULL};
+const char *String_table_list[] = {"D3.STR", NULL};
 
 const char *_Error_string = "!!ERROR MISSING STRING!!";
 const char *_Empty_string = "\0";
@@ -143,7 +143,7 @@ int Localization_GetLanguage(void) { return Localization_language; }
 #define MAX_TAG_LENGTH 3
 
 int GetTotalStringCount(void);
-int LoadStringFile(char *filename, int starting_offset);
+int LoadStringFile(const char *filename, int starting_offset);
 sbyte _parse_line_information(char *line);
 char *_parse_string_tag(char *buffer);
 char *_parse_escape_chars(char *buffer);
@@ -223,17 +223,17 @@ void FreeStringTables(void) {
   String_table = NULL;
 }
 
-char *GetStringFromTable(int index) {
+const char *GetStringFromTable(int index) {
   if ((index < 0) || (index >= String_table_size))
-    return const_cast<char *>(_Error_string);
+    return _Error_string;
 
   if (!String_table[index])
-    return const_cast<char *>(_Empty_string);
+    return _Empty_string;
 
   return String_table[index];
 }
 
-void FixFilenameCase(char *filename, char *newfile) {
+void FixFilenameCase(const char *filename, char *newfile) {
   char path[_MAX_PATH], file[_MAX_FNAME], ext[256];
   ddio_SplitPath(filename, path, file, ext);
 
@@ -261,7 +261,7 @@ void FixFilenameCase(char *filename, char *newfile) {
 // Given a filename, pointer to a char * array and a pointer to an int,
 // it will load the string table and fill in the information
 // returns true on success
-bool CreateStringTable(char *filename, char ***table, int *size) {
+bool CreateStringTable(const char *filename, char ***table, int *size) {
   ASSERT(filename);
   ASSERT(Localization_language != -1);
   if (!filename) {
@@ -467,7 +467,7 @@ int GetTotalStringCount(void) {
 }
 
 // Loads a string table file, returns number of strings read if everything went ok,else 0
-int LoadStringFile(char *filename, int starting_offset) {
+int LoadStringFile(const char *filename, int starting_offset) {
   ASSERT(filename);
   ASSERT(Localization_language != -1);
   if (!filename)

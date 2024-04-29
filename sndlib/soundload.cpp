@@ -253,7 +253,7 @@
 int Num_sounds = 0;
 int Num_sound_files = 0;
 
-char *Static_sound_names[NUM_STATIC_SOUNDS] = {
+const char *Static_sound_names[NUM_STATIC_SOUNDS] = {
     TBL_SOUND("Default"),                      // 0	SOUND_NONE_INDEX
     TBL_SOUND("Refuel"),                       // 1	SOUND_REFUELING
     TBL_SOUND("DefaultRobotExplode1"),         // 2	SOUND_ROBOT_EXPLODE_1
@@ -395,7 +395,7 @@ int FindSoundFileName(char *name) {
 }
 
 // gets the filename from a path, plus appends our .wav extension
-void ChangeSoundFileName(char *src, char *dest) {
+void ChangeSoundFileName(const char *src, char *dest) {
   int limit;
   char path[256], ext[256], filename[256];
 
@@ -410,7 +410,7 @@ void ChangeSoundFileName(char *src, char *dest) {
 }
 
 // Given a filename, loads the sound file.
-int LoadSoundFile(char *filename, float import_volume, bool f_get_data) {
+int LoadSoundFile(const char *filename, float import_volume, bool f_get_data) {
   int sound_file_index;
   char extension[10];
   char name[90];
@@ -560,7 +560,7 @@ int GetPrevSound(int n) {
 }
 // Searches thru all sounds for a specific name, returns -1 if not found
 // or index of sound with name
-int FindSoundName(char *name) {
+int FindSoundName(const char *name) {
   int i;
 
   ASSERT(name != NULL);

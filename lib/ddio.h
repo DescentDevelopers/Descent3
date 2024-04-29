@@ -327,7 +327,7 @@ bool ddio_RemoveDir(const char *path);
 
 // deletes a file.  Returns 1 if successful, 0 on failure
 //	This pathname is *RELATIVE* not fully qualified
-int ddio_DeleteFile(char *name);
+int ddio_DeleteFile(const char *name);
 
 // Save/Restore the current working directory
 void ddio_SaveWorkingDir(void);
@@ -411,15 +411,15 @@ bool ddio_GetFullPath(char *full_path, const char *rel_path);
 //		filename - buffer to hold generated filename (must be at least _MAX_PATH in length)
 //
 // Returns TRUE if successful, FALSE if an error
-bool ddio_GetTempFileName(char *basedir, char *prefix, char *filename);
+bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename);
 
 // Renames file
 // Returns true on success or false on an error
 bool ddio_RenameFile(char *oldfile, char *newfile);
 
 // Give a volume label to look for, and if it's found returns a path
-// If it isn't found, return ""
-char *ddio_GetCDDrive(char *vol);
+// If it isn't found, return NULL
+const char *ddio_GetCDDrive(const char *vol);
 
 // Checks to see if a lock file is located in the specified directory.
 //	Parameters:

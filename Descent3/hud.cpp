@@ -845,7 +845,7 @@ void InitHUDItem(int new_item, tHUDItem *item) {
     stat = STAT_CUSTOM;
     break;
 
-  case HUD_ITEM_CUSTOMTEXT2: // malloc buffer to be updated later
+  case HUD_ITEM_CUSTOMTEXT2:  // malloc buffer to be updated later
     HUD_array[new_item].data.text = (char *)mem_malloc(item->buffer_size);
     HUD_array[new_item].data.text[0] = 0;
     HUD_array[new_item].buffer_size = item->buffer_size;
@@ -1386,7 +1386,7 @@ char *GetKeyBindingText(int fidkey) {
   return key_bind_txt;
 }
 
-void DoEnabledControlsLine(char *controlp, char *keyp, char *label, int y, char *axis = NULL) {
+void DoEnabledControlsLine(const char *controlp, const char *keyp, const char *label, int y, const char *axis = NULL) {
   char control_text[200] = "";
 
   strcpy(control_text, label);

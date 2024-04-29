@@ -1913,7 +1913,7 @@ char **PltGetPilots(int *count, char *ignore_filename, int display_default_confi
           }
 
           if (curr) {
-            curr->filename = (char *)mem_strdup(buffer);
+            curr->filename = mem_strdup(buffer);
 
             if (curr->filename) {
               (*count)++;
@@ -3285,7 +3285,7 @@ bool PltSelectShip(pilot *Pilot) {
           } // end else (file size)
         } else {
           int imp_err = taunt_GetError();
-          char *err = taunt_GetErrorString(imp_err);
+          const char *err = taunt_GetErrorString(imp_err);
           // failure
           DoMessageBox(TXT_ERROR, err, MSGBOX_OK);
         }

@@ -113,9 +113,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 // DMFCBase::RegisterPacketReceiver
 //
@@ -402,10 +402,10 @@ void DMFCBase::SendDMFCGameInfo(int player) {
     MultiAddByte(m_bMakeClientsWait, data, &count);
     MultiAddByte(GetNumTeams(), data, &count);
 
-    MultiAddString((char *)GetTeamString(RED_TEAM), data, &count);
-    MultiAddString((char *)GetTeamString(BLUE_TEAM), data, &count);
-    MultiAddString((char *)GetTeamString(GREEN_TEAM), data, &count);
-    MultiAddString((char *)GetTeamString(YELLOW_TEAM), data, &count);
+    MultiAddString(GetTeamString(RED_TEAM), data, &count);
+    MultiAddString(GetTeamString(BLUE_TEAM), data, &count);
+    MultiAddString(GetTeamString(GREEN_TEAM), data, &count);
+    MultiAddString(GetTeamString(YELLOW_TEAM), data, &count);
 
   } else {
     // non-team game

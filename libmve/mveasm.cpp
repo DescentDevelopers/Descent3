@@ -42,8 +42,8 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 void nfHPkDecomp(unsigned char *ops, unsigned char *comp, int x, int y, int w, int h);
 void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 void nfPkConfig(void);
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev);
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev);
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
 
 void Trans16Blk(unsigned char *edi, const unsigned char *idx);
 void DOnf_xycshift(const bool hiColor, const unsigned int eax, unsigned char *&edi, const int nfpk_back_right);
@@ -59,7 +59,7 @@ void DOnf_shift(const bool hiColor, int eax, unsigned char *&edi, const int nfpk
 // (src is len bytes, dst is len*2 bytes)
 // prev is the previous decompression state or zero.
 // Returns new decompression state.
-unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
   unsigned int i, eax, ebx;
   if (len == 0)
     return prev;
@@ -84,7 +84,7 @@ unsigned sndDecompM16(unsigned short *dst, unsigned char *src, unsigned len, uns
 //	(It encodes the 16-bit states of the two stereo channels
 //	in its low and high order 16-bit halves.)
 //	Returns new decompression state.
-unsigned sndDecompS16(unsigned short *dst, unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
   unsigned re = 0;
   unsigned int eax, edx, ebx, i;
 

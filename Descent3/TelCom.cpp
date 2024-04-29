@@ -549,7 +549,7 @@ tTelComInfo Telcom_system;
 
 chunked_bitmap Telcom_bitmap; // background bitmap for telcom system
 chunked_bitmap *hotspot_bitmaps;
-int LoadTelcomBitmap(char *filename, chunked_bitmap *bmp);
+int LoadTelcomBitmap(const char *filename, chunked_bitmap *bmp);
 bool TelComMainMenu(tTelComInfo *tcs);
 
 void TelCom_PrepareCustomKeyEvents(void);
@@ -644,7 +644,7 @@ void TelComMain(bool ingame, bool SelectShip) {
         char basefilename[_MAX_FNAME];
         char briefingname[_MAX_FNAME];
         char extension[_MAX_FNAME];
-        char *tag[] = {"", "_GER", "_SPN", "_ITN", "_FRN"};
+        const char *tag[] = {"", "_GER", "_SPN", "_ITN", "_FRN"};
         bool ok_to_go = false;
 
         ddio_SplitPath(Current_level->briefname, NULL, basefilename, extension);
@@ -1040,7 +1040,7 @@ int HotSpotB(int hotspot) {
   return hotspotmap.hs[hotspot].starting_y + hotspotmap.hs[hotspot].scanlines;
 }
 
-int LoadTelcomBitmap(char *filename, chunked_bitmap *chunk) {
+int LoadTelcomBitmap(const char *filename, chunked_bitmap *chunk) {
   int bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
   if (bm_handle == -1)
     return 0;
@@ -1369,7 +1369,7 @@ void TelcomRenderOverlays(void);
 //	Renders the screen hilights
 void TelcomRenderDrawHiLites(void);
 //	Loads the Hilites for a monitor
-void TelcomLoadHiLites(char *filelist[], int monitor, int xoff, int yoff);
+void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff);
 //	Frees all the memory allocated for the hilites
 void TelcomFreeHiLites(void);
 //	Renders the scanline to be drawn
@@ -1833,8 +1833,8 @@ void TelcomDisplayCorners(void) {
   }
 }
 
-char *hilites[] = {"hilite0", "hilite1", "hilite2", "hilite3", "hilite4", "hilite5", NULL};
-char *smhilites[] = {"smhilite01", "smhilite11", "smhilite21", "smhilite31", "smhilite41",
+const char *hilites[] = {"hilite0", "hilite1", "hilite2", "hilite3", "hilite4", "hilite5", NULL};
+const char *smhilites[] = {"smhilite01", "smhilite11", "smhilite21", "smhilite31", "smhilite41",
                      "smhilite51", "smhilite61", "smhilite71", NULL};
 
 /*
@@ -1957,7 +1957,7 @@ void TelcomRenderDrawHiLites(void) {
 }
 
 //	Loads the Hilites for a monitor
-void TelcomLoadHiLites(char *filelist[], int monitor, int xoff, int yoff) {
+void TelcomLoadHiLites(const char *filelist[], int monitor, int xoff, int yoff) {
   if (!filelist)
     return;
   ASSERT(monitor >= 0 && monitor < MAX_MONITOR);
@@ -3277,7 +3277,7 @@ typedef struct {
 
 TCSound TelcomSounds[TCSND_SOUNDCOUNT];
 
-char *TCSoundFiles[] = {"Briefstartup1", "BriefStatic",  "Briefmonitoroff1", "Briefingrunning",
+const char *TCSoundFiles[] = {"Briefstartup1", "BriefStatic",  "Briefmonitoroff1", "Briefingrunning",
                         "Briefbulb1",    "Briefingtype", "Menu Slider Click"};
 
 /*
@@ -3827,7 +3827,7 @@ void TCSSSCallback(void) {
   int max_height = y + 150;
   grtext_SetFont(BRIEFING_FONT);
   int height = grfont_GetHeight(BRIEFING_FONT);
-  char *line_text;
+  const char *line_text;
   char buffy[512];
   char linebuffer[512];
 
@@ -3926,7 +3926,7 @@ void TCSSPutButtonsOnScreen(void) {
   int curr_x, curr_y;
   curr_x = left_x + 3;
   curr_y = top_y + 2;
-  char *lit_name, *name;
+  const char *lit_name, *name;
 
   for (i = 0; i < MAX_NUM_SHIPS; i++) {
     if (SSShips[i].found) {

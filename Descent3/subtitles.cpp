@@ -142,7 +142,7 @@ char *parse_int(char *buf, int *d) {
   }
 }
 
-char *parse_token(char *p, char *token) {
+char *parse_token(char *p, const char *token) {
   ASSERT(p);
   ASSERT(token);
 

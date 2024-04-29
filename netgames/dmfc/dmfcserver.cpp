@@ -105,9 +105,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 // ###################Server Only functions################################
 
@@ -266,7 +266,7 @@ void DMFCBase::OnServerObjectShieldsChanged(object *obj, float amount) {}
 // DMFCBase::OnServerIsAddressBanned
 //
 //	Called by the game to determine if the given network address is banned from the game
-bool DMFCBase::OnServerIsAddressBanned(network_address *addr, char *tracker_id) {
+bool DMFCBase::OnServerIsAddressBanned(network_address *addr, const char *tracker_id) {
   return IsAddressBanned(addr, tracker_id);
 }
 

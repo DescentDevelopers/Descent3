@@ -2886,7 +2886,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 
 // This is a terrible hack -- it maps powerup to multi-pack versions
 // This mapping should really be on the powerup page
-char *powerup_multipacks[] = {"Concussion", "4packConc",   "Frag",   "4packFrag",
+const char *powerup_multipacks[] = {"Concussion", "4packConc",   "Frag",   "4packFrag",
                               "Guided",     "4packGuided", "Homing", "4packHoming"};
 #define N_POWERUP_MULTIPACKS (sizeof(powerup_multipacks) / sizeof(*powerup_multipacks) / 2)
 

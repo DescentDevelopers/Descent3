@@ -67,6 +67,6 @@
 
 #include "TelCom.h"
 
-bool ParseBriefing(char *filename, tTelComInfo *tcs);
+bool ParseBriefing(const char *filename, tTelComInfo *tcs);
 
 #endif

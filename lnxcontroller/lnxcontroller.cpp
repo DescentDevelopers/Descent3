@@ -161,7 +161,7 @@ char Ctltext_PovBindings[][16] = {"", "pov-U", "pov-R", "pov-D", "pov-L"};
 
 // retrieves binding text for desired function, binding, etc.
 const char *lnxgameController::get_binding_text(ct_type type, ubyte ctrl, ubyte bind) {
-  static char binding_text[16];
+  static char binding_text[32];
   const char *str;
 
   if (ctrl == NULL_CONTROLLER) {

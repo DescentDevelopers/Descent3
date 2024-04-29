@@ -218,7 +218,7 @@ void FileSelectCallback(int index) {
 //		path	- Initial path, will contain the chosen file/path on exit with true, must be at least _MAX_PATH
 // in size 		title	- Title of the dialog 		wildc	- semicolon (;) seperated list of wildcards to
 // be shown 		flags	- see header PFDF_ for flags
-bool DoPathFileDialog(bool save_dialog, char *path, char *title, char *wildc, int flags) {
+bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const char *wildc, int flags) {
 #define HS_CANCEL 0
 #define HS_OK 1
 #define HS_UPDIR 0

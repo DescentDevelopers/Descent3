@@ -142,8 +142,8 @@ void CBriefParse::SetCallbacks(tBriefParseCallbacks *cb) {
 #define B_QUIT 4    // exit TelCom
 
 // Keywords.  These must match the keyword IDs above
-char *keywords[] = {"screen", "button", "text",  "endtext", "bitmap", "endscreen", "movie",
-                    "poly",   "title",  "sound", "static",  "glitch", "voice"};
+const char *keywords[] = {"screen", "button", "text",  "endtext", "bitmap", "endscreen", "movie",
+                          "poly",   "title",  "sound", "static",  "glitch", "voice"};
 
 #define tfxNONE 0
 #define tfxFLASH 1
@@ -157,10 +157,10 @@ char *keywords[] = {"screen", "button", "text",  "endtext", "bitmap", "endscreen
 
 #define fntSMBRIEF 0
 #define fntLGBRIEF 1
-char *FontNames[] = {"sm_brief", "lg_brief", NULL};
+const char *FontNames[] = {"sm_brief", "lg_brief", NULL};
 
-char *TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "scroll_r2l", "scroll_t2b",
-                         "scroll_b2t", "fade_in_and_out", "fade_in",    "fade_out",   NULL};
+const char *TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "scroll_r2l", "scroll_t2b",
+                               "scroll_b2t", "fade_in_and_out", "fade_in",    "fade_out",   NULL};
 #define bfxNONE 0
 #define bfxFADE_IN 1
 #define bfxFADE_OUT 2
@@ -173,8 +173,8 @@ char *TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "scroll_
 #define bfxSTRETCH_IN 9
 #define bfxSTRETCH_OUT 10
 
-char *BitmapEffectstr[] = {"None",     "Fade_in",   "Fade_out",   "Blur_in",    "Blur_out",    "Scan_in",
-                           "Scan_out", "Invert_in", "Invert_out", "Stretch_in", "Stretch_out", NULL};
+const char *BitmapEffectstr[] = {"None",     "Fade_in",   "Fade_out",   "Blur_in",    "Blur_out",    "Scan_in",
+                                 "Scan_out", "Invert_in", "Invert_out", "Stretch_in", "Stretch_out", NULL};
 
 ////////////////////////////////////////////
 //	These are the types of on screen buttons
@@ -185,7 +185,7 @@ char *BitmapEffectstr[] = {"None",     "Fade_in",   "Fade_out",   "Blur_in",    
 #define osbQUIT 4
 #define osbJUMP_PAGE 5
 
-char *OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", NULL};
+const char *OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", NULL};
 
 /////////////////////////////////////////////
 // These are the different ways an onscreen button will respond to mouse clicks
@@ -193,7 +193,7 @@ char *OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", NUL
 #define oscCLICK_DOWN 1
 #define oscCLICK_UP 2
 
-char *OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", NULL};
+const char *OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", NULL};
 
 #define PARSE_INT(i)                                                                                                   \
   do {                                                                                                                 \
@@ -295,7 +295,7 @@ int ReadFullLine(char **data, CFILE *ifile) {
 //	ParseBriefing
 //
 //	Parses the briefing file (calling the callbacks throughout), check return code
-int CBriefParse::ParseBriefing(char *filename) {
+int CBriefParse::ParseBriefing(const char *filename) {
   CFILE *ifile;
   bool retvalue = false;
   bool voice_def_screen = false;
@@ -336,7 +336,7 @@ int CBriefParse::ParseBriefing(char *filename) {
 
   // Read & parse lines
   int bytes_read;
-  char *p;
+	const char *p;
 
   linebuf = NULL;
 
@@ -843,7 +843,7 @@ done_parsing:;
 }
 
 // Parses the keyword description for an OnScreenButton
-bool CBriefParse::ParseButtonEffect(char *p) {
+bool CBriefParse::ParseButtonEffect(const char *p) {
   int type = osbPREV_PAGE, ctype = oscCLICK_UP;
   // creates an input button
   int x, y, screen;
@@ -1026,7 +1026,7 @@ done_parsing:
 }
 
 //	Parses a text keyword description
-bool CBriefParse::ParseTextEffect(char *p, tTextBufferDesc *tbd) {
+bool CBriefParse::ParseTextEffect(const char *p, tTextBufferDesc *tbd) {
   tbd->textdesc.caps = 0;
   tbd->textdesc.type = TC_TEXT_STATIC;
   tbd->textdesc.flags = 0;
@@ -1183,7 +1183,7 @@ done_parsing:
 }
 
 // Generates an parsing error
-void CBriefParse::ParseError(char *msg, char *p) {
+void CBriefParse::ParseError(const char *msg, const char *p) {
   mprintf((0, "ERROR, line %d: %s\n", linenum, msg));
   if (p) {
     mprintf((0, "  %s\n", p));
@@ -1193,7 +1193,7 @@ void CBriefParse::ParseError(char *msg, char *p) {
 }
 
 // Parses a keyword
-char *CBriefParse::ParseKeyword(char *p, int *keyword_id) {
+const char *CBriefParse::ParseKeyword(const char *p, int *keyword_id) {
   int i;
 
   *keyword_id = K_NONE;
@@ -1216,7 +1216,7 @@ char *CBriefParse::ParseKeyword(char *p, int *keyword_id) {
 
 // Removes whitespace from the start of the given string.
 // Returns a pointer to the first non-white character
-char *CBriefParse::SkipWhite(char *p) {
+const char *CBriefParse::SkipWhite(const char *p) {
   while (isspace(*p))
     p++;
 
@@ -1224,8 +1224,8 @@ char *CBriefParse::SkipWhite(char *p) {
 }
 
 // Parses a sequence of non-space characters
-char *CBriefParse::ParseToken(char *p, char *buf, int bufsize) {
-  char *save_p;
+const char *CBriefParse::ParseToken(const char *p, char *buf, int bufsize) {
+  const char *save_p;
 
   p = SkipWhite(p);
 
@@ -1247,8 +1247,8 @@ char *CBriefParse::ParseToken(char *p, char *buf, int bufsize) {
 
 // Parses a quoted string
 // Returns true if got string ok, else false
-char *CBriefParse::ParseString(char *p, char *buf, int bufsize) {
-  char *save_p;
+const char *CBriefParse::ParseString(const char *p, char *buf, int bufsize) {
+  const char *save_p;
 
   p = SkipWhite(p);
 
@@ -1284,8 +1284,8 @@ char *CBriefParse::ParseString(char *p, char *buf, int bufsize) {
 }
 
 // Parses an integer value
-char *CBriefParse::ParseInt(char *p, int *i) {
-  char *t;
+const char *CBriefParse::ParseInt(const char *p, int *i) {
+  const char *t;
   bool got_digit = 0;
 
   t = p = SkipWhite(p);
@@ -1315,8 +1315,8 @@ char *CBriefParse::ParseInt(char *p, int *i) {
 }
 
 // Parses a floating-point value
-char *CBriefParse::ParseFloat(char *p, float *f) {
-  char *t;
+const char *CBriefParse::ParseFloat(const char *p, float *f) {
+  const char *t;
   bool got_digit = 0;
 
   t = p = SkipWhite(p);
@@ -1359,7 +1359,7 @@ char *CBriefParse::ParseFloat(char *p, float *f) {
 }
 
 // Parses a comma
-char *CBriefParse::ParseComma(char *p) {
+const char *CBriefParse::ParseComma(const char *p) {
   p = SkipWhite(p);
 
   if (*p != ',') {

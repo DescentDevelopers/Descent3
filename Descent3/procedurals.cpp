@@ -76,10 +76,10 @@ ushort ProcFadeTable[32768];
 #define NUM_WATER_SHADES 64
 ushort WaterProcTableHi[NUM_WATER_SHADES][256];
 ubyte WaterProcTableLo[NUM_WATER_SHADES][256];
-char *ProcNames[] = {"None",     "Line Lightning", "Sphere lightning", "Straight", "Rising Embers", "Random Embers",
+const char *ProcNames[] = {"None",     "Line Lightning", "Sphere lightning", "Straight", "Rising Embers", "Random Embers",
                      "Spinners", "Roamers",        "Fountain",         "Cone",     "Fall Right",    "Fall Left",
                      "END"};
-char *WaterProcNames[] = {"None", "Height blob", "Sine Blob", "Random Raindrops", "Random Blobdrops", "END"};
+const char *WaterProcNames[] = {"None", "Height blob", "Sine Blob", "Random Raindrops", "Random Blobdrops", "END"};
 static ubyte *ProcDestData;
 int pholdrand = 1;
 inline int prand() { return (((pholdrand = pholdrand * 214013L + 2531011L) >> 16) & 0x7fff); }

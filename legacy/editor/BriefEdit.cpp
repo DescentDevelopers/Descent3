@@ -391,7 +391,7 @@ ubyte BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalVal
 					cf_WriteString(file,buffer);
 
 					//now write out all the text
-					char *p = effects[curr_effect].text;
+					const char *p = effects[curr_effect].text;
 					while(p){
 						p = textaux_CopyTextLine(p,buffer);
 						cf_WriteString(file,buffer);

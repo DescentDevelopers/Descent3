@@ -488,7 +488,7 @@ void CScriptSyncDialog::DoStuff(void)
 							if(string)
 							{
 								char buffer[2048];
-								char *next_line;
+								const char *next_line;
 
 								mprintf((0,"===========================================\n"));
 								next_line = textaux_CopyTextLine(string,buffer);

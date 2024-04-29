@@ -1855,7 +1855,7 @@ char *GetFileNameFromPlayerAndID(short playernum, short id);
   }
 
 // Gets us out of a multiplayer game in a hurry...useful for when things are screwed
-void BailOnMultiplayer(char *message) {
+void BailOnMultiplayer(const char *message) {
   Int3(); // Get Jason
 
   // Show message
@@ -5061,7 +5061,7 @@ void MultiSendMessageToServer(int color, char *message, int to_who) {
 void MultiDoExecuteDLL(ubyte *data) {
   int count = 0;
   float fParam = 0;
-  int iParam = 0;
+  ptrdiff_t iParam = 0;
 
   SKIP_HEADER(data, &count);
 
@@ -6696,7 +6696,7 @@ void MultiPaintGoalRooms(int *texcolors) {
   $$TABLE_TEXTURE "Yellowbase"
   */
 
-  char *tnames[] = {"RedBase", "BlueBase", "GreenBase", "YellowBase"};
+  const char *tnames[] = {"RedBase", "BlueBase", "GreenBase", "YellowBase"};
 
   for (i = 0; i < MAX_TEAMS; i++) {
     int roomnum = GetGoalRoomForTeam(i);
@@ -7939,7 +7939,7 @@ void MultiDoFileCancelled(ubyte *data) {
 // ddio_splitpath
 void MultiSendClientCustomData(int slot, int whoto) {
   ubyte data[MAX_GAME_DATA_SIZE];
-  char csum_filename[_MAX_PATH];
+  char csum_filename[(_MAX_PATH * 2) + 64];
   char path[_MAX_PATH];
   char ext[_MAX_PATH];
   char file[_MAX_PATH];
@@ -9435,7 +9435,7 @@ void MultiDoBashPlayerShip(ubyte *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
-  int ship_index = FindShipName((char *)data + count);
+  int ship_index = FindShipName((const char *)data + count);
   if (ship_index < 0)
     ship_index = 0;
 

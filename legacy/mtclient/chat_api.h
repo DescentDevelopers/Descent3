@@ -64,7 +64,7 @@ char *GetChannelList(void);
 char *GetTrackerIdByUser(char *nickname);
 char *GetChannelByUser(char *nickname);
 
-char *ChatGetString(void);
+const char *ChatGetString(void);
 char * GetWordNum(int num, char * l_String);
 char * ParseIRCMessage(char *Line, int iMode);
 int AddChatUser(char *nickname);

@@ -115,7 +115,7 @@ typedef struct {
   sound_buffer_info *sound_cache; // the array of sound information
 
   void (*fp_SetError)(int code);
-  void (*fp_ErrorText)(char *fmt, ...);
+  void (*fp_ErrorText)(const char *fmt, ...);
   int *p_error_code;
 
   llsSystem *ll_sound_ptr;
@@ -148,7 +148,7 @@ private:
   sound_buffer_info *m_sound_cache;
 
   void (*m_fpSetError)(int code);
-  void (*m_fpErrorText)(char *fmt, ...);
+  void (*m_fpErrorText)(const char *fmt, ...);
   int *m_error_code;
 };
 

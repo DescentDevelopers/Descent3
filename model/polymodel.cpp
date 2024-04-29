@@ -2044,7 +2044,7 @@ extern int paged_in_num;
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
-int LoadPolyModel(char *filename, int pageable) {
+int LoadPolyModel(const char *filename, int pageable) {
   char name[256];
   char fname[256], pname[256], extname[256];
   int i, polynum = -1;
@@ -2213,7 +2213,7 @@ poly_model *GetPolymodelPointer(int polynum) {
 }
 
 // gets the filename from a path
-void ChangePolyModelName(char *src, char *dest) {
+void ChangePolyModelName(const char *src, char *dest) {
   int limit;
   char path[256], ext[256], filename[256];
 
@@ -2228,7 +2228,7 @@ void ChangePolyModelName(char *src, char *dest) {
 }
 // Searches thru all polymodels for a specific name, returns -1 if not found
 // or index of polymodel with name
-int FindPolyModelName(char *name) {
+int FindPolyModelName(const char *name) {
   int i;
 
   for (i = 0; i < MAX_POLY_MODELS; i++)

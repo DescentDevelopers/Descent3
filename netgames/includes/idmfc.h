@@ -296,7 +296,7 @@ public:
   // DMFCBase::OnServerIsAddressBanned
   //
   //	Called by the game to determine if the given network address is banned from the game
-  virtual bool OnServerIsAddressBanned(network_address *addr, char *tracker_id) = 0;
+  virtual bool OnServerIsAddressBanned(network_address *addr, const char *tracker_id) = 0;
 
   // DMFCBase::OnServerWallCollide
   //
@@ -692,13 +692,13 @@ public:
   //    This will add a death message to DMFC.
   //    format = string in a "printf" type format (using %s for player callsigns) of the message
   //    victim_first = Set this to true if the victim is listed first in the format
-  virtual void AddDeathMessage(char *string, bool victim_first = true) = 0;
+  virtual void AddDeathMessage(const char *string, bool victim_first = true) = 0;
 
   // DMFCBase::AddSuicideMessage
   //
   //    This will add a death message to DMFC.
   //    format = string in a "printf" type format (using %s for player callsigns) of the message
-  virtual void AddSuicideMessage(char *string) = 0;
+  virtual void AddSuicideMessage(const char *string) = 0;
 
   // DMFCBase::DoRandomDeathMessage
   //
@@ -1000,7 +1000,7 @@ public:
   //
   //	Sets a death message for a weapon kill (you only need to pass in one version of the weapon if it
   //  consists of multiple weapons...make sure AddWeaponHash has been called before this for this weapon)
-  virtual bool SetWeaponDeathMessage(char *weapon_name, char *message, bool victim_first) = 0;
+  virtual bool SetWeaponDeathMessage(const char *weapon_name, const char *message, bool victim_first) = 0;
 
   // DMFCBase::GetWeaponDeathMessage
   //
@@ -1012,14 +1012,14 @@ public:
   //	Since one weapon may actually consist of many weapons, in order to save space you can create
   //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
   //  get the actual weapon.  End list of children with a NULL
-  virtual void AddWeaponHash(char *parent, ...) = 0;
+  virtual void AddWeaponHash(const char *parent, ...) = 0;
 
   // DMFCBase::AddWeaponHashArray
   //
   //	Since one weapon may actually consist of many weapons, in order to save space you can create
   //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
   //  get the actual weapon.
-  virtual void AddWeaponHashArray(char *parent, int count, char **array) = 0;
+  virtual void AddWeaponHashArray(const char *parent, int count, char **array) = 0;
 
   // DMFCBase::SetupPlayerRecord
   //
@@ -1076,7 +1076,7 @@ public:
   // DMFCBase::IsAddressBanned
   //
   //	returns true if the given address is banned from the game
-  virtual bool IsAddressBanned(network_address *addr, char *tracker_id) = 0;
+  virtual bool IsAddressBanned(network_address *addr, const char *tracker_id) = 0;
 
   // DMFCBase::RemoveAllBans
   //
@@ -1166,7 +1166,7 @@ public:
   //	exists. These commands are not case sensitive.
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
-  virtual signed char AddInputCommand(char *command, char *description, void (*handler)(char *),
+  virtual signed char AddInputCommand(const char *command, const char *description, void (*handler)(const char *),
                                       bool allow_remotely = false) = 0;
 
   //	Does a check on on the pinfo info making sure it is valid
@@ -1198,7 +1198,7 @@ public:
   //	the recommended filename to save stats to should be.
   //	root = Multiplayer DLL Name (filename will start with this)
   //	end_of_level = pass true if this is the end of a level stats
-  virtual void GenerateStatFilename(char *filename, char *root, bool end_of_level) = 0;
+  virtual void GenerateStatFilename(char *filename, const char *root, bool end_of_level) = 0;
 
   //	DMFCBase::IsPlayerObserver
   //
@@ -1308,7 +1308,7 @@ public:
   virtual bool IsPlayerDedicatedServer(player_record *pr) = 0;
 
   //	Displays dedicated server help
-  virtual void DisplayInputCommandHelp(char *s) = 0;
+  virtual void DisplayInputCommandHelp(const char *s) = 0;
 
   // DMFCBase::GetPlayerTeam
   //
@@ -1321,7 +1321,7 @@ public:
   //	team:	integer value of the team to change
   //	name:	new name for the team
   //	announce:	if this is true, and we are the server, it will tell all the clients about the change
-  virtual bool SetTeamName(int team, char *name, bool announce) = 0;
+  virtual bool SetTeamName(int team, const char *name, bool announce) = 0;
 
   // DMFCBase::ConvertHUDCoord
   //
@@ -1375,7 +1375,7 @@ public:
   // bool SetStateItemList(int count, ... ); for MIT_STATE items
   // or
   // bool SetStateItemListArray(int count, char **array);	for MIT_STATE items
-  // virtual MenuItem *CreateMenuItem(char *title,char type,ubyte flags,void (*fp)(int), ... ) = 0;
+  // virtual MenuItem *CreateMenuItem(const char *title,char type,ubyte flags,void (*fp)(int), ... ) = 0;
 
   // DMFCBase::ReadInHostsAllowDeny
   //
@@ -1437,7 +1437,7 @@ public:
   virtual void Set_OnServerLevelStart(void (*callback)(void)) = 0;
   virtual void Set_OnServerLevelEnd(void (*callback)(void)) = 0;
   virtual void Set_OnServerObjectShieldsChanged(void (*callback)(object *obj, float amount)) = 0;
-  virtual void Set_OnServerIsAddressBanned(bool (*callback)(network_address *addr, char *tracker_id)) = 0;
+  virtual void Set_OnServerIsAddressBanned(bool (*callback)(network_address *addr, const char *tracker_id)) = 0;
   virtual void Set_OnServerWallCollide(void (*callback)(object *obj, float hitspeed, int hitseg, int hitwall,
                                                         vector *hitpt, vector *wall_normal, float hit_dot)) = 0;
   virtual void Set_OnServerObjectKilled(void (*callback)(object *obj, object *killer)) = 0;
@@ -1510,7 +1510,7 @@ public:
   virtual void CallOnServerLevelStart(void) = 0;
   virtual void CallOnServerLevelEnd(void) = 0;
   virtual void CallOnServerObjectShieldsChanged(object *obj, float amount) = 0;
-  virtual bool CallOnServerIsAddressBanned(network_address *addr, char *tracker_id) = 0;
+  virtual bool CallOnServerIsAddressBanned(network_address *addr, const char *tracker_id) = 0;
   virtual void CallOnServerWallCollide(object *obj, float hitspeed, int hitseg, int hitwall, vector *hitpt,
                                        vector *wall_normal, float hit_dot) = 0;
   virtual void CallOnServerObjectKilled(object *obj, object *killer) = 0;
@@ -1674,7 +1674,7 @@ public:
   virtual void LoseInputFocus(void) = 0;
   virtual bool GetFocus(void) = 0;
 
-  virtual char *GetTitle(void) = 0;
+  virtual const char *GetTitle(void) = 0;
   virtual int GetCustomSubMenuCount(void) = 0;
 
   virtual void CallFunc(int value) = 0;
@@ -1725,7 +1725,7 @@ Class creation interface functions
 */
 EXTERN DLLEXPORT IDMFC DLLFUNCCALLPTR CreateDMFC(void);
 EXTERN DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItem(void);
-EXTERN DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(char *title, char type, ubyte flags, void (*fp)(int),
+EXTERN DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, ubyte flags, void (*fp)(int),
                                                               tCustomMenu *custom_menu = NULL);
 EXTERN DLLEXPORT IDmfcStats DLLFUNCCALLPTR CreateDmfcStats(void);
 
@@ -1830,8 +1830,8 @@ EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_WarpToLevel(IDMFC *instance, int lev);
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_GetScoreLimit(IDMFC *instance, int *limit);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AutoTimeLimit(IDMFC *instance, bool turnon);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AutoDeathMessage(IDMFC *instance, bool turnon);
-EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AddDeathMessage(IDMFC *instance, char *string, bool victim_first = true);
-EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, char *string);
+EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AddDeathMessage(IDMFC *instance, const char *string, bool victim_first = true);
+EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, const char *string);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_DoRandomDeathMessage(IDMFC *instance, int killernum, int victimnum,
                                                              uint hash = -1);
 EXTERN DLLEXPORT int DLLFUNCCALL IDMFC_GetItObjNum(IDMFC *instance);
@@ -1887,10 +1887,9 @@ EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_VersionCheck(IDMFC *instance, int pnum);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_UpdatePInfo(IDMFC *instance, int victim, int killer, int amount);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_ResetPInfo(IDMFC *instance);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_WriteDMFCStatsToFile(IDMFC *instance, CFILE *file);
-EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, char *weapon_name, char *message,
-                                                              bool victim_first);
+EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const char *weapon_name, const char *message, bool victim_first);
 EXTERN DLLEXPORT char DLLFUNCCALLPTR IDMFC_GetWeaponDeathMessage(IDMFC *instance, int index, bool *victim_first);
-EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, char *parent, int count, char **array);
+EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, const char *parent, int count, char **array);
 EXTERN DLLEXPORT int DLLFUNCCALL IDMFC_SetupPlayerRecord(IDMFC *instance, int sizeof_individual_data,
                                                          int (*pack_callback)(void *user_info, ubyte *data),
                                                          int (*unpack_callback)(void *user_info, ubyte *data));
@@ -1900,7 +1899,7 @@ EXTERN DLLEXPORT player_record DLLFUNCCALLPTR IDMFC_GetPlayerRecordByPnum(IDMFC 
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_SendRequestForPlayerRecords(IDMFC *instance);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_ReceiveRequestForPlayerRecords(IDMFC *instance, ubyte *data);
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerBanned(IDMFC *instance, int pnum);
-EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IsAddressBanned(IDMFC *instance, network_address *addr, char *tracker_id);
+EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IsAddressBanned(IDMFC *instance, network_address *addr, const char *tracker_id);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_RemoveAllBans(IDMFC *instance);
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_RemoveBan(IDMFC *instance, int index);
 EXTERN DLLEXPORT char DLLFUNCCALLPTR IDMFC_GetBannedPlayerCallsign(IDMFC *instance, int index);
@@ -1916,14 +1915,14 @@ EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_DoDamageToPlayer(IDMFC *instance, int pn
                                                          bool playsound = true);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_StartUIWindow(IDMFC *instance, int id, void *user_data);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_DisconnectMe(IDMFC *instance);
-EXTERN DLLEXPORT signed char DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, char *command, char *description,
-                                                               void (*handler)(char *));
+EXTERN DLLEXPORT signed char DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
+                                                               void (*handler)(const char *));
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_CheckPInfo(IDMFC *instance);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_EnableStatisticalMessages(IDMFC *instance, bool on);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenu(IDMFC *instance, bool turn_on);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveLevelEnd(IDMFC *instance, bool enable);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveDisconnect(IDMFC *instance, bool enable);
-EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, char *root,
+EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, const char *root,
                                                              bool end_of_level);
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerObserver(IDMFC *instance, int pnum);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenuBackground(IDMFC *instance, bool enable);
@@ -1951,9 +1950,9 @@ EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_SetDeathMessageFilter(IDMFC *instance, i
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IAmDedicatedServer(IDMFC *instance);
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerDedicatedServerPnum(IDMFC *instance, int pnum);
 EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerDedicatedServer(IDMFC *instance, player_record *pr);
-EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_DisplayInputCommandHelp(IDMFC *instance, char *s);
+EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_DisplayInputCommandHelp(IDMFC *instance, const char *s);
 EXTERN DLLEXPORT int DLLFUNCCALL IDMFC_GetPlayerTeam(IDMFC *instance, int pnum);
-EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_SetTeamName(IDMFC *instance, int team, char *name, bool announce);
+EXTERN DLLEXPORT bool DLLFUNCCALL IDMFC_SetTeamName(IDMFC *instance, int team, const char *name, bool announce);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_ConvertHUDCoord(IDMFC *instance, int x, int y, int *rx, int *ry);
 EXTERN DLLEXPORT int DLLFUNCCALL IDMFC_GetPlayerLogoBmp(IDMFC *instance, int player_num, bool *is_vclip);
 EXTERN DLLEXPORT void DLLFUNCCALL IDMFC_EnableShipLogos(IDMFC *instance, bool enable);
@@ -2196,7 +2195,7 @@ EXTERN DLLEXPORT void DLLFUNCCALL IMenuItem_Draw(IMenuItem *instance, int x, int
 EXTERN DLLEXPORT void DLLFUNCCALL IMenuItem_SetInputFocus(IMenuItem *instance);
 EXTERN DLLEXPORT void DLLFUNCCALL IMenuItem_LoseInputFocus(IMenuItem *instance);
 EXTERN DLLEXPORT bool DLLFUNCCALL IMenuItem_GetFocus(IMenuItem *instance);
-EXTERN DLLEXPORT char DLLFUNCCALLPTR IMenuItem_GetTitle(IMenuItem *instance);
+EXTERN DLLEXPORT const char DLLFUNCCALLPTR IMenuItem_GetTitle(IMenuItem *instance);
 EXTERN DLLEXPORT int DLLFUNCCALL IMenuItem_GetCustomSubMenuCount(IMenuItem *instance);
 EXTERN DLLEXPORT void DLLFUNCCALL IMenuItem_CallFunc(IMenuItem *instance, int value);
 EXTERN DLLEXPORT bool DLLFUNCCALL IMenuItem_HasSubMenus(IMenuItem *instance);

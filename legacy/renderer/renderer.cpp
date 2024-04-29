@@ -458,7 +458,7 @@
 #ifdef USE_D3D
 #include "rend_d3d.h"
 #endif
-extern int FindArg(char *);
+extern int FindArg(const char *);
 #ifdef USE_OPENGL
 int OpenGL_window_initted = 0;
 #endif
@@ -2139,9 +2139,9 @@ void rend_FreePreUploadedTexture(int handle, int map_type) {
   }
 }
 // Retrieves an error message
-char *rend_GetErrorMessage() { return (char *)Renderer_error_message; }
+const char *rend_GetErrorMessage() { return Renderer_error_message; }
 // Sets an error message
-void rend_SetErrorMessage(char *str) {
+void rend_SetErrorMessage(const char *str) {
   ASSERT(strlen(str) < 256);
   strcpy(Renderer_error_message, str);
 }

@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -613,13 +613,13 @@ $$END
 
 #define NUM_REACTORS 5
 
-char *Reactor_names[NUM_REACTORS] = {"Reactor1", "Reactor2", "Reactor3", "Reactor4", "Reactor5"};
+const char *Reactor_names[NUM_REACTORS] = {"Reactor1", "Reactor2", "Reactor3", "Reactor4", "Reactor5"};
 int Reactor_handles[NUM_REACTORS];
 float Reactor_initial_shields[NUM_REACTORS];
 int Reactor_shields_percent[NUM_REACTORS];
-char *Reactor_text;
+const char *Reactor_text;
 
-char *GetMessage(char *name);
+const char *GetMessage(const char *name);
 
 /*
 $$ACTION
@@ -811,7 +811,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -879,7 +879,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -898,23 +898,23 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 1
-char *Door_names[NUM_DOOR_NAMES] = {"ExitDoor"};
+const char *Door_names[NUM_DOOR_NAMES] = {"ExitDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 15
-char *Object_names[NUM_OBJECT_NAMES] = {"Reactor1",  "Reactor2", "Reactor3", "Reactor4", "Reactor5",
+const char *Object_names[NUM_OBJECT_NAMES] = {"Reactor1",  "Reactor2", "Reactor3", "Reactor4", "Reactor5",
                                         "StartDoor", "Flame01",  "Flame03",  "Flame04",  "Flame05",
                                         "Flame06",   "Flame07",  "Flame08",  "Flame09",  "ExitDoor"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 10
-char *Room_names[NUM_ROOM_NAMES] = {"Reactor5Screen", "Reactor4Screen", "Reactor3Screen", "Reactor2Screen",
+const char *Room_names[NUM_ROOM_NAMES] = {"Reactor5Screen", "Reactor4Screen", "Reactor3Screen", "Reactor2Screen",
                                     "Reactor1Screen", "Reactor5Room",   "Reactor4Room",   "Reactor3Room",
                                     "Reactor2Room",   "Reactor1Room"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 25
-char *Trigger_names[NUM_TRIGGER_NAMES] = {"ExitSequenceTrigger",
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"ExitSequenceTrigger",
                                           "IntoTunnel1",
                                           "MainHub1",
                                           "MainHub2",
@@ -944,35 +944,35 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 10
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor",  "DoorIsLocked",     "ExpMissileLarge1", "ExpMissileMed1",
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor",  "DoorIsLocked",     "ExpMissileLarge1", "ExpMissileMed1",
                                       "Lightning",        "AmbExplosionFarA", "AmbExplosionFarG", "AmbExplosionFarI",
                                       "AmbExplosionFarD", "AmbExplosionFarE"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 4
-char *Texture_names[NUM_TEXTURE_NAMES] = {"RedAMon75", "RedAMon50", "RedAMon25", "Staticscrolling"};
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"RedAMon75", "RedAMon50", "RedAMon25", "Staticscrolling"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 14
-char *Path_names[NUM_PATH_NAMES] = {"Matcen12To1",      "Matcen12To2",     "Matcen12To3", "Matcen34To3",
+const char *Path_names[NUM_PATH_NAMES] = {"Matcen12To1",      "Matcen12To2",     "Matcen12To3", "Matcen34To3",
                                     "Matcen34To4",      "Mat5To5",         "Matcen5To4",  "Matcen5To2",
                                     "IntroCamera",      "IntroPlayerPath", "ExitCamera2", "PlayerExit3",
                                     "ExitCameraTunnel", "PlayerExit1Alt"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 3
-char *Matcen_names[NUM_MATCEN_NAMES] = {"Matcen34", "Matcen5", "Matcen12"};
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"Matcen34", "Matcen5", "Matcen12"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 8
-char *Goal_names[NUM_GOAL_NAMES] = {"Keep Reactor 5 Alive",      "Keep Reactor 4 Alive",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Keep Reactor 5 Alive",      "Keep Reactor 4 Alive",
                                     "Keep Reactor 3 Alive",      "Keep Reactor 2 Alive",
                                     "Keep Reactor 1 Alive",      "Defend Red Acropolis and Escape",
                                     "Escape from Red Acropolis", "Keep 3 of the 5 reactors alive"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 21
-char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "DefendThoseReactors2",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "DefendThoseReactors2",
                                           "IncomingMessage", "DefendReactorsShort",
                                           "Reactor5Status",  "Health75",
                                           "Reactor4Status",  "Reactor3Status",
@@ -983,7 +983,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "DefendThoseReactor
                                           "WereGettinOut",   "SelfDestruct",
                                           "ExitOnly",        "EntranceDoorMessage",
                                           "30SecondsLeft"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1001,7 +1001,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1079,7 +1079,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

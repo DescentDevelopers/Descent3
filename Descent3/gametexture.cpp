@@ -351,7 +351,7 @@ int AllocTexture(void) {
 
 // Searches thru all textures for a specific name, returns -1 if not found
 // or index of texture with name
-int FindTextureName(char *name) {
+int FindTextureName(const char *name) {
   int i, num_counted = 0;
   ;
 
@@ -370,7 +370,7 @@ int FindTextureName(char *name) {
 
 // Searches thru all textures for a bitmap of a specific name, returns -1 if not found
 // or index of texture with name
-int FindTextureBitmapName(char *name) {
+int FindTextureBitmapName(const char *name) {
   int i;
 
   ASSERT(name != NULL);
@@ -546,7 +546,7 @@ int GetTextureBitmap(int handle, int framenum, bool force) {
 
 // Given a filename, loads either the bitmap or vclip found in that file.  If type
 // is not NULL, sets it to 1 if file is animation, otherwise sets it to zero
-int LoadTextureImage(char *filename, int *type, int texture_size, int mipped, int pageable, int format) {
+int LoadTextureImage(const char *filename, int *type, int texture_size, int mipped, int pageable, int format) {
   int anim = 0, bm_handle;
   char extension[10];
   int w, h;

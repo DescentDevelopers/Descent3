@@ -286,7 +286,7 @@ typedef struct {
 } tCinematicDemoInfo;
 
 void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info);
-bool Cinematic_StartCine(tGameCinematic *info, char *text_string, int camera_objhandle);
+bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle);
 
 void Cinematic_DrawText(void);
 void Cinematic_DoEndTransition(void);
@@ -501,7 +501,7 @@ inline void Cinematic_DeleteCamera(int objhandle) {
 //
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed
 //	use pipes (|) to seperate lines. (does not call demo routines)
-bool Cinematic_StartCine(tGameCinematic *info, char *text_string, int camera_objhandle) {
+bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle) {
   ASSERT(info != NULL);
   ASSERT(text_string != NULL);
   if (!info || !text_string) {
@@ -1765,7 +1765,7 @@ void CannedCinematicIntroCallback(int type) {
   }
 }
 
-void CannedCinematic_Intro(int PathID, char *Text, int PlayerPath, float Seconds, int camera_handle) {
+void CannedCinematic_Intro(int PathID, const char *Text, int PlayerPath, float Seconds, int camera_handle) {
   CannedCinematicIntro.player_path = PlayerPath;
   CannedCinematicIntro.cinematic_time = Seconds;
 
@@ -1901,7 +1901,7 @@ void CannedCinematicEndLevelCallback(int type) {
   }
 }
 
-void CannedCinematic_EndLevelPath(int PathID, char *Text, int PlayerPath, float Seconds, int camera_handle) {
+void CannedCinematic_EndLevelPath(int PathID, const char *Text, int PlayerPath, float Seconds, int camera_handle) {
   CannedCinematicEndLevel.player_path = PlayerPath;
   CannedCinematicEndLevel.cinematic_time = Seconds;
 
@@ -1930,7 +1930,7 @@ void CannedCinematic_EndLevelPath(int PathID, char *Text, int PlayerPath, float 
   Cinematic_StartCine(&info, Text, camera_handle);
 }
 
-void CannedCinematic_EndLevelPoint(vector *pos, int room, char *Text, int PlayerPath, float Seconds,
+void CannedCinematic_EndLevelPoint(vector *pos, int room, const char *Text, int PlayerPath, float Seconds,
                                    int camera_handle) {
   CannedCinematicEndLevel.player_path = PlayerPath;
   CannedCinematicEndLevel.cinematic_time = Seconds;
@@ -2028,7 +2028,7 @@ void CannedCinematicLevelEndFadeWhiteCallback(int type) {
   }
 }
 
-void CannedCinematic_LevelEndFadeWhite(int camera_handle, float time, char *text_to_display) {
+void CannedCinematic_LevelEndFadeWhite(int camera_handle, float time, const char *text_to_display) {
   CannedCinematicLevelEndFadeWhite.start_time = Gametime;
   CannedCinematicLevelEndFadeWhite.max_time = time;
 
@@ -2055,7 +2055,7 @@ void CannedCinematic_LevelEndFadeWhite(int camera_handle, float time, char *text
   info.room = Player_object->roomnum;
   info.orient = &Player_object->orient;
 
-  Cinematic_StartCine(&info, (text_to_display) ? text_to_display : (char *)"", camera_handle);
+  Cinematic_StartCine(&info, (text_to_display) ? text_to_display : "", camera_handle);
 }
 
 //==============================================================================
@@ -2195,7 +2195,7 @@ void mf_WriteShort(ubyte *buffer, int *pointer, short data);
 void mf_WriteByte(ubyte *buffer, int *pointer, ubyte data);
 void mf_WriteFloat(ubyte *buffer, int *pointer, float data);
 void mf_WriteBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
-void mf_WriteString(ubyte *buffer, int *pointer, char *string);
+void mf_WriteString(ubyte *buffer, int *pointer, const char *string);
 int mf_ReadInt(ubyte *buffer, int *pointer);
 short mf_ReadShort(ubyte *buffer, int *pointer);
 ubyte mf_ReadByte(ubyte *buffer, int *pointer);
@@ -2417,7 +2417,7 @@ void mf_WriteBytes(ubyte *buffer, int *pointer, ubyte *data, int len) {
   (*pointer) += len;
 }
 
-void mf_WriteString(ubyte *buffer, int *pointer, char *string) {
+void mf_WriteString(ubyte *buffer, int *pointer, const char *string) {
   while (*string) {
     mf_WriteByte(buffer, pointer, (*string));
     string++;

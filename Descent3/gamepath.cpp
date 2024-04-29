@@ -113,7 +113,7 @@ void InitGamePaths() {
 
 // searches through GamePath index and returns index of path matching name
 // returns -1 if not found
-int FindGamePathName(char *name) {
+int FindGamePathName(const char *name) {
   int i;
 
   for (i = 0; i < MAX_GAME_PATHS; i++) {

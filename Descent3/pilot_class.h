@@ -202,14 +202,14 @@ public:
 
 public:
   // data access functions
-  void set_name(char *name);
+  void set_name(const char *name);
   void get_name(char *name);
 
-  void set_ship(char *ship);
+  void set_ship(const char *ship);
   void get_ship(char *ship);
 
-  void set_multiplayer_data(char *logo = NULL, char *audio1 = NULL, char *audio2 = NULL, ushort *ppic = NULL,
-                            char *audio3 = NULL, char *audio4 = NULL);
+  void set_multiplayer_data(const char *logo = NULL, const char *audio1 = NULL, const char *audio2 = NULL, const ushort *ppic = NULL,
+                            const char *audio3 = NULL, const char *audio4 = NULL);
   void get_multiplayer_data(char *logo = NULL, char *audio1 = NULL, char *audio2 = NULL, ushort *ppic = NULL,
                             char *audio3 = NULL, char *audio4 = NULL);
 
@@ -233,7 +233,7 @@ public:
   void add_mission_data(tMissionData *data);
   void edit_mission_data(int index, tMissionData *data);
   void get_mission_data(int index, tMissionData *data);
-  int find_mission_data(char *mission_name);
+  int find_mission_data(const char *mission_name);
 
 private:
   void initialize(void); // initializes all the data (for constructors)

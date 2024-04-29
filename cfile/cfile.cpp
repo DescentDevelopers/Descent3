@@ -82,10 +82,10 @@ int lib_handle = 0;
 // Structure thrown on disk error
 cfile_error cfe;
 // The message for unexpected end of file
-char *eof_error = "Unexpected end of file";
+const char *eof_error = "Unexpected end of file";
 
 // Generates a cfile error
-void ThrowCFileError(int type, CFILE *file, char *msg) {
+void ThrowCFileError(int type, CFILE *file, const char *msg) {
   cfe.read_write = type;
   cfe.msg = msg;
   cfe.file = file;
@@ -867,7 +867,7 @@ int cfexist(const char *filename) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
   int i;
-  char *error_msg = eof_error; // default error
+  const char *error_msg = eof_error; // default error
   ASSERT(!(cfp->flags & CFF_TEXT));
   if (cfp->position + count <= cfp->size) {
     i = fread(buf, 1, count, cfp->file);
@@ -1319,7 +1319,7 @@ bool cf_ReadHogFileEntry(int libr, const char *filename, tHogFileEntry *entry, i
   return false;
 }
 
-bool cf_IsFileInHog(char *filename, char *hogname) {
+bool cf_IsFileInHog(const char *filename, const char *hogname) {
   library *lib = Libraries;
 
   while (lib) {

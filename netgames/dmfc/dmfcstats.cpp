@@ -151,9 +151,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 extern player_record Player_records[MAX_PLAYER_RECORDS];
 
 #define ROW_PIXEL_GAP 2

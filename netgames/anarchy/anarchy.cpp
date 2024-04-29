@@ -85,8 +85,8 @@ void SwitchHUDColor(int i);
 // localization info
 char **StringTable;
 int StringTableSize = 0;
-char *_ErrorString = "Missing String";
-char *GetString(int d) {
+const char *_ErrorString = "Missing String";
+const char *GetString(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
   else
@@ -644,7 +644,7 @@ void SaveStatsToFile(char *filename) {
       DLLcf_WriteString(file, buffer);
 
       if (DMFCBase->FindPInfoStatFirst(p, &stat)) {
-        snprintf(buffer, sizeof(buffer), TXT_SAVE_KILLERLIST);
+        snprintf(buffer, sizeof(buffer), "%s", TXT_SAVE_KILLERLIST);
         DLLcf_WriteString(file, buffer);
 
         if (stat.slot != p) {

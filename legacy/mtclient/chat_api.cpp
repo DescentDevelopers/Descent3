@@ -39,7 +39,7 @@
 
 #include "chat_api.h"
 #include "mtstrings.h"
-extern char *GetString(int d);
+extern const char *GetString(int d);
 
 typedef void *(*mem_malloc_fp) (int size);
 extern mem_malloc_fp DLLmem_malloc;
@@ -59,7 +59,7 @@ extern PollUI_fp DLLPollUI;
 #define DLLmprintf(args)	
 #endif
 
-typedef void( *Debug_ConsolePrintf_fp ) (int n, char *format, ... );
+typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 #define MAXCHATBUFFER	500
 
@@ -515,7 +515,7 @@ int SetNewChatChannel(char *channel)
 }
 
 
-char *ChatGetString(void)
+const char *ChatGetString(void)
 {
 	char ch[2];
 	char *p;

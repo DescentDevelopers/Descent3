@@ -165,7 +165,7 @@ typedef struct vmt_descent3_struct {
 
 #define DLLmprintf(args)	DLLDebug_ConsolePrintf args
 
-typedef void( *Debug_ConsolePrintf_fp ) (int n, char *format, ... );
+typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
 
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 

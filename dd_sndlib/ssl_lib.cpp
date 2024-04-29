@@ -56,7 +56,7 @@ void llsSystem::CheckForErrors() {
   m_lib_error_code = SSL_OK;
 }
 
-void llsSystem::ErrorText(char *fmt, ...) {
+void llsSystem::ErrorText(const char *fmt, ...) {
   va_list arglist;
   char buf[128];
   int len, slen;

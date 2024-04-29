@@ -112,7 +112,7 @@ void ddio_LoadImmersionDLL(void);
 void ddio_FreeImmersionDLL(void);
 
 
-void PrintDirectInputErrorString( HRESULT hr,char *format, ... );
+void PrintDirectInputErrorString( HRESULT hr,const char *format, ... );
 
 #define DDIO_JOY_COOP_FLAGS (DISCL_EXCLUSIVE | DISCL_BACKGROUND)
 
@@ -1297,7 +1297,7 @@ void ddio_ForceUnloadProject(FORCEPROJECT prj)
 //	Given a handle to a resource, and the name of the effect to load
 //	it will load that effect.  Returns the effect ID, or -1 if it couldn't
 //	be created
-int ddio_CreateForceFromProject(FORCEPROJECT project,char *forcename)
+int ddio_CreateForceFromProject(FORCEPROJECT project,const char *forcename)
 {
 	if(!d_IFCreateEffects){
 		return -1;
@@ -1342,7 +1342,7 @@ void ddio_ForceUnloadProject(FORCEPROJECT prj)
 //	Given a handle to a resource, and the name of the effect to load
 //	it will load that effect.  Returns the effect ID, or -1 if it couldn't
 //	be created
-int ddio_CreateForceFromProject(FORCEPROJECT project,char *forcename)
+int ddio_CreateForceFromProject(FORCEPROJECT project,const char *forcename)
 {
 	return -1;
 }
@@ -1366,7 +1366,7 @@ void ddio_FreeImmersionDLL(void)
 //	code passed in.
 //
 //==========================================================
-void PrintDirectInputErrorString( HRESULT hr,char *format, ... )
+void PrintDirectInputErrorString( HRESULT hr,const char *format, ... )
 {
 #ifdef RELEASE
 	return;
@@ -1505,7 +1505,7 @@ void ddio_ffb_effectModify(short eID, int *Direction, unsigned int *Duration, un
 
 int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect *eff) { return -1; }
 
-int ddio_CreateForceFromProject(FORCEPROJECT project, char *forcename) { return -1; }
+int ddio_CreateForceFromProject(FORCEPROJECT project, const char *forcename) { return -1; }
 
 void ddio_ForceUnloadProject(FORCEPROJECT prj) {}
 

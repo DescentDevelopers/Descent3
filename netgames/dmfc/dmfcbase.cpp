@@ -478,12 +478,12 @@
 
 char **DMFCStringTable;
 int DMFCStringTableSize = 0;
-char *_DMFCErrorString = "DMFC Missing String";
+const char *_DMFCErrorString = "DMFC Missing String";
 ubyte seeds1[31] = {49, 73, 0,  44, 87, 253, 35, 74, 62, 250, 4,  247, 251, 72,  244, 30,
                     59, 61, 60, 52, 50, 237, 23, 48, 56, 55,  65, 232, 231, 230, 0};
 ubyte seeds2[6] = {70, 95, 103, 102, 112, 0};
 
-char *DMFCGetString(int d) {
+const char *DMFCGetString(int d) {
   if ((d < 0) || (d >= DMFCStringTableSize))
     return _DMFCErrorString;
   else
@@ -1330,7 +1330,7 @@ int DMFCBase::DisplayingPlayerInfo(void) {
 //	team:	integer value of the team to change
 //	name:	new name for the team
 //	announce:	if this is true, and we are the server, it will tell all the clients about the change
-bool DMFCBase::SetTeamName(int team, char *name, bool announce) {
+bool DMFCBase::SetTeamName(int team, const char *name, bool announce) {
   if (team < 0 || team > DLLMAX_TEAMS)
     return false;
   if (!name)
@@ -1490,7 +1490,7 @@ void DMFCBase::AutoDeathMessage(bool turnon) {
 //    This will add a death message to DMFC.
 //    format = string in a "printf" type format (using %s for player callsigns) of the message
 //    victim_first = Set this to true if the victim is listed first in the format
-void DMFCBase::AddDeathMessage(char *string, bool victim_first) {
+void DMFCBase::AddDeathMessage(const char *string, bool victim_first) {
   if ((m_iDeathMsgCount >= 0) && (m_iDeathMsgCount < MAX_DEATH_MSGS)) {
     DeathMsgs[m_iDeathMsgCount].message = (char *)malloc(strlen(string) + 1);
     if (DeathMsgs[m_iDeathMsgCount].message) {
@@ -1506,7 +1506,7 @@ void DMFCBase::AddDeathMessage(char *string, bool victim_first) {
 //
 //    This will add a death message to DMFC.
 //    format = string in a "printf" type format (using %s for player callsigns) of the message
-void DMFCBase::AddSuicideMessage(char *string) {
+void DMFCBase::AddSuicideMessage(const char *string) {
   if ((m_iSuicideMsgCount >= 0) && (m_iSuicideMsgCount < MAX_DEATH_MSGS)) {
     SuicideMsgs[m_iSuicideMsgCount].message = (char *)malloc(strlen(string) + 1);
     if (SuicideMsgs[m_iSuicideMsgCount].message) {
@@ -2274,7 +2274,7 @@ void DMFCBase::WriteDMFCStatsToFile(CFILE *file) {
 
       if (FindPInfoStatFirst(p, &stat)) {
         char tempbuffer[25];
-        snprintf(buffer, sizeof(buffer), DTXT_DMFC_STAT_HEADER);
+        snprintf(buffer, sizeof(buffer), "%s", DTXT_DMFC_STAT_HEADER);
         DLLcf_WriteString(file, buffer);
         memset(buffer, ' ', BUFSIZE);
         dpr = GetPlayerRecord(stat.slot);
@@ -2486,7 +2486,7 @@ void DMFCBase::FindPInfoStatClose(void) {
 // DMFCBase::SetWeaponDeathMessage
 //
 //	Sets a death message for a weapon kill
-bool DMFCBase::SetWeaponDeathMessage(char *weapon_name, char *message, bool victim_first) {
+bool DMFCBase::SetWeaponDeathMessage(const char *weapon_name, const char *message, bool victim_first) {
   ASSERT(weapon_name != NULL);
   ASSERT(message != NULL);
 
@@ -2544,7 +2544,7 @@ char *DMFCBase::GetWeaponDeathMessage(int index, bool *victim_first) {
 //	Since one weapon may actually consist of many weapons, in order to save space you can create
 //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
 //  get the actual weapon.  End list of children with a NULL
-void DMFCBase::AddWeaponHash(char *parent, ...) {
+void DMFCBase::AddWeaponHash(const char *parent, ...) {
   ASSERT(parent != NULL);
 
   int parent_id = DLLFindWeaponName(IGNORE_TABLE(parent));
@@ -2588,7 +2588,7 @@ void DMFCBase::AddWeaponHash(char *parent, ...) {
 //	Since one weapon may actually consist of many weapons, in order to save space you can create
 //  one weapon where all those other weapon id's will be mapped to it...use WeaponHash[id] to
 //  get the actual weapon.
-void DMFCBase::AddWeaponHashArray(char *parent, int count, char **array) {
+void DMFCBase::AddWeaponHashArray(const char *parent, int count, char **array) {
   ASSERT(parent != NULL);
 
   int parent_id = DLLFindWeaponName(IGNORE_TABLE(parent));
@@ -2794,7 +2794,7 @@ bool DMFCBase::IsPlayerBanned(int pnum) {
 // DMFCBase::IsAddressBanned
 //
 //	returns true if the given address is banned from the game
-bool DMFCBase::IsAddressBanned(network_address *addr, char *tracker_id) {
+bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   tBanItem *c;
   c = m_BanList;
 
@@ -3230,7 +3230,7 @@ int DMFCBase::CanInputCommandBeUsedRemotely(char *command) {
 }
 
 //	Displays dedicated server help
-void DMFCBase::DisplayInputCommandHelp(char *s) {
+void DMFCBase::DisplayInputCommandHelp(const char *s) {
   if (!IAmDedicatedServer())
     return;
 
@@ -3305,7 +3305,7 @@ void strlowcpy(char *dest, const char *src) {
 //	command string to the given function handler. Returns 1 on success, -1 if out of memory, 0 if it already
 //	exists. These commands are not case sensitive.
 //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
-signed char DMFCBase::AddInputCommand(char *command, char *description, void (*handler)(char *), bool allow_remotely) {
+signed char DMFCBase::AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely) {
   ASSERT(command != NULL);
   ASSERT(handler != NULL);
 
@@ -3441,7 +3441,7 @@ void DMFCBase::EnableAutoSaveDisconnect(bool enable) {
 //	the recommended filename to save stats to should be.
 //	root = Multiplayer DLL Name (filename will start with this)
 //	end_of_level = pass true if this is the end of a level stats
-void DMFCBase::GenerateStatFilename(char *filename, char *root, bool end_of_level) {
+void DMFCBase::GenerateStatFilename(char *filename, const char *root, bool end_of_level) {
   int level = Current_mission->cur_level;
   char *name = Netgame->name;
   struct tm *newtime;
@@ -4240,7 +4240,7 @@ void DMFCBase::RespawnPlayer(int pnum, bool spew_energy_and_shields, bool spew_e
 // If you are going to create submenus you MUST use this function. along with:
 // void SetState(int state);
 // bool SetStateItemList(int count, ... ); for MIT_STATE items
-MenuItem *DMFCBase::CreateMenuItem(char *title, char type, ubyte flags, void (*fp)(int), ...) {
+MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...) {
   MenuItem *p;
 
   if (type != MIT_CUSTOM && type != MIT_STATE) {
@@ -4353,7 +4353,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       // Its a valid IP address mask! yeah...*whew* that was fun
 
       int value;
-      char temp_str[3];
+      char temp_str[16];
       s_ip[0] = s_mask[0] = '\0';
 
       for (count = 0; count < 4; count++) {

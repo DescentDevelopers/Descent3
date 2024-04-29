@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -1266,7 +1266,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -1334,7 +1334,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -1353,12 +1353,12 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 7
-char *Door_names[NUM_DOOR_NAMES] = {"MainGateDoor", "GenHangarDoor", "ResEntDoor", "GeneralDoor",
+const char *Door_names[NUM_DOOR_NAMES] = {"MainGateDoor", "GenHangarDoor", "ResEntDoor", "GeneralDoor",
                                     "CompDoor",     "LastDoor",      "ArmoryDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 136
-char *Object_names[NUM_OBJECT_NAMES] = {"LR1Sound",
+const char *Object_names[NUM_OBJECT_NAMES] = {"LR1Sound",
                                         "LR2Sound",
                                         "RepairRoomWelder",
                                         "WorkerScrewup",
@@ -1497,7 +1497,7 @@ char *Object_names[NUM_OBJECT_NAMES] = {"LR1Sound",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 23
-char *Room_names[NUM_ROOM_NAMES] = {"Weapon Check",
+const char *Room_names[NUM_ROOM_NAMES] = {"Weapon Check",
                                     "LaserRoom01",
                                     "LaserRoom01b",
                                     "LaserRoom02",
@@ -1523,7 +1523,7 @@ char *Room_names[NUM_ROOM_NAMES] = {"Weapon Check",
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 17
-char *Trigger_names[NUM_TRIGGER_NAMES] = {
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {
     "LR1MonitorHit",     "LR2Monitor1Hit",     "LR2Monitor2Hit",     "GateMonitor1",       "GateMonitor2",
     "EnteredMainGate",   "WeaponCheckEntered", "WorkerScrewup",      "GeneralShipLanding", "LeftHangarArea",
     "HTrooper01Trigger", "EndTrooperTrigger",  "ArmoryGuardTrigger", "EscapeTrigger",      "CrateRoomEntered",
@@ -1533,18 +1533,18 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 7
-char *Sound_names[NUM_SOUND_NAMES] = {"Merc2LaserBeam",        "Merc2AlertSiren", "Merc2IGSqueel", "Powerup pickup",
+const char *Sound_names[NUM_SOUND_NAMES] = {"Merc2LaserBeam",        "Merc2AlertSiren", "Merc2IGSqueel", "Powerup pickup",
                                       "Merc2ShortingComputer", "AmbSwitch31",     "AmbSwitch41"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 12
-char *Texture_names[NUM_TEXTURE_NAMES] = {"M02MonitorScreen", "Stlaser",      "Stlaser25alpha",    "Stlaser50alpha",
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"M02MonitorScreen", "Stlaser",      "Stlaser25alpha",    "Stlaser50alpha",
                                           "Stlaser75alpha",   "M02_Scanning", "M02_Cleared",       "Lightning4",
                                           "M02_Aborted",      "M02_Ready",    "M02_BreachedNoDes", "FunkyEffect2"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 66
-char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",
                                     "IntroPlayerPath",
                                     "LifterPath",
                                     "WelderPathA",
@@ -1613,13 +1613,13 @@ char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 7
-char *Matcen_names[NUM_MATCEN_NAMES] = {"WpnGuard1Matcen",   "LaserRoom1Matcen",   "LaserRoom2Matcen1",
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"WpnGuard1Matcen",   "LaserRoom1Matcen",   "LaserRoom2Matcen1",
                                         "LaserRoom2Matcen2", "STrooperClawMatcen", "HTrooperClawMatcen",
                                         "ArmoryGadgetMatcen"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 18
-char *Goal_names[NUM_GOAL_NAMES] = {"Disable Forcefields in Laser Room A",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Disable Forcefields in Laser Room A",
                                     "Disable Forcefields in Laser Room B",
                                     "Get Cleared at Scanning Tower",
                                     "Enter Base",
@@ -1640,7 +1640,7 @@ char *Goal_names[NUM_GOAL_NAMES] = {"Disable Forcefields in Laser Room A",
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 31
-char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
                                           "InfectedDataCartridgeName",
                                           "LaserBeamTriggered",
                                           "ScanTowerEntered",
@@ -1671,7 +1671,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
                                           "SecCamSpottedUs",
                                           "ResAreaEntrance",
                                           "NeedAWeapon"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1689,8 +1689,8 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
-  char english_filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
+  char english_filename[(_MAX_PATH + 32) * 2];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1775,7 +1775,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

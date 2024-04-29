@@ -663,7 +663,7 @@ void bm_ChangeEndName(const char *src, char *dest) {
   unsigned int i, limit;
   int last = -1;
   int curnum = -1;
-  char namedest[256];
+  char namedest[256+16];
   char path[256], ext[256], filename[256];
 
   ddio_SplitPath(src, path, filename, ext);
@@ -1452,7 +1452,7 @@ int bm_used(int n) {
 // Loads a series of bitmaps from an IFF file
 int bm_AllocLoadIFFAnim(const char *filename, int *dest_index, int mipped) {
   char name[BITMAP_NAME_LEN];
-  char str[BITMAP_NAME_LEN];
+  char str[BITMAP_NAME_LEN + 16];
   int num_bitmaps, i, src_bm, n;
   int bm_index[200];
   bm_ChangeEndName(filename, name);

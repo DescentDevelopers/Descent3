@@ -576,7 +576,7 @@ void CloseGameModule(module *mod) {
   mod->handle = NULL;
 }
 // this function will load up the DLL, but not get any symbols
-bool InitGameModule(char *name, module *mod) {
+bool InitGameModule(const char *name, module *mod) {
   char lib_name[_MAX_PATH * 2];
   char dll_name[_MAX_PATH * 2];
   char tmp_dll_name[_MAX_PATH * 2];
@@ -631,7 +631,7 @@ void FreeGameDLL() {
   DLLGetGameInfo = NULL;
 }
 // Loads the game dll.  Returns 1 on success, else 0 on failure
-int LoadGameDLL(char *name, int num_teams_to_use) {
+int LoadGameDLL(const char *name, int num_teams_to_use) {
   static int first = 1;
   // char lib_name[_MAX_PATH*2];
   // char dll_name[_MAX_PATH*2];
@@ -720,7 +720,7 @@ int LoadGameDLL(char *name, int num_teams_to_use) {
 }
 // If this function is called than the DLL is to be closed, because there was an error running it
 // if reason is not NULL than that is the reason why
-void DLLFatalError(char *reason) {
+void DLLFatalError(const char *reason) {
   mprintf((0, "============================\n"));
   mprintf((0, "= DLL Fatal Error          =\n"));
   mprintf((0, "============================\n"));
@@ -736,7 +736,7 @@ void CallGameDLL(int eventnum, dllinfo *data) {
   }
 }
 // Call this function right after a player connects to the game to see if a player is banned
-bool GameDLLIsAddressBanned(network_address *addr, char *tracker_id) {
+bool GameDLLIsAddressBanned(network_address *addr, const char *tracker_id) {
   ASSERT(addr);
   DLLInfo.special_data = (ubyte *)addr;
   // This used to be tracker_id, but storing a pointer as an int is a problem in 64 bit
@@ -765,7 +765,7 @@ int GameDLLGetConnectingPlayersTeam(int slot) {
   return DLLInfo.iRet;
 }
 // Call this function to get information/options from a unloaded mod
-bool GetDLLGameInfo(char *name, tDLLOptions *options) {
+bool GetDLLGameInfo(const char *name, tDLLOptions *options) {
   module mod = {NULL};
   memset(options, 0, sizeof(tDLLOptions));
   DLLGetGameInfo_fp modGetGameInfo;
@@ -787,7 +787,7 @@ bool GetDLLGameInfo(char *name, tDLLOptions *options) {
 }
 // Call this function to get the list of requirements that the given module needs in order
 // to be playable.  Returns the number of requirements it needs...-1 on error.
-int GetDLLRequirements(char *name, char *requirements, int buflen) {
+int GetDLLRequirements(const char *name, char *requirements, int buflen) {
   ASSERT(buflen >= 0);
   ASSERT(requirements);
   tDLLOptions opt;
@@ -826,7 +826,7 @@ int GetDLLRequirements(char *name, char *requirements, int buflen) {
 // If it returns true, then min is filled in with the minumum number of teams needed for the game
 // and max is filled in with the maximum number of teams for the game...if they are the same
 // value, then it is the only number of teams supported.
-bool GetDLLNumTeamInfo(char *name, int *mint, int *maxt) {
+bool GetDLLNumTeamInfo(const char *name, int *mint, int *maxt) {
   tDLLOptions dllo;
   if (!GetDLLGameInfo(name, &dllo)) {
     *mint = 1;

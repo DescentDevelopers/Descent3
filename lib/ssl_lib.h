@@ -440,7 +440,7 @@ protected:
 
 protected:
   void SetError(int code) { m_lib_error_code = code; };
-  void ErrorText(char *fmt, ...); // error text function called inside library.  a stack is kept of errors
+  void ErrorText(const char *fmt, ...); // error text function called inside library.  a stack is kept of errors
   virtual void CheckForErrors();  // called by sound library every frame to reset error count.
 
   // Public functions
@@ -552,7 +552,7 @@ extern sound_file_info SoundFiles[MAX_SOUND_FILES];
 extern sound_file_info SoundFiles[MAX_SOUND_FILES];
 
 //	loads a sound from a wavefile.
-char SoundLoadWaveFile(char *filename, float percent_volume, int sound_file_index, bool f_high_quality,
+char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_file_index, bool f_high_quality,
                        bool f_load_sample_data, int *e_type = NULL);
 
 void SoundLoadFree(int sound_file_index);

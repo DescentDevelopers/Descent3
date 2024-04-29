@@ -58,9 +58,9 @@
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
-extern char *_DMFCErrorString;
+extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-char *DMFCGetString(int d);
+const char *DMFCGetString(int d);
 
 typedef struct {
   bool authorized;   // whether the player is authorized
@@ -76,11 +76,11 @@ static void Remote_encrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *ne
 static void Remote_decrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *new_size, ubyte **new_buffer);
 
 // Sends a string to the server (function encrypts it before sending)
-void Remote_SendStringToServer(char *string);
+void Remote_SendStringToServer(const char *string);
 // Recieves a string from the server (function decrypts it)
 void Remote_RecieveStringFromServer(ubyte *data, char *buffer, int size);
 // Sends a string to a client (function encrypts it before sending)
-void Remote_SendStringToClient(int client, char *string);
+void Remote_SendStringToClient(int client, const char *string);
 // Recieves a string from a client (function decrypts it)
 int Remote_RecieveStringFromClient(ubyte *data, char *buffer, int size);
 // Handles remote admin packets from a client
@@ -89,7 +89,7 @@ void Remote_HandleClientPacket(ubyte *data);
 void Remote_HandleServerPacket(ubyte *data);
 
 // Sends a message from the server to a client
-void Remote_SendMessage(int client, char *message);
+void Remote_SendMessage(int client, const char *message);
 // Receives a message from the server
 void Remote_GetMessage(ubyte *data);
 
@@ -316,7 +316,7 @@ void Remote_SetMyKey(ubyte key[8]) {
 }
 
 // handles a remote command (client side)
-void Remote_ClientProcess(char *command) {
+void Remote_ClientProcess(const char *command) {
   if (basethis->GetLocalRole() == LR_SERVER)
     return;
   if (!IAmAnAdmin) {
@@ -328,8 +328,7 @@ void Remote_ClientProcess(char *command) {
     }
   }
 
-  char *ptr;
-  ptr = command;
+  const char *ptr = command;
   while (*ptr == ' ')
     ptr++;
   if (*ptr) {
@@ -417,14 +416,18 @@ int FilterNonRemoteCommands(char *command) {
 }
 
 // Sends a message from the server to a client
-void Remote_SendMessage(int client, char *message) {
+void Remote_SendMessage(int client, const char *message) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
+  char *allocated = NULL;
   int len = strlen(message);
-  int maxlen = ((MAX_GAME_DATA_SIZE - 5) < 511) ? (MAX_GAME_DATA_SIZE - 5) : 511;
+  const int maxlen = ((MAX_GAME_DATA_SIZE - 5) < 511) ? (MAX_GAME_DATA_SIZE - 5) : 511;
   if (len > maxlen) {
-    message[maxlen] = '\0';
+    allocated = new char[maxlen + 1];
+    memcpy(allocated, message, maxlen);
+    allocated[maxlen] = '\0';
+    message = allocated;
     len = maxlen;
   }
 
@@ -435,6 +438,7 @@ void Remote_SendMessage(int client, char *message) {
   MultiAddString(message, data, &count);
 
   basethis->SendPacket(data, count, client);
+  delete[] allocated;
 }
 
 // Receives a message from the server
@@ -448,7 +452,7 @@ void Remote_GetMessage(ubyte *data) {
 }
 
 // Sends a string to the server (function encrypts it before sending)
-void Remote_SendStringToServer(char *string) {
+void Remote_SendStringToServer(const char *string) {
   if (basethis->GetLocalRole() == LR_SERVER) {
     Int3();
     return;
@@ -542,7 +546,7 @@ void Remote_RecieveStringFromServer(ubyte *data, char *buffer, int size) {
 }
 
 // Sends a string to a client (function encrypts it before sending)
-void Remote_SendStringToClient(int client, char *string) {
+void Remote_SendStringToClient(int client, const char *string) {
   if (basethis->GetLocalRole() != LR_SERVER) {
     Int3();
     return;

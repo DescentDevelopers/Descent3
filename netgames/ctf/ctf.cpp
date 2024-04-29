@@ -229,8 +229,8 @@ void LoseFlagForPlayer(int pnum, ubyte team, bool remove_from_inven = true);
 // localization info/functions
 char **StringTable;
 int StringTableSize = 0;
-char *_ErrorString = "Missing String";
-char *GetString(int d) {
+const char *_ErrorString = "Missing String";
+const char *GetString(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
   else

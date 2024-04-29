@@ -138,7 +138,7 @@ int ui_DoFrame(bool input = true);
 int ui_DoFrame(tUIInput *input, bool doinput = true);
 
 //	ability to load/use mouse cursors
-void ui_UseCursor(char *fname);
+void ui_UseCursor(const char *fname);
 
 //	hide and show cursor. effects are cumulative (returns whether the cursor was already shown or hidden.)
 bool ui_ShowCursor();      // return value false if cursor is currently visible.

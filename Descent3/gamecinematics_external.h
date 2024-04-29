@@ -134,7 +134,7 @@ typedef struct {
 
   int32_t camera_pathid;
   int32_t target_pathid;
-  char *text_to_display;
+  const char *text_to_display;
 
   int32_t target_objhandle;
 

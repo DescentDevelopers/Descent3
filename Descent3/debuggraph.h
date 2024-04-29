@@ -39,8 +39,8 @@
 #define DGF_MULTIPLAYER 0x01  // used in multiplayer
 #define DGF_SINGLEPLAYER 0x02 // used in single player
 
-int DebugGraph_Add(float min, float max, char *name, int flags = DGF_MULTIPLAYER | DGF_SINGLEPLAYER);
-int DebugGraph_Add(int min, int max, char *name, int flags = DGF_MULTIPLAYER | DGF_SINGLEPLAYER);
+int DebugGraph_Add(float min, float max, const char *name, int flags = DGF_MULTIPLAYER | DGF_SINGLEPLAYER);
+int DebugGraph_Add(int min, int max, const char *name, int flags = DGF_MULTIPLAYER | DGF_SINGLEPLAYER);
 
 void DebugGraph_Update(int id, int value);
 void DebugGraph_Update(int id, float value);

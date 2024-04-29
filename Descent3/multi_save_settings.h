@@ -45,7 +45,7 @@
 
 #define MAX_MPS_LINE_LEN 200
 
-int MultiSaveSettings(char *filename);
-int MultiLoadSettings(char *filename);
+int MultiSaveSettings(const char *filename);
+int MultiLoadSettings(const char *filename);
 
 #endif

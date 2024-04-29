@@ -687,7 +687,7 @@ extern msn_urls Net_msn_URLs;
 //	---------------------------------------------------------------------------
 bool InitMissionScript();
 void DoEndMission();
-void DoMissionMovie(char *movie);
+void DoMissionMovie(const char *movie);
 void FreeMission();
 // used in load level callback
 void LoadLevelCB(const char *chunk, int curlen, int filelen);
@@ -1183,7 +1183,7 @@ bool LoadMission(const char *mssn) {
   msn->cur_level = 1;
   msn->num_levels = numlevels;
   msn->levels = lvls;
-  msn->filename = mem_strdup((char *)mission);
+  msn->filename = mem_strdup(mission);
   msn->game_state_flags = 0;
   strcpy(Net_msn_URLs.msnname, mission);
   res = true; // everthing is ok.
@@ -1191,7 +1191,7 @@ bool LoadMission(const char *mssn) {
 msnfile_error:
   if (!res) {
     char str_text[128];
-    snprintf(errtext, sizeof(errtext), "%s\nline %d.", errtext, srclinenum);
+    snprintf(str_text, sizeof(str_text), "%s\nline %d.", errtext, srclinenum);
     if (!Dedicated_server) {
       DoMessageBox(TXT_ERROR, str_text, MSGBOX_OK);
     } else {
@@ -1258,7 +1258,7 @@ void FreeMission() {
 #include "localization.h"
 #include "levelgoal.h"
 // Load the text (goal strings) for a level
-void LoadLevelText(char *level_filename) {
+void LoadLevelText(const char *level_filename) {
   char pathname[_MAX_FNAME], filename[_MAX_FNAME];
   int n_strings;
   ddio_SplitPath(level_filename, pathname, filename, NULL);
@@ -1322,7 +1322,7 @@ bool started_page = 0;
 $$TABLE_GAMEFILE "tunnelload.ogf"
 */
 bool Progress_screen_loaded = false;
-void LoadLevelProgress(int step, float percent, char *chunk) {
+void LoadLevelProgress(int step, float percent, const char *chunk) {
   static tLargeBitmap level_bmp;
   static bool level_bmp_loaded = false;
   static int dedicated_last_string_len = -1;
@@ -1348,7 +1348,7 @@ void LoadLevelProgress(int step, float percent, char *chunk) {
     lvl_percent_loaded = 0.0f;
     pag_percent_loaded = 0.0f;
     dedicated_last_string_len = -1;
-    char *p = NULL;
+    const char *p = NULL;
     if ((!(Game_mode & GM_MULTI)) && (!Current_mission.levels[Current_mission.cur_level - 1].progress)) {
       p = "tunnelload.ogf";
     } else {
@@ -1605,7 +1605,7 @@ void DoEndMission() {
 }
 // Shows some text on a background, useful for telling the player what is going on
 // ie "Loading level...", "Receiving data...", etc
-void ShowProgressScreen(char *str, char *str2, bool flip) {
+void ShowProgressScreen(const char *str, const char *str2, bool flip) {
   if (Dedicated_server) {
     PrintDedicatedMessage("%s\n", str);
     if (str2)
@@ -1645,7 +1645,7 @@ extern bool FirstGame;
 bool Skip_next_movie = false;
 //	---------------------------------------------------------------------------
 //	 play movie
-void DoMissionMovie(char *movie) {
+void DoMissionMovie(const char *movie) {
   char temppath[PSPATHNAME_LEN];
   if (PROGRAM(windowed)) {
     mprintf((0, "Skipping movie...can't do in windowed mode!\n"));
@@ -1794,7 +1794,7 @@ bool GetMissionInfo(const char *msnfile, tMissionInfo *msn) {
   return true;
 }
 //	---------------------------------------------------------------------------
-char *GetMissionName(char *mission) {
+const char *GetMissionName(const char *mission) {
   tMissionInfo msninfo;
   static char msnname[MSN_NAMELEN];
   msnname[0] = 0;
@@ -1805,14 +1805,14 @@ char *GetMissionName(char *mission) {
   }
   return msnname;
 }
-bool IsMissionMultiPlayable(char *mission) {
+bool IsMissionMultiPlayable(const char *mission) {
   tMissionInfo msninfo;
   if (GetMissionInfo(mission, &msninfo)) {
     return msninfo.multi;
   }
   return false;
 }
-bool IsMissionSinglePlayable(char *mission) {
+bool IsMissionSinglePlayable(const char *mission) {
   tMissionInfo msninfo;
   if (GetMissionInfo(mission, &msninfo)) {
     return msninfo.single;
@@ -1836,7 +1836,7 @@ bool mn3_Open(const char *mn3file) {
     mn3file = tempMn3File;
   }
 
-  char *p = GetMultiCDPath((char *)mn3file);
+  const char *p = GetMultiCDPath((char *)mn3file);
   // ddio_MakePath(pathname, D3MissionsDir, mn3file, NULL);
   if (!p)
     return false;
@@ -1855,12 +1855,12 @@ bool mn3_Open(const char *mn3file) {
   if ((strcmpi(filename, "d3") == 0) || (strcmpi(filename, "training") == 0)) {
     // Open audio hog file
     // ddio_MakePath(voice_hog, D3MissionsDir, "d3voice1.hog", NULL);//Audio for levels 1-4
-    char *v = GetMultiCDPath("d3voice1.hog");
+    const char *v = GetMultiCDPath("d3voice1.hog");
     Mission_voice_hog_handle = cf_OpenLibrary(v);
   } else if (strcmpi(filename, "d3_2") == 0) {
     // Open audio hog file
     // ddio_MakePath(voice_hog, D3MissionsDir, "d3voice2.hog", NULL);//Audio for levels 5-17
-    char *v = GetMultiCDPath("d3voice2.hog");
+    const char *v = GetMultiCDPath("d3voice2.hog");
     Mission_voice_hog_handle = cf_OpenLibrary(v);
   }
   strcat(filename, ".gam");
@@ -1876,7 +1876,7 @@ bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn) {
   char filename[PSFILENAME_LEN + 1];
 
   if (strcmpi(mn3file, "d3.mn3") == 0) {
-    char *p = GetMultiCDPath((char *)mn3file);
+    const char *p = GetMultiCDPath((char *)mn3file);
     if (!p)
       return false;
     strcpy(pathname, p);
@@ -1916,7 +1916,7 @@ void mn3_Close() {
 // Return values:
 // -1	Bad match -- this level and this mod shouldn't be played together!
 // MAX_NET_PLAYERS	-- This is playable with any number of teams the mod wants
-int MissionGetKeywords(char *mission, char *keywords) {
+int MissionGetKeywords(const char *mission, char *keywords) {
   ASSERT(mission);
   ASSERT(keywords);
 

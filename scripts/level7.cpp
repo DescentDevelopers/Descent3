@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -932,7 +932,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -1000,7 +1000,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -1019,11 +1019,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 3
-char *Door_names[NUM_DOOR_NAMES] = {"MagnetControlDoor", "MagnetTubeDoor", "VirusDoor"};
+const char *Door_names[NUM_DOOR_NAMES] = {"MagnetControlDoor", "MagnetTubeDoor", "VirusDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 60
-char *Object_names[NUM_OBJECT_NAMES] = {"TurretControlSwitch",
+const char *Object_names[NUM_OBJECT_NAMES] = {"TurretControlSwitch",
                                         "Repeater-6",
                                         "Repeater-2",
                                         "Repeater-5",
@@ -1086,14 +1086,14 @@ char *Object_names[NUM_OBJECT_NAMES] = {"TurretControlSwitch",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 20
-char *Room_names[NUM_ROOM_NAMES] = {"Entrance-4", "Entrance-1", "Entrance-2", "Entrance-3",   "CoolerRoom",
+const char *Room_names[NUM_ROOM_NAMES] = {"Entrance-4", "Entrance-1", "Entrance-2", "Entrance-3",   "CoolerRoom",
                                     "MagnetRoom", "FireRoom-1", "FireRoom-2", "SteamingRoom", "UpTube-1",
                                     "UpTube-2",   "UpTube-3",   "UpTube-4",   "UpTube-5",     "UpTube-6",
                                     "UpTube-7",   "UpTube-8",   "DownTube-4", "DownTube-3",   "DownTube-2"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 23
-char *Trigger_names[NUM_TRIGGER_NAMES] = {
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {
     "EndLevelStart",  "EnteringBottom", "VirusEnter2",    "VirusEnter1",       "Music-Green8", "Music-Green7",
     "Music-Green5",   "Music-Green2",   "Music-Green1",   "Music-Red4",        "Music-Red3",   "Music-Red2",
     "Music-Red1",     "Music-Tech5",    "Music-Tech3",    "Music-Bunker",      "Music-Escape", "Music-Defense4",
@@ -1103,37 +1103,37 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 8
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch41", "AmbSwitch31", "AmbSwitch21",        "Powerup pickup",
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch41", "AmbSwitch31", "AmbSwitch21",        "Powerup pickup",
                                       "AmbSwitch11", "PupC1",       "LevSecAccelRelease", "LevSecAccelStart"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
-char **Texture_names = NULL;
+const char **Texture_names = NULL;
 int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 3
-char *Path_names[NUM_PATH_NAMES] = {"EndLevel", "IntroCam", "IntroShip"};
+const char *Path_names[NUM_PATH_NAMES] = {"EndLevel", "IntroCam", "IntroShip"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 0
-char **Matcen_names = NULL;
+const char **Matcen_names = NULL;
 int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 5
-char *Goal_names[NUM_GOAL_NAMES] = {"Enable descending accelerator", "Disable containment forcefields",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Enable descending accelerator", "Disable containment forcefields",
                                     "Activate the Ascending Elevator", "Steal the Virus Samples",
                                     "Get both virus samples"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 22
-char *Message_names[NUM_MESSAGE_NAMES] = {
+const char *Message_names[NUM_MESSAGE_NAMES] = {
     "ControlVulnerable",   "TurretsDeactivated", "CoolersAllGone",    "MagnetTubeDoorUnlock",
     "ManualActivation",    "MagnetActivated",    "FFKeyPickup",       "FFDisabled",
     "FFDisable1",          "NeedFFKey",          "UpperTubeActivate", "ContainmentDoorUnlocked",
     "SuperHeaterShutdown", "Virus2Collected",    "Virus1Collected",   "SteamRelease",
     "CameraActivation",    "Finished",           "IntroMessage",      "VirusDescription",
     "Controller",          "TurretsInvuln"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1151,7 +1151,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1229,7 +1229,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

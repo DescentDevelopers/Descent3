@@ -257,7 +257,7 @@ int RunServerConfigs() {
     strcpy(Netgame.mission_name, "The Core");
   }
 #else
-  char *p = GetMissionName(Netgame.mission);
+  const char *p = GetMissionName(Netgame.mission);
   strcpy(Netgame.mission_name, p);
 #endif
 
@@ -539,7 +539,7 @@ void SetCVarFloat(int index, float val) {
   }
 }
 // Sets the value for a cvar string type
-void SetCVarString(int index, char *val) {
+void SetCVarString(int index, const char *val) {
   void *dest_variable;
 
   if (CVars[index].type != CVAR_TYPE_STRING)
@@ -550,7 +550,7 @@ void SetCVarString(int index, char *val) {
     char str[255];
 
     int to_whom;
-    char *msg = GetMessageDestination(val, &to_whom);
+    const char *msg = GetMessageDestination(val, &to_whom);
 
     if (to_whom != MULTI_SEND_MESSAGE_ALL)
       val = msg;
@@ -598,7 +598,7 @@ void SetCVarString(int index, char *val) {
 }
 
 // The accessor function that sets the value of a cvar
-void SetCVar(char *cvar_string, char *cvar_argument, bool game_init) {
+void SetCVar(const char *cvar_string, const char *cvar_argument, bool game_init) {
   int i;
   int done = 0;
 
@@ -650,7 +650,7 @@ void SetCVar(char *cvar_string, char *cvar_argument, bool game_init) {
 }
 
 // The accessor function that sets the value of a cvar...INT only
-void SetCVar(char *cvar_string, int cvar_argument) {
+void SetCVar(const char *cvar_string, int cvar_argument) {
   int i;
   int done = 0;
 
@@ -671,7 +671,7 @@ void SetCVar(char *cvar_string, int cvar_argument) {
 }
 
 // The accessor function that sets the value of a cvar...FLOAT only
-void SetCVar(char *cvar_string, float cvar_argument) {
+void SetCVar(const char *cvar_string, float cvar_argument) {
   int i;
   int done = 0;
 
@@ -1054,7 +1054,7 @@ void DedicatedReadTelnet(void) {
           } else {
             if (strlen(conn->input) + bytesread >= sizeof(conn->input)) {
               conn->input[0] = 0;
-              char *s = "\n\rCommand line too long\n\r";
+              const char *s = "\n\rCommand line too long\n\r";
               send(conn->sock, s, strlen(s), 0);
             } else {
               strcat(conn->input, buf);

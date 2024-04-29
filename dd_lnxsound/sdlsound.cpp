@@ -754,7 +754,7 @@ void lnxsound::CheckForErrors() {
 }
 
 // returns the error string.
-char *lnxsound::GetErrorStr() const {
+const char *lnxsound::GetErrorStr() const {
   static char buffer[] = "No Error Given";
   return buffer;
 }
@@ -786,7 +786,7 @@ void lnxsound::GetEnvironmentToggles(t3dEnvironmentToggles *env) {}
 
 void lnxsound_SetError(int code) { ll_sound_ptr->SetError(code); }
 
-void lnxsound_ErrorText(char *fmt, ...) {
+void lnxsound_ErrorText(const char *fmt, ...) {
   char buffer[384];
   va_list args;
   va_start(args, fmt);

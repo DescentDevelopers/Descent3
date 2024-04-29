@@ -178,7 +178,7 @@ void DLLFUNCCALL IDMFC_OnServerObjectShieldsChanged(IDMFC *instance, object *obj
   instance->OnServerObjectShieldsChanged(obj, amount);
 }
 
-bool DLLFUNCCALL IDMFC_OnServerIsAddressBanned(IDMFC *instance, network_address *addr, char *tracker_id) {
+bool DLLFUNCCALL IDMFC_OnServerIsAddressBanned(IDMFC *instance, network_address *addr, const char *tracker_id) {
   assert(instance != NULL);
   return instance->OnServerIsAddressBanned(addr, tracker_id);
 }
@@ -503,12 +503,12 @@ void DLLFUNCCALL IDMFC_AutoDeathMessage(IDMFC *instance, bool turnon) {
   instance->AutoDeathMessage(turnon);
 }
 
-void DLLFUNCCALL IDMFC_AddDeathMessage(IDMFC *instance, char *string, bool victim_first) {
+void DLLFUNCCALL IDMFC_AddDeathMessage(IDMFC *instance, const char *string, bool victim_first) {
   assert(instance != NULL);
   instance->AddDeathMessage(string, victim_first);
 }
 
-void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, char *string) {
+void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, const char *string) {
   assert(instance != NULL);
   instance->AddSuicideMessage(string);
 }
@@ -769,7 +769,7 @@ void DLLFUNCCALL IDMFC_WriteDMFCStatsToFile(IDMFC *instance, CFILE *file) {
   instance->WriteDMFCStatsToFile(file);
 }
 
-bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, char *weapon_name, char *message, bool victim_first) {
+bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const char *weapon_name, const char *message, bool victim_first) {
   assert(instance != NULL);
   return instance->SetWeaponDeathMessage(weapon_name, message, victim_first);
 }
@@ -779,7 +779,7 @@ char DLLFUNCCALLPTR IDMFC_GetWeaponDeathMessage(IDMFC *instance, int index, bool
   return instance->GetWeaponDeathMessage(index, victim_first);
 }
 
-void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, char *parent, int count, char **array) {
+void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, const char *parent, int count, char **array) {
   assert(instance != NULL);
   instance->AddWeaponHashArray(parent, count, array);
 }
@@ -821,7 +821,7 @@ bool DLLFUNCCALL IDMFC_IsPlayerBanned(IDMFC *instance, int pnum) {
   return instance->IsPlayerBanned(pnum);
 }
 
-bool DLLFUNCCALL IDMFC_IsAddressBanned(IDMFC *instance, network_address *addr, char *tracker_id) {
+bool DLLFUNCCALL IDMFC_IsAddressBanned(IDMFC *instance, network_address *addr, const char *tracker_id) {
   assert(instance != NULL);
   return instance->IsAddressBanned(addr, tracker_id);
 }
@@ -896,8 +896,8 @@ void DLLFUNCCALL IDMFC_DisconnectMe(IDMFC *instance) {
   instance->DisconnectMe();
 }
 
-signed char DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, char *command, char *description,
-                                              void (*handler)(char *)) {
+signed char DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
+                                              void (*handler)(const char *)) {
   assert(instance != NULL);
   return instance->AddInputCommand(command, description, handler);
 }
@@ -927,7 +927,7 @@ void DLLFUNCCALL IDMFC_EnableAutoSaveDisconnect(IDMFC *instance, bool enable) {
   instance->EnableAutoSaveDisconnect(enable);
 }
 
-void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, char *root, bool end_of_level) {
+void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, const char *root, bool end_of_level) {
   assert(instance != NULL);
   instance->GenerateStatFilename(filename, root, end_of_level);
 }
@@ -1048,7 +1048,7 @@ bool DLLFUNCCALL IDMFC_IsPlayerDedicatedServer(IDMFC *instance, player_record *p
   return instance->IsPlayerDedicatedServer(pr);
 }
 
-void DLLFUNCCALL IDMFC_DisplayInputCommandHelp(IDMFC *instance, char *s) {
+void DLLFUNCCALL IDMFC_DisplayInputCommandHelp(IDMFC *instance, const char *s) {
   assert(instance != NULL);
   instance->DisplayInputCommandHelp(s);
 }
@@ -1058,7 +1058,7 @@ int DLLFUNCCALL IDMFC_GetPlayerTeam(IDMFC *instance, int pnum) {
   return instance->GetPlayerTeam(pnum);
 }
 
-bool DLLFUNCCALL IDMFC_SetTeamName(IDMFC *instance, int team, char *name, bool announce) {
+bool DLLFUNCCALL IDMFC_SetTeamName(IDMFC *instance, int team, const char *name, bool announce) {
   assert(instance != NULL);
   return instance->SetTeamName(team, name, announce);
 }
@@ -1198,7 +1198,7 @@ void DLLFUNCCALL IDMFC_Set_OnServerObjectShieldsChanged(IDMFC *instance, void (*
 }
 
 void DLLFUNCCALL IDMFC_Set_OnServerIsAddressBanned(IDMFC *instance,
-                                                   bool (*callback)(network_address *addr, char *tracker_id)) {
+                                                   bool (*callback)(network_address *addr, const char *tracker_id)) {
   assert(instance != NULL);
   instance->Set_OnServerIsAddressBanned(callback);
 }
@@ -1508,7 +1508,7 @@ void DLLFUNCCALL IDMFC_CallOnServerObjectShieldsChanged(IDMFC *instance, object 
   instance->CallOnServerObjectShieldsChanged(obj, amount);
 }
 
-bool DLLFUNCCALL IDMFC_CallOnServerIsAddressBanned(IDMFC *instance, network_address *addr, char *tracker_id) {
+bool DLLFUNCCALL IDMFC_CallOnServerIsAddressBanned(IDMFC *instance, network_address *addr, const char *tracker_id) {
   assert(instance != NULL);
   return instance->CallOnServerIsAddressBanned(addr, tracker_id);
 }
@@ -2028,7 +2028,7 @@ bool DLLFUNCCALL IMenuItem_GetFocus(IMenuItem *instance) {
   return instance->GetFocus();
 }
 
-char DLLFUNCCALLPTR IMenuItem_GetTitle(IMenuItem *instance) {
+const char DLLFUNCCALLPTR IMenuItem_GetTitle(IMenuItem *instance) {
   assert(instance != NULL);
   return instance->GetTitle();
 }

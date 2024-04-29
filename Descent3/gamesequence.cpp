@@ -1319,7 +1319,7 @@ void CheckHogfile() {
       (Current_mission.cur_level > 4)) {
     // close the mission hog file and open d3_2.mn3
     mn3_Close();
-    char *hogp = GetMultiCDPath("d3_2.mn3");
+    const char *hogp = GetMultiCDPath("d3_2.mn3");
     if (hogp) {
       strcpy(hogpath, hogp);
       mn3_Open(hogpath);
@@ -1333,7 +1333,7 @@ void CheckHogfile() {
     // Part 2 of the mission is d3_2.mn3
     // close the mission hog file and open d3.mn3
     mn3_Close();
-    char *hogp = GetMultiCDPath("d3.mn3");
+    const char *hogp = GetMultiCDPath("d3.mn3");
     if (hogp) {
       strcpy(hogpath, hogp);
       mn3_Open(hogpath);
@@ -1481,7 +1481,7 @@ void DeleteAmbientObjects() {
 
 void Localization_SetLanguage(int type);
 int Localization_GetLanguage(void);
-void LoadLevelText(char *level_filename);
+void LoadLevelText(const char *level_filename);
 
 // Starts the level, which has already been loaded
 void StartLevel() {
@@ -1660,7 +1660,7 @@ bool LoadAndStartCurrentLevel() {
       (Current_mission.cur_level > 4)) {
     // close the mission hog file and open d3_2.mn3
     mn3_Close();
-    char *hogp = GetMultiCDPath("d3_2.mn3");
+    const char *hogp = GetMultiCDPath("d3_2.mn3");
     if (hogp) {
       strcpy(hogpath, hogp);
       mn3_Open(hogpath);
@@ -1674,7 +1674,7 @@ bool LoadAndStartCurrentLevel() {
     // Part 2 of the mission is d3_2.mn3
     // close the mission hog file and open d3.mn3
     mn3_Close();
-    char *hogp = GetMultiCDPath("d3.mn3");
+    const char *hogp = GetMultiCDPath("d3.mn3");
     if (hogp) {
       strcpy(hogpath, hogp);
       mn3_Open(hogpath);
@@ -2555,7 +2555,7 @@ void PageInGeneric(int id) {
   }
 }
 
-extern char *Static_sound_names[];
+extern const char *Static_sound_names[];
 
 void PageInAllData() {
   int i;

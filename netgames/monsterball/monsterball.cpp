@@ -268,8 +268,8 @@ bool monsterball_info_set = false;
 // localization info
 char **StringTable;
 int StringTableSize = 0;
-char *_ErrorString = "Missing String";
-char *GetStringFromTable(int d) {
+const char *_ErrorString = "Missing String";
+const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
   else

@@ -180,7 +180,7 @@ void Osiris_UnloadModule(int module_id);
 //	Returns -3 if the module is not a game module. Returns -4 if no module slots are available.
 //	This technically doesn't load a mission module, as it should already be loaded by
 //	Descent 3 prior.
-int Osiris_LoadMissionModule(module *module_handle, char *filename);
+int Osiris_LoadMissionModule(module *module_handle, const char *filename);
 
 //	Osiris_UnloadMissionModule
 //	Purpose:

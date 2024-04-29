@@ -131,8 +131,8 @@
 #endif
 
 DMFCFUNCTION void (*DLLGetGameAPI)(game_api *);
-DMFCFUNCTION bool (*DLLAddHUDMessage)(char *format, ...);
-DMFCFUNCTION void (*DLLDebug_ConsolePrintf)(int n, char *format, ...);
+DMFCFUNCTION bool (*DLLAddHUDMessage)(const char *format, ...);
+DMFCFUNCTION void (*DLLDebug_ConsolePrintf)(int n, const char *format, ...);
 DMFCFUNCTION void (*DLLMultiSendClientExecuteDLL)(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info);
 DMFCFUNCTION void (*DLLMultiSendObject)(object *obj, ubyte announce, ubyte demo_record);
 DMFCFUNCTION void (*DLLMultiPaintGoalRooms)(int *texcolors);
@@ -141,7 +141,7 @@ DMFCFUNCTION void (*DLLComputeRoomCenter)(vector *vp, room *rp);
 DMFCFUNCTION int (*DLLGetGoalRoomForTeam)(int teamnum);
 DMFCFUNCTION int (*DLLObjCreate)(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient,
                                  int parent_handle);
-DMFCFUNCTION int (*DLLFindObjectIDName)(char *name);
+DMFCFUNCTION int (*DLLFindObjectIDName)(const char *name);
 DMFCFUNCTION void (*DLLObjSetPosNoMark)(object *objp, vector *newpos, int roomnum, matrix *orient,
                                         bool f_update_attached_children);
 DMFCFUNCTION void (*DLLObjSetPos)(object *objp, vector *newpos, int roomnum, matrix *orient,
@@ -149,16 +149,15 @@ DMFCFUNCTION void (*DLLObjSetPos)(object *objp, vector *newpos, int roomnum, mat
 DMFCFUNCTION void (*DLLSetMaxTeams)(int num);
 DMFCFUNCTION int (*DLLIncTeamScore)(int team, int amount);
 DMFCFUNCTION bool (*DLLInvCheckItem)(int pnum, int type, int id);
-DMFCFUNCTION bool (*DLLInvAddTypeID)(int pnum, int type, int id, int aux_type, int aux_id, int flags,
-                                     char *description);
+DMFCFUNCTION bool (*DLLInvAddTypeID)(int pnum, int type, int id, int aux_type, int aux_id, int flags, const char *description);
 DMFCFUNCTION bool (*DLLInvRemove)(int pnum, int type, int id);
 DMFCFUNCTION void (*DLLPlayerSetLighting)(int slot, float dist, float r, float g, float b);
-DMFCFUNCTION int (*DLLFindShipName)(char *name);
+DMFCFUNCTION int (*DLLFindShipName)(const char *name);
 DMFCFUNCTION void (*DLLPlayerSetRotatingBall)(int slot, int num, float speed, float *r, float *g, float *b);
 DMFCFUNCTION void (*DLLPlayerChangeShip)(int slot, int ship_index);
 DMFCFUNCTION int (*DLLInvGetTypeIDCount)(int playernum, int type, int id);
 DMFCFUNCTION int (*DLLPlay3dSound)(int sound_index, object *cur_obj, float volume, int flags);
-DMFCFUNCTION int (*DLLFindSoundName)(char *str);
+DMFCFUNCTION int (*DLLFindSoundName)(const char *str);
 DMFCFUNCTION int (*DLLSpewCreate)(spewinfo *spew);
 DMFCFUNCTION void (*DLLSpewClearEvent)(int handle, bool force);
 DMFCFUNCTION int (*DLLbm_AllocLoadFileBitmap)(const char *filename, int mipped, int format);
@@ -176,7 +175,7 @@ DMFCFUNCTION int (*DLLgrtext_GetFont)(void);
 DMFCFUNCTION int (*DLLgrtext_GetTextLineWidth)(const char *str);
 DMFCFUNCTION int (*DLLgrfont_GetHeight)(int font);
 DMFCFUNCTION void (*DLLgrtext_CenteredPrintf)(int xoff, int y, const char *fmt, ...);
-DMFCFUNCTION bool (*DLLAddColoredHUDMessage)(ddgr_color color, char *format, ...);
+DMFCFUNCTION bool (*DLLAddColoredHUDMessage)(ddgr_color color, const char *format, ...);
 DMFCFUNCTION int (*DLLbm_h)(int handle, int miplevel);
 DMFCFUNCTION int (*DLLbm_w)(int handle, int miplevel);
 DMFCFUNCTION void (*DLLrend_DrawSimpleBitmap)(int bm_handle, int x, int y);
@@ -186,7 +185,7 @@ DMFCFUNCTION void (*DLLInvReset)(int playernum, bool reset_all);
 DMFCFUNCTION void (*DLLAddHUDItem)(tHUDItem *item);
 DMFCFUNCTION void (*DLLRenderHUDQuad)(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm,
                                       ubyte alpha, int sat_count);
-DMFCFUNCTION void (*DLLRenderHUDText)(ddgr_color col, ubyte alpha, int sat_count, int x, int y, char *fmt, ...);
+DMFCFUNCTION void (*DLLRenderHUDText)(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCFUNCTION void (*DLLMultiEndLevel)(void);
 DMFCFUNCTION ushort *(*DLLbm_data)(int handle, int miplevel);
 DMFCFUNCTION int (*DLLbm_AllocBitmap)(int w, int h, int add_mem);
@@ -219,22 +218,21 @@ DMFCFUNCTION bool (*DLLcf_Diff)(const char *a, const char *b);
 DMFCFUNCTION void (*DLLMultiDisconnectPlayer)(int slot);
 DMFCFUNCTION void (*DLLnw_GetNumbersFromHostAddress)(network_address *address, char *str);
 DMFCFUNCTION int (*DLLnw_GetThisIP)(void);
-DMFCFUNCTION bool (*DLLCreateStringTable)(char *filename, char ***table, int *size);
+DMFCFUNCTION bool (*DLLCreateStringTable)(const char *filename, char ***table, int *size);
 DMFCFUNCTION void (*DLLDestroyStringTable)(char **table, int size);
-DMFCFUNCTION void (*DLLRenderHUDTextFlags)(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y,
-                                           char *fmt, ...);
+DMFCFUNCTION void (*DLLRenderHUDTextFlags)(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCFUNCTION void (*DLLPlayerSetHUDNameFOV)(int fov);
 DMFCFUNCTION void (*DLLGetUltimateParentForObject)(object **parent, object *child);
 DMFCFUNCTION void (*DLLSetObjectDeadFlagRaw)(object *obj, bool tell_clients_to_remove, bool tell_clients_to_play_sound);
 DMFCFUNCTION void (*DLLSetObjectDeadFlag)(object *obj, bool tell_clients_to_remove, bool tell_clients_to_play_sound);
-DMFCFUNCTION void (*FatalError)(char *reason);
+DMFCFUNCTION void (*FatalError)(const char *reason);
 DMFCFUNCTION int (*DLLMultiMatchWeapon)(uint unique_id);
 DMFCFUNCTION uint (*DLLMultiGetMatchChecksum)(int type, int id);
-DMFCFUNCTION int (*DLLFindWeaponName)(char *name);
+DMFCFUNCTION int (*DLLFindWeaponName)(const char *name);
 DMFCFUNCTION int (*DLLcf_OpenLibrary)(const char *libname);
 DMFCFUNCTION void (*DLLcf_CloseLibrary)(int handle);
 DMFCFUNCTION void (*DLLMultiSendRequestToObserve)(int mode, int on, int objnum);
-DMFCFUNCTION int (*DLLFindTextureName)(char *name);
+DMFCFUNCTION int (*DLLFindTextureName)(const char *name);
 DMFCFUNCTION bool (*DLLApplyDamageToPlayer)(object *playerobj, object *killer, int damage_type, float damage_amount,
                                             int server_says, int weapon_id, bool playsound);
 DMFCFUNCTION int (*DLLMultiMatchGeneric)(uint unique_id);
@@ -254,7 +252,7 @@ DMFCFUNCTION void (*DLLListSelectItem)(void *item, void *txtitem);
 DMFCFUNCTION char *(*DLLListGetItem)(void *item, int index);
 DMFCFUNCTION int (*DLLListGetSelectedIndex)(void *item);
 DMFCFUNCTION void (*DLLListSetSelectedIndex)(void *item, int index);
-DMFCFUNCTION void (*DLLEditSetText)(void *item, char *buff);
+DMFCFUNCTION void (*DLLEditSetText)(void *item, const char *buff);
 DMFCFUNCTION void (*DLLEditGetText)(void *item, char *buff, int len);
 DMFCFUNCTION int (*DLLDoUI)(void);
 DMFCFUNCTION int (*DLLDoMessageBox)(const char *title, const char *msg, int type, ddgr_color title_color,
@@ -268,7 +266,7 @@ DMFCFUNCTION void *(*DLLHotSpotCreate)(void *parentwin, int id, int key, void *t
                                        int y, int w, int h, int flags);
 DMFCFUNCTION int (*DLLPollUI)(void);
 DMFCFUNCTION void (*DLLRemoveUITextItem)(void *item);
-DMFCFUNCTION void *(*DLLCreateNewUITextItem)(char *newtext, unsigned int color, int font);
+DMFCFUNCTION void *(*DLLCreateNewUITextItem)(const char *newtext, unsigned int color, int font);
 DMFCFUNCTION void (*DLLRemoveUIBmpItem)(void *item);
 DMFCFUNCTION void *(*DLLCreateNewUIBmpItem)(int handle, ubyte alpha);
 DMFCFUNCTION void *(*DLLUIConsoleGadgetCreate)(void *parentid, int id, int x, int y, int font, int cols, int rows,
@@ -282,7 +280,7 @@ DMFCFUNCTION void (*DLLOldListRemoveItem)(void *item, void *txtitem);
 DMFCFUNCTION void (*DLLOldListSelectItem)(void *item, void *txtitem);
 DMFCFUNCTION void *(*DLLOldEditCreate)(void *parentitem, int id, int x, int y, int w, int h, int flags);
 DMFCFUNCTION void (*DLLOldEditGetText)(void *item, char *buff, int len);
-DMFCFUNCTION void (*DLLOldEditSetText)(void *item, char *newtext);
+DMFCFUNCTION void (*DLLOldEditSetText)(void *item, const char *newtext);
 DMFCFUNCTION char *(*DLLOldListGetItem)(void *item, int index);
 DMFCFUNCTION int (*DLLOldListGetSelectedIndex)(void *item);
 DMFCFUNCTION void (*DLLToggleUICallback)(int state);
@@ -298,7 +296,7 @@ DMFCFUNCTION void (*DLLShowCursor)(void);
 DMFCFUNCTION void (*DLLHideCursor)(void);
 DMFCFUNCTION void (*DLLGameFrame)(void);
 DMFCFUNCTION void (*DPrintf)(const char *format, ...);
-DMFCFUNCTION void (*DLLassert)(int, char *, char *, int);
+DMFCFUNCTION void (*DLLassert)(int, const char *, const char *, int);
 DMFCFUNCTION void (*DLLddio_SplitPath)(const char *srcPath, char *path, char *filename, char *ext);
 DMFCFUNCTION void (*DLLddio_MakePath)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
 DMFCFUNCTION int (*DLLPlay2dSound)(int sound_index, float volume);
@@ -336,7 +334,7 @@ DMFCFUNCTION void (*TableFilesClear)(void);
 DMFCFUNCTION bool (*TableFileAdd)(char *filename);
 DMFCFUNCTION void (*DLLDebugBreak_callback_stop)(void);
 DMFCFUNCTION void (*DLLDebugBreak_callback_resume)(void);
-DMFCFUNCTION void (*DLLInt3MessageBox)(char *file, char *line);
+DMFCFUNCTION void (*DLLInt3MessageBox)(const char *file, const char *line);
 DMFCFUNCTION void (*DLLGetUIItemPosition)(void *item, int *x, int *y, int *w, int *h);
 DMFCFUNCTION bool (*DLLAttachObjectRadius)(object *parent, char parent_ap, object *child, float percent_rad);
 DMFCFUNCTION bool (*DLLUnattachChildren)(object *parent);
@@ -391,8 +389,8 @@ DMFCFUNCTION float (*DLLvm_GetCentroid)(vector *centroid, vector *src, int nv);
 DMFCFUNCTION void (*DLLvm_MakeRandomVector)(vector *vec);
 DMFCFUNCTION float (*DLLvm_ComputeBoundingSphere)(vector *center, vector *vecs, int num_verts);
 DMFCFUNCTION float (*DLLvm_GetCentroidFast)(vector *centroid, vector *src, int nv);
-DMFCFUNCTION int (*DLLRenderHUDGetTextLineWidth)(char *string);
-DMFCFUNCTION int (*DLLRenderHUDGetTextHeight)(char *string);
+DMFCFUNCTION int (*DLLRenderHUDGetTextLineWidth)(const char *string);
+DMFCFUNCTION int (*DLLRenderHUDGetTextHeight)(const char *string);
 DMFCFUNCTION void (*DLLStartFrame)(int x, int y, int x2, int y2, bool clear);
 DMFCFUNCTION void (*DLLEndFrame)(void);
 DMFCFUNCTION void (*DLLResetFacings)(void);
@@ -491,7 +489,7 @@ DMFCFUNCTION void (*DLLg3_DrawSpecialLine)(g3Point *p0, g3Point *p1);
 DMFCFUNCTION void (*DLLg3_DrawPlanarRotatedBitmap)(vector *pos, vector *norm, angle rot_angle, float width,
                                                    float height, int bm);
 DMFCFUNCTION void (*DLLPlayerStopSounds)(int slot);
-DMFCFUNCTION int (*DLLFindArg)(char *which);
+DMFCFUNCTION int (*DLLFindArg)(const char *which);
 DMFCFUNCTION int (*DLLFireWeaponFromObject)(object *obj, int weapon_num, int gun_num, bool f_force_forward,
                                             bool f_force_target);
 DMFCFUNCTION int (*DLLCreateAndFireWeapon)(vector *pos, vector *dir, object *parent, int weapon_num);

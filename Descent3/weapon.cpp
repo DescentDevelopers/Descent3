@@ -545,7 +545,7 @@ int GetPrevWeapon(int n) {
 }
 // Searches thru all weapons for a specific name, returns -1 if not found
 // or index of weapon with name
-int FindWeaponName(char *name) {
+int FindWeaponName(const char *name) {
   int i;
 
   ASSERT(name != NULL);
@@ -1184,7 +1184,7 @@ void SetAutoSelectSecondaryWpnIdx(int slot, ushort idx) {
   SecondaryWpnSelectList[slot + 1] = idx;
 }
 
-const ushort IWPNSEL_SKIP = (~WPNSEL_SKIP);
+const ushort IWPNSEL_SKIP = (ushort) ((~WPNSEL_SKIP) & 0xFFFF);
 
 #define WPNINDEX(_index) (sel_list[(_index)] & IWPNSEL_SKIP)
 

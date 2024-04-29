@@ -71,7 +71,7 @@ public:
   virtual void get_info(void *appinfo);
   //	defer returns some flags.   essentially this function defers program control to OS.
   virtual unsigned defer();
-  virtual char *get_window_name(void);
+  virtual const char *get_window_name(void);
   virtual void clear_window(void);
   //	set a function to run when deferring to OS.
   virtual void set_defer_handler(void (*func)(bool isactive));

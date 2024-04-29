@@ -146,7 +146,7 @@ char *ParseToken(char *p, char *buf, int bufsize) {
     ptr = ParseToken(ptr, buf, sizeof(buf));                                                                           \
   } while (0)
 
-CRegistry::CRegistry(char *str) {
+CRegistry::CRegistry(const char *str) {
   currentkey = root = NULL;
   strcpy(name, str);
 }
@@ -155,7 +155,7 @@ CRegistry::~CRegistry() { Destroy(); }
 
 void CRegistry::GetSystemName(char *n) { strcpy(n, name); }
 
-void CRegistry::SetSystemName(char *n) { strcpy(name, n); }
+void CRegistry::SetSystemName(const char *n) { strcpy(name, n); }
 
 void CRegistry::Destroy(void) {
   tKey *curr, *next;
@@ -206,7 +206,7 @@ void CRegistry::ExportKey(tKey *key, FILE *file) {
   tRecord *curr, *next;
   curr = next = key->records;
   // write out name
-  char buffer[258];
+  char buffer[256+16];
   snprintf(buffer, sizeof(buffer), "[%s]\n", key->name);
   fputs(buffer, file);
   while (curr) {
@@ -323,7 +323,7 @@ bool CRegistry::Import() {
   return true;
 }
 
-void CRegistry::CreateKey(char *name) {
+void CRegistry::CreateKey(const char *name) {
   tKey *curr;
   if (LookupKey(name)) {
     // mprintf((0,"Key: %s already exists\n",name));
@@ -350,7 +350,7 @@ void CRegistry::CreateKey(char *name) {
   currentkey = curr;
 }
 
-bool CRegistry::LookupKey(char *name) {
+bool CRegistry::LookupKey(const char *name) {
   tKey *curr;
   curr = root;
   while (curr) {
@@ -364,7 +364,7 @@ bool CRegistry::LookupKey(char *name) {
   return false;
 }
 
-tRecord *CRegistry::LookupRecord(char *record, void *data) {
+tRecord *CRegistry::LookupRecord(const char *record, void *data) {
   if (!currentkey)
     return NULL;
 
@@ -392,7 +392,7 @@ tRecord *CRegistry::LookupRecord(char *record, void *data) {
   return NULL;
 }
 
-int CRegistry::GetDataSize(char *record) {
+int CRegistry::GetDataSize(const char *record) {
   if (!currentkey)
     return false;
   tRecord *curr;
@@ -415,7 +415,7 @@ int CRegistry::GetDataSize(char *record) {
   return 0;
 }
 
-bool CRegistry::CreateRecord(char *name, char type, void *data) {
+bool CRegistry::CreateRecord(const char *name, char type, void *data) {
   if (!currentkey)
     return false;
   tRecord *curr;

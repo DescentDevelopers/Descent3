@@ -37,7 +37,7 @@ extern "C" {
 #endif
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(char *name, ubyte is_door);
+int STDCALL GetGOScriptID(const char *name, ubyte is_door);
 void STDCALLPTR CreateInstance(int id);
 void STDCALL DestroyInstance(int id, void *ptr);
 short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
@@ -665,7 +665,7 @@ $$END
 
 // Enter your custom script code here
 typedef struct {
-  char *room_name;
+  const char *room_name;
   int room_id;
   int face_num;
 } tTextureInfo;
@@ -681,7 +681,7 @@ tTextureInfo texture_info[NUM_MONITORS] = {
     {"Room 82", 0, 125},          {"Control DataTerm", 0, 50}};
 
 typedef struct {
-  char *matcen_name;
+  const char *matcen_name;
   int matcen_id;
 } tMatcenInfo;
 
@@ -820,7 +820,7 @@ Update Bypass Connector display
 
 $$END
 */
-void aUpdateBypassConnDisplay(char *text, int level) {
+void aUpdateBypassConnDisplay(const char *text, int level) {
   msafe_struct mstruct;
 
   mstruct.color = GR_RGB(0, 255, 0);
@@ -930,7 +930,7 @@ char *SkipInitialWhitespace(char *s) {
 }
 
 // Read in the Messages
-int ReadMessageFile(char *filename) {
+int ReadMessageFile(const char *filename) {
   void *infile;
   char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
   char *line, *msg_start;
@@ -998,7 +998,7 @@ int ReadMessageFile(char *filename) {
 }
 
 // Find a message
-char *GetMessage(char *name) {
+const char *GetMessage(const char *name) {
   // Make sure given name is valid
   if (name == NULL)
     return INV_MSGNAME_STRING;
@@ -1017,11 +1017,11 @@ char *GetMessage(char *name) {
 //======================
 
 #define NUM_DOOR_NAMES 1
-char *Door_names[NUM_DOOR_NAMES] = {"EquipRm Door"};
+const char *Door_names[NUM_DOOR_NAMES] = {"EquipRm Door"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 63
-char *Object_names[NUM_OBJECT_NAMES] = {"Power Conduit1",
+const char *Object_names[NUM_OBJECT_NAMES] = {"Power Conduit1",
                                         "Power Conduit2",
                                         "Power Conduit3",
                                         "AntiVirus Program",
@@ -1087,23 +1087,23 @@ char *Object_names[NUM_OBJECT_NAMES] = {"Power Conduit1",
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 3
-char *Room_names[NUM_ROOM_NAMES] = {"Terrarium Room", "Beam Emitter Rm", "Shuttle Bay"};
+const char *Room_names[NUM_ROOM_NAMES] = {"Terrarium Room", "Beam Emitter Rm", "Shuttle Bay"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 9
-char *Trigger_names[NUM_TRIGGER_NAMES] = {"AudioStream3", "MWing-1",   "MTop-1",    "MBottom-2", "MBottom-1",
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"AudioStream3", "MWing-1",   "MTop-1",    "MBottom-2", "MBottom-1",
                                           "MMiddle-4",    "MMiddle-3", "MMiddle-2", "MMiddle-1"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 5
-char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31", "Powerup pickup", "AmbSwitch11", "AmbSwitch21",
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31", "Powerup pickup", "AmbSwitch11", "AmbSwitch21",
                                       "AmbExplosionFarC"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 16
-char *Texture_names[NUM_TEXTURE_NAMES] = {"DataLogon",
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"DataLogon",
                                           "DataScroll",
                                           "CEDSignSilverLogo",
                                           "CEDUploadAnti",
@@ -1122,16 +1122,16 @@ char *Texture_names[NUM_TEXTURE_NAMES] = {"DataLogon",
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 7
-char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",  "IntroPlayerPath", "EscapeShuttlePathA", "EscapeShuttlePathB",
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",  "IntroPlayerPath", "EscapeShuttlePathA", "EscapeShuttlePathB",
                                     "LensRobotPath", "EndCamPath",      "EndPlayerPath"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 1
-char *Matcen_names[NUM_MATCEN_NAMES] = {"Emitter Rm Matcen2"};
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"Emitter Rm Matcen2"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 14
-char *Goal_names[NUM_GOAL_NAMES] = {"Find Three Bypass Connectors",
+const char *Goal_names[NUM_GOAL_NAMES] = {"Find Three Bypass Connectors",
                                     "Find Equipment Room Key",
                                     "Start Transmitter Control System",
                                     "Upload Anti-Virus Program",
@@ -1148,7 +1148,7 @@ char *Goal_names[NUM_GOAL_NAMES] = {"Find Three Bypass Connectors",
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 55
-char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
+const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
                                           "Empty",
                                           "BypassConnDisplay",
                                           "PowerOffline",
@@ -1203,7 +1203,7 @@ char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
                                           "JournalRobotHUD",
                                           "JournalDialGame",
                                           "JournalDialHUD"};
-char *Message_strings[NUM_MESSAGE_NAMES];
+const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1221,7 +1221,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   InitMessageList();
 
   // Build the filename of the message file
-  char filename[_MAX_PATH + 1];
+  char filename[_MAX_PATH + 32];
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
@@ -1299,7 +1299,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
 
 // ================
 // CreateInstance()

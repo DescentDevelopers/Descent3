@@ -215,7 +215,7 @@ void ddio_CopyFileTime(char *destname, const char *srcname) {
 }
 
 // deletes a file.  Returns 1 if successful, 0 on failure
-int ddio_DeleteFile(char *name) { return (!unlink(name)); }
+int ddio_DeleteFile(const char *name) { return (!unlink(name)); }
 
 // Save/Restore the current working directory
 
@@ -800,7 +800,7 @@ bool ddio_RenameFile(char *oldfile, char *newfile) {
 //		filename - buffer to hold generated filename (must be at least _MAX_PATH in length)
 //
 // Returns TRUE if successful, FALSE if an error
-bool ddio_GetTempFileName(char *basedir, char *prefix, char *filename) {
+bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filename) {
   char old_workdir[_MAX_PATH];
   bool success = false;
 

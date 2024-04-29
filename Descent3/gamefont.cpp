@@ -128,7 +128,7 @@ int Game_fonts[NUM_FONTS] = {
 #define HUD_FONT_LOWRES 0
 #define HUD_FONT_HIGHRES 1
 
-char *HUD_font_files[] = {"lohud.fnt", "hihud.fnt"};
+const char *HUD_font_files[] = {"lohud.fnt", "hihud.fnt"};
 
 #define HUD_FONT_FILE HUD_font_files[HUD_font_resolution]
 
@@ -144,7 +144,7 @@ void FreeAuxFontData() {
 }
 
 // Loads the font and returns the handle.  Exits with an error if the font can't be found.
-int LoadFont(char *font_name) {
+int LoadFont(const char *font_name) {
   int handle = grfont_Load(font_name);
   if (handle == -1)
     Error(TXT_ERRNOFONT, font_name);

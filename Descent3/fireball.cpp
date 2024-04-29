@@ -1314,7 +1314,7 @@ void PlayObjectExplosionSound(object *objp) {
   if (sound != -1)
     Sound_system.Play3dSound(sound, SND_PRIORITY_HIGH, objp);
 }
-char *dead_object_types[] = {
+const char *dead_object_types[] = {
     "swatter", "swatter(deadmodel)", "Hangturret",  "Securityturret(DEAD)",
     "Lance",   "Lance(DEAD)",        "L10 swatter", "swatter(deadmodel)",
 };

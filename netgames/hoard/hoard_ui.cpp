@@ -141,7 +141,7 @@ void DisplayHoardConfigDialog(tGameConfig *config) {
       break;
     case 31: { // update slider
       DLLRemoveUITextItem(slider_val_ti);
-      char buff[10];
+      char buff[16];
       int val = DLLSliderGetPos(count_slider);
       snprintf(buff, sizeof(buff), "%d", val + 1);
       slider_val_ti = DLLCreateNewUITextItem(buff, UICOL_TEXT_NORMAL, -1);

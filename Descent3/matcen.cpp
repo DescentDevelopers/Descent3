@@ -724,7 +724,7 @@ bool matcen::SetSpawnPnt(char s_index, int s_value) {
   return false;
 }
 
-bool matcen::SetName(char *name) {
+bool matcen::SetName(const char *name) {
   strcpy(m_name, name);
 
   return true;
@@ -1865,7 +1865,7 @@ bool matcen::SetPostProdTime(float time) {
   return false;
 }
 
-int FindMatcenIndex(char *name) {
+int FindMatcenIndex(const char *name) {
   int i;
   char temp[MAX_MATCEN_NAME_LEN];
 
@@ -1879,7 +1879,7 @@ int FindMatcenIndex(char *name) {
   return MATCEN_ERROR;
 }
 
-int CreateMatcen(char *name, bool *f_name_changed) {
+int CreateMatcen(const char *name, bool *f_name_changed) {
   if (Num_matcens < MAX_MATCENS) {
     Matcen[Num_matcens] = new matcen;
     Matcen[Num_matcens++]->SetName(name);

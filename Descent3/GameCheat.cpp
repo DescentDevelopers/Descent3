@@ -160,7 +160,7 @@ char OldCheatBuffer[] = "AAAAAAAAAAAAAAA";
 extern bool Force_one_texture;
 extern ubyte AutomapVisMap[MAX_ROOMS];
 
-char *LamerCheats[] = {
+const char *LamerCheats[] = {
     "?E9FI=()",  // gabbagabbahey
     "=-OQESN1",  // motherlode
     "C<G2DAIV",  // zingermans
@@ -240,47 +240,47 @@ OUTLINEM = Cycle outline modes
 // THE OTHER QUOTED STRINGS ARE TO TOSS THE HACKERS
 // SOME FUN.
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-char *WeaponsCheat = "BH;URJH,"
+const char *WeaponsCheat = "BH;URJH,"
                      "8DS#";
-char *CloakCheat = "L_QM[=^)"
+const char *CloakCheat = "L_QM[=^)"
                    "@-:!(";
-char *KillRobotsCheat = "KMGKKG4D"
+const char *KillRobotsCheat = "KMGKKG4D"
                         "~";
-char *InvulnCheat = "BBG\\Q90L"
+const char *InvulnCheat = "BBG\\Q90L"
                     "}FQC.>$";
-char *FrametimeCheat = ";;24E1)]"
+const char *FrametimeCheat = ";;24E1)]"
                        "==";
-char *CameraCheat = "X2OHN*2("
+const char *CameraCheat = "X2OHN*2("
                     "K<?@!";
-char *CoolTextures = "/Q/NGQ\\,"
+const char *CoolTextures = "/Q/NGQ\\,"
                      "%*HD@";
-char *SuicideCheat = "\\S3YGK=N"
+const char *SuicideCheat = "\\S3YGK=N"
                      "&D+#";
-char *LevelWarpCheat = "*JYO]9<G"
+const char *LevelWarpCheat = "*JYO]9<G"
                        "()()";
-char *TeletubbiesCheat = "I@\\LQOKM"
+const char *TeletubbiesCheat = "I@\\LQOKM"
                          ":):/;)>:(";
-char *FullmapCheat = "4V\\9EI:'"
+const char *FullmapCheat = "4V\\9EI:'"
                      "\"#$NNW@";
-char *OutlineModeCheat = "*HAFW1ZI"
+const char *OutlineModeCheat = "*HAFW1ZI"
                          " (-'\"#";
-char *PolygonCountCheat = "MMQ6TXHU"
+const char *PolygonCountCheat = "MMQ6TXHU"
                           "hj@(x`";
 
 #ifdef USE_RTP
-char *StartLogCheat = ";IT.*+E3"
+const char *StartLogCheat = ";IT.*+E3"
                       "%^VXKS;JKS"; // startrtlog
-char *StopLogCheat = "GE8FHH6*"
+const char *StopLogCheat = "GE8FHH6*"
                      "_=JJDK"; // stoprtlog
 #endif
 
 // these are cheat codes from the demo/oem carried over as they aren't cheats
-char *OLDDEMO_FrametimeCheat = "B'&>;6V4"; // frametime
-char *OLDOEM_FrametimeCheat = "F+NDOJ'<";  // mrshowbiz
-char *OLDDEMO_CoolTextures = "QG1EG+H+";   // badtexture
-char *OLDOEM_CoolTextures = "5UU(I'0=";    // garbarge
+const char *OLDDEMO_FrametimeCheat = "B'&>;6V4"; // frametime
+const char *OLDOEM_FrametimeCheat = "F+NDOJ'<";  // mrshowbiz
+const char *OLDDEMO_CoolTextures = "QG1EG+H+";   // badtexture
+const char *OLDOEM_CoolTextures = "5UU(I'0=";    // garbarge
 
-char *jcrypt(char *plainstring) {
+const char *jcrypt(const char *plainstring) {
   int i, t, len;
   static char cryptstring[20];
 
@@ -298,10 +298,10 @@ char *jcrypt(char *plainstring) {
     }
   }
   cryptstring[i] = 0;
-  return ((char *)cryptstring);
+  return cryptstring;
 }
 
-char *oldjcrypt(char *plainstring) {
+const char *oldjcrypt(const char *plainstring) {
   int i, t, len;
   static char cryptstring[20];
 
@@ -319,7 +319,7 @@ char *oldjcrypt(char *plainstring) {
     }
   }
   cryptstring[i] = 0;
-  return ((char *)cryptstring);
+  return cryptstring;
 }
 
 // Tells others that we are cheating
@@ -336,7 +336,7 @@ void SendCheaterAttemptText() {
 void DemoCheats(int key) {
   static int snd_cheat = -1;
   int i;
-  char *cryptstring, *oldcryptstring;
+  const char *cryptstring, *oldcryptstring;
 
   if (snd_cheat == -1) {
     snd_cheat = SOUND_CHEATER;

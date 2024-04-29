@@ -43,8 +43,7 @@ bool InvCheckItem(int playernum, int type, int id);
 // adds an object to a player inventory
 bool InvAdd(int playernum, object *obj, bool remove = true);
 // adds a type/id to a player inventory
-bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0,
-                  char *description = NULL);
+bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = NULL);
 // removes a type/id from a players inventory
 bool InvRemove(int playernum, int type, int id);
 // returns how many of a type/id a player has in his inventory
@@ -58,7 +57,7 @@ void GetUltimateParentForObject(object **parent, object *child);
 // sets an object's flag dead
 void SetObjectDeadFlagDLL(object *obj, bool tell_client_to_remove = false, bool tell_clients_to_play_sound = false);
 // Assert for the DLLs
-void assertdll(int x, char *expression, char *file, int line);
+void assertdll(int x, const char *expression, const char *file, int line);
 void RetrieveUICallback(void **fn);
 
 // Registry database functions
