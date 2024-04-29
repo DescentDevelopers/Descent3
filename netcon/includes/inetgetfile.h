@@ -113,10 +113,8 @@
 #endif
 
 #define SOCKADDR_IN sockaddr_in
-#define SOCKADDR_IPX sockaddr_ipx
 #define SOCKADDR sockaddr
 #define INVALID_SOCKET -1
-#define NSPROTO_IPX AF_IPX
 #define HOSTENT struct hostent
 #define SERVENT struct servent
 #define TIMEVAL struct timeval
