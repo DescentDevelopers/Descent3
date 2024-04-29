@@ -64,14 +64,14 @@
  *
  */
 
-#include <stdio.h>
+#include <cstdarg>
+#include <cstdio>
+
 #include <stdlib.h>
-#include <stdarg.h>
 #include <string.h>
 
 #include "mono.h"
 #include "pserror.h"
-#include "pstring.h"
 #include "debug.h"
 #include "application.h"
 
@@ -118,14 +118,14 @@ extern int no_debug_dialog;
 
 //	exits the application and prints out a standard error message
 void Error(const char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   int exit_msg_len;
 
   strcpy(Exit_message, "Error: ");
 
   va_start(arglist, fmt);
   exit_msg_len = strlen(Exit_message);
-  Pvsprintf(Exit_message + exit_msg_len, MAX_MSG_LEN - exit_msg_len, fmt, arglist);
+  std::vsnprintf(Exit_message + exit_msg_len, MAX_MSG_LEN - exit_msg_len, fmt, arglist);
   va_end(arglist);
 
   snprintf(Exit_title_str, sizeof(Exit_title_str), "%s Error", App_title);
@@ -242,11 +242,11 @@ void SetMessageBoxTitle(const char *title) { strncpy(Messagebox_title, title, si
 // Pops up a dialog box to display a message
 void OutrageMessageBox(const char *str, ...) {
   char buf[BUF_LEN];
-  va_list arglist;
+  std::va_list arglist;
   int nchars;
 
   va_start(arglist, str);
-  nchars = Pvsprintf(buf, BUF_LEN, str, arglist);
+  nchars = std::vsnprintf(buf, BUF_LEN, str, arglist);
   va_end(arglist);
 
   if (nchars >= BUF_LEN)
@@ -258,12 +258,12 @@ void OutrageMessageBox(const char *str, ...) {
 
 int OutrageMessageBox(int type, const char *str, ...) {
   char buf[BUF_LEN];
-  va_list arglist;
+  std::va_list arglist;
   int os_flags = 0;
   int nchars;
 
   va_start(arglist, str);
-  nchars = Pvsprintf(buf, BUF_LEN, str, arglist);
+  nchars = std::vsnprintf(buf, BUF_LEN, str, arglist);
   va_end(arglist);
 
   if (type == MBOX_OK)

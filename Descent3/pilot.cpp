@@ -570,6 +570,8 @@
  * $NoKeywords: $
  */
 
+#include <cstdio>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -598,7 +600,6 @@
 #include "config.h"
 #include "difficulty.h"
 #include "PilotPicsAPI.h"
-#include "pstring.h"
 #include "Mission.h"
 #include "mem.h"
 #include "polymodel.h"
@@ -3889,14 +3890,14 @@ void ShowPilotPicDialog(pilot *Pilot) {
       if (ppic_id == id_list[idx])
         selected_index = idx + 1;
 
-      Psprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s%d", pname, idx);
+      std::snprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s%d", pname, idx);
       list->AddItem(temp_buffer);
     }
   } else {
     if (ppic_id == id_list[idx])
       selected_index = idx + 1;
 
-    Psprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s", pname);
+    std::snprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s", pname);
     list->AddItem(temp_buffer);
   }
 

@@ -64,18 +64,18 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "DDAccess.h"
 #include "Application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "pstring.h"
 #include <windows.h>
-#include <stdarg.h>
 #include <string.h>
 #include <process.h>
-#include <stdio.h>
 
 #include <algorithm>
 
@@ -102,11 +102,11 @@ int con_Char(HWND hWnd, UINT vkey);
 
 void con_Printf(const char *fmt, ...) {
   char buf[CON_MAX_STRINGLEN];
-  va_list args;
+  std::va_list args;
 
   //	filter out messages
   va_start(args, fmt);
-  Pvsprintf(buf, CON_MAX_STRINGLEN, fmt, args);
+  std::vsnprintf(buf, CON_MAX_STRINGLEN, fmt, args);
 
   int len = strlen(buf);
   if (len >= CON_MAX_STRINGLEN) {

@@ -182,6 +182,9 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "newui_core.h"
 #include "bitmap.h"
 #include "mem.h"
@@ -193,13 +196,11 @@
 #include "application.h"
 #include "stringtable.h"
 #include "gamefont.h"
-#include "pstring.h"
 #include "textaux.h"
 #include "d3music.h"
 #include "hlsoundlib.h"
 
 #include <string.h>
-#include <stdarg.h>
 
 extern void ui_DoCursor();
 
@@ -2035,12 +2036,12 @@ short *newuiSheet::AddSlider(const char *title, short range, short init_pos, tSl
 
 //	adds a static text item
 void newuiSheet::AddText(const char *text, ...) {
-  va_list arglist;
+  std::va_list arglist;
   char buf[512];
   int len;
 
   va_start(arglist, text);
-  len = Pvsprintf(buf, 512, text, arglist);
+  len = std::vsnprintf(buf, 512, text, arglist);
   va_end(arglist);
 
   newuiSheet::t_gadget_desc *gadget = AddGadget(-1, GADGET_STATIC_TXT, buf);

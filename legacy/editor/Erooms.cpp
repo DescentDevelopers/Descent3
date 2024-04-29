@@ -539,9 +539,10 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
 
 #include <string.h>
-#include <stdarg.h>
 
 #ifndef NEWEDITOR
 #include "d3edit.h"
@@ -561,7 +562,6 @@
 #include "trigger.h"
 #include "mem.h"
 #include "doorway.h"
-#include "pstring.h"
 
 #ifndef NEWEDITOR
 #include "editor_lighting.h"
@@ -2205,11 +2205,11 @@ int error_buf_offset;
 //Log an error in the room check process
 void CheckError(const char *str,...)
 {
-	va_list arglist;
+	std::va_list arglist;
 	int nchars;
 
 	va_start(arglist, str);
-		nchars = Pvsprintf(error_buf+error_buf_offset,BUF_LEN-error_buf_offset, str, arglist);
+		nchars = std::vsnprintf(error_buf+error_buf_offset,BUF_LEN-error_buf_offset, str, arglist);
 	va_end(arglist);
 
 	error_buf_offset += strlen(error_buf+error_buf_offset);

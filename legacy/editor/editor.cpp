@@ -364,6 +364,9 @@
 // editor.cpp : Defines the class behaviors for the application.
 //
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "MainFrm.h"
@@ -376,7 +379,6 @@
 #include "moveworld.h"
 #include "d3edit.h"
 #include "pserror.h"
-#include "pstring.h"
 #include "args.h"
 #include "game.h"
 #include "trigger.h"
@@ -1067,13 +1069,13 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
 //					fmt - printf-style text & arguments
 void PrintToDlgItem(CDialog *dlg,int id,char *fmt,...)
 {
-	va_list arglist;
+	std::va_list arglist;
 	char str[3000];
 	int len;
 	CEdit *ebox;
 
 	va_start(arglist,fmt);
-	len = Pvsprintf(str,3000,fmt,arglist);
+	len = std::vsnprintf(str,3000,fmt,arglist);
 	va_end(arglist);
 	ASSERT(len < 3000);
 

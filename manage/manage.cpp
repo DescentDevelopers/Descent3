@@ -433,8 +433,11 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstdarg>
+#include <cstdio>
+
 #include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
 #include <string.h>
 #if defined(WIN32)
@@ -3078,8 +3081,6 @@ void Read256TextureNames ()
         cfclose (infile);
 }*/
 
-#include "pstring.h"
-
 void DataError(const char *fmt, ...) {
   // Got a data error!
   //	Int3();
@@ -3094,11 +3095,11 @@ void DataError(const char *fmt, ...) {
   // Write to file if switch specified
   if (FindArg("-datacheck")) {
     static char last_filename[_MAX_PATH];
-    va_list arglist;
+    std::va_list arglist;
     char buf[1024];
 
     va_start(arglist, fmt);
-    Pvsprintf(buf, sizeof(buf), fmt, arglist);
+    std::vsnprintf(buf, sizeof(buf), fmt, arglist);
     va_end(arglist);
 
     // Open file if not already open

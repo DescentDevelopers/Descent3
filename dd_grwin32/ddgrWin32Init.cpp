@@ -49,16 +49,16 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "ddgrWin32.h"
 #include "ddgrWin32GDI.h"
 #include "ddgrWin32DX.h"
 #include "pserror.h"
-#include "pstring.h"
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 /*	DDGR_WIN32 Library
                 v2.0			enhancements = concept of graphic subsystem when initializing.
@@ -185,10 +185,10 @@ void ddgr_FatalError(const char *fmt, ...) {
   }
 
   //	create whole error message
-  va_list arglist;
+  std::va_list arglist;
 
   va_start(arglist, fmt);
-  Pvsprintf(buf, 768, fmt, arglist);
+  std::vsnprintf(buf, 768, fmt, arglist);
   va_end(arglist);
 
   if (DDGR_subsystems[i] = !-1) {
@@ -206,11 +206,11 @@ void ddgr_FatalError(const char *fmt, ...) {
 }
 
 void ddgr_PushError(const char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   char buf[128];
 
   va_start(arglist, fmt);
-  Pvsprintf(buf, 128, fmt, arglist);
+  std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
 
   DDGR_error_msgs[DDGR_num_msgs] = new char[strlen(buf) + 1];

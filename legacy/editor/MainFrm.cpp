@@ -761,6 +761,8 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
 
 #include "stdafx.h"
 #include "editor.h"
@@ -804,7 +806,6 @@
 
 // D3 EDITOR HEADERS
 #include "pserror.h"
-#include "pstring.h"
 #include "Application.h"
 #include "AppDatabase.h"
 #include "program.h"
@@ -1594,10 +1595,10 @@ void EditorStatus( const char *format, ... )
 {
 	if (MFC_Main_frame) {
 		char status_line[256];
-		va_list ap;
+		std::va_list ap;
 
 		va_start(ap, format);
-		Pvsprintf(status_line, 256,format, ap);
+		std::vsnprintf(status_line, 256,format, ap);
 		va_end(ap);
 
 		MFC_Main_frame->SetStatusMessage(status_line);	
@@ -1609,10 +1610,10 @@ void SplashMessage(const char *format, ...)
 {
 	if (D3_splash_screen) {
 		char status_line[256];
-		va_list ap;
+		std::va_list ap;
 
 		va_start(ap, format);
-		Pvsprintf(status_line, 256,format, ap);
+		std::vsnprintf(status_line, 256,format, ap);
 		va_end(ap);
 
 		D3_splash_screen->PutText(status_line);	
@@ -1625,10 +1626,10 @@ char Editor_error_message[1000]="";
 //code should call this with the error message.
 void SetErrorMessage(const char *fmt,...)
 {
-	va_list arglist;
+	std::va_list arglist;
 
 	va_start(arglist,fmt);
-	Pvsprintf(Editor_error_message,sizeof(Editor_error_message),fmt,arglist);
+	std::vsnprintf(Editor_error_message,sizeof(Editor_error_message),fmt,arglist);
 	va_end(arglist);
 
 	mprintf ((0,"Editor error: %s\n",Editor_error_message));

@@ -102,6 +102,9 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -555,7 +558,7 @@ void SetCVarString(int index, const char *val) {
     if (to_whom != MULTI_SEND_MESSAGE_ALL)
       val = msg;
 
-    Psprintf(str, sizeof(str), TXT_HUDSAY, Players[Player_num].callsign, val);
+    std::snprintf(str, sizeof(str), TXT_HUDSAY, Players[Player_num].callsign, val);
 
     MultiSendMessageFromServer(GR_RGB(0, 128, 255), str, to_whom);
 
@@ -770,10 +773,10 @@ void PrintDedicatedMessage(const char *fmt, ...) {
     return;
 
   char buf[CON_MAX_STRINGLEN];
-  va_list args;
+  std::va_list args;
 
   va_start(args, fmt);
-  Pvsprintf(buf, CON_MAX_STRINGLEN, fmt, args);
+  std::vsnprintf(buf, CON_MAX_STRINGLEN, fmt, args);
   va_end(args);
 
   con_Printf(buf);

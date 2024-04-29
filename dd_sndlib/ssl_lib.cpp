@@ -37,9 +37,11 @@
  *
  */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "ssl_lib.h"
 #include "pserror.h"
-#include "pstring.h"
 
 #include <string.h>
 
@@ -57,7 +59,7 @@ void llsSystem::CheckForErrors() {
 }
 
 void llsSystem::ErrorText(const char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   char buf[128];
   int len, slen;
 
@@ -69,7 +71,7 @@ void llsSystem::ErrorText(const char *fmt, ...) {
 
   strcat(m_error_text, "\n");
   va_start(arglist, fmt);
-  len = Pvsprintf(buf, 128, fmt, arglist);
+  len = std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
   if (len < 0)
     return;

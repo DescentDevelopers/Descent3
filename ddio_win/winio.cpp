@@ -104,13 +104,15 @@
 // ----------------------------------------------------------------------------
 // Win32 IO System Main Library Interface
 // ----------------------------------------------------------------------------
+
+#include <cstdarg>
+#include <cstdio>
+
 #include "DDAccess.h"
 
 #include <stdlib.h>
-#include <stdarg.h>
 
 #include "pserror.h"
-#include "pstring.h"
 #include "Application.h"
 #include "ddio_win.h"
 #include "ddio.h"
@@ -180,10 +182,10 @@ void ddio_InternalClose() {
 #ifdef _DEBUG
 void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   char buf[128];
-  va_list arglist;
+  std::va_list arglist;
 
   va_start(arglist, fmt);
-  Pvsprintf(buf, 128, fmt, arglist);
+  std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
 
   mprintf((0, "DDIO: %s\n", buf));
