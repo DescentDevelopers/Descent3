@@ -41,11 +41,11 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 }
 #endif
 
-int String_table_size = 0;
-char **String_table = NULL;
+static int String_table_size = 0;
+static char **String_table = NULL;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
-const char *GetStringFromTable(int index) {
+static const char *GetStringFromTable(int index) {
   if ((index < 0) || (index >= String_table_size))
     return _Error_string;
   if (!String_table[index])
@@ -67,15 +67,15 @@ typedef struct {
   const char *name;
 } tScriptInfo;
 
-tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
-                           {ID_NAPALMBARREL, "napalmbarrel"},
-                           {ID_ALIENCUPLINK, "Aliencuplink"},
-                           {ID_TNTHIGHYIELD, "TNTCrateHighYield"},
-                           {ID_TNTMEDYIELD, "TNTCrateMediumYield"},
-                           {ID_FALLINGROCK, "FallingRock"},
-                           {ID_LAVAROCK, "LavaRock"}};
+static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
+                                  {ID_NAPALMBARREL, "napalmbarrel"},
+                                  {ID_ALIENCUPLINK, "Aliencuplink"},
+                                  {ID_TNTHIGHYIELD, "TNTCrateHighYield"},
+                                  {ID_TNTMEDYIELD, "TNTCrateMediumYield"},
+                                  {ID_FALLINGROCK, "FallingRock"},
+                                  {ID_LAVAROCK, "LavaRock"}};
 
-int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
+static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
 
 class ClutterScript {
 public:
