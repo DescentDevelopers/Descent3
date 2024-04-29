@@ -1,22 +1,42 @@
 cmake_minimum_required(VERSION 3.20)  # For using CMAKE_<LANG>_BYTE_ORDER
 
-# set default cmake build type to Debug (None Debug Release RelWithDebInfo MinSizeRel)
+##################################################
+# Set default cmake build type to Debug          #
+# (None Debug Release RelWithDebInfo MinSizeRel) #
+##################################################
+
 if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
+
+#########################
+# Project configuration #
+#########################
 
 project(Descent3
   LANGUAGES C CXX
   VERSION 1.5.0
 )
 
+###########
+# OPTIONS #
+###########
+
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 option(LOGGER "Enable logging to the terminal" OFF)
+
+#####################
+# Compiler settings #
+#####################
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+####################
+# Compiler options #
+####################
 
 if(FORCE_COLORED_OUTPUT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
@@ -30,11 +50,18 @@ if(FORCE_COLORED_OUTPUT)
   endif()
 endif()
 
+###############################################
+# Conditional compilation based on byte order #
+###############################################
+
 if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
   message(STATUS "Big Endian system detected.")
   add_compile_definitions("OUTRAGE_BIG_ENDIAN")
 endif()
 
+#########################################################
+# Conditional compilation based on machine architecture #
+#########################################################
 
 # 64 bit machines have a different game checksum than 32 bit machines
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -43,12 +70,20 @@ else()
   add_definitions(-DCHECKSUM=2273873307UL)
 endif()
 
+#########################
+# Testing configuration #
+#########################
+
 if(BUILD_TESTING)
   find_package(GTest REQUIRED)
   enable_testing()
   include(GoogleTest)
   add_subdirectory(tests)
 endif()
+
+##############
+# Versioning #
+##############
 
 add_custom_command(
   OUTPUT ${PROJECT_BINARY_DIR}/Descent3/d3_version.h ALL
@@ -62,11 +97,15 @@ add_custom_command(
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
-# rebuild version.hpp every time
+# Rebuild version.hpp every time
 add_custom_target(get_git_hash ALL
   DEPENDS ${PROJECT_BINARY_DIR}/Descent3/d3_version.h
 )
+####################################
+# Platform-specific configurations #
+####################################
 
+# Linux
 if(UNIX)
   set(D3_GAMEDIR "~/Descent3/")
 
@@ -74,6 +113,8 @@ if(UNIX)
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
 
   find_package(SDL REQUIRED)
+  
+  # MacOS
   if(APPLE)
     # Provide FIND_PACKAGE( SDL_image ) below with an include dir and library that work with brew-installed sdl2_image
     find_path(SDL_IMAGE_INCLUDE_DIR NAMES SDL_image.h PATH_SUFFIXES include/SDL2)
@@ -85,6 +126,10 @@ if(UNIX)
   find_package(OpenGL REQUIRED)
   message("SDL Include Dir is " ${SDL_INCLUDE_DIR})
 endif()
+
+##########################################
+# Platform-specific build configurations #
+##########################################
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   message("Building for Linux")
@@ -115,7 +160,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
   if(MSVC AND CMAKE_CXX_SIMULATE_ID STREQUAL "")
     add_compile_options("/we4150")  # deletion of pointer to incomplete type 'type'; no destructor called
-#    add_compile_options("/we4305")  # truncation from 'X' to 'Y'
+#   add_compile_options("/we4305")  # truncation from 'X' to 'Y'
     add_compile_options("/we4474")  # too many arguments passed for format string
     add_compile_options("/we4700")  # uninitialized local variable 'X' used
     add_compile_options("/we4804")  # unsafe use of type 'bool' in operation
@@ -129,15 +174,31 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_compile_options("/MP")  # so msbuild builds with multiple processes
 endif()
 
+############################
+# Preprocessor definitions #
+############################
+
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
+#########################
+# External dependencies #
+#########################
+
 find_package(ZLIB REQUIRED)
+
+##########
+# Logger #
+##########
 
 if(LOGGER)
   message("Enabling Logging")
   add_compile_definitions(LOGGER)
 endif()
+
+#######################
+# Include directories #
+#######################
 
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
@@ -148,6 +209,7 @@ include_directories(
 
 # file(GLOB_RECURSE INCS "*.h")
 
+# Subdirectories
 add_subdirectory(2dlib)
 add_subdirectory(AudioEncode)
 add_subdirectory(bitmap)
@@ -155,6 +217,7 @@ add_subdirectory(cfile)
 add_subdirectory(czip)
 add_subdirectory(d3music)
 
+# Platform-specific subdirectories
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(dd_grwin32)
   add_subdirectory(dd_vidwin32)
@@ -169,6 +232,7 @@ else()
   add_subdirectory(ddio_lnx)
 endif()
 
+# Common subdirectories
 add_subdirectory(ddio_common)
 add_subdirectory(fix)
 add_subdirectory(manage)
@@ -197,6 +261,7 @@ add_subdirectory(tools)
 
 # For now we don't need to build the scripts under windows, so we'll only include
 # the directory when building for linux/osx. In the future we may want to to fix bugs, etc.
+# Scripts subdirectory (only included for Unix-like systems)
 if(UNIX)
   add_subdirectory(netgames)
   add_subdirectory(netcon)
