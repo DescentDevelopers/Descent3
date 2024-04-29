@@ -1,5 +1,5 @@
 /*
-* Descent 3
+* Descent 3 
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ LPDPLCONNECTION lpdplconnection = NULL;
 // {915CE160-3125-11d2-BB3D-00104B27BFF0}
 static const GUID DPD3_GUID = {0x915ce160, 0x3125, 0x11d2, {0xbb, 0x3d, 0x0, 0x10, 0x4b, 0x27, 0xbf, 0xf0}};
 
-unsigned int Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
+unsigned long Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
 
 typedef struct _dpconnections {
   char name[100];
@@ -216,7 +216,7 @@ int dp_SelectDirectPlayConnection(char *name) {
 }
 
 int dp_InitDirectPlay(char *conn_name, void *parms, int num_elements) {
-  unsigned int dwAddressSize;
+  unsigned long dwAddressSize;
   HRESULT hr;
   char *conn = conn_name;
   for (int i = 0; i < MAX_PENDING_NEW_CONNECTIONS; i++)
@@ -498,7 +498,7 @@ int dp_ListDirectPlayGames() {
 void dp_DirectPlayDispatch() {
   HRESULT hr;
   ubyte packet_data[32000];              // MAX_PACKET_SIZE+1];
-  unsigned int dwMsgBufferSize = 32000; // MAX_PACKET_SIZE;
+  unsigned long dwMsgBufferSize = 32000; // MAX_PACKET_SIZE;
   DPID idFrom = 0;
   DPID idTo = 0;
   network_address from_addr;
@@ -588,7 +588,7 @@ void dp_DirectPlayDispatch() {
 int dp_DirectPlaySend(network_address *who_to, ubyte *data, int len, bool reliable) {
   DPID idTo;
   HRESULT hr;
-  unsigned int send_flags;
+  unsigned long send_flags;
   if ((!DP_active) || (!lpDirectPlay4A)) {
     mprintf((0, "Can't send DirectPlay message because DirectPlay isn't active!\n"));
     return 0;
@@ -838,7 +838,7 @@ BOOL FAR PASCAL EnumModemAddress(REFGUID lpguidDataType, DWORD dwDataSize, LPCVO
 // the amount of buffer space you need
 // Otherwise, it will fill in the buffer with a bunch of null delimited
 // strings, with a double null at the end.
-int dp_GetModemChoices(char *buffer, unsigned int *size) {
+int dp_GetModemChoices(char *buffer, unsigned long *size) {
   LPDIRECTPLAY4A lpTempDP4;
   HRESULT hr;
   void *connection = NULL;
@@ -975,7 +975,7 @@ void dp_RegisterLobbyApplication(char *appname, char *exefile, char *exepath, ch
 // Returns TRUE if the game was launched from a lobby
 bool dp_DidLobbyLaunchGame() {
   HRESULT hr;
-  unsigned int buffersize = sizeof(DPLCONNECTION);
+  unsigned long buffersize = sizeof(DPLCONNECTION);
 
   Directplay_lobby_launched_game = false;
   if (lpDirectPlayLobby3A) {
