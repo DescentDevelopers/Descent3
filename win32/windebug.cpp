@@ -1,5 +1,5 @@
 /*
-* Descent 3
+* Descent 3 
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1057,7 +1057,7 @@ static void PrintFileTime(char *sztime, FILETIME ftime) {
 
 static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle) {
   char FmtString[2000];
-  unsigned int bytesout;
+  unsigned long bytesout;
   char ModName[MAX_PATH];
   __try {
     if (GetModuleFileName(ModuleHandle, ModName, sizeof(ModName)) > 0) {
@@ -1102,7 +1102,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle) {
 
 static void RecordModuleList(HANDLE LogFile) {
   char FmtString[2000];
-  unsigned int bytesout;
+  unsigned long bytesout;
   wsprintf(FmtString, "\r\n"
                       "Modules:\r\n");
   WriteFile(LogFile, FmtString, lstrlen(FmtString), &bytesout, 0);
@@ -1139,7 +1139,7 @@ static void RecordModuleList(HANDLE LogFile) {
 
 static void RecordSystemInformation(HANDLE LogFile) {
   char FmtString[2000];
-  unsigned int bytesout;
+  unsigned long bytesout;
   FILETIME CurrentTime;
   GetSystemTimeAsFileTime(&CurrentTime);
   char TimeBuffer[100];
@@ -1220,16 +1220,16 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
     char *p = Debug_DumpInfo();
     lstrcpy(callstack, p);
 
-    unsigned int NumBytes;
+    unsigned long NumBytes;
     SetFilePointer(LogFile, 0, 0, FILE_END);
 
     WriteFile(LogFile, topmsg, lstrlen(topmsg), &NumBytes, 0);
     WriteFile(LogFile, FORMATCRLF, lstrlen(FORMATCRLF), &NumBytes, 0);
 
     char Username[100];
-    unsigned int unamelen = 99;
+    unsigned long unamelen = 99;
     char Machinename[200];
-    unsigned int cnamelen = 199;
+    unsigned long cnamelen = 199;
     GetUserName(Username, &unamelen);
     GetComputerName(Machinename, &cnamelen);
     wsprintf(callstack, "Username: %s\r\nMachineName: %s\r\n", Username, Machinename);
