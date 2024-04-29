@@ -95,15 +95,15 @@ endforeach ()
 
 if (UNIX)
   add_custom_target(HogLinuxFull
-    COMMAND $<TARGET_FILE:HogMaker> "$<TARGET_FILE_DIR:Descent3>/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog/d3linuxfullhog.txt"
-    DEPENDS ${SCRIPTS} HogMaker
+    COMMAND $<TARGET_FILE:hogedit> "$<TARGET_FILE_DIR:Descent3>/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog/d3linuxfullhog.txt"
+    DEPENDS ${SCRIPTS} hogedit
     COMMENT "Generate linuxfullhog/d3-linux.hog"
   )
 
   # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
   #	add_custom_target(HogLinuxDemo
-  #		COMMAND $<TARGET_FILE:HogMaker> "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/d3linuxdemohog.txt"
-  #		DEPENDS ${SCRIPTS} HogMaker
+  #		COMMAND $<TARGET_FILE:hogedit> "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/d3linuxdemohog.txt"
+  #		DEPENDS ${SCRIPTS} hogedit
   #		COMMENT "Generate linuxdemohog/d3-linux.hog"
   #	)
 

@@ -1,7 +1,7 @@
 add_executable(
-	HogMaker
-	HogMaker/HogFormat.cpp
-	HogMaker/HogMaker.cpp
+        hogedit
+	HogEdit/HogFormat.cpp
+	HogEdit/HogEdit.cpp
 )
-add_dependencies(HogMaker get_git_hash)
-target_include_directories(HogMaker PRIVATE ${PROJECT_BINARY_DIR}/lib)
+add_dependencies(hogedit get_git_hash)
+target_include_directories(hogedit PRIVATE ${PROJECT_BINARY_DIR}/lib)
