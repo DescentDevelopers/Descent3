@@ -17,9 +17,12 @@
  */
 #pragma once
 
+// System
 #include <cstdint>
 #include <ostream>
+#include <istream>
 
+// Project
 #include "byteswap.h"
 
 namespace D3 {
@@ -30,6 +33,14 @@ inline std::ostream &bin_write(std::ostream &output, T value, bool is_little_end
   output.write(reinterpret_cast<const char *>(&value), n);
 
   return output;
+}
+
+template <class T>
+inline std::istream &bin_read(std::istream &input, T &value, bool is_little_endian = true, size_t n = sizeof(T)) {
+  input.read(reinterpret_cast<char *>(&value), n);
+  value = is_little_endian ? convert_le(value) : convert_be(value);
+
+  return input;
 }
 
 } // namespace D3

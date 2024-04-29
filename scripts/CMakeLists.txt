@@ -94,8 +94,11 @@ foreach(SCRIPT ${SCRIPTS})
 endforeach ()
 
 if (UNIX)
+  file(READ "${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog/d3linuxfullhog.txt" hog_file_entries)
+  string(REPLACE "\n" ";" hog_file_entries "${hog_file_entries}")
+
   add_custom_target(HogLinuxFull
-    COMMAND $<TARGET_FILE:hogedit> "$<TARGET_FILE_DIR:Descent3>/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog/d3linuxfullhog.txt"
+    COMMAND $<TARGET_FILE:hogedit> --create "$<TARGET_FILE_DIR:Descent3>/d3-linux.hog" --directory "${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog" ${hog_file_entries}
     DEPENDS ${SCRIPTS} hogedit
     COMMENT "Generate linuxfullhog/d3-linux.hog"
   )

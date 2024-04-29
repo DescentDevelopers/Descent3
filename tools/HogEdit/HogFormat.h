@@ -17,12 +17,14 @@
  */
 #pragma once
 
-#include <array>
+// System
 #include <cstdint>
+#include <cstring>
+#include <array>
 #include <filesystem>
-#include <vector>
-
-#include "IOOps.h"
+#include <list>
+#include <string>
+#include <algorithm>
 
 namespace D3 {
 
@@ -39,39 +41,72 @@ FILE 1			[filelen(FILE 1)]
 FILE NFILES-1		[filelen(NFILES -1)]
 */
 
-inline std::array<char, 56> array_with(char val) {
+template <std::size_t len> static inline std::string arr_to_str(const std::array<char, len> &arr) {
+  return std::string(std::data(arr), strnlen(std::data(arr), std::size(arr)));
+}
+
+static inline std::string lowercase(std::string s) {
+  std::transform(std::begin(s), std::end(s), std::begin(s), [](unsigned char c) { return std::tolower(c); });
+  return s;
+}
+
+static inline std::array<char, 56> array_with(char val) {
   std::array<char, 56> arr;
   arr.fill(val);
   return arr;
 }
 
-struct HogHeader {
-  std::array<char, 4> tag = {'H', 'O', 'G', '2'}; // "HOG2"
-  uint32_t nfiles = 0;                            // number of files in header
-  uint32_t file_data_offset = 68;                 // offset in file to filedata.
-  std::array<char, 56> reserved = array_with(-1); // filled with 0xff
+struct /* [[gnu::packed]] */ HogHeader {
+  std::array<char, 4> magic = {'H', 'O', 'G', '2'};          // "HOG2"
+  uint32_t entry_count = 0;                                  // number of file entries in header
+  uint32_t file_data_offset = sizeof(HogHeader);             // offset in file to filedata.
+  std::array<char, 56> reserved = array_with(-1 /*'\xff'*/); // filled with 0xff
 };
+static_assert(sizeof(HogHeader) == 68, "HogHeader is the incorrect size. 68 bytes was expected.");
 
-struct HogFileEntry {
+struct /* [[gnu::packed] ]*/ HogFileEntry {
   std::array<char, 36> name = {}; // file name (36 char max)
-  uint32_t flags = 0;              // extra info
-  uint32_t len = 0;                // length of file
-  uint32_t timestamp = 0;          // time of file.
+  uint32_t flags = 0;             // extra info
+  uint32_t len = 0;               // length of file
+  uint32_t timestamp = 0;         // time of file.
 };
+static_assert(sizeof(HogFileEntry) == 48, "HogFileEntry is the incorrect size. 48 bytes was expected.");
 
 class HogFormat {
 private:
   HogHeader m_header;
-  std::vector<HogFileEntry> m_file_entries;
+  std::list<HogFileEntry> m_file_entries;
 
 public:
+  using hog_iter = std::list<HogFileEntry>::const_iterator;
+  hog_iter begin(void) const { return std::cbegin(m_file_entries); }
+  hog_iter end(void) const { return std::cend(m_file_entries); }
+
   void AddEntry(HogFileEntry &entry) {
     m_file_entries.push_back(entry);
-    m_header.nfiles++;
+    m_header.entry_count++;
     m_header.file_data_offset += 48;
-  };
+
+    m_file_entries.sort(
+        [](HogFileEntry &a, HogFileEntry &b) { return lowercase(arr_to_str(a.name)) < lowercase(arr_to_str(b.name)); });
+  }
+
+  void RemoveEntry(hog_iter entry_iter) {
+    m_file_entries.erase(entry_iter);
+    m_header.entry_count--;
+    m_header.file_data_offset -= 48;
+  }
+
+  std::size_t GetFileOffset(const hog_iter entry_iter) {
+    std::size_t offset = m_header.file_data_offset;
+    for (hog_iter pos = begin(); pos != entry_iter && pos != end(); pos++)
+      offset += pos->len;
+
+    return offset;
+  }
 
   friend std::ostream &operator<<(std::ostream &output, const HogFormat &format);
+  friend std::istream &operator>>(std::istream &input, HogFormat &format);
 };
 
 } // namespace D3

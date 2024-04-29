@@ -16,30 +16,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "HogFormat.h"
-#include "IOOps.h"
-
+// System
 #include <algorithm>
 #include <fstream>
 #include <iterator>
+#include <stdexcept>
+
+// Project
+#include "HogFormat.h"
+#include "IOOps.h"
+#include "byteswap.h"
 
 namespace D3 {
 
 std::ostream &operator<<(std::ostream &output, const HogHeader &header) {
-  std::copy(header.tag.begin(), header.tag.end(), std::ostream_iterator<char>(output));
-  bin_write(output, header.nfiles);
+  std::copy(std::begin(header.magic), std::end(header.magic), std::ostream_iterator<char>(output));
+  bin_write(output, header.entry_count);
   bin_write(output, header.file_data_offset);
-  std::copy(header.reserved.begin(), header.reserved.end(), std::ostream_iterator<char>(output));
+  bin_write(output, header.reserved);
 
   return output;
 }
 
+std::istream &operator>>(std::istream &input, HogHeader &header) {
+  input.read(std::data(header.magic), std::size(header.magic));
+  if (header.magic != std::array<char, 4>{'H', 'O', 'G', '2'})
+    throw std::invalid_argument("HOG2 magic number not found. Not a hog file.");
+
+  bin_read(input, header.entry_count);
+  bin_read(input, header.file_data_offset);
+  bin_read(input, header.reserved);
+
+  return input;
+}
+
 std::ostream &operator<<(std::ostream &output, const HogFileEntry &entry) {
-  std::copy(entry.name.begin(), entry.name.end(), std::ostream_iterator<char>(output));
+  std::copy(std::begin(entry.name), std::end(entry.name), std::ostream_iterator<char>(output));
   bin_write(output, entry.flags);
   bin_write(output, entry.len);
   bin_write(output, entry.timestamp);
+
   return output;
+}
+
+std::istream &operator>>(std::istream &input, HogFileEntry &entry) {
+  input.read(std::data(entry.name), std::size(entry.name));
+  bin_read(input, entry.flags);
+  bin_read(input, entry.len);
+  bin_read(input, entry.timestamp);
+
+  return input;
 }
 
 std::ostream &operator<<(std::ostream &output, const HogFormat &format) {
@@ -49,6 +75,16 @@ std::ostream &operator<<(std::ostream &output, const HogFormat &format) {
   }
 
   return output;
+}
+
+std::istream &operator>>(std::istream &input, HogFormat &format) {
+  input >> format.m_header;
+  format.m_file_entries.resize(format.m_header.entry_count);
+  for (HogFileEntry &entry : format.m_file_entries) {
+    input >> entry;
+  }
+
+  return input;
 }
 
 } // namespace D3
