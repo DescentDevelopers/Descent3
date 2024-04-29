@@ -446,6 +446,7 @@ protected:
   // Public functions
 public:
   llsSystem();
+  virtual ~llsSystem() = default;
 
   // may be called before init (must be to be valid, the card passed here will be initialized in InitSoundLib)
   virtual void SetSoundCard(const char *name) = 0;
