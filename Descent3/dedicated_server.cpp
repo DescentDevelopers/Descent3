@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -854,10 +854,12 @@ void InitDedicatedSocket(ushort port) {
     return;
   }
   // Make the socket non-blocking
-  unsigned long argp = 1;
+
 #if defined(WIN32)
+  u_long argp = 1;
   ioctlsocket(dedicated_listen_socket, FIONBIO, &argp);
 #elif defined(__LINUX__)
+  int argp = 1;
   ioctl(dedicated_listen_socket, FIONBIO, &argp);
 #endif
 }
@@ -870,10 +872,12 @@ void ListenDedicatedSocket(void) {
   incoming_socket = accept(dedicated_listen_socket, (SOCKADDR *)&conn_addr, &addrlen);
   if (INVALID_SOCKET != incoming_socket) {
     // Make the socket non-blocking
-    unsigned long argp = 1;
+
 #if defined(WIN32)
+    u_long argp = 1;
     ioctlsocket(incoming_socket, FIONBIO, &argp);
 #elif defined(__LINUX__)
+    int argp = 1;
     ioctl(incoming_socket, FIONBIO, &argp);
 #endif
     if (!Dedicated_allow_remote) {
