@@ -192,7 +192,7 @@ typedef struct {
   ubyte sequence; // where we are in the sequence chain
   ubyte pps;
   HANDLE hPlayerEvent;      // player event to use for directplay
-  unsigned int dpidPlayer; // directplay ID of player created
+  unsigned long dpidPlayer; // directplay ID of player created
   float ping_time;
   float last_ping_time;
   ushort pilot_pic_id;
