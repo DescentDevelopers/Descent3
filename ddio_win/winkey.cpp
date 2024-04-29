@@ -1,5 +1,5 @@
 /*
-* Descent 3
+* Descent 3 
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -196,7 +196,7 @@ static struct tWinKeyData {
   LPDIRECTINPUTDEVICE lpdikey; // key device
   HANDLE evtnotify;            // notify event
   HHOOK winhook;               // windows hook
-  unsigned int thread;        // thread id
+  unsigned long thread;        // thread id
                                //	osMutex keyframe_mutex;							// mutex between
                                // internal key frame and key thread.
   bool nextframe;              // used for mutexing between keyframe and thread.
@@ -290,7 +290,7 @@ retry_key_init:
       bool acquired = dikey_Acquire(lpdikey, true);
       if (acquired) {
         //	create keyboard thread
-        unsigned int thrid;
+        unsigned long thrid;
         WKD.thread_active = true;
         WKD.lpdikey = lpdikey;
         WKD.thread = 0;
@@ -300,7 +300,7 @@ retry_key_init:
         WKD.suspended = false;
         WKD.nextframe = false;
         thrid = _beginthread(dikey_Thread, 0, NULL);
-        if (thrid == (unsigned int)(-1)) {
+        if (thrid == (unsigned long)(-1)) {
           mprintf((0, "DDIO: DI_Keyboard thread failed to initialize.\n"));
           WKD.thread_active = false;
           WKD.lpdikey = NULL;

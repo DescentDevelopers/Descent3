@@ -1,5 +1,5 @@
 /*
-* Descent 3
+* Descent 3 
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ void timer_Close() {
   Timer_initialized = 0;
 }
 
-float ddio_TickToSeconds(unsigned int ticks) {
+float ddio_TickToSeconds(unsigned long ticks) {
   if (Timer_use_highres_timer) {
     LARGE_INTEGER t;
     t.QuadPart = ticks;
