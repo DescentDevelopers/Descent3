@@ -931,7 +931,7 @@ typedef unsigned char ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
 typedef unsigned int uint;
-typedef unsigned int ulong;
+typedef unsigned long ulong;
 typedef unsigned int ddgr_color;
 
 #ifndef NULL
