@@ -305,6 +305,11 @@ target_link_libraries(Descent3
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash)
+if(WIN32)
+  set_property(TARGET Descent3
+    PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+  )
+endif()
 
 if(UNIX)
 	add_dependencies(Descent3 HogLinuxFull)
