@@ -22,7 +22,6 @@
 #elif defined(__LINUX__)
 #include "linux/linux_fix.h"
 #include "lnxscreenmode.h"
-#include <X11/Xatom.h>
 #else
 #endif
 
