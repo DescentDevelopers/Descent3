@@ -322,6 +322,11 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
     return (sdlMouseButtonUpFilter(event));
   case SDL_MOUSEBUTTONDOWN:
     return (sdlMouseButtonDownFilter(event));
+  case SDL_QUIT:
+    SDL_Quit();
+    _exit(0);
+    break;
+  default: break;
   } // switch
 
   return (1);
