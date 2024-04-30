@@ -1,8 +1,7 @@
 # Homebrew dependencies to build Descent3
 
 # SDL
-brew "sdl12-compat"
-brew "sdl2_image"
+brew "sdl2"
 
 brew "cmake"
 brew "googletest"

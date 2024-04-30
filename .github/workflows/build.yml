@@ -67,7 +67,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libgtest-dev libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev libspdlog-dev
+            ninja-build cmake g++ libgtest-dev libsdl2-dev libncurses-dev zlib1g-dev libspdlog-dev
 
       - name: Configure CMake
         env:
