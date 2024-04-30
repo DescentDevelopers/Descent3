@@ -61,22 +61,32 @@ jobs:
           # Install packages from Homebrew
           brew bundle install
 
+      # `autopoint`, `gperf` tools needed for another package, probably wayland dependencies
       - name: Install Linux dependencies
         if: ${{ matrix.os.preset == 'linux' }}
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libgtest-dev libsdl2-dev libncurses-dev zlib1g-dev libspdlog-dev
+            ninja-build cmake g++ libgtest-dev libsdl2-dev libncurses-dev zlib1g-dev libspdlog-dev \
+            libx11-dev libxft-dev libxext-dev \
+            libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
+            libibus-1.0-dev \
+            autopoint gperf
 
-      - name: Configure CMake
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: "326d8b43e365352ba3ccadf388d989082fe0f2a6"
+
+      - name: Configure and build
+        uses: lukka/run-cmake@v10
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-          VCPKG_ROOT: C:/vcpkg
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON
-
-      - name: Build ${{ matrix.build_type }}
-        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
+        with:
+          configurePreset: ${{matrix.os.preset}}
+          configurePresetAdditionalArgs: "['-DBUILD_TESTING=ON', '-DENABLE_LOGGER=ON']"
+          buildPreset: ${{matrix.os.preset}}
+          buildPresetAdditionalArgs: "['--config ${{matrix.build_type}}', '--verbose']"
 
       - name: Run ${{ matrix.build_type }} Unittests
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}

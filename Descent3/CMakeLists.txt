@@ -282,12 +282,12 @@ if(WIN32)
 endif()
 
 if(UNIX AND NOT APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL2::SDL2 m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
+  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
   set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
 endif()
 
 if(APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL2::SDL2 ${CURSES_LIBRARIES})
+  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${CURSES_LIBRARIES})
   set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
   set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
 endif()
@@ -300,6 +300,8 @@ add_executable(Descent3
 )
 target_link_libraries(Descent3
   2dlib AudioEncode bitmap cfile czip d3music ddebug ddio_common libmve libacm
+  $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
   fix grtext manage mem misc model module movie stream_audio
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})

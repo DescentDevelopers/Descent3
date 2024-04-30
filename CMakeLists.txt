@@ -70,13 +70,13 @@ add_custom_target(get_git_hash ALL
   DEPENDS ${PROJECT_BINARY_DIR}/Descent3/d3_version.h
 )
 
+find_package(SDL2 CONFIG REQUIRED)
 if(UNIX)
   set(D3_GAMEDIR "~/Descent3/")
 
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
 
-  find_package(SDL2 REQUIRED)
   find_package(Curses REQUIRED)
   find_package(OpenGL REQUIRED)
   # Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
