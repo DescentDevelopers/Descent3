@@ -25,7 +25,6 @@
 #include "ddraw.h"
 #elif defined(__LINUX__)
 #include "linux/linux_fix.h"
-#include "linux/dyna_xext.h"
 #include "lnxscreenmode.h"
 #else
 #endif
@@ -48,8 +47,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include "HardwareInternal.h"
 #include "../Descent3/args.h"
 
