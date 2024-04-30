@@ -43,6 +43,9 @@
  *
  *
  */
+#pragma once
+
+#include "networking.h"
 
 #define MAX_MISSION_URL_LEN 300
 #define MAX_MISSION_URL_COUNT 5

@@ -124,13 +124,12 @@
 #include "mem.h"
 #include "args.h"
 #include "descent.h"
-#include "networking.h"
 #include "multi.h"
 #include "ui.h"
 #include "newui.h"
 #include "ddio.h"
 #include "stringtable.h"
-#include "multi_dll_mgr.h"
+// #include "multi_dll_mgr.h"
 // #include "inetgetfile.h"
 #include "grtext.h"
 #include "Mission.h"
@@ -694,7 +693,7 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 // return 0 on failure
 // return 1 on success
 int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
-
+/*
   mprintf((0, "Extracting ZIP File (%s) to missions directory\n", zipfilename));
   if (!cfexist(zipfilename)) {
     mprintf((0, "Zip file doesn't exist\n"));
@@ -826,7 +825,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
 
   if (!found_mn3)
     return 0;
-
+*/
   return 1;
 }
 

@@ -299,9 +299,9 @@ add_executable(Descent3
   ${HEADERS} ${CPPS} ${PLATFORM_CPPS} ${INCS}
 )
 target_link_libraries(Descent3
-  2dlib AudioEncode bitmap cfile czip d3music ddio_common libmve libacm
+  2dlib AudioEncode bitmap cfile d3music ddio_common libmve libacm
   fix grtext manage mem misc model module movie stream_audio
-  music networking physics renderer rtperformance sndlib ui unzip vecmat md5
+  music networking physics renderer rtperformance sndlib ui vecmat md5
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash)
