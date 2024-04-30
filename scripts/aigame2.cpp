@@ -711,7 +711,7 @@ void aiBlackStormTrooper::OnInit(int me_handle) {
     char name[48];
     int id;
     Obj_Value(me_handle, VF_GET, OBJV_S_NAME, name);
-    sprintf(buf, "Snipe%s-%c", name, 'A' + memory->snipe_points);
+    snprintf(buf, sizeof(buf), "Snipe%s-%c", name, 'A' + memory->snipe_points);
     id = Scrpt_FindObjectName(buf);
     if (id == OBJECT_HANDLE_NONE) {
       break;
