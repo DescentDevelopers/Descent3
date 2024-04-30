@@ -37,14 +37,14 @@ setx PATH=%VCPKG_ROOT%;%PATH%
 
 Build Descent 3:
 ```sh
-cmake --preset win -D LOGGER=[ON|OFF]
+cmake --preset win -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset win --config [Debug|Release]
 ```
 
 #### Building - MacOS
 ```sh
 brew bundle install
-cmake --preset mac -D LOGGER=[ON|OFF]
+cmake --preset mac -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset mac --config [Debug|Release]
 ```
 
