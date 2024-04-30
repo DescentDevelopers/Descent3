@@ -275,14 +275,14 @@ set(CPPS
   weather.cpp)
 
 if(WIN32)
-  set(PLATFORM_LIBS dd_sndlib dd_grwin32 dd_vidwin32 ddio_win win32 wsock32.lib winmm.lib Glu32.lib
+  set(PLATFORM_LIBS dd_sndlib dd_grwin32 dd_vidwin32 ddio_win win32 wsock32.lib winmm.lib
     ${DSOUND_LIBRARY} ${DINPUT_LIBRARY} ${DXGUID_LIBRARY} ${DDRAW_LIBRARY})
   set(PLATFORM_CPPS winmain.cpp)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:LIBC")
 endif()
 
 if(UNIX AND NOT APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL m ${CMAKE_DL_LIBS} OpenGL::GLU ${CURSES_LIBRARIES})
+  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
   set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
 endif()
 
