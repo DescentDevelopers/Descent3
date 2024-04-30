@@ -237,6 +237,7 @@ inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
       Int3();                                                                                                          \
   } while (0)
 #elif defined(LINUX)
+#include "SDL.h"
 // For some reason Linux doesn't like the \ continuation character, so I have to uglify this
 #define DEBUG_BREAK()                                                                                                  \
   do {                                                                                                                 \
@@ -246,16 +247,7 @@ inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
     if (DebugBreak_callback_resume)                                                                                    \
       (*DebugBreak_callback_resume)();                                                                                 \
   } while (0)
-#define ASSERT(x)                                                                                                      \
-  do {                                                                                                                 \
-    if (!(unsigned long long)(x)) {                                                                                    \
-      mprintf((0, "Assertion failed (%s) in %s line %d.\n", #x, __FILE__, __LINE__));                                  \
-      if (Debug_break)                                                                                                 \
-        DEBUG_BREAK();                                                                                                 \
-      else                                                                                                             \
-        AssertionFailed(#x, __FILE__, __LINE__);                                                                       \
-    }                                                                                                                  \
-  } while (0)
+#define ASSERT(x) SDL_assert(x)
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
     mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
