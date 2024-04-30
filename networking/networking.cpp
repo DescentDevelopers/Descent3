@@ -2158,7 +2158,7 @@ int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
       // rcg06192000 SDLified.
       // pthread_t thread;
       // dpthread_create(&thread, NULL, gethostbynameworker,newaslu);
-      aslu.threadId = SDL_CreateThread(gethostbynameworker, &aslu);
+      aslu.threadId = SDL_CreateThread(gethostbynameworker, "dnsworker", &aslu);
     }
 #else
     HOSTENT *he = gethostbyname(lastaslu->host);

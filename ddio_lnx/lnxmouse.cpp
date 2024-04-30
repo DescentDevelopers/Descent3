@@ -125,10 +125,6 @@ static int Mouse_mode = MOUSE_STANDARD_MODE;
 
 bool ddio_MouseInit(void) {
   DDIO_mouse_init = true;
-
-  SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
-  SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
-  SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
   ddio_MouseReset();
   return true;
 }

@@ -108,6 +108,8 @@ static HDC hOpenGLDC = NULL;
 HGLRC ResourceContext;
 static WORD Saved_gamma_values[256 * 3];
 #elif defined(__LINUX__)
+SDL_Window *GSDLWindow = NULL;
+SDL_GLContext GSDLGLContext = NULL;
 char loadedLibrary[_MAX_PATH];
 #else
 #endif
@@ -216,7 +218,7 @@ int checkForGLErrors( const char *file, int line )
       counter++ ;
     }
   */
-  char *sdlp = SDL_GetError();
+  const char *sdlp = SDL_GetError();
   if(sdlp && *sdlp)
     mprintf((0,"SDL: %s",sdlp));
 	return 1;
@@ -566,7 +568,7 @@ void setMinimumAcceptableRenderTime(int ms) {
 extern bool linux_permit_gamma;
 extern renderer_preferred_state Render_preferred_state;
 extern bool ddio_mouseGrabbed;
-int d3SDLEventFilter(const SDL_Event *event);
+int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
 int opengl_Setup(oeApplication *app, int *width, int *height) {
 // rcg11192000 don't check for FPS.
@@ -595,15 +597,18 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     rend_SetErrorMessage(buffer);
     return (0);
   } // if
-  SDL_SetEventFilter(d3SDLEventFilter);
+  SDL_SetEventFilter(d3SDLEventFilter, NULL);
 
   bool fullscreen = false;
+
+#if 0  // this was a workaround for 3DFx Voodoo cards back in the day. Presumably no longer needed?    --ryan 04/27/2024
   char *env = getenv("MESA_GLX_FX");
 
   if ((!env) || (*env == 'f')) // Full screen Mesa mode    !!! needs more.
   {
     fullscreen = true;
   }
+#endif
 
   if (FindArgChar("-fullscreen", 'f')) {
     fullscreen = true;
@@ -612,7 +617,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   }
 
 #if 0  // this was for 3DFx Voodoo cards...probably don't need this anymore.  --ryan 04/27/2024
-
   if (env == NULL) {
     putenv((char *)(fullscreen ? "MESA_GLX_FX=f" : "MESA_GLX_FX=w"));
   }
@@ -631,14 +635,10 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     if (arg != 0) {
       strcpy(gl_library, GameArgs[arg + 1]);
     } else {
-#if defined(MACOSX)
-      strcpy(gl_library, "/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib");
-#else
-      strcpy(gl_library, "libGL.so");
-#endif
+        gl_library[0] = 0;
     }
 
-    mprintf((0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library));
+    mprintf((0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library[0] ? gl_library : "[system default library]"));
 
 #if 0  // this was for 3DFx Voodoo cards...probably don't need this anymore.  --ryan 04/27/2024
     putenv("MESA_FX_NO_SIGNALS=ihatesegfaults");
@@ -690,45 +690,49 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  int flags = SDL_OPENGL;
+  Uint32 flags = SDL_WINDOW_OPENGL;
 
   if (fullscreen) {
-    flags |= SDL_FULLSCREEN;
+    flags |= SDL_WINDOW_FULLSCREEN;
   }
 
-  // Should we shoot for 32-bpp if available?  !!!
-  SDL_Surface *surface = SDL_SetVideoMode(*width, *height, 32, flags);
-  mprintf((0, "OpenGL: SDL GL surface is %sNULL.", (surface == NULL) ? "" : "NOT "));
+
+  GSDLWindow = SDL_CreateWindow("Descent 3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, *width, *height, flags);
+  if (!GSDLWindow) {
+    mprintf((0, "OpenGL: SDL window creation failed: %s", SDL_GetError()));
+    return 0;
+  }
+
+  GSDLGLContext = SDL_GL_CreateContext(GSDLWindow);
+  if (!GSDLGLContext) {
+    mprintf((0, "OpenGL: OpenGL context creation failed: %s", SDL_GetError()));
+    SDL_DestroyWindow(GSDLWindow);
+    GSDLWindow = NULL;
+    return 0;
+  }
 
   if (!FindArg("-nomousecap")) {
-    // ShowCursor(0) and input grabbing need to be done before setting
-    //  the video mode, or the Voodoo 3 gets a hardware cursor stuck
-    //  on the screen.
-    // On modern systems this is not necessary and must be done after to take effect.
-    SDL_ShowCursor(0);
-    SDL_WM_GrabInput(SDL_GRAB_ON);
     ddio_mouseGrabbed = true;
   }
 
-  if (ddio_mouseGrabbed == false) {
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
+  if (ddio_mouseGrabbed) {
+    SDL_ShowCursor( 0 );
+    SDL_SetWindowGrab(GSDLWindow, SDL_TRUE);
   }
-
-  SDL_WM_SetCaption("Descent 3", "Descent3");
 
   // rcg09182000 gamma fun.
   // rcg01112000 --nogamma fun.
   if (FindArgChar("-nogamma", 'M')) {
     linux_permit_gamma = false;
   } else {
-    float f = Render_preferred_state.gamma;
-    bool gammarc = SDL_SetGamma(f, f, f);
-    linux_permit_gamma = (gammarc == 0);
+    Uint16 ramp[256];
+    SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
+    linux_permit_gamma = (SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp) == 0);
   } // else
 
   if (ParentApplication) {
     reinterpret_cast<oeLnxApplication *>(ParentApplication)->set_sizepos(0, 0, *width, *height);
-    SDL_FillRect(SDL_GetVideoSurface(), NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 0, 0));
+    //SDL_FillRect(SDL_GetVideoSurface(), NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 0, 0));
   }
 
   Already_loaded = 1;
@@ -1061,7 +1065,16 @@ void opengl_Close() {
 #endif
   }
 #elif defined(__LINUX__)
-  // SDL_Quit() handles this for us.
+    if (GSDLGLContext) {
+        SDL_GL_MakeCurrent(NULL, NULL);
+        SDL_GL_DeleteContext(GSDLGLContext);
+        GSDLGLContext = NULL;
+    }
+
+    if (GSDLWindow) {
+        SDL_DestroyWindow(GSDLWindow);
+        GSDLWindow = NULL;
+    }
 #else
 
 #endif
@@ -2323,6 +2336,8 @@ void rend_StartFrame(int x1, int y1, int x2, int y2, int clear_flags) {
 }
 
 #ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
+// !!! FIXME: delete this whole section (and definitely the Loki email and phone number!).
+#error do not compile this in. This was for software mesa problems in 2000.
 static void slownessAbort(void) {
 
 #ifdef __LINUX__
@@ -2376,7 +2391,7 @@ void rend_Flip(void) {
 #if defined(WIN32)
   SwapBuffers((HDC)hOpenGLDC);
 #elif defined(__LINUX__)
-  SDL_GL_SwapBuffers();
+  SDL_GL_SwapWindow(GSDLWindow);
 #endif
 
 #ifdef __PERMIT_GL_LOGGING

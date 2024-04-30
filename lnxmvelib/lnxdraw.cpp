@@ -65,7 +65,7 @@ int LnxDraw_InitVideo(LnxVideoDesc *ldesc) {
   return 0;
 }
 
-int d3SDLEventFilter(const SDL_Event *event);
+int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
 /////////////////////////
 // LnxDraw_CreateWindow
@@ -78,8 +78,10 @@ int d3SDLEventFilter(const SDL_Event *event);
 //      -2 : Display not opened
 //      -3 : Out of memory
 int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
-
+#if 1
+  SDL_Log("!!! FIXME no movie window %s:%d\n", __FILE__, __LINE__);
   return -1;
+#else
   if (!ldesc || !lphandle)
     return -1;
   *lphandle = NULL;
@@ -93,7 +95,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
     fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());
     return (-2);
   } // if
-  SDL_SetEventFilter(d3SDLEventFilter);
+  SDL_SetEventFilter(d3SDLEventFilter, NULL);
 
   SDL_Rect **modes = LinuxVideoMode.getModes();
   Uint32 sdlflags = LinuxVideoMode.getSDLFlags();
@@ -315,6 +317,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
   }
 
   return 0;
+#endif
 }
 
 //////////////////////////
@@ -326,7 +329,10 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
 //       0 : no error
 //      -1 : invalid parameter
 int LnxDraw_DestroyWindow(LnxWindow *handle) {
+#if 1
+  SDL_Log("!!! FIXME no movie window %s:%d\n", __FILE__, __LINE__);
   return -1;
+#else
   int i;
   LnxWindow *wnd = NULL;
 
@@ -373,6 +379,7 @@ int LnxDraw_DestroyWindow(LnxWindow *handle) {
   free(wnd);
 
   return 0;
+#endif
 }
 
 ////////////////////////
@@ -385,6 +392,10 @@ int LnxDraw_DestroyWindow(LnxWindow *handle) {
 //       false : error
 bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned char **ptr,
                          int *pitch) {
+#if 1
+  SDL_Log("!!! FIXME no movie window %s:%d\n", __FILE__, __LINE__);
+  return false;
+#else
   return -1;
   if (!wnd || !ptr || !pitch)
     return false;
@@ -460,6 +471,7 @@ bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, 
 
   *ptr = ((unsigned char *)wnd->surface->pixels) + ((wnd->surface->format->BytesPerPixel * wnd->dwWidth) * linesDown);
   return true;
+#endif
 }
 
 //////////////////////////
@@ -468,7 +480,9 @@ bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, 
 // Unlocks the window surface, blitting the buffer
 //
 void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
-  return;
+#if 1
+  SDL_Log("!!! FIXME no movie window %s:%d\n", __FILE__, __LINE__);
+#else
   if (!wnd->bLocked)
     return;
   bool still_have_shared = true;
@@ -513,6 +527,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
   snprintf(filename, sizeof(filename), "./mve/frame%lu.bmp", framenum);
   SDL_SaveBMP(wnd->surface, filename);
   framenum++;
+#endif
 #endif
 }
 

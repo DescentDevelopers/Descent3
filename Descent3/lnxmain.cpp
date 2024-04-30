@@ -309,7 +309,7 @@ int sdlMouseButtonUpFilter(const SDL_Event *event);
 int sdlMouseButtonDownFilter(const SDL_Event *event);
 int sdlMouseMotionFilter(const SDL_Event *event);
 
-int d3SDLEventFilter(const SDL_Event *event) {
+int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
   switch (event->type) {
   case SDL_KEYUP:
   case SDL_KEYDOWN:
@@ -614,8 +614,11 @@ int main(int argc, char *argv[]) {
       } // if
   */
 
-  SDL_ClearError();
-  int rc = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_CDROM);
+  #ifdef DEDICATED
+  setenv("SDL_VIDEODRIVER", "dummy", 1);
+  #endif
+
+  int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0) {
     fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
     fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());
@@ -625,7 +628,7 @@ int main(int argc, char *argv[]) {
   //    atexit(SDL_Quit);
 
   // !!! FIXME: Don't use an event filter!
-  SDL_SetEventFilter(d3SDLEventFilter);
+  SDL_SetEventFilter(d3SDLEventFilter, NULL);
   install_signal_handlers();
 
   // build the command line as one long string, seperated by spaces...
