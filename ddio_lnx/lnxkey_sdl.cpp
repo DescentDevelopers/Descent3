@@ -356,19 +356,12 @@ int sdlKeyFilter(const SDL_Event *event) {
   switch (event->key.state) {
   case SDL_PRESSED:
     kc = sdlkeycode_to_keycode(event->key.keysym.sym);
-#if 0  // !!! FIXME: migrate from SDL 1.2
     if (event->key.keysym.mod & KMOD_CTRL) {
       switch (kc) {
       case KEY_G: // toggle grabbed input.
-        if (ddio_mouseGrabbed) {
-          SDL_WM_GrabInput(SDL_GRAB_OFF);
-          ddio_mouseGrabbed = false;
-        } // if
-        else {
-          SDL_WM_GrabInput(SDL_GRAB_ON);
-          ddio_mouseGrabbed = true;
-        } // else
-        return (0);
+        ddio_mouseGrabbed = !ddio_mouseGrabbed;
+        SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
+        return 0;
 
 #ifdef __PERMIT_GL_LOGGING
       case KEY_INSERT:
@@ -392,11 +385,17 @@ int sdlKeyFilter(const SDL_Event *event) {
 
     else if (event->key.keysym.mod & KMOD_ALT) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
-        SDL_WM_ToggleFullScreen(SDL_GetVideoSurface());
-        return (0);
+        extern SDL_Window *GSDLWindow;
+        Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
+        if (flags & SDL_WINDOW_FULLSCREEN) {
+          flags &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
+        } else {
+          flags |= SDL_WINDOW_FULLSCREEN;  // !!! FIXME: FULLSCREEN_DESKTOP
+        }
+        SDL_SetWindowFullscreen(GSDLWindow, flags);
+        return(0);
       } // if
     }   // else if
-#endif
 
     LKeys[kc].down_time = timer_GetTime();
     LKeys[kc].status = true;

@@ -715,10 +715,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     ddio_mouseGrabbed = true;
   }
 
-  if (ddio_mouseGrabbed) {
-    SDL_ShowCursor( 0 );
-    SDL_SetWindowGrab(GSDLWindow, SDL_TRUE);
-  }
+  SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
 
   // rcg09182000 gamma fun.
   // rcg01112000 --nogamma fun.
