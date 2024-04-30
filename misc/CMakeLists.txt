@@ -7,3 +7,6 @@ set(CPPS
   pstring.cpp)
 
 add_library(misc STATIC ${HEADERS} ${CPPS})
+target_link_libraries(misc
+  ddebug
+)
