@@ -42,26 +42,26 @@ const char *English_strings[] = {"Descent 3 under Windows NT requires version 4.
                                  "Your processor and system must support Katmai to run this game."};
 
 const char *French_strings[] = {
-    "L'exTcution de Descent 3 sous Windows NT nTcessite la version 4.0 ou ultTrieure de NT.",
-    "L'exTcution de Descent 3 nTcessite Windows 9x, NT 4.0 ou ultTrieur.",
+    "L'exécution de Descent 3 sous Windows NT nécessite la version 4.0 ou ultérieure de NT.",
+    "L'exécution de Descent 3 nécessite Windows 9x, NT 4.0 ou ultérieur.",
     "",
     "Vous devez installer DirectX a partir de l'installateur Descent 3 avant de continuer.",
-    "Vous devez installer au moins Service Pack 3 pour exTcuter Descent 3 sous Windows NT 4.0.",
-    "+chec de la rTcupTration de DirectX.",
-    "Descent 3 nTcessite DirectX 3 ou ultTrieur sur ce systFme.",
-    "Cette version de Windows NT n'est pas munie de DirectX 3 ou ultTrieur.",
-    "Votre processeur et votre systFme doivent prendre en charge Katmai pour exTcuter ce jeu."};
+    "Vous devez installer au moins Service Pack 3 pour exécuter Descent 3 sous Windows NT 4.0.",
+    "+chec de la récupération de DirectX.",
+    "Descent 3 nécessite DirectX 3 ou ultérieur sur ce système.",
+    "Cette version de Windows NT n'est pas munie de DirectX 3 ou ultérieur.",
+    "Votre processeur et votre système doivent prendre en charge Katmai pour exécuter ce jeu."};
 
 const char *German_strings[] = {
-    "Descent3 unter Windows NT ben÷tigt fnr die Ausfnhrung die NT-Version 4.0 oder h÷her",
-    "Descent 3 ben÷tigt fnr die Ausfnhrung Windows 9x, NT 4.0 oder h÷her.",
+    "Descent3 unter Windows NT benötigt fnr die Ausführung die NT-Version 4.0 oder höher",
+    "Descent 3 benötigt fnr die Ausführung Windows 9x, NT 4.0 oder höher.",
     "",
-    "Sie mnssen DirectX nber den Descent 3 Starter installieren, bevor Sie fortsetzen.",
-    "Sie mnssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausfnhren zu k÷nnen.",
+    "Sie müssen DirectX über den Descent 3 Starter installieren, bevor Sie fortsetzen.",
+    "Sie müssen mindestens Service Paket 3 installieren, um Descent 3 unter Windows NT 4.0 ausführen zu können.",
     "Die DirectX Version konnte nicht abgerufen werden.",
-    "Descent 3 ben÷tigt DirectX 3 oder h÷her auf diesem Computer.",
-    "In dieser Windows NT Version ist DirectX 3 oder h÷her nicht installiert.",
-    "Ihr Prozessor und System mu¯ Katmai unterstntzen, um dieses Spiel auszufnhren."};
+    "Descent 3 benötigt DirectX 3 oder höher auf diesem Computer.",
+    "In dieser Windows NT Version ist DirectX 3 oder höher nicht installiert.",
+    "Ihr Prozessor und System mu¯ Katmai unterstützen, um dieses Spiel auszuführen."};
 
 const char *Italian_strings[] = {
     "Descent 3 per Windows NT richiede la versione NT 4.0 o superiore.",
@@ -86,15 +86,15 @@ const char *Spanish_strings[] = {"Descent 3 bajo Windows NT requiere version 4.0
 
 #if 0
 const char *Polish_strings[] = {
-	"Aby uruchomi‘ grˆ Descent 3 potrzebujesz Windows NT w wersji 4.0 lub nowszej.",
+	"Aby uruchomić grę Descent 3 potrzebujesz Windows NT w wersji 4.0 lub nowszej.",
 	"Descent 3 wymaga Windows 9x albo Windows NT w wersji 4.0 lub nowszej.",
 	"",
-	"Zanim uruchomisz grˆ, musisz zainstalowa‘ DirectX przy u¨yciu programu startowego.",
-	"Musisz zainstalowa‘ co najmniej Service Pack 3, aby uruchomi‘ grˆ Descent 3 pod Windows NT 4.0.",
-	"Nie uda3o siˆ odczyta‘ numeru wersji sterownik¢w DirectX.",
-	"Descent 3 wymaga sterownik¢w DirectX 3 lub nowszych.",
+	"Zanim uruchomisz grę, musisz zainstalować DirectX przy u¨yciu programu startowego.",
+	"Musisz zainstalować co najmniej Service Pack 3, aby uruchomić grę Descent 3 pod Windows NT 4.0.",
+	"Nie udało siˆ odczytać numeru wersji sterowników DirectX.",
+	"Descent 3 wymaga sterowników DirectX 3 lub nowszych.",
 	"Ta wersja Windows NT nie ma zainstalowanych sterownik¢w DirectX 3 lub nowszych.",
-	"Tw¢j procesor musi obs3ugiwa‘ rozkazy Katmai, aby uruchomi‘ grˆ."
+	"Twój procesor musi obsługiwać rozkazy Katmai, aby uruchomić grę."
 };
 #endif
 
