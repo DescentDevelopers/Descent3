@@ -9,4 +9,4 @@ set(CPPS
 
 add_library(misc STATIC ${HEADERS} ${CPPS})
 
-target_link_libraries(misc spdlog::spdlog_header_only)
+target_link_libraries(misc spdlog::spdlog_header_only ddebug)

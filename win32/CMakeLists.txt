@@ -4,9 +4,8 @@ set(CPPS
   wincon.cpp
   WinController.cpp
   windata.cpp
-  windebug.cpp
-  winmono.cpp
-  wintask.cpp)
+  wintask.cpp
+)
 
 add_library(win32 STATIC ${HEADERS} ${CPPS})
 add_dependencies(win32 get_git_hash)

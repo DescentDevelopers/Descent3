@@ -143,6 +143,7 @@ endif()
 
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
+  "ddebug"  # -*-
   "lib"     # TODO: Remove after untying all modules
   "Descent3"
   ${PLATFORM_INCLUDES}
@@ -156,6 +157,7 @@ add_subdirectory(bitmap)
 add_subdirectory(cfile)
 add_subdirectory(czip)
 add_subdirectory(d3music)
+add_subdirectory(ddebug)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(dd_grwin32)
