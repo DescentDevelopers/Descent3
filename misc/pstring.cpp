@@ -38,47 +38,41 @@
  * $NoKeywords: $
  */
 
-#include <string.h>
+#include <cctype>
 
 #include "pstring.h"
 
 // CleanupStr
-//		this function strips all leading and trailing spaces, keeping internal spaces.  this goes
-//		for tabs too.
-int CleanupStr(char *dest, const char *src, int destlen) {
-  int i, j, err, begin = 0, end = 0, len;
+//    This function strips all leading and trailing spaces, keeping internal spaces. This goes for tabs too.
+std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen) {
+  if (destlen == 0)
+    return 0;
 
-  err = 0;
+  const char *end;
+  std::size_t out_size;
 
-  len = strlen(src);
-  for (i = 0; i < len; i++) {
-    char ch;
-    ch = src[i];
+  // Trim leading space
+  while (std::isspace((unsigned char)*src))
+    src++;
 
-    //	 mark beginning.
-    if ((ch > ' ' && ch > '\t') && err < 1) {
-      err = 1;
-      begin = i;
-      end = i;
-    } else if (ch == ' ' && err == 1) {
-      err = 2;
-      end = i;
-    } else if (ch > ' ' && err >= 1) {
-      end = i;
-    }
+  // All spaces?
+  if (*src == '\0') {
+    *dest = '\0';
+    return 1;
   }
 
-  j = 0;
-  for (i = begin; i < (end + 1); i++) {
-    char ch;
-    ch = src[i];
-    if (j == destlen - 1)
-      break;
-    if (ch != '\"')
-      dest[j++] = ch;
-  }
+  // Trim trailing space
+  end = src + std::strlen(src) - 1;
+  while (end > src && std::isspace((unsigned char)*end))
+    end--;
+  end++;
 
-  dest[j] = 0;
+  // Set output size to minimum of trimmed string length and buffer size minus 1
+  out_size = (end - src) < destlen - 1 ? (end - src) : destlen - 1;
 
-  return 0;
+  // Copy trimmed string and add null terminator
+  std::memcpy(dest, src, out_size);
+  dest[out_size] = '\0';
+
+  return out_size;
 }

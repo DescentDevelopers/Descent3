@@ -35,12 +35,13 @@
  * $NoKeywords: $
  */
 
-#ifndef _PSTRING_H_
-#define _PSTRING_H_
+#ifndef PSTRING_H
+#define PSTRING_H
+
+#include <cstring>
 
 // CleanupStr
-//		this function strips all leading and trailing spaces, keeping internal spaces.  this goes
-//		for tabs too.
-int CleanupStr(char *dest, const char *src, int destlen);
+//    This function strips all leading and trailing spaces, keeping internal spaces. This goes for tabs too.
+std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen);
 
 #endif
