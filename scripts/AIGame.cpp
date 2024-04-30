@@ -1920,7 +1920,7 @@ bool SuperThief::DoSteal(int me, int it) {
         Player_Value(it, VF_GET, PLYSV_I_WEAPON, &amount, SuperThiefableItems[i].index);
         if (SuperThiefableItems[i].index != 0 && amount) {
           can_take = true;
-          sprintf(message, TXT_THIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
+          snprintf(message, sizeof(message), TXT_THIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
         }
         break;
 
@@ -1948,9 +1948,9 @@ bool SuperThief::DoSteal(int me, int it) {
             can_take = true;
 
             if (amount == 1) {
-              sprintf(message, TXT_STHIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
+              snprintf(message, sizeof(message), TXT_STHIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
             } else {
-              sprintf(message, TXT_STHIEFSTEAL2, amount, TXT(SuperThiefableItems[i].name_idx));
+              snprintf(message, sizeof(message), TXT_STHIEFSTEAL2, amount, TXT(SuperThiefableItems[i].name_idx));
             }
           }
         }
@@ -4610,7 +4610,7 @@ void GuideBot::DoMessage(const char *str, bool f_high_priority, const char *soun
   }
 
   char gb_message[256];
-  sprintf(gb_message, "\1\255\255\1%s:\1\1\255\1 %s", memory->name, str);
+  snprintf(gb_message, sizeof(gb_message), "\1\255\255\1%s:\1\1\255\1 %s", memory->name, str);
   Player_AddHudMessage(memory->my_player, gb_message);
 }
 
@@ -5189,7 +5189,7 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
           strcat(marker_message, "...");
         }
 
-        sprintf(message, TXT_GB_GOMARKER, marker_message);
+        snprintf(message, sizeof(message), TXT_GB_GOMARKER, marker_message);
         DoMessage(message, false, "GBotAcceptOrder1");
 
         AI_AddGoal(me, AIG_GET_TO_OBJ, 1, 1.0f, -1, GF_KEEP_AT_COMPLETION | GF_NOTIFIES, memory->g_powerup);
@@ -5217,7 +5217,7 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
           strcat(marker_message, "...");
         }
 
-        sprintf(message, TXT_GB_GOMARKER, marker_message);
+        snprintf(message, sizeof(message), TXT_GB_GOMARKER, marker_message);
         DoMessage(message, false, "GBotAcceptOrder1");
 
         AI_AddGoal(me, AIG_GET_TO_OBJ, 1, 1.0f, -1, GF_KEEP_AT_COMPLETION | GF_NOTIFIES, memory->g_powerup);
@@ -5438,11 +5438,11 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
         }
 
         if (f_do) {
-          sprintf(pow_message, "%s", TXT(gb_pow_text[param1 - GB_POW_STRING_OFFSET]));
+          snprintf(pow_message, sizeof(pow_message), "%s", TXT(gb_pow_text[param1 - GB_POW_STRING_OFFSET]));
           DoMessage(pow_message, false, "GBotAcceptOrder1");
           memory->powerups[param1 - GB_POW_STRING_OFFSET]--;
         } else {
-          sprintf(pow_message, "%s", TXT(gb_pow_not_text[param1 - GB_POW_STRING_OFFSET]));
+          snprintf(pow_message, sizeof(pow_message), "%s", TXT(gb_pow_not_text[param1 - GB_POW_STRING_OFFSET]));
           DoMessage(pow_message, false, "GBotConcern1");
         }
       } else {
@@ -5455,10 +5455,10 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
         memory->name[7] = '\0';
         Player_Value(memory->my_player, VF_SET, PLYV_CS_GUIDEBOTNAME, memory->name);
 
-        sprintf(str, TXT_GB_NEWNAME, (char *)command->ptr);
+        snprintf(str, sizeof(str), TXT_GB_NEWNAME, (char *)command->ptr);
         DoMessage(str, true, "GBotAcceptOrder1");
       } else {
-        sprintf(str, TXT_GB_NOWAY, (char *)command->ptr);
+        snprintf(str, sizeof(str), TXT_GB_NOWAY, (char *)command->ptr);
         DoMessage(str, true, "GBotConcern1");
       }
     } else if (param1 == GBC_RENAME_SILENT) {
@@ -5468,7 +5468,7 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
       }
     } else {
       char str[80];
-      sprintf(str, TXT_GB_STRIKE, param1);
+      snprintf(str, sizeof(str), TXT_GB_STRIKE, param1);
       DoMessage(str, true, "GBotConern1", true);
     }
   } else if (command->action == COM_GET_MENU) {
@@ -5502,7 +5502,7 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
           strcat(marker_message, "...");
         }
 
-        sprintf(message, TXT_GB_FINDMARKMENU, marker_message);
+        snprintf(message, sizeof(message), TXT_GB_FINDMARKMENU, marker_message);
         strcpy(menu->command_text[i], message);
       } else if (c_index >= GBC_FIND_ACTIVE_GOAL_0 && c_index <= GBC_FIND_ACTIVE_GOAL_7) {
         int g_id;
@@ -5520,7 +5520,7 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
 
           strcat(message, "...");
         }
-        sprintf(menu->command_text[i], TXT_GB_GETTO, message);
+        snprintf(menu->command_text[i], sizeof(menu->command_text[i]), TXT_GB_GETTO, message);
       } else if (c_index >= GBC_FIND_ACTIVE_SEC_GOAL_0 && c_index <= GBC_FIND_ACTIVE_SEC_GOAL_7) {
         int g_id;
         char message[256];
@@ -5537,13 +5537,13 @@ bool GuideBot::DoExternalCommands(int me, gb_com *command, int it) {
 
           strcat(message, "...");
         }
-        sprintf(menu->command_text[i], TXT_GB_GETTO, message);
+        snprintf(menu->command_text[i], sizeof(menu->command_text[i]), TXT_GB_GETTO, message);
       } else
         strcpy(menu->command_text[i], TXT(gb_command_text[gbc_list[i]]));
 
       if (gbc_list[i] == GBC_REPAIR_GUIDEBOT) {
         char message[256];
-        sprintf(message, TXT_GB_SHIELDAMOUNT, 5 + 5 * Game_GetDiffLevel());
+        snprintf(message, sizeof(message), TXT_GB_SHIELDAMOUNT, 5 + 5 * Game_GetDiffLevel());
         strcat(menu->command_text[i], message);
       }
 
@@ -6340,7 +6340,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
         Player_Value(it, VF_GET, PLYSV_I_WEAPON, &amount, ThiefableItems[i].index);
         if (ThiefableItems[i].index != 0 && amount) {
           can_take = true;
-          sprintf(message, TXT_THIEFSTEAL, TXT(ThiefableItems[i].name_idx));
+          snprintf(message, sizeof(message), TXT_THIEFSTEAL, TXT(ThiefableItems[i].name_idx));
         }
         break;
 
@@ -6368,9 +6368,9 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
             can_take = true;
 
             if (amount == 1) {
-              sprintf(message, TXT_THIEFSTEAL1, TXT(ThiefableItems[i].name_idx));
+              snprintf(message, sizeof(message), TXT_THIEFSTEAL1, TXT(ThiefableItems[i].name_idx));
             } else {
-              sprintf(message, TXT_THIEFSTEAL2, amount, TXT(ThiefableItems[i].name_idx));
+              snprintf(message, sizeof(message), TXT_THIEFSTEAL2, amount, TXT(ThiefableItems[i].name_idx));
             }
           }
         }
@@ -6394,7 +6394,7 @@ bool Thief::DoSteal(int me, int it, int attempt_num, bool f_last_success) {
         }
 
         if (can_take) {
-          sprintf(message, TXT_THIEFSTEAL, TXT(ThiefableItems[i].name_idx));
+          snprintf(message, sizeof(message), TXT_THIEFSTEAL, TXT(ThiefableItems[i].name_idx));
         }
         break;
       }
@@ -7606,7 +7606,7 @@ bool OldScratch::DoSteal(int me, int it) {
         Player_Value(it, VF_GET, PLYSV_I_WEAPON, &amount, SuperThiefableItems[i].index);
         if (SuperThiefableItems[i].index != 0 && amount) {
           can_take = true;
-          sprintf(message, TXT_THIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
+          snprintf(message, sizeof(message), TXT_THIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
         }
         break;
 
@@ -7634,9 +7634,9 @@ bool OldScratch::DoSteal(int me, int it) {
             can_take = true;
 
             if (amount == 1) {
-              sprintf(message, TXT_STHIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
+              snprintf(message, sizeof(message), TXT_STHIEFSTEAL, TXT(SuperThiefableItems[i].name_idx));
             } else {
-              sprintf(message, TXT_STHIEFSTEAL2, amount, TXT(SuperThiefableItems[i].name_idx));
+              snprintf(message, sizeof(message), TXT_STHIEFSTEAL2, amount, TXT(SuperThiefableItems[i].name_idx));
             }
           }
         }
