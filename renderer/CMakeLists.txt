@@ -17,8 +17,6 @@ set(CPPS
   SoftwareDraw.cpp
   SoftwareGlobalVars.cpp
   SoftwareInstance.cpp
-  SoftwareOpenGL.cpp
-  SoftwareOpenGLMeshBuilder.cpp
   SoftwarePoints.cpp
   SoftwareSetup.cpp)
 

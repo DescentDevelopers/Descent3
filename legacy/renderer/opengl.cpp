@@ -21,7 +21,6 @@
 #include "ddraw.h"
 #elif defined(__LINUX__)
 #include "linux/linux_fix.h"
-#include "linux/dyna_xext.h"
 #include "lnxscreenmode.h"
 #include <X11/Xatom.h>
 #else
