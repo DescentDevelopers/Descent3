@@ -48,11 +48,20 @@ cmake --preset mac -D LOGGER=[ON|OFF]
 cmake --build --preset mac --config [Debug|Release]
 ```
 
-#### Building - Linux
+#### Building - Linux (Ubuntu)
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev spdlog-dev
+cmake --preset linux -D LOGGER=[ON|OFF]
+cmake --build --preset linux --config [Debug|Release]
+```
+
+#### Building - Linux (Fedora)
+```sh
+sudo dnf update --refresh
+sudo dnf install -y ninja-build cmake gcc-c++ SDL-devel SDL_image-devel ncurses-devel libXext.x86_64 zlib-devel spdlog-devel
+sudo dnf install -y libXext.i686
 cmake --preset linux -D LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
