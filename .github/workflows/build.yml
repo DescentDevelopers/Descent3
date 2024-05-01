@@ -13,7 +13,6 @@ on:
     paths-ignore:
       - '**/README.md'
       - '**/LICENSE'
-      - '**/.github/**'
 
 jobs:
   build:
@@ -74,7 +73,7 @@ jobs:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
           VCPKG_ROOT: C:/vcpkg
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON
 
       - name: Build ${{ matrix.build_type }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
