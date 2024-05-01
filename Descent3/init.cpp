@@ -1690,14 +1690,19 @@ void InitIOSystems(bool editor) {
 #endif
 
   // Open this file if it's present for stuff we might add later
-  ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+  // JC: Digital releases call this 'extra1'hog', on CD releases it's 'extra.hog'. Check for extra1.hog first.
+  ddio_MakePath(fullname, LocalD3Dir, "extra1.hog", NULL);
   extra_hid = cf_OpenLibrary(fullname);
+  if (extra_hid == -1) {
+	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+ 	extra_hid = cf_OpenLibrary(fullname);
+  }
 
-  // Always look for merc.hog first
-  merc_hid = cf_OpenLibrary("merc.hog");
-  // Check if merc_hid is valid, if not, open extra.hog
+  // Always look for extra.hog first
+  merc_hid = cf_OpenLibrary("extra.hog");
+  // Check if merc_hid is valid, if not, open merc.hog
   if (merc_hid == -1) {
-    merc_hid = cf_OpenLibrary("extra.hog");
+    merc_hid = cf_OpenLibrary("merc.hog");
   }
   // Open this for extra 1.3 code (Black Pyro, etc)
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
