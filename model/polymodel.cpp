@@ -614,6 +614,7 @@
 #include <string.h>
 #include "robotfire.h"
 #include "mem.h"
+#include "gamesequence.h"
 
 #include <algorithm>
 
@@ -678,6 +679,7 @@ static void FreeAllModels();
 /// Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
 /// position/angle of each corresponding subobject.
 static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subobj_flags);
+static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
 
 int findtextbmpname = 0;
 int findtextname = 0;
@@ -2059,9 +2061,6 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
   return 1;
 }
-
-extern int paged_in_count;
-extern int paged_in_num;
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong

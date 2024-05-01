@@ -902,10 +902,6 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
   }
 }
 
-extern void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
-extern void StartLightInstance(vector *, matrix *);
-extern void DoneLightInstance();
-
 // Rotates all of the points of a submodel, plus supplies color info
 void RotateModelPoints(poly_model *pm, bsp_info *sm) {
 

@@ -1316,8 +1316,6 @@ bool LoadMissionLevel(int level) {
 #define LOADBAR_W (260 * (float)Max_window_w / (float)FIXED_SCREEN_WIDTH)
 #define LOADBAR_H (22 * (float)Max_window_h / (float)FIXED_SCREEN_HEIGHT)
 #define N_LOAD_MSGS 12
-extern int need_to_page_in;
-extern int paged_in_count;
 bool started_page = 0;
 /*
 $$TABLE_GAMEFILE "tunnelload.ogf"

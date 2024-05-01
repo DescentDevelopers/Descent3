@@ -142,6 +142,7 @@
 #include "byteswap.h"
 #include <string.h>
 #include "mem.h"
+#include "gamesequence.h"
 
 #include <stdlib.h>
 
@@ -597,8 +598,6 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     return (n);
 }
 
-extern int paged_in_count;
-extern int paged_in_num;
 // Pages in bitmap index n.  Returns 1 if successful, 0 if not
 int bm_page_in_file(int n) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;

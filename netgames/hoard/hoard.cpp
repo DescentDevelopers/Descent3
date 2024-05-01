@@ -135,8 +135,6 @@ static void SaveStatsToFile(char *filename);
 static void ReceiveGameConfig(ubyte *data);
 static void OnClientPlayerEntersGame(int player_num);
 
-// Displays the Hoard game configuration dialog (Server)
-extern void DisplayHoardConfigDialog(tGameConfig *);
 static bool Config_displayed = false;
 
 ///////////////////////////////////////////////

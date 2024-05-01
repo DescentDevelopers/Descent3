@@ -437,4 +437,7 @@ void FreePolymodelData(int i);
 // Sets the position and rotation of a polymodel.  Used for rendering and collision detection
 void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint subobj_flags = 0xFFFFFFFF);
 
+extern void DoneLightInstance();
+extern void StartLightInstance(vector *, matrix *);
+
 #endif
