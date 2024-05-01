@@ -1548,12 +1548,6 @@ tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
                                        {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
 int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
 
-// JC: Assume merc is installed by default. Fix later if needed.
-// Returns true if Mercenary is installed
-bool MercInstalled() {
-	return true;
-}
-
 /*
         I/O systems initialization
 */
