@@ -2910,46 +2910,16 @@ bool PltSelectShip(pilot *Pilot) {
 #ifdef DEMO
       if (strcmpi(Ships[i].name, DEFAULT_SHIP) == 0) {
 #endif
-#ifdef WIN32
-        HKEY key;
-        DWORD lType;
-        LONG error;
-
-#define BUFLEN 2000
-        char dir[BUFLEN];
-        DWORD dir_len = BUFLEN;
-
-        if (!stricmp(Ships[i].name, "Black Pyro")) {
-          // make sure they have mercenary in order to play with Black Pyro
-          shipoktoadd = false;
-
-          error = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                               "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3 Mercenary", 0,
-                               KEY_ALL_ACCESS, &key);
-
-          if ((error == ERROR_SUCCESS)) {
-            lType = REG_EXPAND_SZ;
-
-            unsigned long len = BUFLEN;
-            error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
-
-            if (error == ERROR_SUCCESS) {
-              // they have mercenary, and this is a black pyro...add it
-              shipoktoadd = true;
-            }
-          }
-        } else {
-          // this isn't a black pyro
-          shipoktoadd = true;
-        }
-#else
-      // Non-Windows versions don't have to check
-      if (!stricmp(Ships[i].name, "Black Pyro")) {
-        shipoktoadd = false;
-      } else {
-        shipoktoadd = true;
-      }
-#endif
+	  // make sure they have mercenary in order to play with Black Pyro
+	  if (!stricmp(Ships[i].name, "Black Pyro")) {
+		shipoktoadd = false;
+		extern bool MercInstalled();
+		if (MercInstalled()) {
+		  shipoktoadd = true;
+		}
+	  }
+	  else
+		  shipoktoadd = true;
         if (shipoktoadd)
           ship_list->AddItem(Ships[i].name);
 #ifdef DEMO
