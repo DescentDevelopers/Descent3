@@ -42,8 +42,8 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 }
 #endif
 
-int String_table_size = 0;
-char **String_table = NULL;
+static int String_table_size = 0;
+static char **String_table = NULL;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -202,8 +202,12 @@ const char *GetStringFromTable(int index) {
 #define TXT_GB_I_FOUND_A_GB_POWERUP TXT(145)
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
-                    bool f_set_parent = false) {
+static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+                           bool f_aligned = true, bool f_set_parent = false);
+
+// Returns the new child's handle
+int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+                    bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
   msafe_struct m;
@@ -284,57 +288,57 @@ typedef struct {
   const char *name;
 } tScriptInfo;
 
-tScriptInfo ScriptInfo[NUM_IDS] = {{ID_PEST, "Pest"},
-                                   {ID_STINGER, "Stinger"},
-                                   {ID_DRAGON, "Dragontorso"},
-                                   {ID_TRACKER, "Tracker"},
-                                   {ID_LANCE, "Lance"},
-                                   {ID_FLAK, "Flak"},
-                                   {ID_SUPERTROOPER, "supertrooper"},
-                                   {ID_REDSUPERTROOPER, "red supertrooper"},
-                                   {ID_JUGG, "jugg"},
-                                   {ID_SIXGUN, "Sixgun"},
-                                   {ID_SICKLE, "Sickle"},
-                                   {ID_GUIDEBOT, "Guidebot"},
-                                   {ID_FIREATDIST, "FireAtDist"},
-                                   {ID_TUBBS, "Tubbs"},
-                                   {ID_THIEF, "Thief"},
-                                   {ID_GBPOWERUP, "GBPowerup"},
-                                   {ID_BARNSWALLOW, "BarnSwallow"},
-                                   {ID_SPARKY, "Sparky"},
-                                   {ID_MANTARAY, "Mantaray"},
-                                   {ID_SPYHUNTER, "Spyhunter"},
-                                   {ID_SNIPER, "Sniper"},
-                                   {ID_HUMONCULOUS, "Humonculous"},
-                                   {ID_SEEKER, "Seeker"},
-                                   {ID_BETTY, "Betty"},
-                                   {ID_CHAFF, "ChaffBomb"},
-                                   {ID_CHAFFCHUNK, "ChaffChunk"},
-                                   {ID_PROXMINE, "ProxMine"},
-                                   {ID_BETTYBOMB, "BettyBomb"},
-                                   {ID_JOSHBELL, "JoshBell"},
-                                   {ID_SKIFF, "Skiff"},
-                                   {ID_EXPLODEONCONTACT, "ExplodeOnContact"},
-                                   {ID_EXPLODETIMEOUT, "ExplodeTimeOut"},
-                                   {ID_GUNBOY, "Gunboy"},
-                                   {ID_DEATH_TOWER, "Ltowerbase"},
-                                   {ID_DEATH_COLLECTOR, "Collectorbase"},
-                                   {ID_CHEMICAL_BALL, "ChemicalBall"},
-                                   {ID_HELLION, "Hellion"},
-                                   {ID_SUPERTHIEF, "superthief"},
-                                   {ID_EVADERMODA, "EvaderModA"},
-                                   {ID_DESTROYONCONTACT, "DestroyOnContact"},
-                                   {ID_HATEPTMC, "HatePTMC"},
-                                   {ID_SNIPERNORUN, "SniperNoRun"},
-                                   {ID_FLAMERAS, "FlameRAS"},
-                                   {ID_OLDSCRATCH, "old scratch"}};
+static tScriptInfo ScriptInfo[NUM_IDS] = {{ID_PEST, "Pest"},
+                                          {ID_STINGER, "Stinger"},
+                                          {ID_DRAGON, "Dragontorso"},
+                                          {ID_TRACKER, "Tracker"},
+                                          {ID_LANCE, "Lance"},
+                                          {ID_FLAK, "Flak"},
+                                          {ID_SUPERTROOPER, "supertrooper"},
+                                          {ID_REDSUPERTROOPER, "red supertrooper"},
+                                          {ID_JUGG, "jugg"},
+                                          {ID_SIXGUN, "Sixgun"},
+                                          {ID_SICKLE, "Sickle"},
+                                          {ID_GUIDEBOT, "Guidebot"},
+                                          {ID_FIREATDIST, "FireAtDist"},
+                                          {ID_TUBBS, "Tubbs"},
+                                          {ID_THIEF, "Thief"},
+                                          {ID_GBPOWERUP, "GBPowerup"},
+                                          {ID_BARNSWALLOW, "BarnSwallow"},
+                                          {ID_SPARKY, "Sparky"},
+                                          {ID_MANTARAY, "Mantaray"},
+                                          {ID_SPYHUNTER, "Spyhunter"},
+                                          {ID_SNIPER, "Sniper"},
+                                          {ID_HUMONCULOUS, "Humonculous"},
+                                          {ID_SEEKER, "Seeker"},
+                                          {ID_BETTY, "Betty"},
+                                          {ID_CHAFF, "ChaffBomb"},
+                                          {ID_CHAFFCHUNK, "ChaffChunk"},
+                                          {ID_PROXMINE, "ProxMine"},
+                                          {ID_BETTYBOMB, "BettyBomb"},
+                                          {ID_JOSHBELL, "JoshBell"},
+                                          {ID_SKIFF, "Skiff"},
+                                          {ID_EXPLODEONCONTACT, "ExplodeOnContact"},
+                                          {ID_EXPLODETIMEOUT, "ExplodeTimeOut"},
+                                          {ID_GUNBOY, "Gunboy"},
+                                          {ID_DEATH_TOWER, "Ltowerbase"},
+                                          {ID_DEATH_COLLECTOR, "Collectorbase"},
+                                          {ID_CHEMICAL_BALL, "ChemicalBall"},
+                                          {ID_HELLION, "Hellion"},
+                                          {ID_SUPERTHIEF, "superthief"},
+                                          {ID_EVADERMODA, "EvaderModA"},
+                                          {ID_DESTROYONCONTACT, "DestroyOnContact"},
+                                          {ID_HATEPTMC, "HatePTMC"},
+                                          {ID_SNIPERNORUN, "SniperNoRun"},
+                                          {ID_FLAMERAS, "FlameRAS"},
+                                          {ID_OLDSCRATCH, "old scratch"}};
 
-int aigame_mod_id;
+static int aigame_mod_id;
 // use this macro to create unique timer IDs
 #define CREATE_TIMER_ID(id) ((aigame_mod_id << 16) | (id))
 
-int GetObjectParent(int object);
-int GetObjectType(int object);
+static int GetObjectParent(int object);
+static int GetObjectType(int object);
 
 class BaseObjScript {
 public:
@@ -1460,7 +1464,7 @@ public:
 #define GBC_RETURN_TO_SHIP 43
 #define GBC_RENAME_SILENT 44
 
-int gb_command_text[NUM_GB_COMMANDS] = {
+static int gb_command_text[NUM_GB_COMMANDS] = {
     TXT_GBM_EXITSHIP,    TXT_GBM_REPAIR,     TXT_GBM_RENAME,       TXT_GBM_P0,           TXT_GBM_P1,
     TXT_GBM_P2,          TXT_GBM_P3,         TXT_GBM_P4,           TXT_GBM_P5,           TXT_GBM_P6,
     TXT_GBM_P7,          TXT_GBM_S0,         TXT_GBM_S1,           TXT_GBM_S2,           TXT_GBM_S3,
@@ -1479,14 +1483,14 @@ int gb_command_text[NUM_GB_COMMANDS] = {
 
 #define MAX_AV_ROBOTS 100
 
-int gb_pow_text[NUM_GB_POWERUPS] = {TXT_GBP_PUTOUTFIRE, TXT_GBP_COWABUNGA, TXT_GBP_BEGENTAL,
-                                    TXT_GBP_LETSDOIT,   TXT_GBP_CONVERTEN, TXT_GBP_ACCELERATOR};
+static int gb_pow_text[NUM_GB_POWERUPS] = {TXT_GBP_PUTOUTFIRE, TXT_GBP_COWABUNGA, TXT_GBP_BEGENTAL,
+                                           TXT_GBP_LETSDOIT,   TXT_GBP_CONVERTEN, TXT_GBP_ACCELERATOR};
 
-int gb_pow_not_text[NUM_GB_POWERUPS] = {TXT_GBPN_NOFIRE,   TXT_GBPN_NOFIGHT, TXT_GBPN_GOPLAY,
-                                        TXT_GBPN_TOODISSY, TXT_GBPN_NOENEMY, TXT_GBPN_NOCOFFEE};
+static int gb_pow_not_text[NUM_GB_POWERUPS] = {TXT_GBPN_NOFIRE,   TXT_GBPN_NOFIGHT, TXT_GBPN_GOPLAY,
+                                               TXT_GBPN_TOODISSY, TXT_GBPN_NOENEMY, TXT_GBPN_NOCOFFEE};
 
-int gb_pow_pickup_text[NUM_GB_POWERUPS] = {TXT_GBPP_EXTIN, TXT_GBPP_WINGNUT, TXT_GBPP_MANCON,
-                                           TXT_GBPP_GUARD, TXT_GBPP_ANTIV,   TXT_GBPP_ACCEL};
+static int gb_pow_pickup_text[NUM_GB_POWERUPS] = {TXT_GBPP_EXTIN, TXT_GBPP_WINGNUT, TXT_GBPP_MANCON,
+                                                  TXT_GBPP_GUARD, TXT_GBPP_ANTIV,   TXT_GBPP_ACCEL};
 
 #define GB_POW_FIRE 0
 #define GB_POW_WINGNUT 1
@@ -1630,7 +1634,7 @@ typedef struct {
   int name_idx;
 } tThiefItems;
 
-tThiefItems ThiefableItems[] = {
+static tThiefItems ThiefableItems[] = {
     {0, THIEFABLEITEM_PRIMARY, 0.70f, 0.50f, 0.70f, TXT_WEAP_LASERS},    // Laser
     {1, THIEFABLEITEM_PRIMARY, 0.70f, 0.50f, 0.70f, TXT_WEAP_VAUSS},     // Vauss
     {2, THIEFABLEITEM_PRIMARY, 0.70f, 0.50f, 0.70f, TXT_WEAP_MICROWAVE}, // Microwave
@@ -1661,7 +1665,7 @@ tThiefItems ThiefableItems[] = {
     {6, THIEFABLEITEM_ACCESSORY, 1.00f, 0.60f, 1.00f, TXT_WEAP_RAPIDFIRE},       // RapidFire
     {7, THIEFABLEITEM_ACCESSORY, 1.00f, 0.60f, 1.00f, TXT_WEAP_QUADLASERS},      // Quads
 };
-int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
+static int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
 
 typedef struct {
   unsigned short id;
@@ -1738,7 +1742,7 @@ typedef struct {
   const char *fire_sound;
 } tSuperThiefItems;
 
-tSuperThiefItems SuperThiefableItems[] = {
+static tSuperThiefItems SuperThiefableItems[] = {
     {0, -1, THIEFABLEITEM_PRIMARY, .25, TXT_WEAP_LASERS, "", ""},                                        // Laser
     {1, 4, THIEFABLEITEM_PRIMARY, .1f, TXT_WEAP_VAUSS, "Vauss", "WpnPyroGLVaussSidefire"},               // Vauss
     {2, 2, THIEFABLEITEM_PRIMARY, .1f, TXT_WEAP_MICROWAVE, "Raygun", "WpnPyroGLMicrowaveSide"},          // Microwave
@@ -1762,7 +1766,7 @@ tSuperThiefItems SuperThiefableItems[] = {
     {19, -1, THIEFABLEITEM_SECONDARY, .2f, TXT_WEAP_BLACKSHARK, "", ""},                           // Black Shark
 };
 
-int numSuperThiefableItems = sizeof(SuperThiefableItems) / sizeof(tSuperThiefItems);
+static int numSuperThiefableItems = sizeof(SuperThiefableItems) / sizeof(tSuperThiefItems);
 
 #define SUPERTHIEF_MELEE_DIST 50.0f
 
@@ -2767,7 +2771,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 // Functions
 //============================================
 
-float Obj_GetObjDist(int me, int it, bool f_sub_rads) {
+static float Obj_GetObjDist(int me, int it, bool f_sub_rads) {
   vector me_pos;
   vector it_pos;
   float dist;
@@ -2789,7 +2793,7 @@ float Obj_GetObjDist(int me, int it, bool f_sub_rads) {
   return dist;
 }
 
-inline void AIClearNonHPGoals(int handle) {
+static inline void AIClearNonHPGoals(int handle) {
   int i;
 
   for (i = 0; i < MAX_GOALS; i++) {
@@ -2798,7 +2802,7 @@ inline void AIClearNonHPGoals(int handle) {
   }
 }
 
-inline bool IsGoalFinishedNotify(int index) {
+static inline bool IsGoalFinishedNotify(int index) {
   return (index == AIN_GOAL_COMPLETE || index == AIN_GOAL_INVALID || index == AIN_GOAL_FAIL || index == AIN_GOAL_ERROR);
 }
 

@@ -55,6 +55,12 @@ const char *GetStringFromTable(int index) {
 }
 #define TXT(x) GetStringFromTable(x)
 
+static void PortalBreakGlass(int portalnum, int roomnum);
+// Returns the new child's handle
+static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+                           bool f_aligned = true, bool f_set_parent = false);
+static float Obj_GetObjDist(int me, int it, bool f_sub_rads);
+
 void PortalBreakGlass(int portalnum, int roomnum) {
   msafe_struct mstruct;
 
@@ -65,8 +71,8 @@ void PortalBreakGlass(int portalnum, int roomnum) {
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
-                    bool f_set_parent = false) {
+int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+                    bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
   msafe_struct m;
@@ -113,12 +119,9 @@ tScriptInfo ScriptInfo[NUM_IDS] = {{ID_MERCENDBOSS, "MercEndBoss"}, {ID_GUN, "Gu
                                    {ID_CASING, "Casing"},           {ID_HANGLIGHT, "HangLight"},
                                    {ID_COMBWALLHIT, "CombWallHit"}, {ID_DROPTARGET, "DropTarget"}};
 
-int aigame_mod_id;
+static int aigame_mod_id;
 // use this macro to create unique timer IDs
 #define CREATE_TIMER_ID(id) ((aigame_mod_id << 16) | (id))
-
-int GetObjectParent(int object);
-int GetObjectType(int object);
 
 class BaseObjScript {
 public:
@@ -398,7 +401,7 @@ float Obj_GetObjDist(int me, int it, bool f_sub_rads) {
   return dist;
 }
 
-inline void AIClearNonHPGoals(int handle) {
+static inline void AIClearNonHPGoals(int handle) {
   int i;
 
   for (i = 0; i < MAX_GOALS; i++) {
@@ -407,7 +410,7 @@ inline void AIClearNonHPGoals(int handle) {
   }
 }
 
-inline bool IsGoalFinishedNotify(int index) {
+static inline bool IsGoalFinishedNotify(int index) {
   return (index == AIN_GOAL_COMPLETE || index == AIN_GOAL_INVALID || index == AIN_GOAL_FAIL || index == AIN_GOAL_ERROR);
 }
 
