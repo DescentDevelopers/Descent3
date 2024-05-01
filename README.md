@@ -52,7 +52,7 @@ cmake --build --preset mac --config [Debug|Release]
 ```sh
 sudo apt update
 sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev libspdlog-dev
-cmake --preset linux -D LOGGER=[ON|OFF]
+cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
 
@@ -60,7 +60,7 @@ cmake --build --preset linux --config [Debug|Release]
 ```sh
 sudo dnf update --refresh
 sudo dnf install -y ninja-build cmake gcc-c++ SDL-devel SDL_image-devel ncurses-devel zlib-devel spdlog-devel
-cmake --preset linux -D LOGGER=[ON|OFF]
+cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
 
