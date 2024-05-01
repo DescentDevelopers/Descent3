@@ -1696,7 +1696,7 @@ void InitIOSystems(bool editor) {
   // Always look for merc.hog first
   merc_hid = cf_OpenLibrary("merc.hog");
   // Check if merc_hid is valid, if not, open extra.hog
-  if (merc_hid == nullptr) {
+  if (merc_hid == -1) {
     merc_hid = cf_OpenLibrary("extra.hog");
   }
   // Open this for extra 1.3 code (Black Pyro, etc)
