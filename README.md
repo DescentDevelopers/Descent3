@@ -52,7 +52,7 @@ cmake --build --preset mac --config [Debug|Release]
 ```sh
 sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev spdlog-dev
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev libspdlog-dev
 cmake --preset linux -D LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
