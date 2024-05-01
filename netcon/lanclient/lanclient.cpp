@@ -325,7 +325,6 @@ extern int MTAVersionCheck(unsigned int oldver, char *URL);
 /////////////////////////////
 // Defines
 
-
 // These next two function prototypes MUST appear in the extern "C" block if called
 // from a CPP file.
 extern "C" {
@@ -691,6 +690,7 @@ int MainMultiplayerMenu() {
   return ret;
 }
 
+// MTS: only used in this file
 void AutoLoginAndJoinGame(void) {
   unsigned short port;
   unsigned int iaddr;

@@ -113,7 +113,6 @@ static vector Fog_view_pos, Specular_view_pos, Bump_view_pos;
 static matrix Unscaled_bumpmap_matrix;
 
 static int ModelFaceSortFunc(const short *a, const short *b);
-
 static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum);
 static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum);
 static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum);
