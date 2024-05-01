@@ -2969,13 +2969,6 @@ void GameFrame(void) {
   mprintf_at((5, 2, 0, "UDP: tx: %d/%d rx: %d/%d", netstat.udp_total_packets_sent, netstat.udp_total_bytes_sent,
               netstat.udp_total_packets_rec, netstat.udp_total_bytes_rec));
 
-  mprintf_at((6, 0, 0, "IPX/SPX Network Stats:"));
-  mprintf_at((6, 1, 0, "SPX: tx: %d/%d rtx: %d/%d rx: %d/%d", netstat.spx_total_packets_sent,
-              netstat.spx_total_bytes_sent, netstat.spx_total_packets_resent, netstat.spx_total_bytes_resent,
-              netstat.spx_total_packets_rec, netstat.spx_total_bytes_rec));
-  mprintf_at((6, 2, 0, "IPX: tx: %d/%d rx: %d/%d", netstat.ipx_total_packets_sent, netstat.ipx_total_bytes_sent,
-              netstat.ipx_total_packets_rec, netstat.ipx_total_bytes_rec));
-
   if (!netstat_init) {
     netstat_time = timer_GetTime();
 
@@ -2987,8 +2980,6 @@ void GameFrame(void) {
       // time to update
       float tcp_rx, tcp_rtx, tcp_tx;
       float udp_rx, udp_tx;
-      float ipx_rx, ipx_tx;
-      float spx_rx, spx_tx, spx_rtx;
       float time_diff = newt - netstat_time;
 
       tcp_rx = ((float)(netstat.tcp_total_bytes_rec - old_netstat.tcp_total_bytes_rec)) / time_diff;
@@ -2998,17 +2989,8 @@ void GameFrame(void) {
       udp_rx = ((float)(netstat.udp_total_bytes_rec - old_netstat.udp_total_bytes_rec)) / time_diff;
       udp_tx = ((float)(netstat.udp_total_bytes_sent - old_netstat.udp_total_bytes_sent)) / time_diff;
 
-      spx_rx = ((float)(netstat.spx_total_bytes_rec - old_netstat.spx_total_bytes_rec)) / time_diff;
-      spx_tx = ((float)(netstat.spx_total_bytes_sent - old_netstat.spx_total_bytes_sent)) / time_diff;
-      spx_rtx = ((float)(netstat.spx_total_bytes_resent - old_netstat.spx_total_bytes_resent)) / time_diff;
-
-      ipx_rx = ((float)(netstat.ipx_total_bytes_rec - old_netstat.ipx_total_bytes_rec)) / time_diff;
-      ipx_tx = ((float)(netstat.ipx_total_bytes_sent - old_netstat.ipx_total_bytes_sent)) / time_diff;
-
       mprintf_at((5, 3, 0, "TCP/s: TX: % 5.1f RTX: % 5.1f RX: % 5.1f", tcp_tx, tcp_rtx, tcp_rx));
       mprintf_at((5, 4, 0, "UDP/s: TX: % 5.1f RX: % 5.1f", udp_tx, udp_rx));
-      mprintf_at((6, 3, 0, "SPX/s: TX: % 5.1f RTX: % 5.1f RX: % 5.1f", spx_tx, spx_rtx, spx_rx));
-      mprintf_at((6, 4, 0, "IPX/s: TX: % 5.1f RX: % 5.1f", ipx_tx, ipx_rx));
 
       old_netstat = netstat;
       netstat_time = newt;

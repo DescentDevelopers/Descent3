@@ -191,11 +191,6 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 #elif defined(__LINUX__)
 // Linux includes/defines
 
-#if __SUPPORT_IPX
-#include <linux/types.h>
-#include <linux/ipx.h>
-#endif
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -223,10 +218,8 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 #define SOCKET int
 #define BOOL bool
 #define SOCKADDR_IN sockaddr_in
-#define SOCKADDR_IPX sockaddr_ipx
 #define SOCKADDR sockaddr
 #define INVALID_SOCKET -1
-#define NSPROTO_IPX AF_IPX
 
 #ifdef TRUE
 #undef TRUE
