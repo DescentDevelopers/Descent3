@@ -1704,24 +1704,12 @@ void InitIOSystems(bool editor) {
   char dir[BUFLEN];
   DWORD dir_len = BUFLEN;
 
-  error =
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3 Mercenary", 0,
-                   KEY_ALL_ACCESS, &key);
-
-  if ((error == ERROR_SUCCESS)) {
-    lType = REG_EXPAND_SZ;
-
-    unsigned long len = BUFLEN;
-    error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
-
-    if (error == ERROR_SUCCESS) {
-      merc_hid = cf_OpenLibrary("merc.hog");
-    }
-  }
-#else
-  // non-windows platforms always get merc!
+  // Always look for merc.hog first
   merc_hid = cf_OpenLibrary("merc.hog");
-#endif
+  // Check if merc_hid is valid, if not, open extra.hog
+  if (merc_hid == INVALID_HANDLE_VALUE) {
+    merc_hid = cf_OpenLibrary("extra.hog");
+  }
   // Open this for extra 1.3 code (Black Pyro, etc)
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
   extra13_hid = cf_OpenLibrary(fullname);
