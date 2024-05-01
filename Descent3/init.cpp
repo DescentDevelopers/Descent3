@@ -1693,21 +1693,10 @@ void InitIOSystems(bool editor) {
   ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
   extra_hid = cf_OpenLibrary(fullname);
 
-  // Opens the mercenary hog if it exists and the registry entery is present
-  // Win32 only.  Mac and Linux users are SOL for now
-#ifdef WIN32
-  HKEY key;
-  DWORD lType;
-  LONG error;
-
-#define BUFLEN 2000
-  char dir[BUFLEN];
-  DWORD dir_len = BUFLEN;
-
   // Always look for merc.hog first
   merc_hid = cf_OpenLibrary("merc.hog");
   // Check if merc_hid is valid, if not, open extra.hog
-  if (merc_hid == INVALID_HANDLE_VALUE) {
+  if (merc_hid == nullptr) {
     merc_hid = cf_OpenLibrary("extra.hog");
   }
   // Open this for extra 1.3 code (Black Pyro, etc)
