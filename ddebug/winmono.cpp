@@ -410,7 +410,7 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   }
 }
 
-void Debug_ConsolePrintf(int n, int row, int col, const char *format, ...) {
+void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {
   char *ptr = Mono_buffer;
   int r, c;
   std::va_list args;
