@@ -54,7 +54,7 @@ int Num_object_ids[MAX_OBJECT_TYPES];
 // #ifdef _WIN32
 // char *Static_object_names[]={TBL_GENERIC("GuideBot"),TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
 // #else
-const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk")};
+const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
 // #endif
 
 #define NUM_STATIC_OBJECTS (sizeof(Static_object_names) / sizeof(*Static_object_names))

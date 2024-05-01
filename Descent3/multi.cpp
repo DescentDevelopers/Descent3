@@ -9439,14 +9439,6 @@ void MultiDoBashPlayerShip(ubyte *data) {
   if (ship_index < 0)
     ship_index = 0;
 
-  // If told to switch to the Black Pyro, make sure it's allowed
-  if (!stricmp(Ships[ship_index].name, "Black Pyro")) {
-    extern bool MercInstalled();
-    if (!MercInstalled()) {
-      BailOnMultiplayer("Exiting: Game requires Black Pyro");
-    }
-  }
-
   AddHUDMessage("%s not allowed", Ships[Players[Player_num].ship_index].name);
   AddHUDMessage("Switching to %s", Ships[ship_index].name);
 

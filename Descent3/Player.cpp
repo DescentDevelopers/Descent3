@@ -2754,10 +2754,8 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   int model_num = Object_info[ROBOT_GUIDEBOT].render_handle;
   float size;
 
+  // Spews the red guidebot if using the Black Pyro ship
   if (stricmp(Ships[Players[parent->id].ship_index].name, "Black Pyro") == 0) {
-    // Only spew red GB if merc is installed
-    extern bool MercInstalled();
-    if (MercInstalled())
       model_num = Object_info[ROBOT_GUIDEBOTRED].render_handle;
   }
 

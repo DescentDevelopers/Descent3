@@ -1548,38 +1548,10 @@ tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
                                        {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
 int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
 
+// JC: Assume merc is installed by default. Fix later if needed.
 // Returns true if Mercenary is installed
 bool MercInstalled() {
-#if defined(LINUX)
-  return false; // TODO: check for mercenary
-#else
-  HKEY key;
-  DWORD lType;
-  LONG error;
-
-#define BUFLEN 2000
-  char dir[BUFLEN];
-  DWORD dir_len = BUFLEN;
-
-  error =
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3 Mercenary", 0,
-                   KEY_ALL_ACCESS, &key);
-
-  if ((error == ERROR_SUCCESS)) {
-    lType = REG_EXPAND_SZ;
-
-    unsigned long len = BUFLEN;
-    error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
-
-    if (error == ERROR_SUCCESS) {
-      // Mercenary is installed
-      return true;
-    }
-  }
-
-  // Mercenary not installed
-  return false;
-#endif
+	return true;
 }
 
 /*
@@ -1690,20 +1662,21 @@ void InitIOSystems(bool editor) {
 #endif
 
   // Open this file if it's present for stuff we might add later
-  // JC: Digital releases call this 'extra1'hog', on CD releases it's 'extra.hog'. Check for extra1.hog first.
   ddio_MakePath(fullname, LocalD3Dir, "extra1.hog", NULL);
   extra_hid = cf_OpenLibrary(fullname);
-  if (extra_hid == -1) {
-	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
- 	extra_hid = cf_OpenLibrary(fullname);
+  if (extra_hid == 0) {
+  	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+  	extra_hid = cf_OpenLibrary(fullname);
   }
 
-  // Always look for extra.hog first
-  merc_hid = cf_OpenLibrary("extra.hog");
-  // Check if merc_hid is valid, if not, open merc.hog
-  if (merc_hid == -1) {
-    merc_hid = cf_OpenLibrary("merc.hog");
-  }
+  // Open mercenary hog if it exists
+  ddio_MakePath(fullname, LocalD3Dir, "merc.hog", NULL);
+  merc_hid = cf_OpenLibrary(fullname);
+  if (merc_hid == 0) {
+  	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+  	merc_hid = cf_OpenLibrary(fullname);
+  }  
+	
   // Open this for extra 1.3 code (Black Pyro, etc)
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
   extra13_hid = cf_OpenLibrary(fullname);
