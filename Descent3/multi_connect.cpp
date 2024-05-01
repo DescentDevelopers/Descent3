@@ -975,34 +975,6 @@ void UpdateAndPackGameList(void) {
   }
 }
 
-int SearchForLocalGamesIPX(network_address *check_addr) {
-  int count = 0;
-  int size;
-  int tries = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
-  network_address from_addr;
-
-  if (check_addr) {
-    if (check_addr->connection_type != NP_IPX)
-      return 0;
-
-    size = START_DATA(MP_GET_GAME_INFO, data, &count);
-    MultiAddFloat(timer_GetTime(), data, &count);
-    MultiAddInt(MULTI_VERSION, data, &count);
-    END_DATA(count, data, size);
-
-    nw_Send(check_addr, data, count, 0);
-
-    // Num_network_games_known=0;
-  }
-
-  int packsize;
-  while (((packsize = nw_Receive(Multi_receive_buffer, &from_addr)) > 0)) {
-    MultiProcessBigData(Multi_receive_buffer, packsize, &from_addr);
-  }
-  return Num_network_games_known;
-}
-
 // Sets whether or not the server answsers to a connection request
 void MultiSetAcceptState(bool state) {
   mprintf((0, "Setting multi_accept_state to %s.\n", state ? "true" : "false"));

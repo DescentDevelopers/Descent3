@@ -372,10 +372,6 @@ int Network_initted = 0;
 unsigned long Net_fixed_ip = INADDR_NONE;
 // sockets for IPX and TCP
 
-SOCKET IPX_socket;
-SOCKET IPX_reliable_socket;
-SOCKET IPX_listen_socket;
-
 SOCKET TCP_socket;
 SOCKET TCP_reliable_socket;
 SOCKET TCP_listen_socket;
@@ -484,7 +480,6 @@ typedef struct {
 } reliable_net_rcvbuffer;
 
 SOCKET Reliable_UDP_socket = INVALID_SOCKET;
-SOCKET Reliable_IPX_socket = INVALID_SOCKET;
 
 float first_sent_iamhere = 0;
 float last_sent_iamhere = 0;
@@ -545,15 +540,6 @@ void CloseNetworking() {
 
   dp_ShutdownDirectPlay();
 #endif
-
-  if (IPX_socket != INVALID_SOCKET) {
-    shutdown(IPX_socket, 1);
-#ifdef WIN32
-    closesocket(IPX_socket);
-#else
-    close(IPX_socket);
-#endif
-  }
 
   if (TCP_socket != INVALID_SOCKET) {
     shutdown(TCP_socket, 1);
@@ -752,41 +738,6 @@ void nw_InitSockets(ushort port) {
   // UDP/TCP socket structure
   SOCKADDR_IN sock_addr;
 
-#if __SUPPORT_IPX
-  // IPX socket structure
-  SOCKADDR_IPX ipx_addr;
-
-  // Initialize IPX stuff first
-  IPX_active = 0;
-  IPX_socket = INVALID_SOCKET;
-  IPX_reliable_socket = INVALID_SOCKET;
-  IPX_listen_socket = INVALID_SOCKET;
-
-  IPX_socket = socket(AF_IPX, SOCK_DGRAM, NSPROTO_IPX);
-
-  if (IPX_socket != INVALID_SOCKET) {
-    memset(&ipx_addr, 0, sizeof(SOCKADDR_IPX));
-#if defined(WIN32)
-    ipx_addr.sa_socket = htons(port);
-    ipx_addr.sa_family = AF_IPX;
-#else
-    ipx_addr.sipx_port = htons(port);
-    ipx_addr.sipx_family = AF_IPX;
-#endif
-    if (bind(IPX_socket, (SOCKADDR *)&ipx_addr, sizeof(SOCKADDR_IPX)) == SOCKET_ERROR) {
-      mprintf((0, "Couldn't bind IPX socket (%d)! Invalidating IPX\n", WSAGetLastError()));
-      goto init_tcp;
-    }
-
-    nw_SetSocketOptions(IPX_socket);
-    IPX_active = 1;
-
-  } else {
-    mprintf((0, "Cannot create IPX socket (%d)!\n", WSAGetLastError()));
-  }
-init_tcp:
-#endif
-
   // Now do tcp!
   TCP_active = 0;
   TCP_socket = INVALID_SOCKET;
@@ -825,17 +776,7 @@ init_tcp:
 tcp_done:
   int ret;
   unsigned int isocktrue = 1;
-  setsockopt(IPX_socket, SOL_SOCKET, SO_REUSEADDR, (LPSTR)&isocktrue, sizeof(isocktrue));
-  ret = setsockopt(IPX_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
-  if (ret == SOCKET_ERROR) {
-    int wserr;
-    wserr = WSAGetLastError();
-    if ((wserr == WSAENOPROTOOPT) || (wserr == WSAEINVAL)) {
-      mprintf((0, "Unable to make socket broadcastable!"));
 
-      Int3(); // Get Kevin
-    }
-  }
   setsockopt(TCP_socket, SOL_SOCKET, SO_REUSEADDR, (LPSTR)&isocktrue, sizeof(isocktrue));
   ret = setsockopt(TCP_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
   if (ret == SOCKET_ERROR) {
@@ -853,9 +794,6 @@ tcp_done:
   if (TCP_active)
     mprintf((0, "TCP Initialized\n"));
 
-  if (IPX_active)
-    mprintf((0, "IPX Initialized\n"));
-
   nw_psnet_buffer_init();
   nw_RegisterCallback((NetworkReceiveCallback)nw_HandleUnreliableData, NWT_UNRELIABLE);
 }
@@ -864,9 +802,6 @@ tcp_done:
 void nw_GetMyAddress(network_address *addr) {
   socklen_t len;
   SOCKADDR_IN in_addr;
-#if __SUPPORT_IPX
-  SOCKADDR_IPX ipx_addr;
-#endif
 
   memset(&My_addr, 0, sizeof(network_address));
   if (TCP_active) {
@@ -887,30 +822,6 @@ void nw_GetMyAddress(network_address *addr) {
     // My_addr.port = in_addr.sin_port;
     My_addr.port = ntohs(in_addr.sin_port);
   }
-
-#if __SUPPORT_IPX
-  else if (IPX_active) {
-    // assign the IPX_* sockets to the socket values used elsewhere
-    Unreliable_socket = &IPX_socket;
-    Reliable_socket = &IPX_reliable_socket;
-    Listen_socket = &IPX_listen_socket;
-
-    // get the socket name for the IPX_socket, and put it into My_addr
-    len = sizeof(SOCKADDR_IPX);
-    if (getsockname(IPX_socket, (SOCKADDR *)&ipx_addr, &len) == SOCKET_ERROR) {
-      mprintf((0, "Unable to get sock name for IPX unreliable socket (%d)\n", WSAGetLastError()));
-      return;
-    }
-#if defined(WIN32)
-    memcpy(My_addr.net_id, ipx_addr.sa_netnum, 4);
-    memcpy(My_addr.address, ipx_addr.sa_nodenum, 6);
-#else
-    memcpy(My_addr.net_id, &ipx_addr.sipx_network, 4);
-    memcpy(My_addr.address, ipx_addr.sipx_node, 6);
-#endif
-    My_addr.port = DEFAULT_GAME_PORT;
-  }
-#endif
 
   *addr = My_addr;
 }
@@ -933,24 +844,6 @@ void nw_GetNumbersFromHostAddress(network_address *address, char *str) {
     memcpy(&addr, address->address, sizeof(struct in_addr));
     sprintf(str, "IP: %s:%d", inet_ntoa(addr), address->port);
   }
-
-#if __SUPPORT_IPX
-  else if (address->connection_type == NP_IPX) {
-    char sznet[10] = "";
-    char sznode[20] = "";
-    char sztmp[4];
-    int i;
-    for (i = 0; i < 4; i++) {
-      sprintf(sztmp, "%.2X", address->net_id[i]);
-      strcat(sznet, sztmp);
-    }
-    for (i = 0; i < 6; i++) {
-      sprintf(sztmp, "%.2X", address->address[i]);
-      strcat(sznode, sztmp);
-    }
-    sprintf(str, "IPX: %s:%s:%d", sznet, sznode, address->port);
-  }
-#endif
 
 #ifdef WIN32
   else if (Use_DirectPlay && (address->connection_type == NP_DIRECTPLAY)) {
@@ -1125,10 +1018,6 @@ int nw_ReceiveReliable(SOCKET socketid, ubyte *buffer, int max_len) {
 int nw_CheckListenSocket(network_address *from_addr) {
   SOCKADDR_IN *ip_addr; // UDP/TCP socket structure
 
-#if __SUPPORT_IPX
-  SOCKADDR_IPX *ipx_addr; // IPX socket structure
-#endif
-
 #ifdef WIN32
   DPID id;
 #endif
@@ -1161,24 +1050,6 @@ int nw_CheckListenSocket(network_address *from_addr) {
       mprintf((0, "New reliable connection in nw_CheckListenSocket().\n"));
 
       switch (reliable_sockets[i].connection_type) {
-#if __SUPPORT_IPX
-      case NP_IPX:
-        ipx_addr = (SOCKADDR_IPX *)&reliable_sockets[i].addr;
-        memset(from_addr, 0x00, sizeof(network_address));
-#if defined(WIN32)
-        from_addr->port = ntohs(ipx_addr->sa_socket);
-        from_addr->connection_type = NP_IPX;
-        memcpy(from_addr->address, ipx_addr->sa_nodenum, 6);
-        memcpy(from_addr->net_id, ipx_addr->sa_netnum, 4);
-#else
-        from_addr->port = ntohs(ipx_addr->sipx_port);
-        from_addr->connection_type = NP_IPX;
-        memcpy(from_addr->address, ipx_addr->sipx_node, 6);
-        memcpy(from_addr->net_id, &ipx_addr->sipx_network, 4);
-#endif
-        break;
-#endif
-
       case NP_TCP:
         ip_addr = (SOCKADDR_IN *)&reliable_sockets[i].addr;
         memset(from_addr, 0x00, sizeof(network_address));
@@ -1277,22 +1148,6 @@ int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent)
         send_address.connection_type = NP_TCP;
       }
 
-#if __SUPPORT_IPX
-      else if (NP_IPX == rsocket->connection_type) {
-        SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rsocket->addr;
-#if defined(WIN32)
-        memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
-        memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
-        send_address.port = htons(ipxaddr->sa_socket);
-#else
-        memcpy(send_address.address, ipxaddr->sipx_node, 6);
-        memcpy(send_address.net_id, &ipxaddr->sipx_network, 4);
-        send_address.port = htons(ipxaddr->sipx_port);
-#endif
-        send_address.connection_type = NP_IPX;
-      }
-#endif
-
       // mprintf((0,"Sending reliable packet! Sequence %d\n",send_header.seq));
       bytesout = nw_SendWithID(NWT_RELIABLE, (ubyte *)&send_header,
                                RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[use_buffer], &send_address);
@@ -1377,21 +1232,6 @@ void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link
     send_address.port = htons(inaddr->sin_port);
     send_address.connection_type = NP_TCP;
   }
-#if __SUPPORT_IPX
-  else if (NP_IPX == link_type) {
-    SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)raddr;
-#if defined(WIN32)
-    memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
-    memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
-    send_address.port = htons(ipxaddr->sa_socket);
-#else
-    memcpy(send_address.address, ipxaddr->sipx_node, 6);
-    memcpy(send_address.net_id, &ipxaddr->sipx_network, 4);
-    send_address.port = htons(ipxaddr->sipx_port);
-#endif
-    send_address.connection_type = NP_IPX;
-  }
-#endif
 
   ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&ack_header, RELIABLE_PACKET_HEADER_ONLY_SIZE + sizeof(unsigned int),
                       &send_address);
@@ -1422,23 +1262,6 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
     inaddr->sin_port = htons(naddr->port);
   }
 
-#if __SUPPORT_IPX
-  else if (NP_IPX == naddr->connection_type) {
-    SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rcv_addr;
-#if defined(WIN32)
-    memcpy(&ipxaddr->sa_nodenum, &naddr->address, 6);
-    memcpy(&ipxaddr->sa_netnum, &naddr->net_id, 4);
-    ipxaddr->sa_socket = htons(naddr->port);
-#else
-    memcpy(ipxaddr->sipx_node, &naddr->address, 6);
-    memcpy(&ipxaddr->sipx_network, &naddr->net_id, 4);
-    ipxaddr->sipx_port = htons(naddr->port);
-#endif
-  }
-#endif
-
-  // memcpy(&rcv_addr,&naddr->address,sizeof(SOCKADDR));
-
   if (Net_connect_sequence == R_NET_SEQUENCE_CONNECTING) {
     nw_HandleConnectResponse(data, len, naddr);
     return;
@@ -1465,21 +1288,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
       send_address.port = htons(inaddr->sin_port);
       send_address.connection_type = NP_TCP;
     }
-#if __SUPPORT_IPX
-    else if (NP_IPX == send_address.connection_type) {
-      SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&reliable_sockets[serverconn].addr;
-#if defined(WIN32)
-      memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
-      memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
-      send_address.port = htons(ipxaddr->sa_socket);
-#else
-      memcpy(send_address.address, ipxaddr->sipx_node, 6);
-      memcpy(send_address.net_id, &ipxaddr->sipx_network, 4);
-      send_address.port = htons(ipxaddr->sipx_port);
-#endif
-      send_address.connection_type = NP_IPX;
-    }
-#endif
+
     int ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
     if ((ret == SOCKET_ERROR) && (WSAEWOULDBLOCK == WSAGetLastError())) {
@@ -1714,20 +1523,6 @@ void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr
     memcpy(&inaddr->sin_addr, &server_addr->address, 4);
     inaddr->sin_port = htons(server_addr->port);
   }
-#if __SUPPORT_IPX
-  else if (NP_IPX == server_addr->connection_type) {
-    SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rcv_addr;
-#if defined(WIN32)
-    memcpy(&ipxaddr->sa_nodenum, &server_addr->address, 6);
-    memcpy(&ipxaddr->sa_netnum, &server_addr->net_id, 4);
-    ipxaddr->sa_socket = htons(server_addr->port);
-#else
-    memcpy(&ipxaddr->sipx_node, &server_addr->address, 6);
-    memcpy(&ipxaddr->sipx_network, &server_addr->net_id, 4);
-    ipxaddr->sipx_port = htons(server_addr->port);
-#endif
-  }
-#endif
 
   mprintf((0, "Got a connect response!\n"));
   if (ack_header.type == RNT_ACK) {
@@ -1823,12 +1618,6 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
   timeout.tv_sec = 0;
   timeout.tv_usec = 0;
 
-#if __SUPPORT_IPX
-  if ((server_addr->connection_type == NP_IPX) && (!IPX_active)) {
-    return;
-  }
-#endif
-
   if ((server_addr->connection_type == NP_TCP) && (!TCP_active)) {
     return;
   }
@@ -1843,7 +1632,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
 
   int ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
   if (SOCKET_ERROR == ret) {
-    mprintf((0, "Unable to send IPX packet in nw_ConnectToServer()! -- %d\n", WSAGetLastError()));
+    mprintf((0, "Unable to send packet in nw_ConnectToServer()! -- %d\n", WSAGetLastError()));
     return;
   }
 
@@ -1921,21 +1710,7 @@ void nw_CloseSocket(SOCKET *sockp) {
     send_address.port = htons(inaddr->sin_port);
     send_address.connection_type = NP_TCP;
   }
-#if __SUPPORT_IPX
-  else if (NP_IPX == reliable_sockets[*sockp].connection_type) {
-    SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&reliable_sockets[*sockp].addr;
-#if defined(WIN32)
-    memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
-    memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
-    send_address.port = htons(ipxaddr->sa_socket);
-#else
-    memcpy(send_address.address, ipxaddr->sipx_node, 6);
-    memcpy(send_address.net_id, &ipxaddr->sipx_network, 4);
-    send_address.port = htons(ipxaddr->sipx_port);
-#endif
-    send_address.connection_type = NP_IPX;
-  }
-#endif
+
   nw_SendWithID(NWT_RELIABLE, (ubyte *)&diss_conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
   memset(&reliable_sockets[*sockp], 0, sizeof(reliable_socket));
@@ -2529,10 +2304,6 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
   SOCKET send_sock;
   SOCKADDR_IN sock_addr; // UDP/TCP socket structure
 
-#if __SUPPORT_IPX
-  SOCKADDR_IPX ipx_addr; // IPX socket structure
-#endif
-
   int ret, send_len;
   ubyte iaddr[6], *send_data;
   short port;
@@ -2561,23 +2332,6 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
   // mprintf((1, "network: type %d\n", who_to->connection_type));
   // send_sock = *Unreliable_socket;
   switch (who_to->connection_type) {
-#if __SUPPORT_IPX
-  case NP_IPX:
-
-    if (id == NWT_RELIABLE) {
-      NetStatistics.spx_total_packets_sent++;
-      NetStatistics.spx_total_bytes_sent += len;
-    } else if (id == NWT_UNRELIABLE) {
-      NetStatistics.ipx_total_packets_sent++;
-      NetStatistics.ipx_total_bytes_sent += len;
-    }
-
-    send_sock = IPX_socket;
-    if (!IPX_active)
-      return 0;
-    break;
-#endif
-
   case NP_TCP:
     if (id == NWT_RELIABLE) {
       NetStatistics.tcp_total_packets_sent++;
@@ -2650,24 +2404,6 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
 
   if (send_this_packet) {
     switch (who_to->connection_type) {
-#if __SUPPORT_IPX
-    case NP_IPX:
-#if defined(WIN32)
-      ipx_addr.sa_family = AF_IPX;
-      ipx_addr.sa_socket = htons(port);
-      memcpy(ipx_addr.sa_nodenum, iaddr, 6);
-      memcpy(ipx_addr.sa_netnum, who_to->net_id, 4);
-#else
-      ipx_addr.sipx_family = AF_IPX;
-      ipx_addr.sipx_port = htons(port);
-      memcpy(ipx_addr.sipx_node, iaddr, 6);
-      memcpy(&ipx_addr.sipx_network, who_to->net_id, 4);
-#endif
-
-      ret = sendto(IPX_socket, (char *)send_data, send_len, 0, (SOCKADDR *)&ipx_addr, sizeof(ipx_addr));
-      break;
-#endif
-
     case NP_TCP:
       sock_addr.sin_family = AF_INET;
       memcpy(&sock_addr.sin_addr.s_addr, iaddr, 4);
@@ -2696,9 +2432,6 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
 }
 
 int nw_DoReceiveCallbacks(void) {
-#if __SUPPORT_IPX
-  SOCKADDR_IPX ipx_addr; // IPX socket structure
-#endif
   SOCKADDR_IN ip_addr; // UDP/TCP socket structure
   socklen_t read_len, from_len;
   network_address from_addr;
@@ -2764,63 +2497,6 @@ int nw_DoReceiveCallbacks(void) {
       Netcallbacks[packet_id](packet_data + 1, rlen, &from_addr);
     }
   }
-
-#if __SUPPORT_IPX
-  while (IPX_active) {
-
-    // check if there is any data on the socket to be read.  The amount of data that can be
-    // atomically read is stored in len.
-
-    FD_ZERO(&rfds);
-    FD_SET(IPX_socket, &rfds);
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-
-    if (select(IPX_socket + 1, &rfds, NULL, NULL, &timeout) == SOCKET_ERROR) {
-      mprintf((0, "Error %d doing a socket select on IPX read\n", WSAGetLastError()));
-      break;
-    }
-    // if the read file descriptor is not set, then bail!
-    if (!FD_ISSET(IPX_socket, &rfds))
-      break;
-
-    // get data off the socket and process
-    from_len = sizeof(SOCKADDR_IPX);
-    read_len = recvfrom(IPX_socket, (char *)packet_data, 1500, 0, (SOCKADDR *)&ipx_addr, &from_len);
-
-    if (read_len == SOCKET_ERROR) {
-      int x = WSAGetLastError();
-      mprintf((0, "Read error on IPX socket.  Winsock error %d \n", x));
-      break;
-    }
-    memset(&from_addr, 0x00, sizeof(network_address));
-    from_addr.connection_type = NP_IPX;
-#if defined(WIN32)
-    from_addr.port = ntohs(ipx_addr.sa_socket);
-    memcpy(from_addr.address, &ipx_addr.sa_nodenum, 6);
-    memcpy(from_addr.net_id, &ipx_addr.sa_netnum, 4);
-#else
-    from_addr.port = ntohs(ipx_addr.sipx_port);
-    memcpy(from_addr.address, &ipx_addr.sipx_node, 6);
-    memcpy(from_addr.net_id, &ipx_addr.sipx_network, 4);
-#endif
-
-    ubyte packet_id = (packet_data[0] & 0x0f);
-    if (Netcallbacks[packet_id]) {
-      // mprintf((0,"Calling network callback for id %d.\n",packet_id));
-      int rlen = read_len - 1;
-      if (packet_id == NWT_UNRELIABLE) {
-        NetStatistics.ipx_total_packets_rec++;
-        NetStatistics.ipx_total_bytes_rec += rlen;
-      } else if (packet_id == NWT_RELIABLE) {
-        NetStatistics.spx_total_packets_rec++;
-        NetStatistics.spx_total_bytes_rec += rlen;
-      }
-
-      Netcallbacks[packet_id](packet_data + 1, rlen, &from_addr);
-    }
-  }
-#endif
 
   return 0;
 }
@@ -2906,29 +2582,6 @@ void nw_ReliableResend(void) {
             NetStatistics.tcp_total_bytes_resent += len;
           }
 
-#if __SUPPORT_IPX
-          else if (NP_IPX == send_address.connection_type) {
-            SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rsocket->addr;
-#if defined(WIN32)
-            memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
-            memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
-            send_address.port = htons(ipxaddr->sa_socket);
-#else
-            memcpy(send_address.address, ipxaddr->sipx_node, 6);
-            memcpy(send_address.net_id, &ipxaddr->sipx_network, 4);
-            send_address.port = htons(ipxaddr->sipx_port);
-#endif
-            send_address.connection_type = NP_IPX;
-
-            int len = RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i];
-            NetStatistics.spx_total_packets_sent--;    // decrement because we are going to inc
-                                                       // in nw_SendWithID
-            NetStatistics.spx_total_bytes_sent -= len; // see above
-            NetStatistics.spx_total_packets_resent++;
-            NetStatistics.spx_total_bytes_resent += len;
-          }
-#endif
-
           // mprintf((0,"Resending reliable packet! Sequence %d\n",send_header.seq));
           rcode = nw_SendWithID(NWT_RELIABLE, (ubyte *)&send_header,
                                 RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i], &send_address);
@@ -2971,29 +2624,6 @@ void nw_ReliableResend(void) {
           NetStatistics.tcp_total_packets_resent++;
           NetStatistics.tcp_total_bytes_resent += len;
         }
-
-#if __SUPPORT_IPX
-        else if (NP_IPX == send_address.connection_type) {
-          SOCKADDR_IPX *ipxaddr = (SOCKADDR_IPX *)&rsocket->addr;
-#if defined(WIN32)
-          memcpy(send_address.address, ipxaddr->sa_nodenum, 6);
-          memcpy(send_address.net_id, ipxaddr->sa_netnum, 4);
-          send_address.port = htons(ipxaddr->sa_socket);
-#else
-          memcpy(send_address.address, ipxaddr->sipx_node, 6);
-          memcpy(send_address.net_id, &ipxaddr->sipx_network, 4);
-          send_address.port = htons(ipxaddr->sipx_port);
-#endif
-          send_address.connection_type = NP_IPX;
-
-          int len = RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i];
-          NetStatistics.spx_total_packets_sent--;    // decrement because we are going to inc
-                                                     // in nw_SendWithID
-          NetStatistics.spx_total_bytes_sent -= len; // see above
-          NetStatistics.spx_total_packets_resent++;
-          NetStatistics.spx_total_bytes_resent += len;
-        }
-#endif
 
         rcode = nw_SendWithID(NWT_RELIABLE, (ubyte *)&send_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
