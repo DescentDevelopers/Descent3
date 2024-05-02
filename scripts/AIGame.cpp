@@ -5730,7 +5730,6 @@ bool GuideBot::DoInit(int me, bool f_reinit) {
     memory->powerups[2] = 0;
     memory->powerups[3] = 0;
     memory->powerups[4] = 0;
-    memory->powerups[5] = 0;
 
     for (i = 0; i < NUM_GB_SOUNDS; i++) {
       memory->sounds[i] = -1;
