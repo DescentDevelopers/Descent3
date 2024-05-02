@@ -1,0 +1,6313 @@
+!/!Notes on Localizing This File
+!/!
+!/!Line Tokens:
+!/!
+!/!  Each non-blank line begins with one of the following tokens that
+!/!  identifies it as either a comment or a string in a particular
+!/!  language:
+!/!
+!/!    !/!  = comment (optional)
+!/!    !=!  = English version of string
+!/!    !G!  = German version of string
+!/!    !S!  = Spanish version of string
+!/!    !I!  = Italian version of string
+!/!    !F!  = French version of string
+!/!
+!/!Rules:
+!/!
+!/!  1. There must be an English version of each string.
+!/!
+!/!  2. All text when translated should stay very near the
+!/!     length of the English version, unless otherwise noted.
+!/!
+!/!  3. The maximum length of any line is 1024 characters.
+!/!
+!/!  4. All %s,%d,%f and similar tokens MUST stay in the string.
+!/!     In the game, these tokens will be replaced by:
+!/!
+!/!        %s  = another string
+!/!        %d  = an integer number
+!/!        %f  = a floating point number (a number with a decimal point)
+!/!
+!/!     These tokens MUST stay in the same relative order (i.e. in the
+!/!     string "%s got %d points" the %s must always come before the %d).
+!/!
+!/!Special Characters:
+!/!
+!/!  Special characters can be inserted in strings with the following tokens:
+!/!
+!/!    \t  = tab
+!/!    \n  = newline
+!/!    \0 - \255  = specific ASCII character
+
+!/!0:Used in Pilot dialog, text for creating a "New" Pilot
+!=!New
+!G!Neu
+!S!Nuevo
+!I!Nuovo
+!F!Nouveau
+
+!/!1:Used in Pilot dialog, text for deleting an existing Pilot
+!=!Delete
+!G!Löschen
+!S!Eliminar
+!I!Elimina
+!F!Supprimer
+
+!/!2:Used in pilot dialog, text for configuring an existing pilot
+!=!Configure
+!G!Steuerung
+!S!Config
+!I!Configura
+!F!Configurer
+
+!/!3:Used in numerous places especially in ok/cancel message boxes
+!=!OK
+!G!OK
+!S!Aceptar
+!I!OK
+!F!OK
+
+!/!4:Used in numerous places especially in ok/cancel message boxes
+!=!Cancel
+!G!Abbruch
+!S!Cancelar
+!I!Annulla
+!F!Annuler
+
+!/!5:Text used in Multiplayer Ship configuration of Pilot menu
+!=!Default Ship
+!G!Schiffsauswahl
+!S!Nave predeterminada
+!I!Nave predefinita
+!F!vaisseau par defaut
+
+!/!6:Used in the pilot dialog, where the pilot's stats for number of kills is displayed, should not be too much longer than english version
+!=!Number of Kills:
+!G!Abschüsse:
+!S!Número de bajas:
+!I!Numero di uccisi:
+!F!Nombre de victimes:
+
+!/!7:Used in the pilot dialog, where the pilot's stats for number of deaths is displayed, should not be too much longer than english version
+!=!Number of Deaths:
+!G!Verlorene Leben:
+!S!Número de muertes:
+!I!Numero di morti:
+!F!Nombre de morts:
+
+!/!8:Used in the pilot dialog, where the pilot's stats for ratio between the number of kills and deaths is displayed, should not be too much longer than english version
+!=!Kill/Deaths Ratio:
+!G!Effizienz:
+!S!Proporción bajas/muertes:
+!I!Rapp. uccisi/morti:
+!F!Ratio victimes/morts:
+
+!/!9:Used in the pilot dialog, displaying what the pilot difficulty is
+!=!Difficulty:
+!G!Schwierigkeitsgrad:
+!S!Dificultad:
+!I!Difficoltà:
+!F!Difficulté:
+
+!/!10:Used to form strings that specify level (i.e. "Level 10")
+!=!Level %d
+!G!Level %d
+!S!Nivel %d
+!I!Livello %d
+!F!Niveau %d
+
+!/!11:String for items that are unnamed
+!=!<UnNamed>
+!G!<namenlos>
+!S!<sin nombre>
+!I!<senza nome>
+!F!<pas de nom>
+
+!/!12:Primary Goal list label in TelCom
+!=!Primary Objectives
+!G!Primaere Missionsziele
+!S!Objetivos principales
+!I!Obiettivi principali
+!F!Objectifs primaires
+
+!/!13:Secondary Goal list label in TelCom
+!=!Secondary Objectives
+!G!Sekundaere Missionsziele
+!S!Objetivos secundarios
+!I!Obiettivi secondari
+!F!Objectifs secondaires
+
+!/!14:Used in the pilot dialog to display the name of the ship of the current pilot
+!=!Ship:
+!G!Schiff:
+!S!Nave:
+!I!Nave:
+!F!Vaisseau:
+
+!/!15:Used in the pilot dialog if there are no pilots to be selected to be displayed
+!=!No Pilot Selected
+!G!Kein Spieler ausgewählt
+!S!No se ha seleccionado un piloto
+!I!Nessun pilota selezionato
+!F!Aucun pilote sélectionné
+
+!/!16:Used as the window title in the Pilots dialog, be careful about size, it should stay close to this size
+!=!Pilots
+!G!Spieler
+!S!Pilotos
+!I!Piloti
+!F!Pilotes
+
+!/!17:Used in pilot's dialog for Error Message box titles, be careful about size, it should stay close to this size
+!=!Pilot Error
+!G!Spielerfehler
+!S!Error de Piloto
+!I!Errore del pilota
+!F!Erreur pilote
+
+!/!18:Error message if the user tries to exit the pilot menu without first selecting a pilot
+!=!You must create and select a pilot.
+!G!Sie müssen einen Spieler erstellen und auswählen.
+!S!Debes crear y seleccionar un piloto.
+!I!Devi creare e selezionare un pilota.
+!F!Vous devez créer et sélectionner un pilote.
+
+!/!19:Confirmation message in pilot dialog when the user wants to delete a pilot, %s must stay in the sentence somewhere, it will be replaced by the name of the pilot
+!=!Are you sure you want to delete %s?
+!G!Möchten Sie %s wirklich löschen?
+!S!¿Seguro que quieres borrar %s?
+!I!Sicuro di voler eliminare %s?
+!F!Etes-vous sûr de vouloir supprimer %s?
+
+!/!20:Message box title for the message box that is displayed when the user wants to delete a pilot
+!=!Delete Confirmation
+!G!Sicherheitsabfrage
+!S!Confirmar eliminación
+!I!Conferma eliminazione
+!F!Confirmation de suppression
+
+!/!21:Used in pilot configuration, title of the listbox that contains the names of the level of difficulties
+!=!Difficulty
+!G!Schwierigkeitsgrad
+!S!Dificultad
+!I!Difficoltà
+!F!Difficulté
+
+!/!22:name of the trainee difficulty level in the pilot configuration dialog
+!=!Trainee
+!G!Anfänger
+!S!Entrenamiento
+!I!Apprendista
+!F!debutant
+
+!/!23:name of the rookie difficulty level in the pilot configuration dialog
+!=!Rookie
+!G!Rekrut
+!S!Novato
+!I!Recluta
+!F!bleu
+
+!/!24:name of the hotshot difficulty level in the pilot configuration dialog
+!=!Hotshot
+!G!Draufgänger
+!S!Veterano
+!I!Veterano
+!F!veteran
+
+!/!25:name of the ace difficulty level in the pilot configuration dialog
+!=!Ace
+!G!As
+!S!As
+!I!Asso
+!F!As
+
+!/!26:name of the insane difficulty level in the pilot configuration dialog
+!=!Insane
+!G!Wahnsinniger
+!S!Imposible
+!I!Impossibile
+!F!kamikaze
+
+!/!27:Used in the pilot configuration dialog, hotspot label to copy keyboard and joystick controls
+!=!COPY CONTROLS
+!G!STEUERUNG KOPIEREN
+!S!COPIAR CONTROLES
+!I!COPIA COMANDI
+!F!COPIE DES COMMANDES
+
+!/!28:Used in the pilot configuration dialog, hotspot label to edit the pilot's keyboard settings
+!=!CONFIGURE KEYBOARD
+!G!TASTATURBELEGUNG
+!S!CONFIGURAR TECLADO
+!I!CONFIGURA TASTIERA
+!F!CONFIGURER CLAVIER
+
+!/!29:Used in the pilot configuration dialog, hotspot label to customize the game controller
+!=!CONFIGURE CONTROLLER
+!G!JOY-/MAUSBELEGUNG
+!S!CONFIG CONTROLADOR
+!I!CONFIGURA CONTROLLORE
+!F!CONFIGURER CONTROLEUR
+
+!/!30:Used in the pilot configuration, error message box title if there was an error copy pilot configuration
+!=!Copy Config Error
+!G!Fehler beim Kopieren
+!S!Error al copiar configuración
+!I!Errore di copia
+!F!Erreur de copie de la config.
+
+!/!31:Used in pilot configuration, if the user tries to copy the controls from the same pilot
+!=!You Can't Copy the Configuration From The Same Pilot.
+!G!Sie können die Konfiguration nicht vom selben Spieler kopieren.
+!S!No puedes copiar la configuración del mismo piloto.
+!I!Non puoi copiare la configurazione dello stesso pilota.
+!F!Vous ne pouvez pas copier la configuration du même pilote.
+
+!/!32:Used in the pilot dialog when you create a new pilot, message box title for entering the pilot name
+!=!Enter Pilot Name
+!G!Spielernamen eingeben
+!S!Introduce nombre del piloto
+!I!Immetti il nome del pilota
+!F!Entrez le nom du pilote.
+
+!/!33:Used in the pilot dialog when you create a new pilot, label for the edit box for entering the pilot name
+!=!Please enter a name for your pilot.
+!G!Bitte geben Sie einen Namen für Ihren Spieler ein.
+!S!Escribe un nombre para el piloto.
+!I!Immetti un nome per il pilota.
+!F!Veuillez entrer le nom du pilote.
+
+!/!34:Used in pilot dialog (and other places?)
+!=!File Error
+!G!Dateifehler
+!S!Error de archivo
+!I!Errore file
+!F!Erreur Fichier
+
+!/!35:Out of Drive Space?
+!=!Can't Create Pilot File (Out of Drive Space?)
+!G!Spielerdatei kann nicht erstellt werden. (Festplattenspeicher voll?)
+!S!No se puede crear archivo de piloto (¿Espacio insuficiente?)
+!I!Impossibile creare il file del pilota (spazio insufficiente?)
+!F!Création fichier pilote impossible (par manque de place ?)
+
+!/!36:Error message if the user tried to create a pilot without a name
+!=!You Need To Name Your Pilot.
+!G!Sie müssen Ihrem Spieler einen Namen geben.
+!S!Tienes que dar nombre al piloto.
+!I!Devi assegnare un nome al pilota.
+!F!Vous devez donner un nom à votre pilote.
+
+!/!37:Error message if the user tries to create a pilot with the same name as an exiting pilot
+!=!Pilot Already Exists. Please Rename.
+!G!Spieler existiert bereits. Bitte umbenennen.
+!S!Este piloto ya existe. Cambia el nombre.
+!I!Pilota già esistente. Cambia nome.
+!F!Ce pilote existe déjà. Changez de nom.
+
+!/!38:Message box title for the place to choose a pilot...(to copy controls?
+!=!Choose Pilot
+!G!Spielerauswahl
+!S!Escoge piloto
+!I!Scegli pilota
+!F!Choisissez un pilote
+
+!/!39:save game dialog
+!=!You need to specify a name.
+!G!Bitte einen Namen angeben.
+!S!Tienes que elegir un nombre.
+!I!Devi specificare un nome.
+!F!Vous devez donner un nom.
+
+!/!40:Used in popup windows that say 'loading'
+!=!Loading
+!G!Bitte warten...
+!S!Cargando
+!I!Caricamento in corso...
+!F!Chargement en cours...
+
+!/!41: audio taunt 3 label
+!=!Audio Taunt #3
+!G!Audio #3
+!S!Provocación nº 3
+!I!Provocazione audio n. 3
+!F!Raillerie audio #3
+
+!/!42: audio taunt 4 label
+!=!Audio Taunt #4
+!G!Audio #4
+!S!Provocación nº 4
+!I!Provocazione audio n. 4
+!F!Raillerie audio #4
+
+!/!43:HUD message when not picking up energy because player is already at max
+!=!Energy Full
+!G!Energie auf Maximum
+!S!Energía al máximo
+!I!Energia al massimo
+!F!Energie au maximum
+
+!/!44:In Pilot menu, dialog title to use preset controls
+!=!Preset Controls
+!G!Voreingestellte Steuerung 
+!S!Controles prestablecidos
+!I!Comandi preimpostati
+!F!Contrôles prédéfinis
+
+!/!45:Message displayed for a level with no goals (in the TelCom)
+!=!There are no goals available
+!G!Es sind keine Ziele verfügbar
+!S!No hay objetivos disponibles
+!I!Nessun obiettivo disponibile
+!F!Pas d'objectifs disponibles.
+
+!/!46:In Pilot menu, dialog text asking whether they want to use preset controls
+!=!Would you like to use one of the preset configurations?
+!G!Möchten Sie eine voreingestellte Konfiguration verwenden?
+!S!¿Quieres usar una de las configuraciones prestablecidas?
+!I!Desideri utilizzare una delle configurazioni preimpostate?
+!F!Voulez-vous utiliser une configuration par défaut ?
+
+!/!47:Message in Guide-Bot menu if no Guide-Bot is available
+!=!One moment...
+!G!Einen Moment...
+!S!Un momento...
+!I!Nessun Robot-Guida disponibile.
+!F!Un instant...
+
+!/!48:Used in Guide-Bot message (among other places?) as a message to press the escape key to return back to the game)
+!=!Press ESC to return
+!G!Mit ESC zurück
+!S!Pulsa Esc para volver
+!I!Premi ESC per riprendere
+!F!echap pour continuer
+
+!/!49:Used in configuration dialog, window title for video configuration, be careful of size
+!=!Graphics
+!G!Grafik
+!S!Gráficos
+!I!Grafici
+!F!graphismes
+
+!/!50:button label in video configuration dialog to apply the gamma setting
+!=!Apply
+!G!Übernehmen
+!S!Aplicar
+!I!Applica
+!F!appliquer
+
+!/!51:slider label for gamma setting in video configuration
+!=!Brightness
+!G!Helligkeit
+!S!Brillo
+!I!Luminosità
+!F!Luminosité
+
+!/!52:label for what type of renderer you want to use in the video configuration
+!=!Renderer
+!G!Renderer
+!S!Procesador de vídeo
+!I!Processore video
+!F!Rendu vidéo
+
+!/!53:Direct3D renderer in video configuration
+!=!Direct3D
+!G!Direct3D
+!S!Direct3D
+!I!Direct3D
+!F!Direct3D
+
+!/!54:GLiDE renderer in video configuration
+!=!Glide (3Dfx)
+!G!Glide (3Dfx)
+!S!Glide (3Dfx)
+!I!Glide (3Dfx)
+!F!Glide (3Dfx)
+
+!/!55:OpenGL renderer in video configuration
+!=!OpenGL
+!G!OpenGL 
+!S!OpenGL
+!I!OpenGL
+!F!OpenGL
+
+!/!56:label for what kind of resolution you want...in video configuration
+!=!Resolution	
+!G!Auflösung	
+!S!Resolución
+!I!Risoluzione
+!F!Résolution
+
+!/!57:Label for Completed goals in Telcom & post-level results
+!=!Completed
+!G!Erfuellt
+!S!Completo
+!I!Completato
+!F!Rempli
+
+!/!58:Label for goals not yet completed in TelCom
+!=!InComplete
+!G!Nicht erfuellt
+!S!Incompleto
+!I!Incompleto
+!F!Incomplet
+
+!/!59:You cannot load a save game in multiplayer! (error when trying to load a multiplayer game)
+!=!You cannot load a save game in multiplayer!
+!G!Laden eines gespeicherten Spiels im Multiplayer-Modus nicht möglich!
+!S!No se puede cargar una partida en modo multijugador
+!I!Non puoi caricare una partita salvata in modalità multigiocatore!
+!F!Vous ne pouvez pas charger une partie en mode multijoueur !
+
+!/!60:label for bilinear filtering checkbox label in video configuration
+!=!Bilinear Filtering
+!G!Bilineare Filterung
+!S!Filtro bilineal
+!I!Filtro bilineare
+!F!Filtrage Bilinéaire
+
+!/!61:label for MIP mapping checkbox label in video configuration
+!=!MIP Mapping
+!G!MIP Mapping
+!S!Asignación MIP
+!I!Mappa MIP
+!F!MIP MAPPING
+
+!/!62:label for dynamic lighting checkbox label in video configuration
+!=!Dynamic Lighting
+!G!Dyn. Ausleuchtung
+!S!Iluminación dinámica
+!I!Illuminazione dinamica
+!F!Eclairage dynamique
+
+!/!63:Heading of TelCom screen for Objectives/Goal status (use spaces to center the line)
+!=!     Objectives
+!G!     Ziele
+!S!     Objetivos
+!I!     Obiettivi
+!F!	  Objectifs
+
+!/!64:You cannot save a game in multiplayer! (error when trying to save a multiplayer game)
+!=!You cannot save a game in multiplayer!
+!G!Speichern eines Spiels im Multiplayer-Modus nicht möglich!
+!S!No se puede guardar una partida en modo multijugador
+!I!Non puoi salvare una partita in modalità multigiocatore!
+!F!Vous ne pouvez pas sauvegarder une partie en mode multijoueur !
+
+!/!65:window title for sound configuration
+!=!Sound
+!G!Sound
+!S!Sonido
+!I!Suono
+!F!Son
+
+!/!66:label for sound volume slider in sound configuration
+!=!Sound Volume
+!G!Lautstärke
+!S!Volumen del sonido
+!I!Volume del suono
+!F!Volume du son
+
+!/!67:window title for general configuration window
+!=!General
+!G!Allgemein
+!S!General
+!I!Generale
+!F!General
+
+!/!68:in general configuration, label for slider for terrain Auto-leveling
+!=!Terrain Autolev
+!G!Gelände Autolev 
+!S!Autoniv. terreno
+!I!Autoliv terreno  
+!F!Stab. en surface
+
+!/!69:in general configuration, label for slider for mine Auto-leveling
+!=!Mine Autolev
+!G!Mine Autolev
+!S!Autoniv. mina
+!I!Autoliv miniera  
+!F!Stab. sous terre 
+
+!/!70:Left
+!=!Left
+!G!Links
+!S!Izq.
+!I!Sinistra
+!F!Gauche
+
+!/!71:used throughout the game for 'none' when no item is selected
+!=!None
+!G!Keine 
+!S!Nulo
+!I!Nessuno
+!F!aucune
+
+!/!72:in general configuration, for missile for mini-view choices
+!=!Missile
+!G!Rakete
+!S!Misil
+!I!Missile
+!F!Missile
+
+!/!73:Right
+!=!Right
+!G!Rechts
+!S!Der
+!I!Destra
+!F!Droite
+
+!/!74:in general configuration, label for missile mini-view
+!=!Missile View
+!G!Geschossansicht
+!S!Vista de misil
+!I!Vista/missile  
+!F!Vue du missile
+
+!/!75:details configuration window label
+!=!Details
+!G!Details
+!S!Detalles
+!I!Dettagli
+!F!Details
+
+!/!76:detail setting label for terrain detail
+!=!Terrain Detail
+!G!Geländedetails
+!S!Detalle del terreno
+!I!Dettaglio del terreno
+!F!Détail du terrain
+
+!/!77:detail setting label for render distance out in the terrain
+!=!Render Depth
+!G!Renderingtiefe
+!S!Profundidad de campo
+!I!Profondità di campo
+!F!Rendu de profondeur 
+
+!/!78:detail setting label for terrain casting checkbox
+!=!Terrain Casting
+!G!Geländeprojektion
+!S!Características del terreno
+!I!Caratteristiche del terreno
+!F!Projection terrain
+
+!/!79:used in numerous places for off
+!=!Off
+!G!Aus
+!S!Desactiv
+!I!Disattiv
+!F!Off
+
+!/!80:used in numerous places for on
+!=!On
+!G!Ein
+!S!Activado
+!I!Attivato
+!F!On
+
+!/!81:used in numerous places for no
+!=!No
+!G!Nein
+!S!No
+!I!No
+!F!Non
+
+!/!82:used in numerous places for yes
+!=!Yes
+!G!Ja
+!S!Si
+!I!Sì
+!F!Oui
+
+!/!83:used in control configuration dialog
+!=!Unable to initialize game control/joystick system.
+!G!Fehler beim initialisieren des Joysticksystems
+!S!Falla al inicializar sistema de control/joystick.
+!I!Impossibile inizializzare il sistema di controllo/joystick.
+!F!Impossible d'initialiser le système de contrôles de jeu/joystick.
+
+!/!84:used in control configuration dialog
+!=!Click on 'X' or CTRL-C to clear function.
+!G!Auf 'X' klicken oder Strg-C drücken, um Funktion zu löschen.
+!S!Haz clic en "X" o pulsa Ctrl+C para desactivar función.
+!I!Fai clic su "X" o premi Ctrl+C per disattivare la funzione.
+!F!Cliquez sur 'X' ou CTRL-C pour supprimer une fonction.
+
+!/!85:used in control configuration whether joystick is active or not
+!=!Active
+!G!Aktiv
+!S!Activo
+!I!Attivo
+!F!Actif
+
+!/!86:error string used in D3 if there is an error reading/writing files...keep %s and %d in
+!=!%s file <%s>: error = %s\n
+!G!%s-Datei <%s>: Fehler = %s\n 
+!S!archivo %s <%s>: error = %s\n
+!I!%s del file <%s>: errore = %s\n
+!F!%s fichier <%s>: erreur = %s\n
+
+!/!87:see #86
+!=!Reading
+!G!Lese
+!S!Leyendo
+!I!Lettura
+!F!Lecture
+
+!/!88:see #86
+!=!Writing
+!G!Schreibe
+!S!Escribiendo
+!I!Scrittura
+!F!Ecriture
+
+!/!89:Adjust settings for either keyboard or joystick mouse in config menus.
+!=!Adjust Settings
+!G!Einstellungen anpassen
+!S!Ajustar parametros
+!I!Regola le impostazioni
+!F!ajuster parametres
+
+!/!90:error message is there was a problem trying to initialize the renderer
+!=!Unable to initialize renderer.
+!G!Renderer-Initialisierung nicht möglich.
+!S!Falla al inicializar procesador de vídeo.
+!I!Impossibile inizializzare il processore video
+!F!Impossible d'initialiser le processeur vidéo.
+
+!/!91:error message if a font file couldn't be loaded
+!=!Unable to load font %s.
+!G!%s Font laden nicht möglich.
+!S!No se puede cargar fuente %s
+!I!Impossibile caricare il carattere %s.
+!F!Impossible de charger la police %s
+
+!/!92:error message if D3 ran out of memory doing a screenshot
+!=!Not enough memory for screenshot.
+!G!Nicht genug Speicherplatz für Screenshot.
+!S!No hay suficiente memoria para captura de pantalla.
+!I!Memoria insufficiente per cattura video.
+!F!Pas assez de mémoire pour une capture d'écran.
+
+!/!93:HUD message for what a screenshot was saved to
+!=!Screenshot saved as '%s'.
+!G!Screenshot als '%s' gespeichert.
+!S!Pantalla guardada como "%s".
+!I!Cattura video salvata come '%s'.
+!F!Capture d'ecran sauvegardee dans '%s'.
+
+!/!94:HUD message in a multiplayer game if a player cheats
+!=!%s is cheating!
+!G!%s mogelt!
+!S!%s está haciendo trampa
+!I!%s sta barando!
+!F!%s est en train de tricher !
+
+!/!95:HUD Enabled
+!=!HUD Enabled
+!G!CPA aktiviert
+!S!HUD activado
+!I!HUD attivato
+!F!collimateur activé
+
+!/!96:multiplayer message when joining a game
+!=!Receiving data...
+!G!Empfange Daten...
+!S!Recibiendo datos...
+!I!Ricezione dati...
+!F!reception des donnees...
+
+!/!97:screen message while level is loading to play
+!=!Downloading mission data...
+!G!Lade Missionsdaten...
+!S!Descargando datos de la misión...
+!I!Scaricamento dati della missione...
+!F!Chargement des donnees de la mission...
+
+!/!98:window title for in game help screen
+!=!Keys
+!G!Tasten
+!S!Claves
+!I!Tasti
+!F!Touches
+
+!/!99:label in help screen for key..most likely shouldn't change
+!=!PrintScreen
+!G!PrintScreen
+!S!ImprPantalla
+!I!Stamp
+!F!Impr.Ecran
+
+!/!100:in help screen, label
+!=!Save A Screenshot
+!G!Screenshot speichern
+!S!Guardar captura de pantalla.
+!I!Salva immagine video
+!F!Sauvegarder une capture d'écran
+
+!/!101:label in help screen for key..most likely shouldn't change
+!=!F3
+!G!F3
+!S!F3
+!I!F3
+!F!F3
+
+!/!102:in help screen, label
+!=!Toggle Cockpit
+!G!Cockpit Ein/Aus
+!S!Abrir/Cerrar cabina
+!I!Alterna cabina
+!F!Basc. Cockpit
+
+!/!103:label in help screen for key..most likely shouldn't change
+!=!F2
+!G!F2
+!S!F2
+!I!F2
+!F!F2
+
+!/!104:in help screen, label
+!=!Go To Options Menu
+!G!Zum Optionsmenü
+!S!Ir a menú de opciones
+!I!Passa al menu delle opzioni
+!F!Atteindre Menu Options
+
+!/!105:label in help screen for key..most likely shouldn't change
+!=!ESC
+!G!ESC
+!S!Esc
+!I!Esc
+!F!Echap
+
+!/!106:in help screen, label
+!=!Abort Game
+!G!Spiel beenden
+!S!Salir del juego
+!I!Interrompi la partita
+!F!Abandon de la partie
+
+!/!107:label in help screen for key..most likely shouldn't change
+!=!+/-
+!G!+/-
+!S!+/-
+!I!+/-
+!F!+/-
+
+!/!108:in help screen, label
+!=!Increase/Decrease Screen Size
+!G!Bild vergrössern/verkleinern
+!S!Aumentar/Reducir tamaño de pantalla
+!I!Aumenta/riduci dimensioni schermo
+!F!Augmenter/réduire la taille de l'écran
+
+!/!109:Pause
+!=!Pause
+!G!Pause
+!S!Pausa
+!I!Pausa
+!F!Pause
+
+!/!110:in help screen, label
+!=!Pause The Game
+!G!Spielpause einschalten
+!S!Detener el juego
+!I!Pausa del gioco
+!F!Mettre la partie en pause
+
+!/!111:label in help screen for key..most likely shouldn't change
+!=!SHIFT-F1
+!G!SHIFT-F1
+!S!Mayús+F1
+!I!Maiusc+F1
+!F!Maj.+F1
+
+!/!112:label in help screen for key..most likely shouldn't change
+!=!SHIFT-F2
+!G!SHIFT-F2
+!S!Mayús+F2
+!I!Maiusc+F2
+!F!Maj.-F2
+
+!/!113:label in help screen for key..most likely shouldn't change
+!=!SHIFT-F3
+!G!SHIFT-F3
+!S!Mayús+F3
+!I!Maiusc+F3
+!F!Maj.-F3
+
+!/!114:(in help screen, label
+!=!Cycle Left Window View
+!G!Ansicht im linken Fenster wechseln
+!S!Cambiar vista de video izquierda
+!I!Cambiare vista della finestra sinistra
+!F!Afficher Fenêtre Gauche
+
+!/!115:Used in config dialog when adjusting settings on a joystick or mouse.
+!=!Joystick-Mouse Settings
+!G!Joystick-Maus-Einstellungen
+!S!Configuración de ratón/joystick
+!I!Impostazioni joystick-mouse
+!F!paramètres joystick/souris
+
+!/!116:in help screen, label
+!=!Cycle Right Window View
+!G!Ansicht im rechten Fenster wechseln
+!S!Cambiar vista de video derecha
+!I!Passa alla vista della finestra destra
+!F!afficher fenêtre droite
+
+!/!117:HUD message format for multiplayer games when a player says a message, make sure %s's stay and line length doesn't go much longer
+!=!%s says: %s
+!G!%s sagt: %s 
+!S!%s dice: %s
+!I!%s dice: %s
+!F!%s dit : %s
+
+!/!118:message prompt for when a player wants to type a message in a multiplayer game
+!=!Message: %s
+!G!Nachricht: %s
+!S!Mensaje: %s
+!I!Messaggio: %s
+!F!Message : %s
+
+!/!119:Keyboard settings via config menu in dialog opened with adjust settings is pressed.
+!=!Keyboard Settings
+!G!Tastatur-Einstellungen
+!S!Configuración de teclado
+!I!Impostazioni della tastiera
+!F!Paramètres Clavier
+
+!/!120:HUD label for inventory item
+!=!INV
+!G!INV
+!S!INV
+!I!INV
+!F!INV
+
+!/!121:HUD label for cloak
+!=!CLK
+!G!TARN
+!S!OCU
+!I!OCC
+!F!OCC
+
+!/!122:Weapon text on buttons in weapon selection screen
+!=!%s-disabled
+!G!%s inaktiv
+!S!%s desactiv
+!I!%s disattiv
+!F!%s-désactivé
+
+!/!123:game state message when you are entering the game
+!=!Downloading data...
+!G!Lade Daten...
+!S!Descargando datos...
+!I!Scaricamento dati...
+!F!Chargement des données...
+
+!/!124:error message when loading the game
+!=!Could not read table files.
+!G!Tabellendateien konnten nicht gelesen werden.
+!S!No se pueden leer los archivos de tabla.
+!I!Impossibile leggere i file della tabella.
+!F!Fichiers de table illisibles.
+
+!/!125:game state message when you are entering the game
+!=!Analyzing data...
+!G!Analysiere Daten...
+!S!Analizando datos...
+!I!Analisi dei dati...
+!F!Analyse des données...
+
+!/!126:error message when loading a level
+!=!Cannot load level: Version number too new.
+!G!Level kann nicht geladen werden: Version zu neu.
+!S!No se puede cargar el nivel: Versión demasiado reciente.
+!I!Impossibile caricare il livello: numero di versione troppo recente.
+!F!Chargement du niveau impossible : numéro de version trop récent.
+
+!/!127:Used in configuration menus for help for keyboard/joystick config.
+!=!Select slot to configure.
+!G!Wählen Sie die zu konfigurierende Funktion aus.
+!S!Selecciona ranura para configurar.
+!I!Seleziona lo slot da configurare.
+!F!Sélectionnez la commande à configurer.
+
+!/!128:Main menu option label
+!=!New Game
+!G!Neues Spiel
+!S!Partida nueva
+!I!Nuova partita
+!F!Nouvelle partie
+
+!/!129:Main menu option label
+!=!Options
+!G!Optionen
+!S!Opciones
+!I!Opzioni
+!F!Options
+
+!/!130:Main menu option label
+!=!Pilots
+!G!Piloten
+!S!Pilotos
+!I!Piloti
+!F!Pilotes
+
+!/!131:Main menu option label
+!=!Multiplayer
+!G!Multiplayer
+!S!Multijugador
+!I!Multigiocatore
+!F!Multijoueur
+
+!/!132:Main menu option label
+!=!Quit
+!G!Beenden
+!S!Salir
+!I!Esci
+!F!Quitter
+
+!/!133:Load Mission
+!=!Load Mission
+!G!Mission laden
+!S!Cargar misión
+!I!Carica missione
+!F!Charger mission
+
+!/!134:Error
+!=!Error
+!G!Fehler
+!S!Error
+!I!Errore
+!F!Erreur
+
+!/!135:Failed to load mission.
+!=!Could not load mission
+!G!Mission konnte nicht geladen werden
+!S!No se ha podido cargar misión
+!I!Impossibile caricare la missione
+!F!Echec du chargement de la mission
+
+!/!136:hotspot label in Options menu
+!=!Keyboard
+!G!Tastatur
+!S!Teclado
+!I!Tastiera
+!F!Clavier
+
+!/!137:hotspot label in Options menu
+!=!Joy/Mouse
+!G!Joy/Maus
+!S!Joy/ratón
+!I!Joy/Mouse
+!F!Joy/Souris
+
+!/!138:hotspot label in Options menu
+!=!Video
+!G!Grafik
+!S!Vídeo
+!I!Video
+!F!Video
+
+!/!139:hotspot label in Options menu
+!=!Sound
+!G!Sound
+!S!Sonido
+!I!Suono
+!F!Son
+
+!/!140:hotspot label in Options menu
+!=!General
+!G!Allgemein
+!S!General
+!I!Generale
+!F!General
+
+!/!141:hotspot label in Options menu
+!=!Detail
+!G!Details
+!S!Detalle
+!I!Dettaglio
+!F!Detail
+
+!/!142:Done
+!=!Done
+!G!Fertig
+!S!Hecho
+!I!Completato
+!F!OK
+
+!/!143:Center
+!=!Center
+!G!Zentrum
+!S!Centro
+!I!Centra
+!F!Centre
+
+!/!144:error message if there is a problem loading a level
+!=!Unable to load level file %s.
+!G!Datei %s laden nicht möglich.
+!S!No se puede cargar archivo de nivel %s.
+!I!Impossibile caricare il file del livello %s.
+!F!Impossible de charger fichier du niveau %s.
+
+!/!145:used for help in key/joystick configuration menu.
+!=!Keyboard
+!G!Tastatur
+!S!Teclado
+!I!Tastiera
+!F!Clavier
+
+!/!146:message when the server is shutting down
+!=!Shutting down server.
+!G!Server wird abgeschaltet.
+!S!Cerrando servidor.
+!I!Chiusura del server.
+!F!arret du serveur.
+
+!/!147:multiplayer HUD message when a player leaves the game
+!=!%s has left the game
+!G!%s hat das Spiel verlassen
+!S!%s ha salido del juego
+!I!%s ha abbandonato la partita
+!F!%s a quitté la partie.
+
+!/!148:message when the server quits the game
+!=!The server has quit the game.
+!G!Der Server hat das Spiel beendet.
+!S!El servidor ha finalizado el juego.
+!I!Il server ha terminato la partita.
+!F!Le serveur a quitté la partie.
+
+!/!149:multiplayer HUD message when a player disconnects
+!=!%s disconnected
+!G!%s Verbindung abgebrochen
+!S!%s se ha desconectado.
+!I!%s si è scollegato.
+!F!%s s'est déconnecté.
+
+!/!150:error message when loading a level in a multiplayer level
+!=!Levels don't match.
+!G!Levels stimmen nicht überein.
+!S!Los niveles no coinciden.
+!I!I livelli non corrispondono.
+!F!Niveaux non concordants.
+
+!/!151:message when you disconnect from the server
+!=!Disconnected from server.
+!G!Vom Server getrennt.
+!S!Desconectado del servidor.
+!I!Scollegato dal server.
+!F!Déconnexion au serveur.
+
+!/!152:general error message when trying to connect to a server
+!=!Can't connect. Reason: %s
+!G!Verbindung nicht möglich. Grund: %s
+!S!No se puede conectar. Causa: %s
+!I!Collegamento impossibile. Causa: %s
+!F!Connexion impossible. Raison: %s
+
+!/!153:error message if the server doesn't respond
+!=!No response from server.
+!G!Keine Antwort vom Server.
+!S!No hay respuesta del servidor.
+!I!Nessuna risposta dal server.
+!F!Pas de réponse du serveur.
+
+!/!154:Waiting for server...		
+!=!Waiting for server...
+!G!Warte auf Server...
+!S!Esperando al servidor...
+!I!In attesa del server...
+!F!En attente de serveur...
+
+!/!155:error message trying to get info from the server
+!=!No level info from server.
+!G!Keine Levelinfo vom Server.
+!S!Servidor no proporciona información de nivel.
+!I!Nessuna informazione di livello dal server.
+!F!Aucune info venant du serveur.
+
+!/!156:a general use OK
+!=!OK!
+!G!OK!
+!S!Aceptar
+!I!OK!
+!F!OK !
+
+!/!157:Machine is not server
+!=!Machine is not server.
+!G!Gerät ist nicht Server.
+!S!No es un servidor.
+!I!Il computer non è un server.
+!F!La machine n'est pas un serveur.
+
+!/!158:error message if you try to connect to a server
+!=!You are banned!
+!G!Sie sind gesperrt!
+!S!Te han vetado
+!I!Sei escluso!
+!F!Vous êtes banni !
+
+!/!159:error message if you try to connect to a server
+!=!Not enough start positions.
+!G!Nicht genug Startpositionen.
+!S!No hay suficientes posiciones de comienzo.
+!I!Posizioni di partenza insufficienti.
+!F!Pas assez de positions de départ.
+
+!/!160:error message if you try to connect to a server
+!=!Server is full.
+!G!Server ist voll.
+!S!El servidor está lleno.
+!I!Il server è completo.
+!F!Le serveur est complet.
+
+!/!161:Multiplayer						
+!=!Multiplayer
+!G!Multiplayer
+!S!Multijugador
+!I!Multigiocatore
+!F!Multijoueur
+
+!/!162:Choose Connection Type
+!=!Choose Connection Type
+!G!Verbindungsart auswählen
+!S!Elige tipo de conexión
+!I!Scegli il tipo di collegamento
+!F!Choisissez un type de connexion
+
+!/!163:No Multiplayer Files Found!
+!=!No Multiplayer Files Found
+!G!Keine Multiplayerdatein gefunden
+!S!No se encuentran archivos multijugador
+!I!Non è stato trovato alcun file multigiocatore
+!F!Fichiers multijoueurs introuvables
+
+!/!164:Used in options menu for weapon selection precedence
+!=!Weapons
+!G!Waffen
+!S!Armas
+!I!Armi
+!F!Armes
+
+!/!165:Press space bar to continue...
+!=!Press space bar to continue...
+!G!Zum Fortsetzen Leertaste drücken...
+!S!Pulsa barra espaciadora para continuar...
+!I!Premi la barra spazio per continuare...
+!F!Appuyez sur la barre d'espace pour continuer...
+
+!/!166:None
+!=!None
+!G!Keine
+!S!Nulo
+!I!Nessuno
+!F!Aucun
+
+!/!167:skill rating for post level result
+!=!Feeble
+!G!Lahm
+!S!Débil
+!I!Debole
+!F!Médiocre
+
+!/!168:skill rating for post level result
+!=!Poor
+!G!Schlecht
+!S!Flojo
+!I!Insufficiente
+!F!Faible
+
+!/!169:skill rating for post level result
+!=!Average
+!G!Durchschnitt
+!S!Medio
+!I!Medio
+!F!Moyen
+
+!/!170:skill rating for post level result
+!=!Good
+!G!Gut
+!S!Bueno
+!I!Buono
+!F!Bon
+
+!/!171:skill rating for post level result
+!=!Excellent
+!G!Hervorragend
+!S!Excelente
+!I!Eccellente
+!F!Excellent
+
+!/!172:skill rating for post level result
+!=!Supreme
+!G!Super
+!S!Magnífico
+!I!Magnifico
+!F!Suprême
+
+!/!173:Telcom message while it is loading up a briefing
+!=!Please wait... Initializing
+!G!Bitte warten... Initialisiere
+!S!Espera... Inicializando
+!I!Attendi... Inizializzazione
+!F!Un instant SVP... Initialisation
+
+!/!174:TelCom Main Menu text
+!=!Main Menu
+!G!Hauptmenü
+!S!Menú principal
+!I!Menu principale
+!F!menu telcom
+
+!/!175:TelCom Main Menu Briefings option
+!=!Briefings
+!G!Anweisungen
+!S!Órdenes
+!I!Istruzioni preliminari
+!F!briefings
+
+!/!176:TelCom Main Menu Automap option
+!=!Automap
+!G!Karte
+!S!Auto-Mapa
+!I!Automappa
+!F!autocarte
+
+!/!---------------------The following section are weapon names (on the HUD,etc)-------------------------
+!/!177:Laser		
+!=!Laser
+!G!Laser
+!S!Láser
+!I!Laser
+!F!Laser
+
+!/!178:Vauss
+!=!Vauss
+!G!Vauss
+!S!Vauss
+!I!Vauss
+!F!Vauss
+
+!/!179:Microwave
+!=!Microwave
+!G!Mikrowellen
+!S!Microondas
+!I!Microonde
+!F!Micro-onde
+
+!/!180:Plasma
+!=!Plasma
+!G!Plasma
+!S!Plasma
+!I!Plasma
+!F!Plasma
+
+!/!181:Fusion
+!=!Fusion
+!G!Fusion
+!S!Fusión
+!I!Fusione
+!F!Fusion
+
+!/!182:Super Laser
+!=!Super Laser
+!G!Superlaser
+!S!Superláser
+!I!Super Laser 
+!F!Super Laser
+
+!/!183:Mass Driver
+!=!Mass Driver
+!G!Massetreiber
+!S!Lanzamasa
+!I!Lanciamassa
+!F!Particules
+
+!/!184:Napalm
+!=!Napalm
+!G!Napalm
+!S!Napalm
+!I!Napalm
+!F!Napalm
+
+!/!185:EMD Gun
+!=!EMD Gun
+!G!EMD-Kanone
+!S!Cañón IEM
+!I!Cannone EMD
+!F!Canon DEM
+
+!/!186:Omega
+!=!Omega
+!G!Omega
+!S!Omega
+!I!Omega
+!F!Oméga
+
+!/!187:Concussion
+!=!Concussion
+!G!Erschütterung
+!S!Cohete S-1
+!I!Esplosivo
+!F!Explosif
+
+!/!188:Homing
+!=!Homing
+!G!Zielpeil
+!S!Buscador
+!I!Autoguidato
+!F!Autoguidé
+
+!/!189:Impact Mortar
+!=!Impact Mortar
+!G!Granatwerfer
+!S!Mortero de impacto
+!I!Mortaio d'impatto
+!F!Mortier d'impact
+
+!/!190:Smart
+!=!Smart
+!G!Smart
+!S!Inteligente
+!I!Intelligente
+!F!Smart
+
+!/!191:Mega
+!=!Mega
+!G!Mega
+!S!Mega
+!I!Mega
+!F!Méga
+
+!/!192:Frag
+!=!Frag
+!G!Frag
+!S!Fragmentario
+!I!Frammentatore
+!F!Missile Frag
+
+!/!193:Guided
+!=!Guided
+!G!Fernlenk
+!S!Guiado
+!I!Teleguidato
+!F!Guidé
+
+!/!194:Napalm Rocket
+!=!Napalm Rocket
+!G!Napalmrakete
+!S!Cohete de napalm
+!I!Razzo Napalm
+!F!Roquette Napalm
+
+!/!195:Cyclone
+!=!Cyclone
+!G!Zyklon
+!S!Ciclón
+!I!Ciclone
+!F!Cyclone
+
+!/!196:Black Shark
+!=!Black Shark
+!G!Black Shark
+!S!Tiburón negro
+!I!Squalo nero
+!F!Requin Noir
+
+!/!197:Yellow Flare
+!=!Yellow Flare
+!G!Gelbes Leuchtgeschoss
+!S!Bengala
+!I!Bengala giallo
+!F!Fusée jaune
+
+!/!198:Laser Cockpit Pt. 1
+!=!Laser
+!G!Laser
+!S!Láser
+!I!Laser
+!F!Laser
+
+!/!199:Laser Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!200:Vauss Cockpit Pt. 1
+!=!Vauss
+!G!Vauss
+!S!Vauss
+!I!Vauss
+!F!Vauss
+
+!/!201:Vauss Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!202:Microwave Cockpit Pt. 1
+!=!Micro-
+!G!Mikro-
+!S!Micro-
+!I!Micro-
+!F!Micro-
+
+!/!203:Microwave Cockpit Pt. 2
+!=!wave
+!G!wellen
+!S!ondas
+!I!onde
+!F!Ondes
+
+!/!204:Plasma Cockpit Pt. 1
+!=!Plasma
+!G!Plasma
+!S!Plasma
+!I!Plasma
+!F!Plasma
+
+!/!205:Plasma Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!206:Fusion Cockpit Pt. 1
+!=!Fusion
+!G!Fusion
+!S!Fusión
+!I!Fusione
+!F!Fusion
+
+!/!207 (Fusion Cockpit Pt. 2)
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!208:Superlaser Cockpit Pt. 1
+!=!Super
+!G!Super-
+!S!Súper
+!I!Super
+!F!Super
+
+!/!209:Superlaser Cockpit Pt. 2
+!=!Laser
+!G!laser
+!S!Láser
+!I!Laser
+!F!laser
+
+!/!210:Mass Driver Cockpit Pt. 1
+!=!Mass
+!G!Masse-
+!S!Lanza
+!I!Lancia
+!F!Canon à
+
+!/!211:Mass Driver Cockpit Pt. 2
+!=!Driver
+!G!treiber
+!S!masa
+!I!Massa
+!F!Particules
+
+!/!212:Napalm Cockpit Pt. 1
+!=!Napalm
+!G!Napalm
+!S!Napalm
+!I!Napalm
+!F!Napalm
+
+!/!213:Napalm Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!214:EMD Gun Cockpit Pt. 1
+!=!EMD
+!G!EMD-
+!S!IEM
+!I!Cannone
+!F!Canon
+
+!/!215:EMD Gun Cockpit Pt. 2
+!=!Gun
+!G!Kanone
+!S!
+!I!EMD
+!F!DEM
+
+!/!216:Omega Cockpit Pt. 1
+!=!Omega
+!G!Omega
+!S!Omega
+!I!Omega
+!F!Oméga
+
+!/!217:Omega Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!218:Concussion Cockpit Pt. 1
+!=!Concussn
+!G!Erschütt.
+!S!Cohete S-1
+!I!Esplosivo
+!F!Explosif
+
+!/!219:Concussion Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!220:Homing Cockpit Pt. 1
+!=!Homing
+!G!Zielpeil
+!S!Buscador
+!I!Autoguidato
+!F!Autoguidé
+
+!/!221:Homing Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!222:Impact Mortar Cockpit Pt. 1
+!=!Impact
+!G!Granat-
+!S!Mortero
+!I!Mortaio
+!F!Mortier
+
+!/!223:Impact Mortar Cockpit Pt. 2
+!=!Mortar
+!G!werfer
+!S!Impacto
+!I!Impatto
+!F!Impact 
+
+!/!224:Smart Missile Cockpit Pt. 1
+!=!Smart
+!G!Smart
+!S!Inteligente
+!I!Intelligente
+!F!Smart
+
+!/!225:Smart Missile Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!226:Mega Cockpit Pt. 1
+!=!Mega
+!G!Mega
+!S!Mega
+!I!Mega
+!F!Méga
+
+!/!227:Mega Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!228:Frag Cockpit Pt. 1
+!=!Frag
+!G!Frag
+!S!Fragmentario
+!I!Frammentatore
+!F!Frag
+
+!/!229:Frag Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!230:Guided Cockpit Pt. 1
+!=!Guided
+!G!Fernlenk
+!S!Guiado
+!I!Teleguidato
+!F!Guidé
+
+!/!231:Guided Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!232:Napalm Rocket Cockpit Pt. 1
+!=!Napalm
+!G!Napalm-
+!S!Cohete
+!I!Razzo
+!F!Roquette
+
+!/!233:Napalm Rocket Cockpit Pt. 2
+!=!Rocket
+!G!rakete
+!S!Napalm
+!I!Napalm
+!F!Napalm
+
+!/!234:Cyclone Cockpit Pt. 1
+!=!Cyclone
+!G!Zyklon
+!S!Ciclón
+!I!Ciclone
+!F!Cyclone
+
+!/!235:Cyclone Cockpit Pt. 2
+!=!
+!G!
+!S!
+!I!
+!F!
+
+!/!236:Black Cockpit Shark Pt. 1
+!=!Black
+!G!Black
+!S!Tiburón
+!I!Squalo
+!F!Requin 
+
+!/!237:Black Cockpit Shark Pt. 2
+!=!Shark
+!G!Shark
+!S!Negro
+!I!Nero
+!F!Noir 
+
+!/!238:Yellow Flare Cockpit Pt. 1
+!=!Yellow
+!G!Leucht-
+!S!Bengala
+!I!Bengala
+!F!Fusée
+
+!/!239:Yellow Flare Cockpit Pt. 2
+!=!Flare
+!G!Leuchtg.
+!S!
+!I!Giallo
+!F!Jaune
+
+!/!------------------------ HUD Messages for weapon select --------------------------------
+!/!240:A weapon is not available when the user tries to select it
+!=!Weapon not available
+!G!Waffe nicht verfügbar
+!S!Arma no disponible
+!I!Arma non disponibile
+!F!Arme non disponible
+
+!/!241:Objectives (used in post level results)
+!=!Objectives
+!G!Ziele
+!S!Objetivos
+!I!Obiettivi
+!F!Objectifs
+
+!/!242:%s selected. HUD messsage for a weapon selected. %s is the weapon name.
+!=!%s selected
+!G!%s ausgewählt
+!S!%s seleccionado.
+!I!%s selezionato.
+!F!%s
+
+!/!243:Not enough energy available to fire this weapon
+!=!Not enough energy to fire weapon
+!G!Energie reicht nicht, um Waffe abzufeuern
+!S!No hay suficiente energía para usar arma
+!I!Energia insufficiente per utilizzare l'arma
+!F!Pas assez d'énergie pour tirer
+
+!/!244:Not enough ammo available to fire this weapon
+!=!Not enough ammo to fire weapon
+!G!Nicht genug Munition, um Waffe abzufeuern
+!S!No hay suficiente munición para usar arma
+!I!Munizioni insufficienti per utilizzare l'arma
+!F!Pas assez de munitions pour tirer
+
+!/!245:Not enough secondaries available
+!=!Weapon not available
+!G!Waffe nicht vefügbar
+!S!Arma no disponible
+!I!Arma non disponibile
+!F!Arme non disponible
+
+!/!246:Not enough energy available to fire flare
+!=!Not enough energy to fire flare
+!G!Energie reicht nicht, um Leuchtgeschoss abzufeuern 
+!S!No hay suficiente energía para usar bengala
+!I!Energia insufficiente per lanciare il bengala
+!F!Pas assez d'énergie pour tirer une fusée.
+
+!/!-----------------------------------------------------------------------------------------
+
+!/!247:%s disconnected!	(Text for when a player disconnects)
+!=!%s disconnected!
+!G!%s Verbindung abgebrochen!
+!S!%s ha desconectado
+!I!%s scollegato!
+!F!%s déconnecté !
+
+!/!--------------------------- Text Labels for Post Level Results ----------------------------
+!/!248:Accuracy rating:
+!=!Accuracy rating:
+!G!Treffgenauigkeitsbewertung:
+!S!Tasa de exactitud:
+!I!Classificazione precisione:
+!F!Taux de précision :
+
+!/!249:Shield rating:
+!=!Shield rating:
+!G!Schutzschildbewertung:
+!S!Tasa de escudo:
+!I!Classificazione scudi:
+!F!Taux de protection :
+
+!/!250:Energy rating
+!=!Energy rating:
+!G!Energiebewertung:
+!S!Tasa de energía:
+!I!Classificazione energia:
+!F!Taux d'énergie :
+
+!/!251:Robots destroyed
+!=!Robots destroyed:
+!G!Zerstörte Roboter:
+!S!Enemigos eliminados:
+!I!Nemici eliminati:
+!F!Robots détruits:
+
+!/!252:Mine explored:
+!=!Mine explored:
+!G!Mineneerforschung:
+!S!Mina explorada:
+!I!Miniera esplorata:
+!F!Mine explorée :
+
+!/!253:Time played:
+!=!Time played:
+!G!Spielzeit:
+!S!Tiempo jugado:
+!I!Tempo di gioco:
+!F!Durée de la partie :
+
+!/!254:Times restored: (Post level results)
+!=!Times restored:
+!G!Wiedereinstieg:
+!S!Veces de restauración:
+!I!Numero di ripristini:
+!F!Nombre de chargements :
+
+!/!255:Pilot Performance Review (title)
+!=!Pilot Performance Review
+!G!Pilotenleistung
+!S!Informe de rendimiento del piloto
+!I!Rapporto prestazioni del pilota
+!F!Compte-rendu des performances du pilote
+
+!/!256:Success
+!=!Success
+!G!Erfolgreich
+!S!Éxito
+!I!Successo
+!F!Succès
+
+!/!257:Failed
+!=!Failed
+!G!Erfolglos
+!S!Fracaso
+!I!Insuccesso
+!F!Echec
+
+!/!---------------------------Labels in Controller configuration---------------------------
+
+!/!258:Label in Controller configuration
+!=!fire primary
+!G!Primäre feuern
+!S!disparar prin
+!I!spara primario  
+!F!tir primaire
+
+!/!259:Label in Controller configuration
+!=!fire secondary
+!G!Sekund. feuern
+!S!disparar secun
+!I!spara second.  
+!F!tir secondaire
+
+!/!260:Label in Controller configuration
+!=!forward
+!G!Vorwärts
+!S!acelerar
+!I!avanti
+!F!avant
+
+!/!261:Label in Controller configuration
+!=!reverse
+!G!Rückwärts
+!S!reversa
+!I!indietro
+!F!arrière
+
+!/!262:Label in Controller configuration
+!=!slide horiz
+!G!Horiz. gleiten
+!S!desliz horiz
+!I!scivola orizz.  
+!F!glissée horiz.
+
+!/!263:Label in Controller configuration
+!=!slide left
+!G!Links gleiten
+!S!desliz izqda
+!I!scivola a sinist  
+!F!glissée à gauche
+
+!/!264:Label in Controller configuration
+!=!slide right
+!G!Rechts gleiten
+!S!desliz dcha
+!I!scivola a dest  
+!F!glissée à droite
+
+!/!265:Label in Controller configuration
+!=!slide vertical
+!G!Vertik. gleiten
+!S!desliz vert
+!I!scivola vertic.  
+!F!glissée vertic.
+
+!/!266:Label in Controller configuration
+!=!slide up
+!G!Hoch gleiten
+!S!desliz arriba
+!I!scivola in alto
+!F!glisser en haut
+
+!/!267:Label in Controller configuration
+!=!slide down
+!G!Runter gleiten
+!S!desliz abajo
+!I!scivola in basso  
+!F!glisser en bas
+
+!/!268:Label in Controller configuration
+!=!bank left
+!G!Linksneigung
+!S!ladear izqda
+!I!inclina a sinist 
+!F!incliner gauche
+
+!/!269:Label in Controller configuration
+!=!bank right
+!G!Rechtsneigung
+!S!ladear dcha
+!I!inclina a dest
+!F!incliner droite
+
+!/!270:Label in Controller configuration
+!=!pitch up
+!G!Hoch neigen
+!S!inclin arriba
+!I!inclina in alto
+!F!cabrer
+
+!/!271:Label in Controller configuration
+!=!pitch down
+!G!Runter neigen
+!S!inclin abajo
+!I!inclina in basso
+!F!piquer 
+
+!/!272:Label in Controller configuration
+!=!turn left
+!G!Links drehen
+!S!torcer izquda
+!I!vira a sinistra
+!F!virer à gauche
+
+!/!273:Label in Controller configuration
+!=!turn right
+!G!Rechts drehen
+!S!torcer decha
+!I!vira a destra
+!F!virer à droite
+
+!/!274:Label in Controller configuration
+!=!fire flare
+!G!Leuchtg. feuern
+!S!lanzar bengala
+!I!spara bengala
+!F!tir fusée
+
+!/!275:Label in Controller configuration
+!=!toggle slide
+!G!Gleiten festst.
+!S!conmutar desl
+!I!commuta sciv
+!F!basc. glissée
+
+!/!276:Label in Controller configuration
+!=!toggle bank
+!G!Neigen festst.
+!S!conmutar ladeo
+!I!commuta incl
+!F!basc inclinaison
+
+!/!277:Label in Controller configuration
+!=!heading
+!G!Flugrichtung
+!S!dirección
+!I!direzione
+!F!cap
+
+!/!278:Label in Controller configuration
+!=!pitch
+!G!Längsneigung
+!S!inclinación
+!I!inclinazione
+!F!tangage
+
+!/!279:Label in Controller configuration
+!=!throttle
+!G!Schubantrieb
+!S!acelerador
+!I!accelera
+!F!accélération
+
+!/!280:Label in Controller configuration
+!=!throttle
+!G!Schubregelung
+!S!acelerador
+!I!accelera
+!F!accélération
+
+!/!281:Label in Controller configuration
+!=!bank
+!G!Querneigung
+!S!ladear
+!I!inclina
+!F!tangage
+
+!/!282:Label in Controller configuration
+!=!afterburner
+!G!Nachbrenner
+!S!postquemador
+!I!postcombustore
+!F!postcombustion
+
+!/!283:Label in Controller configuration
+!=!automap
+!G!Autom. Karte
+!S!auto-mapa
+!I!auto-mappa
+!F!autocarte
+
+!/!===============================================================================
+
+!/!284:Quit	(General quit text)
+!=!Quit
+!G!Beenden
+!S!Abandonar
+!I!Esci
+!F!Quitter
+
+!/!285:Goal completed message for HUD, "Completed: blah blah blah"
+!=!Completed:
+!G!Erledigt:
+!S!Completo:
+!I!Completato:
+!F!Accompli :
+
+!/!286:music volume slider label in sound config
+!=!Music Volume
+!G!Musiklautstärke
+!S!Volumen música
+!I!Volume musica
+!F!Volume de la musique
+
+!/!287:sound mixer label in sound config
+!=!Sound Mixer
+!G!Sound Mixer
+!S!Mezclador sonido
+!I!Mixer sonoro
+!F!Mixage du son
+
+!/!288:software sound mixer
+!=!Software
+!G!Software
+!S!Software
+!I!Software
+!F!Logiciel
+
+!/!289:Direct Sound 8 bit sound mixer
+!=!DirectSound 8-Bit
+!G!DirectSound 8-Bit 
+!S!DirectSound 8 bits
+!I!DirectSound a 8 bit
+!F!DirectSound3D
+
+!/!290:Direct Sound 3D sound mixer
+!=!DirectSound3D
+!G!DirectSound3D 
+!S!DirectSound 3D
+!I!DirectSound 3D
+!F!DirectSound3D
+
+!/!291:Aureal sound mixer
+!=!Aureal
+!G!Aureal 
+!S!Aureal
+!I!Aureal
+!F!Aureal
+
+!/!292:sound quality slider label in sound config
+!=!Sound Quality
+!G!Soundqualität
+!S!Calidad sonido
+!I!Qualità del suono
+!F!Qualité Sonore
+
+!/!293:sound quality
+!=!High
+!G!Hoch
+!S!Alta
+!I!Alta
+!F!Haute
+
+!/!294:sound quality
+!=!Low
+!G!Niedrig
+!S!Baja
+!I!Bassa
+!F!Faible
+
+!/!295:options menu label for HUD customization
+!=!HUD
+!G!CPA
+!S!HUD
+!I!HUD 
+!F!Collimateur
+
+!/!296:Used in key/joystick config help
+!=!Joystick Handle, mouse, throttle
+!G!Joystick, Maus, Schubregler
+!S!palanca del joystick, ratón, acelerar
+!I!Impugnatura del joystick, mouse, acceleratore
+!F!joystick, la souris ou la manette.
+ 
+!/!297:text HUD representation
+!=!Text
+!G!Text
+!S!Texto
+!I!Testo
+!F!Texte
+
+!/!298:graphical HUD representation
+!=!Graphic
+!G!Grafik
+!S!Gráfico
+!I!Grafico
+!F!Graph.
+
+!/!299:HUD customization label
+!=!Ship Status
+!G!Schiffstatus
+!S!Estado de nave
+!I!Stato della nave
+!F!statut du vaisseau
+
+!/!300:HUD customization label
+!=!Shield/Energy
+!G!Schutzschild/Energie
+!S!Escudo/energía
+!I!Scudo/energia
+!F!Bouclier/Energie
+
+!/!301:HUD customization label
+!=!Weapon Layout
+!G!Waffenaufstellung
+!S!Disposición de armas
+!I!Disposizione dell'arma
+!F!Affichage des armes
+
+!/!302:HUD customization label
+!=!Afterburner
+!G!Nachbrenner
+!S!Postquemador
+!I!Postcombustore
+!F!Postcombustion
+
+!/!303:HUD customization label
+!=!Goals
+!G!Ziele
+!S!Objetivos
+!I!Obiettivi
+!F!Objectifs
+
+!/!304:HUD customization label
+!=!Mission Status
+!G!Missionsstatus
+!S!Estado de misión
+!I!Stato della missione
+!F!Statut de la mission
+
+!/!305:HUD customization label
+!=!Inventory
+!G!Inventar
+!S!Inventario
+!I!Inventario
+!F!Inventaire
+
+!/!306:Help in key/joystick config dialog
+!=!Joystick, mouse buttons or hat
+!G!Joystick, Maustasten oder POV-Knopf
+!S!Joystick, botones del ratón o hat
+!I!Joystick, pulsanti del mouse o hat
+!F!Joystick, souris ou chapeau
+
+!/!307:specular mapping setting in detail settings
+!=!Specular mapping
+!G!Reflexionen
+!S!Asignación invertida
+!I!Mappatura speculare
+!F!Mapping spéculaire
+
+!/!308:key/joystick config dialog binding 1.
+!=!Binding 1: %s
+!G!Zuweisung 1: %s
+!S!Vínculo 1: %s
+!I!Legatura 1: %s
+!F!Liaison 1: %s
+
+!/!309:key/joystick config dialog binding 2.
+!=!Binding 2: %s
+!G!Zuweisung 2: %s
+!S!Vínculo 2: %s 
+!I!Legatura 2: %s
+!F!Liaison 2: %s
+
+!/!310:DirectSound 16-bit sound mixer
+!=!DirectSound 16-Bit
+!G!DirectSound 16-Bit 
+!S!DirectSound 16 bits
+!I!DirectSound a 16 bit
+!F!DirectSound 16-Bit
+
+!/!311:HUD customization label
+!=!Countermeasures
+!G!Gegenmassnahmen
+!S!Contramedidas
+!I!Contromisure
+!F!Leurres
+
+!/!312:HUD message if antigravity fails
+!=!ANTIGRAV FAIL
+!G!ANTIGRAVITATION VERSAGT
+!S!FALLO ANTIGRAVEDAD
+!I!GUASTO ANTIGRAVITÀ
+!F!DEFAUT ANTIGRAVITE
+
+!/!313:HUD message if a missile has a lock on you
+!=!LOCK
+!G!LOCK
+!S!APUNTADO
+!I!BLOCCO
+!F!VERROU
+
+!/!314:key/joystick config dialog to clear bindings.
+!=!Clear
+!G!Aufheben
+!S!Borrar
+!I!Cancella
+!F!effacer
+
+!/!315:Cargo
+!=!Cargo
+!G!Fracht
+!S!Carga
+!I!Carico
+!F!Cargo
+
+!/!316:All
+!=!All
+!G!Alle
+!S!Todo
+!I!Tutto
+!F!Tous
+
+!/!317:Warnings
+!=!Warnings
+!G!Warnungen
+!S!Advertencias
+!I!Avvisi
+!F!attention
+
+!/!318:Used in Pilot ship customization dialog
+!=!Import IFL File
+!G!IFL-Datei importieren
+!S!Importar archivo IFL
+!I!Importa un file IFL
+!F!importer fichier IFL
+
+!/!319: Used in Telcom Ship selection
+!=!Ship Select
+!G!Schiffsauswahl
+!S!Configuración de nave
+!I!Configurazione nave multigiocatore
+!F!selection du vaisseau
+
+!/!320:Used in Pilot ship customization dialog
+!=!Ship Display
+!G!Schiff
+!S!Presentación de nave
+!I!Presentazione di nave
+!F!vaisseau
+
+!/!321:Used in Pilot ship customization dialog
+!=!Ships
+!G!Schiffe
+!S!Naves
+!I!Navi
+!F!Vaisseaux
+
+!/!322:Used in Pilot ship customization dialog
+!=!Custom Textures
+!G!Eigene Texturen
+!S!Texturas personalizadas
+!I!Texture personalizzate
+!F!textures personnalisees
+
+!/!323:Used in Pilot ship customization dialog
+!=!Choose
+!G!Auswahl
+!S!Elegir
+!I!Scegli
+!F!Sélection
+
+!/!324:Used in Pilot ship customization dialog
+!=!Success
+!G!Erfolg
+!S!Éxito
+!I!Successo
+!F!Succès
+
+!/!325:Used in Pilot ship customization dialog
+!=!There was an error importing
+!G!Fehler beim Importieren
+!S!Ha ocurrido un error al importar
+!I!Si è verificato un errore durante l'importazione
+!F!Une erreur s'est produite durant l'importation
+
+!/!326:Used in Pilot ship customization dialog
+!=!Animated Bitmap Successfully Imported.
+!G!Animierte Grafik erfolgreich importiert.
+!S!Mapa de bits animado importado correctamente.
+!I!Bitmap animata importata con successo.
+!F!Importation du bitmap animé réussie.
+
+!/!327:Used in Pilot ship customization dialog
+!=!Custom Logo
+!G!Logo
+!S!Emblema
+!I!Logo
+!F!Logo
+
+!/!328:Used in Pilot ship customization dialog
+!=!SHIP CONFIGURATION
+!G!SCHIFFSKONFIGURATION
+!S!CONFIGURACIÓN DE NAVE
+!I!CONFIGURAZIONE/NAVE
+!F!CONFIGURER VAISSEAU
+
+!/!329:Used in file dialog
+!=!Up To Parent Directory
+!G!übergeordnetes Verz.
+!S!Subir al directorio sup.
+!I!Vai a directory super.
+!F!Vers répertoire parent
+
+!/!330:Used in file dialog
+!=!You Must Select A Filename.
+!G!Bitte Dateinamen auswählen.
+!S!Debes seleccionar un nombre de archivo.
+!I!Selezionare un nome di file.
+!F!Vous devez choisir un nom de fichier.
+
+!/!331:Used in file dialog
+!=!File Does Not Exist.
+!G!Datei existiert nicht.
+!S!Este archivo no existe.
+!I!Il file non esiste.
+!F!Fichier inexistant.
+
+!/!332:Used in file dialog
+!=!Invalid Path/Directory
+!G!Ungültiger Pfad/Verzeichnis
+!S!Ruta o directorio no válido
+!I!Percorso o directory non validi
+!F!Chemin/répertoire incorrect
+
+!/!333:Message when restoring a bad save game
+!=!Illegal saved game file.
+!G!Ungültige gespeicherte Spieldatei.
+!S!Archivo de partida guardado no válido
+!I!File di salvataggio non valido.
+!F!Fichier de sauvegarde non conforme.
+
+!/!334:error message when saving a game
+!=!Unable to save current game.
+!G!Aktuelles Spiel speichern nicht möglich.
+!S!No se puede guardar la partida actual.
+!I!Impossibile salvare questa partita.
+!F!Impossible de sauver la partie en cours.
+
+!/!335:Message when restoring a bad save game
+!=!Unable to load game.
+!G!Spiel laden nicht möglich.
+!S!No se puede cargar la partida.
+!I!Impossibile caricare la partita.
+!F!Impossible de charger la partie.
+
+!/!336:In Load/Save game dialog, represents an empty slot
+!=!Empty
+!G!Leer
+!S!Vacío
+!I!Vuoto
+!F!Vide
+
+!/!337:Unable to create directory.
+!=!Unable to create directory.
+!G!Verzeichniserstellung nicht möglich.
+!S!No se puede crear directorio.
+!I!Impossibile creare la directory.
+!F!Création de répertoire impossible.
+
+!/!338:Error Message when restoring a save game
+!=!There are no saved games.
+!G!Es gibt keine gespeicherten Spiele.
+!S!No hay partidas guardadas.
+!I!Non esiste alcuna partita salvata.
+!F!Aucune partie n'a été sauvegardée.
+
+!/!339:There are no valid missions in the mission directory.
+!=!There are no valid missions in the mission directory.
+!G!Im Missionsverzeichnis gibt es keine gültigen Missionen.
+!S!No hay misiones válidas en el directorio de misiones.
+!I!Non esistono missioni valide nella directory delle missioni.
+!F!Il n'y a pas de missions valides dans le répertoire de missions.
+
+!/!340:Window title for load game dialog
+!=!Load Game
+!G!Spiel laden
+!S!Cargar partida
+!I!Carica partita
+!F!Charger Partie
+
+!/!341:Window title for save game dialog
+!=!Save Game
+!G!Spiel speichern
+!S!Guardar partida
+!I!Salva partita
+!F!Sauvegarder Partie
+
+!/!342:Description
+!=!Description
+!G!Beschreibung
+!S!Descripción
+!I!Descrizione
+!F!Description
+
+!/!343:in Detail configuration,label for fast headlight option
+!=!Fast Headlight
+!G!Schneller Scheinw.
+!S!Faro rápido
+!I!Fanale rapido
+!F!Phare Rapide
+
+!/!344:in Detail configuration,label for mirrored surfaces option
+!=!Mirrored Surfaces
+!G!Gespiegelte Oberfl.
+!S!Reflejo Superficie
+!I!Superfici riflettenti
+!F!Surfaces miroitantes
+
+!/! ============================  In keyboard config menu =================================
+!/!345:In keyboard config menu
+!=!prev inv item
+!G!Gegenstand -
+!S!ant elem inv
+!I!elem ant inv
+!F!objet inv. prec.
+
+!/!346:In keyboard config menu
+!=!Next Inv Item
+!G!Gegenstand +
+!S!sig elem inv
+!I!elem succ inv
+!F!objet inv. suiv.
+
+!/!347:In keyboard config menu
+!=!Use Inv Item
+!G!G. benutzen
+!S!Usar elem inv
+!I!Usa elem inv
+!F!util. objet inv.
+
+!/!348:In keyboard config menu
+!=!prev cntr meas
+!G!Gegenmassn. -
+!S!Contramed ant
+!I!contromis prec
+!F!leurre préc.
+
+!/!349:In keyboard config menu
+!=!next cntr meas
+!G!Gegenmassn. +
+!S!Contramed sig
+!I!contromis succ
+!F!leurre suivant
+
+!/!350:In keyboard config menu
+!=!use cntr meas
+!G!G.M. benutzen
+!S!usar contramed
+!I!usa contromis
+!F!utiliser leurre
+!/!=========================================================================================
+
+!/!351:in game controller config menu
+!=!Joystick Sensitivity
+!G!Joystickempfindlichkeit
+!S!Sensibilidad del joystick
+!I!Sensibilità del joystick
+!F!Sensibilité du joystick
+
+!/!352:in game controller config menu
+!=!Mouse Sensitivity
+!G!Mausempfindlichkeit
+!S!Sensibilidad del ratón
+!I!Sensibilità del mouse
+!F!Sensibilité de la souris
+
+!/!353:keyconfig option for headlight toggle
+!=!headlight
+!G!Scheinwerfer
+!S!faro delantero
+!I!fanale
+!F!phare
+
+!/!354:in help screen
+!=!Alt-F2
+!G!Alt-F2
+!S!Alt+F2
+!I!Alt+F2
+!F!Alt-F2
+
+!/!355:in help screen
+!=!Save Game
+!G!Spiel speichern
+!S!Guardar partida
+!I!Salva partita
+!F!Sauvegarder partie
+
+!/!356:in help screen
+!=!Alt-F3
+!G!Alt-F3
+!S!Alt+F3
+!I!Alt+F3
+!F!Alt-F3
+
+!/!357:in help screen
+!=!Load Game
+!G!Spiel laden
+!S!Cargar partida
+!I!Carica partita
+!F!Charger partie
+
+!/!358:in help screen
+!=!F4
+!G!F4
+!S!F4
+!I!F4
+!F!F4
+
+!/!359:in help screen
+!=!Go To Guide-Bot Menu
+!G!Guide-Bot Menü aufrufen
+!S!Ir a menú de roboguía
+!I!Vai al menu Robot-Guida
+!F!Passer au Menu GuideBot
+
+!/!360:in help screen
+!=!1-5
+!G!1-5
+!S!1-5
+!I!1-5
+!F!1-5
+
+!/!361:in help screen
+!=!Select Primary Weapon
+!G!Primärwaffe auswählen
+!S!Seleccionar arma principal
+!I!Seleziona arma principale
+!F!Choix Arme Primaire
+
+!/!362:in help screen
+!=!6-0
+!G!6-0
+!S!6-0
+!I!6-0
+!F!6-0
+
+!/!363:in help screen
+!=!Select Secondary Weapon
+!G!Sekundärwaffe auswählen
+!S!Seleccionar arma secundaria
+!I!Seleziona arma secondaria
+!F!Choix Arme Secondaire
+
+!/!364:for use in the demo: unavailable features in demo
+!=!Not available in this version.
+!G!In dieser Version nicht verfügbar.
+!S!No está disponible en esta versión.
+!I!Non disponibile in questa versione.
+!F!Non disponible dans cette version.
+
+!/!365:Main multiplayer menu
+!=!%s Set as Default
+!G!%s als Standard festgelegt
+!S!%s establecido como predeterminado
+!I!%s impostato come predefinito
+!F!%s défini par défaut
+
+!/!366:Main multiplayer menu
+!=!Set Selected as Default
+!G!Als Standard festlegen
+!S!Estab. como predetermin.
+!I!Imposta come predefinito
+!F!enreg. comme défaut
+
+!/!367:Help
+!=!Help
+!G!Hilfe
+!S!Ayuda
+!I!?
+!F!aide
+
+!/!368:For selecting no custom bitmaps
+!=!<None>
+!G!<Keine>
+!S!<Ninguno>
+!I!<Nessuno>
+!F!<Aucune>
+
+!/!369:Used on file dialog
+!=!Save
+!G!Speichern
+!S!Guardar
+!I!Salva
+!F!Enreg.
+
+!/!370:Used on file dialog
+!=!Open
+!G!Öffnen
+!S!Abrir
+!I!Apri
+!F!Ouvrir
+
+!/!371:Main multiplayer menu error message
+!=!No Multiplayer Files Found.
+!G!Keine Multiplayer-Dateien gefunden.
+!S!No se encuentran archivos multijugador
+!I!File multigiocatore non trovato.
+!F!Aucun fichier multijoueur trouvé.
+
+!/!372:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Save Multiplayer Settings
+!G!Multiplayer-Einstellungen speichern
+!S!Guardar config multijugador
+!I!Salva impostazioni multigiocatore
+!F!Enreg paramètres multijoueur
+
+!/!373:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Load Multiplayer Settings
+!G!Multiplayer-Einstellungen laden
+!S!Cargar config multijugador
+!I!Carica impostazioni multigiocatore
+!F!charger paramètres multijoueur
+
+!/!374:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Allowed items
+!G!Zugelassene Objekte
+!S!Objetos permitidos
+!I!Elementi consentiti
+!F!equipement autorisé
+
+!/!375:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Disallowed items
+!G!Nicht zugelassene Objekte
+!S!Objetos no permitidos
+!I!Elementi non consentiti
+!F!equipement interdit
+
+!/!376:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Allowed Ships
+!G!Zugelassene Schiffe
+!S!Naves permitidas
+!I!Navi consentite
+!F!Vaisseaux autorisés
+
+!/!377:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Disallowed Ships
+!G!Nicht zugelassene Schiffe
+!S!Naves no permitidas
+!I!Navi non consentite
+!F!Vaisseaux interdits
+
+!/!378:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Allow
+!G!Zulassen
+!S!Permitir
+!I!Consenti
+!F!Autoriser
+
+!/!379:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Disallow
+!G!Nicht zul.
+!S!No permitir
+!I!Non consenti
+!F!Interdire
+
+!/!380:Multiplayer start game options menu -- Ships/Powerups allowed
+!=!Ships Allowed:
+!G!Zugelassene Schiffe:
+!S!Naves permitidas:
+!I!Navi consentite:
+!F!Vaisseaux autorisés
+
+!/!381: help in weapon autoselect config screen
+!=!Select weapon to switch that slot with another weapon.
+!G!Wählen Sie die durch eine andere Waffe zu ersetzende Waffe aus.
+!S!Seleccionar arma para intercambiar ranura con otra.
+!I!Seleziona arma per commutare lo slot con un'altra arma.
+!F!Sélectionnez l'arme à déplacer.
+
+!/!382:help in weapon autoselect config screen
+!=!To disable a weapon, click on the 'X' button or use CTRL-C on highlighted weapon.
+!G!Um Waffen zu deaktivieren, auf 'X' klicken oder Waffe markieren und Strg-C drücken.
+!S!Para desactivar un arma, haz clic en el botón "X" o pulsa Ctrl+C en el arma resaltada
+!I!Per disattivare un'arma, fai clic sul pulsante 'X' o premi CTRL+C sull'arma evidenziata.
+!F!Pour désactiver une arme, cliquez sur 'X' ou utilisez CTRL-C sur l'arme sélectionnée.
+
+!/!383:Used in controller config help
+!=!Function may be configured using:
+!G!Funktion konfigurieren mit:
+!S!Esta función se puede configurar con:
+!I!La funzione può essere config util:
+!F!Définissez cette fonction avec le
+
+!/!384:help in weapon autoselect config screen
+!=!Exchange with:
+!G!Tauschen mit:
+!S!Intercambiar con:
+!I!Scambia con:
+!F!Echange avec:
+
+!/!385:weapon autoselect config screen
+!=!Disable
+!G!Deaktivieren
+!S!Desactivar
+!I!Disattiva
+!F!Désactiver
+
+!/!386:weapon autoselect config screen
+!=!Primary
+!G!Primäre
+!S!Principal
+!I!Principale
+!F!Primaire
+
+!/!387:weapon autoselect config screen
+!=!Secondary
+!G!Sekundäre
+!S!Secundario
+!I!Secondaria
+!F!Secondaire
+
+!/!388:weapon autoselect config screen
+!=!Lowest
+!G!Niedrigste
+!S!Inferior
+!I!Inferiore
+!F!Minimum
+
+!/!389:weapon autoselect config screen
+!=!Highest
+!G!Höchste
+!S!Superior
+!I!Superiore
+!F!Maximum
+
+!/!390:Used in help screen
+!=!F5
+!G!F5
+!S!F5
+!I!F5
+!F!F5
+
+!/!391:Used in help screen
+!=!Start/Stop Demo Recording
+!G!Start/Stop Demoaufnahme
+!S!Iniciar/detener grabación de demo
+!I!Inizia/termina registrazione demo
+!F!lancer/arrêter enregistrement démo
+
+!/!392:Used in keyconfig 
+!=!cycle primary
+!G!Prim. wechseln
+!S!rotar primaria
+!I!ruota primario  
+!F!chgt primaire
+
+!/!393:Used in keyconfig
+!=!cycle secondary
+!G!Seku. wechseln
+!S!rot. secundaria
+!I!ruota second.  
+!F!chgt secondaire
+
+!/!394:Used in Menu
+!=!Credits
+!G!Credits
+!S!Créditos
+!I!Crediti
+!F!Credits
+
+!/!395: Used in control config dialog to invert axis
+!=!Invert
+!G!Umkehren
+!S!Invertir
+!I!Inverti
+!F!Permut.
+
+!/!396: Used in control config
+!=!Reset to Defaults
+!G!Voreinstellungen
+!S!Restablecer valores
+!I!Ripristina pred.
+!F!reinitialiser
+
+!/!397:Used in help screen
+!=!F6
+!G!F6
+!S!F6
+!I!F6
+!F!F6
+
+!/!398:Used in help screen
+!=!Go To Multiplayer On-Screen Menu
+!G!Multiplayer On-Screen-Menü aufrufen
+!S!Ir a menú multijugador en pantalla 
+!I!Vai al menu su schermo multigiocatore
+!F!Atteindre Menu Multijoueur
+
+!/!399:Main menu
+!=!View Demo
+!G!Demo ansehen
+!S!Ver demostración
+!I!Visualizza demo
+!F!Voir Demo
+
+!/!400:hud
+!=!Recording Demo
+!G!Demo aufnehmen
+!S!Grabar demostración
+!I!Registra demo
+!F!Enregistrement Démo
+
+!/!401:hud
+!=!Playing Demo
+!G!Demo abspielen
+!S!Reproducir demostración
+!I!Riproduci demo
+!F!Lecture de la démo
+
+!/!402:Demo recording dialog
+!=!Demo FileName
+!G!Demo Dateiname
+!S!Nombre archivo demostración
+!I!Nome file demo
+!F!Nom Démo
+
+!/!403:Demo recording error
+!=!Unable to save demo file.
+!G!Demodatei speichern nicht möglich.
+!S!No se puede guardar archivo demostración.
+!I!Impossibile salvare il file demo.
+!F!Enregistrement du fichier de démo impossible.
+
+!/!404:Demo recording hud message
+!=!Demo file saved.
+!G!Demodatei gespeichert.
+!S!Archivo demostración guardado.
+!I!File demo salvato.
+!F!Fichier de démo enregistré.
+
+!/!405:Goal Status (TelCom Main menu button label)
+!=!Objectives
+!G!Ziele
+!S!Objetivos
+!I!Obiettivi
+!F!Objectifs
+
+!/!406:Demo recording error
+!=!Unable to create demo file.
+!G!Demodatei erstellen nicht möglich.
+!S!No se puede crear archivo demostración.
+!I!Impossibile creare file demo.
+!F!Création du fichier de démo impossible.
+
+!/!407:Demo playback error
+!=!Unable to load demo file.
+!G!Demodatei laden nicht möglich.
+!S!No se puede cargar archivo demostración.
+!I!Impossibile caricare file demo.
+
+!F!Chargement du fichier de démo impossible.
+
+!/!408:Demo playback error
+!=!Bad Demo file; unable to read.
+!G!Ungültige Demodatei: Lesen nicht möglich.
+!S!Archivo demostración deteriorado; no se puede leer.
+!I!Impossibile leggere il file demo. File danneggiato.
+!F!Fichier de démo illisible. 
+
+!/!409:Post Demo playack menu
+!=!Min. FPS: %.2f
+!G!Min. FPS: %.2f 
+!S!FPS mín: %.2f 
+!I!FPS min.: %.2f
+!F!FPS min.: %.2f
+
+!/!410:Post Demo playack menu
+!=!Max. FPS: %.2f
+!G!Max. FPS: %.2f 
+!S!FPS máx: %.2f 
+!I!FPS max: %.2f
+!F!FPS max.: %.2f
+
+!/!411:Post Demo playack menu
+!=!Avg. FPS: %.2f
+!G!Mtl. FPS: %.2f
+!S!FPS med: %.2f 
+!I!FPS med: %.2f
+!F!FPS moy.: %.2f
+
+!/!412:Post Demo playack menu
+!=!Play Looping
+!G!Schleife abspielen
+!S!Reproducir bucle
+!I!Riproduzione ciclica
+!F!Lecture en boucle
+
+!/!413:Hud message for Demo playback
+!=!Demo Playback Paused
+!G!Demo Playback angehalten
+!S!Demostración detenida
+!I!Riproduzione demo in pausa
+!F!Démo en pause
+
+!/!414:Mission Downloading screens
+!=!Would you like to download it?
+!G!Möchten Sie es herunterladen?
+!S!¿Quieres descargarla?
+!I!Procedere allo scaricamento?
+!F!Voulez-vous la télécharger ?
+
+!/!415:Mission Downloading screens
+!=!You do not have this mission installed.
+!G!Diese Mission ist nicht installiert.
+!S!No has instalado esta misión
+!I!Non hai installato questa missione.
+!F!Cette mission n'est pas installée.
+
+!/!416:Mission Downloading screens
+!=!Download Mission
+!G!Mission herunterladen
+!S!Descargar misión
+!I!Scarica missione
+!F!Télécharger mission
+
+!/!417:Mission Downloading screens
+!=!Downloading: %s
+!G!Herunterladen: %s
+!S!Descargando: %s
+!I!Scaricamento di: %s
+!F!Téléchargement de %s
+
+!/!418:Mission Downloading screens
+!=!Received: %d 
+!G!Empfangen: %d
+!S!Recibido: %d
+!I!Ricezione di: %d
+!F!Reception de %d
+
+!/!419:Mission Downloading screens
+!=!Total: %d
+!G!Gesamt: %d
+!S!Total: %d
+!I!Totale: %d
+!F!Total: %d
+
+!/!420:Mission Downloading screens
+!=!Time Elapsed: %s
+!G!Verstrichene Zeit: %s
+!S!Tiempo transcurrido: %s
+!I!Tempo trascorso: %s
+!F!Temps écoulé: %s
+
+!/!421:Mission Downloading screens
+!=!Time Left: %s
+!G!Verbleibende Zeit: %s
+!S!Tiempo que falta: %s
+!I!Tempo restante: %s
+!F!Temps restant: %s
+
+!/!422:Mission Downloading screens
+!=!Transfer Rate: %d Bytes/Second
+!G!Übertragungsrate: %d Bytes/Sekunde
+!S!Velocidad de transmisión: %d bytes por segundo.
+!I!Velocità di trasmissione: %d byte al secondo.
+!F!Taux de transfert: %d octets/sec
+
+!/!423:Mission Downloading screens
+!=!Unable to download the selected mission.
+!G!Herunterladen der ausgewählten Mission nicht möglich.
+!S!No se puede descargar la misión elegida.
+!I!Impossibile scaricare la missione selezionata.
+!F!Impossible de télécharger la mission sélectionnée.
+
+!/!424:Mission Downloading screens
+!=!%d hr.
+!G!%d St.
+!S!%d hr.
+!I!%d h.
+!F!%d h
+
+!/!425:Mission Downloading screens
+!=!%d min. 
+!G!%d Min.
+!S!%d min.
+!I!%d min.
+!F!%d min
+
+!/!426:Mission Downloading screens
+!=!%d sec.
+!G!%d Sek.
+!S!%d seg.
+!I!%d sec.
+!F!%d sec
+
+!/!427:Multiplayer start game options menu
+!=!Exit
+!G!Beenden
+!S!Salir
+!I!Esci
+!F!Quitter
+
+!/!428:Multiplayer start game options menu
+!=!Multiplayer Options
+!G!Multiplayer-Optionen
+!S!Opciones multijugador
+!I!Opzioni multigiocatore
+!F!Options Multijoueur
+
+!/!429:Multiplayer start game options menu
+!=!Time Limit
+!G!Zeitlimit
+!S!Límite de tiempo
+!I!Limite di tempo
+!F!Limite de temps
+
+!/!430:Multiplayer start game options menu
+!=!Goal Limit
+!G!Ziellimit
+!S!Límite de objetivo
+!I!Limite dell'obiettivo
+!F!objectif limite
+
+!/!431:Multiplayer start game options menu
+!=!Packets per second
+!G!Pakete pro Sekunde
+!S!Paquetes por segundo
+!I!Pacchetti al secondo
+!F!Paquets par seconde
+
+!/!432:Multiplayer start game options menu
+!=!Configure Allowed Ships/Items
+!G!Zugelassene Schiffe/Objekte...
+!S!Configurar naves/objetos permitidos
+!I!Configura navi/oggetti consentiti
+!F!équipement/vaisseaux autorisés
+
+!/!433:Multiplayer start game options menu
+!=!Server mode
+!G!Server-Modus
+!S!Modo de servidor
+!I!Modalità server
+!F!Mode Serveur
+
+!/!434:Multiplayer start game options menu
+!=!Client/Server
+!G!Client/Server 
+!S!Cliente/servidor
+!I!Client/server
+!F!Client/Serveur
+
+!/!435:Multiplayer start game options menu
+!=!Peer-to-Peer
+!G!Peer-to-Peer
+!S!De igual a igual
+!I!Paritetica
+!F!Homologue
+
+!/!436:Multiplayer start game options menu
+!=!Respawn Rate
+!G!Wiedereinstiegsrate
+!S!Velocidad resurrección
+!I!Velocità di ricomparsa
+!F!Taux de vies
+
+!/!437:Multiplayer start game options menu
+!=!Use rotational velocity
+!G!Drehgeschwindigkeit verwenden
+!S!Utilizar velocidad de giro
+!I!Utilizza velocità di rotazione
+!F!Utiliser vitesse rotationnelle
+
+!/!438:Multiplayer start game options menu
+!=!Movement averaging
+!G!Bewegungsschätzung
+!S!Movimiento medio
+!I!Calcolo del movimento
+!F!Lissage Mouvement
+
+!/!439:Multiplayer start game options menu
+!=!Max. Players
+!G!Max. Spieler
+!S!Jugadores máximos
+!I!Num max giocatori
+!F!Nb max. joueurs 
+
+!/!440:Multiplayer start game options menu
+!=!%c Use restrictive weapon collisions
+!G!%c Beschränkte Waffenkollisionen verwenden
+!S!%c Utilizar colisiones de armas restringidas
+!I!%c Utilizza collisioni di armi precise
+!F!%c Utiliser collisions d'armes précises
+
+!/!441:Multiplayer start game options menu
+!=!Bright player ships
+!G!Helle Spielerschiffe
+!S!Naves brillantes
+!I!Navi dei giocatori luminose
+!F!Vaisseaux joueurs lumineux
+
+!/!442:Multiplayer start game options menu
+!=!Max terrain distance
+!G!Max. Gebietsentfernung
+!S!Distancia máx terreno
+!I!Distanza max terreno
+!F!visibilite du terrain 
+
+!/!443:Multiplayer start game options menu
+!=!Field of view
+!G!Sichtfeld
+!S!Campo visual
+!I!Campo visivo
+!F!Champ de vision
+
+!/!444:Multiplayer start game options menu
+!=!Permissible Client/Server
+!G!Zulässiger Client/Server
+!S!Cliente/servidor permisible
+!I!Client/server consentito
+!F!Client/Serveur acceptable
+
+!/!445:Adjust brightness
+!=!Adjust brightness
+!G!Helligkeit anpassen
+!S!Ajustar brillo
+!I!Regola luminosità
+!F!Ajuster la luminosité
+
+!/!446:Set taunt macros
+!=!Set taunt macros
+!G!Hohn-Makros einstellen
+!S!Macros provocación
+!I!Imposta macro provocazione
+!F!creer railleries
+
+!/!447:Macro #
+!=!Macro #
+!G!Makro Nr.
+!S!Nº macro 
+!I!N. macro
+!F!Macro #
+
+!/!448:Taunt message
+!=!Gimme some sugar, baby!
+!G!Gib mir Zucker, Baby!
+!S!¡Dame azúcar, nena!
+!I!Dammi dello zucchero, piccola!
+!F!Fais-moi vibrer !
+
+!/!449:Taunt message
+!=!Stop, drop, and roll!
+!G!Stoppen, fallen und rollen! 
+!S!¡Detente, tírate y rueda!
+!I!Fermati, abbassati e ruota!
+!F!Attention les yeux !
+
+!/!450:Taunt message
+!=!For every winner, there is a LOSER!
+!G!Wo ein Sieger ist, ist auch ein VERLIERER!
+!S!Por cada ganador hay un perdedor
+!I!Per ogni vincitore, c'è un PERDENTE!
+!F!A chaque vainqueur son PERDANT !
+
+!/!451:Taunt message
+!=!I'm better than you. Deal with it!
+!G!Ich bin besser als Du. Sieh's ein!
+!S!Soy mejor que tú. Reconócelo.
+!I!Sono migliore di te. Riconoscilo!
+!F!J'suis meilleur que toi. Faudra t'y faire !
+
+!/!452:Taunt message
+!=!Kneel before Zod!
+!G!Knie vor mir nieder!
+!S!¡Arrodíllate ante mí!
+!I!Inginocchiati davanti a me!
+!F!A genoux devant moi !
+
+!/!453:Taunt message
+!=!It's good to be the king!
+!G!Es ist schön, der King zu sein!
+!S!Ser el rey no está mal
+!I!È bello essere il re!
+!F!Que c'est bon d'être le roi !
+
+!/!454:Taunt message
+!=!First you wanna kiss me, now you wanna kill me
+!G!Vorhin wolltest Du mich knutschen, und jetzt willst Du mich töten
+!S!Primero querías besarme y ahora quieres matarme
+!I!Prima volevi baciarmi, ora vuoi uccidermi
+!F!Faudra d'abord m'attraper !
+
+!/!455:Taunt message
+!=!This is gonna hurt you more than it hurts me
+!G!Das wird Dir mehr weh tun als mir
+!S!Te va a doler más que a mí
+!I!Farà più male a te che a me
+!F!Ne frappe jamais le premier ou tu perdras le combat. 
+
+!/!456: Error message when a file can't be found
+!=!File Not Found
+!G!Datei nicht gefunden
+!S!No se encuentra el archivo
+!I!File non trovato
+!F!Fichier non trouvé 
+
+!/!457: Audio taunt import error message when the file isn't in RIFF format
+!=!File Not In RIFF Format
+!G!Datei nicht im RIFF-Format
+!S!El archivo no está en formato RIFF
+!I!File non in formato RIFF
+!F!Le fichier doit être au format RIFF.
+
+!/!458: Audio taunt error message when the given file isn't a wave file
+!=!File Not A WAVE 
+!G!Datei nicht im WAVE-Format
+!S!No es un archivo WAVE
+!I!Non è un file WAVE
+!F!Le fichier doit être au format WAVE.
+
+!/!459: Error message when the given file is invalid
+!=!Invalid File
+!G!Ungültige Datei
+!S!Archivo no válido
+!I!File non valido
+!F!Fichier Non Valide
+
+!/!460: Audio taunt import error message when the file format isn't supported
+!=!File Format Not Supported.
+!G!Dateiformat wird nicht unterstützt.
+!S!No se admite el formato de archivo.
+!I!Formato di file non supportato.
+!F!Format non pris en charge.
+
+!/!461: Audio taunt error message when the wav file isn't in mono
+!=!WAV Must Be In Mono Format.
+!G!WAV muss im Mono-Format sein.
+!S!WAV debe estar en formato mono.
+!I!WAV deve essere in formato mono.
+!F!WAV doit être en format Mono.
+
+!/!462: Audio taunt import error when the sample rate is not correct
+!=!WAV Must Have 22,050 Sample Rate.
+!G!WAV muss Frequenzrate 22.050 haben.
+!S!El WAV debe tener una tasa de muestreo de 22.050
+!I!WAV deve avere una frequenza di campionamento di 22.050.
+!F!WAV doit avoir un taux d'échantillonnage de 22 050.
+
+!/!463: Audio taunt import error message when the bit depth of the file is not supported
+!=!Invalid Bit Depth; Must Be 8 or 16.
+!G!Ungültige Bitanzahl: Muss 8 oder 16 sein.
+!S!Resolución de bits no válida; debe ser 8 ó 16.
+!I!Risoluzione in bit non valida; deve essere 8 o 16.
+!F!Résolution en bits incorrecte ; elle doit être de 8 ou 16.
+
+!/!464: Audio taunt import message when no data was found in the wav file
+!=!No Data Found In WAV.
+!G!Keine Daten in WAV gefunden.
+!S!No se encuentran datos en el WAV.
+!I!Nessun dato trovato nel WAV.
+!F!Aucune donnée trouvée dans WAV.
+
+!/!465: Audio taunt import error message when the output file already exists
+!=!OSF File Already Exists; Can't Overwrite.
+!G!OFS-Datei existiert bereits; kann nicht überschrieben werden.
+!S!Archivo OSF ya existe; no se puede sustituir.
+!I!Il file OSF esiste già; impossibile sovrascriverlo.
+!F!Le fichier OSF existe déjà ; il ne peut être écrasé.
+
+!/!466: Audio taunt import message when there is an internal error
+!=!Internal Error
+!G!Interner Fehler
+!S!Error interno
+!I!Errore interno
+!F!Erreur interne
+
+!/!467: Audio taunt import error message when the compression failed
+!=!Compression Failure
+!G!Komprimierungsfehler
+!S!Fallo de compresión
+!I!Errore di compressione
+!F!Echec de compression.
+
+!/!468: Out of memory error
+!=!Out of Memory
+!G!Kein Speicherplatz mehr
+!S!No hay suficiente memoria
+!I!Memoria insufficiente
+!F!Mémoire insuffisante.
+
+!/!469: Audio taunt error message when the OSF can't be opened for writng
+!=!Can't Open OSF For Writing
+!G!OSF kann zum Schreiben nicht geöffnet werden
+!S!No se puede abrir OSF para escribir
+!I!Impossibile aprire l'OSF per la scrittura
+!F!Impossible d'ouvrir OSF pour écriture.
+
+!/!470: There was no error
+!=!No Error
+!G!Kein Fehler
+!S!No hay errores
+!I!Nessun errore
+!F!Pas d'erreur
+
+!/!471: In the graphics config menu, first line for gamma set
+!=!Adjust the brightness slider so that the dark
+!G!Stellen Sie die Helligkeit so ein, dass die dunkelgraue
+!S!Ajusta el deslizador de brillo para que el cuadro
+!I!Regolare l'indicatore di scorrimento della luminosità in modo che la
+!F!Ajustez la barre de défilement de façon à ce que 
+
+!/!472: In graphics config, gamma set description line 2
+!=!grey box above is easily visible inside the black box
+!G!Fläche gut in der schwarzen Box sichtbar ist
+!S!gris oscuro se vea fácilmente dentro del cuadro negro
+!I!casella superiore di colore grigio scuro sia facilmente visibile nella casella nera
+!F!le carré gris sombre apparaisse dans le carré noir. 
+
+!/!473: Bit depth radio list in config menus
+!=!Bit Depth
+!G!Bitanzahl
+!S!Profundidad de color
+!I!Risoluzione in bit
+!F!Résolution
+
+!/!474: 16 bit, bit depth
+!=!16 Bit
+!G!16 Bits
+!S!16 bits
+!I!16 bit
+!F!16 bits
+
+!/!475: 32 bit, bit depth
+!=!32 Bit
+!G!32 Bits
+!S!32 bits
+!I!32 bit
+!F!32 bits
+
+!/!476: In Graphics config, whether or not video sync should be enabled
+!=!Vertical Sync
+!G!Vertikale Sync.
+!S!Sinc. vertical
+!I!Sincr. verticale
+!F!Synch. verticale
+
+!/!477: Sound mixer option for Creative Lab's EAX
+!=!Creative EAX
+!G!Creative EAX
+!S!EAX creativo
+!I!Creative EAX
+!F!Creative EAX
+
+!/!478: In config menus, for medium settings
+!=!Medium
+!G!Mittel
+!S!Medio
+!I!Medio
+!F!Moyen
+
+!/!479: In config menus, the mouse enabled check box
+!=!Mouse
+!G!Maus
+!S!Ratón
+!I!Mouse
+!F!Souris
+
+!/!480: In config menus, the checkbox for controller enabled
+!=!Controller Enabled
+!G!Joystick aktiviert
+!S!Controlador activado
+!I!Controllo attivata
+!F!Contrôleur actif
+
+!/!481: In the config menu, the format label for joystick sensitivity sliders (it will become "Joystick X Sensitivity")
+!=!Joystick %c Sensitivity
+!G!Joystick %c Empfindlichkeit
+!S!Sensibilidad joystick %c 
+!I!Sensibilità joystick %c
+!F!Sensibilité Joystick %c
+
+!/!482: In the config menus, just like joystick, its the label for the sensitivity sliders for the mouse axis
+!=!Mouse %c Sensitivity
+!G!Maus %c Empfindlichkeit
+!S!Sensibilidad ratón %c
+!I!Sensibilità mouse %c
+!F!Sensibilité Souris %c
+
+!/!483: Configure Force Feedback joystick, option in config menu, only shows when there is a force feedback device connected
+!=!Configure Force-feedback
+!G!Force-Feedback
+!S!Config Contrarreacción
+!I!Config Ritorno di forza  
+!F!Config. retour de force
+
+!/!484: In detail config menu, label for list of predefined detail levels list
+!=!Level
+!G!Stufe
+!S!Nivel
+!I!Livello
+!F!Niveau
+
+!/!485: Low settings
+!=!Low
+!G!Niedrig
+!S!Bajo
+!I!Basso
+!F!Faible
+
+!/!486: Very high settings
+!=!Highest
+!G!Höchste
+!S!Super
+!I!Massimo
+!F!Maximum
+
+!/!487: Custom settings
+!=!Custom
+!G!Benutzer
+!S!Personal
+!I!Personal
+!F!Defini
+
+!/!488: In detail config menu, it's the label for the object complexity option
+!=!Object Complex
+!G!Objektkomplex
+!S!Objeto Complej.
+!I!Oggetto
+!F!Objet
+
+!/!489: Enable fog setting in detail config
+!=!Fog
+!G!Nebel
+!S!Niebla
+!I!Nebbia
+!F!Brouillard
+
+!/!490: In detail settings, for light coronas
+!=!Light Coronas
+!G!Lichtkränze
+!S!Coronas de luz
+!I!Corone di luce
+!F!Halos lumineux
+
+!/!491: In detail config menu, to use procedural textures
+!=!Procedural Textures
+!G!Prozedural-Texturen
+!S!Texturas Procedimiento
+!I!Texture procedurali
+!F!Textures procedurales
+
+!/!492: In detail config menu, option for powerup halo display
+!=!Powerup Halos
+!G!Powerup Lichtkranz
+!S!Halos de potenciadores
+!I!Aloni bonus
+!F!Halos des recharges
+
+!/!493: In details menu, option for displaying scorch marks
+!=!Scorch Marks
+!G!Brandflecke
+!S!Marcas de quemadura
+!I!Segni di bruciature
+!F!Marques de brulures
+
+!/!494: In details menu, option for weapon effects eye candy
+!=!Weapon Effects
+!G!Waffeneffekte
+!S!Efectos de armas
+!I!Effetti delle armi
+!F!Impact de balles
+
+!/!495: Window title for force feedback config window
+!=!Force-feedback
+!G!Force-feedback
+!S!Contrarreacción
+!I!Ritorno di forza
+!F!Retour de force
+
+!/!496: in force feedback options, whether force feedback is to be enabled
+!=!Force-feedback Enabled
+!G!FF aktiviert
+!S!Contrarreacción Activa
+!I!Ritorno di forza attiv
+!F!Retour de force actif
+
+!/!497: In force feedback options, joystick autocentering option
+!=!Controller AutoCenter
+!G!Joystick Autozentr.
+!S!Autocentrar control
+!I!Autocentr. controllo
+!F!Autocentr. Controleur
+
+!/!498: In force feedback options, label for force gain slider
+!=!Force Gain
+!G!Kraftzunahme
+!S!Incrementar fuerza
+!I!Aumento della forza
+!F!Gain de force
+
+!/!499: High settings
+!=!High
+!G!Hoch
+!S!Alto
+!I!Alto
+!F!Elevé
+
+!/!500: format string for hud message when the headlight is turned on/off
+!=!Headlight turned %s.
+!G!Scheinwerfer %s
+!S!Faro delantero %s.
+!I!Fanale %s.
+!F!Phare %s
+
+!/!501: string for when something is turned on
+!=!on
+!G!ein
+!S!activado
+!I!attivato
+!F!on
+
+!/!502: string for when something is turned off
+!=!off
+!G!aus
+!S!desactiv
+!I!disattiv
+!F!off
+
+!/!503: In controller config, for rear view
+!=!rear view
+!G!Rückansicht
+!S!visión trasera
+!I!vista poster.  
+!F!vue arrière
+
+!/!504: In controller config, to label to enable/disable the joystick
+!=!Joystick
+!G!Joystick
+!S!Joystick
+!I!Joystick
+!F!Joystick
+
+!/!505: Dedicated server message when couldn't init dll
+!=!Couldn't initialize connection '%s' DLL.
+!G!Initialisieren der Verbindung '%s' DLL nicht möglich.
+!S!No se puede inicializar la DLL de conexión "%s".
+!I!Impossibile inizializzare la DLL "%s" di connessione.
+!F!Impossible d'initialiser la connexion '%s' DLL.
+
+!/!506: Dedicated server message when the dll is inited
+!=!Connection DLL initialized.
+!G!Verbindungs DLL initialisiert.
+!S!DLL de conexión inicializada.
+!I!DLL di connessione inizializzata.
+!F!Connexion DLL initialisée.
+
+!/!507: Dedicated server message when it couldn't load connection dll
+!=!Error loading connection DLL '%s'.
+!G!Fehler beim Laden der Verbindung DLL '%s'.
+!S!Error al cargar DLL de conexión "%s".
+!I!Errore di caricamento della DLL di connessione "%s".
+!F!Erreur du chargement de la connexion DLL '%s'
+
+!/!508: Dedicated server message when it couldn't load the mission
+!=!Couldn't load mission '%s' for dedicated server.
+!G!Mission '%s' für zugeordneten Server laden nicht möglich.
+!S!No se puede cargar la misión "%s" en el servidor exclusivo.
+!I!Impossibile caricare la missione "%s" per il server dedicato.
+!F!Impossible de charger '%s' pour serveur dédié.
+
+!/!509: Dedicated server message when the mission is loaded
+!=!Mission '%s' loaded successfully.
+!G!Mission '%s' erfolgreich geladen.
+!S!Misión "%s" cargada correctamente.
+!I!Missione "%s" caricata correttamente.
+!F!Mission '%s' chargée avec succès.
+
+!/!510: Dedicated server player name
+!=!-Server-
+!G!-Server-
+!S!-Servidor-
+!I!-Server-
+!F!-Serveur-
+
+!/!511: Dedicated server message for a bad command line
+!=!Bad command line
+!G!Ungültige Kommandozeile
+!S!Línea de comando defectuosa
+!I!Riga di comando errata
+!F!Ligne de commande incorrecte
+
+!/!512: Dedicated server message when it can't find config file
+!=!Missing server config filename
+!G!Server Konfigurations-Dateiname fehlt
+!S!Falta nombre de archivo de configuración del servidor
+!I!Nome file di configurazione server mancante
+!F!Nom de fichier de config. du serveur manquant
+
+!/!513: Dedicated server message when the config file is bad
+!=!Unable to open server config '%s' or bad file.
+!G!Öffnen von Server Konfiguration '%s' nicht möglich oder ungültige Datei. 
+!S!No se puede abrir la configuración del servidor "%s" o el archivo está defectuoso.
+!I!Impossibile aprire la configurazione server "%s" o file danneggiato.
+!F!Impossible d'ouvrir la config. du serveur '%s' ou fichier non conforme.
+
+!/!514: Dedicated server message when the settings are loaded
+!=!Settings file loaded successfully.
+!G!Einstellungsdatei erfolgreich geladen.
+!S!Archivo de configuración cargado correctamente.
+!I!File delle impostazioni caricato correttamente.
+!F!Fichier de paramètres chargé avec succès.
+
+!/!515: Dedicated server message there was an error loading the settings
+!=!Settings file failed to load.
+!G!Einstellungsdatei laden nicht möglich.
+!S!No se puede cargar el archivo de configuración.
+!I!Impossibile caricare il file di configurazione.
+!F!Echec du chargement du fichier de paramètres.
+
+!/!516: Dedicated server message for disallowed objects
+!=!Disallowing objected named %s.
+!G!Objekte %s nicht zugelassen.
+!S!Nombre de objeto no permitido %s.
+!I!Oggetto %s non consentito.
+!F!Objet %s interdit.
+
+!/!517: Dedicated server message for allowed objects
+!=!Allowing objected named %s.
+!G!Objekte %s zugelassen.
+!S!Nombre de objeto permitido %s.
+!I!Oggetto %s consentito.
+!F!Objet %s autorisé.
+
+!/!518: Dedicated server message a variable is set/changed
+!=!Setting '%s' variable to %s.
+!G!Variable '%s' wird auf %s gesetzt.
+!S!Asignar a variable "%s" el valor %s.
+!I!Imposta la variabile "%s" su %s.
+!F!Changement de la variable '%s' à %s.
+
+!/!519: Dedicated server message when a bad command is given
+!=!Unrecognized command or bad format.
+!G!Ungültiges Kommando oder falsches Format.
+!S!Comando no reconocido o formato erróneo.
+!I!Comando non riconosciuto o formato non valido.
+!F!Commande non reconnue ou format non conforme.
+
+!/!520: Dedicated server message password prompt
+!=!Enter Password:
+!G!Passwort eingeben:
+!S!Escribe contraseña:
+!I!Immetti password:
+!F!Entrer mot de passe:
+
+!/!521: Dedicated server message when it rejects a remote host connect
+!=!Rejecting connection from remote host. (%s)
+!G!Verbindung von Remote-Host abgelehnt. (%s)
+!S!Rechazando conexión de anfitrión remoto. (%s)
+!I!Impossibile connettere host remoto (%s).
+!F!Rejet de la connexion par hôte distant. (%s)
+
+!/!522: Dedicated server message for a new connection (%s is ip address)
+!=!New connection (%s)
+!G!Neue Verbindung (%s)
+!S!Nueva conexión (%s)
+!I!Nuova connessione (%s)
+!F!Nouvelle connexion (%s)
+
+!/!523: Dedicated server message when the remote connection closes
+!=!Remote host %s closed the connection.
+!G!Remote-Host %s hat Verbindung getrennt.
+!S!El anfitrión remoto %s ha interrumpido la conexión.
+!I!L'host remoto %s ha interrotto la connessione.
+!F!L'hôte distant %s a fermé la connexion.
+
+!/!524: Dedicated server message when there is a remote login
+!=!Remote host %s logged in.
+!G!Remote-Host %s eingeloggt.
+!S!El anfitrión remoto %s ha iniciado una sesión.
+!I!Host remoto %s collegato.
+!F!Hôte distant %s connecté.
+
+!/!525: Dedicated server message when a bad pass is enter for a remote connect (%s is ip address)
+!=!Invalid login password from %s.
+!G!Ungültiges Passwort von %s.
+!S!Contraseña de inicio de %s no válida.
+!I!Password di collegamento non valida per %s.
+!F!Mot de passe d'ouverture de session de %s non valide.
+
+!/!526: Window title for Demo playback options dialog
+!=!Demo Playback options
+!G!Demo Abspieloptionen
+!S!Opciones reproducción demostración
+!I!Opzioni di riproduzione demo
+!F!Options Lecture Démo
+
+!/!527: Progress screen error if the module couldn't be loaded
+!=!Error Loading Module
+!G!Fehler beim Laden des Moduls
+!S!Error al cargar el módulo
+!I!Errore di caricamento modulo
+!F!Erreur Chargement Module
+
+!/!528: Message box text if the module couldn't be initialized during load
+!=!Error Initializing Game Module.
+!G!Fehler beim Initialisieren des Spielmoduls.
+!S!Error al inicializar el módulo del juego.
+!I!Errore di inizializzazione modulo di gioco.
+!F!Erreur Initialisation Module de Jeu.
+
+!/!529: Hud message displayed when a player tries to cheat in a multiplayer game
+!=!%s is attempting to cheat!
+!G!%s versucht zu mogeln!
+!S!%s intenta hacer trampas
+!I!%s cerca di barare!
+!F!%s essaye de tricher !
+
+!/!530: Message displayed when the user types in a d1/d2 cheat
+!=!Lamer!
+!G!Versager!
+!S!¡Tramposo!
+!I!Imbroglione!
+!F!Minable !
+
+!/!531: Hud message displayed when framerate is enable/disabled
+!=!Frame time: %s
+!G!Einzelbildrate: %s
+!S!Velocidad de constitución de imágenes: %s
+!I!Velocità fotogrammi: %s
+!F!Durée d'image: %s
+
+!/!532: The option is being enabled
+!=!Enabled
+!G!Aktiviert
+!S!Activada
+!I!Attivata
+!F!Activé
+
+!/!533: The option is being disabled
+!=!Disabled
+!G!Deaktiviert
+!S!Desactivo
+!I!Disattivata
+!F!Désactivé
+
+!/!534: Hud message for the texture cheat/test
+!=!Cool Textures!!
+!G!Coole Texturen!!
+!S!¡Bonitas texturas!
+!I!Buone Texture!
+!F!Super textures !!
+
+!/!535: Hud message when textures are restored from cheat
+!=!Textures Back To Normal
+!G!Texturen auf normal zurückgesetzt 
+!S!Restablecer texturas normales
+!I!Ristabilire texture normali
+!F!Retour aux textures normales
+
+!/!536: Hud message displayed when the invuln cheat is turned off
+!=!Your mother wont protect you now!
+!G!Deine Mutter wird Dich jetzt nicht schützen!
+!S!¡Tu madre no podrá protegerte ahora!
+!I!Tua madre non potrà proteggerti ora!
+!F!Ta mère n'est pas là pour t'aider ?!
+
+!/!537: Hud message displayed when you enter invuln mode by cheat
+!=!You're a wimp!
+!G!Sie sind ein Schwächling!
+!S!¡Eres un pringao!
+!I!Sei un baro!
+!F!Quel lâche tu fais !
+
+!/!538: Hud message displayed when you leave the cloak cheat
+!=!You escape the darkness!
+!G!Sie verlassen die Dunkelheit!
+!S!¡Has escapado de la oscuridad!
+!I!Sei sfuggito all'oscurità!
+!F!Tu sors de l'ombre ?!
+
+!/!539: Hud message displayed when you enter cloak cheat
+!=!You enter the darkness!
+!G!Sie betreten die Dunkelheit!
+!S!¡Has entrado en la oscuridad!
+!I!Sei entrato nell'oscurità!
+!F!Tu préfères rester dans l'ombre ?!
+
+!/!540: Hud message when you enter the all weapons cheat
+!=!All weapons!
+!G!Alle Waffen!
+!S!¡Todas las armas!
+!I!Tutte le armi!
+!F!Toutes armes !
+
+!/!541: Hud message when you enter the all robots dead cheat
+!=!All robots dead!
+!G!Alle Roboter sind tot!
+!S!¡Todos los robots están muertos!
+!I!Tutti i robot sono morti!
+!F!Tous les robots sont morts !
+
+!/!542: Error message when you try to pause during a multiplayer game
+!=!You cannot Pause in a multiplayer game
+!G!In einem Multiplayerspiel kann keine Pause eingelegt werden
+!S!No puedes detener una partida multijugador
+!I!Non puoi interrompere una partita multigiocatore
+!F!Vous ne pouvez pas mettre une partie multijoueur en pause.
+
+!/!543: Window text for pause screen
+!=!The game is paused.\nPress Pause or click on OK to resume.
+!G!Pause eingeschaltet.\nZum Fortsetzen auf OK klicken.
+!S!El juego está detenido. Pulsa "Aceptar" para continuar.
+!I!La partita è in pausa. Premi OK per riprendere.
+!F!La partie est en pause.\nAppuyez sur OK pour continuer.
+
+!/!544: exit game confirmation window title
+!=!Abort Mission
+!G!Mission abbrechen
+!S!Interrumpir misión.
+!I!Interrompi la missione
+!F!Abandon de la mission
+
+!/!545: game exit confirmation text
+!=!Are You Sure You Want To Abort The Mission?
+!G!Sind Sie sicher, dass Sie die Mission abbrechen wollen?
+!S!¿Estás seguro de que quieres interrumpir la misión?
+!I!Sei sicuro di voler interrompere la missione?
+!F!Etes-vous sûr de vouloir abandonner la mission ?
+
+!/!546: Hud message displayed if the ship doesn't have a cockpit
+!=!This ship does not have a cockpit!
+!G!Dieses Schiff hat kein Cockpit!
+!S!Esta nave no tiene cabina.
+!I!Questa nave non ha cabina!
+!F!Ce vaisseau n'a pas de cockpit !
+
+!/!547: Hud display for guided missile view
+!=!guided
+!G!Ferngelenkt
+!S!guiado
+!I!teleguidato
+!F!guidé
+
+!/!548: Hud display when in zoom view
+!=!zoom view
+!G!Zoom-Ansicht
+!S!vista ampliada
+!I!vista con zoom
+!F!zoom 
+
+!/!549: Format string for zoom units display (use Mass Driver)
+!=!%.1f units
+!G!%.1f Einheiten
+!S!%.1f unidades
+!I!%.1f unità
+!F!%.1f unités
+
+!/!550: Shields display on the hud
+!=!Shields
+!G!Schutzschilde
+!S!Escudos
+!I!Scudi
+!F!Boucliers
+
+!/!551: Hud display for energy
+!=!Energy
+!G!Energie
+!S!Energía
+!I!Energia
+!F!Energie
+
+!/!552: Hud display for afterburner
+!=!Afterburner
+!G!Nachbrenner
+!S!Postquemador
+!I!Postcombustore
+!F!Postcombustion
+
+!/!553: Hud display for invulnerability
+!=!Invulnerable
+!G!Unverwundbar
+!S!Invulnerable
+!I!Invulnerabile
+!F!Invulnérable
+
+!/!554: Hud display for cloak
+!=!Cloaked
+!G!Getarnt
+!S!Camuflajeado
+!I!Occultato
+!F!Occulté
+
+!/!555: Team say prompt on hud
+!=!Team Say: %s
+!G!Team sagt: %s
+!S!El equipo dice: %s
+!I!La squadra dice: %s
+!F!Message de l'équipe: %s
+
+!/!556: Marker prompt on hud
+!=!Marker: %s
+!G!Markierung: %s
+!S!Marcador: %s
+!I!Segnapunti: %s
+!F!Marqueur: %s
+
+!/!557: Window title for game messages on hud
+!=!Ship Message Log
+!G!Schiffscomputerlogbuch
+!S!Registro mensaje de nave
+!I!Registro messaggi della nave
+!F!Journal de Messages du Vaisseau
+
+!/!558: Dedicated server message when it's shutting down
+!=!Shutting down.
+!G!Schalte ab.
+!S!Apagando.
+!I!Chiusura.
+!F!Arrêt.
+
+!/!559:Invalid team count (for variable team games)
+!=!Invalid team count
+!G!Ungültige Teamzahl
+!S!Cuenta de equipo no válida
+!I!Conteggio squadre non valido
+!F!nombre d'équipes incorrect
+
+!/!560: Dedicated server message when opening a level
+!=!Opening level '%s'...
+!G!Öffne Level '%s'...
+!S!Abriendo nivel "%s"...
+!I!Apertura livello "%s"...
+!F!Ouverture niveau '%s'...
+
+!/!561: Dialog title for level select dialog
+!=!Level Select
+!G!Level-Auswahl
+!S!Seleccionar nivel
+!I!Seleziona livello
+!F!sélection du niveau
+
+!/!562: Window text for level select
+!=!Start level(1 to %d)
+!G!Startlevel(1 bis %d)
+!S!Nivel inicial (1 a %d)
+!I!Livello iniziale (da 1 a %d)
+!F!Démarrer niveau (1 à %d)
+
+!/!563: Level warp dialog title
+!=!Level Warp
+!G!Level-Sprung
+!S!Salto de nivel 
+!I!Salto di livello
+!F!Changement de niveau
+
+!/!564: window text for level warp dialog
+!=!Warp to level (1 to %d)
+!G!Zum Level springen (1 bis %d)
+!S!Saltar a nivel(1 a %d)
+!I!Salta a livello (da 1 a %d)
+!F!Aller au niveau (1 à %d)
+
+!/!565: hotspot for select (choose, ok, etc.)
+!=!Select
+!G!Auswählen
+!S!Seleccionar
+!I!Seleziona
+!F!Sélectionner
+
+!/!566: Message displayed if the requested level is not valid
+!=!Please choose a level between 1 and %d.
+!G!Bitte einen Level zwischen 1 und %d auswählen.
+!S!Elige un nivel entre 1 y %d.
+!I!Scegli un livello tra 1 e %d.
+!F!Choisissez un niveau entre 1 et %d.
+
+!/!567: The specified mission file was not found
+!=!Mission file not found.
+!G!Missionsdatei nicht gefunden.
+!S!No se encuentra archivo de misión
+!I!File della missione non trovato.
+!F!Fichier de mission non trouvé.
+
+!/!568: Dedicated server message displayed during level load, progress indicator
+!=!%s %.0f Percent Complete
+!G!%s %.0f Prozent geladen
+!S!%s %.0f del total completo
+!I!%s %.0f del totale completato
+!F!%s %.0f Pourcent Chargé
+
+!/!569: Load level progress indicator for rooms loaded
+!=!Initializing on-board computer
+!G!Initialisiere Bordcomputer 
+!S!Iniciacilizando ordenador de a bordo
+!I!Inizializzazione del computer di bordo
+!F!initialisation de l'ordinateur de bord
+
+!/!570: Load level progress indicator for objects loaded
+!=!Verifying weapon systems
+!G!Verifiziere Waffensysteme 
+!S!Comprobando sistemas de armas
+!I!Verifica dei sistemi di armi
+!F!vérification des systèmes d'armes
+
+!/!571: Load level progress indicator for paging in data
+!=!Analyzing data...
+!G!Analysiere Daten...
+!S!Analizando datos...
+!I!Analisi dei dati...
+!F!Analyse des données...
+
+!/!572: Dedicated server message when the mission is over and it starts looping it
+!=!Mission over.  Looping back to first level in mission file.
+!G!Mission beendet. Zurück zum ersten Level in Missionsdatei.
+!S!Misión concluida. Volviendo al primer nivel del archivo de misión.
+!I!Missione conclusa. Ritorno al primo livello del file della missione.
+!F!Mission terminée. Retour au premier niveau dans le fichier mission.
+
+!/!573: Load level progress indicator for script loaded
+!=!Level script loaded
+!G!Levelskript geladen
+!S!Guión de nivel cargado
+!I!Procedura livello caricata
+!F!Script de niveau chargé
+
+!/!574: Load level progress indicator for terrain loaded
+!=!Verifying propulsion systems
+!G!Überprüfe Antriebssysteme
+!S!Comprobando sistemas de propulsión
+!I!Verifica dei sistemi di propulsione
+!F!vérification des systèmes de propulsion
+
+!/!575: Mission download status window title
+!=!Download Status
+!G!Status herunterladen
+!S!Estado de la descarga
+!I!Stato dello scaricamento
+!F!Statut du téléchargement
+
+!/!576: In multiplayer game, shows screen that data is corrupt and it's exiting
+!=!Network data corruption detected.
+!G!Netzwerkdatenkorruption entdeckt.
+!S!Detectado error de datos de red.
+!I!Dati di rete danneggiati
+!F!Corruption des données de réseau détectée.
+
+!/!577: In multiplayer, if joining the level the server changed levels
+!=!Server changed levels.
+!G!Server änderte Levels.
+!S!El servidor ha cambiado de nivel.
+!I!Il server ha modificato i livelli.
+!F!Le serveur a changé les niveaux.
+
+!/!578: continuation of rejoin message
+!=!Please try rejoining.
+!G!Bitte versuchen Sie erneut teilzunehmen.
+!S!Intenta volver a unirte a la partida.
+!I!Prova a ricollegarti.
+!F!Veuillez réessayez de joindre la partie.
+
+!/!579: Dedicated server message displayed when ending the level
+!=!Ending level.
+!G!Beende Level.
+!S!Finalizando nivel.
+!I!Fine del livello.
+!F!Fin de niveau.
+
+!/!580: Multiplayer message if a corrupted object
+!=!Corrupted object received.
+!G!Beschädigtes Objekt empfangen.
+!S!Objeto deteriorado recibido.
+!I!Ricevuto oggetto danneggiato.
+!F!Elément corrompu reçu.
+
+!/!581: Hud message if you attempt to go into observer mode and you don't have enough shields
+!=!Not enough shields to set observer.
+!G!Nicht genug Schutzschilde für Beobachtermodus.
+!S!No hay suficientes escudos para ir a modo observador.
+!I!Scudi insufficienti per impostare l'osservatore.
+!F!Vous n'avez pas assez de boucliers pour être observateur.
+
+!/!582: Multiplayer progress screen when connecting
+!=!Connecting...
+!G!Verbinden...
+!S!Conectando...
+!I!Collegamento...
+!F!Connexion...
+
+!/!583: text for close (close dialog, etc.)
+!=!Close
+!G!Schliessen
+!S!Cerrar
+!I!Chiudi
+!F!Fermer
+
+!/!584: Hud message if you already have the vauss
+!=!You already have the Vauss
+!G!Sie haben die Vausskanone schon
+!S!Ya tienes el Vauss
+!I!Hai già il Vauss
+!F!Vous avez déjà le Vauss.
+
+!/!585: Hud message when you pickup the vauss
+!=!Vauss!
+!G!Vauss!
+!S!¡Vauss!
+!I!Vauss!
+!F!Vauss !
+
+!/!586: Hud message if you already have napalm
+!=!You already have the Napalm Gun
+!G!Sie haben die Napalmkanone schon 
+!S!Ya tienes el cañón de napalm
+!I!Hai già il cannone al napalm!
+!F!Vous avez déjà le Canon Napalm.
+
+!/!587: message when you pickup napalm
+!=!Napalm Gun!
+!G!Napalmkanone!
+!S!¡Cañón de napalm!
+!I!Cannone al napalm!
+!F!Canon Napalm !
+
+!/!588: Message if you already have EMD
+!=!You already have the EMD Launcher
+!G!Sie haben die EMD-Kanone schon
+!S!Ya tienes el IEM
+!I!Hai già il lanciatore distruttore elettromagnetico (EMD)
+!F!Vous avez déjà le Lanceur DEM.
+
+!/!589: Message when you pickup emd
+!=!EMD Launcher!
+!G!EMD-Kanone!
+!S!¡Interruptor EM!
+!I!Lanciatore EMD!
+!F!Lanceur DEM !
+
+!/!590: message if you already have microwave
+!=!You already have the Microwave Cannon
+!G!Sie haben die Mikrowellenkanone schon
+!S!Ya tienes el cañón de microondas
+!I!Hai già il cannone a microonde
+!F!Vous avez déjà le Canon Micro-Ondes.
+
+!/!591: message when you get microwave
+!=!Microwave Cannon!
+!G!Mikrowellenkanone!
+!S!¡Cañón de microondas!
+!I!Cannone a microonde!
+!F!Canon Micro-Ondes !
+
+!/!592: message if you already got mass driver
+!=!You already have the Mass Driver
+!G!Sie haben den Massetreiber schon
+!S!Ya tienes el Lanzamasa
+!I!Hai già il lanciamassa
+!F!Vous avez déjà le Canon à Particules.
+
+!/!593: message when you pickup mass driver
+!=!Mass Driver!
+!G!Massetreiber!
+!S!¡Lanzamasa!
+!I!Lanciamassa!
+!F!Canon à Particule !
+
+!/!594: message if you already have super laser
+!=!You already have the Super Laser
+!G!Sie haben den Superlaser schon
+!S!Ya tienes el superláser
+!I!Hai già il Super Laser
+!F!Vous avez déjà le Super Laser.
+
+!/!595: message when you pickup super laser
+!=!Super Laser!
+!G!Superlaser!
+!S!¡Superláser!
+!I!Super Laser!
+!F!Super Laser !
+
+!/!596: message if you already have plasma
+!=!You already have the Plasma Cannon
+!G!Sie haben die Plasmakanone schon
+!S!Ya tienes el cañón de plasma
+!I!Hai già il Cannone Plasma
+!F!Vous avez déjà le Canon Plasma.
+
+!/!597: message if you get plasma
+!=!Plasma Cannon!
+!G!Plasmakanone!
+!S!¡Cañón de plasma!
+!I!Cannone plasma!
+!F!Canon Plasma !
+
+!/!598: message if you already have fusion
+!=!You already have the Fusion Cannon
+!G!Sie haben die Fusionskanone bereits
+!S!Ya tienes el cañón de fusión
+!I!Hai già il Cannone Fusione
+!F!Vous avez déjà le Canon à Fusion.
+
+!/!599: message when you get fusion
+!=!Fusion Cannon!
+!G!Fusionskanone!
+!S!¡Cañón de fusión!
+!I!Cannone fusione!
+!F!Canon à Fusion !
+
+!/!600: message when you already have omega
+!=!You already have the Omega Cannon
+!G!Sie haben die Omega-Kanone schon
+!S!Ya tienes el cañón Omega
+!I!Hai già il Cannone Omega
+!F!Vous avez déjà le Canon Oméga.
+
+!/!601: message when you pickup omega
+!=!Omega Cannon!
+!G!Omega-Kanone!
+!S!¡Cañón Omega!
+!I!Cannone Omega!
+!F!Canon Oméga !
+
+!/!602: message when you pickup frag
+!=!Frag Missile!
+!G!Fragmentgeschoss!
+!S!¡Misil fragmentario!
+!I!Missile Frammentatore!
+!F!Missile Frag !
+
+!/!603: message when frags are full
+!=!Frag Missiles Full
+!G!Fragmentgeschoss voll
+!S!Misiles fragmentarios al máximo
+!I!Missili frammentatori al massimo
+!F!Missiles Frag au maximum
+
+!/!604: message when you get an impact mortar
+!=!Impact Mortar!
+!G!Granatwerfer!
+!S!¡Mortero de impacto!
+!I!Mortaio d'impatto!
+!F!Mortier d'impact !
+
+!/!605: message when impact mortars are full
+!=!Impact Mortars Full
+!G!Granatwerfer voll
+!S!Morteros de impacto al máximo
+!I!Mortai d'impatto al massimo
+!F!Mortiers d'impact au maximum
+
+!/!606: message when you get a napalm rocket
+!=!Napalm Rocket!
+!G!Napalmrakete!
+!S!¡Misil de napalm!
+!I!Razzo Napalm!
+!F!Rocket Napalm !
+
+!/!607: message when napalm rockets are full
+!=!Napalm Rockets Full
+!G!Napalmrakete voll
+!S!Misiles de napalm al máximo
+!I!Razzi Napalm al massimo
+!F!Roquettes Napalm au maximum
+
+!/!608: message when you get a cyclone
+!=!Cyclone Missile!
+!G!Zyklon-Geschoss!
+!S!¡Misil ciclón!
+!I!Missile Ciclone!
+!F!Missile Cyclone !
+
+!/!609: message when cyclones are full
+!=!Cyclone Missiles Full
+!G!Zyklon-Geschoss voll
+!S!Misiles ciclón al máximo
+!I!Missili Ciclone al massimo
+!F!Missile Cyclone au maximum
+
+!/!610: message when you pickup a blackshark
+!=!Black Shark Missile!
+!G!Black Shark Geschoss!
+!S!¡Misil Tiburón negro!
+!I!Missile Squalo nero!
+!F!Missile Requin Noir !
+
+!/!611: message when black sharks are full
+!=!Black Shark Missiles Full
+!G!Black Shark Geschoss voll
+!S!Misiles Tiburón negro al máximo
+!I!Missili Squalo nero al massimo
+!F!Missiles Requin Noir au maximum
+
+!/!612: message when you pickup a concussion
+!=!Concussion Missile!
+!G!Erschütterungsgeschoss!
+!S!¡Cohete S-1!
+!I!Missile esplosivo!
+!F!Missile à explosion !
+
+!/!613: message when concussion missiles are full
+!=!Concussion Missiles Full
+!G!Erschütterungsgeschoss voll
+!S!Cohetes S-1 al máximo
+!I!Missili esplosivi al massimo
+!F!Missiles à explosion au maximum
+
+!/!614: message when you get a homer
+!=!Homing Missile!
+!G!Zielpeilgeschoss!
+!S!¡Misil buscador!
+!I!Missile autoguidato!
+!F!Missile autoguidés !
+
+!/!615: message when homing missiles are full
+!=!Homing Missiles Full
+!G!Zielpeilgeschoss voll
+!S!Misiles buscadores al máximo
+!I!Missili autoguidati al massimo
+!F!Missiles autoguidés au maximum
+
+!/!616: message when you pickup a smart missile
+!=!Smart Missile!
+!G!Smart-Geschoss!
+!S!¡Misil inteligente!
+!I!Missile intelligente!
+!F!Missile Smart !
+
+!/!617: message when smarts are full
+!=!Smart Missiles Full
+!G!Smart-Geschoss voll
+!S!Misiles inteligentes al máximo
+!I!Missili intelligenti al massimo
+!F!Missiles Smart au maximum
+
+!/!618: message when you pickup a mega
+!=!Mega Missile!
+!G!Mega-Geschoss!
+!S!¡Megamisil!
+!I!Mega Missile!
+!F!Missile Méga !
+
+!/!619: message when megas are full
+!=!Mega Missiles Full
+!G!Mega-Geschoss voll
+!S!Megamisiles al máximo
+!I!Mega Missili al massimo
+!F!Missiles Méga au maximum
+
+!/!620: message when you pickup a guided
+!=!Guided Missile!
+!G!Fernlenkgeschoss!
+!S!¡Misil guiado!
+!I!Missile teleguidato!
+!F!Missile guidé !
+
+!/!621: message when guideds are full
+!=!Guided Missiles Full
+!G!Fernlenkgeschoss voll
+!S!Misiles guiados al máximo
+!I!Missili teleguidati al massimo
+!F!Missiles guidés au maximum
+
+!/!622: format for multiple homing missiles pickup
+!=!%d Homing Missiles!
+!G!%d Zielpeilgeschosse!
+!S!¡%d misiles buscadores!
+!I!%d missili autoguidati!
+!F!%d missiles autoguidés !
+
+!/!623: format message when you pickup multiple concussions
+!=!%d Concussion Missiles!
+!G!%d Erschütterungsgeschosse!
+!S!¡%d cohetes S-1!
+!I!%d missili esplosivi!
+!F!%d missiles à explosion !
+
+!/!624: message when you pickup multiple frag missiles
+!=!%d Frag Missiles!
+!G!%d Fragmentgeschosse!
+!S!¡%d misiles de fragmentarios!
+!I!%d missili frammentatori!
+!F!%d missiles Frag !
+
+!/!625: message when you pickup multiple guided missiles
+!=!%d Guided Missiles!
+!G!%d Fernlenkgeschosse!
+!S!¡%d misiles guiados!
+!I!%d missili teleguidati!
+!F!%d missiles guidés !
+
+!/!626: message when you pickup some vauss ammo
+!=!%d Vauss rounds
+!G!%d Vaussrunden
+!S!%d tiros de vauss
+!I!%d lanci Vauss
+!F!%d balles Vauss
+
+!/!627: message when the vauss cannon is full
+!=!Vauss Cannon full
+!G!Vausskanone voll
+!S!Cañón Vauss al máximo
+!I!Cannone Vauss al massimo
+!F!Canon Vauss plein
+
+!/!628: message when you pickup some mass driver rounds
+!=!%d Mass Driver rounds
+!G!%d Massetreiberrunden
+!S!%d disparos de Lanzamasa
+!I!%d spari del lanciamassa
+!F!%d balles de canon à particules
+
+!/!629: message when massdriver is full
+!=!Mass Driver full
+!G!Massetreiber voll
+!S!Lanzamasa al máximo
+!I!Lanciamassa al massimo
+!F!Canon à particules plein
+
+!/!630: message when you pickup napalm full (12.50 liters of Napalm fuel for example)
+!=!%d.%d liters of Napalm fuel
+!G!%d.%d Liter Napalm 
+!S!%d.%d litros de napalm
+!I!%d.%d litri di napalm
+!F!%d,%d litres de Napalm
+
+!/!631: message when napalm cannon is full
+!=!Napalm Cannon full
+!G!Napalmkanone voll
+!S!Cañón de napalm al máximo
+!I!Cannone Napalm al massimo
+!F!Canon Napalm plein
+
+!/!632: hud message when invulnerability wears off
+!=!Invulnerability Off
+!G!Unverwundbarkeit Aus
+!S!Invulnerabilidad desactivada
+!I!Invulnerabilità disattivata
+!F!Invulnérabilité désactivée
+
+!/!633: Hud message when cloak wears off
+!=!Cloak off
+!G!Tarnung aus
+!S!Camuflaje desactivado
+!I!Disattivata invisibilità
+!F!A découvert
+
+!/!634: hud message when cloak wears off
+!=!Cloak Off
+!G!Tarnung aus
+!S!Camuflaje desactivado
+!I!Disattivata invisibilità
+!F!A découvert
+
+!/!635: hud message if you are full shields
+!=!Shields Full
+!G!Schutzschilde voll
+!S!Escudos al máximo
+!I!Scudi al massimo
+!F!Boucliers au maximum
+
+!/!636: hud message when your shields are boosted
+!=!Shields boosted to %d
+!G!Schutzschilde auf %d erhoeht
+!S!Escudos cargados a %d
+!I!Scudi caricati a %d
+!F!Boucliers renforcés à %d
+
+!/!637: hud message when you pickup energy
+!=!Energy!
+!G!Energie!
+!S!¡Energía!
+!I!Energia!
+!F!Energie !
+
+!/!638: hud message when you pickup quad lasers
+!=!Quad Lasers!
+!G!Quadrolaser!
+!S!¡Lásers cuádruples!
+!I!Laser quadrupli!
+!F!Lasers Quad !
+
+!/!639: hud message if you already have quad laser
+!=!You already have Quad Lasers
+!G!Sie haben bereits den Quadrolaser 
+!S!Ya tienes lásers cuádruples
+!I!Hai già i laser quadrupli
+!F!Vous avez déjà les Lasers Quad
+
+!/!640: hud message when you pickup invulnerability
+!=!Invulnerability On
+!G!Unverwundbarkeit!
+!S!Invulnerabilidad activada
+!I!Invulnerabilità attivata
+!F!Invulnérabilité Activée
+
+!/!641: hud message if you are already invulnerable
+!=!You're already invulnerable
+!G!Sie sind bereits unverwundbar
+!S!Ya eres invulnerable
+!I!Sei già invulnerabile
+!F!Vous êtes déjà invulnérable.
+
+!/!642: hud message when you pickup cloak
+!=!Cloak On
+!G!Unsichtbarkeit
+!S!Camuflaje activado
+!I!Attivata invisibilità
+!F!Camouflage Activé
+
+!/!643: hud message when you are already cloaked
+!=!Already cloaked
+!G!Sie sind bereits unsichtbar
+!S!Ya estás camuflajeado
+!I!Sei già invisibile
+!F!Déjà occulté
+
+!/!644: hud message when you pickup chaff
+!=!Chaff
+!G!Störspreu
+!S!Señuelos
+!I!Sberleffo
+!F!Chaff
+
+!/!645: hud message when you pickup mutliple chaffs
+!=!%d Chaff Packs
+!G!%d Störspreupakete
+!S!%d Paquetes de señuelos
+!I!%d pacchetti di sberleffi
+!F!%d paquets de Chaff
+
+!/!646: hud message if your counter measure inventory is full
+!=!Countermeasures Full
+!G!Gegenmassnahmen voll
+!S!Contramedidas al máximo
+!I!Contromisure al massimo
+!F!Leurres au Maximum
+
+!/!647: hud message if your chaffs are full
+!=!You Can't Carry Any More Chaff Packets
+!G!Sie können keine weiteren Störspreupakete aufnehmen
+!S!No puedes llevar más paquetes de señuelos
+!I!Non puoi trasportare altri pacchetti di sberleffi
+!F!Impossible de transporter plus de Chaff.
+
+!/!648: hud message when you pickup a betty
+!=!Bouncing Betty
+!G!Hüpfende Betty
+!S!Betty
+!I!Betty
+!F!Betty
+
+!/!649: hud message when you pickup multiple bettys
+!=!%d Bouncing Bettys
+!G!%d Hüpfende Bettys
+!S!%d Bettys
+!I!%d Betty
+!F!%d Bettys
+
+!/!650: hud message when you can't carry anymore bettys
+!=!You Can't Carry Any More Bettys
+!G!Sie können keine weiteren Hüpfende Bettys aufnehmen
+!S!No puedes llevar más Bettys
+!I!Non puoi trasportare altre Betty
+!F!Impossible de transporter plus de Bettys.
+
+!/!651: message when you pickup a seeker
+!=!Seeker Mine
+!G!Suchermine
+!S!Mina buscadora
+!I!Mina cercatrice
+!F!Mine chercheuse
+
+!/!652: message when you pickup multiple seekers
+!=!%d Seeker Mines
+!G!%d Sucherminen
+!S!%d minas buscadoras
+!I!%d mine cercatrici
+!F!%d Mines chercheuses
+
+!/!653: message when your seekers are full
+!=!You Can't Carry Any More Seeker Mines
+!G!Sie können keine weiteren Sucherminen aufnehmen
+!S!No puedes llevar más minas buscadoras
+!I!Non puoi trasportare altre mine cercatrici
+!F!Impossible de transporter plus de mines chercheuses.
+
+!/!654: message when you pickup a gunboy
+!=!GunBoy
+!G!GunBoy
+!S!Robofusil
+!I!GunBoy
+!F!GunBoy
+
+!/!655: message when you pickup multiple gunboys
+!=!%d GunBoys
+!G!%d GunBoys
+!S!%d Robofusiles
+!I!%d GunBoy
+!F!%d GunBoys
+
+!/!656: message when gunboys are full
+!=!You Can't Carry Any More GunBoys
+!G!Sie können keine weiteren GunBoys aufnehmen
+!S!No puedes llevar más Robofusiles
+!I!Non puoi trasportare altri GunBoy
+!F!Impossible de transporter plus de GunBoys
+
+!/!657: hud message when you pickup an afterburner cooler
+!=!Afterburner Cooler!
+!G!Nachbrenner-Kühler!
+!S!¡Refrigerador de postcombustión!
+!I!Refrigeratore del postcombustore!
+!F!Refroidissant Postcombustion !
+
+!/!658: hud message if you already have an afterburner cooler
+!=!You Already Have An Afterburner Cooler
+!G!Sie haben bereits einen Nachbrenner-Kühler
+!S!Ya tienes un refrigerador de postcombustión
+!I!Hai già un refrigeratore del postcombustore
+!F!Vous avez déjà un refroidissant de postcombution.
+
+!/!659: message when you pickup an energy to shields converter
+!=!Energy-to-Shields Converter!
+!G!Energie-zu-Schutzschild-Konverter!
+!S!¡Convertidor de energía a escudos!
+!I!Convertitore di energia in scudi!
+!F!Convertisseur d'energie en bouclier !
+
+!/!660: message when you already have an energy to shields conv
+!=!You Already Have A Energy-to-Shields Converter
+!G!Sie haben bereits einen Energie-zu-Schutzschild-Konverter
+!S!Ya tienes un convertidor de energía a escudos
+!I!Hai già un convertitore di energia in scudi
+!F!Vous avez déjà un convertisseur d'energie en bouclier.
+
+!/!661: hud message when you pickup full automap powerup
+!=!Full Map!
+!G!Karte!
+!S!¡Mapa completo!
+!I!Mappa completa!
+!F!Carte entière !
+
+!/!662: In file dialog, message that pops up while building file list
+!=!Getting Files...
+!G!Lese Dateien...
+!S!Obteniendo archivos...
+!I!Ricezione file...
+!F!Récupération des fichiers...
+
+!/!663: hud message report for time-demo
+!=!Timedemo reports %.2f FPS
+!G!Statistik: %.2f FPS 
+!S!Demostración reporta %.2f FPS 
+!I!Rapporti demo tempi %.2f FPS
+!F!Temps de Démo affiche %.2f FPS
+
+!/!664: hotspot label in pilot dialog
+!=!Add
+!G!Neu
+!S!Añadir
+!I!Aggiungi
+!F!Ajouter
+
+!/!665: hotspot label in pilot dialog
+!=!Edit
+!G!Ändern
+!S!Editar
+!I!Modifica
+!F!Modifier
+
+!/!666: in pilot dialog, message saying pilot file no longer exists
+!=!Pilot No Longer Exists. Please Select A New One.
+!G!Pilot existiert nicht mehr. Bitte neuen auswählen.
+!S!Este piloto ya no existe. Elige uno nuevo.
+!I!Il pilota non esiste più. Scegline uno nuovo.
+!F!Pilote Inexistant. Choisissez-en un autre.
+
+!/!667: hotspot label for pilot picture selection
+!=!CHOOSE PILOT PICTURE
+!G!PILOTENBILD AUSWÄHLEN
+!S!ELIGE FOTO DE PILOTO
+!I!SCEGLI FOTO PILOTA
+!F!CHOISIR PHOTO DU PILOTE
+
+!/!668: first line of copy controls instructions
+!=!From which do you want to
+!G!Welche Einstellungen
+!S!¿Desde dónde quieres copiar 
+!I!Da dove desideri
+!F!D'où voulez-vous copier les
+
+!/!669: second line of copy controls instructions
+!=!copy control settings from?
+!G!sollen kopiert werden?
+!S!la configuración de control?
+!I!copiare la configurazione di controllo?
+!F!paramètres des commandes ?
+
+!/!670: line 3 of the copy controls instructions
+!=!Click cancel for none.
+!G!Abbruch für keine.
+!S!Cancelar para escoger despues.
+!I!Premi Annulla per nessuna selezione.
+!F!pour aucune copie, annulez.
+
+!/!671: import graphic hotspot in multiplayer ship config
+!=!Import Graphic
+!G!Grafik importieren
+!S!Importar gráfico
+!I!Importa grafico
+!F!Importer graphisme
+
+!/!672: hotspot label to play an audio taunt in multiplayer ship config
+!=!Play
+!G!Abspielen
+!S!Jugar
+!I!Gioca
+!F!Lecture
+
+!/!673: import sound hotspot label in multiplayer ship config
+!=!Import Sound
+!G!Sound importieren
+!S!Importar sonido
+!I!Importa suono
+!F!Importer Son
+
+!/!674: audio taunt 1 label
+!=!Audio Taunt #1
+!G!Audio #1
+!S!Provocación nº 1
+!I!Provoc. audio n. 1  
+!F!Raillerie Audio #1
+
+!/!675: audio taunt 2 label
+!=!Audio Taunt #2
+!G!Audio #2
+!S!Provocación nº 1
+!I!Provoc. audio n. 2  
+!F!Raillerie Audio #2
+
+!/!676: warning message
+!=!Warning
+!G!Warnung
+!S!Advertencia
+!I!Avviso
+!F!Attention
+
+!/!677: message displayed if they had selected a ship no longer available
+!=!The ship you have selected wasn't found. Using default.
+!G!Gewähltes Schiff nicht gefunden. Standard wird verwendet.
+!S!No se encuentra la nave elegida. Se utilizará la predeterminada.
+!I!La nave selezionata non è stata trovata. Verrà usata quella predefinita.
+!F!Vaisseau sélectionné non trouvé. Utilisation du vaisseau par défaut.
+
+!/!678: audio taunt import error if the file size is bigger than 32K
+!=!Compressed file is larger than %dK.  It will not be transferred.
+!G!Komprimierte Datei ist grösser als %d K. Sie wird nicht übertragen.
+!S!El archivo compromido ocupa más de %d K. No se puede transferir.
+!I!Il file compresso è maggiore di %d Kb. Non sarà trasferito.
+!F!Le fichier compressé est plus grand que %dK. Il ne sera pas transféré.
+
+!/!679: message if audio import was successful
+!=!Audio File Imported
+!G!Audiodatei importiert
+!S!Archivo de sonido importado
+!I!File audio importato
+!F!Fichier Audio Importé
+
+!/!680: message during audio taunt, if it couldn't copy temp file
+!=!Unable to copy temp file
+!G!Konnte Temp-Datei nicht kopieren
+!S!No se puede copiar archivo temporal
+!I!Impossibile copiare il file temporaneo
+!F!Copie du fichier temporaire impossible 
+
+!/!681: error message of taunt import
+!=!Unable to create CRC File
+!G!Konnte CRC-Datei nicht erstellen
+!S!No se puede crear archivo CRC
+!I!Impossibile creare file CRC
+!F!Création du fichier CRC impossible 
+
+!/!682: error message if no pilot pictures are available to choose from (use \n to force a newline)
+!=!There are no available\npictures for this pilot
+!G!Es sind keine Bilder für\ndiesen Piloten verfügbar
+!S!No hay fotografías disponibles\npara este piloto
+!I!Per questo pilota non\nci sono foto disponibili
+!F!Ce pilote n'a pas de\nphoto.
+
+!/!683: error creating dialog
+!=!An Error Occured Creating Dialog.
+!G!Fehler beim Dialog erstellen.
+!S!Error al crear cuadro de diálogo.
+!I!Errore di creazione della finestra di dialogo.
+!F!Erreur à la création du dialogue.
+
+!/!684: Pilot picture window label
+!=!Pilot Picture
+!G!Pilotenbild
+!S!Fotografía de piloto
+!I!Foto del pilota
+!F!Photo du pilote
+
+!/!685: pictures label in pilot pics dialog
+!=!Pictures
+!G!Bilder
+!S!Fotografías
+!I!Fotografie
+!F!Photos
+
+!/!686: display label for pilot pic image display
+!=!Display
+!G!Anzeige
+!S!Mostrar
+!I!Visualizza
+!F!Affichage
+
+!/!687: message when entering observer mode
+!=!Entering observer mode.
+!G!In Beobachter-Modus eintreten.
+!S!Entrando en modo observador.
+!I!Ingresso in modalità osservatore.
+!F!Passage en mode d'observation.
+
+!/!688: message when another player enters observer mode
+!=!%s starts observing.
+!G!%s beginnt Beobachtung.
+!S!%s empieza a observar.
+!I!%s inizia ad osservare.
+!F!%s nous observe.
+
+!/!689: message when leaving observer mode
+!=!Leaving observer mode.
+!G!Beobachter-Modus verlassen.
+!S!Saliendo del modo observador.
+!I!Uscita dalla modalità osservatore.
+!F!Abandon du mode d'observation.
+
+!/!690: message when another player leaves observer mode
+!=!%s stops observing.
+!G!%s beendet Beobachtung.
+!S!%s ha dejado de observar.
+!I!%s ha smesso di osservare.
+!F!%s ne nous observe plus.
+
+!/!691: message if you don't have enough energy for energy->shields converter
+!=!Need more than %d energy to enable transfer
+!G!Sie brauchen mindestens %d Energieeinheiten für den Konverter
+!S!Se necesita más de %d de energía para permitir la transferencia
+!I!Per il trasferimento è necessario più di %d energia
+!F!Il faut plus de %d en énergie pour permettre le transfert.
+
+!/!692: message when energy->shields doesn't continue because shields are full
+!=!No transfer: Shields already at max
+!G!Kein Transfer: Schutzschilde bereits maximiert
+!S!No hay transferencia: el escudo ya se encuentra al máximo
+!I!Trasferimento non effettuato: scudi già al massimo
+!F!Arrêt du transfert: boucliers déjà au maximum.
+
+!/!693: TelCom Main menu briefings button
+!=!Briefings
+!G!Anweisungen
+!S!Orndenes
+!I!Informazioni
+!F!Briefings
+
+!/!694: telcom main menu cargo button
+!=!Cargo
+!G!Fracht
+!S!Carga
+!I!Carica
+!F!Cargo
+
+!/!695: telcom main menu automap button
+!=!AutoMap
+!G!Karte
+!S!Auto-Mapa
+!I!Auto-mappa
+!F!AutoCarte
+
+!/!696: telcom initializing screen text
+!=!Please wait... Initializing
+!G!Bitte warten... Initialisierung
+!S!Espera... Inicializando
+!I!Attendi... Inizializzazione
+!F!Patientez... Initialisation
+
+!/!697: telcom shutting down screen text
+!=!Telcom Shutting Down
+!G!Telcom fährt herunter
+!S!Telcom desactivando
+!I!Telcom in chiusura
+!F!Fermeture Telcom
+
+!/!698: instructions in automap to turn on/off terrain
+!=!F1 - Turn terrain %s    1 thru 8 - Markers
+!G!F1 - Gelände %s       1 bis 8 - Markierungen 
+!S!F1: Girar terreno %s    1 a 8: marcadores 
+!I!F1: Terreno %s    da 1 a 8 - segnapunti
+!F!F1: regler terrain sur %s   1 à 8 - Marqueurs
+
+!/!699: more instructions for automap
+!=!F2 - Center on player   F3 - Realign to gravity
+!G!F2 - Auf Spieler zentrieren F3 - Schwerkraftausrichtung 
+!S!F2: Centrar en jugador F3: Realinear a gravedad
+!I!F2: Centra sul giocatore F3: Riallinea alla gravità
+!F!F2: centrage sur joueur  F3: realignement sur gravite
+
+!/!700: Ranks
+!=!Cadet
+!G!Kadett
+!S!Cadete
+!I!Cadetto
+!F!Cadet
+
+!/!701: Ranks
+!=!Ensign
+!G!Unteroffizier 
+!S!Alférez
+!I!Guardiamarina
+!F!Enseigne
+
+!/!702: Ranks
+!=!Lieutenant
+!G!Leutnant
+!S!Teniente
+!I!Tenente
+!F!Lieutenant
+
+!/!703: Ranks
+!=!Lt. Cmdr.
+!G!Erster Leutnant
+!S!Cpt de Corbeta
+!I!Comandante in seconda
+!F!Premier Ltnt
+
+!/!704: Ranks
+!=!Commander
+!G!Kommandant
+!S!Comandante
+!I!Comandante
+!F!Commandant 
+
+!/!705: Ranks
+!=!Captain
+!G!Hauptmann
+!S!Capitán
+!I!Capitano
+!F!Capitaine
+
+!/!706: Ranks
+!=!Commodore
+!G!Oberst
+!S!Comodoro
+!I!Commodoro
+!F!Commodore 
+
+!/!707: Ranks
+!=!Rear Admiral
+!G!Vizeadmiral
+!S!Segundo almirante
+!I!Viceammiraglio
+!F!Vice Amiral
+
+!/!708: Ranks
+!=!Admiral
+!G!Admiral
+!S!Almirante
+!I!Ammiraglio
+!F!Amiral
+
+!/!709: Ranks
+!=!Demigod
+!G!Halbgott
+!S!Semidiós
+!I!Semidio
+!F!Demi-dieu
+
+!/!710: has been
+!=!has been
+!G!wurde
+!S!ha sido 
+!I!è stato
+!F!a été
+
+!/!711: promoted to
+!=!promoted to
+!G!befördert zum
+!S!ascendido a
+!I!promosso a
+!F!promu au grade de
+
+!/!712: demoted to
+!=!demoted to
+!G!degradiert zum
+!S!degradado a
+!I!degradato a
+!F!rétrogradé au grade de
+
+!/!713: Hud message when you get 1 prox mine
+!=!Prox Mine
+!G!Nahmine
+!S!Mina de proximidad
+!I!Mina di prossimità
+!F!Mine Prox
+
+!/!714: Hud message displayed when you pickup multiple prox mines
+!=!%d Prox Mines
+!G!%d Annäherungsminen
+!S!%d minas de proximidad
+
+!I!%d mine di prossimità
+!F!%d Mines Prox
+
+!/!715: Hud message when prox mines are full
+!=!You Can't Carry Any More Prox Mines
+!G!Sie können keine weiteren Annäherungsminen aufnehmen
+!S!No puedes llevar más minas de proximidad
+!I!Non puoi portare altre mine di prossimità
+!F!Vous ne pouvez pas transporter plus de mines Prox.
+
+!/!716: Play (used in new game dialog)
+!=!Play
+!G!Spielen
+!S!Jugar
+!I!Gioca
+!F!Jouer
+
+!/!717: Config (Configuration menu in options menu)
+!=!Config
+!G!Konfig
+!S!Configurar
+!I!Configura
+!F!Configurer
+
+!/!718: Toggles (specifies a generic list of checkboxes used to configure settings)
+!=!Toggles
+!G!Weitere...
+!S!Conmutadores
+!I!Commutatori
+!F!Options
+
+!/!719: Detail settings for Geometry (used in details menu for the detail sliders.)
+!=!Geometry
+!G!Geometrie
+!S!Geometría
+!I!Geometria
+!F!Géométrie
+
+!/!720: Used in video config menu to specify screen gamma or vertical sync
+!=!Monitor options
+!G!Bildschirmoptionen
+!S!Opciones del monitor
+!I!Opzioni del monitor
+!F!Moniteur
+
+!/!721: Used to specify the name of a controller axis (i.e. X-axis, y-axis, etc.)
+!=!%c-axis
+!G!%c-Achse
+!S!eje %c
+!I!asse %c
+!F!Axe %c
+
+!/!722: Used to group items in controller/keyboard config menus
+!=!Weapons
+!G!Waffen
+!S!Armas
+!I!Armi
+!F!Armes
+
+!/!723: Used to group items in controller/keyboard config menus
+!=!Miscellaneous
+!G!Verschiedenes
+!S!Varios
+!I!Varie
+!F!Divers
+
+!/!724: Used to group items in controller/keyboard config menus
+!=!Thrusting
+!G!Schubkraft
+!S!Propulsión
+!I!Spinta
+!F!propulsion
+
+!/!725: Used to group items in controller/keyboard config menus
+!=!Turning
+!G!Drehen
+!S!Rotación
+!I!Rotazion
+!F!rotation
+
+!/!726:In keyboard config menu
+!=!Audio Taunt 1
+!G!Audio #1
+!S!Provocación 1
+!I!Provoc. audio 1  
+!F!raillerie 1
+
+!/!727:In keyboard config menu
+!=!Audio Taunt 2
+!G!Audio #2
+!S!Provocación 2
+!I!Provoc. audio 2  
+!F!raillerie 2
+
+!/!728:Used in controller config menus for rear view function
+!=!Rear View
+!G!Rückansicht
+!S!Vista trasera
+!I!Vista post.
+!F!vue arrière
+
+!/!729:Used in hud config menu
+!=!HUD Warnings
+!G!CPA Warnungen
+!S!Advertencias, HUD
+!I!Avvisi del HUD 
+!F!alertes du collimateur
+
+!/!730:Used in missions dialog
+!=!Info
+!G!Infos
+!S!Info
+!I!Informazioni
+!F!infos
+
+!/!731:Used in missions dialog
+!=!Name:
+!G!Name:
+!S!Nombre:
+!I!Nome:
+!F!nom:
+
+!/!732:Used in missions dialog
+!=!Author:
+!G!Autor:
+!S!Autor:
+!I!Autore:
+!F!auteur:
+
+!/!733:Used in missions dialog
+!=!Notes:
+!G!Bemerkungen:
+!S!Notas:
+!I!Note:
+!F!notes:
+
+!/!734:Help screen text
+!=!Shift-F9
+!G!Shift-F9
+!S!Mayús+F9
+!I!Maiusc+F9
+!F!Maj.+F9
+
+!/!735:Help screen text
+!=!Display HUD Message Console
+!G!CPA Nachrichtenkonsole anzeigen
+!S!Mostrar consola de mensajes 
+!I!Visualizza console messaggi
+!F!Affiche Console Message collimateur
+
+!/!736:Help screen text
+!=!Shift-F8
+!G!Shift-F8
+!S!Mayús+F8
+!I!Maiusc+F8
+!F!Maj.+F8
+
+!/!737:Help screen text
+!=!Display Ship Message Log
+!G!Schiffscomputerlogbuch anzeigen
+!S!Mostrar mensajes de la nave
+!I!Visualizza messaggi della nave
+!F!journal de messages du vaisseau
+
+!/!738:Help screen text
+!=!F12
+!G!F12
+!S!F12
+!I!F12
+!F!F12
+
+!/!739:Help screen text
+!=!Drop a Marker
+!G!Markierung fallenlassen
+!S!Soltar marcador
+!I!Salta segnapunti
+!F!Poser un marqueur
+
+!/!740:save game screen
+!=!Double click on slot or use arrow keys and press ENTER.
+!G!Doppelklicken Sie auf eine Zeile.
+!S!Selecciona una ranura en donde guardar la partida.
+!I!Fai doppio clic sullo slot o tasti freccia e INVIO.
+!F!Double-cliquez sur case ou les touches fléchées et Entrée.
+
+!/!741:load game screen
+!=!Double click on slot or use arrow keys and press ENTER.
+!G!Doppelklicken Sie auf eine Zeile.
+!S!Selecciona una ranura de donde cargar la partida.
+!I!Doppio clic sullo slot o tasti freccia e premi INVIO.
+!F!Double-cliquez sur une case ou utilisez les touches fléchées et appuyez sur Entrée.
+ 
+!/!742:save game screen
+!=!There is already a saved game of that name. Please choose another.
+!G!Gespeichertes Spiel mit diesem Namen bereits vorhanden. Bitte einen anderen auswählen.
+!S!Ya hay un juego guardado con ese nombre. Elige otro.
+!I!Esiste già una partita salvata con questo nome. Scegline un'altra.
+!F!Ce nom de sauvegarde existe déjà. Choisissez-en un autre.
+
+!/!743:save game screen
+!=!Overwrite current saved game?
+!G!Gespeichertes Spiel überschreiben?
+!S!¿Sustituir partida guardada?
+!I!Sovrascrivere la partita salvata?
+!F!Ecraser la dernière sauvegarde ?
+
+!/!744:used in general config menu and joystick settings menu
+!=!Input Devices
+!G!Spielsteuerungen
+!S!Dispositivos de entrada
+!I!Dispositivi di input
+!F!Périphériques
+
+!/!745: help dialog text
+!=!Shift-Tab
+!G!Umschalt-Tab 
+!S!Mayús+Tab
+!I!Maiusc+Tab
+!F!Maj.-Tab
+
+!/!746: help dialog text
+!=!Telcom briefings and goals
+!G!TelCom Anweisungen und Ziele
+!S!Ordenes y objetivos TelCom
+!I!Vai al menu TelCom
+!F!Briefings et objectifs
+
+!/!747: pilot write error
+!=!There was a file write error trying to create the Pilot file.
+!G!Beim Erstellen der Pilotendatei trat ein Dateischreibfehler auf.
+!S!Se ha producido un error de escritura al intentar crear el archivo del piloto.
+!I!Errore di scrittura file durante la creazione del file del pilota.
+!F!Erreur d'écriture lors de la création du fichier Pilote.
+
+!/!748: pilot write error
+!=!There was an internal error trying to create the Pilot file.
+!G!Beim Erstellen der Pilotendatei trat ein interner Fehler auf.
+!S!Se ha producido un error interno al intentar crear el archivo del piloto.
+!I!Errore interno durante la creazione del file del pilota.
+!F!Une erreur interne est survenue lors de la création du fichier Pilote.
+
+!/!749:In keyboard config menu
+!=!Audio Taunt 3
+!G!Audio #3
+!S!Provocación 3
+!I!Provoc. audio 3  
+!F!raillerie 3
+
+!/!750:In keyboard config menu
+!=!Audio Taunt 4
+!G!Audio #4
+!S!Provocación 4
+!I!Provoc. audio 4  
+!F!raillerie 4
+
+!/!751:Variable team game prompt
+!=!Please enter the number of teams for
+!G!Bitte Teamanzahl eingeben für
+!S!Introduce el número de equipos para
+!I!Immetti il numero di squadre per
+!F!entrez le nombre d'equipes pour
+
+!/!752:Dedicated server message if you try to set a variable that can't be set
+!=!This value can't be set during server initialization
+!G!Dieser Wert kann nicht während der Server-Initialisierung eingestellt werden
+!S!No se puede establecer este valor durante la inicialización del servidor
+!I!Impossibile impostare questo valore durante l'inizializzazione del server
+!F!Cette valeur ne peut être fixée lors de l'initialisation du serveur.
+
+!/!753:Dedicated server message if you try to set a variable that can't be set
+!=!This value can't be set during game play
+!G!Dieser Wert kann nicht während des Spiels eingestellt werden
+!S!No se puede establecer este valor durante el juego
+!I!Impossibile impostare questo valore durante il gioco
+!F!Cette valeur ne peut être fixée pendant le jeu.
+
+!/!754:Message printed when there is an invalid number of teams set for a dedicated server
+!=!Invalid Number of Teams Set, defaulting to %d
+!G!Ungültige Teamanzahl eingestellt, es wird %d eingestellt
+!S!Número de equipos no válido. Adoptando valor predeterminado: %d
+!I!Numero di squadre impostato non valido. Usato il valore predefinito di %d
+!F!Nombre d'Equipes Invalide. Passage à %d par défaut.
+
+!/!755:Descent 3: Retribution (The name of the main mission)
+!=!Descent 3: Retribution
+!G!Descent 3: Vergeltung
+!S!Descent 3: Retribución
+!I!Descent 3: Ricompensa
+!F!Descent 3: Rétribution
+
+!/!756:Randomize powerup respawn
+!=!Randomize powerup respawn
+!G!Powerup Zufallsregenerierung
+!S!Aleatorizar aparición de bonificadores
+!I!Ricomparsa accelerata casuale
+!F!Apparition des recharges aléatoire
+
+!/!757:Pilot dialog
+!=!CONTROLS CONFIGURATION
+!G!STEUERUNGSKONFIGURATION
+!S!CONFIGURACIÓN DE CONTROLES
+!I!CONFIGURAZIONE DEI COMANDI
+!F!CONFIGURER COMMANDES
+
+!/!758:Pilot dialog
+!=!MULTIPLAYER CONFIGURATION
+!G!MULTIPLAYERKONFIGURATION
+!S!CONFIG DEL MODO MULTIJUGADOR
+!I!CONFIG/MODALITÀ MULTIGIOCATORE
+!F!CONFIGURER MODE MULTIJOUEUR
+
+!/!759:Misc. Pilot dialog section
+!=!MISCELLANEOUS
+!G!VERSCHIEDENES
+!S!VARIOS
+!I!VARIE
+!F!DIVERS
+
+!/!760:Pilot dialog
+!=!FILTER PROFANITY
+!G!FLUCH-FILTER 
+!S!FILTRAR PROFANIDAD
+!I!FILTRA VOLGARITÀ
+!F!FILTRER VULGARITE
+
+!/!761:Pilot dialog error if there are no pilots to copy control config from
+!=!There are no pilots to copy from
+!G!Kein Pilot vorhanden, von dem kopiert werden kann
+!S!No hay pilotos para copiar
+!I!Non esistono piloti da copiare
+!F!Vous devez disposer d'un autre pilote pour pouvoir copier les paramètres de configuration. 
+
+!/!762:Fatal pilot file read error msg
+!=!An error has occurred reading your pilot file, please create a new one
+!G!Fehler beim Lesen der Pilotendatei, bitte erstellen Sie eine neue
+!S!Ha ocurrido un error al leer el archivo de piloto. Crea otro.
+!I!Errore durante la lettura del file del pilota. Creane un altro.
+!F!Erreur à la lecture de votre fichier pilote. Veuillez en créer un autre.
+
+!/!763:Error if pilot file is so old it's unsupported
+!=!Your pilot file is too old, delete and create a new one
+!G!Pilotendatei ist zu alt, bitte löschen und neue erstellen
+!S!El archivo del piloto es demasiado antiguo. Bórralo y crea uno nuevo.
+!I!Il file del pilota è troppo vecchio. Eliminalo e creane un altro
+!F!Votre fichier pilote est trop vieux. Supprimez-le et créez-en un autre.
+
+!/!764:Error if pilot file is too new (we don't recognize it)
+!=!Pilot File '%s' is not compatible with this version. 
+!G!Pilotendatei '%s' ist mit dieser Version nicht kompatibel.
+!S!El archivo del piloto "%s" no es compatible con esta versión.
+!I!Il file del pilota "%s" non è compatibile con questa versione.
+!F!Le fichier pilote '%s' n'est pas compatible avec cette version.
+
+!/!765:TelCom Goal status if a goal/objective was failed
+!=!Failed
+!G!Gescheitert
+!S!Fallado
+!I!Mancato
+!F!Echec
+
+!/!766:Score label for the HUD and the post-level results screen
+!=!Score
+!G!Punkte
+!S!Puntuación
+!I!Punteggio
+!F!Score
+
+!/!767:Post level results
+!=!Mission Successful
+!G!Mission erfolgreich
+!S!Misión cumplida
+!I!Missione compiuta
+!F!Mission accomplie
+
+!/!768:Post level results
+!=!Mission Failed
+!G!Mission gescheitert
+!S!Misión fracasada
+!I!Missione fallita
+!F!Mission Echouée
+
+!/!769:Label for the Guide-bot view window
+!=!Guide-Bot
+!G!Guide-Bot
+!S!Roboguía
+!I!Robot-Guida
+!F!Guidebot
+
+!/!770:Label for the Marker view window. %d is the marker number.
+!=!Marker %d
+!G!Markierung %d
+!S!Marcador %d
+!I!Segnapunti %d
+!F!Marqueur %d
+
+!/!771:Label for rear-view window
+!=!Rear
+!G!Rückansicht
+!S!Trasera
+!I!Posteriore
+!F!Arrière
+
+!/!772:Prepare for Descent... (before the level starts)
+!=!Prepare for Descent...
+!G!Halten Sie sich bereit für Descent...
+!S!Prepárate para Descent...
+!I!Preparati per Descent...
+!F!Tenez-vous pret !
+
+!/!773:You already have this weapon (in multiplayer)
+!=!You already have this weapon.
+!G!Sie haben diese Waffe schon.
+!S!Ya tienes esta arma.
+!I!Hai già quest'arma.
+!F!Vous avez déjà cette arme.
+
+!/!774:Press key to bind control (in controller config screen.)
+!=!Press key to bind control
+!G!Zum Zuweisen Taste drücken
+!S!Pulsa una tecla 
+!I!Premi un tasto 
+!F!Liez la commande
+
+!/!775:Press a button on your mouse (in controller config screen.)
+!=!Press a button on your mouse
+!G!Bitte eine Maustaste oder einen
+!S!Pulsa un botón del ratón
+!I!Premi un pulsante del mouse
+!F!Pressez un bouton de votre souris
+
+!/!776:or joystick (including hat). (in controller config screen.)
+!=!or joystick (including hat).
+!G!Joystick-Knopf drücken.
+!S!o del joystick (hat incluído).
+!I!o del joystick (hat compreso).
+!F!ou joystick (chapeau inclu).
+
+!/!777:Move your mouse or joystick (in controller config screen.)
+!=!Move your mouse or joystick
+!G!Bitte Maus oder Joystick in die
+!S!Mueve el ratón o el joystick
+!I!Sposta il mouse o il joystick
+!F!Bougez votre souris ou joystick
+
+!/!778:in the desired direction. (in controller config screen.)
+!=!in the desired direction.
+!G!gewünschte Richtung bewegen.
+!S!en la dirección deseada.
+!I!nella direzione desiderata.
+!F!dans la direction désirée.
+
+!/!779:HUD Messages (HUD Message scrollback buffer dialog)
+!=!HUD Messages
+!G!CPA Nachrichten
+!S!Mensajes del presentador
+!I!Messaggi del HUD
+!F!Messages du collimateur
+
+!/!780:Message (Generic Messagebox title)
+!=!Message
+!G!Nachricht
+!S!Mensaje
+!I!Messaggio
+!F!Message
+
+!/!781:Failed to open MN3 file. (Mission file error message)
+!=!Failed to open MN3 file.
+!G!MN3-Datei konnte nicht geöffnet werden.
+!S!No se puede abrir archivo MN3.
+!I!Impossibile aprire il file MN3.
+!F!Echec de l'ouverture du fichier MN3.
+
+!/!782:Command specified is a mission command. (Mission file error message)
+!=!Command specified is a mission command.
+!G!Eingegebenes Kommando ist ein Missionskommando.
+!S!Este comando pertenece a la misión.
+!I!Il comando specificato appartiene alla missione.
+!F!La commande spécifiée est une commande de mission.
+
+!/!783:Command specified is not a level command. (Mission file error message)
+!=!Command specified is not a level command.
+!G!Eingegebenes Kommando ist kein Levelkommando.
+!S!Este comando no pertenece al nivel.
+!I!Questo comando non appartiene al livello.
+!F!Le commande spécifiée n'est pas une commande de niveau.
+
+!/!784:NUMLEVELS doesn't match number of level descript. (Mission file error message)
+!=!NUMLEVELS doesn't match number of level descript.
+!G!NUMLEVELS weicht von Levelnummer ab.
+!S!NUMLEVELS no encaja con el número de la descripción del nivel.
+!I!NUMLEVELS non corrisponde al numero della descrizione del livello.
+!F!NUMLEVELS est différent du numéro de niveau.
+
+!/!785:Level number is out of range. (Mission file error message)
+!=!Level number is out of range.
+!G!Levelnummer ausserhalb des Bereiches.
+!S!Nº de nivel fuera de intervalo.
+!I!Numero di livello al di fuori dell'intervallo.
+!F!Numéro de niveau non disponible.
+
+!/!786:Illegal command %s (Mission file error message)
+!=!Illegal command %s
+!G!Ungültiges Kommando %s
+!S!Comando no admitido %s
+!I!Comando non consentito %s
+!F!Commande %s interdite
+
+!/!787:Failed to create missions directory (Mission file error message)
+!=!Failed to create missions directory
+!G!Missionsverzeichnis erstellen gescheitert
+!S!No se puede crear directorio de misiones
+!I!Impossibile creare la directory delle missioni
+!F!Création du répertoire des missions impossible
+
+!/!788:Please insert Descent 3 CD %d (prompt for small install levels)
+!=!Please insert Descent 3 CD %d
+!G!Bitte Descent 3 CD %d einlegen
+!S!Inserta el CD %d de Descent 3
+!I!Inserisci il CD %d di Descent 3
+!F!Insérer le CD %d de Descent 3
+
+!/!789:Unable to configure joystick (error if calibrate joystick fails)
+!=!Unable to configure joystick.
+!G!Joystick-Konfiguration nicht möglich.
+!S!No se puede configurar joystick.
+!I!Impossibile configurare il joystick.
+!F!Impossible de configurer le joystick.
+
+!/!790:Calibrate Joystick (calibrate joystick button in joystick adjust settings)
+!=!Calibrate Joystick
+!G!Joystick kalibrieren
+!S!Calibrar joystick
+!I!Calibra il joystick
+!F!Calibrer Joystick
+
+!/!791:Mouse Control (adjust settings for joystick and mouse)
+!=!Mouse Control
+!G!Maussteuerung
+!S!Control del ratón
+!I!Controllo del mouse
+!F!Contrôle Souris
+
+!/!792:Flight Sim (adjust settings for mouse control)
+!=!Flight Sim
+!G!Flugsimulator
+!S!Simulador de vuelo
+!I!Simulatore di volo
+!F!Simulateur de vol
+
+!/!793:Mouselook (mouse control)
+!=!Mouselook
+!G!Mouselook
+!S!Vista con ratón
+!I!Vista con mouse
+!F!Vue avec la souris
+
+!/!794:Allow Mouselookers
+!=!Allow Mouselookers
+!G!Mouselook zulassen
+!S!Permitir vista con ratón
+!I!Consenti viste con mouse
+!F!Autoriser la vue avec la souris
+
+!/!795:Mouselook not allowed (if a player tried to join a non-mouselook multiplayer game)
+!=!Mouselook not allowed
+!G!Mouselook nicht zugelassen
+!S!Vista con Ratón no permitida
+!I!Vista con mouse non consentita
+!F!Vue avec la souris interdite
+
+!/!796:if a player tried to join a non-mouselook multiplayer game
+!=!This game does not allow mouselook. Do you want to join anyway?
+!G!Das Spiel lässt keine Mouselookspieler zu. Möchten Sie trotzdem teilnehmen?
+!S!Esta partida no acepta vista con ratón. ¿Quieres unirte de todas formas?
+!I!Questa partita non consente la vista con mouse. Partecipi comunque?
+!F!Cette partie n'autorise pas la vue avec la souris. Voulez-vous continuer ?
+
+!/!797:Abort Training System (if you try to exit the training mission the first time you play it)
+!=!Abort Training System
+!G!Training abbrechen
+!S!Detener entrenamiento
+!I!Interrompi l'addestramento
+!F!arreter l'entraînement
+
+!/!798:if you try to exit the training mission the first time you play it
+!=!Do you want to Skip to the first level, or abort the Mission?
+!G!Möchten Sie mit dem ersten Level beginnen, oder zum Hauptmenü zurück?
+!S!¿Quieres saltar al primer nivel o detener la misión?
+!I!Passare al primo livello o interrompere la missione?
+!F!Voulez-vous passer directement au premier niveau, ou annuler la mission ?
+
+!/!799:Skip (if you try to exit the training mission the first time you play it)
+!=!Skip
+!G!Beginnen
+!S!Saltar
+!I!Passa
+!F!niveau 1
+
+!/!800:Abort (if you try to exit the training mission the first time you play it)
+!=!Abort
+!G!Hauptmenü
+!S!Detener
+!I!Interrompi
+!F!arreter
+
+!/!801:Restore settings (used in controller config menus to restore previous control settings)
+!=!Restore settings
+!G!Rückgängig machen
+!S!Restaurar config
+!I!Ripristina impostaz.  
+!F!parametres precedents
+
+!/!802:Game saved. (used for quick save)
+!=!Game saved.
+!G!Spiel gespeichert.
+!S!Partida guardada.
+!I!Partita salvata.
+!F!Partie sauvegardée.
+
+!/!803:Hit a button or the spacebar to continue (Post level results screen)
+!=!Hit a button or the spacebar to continue
+!G!Weiter mit 'Leertaste'.
+!S!Pulsa un botón o la barra espaciadora para continuar.
+!I!Premi un tasto o la barra spazio per continuare
+!F!Appuyez sur la barre d'espace pour continuer.
+
+!/!804:Enabled Key: %s (shown on the hud during the training mission)
+!=!Enabled Key: %s
+!G!Aktivierte Taste: %s
+!S!Activa tecka: %s
+!I!Tasto attivato: %s
+!F!Touche active: %s
+
+!/!805:Enabled Control: %s (shown on the hud during the training mission)
+!=!Enabled Control: %s
+!G!Aktivierte Steuerung: %s
+!S!Activa control: %s
+!I!Comando attivato: %s
+!F!Commande active: %s
+
+!/!806:Friendlies destroyed, on post-level results screen
+!=!Friendlies destroyed:
+!G!Zerstörte Verbündete:
+!S!Compañeros destruidos:
+!I!Alleati distrutti:
+!F!alliés détruits:
+
+!/!807:This mission is not compatible with the selected multiplayer mode. (error for multiplayer)
+!=!This mission is not compatible with the selected multiplayer mode.
+!G!Diese Mission ist mit dem gewählten Multiplayer-Modus nicht kompatibel.
+!S!Esta misión no es compatible con el modo multijugador seleccionado.
+!I!Questa missione non è compatibile con la modalità multigiocatore.
+!F!Cette mission n'est pas compatible avec le mode multijoueur sélectionné.
+
+!/!808:Used in Pilot ship customization dialog
+!=!Multiplayer Ship Configuration
+!G!Multiplayer Schiffskonfiguration
+!S!Config de Nave Multijugador
+!I!Configurazione nave multigiocatore
+!F!Config. vaisseau multijoueur
+
+!/!809: HUD Name for Afterburner Cooler
+!=!AB Cooler
+!G!NB-Kühler
+!S!PC Refrig
+!I!Raffreddamento PC
+!F!refroidissant PC
+
+!/!810: HUD Message when you get back your stolen automap
+!=!Your automap has been retrieved
+!G!Sie haben Ihre Autom. Karte zurückbekommen
+!S!El automapa ha sido recuperado
+!I!Auto-mappa recuperata
+!F!votre autocarte a été récupérée.
+
+!/!811: HUD Message when you get back your stolen headlight
+!=!Your headlight has been retrieved
+!G!Sie haben Ihre Scheinwerfer zurückbekommen
+!S!Los faros delanteros han sido recuperados
+!I!Fanale recuperato
+!F!votre phare a été récupéré.
+
+!/!812: HUD Message when you try to pickup a headlight you already have
+!=!You already have a headlight
+!G!Sie haben schon Scheinwerfer
+!S!Ya tienes los faros delanteros
+!I!Hai già un fanale
+!F!vous avez déjà un phare.
+
+!/!813: HDU Message if you try to turn on your headlight but don't have it
+!=!You don't have any headlight
+!G!Sie haben keine Scheinwerfer
+!S!No tienes faros
+!I!Non hai il fanale
+!F!vous n'avez pas de phare.
+
+!/!814: In General Options Menu to toggle on/off guided missile
+!=!Guided missile view
+!G!Fernlenk-Ansicht
+!S!Vista de misil guiado
+!I!Vista/missile guidato  
+!F!vue du missile guidé
+
+!/!815: In General Options Menu to toggle on/off gun reticle
+!=!Show reticle
+!G!Fadenkreuz
+!S!Muestra diana
+!I!Mostra reticolo
+!F!réticule
+
+!/!816: In General Options Menu to toggle on/off ship engine sounds
+!=!Ship sounds
+!G!Schiffsounds
+!S!Sonidos de nave
+!I!Suoni della nave
+!F!sons des vaisseaux
+
+!/!817: In sound options menu, specify maximum number of sounds to play on your sound card
+!=!SFX Quantity
+!G!Anzahl Effekte
+!S!Calidad efectos
+!I!Quantità effetti sonori
+!F!effets sonores
+
+!/!818:Dedicated server: %s (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Dedicated server: %s
+!G!Dedizierter Server: %s
+!S!Servidor dedicado: %s
+!I!Server dedicato: %s 
+!F!serveur dédié: %s
+
+!/!819:Nondedicated server: %s (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Nondedicated server: %s
+!G!Nicht-dedizierter Server: %s
+!S!Servidor no dedicado: %s
+!I!Server non dedicato: %s 
+!F!serveur non dédié: %s
+
+!/!820:%s allow Mouselook. (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!%s allow Mouselook.
+!G!Mouselook zulassen: %s
+!S!%s permite vista de ratón
+!I!vista con mouse %s
+!F!vue avec la souris %s.
+
+!/!821:Does (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Does
+!G!Ja
+!S!Si
+!I!consentita
+!F!autorisée
+
+!/!822:Does not (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Does not
+!G!Nein
+!S!No
+!I!non consentita
+!F!interdite
+
+!/!823:Accurate weapon collisions: %s (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Accurate weapon collisions: %s
+!G!Genaue Waffenkollisionen: %s
+!S!Colisiones reales de armas: %s
+!I!Collisioni precise tra armi: %s
+!F!collisions d'armes précises: %s
+
+!/!824:Use rotational velocity: %s (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Use rotational velocity: %s
+!G!Drehgeschw. verwenden: %s
+!S!Utiliza velocidad rotacional: %s
+!I!Usa velocità di rotazione: %s
+!F!utiliser vitesse de rotation: %s
+
+!/!825:Randomize powerup respawn: %s (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Randomize powerup respawn: %s
+!G!Zufällige Powerup-Wiederherst.: %s 
+!S!Creación aleatoria de bonificadores: %s
+!I!Comparsa casuale dei bonus: %s
+!F!apparition des recharges aléatoire: %s
+
+!/!826:Players: %d of %d (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Players: %d of %d
+!G!Spieler: %d von %d
+!S!Jugadores: %d de %d
+!I!Giocatori: %d di %d 
+!F!joueurs: %d de %d
+
+!/!827:Mission: %s (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Mission: %s
+!G!Mission: %s
+!S!Misión: %s
+!I!Missione: %s 
+!F!mission: %s
+
+!/!828:Game information (game-info screen if you hit 'i' while a game is selected in multiplayer)
+!=!Game information
+!G!Spielinfo
+!S!Info de partida
+!I!Informazioni sulla partita
+!F!infos sur la partie
+
+!/!829:Error message if your pilot file's version is too new to read
+!=!The selected pilot (%s) is too new, please delete and create a new one
+!G!Der gewählte Pilot (%s) ist zu neu, bitte löschen und einen neuen erstellen
+!S!El piloto seleccionado (%s) es muy nuevo, borralo y crea uno nuevo.
+!I!Il pilota selezionato (%s) è troppo recente. Eliminarlo e crearne un altro.
+!F!le pilote sélectionné (%s) est trop récent. Supprimez-le et créez en un autre.
+
+!/!830:Wait message displayed when going into TelCom
+!=!Accessing TelCom...Please wait
+!G!Aktiviere TelCom...Bitte warten
+!S!Accesando TelCom...Espere
+!I!Connessione a Telcom... Attendere
+!F!connexion au TelCom... veuillez patienter.
+
+!/!831:Couldn't get player list from server! (Game info error message)
+!=!Couldn't get player list from server!
+!G!Spielerliste konnte nicht vom Server erhalten werden!
+!S!¡No obtuve lista de jugadores sel servidor!
+!I!Impossibile ottenere elenco giocatori dal server
+!F!le serveur n'a pu fournir la liste de joueurs !
+
+!/!832:Players (title in game info dialog)
+!=!Players
+!G!Spieler
+!S!Jugadores
+!I!Giocatori
+!F!joueurs
+
+!/!833:Getting Player list... (splash screen while waiting for player info from server)
+!=!Getting Player list...
+!G!Spielerinformationen übertragen...
+!S!Obteniendo lista de jugadores...
+!I!Generazione elenco giocatori...
+!F!obtention de la liste de joueurs...
+
+!/!834:You have found a secret area (printed when player first enters a secret area)
+!=!You have found a secret area!
+!G!Sie haben einen geheimen Bereich gefunden!
+!S!Abéis encontrado un area secreta
+!I!Hai trovato una zona segreta
+!F!vous avez découvert une zone secrète !
+
+!/!835:Game restored. (put on HUD when you load a savegame)
+!=!Game restored.
+!G!Spiel geladen.
+!S!Partida recuperada.
+!I!Partita ripristinata.
+!F!partie restaurée.
+
+!/!836: in pilot menu, option for audio taunts
+!=!Audio Taunts
+!G!Audio Hohn
+!S!Insultos
+!I!Provocazioni audio 
+!F!railleries audio
+
+!/!837: in guidebot menu (for clients in multiplayer games)
+!=!Guidebot
+!G!Guide-Bot
+!S!Roboguía
+!I!Robot-Guida
+!F!guidebot
+
+!/!838: in guidebot menu (for clients in multiplayer games)
+!=!Please wait, accessing Guidebot
+!G!Bitte warten, rufe Guide-Bot
+!S!Espere, accesando al Roboguía
+!I!Attendere, connessione a Robot-Guida
+!F!connexion au guidebot... Veuillez patienter.
+
+!/!839: in guidebot menu (for clients in multiplayer games)
+!=!Press ESC to Cancel
+!G!Abbrechen mit ESC
+!S!Pulsa ESC para cancelar
+!I!Premi ESC per annullare
+!F!appuyez sur echap pour annuler
+
+!/!840: Exit message when quitting from main menu
+!=!Are you sure you want to exit?
+!G!Wollen Sie wirklich beenden?
+!S!¿Estas seguro que quieres salir?
+!I!Sicuro di voler uscire?
+!F!etes-vous sûr de vouloir quitter ?
+
+!/!841: generic help for the controller config screens to clear a key/joy binding
+!=!Use CTRL-C to clear currently highlighted slot.
+!G!Mit STRG-C die Zuweisung löschen.
+!S!Usa CTRL-C para borrar la selección iluminada.
+!I!Usa CTRL-C per cancellare lo slot selezionato.
+!F!CTRL+C vous permet d'effacer la sélection actuelle.
+
+!/!842: help for keyboard config screen
+!=!Press '?' for help.
+!G!Mit '?' zur Hilfe.
+!S!Pulsa '?' para ayuda.
+!I!Premere '?' per richiamare la Guida.
+!F!cliquez sur '?' pour appeler l'écran d'aide.
+
+!/!843: help for joystick config screen
+!=!Press '?' for help, or to invert axis.
+!G!Mit '?' zur Hilfe, oder Achse umkehren.
+!S!Pulsa '?' para ayuda o para invertir el eje.
+!I!Premere '?' per richiamare la Guida o per invertire l'asse.
+!F!'?': voir l'écran d'aide ou inverser l'axe.
+
+!/!844: Title for keyboard ramping slider in joystick adjust settings
+!=!Key Ramping Time (s)
+!G!Wiederholrate (s)
+!S!Repetición de teclado
+!I!Tempo di ripetizione (s)
+!F!temps de répétition (s)
+
+!/!845: title of controller settings in general options menu
+!=!Controller settings
+!G!Steuerungseinstellung
+!S!Configuración de control
+!I!Impostazioni di control  
+!F!config. du controleur
+
+!/!846: shortcut to joystick adjust settings located in general options
+!=!Sensitivity
+!G!Empfindlichkeit
+!S!Sensibilidad
+!I!Sensibilità
+!F!sensibilite
+
+!/!847: shortcut to keyboard adjust settings located in general options
+!=!Keyboard Ramping
+!G!Tastenerwiderung
+!S!Repetición de teclado
+!I!Ripetizione da tastiera
+!F!repetition du clavier
+
+!/!848: used in help for weapon autoselect config after pressing button
+!=!Click slot to put weapon into.
+!G!Waffe durch Klicken einfügen.
+!S!Haz clic para colocar arma.
+!I!Fare clic sullo slot in cui inserire l'arma.
+!F!cliquez sur l'emplacement de l'arme.
+
+!/!849: used when player finishes a level, entering a secret
+!=!Entering Secret Level
+!G!Secret Level betreten
+!S!Entrando a nivel secreto
+!I!Ingresso in un livello segreto
+!F!passage au niveau secret
+
+!/!The following lines are for the descriptions of the ships in the single player
+!/!ship selection screen.  Please note that the lines that have \1\XX\XX\XX are colors
+!/!please leave them in through localization.  For reference \1 notes the start of a 
+!/!color sequence, the next number (they are seperated by \) is the red component, followed
+!/!by green then blue.
+
+!/!Pyro-GL (850-857)
+!=!\1\255\255\255Max. Trans-Atmospheric Speed:\1\160\153\222 2,000 Knots
+!G!\1\255\255\255Max. Trans-Atmospherengeschw.:\1\160\153\222 2,000 Knoten
+!S!\1\255\255\255Límite de velocidad transatmosférica:\1\160\153\222 2,000 nudos 
+!I!\1\255\255\255Velocità transatmosferica max:\1\160\153\222 2.000 nodi
+!F!\1\255\255\255Vitesse transatmosphérique max:\1\160\153\222 2,000 noeuds 
+
+!=!\1\255\255\255Maneuverability Rating:\1\160\153\222 4.62 ZG-Units
+!G!\1\255\255\255Manövrierleistung:\1\160\153\222 4.62 ZG-Einheiten 
+!S!\1\255\255\255Maniobrabilidad:\1\160\153\222 4.62 ZG-Unidades 
+!I!\1\255\255\255Manovrabilità:\1\160\153\222 4,62 Unità ZG 
+!F!\1\255\255\255Taux de manoeuvrabilité:\1\160\153\222 4.62 unités ZG
+
+
+!=!\1\255\255\255Shield Rating:\1\160\153\222 1.0 Flux :Standard output, ACM grade Magneto-Repulsory Wave Device
+!G!\1\255\255\255Schildleistung:\1\160\153\222 1.0 Flux :Standard Output, ACM-Klasse Magnetrückstosswellengerät
+!S!\1\255\255\255Grado de escudo:\1\160\153\222 1.0 Flux:Producción media, dispositivo de onda magneto-repulsora de grado ACM 
+!I!\1\255\255\255Grado di protezione:\1\160\153\222 1,0 Flux :Output standard, dispositivo ad onde magneto-repulsive di grado ACM
+!F!\1\255\255\255Taux Bouclier:\1\160\153\222 1.0 Flux: sortie standard, dispositif VMR, grade ACM
+
+!=!\1\255\255\255Ordnance:\1\160\153\222 Mid-Level Primary fuselage configuration, with a maximum secondary payload of 100 missile stores in in
+!G!\1\255\255\255Geschütz:\1\160\153\222 Rumpfkonfiguriertes Primär der mittleren Stufe mit einer maximalen Sekundärzuladung von 100 Geschossen
+!S!\1\255\255\255Artillería:\1\160\153\222 Configuración de fuselaje primario de medio nivel, con una capacidad máxima de armas secundarias de 100 misiles
+
+!I!\1\255\255\255Artiglieria:\1\160\153\222 Configurazione della fusoliera primaria di medio livello, con una capienza massima di armi secondarie pari a 100 missili
+!F!\1\255\255\255Artillerie:\1\160\153\222 Configuration du fuselage primaire à mi-niveau, avec un max d'armes secondaires de 100 missiles 
+
+!=!\1\255\255\255Wing Span:\1\160\153\222 13.5 Units
+!G!\1\255\255\255Spannweite:\1\160\153\222 13.5 Einheiten
+!S!\1\255\255\255Largo de alas:\1\160\153\222 13.5 Unidades 
+!I!\1\255\255\255Apertura alare:\1\160\153\222 13,5 Unità 
+!F!\1\255\255\255Enverg. aile:\1\160\153\222 13.5 Unités
+
+!=!\1\255\255\255Overall Length:\1\160\153\222 14.55 Units
+!G!\1\255\255\255Gesamtlänge:\1\160\153\222 14.55 Einheiten
+!S!\1\255\255\255Largo total:\1\160\153\222 14.55 Unidades 
+!I!!=!\1\255\255\255Lunghezza totale:\1\160\153\222 14,55 Unità 
+!F!\1\255\255\255Longueur:\1\160\153\222 14.55 Unités
+
+!=!\1\255\255\255Height: \1\160\153\222 7.35 Units
+!G!\1\255\255\255Höhe: \1\160\153\222 7.35 Einheiten
+!S!\1\255\255\255Altura: \1\160\153\222 7.35 Unidades
+!I!\1\255\255\255Altezza: \1\160\153\222 7,35 Unità 
+!F!\1\255\255\255Hauteur: \1\160\153\222 7.35 Unités
+
+
+!=!\1\255\255\255Weight Empty: \1\160\153\222 12,833 Lbs
+!G!\1\255\255\255Leergewicht: \1\160\153\222 6.416 kg
+!S!\1\255\255\255Peso vacío: \1\160\153\222 6.416 kg 
+!I!\1\255\255\255Peso a vuoto: \1\160\153\222 6.416 kg 
+!F!\1\255\255\255Poids à vide: \1\160\153\222 6.416 kg 
+
+
+!/!Phoenix (858-865)
+!=!\1\255\255\255Max. Trans-Atmospheric Speed:\1\160\153\222 2,790 Knots
+!G!\1\255\255\255Max. Trans-Atmospheengeschw.:\1\160\153\222 2,790 Knoten
+!S!\1\255\255\255Límite de velocidad transatmosférica:\1\160\153\222 2,790 nudos 
+!I!\1\255\255\255Velocità transatmosferica max:\1\160\153\222 2.790 nodi
+!F!\1\255\255\255Vitesse transatmosphérique max.:\1\160\153\222 2,790 noeuds
+
+
+!=!\1\255\255\255Maneuverability Rating:\1\160\153\222 8.0 ZG-Units
+!G!\1\255\255\255Manövrierleistung:\1\160\153\222 8.0 ZG-Einheiten
+!S!\1\255\255\255Maniobrabilidad:\1\160\153\222 8.0 ZG-Unidades 
+!I!\1\255\255\255Manovrabilità:\1\160\153\222 8,0 Unità ZG 
+!F!\1\255\255\255Taux de manoeuvrabilité:\1\160\153\222 8.0 unités ZG
+
+
+!=!\1\255\255\255Shield Rating:\1\160\153\222 0.85 Flux :Minimal output, CCM grade Magneto-Repulsory Wave Device
+!G!\1\255\255\255Schildleistung:\1\160\153\222 0.85 Flux :Minimal Output, CCM-Klasse Magnetrückstosswellengerät
+!S!\1\255\255\255Grado de escudo:\1\160\153\222 0.85 Flux:Producción minima, dispositivo de onda magneto-repulsora de grado CCM 
+!I!\1\255\255\255Grado di protezione:\1\160\153\222 0,85 Flux :Output minimo, dispositivo ad onde magneto-repulsive di grado CCM
+!F!\1\255\255\255Taux Bouclier:\1\160\153\222 0.85 Flux: sortie minimale, dispositif VMR, grade ACM 
+
+!=!\1\255\255\255Ordnance:\1\160\153\222 Low-Level Primary fuselage configuration, with a maximum secondary payload of 66 missile stores in int
+!G!\1\255\255\255Geschütz:\1\160\153\222 Rumpfkonfiguriertes Primär der unteren Stufe mit einer maximalen Sekundärzuladung von 66 Geschossen
+!S!\1\255\255\255Artillería:\1\160\153\222 Configuración de fuselaje primario de bajo nivel, con una capacidad máxima de armas secundarias de 66 misiles
+!I!\1\255\255\255Artiglieria:\1\160\153\222 Configurazione della fusoliera primaria di basso livello, con una capienza massima di armi secondarie pari a 66 missili
+!F!\1\255\255\255Artillerie:\1\160\153\222 Configuration du fuselage primaire à niveau bas, avec un max d'armes secondaires de 66 missiles 
+
+!=!\1\255\255\255Wing Span:\1\160\153\222 13.7 Units
+!G!\1\255\255\255Spannweite:\1\160\153\222 13.7 Einheiten
+!S!\1\255\255\255Largo de alas:\1\160\153\222 13.7 Unidades 
+!I!\1\255\255\255Apertura alare:\1\160\153\222 13,7 Unità
+!F!\1\255\255\255Enverg. aile:\1\160\153\222 13.7 Unités
+
+!=!\1\255\255\255Overall Length:\1\160\153\222 17.25 Units
+!G!\1\255\255\255Gesamtlänge:\1\160\153\222 17.25 Einheiten
+!S!\1\255\255\255Largo total:\1\160\153\222 17.25 Unidades 
+!I!\1\255\255\255Lunghezza totale:\1\160\153\222 17,25 Unità 
+!F!\1\255\255\255Longueur:\1\160\153\222 17.25 Unités
+
+!=!\1\255\255\255Height: \1\160\153\222 5.1 Units
+!G!\1\255\255\255Höhe: \1\160\153\222 5.1 Einheiten
+!S!\1\255\255\255Altura: \1\160\153\222 5.1 Unidades 
+!I!\1\255\255\255Altezza: \1\160\153\222 5,1 Unità 
+!F!\1\255\255\255Hauteur: \1\160\153\222 5.1 Unités
+
+!=!\1\255\255\255Weight Empty: \1\160\153\222 10,445 Lbs
+!G!\1\255\255\255Leergewicht: \1\160\153\222 5.222 kg
+!S!\1\255\255\255Peso vacío: \1\160\153\222 5.222 kg 
+!I!\1\255\255\255Peso a vuoto: \1\160\153\222 5.222 kg 
+!F!\1\255\255\255Poids à vide: \1\160\153\222 5.222 kg
+
+!/!Magnum (866-873)
+!=!\1\255\255\255Max. Trans-Atmospheric Speed:\1\160\153\222 1,530 Knots
+!G!\1\255\255\255Max. Trans-Atmospheengeschw.:\1\160\153\222 1,530 Knoten
+!S!\1\255\255\255Límite de velocidad transatmosférica:\1\160\153\222 1,530 nudos 
+!I!\1\255\255\255Velocità transatmosferica max:\1\160\153\222 1.530 nodi 
+!F!\1\255\255\255Vitesse transatmosphérique max:\1\160\153\222 1,530 noeuds
+
+!=!\1\255\255\255Maneuverability Rating:\1\160\153\222 3.2 ZG-Units
+!G!\1\255\255\255Manövrierleistung:\1\160\153\222 3.2 ZG-Einheiten
+!S!\1\255\255\255Maniobrabilidad:\1\160\153\222 3.2 ZG-Unidades 
+!I!\1\255\255\255Manovrabilità:\1\160\153\222 3,2 Unità ZG 
+!F!\1\255\255\255Taux de manoeuvrabilité:\1\160\153\222 3.2 unités ZG
+
+!=!\1\255\255\255Shield Rating:\1\160\153\222 1.13 Flux :Enhanced output, DCM grade Magneto-Repulsory Wave Device
+!G!\1\255\255\255Schildleistung:\1\160\153\222 1.13 Flux :Verstärkter Output, DCM-Klasse Magnetrückstosswellengerät
+!S!\1\255\255\255Grado de escudo:\1\160\153\222 1.13 Flux:Producción optima, dispositivo de onda magneto-repulsora de grado DCM 
+!I!\1\255\255\255Grado di protezione:\1\160\153\222 1,13 Flux :Output massimo, dispositivo ad onde magneto-repulsive di grado DCM 
+!F!\1\255\255\255Taux Bouclier:\1\160\153\222 1.13 Flux: sortie optimisée, dispositif VMR, grade ACM
+
+!=!\1\255\255\255Ordnance:\1\160\153\222 High-Level Primary fuselage configuration, with a maximum secondary payload of 143 missile stores in i
+!G!\1\255\255\255Geschütz:\1\160\153\222 Rumpfkonfiguriertes Primär der oberen Stufe mit einer maximalen Sekundärzuladung von 143 Geschossen
+!S!\1\255\255\255Artillería:\1\160\153\222 Configuración de fuselaje primario de alto nivel, con una capacidad máxima de armas secundarias de 143 misiles
+!I!\1\255\255\255Artiglieria:\1\160\153\222 Configurazione della fusoliera primaria di alto livello, con una capienza massima di armi secondarie pari a 143 missili
+!F!\1\255\255\255Artillerie:\1\160\153\222 Configuration du fuselage primaire à haut niveau, avec un max d'armes secondaires de 143 missiles
+
+!=!\1\255\255\255Wing Span:\1\160\153\222 13.65 Units
+!G!\1\255\255\255Spannweite:\1\160\153\222 13.65 Einheiten
+!S!\1\255\255\255Largo de alas:\1\160\153\222 13.65 Unidades 
+!I!\1\255\255\255Apertura alare:\1\160\153\222 13,65 Unità 
+!F!\1\255\255\255Enverg. aile:\1\160\153\222 13.65 Unités
+
+!=!\1\255\255\255Overall Length:\1\160\153\222 17.7 Units
+!G!\1\255\255\255Gesamtlänge:\1\160\153\222 17.7 Einheiten
+!S!\1\255\255\255Largo total:\1\160\153\222 17.7 Unidades
+!I!\1\255\255\255Lunghezza totale:\1\160\153\222 17,7 Unità
+!F!\1\255\255\255Longueur:\1\160\153\222 17.7 Unités
+
+!=!\1\255\255\255Height: \1\160\153\222 7.05 Units
+!G!\1\255\255\255Höhe: \1\160\153\222 7.05 Einheiten
+!S!\1\255\255\255Altura: \1\160\153\222 7.05 Unidades 
+!I!\1\255\255\255Altezza: \1\160\153\222 7,05 Unità
+!F!\1\255\255\255Hauteur: \1\160\153\222 7.05 Unités
+
+!=!\1\255\255\255Weight Empty: \1\160\153\222 16,159 Lbs
+!G!\1\255\255\255Leergewicht: \1\160\153\222 8.079 kg
+!S!\1\255\255\255Peso vacío: \1\160\153\222 8.079 kg 
+!I!\1\255\255\255Peso a vuoto: \1\160\153\222 8.079 kg
+!F!\1\255\255\255Poids à vide: \1\160\153\222 8.079 kg
+
+!/!874 Enabled Controls: (used in training mission)
+!=!Enabled Controls:
+!G!Aktivierte Steuerung:
+!S!Controles activos:
+!I!Comandi attivati:
+!F!Commandes actives:
+
+!/!875 Forward (used in training mission)
+!=!Forward
+!G!Vorwärts
+!S!Avanzar
+!I!Avanti
+!F!Avant
+
+!/!876 Reverse (used in training mission)
+!=!Reverse
+!G!Rückwärts
+!S!Reversa
+!I!Indietro
+!F!Arrière
+
+!/!877 Slide Left (used in training mission)
+!=!Slide Left
+!G!Nach links gleiten
+!S!Deslice Izq
+!I!Scivola a sinistra
+!F!Glisser à gauche
+
+!/!878 Slide Right (used in training mission)
+!=!Slide Right
+!G!Nach rechts gleiten
+!S!Deslice Der
+!I!Scivola a destra
+!F!Glisser à droite
+
+!/!879 Slide Up (used in training mission)
+!=!Slide Up
+!G!Nach oben gleiten
+!S!Deslice Arriba
+!I!Scivola in alto
+!F!Changer d'altitude
+
+!/!880 Slide Down (used in training mission)
+!=!Slide Down
+!G!Nach unten gleiten
+!S!Deslice abajo
+!I!Scivola in basso
+!F!Glisser vers le bas
+
+!/!881 Pitch Up (used in training mission)
+!=!Pitch Up
+!G!Nach oben neigen
+!S!Naríz arriba
+!I!Inclina in alto
+!F!cabrer
+
+!/!882 Pitch Down (used in training mission)
+!=!Pitch Down
+!G!Nach unten neigen
+!S!Nariz abajo
+!I!Inclina in basso
+!F!piquer
+
+!/!883 Heading Left (used in training mission)
+!=!Heading Left
+!G!Nach links drehen
+!S!Girar a izq
+!I!Vira a sinistra
+!F!cap à gauche
+
+!/!884 Heading Right (used in training mission)
+!=!Heading Right
+!G!Nach rechts drehen
+!S!Girar a der
+!I!Vira a destra
+!F!cap à droite
+
+!/!885 Bank Left (used in training mission)
+!=!Bank Left
+!G!Nach links neigen
+!S!Inclinar a la izquierda
+!I!Inclina a sinistra
+!F!Incliner gauche
+
+!/!886 Bank Right (used in training mission)
+!=!Bank Right
+!G!Nach rechts neigen
+!S!Inclinar a la derecha
+!I!Inclina a destra
+!F!Incliner droite
+
+!/!887 Primary Weapon (used in training mission)
+!=!Primary Weapon
+!G!Primärwaffe
+!S!Arma primaria
+!I!Arma principale
+!F!Arme primaire
+
+!/!888 Secondary Weapon (used in training mission)
+!=!Secondary Weapon
+!G!Sekundärwaffe
+!S!Arma secundaria
+!I!Arma secondaria
+!F!Arme secondaire
+
+!/!889 Afterburner (used in training mission)
+!=!Afterburner
+!G!Nachbrenner
+!S!Postquemador
+!I!Postcombustore
+!F!Postcombustion
+
+!/!890 Reliable buffer overrun
+!=!Reliable buffer overrun
+!G!Zuverl. Pufferüberlauf
+!S!Memoria intermedia excedida
+!I!Memoria temporanea esaurita
+!F!Dépassement de tampon
+
+!/!891 Quick save game help text (help dialog)
+!=!Quick Save Game
+!G!Schnellspeicherung
+!S!Guardar rapido
+!I!Salvataggio rapido
+!F!Sauvegarde rapide
+
+!/!892 F9 Key
+!=!F9
+
+!G!F9
+!S!F9
+!I!F9
+!F!F9
+
+!/!893 help text for sending messages in multiplayer (help dialog)
+!=!Send message in multiplayer
+!G!Nachricht in Multiplayer senden
+!S!Manda mensaje en multijugador
+!I!Invia messaggio in mod. multigiocatore
+!F!Envoyer message en multijoueur
+
+!/!894 F8 Key
+!=!F8
+!G!F8
+!S!F8
+!I!F8
+!F!F8
+
+!/!Please look for unused entries (search for "unused") when adding new items

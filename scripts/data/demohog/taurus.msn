@@ -1,0 +1,12 @@
+NAME                    Taurus
+NUMLEVELS               1
+SINGLE                  NO
+KEYWORDS                GOALS2
+
+LEVEL                   1
+MINE                    Taurus.d3l
+PROGRESS                tunnelload.ogf
+
+BRANCH                  1
+
+

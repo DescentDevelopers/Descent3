@@ -1,8 +1,0 @@
-//////////////////////////////////////////////
-// D.A.L.L.A.S. Generated Message Table File
-//////////////////////////////////////////////
-
-NEXT_MESSAGE_ID_NUMBER     2
-
-// Message List
-Polar=Magnetic polarity reversed!

@@ -1,0 +1,190 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!========================= HUD Death Messages =================================================
+!/! Note: if it states that victim is first, then the first %s will be replaced by the nickname of the victim,
+!/! else the first nickname will be the name of the killer.
+
+!/!0:%s is out-gunned by %s (victim first)
+!=!%s is out-gunned by %s
+
+!/!1:%s gets shot down by %s (victim first)
+!=!%s gets shot down by %s
+
+!/!2:%s tags %s's toe (killer first)
+!=!%s tags %s's toe
+
+!/!3:%s downs %s! (killer first)
+!=!%s downs %s!
+
+!/!4:%s can't outmaneuver %s! (victim first)
+!=!%s can't outmaneuver %s!
+
+!/!5:%s becomes another statistic for %s! (victim first)
+!=!%s becomes another statistic for %s!
+
+!/!6:%s takes out %s! (killer first)
+!=!%s takes out %s!
+
+!/!7:%s was no match for %s (victim first)
+!=!%s was no match for %s
+
+!/!8:%s dreams of being as good as %s (victim first)
+!=!%s dreams of being as good as %s
+
+!/!9:%s gets destroyed by %s (victim first)
+!=!%s gets destroyed by %s
+
+
+!/! ------------------------ Suicide Messages ---------------------------------
+
+!/!10:%s spins out of control!
+!=!%s spins out of control!
+
+!/!11:%s has a major malfunction!
+!=!%s has a major malfunction!
+
+!/!12:%s experiences technical difficulties
+!=!%s experiences technical difficulties
+
+!/!13:%s fumbles for the pilots manual!
+!=!%s fumbles for the pilots manual!
+
+!/!14:%s pushes the red button!
+!=!%s pushes the red button!
+
+!/!15:%s pushes the envelope!
+!=!%s pushes the envelope!
+
+!/!16:%s scores 1 point [%d]		(HUD Message on score)
+!=!%s scores 1 point [%d]
+
+!/!17:%s scores %d points [%d]		(HUD Message on score)
+!=!%s scores %d points [%d]
+
+!/!18:You got a hoard orb			(HUD Message when you pickup an orb)
+!=!You got a hoard orb
+
+!/!19:You've got all the orbs you can handle	(HUD Message when you try to pickup an orb, but have max)
+!=!You've got all the orbs you can handle
+
+!/!20:Pilot		(Stats column label)
+!=!Pilot
+
+!/!21:Level		(Stats column label)
+!=!Level
+
+!/!22:Points	(Stats column label)
+!=!Points
+
+!/!23:High		(Stats column label pt.1)
+!=!High
+
+!/!24:Goal		(Stats column label pt.2)
+!=!Goal
+
+!/!25:Kills		(Stats column label)
+!=!Kills
+
+!/!26:Deaths	(Stats column label)
+!=!Deaths
+
+!/!27:Suicides	(Stats column label)
+!=!Suicides
+
+!/!28:Welcome to the Hoard %s!	(HUD Message on join)
+!=!Welcome to the Hoard %s!
+
+!/!29:%s has joined the Hoard	(HUD Message on join)
+!=!%s has joined the Hoard
+
+!/!30:Stats		(Stats column label)
+!=!Stats
+!/!31: Name of the game (maybe don't localize)
+!=!Hoard
+
+!/!32: Score label
+!=!Score
+
+!/!33: Highest score label
+!=!Highest
+
+!/!34: Ping label
+!=!Ping
+
+!/!35: HUD Score colors option in on-screen menu
+!=!HUD Score Colors
+
+!/!36: Use player ship colors for hud display (in on-screen menu)
+!=!Player Colors
+
+!/!37: Use normal colors for hud display (in on-screen menu)
+!=!Normal
+
+!/!38: Game configuration option in on-screen menu
+!=!Game Configuration
+
+!/!39: Hud message if you don't have enough hoard orbs to score
+!=!You need at least %d orbs to score
+
+!/!40: Saved stats header
+!=!Hoard\r\nGame: %s\r\nLevel: %d\r\n
+
+!/!41: Save stats header
+!=!Current Level Rankings\r\n
+
+!/!42: Save stats header
+!=![Rank] [Name]                     [Score]     [Kills]     [Deaths]   [Suicides] [Highest Goal] [Time In Game]
+
+!/!43: Save stats header
+!=!\r\nIndividual Stats\r\n
+
+!/!44: Time in game label (%s is generated...already localized in dmfc.str)
+!=!Total Time In Game: %s
+
+!/!45: Save stats header
+!=!Callsign:                     Kills:    Deaths:
+
+!/!46: Hud message when the stats are saved
+!=!Stats saved to file
+
+!/!47: Name of the game in the stats screen
+!=!Hoard
+
+!/!48: Return to game option in game config
+!=!Back to Game
+
+!/!49: label for the minimum number of orbs needed to score
+!=!Minimum Hoard Orbs To Score
+
+!/!50: Shortened Kills
+!=!K
+
+!/!51: Shortened Deaths
+!=!D
+
+!/!52: Shortened Suicides
+!=!S

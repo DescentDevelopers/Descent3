@@ -1,0 +1,353 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!========================= HUD Death Messages =================================================
+!/! Note: if it states that victim is first, then the first %s will be replaced by the nickname of the victim,
+!/! else the first nickname will be the name of the killer.
+
+!/!0:%s is out-gunned by %s (victim first)
+!=!%s is out-gunned by %s
+!G!%s wurde von %s umgelegt
+!S!%s es machacado por %s
+!I!%s è massacrato da %s
+!F!%s est perforé par %s.
+
+!/!1:%s gets shot down by %s (victim first)
+!=!%s gets shot down by %s
+!G!%s wird von %s abgeschossen
+!S!%s es abatido por %s
+!I!%s è colpito da %s
+!F!%s est abattu par %s.
+
+!/!2:%s tags %s's toe (killer first)
+!=!%s tags %s's toe
+!G!%s zerstört %s
+!S!%s destroza a %s
+!I!%s colpisce le dita di %s 
+!F!%s écrase %s.
+
+!/!3:%s downs %s! (killer first)
+!=!%s downs %s!
+!G!%s streckt %s nieder!
+!S!%s derriba a %s
+!I!%s abbatte %s
+!F!%s abat %s !
+
+!/!4:%s can't outmaneuver %s! (victim first)
+!=!%s can't outmaneuver %s!
+!G!%s wird %s nicht los!
+!S!%s no puede librarse de %s
+!I!%s non riesce a liberarsi di %s
+!F!%s n'est pas un défi pour %s !
+
+!/!5:%s becomes another statistic for %s! (victim first)
+!=!%s becomes another statistic for %s!
+!G!%s ist ein Weiterer auf %ss Liste!
+!S!%s se ha convertido en otro dato estadístico de %s
+!I!%s diventa un altro numero per %s
+!F!%s n'est qu'un point en plus pour %s.
+
+!/!6:%s takes out %s! (killer first)
+!=!%s takes out %s!
+!G!%s löscht %s aus!
+!S!%s acaba con %s
+!I!%s elimina %s
+!F!%s éjecte %s !
+
+!/!7:%s was no match for %s (victim first)
+!=!%s was no match for %s
+!G!%s war %s nicht gewachsen
+!S!%s no estaba a la altura de %s
+!I!%s non era all'altezza di %s
+!F!%s ne peut rien contre %s.
+
+!/!8:%s wishes he was as good as %s (victim first)
+!=!%s wishes he was as good as %s
+!G!%s wünschte, er wäre so gut wie %s
+!S!A %s le gustaría ser tan bueno como %s
+!I!%s vorrebbe essere in gamba come %s
+!F!%s aimerait être aussi bon que %s.
+
+!/!9:%s gets destroyed by %s (victim first)
+!=!%s gets destroyed by %s
+!G!%s wird von %s zerstört
+!S!%s es destruido por %s
+!I!%s viene annientato da %s
+!F!%s agonit face à %s.
+
+
+!/! ------------------------ Suicide Messages ---------------------------------
+
+!/!10:%s spins out of control!
+!=!%s spins out of control!
+!G!%s verliert die Kontrolle!
+!S!%s ha perdido el control
+!I!%s ha perso il controllo!
+!F!%s perd le contrôle !
+
+!/!11:%s has a major malfunction!
+!=!%s has a major malfunction!
+!G!%s hat eine erhebliche Störung!
+!S!%s tiene una avería grave
+!I!%s è in grave avaria!
+!F!%s a des problèmes techniques !
+
+!/!12:%s experiences technical difficulties
+!=!%s experiences technical difficulties
+!G!%s hat technische Schwierigkeiten
+!S!%s tiene dificultades técnicas
+!I!%s ha difficoltà tecniche
+!F!%s a des problèmes techniques !
+
+!/!13:%s fumbles for the pilots manual!
+!=!%s fumbles for the pilots manual!
+!G!%s tastet nach dem Pilotenhandbuch!
+!S!%s necesita el manual del piloto
+!I!%s cerca il manuale del pilota!
+!F!%s s'est trompé de bouton !
+
+!/!14:%s pushes the red button!
+!=!%s pushes the red button!
+!G!%s drückt den roten Knopf!
+!S!%s pulsa el botón rojo.
+!I!%s preme il pulsante rosso!
+!F!%s se repent de ses péchés !
+
+!/!15:%s pushes the envelope!
+!=!%s pushes the envelope!
+!G!%s drückt die Abdeckung!
+!S!%s sobrepasa los limites de la nave.
+!I!%s preme la copertura! 
+!F!%s a trop tiré sur la corde !
+
+!/!-------------- The following are column labels on the stats screen (F7 in game) ----------------
+
+!/!16:Pilot
+!=!Pilot
+!G!Pilot
+!S!Piloto
+!I!Pilota
+!F!Pilote
+
+!/!17:Kills
+!=!Kills
+!G!Abschüsse
+!S!Bajas
+!I!Uccide
+!F!Victimes
+
+!/!18:Deaths
+!=!Deaths
+!G!Verlorene Leben
+!S!Muertes
+!I!Morti
+!F!Morts
+
+!/!19:Suicides
+!=!Suicides
+!G!Selbstmorde
+!S!Suicidios
+!I!Suicidi
+!F!Suicides
+
+!/!20:Score
+!=!Score
+!G!Punkte
+!S!Puntuación
+!I!Punteggio
+!F!Score
+
+!/!21:Stats
+!=!Stats
+!G!Statistik
+!S!Estadísticas
+!I!Statistiche
+!F!Stats
+
+!/!=========================================
+
+!/!22:Welcome to the Anarchy %s!	(HUD Message on join)
+!=!Welcome to the Anarchy %s!
+!G!Willkommen zur Anarchie %s!
+!S!Bienvenido a Anarquía, %s
+!I!Benvenuto all'Anarchia %s
+!F!Bienvenue à l'anarchie %s !
+
+!/!23:%s has joined the Anarchy		(HUD Message on join)
+!=!%s has joined the Anarchy
+!G!%s ist der Anarchie beigetreten
+!S!%s se ha unido a Anarquía
+!I!%s si è unito all'Anarchia
+!F!%s a rejoint l'anarchie
+
+!/!24:Points	(column label on the stats screen)
+!=!Points
+!G!Punkte
+!S!Puntos
+!I!Punti
+!F!Points
+
+!/!25-27: Hud messages displayed when you change the type of information displayed on the hud
+!=!Anarchy: HUD Display set to None
+!G!Anarchie: CPA ausgeschaltet 
+!S!Anarquía: Presentador frontal de datos establecido en Ninguno
+!I!Anarchia: il video del collimatore è impostato su Nessuno
+!F!Anarchie: Arrêt Affichage Collimateur
+!=!Anarchy: HUD Display set to Scores
+!G!Anarchie: CPA: Punkte anzeigen 
+!S!Anarquía: Presentador frontal de datos establecido en Puntuación
+!I!Anarchia: il video del collimatore è impostato su Punteggio
+!F!Anarchie : Affichage Collimateur sur Score
+!=!Anarchy: HUD Display set to Efficiency
+!G!Anarchie: CPA: Leistung anzeigen
+!S!Anarquía: Presentador frontal de datos establecido en Eficacia
+!I!Anarchia: il video del collimatore è impostato su Efficienza
+!F!Anarchie: Affichage Collimateur sur Efficacité
+
+!/!28: On-Screen menu option to change the hud display style
+!=!HUD Display
+!G!Cockpitanzeige
+!S!Pantalla de cabina
+!I!Video del collimatore
+!F!Affichage Collimateur
+
+!/!29-31: On-Screen menu options (for above menu)
+!=!None
+!G!Keine
+!S!Ninguno
+!I!Nessuno
+!F!Aucun
+!=!Score
+!G!Punkte
+!S!Puntuación
+!I!Punteggio
+!F!Score
+!=!Efficiency
+!G!Leistung
+!S!Eficacia
+!I!Efficienza
+!F!Efficacité
+
+!/!32: On-Screen menu option to change the hud display colors
+!=!HUD Score Colors
+!G!CPA: Farbe der Punktanzeige
+!S!Colores de puntuación del presentador
+!I!Colori del punteggio del collimatore
+!F!Couleurs Collimateur
+
+!/!33,34: On-Screen menu options (for above menu)
+!=!Player Colors
+!G!Spielerfarben
+!S!Colores del jugador
+!I!Colori del giocatore
+!F!Couleur du joueur
+!=!Normal
+!G!Normal
+!S!Normal
+!I!Normale
+!F!Normal
+
+!/!35: Label for ping time column
+!=!Ping
+!G!Ping
+!S!Ping
+!I!Ping
+!F!Ping
+
+!/!36: Header for stats file
+!=!Anarchy\r\nGame: %s\r\nLevel: %d\r\n
+!G!Anarchie\r\nSpiel: %s\r\nLevel: %d\r\n 
+!S!Anarquía\r\nPartida: %s\r\nNivel: %d\r\n
+!I!Anarchia\r\n\Partita %s\r\nLivello: %d\r\n
+!F!Anarchie\r\nPartie: %s\r\nNiveau: %d\d\n
+
+!/!37: The 'player's scores' header in the stats file...keep the position of the start of each column
+!/!at the same position
+!=![Rank] [Name]                      [Score]     [Kills]     [Deaths]   [Suicides] [Time In Game]
+!G![Rang] [Name]                      [Punkte]    [Abschüsse] [Verl. Leben]   [Selbstmorde] [Spielzeit]
+!S![Rango][Nombre]                    [Puntuación][Bajas]     [Muertes]  [Suicidios][Tiempo
+!I![Pos] [Nome]                      [Punt]      [Ucc]     [Morti]      [Suicidi]     [Tempo]
+!F![Rang] [Nom]				  [Score]	  [Victimes]  [Morts]    [Suicides] [Temps de Jeu]
+
+!/!38: Invidual Stats header for stats file
+!=!\r\nIndividual Stats\r\n
+!G!\r\nIndividuelle Statistik\r\n 
+!S!\r\nEstadísticas individuales\r\n
+!I!\r\nStatistiche individuali\r\n
+!F!\r\nStats personnelles\r\n
+
+!/!39: Time in game label for stats files
+!=!Total Time In Game: %s
+!G!Gesamte Spielzeit: %s
+!S!Tiempo total en partida: %s
+!I!Tempo totale partita: %s
+!F!Durée de la partie: %s 
+
+!/!40: Header for list of killers/victims in stats file, keep position of columns the same
+!=!Callsign:                     Kills:    Deaths:
+!G!Rufname:                      Abschüsse: Verl. Leben:
+!S!Llamada:                      Bajas:    Muertes:
+!I!Chiamata:                     Ucc:      Morti
+!F!Indicatif:			   Victimes: Morts:
+
+!/!41: Hud message given when the stats are saved
+!=!Stats saved to file
+!G!Statistik in Datei gespeichert
+!S!Estadísticas guardadas en archivo
+!I!Statistiche salvate
+!F!Stats enregistrées
+
+!/!42,43: Hud messages displayed when you change the hud color type
+!=!Anarchy HUD Color Model: Player Colors
+!G!Anarchie CPA Farbmodell: Spielerfarben 
+!S!Modelo de color del presentador Anarquía: Colores del jugador
+!I!Modello di colore del collimatore Anarchia: Colori del giocatore
+!F!Couleur du collimateur: couleurs du joueur
+
+!=!Anarchy HUD Color Model: Normal
+!G!Anarchie CPA Farbmodell: Normal 
+!S!Modelo de color del presentador Anarquía: Normal
+!I!Modello di colore del collimatore Anarchia: Normale
+!F!Couleur Collimateur pour Anarchie: Normal
+
+!/!44,45,46: Shortened Kills,Deaths,Suicides
+!=!K
+!G!A
+!S!B
+!I!U
+!F!V
+
+!=!D
+!G!VL
+!S!M
+!I!M
+!F!M
+
+!=!S
+!G!S
+!S!S
+!I!S
+!F!S
