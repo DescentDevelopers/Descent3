@@ -475,6 +475,7 @@ void loki_initialize(int argc, char **argv, char *desc) {
   // printf("base path: %s\n", basepath);
   // printf("pref path: %s\n", prefpath);
 
+  printf("%s\n", desc);
 } /* loki_initialize */
 
 /* end of loki_utils.c ... */

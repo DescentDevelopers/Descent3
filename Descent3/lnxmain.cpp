@@ -54,8 +54,6 @@
 #include "osiris_dll.h"
 #include "loki_utils.h"
 
-#include "log.h"
-
 #if defined(MACOSX)
 #include <SDL.h>
 #endif
@@ -471,15 +469,6 @@ static void check_beta() {
 int main(int argc, char *argv[]) {
   __orig_pwd = getcwd(NULL, 0);
 
-  /* Setup the spdlog system */
-  InitLog();
-
-  #ifdef DEBUG
-  spdlog::set_level(spdlog::level::debug);
-  #else
-  spdlog::set_level(spdlog::level::info);
-  #endif
-
   setbuf(stdout, NULL);
   setbuf(stderr, NULL);
 
@@ -574,8 +563,6 @@ int main(int argc, char *argv[]) {
            "Client",
 #endif
            D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
-
-  SPDLOG_INFO(game_version_buffer);
 
   game_version += 2; // skip those first newlines for loki_initialize.
 

@@ -10,6 +10,3 @@ brew "ninja"
 
 # zlib
 brew "zlib"
-
-# spdlog
-brew "spdlog"

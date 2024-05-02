@@ -30,7 +30,6 @@
 #include "init.h"
 #include "dedicated_server.h"
 #include "resource.h"
-#include "log.h"
 
 const char *English_strings[] = {"Descent 3 under Windows NT requires version 4.0 or greater of NT to run.",
                                  "Descent 3 requires  Windows 9x, NT 4.0 or greater to run.",
@@ -594,8 +593,6 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
   oeD3Win32App *d3;
   extern bool w32_mouseman_hack; // from winapp.cpp
   extern bool joy_chpro_hack;    // located in winjoy.cpp
-
-  InitLog();
 
   strupr(szCmdLine);
   GatherArgs(szCmdLine);
