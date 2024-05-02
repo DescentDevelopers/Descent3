@@ -1821,7 +1821,7 @@ void cGravityRoomBoxStates(int gravity_room, int gravity_type) {
     sbyte cur_box_state = Gravity_room_box_states[gravity_room - 1][i - 1];
 
     if ((gravity_type != cur_box_state) || (gravity_type == cur_box_state && gravity_type == G_NONE)) {
-      sprintf(objname, "r%dBox%d", gravity_room, i);
+      snprintf(objname, sizeof(objname), "r%dBox%d", gravity_room, i);
       handle = Scrpt_FindObjectName(objname);
 
       if (handle > OBJECT_HANDLE_NONE) {
@@ -1856,7 +1856,7 @@ void cUpdateGravityRoomBoxStates(int gravity_room) {
     char objname[64];
     sbyte cur_box_state = Gravity_room_box_states[gravity_room - 1][i - 1];
     if (cur_box_state == G_NONE) {
-      sprintf(objname, "r%dBox%d", gravity_room, i);
+      snprintf(objname, sizeof(objname), "r%dBox%d", gravity_room, i);
       handle = Scrpt_FindObjectName(objname);
 
       if (handle > OBJECT_HANDLE_NONE) {
@@ -1898,7 +1898,7 @@ void cOffAIForSharksInRoom(int state, int room_n) {
     int handle;
     char objname[64];
 
-    sprintf(objname, "SecShark%d-%d", room_n, i + 1);
+    snprintf(objname, sizeof(objname), "SecShark%d-%d", room_n, i + 1);
     handle = Scrpt_FindObjectName(objname);
 
     if (handle >= OBJECT_HANDLE_NONE) {
@@ -1926,7 +1926,7 @@ void cSetSharkTarget(int room_n, int objhandle) {
     int handle;
     char objname[64];
 
-    sprintf(objname, "SecShark%d-%d", room_n, i + 1);
+    snprintf(objname, sizeof(objname), "SecShark%d-%d", room_n, i + 1);
     handle = Scrpt_FindObjectName(objname);
 
     if (handle >= OBJECT_HANDLE_NONE) {
@@ -2255,15 +2255,15 @@ void cEndSequenceFrame(int playerobj) {
         //	get handle of object
         switch (fx_type) {
         case 0:
-          sprintf(name, "X%d %c", exit_room_info[r].room_number, cmds[c]);
+          snprintf(name, sizeof(name), "X%d %c", exit_room_info[r].room_number, cmds[c]);
           break;
         case 1:
         case 2:
         case 3:
-          sprintf(name, "X%d Spew %c", exit_room_info[r].room_number, cmds[c]);
+          snprintf(name, sizeof(name), "X%d Spew %c", exit_room_info[r].room_number, cmds[c]);
           break;
         case 4:
-          sprintf(name, "X%d Sparks%c", exit_room_info[r].room_number, cmds[c]);
+          snprintf(name, sizeof(name), "X%d Sparks%c", exit_room_info[r].room_number, cmds[c]);
           break;
         default:
           name[0] = 0;
@@ -2989,7 +2989,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    sprintf(english_filename, "%s.msg", filename);
+    snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
     lang_type = Game_GetLanguage();
     if (lang_type == LANGUAGE_FRENCH)
       strcat(filename, "_FRN");
