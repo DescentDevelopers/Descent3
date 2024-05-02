@@ -346,7 +346,7 @@
 #ifdef DEBUG_BREAK
 #undef DEBUG_BREAK
 #endif
-#if (defined __i386__)
+#if (defined __i386__) || defined(__x86_64__)
 #define DEBUG_BREAK()                                                                                                  \
   do {                                                                                                                 \
     if (DLLDebugBreak_callback_stop)                                                                                   \

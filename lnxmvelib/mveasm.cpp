@@ -1575,7 +1575,8 @@ void MVE_gfxSetSplit(unsigned line);
 
 // rcg07272000
 // need this on non-Intel platforms. Intel uses int $3.
-#if (defined __i386__)
+#if (defined __i386__) || defined(__x86_64__)
+#error
 #define int3() __asm__ __volatile__("int $3")
 #else
 #define int3() raise(SIGTRAP)
