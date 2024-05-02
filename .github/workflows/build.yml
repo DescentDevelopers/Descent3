@@ -7,7 +7,8 @@ on:
     paths-ignore:
       - '**/README.md'
       - '**/LICENSE'
-      - '**/.github/**'
+      - '**/.github/ISSUE_TEMPLATE/*'
+      - '**/.github/pull_request/template.md'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
@@ -56,31 +57,67 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache dependencies
+        if: ${{ matrix.os.preset != 'linux' }}
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/Homebrew/
+            /usr/local/bin/
+            /usr/local/Cellar/
+            /usr/local/opt/
+            ~/.cache/
+            ~/.ccache/
+            ~/.conan/
+            ~/.npm/
+            ~/.yarn/
+            ~/.cargo/
+            ~/Library/Caches/Homebrew/
+            /vcpkg/downloads/
+            /vcpkg/installed/
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/lockfiles') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
       - name: Install macOS dependencies
         if: ${{ matrix.os.preset == 'mac' }}
         run: |
           # Install packages from Homebrew
           brew bundle install
 
+      # `autopoint`, `gperf` tools needed for another package, probably wayland dependencies
       - name: Install Linux dependencies
         if: ${{ matrix.os.preset == 'linux' }}
         run: |
           sudo apt update
           sudo apt install -y --no-install-recommends \
-            ninja-build cmake g++ libgtest-dev libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev libspdlog-dev
+            ninja-build cmake g++ libgtest-dev libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev libspdlog-dev \
+            libx11-dev libxft-dev libxext-dev \
+            libwayland-dev libxkbcommon-dev libegl1-mesa-dev \
+            libibus-1.0-dev \
+            autopoint gperf
 
-      - name: Configure CMake
+      - uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: "501cb01e517ee5689577bb01ba8bd1b4c1041a53"
+
+      - name: Configure and build
+        uses: lukka/run-cmake@v10
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-          VCPKG_ROOT: C:/vcpkg
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON
-
-      - name: Build ${{ matrix.build_type }}
-        run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
+        with:
+          configurePreset: ${{matrix.os.preset}}
+          configurePresetAdditionalArgs: "['-DBUILD_TESTING=ON', '-DENABLE_LOGGER=ON']"
+          buildPreset: ${{matrix.os.preset}}
+          buildPresetAdditionalArgs: "['--config ${{matrix.build_type}}', '--verbose', '-Wno-unused-value', '-Wno-int-to-pointer-cast']"
 
       - name: Run ${{ matrix.build_type }} Unittests
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
+
+      - name: Packaging
+        # TO-DO: Replace with full packaging steps
+        run: cp LICENSE ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/${{ matrix.build_type }}/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
