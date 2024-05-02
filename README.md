@@ -13,7 +13,7 @@ Purchase Descent 3 from a reputable source and install it, then replace the main
 See your platform below:
 
 #### Windows
-In the install folder, rename `main.exe` to `main.old` and take your built `Descent3.exe`, name it `main.exe`, and add it to the install folder.
+If still using the Descent 3 launcher, copy your `Descent3.exe` binary to your install folder and rename it `main.exe` (back up your old one). Otherwise, drop in `Descent3.exe` and play!
 
 #### MacOS
 Right-click Descent3.app, click Show Package Contents. Back up your `Descent3` binary and drop your built `Descent3` binary into the install (Contents/MacOS) folder.
