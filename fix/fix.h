@@ -61,22 +61,20 @@
 #ifndef _FIX_H
 #define _FIX_H
 
-#include "math.h"
-
-// Disable the "possible loss of data" warning
-#pragma warning(disable : 4244)
+#include <cmath>
+#include <cstdint>
 
 // Angles are unsigned shorts
-typedef unsigned short angle;
+typedef uint16_t angle;
 
 // The basic fixed-point type
-typedef long fix;
+typedef int32_t fix;
 
-#define PI 3.141592654
+#define PI 3.141592654f
 #define PIOVER2 1.570796327 // DAJ
 
 // Constants for converted between fix and float
-#define FLOAT_SCALER 65536.0
+#define FLOAT_SCALER 65536.0f
 #define FIX_SHIFT 16
 
 // 1.0 in fixed-point
@@ -105,15 +103,10 @@ fix FloatToFixFast(float num);
 //??#define FloatToFix(num) Round((num) * FLOAT_SCALER)
 #define FloatToFix(num) ((fix)((num) * FLOAT_SCALER))
 #define IntToFix(num) ((num) << FIX_SHIFT)
-#define ShortToFix(num) (((long)(num)) << FIX_SHIFT)
+#define ShortToFix(num) (((int32_t)(num)) << FIX_SHIFT)
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
-#define FixToShort(num) ((short)((num) >> FIX_SHIFT))
-
-// Fixed-point math functions in inline ASM form
-#if   defined(WIN32)
-#include "win\fixwin32.h"
-#endif
+#define FixToShort(num) ((int16_t)((num) >> FIX_SHIFT))
 
 // use this instead of:
 // for:  (int)floor(x+0.5f) use FloatRound(x)

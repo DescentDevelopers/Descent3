@@ -60,9 +60,7 @@
 #include "application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
-//@@#include "mem.h"
 #include "mono.h"
-// #include "local_malloc.h"
 #include "pstring.h"
 #include <stdarg.h>
 #include <string.h>
@@ -70,9 +68,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#define DECLARE_POINTERS
 #include "linux/dyna_curses.h"
-#undef DECLARE_POINTERS
 
 #include <algorithm>
 

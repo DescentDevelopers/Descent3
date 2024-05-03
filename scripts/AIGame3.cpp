@@ -29,6 +29,7 @@
 #include "AIGame3_External.h"
 
 #include "module.h"
+#include "psrand.h"
 
 #ifdef __cplusplus
 extern "C" {

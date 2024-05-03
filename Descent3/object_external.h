@@ -352,10 +352,6 @@
 
 // Static Robot ids
 #define ROBOT_GUIDEBOT 0 // NOTE: this must match GENOBJ_GUIDEBOT
-#ifdef _WIN32
 #define ROBOT_GUIDEBOTRED 2 // NOTE: this must match GENOBJ_GUIDEBOTRED
-#else
-#define ROBOT_GUIDEBOTRED 0 // NOTE: this must match GENOBJ_GUIDEBOTRED
-#endif
 
 #endif
