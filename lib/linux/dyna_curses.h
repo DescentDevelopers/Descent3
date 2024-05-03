@@ -16,12 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef DECLARE_POINTERS
-#define FEXTERN
-#else
-#define FEXTERN extern
-#endif
 #include <curses.h>
+#include <dlfcn.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #define LINES (*soLINES)
 #define COLS (*soCOLS)
@@ -42,61 +40,55 @@
 #define doupdate sodoupdate
 #define mvwin somvwin
 
-FEXTERN int *soLINES;
-FEXTERN int *soCOLS;
-FEXTERN WINDOW **sostdscr;
+int *soLINES;
+int *soCOLS;
+WINDOW **sostdscr;
 
 typedef WINDOW *(*initscr_fp)(void);
-FEXTERN initscr_fp soinitscr;
+initscr_fp soinitscr;
 
 typedef WINDOW *(*newwin_fp)(int, int, int, int);
-FEXTERN newwin_fp sonewwin;
+newwin_fp sonewwin;
 
 typedef int (*wclear_fp)(WINDOW *);
-FEXTERN wclear_fp sowclear;
+wclear_fp sowclear;
 
 typedef int (*wrefresh_fp)(WINDOW *);
-FEXTERN wrefresh_fp sowrefresh;
+wrefresh_fp sowrefresh;
 
 typedef int (*scrollok_fp)(WINDOW *, bool);
-FEXTERN scrollok_fp soscrollok;
+scrollok_fp soscrollok;
 
 typedef int (*leaveok_fp)(WINDOW *, bool);
-FEXTERN leaveok_fp soleaveok;
+leaveok_fp soleaveok;
 
 typedef int (*wmove_fp)(WINDOW *, int, int);
-FEXTERN wmove_fp sowmove;
+wmove_fp sowmove;
 
 typedef int (*delwin_fp)(WINDOW *);
-FEXTERN delwin_fp sodelwin;
+delwin_fp sodelwin;
 
 typedef int (*endwin_fp)(void);
-FEXTERN endwin_fp soendwin;
+endwin_fp soendwin;
 
 typedef int (*wprintw_fp)(WINDOW *, const char *, ...);
-FEXTERN wprintw_fp sowprintw;
+wprintw_fp sowprintw;
 
 typedef int (*wnoutrefresh_fp)(WINDOW *);
-FEXTERN wnoutrefresh_fp sownoutrefresh;
+wnoutrefresh_fp sownoutrefresh;
 
 typedef int (*mvwprintw_fp)(WINDOW *, int, int, const char *, ...);
-FEXTERN mvwprintw_fp somvwprintw;
+mvwprintw_fp somvwprintw;
 
 typedef int (*wtouchln_fp)(WINDOW *, int, int, int);
-FEXTERN wtouchln_fp sowtouchln;
+wtouchln_fp sowtouchln;
 
 typedef int (*doupdate_fp)(void);
-FEXTERN doupdate_fp sodoupdate;
+doupdate_fp sodoupdate;
 
 typedef int (*mvwin_fp)(WINDOW *, int, int);
-FEXTERN mvwin_fp somvwin;
+mvwin_fp somvwin;
 
-#ifndef DECLARE_POINTERS
-bool LoadCursesLib(bool load = true);
-#else
-#include <dlfcn.h>
-#include <stdlib.h>
-#include <stdio.h>
 void LoadCursesLibSetNULL(void) {
   soLINES = NULL;
   soCOLS = NULL;
@@ -224,4 +216,3 @@ load_error:
   handle = NULL;
   return false;
 }
-#endif
