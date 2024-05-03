@@ -1,4 +1,5 @@
 set(HEADERS
+  dyna_pthread.h
   lnxdsound.h
   mvegfx.h
   mvelibi.h
