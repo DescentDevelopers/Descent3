@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ extern bool DDIO_preemptive;
 
 bool ddio_JoyHandler();
 void ddio_DebugMessage(unsigned err, char *fmt, ...);
-float ddio_TickToSeconds(unsigned long ticks);
+float ddio_TickToSeconds(unsigned int ticks);
 
 void ddio_KeyHandler(MSG *msg);
 void ddio_MouseHandler(MSG *msg);

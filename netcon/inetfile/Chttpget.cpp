@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -208,7 +208,7 @@ void ChttpGet::PrepSocket(char *URL) {
     m_State = HTTP_STATE_SOCKET_ERROR;
     return;
   }
-  unsigned long arg;
+  unsigned int arg;
 
   arg = true;
 #if defined(WIN32)

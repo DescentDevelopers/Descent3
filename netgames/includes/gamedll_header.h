@@ -924,7 +924,7 @@ DMFCDLLOUT(InitPlayerNewShip_fp DLLInitPlayerNewShip;)
 
 // Returns internet address format from string address format...ie "204.243.217.14"
 // turns into 1414829242
-typedef unsigned long (*nw_GetHostAddressFromNumbers_fp)(char *str);
+typedef unsigned int (*nw_GetHostAddressFromNumbers_fp)(char *str);
 DMFCDLLOUT(nw_GetHostAddressFromNumbers_fp DLLnw_GetHostAddressFromNumbers;)
 
 //	Removes all addon table files from D3 (really shouldn't be called, automatically done)

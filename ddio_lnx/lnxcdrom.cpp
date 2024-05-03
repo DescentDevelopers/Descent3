@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -522,7 +522,7 @@ bool system_cdroms::Mount(void) {
   /*  don't do this.
   // Not mounted? Do it ourselves.
       // so we now have our directory, try to mount
-      unsigned long int rwflag = MS_MGC_VAL|MS_RDONLY;
+      unsigned int int rwflag = MS_MGC_VAL|MS_RDONLY;
       int ret = mount(name,m_MountedDir,"iso9660",rwflag,NULL);
       if(ret!=0)
       {
@@ -757,8 +757,8 @@ void system_cdroms::QueryDefaultDevice(void) {
     		sptr++;
     	}
     	*dptr = '0';dptr++;
-    	*dptr = '\0';	
-	
+    	*dptr = '\0';
+
     	dptr = mountpoint + strlen(mountpoint) - 1;
 
     	// now keep attempting to make the directory until we do or can't even try

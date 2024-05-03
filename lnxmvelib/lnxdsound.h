@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -78,12 +78,12 @@ typedef struct {
   unsigned int play_cursor;
   unsigned int write_cursor;
   unsigned int flags;
-  unsigned long left_vol, right_vol;
+  unsigned int left_vol, right_vol;
 
   unsigned char *buffer;
 
-  signed long volume;
-  signed long pan;
+  signed int volume;
+  signed int pan;
 
   WAVEFORMATEX wfx;
 
@@ -125,7 +125,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff);
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol);
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol);
 
 ///////////////////////////
 // LnxSoundBuffer_SetPan
@@ -136,7 +136,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol);
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed long pan);
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed int pan);
 
 /////////////////////////
 // LnxSoundBuffer_Stop

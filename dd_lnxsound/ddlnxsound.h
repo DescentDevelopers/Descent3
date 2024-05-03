@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@
 typedef struct LNXSTREAMTAG {
   //	pthread_t thread_id;
   SDL_Thread *thread_id;
-  unsigned long thread_handle;
+  unsigned int thread_handle;
   volatile bool thread_request_kill;
   volatile bool thread_alive;
   volatile bool thread_waiting_for_death;

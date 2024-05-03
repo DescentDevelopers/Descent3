@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ int SerialCheck(void);
 void SerialError(int error);
 
 // returns the serialnumber of the user
-unsigned long SerialGetSerialNum(void);
+unsigned int SerialGetSerialNum(void);
 
 /////////////////////////////////////////////////////////////////////////////
 //	These are the functions used for serialization

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  int SetVolume(signed long vol) { return m_pBuffer->SetVolume(vol); }
+  int SetVolume(signed int vol) { return m_pBuffer->SetVolume(vol); }
 
   ///////////////////////////
   // SetPan
@@ -105,7 +105,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  int SetPan(signed long pan) { return m_pBuffer->SetPan(pan); }
+  int SetPan(signed int pan) { return m_pBuffer->SetPan(pan); }
 
   /////////////////////////
   // Stop
@@ -289,7 +289,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  int SetVolume(signed long vol) { return LnxSoundBuffer_SetVolume(m_pBuffer, vol); }
+  int SetVolume(signed int vol) { return LnxSoundBuffer_SetVolume(m_pBuffer, vol); }
 
   ///////////////////////////
   // SetPan
@@ -300,7 +300,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  int SetPan(signed long pan) { return LnxSoundBuffer_SetPan(m_pBuffer, pan); }
+  int SetPan(signed int pan) { return LnxSoundBuffer_SetPan(m_pBuffer, pan); }
 
   /////////////////////////
   // Stop
