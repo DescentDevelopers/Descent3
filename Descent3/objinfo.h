@@ -358,11 +358,7 @@ extern char *Anim_state_names[];
 // These defines must correspond to the Static_object_names array
 #define GENOBJ_GUIDEBOT 0 // NOTE: This must match ROBOT_GUIDEBOT
 #define GENOBJ_CHAFFCHUNK 1
-#ifdef _WIN32
 #define GENOBJ_GUIDEBOTRED 2 // NOTE: This must match ROBOT_GUIDEBOTRED
-#else
-#define GENOBJ_GUIDEBOTRED 0 // NOTE: This must match ROBOT_GUIDEBOTRED
-#endif
 
 #define IS_GUIDEBOT(x)                                                                                                 \
   (((object *)x)->type == OBJ_ROBOT &&                                                                                 \

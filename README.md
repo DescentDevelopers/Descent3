@@ -13,7 +13,7 @@ Purchase Descent 3 from a reputable source and install it, then replace the main
 See your platform below:
 
 #### Windows
-In the install folder, rename `main.exe` to `main.old` and take your built `Descent3.exe`, name it `main.exe`, and add it to the install folder.
+If still using the Descent 3 launcher, copy your `Descent3.exe` binary to your install folder and rename it `main.exe` (back up your old one). Otherwise, drop in `Descent3.exe` and play!
 
 #### MacOS
 Right-click Descent3.app, click Show Package Contents. Back up your `Descent3` binary and drop your built `Descent3` binary into the install (Contents/MacOS) folder.
@@ -37,23 +37,30 @@ setx PATH=%VCPKG_ROOT%;%PATH%
 
 Build Descent 3:
 ```sh
-cmake --preset win -D LOGGER=[ON|OFF]
+cmake --preset win -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset win --config [Debug|Release]
 ```
 
 #### Building - MacOS
 ```sh
 brew bundle install
-cmake --preset mac -D LOGGER=[ON|OFF]
+cmake --preset mac -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset mac --config [Debug|Release]
 ```
 
-#### Building - Linux
+#### Building - Linux (Ubuntu)
 ```sh
-sudo dpkg --add-architecture i386
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev libxext6:i386 zlib1g-dev
-cmake --preset linux -D LOGGER=[ON|OFF]
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl1.2-dev libsdl-image1.2-dev libncurses-dev zlib1g-dev libspdlog-dev
+cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
+cmake --build --preset linux --config [Debug|Release]
+```
+
+#### Building - Linux (Fedora)
+```sh
+sudo dnf update --refresh
+sudo dnf install -y ninja-build cmake gcc-c++ SDL-devel SDL_image-devel ncurses-devel zlib-devel spdlog-devel
+cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
 

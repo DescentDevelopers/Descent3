@@ -64,17 +64,14 @@
  * $NoKeywords: $
  */
 
+#include <cmath>
+
 #include "fix.h"
 
-#include <time.h>
-#include <stdlib.h>
-#include "psrand.h"
 // Tables for trig functions
 float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
 angle asin_table[257];   // 1 quadrants worth, +1 for interpolation
 angle acos_table[257];
-
-#define PI 3.141592654
 
 // Generate the data for the trig tables
 void InitMathTables() {
@@ -83,13 +80,13 @@ void InitMathTables() {
 
   for (i = 0; i < 321; i++) {
     rad = (float)((double)i / 256.0 * 2 * PI);
-    sincos_table[i] = (float)sin(rad);
+    sincos_table[i] = std::sin(rad);
   }
 
   for (i = 0; i < 256; i++) {
 
-    s = asin((float)i / 256.0);
-    c = acos((float)i / 256.0);
+    s = std::asin((float)i / 256.0f);
+    c = std::acos((float)i / 256.0f);
 
     s = (s / (PI * 2));
     c = (c / (PI * 2));
@@ -100,9 +97,6 @@ void InitMathTables() {
 
   asin_table[256] = asin_table[255];
   acos_table[256] = acos_table[255];
-
-  //	Initialize a random seed.
-  ps_srand(time(NULL));
 }
 
 // Returns the sine of the given angle.  Linearly interpolates between two entries in a 256-entry table
@@ -179,7 +173,7 @@ angle FixAsin(float v) {
   fix vv;
   int i, f, aa;
 
-  vv = FloatToFix(fabs(v));
+  vv = FloatToFix(std::fabs(v));
 
   if (vv >= F1_0) // check for out of range
     return 0x4000;
@@ -201,7 +195,7 @@ angle FixAcos(float v) {
   fix vv;
   int i, f, aa;
 
-  vv = FloatToFix(fabs(v));
+  vv = FloatToFix(std::fabs(v));
 
   if (vv >= F1_0) // check for out of range
     return 0;
@@ -231,12 +225,12 @@ angle FixAtan2(float cos, float sin) {
 
   q = (sin * sin) + (cos * cos);
 
-  m = sqrt(q);
+  m = std::sqrt(q);
 
   if (m == 0)
     return 0;
 
-  if (fabs(sin) < fabs(cos)) {
+  if (std::fabs(sin) < std::fabs(cos)) {
     // sin is smaller, use arcsin
     t = FixAsin(sin / m);
     if (cos < 0)

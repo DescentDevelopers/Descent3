@@ -967,6 +967,7 @@
 #include "stringtable.h"
 #include "hlsoundlib.h"
 #include "player.h"
+#include "psrand.h"
 #include "ambient.h"
 #include "matcen.h"
 #include "dedicated_server.h"
@@ -1050,6 +1051,8 @@ const float kAnglesPerDegree = 65536.0f / 360.0f;
 int CD_inserted = 0;
 float Mouselook_sensitivity = kAnglesPerDegree * kDefaultMouselookSensitivity;
 float Mouse_sensitivity = 1.0f;
+
+int merc_hid = -1;
 
 int IsLocalOk(void) {
 #ifdef WIN32
@@ -1548,40 +1551,6 @@ tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
                                        {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
 int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
 
-// Returns true if Mercenary is installed
-bool MercInstalled() {
-#if defined(LINUX)
-  return false; // TODO: check for mercenary
-#else
-  HKEY key;
-  DWORD lType;
-  LONG error;
-
-#define BUFLEN 2000
-  char dir[BUFLEN];
-  DWORD dir_len = BUFLEN;
-
-  error =
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3 Mercenary", 0,
-                   KEY_ALL_ACCESS, &key);
-
-  if ((error == ERROR_SUCCESS)) {
-    lType = REG_EXPAND_SZ;
-
-    unsigned long len = BUFLEN;
-    error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
-
-    if (error == ERROR_SUCCESS) {
-      // Mercenary is installed
-      return true;
-    }
-  }
-
-  // Mercenary not installed
-  return false;
-#endif
-}
-
 /*
         I/O systems initialization
 */
@@ -1668,7 +1637,7 @@ void InitIOSystems(bool editor) {
   }
 
   // Init hogfiles
-  int d3_hid = -1, extra_hid = -1, merc_hid = -1, sys_hid = -1, extra13_hid = -1;
+  int d3_hid = -1, extra_hid = -1, sys_hid = -1, extra13_hid = -1;
   char fullname[_MAX_PATH];
 
 #ifdef DEMO
@@ -1688,40 +1657,25 @@ void InitIOSystems(bool editor) {
   ddio_MakePath(fullname, LocalD3Dir, "d3-osx.hog", NULL);
   sys_hid = cf_OpenLibrary(fullname);
 #endif
-
+  
+  // JC: Steam release uses extra1.hog instead of extra.hog, so try loading it first
   // Open this file if it's present for stuff we might add later
-  ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+  ddio_MakePath(fullname, LocalD3Dir, "extra1.hog", NULL);
   extra_hid = cf_OpenLibrary(fullname);
-
-  // Opens the mercenary hog if it exists and the registry entery is present
-  // Win32 only.  Mac and Linux users are SOL for now
-#ifdef WIN32
-  HKEY key;
-  DWORD lType;
-  LONG error;
-
-#define BUFLEN 2000
-  char dir[BUFLEN];
-  DWORD dir_len = BUFLEN;
-
-  error =
-      RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3 Mercenary", 0,
-                   KEY_ALL_ACCESS, &key);
-
-  if ((error == ERROR_SUCCESS)) {
-    lType = REG_EXPAND_SZ;
-
-    unsigned long len = BUFLEN;
-    error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
-
-    if (error == ERROR_SUCCESS) {
-      merc_hid = cf_OpenLibrary("merc.hog");
-    }
+  if (extra_hid == 0) {
+  	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+  	extra_hid = cf_OpenLibrary(fullname);
   }
-#else
-  // non-windows platforms always get merc!
-  merc_hid = cf_OpenLibrary("merc.hog");
-#endif
+
+  // JC: Steam release uses extra.hog instead of merc.hog, so try loading it last (so we don't conflict with the above)
+  // Open mercenary hog if it exists
+  ddio_MakePath(fullname, LocalD3Dir, "merc.hog", NULL);
+  merc_hid = cf_OpenLibrary(fullname);
+  if (merc_hid == 0) {
+  	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+  	merc_hid = cf_OpenLibrary(fullname);
+  }
+
   // Open this for extra 1.3 code (Black Pyro, etc)
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
   extra13_hid = cf_OpenLibrary(fullname);
@@ -1763,6 +1717,11 @@ void InitIOSystems(bool editor) {
   if (sys_hid != -1)
     Osiris_ExtractScriptsFromHog(sys_hid, false);
   Osiris_ExtractScriptsFromHog(d3_hid, false);
+}
+
+// Returns true if Mercenary is installed (inits the Black Pyro and Red GB)
+bool MercInstalled() {
+	return merc_hid > 0;
 }
 
 extern int Num_languages;
@@ -2113,6 +2072,10 @@ void InitD3Systems1(bool editor) {
 
   // This function needs be called before ANY 3d stuff can get done. I mean it.
   InitMathTables();
+
+  // Initialize a random seed.
+  ps_srand(time(nullptr));
+
 
   // This function has to be done before any sound stuff is called
   InitSounds();

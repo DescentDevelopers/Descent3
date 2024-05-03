@@ -18,17 +18,12 @@
 
 /*
 ** Linux Specific Notes:
-**   This library is dependant off of:
-**      -POSIX Threads (-lpthread)
-**      -X11 Library (-lX11)
-**      -Xext Library (-Xext)
-**
 **   Only HiColor mode movies are supported.  Others could
 **      be supported, but the nf*, etc. functions need to be
 **      implemented to do so.  See mveasm.cpp.
 **
 **   No gfx or resolution changing functions are implemented in
-**      here.  See the xf86vm X11 extension on how to do this.
+**      here.
 */
 static char notice1[] = "(c) 1997 Interplay Productions.  All Rights Reserved.\n"
                         "This file is confidential and consists of proprietary information\n"

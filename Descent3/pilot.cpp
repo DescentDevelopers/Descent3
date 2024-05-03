@@ -570,6 +570,8 @@
  * $NoKeywords: $
  */
 
+#include <cstdio>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -598,7 +600,6 @@
 #include "config.h"
 #include "difficulty.h"
 #include "PilotPicsAPI.h"
-#include "pstring.h"
 #include "Mission.h"
 #include "mem.h"
 #include "polymodel.h"
@@ -2909,46 +2910,16 @@ bool PltSelectShip(pilot *Pilot) {
 #ifdef DEMO
       if (strcmpi(Ships[i].name, DEFAULT_SHIP) == 0) {
 #endif
-#ifdef WIN32
-        HKEY key;
-        DWORD lType;
-        LONG error;
-
-#define BUFLEN 2000
-        char dir[BUFLEN];
-        DWORD dir_len = BUFLEN;
-
-        if (!stricmp(Ships[i].name, "Black Pyro")) {
-          // make sure they have mercenary in order to play with Black Pyro
-          shipoktoadd = false;
-
-          error = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                               "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3 Mercenary", 0,
-                               KEY_ALL_ACCESS, &key);
-
-          if ((error == ERROR_SUCCESS)) {
-            lType = REG_EXPAND_SZ;
-
-            unsigned long len = BUFLEN;
-            error = RegQueryValueEx(key, "UninstallString", NULL, &lType, (unsigned char *)dir, &len);
-
-            if (error == ERROR_SUCCESS) {
-              // they have mercenary, and this is a black pyro...add it
-              shipoktoadd = true;
-            }
-          }
-        } else {
-          // this isn't a black pyro
-          shipoktoadd = true;
-        }
-#else
-      // Non-Windows versions don't have to check
-      if (!stricmp(Ships[i].name, "Black Pyro")) {
-        shipoktoadd = false;
-      } else {
-        shipoktoadd = true;
-      }
-#endif
+	  // make sure they have mercenary in order to play with Black Pyro
+	  if (!stricmp(Ships[i].name, "Black Pyro")) {
+		shipoktoadd = false;
+		extern bool MercInstalled();
+		if (MercInstalled()) {
+		  shipoktoadd = true;
+		}
+	  }
+	  else
+		  shipoktoadd = true;
         if (shipoktoadd)
           ship_list->AddItem(Ships[i].name);
 #ifdef DEMO
@@ -3889,14 +3860,14 @@ void ShowPilotPicDialog(pilot *Pilot) {
       if (ppic_id == id_list[idx])
         selected_index = idx + 1;
 
-      Psprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s%d", pname, idx);
+      std::snprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s%d", pname, idx);
       list->AddItem(temp_buffer);
     }
   } else {
     if (ppic_id == id_list[idx])
       selected_index = idx + 1;
 
-    Psprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s", pname);
+    std::snprintf(temp_buffer, PILOT_STRING_SIZE + 6, "%s", pname);
     list->AddItem(temp_buffer);
   }
 

@@ -746,7 +746,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   int lang_type;
   if (func_list->script_identifier != NULL) {
     _splitpath(func_list->script_identifier, NULL, NULL, filename, NULL);
-    sprintf(english_filename, "%s.msg", filename);
+    snprintf(english_filename, sizeof(english_filename), "%s.msg", filename);
     lang_type = Game_GetLanguage();
     if (lang_type == LANGUAGE_FRENCH)
       strcat(filename, "_FRN");

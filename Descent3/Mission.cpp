@@ -1013,7 +1013,7 @@ bool LoadMission(const char *mssn) {
           for (int a = 0; a < MAX_MISSION_URL_COUNT; a++) {
             if (Net_msn_URLs.URL[a][0] == '\0') {
               strncpy(Net_msn_URLs.URL[a], operand, MAX_MISSION_URL_LEN - 1);
-              Net_msn_URLs.URL[a][MAX_MISSION_URL_LEN] = '\0';
+              Net_msn_URLs.URL[a][MAX_MISSION_URL_LEN - 1] = '\0';
               mprintf((0, "Found a Mission URL: %s\n", operand));
               break;
             }

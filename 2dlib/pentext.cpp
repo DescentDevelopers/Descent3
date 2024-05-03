@@ -81,11 +81,11 @@
  * $NoKeywords: $
  */
 
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdarg>
+
 #include <string.h>
 #include <assert.h>
-#include "pstring.h"
 #include "gr.h"
 #include "mono.h"
 #include "renderer.h"
@@ -115,11 +115,11 @@ void grViewport::get_font(char *fontname, int size) {
 //	---------------------------------------------------------------------------
 
 int grViewport::printf(grTextAlign align, int x, int y, char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   int len;
 
   va_start(arglist, fmt);
-  len = Pvsprintf(Str_buf, STR_BUF_SIZE, fmt, arglist);
+  len = std::vsnprintf(Str_buf, STR_BUF_SIZE, fmt, arglist);
   va_end(arglist);
   if (len < 0)
     return 0;
@@ -128,11 +128,11 @@ int grViewport::printf(grTextAlign align, int x, int y, char *fmt, ...) {
 }
 
 int grViewport::printf(int x, int y, char *fmt, ...) {
-  va_list arglist;
+  std::va_list arglist;
   int len;
 
   va_start(arglist, fmt);
-  len = Pvsprintf(Str_buf, STR_BUF_SIZE, fmt, arglist);
+  len = std::vsnprintf(Str_buf, STR_BUF_SIZE, fmt, arglist);
   va_end(arglist);
   if (len < 0)
     return 0;

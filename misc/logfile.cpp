@@ -16,10 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "logfile.h"
-#include "pstring.h"
-#include <stdio.h>
-#include <stdarg.h>
 
 #ifdef _DEBUG
 static bool log_enable = true;
@@ -61,9 +61,9 @@ void logfile::end() {
 void logfile::printf(const char *fmt, ...) {
   if (fp && fmt) {
     char msg[256];
-    va_list arglist;
+    std::va_list arglist;
     va_start(arglist, fmt);
-    Pvsprintf(msg, sizeof(msg), fmt, arglist);
+    std::vsnprintf(msg, sizeof(msg), fmt, arglist);
     va_end(arglist);
 
     logfile::puts(msg);

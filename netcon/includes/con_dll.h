@@ -1167,9 +1167,9 @@ int StartMultiplayerGameMenu() {
       if (!mi)
         break;
       strncpy(DLLNetgame->mission, mi->msn_file, MSN_NAMELEN);
-      DLLNetgame->mission[MSN_NAMELEN] = '\0';
+      DLLNetgame->mission[MSN_NAMELEN - 1] = '\0';
       strncpy(DLLNetgame->mission_name, mi->msn_name, MISSION_NAME_LEN);
-      DLLNetgame->mission_name[MISSION_NAME_LEN] = '\0';
+      DLLNetgame->mission_name[MISSION_NAME_LEN - 1] = '\0';
 #else
       // strcpy(DLLNetgame->mission,DLLListGetSelectedIndex(list_1)?"thecore.d3l":"polaris.d3l");
 

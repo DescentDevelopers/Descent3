@@ -16,19 +16,18 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef RELEASE
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "Debug.h"
-#include "pstring.h"
 #include "networking.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winioctl.h>
 #include <assert.h>
-#include <stdarg.h>
-#include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
 #include <io.h>
@@ -152,7 +151,7 @@ void nw_InitTCPLogging(char *ip, unsigned short port) {
 }
 
 void nw_TCPPrintf(int n, char *format, ...) {
-  va_list args;
+  std::va_list args;
 
   if (tcp_log_sock == INVALID_SOCKET)
     return;
@@ -162,7 +161,7 @@ void nw_TCPPrintf(int n, char *format, ...) {
     return;
 
   va_start(args, format);
-  Pvsprintf(tcp_log_buffer, MAX_TCPLOG_LEN, format, args);
+  std::vsnprintf(tcp_log_buffer, MAX_TCPLOG_LEN, format, args);
 
   fd_set read_fds;
   timeval tv = {0, 0};
@@ -372,7 +371,7 @@ void Debug_ConsoleClose(int n) {
 void Debug_ConsolePrintf(int n, const char *format, ...) {
   static bool newline = false;
   char *ptr = Mono_buffer;
-  va_list args;
+  std::va_list args;
 
   if (n >= MAX_NUM_VWINDOWS)
     return;
@@ -387,7 +386,7 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   // if (!OPEN) return;
 
   va_start(args, format);
-  Pvsprintf(ptr, MAX_MONO_LENGTH, format, args);
+  std::vsnprintf(ptr, MAX_MONO_LENGTH, format, args);
 
   if (strlen(ptr) >= MAX_MONO_LENGTH) {
     return;
@@ -411,10 +410,10 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   }
 }
 
-void Debug_ConsolePrintf(int n, int row, int col, const char *format, ...) {
+void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {
   char *ptr = Mono_buffer;
   int r, c;
-  va_list args;
+  std::va_list args;
 
   if (Debug_NT)
     return;
@@ -429,7 +428,7 @@ void Debug_ConsolePrintf(int n, int row, int col, const char *format, ...) {
     return;
 
   va_start(args, format);
-  Pvsprintf(ptr, MAX_MONO_LENGTH, format, args);
+  std::vsnprintf(ptr, MAX_MONO_LENGTH, format, args);
 
   //	if (n==MAX_NUM_WINDOWS)
   //		OutputDebugString (Mono_buffer);

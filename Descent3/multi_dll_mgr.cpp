@@ -330,7 +330,6 @@ void *callback = NULL;
 module MultiDLLHandle = {NULL};
 int SearchForLocalGamesTCP(unsigned int ask, ushort port);
 int SearchForGamesPXO(unsigned int ask, ushort port);
-int SearchForLocalGamesIPX(network_address *check_addr);
 extern ubyte NewUIWindow_alpha;
 extern void DoScreenshot();
 extern void UpdateAndPackGameList(void);
@@ -478,7 +477,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[68] = (int *)SetOldEditBufferLen;
   api->fp[69] = (int *)NewUIWindowLoadBackgroundImage;
   api->fp[70] = (int *)DeleteUIItem;
-  api->fp[71] = (int *)SearchForLocalGamesIPX;
+  api->fp[71] = (int *)NULL;  // was SearchForLocalGamesIPX
   api->fp[72] = (int *)HotSpotSetStates;
   api->fp[73] = (int *)PlayerSetShipPermission;
   api->fp[74] = (int *)fp_PlayerIsShipAllowed;

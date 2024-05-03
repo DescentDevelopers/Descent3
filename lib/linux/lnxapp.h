@@ -20,8 +20,6 @@
 #define LNXAPP_H
 
 #include "linux_fix.h"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 
 // if no-display/input specifier is given, it will use defaults
 #define APPFLAG_USESERVICE 0x00000100     // console (run no output/input)
@@ -35,9 +33,6 @@
 
 //	This structure is used to retrieve and set
 typedef struct tLnxAppInfo {
-  Display *m_Display;             // X-Windows display
-  Window m_window;                // X-Windows window
-  XVisualInfo m_VisualInfo;       // X-Window visual info
   unsigned flags;                 // Application Flags
   int wnd_x, wnd_y, wnd_w, wnd_h; // Window dimensions
 } tLnxAppInfo;
@@ -84,9 +79,6 @@ public:
 
   unsigned m_Flags;
   int m_X, m_Y, m_W, m_H;   // window dimensions.
-  Display *m_Display;       // X-Windows Display
-  Window m_Window;          // X-Windows Window
-  XVisualInfo m_VisualInfo; // X-Windows Visual Info
 private:
   void os_init(); // initializes OS components.
 };

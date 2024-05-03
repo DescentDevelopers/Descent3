@@ -75,6 +75,7 @@ add_custom_target(HogLinuxFull-copy
 
 foreach(SCRIPT ${SCRIPTS})
   add_library(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
+  target_link_libraries(${SCRIPT} fix)
   add_dependencies(${SCRIPT} HogLinuxFull-copy) #  HogLinuxDemo-copy
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
   if (UNIX)

@@ -37,6 +37,8 @@
  * 
  */
 
+#include <cstdarg>
+#include <cstdio>
 
 #include "FontEditor.h"
 #include "pstypes.h"
@@ -44,12 +46,9 @@
 #include "bitmap.h"
 #include "renderer.h"
 #include "grtext.h"
-#include "pstring.h"
 #include "ddio.h"
 #include "mem.h"
 
-#include <stdio.h>
-#include <stdarg.h>
 #include <string.h>
 
 //	Font File stuff
@@ -99,12 +98,12 @@ void message_box(const char *fmt, ...)
 #define FIXED_MSGBOX_WIDTH  (512)
 #define FIXED_MSGBOX_HEIGHT (128)
 
-	va_list arglist;
+	std::va_list arglist;
 	char buf[512];
 	int len;
 
 	va_start(arglist,fmt);
-	len = Pvsprintf(buf,512,fmt,arglist);
+	len = std::vsnprintf(buf,512,fmt,arglist);
 	va_end(arglist);
 	if (len < 0) return;
 

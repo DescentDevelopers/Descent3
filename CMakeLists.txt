@@ -11,21 +11,24 @@ project(Descent3
 )
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
-option(LOGGER "Enable logging to the terminal" OFF)
+option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
+option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(spdlog REQUIRED)
+
 if(FORCE_COLORED_OUTPUT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
     set(CMAKE_COLOR_DIAGNOSTICS ON)
   else()
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      add_compile_options (-fdiagnostics-color=always)
+      add_compile_options(-fdiagnostics-color=always)
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-      add_compile_options (-fcolor-diagnostics)
+      add_compile_options(-fcolor-diagnostics)
     endif()
   endif()
 endif()
@@ -93,7 +96,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for MAC OSX")
   add_compile_definitions(__LINUX__ LINUX _MAX_PATH=260 _MAX_FNAME=256 _REENRANT MACOSX=1 _USE_OGL_ACTIVE_TEXTURES)
-  set(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR} "/usr/X11/include")
+  set(PLATFORM_INCLUDES "lib/linux" ${SDL_INCLUDE_DIR})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
@@ -134,13 +137,15 @@ add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
 find_package(ZLIB REQUIRED)
 
-if(LOGGER)
+if(ENABLE_LOGGER)
   message("Enabling Logging")
   add_compile_definitions(LOGGER)
 endif()
 
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
+  "ddebug"  # -*-
+  "fix"     # -*-
   "lib"     # TODO: Remove after untying all modules
   "Descent3"
   ${PLATFORM_INCLUDES}
@@ -154,6 +159,7 @@ add_subdirectory(bitmap)
 add_subdirectory(cfile)
 add_subdirectory(czip)
 add_subdirectory(d3music)
+add_subdirectory(ddebug)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(dd_grwin32)

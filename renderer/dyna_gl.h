@@ -17,14 +17,19 @@
 */
 
 #pragma once
+
+#if defined(WIN32)
 #include <GL/gl.h>
+#else
+#include "SDL_opengl.h"
+#endif
+
 #include "module.h"
 
 #if defined(WIN32)
 #define GLFUNCCALL __stdcall
 #elif defined(__LINUX__)
 #include <unistd.h>
-#include <GL/glx.h>
 #define GLFUNCCALL
 #else
 #define GLFUNCCALL
@@ -132,26 +137,6 @@ DYNAEXTERN(wglCreateContext_fp, dwglCreateContext);
 DYNAEXTERN(wglDeleteContext_fp, dwglDeleteContext);
 DYNAEXTERN(wglMakeCurrent_fp, dwglMakeCurrent);
 DYNAEXTERN(wglGetProcAddress_fp, dwglGetProcAddress);
-#elif defined(__LINUX__)
-typedef Bool (*glXQueryExtension_fp)(Display *dpy, int *errorb, int *event);
-typedef GLXContext (*glXCreateContext_fp)(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct);
-typedef Bool (*glXMakeCurrent_fp)(Display *dpy, GLXDrawable drawable, GLXContext ctx);
-typedef void (*glXSwapBuffers_fp)(Display *dpy, GLXDrawable drawable);
-typedef int (*glXGetConfig_fp)(Display *dpy, XVisualInfo *visual, int attrib, int *value);
-typedef XVisualInfo *(*glXChooseVisual_fp)(Display *dpy, int screen, int *attribList);
-typedef void (*glXDestroyContext_fp)(Display *dpy, GLXContext ctx);
-typedef void (*glXWaitGL_fp)(void);
-
-DYNAEXTERN(glXQueryExtension_fp, dglXQueryExtension);
-DYNAEXTERN(glXCreateContext_fp, dglXCreateContext);
-DYNAEXTERN(glXMakeCurrent_fp, dglXMakeCurrent);
-DYNAEXTERN(glXSwapBuffers_fp, dglXSwapBuffers);
-DYNAEXTERN(glXGetConfig_fp, dglXGetConfig);
-DYNAEXTERN(glXChooseVisual_fp, dglXChooseVisual);
-DYNAEXTERN(glXDestroyContext_fp, dglXDestroyContext);
-DYNAEXTERN(glXWaitGL_fp, dglXWaitGL);
-#else
-
 #endif
 
 DYNAEXTERN(glAlphaFunc_fp, dglAlphaFunc);
@@ -492,41 +477,6 @@ module *LoadOpenGLDLL(const char *dllname) {
   if (!dwglGetProcAddress)
     goto dll_error;
 #elif defined(__LINUX__)
-
-#if USINGX11_
-  dglXQueryExtension = (glXQueryExtension_fp)mod_GetSymbol(&OpenGLDLLInst, "glXQueryExtension", 255);
-  if (!dglXQueryExtension)
-    goto dll_error;
-
-  dglXCreateContext = (glXCreateContext_fp)mod_GetSymbol(&OpenGLDLLInst, "glXCreateContext", 255);
-  if (!dglXCreateContext)
-    goto dll_error;
-
-  dglXMakeCurrent = (glXMakeCurrent_fp)mod_GetSymbol(&OpenGLDLLInst, "glXMakeCurrent", 255);
-  if (!dglXMakeCurrent)
-    goto dll_error;
-
-  dglXSwapBuffers = (glXSwapBuffers_fp)mod_GetSymbol(&OpenGLDLLInst, "glXSwapBuffers", 255);
-  if (!dglXSwapBuffers)
-    goto dll_error;
-
-  dglXGetConfig = (glXGetConfig_fp)mod_GetSymbol(&OpenGLDLLInst, "glXGetConfig", 255);
-  if (!dglXGetConfig)
-    goto dll_error;
-
-  dglXChooseVisual = (glXChooseVisual_fp)mod_GetSymbol(&OpenGLDLLInst, "glXChooseVisual", 255);
-  if (!dglXChooseVisual)
-    goto dll_error;
-
-  dglXDestroyContext = (glXDestroyContext_fp)mod_GetSymbol(&OpenGLDLLInst, "glXDestroyContext", 255);
-  if (!dglXDestroyContext)
-    goto dll_error;
-
-  dglXWaitGL = (glXWaitGL_fp)mod_GetSymbol(&OpenGLDLLInst, "glXWaitGL", 255);
-  if (!dglXWaitGL)
-    goto dll_error;
-
-#endif
 
   // bk000614 - have to fix globals
   extern glAlphaFunc_fp dglAlphaFunc;
