@@ -1649,13 +1649,14 @@ void InitIOSystems(bool editor) {
   d3_hid = cf_OpenLibrary(fullname);
 
 #ifdef __LINUX__
+#ifndef MACOSX
   // DAJ	sys_hid = cf_OpenLibrary("d3-linux.hog");
   ddio_MakePath(fullname, LocalD3Dir, "d3-linux.hog", NULL);
   sys_hid = cf_OpenLibrary(fullname);
-#endif
-#ifdef MACOSX
+#else
   ddio_MakePath(fullname, LocalD3Dir, "d3-osx.hog", NULL);
   sys_hid = cf_OpenLibrary(fullname);
+#endif
 #endif
   
   // JC: Steam release uses extra1.hog instead of extra.hog, so try loading it first
