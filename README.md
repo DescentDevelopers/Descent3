@@ -9,7 +9,7 @@ There is no "release" yet. The current milestone is "1.5 Stable", which is meant
 The milestone needs testing on all platforms. Please report issues when found.
 
 ## Usage
-Purchase Descent 3 from a reputable source and install it, then replace the main binary with the newly built `Descent3` binary under `${CMAKE_BINARY_DIR}/Descent3/*/Descent3[.exe]`.
+Purchase Descent 3 from a reputable source, such as [GOG](https://www.gog.com/game/descent_3_expansion) or [Steam](https://store.steampowered.com/app/273590/Descent_3/), and install it, then replace the main binary with the newly built `Descent3` binary under `${CMAKE_BINARY_DIR}/Descent3/*/Descent3[.exe]`.
 See your platform below:
 
 #### Windows
