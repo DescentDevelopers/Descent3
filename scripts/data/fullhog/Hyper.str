@@ -1,0 +1,118 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!========================= HUD Death Messages =================================================
+!/! Note: if it states that victim is first, then the first %s will be replaced by the nickname of the victim,
+!/! else the first nickname will be the name of the killer.
+
+!/!0:%s got killed by %s	(victim first)
+!=!%s got killed by %s
+
+!/! ---------------------------- Suicide Messages --------------------------------------
+
+!/!1:%s pushes the red button
+!=!%s pushes the red button
+
+!/!2:Pilot		(Stats column label)
+!=!Pilot
+
+!/!3:Kills		(Stats column label)
+!=!Kills
+
+!/!4:Deaths		(Stats column label)
+!=!Deaths
+
+!/!5:Suicides	(Stats column label)
+!=!Suicides
+
+!/!6:Score		(Stats column label)
+!=!Score
+
+!/!7:%s Lost The HyperOrb!!!	(HUD Message)
+!=!%s Lost The HyperOrb!!!
+
+!/!8:%s Has The HyperOrb!!!		(HUD Message)
+!=!%s Has The HyperOrb!!!
+
+!/!9:%s racks up another %d points!	(HUD Message)
+!=!%s racks up another %d points!
+
+!/!10:Stats	(Stats column label)
+!=!Stats
+
+!/!11:Welcome to Hyper Anarchy %s!	(HUD Message)
+!=!Welcome to Hyper Anarchy %s!
+
+!/!12:%s has joined the Hyper Anarchy!	(HUD Message)
+!=!%s has joined the Hyper Anarchy!
+
+!/!13: Name of the game (shouldn't be localized probably)
+!=!Hyper-Anarchy
+
+!/!14: Name of the game in the stats screen
+!=!Hyper-Anarchy
+
+!/!15: Ping label
+!=!Ping
+
+!/!16: on-screen menu option for hud score colors
+!=!HUD Score Colors
+
+!/!17: on-screen menu sub-option to use player ship colors
+!=!Player Colors
+
+!/!18: On screen menu sub-option to use normal colors
+!=!Normal
+
+!/!19: Saved game stats header
+!=!Hyper-Anarchy\r\nGame: %s\r\nLevel: %d\r\n
+
+!/!20: Saved game stats header
+!=!Current Level Rankings\r\n
+
+!/!21: Saved game stats header
+!=![Rank] [Name]                     [Score]     [Kills]     [Deaths]   [Suicides] [Time In Game]
+
+!/!22: Saved game stats header
+!=!\r\nIndividual Stats\r\n
+
+!/!23: Time in game string (%s is built and already localized from dmfc.str)
+!=!Total Time In Game: %s
+
+!/!24: Saved game stats header
+!=!Callsign:                     Kills:    Deaths:
+
+!/!25: Hud message when the game stats are saved
+!=!Stats saved to file
+
+!/!26: Shortened Kills
+!=!K
+
+!/!27: Shortened Deaths
+!=!D
+
+!/!28: Shortened Suicides
+!=!S

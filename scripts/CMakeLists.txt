@@ -1,9 +1,8 @@
-set(HEADERS)
-set(CPPS)
-if (UNIX)
-  set(CPPS
-    linux_lib.cpp)
-endif ()
+set(CPPS
+  $<$<PLATFORM_ID:Darwin,Linux>:
+    linux_lib.cpp
+  >
+)
 
 set(SCRIPTS
   aigame2
@@ -63,49 +62,52 @@ set(SCRIPTS
   TrainingMission
   Y2K)
 
-add_custom_target(HogLinuxFull-copy
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/scripts/data/linuxfullhog ${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog/
-  COMMENT "Copy script/data/linuxfullhog directory"
+add_custom_target(HogFull-copy
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/scripts/data/fullhog ${CMAKE_BINARY_DIR}/scripts/data/fullhog/
+  COMMENT "Copy script/data/fullhog directory"
 )
 
-#add_custom_target(HogLinuxDemo-copy
-#	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/scripts/data/linuxdemohog ${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/
-#	COMMENT "Copy script/data/linuxdemohog directory"
+#add_custom_target(HogDemo-copy
+#	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/scripts/data/demohog ${CMAKE_BINARY_DIR}/scripts/data/demohog/
+#	COMMENT "Copy script/data/demohog directory"
 #)
 
 foreach(SCRIPT ${SCRIPTS})
   add_library(${SCRIPT} SHARED ${CPPS} "${SCRIPT}.cpp")
   target_link_libraries(${SCRIPT} fix)
-  add_dependencies(${SCRIPT} HogLinuxFull-copy) #  HogLinuxDemo-copy
+  add_dependencies(${SCRIPT} HogFull-copy) #  HogDemo-copy
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
   if (UNIX)
     add_custom_command(
       TARGET ${SCRIPT}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog/"
-      COMMENT "Copying file ${SCRIPT} to scripts/data/linuxfullhog/..."
+      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_BINARY_DIR}/scripts/data/fullhog/"
+      COMMENT "Copying file ${SCRIPT} to scripts/data/fullhog/..."
     )
     #		add_custom_command(
     #			TARGET ${SCRIPT}
     #			POST_BUILD
-    #			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/"
-    #			COMMENT "Copying file ${SCRIPT} to scripts/data/linuxdemohog/..."
+    #			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SCRIPT}> "${CMAKE_BINARY_DIR}/scripts/data/demohog/"
+    #			COMMENT "Copying file ${SCRIPT} to scripts/data/demohog/..."
     #		)
   endif ()
 endforeach ()
 
-if (UNIX)
-  add_custom_target(HogLinuxFull
-    COMMAND $<TARGET_FILE:HogMaker> "$<TARGET_FILE_DIR:Descent3>/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxfullhog/d3linuxfullhog.txt"
-    DEPENDS ${SCRIPTS} HogMaker
-    COMMENT "Generate linuxfullhog/d3-linux.hog"
-  )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(HOG_NAME "linux")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set(HOG_NAME "osx")
+endif()
 
-  # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
-  #	add_custom_target(HogLinuxDemo
-  #		COMMAND $<TARGET_FILE:HogMaker> "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/d3-linux.hog" "${CMAKE_BINARY_DIR}/scripts/data/linuxdemohog/d3linuxdemohog.txt"
-  #		DEPENDS ${SCRIPTS} HogMaker
-  #		COMMENT "Generate linuxdemohog/d3-linux.hog"
-  #	)
+add_custom_target(HogFull
+  COMMAND $<TARGET_FILE:HogMaker> "$<TARGET_FILE_DIR:Descent3>/d3-${HOG_NAME}.hog" "${CMAKE_BINARY_DIR}/scripts/data/fullhog/d3-${HOG_NAME}-fullhog.txt"
+  DEPENDS ${SCRIPTS} HogMaker data/fullhog/d3-linux-fullhog.txt data/fullhog/d3-osx-fullhog.txt
+  COMMENT "Generate fullhog/d3-${HOG_NAME}.hog"
+)
 
-endif ()
+# FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
+#	add_custom_target(HogLinuxDemo
+#		COMMAND $<TARGET_FILE:HogMaker> "${CMAKE_BINARY_DIR}/scripts/data/demohog/d3-${HOG_NAME}.hog" "${CMAKE_BINARY_DIR}/scripts/data/demohog/d3-${HOG_NAME}-demohog.txt"
+#		DEPENDS ${SCRIPTS} HogMaker
+#		COMMENT "Generate linuxdemohog/d3-${HOG_NAME}.hog"
+#	)

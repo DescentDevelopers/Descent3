@@ -1,0 +1,406 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !*!  == english version of string (optional)
+!/!   !=!  == string as it should appear in the game
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!0: Guidebot Menu
+!=!Rename GB Unit
+
+!/!1: Guidebot Menu
+!=!Repair GB
+
+!/!2: Guidebot Menu
+!=!Release Guidebot
+
+!/!3: Guidebot Menu
+!=!P0
+
+!/!4: Guidebot Menu
+!=!P1
+
+!/!5: Guidebot Menu
+!=!P2
+
+!/!6: Guidebot Menu
+!=!P3
+
+!/!7: Guidebot Menu
+!=!P4
+
+!/!8: Guidebot Menu
+!=!P5
+
+!/!9: Guidebot Menu
+!=!P6
+
+!/!10: Guidebot Menu
+!=!P7
+
+!/!11: Guidebot Menu
+!=!S0
+
+!/!12: Guidebot Menu
+!=!S1
+
+!/!13: Guidebot Menu
+!=!S2
+
+!/!14: Guidebot Menu
+!=!S3
+
+!/!15: Guidebot Menu
+!=!S4
+
+!/!16: Guidebot Menu
+!=!S5
+
+!/!17: Guidebot Menu
+!=!S6
+
+!/!18: Guidebot Menu
+!=!S7
+
+!/!19: Guidebot Menu
+!=!Find my powerups
+
+!/!20: Guidebot Menu
+!=!Find powerup
+
+!/!21: Guidebot Menu
+!=!Find energy
+
+!/!22: Guidebot Menu
+!=!Find robot
+
+!/!23: Guidebot Menu
+!=!Find Thief
+
+!/!24: Guidebot Menu
+!=!Find an exit to the mine
+
+!/!25: Guidebot Menu
+!=!Find a mine
+
+!/!26: Guidebot Menu
+!=!Find closest marker
+
+!/!27: Guidebot Menu
+!=!Find Marker 0
+
+!/!28: Guidebot Menu
+!=!Find Marker 1
+
+!/!29: Guidebot Menu
+!=!Find Marker 2
+
+!/!30: Guidebot Menu
+!=!Find Marker 3
+
+!/!31: Guidebot Menu
+!=!Find Marker 4
+
+!/!32: Guidebot Menu
+!=!Find Marker 5
+
+!/!33: Guidebot Menu
+!=!Find Marker 6
+
+!/!34: Guidebot Menu
+!=!Find Marker 7
+
+!/!35: Guidebot Menu
+!=!Escort ship
+
+!/!36: Guidebot Menu
+!=!Use fire extinguisher
+
+!/!37: Guidebot Menu
+!=!Use Go Wingnut Powerup
+
+!/!38: Guidebot Menu
+!=!Use Manual Pilot Powerup
+
+!/!39: Guidebot Menu
+!=!Use Guardian Powerup
+
+!/!40: Guidebot Menu
+!=!Use Anti-Virus Powerup
+
+!/!41: Guidebot Menu
+!=!Allow GB chatter
+
+!/!42: Guidebot Menu
+!=!Disallow GB chatter
+
+!/!43: Guidebot Menu
+!=!Return to ship
+
+!/!44: Guidebot message
+!=!Entering ship!
+
+!/!45: Guidebot message
+!=!HELP! I am about to die...
+
+!/!46: Guidebot message
+!=!This goal is not location based.
+
+!/!47: Guidebot message
+!=!I do not have nav. data on this goal.
+
+!/!48: Guidebot message
+!=!On my way!
+
+!/!49: Guidebot message
+!=!The goal isn't currently reachable.
+
+!/!50: Guidebot message
+!=!Returning to ship.
+
+!/!51: Guidebot message
+!=!Escorting ship...
+
+!/!52: Gudiebot message
+!=!Finding a robot.
+
+!/!53: Guidebot message
+!=!No robots are reachable.
+
+!/!54: Guidebot message
+!=!Finding a powerup.
+
+!/!55: Guidebot message
+!=!No powerups are reachable.
+
+!/!56: Guidebot message
+!=!Going to the '%s' marker.
+
+!/!57: Guidebot message
+!=!None of your markers are reachable.
+
+!/!58: Guidebot message
+!=!The marker is not reachable.
+
+!/!59: Guidebot message
+!=!Finding the Thief.
+
+!/!60: Guidebot message
+!=!Let's get him!
+
+!/!61: Guidebot message
+!=!The Thief is not reachable.
+
+!/!62: Guidebot message
+!=!Finding your powerups.
+
+!/!63: Guidebot message
+!=!No spew reachable.
+
+!/!64: Guidebot message
+!=!Message Processor off.
+
+!/!65: Guidebot message
+!=!Message Processor On.
+
+!/!66: Guidebot message
+!=!Finding energy.
+
+!/!67: Guidebot message
+!=!No energy centers are reachable.
+
+!/!68: Guidebot message
+!=!Thank you for repairing me!
+
+!/!69: Guidebot message
+!=!NOt eNougH shIelDs to do rePAir...
+
+!/!70: Guidebot message
+!=!Thank you for the new name!
+
+!/!71: Guidebot message
+!=!No way!
+
+!/!72: Guidebot message
+!=!I am on strike!  I won't do task %d
+
+!/!73: Guidebot menu title
+!=!GB Command Menu
+
+!/!74: Guidebot menu item
+!=!Find marker: '%s'
+
+!/!75: Guidebot menu item
+!=!Get to %s
+
+!/!76: Guidebot menu item (for repair)
+!=! (%d shields)
+
+!/!77: Guidebot menu
+!=!Enter GuideBot name:
+
+!/!78: Guidebot message
+!=!Stop shooting me!
+
+!/!79: Guidebot message
+!=!You hit me!
+
+!/!80: Guidebot message
+!=!Stop it!
+
+!/!81: Guidebot message
+!=!Im getting attacked!
+
+!/!82: Guidebot message
+!=!Ouch!
+
+!/!83: Guidebot (damaged) message
+!=!T?o Dama.xgf.ed to exit.  NExfvD rEpair.
+
+!/!84: Guidebot message
+!=!Oops...  Sorry about that!
+
+!/!85: Guidebot message (shoot robot)
+!=!Take that!
+
+!/!86: Guidebot message
+!=!I am at the goal, coming back to get you.
+
+!/!87: Guidebot message
+!=!Come on!
+
+!/!88: Guidebot message
+!=!Let's go!
+
+!/!89: Guidebot message
+!=!I am coming back to get you.
+
+!/!90: Message when thief takes something
+!=!The thief stole your %s!
+
+!/!91: Message when thief takes something
+!=!The thief stole a %s!
+
+!/!92: Message when the thief takes multiple somethings
+!=!The thief stole %d of your %ss!
+
+!/!93: Hud message
+!=!This powerup is for the GuideBot.
+
+!/!94: hud message
+!=!The Super Thief stole a %s!
+
+!/!95: hud message
+!=!The Super Thief stole %d of your %ss!
+
+!/!96: Guidebot powerup HUD messages
+!=!Putting out fires!
+
+!/!97: Guidebot powerup HUD messages
+!=!Cowabunga!
+
+!/!98: Guidebot powerup HUD messages
+!=!Be gental...
+
+!/!99: Guidebot powerup HUD messages
+!=!Let's do it!
+
+!/!100: Guidebot powerup HUD messages
+!=!I will convert the infidal!
+
+!/!101: Guidebot powerup HUD messages
+!=!Accelerator!!!!!!!
+
+!/!102: Guidebot powerup HUD messages
+!=!No fires to put out!
+
+!/!103: Guidebot powerup HUD messages
+!=!I don't want to fight!
+
+!/!104: Guidebot powerup HUD messages
+!=!Manual control cannot be enabled...
+
+!/!105: Guidebot powerup HUD messages
+!=!I am too far away!
+
+!/!106: Guidebot powerup HUD messages
+!=!No enemies are near and visible from here!
+
+!/!107: Guidebot powerup HUD messages
+!=!I am sick of coffee...
+
+!/!108: Guidebot powerup pickup HUD messages
+!=!I got an extinguisher!
+
+!/!109: Guidebot powerup pickup HUD messages
+!=!I got the Wingnut Powerup!
+
+!/!110: Guidebot powerup pickup HUD messages
+!=!I got the Manual Control Powerup!
+
+!/!111: Guidebot powerup pickup HUD messages
+!=!I got the Guardian Powerup!
+
+!/!112: Guidebot powerup pickup HUD messages
+!=!I got a temporary Anti-Virus!
+
+!/!113: Guidebot powerup pickup HUD messages
+!=!I got the Accelerator!!!!!!
+
+!/!114 - 140 Thiefable item names
+!=!Lasers
+!=!Vauss Cannon
+!=!Microwave Cannon
+!=!Plasma
+!=!Fusion
+!=!Super Lasers
+!=!Mass Driver
+!=!Napalm
+!=!EMD Gun
+!=!Omega Cannon
+!=!Concussion missile
+!=!Homing missile
+!=!Impact Mortar
+!=!Smart missile
+!=!Mega
+!=!Frag
+!=!Guided
+!=!Napalm Rocket
+!=!Cyclone
+!=!Black Shark
+!=!Automap
+!=!Headlight
+!=!Energy-to-shields Converter
+!=!Cloak
+!=!Invulnerability
+!=!RapidFire
+!=!Quad Lasers
+
+!/!141:GB Text for 15 seconds into the Go Wingnut powerup
+!=!15 seconds left!
+
+!/!142:Powerup ran out
+!=!Powerup Depleted!
+
+!/!143:Acc almost depleted
+!=!Accelerator!
+
+!/!144:For when the GB doesn't have a powerup and the player asks him to use one
+!=!I do not have that powerup.
+
+!/!145:GB found one of his powerups and is going after it
+!=!One moment...  I see one of my powerups!

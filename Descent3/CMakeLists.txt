@@ -307,7 +307,7 @@ target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash)
 
 if(UNIX)
-	add_dependencies(Descent3 HogLinuxFull)
+	add_dependencies(Descent3 HogFull)
 endif()
 
 if(BUILD_TESTING)

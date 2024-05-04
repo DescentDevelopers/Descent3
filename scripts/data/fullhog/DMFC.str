@@ -1,0 +1,818 @@
+!/!Current Restrictions:
+!/!Maximum Line Length: 1024 characters
+!/!Maximum Number of Lines Per String: 8 Lines
+!/!  Lines that begin with:
+!/!   !/!  == comments (optional)
+!/!   !=!  == English version of string
+!/!	  !G!  == German version of string
+!/!	  !S!  == Spanish version of string
+!/!	  !I!  == Italian version of string
+!/!	  !F!  == French version of string
+!/!
+!/!	THERE MUST BE ENGLISH VERSIONS OF EACH STRING
+!/!
+!/!	Note to localizers:	All text when translated should stay very near the length of the
+!/! English version, unless otherwise noted.
+!/!
+!/! Note to localizers: All %s,%d,%f and similar tokens MUST stay in the string, they will get replaced by:
+!/!		%s = another string
+!/!		%d = an integer value
+!/!		%f = a floating point number (a number with a decimal point)
+!/!	They may be moved around the string, but MUST stay in the same order (i.e. "%s got %d points" the %s must always come before %d)
+!/!	
+!/!	\t	= insert a tab
+!/!	\n	= force a newline
+!/!	\0-\255 = insert the number directly into byte
+
+!/!========================= HUD Death Messages =================================================
+!/! Note: if it states that victim is first, then the first %s will be replaced by the nickname of the victim,
+!/! else the first nickname will be the name of the killer.
+
+!/!0:%s was killed by %s	(victim first)
+!=!%s was killed by %s
+
+!/!1:%s spins out of control!		(suicide message)
+!=!%s spins out of control!
+
+!/! ======================= The following appear on the on-screen menu (F6) =====================
+
+!/!2:Server Commands
+!=!Server Commands
+
+!/!3:Kick
+!=!Kick
+
+!/!4:Ban
+!=!Ban
+
+!/!5:End Level
+!=!End Level
+
+!/!6:Team Control
+!=!Team Control
+
+!/!7:Balance Teams
+!=!Balance Teams
+
+!/!8:AutoTeam Balance
+!=!AutoTeam Balance
+
+!/!9:Allow Team Changing
+!=!Allow Team Changing
+
+!/!10:On
+!=!On
+
+!/!11:Off
+!=!Off
+
+!/!12:Get Player Info
+!=!Get Player Info
+
+!/!13:Observer Mode
+!=!Observer Mode
+
+!/!14:Change Teams
+!=!Change Teams
+
+!/! ====================  The follow 4 are the team names ==========================
+
+!/!15:Red
+!=!Red
+
+!/!16:Blue
+!=!Blue
+
+!/!17:Green
+!=!Green
+
+!/!18:Yellow
+!=!Yellow
+
+!/! ========================== The following can be found when getting a player info from menu =============
+
+!/!19:Server
+!=!Server
+
+!/!20:Client
+!=!Client
+
+!/!21:Team: %s
+!=!Team: %s
+
+!/!22:PlayerNum: %d
+!=!PlayerNum: %d
+
+!/!23:TCP/IP Address: %s
+!=!TCP/IP Address: %s
+
+!/!24:Ship: %s
+!=!Ship: %s
+
+!/!25:%s was killed	(death message when someone is killed by something other than player or robot)
+!=!%s was killed
+
+!/!26:Loner
+!=!Loner
+
+!/!27:Save Stats To File		(in On-Screen Menu)
+!=!Save Stats To File
+
+!/!28:%s was killed by a robot	(death message when someone is killed by a robot)
+!=!%s was killed by a robot
+
+!/!29:HUD Callsign Level		(in On-Screen Menu)
+!=!HUD Callsign Level
+
+!/!30:You've Been Kicked From The Game	(HUD Message)
+!=!You've Been Kicked From The Game
+
+!/!31:You've Been Banned From This Game	(HUD Message)
+!=!You've Been Banned From This Game
+
+!/!32:Max HUD Callsign Level		(in On-Screen Menu)
+!=!Max HUD Callsign Level
+
+!/!33:<None>				(OnScreen Menu)
+!=!<None>
+
+!/!34:Laser death message (killer first)
+!=!%s's Laser blasts %s to smithereens
+
+!/!35: Vauss death message (killer first)
+!=!%s punctures %s's ship with the Vauss
+
+!/!36: Microwave death message (victim first)
+!=!%s is vaporized by %s's Microwave beam
+
+!/!37: Plasma death message (killer first)
+!=!%s pulverizes %s with Plasma power
+
+!/!38: Fusion death message (killer first)
+!=!%s disintegrates %s's hull with the fusion
+
+!/!39: Super laser death message (killer first)
+!=!%s's Super Laser blasts %s to smithereens
+
+!/!40: Mass Driver death message (killer first)
+!=!%s targets %s for Mass destruction
+
+!/!41: Napalm death message (killer first)
+!=!%s's Napalm burns %s beyond recognition
+
+!/!42: EMD death message (killer first)
+!=!%s's EMD electrocutes %s!
+
+!/!43: Omega death message (killer first)
+!=!%s's Omega peels off %s's shields
+
+!/!44: Concussion death message (victim first)
+!=!%s takes a pounding from %s's Concussion
+
+!/!45: Homing missile death message (killer first)
+!=!%s's Homer swoops down on %s for the kill
+
+!/!46: Smart missile death message (victim first)
+!=!%s can't shake %s's Smart missile
+
+!/!47: Mega death message (killer first)
+!=!%s's Mega reduces %s to smoldering scrap
+
+!/!48: Frag death message (victim first)
+!=!%s catches shrapnel from %s's Frag
+
+!/!49: Guided missile death message (killer first)
+!=!%s's Guided hunts down %s
+
+!/!50: Napalm Rocket death message (victim first)
+!=!%s is incinerated by %s's Napalm Rocket
+
+!/!51: Cyclone missile death message (killer first)
+!=!%s's Cyclone overwhelms %s's defenses
+
+!/!52: Flare death message (killer first)
+!=!%s's Flare ignites %s's fuel leak
+
+!/!53: On-Screen menu option to remove ban
+!=!Remove Ban
+
+!/!54: On-Screen menu option to reload ban/allow lists
+!=!Rehash Allow/Deny List
+
+!/!55: On-Screen menu option to set the HUD name level filter
+!=!Max HUD Name Level
+
+!/!56: On-Screen menu "None" option (keep 1 word)
+!=!None
+
+!/!57: On-Screen menu "Team Only" option
+!=!Team Only
+
+!/!58: On-Screen menu "Full" option ('all the way set')
+!=!Full
+
+!/!59: On-Screen menu option to bring up team configuration dialog
+!=!Show Team Cfg Dialog
+
+!/!60: Piggy back On-Screen menu option
+!=!PiggyBack Observer
+
+!/!61: On-Screen menu for turning on/off the on-screen menu background
+!=!OnScreen Menu Bkg
+
+!/!62: On-Screen menu option for the hud-name level
+!=!HUD Name Level
+
+!/!63: On-Screen menu option to turn on/off ship logo displaying
+!=!Ship Logos
+
+!/!64: On-Screen menu option to save stats to file
+!=!Game Stats To File
+
+!/!65: On-Screen menu option to turn on/off auto save of stats at end of level
+!=!AutoSave On Level End
+
+!/!66: On-Screen menu option to turn on/off auto save of stats on disconnect
+!=!AutoSave On Disconnect
+
+!/!67: On-Screen menu option to turn on/off netgame info display
+!=!NetGame Info
+
+!/!68: On-Screen menu option to change the hud message filters
+!=!HUD Message Filters
+
+!/!69: On-Screen sub-menu of Hud Message filters
+!=!Kill Messages
+
+!/!70: On-Screen menu option for 'simple' hud messages (keep 1 word)
+!=!Simple
+
+!/!71: On-Screen sub-menu of Hud Message filters
+!=!Statistical Messages
+
+!/!72: On-Screen menu option to quit on-screen menu
+!=!Exit Menu
+
+!/!73: In Player Info display, time in game
+!=!Total Time In Game: %s\n
+
+!/!74: Message displayed when changing a team name
+!=!%s changed team name to %s
+
+!/!75: Hud message when hud level is set to full
+!=!Personal HUD Name Level: Full
+
+!/!76: Hud message when hud level is set to team only
+!=!Personal HUD Name Level: Team Only
+
+!/!77: Hud message when hud level is set to none
+!=!Personal HUD Name Level: None
+
+!/!78: Hud message when server hud level is set to full
+!=!Server Max HUD Name Level: Full
+
+!/!79: Hud message when server hud level is set to team only
+!=!Server Max HUD Name Level: Team Only
+
+!/!80: Hud message when server hud level is set to none
+!=!Server Max HUD Name Level: None
+
+!/!81: Header for when game stats are written out...must keep column alignment, meaning:
+!/!Callsign starts at column 0
+!/!Kills starts at column 30
+!/!Deaths starts at column 40
+!=!Callsign:                     Kills:    Deaths:
+
+!/!82: Message (Dedicated server) when banning a player
+!=!Banning %s\n
+
+!/!83: Message when there was an error banning the player
+!=!Unable to ban player...pnum not valid\n
+
+!/!84: Time string when the time is exactly 1 hour
+!=!01:00:00 hour
+
+!/!85: Time format string when the time is more than 1 hour
+!/! 1st %d is hours
+!/! 2nd .2%d is minutes
+!/! 3rd .2%d is seconds
+!=!%d:%.2d:%.2d hours
+
+!/!86: Time string when the time is exactly 1 minute
+!=!1:00 minute
+
+!/!87: Time format string when the time is more than 1 minute
+!/! 1st %d is minutes
+!/! 2nd .2%d is seconds
+!=!%d:%.2d minutes
+
+!/!88: Time string when the time is exactly 1 second
+!=!1 second
+
+!/!89: Time format string when the time is more than 1 second
+!/! %d is seconds
+!=!%d seconds
+
+!/! ------------------------------------------------------------------------------------
+!/! The following are Input commands, the first string is the name of the input command (dedicated server commmand)
+!/! The second string is a description for the command.  The first string can't have any
+!/! spaces!
+
+!=!allowteamchange
+!=![Server Only]\nTurns off/on allowing clients to change their team.\nUsage: "$allowteamchange <off/on>"
+
+!=!autobalance
+!=![Server Only]\nTurns off/on allowing the automatic team placement of new players by the server.\nUsage: "$autobalance <off/on>"
+
+!=!autosavedisconnect
+!=!Enables/Disables the automatic saving of the game stats if you disconnect from the server.\nUsage: "$autosavedisconnect <on/off>"
+
+!=!autosavelevel
+!=!Enables/Disables the automatic saving of the game stats when the level ends.\nUsage: "$autosavelevel <on/off>"
+
+!=!balance
+!=![Server Only]\nAutomatically balances the teams, based on senority.\nUsage: "$balance"
+
+!=!ban
+!=![Server Only]\nBans a player from the game.\nUsage: "$ban <pnum>"
+
+!=!banlist
+!=![Dedicated Server Only]\nLists the players banned from the game along with their ban number, which can be used to remove the ban.\nUsage: "$banlist"
+
+!=!changeteam
+!=![Server Only]\nForces a player to a team.\nUsage: "$changeteam <pnum> <team_name>"
+
+!=!endlevel
+!=![Server Only]\nEnds the level.\nUsage: "$endlevel"
+
+!=!help
+!=!Displays help information for the input commands.\nUsage: "$help [command]"
+
+!=!hudnames
+!=!Sets your personal level for the HUD name filter.\nUsage: "$hudnames <full/team/none>"\nNOTE: You can only set your HUD Callsign level up to the level that the server is.  So if the server is only allowing up to teammates, you won't be able to set to full
+
+!=!kick
+!=![Server Only]\nKicks a player from the game.\nUsage: "$kick <pnum>"
+
+!=!killmsgfilter
+!=!Sets the kill message filter, for what style of messages you want.\nUsage: "$killmsgfilter <full/simple/none>"
+
+!=!netgameinfo
+!=!Displays information about the net game.\nUsage: "$netgameinfo"
+
+!=!observer
+!=!If you pass specify 'on', it puts you into observer mode, else it will return you back to normal mode.\nUsage: "$observer <on/off>"
+
+!=!piggyback
+!=!Puts you into Piggyback Observer mode."$piggyback <pnum>"
+
+!=!playerinfo
+!=!Displays information about a player.\nUsage: "$playerinfo <pnum>"
+
+!=!players
+!=![Dedicated Server Only]\nDisplays a list of the players in the game, with their player numbers.\nUsage: "$players"
+
+!=!rehash
+!=![Server Only]\nRehashes the hosts.allow and hosts.deny files.  First it flushes the old, and reloads them.\nUsages: "$rehash"
+
+!=!removeban
+!=![Dedicated Server Only]\nRemoves a ban from a player, given the number associated with them from $banlist.\nUsage: "$removeban <player>"
+
+!=!savestats
+!=!Saves the game stats to file immediatly.\nUsage: "$savestats"
+
+!=!scores
+!=!Displays the scores or stats of the game.\nUsage: "$scores"
+
+!=!serverhudnames
+!=![Server Only]\nSets the highest HUD name filter permitted for the clients.\nUsage: "$serverhudnames <full/team/none>"
+
+!=!setgoallimit
+!=![Server Only]\nChanges the goal limit for the level.\nUsage: "$setgoallimit <points>"
+
+!=!setmaxplayers
+!=![Server Only]\nSets the maximum number of players allowed in the game.\nUsage: "$setmaxplayers <count>"
+
+!=!setpps
+!=![Server Only]\nChanges the Packets Per Second (PPS) threshold of the game\nUsage: "$setpps <pps>"
+
+!=!setrespawntime
+!=![Server Only]\nChanges the respawn time of the powerups in the level.\nUsage: "$setrespawntime <seconds>"
+
+!=!setteamname
+!=![Server Only]\nChanges the name of a team.\nUsage: "$setteamname <team_num> <new_team_name>"
+
+!=!settimelimit
+!=![Server Only]\nChanges the time limit for the level.\nUsage: "$settimelimit <minutes>"
+
+!=!statmsgs
+!=!Enables/Disables random statistical messages.\nUsage: "$statmsgs <on/off>"
+
+!=!team
+!=!Change teams for yourself.\nUsage: "$team <team_name>"
+
+!/! ------------------------------------------------------------------------------------
+
+!/!152:Header for when displaying the input commands in the dedicated server
+!=!Input Command List:\n
+
+!/!153:Instructions for InputCommands
+!=!Prefix a '$' before the commands listed below.  To get more detailed help\nabout a command, type '$help <command>'\n
+
+!/!154:DIsplayed when there is no additional info
+!=!No additional information is available\n
+
+!/!155: Displayed when the given command is not found
+!=!Command not found\n
+
+!/!156: Shortened for Sunday
+!=!Sun
+
+!/!157: Shortened for Monday
+!=!Mon
+
+!/!158: Shortened for Tuesday
+!=!Tue
+
+!/!159: Shortened for Wednesday
+!=!Wed
+
+!/!160: Shortened for Thursday
+!=!Thur
+
+!/!161: Shortened for Friday
+!=!Fri
+
+!/!162: Shortened for Saturday
+!=!Sat
+
+!/!163-174:	Shortened months
+!=!Jan
+!=!Feb
+!=!March
+!=!April
+!=!May
+!=!June
+!=!July
+!=!Aug
+!=!Sept
+!=!Oct
+!=!Nov
+!=!Dec
+
+!/!175:	This string gets concattenated at the end of the filename if when generating the
+!/!	filename for an end-of-level stats
+!=!End_Of_Level_
+
+!/!176: Heading for Netgame Info display
+!=!NetGame Information\n
+
+!/!177-> : The following are labels found in the Netgame Info
+!=!Game Name: %s\n
+!=!Mission Name: %s\n
+!=!Script Name: %s\n
+!=!PPS: %d\n
+!=!PPS (Server/You): %d/%d\n
+!=!Max Players: %d\n
+!=!Accurate Weapon Collisions: %s\n
+!=!Send Rotational Velocity: %s\n
+!=!Time Limit: %d %s\n
+!=!minute
+!=!minutes
+!=!Time Left: %s\n
+!=!Time Limit: None\n
+!=!Goal: %d points\n
+!=!Goal: None\n
+!=!Respawn Time: %s\n
+!=!Packet Loss: N/A\n
+!=!Packet Loss: %.1f%%\n
+!=!Network Model: %s\n
+!=!Peer-To-Peer
+!=!Client/Server
+!=!Movement Smoothing: %s\n
+
+!/!199: Hud message when changing teams was denied
+!=!Team Change Was Denied
+
+!/!200-202: Kill message filter string settings, full, simple, none
+!=!Kill Message Filter: Full
+!=!Kill Message Filter: Simple
+!=!Kill Message Filter: None
+
+!/!203: Message displayed on screen while waiting for the server to start a game
+!=!Waiting For Server...
+
+!/!204: Message on Post Level Results screen for screenshot
+!=!Press PrintScreen For A ScreenShot
+
+!/!205: Hud message displayed when a player changes teams
+!=!%s changes teams to the %s team\n
+
+!/!206: Hud message displayed when a player is killed, but the killer can't be determined
+!=!%s was killed
+
+!/!207: A Simple suicide message
+!=!%s went suicidal
+
+!/!208: # of kills in a row stat msg
+!=!That's %d kills in a row for %s!
+
+!/!209: # of deaths in a row stat msg
+!=!That's %d deaths in a row for %s!
+
+!/!210: time since last kill stat msg
+!=!It's %s's first kill in %s
+
+!/!211: time since last death stat msg
+!=!%s lasted %s without being killed!
+
+!/!212: Excellent effeciency stat
+!=!%s has an awesome efficiency of %.2f!!
+
+!/!213: Good effeciency stats
+!=!%s has an efficiency of %.2f
+
+!/!214: Number of times killed
+!=!%s has killed %s %d times!
+
+!/!215: Revenge stat message
+!=!%s got revenge on %s!
+
+!/!216: Hud message displayed when you attempt to change teams
+!=!Attempting to change teams to %s team
+
+!/!217: Hud message displayed when the server is changing a player to another team
+!=!Attempting to change %s to %s team
+
+!/!218: Hud message displayed when you get player information on someone
+!=!Getting Playerinfo for %s
+
+!/!219: Hud message displayed when the server auto-balances the teams
+!=!Balancing Teams
+
+!/!220: Hud message displayed when the server turns on/off auto-team balancing
+!=!Auto Team Balance: %s
+
+!/!221: Hud message displayed when the server enables/disables team changing
+!=!Allow Team Changing: %s
+
+!/!222: Hud message displayed when you kick someone from the game
+!=!Kicking %s from game
+
+!/!223: Hud message displayed when you ban someone from the game
+!=!Banning %s from game
+
+!/!224: Hud message displayed when you end the level
+!=!Ending the level
+
+!/!225: Hud message when you change your statistical hud message level
+!=!Statistical Messages: %s
+
+!/!226: Hud message when you change the auto-save on level end setting
+!=!AutoSave Stats on Level End: %s
+
+!/!227: Hud message when you change the auto-save on disconnect setting
+!=!AutoSave Stats on Disconnect: %s
+
+!/!228: Hud message for when you change the time limit
+!=!Time Limit: %d
+
+!/!229: Hud message for when you turn off the time limit
+!=!Time Limit: Off
+
+!/!230: Hud message for when you set the goal limit
+!=!Goal Limit: %d
+
+!/!231: Hud message for when you turn off the goal limit
+!=!Goal Limit: None
+
+!/!232: Hud message for when you set the max players
+!=!Max Players: %d
+
+!/!233: Hud message for when you set the respawn time
+!=!Respawn Time: %d
+
+!/!234: Hud message for when you change the pps setting
+!=!Max PPS: %d
+
+!/!235: Hud message for when a ban was successfully removed
+!=!Ban Removed\n
+
+!/!236: Hud message for when a ban was not removed
+!=!Couldn't remove ban\n
+
+!/!237: Hud message for when a given command isn't supported for dedicated server
+!=!Command Not Available To Dedicated Server\n
+
+!/!238: Message for when Observer mode has been denied
+!=!Observer mode request denied
+
+!/!239: Message given if the given playernum was invalid
+!=!Invalid Player Number
+
+!/!240: Heading printed out on the dedicated server when listing the players, try to keep
+!/!column position
+!=!PNum Name\n
+
+!/!241:Hud message displayed if an invalid team number is given
+!=!Invalid Team, Must be between 0 and %d
+
+!/!242:Hud message displayed if the server tries to kick themself
+!=!Server can't kick themself\n
+
+!/!243:Hud messaged displayed if the server tries to ban themself
+!=!Server can't ban themself\n
+
+!/!244:Message displayed when 'auto balancing' occurs
+!=!Balancing Teams\n
+
+!/!245: Hud message displayed if the dedicated server tries to change teams
+!=!Dedicated Server Can't Change Teams\n
+
+!/!246: Hud message displayed if you try to change teams to the same team
+!=!You're already on the %s team\n
+
+!/!247: Hud message displayed showing whether Ship logos are enabled or not
+!=!Ship Logos: %s
+
+!/!248: used to report enabled items
+!=!Enabled
+
+!/!249: used to report disabled items
+!=!Disabled
+
+!/!250: Hud message displayed when flushing and re-reading hosts.allow and hosts.deny files
+!=!Rehashing Hosts.allow and Hosts.deny
+
+!/!251: Status label for in-game stats screen
+!=!Status:
+
+!/!252: Team label for in-game stats screen
+!=!Team:
+
+!/!253: Playtime label for in-game stats screen
+!=!Play Time:
+
+!/!254: Streak label (how many kills or deaths in a row) for in-game stats screen
+!=!Streak:
+
+!/!255: Last victim label for in-game stats screen
+!=!Last Victim:
+
+!/!256: Last killer label for in-game stats screen
+!=!Last Killer:
+
+!/!257,258,259,260: status: server/observing/playing for in-game stats screen
+!=!Server
+!=!Observing
+!=!Playing
+!=!Disconnected
+
+!/!261: singular form of kills (if there is one, else use whatever would be for "1 kill")
+!=!Kill
+!/!262: plural form of kills
+!=!Kills
+
+!/!263: singular form of deaths (if there is one, else use whatever would be for "1 death")
+!=!Death
+!/!264: plural form of deaths
+!=!Deaths
+
+!/!265: pilot name label/heading for in-game stats screen
+!=!Pilot Name
+
+!/!266: hotspot/button label on team config dialog to start the game
+!=!Start Game
+
+!/!267: hotspot/button label on team config dialog to return to the game
+!=!Return to Game
+
+!/!268: hotspot/checkbox label on team config dialog for having the clients wait until the
+!/!server is done with the dialog
+!=!Make Clients Wait
+
+!/!269: window title for team config dialog
+!=!Team Setup
+
+!/!270: window title for wait to join screen
+!=!Waiting For Players
+
+!/!271: hotspot/button label on wait screen to kick a player in the list
+!=!Kick Player
+
+!/!272: hotspot/button label on wait screen to ban a player in the list
+!=!Ban Player
+
+!/!273: On-Screen menu option for audio taunts
+!=!Audio Taunts
+
+!/!274: HUD message when audio taunts are toggled
+!=!Audio Taunts: %s
+
+!/!275: Rank label in stats screen
+!=!Rank:
+
+!/!276: Network packet loss HUD indicator text
+!=!Net Loss
+
+!/!277: Network ping HUD indicator text
+!=!Net Ping
+
+!/!278: On-Screen menu title for HUD indicators
+!=!Loss/Ping HUD Indicator
+
+!/!279: HUD message when HUD indicator is enabled/disabled
+!=!Loss/Ping Indicator: %s
+
+!/!280: Network model type in Netgame info display
+!=!Permissable C/S
+
+!/!281: input command for warp
+!=!warp
+
+!/!282: description for warp command
+!=![Server Only]\nChanges the current level to another level in the mission.\nUsage: "$warp <level>"
+
+!/!----------Patch----------------
+
+!/!283: HUD Message when a remote administrator logs out (for the client)
+!=!Remote Admin Logged Out
+
+!/!284: HUD Message when a remote administrator logs out (for the server)
+!=!==%s has logged out==
+
+!/!285: HUD Message when someone starts remote administrating (for the server)
+!=!==%s is remote administrating==
+
+!/!286: HUD Message when you start remote administrating (for the client)
+!=!Remote Admin Logged In
+
+!/!287: HUD Message when a client executes a command
+!=!==%s executed "%s"
+
+!/!288: HUD Message for a client when the command was successful
+!=!Remote Command Successful
+
+!/!289: HUD Message for a client when a command is not successful
+!=!Remote Command Not Successful
+
+!/!290: HUD Message for a client when a command is not allowed remotely
+!=!Remote Command Not Allowed
+
+!/!291: HUD Message for a client when a command is not found
+!=!Remote Command Not Found
+
+!/!292: HUD Message for server when remote administration can't be set
+!=!Unable to enable remote administration (no password?)
+
+!/!293: HUD Message when remote administration is enabled/disabled
+!=!Remote Administration: %s
+
+!/!294: HUD Message when a remote admin password is set
+!=!Remote Administration Password Set
+
+!/!295: Dedicated server message when a time is set to make clients wait a certain
+!/!amount of time before they can start playing (%.2f is replaced by a number of seconds)
+!=!Making Clients Wait %.2f seconds\n
+
+!/!296: Dedicated server message when the wait time is disabled
+!=!Turning Off Client Wait Time\n
+
+!/!297: Dedicated server message when clients are forced to wait
+!=!Making Clients Wait\n
+
+!/!298: Dedicated server message when clients no longer are forced to wait
+!=!No Longer Making Clients Wait\n
+
+!/!299: Label in the F7 screen (multiplayer) for team games, %s is replaced with the team name
+!=!%s Team:
+
+!/!300: Dedicated server command to send a remote command (doesn't really have to be localized)
+!=!remote
+
+!/!301: Help description for remote command
+!=![Client Only]\nhandles a remote admin command\nUsage: "$remote <command> <option parms> <...>"
+
+!/!302: Dedicated server command to enable/disable remote administration (doesn't really have to be localized)
+!=!remoteadmin
+
+!/!303: Help description for remoteadmin command
+!=![Server Only]\nhandles enable/disable remote administration\nUsage: "$remoteadmin <on/off>""
+
+!/!304: Dedicated server command to logout of remote admin (doesn't really have to be localized)
+!=!remoteadminlogout
+
+!/!305: Help description for remotelogout command
+!=![Server Only]\nhandles seeing who is logged in, and allows the server to log them out\nIf no parameter is given it lists all the players logged in.\nTo log out a player give the login-id as a parameter\nUsage: "$remoteadminlogout [login-id]"
+
+!/!306: Dedicated server command to set remote admin password (doesn't really have to be localized)
+!=!remoteadminpass
+
+!/!307: Help description for remoteadminpass command
+!=![Server Only]\nhandles setting/changing the remote administration password\nUsage: "$remoteadminpass <password>"
+
+!/!308: Dedicated server command to force clients to wait (doesn't really have to be localized)
+!=!wait
+
+!/!309: Help description for wait command
+!=![Dedicated Server Only]\nhandles a request to make all clients wait/or stop waiting.  If a time is giving, the server will wait that long each level until it lets clients to play.\nUsage: "$wait <on/off or time-in-seconds>"
