@@ -107,7 +107,7 @@ static unsigned long long Timer_sys_start_time = 0;
 static unsigned long long Timer_accum = 0, Timer_high_mark = 0;
 
 static float nw_TCPLoggingTimer(void) {
-  unsigned long time_ms;
+  unsigned int time_ms;
   unsigned long long ret;
 
   struct timeval t;
@@ -208,7 +208,7 @@ bool nw_InitTCPLogging(char *ip, unsigned short port) {
   dpthread_self = (pthread_self_fp)dlsym(lib, "pthread_self");
 #endif
 
-  unsigned long argp = 1;
+  unsigned int argp = 1;
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {

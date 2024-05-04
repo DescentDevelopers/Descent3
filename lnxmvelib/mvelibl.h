@@ -90,7 +90,7 @@ void MVE_dsbSetPan(long lPan);
 ** how and when to do palette callbacks.
 */
 void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned long WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
+                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
 
 /* This function alters the display from 640x480 or 640x400 to 640x350 resolution.
  */

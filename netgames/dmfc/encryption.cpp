@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@
 
 class IceSubkey {
 public:
-  unsigned long val[3];
+  unsigned int val[3];
 };
 
 // the S-boxes
-static unsigned long ice_sbox[4][1024];
+static unsigned int ice_sbox[4][1024];
 static int ice_sboxes_initialised = 0;
 
 // modulo values for the S-boxes
@@ -55,7 +55,7 @@ static const int ice_sxor[4][4] = {
     {0x83, 0x85, 0x9b, 0xcd}, {0xcc, 0xa7, 0xad, 0x41}, {0x4b, 0x2e, 0xd4, 0x33}, {0xea, 0xcb, 0x2e, 0x04}};
 
 // Permutation values for the P-box
-static const unsigned long ice_pbox[32] = {
+static const unsigned int ice_pbox[32] = {
     0x00000001, 0x00000080, 0x00000400, 0x00002000, 0x00080000, 0x00200000, 0x01000000, 0x40000000,
     0x00000008, 0x00000020, 0x00000100, 0x00004000, 0x00010000, 0x00800000, 0x04000000, 0x20000000,
     0x00000004, 0x00000010, 0x00000200, 0x00008000, 0x00020000, 0x00400000, 0x08000000, 0x10000000,
@@ -90,7 +90,7 @@ static uint gf_mult(uint a, uint b, uint m) {
 // Galois Field exponentiation.
 // Raise the base to the power of 7, modulo m.
 //
-static unsigned long gf_exp7(uint b, uint m) {
+static unsigned int gf_exp7(uint b, uint m) {
   uint x;
 
   if (b == 0)
@@ -106,9 +106,9 @@ static unsigned long gf_exp7(uint b, uint m) {
 //
 // Carry out the ICE 32-bit P-box permutation.
 //
-static unsigned long ice_perm32(unsigned long x) {
-  unsigned long res = 0;
-  const unsigned long *pbox = ice_pbox;
+static unsigned int ice_perm32(unsigned int x) {
+  unsigned int res = 0;
+  const unsigned int *pbox = ice_pbox;
 
   while (x) {
     if (x & 1)
@@ -130,7 +130,7 @@ static void ice_sboxes_init(void) {
   for (i = 0; i < 1024; i++) {
     int col = (i >> 1) & 0xff;
     int row = (i & 0x1) | ((i & 0x200) >> 8);
-    unsigned long x;
+    unsigned int x;
 
     x = gf_exp7(col ^ ice_sxor[0][row], ice_smod[0][row]) << 24;
     ice_sbox[0][i] = ice_perm32(x);
@@ -186,9 +186,9 @@ IceKey::~IceKey() {
 //
 // The single round ICE f function.
 //
-static unsigned long ice_f(unsigned long p, const IceSubkey *sk) {
-  unsigned long tl, tr; /* Expanded 40-bit values */
-  unsigned long al, ar; /* Salted expanded 40-bit values */
+static unsigned int ice_f(unsigned int p, const IceSubkey *sk) {
+  unsigned int tl, tr; /* Expanded 40-bit values */
+  unsigned int al, ar; /* Salted expanded 40-bit values */
 
   // Left half expansion
   tl = ((p >> 16) & 0x3ff) | (((p >> 14) | (p << 18)) & 0xffc00);
@@ -213,12 +213,12 @@ static unsigned long ice_f(unsigned long p, const IceSubkey *sk) {
 //
 void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
   int i;
-  unsigned long l, r;
+  unsigned int l, r;
 
-  l = (((unsigned long)ptext[0]) << 24) | (((unsigned long)ptext[1]) << 16) | (((unsigned long)ptext[2]) << 8) |
+  l = (((unsigned int)ptext[0]) << 24) | (((unsigned int)ptext[1]) << 16) | (((unsigned int)ptext[2]) << 8) |
       ptext[3];
 
-  r = (((unsigned long)ptext[4]) << 24) | (((unsigned long)ptext[5]) << 16) | (((unsigned long)ptext[6]) << 8) |
+  r = (((unsigned int)ptext[4]) << 24) | (((unsigned int)ptext[5]) << 16) | (((unsigned int)ptext[6]) << 8) |
       ptext[7];
 
   for (i = 0; i < _rounds; i += 2) {
@@ -240,11 +240,11 @@ void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
 //
 void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
   int i;
-  unsigned long l, r;
+  unsigned int l, r;
 
-  l = (((unsigned long)ctext[0]) << 24) | (((unsigned long)ctext[1]) << 16) | (((unsigned long)ctext[2]) << 8) |
+  l = (((unsigned int)ctext[0]) << 24) | (((unsigned int)ctext[1]) << 16) | (((unsigned int)ctext[2]) << 8) |
       ctext[3];
-  r = (((unsigned long)ctext[4]) << 24) | (((unsigned long)ctext[5]) << 16) | (((unsigned long)ctext[6]) << 8) |
+  r = (((unsigned int)ctext[4]) << 24) | (((unsigned int)ctext[5]) << 16) | (((unsigned int)ctext[6]) << 8) |
       ctext[7];
 
   for (i = _rounds - 1; i > 0; i -= 2) {
@@ -277,7 +277,7 @@ void IceKey::scheduleBuild(unsigned short *kb, int n, const int *keyrot) {
 
     for (j = 0; j < 15; j++) {
       int k;
-      unsigned long *curr_sk = &isk->val[j % 3];
+      unsigned int *curr_sk = &isk->val[j % 3];
 
       for (k = 0; k < 4; k++) {
         ushort *curr_kb = &kb[(kr + k) & 3];

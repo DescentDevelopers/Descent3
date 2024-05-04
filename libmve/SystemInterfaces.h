@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  virtual int SetVolume(signed long vol) = 0;
+  virtual int SetVolume(signed int vol) = 0;
 
   ///////////////////////////
   // SetPan
@@ -98,7 +98,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  virtual int SetPan(signed long pan) = 0;
+  virtual int SetPan(signed int pan) = 0;
 
   /////////////////////////
   // Stop

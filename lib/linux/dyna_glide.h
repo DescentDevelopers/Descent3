@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -173,9 +173,9 @@ typedef unsigned short FxU16;
 
 typedef signed short FxI16;
 
-typedef signed long FxI32;
+typedef signed int FxI32;
 
-typedef unsigned long FxU32;
+typedef unsigned int FxU32;
 
 typedef int FxBool;
 
@@ -189,7 +189,7 @@ typedef double FxDouble;
 
 */
 
-typedef unsigned long FxColor_t;
+typedef unsigned int FxColor_t;
 
 typedef struct {
   float r, g, b, a;

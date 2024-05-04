@@ -95,7 +95,7 @@ void __cdecl MVE_dsbSetPan(long lPan);
 void __cdecl
 MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth,
 	   unsigned WriteWin, unsigned char *WriteWinPtr,
-	   unsigned long WinSize, unsigned WinGran,
+	   unsigned int WinSize, unsigned WinGran,
 	   void *SetBank, unsigned hicolor);
 
 /* This function alters the display from 640x480 or 640x400 to 640x350 resolution.
@@ -293,7 +293,7 @@ int __cdecl MVE_frGet(MVE_frStream frs,
 **  with the standard player interface, except that this interface requires
 **  polling each frame instead, and must be passed pointers to the variables where
 **  the values will be returned.
-**  
+**
 */
 void __cdecl MVE_frPal(MVE_frStream frs,
 					   unsigned char **pPaltbl, unsigned *pStart, unsigned *pCount);

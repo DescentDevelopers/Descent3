@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -579,7 +579,7 @@ dp_ListDirectPlayGames_fp DLLdp_ListDirectPlayGames;
 typedef int (*dp_InitDirectPlay_fp)(char *conn_name, void *parms, int num_elements);
 dp_InitDirectPlay_fp DLLdp_InitDirectPlay;
 
-typedef int (*dp_GetModemChoices_fp)(char *buffer, unsigned long *size);
+typedef int (*dp_GetModemChoices_fp)(char *buffer, unsigned int *size);
 dp_GetModemChoices_fp DLLdp_GetModemChoices;
 #endif
 
@@ -739,8 +739,8 @@ typedef struct vmt_descent3_struct {
   unsigned int lateral_thrust;
   unsigned int rotational_thrust;
   unsigned int sliding_pct; // Percentage of the time you were sliding
-  unsigned long checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
-  unsigned long pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
+  unsigned int checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
+  unsigned int pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #ifdef WIN32

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -696,7 +696,7 @@ int MainMultiplayerMenu() {
 
 void AutoLoginAndJoinGame(void) {
   unsigned short port;
-  unsigned long iaddr;
+  unsigned int iaddr;
 
   *DLLMultiGameStarting = 0;
 
@@ -714,7 +714,7 @@ void AutoLoginAndJoinGame(void) {
 
   network_address s_address;
   iaddr = inet_addr(DLLAuto_login_addr);
-  memcpy(&s_address.address, &iaddr, sizeof(unsigned long));
+  memcpy(&s_address.address, &iaddr, sizeof(unsigned int));
   s_address.port = port;
   s_address.connection_type = NP_TCP;
   *DLLGame_is_master_tracker_game = 0;

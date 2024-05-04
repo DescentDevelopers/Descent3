@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -236,7 +236,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff) {
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol) {
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol) {
   if (!buff)
     return -1;
 
@@ -260,9 +260,9 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol) {
 
   double vt;
   vt = (double)(buff->volume - (buff->pan > 0 ? buff->pan : 0));
-  buff->left_vol = (unsigned long)(pow(2.0, vt / 600.0) * 32768.0);
+  buff->left_vol = (unsigned int)(pow(2.0, vt / 600.0) * 32768.0);
   vt = (double)(buff->volume + (buff->pan < 0 ? buff->pan : 0));
-  buff->right_vol = (unsigned long)(pow(2.0, vt / 600.0) * 32768.0);
+  buff->right_vol = (unsigned int)(pow(2.0, vt / 600.0) * 32768.0);
 
   exit_critical();
 
@@ -278,7 +278,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed long vol) {
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed long pan) {
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed int pan) {
   if (!buff)
     return -1;
 
@@ -295,9 +295,9 @@ int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed long pan) {
 
   double pt;
   pt = (double)(buff->volume - (buff->pan > 0 ? buff->pan : 0));
-  buff->left_vol = (unsigned long)(pow(2.0, pt / 600.0) * 32768.0);
+  buff->left_vol = (unsigned int)(pow(2.0, pt / 600.0) * 32768.0);
   pt = (double)(buff->volume + (buff->pan < 0 ? buff->pan : 0));
-  buff->right_vol = (unsigned long)(pow(2.0, pt / 600.0) * 32768.0);
+  buff->right_vol = (unsigned int)(pow(2.0, pt / 600.0) * 32768.0);
 
   exit_critical();
 

@@ -169,17 +169,17 @@ typedef struct tEffectRamp {
   long End;   // +- 10,000
 } tEffRamp;
 typedef struct tEffectWave {
-  unsigned long Mag;   // 0 to 10,000
+  unsigned int Mag;   // 0 to 10,000
   long Offset;         // +- 10,000
-  unsigned long Phase; // 0 to 35,999
-  unsigned long Period;
+  unsigned int Phase; // 0 to 35,999
+  unsigned int Period;
 } tEffWave;
 typedef struct tEffectCondition {
   long Offset;                      // +- 10,000
   long PositiveCoefficient;         // +- 10,000
   long NegativeCoefficient;         // +- 10,000
-  unsigned long PositiveSaturation; // 0 to 10,000
-  unsigned long NegativeSaturation; // 0 to 10,000
+  unsigned int PositiveSaturation; // 0 to 10,000
+  unsigned int NegativeSaturation; // 0 to 10,000
   long DeadBand;                    // 0 to 10,000
 } tEffCondition;
 typedef struct tEffectCustom {
@@ -196,10 +196,10 @@ typedef union tEffectInfo {
   tEffCustom Custom;
 } tEffInfo;
 typedef struct tEffectEnvelope {
-  unsigned long AttackLevel;
-  unsigned long AttackTime;
-  unsigned long FadeLevel;
-  unsigned long FadeTime;
+  unsigned int AttackLevel;
+  unsigned int AttackTime;
+  unsigned int FadeLevel;
+  unsigned int FadeTime;
 } tEffEnvelope;
 typedef enum { kXAxisOnly, kYAxisOnly, kBothAxes } tEffAxis;
 typedef struct tFFB_Effect {
@@ -207,12 +207,12 @@ typedef struct tFFB_Effect {
   tEffType Type;
   // tEffInfo			TypeInfo[2];
   tEffInfo TypeInfo;
-  unsigned long Duration;
-  unsigned long Gain; // 0-10000 -- scales all magnitudes and envelope
-  unsigned long Period;
+  unsigned int Duration;
+  unsigned int Gain; // 0-10000 -- scales all magnitudes and envelope
+  unsigned int Period;
   tEffAxis Axis;
   tJoyButtons Trigger;
-  unsigned long TriggerRepeatTime;
+  unsigned int TriggerRepeatTime;
   long Direction; // 0 to 360 deg.
   tEffEnvelope Envelope;
 } tFFB_Effect;

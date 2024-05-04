@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ enum AudioError {
   ReadSampleEof = 0x80000000,
 };
 
-unsigned long AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
+unsigned int AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
                           FILE *out, int levels, int samples_per_subband, float comp_ratio);
 
 #endif

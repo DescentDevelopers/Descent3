@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -212,7 +212,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
                   wnd->lpXvisual = wnd->viVisualInfo.visual;
                   wnd->cmColorMap = DefaultColormapOfScreen(DefaultScreenOfDisplay(lpDisplay));
 
-                  unsigned long attrib_mask;
+                  unsigned int attrib_mask;
                   XSetWindowAttributes attrib;
 
                   // setup some attribute and hints for actual window creation
@@ -508,7 +508,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
   SDL_UpdateRect(wnd->surface, 0, 0, wnd->dwWidth, wnd->dwHeight);
 
 #ifdef __DUMP_MVE_TO_DISK
-  static unsigned long framenum = 0;
+  static unsigned int framenum = 0;
   char filename[100];
   snprintf(filename, sizeof(filename), "./mve/frame%lu.bmp", framenum);
   SDL_SaveBMP(wnd->surface, filename);
@@ -738,7 +738,7 @@ inline void BltBuffer32ToPixMap24(unsigned char *pixmap, unsigned char *buffer, 
     b = (c & 0x000000ff);
 
     if (a)
-      *(unsigned long *)data = ((r << 16) + (g << 8) + b);
+      *(unsigned int *)data = ((r << 16) + (g << 8) + b);
     data += 4;
     buffer += 4;
   }
@@ -759,7 +759,7 @@ inline void BltBuffer16ToPixMap24(unsigned char *pixmap, unsigned char *buffer, 
     b = (c & 0x001F);
 
     if (a)
-      *(unsigned long *)data = ((r << 19) + (g << 11) + (b << 3));
+      *(unsigned int *)data = ((r << 19) + (g << 11) + (b << 3));
     data += 4;
     buffer += 2;
   }
