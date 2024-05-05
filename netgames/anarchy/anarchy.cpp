@@ -81,7 +81,7 @@ static void DisplayWelcomeMessage(int player_num);
 static void SaveStatsToFile(char *filename);
 static void SwitchHUDColor(int i);
 static void SwitchAnarchyScores(int i);
-static char *GetString(int d);
+static const char *GetString(int d);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
 
 ///////////////////////////////////////////////

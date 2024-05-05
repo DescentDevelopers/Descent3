@@ -115,8 +115,8 @@
 #include "manage.h"
 
 static void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b);
-static int CreateHotSpotMap(char *map, int width, int height, hotspotmap_t *hsmap);
-static void CreateWindowMap(char *map, int width, int height, windowmap_t *wndmap);
+static int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap);
+static void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap);
 
 // just like the old bm_tga_translate_pixel function, but it stores the alpha in the alpha_value parameter
 ushort menutga_translate_pixel(int pixel, char *alpha_value) {
