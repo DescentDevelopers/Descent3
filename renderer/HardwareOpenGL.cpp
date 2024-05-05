@@ -729,7 +729,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   if (ParentApplication) {
     reinterpret_cast<oeLnxApplication *>(ParentApplication)->set_sizepos(0, 0, *width, *height);
-    //SDL_FillRect(SDL_GetVideoSurface(), NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 0, 0));
   }
 
   Already_loaded = 1;
