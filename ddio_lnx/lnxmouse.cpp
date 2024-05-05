@@ -207,7 +207,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
   const SDL_MouseButtonEvent *ev = &event->button;
   t_mse_event mevt;
 
-  if (ev->button == 1) { //(evt.xbutton.state & Button1Mask) || (evt.xbutton.button == Button1)) {
+  if (ev->button == 1) {
     DDIO_mouse_state.btn_mask |= MOUSE_LB;
     DIM_buttons.down_count[0]++;
     DIM_buttons.time_down[0] = timer_GetTime();
@@ -216,7 +216,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.state = true;
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 0: Down\n"));
-  } else if (ev->button == 2) { //((evt.xbutton.state & Button2Mask) || (evt.xbutton.button == Button2)) {
+  } else if (ev->button == 2) {
     DDIO_mouse_state.btn_mask |= MOUSE_RB;
     DIM_buttons.down_count[1]++;
     DIM_buttons.time_down[1] = timer_GetTime();
@@ -226,7 +226,6 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //     	mprintf((0, "MOUSE Button 1: Down\n"));
   }
-  //	if ((evt.xbutton.state & Button3Mask) || (evt.xbutton.button == Button3)) {
   else if (ev->button == 3) {
     DDIO_mouse_state.btn_mask |= MOUSE_CB;
     DIM_buttons.down_count[2]++;
@@ -237,19 +236,10 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 2: Down\n"));
   }
-  //	if ((evt.xbutton.state & Button4Mask) || (evt.xbutton.button == Button4)) {
-  else if (ev->button == 4) { /* Mouse scroll up */
-    DDIO_mouse_state.btn_mask |= MOUSE_B5;
-    DIM_buttons.down_count[4]++;
-    DIM_buttons.time_down[4] = timer_GetTime();
-    DIM_buttons.is_down[4] = true;
-    mevt.btn = 4;
-    mevt.state = true;
-    MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 4: Down\n"));
-  }
-  //	if ((evt.xbutton.state & Button5Mask) || (evt.xbutton.button == Button5)) {
-  else if (ev->button == 5) { /* Mouse scroll down */
+
+  // buttons 4 and 5 are reserved for the mouse wheel...that's how the engine works...adjust in here.
+
+  else if (ev->button == 4) {
     DDIO_mouse_state.btn_mask |= MOUSE_B6;
     DIM_buttons.down_count[5]++;
     DIM_buttons.time_down[5] = timer_GetTime();
@@ -259,6 +249,27 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 5: Down\n"));
   }
+  else if (ev->button == 5) {
+    DDIO_mouse_state.btn_mask |= MOUSE_B7;
+    DIM_buttons.down_count[6]++;
+    DIM_buttons.time_down[6] = timer_GetTime();
+    DIM_buttons.is_down[6] = true;
+    mevt.btn = 6;
+    mevt.state = true;
+    MB_queue.send(mevt);
+    //		mprintf((0, "MOUSE Button 6: Down\n"));
+  }
+  else if (ev->button == 6) {
+    DDIO_mouse_state.btn_mask |= MOUSE_B8;
+    DIM_buttons.down_count[7]++;
+    DIM_buttons.time_down[7] = timer_GetTime();
+    DIM_buttons.is_down[7] = true;
+    mevt.btn = 7;
+    mevt.state = true;
+    MB_queue.send(mevt);
+    //		mprintf((0, "MOUSE Button 7: Down\n"));
+  }
+
   return (0);
 }
 
@@ -268,7 +279,6 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
   const SDL_MouseButtonEvent *ev = &event->button;
   t_mse_event mevt;
 
-  //	if ((evt.xbutton.state & Button1Mask) || (evt.xbutton.button == Button1)) {
   if (ev->button == 1) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_LB);
     DIM_buttons.up_count[0]++;
@@ -279,7 +289,6 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 0: Up\n"));
   }
-  //	if ((evt.xbutton.state & Button2Mask) || (evt.xbutton.button == Button2)) {
   else if (ev->button == 2) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_RB);
     DIM_buttons.up_count[1]++;
@@ -290,7 +299,6 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 1: Up\n"));
   }
-  //	if ((evt.xbutton.state & Button3Mask) || (evt.xbutton.button == Button3)) {
   else if (ev->button == 3) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_CB);
     DIM_buttons.up_count[2]++;
@@ -300,20 +308,12 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.state = false;
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 2: Up\n"));
+
   }
-  //	if ((evt.xbutton.state & Button4Mask) || (evt.xbutton.button == Button4)) {
+
+  // buttons 4 and 5 are reserved for the mouse wheel...that's how the engine works...adjust in here.
+
   else if (ev->button == 4) {
-    DDIO_mouse_state.btn_mask &= (~MOUSE_B5);
-    DIM_buttons.up_count[4]++;
-    DIM_buttons.is_down[4] = false;
-    DIM_buttons.time_up[4] = timer_GetTime();
-    mevt.btn = 4;
-    mevt.state = false;
-    MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 4: Up\n"));
-  }
-  //	if ((evt.xbutton.state & Button5Mask) || (evt.xbutton.button == Button5)) {
-  else if (ev->button == 5) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_B6);
     DIM_buttons.up_count[5]++;
     DIM_buttons.is_down[5] = false;
@@ -323,8 +323,79 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     MB_queue.send(mevt);
     //		mprintf((0, "MOUSE Button 5: Up\n"));
   }
+  else if (ev->button == 5) {
+    DDIO_mouse_state.btn_mask &= (~MOUSE_B7);
+    DIM_buttons.up_count[6]++;
+    DIM_buttons.is_down[6] = false;
+    DIM_buttons.time_up[6] = timer_GetTime();
+    mevt.btn = 6;
+    mevt.state = false;
+    MB_queue.send(mevt);
+    //		mprintf((0, "MOUSE Button 6: Up\n"));
+  }
+  else if (ev->button == 6) {
+    DDIO_mouse_state.btn_mask &= (~MOUSE_B8);
+    DIM_buttons.up_count[7]++;
+    DIM_buttons.is_down[7] = false;
+    DIM_buttons.time_up[7] = timer_GetTime();
+    mevt.btn = 7;
+    mevt.state = false;
+    MB_queue.send(mevt);
+    //		mprintf((0, "MOUSE Button 7: Up\n"));
+  }
 
   return (0);
+}
+
+int sdlMouseWheelFilter(SDL_Event const *event) {
+  ASSERT(event->type == SDL_MOUSEWHEEL);
+
+  const SDL_MouseWheelEvent *ev = &event->wheel;
+  t_mse_event mevt;
+
+  // !!! FIXME: this ignores horizontal wheels for now, since Descent3 doesn't currently have a concept of them
+  // !!! FIXME: (vertical mouse wheels are represented as mouse buttons 4 and 5, incorrectly, on all platforms).
+  // !!! FIXME: this will require improvements to the engine before this changes here, though.
+
+  if (ev->y > 0) { /* Mouse scroll up */
+    DDIO_mouse_state.btn_mask |= MOUSE_B5;
+    DIM_buttons.down_count[4]++;
+    DIM_buttons.time_down[4] = timer_GetTime();
+    DIM_buttons.is_down[4] = true;
+    mevt.btn = 4;
+    mevt.state = true;
+    MB_queue.send(mevt);
+
+    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the engine.
+    // don't remove from btn_mask
+    DIM_buttons.up_count[4]++;
+    DIM_buttons.is_down[4] = false;
+    DIM_buttons.time_up[4] = timer_GetTime();
+    mevt.btn = 4;
+    mevt.state = false;
+    MB_queue.send(mevt);
+    //		mprintf((0, "MOUSE Scrollwheel: Rolled Up\n"));
+  } else if (ev->y < 0) { /* Mouse scroll down */
+    DDIO_mouse_state.btn_mask |= MOUSE_B6;
+    DIM_buttons.down_count[5]++;
+    DIM_buttons.time_down[5] = timer_GetTime();
+    DIM_buttons.is_down[5] = true;
+    mevt.btn = 5;
+    mevt.state = true;
+    MB_queue.send(mevt);
+
+    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the engine.
+    // don't remove from btn_mask
+    DIM_buttons.up_count[5]++;
+    DIM_buttons.is_down[5] = false;
+    DIM_buttons.time_up[5] = timer_GetTime();
+    mevt.btn = 5;
+    mevt.state = false;
+    MB_queue.send(mevt);
+    //		mprintf((0, "MOUSE Scrollwheel: Rolled Down\n"));
+  }
+
+  return 0;
 }
 
 int sdlMouseMotionFilter(SDL_Event const *event) {
@@ -454,6 +525,10 @@ int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z, int *dz) {
 
   DDIO_mouse_state.dx = 0;
   DDIO_mouse_state.dy = 0;
+
+  // unset the mouse wheel "button" once it's been retrieved.
+  DDIO_mouse_state.btn_mask &= ~(MOUSE_B5|MOUSE_B6);
+
   return btn_mask;
 }
 

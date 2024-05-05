@@ -307,6 +307,7 @@ static void register_d3_args(void) {
 int sdlKeyFilter(const SDL_Event *event);
 int sdlMouseButtonUpFilter(const SDL_Event *event);
 int sdlMouseButtonDownFilter(const SDL_Event *event);
+int sdlMouseWheelFilter(const SDL_Event *event);
 int sdlMouseMotionFilter(const SDL_Event *event);
 
 int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
@@ -322,6 +323,8 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
     return (sdlMouseButtonUpFilter(event));
   case SDL_MOUSEBUTTONDOWN:
     return (sdlMouseButtonDownFilter(event));
+  case SDL_MOUSEWHEEL:
+    return (sdlMouseWheelFilter(event));
   case SDL_QUIT:
     SDL_Quit();
     _exit(0);
