@@ -355,6 +355,7 @@ int sdlKeyFilter(const SDL_Event *event) {
 
   switch (event->key.state) {
   case SDL_PRESSED:
+    if (event->key.repeat) break;  // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
     kc = sdlkeycode_to_keycode(event->key.keysym.sym);
     if (event->key.keysym.mod & KMOD_CTRL) {
       switch (kc) {
