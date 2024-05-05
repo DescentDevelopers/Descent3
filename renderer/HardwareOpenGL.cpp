@@ -601,28 +601,11 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   bool fullscreen = false;
 
-#if 0  // this was a workaround for 3DFx Voodoo cards back in the day. Presumably no longer needed?    --ryan 04/27/2024
-  char *env = getenv("MESA_GLX_FX");
-
-  if ((!env) || (*env == 'f')) // Full screen Mesa mode    !!! needs more.
-  {
-    fullscreen = true;
-  }
-#endif
-
   if (FindArgChar("-fullscreen", 'f')) {
     fullscreen = true;
   } else if (FindArgChar("-windowed", 'w')) {
     fullscreen = false;
   }
-
-#if 0  // this was for 3DFx Voodoo cards...probably don't need this anymore.  --ryan 04/27/2024
-  if (env == NULL) {
-    putenv((char *)(fullscreen ? "MESA_GLX_FX=f" : "MESA_GLX_FX=w"));
-  }
-
-  putenv("FX_GLIDE_NO_SPLASH=1");
-#endif
 
   if (!Already_loaded) {
 #define MAX_ARGS 30
@@ -639,10 +622,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     }
 
     mprintf((0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library[0] ? gl_library : "[system default library]"));
-
-#if 0  // this was for 3DFx Voodoo cards...probably don't need this anymore.  --ryan 04/27/2024
-    putenv("MESA_FX_NO_SIGNALS=ihatesegfaults");
-#endif
 
     // ryan's adds. 04/18/2000...SDL stuff on 04/25/2000
     bool success = true;
