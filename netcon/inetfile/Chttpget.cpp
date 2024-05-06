@@ -291,7 +291,7 @@ void ChttpGet::GetFile(char *URL, char *localfile) {
   }
 
   //	if(df_pthread_create(&thread,NULL,HTTPObjThread,this)!=0)
-  thread = SDL_CreateThread(HTTPObjThread, this);
+  thread = SDL_CreateThread(HTTPObjThread, "httpget", this);
   if (thread == NULL) {
     m_State = HTTP_STATE_INTERNAL_ERROR;
     return;
@@ -713,7 +713,7 @@ int http_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
     }
 
     //		df_pthread_create(&thread,NULL,http_gethostbynameworker,newaslu);
-    newaslu->threadId = SDL_CreateThread(http_gethostbynameworker, newaslu);
+    newaslu->threadId = SDL_CreateThread(http_gethostbynameworker, "httpdns", newaslu);
 #endif
     return 1;
   } else if (command == NW_AGHBN_CANCEL) {

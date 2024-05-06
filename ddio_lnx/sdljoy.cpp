@@ -106,10 +106,6 @@ bool joy_Init(bool remote) {
     // FIXME: report an error?
     return false;
   }
-  SDL_EventState(SDL_JOYAXISMOTION, SDL_IGNORE);
-  SDL_EventState(SDL_JOYHATMOTION, SDL_IGNORE);
-  SDL_EventState(SDL_JOYBUTTONDOWN, SDL_IGNORE);
-  SDL_EventState(SDL_JOYBUTTONUP, SDL_IGNORE);
 
   //	check if this OS supports joysticks
   if (!joyGetNumDevs() && !remote) {
@@ -155,7 +151,7 @@ static bool joy_InitStick(tJoystick joy, char *server_adr) {
     tJoyInfo caps;
 
     memset(&caps, 0, (sizeof caps));
-    strncpy(caps.name, SDL_JoystickName(joy), sizeof(caps.name) - 1);
+    strncpy(caps.name, SDL_JoystickNameForIndex(joy), sizeof(caps.name) - 1);
     caps.num_btns = SDL_JoystickNumButtons(stick);
     int axes = SDL_JoystickNumAxes(stick);
     switch (axes) {

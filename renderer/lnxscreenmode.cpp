@@ -115,6 +115,7 @@ CLnxVideoModes::~CLnxVideoModes() {
 // enumerate all the possible video modes
 bool CLnxVideoModes::Init(void) // Display *dpy,int screen)
 {
+#if 0  // with SDL2, we'll just use FULLSCREEN_DESKTOP and never change the physical vidmode
   if (m_Inited)
     return true;
 
@@ -181,6 +182,7 @@ bool CLnxVideoModes::Init(void) // Display *dpy,int screen)
     } // for
     mprintf((0, "-------------------------\n"));
   } // else
+#endif
 
   return true;
 }

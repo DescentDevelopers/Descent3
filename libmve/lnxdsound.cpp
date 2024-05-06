@@ -775,6 +775,8 @@ static void LinuxSoundMixBuffersIntoMain(int len) {
 }
 
 static void LinuxSoundThreadHandler(void *unused, Uint8 *stream, int len) {
+  SDL_memset(stream, '\0', len);
+
   LnxBuffers[0]->buffer = stream;
   LnxBuffers[0]->buffer_len = len;
   LnxBuffers[0]->play_cursor = 0;

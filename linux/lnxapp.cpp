@@ -80,6 +80,11 @@
 #include <sys/types.h>
 #include <term.h>
 #include <termios.h>
+
+#ifdef buttons // termios.h defines buttons, but SDL's headers use that symbol.
+#undef buttons
+#endif
+
 #include <stdio.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -148,8 +153,6 @@ void LnxAppShutdown(void) {
   if (LinuxAppFlags & OEAPP_CONSOLE) {
     con_Destroy();
     tcsetattr(0, TCSANOW, &Linux_initial_terminal_settings);
-  } else {
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
   }
 }
 
@@ -162,8 +165,6 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
     tcgetattr(0, &Linux_initial_terminal_settings);
     con_Create(m_Flags);
   }
-
-  SDL_EnableKeyRepeat(0, 0);
 
   LinuxAppFlags = m_Flags;
 
@@ -252,7 +253,6 @@ void oeLnxApplication::set_sizepos(int x, int y, int w, int h) {
 const char *oeLnxApplication::get_window_name(void) { return "Descent 3"; }
 
 void oeLnxApplication::clear_window(void) {
-  SDL_FillRect(SDL_GetVideoSurface(), NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 0, 0));
 }
 
 // initializes OS components.

@@ -282,13 +282,13 @@ if(WIN32)
 endif()
 
 if(UNIX AND NOT APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
+  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL2::SDL2 m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
   set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
 endif()
 
 if(APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL::SDL ${CURSES_LIBRARIES})
-  set(PLATFORM_CPPS loki_utils.c lnxmain.cpp SDLMain.m)
+  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL2::SDL2 ${CURSES_LIBRARIES})
+  set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
   set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
 endif()
 

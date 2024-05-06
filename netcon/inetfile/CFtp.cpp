@@ -218,7 +218,7 @@ CFtpGet::CFtpGet(char *URL, char *localfile, char *Username, char *Password) {
   }
 
   //	if(df_pthread_create(&thread,NULL,FTPObjThread,this)!=0)
-  thread = SDL_CreateThread(FTPObjThread, this);
+  thread = SDL_CreateThread(FTPObjThread, "ftpget", this);
   if (thread == NULL) {
     m_State = FTP_STATE_INTERNAL_ERROR;
     return;

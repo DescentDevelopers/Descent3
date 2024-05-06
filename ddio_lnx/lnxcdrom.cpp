@@ -95,7 +95,6 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
-#include <SDL.h>
 #include "mem.h"
 #include "mono.h"
 #include "ddio.h"
@@ -242,8 +241,6 @@ void cdrom_set_system_shutdown(void) {
 system_cdroms::system_cdroms(void) { reinit(); }
 
 void system_cdroms::reinit(void) {
-  SDL_QuitSubSystem(SDL_INIT_CDROM);
-  SDL_Init(SDL_INIT_CDROM);
   m_CreatedMountPoint = false;
   m_NumCDRoms = 0;
   m_DeviceToUse = -1;
@@ -253,10 +250,9 @@ void system_cdroms::reinit(void) {
 } // reinit
 
 system_cdroms::~system_cdroms(void) {
-  //    SDL_QuitSubSystem(SDL_INIT_CDROM);
 }
 
-int system_cdroms::GetNumCDRoms(void) { return (SDL_CDNumDrives()); }
+int system_cdroms::GetNumCDRoms(void) { return 0; }
 
 // Returns the device name of the default drive
 const char *system_cdroms::GetDeviceName(void) { return CDName(m_DeviceToUse); }
@@ -264,7 +260,7 @@ const char *system_cdroms::GetDeviceName(void) { return CDName(m_DeviceToUse); }
 // Returns the volume name of the default drive
 const char *system_cdroms::GetVolumeName(void) { return GetVolume(m_DeviceToUse); }
 
-const char *system_cdroms::CDName(int drive) { return (SDL_CDName(drive)); }
+const char *system_cdroms::CDName(int drive) { return NULL; }
 
 const char *system_cdroms::GetVolume(int drive) {
 #if 1 // MACOSX
@@ -342,21 +338,7 @@ const char *system_cdroms::GetVolume(int drive) {
 bool system_cdroms::IsCdInDrive(void) { return IsCdInDrive(m_DeviceToUse); }
 
 bool system_cdroms::IsCdInDrive(int drive) {
-  //	int cdfd,is_in=0;
-  //	struct cdrom_subchnl info;
-  //	struct stat stbuf;
-  CDstatus cdStat;
-  SDL_CD cdInfo;
-  bool retVal = true;
-
-  if (drive < 0 || drive >= m_NumCDRoms)
-    retVal = false;
-  else {
-    cdStat = SDL_CDStatus(&cdInfo);
-    if ((cdStat == CD_TRAYEMPTY) || (cdStat == CD_ERROR))
-      retVal = false;
-  } // else
-  return (retVal);
+  return false;
 }
 
 static int read_file_string(FILE *fd, char *buffer, int maxsize) {

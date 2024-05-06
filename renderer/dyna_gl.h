@@ -228,12 +228,12 @@ module *LoadOpenGLDLL(const char *dllname) {
 #ifdef __LINUX__
   char *tmp = getcwd(NULL, 0);
   chdir(__orig_pwd);
-  int rc = SDL_GL_LoadLibrary(dllname);
+  int rc = SDL_GL_LoadLibrary(dllname[0] ? dllname : NULL);
   chdir(tmp);
   free(tmp);
   if (rc < 0) {
     const char *sdlErr = SDL_GetError();
-    mprintf((0, "OpenGL: Couldn't open library [%s].\n", dllname));
+    mprintf((0, "OpenGL: Couldn't open library [%s].\n", dllname[0] ? dllname : "system default"));
     mprintf((0, "OpenGL:  SDL error is [%s].", sdlErr));
     return NULL;
   }
