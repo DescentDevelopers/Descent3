@@ -193,8 +193,6 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <netdb.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>

@@ -97,7 +97,6 @@
 #include "findintersection.h"
 
 #include <stdlib.h>
-#include <search.h>
 #include <string.h>
 
 #include "psrand.h"

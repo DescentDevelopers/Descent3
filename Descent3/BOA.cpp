@@ -131,7 +131,6 @@
 #include "room.h"
 #include <string.h>
 #include <stdlib.h>
-#include <search.h>
 #include "object.h"
 #include "bsp.h"
 #include "pserror.h"

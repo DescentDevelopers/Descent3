@@ -381,10 +381,6 @@ bool ddio_FindFileStart(const char *wildcard, char *namebuf);
 bool ddio_FindNextFile(char *namebuf);
 void ddio_FindFileClose();
 
-void ddio_FindDirClose();
-bool ddio_FindDirStart(const char *wildcard, char *namebuf);
-bool ddio_FindNextDir(char *namebuf);
-
 //	given a path (with no filename), it will return the parent path
 //	srcPath is the source given path
 //	dest is where the parent path will be placed

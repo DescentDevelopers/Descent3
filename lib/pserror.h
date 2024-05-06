@@ -199,11 +199,7 @@ inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
 // Does a DEBUG_BREAK() if debugging is turned on.  Also does an mprintf().
 //	Define the macros
 #ifndef RELEASE
-#if defined(MACOSX)
-#include <sys/malloc.h>
-#else
-#include <malloc.h>
-#endif
+#include <cstdlib>
 #if defined(WIN32)
 #define DEBUG_BREAK()                                                                                                  \
   do {                                                                                                                 \

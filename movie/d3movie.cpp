@@ -19,7 +19,6 @@
 #include <stdlib.h>
 
 #ifdef __LINUX__
-#include <sys/ioctl.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/uio.h>

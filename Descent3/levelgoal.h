@@ -21,11 +21,7 @@
 
 #include "object.h"
 #include "cfile.h"
-#if defined(MACOSX)
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
+#include <cstdlib>
 #include "mem.h"
 #include "levelgoal_external.h"
 

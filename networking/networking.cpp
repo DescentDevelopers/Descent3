@@ -299,11 +299,8 @@ typedef int socklen_t;
 #include <netinet/in.h>
 #endif
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
-#include <sys/termios.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <stdlib.h>

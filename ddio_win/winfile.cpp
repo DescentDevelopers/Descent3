@@ -349,58 +349,6 @@ void ddio_FindFileClose() {
   hFindFile = INVALID_HANDLE_VALUE;
 }
 
-static HANDLE hFindDir = INVALID_HANDLE_VALUE;
-static WIN32_FIND_DATA FindDirData;
-bool ddio_FindDirStart(const char *wildcard, char *namebuf) {
-  if (hFindDir != INVALID_HANDLE_VALUE)
-    ddio_FindDirClose();
-
-  hFindDir = FindFirstFile(wildcard, &FindDirData);
-  if (hFindDir != INVALID_HANDLE_VALUE) {
-
-    if (FindDirData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-      strcpy(namebuf, FindDirData.cFileName);
-      return true;
-    } else {
-      return ddio_FindNextDir(namebuf);
-    }
-  } else {
-    namebuf[0] = 0;
-    return false;
-  }
-}
-
-bool ddio_FindNextDir(char *namebuf) {
-
-  if (!hFindDir)
-    return false;
-
-  bool done = false;
-  bool found = false;
-
-  while (!done) {
-
-    if (FindNextFile(hFindDir, &FindDirData)) {
-      if (FindDirData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-        strcpy(namebuf, FindDirData.cFileName);
-        done = true;
-        found = true;
-      }
-    } else {
-      namebuf[0] = '\0';
-      done = true;
-    }
-  }
-
-  return found;
-}
-
-void ddio_FindDirClose() {
-  if (hFindDir != INVALID_HANDLE_VALUE)
-    FindClose(hFindDir);
-  hFindDir = INVALID_HANDLE_VALUE;
-}
-
 //	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
 void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
   assert(root_path);

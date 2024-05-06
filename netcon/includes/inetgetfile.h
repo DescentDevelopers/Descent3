@@ -131,8 +131,6 @@ inline int WSAGetLastError() { return errno; }
 #endif
 
 
-#include <dlfcn.h>
-// #include <pthread.h>
 
 /*
 typedef int (*pthread_create_fp)(pthread_t *__thread,__const pthread_attr_t *__attr,void *(*__start_routine) (void

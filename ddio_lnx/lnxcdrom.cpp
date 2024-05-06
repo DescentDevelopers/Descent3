@@ -86,7 +86,6 @@
  * $NoKeywords: $
  */
 
-#include <sys/mount.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <sys/stat.h>
