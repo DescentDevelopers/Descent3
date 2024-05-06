@@ -599,7 +599,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   } // if
   SDL_SetEventFilter(d3SDLEventFilter, NULL);
 
-  bool fullscreen = false;
+  bool fullscreen = true;
 
   if (FindArgChar("-fullscreen", 'f')) {
     fullscreen = true;
