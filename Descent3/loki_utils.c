@@ -18,18 +18,11 @@
 
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
-#include <sys/stat.h>
-#include <sys/param.h>
-#include <dirent.h>
-#include <time.h>
-#include <errno.h>
+#if defined(MACOSX)
 #include <sys/mount.h>
+#endif
 
 #include "SDL.h"
 

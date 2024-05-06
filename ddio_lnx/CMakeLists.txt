@@ -8,7 +8,6 @@ set(CPPS
   lnxkey_null.cpp
   lnxmouse.cpp
   lnxtimer.cpp
-  lnxkey_raw.cpp
   lnxcdrom.cpp
   lnxkey_sdl.cpp)
 

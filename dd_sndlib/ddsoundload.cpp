@@ -96,11 +96,7 @@
 #endif
 
 #include "ssl_lib.h"
-#if defined(MACOSX)
-#include <sys/malloc.h>
-#else
-#include <malloc.h>
-#endif
+#include <cstdlib>
 #include "cfile.h"
 #include "mem.h"
 #include "pserror.h"

@@ -786,11 +786,8 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 #ifdef __LINUX__
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
-#include <sys/termios.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <unistd.h>

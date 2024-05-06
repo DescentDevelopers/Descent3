@@ -201,7 +201,6 @@
 #include <string.h>
 #include <stdlib.h>
 #ifdef WIN32
-#include <search.h>
 // Non-Linux Includes
 #include <windows.h>
 #include <crtdbg.h>

@@ -84,7 +84,6 @@ bool Debug_print_block = false;
 // pthread library functions
 // ===============================
 #include <pthread.h>
-#include <dlfcn.h>
 
 #include <algorithm>
 

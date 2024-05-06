@@ -46,11 +46,7 @@
 
 #include "UIlib.h"
 #include <string.h>
-#if defined(MACOSX)
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
+#include <cstdlib>
 #include "mem.h"
 
 //	----------------------------------------------------------------------------

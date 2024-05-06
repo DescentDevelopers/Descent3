@@ -105,7 +105,6 @@ typedef struct {
 //=======================================================================
 #elif defined(__LINUX__)
 //==========================Linux Definitions============================
-#include <dlfcn.h>
 
 #define MODPROCADDRESS void *
 #define DLLFUNCEXPORT

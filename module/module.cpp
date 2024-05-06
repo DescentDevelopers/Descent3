@@ -97,6 +97,8 @@
 #include "ddio.h"
 
 #ifdef __LINUX__
+#include <dlfcn.h>
+
 bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *filename, char *new_filename);
 #endif
 
@@ -493,7 +495,6 @@ int mod_GetLastError(void) {
 #include <glob.h>
 #include <string.h>
 #include <errno.h>
-#include <signal.h>
 #include <ctype.h>
 
 void dd_GetWorkingDir(char *path, int len);

@@ -24,7 +24,6 @@
 #include "game.h"
 
 #include <stdlib.h>
-#include <search.h>
 #include <string.h>
 #ifndef NED_PHYSICS
 #include "multi.h"

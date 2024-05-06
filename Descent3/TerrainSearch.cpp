@@ -227,7 +227,6 @@
 #include "gameloop.h"
 #include <memory.h>
 #include <stdlib.h>
-#include <search.h>
 #include "config.h"
 #include "dedicated_server.h"
 
