@@ -118,7 +118,7 @@ int cf_OpenLibrary(const char *libname) {
   char t_file[_MAX_PATH];
   char t_ext[256];
   ddio_SplitPath(libname, t_dir, t_file, t_ext);
-  char *resolve_dir = nullptr;
+  const char *resolve_dir = nullptr;
   const char *resolve_name = libname;
   if (strlen(t_dir) > 0) {
     strcat(t_file, t_ext);
@@ -613,9 +613,14 @@ bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *fname,
 
 FILE *open_file_in_directory_case_sensitive(const char *directory, const char *filename, const char *mode,
                                             char *new_filename) {
+  char t_dir[_MAX_PATH];
+  ddio_SplitPath(filename, t_dir, nullptr, nullptr);
   if (cf_FindRealFileNameCaseInsenstive(directory, filename, new_filename)) {
     // we have a file, open it open and use it
     char full_path[_MAX_PATH * 2];
+    // if we had a directory as part of the file name, put it back in
+    if (strlen(t_dir) > 0)
+      directory = t_dir;
     if (directory != nullptr) {
       ddio_MakePath(full_path, directory, new_filename, NULL);
     } else {
