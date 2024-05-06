@@ -1,6 +1,5 @@
 set(HEADERS ddio_win.h)
 set(CPPS
-  serial.cpp
   winfile.cpp
   winforcefeedback.cpp
   winio.cpp

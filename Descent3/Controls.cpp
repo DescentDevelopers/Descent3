@@ -430,8 +430,6 @@
 #include "sounds.h"
 #include "soundload.h"
 
-#include "rocknride.h"
-
 #include <stdlib.h>
 #include <memory.h>
 
@@ -739,9 +737,6 @@ void ReadPlayerControls(game_controls *controls) {
   DoWeapons(controls); // controls for weapon firing operations
   DoMisc(controls);
   DoMovement(controls); // controls for moving the object
-
-  // Do any rock'n'ride updates
-  RNR_UpdateControllerInfo(controls);
 
   //	only read at the specified rate to keep things consistant. manager control system timer
   // Control_current_time += Frametime;

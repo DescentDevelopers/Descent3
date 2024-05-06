@@ -1085,7 +1085,6 @@
 #include "debuggraph.h"
 #include "multi_dll_mgr.h"
 #include "multi_ui.h"
-#include "rocknride.h"
 #include "gamepath.h"
 #include "vclip.h"
 #include "bsp.h"
@@ -2047,7 +2046,6 @@ void RunGameMenu() {
     NewUIWindow_alpha = 226;
     SetUICallback(GameFrameUI);
     SuspendControls();
-    RNR_UpdateGameStatus(RNRGSC_INMENU);
 
     // reset bail flag.
     Multi_bail_ui_menu = false;
