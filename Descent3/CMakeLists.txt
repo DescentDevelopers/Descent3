@@ -110,7 +110,6 @@ set(HEADERS
   robotfire.h
   robotfirestruct.h
   robotfirestruct_external.h
-  rocknride.h
   room.h
   room_external.h
   scorch.h
@@ -244,7 +243,6 @@ set(CPPS
   render.cpp
   renderobject.cpp
   robotfire.cpp
-  rocknride.cpp
   room.cpp
   scorch.cpp
   screens.cpp

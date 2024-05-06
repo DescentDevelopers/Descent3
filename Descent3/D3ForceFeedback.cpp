@@ -97,7 +97,6 @@
 #include "weapon.h"
 #include "ddio.h"
 #include "psrand.h"
-#include "rocknride.h"
 
 extern float Gametime;
 
@@ -360,10 +359,6 @@ void ForceEffectsClose(void) { ddio_ffb_DestroyAll(); }
 //		Plays an effect
 // -----------------------------------------------------------------
 void ForceEffectsPlay(int id, float *scale, int *direction) {
-  if (RocknRide_enabled && direction) {
-    RNR_UpdateForceFeedbackInfo((scale) ? *scale : 1.0f, direction);
-  }
-
   if (!D3Force_init || !D3Use_force_feedback)
     return;
 
@@ -389,10 +384,6 @@ void ForceEffectsPlay(int id, float *scale, int *direction) {
   ddio_ffb_effectPlay(low_id);
 }
 void ForceEffectsPlay(int id, float *scale, vector *direction) {
-  if (RocknRide_enabled && direction) {
-    RNR_UpdateForceFeedbackInfo((scale) ? *scale : 1.0f, direction);
-  }
-
   if (!D3Force_init || !D3Use_force_feedback)
     return;
 
@@ -437,9 +428,6 @@ void ForceEffectsPlay(int id, float *scale, vector *direction) {
 }
 
 void DoForceForWeapon(object *me_obj, object *it_obj, vector *force_vec) {
-  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
-    return;
-
   if (it_obj->id < 0 || it_obj->id >= MAX_WEAPONS)
     return;
 
@@ -462,9 +450,6 @@ void DoForceForWeapon(object *me_obj, object *it_obj, vector *force_vec) {
 }
 
 void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *wall_normal) {
-  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
-    return;
-
   vector local_norm;
   float scale = 1.00f;
 
@@ -484,9 +469,6 @@ void DoForceForWall(object *playerobj, float hitspeed, int hitseg, int hitwall, 
 }
 
 void DoForceForRecoil(object *playerobj, object *weap) {
-  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
-    return;
-
   weapon *w_ptr = &Weapons[weap->id];
 
   vector local_norm;
@@ -513,9 +495,6 @@ void DoForceForRecoil(object *playerobj, object *weap) {
 float Force_time_since_last_shake;
 #define SHAKE_TIME 0.2f
 void DoForceForShake(float magnitude) {
-  if (!RocknRide_enabled && (!D3Force_init || !D3Use_force_feedback))
-    return;
-
   if (Force_time_since_last_shake + SHAKE_TIME > Gametime) {
     if (Force_time_since_last_shake < Gametime) {
       return;

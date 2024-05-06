@@ -985,7 +985,6 @@
 #include "marker.h"
 #include "gamecinematics.h"
 #include "debuggraph.h"
-#include "rocknride.h"
 #include "vibeinterface.h"
 
 // Uncomment this for all non-US versions!!
@@ -1595,16 +1594,6 @@ void InitIOSystems(bool editor) {
   io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0); WIN95: DirectInput is flaky for some keys.
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
-  }
-
-  int rocknride_arg = FindArg("-rocknride");
-  if (rocknride_arg) {
-    int comm_port = atoi(GameArgs[rocknride_arg + 1]);
-    if (!RNR_Initialize(comm_port)) {
-      mprintf((0, "Rock'n'Ride Init failed!\n"));
-    } else {
-      mprintf((0, "Rock'n'Ride Init success!\n"));
-    }
   }
 
   rtp_Init();

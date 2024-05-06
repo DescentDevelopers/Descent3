@@ -92,7 +92,6 @@ static cmdLineArg d3ArgTable[] = {
 
     {"glidelibrary", 'l', "Select Glide rendering library."},
     {"gllibrary", 'g', "Select OpenGL rendering library."},
-    {"rocknride", 'r', "Enable Rock'n'Ride (http://www.rocknride.com)."},
     {"cobra", 'R', "Enable Cobra chair support."},
 
 #if (!defined(DEMO))
