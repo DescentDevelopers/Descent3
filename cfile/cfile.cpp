@@ -113,6 +113,7 @@ int cf_OpenLibrary(const char *libname) {
   if (!lib) { // malloc error
     return 0;
   }
+#ifdef __LINUX__
   // resolve library name
   char t_dir[_MAX_PATH];
   char t_file[_MAX_PATH];
@@ -135,6 +136,9 @@ int cf_OpenLibrary(const char *libname) {
     ddio_MakePath(lib->name, resolve_dir, t_out, nullptr);
   else
     strcpy(lib->name, t_out);
+#else
+  strcpy(lib->name, libname);
+#endif
   fp = fopen(lib->name, "rb");
   if (fp == nullptr) {
     mem_free(lib);

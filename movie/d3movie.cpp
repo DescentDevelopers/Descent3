@@ -467,6 +467,7 @@ void mve_SetCallback(MovieFrameCallback_fp callBack) {
 // used to tell movie library how to render movies.
 void mve_SetRenderProperties(short x, short y, short w, short h, renderer_type type, bool hicolor) {}
 
+#ifdef __LINUX__
 // locates the case-sensitive movie file name
 bool mve_FindMovieFileRealName(const char *movie, char *real_name) {
   // split into directory and file...
@@ -493,16 +494,21 @@ bool mve_FindMovieFileRealName(const char *movie, char *real_name) {
   }
   return true;
 }
+#endif
 
 // plays a movie using the current screen.
 int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
 #ifndef NO_MOVIES
   // first, find that movie..
   char real_name[_MAX_PATH];
+#ifdef __LINUX__
   if (!mve_FindMovieFileRealName(pMovieName, real_name)) {
     mprintf((0, "MOVIE: No such file %s\n", pMovieName));
     return MVELIB_FILE_ERROR;
   }
+#else
+  strcpy(real_name, pMovieName);
+#endif
   // open movie file.
   int hFile = open(real_name, O_RDONLY | O_BINARY);
   if (hFile == -1) {
@@ -719,11 +725,15 @@ intptr_t mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app
 
   // first, find that movie..
   char real_name[_MAX_PATH];
+#ifdef __LINUX__
   if (!mve_FindMovieFileRealName(mvename, real_name)) {
     mprintf((0, "MOVIE: No such file %s\n", mvename));
     *fhandle = -1;
     return 0;
   }
+#else
+  strcpy(real_name, mvename);
+#endif
   int hfile = open(real_name, O_RDONLY | O_BINARY);
 
   if (hfile == -1) {
