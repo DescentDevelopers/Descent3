@@ -61,7 +61,7 @@
 #define HOGFILE_H
 
 #include <cstdint>
-#include "pstypes.h"
+#include <cstdio>
 
 #define HOG_HDR_SIZE (64)
 #define HOG_TAG_STR "HOG2"
@@ -79,24 +79,8 @@ typedef struct tHogFileEntry {
   uint32_t timestamp;          // time of file.
 } tHogFileEntry;
 
-enum HogErrors {
-  HOGMAKER_ERROR = 0,   // Incorrect number of files passed in
-  HOGMAKER_OK,          // Hog file was created successfully
-  HOGMAKER_MEMORY,      // Could not allocate hog entry table
-  HOGMAKER_OUTFILE,     // Error occurred writing to output hog file
-  HOGMAKER_INFILE,      // An input file could not be found (filename is stored in hogerr_filename)
-  HOGMAKER_COPY,        // An error occurred copying an input file into the hog file
-  HOGMAKER_OPENOUTFILE, // The specified hog file could not be opened for output
-};
-
-// Used to return filenames involved in a NewHogFile() error
-extern char hogerr_filename[PSPATHNAME_LEN];
-
-int NewHogFile(const char *hogname, int nfiles, const char **filenames, void (*UpdateFunction)(char *) = nullptr);
 bool ReadHogHeader(FILE *fp, tHogHeader *header);
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry);
-bool WriteHogEntry(FILE *fp, tHogFileEntry *entry);
-bool FileCopy(FILE *ofp, FILE *ifp, int length);
 
 // returns hog cfile info, using a library handle opened via cf_OpenLibrary.
 bool cf_ReadHogFileEntry(int library, const char *filename, tHogFileEntry *entry, int *fileoffset);
