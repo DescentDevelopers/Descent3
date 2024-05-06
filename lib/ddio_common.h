@@ -196,21 +196,6 @@ int ddio_AsciiToKey(int ascii);
 void ddio_SetKeyboardLanguage(int language);
 
 // ----------------------------------------------------------------------------
-//	SERIAL CONSTANTS AND FUNCTIONS
-// ----------------------------------------------------------------------------
-// serial port data type
-typedef void *tSerialPort;
-
-// takes port number 1-4, returns a port object
-tSerialPort ddio_SerialOpenPort(int port_number, int baud);
-
-// takes port structure and frees it.
-void ddio_SerialClosePort(tSerialPort port);
-
-// writes one byte.  true return value means it worked.
-bool ddio_SerialWriteByte(tSerialPort port, ubyte b);
-
-// ----------------------------------------------------------------------------
 //	KEYBOARD CONSTANTS
 // ----------------------------------------------------------------------------
 
