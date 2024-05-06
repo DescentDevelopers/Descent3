@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/manage/generic.cpp $
  * $Revision: 100 $
  * $Date: 9/06/01 10:32a $

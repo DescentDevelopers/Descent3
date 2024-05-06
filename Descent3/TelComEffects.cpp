@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/TelComEffects.cpp $
  * $Revision: 33 $
  * $Date: 5/13/99 3:42p $

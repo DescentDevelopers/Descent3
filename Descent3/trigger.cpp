@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/main/trigger.cpp $
  * $Revision: 26 $
  * $Date: 5/20/99 9:03p $

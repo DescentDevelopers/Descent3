@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/DeathInfo.h $
  * $Revision: 6 $
  * $Date: 4/02/99 2:46p $

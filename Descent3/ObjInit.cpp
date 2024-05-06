@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/main/ObjInit.cpp $
  * $Revision: 170 $
  * $Date: 4/19/00 5:18p $

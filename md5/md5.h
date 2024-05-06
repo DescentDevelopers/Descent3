@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
         This is the C++ implementation of the MD5 Message-Digest
         Algorithm desrcipted in RFC 1321.
         I translated the C code from this RFC to C++.

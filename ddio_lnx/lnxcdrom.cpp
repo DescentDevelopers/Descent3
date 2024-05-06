@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/ddio_lnx/lnxcdrom.cpp $
  * $Revision: 1.12 $
  * $Date: 2004/12/05 04:00:20 $

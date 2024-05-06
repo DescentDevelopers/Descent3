@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/ddio_lnx/lnxkey_sdl.cpp $
  * $Revision: 1.6 $
  * $Date: 2001/02/07 09:18:02 $

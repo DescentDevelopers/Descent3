@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/linux/lnxdebug.cpp $
  * $Revision: 1.1.1.1 $
  * $Date: 2000/04/18 00:00:39 $
