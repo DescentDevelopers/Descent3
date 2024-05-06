@@ -319,6 +319,47 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
           MB_queue.send(ev);
         }
 
+        // JC: Imported extra mouse buttons code from Piccu Engine 2924ad2
+        if (buttons & RI_MOUSE_BUTTON_4_DOWN && !DIM_buttons.is_down[3])
+        {
+          DIM_buttons.down_count[3]++;
+          DIM_buttons.time_down[3] = curtime;
+          DIM_buttons.is_down[3] = true;
+          DDIO_mouse_state.btn_mask |= MOUSE_B4;
+          ev.btn = 3;
+          ev.state = true;
+          MB_queue.send(ev);
+        }
+        else if (buttons & RI_MOUSE_BUTTON_4_UP && DIM_buttons.is_down[3])
+        {
+          DIM_buttons.up_count[3]++;
+          DIM_buttons.is_down[3] = false;
+          DIM_buttons.time_up[3] = curtime;
+          DDIO_mouse_state.btn_mask &= ~MOUSE_B4;
+          ev.btn = 3;
+          ev.state = false;
+          MB_queue.send(ev);
+        }
+        if (buttons & RI_MOUSE_BUTTON_5_DOWN && !DIM_buttons.is_down[6])
+        {
+          DIM_buttons.down_count[6]++;
+          DIM_buttons.time_down[6] = curtime;
+          DIM_buttons.is_down[6] = true;
+          DDIO_mouse_state.btn_mask |= MOUSE_B7;
+          ev.btn = 6;
+          ev.state = true;
+          MB_queue.send(ev);
+        } else if (buttons & RI_MOUSE_BUTTON_5_UP && DIM_buttons.is_down[6])
+        {
+          DIM_buttons.up_count[6]++;
+          DIM_buttons.is_down[6] = false;
+          DIM_buttons.time_up[6] = curtime;
+          DDIO_mouse_state.btn_mask &= ~MOUSE_B7;
+          ev.btn = 6;
+          ev.state = false;
+          MB_queue.send(ev);
+        }
+
         if (buttons & RI_MOUSE_WHEEL) {
           wheelAccum += (int)(short)rawinput->data.mouse.usButtonData;
           if (wheelAccum >= WHEEL_DELTA) {
@@ -407,7 +448,7 @@ bool InitNewMouse() {
 
     DDIO_mouse_state.timer = timer_GetTime();
     DDIO_mouse_state.naxis = 2;
-    DDIO_mouse_state.nbtns = N_DIMSEBTNS + 2; // always have a mousewheel
+    DDIO_mouse_state.nbtns = N_DIMSEBTNS + 3; // always have a mousewheel. [ISB] disgusting hack: Can't change mousewheel bindings for old pilots, so make button 5 after the two mouse wheel buttons.
     for (i = 0; i < DDIO_mouse_state.nbtns; i++) {
       DDIO_mouse_state.btn_flags |= (1 << i);
     }
@@ -564,7 +605,7 @@ char Ctltext_MseBtnBindings[N_MSEBTNS][32] = {"mse-l\0\0\0\0\0\0\0\0\0\0\0\0",
                                               "mse-b4\0\0\0\0\0\0\0\0\0\0\0",
                                               "msew-u\0\0\0\0\0\0\0\0\0\0\0",
                                               "msew-d\0\0\0\0\0\0\0\0\0\0\0",
-                                              "",
+                                              "mse-b5",
                                               ""};
 
 char Ctltext_MseAxisBindings[][32] = {"mse-X\0\0\0\0\0\0\0\0\0\0\0\0", "mse-Y\0\0\0\0\0\0\0\0\0\0\0\0",
