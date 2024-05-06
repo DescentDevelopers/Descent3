@@ -263,9 +263,6 @@
  * $NoKeywords: $
  */
 
-#ifndef __LINUX__
-#include "local_malloc.h"
-#endif
 #include "ui.h"
 #include "newui.h"
 #include "grdefs.h"

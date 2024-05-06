@@ -208,14 +208,14 @@ void ChttpGet::PrepSocket(char *URL) {
     m_State = HTTP_STATE_SOCKET_ERROR;
     return;
   }
-  unsigned int arg;
-
-  arg = true;
-#if defined(WIN32)
-  ioctlsocket(m_DataSock, FIONBIO, &arg);
-#elif defined(__LINUX__)
-  ioctl(m_DataSock, FIONBIO, &arg);
-#endif
+  unsigned int arg = 1;
+  
+  #ifdef WIN32
+    u_long argWin = static_cast<u_long>(arg);
+    ioctlsocket(m_DataSock, FIONBIO, &argWin);
+  #elif defined(__linux__)
+    ioctl(m_DataSock, FIONBIO, &arg);
+  #endif
 
   char *pURL = URL;
   if (strnicmp(URL, "http:", 5) == 0) {
