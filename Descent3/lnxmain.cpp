@@ -31,13 +31,6 @@
 #include <sys/types.h>
 #include <time.h>
 
-#ifdef __PERMIT_MAKEHOG
-#include <dirent.h>
-#define _GNU_SOURCE
-#include <fnmatch.h>
-#include "hogfile.h"
-#endif
-
 #include "SDL.h"
 #include "program.h"
 #include "mono.h"
@@ -83,11 +76,6 @@ static cmdLineArg d3ArgTable[] = {
 
 #ifdef __PERMIT_PLAYMVE
     {"playmve", 'p', "Play a specified movie."},
-#endif
-
-#ifdef __PERMIT_MAKEHOG
-    {"makehog", 'a', "Make a HOG archive from a list of names."},
-    {"dumphog", 'A', "Dump a HOG archive to a directory."},
 #endif
 
     {"glidelibrary", 'l', "Select Glide rendering library."},
@@ -337,105 +325,6 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
 
 void StartDedicatedServer();
 
-#ifdef __PERMIT_MAKEHOG
-
-static void hogfileRefresh(const char *x) { printf(" - %s\n", x); } // hogfileRefresh
-
-// hack of the century.
-static void buildNewHogFromFileList(char *fileName) {
-  setbuf(stdout, NULL);
-  setbuf(stderr, NULL);
-
-  if (fileName == NULL) {
-    printf("\n\nno filename specified.\n\n");
-    return;
-  } // if
-
-  char **files = (char **)malloc(sizeof(char *) * 8000);
-  int fCount = 0;
-
-  FILE *f = fopen(fileName, "rb");
-  if (f == NULL) {
-    printf("\n\ncan't open [%s].\n\n", fileName);
-    return;
-  } // if
-
-  int alreadyHere = 0;
-  int i = 0;
-  int j = 0;
-
-  do {
-    int ch = 0;
-    files[i] = (char *)malloc(300);
-    files[i][0] = '\0';
-    for (j = 0; (ch != '\n') && (ch != EOF); j++) {
-      ch = fgetc(f);
-      files[i][j] = (char)ch;
-    }
-
-    files[i][j - 1] = '\0';
-
-    // !!! trim spaces...
-
-    if (files[i][0] == '\0')
-      alreadyHere = 1;
-    else {
-      alreadyHere = 0;
-
-      for (int n = 0; n < i; n++) {
-        if (strcasecmp(files[n], files[i]) == 0)
-          alreadyHere = 1;
-      } // for
-
-      if ((!alreadyHere) && (access(files[i], R_OK) != 0)) {
-        alreadyHere = 1;
-        DIR *d = opendir(".");
-        struct dirent *ent = readdir(d);
-        while (ent != NULL) {
-          if (fnmatch(files[i], ent->d_name, FNM_CASEFOLD) == 0) {
-            rename(ent->d_name, files[i]);
-            ent = NULL;
-            alreadyHere = 0; // ok, so this variable is misnamed...
-          }                  // if
-          else
-            ent = readdir(d);
-        } // while
-        closedir(d);
-
-        if (alreadyHere)
-          printf("File [%s] is missing.\n", files[i]);
-      } // if
-    }   // if
-
-    if (alreadyHere == 0) {
-      printf(" - %s\n", files[i]);
-      i++;
-      fCount++;
-    } else
-      free(files[i]);
-  } while (!feof(f));
-
-  fclose(f);
-
-  int swapped;
-  do {
-    swapped = 0;
-
-    for (int y = 0; y < fCount - 1; y++) {
-      if (strcasecmp(files[y], files[y + 1]) > 0) {
-        char *tmp = files[y];
-        files[y] = files[y + 1];
-        files[y + 1] = tmp;
-        swapped = 1;
-      } // if
-    }   // for
-  } while (swapped);
-
-  NewHogFile("new.hog", i, (const char **)files, (void (*)(char *))hogfileRefresh);
-} // buildNewHogFileFromList
-
-#endif
-
 #ifdef BETAEXPIRE
 static void check_beta() {
   fprintf(stderr, "\n\n\n");
@@ -591,26 +480,6 @@ int main(int argc, char *argv[]) {
   loki_initialize(argc, argv, game_version_buffer);
 
   int x;
-
-#ifdef __PERMIT_MAKEHOG
-  x = FindArgChar("-dumphog", 'A');
-  if (x) {
-    if (x != 1)
-      printf("  --dumphog must be first command if you use it.\n");
-    else
-      dump_hog_to_directory(argv[x + 1]);
-    _exit(0);
-  } // if
-
-  x = FindArgChar("-makehog", 'a');
-  if (x) {
-    if (x != 1)
-      printf("  --makehog must be first command if you use it.\n");
-    else
-      buildNewHogFromFileList(argv[x + 1]);
-    _exit(0);
-  } // if
-#endif
 
   /*
       x = FindArg("-nettest");
