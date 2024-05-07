@@ -86,7 +86,7 @@ add_custom_target(HogFull
   COMMAND $<TARGET_FILE:HogMaker>
     "$<TARGET_FILE_DIR:Descent3>/d3-${HOG_NAME}.hog"
     "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/d3-${HOG_NAME}-fullhog.txt"
-    "${CMAKE_BINARY_DIR}/scripts/"
+    "$<TARGET_FILE_DIR:AIGame>"
   DEPENDS ${SCRIPTS} HogMaker data/fullhog/d3-${HOG_NAME}-fullhog.txt
   COMMENT "Generate fullhog/d3-${HOG_NAME}.hog"
 )

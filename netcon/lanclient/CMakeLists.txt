@@ -1,6 +1,6 @@
 set(CPPS lanclient.cpp)
 
-add_library("Direct_TCP_IP" MODULE ${CPPS} ${HEADERS})
+add_library(Direct_TCP_IP MODULE ${CPPS})
 set_target_properties(Direct_TCP_IP PROPERTIES PREFIX "")
 set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")
 target_link_libraries(Direct_TCP_IP PRIVATE
@@ -15,7 +15,7 @@ add_custom_target(Direct_TCP_IP_Hog
   "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c"
   "${CMAKE_SOURCE_DIR}/netcon/lanclient/TCP_IP.d3c.txt"
   "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
-  "${CMAKE_BINARY_DIR}/netcon/lanclient/"
+  "$<TARGET_FILE_DIR:Direct_TCP_IP>"
 
   DEPENDS Direct_TCP_IP HogMaker
   COMMENT "Generate 'Direct TCP~IP.d3c'"
