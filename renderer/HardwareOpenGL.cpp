@@ -2854,7 +2854,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
     }
 
     // Finally, specify a vertex
-    float z = std::max<double>(0, std::min(1.0, 1.0 - (1.0 / (pnt->p3_z + Z_bias))));
+    float z = std::clamp<double>(1.0 - (1.0 / (pnt->p3_z + Z_bias)), 0, 1);
     dglVertex3f(pnt->p3_sx + x_add, pnt->p3_sy + y_add, -z);
   }
 

@@ -3735,8 +3735,7 @@ void DoEnergyToShields(int pnum) {
     return;
   }
 
-  amount = std::min(Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY);
-  amount = std::min(amount, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE);
+  amount = std::min({Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE});
 
   Players[pnum].energy -= amount;
 
