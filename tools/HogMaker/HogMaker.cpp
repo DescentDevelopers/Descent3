@@ -32,11 +32,6 @@ template <typename TP> std::time_t to_time_t(TP tp) {
   return std::chrono::system_clock::to_time_t(sctp);
 }
 
-std::string str_tolower(std::string s) {
-  std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
-  return s;
-}
-
 // Find requested file in search paths
 std::filesystem::path resolve_path(const std::vector<std::filesystem::path> &search_path,
                                    const std::filesystem::path &file) {
@@ -64,11 +59,10 @@ int main(int argc, char *argv[]) {
   std::filesystem::path input_filename{argv[2]};
   // Default search path
   std::vector<std::filesystem::path> search_paths{input_filename.parent_path()};
-  if (argc >= 3) {
-    for (int i = 3; i < argc; i++) {
-      if (is_directory(std::filesystem::path(argv[i]))) {
-        search_paths.emplace_back(argv[i]);
-      }
+  // Additional search paths
+  for (int i = 3; i < argc; i++) {
+    if (is_directory(std::filesystem::path(argv[i]))) {
+      search_paths.emplace_back(argv[i]);
     }
   }
 
@@ -77,6 +71,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  D3::HogFormat hog_table;
+
   try {
     create_directories(absolute(hog_filename).parent_path());
     std::ifstream input(input_filename, std::ios_base::in);
@@ -84,10 +80,10 @@ int main(int argc, char *argv[]) {
       auto resolved_file = resolve_path(search_paths, line);
       if (resolved_file.empty()) {
         std::cout << "Warning! File " << line << " from " << input_filename << " not found! Skipping..." << std::endl;
-      } else if (std::filesystem::path(line).filename().string().size() > 36) {
+      } else if (line.size() > 36) {
         std::cout << "Warning! Length of name of file " << line << " is more than 36 symbols! Skipping..." << std::endl;
       } else {
-        input_files.emplace_back(resolved_file);
+        hog_table.AddEntry(D3::HogFileEntry(resolved_file));
       }
     }
 
@@ -96,39 +92,16 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  auto customLess = [](const std::filesystem::path &a, const std::filesystem::path &b) {
-    return (str_tolower(a.u8string()) < str_tolower(b.u8string()));
-  };
+  hog_table.SortEntries();
 
-  std::sort(input_files.begin(), input_files.end(), customLess);
-
-  D3::HogFormat hog_table;
-
-  for (const auto &i : input_files) {
-    try {
-      D3::HogFileEntry entry;
-      auto name = i.filename().u8string();
-      std::copy(name.begin(), name.end(), entry.name.begin());
-      entry.flags = 0;
-      entry.len = (uint32_t)file_size(i);
-      entry.timestamp = (uint32_t)to_time_t(last_write_time(i));
-
-      hog_table.AddEntry(entry);
-
-    } catch (std::exception &e) {
-      std::cout << "Exception: " << e.what() << std::endl;
-      return 1;
-    }
-  }
-
-  std::cout << "Creating " << hog_filename << "..." << std::endl;
+  std::cout << "Creating " << absolute(hog_filename) << "..." << std::endl;
   std::fstream ofs(hog_filename, std::ios_base::out | std::ios_base::binary);
 
   ofs << hog_table;
-  for (const auto &i : input_files) {
-    std::cout << "Adding " << i << "... ";
+  for (const auto& i : hog_table.GetEntries()) {
+    std::cout << "Adding " << i.GetName() << "... ";
     try {
-      std::fstream ifs(i, std::ios_base::in | std::ios_base::binary);
+      std::fstream ifs(i.GetRealPath(), std::ios_base::in | std::ios_base::binary);
       std::copy((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>(),
                 std::ostreambuf_iterator<char>(ofs));
     } catch (std::exception &e) {

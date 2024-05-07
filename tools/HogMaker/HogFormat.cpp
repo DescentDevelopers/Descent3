@@ -16,14 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "HogFormat.h"
-#include "IOOps.h"
-
 #include <algorithm>
 #include <fstream>
 #include <iterator>
 
+#include "HogFormat.h"
+#include "IOOps.h"
+
 namespace D3 {
+
+// TODO: To our descendants from the future: remove it when code will support C++20
+template <typename TP> std::time_t to_time_t(TP tp) {
+  auto sctp = std::chrono::duration_cast<std::chrono::system_clock::duration>(tp - TP::clock::now()) +
+              std::chrono::system_clock::now();
+  return std::chrono::system_clock::to_time_t(sctp);
+}
+
+HogFileEntry::HogFileEntry(const std::filesystem::path &input) {
+  m_real_path = input;
+  m_flags = 0;
+  m_len = (uint32_t)file_size(input);
+  m_timestamp = (uint32_t)to_time_t(last_write_time(input));
+  auto name = input.filename().u8string();
+  std::copy(name.begin(), name.end(), m_name.begin());
+}
+
+HogFileEntry::HogFileEntry(std::string name, uint32_t flags, uint32_t len, uint32_t timestamp) {
+  std::copy(name.begin(), name.end(), m_name.begin());
+  m_flags = flags;
+  m_len = len;
+  m_timestamp = timestamp;
+}
+
+void HogFileEntry::SetRealPath(const std::filesystem::path &input) {
+  m_real_path = input;
+  m_flags = 0;
+  m_len = (uint32_t)file_size(input);
+  m_timestamp = (uint32_t)to_time_t(last_write_time(input));
+  auto name = input.filename().u8string();
+  std::copy(name.begin(), name.end(), m_name.begin());
+}
+
+std::array<char, 36> char_tolower(std::array<char, 36> s) {
+  std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
+  return s;
+}
 
 std::ostream &operator<<(std::ostream &output, const HogHeader &header) {
   std::copy(header.tag.begin(), header.tag.end(), std::ostream_iterator<char>(output));
@@ -35,10 +72,11 @@ std::ostream &operator<<(std::ostream &output, const HogHeader &header) {
 }
 
 std::ostream &operator<<(std::ostream &output, const HogFileEntry &entry) {
-  std::copy(entry.name.begin(), entry.name.end(), std::ostream_iterator<char>(output));
-  bin_write(output, entry.flags);
-  bin_write(output, entry.len);
-  bin_write(output, entry.timestamp);
+  std::copy(entry.m_name.begin(), entry.m_name.end(), std::ostream_iterator<char>(output));
+  bin_write(output, entry.m_flags);
+  bin_write(output, entry.m_len);
+  bin_write(output, entry.m_timestamp);
+
   return output;
 }
 
@@ -49,6 +87,14 @@ std::ostream &operator<<(std::ostream &output, const HogFormat &format) {
   }
 
   return output;
+}
+
+void HogFormat::SortEntries() {
+  auto customLess = [](const HogFileEntry &a, const HogFileEntry &b) {
+    return (char_tolower(a.m_name) < char_tolower(b.m_name));
+  };
+
+  std::sort(m_file_entries.begin(), m_file_entries.end(), customLess);
 }
 
 } // namespace D3
