@@ -1997,8 +1997,7 @@ void DestroyLight(int roomnum, int facenum) {
   b = GameTextures[destroy_fp->tmap].b * mul;
 
   // Get highest component
-  float rmax = std::max(r, g);
-  rmax = std::max(rmax, b);
+  float rmax = std::max({r, g, b});
 
   // Get the normalized color that this face emits
   float red_scale = r / rmax;

@@ -1427,7 +1427,7 @@ void CDmfcStats::DoFrame() {
     memcpy(m_translate, temp_array, sizeof(int) * MAX_PLAYER_RECORDS);
   }
 
-  m_MaxCount = std::min(high_count, std::min(count, index));
+  m_MaxCount = std::min({high_count, count, index});
 
   pr = PRec_GetPRecord(m_selected_prec);
   if (!pr || pr->state != last_state) {

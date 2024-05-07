@@ -2099,8 +2099,7 @@ void DrawSky(vector *veye, matrix *vorient) {
       float str = Terrain_sky.satellite_r[i];
       float stg = Terrain_sky.satellite_g[i];
       float stb = Terrain_sky.satellite_b[i];
-      float maxc = std::max(str, stg);
-      maxc = std::max(stb, maxc);
+      float maxc = std::max({str, stg, stb});
       float r, g, b;
       if (maxc > 1.0) {
         r = str / maxc;
