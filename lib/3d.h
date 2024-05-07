@@ -398,7 +398,7 @@ void g3_SetCustomClipPlane(ubyte state, vector *pnt, vector *normal);
 void g3_SetFarClipZ(float z);
 
 // Disables the far clip plane
-inline void g3_ResetFarClipZ() { g3_SetFarClipZ(FLT_MAX); }
+static inline void g3_ResetFarClipZ() { g3_SetFarClipZ(FLT_MAX); }
 
 // Clips a polygon
 // Parameters:	pointlist - pointer to a list of pointers to points

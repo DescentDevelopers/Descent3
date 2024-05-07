@@ -76,13 +76,13 @@ typedef struct {
 } matrix4;
 
 // Zero's out a vector
-inline void vm_MakeZero(vector *v) { v->x = v->y = v->z = 0; }
+static inline void vm_MakeZero(vector *v) { v->x = v->y = v->z = 0; }
 
 // Set an angvec to {0,0,0}
-inline void vm_MakeZero(angvec *a) { a->p = a->h = a->b = 0; }
+static inline void vm_MakeZero(angvec *a) { a->p = a->h = a->b = 0; }
 
 // Checks for equality
-inline bool operator==(vector a, vector b) {
+static inline bool operator==(vector a, vector b) {
   bool equality = false;
   // Adds two vectors.
 
@@ -93,7 +93,7 @@ inline bool operator==(vector a, vector b) {
 }
 
 // Checks for inequality
-inline bool operator!=(vector a, vector b) {
+static inline bool operator!=(vector a, vector b) {
   bool equality = true;
   // Adds two vectors.
 
@@ -104,7 +104,7 @@ inline bool operator!=(vector a, vector b) {
 }
 
 // Adds 2 vectors
-inline vector operator+(vector a, vector b) {
+static inline vector operator+(vector a, vector b) {
   // Adds two vectors.
 
   a.x += b.x;
@@ -115,10 +115,10 @@ inline vector operator+(vector a, vector b) {
 }
 
 // Adds 2 vectors
-inline vector operator+=(vector &a, vector b) { return (a = a + b); }
+static inline vector operator+=(vector &a, vector b) { return (a = a + b); }
 
 // Adds 2 matrices
-inline matrix operator+(matrix a, matrix b) {
+static inline matrix operator+(matrix a, matrix b) {
   // Adds two 3x3 matrixs.
 
   a.rvec += b.rvec;
@@ -129,10 +129,10 @@ inline matrix operator+(matrix a, matrix b) {
 }
 
 // Adds 2 matrices
-inline matrix operator+=(matrix &a, matrix b) { return (a = a + b); }
+static inline matrix operator+=(matrix &a, matrix b) { return (a = a + b); }
 
 // Subtracts 2 vectors
-inline vector operator-(vector a, vector b) {
+static inline vector operator-(vector a, vector b) {
   // subtracts two vectors
 
   a.x -= b.x;
@@ -143,10 +143,10 @@ inline vector operator-(vector a, vector b) {
 }
 
 // Subtracts 2 vectors
-inline vector operator-=(vector &a, vector b) { return (a = a - b); }
+static inline vector operator-=(vector &a, vector b) { return (a = a - b); }
 
 // Subtracts 2 matrices
-inline matrix operator-(matrix a, matrix b) {
+static inline matrix operator-(matrix a, matrix b) {
   // subtracts two 3x3 matrices
 
   a.rvec = a.rvec - b.rvec;
@@ -157,13 +157,13 @@ inline matrix operator-(matrix a, matrix b) {
 }
 
 // Subtracts 2 matrices
-inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
+static inline matrix operator-=(matrix &a, matrix b) { return (a = a - b); }
 
 // Does a simple dot product calculation
-inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
+static inline float operator*(vector u, vector v) { return (u.x * v.x) + (u.y * v.y) + (u.z * v.z); }
 
 // Scalar multiplication
-inline vector operator*(vector v, float s) {
+static inline vector operator*(vector v, float s) {
   v.x *= s;
   v.y *= s;
   v.z *= s;
@@ -172,13 +172,13 @@ inline vector operator*(vector v, float s) {
 }
 
 // Scalar multiplication
-inline vector operator*=(vector &v, float s) { return (v = v * s); }
+static inline vector operator*=(vector &v, float s) { return (v = v * s); }
 
 // Scalar multiplication
-inline vector operator*(float s, vector v) { return v * s; }
+static inline vector operator*(float s, vector v) { return v * s; }
 
 // Scalar multiplication
-inline matrix operator*(float s, matrix m) {
+static inline matrix operator*(float s, matrix m) {
   m.fvec = m.fvec * s;
   m.uvec = m.uvec * s;
   m.rvec = m.rvec * s;
@@ -187,13 +187,13 @@ inline matrix operator*(float s, matrix m) {
 }
 
 // Scalar multiplication
-inline matrix operator*(matrix m, float s) { return s * m; }
+static inline matrix operator*(matrix m, float s) { return s * m; }
 
 // Scalar multiplication
-inline matrix operator*=(matrix &m, float s) { return (m = m * s); }
+static inline matrix operator*=(matrix &m, float s) { return (m = m * s); }
 
 // Scalar division
-inline vector operator/(vector src, float n) {
+static inline vector operator/(vector src, float n) {
   src.x /= n;
   src.y /= n;
   src.z /= n;
@@ -202,10 +202,10 @@ inline vector operator/(vector src, float n) {
 }
 
 // Scalar division
-inline vector operator/=(vector &src, float n) { return (src = src / n); }
+static inline vector operator/=(vector &src, float n) { return (src = src / n); }
 
 // Scalar division
-inline matrix operator/(matrix src, float n) {
+static inline matrix operator/(matrix src, float n) {
   src.fvec = src.fvec / n;
   src.rvec = src.rvec / n;
   src.uvec = src.uvec / n;
@@ -214,11 +214,11 @@ inline matrix operator/(matrix src, float n) {
 }
 
 // Scalar division
-inline matrix operator/=(matrix &src, float n) { return (src = src / n); }
+static inline matrix operator/=(matrix &src, float n) { return (src = src / n); }
 
 // Computes a cross product between u and v, returns the result
 //	in Normal.
-inline vector operator^(vector u, vector v) {
+static inline vector operator^(vector u, vector v) {
   vector dest;
 
   dest.x = (u.y * v.z) - (u.z * v.y);
@@ -229,7 +229,7 @@ inline vector operator^(vector u, vector v) {
 }
 
 // Matrix transpose
-inline matrix operator~(matrix m) {
+static inline matrix operator~(matrix m) {
   float t;
 
   t = m.uvec.x;
@@ -246,7 +246,7 @@ inline matrix operator~(matrix m) {
 }
 
 // Negate vector
-inline vector operator-(vector a) {
+static inline vector operator-(vector a) {
   a.x *= -1;
   a.y *= -1;
   a.z *= -1;
@@ -255,7 +255,7 @@ inline vector operator-(vector a) {
 }
 
 // Apply a matrix to a vector
-inline vector operator*(vector v, matrix m) {
+static inline vector operator*(vector v, matrix m) {
   vector result;
 
   result.x = v * m.rvec;
@@ -265,7 +265,7 @@ inline vector operator*(vector v, matrix m) {
   return result;
 }
 
-inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x) + (y * v->y) + (z * v->z); }
+static inline float vm_Dot3Vector(float x, float y, float z, vector *v) { return (x * v->x) + (y * v->y) + (z * v->z); }
 
 #define vm_GetSurfaceNormal vm_GetNormal
 

@@ -293,7 +293,7 @@ void PreRotateTerrain() {
   }
 }
 
-inline vector *GetDYVector(int h) {
+static inline vector *GetDYVector(int h) {
   vector *dyp;
 
   dyp = &Terrain_y_cache[h];
@@ -309,7 +309,7 @@ inline vector *GetDYVector(int h) {
   return dyp;
 }
 
-inline void GetPreRotatedPointFast(vector *dest, int x, int z, int yvalue) {
+static inline void GetPreRotatedPointFast(vector *dest, int x, int z, int yvalue) {
   ASSERT(yvalue >= 0 && yvalue <= 255);
 
   // If the terrain is supposed to be flat, bash this to zero

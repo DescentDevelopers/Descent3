@@ -3025,7 +3025,7 @@ static int obj_sort_func(const obj_sort_item *a, const obj_sort_item *b) {
   else
     return 0;
 }
-inline void IsRoomDynamicValid(room *rp, int x, int y, int z, float *r, float *g, float *b) {
+static inline void IsRoomDynamicValid(room *rp, int x, int y, int z, float *r, float *g, float *b) {
   int w = rp->volume_width;
   int h = rp->volume_height;
   int d = rp->volume_depth;

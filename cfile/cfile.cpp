@@ -486,7 +486,6 @@ void CFindFiles::Close() {
   globfree(&ffres);
 }
 
-static bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *fname, char *new_filename);
 static FILE *open_file_in_directory_case_sensitive(const char *directory, const char *filename, const char *mode,
                                                    char *new_filename);
 

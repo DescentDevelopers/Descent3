@@ -478,7 +478,7 @@ void AddProcPoint(int x, int y, ubyte color) {
   ProcDestData[index] = color;
 }
 // Adds one point to a bitmap
-inline void PlaceProcPoint(int x, int y, ubyte color) {
+static inline void PlaceProcPoint(int x, int y, ubyte color) {
   x &= (PROC_SIZE - 1);
   y &= (PROC_SIZE - 1);
   ProcDestData[y * PROC_SIZE + x] = color;

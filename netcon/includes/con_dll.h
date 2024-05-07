@@ -393,7 +393,7 @@ DescentDefer_fp DLLDescentDefer;
 typedef void (*DoMessageBox_fp)(const char *title, const char *msg, int type, ddgr_color title_color,
                                 ddgr_color text_color);
 DoMessageBox_fp DLLDoMessageBoxFP;
-inline void DLLDoMessageBox(const char *title, const char *msg, int type, ddgr_color title_color = GR_WHITE,
+static inline void DLLDoMessageBox(const char *title, const char *msg, int type, ddgr_color title_color = GR_WHITE,
                             ddgr_color text_color = GR_WHITE) {
   DLLDoMessageBoxFP(title, msg, type, title_color, text_color);
 }
@@ -458,7 +458,7 @@ ddio_FindNextFile_fp DLLddio_FindNextFile;
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);
 MultiStartServer_fp DLLMultiStartServerFP;
-inline void DLLMultiStartServer(int playing, char *scriptname, int dedicated_num_teams = -1) {
+static inline void DLLMultiStartServer(int playing, char *scriptname, int dedicated_num_teams = -1) {
   DLLMultiStartServerFP(playing, scriptname, dedicated_num_teams);
 }
 
@@ -489,7 +489,7 @@ RemoveUITextItem_fp DLLRemoveUITextItem;
 
 typedef void *(*CreateNewUITextItem_fp)(const char *newtext, unsigned int color, int font);
 CreateNewUITextItem_fp DLLCreateNewUITextItemFP;
-inline void *DLLCreateNewUITextItem(const char *newtext, unsigned int color, int font = -1) {
+static inline void *DLLCreateNewUITextItem(const char *newtext, unsigned int color, int font = -1) {
   return DLLCreateNewUITextItemFP(newtext, color, font);
 }
 

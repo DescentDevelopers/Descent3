@@ -2283,9 +2283,9 @@ typedef struct {
 } tOSIRISINTERNALTIMER;
 tOSIRISINTERNALTIMER OsirisTimers[MAX_OSIRIS_TIMERS];
 
-inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFFFFFF) << 8) | (slot & 0xFF)); }
+static inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFFFFFF) << 8) | (slot & 0xFF)); }
 
-inline int GET_SLOT(int handle) { return (handle & 0xFF); }
+static inline int GET_SLOT(int handle) { return (handle & 0xFF); }
 
 int Osiris_timer_counter = 0;
 

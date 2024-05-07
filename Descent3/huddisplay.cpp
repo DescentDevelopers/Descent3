@@ -271,7 +271,7 @@ static void RenderHUDWarnings(tHUDItem *item);
 static void RenderHUDCountermeasures(tHUDItem *item);
 
 //	returns the weapon's icon.
-inline int get_weapon_icon(int player, int type) {
+static inline int get_weapon_icon(int player, int type) {
   player_weapon *pw = &Players[player].weapon[type];
   weapon *wpn = GetWeaponFromIndex(player, pw->index);
   int bmp;

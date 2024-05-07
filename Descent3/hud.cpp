@@ -1916,7 +1916,7 @@ void ResetReticle() {
 }
 
 //	creates the reticle display bitmap mask to be used by the reticle renderer.
-inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
+static inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
   poly_model *pm = &Poly_models[pobj->rtype.pobj_info.model_num];
   dynamic_wb_info *dyn_wb = &pobj->dynamic_wb[wb_index];
   unsigned mask = 0;
@@ -1952,7 +1952,7 @@ inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index)
   return mask;
 }
 
-inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_mask, ushort gp_mask, const int *wb_elem_array) {
+static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_mask, ushort gp_mask, const int *wb_elem_array) {
   int i, x, y;
   int bmp_handle;
   char align;

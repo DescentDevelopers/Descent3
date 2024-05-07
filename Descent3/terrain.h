@@ -216,7 +216,7 @@ extern short Terrain_seg_render_objs[];
 #ifdef RELEASE
 #define TERRAIN_REGION(x) ((Terrain_seg[0x7FFFFFFF & x].flags & TFM_REGION_MASK) >> 5)
 #else // debug(-ish) builds - check if x is valid
-inline int TERRAIN_REGION(int x) {
+static inline int TERRAIN_REGION(int x) {
 	ASSERT(x != -1 && "invalid/unset room number (-1)!");
 	// Note: due to the 0x7FFFFFFF mask, terrSegIdx will be >= 0
 	int terrSegIdx = 0x7FFFFFFF & x;

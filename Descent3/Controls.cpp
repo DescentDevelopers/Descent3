@@ -433,7 +433,6 @@
 #include <stdlib.h>
 #include <memory.h>
 
-
 float Key_ramp_speed = 0.5f;
 
 #define CONTROL_POLL_RATE (1.0f / 25.0f)
@@ -468,7 +467,6 @@ static tSpace Key_ramp;
 
 //	PROTOTYPES
 
-void DoMovement(game_controls *controls);
 static void DoKeyboardMovement(game_controls *controls);
 static void DoControllerMovement(game_controls *controls);
 static void DoWeapons(game_controls *controls);
@@ -621,7 +619,7 @@ void InitControls() {
   Key_ramp.oy = Key_ramp.y = 0.0f;
   Key_ramp.oz = Key_ramp.z = 0.0f;
 
-//	Initialize preemptive controller system for non-positonal data.
+  //	Initialize preemptive controller system for non-positonal data.
   mprintf((0, "Initialized control system.\n"));
 }
 

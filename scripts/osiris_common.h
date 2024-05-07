@@ -993,8 +993,8 @@ typedef struct {
                            // DO NOT ALTER THE STRING IT POINTS TO.
 
   uint32_t game_checksum; // Checksum of game structures, if this doesn't match
-                      // the checksum at compile time, it is very likely that
-                      // bad things can happen, and this module shouldn't initialize.
+                          // the checksum at compile time, it is very likely that
+                          // bad things can happen, and this module shouldn't initialize.
 
 } tOSIRISModuleInit; // contains the necessary data to initialize
 
@@ -1022,7 +1022,7 @@ typedef struct {
 } tOSIRISEVTCREATED; // struct for EVT_CREATED data
 
 typedef struct {
-  uint8_t is_dying;    // if this is !=0 than the event is coming because it is
+  uint8_t is_dying;  // if this is !=0 than the event is coming because it is
                      // really being destroyed.  Else it is due to the level ending.
 } tOSIRISEVTDESTROY; // struct for EVT_DESTROY data
 
@@ -1176,14 +1176,14 @@ typedef struct {
   uint16_t flags;
   int32_t id;           // an optional id you can use to store, will be passed back on EVT_TIMER signal
   int32_t repeat_count; // if OTF_REPEATER is set, this is how many times to repeat the signal (every
-                    // interval).  -1 for infinite.
+                        // interval).  -1 for infinite.
   union {
     int32_t object_handle;  // handle to the object to recieve the EVT_TIMER signal
     int32_t trigger_number; // trigger number to recieve the EVT_TIMER signal (OTF_TRIGGER)
   };
 
   int32_t object_handle_detonator; // if OTF_CANCELONDEAD is specified, this is the object handle to
-                               // use for checking, if this object dies, than auto-cancel the timer
+                                   // use for checking, if this object dies, than auto-cancel the timer
 
   float timer_interval; // the timeframe in between EVT_TIMER signals (for non-repeaters, this is how
                         // long until the single EVT_TIMER gets signaled).
@@ -1342,7 +1342,7 @@ typedef struct {
 #define PV_I_NUMPATHS 0x00040000 // get number of paths (path_id & node_id are ignored in this case)
 
 typedef struct {
-  vector pos;  // where this node is in the world
+  vector pos;      // where this node is in the world
   int32_t roomnum; // what room?
   int32_t flags;   // if this point lives over the terrain, etc
   vector fvec;

@@ -39,7 +39,7 @@ FILE 1			[filelen(FILE 1)]
 FILE NFILES-1		[filelen(NFILES -1)]
 */
 
-inline std::array<char, 56> array_with(char val) {
+static inline std::array<char, 56> array_with(char val) {
   std::array<char, 56> arr;
   arr.fill(val);
   return arr;

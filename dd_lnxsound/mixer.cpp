@@ -28,14 +28,14 @@
 #define MAX_WRITE_AHEAD 0.04f // Seconds to write ahead of the play position (in seconds)
 #define VOLUME_FIX_BITS 1024
 
-inline void opti_8m_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played, short *mixer_buffer16,
-                        const float l_volume, const float r_volume);
-inline void opti_8s_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played, short *mixer_buffer16,
-                        const float l_volume, const float r_volume);
-inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samples_played, short *mixer_buffer16,
-                         const float l_volume, const float r_volume);
-inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samples_played, short *mixer_buffer16,
-                         const float l_volume, const float r_volume);
+static inline void opti_8m_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played,
+                               short *mixer_buffer16, const float l_volume, const float r_volume);
+static inline void opti_8s_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played,
+                               short *mixer_buffer16, const float l_volume, const float r_volume);
+static inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samples_played,
+                                short *mixer_buffer16, const float l_volume, const float r_volume);
+static inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samples_played,
+                                short *mixer_buffer16, const float l_volume, const float r_volume);
 
 software_mixer::software_mixer() {
   m_init = false;

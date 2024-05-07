@@ -515,7 +515,7 @@ int CheckTransparentPoint(const vector *pnt, const room *rp, const int facenum);
 // Parameters:	rp - pointer to the room the face is in
 //					fp - the face we're interested in
 // Returns:	bitmask of flags (see above).
-inline int GetFacePhysicsFlags(const room *rp, const face *fp) {
+static inline int GetFacePhysicsFlags(const room *rp, const face *fp) {
   int ret = 0;
 
   // If face is a trigger, must record

@@ -577,7 +577,7 @@ void MakeAtuoWaypointList();
 void SetAutoWaypoint(object *objp);
 
 // Returns the team (0 to 3) of the given player
-inline int PlayerGetTeam(int pnum) {
+static inline int PlayerGetTeam(int pnum) {
   if (Players[pnum].team == -1) {
     // special "no-team" for Dedicated server
     return 0; // fake a red team

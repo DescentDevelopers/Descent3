@@ -1073,7 +1073,7 @@ static inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
 extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 // Returns true if passed in point collides with a nodes polygon
-inline int BSPPointInPolygon(vector *pos, bspnode *node) {
+static inline int BSPPointInPolygon(vector *pos, bspnode *node) {
   if (node->node_subnum < 0) // Room face
   {
     room *rp = &Rooms[node->node_roomnum];

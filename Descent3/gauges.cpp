@@ -501,7 +501,7 @@ void FlagGaugesNonfunctional(tStatMask mask) {
 //		can render another view though.
 //	renders the primary monitor gauge
 
-inline int get_weapon_hud_image(int player, int type) {
+static inline int get_weapon_hud_image(int player, int type) {
   player_weapon *pw = &Players[player].weapon[type];
   weapon *wpn = GetWeaponFromIndex(player, pw->index);
 

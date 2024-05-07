@@ -142,9 +142,9 @@
 
 #define MAX_SPEWS_PER_FRAME 5 // maximum number of spews 1 can emit per frame
 
-inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFF) << 16) + (slot & 0xFF)); }
+static inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFF) << 16) + (slot & 0xFF)); }
 
-inline int GET_SLOT(int handle) { return (handle & 0xFF); }
+static inline int GET_SLOT(int handle) { return (handle & 0xFF); }
 
 spewinfo SpewEffects[MAX_SPEW_EFFECTS];
 int spew_count;

@@ -163,24 +163,24 @@
 #include <winsock.h>
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->S_un.S_addr = value; }
-inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->S_un.S_addr; }
-inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
+static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->S_un.S_addr = value; }
+static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->S_un.S_addr; }
+static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
   st->S_un.S_un_w.s_w1 = s_w1;
   st->S_un.S_un_w.s_w2 = s_w2;
 }
-inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
+static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
   *s_w1 = st->S_un.S_un_w.s_w1;
   *s_w2 = st->S_un.S_un_w.s_w2;
 }
-inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
                                 unsigned char s_b4) {
   st->S_un.S_un_b.s_b1 = s_b1;
   st->S_un.S_un_b.s_b2 = s_b2;
   st->S_un.S_un_b.s_b3 = s_b3;
   st->S_un.S_un_b.s_b4 = s_b4;
 }
-inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
                                 unsigned char *s_b4) {
   *s_b1 = st->S_un.S_un_b.s_b1;
   *s_b2 = st->S_un.S_un_b.s_b2;
@@ -236,13 +236,13 @@ inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigne
 #define WSAEINVAL EINVAL
 #define WSAENOPROTOOPT ENOPROTOOPT
 
-inline int WSAGetLastError() { return errno; }
+static inline int WSAGetLastError() { return errno; }
 extern bool Use_DirectPlay;
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->s_addr = value; }
-inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->s_addr; }
-inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
+static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->s_addr = value; }
+static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->s_addr; }
+static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
   union {
     struct {
       unsigned char s_b1, s_b2, s_b3, s_b4;
@@ -257,7 +257,7 @@ inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigne
   S_un.S_un_w.s_w2 = s_w2;
   st->s_addr = S_un.S_addr;
 }
-inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
+static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
   union {
     struct {
       unsigned char s_b1, s_b2, s_b3, s_b4;
@@ -272,7 +272,7 @@ inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsign
   *s_w1 = S_un.S_un_w.s_w1;
   *s_w2 = S_un.S_un_w.s_w2;
 }
-inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
                                 unsigned char s_b4) {
   union {
     struct {
@@ -290,7 +290,7 @@ inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned
   S_un.S_un_b.s_b4 = s_b4;
   st->s_addr = S_un.S_addr;
 }
-inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
                                 unsigned char *s_b4) {
   union {
     struct {

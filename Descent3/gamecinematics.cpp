@@ -403,7 +403,7 @@ void Cinematic_LevelInit(void) {
   GameCinema.doing_end_transition = false;
 }
 
-inline void verify_percentranage(PercentageRange *range) {
+static inline void verify_percentranage(PercentageRange *range) {
   if (range->min < 0.0f)
     range->min = 0.0f;
   if (range->min > 1.0f)
@@ -454,7 +454,7 @@ void Cinematic_SetForFakeCinematic(tGameCinematic *info) {
   Cinematic_fake_queued = true;
 }
 
-inline int Cinematics_CreateCamera(void) {
+static inline int Cinematics_CreateCamera(void) {
   int objnum = ObjCreate(OBJ_CAMERA, 0, Player_object->roomnum, &Player_object->pos, NULL);
   if (objnum == -1)
     return OBJECT_HANDLE_NONE;
@@ -508,7 +508,7 @@ bool Cinematic_Start(tGameCinematic *info, char *text_string) {
   return Cinematic_StartCine(info, text_string, camera_handle);
 }
 
-inline void Cinematic_DeleteCamera(int objhandle) {
+static inline void Cinematic_DeleteCamera(int objhandle) {
   object *obj = ObjGet(objhandle);
   if (obj) {
     SetObjectDeadFlag(obj);
@@ -890,7 +890,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
   return true;
 }
 
-inline bool Cinematic_IsPlayerDead(void) {
+static inline bool Cinematic_IsPlayerDead(void) {
   if (!Player_object || (Player_object->type == OBJ_GHOST) ||
       (Player_object->type == OBJ_PLAYER &&
        Players[Player_object->id].flags & (PLAYER_FLAGS_DYING | PLAYER_FLAGS_DEAD))) {

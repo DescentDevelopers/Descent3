@@ -565,7 +565,7 @@ inline void grViewport::get_char_properties(tCharProperties *props) const {
 
 //	useful macros
 
-inline void VP_BITBLT(grViewport *vp, int dx, int dy, int bm) {
+static inline void VP_BITBLT(grViewport *vp, int dx, int dy, int bm) {
   grMemorySurface surf(bm);
   vp->blt(dx, dy, &surf);
 }

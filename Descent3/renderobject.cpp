@@ -760,7 +760,7 @@ static void DrawNumber(int num, vector pos, float size, ddgr_color c1) {
     }
   }
 }
-inline bool object_object_AABB(object *obj1, object *obj2) {
+static inline bool object_object_AABB(object *obj1, object *obj2) {
   bool overlap = true;
   if (obj1->max_xyz.x < obj2->min_xyz.x || obj2->max_xyz.x < obj1->min_xyz.x || obj1->max_xyz.z < obj2->min_xyz.z ||
       obj2->max_xyz.z < obj1->min_xyz.z || obj1->max_xyz.y < obj2->min_xyz.y || obj2->max_xyz.y < obj1->min_xyz.y)

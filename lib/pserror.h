@@ -186,7 +186,7 @@ void DumpTextToClipboard(char *text);
 extern void (*DebugBreak_callback_stop)();
 extern void (*DebugBreak_callback_resume)();
 //	set DEBUG_BREAK callback
-inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
+static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
   DebugBreak_callback_stop = stop;
   DebugBreak_callback_resume = resume;
 }

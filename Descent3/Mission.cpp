@@ -700,14 +700,14 @@ bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn);
 // closes the current mn3 file
 void mn3_Close();
 
-inline bool IS_MN3_FILE(const char *fname) {
+static inline bool IS_MN3_FILE(const char *fname) {
   char name[PSFILENAME_LEN + 1];
   char ext[PSFILENAME_LEN + 1];
   ddio_SplitPath(fname, NULL, name, ext);
   return (strcmpi(ext, ".mn3") == 0) ? true : false;
 }
 
-inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
+static inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
   char fname[PSFILENAME_LEN + 1];
   ddio_SplitPath(mn3name, NULL, fname, NULL);
 

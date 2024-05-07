@@ -249,7 +249,7 @@ extern bool FVI_always_check_ceiling;
 #define Q_LEFT 1
 #define Q_MIDDLE 2
 
-inline bool FastVectorBBox(const float *min, const float *max, const float *origin, const float *dir) {
+static inline bool FastVectorBBox(const float *min, const float *max, const float *origin, const float *dir) {
   bool f_inside = true;
   char quad[3];
   int i;
