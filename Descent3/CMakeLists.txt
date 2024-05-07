@@ -312,8 +312,9 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
-add_custom_target(LicenseFile
+add_custom_target(LicenseFiles
   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/LICENSE" $<TARGET_FILE_DIR:Descent3>
-  COMMENT "Create LICENSE file"
+  COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/third_party_licenses" "$<TARGET_FILE_DIR:Descent3>/Third-party licenses"
+  COMMENT "Create license files"
 )
-add_dependencies(Descent3 LicenseFile)
+add_dependencies(Descent3 LicenseFiles)
