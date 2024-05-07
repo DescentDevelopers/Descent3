@@ -2,7 +2,7 @@ set(HEADERS
   dyna_gl.h
   HardwareInternal.h
   RendererConfig.h
-  SoftwareInternal.h)
+)
 set(CPPS
   HardwareClipper.cpp
   HardwareDraw.cpp
@@ -12,13 +12,7 @@ set(CPPS
   HardwarePoints.cpp
   HardwareSetup.cpp
   HardwareTransforms.cpp
-
-  SoftwareClipper.cpp
-  SoftwareDraw.cpp
-  SoftwareGlobalVars.cpp
-  SoftwareInstance.cpp
-  SoftwarePoints.cpp
-  SoftwareSetup.cpp)
+)
 
 if(UNIX)
   set(CPPS ${CPPS} lnxscreenmode.cpp)
