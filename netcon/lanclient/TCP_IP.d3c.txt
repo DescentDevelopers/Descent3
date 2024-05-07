@@ -1,0 +1,4 @@
+Direct TCP~IP.so
+Direct TCP~IP.dll
+Direct TCP~IP.dylib
+lanclient.str

@@ -1,12 +1,22 @@
-set(HEADERS lanclient.h)
 set(CPPS lanclient.cpp)
 
-set(NETGAME_MODULE "TCP_IP")
+add_library("Direct_TCP_IP" MODULE ${CPPS} ${HEADERS})
+set_target_properties(Direct_TCP_IP PROPERTIES PREFIX "")
+set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")
+target_link_libraries(Direct_TCP_IP PRIVATE
+  inetfile
+  $<$<PLATFORM_ID:Windows>:
+    ws2_32
+  >
+)
 
-add_library(${NETGAME_MODULE} MODULE ${CPPS} ${HEADERS})
-set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
-set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3c")
-target_link_libraries(${NETGAME_MODULE} inetfile)
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  target_link_libraries(${NETGAME_MODULE} ws2_32)
-endif()
+add_custom_target(Direct_TCP_IP_Hog
+  COMMAND $<TARGET_FILE:HogMaker>
+  "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c"
+  "${CMAKE_SOURCE_DIR}/netcon/lanclient/TCP_IP.d3c.txt"
+  "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
+  "${CMAKE_BINARY_DIR}/netcon/lanclient/"
+
+  DEPENDS Direct_TCP_IP HogMaker
+  COMMENT "Generate 'Direct TCP~IP.d3c'"
+)
