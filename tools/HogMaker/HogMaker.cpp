@@ -37,19 +37,41 @@ std::string str_tolower(std::string s) {
   return s;
 }
 
+// Find requested file in search paths
+std::filesystem::path resolve_path(const std::vector<std::filesystem::path> &search_path,
+                                   const std::filesystem::path &file) {
+  for (const auto &i : search_path) {
+    if (is_regular_file((i / file))) {
+      return (i / file);
+    }
+  }
+  // Return empty path
+  return std::filesystem::path{};
+}
+
 int main(int argc, char *argv[]) {
   std::vector<std::filesystem::path> input_files;
 
-  if (argc != 3) {
+  if (argc < 3) {
     std::cout << "HogMaker v" << D3_MAJORVER << "." << D3_MINORVER << "." << D3_BUILD << "-g" << D3_GIT_HASH << "\n"
               << "Usage:\n"
-              << "  " << argv[0] << " <hogfile.hog> <inputfile.txt>\n"
+              << "  " << argv[0] << " <hogfile.hog> <inputfile.txt> [search_path]\n"
               << std::endl;
     return 1;
   }
 
   std::filesystem::path hog_filename{argv[1]};
   std::filesystem::path input_filename{argv[2]};
+  // Default search path
+  std::vector<std::filesystem::path> search_paths{input_filename.parent_path()};
+  if (argc >= 3) {
+    for (int i = 3; i < argc; i++) {
+      if (is_directory(std::filesystem::path(argv[i]))) {
+        search_paths.emplace_back(argv[i]);
+      }
+    }
+  }
+
   if (!is_regular_file(input_filename)) {
     std::cout << input_filename << " is not a regular file!" << std::endl;
     return 1;
@@ -58,15 +80,14 @@ int main(int argc, char *argv[]) {
   try {
     create_directories(absolute(hog_filename).parent_path());
     std::ifstream input(input_filename, std::ios_base::in);
-    auto parent_input_path = input_filename.parent_path();
     for (std::string line; std::getline(input, line);) {
-      if (!is_regular_file(parent_input_path / line)) {
-        std::cout << "Warning! File " << line << " from " << input_filename << " does not exist! Skipping..."
-                  << std::endl;
+      auto resolved_file = resolve_path(search_paths, line);
+      if (resolved_file.empty()) {
+        std::cout << "Warning! File " << line << " from " << input_filename << " not found! Skipping..." << std::endl;
       } else if (std::filesystem::path(line).filename().string().size() > 36) {
         std::cout << "Warning! Length of name of file " << line << " is more than 36 symbols! Skipping..." << std::endl;
       } else {
-        input_files.emplace_back(parent_input_path / line);
+        input_files.emplace_back(resolved_file);
       }
     }
 
