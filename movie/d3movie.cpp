@@ -29,7 +29,8 @@
 #include "DDAccess.h"
 
 #ifdef WIN32
-#include <MMSystem.h>
+#include <windows.h>
+#include <mmsystem.h>
 #include <io.h>
 #include "dsound.h"
 #endif

@@ -61,9 +61,7 @@
  * $NoKeywords: $
  */
 
-#if defined(WIN32)
-#include <windows.h>
-#endif
+#include <cstring>
 #include "cfile.h"
 #include "manage.h"
 #include "megacell.h"
@@ -73,9 +71,6 @@
 #include "pserror.h"
 #include "polymodel.h"
 #include "ddio.h"
-#if defined(LINUX)
-#include <string.h>
-#endif
 // megacellpage commands that are read/written
 // A command is followed by a byte count describing how many bytes
 // are in the data for the command

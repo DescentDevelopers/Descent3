@@ -192,13 +192,8 @@
 #include "Debug.h"
 #include "mono.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <winioctl.h>
-#include <assert.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <conio.h>
 #include <stdlib.h>
 
 ///////////////////////////////////////////////////////////////////////////////

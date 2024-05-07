@@ -146,8 +146,6 @@
 #include "ddio_win.h"
 #include "pserror.h"
 #include "mem.h"
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <stdarg.h>
 #include <sys\stat.h>
 #include <io.h>

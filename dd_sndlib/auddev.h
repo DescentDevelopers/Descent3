@@ -77,6 +77,8 @@
 #ifndef AUDDEV_H
 #define AUDDEV_H
 
+#include <windows.h>
+#include <mmsystem.h>
 #include "dsound.h"
 #include "vmanpset.h"
 #include "pstypes.h"

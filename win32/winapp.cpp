@@ -152,15 +152,10 @@
 #include "mono.h"
 #include "networking.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include <shellapi.h>
-#include <windows.h>
 #include <mmsystem.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "pserror.h"
-#include "win\directx\ddraw.h"
-#include "win\directx\dsound.h"
 
 // taken from winuser.h
 #ifndef WHEEL_DELTA

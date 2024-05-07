@@ -62,7 +62,6 @@
 #ifndef DS3DLIB_INTERNAL_H
 #define DS3DLIB_INTERNAL_H
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <mmsystem.h>
 

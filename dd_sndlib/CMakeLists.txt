@@ -7,7 +7,6 @@ set(HEADERS
   Ia3dutil.h
   vmanpset.h)
 set(CPPS
-  aureal3d.cpp
   ddsoundload.cpp
   Ds3dlib.cpp
   dsound3d.cpp

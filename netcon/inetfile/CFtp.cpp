@@ -65,6 +65,7 @@
 
 #ifdef WIN32
 #include <windows.h>
+#include <winsock.h>
 #include <process.h>
 typedef int socklen_t;
 #endif

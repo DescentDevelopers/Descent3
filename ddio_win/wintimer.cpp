@@ -25,6 +25,9 @@
 #include "pserror.h"
 #include "mono.h"
 
+#include <windows.h>
+#include <mmsystem.h>
+
 #define MAX_TIMER_HOOKS 4
 #define TIMER_CLOCK_RATE 100 // ms
 

@@ -1,4 +1,3 @@
-set(HEADERS win32os.h)
 set(CPPS
   winapp.cpp
   wincon.cpp
@@ -7,6 +6,6 @@ set(CPPS
   wintask.cpp
 )
 
-add_library(win32 STATIC ${HEADERS} ${CPPS})
+add_library(win32 STATIC ${CPPS})
 add_dependencies(win32 get_git_hash)
 target_include_directories(win32 PRIVATE ${PROJECT_BINARY_DIR}/lib)

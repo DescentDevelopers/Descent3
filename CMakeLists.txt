@@ -92,13 +92,18 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   add_compile_definitions(__LINUX__ LINUX _MAX_PATH=260 _MAX_FNAME=256 _REENRANT MACOSX=1 _USE_OGL_ACTIVE_TEXTURES)
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  # Windows.h defines to avoid as many issues as possible.
+  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE NOHELP
+          #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
+  )
+
   list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
   string(APPEND CMAKE_EXE_LINKER_FLAGS " /SAFESEH:NO /NODEFAULTLIB:LIBC")
   set(CMAKE_MODULE_LINKER_FLAGS "/SAFESEH:NO /NODEFAULTLIB:LIBC")
-  add_compile_definitions(IS_WINDOWS _CRT_SECURE_NO_WARNINGS WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE NOMINMAX)
+  add_compile_definitions(IS_WINDOWS _CRT_SECURE_NO_WARNINGS WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
 
   set(PLATFORM_INCLUDES "lib/win/directx" "lib/win")
 
