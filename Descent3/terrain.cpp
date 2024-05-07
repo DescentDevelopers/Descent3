@@ -750,7 +750,7 @@ void SetupSky(float radius, int flags, ubyte randit) {
     float ynorm = starvec.y / (Terrain_sky.radius * 500);
 
     float color_norm = ynorm * 2;
-    color_norm = std::clamp<float>(color_norm, 0.2, 1.0);
+    color_norm = std::clamp(color_norm, 0.2f, 1.0f);
     int color = ps_rand() % 6;
     int r, g, b;
 
