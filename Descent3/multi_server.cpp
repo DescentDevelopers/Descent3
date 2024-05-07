@@ -2031,8 +2031,7 @@ void MultiSendPositionalUpdates(int to_slot) {
             dp=fabs(dp);
 
             pps_check_time=((float)pps_check_time/2.0)+((dp*((float)pps_check_time/2.0))+(dp*.9));
-            pps_check_time=std::max(pps_check_time,6.0);
-            pps_check_time=std::min(pps_check_time,20.0);
+            pps_check_time=std::clamp(pps_check_time,6.0,20.0);
 
             int pps=pps_check_time;
             pps_check_time=pps;
