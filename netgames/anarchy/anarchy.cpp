@@ -60,32 +60,35 @@
 #include <algorithm>
 
 IDMFC *DMFCBase = NULL;
-IDmfcStats *dstat = NULL;
+static IDmfcStats *dstat = NULL;
 
-int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
-bool DisplayScoreScreen;
-int Highlight_bmp = -1;
+static int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
+static bool DisplayScoreScreen;
+static int Highlight_bmp = -1;
 
 #define AHD_NONE 0
 #define AHD_SCORE 1
 #define AHD_EFFICIENCY 2
 #define ACM_PLAYERCOLOR 0
 #define ACM_NORMAL 1
-ubyte Anarchy_hud_display = AHD_SCORE;
-ubyte HUD_color_model = ACM_PLAYERCOLOR;
-bool display_my_welcome = false;
+static ubyte Anarchy_hud_display = AHD_SCORE;
+static ubyte HUD_color_model = ACM_PLAYERCOLOR;
+static bool display_my_welcome = false;
 
-void DisplayHUDScores(struct tHUDItem *hitem);
-void DisplayScores(void);
-void DisplayWelcomeMessage(int player_num);
-void SaveStatsToFile(char *filename);
-void SwitchHUDColor(int i);
+static void DisplayHUDScores(struct tHUDItem *hitem);
+static void DisplayScores(void);
+static void DisplayWelcomeMessage(int player_num);
+static void SaveStatsToFile(char *filename);
+static void SwitchHUDColor(int i);
+static void SwitchAnarchyScores(int i);
+static const char *GetString(int d);
+static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetString(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -114,7 +117,6 @@ void SwitchAnarchyScores(int i) {
     break;
   };
 }
-
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -1005,4 +1007,3 @@ void SwitchHUDColor(int i) {
     break;
   };
 }
-

@@ -57,15 +57,15 @@
 
 #define AI_MAX_SEGS_CHECKED 200
 
-int ai_num_segs_checked = 0;
-ubyte ai_terrain_check_list[((TERRAIN_WIDTH * TERRAIN_DEPTH) >> 3) + 1];
-int ai_segs_checked[AI_MAX_SEGS_CHECKED];
+static int ai_num_segs_checked = 0;
+static ubyte ai_terrain_check_list[((TERRAIN_WIDTH * TERRAIN_DEPTH) >> 3) + 1];
+static int ai_segs_checked[AI_MAX_SEGS_CHECKED];
 #ifdef _DEBUG
-int ai_num_checks_since_init = 0;
+static int ai_num_checks_since_init = 0;
 #endif
 
-float ai_rad;
-ground_information *ai_ground_info_ptr;
+static float ai_rad;
+static ground_information *ai_ground_info_ptr;
 
 void ait_Init() {
   ai_num_segs_checked = 0;
@@ -76,7 +76,7 @@ void ait_Init() {
 #endif
 }
 
-void ait_terrain_clean() {
+static void ait_terrain_clean() {
   int i;
 
   assert(ai_num_segs_checked >= 0 && ai_num_segs_checked <= AI_MAX_SEGS_CHECKED);
@@ -96,7 +96,7 @@ void ait_terrain_clean() {
   ai_num_segs_checked = 0;
 }
 
-void ai_check_terrain_node(int cur_node, int f_check_local_nodes) {
+static void ai_check_terrain_node(int cur_node, int f_check_local_nodes) {
   int check_x, check_y;
   int new_node;
   int xcounter, ycounter;

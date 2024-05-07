@@ -82,37 +82,40 @@
 #include "tanDMFC.h"
 #include "tanarchystr.h"
 IDMFC *DMFCBase = NULL;
-IDmfcStats *dstat = NULL;
-player *dPlayers;
+static IDmfcStats *dstat = NULL;
+static player *dPlayers;
 
 #define SPID_NEWPLAYER 0
 #define NUM_TEAMS 2
 
-int SortedPLRPlayers[MAX_TEAMS][MAX_PLAYER_RECORDS];
-int TeamScore[NUM_TEAMS];
-int SortedTeams[NUM_TEAMS];
-int SortedPlayers[MAX_PLAYER_RECORDS];
-bool DisplayScoreScreen;
-bool display_my_welcome = false;
+static int SortedPLRPlayers[MAX_TEAMS][MAX_PLAYER_RECORDS];
+static int TeamScore[NUM_TEAMS];
+static int SortedTeams[NUM_TEAMS];
+static int SortedPlayers[MAX_PLAYER_RECORDS];
+static bool DisplayScoreScreen;
+static bool display_my_welcome = false;
 
-void GetGameStartPacket(ubyte *data);
-void SendGameStartPacket(int pnum);
-void DisplayScores(void);
-void DisplayHUDScores(struct tHUDItem *hitem);
-void DisplayWelcomeMessage(int player_num);
-void SortTeamScores(int *sortedindex, int *scores);
+static void GetGameStartPacket(ubyte *data);
+static void SendGameStartPacket(int pnum);
+static void DisplayScores(void);
+static void DisplayHUDScores(struct tHUDItem *hitem);
+static void DisplayWelcomeMessage(int player_num);
+static void SortTeamScores(int *sortedindex, int *scores);
 void OnSaveStatsToFile(void);
-void OnLevelEndSaveStatsToFile(void);
-void OnDisconnectSaveStatsToFile(void);
-void OnPrintScores(int level);
+static void OnLevelEndSaveStatsToFile(void);
+static void OnDisconnectSaveStatsToFile(void);
+static void OnPrintScores(int level);
+static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
+static void TeamScoreCallback(int team, char *buffer, int buffer_size);
+static bool compare_slots(int a, int b);
 
-int Highlight_bmp = -1;
+static int Highlight_bmp = -1;
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -137,7 +140,6 @@ void TeamScoreCallback(int team, char *buffer, int buffer_size) {
 
   snprintf(buffer, buffer_size, " %d", TeamScore[team]);
 }
-
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -1067,4 +1069,3 @@ void OnPrintScores(int level) {
     }
   }
 }
-

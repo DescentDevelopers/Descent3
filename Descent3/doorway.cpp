@@ -150,9 +150,10 @@ int Global_keys;
 //	---------------------------------------------------------------------------
 //	Prototypes
 
-void DoorwayOpen(room *rp);
-void DoorwayClose(room *rp);
-void DoorwayWait(room *rp);
+// TODO: MTS: none of the following were found
+// void DoorwayOpen(room *rp);
+// void DoorwayClose(room *rp);
+// void DoorwayWait(room *rp);
 object *GetDoorObject(room *rp);
 
 //	---------------------------------------------------------------------------

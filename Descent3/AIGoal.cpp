@@ -479,6 +479,9 @@
 
 extern int AI_unique_goal_id;
 
+static void GoalInitWanderAround(object *obj, goal *goal_ptr);
+static int GoalAllocSlot(object *obj, int level, float influence);
+
 #define BASH_TO_ANIM_SCALER 10.0f
 #define MAX_BASH_TO_FLINCH_TIME 2.5f
 

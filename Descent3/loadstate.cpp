@@ -219,11 +219,12 @@
 
 #include <algorithm>
 
-void PageInAllData();
+extern void PageInAllData();
 
 // dynamically allocated to be efficient (only needed during save/load)
 
-int LGSSnapshot(CFILE *fp);
+static int LGSSnapshot(CFILE *fp);
+static void IncreaseRestoreCount(const char *file);
 
 int Times_game_restored = 0;
 // static gs_tables *gs_Xlates = NULL;
@@ -614,6 +615,7 @@ int LGSRooms(CFILE *fp) {
   return retval;
 }
 
+// TODO: MTS: unused?
 //	loads in and sets these events
 int LGSEvents(CFILE *fp) {
   int retval = LGS_OK;

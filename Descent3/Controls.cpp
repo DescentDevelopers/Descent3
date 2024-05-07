@@ -433,7 +433,6 @@
 #include <stdlib.h>
 #include <memory.h>
 
-
 float Key_ramp_speed = 0.5f;
 
 #define CONTROL_POLL_RATE (1.0f / 25.0f)
@@ -468,18 +467,18 @@ static tSpace Key_ramp;
 
 //	PROTOTYPES
 
-void DoMovement(game_controls *controls);
-void DoKeyboardMovement(game_controls *controls);
-void DoControllerMovement(game_controls *controls);
-void DoWeapons(game_controls *controls);
-void DoKeyboardWeapons(game_controls *controls);
-void DoControllerWeapons(game_controls *controls);
-void DoMisc(game_controls *contols);
-void DoKeyboardMisc(game_controls *controls);
-void DoControllerMisc(game_controls *controls);
+static void DoKeyboardMovement(game_controls *controls);
+static void DoControllerMovement(game_controls *controls);
+static void DoWeapons(game_controls *controls);
+static void DoKeyboardWeapons(game_controls *controls);
+static void DoControllerWeapons(game_controls *controls);
+static void DoMisc(game_controls *contols);
+static void DoKeyboardMisc(game_controls *controls);
+static void DoControllerMisc(game_controls *controls);
+// MTS: no implementation!
 void DoCommands();
 
-void ToggleHeadlightControlState();
+static void ToggleHeadlightControlState();
 
 //	LIST OF NEEDS
 ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
@@ -558,7 +557,7 @@ ct_function Controller_needs[NUM_CONTROLLER_FUNCTIONS] = {
     {ctfAUDIOTAUNT4_BTN, ctDownCount, ctButton, ctButton, 0, 0, 0, 0}};
 
 // ramping macros
-inline float ramp_control_value(float val, float limit, float &ramp_state, float &old_ramp_delta) {
+static inline float ramp_control_value(float val, float limit, float &ramp_state, float &old_ramp_delta) {
   float sign = val / fabs(val), old_sign = old_ramp_delta / fabs(old_ramp_delta);
   if (sign != old_sign)
     ramp_state = -ramp_state;
@@ -620,7 +619,7 @@ void InitControls() {
   Key_ramp.oy = Key_ramp.y = 0.0f;
   Key_ramp.oz = Key_ramp.z = 0.0f;
 
-//	Initialize preemptive controller system for non-positonal data.
+  //	Initialize preemptive controller system for non-positonal data.
   mprintf((0, "Initialized control system.\n"));
 }
 
@@ -1131,9 +1130,9 @@ void DoMisc(game_controls *controls) {
 }
 
 // use the currently selected inventory item
-bool UseInventoryItem();
+extern bool UseInventoryItem();
 // use the currently selected countermeasure
-bool UseCountermeasure();
+extern bool UseCountermeasure();
 
 // Inventory/CounterMeasure states
 void DoKeyboardMisc(game_controls *controls) {

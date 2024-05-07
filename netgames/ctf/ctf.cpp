@@ -92,12 +92,12 @@
 #include "CTFstr.h"
 
 IDMFC *DMFCBase;
-IDmfcStats *dstat;
+static IDmfcStats *dstat;
 
-object *dObjects;
-player *dPlayers;
-room *dRooms;
-netplayer *dNetPlayers;
+static object *dObjects;
+static player *dPlayers;
+static room *dRooms;
+static netplayer *dNetPlayers;
 
 #define SPID_GAMESTATE 0x01
 #define SPID_ADDDELFLAG 0x02
@@ -139,20 +139,22 @@ $$TABLE_SOUND "CTFReturnedFlag1"
 $$TABLE_SOUND "CTFHatTrick"
 $$TABLE_SOUND "CTFHatTrick"
 */
-int snd_return_ownteam = -1;
-int snd_return_otherteam = -1;
-int snd_pickedup_otherteam = -1;
-int snd_pickedup_ownteam = -1;
-int snd_score_ownteam = -1;
-int snd_score_otherteam = -1;
-int snd_lose_ownteam = -1;
-int snd_lose_otherteam = -1;
-int snd_hattrick_first = -1;
-int snd_hattrick_reg = -1;
+static int snd_return_ownteam = -1;
+static int snd_return_otherteam = -1;
+static int snd_pickedup_otherteam = -1;
+static int snd_pickedup_ownteam = -1;
+static int snd_score_ownteam = -1;
+static int snd_score_otherteam = -1;
+static int snd_lose_ownteam = -1;
+static int snd_lose_otherteam = -1;
+static int snd_hattrick_first = -1;
+static int snd_hattrick_reg = -1;
 
 typedef struct {
   int Score[2];
 } tPlayerStat; // Overall scores (throughout the game)
+static int pack_pstat(tPlayerStat *user_info, ubyte *data);
+static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
 int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
@@ -167,77 +169,78 @@ int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
   return count;
 }
 
-int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
-int SortedPLRPlayers[DLLMAX_TEAMS][MAX_PLAYER_RECORDS];
+static int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
+static int SortedPLRPlayers[DLLMAX_TEAMS][MAX_PLAYER_RECORDS];
 
-int TeamScores[DLLMAX_TEAMS];        // teams scores
-int OverallTeamScores[DLLMAX_TEAMS]; // overall scores per team
-int SortedTeams[DLLMAX_TEAMS];       // sorted team scores
-int Highlight_bmp = -1;
-bool DisplayScoreScreen;
-bool Someone_has_hattrick = false; // this is false if no one has had a hattrick this level
-bool First_game_frame = false;
+static int TeamScores[DLLMAX_TEAMS];        // teams scores
+static int OverallTeamScores[DLLMAX_TEAMS]; // overall scores per team
+static int SortedTeams[DLLMAX_TEAMS];       // sorted team scores
+static int Highlight_bmp = -1;
+static bool DisplayScoreScreen;
+static bool Someone_has_hattrick = false; // this is false if no one has had a hattrick this level
+static bool First_game_frame = false;
 
-int FlagIDs[DLLMAX_TEAMS];      // Flag Object ID's
-int AFlagIDs[DLLMAX_TEAMS];     // Attached Flag Object ID's
-int GoalRooms[DLLMAX_TEAMS];    // Goal Rooms for Teams
-int FlagBmp[DLLMAX_TEAMS];      // Flag Bitmap handles
-int FlagAHBmp[DLLMAX_TEAMS];    // Flag At Home Bitmap handles
-int DimFlagAHBmp[DLLMAX_TEAMS]; // Dimmed versions of the Flag At Home Bitmaps
-bool FlagAtHome[DLLMAX_TEAMS];  // Flag At Home bools
-int HasFlag[DLLMAX_TEAMS];      // List of Playernums of who has what flag, -1 if no one does
-bool DisplayFlagBlink = true, DisplayScoreBlink = true;
-int WhoJustFlagged = -1, WhoJustFlaggedTimer = -1;
-int WhoJustScored = -1, WhoJustScoredTimer = -1;
-int CTFNumOfTeams = 2;
-int ChildFlags[DLLMAX_TEAMS]; // Object handles of attached flags as a player has em
+static int FlagIDs[DLLMAX_TEAMS];      // Flag Object ID's
+static int AFlagIDs[DLLMAX_TEAMS];     // Attached Flag Object ID's
+static int GoalRooms[DLLMAX_TEAMS];    // Goal Rooms for Teams
+static int FlagBmp[DLLMAX_TEAMS];      // Flag Bitmap handles
+static int FlagAHBmp[DLLMAX_TEAMS];    // Flag At Home Bitmap handles
+static int DimFlagAHBmp[DLLMAX_TEAMS]; // Dimmed versions of the Flag At Home Bitmaps
+static bool FlagAtHome[DLLMAX_TEAMS];  // Flag At Home bools
+static int HasFlag[DLLMAX_TEAMS];      // List of Playernums of who has what flag, -1 if no one does
+static bool DisplayFlagBlink = true, DisplayScoreBlink = true;
+static int WhoJustFlagged = -1, WhoJustFlaggedTimer = -1;
+static int WhoJustScored = -1, WhoJustScoredTimer = -1;
+static int CTFNumOfTeams = 2;
+static int ChildFlags[DLLMAX_TEAMS]; // Object handles of attached flags as a player has em
 
-float Flag_timeout_timers[DLLMAX_TEAMS];
-bool display_my_welcome = false;
+static float Flag_timeout_timers[DLLMAX_TEAMS];
+static bool display_my_welcome = false;
 
-void OnTimerScoreKill(void);                        // timer callback: when a score flash timer ends
-void OnTimerScore(void);                            // timer callback: on a score flash interval
-void OnTimer(void);                                 // timer callback: when a flag taken flash timer ends
-void OnTimerKill(void);                             // timer callback: on a flag taken flash interval
-void DisplayWelcomeMessage(int player_num);         // displays a welcome message to the player when he joins
-void SortTeamScores(int *sortedindex, int *scores); // sorts an array of team scores, filling in the sorted index
-                                                    // numbers
-void DisplayHUDScores(struct tHUDItem *hitem);      // callback when the HUD info is to be drawn
-void ReceiveGameState(ubyte *data);                 // callback when a gamestate packet is received from the server
-void SendGameState(int playernum);                  // called when the server is to send gamestate packet to a client
-void SetColoredBalls(
+static void OnTimerScoreKill(void);                        // timer callback: when a score flash timer ends
+static void OnTimerScore(void);                            // timer callback: on a score flash interval
+static void OnTimer(void);                                 // timer callback: when a flag taken flash timer ends
+static void OnTimerKill(void);                             // timer callback: on a flag taken flash interval
+static void DisplayWelcomeMessage(int player_num);         // displays a welcome message to the player when he joins
+static void SortTeamScores(int *sortedindex, int *scores); // sorts an array of team scores, filling in the sorted index
+                                                           // numbers
+static void DisplayHUDScores(struct tHUDItem *hitem);      // callback when the HUD info is to be drawn
+static void ReceiveGameState(ubyte *data); // callback when a gamestate packet is received from the server
+static void SendGameState(int playernum);  // called when the server is to send gamestate packet to a client
+static void SetColoredBalls(
     int playernum,
     bool reset = false); // sets the colored balls around a player (determined by what is in their inventory)
-void ChangeNumberOfTeams(int newsize); // called when the number of teams in the game is changed or to be changed
-void DoFlagReturnedHome(int team);     // called to handle any events when a flag is returned home for a team
-void DoLoseFlag(int team);             // called to handle any events when a team loses their flag
-void TellClientsToAddorDelFlag(int pnum, int team, int objnum, bool add);
-void ServerIsTellingMeToAddorDelAFlag(ubyte *data);
-void OnGetTokenString(char *src, char *dest, int dest_size);
-//	returns the number of flags a player has, 0 if none, or an invalid pnum
-int GetFlagCountForPlayer(int pnum);
-//	returns the mask of which flags this player currently has
-ubyte GetFlagMaskForPlayer(int pnum);
+static void ChangeNumberOfTeams(int newsize); // called when the number of teams in the game is changed or to be changed
+static void DoFlagReturnedHome(int team);     // called to handle any events when a flag is returned home for a team
+static void DoLoseFlag(int team);             // called to handle any events when a team loses their flag
+static void TellClientsToAddorDelFlag(int pnum, int team, int objnum, bool add);
+static void ServerIsTellingMeToAddorDelAFlag(ubyte *data);
+static void OnGetTokenString(char *src, char *dest, int dest_size);
+// returns the number of flags a player has, 0 if none, or an invalid pnum
+static int GetFlagCountForPlayer(int pnum);
+// returns the mask of which flags this player currently has
+static ubyte GetFlagMaskForPlayer(int pnum);
 //	adds a flag to a player, as a precaution, it will go through all the players and makes sure that no one
 //	has the flag that is being added.  If they are adding the flag, than remove that flag from whoever we thought
 // had it 	it will return false if it had to remove a flag from a player
-bool GivePlayerFlag(int pnum, ubyte team);
+static bool GivePlayerFlag(int pnum, ubyte team);
 // this function takes a flag away from the player, useful for when he scores, spews, disconnects, or observer modes
-void LoseFlagForPlayer(int pnum, ubyte team, bool remove_from_inven = true);
+static void LoseFlagForPlayer(int pnum, ubyte team, bool remove_from_inven = true);
 
 ///////////////////////////////////////////////
 // localization info/functions
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetString(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
   else
     return StringTable[d];
 }
-void SaveStatsToFile(char *filename);
-
+static void SaveStatsToFile(char *filename);
+static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
+static void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use);
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -2714,4 +2717,3 @@ void OnGetTokenString(char *src, char *dest, int dest_size) {
 
   DMFCBase->OnGetTokenString(src, dest, dest_size);
 }
-

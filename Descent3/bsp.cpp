@@ -57,10 +57,11 @@
 
 bsptree MineBSP;
 ubyte BSP_initted = 0;
-int ConvexSubspaces = 0, ConvexPolys = 0;
-int Solids = 0, Empty = 0;
+static int ConvexSubspaces = 0, ConvexPolys = 0;
+static int Solids = 0, Empty = 0;
 
 int BSPChecksum = -1;
+// TODO: MTS: Only used here?
 ubyte UseBSP = 0;
 
 // Goes through all the valid points in the indoor engine and returns a unique
@@ -1061,7 +1062,7 @@ void BuildSingleBSPTree(int roomnum) {
 }
 
 // Returns true if the point is inside the min,max
-inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
+static inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
   if (pos->x < min_xyz->x || pos->y < min_xyz->y || pos->z < min_xyz->z || pos->x > max_xyz->x || pos->y > max_xyz->y ||
       pos->z > max_xyz->z)
     return 0;
@@ -1072,7 +1073,7 @@ inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
 extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 // Returns true if passed in point collides with a nodes polygon
-inline int BSPPointInPolygon(vector *pos, bspnode *node) {
+static inline int BSPPointInPolygon(vector *pos, bspnode *node) {
   if (node->node_subnum < 0) // Room face
   {
     room *rp = &Rooms[node->node_roomnum];

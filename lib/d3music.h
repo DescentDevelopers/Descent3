@@ -87,7 +87,7 @@
 #define MUSICTRIGGER_NONE 0
 #define MUSICTRIGGER_NEWREGION 1 // player entered new region
 
-extern const char *Music_type_names[]; // contains type names.
+extern const char *const Music_type_names[]; // contains type names.
 
 // structure passed to music frame
 typedef struct tMusicSeqInfo {

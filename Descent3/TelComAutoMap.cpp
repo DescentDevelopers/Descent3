@@ -179,24 +179,24 @@
 #include "hlsoundlib.h"
 
 // Variables needed for automap
-vector AM_view_pos = {0, 0, 0};
-matrix AM_view_orient;
-tTelComInfo *AM_tcs;
-int AM_ship_model_handle = -1;
+static vector AM_view_pos = {0, 0, 0};
+static matrix AM_view_orient;
+static tTelComInfo *AM_tcs;
+static int AM_ship_model_handle = -1;
 
 ubyte AutomapVisMap[MAX_ROOMS];
 
-float AM_heading;
-float AM_pitch;
+static float AM_heading;
+static float AM_pitch;
 
 int AM_terrain = 0, AM_realign = 0, AM_center_on_player = 0, AM_current_marker;
 
-int Num_AM_rooms;
-ushort AM_room_list[MAX_ROOMS];
-ubyte AM_rooms_seen[MAX_ROOMS];
-g3Point *AM_rotated_points = NULL; //[MAX_VERTS_PER_ROOM];
+static int Num_AM_rooms;
+static ushort AM_room_list[MAX_ROOMS];
+static ubyte AM_rooms_seen[MAX_ROOMS];
+static g3Point *AM_rotated_points = NULL; //[MAX_VERTS_PER_ROOM];
 
-void TCAMCallback(void);
+static void TCAMCallback(void);
 
 static ubyte *Small_faces[MAX_ROOMS];
 
@@ -568,7 +568,6 @@ void TCAMRenderRoom(int roomnum) {
 #define AM_ROTATIONAL_SCALAR 90
 
 // Reads the controls for the automap, and adjusts viewpoint accordingly
-extern float last_frametime;
 void TCAMReadControls() {
   Frametime = last_frametime;
   int save_mode = Game_interface_mode;

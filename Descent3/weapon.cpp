@@ -886,7 +886,7 @@ void SelectSecondaryWeapon(int slot);
 void SetPrimaryWeapon(int index, int slot);
 void SetSecondaryWeapon(int index, int slot);
 
-inline bool is_weapon_available(unsigned player_weapon_flags, int new_weapon, ushort ammo = 0xffff) {
+static inline bool is_weapon_available(unsigned player_weapon_flags, int new_weapon, ushort ammo = 0xffff) {
   return ((player_weapon_flags & HAS_FLAG(new_weapon)) && ammo > 0) ? true : false;
 }
 

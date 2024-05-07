@@ -417,7 +417,7 @@ void WeaponDoFrame(object *obj);
 bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_num);
 
 // Checks for relation between weapons and other objects
-bool ObjectsAreRelated(int o1, int o2);
+extern bool ObjectsAreRelated(int o1, int o2);
 
 // A quick way to see where a weapon hits.  Weapons make debris.
 void CreateWeaponDebris(object *obj);

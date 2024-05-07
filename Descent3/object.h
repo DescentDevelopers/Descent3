@@ -705,8 +705,8 @@ extern short BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
  */
 
 // Set the dead flag for an object
-void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove = false, bool play_sound_on_clients = false);
-inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove, bool play_sound_on_clients) {
+static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove = false, bool play_sound_on_clients = false);
+static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove, bool play_sound_on_clients) {
   int objnum = OBJNUM(obj);
   ASSERT(objnum != -1);
   ASSERT(objnum != 0);

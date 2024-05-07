@@ -113,7 +113,9 @@ extern bool Demo_paused;
 extern bool Demo_do_one_frame;
 extern bool Demo_restart;
 extern bool Demo_auto_play;
+extern bool Demo_make_movie;
 extern float Demo_frame_ofs;
+extern unsigned short Demo_obj_map[MAX_OBJECTS];
 #define DF_NONE 0
 #define DF_RECORDING 1
 #define DF_PLAYBACK 2

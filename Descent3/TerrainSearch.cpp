@@ -231,44 +231,43 @@
 #include "dedicated_server.h"
 
 
-int EvaluateBlock(int x, int z, int lod);
+static int EvaluateBlock(int x, int z, int lod);
 
 ushort TS_FrameCount = 0xFFFF;
 
-int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount);
+static int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount);
 int GlobalTransCount = 0;
 int TotalDepth;
 
 // LOD shutoff stuff
 #define MAX_LODOFFS 100
-lodoff LODOffs[MAX_LODOFFS];
-int Num_lodoffs = 0;
+static lodoff LODOffs[MAX_LODOFFS];
+static int Num_lodoffs = 0;
 
 // Render the terrain as flat?
 ubyte Flat_terrain = 0;
 
 // Variables for LOD engine
-float ViewDistance1 = .68f, ViewDistance2 = 1.0f;
-float TS_Lambda, TS_SimplifyCondition;
+static float ViewDistance1 = .68f, ViewDistance2 = 1.0f;
+static float TS_Lambda, TS_SimplifyCondition;
 
-matrix *TS_View_matrix;
-vector *TS_View_position;
+static matrix *TS_View_matrix;
+static vector *TS_View_position;
 
-vector TS_PreRows[TERRAIN_DEPTH];
-vector TS_FVectorAdd, TS_RVectorAdd;
+static vector TS_PreRows[TERRAIN_DEPTH];
+static vector TS_FVectorAdd, TS_RVectorAdd;
 
-ubyte Terrain_y_flags[256];
-vector Terrain_y_cache[256];
+static ubyte Terrain_y_flags[256];
+static vector Terrain_y_cache[256];
 
-ushort LOD_sort_bucket[MAX_TERRAIN_LOD][MAX_CELLS_TO_RENDER];
-ushort LOD_sort_num[MAX_TERRAIN_LOD];
+static ushort LOD_sort_bucket[MAX_TERRAIN_LOD][MAX_CELLS_TO_RENDER];
+static ushort LOD_sort_num[MAX_TERRAIN_LOD];
 
 // Variable to determine if we're in editor or game
 extern function_mode View_mode;
-extern ubyte Terrain_from_mine;
 
-vector TJoint_VectorAddZ;
-vector TJoint_VectorAddX;
+static vector TJoint_VectorAddZ;
+static vector TJoint_VectorAddX;
 
 // Since our terrain points increment in finite steps we can rotate 2 points (x,z)
 // just add them to a base point to get the final rotated point
@@ -294,7 +293,7 @@ void PreRotateTerrain() {
   }
 }
 
-inline vector *GetDYVector(int h) {
+static inline vector *GetDYVector(int h) {
   vector *dyp;
 
   dyp = &Terrain_y_cache[h];
@@ -310,7 +309,7 @@ inline vector *GetDYVector(int h) {
   return dyp;
 }
 
-inline void GetPreRotatedPointFast(vector *dest, int x, int z, int yvalue) {
+static inline void GetPreRotatedPointFast(vector *dest, int x, int z, int yvalue) {
   ASSERT(yvalue >= 0 && yvalue <= 255);
 
   // If the terrain is supposed to be flat, bash this to zero

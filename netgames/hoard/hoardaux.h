@@ -26,4 +26,7 @@ typedef struct {
 // game config send/receive
 void SendGameConfig(int towho);
 
+// Displays the Hoard game configuration dialog (Server)
+extern void DisplayHoardConfigDialog(tGameConfig *);
+
 #endif

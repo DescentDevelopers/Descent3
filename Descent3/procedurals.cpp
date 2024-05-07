@@ -82,7 +82,7 @@ const char *ProcNames[] = {"None",     "Line Lightning", "Sphere lightning", "St
 const char *WaterProcNames[] = {"None", "Height blob", "Sine Blob", "Random Raindrops", "Random Blobdrops", "END"};
 static ubyte *ProcDestData;
 int pholdrand = 1;
-inline int prand() { return (((pholdrand = pholdrand * 214013L + 2531011L) >> 16) & 0x7fff); }
+static inline int prand() { return (((pholdrand = pholdrand * 214013L + 2531011L) >> 16) & 0x7fff); }
 // Given an array of r,g,b values, generates a 16bit palette table for those colors
 void GeneratePaletteForProcedural(ubyte *r, ubyte *g, ubyte *b, ushort *pal) {
   int i;
@@ -478,7 +478,7 @@ void AddProcPoint(int x, int y, ubyte color) {
   ProcDestData[index] = color;
 }
 // Adds one point to a bitmap
-inline void PlaceProcPoint(int x, int y, ubyte color) {
+static inline void PlaceProcPoint(int x, int y, ubyte color) {
   x &= (PROC_SIZE - 1);
   y &= (PROC_SIZE - 1);
   ProcDestData[y * PROC_SIZE + x] = color;

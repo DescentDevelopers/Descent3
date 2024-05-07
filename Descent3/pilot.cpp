@@ -1529,8 +1529,6 @@ void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected,
 
 // updates the current pilot's information (level played, mission played, etc)
 //	call after every successful mission completion
-extern bool IsCheater;
-extern int Default_ship_permission;
 void CurrentPilotUpdateMissionStatus(bool just_add_data) {
   // Don't update if it's a multiplayer game
   if (Game_mode & GM_MULTI)

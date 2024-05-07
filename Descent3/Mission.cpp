@@ -671,6 +671,7 @@
 #include "BOA.h"
 #include "terrain.h"
 #include "multi.h"
+#include "hud.h"
 //	---------------------------------------------------------------------------
 //	Data
 //	---------------------------------------------------------------------------
@@ -699,14 +700,14 @@ bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn);
 // closes the current mn3 file
 void mn3_Close();
 
-inline bool IS_MN3_FILE(const char *fname) {
+static inline bool IS_MN3_FILE(const char *fname) {
   char name[PSFILENAME_LEN + 1];
   char ext[PSFILENAME_LEN + 1];
   ddio_SplitPath(fname, NULL, name, ext);
   return (strcmpi(ext, ".mn3") == 0) ? true : false;
 }
 
-inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
+static inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
   char fname[PSFILENAME_LEN + 1];
   ddio_SplitPath(mn3name, NULL, fname, NULL);
 
@@ -1276,7 +1277,7 @@ void LoadLevelText(const char *level_filename) {
     DestroyStringTable(goal_strings, n_strings);
   }
 }
-extern bool Hud_show_controls;
+
 /*	loads a level and sets it as current level in mission
  */
 bool LoadMissionLevel(int level) {
@@ -1315,8 +1316,6 @@ bool LoadMissionLevel(int level) {
 #define LOADBAR_W (260 * (float)Max_window_w / (float)FIXED_SCREEN_WIDTH)
 #define LOADBAR_H (22 * (float)Max_window_h / (float)FIXED_SCREEN_HEIGHT)
 #define N_LOAD_MSGS 12
-extern int need_to_page_in;
-extern int paged_in_count;
 bool started_page = 0;
 /*
 $$TABLE_GAMEFILE "tunnelload.ogf"

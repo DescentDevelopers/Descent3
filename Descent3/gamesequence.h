@@ -148,6 +148,8 @@ typedef enum tGameState {
 //	variables
 extern tGameState Game_state;
 extern int Game_interface_mode; // current interface mode of game (menu, game?)
+extern int paged_in_count;
+extern int paged_in_num;
 
 //	functions
 //	main sequencing code for game.  run this to execute a game.

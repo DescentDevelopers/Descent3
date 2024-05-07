@@ -141,6 +141,13 @@
 
 typedef CFILE *FONTFILE;
 
+static inline int READ_FONT_INT(FONTFILE ffile);
+static inline short READ_FONT_SHORT(FONTFILE ffile);
+static inline ubyte READ_FONT_BYTE(FONTFILE ffile);
+static inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem);
+static inline FONTFILE OPEN_FONT(char *filename, bool &success);
+static inline void CLOSE_FONT(FONTFILE ffile);
+
 #define BITS_TO_BYTES(_c) (((_c) + 7) >> 3)
 #define BITS_TO_SHORTS(_c) (((_c) + 15) >> 4)
 

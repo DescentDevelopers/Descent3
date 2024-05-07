@@ -30,10 +30,10 @@
 
 #include <algorithm>
 
-int Num_of_lightmaps = 0;
+static int Num_of_lightmaps = 0;
 static ushort Free_lightmap_list[MAX_LIGHTMAPS];
 bms_lightmap GameLightmaps[MAX_LIGHTMAPS];
-int Lightmap_mem_used = 0;
+static int Lightmap_mem_used = 0;
 // Sets all the lightmaps to unused
 void lm_InitLightmaps() {
   int i;

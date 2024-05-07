@@ -1,5 +1,5 @@
 /*
-* Descent 3
+* Descent 3 
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@
 
 static char name_copy[DESC_ID_LEN];
 
-unsigned int d3_serialnum = 100000;
+static unsigned int d3_serialnum = 100000;
 
 // checks the exectuable (serialization)
 int SerialCheck(void) {

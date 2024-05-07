@@ -290,7 +290,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 // Use FindFileClose to end your search.
 glob_t ffres = {0, NULL, 0};
 int globindex = -1;
-int globerrfn(const char *path, int err) {
+static int globerrfn(const char *path, int err) {
   mprintf((0, "Error accessing %s: %s .... \n", path, strerror(err)));
   return 0;
 }

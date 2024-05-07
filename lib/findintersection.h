@@ -249,7 +249,7 @@ extern bool FVI_always_check_ceiling;
 #define Q_LEFT 1
 #define Q_MIDDLE 2
 
-inline bool FastVectorBBox(const float *min, const float *max, const float *origin, const float *dir) {
+static inline bool FastVectorBBox(const float *min, const float *max, const float *origin, const float *dir) {
   bool f_inside = true;
   char quad[3];
   int i;
@@ -417,6 +417,8 @@ bool PolyCollideObject(object *obj);
 
 bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *collision_normal, object *obj,
                            vector *new_pos, int nv, vector **vertex_ptr_list, vector *face_normal, matrix *orient);
+
+extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 extern int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, const vector *p1,
                                     vector *sphere_pos, float sphere_rad, bool f_correcting, bool f_init_collisions);

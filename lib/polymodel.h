@@ -331,11 +331,11 @@ extern g3Point Robot_points[];
 // Flag to draw an outline around the faces
 extern bool Polymodel_outline_mode;
 
-inline float POLY_WIDTH(int model_num) { return Poly_models[model_num].maxs.x - Poly_models[model_num].mins.x; }
+static inline float POLY_WIDTH(int model_num) { return Poly_models[model_num].maxs.x - Poly_models[model_num].mins.x; }
 
-inline float POLY_HEIGHT(int model_num) { return Poly_models[model_num].maxs.y - Poly_models[model_num].mins.y; }
+static inline float POLY_HEIGHT(int model_num) { return Poly_models[model_num].maxs.y - Poly_models[model_num].mins.y; }
 
-inline float POLY_DEPTH(int model_num) { return Poly_models[model_num].maxs.z - Poly_models[model_num].mins.z; }
+static inline float POLY_DEPTH(int model_num) { return Poly_models[model_num].maxs.z - Poly_models[model_num].mins.z; }
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
@@ -436,5 +436,8 @@ void FreePolymodelData(int i);
 
 // Sets the position and rotation of a polymodel.  Used for rendering and collision detection
 void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint subobj_flags = 0xFFFFFFFF);
+
+extern void DoneLightInstance();
+extern void StartLightInstance(vector *, matrix *);
 
 #endif

@@ -25,7 +25,7 @@
 #endif
 
 // rcg07062000 used to be static.
-int TotalArgs = 0;
+static int TotalArgs = 0;
 char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
 const char *GetArg(int index) {

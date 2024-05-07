@@ -151,6 +151,8 @@ void ShakePlayer();
 // Restores the player orientation matrix after shaking
 void UnshakePlayer();
 
+extern void SetShakeMagnitude(float delta);
+
 // Break the specified (glass) face into shards
 // Parameters:	rp, facenum - the face to break
 //					hitpnt - the point on the face where the face shatters.  If NULL, uses center

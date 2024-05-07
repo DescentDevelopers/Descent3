@@ -283,12 +283,13 @@
 #include "args.h"
 #include "mem.h"
 
+// TODO: MTS: this is only used in this file.
 int Num_textures = 0;
 texture GameTextures[MAX_TEXTURES];
 
 extern bool Mem_superlow_memory_mode;
 
-int Total_memory_saved = 0;
+static int Total_memory_saved = 0;
 
 void FreeAllTextures() {
   for (int i = 0; i < MAX_TEXTURES; i++) {

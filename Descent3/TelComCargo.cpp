@@ -134,7 +134,7 @@ tLineInfo StatusLines[] = {
 #define NUM_LINES (sizeof(StatusLines) / sizeof(tLineInfo))
 #define TITLE_X 30 + TCminx
 #define VALUE_X 400 + TCminx
-int TCminx, TCmaxx, TCminy, TCmaxy;
+static int TCminx, TCmaxx, TCminy, TCmaxy;
 #define SM_FONT BRIEFING_FONT
 #define BG_FONT BIG_BRIEFING_FONT
 

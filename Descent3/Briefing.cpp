@@ -229,21 +229,39 @@ typedef struct {
 #define TAG_PLEVELNUM 1
 #define TAG_NLEVELNUM 2
 
-tBriefingTag HotTags[] = {
+static tBriefingTag HotTags[] = {
     {"#LEVELNUM#", TAG_LEVELNUM, -1},
     {"#PLEVELNUM#", TAG_PLEVELNUM, -1},
     {"#NLEVELNUM#", TAG_NLEVELNUM, -1},
 };
-int NumHotTags = sizeof(HotTags) / sizeof(tBriefingTag);
+static const int NumHotTags = sizeof(HotTags) / sizeof(tBriefingTag);
 
-int osb_xoff = 0, osb_yoff = 0;
-int current_screen = -1;
-tTelComInfo *pb_tcs = NULL;
-bool gottitle = false;
-bool pbfirst_call;
-char pbtitle[100];
-bool ok_to_parse_screen = false;
-int skipped_screens;
+static int osb_xoff = 0, osb_yoff = 0;
+static int current_screen = -1;
+static tTelComInfo *pb_tcs = NULL;
+static bool gottitle = false;
+static bool pbfirst_call;
+static char pbtitle[100];
+static bool ok_to_parse_screen = false;
+static int skipped_screens;
+
+static bool IsMissionMaskOK(uint set, uint unset);
+static void ReplaceHotTag(char *string, int tag);
+static bool ParseForHotTags(char *src, char **dest);
+static bool PlayBriefing(tTelComInfo *tcs);
+static void PBAddTextEffect(LPTCTEXTDESC desc, char *text, char *description, int id);
+static void PBAddBmpEffect(LPTCBMPDESC desc, char *description);
+static void PBAddMovieEffect(LPTCMOVIEDESC desc, char *description);
+static void PBAddBkgEffect(LPTCBKGDESC desc, char *description);
+static void PBAddPolyEffect(LPTCPOLYDESC desc, char *description);
+static void PBAddButtonEffect(LPTCBUTTONDESC desc, char *description, int id);
+static void PBStartScreen(int screen_num, char *description, char *layout, uint mask_set, uint mask_unset);
+static void PBEndScreen();
+static bool PBLoopCallback();
+static void PBSetTitle(char *title);
+static void PBSetStatic(float amount);
+static void PBSetGlitch(float amount);
+static void PBAddVoice(char *filename, int flags, char *description);
 
 bool IsMissionMaskOK(uint set, uint unset) {
   uint Gamemissionmask = Current_mission.game_state_flags;

@@ -300,23 +300,23 @@
 #include "demofile.h"
 
 extern bool is_multi_demo;
-CFILE *Demo_cfp = NULL;
+static CFILE *Demo_cfp = NULL;
 char Demo_fname[_MAX_PATH * 2];
-char Old_demo_fname[_MAX_PATH * 2];
-float Demo_next_frame = 0;
-float Demo_frame_time = 0;
-float Demo_last_pinfo;
+static char Old_demo_fname[_MAX_PATH * 2];
+static float Demo_next_frame = 0;
+static float Demo_frame_time = 0;
+static float Demo_last_pinfo;
 float Demo_frame_ofs;
-int Demo_auto_idx = 0;
+static int Demo_auto_idx = 0;
 unsigned int Demo_flags = 0;
 unsigned short Demo_obj_map[MAX_OBJECTS];
-bool Demo_turretchanged[MAX_OBJECTS];
+static bool Demo_turretchanged[MAX_OBJECTS];
 bool Demo_looping = false;
 bool Demo_paused = false;
 bool Demo_do_one_frame = false;
 bool Demo_restart = false;
 bool Demo_auto_play = false;
-bool Demo_first_frame = true;
+static bool Demo_first_frame = true;
 bool Demo_make_movie = false;
 
 #define DEMO_PINFO_UPDATE .1
@@ -333,9 +333,9 @@ extern bool Game_paused;
 
 extern bool Game_gauge_do_time_test;
 
-bool Demo_play_fast = false;
+static bool Demo_play_fast = false;
 
-void PageInAllData(void);
+extern void PageInAllData(void);
 
 // Prompts user for filename and starts recording if successfull
 void DemoToggleRecording() {

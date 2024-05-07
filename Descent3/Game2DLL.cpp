@@ -72,7 +72,7 @@ extern int Camera_view_mode[NUM_CAMERA_VIEWS];
 //	Purpose:
 //		This function initializes a Module Init Struct with all the needed data to get sent
 //	to the module during initialization.
-void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
+extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
 module GameDLLHandle = {NULL};
 extern ddgr_color Player_colors[];
 typedef struct {

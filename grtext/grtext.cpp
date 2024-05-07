@@ -190,15 +190,15 @@ static float Grtext_scale = 1.0f;
 static ddgr_color Grtext_color = GR_BLACK;
 
 //	draws a string
-void grtext_RenderString(int x, int y, char *str);
-void grtext_DrawTextLine(int x, int y, char *str);
-void grtext_DrawTextLineClip(int x, int y, char *str);
+static void grtext_RenderString(int x, int y, char *str);
+static void grtext_DrawTextLine(int x, int y, char *str);
+static void grtext_DrawTextLineClip(int x, int y, char *str);
 
 #define XORVAL 205
 #define MAX_BAD_WORD_LEN 10
 typedef unsigned char badword[MAX_BAD_WORD_LEN];
 // These all need to be lower case!
-badword bad_words[] = {
+static badword bad_words[] = {
     // These are just XOR'd with XORVAL
     {0xab, 0xb8, 0xae, 0xa6, 0x00},                   // = fuck
     {0xbe, 0xa5, 0xa4, 0xb9, 0x00},                   // = shit
@@ -214,11 +214,11 @@ badword bad_words[] = {
 
 #define NUM_BAD_WORDS (sizeof(bad_words) / sizeof(badword))
 
-char subst_chars[] = "#!&@&#%*";
+static const char subst_chars[] = "#!&@&#%*";
 
 #define NUM_SUBST_CHARS (sizeof(subst_chars) - 1)
 
-bool grtext_FilterProfanity = false;
+static bool grtext_FilterProfanity = false;
 
 void grtext_SetProfanityFilter(bool enabled) { grtext_FilterProfanity = enabled; }
 // Right now this just decrypts the bad words
@@ -234,14 +234,14 @@ void grtext_Init(void) {
 }
 
 //	macro to get character width
-inline int CHAR_WIDTH(int font, int ch) { return (int)(grfont_GetCharWidth(font, ch) * Grtext_scale); }
+static inline int CHAR_WIDTH(int font, int ch) { return (int)(grfont_GetCharWidth(font, ch) * Grtext_scale); }
 
-inline int CHAR_HEIGHT(int font) { return (int)(grfont_GetHeight(font) * Grtext_scale); }
+static inline int CHAR_HEIGHT(int font) { return (int)(grfont_GetHeight(font) * Grtext_scale); }
 
-inline int CHAR_SPACING(int font, int ch1, int ch2) { return (int)(grfont_GetKernedSpacing(font, ch1, ch2)); }
+static inline int CHAR_SPACING(int font, int ch1, int ch2) { return (int)(grfont_GetKernedSpacing(font, ch1, ch2)); }
 
 //	macro to get character width
-inline int CHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
+static inline int CHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
   if (ch > ft->max_ascii && ft->uppercase) {
     ch = toupper(ch);
   } else if (ch < ft->min_ascii || ch > ft->max_ascii) {
@@ -251,9 +251,9 @@ inline int CHAR_WIDTH_TEMP(const tFontTemplate *ft, int ch) {
   return (int)((ft->proportional) ? ft->ch_widths[ch - ft->min_ascii] : ft->ch_maxwidth);
 }
 
-inline int CHAR_HEIGHT_TEMP(const tFontTemplate *ft) { return (int)ft->ch_height; }
+static inline int CHAR_HEIGHT_TEMP(const tFontTemplate *ft) { return (int)ft->ch_height; }
 
-inline int CHAR_SPACING_TEMP(const tFontTemplate *ft, int ch1, int ch2) {
+static inline int CHAR_SPACING_TEMP(const tFontTemplate *ft, int ch1, int ch2) {
   if (ch1 > ft->max_ascii && ft->uppercase) {
     ch1 = toupper(ch1);
   }

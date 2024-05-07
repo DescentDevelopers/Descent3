@@ -127,7 +127,7 @@
 #define SOCKET_ERROR -1
 
 #ifndef NETWORKING_H
-inline int WSAGetLastError() { return errno; }
+static inline int WSAGetLastError() { return errno; }
 #endif
 
 

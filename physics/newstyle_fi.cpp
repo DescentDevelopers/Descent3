@@ -32,14 +32,14 @@
 extern matrix View_matrix;
 extern vector View_position;
 
-vector Original_pos;
-matrix Original_orient;
+static vector Original_pos;
+static matrix Original_orient;
 
-vector fvi_move_fvec;
-vector fvi_move_uvec;
-bool fvi_do_orient;
+static vector fvi_move_fvec;
+static vector fvi_move_uvec;
+static bool fvi_do_orient;
 
-bool Fvi_f_normal;
+static bool Fvi_f_normal;
 
 #define MAX_INSTANCE_DEPTH 30
 
@@ -54,6 +54,22 @@ struct instance_context {
 static struct instance_context instance_stack[MAX_INSTANCE_DEPTH];
 
 static int instance_depth = 0;
+
+static inline void ns_compute_movement_AABB(void);
+static inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz);
+static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm);
+
+/// instance at specified point with specified orientation.
+/// if matrix==NULL, don't modify matrix.  This will be like doing an offset.
+static void newstyle_StartInstanceMatrix(vector *pos, matrix *orient);
+/// instance at specified point with specified orientation.
+/// if angles==NULL, don't modify matrix.  This will be like doing an offset.
+static void newstyle_StartInstanceAngles(vector *pos, angvec *angles);
+
+/// pops the old context
+static void newstyle_DoneInstance();
+static void CollideSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub);
+static void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, uint f_render_sub);
 
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   float x, y, z;

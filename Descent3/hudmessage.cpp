@@ -368,14 +368,14 @@ int Doing_input_message = HUD_MESSAGE_NONE;
 int HudInputMessageLen = 0;
 static tDirtyRect HUD_inmsg_dirty_rect;
 
-char HUD_messages[MAX_HUD_MESSAGES][HUD_MESSAGE_LENGTH];
-int HUD_message_type[MAX_HUD_MESSAGES];
-ddgr_color HUD_message_color[MAX_HUD_MESSAGES];
+static char HUD_messages[MAX_HUD_MESSAGES][HUD_MESSAGE_LENGTH];
+static int HUD_message_type[MAX_HUD_MESSAGES];
+static ddgr_color HUD_message_color[MAX_HUD_MESSAGES];
 int Num_hud_messages = 0;
-int Hud_scroll_offset = 0;
+static int Hud_scroll_offset = 0;
 static tDirtyRect HUD_msg_dirty_rect;
 
-float Hud_timer = 0.0f;
+static float Hud_timer = 0.0f;
 
 static ubyte Hud_persistent_msg_id = HUD_INVALID_ID;
 static float Hud_persistent_msg_timer = 0.0f;
@@ -405,17 +405,17 @@ static bool Hud_messages_paused = false;
 #define GAME_MSGCON_Y ((Max_window_h - GAME_MSGCON_H) / 2)
 
 // This function takes a HUD messages, ensures it isn't too long, and if it is, it correctly fixes it
-void CorrectHudMessage(char *str);
+static void CorrectHudMessage(char *str);
 
 ///////////////////////////////////////////////////////////////////////////////
 //	Functions
 
 //	prints a string onto the debug consle
-void AddMessageToRollback(char *msg) { HUD_msg_list.add(msg); }
+static void AddMessageToRollback(char *msg) { HUD_msg_list.add(msg); }
 
 // Adds a single line to the hud message list
 // Returns true if message added, or false if message not (because the previous message was the same)
-bool AddLineToHUDMessages(char *temp_message, ddgr_color color = -1);
+static bool AddLineToHUDMessages(char *temp_message, ddgr_color color = -1);
 bool AddLineToHUDMessages(char *temp_message, ddgr_color color) {
   if (Num_hud_messages > 0 && !strcmp(temp_message, HUD_messages[Num_hud_messages - 1]))
     return 0; // this is the same message as before, don't print it twice!
@@ -464,7 +464,7 @@ bool AddLineToHUDMessages(char *temp_message, ddgr_color color) {
 
 // Adds line, splitting if too long
 // Returns true if line added
-bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color = -1);
+static bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color = -1);
 bool AddMultipleLinesToHUDMessages(char *temp_message, ddgr_color color) {
   char ourstr[HUD_MESSAGE_LENGTH * 2];
   char *p;

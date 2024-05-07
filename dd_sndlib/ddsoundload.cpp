@@ -102,6 +102,7 @@
 #include "pserror.h"
 #include <string.h>
 #include "byteswap.h"
+#include "gamesequence.h"
 
 sound_info Sounds[MAX_SOUNDS];
 sound_file_info SoundFiles[MAX_SOUND_FILES];
@@ -113,8 +114,6 @@ sound_file_info SoundFiles[MAX_SOUND_FILES];
 #define SND_LOAD_ERROR_NO_FILE 0
 #define SND_LOAD_ERROR_INVALID 1
 
-extern int paged_in_count;
-extern int paged_in_num;
 char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_file_index, bool f_high_quality,
                        bool f_load_sample_data, int *e_type) {
 

@@ -146,7 +146,7 @@
 
 tceffect TCEffects[MAX_TCEFFECTS];
 int Screen_roots[MAX_TELCOM_SCREENS];
-bool Screen_has_effect_with_focus[MAX_TELCOM_SCREENS];
+static bool Screen_has_effect_with_focus[MAX_TELCOM_SCREENS];
 
 // Initializes the effects
 void EfxInit(void) {

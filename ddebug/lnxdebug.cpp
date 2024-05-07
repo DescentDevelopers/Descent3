@@ -50,7 +50,7 @@
 bool Debug_break = false;
 bool Debug_mono = false;
 
-char *Debug_DumpInfo();
+static char *Debug_DumpInfo();
 
 //	if we are running under a debugger, then pass true
 bool Debug_Init(bool debugger, bool mono_debug) {

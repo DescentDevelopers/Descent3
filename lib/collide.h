@@ -119,6 +119,8 @@ extern void collide_player_and_powerup(object *player, object *powerup, vector *
 extern void apply_damage_to_controlcen(object *controlcen, float damage, short who);
 extern void bump_one_object(object *obj0, vector *hit_dir, float damage);
 
+extern void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum);
+
 void ConvertEulerToAxisAmount(vector *e, vector *n, float *w);
 void ConvertAxisAmountToEuler(vector *n, float *w, vector *e);
 

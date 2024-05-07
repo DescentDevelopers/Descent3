@@ -141,33 +141,33 @@
 
 #define BOA_VERSION 25
 
-const ubyte bbf_lookup[27] = {(0),
-                              (0x01),
-                              (0x02),
-                              (0x04),
-                              (0x08),
-                              (0x10),
-                              (0x20),
-                              (0x01 | 0x02),
-                              (0x01 | 0x04),
-                              (0x01 | 0x10),
-                              (0x01 | 0x20),
-                              (0x02 | 0x04),
-                              (0x02 | 0x08),
-                              (0x02 | 0x20),
-                              (0x04 | 0x08),
-                              (0x04 | 0x10),
-                              (0x08 | 0x10),
-                              (0x08 | 0x20),
-                              (0x10 | 0x20),
-                              (0x01 | 0x02 | 0x04),
-                              (0x01 | 0x02 | 0x20),
-                              (0x01 | 0x04 | 0x10),
-                              (0x01 | 0x10 | 0x20),
-                              (0x08 | 0x02 | 0x04),
-                              (0x08 | 0x02 | 0x20),
-                              (0x08 | 0x04 | 0x10),
-                              (0x08 | 0x10 | 0x20)};
+static const ubyte bbf_lookup[27] = {(0),
+                                     (0x01),
+                                     (0x02),
+                                     (0x04),
+                                     (0x08),
+                                     (0x10),
+                                     (0x20),
+                                     (0x01 | 0x02),
+                                     (0x01 | 0x04),
+                                     (0x01 | 0x10),
+                                     (0x01 | 0x20),
+                                     (0x02 | 0x04),
+                                     (0x02 | 0x08),
+                                     (0x02 | 0x20),
+                                     (0x04 | 0x08),
+                                     (0x04 | 0x10),
+                                     (0x08 | 0x10),
+                                     (0x08 | 0x20),
+                                     (0x10 | 0x20),
+                                     (0x01 | 0x02 | 0x04),
+                                     (0x01 | 0x02 | 0x20),
+                                     (0x01 | 0x04 | 0x10),
+                                     (0x01 | 0x10 | 0x20),
+                                     (0x08 | 0x02 | 0x04),
+                                     (0x08 | 0x02 | 0x20),
+                                     (0x08 | 0x04 | 0x10),
+                                     (0x08 | 0x10 | 0x20)};
 
 unsigned short BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 float BOA_cost_array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_PATH_PORTALS];
@@ -177,7 +177,7 @@ bool BOA_vis_valid = 0;   // Is the vis table up to date and valid to use?
 int BOA_AABB_checksum = 0;
 int BOA_AABB_ROOM_checksum[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 
-bool BOA_f_making_boa = false;
+static bool BOA_f_making_boa = false;
 
 int BOA_num_mines = 0;
 int BOA_num_terrain_regions = 0;
@@ -185,7 +185,25 @@ int BOA_num_terrain_regions = 0;
 int BOA_num_connect[MAX_BOA_TERRAIN_REGIONS];
 connect_data BOA_connect[MAX_BOA_TERRAIN_REGIONS][MAX_PATH_PORTALS];
 
-void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *xdiff, float *ydiff, vector *center);
+static void add_mine_room(int room, int mine, char *checked);
+static void compute_mine_info();
+static void add_terrain_cell(int cell, int t_region, char *checked);
+static void compute_terrain_region_info();
+static void compute_sound_dist_info();
+static void clear_BOA();
+static void compute_costs();
+static void update_path_info(q_item *node_list[MAX_ROOMS], int start, int end);
+static void FindPath(int i, int j);
+static void compute_next_segs();
+static void compute_blockage_info();
+static void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *xdiff, float *ydiff,
+                                       vector *center);
+static int BOAGetRoomChecksum(int i);
+static bool IsPathPointValid(int room, vector *pos);
+static void ValidateRoomPathPoint(int room, char *message, int len);
+static void verify_connections();
+static void find_small_portals();
+static void compute_robot_path_info();
 
 bool BOA_PassablePortal(int room, int portal_index, bool f_for_sound, bool f_making_robot_path_invalid_list) {
   if (room == -1) {
@@ -1483,8 +1501,6 @@ void ComputeBOAVisFaceUpperLeft(room *rp, face *fp, vector *upper_left, float *x
     *center = avg_vert;
 }
 
-extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
-
 #if (defined(EDITOR) || defined(NEWEDITOR))
 
 #ifdef NEWEDITOR
@@ -2082,7 +2098,7 @@ void MakeBOA(void) {
   mprintf((0, "BOA is done\n"));
 }
 
-int Current_sort_room;
+static int Current_sort_room;
 
 static int face_sort_func1(const short *a, const short *b) {
   if (Rooms[Current_sort_room].faces[*a].min_xyz.y > Rooms[Current_sort_room].faces[*b].min_xyz.y)

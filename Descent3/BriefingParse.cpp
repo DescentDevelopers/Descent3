@@ -142,8 +142,8 @@ void CBriefParse::SetCallbacks(tBriefParseCallbacks *cb) {
 #define B_QUIT 4    // exit TelCom
 
 // Keywords.  These must match the keyword IDs above
-const char *keywords[] = {"screen", "button", "text",  "endtext", "bitmap", "endscreen", "movie",
-                          "poly",   "title",  "sound", "static",  "glitch", "voice"};
+static const char *const keywords[] = {"screen", "button", "text",  "endtext", "bitmap", "endscreen", "movie",
+                                       "poly",   "title",  "sound", "static",  "glitch", "voice"};
 
 #define tfxNONE 0
 #define tfxFLASH 1
@@ -157,10 +157,10 @@ const char *keywords[] = {"screen", "button", "text",  "endtext", "bitmap", "end
 
 #define fntSMBRIEF 0
 #define fntLGBRIEF 1
-const char *FontNames[] = {"sm_brief", "lg_brief", NULL};
+static const char *const FontNames[] = {"sm_brief", "lg_brief", NULL};
 
-const char *TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "scroll_r2l", "scroll_t2b",
-                               "scroll_b2t", "fade_in_and_out", "fade_in",    "fade_out",   NULL};
+static const char *const TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "scroll_r2l", "scroll_t2b",
+                                            "scroll_b2t", "fade_in_and_out", "fade_in",    "fade_out",   NULL};
 #define bfxNONE 0
 #define bfxFADE_IN 1
 #define bfxFADE_OUT 2
@@ -173,8 +173,9 @@ const char *TextEffectstr[] = {"None",       "flash",           "scroll_l2r", "s
 #define bfxSTRETCH_IN 9
 #define bfxSTRETCH_OUT 10
 
-const char *BitmapEffectstr[] = {"None",     "Fade_in",   "Fade_out",   "Blur_in",    "Blur_out",    "Scan_in",
-                                 "Scan_out", "Invert_in", "Invert_out", "Stretch_in", "Stretch_out", NULL};
+static const char *const BitmapEffectstr[] = {"None",       "Fade_in",    "Fade_out",    "Blur_in",
+                                              "Blur_out",   "Scan_in",    "Scan_out",    "Invert_in",
+                                              "Invert_out", "Stretch_in", "Stretch_out", NULL};
 
 ////////////////////////////////////////////
 //	These are the types of on screen buttons
@@ -185,7 +186,7 @@ const char *BitmapEffectstr[] = {"None",     "Fade_in",   "Fade_out",   "Blur_in
 #define osbQUIT 4
 #define osbJUMP_PAGE 5
 
-const char *OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", NULL};
+static const char *const OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump", NULL};
 
 /////////////////////////////////////////////
 // These are the different ways an onscreen button will respond to mouse clicks
@@ -193,7 +194,7 @@ const char *OnScreenButtonTypes[] = {"Down", "Up", "Next", "Prev", "Quit", "Jump
 #define oscCLICK_DOWN 1
 #define oscCLICK_UP 2
 
-const char *OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", NULL};
+static const char *const OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", NULL};
 
 #define PARSE_INT(i)                                                                                                   \
   do {                                                                                                                 \
@@ -226,7 +227,7 @@ const char *OnScreenButtonClickTypes[] = {"HoldDown", "ClickDown", "ClickUp", NU
       goto done_parsing;                                                                                               \
   } while (0)
 
-int ReadFullLine(char **data, CFILE *ifile) {
+static int ReadFullLine(char **data, CFILE *ifile) {
   int counter, readin;
   char buffer[512];
   bool done;
@@ -336,7 +337,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
 
   // Read & parse lines
   int bytes_read;
-	const char *p;
+  const char *p;
 
   linebuf = NULL;
 

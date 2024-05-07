@@ -130,6 +130,21 @@ short iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is val
 #define IFF_SIG_DELTA 9
 #define IFF_SIG_ANHD 10
 
+static int bm_iff_get_sig(CFILE *f);
+static int bm_iff_parse_bmhd(CFILE *ifile, uint len, iff_bitmap_header *bmheader);
+
+/// the buffer pointed to by raw_data is stuffed with a pointer to decompressed pixel data
+static int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader);
+
+/// the buffer pointed to by raw_data is stuffed with a pointer to bitplane pixel data
+static void bm_iff_skip_chunk(CFILE *ifile, uint len);
+
+/// modify passed bitmap
+static int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader);
+
+static int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_header *prev_bm);
+static void bm_iff_convert_8_to_16(int dest_bm, iff_bitmap_header *iffbm);
+
 int bm_iff_get_sig(CFILE *f) {
   char s[4];
   int i;

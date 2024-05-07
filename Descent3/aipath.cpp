@@ -37,7 +37,7 @@ ai_dynamic_path AIDynamicPath[MAX_DYNAMIC_PATHS];
 int AIAltPath[MAX_ROOMS];
 int AIAltPathNumNodes;
 
-void AIUpdatePathInfo(q_item **node_list, int start, int end) {
+static void AIUpdatePathInfo(q_item **node_list, int start, int end) {
   int cur_room = end;
   int i;
 
@@ -205,7 +205,7 @@ done:
   return f_found;
 }
 
-bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room = NULL) {
+bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room) {
   int c_path = aip->cur_path;
   int c_node = aip->cur_node;
 
@@ -236,7 +236,7 @@ bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room = NULL) {
 }
 
 // Chrishack -- need to add static path flag stuff
-bool AIPathMoveToNextNode(ai_path_info *aip) {
+static bool AIPathMoveToNextNode(ai_path_info *aip) {
   int c_path = aip->cur_path;
   int c_node = aip->cur_node;
 
@@ -277,7 +277,7 @@ bool AIPathAtEnd(ai_path_info *aip) {
     return false;
 }
 
-void AIPathSetAtEnd(ai_path_info *aip) {
+static void AIPathSetAtEnd(ai_path_info *aip) {
   aip->cur_path = aip->num_paths - 1;
   aip->cur_node = aip->path_end_node[aip->num_paths - 1];
 }
@@ -287,7 +287,7 @@ void AIPathSetAtStart(ai_path_info *aip) {
   aip->cur_node = aip->path_start_node[0];
 }
 
-bool AIPathMoveToPrevNode(ai_path_info *aip) {
+static bool AIPathMoveToPrevNode(ai_path_info *aip) {
   int c_path = aip->cur_path;
   int c_node = aip->cur_node;
 
@@ -315,7 +315,7 @@ bool AIPathMoveToPrevNode(ai_path_info *aip) {
   return false;
 }
 
-bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room = NULL) {
+bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room) {
   if (AIPathMoveToNextNode(aip)) {
     AIPathGetCurrentNodePos(aip, pos, room);
     AIPathMoveToPrevNode(aip);
@@ -326,7 +326,7 @@ bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room = NULL) {
   return false;
 }
 
-bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room = NULL) {
+bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room) {
   if (AIPathMoveToPrevNode(aip)) {
     AIPathGetCurrentNodePos(aip, pos, room);
     AIPathMoveToNextNode(aip);
@@ -337,7 +337,7 @@ bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room = NULL) {
   return false;
 }
 
-void AIPathComplete(object *obj) { GoalPathComplete(obj); }
+static void AIPathComplete(object *obj) { GoalPathComplete(obj); }
 
 void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved) {
   ai_path_info *aip = &obj->ai_info->path;
@@ -535,7 +535,7 @@ pass_node:
   }
 }
 
-bool AIPathFreeDPathSlot(int slot) {
+static bool AIPathFreeDPathSlot(int slot) {
   ASSERT(AIDynamicPath[slot].use_count >= 0);
   ASSERT(slot >= 0 && slot < MAX_DYNAMIC_PATHS && AIDynamicPath[slot].use_count != 0);
 
@@ -549,7 +549,7 @@ bool AIPathFreeDPathSlot(int slot) {
   return true;
 }
 
-bool AIPathGetDPathSlot(int *slot, int handle) {
+static bool AIPathGetDPathSlot(int *slot, int handle) {
   int i;
 
   for (i = 0; i < MAX_DYNAMIC_PATHS; i++) {
@@ -600,7 +600,7 @@ bool AIPathFreePath(ai_path_info *aip) {
   return true;
 }
 
-bool AIPathAddDPath(ai_path_info *aip, int handle) {
+static bool AIPathAddDPath(ai_path_info *aip, int handle) {
   int slot;
   bool status;
 
@@ -626,7 +626,7 @@ bool AIPathAddDPath(ai_path_info *aip, int handle) {
   return status;
 }
 
-bool AIPathAddStaticPath(ai_path_info *aip, int path_id, int start_index, int end_index) {
+static bool AIPathAddStaticPath(ai_path_info *aip, int path_id, int start_index, int end_index) {
   // chrishack -- validation code is needed
 
   if (aip->num_paths >= MAX_JOINED_PATHS) {
@@ -644,7 +644,7 @@ bool AIPathAddStaticPath(ai_path_info *aip, int path_id, int start_index, int en
   return true;
 }
 
-inline bool AIPathAddDPathNode(ai_path_info *aip, int *slot, int *cur_node, vector *pos, int room, int handle) {
+static inline bool AIPathAddDPathNode(ai_path_info *aip, int *slot, int *cur_node, vector *pos, int room, int handle) {
   int status;
 
   if (*cur_node == MAX_NODES) {
@@ -665,8 +665,8 @@ inline bool AIPathAddDPathNode(ai_path_info *aip, int *slot, int *cur_node, vect
   return true;
 }
 
-bool AIGenerateAltBNodePath(object *obj, vector *start_pos, int *start_room, vector *end_pos, int *end_room,
-                            ai_path_info *aip, int *slot, int *cur_node, int handle) {
+static bool AIGenerateAltBNodePath(object *obj, vector *start_pos, int *start_room, vector *end_pos, int *end_room,
+                                   ai_path_info *aip, int *slot, int *cur_node, int handle) {
   int x;
   vector *pos;
   bool f_path_exists = true;
@@ -773,7 +773,8 @@ done:
   return f_path_exists;
 }
 
-void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_info *aip, int *slot, int *cur_node, int handle) {
+static void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_info *aip, int *slot, int *cur_node,
+                                 int handle) {
   int x;
   vector *pos = NULL;
 
@@ -823,8 +824,8 @@ void AIGenerateAltBOAPath(vector *start_pos, vector *end_pos, ai_path_info *aip,
 //		next_room = *end_room;
 //	}
 
-bool AIGenerateBNodePath(object *obj, vector *start_pos, int *start_room, vector *end_pos, int *end_room,
-                         ai_path_info *aip, int *slot, int *cur_node, int handle) {
+static bool AIGenerateBNodePath(object *obj, vector *start_pos, int *start_room, vector *end_pos, int *end_room,
+                                ai_path_info *aip, int *slot, int *cur_node, int handle) {
   int next_room = BOA_INDEX(*start_room);
   bool f_path_exists = true;
   vector *pos;
@@ -938,8 +939,8 @@ done:
   return f_path_exists;
 }
 
-bool AIGenerateBOAPath(vector *start_pos, int *start_room, vector *end_pos, int *end_room, ai_path_info *aip, int *slot,
-                       int *cur_node, int handle) {
+static bool AIGenerateBOAPath(vector *start_pos, int *start_room, vector *end_pos, int *end_room, ai_path_info *aip,
+                              int *slot, int *cur_node, int handle) {
   int next_room = *start_room;
   bool f_path_exists = true;
   vector *pos;

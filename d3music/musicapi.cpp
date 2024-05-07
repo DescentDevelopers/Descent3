@@ -40,8 +40,8 @@
 #define MUSICAIF_NEWREGION 0x40
 
 // names of themes. (match to music.h THEME_TYPES)
-const char *Music_type_names[] = {"No song",    "Intro song",       "Idle song",       "Combat song",
-                                  "Death song", "Idle-Combat song", "Combat-Idle song"};
+const char *const Music_type_names[] = {"No song",    "Intro song",       "Idle song",       "Combat song",
+                                        "Death song", "Idle-Combat song", "Combat-Idle song"};
 
 // global data
 #ifdef _DEBUG
@@ -68,10 +68,10 @@ static struct {
 } MusicAI;
 
 //	handles operations on current events.
-void D3MusicSongSelector();
+static void D3MusicSongSelector();
 
 // creates music ai struction from music info passed in.
-void D3MusicAI(tMusicSeqInfo *music_info);
+static void D3MusicAI(tMusicSeqInfo *music_info);
 
 ///////////////////////////////////////////////////////////////////////////////
 

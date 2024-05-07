@@ -123,7 +123,6 @@
 #include <process.h>
 #endif
 
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -155,12 +154,14 @@ inline void Sleep(int millis) {
 #define NW_AGHBN_READ 3
 
 #ifndef __LINUX__
-void __cdecl http_gethostbynameworker(void *parm);
+static void HTTPObjThread(void *obj);
+static void __cdecl http_gethostbynameworker(void *parm);
 #else
-int http_gethostbynameworker(void *parm);
+static int HTTPObjThread(void *obj);
+static int http_gethostbynameworker(void *parm);
 #endif
 
-int http_Asyncgethostbyname(unsigned int *ip, int command, char *hostname);
+static int http_Asyncgethostbyname(unsigned int *ip, int command, char *hostname);
 
 #ifndef __LINUX__
 void HTTPObjThread(void *obj)
@@ -679,14 +680,8 @@ typedef struct _async_dns_lookup {
 #endif
 } async_dns_lookup;
 
-async_dns_lookup httpaslu;
-async_dns_lookup *http_lastaslu = NULL;
-
-#ifndef __LINUX__
-void __cdecl http_gethostbynameworker(void *parm);
-#else
-int http_gethostbynameworker(void *parm);
-#endif
+static async_dns_lookup httpaslu;
+static async_dns_lookup *http_lastaslu = NULL;
 
 int http_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
 

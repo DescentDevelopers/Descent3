@@ -64,6 +64,8 @@ $$TABLE_GAMEFILE "TelComOn.OGF"
 */
 
 extern chunked_bitmap Telcom_bitmap;
+extern int TC_cursor;
+extern float last_frametime;
 
 /*
 //	Note for above: In TelCom.h there is a section of defines which give names to the above files

@@ -496,19 +496,19 @@ private:
   bool m_quick_escape_enable;
 };
 
-inline UISnazzyTextItem *MonitorSmallText(const char *text) {
+static inline UISnazzyTextItem *MonitorSmallText(const char *text) {
   return new UISnazzyTextItem(0, MONITOR9_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
 }
 
-inline UISnazzyTextItem *MonitorLargeText(const char *text) {
+static inline UISnazzyTextItem *MonitorLargeText(const char *text) {
   return new UISnazzyTextItem(0, MONITOR15_NEWUI_FONT, text, NEWUI_MONITORFONT_COLOR);
 }
 
-inline UISnazzyTextItem *GadgetSmallText(const char *text) {
+static inline UISnazzyTextItem *GadgetSmallText(const char *text) {
   return new UISnazzyTextItem(0, GADGET9_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
 }
 
-inline UISnazzyTextItem *GadgetLargeText(const char *text) {
+static inline UISnazzyTextItem *GadgetLargeText(const char *text) {
   return new UISnazzyTextItem(0, GADGET15_NEWUI_FONT, text, NEWUI_GADGETFONT_COLOR);
 }
 

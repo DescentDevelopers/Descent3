@@ -1906,8 +1906,6 @@ void FlushDataCache() {
 ///////////////////////////////////////////////////////////////////////////////
 
 // Parameter:	state -  1 = success, 0 = failure, -1 = abort
-extern float Player_shields_saved_from_last_level;
-extern float Player_energy_saved_from_last_level;
 void EndLevel(int state) {
   // tell IntelliVIBE
   VIBE_DoLevelEnd();

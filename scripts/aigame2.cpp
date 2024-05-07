@@ -42,8 +42,8 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 }
 #endif
 
-int String_table_size = 0;
-char **String_table = NULL;
+static int String_table_size = 0;
+static char **String_table = NULL;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -70,7 +70,8 @@ const char *GetStringFromTable(int index) {
 ///////////////////////////////////////////////////////////////////////////////
 //	Script names
 
-const char *Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperBlack", "Creeper", "LukeTurret", "STBlackBarrel"};
+static const char *const Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperBlack", "Creeper", "LukeTurret",
+                                                  "STBlackBarrel"};
 
 //	Class definitions
 
@@ -375,12 +376,20 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	write data to the file_ptr, 0 when you should read in the data.
 int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
 
+static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+                           bool f_aligned = true, bool f_set_parent = false);
+static void FlushGoal(int me_handle, int goal_priority);
+static void SafeGoalClearAll(int obj_handle);
+static void AI_SafeSetType(int obj_handle, int ai_type);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
+                      float lifetime, float interval, float longevity, float size, float speed, ubyte random);
+
 //////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
-                    bool f_set_parent = false) {
+int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+                    bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
   msafe_struct m;

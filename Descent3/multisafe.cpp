@@ -719,7 +719,7 @@ object *VALIDATE_OBJECT(int handle) {
   }
   return objp;
 }
-extern bool Hud_show_controls;
+
 // Gets a value for the calling party
 void msafe_GetValue(int type, msafe_struct *mstruct) {
   object *objp;

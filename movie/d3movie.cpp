@@ -432,17 +432,18 @@ public:
 #endif
 } // namespace
 
-void *CallbackAlloc(unsigned int size);
-void CallbackFree(void *p);
-unsigned int CallbackFileRead(int hFile, void *pBuffer, unsigned int bufferCount);
-void InitializePalette();
-void CallbackSetPalette(unsigned char *pBuffer, unsigned int start, unsigned int count);
-void CallbackShowFrame(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int sx, unsigned int sy,
-                       unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty, unsigned int hicolor);
+static void *CallbackAlloc(unsigned int size);
+static void CallbackFree(void *p);
+static unsigned int CallbackFileRead(int hFile, void *pBuffer, unsigned int bufferCount);
+static void InitializePalette();
+static void CallbackSetPalette(unsigned char *pBuffer, unsigned int start, unsigned int count);
+static void CallbackShowFrame(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int sx,
+                              unsigned int sy, unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty,
+                              unsigned int hicolor);
 
 #ifndef NO_MOVIES
-bool mve_InitSound(oeApplication *app, MovieSoundDevice &device);
-void mve_CloseSound(MovieSoundDevice &device);
+static bool mve_InitSound(oeApplication *app, MovieSoundDevice &device);
+static void mve_CloseSound(MovieSoundDevice &device);
 #endif
 
 // sets the directory where movies are stored

@@ -64,33 +64,47 @@ typedef struct {
 
 float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
-ushort *Dynamic_lightmap_memory = NULL;
-float Light_component_scalar[32];
+static ushort *Dynamic_lightmap_memory = NULL;
+static float Light_component_scalar[32];
 float Ubyte_to_float[256];
 
 static ubyte Lmi_spoken_for[MAX_LIGHTMAP_INFOS / 8];
 
-dynamic_lightmap *Dynamic_lightmaps;
-dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
-ushort Specular_face_list[MAX_DYNAMIC_FACES];
-volume_object Dynamic_volume_object_list[MAX_VOLUME_OBJECTS];
-dynamic_cell Dynamic_cell_list[MAX_DYNAMIC_CELLS];
-int Specular_maps[NUM_DYNAMIC_CLASSES];
+static dynamic_lightmap *Dynamic_lightmaps;
+static dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
+static ushort Specular_face_list[MAX_DYNAMIC_FACES];
+static volume_object Dynamic_volume_object_list[MAX_VOLUME_OBJECTS];
+static dynamic_cell Dynamic_cell_list[MAX_DYNAMIC_CELLS];
+static int Specular_maps[NUM_DYNAMIC_CLASSES];
 
-ushort Edges_to_blend[MAX_DYNAMIC_LIGHTMAPS];
-int Num_edges_to_blend = 0;
+static ushort Edges_to_blend[MAX_DYNAMIC_LIGHTMAPS];
+static int Num_edges_to_blend = 0;
 
-int Num_specular_faces = 0;
-int Num_dynamic_faces = 0;
-int Num_dynamic_lightmaps = 0;
-int Cur_dynamic_mem_ptr = 0;
-int Num_volume_objects = 0;
-int Num_dynamic_cells = 0;
-int Num_destroyed_lights_this_frame = 0;
+static int Num_specular_faces = 0;
+static int Num_dynamic_faces = 0;
+static int Num_dynamic_lightmaps = 0;
+static int Cur_dynamic_mem_ptr = 0;
+static int Num_volume_objects = 0;
+static int Num_dynamic_cells = 0;
+static int Num_destroyed_lights_this_frame = 0;
 
 #define MAX_DESTROYED_LIGHTS_PER_FRAME 20
-int Destroyed_light_rooms_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
-int Destroyed_light_faces_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
+static int Destroyed_light_rooms_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
+static int Destroyed_light_faces_this_frame[MAX_DESTROYED_LIGHTS_PER_FRAME];
+
+static void FreeLighting();
+static int GetFreeDynamicLightmap(int w, int h);
+static void BlendLightingEdges(lightmap_info *lmi_ptr);
+static void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, float red_scale, float green_scale,
+                                        float blue_scale, vector *light_direction, float dot_range);
+static void StartLightingInstance(vector *pos, matrix *orient);
+static void DoneLightingInstance();
+static void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float light_dist, float red_scale,
+                                    float green_scale, float blue_scale, float dot_range);
+static void ApplyVolumeLightToObject(vector *pos, object *obj, float light_dist, float red_scale, float green_scale,
+                                     float blue_scale, vector *light_direction, float dot_range);
+static void ApplyLightingToObjects(vector *pos, int roomnum, float light_dist, float red_scale, float green_scale,
+                                   float blue_scale, vector *light_direction, float dot_range);
 
 // Frees memory used by dynamic light structures
 void FreeLighting() {
@@ -1589,6 +1603,7 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
   }
 }
 
+// TODO: MTS: Unused?
 // Sets pulse parameters for an entire room
 void SetRoomPulse(room *rp, ubyte pulse_time, ubyte pulse_offset) {
   ASSERT(rp->used);
@@ -1597,6 +1612,7 @@ void SetRoomPulse(room *rp, ubyte pulse_time, ubyte pulse_offset) {
   rp->pulse_offset = pulse_offset;
 }
 
+// TODO: MTS: Unused?
 // Returns the total number of bytes needed for volume lighting in this room
 int GetVolumeSizeOfRoom(room *rp, int *w, int *h, int *d) {
   int width = ((rp->max_xyz.x - rp->min_xyz.x) / VOLUME_SPACING) + 1;
@@ -2206,6 +2222,7 @@ void DestroyLight(int roomnum, int facenum) {
   }
 }
 
+// TODO: MTS: unused?
 // Adds to our list of destroyable lights that got destroyed this frame
 void AddToDestroyableLightList(int roomnum, int facenum) {
   if (Num_destroyed_lights_this_frame >= MAX_DESTROYED_LIGHTS_PER_FRAME) {

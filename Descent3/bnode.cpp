@@ -172,14 +172,14 @@ public:
   }
 };
 
-float BNode_QuickDist(vector *pos1, vector *pos2) {
+static float BNode_QuickDist(vector *pos1, vector *pos2) {
   return fabs(pos1->x - pos2->x) + fabs(pos1->y - pos2->y) + fabs(pos1->z - pos2->z);
 }
 
 int BNode_Path[MAX_BNODES_PER_ROOM];
 int BNode_PathNumNodes;
 
-void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
+static void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
   int cur_node = end;
   int i;
 
@@ -287,12 +287,13 @@ done:
   return f_found;
 }
 
+// TODO: MTS: Unused?
 int BNode_GenerateBestPathThroughRoom(int sroom, int spnt, int croom, int eroom, int eportal, int max_nodes,
                                       vector *pos_list) {
   return -1;
 }
 
-char BNode_vis[MAX_BNODES_PER_ROOM];
+static char BNode_vis[MAX_BNODES_PER_ROOM];
 #define VIS_NO_CHECK 2
 #define VIS_OK 1
 #define VIS_NO 2
@@ -502,6 +503,7 @@ void BNode_ClearBNodeInfo(void) {
   BNode_verified = false;
 }
 
+// Unused?
 bool BNode_MakeSubPath(short sroom, short spnt, short eroom, short epnt, int flags, float size, short *roomlist,
                        short *pnts, int max_elements) {
   return false;

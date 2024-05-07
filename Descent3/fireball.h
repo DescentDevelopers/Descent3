@@ -220,6 +220,9 @@ void MakeShockwave(object *explode_obj_ptr, int parent_handle);
 
 void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_scalar = 1);
 
+// Creates a gravity field that sucks objects into it
+extern int CreateGravityField(vector *pos, int roomnum, float size, float time, int parent_handle);
+
 // Control code for explosions
 void DoExplosionFrame(object *obj);
 

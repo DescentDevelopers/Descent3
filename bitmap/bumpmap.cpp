@@ -24,11 +24,11 @@
 #include "mono.h"
 #include "mem.h"
 
-int Num_of_bumpmaps = 0;
+static int Num_of_bumpmaps = 0;
 static ushort Free_bumpmap_list[MAX_BUMPMAPS];
 
 bms_bumpmap GameBumpmaps[MAX_BUMPMAPS];
-int Bumpmap_mem_used = 0;
+static int Bumpmap_mem_used = 0;
 
 // Sets all the bumpmaps to unused
 void bump_InitBumpmaps() {

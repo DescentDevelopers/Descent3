@@ -868,6 +868,34 @@
 ubyte CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
 ubyte CollisionRayResult[MAX_OBJECT_TYPES];
 
+static bool IsOKToApplyForce(object *objp);
+static void bump_this_object(object *objp, object *other_objp, vector *force, vector *collision_pnt, int damage_flag);
+//! Creates some effects where a weapon has collided with a wall.
+static void DoWallEffects(object *weapon, int surface_tmap);
+//! Check for lava, volatile, or water surface.  If contact, make special sound & kill the weapon.
+static void check_for_special_surface(object *weapon, int surface_tmap, vector *surface_normal, float hit_dot);
+/// Process a collision between a weapon and a wall.
+/// - Returns: true if the weapon hits the wall, and false if should keep going though the wall (for breakable glass).
+static bool collide_weapon_and_wall(object *weapon, fix hitspeed, int hitseg, int hitwall, vector *hitpnt,
+                                    vector *wall_normal, float hit_dot);
+/// Prints out a marker hud message if needed.
+static void collide_player_and_marker(object *playerobj, object *marker_obj, vector *collision_point,
+                                      vector *collision_normal, bool f_reverse_normal, fvi_info *hit_info);
+static void collide_player_and_wall(object *playerobj, float hitspeed, int hitseg, int hitwall, vector *hitpt,
+                                    vector *wall_normal, float hit_dot);
+static void collide_generic_and_wall(object *genericobj, float hitspeed, int hitseg, int hitwall, vector *hitpt,
+                                     vector *wall_normal, float hit_dot);
+static void CollideAnglesToMatrix(matrix *m, float p, float h, float b);
+static vector *CollideExtractAnglesFromMatrix(vector *a, matrix *m);
+static void bump_two_objects(object *object0, object *object1, vector *collision_point, vector *collision_normal,
+                             int damage_flag);
+static void collide_player_and_player(object *p1, object *p2, vector *collision_point, vector *collision_normal,
+                                      bool f_reverse_normal, fvi_info *hit_info);
+static void collide_generic_and_player(object *robotobj, object *playerobj, vector *collision_point,
+                                       vector *collision_normal, bool f_reverse_normal, fvi_info *hit_info);
+static void MakeWeaponStick(object *weapon, object *parent, fvi_info *hit_info);
+static void check_lg_inform(object *A, object *B);
+
 bool IsOKToApplyForce(object *objp) {
   if (Game_mode & GM_MULTI) {
     if (objp->type == OBJ_PLAYER) {
@@ -1084,7 +1112,7 @@ void DoWallEffects(object *weapon, int surface_tmap) {
 
 #define FORCEFIELD_DAMAGE 5.0f
 
-void DeformTerrain(vector *pos, int depth, float size);
+extern void DeformTerrain(vector *pos, int depth, float size);
 
 // Check for lava, volatile, or water surface.  If contact, make special sound & kill the weapon
 void check_for_special_surface(object *weapon, int surface_tmap, vector *surface_normal, float hit_dot) {
@@ -1509,7 +1537,7 @@ void collide_generic_and_wall(object *genericobj, float hitspeed, int hitseg, in
   return;
 }
 
-float Last_volatile_scrape_sound_time = 0;
+static float Last_volatile_scrape_sound_time = 0;
 
 // this gets called when an object is scraping along the wall
 void scrape_object_on_wall(object *obj, int hitseg, int hitwall, vector *hitpt, vector *wall_normal) {

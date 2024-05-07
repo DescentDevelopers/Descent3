@@ -80,9 +80,9 @@ typedef int socklen_t;
 #include "inetgetfile.h"
 #endif
 
-
 #include "CFtp.h"
 
+// MTS: only used in this file?
 #ifdef __LINUX__
 int FTPObjThread(void *obj)
 #else

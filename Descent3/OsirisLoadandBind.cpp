@@ -490,7 +490,7 @@ typedef struct {
 #endif
 } tOSIRISModule;
 
-tOSIRISModule OSIRIS_loaded_modules[MAX_LOADED_MODULES];
+static tOSIRISModule OSIRIS_loaded_modules[MAX_LOADED_MODULES];
 tOSIRISModuleInit Osiris_module_init;
 struct {
   bool level_loaded;
@@ -512,17 +512,17 @@ typedef struct {
   char *temp_filename;
   char *real_filename;
 } tExtractedScriptInfo;
-tExtractedScriptInfo OSIRIS_Extracted_scripts[MAX_LOADED_MODULES];
-char *OSIRIS_Extracted_script_dir = NULL;
+static tExtractedScriptInfo OSIRIS_Extracted_scripts[MAX_LOADED_MODULES];
+static char *OSIRIS_Extracted_script_dir = NULL;
 
 //	Osiris_CreateModuleInitStruct
 //	Purpose:
 //		This function initializes a Module Init Struct with all the needed data to get sent
 //	to the module during initialization.
-void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
+extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
 
-void Osiris_RestoreOMMS(CFILE *file);
-void Osiris_SaveOMMS(CFILE *file);
+static void Osiris_RestoreOMMS(CFILE *file);
+static void Osiris_SaveOMMS(CFILE *file);
 
 //	Osiris_CreateGameChecksum
 //	Purpose:
@@ -533,21 +533,21 @@ uint Osiris_CreateGameChecksum(void);
 //	Osiris_IsEventEnabled
 //	Purpose:
 //		Returns true if the event is allowed to be called
-bool Osiris_IsEventEnabled(int event);
+static bool Osiris_IsEventEnabled(int event);
 
-void Cinematic_StartCannedScript(tCannedCinematicInfo *info);
+extern void Cinematic_StartCannedScript(tCannedCinematicInfo *info);
 
 //	Osiris_DumpLoadedObjects
 //
 //	Debug.  Dumps all loaded objects to given file
-void Osiris_DumpLoadedObjects(char *file);
-void Osiris_ForceUnloadModules(void);
+static void Osiris_DumpLoadedObjects(char *file);
+static void Osiris_ForceUnloadModules(void);
 
 uint Osiris_game_checksum;
 
-ubyte Osiris_event_mask = OEM_OBJECTS | OEM_TRIGGERS | OEM_LEVELS;
-bool Osiris_create_events_disabled = false;
-bool Osiris_level_script_loaded = false;
+static ubyte Osiris_event_mask = OEM_OBJECTS | OEM_TRIGGERS | OEM_LEVELS;
+static bool Osiris_create_events_disabled = false;
+static bool Osiris_level_script_loaded = false;
 
 #define HAVECUSTOMONLY(type) (type == OBJ_CAMERA)
 #define CANBEASSIGNEDSCRIPT(obj)                                                                                       \
@@ -2283,9 +2283,9 @@ typedef struct {
 } tOSIRISINTERNALTIMER;
 tOSIRISINTERNALTIMER OsirisTimers[MAX_OSIRIS_TIMERS];
 
-inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFFFFFF) << 8) | (slot & 0xFF)); }
+static inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFFFFFF) << 8) | (slot & 0xFF)); }
 
-inline int GET_SLOT(int handle) { return (handle & 0xFF); }
+static inline int GET_SLOT(int handle) { return (handle & 0xFF); }
 
 int Osiris_timer_counter = 0;
 
@@ -3380,15 +3380,15 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash = NULL
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different Returns -3 if the unique identifier passed in is
 // already used, same size requested
-OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint unique_identifier, char *script_identifier);
+static OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint unique_identifier, char *script_identifier);
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
 //	attached to a module, the memory will not be deleted. (Increments the reference count)
 //	Returns NULL if the memory couldn't be attached (it has been either free'd or never malloced)
-void *Osiris_OMMS_Attach(OMMSHANDLE handle);
+static void *Osiris_OMMS_Attach(OMMSHANDLE handle);
 
 //	Detaches a block of global OMMS memory. (Reduces the reference count).
-void Osiris_OMMS_Detach(OMMSHANDLE handle);
+static void Osiris_OMMS_Detach(OMMSHANDLE handle);
 
 //	Frees a block of global memory
 //	Only has affect if you are attached to the memory.  Memory will _ONLY_ be deleted when the
@@ -3400,19 +3400,19 @@ void Osiris_OMMS_Detach(OMMSHANDLE handle);
 // invalid.
 //
 //	handle : the value returned by OMMS_Malloc()
-void Osiris_OMMS_Free(OMMSHANDLE handle);
+static void Osiris_OMMS_Free(OMMSHANDLE handle);
 
 //	Returns an OMMSHANDLE to a block of global memory allocated by a module/script.  Pass
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier);
+static OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier);
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
-                         ubyte *has_free_been_called);
+static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
+                                ubyte *has_free_been_called);
 
 void Osiris_InitOMMS(void) {
   OMMS_Current_base_id = 0;

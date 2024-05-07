@@ -283,6 +283,9 @@ typedef struct {
 
 extern int glitch_dx, glitch_dy;
 
+extern tceffect TCEffects[MAX_TCEFFECTS];
+extern int Screen_roots[MAX_TELCOM_SCREENS];
+
 /////////////////////////////////////////////////
 // Prototypes
 

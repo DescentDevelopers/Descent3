@@ -114,7 +114,9 @@
 #include "bitmap.h"
 #include "manage.h"
 
-void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b);
+static void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b);
+static int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap);
+static void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap);
 
 // just like the old bm_tga_translate_pixel function, but it stores the alpha in the alpha_value parameter
 ushort menutga_translate_pixel(int pixel, char *alpha_value) {
@@ -504,6 +506,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
   }
 }
 
+// TODO: MTS: only used in this file
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
 int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
@@ -589,6 +592,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   return (n);
 }
 
+// TODO: MTS: only used in this file
 // Given a filename and a hotspotmap structure, it saves it to disk (.HSM)
 void menutga_SaveHotSpotMap(const char *filename, hotspotmap_t *hsmap, windowmap_t *wndmap) {
   CFILE *file;
@@ -911,6 +915,7 @@ bool menutga_ConvertTGAtoHSM(const char *fpath) {
   return true;
 }
 
+// TODO: MTS: Unused?
 // Given a hotspotmap structure, it draws the pretty hotspot map to the screen (blue areas are the hotspots)
 void DisplayHotSpots(hotspotmap_t *hsmap, windowmap_t *wndmap) {
   //@@	grSurface *cursurf;
@@ -965,6 +970,7 @@ void DisplayHotSpots(hotspotmap_t *hsmap, windowmap_t *wndmap) {
   //@@	Game_screen->flip();
 }
 
+// TODO: MTS: only used in this file
 // Writes a hotspotmap_t struct to a text file
 void ExportHotSpot(const char *filename, hotspotmap_t *hsmap) {
   CFILE *file;

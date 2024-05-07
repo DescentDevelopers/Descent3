@@ -241,14 +241,13 @@ typedef struct tCockpitInfo {
   matrix orient; // orientation of cockpit
 } tCockpitInfo;
 static tCockpitInfo Cockpit_info;
-float KeyframeAnimateCockpit();
+static float KeyframeAnimateCockpit();
 //	loads cockpit. model_name = NULL, then will not load in model name.
-void LoadCockpitInfo(const char *ckt_file, tCockpitCfgInfo *info);
+static void LoadCockpitInfo(const char *ckt_file, tCockpitCfgInfo *info);
 //////////////////////////////////////////////////////////////////////////////
 //	Initializes the cockpit by loading it in and initializing all it's gauges.
 //	initialization of cockpit.
 void InitCockpit(int ship_index) {
-  extern void FreeReticle();
   tCockpitCfgInfo cfginfo;
   int i;
   mprintf((0, "Initializing cockpit.\n"));

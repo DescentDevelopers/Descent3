@@ -24,17 +24,23 @@
 #include "aistruct.h"
 
 // Exported functions
-void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved);
+extern void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved);
 // void AIPathMoveTowardsRoom(object *obj, int room_index);
-bool AIPathSetAsStaticPath(object *obj, void *goal_ptr, int path_id, int start_node, int end_node, int cur_node);
-bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_room, vector *start_pos, int *end_room,
-                     vector *end_pos, float rad, int flags, int handle, int ignore_obj = -1);
-bool AIPathInitPath(ai_path_info *aip);
-bool AIPathFreePath(ai_path_info *aip);
-bool AIFindAltPath(object *obj, int i, int j, float *dist = NULL);
+extern bool AIPathSetAsStaticPath(object *obj, void *goal_ptr, int path_id, int start_node, int end_node, int cur_node);
+extern bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_room, vector *start_pos,
+                            int *end_room, vector *end_pos, float rad, int flags, int handle, int ignore_obj = -1);
+extern bool AIPathInitPath(ai_path_info *aip);
+extern bool AIPathFreePath(ai_path_info *aip);
+extern bool AIFindAltPath(object *obj, int i, int j, float *dist = NULL);
+
+extern bool AIPathAtEnd(ai_path_info *aip);
+extern bool AIPathAtStart(ai_path_info *aip);
+extern bool AIPathGetNextNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
+extern bool AIPathGetPrevNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
+extern bool AIPathGetCurrentNodePos(ai_path_info *aip, vector *pos, int *room = NULL);
 
 #ifdef _DEBUG
-bool MakeTestPath(int *start_room, vector *pos);
+extern bool MakeTestPath(int *start_room, vector *pos);
 
 extern int AIPath_test_end_room;
 extern vector AIPath_test_end_pos;

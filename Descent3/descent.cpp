@@ -756,7 +756,7 @@ function_mode GetFunctionMode() { return Function_mode; }
 // The game's defer handler (For Win32, it happens during idle processing)
 //	---------------------------------------------------------------------------
 extern bool Skip_render_game_frame;
-void GameFrame(void);
+extern void GameFrame(void);
 void D3DeferHandler(bool is_active) {
   if (is_active) {
     // perform any needed io system processing in the background

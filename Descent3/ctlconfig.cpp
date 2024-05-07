@@ -403,10 +403,10 @@ t_cfg_element Cfg_joy_elements[] = {{-1, CtlText_WeaponGroup, CCITEM_WPN_X2, CCI
                                     {ctfBANK_RIGHTBUTTON, CtlText_BankRight, 0, 0}};
 #define N_JOY_CFG_FN (sizeof(Cfg_joy_elements) / sizeof(t_cfg_element))
 #define N_KEY_CFG_FN (sizeof(Cfg_key_elements) / sizeof(t_cfg_element))
-void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte controller, ubyte elem, sbyte slot);
-void ctl_cfg_element_options_dialog(short fnid);
+static void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte controller, ubyte elem, sbyte slot);
+static void ctl_cfg_element_options_dialog(short fnid);
 // used for adjusting settings.
-int weapon_select_dialog(int wpn, bool is_secondary);
+static int weapon_select_dialog(int wpn, bool is_secondary);
 #define UID_KEYCFG_ID 0x1000
 #define UID_JOYCFG_ID 0x1100
 #define UID_PRIMARY_WPN 0x1200
@@ -966,7 +966,6 @@ void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte ctrl, u
   Controller->set_controller_function(fnid, ctype_fn, ccfgdata_fn, cfgflags_fn);
 }
 // used as a help/options dialog for each controller config element
-extern const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding);
 void ctl_cfg_element_options_dialog(short fnid) {
   newuiTiledWindow wnd;
   newuiSheet *sheet;

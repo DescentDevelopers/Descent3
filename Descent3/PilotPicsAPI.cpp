@@ -75,11 +75,11 @@
 #define PILOTPIC_DATABASE_HOG "PPics.Hog"
 #define PILOTPIC_DATABASE_INDEX "PPics.idx"
 
-CFILE *PilotPic_database_index_handle = NULL;
-int PilotPic_database_hog_handle = 0;
-int PilotPic_find_offset;
-char PilotPic_find_name[PILOT_STRING_SIZE];
-bool PilotPic_init = false;
+static CFILE *PilotPic_database_index_handle = NULL;
+static int PilotPic_database_hog_handle = 0;
+static int PilotPic_find_offset;
+static char PilotPic_find_name[PILOT_STRING_SIZE];
+static bool PilotPic_init = false;
 
 // -----------------------------------------------
 // PPic_BuildDatabase
@@ -87,13 +87,13 @@ bool PilotPic_init = false;
 //		Builds up some databases for fast access
 //	based off the index file.
 // -----------------------------------------------
-bool PPic_BuildDatabases(void);
+static bool PPic_BuildDatabases(void);
 // -----------------------------------------------
 // PPic_FreeDatabase
 //	Purpose:
 //		Frees up memory associated with the databases
 // -----------------------------------------------
-void PPic_FreeDatabase(void);
+static void PPic_FreeDatabase(void);
 // -------------------------------------------------
 // PPic_JumpToPilot
 //	Purpose:
@@ -101,20 +101,20 @@ void PPic_FreeDatabase(void);
 //	the first pilot that matches pilot_name is. -1
 //	is returned if no match
 // --------------------------------------------------
-int PPic_JumpToPilot(char *pilot_name);
+static int PPic_JumpToPilot(char *pilot_name);
 // -------------------------------------
 // PPic_GetIndexFromID
 //	Purpose:
 //		Returns the file index into the Pilot_id_to_offset
 //	list for the given id, -1 if not found.
 // -------------------------------------
-int PPic_GetIndexFromID(int id);
+static int PPic_GetIndexFromID(int id);
 // -------------------------------------
 // PPic_GetOffsetByID
 //	Purpose:
 //		Returns the file offset of the given pilot id. -1 if not found
 // -------------------------------------
-int PPic_GetOffsetByID(ushort pilot_id);
+static int PPic_GetOffsetByID(ushort pilot_id);
 
 //===========================================================================
 

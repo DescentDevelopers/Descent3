@@ -45,8 +45,8 @@ int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 }
 #endif
 
-int String_table_size = 0;
-char **String_table = NULL;
+static int String_table_size = 0;
+static char **String_table = NULL;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
@@ -58,37 +58,60 @@ const char *GetStringFromTable(int index) {
 }
 #define TXT(x) GetStringFromTable(x)
 
+//-------------------
+// Function prototypes
+//-------------------
+
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
+                      float lifetime, float interval, float longevity, float size, float speed, ubyte random);
+// Returns the new child's handle
+static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+                           bool f_aligned = true, bool f_set_parent = false);
+
+static int FindClosestPlayer(int objhandle);
+
+// Returns true if object current has an active Dallas low priority goal
+static bool HasLowPriorityGoal(int obj_handle);
+
+// Returns true if object current has an active Dallas high priority goal
+static bool HasHighPriorityGoal(int obj_handle);
+
+// Wipes out all goals except slots 0 and 3 (used by Dallas)
+static void SafeGoalClearAll(int obj_handle);
+
+static void AI_SafeSetType(int obj_handle, int ai_type);
+
 //----------------
 // Name lookups
 //----------------
 
 // Name lookup globals
-unsigned short energy_effect_id;       // weapon ID for the energy charge effect
-unsigned short frag_burst_effect_id;   // weapon ID for the frag burst effect
-unsigned short boss_frag_burst_id;     // weapon ID for the boss frag burst effect
-unsigned short transfer_effect_id;     // texture ID for the energy transfer lightning effect
-unsigned short heal_effect_id;         // texture ID for the heal lightning effect
-unsigned short boss_heal_effect_id;    // texture ID for the boss heal lightning effect
-unsigned short tractor_beam_effect_id; // texture ID for the tractor beam effect
-unsigned short alien_organism_id;      // object type ID for the alien organism robot
-unsigned short shield_blast_id;        // weapon ID for the HT shield blast effect
-unsigned short ht_grenade_id;          // weapon ID for the HT grenade
-unsigned short ht_grenade_effect_id;   // weapon ID for the HT grenade launch effect
-unsigned short lifter_blast_effect_id; // weapon ID for the lifter blast effect
-unsigned short lifter_stick_effect_id; // texture ID for lifter's night-stick lightning effect
-unsigned short teleport_effect_id;     // weapon ID for teleporting effect
+static unsigned short energy_effect_id;       // weapon ID for the energy charge effect
+static unsigned short frag_burst_effect_id;   // weapon ID for the frag burst effect
+static unsigned short boss_frag_burst_id;     // weapon ID for the boss frag burst effect
+static unsigned short transfer_effect_id;     // texture ID for the energy transfer lightning effect
+static unsigned short heal_effect_id;         // texture ID for the heal lightning effect
+static unsigned short boss_heal_effect_id;    // texture ID for the boss heal lightning effect
+static unsigned short tractor_beam_effect_id; // texture ID for the tractor beam effect
+static unsigned short alien_organism_id;      // object type ID for the alien organism robot
+static unsigned short shield_blast_id;        // weapon ID for the HT shield blast effect
+static unsigned short ht_grenade_id;          // weapon ID for the HT grenade
+static unsigned short ht_grenade_effect_id;   // weapon ID for the HT grenade launch effect
+static unsigned short lifter_blast_effect_id; // weapon ID for the lifter blast effect
+static unsigned short lifter_stick_effect_id; // texture ID for lifter's night-stick lightning effect
+static unsigned short teleport_effect_id;     // weapon ID for teleporting effect
 
-unsigned short ht_grenade_sound_id; // sound ID for firing the grenade
+static unsigned short ht_grenade_sound_id; // sound ID for firing the grenade
 
-unsigned short powerup_id; // invisible powerup id
+static unsigned short powerup_id; // invisible powerup id
 
-unsigned short boss_flapping_id; // flapping sound id
-unsigned short boss_turf_id;     // turf id
-unsigned short boss_see_id;
-unsigned short boss_hurt_id;
+static unsigned short boss_flapping_id; // flapping sound id
+static unsigned short boss_turf_id;     // turf id
+static unsigned short boss_see_id;
+static unsigned short boss_hurt_id;
 
-unsigned short lifter_pull_sound_id;
-unsigned short lifter_amb_sound_id;
+static unsigned short lifter_pull_sound_id;
+static unsigned short lifter_amb_sound_id;
 
 // ==========================
 // AI Goal Related Functions
@@ -114,7 +137,7 @@ bool HasHighPriorityGoal(int obj_handle) {
 }
 
 // Returns True if given index implies that a goal is finished
-inline bool IsGoalFinishedNotify(int index) {
+static inline bool IsGoalFinishedNotify(int index) {
   return (index == AIN_GOAL_COMPLETE || index == AIN_GOAL_INVALID || index == AIN_GOAL_FAIL || index == AIN_GOAL_ERROR);
 }
 
@@ -260,8 +283,8 @@ int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned = true,
-                    bool f_set_parent = false) {
+int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+                    bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
   msafe_struct m;
@@ -363,8 +386,13 @@ typedef struct {
 } tShotPathPositionData;
 
 // Clear shot globals
-tShotPathPositionData ShotPathPositions[MAX_SHOT_PATH_POSITIONS];
-int num_shot_path_positions;
+static tShotPathPositionData ShotPathPositions[MAX_SHOT_PATH_POSITIONS];
+static int num_shot_path_positions;
+
+static bool ScanShotPathPosition(int obj_handle, vector *pos, int room, float radius, float dist);
+static float TraverseShotPath(tShotData *shot_data);
+static int ShotIsClear(float risk_factor);
+static int HasClearShot(tShotData *shot_data);
 
 // Scans area around given shot position for object data
 bool ScanShotPathPosition(int obj_handle, vector *pos, int room, float radius, float dist) {
@@ -568,7 +596,7 @@ typedef struct {
   const char *name;
 } tScriptInfo;
 
-tScriptInfo ScriptInfo[NUM_IDS] = {
+static tScriptInfo ScriptInfo[NUM_IDS] = {
     {ID_ALIENORGANISM, "AlienOrganism"}, {ID_HEAVYTROOPER, "HeavyTrooper"},     {ID_LIFTER, "Lifter"},
     {ID_ALIENBOSS, "AlienBoss"},         {ID_SECURITYCAMERA, "SecurityCamera"}, {ID_CROWDCONTROL, "CrowdControl"}};
 
@@ -1190,9 +1218,9 @@ public:
 // Alien Boss Lookup Globals
 #define AB_NUM_WANDER_ROOMS 11
 
-const char *AB_WanderRoomNames[AB_NUM_WANDER_ROOMS] = {"BossRoomA", "BossTunnelAB", "BossRoomB", "BossTunnelBC",
-                                                 "BossRoomC", "BossTunnelCE", "BossRoomD", "BossTunnelAE",
-                                                 "BossRoomE", "BossTunnelCE", "BossRoomD"};
+static const char *const AB_WanderRoomNames[AB_NUM_WANDER_ROOMS] = {
+    "BossRoomA", "BossTunnelAB", "BossRoomB", "BossTunnelBC", "BossRoomC", "BossTunnelCE",
+    "BossRoomD", "BossTunnelAE", "BossRoomE", "BossTunnelCE", "BossRoomD"};
 
 // Alien Boss memory data structure
 typedef struct {

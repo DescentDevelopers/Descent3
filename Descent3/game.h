@@ -255,6 +255,8 @@ extern float force_field_bounce_multiplier[MAX_FORCE_FIELD_BOUNCE_TEXTURES];
 
 extern bool Level_powerups_ignore_wind;
 
+extern bool IsCheater;
+
 #ifdef _DEBUG
 extern int Game_show_sphere;
 extern int Game_show_portal_vis_pnts;

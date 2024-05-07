@@ -432,6 +432,9 @@ extern bool Player_has_camera;
 extern int Player_camera_objnum;
 extern uint Players_typing; // information about which players are typing messages (to display an icon)
 
+extern float Player_shields_saved_from_last_level;
+extern float Player_energy_saved_from_last_level;
+
 // How long a player must be dead before he can respawn
 #define DEATH_RESPAWN_TIME 3.0f
 extern float Total_time_dead;
@@ -574,7 +577,7 @@ void MakeAtuoWaypointList();
 void SetAutoWaypoint(object *objp);
 
 // Returns the team (0 to 3) of the given player
-inline int PlayerGetTeam(int pnum) {
+static inline int PlayerGetTeam(int pnum) {
   if (Players[pnum].team == -1) {
     // special "no-team" for Dedicated server
     return 0; // fake a red team

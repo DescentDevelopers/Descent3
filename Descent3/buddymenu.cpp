@@ -89,15 +89,15 @@
 #define BUDDYMENU_ITEM_W 226
 #define UID_BUDDYCMD 0x100
 
-gb_menu Guidebot_menu_data;
-int Guidebot_data_download_status;
+static gb_menu Guidebot_menu_data;
+static int Guidebot_data_download_status;
 
 // downloads data for the buddybot
 //	on return:	if 1, process data
 //				if 0, abort
 //				if -1, no guidebot
-int BuddyBotDownloadData(void);
-void BuddyProcessCommand(int res);
+static int BuddyBotDownloadData(void);
+static void BuddyProcessCommand(int res);
 
 void BuddyDisplay(void) {
   newuiTiledWindow gbcommand_wnd;
@@ -181,7 +181,7 @@ void BuddyDisplay(void) {
   gbcommand_wnd.Destroy();
 }
 
-void MultiAskforGuidebotMenu() {
+static void MultiAskforGuidebotMenu() {
   int size_offset;
   int count = 0;
   ubyte data[MAX_GAME_DATA_SIZE];
@@ -196,7 +196,7 @@ void MultiAskforGuidebotMenu() {
   nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count);
 }
 
-void MultiStuffGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
+static void MultiStuffGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
   int i;
   // Get the menu data and stick it here
   // length of the title
@@ -254,7 +254,7 @@ void MultiSendGuidebotMenuSelection(gb_com *command) {
   nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count);
 }
 
-void MultiSendGuidebotMenuText(gb_menu *menu, int slot) {
+static void MultiSendGuidebotMenuText(gb_menu *menu, int slot) {
   int size_offset;
   int count = 0;
 
@@ -272,7 +272,7 @@ void MultiSendGuidebotMenuText(gb_menu *menu, int slot) {
   nw_SendReliable(NetPlayers[slot].reliable_socket, data, count, false);
 }
 
-void MultiReadGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
+static void MultiReadGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
 
   int i;
   // Get the menu data and stick it here

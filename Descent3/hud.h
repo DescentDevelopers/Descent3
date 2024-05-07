@@ -332,6 +332,8 @@ extern tStatMask Hud_stat_mask;
 extern float Hud_aspect_x;
 extern float Hud_aspect_y;
 
+extern bool Hud_show_controls;
+
 //	normalize hud coordinates
 #define HUD_X(_x) ((float)(_x) * Hud_aspect_x)
 #define HUD_Y(_y) ((float)(_y) * Hud_aspect_y)
@@ -391,6 +393,9 @@ void InitReticle(int primary_slots, int secondary_slots);
 
 //	resets reticle to current weapon.
 void ResetReticle();
+
+//  frees up reticle bitmaps
+void FreeReticle();
 
 // Flags for persistent HUD messages
 #define HPF_FADEOUT 1        // message fades out when done

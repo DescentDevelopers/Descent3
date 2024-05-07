@@ -285,25 +285,43 @@ typedef struct {
 
 } tCinematicDemoInfo;
 
-void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info);
-bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle);
+static void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info);
+static bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle);
 
-void Cinematic_DrawText(void);
-void Cinematic_DoEndTransition(void);
-void Cinematic_DoStartTransition(void);
+static void Cinematic_DrawText(void);
+static void Cinematic_DoEndTransition(void);
+static void Cinematic_DoStartTransition(void);
 
 bool Cinematic_inuse;
-tGameCinematic Cinematic_fake_info;
+static tGameCinematic Cinematic_fake_info;
 bool Cinematic_fake_queued = false;
 
-int gc_fade_bmp_handle = BAD_BITMAP_HANDLE;
-int gc_fadewhite_bmp_handle = BAD_BITMAP_HANDLE;
-int gc_wacky_bmp_handle = BAD_BITMAP_HANDLE;
-int gc_temp_bmp_handle = BAD_BITMAP_HANDLE;
+static int gc_fade_bmp_handle = BAD_BITMAP_HANDLE;
+static int gc_fadewhite_bmp_handle = BAD_BITMAP_HANDLE;
+static int gc_wacky_bmp_handle = BAD_BITMAP_HANDLE;
+static int gc_temp_bmp_handle = BAD_BITMAP_HANDLE;
 
 #define END_TRANSITION_TIME 1.0f
 
-float Cine_GetPathTravelSpeed(int pathnum, float time);
+static float Cine_GetPathTravelSpeed(int pathnum, float time);
+static void Cinematic_PerformFake(void);
+static void Cinematic_SetForFakeCinematic(tGameCinematic *info);
+static inline void verify_percentranage(PercentageRange *range);
+static inline int Cinematics_CreateCamera(void);
+static inline void Cinematic_DeleteCamera(int objhandle);
+static inline bool Cinematic_IsPlayerDead(void);
+static bool Cinematic_IsKeyPressed(void);
+static void CannedCinematicIntroCallback(int type);
+static void CannedCinematic_Intro(int PathID, char *Text, int PlayerPath, float Seconds, int camera_handle);
+static void CannedCinematicEndLevelCallback(int type);
+static void CannedCinematic_EndLevelPath(int PathID, char *Text, int PlayerPath, float Seconds, int camera_handle);
+static void CannedCinematic_EndLevelPoint(vector *pos, int room, char *Text, int PlayerPath, float Seconds,
+                                          int camera_handle);
+static void CannedCinematicMovePlayerFadeCallback(int type);
+static void CannedCinematic_MovePlayerFade(object *player, int room, vector *pos, matrix *orient, int camera_handle);
+static void CannedCinematicLevelEndFadeWhiteCallback(int type);
+static void CannedCinematic_LevelEndFadeWhite(int camera_handle, float time, char *text_to_display);
+static void Cinematic_DoFakeCannedCinematics(tCannedCinematicInfo *info);
 
 //	Returns the hud mode before cinematics
 tHUDMode Cinematic_GetOldHudMode(void) { return GameCinema.old_hudmode; }
@@ -385,7 +403,7 @@ void Cinematic_LevelInit(void) {
   GameCinema.doing_end_transition = false;
 }
 
-inline void verify_percentranage(PercentageRange *range) {
+static inline void verify_percentranage(PercentageRange *range) {
   if (range->min < 0.0f)
     range->min = 0.0f;
   if (range->min > 1.0f)
@@ -436,7 +454,7 @@ void Cinematic_SetForFakeCinematic(tGameCinematic *info) {
   Cinematic_fake_queued = true;
 }
 
-inline int Cinematics_CreateCamera(void) {
+static inline int Cinematics_CreateCamera(void) {
   int objnum = ObjCreate(OBJ_CAMERA, 0, Player_object->roomnum, &Player_object->pos, NULL);
   if (objnum == -1)
     return OBJECT_HANDLE_NONE;
@@ -490,7 +508,7 @@ bool Cinematic_Start(tGameCinematic *info, char *text_string) {
   return Cinematic_StartCine(info, text_string, camera_handle);
 }
 
-inline void Cinematic_DeleteCamera(int objhandle) {
+static inline void Cinematic_DeleteCamera(int objhandle) {
   object *obj = ObjGet(objhandle);
   if (obj) {
     SetObjectDeadFlag(obj);
@@ -872,7 +890,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
   return true;
 }
 
-inline bool Cinematic_IsPlayerDead(void) {
+static inline bool Cinematic_IsPlayerDead(void) {
   if (!Player_object || (Player_object->type == OBJ_GHOST) ||
       (Player_object->type == OBJ_PLAYER &&
        Players[Player_object->id].flags & (PLAYER_FLAGS_DYING | PLAYER_FLAGS_DEAD))) {
@@ -1798,7 +1816,7 @@ struct {
   float cinematic_time;
   bool should_thrust;
 } CannedCinematicEndLevel;
-bool EndLevel();
+extern bool EndLevel();
 
 void CannedCinematicEndLevelCallback(int type) {
   switch (type) {
@@ -2190,18 +2208,18 @@ void Cinematic_StartCanned(tCannedCinematicInfo *info, int camera_handle) {
 //==================================================
 // Demo file support
 //==================================================
-void mf_WriteInt(ubyte *buffer, int *pointer, int data);
-void mf_WriteShort(ubyte *buffer, int *pointer, short data);
-void mf_WriteByte(ubyte *buffer, int *pointer, ubyte data);
-void mf_WriteFloat(ubyte *buffer, int *pointer, float data);
-void mf_WriteBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
-void mf_WriteString(ubyte *buffer, int *pointer, const char *string);
-int mf_ReadInt(ubyte *buffer, int *pointer);
-short mf_ReadShort(ubyte *buffer, int *pointer);
-ubyte mf_ReadByte(ubyte *buffer, int *pointer);
-float mf_ReadFloat(ubyte *buffer, int *pointer);
-void mf_ReadBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
-void mf_ReadString(ubyte *buffer, int *pointer, char *string);
+static void mf_WriteInt(ubyte *buffer, int *pointer, int data);
+static void mf_WriteShort(ubyte *buffer, int *pointer, short data);
+static void mf_WriteByte(ubyte *buffer, int *pointer, ubyte data);
+static void mf_WriteFloat(ubyte *buffer, int *pointer, float data);
+static void mf_WriteBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
+static void mf_WriteString(ubyte *buffer, int *pointer, const char *string);
+static int mf_ReadInt(ubyte *buffer, int *pointer);
+static short mf_ReadShort(ubyte *buffer, int *pointer);
+static ubyte mf_ReadByte(ubyte *buffer, int *pointer);
+static float mf_ReadFloat(ubyte *buffer, int *pointer);
+static void mf_ReadBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
+static void mf_ReadString(ubyte *buffer, int *pointer, char *string);
 
 void Cinematic_DoDemoFileData(ubyte *buffer) {
   int count = 0;

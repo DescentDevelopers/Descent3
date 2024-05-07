@@ -79,8 +79,6 @@ void ReceiveTakeOverPacket(ubyte *data) {
   TakeOverRoom(newteam, oldteam, room, victor);
 }
 
-void RemoveVirusFromPlayer(int player_num, bool remove_all);
-
 // Handles when we get a new player packet
 void GetGameStartPacket(ubyte *data) {
   int i, count = 0;
@@ -160,6 +158,7 @@ void ReceivePickupVirus(ubyte *data) {
 #define RT_BLUREP 4
 #define RT_BLUENG 5
 
+// MTS: only used in this file.
 void SendRoomInfo(int pnum) {
   char *room_info = NULL;
   int flags, r, i;

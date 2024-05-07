@@ -57,8 +57,6 @@
 #include <stdlib.h>
 
 int glitch_dx = 0, glitch_dy = 0;
-extern tceffect TCEffects[MAX_TCEFFECTS];
-extern int Screen_roots[MAX_TELCOM_SCREENS];
 #define DISABLED_TEXT_COLOR GR_RGB(180, 180, 180);
 int GetTextEffectWithTabStopsOnScreen(int screen) {
   int count = 0;

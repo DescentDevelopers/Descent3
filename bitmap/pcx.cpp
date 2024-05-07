@@ -62,9 +62,9 @@
 #include <stdlib.h>
 
 // load an 8bit pcx image
-int bm_pcx_8bit_alloc_file(CFILE *infile);
+static int bm_pcx_8bit_alloc_file(CFILE *infile);
 // load a 24bit pcx image
-int bm_pcx_24bit_alloc_file(CFILE *infile);
+static int bm_pcx_24bit_alloc_file(CFILE *infile);
 
 // Loads a pcx file and converts it to 16 bit.  Returns bitmap handle or -1 on error
 int bm_pcx_alloc_file(CFILE *infile) {

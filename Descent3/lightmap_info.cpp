@@ -35,6 +35,8 @@ lightmap_info *LightmapInfo = NULL;
 
 static ushort *Free_lmi_list = NULL;
 
+static void CloseLightmapInfos();
+
 void CloseLightmapInfos() {
   bool final_lightmap = true;
 
@@ -191,6 +193,7 @@ int lmi_h(int handle) {
   return (LightmapInfo[handle].height);
 }
 
+// TODO: MTS: unused?
 // Softens the edges of lightmaps so there are fewer artifaces
 void ShadeLightmapInfoEdges(int type) {
   int i;
@@ -322,6 +325,7 @@ void ShadeLightmapInfoEdges(int type) {
   }
 }
 
+// TODO: MTS: unused?
 // Blurs the lightmaps so a dithering pattern is less noticeable
 void BlurLightmapInfos(int type) {
   int i;

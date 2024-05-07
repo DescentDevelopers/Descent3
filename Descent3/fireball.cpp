@@ -615,6 +615,12 @@
 
 #include <algorithm>
 
+static object *CreateSubobjectDebris(object *parent, int subobj_num, float explosion_mag, int death_flags);
+static void DrawSmolderingObject(object *obj);
+static int GetRandomExplosion(float size);
+static void CreateBlueBlastRing(vector *pos, int index, float lifetime, float max_size, int roomnum, int objnum,
+                                int force_up);
+
 // If an objects size is bigger than this, we create size/threshold extra explosions
 #define EXTRA_EXPLOSION_THRESHOLD 15
 fireball Fireballs[NUM_FIREBALLS] = {
@@ -709,7 +715,7 @@ void InitFireballs() {
   }
   GameBitmaps[Fireballs[GRAY_SPARK_INDEX].bm_handle].flags |= BF_CHANGED;
 }
-void DrawSmolderingObject(object *obj);
+
 // Given an object, renders the representation of this fireball
 void DrawFireballObject(object *obj) {
   ASSERT(obj->type == OBJ_FIREBALL);
@@ -855,6 +861,7 @@ int CreateFireball(vector *pos, int fireball_num, int roomnum, int realtype) {
 
   return objnum;
 }
+// TODO: MTS: used only in this file.
 // Creates a fireball object with a custom texture/vclip
 int CreateCustomFireballObject(vector *pos, int fireball_num, int tex_handle, int roomnum) {
   int objnum;
@@ -1199,7 +1206,7 @@ void DoDeathSpew(object *parent) {
     }
   }
 }
-int GetRandomExplosion(float size);
+
 // Creates a fireball vis effect for the specified object
 // The explosion size is based on the object size times the size_scale
 // The fireball type will be randomly selected based on the explosion size
@@ -1504,7 +1511,6 @@ void DoDyingFrame(object *objp) {
     }
   }
 }
-extern void SetShakeMagnitude(float delta);
 // Pulls every object near the gravity field into its center
 void DoGravityFieldEffect(object *obj) {
   float max_size = obj->ctype.blast_info.max_size;
@@ -2020,11 +2026,13 @@ int CreateBlastRing(vector *pos, int index, float lifetime, float max_size, int 
 
   return objnum;
 }
+// TODO: MTS: only used in this file.
 // Creates a standard blast ring for an object
 int CreateObjectBlastRing(object *objp) {
   float ring_size = OBJECT_OUTSIDE(objp) ? (objp->size * 3) : objp->size;
   return CreateBlastRing(&objp->pos, BLAST_RING_INDEX, DAMAGE_RING_TIME, ring_size, objp->roomnum);
 }
+// TODO: MTS: Not used?
 // Creates a smolding smoke to be drawn
 int CreateSmolderingObject(vector *pos, int index, float lifetime, float max_size, int roomnum) {
   int objnum;
@@ -2050,6 +2058,7 @@ void DrawColoredDisk(vector *pos, float r, float g, float b, float inner_alpha, 
   DrawColoredRing(pos, r, g, b, inner_alpha, outer_alpha, size, 0, saturate, lod);
   rend_SetZBufferWriteMask(1);
 }
+// TODO: MTS: Not used?
 // Draws a glowing cone of light using a bitmap
 void DrawColoredGlow(vector *pos, float r, float g, float b, float size) {
   rend_SetTextureType(TT_LINEAR);
@@ -2140,6 +2149,7 @@ void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, 
   }
 }
 
+// TODO: MTS: not used?
 // Draws a sphere with the appropriate texture.  If texture=-1, then uses rgb as colors
 void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size, int texture, ubyte saturate) {
   static vector sphere_vecs[16][16];
@@ -2222,7 +2232,8 @@ void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size,
   rend_SetZBufferWriteMask(1);
 }
 #define BLAST_RING_ALPHA 1.0f
-// Draws a blast ring
+// TODO: MTS: only used in this file.
+//  Draws a blast ring
 void DrawBlastRingObject(object *obj) {
   vector inner_vecs[30], outer_vecs[30];
   g3Point inner_points[30], outer_points[30];
@@ -2342,7 +2353,8 @@ void DoBlastRingEvent(int eventnum, void *data) {
   object *obj = (object *)data;
   CreateObjectBlastRing(obj);
 }
-// Creates an explosion
+// TODO: MTS: only used in this file.
+//  Creates an explosion
 void DoExplosionEvent(int eventnum, void *data) {
   float *vals = (float *)data;
   vector pos;
@@ -2395,6 +2407,7 @@ int GetRandomExplosion(float size) {
   else
     return GetRandomMediumExplosion();
 }
+// TODO: MTS: only found in this file.
 // Returns a random medium sized explosion
 int GetRandomMediumExplosion() {
   int choices[] = {MED_EXPLOSION_INDEX, MED_EXPLOSION_INDEX2, MED_EXPLOSION_INDEX3};
@@ -2406,6 +2419,7 @@ int GetRandomSmallExplosion() {
   int pick = ps_rand() % 2;
   return (choices[pick]);
 }
+// TODO: MTS: only found in this file.
 int GetRandomBillowingExplosion() {
   int choices[] = {BILLOWING_INDEX, MED_EXPLOSION_INDEX2};
   int pick = ps_rand() % 2;

@@ -73,10 +73,10 @@
 #include <algorithm>
 
 IDMFC *DMFCBase = NULL;
-IDmfcStats *dstat = NULL;
-IMenuItem *OSMenuSave = NULL;
-object *dObjects = NULL;
-player *dPlayers = NULL;
+static IDmfcStats *dstat = NULL;
+static IMenuItem *OSMenuSave = NULL;
+static object *dObjects = NULL;
+static player *dPlayers = NULL;
 
 #define SPID_INVINFO 1 // packet for hoard inventory info
 #define SPID_GAMECONFIG 2
@@ -89,6 +89,8 @@ typedef struct {
   int Score[2];
   int HighestScore[2];
 } tPlayerStat;
+static int pack_pstat(tPlayerStat *user_info, ubyte *data);
+static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
 int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
@@ -107,41 +109,39 @@ int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
   return count;
 }
 
-tGameConfig config;
+static tGameConfig config;
 
-int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
-bool DisplayScoreScreen;
-int HoardID = 0;
-int HoardOrbIcon = BAD_BITMAP_HANDLE;
-bool DisplayBlink = true;
-int WhoJustScored = -1;
-int WhoJustScoredTimer = -1;
-ubyte HUD_color_model = HCM_PLAYERCOLOR;
-int Highlight_bmp = -1;
-bool display_my_welcome = false;
+static int SortedPlayers[MAX_PLAYER_RECORDS]; // sorted player nums
+static bool DisplayScoreScreen;
+static int HoardID = 0;
+static int HoardOrbIcon = BAD_BITMAP_HANDLE;
+static bool DisplayBlink = true;
+static int WhoJustScored = -1;
+static int WhoJustScoredTimer = -1;
+static ubyte HUD_color_model = HCM_PLAYERCOLOR;
+static int Highlight_bmp = -1;
+static bool display_my_welcome = false;
 
-void OnTimer(void);
-void OnTimerKill(void);
-void DisplayWelcomeMessage(int player_num);
-void DisplayHUDScores(struct tHUDItem *hitem);
-void SortPlayerScores(int *sortedindex, int size);
-void DisplayWelcomeMessage(int player_num);
-void DoBallsEffect(int i, int count);
-void ReceiveHoardInv(ubyte *data);
-void SendHoardInv(int playernum);
-void SaveStatsToFile(char *filename);
-void ReceiveGameConfig(ubyte *data);
-void OnClientPlayerEntersGame(int player_num);
+static void OnTimer(void);
+static void OnTimerKill(void);
+static void DisplayWelcomeMessage(int player_num);
+static void DisplayHUDScores(struct tHUDItem *hitem);
+static void SortPlayerScores(int *sortedindex, int size);
+static void DisplayWelcomeMessage(int player_num);
+static void DoBallsEffect(int i, int count);
+static void ReceiveHoardInv(ubyte *data);
+static void SendHoardInv(int playernum);
+static void SaveStatsToFile(char *filename);
+static void ReceiveGameConfig(ubyte *data);
+static void OnClientPlayerEntersGame(int player_num);
 
-// Displays the Hoard game configuration dialog (Server)
-void DisplayHoardConfigDialog(tGameConfig *);
-bool Config_displayed = false;
+static bool Config_displayed = false;
 
 ///////////////////////////////////////////////
 // localization info
-char **StringTable;
-int StringTableSize = 0;
-const char *_ErrorString = "Missing String";
+static char **StringTable;
+static int StringTableSize = 0;
+static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
   if ((d < 0) || (d >= StringTableSize))
     return _ErrorString;
@@ -149,7 +149,6 @@ const char *GetStringFromTable(int d) {
     return StringTable[d];
 }
 ///////////////////////////////////////////////
-
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -1509,4 +1508,3 @@ void ShowGameConfigDialog(int i) {
 }
 
 void SwitchHUDColor(int i) { HUD_color_model = i; }
-

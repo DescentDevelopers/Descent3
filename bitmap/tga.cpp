@@ -142,13 +142,20 @@
 #include "byteswap.h"
 #include <string.h>
 #include "mem.h"
+#include "gamesequence.h"
 
 #include <stdlib.h>
 
-char *Tga_file_data = NULL;
-int Fake_pos = 0;
-int Bad_tga = 0;
-int Fake_file_size = 0;
+static char *Tga_file_data = NULL;
+static int Fake_pos = 0;
+static int Bad_tga = 0;
+static int Fake_file_size = 0;
+
+static inline char tga_read_byte();
+static inline int tga_read_int();
+static inline short tga_read_short();
+static ushort bm_tga_translate_pixel(int pixel, int format);
+static int bm_tga_read_outrage_compressed16(CFILE *infile, int n, int num_mips, int type);
 
 inline char tga_read_byte() {
   // Check for bad file
@@ -591,8 +598,6 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     return (n);
 }
 
-extern int paged_in_count;
-extern int paged_in_num;
 // Pages in bitmap index n.  Returns 1 if successful, 0 if not
 int bm_page_in_file(int n) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;

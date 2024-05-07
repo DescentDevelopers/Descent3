@@ -480,25 +480,22 @@ static tHUDItem HUD_array[MAX_HUD_ITEMS];
 struct sHUDResources HUD_resources;
 
 // initializes non configurable hud items.
-void InitDefaultHUDItems();
+static void InitDefaultHUDItems();
 
 //	initializes items based off their type (information, etc.)
-void InitHUDItem(int new_item, tHUDItem *item);
+static void InitHUDItem(int new_item, tHUDItem *item);
 
 //	iterate through entire hud item list to draw.
-void RenderHUDItems(tStatMask stat_mask);
-
-//	frees up reticle bitmaps
-void FreeReticle();
+static void RenderHUDItems(tStatMask stat_mask);
 
 //	renders the reticle
-void RenderReticle();
+static void RenderReticle();
 
 //	renders missile reticle
-void RenderMissileReticle();
+static void RenderMissileReticle();
 
 //	renders zoom reticle
-void RenderZoomReticle();
+static void RenderZoomReticle();
 
 //	hack!
 
@@ -1340,8 +1337,6 @@ void RenderAuxHUDFrame() {
   HUD_msg_con.Draw();
 }
 
-extern const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding);
-
 char *GetControllerBindingText(int fidcont) {
   static char *cont_bind_txt;
   ct_type ctype[CTLBINDS_PER_FUNC];
@@ -1921,7 +1916,7 @@ void ResetReticle() {
 }
 
 //	creates the reticle display bitmap mask to be used by the reticle renderer.
-inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
+static inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
   poly_model *pm = &Poly_models[pobj->rtype.pobj_info.model_num];
   dynamic_wb_info *dyn_wb = &pobj->dynamic_wb[wb_index];
   unsigned mask = 0;
@@ -1957,7 +1952,7 @@ inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index)
   return mask;
 }
 
-inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_mask, ushort gp_mask, const int *wb_elem_array) {
+static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_mask, ushort gp_mask, const int *wb_elem_array) {
   int i, x, y;
   int bmp_handle;
   char align;

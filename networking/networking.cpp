@@ -340,7 +340,6 @@ typedef int socklen_t;
 bool Use_DirectPlay = false;
 #endif
 
-
 #include "module.h" //for some nice defines to use below
 
 #define MAX_CONNECT_TRIES 50
@@ -418,16 +417,16 @@ static short Packet_free_list[MAX_PACKET_BUFFERS];               // contains id'
 static int Num_packet_buffers;
 static int Largest_packet_index = 0;
 
-int Uncompressed_outgoing_data_len = 0;
-int Compressed_outgoing_data_len = 0;
+static int Uncompressed_outgoing_data_len = 0;
+static int Compressed_outgoing_data_len = 0;
 
 int Next_packet_id;
 int Last_packet_id;
 
-CFILE *NetDebugFile = NULL;
+static CFILE *NetDebugFile = NULL;
 
 // An array of callbacks
-NetworkReceiveCallback Netcallbacks[16];
+static NetworkReceiveCallback Netcallbacks[16];
 
 #define R_NET_SEQUENCE_NONE 0
 #define R_NET_SEQUENCE_CONNECTING 1
@@ -436,18 +435,18 @@ NetworkReceiveCallback Netcallbacks[16];
 
 #define R_NET_PACKET_QUEUE_TIME .1f
 
-int Net_connect_socket_id = INVALID_SOCKET;
-int Net_connect_sequence = R_NET_SEQUENCE_NONE;
+static int Net_connect_socket_id = INVALID_SOCKET;
+static int Net_connect_sequence = R_NET_SEQUENCE_NONE;
 
 // ------------------------------------------------------------------------------------------------------
 // PACKET BUFFERING FUNCTIONS
 //
 
 // a sequence number of -1 will indicate that this packet is not valid
-network_packet_buffer Psnet_buffers[MAX_PACKET_BUFFERS];
-int Psnet_seq_number = 0;
-int Psnet_lowest_id = 0;
-int Psnet_highest_id = 0;
+static network_packet_buffer Psnet_buffers[MAX_PACKET_BUFFERS];
+static int Psnet_seq_number = 0;
+static int Psnet_lowest_id = 0;
+static int Psnet_highest_id = 0;
 
 // Reliable UDP stuff
 //*******************************
@@ -476,12 +475,12 @@ typedef struct {
   ubyte buffer[NETBUFFERSIZE];
 } reliable_net_rcvbuffer;
 
-SOCKET Reliable_UDP_socket = INVALID_SOCKET;
+static SOCKET Reliable_UDP_socket = INVALID_SOCKET;
 
-float first_sent_iamhere = 0;
-float last_sent_iamhere = 0;
+static float first_sent_iamhere = 0;
+static float last_sent_iamhere = 0;
 
-unsigned int serverconn = 0xFFFFFFFF;
+static unsigned int serverconn = 0xFFFFFFFF;
 
 #ifdef WIN32
 #pragma pack(pop, r_udp)
@@ -518,8 +517,12 @@ typedef struct {
   ubyte send_urgent;
 } reliable_socket;
 
-reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
+static reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
 //*******************************
+
+static void CloseNetworking();
+static void nw_SetSocketOptions(SOCKET sock);
+static void nw_LoadThreadLibrary(void);
 
 void CloseNetworking() {
   if (Sockets_initted != 1)
@@ -551,7 +554,6 @@ void CloseNetworking() {
     mprintf((0, "Error closing wsock!\n"));
   }
 #endif
-
 
   Network_initted = 0;
   Sockets_initted = 0;
@@ -919,10 +921,12 @@ int nw_Send(network_address *who_to, void *data, int len, int flags) {
   return nw_SendWithID(NWT_UNRELIABLE, (ubyte *)data, len, who_to);
 }
 
+// MTS: only used in this file?
 void nw_HandleUnreliableData(ubyte *data, int len, network_address *from_addr) {
   nw_psnet_buffer_packet((ubyte *)data, len, from_addr);
 }
 
+// MTS: unused?
 // routine to "free" a packet buffer
 void nw_FreePacket(int id) {
   Packet_buffers[id].sequence_number = -1;
@@ -1204,10 +1208,12 @@ int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent)
   return 0;
 }
 
+// MTS: only used in this file
 int nw_InitReliableSocket() {
   nw_RegisterCallback((NetworkReceiveCallback)nw_WorkReliable, NWT_RELIABLE);
   return 1;
 }
+// MTS: only used in this file
 void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link_type, float time_sent) {
   int ret;
   reliable_header ack_header;
@@ -1506,6 +1512,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
   } while (0); // while((IPX_has_data>0) || (UDP_has_data>0));
 }
 
+// MTS: only used in this file
 void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr) {
 
   int i;
@@ -1733,6 +1740,7 @@ int nw_CheckReliableSocket(int socknum) {
   }
 }
 
+// MTS: only used in this file.
 int nw_PingCompare(const void *arg1, const void *arg2) {
   float *ping1 = (float *)arg1;
   float *ping2 = (float *)arg2;
@@ -1747,6 +1755,7 @@ int nw_PingCompare(const void *arg1, const void *arg2) {
   return 0;
 }
 
+// MTS: only used in this file
 // Warning, experimental compression below, if you want to use it, talk to Kevin. Doesn't do much currently, only
 // reduces 0's
 #define COMPRESS_KEY 0xfd
@@ -1785,6 +1794,7 @@ int nw_Compress(void *srcdata, void *destdata, int count) {
   return currp - (ubyte *)destdata;
 }
 
+// MTS: only used in this file
 int nw_Uncompress(void *compdata, void *uncompdata, int count) {
   int i;
   int destlen = 0;
@@ -1814,6 +1824,7 @@ int nw_Uncompress(void *compdata, void *uncompdata, int count) {
   return destlen;
 }
 
+// MTS: only used in this file
 // initialize the buffering system
 void nw_psnet_buffer_init() {
   int idx;
@@ -1832,6 +1843,7 @@ void nw_psnet_buffer_init() {
   Psnet_highest_id = -1;
 }
 
+// MTS: only used in this file
 // buffer a packet (maintain order!)
 void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from) {
   int idx;
@@ -1865,6 +1877,7 @@ void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from) {
   }
 }
 
+// MTS: only used in this file
 // get the index of the next packet in order!
 int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpid) {
   int idx;
@@ -1902,6 +1915,7 @@ int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpi
   return 1;
 }
 
+// MTS: only used in this file
 // get the index of the next packet in order!
 int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from) {
   int idx;
@@ -1939,6 +1953,7 @@ int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from) {
 }
 
 #ifdef WIN32
+// MTS: only used in this file
 // functions to get the status of a RAS connection
 unsigned int psnet_ras_status() {
   int rval;
@@ -2037,8 +2052,8 @@ unsigned int psnet_ras_status() {
 }
 #endif
 
-async_dns_lookup aslu;
-async_dns_lookup *lastaslu = NULL;
+static async_dns_lookup aslu;
+static async_dns_lookup *lastaslu = NULL;
 
 #ifdef WIN32
 #define CDECLCALL __cdecl
@@ -2059,7 +2074,7 @@ int CDECLCALL gethostbynameworker(void *parm);
 // pthread_create_fp dpthread_create = NULL; static pthread_detach_fp dpthread_detach = NULL; static pthread_self_fp
 // dpthread_self = NULL;
 
-static void nw_LoadThreadLibrary(void) {
+void nw_LoadThreadLibrary(void) {
   // rcg06192000 use SDL threads.
   /*
           if(dpthread_create)
@@ -2498,6 +2513,7 @@ int nw_DoReceiveCallbacks(void) {
   return 0;
 }
 
+// MTS: only used in this file?
 // Resend any unack'd packets and send any buffered packets, heartbeats, etc.
 void nw_ReliableResend(void) {
   int i, j;

@@ -75,18 +75,18 @@
 typedef uint ddgr_color;
 
 // Color constants
-const ddgr_color GR_NULL = 0xffffffff, // don't do a thing with this.
+static const ddgr_color GR_NULL = 0xffffffff, // don't do a thing with this.
     GR_BLACK = 0x00000000, GR_GREEN = 0x0000ff00, GR_RED = 0x00ff0000, GR_BLUE = 0x000000ff, GR_DARKGRAY = 0x00404040,
-                 GR_LIGHTGRAY = 0x00c0c0c0, GR_WHITE = 0x00ffffff;
+                        GR_LIGHTGRAY = 0x00c0c0c0, GR_WHITE = 0x00ffffff;
 
 #define GR_COLOR_CHAR 1 // ASCII 1 and (r,g,b) changes current text color in string.
 
 //	MACROS
-inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b); }
+static inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b); }
 
-inline ushort GR_RGB16(int r, int g, int b) { return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3)); }
+static inline ushort GR_RGB16(int r, int g, int b) { return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3)); }
 
-inline ushort GR_COLOR_TO_16(ddgr_color c) {
+static inline ushort GR_COLOR_TO_16(ddgr_color c) {
   int r, g, b;
   r = ((c & 0x00ff0000) >> 16);
   g = ((c & 0x0000ff00) >> 8);
@@ -95,22 +95,22 @@ inline ushort GR_COLOR_TO_16(ddgr_color c) {
   return (ushort)(((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
 }
 
-inline int GR_COLOR_RED(ddgr_color c) {
+static inline int GR_COLOR_RED(ddgr_color c) {
   int r = ((c & 0x00ff0000) >> 16);
   return (int)r;
 }
 
-inline int GR_COLOR_GREEN(ddgr_color c) {
+static inline int GR_COLOR_GREEN(ddgr_color c) {
   int g = ((c & 0x0000ff00) >> 8);
   return (int)g;
 }
 
-inline int GR_COLOR_BLUE(ddgr_color c) {
+static inline int GR_COLOR_BLUE(ddgr_color c) {
   int b = (c & 0x000000ff);
   return (int)b;
 }
 
-inline ddgr_color GR_16_TO_COLOR(ushort col) {
+static inline ddgr_color GR_16_TO_COLOR(ushort col) {
   int r, g, b;
 
   r = (col & 0x7c00) >> 7;

@@ -1137,7 +1137,6 @@
 
 player Players[MAX_PLAYERS];
 int Player_num;
-extern bool IsCheater;
 
 int Num_teams = 0;
 int Team_game = 0;
@@ -1146,7 +1145,7 @@ float HudNameTan = -1;
 
 team Teams[MAX_TEAMS];
 
-int Highest_player_start = 0;
+static int Highest_player_start = 0;
 
 // Only one of these waypoint variable can be active at one time; the other will be -1
 int Current_waypoint = 0; // the most recent manually-set waypoint, or -1
@@ -1167,18 +1166,18 @@ float Player_energy_saved_from_last_level = -1.0f;
 
 uint Players_typing; // information about which players are typing messages (to display an icon)
 
-float Player_camera_last_sample_time = 0;
-float Player_camera_last_follow_time = 0;
+static float Player_camera_last_sample_time = 0;
+static float Player_camera_last_follow_time = 0;
 
-int Camera_sample_index = 0;
-int Camera_follow_index = 0;
-vector Camera_sample_vectors[MAX_CAMERA_SAMPLES];
-matrix Camera_sample_matrix[MAX_CAMERA_SAMPLES];
-int Camera_sample_rooms[MAX_CAMERA_SAMPLES];
+static int Camera_sample_index = 0;
+static int Camera_follow_index = 0;
+static vector Camera_sample_vectors[MAX_CAMERA_SAMPLES];
+static matrix Camera_sample_matrix[MAX_CAMERA_SAMPLES];
+static int Camera_sample_rooms[MAX_CAMERA_SAMPLES];
 
 float Total_time_dead = 0;
 
-void StartPlayerDeath(int slot, float damage, bool melee, int fate);
+static void StartPlayerDeath(int slot, float damage, bool melee, int fate);
 
 // Sets up the players array
 void InitPlayers() {

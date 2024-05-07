@@ -528,8 +528,8 @@ int main(int argc, char *argv[]) {
 
   if (FindArg("-game_checksum")) {
     extern tOSIRISModuleInit Osiris_module_init;
-    void Osiris_CreateModuleInitStruct(tOSIRISModuleInit * st);
-    unsigned int Osiris_CreateGameChecksum(void);
+    extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit * st);
+    extern unsigned int Osiris_CreateGameChecksum(void);
 
     Osiris_CreateModuleInitStruct(&Osiris_module_init);
     unsigned int checksum = Osiris_CreateGameChecksum();

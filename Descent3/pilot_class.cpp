@@ -149,11 +149,11 @@
 
 #define __PILOT_H_ // don't want to include pilot.h right now
 #include "difficulty.h"
+#include "audiotaunts.h"
 
 #include <algorithm>
 
-void grtext_SetProfanityFilter(bool enabled);
-void taunt_Enable(bool enable);
+extern void grtext_SetProfanityFilter(bool enabled);
 
 extern float Key_ramp_speed;
 

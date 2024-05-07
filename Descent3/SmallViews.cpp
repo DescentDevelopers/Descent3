@@ -178,10 +178,10 @@ typedef struct {
 } small_view;
 
 // The array of small views
-small_view Small_views[NUM_SMALL_VIEWS];
+static small_view Small_views[NUM_SMALL_VIEWS];
 
 // Saved copies of small views for while a pop-up is active
-small_view Small_views_save[NUM_SMALL_VIEWS];
+static small_view Small_views_save[NUM_SMALL_VIEWS];
 
 // guided missile in small view? if so, then true.
 bool Guided_missile_smallview = false;

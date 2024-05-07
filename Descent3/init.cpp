@@ -1017,10 +1017,16 @@ bool Running_editor = false; // didn't we have a variable like this somewhere
 static bool Init_in_editor = false;
 
 // used to update load bar.
-void SetInitMessageLength(const char *c, float amount); // portion of total bar to fill (0 to 1)
-void UpdateInitMessage(float amount);             // amount is 0 to 1
-void SetupTempDirectory(void);
-void DeleteTempFiles(void);
+static void SetInitMessageLength(const char *c, float amount); // portion of total bar to fill (0 to 1)
+extern void UpdateInitMessage(float amount);                   // amount is 0 to 1
+static void SetupTempDirectory(void);
+static void DeleteTempFiles(void);
+static void PreGameCdCheck();
+static void InitIOSystems(bool editor);
+static void InitStringTable();
+static void InitGraphics(bool editor);
+static void InitGameSystems(bool editor);
+static void InitDedicatedServer();
 
 #define TEMPBUFFERSIZE 256
 
@@ -1045,8 +1051,8 @@ extern int Use_file_xfer;
 
 extern bool Mem_superlow_memory_mode;
 
-const float kDefaultMouselookSensitivity = 9.102f;
-const float kAnglesPerDegree = 65536.0f / 360.0f;
+static const float kDefaultMouselookSensitivity = 9.102f;
+static const float kAnglesPerDegree = 65536.0f / 360.0f;
 int CD_inserted = 0;
 float Mouselook_sensitivity = kAnglesPerDegree * kDefaultMouselookSensitivity;
 float Mouse_sensitivity = 1.0f;
@@ -1352,7 +1358,6 @@ void LoadGameSettings() {
   Render_preferred_state.gamma = 1.5;
   PreferredRenderer = RENDERER_NONE;
 
-
   Sound_system.SetLLSoundQuantity(MIN_SOUNDS_MIXED + (MAX_SOUNDS_MIXED - MIN_SOUNDS_MIXED) / 2);
   D3MusicSetVolume(0.5f);
   Detail_settings.Pixel_error = 8.0;
@@ -1546,9 +1551,9 @@ void LoadGameSettings() {
 typedef struct {
   const char *wildcard;
 } tTempFileInfo;
-tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
-                                       {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
-int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
+static const tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
+                                                    {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
+static const int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
 
 /*
         I/O systems initialization
@@ -1647,14 +1652,14 @@ void InitIOSystems(bool editor) {
   sys_hid = cf_OpenLibrary(fullname);
 #endif
 #endif
-  
+
   // JC: Steam release uses extra1.hog instead of extra.hog, so try loading it first
   // Open this file if it's present for stuff we might add later
   ddio_MakePath(fullname, LocalD3Dir, "extra1.hog", NULL);
   extra_hid = cf_OpenLibrary(fullname);
   if (extra_hid == 0) {
-  	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
-  	extra_hid = cf_OpenLibrary(fullname);
+    ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+    extra_hid = cf_OpenLibrary(fullname);
   }
 
   // JC: Steam release uses extra.hog instead of merc.hog, so try loading it last (so we don't conflict with the above)
@@ -1662,8 +1667,8 @@ void InitIOSystems(bool editor) {
   ddio_MakePath(fullname, LocalD3Dir, "merc.hog", NULL);
   merc_hid = cf_OpenLibrary(fullname);
   if (merc_hid == 0) {
-  	ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
-  	merc_hid = cf_OpenLibrary(fullname);
+    ddio_MakePath(fullname, LocalD3Dir, "extra.hog", NULL);
+    merc_hid = cf_OpenLibrary(fullname);
   }
 
   // Open this for extra 1.3 code (Black Pyro, etc)
@@ -1710,9 +1715,7 @@ void InitIOSystems(bool editor) {
 }
 
 // Returns true if Mercenary is installed (inits the Black Pyro and Red GB)
-bool MercInstalled() {
-	return merc_hid > 0;
-}
+bool MercInstalled() { return merc_hid > 0; }
 
 extern int Num_languages;
 void InitStringTable() {
@@ -2066,7 +2069,6 @@ void InitD3Systems1(bool editor) {
   // Initialize a random seed.
   ps_srand(time(nullptr));
 
-
   // This function has to be done before any sound stuff is called
   InitSounds();
 
@@ -2325,8 +2327,7 @@ void DeleteTempFiles(void) {
       if (ddio_FindFileStart(temp_file_wildcards[i].wildcard, filename)) {
         do {
           ddio_DeleteFile(filename);
-        }
-        while (ddio_FindNextFile(filename));
+        } while (ddio_FindNextFile(filename));
       }
       ddio_FindFileClose();
     }
@@ -2349,6 +2350,7 @@ static bool Init_ui_cursor_visible;
 static bool Init_was_game_paused = false;
 static pilot Init_old_pilot;
 
+// TODO: MTS: Unused in project
 void ShutdownD3() {
   if (!Init_systems_init)
     return;
@@ -2392,6 +2394,7 @@ void ShutdownD3() {
   ddio_Close();
 }
 
+// TODO: MTS: unused in project
 //	This function restarts all game systems
 void RestartD3() {
   ddio_init_info io_info;

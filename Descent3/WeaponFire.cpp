@@ -945,7 +945,7 @@
 
 #include <algorithm>
 
-bool AreObjectsAttached(const object *obj1, const object *obj2) {
+static bool AreObjectsAttached(const object *obj1, const object *obj2) {
   const bool f_o1_a = (obj1->flags & OF_ATTACHED) != 0;
   const bool f_o2_a = (obj2->flags & OF_ATTACHED) != 0;
 
@@ -1054,8 +1054,7 @@ bool ObjectsAreRelated(int o1, int o2) {
   if (obj1->parent_handle == obj2->parent_handle) {
     if ((obj1->mtype.phys_info.flags & PF_HITS_SIBLINGS) || (obj2->mtype.phys_info.flags & PF_HITS_SIBLINGS)) {
       return false; // if either is proximity, then can blow up, so say not related
-    }
-    else {
+    } else {
       return true;
     }
   }
@@ -3066,9 +3065,6 @@ void FireFlareFromPlayer(object *objp) {
     // Players[Player_num].num_discharges_level++;
   }
 }
-
-// Creates a gravity field that sucks objects into it
-int CreateGravityField(vector *pos, int roomnum, float size, float time, int parent_handle);
 
 // Plays the animation that accompanies a weapon death
 void DoWeaponExploded(object *obj, vector *norm, vector *collision_point, object *hit_object) {

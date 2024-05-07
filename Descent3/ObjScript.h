@@ -105,22 +105,22 @@ struct object;
 struct trigger;
 
 //	assigns scripts for a level.
-void AssignScriptsForLevel();
+extern void AssignScriptsForLevel();
 
 //	free scripts for a level
-void FreeScriptsForLevel();
+extern void FreeScriptsForLevel();
 
 // allocates and initializes the scripts for an object.
-void InitObjectScripts(object *objp, bool do_evt_created = true);
+extern void InitObjectScripts(object *objp, bool do_evt_created = true);
 
 // frees all scripts for an object.
-void FreeObjectScripts(object *objp, bool level_end = false);
+extern void FreeObjectScripts(object *objp, bool level_end = false);
 
 // allocates and initializes the scripts for a trigger.
-void InitTriggerScript(trigger *tp);
+extern void InitTriggerScript(trigger *tp);
 
 // frees all scripts for an trigger.
-void FreeTriggerScript(trigger *tp, bool level_end = false);
+extern void FreeTriggerScript(trigger *tp, bool level_end = false);
 
 //@@// called to reinitialize an object's 'state' given the current script element of object.
 //@@//	refuses to call EVT_CREATED too.  this just restores the state of a script given the current script_info

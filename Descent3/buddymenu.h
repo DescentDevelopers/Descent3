@@ -20,5 +20,7 @@
 #define __BUDDYMENU_H_
 
 void BuddyDisplay(void);
+struct gb_com;
+extern void MultiSendGuidebotMenuSelection(gb_com *);
 
 #endif

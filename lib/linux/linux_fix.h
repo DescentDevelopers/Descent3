@@ -45,7 +45,7 @@ char *strupr(char *string);
 // _stdcall replacement
 #define _stdcall __attribute__((stdcall))
 
-inline int _filelength(int fd) {
+static inline int _filelength(int fd) {
   struct stat statbuf;
 
   if (fstat(fd, &statbuf) != 0) {

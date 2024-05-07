@@ -122,19 +122,18 @@ typedef struct {
   int goal_index;
   int lx, rx, ty, by; // bounding box
 } tGoalLineInfo;
-tGoalLineInfo *TG_Lines;
-int TG_NumLines;
-int *TG_SortedList;
-int TG_CurrObjectiveArrow;
+static tGoalLineInfo *TG_Lines;
+static int TG_NumLines;
+static int *TG_SortedList;
+static int TG_CurrObjectiveArrow;
 typedef struct {
   int w, h;
 } tToolTipData;
 
-tToolTipData TG_TT_dest;
-tToolTipData TG_TT_curr;
-chunked_bitmap TG_Tooltipbitmap;
-int TG_MouseOffset_x = -1, TG_MouseOffset_y = -1;
-extern int TC_cursor;
+static tToolTipData TG_TT_dest;
+static tToolTipData TG_TT_curr;
+static chunked_bitmap TG_Tooltipbitmap;
+static int TG_MouseOffset_x = -1, TG_MouseOffset_y = -1;
 // returns true if left < right
 bool TG_compare_slots(int left, int right) {
   int left_index, right_index;
@@ -297,7 +296,6 @@ int FindHighlightedItem(int x, int y) {
 #define COLOR_INCOMPLETE GR_RGB(255, 40, 40)
 #define COLOR_FAILED GR_RGB(255, 255, 40)
 
-extern float last_frametime;
 void TCGoalsRenderCallback(void) {
   static bool active_alpha_in = false;
   static float active_alpha = ACTIVE_ALPHA_MAX;

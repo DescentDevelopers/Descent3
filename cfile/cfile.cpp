@@ -92,7 +92,10 @@ void ThrowCFileError(int type, CFILE *file, const char *msg) {
   throw &cfe;
 }
 
-void cf_Close();
+static void cf_Close();
+
+// searches through the open HOG files, and opens a file if it finds it in any of the libs
+static CFILE *open_file_in_lib(const char *filename);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
 // Parameters:  libname - the path & filename of the HOG file
@@ -344,7 +347,7 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   }
   cfile = (CFILE *)mem_malloc(sizeof(*cfile));
   if (!cfile)
-    Error("Out of memory in open_file_in_lib()");
+    Error("Out of memory in cf_OpenFileInLibrary()");
   cfile->name = lib->entries[i].name;
   cfile->file = fp;
   cfile->lib_handle = lib->handle;
@@ -482,6 +485,9 @@ void CFindFiles::Close() {
   globindex = -1;
   globfree(&ffres);
 }
+
+static FILE *open_file_in_directory_case_sensitive(const char *directory, const char *filename, const char *mode,
+                                                   char *new_filename);
 
 bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *fname, char *new_filename) {
   bool use_dir = false;
@@ -636,6 +642,9 @@ FILE *open_file_in_directory_case_sensitive(const char *directory, const char *f
   return nullptr;
 }
 #endif
+
+// look for the file in the specified directory
+static CFILE *open_file_in_directory(const char *filename, const char *mode, const char *directory);
 
 // look for the file in the specified directory
 CFILE *open_file_in_directory(const char *filename, const char *mode, const char *directory) {
@@ -880,10 +889,11 @@ int cfexist(const char *filename) {
   int ret;
 
   cfp = cfopen(filename, "rb");
-  if (!cfp) {            // Didn't get file.  Why?
-    if (errno == EACCES) // File exists, but couldn't open it
+  if (!cfp) {              // Didn't get file.  Why?
+    if (errno == EACCES)   // File exists, but couldn't open it
       return CFES_ON_DISK; // so say it exists on the disk
-                         // DAJ		if (errno != ENOENT)			//Check if error is "file not found"
+                           // DAJ		if (errno != ENOENT)			//Check if error is "file not
+                           // found"
     // DAJ			Int3();						//..warn if not
     return CFES_NOT_FOUND; // Say we didn't find the file
   }

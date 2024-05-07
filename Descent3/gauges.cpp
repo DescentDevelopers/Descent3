@@ -255,56 +255,59 @@ static float *Render_normalized_times;
 static bool Render_gauge_moving; // gauge is moving, but temporarily off.
 static bool Render_gauge_reset;  //	set this if gauges will be moving, but are still active
 
+// TODO: MTS: function not found
 //	loads all shield bitmaps into memory
-void FreeShieldFrames();
+static void FreeShieldFrames();
 
+// TODO: MTS: function not found
 //	loads all ship bitmaps into memory
-void FreeShipFrames();
+static void FreeShipFrames();
 
 //	projects monitor coordinates to screen coordinates
-void RotateMonitorPosition(tGauge *gauge);
+static void RotateMonitorPosition(tGauge *gauge);
 
+// TODO: MTS: function not found
 // renders the current inventory item name at the x,y position
-void InventoryRenderGauge(int x, int y);
+static void InventoryRenderGauge(int x, int y);
 
 //	renders the primary monitor gauge
-void RenderPrimaryMonitor(tGauge *gauge, bool modified);
+static void RenderPrimaryMonitor(tGauge *gauge, bool modified);
 
 //	renders the secondary monitor gauge
-void RenderSecondaryMonitor(tGauge *gauge, bool modified);
+static void RenderSecondaryMonitor(tGauge *gauge, bool modified);
 
 //	renders the shield gauge monitor
-void RenderShieldMonitor(tGauge *gauge, bool modified);
+static void RenderShieldMonitor(tGauge *gauge, bool modified);
 
 //	renders the ship gauge monitor
-void RenderShipMonitor(tGauge *gauge, bool modified);
+static void RenderShipMonitor(tGauge *gauge, bool modified);
 
 //	renders the ship gauge monitor
-void RenderEnergyMonitor(tGauge *gauge, int orient, bool modified);
+static void RenderEnergyMonitor(tGauge *gauge, int orient, bool modified);
 
 //	renders the ship gauge monitor
-void RenderAfterburnMonitor(tGauge *gauge, bool modified);
+static void RenderAfterburnMonitor(tGauge *gauge, bool modified);
 
 //	renders a monitor style quad
-void DrawGaugeMonitor(g3Point *pts, int bm, float brightness, float *alphas);
+static void DrawGaugeMonitor(g3Point *pts, int bm, float brightness, float *alphas);
 
 //	renders a square texture onto the screen.
-void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, ubyte alpha, bool saturate);
+static void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, ubyte alpha, bool saturate);
 
 //	renders a square texture onto the screen.
-void DrawGaugeQuad(g3Point *pts, int bm, ubyte alpha = 255, bool saturate = false);
+static void DrawGaugeQuad(g3Point *pts, int bm, ubyte alpha = 255, bool saturate = false);
 
 //	renders a flat poly onto the screen with given color
-void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, ubyte alpha);
+static void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, ubyte alpha);
 
 //	renders a flat poly onto the screen with 4 colors (for each vertex)
-void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, ubyte alpha);
+static void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, ubyte alpha);
 
 // correctly orders monitor vertices based off of UVs
-int GetFirstVert(bsp_info *sm);
+static int GetFirstVert(bsp_info *sm);
 
 //	tells what gauge index is the gauge stat item.
-inline int GAUGE_INDEX(tStatMask mask) {
+static inline int GAUGE_INDEX(tStatMask mask) {
   int i;
 
   for (i = 0; i < NUM_GAUGES; i++)
@@ -498,7 +501,7 @@ void FlagGaugesNonfunctional(tStatMask mask) {
 //		can render another view though.
 //	renders the primary monitor gauge
 
-inline int get_weapon_hud_image(int player, int type) {
+static inline int get_weapon_hud_image(int player, int type) {
   player_weapon *pw = &Players[player].weapon[type];
   weapon *wpn = GetWeaponFromIndex(player, pw->index);
 

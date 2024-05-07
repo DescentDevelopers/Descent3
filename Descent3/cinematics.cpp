@@ -42,7 +42,7 @@ static struct {
 static bool Cinematic_lib_init = false;
 static int Cinematic_x = 0, Cinematic_y = 0, Cinematic_w = 0, Cinematic_h = 0;
 
-void CinematicCallback(int mve_x, int mve_y, int frame_num);
+static void CinematicCallback(int mve_x, int mve_y, int frame_num);
 
 ///////////////////////////////////////////////////////////////////////////////
 //	functions
