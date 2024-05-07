@@ -81,9 +81,6 @@ jobs:
       - name: Run ${{ matrix.build_type }} Unittests
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
-      - name: Ensure artifacts contain LICENSE
-        run: cp LICENSE ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/${{ matrix.build_type }}/
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
