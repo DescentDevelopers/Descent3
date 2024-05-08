@@ -1,6 +1,6 @@
 /*
 * Descent 3
-* Copyright (C) 2024 Parallax Software
+* Copyright (C) 2024 Descent Developers
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,24 +18,14 @@
 
 // TODO: This is missing a good way of overriding base behavior (like, you know, method overrides...)
 
-#include "DDAccess.h"
-#include "pstypes.h"
 #include "pserror.h"
 #include "mono.h"
 #include "3d.h"
 #include "renderer.h"
-#include "ddvid.h"
-#include "ddio.h"
-#include "application.h"
 #include "bitmap.h"
-#include "lightmap.h"
-#include "rend_opengl.h"
 #include "grdefs.h"
-#include "mem.h"
-#include "rtperformance.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstring>
+
 #include "HardwareInternal.h"
 
 // FIXME: Unused
