@@ -54,6 +54,8 @@ bool UseMultitexture = false;
 bool UseWBuffer = false;
 
 // General renderer states
+int gpu_Overlay_map = -1;
+ubyte gpu_Overlay_type = OT_NONE;
 ubyte Renderer_initted = 0;
 
 // Generic GPU data
@@ -122,6 +124,13 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
   rend_FontAlpha[2] = (color3 >> 24) / 255.0f;
   rend_FontAlpha[3] = (color4 >> 24) / 255.0f;
 }
+
+// Sets a bitmap as a overlay map to rendered on top of the next texture map
+// a -1 value indicates no overlay map
+void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
+
+void rend_SetOverlayType(ubyte type) { gpu_Overlay_type = type; }
+
 
 void rend_FillCircle(ddgr_color col, int x, int y, int rad) {}
 

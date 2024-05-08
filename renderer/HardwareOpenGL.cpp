@@ -61,10 +61,10 @@ void rend_SetLightingState(light_state state);
 #define CHANGE_RESOLUTION_IN_FULLSCREEN
 
 // General renderer states
-int gpu_Overlay_map = -1;
+extern int gpu_Overlay_map;
 int Bump_map = 0;
 int Bumpmap_ready = 0;
-ubyte gpu_Overlay_type = OT_NONE;
+extern ubyte gpu_Overlay_type;
 float Z_bias = 0.0f;
 ubyte Renderer_close_flag = 0;
 extern ubyte Renderer_initted;
@@ -2409,12 +2409,6 @@ void rend_SetZValues(float nearz, float farz) {
   // It is set in init
   //@@dglDepthRange (0,farz);
 }
-
-// Sets a bitmap as a overlay map to rendered on top of the next texture map
-// a -1 value indicates no overlay map
-void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
-
-void rend_SetOverlayType(ubyte type) { gpu_Overlay_type = type; }
 
 // Clears the display to a specified color
 void rend_ClearScreen(ddgr_color color) {
