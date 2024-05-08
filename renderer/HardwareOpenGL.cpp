@@ -138,7 +138,8 @@ static int Last_texel_unit_set = -1;
 static int OpenGL_last_frame_polys_drawn = 0;
 static int OpenGL_last_frame_verts_processed = 0;
 static int OpenGL_last_uploaded = 0;
-static float OpenGL_Alpha_factor = 1.0f;
+
+static float gpu_Alpha_factor = 1.0f;
 
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
 PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
@@ -1515,7 +1516,7 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
     fb = GR_COLOR_BLUE(OpenGL_state.cur_color);
   }
 
-  alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  alpha = Alpha_multiplier * gpu_Alpha_factor;
 
   vertp = &GL_verts[0];
   texp = &GL_tex_coords[0];
@@ -1528,7 +1529,7 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
     if (OpenGL_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+      alpha = pnt->p3_a * Alpha_multiplier * gpu_Alpha_factor;
 
     // If we have a lighting model, apply the correct lighting!
     if (OpenGL_state.cur_light_state != LS_NONE) {
@@ -1611,7 +1612,7 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
     opengl_SetMultitextureBlendMode(false);
   }
 
-  float alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  float alpha = Alpha_multiplier * gpu_Alpha_factor;
 
   fr = GR_COLOR_RED(OpenGL_state.cur_color);
   fg = GR_COLOR_GREEN(OpenGL_state.cur_color);
@@ -1627,7 +1628,7 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
     if (OpenGL_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+      alpha = pnt->p3_a * Alpha_multiplier * gpu_Alpha_factor;
 
     // If we have a lighting model, apply the correct lighting!
     if (OpenGL_state.cur_light_state != LS_NONE) {
@@ -1908,7 +1909,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   opengl_MakeWrapTypeCurrent(handle, map_type, 0);
   opengl_MakeFilterTypeCurrent(handle, map_type, 0);
 
-  alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  alpha = Alpha_multiplier * gpu_Alpha_factor;
 
   vertp = &GL_verts[0];
   texp = &GL_tex_coords[0];
@@ -1955,7 +1956,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     ////////////////////////////////////////////
 
     if (OpenGL_state.cur_alpha_type & ATF_VERTEX) {
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+      alpha = pnt->p3_a * Alpha_multiplier * gpu_Alpha_factor;
     }
 
     // If we have a lighting model, apply the correct lighting!
@@ -2070,7 +2071,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   opengl_MakeWrapTypeCurrent(handle, MAP_TYPE_BITMAP, 0);
   opengl_MakeFilterTypeCurrent(handle, MAP_TYPE_BITMAP, 0);
 
-  float alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  float alpha = Alpha_multiplier * gpu_Alpha_factor;
 
   vector *vertp = &GL_verts[0];
   tex_array *texp = &GL_tex_coords[0];
@@ -2083,7 +2084,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
 
     if (OpenGL_state.cur_alpha_type & ATF_VERTEX) {
       // the alpha should come from the vertex
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+      alpha = pnt->p3_a * Alpha_multiplier * gpu_Alpha_factor;
     }
 
     // If we have a lighting model, apply the correct lighting!
@@ -2730,11 +2731,11 @@ void rend_SetAlphaFactor(float val) {
     val = 0.0f;
   if (val > 1.0f)
     val = 1.0f;
-  OpenGL_Alpha_factor = val;
+  gpu_Alpha_factor = val;
 }
 
 // Returns the current Alpha factor
-float rend_GetAlphaFactor(void) { return OpenGL_Alpha_factor; }
+float rend_GetAlphaFactor(void) { return gpu_Alpha_factor; }
 
 // Sets the texture wrapping type
 void rend_SetWrapType(wrap_type val) { OpenGL_state.cur_wrap_type = val; }
@@ -2756,7 +2757,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
   fg /= 255.0f;
   fb /= 255.0f;
 
-  alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  alpha = Alpha_multiplier * gpu_Alpha_factor;
 
   // And draw!
   dglBegin(GL_LINES);
@@ -2767,7 +2768,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
       pnt = p1;
 
     if (OpenGL_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+      alpha = pnt->p3_a * Alpha_multiplier * gpu_Alpha_factor;
 
     // If we have a lighting model, apply the correct lighting!
     if (OpenGL_state.cur_light_state != LS_NONE) {
