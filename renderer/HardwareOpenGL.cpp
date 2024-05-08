@@ -508,42 +508,12 @@ int opengl_Setup(HDC glhdc) {
 }
 #elif defined(__LINUX__)
 
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-static long minimumAcceptableRender = -1;
-static Uint32 lastSwapTicks = 0;
-static int tooSlowCount = 0;
-static int tooSlowChecksLeft = 0;
-
-void setMinimumAcceptableRenderTime(int ms) {
-  if (nofpscheck)
-    return;
-
-  minimumAcceptableRender = ms;
-  lastSwapTicks = SDL_GetTicks();
-  tooSlowCount = 0;
-  tooSlowChecksLeft = 15; // check 15 frames.
-}
-#endif
-
 extern bool linux_permit_gamma;
 extern renderer_preferred_state Render_preferred_state;
 extern bool ddio_mouseGrabbed;
 int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
 int opengl_Setup(oeApplication *app, int *width, int *height) {
-// rcg11192000 don't check for FPS.
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-  nofpscheck = (FindArgChar("-nofpscheck", 'H') != 0);
-
-  // rcg01252000 reset these, so they don't barf if we change
-  // video modes for a movie or whatnot in the middle of
-  // checking rendering speed...
-  minimumAcceptableRender = -1;
-  lastSwapTicks = 0;
-  tooSlowCount = 0;
-  tooSlowChecksLeft = 0;
-#endif
-
   // rcg09182000 don't need to quitsubsystem anymore...
   //    SDL_QuitSubSystem(SDL_INIT_VIDEO);  // here goes nothing...
   //    Already_loaded = false;
@@ -2233,32 +2203,6 @@ void rend_StartFrame(int x1, int y1, int x2, int y2, int clear_flags) {
   gpu_state.clip_y2 = y2;
 }
 
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-// !!! FIXME: delete this whole section (and definitely the Loki email and phone number!).
-#error do not compile this in. This was for software mesa problems in 2000.
-static void slownessAbort(void) {
-
-#ifdef __LINUX__
-  SDL_Surface *surface = SDL_GetVideoSurface();
-  SDL_SetVideoMode(surface->w, surface->h, surface->format->BitsPerPixel, surface->flags & ~SDL_OPENGL);
-
-  sdl_ShowMessage("Your OpenGL driver is too slow to play this game.\n"
-                  "Driver used: [ %s ]\n"
-                  "Please change your driver!\n"
-                  "Email support@lokigames.com for help,\n"
-                  "or call 1-714-508-2140 (9-5 PM US Pacific Time).\n",
-                  loadedLibrary);
-
-  SDL_GL_SwapBuffers();
-  Sleep(10000);
-  SDL_Quit();
-  _exit(99);
-#else
-#error Fill in an aborting notice for your platform.
-#endif
-
-} // slownessAbort
-#endif
 
 // Flips the screen
 void rend_Flip(void) {
@@ -2296,25 +2240,6 @@ void rend_Flip(void) {
   if (__glLog == true) {
     DGL_LogNewFrame();
   }
-#endif
-
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-  if (minimumAcceptableRender > 0) {
-    Uint32 newticks = SDL_GetTicks();
-    if ((newticks - lastSwapTicks) > minimumAcceptableRender) {
-      tooSlowCount++;
-      if (tooSlowCount >= 3) {
-        slownessAbort();
-      } // if
-    }   // if
-
-    // disable check?
-    tooSlowChecksLeft--;
-    if (tooSlowChecksLeft <= 0) {
-      minimumAcceptableRender = -1;
-    }
-    lastSwapTicks = newticks;
-  } // if
 #endif
 }
 

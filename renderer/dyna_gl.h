@@ -534,11 +534,6 @@ module *LoadOpenGLDLL(const char *dllname) {
 
   module *LoadOpenGLDLL(const char *dllname);
 
-// ryan's add. 10/04/2000
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-  void setMinimumAcceptableRenderTime(int ms);
-#endif
-
 #else
 #endif
   mprintf((0, "OpenGL dll loading successful.\n"));
