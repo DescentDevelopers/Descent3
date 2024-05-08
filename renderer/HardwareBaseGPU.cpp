@@ -123,6 +123,38 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
   rend_FontAlpha[3] = (color4 >> 24) / 255.0f;
 }
 
+void rend_FillCircle(ddgr_color col, int x, int y, int rad) {}
+
+void rend_DrawCircle(int x, int y, int rad) {}
+
+// Sets up a font character to draw.  We draw our fonts as pieces of textures
+void rend_DrawFontCharacter(int bm_handle, int x1, int y1, int x2, int y2, float u, float v, float w, float h) {
+  g3Point *ptr_pnts[4];
+  g3Point pnts[4];
+  for (int i = 0; i < 4; i++) {
+    pnts[i].p3_z = 1; // Make REALLY close!
+    pnts[i].p3_flags = PF_PROJECTED;
+    ptr_pnts[i] = &pnts[i];
+  }
+  pnts[0].p3_sx = x1;
+  pnts[0].p3_sy = y1;
+  pnts[0].p3_u = u;
+  pnts[0].p3_v = v;
+  pnts[1].p3_sx = x2;
+  pnts[1].p3_sy = y1;
+  pnts[1].p3_u = u + w;
+  pnts[1].p3_v = v;
+  pnts[2].p3_sx = x2;
+  pnts[2].p3_sy = y2;
+  pnts[2].p3_u = u + w;
+  pnts[2].p3_v = v + h;
+  pnts[3].p3_sx = x1;
+  pnts[3].p3_sy = y2;
+  pnts[3].p3_u = u;
+  pnts[3].p3_v = v + h;
+  rend_DrawPolygon2D(bm_handle, ptr_pnts, 4);
+}
+
 // Sets the alpha value for constant alpha
 void rend_SetAlphaValue(ubyte val) {
   gpu_state.cur_alpha = val;
