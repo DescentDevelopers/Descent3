@@ -2990,9 +2990,6 @@ void rend_SetFrameBufferCopyState(bool state) {
   }
 }
 
-// Changes the resolution of the renderer
-void rend_SetResolution(int width, int height) {}
-
 // Gets OpenGL ready to work in a window
 int rend_InitOpenGLWindow(oeApplication *app, renderer_preferred_state *pref_state) {
   WindowGL = 1;
@@ -3017,21 +3014,6 @@ void rend_SetCoplanarPolygonOffset(float factor) {
     dglPolygonOffset(-1.0f, -1.0f);
   }
 }
-
-// Preuploads a texture to the video card
-void rend_PreUploadTextureToCard(int handle, int map_type) {}
-
-// Frees an uploaded texture from the video card
-void rend_FreePreUploadedTexture(int handle, int map_type) {}
-
-// Returns 1 if there is mid video memory, 2 if there is low vid memory, or 0 if there is large vid memory
-int rend_LowVidMem(void) { return 0; }
-
-// Returns 1 if the renderer supports bumpmapping
-int rend_SupportsBumpmapping(void) { return 0; }
-
-// Sets a bumpmap to be rendered, or turns off bumpmapping altogether
-void rend_SetBumpmapReadyState(int state, int map) {}
 
 // returns the direct draw object
 void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {

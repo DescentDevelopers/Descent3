@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: This is missing a good way of overriding base behavior (like, you know, method overrides...)
+
 #include "DDAccess.h"
 #include "pstypes.h"
 #include "pserror.h"
@@ -103,6 +105,21 @@ void rend_SetAlphaFactor(float val) {
 
 // Returns the current Alpha factor
 float rend_GetAlphaFactor(void) { return gpu_Alpha_factor; }
+
+// Preuploads a texture to the video card
+void rend_PreUploadTextureToCard(int handle, int map_type) {}
+
+// Frees an uploaded texture from the video card
+void rend_FreePreUploadedTexture(int handle, int map_type) {}
+
+// Returns 1 if there is mid video memory, 2 if there is low vid memory, or 0 if there is large vid memory
+int rend_LowVidMem(void) { return 0; }
+
+// Returns 1 if the renderer supports bumpmapping
+int rend_SupportsBumpmapping(void) { return 0; }
+
+// Sets a bumpmap to be rendered, or turns off bumpmapping altogether
+void rend_SetBumpmapReadyState(int state, int map) {}
 
 // returns rendering statistics for the frame
 void rend_GetStatistics(tRendererStats *stats) {

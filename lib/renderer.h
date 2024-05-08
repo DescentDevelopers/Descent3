@@ -631,9 +631,6 @@ void rend_GetRenderState(rendering_state *rstate);
 // Draws a simple bitmap at the specified x,y location
 void rend_DrawSimpleBitmap(int bm_handle, int x, int y);
 
-// Changes the resolution of the renderer
-void rend_SetResolution(int width, int height);
-
 // Gets OpenGL ready to work in a window
 int rend_InitOpenGLWindow(oeApplication *app, renderer_preferred_state *pref_state);
 
