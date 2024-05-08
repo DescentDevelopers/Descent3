@@ -60,19 +60,6 @@ void rend_SetLightingState(light_state state);
 
 #define CHANGE_RESOLUTION_IN_FULLSCREEN
 
-// The font characteristics
-static float rend_FontRed[4], rend_FontBlue[4], rend_FontGreen[4], rend_FontAlpha[4];
-char Renderer_error_message[256] = "Generic renderer error";
-// The following values are referenced by the game code, but only
-// UseMultitexture is actually referenced and used in this code - and
-// even that can probably go away and we just assume there is more than
-// one texture unit (which, since I believe OpenGL 1.2 is a requirement)
-bool UseHardware = true;
-bool NoLightmaps = false;
-bool StateLimited = false;
-bool UseMultitexture = false;
-bool UseWBuffer = false;
-
 // General renderer states
 int Overlay_map = -1;
 int Bump_map = 0;
@@ -139,7 +126,7 @@ static int OpenGL_last_frame_polys_drawn = 0;
 static int OpenGL_last_frame_verts_processed = 0;
 static int OpenGL_last_uploaded = 0;
 
-static float gpu_Alpha_factor = 1.0f;
+extern float gpu_Alpha_factor;
 
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
 PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
@@ -2586,26 +2573,6 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   rend_SetTextureType(ttype);
 }
 
-// Sets the argb characteristics of the font characters.  color1 is the upper left and proceeds clockwise
-void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_color color3, ddgr_color color4) {
-  rend_FontRed[0] = (float)(GR_COLOR_RED(color1) / 255.0f);
-  rend_FontRed[1] = (float)(GR_COLOR_RED(color2) / 255.0f);
-  rend_FontRed[2] = (float)(GR_COLOR_RED(color3) / 255.0f);
-  rend_FontRed[3] = (float)(GR_COLOR_RED(color4) / 255.0f);
-  rend_FontGreen[0] = (float)(GR_COLOR_GREEN(color1) / 255.0f);
-  rend_FontGreen[1] = (float)(GR_COLOR_GREEN(color2) / 255.0f);
-  rend_FontGreen[2] = (float)(GR_COLOR_GREEN(color3) / 255.0f);
-  rend_FontGreen[3] = (float)(GR_COLOR_GREEN(color4) / 255.0f);
-  rend_FontBlue[0] = (float)(GR_COLOR_BLUE(color1) / 255.0f);
-  rend_FontBlue[1] = (float)(GR_COLOR_BLUE(color2) / 255.0f);
-  rend_FontBlue[2] = (float)(GR_COLOR_BLUE(color3) / 255.0f);
-  rend_FontBlue[3] = (float)(GR_COLOR_BLUE(color4) / 255.0f);
-  rend_FontAlpha[0] = (color1 >> 24) / 255.0f;
-  rend_FontAlpha[1] = (color2 >> 24) / 255.0f;
-  rend_FontAlpha[2] = (color3 >> 24) / 255.0f;
-  rend_FontAlpha[3] = (color4 >> 24) / 255.0f;
-}
-
 // Sets the color of fog
 void rend_SetFogColor(ddgr_color color) {
   if (color == OpenGL_state.cur_fog_color)
@@ -2723,19 +2690,6 @@ void rend_SetAlphaValue(ubyte val) {
   OpenGL_state.cur_alpha = val;
   Alpha_multiplier = opengl_GetAlphaMultiplier();
 }
-
-// Sets the overall alpha scale factor (all alpha values are scaled by this value)
-// usefull for motion blur effect
-void rend_SetAlphaFactor(float val) {
-  if (val < 0.0f)
-    val = 0.0f;
-  if (val > 1.0f)
-    val = 1.0f;
-  gpu_Alpha_factor = val;
-}
-
-// Returns the current Alpha factor
-float rend_GetAlphaFactor(void) { return gpu_Alpha_factor; }
 
 // Sets the texture wrapping type
 void rend_SetWrapType(wrap_type val) { OpenGL_state.cur_wrap_type = val; }
@@ -3068,15 +3022,6 @@ void rend_PreUploadTextureToCard(int handle, int map_type) {}
 
 // Frees an uploaded texture from the video card
 void rend_FreePreUploadedTexture(int handle, int map_type) {}
-
-// Retrieves an error message
-const char *rend_GetErrorMessage() { return Renderer_error_message; }
-
-// Sets an error message
-void rend_SetErrorMessage(const char *str) {
-  ASSERT(strlen(str) < 256);
-  strcpy(Renderer_error_message, str);
-}
 
 // Returns 1 if there is mid video memory, 2 if there is low vid memory, or 0 if there is large vid memory
 int rend_LowVidMem(void) { return 0; }
