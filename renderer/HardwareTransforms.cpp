@@ -16,9 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "RendererConfig.h"
-#ifndef USE_SOFTWARE_TNL
-
 #include "3d.h"
 #include "pserror.h"
 #include "HardwareInternal.h"
@@ -115,5 +112,3 @@ void g3_RefreshTransforms(bool usePassthru) {
   // store the pass-thru
   sUseTransformPassthru = (usePassthru) ? 1 : 0;
 }
-
-#endif

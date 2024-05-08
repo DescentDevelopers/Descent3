@@ -686,12 +686,4 @@ void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf);
 #endif
 #endif
 
-///////////////////////////////////////////////////////////////
-#include "../renderer/RendererConfig.h"
-#ifdef USE_SOFTWARE_TNL
-#include "IMeshBuilder.h"
-
-RZ::Renderer::IMeshBuilder *rend_CreateMeshBuilder(void);
-#endif
-
 #endif
