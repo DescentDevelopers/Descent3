@@ -390,8 +390,7 @@ void DeformTerrainPoint(int x, int z, int change_height) {
 
   change_height += tseg->ypos;
 
-  change_height = std::min(255, change_height);
-  change_height = std::max(0, change_height);
+  change_height = std::clamp(change_height, 0, 255);
 
   tseg->ypos = change_height;
   tseg->y = tseg->ypos * TERRAIN_HEIGHT_INCREMENT;
@@ -751,8 +750,7 @@ void SetupSky(float radius, int flags, ubyte randit) {
     float ynorm = starvec.y / (Terrain_sky.radius * 500);
 
     float color_norm = ynorm * 2;
-    color_norm = std::min<float>(1.0, color_norm);
-    color_norm = std::max<float>(.2, color_norm);
+    color_norm = std::clamp(color_norm, 0.2f, 1.0f);
     int color = ps_rand() % 6;
     int r, g, b;
 

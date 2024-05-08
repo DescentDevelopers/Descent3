@@ -2234,8 +2234,7 @@ void AttachRandomNapalmEffectsToObject(object *obj) {
 
   float size_scalar = obj->size / 7.0;
 
-  size_scalar = std::max<float>(1.0, size_scalar);
-  size_scalar = std::min<float>(4.0, size_scalar);
+  size_scalar = std::clamp(size_scalar, 1.0f, 4.0f);
 
   // Create an explosion that follows every now and then
   if ((ps_rand() % 3) == 0) {

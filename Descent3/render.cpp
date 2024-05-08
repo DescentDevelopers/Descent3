@@ -2437,8 +2437,7 @@ void RenderSingleLightGlow(int index) {
   facing_scalar *= Room_light_val;
   rend_SetAlphaValue(facing_scalar * .4 * 255);
 
-  float maxc = std::max(texp->r, texp->g);
-  maxc = std::max(texp->b, maxc);
+  float maxc = std::max({texp->r, texp->g, texp->b});
   float r, g, b;
   if (maxc > 1.0) {
     r = texp->r / maxc;
@@ -2482,8 +2481,7 @@ void RenderSingleLightGlow2(int index) {
     first = 0;
   }
   rend_SetAlphaValue(.4 * 255);
-  float maxc = std::max(texp->r, texp->g);
-  maxc = std::max(texp->b, maxc);
+  float maxc = std::max({texp->r, texp->g, texp->b});
   float r, g, b;
   if (maxc > 1.0) {
     r = texp->r / maxc;

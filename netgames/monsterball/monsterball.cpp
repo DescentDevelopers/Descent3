@@ -2034,8 +2034,7 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
 
   new_vel /= mag;
 
-  mag = std::min(mag, 20.0f);
-  mag = std::max(mag, 10.0f);
+  mag = std::clamp(mag, 10.0f, 20.0f);
 
   new_vel *= mag;
 
