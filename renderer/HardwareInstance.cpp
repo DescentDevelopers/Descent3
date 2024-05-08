@@ -16,9 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "RendererConfig.h"
-#ifndef USE_SOFTWARE_TNL
-
 #include "3d.h"
 #include "HardwareInternal.h"
 #include <string.h>
@@ -91,5 +88,3 @@ void g3_DoneInstance() {
   memcpy(gTransformModelView, sInstanceStack[sInstanceDepth].m_modelView, sizeof(gTransformModelView));
   g3_UpdateFullTransform();
 }
-
-#endif

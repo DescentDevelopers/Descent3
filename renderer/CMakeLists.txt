@@ -1,7 +1,6 @@
 set(HEADERS
   dyna_gl.h
   HardwareInternal.h
-  RendererConfig.h
 )
 set(CPPS
   HardwareClipper.cpp

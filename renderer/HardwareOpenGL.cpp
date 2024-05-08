@@ -16,9 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "RendererConfig.h"
-#ifndef USE_SOFTWARE_TNL
-
 #include "byteswap.h"
 #if defined(WIN32)
 #include <windows.h>
@@ -3204,5 +3201,3 @@ void rend_TransformSetModelView(float trans[4][4]) {
   dglMatrixMode(GL_MODELVIEW);
   dglLoadMatrixf(&trans[0][0]);
 }
-
-#endif

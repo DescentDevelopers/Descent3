@@ -16,9 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "RendererConfig.h"
-#ifndef USE_SOFTWARE_TNL
-
 #include "3d.h"
 #include "HardwareInternal.h"
 #include <float.h>
@@ -47,5 +44,3 @@ float gTransformViewPort[4][4];
 float gTransformProjection[4][4];
 float gTransformModelView[4][4];
 float gTransformFull[4][4];
-
-#endif
