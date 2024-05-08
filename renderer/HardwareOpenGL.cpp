@@ -404,7 +404,7 @@ void opengl_SetDefaults() {
   rend_SetColorModel(CM_RGB);
   rend_SetZBufferState(1);
   rend_SetZValues(0, 3000);
-  opengl_SetGammaValue(OpenGL_preferred_state.gamma);
+  rend_SetGammaValue(OpenGL_preferred_state.gamma);
   OpenGL_last_bound[0] = 9999999;
   OpenGL_last_bound[1] = 9999999;
   Last_texel_unit_set = -1;
@@ -1464,33 +1464,22 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
 float opengl_GetAlphaMultiplier(void) {
   switch (OpenGL_state.cur_alpha_type) {
   case AT_ALWAYS:
-    return 1.0;
-  case AT_CONSTANT:
-    return OpenGL_state.cur_alpha / 255.0;
   case AT_TEXTURE:
-    return 1.0;
-  case AT_CONSTANT_TEXTURE:
-    return OpenGL_state.cur_alpha / 255.0;
   case AT_VERTEX:
-    return 1.0;
-  case AT_CONSTANT_TEXTURE_VERTEX:
-  case AT_CONSTANT_VERTEX:
-    return OpenGL_state.cur_alpha / 255.0;
   case AT_TEXTURE_VERTEX:
-    return 1.0;
-  case AT_LIGHTMAP_BLEND:
-  case AT_LIGHTMAP_BLEND_SATURATE:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_SATURATE_TEXTURE:
-    return OpenGL_state.cur_alpha / 255.0;
   case AT_SATURATE_VERTEX:
-    return 1.0;
-  case AT_SATURATE_CONSTANT_VERTEX:
-    return OpenGL_state.cur_alpha / 255.0;
   case AT_SATURATE_TEXTURE_VERTEX:
-    return 1.0;
   case AT_SPECULAR:
     return 1.0;
+  case AT_CONSTANT:
+  case AT_CONSTANT_TEXTURE:
+  case AT_CONSTANT_TEXTURE_VERTEX:
+  case AT_CONSTANT_VERTEX:
+  case AT_LIGHTMAP_BLEND:
+  case AT_LIGHTMAP_BLEND_SATURATE:
+  case AT_SATURATE_TEXTURE:
+  case AT_SATURATE_CONSTANT_VERTEX:
+    return OpenGL_state.cur_alpha / 255.0;
   default:
     // Int3();		// no type defined,get jason
     return 0;
@@ -1692,7 +1681,7 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
 }
 
 // Sets the gamma correction value
-void opengl_SetGammaValue(float val) {
+void rend_SetGammaValue(float val) {
   //	if( WindowGL )
   //		return;
 
@@ -2731,26 +2720,15 @@ void rend_SetAlphaType(sbyte atype) {
 
   switch (atype) {
   case AT_ALWAYS:
-    rend_SetAlphaValue(255);
-    dglBlendFunc(GL_ONE, GL_ZERO);
-    break;
-  case AT_CONSTANT:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_TEXTURE:
     rend_SetAlphaValue(255);
     dglBlendFunc(GL_ONE, GL_ZERO);
     break;
+  case AT_CONSTANT:
   case AT_CONSTANT_TEXTURE:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_CONSTANT_TEXTURE_VERTEX:
   case AT_CONSTANT_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_TEXTURE_VERTEX:
     dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     break;
@@ -2759,14 +2737,8 @@ void rend_SetAlphaType(sbyte atype) {
     break;
   case AT_SATURATE_TEXTURE:
   case AT_LIGHTMAP_BLEND_SATURATE:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
   case AT_SATURATE_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
   case AT_SATURATE_CONSTANT_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
   case AT_SATURATE_TEXTURE_VERTEX:
     dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
     break;
@@ -3042,7 +3014,7 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state) {
       retval = opengl_Init(NULL, &OpenGL_preferred_state);
     } else {
       if (old_state.gamma != pref_state->gamma) {
-        opengl_SetGammaValue(pref_state->gamma);
+        rend_SetGammaValue(pref_state->gamma);
       }
     }
   } else {
@@ -3051,9 +3023,6 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state) {
 
   return retval;
 }
-
-// Sets the gamma for this display
-void rend_SetGammaValue(float val) {}
 
 // Draws a simple bitmap at the specified x,y location
 void rend_DrawSimpleBitmap(int bm_handle, int x, int y) {
