@@ -96,6 +96,20 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
   rend_FontAlpha[3] = (color4 >> 24) / 255.0f;
 }
 
+// Sets the texture wrapping type
+void rend_SetWrapType(wrap_type val) { gpu_state.cur_wrap_type = val; }
+
+void rend_SetZBias(float z_bias) {
+  if (Z_bias != z_bias) {
+    Z_bias = z_bias;
+
+    // Force refresh our transforms to take the Zbias into account
+    g3_GetModelViewMatrix(&View_position, &Unscaled_matrix, (float *)gTransformModelView);
+    g3_UpdateFullTransform();
+    g3_ForceTransformRefresh();
+  }
+}
+
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
 // usefull for motion blur effect
 void rend_SetAlphaFactor(float val) {

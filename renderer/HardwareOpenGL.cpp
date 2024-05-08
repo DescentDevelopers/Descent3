@@ -2692,9 +2692,6 @@ void rend_SetAlphaValue(ubyte val) {
   Alpha_multiplier = opengl_GetAlphaMultiplier();
 }
 
-// Sets the texture wrapping type
-void rend_SetWrapType(wrap_type val) { gpu_state.cur_wrap_type = val; }
-
 // Draws a line using the states of the renderer
 void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
   g3_RefreshTransforms(true);
@@ -2783,17 +2780,6 @@ void rend_Screenshot(int bm_handle) {
   }
 
   mem_free(temp_data);
-}
-
-void rend_SetZBias(float z_bias) {
-  if (Z_bias != z_bias) {
-    Z_bias = z_bias;
-
-    // Force refresh our transforms to take the Zbias into account
-    g3_GetModelViewMatrix(&View_position, &Unscaled_matrix, (float *)gTransformModelView);
-    g3_UpdateFullTransform();
-    g3_ForceTransformRefresh();
-  }
 }
 
 // Enables/disables writes the depth buffer
