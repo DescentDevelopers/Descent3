@@ -177,7 +177,8 @@ IObject
 */
 class IObject {
 public:
-  virtual ~IObject() = default;
+  // JC: This breaks dmfc, fix later
+  //virtual ~IObject() = default;
   virtual void Delete(void) = 0;
   virtual void *Dynamic_Cast(const char *pszType) = 0;
   virtual void DuplicatePointer(void) = 0;
@@ -1651,7 +1652,8 @@ public:
   // in the range of 0 to MAX_OBJECT_IDS, this returns a pointer to it's information (see objinfo.h)
   //	It returns NULL if an invalid id is given (or it's not used)
   virtual object_info *GetObjectInfo(int objinfo_id) = 0;
-  virtual ~IDMFC() = default;
+  // JC: This breaks dmfc, fix later
+  //virtual ~IDMFC() = default;
 };
 
 //===========================================================================================
@@ -1686,7 +1688,8 @@ public:
   virtual void SetState(int state) = 0;
   virtual bool SetStateItemList(int count, ...) = 0;
   virtual bool SetStateItemListArray(int count, char **array) = 0;
-  virtual ~IMenuItem() = default;
+  // JC: This breaks dmfc, fix later
+  //virtual ~IMenuItem() = default;
 };
 
 //===========================================================================================
@@ -1714,7 +1717,8 @@ public:
   virtual bool CanScrollDown() = 0;
   // returns true if the player list can scroll up any more
   virtual bool CanScrollUp() = 0;
-  virtual ~IDmfcStats() = default;
+  // JC: This breaks dmfc, fix later
+  //virtual ~IDmfcStats() = default;
 };
 
 #endif // #ifdef USECLASSES

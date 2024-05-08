@@ -27,4 +27,8 @@ set(CPPS
 
 add_definitions(-DOUTRAGE_VERSION -DDMFC_DLL)
 
-add_library(dmfc STATIC ${HEADERS} ${CPPS})
+add_library(dmfc SHARED ${HEADERS} ${CPPS})
+
+add_custom_command(TARGET dmfc POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:dmfc> "$<TARGET_FILE_DIR:Descent3>"
+    COMMENT "Generate dmfc")
