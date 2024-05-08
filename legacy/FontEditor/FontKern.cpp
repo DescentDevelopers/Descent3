@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Source: /home/kevin/cvsstuff/descent3/descent3/Main/FontEditor/FontKern.cpp,v $
  * $Revision: 1.1.1.1 $
  * $Author: kevinb $

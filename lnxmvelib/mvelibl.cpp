@@ -14,9 +14,9 @@
 ** Further, you may not reverse engineer, decompile or otherwise
 ** attempt to derive source code of this material.
 **
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
 ** Linux Specific Notes:
 **  It uses SDL. We love it. Woohoo. None of this low-level X11 shit. --ryan.
 */

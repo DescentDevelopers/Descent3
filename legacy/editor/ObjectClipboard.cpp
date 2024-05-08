@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
 	ObjectClipboard.cpp
 		This file contains the cut,copy,paste, and delete routines used when you right click in the view
 */

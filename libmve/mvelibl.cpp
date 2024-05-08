@@ -14,9 +14,9 @@
 ** Further, you may not reverse engineer, decompile or otherwise
 ** attempt to derive source code of this material.
 **
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
 ** Linux Specific Notes:
 **   Only HiColor mode movies are supported.  Others could
 **      be supported, but the nf*, etc. functions need to be

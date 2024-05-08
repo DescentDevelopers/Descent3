@@ -1,0 +1,60 @@
+# .gitattributes
+
+# Text files
+*.asm text eol=lf
+*.asp text eol=lf
+*.bat text eol=lf
+*.c text eol=lf
+*.cc text eol=lf
+*.check_cache text eol=lf
+*.cmake text eol=lf
+*.cnt text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hm text eol=lf
+*.in text eol=lf
+*.json text eol=lf
+*.lastbuildstate text eol=lf
+*.list text eol=lf
+*.loc text eol=lf
+*.log text eol=lf
+*.m text eol=lf
+*.md text eol=lf
+*.msg text eol=lf
+*.msn text eol=lf
+*.recipe text eol=lf
+*.rc text eol=lf
+*.rule text eol=lf
+*.sh text eol=lf
+*.sqlite text eol=lf
+*.str text eol=lf
+*.txt text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Visual Studio project files
+*.vcproj text eol=crlf
+*.vcxproj text eol=crlf
+
+# Binary files
+*.bin binary
+*.bmp binary
+*.dll binary
+*.exe binary
+*.exp binary
+*.fnt binary
+*.ico binary
+*.idb binary
+*.lib binary
+*.oaf binary
+*.obj binary
+*.ogf binary
+*.omf binary
+*.osf binary
+*.pdb binary
+*.rc2 binary
+*.rtf binary
+*.sln binary
+*.stamp binary
+*.tlog binary
+*.wav binary

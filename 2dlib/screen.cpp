@@ -14,9 +14,9 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
-/*
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /descent3/main/2dlib/screen.cpp $
  * $Revision: 12 $
  * $Date: 6/16/97 5:16p $
