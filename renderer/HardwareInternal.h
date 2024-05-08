@@ -23,6 +23,29 @@
 
 #define MAX_POINTS_IN_POLY 100
 
+// These structs are for drawing with vertex arrays
+// Useful for fast indexing
+typedef struct {
+  float r, g, b, a;
+} color_array;
+
+typedef struct {
+  float s, t, r, w;
+} tex_array;
+
+struct PosColorUVVertex {
+  vector pos;
+  color_array color;
+  tex_array uv;
+};
+
+struct PosColorUV2Vertex {
+  vector pos;
+  color_array color;
+  tex_array uv0;
+  tex_array uv1;
+};
+
 void FreeTempPoint(g3Point *p);
 void InitFreePoints(void);
 void ClipLine(g3Point **p0, g3Point **p1, ubyte codes_or);
@@ -60,5 +83,12 @@ void rend_TransformSetModelView(float trans[4][4]);
 
 int rend_ReInit();
 float rend_GetAlphaMultiplier();
+
+void gpu_SetMultitextureBlendMode(bool state);
+void gpu_BindTexture(int handle, int map_type, int slot);
+void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv);
+void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv);
+void gpu_DrawFlatPolygon3D(g3Point **p, int nv);
+void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type);
 
 #endif

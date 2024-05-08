@@ -27,6 +27,7 @@
 #include <cstring>
 
 #include "HardwareInternal.h"
+#include "lightmap.h"
 
 // FIXME: Unused
 // The font characteristics
@@ -58,6 +59,9 @@ int gpu_last_uploaded = 0;
 
 float gpu_Alpha_factor = 1.0f;
 float gpu_Alpha_multiplier = 1.0f;
+
+PosColorUVVertex vArray[100];
+PosColorUV2Vertex vArray2[100];
 
 // returns the alpha that we should use
 float rend_GetAlphaMultiplier() {
@@ -433,4 +437,320 @@ void rend_GetStatistics(tRendererStats *stats) {
   } else {
     memset(stats, 0, sizeof(tRendererStats));
   }
+}
+
+#ifdef DEDICATED_ONLY
+
+void rend_DrawPolygon2D(int, g3Point **, int, int) {}
+void rend_DrawPolygon3D(int, g3Point **, int, int) {}
+
+#else
+
+// Takes nv vertices and draws the 2D polygon defined by those vertices.
+// Uses bitmap "handle" as a texture
+void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
+  ASSERT(nv < 100);
+  ASSERT(gpu_Overlay_type == OT_NONE);
+
+  g3_RefreshTransforms(true);
+
+  if (UseMultitexture) {
+    gpu_SetMultitextureBlendMode(false);
+  }
+
+  int xAdd = gpu_state.clip_x1;
+  int yAdd = gpu_state.clip_y1;
+
+  float fr, fg, fb;
+  if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
+    float scale = 1.0f / 255.0f;
+    fr = GR_COLOR_RED(gpu_state.cur_color) * scale;
+    fg = GR_COLOR_GREEN(gpu_state.cur_color) * scale;
+    fb = GR_COLOR_BLUE(gpu_state.cur_color) * scale;
+  }
+
+  // make sure our bitmap is ready to be drawn
+  gpu_BindTexture(handle, MAP_TYPE_BITMAP, 0);
+
+  float alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
+
+  PosColorUVVertex *vData = &vArray[0];
+
+  // Specify our coordinates
+  int i;
+  for (i = 0; i < nv; ++i, ++vData) {
+    g3Point *pnt = p[i];
+
+    if (gpu_state.cur_alpha_type & ATF_VERTEX) {
+      // the alpha should come from the vertex
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
+    }
+
+    // If we have a lighting model, apply the correct lighting!
+    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
+      // pull the color from the constant color data
+      vData->color.r = fr;
+      vData->color.g = fg;
+      vData->color.b = fb;
+      vData->color.a = alpha;
+    } else if (gpu_state.cur_light_state != LS_NONE) {
+      // Do lighting based on intensity (MONO) or colored (RGB)
+      if (gpu_state.cur_color_model == CM_MONO) {
+        vData->color.r = pnt->p3_l;
+        vData->color.g = pnt->p3_l;
+        vData->color.b = pnt->p3_l;
+        vData->color.a = alpha;
+      } else {
+        vData->color.r = pnt->p3_r;
+        vData->color.g = pnt->p3_g;
+        vData->color.b = pnt->p3_b;
+        vData->color.a = alpha;
+      }
+    } else {
+      // force white
+      vData->color.r = 1.0f;
+      vData->color.g = 1.0f;
+      vData->color.b = 1.0f;
+      vData->color.a = alpha;
+    }
+
+    vData->uv.s = pnt->p3_u;
+    vData->uv.t = pnt->p3_v;
+    vData->uv.r = 0.0f;
+    vData->uv.w = 1.0f;
+
+    // Finally, specify a vertex
+    vData->pos.x = pnt->p3_sx + xAdd;
+    vData->pos.y = pnt->p3_sy + yAdd;
+    vData->pos.z = 0.0f;
+  }
+
+  gpu_RenderPolygon(&vArray[0], nv);
+}
+
+
+// Takes nv vertices and draws the 3D polygon defined by those vertices.
+// Uses bitmap "handle" as a texture
+void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
+  g3Point *pnt;
+  int i;
+  float fr, fg, fb;
+  float alpha;
+
+  ASSERT(nv < 100);
+
+  g3_RefreshTransforms(false);
+
+  if (gpu_state.cur_texture_quality == 0) {
+    gpu_DrawFlatPolygon3D(p, nv);
+    return;
+  }
+
+  if (gpu_Overlay_type != OT_NONE && UseMultitexture) {
+    rend_DrawMultitexturePolygon3D(handle, p, nv, map_type);
+    return;
+  }
+
+  if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
+    fr = GR_COLOR_RED(gpu_state.cur_color) / 255.0;
+    fg = GR_COLOR_GREEN(gpu_state.cur_color) / 255.0;
+    fb = GR_COLOR_BLUE(gpu_state.cur_color) / 255.0;
+  }
+
+  if (UseMultitexture) {
+    gpu_SetMultitextureBlendMode(false);
+  }
+
+  gpu_BindTexture(handle, map_type, 0);
+
+  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
+
+  PosColorUVVertex *vData = &vArray[0];
+
+  // Specify our coordinates
+  for (i = 0; i < nv; i++, vData++) {
+    pnt = p[i];
+
+    // all points should be original
+    ASSERT(pnt->p3_flags & PF_ORIGPOINT);
+
+    ////////////////////////////////////////////
+    if (pnt->p3_flags & PF_ORIGPOINT) {
+      if (!(pnt->p3_flags & PF_PROJECTED)) {
+        g3_ProjectPoint(pnt);
+      }
+
+      // get the original point
+      float origPoint[4];
+      origPoint[0] = pnt->p3_vecPreRot.x;
+      origPoint[1] = pnt->p3_vecPreRot.y;
+      origPoint[2] = pnt->p3_vecPreRot.z;
+      origPoint[3] = 1.0f;
+
+      // transform by the full transform
+      float view[4];
+      g3_TransformVert(view, origPoint, gTransformFull);
+
+      vector tempv = pnt->p3_vecPreRot - View_position;
+      vector testPt = tempv * Unscaled_matrix;
+
+      float screenX = pnt->p3_sx + gpu_state.clip_x1;
+      float screenY = pnt->p3_sy + gpu_state.clip_y1;
+
+      // normalize
+      float oOW = 1.0f / view[3];
+      view[0] *= oOW;
+      view[1] *= oOW;
+      view[2] *= oOW;
+
+      oOW *= 1.0f;
+    }
+    ////////////////////////////////////////////
+
+    if (gpu_state.cur_alpha_type & ATF_VERTEX) {
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
+    }
+
+    // If we have a lighting model, apply the correct lighting!
+    if (gpu_state.cur_light_state != LS_NONE) {
+      if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
+        vData->color.r = fr;
+        vData->color.g = fg;
+        vData->color.b = fb;
+        vData->color.a = alpha;
+      } else {
+        // Do lighting based on intesity (MONO) or colored (RGB)
+        if (gpu_state.cur_color_model == CM_MONO) {
+          vData->color.r = pnt->p3_l;
+          vData->color.g = pnt->p3_l;
+          vData->color.b = pnt->p3_l;
+          vData->color.a = alpha;
+        } else {
+          vData->color.r = pnt->p3_r;
+          vData->color.g = pnt->p3_g;
+          vData->color.b = pnt->p3_b;
+          vData->color.a = alpha;
+        }
+      }
+    } else {
+      vData->color.r = 1;
+      vData->color.g = 1;
+      vData->color.b = 1;
+      vData->color.a = alpha;
+    }
+
+    vData->uv.s = pnt->p3_u;
+    vData->uv.t = pnt->p3_v;
+    vData->uv.r = 0.0f;
+    vData->uv.w = 1.0f;
+
+    // Finally, specify a vertex
+    vData->pos = pnt->p3_vecPreRot;
+  }
+
+  // And draw!
+  gpu_RenderPolygon(&vArray[0], nv);
+
+  // If there is a lightmap to draw, draw it as well
+  if (gpu_Overlay_type != OT_NONE) {
+    return; // Temp fix until I figure out whats going on
+    Int3(); // Shouldn't reach here
+  }
+}
+
+#endif // DEDICATED_ONLY
+
+// Takes nv vertices and draws the polygon defined by those vertices.  Uses bitmap "handle"
+// as a texture
+void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type) {
+  g3Point *pnt;
+  int i, fr, fg, fb;
+  float alpha;
+
+  float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
+  float xscalar = (float)GameLightmaps[gpu_Overlay_map].width * one_over_square_res;
+  float yscalar = (float)GameLightmaps[gpu_Overlay_map].height * one_over_square_res;
+
+  ASSERT(nv < 100);
+
+  if (gpu_state.cur_light_state == LS_NONE) {
+    fr = GR_COLOR_RED(gpu_state.cur_color);
+    fg = GR_COLOR_GREEN(gpu_state.cur_color);
+    fb = GR_COLOR_BLUE(gpu_state.cur_color);
+  }
+
+  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
+
+  PosColorUV2Vertex *vData = &vArray2[0];
+
+  // Specify our coordinates
+  for (i = 0; i < nv; i++, vData++) {
+    pnt = p[i];
+    ASSERT(pnt->p3_flags & PF_ORIGPOINT);
+
+    if (gpu_state.cur_alpha_type & ATF_VERTEX)
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
+
+    // If we have a lighting model, apply the correct lighting!
+    if (gpu_state.cur_light_state != LS_NONE) {
+      // Do lighting based on intesity (MONO) or colored (RGB)
+      if (gpu_state.cur_color_model == CM_MONO) {
+        vData->color.r = pnt->p3_l;
+        vData->color.g = pnt->p3_l;
+        vData->color.b = pnt->p3_l;
+        vData->color.a = alpha;
+      } else {
+        vData->color.r = pnt->p3_r;
+        vData->color.g = pnt->p3_g;
+        vData->color.b = pnt->p3_b;
+        vData->color.a = alpha;
+      }
+    } else {
+      vData->color.r = 1;
+      vData->color.g = 1;
+      vData->color.b = 1;
+      vData->color.a = alpha;
+    }
+
+    /*
+    // Texture this polygon!
+    float texw=1.0/(pnt->p3_z+Z_bias);
+    vData->uv0.s=pnt->p3_u*texw;
+    vData->uv0.t=pnt->p3_v*texw;
+    vData->uv0.r=0;
+    vData->uv0.w=texw;
+
+    vData->uv1.s=pnt->p3_u2*xscalar*texw;
+    vData->uv1.t=pnt->p3_v2*yscalar*texw;
+    vData->uv1.r=0;
+    vData->uv1.w=texw;
+    */
+    vData->uv0.s = pnt->p3_u;
+    vData->uv0.t = pnt->p3_v;
+    vData->uv0.r = 0.0f;
+    vData->uv0.w = 1.0f;
+
+    vData->uv1.s = pnt->p3_u2 * xscalar;
+    vData->uv1.t = pnt->p3_v2 * yscalar;
+    vData->uv1.r = 0.0f;
+    vData->uv1.w = 1.0f;
+
+    // Finally, specify a vertex
+    /*
+    vData->pos.x=pnt->p3_sx+x_add;
+    vData->pos.y=pnt->p3_sy+y_add;
+    vData->pos.z = -std::max(0,std::min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
+    */
+    vData->pos = pnt->p3_vecPreRot;
+  }
+
+  // make sure our bitmap is ready to be drawn
+  gpu_BindTexture(handle, map_type, 0);
+
+  // make sure our bitmap is ready to be drawn
+  gpu_BindTexture(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+
+  gpu_SetMultitextureBlendMode(true);
+
+  gpu_RenderPolygonUV2(&vArray2[0], nv);
 }
