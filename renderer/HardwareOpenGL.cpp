@@ -162,10 +162,21 @@ typedef struct {
   float s, t, r, w;
 } tex_array;
 
-vector GL_verts[100];
-color_array GL_colors[100];
-tex_array GL_tex_coords[100];
-tex_array GL_tex_coords2[100];
+struct PosColorUVVertex {
+  vector pos;
+  color_array color;
+  tex_array uv;
+};
+
+struct PosColorUV2Vertex {
+  vector pos;
+  color_array color;
+  tex_array uv0;
+  tex_array uv1;
+};
+
+PosColorUVVertex vArray[100];
+PosColorUV2Vertex vArray2[100];
 
 bool OpenGL_multitexture_state = false;
 module *OpenGLDLLHandle = NULL;
@@ -378,10 +389,6 @@ void opengl_SetDefaults() {
   dglEnableClientState(GL_COLOR_ARRAY);
   dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-  dglVertexPointer(3, GL_FLOAT, 0, GL_verts);
-  dglColorPointer(4, GL_FLOAT, 0, GL_colors);
-  dglTexCoordPointer(4, GL_FLOAT, 0, GL_tex_coords);
-
   dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   dglHint(GL_FOG_HINT, GL_NICEST);
   dglEnable(GL_SCISSOR_TEST);
@@ -394,7 +401,6 @@ void opengl_SetDefaults() {
     oglActiveTextureARB(GL_TEXTURE0_ARB + 1);
     oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    dglTexCoordPointer(4, GL_FLOAT, 0, GL_tex_coords2);
     dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     dglHint(GL_FOG_HINT, GL_NICEST);
 
@@ -1399,29 +1405,20 @@ void opengl_SetMultitextureBlendMode(bool state) {
   if (OpenGL_multitexture_state == state)
     return;
   OpenGL_multitexture_state = state;
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  if (state) {
 
-    oglActiveTextureARB(GL_TEXTURE1_ARB);
-    oglClientActiveTextureARB(GL_TEXTURE1_ARB);
+#if (defined(_USE_OGL_ACTIVE_TEXTURES))
+  oglActiveTextureARB(GL_TEXTURE1_ARB);
+  oglClientActiveTextureARB(GL_TEXTURE1_ARB);
+  if (state) {
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
     dglEnable(GL_TEXTURE_2D);
-
-    oglActiveTextureARB(GL_TEXTURE0_ARB);
-    oglClientActiveTextureARB(GL_TEXTURE0_ARB);
-    Last_texel_unit_set = 0;
-
   } else {
-
-    oglActiveTextureARB(GL_TEXTURE1_ARB);
-    oglClientActiveTextureARB(GL_TEXTURE1_ARB);
     dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
     dglDisable(GL_TEXTURE_2D);
-
-    oglActiveTextureARB(GL_TEXTURE0_ARB);
-    oglClientActiveTextureARB(GL_TEXTURE0_ARB);
-    Last_texel_unit_set = 0;
   }
+  oglActiveTextureARB(GL_TEXTURE0_ARB);
+  oglClientActiveTextureARB(GL_TEXTURE0_ARB);
+  Last_texel_unit_set = 0;
 #endif
 }
 
@@ -1431,9 +1428,6 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
   g3Point *pnt;
   int i, fr, fg, fb;
   float alpha;
-  vector *vertp;
-  color_array *colorp;
-  tex_array *texp, *texp2;
 
   float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
   float xscalar = (float)GameLightmaps[gpu_Overlay_map].width * one_over_square_res;
@@ -1449,13 +1443,10 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
 
   alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
-  vertp = &GL_verts[0];
-  texp = &GL_tex_coords[0];
-  texp2 = &GL_tex_coords2[0];
-  colorp = &GL_colors[0];
+  PosColorUV2Vertex *vData = &vArray2[0];
 
   // Specify our coordinates
-  for (i = 0; i < nv; i++, vertp++, texp++, colorp++, texp2++) {
+  for (i = 0; i < nv; i++, vData++) {
     pnt = p[i];
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
@@ -1466,53 +1457,53 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
     if (gpu_state.cur_light_state != LS_NONE) {
       // Do lighting based on intesity (MONO) or colored (RGB)
       if (gpu_state.cur_color_model == CM_MONO) {
-        colorp->r = pnt->p3_l;
-        colorp->g = pnt->p3_l;
-        colorp->b = pnt->p3_l;
-        colorp->a = alpha;
+        vData->color.r = pnt->p3_l;
+        vData->color.g = pnt->p3_l;
+        vData->color.b = pnt->p3_l;
+        vData->color.a = alpha;
       } else {
-        colorp->r = pnt->p3_r;
-        colorp->g = pnt->p3_g;
-        colorp->b = pnt->p3_b;
-        colorp->a = alpha;
+        vData->color.r = pnt->p3_r;
+        vData->color.g = pnt->p3_g;
+        vData->color.b = pnt->p3_b;
+        vData->color.a = alpha;
       }
     } else {
-      colorp->r = 1;
-      colorp->g = 1;
-      colorp->b = 1;
-      colorp->a = alpha;
+      vData->color.r = 1;
+      vData->color.g = 1;
+      vData->color.b = 1;
+      vData->color.a = alpha;
     }
 
     /*
     // Texture this polygon!
     float texw=1.0/(pnt->p3_z+Z_bias);
-    texp->s=pnt->p3_u*texw;
-    texp->t=pnt->p3_v*texw;
-    texp->r=0;
-    texp->w=texw;
+    vData->uv0.s=pnt->p3_u*texw;
+    vData->uv0.t=pnt->p3_v*texw;
+    vData->uv0.r=0;
+    vData->uv0.w=texw;
 
-    texp2->s=pnt->p3_u2*xscalar*texw;
-    texp2->t=pnt->p3_v2*yscalar*texw;
-    texp2->r=0;
-    texp2->w=texw;
+    vData->uv1.s=pnt->p3_u2*xscalar*texw;
+    vData->uv1.t=pnt->p3_v2*yscalar*texw;
+    vData->uv1.r=0;
+    vData->uv1.w=texw;
     */
-    texp->s = pnt->p3_u;
-    texp->t = pnt->p3_v;
-    texp->r = 0.0f;
-    texp->w = 1.0f;
+    vData->uv0.s = pnt->p3_u;
+    vData->uv0.t = pnt->p3_v;
+    vData->uv0.r = 0.0f;
+    vData->uv0.w = 1.0f;
 
-    texp2->s = pnt->p3_u2 * xscalar;
-    texp2->t = pnt->p3_v2 * yscalar;
-    texp2->r = 0.0f;
-    texp2->w = 1.0f;
+    vData->uv1.s = pnt->p3_u2 * xscalar;
+    vData->uv1.t = pnt->p3_v2 * yscalar;
+    vData->uv1.r = 0.0f;
+    vData->uv1.w = 1.0f;
 
     // Finally, specify a vertex
     /*
-    vertp->x=pnt->p3_sx+x_add;
-    vertp->y=pnt->p3_sy+y_add;
-    vertp->z = -std::max(0,std::min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
+    vData->pos.x=pnt->p3_sx+x_add;
+    vData->pos.y=pnt->p3_sy+y_add;
+    vData->pos.z = -std::max(0,std::min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
     */
-    *vertp = pnt->p3_vecPreRot;
+    vData->pos = pnt->p3_vecPreRot;
   }
 
   // make sure our bitmap is ready to be drawn
@@ -1528,6 +1519,14 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
   opengl_SetMultitextureBlendMode(true);
 
   // And draw!
+  vData = &vArray2[0];
+  dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
+  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv0);
+  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv1);
+
   dglDrawArrays(GL_POLYGON, 0, nv);
   OpenGL_polys_drawn++;
   OpenGL_verts_processed += nv;
@@ -1807,9 +1806,6 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   int i;
   float fr, fg, fb;
   float alpha;
-  vector *vertp;
-  color_array *colorp;
-  tex_array *texp;
 
   ASSERT(nv < 100);
 
@@ -1842,12 +1838,10 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 
   alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
-  vertp = &GL_verts[0];
-  texp = &GL_tex_coords[0];
-  colorp = &GL_colors[0];
+  PosColorUVVertex *vData = &vArray[0];
 
   // Specify our coordinates
-  for (i = 0; i < nv; i++, vertp++, texp++, colorp++) {
+  for (i = 0; i < nv; i++, vData++) {
     pnt = p[i];
 
     // all points should be original
@@ -1893,74 +1887,47 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     // If we have a lighting model, apply the correct lighting!
     if (gpu_state.cur_light_state != LS_NONE) {
       if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
-        colorp->r = fr;
-        colorp->g = fg;
-        colorp->b = fb;
-        colorp->a = alpha;
+        vData->color.r = fr;
+        vData->color.g = fg;
+        vData->color.b = fb;
+        vData->color.a = alpha;
       } else {
         // Do lighting based on intesity (MONO) or colored (RGB)
         if (gpu_state.cur_color_model == CM_MONO) {
-          colorp->r = pnt->p3_l;
-          colorp->g = pnt->p3_l;
-          colorp->b = pnt->p3_l;
-          colorp->a = alpha;
+          vData->color.r = pnt->p3_l;
+          vData->color.g = pnt->p3_l;
+          vData->color.b = pnt->p3_l;
+          vData->color.a = alpha;
         } else {
-          colorp->r = pnt->p3_r;
-          colorp->g = pnt->p3_g;
-          colorp->b = pnt->p3_b;
-          colorp->a = alpha;
+          vData->color.r = pnt->p3_r;
+          vData->color.g = pnt->p3_g;
+          vData->color.b = pnt->p3_b;
+          vData->color.a = alpha;
         }
       }
     } else {
-      colorp->r = 1;
-      colorp->g = 1;
-      colorp->b = 1;
-      colorp->a = alpha;
+      vData->color.r = 1;
+      vData->color.g = 1;
+      vData->color.b = 1;
+      vData->color.a = alpha;
     }
 
-    /*
-#ifdef __LINUX__
-    //MY TEST HACK...MAYBE BAD DRIVERS? OR MAYBE THIS IS
-    //HOW IT SHOULD BE DONE (STILL BUGGY)
-    // Texture this polygon!
-    float texw=1.0/(pnt->p3_z+Z_bias);
-    if(OpenGL_TextureHack)
-    {
-            texp->s=pnt->p3_u;
-            texp->t=pnt->p3_v;
-    }else
-    {
-            texp->s=pnt->p3_u*texw;
-            texp->t=pnt->p3_v*texw;
-    }
-    texp->r=0;
-    texp->w=texw;
-#else
-    // Texture this polygon!
-    float texw=1.0/(pnt->p3_z+Z_bias);
-    texp->s=pnt->p3_u*texw;
-    texp->t=pnt->p3_v*texw;
-    texp->r=0;
-    texp->w=texw;
-#endif
-    */
-    texp->s = pnt->p3_u;
-    texp->t = pnt->p3_v;
-    texp->r = 0.0f;
-    texp->w = 1.0f;
+    vData->uv.s = pnt->p3_u;
+    vData->uv.t = pnt->p3_v;
+    vData->uv.r = 0.0f;
+    vData->uv.w = 1.0f;
 
     // Finally, specify a vertex
-    /*
-    vertp->x=pnt->p3_sx+x_add;
-    vertp->y=pnt->p3_sy+y_add;
-
-    float z = std::max(0,std::min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
-    vertp->z=-z;
-    */
-    *vertp = pnt->p3_vecPreRot;
+    vData->pos = pnt->p3_vecPreRot;
   }
 
   // And draw!
+  vData = &vArray[0];
+  dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
+  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv);
+
   dglDrawArrays(GL_POLYGON, 0, nv);
   OpenGL_polys_drawn++;
   OpenGL_verts_processed += nv;
@@ -2004,13 +1971,11 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
 
   float alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
-  vector *vertp = &GL_verts[0];
-  tex_array *texp = &GL_tex_coords[0];
-  color_array *colorp = &GL_colors[0];
+  PosColorUVVertex *vData = &vArray[0];
 
   // Specify our coordinates
   int i;
-  for (i = 0; i < nv; ++i, ++vertp, ++texp, ++colorp) {
+  for (i = 0; i < nv; ++i, ++vData) {
     g3Point *pnt = p[i];
 
     if (gpu_state.cur_alpha_type & ATF_VERTEX) {
@@ -2021,43 +1986,49 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
     // If we have a lighting model, apply the correct lighting!
     if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
       // pull the color from the constant color data
-      colorp->r = fr;
-      colorp->g = fg;
-      colorp->b = fb;
-      colorp->a = alpha;
+      vData->color.r = fr;
+      vData->color.g = fg;
+      vData->color.b = fb;
+      vData->color.a = alpha;
     } else if (gpu_state.cur_light_state != LS_NONE) {
       // Do lighting based on intensity (MONO) or colored (RGB)
       if (gpu_state.cur_color_model == CM_MONO) {
-        colorp->r = pnt->p3_l;
-        colorp->g = pnt->p3_l;
-        colorp->b = pnt->p3_l;
-        colorp->a = alpha;
+        vData->color.r = pnt->p3_l;
+        vData->color.g = pnt->p3_l;
+        vData->color.b = pnt->p3_l;
+        vData->color.a = alpha;
       } else {
-        colorp->r = pnt->p3_r;
-        colorp->g = pnt->p3_g;
-        colorp->b = pnt->p3_b;
-        colorp->a = alpha;
+        vData->color.r = pnt->p3_r;
+        vData->color.g = pnt->p3_g;
+        vData->color.b = pnt->p3_b;
+        vData->color.a = alpha;
       }
     } else {
       // force white
-      colorp->r = 1.0f;
-      colorp->g = 1.0f;
-      colorp->b = 1.0f;
-      colorp->a = alpha;
+      vData->color.r = 1.0f;
+      vData->color.g = 1.0f;
+      vData->color.b = 1.0f;
+      vData->color.a = alpha;
     }
 
-    texp->s = pnt->p3_u;
-    texp->t = pnt->p3_v;
-    texp->r = 0.0f;
-    texp->w = 1.0f;
+    vData->uv.s = pnt->p3_u;
+    vData->uv.t = pnt->p3_v;
+    vData->uv.r = 0.0f;
+    vData->uv.w = 1.0f;
 
     // Finally, specify a vertex
-    vertp->x = pnt->p3_sx + xAdd;
-    vertp->y = pnt->p3_sy + yAdd;
-    vertp->z = 0.0f;
+    vData->pos.x = pnt->p3_sx + xAdd;
+    vData->pos.y = pnt->p3_sy + yAdd;
+    vData->pos.z = 0.0f;
   }
 
   // And draw!
+  vData = &vArray[0];
+  dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
+  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv);
+
   if (gpu_state.cur_texture_quality == 0) {
     // force disable textures
     dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
