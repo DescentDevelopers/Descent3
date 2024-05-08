@@ -58,4 +58,6 @@ void rend_TransformSetViewport(int lx, int ty, int width, int height);
 void rend_TransformSetProjection(float trans[4][4]);
 void rend_TransformSetModelView(float trans[4][4]);
 
+int rend_ReInit();
+
 #endif
