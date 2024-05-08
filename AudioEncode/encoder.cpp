@@ -23,7 +23,7 @@
 #include "audio_encode.h"
 #include "mono.h"
 
-int32_t aenc_ReadSamp(void *data) {
+static int32_t aenc_ReadSamp(void *data) {
   FILE *f = (FILE *)data;
   int a, b;
   a = getc(f);
