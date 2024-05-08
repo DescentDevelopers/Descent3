@@ -61,10 +61,10 @@ void rend_SetLightingState(light_state state);
 #define CHANGE_RESOLUTION_IN_FULLSCREEN
 
 // General renderer states
-int Overlay_map = -1;
+int gpu_Overlay_map = -1;
 int Bump_map = 0;
 int Bumpmap_ready = 0;
-ubyte Overlay_type = OT_NONE;
+ubyte gpu_Overlay_type = OT_NONE;
 float Z_bias = 0.0f;
 ubyte Renderer_close_flag = 0;
 extern ubyte Renderer_initted;
@@ -1465,9 +1465,9 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
   color_array *colorp;
   tex_array *texp, *texp2;
 
-  float one_over_square_res = 1.0 / GameLightmaps[Overlay_map].square_res;
-  float xscalar = (float)GameLightmaps[Overlay_map].width * one_over_square_res;
-  float yscalar = (float)GameLightmaps[Overlay_map].height * one_over_square_res;
+  float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
+  float xscalar = (float)GameLightmaps[gpu_Overlay_map].width * one_over_square_res;
+  float yscalar = (float)GameLightmaps[gpu_Overlay_map].height * one_over_square_res;
 
   ASSERT(nv < 100);
 
@@ -1551,9 +1551,9 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
   opengl_MakeFilterTypeCurrent(handle, map_type, 0);
 
   // make sure our bitmap is ready to be drawn
-  opengl_MakeBitmapCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1);
-  opengl_MakeWrapTypeCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1);
-  opengl_MakeFilterTypeCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+  opengl_MakeBitmapCurrent(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+  opengl_MakeWrapTypeCurrent(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+  opengl_MakeFilterTypeCurrent(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
 
   opengl_SetMultitextureBlendMode(true);
 
@@ -1850,7 +1850,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     return;
   }
 
-  if (Overlay_type != OT_NONE && UseMultitexture) {
+  if (gpu_Overlay_type != OT_NONE && UseMultitexture) {
     opengl_DrawMultitexturePolygon3D(handle, p, nv, map_type);
     return;
   }
@@ -1998,7 +1998,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   CHECK_ERROR(10)
 
   // If there is a lightmap to draw, draw it as well
-  if (Overlay_type != OT_NONE) {
+  if (gpu_Overlay_type != OT_NONE) {
     return; // Temp fix until I figure out whats going on
     Int3(); // Shouldn't reach here
   }
@@ -2008,7 +2008,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 // Uses bitmap "handle" as a texture
 void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   ASSERT(nv < 100);
-  ASSERT(Overlay_type == OT_NONE);
+  ASSERT(gpu_Overlay_type == OT_NONE);
 
   g3_RefreshTransforms(true);
 
@@ -2412,9 +2412,9 @@ void rend_SetZValues(float nearz, float farz) {
 
 // Sets a bitmap as a overlay map to rendered on top of the next texture map
 // a -1 value indicates no overlay map
-void rend_SetOverlayMap(int handle) { Overlay_map = handle; }
+void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
 
-void rend_SetOverlayType(ubyte type) { Overlay_type = type; }
+void rend_SetOverlayType(ubyte type) { gpu_Overlay_type = type; }
 
 // Clears the display to a specified color
 void rend_ClearScreen(ddgr_color color) {
