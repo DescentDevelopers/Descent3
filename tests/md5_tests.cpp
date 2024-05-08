@@ -52,6 +52,7 @@ TEST(D3, MD5) {
   EXPECT_EQ(hexdigest_after_n_rounds_of_fuzz(1), "c56c005504f5b9b17df9d83f1106e9b2");
   EXPECT_EQ(hexdigest_after_n_rounds_of_fuzz(2), "98327a3f4ee311c9bdc8613508922c95");
   EXPECT_EQ(hexdigest_after_n_rounds_of_fuzz(4), "f2343ce526646c087df92d708e883675");
+  EXPECT_EQ(hexdigest_after_n_rounds_of_fuzz(8), "73396b338a0a769c4e6ae5b7b0bc187e");
   EXPECT_EQ(hexdigest_after_n_rounds_of_fuzz(100), "99b30c1dcc42d97c3d914c26a14bb1d7");
   EXPECT_EQ(hexdigest_after_n_rounds_of_fuzz(1999), "82eeff8c7d574c8232b0ca6ca2c9dd40");
 }

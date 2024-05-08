@@ -126,9 +126,9 @@ std::array<unsigned char, 16> MD5::digest() const noexcept {
   auto buf = tmpbuf_;
   std::size_t n = tmpbuf_n_;
 
-  if (n > 56) {
-    // must append current block, length won't fit.
-    // n is never buf.size() yet
+  if (n >= 56) {
+    // must append current block, required padding bit and length won't fit.
+    // n is never buf.size() (= 64) yet
     buf[n++] = 0x80U;
     while (n < buf.size())
       buf[n++] = 0;
@@ -137,7 +137,7 @@ std::array<unsigned char, 16> MD5::digest() const noexcept {
     // all zeroes, except for length
     std::fill(buf.begin(), buf.begin() + 56, 0);
 
-  } else if (n < 56) {
+  } else { // n < 56
     // append padding to tmpbuf and then the length
     buf[n++] = 0x80U;
     while (n < 56)
