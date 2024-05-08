@@ -75,6 +75,10 @@
 #define FTP_STATE_CANT_WRITE_FILE 15
 #define FTP_STATE_STARTUP 16
 
+#if WIN32
+typedef UINT_PTR SOCKET;
+#endif
+
 #ifdef __LINUX__
 extern int FTPObjThread(void *obj);
 #else

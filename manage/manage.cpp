@@ -440,9 +440,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#if defined(WIN32)
-#include <windows.h>
-#elif defined(__LINUX__)
+#if defined(__LINUX__)
 #include "linux/linux_fix.h"
 #endif
 #include "descent.h"

@@ -276,10 +276,6 @@
  *
  * $NoKeywords: $
  */
-#ifdef WIN32
-#include <crtdbg.h>
-#include "windows.h"
-#endif
 #include "ui.h"
 #include "newui.h"
 #include "game.h"
@@ -289,12 +285,9 @@
 #include "manage.h"
 #include "Mission.h"
 #include "pilot.h"
-#include "ui.h"
-#include "newui.h"
 #include "pstypes.h"
 #include "pserror.h"
 #include "descent.h"
-#include "game.h"
 #include "room.h"
 #include "object.h"
 #include "terrain.h"
@@ -310,14 +303,12 @@
 #include "DllWrappers.h"
 #include "appdatabase.h"
 #include "module.h"
-#include "ship.h"
 #include "localization.h"
 #include "stringtable.h"
 #include "dedicated_server.h"
 #include "multi_save_settings.h"
 #include "multi_dll_mgr.h"
 #include "mission_download.h"
-#include "module.h"
 #include "mem.h"
 #include "args.h"
 // #define USE_DIRECTPLAY

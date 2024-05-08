@@ -311,9 +311,6 @@
 
 #include "Controller.h"
 
-#include <windows.h>
-#include <process.h>
-
 #include <math.h>
 
 #include "pserror.h"

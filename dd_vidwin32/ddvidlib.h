@@ -46,7 +46,6 @@
 
 #include "ddvid.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <ddraw.h>
 #include <stdlib.h>

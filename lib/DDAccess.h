@@ -51,10 +51,6 @@
 
 #if defined(WIN32)
 
-//	Headers
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 //	Messages
 #define WM_SYNCMOUSEACQUIRE (WM_USER + 0)
 

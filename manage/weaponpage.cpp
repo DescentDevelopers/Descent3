@@ -286,10 +286,6 @@
  *
  * $NoKeywords: $
  */
-#if defined(WIN32)
-#include <windows.h>
-#endif
-
 #include "cfile.h"
 #include "manage.h"
 #include "weapon.h"

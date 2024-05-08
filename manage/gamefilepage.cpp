@@ -16,10 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if defined(WIN32)
-#include <windows.h>
-#endif
-
 #include "cfile.h"
 #include "manage.h"
 #include "mono.h"
