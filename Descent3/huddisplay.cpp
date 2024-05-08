@@ -339,8 +339,7 @@ void HudDisplayRouter(tHUDItem *item) {
 
   case HUD_ITEM_CUSTOMTEXT2:
     if (item->data.text) {
-      RenderHUDTextFlagsNoFormat(0, item->color, item->alpha, item->saturation_count, 2, Game_window_h / 2,
-                                 item->data.text);
+      RenderHUDTextFlagsNoFormat(0, item->color, item->alpha, item->saturation_count, 2, 240, item->data.text);
     }
     break;
 
