@@ -51,7 +51,14 @@ bool StateLimited = false;
 bool UseMultitexture = false;
 bool UseWBuffer = false;
 
+// General renderer states
+ubyte Renderer_initted = 0;
+
 // Generic GPU data
+int gpu_last_frame_polys_drawn = 0;
+int gpu_last_frame_verts_processed = 0;
+int gpu_last_uploaded = 0;
+
 float gpu_Alpha_factor = 1.0f;
 
 // Retrieves an error message
@@ -96,3 +103,14 @@ void rend_SetAlphaFactor(float val) {
 
 // Returns the current Alpha factor
 float rend_GetAlphaFactor(void) { return gpu_Alpha_factor; }
+
+// returns rendering statistics for the frame
+void rend_GetStatistics(tRendererStats *stats) {
+  if (Renderer_initted) {
+    stats->poly_count = gpu_last_frame_polys_drawn;
+    stats->vert_count = gpu_last_frame_verts_processed;
+    stats->texture_uploads = gpu_last_uploaded;
+  } else {
+    memset(stats, 0, sizeof(tRendererStats));
+  }
+}

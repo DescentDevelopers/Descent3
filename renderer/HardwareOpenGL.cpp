@@ -67,7 +67,7 @@ int Bumpmap_ready = 0;
 ubyte Overlay_type = OT_NONE;
 float Z_bias = 0.0f;
 ubyte Renderer_close_flag = 0;
-ubyte Renderer_initted = 0;
+extern ubyte Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
 
@@ -122,9 +122,10 @@ static int Cur_texture_object_num = 1;
 static int OpenGL_cache_initted = 0;
 static int OpenGL_last_bound[2];
 static int Last_texel_unit_set = -1;
-static int OpenGL_last_frame_polys_drawn = 0;
-static int OpenGL_last_frame_verts_processed = 0;
-static int OpenGL_last_uploaded = 0;
+
+extern int gpu_last_frame_polys_drawn;
+extern int gpu_last_frame_verts_processed;
+extern int gpu_last_uploaded;
 
 extern float gpu_Alpha_factor;
 
@@ -2304,9 +2305,9 @@ void rend_Flip(void) {
   }
 #endif
 
-  OpenGL_last_frame_polys_drawn = OpenGL_polys_drawn;
-  OpenGL_last_frame_verts_processed = OpenGL_verts_processed;
-  OpenGL_last_uploaded = OpenGL_uploads;
+  gpu_last_frame_polys_drawn = OpenGL_polys_drawn;
+  gpu_last_frame_verts_processed = OpenGL_verts_processed;
+  gpu_last_uploaded = OpenGL_uploads;
 
   OpenGL_uploads = 0;
   OpenGL_polys_drawn = 0;
@@ -3039,21 +3040,11 @@ void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {
   return NULL;
 }
 
-// returns rendering statistics for the frame
-void rend_GetStatistics(tRendererStats *stats) {
-  if (Renderer_initted) {
-    stats->poly_count = OpenGL_last_frame_polys_drawn;
-    stats->vert_count = OpenGL_last_frame_verts_processed;
-    stats->texture_uploads = OpenGL_last_uploaded;
-  } else {
-    memset(stats, 0, sizeof(tRendererStats));
-  }
-}
-
 void rend_TransformSetToPassthru(void) {
   int width = OpenGL_state.screen_width;
   int height = OpenGL_state.screen_height;
 
+  // TODO: Generalize
   // Projection
   dglMatrixMode(GL_PROJECTION);
   dglLoadIdentity();
