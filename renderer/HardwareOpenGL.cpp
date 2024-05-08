@@ -2320,65 +2320,6 @@ void rend_Flip(void) {
 
 void rend_EndFrame(void) {}
 
-// draws a scaled 2d bitmap to our buffer
-void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1, int color,
-                           float *alphas) {
-  g3Point *ptr_pnts[4];
-  g3Point pnts[4];
-  float r, g, b;
-  if (color != -1) {
-    r = GR_COLOR_RED(color) / 255.0;
-    g = GR_COLOR_GREEN(color) / 255.0;
-    b = GR_COLOR_BLUE(color) / 255.0;
-  }
-  for (int i = 0; i < 4; i++) {
-    if (color == -1)
-      pnts[i].p3_l = 1.0;
-    else {
-      pnts[i].p3_r = r;
-      pnts[i].p3_g = g;
-      pnts[i].p3_b = b;
-    }
-    if (alphas) {
-      pnts[i].p3_a = alphas[i];
-    }
-
-    pnts[i].p3_z = 1.0f;
-    pnts[i].p3_flags = PF_PROJECTED;
-  }
-
-  pnts[0].p3_sx = x1;
-  pnts[0].p3_sy = y1;
-  pnts[0].p3_u = u0;
-  pnts[0].p3_v = v0;
-  pnts[1].p3_sx = x2;
-  pnts[1].p3_sy = y1;
-  pnts[1].p3_u = u1;
-  pnts[1].p3_v = v0;
-  pnts[2].p3_sx = x2;
-  pnts[2].p3_sy = y2;
-  pnts[2].p3_u = u1;
-  pnts[2].p3_v = v1;
-  pnts[3].p3_sx = x1;
-  pnts[3].p3_sy = y2;
-  pnts[3].p3_u = u0;
-  pnts[3].p3_v = v1;
-  ptr_pnts[0] = &pnts[0];
-  ptr_pnts[1] = &pnts[1];
-  ptr_pnts[2] = &pnts[2];
-  ptr_pnts[3] = &pnts[3];
-  rend_SetTextureType(TT_LINEAR);
-  rend_DrawPolygon2D(bm, ptr_pnts, 4);
-}
-
-// Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte *framebuffer) {}
-
-// Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state) {
-  gpu_state.cur_bilinear_state = state;
-}
-
 // Sets the state of z-buffering to on or off
 void rend_SetZBufferState(sbyte state) {
   if (state == gpu_state.cur_zbuffer_state)
@@ -2397,17 +2338,6 @@ void rend_SetZBufferState(sbyte state) {
   }
 
   CHECK_ERROR(14)
-}
-
-// Sets the near and far planes for z buffer
-void rend_SetZValues(float nearz, float farz) {
-  gpu_state.cur_near_z = nearz;
-  gpu_state.cur_far_z = farz;
-  //	mprintf ((0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz));
-
-  // JEFF: glDepthRange must take parameters [0,1]
-  // It is set in init
-  //@@dglDepthRange (0,farz);
 }
 
 // Clears the display to a specified color
