@@ -12,3 +12,6 @@ brew "zlib"
 
 # spdlog
 brew "spdlog"
+
+# openssl
+brew "openssl@3"

@@ -135,6 +135,7 @@ add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
 add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
 
 find_package(ZLIB REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 if(ENABLE_LOGGER)
   message("Enabling Logging")

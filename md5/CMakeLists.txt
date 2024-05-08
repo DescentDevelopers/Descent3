@@ -1,7 +1,6 @@
 set(HEADERS md5.h)
-set(CPPS
-  md5.cpp)
+set(CPPS)
 
-set(PLATFORMCPPS)
+add_library(md5 INTERFACE ${HEADERS} ${CPPS})
 
-add_library(md5 STATIC ${HEADERS} ${CPPS} ${PLATFORMCPPS})
+target_link_libraries(md5 INTERFACE OpenSSL::Crypto)
