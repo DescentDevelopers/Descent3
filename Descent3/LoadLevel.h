@@ -672,58 +672,57 @@ inline void RestartLevelMD5() {
   if (Level_md5)
     delete Level_md5;
   Level_md5 = new MD5();
-  Level_md5->MD5Init();
 }
 
 inline void AppendToLevelChecksum(int val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val);
+  Level_md5->update(val);
 }
 
 inline void AppendToLevelChecksum(unsigned int val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val);
+  Level_md5->update(val);
 }
 
 inline void AppendToLevelChecksum(unsigned short val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val);
+  Level_md5->update(val);
 }
 
 inline void AppendToLevelChecksum(short val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val);
+  Level_md5->update(val);
 }
 
 inline void AppendToLevelChecksum(float val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val);
+  Level_md5->update(val);
 }
 
 inline void AppendToLevelChecksum(vector val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val.x);
-  Level_md5->MD5Update(val.y);
-  Level_md5->MD5Update(val.z);
+  Level_md5->update(val.x);
+  Level_md5->update(val.y);
+  Level_md5->update(val.z);
 }
 
 inline void AppendToLevelChecksum(unsigned char val) {
   if (!Level_md5) {
     return;
   }
-  Level_md5->MD5Update(val);
+  Level_md5->update(val);
 }
 
 inline void GetLevelMD5Sum(unsigned char digest[16]) {
@@ -732,24 +731,18 @@ inline void GetLevelMD5Sum(unsigned char digest[16]) {
       digest[i] = 0;
     return;
   }
-  Level_md5->MD5Final(digest);
+  Level_md5->digest(digest);
 }
 #include <string.h>
 inline char *GetCurrentSumString() {
   static char output_buf[100];
   output_buf[0] = '\0';
-  // Make a copy of the context so we don't mess
-  // up an in progress md5 sum.
-  MD5 *checksum = Level_md5->Clone();
-
-  unsigned char digest[16];
-  checksum->MD5Final(digest);
+  auto digest = Level_md5->digest();
   char bytestr[10] = "";
   // Do level checksum
   for (int i = 0; i < 16; i++) {
     snprintf(bytestr, sizeof(bytestr), "%.2x", digest[i]);
     strcat(output_buf, bytestr);
   }
-  MD5::Destroy(checksum);
   return output_buf;
 }
