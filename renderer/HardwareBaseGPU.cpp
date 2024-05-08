@@ -65,6 +65,33 @@ int gpu_last_frame_verts_processed = 0;
 int gpu_last_uploaded = 0;
 
 float gpu_Alpha_factor = 1.0f;
+float gpu_Alpha_multiplier = 1.0f;
+
+// returns the alpha that we should use
+float rend_GetAlphaMultiplier() {
+  switch (gpu_state.cur_alpha_type) {
+  case AT_ALWAYS:
+  case AT_TEXTURE:
+  case AT_VERTEX:
+  case AT_TEXTURE_VERTEX:
+  case AT_SATURATE_VERTEX:
+  case AT_SATURATE_TEXTURE_VERTEX:
+  case AT_SPECULAR:
+    return 1.0;
+  case AT_CONSTANT:
+  case AT_CONSTANT_TEXTURE:
+  case AT_CONSTANT_TEXTURE_VERTEX:
+  case AT_CONSTANT_VERTEX:
+  case AT_LIGHTMAP_BLEND:
+  case AT_LIGHTMAP_BLEND_SATURATE:
+  case AT_SATURATE_TEXTURE:
+  case AT_SATURATE_CONSTANT_VERTEX:
+    return gpu_state.cur_alpha / 255.0;
+  default:
+    // Int3();		// no type defined,get jason
+    return 0;
+  }
+}
 
 // Retrieves an error message
 const char *rend_GetErrorMessage() { return Renderer_error_message; }
@@ -94,6 +121,12 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
   rend_FontAlpha[1] = (color2 >> 24) / 255.0f;
   rend_FontAlpha[2] = (color3 >> 24) / 255.0f;
   rend_FontAlpha[3] = (color4 >> 24) / 255.0f;
+}
+
+// Sets the alpha value for constant alpha
+void rend_SetAlphaValue(ubyte val) {
+  gpu_state.cur_alpha = val;
+  gpu_Alpha_multiplier = rend_GetAlphaMultiplier();
 }
 
 // Sets the texture wrapping type

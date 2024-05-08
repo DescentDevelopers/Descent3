@@ -128,6 +128,7 @@ extern int gpu_last_frame_verts_processed;
 extern int gpu_last_uploaded;
 
 extern float gpu_Alpha_factor;
+extern float gpu_Alpha_multiplier;
 
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
 PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
@@ -149,8 +150,6 @@ ushort *opengl_packed_Translate_table = NULL;
 ushort *opengl_packed_4444_translate_table = NULL;
 
 extern rendering_state gpu_state;
-static float gpu_Alpha_multiplier = 1.0f;
-
 extern renderer_preferred_state gpu_preferred_state;
 
 // These structs are for drawing with OpenGL vertex arrays
@@ -1425,32 +1424,6 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
   CHECK_ERROR(9)
 }
 
-// returns the alpha that we should use
-float opengl_GetAlphaMultiplier(void) {
-  switch (gpu_state.cur_alpha_type) {
-  case AT_ALWAYS:
-  case AT_TEXTURE:
-  case AT_VERTEX:
-  case AT_TEXTURE_VERTEX:
-  case AT_SATURATE_VERTEX:
-  case AT_SATURATE_TEXTURE_VERTEX:
-  case AT_SPECULAR:
-    return 1.0;
-  case AT_CONSTANT:
-  case AT_CONSTANT_TEXTURE:
-  case AT_CONSTANT_TEXTURE_VERTEX:
-  case AT_CONSTANT_VERTEX:
-  case AT_LIGHTMAP_BLEND:
-  case AT_LIGHTMAP_BLEND_SATURATE:
-  case AT_SATURATE_TEXTURE:
-  case AT_SATURATE_CONSTANT_VERTEX:
-    return gpu_state.cur_alpha / 255.0;
-  default:
-    // Int3();		// no type defined,get jason
-    return 0;
-  }
-}
-
 // Turns on/off multitexture blending
 void opengl_SetMultitextureBlendMode(bool state) {
   if (OpenGL_multitexture_state == state)
@@ -2682,14 +2655,8 @@ void rend_SetAlphaType(sbyte atype) {
     break;
   }
   gpu_state.cur_alpha_type = atype;
-  gpu_Alpha_multiplier = opengl_GetAlphaMultiplier();
+  gpu_Alpha_multiplier = rend_GetAlphaMultiplier();
   CHECK_ERROR(15)
-}
-
-// Sets the alpha value for constant alpha
-void rend_SetAlphaValue(ubyte val) {
-  gpu_state.cur_alpha = val;
-  gpu_Alpha_multiplier = opengl_GetAlphaMultiplier();
 }
 
 // Draws a line using the states of the renderer
