@@ -140,13 +140,6 @@ static int OpenGL_last_frame_verts_processed = 0;
 static int OpenGL_last_uploaded = 0;
 static float OpenGL_Alpha_factor = 1.0f;
 
-#ifndef RELEASE
-// This is for the Microsoft OpenGL reference driver
-// Setting this will turn off bilinear filtering and zbuffer so we can get decent
-// framerates to discern driver problems
-static ubyte Fast_test_render = 0;
-#endif
-
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
 PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
 PFNGLCLIENTACTIVETEXTUREARBPROC oglClientActiveTextureARB = NULL;
@@ -285,17 +278,6 @@ void opengl_GetInformation() {
   mprintf((0, "OpenGL Renderer: %s\n", dglGetString(GL_RENDERER)));
   mprintf((0, "OpenGL Version: %s\n", dglGetString(GL_VERSION)));
   mprintf((0, "OpenGL Extensions: %s\n", dglGetString(GL_EXTENSIONS)));
-
-  /*
-  #ifndef RELEASE
-  // If this is the microsoft driver, then make stuff go faster
-  const ubyte *renderer=dglGetString(GL_RENDERER);
-  if (!(strnicmp ((const char *)renderer,"GDI",3)))
-          Fast_test_render=1;
-  else
-          Fast_test_render=0;
-  #endif
-  */
 }
 
 int opengl_MakeTextureObject(int tn) {
@@ -389,12 +371,6 @@ void opengl_SetDefaults() {
   dglEnable(GL_BLEND);
   dglEnable(GL_DITHER);
   opengl_Blending_on = true;
-
-#ifndef RELEASE
-  if (Fast_test_render) {
-    dglDisable(GL_DITHER);
-  }
-#endif
 
   rend_SetAlphaType(AT_ALWAYS);
   rend_SetAlphaValue(255);
@@ -2438,23 +2414,11 @@ void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, 
 
 // Sets the state of bilinear filtering for our textures
 void rend_SetFiltering(sbyte state) {
-#ifndef RELEASE
-  if (Fast_test_render) {
-    state = 0;
-  }
-#endif
-
   OpenGL_state.cur_bilinear_state = state;
 }
 
 // Sets the state of z-buffering to on or off
 void rend_SetZBufferState(sbyte state) {
-#ifndef RELEASE
-  if (Fast_test_render) {
-    state = 0;
-  }
-#endif
-
   if (state == OpenGL_state.cur_zbuffer_state)
     return; // No redundant state setting
 
