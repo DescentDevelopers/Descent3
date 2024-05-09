@@ -2235,7 +2235,7 @@ void SetupTempDirectory(void) {
   // verify that we can write to the temp directory
   if (!ddio_GetTempFileName(Descent3_temp_directory, "d3t", tempfilename)) {
     mprintf((0, "Unable to get temp file name\n"));
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    Error("Unable to write to temporary directory: \"%s\"", Descent3_temp_directory);
     exit(1);
   }
 
@@ -2244,7 +2244,7 @@ void SetupTempDirectory(void) {
   if (!file) {
     // unable to open file for writing
     mprintf((0, "Unable to open temp file name for writing\n"));
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    Error("Unable to create a file in temporary directory: \"%s\"", Descent3_temp_directory);
     exit(1);
   }
 
@@ -2257,7 +2257,7 @@ void SetupTempDirectory(void) {
     // unable to open file for reading
     mprintf((0, "Unable to open temp file name for reading\n"));
     ddio_DeleteFile(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    Error("Unable to read files in temporary directory: \"%s\"", Descent3_temp_directory);
     exit(1);
   }
 
@@ -2266,7 +2266,7 @@ void SetupTempDirectory(void) {
     mprintf((0, "Temp file verify failed\n"));
     cfclose(file);
     ddio_DeleteFile(tempfilename);
-    Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
+    Error("Unable to verify temporary directory: \"%s\"", Descent3_temp_directory);
     exit(1);
   }
 
