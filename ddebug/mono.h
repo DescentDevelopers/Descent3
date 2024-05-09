@@ -66,7 +66,7 @@
 #include "debug.h"
 void nw_InitTCPLogging(char *ip, unsigned short port);
 void nw_TCPPrintf(int n, char *format, ...);
-#if (!defined(RELEASE)) && defined(LOGGER)
+#if (!defined(RELEASE))
 extern bool Debug_print_block;
 // Prints a formatted string to the debug window
 #define mprintf(args) Debug_ConsolePrintf args

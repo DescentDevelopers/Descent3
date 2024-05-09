@@ -37,14 +37,14 @@ setx PATH=%VCPKG_ROOT%;%PATH%
 
 Build Descent 3:
 ```sh
-cmake --preset win -D ENABLE_LOGGER=[ON|OFF]
+cmake --preset win
 cmake --build --preset win --config [Debug|Release]
 ```
 
 #### Building - MacOS
 ```sh
 brew bundle install
-cmake --preset mac -D ENABLE_LOGGER=[ON|OFF]
+cmake --preset mac
 cmake --build --preset mac --config [Debug|Release]
 ```
 
@@ -52,7 +52,7 @@ cmake --build --preset mac --config [Debug|Release]
 ```sh
 sudo apt update
 sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl2-dev libncurses-dev zlib1g-dev
-cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
+cmake --preset linux
 cmake --build --preset linux --config [Debug|Release]
 ```
 
@@ -60,7 +60,7 @@ cmake --build --preset linux --config [Debug|Release]
 ```sh
 sudo dnf update --refresh
 sudo dnf install -y ninja-build cmake gcc-c++ SDL2-devel ncurses-devel zlib-devel
-cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
+cmake --preset linux
 cmake --build --preset linux --config [Debug|Release]
 ```
 

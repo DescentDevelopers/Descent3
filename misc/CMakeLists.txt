@@ -9,7 +9,7 @@ set(CPPS
 
 add_library(misc STATIC ${HEADERS} ${CPPS})
 
-target_link_libraries(misc PRIVATE ddebug spdlog_header)
+target_link_libraries(misc spdlog_header ddebug)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

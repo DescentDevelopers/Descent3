@@ -19,6 +19,9 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_sinks.h"
+
 // Initialize the logging system
 void InitLog();
 

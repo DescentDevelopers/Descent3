@@ -1151,9 +1151,7 @@ void PreInitD3Systems() {
 
   debugging = (FindArg("-debug") != 0);
 
-#ifdef LOGGER
   console_output = true;
-#endif
   if (FindArg("-logfile"))
     Debug_Logfile("d3.log");
 
