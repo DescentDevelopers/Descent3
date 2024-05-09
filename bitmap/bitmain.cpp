@@ -586,18 +586,6 @@ int bm_FindBitmapName(const char *name) {
     return fnode->data - GameBitmaps;
   } else
     return -1;
-  /*
-  for (i=0;i<MAX_BITMAPS && num_counted<Num_of_bitmaps;i++)
-  {
-          if (GameBitmaps[i].used)
-          {
-                  num_counted++;
-                  if(!stricmp (GameBitmaps[i].name,name))
-                          return i;
-          }
-  }
-  */
-  return -1;
 }
 // Given a handle, frees the bitmap memory and flags this bitmap as unused
 void bm_FreeBitmap(int handle) {
@@ -873,97 +861,6 @@ int bm_AllocLoadFileBitmap(const char *fname, int mipped, int format) {
   bm_insertNode(&GameBitmaps[n]);
   return n; // We made it!
 }
-// Allocs and loads a bitmap but doesn't actually load texel data!
-// Returns the handle of the loaded bitmap
-// Returns -1 if something is wrong
-/*
-int bm_AllocLoadFileNoMemBitmap (char *fname,int mipped)
-{
-        CFILE *infile;
-        if (!Bitmaps_initted)
-        {
-                Int3();
-                mprintf ((0,"Bitmaps not initted!!!\n"));
-                return -1;
-        }
-
-        char *filename,name[BITMAP_NAME_LEN];
-        int n,src_bm;
-
-        filename = fname;
-
-        // due to a bug in some people's tablefile editors, we got to make sure there is
-        // no path if there shouldn't be
-        if(!cfexist(filename))
-        {
-                // generate a possible new filename
-                char *end_ptr,*start_ptr;
-                start_ptr = fname;
-                end_ptr = start_ptr + strlen(start_ptr) - 1;
-                while( (end_ptr >= start_ptr) && (*end_ptr!='\\') ) end_ptr--;
-                if(end_ptr < start_ptr)
-                {
-                        mprintf((0,"Unable to find bitmap %s\n",fname));
-                        return -1;
-                }
-                ASSERT(*end_ptr=='\\');
-                end_ptr++;
-                filename = end_ptr;
-                mprintf((0,"Couldn't find %s, so gonna try %s\n",fname,filename));
-        }
-
-
-        // Check to see if this bitmap is already in memory, if so, just return that
-        // bitmaps handle
-        if ((n=bm_TestName(filename))!=-1)
-        {
-                GameBitmaps[n].used++;
-                mprintf ((0,"Found duplicate bitmap %s.\n",GameBitmaps[n].name));
-                return n;
-        }
-
-        bm_ChangeEndName (filename,name);
-        if (strlen(name)>33)
-        {
-                mprintf ((0,"ERROR!! This bitmaps name is too long, try shortening it and retry!\n"));
-                return -1;
-        }
-        // Try to open the file.  If we can't load it from the network if possible
-        infile=(CFILE *)cfopen (filename,"rb");
-        if( !infile)
-        {
-                mprintf ((0,"bm_AllocLoadFileBitmap: Can't open file named %s.\n",filename));
-
-                #ifdef _DEBUG
-                        return BAD_BITMAP_HANDLE;	// return the bad texture
-                #else
-                        return -1;
-                #endif
-        }
-        // Check to see if this is IFF.  If so, call the IFF reader.  If not,
-        // rewind the file and read as a TGA
-
-        int filetype=bm_GetFileType (infile,filename);
-
-        switch (filetype)
-        {
-                case BM_FILETYPE_TGA:
-                        // reads a tga or an outrage graphics file (ogf)
-                        src_bm=bm_tga_load_short_file(infile,name);
-                        break;
-                default:
-                        Int3();	// Can't read this type
-                        break;
-        }
-        cfclose (infile);
-        if (src_bm<0)
-        {
-                mprintf ((0,"Couldn't load %s.",filename));
-                return -1;
-        }
-
-        return src_bm;  // We made it!
-}*/
 // Allocs and loads a bitmap but doesn't actually load texel data!
 // Returns the handle of the loaded bitmap
 // Returns -1 if something is wrong
@@ -1447,71 +1344,6 @@ void bm_ScaleBitmapToBitmap(int dest, int src) {
     }
   }
   GameBitmaps[dest].flags |= BF_CHANGED;
-}
-// Returns whether or not this bitmap is in use
-int bm_used(int n) {
-  ASSERT(n >= 0 && n < MAX_BITMAPS);
-  return GameBitmaps[n].used;
-}
-// Loads a series of bitmaps from an IFF file
-int bm_AllocLoadIFFAnim(const char *filename, int *dest_index, int mipped) {
-  char name[BITMAP_NAME_LEN];
-  char str[BITMAP_NAME_LEN + 16];
-  int num_bitmaps, i, src_bm, n;
-  int bm_index[200];
-  bm_ChangeEndName(filename, name);
-
-  num_bitmaps = bm_iff_read_animbrush(filename, bm_index);
-  if (num_bitmaps < 0) {
-    mprintf((0, "Couldn't load %s.", filename));
-    return -1;
-  }
-
-  // Allocate space for our bitmap.  If its mipped it must mean its a texture,
-  // so make it TEXTURE_WIDTH x TEXTURE_SIZE
-  for (i = 0; i < num_bitmaps; i++) {
-    src_bm = bm_index[i];
-    ASSERT(GameBitmaps[src_bm].used);
-    if (mipped) {
-      if ((bm_mipped(src_bm)) == 0) // If we want a mipped but we don't have one
-      {
-        int w = bm_w(src_bm, 0);
-        int h = bm_h(src_bm, 0);
-
-        n = bm_AllocBitmap(w, h, mipped * (((w * h * 2) / 3)));
-
-        ASSERT(n >= 0);
-        bm_ScaleBitmapToBitmap(n, src_bm);
-        bm_FreeBitmap(src_bm);
-
-        bm_GenerateMipMaps(n);
-      } else
-        n = src_bm;
-    } else // If we don't want a mipped
-    {
-      if ((bm_mipped(src_bm)) == 0)
-        n = src_bm;
-      else // And this is already mipped
-      {
-        int w = bm_w(src_bm, 0);
-        int h = bm_h(src_bm, 0);
-        ushort *src_data, *dest_data;
-
-        n = bm_AllocBitmap(w, h, mipped * (((w * h * 2) / 3)));
-        ASSERT(n >= 0);
-        src_data = (ushort *)bm_data(src_bm, 0);
-        dest_data = (ushort *)bm_data(n, 0);
-        memcpy(dest_data, src_data, w * h * 2);
-
-        bm_FreeBitmap(src_bm);
-      }
-    }
-    snprintf(str, sizeof(str), "%s%d", name, i);
-    strcpy(GameBitmaps[n].name, str);
-    dest_index[i] = n;
-    bm_FreeBitmap(src_bm);
-  }
-  return num_bitmaps; // We made it!
 }
 // given a handle and a miplevel, returns the bytes per bitmap row
 int bm_rowsize(int handle, int miplevel) {

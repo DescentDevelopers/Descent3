@@ -77,17 +77,7 @@ void ChangeVClipName(const char *src, char *dest);
 // or index of vclip with name
 int FindVClipName(const char *name);
 
-// Returns frame "frame" of vclip "vclip".  Will mod the frame so that there
-// is no overflow
-int GetVClipBitmap(int vclip, int frame);
-
-// Loads an animation from an IFF ANIM file
-int AllocLoadIFFAnimClip(const char *filename, int texture);
-
 // Pages in a vclip if it needs to be
 void PageInVClip(int vcnum);
-
-// Frees up the bitmaps used by a vclip
-void FreeVClipResidency(int vcnum);
 
 #endif

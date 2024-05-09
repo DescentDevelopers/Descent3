@@ -18,13 +18,17 @@
 
 #ifndef PSBITMAP_H
 #define PSBITMAP_H
+
 #include "pstypes.h"
 #include "cfile.h"
+
 #ifdef __LINUX__
 #include "linux/linux_fix.h" //needed for stricmp's throughout bitmap lib
 #endif
+
 #define MAX_BITMAPS 5000
 #define NUM_MIP_LEVELS 5
+
 // It really doesn't matter what these are, as long as its above 10
 #define OUTRAGE_4444_COMPRESSED_MIPPED 121
 #define OUTRAGE_1555_COMPRESSED_MIPPED 122
@@ -35,6 +39,7 @@
 #define OUTRAGE_COMPRESSED_OGF 127
 #define BITMAP_NAME_LEN 35
 #define BAD_BITMAP_HANDLE 0
+
 // Bitmap flags
 #define BF_TRANSPARENT 1
 #define BF_CHANGED 2        // this bitmap has changed since last frame (useful for hardware cacheing)
@@ -44,10 +49,12 @@
 #define BF_WANTS_4444 32    // Read data as 4444 when this bitmap is paged in
 #define BF_BRAND_NEW 64     // This bitmap was just allocated and hasn't been to the video card
 #define BF_COMPRESSABLE 128 // This bitmap is compressable for 3dhardware that supports it
+
 // Bitmap priorities
 #define BITMAP_FORMAT_STANDARD 0
 #define BITMAP_FORMAT_1555 0
 #define BITMAP_FORMAT_4444 1
+
 typedef struct {
   ushort *data16;       // 16bit data
   ushort width, height; // Width and height in pixels
@@ -60,6 +67,7 @@ typedef struct {
   ubyte format;               // See bitmap format types above
   char name[BITMAP_NAME_LEN]; // Whats the name of this bitmap? (ie SteelWall)
 } bms_bitmap;
+
 typedef struct chunked_bitmap {
   int pw, ph;    // pixel width and height
   int w, h;      // width and height in square bitmaps.
@@ -67,7 +75,7 @@ typedef struct chunked_bitmap {
 } chunked_bitmap;
 extern bms_bitmap GameBitmaps[MAX_BITMAPS];
 extern ulong Bitmap_memory_used;
-extern ubyte Memory_map[];
+
 // Sets all the bitmaps to unused
 void bm_InitBitmaps();
 // Frees up all memory used by bitmaps
@@ -119,18 +127,12 @@ int bm_bpp(int handle);
 void bm_GenerateMipMaps(int handle);
 // Given two bitmaps, scales the data from src to the size of dest
 void bm_ScaleBitmapToBitmap(int dest, int src);
-// Returns whether or not this bitmap is in use
-int bm_used(int n);
-// Loads a series of bitmaps from an IFF file
-int bm_AllocLoadIFFAnim(const char *filename, int *dest_index, int mipped);
 // given a handle and a miplevel, returns the bytes per bitmap row
 int bm_rowsize(int handle, int miplevel);
 // Goes through the bitmap and sees if there is any transparency...if so, flag it!
 int bm_SetBitmapIfTransparent(int handle);
 // Saves the passed bitmap handle as a 24 bit uncompressed tga
 int bm_SaveBitmapTGA(const char *filename, int handle);
-// Sets the bitmap priority.  This comes in handy for our 3d hardware
-void bm_set_priority(int handle, int priority);
 // Allocs and loads a bitmap but doesn't actually load texel data!
 // Returns the handle of the loaded bitmap
 // Returns -1 if something is wrong
@@ -152,4 +154,5 @@ void bm_FreeBitmapData(int handle);
 int bm_format(int handle);
 // Returns the number of mipmap levels
 int bm_miplevels(int handle);
+
 #endif
