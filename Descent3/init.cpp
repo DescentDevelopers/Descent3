@@ -1573,6 +1573,7 @@ void InitIOSystems(bool editor) {
     for (int i = (len - 1); i >= 0; i--) {
       if (Base_directory[i] == '\\' || Base_directory[i] == '/') {
         Base_directory[i] = '\0';
+	break;
       }
     }
     mprintf((0, "Using working directory of %s\n", Base_directory));
