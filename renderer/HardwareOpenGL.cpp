@@ -60,27 +60,14 @@ void rend_SetLightingState(light_state state);
 
 #define CHANGE_RESOLUTION_IN_FULLSCREEN
 
-// The font characteristics
-static float rend_FontRed[4], rend_FontBlue[4], rend_FontGreen[4], rend_FontAlpha[4];
-char Renderer_error_message[256] = "Generic renderer error";
-// The following values are referenced by the game code, but only
-// UseMultitexture is actually referenced and used in this code - and
-// even that can probably go away and we just assume there is more than
-// one texture unit (which, since I believe OpenGL 1.2 is a requirement)
-bool UseHardware = true;
-bool NoLightmaps = false;
-bool StateLimited = false;
-bool UseMultitexture = false;
-bool UseWBuffer = false;
-
 // General renderer states
-int Overlay_map = -1;
+extern int gpu_Overlay_map;
 int Bump_map = 0;
 int Bumpmap_ready = 0;
-ubyte Overlay_type = OT_NONE;
+extern ubyte gpu_Overlay_type;
 float Z_bias = 0.0f;
 ubyte Renderer_close_flag = 0;
-ubyte Renderer_initted = 0;
+extern ubyte Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
 
@@ -135,17 +122,13 @@ static int Cur_texture_object_num = 1;
 static int OpenGL_cache_initted = 0;
 static int OpenGL_last_bound[2];
 static int Last_texel_unit_set = -1;
-static int OpenGL_last_frame_polys_drawn = 0;
-static int OpenGL_last_frame_verts_processed = 0;
-static int OpenGL_last_uploaded = 0;
-static float OpenGL_Alpha_factor = 1.0f;
 
-#ifndef RELEASE
-// This is for the Microsoft OpenGL reference driver
-// Setting this will turn off bilinear filtering and zbuffer so we can get decent
-// framerates to discern driver problems
-static ubyte Fast_test_render = 0;
-#endif
+extern int gpu_last_frame_polys_drawn;
+extern int gpu_last_frame_verts_processed;
+extern int gpu_last_uploaded;
+
+extern float gpu_Alpha_factor;
+extern float gpu_Alpha_multiplier;
 
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
 PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
@@ -166,10 +149,8 @@ ushort *opengl_packed_Upload_data = NULL;
 ushort *opengl_packed_Translate_table = NULL;
 ushort *opengl_packed_4444_translate_table = NULL;
 
-rendering_state OpenGL_state;
-static float Alpha_multiplier = 1.0f;
-
-renderer_preferred_state OpenGL_preferred_state = {0, 1, 1.5};
+extern rendering_state gpu_state;
+extern renderer_preferred_state gpu_preferred_state;
 
 // These structs are for drawing with OpenGL vertex arrays
 // Useful for fast indexing
@@ -285,17 +266,6 @@ void opengl_GetInformation() {
   mprintf((0, "OpenGL Renderer: %s\n", dglGetString(GL_RENDERER)));
   mprintf((0, "OpenGL Version: %s\n", dglGetString(GL_VERSION)));
   mprintf((0, "OpenGL Extensions: %s\n", dglGetString(GL_EXTENSIONS)));
-
-  /*
-  #ifndef RELEASE
-  // If this is the microsoft driver, then make stuff go faster
-  const ubyte *renderer=dglGetString(GL_RENDERER);
-  if (!(strnicmp ((const char *)renderer,"GDI",3)))
-          Fast_test_render=1;
-  else
-          Fast_test_render=0;
-  #endif
-  */
 }
 
 int opengl_MakeTextureObject(int tn) {
@@ -374,14 +344,14 @@ int opengl_InitCache(void) {
 void opengl_SetDefaults() {
   mprintf((0, "Setting states\n"));
 
-  OpenGL_state.cur_color = 0x00FFFFFF;
-  OpenGL_state.cur_bilinear_state = -1;
-  OpenGL_state.cur_zbuffer_state = -1;
-  OpenGL_state.cur_texture_quality = -1;
-  OpenGL_state.cur_light_state = LS_GOURAUD;
-  OpenGL_state.cur_color_model = CM_MONO;
-  OpenGL_state.cur_bilinear_state = -1;
-  OpenGL_state.cur_alpha_type = AT_TEXTURE;
+  gpu_state.cur_color = 0x00FFFFFF;
+  gpu_state.cur_bilinear_state = -1;
+  gpu_state.cur_zbuffer_state = -1;
+  gpu_state.cur_texture_quality = -1;
+  gpu_state.cur_light_state = LS_GOURAUD;
+  gpu_state.cur_color_model = CM_MONO;
+  gpu_state.cur_bilinear_state = -1;
+  gpu_state.cur_alpha_type = AT_TEXTURE;
 
   // Enable some states
   dglAlphaFunc(GL_GREATER, 0);
@@ -389,12 +359,6 @@ void opengl_SetDefaults() {
   dglEnable(GL_BLEND);
   dglEnable(GL_DITHER);
   opengl_Blending_on = true;
-
-#ifndef RELEASE
-  if (Fast_test_render) {
-    dglDisable(GL_DITHER);
-  }
-#endif
 
   rend_SetAlphaType(AT_ALWAYS);
   rend_SetAlphaValue(255);
@@ -404,7 +368,7 @@ void opengl_SetDefaults() {
   rend_SetColorModel(CM_RGB);
   rend_SetZBufferState(1);
   rend_SetZValues(0, 3000);
-  opengl_SetGammaValue(OpenGL_preferred_state.gamma);
+  rend_SetGammaValue(gpu_preferred_state.gamma);
   OpenGL_last_bound[0] = 9999999;
   OpenGL_last_bound[1] = 9999999;
   Last_texel_unit_set = -1;
@@ -421,7 +385,7 @@ void opengl_SetDefaults() {
   dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   dglHint(GL_FOG_HINT, GL_NICEST);
   dglEnable(GL_SCISSOR_TEST);
-  dglScissor(0, 0, OpenGL_state.screen_width, OpenGL_state.screen_height);
+  dglScissor(0, 0, gpu_state.screen_width, gpu_state.screen_height);
   dglDisable(GL_SCISSOR_TEST);
   dglDepthRange(0.0f, 1.0f);
 
@@ -470,15 +434,15 @@ int opengl_Setup(HDC glhdc) {
 
   /*if (!WindowGL)
   {
-  if (OpenGL_preferred_state.bit_depth==32)
+  if (gpu_preferred_state.bit_depth==32)
   {
   pfd.cColorBits   = 32;
   pfd.cDepthBits   = 32;
   }
   else
   {
-  pfd.cColorBits   = OpenGL_preferred_state.bit_depth;
-  pfd.cDepthBits   =OpenGL_preferred_state.bit_depth;
+  pfd.cColorBits   = gpu_preferred_state.bit_depth;
+  pfd.cDepthBits   =gpu_preferred_state.bit_depth;
   }
 
   pfd.cColorBits   = 16;
@@ -544,42 +508,12 @@ int opengl_Setup(HDC glhdc) {
 }
 #elif defined(__LINUX__)
 
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-static long minimumAcceptableRender = -1;
-static Uint32 lastSwapTicks = 0;
-static int tooSlowCount = 0;
-static int tooSlowChecksLeft = 0;
-
-void setMinimumAcceptableRenderTime(int ms) {
-  if (nofpscheck)
-    return;
-
-  minimumAcceptableRender = ms;
-  lastSwapTicks = SDL_GetTicks();
-  tooSlowCount = 0;
-  tooSlowChecksLeft = 15; // check 15 frames.
-}
-#endif
-
 extern bool linux_permit_gamma;
 extern renderer_preferred_state Render_preferred_state;
 extern bool ddio_mouseGrabbed;
 int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
 int opengl_Setup(oeApplication *app, int *width, int *height) {
-// rcg11192000 don't check for FPS.
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-  nofpscheck = (FindArgChar("-nofpscheck", 'H') != 0);
-
-  // rcg01252000 reset these, so they don't barf if we change
-  // video modes for a movie or whatnot in the middle of
-  // checking rendering speed...
-  minimumAcceptableRender = -1;
-  lastSwapTicks = 0;
-  tooSlowCount = 0;
-  tooSlowChecksLeft = 0;
-#endif
-
   // rcg09182000 don't need to quitsubsystem anymore...
   //    SDL_QuitSubSystem(SDL_INIT_VIDEO);  // here goes nothing...
   //    Already_loaded = false;
@@ -721,7 +655,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   mprintf((0, "Setting up opengl mode!\n"));
 
   if (pref_state) {
-    OpenGL_preferred_state = *pref_state;
+    gpu_preferred_state = *pref_state;
   }
 
   if (app != NULL) {
@@ -747,9 +681,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 
     devmode.dmSize = sizeof(devmode);
     devmode.dmBitsPerPel = 16;
-    // devmode.dmBitsPerPel=OpenGL_preferred_state.bit_depth;
-    devmode.dmPelsWidth = OpenGL_preferred_state.width;
-    devmode.dmPelsHeight = OpenGL_preferred_state.height;
+    // devmode.dmBitsPerPel=gpu_preferred_state.bit_depth;
+    devmode.dmPelsWidth = gpu_preferred_state.width;
+    devmode.dmPelsHeight = gpu_preferred_state.height;
     devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 #ifdef CHANGE_RESOLUTION_IN_FULLSCREEN
@@ -773,17 +707,17 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         opengl_Close();
         return 0;
       } else {
-        OpenGL_preferred_state.bit_depth = 16;
-        OpenGL_preferred_state.width = 640;
-        OpenGL_preferred_state.height = 480;
+        gpu_preferred_state.bit_depth = 16;
+        gpu_preferred_state.width = 640;
+        gpu_preferred_state.height = 480;
       }
     } else {
-      mprintf((0, "Setdisplaymode to %d x %d (%d bits) is successful!\n", OpenGL_preferred_state.width,
-               OpenGL_preferred_state.height, OpenGL_preferred_state.bit_depth));
+      mprintf((0, "Setdisplaymode to %d x %d (%d bits) is successful!\n", gpu_preferred_state.width,
+               gpu_preferred_state.height, gpu_preferred_state.bit_depth));
     }
   }
 
-  memset(&OpenGL_state, 0, sizeof(rendering_state));
+  memset(&gpu_state, 0, sizeof(rendering_state));
 
   //	These values are set here - samir
   if (app != NULL) {
@@ -806,17 +740,17 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     windowX = topLeft.x;
     windowY = topLeft.y;
   } else {
-    SetWindowPos(hOpenGLWnd, HWND_TOPMOST, 0, 0, OpenGL_preferred_state.width, OpenGL_preferred_state.height,
+    SetWindowPos(hOpenGLWnd, HWND_TOPMOST, 0, 0, gpu_preferred_state.width, gpu_preferred_state.height,
                  SWP_FRAMECHANGED);
-    width = OpenGL_preferred_state.width;
-    height = OpenGL_preferred_state.height;
+    width = gpu_preferred_state.width;
+    height = gpu_preferred_state.height;
     RECT rect;
     GetWindowRect((HWND)hOpenGLWnd, &rect);
     mprintf((0, "rect=%d %d %d %d\n", rect.top, rect.right, rect.bottom, rect.left));
   }
 
-  OpenGL_state.screen_width = width;
-  OpenGL_state.screen_height = height;
+  gpu_state.screen_width = width;
+  gpu_state.screen_height = height;
 
   if (!opengl_Setup(hOpenGLDC)) {
     opengl_Close();
@@ -831,20 +765,20 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
    *               LINUX OPENGL
    ***********************************************************
    */
-  // Setup OpenGL_state.screen_width & OpenGL_state.screen_height & width & height
-  width = OpenGL_preferred_state.width;
-  height = OpenGL_preferred_state.height;
+  // Setup gpu_state.screen_width & gpu_state.screen_height & width & height
+  width = gpu_preferred_state.width;
+  height = gpu_preferred_state.height;
 
   if (!opengl_Setup(app, &width, &height)) {
     opengl_Close();
     return 0;
   }
 
-  memset(&OpenGL_state, 0, sizeof(rendering_state));
-  OpenGL_state.screen_width = width;
-  OpenGL_state.screen_height = height;
+  memset(&gpu_state, 0, sizeof(rendering_state));
+  gpu_state.screen_width = width;
+  gpu_state.screen_height = height;
 #else
-  // Setup OpenGL_state.screen_width & OpenGL_state.screen_height & width & height
+  // Setup gpu_state.screen_width & gpu_state.screen_height & width & height
 
 #endif
   // Get some info
@@ -1001,7 +935,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 
   CHECK_ERROR(4)
 
-  OpenGL_state.initted = 1;
+  gpu_state.initted = 1;
 
   mprintf((0, "OpenGL initialization at %d x %d was successful.\n", width, height));
 
@@ -1094,7 +1028,7 @@ void opengl_Close() {
 
 #endif
   // mod_FreeModule (OpenGLDLLHandle);
-  OpenGL_state.initted = 0;
+  gpu_state.initted = 0;
 }
 
 // Takes our 16bit format and converts it into the memory scheme that OpenGL wants
@@ -1366,7 +1300,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
   if (tn == 1)
     dest_wrap = WT_CLAMP;
   else
-    dest_wrap = OpenGL_state.cur_wrap_type;
+    dest_wrap = gpu_state.cur_wrap_type;
 
   if (map_type == MAP_TYPE_LIGHTMAP)
     uwrap = GET_WRAP_STATE(OpenGL_lightmap_states[handle]);
@@ -1385,11 +1319,11 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
 
   OpenGL_sets_this_frame[1]++;
 
-  if (OpenGL_state.cur_wrap_type == WT_CLAMP) {
+  if (gpu_state.cur_wrap_type == WT_CLAMP) {
     dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-  } else if (OpenGL_state.cur_wrap_type == WT_WRAP_V) {
+  } else if (gpu_state.cur_wrap_type == WT_WRAP_V) {
     dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     dglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   } else {
@@ -1416,8 +1350,8 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
     dest_state = 1;
   } else {
     magf = GET_FILTER_STATE(OpenGL_bitmap_states[handle]);
-    dest_state = OpenGL_preferred_state.filtering;
-    if (!OpenGL_state.cur_bilinear_state)
+    dest_state = gpu_preferred_state.filtering;
+    if (!gpu_state.cur_bilinear_state)
       dest_state = 0;
   }
 
@@ -1458,43 +1392,6 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
   }
 
   CHECK_ERROR(9)
-}
-
-// returns the alpha that we should use
-float opengl_GetAlphaMultiplier(void) {
-  switch (OpenGL_state.cur_alpha_type) {
-  case AT_ALWAYS:
-    return 1.0;
-  case AT_CONSTANT:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_TEXTURE:
-    return 1.0;
-  case AT_CONSTANT_TEXTURE:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_VERTEX:
-    return 1.0;
-  case AT_CONSTANT_TEXTURE_VERTEX:
-  case AT_CONSTANT_VERTEX:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_TEXTURE_VERTEX:
-    return 1.0;
-  case AT_LIGHTMAP_BLEND:
-  case AT_LIGHTMAP_BLEND_SATURATE:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_SATURATE_TEXTURE:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_SATURATE_VERTEX:
-    return 1.0;
-  case AT_SATURATE_CONSTANT_VERTEX:
-    return OpenGL_state.cur_alpha / 255.0;
-  case AT_SATURATE_TEXTURE_VERTEX:
-    return 1.0;
-  case AT_SPECULAR:
-    return 1.0;
-  default:
-    // Int3();		// no type defined,get jason
-    return 0;
-  }
 }
 
 // Turns on/off multitexture blending
@@ -1538,19 +1435,19 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
   color_array *colorp;
   tex_array *texp, *texp2;
 
-  float one_over_square_res = 1.0 / GameLightmaps[Overlay_map].square_res;
-  float xscalar = (float)GameLightmaps[Overlay_map].width * one_over_square_res;
-  float yscalar = (float)GameLightmaps[Overlay_map].height * one_over_square_res;
+  float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
+  float xscalar = (float)GameLightmaps[gpu_Overlay_map].width * one_over_square_res;
+  float yscalar = (float)GameLightmaps[gpu_Overlay_map].height * one_over_square_res;
 
   ASSERT(nv < 100);
 
-  if (OpenGL_state.cur_light_state == LS_NONE) {
-    fr = GR_COLOR_RED(OpenGL_state.cur_color);
-    fg = GR_COLOR_GREEN(OpenGL_state.cur_color);
-    fb = GR_COLOR_BLUE(OpenGL_state.cur_color);
+  if (gpu_state.cur_light_state == LS_NONE) {
+    fr = GR_COLOR_RED(gpu_state.cur_color);
+    fg = GR_COLOR_GREEN(gpu_state.cur_color);
+    fb = GR_COLOR_BLUE(gpu_state.cur_color);
   }
 
-  alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   vertp = &GL_verts[0];
   texp = &GL_tex_coords[0];
@@ -1562,13 +1459,13 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
     pnt = p[i];
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
-    if (OpenGL_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+    if (gpu_state.cur_alpha_type & ATF_VERTEX)
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
 
     // If we have a lighting model, apply the correct lighting!
-    if (OpenGL_state.cur_light_state != LS_NONE) {
+    if (gpu_state.cur_light_state != LS_NONE) {
       // Do lighting based on intesity (MONO) or colored (RGB)
-      if (OpenGL_state.cur_color_model == CM_MONO) {
+      if (gpu_state.cur_color_model == CM_MONO) {
         colorp->r = pnt->p3_l;
         colorp->g = pnt->p3_l;
         colorp->b = pnt->p3_l;
@@ -1624,9 +1521,9 @@ void opengl_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_t
   opengl_MakeFilterTypeCurrent(handle, map_type, 0);
 
   // make sure our bitmap is ready to be drawn
-  opengl_MakeBitmapCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1);
-  opengl_MakeWrapTypeCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1);
-  opengl_MakeFilterTypeCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+  opengl_MakeBitmapCurrent(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+  opengl_MakeWrapTypeCurrent(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
+  opengl_MakeFilterTypeCurrent(gpu_Overlay_map, MAP_TYPE_LIGHTMAP, 1);
 
   opengl_SetMultitextureBlendMode(true);
 
@@ -1646,11 +1543,11 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
     opengl_SetMultitextureBlendMode(false);
   }
 
-  float alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  float alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
-  fr = GR_COLOR_RED(OpenGL_state.cur_color);
-  fg = GR_COLOR_GREEN(OpenGL_state.cur_color);
-  fb = GR_COLOR_BLUE(OpenGL_state.cur_color);
+  fr = GR_COLOR_RED(gpu_state.cur_color);
+  fg = GR_COLOR_GREEN(gpu_state.cur_color);
+  fb = GR_COLOR_BLUE(gpu_state.cur_color);
   fr /= 255.0;
   fg /= 255.0;
   fb /= 255.0;
@@ -1661,13 +1558,13 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
     g3Point *pnt = p[i];
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
-    if (OpenGL_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+    if (gpu_state.cur_alpha_type & ATF_VERTEX)
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
 
     // If we have a lighting model, apply the correct lighting!
-    if (OpenGL_state.cur_light_state != LS_NONE) {
+    if (gpu_state.cur_light_state != LS_NONE) {
       // Do lighting based on intesity (MONO) or colored (RGB)
-      if (OpenGL_state.cur_color_model == CM_MONO)
+      if (gpu_state.cur_color_model == CM_MONO)
         dglColor4f(pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha);
       else {
         dglColor4f(pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha);
@@ -1692,11 +1589,11 @@ void opengl_DrawFlatPolygon3D(g3Point **p, int nv) {
 }
 
 // Sets the gamma correction value
-void opengl_SetGammaValue(float val) {
+void rend_SetGammaValue(float val) {
   //	if( WindowGL )
   //		return;
 
-  OpenGL_preferred_state.gamma = val;
+  gpu_preferred_state.gamma = val;
   mprintf((0, "Setting gamma to %f\n", val));
 
 #if defined(WIN32)
@@ -1918,20 +1815,20 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 
   g3_RefreshTransforms(false);
 
-  if (OpenGL_state.cur_texture_quality == 0) {
+  if (gpu_state.cur_texture_quality == 0) {
     opengl_DrawFlatPolygon3D(p, nv);
     return;
   }
 
-  if (Overlay_type != OT_NONE && UseMultitexture) {
+  if (gpu_Overlay_type != OT_NONE && UseMultitexture) {
     opengl_DrawMultitexturePolygon3D(handle, p, nv, map_type);
     return;
   }
 
-  if (OpenGL_state.cur_light_state == LS_FLAT_GOURAUD) {
-    fr = GR_COLOR_RED(OpenGL_state.cur_color) / 255.0;
-    fg = GR_COLOR_GREEN(OpenGL_state.cur_color) / 255.0;
-    fb = GR_COLOR_BLUE(OpenGL_state.cur_color) / 255.0;
+  if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
+    fr = GR_COLOR_RED(gpu_state.cur_color) / 255.0;
+    fg = GR_COLOR_GREEN(gpu_state.cur_color) / 255.0;
+    fb = GR_COLOR_BLUE(gpu_state.cur_color) / 255.0;
   }
 
   if (UseMultitexture) {
@@ -1943,7 +1840,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   opengl_MakeWrapTypeCurrent(handle, map_type, 0);
   opengl_MakeFilterTypeCurrent(handle, map_type, 0);
 
-  alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   vertp = &GL_verts[0];
   texp = &GL_tex_coords[0];
@@ -1976,8 +1873,8 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
       vector tempv = pnt->p3_vecPreRot - View_position;
       vector testPt = tempv * Unscaled_matrix;
 
-      float screenX = pnt->p3_sx + OpenGL_state.clip_x1;
-      float screenY = pnt->p3_sy + OpenGL_state.clip_y1;
+      float screenX = pnt->p3_sx + gpu_state.clip_x1;
+      float screenY = pnt->p3_sy + gpu_state.clip_y1;
 
       // normalize
       float oOW = 1.0f / view[3];
@@ -1989,20 +1886,20 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     }
     ////////////////////////////////////////////
 
-    if (OpenGL_state.cur_alpha_type & ATF_VERTEX) {
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+    if (gpu_state.cur_alpha_type & ATF_VERTEX) {
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
     }
 
     // If we have a lighting model, apply the correct lighting!
-    if (OpenGL_state.cur_light_state != LS_NONE) {
-      if (OpenGL_state.cur_light_state == LS_FLAT_GOURAUD) {
+    if (gpu_state.cur_light_state != LS_NONE) {
+      if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
         colorp->r = fr;
         colorp->g = fg;
         colorp->b = fb;
         colorp->a = alpha;
       } else {
         // Do lighting based on intesity (MONO) or colored (RGB)
-        if (OpenGL_state.cur_color_model == CM_MONO) {
+        if (gpu_state.cur_color_model == CM_MONO) {
           colorp->r = pnt->p3_l;
           colorp->g = pnt->p3_l;
           colorp->b = pnt->p3_l;
@@ -2071,7 +1968,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
   CHECK_ERROR(10)
 
   // If there is a lightmap to draw, draw it as well
-  if (Overlay_type != OT_NONE) {
+  if (gpu_Overlay_type != OT_NONE) {
     return; // Temp fix until I figure out whats going on
     Int3(); // Shouldn't reach here
   }
@@ -2081,7 +1978,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 // Uses bitmap "handle" as a texture
 void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   ASSERT(nv < 100);
-  ASSERT(Overlay_type == OT_NONE);
+  ASSERT(gpu_Overlay_type == OT_NONE);
 
   g3_RefreshTransforms(true);
 
@@ -2089,15 +1986,15 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
     opengl_SetMultitextureBlendMode(false);
   }
 
-  int xAdd = OpenGL_state.clip_x1;
-  int yAdd = OpenGL_state.clip_y1;
+  int xAdd = gpu_state.clip_x1;
+  int yAdd = gpu_state.clip_y1;
 
   float fr, fg, fb;
-  if (OpenGL_state.cur_light_state == LS_FLAT_GOURAUD || OpenGL_state.cur_texture_quality == 0) {
+  if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
     float scale = 1.0f / 255.0f;
-    fr = GR_COLOR_RED(OpenGL_state.cur_color) * scale;
-    fg = GR_COLOR_GREEN(OpenGL_state.cur_color) * scale;
-    fb = GR_COLOR_BLUE(OpenGL_state.cur_color) * scale;
+    fr = GR_COLOR_RED(gpu_state.cur_color) * scale;
+    fg = GR_COLOR_GREEN(gpu_state.cur_color) * scale;
+    fb = GR_COLOR_BLUE(gpu_state.cur_color) * scale;
   }
 
   // make sure our bitmap is ready to be drawn
@@ -2105,7 +2002,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   opengl_MakeWrapTypeCurrent(handle, MAP_TYPE_BITMAP, 0);
   opengl_MakeFilterTypeCurrent(handle, MAP_TYPE_BITMAP, 0);
 
-  float alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  float alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   vector *vertp = &GL_verts[0];
   tex_array *texp = &GL_tex_coords[0];
@@ -2116,21 +2013,21 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   for (i = 0; i < nv; ++i, ++vertp, ++texp, ++colorp) {
     g3Point *pnt = p[i];
 
-    if (OpenGL_state.cur_alpha_type & ATF_VERTEX) {
+    if (gpu_state.cur_alpha_type & ATF_VERTEX) {
       // the alpha should come from the vertex
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
     }
 
     // If we have a lighting model, apply the correct lighting!
-    if (OpenGL_state.cur_light_state == LS_FLAT_GOURAUD || OpenGL_state.cur_texture_quality == 0) {
+    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
       // pull the color from the constant color data
       colorp->r = fr;
       colorp->g = fg;
       colorp->b = fb;
       colorp->a = alpha;
-    } else if (OpenGL_state.cur_light_state != LS_NONE) {
+    } else if (gpu_state.cur_light_state != LS_NONE) {
       // Do lighting based on intensity (MONO) or colored (RGB)
-      if (OpenGL_state.cur_color_model == CM_MONO) {
+      if (gpu_state.cur_color_model == CM_MONO) {
         colorp->r = pnt->p3_l;
         colorp->g = pnt->p3_l;
         colorp->b = pnt->p3_l;
@@ -2161,7 +2058,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   }
 
   // And draw!
-  if (OpenGL_state.cur_texture_quality == 0) {
+  if (gpu_state.cur_texture_quality == 0) {
     // force disable textures
     dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
   }
@@ -2169,7 +2066,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   // draw the data in the arrays
   dglDrawArrays(GL_POLYGON, 0, nv);
 
-  if (OpenGL_state.cur_texture_quality == 0) {
+  if (gpu_state.cur_texture_quality == 0) {
     // re-enable textures
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
   }
@@ -2182,14 +2079,14 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
 
 #endif // DEDICATED_ONLY
 
-void rend_SetFlatColor(ddgr_color color) { OpenGL_state.cur_color = color; }
+void rend_SetFlatColor(ddgr_color color) { gpu_state.cur_color = color; }
 
 // Sets the fog state to TRUE or FALSE
 void rend_SetFogState(sbyte state) {
-  if (state == OpenGL_state.cur_fog_state)
+  if (state == gpu_state.cur_fog_state)
     return;
 
-  OpenGL_state.cur_fog_state = state;
+  gpu_state.cur_fog_state = state;
   if (state == 1) {
     dglEnable(GL_FOG);
   } else {
@@ -2203,8 +2100,8 @@ void rend_SetFogBorders(float nearz, float farz) {
   float fogStart = nearz;
   float fogEnd = farz;
 
-  OpenGL_state.cur_fog_start = fogStart;
-  OpenGL_state.cur_fog_end = fogEnd;
+  gpu_state.cur_fog_start = fogStart;
+  gpu_state.cur_fog_end = fogEnd;
 
   dglFogi(GL_FOG_MODE, GL_LINEAR);
   dglFogf(GL_FOG_START, fogStart);
@@ -2217,7 +2114,7 @@ void rend_SetRendererType(renderer_type state) {
 }
 
 void rend_SetLighting(light_state state) {
-  if (state == OpenGL_state.cur_light_state)
+  if (state == gpu_state.cur_light_state)
     return; // No redundant state setting
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != 0) {
@@ -2231,16 +2128,16 @@ void rend_SetLighting(light_state state) {
   switch (state) {
   case LS_NONE:
     dglShadeModel(GL_SMOOTH);
-    OpenGL_state.cur_light_state = LS_NONE;
+    gpu_state.cur_light_state = LS_NONE;
     break;
   case LS_FLAT_GOURAUD:
     dglShadeModel(GL_SMOOTH);
-    OpenGL_state.cur_light_state = LS_FLAT_GOURAUD;
+    gpu_state.cur_light_state = LS_FLAT_GOURAUD;
     break;
   case LS_GOURAUD:
   case LS_PHONG:
     dglShadeModel(GL_SMOOTH);
-    OpenGL_state.cur_light_state = LS_GOURAUD;
+    gpu_state.cur_light_state = LS_GOURAUD;
     break;
   default:
     Int3();
@@ -2253,10 +2150,10 @@ void rend_SetLighting(light_state state) {
 void rend_SetColorModel(color_model state) {
   switch (state) {
   case CM_MONO:
-    OpenGL_state.cur_color_model = CM_MONO;
+    gpu_state.cur_color_model = CM_MONO;
     break;
   case CM_RGB:
-    OpenGL_state.cur_color_model = CM_RGB;
+    gpu_state.cur_color_model = CM_RGB;
     break;
   default:
     Int3();
@@ -2265,7 +2162,7 @@ void rend_SetColorModel(color_model state) {
 }
 
 void rend_SetTextureType(texture_type state) {
-  if (state == OpenGL_state.cur_texture_type)
+  if (state == gpu_state.cur_texture_type)
     return; // No redundant state setting
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != 0) {
@@ -2278,14 +2175,14 @@ void rend_SetTextureType(texture_type state) {
   switch (state) {
   case TT_FLAT:
     dglDisable(GL_TEXTURE_2D);
-    OpenGL_state.cur_texture_quality = 0;
+    gpu_state.cur_texture_quality = 0;
     break;
   case TT_LINEAR:
   case TT_LINEAR_SPECIAL:
   case TT_PERSPECTIVE:
   case TT_PERSPECTIVE_SPECIAL:
     dglEnable(GL_TEXTURE_2D);
-    OpenGL_state.cur_texture_quality = 2;
+    gpu_state.cur_texture_quality = 2;
     break;
   default:
     Int3(); // huh? Get Jason
@@ -2293,45 +2190,19 @@ void rend_SetTextureType(texture_type state) {
   }
 
   CHECK_ERROR(12)
-  OpenGL_state.cur_texture_type = state;
+  gpu_state.cur_texture_type = state;
 }
 
 void rend_StartFrame(int x1, int y1, int x2, int y2, int clear_flags) {
   if (clear_flags & RF_CLEAR_ZBUFFER) {
     dglClear(GL_DEPTH_BUFFER_BIT);
   }
-  OpenGL_state.clip_x1 = x1;
-  OpenGL_state.clip_y1 = y1;
-  OpenGL_state.clip_x2 = x2;
-  OpenGL_state.clip_y2 = y2;
+  gpu_state.clip_x1 = x1;
+  gpu_state.clip_y1 = y1;
+  gpu_state.clip_x2 = x2;
+  gpu_state.clip_y2 = y2;
 }
 
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-// !!! FIXME: delete this whole section (and definitely the Loki email and phone number!).
-#error do not compile this in. This was for software mesa problems in 2000.
-static void slownessAbort(void) {
-
-#ifdef __LINUX__
-  SDL_Surface *surface = SDL_GetVideoSurface();
-  SDL_SetVideoMode(surface->w, surface->h, surface->format->BitsPerPixel, surface->flags & ~SDL_OPENGL);
-
-  sdl_ShowMessage("Your OpenGL driver is too slow to play this game.\n"
-                  "Driver used: [ %s ]\n"
-                  "Please change your driver!\n"
-                  "Email support@lokigames.com for help,\n"
-                  "or call 1-714-508-2140 (9-5 PM US Pacific Time).\n",
-                  loadedLibrary);
-
-  SDL_GL_SwapBuffers();
-  Sleep(10000);
-  SDL_Quit();
-  _exit(99);
-#else
-#error Fill in an aborting notice for your platform.
-#endif
-
-} // slownessAbort
-#endif
 
 // Flips the screen
 void rend_Flip(void) {
@@ -2351,9 +2222,9 @@ void rend_Flip(void) {
   }
 #endif
 
-  OpenGL_last_frame_polys_drawn = OpenGL_polys_drawn;
-  OpenGL_last_frame_verts_processed = OpenGL_verts_processed;
-  OpenGL_last_uploaded = OpenGL_uploads;
+  gpu_last_frame_polys_drawn = OpenGL_polys_drawn;
+  gpu_last_frame_verts_processed = OpenGL_verts_processed;
+  gpu_last_uploaded = OpenGL_uploads;
 
   OpenGL_uploads = 0;
   OpenGL_polys_drawn = 0;
@@ -2370,107 +2241,17 @@ void rend_Flip(void) {
     DGL_LogNewFrame();
   }
 #endif
-
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-  if (minimumAcceptableRender > 0) {
-    Uint32 newticks = SDL_GetTicks();
-    if ((newticks - lastSwapTicks) > minimumAcceptableRender) {
-      tooSlowCount++;
-      if (tooSlowCount >= 3) {
-        slownessAbort();
-      } // if
-    }   // if
-
-    // disable check?
-    tooSlowChecksLeft--;
-    if (tooSlowChecksLeft <= 0) {
-      minimumAcceptableRender = -1;
-    }
-    lastSwapTicks = newticks;
-  } // if
-#endif
 }
 
 void rend_EndFrame(void) {}
 
-// draws a scaled 2d bitmap to our buffer
-void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1, int color,
-                           float *alphas) {
-  g3Point *ptr_pnts[4];
-  g3Point pnts[4];
-  float r, g, b;
-  if (color != -1) {
-    r = GR_COLOR_RED(color) / 255.0;
-    g = GR_COLOR_GREEN(color) / 255.0;
-    b = GR_COLOR_BLUE(color) / 255.0;
-  }
-  for (int i = 0; i < 4; i++) {
-    if (color == -1)
-      pnts[i].p3_l = 1.0;
-    else {
-      pnts[i].p3_r = r;
-      pnts[i].p3_g = g;
-      pnts[i].p3_b = b;
-    }
-    if (alphas) {
-      pnts[i].p3_a = alphas[i];
-    }
-
-    pnts[i].p3_z = 1.0f;
-    pnts[i].p3_flags = PF_PROJECTED;
-  }
-
-  pnts[0].p3_sx = x1;
-  pnts[0].p3_sy = y1;
-  pnts[0].p3_u = u0;
-  pnts[0].p3_v = v0;
-  pnts[1].p3_sx = x2;
-  pnts[1].p3_sy = y1;
-  pnts[1].p3_u = u1;
-  pnts[1].p3_v = v0;
-  pnts[2].p3_sx = x2;
-  pnts[2].p3_sy = y2;
-  pnts[2].p3_u = u1;
-  pnts[2].p3_v = v1;
-  pnts[3].p3_sx = x1;
-  pnts[3].p3_sy = y2;
-  pnts[3].p3_u = u0;
-  pnts[3].p3_v = v1;
-  ptr_pnts[0] = &pnts[0];
-  ptr_pnts[1] = &pnts[1];
-  ptr_pnts[2] = &pnts[2];
-  ptr_pnts[3] = &pnts[3];
-  rend_SetTextureType(TT_LINEAR);
-  rend_DrawPolygon2D(bm, ptr_pnts, 4);
-}
-
-// Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte *framebuffer) {}
-
-// Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state) {
-#ifndef RELEASE
-  if (Fast_test_render) {
-    state = 0;
-  }
-#endif
-
-  OpenGL_state.cur_bilinear_state = state;
-}
-
 // Sets the state of z-buffering to on or off
 void rend_SetZBufferState(sbyte state) {
-#ifndef RELEASE
-  if (Fast_test_render) {
-    state = 0;
-  }
-#endif
-
-  if (state == OpenGL_state.cur_zbuffer_state)
+  if (state == gpu_state.cur_zbuffer_state)
     return; // No redundant state setting
 
   OpenGL_sets_this_frame[5]++;
-  OpenGL_state.cur_zbuffer_state = state;
+  gpu_state.cur_zbuffer_state = state;
 
   //	mprintf ((0,"OPENGL: Setting zbuffer state to %d.\n",state));
 
@@ -2483,23 +2264,6 @@ void rend_SetZBufferState(sbyte state) {
 
   CHECK_ERROR(14)
 }
-
-// Sets the near and far planes for z buffer
-void rend_SetZValues(float nearz, float farz) {
-  OpenGL_state.cur_near_z = nearz;
-  OpenGL_state.cur_far_z = farz;
-  //	mprintf ((0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz));
-
-  // JEFF: glDepthRange must take parameters [0,1]
-  // It is set in init
-  //@@dglDepthRange (0,farz);
-}
-
-// Sets a bitmap as a overlay map to rendered on top of the next texture map
-// a -1 value indicates no overlay map
-void rend_SetOverlayMap(int handle) { Overlay_map = handle; }
-
-void rend_SetOverlayType(ubyte type) { Overlay_type = type; }
 
 // Clears the display to a specified color
 void rend_ClearScreen(ddgr_color color) {
@@ -2530,18 +2294,18 @@ void rend_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
   int width = x2 - x1;
   int height = y2 - y1;
 
-  x1 += OpenGL_state.clip_x1;
-  y1 += OpenGL_state.clip_y1;
+  x1 += gpu_state.clip_x1;
+  y1 += gpu_state.clip_y1;
 
   dglEnable(GL_SCISSOR_TEST);
-  dglScissor(x1, OpenGL_state.screen_height - (height + y1), width, height);
+  dglScissor(x1, gpu_state.screen_height - (height + y1), width, height);
   dglClearColor((float)r / 255.0, (float)g / 255.0, (float)b / 255.0, 0);
   dglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  width = OpenGL_state.clip_x2 - OpenGL_state.clip_x1;
-  height = OpenGL_state.clip_y2 - OpenGL_state.clip_y1;
+  width = gpu_state.clip_x2 - gpu_state.clip_x1;
+  height = gpu_state.clip_y2 - gpu_state.clip_y1;
 
-  dglScissor(OpenGL_state.clip_x1, OpenGL_state.screen_height - (OpenGL_state.clip_y1 + height), width, height);
+  dglScissor(gpu_state.clip_x1, gpu_state.screen_height - (gpu_state.clip_y1 + height), width, height);
   dglDisable(GL_SCISSOR_TEST);
 }
 
@@ -2563,40 +2327,8 @@ void rend_SetPixel(ddgr_color color, int x, int y) {
 // Sets a pixel on the display
 ddgr_color rend_GetPixel(int x, int y) {
   ddgr_color color[4];
-  dglReadPixels(x, (OpenGL_state.screen_height - 1) - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid *)color);
+  dglReadPixels(x, (gpu_state.screen_height - 1) - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid *)color);
   return color[0];
-}
-
-void rend_FillCircle(ddgr_color col, int x, int y, int rad) {}
-
-void rend_DrawCircle(int x, int y, int rad) {}
-
-// Sets up a font character to draw.  We draw our fonts as pieces of textures
-void rend_DrawFontCharacter(int bm_handle, int x1, int y1, int x2, int y2, float u, float v, float w, float h) {
-  g3Point *ptr_pnts[4];
-  g3Point pnts[4];
-  for (int i = 0; i < 4; i++) {
-    pnts[i].p3_z = 1; // Make REALLY close!
-    pnts[i].p3_flags = PF_PROJECTED;
-    ptr_pnts[i] = &pnts[i];
-  }
-  pnts[0].p3_sx = x1;
-  pnts[0].p3_sy = y1;
-  pnts[0].p3_u = u;
-  pnts[0].p3_v = v;
-  pnts[1].p3_sx = x2;
-  pnts[1].p3_sy = y1;
-  pnts[1].p3_u = u + w;
-  pnts[1].p3_v = v;
-  pnts[2].p3_sx = x2;
-  pnts[2].p3_sy = y2;
-  pnts[2].p3_u = u + w;
-  pnts[2].p3_v = v + h;
-  pnts[3].p3_sx = x1;
-  pnts[3].p3_sy = y2;
-  pnts[3].p3_u = u;
-  pnts[3].p3_v = v + h;
-  rend_DrawPolygon2D(bm_handle, ptr_pnts, 4);
 }
 
 // Draws a line
@@ -2604,7 +2336,7 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   sbyte atype;
   light_state ltype;
   texture_type ttype;
-  int color = OpenGL_state.cur_color;
+  int color = gpu_state.cur_color;
 
   g3_RefreshTransforms(true);
 
@@ -2612,19 +2344,20 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   int g = GR_COLOR_GREEN(color);
   int b = GR_COLOR_BLUE(color);
 
-  atype = OpenGL_state.cur_alpha_type;
-  ltype = OpenGL_state.cur_light_state;
-  ttype = OpenGL_state.cur_texture_type;
+  atype = gpu_state.cur_alpha_type;
+  ltype = gpu_state.cur_light_state;
+  ttype = gpu_state.cur_texture_type;
 
   rend_SetAlphaType(AT_ALWAYS);
   rend_SetLighting(LS_NONE);
   rend_SetTextureType(TT_FLAT);
 
+  // TODO: Generalize
   dglBegin(GL_LINES);
   dglColor4ub(r, g, b, 255);
-  dglVertex2i(x1 + OpenGL_state.clip_x1, y1 + OpenGL_state.clip_y1);
+  dglVertex2i(x1 + gpu_state.clip_x1, y1 + gpu_state.clip_y1);
   dglColor4ub(r, g, b, 255);
-  dglVertex2i(x2 + OpenGL_state.clip_x1, y2 + OpenGL_state.clip_y1);
+  dglVertex2i(x2 + gpu_state.clip_x1, y2 + gpu_state.clip_y1);
   dglEnd();
 
   rend_SetAlphaType(atype);
@@ -2632,29 +2365,9 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   rend_SetTextureType(ttype);
 }
 
-// Sets the argb characteristics of the font characters.  color1 is the upper left and proceeds clockwise
-void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_color color3, ddgr_color color4) {
-  rend_FontRed[0] = (float)(GR_COLOR_RED(color1) / 255.0f);
-  rend_FontRed[1] = (float)(GR_COLOR_RED(color2) / 255.0f);
-  rend_FontRed[2] = (float)(GR_COLOR_RED(color3) / 255.0f);
-  rend_FontRed[3] = (float)(GR_COLOR_RED(color4) / 255.0f);
-  rend_FontGreen[0] = (float)(GR_COLOR_GREEN(color1) / 255.0f);
-  rend_FontGreen[1] = (float)(GR_COLOR_GREEN(color2) / 255.0f);
-  rend_FontGreen[2] = (float)(GR_COLOR_GREEN(color3) / 255.0f);
-  rend_FontGreen[3] = (float)(GR_COLOR_GREEN(color4) / 255.0f);
-  rend_FontBlue[0] = (float)(GR_COLOR_BLUE(color1) / 255.0f);
-  rend_FontBlue[1] = (float)(GR_COLOR_BLUE(color2) / 255.0f);
-  rend_FontBlue[2] = (float)(GR_COLOR_BLUE(color3) / 255.0f);
-  rend_FontBlue[3] = (float)(GR_COLOR_BLUE(color4) / 255.0f);
-  rend_FontAlpha[0] = (color1 >> 24) / 255.0f;
-  rend_FontAlpha[1] = (color2 >> 24) / 255.0f;
-  rend_FontAlpha[2] = (color3 >> 24) / 255.0f;
-  rend_FontAlpha[3] = (color4 >> 24) / 255.0f;
-}
-
 // Sets the color of fog
 void rend_SetFogColor(ddgr_color color) {
-  if (color == OpenGL_state.cur_fog_color)
+  if (color == gpu_state.cur_fog_color)
     return;
 
   float fc[4];
@@ -2672,7 +2385,7 @@ void rend_SetFogColor(ddgr_color color) {
 
 // Sets the lighting state of opengl
 void rend_SetLightingState(light_state state) {
-  if (state == OpenGL_state.cur_light_state)
+  if (state == gpu_state.cur_light_state)
     return; // No redundant state setting
 
   if (UseMultitexture && Last_texel_unit_set != 0) {
@@ -2687,16 +2400,16 @@ void rend_SetLightingState(light_state state) {
   switch (state) {
   case LS_NONE:
     dglShadeModel(GL_SMOOTH);
-    OpenGL_state.cur_light_state = LS_NONE;
+    gpu_state.cur_light_state = LS_NONE;
     break;
   case LS_FLAT_GOURAUD:
     dglShadeModel(GL_SMOOTH);
-    OpenGL_state.cur_light_state = LS_FLAT_GOURAUD;
+    gpu_state.cur_light_state = LS_FLAT_GOURAUD;
     break;
   case LS_GOURAUD:
   case LS_PHONG:
     dglShadeModel(GL_SMOOTH);
-    OpenGL_state.cur_light_state = LS_GOURAUD;
+    gpu_state.cur_light_state = LS_GOURAUD;
     break;
   default:
     Int3();
@@ -2707,7 +2420,7 @@ void rend_SetLightingState(light_state state) {
 }
 
 void rend_SetAlphaType(sbyte atype) {
-  if (atype == OpenGL_state.cur_alpha_type)
+  if (atype == gpu_state.cur_alpha_type)
     return; // don't set it redundantly
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != 0) {
@@ -2731,26 +2444,15 @@ void rend_SetAlphaType(sbyte atype) {
 
   switch (atype) {
   case AT_ALWAYS:
-    rend_SetAlphaValue(255);
-    dglBlendFunc(GL_ONE, GL_ZERO);
-    break;
-  case AT_CONSTANT:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_TEXTURE:
     rend_SetAlphaValue(255);
     dglBlendFunc(GL_ONE, GL_ZERO);
     break;
+  case AT_CONSTANT:
   case AT_CONSTANT_TEXTURE:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_CONSTANT_TEXTURE_VERTEX:
   case AT_CONSTANT_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    break;
   case AT_TEXTURE_VERTEX:
     dglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     break;
@@ -2759,14 +2461,8 @@ void rend_SetAlphaType(sbyte atype) {
     break;
   case AT_SATURATE_TEXTURE:
   case AT_LIGHTMAP_BLEND_SATURATE:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
   case AT_SATURATE_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
   case AT_SATURATE_CONSTANT_VERTEX:
-    dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    break;
   case AT_SATURATE_TEXTURE_VERTEX:
     dglBlendFunc(GL_SRC_ALPHA, GL_ONE);
     break;
@@ -2776,51 +2472,29 @@ void rend_SetAlphaType(sbyte atype) {
     Int3(); // no type defined,get jason
     break;
   }
-  OpenGL_state.cur_alpha_type = atype;
-  Alpha_multiplier = opengl_GetAlphaMultiplier();
+  gpu_state.cur_alpha_type = atype;
+  gpu_Alpha_multiplier = rend_GetAlphaMultiplier();
   CHECK_ERROR(15)
 }
-
-// Sets the alpha value for constant alpha
-void rend_SetAlphaValue(ubyte val) {
-  OpenGL_state.cur_alpha = val;
-  Alpha_multiplier = opengl_GetAlphaMultiplier();
-}
-
-// Sets the overall alpha scale factor (all alpha values are scaled by this value)
-// usefull for motion blur effect
-void rend_SetAlphaFactor(float val) {
-  if (val < 0.0f)
-    val = 0.0f;
-  if (val > 1.0f)
-    val = 1.0f;
-  OpenGL_Alpha_factor = val;
-}
-
-// Returns the current Alpha factor
-float rend_GetAlphaFactor(void) { return OpenGL_Alpha_factor; }
-
-// Sets the texture wrapping type
-void rend_SetWrapType(wrap_type val) { OpenGL_state.cur_wrap_type = val; }
 
 // Draws a line using the states of the renderer
 void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
   g3_RefreshTransforms(true);
 
-  int x_add = OpenGL_state.clip_x1;
-  int y_add = OpenGL_state.clip_y1;
+  int x_add = gpu_state.clip_x1;
+  int y_add = gpu_state.clip_y1;
   float fr, fg, fb, alpha;
   int i;
 
-  fr = GR_COLOR_RED(OpenGL_state.cur_color);
-  fg = GR_COLOR_GREEN(OpenGL_state.cur_color);
-  fb = GR_COLOR_BLUE(OpenGL_state.cur_color);
+  fr = GR_COLOR_RED(gpu_state.cur_color);
+  fg = GR_COLOR_GREEN(gpu_state.cur_color);
+  fb = GR_COLOR_BLUE(gpu_state.cur_color);
 
   fr /= 255.0f;
   fg /= 255.0f;
   fb /= 255.0f;
 
-  alpha = Alpha_multiplier * OpenGL_Alpha_factor;
+  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   // And draw!
   dglBegin(GL_LINES);
@@ -2830,16 +2504,16 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
     if (i == 1)
       pnt = p1;
 
-    if (OpenGL_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * Alpha_multiplier * OpenGL_Alpha_factor;
+    if (gpu_state.cur_alpha_type & ATF_VERTEX)
+      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
 
     // If we have a lighting model, apply the correct lighting!
-    if (OpenGL_state.cur_light_state != LS_NONE) {
-      if (OpenGL_state.cur_light_state == LS_FLAT_GOURAUD) {
+    if (gpu_state.cur_light_state != LS_NONE) {
+      if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
         dglColor4f(fr, fg, fb, alpha);
       } else {
         // Do lighting based on intesity (MONO) or colored (RGB)
-        if (OpenGL_state.cur_color_model == CM_MONO)
+        if (gpu_state.cur_color_model == CM_MONO)
           dglColor4f(pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha);
         else {
           dglColor4f(pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha);
@@ -2862,10 +2536,10 @@ void rend_Screenshot(int bm_handle) {
   ushort *dest_data;
   uint *temp_data;
   int i, t;
-  int total = OpenGL_state.screen_width * OpenGL_state.screen_height;
+  int total = gpu_state.screen_width * gpu_state.screen_height;
 
-  ASSERT((bm_w(bm_handle, 0)) == OpenGL_state.screen_width);
-  ASSERT((bm_h(bm_handle, 0)) == OpenGL_state.screen_height);
+  ASSERT((bm_w(bm_handle, 0)) == gpu_state.screen_width);
+  ASSERT((bm_h(bm_handle, 0)) == gpu_state.screen_height);
 
   int w = bm_w(bm_handle, 0);
   int h = bm_h(bm_handle, 0);
@@ -2875,7 +2549,7 @@ void rend_Screenshot(int bm_handle) {
 
   dest_data = bm_data(bm_handle, 0);
 
-  dglReadPixels(0, 0, OpenGL_state.screen_width, OpenGL_state.screen_height, GL_RGBA, GL_UNSIGNED_BYTE,
+  dglReadPixels(0, 0, gpu_state.screen_width, gpu_state.screen_height, GL_RGBA, GL_UNSIGNED_BYTE,
                 (GLvoid *)temp_data);
 
   for (i = 0; i < h; i++) {
@@ -2893,17 +2567,6 @@ void rend_Screenshot(int bm_handle) {
   mem_free(temp_data);
 }
 
-void rend_SetZBias(float z_bias) {
-  if (Z_bias != z_bias) {
-    Z_bias = z_bias;
-
-    // Force refresh our transforms to take the Zbias into account
-    g3_GetModelViewMatrix(&View_position, &Unscaled_matrix, (float *)gTransformModelView);
-    g3_UpdateFullTransform();
-    g3_ForceTransformRefresh();
-  }
-}
-
 // Enables/disables writes the depth buffer
 void rend_SetZBufferWriteMask(int state) {
   OpenGL_sets_this_frame[5]++;
@@ -2914,161 +2577,10 @@ void rend_SetZBufferWriteMask(int state) {
   }
 }
 
-// Gets a pointer to a linear frame buffer
-void rend_GetLFBLock(renderer_lfb *lfb) {}
-
-// Releases an lfb lock
-void rend_ReleaseLFBLock(renderer_lfb *lfb) {}
-
-// Returns the aspect ratio of the physical screen
-void rend_GetProjectionParameters(int *width, int *height) {
-  *width = OpenGL_state.clip_x2 - OpenGL_state.clip_x1;
-  *height = OpenGL_state.clip_y2 - OpenGL_state.clip_y1;
+int rend_ReInit() {
+  opengl_Close();
+  return opengl_Init(NULL, &gpu_preferred_state);
 }
-
-void rend_GetProjectionScreenParameters(int &screenLX, int &screenTY, int &screenW, int &screenH) {
-  screenLX = OpenGL_state.clip_x1;
-  screenTY = OpenGL_state.clip_y1;
-  screenW = OpenGL_state.clip_x2 - OpenGL_state.clip_x1 + 1;
-  screenH = OpenGL_state.clip_y2 - OpenGL_state.clip_y1 + 1;
-}
-
-// Returns the aspect ratio of the physical screen
-float rend_GetAspectRatio(void) {
-  float aspect_ratio = (float)((3.0f * OpenGL_state.screen_width) / (4.0f * OpenGL_state.screen_height));
-  return aspect_ratio;
-}
-
-// Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize) {}
-
-//	given a chunked bitmap, renders it.
-void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha) {
-  int *bm_array = chunk->bm_array;
-  int w = chunk->w;
-  int h = chunk->h;
-  int piece_w = bm_w(bm_array[0], 0);
-  int piece_h = bm_h(bm_array[0], 0);
-  int screen_w, screen_h;
-  int i, t;
-  rend_SetZBufferState(0);
-  rend_GetProjectionParameters(&screen_w, &screen_h);
-  for (i = 0; i < h; i++) {
-    for (t = 0; t < w; t++) {
-      int dx = x + (piece_w * t);
-      int dy = y + (piece_h * i);
-      int dw, dh;
-      if ((dx + piece_w) > screen_w)
-        dw = piece_w - ((dx + piece_w) - screen_w);
-      else
-        dw = piece_w;
-      if ((dy + piece_h) > screen_h)
-        dh = piece_h - ((dy + piece_h) - screen_h);
-      else
-        dh = piece_h;
-
-      float u2 = (float)dw / (float)piece_w;
-      float v2 = (float)dh / (float)piece_h;
-      rend_DrawSimpleBitmap(bm_array[i * w + t], dx, dy);
-    }
-  }
-  rend_SetZBufferState(1);
-}
-
-//	given a chunked bitmap, renders it.scaled
-void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, ubyte alpha) {
-  int *bm_array = chunk->bm_array;
-  int w = chunk->w;
-  int h = chunk->h;
-  int piece_w;
-  int piece_h;
-  int screen_w, screen_h;
-  int i, t;
-
-  float scalew, scaleh;
-
-  scalew = ((float)neww) / ((float)chunk->pw);
-  scaleh = ((float)newh) / ((float)chunk->ph);
-  piece_w = scalew * ((float)bm_w(bm_array[0], 0));
-  piece_h = scaleh * ((float)bm_h(bm_array[0], 0));
-  rend_GetProjectionParameters(&screen_w, &screen_h);
-  rend_SetOverlayType(OT_NONE);
-  rend_SetLighting(LS_NONE);
-  rend_SetColorModel(CM_MONO);
-  rend_SetZBufferState(0);
-  rend_SetAlphaType(AT_CONSTANT_TEXTURE);
-  rend_SetAlphaValue(alpha);
-  rend_SetWrapType(WT_WRAP);
-  for (i = 0; i < h; i++) {
-    for (t = 0; t < w; t++) {
-      int dx = x + (piece_w * t);
-      int dy = y + (piece_h * i);
-      int dw, dh;
-      if ((dx + piece_w) > screen_w)
-        dw = piece_w - ((dx + piece_w) - screen_w);
-      else
-        dw = piece_w;
-      if ((dy + piece_h) > screen_h)
-        dh = piece_h - ((dy + piece_h) - screen_h);
-      else
-        dh = piece_h;
-
-      float u2 = (float)dw / (float)piece_w;
-      float v2 = (float)dh / (float)piece_h;
-      rend_DrawScaledBitmap(dx, dy, dx + dw, dy + dh, bm_array[i * w + t], 0, 0, u2, v2);
-    }
-  }
-  rend_SetZBufferState(1);
-}
-
-// Sets some global preferences for the renderer
-int rend_SetPreferredState(renderer_preferred_state *pref_state) {
-  int retval = 1;
-  renderer_preferred_state old_state = OpenGL_preferred_state;
-
-  OpenGL_preferred_state = *pref_state;
-  if (OpenGL_state.initted) {
-    int reinit = 0;
-    mprintf((0, "Inside pref state!\n"));
-
-    // Change gamma if needed
-    if (pref_state->width != OpenGL_state.screen_width || pref_state->height != OpenGL_state.screen_height ||
-        old_state.bit_depth != pref_state->bit_depth) {
-      reinit = 1;
-    }
-
-    if (reinit) {
-      opengl_Close();
-      retval = opengl_Init(NULL, &OpenGL_preferred_state);
-    } else {
-      if (old_state.gamma != pref_state->gamma) {
-        opengl_SetGammaValue(pref_state->gamma);
-      }
-    }
-  } else {
-    OpenGL_preferred_state = *pref_state;
-  }
-
-  return retval;
-}
-
-// Sets the gamma for this display
-void rend_SetGammaValue(float val) {}
-
-// Draws a simple bitmap at the specified x,y location
-void rend_DrawSimpleBitmap(int bm_handle, int x, int y) {
-  rend_SetAlphaType(AT_CONSTANT_TEXTURE);
-  rend_SetAlphaValue(255);
-  rend_SetLighting(LS_NONE);
-  rend_SetColorModel(CM_MONO);
-  rend_SetOverlayType(OT_NONE);
-  rend_SetFiltering(0);
-  rend_DrawScaledBitmap(x, y, x + bm_w(bm_handle, 0), y + bm_h(bm_handle, 0), bm_handle, 0, 0, 1, 1);
-  rend_SetFiltering(1);
-}
-
-// Fills in the passed in pointer with the current rendering state
-void rend_GetRenderState(rendering_state *rstate) { memcpy(rstate, &OpenGL_state, sizeof(rendering_state)); }
 
 // Takes a bitmap and blits it to the screen using linear frame buffer stuff
 // X and Y are the destination X,Y
@@ -3101,9 +2613,6 @@ void rend_SetFrameBufferCopyState(bool state) {
   }
 }
 
-// Changes the resolution of the renderer
-void rend_SetResolution(int width, int height) {}
-
 // Gets OpenGL ready to work in a window
 int rend_InitOpenGLWindow(oeApplication *app, renderer_preferred_state *pref_state) {
   WindowGL = 1;
@@ -3129,30 +2638,6 @@ void rend_SetCoplanarPolygonOffset(float factor) {
   }
 }
 
-// Preuploads a texture to the video card
-void rend_PreUploadTextureToCard(int handle, int map_type) {}
-
-// Frees an uploaded texture from the video card
-void rend_FreePreUploadedTexture(int handle, int map_type) {}
-
-// Retrieves an error message
-const char *rend_GetErrorMessage() { return Renderer_error_message; }
-
-// Sets an error message
-void rend_SetErrorMessage(const char *str) {
-  ASSERT(strlen(str) < 256);
-  strcpy(Renderer_error_message, str);
-}
-
-// Returns 1 if there is mid video memory, 2 if there is low vid memory, or 0 if there is large vid memory
-int rend_LowVidMem(void) { return 0; }
-
-// Returns 1 if the renderer supports bumpmapping
-int rend_SupportsBumpmapping(void) { return 0; }
-
-// Sets a bumpmap to be rendered, or turns off bumpmapping altogether
-void rend_SetBumpmapReadyState(int state, int map) {}
-
 // returns the direct draw object
 void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {
   *frontsurf = NULL;
@@ -3160,21 +2645,11 @@ void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {
   return NULL;
 }
 
-// returns rendering statistics for the frame
-void rend_GetStatistics(tRendererStats *stats) {
-  if (Renderer_initted) {
-    stats->poly_count = OpenGL_last_frame_polys_drawn;
-    stats->vert_count = OpenGL_last_frame_verts_processed;
-    stats->texture_uploads = OpenGL_last_uploaded;
-  } else {
-    memset(stats, 0, sizeof(tRendererStats));
-  }
-}
-
 void rend_TransformSetToPassthru(void) {
-  int width = OpenGL_state.screen_width;
-  int height = OpenGL_state.screen_height;
+  int width = gpu_state.screen_width;
+  int height = gpu_state.screen_height;
 
+  // TODO: Generalize
   // Projection
   dglMatrixMode(GL_PROJECTION);
   dglLoadIdentity();
@@ -3189,7 +2664,7 @@ void rend_TransformSetToPassthru(void) {
 }
 
 void rend_TransformSetViewport(int lx, int ty, int width, int height) {
-  dglViewport(lx, OpenGL_state.screen_height - (ty + height - 1), width, height);
+  dglViewport(lx, gpu_state.screen_height - (ty + height - 1), width, height);
 }
 
 void rend_TransformSetProjection(float trans[4][4]) {

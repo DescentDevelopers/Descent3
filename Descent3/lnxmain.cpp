@@ -113,10 +113,6 @@ static cmdLineArg d3ArgTable[] = {
     {"glfog", 'o', "Enable OpenGL fog."},
     {"nogamma", 'M', "Disable gamma support."},
     {"glinfo", 'I', "Display info about OpenGL library."}
-
-#ifdef __CHECK_FOR_TOO_SLOW_RENDERING__
-    {"nofpscheck", 'H', "Disable FPS checking."},
-#endif
 };
 
 static volatile char already_tried_signal_cleanup = 0;

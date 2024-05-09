@@ -8,6 +8,7 @@ set(CPPS
   HardwareGlobalVars.cpp
   HardwareInstance.cpp
   HardwareOpenGL.cpp
+  HardwareBaseGPU.cpp
   HardwarePoints.cpp
   HardwareSetup.cpp
   HardwareTransforms.cpp
