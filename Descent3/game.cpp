@@ -694,6 +694,8 @@
 #include "osiris_share.h"
 #include "demofile.h"
 
+#include <NewBitmap.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 //	Variables
 
@@ -1293,7 +1295,6 @@ void EndFrame() {
 
 // Does a screenshot and tells the bitmap lib to save out the picture as a tga
 void DoScreenshot() {
-  int bm_handle;
   int count;
   char str[255], filename[255];
   CFILE *infile;
@@ -1307,21 +1308,20 @@ void DoScreenshot() {
     height = rs.screen_height;
   }
 
-  bm_handle = bm_AllocBitmap(width, height, 0);
-  if (bm_handle < 0) {
+  StopTime();
+
+  // Tell our renderer lib to take a screen shot
+  auto screenshot = rend_Screenshot();
+
+  if (!screenshot || screenshot->getData() == nullptr) {
     AddHUDMessage(TXT_ERRSCRNSHT);
     return;
   }
 
-  StopTime();
-
-  // Tell our renderer lib to take a screen shot
-  rend_Screenshot(bm_handle);
-
   // Find a valid filename
   count = 1;
   while (!done) {
-    snprintf(str, sizeof(str), "Screenshot%.3d.tga", count);
+    snprintf(str, sizeof(str), "Screenshot%.3d.png", count);
     ddio_MakePath(filename, Base_directory, str, NULL);
     infile = (CFILE *)cfopen(filename, "rb");
     if (infile == NULL) {
@@ -1335,16 +1335,12 @@ void DoScreenshot() {
       break;
   }
 
-  strcpy(GameBitmaps[bm_handle].name, str);
-
   // Now save it
-  bm_SaveBitmapTGA(filename, bm_handle);
+  screenshot->saveAsPNG(filename);
+
   if (Demo_flags != DF_PLAYBACK) {
     AddHUDMessage(TXT_SCRNSHT, filename);
   }
-
-  // Free memory
-  bm_FreeBitmap(bm_handle);
 
   StartTime();
 }

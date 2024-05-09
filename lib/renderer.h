@@ -294,6 +294,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <memory>
 #include "pstypes.h"
 #include "grdefs.h"
 
@@ -351,6 +352,8 @@ extern bool UseWBuffer;
 extern bool UseMipmap;  // DAJ
 extern bool ATIRagePro; // DAJ
 extern bool Formac;     // DAJ
+
+class NewBitmap;
 
 // various state setting functions
 //------------------------------------
@@ -579,6 +582,9 @@ float rend_GetAlphaFactor(void);
 
 // Sets the wrap parameter
 void rend_SetWrapType(wrap_type val);
+
+/// Takes a screenshot of the current frame and returns a NewBitmap
+std::unique_ptr<NewBitmap> rend_Screenshot();
 
 // Takes a screenshot of the current frame and puts it into the handle passed
 void rend_Screenshot(int bm_handle);

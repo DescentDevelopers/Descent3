@@ -150,7 +150,7 @@ include_directories(
   ${PLATFORM_INCLUDES}
 )
 
-# file(GLOB_RECURSE INCS "*.h")
+add_subdirectory(third_party)
 
 add_subdirectory(2dlib)
 add_subdirectory(AudioEncode)

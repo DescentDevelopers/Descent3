@@ -46,6 +46,8 @@
 #include "HardwareInternal.h"
 #include "../Descent3/args.h"
 
+#include <NewBitmap.h>
+
 #define DECLARE_OPENGL
 #include "dyna_gl.h"
 
@@ -2532,28 +2534,38 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 }
 
 // Takes a screenshot of the current frame and puts it into the handle passed
-void rend_Screenshot(int bm_handle) {
+std::unique_ptr<NewBitmap> rend_Screenshot() {
   ushort *dest_data;
   uint *temp_data;
-  int i, t;
+
   int total = gpu_state.screen_width * gpu_state.screen_height;
+  auto result = std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
+
+  if (!result || result->getData() == nullptr) {
+    return nullptr;
+  }
+
+  dglReadPixels(0, 0, gpu_state.screen_width, gpu_state.screen_height, GL_RGBA, GL_UNSIGNED_BYTE,
+                (GLvoid *)result->getData());
+
+  return result;
+}
+
+// Takes a screenshot of the current frame and puts it into the handle passed
+void rend_Screenshot(int bm_handle) {
+  auto screenshot = rend_Screenshot();
+  auto *temp_data = reinterpret_cast<uint*>(screenshot->getData());
+
+  uint32_t w, h;
+  screenshot->getSize(w, h);
 
   ASSERT((bm_w(bm_handle, 0)) == gpu_state.screen_width);
   ASSERT((bm_h(bm_handle, 0)) == gpu_state.screen_height);
 
-  int w = bm_w(bm_handle, 0);
-  int h = bm_h(bm_handle, 0);
+  ushort* dest_data = bm_data(bm_handle, 0);
 
-  temp_data = (uint *)mem_malloc(total * 4);
-  ASSERT(temp_data); // Ran out of memory?
-
-  dest_data = bm_data(bm_handle, 0);
-
-  dglReadPixels(0, 0, gpu_state.screen_width, gpu_state.screen_height, GL_RGBA, GL_UNSIGNED_BYTE,
-                (GLvoid *)temp_data);
-
-  for (i = 0; i < h; i++) {
-    for (t = 0; t < w; t++) {
+  for (int i = 0; i < h; i++) {
+    for (int t = 0; t < w; t++) {
       uint spix = temp_data[i * w + t];
 
       int r = spix & 0xff;

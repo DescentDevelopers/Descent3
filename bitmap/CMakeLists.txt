@@ -1,5 +1,8 @@
 set(HEADERS iff.h)
 set(CPPS
+  NewBitmap.cpp
+  NewBitmap.h
+
   bitmain.cpp
   bumpmap.cpp
   iff.cpp
@@ -11,4 +14,6 @@ add_library(bitmap STATIC ${HEADERS} ${CPPS})
 target_link_libraries(bitmap PRIVATE
   cfile
   ddebug
+  stb
 )
+target_include_directories(bitmap PUBLIC .)

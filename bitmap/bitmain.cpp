@@ -1403,51 +1403,6 @@ int bm_SetBitmapIfTransparent(int handle) {
   return 0;
 }
 
-// Saves the passed bitmap handle as a 32 bit uncompressed tga
-int bm_SaveBitmapTGA(const char *filename, int handle) {
-  int height, width;
-  int i, t;
-  CFILE *fp;
-  fp = (CFILE *)cfopen(filename, "wb");
-  if (fp == NULL) {
-    mprintf((0, "SaveTGA:couldn't open %s!\n", filename));
-    return 0;
-  }
-  ASSERT(GameBitmaps[handle].format == BITMAP_FORMAT_1555); // Can only save 1555
-  width = bm_w(handle, 0);
-  height = bm_h(handle, 0);
-  cf_WriteByte(fp, 0); // image_id_len
-  cf_WriteByte(fp, 0); // color map type
-  cf_WriteByte(fp, 2); // image type: 2= uncompressed tga
-
-  for (i = 0; i < 9; i++) // ingore next 9 bytes
-    cf_WriteByte(fp, 0);
-
-  cf_WriteShort(fp, width);
-  cf_WriteShort(fp, height);
-  cf_WriteByte(fp, 32);
-  cf_WriteByte(fp, 32 + 8);
-
-  // for (i=0;i<image_id_len;i++)
-  // cf_ReadByte (infile);
-  // upside_down=(descriptor & 0x20)>>5;
-  // upside_down=1-upside_down;
-  ushort *src_data = (ushort *)bm_data(handle, 0);
-  for (i = 0; i < height; i++) {
-    for (t = 0; t < width; t++) {
-      ushort pix;
-      ddgr_color color;
-      pix = src_data[i * width + t];
-      color = GR_16_TO_COLOR(pix);
-      color |= 0xFF000000;
-
-      cf_WriteInt(fp, color);
-    }
-  }
-  // Finis!
-  cfclose(fp);
-  return 1;
-}
 // clears bitmap
 void bm_ClearBitmap(int handle) {
   int dx, dy;

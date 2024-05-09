@@ -131,8 +131,6 @@ void bm_ScaleBitmapToBitmap(int dest, int src);
 int bm_rowsize(int handle, int miplevel);
 // Goes through the bitmap and sees if there is any transparency...if so, flag it!
 int bm_SetBitmapIfTransparent(int handle);
-// Saves the passed bitmap handle as a 24 bit uncompressed tga
-int bm_SaveBitmapTGA(const char *filename, int handle);
 // Allocs and loads a bitmap but doesn't actually load texel data!
 // Returns the handle of the loaded bitmap
 // Returns -1 if something is wrong
