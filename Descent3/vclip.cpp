@@ -236,20 +236,6 @@ void FreeVClip(int num) {
   ASSERT(Num_vclips >= 0);
 }
 
-// Frees up the bitmaps used by a vclip
-void FreeVClipResidency(int num) {
-  ASSERT(GameVClips[num].used > 0);
-
-  mprintf((0, "Freeing vclip residency!\n"));
-
-  if (!(GameVClips[num].flags & VCF_NOT_RESIDENT)) {
-    for (int i = 0; i < GameVClips[num].num_frames; i++)
-      bm_FreeBitmap(GameVClips[num].frames[i]);
-  }
-
-  GameVClips[num].flags |= VCF_NOT_RESIDENT;
-}
-
 // Saves a given video clip to a file
 // Returns 1 if everything ok, 0 otherwise
 // "num" is index into GameVClip array
@@ -640,58 +626,6 @@ int FindVClipName(const char *name) {
   for (i = 0; i < MAX_VCLIPS; i++)
     if (GameVClips[i].used && !stricmp(GameVClips[i].name, name))
       return i;
-
-  return -1;
-}
-
-// Returns frame "frame" of vclip "vclip".  Will mod the frame so that there
-// is no overflow
-int GetVClipBitmap(int v, int frame) {
-  ASSERT(GameVClips[v].used > 0);
-  ASSERT(v >= 0 && v < MAX_VCLIPS);
-  ASSERT(frame >= 0);
-
-  vclip *vc = &GameVClips[v];
-
-  int bm = vc->frames[frame % vc->num_frames];
-
-  return bm;
-}
-
-// Loads an animation from an IFF ANIM file
-int AllocLoadIFFAnimClip(const char *filename, int texture) {
-  /*	char name[PAGENAME_LEN];
-          int i;
-
-          ASSERT (filename!=NULL);
-
-          ChangeVClipName (filename,name);
-
-          if ((i=FindVClipName(name))!=-1)
-          {
-                  GameVClips[i].used++;
-                  return i;
-          }
-
-          mprintf ((0,"Loading IFF vclip %s\n",name));
-
-          int vcnum=AllocVClip ();
-
-          ASSERT (vcnum>=0);
-
-          vclip *vc=&GameVClips[vcnum];
-
-          vc->num_frames=bm_AllocLoadIFFAnim (filename,vc->frames,0);
-          if (vc->num_frames==-1)
-          {
-                  mprintf ((0,"Couldn't load vclip named %d!\n",name));
-                  FreeVClip (vcnum);
-                  return -1;
-          }
-
-          strcpy (vc->name,name);
-
-          return vcnum;*/
 
   return -1;
 }

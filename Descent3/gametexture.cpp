@@ -394,11 +394,6 @@ int FindTextureBitmapName(const char *name) {
           if ((!stricmp(GameBitmaps[vc->frames[t]].name, name)))
             retval = i;
 
-        /*if (not_res)
-        {
-                FreeVClipResidency (GameTextures[i].bm_handle);
-        }*/
-
         if (retval != -1)
           return retval;
       } else {
