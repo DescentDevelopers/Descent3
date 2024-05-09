@@ -1233,25 +1233,13 @@ void StartFrame(int x, int y, int x2, int y2, bool clear, bool push_on_stack) {
     last_fov = Render_FOV;
   }
 
-  //	for software renderers perform frame buffer lock.
-  if (Renderer_type == RENDERER_SOFTWARE_16BIT) {
-    int w, h, color_depth, pitch;
-    ubyte *data;
-
-    ddvid_GetVideoProperties(&w, &h, &color_depth);
-    ddvid_LockFrameBuffer(&data, &pitch);
-    rend_SetSoftwareParameters(ddvid_GetAspectRatio(), w, h, pitch, data);
-  }
-
   if (push_on_stack) {
     // push this frame onto the stack
     FramePush(x, y, x2, y2, clear);
   }
 
   rend_StartFrame(x, y, x2, y2);
-  if (Renderer_type == RENDERER_SOFTWARE_16BIT && clear) {
-    rend_FillRect(GR_RGB(0, 0, 0), x, y, x2, y2);
-  }
+
   grtext_SetParameters(0, 0, (x2 - x), (y2 - y));
 }
 
@@ -1272,11 +1260,6 @@ bool GetFrameParameters(int *x1, int *y1, int *x2, int *y2) {
 void EndFrame() {
   //@@Frame_inside = false;
   rend_EndFrame();
-
-  //	for software renderers perform unlock on frame buffer.
-  if (Renderer_type == RENDERER_SOFTWARE_16BIT) {
-    ddvid_UnlockFrameBuffer();
-  }
 
   // pop off frame
   int x1, x2, y1, y2;

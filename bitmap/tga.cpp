@@ -322,69 +322,6 @@ int bm_tga_read_outrage_compressed16(CFILE *infile, int n, int num_mips, int typ
   return 1;
 }
 
-// Reads a 8bit bitmap into memory
-// Note: Even if we're are not using an 8bit renderer this routine still needs
-// to be called due to the fact that we need to 'move' our position in the file
-// We also need to extract the palette number
-
-/*int bm_tga_read_outrage_compressed8 (CFILE *infile,int n)
-{
-
-        ubyte pal_num=tga_read_byte ();
-        ubyte num_mips=tga_read_byte ();
-
-        ASSERT (pal_num>=0 && pal_num<=MAX_BITMAP_PALETTES);
-        if (num_mips>1)
-                GameBitmaps[n].mipmapped=1;
-
-        GameBitmaps[n].palette_num=pal_num;
-
-        for (int m=0;m<num_mips;m++)
-        {
-                int width=bm_w(n,m);
-                int height=bm_h(n,m);
-
-                int total=height * width;
-                int count=0;
-                ubyte *data;
-
-                if (Renderer_type==RENDERER_SOFTWARE_8BIT)
-                        data=bm_data8 (n,m);
-                else
-                        data=NULL;
-
-                while (count!=total)
-                {
-                        ASSERT (count<total);
-
-                        ubyte command=tga_read_byte ();
-                        if (command==0)	// next pixel is raw
-                        {
-                                ubyte pixel=tga_read_byte ();
-                                int i=count/width;
-                                int t=count%width;
-                                if (Renderer_type==RENDERER_SOFTWARE_8BIT)
-                                        data[i*256+t]=pixel;
-                                count++;
-                        }
-                        else if (command>=2 && command<=250)	// next pixel is run of pixels
-                        {
-                                ubyte pixel=tga_read_byte ();
-                                for (int k=0;k<command;k++)
-                                {
-                                        int i=count/width;
-                                        int t=count%width;
-                                        if (Renderer_type==RENDERER_SOFTWARE_8BIT)
-                                                data[i*256+t]=pixel;
-                                        count++;
-                                }
-                        }
-                        else Int3();		// bad compression run
-                }
-        }
-        return 1;
-}*/
-
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error
 int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;

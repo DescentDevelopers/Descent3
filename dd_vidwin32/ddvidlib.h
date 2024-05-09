@@ -100,9 +100,6 @@ bool ddvidfs_SetVideoMode(int w, int h, int color_depth, bool paged);
 //	closes video mode for fs
 void ddvidfs_CloseVideo();
 
-//	retrieves screen information for fullscreen version
-void ddvidfs_GetVideoProperties(int *w, int *h, int *color_depth);
-
 //	flips screen if there's a back buffer
 void ddvidfs_VideoFlip();
 
@@ -120,9 +117,6 @@ bool ddvidwin_SetVideoMode(int w, int h, int color_depth, bool paged, bool resch
 
 //	closes video mode for fs
 void ddvidwin_CloseVideo();
-
-//	retrieves screen information for windowed version
-void ddvidwin_GetVideoProperties(int *w, int *h, int *color_depth);
 
 //	flips screen if there's a back buffer
 void ddvidwin_VideoFlip();
