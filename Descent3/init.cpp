@@ -1484,12 +1484,6 @@ void LoadGameSettings() {
   int len = _MAX_PATH;
   Database->read("Default_pilot", Default_pilot, &len);
 
-  // If preferred renderer set to software, force it to be glide
-  if ((PreferredRenderer == RENDERER_SOFTWARE_8BIT) || (PreferredRenderer == RENDERER_SOFTWARE_16BIT)) {
-    Int3(); // Warning: rederer was set to Software.  Ok to ignore this.
-    PreferredRenderer = RENDERER_OPENGL;
-  }
-
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)
 

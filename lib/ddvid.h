@@ -59,29 +59,4 @@ bool ddvid_SetVideoMode(int w, int h, int color_depth, bool paged);
 //	sets screen handle
 void ddvid_SetVideoHandle(unsigned handle);
 
-//	retrieves screen information
-void ddvid_GetVideoProperties(int *w, int *h, int *color_depth);
-
-//	retrieves screen aspect ratio.
-float ddvid_GetAspectRatio();
-
-//	retreives frame buffer info for a video mode.
-void ddvid_LockFrameBuffer(ubyte **data, int *pitch);
-void ddvid_UnlockFrameBuffer();
-
-//	flips screen if there's a back buffer
-void ddvid_VideoFlip();
-
-// only available to DD_ACCESS libraries.
-#if defined(DD_ACCESS_RING)
-#if defined(WIN32)
-
-//	dd_obj is the DIRECTDRAW OBJECT for the system.
-//	dds_obj is the DIRECTDRAWSURFACE OBJECT for the screen
-void ddvid_GetVideoDDrawProps(uint *dd_obj, uint *dds_obj);
-
-#endif // WIN32
-
-#endif // DD_ACCESS
-
 #endif

@@ -316,8 +316,6 @@ extern int Triangles_drawn;
 
 // Is this hardware or software rendered?
 typedef enum {
-  RENDERER_SOFTWARE_8BIT,
-  RENDERER_SOFTWARE_16BIT,
   RENDERER_OPENGL,
   RENDERER_DIRECT3D,
   RENDERER_GLIDE,

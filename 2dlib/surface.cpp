@@ -266,11 +266,8 @@ void grSurface::load(char *data, int w, int h, char *pal) {
 
   switch (ddsfObj.bpp) {
   case BPP_16:
-    if (Renderer_type == RENDERER_SOFTWARE_8BIT)
-      xlat8_16(data, w, h, pal);
-    else
-      xlat16_16(data, w, h);
-    break;
+    // TODO: This is probably software renderer only?
+    xlat16_16(data, w, h);
   default:
     Int3(); // NOT SUPPORTED YET
   }

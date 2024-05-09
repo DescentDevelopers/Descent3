@@ -192,15 +192,6 @@ void ddvidfs_CloseVideo() {
   }
 }
 
-//	retrieves screen information for fullscreen version
-void ddvidfs_GetVideoProperties(int *w, int *h, int *color_depth) {
-  ASSERT(DDVideo_info.curmode > -1);
-
-  *w = DDVideo_info.DDModes[DDVideo_info.curmode].dwWidth;
-  *h = DDVideo_info.DDModes[DDVideo_info.curmode].dwHeight;
-  *color_depth = (int)DDVideo_info.DDModes[DDVideo_info.curmode].ddpfPixelFormat.dwRGBBitCount;
-}
-
 //	flips screen if there's a back buffer
 void ddvidfs_VideoFlip() {
   if (DDVideo_info.lpDDSBack)
