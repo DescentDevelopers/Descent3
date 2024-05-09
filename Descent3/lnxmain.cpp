@@ -32,6 +32,8 @@
 #include <time.h>
 
 #include "SDL.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/fmt/fmt.h"
 #include "program.h"
 #include "mono.h"
 #include "descent.h"

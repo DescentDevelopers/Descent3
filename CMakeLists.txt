@@ -19,7 +19,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(spdlog REQUIRED)
 
 if(FORCE_COLORED_OUTPUT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
@@ -141,6 +140,8 @@ if(ENABLE_LOGGER)
   add_compile_definitions(LOGGER)
 endif()
 
+add_subdirectory(third_party)
+
 include_directories(
   "cfile"   # TODO: Remove after untying all modules
   "ddebug"  # -*-
@@ -200,6 +201,7 @@ add_subdirectory(Descent3)
 
 add_subdirectory(tools)
 add_subdirectory(netcon)
+
 
 # For now we don't need to build the scripts under windows, so we'll only include
 # the directory when building for linux/osx. In the future we may want to to fix bugs, etc.

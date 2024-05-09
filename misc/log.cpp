@@ -18,6 +18,9 @@
 
 #include "log.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_sinks.h"
+
 void InitLog() {
     // Set the logging pattern
     spdlog::set_pattern("%T [%l] %s:%!:%# %v");
