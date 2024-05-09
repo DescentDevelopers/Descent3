@@ -1571,7 +1571,7 @@ void InitIOSystems(bool editor) {
     strcpy(Base_directory, GameArgs[0]);
     int len = strlen(Base_directory);
     for (int i = (len - 1); i >= 0; i--) {
-      if (Base_directory[i] == '\\') {
+      if (Base_directory[i] == '\\' || Base_directory[i] == '/') {
         Base_directory[i] = '\0';
       }
     }
