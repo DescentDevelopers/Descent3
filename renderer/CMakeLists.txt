@@ -8,6 +8,7 @@ set(CPPS
   HardwareGlobalVars.cpp
   HardwareInstance.cpp
   HardwareOpenGL.cpp
+  HardwareBaseGPU.cpp
   HardwarePoints.cpp
   HardwareSetup.cpp
   HardwareTransforms.cpp
@@ -23,3 +24,4 @@ endif()
 #Direct3D.cpp
 
 add_library(renderer STATIC ${HEADERS} ${CPPS})
+target_link_libraries(renderer PRIVATE bitmap)

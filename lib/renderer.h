@@ -294,6 +294,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <memory>
 #include "pstypes.h"
 #include "grdefs.h"
 
@@ -316,12 +317,10 @@ extern int Triangles_drawn;
 
 // Is this hardware or software rendered?
 typedef enum {
-  RENDERER_SOFTWARE_8BIT,
-  RENDERER_SOFTWARE_16BIT,
-  RENDERER_OPENGL,
-  RENDERER_DIRECT3D,
-  RENDERER_GLIDE,
-  RENDERER_NONE,
+  RENDERER_OPENGL = 2,
+  RENDERER_DIRECT3D = 3,
+  RENDERER_GLIDE = 4,
+  RENDERER_NONE = 5,
 } renderer_type;
 
 extern renderer_type Renderer_type;
@@ -351,6 +350,8 @@ extern bool UseWBuffer;
 extern bool UseMipmap;  // DAJ
 extern bool ATIRagePro; // DAJ
 extern bool Formac;     // DAJ
+
+class NewBitmap;
 
 // various state setting functions
 //------------------------------------
@@ -580,6 +581,9 @@ float rend_GetAlphaFactor(void);
 // Sets the wrap parameter
 void rend_SetWrapType(wrap_type val);
 
+/// Takes a screenshot of the current frame and returns a NewBitmap
+std::unique_ptr<NewBitmap> rend_Screenshot();
+
 // Takes a screenshot of the current frame and puts it into the handle passed
 void rend_Screenshot(int bm_handle);
 
@@ -630,9 +634,6 @@ void rend_GetRenderState(rendering_state *rstate);
 
 // Draws a simple bitmap at the specified x,y location
 void rend_DrawSimpleBitmap(int bm_handle, int x, int y);
-
-// Changes the resolution of the renderer
-void rend_SetResolution(int width, int height);
 
 // Gets OpenGL ready to work in a window
 int rend_InitOpenGLWindow(oeApplication *app, renderer_preferred_state *pref_state);
