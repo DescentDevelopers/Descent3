@@ -1755,11 +1755,15 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
     dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
   }
 
+  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
   // draw the data in the arrays
   dglDrawArrays(GL_POLYGON, 0, nv);
 
   if (gpu_state.cur_texture_quality == 0) {
     // re-enable textures
+    oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
   }
 
@@ -1773,6 +1777,7 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
   oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv0);
   oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv1);
 
   dglDrawArrays(GL_POLYGON, 0, nv);
