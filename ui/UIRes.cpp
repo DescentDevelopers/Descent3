@@ -154,7 +154,9 @@ const UITextItem &UITextItem::operator=(const UITextItem &item) {
     dummy_str[0] = 0;
   }
 
-  strcpy(m_Text, item.m_Text);
+  if (m_Text != item.m_Text) {
+    strcpy(m_Text, item.m_Text);
+  }
   m_Color = item.m_Color;
   m_Alpha = item.m_Alpha;
   m_Font = item.m_Font;
