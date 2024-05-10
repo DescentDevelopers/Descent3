@@ -1484,6 +1484,10 @@ void LoadGameSettings() {
   int len = _MAX_PATH;
   Database->read("Default_pilot", Default_pilot, &len);
 
+  if (PreferredRenderer < RENDERER_FIRST) {
+    PreferredRenderer = RENDERER_OPENGL;  // If the renderer is invalid, we force OpenGL
+  }
+
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)
 

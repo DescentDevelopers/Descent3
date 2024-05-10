@@ -321,6 +321,8 @@ typedef enum {
   RENDERER_DIRECT3D = 3,
   RENDERER_GLIDE = 4,
   RENDERER_NONE = 5,
+
+  RENDERER_FIRST = RENDERER_OPENGL,
 } renderer_type;
 
 extern renderer_type Renderer_type;
