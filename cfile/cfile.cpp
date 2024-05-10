@@ -147,8 +147,7 @@ int cf_OpenLibrary(const char *libname) {
     mem_free(lib);
     return 0; // CF_NO_FILE;
   }
-  fread(id, HOG_TAG_LEN, 1, fp);
-  if (strncmp(id, HOG_TAG_STR, HOG_TAG_LEN)) {
+  if (!fread(id, HOG_TAG_LEN, 1, fp) || strncmp(id, HOG_TAG_STR, HOG_TAG_LEN)) {
     fclose(fp);
     mem_free(lib);
     return 0; // CF_BAD_FILE;
