@@ -167,7 +167,9 @@ public:
         if (!shutdown) {
           ShutdownD3();
           shutdown = true;
-          ShowWindow((HWND)hwnd, SW_MINIMIZE);
+          if (m_Flags & OEAPP_FULLSCREEN) {
+            ShowWindow((HWND)hwnd, SW_MINIMIZE);
+          }
         }
       } else {
         this->activate();
