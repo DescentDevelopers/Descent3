@@ -49,6 +49,7 @@
 #include <NewBitmap.h>
 
 #define DECLARE_OPENGL
+#include <GL/glew.h>
 #include "dyna_gl.h"
 
 #if defined(WIN32)
@@ -136,6 +137,8 @@ extern float gpu_Alpha_multiplier;
 PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
 PFNGLCLIENTACTIVETEXTUREARBPROC oglClientActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD4FARBPROC oglMultiTexCoord4f = NULL;
+PFNGLDEBUGMESSAGECALLBACKPROC oglDebugMessageCallback = NULL;
+PFNGLDEBUGMESSAGECONTROLPROC oglDebugMessageControl = NULL;
 #endif
 
 ushort *OpenGL_bitmap_remap = NULL;
@@ -203,6 +206,8 @@ void opengl_GetDLLFunctions(void) {
   oglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)dwglGetProcAddress("glMultiTexCoord4f");
   if (!oglMultiTexCoord4f)
     goto dll_error;
+  oglDebugMessageCallback = (PFNGLDEBUGMESSAGECALLBACKPROC)dwglGetProcAddress("glDebugMessageCallback");
+  oglDebugMessageControl = (PFNGLDEBUGMESSAGECONTROLPROC)dwglGetProcAddress("glDebugMessageControl");
 #else
 #define mod_GetSymbol(x, funcStr, y) __SDL_mod_GetSymbol(funcStr)
 
@@ -394,6 +399,63 @@ void opengl_SetDefaults() {
 }
 
 #if defined(WIN32)
+//#define GL_DEBUG_OUTPUT_SYNCHRONOUS 0x8242
+//#define GL_DEBUG_OUTPUT 0x92E0
+
+#define GL_SHADING_LANGUAGE_VERSION 0x8B8C
+
+// WGL_ARB_pixel_format
+#define WGL_DRAW_TO_WINDOW_ARB  0x2001
+#define WGL_DRAW_TO_BITMAP_ARB  0x2002
+#define WGL_ACCELERATION_ARB    0x2003
+#define WGL_SUPPORT_GDI_ARB     0x200F
+#define WGL_SUPPORT_OPENGL_ARB  0x2010
+#define WGL_DOUBLE_BUFFER_ARB   0x2011
+#define WGL_STEREO_ARB          0x2012
+#define WGL_PIXEL_TYPE_ARB      0x2013
+#define WGL_COLOR_BITS_ARB      0x2014
+#define WGL_DEPTH_BITS_ARB      0x2022
+#define WGL_STENCIL_BITS_ARB    0x2023
+
+#define WGL_NO_ACCELERATION_ARB      0x2025
+#define WGL_GENERIC_ACCELERATION_ARB 0x2026
+#define WGL_FULL_ACCELERATION_ARB    0x2027
+
+#define WGL_TYPE_RGBA_ARB       0x202B
+#define WGL_TYPE_COLORINDEX_ARB 0x202C
+
+// WGL_ARB_create_context_profile
+#define WGL_CONTEXT_MAJOR_VERSION_ARB 0x2091
+#define WGL_CONTEXT_MINOR_VERSION_ARB 0x2092
+#define WGL_CONTEXT_FLAGS_ARB         0x2094
+#define WGL_CONTEXT_PROFILE_MASK_ARB  0x9126
+
+// WGL_CONTEXT_FLAGS bits
+#define WGL_CONTEXT_DEBUG_BIT_ARB 0x0001
+#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x0002
+
+// WGL_CONTEXT_PROFILE_MASK_ARB bits
+#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB 0x00000001
+#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+
+typedef const char* (WINAPI *wglGetExtensionsStringARB_t)(HDC theDeviceContext);
+typedef BOOL (WINAPI *wglChoosePixelFormatARB_t)(HDC theDevCtx, const int* theIntAttribs,
+                                                const float* theFloatAttribs, unsigned int theMaxFormats,
+                                                int* theFormatsOut, unsigned int* theNumFormatsOut);
+typedef HGLRC (WINAPI *wglCreateContextAttribsARB_t)(HDC theDevCtx, HGLRC theShareContext, const int* theAttribs);
+typedef const GLubyte* (WINAPI *glGetStringi_t) (GLenum name, GLuint index);
+
+
+void GLFUNCCALL debugMessage(uint32_t source,
+                             uint32_t type,
+                             uint32_t id,
+                             uint32_t severity,
+                  int length,
+                  const char *message,
+                  const void *userParam) {
+  fprintf( stderr, "GL CALLBACK: type = 0x%x, severity = 0x%x, message = %s\n",
+          type, severity, message );
+}
 // Check for OpenGL support,
 int opengl_Setup(HDC glhdc) {
   if (!Already_loaded) {
@@ -471,6 +533,15 @@ int opengl_Setup(HDC glhdc) {
     return NULL;
   }
 
+  int aCoreCtxAttribs[] =
+      {
+          WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+          WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+          WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+          WGL_CONTEXT_FLAGS_ARB,         WGL_CONTEXT_DEBUG_BIT_ARB,
+          0, 0
+      };
+
   // Create an OpenGL context, and make it the current context
   ResourceContext = dwglCreateContext((HDC)glhdc);
   if (ResourceContext == NULL) {
@@ -482,6 +553,18 @@ int opengl_Setup(HDC glhdc) {
 
   ASSERT(ResourceContext != NULL);
   mprintf((0, "Making context current\n"));
+  dwglMakeCurrent((HDC)glhdc, ResourceContext);
+
+  wglCreateContextAttribsARB_t aCreateCtxProc = (wglCreateContextAttribsARB_t )wglGetProcAddress ("wglCreateContextAttribsARB");
+  wglDeleteContext(ResourceContext);
+
+  ResourceContext = aCreateCtxProc((HDC)glhdc, NULL, aCoreCtxAttribs);
+  if (ResourceContext == NULL) {
+    DWORD ret = GetLastError();
+    // FreeLibrary(opengl_dll_handle);
+    Int3();
+    return NULL;
+  }
   dwglMakeCurrent((HDC)glhdc, ResourceContext);
 
   Already_loaded = 1;
@@ -768,6 +851,15 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 
   mprintf((0, "Setting up multitexture...\n"));
 
+  // attempt to grab Multitexture functions
+  opengl_GetDLLFunctions();
+
+  glEnable(GL_DEBUG_OUTPUT);
+  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+  oglDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+  oglDebugMessageCallback(debugMessage, NULL);
+
   // Determine if Multitexture is supported
   bool supportsMultiTexture = opengl_CheckExtension("GL_ARB_multitexture");
   if (!supportsMultiTexture) {
@@ -779,8 +871,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   }
 
   if (supportsMultiTexture) {
-    // attempt to grab Multitexture functions
-    opengl_GetDLLFunctions();
+
   } else {
     // No multitexture at all
     UseMultitexture = false;

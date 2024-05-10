@@ -3,6 +3,7 @@
   "dependencies": [
     "spdlog",
     "gtest",
-    "zlib"
+    "zlib",
+    "glew"
   ]
 }

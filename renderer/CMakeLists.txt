@@ -23,5 +23,6 @@ endif()
 #renderer.cpp
 #Direct3D.cpp
 
+find_package(GLEW REQUIRED)
 add_library(renderer STATIC ${HEADERS} ${CPPS})
-target_link_libraries(renderer PRIVATE bitmap)
+target_link_libraries(renderer PRIVATE bitmap GLEW::GLEW)
