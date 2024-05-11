@@ -1300,11 +1300,13 @@ bool LoadMissionLevel(int level) {
   if (GetTerrainGeometryChecksum() != Terrain_checksum)
     terrain = false;
 
+  // JC: This isn't going to be fixed for a while, so silence the error
+  /*
   if (!boa) {
     snprintf(str, sizeof(str), "BOA NOT VALID! %s", terrain ? "" : "TERRAINOCC NOT VALID!");
     ShowProgressScreen(str, NULL, true);
     Sleep(2000);
-  }
+  } */
 
   LoadLevelText(Current_mission.levels[level - 1].filename);
 
