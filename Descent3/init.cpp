@@ -1870,46 +1870,37 @@ void InitD3Systems1(bool editor) {
   InitGraphics(editor);
 
   //	initialize data structures
-  INIT_MESSAGE(("Initializing data structures."));
   InitObjectInfo();
   InitVClips();
   InitRooms();
 
   //	initialize lighting systems
-  INIT_MESSAGE(("Initializing lighting systems."));
   InitLightmapInfo();
   InitSpecialFaces();
   InitDynamicLighting();
 
   // Initialize missions
-  INIT_MESSAGE(("Initializing missions."));
   InitMission();
 
   // Initializes the ship structure
-  INIT_MESSAGE(("Initializing ships."));
   InitShips();
 
   // Initializes the fvi structures for quicker operation
-  INIT_MESSAGE(("Initializing FVI."));
   InitFVI();
 
   // Initializes the matcens
-  INIT_MESSAGE(("Initializing matcens."));
   InitMatcens();
 
   // This function needs be called before ANY 3d stuff can get done. I mean it.
-  INIT_MESSAGE(("Initializing math tables."));
   InitMathTables();
 
   // Initialize a random seed.
   ps_srand(time(nullptr));
 
   // This function has to be done before any sound stuff is called
-  INIT_MESSAGE(("Initializing sounds."));
   InitSounds();
 
   // Allocate memory and stuff for our terrain engine, objects, etc.
-  INIT_MESSAGE(("Allocating memory."));
   InitTerrain();
   InitModels();
   InitDoors();
