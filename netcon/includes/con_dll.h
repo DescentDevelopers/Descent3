@@ -264,8 +264,15 @@
  */
 ///////////////////////////////////////////////
 
+#pragma once
+
 #include "ship.h"
 #include "pstypes.h"
+#include "module.h"
+#include "newui.h"
+#include "ddio_common.h"
+#include "renderer.h"
+#include "pilot.h"
 
 #ifdef __LINUX__
 #include <string.h>
@@ -286,6 +293,8 @@ const char *GetString(int d) {
     return StringTable[d];
 }
 #define TXT(d) GetString(d)
+#define TXT_DLL_SAVESETTINGS TXT(27)
+#define TXT_DLL_LOADSETTINGS TXT(28)
 ///////////////////////////////////////////////
 #define CHAR_LEFT_ARROW 24
 #define CHAR_UP_ARROW 25
@@ -760,8 +769,6 @@ typedef struct vmt_descent3_struct {
 unsigned int MTClientVer = 100;
 
 char MTUpdateURL[300] = "";
-
-multi_api API;
 
 player *DLLMPlayers;
 ship *DLLShips;
@@ -1351,9 +1358,5 @@ int StartMultiplayerGameMenu() {
 }
 
 void MultiplayerOptionsMenu() {
-#ifndef MULTI_USE_ALL_OPTIONS
-  DLLMultiGameOptionsMenu(0);
-#else
   DLLMultiGameOptionsMenu(1);
-#endif
 }

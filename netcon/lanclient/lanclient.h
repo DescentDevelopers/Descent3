@@ -82,6 +82,7 @@
  */
 
 #include "ui.h"
+#include "con_dll.h"
 
 // #define ubyte unsigned char
 
@@ -97,8 +98,6 @@
 #define MAXUITEXTS 20
 #define MAXEDITS 20
 #define MAXLISTS 20
-
-#include "con_dll.h"
 
 int StartMultiplayerGameMenu();
 void MultiplayerOptionsMenu();
