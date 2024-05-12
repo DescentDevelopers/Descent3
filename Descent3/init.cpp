@@ -1170,7 +1170,7 @@ void SaveGameSettings() {
   Database->write("FastHeadlight", Detail_settings.Fast_headlight_on);
   Database->write("MirrorSurfaces", Detail_settings.Mirrored_surfaces);
   Database->write("MissileView", Missile_camera_window);
-  Render_preferred_state.vsync_on = 0;
+  Database->write("RS_vsync", Render_preferred_state.vsync_on);
   Database->write("DetailScorchMarks", Detail_settings.Scorches_enabled);
   Database->write("DetailWeaponCoronas", Detail_settings.Weapon_coronas_enabled);
   Database->write("DetailFog", Detail_settings.Fog_enabled);
@@ -1940,7 +1940,6 @@ void InitD3Systems1(bool editor) {
   int soundres = Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 
   //	Initialize Cinematics system
-  INIT_MESSAGE(("Initializing cinematics."));
   InitCinematics();
 
   // Initialize IntelliVIBE (if available)
@@ -1969,7 +1968,6 @@ void InitD3Systems2(bool editor) {
   INIT_MESSAGE((TXT_INITCOLLATING));
 
   // Initialize the pilot system
-  INIT_MESSAGE(("Initializing pilots."));
   PilotInit();
 
   // Setup our object system.  By object I mean stuff in our world, not those silly C++ things.
@@ -1977,7 +1975,6 @@ void InitD3Systems2(bool editor) {
   InitObjects();
 
   // Fireball initting must come after LoadTableFiles
-  INIT_MESSAGE(("Initializing effects."));
   SetInitMessageLength(TXT_INITCOLLATING, 0.1f);
   InitFireballs();
   UpdateInitMessage(1.0f);
