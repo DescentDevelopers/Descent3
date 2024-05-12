@@ -1167,10 +1167,10 @@ bool GameSequencer() {
   case MENU_MODE:
   case QUIT_MODE:
   case CREDITS_MODE:
+  case GAMEGAUGE_MODE:
     break;
   case RESTORE_GAME_MODE:
   case LOADDEMO_MODE:
-  case GAMEGAUGE_MODE:
     SetFunctionMode(GAME_MODE); // need to do so sequencer thiks we're in game.
     break;
   }
@@ -1230,15 +1230,6 @@ bool GameSequencer() {
         SetFunctionMode(MENU_MODE);
       }
       break;
-    case GAMESTATE_GAMEGAUGEDEMO: {
-      char ggdemopath[_MAX_PATH * 2];
-      ddio_MakePath(ggdemopath, Base_directory, "demo", Game_gauge_usefile, NULL);
-      if (DemoPlaybackFile(ggdemopath)) {
-        SetGameState(GAMESTATE_LVLPLAYING);
-      } else {
-        SetFunctionMode(MENU_MODE);
-      }
-    } break;
     case GAMESTATE_LOADGAME:
       if (Game_mode & GM_MULTI) {
         DoMessageBox(TXT_ERROR, TXT_CANT_LOAD_MULTI, MSGBOX_OK);
@@ -1445,10 +1436,6 @@ void SetCurrentLevel(int level) {
 
 void StartLevelSounds();
 
-// #ifdef GAMEGAUGE
-extern float gamegauge_start_time;
-// #endif
-
 // Get rid of any viewer objects in the level
 void ClearViewerObjects() {
   int i;
@@ -1643,9 +1630,7 @@ void StartLevel() {
   Gametime = 0.0f;
   // Start the clock
   InitFrameTime();
-  // #ifdef GAMEGAUGE
-  gamegauge_start_time = timer_GetTime();
-  // #endif
+
   LoadLevelProgress(LOAD_PROGRESS_DONE, 0);
 
 }
@@ -2194,14 +2179,7 @@ void RunGameMenu() {
       break;
 
     case GAME_POST_DEMO:
-#ifdef GAMEGAUGE
-      if (0)
-#else
-      if (!Game_gauge_do_time_test)
-#endif
-      {
-        DemoPostPlaybackMenu();
-      }
+      DemoPostPlaybackMenu();
       SetFunctionMode(MENU_MODE);
       break;
     case GAME_DEMO_LOOP:

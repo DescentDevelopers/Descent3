@@ -1218,9 +1218,6 @@ void SaveGameSettings() {
     Database->write("Default_pilot", " ", 2);
 }
 
-extern bool Game_gauge_do_time_test;
-extern char Game_gauge_usefile[_MAX_PATH];
-
 /*
         Read game variables from the registry
 */
@@ -1234,12 +1231,6 @@ void LoadGameSettings() {
   Outline_mode = OM_ALL;
   Lighting_on = true;
 #endif
-
-  int tt_arg = FindArg("-timetest");
-  if (tt_arg) {
-    Game_gauge_do_time_test = true;
-    strcpy(Game_gauge_usefile, GameArgs[tt_arg + 1]);
-  }
 
   Detail_settings.Specular_lighting = false;
   Detail_settings.Dynamic_lighting = true;

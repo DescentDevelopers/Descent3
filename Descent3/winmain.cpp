@@ -209,8 +209,6 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
   lstrcat(m_Basepath, "\\Descent3_OEM_A2");
 #elif defined(OEM_KATMAI)
   lstrcat(m_Basepath, "\\Descent3_OEM_KM");
-#elif defined(GAMEGAUGE)
-  lstrcat(m_Basepath, "\\Descent3GG");
 #elif defined(OEM)
   lstrcat(m_Basepath, "\\Descent3_OEM");
 #else
