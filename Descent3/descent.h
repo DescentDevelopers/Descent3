@@ -164,14 +164,11 @@ typedef enum function_mode {
   MENU_MODE,
   QUIT_MODE,
   LOADDEMO_MODE,
-  GAMEGAUGE_MODE,
+  GAMEGAUGE_MODE, // Unused
   CREDITS_MODE
 } function_mode;
 
 extern bool Descent_overrided_intro;
-
-// Maximum samples to save for gamegauge graph info
-#define GAMEGAUGE_MAX_LOG 1000
 
 // This is the default FOV
 #define D3_DEFAULT_FOV 72.0

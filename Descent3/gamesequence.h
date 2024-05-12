@@ -123,7 +123,6 @@ typedef enum tGameState {
   GAMESTATE_LVLFAILED,    // a level was unsuccessfully ended
   GAMESTATE_LVLWARP,      // warp to a new level
   GAMESTATE_LOADDEMO,     // Load whatever demo was chosen in the UI
-  GAMESTATE_GAMEGAUGEDEMO // Play a gamegauge demo and exit
 } tGameState;
 
 //	top level interfaces for game.

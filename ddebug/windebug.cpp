@@ -1230,7 +1230,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
     wsprintf(callstack, "Username: %s\r\nMachineName: %s\r\n", Username, Machinename);
     WriteFile(LogFile, callstack, lstrlen(callstack), &NumBytes, 0);
 
-#if (defined(RELEASE) && (!defined(DEMO)) && (!defined(GAMEGAUGE)))
+#if (defined(RELEASE) && (!defined(DEMO)))
     wsprintf(callstack, "Descent 3 Release build %s\r\n", D3_GIT_HASH);
     WriteFile(LogFile, callstack, lstrlen(callstack), &NumBytes, 0);
 #endif

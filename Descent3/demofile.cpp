@@ -331,8 +331,6 @@ extern float Avg_frametime;
 extern unsigned int Frames_counted;
 extern bool Game_paused;
 
-extern bool Game_gauge_do_time_test;
-
 static bool Demo_play_fast = false;
 
 extern void PageInAllData(void);
@@ -1168,7 +1166,7 @@ void DemoFrame() {
       DoScreenshot();
     }
     // This code slows down demo playback
-    if ((!Game_gauge_do_time_test) && (!Demo_play_fast)) {
+    if (!Demo_play_fast) {
 
       float tdelta = timer_GetTime();
       // if(Gametime<Demo_next_frame)

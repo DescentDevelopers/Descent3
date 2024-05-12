@@ -711,8 +711,6 @@ extern bool Mem_quick_exit;
 bool IsRestoredGame = false;
 //////////////////////////////////////////////////////////////////////////////
 extern bool Demo_looping;
-extern bool Game_gauge_do_time_test;
-extern char Game_gauge_usefile[_MAX_PATH];
 bool FirstGame = false;
 
 int MainMenu() {
@@ -721,15 +719,6 @@ int MainMenu() {
   bool exit_game = false;
   bool exit_menu = false;
 
-#ifdef GAMEGAUGE
-  if (1)
-#else
-  if (Game_gauge_do_time_test)
-#endif
-  {
-    Mem_quick_exit = 1;
-    return 1;
-  }
   // okay over here, we'll decide whether we've finished the training mission and are going into game.
   if (!Demo_looping && !Demo_restart && !MultiDLLGameStarting) {
     if (FirstGame) {

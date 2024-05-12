@@ -16,7 +16,6 @@ set(SCRIPTS
   CellTestLevel
   ChrisTest
   clutter
-  GameGauge
   generic
   Geodomes
   HalfPipe
