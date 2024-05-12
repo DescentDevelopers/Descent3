@@ -60,7 +60,6 @@ typedef struct t_mse_event {
 #endif
 
 bool rawInputOpened = false;
-bool handlerCalled = false;
 
 // ----------------------------------------------------------------------------
 
@@ -124,7 +123,14 @@ void ddio_MouseQueueFlush() {
 }
 
 void ddio_MouseReset() {
-  SetRect(&DDIO_mouse_state.brect, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+  // get relative window rect, 0/0 - width-1/height-1
+  GetClientRect(DInputData.hwnd, &DDIO_mouse_state.brect);
+  // restrict mouse cursor to actual screen coords of the window
+  RECT clipRect = DDIO_mouse_state.brect;
+  ClientToScreen(DInputData.hwnd, reinterpret_cast<POINT *>(&clipRect.left));
+  ClientToScreen(DInputData.hwnd, reinterpret_cast<POINT *>(&clipRect.right));
+  ClipCursor(&clipRect);
+
   DDIO_mouse_state.zmin = MOUSE_ZMIN;
   DDIO_mouse_state.zmax = MOUSE_ZMAX;
 
@@ -134,9 +140,11 @@ void ddio_MouseReset() {
   DDIO_mouse_state.dy = 0;
   DDIO_mouse_state.dz = 0;
   DDIO_mouse_state.imm_dz = 0;
-  DDIO_mouse_state.x = (DDIO_mouse_state.brect.right - DDIO_mouse_state.brect.left) / 2;
-  DDIO_mouse_state.y = (DDIO_mouse_state.brect.bottom - DDIO_mouse_state.brect.top) / 2;
-  DDIO_mouse_state.z = (DDIO_mouse_state.zmax = DDIO_mouse_state.zmin) / 2;
+  DDIO_mouse_state.x = (DDIO_mouse_state.brect.right + DDIO_mouse_state.brect.left) / 2;
+  DDIO_mouse_state.y = (DDIO_mouse_state.brect.bottom + DDIO_mouse_state.brect.top) / 2;
+  DDIO_mouse_state.z = (DDIO_mouse_state.zmax + DDIO_mouse_state.zmin) / 2;
+  DDIO_mouse_state.cx = DDIO_mouse_state.x;
+  DDIO_mouse_state.cy = DDIO_mouse_state.y;
   DDIO_mouse_state.cz = 0;
   DDIO_mouse_state.x_aspect = 1.0f;
   DDIO_mouse_state.y_aspect = 1.0f;
@@ -388,8 +396,7 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
         // DDIO_mouse_state.btn_mask = buttons;
       }
 
-      DDIO_mouse_state.x += (float)rawinput->data.mouse.lLastX;
-      ;
+      DDIO_mouse_state.x += rawinput->data.mouse.lLastX;
       DDIO_mouse_state.y += rawinput->data.mouse.lLastY;
       DDIO_mouse_state.z = 0;
 
@@ -416,7 +423,6 @@ int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lPara
 bool InitNewMouse() {
   int i;
   if (!rawInputOpened) {
-    char buf[256];
     RAWINPUTDEVICE rawInputDevice = {};
 
     rawInputDevice.usUsage = 0x0002;
@@ -493,7 +499,6 @@ void ddio_MouseClose() {
     return;
 
   if (rawInputOpened) {
-    char buf[256];
     RAWINPUTDEVICE rawInputDevice = {};
 
     rawInputDevice.usUsage = 0x0002;
@@ -578,8 +583,8 @@ void ddio_MouseSetLimits(int left, int top, int right, int bottom, int zmin, int
   SetRect(&DDIO_mouse_state.brect, left, top, right, bottom);
   DDIO_mouse_state.zmin = (!zmin && zaxis) ? MOUSE_ZMIN : zmin;
   DDIO_mouse_state.zmax = (!zmax && zaxis) ? MOUSE_ZMAX : zmax;
-  DDIO_mouse_state.cx = left + (right - left) / 2;
-  DDIO_mouse_state.cy = top + (bottom - top) / 2;
+  DDIO_mouse_state.cx = (right + left) / 2;
+  DDIO_mouse_state.cy = (bottom + top) / 2;
 }
 
 // virtual coordinate system for mouse (match to video resolution set for optimal mouse usage.

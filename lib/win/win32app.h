@@ -216,7 +216,7 @@ public:
 #if defined(DD_ACCESS_RING)
 public:
 #else
-private:
+protected:
 #endif
   HWnd m_hWnd; // handles created by the system
   HInstance m_hInstance;
