@@ -262,7 +262,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 
   // Add the first sub directory
   pathLength = strlen(newPath);
-  if (newPath[pathLength - 1] != delimiter) {
+  if (pathLength > 0 && newPath[pathLength - 1] != delimiter) {
     newPath[pathLength] = delimiter; // add the delimiter
     newPath[pathLength + 1] = 0;     // terminate the string
   }
