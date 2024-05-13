@@ -41,7 +41,7 @@
 
 #define MAX_LOD_SIZE (1 << (MAX_TERRAIN_LOD - 1))
 
-#define MAX_CELLS_TO_RENDER 8000 // The maximum number of cells we can render in a frame
+#define MAX_CELLS_TO_RENDER 32768 // The maximum number of cells we can render in a frame
 
 #define MAX_TERRAIN_HEIGHT 350.0f                              // Max height of our terrain
 #define TERRAIN_HEIGHT_INCREMENT (MAX_TERRAIN_HEIGHT / 255.0f) // Incremental jumps
@@ -50,9 +50,7 @@
 // Sky defines
 #define MAX_STARS 600    // how many stars in our sky
 #define MAX_SATELLITES 5 // max satellites in our sky
-#define MAX_HORIZON_PIECES                                                                                             \
-  16 // how many segments of the horizon
-     // there are around our sphere
+#define MAX_HORIZON_PIECES 16 // how many segments of the horizon there are around our sphere
 
 // Sky flags
 #define TF_STARS 1      // whether or not our terrain is starred

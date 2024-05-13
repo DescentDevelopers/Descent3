@@ -910,6 +910,7 @@
 // Initialization routines for Descent3/Editor
 
 #include <stdlib.h>
+#include <time.h>
 
 #include "mono.h"
 #include "application.h"
@@ -956,7 +957,6 @@
 #include "networking.h"
 #include "args.h"
 #include "pilot.h"
-#include "d3serial.h"
 #include "gameloop.h"
 #include "trigger.h"
 #include "PHYSICS.H"
@@ -979,7 +979,6 @@
 #include "d3music.h"
 #include "PilotPicsAPI.h"
 #include "osiris_dll.h"
-// #include "gamespy.h"
 #include "mem.h"
 #include "multi.h"
 #include "marker.h"
@@ -987,15 +986,8 @@
 #include "debuggraph.h"
 #include "vibeinterface.h"
 
-// Uncomment this for all non-US versions!!
-// #define LASERLOCK
-
 // Uncomment this to allow all languages
 #define ALLOW_ALL_LANG 1
-
-#if defined(WIN32) && defined(LASERLOCK)
-#include "laserlock.h"
-#endif
 
 #ifdef EDITOR
 #include "editor\HFile.h"
@@ -1059,86 +1051,6 @@ float Mouse_sensitivity = 1.0f;
 
 int merc_hid = -1;
 
-int IsLocalOk(void) {
-#ifdef WIN32
-#ifdef ALLOW_ALL_LANG
-  return 1;
-#endif
-
-  switch (PRIMARYLANGID(GetSystemDefaultLangID())) {
-  case LANG_JAPANESE:
-    /* Japanese */
-    return 0;
-#ifndef LASERLOCK
-  // If no laserlock that means this is the US distribution
-  case LANG_ENGLISH:
-    if ((SUBLANG_ENGLISH_US != SUBLANGID(GetSystemDefaultLangID())) &&
-        (SUBLANG_ENGLISH_CAN != SUBLANGID(GetSystemDefaultLangID())))
-      return 0;
-    else
-      return 1;
-    break;
-  default:
-    // Non-japanese or english version
-    return 0;
-#endif
-  }
-#endif
-  return 1;
-}
-
-void PreGameCdCheck() {
-  CD_inserted = 0;
-  do {
-    const char *p;
-
-#if defined(OEM)
-    p = ddio_GetCDDrive("D3OEM_1");
-    if (p && *p) {
-      CD_inserted = 1;
-      break;
-    }
-#else
-    p = ddio_GetCDDrive("D3_DVD");
-    if (p && *p) {
-      CD_inserted = 3;
-      break;
-    }
-    p = ddio_GetCDDrive("D3_1");
-    if (p && *p) {
-      CD_inserted = 1;
-      break;
-    }
-    p = ddio_GetCDDrive("D3_2");
-    if (p && *p) {
-      CD_inserted = 2;
-      break;
-    }
-#endif
-
-    if (!CD_inserted) {
-#if defined(WIN32)
-      char message_txt[50];
-      snprintf(message_txt, sizeof(message_txt), TXT_CDPROMPT, 1);
-      ShowCursor(true);
-      HWND dwnd = FindWindow(NULL, PRODUCT_NAME);
-      if (MessageBox(dwnd, message_txt, PRODUCT_NAME, MB_OKCANCEL) == IDCANCEL) {
-        exit(0);
-      }
-      ShowCursor(false);
-
-#elif defined(__LINUX__)
-      // ummm what should we do in Linux?
-      // right now I'm just going to return this hopefully will be safe, as I think
-      // this function is only really used for a copy protection check of sorts, if they
-      // don't have the CD in on start, then they don't get the intro movie
-      return;
-#endif
-    }
-
-  } while (!CD_inserted);
-}
-
 /*
         Initializes all the subsystems that need to be initialized BEFORE application creation.
         Returns 1 if all is good, 0 if something is wrong
@@ -1165,16 +1077,6 @@ void PreInitD3Systems() {
 
   error_Init(debugging, console_output, PRODUCT_NAME);
 
-#ifndef EDITOR
-  {
-    int serial_error = SerialCheck(); // determine if its ok to run based on serialization
-
-    if (serial_error) {
-      SerialError(serial_error);
-      exit(1);
-    }
-  }
-#endif
   if (FindArg("-lowmem"))
     Mem_low_memory_mode = true;
   if (FindArg("-superlowmem"))
@@ -1268,11 +1170,7 @@ void SaveGameSettings() {
   Database->write("FastHeadlight", Detail_settings.Fast_headlight_on);
   Database->write("MirrorSurfaces", Detail_settings.Mirrored_surfaces);
   Database->write("MissileView", Missile_camera_window);
-#ifndef GAMEGAUGE
   Database->write("RS_vsync", Render_preferred_state.vsync_on);
-#else
-  Render_preferred_state.vsync_on = 0;
-#endif
   Database->write("DetailScorchMarks", Detail_settings.Scorches_enabled);
   Database->write("DetailWeaponCoronas", Detail_settings.Weapon_coronas_enabled);
   Database->write("DetailFog", Detail_settings.Fog_enabled);
@@ -1320,9 +1218,6 @@ void SaveGameSettings() {
     Database->write("Default_pilot", " ", 2);
 }
 
-extern bool Game_gauge_do_time_test;
-extern char Game_gauge_usefile[_MAX_PATH];
-
 /*
         Read game variables from the registry
 */
@@ -1337,12 +1232,6 @@ void LoadGameSettings() {
   Lighting_on = true;
 #endif
 
-  int tt_arg = FindArg("-timetest");
-  if (tt_arg) {
-    Game_gauge_do_time_test = true;
-    strcpy(Game_gauge_usefile, GameArgs[tt_arg + 1]);
-  }
-
   Detail_settings.Specular_lighting = false;
   Detail_settings.Dynamic_lighting = true;
   Detail_settings.Fast_headlight_on = true;
@@ -1356,7 +1245,7 @@ void LoadGameSettings() {
   Default_player_terrain_leveling = 2;
   Default_player_room_leveling = 2;
   Render_preferred_state.gamma = 1.5;
-  PreferredRenderer = RENDERER_NONE;
+  PreferredRenderer = RENDERER_OPENGL;
 
   Sound_system.SetLLSoundQuantity(MIN_SOUNDS_MIXED + (MAX_SOUNDS_MIXED - MIN_SOUNDS_MIXED) / 2);
   D3MusicSetVolume(0.5f);
@@ -1420,7 +1309,6 @@ void LoadGameSettings() {
 
   Database->read_int("TerrLeveling", &Default_player_terrain_leveling);
   Database->read_int("RoomLeveling", &Default_player_room_leveling);
-  // Database->read("Terrain_casting",&Detail_settings.Terrain_casting);
   Database->read("Specmapping", &Detail_settings.Specular_lighting);
   Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
   Database->read_int("RS_resolution", &Game_video_resolution);
@@ -1516,30 +1404,6 @@ void LoadGameSettings() {
     Render_powerup_sparkles = true;
   }
 
-#ifdef GAMEGAUGE
-  // Setup some default params for gamegauge
-  Detail_settings.Scorches_enabled = 1;
-  Detail_settings.Weapon_coronas_enabled = 1;
-  Detail_settings.Fog_enabled = 1;
-  Detail_settings.Coronas_enabled = 1;
-  Detail_settings.Procedurals_enabled = 1;
-  Detail_settings.Powerup_halos = 1;
-  Detail_settings.Mirrored_surfaces = 1;
-  Detail_settings.Pixel_error = 8;
-  Detail_settings.Terrain_render_distance = 120 * TERRAIN_SIZE;
-  Detail_settings.Specular_lighting = 1;
-  Use_motion_blur = 0;
-
-  if (1)
-#else
-  if (Game_gauge_do_time_test)
-#endif
-  {
-    Detail_settings.Procedurals_enabled = 0;
-  }
-
-  // We only support OpenGL now...
-  PreferredRenderer = RENDERER_OPENGL;
 }
 
 typedef struct {
@@ -1569,6 +1433,7 @@ void InitIOSystems(bool editor) {
         Base_directory[i] = '\0';
       }
     }
+    INIT_MESSAGE(("Using working directory of %s\n", Base_directory));
     mprintf((0, "Using working directory of %s\n", Base_directory));
   } else {
     ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
@@ -1591,6 +1456,7 @@ void InitIOSystems(bool editor) {
   io_info.use_lo_res_time = (bool)(FindArg("-lorestimer") != 0);
   io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0); WIN95: DirectInput is flaky for some keys.
+  INIT_MESSAGE(("Initializing DDIO systems."));
   if (!ddio_Init(&io_info)) {
     Error("I/O initialization failed.");
   }
@@ -1603,15 +1469,12 @@ void InitIOSystems(bool editor) {
   RTP_ENABLEFLAGS(RTI_OBJFRAMETIME | RTI_AIFRAMETIME | RTI_PROCESSKEYTIME);
 
   //	Read in stuff from the registry
+  INIT_MESSAGE(("Reading settings."));
   LoadGameSettings();
 
   // Setup temp directory
+  INIT_MESSAGE(("Setting up temp directory."));
   SetupTempDirectory();
-
-  //	Initialize file system
-  INIT_MESSAGE(("Managing file system."));
-
-  // delete any leftover temp files
   mprintf((0, "Removing any temp files left over from last execution\n"));
   DeleteTempFiles();
 
@@ -1625,6 +1488,7 @@ void InitIOSystems(bool editor) {
   }
 
   // Init hogfiles
+  INIT_MESSAGE(("Checking for HOG files."));
   int d3_hid = -1, extra_hid = -1, sys_hid = -1, extra13_hid = -1;
   char fullname[_MAX_PATH];
 
@@ -1692,10 +1556,12 @@ void InitIOSystems(bool editor) {
   }
 
   // Initialize debug graph early incase any system uses it in it's init
+  INIT_MESSAGE(("Initializing debug graph."));
   DebugGraph_Initialize();
 
   //	initialize all the OSIRIS systems
   //	extract from extra.hog first, so it's dll files are listed ahead of d3.hog's
+  INIT_MESSAGE(("Initializing OSIRIS."));
   Osiris_InitModuleLoader();
   if (extra13_hid != -1)
     Osiris_ExtractScriptsFromHog(extra13_hid, false);
@@ -1941,9 +1807,7 @@ void InitDedicatedServer() {
   if (!ok) {
     PrintDedicatedMessage(TXT_SHUTTINGDOWN);
     Error("Cannot load Dedicated Server config file.");
-#ifdef WIN32
     exit(0);
-#endif
   }
 }
 
@@ -1993,45 +1857,6 @@ void InitD3Systems1(bool editor) {
   //	load the string table
   InitStringTable();
 
-  if (!IsLocalOk()) {
-#ifdef WIN32
-    MessageBox(NULL, "Sorry, your computer has a language not supported by this version of Descent 3.", PRODUCT_NAME,
-               MB_OK);
-#else
-    printf("Sorry, your computer has a language not supported by this version of Descent 3.");
-#endif
-    exit(0);
-  }
-
-// With 1.5 no more copy protection!
-#if 0
-	//CD Check goes here
-//#if ( defined(RELEASE) && (!defined(DEMO)) && (!defined(GAMEGAUGE)) )
-	if( (!FindArg("-dedicated")) )
-		PreGameCdCheck();
-#endif
-
-#ifdef LASERLOCK
-  // At this point the laser locked CD MUST be inserted or the
-  // game and possibly the entire OS will crash because laserlock
-  // will assume it's a hacked CD.
-  if (!ll_Init())
-    exit(0);
-  if (!ll_Verify())
-    exit(0);
-#else
-  bool CheckCdForValidity(int cd);
-  if ((!FindArg("-dedicated"))) {
-    if (!CheckCdForValidity(CD_inserted)) {
-#ifdef WIN32
-      ShowCursor(true);
-      MessageBox(NULL, "Invalid CDROM!", PRODUCT_NAME, MB_OK);
-      ShowCursor(false);
-#endif
-      exit(0);
-    }
-  }
-#endif
   INIT_MESSAGE(("Initializing GFX"));
   InitGraphics(editor);
 
@@ -2068,7 +1893,6 @@ void InitD3Systems1(bool editor) {
 
   // Allocate memory and stuff for our terrain engine, objects, etc.
   InitTerrain();
-
   InitModels();
   InitDoors();
   InitGamefiles();
@@ -2103,16 +1927,8 @@ void InitD3Systems1(bool editor) {
     LastPacketReceived = timer_GetTime();
   }
 
-  // Init gamespy
-  //	gspy_Init();
-
   // Sound initialization
   int soundres = Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
-#ifdef OEM_AUREAL
-  if (!soundres) {
-    Error("Unable to initialize Aureal audio. This version of Descent 3 requires Aureal audio");
-  }
-#endif
 
   //	Initialize Cinematics system
   InitCinematics();
@@ -2192,16 +2008,6 @@ void InitD3Systems2(bool editor) {
   // initialize localized text for controller system.
   extern void Localize_ctl_bindings();
   Localize_ctl_bindings();
-
-#ifdef OEM
-  if (cfexist("bundler.mve")) {
-    PlayMovie("bundler.mve");
-  }
-
-  if (cfexist("bundler.tga")) {
-    ShowStaticScreen("bundler.tga");
-  }
-#endif
 }
 
 void SetupTempDirectory(void) {
@@ -2455,175 +2261,3 @@ void RestartD3() {
   //	Sound_system.ResumeSounds();
   //	Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
 }
-
-#if (defined(RELEASE) && defined(WIN32) && (!defined(LASERLOCK)))
-
-#include "io.h"
-const char *GetCDVolume(int cd_num);
-
-#endif
-
-unsigned int checksum = 0x2bad4b0b;
-int DoADir(const char *patternp, const char *patternn);
-
-// Checks the checksum of all the files on the directory
-// and returns true if it matches the built in checksum
-bool CheckCdForValidity(int cd) {
-  // 1.5 removed copy protection
-  return true;
-#if (defined(RELEASE) && defined(WIN32) && (!defined(LASERLOCK)))
-
-#ifdef GAMEGAUGE
-  return true;
-#endif
-
-  checksum = 0x2bad4b0b;
-  const unsigned int altsums[5] = {0, 734315313, 732785576, 0, 0};   // South American	& EU NO-LL
-  const unsigned int altsums_b[5] = {0, 734427847, 732785576, 0, 0}; // US 1.2 installable version
-  //
-#ifndef OEM
-  const unsigned int validsums[5] = {0, 734382075, 732785576, 0, 0}; // US D3
-  // const unsigned int validsums[5] = {0,734316207,732784682,0,0};????
-
-#else
-  const unsigned int validsums[5] = {0, 734315450, 0, 0, 0};
-#endif
-
-#ifdef OEM
-  if (cd != 1) {
-    // MessageBox(NULL,"Wrong disk!","Grr...",MB_OK);
-    return false;
-  }
-#else
-  if (cd == 3) {
-    // DVD==no protection
-    return true;
-  }
-
-  if ((cd != 2) && (cd != 1)) {
-    // MessageBox(NULL,"Wrong disk!","Grr...",MB_OK);
-    return false;
-  }
-#endif
-  const char *p = GetCDVolume(cd);
-  if (*p) {
-    DWORD SectorsPerCluster;     // sectors per cluster
-    DWORD BytesPerSector;        // bytes per sector
-    DWORD NumberOfFreeClusters;  // number of free clusters
-    DWORD TotalNumberOfClusters; // total number of clusters
-
-    DoADir(p, "*.*");
-
-    if (GetDiskFreeSpace(p, &SectorsPerCluster, &BytesPerSector, &NumberOfFreeClusters, &TotalNumberOfClusters)) {
-      // Check that we used enough clusters!
-      int a = SectorsPerCluster * BytesPerSector * TotalNumberOfClusters;
-      // Look for a non-overburned cd
-      if (a < 696000000) {
-        // char dbg[300];
-        // snprintf(dbg,sizeof(dbg),"Disk too small (%d).",a);
-        // MessageBox(NULL,dbg,"Grr...",MB_OK);
-        return false;
-      }
-    } else {
-      // char dbg[300];
-      // snprintf(dbg,sizeof(dbg),"Can't get disk info. (%s).",p);
-      // MessageBox(NULL,dbg,"Grr...",MB_OK);
-      return false;
-    }
-  }
-  if ((checksum == validsums[cd]) || (checksum == altsums[cd]) || (checksum == altsums_b[cd]))
-    return true;
-  // MessageBox(NULL,"Bad Checksum.","Grr...",MB_OK);
-  return false;
-#else
-  return true;
-#endif
-}
-
-// lame copy protection
-#if (defined(RELEASE) && defined(WIN32) && (!defined(LASERLOCK)))
-
-void AddStringToChecksum(char *str) {
-  unsigned int localsum = 0;
-
-  int len = strlen(str);
-  localsum = len;
-  for (int i = 0; i < len; i++) {
-    localsum += str[i];
-  }
-  checksum += localsum;
-}
-
-int DoADir(const char *patternp, const char *patternn) {
-  char patternw[_MAX_PATH];
-  char npatternp[_MAX_PATH];
-  int mfiles;
-  int have_subs;
-  int nfiles;
-  struct _finddata_t fileinfo;
-
-  strcpy(patternw, patternp);
-  if (patternp[strlen(patternp) - 1] != '\\')
-    strcat(patternw, "\\");
-
-  strcat(patternw, patternn);
-
-  mfiles = 0;
-  have_subs = 0;
-
-  int isearchhandle = _findfirst(patternw, &fileinfo);
-  if (isearchhandle) {
-    do {
-      // Add this file to the checksum
-
-      // Always use lower case
-      char lowerfile[_MAX_PATH];
-      strcpy(lowerfile, fileinfo.name);
-      int slen = strlen(lowerfile);
-      for (int b = 0; b < slen; b++)
-        lowerfile[b] = tolower(lowerfile[b]);
-
-      char *n = lowerfile;
-      // Don't use any strings that start with a dot or 'free' (as in 'freespacemovie.exe')
-      if ((n[0] != '.') && (!((n[0] == 'f') && (n[1] == 'r') && (n[2] == 'e') && (n[3] == 'e'))) &&
-          (!((n[0] == 'i') && (n[1] == ' ') && (n[2] == 'w') && (n[3] == 'a')))
-
-      )
-        AddStringToChecksum(lowerfile);
-      if (fileinfo.attrib & _A_SUBDIR) // subdirectory
-      {
-        if (fileinfo.name[0] != '.') // ignore . and ..
-          have_subs = 1;
-      }
-    } while (!_findnext(isearchhandle, &fileinfo));
-  }
-  if (have_subs) {
-    int isearchhandle2 = _findfirst(patternw, &fileinfo);
-    if (isearchhandle2) {
-      do {
-        if (fileinfo.attrib & _A_SUBDIR) // subdirectory
-        {
-          if (fileinfo.name[0] != '.') // ignore . and ..
-          {
-            strcpy(npatternp, patternp);
-            if (patternp[strlen(patternp) - 1] != '\\')
-              strcat(npatternp, "\\");
-            strcat(npatternp, fileinfo.name);
-            nfiles = DoADir(npatternp, patternn);
-
-            if (nfiles >= 0)
-              mfiles += nfiles;
-            else {
-              mfiles -= nfiles;
-              return (-mfiles); // error return
-            }
-          }
-        }
-      } while (!_findnext(isearchhandle2, &fileinfo));
-    }
-  }
-
-  return mfiles;
-}
-
-#endif

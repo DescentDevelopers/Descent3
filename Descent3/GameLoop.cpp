@@ -927,20 +927,9 @@ bool Rendering_main_view = false;
 bool Skip_render_game_frame = false;
 bool Menu_interface_mode = false;
 
-// #ifdef GAMEGAUGE
 int frames_one_second = 0;
 int min_one_second = 0x7fffffff;
 int max_one_second = 0;
-float gamegauge_start_time;
-int gamegauge_total_frame_seconds = 0;
-int gamegauge_total_frames = 0;
-float gamegauge_total_time = 0.0;
-
-short gamegauge_fpslog[GAMEGAUGE_MAX_LOG];
-
-bool Game_gauge_do_time_test = false;
-char Game_gauge_usefile[_MAX_PATH] = "gg.dem";
-// #endif
 
 longlong last_timer = 0;
 
@@ -2409,14 +2398,6 @@ void DemoCheats(int key);
 // Get and handle all pending keys
 void ProcessKeys() {
   int key;
-#ifdef GAMEGAUGE
-  if (1)
-#else
-  if (Game_gauge_do_time_test)
-#endif
-  {
-    return;
-  }
 
   if (Dedicated_server)
     return; // No key processing for dedicated server!
@@ -2697,10 +2678,8 @@ void GameRenderFrame(void) {
 
   // Increment frame count
   FrameCount++;
-  // #ifdef GAMEGAUGE
   frames_one_second++;
-  gamegauge_total_frames++;
-  // #endif
+
   //  Update our glows
   PostUpdateAllLightGlows();
 
@@ -2796,30 +2775,6 @@ void CalcFrameTime(void) {
   }
   Frames_counted++;
   Avg_frametime += (Frametime - Demo_frame_ofs);
-#ifdef GAMEGAUGE
-  if (1)
-#else
-  if (Game_gauge_do_time_test)
-#endif
-  {
-    if (gamegauge_total_frames == 0)
-      gamegauge_start_time = timer_GetTime();
-    if ((timer_GetTime() - gamegauge_start_time) > 1.0) {
-      // Skip the first frame, it's always more than one second
-      if (gamegauge_total_frames > 1) {
-        if (frames_one_second < min_one_second)
-          min_one_second = frames_one_second;
-        if (frames_one_second > max_one_second)
-          max_one_second = frames_one_second;
-        if (gamegauge_total_frame_seconds < GAMEGAUGE_MAX_LOG)
-          gamegauge_fpslog[gamegauge_total_frame_seconds] = frames_one_second;
-      }
-      gamegauge_total_frame_seconds++;
-      frames_one_second = 0;
-      gamegauge_start_time = timer_GetTime();
-    }
-    gamegauge_total_time += Frametime;
-  }
 }
 
 //	called before first call to StopTime, StartTime or CalcFrameTime

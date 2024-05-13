@@ -426,7 +426,6 @@ oeAppDatabase *Database = NULL; // Application database.
 
 bool Descent_overrided_intro = false;
 
-extern bool Game_gauge_do_time_test;
 bool Katmai = true;
 
 char Descent3_temp_directory[_MAX_PATH]; // temp directory to put temp files
@@ -548,16 +547,7 @@ void Descent3() {
     // Init a bunch more stuff
     InitD3Systems2(false);
 
-#ifdef GAMEGAUGE
-    if (0)
-#else
-    if (!Game_gauge_do_time_test)
-#endif
-    {
-      SetFunctionMode(MENU_MODE);
-    } else {
-      SetFunctionMode(GAMEGAUGE_MODE);
-    }
+    SetFunctionMode(MENU_MODE);
 
     MainLoop();
 
@@ -577,14 +567,9 @@ void Descent3() {
 //		Otherwise this should be called from the main function.
 //	---------------------------------------------------------------------------
 
-// #ifdef GAMEGAUGE
 extern int frames_one_second;
 extern int min_one_second;
 extern int max_one_second;
-extern float gamegauge_start_time;
-extern int gamegauge_total_frames;
-extern float gamegauge_total_time;
-extern short gamegauge_fpslog[GAMEGAUGE_MAX_LOG];
 
 // #endif
 
@@ -619,16 +604,8 @@ void MainLoop() {
       Credits_Display();
       Function_mode = MENU_MODE;
       break;
-      // #ifdef GAMEGAUGE
-    case GAMEGAUGE_MODE: {
-      int c;
-      for (c = 0; c < GAMEGAUGE_MAX_LOG; c++)
-        gamegauge_fpslog[c] = 0;
-      SetGameState(GAMESTATE_GAMEGAUGEDEMO);
-      PlayGame();
-      // exit_game = 1;
-    } break;
-    // #endif
+    case GAMEGAUGE_MODE:
+      break;
 #ifdef EDITOR
     case EDITOR_GAME_MODE: // run level and then instead of menus, go to editor.
       QuickPlayGame();
@@ -652,33 +629,6 @@ void MainLoop() {
     Players[a].counter_measures.Reset(false, INVRESET_ALL);
   }
 
-#ifdef GAMEGAUGE
-  if (1)
-#else
-  if (Game_gauge_do_time_test)
-#endif
-  {
-    char fpsfile[_MAX_PATH * 2];
-    CFILE *cfp;
-    ddio_MakePath(fpsfile, Base_directory, "fps.txt", NULL);
-    cfp = cfopen(fpsfile, "wt");
-    if (cfp) {
-      char szline[200];
-      snprintf(szline, sizeof(szline), "%.2f Descent3 v%d.%d", gamegauge_total_frames / gamegauge_total_time,
-               (int)Program_version.major, (int)Program_version.minor);
-      cf_WriteString(cfp, szline);
-      snprintf(szline, sizeof(szline), "%d Min", min_one_second);
-      cf_WriteString(cfp, szline);
-      snprintf(szline, sizeof(szline), "%d Max", max_one_second);
-      cf_WriteString(cfp, szline);
-      for (int b = 1; ((b < GAMEGAUGE_MAX_LOG) && (gamegauge_fpslog[b])); b++) {
-        snprintf(szline, sizeof(szline), "%d Second %d", gamegauge_fpslog[b], b);
-        cf_WriteString(cfp, szline);
-      }
-
-      cfclose(cfp);
-    }
-  }
 #if defined(OEM)
   if (!Dedicated_server)
     ShowStaticScreen("oemupsell.ogf");

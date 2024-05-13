@@ -104,7 +104,7 @@ static CFILE *open_file_in_lib(const char *filename);
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const char *libname) {
   FILE *fp;
-  char id[4];
+  char id[HOG_TAG_LEN];
   int i, offset;
   library *lib;
   static int first_time = 1;
@@ -147,8 +147,7 @@ int cf_OpenLibrary(const char *libname) {
     mem_free(lib);
     return 0; // CF_NO_FILE;
   }
-  fread(id, strlen(HOG_TAG_STR), 1, fp);
-  if (strncmp(id, HOG_TAG_STR, strlen(HOG_TAG_STR))) {
+  if (!fread(id, HOG_TAG_LEN, 1, fp) || strncmp(id, HOG_TAG_STR, HOG_TAG_LEN)) {
     fclose(fp);
     mem_free(lib);
     return 0; // CF_BAD_FILE;
@@ -179,7 +178,7 @@ int cf_OpenLibrary(const char *libname) {
   // DAJ	offset = INTEL_INT(header.file_data_offset);
   offset = header.file_data_offset;
   // Go to index start
-  fseek(fp, strlen(HOG_TAG_STR) + HOG_HDR_SIZE, SEEK_SET);
+  fseek(fp, HOG_TAG_LEN + HOG_HDR_SIZE, SEEK_SET);
 
   // read in index table
   for (i = 0; i < lib->nfiles; i++) {

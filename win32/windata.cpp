@@ -161,11 +161,6 @@ bool oeWin32AppDatabase::read(const char *label, char *entry, int *entrylen) {
   assert(entry != NULL);
   assert(entrylen != NULL);
 
-#ifdef GAMEGAUGE
-  // We don't want to read the registry for game gauge
-  return 0;
-#endif
-
   lres = RegQueryValueEx((HKEY)hCurKey, label, NULL, &type, (LPBYTE)entry, (LPDWORD)entrylen);
 
   assert(type != REG_DWORD);
@@ -187,11 +182,6 @@ bool oeWin32AppDatabase::read(const char *label, void *entry, int wordsize) {
   assert(hBaseKey);
   assert(label != NULL);
   assert(entry != NULL);
-
-#ifdef GAMEGAUGE
-  // We don't want to read the registry for game gauge
-  return 0;
-#endif
 
   lres = RegQueryValueEx((HKEY)hCurKey, label, NULL, &type, (LPBYTE)&t, &len);
 
@@ -224,11 +214,6 @@ bool oeWin32AppDatabase::read(const char *label, void *entry, int wordsize) {
 
 bool oeWin32AppDatabase::read(const char *label, bool *entry) {
   int t;
-
-#ifdef GAMEGAUGE
-  // We don't want to read the registry for game gauge
-  return 0;
-#endif
 
   if (read(label, &t, sizeof(t))) {
     *entry = (t != 0);

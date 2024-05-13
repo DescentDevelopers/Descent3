@@ -94,7 +94,6 @@ static cmdLineArg d3ArgTable[] = {
     {"deadzone0", 'D', "Specify a joystick deadzone (0.0 to 1.0)"},
 
     {"gspyfile", 'S', "Specify a GameSpy config file."},
-    {"timetest", 'T', "Run a demo benchmark."},
     {"fastdemo", 'Q', "Run demos as fast as possible."},
     {"framecap", 'F', "Specify a framecap (for dedicated server)."},
 

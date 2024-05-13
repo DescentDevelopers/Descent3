@@ -65,6 +65,7 @@
 
 #define HOG_HDR_SIZE (64)
 #define HOG_TAG_STR "HOG2"
+#define HOG_TAG_LEN (4)
 #define HOG_FILENAME_LEN (36)
 
 typedef struct tHogHeader {
