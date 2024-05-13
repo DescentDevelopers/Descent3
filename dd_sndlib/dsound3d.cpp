@@ -418,9 +418,6 @@ bool sb_stream_element_init(sound_buffer_info *sb, char *sample_ptr, int sound_l
 void sb_stream_element_kill(sound_buffer_info *sb) {
   if (sb->m_status & SSF_BUFFERED_STRM) {
     if (sb->s->hEvent) {
-      // if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-      //	A3D_SetSourceWaveEvent(sb->m_snd_obj, 0, NULL);
-      //}
       CloseHandle(sb->s->hEvent);
       sb->s->hEvent = NULL;
     }
@@ -561,26 +558,6 @@ void sb_buffered_loop_step(win_llsSystem *lls, sound_buffer_info *sb, int force_
 
   // get current properties.
   old_pan = 0;
-#ifdef SUPPORT_AUREAL
-  if (lls->m_mixer_type == SOUND_MIXER_AUREAL) {
-    matrix old_orient;
-    vector old_pos, old_vel;
-    old_volume = A3D_GetSourceVolume(sb->m_snd_obj);
-
-    if (sb->m_buffer_type == SBT_3D) {
-      A3D_GetSourceVelocity(sb->m_snd_obj, &old_vel);
-      A3D_GetSourcePosition(sb->m_snd_obj, &old_pos);
-      A3D_GetSourceOrientation(sb->m_snd_obj, &old_orient);
-      old_pos_state.orient = &old_orient;
-      old_pos_state.position = &old_pos;
-      old_pos_state.velocity = &old_vel;
-    } else {
-      float lpan, rpan;
-      A3D_GetSourcePan(sb->m_snd_obj, &lpan, &rpan);
-      old_pan = rpan - lpan;
-    }
-  }
-#endif
 
   // advance to next step.
   sound_length = 0;

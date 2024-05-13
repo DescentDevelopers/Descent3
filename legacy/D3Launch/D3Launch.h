@@ -175,7 +175,6 @@
 //#define DEMO2
 //#define OEM_GENERIC
 //#define OEM_VOODOO3
-//#define OEM_AUREAL2
 //#define OEM_KATMAI
 //#define FULL_US_RELEASE
 #define FULL_ROW_RELEASE

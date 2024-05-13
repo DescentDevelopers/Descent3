@@ -207,8 +207,6 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
   lstrcat(m_Basepath, "\\Descent3Demo2");
 #elif defined(OEM_V3)
   lstrcat(m_Basepath, "\\Descent3_OEM_V3");
-#elif defined(OEM_AUREAL2)
-  lstrcat(m_Basepath, "\\Descent3_OEM_A2");
 #elif defined(OEM_KATMAI)
   lstrcat(m_Basepath, "\\Descent3_OEM_KM");
 #elif defined(OEM)

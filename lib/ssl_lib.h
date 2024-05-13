@@ -343,7 +343,7 @@ typedef struct sound_info {
 #define SOUND_MIXER_DS_16 1
 #define SOUND_MIXER_DS_8 2
 #define SOUND_MIXER_DS3D_16 3
-#define SOUND_MIXER_AUREAL 4
+#define SOUND_MIXER_AUREAL 4       // Unused, outdated 3D sound technology
 #define SOUND_MIXER_CREATIVE_EAX 6 // switched because launcher uses 5 as NONE.
 #define SOUND_MIXER_NONE 5
 

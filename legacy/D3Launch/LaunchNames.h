@@ -149,9 +149,6 @@
 #elif defined(OEM_VOODOO3)
 #define CD1_VOLUME_NAME		"D3OEM_1"
 #define CD2_VOLUME_NAME		"D3OEM_2"
-#elif defined(OEM_AUREAL2)
-#define CD1_VOLUME_NAME		"D3OEM_1"
-#define CD2_VOLUME_NAME		"D3OEM_2"
 #elif defined(OEM_KATMAI)
 #define CD1_VOLUME_NAME		"D3OEM_1"
 #define CD2_VOLUME_NAME		"D3OEM_2"
@@ -194,12 +191,6 @@
 #define HELP_CNT_FNAME			"Descent 3 SOL ASCENT.cnt"
 #define HELP_GID_FNAME			"DESCENT 3 SOL ASCENT.GID"
 #define HELP_FTS_FNAME			"DESCENT 3 SOL ASCENT.FTS"
-#elif defined(OEM_AUREAL2)
-#define LAUNCHER_FNAME			"Descent 3 SOL ASCENT for Aureal.exe"
-#define HELP_HLP_FNAME			"Descent 3 SOL ASCENT for Aureal.hlp"
-#define HELP_CNT_FNAME			"Descent 3 SOL ASCENT for Aureal.cnt"
-#define HELP_GID_FNAME			"DESCENT 3 SOL ASCENT FOR AUREAL.GID"
-#define HELP_FTS_FNAME			"DESCENT 3 SOL ASCENT FOR AUREAL.FTS"
 #elif defined(OEM_KATMAI)
 #define LAUNCHER_FNAME			"Descent 3 SOL ASCENT for Pentium III.exe"
 #define HELP_HLP_FNAME			"Descent 3 SOL ASCENT for Pentium III.hlp"
@@ -250,9 +241,6 @@
 #elif defined(OEM_VOODOO3)
 #define MOTD_PATH		"http://www.outrage.com/update/descent3_oem_v3/motd.txt"
 #define VERSION_PATH	"http://www.outrage.com/update/descent3_oem_v3/version.nfo"
-#elif defined(OEM_AUREAL2)
-#define MOTD_PATH		"http://www.outrage.com/update/descent3_oem_a2/motd.txt"
-#define VERSION_PATH	"http://www.outrage.com/update/descent3_oem_a2/version.nfo"
 #elif defined(OEM_KATMAI)
 #define MOTD_PATH		"http://www.outrage.com/update/descent3_oem_km/motd.txt"
 #define VERSION_PATH	"http://www.outrage.com/update/descent3_oem_km/version.nfo"
@@ -297,8 +285,6 @@
 #define UNINSTALL_PATH "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3_OEM"
 #elif defined(OEM_VOODOO3)
 #define UNINSTALL_PATH "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3_OEM_V3"
-#elif defined(OEM_AUREAL2)
-#define UNINSTALL_PATH "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3_OEM_A2"
 #elif defined(OEM_KATMAI)
 #define UNINSTALL_PATH "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Descent3_OEM_KM"
 #else
@@ -316,8 +302,6 @@
 #define REG_APP_NAME			"Descent3_OEM";
 #elif defined(OEM_VOODOO3)
 #define REG_APP_NAME			"Descent3_OEM_V3";
-#elif defined(OEM_AUREAL2)
-#define REG_APP_NAME			"Descent3_OEM_A2";
 #elif defined(OEM_KATMAI)
 #define REG_APP_NAME			"Descent3_OEM_KM";
 #elif defined(GAMEGAUGE)

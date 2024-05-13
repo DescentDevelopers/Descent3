@@ -508,7 +508,7 @@ BOOL CD3LaunchDlg::OnInitDialog()
 		MessageBox(dd_msg,dd_title,MB_OK | MB_ICONEXCLAMATION);
 	}
 
-#if (!defined(DEMO) && !defined(DEMO2) && !defined(OEM_VOODOO3) && !defined(OEM_AUREAL2) && !defined(OEM_KATMAI))
+#if (!defined(DEMO) && !defined(DEMO2) && !defined(OEM_VOODOO3) && !defined(OEM_KATMAI))
 	// Startup the registration app
 	if(EregEnabled) {
 		Register(TRUE);
@@ -731,7 +731,7 @@ void CD3LaunchDlg::OnBtnReadme()
 	// Play button pressed sound
 	PlaySound("NormalBtnPressedSnd",TRUE,FALSE);
 
-#if (defined(DEMO)||defined(DEMO2)||defined(OEM_GENERIC)||defined(OEM_VOODOO3)||defined(OEM_AUREAL2)||defined(OEM_KATMAI))
+#if (defined(DEMO)||defined(DEMO2)||defined(OEM_GENERIC)||defined(OEM_VOODOO3)||defined(OEM_KATMAI))
 	// Make sure readme.txt file exist
 	if( _access("readme.txt",0x00) == -1) {	// does new executable exist?
 		CString readme_msg, readme_title;
@@ -891,7 +891,7 @@ void CD3LaunchDlg::OnBtnPlay()
 		low_mem_switch="-lowmem";
 	}
 
-#if (defined(OEM_VOODOO3) || defined(OEM_AUREAL2) || defined(OEM_KATMAI))
+#if (defined(OEM_VOODOO3) || defined(OEM_KATMAI))
 	// Display the update recommendation message 
 	if(os_config_read_uint(NULL,"UpdatePromptShown",0)==0) {
 		os_config_write_uint(NULL,"UpdatePromptShown",1);
