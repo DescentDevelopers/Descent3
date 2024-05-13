@@ -913,18 +913,18 @@ $$END
 //
 
 #define MAX_USER_VARS 25 // make sure this value matches the USERTYPE definition
-float User_vars[MAX_USER_VARS];
+static float User_vars[MAX_USER_VARS];
 
 #define MAX_SPEW_HANDLES 50 // make sure this value matches the USERTYPE definition
-int Spew_handles[MAX_SPEW_HANDLES];
+static int Spew_handles[MAX_SPEW_HANDLES];
 
 #define MAX_SOUND_HANDLES 10 // make sure this value matches the USERTYPE definition
-int Sound_handles[MAX_SOUND_HANDLES];
+static int Sound_handles[MAX_SOUND_HANDLES];
 
 #define MAX_SAVED_OBJECT_HANDLES 20 // make sure this value matches the USERTYPE definition
-int Saved_object_handles[MAX_SAVED_OBJECT_HANDLES];
+static int Saved_object_handles[MAX_SAVED_OBJECT_HANDLES];
 
-int User_flags;
+static int User_flags;
 
 class cPositionClipboard {
 public:
@@ -934,7 +934,7 @@ public:
   vector pos;
   matrix orient;
 };
-cPositionClipboard PositionClipboard;
+static cPositionClipboard PositionClipboard;
 
 #define SOUND_INVALID_HANDLE -1
 #define SPEW_INVALID_HANDLE -1
@@ -959,7 +959,7 @@ $$USERTYPE SavedObjectSlot:19
 //
 
 // Initialize vars
-void dfInit() {
+static void dfInit() {
   int i;
 
   for (i = 0; i < MAX_SPEW_HANDLES; i++)
@@ -978,7 +978,7 @@ void dfInit() {
 }
 
 // Save vars
-void dfSave(void *fileptr) {
+static void dfSave(void *fileptr) {
   int i;
 
   for (i = 0; i < MAX_SPEW_HANDLES; i++)
@@ -1012,7 +1012,7 @@ void dfSave(void *fileptr) {
 }
 
 // Restore vars
-void dfRestore(void *fileptr) {
+static void dfRestore(void *fileptr) {
   int i;
 
   for (i = 0; i < MAX_SPEW_HANDLES; i++)
@@ -1045,7 +1045,7 @@ void dfRestore(void *fileptr) {
   PositionClipboard.orient.rvec.z = File_ReadFloat(fileptr);
 }
 
-int dfGetPlayer(int objhandle) {
+static int dfGetPlayer(int objhandle) {
   msafe_struct mstruct;
   mstruct.objhandle = objhandle;
   MSafe_GetValue(MSAFE_OBJECT_TYPE, &mstruct);
@@ -1087,7 +1087,7 @@ Parameters:
   PortalNum:  The portal number of the forcefield
 $$END
 */
-void aPortalRenderSet(int state, int portalnum, int roomnum, bool doublesided) {
+static void aPortalRenderSet(int state, int portalnum, int roomnum, bool doublesided) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -1111,7 +1111,7 @@ Parameters:
   PortalNum:  The portal number of the blockage
 $$END
 */
-void aPortalBlockageSet(int state, int portalnum, int roomnum) {
+static void aPortalBlockageSet(int state, int portalnum, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -1134,7 +1134,7 @@ Parameters:
   PortalNum:  The portal number of the forcefield
 $$END
 */
-void aPortalRenderToggle(int portalnum, int roomnum, bool doublesided) {
+static void aPortalRenderToggle(int portalnum, int roomnum, bool doublesided) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -1160,7 +1160,7 @@ Parameters:
   Room:  The room the forcefield is in
 $$END
 */
-void aPortalBreakGlass(int portalnum, int roomnum) {
+static void aPortalBreakGlass(int portalnum, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -1194,7 +1194,7 @@ Parameters:
   Damage: the damage rate, in shield units per second
 $$END
 */
-void aRoomSetDamage(int roomnum, float damage, int soundtype) {
+static void aRoomSetDamage(int roomnum, float damage, int soundtype) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -1216,7 +1216,7 @@ Parameters:
   Message:  The message to show
 $$END
 */
-void aShowHUDMessage(const char *format, ...) {
+static void aShowHUDMessage(const char *format, ...) {
 #if defined(__LINUX__)
 #define _vsnprintf vsnprintf
 #endif
@@ -1246,7 +1246,7 @@ Parameters:
   PlayerObject: The player who sees the object
 $$END
 */
-void aShowHUDMessageObj(const char *format, int objhandle, ...) {
+static void aShowHUDMessageObj(const char *format, int objhandle, ...) {
   msafe_struct mstruct;
   va_list args;
 
@@ -1276,7 +1276,7 @@ Parameters:
   Message:  The message to show
 $$END
 */
-void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ...) {
+static void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ...) {
   msafe_struct mstruct;
   va_list args;
 
@@ -1306,7 +1306,7 @@ Parameters:
   PlayerObject: The player who sees the object
 $$END
 */
-void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format, int objhandle, ...) {
+static void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format, int objhandle, ...) {
   msafe_struct mstruct;
   va_list args;
 
@@ -1334,7 +1334,7 @@ Parameters:
   HUDMessage: The message that's displayed on the HUD
 $$END
 */
-void aAddGameMessage(const char *game_message, const char *hud_message) {
+static void aAddGameMessage(const char *game_message, const char *hud_message) {
   msafe_struct mstruct;
 
   strncpy(mstruct.message, game_message, sizeof(mstruct.message));
@@ -1402,7 +1402,7 @@ Parameters:
   ??
 $$END
 */
-void aSnowTurnOn(float density) {
+static void aSnowTurnOn(float density) {
   msafe_struct mstruct;
 
   mstruct.scalar = density;
@@ -1423,7 +1423,7 @@ Parameters:
   None
 $$END
 */
-void aSnowTurnOff() {
+static void aSnowTurnOff() {
   msafe_struct mstruct;
 
   mstruct.state = false;
@@ -1444,7 +1444,7 @@ Parameters:
   Probability:  The chance of creating lightning at each check
 $$END
 */
-void aLightningTurnOn(float check_delay, float prob) {
+static void aLightningTurnOn(float check_delay, float prob) {
   msafe_struct mstruct;
 
   mstruct.state = true;
@@ -1466,7 +1466,7 @@ Parameters:
   None
 $$END
 */
-void aLightningTurnOff() {
+static void aLightningTurnOff() {
   msafe_struct mstruct;
 
   mstruct.state = false;
@@ -1494,8 +1494,9 @@ Parameters:
   AutoTile - For automatic UV tiling based on the length of the bolt
 $$END
 */
-void aLightningCreate(int objhandle1, int objhandle2, float lifetime, float thickness, int numtiles, int texture_id,
-                      float slidetime, int timesdrawn, int red, int green, int blue, bool autotile) {
+static void aLightningCreate(int objhandle1, int objhandle2, float lifetime, float thickness, int numtiles,
+                             int texture_id, float slidetime, int timesdrawn, int red, int green, int blue,
+                             bool autotile) {
   msafe_struct mstruct;
   int type;
 
@@ -1553,9 +1554,9 @@ Parameters:
   AutoTile - For automatic UV tiling based on the length of the bolt
 $$END
 */
-void aLightningCreateGunpoints(int gunpoint1, int gunpoint2, int objhandle, float lifetime, float thickness,
-                               int numtiles, int texture_id, float slidetime, int timesdrawn, int red, int green,
-                               int blue, bool autotile) {
+static void aLightningCreateGunpoints(int gunpoint1, int gunpoint2, int objhandle, float lifetime, float thickness,
+                                      int numtiles, int texture_id, float slidetime, int timesdrawn, int red, int green,
+                                      int blue, bool autotile) {
   msafe_struct mstruct;
   int type;
 
@@ -1599,7 +1600,7 @@ Parameters:
   True/False: What to set the flag to
 $$END
 */
-void aUserFlagSet(int flagnum, bool state) {
+static void aUserFlagSet(int flagnum, bool state) {
   if ((flagnum >= 0) && (flagnum < 32)) {
     int bit = 1 << flagnum;
     if (state)
@@ -1622,7 +1623,7 @@ Parameters:
   Value: The value assigned to the variable
 $$END
 */
-void aUserVarSet(int varnum, float value) {
+static void aUserVarSet(int varnum, float value) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     User_vars[varnum] = value;
 }
@@ -1639,7 +1640,7 @@ Parameters:
   UserVar: The variable to increment
 $$END
 */
-void aUserVarInc(int varnum) {
+static void aUserVarInc(int varnum) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     User_vars[varnum]++;
 }
@@ -1656,7 +1657,7 @@ Parameters:
   UserVar: The variable to decrement
 $$END
 */
-void aUserVarDec(int varnum) {
+static void aUserVarDec(int varnum) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     User_vars[varnum]--;
 }
@@ -1674,7 +1675,7 @@ Parameters:
   UserVar: The variable to be modified
 $$END
 */
-void aUserVarAdd(float value, int varnum) {
+static void aUserVarAdd(float value, int varnum) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     User_vars[varnum] += value;
 }
@@ -1692,7 +1693,7 @@ Parameters:
   UserVar: The variable to be modified
 $$END
 */
-void aUserVarSub(float value, int varnum) {
+static void aUserVarSub(float value, int varnum) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     User_vars[varnum] -= value;
 }
@@ -1716,7 +1717,7 @@ Parameters:
   DoorName: the object name of the door to be locked or unlocked
 $$END
 */
-void aDoorLockUnlock(int state, int objref) {
+static void aDoorLockUnlock(int state, int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1737,7 +1738,7 @@ Parameters:
   Door: the object of the door to be activated
 $$END
 */
-void aDoorActivate(int objref) {
+static void aDoorActivate(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1758,7 +1759,7 @@ Parameters:
   Position: the position of the door, with 0% being fully closed and 100% fully open
 $$END
 */
-void aDoorSetPos(int objhandle, float pos) {
+static void aDoorSetPos(int objhandle, float pos) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -1779,7 +1780,7 @@ Parameters:
   Door: the object of the door to stop
 $$END
 */
-void aDoorStop(int objhandle) {
+static void aDoorStop(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -1801,7 +1802,7 @@ Parameters:
   Zoom: the relative zoom of the viewer camera. 1.0 is the normal zoom.
 $$END
 */
-void aCreatePopupView(int gunpoint, int objref, float time, float zoom) {
+static void aCreatePopupView(int gunpoint, int objref, float time, float zoom) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1823,7 +1824,7 @@ Parameters:
   None.
 $$END
 */
-void aClosePopupView() { MSafe_CallFunction(MSAFE_MISC_CLOSE_POPUP, NULL); }
+static void aClosePopupView() { MSafe_CallFunction(MSAFE_MISC_CLOSE_POPUP, NULL); }
 
 /*
 $$ACTION
@@ -1838,7 +1839,7 @@ Parameters:
   Shields: the value to assign to the object's shields
 $$END
 */
-void aObjSetShields(int objref, float shields) {
+static void aObjSetShields(int objref, float shields) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1860,7 +1861,7 @@ Parameters:
   Energy: the value to assign to the object's energy
 $$END
 */
-void aObjSetEnergy(int objref, float energy) {
+static void aObjSetEnergy(int objref, float energy) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1883,7 +1884,7 @@ Parameters:
   Looping: if true, animation repeats.  If false, animation plays once
 $$END
 */
-void aObjPlayAnim(int objref, int startframe, int endframe, float cycletime, bool looping) {
+static void aObjPlayAnim(int objref, int startframe, int endframe, float cycletime, bool looping) {
   int flags = 0;
 
   if (looping)
@@ -1905,7 +1906,7 @@ Parameters:
   DamageAmount:  how much damage to apply to the object (scaled by difficulty level)
 $$END
 */
-void aObjApplyDamage(int objref, float damage) {
+static void aObjApplyDamage(int objref, float damage) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1964,7 +1965,7 @@ Parameters:
   Object: the object to kill
 $$END
 */
-void aObjKill(int objhandle, int delay_type, int expl_size, int death_flags, float min_delay, float max_delay) {
+static void aObjKill(int objhandle, int delay_type, int expl_size, int death_flags, float min_delay, float max_delay) {
   death_flags |= (expl_size << DF_EXPL_SIZE_SHIFT);
 
   if (delay_type == 2)
@@ -1988,7 +1989,7 @@ Parameters:
   Object: the object to kill
 $$END
 */
-void aObjDestroy(int objhandle) { Obj_Kill(objhandle, OBJECT_HANDLE_NONE, 1000.0f, -1, 0.0, 0.0); }
+static void aObjDestroy(int objhandle) { Obj_Kill(objhandle, OBJECT_HANDLE_NONE, 1000.0f, -1, 0.0, 0.0); }
 
 /*
 $$ACTION
@@ -2002,7 +2003,7 @@ Parameters:
   Object: the object to delete
 $$END
 */
-void aObjDelete(int objhandle) {
+static void aObjDelete(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -2024,7 +2025,7 @@ Parameters:
   Distance: how far the light from the object will cast
 $$END
 */
-void aObjSetLightingDist(int objhandle, float dist) {
+static void aObjSetLightingDist(int objhandle, float dist) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -2046,7 +2047,7 @@ Parameters:
   R,G,B: the fog color (0.0 to 1.0 for each of R,G, & B)
 $$END
 */
-void aObjSetLightingColor(int objhandle, float r, float g, float b) {
+static void aObjSetLightingColor(int objhandle, float r, float g, float b) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -2070,7 +2071,7 @@ Parameters:
   Object: the object to set
 $$END
 */
-void aObjGravityEnable(int enable, int objhandle) {
+static void aObjGravityEnable(int enable, int objhandle) {
   int flags = PF_GRAVITY;
 
   Obj_Value(objhandle, enable ? VF_SET_FLAGS : VF_CLEAR_FLAGS, OBJV_I_PHYSICS_FLAGS, &flags);
@@ -2098,7 +2099,9 @@ Parameters:
   MovementType: how this object moves
 $$END
 */
-void aObjSetMovementType(int objhandle, int mtype) { Obj_Value(objhandle, VF_SET, OBJV_C_MOVEMENT_TYPE, &mtype); }
+static void aObjSetMovementType(int objhandle, int mtype) {
+  Obj_Value(objhandle, VF_SET, OBJV_C_MOVEMENT_TYPE, &mtype);
+}
 
 /*
 $$ACTION
@@ -2114,7 +2117,7 @@ Parameters:
   Speed: the speed of the wind (10.0 is faster than the player ship)
 $$END
 */
-void aObjSetVelocity(int objhandle, float x, float y, float z, float speed) {
+static void aObjSetVelocity(int objhandle, float x, float y, float z, float speed) {
   vector velocity;
 
   velocity.x = x * speed;
@@ -2137,7 +2140,7 @@ Parameters:
   Room: the room to set
 $$END
 */
-void aRoomSetLightingStrobe(int state, int roomnum) {
+static void aRoomSetLightingStrobe(int state, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -2159,7 +2162,7 @@ Parameters:
   Room: the room to set
 $$END
 */
-void aRoomSetLightingFlicker(int state, int roomnum) {
+static void aRoomSetLightingFlicker(int state, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -2181,7 +2184,7 @@ Parameters:
   Room: the room to set
 $$END
 */
-void aRoomSetFuelcen(int state, int roomnum) {
+static void aRoomSetFuelcen(int state, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -2204,7 +2207,7 @@ Parameters:
   PulseOffset: the time offset for this pulse
 $$END
 */
-void aRoomSetLightingPulse(int roomnum, float time, float offset) {
+static void aRoomSetLightingPulse(int roomnum, float time, float offset) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -2226,7 +2229,7 @@ Parameters:
   Number: which waypoint to set
 $$END
 */
-void aSetWaypoint(int number) {
+static void aSetWaypoint(int number) {
   msafe_struct mstruct;
 
   mstruct.index = number;
@@ -2255,9 +2258,9 @@ speed of each blob spew Randomize: if set than BlobSize, BlobSpeed and BlobLifet
 for each blob SpewHandle: Where to store the handle for this spewer
 $$END
 */
-void aTurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-                 float lifetime, float interval, float longevity, float size, float speed, ubyte random,
-                 int handle_slot) {
+static void aTurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type,
+                        ubyte isreal, float lifetime, float interval, float longevity, float size, float speed,
+                        ubyte random, int handle_slot) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -2292,7 +2295,7 @@ Parameters:
   SpewHandle: the handle of the spewer to stop
 $$END
 */
-void aTurnOffSpew(int handle_slot) {
+static void aTurnOffSpew(int handle_slot) {
   msafe_struct mstruct;
 
   if ((handle_slot >= 0) && (handle_slot < MAX_SPEW_HANDLES)) {
@@ -2315,7 +2318,7 @@ Attach new object of type [a:ChildTypeName] attachpoint [i:ChildPoint] to object
 Parameters:
 $$END
 */
-void aAttachObject(const char *objtypename, int childpoint, int objref, int parentpoint) {
+static void aAttachObject(const char *objtypename, int childpoint, int objref, int parentpoint) {
   int child_handle;
   int child_type = Obj_FindType(objtypename);
   int child_id = Obj_FindID(objtypename);
@@ -2349,7 +2352,7 @@ UnAttach an object from another one
 Parameters:
 $$END
 */
-void aUnAttachObject(int objref) { Obj_UnattachFromParent(objref); }
+static void aUnAttachObject(int objref) { Obj_UnattachFromParent(objref); }
 
 /*
 $$ACTION
@@ -2362,7 +2365,7 @@ Drop attached objects
 Parameters:
 $$END
 */
-void aDropObjects(int objref) { Obj_UnattachChildren(objref); }
+static void aDropObjects(int objref) { Obj_UnattachChildren(objref); }
 
 /*
 $$ACTION
@@ -2375,7 +2378,7 @@ Attach existing object to another object
 Parameters:
 $$END
 */
-void aAttachExistingObject(int child_ref, int childpoint, int objref, int parentpoint) {
+static void aAttachExistingObject(int child_ref, int childpoint, int objref, int parentpoint) {
   if (!Obj_AttachObjectAP(objref, parentpoint, child_ref, childpoint, 1)) {
 
     //!!Error attaching, so delete new object
@@ -2395,7 +2398,7 @@ Parameters:
   PlayerObject: which player gets the music change
 $$END
 */
-void aMusicSetRegion(int region_num, int objhandle) {
+static void aMusicSetRegion(int region_num, int objhandle) {
   msafe_struct mstruct;
 
   mstruct.state = 0; // specific player
@@ -2417,7 +2420,7 @@ Parameters:
   Region: which region is now active
 $$END
 */
-void aMusicSetRegionAll(int region_num) {
+static void aMusicSetRegionAll(int region_num) {
   msafe_struct mstruct;
 
   mstruct.state = 0; // all players
@@ -2440,7 +2443,7 @@ Parameters:
   TimerID: the ID for this timer
 $$END
 */
-void aSetObjectTimer(int objref, float time, int id) {
+static void aSetObjectTimer(int objref, float time, int id) {
   tOSIRISTIMER timer_info;
 
   timer_info.flags = 0;
@@ -2466,7 +2469,7 @@ Parameters:
   TimerID: the ID for this timer
 $$END
 */
-void aSetLevelTimer(float time, int id) {
+static void aSetLevelTimer(float time, int id) {
   tOSIRISTIMER timer_info;
 
   timer_info.flags = OTF_LEVEL;
@@ -2490,7 +2493,7 @@ Parameters:
   TimerID: the ID for this timer
 $$END
 */
-void aCancelTimer(int id) { Scrpt_CancelTimerID(id); }
+static void aCancelTimer(int id) { Scrpt_CancelTimerID(id); }
 
 /*
 $$ACTION
@@ -2504,7 +2507,7 @@ Parameters:
   TimerID: the ID for this timer
 $$END
 */
-void aTimerShow(int id) {
+static void aTimerShow(int id) {
   msafe_struct mstruct;
 
   mstruct.index = id;
@@ -2524,7 +2527,7 @@ Parameters:
   None.
 $$END
 */
-void aEndLevel() {
+static void aEndLevel() {
   msafe_struct mstruct;
 
   mstruct.state = 1; // success
@@ -2543,7 +2546,7 @@ Parameters:
   None.
 $$END
 */
-void aFailLevel() {
+static void aFailLevel() {
   msafe_struct mstruct;
 
   mstruct.state = 0; // failure
@@ -2565,7 +2568,7 @@ Parameters:
   Text: Any text (if any) you want to display (pass empty message if you want none)
 $$END
 */
-void aStartEndlevelSequence(int objhandle, int pathid, float time, const char *text) {
+static void aStartEndlevelSequence(int objhandle, int pathid, float time, const char *text) {
   tCannedCinematicInfo info;
 
   info.object_to_use_for_point = objhandle;
@@ -2591,7 +2594,7 @@ Parameters:
   Text: Any text (if any) you want to display (pass empty message if you want none)
 $$END
 */
-void aStartEndlevelSequencePath(int camerapath, int pathid, float time, const char *text) {
+static void aStartEndlevelSequencePath(int camerapath, int pathid, float time, const char *text) {
   tCannedCinematicInfo info;
 
   info.camera_pathid = camerapath;
@@ -2615,7 +2618,7 @@ Parameters:
   Text: Any text (if any) you want to display (pass empty message if you want none)
 $$END
 */
-void aFadeWhiteAndEndlevel(float time, const char *text) {
+static void aFadeWhiteAndEndlevel(float time, const char *text) {
   tCannedCinematicInfo info;
 
   info.text_to_display = text;
@@ -2637,7 +2640,7 @@ Parameters:
         Player: the player to move
 $$END
 */
-void aFadeAndMovePlayer(int Player) {
+static void aFadeAndMovePlayer(int Player) {
   if (PositionClipboard.has_pos) {
     tCannedCinematicInfo info;
 
@@ -2666,7 +2669,7 @@ Parameters:
   State: the value to set the flag to
 $$END
 */
-void aMissionSetFlag(int flagnum, bool state) { Msn_FlagSet(flagnum, state); }
+static void aMissionSetFlag(int flagnum, bool state) { Msn_FlagSet(flagnum, state); }
 
 /*
 $$ACTION
@@ -2680,7 +2683,7 @@ Parameters:
   State: whether to set or clear the flag
 $$END
 */
-void aMissionSetSecretFlag(bool state) { Msn_FlagSet(32, state); }
+static void aMissionSetSecretFlag(bool state) { Msn_FlagSet(32, state); }
 
 /*
 $$ACTION
@@ -2695,7 +2698,7 @@ Parameters:
   State: the value to set the flag to
 $$END
 */
-void aMissionSetLevelFlag(int flagnum, bool state) {
+static void aMissionSetLevelFlag(int flagnum, bool state) {
   //!!Add code here
 }
 
@@ -2713,7 +2716,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlay2DObj(int soundnum, int objhandle, float volume) {
+static void aSoundPlay2DObj(int soundnum, int objhandle, float volume) {
   msafe_struct mstruct;
 
   mstruct.state = 1; // specific player
@@ -2737,7 +2740,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlay2D(int soundnum, float volume) {
+static void aSoundPlay2D(int soundnum, float volume) {
   msafe_struct mstruct;
 
   mstruct.state = 0; // all players
@@ -2761,7 +2764,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlayObject(int soundnum, int objref, float volume) {
+static void aSoundPlayObject(int soundnum, int objref, float volume) {
   msafe_struct mstruct;
 
   mstruct.index = soundnum;
@@ -2784,7 +2787,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlaySteaming(const char *soundname, float volume) {
+static void aSoundPlaySteaming(const char *soundname, float volume) {
   msafe_struct mstruct;
 
   mstruct.state = 0; // all players
@@ -2824,7 +2827,7 @@ Parameters:
   Volume: how loud to play the sound
 $$END
 */
-void aSoundPlaySteamingObj(const char *soundname, int objhandle, float volume) {
+static void aSoundPlaySteamingObj(const char *soundname, int objhandle, float volume) {
   msafe_struct mstruct;
 
   mstruct.state = 1; // specific player
@@ -2850,7 +2853,7 @@ Parameters:
   Volume - the volume to set
 $$END
 */
-void aSoundVolumeObj(int objhandle, float volume) {
+static void aSoundVolumeObj(int objhandle, float volume) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -2871,7 +2874,7 @@ Parameters:
   Object - the object whose sound to stop
 $$END
 */
-void aSoundStopObj(int objhandle) {
+static void aSoundStopObj(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -2899,7 +2902,7 @@ Parameters:
   Object: the object to ghost or unghost
 $$END
 */
-void aObjGhostSet(int state, int objref) {
+static void aObjGhostSet(int state, int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -2919,7 +2922,7 @@ Parameters:
   Object: the object to hide
 $$END
 */
-void aObjHide(int objref) {
+static void aObjHide(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -2940,7 +2943,7 @@ Parameters:
   Time: how long the object stays invulnerable
 $$END
 */
-void aObjMakeInvuln(int objref, int time) {
+static void aObjMakeInvuln(int objref, int time) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -2963,7 +2966,7 @@ Parameters:
 
 $$END
 */
-void aObjMakeVulnerable(int objref) {
+static void aObjMakeVulnerable(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -2985,7 +2988,7 @@ Parameters:
   Time: how long to deform the object
 $$END
 */
-void aObjDeform(int objhandle, float amount, float time) {
+static void aObjDeform(int objhandle, float amount, float time) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -3009,7 +3012,7 @@ Parameters:
   Time: how long the sparking will last
 $$END
 */
-void aObjSpark(int objhandle, float rate, float time) {
+static void aObjSpark(int objhandle, float rate, float time) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -3031,7 +3034,7 @@ Parameters:
   Amount: how much to shake the viewer (0-100)
 $$END
 */
-void aMiscViewerShake(float amount) {
+static void aMiscViewerShake(float amount) {
   msafe_struct mstruct;
 
   mstruct.amount = amount;
@@ -3053,7 +3056,7 @@ Parameters:
   Dist: how far away the shake can be felt.
 $$END
 */
-void aMiscShakeArea(int objhandle, float amount, float dist) {
+static void aMiscShakeArea(int objhandle, float amount, float dist) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -3077,7 +3080,7 @@ Parameters:
   TextureName: the texture to assign to the specified face
 $$END
 */
-void aRoomSetFaceTexture(int roomnum, int facenum, int texturenum) {
+static void aRoomSetFaceTexture(int roomnum, int facenum, int texturenum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3100,7 +3103,7 @@ Parameters:
   Matcen: the matcen to activate
 $$END
 */
-void aMatcenSetState(int state, int matcen_id) {
+static void aMatcenSetState(int state, int matcen_id) {
   int flags = MSTAT_ACTIVE;
 
   if (matcen_id >= 0)
@@ -3120,7 +3123,7 @@ Parameters:
   Matcen: the matcen to enable or disable
 $$END
 */
-void aMatcenSetEnableState(int state, int matcen_id) {
+static void aMatcenSetEnableState(int state, int matcen_id) {
   int flags = MSTAT_DISABLED;
 
   if (matcen_id >= 0)
@@ -3141,7 +3144,7 @@ Parameters:
   MaxAlive: the maximum number of created object that will be alive at one time, or -1 for no limit
 $$END
 */
-void aMatcenSetValues(int matcen_id, int max_produced, float multiplier, int max_alive) {
+static void aMatcenSetValues(int matcen_id, int max_produced, float multiplier, int max_alive) {
   if (matcen_id >= 0) {
     Matcen_Value(matcen_id, VF_SET, MTNV_I_MAX_PROD, &max_produced, 0);
     Matcen_Value(matcen_id, VF_SET, MTNV_F_PROD_MULTIPLIER, &multiplier, 0);
@@ -3163,7 +3166,7 @@ Parameters:
   Depth:  how deep the fog should be
 $$END
 */
-void aRoomSetFog(int roomnum, float r, float g, float b, float depth) {
+static void aRoomSetFog(int roomnum, float r, float g, float b, float depth) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3188,7 +3191,7 @@ Parameters:
   Time: how long in seconds the change takes
 $$END
 */
-void aRoomChangeFog(int roomnum, float r, float g, float b, float depth, float time) {
+static void aRoomChangeFog(int roomnum, float r, float g, float b, float depth, float time) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3214,7 +3217,7 @@ Parameters:
   Room: the room in which to turn on or off the fog
 $$END
 */
-void aRoomFogSetState(int state, int roomnum) {
+static void aRoomFogSetState(int state, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3235,7 +3238,7 @@ Parameters:
   Room: the room in which to turn off the fog
 $$END
 */
-void aRoomToggleFog(int roomnum) {
+static void aRoomToggleFog(int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3261,7 +3264,7 @@ Parameters:
   Speed: the speed of the wind (10.0 is faster than the player ship)
 $$END
 */
-void aRoomSetWind(int roomnum, float x, float y, float z, float speed) {
+static void aRoomSetWind(int roomnum, float x, float y, float z, float speed) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3288,7 +3291,7 @@ Parameters:
   Time: how long the change takes
 $$END
 */
-void aRoomChangeWind(int roomnum, float x, float y, float z, float speed, float time) {
+static void aRoomChangeWind(int roomnum, float x, float y, float z, float speed, float time) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -3314,7 +3317,7 @@ Parameters:
   On/Off - whether to turn on/off the AI Scripted Death Flag
 $$END
 */
-void aSetScriptedDeath(int objhandle, int state) {
+static void aSetScriptedDeath(int objhandle, int state) {
   int flags = OF_AI_DEATH;
 
   Obj_Value(objhandle, state ? VF_SET_FLAGS : VF_CLEAR_FLAGS, OBJV_I_FLAGS, &flags);
@@ -3333,7 +3336,7 @@ Parameters:
   Object - the object whose AI is turned on or off
 $$END
 */
-void aAISetState(int state, int objhandle) { AI_PowerSwitch(objhandle, state != 0); }
+static void aAISetState(int state, int objhandle) { AI_PowerSwitch(objhandle, state != 0); }
 
 /*
 $$ACTION
@@ -3348,7 +3351,7 @@ Parameters:
   FOV - the number of angles of the FOV
 $$END
 */
-void aAISetFOV(int objhandle, float fov) {
+static void aAISetFOV(int objhandle, float fov) {
   fov = cos(fov * PI / (360.0));
   AI_Value(objhandle, VF_SET, AIV_F_FOV, &fov);
 }
@@ -3366,7 +3369,9 @@ Parameters:
   Target - the object to be targetted for attack
 $$END
 */
-void aAISetTarget(int objhandle, int targethandle) { AI_Value(objhandle, VF_SET, AIV_I_TARGET_HANDLE, &targethandle); }
+static void aAISetTarget(int objhandle, int targethandle) {
+  AI_Value(objhandle, VF_SET, AIV_I_TARGET_HANDLE, &targethandle);
+}
 
 /*
 $$ACTION
@@ -3381,7 +3386,7 @@ Parameters:
   Object - the object whose team you want to change
 $$END
 */
-void aAISetTeam(int team, int objhandle) {
+static void aAISetTeam(int team, int objhandle) {
   int flags = AIF_TEAM_MASK;
   AI_Value(objhandle, VF_CLEAR_FLAGS, AIV_I_FLAGS, &flags);
   flags = team; // AIF_TEAM_REBEL;
@@ -3405,7 +3410,7 @@ Parameters:
 $$END
 */
 
-void aAIClearGoal(int slot, int handle) { AI_ClearGoal(handle, slot); }
+static void aAIClearGoal(int slot, int handle) { AI_ClearGoal(handle, slot); }
 
 /*
 $$ENUM AIModeType
@@ -3442,7 +3447,7 @@ Parameters:
   AIModeType - which mode to set for the object
 $$END
 */
-void aAISetMode(int objhandle, int modetype) { AI_SetType(objhandle, modetype); }
+static void aAISetMode(int objhandle, int modetype) { AI_SetType(objhandle, modetype); }
 
 /*
 $$ACTION
@@ -3457,7 +3462,7 @@ Parameters:
   MaxSpeed - Maximum speed
 $$END
 */
-void aAISetMaxSpeed(int objhandle, float max_speed) { AI_Value(objhandle, VF_SET, AIV_F_MAX_SPEED, &max_speed); }
+static void aAISetMaxSpeed(int objhandle, float max_speed) { AI_Value(objhandle, VF_SET, AIV_F_MAX_SPEED, &max_speed); }
 
 // Used for all AI Goal calls
 #define DEFAULT_INFLUENCE 1.0
@@ -3546,7 +3551,7 @@ Parameters:
         Object - The object of which you want to alter the AI flags
 $$END
 */
-void aAIFlags(int set, int flags, int handle) {
+static void aAIFlags(int set, int flags, int handle) {
   bool f_team = false;
 
   // Because its a bitfield, I had to hack a team value...  Team PTMC was 0; so, it was
@@ -3582,7 +3587,7 @@ Parameters:
   Priority - priority of the goal in question
 $$END
 */
-void aAIGoalSetCircleDistance(int objhandle, int slot, float distance) {
+static void aAIGoalSetCircleDistance(int objhandle, int slot, float distance) {
   AI_GoalValue(objhandle, slot, VF_SET, AIGV_F_CIRCLE_DIST, &distance);
 }
 
@@ -3600,7 +3605,7 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalGotoRoom(int objhandle, int roomnum, int slot, int flags, int goalid) {
+static void aAIGoalGotoRoom(int objhandle, int roomnum, int slot, int flags, int goalid) {
   vector pos;
 
   Room_Value(roomnum, VF_GET, RMSV_V_PATH_PNT, &pos, 0);
@@ -3623,7 +3628,7 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalGotoObject(int objhandle, int target, int slot, int flags, int goalid) {
+static void aAIGoalGotoObject(int objhandle, int target, int slot, int flags, int goalid) {
   AI_AddGoal(objhandle, AIG_GET_TO_OBJ, slot, DEFAULT_INFLUENCE, goalid, flags, target);
 }
 
@@ -3641,7 +3646,7 @@ Parameters:
   Priority - The priority of the goal
 $$END
 */
-void aAIGoalFollowPathSimple(int objhandle, int pathid, int flags, int goalid, int priority = 0) {
+static void aAIGoalFollowPathSimple(int objhandle, int pathid, int flags, int goalid, int priority = 0) {
   //!!GoalID not used yet
 
   if (pathid != -1)
@@ -3665,8 +3670,8 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalFollowPath(int objhandle, int pathid, int firstnode, int lastnode, int startnode, int slot, int flags,
-                       int goalid) {
+static void aAIGoalFollowPath(int objhandle, int pathid, int firstnode, int lastnode, int startnode, int slot,
+                              int flags, int goalid) {
   if (pathid != -1)
     AI_AddGoal(objhandle, AIG_FOLLOW_PATH, slot, DEFAULT_INFLUENCE, goalid, flags, pathid, firstnode, lastnode,
                startnode);
@@ -3691,8 +3696,8 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalPickUpObject(int pickerhandle, int pickerpoint, int pickeehandle, int pickeepoint, bool aligned, int slot,
-                         int flags, int goalid) {
+static void aAIGoalPickUpObject(int pickerhandle, int pickerpoint, int pickeehandle, int pickeepoint, bool aligned,
+                                int slot, int flags, int goalid) {
   AI_AddGoal(pickerhandle, AIG_ATTACH_TO_OBJ, slot, DEFAULT_INFLUENCE, goalid, flags, pickeehandle, pickerpoint,
              pickeepoint, 0.0, aligned, 0);
 }
@@ -3716,8 +3721,8 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalSetObjectOnObject(int pickerhandle, int pickerpoint, int pickeehandle, int pickeepoint, int slot, int flags,
-                              int goalid) {
+static void aAIGoalSetObjectOnObject(int pickerhandle, int pickerpoint, int pickeehandle, int pickeepoint, int slot,
+                                     int flags, int goalid) {
   AI_AddGoal(pickerhandle, AIG_PLACE_OBJ_ON_OBJ, slot, DEFAULT_INFLUENCE, goalid, flags, pickeehandle, pickerpoint,
              pickeepoint, 0.0, true, 0);
 }
@@ -3741,8 +3746,8 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalLandOnObject(int pickerhandle, int pickerpoint, int pickeehandle, int pickeepoint, int slot, int flags,
-                         int goalid) {
+static void aAIGoalLandOnObject(int pickerhandle, int pickerpoint, int pickeehandle, int pickeepoint, int slot,
+                                int flags, int goalid) {
   AI_AddGoal(pickerhandle, AIG_ATTACH_TO_OBJ, slot, DEFAULT_INFLUENCE, goalid, flags | GF_IS_ATTACH_CHILD, pickeehandle,
              pickerpoint, pickeepoint, 0.0, true, 0);
 }
@@ -3764,8 +3769,8 @@ Parameters:
   GoalID - an ID for this goal
 $$END
 */
-void aAIGoalPickUpObjectRad(int pickerhandle, int pickerpoint, int pickeehandle, float radius, int slot, int flags,
-                            int goalid) {
+static void aAIGoalPickUpObjectRad(int pickerhandle, int pickerpoint, int pickeehandle, float radius, int slot,
+                                   int flags, int goalid) {
   AI_AddGoal(pickerhandle, AIG_ATTACH_TO_OBJ, slot, DEFAULT_INFLUENCE, goalid, flags, pickeehandle, pickerpoint, -1,
              radius, 0, 1);
 }
@@ -3805,7 +3810,7 @@ Parameters:
 
 $$END
 */
-void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn = false) {
+static void aCinematicSimple(int pathid, const char *Text, int Target, float Seconds, bool FadeIn = false) {
   tGameCinematic info;
 
   info.flags = 0;
@@ -3851,7 +3856,7 @@ ONCE AGAIN, THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD COMPATIBILITY
 ONCE AGAIN, THE TARGET IS NOT USED, IT'S HERE FOR BACKWARD COMPATIBILITY
 $$END
 */
-void aCinematicIntro(int camera_path, const char *Text, int NoLongerUserTarget, int PlayerPath, float Seconds) {
+static void aCinematicIntro(int camera_path, const char *Text, int NoLongerUserTarget, int PlayerPath, float Seconds) {
   tCannedCinematicInfo info;
 
   info.type = CANNED_LEVEL_INTRO;
@@ -3872,7 +3877,7 @@ CinematicStop
         Stops a currently playing in-game cinematic, restoring everything
 $$END
 */
-void aCinematicStop(void) { Cine_Stop(); }
+static void aCinematicStop(void) { Cine_Stop(); }
 
 class complex_cinematic {
 public:
@@ -3884,7 +3889,7 @@ public:
   tGameCinematic info;
   bool being_made;
 };
-complex_cinematic ccinematic;
+static complex_cinematic ccinematic;
 
 /*
 $$ACTION
@@ -3895,7 +3900,7 @@ ComplexCinematicStart
         Starts the creation process of a 'complex' in-game cinematic.
 $$END
 */
-void aComplexCinematicStart(void) {
+static void aComplexCinematicStart(void) {
   ccinematic.being_made = true;
   memset(&ccinematic.info, 0, sizeof(tGameCinematic));
 
@@ -3931,7 +3936,7 @@ Params:
         Seconds: How long cinematic should play
 $$END
 */
-void aComplexCinematicEnd(const char *Text, float Seconds) {
+static void aComplexCinematicEnd(const char *Text, float Seconds) {
   if (!ccinematic.being_made)
     return;
 
@@ -3953,7 +3958,7 @@ Params:
         End: At what percentage of time into the cinematic should text stop displaying
 $$END
 */
-void aComplexCinematicText(float Start, float End) {
+static void aComplexCinematicText(float Start, float End) {
   ccinematic.info.text_display.min = Start;
   ccinematic.info.text_display.max = End;
 }
@@ -3972,7 +3977,7 @@ Params:
         End: At what percentage of time into the cinematic should target stop being tracked
 $$END
 */
-void aComplexCinematicTrack(int Target, float Start, float End) {
+static void aComplexCinematicTrack(int Target, float Start, float End) {
   ccinematic.info.target_objhandle = Target;
   ccinematic.info.track_target.min = Start;
   ccinematic.info.track_target.max = End;
@@ -3991,7 +3996,7 @@ Params:
         End: At what percentage of time into the cinematic should controls be renabled
 $$END
 */
-void aComplexCinematicPlayerDisabled(float Start, float End) {
+static void aComplexCinematicPlayerDisabled(float Start, float End) {
   ccinematic.info.player_disabled.min = Start;
   ccinematic.info.player_disabled.max = End;
 }
@@ -4009,7 +4014,7 @@ Params:
         End: At what percentage of time into the cinematic should the view be back to the player
 $$END
 */
-void aComplexCinematicCameraView(float Start, float End) {
+static void aComplexCinematicCameraView(float Start, float End) {
   ccinematic.info.in_camera_view.min = Start;
   ccinematic.info.in_camera_view.max = End;
 }
@@ -4027,7 +4032,7 @@ Params:
         End: At what percentage of time into the cinematic can't the player quick exit
 $$END
 */
-void aComplexCinematicQuickExit(float Start, float End) {
+static void aComplexCinematicQuickExit(float Start, float End) {
   ccinematic.info.quick_exit.min = Start;
   ccinematic.info.quick_exit.max = End;
 }
@@ -4050,7 +4055,7 @@ ComplexCinematicEndTrans
         Sets the end transition setting.
 $$END
 */
-void aComplexCinematicEndTrans(int End) { ccinematic.info.end_transition = End; }
+static void aComplexCinematicEndTrans(int End) { ccinematic.info.end_transition = End; }
 
 /*
 $$ACTION
@@ -4061,7 +4066,9 @@ ComplexCinematicStartTrans
         Sets whether the cinematic should fade in to start
 $$END
 */
-void aComplexCinematicStartTrans(bool Enable) { ccinematic.info.start_transition = (Enable) ? GCTT_FADE : GCTT_NONE; }
+static void aComplexCinematicStartTrans(bool Enable) {
+  ccinematic.info.start_transition = (Enable) ? GCTT_FADE : GCTT_NONE;
+}
 
 /*
 $$ACTION
@@ -4072,7 +4079,7 @@ ComplexCinematicCameraOnPath
         Tells the cinematic that the camera should be on the given path
 $$END
 */
-void aComplexCinematicCameraOnPath(int Path) {
+static void aComplexCinematicCameraOnPath(int Path) {
   ccinematic.info.flags |= GCF_USEPATH;
   ccinematic.info.flags &= ~GCF_USEPOINT;
   ccinematic.info.pathid = Path;
@@ -4090,7 +4097,7 @@ Params:
         Room: The room that that position is in
 $$END
 */
-void aComplexCinematicCameraAtPoint(vector *Position, int Room) {
+static void aComplexCinematicCameraAtPoint(vector *Position, int Room) {
   ccinematic.info.flags &= ~GCF_USEPATH;
   ccinematic.info.flags |= GCF_USEPOINT;
 
@@ -4109,7 +4116,7 @@ Params:
         Room: The room that that position is in
 $$END
 */
-void aComplexCinematicCameraAtStoredPt(int Room) {
+static void aComplexCinematicCameraAtStoredPt(int Room) {
   if (!PositionClipboard.has_pos)
     return;
 
@@ -4136,7 +4143,7 @@ ComplexCinematicScreenMode
         Sets what type of screen mode the cinematic should be in
 $$END
 */
-void aComplexCinematicScreenMode(int Mode) {
+static void aComplexCinematicScreenMode(int Mode) {
   ccinematic.info.flags &= ~GCF_SCREENFORMAT;
   ccinematic.info.flags |= Mode;
 }
@@ -4158,7 +4165,7 @@ ComplexCinematicTextMode
         Sets what type of text effect the cinematic should use
 $$END
 */
-void aComplexCinematicTextMode(int Mode) {
+static void aComplexCinematicTextMode(int Mode) {
   ccinematic.info.flags &= ~GCF_TEXT_MASK;
   ccinematic.info.flags |= Mode;
 }
@@ -4181,7 +4188,7 @@ ComplexCinematicTextLayoutMode
         Sets what type of text layout the cinematic should use
 $$END
 */
-void aComplexCinematicTextLayoutMode(int Mode) {
+static void aComplexCinematicTextLayoutMode(int Mode) {
   ccinematic.info.flags &= ~GCF_LAYOUT_MASK;
   ccinematic.info.flags |= Mode;
 }
@@ -4202,7 +4209,7 @@ ComplexCinematicFlags
         Sets special flags for the cinematic
 $$END
 */
-void aComplexCinematicFlags(int flags) {
+static void aComplexCinematicFlags(int flags) {
   ccinematic.info.flags &= ~(GCF_STOPIFTAGETDEAD | GCF_FORCETARGETTOEND);
   ccinematic.info.flags |= flags;
 }
@@ -4220,7 +4227,7 @@ Parameters:
         Ship:	The name of the ship you want to enable
 $$END
 */
-void aEnableShip(const char *Ship) {
+static void aEnableShip(const char *Ship) {
   // this doesn't have to be multiplayer friendly, since it's a single
   // player only thing
   Game_EnableShip(Ship, true);
@@ -4240,7 +4247,7 @@ Parameters:
 
 $$END
 */
-void aDisableShip(const char *Ship) {
+static void aDisableShip(const char *Ship) {
   // this doesn't have to be multiplayer friendly, since it's a single
   // player only thing
   Game_EnableShip(Ship, false);
@@ -4259,7 +4266,7 @@ Parameters:
   Trigger: which trigger to set
 $$END
 */
-void aTriggerSetState(int state, int trigger_num) {
+static void aTriggerSetState(int state, int trigger_num) {
   msafe_struct mstruct;
 
   mstruct.trigger_num = trigger_num;
@@ -4280,7 +4287,7 @@ Parameters:
   Spewable: Whether the object should be spewed from the inventory when the player dies
 $$END
 */
-void aAddObjectToInventory(int Object, int PlayerObject, bool Spewable) {
+static void aAddObjectToInventory(int Object, int PlayerObject, bool Spewable) {
   msafe_struct mstruct;
 
   mstruct.objhandle = PlayerObject;
@@ -4309,7 +4316,7 @@ Parameters:
   Spewable: Whether the object should be spewed from the inventory when the player dies
 $$END
 */
-void aAddObjectToInventoryNamed(int Object, int PlayerObject, const char *name, bool Spewable) {
+static void aAddObjectToInventoryNamed(int Object, int PlayerObject, const char *name, bool Spewable) {
   msafe_struct mstruct;
 
   mstruct.objhandle = PlayerObject;
@@ -4338,7 +4345,7 @@ Parameters:
   PlayerObject: Which Player
 $$END
 */
-void aRemoveObjectFromInventory(int Object, int PlayerObject) {
+static void aRemoveObjectFromInventory(int Object, int PlayerObject) {
   msafe_struct mstruct;
 
   mstruct.objhandle = PlayerObject;
@@ -4357,7 +4364,7 @@ Parameters:
         Object: object whose position you want to store
 $$END
 */
-void aStoreObjectInPositionClipboard(int Object) {
+static void aStoreObjectInPositionClipboard(int Object) {
   msafe_struct mstruct;
   mstruct.objhandle = Object;
   MSafe_GetValue(MSAFE_OBJECT_WORLD_POSITION, &mstruct);
@@ -4379,7 +4386,7 @@ Parameters:
         Object: object whose position you want to change
 $$END
 */
-void aMoveObjectToPositionClipboard(int Object) {
+static void aMoveObjectToPositionClipboard(int Object) {
   if (!PositionClipboard.has_pos)
     return;
 
@@ -4404,7 +4411,7 @@ Parameters:
         Seconds: how long should it be cloaked
 $$END
 */
-void aCloakObject(int Object, float Seconds) {
+static void aCloakObject(int Object, float Seconds) {
   msafe_struct mstruct;
   mstruct.objhandle = Object;
   mstruct.state = 1;
@@ -4423,7 +4430,7 @@ Parameters:
         Object: object to uncloak
 $$END
 */
-void aUnCloakObject(int Object) {
+static void aUnCloakObject(int Object) {
   msafe_struct mstruct;
   mstruct.objhandle = Object;
   mstruct.state = 0;
@@ -4441,7 +4448,7 @@ Parameters:
         Seconds: how long should the players be cloaked
 $$END
 */
-void aCloakAllPlayers(float Seconds) {
+static void aCloakAllPlayers(float Seconds) {
   msafe_struct mstruct;
   mstruct.state = 1;
   mstruct.lifetime = Seconds;
@@ -4457,7 +4464,7 @@ UnCloaks all the Players in the game
 
 $$END
 */
-void aUnCloakAllPlayers(void) {
+static void aUnCloakAllPlayers(void) {
   msafe_struct mstruct;
   mstruct.state = 0;
   MSafe_CallFunction(MSAFE_OBJECT_CLOAKALLPLAYERS, &mstruct);
@@ -4476,7 +4483,7 @@ Parameters:
         Damage = how much damage per second the fire should do
 $$END
 */
-void aSetObjectOnFire(int obj, float seconds, float dps) {
+static void aSetObjectOnFire(int obj, float seconds, float dps) {
   msafe_struct mstruct;
   mstruct.objhandle = obj;
   mstruct.longevity = seconds;
@@ -4499,7 +4506,7 @@ Parameters:
   Object - the object to fire the flare
 $$END
 */
-void aObjFireWeapon(const char *weapon_name, int gun_num, int objhandle) {
+static void aObjFireWeapon(const char *weapon_name, int gun_num, int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -4547,7 +4554,7 @@ public:
 
   tKillRobotListNode *list;
 };
-CKillRobotList KillRobotList;
+static CKillRobotList KillRobotList;
 
 void CKillRobotList::clear(void) {
   tKillRobotListNode *next, *curr = list;
@@ -4594,7 +4601,7 @@ NOTE: It is VERY important that the entire command sequence happens all in the s
         action, and in proper order.
 $$END
 */
-void aDestroyAllRobotsInit(void) { KillRobotList.clear(); }
+static void aDestroyAllRobotsInit(void) { KillRobotList.clear(); }
 
 /*
 $$ACTION
@@ -4607,7 +4614,7 @@ Parameters:
   RobotID - the name of the group of robots to Spare
 $$END
 */
-void aDestroyAllRobotsSpareType(const char *name) {
+static void aDestroyAllRobotsSpareType(const char *name) {
   int id = Obj_FindID(name);
 
   if (id != -1) {
@@ -4630,7 +4637,7 @@ Parameters:
   RobotHandle - the handle of the robot to Spare
 $$END
 */
-void aDestroyAllRobotsSpareHandle(int handle) {
+static void aDestroyAllRobotsSpareHandle(int handle) {
   if (handle != OBJECT_HANDLE_NONE) {
     tKillObjectItem item;
     item.info_type = KOI_HANDLE;
@@ -4649,7 +4656,7 @@ Destroys the robots (except those spared) in the level
 
 $$END
 */
-void aDestroyAllRobotsEnd(void) {
+static void aDestroyAllRobotsEnd(void) {
   tKillRobotListNode *curr = KillRobotList.list;
   int count = 0;
 
@@ -4695,7 +4702,7 @@ with a virus
 
 $$END
 */
-void aEnableVirusInfection(int enable, int handle) {
+static void aEnableVirusInfection(int enable, int handle) {
   char cenable;
   cenable = (enable) ? 1 : 0;
 
@@ -4711,7 +4718,7 @@ Enables or disables negative dynamic lighting (ala black hole) for the object
 
 $$END
 */
-void aEnableNegativeLighting(int enable, int handle) {
+static void aEnableNegativeLighting(int enable, int handle) {
   char cenable;
   cenable = (enable) ? 1 : 0;
 
@@ -4727,7 +4734,7 @@ Removes all weapons (but lasers) and ammo, and reduces energy to 0.
 
 $$END
 */
-void aStripWeaponsEnergy(int Object) {
+static void aStripWeaponsEnergy(int Object) {
   int val = 0;
   Player_Value(Object, VF_SET, PLYV_I_STRIP_WEAPONS, &val);
 }
@@ -4741,7 +4748,7 @@ Removes all weapons (but lasers) and ammo, and reduces energy to 0.
 
 $$END
 */
-void aStripWeaponsEnergyFromAll(void) {
+static void aStripWeaponsEnergyFromAll(void) {
   int val = -1;
   Player_Value(OBJECT_HANDLE_NONE, VF_SET, PLYV_I_STRIP_WEAPONS, &val);
 }
@@ -4755,7 +4762,7 @@ Removes all the powerups in the room given
 
 $$END
 */
-void aRemovePowerupsInRoom(int Room) {
+static void aRemovePowerupsInRoom(int Room) {
   msafe_struct mstruct;
   mstruct.roomnum = Room;
   MSafe_CallFunction(MSAFE_ROOM_REMOVE_ALL_POWERUPS, &mstruct);
@@ -4770,7 +4777,7 @@ Returns true if the object is showing signs of being infected by a virus
 
 $$END
 */
-bool qVirusInfected(int handle) {
+static bool qVirusInfected(int handle) {
   char cenable;
   Obj_Value(handle, VF_GET, OBJV_C_VIRUS_INFECTED, &cenable);
 
@@ -4787,7 +4794,7 @@ removing light from the world)
 
 $$END
 */
-bool qNegativeLight(int handle) {
+static bool qNegativeLight(int handle) {
   char cenable;
   Obj_Value(handle, VF_GET, OBJV_C_NEGATIVE_LIGHT, &cenable);
 
@@ -4803,7 +4810,7 @@ Returns the difficulty level (0 = trainee,4 = insane)
 
 $$END
 */
-int qGetDifficulty(void) { return Game_GetDiffLevel(); }
+static int qGetDifficulty(void) { return Game_GetDiffLevel(); }
 
 /*
 Requested by Luke 1/15/99
@@ -4846,7 +4853,7 @@ Parameters:
         Object: object to get cloak time left (0 if it's not cloaked)
 $$END
 */
-float qObjectCloakTime(int Object) {
+static float qObjectCloakTime(int Object) {
   msafe_struct mstruct;
   mstruct.objhandle = Object;
   mstruct.state = 0;
@@ -4866,7 +4873,7 @@ Parameters:
         Object: object to get cloak time left (0 if it's not cloaked)
 $$END
 */
-float qObjectPosition(int handle, int axis) {
+static float qObjectPosition(int handle, int axis) {
   float value = 0.0f;
   int type;
 
@@ -4901,7 +4908,7 @@ Parameters:
         Object: Is this object near its target
 $$END
 */
-bool qAICloseToTarget(int me) {
+static bool qAICloseToTarget(int me) {
   int target = OBJECT_HANDLE_NONE;
   bool f_close = false;
   char ctype;
@@ -4934,7 +4941,7 @@ Parameters:
         Object: Is this object near its target
 $$END
 */
-bool qAIIsObjectAware(int me) {
+static bool qAIIsObjectAware(int me) {
   bool f_aware = false;
   char ctype;
 
@@ -4961,7 +4968,7 @@ Parameters:
         Object: object we want the the target of
 $$END
 */
-int qAIGetTarget(int me) {
+static int qAIGetTarget(int me) {
   int target = OBJECT_HANDLE_NONE;
   char ctype;
 
@@ -4984,7 +4991,7 @@ Parameters:
         Object: Which object to check for
 $$END
 */
-bool qHasObjectInInventory(int PlayerObject, int Object) {
+static bool qHasObjectInInventory(int PlayerObject, int Object) {
   msafe_struct mstruct;
 
   mstruct.objhandle = PlayerObject;
@@ -5007,7 +5014,7 @@ Parameters:
   SavedObjectSlot: the slot in which to save the handle
 $$END
 */
-void aObjSaveHandle(int objhandle, int slot) {
+static void aObjSaveHandle(int objhandle, int slot) {
   if ((slot >= 0) && (slot < MAX_SAVED_OBJECT_HANDLES))
     Saved_object_handles[slot] = objhandle;
 }
@@ -5025,7 +5032,7 @@ Parameters:
   Completed: whether or not the goal has been completed
 $$END
 */
-void aGoalCompleted(int goal_index, int completed) {
+static void aGoalCompleted(int goal_index, int completed) {
   int flags = LGF_COMPLETED;
 
   LGoal_Value(completed ? VF_SET_FLAGS : VF_CLEAR_FLAGS, LGSV_I_STATUS, &flags, goal_index);
@@ -5045,7 +5052,7 @@ Parameters:
   Completed: whether or not the goal item has been completed
 $$END
 */
-void aGoalItemCompleted(int goal_index, int item_index, int completed) {
+static void aGoalItemCompleted(int goal_index, int item_index, int completed) {
   bool f_set = (completed != 0);
   LGoal_Value(VF_SET, LGSSV_B_ITEM_DONE, &f_set, goal_index, item_index - 1);
 }
@@ -5063,7 +5070,7 @@ Parameters:
   Failed: whether or not the goal has been failed
 $$END
 */
-void aGoalFailed(int goal_index, int failed) {
+static void aGoalFailed(int goal_index, int failed) {
   int flags = LGF_FAILED;
 
   LGoal_Value(failed ? VF_SET_FLAGS : VF_CLEAR_FLAGS, LGSV_I_STATUS, &flags, goal_index);
@@ -5082,7 +5089,7 @@ Parameters:
   LevelGoal: the goal to set
 $$END
 */
-void aGoalEnableDisable(int enabled, int goal_index) {
+static void aGoalEnableDisable(int enabled, int goal_index) {
   int flags = LGF_ENABLED;
 
   LGoal_Value(enabled ? VF_SET_FLAGS : VF_CLEAR_FLAGS, LGSV_I_STATUS, &flags, goal_index);
@@ -5101,7 +5108,9 @@ Parameters:
   Priority: the priority to set
 $$END
 */
-void aGoalSetPriority(int goal_index, int priority) { LGoal_Value(VF_SET, LGSV_I_PRIORITY, &priority, goal_index); }
+static void aGoalSetPriority(int goal_index, int priority) {
+  LGoal_Value(VF_SET, LGSV_I_PRIORITY, &priority, goal_index);
+}
 
 /*
 $$ACTION
@@ -5116,8 +5125,8 @@ Parameters:
   Message: the message for the goal
 $$END
 */
-void aGoalSetCompletionMessage(int goal_index, const char *message) {
-  LGoal_Value(VF_SET, LGSV_PC_COMPLETION_MESSAGE, (void *) message, goal_index);
+static void aGoalSetCompletionMessage(int goal_index, const char *message) {
+  LGoal_Value(VF_SET, LGSV_PC_COMPLETION_MESSAGE, (void *)message, goal_index);
 }
 
 /*
@@ -5133,7 +5142,7 @@ Parameters:
   LevelGoal: the goal to set
 $$END
 */
-void aGoalSetGBKnowledge(int enabled, int goal_index) {
+static void aGoalSetGBKnowledge(int enabled, int goal_index) {
   int flags = LGF_GB_DOESNT_KNOW_LOC;
 
   LGoal_Value(enabled ? VF_CLEAR_FLAGS : VF_SET_FLAGS, LGSV_I_STATUS, &flags, goal_index);
@@ -5181,7 +5190,7 @@ Parameters:
   Object: The object to check
 $$END
 */
-bool qObjExists(int objref) {
+static bool qObjExists(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5203,7 +5212,7 @@ Parameters:
   Object: The object to check
 $$END
 */
-bool qObjIsPlayer(int objref) {
+static bool qObjIsPlayer(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5225,7 +5234,7 @@ Parameters:
   Object: The object to check
 $$END
 */
-bool qObjIsPlayerWeapon(int handle) {
+static bool qObjIsPlayerWeapon(int handle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = handle;
@@ -5255,7 +5264,7 @@ Parameters:
   Object: The object to check
 $$END
 */
-bool qObjIsPlayerOrPlayerWeapon(int handle) {
+static bool qObjIsPlayerOrPlayerWeapon(int handle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = handle;
@@ -5288,7 +5297,7 @@ Parameters:
   Object: The object to check
 $$END
 */
-bool qObjIsEnergyWeapon(int handle) {
+static bool qObjIsEnergyWeapon(int handle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = handle;
@@ -5310,7 +5319,7 @@ Parameters:
   ObjectType: The type to check
 $$END
 */
-bool qObjIsType(int objhandle, int type) {
+static bool qObjIsType(int objhandle, int type) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -5334,7 +5343,7 @@ Parameters:
   Cone: Angle between 0-360 which makes the viewcone that determines if the object can see the other object
 $$END
 */
-bool qObjCanSeeObj(int handletarget, int cone, int handlesrc) {
+static bool qObjCanSeeObj(int handletarget, int cone, int handlesrc) {
   vector vsource, vtarget;
 
   msafe_struct mstruct;
@@ -5380,7 +5389,7 @@ Parameters:
   FVIHitFlags: Flags used to determine visibility
 $$END
 */
-bool qObjCanSeeObjAdvanced(int handletarget, int cone, int handlesrc, int fvi_flags) {
+static bool qObjCanSeeObjAdvanced(int handletarget, int cone, int handlesrc, int fvi_flags) {
   vector vsource, vtarget;
   int sourceroom;
 
@@ -5439,7 +5448,7 @@ Parameters:
   Object: The object whose parent is returned
 $$END
 */
-int qObjParent(int objhandle) {
+static int qObjParent(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -5462,7 +5471,7 @@ Parameters:
   AttachPoint: The attach point the child is attached to
 $$END
 */
-int qGetAtachedChild(int objhandle, int attachpoint) { return Obj_GetAttachChildHandle(objhandle, attachpoint); }
+static int qGetAtachedChild(int objhandle, int attachpoint) { return Obj_GetAttachChildHandle(objhandle, attachpoint); }
 
 /*
 $$QUERY
@@ -5476,7 +5485,7 @@ Parameters:
   Object: The object whose room you want to know
 $$END
 */
-int qObjRoom(int objref) {
+static int qObjRoom(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5502,7 +5511,7 @@ Parameters:
   Object: The object to check
 $$END
 */
-bool qObjOnTerrain(int objhandle) {
+static bool qObjOnTerrain(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -5524,7 +5533,7 @@ Parameters:
   Object: The object whose type you want to know
 $$END
 */
-int qObjType(int objref) {
+static int qObjType(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5546,7 +5555,7 @@ Parameters:
   UserVar: The variable whose value to return
 $$END
 */
-float qUserVarValue(int varnum) {
+static float qUserVarValue(int varnum) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     return User_vars[varnum];
   else
@@ -5565,7 +5574,7 @@ Parameters:
   UserVar: The variable whose value to return
 $$END
 */
-int qUserVarValueInt(int varnum) {
+static int qUserVarValueInt(int varnum) {
   if ((varnum >= 0) && (varnum < MAX_USER_VARS))
     return (User_vars[varnum] + 0.5);
   else
@@ -5584,7 +5593,7 @@ Parameters:
   UserFlag: The flag whose state to return
 $$END
 */
-bool qUserFlag(int flagnum) {
+static bool qUserFlag(int flagnum) {
   if ((flagnum >= 0) && (flagnum < 32))
     return ((User_flags & (1 << flagnum)) != 0);
   else
@@ -5603,7 +5612,7 @@ Parameters:
   Object: the object whose shields are being queried
 $$END
 */
-float qObjShields(int objref) {
+static float qObjShields(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5625,7 +5634,7 @@ Parameters:
   Object: the object whose energy are being queried
 $$END
 */
-float qObjEnergy(int objref) {
+static float qObjEnergy(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5647,7 +5656,7 @@ Parameters:
   Object: the object whose shields are being queried
 $$END
 */
-float qObjShieldsOriginal(int objref) {
+static float qObjShieldsOriginal(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5669,7 +5678,7 @@ Parameters:
   Door: the door to check
 $$END
 */
-bool qDoorLocked(int objref) {
+static bool qDoorLocked(int objref) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -5691,7 +5700,7 @@ Parameters:
   Object: the object to check
 $$END
 */
-bool qDoorOpenable(int door_handle, int opener_handle) {
+static bool qDoorOpenable(int door_handle, int opener_handle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = door_handle;
@@ -5713,7 +5722,7 @@ Parameters:
   Door: the object of the door
 $$END
 */
-float qDoorGetPos(int objhandle) {
+static float qDoorGetPos(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -5735,7 +5744,7 @@ Parameters:
   FlagNum: the flag to get
 $$END
 */
-bool aMissionGetFlag(int flagnum) { return Msn_FlagGet(flagnum); }
+static bool aMissionGetFlag(int flagnum) { return Msn_FlagGet(flagnum); }
 
 /*
 $$QUERY
@@ -5749,7 +5758,7 @@ Parameters:
   FlagNum: the flag to get
 $$END
 */
-bool aMissionGetLevelFlag(int flagnum) {
+static bool aMissionGetLevelFlag(int flagnum) {
   //!!Add code here
 
   return 0;
@@ -5767,7 +5776,7 @@ Parameters:
   Object: the object whose animation frame is being queried
 $$END
 */
-float qObjAnimFrame(int objref) {
+static float qObjAnimFrame(int objref) {
   float anim_frame;
 
   Obj_Value(objref, VF_GET, OBJV_F_ANIM_FRAME, &anim_frame);
@@ -5787,7 +5796,7 @@ Parameters:
   Room: the room to check
 $$END
 */
-bool qRoomFogOn(int roomnum) {
+static bool qRoomFogOn(int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -5811,7 +5820,7 @@ Parameters:
   Enable/Disable: Whether to Enable or Disable the specified controls
 $$END
 */
-void aTogglePlayerObjControl(int enable, int controlmask, int objhandle) {
+static void aTogglePlayerObjControl(int enable, int controlmask, int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -5834,7 +5843,7 @@ Parameters:
   PlayerObject: The player this affects
 $$END
 */
-void aTogglePlayerObjAllControls(int enable, int objhandle) {
+static void aTogglePlayerObjAllControls(int enable, int objhandle) {
   msafe_struct mstruct;
   int controlbit = 0xffffffff;
   mstruct.objhandle = objhandle;
@@ -5859,7 +5868,8 @@ Parameters:
   Yes/No: should the name of the key be shown on the HUD?
 $$END
 */
-void aObjectPlayerGiveKey(int player_handle, int key_handle, int key_num, const char *key_name, int show_on_hud) {
+static void aObjectPlayerGiveKey(int player_handle, int key_handle, int key_num, const char *key_name,
+                                 int show_on_hud) {
   msafe_struct mstruct;
 
   mstruct.objhandle = key_handle;
@@ -5888,7 +5898,7 @@ Parameters:
   KeyNum: which key this is (1-8)
 $$END
 */
-void aObjectPlayerGiveInvisibleKey(int player_handle, int key_num) {
+static void aObjectPlayerGiveInvisibleKey(int player_handle, int key_num) {
   msafe_struct mstruct;
 
   mstruct.objhandle = OBJECT_HANDLE_NONE;
@@ -5911,7 +5921,7 @@ Parameters:
   Object: the object to get
 $$END
 */
-float qObjGetLightingDist(int objhandle) {
+static float qObjGetLightingDist(int objhandle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objhandle;
@@ -5933,7 +5943,7 @@ Parameters:
   Float1, Float2: the numbers to add
 $$END
 */
-float qMathAddFloat(float f0, float f1) { return f0 + f1; }
+static float qMathAddFloat(float f0, float f1) { return f0 + f1; }
 
 /*
 $$QUERY
@@ -5947,7 +5957,7 @@ Parameters:
   Float1, Float2: subtracts Float2 from Float1
 $$END
 */
-float qMathSubFloat(float f0, float f1) { return f0 - f1; }
+static float qMathSubFloat(float f0, float f1) { return f0 - f1; }
 
 /*
 $$QUERY
@@ -5961,7 +5971,7 @@ Parameters:
   Float1, Float2: the numbers to multiply
 $$END
 */
-float qMathMulFloat(float f0, float f1) { return f0 * f1; }
+static float qMathMulFloat(float f0, float f1) { return f0 * f1; }
 
 /*
 $$QUERY
@@ -5975,7 +5985,7 @@ Parameters:
   Int: the interger that's converted to a float
 $$END
 */
-float qMathIntToFloat(int i) { return (float)i; }
+static float qMathIntToFloat(int i) { return (float)i; }
 
 /*
 $$QUERY
@@ -5989,7 +5999,7 @@ Parameters:
   Percent1, Percent2: the percentages to add
 $$END
 */
-float qMathAddPercent(float f0, float f1) {
+static float qMathAddPercent(float f0, float f1) {
   float r = f0 + f1;
 
   return (r > 1.0) ? 1.0 : r;
@@ -6007,7 +6017,7 @@ Parameters:
   Percent1, Percent2: subtracts Percent2 from Percent1
 $$END
 */
-float qMathSubPercent(float f0, float f1) {
+static float qMathSubPercent(float f0, float f1) {
   float r = f0 - f1;
 
   return (r < 0.0) ? 0.0 : r;
@@ -6025,7 +6035,7 @@ Parameters:
   Integer1, Integer2: the numbers to add
 $$END
 */
-int qMathAddInt(int f0, int f1) { return f0 + f1; }
+static int qMathAddInt(int f0, int f1) { return f0 + f1; }
 
 /*
 $$QUERY
@@ -6039,7 +6049,7 @@ Parameters:
   Integer1, Integer2: subtracts Integer2 from Integer1
 $$END
 */
-int qMathSubInt(int f0, int f1) { return f0 - f1; }
+static int qMathSubInt(int f0, int f1) { return f0 - f1; }
 
 /*
 $$QUERY
@@ -6054,7 +6064,7 @@ Parameters:
   Float: the number that's scaled
 $$END
 */
-float qMathPercentage(float f0, float f1) { return f0 * f1; }
+static float qMathPercentage(float f0, float f1) { return f0 * f1; }
 
 #include <math.h>
 
@@ -6070,7 +6080,7 @@ Parameters:
   Object1, Object2: the two objects
 $$END
 */
-float qObjGetDistance(int objhandle0, int objhandle1) {
+static float qObjGetDistance(int objhandle0, int objhandle1) {
   msafe_struct mstruct;
   vector p0;
 
@@ -6097,7 +6107,7 @@ Parameters:
   PortalNum:  The portal number of the forcefield
 $$END
 */
-bool qPortalIsOn(int portalnum, int roomnum) {
+static bool qPortalIsOn(int portalnum, int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -6120,7 +6130,7 @@ Parameters:
   Probablilty:  how likely this query is to return true.
 $$END
 */
-bool qRandomChance(float prob) {
+static bool qRandomChance(float prob) {
   if (prob == 0.0)
     return false;
 
@@ -6140,7 +6150,7 @@ Parameters:
   UpperLimit: the returned value will be lower than or equal to this value
 $$END
 */
-float qRandomValue(float low, float high) { return low + ((float)rand() / RAND_MAX) * (high - low); }
+static float qRandomValue(float low, float high) { return low + ((float)rand() / RAND_MAX) * (high - low); }
 
 /*
 $$QUERY
@@ -6156,7 +6166,7 @@ Parameters:
   Distance: The player must be within this distance for this query to return true
 $$END
 */
-bool qObjCanSeePlayer(int cone, int handlesrc, float max_distance) {
+static bool qObjCanSeePlayer(int cone, int handlesrc, float max_distance) {
   vector vsource, vtarget, viewvec;
   msafe_struct mstruct;
 
@@ -6218,7 +6228,7 @@ Parameters:
   FVIHitFlags: Flags used to determine visibility
 $$END
 */
-bool qObjCanSeePlayerAdvanced(int cone, int handlesrc, float max_distance, int fvi_flags) {
+static bool qObjCanSeePlayerAdvanced(int cone, int handlesrc, float max_distance, int fvi_flags) {
   vector vsource, vtarget, viewvec;
   msafe_struct mstruct;
   matrix orient;
@@ -6305,7 +6315,7 @@ Parameters:
   FVIHitFlags: Flags used to determine visibility
 $$END
 */
-bool qObjCanSeePlayerAdvancedWithStore(int slot, int cone, int handlesrc, float max_distance, int fvi_flags) {
+static bool qObjCanSeePlayerAdvancedWithStore(int slot, int cone, int handlesrc, float max_distance, int fvi_flags) {
   vector vsource, vtarget, viewvec;
   msafe_struct mstruct;
   matrix orient;
@@ -6399,7 +6409,7 @@ Parameters:
   Room: the room to check
 $$END
 */
-bool qRoomHasPlayer(int roomnum) {
+static bool qRoomHasPlayer(int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -6421,7 +6431,7 @@ Parameters:
   Ship: The name of the ship you want to query
 $$END
 */
-bool qIsShipEnabled(const char *Ship) { return Game_IsShipEnabled(Ship); }
+static bool qIsShipEnabled(const char *Ship) { return Game_IsShipEnabled(Ship); }
 
 /*
 $$QUERY
@@ -6435,7 +6445,7 @@ Parameters:
   Room:  The room for which the damage is returned
 $$END
 */
-float qRoomGetDamage(int roomnum) {
+static float qRoomGetDamage(int roomnum) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
@@ -6457,7 +6467,7 @@ Parameters:
   HandleSlot: the slot for which the object handle is returned
 $$END
 */
-int qObjSavedHandle(int slot) {
+static int qObjSavedHandle(int slot) {
   if ((slot >= 0) && (slot < MAX_SAVED_OBJECT_HANDLES))
     return Saved_object_handles[slot];
   else
@@ -6476,7 +6486,7 @@ Parameters:
   Trigger: which trigger to check
 $$END
 */
-bool qTriggerGetState(int trigger_num) {
+static bool qTriggerGetState(int trigger_num) {
   msafe_struct mstruct;
 
   mstruct.trigger_num = trigger_num;
@@ -6498,7 +6508,7 @@ Parameters:
   ObjectIDName: the name of the object ID to count
 $$END
 */
-int qObjCountTypeID(int type, const char *idname) {
+static int qObjCountTypeID(int type, const char *idname) {
   int id = Obj_FindID(idname);
 
   if (id != -1) {
@@ -6570,7 +6580,7 @@ Parameters:
   None.
 $$END
 */
-bool qGoalPrimariesComplete() {
+static bool qGoalPrimariesComplete() {
   int flags = LF_ALL_PRIMARIES_DONE;
 
   LGoal_Value(VF_GET, LGV_I_STATUS, &flags);
@@ -6590,7 +6600,7 @@ Parameters:
   LevelGoal: the goal to check
 $$END
 */
-bool qGoalEnabled(int goal_index) {
+static bool qGoalEnabled(int goal_index) {
   int flags;
 
   LGoal_Value(VF_GET, LGSV_I_STATUS, &flags, goal_index);
@@ -6610,7 +6620,7 @@ Parameters:
   LevelGoal: the goal to check
 $$END
 */
-bool qGoalCompleted(int goal_index) {
+static bool qGoalCompleted(int goal_index) {
   int flags;
 
   LGoal_Value(VF_GET, LGSV_I_STATUS, &flags, goal_index);
@@ -6630,7 +6640,7 @@ Parameters:
   LevelGoal: the goal to check
 $$END
 */
-bool qGoalFailed(int goal_index) {
+static bool qGoalFailed(int goal_index) {
   int flags;
 
   LGoal_Value(VF_GET, LGSV_I_STATUS, &flags, goal_index);
@@ -6650,7 +6660,7 @@ Parameters:
   Object: the object to check players against
 $$END
 */
-int qPlayerClosest(int objhandle, int varnum) {
+static int qPlayerClosest(int objhandle, int varnum) {
   vector objpos, playerpos;
   float closest_dist = FLT_MAX;
   int closest_player = OBJECT_HANDLE_NONE;
@@ -6702,7 +6712,7 @@ Parameters:
   WeaponObject: The weapon object whose damage it returned
 $$END
 */
-float qObjDamage(int handle) {
+static float qObjDamage(int handle) {
   msafe_struct mstruct;
 
   mstruct.objhandle = handle;
@@ -6723,7 +6733,7 @@ Parameters:
   None
 $$END
 */
-float qFrametime() { return Game_GetFrameTime(); }
+static float qFrametime() { return Game_GetFrameTime(); }
 
 /*
 $$QUERY
@@ -6735,7 +6745,7 @@ Parameters:
         Object: Get object's max speed.
 $$END
 */
-float qAIQueryMaxSpeed(int objhandle) {
+static float qAIQueryMaxSpeed(int objhandle) {
   float max_speed = 0.0f;
   AI_Value(objhandle, VF_GET, AIV_F_MAX_SPEED, &max_speed);
   return max_speed;
