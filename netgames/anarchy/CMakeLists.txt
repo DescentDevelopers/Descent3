@@ -4,6 +4,7 @@ set(CPPS anarchy.cpp)
 set(NETGAME_MODULE anarchy)
 
 add_library(${NETGAME_MODULE} MODULE ${CPPS} ${HEADERS})
+set_target_properties(${NETGAME_MODULE} PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 
