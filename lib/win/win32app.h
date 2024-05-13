@@ -212,12 +212,7 @@ public:
   // detect if application can handle what we want of it.
   static bool GetSystemSpecs(const char *fname);
 
-//	These variables are only accessable to modules that have DD_ACCESS.
-#if defined(DD_ACCESS_RING)
 public:
-#else
-protected:
-#endif
   HWnd m_hWnd; // handles created by the system
   HInstance m_hInstance;
   unsigned m_Flags;
@@ -227,11 +222,7 @@ private:
   void os_init(); // initializes OS components.
 };
 
-// the following data is communicated by the application library to other DDAccessed libraries.
-#if defined(DD_ACCESS_RING)
-
 // system mouse info.
 extern short w32_msewhl_delta; // value of mouse wheel delta for frame
 
-#endif
 #endif

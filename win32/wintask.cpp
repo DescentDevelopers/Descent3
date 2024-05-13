@@ -44,9 +44,6 @@
  * $NoKeywords: $
  */
 
-//	Allow Full DD system access.
-#include "DDAccess.h"
-
 //	Library includes
 #include "TaskSystem.h"
 #include "pserror.h"

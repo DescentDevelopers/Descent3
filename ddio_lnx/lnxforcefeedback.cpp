@@ -40,7 +40,6 @@
  * $NoKeywords: $
  */
 
-#include "DDAccess.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
