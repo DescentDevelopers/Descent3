@@ -236,7 +236,7 @@ bool cf_SetSearchPath(const std::filesystem::path &path, const std::vector<std::
   return true;
 }
 
-// MTS: not used
+// TODO: MTS: unused?
 /**
  * Removes all search paths that have been added by cf_SetSearchPath
  */
