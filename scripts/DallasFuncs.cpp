@@ -1225,6 +1225,7 @@ void aShowHUDMessage(const char *format, ...) {
 
   va_start(args, format);
   _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
   mstruct.state = 0; // means all players
@@ -1252,6 +1253,7 @@ void aShowHUDMessageObj(const char *format, int objhandle, ...) {
 
   va_start(args, objhandle);
   _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
   mstruct.state = 1; // means specific player
@@ -1282,6 +1284,7 @@ void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ..
 
   va_start(args, format);
   _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
   mstruct.state = 0; // means all players
@@ -1312,6 +1315,7 @@ void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format,
 
   va_start(args, objhandle);
   _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
   mstruct.state = 1;
