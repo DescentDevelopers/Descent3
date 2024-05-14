@@ -1376,7 +1376,7 @@ Parameters:
 $$END
 */
 [[maybe_unused]]
-void aRainTurnOn(float density) {
+static void aRainTurnOn(float density) {
   msafe_struct mstruct;
 
   mstruct.scalar = density;
@@ -1398,7 +1398,7 @@ Parameters:
 $$END
 */
 [[maybe_unused]]
-void aRainTurnOff() {
+static void aRainTurnOff() {
   msafe_struct mstruct;
 
   mstruct.state = false;
@@ -2590,6 +2590,7 @@ Parameters:
   None.
 $$END
 */
+[[maybe_unused]]
 static void aEndLevel() {
   msafe_struct mstruct;
 
@@ -3903,7 +3904,7 @@ Parameters:
 $$END
 */
 [[maybe_unused]]
-void aPhysFlags(int set, int flags, int handle) {
+static void aPhysFlags(int set, int flags, int handle) {
   Obj_Value(handle, (set) ? VF_SET_FLAGS : VF_CLEAR_FLAGS, OBJV_I_PHYSICS_FLAGS, &flags);
 }
 
@@ -6979,7 +6980,8 @@ Parameters:
         Object: Get object's max speed.
 $$END
 */
-[[maybe_unused]] static float qAIQueryMaxSpeed(int objhandle) {
+[[maybe_unused]] 
+static float qAIQueryMaxSpeed(int objhandle) {
   float max_speed = 0.0f;
   AI_Value(objhandle, VF_GET, AIV_F_MAX_SPEED, &max_speed);
   return max_speed;
