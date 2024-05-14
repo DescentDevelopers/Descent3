@@ -673,6 +673,7 @@
 #include "cinematics.h"
 #include "multi_dll_mgr.h"
 #include "newui_core.h"
+#include "init.h"
 
 #ifdef _WIN32
 #define USE_DIRECTPLAY
@@ -697,19 +698,17 @@ bool Directplay_lobby_launched_game = false;
 #define IDV_LOADLEVEL 20
 #define IDV_OK 1
 #define IDV_CANCEL 2
-bool MenuLoadLevel(void);
+static bool MenuLoadLevel(void);
 #endif
 // for command line joining of games
-bool Auto_connected = false;
-
+static bool Auto_connected = false;
 //	runs command line options.
-bool ProcessCommandLine();
+static bool ProcessCommandLine();
 // new game selection
-bool MenuNewGame();
+static bool MenuNewGame();
 extern bool Mem_quick_exit;
 bool IsRestoredGame = false;
 //////////////////////////////////////////////////////////////////////////////
-extern bool Demo_looping;
 bool FirstGame = false;
 
 int MainMenu() {

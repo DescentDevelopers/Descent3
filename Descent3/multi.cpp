@@ -1709,7 +1709,6 @@
 #include "psrand.h"
 
 #include "../md5/md5.h"
-void MultiProcessShipChecksum(MD5 *md5, int ship_index);
 
 
 #include <algorithm>
