@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <windows.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
