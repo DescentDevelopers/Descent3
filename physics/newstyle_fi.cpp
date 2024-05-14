@@ -54,6 +54,10 @@ static int instance_depth = 0;
 
 static inline void ns_compute_movement_AABB();
 static inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz);
+/// Collide with a submodel
+/// - parameter nv: The number of verts in the poly.
+/// - parameter pointlist: A pointer to a list of pointers to points.
+/// - parameter bm: The bitmap handle if texturing.  ignored if flat shading.
 static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm);
 
 /// instance at specified point with specified orientation.
@@ -94,8 +98,8 @@ static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   mat->fvec.z = t * z * z + c;
 }
 
-float fvi_hit_param;
-bool fvi_check_param;
+static float fvi_hit_param;
+static bool fvi_check_param;
 
 static vector ns_min_xyz;
 static vector ns_max_xyz;
@@ -144,7 +148,7 @@ inline bool ns_movement_manual_AABB(vector *min_xyz, vector *max_xyz) {
 //					pointlist - a pointer to a list of pointers to points
 //					bm - the bitmap handle if texturing.  ignored if flat shading
 
-static void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
+void CollideSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
   int i;
   int j;
   vector colp;
@@ -273,7 +277,7 @@ void newstyle_StartInstanceMatrix(vector *pos, matrix *orient) {
 
 // instance at specified point with specified orientation
 // if angles==NULL, don't modify matrix.  This will be like doing an offset
-static void newstyle_StartInstanceAngles(vector *pos, angvec *angles) {
+void newstyle_StartInstanceAngles(vector *pos, angvec *angles) {
   matrix tm;
 
   if (angles == nullptr) {
@@ -287,7 +291,7 @@ static void newstyle_StartInstanceAngles(vector *pos, angvec *angles) {
 }
 
 // pops the old context
-static void newstyle_DoneInstance() {
+void newstyle_DoneInstance() {
   instance_depth--;
 
   ASSERT(instance_depth >= 0);
