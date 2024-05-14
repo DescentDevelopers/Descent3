@@ -1453,7 +1453,7 @@ void aLightningTurnOn(float check_delay, float prob) {
 
   mstruct.state = true;
   mstruct.scalar = check_delay;
-  mstruct.randval = (int)(prob * RAND_MAX);
+  mstruct.randval = static_cast<int>(prob * static_cast<float>(RAND_MAX));
 
   MSafe_CallFunction(MSAFE_WEATHER_LIGHTNING, &mstruct);
 }
@@ -6128,7 +6128,7 @@ bool qRandomChance(float prob) {
   if (prob == 0.0)
     return false;
 
-  return (((float)rand() / RAND_MAX) <= prob);
+  return ((static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) <= prob);
 }
 
 /*
@@ -6144,7 +6144,7 @@ Parameters:
   UpperLimit: the returned value will be lower than or equal to this value
 $$END
 */
-float qRandomValue(float low, float high) { return low + ((float)rand() / RAND_MAX) * (high - low); }
+float qRandomValue(float low, float high) { return low + (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * (high - low); }
 
 /*
 $$QUERY
