@@ -840,7 +840,7 @@ struct sound_menu {
       iTemp = 4;
       break;
     case SOUND_MIXER_CREATIVE_EAX:
-      iTemp = 6;
+      iTemp = 5;
       break;
     default:
       Int3(); //-wtf?
@@ -881,7 +881,7 @@ struct sound_menu {
     case 4:
       mixer_type = SOUND_MIXER_DS3D_16;
       break;
-    case 6:
+    case 5:
       mixer_type = SOUND_MIXER_CREATIVE_EAX;
       break;
     default:
