@@ -142,17 +142,17 @@ public:
     final_shutdown = true;
   };
 
-  void run() { Descent3(); };
+  void run() { Descent3(); }
 
   //	returns 0 if we pass to default window handler.
-  virtual int WndProc(HWnd hwnd, unsigned msg, unsigned wParam, long lParam) {
+  virtual LResult WndProc(HWnd hwnd, unsigned msg, WParam wParam, LParam lParam) override {
     if (final_shutdown) {
       return oeWin32Application::WndProc(hwnd, msg, wParam, lParam);
     }
 
     switch (msg) {
     case WM_ACTIVATEAPP: {
-      if (wParam == false) {
+      if (wParam == FALSE) {
         this->deactivate();
 
         if (!shutdown) {

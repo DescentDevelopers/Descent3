@@ -61,11 +61,10 @@
 osTask::osTask(unsigned (*func)(void *), tTaskPriority priority, void *parm) {
   int pri;
 
-  task_os_handle = 0;
-  task_os_id = 0;
+  task_os_handle = nullptr;
 
-  task_os_handle = (unsigned)CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)func, (LPVOID)parm, 0, (LPDWORD)&task_os_id);
-  if (task_os_handle == 0) {
+  task_os_handle = CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)func, (LPVOID)parm, 0, nullptr);
+  if (task_os_handle == nullptr) {
     Int3(); // Get Samir.
   }
 
@@ -109,7 +108,7 @@ void osTask::resume() // resumes task
 //	---------------------------------------------------------------------------
 //	osEvent implementation
 //	---------------------------------------------------------------------------
-osEvent::osEvent(char *name) { event_os_handle = (unsigned)CreateEvent(NULL, TRUE, FALSE, name); }
+osEvent::osEvent(char *name) { event_os_handle = CreateEvent(NULL, TRUE, FALSE, name); }
 
 osEvent::~osEvent() {
   if (event_os_handle)
@@ -130,10 +129,8 @@ void osEvent::clear() {
 
 // block until signaled
 bool osEvent::block(int timeout) {
-  DWORD res;
-
   if (event_os_handle) {
-    res = WaitForSingleObject((HANDLE)event_os_handle, (timeout == -1) ? INFINITE : timeout);
+    DWORD res = WaitForSingleObject((HANDLE)event_os_handle, (timeout == -1) ? INFINITE : timeout);
     if (res == WAIT_OBJECT_0)
       return 1;
     else if (res == WAIT_ABANDONED)

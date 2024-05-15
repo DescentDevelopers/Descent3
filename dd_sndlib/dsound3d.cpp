@@ -58,7 +58,7 @@
 
 static struct t_sb_loop_thread_data {
   win_llsSystem *m_ll_sndsys;
-  int thread_handle;
+  uintptr_t thread_handle;
   short no_callbacks;
   bool request_kill;
   bool thread_alive;
