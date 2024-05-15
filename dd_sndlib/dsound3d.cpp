@@ -75,6 +75,12 @@ inline void sb_loop_thread_clean_buffer(sound_buffer_info *sb) {
   sb->s->playing = 0;
   sb->s->kill_me = true;
 
+  // TODO: investigate why this is -1 sometimes, 32bit builds seem to work by
+  // chance while 64bit builds crash without this ckeck
+  if (sb->m_sound_index < 0) {
+    return;
+  }
+
   if (SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count > 0) {
     SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count--;
     // DUPSND	if (SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count == 0) {
