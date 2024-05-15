@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "Scripts")
+
 set(CPPS
   $<$<PLATFORM_ID:Darwin,Linux>:
     linux_lib.cpp
@@ -79,6 +81,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(HOG_NAME "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(HOG_NAME "osx")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(HOG_NAME "win")
 endif()
 
 add_custom_target(HogFull
