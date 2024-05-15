@@ -319,26 +319,22 @@ extern int Times_game_restored;
 // available for all.
 int Quicksave_game_slot = -1;
 
-// Quicksave function
 void QuickSaveGame() {
-    // Check if game is in multiplayer mode
   if (Game_mode & GM_MULTI) {
     DoMessageBox(TXT_ERROR, TXT_CANT_SAVE_MULTI, MSGBOX_OK);
     return;
   }
 
-// Check if game is in editor mode or not playing a mission
 #ifdef _DEBUG
   if (GetFunctionMode() == EDITOR_GAME_MODE || !Current_mission.filename) {
     DoMessageBox(TXT_ERROR, "You need to be playing a mission.", MSGBOX_OK);
     return;
   }
 #endif
-  // Check if quicksave slot is defined, if not run a dialog
+
   if (Quicksave_game_slot == -1) {
     SaveGameDialog();
   } else {
-    // If defined, then verify the slot and save
     char filename[PSFILENAME_LEN + 1];
     char pathname[PSPATHNAME_LEN];
     char desc[GAMESAVE_DESCLEN + 1];
@@ -367,7 +363,6 @@ void QuickSaveGame() {
   }
 }
 
-// Savegame dialog function
 void SaveGameDialog() {
   newuiTiledWindow wnd;
   newuiSheet *sheet;
@@ -379,13 +374,11 @@ void SaveGameDialog() {
   char desc[GAMESAVE_DESCLEN + 1];
   bool occupied_slot[N_SAVE_SLOTS];
 
-  // Check if we are in multiplayer mode
   if (Game_mode & GM_MULTI) {
     DoMessageBox(TXT_ERROR, TXT_CANT_SAVE_MULTI, MSGBOX_OK);
     return;
   }
 
-// Check if game is in editor mode or not playing a mission
 #ifdef _DEBUG
   if (!Current_mission.filename) {
     DoMessageBox(TXT_ERROR, "You need to be playing a mission.", MSGBOX_OK);
@@ -397,7 +390,6 @@ void SaveGameDialog() {
   ddio_MakePath(savegame_dir, Base_directory, "savegame", NULL);
   //	ddio_MakePath(pathname, savegame_dir, "*.sav", NULL); -unused
 
-  // create savegame directory if it didn't exist before.
   if (!ddio_DirExists(savegame_dir)) {
     if (!ddio_CreateDir(savegame_dir)) {
       DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
@@ -442,7 +434,6 @@ void SaveGameDialog() {
   sheet->NewGroup(NULL, GAMESAVE_WND_W - 148, GAMESAVE_WND_H - 100);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
-  // Mouse clicks from gameplay will be read by the dialog without this flush
   ddio_MouseQueueFlush();
 
   // Handle ui interactions
@@ -502,7 +493,6 @@ void SaveGameDialog() {
     }
   } while (res != UID_CANCEL);
 
-  // Close and destroy window
   wnd.Close();
   wnd.Destroy();
 }
@@ -515,7 +505,6 @@ typedef struct tLoadGameDialogData {
 } tLoadGameDialogData;
 
 #if defined(LINUX)
-// Callback function for load game dialog
 void LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 #else
 void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
@@ -571,7 +560,6 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
   }
 }
 
-// Load game dialog function
 bool LoadGameDialog() {
   tLoadGameDialogData lgd_data;
   newuiTiledWindow wnd;
@@ -585,7 +573,6 @@ bool LoadGameDialog() {
   char desc[GAMESAVE_DESCLEN + 1];
   bool occupied_slot[N_SAVE_SLOTS], loadgames_avail = false;
 
-  // Check if the game is in multiplayer mode
   if (Game_mode & GM_MULTI) {
     DoMessageBox(TXT_ERROR, TXT_CANT_LOAD_MULTI, MSGBOX_OK);
     return false;
@@ -615,59 +602,42 @@ bool LoadGameDialog() {
   lgd_data.cur_slot = SAVE_HOTSPOT_ID;
   lgd_data.chunk.bm_array = NULL;
 
-  // Loop through all the save slots to generate save slot entries in the UI
   for (i = 0; i < N_SAVE_SLOTS; i++) {
     FILE *fp;
     bool ingroup = (i == 0 || i == (N_SAVE_SLOTS - 1)) ? true : false;
 
-    // Construct the filename for the save slot
     snprintf(filename, sizeof(filename), "saveg00%d", i);
-    // Construct the full path for the save file
     ddio_MakePath(pathname, savegame_dir, filename, NULL);
 
     occupied_slot[i] = false;
-    // Attempt to open the save file in read mode
     fp = fopen(pathname, "rb");
     if (fp) {
-      // Declare variables to handle the bitmap for the save slot
       int bm_handle;
       int *pbm_handle;
-      // Close the file as we just need to check its existence
       fclose(fp);
 
-      // Check if the current slot is the one we are focusing on
       if (lgd_data.cur_slot == (SAVE_HOTSPOT_ID + i)) {
-        // If so, we will use pbm_handle to store the bitmap handle
         pbm_handle = &bm_handle;
       } else {
-        // Otherwise, set pbm_handle to NULL
         pbm_handle = NULL;
       }
 
-      // Retrieve the game state information from the save file
       if (GetGameStateInfo(pathname, desc, pbm_handle)) {
-        // If the game state info is valid, add a hotspot with the description to the UI sheet
         sheet->AddHotspot(desc, GAMESAVE_SLOT_W, GAMESAVE_SLOT_H, SAVE_HOTSPOT_ID + i, ingroup);
-        occupied_slot[i] = true; // Mark the slot as occupied
-        loadgames_avail = true; // Set the flag indicating that loadable games are available
+        occupied_slot[i] = true;
+        loadgames_avail = true;
 
-        // If a bitmap handle was retrieved and is valid
         if (pbm_handle && bm_handle > 0) {
-          // If a chunked bitmap already exists, destroy it
           if (lgd_data.chunk.bm_array) {
             bm_DestroyChunkedBitmap(&lgd_data.chunk);
           }
-          // Create a new chunked bitmap using the handle
           bm_CreateChunkedBitmap(bm_handle, &lgd_data.chunk);
-          // Free the bitmap handle
           bm_FreeBitmap(bm_handle);
         }
       } else {
-        // If the game state info is invalid, add a hotspot indicating an illegal save game
         sheet->AddHotspot(TXT_ILLEGALSAVEGAME, GAMESAVE_SLOT_W, GAMESAVE_SLOT_H, SAVE_HOTSPOT_ID + i, ingroup);
       }
     } else {
-      // If the save file does not exist, add a hotspot indicating an empty slot
       sheet->AddHotspot(TXT_EMPTY, GAMESAVE_SLOT_W, GAMESAVE_SLOT_H, SAVE_HOTSPOT_ID + i, ingroup);
     }
   }
@@ -686,7 +656,6 @@ bool LoadGameDialog() {
   wnd.SetData(&lgd_data);
   wnd.SetOnDrawCB(LoadGameDialogCB);
 
-  // Mouse clicks from gameplay will be read by the dialog without this flush
   ddio_MouseQueueFlush();
 
   // Handle ui interactions
@@ -715,7 +684,6 @@ loadgame_fail:
     bm_DestroyChunkedBitmap(&lgd_data.chunk);
   }
   
-  // Close and destroy window
   wnd.Close();
   wnd.Destroy();
 
