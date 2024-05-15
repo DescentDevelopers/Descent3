@@ -282,9 +282,6 @@ int LGSObjEffects(CFILE *fp, object *op);
 //	loads weapon batter info
 int LGSObjWB(CFILE *fp, object *op);
 
-//	loads script
-//@@vector *LGSScript(CFILE *fp, script_info *script, ubyte *is_scripted, int *memsize);
-
 // loads special object info
 int LGSObjSpecial(CFILE *fp, object *op);
 
