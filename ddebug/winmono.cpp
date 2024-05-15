@@ -501,7 +501,9 @@ void con_mputc(int n, char c) {
 }
 
 void copy_row(int nwords, short *src, short *dest1, short *dest2) {
-
+// TODO: disabled for now to get the x64 build compiling
+// do we even need all this old 'mono' stuff anymore?
+#ifndef _WIN64
   __asm {
 		mov ecx,nwords
 		mov esi,src
@@ -526,6 +528,7 @@ void copy_row(int nwords, short *src, short *dest1, short *dest2) {
 		loop		rowloop				
 		done:
   }
+#endif // _WIN64
 }
 
 void con_scroll(int n) {
