@@ -1,0 +1,8 @@
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+ add_subdirectory(dd_grwin32)
+ add_subdirectory(dd_vidwin32)
+ add_subdirectory(dd_sndlib)
+else()
+ add_subdirectory(ddvid_lnx)
+ add_subdirectory(dd_lnxsound)
+endif()
