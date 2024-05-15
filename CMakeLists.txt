@@ -95,7 +95,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
-  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx/$<LOWER_CASE:${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}>")
+  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
