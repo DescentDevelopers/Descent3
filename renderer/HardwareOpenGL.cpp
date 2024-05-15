@@ -2190,8 +2190,6 @@ void rend_Screenshot(int bm_handle) {
       dest_data[(((h - 1) - i) * w) + t] = GR_RGB16(r, g, b);
     }
   }
-
-  mem_free(temp_data);
 }
 
 // Enables/disables writes the depth buffer
