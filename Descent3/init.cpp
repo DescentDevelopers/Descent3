@@ -1533,6 +1533,13 @@ void InitIOSystems(bool editor) {
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
   extra13_hid = cf_OpenLibrary(fullname);
 
+  // last library opened is the first to be searched for DLLs, so put this one
+  // at the end to find our newly build script DLLs first
+#ifdef _WIN32
+  ddio_MakePath(fullname, LocalD3Dir, "d3-win.hog", NULL);
+  sys_hid = cf_OpenLibrary(fullname);
+#endif
+
   // Check to see if there is a -mission command line option
   // if there is, attempt to open that hog/mn3 so it can override such
   // things as the mainmenu movie, or loading screen
