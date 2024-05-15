@@ -186,7 +186,6 @@ add_subdirectory(unzip)
 add_subdirectory(vecmat)
 add_subdirectory(libmve)
 add_subdirectory(md5)
-add_subdirectory(libacm)
 add_subdirectory(Descent3)
 
 add_subdirectory(tools)
