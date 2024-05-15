@@ -95,7 +95,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
-  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx")
+  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx/$<LOWER_CASE:${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}>")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
@@ -108,10 +108,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 
-  find_library(DSOUND_LIBRARY NAMES dsound REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DINPUT_LIBRARY NAMES dinput REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DXGUID_LIBRARY NAMES dxguid REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DDRAW_LIBRARY NAMES ddraw REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+  add_compile_definitions(DIRECTINPUT_VERSION=0x0500)
+  find_library(DSOUND_LIBRARY NAMES dsound REQUIRED)
+  find_library(DINPUT_LIBRARY NAMES dinput REQUIRED)
+  find_library(DXGUID_LIBRARY NAMES dxguid REQUIRED)
+  find_library(DDRAW_LIBRARY NAMES ddraw REQUIRED)
 
   if(MSVC AND CMAKE_CXX_SIMULATE_ID STREQUAL "")
     add_compile_options("/we4150")  # deletion of pointer to incomplete type 'type'; no destructor called
