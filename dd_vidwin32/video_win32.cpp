@@ -47,7 +47,6 @@
  * $NoKeywords: $
  */
 
-#include "DDAccess.h" // DD Access enabled
 
 #include "ddvidlib.h"
 #include "pserror.h"

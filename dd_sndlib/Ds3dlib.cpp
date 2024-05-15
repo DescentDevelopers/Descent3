@@ -203,9 +203,6 @@
  * $NoKeywords: $
  */
 
-//	NEED THIS SINCE DDSNDLIB is a DD library.
-#include "DDAccess.h"
-
 #include "ds3dlib_internal.h"
 
 #include <stdio.h>

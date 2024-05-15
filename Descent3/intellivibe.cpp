@@ -41,7 +41,6 @@
  * $NoKeywords: $
  */
 
-#define DD_ACCESS_RING
 #include "vibeinterface.h"
 
 #ifndef WIN32

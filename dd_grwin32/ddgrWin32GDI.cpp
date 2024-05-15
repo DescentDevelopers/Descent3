@@ -73,7 +73,6 @@
  * $NoKeywords: $
  */
 
-#include "DDAccess.h" //	Allow this module full DD access
 #include "ddgrWin32.h"
 #include "ddgrWin32GDI.h"
 #include "Application.h"
