@@ -103,7 +103,6 @@ static CFILE *open_file_in_lib(const char *filename);
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const char *libname) {
   FILE *fp;
-  char id[HOG_TAG_LEN];
   int i;
   uint32_t offset;
   library *lib;
@@ -147,11 +146,6 @@ int cf_OpenLibrary(const char *libname) {
     mem_free(lib);
     return 0; // CF_NO_FILE;
   }
-  if (!fread(id, HOG_TAG_LEN, 1, fp) || strncmp(id, HOG_TAG_STR, HOG_TAG_LEN)) {
-    fclose(fp);
-    mem_free(lib);
-    return 0; // CF_BAD_FILE;
-  }
   // check if this if first library opened
   if (first_time) {
     atexit(cf_Close);
@@ -178,7 +172,7 @@ int cf_OpenLibrary(const char *libname) {
   // DAJ	offset = INTEL_INT(header.file_data_offset);
   offset = header.file_data_offset;
   // Go to index start
-  fseek(fp, HOG_TAG_LEN + HOG_HDR_SIZE, SEEK_SET);
+  fseek(fp, HOG_HDR_SIZE, SEEK_SET);
 
   // read in index table
   for (i = 0; i < lib->nfiles; i++) {
@@ -200,7 +194,7 @@ int cf_OpenLibrary(const char *libname) {
   lib->handle = ++lib_handle;
   // Save the file pointer
   lib->file = fp;
-  // Sucess.  Return the handle
+  // Success.  Return the handle
   return lib->handle;
 }
 
@@ -1285,57 +1279,6 @@ void cf_LibraryFindClose() {
   cfile_search_library = nullptr;
   cfile_search_curr_index = 0;
   cfile_search_ispattern = false;
-}
-
-// returns hog cfile info, using a library handle opened via cf_OpenLibrary.
-bool cf_ReadHogFileEntry(int libr, const char *filename, tHogFileEntry *entry, int *fileoffset) {
-  // searches through the open HOG files, and opens a file if it finds it in any of the libs
-  library *lib;
-
-  lib = Libraries;
-
-  while (lib) {
-    int i;
-
-    if (lib->handle == libr || libr == -1) {
-      // Do binary search for the file
-      int first = 0, last = lib->nfiles - 1, c, found = 0;
-      do {
-
-        i = (first + last) / 2;
-        c = stricmp(filename, lib->entries[i].name); // compare to current
-
-        if (c == 0) { // found it
-          found = 1;
-          break;
-        }
-
-        if (first >= last) // exhausted search
-          break;
-
-        if (c > 0) // search key after check key
-          first = i + 1;
-        else // search key before check key
-          last = i - 1;
-
-      } while (true);
-
-      if (found) {
-        strcpy(entry->name, lib->entries[i].name);
-        entry->len = lib->entries[i].length;
-        entry->flags = lib->entries[i].flags;
-        entry->timestamp = lib->entries[i].timestamp;
-        *fileoffset = lib->entries[i].offset;
-        return true;
-      } else if (lib->handle == libr) {
-        break;
-      }
-    }
-
-    lib = lib->next;
-  }
-
-  return false;
 }
 
 bool cf_IsFileInHog(const char *filename, const char *hogname) {
