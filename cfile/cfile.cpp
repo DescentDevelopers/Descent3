@@ -900,7 +900,6 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
   }
   mprintf(
       (1, "Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name, errno));
-  ThrowCFileError(CFE_READING, cfp, error_msg);
   return 0;
 }
 // The following functions read numeric vales from a CFILE.  All values are
