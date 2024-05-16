@@ -387,7 +387,7 @@ BOOL WINAPI d3d_Enumerate2DDevice(LPGUID lpGUID, LPSTR lpDeviceDescription, LPST
 }
 
 // Enumerates the zbuffer types we have to choose from
-long WINAPI d3d_EnumZPixelFormats(LPDDPIXELFORMAT pixfmt, LPVOID lpContext) {
+HRESULT WINAPI d3d_EnumZPixelFormats(LPDDPIXELFORMAT pixfmt, LPVOID lpContext) {
   if (NumZDepths >= MAX_ZDEPTHS)
     return D3DENUMRET_OK;
   if (!(pixfmt->dwFlags & DDPF_ZBUFFER))
@@ -399,7 +399,7 @@ long WINAPI d3d_EnumZPixelFormats(LPDDPIXELFORMAT pixfmt, LPVOID lpContext) {
 }
 
 // Enumerates the texture pixel formats we have to choose from
-long WINAPI d3d_EnumTexturePixelFormats(LPDDPIXELFORMAT pixfmt, LPVOID lpContext) {
+HRESULT WINAPI d3d_EnumTexturePixelFormats(LPDDPIXELFORMAT pixfmt, LPVOID lpContext) {
   if (Num_texture_formats >= MAX_TEXTURE_FORMATS)
     return D3DENUMRET_CANCEL;
 

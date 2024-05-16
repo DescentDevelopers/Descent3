@@ -453,8 +453,8 @@ BOOL CD3LaunchDlg::OnInitDialog()
 	if(DlgHeightModifier>0.99 && DlgHeightModifier<1.01) DlgHeightModifier=1.0;
 
 	// Calculate the size and position of the background bitmap
-	m_size.cx = long(m_bmInfo.bmWidth*DlgWidthModifier);
-	m_size.cy = long(m_bmInfo.bmHeight*DlgHeightModifier);
+  m_size.cx = int32_t(m_bmInfo.bmWidth*DlgWidthModifier);
+  m_size.cy = int32_t(m_bmInfo.bmHeight*DlgHeightModifier);
 
 	m_pt.x = 0;		
 	m_pt.y = 0;
@@ -1868,7 +1868,7 @@ void CD3LaunchDlg::OnOK()
 	// Trick main window into thinking that button has been clicked
 	ctrl_id=selected_button->GetDlgCtrlID();
 	hwnd=selected_button->m_hWnd;
-	PostMessage(WM_COMMAND,(BN_CLICKED<<16) + ctrl_id,(long)hwnd);
+  PostMessage(WM_COMMAND,(BN_CLICKED<<16) + ctrl_id,(LPARAM)hwnd);
 
 	//CDialog::OnOK();
 }
