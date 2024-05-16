@@ -572,12 +572,12 @@ const char *ddio_GetCDDrive(const char *vol) {
 
 #define MAX_FSTYPE_LEN 30
   static char drivepath[10];
-  unsigned long volflags;
+  DWORD volflags;
   int i;
   char volume[_MAX_PATH];
   char fsname[MAX_FSTYPE_LEN] = "";
-  unsigned long serial;
-  unsigned long component;
+  DWORD serial;
+  DWORD component;
 
   strcpy(drivepath, "c:\\");
 

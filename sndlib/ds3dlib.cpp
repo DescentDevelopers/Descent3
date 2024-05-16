@@ -242,7 +242,7 @@ DSSTREAM m_sb_info;
 char m_sound_device_name[256] = ""; // set by set sound card
 
 // Loads a sound buffer with data
-long LoadSoundData(LPDIRECTSOUNDBUFFER lp_dsb, char *sound_data_ptr, ulong total_bytes);
+HRESULT LoadSoundData(LPDIRECTSOUNDBUFFER lp_dsb, char *sound_data_ptr, DWORD total_bytes);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1213,8 +1213,8 @@ bool win_llsSystem::StartStreaming(void) {
 }
 
 // Creates a 2d, 3d, or Primary direct sound buffer
-long win_llsSystem::CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_lp_dsb, LPDIRECTSOUND3DBUFFER *lp_lp_dsb_3d,
-                                   ulong sound_bytes, ulong frequency, bool f_is_stereo, bool f_is_16_bit) {
+HRESULT win_llsSystem::CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_lp_dsb, LPDIRECTSOUND3DBUFFER *lp_lp_dsb_3d,
+                                   DWORD sound_bytes, DWORD frequency, bool f_is_stereo, bool f_is_16_bit) {
   DSBUFFERDESC dsbd;
   tWAVEFORMATEX fmt;
   HRESULT result = DS_OK;
@@ -1885,7 +1885,7 @@ void win_llsSystem::StopSound(int sound_uid, unsigned char f_immediately) {
 }
 
 // Copies sound data from the external sound data block to an individual sound buffer
-long LoadSoundData(LPDIRECTSOUNDBUFFER lp_dsb, char *sound_data_ptr, ulong total_bytes) {
+HRESULT LoadSoundData(LPDIRECTSOUNDBUFFER lp_dsb, char *sound_data_ptr, DWORD total_bytes) {
   LPVOID ptr1, ptr2;
   DWORD len1, len2;
   HRESULT result;

@@ -1957,7 +1957,7 @@ int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from) {
 // functions to get the status of a RAS connection
 unsigned int psnet_ras_status() {
   int rval;
-  unsigned long size, num_connections, i;
+  DWORD size, num_connections, i;
   RASCONN rasbuffer[25];
   HINSTANCE ras_handle;
   unsigned long rasip = 0;
@@ -2012,7 +2012,7 @@ unsigned int psnet_ras_status() {
 
   for (i = 0; i < num_connections; i++) {
     RASCONNSTATUS status;
-    unsigned long size;
+    DWORD size;
 
     mprintf((0, "Connection %d:\n", i));
     mprintf((0, "Entry Name: %s\n", rasbuffer[i].szEntryName));
