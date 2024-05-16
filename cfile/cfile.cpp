@@ -16,13 +16,12 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdarg>
+#include <cerrno>
+#include <cctype>
 #ifndef __LINUX__
 // Non-Linux Build Includes
 #include <io.h>
@@ -42,15 +41,15 @@
 // Library structures
 typedef struct {
   char name[PSFILENAME_LEN + 1]; // just the filename part
-  int offset;                    // offset into library file
-  int length;                    // length of this file
-  ulong timestamp;               // time and date of file
-  int flags;                     // misc flags
+  uint32_t offset;               // offset into library file
+  uint32_t length;               // length of this file
+  uint32_t timestamp;            // time and date of file
+  uint32_t flags;                // misc flags
 } library_entry;
 
 typedef struct library {
   char name[_MAX_PATH]; // includes path + filename
-  int nfiles;
+  uint32_t nfiles;
   library_entry *entries;
   struct library *next;
   int handle; // identifier for this lib
@@ -76,7 +75,7 @@ int N_paths = 0;
 #define MAX_EXTENSIONS 100
 ext_entry extensions[MAX_EXTENSIONS];
 int N_extensions;
-library *Libraries = NULL;
+library *Libraries = nullptr;
 int lib_handle = 0;
 
 // Structure thrown on disk error
@@ -105,7 +104,8 @@ static CFILE *open_file_in_lib(const char *filename);
 int cf_OpenLibrary(const char *libname) {
   FILE *fp;
   char id[HOG_TAG_LEN];
-  int i, offset;
+  int i;
+  uint32_t offset;
   library *lib;
   static int first_time = 1;
   tHogHeader header;
@@ -252,11 +252,11 @@ int cf_SetSearchPath(const char *path, ...) {
   va_list exts;
   va_start(exts, path);
   const char *ext = va_arg(exts, const char *);
-  if (ext == NULL)
+  if (ext == nullptr)
     paths[N_paths].specific = 0;
   else {
     paths[N_paths].specific = 1;
-    while (ext != NULL) {
+    while (ext != nullptr) {
       if (N_extensions >= MAX_EXTENSIONS) {
         va_end(exts);
         return 0;
@@ -308,8 +308,7 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   }
 
   // now do a binary search for the file entry
-  int i;
-  int first = 0, last = lib->nfiles - 1, c, found = 0;
+  int i, first = 0, last = lib->nfiles - 1, c, found = 0;
 
   do {
     i = (first + last) / 2;
@@ -785,7 +784,7 @@ got_file:;
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
-int cfilelength(CFILE *cfp) { return cfp->size; }
+uint32_t cfilelength(CFILE *cfp) { return cfp->size; }
 
 // Closes an open CFILE.
 // Parameters:  cfile - the file pointer returned by cfopen()
@@ -854,8 +853,9 @@ int cfgetc(CFILE *cfp) {
   return c;
 }
 // Just like stdio fseek(), except works on a CFILE
-int cfseek(CFILE *cfp, long int offset, int where) {
-  int c, goal_position;
+int cfseek(CFILE *cfp, long offset, int where) {
+  int c;
+  long goal_position;
   switch (where) {
   case SEEK_SET:
     goal_position = offset;
@@ -875,7 +875,7 @@ int cfseek(CFILE *cfp, long int offset, int where) {
 }
 
 // Just like stdio ftell(), except works on a CFILE
-int cftell(CFILE *cfp) { return cfp->position; }
+long cftell(CFILE *cfp) { return cfp->position; }
 
 // Returns true if at EOF
 int cfeof(CFILE *cfp) { return (cfp->position >= cfp->size); }
@@ -947,11 +947,9 @@ int16_t cf_ReadShort(CFILE *cfp) {
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int8_t cf_ReadByte(CFILE *cfp) {
-  int i;
-  i = cfgetc(cfp);
-  if (i == EOF)
-    ThrowCFileError(CFE_READING, cfp, cfeof(cfp) ? eof_error : strerror(errno));
-  return (int8_t)i;
+  int8_t i;
+  cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
+  return i;
 }
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -965,17 +963,7 @@ float cf_ReadFloat(CFILE *cfp) {
 double cf_ReadDouble(CFILE *cfp) {
   double f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
-#ifdef OUTRAGE_BIG_ENDIAN
-  {
-    double t;
-    int *sp = (int *)&f;
-    int *dp = (int *)&t;
-    dp[0] = SWAPINT(sp[1]);
-    dp[1] = SWAPINT(sp[0]);
-    f = t;
-  }
-#endif
-  return f;
+  return D3::convert_le<double>(f);
 }
 // Reads a string from a CFILE.  If the file is type binary, this
 // function reads until a NULL or EOF is found.  If the file is text,
@@ -988,7 +976,7 @@ double cf_ReadDouble(CFILE *cfp) {
 // Does not generate an exception on EOF
 int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
   int c;
-  uint count;
+  int count;
   char *bp;
   if (n == 0)
     return -1;
@@ -1083,25 +1071,16 @@ void cf_WriteByte(CFILE *cfp, int8_t b) {
 
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteFloat(CFILE *cfp, float_t f) {
+void cf_WriteFloat(CFILE *cfp, float f) {
   float t = INTEL_FLOAT(f);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteDouble(CFILE *cfp, double_t d) {
-#ifdef OUTRAGE_BIG_ENDIAN
-  {
-    double t;
-    int *sp = (int *)&d;
-    int *dp = (int *)&t;
-    dp[0] = SWAPINT(sp[1]);
-    dp[1] = SWAPINT(sp[0]);
-    d = t;
-  }
-#endif
-  cf_WriteBytes((ubyte *)&d, sizeof(d), cfp);
+void cf_WriteDouble(CFILE *cfp, double d) {
+  auto t = D3::convert_le<double>(d);
+  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
