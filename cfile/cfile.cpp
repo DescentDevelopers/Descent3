@@ -22,6 +22,7 @@
 #include <cstdarg>
 #include <cerrno>
 #include <cctype>
+#include <memory>
 #ifndef __LINUX__
 // Non-Linux Build Includes
 #include <io.h>
@@ -49,11 +50,11 @@ typedef struct {
 
 typedef struct library {
   char name[_MAX_PATH]; // includes path + filename
-  uint32_t nfiles;
-  library_entry *entries;
-  struct library *next;
-  int handle; // identifier for this lib
-  FILE *file; // pointer to file for this lib, if no one using it
+  uint32_t nfiles = 0;
+  library_entry *entries = nullptr;
+  std::shared_ptr<library> next;
+  int handle = 0; // identifier for this lib
+  FILE *file = nullptr; // pointer to file for this lib, if no one using it
 } library;
 
 // entry in extension->path table
@@ -75,7 +76,7 @@ int N_paths = 0;
 #define MAX_EXTENSIONS 100
 ext_entry extensions[MAX_EXTENSIONS];
 int N_extensions;
-library *Libraries = nullptr;
+std::shared_ptr<library> Libraries;
 int lib_handle = 0;
 
 // Structure thrown on disk error
@@ -105,13 +106,12 @@ int cf_OpenLibrary(const char *libname) {
   FILE *fp;
   int i;
   uint32_t offset;
-  library *lib;
   static int first_time = 1;
   tHogHeader header;
   tHogFileEntry entry;
 
-  // allocation library stucture
-  lib = (library *)mem_malloc(sizeof(*lib));
+  // allocation library structure
+  std::shared_ptr<library> lib = std::make_shared<library>();
   if (!lib) { // malloc error
     return 0;
   }
@@ -130,7 +130,6 @@ int cf_OpenLibrary(const char *libname) {
   }
   char t_out[_MAX_PATH];
   if (!cf_FindRealFileNameCaseInsenstive(resolve_dir, resolve_name, t_out)) {
-    mem_free(lib);
     return 0; // CF_NO_FILE
   }
   // re-assemble
@@ -143,7 +142,6 @@ int cf_OpenLibrary(const char *libname) {
 #endif
   fp = fopen(lib->name, "rb");
   if (fp == nullptr) {
-    mem_free(lib);
     return 0; // CF_NO_FILE;
   }
   // check if this if first library opened
@@ -154,7 +152,6 @@ int cf_OpenLibrary(const char *libname) {
   //	read HOG header
   if (!ReadHogHeader(fp, &header)) {
     fclose(fp);
-    mem_free(lib);
     return 0; // CF_BAD_LIB;
   }
   // DAJ	lib->nfiles = INTEL_INT(header.nfiles);
@@ -163,7 +160,6 @@ int cf_OpenLibrary(const char *libname) {
   lib->entries = (library_entry *)mem_malloc(sizeof(library_entry) * lib->nfiles);
   if (!lib->entries) { // malloc error
     fclose(fp);
-    mem_free(lib);
     return 0;
   }
   lib->next = Libraries;
@@ -203,7 +199,7 @@ int cf_OpenLibrary(const char *libname) {
  * @param handle the handle returned by cf_OpenLibrary()
  */
 void cf_CloseLibrary(int handle) {
-  library *lib, *prev = nullptr;
+  std::shared_ptr<library> lib, prev;
   for (lib = Libraries; lib; prev = lib, lib = lib->next) {
     if (lib->handle == handle) {
       if (prev)
@@ -213,7 +209,6 @@ void cf_CloseLibrary(int handle) {
       if (lib->file)
         fclose(lib->file);
       mem_free(lib->entries);
-      mem_free(lib);
       return; // successful close
     }
   }
@@ -221,11 +216,10 @@ void cf_CloseLibrary(int handle) {
 
 // Closes down the CFILE system, freeing up all data, etc.
 void cf_Close() {
-  library *next;
+  std::shared_ptr<library> next;
   while (Libraries) {
     next = Libraries->next;
     mem_free(Libraries->entries);
-    mem_free(Libraries);
     Libraries = next;
   }
 }
@@ -285,9 +279,8 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   if (libhandle <= 0)
     return nullptr;
 
-  library *lib;
   CFILE *cfile;
-  lib = Libraries;
+  std::shared_ptr<library> lib = Libraries;
 
   // find the library that we want to use
   while (lib) {
@@ -354,9 +347,8 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
 
 // searches through the open HOG files, and opens a file if it finds it in any of the libs
 CFILE *open_file_in_lib(const char *filename) {
-  library *lib;
   CFILE *cfile;
-  lib = Libraries;
+  std::shared_ptr<library> lib = Libraries;
   while (lib) {
     int i;
     // Do binary search for the file
@@ -785,7 +777,7 @@ uint32_t cfilelength(CFILE *cfp) { return cfp->size; }
 void cfclose(CFILE *cfp) {
   // Either give the file back to the library, or close it
   if (cfp->lib_handle != -1) {
-    library *lib;
+    std::shared_ptr<library> lib;
     for (lib = Libraries; lib; lib = lib->next) {
       if (lib->handle == cfp->lib_handle) { // found the library
         // if library doesn't already have a file, give it this one
@@ -1207,7 +1199,7 @@ unsigned int cf_GetfileCRC(char *src) {
 }
 
 char cfile_search_wildcard[256];
-library *cfile_search_library = nullptr;
+std::shared_ptr<library> cfile_search_library;
 int cfile_search_curr_index = 0;
 bool cfile_search_ispattern = false;
 //	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
@@ -1282,7 +1274,7 @@ void cf_LibraryFindClose() {
 }
 
 bool cf_IsFileInHog(const char *filename, const char *hogname) {
-  library *lib = Libraries;
+  std::shared_ptr<library> lib = Libraries;
 
   while (lib) {
     if (stricmp(lib->name, hogname) == 0) {
