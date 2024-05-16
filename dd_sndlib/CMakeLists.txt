@@ -3,8 +3,6 @@ set(HEADERS
   ds3dlib_internal.h
   eax.h
   eax2.h
-  ia3dapi.h
-  Ia3dutil.h
   vmanpset.h)
 set(CPPS
   ddsoundload.cpp

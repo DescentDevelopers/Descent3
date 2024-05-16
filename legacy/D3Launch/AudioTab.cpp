@@ -162,7 +162,6 @@
 #include "ia3dutil.h"
 #include "eax.h"
 
-//#include "VerifyA3D.h"
 #include "OS_Config.h"
 
 
@@ -190,7 +189,7 @@ static char THIS_FILE[] = __FILE__;
 #define DS8BIT_MIXER		0x02
 #define DS16BIT_MIXER	0x04
 #define DS3D_MIXER		0x08
-#define AUREAL_MIXER		0x10
+#define AUREAL_MIXER		0x10	// Unused
 #define EAX_MIXER			0x20
 
 typedef struct {
@@ -295,43 +294,6 @@ CreateDSBuffer
 
 	return result;
 }
-
-
-BOOL Aureal2Check(LPGUID lpguid)
-{
-	BOOL retval=FALSE;
-	IA3d4 *lpAureal3d;
-	HRESULT hr;
-
-	hr = A3dInitialize();
-	if (SUCCEEDED(hr)) {
-		hr = A3dCreate(lpguid, (void **)&lpAureal3d, NULL, A3D_1ST_REFLECTIONS|A3D_OCCLUSIONS|A3D_DISABLE_SPLASHSCREEN);
-		if (hr == S_OK) {
-		// Successful Creation and initialization of a DirectSound Object
-			A3DCAPS_HARDWARE hwcaps;
-			memset(&hwcaps, 0 , sizeof(hwcaps));
-			hwcaps.dwSize = sizeof(hwcaps);
-			hr = lpAureal3d->GetHardwareCaps(&hwcaps);
-			if (hr == S_OK) {
-				if (hwcaps.dwFlags & A3D_DIRECT_PATH_A3D) {
-					if (lpAureal3d->IsFeatureAvailable(A3D_OCCLUSIONS) == TRUE) {
-						retval = TRUE;
-					}
-				}
-			}
-
-			// Old driver/DLL
-			//CString a3d_msg, title_msg;
-			//title_msg.LoadString(IDS_AUDIOTAB_WARNING);
-			//a3d_msg.LoadString(IDS_AUDIOTAB_A3D1);
-			//MessageBox(NULL, a3d_msg, title_msg, MB_OK | MB_ICONEXCLAMATION );
-			lpAureal3d->Release();
-		}
-		A3dUninitialize();
-	}
-	return retval;
-}
-
 
 BOOL CreativeEAXCheck(LPDIRECTSOUND lpds)
 {
@@ -554,12 +516,7 @@ void check_direct_sound()
 #if (!defined(DEMO) && !defined(OEM_VOODOO3))
 		// Try to initialize Aureal 3D sound
 		{
-			if (Aureal2Check(Cards[j].pguid) == TRUE) {
-				Cards[j].mixers |= AUREAL_MIXER;
-			}
-			else {
-				Cards[j].mixers &= ~AUREAL_MIXER;
-			}
+			Cards[j].mixers &= ~AUREAL_MIXER;
 		}
 #endif
 	}
@@ -584,92 +541,6 @@ CAudioTab::CAudioTab() : CPropertyPage(CAudioTab::IDD)
 CAudioTab::~CAudioTab()
 {
 }
-
-// return 1 if there is Aureal support, otherwise return 0
-/*
-int aureal_enabled()
-{
-	HRESULT			hr;
-	HINSTANCE		hinstance;
-	LPDIRECTSOUND	pDS = NULL;			// pointer to direct sound interface
-	LPIA3D2			pIA3d2 = NULL;
-
-
-	int aureal_enabled = 1;
-
-	CoInitialize(NULL);
-
-	hinstance = LoadLibrary( "dsound.dll" );
-	if ( hinstance == NULL )	{
-		aureal_enabled = 0;
-	}
-	FreeLibrary(hinstance);
-
-	// ensure a3d.dll exists
-	if ( aureal_enabled ) {
-		HINSTANCE a3d_handle;
-		a3d_handle = LoadLibrary("a3d.dll");
-		if ( !a3d_handle ) {
-			aureal_enabled = 0;
-		} else {
-			FreeLibrary(a3d_handle);
-		}
-	}
-
-	if ( aureal_enabled ) {
-		aureal_enabled = 0;
-		if ( SUCCEEDED(CoCreateInstance(CLSID_A3d, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void**)&pDS ))) {
-			if ( SUCCEEDED(pDS->QueryInterface(IID_IA3d2, (void**)&pIA3d2)) ) {
-				A3DCAPS_SOFTWARE swCaps;
-       
-				/* Get Dll Software CAP to get DLL version number */
-/*				ZeroMemory(&swCaps,sizeof(swCaps));
-
-				swCaps.dwSize = sizeof(swCaps);
-				pIA3d2->GetSoftwareCaps(&swCaps);
-*/
-				/* Compare version from a3d.dll to header version */
-				/* only return A3D_OK if dll version >= to header version */
-/*
-				if (swCaps.dwVersion < A3D_CURRENT_VERSION) {
-					CString a3d_msg;
-					a3d_msg.LoadString(IDS_AUDIOTAB_A3D1);
-					MessageBox(NULL, a3d_msg,  NULL, MB_OK | MB_ICONEXCLAMATION );
-				} else {
-
-					int aureal_verified;
-					aureal_verified = VerifyAurealA3D();
-
-					if (aureal_verified == FALSE) {
-						// This is fake A3D!!! Ignore
-						CString a3d_msg;
-						a3d_msg.LoadString(IDS_AUDIOTAB_A3D2);
-						MessageBox(NULL, a3d_msg,  NULL, MB_OK | MB_ICONEXCLAMATION );
-					} else {
-	 					if ( SUCCEEDED((hr = pDS->Initialize(NULL))) ) {
-							aureal_enabled = 1;
-						}
-					}
-				}
-			} 
-		}
-	}
-
-	if ( pDS != NULL ) {
-		pDS->Release();
-		pDS = NULL;
-	}
-
-	if ( pIA3d2 ) {
-		pIA3d2->Release();
-		pIA3d2 = NULL;
-	}
-
-	CoUninitialize();
-
-	return aureal_enabled;
-}
-*/
 
 // Fills in Cards and Num_cards
 void detect_sound_cards(int really_detect)
@@ -912,9 +783,6 @@ void CAudioTab::EnableMixerSettings(UINT mixers)
 	GetDlgItem(IDC_MIXER_DS3D,&hwnd);
 	::EnableWindow(hwnd, mixers & DS3D_MIXER);
 
-	GetDlgItem(IDC_MIXER_AUREAL,&hwnd);
-	::EnableWindow(hwnd, mixers & AUREAL_MIXER);
-
 	GetDlgItem(IDC_MIXER_EAX,&hwnd);
 	::EnableWindow(hwnd, mixers & EAX_MIXER);
 }
@@ -927,7 +795,6 @@ void CAudioTab::SetMixerButton(int mixer_id, UINT mixer_flags)
 	((CButton *) GetDlgItem(IDC_MIXER_DS16BIT))->SetCheck(0);
 	((CButton *) GetDlgItem(IDC_MIXER_DS8BIT))->SetCheck(0);
 	((CButton *) GetDlgItem(IDC_MIXER_DS3D))->SetCheck(0);
-	((CButton *) GetDlgItem(IDC_MIXER_AUREAL))->SetCheck(0);
 	((CButton *) GetDlgItem(IDC_MIXER_EAX))->SetCheck(0);
 
 	// Now, check the appropriate one
@@ -952,13 +819,11 @@ void CAudioTab::SetMixerButton(int mixer_id, UINT mixer_flags)
 			if(mixer_flags & DS3D_MIXER)
 				((CButton *) GetDlgItem(IDC_MIXER_DS3D))->SetCheck(1);
 			break;
-		case SOUND_MIXER_AUREAL_16:
-			if(mixer_flags & AUREAL_MIXER)
-				((CButton *) GetDlgItem(IDC_MIXER_AUREAL))->SetCheck(1);
-			break;
 		case SOUND_MIXER_EAX:
 			if(mixer_flags & EAX_MIXER)
 				((CButton *) GetDlgItem(IDC_MIXER_EAX))->SetCheck(1);
+			break;
+		default:
 			break;
 	}
 }
@@ -978,8 +843,6 @@ int CAudioTab::GetMixerButton(void)
 		mixer_id=SOUND_MIXER_DS_8;
 	else if ( ((CButton *) GetDlgItem(IDC_MIXER_DS3D))->GetCheck() == 1 )
 		mixer_id=SOUND_MIXER_DS3D_16;
-	else if ( ((CButton *) GetDlgItem(IDC_MIXER_AUREAL))->GetCheck() == 1 )
-		mixer_id=SOUND_MIXER_AUREAL_16;
 	else if ( ((CButton *) GetDlgItem(IDC_MIXER_EAX))->GetCheck() == 1 )
 		mixer_id=SOUND_MIXER_EAX;
 
@@ -1001,12 +864,6 @@ UINT CAudioTab::DetermineDefaultMixer(int card_index)
 	// if mixer supports software, make it the default
 	if(Cards[card_index].mixers & SOFTWARE_MIXER)
 		mixer_type=SOUND_MIXER_SOFTWARE_16;
-
-#ifdef OEM_AUREAL2
-	// make aureal the default if it's available
-	if(Cards[card_index].mixers & AUREAL_MIXER)
-		mixer_type=SOUND_MIXER_AUREAL_16;
-#endif
 
 	return(mixer_type);
 }

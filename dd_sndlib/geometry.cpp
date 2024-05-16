@@ -75,15 +75,6 @@ bool llsGeometry::Init(llsSystem *snd_sys) {
     return false;
   }
 
-// create hardware geometry interface
-#ifdef SUPPORT_AUREAL
-  switch (snd_sys->GetSoundMixer()) {
-  case SOUND_MIXER_AUREAL:
-    m_lib_init = A3D_CreateGeometryInterface();
-    break;
-  }
-#endif
-
   if (!m_lib_init) {
     mprintf((0, "DDSNDGEO: Failed to initialize geometry interface.\n"));
     return false;
@@ -121,15 +112,6 @@ void llsGeometry::Shutdown() {
     DestroyMaterial(i);
   }
 
-// destroy geometry interface.
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_DestroyGeometryInterface();
-    break;
-  }
-#endif
-
   m_snd_mixer = SOUND_MIXER_NONE;
   m_snd_system = NULL;
   m_lib_init = false;
@@ -155,79 +137,31 @@ void llsGeometry::EndFrame() {
 //	-1 group if non cached (user doesn't want to reuse this.
 void llsGeometry::StartPolygonGroup(int group) {
   ASSERT(m_lib_init);
-
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    // we flush, so that when starting the geometry list, we can clear the current geometry
-    A3D_Flush();
-    A3D_GeomListStart(group);
-    break;
-  }
-#endif
 }
 
 // ends a list of polygons to render.
 void llsGeometry::EndPolygonGroup(int group) {
   ASSERT(m_lib_init);
-
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_GeomListEnd(group);
-    break;
-  }
-#endif
 }
 
 // renders a group.
 void llsGeometry::RenderGroup(int group) {
   ASSERT(m_lib_init);
-
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_GeomListExec(group);
-    break;
-  }
-#endif
 }
 
 void llsGeometry::Clear() {
   ASSERT(m_lib_init);
-
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_Clear();
-    break;
-  }
-#endif
 }
 
 // primatives
 // 4 verts here.
 void llsGeometry::AddQuad(unsigned tag, vector **verts) {
   n_primatives_used++;
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_GeomAddQuad(tag, verts);
-    break;
-  }
-#endif
 }
 
 // 3 verts here.
 void llsGeometry::AddTriangle(unsigned tag, vector **verts) {
   n_primatives_used++;
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_GeomAddTriangle(tag, verts);
-    break;
-  }
-#endif
 }
 
 void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial material) {
@@ -243,15 +177,6 @@ void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial m
     matp = m_snd_materials[material];
   }
 
-// bind material to current polygon
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    A3D_GeomBindMaterial(matp);
-    break;
-  }
-#endif
-
   if (matp) {
     n_materials_used++;
   }
@@ -266,34 +191,7 @@ void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial m
     AddQuad(tag, verts);
     break;
   default:
-    // split up into tris and or quads
-    if (m_snd_mixer == SOUND_MIXER_AUREAL) {
-      vector *polyvec[4];
-      int nexus_vert = 0;
-
-      for (i = 0; i < nv - 3; i += 3) {
-        nexus_vert = i;
-        polyvec[0] = verts[i];
-        polyvec[1] = verts[i + 1];
-        polyvec[2] = verts[i + 2];
-        polyvec[3] = verts[i + 3];
-        AddQuad(tag | i, polyvec);
-      }
-
-      // fan from nexus to (i through nv)
-      polyvec[0] = verts[nexus_vert];
-      polyvec[2] = verts[i];
-      for (; i < nv; i++) {
-        polyvec[1] = polyvec[2];
-        polyvec[2] = ((i + 1) < nv) ? verts[i + 1] : verts[0];
-        if (polyvec[0] == polyvec[2]) {
-          break;
-        }
-        AddTriangle(tag | i, polyvec);
-      }
-    } else {
-      Int3();
-    }
+    Int3();
   }
 
   if (matp) {
@@ -330,14 +228,6 @@ void llsGeometry::CreateMaterial(tSoundMaterial material, float transmit_gain, f
   } else if (reflect_highfreq > 1) {
     reflect_highfreq = 1;
   }
-
-#ifdef SUPPORT_AUREAL
-  switch (m_snd_mixer) {
-  case SOUND_MIXER_AUREAL:
-    m_snd_materials[material] = A3D_CreateMaterial(transmit_gain, transmit_highfreq, reflect_gain, reflect_highfreq);
-    break;
-  }
-#endif
 }
 
 void llsGeometry::DestroyMaterial(tSoundMaterial material) {
@@ -349,13 +239,6 @@ void llsGeometry::DestroyMaterial(tSoundMaterial material) {
   }
 
   if (m_snd_materials[material]) {
-#ifdef SUPPORT_AUREAL
-    switch (m_snd_mixer) {
-    case SOUND_MIXER_AUREAL:
-      A3D_DestroyMaterial(m_snd_materials[material]);
-      break;
-    }
-#endif
     m_snd_materials[material] = NULL;
   }
 }

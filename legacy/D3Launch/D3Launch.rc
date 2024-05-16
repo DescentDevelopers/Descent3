@@ -191,8 +191,6 @@ BEGIN
                     BS_AUTORADIOBUTTON,16,62,55,10
     CONTROL         "DirectSound 3D",IDC_MIXER_DS3D,"Button",
                     BS_AUTORADIOBUTTON,16,75,91,10
-    CONTROL         "Aureal 3D Sound",IDC_MIXER_AUREAL,"Button",
-                    BS_AUTORADIOBUTTON,16,88,102,10
     CONTROL         "Creative EAX",IDC_MIXER_EAX,"Button",BS_AUTORADIOBUTTON,
                     16,101,58,10
     CONTROL         "Enable Sound in the D3 Launcher",IDC_LAUNCHER_SND_CHECK,
