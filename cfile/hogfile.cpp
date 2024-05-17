@@ -87,6 +87,8 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+
 #include "byteswap.h"
 #include "hogfile.h"
 
@@ -106,6 +108,9 @@
 */
 
 bool ReadHogHeader(FILE *fp, tHogHeader *header) {
+  if (fread(&header->magic, HOG_TAG_LEN, 1, fp) != HOG_TAG_LEN && strncmp(header->magic, HOG_TAG_STR, 4) != 0 )
+    return false;
+
   if (fread(&header->nfiles, sizeof(header->nfiles), 1, fp) != 1)
     return false;
   header->nfiles = INTEL_INT(header->nfiles);
