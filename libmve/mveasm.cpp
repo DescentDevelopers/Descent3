@@ -15,7 +15,6 @@
 ** attempt to derive source code of this material.
 **
 */
-#include "pstypes.h"
 #include "mvelibl.h"
 #include "mvelibi.h"
 #include <string.h>
@@ -2104,8 +2103,8 @@ void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, unsigned int _x
           size_t amt = sizeof(unsigned int) * 2 * HI_COLOR_SCALE;
           // memcpy( this_tbuf, compData, amt );
           for (unsigned int ii = 0; ii < (amt / 2); ii++) {
-            unsigned short *destword = (unsigned short *)this_tbuf[ii];
-            unsigned short *srcword = (unsigned short *)compData[ii];
+            unsigned short *destword = (unsigned short *)&this_tbuf[ii];
+            unsigned short *srcword = (unsigned short *)&compData[ii];
             *destword = IntelSwapper(*srcword);
           }
           compData += amt;
@@ -2151,8 +2150,8 @@ void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, unsigned int _x
           size_t amt = sizeof(unsigned int) * 2 * HI_COLOR_SCALE;
           // memcpy( this_tbuf, src, amt );
           for (unsigned int ii = 0; ii < (amt / 2); ii++) {
-            unsigned short *destword = (unsigned short *)this_tbuf[ii];
-            unsigned short *srcword = (unsigned short *)src[ii];
+            unsigned short *destword = (unsigned short *)&this_tbuf[ii];
+            unsigned short *srcword = (unsigned short *)&src[ii];
             *destword = IntelSwapper(*srcword);
           }
           src += amt + nf_new_line;
@@ -2212,8 +2211,8 @@ void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsi
           // TODO: Do these bytes need swapping? Is this data shorts?
           // memcpy( this_tbuf, compData, amt );
           for (unsigned int ii = 0; ii < (amt / 2); ii++) {
-            unsigned short *dest = (unsigned short *)this_tbuf[ii];
-            unsigned short *src = (unsigned short *)compData[ii];
+            unsigned short *dest = (unsigned short *)&this_tbuf[ii];
+            unsigned short *src = (unsigned short *)&compData[ii];
             *dest = IntelSwapper(*src);
           }
           compData += amt;
@@ -2269,8 +2268,8 @@ void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsi
           size_t amt = sizeof(unsigned int) * 2 * HI_COLOR_SCALE;
           // memcpy( this_tbuf, src, amt );
           for (unsigned int ii = 0; ii < (amt / 2); ii++) {
-            unsigned short *destword = (unsigned short *)this_tbuf[ii];
-            unsigned short *srcword = (unsigned short *)src[ii];
+            unsigned short *destword = (unsigned short *)&this_tbuf[ii];
+            unsigned short *srcword = (unsigned short *)&src[ii];
             *destword = IntelSwapper(*srcword);
           }
           src += amt + nf_new_line;
