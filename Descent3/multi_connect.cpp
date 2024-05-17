@@ -693,27 +693,27 @@ int MultiGetShipChecksum(int ship_index) {
 void MultiProcessShipChecksum(MD5 *md5, int ship_index) {
   ship *s = &Ships[ship_index];
 
-  md5->MD5Update(s->phys_info.full_thrust);
-  md5->MD5Update(s->phys_info.full_rotthrust);
+  md5->update(s->phys_info.full_thrust);
+  md5->update(s->phys_info.full_rotthrust);
 
-  md5->MD5Update(s->phys_info.mass);
-  md5->MD5Update(s->phys_info.drag);
-  md5->MD5Update(s->phys_info.rotdrag);
+  md5->update(s->phys_info.mass);
+  md5->update(s->phys_info.drag);
+  md5->update(s->phys_info.rotdrag);
 
-  md5->MD5Update(s->phys_info.flags);
+  md5->update(s->phys_info.flags);
   poly_model *pm = GetPolymodelPointer(s->model_handle);
-  md5->MD5Update(pm->rad);
+  md5->update(pm->rad);
 
   for (int w = 0; w < MAX_PLAYER_WEAPONS; w++) {
 
     for (int i = 0; i < MAX_WB_FIRING_MASKS; i++) {
-      md5->MD5Update(s->static_wb[w].gp_fire_wait[i]);
-      md5->MD5Update(s->static_wb[w].gp_fire_masks[i]);
+      md5->update(s->static_wb[w].gp_fire_wait[i]);
+      md5->update(s->static_wb[w].gp_fire_masks[i]);
     }
 
-    md5->MD5Update(s->static_wb[w].energy_usage);
-    md5->MD5Update(s->static_wb[w].ammo_usage);
-    md5->MD5Update(s->fire_flags[w]);
+    md5->update(s->static_wb[w].energy_usage);
+    md5->update(s->static_wb[w].ammo_usage);
+    md5->update(s->fire_flags[w]);
   }
 }
 
