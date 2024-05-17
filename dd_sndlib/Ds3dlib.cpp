@@ -203,9 +203,6 @@
  * $NoKeywords: $
  */
 
-//	NEED THIS SINCE DDSNDLIB is a DD library.
-#include "DDAccess.h"
-
 #include "ds3dlib_internal.h"
 
 #include <stdio.h>
@@ -456,20 +453,7 @@ inline char *get_sound_info(sound_buffer_info *sb, int *length, bool *f16bit) {
 inline int sb_get_status(sound_buffer_info *sb) {
   int retflags = 0;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    int status;
-
-    if (sb->m_snd_obj) {
-      status = A3D_GetSourceStatus(sb->m_snd_obj);
-      if (status & A3D_STATUS_PLAYING)
-        retflags |= SB_STATUS_PLAYING;
-    } else {
-      retflags |= SB_STATUS_INVALID;
-    }
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     LPDIRECTSOUNDBUFFER sound_ptr = sb->m_sound_buffer;
     unsigned long status;
 
@@ -491,22 +475,7 @@ inline void sb_adjust_properties_3d(sound_buffer_info *sb, float f_volume, pos_s
 
   sb->m_volume = f_volume;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    //	f_volume = f_volume * 1.2;
-    if (f_volume > 1.0f)
-      f_volume = 1.0f;
-    A3D_SetSourceVolume(sb->m_snd_obj, f_volume);
-    //		A3D_SetMinMaxDistance(sb->m_snd_obj, Sounds[sb->m_sound_index].min_distance,
-    // Sounds[sb->m_sound_index].max_distance);
-    A3D_SetMinMaxDistance(sb->m_snd_obj, 30.0f, Sounds[sb->m_sound_index].max_distance);
-    //		A3D_SetSourceCone(sb->m_snd_obj, x,y,z);
-    A3D_SetSourceOrientation(sb->m_snd_obj, &pos->orient->fvec, &pos->orient->uvec);
-    A3D_SetSourcePosition(sb->m_snd_obj, pos->position->x, pos->position->y, pos->position->z);
-    A3D_SetSourceVelocity(sb->m_snd_obj, pos->velocity->x, pos->velocity->y, pos->velocity->z);
-  } else
-#endif
-      if (IS_3D_MIXER(sb->m_mixer_type)) {
+  if (IS_3D_MIXER(sb->m_mixer_type)) {
     LPDIRECTSOUNDBUFFER lp_dsb = sb->m_sound_buffer;
     LPDIRECTSOUND3DBUFFER lpDSB3D = sb->m_sound_buffer_3d;
 
@@ -539,21 +508,7 @@ inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float
 
   sb->m_volume = f_volume;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    if (sb->m_snd_obj) {
-      float l_pan = 1.0f, r_pan = 1.0f;
-      if (f_pan < 0.0f)
-        r_pan = r_pan + f_pan;
-      if (f_pan > 0.0f)
-        l_pan = l_pan - f_pan;
-      A3D_SetSourceVolume(sb->m_snd_obj, f_volume);
-      A3D_SetSourcePan(sb->m_snd_obj, l_pan, r_pan);
-      //	mprintf((0, "2d vol:%.1f  pan:%.1f,%.1f\n", f_volume, l_pan, r_pan));
-    }
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     LPDIRECTSOUNDBUFFER lpdsb;
 
     ASSERT(f_pan >= -1.0f && f_pan <= 1.0f);
@@ -575,20 +530,7 @@ inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float
 int sb_get_current_position(sound_buffer_info *sb, uint *writep) {
   DWORD playp, wp;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    if (!sb->m_snd_obj) {
-      *writep = (uint)(-1);
-      playp = (DWORD)(-1);
-    } else {
-      uint pp;
-      A3D_GetCurrentPosition(sb->m_snd_obj, &pp);
-      *writep = pp;
-      playp = (DWORD)pp;
-    }
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     if (sb->m_sound_buffer && sb->m_sound_buffer->GetCurrentPosition(&playp, &wp) == DS_OK) {
       *writep = (uint)wp;
     } else {
@@ -604,12 +546,7 @@ inline void sb_set_current_position(sound_buffer_info *sb, uint pos) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_SetCurrentPosition(sb->m_snd_obj, pos);
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     sb->m_sound_buffer->SetCurrentPosition((DWORD)pos);
   }
 }
@@ -620,13 +557,7 @@ void sb_free_buffer(sound_buffer_info *sb) {
   if (!sb->m_sound_buffer)
     return;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_FreeSSource(sb->m_snd_obj);
-    sb->m_snd_obj = NULL;
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     if (sb->m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
       EAX_FreeSource(sb->m_lpksps);
     }
@@ -646,12 +577,7 @@ void sb_stop_buffer(sound_buffer_info *sb) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_Stop(sb->m_snd_obj);
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     sb->m_sound_buffer->Stop();
   }
 }
@@ -660,18 +586,7 @@ bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes
                     uint *lpdwAudioBytes1, void **lplpvAudioPtr2, uint *lpdwAudioBytes2) {
   DWORD len1, len2;
 
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    if (A3D_Lock(sb->m_snd_obj, dwWriteCursor, dwWriteBytes, lplpvAudioPtr1, &len1, lplpvAudioPtr2, &len2)) {
-      *lpdwAudioBytes1 = len1;
-      *lpdwAudioBytes2 = len2;
-      return true;
-    }
-
-    return false;
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
   TryLockAgainLabel:
     switch (sb->m_sound_buffer->Lock(dwWriteCursor, dwWriteBytes, lplpvAudioPtr1, &len1, lplpvAudioPtr2, &len2, 0)) {
     case DS_OK:
@@ -691,12 +606,7 @@ bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes
 }
 
 bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint len1, void *ptr2, uint len2) {
-#ifdef SUPPORT_AUREAL
-  if (sb->m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_Unlock(sb->m_snd_obj, ptr1, len1, ptr2, len2);
-  } else
-#endif
-      if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
+  if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     sb->m_sound_buffer->Unlock(ptr1, len1, ptr2, len2);
     return true;
   }
@@ -708,26 +618,11 @@ bool sb_load_buffer(sound_buffer_info *sb, void *sample_data, int length) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 
-#ifdef SUPPORT_AUREAL
-  switch (sb->m_mixer_type) {
-  case SOUND_MIXER_AUREAL:
-    if (!A3D_LoadSample(sb->m_snd_obj, sample_data, length)) {
+  if (LoadSoundData(sb->m_sound_buffer, (char *)sample_data, length) != DS_OK) {
       Int3();
       sb->m_status = SSF_UNUSED;
       return false;
-    }
-    break;
-  default:
-#endif
-    if (LoadSoundData(sb->m_sound_buffer, (char *)sample_data, length) != DS_OK) {
-      Int3();
-      sb->m_status = SSF_UNUSED;
-      return false;
-    }
-#ifdef SUPPORT_AUREAL
   }
-#endif
-
   return true;
 }
 
@@ -1499,11 +1394,6 @@ int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, unsigned ch
 
   // reset error system.
   SetError(SSL_OK);
-
-#ifdef OEM_AUREAL
-  mixer_type = SOUND_MIXER_AUREAL;
-#endif
-
   SoundApp = (oeWin32Application *)sos;
 
   if (sos) {
@@ -1565,17 +1455,7 @@ int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, unsigned ch
     }
   }
 
-#ifdef SUPPORT_AUREAL
-  if (mixer_type == SOUND_MIXER_AUREAL) {
-    if (!A3D_Init((HWND)GameWindowHandle)) {
-      retval = false;
-      goto error_sub;
-    }
-    m_lp_ds = NULL;
-    m_sound_mixer.m_loop_method = DSLOOP_BUFFER_METHOD;
-  } else
-#endif
-      if (mixer_type != SOUND_MIXER_NONE) {
+  if (mixer_type != SOUND_MIXER_NONE) {
     if (mixer_type == SOUND_MIXER_CREATIVE_EAX) {
       if (!EAX_Create(pguid, &m_lp_ds)) {
         mprintf((0, "Sound NT: Error EAX\n"));
@@ -1674,19 +1554,7 @@ retry_mixer_init:
       goto retry_mixer_init;
     }
 
-  }
-#ifdef SUPPORT_AUREAL
-  else if (mixer_type == SOUND_MIXER_AUREAL) {
-    m_mixer_type = SOUND_MIXER_AUREAL;
-    if (!A3D_CreateListener()) {
-      retval = false;
-      goto error_sub;
-    }
-    A3D_SetRolloffFactor(ENV3DVAL_ROLLOFF_DEFAULT);
-    A3D_SetUnitsPerMeter(1.0f); // feet per meter.
-  }
-#endif
-  else if (mixer_type == SOUND_MIXER_NONE) {
+  } else if (mixer_type == SOUND_MIXER_NONE) {
     m_mixer_type = mixer_type;
     m_f_sound_lib_init = 0;
   } else {
@@ -1749,9 +1617,6 @@ retry_mixer_init:
   case SOUND_MIXER_DS3D_16:
     mprintf((0, "DS3D 16\n"));
     break;
-  case SOUND_MIXER_AUREAL:
-    mprintf((0, "Aureal 3D\n"));
-    break;
   case SOUND_MIXER_CREATIVE_EAX:
     mprintf((0, "Creative EAX\n"));
     break;
@@ -1796,12 +1661,7 @@ retry_mixer_init:
 error_sub:
   if (retval == false) {
     // Only gets here if there was an error
-#ifdef SUPPORT_AUREAL
-    if (m_mixer_type == SOUND_MIXER_AUREAL) {
-      A3D_Destroy();
-    } else
-#endif
-        if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
+  if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
       EAX_Destroy();
     } else if (m_lp_ds) {
       m_lp_ds->Release();
@@ -1859,11 +1719,6 @@ void win_llsSystem::DestroySoundLib(void) {
     if (m_sound_mixer.m_loop_method != DSLOOP_BUFFER_METHOD) {
       sb_loop_thread_kill();
     }
-#ifdef SUPPORT_AUREAL
-    if (m_mixer_type == SOUND_MIXER_AUREAL) {
-      A3D_Flush();
-    }
-#endif
   }
   mprintf((0, "All sounds stopped\n"));
 
@@ -1881,13 +1736,8 @@ void win_llsSystem::DestroySoundLib(void) {
     }
   }
 
-// free audio device;
-#ifdef SUPPORT_AUREAL
-  if (m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_Destroy();
-  } else
-#endif
-      if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
+  // free audio device;
+  if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
     EAX_Destroy();
   } else if (m_lp_ds) {
     m_lp_ds->Release();
@@ -1946,9 +1796,6 @@ void win_llsSystem::update_directsound_sb(sound_buffer_info *sb, bool update_loo
     int status = sb_get_status(sb);
 
     if (update_looping) {
-      //	int status2 = A3D_GetSourceStatus(sb->m_snd_obj);
-      //	mprintf((0, "(%x) status (%x)\n", sb->m_unique_id, status2));
-
       if (status & SB_STATUS_PLAYING) {
         if ((sb->m_status & (SSF_PLAY_STREAMING + SSF_BUFFERED_STRM)) == (SSF_PLAY_STREAMING + SSF_BUFFERED_STRM)) {
           sb_stream_buffered_update(sb);
@@ -2091,7 +1938,7 @@ short win_llsSystem::FindFreeSoundSlot(float volume, int priority)
     sb = &m_sound_mixer.m_sound_cache[current_slot];
     if (sb->m_status == SSF_UNUSED) {
       if (!((m_mixer_type == SOUND_MIXER_DS_8 || m_mixer_type == SOUND_MIXER_DS_16 ||
-             m_mixer_type == SOUND_MIXER_DS3D_16 || m_mixer_type == SOUND_MIXER_AUREAL ||
+             m_mixer_type == SOUND_MIXER_DS3D_16 ||
              m_mixer_type == SOUND_MIXER_CREATIVE_EAX) &&
             sb->s))
         return current_slot;
@@ -2388,12 +2235,6 @@ void win_llsSystem::DSStartStreaming(sound_buffer_info *sb, float volume, float 
 
   // determine how we will stream this data
   determined_method = m_sound_mixer.m_loop_method;
-  if (m_sound_mixer.m_loop_method == DSLOOP_SMART_METHOD) {
-    if (m_mixer_type == SOUND_MIXER_AUREAL) {
-      determined_method = DSLOOP_BUFFER_METHOD;
-    }
-  }
-
   switch (determined_method) {
   case DSLOOP_BUFFER_METHOD:
     sb->m_status = SSF_PLAY_STREAMING | SSF_BUFFERED_STRM;
@@ -2670,20 +2511,9 @@ void win_llsSystem::SoundStartFrame(void) {
   // if the mixer doesn't require such actions.  Aureal does though.
   if (m_pending_actions) {
     mprintf((0, "pending actions\n"));
-#ifdef SUPPORT_AUREAL
-    if (m_mixer_type == SOUND_MIXER_AUREAL) {
-      A3D_Flush();
-    }
-#endif
   }
 
-// start mixer dependant frame
-#ifdef SUPPORT_AUREAL
-  if (m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_StartFrame();
-  }
-#endif
-
+  // start mixer dependant frame
   m_in_sound_frame = true;
   m_pending_actions = false;
 
@@ -2756,12 +2586,6 @@ void win_llsSystem::SoundStartFrame(void) {
 
 // End sound frame
 void win_llsSystem::SoundEndFrame(void) {
-#ifdef SUPPORT_AUREAL
-  if (m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_EndFrame();
-  }
-#endif
-
   CheckForErrors(); // handles errors.
 
   m_in_sound_frame = false;
@@ -2873,14 +2697,7 @@ void win_llsSystem::SetListener(pos_state *cur_pos) {
   m_emulated_listener.position = *cur_pos->position;
   m_emulated_listener.velocity = *cur_pos->velocity;
 
-#ifdef SUPPORT_AUREAL
-  if (m_mixer_type == SOUND_MIXER_AUREAL) {
-    A3D_SetListenerOrient(&cur_pos->orient->fvec, &cur_pos->orient->uvec);
-    A3D_SetListenerPosition(cur_pos->position->x, cur_pos->position->y, cur_pos->position->z);
-    A3D_SetListenerVelocity(cur_pos->velocity->x, cur_pos->velocity->y, cur_pos->velocity->z);
-  } else
-#endif
-      if (IS_3D_MIXER(m_mixer_type)) {
+  if (IS_3D_MIXER(m_mixer_type)) {
     m_lp_listener->SetOrientation(cur_pos->orient->fvec.x, cur_pos->orient->fvec.y, cur_pos->orient->fvec.z,
                                   cur_pos->orient->uvec.x, cur_pos->orient->uvec.y, cur_pos->orient->uvec.z,
                                   DS3D_DEFERRED);
@@ -3181,18 +2998,6 @@ bool win_llsSystem::CreateSoundBuffer(sound_buffer_info *sb, bool f_is_stereo, i
   case SOUND_MIXER_SOFTWARE_16:
     Int3();
     break;
-
-#ifdef SUPPORT_AUREAL
-  case SOUND_MIXER_AUREAL:
-    sb->m_snd_obj = A3D_CreateSSource(sound_length, f_sample_16bit ? 16 : 8, f_is_stereo, (dynamic) ? true : false,
-                                      22050, (buftype == SBT_3D) ? true : false);
-    if (!sb->m_snd_obj) {
-      Int3();
-      sb->m_status = SSF_UNUSED;
-      return false;
-    }
-    break;
-#endif
   default:
     CreateDSBuffer(buftype, &sb->m_sound_buffer, &sb->m_sound_buffer_3d, sound_length, 22050, f_is_stereo,
                    f_sample_16bit);
@@ -3238,15 +3043,6 @@ bool win_llsSystem::LoadSoundBuffer(sound_buffer_info *sb) {
   case SOUND_MIXER_SOFTWARE_16:
     Int3();
     break;
-#ifdef SUPPORT_AUREAL
-  case SOUND_MIXER_AUREAL:
-    if (!A3D_LoadSample(sb->m_snd_obj, sample_ptr, sound_length)) {
-      Int3();
-      sb->m_status = SSF_UNUSED;
-      return false;
-    }
-    break;
-#endif
   default:
     if (LoadSoundData(sb->m_sound_buffer, sample_ptr, sound_length) != DS_OK) {
       Int3();
@@ -3286,34 +3082,6 @@ TryPlayAgainLabel:
   }
 
   switch (m_mixer_type) {
-#ifdef SUPPORT_AUREAL
-  case SOUND_MIXER_AUREAL: {
-    float priority;
-    switch (sb->play_info->priority) {
-    case SND_PRIORITY_CRITICAL:
-    case SND_PRIORITY_HIGHEST:
-      priority = 1.0f;
-      break;
-    case SND_PRIORITY_HIGH:
-      priority = 0.85f;
-      break;
-    case SND_PRIORITY_NORMAL:
-      priority = 0.60f;
-      break;
-    case SND_PRIORITY_LOW:
-      priority = 0.30f;
-      break;
-    case SND_PRIORITY_LOWEST:
-      priority = 0.1f;
-      break;
-    default:
-      priority = 0.5f;
-    }
-    A3D_SetSourcePriority(sb->m_snd_obj, priority);
-    A3D_Play(sb->m_snd_obj, f_looping);
-  } break;
-#endif
-
   case SOUND_MIXER_SOFTWARE_16:
     Int3();
     break;
@@ -3399,12 +3167,7 @@ bool win_llsSystem::DuplicateSoundBuffer(sound_buffer_info *sb) {
 // volume modifier (0-1), damping(0-1), 1 = complete, 0 = none
 //	decay 0.1 to 100 seconds, how long it takes for a sound to die.
 bool win_llsSystem::SetGlobalReverbProperties(float volume, float damping, float decay) {
-#ifdef SUPPORT_AUREAL
-  if (m_mixer_type == SOUND_MIXER_AUREAL) {
-    return A3D_SetEnvironmentalReverb(volume, damping, decay);
-  } else
-#endif
-      if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
+  if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
     return EAX_SetEnvironmentalReverb(volume, damping, decay);
   }
 
@@ -3439,14 +3202,6 @@ sound_buffer_info *sound_buffer_cache::FindSoundBuffer(int sound_index) {
 void win_llsSystem::SetEnvironmentValues(const t3dEnvironmentValues *env) {
   if (CHECK_FLAG(env->flags, ENV3DVALF_DOPPLER)) {
     Env3dValues.doppler_scalar = env->doppler_scalar;
-
-#ifdef SUPPORT_AUREAL
-    switch (m_mixer_type) {
-    case SOUND_MIXER_AUREAL:
-      A3D_SetDopplerFactor(Env3dToggles.doppler ? Env3dValues.doppler_scalar : 0.0f);
-      break;
-    }
-#endif
   }
 }
 
@@ -3476,15 +3231,6 @@ void win_llsSystem::SetEnvironmentToggles(const t3dEnvironmentToggles *env) {
       delete m_geometry;
     }
     m_geometry = NULL;
-    if (env->geometry) {
-      if (m_mixer_type == SOUND_MIXER_AUREAL) {
-        m_geometry = new llsGeometry;
-        if (!m_geometry->Init(this)) {
-          delete m_geometry;
-          m_geometry = NULL;
-        }
-      }
-    }
     Env3dToggles.geometry = m_geometry ? true : false;
   }
 }
@@ -3497,13 +3243,6 @@ void win_llsSystem::GetEnvironmentToggles(t3dEnvironmentToggles *env) {
   }
 
   env->supported = 0;
-
-  switch (m_mixer_type) {
-  case SOUND_MIXER_AUREAL:
-    env->supported |= ENV3DVALF_DOPPLER;
-    env->supported |= ENV3DVALF_GEOMETRY;
-    break;
-  }
 }
 
 // Sound System Error Handler.

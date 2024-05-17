@@ -101,7 +101,8 @@
 !=!S0
 !F!S0
 !S!S0
-!G!S0!I!S0
+!G!S0
+!I!S0
 
 !/!12: Guidebot Menu
 !=!S1
@@ -140,7 +141,8 @@
 
 !/!17: Guidebot Menu
 !=!S6
-!F!S6!S!S6
+!F!S6
+!S!S6
 !G!S6
 !I!S6
 

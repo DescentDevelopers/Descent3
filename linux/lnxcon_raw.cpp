@@ -39,7 +39,6 @@
  * $NoKeywords: $
  */
 
-#include "DDAccess.h"
 #include "application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"

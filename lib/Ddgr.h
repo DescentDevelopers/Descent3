@@ -172,7 +172,6 @@ typedef struct ddgr_surface {
   int locks;               // lock count.
 } ddgr_surface;
 
-#if defined(DD_ACCESS_RING) // only available to DD_ACCESS libraries.
 #if defined(WIN32)
 /*
         ddraw_surf = true	if this is a true DirectDraw surface, false if a GDI surface
@@ -183,7 +182,6 @@ void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint *object_p
 //	you must typecase this return value to LPDIRECTDRAW
 unsigned ddgr_GetDDrawObject();
 #endif // WIN32
-#endif // DD_ACCESS_RING
 
 /*	Surface Functions
  */

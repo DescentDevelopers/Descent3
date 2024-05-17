@@ -898,8 +898,6 @@ void SetLauncherTitleString(void)
 	szTitle.Format(IDS_D3LAUNCH_OEMV3_DLGTITLE);
 #elif (defined(OEM_VOODOO3) && defined(USE_ALL_VIDEO_OPTIONS))
 	szTitle.Format(IDS_D3LAUNCH_OEM_DLGTITLE);
-#elif defined(OEM_AUREAL2)
-	szTitle.Format(IDS_D3LAUNCH_OEMA2_DLGTITLE);
 #elif defined(OEM_KATMAI)
 	szTitle.Format(IDS_D3LAUNCH_OEMKM_DLGTITLE);
 #else

@@ -839,11 +839,8 @@ struct sound_menu {
     case SOUND_MIXER_DS3D_16:
       iTemp = 4;
       break;
-    case SOUND_MIXER_AUREAL:
-      iTemp = 5;
-      break;
     case SOUND_MIXER_CREATIVE_EAX:
-      iTemp = 6;
+      iTemp = 5;
       break;
     default:
       Int3(); //-wtf?
@@ -853,7 +850,6 @@ struct sound_menu {
     sheet->AddRadioButton("DS 8");
     sheet->AddRadioButton("DS 16");
     sheet->AddRadioButton("DS 3D");
-    sheet->AddRadioButton("A3D 2");
     sheet->AddRadioButton("EAX");
     *sndmixer = iTemp;
 #endif
@@ -886,9 +882,6 @@ struct sound_menu {
       mixer_type = SOUND_MIXER_DS3D_16;
       break;
     case 5:
-      mixer_type = SOUND_MIXER_AUREAL;
-      break;
-    case 6:
       mixer_type = SOUND_MIXER_CREATIVE_EAX;
       break;
     default:
