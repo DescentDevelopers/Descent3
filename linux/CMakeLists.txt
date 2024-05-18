@@ -4,7 +4,10 @@ set(CPPS
   lnxcon_raw.cpp
   lnxapp.cpp
   lnxcon_null.cpp
+  lnxcontroller.cpp
   lnxdata.cpp
   registry.cpp)
-#  DynXLib.cpp
 add_library(linux STATIC ${HEADERS} ${CPPS})
+target_link_libraries(linux PRIVATE
+  cfile
+)

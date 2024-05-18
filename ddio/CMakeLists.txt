@@ -1,0 +1,6 @@
+add_subdirectory(ddio_common)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+ add_subdirectory(ddio_win)
+else()
+ add_subdirectory(ddio_lnx)
+endif()
