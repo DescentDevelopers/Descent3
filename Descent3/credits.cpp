@@ -95,7 +95,7 @@
 #include "psrand.h"
 
 #if defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 /*

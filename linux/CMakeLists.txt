@@ -12,3 +12,8 @@ add_library(linux STATIC ${CPPS})
 target_link_libraries(linux PRIVATE
   cfile
 )
+target_include_directories(linux PUBLIC
+  $<BUILD_INTERFACE:
+  ${PROJECT_SOURCE_DIR}/linux
+  >
+)

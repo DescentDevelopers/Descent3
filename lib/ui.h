@@ -268,7 +268,7 @@
 #define UI_H
 
 #if defined(__LINUX__)
-#include "linux/linux_fix.h" //for stricmp's through code
+#include "linux_fix.h" //for stricmp's through code
 #endif
 
 #include "uires.h"

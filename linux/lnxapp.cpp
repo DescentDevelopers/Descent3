@@ -75,7 +75,7 @@
 #include <termios.h>
 
 #include "application.h"
-#include "linux/lnxapp.h"
+#include "lnxapp.h"
 
 #ifdef buttons // termios.h defines buttons, but SDL's headers use that symbol.
 #undef buttons

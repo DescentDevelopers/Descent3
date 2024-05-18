@@ -20,18 +20,14 @@
 #if defined(WIN32)
 #include <windows.h>
 #elif defined(__LINUX__)
-#include "linux/linux_fix.h"
 #include "lnxscreenmode.h"
 #else
 #endif
 
-#include "pstypes.h"
 #include "pserror.h"
 #include "mono.h"
 #include "3d.h"
 #include "renderer.h"
-#include "ddvid.h"
-#include "ddio.h"
 #include "application.h"
 #include "bitmap.h"
 #include "lightmap.h"

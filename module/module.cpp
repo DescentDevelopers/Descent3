@@ -109,7 +109,7 @@ static bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char
 #include <stdarg.h>
 #include <string.h>
 #if defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 #if defined(WIN32) // INSTEAD OF MAKING MODULE HAVE DEPENDENCIES, PUT THE 2 DDIO FUNCTIONS I NEED HERE
 // Split a pathname into its component parts

@@ -47,6 +47,7 @@
 #include "pserror.h"
 #include "joystick.h"
 #include "inffile.h"
+#include "lnxcontroller.h"
 
 // Sorry! This is needed for the semi-hacky mouselook support
 #include "descent.h"

@@ -144,6 +144,7 @@ include_directories(
   "ddebug"  # -*-
   "fix"     # -*-
   "lib"     # TODO: Remove after untying all modules
+  "linux"   # -*-
   "Descent3"
   ${PLATFORM_INCLUDES}
 )
