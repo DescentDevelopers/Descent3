@@ -1886,7 +1886,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     }
 
     if (clear_lightmaps) {
-      mprintf((0, "Freeing lightmaps because model %s  has changed since this level was saved!\n", pm->name));
+      mprintf((0, "Freeing lightmaps because model %s has changed since this level was saved!\n", pm->name));
       ClearObjectLightmaps(objp);
     }
   }
@@ -2091,7 +2091,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
 
     if (fp->light_multiple == 186)
       fp->light_multiple =
-          4; // Get Jason, I'm looking for this bug!  Its safe to go past it, but I'm just on the lookout
+          4; // Get Jason, I'm looking for this bug! Its safe to go past it, but I'm just on the lookout
 
     if (version <= 52) {
       if (fp->light_multiple >= 32)

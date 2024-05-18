@@ -335,7 +335,6 @@ void QuickSaveGame() {
   if (Quicksave_game_slot == -1) {
     SaveGameDialog();
   } else {
-    // verify savegame still exists in the appropriate slot, if not just run dialog, if so then save
     char filename[PSFILENAME_LEN + 1];
     char pathname[PSPATHNAME_LEN];
     char desc[GAMESAVE_DESCLEN + 1];
@@ -391,7 +390,6 @@ void SaveGameDialog() {
   ddio_MakePath(savegame_dir, Base_directory, "savegame", NULL);
   //	ddio_MakePath(pathname, savegame_dir, "*.sav", NULL); -unused
 
-  // create savegame directory if it didn't exist before.
   if (!ddio_DirExists(savegame_dir)) {
     if (!ddio_CreateDir(savegame_dir)) {
       DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
@@ -399,7 +397,7 @@ void SaveGameDialog() {
     }
   }
 
-  // open window
+  // open save game window
   wnd.Create(TXT_SAVEGAME, 0, 0, GAMESAVE_WND_W, GAMESAVE_WND_H);
   wnd.Open();
   sheet = wnd.GetSheet();
@@ -436,10 +434,9 @@ void SaveGameDialog() {
   sheet->NewGroup(NULL, GAMESAVE_WND_W - 148, GAMESAVE_WND_H - 100);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
-  // Mouse clicks from gameplay will be read by the dialog without this flush
   ddio_MouseQueueFlush();
 
-  // do ui.
+  // Handle ui interactions
   do {
     res = wnd.DoUI();
     if (res == NEWUIRES_FORCEQUIT) {
@@ -463,8 +460,7 @@ void SaveGameDialog() {
 
     reenter_save:
       if (DoEditDialog(TXT_DESCRIPTION, desc, sizeof(desc) - 1)) {
-        // perform check for duplicate names
-        // do not allow for empty or space only descriptions
+        // perform check for duplicate names -- do not allow for empty or space only descriptions
         if (strlen(desc) == 0) {
           DoMessageBox("", TXT_SAVEGAMENAME, MSGBOX_OK);
           goto reenter_save;
@@ -502,6 +498,7 @@ void SaveGameDialog() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
+// Data structure for load game dialog
 typedef struct tLoadGameDialogData {
   int cur_slot;
   chunked_bitmap chunk;
@@ -591,7 +588,7 @@ bool LoadGameDialog() {
     return false;
   }
 
-  // open window
+  // open load game window
   wnd.Create(TXT_LOADGAME, 0, 0, GAMESAVE_WND_W, GAMESAVE_WND_H);
   wnd.Open();
   sheet = wnd.GetSheet();
@@ -613,7 +610,6 @@ bool LoadGameDialog() {
     ddio_MakePath(pathname, savegame_dir, filename, NULL);
 
     occupied_slot[i] = false;
-
     fp = fopen(pathname, "rb");
     if (fp) {
       int bm_handle;
@@ -631,7 +627,6 @@ bool LoadGameDialog() {
         occupied_slot[i] = true;
         loadgames_avail = true;
 
-        // create chunk
         if (pbm_handle && bm_handle > 0) {
           if (lgd_data.chunk.bm_array) {
             bm_DestroyChunkedBitmap(&lgd_data.chunk);
@@ -661,10 +656,9 @@ bool LoadGameDialog() {
   wnd.SetData(&lgd_data);
   wnd.SetOnDrawCB(LoadGameDialogCB);
 
-  // Mouse clicks from gameplay will be read by the dialog without this flush
   ddio_MouseQueueFlush();
 
-  // do ui.
+  // Handle ui interactions
   do {
     res = wnd.DoUI();
     if (res == NEWUIRES_FORCEQUIT) {
@@ -689,7 +683,7 @@ loadgame_fail:
   if (lgd_data.chunk.bm_array) {
     bm_DestroyChunkedBitmap(&lgd_data.chunk);
   }
-
+  
   wnd.Close();
   wnd.Destroy();
 
@@ -956,9 +950,6 @@ void SGSTriggers(CFILE *fp) {
   for (i = 0; i < Num_triggers; i++) {
     gs_WriteShort(fp, Triggers[i].flags);
     gs_WriteShort(fp, Triggers[i].activator);
-
-    // write script info
-    //@@		SGSScript(fp, &Triggers[i].script);
   }
 }
 
@@ -1207,9 +1198,6 @@ void SGSObjects(CFILE *fp) {
 
     INSURE_SAVEFILE;
 
-    // save script stuff.
-    //@@		SGSScript(fp, &op->script);
-
     // special things local to object
     SGSObjSpecial(fp, op);
   }
@@ -1226,42 +1214,6 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
   gs_WriteShort(fp, sizeof(ai_frame));
   cf_WriteBytes((ubyte *)ai, sizeof(ai_frame), fp);
 }
-
-//	saves script
-//@@void SGSScript(CFILE *fp, const script_info *script)
-//@@{
-//@@	int i,j;
-//@@
-//@@//	ugh, write out script info.
-//@@	gs_WriteByte(fp, (script->thread ? 1 : 0));
-//@@
-//@@	if (script->name)
-//@@		cf_WriteString(fp, script->name);
-//@@	else
-//@@		cf_WriteString(fp, "");
-//@@
-//@@	gs_WriteShort(fp, script->num_parms);
-//@@	gs_WriteShort(fp, script->is_custom);
-//@@	for (i = 0; i < script->num_parms; i++)
-//@@	{
-//@@		gs_WriteByte(fp, script->parms[i].type);
-//@@		gs_WriteFloat(fp, script->parms[i].val.x);
-//@@		gs_WriteFloat(fp, script->parms[i].val.y);
-//@@		gs_WriteFloat(fp, script->parms[i].val.z);
-//@@	}
-//@@
-//@@// write out thread data if necessary
-//@@	if (script->thread) {
-//@@		const vector *mem = D3XGetThreadMem(script->thread->mem_handle);
-//@@		ushort mem_size = script->thread->prog->map[script->thread->prog_idx].mem;
-//@@
-//@@		gs_WriteShort(fp, mem_size);
-//@@		if (mem) {
-//@@			for (j = 0; j < mem_size; j++)
-//@@				gs_WriteVector(fp, mem[j]);
-//@@		}
-//@@	}
-//@@}
 
 //	saves fx
 void SGSObjEffects(CFILE *fp, const object *op) {
@@ -1361,350 +1313,3 @@ void SGSSnapshot(CFILE *fp) {
     bm_FreeBitmap(bm_handle);
   }
 }
-
-//@@		switch (op->control_type)
-//@@		{
-//@@		case CT_NONE:
-//@@		case CT_AI:
-//@@		case CT_FLYING:			//the player is flying
-//@@		case CT_FLYTHROUGH:		//the flythrough system
-//@@		case CT_SLEW:				//slewing
-//@@		case CT_PARTICLE:			//Particle
-//@@			break;
-//@@		case CT_EXPLOSION:		//explosion sequencer
-//@@			gs_WriteFloat(fp, op_expl->spawn_time);
-//@@			gs_WriteFloat(fp,	op_expl->delete_time);
-//@@			gs_WriteShort(fp, op_expl->delete_objnum);
-//@@			gs_WriteShort(fp, op_expl->attach_parent);
-//@@			gs_WriteShort(fp, op_expl->prev_attach);
-//@@			gs_WriteShort(fp, op_expl->next_attach);
-//@@			break;
-//@@		case CT_DEBRIS:			//this is a piece of debris
-//@@			gs_WriteFloat(fp, op->ctype.dying_info.delay_time);
-//@@			gs_WriteBool(fp, op->ctype.dying_info.f_death_anim);
-//@@			break;
-//@@		case CT_POWERUP:			//animating powerup blob
-//@@			gs_WriteInt(fp, op->ctype.powerup_info.count);
-//@@			gs_WriteInt(fp, op->ctype.powerup_info.flags);
-//@@			break;
-//@@		case CT_SPLINTER:			//Splinter
-//@@			gs_WriteByte(fp, (sbyte)op_splint->subobj_num);
-//@@			gs_WriteShort(fp, op_splint->facenum);
-//@@			for (j = 0; j < MAX_VERTS_PER_SPLINTER; j++)
-//@@				gs_WriteVector(fp, op_splint->verts[j]);
-//@@			gs_WriteVector(fp, op_splint->center);
-//@@			break;
-//@@		case CT_WEAPON:			//laser, etc.
-//@@			gs_WriteShort(fp, op_wpn->parent_type);
-//@@			gs_WriteShort(fp, op_wpn->src_gun_num);
-//@@			gs_WriteInt(fp, op_wpn->last_hit_handle);
-//@@			gs_WriteInt(fp, op_wpn->track_handle);
-//@@			gs_WriteInt(fp, op_wpn->hit_status);
-//@@			gs_WriteVector(fp, op_wpn->hit_pnt);
-//@@			gs_WriteVector(fp, op_wpn->hit_wall_pnt);
-//@@			gs_WriteVector(fp, op_wpn->hit_wall_normal);
-//@@			gs_WriteInt(fp, op_wpn->hit_room);
-//@@			gs_WriteInt(fp, op_wpn->hit_pnt_room);
-//@@			gs_WriteShort(fp, op_wpn->hit_face);
-//@@			gs_WriteFloat(fp, op_wpn->multiplier);
-//@@			gs_WriteFloat(fp, op_wpn->thrust_left);
-//@@			gs_WriteFloat(fp, op_wpn->last_drop_time);
-//@@			break;
-//@@
-//@@		default:
-//@@			Int3();
-//@@		}
-
-//@@		if (op->type == OBJ_FIREBALL) {
-//@@			gs_WriteFloat(fp, op->ctype.blast_info.max_size);
-//@@			gs_WriteInt(fp, op->ctype.blast_info.bm_handle);
-//@@		}
-
-//@@		const int N_SHARD_VERTS = 3;
-//@@		switch (op->render_type)
-//@@		{
-//@@		case RT_NONE:
-//@@		case RT_EDITOR_SPHERE:
-//@@		case RT_FIREBALL:
-//@@		case RT_LINE:
-//@@		case RT_PARTICLE:
-//@@		case RT_SPLINTER:
-//@@		case RT_ROOM:
-//@@			break;
-//@@		case RT_WEAPON:
-//@@			if (!(op->flags & OF_POLYGON_OBJECT))
-//@@				break;
-//@@		case RT_POLYOBJ:
-//@@			gs_WriteShort(fp, pobji->model_num);
-//@@			gs_WriteShort(fp, pobji->dying_model_num);
-//@@			gs_WriteFloat(fp, pobji->anim_start_frame);
-//@@			gs_WriteFloat(fp, pobji->anim_frame);
-//@@			gs_WriteFloat(fp, pobji->anim_end_frame);
-//@@			gs_WriteFloat(fp, pobji->anim_time);
-//@@			gs_WriteInt(fp, (int)pobji->anim_flags);
-//@@			gs_WriteFloat(fp, pobji->max_speed);
-//@@			gs_WriteInt(fp, (int)pobji->subobj_flags);
-//@@			gs_WriteInt(fp, pobji->tmap_override);
-//@@		//!!	multi_anim_save here
-//@@			break;
-//@@
-//@@		case RT_SHARD:
-//@@			for (j = 0; j < N_SHARD_VERTS; j++)
-//@@				gs_WriteVector(fp, op->rtype.shard_info.points[j]);
-//@@			for (j = 0; j < N_SHARD_VERTS; j++)
-//@@				gs_WriteFloat(fp, op->rtype.shard_info.u[j]);
-//@@			for (j = 0; j < N_SHARD_VERTS; j++)
-//@@				gs_WriteFloat(fp, op->rtype.shard_info.v[j]);
-//@@			gs_WriteVector(fp, op->rtype.shard_info.normal);
-//@@			gs_WriteShort(fp, op->rtype.shard_info.tmap);
-//@@			break;
-//@@
-//@@		default:
-//@@			Int3();
-//@@		}
-
-// AI WRITES
-//@@// the FUN begins.
-//@@	gs_WriteByte(fp, ai->ai_class);
-//@@	gs_WriteByte(fp, ai->ai_type);
-//@@
-//@@// write path info
-//@@	const ai_path_info *path = &ai->path;
-//@@	gs_WriteInt(fp, path->flags);
-//@@	gs_WriteShort(fp, path->cur_path);
-//@@	gs_WriteShort(fp, path->cur_node);
-//@@	gs_WriteShort(fp, path->num_paths);
-//@@	gs_WriteShort(fp, path->goal_index);
-//@@
-//@@	for (i = 0; i < MAX_JOINED_PATHS; i++)
-//@@	{
-//@@		gs_WriteByte(fp, path->path_id[i]);
-//@@		gs_WriteByte(fp, path->path_type[i]);
-//@@		gs_WriteShort(fp, path->path_start_node[i]);
-//@@		gs_WriteShort(fp, path->path_end_node[i]);
-//@@		gs_WriteShort(fp, path->path_flags[i]);
-//@@	}
-//@@
-//@@// continue
-//@@	gs_WriteFloat(fp, ai->max_velocity);
-//@@	gs_WriteFloat(fp, ai->max_delta_velocity);
-//@@	gs_WriteFloat(fp, ai->max_turn_rate);
-//@@	gs_WriteFloat(fp, ai->max_delta_turn_rate);
-//@@	gs_WriteFloat(fp, ai->attack_vel_percent);
-//@@	gs_WriteFloat(fp, ai->flee_vel_percent);
-//@@	gs_WriteFloat(fp, ai->dodge_vel_percent);
-//@@	gs_WriteFloat(fp, ai->circle_distance);
-//@@	gs_WriteFloat(fp, ai->dodge_percent);
-//@@
-//@@	for (i = 0; i < 2; i++)
-//@@	{
-//@@		gs_WriteFloat(fp, ai->melee_damage[i]);
-//@@		gs_WriteFloat(fp, ai->melee_latency[i]);
-//@@	}
-//@@
-//@@	for (i = 0; i < MAX_AI_SOUNDS; i++)
-//@@	{
-//@@		gs_WriteInt(fp, ai->sound[i]);
-//@@		gs_WriteFloat(fp, ai->last_sound_time[i]);
-//@@	}
-//@@	gs_WriteShort(fp, ai->last_played_sound_index);
-//@@
-//@@	gs_WriteByte(fp, ai->movement_type);
-//@@	gs_WriteByte(fp, ai->movement_subtype);
-//@@	gs_WriteByte(fp, ai->animation_type);
-//@@	gs_WriteByte(fp, ai->next_animation_type);
-//@@	gs_WriteByte(fp, ai->next_movement);
-//@@	gs_WriteByte(fp, ai->current_wb_firing);
-//@@	gs_WriteByte(fp, ai->last_wb_firing);
-//@@
-//@@//	goals
-//@@	for (i = 0;i < MAX_GOALS; i++)
-//@@		SGSObjAIGoal(fp, &ai->goals[i]);
-//@@
-//@@//	continue
-//@@	gs_WriteInt(fp, ai->target_handle);
-//@@	gs_WriteFloat(fp, ai->next_target_update_time);
-//@@	gs_WriteFloat(fp, ai->dist_to_target);
-//@@	gs_WriteVector(fp, ai->vec_to_target);
-//@@	gs_WriteFloat(fp, ai->last_check_see_target_time);
-//@@	gs_WriteVector(fp, ai->last_see_target_pos);
-//@@	gs_WriteFloat(fp, ai->last_see_target_time);
-//@@	gs_WriteFloat(fp, ai->weapon_speed);
-//@@	gs_WriteFloat(fp, ai->next_melee_time);
-//@@	gs_WriteFloat(fp, ai->last_render_time);
-//@@	gs_WriteFloat(fp, ai->next_flinch_time);
-//@@	gs_WriteInt(fp, ai->status_reg);
-//@@	gs_WriteInt(fp, ai->flags);
-//@@	gs_WriteInt(fp, ai->notify_flags);
-//@@
-//@@// notify events (MUST BE WRITTEN OUT AT A LATER DATE)
-//@@
-//@@// Normalized movement and facing information
-//@@	gs_WriteVector(fp, ai->movement_dir);
-//@@	gs_WriteVector(fp, ai->rot_thrust_vector);
-//@@	gs_WriteFloat(fp, ai->fov);
-//@@	gs_WriteInt(fp, ai->anim_sound_handle);
-//@@	gs_WriteFloat(fp, ai->frustration);
-//@@	gs_WriteFloat(fp, ai->curiousity);
-//@@	gs_WriteFloat(fp, ai->fire_spread);
-//@@	gs_WriteFloat(fp, ai->agression);
-//@@	gs_WriteFloat(fp, ai->night_vision);
-//@@	gs_WriteFloat(fp, ai->fog_vision);
-//@@	gs_WriteFloat(fp, ai->lead_accuracy);
-//@@	gs_WriteFloat(fp, ai->lead_varience);
-//@@	gs_WriteFloat(fp, ai->fight_team);
-//@@	gs_WriteFloat(fp, ai->fight_same);
-//@@	gs_WriteFloat(fp, ai->hearing);
-//@@	gs_WriteFloat(fp, ai->roaming);
-//@@	gs_WriteFloat(fp, ai->life_preservation);
-//@@
-//@@	gs_WriteShort(fp, ai->awareness);
-
-//@@void SGSObjAIGoal(CFILE *fp, const goal *g)
-//@@{
-//@@	int i;
-//@@
-//@@	gs_WriteByte(fp, (g->used ? 1 : 0));
-//@@	if (!g->used)
-//@@		return;
-//@@
-//@@	gs_WriteInt(fp, g->type);
-//@@	gs_WriteByte(fp, g->activation_level);
-//@@	gs_WriteShort(fp, g->influence);
-//@@
-//@@// write goal info
-//@@	switch (g->type)
-//@@	{
-//@@		case AIG_HIDE_FROM_OBJ:
-//@@			gs_WriteInt(fp, g->g_info.handle);
-//@@			gs_WriteFloat(fp, g->g_info.time);
-//@@			break;
-//@@
-//@@		case AIG_WANDER_AROUND:
-//@@			gs_WriteInt(fp, g->g_info.roomnum);
-//@@			break;
-//@@
-//@@		case AIG_DODGE_OBJ:
-//@@		case AIG_MOVE_RELATIVE_OBJ:
-//@@			gs_WriteInt(fp, g->g_info.handle);
-//@@			break;
-//@@
-//@@		case AIG_MOVE_RELATIVE_OBJ_VEC:
-//@@			gs_WriteInt(fp, g->g_info.handle);
-//@@			gs_WriteInt(fp, g->g_info.subtype);
-//@@			break;
-//@@
-//@@		case AIG_GUARD_AREA:
-//@@			gs_WriteVector(fp, g->g_info.pos);
-//@@			break;
-//@@
-//@@		case AIG_GET_TO_OBJ:
-//@@			gs_WriteInt(fp, g->g_info.handle);
-//@@			gs_WriteVector(fp, g->g_info.pos);
-//@@			break;
-//@@
-//@@		case AIG_GET_TO_POS:
-//@@			gs_WriteInt(fp, g->g_info.roomnum);
-//@@			gs_WriteVector(fp, g->g_info.pos);
-//@@			break;
-//@@
-//@@		case AIG_FOLLOW_PATH: // This must be fixed -- chrishack
-//@@			gs_WriteInt(fp, g->g_info.id);
-//@@			break;
-//@@	}
-//@@
-//@@// write goal enabler
-//@@	gs_WriteByte(fp, g->num_enablers);
-//@@	for (i = 0; i < g->num_enablers; i++)
-//@@	{
-//@@		gs_WriteByte(fp, g->enabler[i].enabler_type);
-//@@
-//@@		switch (g->enabler[i].enabler_type)
-//@@		{
-//@@		case AIE_AI_STATUS_FLAG:
-//@@			gs_WriteInt(fp, g->enabler[i].flags);
-//@@			break;
-//@@		}
-//@@
-//@@		gs_WriteFloat(fp, g->enabler[i].percent_enable);
-//@@		gs_WriteFloat(fp, g->enabler[i].check_interval);
-//@@		gs_WriteFloat(fp, g->enabler[i].last_check_time);
-//@@		gs_WriteByte(fp, g->enabler[i].bool_next_enabler_op);
-//@@	}
-//@@
-//@@// continue
-//@@	gs_WriteFloat(fp, g->circle_distance);
-//@@	gs_WriteInt(fp, g->status_reg);
-//@@	gs_WriteFloat(fp, g->start_time);
-//@@	gs_WriteFloat(fp, g->next_path_time);
-//@@	gs_WriteFloat(fp, g->dist_to_goal);
-//@@	gs_WriteVector(fp, g->vec_to_target);
-//@@	gs_WriteFloat(fp, g->last_check_see_target_time);
-//@@	gs_WriteVector(fp, g->last_see_target_pos);
-//@@	gs_WriteFloat(fp, g->last_see_target_time);
-//@@	gs_WriteFloat(fp, g->next_target_update_time);
-//@@	gs_WriteShort(fp, g->flags);
-//@@}
-//@@
-
-// EFFECTS INFO STRUCTURE
-//@@		gs_WriteInt(fp, ei->type_flags);
-//@@		gs_WriteFloat(fp, ei->alpha);
-//@@
-//@@//		if (op->type == OBJ_POWERUP) {
-//@@			gs_WriteFloat(fp, ei->last_object_hit_time);
-//@@			gs_WriteInt(fp, ei->last_object_hit);
-//@@//		}
-//@@//		if (ei->type_flags & EF_DEFORM) {
-//@@			gs_WriteFloat(fp, ei->deform_range);
-//@@			gs_WriteFloat(fp, ei->deform_time);
-//@@//		}
-//@@//		if (ei->type_flags & EF_VOLUME_CHANGING) {
-//@@			gs_WriteFloat(fp, ei->volume_change_time);
-//@@			gs_WriteVector(fp, ei->volume_old_pos);
-//@@			gs_WriteFloat(fp, ei->volume_old_room);
-//@@//		}
-//@@//		if (ei->type_flags & EF_VOLUME_LIT) {
-//@@			gs_WriteByte(fp, (sbyte)ei->dynamic_this_frame);
-//@@			gs_WriteFloat(fp, ei->dynamic_red);
-//@@			gs_WriteFloat(fp, ei->dynamic_green);
-//@@			gs_WriteFloat(fp, ei->dynamic_blue);
-//@@//		}
-//@@//		if (ei->type_flags & EF_CLOAKED) {
-//@@			gs_WriteFloat(fp, ei->cloak_time);
-//@@//		}
-//@@//		if (ei->type_flags & EF_COLORED) {
-//@@			gs_WriteFloat(fp, ei->color_time);
-//@@			gs_WriteFloat(fp, ei->r);
-//@@			gs_WriteFloat(fp, ei->g);
-//@@			gs_WriteFloat(fp, ei->b);
-//@@//		}
-//@@//		if (ei->type_flags & EF_NAPALMED) {
-//@@			gs_WriteFloat(fp, ei->damage_time);
-//@@			gs_WriteFloat(fp, ei->damage_per_second);
-//@@			gs_WriteFloat(fp, ei->last_damage_time);
-//@@			gs_WriteInt(fp, ei->damage_handle);
-//@@//		}
-//@@//		if (ei->type_flags & EF_FREEZE) {
-//@@			gs_WriteFloat(fp, ei->freeze_scalar);
-//@@//		}
-//@@//		if (ei->type_flags & EF_LINE_ATTACH) {
-//@@			gs_WriteInt(fp, ei->attach_line_handle);
-//@@//		}
-
-//	 Weapon Battery Info
-//@@			gs_WriteFloat(fp, dwb->last_fire_time);
-//@@			gs_WriteByte(fp, dwb->cur_firing_mask);
-//@@
-//@@			for (j = 0; j < MAX_WB_TURRETS; j++)
-//@@			{
-//@@				gs_WriteFloat(fp, dwb->norm_turret_angle[j]);
-//@@				gs_WriteFloat(fp, dwb->turret_next_think_time[j]);
-//@@				gs_WriteByte(fp, dwb->turret_direction[j]);
-//@@			}
-//@@
-//@@			gs_WriteByte(fp, dwb->wb_anim_mask);
-//@@			gs_WriteFloat(fp, dwb->wb_anim_frame);
-//@@			gs_WriteVector(fp, dwb->cur_target);
-//@@			gs_WriteByte(fp, dwb->upgrade_level);
-//@@			gs_WriteInt(fp, dwb->flags);
