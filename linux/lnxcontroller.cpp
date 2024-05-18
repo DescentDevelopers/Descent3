@@ -41,9 +41,8 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
 #include "Controller.h"
-#include <string.h>
-#include <memory.h>
 #include "ddio.h"
 #include "pserror.h"
 #include "joystick.h"

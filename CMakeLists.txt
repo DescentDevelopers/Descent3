@@ -168,7 +168,6 @@ else()
   add_subdirectory(linux)
   add_subdirectory(ddvid_lnx)
   add_subdirectory(dd_lnxsound)
-  add_subdirectory(lnxcontroller)
   add_subdirectory(ddio_lnx)
 endif()
 
