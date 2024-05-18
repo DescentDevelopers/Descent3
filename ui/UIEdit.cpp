@@ -132,13 +132,15 @@
  * $NoKeywords: $
  */
 
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+
 #include "UIlib.h"
 #include "grtext.h"
 #include "Macros.h"
 #include "mem.h"
 
-#include <string.h>
-#include <stdlib.h>
 
 static UIEdit *UI_current_editbox = NULL;
 
@@ -203,7 +205,7 @@ void UIEdit::SetText(const char *text) {
 
   if (CHECK_FLAG(m_Flags, UIED_NUMBERS)) {
     int num = atoi(text);
-    itoa(num, m_TextBuf, 10);
+    sprintf(m_TextBuf, "%d", num);
   } else {
     strcpy(m_TextBuf, text);
   }
