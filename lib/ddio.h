@@ -320,6 +320,9 @@ void ddio_MouseSetVCoords(int width, int height);
 //	File Operations
 //	---------------------------------------------------------------------------
 
+// Gets the full path of the executable file
+bool ddio_GetBinaryPath(char *exec_path, size_t len);
+
 //	creates or destroys a directory or folder on disk
 //	This pathname is *RELATIVE* not fully qualified
 bool ddio_CreateDir(const char *path);
