@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <csignal>
+#include <unistd.h>
 
 #include <SDL.h>
 

@@ -62,6 +62,10 @@
 #include "mem.h"
 #include "linux_fix.h"
 
+#if MACOSX
+#include <cctype>
+#endif
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
