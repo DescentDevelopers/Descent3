@@ -1443,6 +1443,7 @@ void InitIOSystems(bool editor) {
 
   Descent->set_defer_handler(D3DeferHandler);
 
+#ifndef RELEASE
   if (!editor && !FindArg("-windowed")) {
     if (Dedicated_server) {
       ddio_MouseMode(MOUSE_STANDARD_MODE);
@@ -1450,6 +1451,9 @@ void InitIOSystems(bool editor) {
       ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
     }
   }
+#else
+  ddio_MouseMode(MOUSE_EXCLUSIVE_MODE);
+#endif
 
   //	do io init stuff
   io_info.obj = Descent;
