@@ -80,7 +80,7 @@
 #ifndef WIN32APP_H
 #define WIN32APP_H
 
-#define MAX_MSG_FUNCTIONS 64
+#include <array>
 
 /*	Basic Application Win32 data types */
 typedef unsigned int HWnd;
@@ -139,12 +139,11 @@ private:
 #endif
   bool m_WasCreated; // Tells us if this app created the window handle or not.
 
-  int m_NumMsgFn; // Number of message functions.
-
-  struct { // assign functions to messages.
+  struct MessageFunction { // assign functions to messages.
     unsigned msg;
     tOEWin32MsgCallback fn;
-  } m_MsgFn[MAX_MSG_FUNCTIONS];
+  };
+  std::array<MessageFunction, 64> m_MsgFn;
 
   bool m_NTFlag; // Are we in NT?
 
