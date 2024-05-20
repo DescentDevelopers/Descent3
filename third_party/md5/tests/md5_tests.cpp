@@ -21,7 +21,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "md5.h"
+#include "md5/md5.h"
 
 namespace {
 

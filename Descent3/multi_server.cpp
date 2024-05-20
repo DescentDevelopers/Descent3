@@ -667,7 +667,7 @@
 #include "psrand.h"
 #include "polymodel.h"
 #include "init.h"
-#include "../md5/md5.h"
+#include "md5/md5.h"
 
 #include <algorithm>
 

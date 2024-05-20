@@ -140,10 +140,11 @@ if(ENABLE_LOGGER)
 endif()
 
 include_directories(
-  "cfile"   # TODO: Remove after untying all modules
-  "ddebug"  # -*-
-  "fix"     # -*-
-  "lib"     # TODO: Remove after untying all modules
+  "cfile"       # TODO: Remove after untying all modules
+  "ddebug"      # -*-
+  "fix"         # -*-
+  "lib"         # TODO: Remove after untying all modules
+  "third_party" # _*_
   "Descent3"
   ${PLATFORM_INCLUDES}
 )
@@ -192,8 +193,6 @@ add_subdirectory(ui)
 add_subdirectory(unzip)
 add_subdirectory(vecmat)
 add_subdirectory(libmve)
-add_subdirectory(md5)
-add_subdirectory(libacm)
 add_subdirectory(Descent3)
 
 add_subdirectory(tools)

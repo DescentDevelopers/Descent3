@@ -666,7 +666,7 @@ void ReadTextureList(CFILE *ifile);
 
 // Primarily for multiplayer, makes sure the client and server levels are the same
 
-#include "../md5/md5.h"
+#include "md5/md5.h"
 extern MD5 *Level_md5;
 inline void RestartLevelMD5() {
   if (Level_md5)
