@@ -19,6 +19,7 @@ set(CPPS
 add_library(sndlib STATIC ${CPPS})
 target_link_libraries(sndlib PRIVATE
   cfile
+  stream_audio
 )
 target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:
