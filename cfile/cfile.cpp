@@ -105,7 +105,7 @@ static CFILE *open_file_in_lib(const char *filename);
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const char *libname) {
   FILE *fp;
-  int i;
+  size_t i;
   uint32_t offset;
   static int first_time = 1;
   tHogHeader header;
@@ -954,7 +954,7 @@ double cf_ReadDouble(CFILE *cfp) {
 // Does not generate an exception on EOF
 int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
   int c;
-  int count;
+  size_t count;
   char *bp;
   if (n == 0)
     return -1;
@@ -1075,8 +1075,8 @@ bool cf_CopyFile(char *dest, const char *src, int copytime) {
     cfclose(infile);
     return false;
   }
-  int progress = 0;
-  int readcount = 0;
+  size_t progress = 0;
+  size_t readcount = 0;
 #define COPY_CHUNK_SIZE 5000
   ubyte copybuf[COPY_CHUNK_SIZE];
   while (!cfeof(infile)) {
@@ -1111,8 +1111,9 @@ void cf_CopyFileTime(char *dest, const char *src) { ddio_CopyFileTime(dest, src)
 
 // Changes a files attributes (ie read/write only)
 void cf_ChangeFileAttributes(const char *name, int attr) {
-  if (_chmod(name, attr) == -1)
+  if (_chmod(name, attr) == -1) {
     Int3(); // Get Jason or Matt, file not found!
+  }
 }
 
 //	rewinds cfile position
@@ -1192,7 +1193,7 @@ unsigned int cf_GetfileCRC(char *src) {
 
 char cfile_search_wildcard[256];
 std::shared_ptr<library> cfile_search_library;
-int cfile_search_curr_index = 0;
+size_t cfile_search_curr_index = 0;
 bool cfile_search_ispattern = false;
 //	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
 //	for files that match the wildcard passed in, however, this is to be used for hog files.
