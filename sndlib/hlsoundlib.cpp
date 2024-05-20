@@ -444,11 +444,11 @@
  */
 // High level sound object.  This code is 100% machine independant and
 // completely encapsulates the lowel-level machine-dependant sound code.
-#include "soundload.h"
+
+#include <cstring>
+
 #include "hlsoundlib.h"
 #include "ssl_lib.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include "mono.h"
 #include "pserror.h"
 #include "vecmat.h"
@@ -457,7 +457,6 @@
 #include "game.h"
 #include "room.h"
 #include "BOA.h"
-#include "mem.h"
 #include "streamaudio.h"
 #include "doorway.h"
 #include "dedicated_server.h"
@@ -468,9 +467,9 @@
 #if defined(WIN32)
 #include "ds3dlib.h"
 #elif defined(__LINUX__)
-#include "lnxsound.h"
+#include "sdlsound.h"
 #endif
-#include <string.h>
+
 hlsSystem Sound_system;
 char Sound_quality = SQT_NORMAL;
 char Sound_mixer = SOUND_MIXER_SOFTWARE_16;

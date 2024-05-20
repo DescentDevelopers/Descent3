@@ -19,7 +19,6 @@
 #ifndef __LINUX_DD_SOUND_H_
 #define __LINUX_DD_SOUND_H_
 
-#include <pthread.h>
 #include "ssl_lib.h"
 #include "mixer.h"
 

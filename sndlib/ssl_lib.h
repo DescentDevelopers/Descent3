@@ -262,7 +262,7 @@
 
 class oeApplication; // reference to oeApplication class.
 
-#define MAX_GAME_VOLUME (float)1.0 // helps against clipping
+#define MAX_GAME_VOLUME 1.0f // helps against clipping
 
 // Size of streaming buffers
 #define STREAM_BUFFER_SIZE 4096 //(4 * 1024)
@@ -408,6 +408,39 @@ typedef struct sound_info {
 
 // Sound Library Internal Error Codes
 #define SSL_OK 0
+#define SSL_ERROR_GENERIC (-1)
+#define SSL_ERROR_SAMPLE_NODATA (-2)
+#define SSL_ERROR_STREAMMIXER (-3)
+
+// Sound Status
+#define SSF_UNUSED 0
+#define SSF_PLAY_NORMAL 1
+#define SSF_PLAY_LOOPING 2
+#define SSF_PAUSED 4
+#define SSF_PLAY_STREAMING 8
+#define SSF_BUFFERED_LOOP 64
+#define SSF_BUFFERED_STRM 128
+
+#define SBT_PRIMARY 0
+#define SBT_2D 1
+#define SBT_3D 2
+
+// looping methods
+#define DSLOOP_SMART_METHOD 0
+#define DSLOOP_BUFFER_METHOD 1
+#define DSLOOP_STREAM_METHOD 2
+
+#define DSBUFLOOP_INIT_STEP (-1)
+#define DSBUFLOOP_LOOP_STEP 0
+#define DSBUFLOOP_FINISH_STEP 1
+
+// used to time threads.
+
+// This is the update rate at which to call sound_mixer::DoFrame()
+// (sleep this amount each frame of the thread)
+#define DSPB_TICK_INTERVAL .01 // Primary buffer update rate (in seconds)
+#define DSPB_TICK_MILLISECONDS (DSPB_TICK_INTERVAL * 1000)
+
 
 // structure to get and set environment values
 #define ENV3DVALF_DOPPLER 1

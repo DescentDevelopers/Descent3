@@ -16,28 +16,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <errno.h>
-#include "cfile.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdarg>
+
+#include <SDL.h>
+
 #include "pserror.h"
 #include "mono.h"
-#include "soundload.h"
 #include "ssl_lib.h"
-#include "mem.h"
 #include "application.h"
-#include "lnxsound.h"
-#include "ddlnxsound.h"
+#include "sdlsound.h"
 #include "mixer.h"
 #include "ddio.h"
-#include "SDL.h"
-#include "SDL_thread.h"
 #include "args.h"
 
 #define SOUNDLIB_SAMPLE_RATE 22050
@@ -50,7 +42,6 @@
 static sound_buffer_info sound_cache[MAX_SOUNDS_PLAYING_AT_ONCE];
 static int sound_buffer_size = MAX_SOUNDS_PLAYING_AT_ONCE;
 
-LNXSTREAM m_sb_info;
 lnxsound *ll_sound_ptr;
 
 // A peroidic mixer that uses the primary buffer as a stream buffer
