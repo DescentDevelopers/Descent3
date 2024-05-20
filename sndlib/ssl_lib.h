@@ -487,16 +487,16 @@ public:
   // Starts the sound library, maybe have it send back some information -- 3d support?
   virtual int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) = 0;
   // Cleans up after the Sound Library
-  virtual void DestroySoundLib(void) = 0;
+  virtual void DestroySoundLib() = 0;
 
   // Locks and unlocks sounds (used when changing play_info data)
   virtual bool LockSound(int sound_uid) = 0;
   virtual bool UnlockSound(int sound_uid) = 0;
 
   virtual bool SetSoundQuality(char quality) = 0;
-  virtual char GetSoundQuality(void) = 0;
+  virtual char GetSoundQuality() = 0;
   virtual bool SetSoundMixer(char mixer_type) = 0;
-  virtual char GetSoundMixer(void) = 0;
+  virtual char GetSoundMixer() = 0;
 
   // Plays a 2d sound
   virtual int PlaySound2d(play_information *play_info, int sound_index, float volume, float pan, bool f_looped) = 0;
@@ -508,7 +508,7 @@ public:
   virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) = 0;
   virtual void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) = 0;
 
-  virtual void StopAllSounds(void) = 0;
+  virtual void StopAllSounds() = 0;
 
   // Checks if a sound is playing (removes finished sound);
   virtual bool IsSoundInstancePlaying(int sound_uid) = 0;
@@ -520,18 +520,18 @@ public:
   virtual void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY) = 0;
 
   // Pause all sounds/resume all sounds
-  virtual void PauseSounds(void) = 0;
-  virtual void ResumeSounds(void) = 0;
+  virtual void PauseSounds() = 0;
+  virtual void ResumeSounds() = 0;
   virtual void PauseSound(int sound_uid) = 0;
   virtual void ResumeSound(int sound_uid) = 0;
 
   virtual bool CheckAndForceSoundDataAlloc(int sound_file_index) = 0;
 
   // Begin sound frame
-  virtual void SoundStartFrame(void) = 0;
+  virtual void SoundStartFrame() = 0;
 
   // End sound frame
-  virtual void SoundEndFrame(void) = 0;
+  virtual void SoundEndFrame() = 0;
 
   // Returns current error code
   int GetLastError() {
@@ -578,7 +578,6 @@ public:
 #define MAX_SOUNDS 1000
 #define MAX_SOUND_FILES 1000
 extern sound_info Sounds[MAX_SOUNDS];
-extern sound_file_info SoundFiles[MAX_SOUND_FILES];
 #else
 #include "..\neweditor\ned_Sound.h"
 #endif
@@ -587,7 +586,7 @@ extern sound_file_info SoundFiles[MAX_SOUND_FILES];
 
 //	loads a sound from a wavefile.
 char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_file_index, bool f_high_quality,
-                       bool f_load_sample_data, int *e_type = NULL);
+                       bool f_load_sample_data, int *e_type = nullptr);
 
 void SoundLoadFree(int sound_file_index);
 

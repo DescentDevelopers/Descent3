@@ -42,85 +42,78 @@ public:
   ~lnxsound();
 
   // may be called before init (must be to be valid, the card passed here will be initialized in InitSoundLib)
-  virtual void SetSoundCard(const char *name);
-  virtual void PauseSound(int sound_uid);
-  virtual void ResumeSound(int sound_uid);
+  void SetSoundCard(const char *name) override;
+  void PauseSound(int sound_uid) override;
+  void ResumeSound(int sound_uid) override;
   // set special parameters for the 3d environment.
   // of strcuture passed, you must set the appropriate 'flags' value for values you wish to modify
-  virtual void SetEnvironmentValues(const t3dEnvironmentValues *env);
+  void SetEnvironmentValues(const t3dEnvironmentValues *env) override;
 
   // get special parameters for the 3d environment.
   // of strcuture passed, you must set the appropriate 'flags' value for values you wish to modify
-  virtual void GetEnvironmentValues(t3dEnvironmentValues *env);
+  void GetEnvironmentValues(t3dEnvironmentValues *env) override;
 
   // enable special parameters for the 3d environment.
   // of strcuture passed, you must set the appropriate 'flags' value for values you wish to modify
-  virtual void SetEnvironmentToggles(const t3dEnvironmentToggles *env);
+  void SetEnvironmentToggles(const t3dEnvironmentToggles *env) override;
 
   // get states of special parameters for the 3d environment.
   // of strcuture passed, you must set the appropriate 'flags' value for values you wish to modify
-  virtual void GetEnvironmentToggles(t3dEnvironmentToggles *env);
+  void GetEnvironmentToggles(t3dEnvironmentToggles *env) override;
 
   // Starts the sound library, maybe have it send back some information -- 3d support?
-  virtual int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played);
+  int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) override;
   // Cleans up after the Sound Library
-  virtual void DestroySoundLib();
+  void DestroySoundLib() override;
 
   // Locks and unlocks sounds (used when changing play_info data)
-  virtual bool LockSound(int sound_uid);
-  virtual bool UnlockSound(int sound_uid);
+  bool LockSound(int sound_uid) override;
+  bool UnlockSound(int sound_uid) override;
 
-  virtual bool SetSoundQuality(char quality);
-  virtual char GetSoundQuality();
-  virtual bool SetSoundMixer(char mixer_type);
-  virtual char GetSoundMixer();
+  bool SetSoundQuality(char quality) override;
+  char GetSoundQuality() override;
+  bool SetSoundMixer(char mixer_type) override;
+  char GetSoundMixer() override;
 
   // Plays a 2d sound
-  virtual int PlaySound2d(play_information *play_info, int sound_index, float volume, float pan, bool f_looped);
-  virtual int PlayStream(play_information *play_info);
+  int PlaySound2d(play_information *play_info, int sound_index, float volume, float pan, bool f_looped) override;
+  int PlayStream(play_information *play_info) override;
 
-  virtual void SetListener(pos_state *cur_pos);
-  virtual int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
-                          bool f_looped, float reverb = 0.5f); //, unsigned short frequency
-  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency);
-  virtual void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f);
+  void SetListener(pos_state *cur_pos) override;
+  int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
+                          bool f_looped, float reverb = 0.5f) override;
+  void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) override;
+  void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) override;
 
-  virtual void StopAllSounds();
+  void StopAllSounds() override;
 
   // Checks if a sound is playing (removes finished sound);
-  virtual bool IsSoundInstancePlaying(int sound_uid);
-  virtual int IsSoundPlaying(int sound_index);
+  bool IsSoundInstancePlaying(int sound_uid) override;
+  int IsSoundPlaying(int sound_index) override;
 
   //	virtual void AdjustSound(int sound_uid, play_information *play_info) = 0;
 
   // Stops 2d and 3d sounds
-  virtual void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY);
+  void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY) override;
 
   // Pause all sounds/resume all sounds
-  virtual void PauseSounds();
-  virtual void ResumeSounds();
-  virtual bool CheckAndForceSoundDataAlloc(int sound_file_index);
+  void PauseSounds() override;
+  void ResumeSounds() override;
+  bool CheckAndForceSoundDataAlloc(int sound_file_index) override;
 
   // Begin sound frame
-  virtual void SoundStartFrame();
+  void SoundStartFrame() override;
 
   // End sound frame
-  virtual void SoundEndFrame();
+  void SoundEndFrame() override;
 
   // returns the error string.
   virtual const char *GetErrorStr() const;
 
-  // Returns current error code
-  int GetLastError() {
-    int code = m_lib_error_code;
-    m_lib_error_code = 0;
-    return code;
-  };
-
   // environmental sound interface
   // volume modifier (0-1), damping(0-1), 1 = complete, 0 = none
   //	decay 0.1 to 100 seconds, how long it takes for a sound to die.
-  virtual bool SetGlobalReverbProperties(float volume, float damping, float decay);
+  bool SetGlobalReverbProperties(float volume, float damping, float decay) override;
 
   virtual bool GetDeviceSettings(int *sound_device, unsigned int *freq, unsigned int *bit_depth,
                                  unsigned int *channels);
@@ -142,9 +135,8 @@ protected:
   static inline int ValidateUniqueId(int sound_uid);
 
   // Sound System Error Handler.
-  void CheckForErrors();
+  void CheckForErrors() override;
 
-  void SetError(int code) { m_lib_error_code = code; };
   void StartStreaming();
   void EndStreaming();
 
