@@ -470,7 +470,7 @@ int main(int argc, char *argv[]) {
   setenv("SDL_VIDEODRIVER", "dummy", 1);
   #endif
 
-  int rc = SDL_Init(SDL_INIT_VIDEO);
+  int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {
     fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
     fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());

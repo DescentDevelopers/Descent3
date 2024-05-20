@@ -19,6 +19,8 @@
 #ifndef __LINUX_DD_SOUND_H_
 #define __LINUX_DD_SOUND_H_
 
+#include <SDL_audio.h>
+
 #include "ssl_lib.h"
 #include "mixer.h"
 
@@ -115,8 +117,8 @@ public:
   //	decay 0.1 to 100 seconds, how long it takes for a sound to die.
   bool SetGlobalReverbProperties(float volume, float damping, float decay) override;
 
-  virtual bool GetDeviceSettings(int *sound_device, unsigned int *freq, unsigned int *bit_depth,
-                                 unsigned int *channels);
+  bool GetDeviceSettings(SDL_AudioDeviceID *sound_device, unsigned int *freq, unsigned int *bit_depth,
+                                 unsigned int *channels) const;
 
   friend void lnxsound_SetError(int code);
   friend void lnxsound_ErrorText(const char *fmt, ...);
@@ -143,7 +145,7 @@ protected:
   int m_primary_frequency; // Set to the primary buffers frequency -- cmphack
   int m_primary_alignment;
 
-  int sound_device;
+  SDL_AudioDeviceID sound_device;
   bool in_at_exit;
   bool m_in_sound_frame;
   bool m_pending_actions;
