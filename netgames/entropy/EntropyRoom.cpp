@@ -112,9 +112,9 @@ int SpewObjectInRoom(int type, int id, int roomnum) {
     return -1;
 
   // Set random velocity for powerups
-  obj->mtype.phys_info.velocity.x = ((float)rand() / RAND_MAX) * 20.0;
-  obj->mtype.phys_info.velocity.z = ((float)rand() / RAND_MAX) * 20.0;
-  obj->mtype.phys_info.velocity.y = ((float)rand() / RAND_MAX) * 20.0;
+  obj->mtype.phys_info.velocity.x = ((float)rand() / static_cast<float>(RAND_MAX)) * 20.0;
+  obj->mtype.phys_info.velocity.z = ((float)rand() / static_cast<float>(RAND_MAX)) * 20.0;
+  obj->mtype.phys_info.velocity.y = ((float)rand() / static_cast<float>(RAND_MAX)) * 20.0;
 
   DLLMultiSendObject(obj, 0, true);
 
