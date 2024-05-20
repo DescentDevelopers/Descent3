@@ -21,6 +21,8 @@
 //      are changed infrequently
 //
 
+#pragma once
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <afxwin.h>         // MFC core and standard components
@@ -30,7 +32,5 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 #include <afxole.h>			// MFC OLE support (ADDED BY SAMIR)
-
-
-
+#include <windows.h>
 

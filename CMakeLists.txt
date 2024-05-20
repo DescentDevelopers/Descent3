@@ -201,6 +201,10 @@ add_subdirectory(vecmat)
 add_subdirectory(libmve)
 add_subdirectory(md5)
 add_subdirectory(libacm)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  add_subdirectory(editor)
+endif()
 add_subdirectory(Descent3)
 
 add_subdirectory(tools)

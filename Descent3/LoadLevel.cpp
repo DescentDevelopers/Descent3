@@ -3923,7 +3923,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           uint8_t buf[1000];
           int n = chunk_size, r;
           while (n) {
-            r = cf_ReadBytes(buf, std::min(n, sizeof(buf)), ifile);
+            r = cf_ReadBytes(buf, std::min(n, static_cast<int>(sizeof(buf))), ifile);
             cf_WriteBytes(buf, r, ofile);
             n -= r;
           }
