@@ -5788,7 +5788,7 @@ bool GuideBot::DoNotify(int me, tOSIRISEventInfo *data) {
     } else if (type == OBJ_ROBOT) {
       // 35% of the time, the buddy is happy enough to say something when
       // he hits a robot
-      if (rand() > RAND_MAX * 0.65f) {
+      if (rand() > static_cast<float>(RAND_MAX) * 0.65f) {
         DoMessage(TXT_GB_SHOOTROBOT, false, "GBotAcceptOrder1");
       }
     }

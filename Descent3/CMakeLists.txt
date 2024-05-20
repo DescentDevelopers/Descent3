@@ -302,8 +302,15 @@ target_link_libraries(Descent3
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
-add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull)
+add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
+
+add_custom_target(LicenseFiles
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/LICENSE" $<TARGET_FILE_DIR:Descent3>
+  COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/third_party_licenses" "$<TARGET_FILE_DIR:Descent3>/Third-party licenses"
+  COMMENT "Create license files"
+)
+add_dependencies(Descent3 LicenseFiles)

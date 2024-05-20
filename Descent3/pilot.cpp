@@ -669,7 +669,7 @@ void PilotCopyDefaultControls(pilot *Pilot);
 int Pilot_NewRead(pilot *Pilot, bool read_keyconfig, bool read_missiondata);
 int Pilot_NewWrite(pilot *Pilot, bool newpilot);
 
-typedef struct {
+struct tCustomListInfo {
   newuiListBox *custom_bitmap_list;
   int needed_size; // size of allocated memory for files
   char *files;     // string list of file names
@@ -688,7 +688,7 @@ typedef struct {
     custom_bitmap_list = NULL;
     needed_size = 0;
   }
-} tCustomListInfo;
+};
 
 typedef struct {
   newuiComboBox *taunt_a, *taunt_b, *taunt_c, *taunt_d;
@@ -2082,7 +2082,7 @@ private:
 //	struct ship_pos
 //
 //	contains information about the ship to be displayed in the ship configuration
-typedef struct {
+struct tShipPos {
   matrix last_frame;
   float cam_dist;
   float last_time;
@@ -2096,14 +2096,14 @@ typedef struct {
     texture_id = Players[0].custom_texture_handle;
     bm_handle = -1;
   }
-} tShipPos;
+};
 
 tShipPos ship_pos;
 int ship_model = -1;
 char custom_texture[_MAX_PATH];
 UIBmpWindow *bmpwindow;
 
-typedef struct {
+struct tShipListInfo {
   int *idlist; // array of remapping indicies (list index->ship index)
   void Init() { idlist = NULL; }
   void Reset() {
@@ -2112,7 +2112,7 @@ typedef struct {
       idlist = NULL;
     }
   }
-} tShipListInfo;
+};
 
 tCustomListInfo *lp_cust_bmps = NULL;
 tShipListInfo *lp_ship_info = NULL;

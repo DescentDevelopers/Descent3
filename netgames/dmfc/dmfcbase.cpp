@@ -4234,7 +4234,7 @@ void DMFCBase::RespawnPlayer(int pnum, bool spew_energy_and_shields, bool spew_e
 
   int slot = DLLPlayerGetRandomStartPosition(pnum);
 
-  DLLObjSetPos(obj, &Players[slot].start_pos, Players[slot].start_roomnum, &Players[slot].start_orient, NULL);
+  DLLObjSetPos(obj, &Players[slot].start_pos, Players[slot].start_roomnum, &Players[slot].start_orient, false);
 }
 
 // If you are going to create submenus you MUST use this function. along with:

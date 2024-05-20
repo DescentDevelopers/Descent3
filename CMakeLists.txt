@@ -199,6 +199,5 @@ add_subdirectory(Descent3)
 
 add_subdirectory(tools)
 add_subdirectory(netcon)
-
 add_subdirectory(netgames)
 add_subdirectory(scripts)
