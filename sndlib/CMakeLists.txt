@@ -6,12 +6,13 @@ set(CPPS
   ssl_lib.cpp
   $<$<PLATFORM_ID:Windows>:
     ds3dlib.cpp
+    ds3dgeometry.cpp
     dsound3d.cpp
     eax.cpp
-    geometry.cpp
   >
   $<$<PLATFORM_ID:Darwin,Linux>:
     mixer.cpp
+    sdlgeometry.cpp
     sdlsound.cpp
   >
 )

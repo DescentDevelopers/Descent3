@@ -64,16 +64,16 @@ public:
   // Starts the sound library, maybe have it send back some information -- 3d support?
   virtual int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played);
   // Cleans up after the Sound Library
-  virtual void DestroySoundLib(void);
+  virtual void DestroySoundLib();
 
   // Locks and unlocks sounds (used when changing play_info data)
   virtual bool LockSound(int sound_uid);
   virtual bool UnlockSound(int sound_uid);
 
   virtual bool SetSoundQuality(char quality);
-  virtual char GetSoundQuality(void);
+  virtual char GetSoundQuality();
   virtual bool SetSoundMixer(char mixer_type);
-  virtual char GetSoundMixer(void);
+  virtual char GetSoundMixer();
 
   // Plays a 2d sound
   virtual int PlaySound2d(play_information *play_info, int sound_index, float volume, float pan, bool f_looped);
@@ -85,7 +85,7 @@ public:
   virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency);
   virtual void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f);
 
-  virtual void StopAllSounds(void);
+  virtual void StopAllSounds();
 
   // Checks if a sound is playing (removes finished sound);
   virtual bool IsSoundInstancePlaying(int sound_uid);
@@ -97,15 +97,15 @@ public:
   virtual void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY);
 
   // Pause all sounds/resume all sounds
-  virtual void PauseSounds(void);
-  virtual void ResumeSounds(void);
+  virtual void PauseSounds();
+  virtual void ResumeSounds();
   virtual bool CheckAndForceSoundDataAlloc(int sound_file_index);
 
   // Begin sound frame
-  virtual void SoundStartFrame(void);
+  virtual void SoundStartFrame();
 
   // End sound frame
-  virtual void SoundEndFrame(void);
+  virtual void SoundEndFrame();
 
   // returns the error string.
   virtual const char *GetErrorStr() const;
@@ -138,15 +138,15 @@ protected:
   // This function limits the number of sounds cached to 255(8bits) and 256 bit is for invalid channel
   // The purpose is to create unique signatures for each sound played (and allow for
   // the slot_number to be quickly determined)
-  inline int MakeUniqueId(int sound_slot);
-  inline int ValidateUniqueId(int sound_uid);
+  inline int MakeUniqueId(int sound_slot) const;
+  static inline int ValidateUniqueId(int sound_uid);
 
   // Sound System Error Handler.
-  void CheckForErrors(void);
+  void CheckForErrors();
 
   void SetError(int code) { m_lib_error_code = code; };
-  void StartStreaming(void);
-  void EndStreaming(void);
+  void StartStreaming();
+  void EndStreaming();
 
   int m_primary_frequency; // Set to the primary buffers frequency -- cmphack
   int m_primary_alignment;
