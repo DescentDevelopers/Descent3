@@ -468,7 +468,7 @@
 #if defined(WIN32)
 #include "ds3dlib.h"
 #elif defined(__LINUX__)
-#include "linux/lnxsound.h"
+#include "lnxsound.h"
 #endif
 #include <string.h>
 hlsSystem Sound_system;

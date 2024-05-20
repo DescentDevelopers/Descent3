@@ -32,7 +32,7 @@
 #include "ssl_lib.h"
 #include "mem.h"
 #include "application.h"
-#include "linux/lnxsound.h"
+#include "lnxsound.h"
 #include "ddlnxsound.h"
 #include "mixer.h"
 #include "ddio.h"
