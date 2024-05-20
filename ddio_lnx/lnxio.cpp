@@ -58,6 +58,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#ifdef MACOSX
+#include <mach-o/dyld.h>
+#endif
+
 #include "pserror.h"
 #include "application.h"
 #include "ddio_lnx.h"
@@ -99,3 +103,24 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   mprintf((0, "%s\n", buf));
 }
 
+bool ddio_GetBinaryPath(char *exec_path, size_t len) {
+#ifndef MACOSX
+  if (realpath("/proc/self/exe", exec_path) == NULL) {
+   perror("realpath");
+   return false;
+  }
+#else
+  if (exec_path == NULL || len == 0) {
+   fprintf(stderr, "Invalid arguments\n");
+   return false;
+  }
+
+  uint32_t size = (uint32_t)len;
+  if (_NSGetExecutablePath(exec_path, &size) != 0) {
+   fprintf(stderr, "Buffer too small; need size %u\n", size);
+   return false;
+  }
+#endif
+ exec_path[len - 1] = '\0';
+ return true;
+}

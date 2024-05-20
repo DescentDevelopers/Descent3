@@ -909,7 +909,8 @@
 
 // Initialization routines for Descent3/Editor
 
-#include <stdlib.h>
+#include <filesystem>
+#include <string.h>
 #include <time.h>
 
 #include "mono.h"
@@ -1418,26 +1419,29 @@ static const int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(
 */
 void InitIOSystems(bool editor) {
   ddio_init_info io_info;
-  int dirlen = _MAX_PATH;
 
   // Set the base directory
   int dirarg = FindArg("-setdir");
   int exedirarg = FindArg("-useexedir");
   if (dirarg) {
-    strcpy(Base_directory, GameArgs[dirarg + 1]);
+    strncpy(Base_directory, GameArgs[dirarg + 1], sizeof(Base_directory) - 1);
+    Base_directory[sizeof(Base_directory) - 1] = '\0';
   } else if (exedirarg) {
-    strcpy(Base_directory, GameArgs[0]);
-    int len = strlen(Base_directory);
-    for (int i = (len - 1); i >= 0; i--) {
-      if (i == '\\') {
-        Base_directory[i] = '\0';
+    char exec_path[_MAX_PATH];
+    memset(exec_path, 0, sizeof(exec_path));
+    // Populate exec_path with the executable path
+    if (!ddio_GetBinaryPath(exec_path, sizeof(exec_path))) {
+    Error("Failed to get executable path\n");
+    } else {
+       std::filesystem::path executablePath(exec_path);
+       std::string baseDirectoryString = executablePath.parent_path().string();
+       strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
+       Base_directory[sizeof(Base_directory) - 1] = '\0';
+       mprintf((0, "Using working directory of %s\n", Base_directory));
       }
-    }
-    INIT_MESSAGE(("Using working directory of %s\n", Base_directory));
-    mprintf((0, "Using working directory of %s\n", Base_directory));
-  } else {
-    ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
-  }
+    } else {
+       ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
+      }
 
   ddio_SetWorkingDir(Base_directory);
 
