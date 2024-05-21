@@ -43,10 +43,7 @@ char *strupr(char *string);
 // _stdcall replacement
 #define _stdcall __attribute__((stdcall))
 
-#ifndef stricmp
 #define stricmp(a, b) strcasecmp(a, b)
-#endif
-
 #define strnicmp(a, b, c) strncasecmp(a, b, c)
 #define _chmod(a, b) chmod(a, b)
 #if defined(__aarch64__)

@@ -61,12 +61,9 @@
 #ifndef _MACROS_H
 #define _MACROS_H
 #define CHECK_FLAG(_var, _flag) ((_var) & (_flag))
-#define kb_to_bytes(_kb) ((_kb) * 1024)
-#define ABS(a) ((a < 0) ? (-a) : (a))
 
 #ifdef LINUX
 #define stricmp(a, b) strcasecmp(a, b)
-#define _fstat32 fstat
 #define _stat stat
 #endif
 
