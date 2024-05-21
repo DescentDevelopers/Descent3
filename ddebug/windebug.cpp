@@ -189,7 +189,7 @@
  */
 
 #include "d3_version.h"
-#include "Debug.h"
+#include "debug.h"
 #include "mono.h"
 
 #include <windows.h>

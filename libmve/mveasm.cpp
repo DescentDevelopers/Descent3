@@ -16,6 +16,7 @@
 **
 */
 #include "pstypes.h"
+#include "pserror.h"
 #include "mvelibl.h"
 #include "mvelibi.h"
 #include <string.h>
@@ -2053,20 +2054,6 @@ void gfxVres(unsigned char misc, unsigned char *crtc);
 void MVE_gfxWaitRetrace(int state);
 void MVE_gfxSetSplit(unsigned line);
 
-#if defined(__LINUX__)
-
-#if !defined(MACOSXPPC) && !defined(__aarch64__)
-
-#define int3 __asm__ __volatile__("int $3");
-#else
-#define int3
-#endif
-#else
-#define int3                                                                                                           \
-  __asm { int 3}                                                                                                        \
-  ;
-#endif
-
 void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, unsigned int _x, unsigned int _y, unsigned int _w,
                  unsigned int _h) {
   unsigned int HI_COLOR_SCALE = (HI_COLOR_FLAG) ? 2 : 1;
@@ -2322,37 +2309,37 @@ void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const 
   DECOMP_CHG_BODY(false, chgs, parms, comp, x, y, w, h);
 }
 
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
+void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { Int3(); }
+void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { Int3(); }
 void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
-  int3
+  Int3();
 }
 void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
-  int3
+  Int3();
 }
 void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
                         unsigned dstx, unsigned dsty) {
-  int3
+  Int3();
 }
 void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
                                unsigned dstx, unsigned dsty) {
-  int3
+  Int3();
 }
 void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
                           unsigned dstx, unsigned dsty) {
-  int3
+  Int3();
 }
 void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
                                  unsigned dstx, unsigned dsty) {
-  int3
+  Int3();
 }
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count) { int3 }
-void palLoadCompPalette(unsigned char *buf) { int3 }
-void gfxMode(unsigned mode) { int3 }
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res) { int3 }
-void gfxGetCrtc(unsigned char *crtc) { int3 }
-void gfxVres(unsigned char misc, unsigned char *crtc) { int3 }
-void MVE_gfxWaitRetrace(int state) { int3 }
-void MVE_gfxSetSplit(unsigned line) { int3 }
+void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count) { Int3(); }
+void palLoadCompPalette(unsigned char *buf) { Int3(); }
+void gfxMode(unsigned mode) { Int3(); }
+void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res) { Int3(); }
+void gfxGetCrtc(unsigned char *crtc) { Int3(); }
+void gfxVres(unsigned char misc, unsigned char *crtc) { Int3(); }
+void MVE_gfxWaitRetrace(int state) { Int3(); }
+void MVE_gfxSetSplit(unsigned line) { Int3(); }

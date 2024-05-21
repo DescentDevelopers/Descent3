@@ -232,7 +232,7 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
     if (_heapchk() != _HEAPOK)                                                                                         \
       Int3();                                                                                                          \
   } while (0)
-#elif defined(LINUX)
+#elif defined(__LINUX__)
 #include "SDL.h"
 // For some reason Linux doesn't like the \ continuation character, so I have to uglify this
 #define DEBUG_BREAK()                                                                                                  \
