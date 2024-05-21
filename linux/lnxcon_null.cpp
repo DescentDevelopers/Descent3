@@ -45,14 +45,15 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstring>
+#include <cstdio>
+
 #include "application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
 #include "mono.h"
 
-#include <stdarg.h>
-#include <string.h>
-#include <stdio.h>
 
 // put some data up on the screen
 void con_null_Puts(int window, const char *str);
@@ -61,7 +62,7 @@ void con_null_Printf(const char *fmt, ...) {
   char buffer[1024];
   va_list args;
   va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::vsnprintf(buffer, sizeof(buffer), fmt, args);
   va_end(args);
   con_null_Puts(0, buffer);
 }

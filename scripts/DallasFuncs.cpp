@@ -708,9 +708,9 @@
  *
  */
 
-#include <string.h>
-#include <stdarg.h>
-#include <float.h>
+#include <cstring>
+#include <cstdarg>
+#include <cfloat>
 
 #include "osiris_vector.h"
 
@@ -1221,7 +1221,7 @@ void aShowHUDMessage(const char *format, ...) {
   va_list args;
 
   va_start(args, format);
-  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  std::vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1249,7 +1249,7 @@ void aShowHUDMessageObj(const char *format, int objhandle, ...) {
   va_list args;
 
   va_start(args, objhandle);
-  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  std::vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1280,7 +1280,7 @@ void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ..
   va_list args;
 
   va_start(args, format);
-  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  std::vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1311,7 +1311,7 @@ void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format,
   va_list args;
 
   va_start(args, objhandle);
-  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  std::vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 

@@ -671,7 +671,7 @@ void AddHudMessage(int player_objhandle, int color, const char *format, ...) {
     char big_buffer[1024];
     va_list marker;
     va_start(marker, format);
-    vsnprintf(big_buffer, sizeof(big_buffer), format, marker);
+    std::vsnprintf(big_buffer, sizeof(big_buffer), format, marker);
     va_end(marker);
     strncpy(ms.message, big_buffer, MSAFE_MESSAGE_LENGTH - 1);
     ms.message[MSAFE_MESSAGE_LENGTH - 1] = '\0';
