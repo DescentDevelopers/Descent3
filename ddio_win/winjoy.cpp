@@ -112,6 +112,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define loword(_v) ((_v) & 0x0000ffff)
+
 //////////////////////////////////////////////////////////////////////////////
 typedef struct tJoystickRecord {
   uint8_t valid; // is this a valid device.
