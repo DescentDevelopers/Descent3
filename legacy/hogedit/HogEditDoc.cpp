@@ -60,7 +60,7 @@
 
 #include "stdafx.h"
 #include <afxtempl.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #include "HogEdit.h"
 
 #include "hogfile.h"

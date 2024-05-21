@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <io.h>
 #include <fcntl.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 
 extern bool Debug_NT;
 extern bool Debug_print_block = false;

@@ -147,7 +147,7 @@
 #include "pserror.h"
 #include "mem.h"
 #include <stdarg.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #include <io.h>
 #include <fcntl.h>
 #include <stdio.h>
