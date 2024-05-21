@@ -60,12 +60,6 @@
  */
 #ifndef _MACROS_H
 #define _MACROS_H
-#define SWAP(a, b)                                                                                                     \
-  do {                                                                                                                 \
-    int _swap_var_ = (a);                                                                                              \
-    (a) = (b);                                                                                                         \
-    (b) = _swap_var_;                                                                                                  \
-  } while (0)
 #define CHECK_FLAG(_var, _flag) ((_var) & (_flag))
 #define makeword(_h, _l) (((_h) << 16) + ((_l) & 0xffff))
 #define hiword(_v) ((_v) >> 16)
