@@ -63,7 +63,6 @@
 #define CHECK_FLAG(_var, _flag) ((_var) & (_flag))
 
 #ifdef LINUX
-#define stricmp(a, b) strcasecmp(a, b)
 #define _stat stat
 #endif
 
