@@ -66,7 +66,6 @@
     (a) = (b);                                                                                                         \
     (b) = _swap_var_;                                                                                                  \
   } while (0)
-#define SET_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define CHECK_FLAG(_var, _flag) ((_var) & (_flag))
 #define makeword(_h, _l) (((_h) << 16) + ((_l) & 0xffff))
 #define hiword(_v) ((_v) >> 16)
