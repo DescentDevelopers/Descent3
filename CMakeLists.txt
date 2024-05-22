@@ -95,7 +95,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
-  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
+  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/DirectX/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
@@ -103,7 +103,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(CMAKE_MODULE_LINKER_FLAGS "/SAFESEH:NO /NODEFAULTLIB:LIBC")
   add_compile_definitions(IS_WINDOWS _CRT_SECURE_NO_WARNINGS WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
 
-  set(PLATFORM_INCLUDES "lib/win/directx" "lib/win")
+  set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
 
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
