@@ -51,7 +51,7 @@
 #define __BRIEFPARSE_H_
 
 #if defined(__LINUX__)
-#include "linux/linux_fix.h" //for stricmp
+#include "linux_fix.h" //for stricmp
 #endif
 
 #include "TelComEfxStructs.h"

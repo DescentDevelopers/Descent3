@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "Scripts")
+
 set(CPPS
   $<$<PLATFORM_ID:Darwin,Linux>:
     linux_lib.cpp
@@ -70,6 +72,7 @@ foreach(SCRIPT ${SCRIPTS})
   add_library(${SCRIPT} MODULE ${CPPS} "${SCRIPT}.cpp")
   target_link_libraries(${SCRIPT} fix)
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
+  set_target_properties(${SCRIPT} PROPERTIES CXX_VISIBILITY_PRESET "hidden")
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set_target_properties(${SCRIPT} PROPERTIES SUFFIX ".dylib")
   endif()
@@ -79,6 +82,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(HOG_NAME "linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(HOG_NAME "osx")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(HOG_NAME "win")
 endif()
 
 add_custom_target(HogFull
@@ -89,6 +94,9 @@ add_custom_target(HogFull
   DEPENDS ${SCRIPTS} HogMaker data/fullhog/d3-${HOG_NAME}-fullhog.txt
   COMMENT "Generate fullhog/d3-${HOG_NAME}.hog"
 )
+
+# Place file next to Descent3 executable on installation
+install(FILES "$<TARGET_FILE_DIR:Descent3>/d3-${HOG_NAME}.hog" DESTINATION ${CMAKE_INSTALL_DATADIR})
 
 # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
 #	add_custom_target(HogLinuxDemo

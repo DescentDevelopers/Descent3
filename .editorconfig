@@ -1,0 +1,21 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+tab_width = 8
+end_of_line = lf
+spelling_language = en-US
+
+[*.md]
+# I would use 2 spaces for indentation in Markdown files in order to be
+# consistent wit the rest of the project, but the GitHub Flavored Markdown Spec
+# requires that you use at least 4 spaces in certain situations:
+# <https://github.github.com/gfm/#indented-code-blocks>
+indent_size = 4
+
+# This end_of_line override exists in order to be consistent with
+# .gitattributes. If you add another override here, then you please also add it
+# to .gitattributes.
+[{*.vcproj,*.vcxproj}]
+end_of_line = crlf

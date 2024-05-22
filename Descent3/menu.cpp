@@ -651,6 +651,10 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstdio>
+#include <cstring>
+
 #include "menu.h"
 #include "mmItem.h"
 #include "game.h"
@@ -680,9 +684,6 @@ bool Directplay_lobby_launched_game = false;
 #include "multi_dll_mgr.h"
 #include "d3music.h"
 #include "newui_core.h"
-
-#include <string.h>
-#include <algorithm>
 
 #define IDV_QUIT 0xff
 //	Menu Item Defines
@@ -1381,7 +1382,7 @@ int DisplayLevelWarpDlg(int max_level) {
   }
   sheet->NewGroup(buffer, 0, 0);
   input_text = sheet->AddEditBox(NULL, 4, 64, IDV_QUIT, UIED_NUMBERS);
-  itoa(chosen_level, input_text, 10);
+  sprintf(input_text, "%d", chosen_level);
 redo_level_choose:
   hwnd.Open();
   res = hwnd.DoUI();

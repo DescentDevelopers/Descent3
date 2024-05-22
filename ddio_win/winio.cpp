@@ -109,6 +109,7 @@
 #include <cstdio>
 
 #include <stdlib.h>
+#include <windows.h>
 
 #include "pserror.h"
 #include "Application.h"
@@ -192,3 +193,13 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   }
 }
 #endif
+
+bool ddio_GetBinaryPath(char *exec_path, size_t len) {
+  if (GetModuleFileName(NULL, exec_path, len) == 0) {
+   DWORD error = GetLastError();
+   Error("GetModuleFileName failed!");
+   return false;
+  }
+ exec_path[len - 1] = '\0';
+ return true;
+}

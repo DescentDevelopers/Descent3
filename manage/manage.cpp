@@ -441,7 +441,7 @@
 #include <errno.h>
 #include <string.h>
 #if defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 #include "descent.h"
 #include "manage.h"

@@ -32,6 +32,8 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 
+# .editorconfig also contains a list of files that should use CRLFs. If you add
+# a new “eol=crlf” here, then please also add it to .editorconfig.
 # Visual Studio project files
 *.vcproj text eol=crlf
 *.vcxproj text eol=crlf

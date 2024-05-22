@@ -58,7 +58,7 @@
 
 static struct t_sb_loop_thread_data {
   win_llsSystem *m_ll_sndsys;
-  int thread_handle;
+  uintptr_t thread_handle;
   short no_callbacks;
   bool request_kill;
   bool thread_alive;
@@ -74,6 +74,12 @@ inline void sb_loop_thread_clean_buffer(sound_buffer_info *sb) {
   sb_stop_buffer(sb);
   sb->s->playing = 0;
   sb->s->kill_me = true;
+
+  // TODO: investigate why this is -1 sometimes, 32bit builds seem to work by
+  // chance while 64bit builds crash without this ckeck
+  if (sb->m_sound_index < 0) {
+    return;
+  }
 
   if (SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count > 0) {
     SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count--;

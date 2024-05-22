@@ -92,7 +92,7 @@
 #include "windows.h"
 #include "winbase.h"
 #elif defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 #include "ssl_lib.h"

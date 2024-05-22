@@ -68,30 +68,18 @@
  * $NoKeywords: $
  */
 
-#include "application.h"
-#include "linux/lnxapp.h"
-#include "mono.h"
-#include <stdlib.h>
-#include "ddio.h"
-// #include "local_malloc.h"
-#include <unistd.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cctype>
 #include <sys/time.h>
-#include <sys/types.h>
 #include <term.h>
 #include <termios.h>
+
+#include "application.h"
+#include "lnxapp.h"
 
 #ifdef buttons // termios.h defines buttons, but SDL's headers use that symbol.
 #undef buttons
 #endif
-
-#include <stdio.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <errno.h>
-#include <string.h>
-#include <assert.h>
-#include <SDL.h>
 
 static struct termios Linux_initial_terminal_settings;
 
@@ -99,8 +87,8 @@ bool oeLnxApplication::os_initialized = false;
 bool oeLnxApplication::first_time = true;
 
 bool con_Create(int flags);
-void con_Destroy(void);
-void con_Defer(void);
+void con_Destroy();
+void con_Defer();
 
 void GlobalFree(void *mptr) {
   if (mptr)
@@ -109,17 +97,17 @@ void GlobalFree(void *mptr) {
 
 void *GlobalAlloc(int flags, int size) {
   if (size <= 0)
-    return NULL;
+    return nullptr;
   return malloc(size);
 }
 
 void *GlobalLock(HGLOBAL hMem) { return hMem; }
 
 void Sleep(int millis) {
-  struct timeval tv;
+  struct timeval tv{};
   tv.tv_sec = 0;
   tv.tv_usec = millis * 1000;
-  select(0, NULL, NULL, NULL, &tv);
+  select(0, nullptr, nullptr, nullptr, &tv);
 }
 
 char *strupr(char *string) {
@@ -130,23 +118,12 @@ char *strupr(char *string) {
   return string;
 }
 
-char *itoa(int value, char *string, int radix) {
-  if (radix == 10) {
-    sprintf(string, "%d", value);
-  } else if (radix == 16) {
-    sprintf(string, "%x", value);
-  } else {
-    mprintf((0, "!!!!!!!!!!!!!!!WARNING CALLING itoa WITHOUT 10 or 16 RADIX!!!!!!!!!!!!!!!!!!!!!!\n"));
-    sprintf(string, "%d", value);
-  }
-  return string;
-}
-
 static unsigned int LinuxAppFlags = 0;
 // static Display *LinuxAppDisplay=NULL;
 static bool LinuxAppSetAtExit = false;
 static bool LinuxAppDontCallShutdown = false;
-void LnxAppShutdown(void) {
+
+void LnxAppShutdown() {
   if (LinuxAppDontCallShutdown)
     return;
   LinuxAppDontCallShutdown = true;
@@ -240,7 +217,7 @@ void oeLnxApplication::delay(float secs) {
 }
 
 //	Function to get the flags
-int oeLnxApplication::flags(void) const { return m_Flags; }
+int oeLnxApplication::flags() const { return m_Flags; }
 
 //	Sizes the displayable region of the app (the window)
 void oeLnxApplication::set_sizepos(int x, int y, int w, int h) {

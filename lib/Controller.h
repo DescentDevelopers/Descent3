@@ -258,7 +258,7 @@ void DestroyController(gameController *ctl);
 #if defined(WIN32)
 #include "win\WinController.h"
 #elif defined(__LINUX__)
-#include "linux/lnxcontroller.h"
+#include "lnxcontroller.h"
 #endif
 
 #endif

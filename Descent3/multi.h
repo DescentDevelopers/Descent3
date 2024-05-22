@@ -499,7 +499,7 @@
 #include "player_external.h"
 
 #if defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 #include "multi_external.h" //defines and structs are in here

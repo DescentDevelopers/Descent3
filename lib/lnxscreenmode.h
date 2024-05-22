@@ -52,7 +52,7 @@
 #ifndef __LNXVIDEOMODE_H__
 #define __LNXVIDEOMODE_H__
 
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #include <SDL.h>
 
 #define MODE_OK 0

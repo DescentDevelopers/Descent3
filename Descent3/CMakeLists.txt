@@ -273,19 +273,19 @@ set(CPPS
   weather.cpp)
 
 if(WIN32)
-  set(PLATFORM_LIBS dd_sndlib dd_grwin32 dd_vidwin32 ddio_win win32 wsock32.lib winmm.lib
+  set(PLATFORM_LIBS dd_grwin32 ddio_win win32 wsock32.lib winmm.lib
     ${DSOUND_LIBRARY} ${DINPUT_LIBRARY} ${DXGUID_LIBRARY} ${DDRAW_LIBRARY})
   set(PLATFORM_CPPS winmain.cpp)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:LIBC")
 endif()
 
 if(UNIX AND NOT APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL2::SDL2 m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
+  set(PLATFORM_LIBS linux ddio_lnx SDL2::SDL2 m ${CMAKE_DL_LIBS} ${CURSES_LIBRARIES})
   set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
 endif()
 
 if(APPLE)
-  set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx SDL2::SDL2 ${CURSES_LIBRARIES})
+  set(PLATFORM_LIBS linux ddio_lnx SDL2::SDL2 ${CURSES_LIBRARIES})
   set(PLATFORM_CPPS loki_utils.c lnxmain.cpp)
   set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
 endif()
@@ -297,16 +297,13 @@ add_executable(Descent3
   ${HEADERS} ${CPPS} ${PLATFORM_CPPS} ${INCS}
 )
 target_link_libraries(Descent3
-  2dlib AudioEncode bitmap cfile czip d3music ddebug ddio_common libmve libacm
+  2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio_common libmve libacm
   fix grtext manage mem misc model module movie stream_audio
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
-add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog)
-
-if(UNIX)
-	add_dependencies(Descent3 HogFull)
-endif()
+add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir)
+install(TARGETS Descent3 RUNTIME)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

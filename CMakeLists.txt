@@ -11,6 +11,7 @@ project(Descent3
 )
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
+option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 
@@ -29,6 +30,18 @@ if(FORCE_COLORED_OUTPUT)
       add_compile_options(-fcolor-diagnostics)
     endif()
   endif()
+endif()
+
+include(GNUInstallDirs)
+if(FORCE_PORTABLE_INSTALL)
+  set(CMAKE_INSTALL_BINDIR ".")
+  set(CMAKE_INSTALL_LIBDIR ".")
+  set(CMAKE_INSTALL_DATADIR ".")
+  set(CMAKE_INSTALL_DOCDIR ".")
+endif()
+
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/installed" CACHE PATH "Default install path" FORCE)
 endif()
 
 if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
@@ -63,14 +76,14 @@ add_custom_command(
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
+install(FILES README.md LICENSE DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
 # rebuild version.hpp every time
 add_custom_target(get_git_hash ALL
   DEPENDS ${PROJECT_BINARY_DIR}/Descent3/d3_version.h
 )
 
 if(UNIX)
-  set(D3_GAMEDIR "~/Descent3/")
-
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
 
@@ -95,7 +108,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
-  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/directx")
+  list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/DirectX/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
   add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
@@ -103,15 +116,16 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(CMAKE_MODULE_LINKER_FLAGS "/SAFESEH:NO /NODEFAULTLIB:LIBC")
   add_compile_definitions(IS_WINDOWS _CRT_SECURE_NO_WARNINGS WIN32 _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE)
 
-  set(PLATFORM_INCLUDES "lib/win/directx" "lib/win")
+  set(PLATFORM_INCLUDES "lib/win/DirectX" "lib/win")
 
   set(CMAKE_FIND_LIBRARY_PREFIXES "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 
-  find_library(DSOUND_LIBRARY NAMES dsound REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DINPUT_LIBRARY NAMES dinput REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DXGUID_LIBRARY NAMES dxguid REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
-  find_library(DDRAW_LIBRARY NAMES ddraw REQUIRED PATHS "${CMAKE_SOURCE_DIR}/lib/win" "${CMAKE_SOURCE_DIR}/lib/win/directx")
+  add_compile_definitions(DIRECTINPUT_VERSION=0x0500)
+  find_library(DSOUND_LIBRARY NAMES dsound REQUIRED)
+  find_library(DINPUT_LIBRARY NAMES dinput REQUIRED)
+  find_library(DXGUID_LIBRARY NAMES dxguid REQUIRED)
+  find_library(DDRAW_LIBRARY NAMES ddraw REQUIRED)
 
   if(MSVC AND CMAKE_CXX_SIMULATE_ID STREQUAL "")
     add_compile_options("/we4150")  # deletion of pointer to incomplete type 'type'; no destructor called
@@ -161,19 +175,15 @@ add_subdirectory(ddebug)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(dd_grwin32)
-  add_subdirectory(dd_vidwin32)
   add_subdirectory(win32)
-  add_subdirectory(dd_sndlib)
   add_subdirectory(ddio_win)
 else()
   add_subdirectory(linux)
-  add_subdirectory(ddvid_lnx)
-  add_subdirectory(dd_lnxsound)
-  add_subdirectory(lnxcontroller)
   add_subdirectory(ddio_lnx)
 endif()
 
 add_subdirectory(ddio_common)
+add_subdirectory(dd_video)
 add_subdirectory(fix)
 add_subdirectory(manage)
 add_subdirectory(grtext)
@@ -197,10 +207,5 @@ add_subdirectory(Descent3)
 
 add_subdirectory(tools)
 add_subdirectory(netcon)
-
-# For now we don't need to build the scripts under windows, so we'll only include
-# the directory when building for linux/osx. In the future we may want to to fix bugs, etc.
-if(UNIX)
-  add_subdirectory(netgames)
-  add_subdirectory(scripts)
-endif()
+add_subdirectory(netgames)
+add_subdirectory(scripts)

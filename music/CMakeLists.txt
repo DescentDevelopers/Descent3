@@ -8,4 +8,10 @@ set(CPPS
 add_library(music STATIC ${HEADERS} ${CPPS})
 target_link_libraries(music
   cfile
+  stream_audio
+)
+target_include_directories(music PUBLIC
+  $<BUILD_INTERFACE:
+  ${PROJECT_SOURCE_DIR}/music
+  >
 )

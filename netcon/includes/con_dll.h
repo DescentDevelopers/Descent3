@@ -269,7 +269,7 @@
 
 #ifdef __LINUX__
 #include <string.h>
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls

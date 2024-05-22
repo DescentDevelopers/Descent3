@@ -26,7 +26,7 @@
 #include "manage_external.h"
 
 #if defined(__LINUX__)
-#include "linux/linux_fix.h" //for strnicmp,etc.
+#include "linux_fix.h" //for strnicmp,etc.
 #endif
 
 #define LOCAL_TABLE "Table.loc"

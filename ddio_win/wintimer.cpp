@@ -201,7 +201,7 @@ longlong timer_GetMSTime() {
 //	Internal functions
 //	---------------------------------------------------------------------------
 //	hook in timer function at certain period.  returns a handle to this function
-DWORD timer_HookFunction(void(CALLBACK *fncptr)(UINT, UINT, DWORD, DWORD, DWORD), UINT delay) {
+DWORD timer_HookFunction(void(CALLBACK *fncptr)(UINT, UINT, DWORD_PTR, DWORD_PTR, DWORD_PTR), UINT delay) {
   DWORD time_event_id;
 
   time_event_id = timeSetEvent(delay, Timer_resolution, fncptr, 0, TIME_PERIODIC);

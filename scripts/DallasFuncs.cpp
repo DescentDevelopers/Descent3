@@ -1217,14 +1217,11 @@ Parameters:
 $$END
 */
 void aShowHUDMessage(const char *format, ...) {
-#if defined(__LINUX__)
-#define _vsnprintf vsnprintf
-#endif
   msafe_struct mstruct;
   va_list args;
 
   va_start(args, format);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1252,7 +1249,7 @@ void aShowHUDMessageObj(const char *format, int objhandle, ...) {
   va_list args;
 
   va_start(args, objhandle);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1283,7 +1280,7 @@ void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ..
   va_list args;
 
   va_start(args, format);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1314,7 +1311,7 @@ void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format,
   va_list args;
 
   va_start(args, objhandle);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1453,7 +1450,7 @@ void aLightningTurnOn(float check_delay, float prob) {
 
   mstruct.state = true;
   mstruct.scalar = check_delay;
-  mstruct.randval = (int)(prob * RAND_MAX);
+  mstruct.randval = static_cast<int>(prob * static_cast<float>(RAND_MAX));
 
   MSafe_CallFunction(MSAFE_WEATHER_LIGHTNING, &mstruct);
 }
@@ -6128,7 +6125,7 @@ bool qRandomChance(float prob) {
   if (prob == 0.0)
     return false;
 
-  return (((float)rand() / RAND_MAX) <= prob);
+  return ((static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) <= prob);
 }
 
 /*
@@ -6144,7 +6141,7 @@ Parameters:
   UpperLimit: the returned value will be lower than or equal to this value
 $$END
 */
-float qRandomValue(float low, float high) { return low + ((float)rand() / RAND_MAX) * (high - low); }
+float qRandomValue(float low, float high) { return low + (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * (high - low); }
 
 /*
 $$QUERY

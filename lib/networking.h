@@ -211,7 +211,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, 
 #include "SDL.h"
 #include "SDL_thread.h"
 
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 
 #define SOCKET int
 #define BOOL bool
