@@ -76,7 +76,7 @@ public:
   // clears out geometry info
   void Clear();
 
-  // primatives, nv = number of verts, and verts is an array of pointers to vertices.
+  // primitives, nv = number of verts, and verts is an array of pointers to vertices.
   // you can pass a sound material value if you want special reflective properties on this polygon.
   void AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial material = SNDGEO_MATERIAL_NONE);
 

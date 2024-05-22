@@ -1,43 +1,35 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <errno.h>
-#include "cfile.h"
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdarg>
+
+#include <SDL.h>
+
 #include "pserror.h"
 #include "mono.h"
-#include "soundload.h"
 #include "ssl_lib.h"
-#include "mem.h"
 #include "application.h"
-#include "linux/lnxsound.h"
-#include "ddlnxsound.h"
+#include "sdlsound.h"
 #include "mixer.h"
 #include "ddio.h"
-#include "SDL.h"
-#include "SDL_thread.h"
 #include "args.h"
 
 #define SOUNDLIB_SAMPLE_RATE 22050
@@ -50,7 +42,6 @@
 static sound_buffer_info sound_cache[MAX_SOUNDS_PLAYING_AT_ONCE];
 static int sound_buffer_size = MAX_SOUNDS_PLAYING_AT_ONCE;
 
-LNXSTREAM m_sb_info;
 lnxsound *ll_sound_ptr;
 
 // A peroidic mixer that uses the primary buffer as a stream buffer
@@ -58,14 +49,14 @@ static void StreamAudio(void *user_ptr, Uint8 *stream, int len);
 
 lnxsound::lnxsound() : llsSystem() {
   ll_sound_ptr = this;
-  sound_device = -1;
+  sound_device = 0;
   in_at_exit = false;
 }
 
 lnxsound::~lnxsound() {
   in_at_exit = true;
   DestroySoundLib();
-  SetSoundCard(NULL);
+  SetSoundCard(nullptr);
 }
 
 // Starts the sound library, maybe have it send back some information -- 3d support?
@@ -74,7 +65,7 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char ma
 
   // setup mixer
   tMixerInit mi;
-  mi.primary_buffer = NULL;
+  mi.primary_buffer = nullptr;
   mi.primary_frequency = SOUNDLIB_SAMPLE_RATE;
   mi.max_sounds_available = &sound_buffer_size;
   mi.sound_cache = sound_cache;
@@ -107,13 +98,14 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char ma
   spec.callback = StreamAudio;
   spec.userdata = &m_mixer;
 
-  if (SDL_OpenAudio(&spec, NULL) < 0) {
+  sound_device = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, SDL_AUDIO_ALLOW_ANY_CHANGE);
+  if (sound_device == 0) {
+    strcpy(m_error_text, SDL_GetError());
     return false;
   }
-  sound_device = 1;
 
   mprintf((0, "Sound: Hardware configured. Kicking off stream thread..."));
-  SDL_PauseAudio(0);
+  SDL_PauseAudioDevice(sound_device, 0);
 
   m_total_sounds_played = 0;
   m_cur_sounds_played = 0;
@@ -126,8 +118,9 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char ma
   return true;
 }
 
-bool lnxsound::GetDeviceSettings(int *device, unsigned int *freq, unsigned int *bit_depth, unsigned int *channels) {
-  if (sound_device == -1)
+bool lnxsound::GetDeviceSettings(SDL_AudioDeviceID *device, unsigned int *freq, unsigned int *bit_depth,
+                                 unsigned int *channels) const {
+  if (sound_device == 0)
     return false;
 
   *device = sound_device;
@@ -139,9 +132,9 @@ bool lnxsound::GetDeviceSettings(int *device, unsigned int *freq, unsigned int *
 }
 
 // Cleans up after the Sound Library
-void lnxsound::DestroySoundLib(void) {
-  SDL_CloseAudio();
-  sound_device = -1;
+void lnxsound::DestroySoundLib() {
+  SDL_CloseAudioDevice(sound_device);
+  sound_device = 0;
 }
 
 // Locks and unlocks sounds (used when changing play_info data)
@@ -170,14 +163,14 @@ bool lnxsound::SetSoundQuality(char quality) {
 
       if (SoundFiles[j].sample_8bit && m_sound_quality == SQT_HIGH) {
         GlobalFree(SoundFiles[j].sample_8bit);
-        SoundFiles[j].sample_8bit = NULL;
+        SoundFiles[j].sample_8bit = nullptr;
 
         CheckAndForceSoundDataAlloc(i);
       }
       if (SoundFiles[j].sample_16bit && m_sound_quality == SQT_NORMAL) {
         int count;
 
-        ASSERT(SoundFiles[j].sample_8bit == NULL);
+        ASSERT(SoundFiles[j].sample_8bit == nullptr);
         SoundFiles[j].sample_8bit = (unsigned char *)GlobalAlloc(0, SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
@@ -187,7 +180,7 @@ bool lnxsound::SetSoundQuality(char quality) {
         }
 
         GlobalFree(SoundFiles[j].sample_16bit);
-        SoundFiles[j].sample_16bit = NULL;
+        SoundFiles[j].sample_16bit = nullptr;
       }
     }
   }
@@ -197,11 +190,11 @@ bool lnxsound::SetSoundQuality(char quality) {
   return true;
 }
 
-char lnxsound::GetSoundQuality(void) { return m_sound_quality; }
+char lnxsound::GetSoundQuality() { return m_sound_quality; }
 
 bool lnxsound::SetSoundMixer(char mixer_type) { return true; }
 
-char lnxsound::GetSoundMixer(void) { return SOUND_MIXER_SOFTWARE_16; }
+char lnxsound::GetSoundMixer() { return SOUND_MIXER_SOFTWARE_16; }
 
 // Determines if a sound will play.  Takes into account maximum allowable
 // sounds.
@@ -276,10 +269,10 @@ short lnxsound::FindFreeSoundSlot(float volume, int priority)
 
 // Plays a 2d sound
 int lnxsound::PlaySound2d(play_information *play_info, int sound_index, float f_volume, float f_pan, bool f_looped) {
-  sound_buffer_info *sb = NULL;
+  sound_buffer_info *sb;
   short sound_slot;
 
-  if (sound_device == -1) {
+  if (sound_device == 0) {
     return -1;
   }
 
@@ -326,7 +319,7 @@ int lnxsound::PlaySound2d(play_information *play_info, int sound_index, float f_
 // This function limits the number of sounds cached to 255(8bits) and 256 bit is for invalid channel
 // The purpose is to create unique signatures for each sound played (and allow for
 // the slot_number to be quickly determined)
-inline int lnxsound::MakeUniqueId(int sound_slot) { return ((((int)m_total_sounds_played) << 8) + sound_slot); }
+inline int lnxsound::MakeUniqueId(int sound_slot) const { return ((((int)m_total_sounds_played) << 8) + sound_slot); }
 
 inline int lnxsound::ValidateUniqueId(int sound_uid) {
   if (sound_uid == sound_cache[sound_uid & 0x00FF].m_unique_id) {
@@ -338,13 +331,12 @@ inline int lnxsound::ValidateUniqueId(int sound_uid) {
 
 int lnxsound::PlayStream(play_information *play_info) {
   short sound_slot;
-  int ds_flags = 0;
 
-  ASSERT(play_info != NULL);
+  ASSERT(play_info != nullptr);
 
-  float volume = (play_info->left_volume > play_info->right_volume) ? play_info->left_volume : play_info->right_volume;
+  float volume = std::max(play_info->left_volume, play_info->right_volume);
 
-  if (sound_device == -1)
+  if (sound_device == 0)
     return -1;
 
 #ifdef _DEBUG
@@ -372,7 +364,7 @@ int lnxsound::PlayStream(play_information *play_info) {
 }
 
 void lnxsound::SetListener(pos_state *cur_pos) {
-  if (sound_device == -1)
+  if (sound_device == 0)
     return;
 
   m_emulated_listener.orient = *cur_pos->orient;
@@ -383,13 +375,9 @@ void lnxsound::SetListener(pos_state *cur_pos) {
 int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float adjusted_volume,
                           bool f_looped, float reverb) //, unsigned short frequency
 {
-  short sound_slot;
-  int ds_flags = 0;
-  float volume;
+  float volume = adjusted_volume; // Adjust base volume by sent volume, let 3d stuff do the rest
 
-  volume = adjusted_volume; // Adjust base volume by sent volume, let 3d stuff do the rest
-
-  if (sound_device == -1)
+  if (sound_device == 0)
     return -1;
 
   ASSERT(Sounds[sound_index].used != 0);
@@ -408,8 +396,8 @@ int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_stat
   if (dist >= Sounds[sound_index].max_distance) {
     return -1;
   } else if (dist > Sounds[sound_index].min_distance) {
-    volume *= (1.0 - ((dist - Sounds[sound_index].min_distance) /
-                      (Sounds[sound_index].max_distance - Sounds[sound_index].min_distance)));
+    volume *= (1.0f - ((dist - Sounds[sound_index].min_distance) /
+                       (Sounds[sound_index].max_distance - Sounds[sound_index].min_distance)));
   }
 
   pan = (dir_to_sound * m_emulated_listener.orient.rvec);
@@ -430,7 +418,7 @@ int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_stat
 void lnxsound::AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) {
   int current_slot;
 
-  if (sound_device == -1)
+  if (sound_device == 0)
     return;
 
   if ((current_slot = ValidateUniqueId(sound_uid)) == -1)
@@ -449,7 +437,7 @@ void lnxsound::AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned 
 }
 
 void lnxsound::AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb) {
-  if (sound_device == -1)
+  if (sound_device == 0)
     return;
 
   int current_slot;
@@ -476,9 +464,9 @@ void lnxsound::AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_vol
   if (dist >= Sounds[sound_cache[current_slot].m_sound_index].max_distance) {
     volume = 0.0f;
   } else if (dist > Sounds[sound_cache[current_slot].m_sound_index].min_distance) {
-    volume *= (1.0 - ((dist - Sounds[sound_cache[current_slot].m_sound_index].min_distance) /
-                      (Sounds[sound_cache[current_slot].m_sound_index].max_distance -
-                       Sounds[sound_cache[current_slot].m_sound_index].min_distance)));
+    volume *= (1.0f - ((dist - Sounds[sound_cache[current_slot].m_sound_index].min_distance) /
+                       (Sounds[sound_cache[current_slot].m_sound_index].max_distance -
+                        Sounds[sound_cache[current_slot].m_sound_index].min_distance)));
   }
 
   pan = (dir_to_sound * m_emulated_listener.orient.rvec);
@@ -496,12 +484,10 @@ void lnxsound::AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_vol
   AdjustSound(sound_cache[current_slot].m_unique_id, volume, pan, 22050);
 }
 
-void lnxsound::StopAllSounds(void) {
-  int current_slot;
-
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    if (sound_cache[current_slot].m_status != SSF_UNUSED) {
-      StopSound(sound_cache[current_slot].m_unique_id);
+void lnxsound::StopAllSounds() {
+  for (auto &current_slot : sound_cache) {
+    if (current_slot.m_status != SSF_UNUSED) {
+      StopSound(current_slot.m_unique_id);
     }
   }
 }
@@ -510,7 +496,7 @@ void lnxsound::StopAllSounds(void) {
 bool lnxsound::IsSoundInstancePlaying(int sound_uid) {
   int current_slot;
 
-  if (sound_device == -1)
+  if (sound_device == 0)
     return false;
 
   if ((current_slot = ValidateUniqueId(sound_uid)) == -1)
@@ -524,15 +510,12 @@ bool lnxsound::IsSoundInstancePlaying(int sound_uid) {
 }
 
 int lnxsound::IsSoundPlaying(int sound_index) {
-  int current_slot;
-
-  if (sound_device == -1)
+  if (sound_device == 0)
     return -1;
 
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    if ((sound_cache[current_slot].m_status != SSF_UNUSED) &&
-        (sound_cache[current_slot].m_sound_index == sound_index)) {
-      return sound_cache[current_slot].m_unique_id;
+  for (auto &current_slot : sound_cache) {
+    if ((current_slot.m_status != SSF_UNUSED) && (current_slot.m_sound_index == sound_index)) {
+      return current_slot.m_unique_id;
     }
   }
 
@@ -544,7 +527,7 @@ void lnxsound::StopSound(int sound_uid, unsigned char f_immediately) {
   int current_slot;
   sound_buffer_info *sb;
 
-  if (sound_device == -1)
+  if (sound_device == 0)
     return;
 
   if ((current_slot = ValidateUniqueId(sound_uid)) == -1)
@@ -568,34 +551,28 @@ void lnxsound::StopSound(int sound_uid, unsigned char f_immediately) {
 }
 
 // Pause all sounds/resume all sounds
-void lnxsound::PauseSounds(void) {
-  int current_slot;
-
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    sound_buffer_info *sb = &sound_cache[current_slot];
+void lnxsound::PauseSounds() {
+  for (auto &current_slot : sound_cache) {
+    sound_buffer_info *sb = &current_slot;
     if (sb->m_status != SSF_UNUSED && !(sb->m_status & SSF_PAUSED)) {
       sb->m_status |= SSF_PAUSED;
     }
   }
 }
 
-void lnxsound::ResumeSounds(void) {
-  int current_slot;
-
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    sound_buffer_info *sb = &sound_cache[current_slot];
+void lnxsound::ResumeSounds() {
+  for (auto &current_slot : sound_cache) {
+    sound_buffer_info *sb = &current_slot;
 
     if (sb->m_status != SSF_UNUSED && (sb->m_status & SSF_PAUSED)) {
-      sound_cache[current_slot].m_status &= (~SSF_PAUSED);
+      current_slot.m_status &= (~SSF_PAUSED);
     }
   }
 }
 
 void lnxsound::PauseSound(int sound_uid) {
-  int current_slot;
-
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    sound_buffer_info *sb = &sound_cache[current_slot];
+  for (auto &current_slot : sound_cache) {
+    sound_buffer_info *sb = &current_slot;
     if (sb->m_unique_id == sound_uid) {
       if (sb->m_status != SSF_UNUSED && !(sb->m_status & SSF_PAUSED)) {
         sb->m_status |= SSF_PAUSED;
@@ -606,12 +583,10 @@ void lnxsound::PauseSound(int sound_uid) {
 }
 
 void lnxsound::ResumeSound(int sound_uid) {
-  int current_slot;
-
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    if (sound_uid == sound_cache[current_slot].m_unique_id) {
-      if (sound_cache[current_slot].m_status != SSF_UNUSED && (sound_cache[current_slot].m_status & SSF_PAUSED)) {
-        sound_cache[current_slot].m_status &= (~SSF_PAUSED);
+  for (auto &current_slot : sound_cache) {
+    if (sound_uid == current_slot.m_unique_id) {
+      if (current_slot.m_status != SSF_UNUSED && (current_slot.m_status & SSF_PAUSED)) {
+        current_slot.m_status &= (~SSF_PAUSED);
         break;
       }
     }
@@ -619,7 +594,6 @@ void lnxsound::ResumeSound(int sound_uid) {
 }
 
 bool lnxsound::CheckAndForceSoundDataAlloc(int sound_index) {
-  int result;
   int sound_file_index = Sounds[sound_index].sample_index;
 
   //	ASSERT(sound_file_index >= 0 && sound_file_index < MAX_SOUND_FILES);
@@ -629,12 +603,12 @@ bool lnxsound::CheckAndForceSoundDataAlloc(int sound_index) {
   }
 
   // Check if the sample data is already loaded
-  if (SoundFiles[sound_file_index].sample_16bit != NULL || SoundFiles[sound_file_index].sample_8bit != NULL)
+  if (SoundFiles[sound_file_index].sample_16bit != nullptr || SoundFiles[sound_file_index].sample_8bit != nullptr)
     return true;
 
   // If not, get the sound data
-  result = SoundLoadWaveFile(SoundFiles[sound_file_index].name, Sounds[sound_index].import_volume, sound_file_index,
-                             (m_sound_quality == SQT_HIGH), true);
+  int result = SoundLoadWaveFile(SoundFiles[sound_file_index].name, Sounds[sound_index].import_volume, sound_file_index,
+                                 (m_sound_quality == SQT_HIGH), true);
 
   // Why would it load once (table load time) and not now?
   if (!result)
@@ -646,10 +620,8 @@ bool lnxsound::CheckAndForceSoundDataAlloc(int sound_index) {
 }
 
 // Begin sound frame
-void lnxsound::SoundStartFrame(void) {
+void lnxsound::SoundStartFrame() {
   float frame_time;
-  int current_slot;
-  int i;
 
   if (m_timer_last_frametime == -1) {
     frame_time = 0.0f;
@@ -673,8 +645,8 @@ void lnxsound::SoundStartFrame(void) {
   int n_p5 = 0, n_p4 = 0, n_p3 = 0, n_p2 = 0, n_p1 = 0, n_p0 = 0;
 #endif
 
-  for (current_slot = 0; current_slot < MAX_SOUNDS_PLAYING_AT_ONCE; current_slot++) {
-    sound_buffer_info *sb = &sound_cache[current_slot];
+  for (auto &current_slot : sound_cache) {
+    sound_buffer_info *sb = &current_slot;
     if (sb->m_status != SSF_UNUSED) {
       counter++;
       if (sb->m_status & SSF_PLAY_LOOPING) {
@@ -721,7 +693,7 @@ void lnxsound::SoundStartFrame(void) {
 }
 
 // End sound frame
-void lnxsound::SoundEndFrame(void) {
+void lnxsound::SoundEndFrame() {
   CheckForErrors(); // handles errors.
   m_in_sound_frame = false;
 }
@@ -729,7 +701,7 @@ void lnxsound::SoundEndFrame(void) {
 // Sound System Error Handler.
 void lnxsound::CheckForErrors() {
   // if a fatal error occurred, quit and display an error
-  // non fatal errors should be put inside a logfile, or just mprinted out.
+  // non-fatal errors should be put inside a logfile, or just mprinted out.
   switch (m_lib_error_code) {
   case SSL_ERROR_SAMPLE_NODATA:
     Error("%s\nSample had no data.", m_error_text);
@@ -756,9 +728,9 @@ const char *lnxsound::GetErrorStr() const {
 
 bool lnxsound::SetGlobalReverbProperties(float volume, float damping, float decay) { return false; }
 
-void lnxsound::StartStreaming(void) {}
+void lnxsound::StartStreaming() {}
 
-void lnxsound::EndStreaming(void) {}
+void lnxsound::EndStreaming() {}
 
 // may be called before init (must be to be valid, the card passed here will be initialized in InitSoundLib)
 void lnxsound::SetSoundCard(const char *name) {}
@@ -795,47 +767,3 @@ void lnxsound_ErrorText(const char *fmt, ...) {
 static void StreamAudio(void *user_ptr, Uint8 *stream, int len) {
   ((software_mixer *)user_ptr)->StreamMixer((char *)stream, len);
 }
-
-///////////////////////////////////////////////////////////////////////
-// llsGeometry
-#include "ddsndgeometry.h"
-
-// specify a sound library to associate geometry with
-bool llsGeometry::Init(llsSystem *snd_sys) { return false; }
-
-// closes low level geometry system.
-void llsGeometry::Shutdown() {}
-
-void llsGeometry::StartFrame() {}
-void llsGeometry::EndFrame() {}
-
-// clears out geometry info
-void llsGeometry::Clear() {}
-
-// polygon lists
-// is a group cached?, check before rendering it.
-void llsGeometry::IsGroupValid(int group) {}
-
-// marks beginning of a list of polygons to render, (-1 group for non cache)
-void llsGeometry::StartPolygonGroup(int group) {}
-
-// ends a list of polygons to render.
-void llsGeometry::EndPolygonGroup(int group) {}
-
-// renders a group.
-void llsGeometry::RenderGroup(int group) {}
-
-// primatives, nv = number of verts, and verts is an array of pointers to vertices.
-// you can pass a sound material value if you want special reflective properties on this polygon.
-void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial material) {}
-
-// 4 verts here.
-void llsGeometry::AddQuad(unsigned tag, vector **verts) {}
-
-// 3 verts here.
-void llsGeometry::AddTriangle(unsigned tag, vector **verts) {}
-
-void llsGeometry::CreateMaterial(tSoundMaterial material, float transmit_gain, float transmit_highfreq,
-                                 float reflect_gain, float reflect_highfreq) {}
-
-void llsGeometry::DestroyMaterial(tSoundMaterial material) {}

@@ -4,4 +4,12 @@ set(CPPS
   streamaudio.cpp)
 
 add_library(stream_audio STATIC ${HEADERS} ${CPPS})
-target_link_libraries(stream_audio libacm)
+target_link_libraries(stream_audio
+  libacm
+  sndlib
+)
+target_include_directories(stream_audio PUBLIC
+  $<BUILD_INTERFACE:
+  ${PROJECT_SOURCE_DIR}/stream_audio
+  >
+)

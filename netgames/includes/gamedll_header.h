@@ -19,7 +19,6 @@
 #ifndef GAMEDLL_HEADER_H
 #define GAMEDLL_HEADER_H
 
-#include "hlsoundlib.h" //for MAX_GAME_VOLUME
 #include "spew.h"
 #include "gamefont.h"
 #include "hud.h"
@@ -53,6 +52,9 @@
 #else
 #define CEXTERN(a) extern a
 #endif
+
+// From ssl_lib.h
+#define MAX_GAME_VOLUME 1.0f
 
 #if defined(__LINUX__)
 #define DMFCDLLOUT(x) extern "C" x
