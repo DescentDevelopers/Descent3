@@ -419,7 +419,6 @@ void mmInterface::OnDestroy() {
 
 // displays the copyright text
 void mmInterface::CopyrightText() {
-  int i;
   char type[16];
   type[0] = 0;
 #ifdef DEMO

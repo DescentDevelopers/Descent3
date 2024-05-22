@@ -2149,8 +2149,6 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 
 // Takes a screenshot of the current frame and puts it into the handle passed
 std::unique_ptr<NewBitmap> rend_Screenshot() {
-  ushort *dest_data;
-  uint *temp_data;
 
   int total = gpu_state.screen_width * gpu_state.screen_height;
   auto result = std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);

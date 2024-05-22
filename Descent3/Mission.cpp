@@ -1293,7 +1293,6 @@ bool LoadMissionLevel(int level) {
   }
   // Test to see if levels are valid
   bool boa = true, terrain = true;
-  char str[255];
 
   if (BOAGetMineChecksum() != BOA_vis_checksum)
     boa = false;
@@ -1647,7 +1646,6 @@ bool Skip_next_movie = false;
 //	---------------------------------------------------------------------------
 //	 play movie
 void DoMissionMovie(const char *movie) {
-  char temppath[PSPATHNAME_LEN];
   if (PROGRAM(windowed)) {
     mprintf((0, "Skipping movie...can't do in windowed mode!\n"));
     return;
