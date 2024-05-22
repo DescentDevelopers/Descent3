@@ -78,7 +78,7 @@ jobs:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
           VCPKG_ROOT: C:/vcpkg
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON
 
       - name: Build ${{ matrix.build_type }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
@@ -86,8 +86,12 @@ jobs:
       - name: Run ${{ matrix.build_type }} Unittests
         run: ctest --preset ${{ matrix.os.preset }} -C ${{ matrix.build_type }}
 
+      - name: Local install
+        # There no cmake install presets so install in traditional way
+        run: cmake --install builds/${{ matrix.os.preset }}/ --config ${{ matrix.build_type }}
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Descent3_${{ matrix.build_type }}_${{ matrix.os.name }}
-          path: ${{ github.workspace }}/builds/${{ matrix.os.preset }}/Descent3/${{ matrix.build_type }}/
+          path: ${{ github.workspace }}/builds/${{ matrix.os.preset }}/installed/

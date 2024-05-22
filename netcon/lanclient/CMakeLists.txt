@@ -21,3 +21,4 @@ add_custom_target(Direct_TCP_IP_Hog
   DEPENDS Direct_TCP_IP HogMaker
   COMMENT "Generate 'Direct TCP~IP.d3c'"
 )
+install(FILES "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)

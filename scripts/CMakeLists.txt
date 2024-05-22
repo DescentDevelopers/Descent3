@@ -95,6 +95,9 @@ add_custom_target(HogFull
   COMMENT "Generate fullhog/d3-${HOG_NAME}.hog"
 )
 
+# Place file next to Descent3 executable on installation
+install(FILES "$<TARGET_FILE_DIR:Descent3>/d3-${HOG_NAME}.hog" DESTINATION ${CMAKE_INSTALL_DATADIR})
+
 # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
 #	add_custom_target(HogLinuxDemo
 #		COMMAND $<TARGET_FILE:HogMaker>

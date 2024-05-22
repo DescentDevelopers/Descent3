@@ -303,6 +303,7 @@ target_link_libraries(Descent3
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir)
+install(TARGETS Descent3 RUNTIME)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

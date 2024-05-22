@@ -11,6 +11,7 @@ project(Descent3
 )
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
+option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 
@@ -29,6 +30,18 @@ if(FORCE_COLORED_OUTPUT)
       add_compile_options(-fcolor-diagnostics)
     endif()
   endif()
+endif()
+
+include(GNUInstallDirs)
+if(FORCE_PORTABLE_INSTALL)
+  set(CMAKE_INSTALL_BINDIR ".")
+  set(CMAKE_INSTALL_LIBDIR ".")
+  set(CMAKE_INSTALL_DATADIR ".")
+  set(CMAKE_INSTALL_DOCDIR ".")
+endif()
+
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/installed" CACHE PATH "Default install path" FORCE)
 endif()
 
 if(CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
@@ -63,14 +76,14 @@ add_custom_command(
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
+install(FILES README.md LICENSE DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
 # rebuild version.hpp every time
 add_custom_target(get_git_hash ALL
   DEPENDS ${PROJECT_BINARY_DIR}/Descent3/d3_version.h
 )
 
 if(UNIX)
-  set(D3_GAMEDIR "~/Descent3/")
-
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
 
