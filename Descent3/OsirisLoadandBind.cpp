@@ -427,7 +427,7 @@
 
 bool Show_osiris_debug = false;
 
-#define MAX_LOADED_MODULES 64 // maximum number of dlls that can be loaded at a time
+#define MAX_LOADED_MODULES 96 // maximum number of dlls that can be loaded at a time
 
 #define OSIMF_INUSE 0x1        // slot in use
 #define OSIMF_LEVEL 0x2        // level module

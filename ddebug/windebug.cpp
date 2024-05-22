@@ -334,8 +334,10 @@ int Debug_MessageBox(int type, const char *title, const char *str) {
 ///////////////////////////////////////////////////////////////////////////////
 //	This CODE SHOULD ONLY BE USED IN A DEBUGGABLE VERSION.
 
+#ifndef _WIN64
 #define SHOW_CALL_STACK // Uncomment SHOW_CALL_STACK to show the call stack in terminal cases
 // #define DUMPRAM
+#endif // _WIN64
 
 #ifdef SHOW_CALL_STACK
 
@@ -1187,6 +1189,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
     return EXCEPTION_CONTINUE_SEARCH;
   BeenHere = true;
 
+#ifndef _WIN64
   PEXCEPTION_RECORD Exception = data->ExceptionRecord;
   PCONTEXT Context = data->ContextRecord;
   const char *desc = GetExceptionDescription(Exception->ExceptionCode);
@@ -1274,6 +1277,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
 
   if ((!Debug_break) && (!no_debug_dialog))
     Debug_ErrorBox(OSMBOX_OK, "Error", topmsg, bottommsg);
+#endif // _WIN64
 
   if (no_debug_dialog)
     exit(0);

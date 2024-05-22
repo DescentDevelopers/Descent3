@@ -81,10 +81,14 @@
 #define WIN32APP_H
 
 #include <array>
+#include <cstdint>
 
-/*	Basic Application Win32 data types */
-typedef unsigned int HWnd;
-typedef unsigned int HInstance;
+/*	Basic Application Win32 data types, to prevent include of windows.h */
+typedef uintptr_t   HWnd;
+typedef uintptr_t   HInstance;
+typedef uintptr_t   WParam;
+typedef intptr_t    LParam;
+typedef intptr_t    LResult;
 
 //	This structure is used to retrieve and set
 typedef struct tWin32AppInfo {
@@ -129,7 +133,7 @@ tOEWin32MsgCallback:
                         endif
 */
 
-typedef int (*tOEWin32MsgCallback)(HWnd, unsigned, unsigned, long);
+typedef int (*tOEWin32MsgCallback)(HWnd, unsigned, WParam, LParam);
 
 class oeWin32Application : public oeApplication {
 #if defined(OEAPP_INTERNAL_MODULE)
@@ -188,7 +192,7 @@ public:
   void set_sizepos(int x, int y, int w, int h);
 
   //	returns -1 if we pass to default window handler.
-  virtual int WndProc(HWnd hwnd, unsigned msg, unsigned wParam, long lParam);
+  virtual LResult WndProc(HWnd hwnd, unsigned msg, WParam wParam, LParam lParam);
 
   //	These functions allow you to add message handlers.
   bool add_handler(unsigned msg, tOEWin32MsgCallback fn);
@@ -197,7 +201,7 @@ public:
   bool remove_handler(unsigned msg, tOEWin32MsgCallback fn);
 
   // Run handler for message (added by add_handler)
-  bool run_handler(HWnd wnd, unsigned msg, unsigned wParam, long lParam);
+  bool run_handler(HWnd wnd, unsigned msg, WParam wParam, LParam lParam);
 
   //	clears handler list
   void clear_handlers();

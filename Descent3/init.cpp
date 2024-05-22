@@ -1508,17 +1508,6 @@ void InitIOSystems(bool editor) {
 #endif
   d3_hid = cf_OpenLibrary(fullname);
 
-#ifdef __LINUX__
-#ifndef MACOSX
-  // DAJ	sys_hid = cf_OpenLibrary("d3-linux.hog");
-  ddio_MakePath(fullname, LocalD3Dir, "d3-linux.hog", NULL);
-  sys_hid = cf_OpenLibrary(fullname);
-#else
-  ddio_MakePath(fullname, LocalD3Dir, "d3-osx.hog", NULL);
-  sys_hid = cf_OpenLibrary(fullname);
-#endif
-#endif
-
   // JC: Steam release uses extra1.hog instead of extra.hog, so try loading it first
   // Open this file if it's present for stuff we might add later
   ddio_MakePath(fullname, LocalD3Dir, "extra1.hog", NULL);
@@ -1540,6 +1529,19 @@ void InitIOSystems(bool editor) {
   // Open this for extra 1.3 code (Black Pyro, etc)
   ddio_MakePath(fullname, LocalD3Dir, "extra13.hog", NULL);
   extra13_hid = cf_OpenLibrary(fullname);
+
+  // last library opened is the first to be searched for dynamic libs, so put
+  // this one at the end to find our newly build script libraries first
+#ifdef __LINUX__
+#ifndef MACOSX
+  ddio_MakePath(fullname, LocalD3Dir, "d3-linux.hog", NULL);
+#else
+  ddio_MakePath(fullname, LocalD3Dir, "d3-osx.hog", NULL);
+#endif
+#elif _WIN32
+  ddio_MakePath(fullname, LocalD3Dir, "d3-win.hog", NULL);
+#endif
+  sys_hid = cf_OpenLibrary(fullname);
 
   // Check to see if there is a -mission command line option
   // if there is, attempt to open that hog/mn3 so it can override such

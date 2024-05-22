@@ -141,7 +141,7 @@ typedef struct DSSTREAMTAG {
   int MaxWriteSamples;
   int MaxWriteBytes;
 
-  unsigned long thread_handle;
+  uintptr_t thread_handle;
   //	unsigned thread_id;
   volatile bool thread_request_kill;
   volatile bool thread_alive;

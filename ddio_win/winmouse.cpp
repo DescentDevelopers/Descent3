@@ -233,7 +233,7 @@ void ddio_InternalMouseFrame() {
 
 void MouseError() { MessageBoxA(nullptr, "Failed to init raw input for mouse", "Error", MB_ICONERROR); }
 
-int RawInputHandler(HWND hWnd, unsigned int msg, unsigned int wParam, long lParam) {
+int RawInputHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   unsigned int buttons;
   t_mse_event ev;
   float curtime = timer_GetTime();
