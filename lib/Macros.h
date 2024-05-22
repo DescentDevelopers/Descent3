@@ -61,9 +61,4 @@
 #ifndef _MACROS_H
 #define _MACROS_H
 #define CHECK_FLAG(_var, _flag) ((_var) & (_flag))
-
-#ifdef LINUX
-#define _stat stat
-#endif
-
 #endif

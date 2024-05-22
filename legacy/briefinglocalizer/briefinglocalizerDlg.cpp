@@ -23,6 +23,10 @@
 #include "briefinglocalizer.h"
 #include "briefinglocalizerDlg.h"
 
+#ifdef __LINUX__
+#include "linux/linux_fix.h"
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
