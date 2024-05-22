@@ -7,7 +7,7 @@
 			"binaryDir": "${sourceDir}/builds/${presetName}"
 		},
 		{
-			"name": "win",
+			"name": "win32",
 			"inherits": "defaults",
 			"generator": "Visual Studio 17 2022",
 			"condition": {
@@ -16,6 +16,18 @@
 				"rhs": "Windows"
 			},
 			"architecture": "Win32",
+			"toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+		},
+		{
+			"name": "win64",
+			"inherits": "defaults",
+			"generator": "Visual Studio 17 2022",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Windows"
+			},
+			"architecture": "x64",
 			"toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
 		},
 		{
@@ -41,8 +53,12 @@
 	],
 	"buildPresets": [
 		{
-			"name": "win",
-			"configurePreset": "win"
+			"name": "win32",
+			"configurePreset": "win32"
+		},
+		{
+			"name": "win64",
+			"configurePreset": "win64"
 		},
 		{
 			"name": "mac",
@@ -62,10 +78,16 @@
 			}
 		},
 		{
-			"name": "win",
+			"name": "win32",
 			"inherits": "defaults",
-			"description": "Testing under Windows",
-			"configurePreset": "win"
+			"description": "Testing under Windows x86",
+			"configurePreset": "win32"
+		},
+		{
+			"name": "win64",
+			"inherits": "defaults",
+			"description": "Testing under Windows x64",
+			"configurePreset": "win64"
 		},
 		{
 			"name": "mac",

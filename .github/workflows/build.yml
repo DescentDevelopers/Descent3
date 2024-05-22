@@ -22,10 +22,15 @@ jobs:
       matrix:
         os:
           - runner: windows-latest
-            preset: win
+            preset: win32
             cc: cl
             cxx: cl
             name: Windows-x86
+          - runner: windows-latest
+            preset: win64
+            cc: cl
+            cxx: cl
+            name: Windows-x64
           - runner: macos-12 # This is supposed to be Intel for now, and what macos-latest is defaulting to for some reason (as of 04/2024)
             preset: mac
             cc: cc
