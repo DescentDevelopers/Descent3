@@ -66,13 +66,12 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <SDL.h>
+
 #include "joystick.h"
 #include "pserror.h"
-#include "pstypes.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "SDL.h"
 
 // rcg06182000 need this for specific joystick stuff.
 #include "args.h"

@@ -9,6 +9,7 @@ add_library(music STATIC ${HEADERS} ${CPPS})
 target_link_libraries(music
   cfile
   ddio_common
+  sndlib
   stream_audio
 )
 target_include_directories(music PUBLIC

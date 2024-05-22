@@ -130,9 +130,6 @@
 
 #include "ddio.h"
 #include "pserror.h"
-#include "Macros.h"
-
-#include <stdlib.h>
 
 #define KEY_QUEUE_SIZE 16
 
