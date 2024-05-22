@@ -790,7 +790,9 @@ tcp_done:
 
   Sockets_initted = 1;
 
-  if (TCP_active) { mprintf((0, "TCP Initialized\n")); }
+  if (TCP_active) {
+    mprintf((0, "TCP Initialized\n"));
+  }
 
   nw_psnet_buffer_init();
   nw_RegisterCallback((NetworkReceiveCallback)nw_HandleUnreliableData, NWT_UNRELIABLE);

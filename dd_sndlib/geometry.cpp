@@ -165,7 +165,7 @@ void llsGeometry::AddTriangle(unsigned tag, vector **verts) {
 }
 
 void llsGeometry::AddPoly(int nv, vector **verts, unsigned tag, tSoundMaterial material) {
-  int saved_primatives_used; //,p;
+  int saved_primatives_used;
   void *matp = NULL;
 
   if (nv < 3) {

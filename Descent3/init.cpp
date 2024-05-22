@@ -1426,22 +1426,25 @@ void InitIOSystems(bool editor) {
   if (dirarg) {
     strncpy(Base_directory, GameArgs[dirarg + 1], sizeof(Base_directory) - 1);
     Base_directory[sizeof(Base_directory) - 1] = '\0';
-  } else if (exedirarg) {
+  } 
+  else if (exedirarg) {
     char exec_path[_MAX_PATH];
     memset(exec_path, 0, sizeof(exec_path));
     // Populate exec_path with the executable path
     if (!ddio_GetBinaryPath(exec_path, sizeof(exec_path))) {
-    Error("Failed to get executable path\n");
-    } else {
-       std::filesystem::path executablePath(exec_path);
-       std::string baseDirectoryString = executablePath.parent_path().string();
-       strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
-       Base_directory[sizeof(Base_directory) - 1] = '\0';
-       mprintf((0, "Using working directory of %s\n", Base_directory));
-      }
-    } else {
-       ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
-      }
+      Error("Failed to get executable path\n");
+    } 
+    else {
+      std::filesystem::path executablePath(exec_path);
+      std::string baseDirectoryString = executablePath.parent_path().string();
+      strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
+      Base_directory[sizeof(Base_directory) - 1] = '\0';
+      mprintf((0, "Using working directory of %s\n", Base_directory));
+    }
+  } 
+  else {
+    ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
+  }
 
   ddio_SetWorkingDir(Base_directory);
 
