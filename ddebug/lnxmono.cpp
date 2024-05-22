@@ -64,7 +64,6 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <sys/ioctl.h>
 
 #define MAX_TCPLOG_LEN 2000
 #define SOCKET int

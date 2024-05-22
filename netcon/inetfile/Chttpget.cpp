@@ -210,14 +210,8 @@ void ChttpGet::PrepSocket(char *URL) {
     m_State = HTTP_STATE_SOCKET_ERROR;
     return;
   }
-  uint32_t arg = 1;
-  
-  #ifdef WIN32
-    u_long argWin = static_cast<u_long>(arg);
-    ioctlsocket(m_DataSock, FIONBIO, &argWin);
-  #elif defined(__linux__)
-    ioctl(m_DataSock, FIONBIO, &arg);
-  #endif
+
+  make_nonblocking(m_DataSock);
 
   char *pURL = URL;
   if (strnicmp(URL, "http:", 5) == 0) {
@@ -668,18 +662,6 @@ uint32_t ChttpGet::ReadDataChannel() {
     return 1;
   }
 }
-
-typedef struct _async_dns_lookup {
-  uint32_t ip; // resolved host. Write only to worker thread.
-  char *host;      // host name to resolve. read only to worker thread
-  bool done;       // write only to the worker thread. Signals that the operation is complete
-  bool error;      // write only to worker thread. Thread sets this if the name doesn't resolve
-  bool abort;      // read only to worker thread. If this is set, don't fill in the struct.
-
-#ifdef __LINUX__
-  SDL_Thread *threadId;
-#endif
-} async_dns_lookup;
 
 static async_dns_lookup httpaslu;
 static async_dns_lookup *http_lastaslu = NULL;

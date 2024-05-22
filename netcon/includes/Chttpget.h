@@ -65,6 +65,7 @@
 #define _CHTTPGET_HEADER_
 
 #include <cstdint>
+#include "networking.h"
 
 #define HTTP_STATE_INTERNAL_ERROR 0
 #define HTTP_STATE_SOCKET_ERROR 1

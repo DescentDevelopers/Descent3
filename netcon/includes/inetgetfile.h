@@ -93,7 +93,6 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/ioctl.h>
 #include <netdb.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -126,8 +125,8 @@
 #define WSAEISCONN EISCONN
 #define SOCKET_ERROR -1
 
-#ifndef NETWORKING_H
-static inline int WSAGetLastError() { return errno; }
+#ifndef WSAGetLastError
+#define WSAGetLastError() errno
 #endif
 
 

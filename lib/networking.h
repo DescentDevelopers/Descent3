@@ -237,7 +237,10 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
 #define WSAEINVAL EINVAL
 #define WSAENOPROTOOPT ENOPROTOOPT
 
-static inline int WSAGetLastError() { return errno; }
+#ifndef WSAGetLastError
+#define WSAGetLastError() errno
+#endif
+
 extern bool Use_DirectPlay;
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
@@ -343,6 +346,10 @@ typedef struct {
 extern BOOL DP_active;
 extern BOOL TCP_active;
 extern BOOL IPX_active;
+
+// create a new non-blocking socket
+int make_nonblocking(SOCKET sock);
+
 // Get the info from RAS
 uint32_t psnet_ras_status();
 

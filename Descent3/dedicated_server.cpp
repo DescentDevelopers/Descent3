@@ -140,6 +140,7 @@ typedef int socklen_t;
 #include "init.h"
 #include "ship.h"
 #include "hud.h"
+#include "networking.h"
 
 
 bool Dedicated_server = false;
@@ -809,7 +810,9 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 #define WSAEINVAL EINVAL
 #define WSAENOPROTOOPT ENOPROTOOPT
 
-#define WSAGetLastError(a) errno
+#ifndef WSAGetLastError
+#define WSAGetLastError() errno
+#endif
 
 #define SOCKET_ERROR -1
 
@@ -854,15 +857,7 @@ void InitDedicatedSocket(uint16_t port) {
     mprintf((0, "Unable to listen on dedicated server socket!\n"));
     return;
   }
-  // Make the socket non-blocking
-
-#if defined(WIN32)
-  u_long argp = 1;
-  ioctlsocket(dedicated_listen_socket, FIONBIO, &argp);
-#elif defined(__LINUX__)
-  int argp = 1;
-  ioctl(dedicated_listen_socket, FIONBIO, &argp);
-#endif
+  make_nonblocking(dedicated_listen_socket);
 }
 
 void ListenDedicatedSocket(void) {
@@ -874,13 +869,8 @@ void ListenDedicatedSocket(void) {
   if (INVALID_SOCKET != incoming_socket) {
     // Make the socket non-blocking
 
-#if defined(WIN32)
-    u_long argp = 1;
-    ioctlsocket(incoming_socket, FIONBIO, &argp);
-#elif defined(__LINUX__)
-    int argp = 1;
-    ioctl(incoming_socket, FIONBIO, &argp);
-#endif
+    make_nonblocking(incoming_socket);
+
     if (!Dedicated_allow_remote) {
       // Check to see if this came in from the local address
       uint32_t localhost = inet_addr("127.0.0.1");
