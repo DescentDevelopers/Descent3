@@ -1186,7 +1186,7 @@ bool matcen::SetStatus(int status, bool f_enable) // Not all flags are settable
 
 void matcen::CheckActivateStatus() {
   m_next_active_check_time = Gametime + MATCEN_ACTIVE_CHECK_RATE +
-                             (MATCEN_ACTIVE_CHECK_VARIENCE * (((float)ps_rand()) / ((float)RAND_MAX) - .5f));
+                             (MATCEN_ACTIVE_CHECK_VARIENCE * (((float)ps_rand()) / ((float)D3_RAND_MAX) - .5f));
   m_last_active_check_result = (m_status & MSTAT_ACTIVE) != 0;
 
   // Determine if active

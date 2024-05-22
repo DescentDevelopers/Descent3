@@ -33,12 +33,15 @@
  *
  * $NoKeywords: $
  */
+#ifndef PS_RAND_H
+#define PS_RAND_H
 
 #include <cstdint>
-#undef RAND_MAX
 
-#define RAND_MAX 0x7fff
+#define D3_RAND_MAX 0x7fff
 
-void ps_srand(unsigned int seed);
+void ps_srand(uint32_t seed);
 
-int ps_rand(void);
+int32_t ps_rand(void);
+
+#endif

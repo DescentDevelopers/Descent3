@@ -376,8 +376,8 @@
  *
  * 131   8/17/98 1:32a Chris
  * Fixed a type cast bug the resulted in rand_vec.y  always equaling .4
- * and then zero after normalization (as the others ranged from RAND_MAX/2
- * to -RAND_MAX/2)
+ * and then zero after normalization (as the others ranged from D3_RAND_MAX/2
+ * to -D3_RAND_MAX/2)
  *
  * 130   8/17/98 1:15a Chris
  * By default, obj_debris don't make a sound when they die
@@ -939,9 +939,9 @@ object *CreateSubobjectDebrisDirected(object *parent, int subobj_num, vector *di
 
   obj->mtype.phys_info.flags = (PF_GRAVITY | PF_BOUNCE | PF_FIXED_ROT_VELOCITY);
   obj->mtype.phys_info.coeff_restitution = .2f;
-  obj->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
   if (death_flags & DF_DEBRIS_REMAINS) {
     obj->mtype.phys_info.num_bounces = 8;
     obj->mtype.phys_info.flags |= PF_STICK;
@@ -963,12 +963,12 @@ object *CreateSubobjectDebrisDirected(object *parent, int subobj_num, vector *di
 object *CreateSubobjectDebris(object *parent, int subobj_num, float explosion_mag, int death_flags) {
   vector rand_vec;
   // Set physics data for this object
-  rand_vec.x = (float)(RAND_MAX / 2 - ps_rand());
-  rand_vec.y = (float)(RAND_MAX / 2 - ps_rand()) + .2f * RAND_MAX; // a habit of moving upwards
-  rand_vec.z = (float)(RAND_MAX / 2 - ps_rand());
+  rand_vec.x = (float)(D3_RAND_MAX / 2 - ps_rand());
+  rand_vec.y = (float)(D3_RAND_MAX / 2 - ps_rand()) + .2f * D3_RAND_MAX; // a habit of moving upwards
+  rand_vec.z = (float)(D3_RAND_MAX / 2 - ps_rand());
 
   vm_NormalizeVectorFast(&rand_vec);
-  explosion_mag *= 1.0f + ((float)(RAND_MAX / 2 - ps_rand()) / (float)(RAND_MAX / 2) * 0.05); // +5/-5 percent
+  explosion_mag *= 1.0f + ((float)(D3_RAND_MAX / 2 - ps_rand()) / (float)(D3_RAND_MAX / 2) * 0.05); // +5/-5 percent
   return CreateSubobjectDebrisDirected(parent, subobj_num, &rand_vec, explosion_mag, death_flags);
 }
 // Create extra fireballs for an exploding object
@@ -1153,7 +1153,7 @@ void DoDeathSpew(object *parent) {
       continue; // spew type set to none
     type = Object_info[id].type;
     int max_spewed = Object_info[parent->id].dspew_number[i];
-    int rand_val = (int)((float)RAND_MAX * Object_info[parent->id].dspew_percent[i]);
+    int rand_val = (int)((float)D3_RAND_MAX * Object_info[parent->id].dspew_percent[i]);
     // Skip it if the player has that weapon battery enabled
     // If multiplayer, it will spew type 2 if no type 1 is spewed
     if (i == 0 && (f_dspew & DSF_ONLY_IF_PLAYER_HAS_OBJ_1)) {
@@ -1192,9 +1192,9 @@ void DoDeathSpew(object *parent) {
         object *obj = &Objects[objnum];
 
         // Set random velocity for powerups
-        obj->mtype.phys_info.velocity.x = ((ps_rand() / (float)RAND_MAX) - .5f) * 35.0;
-        obj->mtype.phys_info.velocity.z = ((ps_rand() / (float)RAND_MAX) - .5f) * 35.0;
-        obj->mtype.phys_info.velocity.y = ((ps_rand() / (float)RAND_MAX) - .5f) * 35.0;
+        obj->mtype.phys_info.velocity.x = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
+        obj->mtype.phys_info.velocity.z = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
+        obj->mtype.phys_info.velocity.y = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 35.0;
         InitObjectScripts(obj);
         // Send object to other players
         if (Game_mode & GM_MULTI) {
@@ -1315,7 +1315,7 @@ void PlayObjectExplosionSound(object *objp) {
       if (objp->type == OBJ_BUILDING)
         sound = SOUND_BUILDING_EXPLODE;
       else
-        sound = (ps_rand() > RAND_MAX / 2) ? SOUND_ROBOT_EXPLODE_1 : SOUND_ROBOT_EXPLODE_2;
+        sound = (ps_rand() > D3_RAND_MAX / 2) ? SOUND_ROBOT_EXPLODE_1 : SOUND_ROBOT_EXPLODE_2;
     }
   }
   if (sound != -1)
@@ -2379,7 +2379,7 @@ void DoExplosionEvent(int eventnum, void *data) {
     sound_pos.orient = &id_mat;
     sound_pos.velocity = &zero_vec;
 
-    if (ps_rand() > RAND_MAX / 2)
+    if (ps_rand() > D3_RAND_MAX / 2)
       Sound_system.Play3dSound(SOUND_ROBOT_EXPLODE_1, SND_PRIORITY_HIGH, &sound_pos);
     else
       Sound_system.Play3dSound(SOUND_ROBOT_EXPLODE_2, SND_PRIORITY_HIGH, &sound_pos);

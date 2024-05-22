@@ -2782,9 +2782,9 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   obj->mtype.phys_info.flags = (PF_GRAVITY | PF_BOUNCE | PF_FIXED_ROT_VELOCITY);
   obj->mtype.phys_info.coeff_restitution = .25f;
 
-  obj->mtype.phys_info.rotvel.x = (float)((120000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.y = (float)((120000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.z = (float)((120000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.x = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.y = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.z = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
 
   obj->mtype.phys_info.num_bounces = 5;
 
@@ -2805,9 +2805,9 @@ void PlayerSpewObject(object *objp, int timed, int room, vector *pos, matrix *or
   ObjSetPos(objp, pos, room, orient, true);
 
   // Set random velocity for powerups
-  objp->mtype.phys_info.velocity.x = ((ps_rand() / (float)RAND_MAX) - .5f) * 40.0; // +20 to -20
-  objp->mtype.phys_info.velocity.z = ((ps_rand() / (float)RAND_MAX) - .5f) * 40.0; // +20 to -20
-  objp->mtype.phys_info.velocity.y = ((ps_rand() / (float)RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.x = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.z = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
+  objp->mtype.phys_info.velocity.y = ((ps_rand() / (float)D3_RAND_MAX) - .5f) * 40.0; // +20 to -20
 
   // Send object to other players
   if (Game_mode & GM_MULTI) {
@@ -3170,7 +3170,7 @@ void PlayerShipBreakup(object *obj, float magnitude) {
   }
 
   // this is an INDEX into the VALID subobjects in the polymodel. (skip 1st subobj)
-  idx = (ps_rand() * n_remaining_models / RAND_MAX) + 1;
+  idx = (ps_rand() * n_remaining_models / D3_RAND_MAX) + 1;
 
   subobjnum = -1;
   for (i = 1, j = 1; i < n_models; i++) {
@@ -3216,12 +3216,12 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
     i++;
   }
 
-  rand_vec.x = (float)(RAND_MAX / 2 - ps_rand());
+  rand_vec.x = (float)(D3_RAND_MAX / 2 - ps_rand());
   if (obj->movement_type != MT_PHYSICS)
     rand_vec.y = (float)((float)ps_rand() / 2.0); // A habit of moving upward
   else
-    rand_vec.y = (float)((float)RAND_MAX / 1.5f - (float)ps_rand()); // A habit of moving upward
-  rand_vec.z = (float)(RAND_MAX / 2 - ps_rand());
+    rand_vec.y = (float)((float)D3_RAND_MAX / 1.5f - (float)ps_rand()); // A habit of moving upward
+  rand_vec.z = (float)(D3_RAND_MAX / 2 - ps_rand());
   vm_NormalizeVectorFast(&rand_vec);
 
   object *subobj = CreateSubobjectDebrisDirected(obj, subobjnum, &rand_vec, magnitude);

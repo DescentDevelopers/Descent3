@@ -146,7 +146,7 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
 
       if (BOA_cost_array[cur_node->roomnum][counter] >= 0.0f)
         new_cost = cur_node->cost +
-                   (1.0f + 0.1f * ((float)ps_rand() - (float)RAND_MAX / 2.0f) / ((float)RAND_MAX / 2.0f)) *
+                   (1.0f + 0.1f * ((float)ps_rand() - (float)D3_RAND_MAX / 2.0f) / ((float)D3_RAND_MAX / 2.0f)) *
                        (BOA_cost_array[cur_node->roomnum][counter] + BOA_cost_array[BOA_INDEX(next_room)][next_portal]);
       else
         continue;

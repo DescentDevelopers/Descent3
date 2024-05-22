@@ -2271,7 +2271,7 @@ void DrawVirusLightning(object *obj) {
   if (!(obj->effect_info->type_flags & EF_VIRUS_INFECTED))
     return;
 
-  float shield_norm = (float)(ps_rand() % RAND_MAX) / (float)RAND_MAX;
+  float shield_norm = (float)(ps_rand() % D3_RAND_MAX) / (float)D3_RAND_MAX;
   shield_norm = 1 - shield_norm;
 
   ASSERT(shield_norm >= 0 && shield_norm <= 1);

@@ -63,7 +63,7 @@
 #define TABMASK (TABSIZE - 1)
 #define PERM(x) perm[(x) & TABMASK]
 #define INDEX(ix, iy) PERM((ix) + PERM((iy)))
-#define RANDNBR ((prand()) / (float)RAND_MAX)
+#define RANDNBR ((prand()) / (float)D3_RAND_MAX)
 #define LERP(t, x0, x1) ((x0) + (t) * ((x1) - (x0)))
 #define SMOOTHSTEP(x) ((x))
 unsigned char perm[TABSIZE];

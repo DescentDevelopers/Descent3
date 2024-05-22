@@ -3212,7 +3212,7 @@ void TelcomEndScreen(void) {
   TCWorking_screen = -1;
 }
 
-float myrand(float max) { return (max * (((float)ps_rand()) / ((float)RAND_MAX))); }
+float myrand(float max) { return (max * (((float)ps_rand()) / ((float)D3_RAND_MAX))); }
 
 /////////////////////////////////////////////////////////////////////////////
 //	These are the functions used for serialization, yes they are out of place,
