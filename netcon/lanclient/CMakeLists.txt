@@ -5,7 +5,7 @@ set_target_properties(Direct_TCP_IP PROPERTIES PREFIX "")
 set_target_properties(Direct_TCP_IP PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")
 target_link_libraries(Direct_TCP_IP PRIVATE
-  ddio_common
+  ddio
   inetfile
   $<$<PLATFORM_ID:Windows>:
     ws2_32

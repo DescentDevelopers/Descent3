@@ -23,12 +23,12 @@ set(CPPS
     wintimer.cpp
   >
 )
-add_library(ddio_common STATIC ${CPPS})
-target_link_libraries(ddio_common
+add_library(ddio STATIC ${CPPS})
+target_link_libraries(ddio
   ddebug
 )
-target_include_directories(ddio_common PUBLIC
+target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:
-  ${PROJECT_SOURCE_DIR}/ddio_common
+  ${PROJECT_SOURCE_DIR}/ddio
   >
 )

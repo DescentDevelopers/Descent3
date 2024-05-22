@@ -180,7 +180,7 @@ else()
   add_subdirectory(linux)
 endif()
 
-add_subdirectory(ddio_common)
+add_subdirectory(ddio)
 add_subdirectory(dd_video)
 add_subdirectory(fix)
 add_subdirectory(manage)
