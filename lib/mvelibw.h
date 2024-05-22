@@ -59,8 +59,8 @@ void __cdecl MVE_sndInit(LPDIRECTSOUND lpDS);
 ** thru 10,000 (left -100db, right full volume).
 ** The default value for volume and pan is zero.
 */
-void __cdecl MVE_dsbSetVolume(long lVolume);
-void __cdecl MVE_dsbSetPan(long lPan);
+void __cdecl MVE_dsbSetVolume(int32_t lVolume);
+void __cdecl MVE_dsbSetPan(int32_t lPan);
 
 
 /* Only call this function to configure software to work with a Super VGA

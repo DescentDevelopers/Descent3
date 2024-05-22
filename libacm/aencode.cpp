@@ -929,7 +929,7 @@ void WriteBands(Encoder &enc) {
   for (int i = 0; i < enc.m_numColumns; ++i) {
     const uint32 formatId = enc.m_pFormatIdPerColumn[i];
     enc.m_bits.WriteBits(formatId, 5);
-    int currPos = ftell(enc.m_bits.m_outFile);
+//    int32_t currPos = ftell(enc.m_bits.m_outFile);
     WriteBand_tbl[formatId](enc, i, formatId);
   }
 }
@@ -993,7 +993,7 @@ void EncodeFlush(Encoder &enc) {
   ProcessBlock(enc);
 }
 
-unsigned int AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
+int32_t AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
                           FILE *out, int levels, int samples_per_subband, float comp_ratio) {
   Encoder enc;
   memset(&enc, 0, sizeof(enc));
@@ -1016,7 +1016,7 @@ unsigned int AudioEncode(ReadSampleFunction *read, void *data, unsigned channels
 
   enc.m_threshold = (sint32)(float(enc.m_samplesPerBlock) * comp_ratio * 16.0f);
 
-  int originalPosVAR64 = ftell(out);
+  int32_t originalPosVAR64 = ftell(out);
 
   // Header
   enc.m_bits.WriteBits(0x97, 8);
@@ -1073,13 +1073,13 @@ unsigned int AudioEncode(ReadSampleFunction *read, void *data, unsigned channels
   /////////////
 
   // Go back and write the Sample Count out proper
-  int endPos = ftell(out);
-  fseek(out, originalPosVAR64 + 4, 0);
+  int32_t endPos = ftell(out);
+  fseek(out, originalPosVAR64 + 4, SEEK_SET);
   putc((enc.m_sampleCount >> 0) & 0xFF, out);
   putc((enc.m_sampleCount >> 8) & 0xFF, out);
   putc((enc.m_sampleCount >> 16) & 0xFF, out);
   putc((enc.m_sampleCount >> 24) & 0xFF, out);
-  fseek(out, endPos, 0);
+  fseek(out, endPos, SEEK_SET);
 
   DestroyEncoder(enc);
   return endPos;

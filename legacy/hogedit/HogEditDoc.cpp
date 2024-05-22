@@ -457,7 +457,7 @@ int CHogEditDoc::AddFile(const char *pathname, hog_library_entry *entry)
 	char filename[PSFILENAME_LEN+1];
 	char ext[_MAX_EXT];
 	unsigned length;
-	long timestamp;
+  int32_t timestamp;
 	POSITION pos;
 	char path[PSPATHNAME_LEN];
 	char drive[PSPATHNAME_LEN];

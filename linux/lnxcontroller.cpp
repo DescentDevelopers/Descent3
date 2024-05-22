@@ -62,7 +62,7 @@
 #define MOUSE_DEADZONE 0.00f
 
 static float WinControllerTimer = 0.0f;
-static longlong g_last_frame_timer_ms = -1;
+static int64_t g_last_frame_timer_ms = -1;
 static float g_accum_frame_time = 0.0f;
 
 lnxgameController::lnxgameController(int num_funcs, ct_function *funcs) : gameController(num_funcs, funcs) {
@@ -98,7 +98,7 @@ void lnxgameController::resume() {
 //	this functions polls the controllers if needed.  some systems may not need to implement
 //	this function.
 void lnxgameController::poll() {
-  longlong cur_frame_timer_ms;
+  int64_t cur_frame_timer_ms;
 
   if (m_Suspended)
     return;

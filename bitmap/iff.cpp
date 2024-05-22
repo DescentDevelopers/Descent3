@@ -117,7 +117,7 @@ short iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is val
 
 #define MIN(a, b) ((a < b) ? a : b)
 
-#define MAKE_SIG(a, b, c, d) (((long)(a) << 24) + ((long)(b) << 16) + ((c) << 8) + (d))
+#define MAKE_SIG(a, b, c, d) (((int32_t)(a) << 24) + ((int32_t)(b) << 16) + ((c) << 8) + (d))
 
 #define IFF_SIG_FORM 1
 #define IFF_SIG_ILBM 2
@@ -307,7 +307,7 @@ void bm_iff_skip_chunk(CFILE *ifile, uint len) {
 int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
   unsigned char *p = bmheader->raw_data;
   int y;
-  long chunk_end = cftell(ifile) + len;
+  int32_t chunk_end = cftell(ifile) + len;
 
   cf_ReadInt(ifile); // longword, seems to be equal to 4.  Don't know what it is
 
@@ -555,8 +555,8 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
   CFILE *ifile;
   iff_bitmap_header bm_headers[40];
   iff_bitmap_header *temp_bm_head;
-  long sig, form_len;
-  long form_type;
+  int32_t sig, form_len;
+  int32_t form_type;
   int num_bitmaps = 0;
   int ret, i;
 

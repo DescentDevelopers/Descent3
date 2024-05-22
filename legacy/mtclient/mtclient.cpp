@@ -3314,7 +3314,7 @@ void AutoLoginAndJoinGame(void)
 	int passlen = PASSWORD_LEN;
 	int valret;
 	unsigned short port;
-	unsigned long iaddr;
+	uint32_t iaddr;
 	
 	*DLLMultiGameStarting = 0;
 	DLLCreateSplashScreen(TXT_PXO_CONNECTING,0);
@@ -3386,7 +3386,7 @@ void AutoLoginAndJoinGame(void)
 
 	network_address s_address;
 	iaddr = inet_addr(DLLAuto_login_addr);
-	memcpy (&s_address.address,&iaddr,sizeof(unsigned long));
+	memcpy (&s_address.address,&iaddr,sizeof(uint32_t));
 	s_address.port=port;
 	s_address.connection_type = NP_TCP;
 	*DLLGame_is_master_tracker_game = 1;

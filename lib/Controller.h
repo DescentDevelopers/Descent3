@@ -116,6 +116,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <cstdint>
+
 #include "pstypes.h"
 #include "Macros.h"
 

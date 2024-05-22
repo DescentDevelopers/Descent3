@@ -57,8 +57,8 @@ void MVE_sndInit(LnxSoundDevice *lpDS);
 ** thru 10,000 (left -100db, right full volume).
 ** The default value for volume and pan is zero.
 */
-void MVE_dsbSetVolume(long lVolume);
-void MVE_dsbSetPan(long lPan);
+void MVE_dsbSetVolume(int32_t lVolume);
+void MVE_dsbSetPan(int32_t lPan);
 
 /* Only call this function to configure software to work with a Super VGA
 **  mode if you do not have VESA support.

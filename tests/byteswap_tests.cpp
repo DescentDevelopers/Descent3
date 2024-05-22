@@ -23,7 +23,7 @@
 // This code taken from original byteswap.h for testing float conversion
 // It cannot convert negative float numbers in 64-bit systems, so testing only non-negative numbers
 
-#define SWAPINT(x) (int)(((x) << 24) | (((unsigned long)(x)) >> 24) | (((x) & 0x0000ff00) << 8) | (((x) & 0x00ff0000) >> 8))
+#define SWAPINT(x) (int)(((x) << 24) | (((uint32_t)(x)) >> 24) | (((x) & 0x0000ff00) << 8) | (((x) & 0x00ff0000) >> 8))
 
 // Stupid function to trick the compiler into letting me byteswap a float
 inline float SWAPFLOAT(float x) {

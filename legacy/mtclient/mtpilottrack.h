@@ -241,10 +241,10 @@ typedef struct {
 typedef struct {
 	unsigned char type; //Type of request
 	unsigned short len; //Length of total packet, including this header
-	unsigned long code;	//For control messages
+	uint32_t code;	//For control messages
 	unsigned short xcode; //For control/NAK messages and for sigs.
-	unsigned long sig;	//To identify unique return ACKs
-	unsigned long security; // Just a random value, we store the last value used in the user record
+	uint32_t sig;	//To identify unique return ACKs
+	uint32_t security; // Just a random value, we store the last value used in the user record
 									// So we don't process the same request twice.
 	unsigned char data[MAX_UDP_DATA_LENGH];
 } udp_packet_header;
@@ -256,12 +256,12 @@ typedef struct {
 
 typedef struct _net_reg_queue {
 	char login[LOGIN_LEN];			//Login id
-	unsigned long time_last_sent;	//Time in milliseconds since we last sent this packet
+	uint32_t time_last_sent;	//Time in milliseconds since we last sent this packet
 	int retries;						//Number of times this has been sent
 	udp_packet_header packet;		//Packet containing the actual data to resend, etc.
 	struct _net_reg_queue *next;	//Pointer to next item in the list
 	SOCKADDR netaddr;
-	unsigned long sig;				//Signature to be used by the client to ACK our response.
+	uint32_t sig;				//Signature to be used by the client to ACK our response.
 } net_reg_queue;
 #endif
 
@@ -286,8 +286,8 @@ typedef struct vmt_descent3_struct {
 	unsigned int lateral_thrust;
 	unsigned int rotational_thrust;
 	unsigned int sliding_pct;	//Percentage of the time you were sliding
-	unsigned long checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
-	unsigned long pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
+	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
+	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
 */
 
@@ -306,7 +306,7 @@ void PollPTrackNet();
 void ValidIdle();
 //int ValidateUser(validate_id_request *valid_id);
 int ValidateUser(validate_id_request *valid_id, char *trackerid);
-void xorcode(void *data,unsigned int len,unsigned long hash);
+void xorcode(void *data,unsigned int len,uint32_t hash);
 extern int MTAVersionCheck(unsigned int oldver, char *URL);
 void VersionIdle();
 void HandlePilotData(ubyte *data,int len, network_address *from);

@@ -257,12 +257,12 @@ bool EAX_SetEnvironmentalReverb(float volume, float damping, float decay) {
       for (i = 0; i < EAX_ENVIRONMENT_COUNT; i++) {
         if (volume == EAX_Environments[i].fVolume && damping == EAX_Environments[i].fDamping &&
             decay == EAX_Environments[i].fDecayTime_sec) {
-          EAX.m_preset.environment = (ulong)i;
+          EAX.m_preset.environment = (uint32_t)i;
           break;
         }
       }
       if (FAILED(EAX.m_lpksps->Set(DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ENVIRONMENT, NULL, 0,
-                                   &EAX.m_preset.environment, sizeof(ulong)))) {
+                                   &EAX.m_preset.environment, sizeof(uint32_t)))) {
         return false;
       }
     } else {

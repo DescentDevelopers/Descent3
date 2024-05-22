@@ -33,7 +33,7 @@ typedef struct {
 	char	name[LIB_FILENAME_LEN];	//just the filename part
 	int	offset;						//offset into library file
 	int	length;						//length of this file
-	long	timestamp;					//time and date of file
+  int32_t	timestamp;					//time and date of file
 	int	flags;						//misc flags
 } library_entry;
 
@@ -262,7 +262,7 @@ list_files(char *hogname)
 		printf(" %-12s  %7d",hogfile->table[i].name,hogfile->table[i].length);
 
 		if (hogfile->table[i].timestamp) {
-			long t = hogfile->table[i].timestamp;
+      int32_t t = hogfile->table[i].timestamp;
 			printf("  %2d/%02d/%02d  %2d:%02d:%02d",MONTH(t),DAY(t),YEAR(t),HOUR(t),MINUTE(t),SECOND(t));
 		}
 		else

@@ -102,17 +102,17 @@ static pthread_self_fp dpthread_self = NULL;
 #define dpthread_self pthread_self
 #endif
 
-static unsigned long long Timer_sys_start_time = 0;
-static unsigned long long Timer_accum = 0, Timer_high_mark = 0;
+static uint64_t Timer_sys_start_time = 0;
+static uint64_t Timer_accum = 0, Timer_high_mark = 0;
 
 static float nw_TCPLoggingTimer(void) {
   unsigned int time_ms;
-  unsigned long long ret;
+  uint64_t ret;
 
   struct timeval t;
   gettimeofday(&t, NULL);
 
-  ret = (unsigned long long)t.tv_sec * 1000000.0 + t.tv_usec;
+  ret = (uint64_t)t.tv_sec * 1000000.0 + t.tv_usec;
 
   if (ret > Timer_high_mark) {
     Timer_high_mark = ret;
@@ -134,7 +134,7 @@ static bool nw_TCPLoggingTimer_Init(void) {
   struct timeval t;
   gettimeofday(&t, NULL);
 
-  Timer_sys_start_time = (unsigned long long)t.tv_sec * 1000000.0 + t.tv_usec;
+  Timer_sys_start_time = (uint64_t)t.tv_sec * 1000000.0 + t.tv_usec;
   Timer_accum = 0;
   Timer_high_mark = 0;
   return true;

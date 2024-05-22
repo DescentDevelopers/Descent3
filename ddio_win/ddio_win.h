@@ -71,6 +71,8 @@
 #ifndef DDIO_WIN_H
 #define DDIO_WIN_H
 
+#include <cstdint>
+#include <windows.h>
 #include "pstypes.h"
 #include "win/DirectX/dinput.h"
 
@@ -88,7 +90,7 @@ extern bool DDIO_init;
 extern bool DDIO_preemptive;
 
 bool ddio_JoyHandler();
-float ddio_TickToSeconds(unsigned long ticks);
+float ddio_TickToSeconds(uint32_t ticks);
 
 #ifdef _DEBUG
 void ddio_DebugMessage(unsigned err, char *fmt, ...);

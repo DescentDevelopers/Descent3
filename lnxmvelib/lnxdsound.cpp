@@ -650,8 +650,8 @@ static unsigned int LinuxSoundMixNormalize(LnxSoundBuffer *dsb, unsigned char *b
 int DoMulDiv(int nNumber, int nNumerator, int nDenominator) {
   if (!nDenominator)
     return -1;
-  long long ret;
-  ret = (((long long)nNumber * nNumerator) + (nDenominator / 2)) / nDenominator;
+  int64_t ret;
+  ret = (((int64_t)nNumber * nNumerator) + (nDenominator / 2)) / nDenominator;
 
   if ((ret > 0x7FFFFFFF) || (ret < 0xFFFFFFFF))
     return -1;

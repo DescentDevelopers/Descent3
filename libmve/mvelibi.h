@@ -60,10 +60,6 @@ inline unsigned int IntelSwapper(unsigned int a) { return INTEL_INT(a); }
 
 inline int IntelSwapper(int a) { return INTEL_INT(a); }
 
-inline unsigned long IntelSwapper(unsigned long a) { return INTEL_INT(a); }
-
-inline long IntelSwapper(long a) { return INTEL_INT(a); }
-
 typedef struct _mve_hdr {
   char FileType[20];      // MVE_FILE_TYPE
   unsigned short HdrSize; // sizeof(mve_hdr)
@@ -121,7 +117,7 @@ typedef struct _mcmd_hdr {
 
 #define mcmd_syncInit 2
 typedef struct _syncInit {
-  unsigned long period;       // period of quanta
+  uint32_t period;       // period of quanta
   unsigned short wait_quanta; // # of quanta per frame
   void SwapBytes() {
     period = IntelSwapper(period);
@@ -149,7 +145,7 @@ typedef struct _sndConfigure {
 #endif
   unsigned short frequency;
   // Minor opcode 1 extends buflen to be a long
-  unsigned long buflen;
+  uint32_t buflen;
   void SwapBytes() {
     rate = IntelSwapper(rate);
     frequency = IntelSwapper(frequency);
@@ -279,13 +275,13 @@ typedef struct _palLoadPalette {
 #define mcmd_nfPkInfo 19
 #define mcmd_nfHPkInfo 20
 typedef struct _nfPkInfo {
-  unsigned long error; // scaled by 10000
+  uint32_t error; // scaled by 10000
   unsigned short usage[64];
 } marg_nfPkInfo;
 
 #define mcmd_idcode 21
 typedef struct _idcode {
-  unsigned long idcode; // Code identifying version mcomp used to create
+  uint32_t idcode; // Code identifying version mcomp used to create
 } marg_idcode;
 
 #if __SC__

@@ -206,6 +206,7 @@
 #include <crtdbg.h>
 #else
 #endif
+#include <cstdint>
 
 #include "init.h"
 #include "mem.h"
@@ -393,7 +394,7 @@ void mem_Init() {
   mprintf((0, "Available virtual memory : %d\n", ms.dwAvailPageFile));
 
   // See if there is enough memory to run
-  if (((longlong)ms.dwAvailPageFile + ms.dwAvailPhys) < (50 * 1024 * 1024)) {
+  if (((int64_t)ms.dwAvailPageFile + ms.dwAvailPhys) < (50 * 1024 * 1024)) {
     Error("Your system doesn't have enough available memory to continue.\r\n\r\nMemory Statistics:\r\nTotal Physical: "
           "%d\r\nAvaliable Physical: %d\r\nAvailable Virtual: %d\r\n\r\nYou may be able to continue by rebooting, or "
           "freeing up some disk space.",

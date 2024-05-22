@@ -46,7 +46,7 @@ bool timerhi_Init(void);
 void timerhi_Close(void);
 float ddio_TickToSeconds(LARGE_INTEGER ticks);
 float timerhi_GetTime();
-longlong timerhi_GetMSTime();
+int64_t timerhi_GetMSTime();
 void timerhi_Normalize();
 LARGE_INTEGER Timer_hi_sys_start_time;
 LARGE_INTEGER Timer_hi_resolution;
@@ -146,7 +146,7 @@ void timer_Close() {
   Timer_initialized = 0;
 }
 
-float ddio_TickToSeconds(unsigned long ticks) {
+float ddio_TickToSeconds(uint32_t ticks) {
   if (Timer_use_highres_timer) {
     LARGE_INTEGER t;
     t.QuadPart = ticks;
@@ -181,7 +181,7 @@ float timer_GetTime() {
   return 0;
 }
 
-longlong timer_GetMSTime() {
+int64_t timer_GetMSTime() {
   if (Timer_use_highres_timer) {
     return timerhi_GetMSTime();
   } else {
@@ -292,7 +292,7 @@ float timerhi_GetTime() {
 }
 
 // This should return a timer in milliseconds
-longlong timerhi_GetMSTime() {
+int64_t timerhi_GetMSTime() {
   LARGE_INTEGER time_tick;
 
   timerhi_Normalize();

@@ -142,7 +142,7 @@ static void syncReset(unsigned int wait_quanta) {
 static void syncRelease(void) { sync_active = false; }
 
 static bool syncInit(unsigned int period, unsigned wait_quanta) {
-  int new_wait_quanta = -(long)(period * wait_quanta + (wait_quanta >> 1));
+  int new_wait_quanta = -(int32_t)(period * wait_quanta + (wait_quanta >> 1));
 
   // If timer is still running and has same timing
   // characteristics, assume we are trying to continue smoothly
@@ -292,8 +292,8 @@ static int snd_pad = 0;
 static unsigned snd_stereo = 0;
 static unsigned snd_comp16 = 0;
 static unsigned snd_bits16 = 0;
-static long snd_volume = 0;
-static long snd_pan = 0;
+static int32_t snd_volume = 0;
+static int32_t snd_pan = 0;
 
 #endif
 
@@ -303,7 +303,7 @@ void MVE_sndInit(ISoundDevice *lpDS) {
 #endif
 }
 
-void MVE_dsbSetVolume(long lVolume) {
+void MVE_dsbSetVolume(int32_t lVolume) {
 #if SOUND_SUPPORT
   snd_volume = lVolume;
   if (snd_buffer) {
@@ -312,7 +312,7 @@ void MVE_dsbSetVolume(long lVolume) {
 #endif
 }
 
-void MVE_dsbSetPan(long lPan) {
+void MVE_dsbSetPan(int32_t lPan) {
 #if SOUND_SUPPORT
   snd_pan = lPan;
   if (snd_buffer) {

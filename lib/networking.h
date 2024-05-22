@@ -157,6 +157,7 @@
 #define NETWORKING_H
 
 #include "pstypes.h"
+#include <cstdint>
 
 #if defined(WIN32)
 // Windows includes
@@ -324,7 +325,13 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, 
 #define NF_CHECKSUM 1
 #define NF_NOSEQINC 2
 
-typedef enum { NP_NONE, NP_TCP, NP_IPX, NP_DIRECTPLAY } network_protocol;
+enum network_protocol : uint32_t
+{
+  NP_NONE,
+  NP_TCP,
+  NP_IPX,
+  NP_DIRECTPLAY
+};
 
 typedef struct {
   ubyte address[6];
@@ -361,7 +368,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr);
 
 // Returns internet address format from string address format...ie "204.243.217.14"
 // turns into 1414829242
-unsigned long nw_GetHostAddressFromNumbers(char *str);
+uint32_t nw_GetHostAddressFromNumbers(char *str);
 
 // Fills in the string with the string address from the internet address
 void nw_GetNumbersFromHostAddress(network_address *address, char *str);
@@ -429,7 +436,7 @@ void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from);
 int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from);
 
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpid);
+int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t packet_id);
 
 // This is all the reliable UDP stuff...
 #define MAXNETBUFFERS                                                                                                  \

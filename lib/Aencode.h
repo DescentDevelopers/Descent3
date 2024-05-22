@@ -19,14 +19,17 @@
 #ifndef AENCODE_H_
 #define AENCODE_H_
 
-#include <stdio.h>
+#include <cstdint>
+#include <cstdio>
+#include "pstypes.h"
 
-typedef long ReadSampleFunction(void *data);
+
+typedef int32_t ReadSampleFunction(void *data);
 enum AudioError {
   ReadSampleEof = 0x80000000,
 };
 
-unsigned int AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
+int32_t AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
                           FILE *out, int levels, int samples_per_subband, float comp_ratio);
 
 #endif
