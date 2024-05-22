@@ -1068,7 +1068,7 @@ int StartMultiplayerGameMenu() {
   if (DLLddio_FindFileStart(search, buffer)) {
     // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
 
-    if (DLLIsMissionMultiPlayable(buffer) && (strcmpi("d3_2.mn3", buffer) != 0)) {
+    if (DLLIsMissionMultiPlayable(buffer) && (stricmp("d3_2.mn3", buffer) != 0)) {
       DLLmprintf((0, "Found a mission: %s\n", buffer));
       mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
       strcpy(mi->msn_name, DLLGetMissionName(buffer));
@@ -1078,7 +1078,7 @@ int StartMultiplayerGameMenu() {
       DLLListAddItem(list_1, mi->ti);
     }
     while (DLLddio_FindNextFile(buffer)) {
-      if (strcmpi("d3_2.mn3", buffer) == 0)
+      if (stricmp("d3_2.mn3", buffer) == 0)
         continue;
       // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
       if (DLLIsMissionMultiPlayable(buffer)) {
@@ -1296,7 +1296,7 @@ int StartMultiplayerGameMenu() {
         DLLListSelectItem(list_1, mi->ti);
 #endif
       for (index = 0; index < dllcount; index++) {
-        if (strcmpi(dll_text[index], DLLNetgame->scriptname) == 0) {
+        if (stricmp(dll_text[index], DLLNetgame->scriptname) == 0) {
           DLLListSelectItem(script_list, dll_txt_items[index]);
           break;
         }

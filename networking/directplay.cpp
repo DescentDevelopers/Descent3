@@ -166,7 +166,7 @@ int dp_SelectDirectPlayConnection(char *name) {
       mem_free(lpAddress);
     lpAddress = NULL;
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
-      if (strcmpi(dpconns[i].name, name) == 0) {
+      if (stricmp(dpconns[i].name, name) == 0) {
         mprintf((0, "Found DirectPlay connection: %s\n", name));
         connection = dpconns[i].conn;
         break;
@@ -851,7 +851,7 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
     lpTempDP4->EnumConnections(&DPD3_GUID, DirectPlayEnumConnectionsCallback, 0, 0);
 
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
-      if (strcmpi(dpconns[i].name, "Modem Connection For DirectPlay") == 0) {
+      if (stricmp(dpconns[i].name, "Modem Connection For DirectPlay") == 0) {
         // mprintf((0,"Found DirectPlay connection: %s\n",name));
         connection = dpconns[i].conn;
         break;

@@ -795,7 +795,7 @@ void CObjectDialog::OnSelchangeComboObjID()
 			box->GetLBText(box->GetCurSel(), text);
 			j = 0;
 			for (i=0;i<MAX_SHIPS;i++)
-				if (Ships[i].used && (strcmpi(text, Ships[i].name) == 0)) {
+				if (Ships[i].used && (stricmp(text, Ships[i].name) == 0)) {
 					j++;
 					break;
 				}
@@ -1004,13 +1004,13 @@ void CObjectDialog::OnSelChangeCoordSysSelect()
 
 	cbox->GetLBText(cbox->GetCurSel(), seltext);
 
-	if (strcmpi(seltext, "local") == 0) {
+	if (stricmp(seltext, "local") == 0) {
 		D3EditState.object_move_mode = REL_OBJECT;
 	}
-	else if (strcmpi(seltext, "viewer") == 0) {
+	else if (stricmp(seltext, "viewer") == 0) {
 		D3EditState.object_move_mode = REL_VIEWER;
 	}
-	else if (strcmpi(seltext, "world") == 0) {
+	else if (stricmp(seltext, "world") == 0) {
 		D3EditState.object_move_mode = REL_VIEWER;
 	}
 }

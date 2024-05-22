@@ -355,7 +355,7 @@ void DemoToggleRecording() {
   //	hand coded 128 because long filenames were failing in cfopen(which called fopen, which failed on very
   // long filenames.  instead of printing a message out to the user, just don't allow filenames that long)
   if (DoEditDialog(TXT_DEMOFILENAME, szfile, 128)) {
-    if (strcmpi(szfile + (strlen(szfile) - 4), ".dem") != 0) {
+    if (stricmp(szfile + (strlen(szfile) - 4), ".dem") != 0) {
       strcat(szfile, ".dem");
     }
     ddio_MakePath(Demo_fname, Base_directory, "demo", szfile, NULL);
@@ -392,7 +392,7 @@ void DemoWriteHeader() {
   // Next is the version
   cf_WriteShort(Demo_cfp, GAMESAVE_VERSION);
   // Write the mission filename
-  if (Current_mission.filename && (strcmpi("d3_2.mn3", Current_mission.filename) == 0)) {
+  if (Current_mission.filename && (stricmp("d3_2.mn3", Current_mission.filename) == 0)) {
     cf_WriteString(Demo_cfp, "d3.mn3");
   } else {
     cf_WriteString(Demo_cfp, Current_mission.filename ? Current_mission.filename : "");

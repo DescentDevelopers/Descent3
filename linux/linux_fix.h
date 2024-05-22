@@ -48,7 +48,6 @@ char *strupr(char *string);
 #endif
 
 #define strnicmp(a, b, c) strncasecmp(a, b, c)
-#define strcmpi(a, b) stricmp(a, b)
 #define _chmod(a, b) chmod(a, b)
 #if defined(__aarch64__)
 #define _finite(a) isfinite(a)

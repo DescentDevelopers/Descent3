@@ -1305,7 +1305,7 @@ void CheckHogfile() {
   char hogpath[_MAX_PATH * 2];
   mprintf((0, "Checking to see if we need to open another hog off of disk or CDROM\n"));
 
-  if (Current_mission.filename && (strcmpi(Current_mission.filename, "d3.mn3") == 0) &&
+  if (Current_mission.filename && (stricmp(Current_mission.filename, "d3.mn3") == 0) &&
       (Current_mission.cur_level > 4)) {
     // close the mission hog file and open d3_2.mn3
     mn3_Close();
@@ -1318,7 +1318,7 @@ void CheckHogfile() {
     } else {
       SetFunctionMode(MENU_MODE);
     }
-  } else if (Current_mission.filename && (strcmpi(Current_mission.filename, "d3_2.mn3") == 0) &&
+  } else if (Current_mission.filename && (stricmp(Current_mission.filename, "d3_2.mn3") == 0) &&
              (Current_mission.cur_level <= 4)) {
     // Part 2 of the mission is d3_2.mn3
     // close the mission hog file and open d3.mn3
@@ -1640,7 +1640,7 @@ bool LoadAndStartCurrentLevel() {
   char hogpath[_MAX_PATH * 2];
   // This is a bit redundant because we just did it in most cases, but we need to be sure that it always happens,
   // and this code is here for weird systems, like save/load and demo, etc.
-  if (Current_mission.filename && (strcmpi(Current_mission.filename, "d3.mn3") == 0) &&
+  if (Current_mission.filename && (stricmp(Current_mission.filename, "d3.mn3") == 0) &&
       (Current_mission.cur_level > 4)) {
     // close the mission hog file and open d3_2.mn3
     mn3_Close();
@@ -1653,7 +1653,7 @@ bool LoadAndStartCurrentLevel() {
     } else {
       SetFunctionMode(MENU_MODE);
     }
-  } else if (Current_mission.filename && (strcmpi(Current_mission.filename, "d3_2.mn3") == 0) &&
+  } else if (Current_mission.filename && (stricmp(Current_mission.filename, "d3_2.mn3") == 0) &&
              (Current_mission.cur_level <= 4)) {
     // Part 2 of the mission is d3_2.mn3
     // close the mission hog file and open d3.mn3
@@ -2114,7 +2114,7 @@ void RunGameMenu() {
       int ret = 0;
       ui_ShowCursor();
       // Weird code for the training mission and the first time you play...
-      if (Current_mission.filename && (strcmpi(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
+      if (Current_mission.filename && (stricmp(Current_mission.filename, "training.mn3") == 0) && (FirstGame)) {
         ret = DoMessageBoxAdvanced(TXT_TRAININGABORTTITLE, TXT_TRAININGABORTTEXT, TXT_SKIP, KEY_S, TXT_ABORT, KEY_A,
                                    TXT_CANCEL, KEY_ESC, NULL);
         if (ret == 2) {

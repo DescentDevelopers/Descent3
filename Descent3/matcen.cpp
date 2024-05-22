@@ -1872,7 +1872,7 @@ int FindMatcenIndex(const char *name) {
   for (i = 0; i < Num_matcens; i++) {
     Matcen[i]->GetName(temp);
 
-    if (!(strcmpi(temp, name))) {
+    if (!(stricmp(temp, name))) {
       return i;
     }
   }

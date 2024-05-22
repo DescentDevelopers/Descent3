@@ -400,7 +400,7 @@ int MainMultiplayerMenu() {
     if (Ships[i].used) {
 
 #ifdef DEMO
-      if (strcmpi(Ships[i].name, "pyro-gl") == 0)
+      if (stricmp(Ships[i].name, "pyro-gl") == 0)
 #endif
         PlayerSetShipPermission(-1, Ships[i].name, 1);
 #ifdef DEMO
@@ -1068,7 +1068,7 @@ void MultiDoConfigSave(void) {
 
   ddio_MakePath(file, Base_directory, "custom", "settings", NULL);
   if (DoPathFileDialog(true, file, TXT_MULTISAVESET, "*.mps", 0)) {
-    if (strcmpi(file + (strlen(file) - 4), ".mps") != 0)
+    if (stricmp(file + (strlen(file) - 4), ".mps") != 0)
       strcat(file, ".mps");
     MultiSaveSettings(file);
   }

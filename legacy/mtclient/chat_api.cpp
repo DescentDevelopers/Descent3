@@ -371,7 +371,7 @@ char * SendChatString(char *line,int raw)
 		
 		//Start off by getting the command
 		strcpy(szCmd,GetWordNum(0,line+1));
-		if(strcmpi(szCmd,"msg")==0)
+		if(stricmp(szCmd,"msg")==0)
 		{
 			strcpy(szTarget,GetWordNum(1,line+1));
 			sprintf(szCmd,"PRIVMSG %s :%s\n\r",szTarget,line+strlen("/msg ")+strlen(szTarget)+1);
@@ -380,7 +380,7 @@ char * SendChatString(char *line,int raw)
 			return ParseIRCMessage(szCmd,MSG_LOCAL);
 
 		}
-		if(strcmpi(szCmd,"me")==0)
+		if(stricmp(szCmd,"me")==0)
 		{
 			sprintf(szCmd,"PRIVMSG %s :\001ACTION %s\001\n\r",szChat_channel,line+strlen("/me "));
 			send(Chatsock,szCmd,strlen(szCmd),0);
@@ -388,14 +388,14 @@ char * SendChatString(char *line,int raw)
 			return ParseIRCMessage(szCmd,MSG_LOCAL);
 
 		}
-		if(strcmpi(szCmd,"xyz")==0)
+		if(stricmp(szCmd,"xyz")==0)
 		{
 			//Special command to send raw irc commands
 			sprintf(szCmd,"%s\n\r",line+strlen("/xyz "));
 			send(Chatsock,szCmd,strlen(szCmd),0);
 			return NULL;
 		}
-		if(strcmpi(szCmd,"list")==0)
+		if(stricmp(szCmd,"list")==0)
 		{
 			sprintf(szCmd,"%s\n\r",line+1);
 			send(Chatsock,szCmd,strlen(szCmd),0);
@@ -611,7 +611,7 @@ int AddChatUser(char *nickname)
 	Curruser = Firstuser;
 	while(Curruser) 
 	{
-		if(strcmpi(nickname,Curruser->nick_name)==0) return 0;
+		if(stricmp(nickname,Curruser->nick_name)==0) return 0;
 		Curruser = Curruser->next;
 	}
 
@@ -649,7 +649,7 @@ int RemoveChatUser(char *nickname)
 	Curruser = Firstuser;
 	while(Curruser) 
 	{
-		if(strcmpi(nickname,Curruser->nick_name)==0)
+		if(stricmp(nickname,Curruser->nick_name)==0)
 		{
 			if(prv_user)
 			{
@@ -891,10 +891,10 @@ char * ParseIRCMessage(char *Line, int iMode)
 		if(stricmp(Nick_name,szNick)==0)
 		{
 			//Yup, it's me!
-			//if(strcmpi(szChat_channel,GetWordNum(0,szRemLine))==0)
+			//if(stricmp(szChat_channel,GetWordNum(0,szRemLine))==0)
 			//{
 				Joined_channel = 1;
-				//if(strcmpi(szChat_channel,"#autoselect")==0)
+				//if(stricmp(szChat_channel,"#autoselect")==0)
 				//{
 					strcpy(szChat_channel,GetWordNum(0,szRemLine));
 					AddChatCommandToQueue(CC_YOURCHANNEL,szChat_channel,strlen(szChat_channel)+1);
@@ -1003,7 +1003,7 @@ char * ParseIRCMessage(char *Line, int iMode)
 		char szWhoisUser[33];
 		strcpy(szWhoisUser,GetWordNum(1,szRemLine));
 		//This is whois user info, we can get their tracker info from here.  -5
-		//if(strcmpi(Getting_user_tracker_info_for,szWhoisUser)==0)
+		//if(stricmp(Getting_user_tracker_info_for,szWhoisUser)==0)
 		//{
 			strcpy(User_req_tracker_id,GetWordNum(5,szRemLine));
 		//}
@@ -1014,7 +1014,7 @@ char * ParseIRCMessage(char *Line, int iMode)
 		char szWhoisUser[33];
 		strcpy(szWhoisUser,GetWordNum(1,szRemLine));
 		//This is whois channel info -- what channel they are on		-2
-		//if(strcmpi(Getting_user_channel_info_for,szWhoisUser)==0)
+		//if(stricmp(Getting_user_channel_info_for,szWhoisUser)==0)
 		//{
 			strcpy(User_req_channel,GetWordNum(2,szRemLine));
 		//}

@@ -306,7 +306,7 @@ int LoadGameState(const char *pathname) {
   curlevel = (uint16_t)cf_ReadShort(fp);
   cf_ReadString(path, sizeof(path), fp);
 
-  if ((curlevel > 4) && (strcmpi(path, "d3.mn3") == 0)) {
+  if ((curlevel > 4) && (stricmp(path, "d3.mn3") == 0)) {
     strcpy(path, "d3_2.mn3");
   }
 

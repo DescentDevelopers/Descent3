@@ -5756,7 +5756,7 @@ char *LocalizeLevelName(char *level) {
 
   // Now search for the correct level
   for (int i = 0; i < num_english_names; i++) {
-    if (0 == strcmpi(level, english_names[i])) {
+    if (0 == stricmp(level, english_names[i])) {
       // Ok, we found a match. So return the local text.
       strcpy(local_name, local_names[i]);
       DestroyStringTable(english_names, num_english_names);

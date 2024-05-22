@@ -1272,9 +1272,9 @@ void LoadGameSettings() {
   ddio_SetKeyboardLanguage(KBLANG_AMERICAN);
 
   if (Database->read("KeyboardType", tempbuffer, &templen)) {
-    if (strcmpi(tempbuffer, "French") == 0) {
+    if (stricmp(tempbuffer, "French") == 0) {
       ddio_SetKeyboardLanguage(KBLANG_FRENCH);
-    } else if (strcmpi(tempbuffer, "German") == 0) {
+    } else if (stricmp(tempbuffer, "German") == 0) {
       ddio_SetKeyboardLanguage(KBLANG_GERMAN);
     }
   }

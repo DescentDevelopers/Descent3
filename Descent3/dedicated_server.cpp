@@ -256,11 +256,11 @@ int RunServerConfigs() {
 
   // Put in the correct mission names for the oem builds
 #if (defined(OEM) || defined(DEMO))
-  if (strcmpi("polaris.d3l", Netgame.mission) == 0) {
+  if (stricmp("polaris.d3l", Netgame.mission) == 0) {
     strcpy(Netgame.mission_name, "Polaris");
-  } else if (strcmpi("taurus.d3l", Netgame.mission) == 0) {
+  } else if (stricmp("taurus.d3l", Netgame.mission) == 0) {
     strcpy(Netgame.mission_name, "Taurus");
-  } else if (strcmpi("thecore.d3l", Netgame.mission) == 0) {
+  } else if (stricmp("thecore.d3l", Netgame.mission) == 0) {
     strcpy(Netgame.mission_name, "The Core");
   }
 #else

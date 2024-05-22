@@ -191,7 +191,7 @@ int CHogEditDoc::LoadDocument(CString& name)
 	_splitpath(ascii_name, NULL, NULL, NULL, ext);
 
 	//	load either .rib or .hog file
-	if (strcmpi(ext, ".rib") == 0) {
+        if (stricmp(ext, ".rib") == 0) {
 		res=LoadRib(ascii_name);
 		if(res) m_StaticHog = false;
 	}
@@ -219,7 +219,7 @@ int CHogEditDoc::SaveDocument(CString& name)
 	_splitpath(ascii_name, NULL, NULL, NULL, ext);
 
 	//	load either .rib or .hog file
-	if (strcmpi(ext, ".rib") == 0) {
+        if (stricmp(ext, ".rib") == 0) {
 		res=SaveRib(ascii_name);
 		if(res) m_StaticHog = false;
 	}
@@ -492,7 +492,7 @@ int CHogEditDoc::AddFile(const char *pathname, hog_library_entry *entry)
 	while (pos)
 	{
 		temp_entry = Library.filelist.GetNext(pos);
-		if (!strcmpi(temp_entry.name, filename) /*&& !strcmpi(temp_entry.path, newpath)*/) 
+                if (!stricmp(temp_entry.name, filename) /*&& !stricmp(temp_entry.path, newpath)*/)
 			return ADDFILE_DUP_FILE_ERROR;
 	}
 
@@ -738,7 +738,7 @@ FILE *CHogEditDoc::FindFileInHog(char *hog_fname,tHogFileEntry *table_entry)
 	while (pos!=NULL)
 	{
 		entry = Library.filelist.GetNext(pos);
-		if (!strcmpi(entry.name, table_entry->name)) {
+                if (!stricmp(entry.name, table_entry->name)) {
 			found_in_hog=TRUE;
 			break;
 		}

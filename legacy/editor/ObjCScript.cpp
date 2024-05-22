@@ -745,9 +745,9 @@ void GenerateScriptListFromAllFiles(int mask)
 	while (filename)
 	{
 	//	compile script first.  if we failed, then display a messagebox giving the warning
-		if (!strcmpi(filename, DEFAULT_SCRIPT_NAME) && (mask & DEFAULT_SCRIPT_MASK)) 
+		if (!stricmp(filename, DEFAULT_SCRIPT_NAME) && (mask & DEFAULT_SCRIPT_MASK)) 
 			GenerateScriptListFromFile(filename);
-		else if ((mask & CUSTOM_SCRIPT_MASK) && strcmpi(filename, DEFAULT_SCRIPT_NAME)) 
+		else if ((mask & CUSTOM_SCRIPT_MASK) && stricmp(filename, DEFAULT_SCRIPT_NAME)) 
 			GenerateScriptListFromFile(filename);
 
 		filename = GetNextScriptFile();
@@ -764,7 +764,7 @@ void GenerateScriptListFromFile(const char *fname)
 	char *script;
 	script = LoadScript(fname);
 	if (script) {
-		if (strcmpi(fname, DEFAULT_SCRIPT_NAME) == 0) 
+		if (stricmp(fname, DEFAULT_SCRIPT_NAME) == 0) 
 			GenerateScriptWizardInfo(script, false);
 		else
 			GenerateScriptWizardInfo(script, true);

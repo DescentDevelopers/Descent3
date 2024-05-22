@@ -562,7 +562,7 @@ void HandlePilotData(uint8_t *data,int len, network_address *from)
 				{
 					d3_pilot = (vmt_descent3_struct *)&inpacket.data;
 					xorcode(d3_pilot,DESCENT3_BLOCK_SIZE,inpacket.security);
-					if(strcmpi(ProccesingPilot,d3_pilot->pilot_name)==0)
+					if(stricmp(ProccesingPilot,d3_pilot->pilot_name)==0)
 					{
 						//Copy the data
 						memcpy(ReadD3Pilot,&inpacket.data,DESCENT3_BLOCK_SIZE);
