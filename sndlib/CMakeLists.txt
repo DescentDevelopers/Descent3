@@ -20,6 +20,7 @@ set(CPPS
 add_library(sndlib STATIC ${CPPS})
 target_link_libraries(sndlib PRIVATE
   cfile
+  ddio_common
   stream_audio
 )
 target_include_directories(sndlib PUBLIC

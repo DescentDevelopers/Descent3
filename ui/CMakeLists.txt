@@ -17,3 +17,6 @@ set(CPPS
   UIWindow.cpp)
 
 add_library(ui STATIC ${HEADERS} ${CPPS})
+target_link_libraries(ui PRIVATE
+  ddio_common
+)

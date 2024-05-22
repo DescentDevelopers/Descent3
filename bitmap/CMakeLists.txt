@@ -17,3 +17,6 @@ target_link_libraries(bitmap PRIVATE
   stb
 )
 target_include_directories(bitmap PUBLIC .)
+target_link_libraries(bitmap PRIVATE
+  ddio_common
+)

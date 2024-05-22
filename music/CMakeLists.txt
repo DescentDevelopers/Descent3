@@ -8,6 +8,7 @@ set(CPPS
 add_library(music STATIC ${HEADERS} ${CPPS})
 target_link_libraries(music
   cfile
+  ddio_common
   stream_audio
 )
 target_include_directories(music PUBLIC
