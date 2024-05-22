@@ -1652,72 +1652,23 @@ void RenderObject_DrawPolymodel(object *obj, float *normalized_times) {
       use_effect = 1;
     }
   }
+  // JC: Always use the highest detail model
   // Pick a lod model to use if eligible
   if (obj->lighting_render_type == LRT_STATIC || obj->lighting_render_type == LRT_GOURAUD) {
     if (obj->type == OBJ_POWERUP || obj->type == OBJ_ROBOT || obj->type == OBJ_CLUTTER) {
-      g3Point pnt;
-      float detail_scalar = 1.0;
-      g3_RotatePoint(&pnt, &obj->pos);
-      if (Detail_settings.Object_complexity == 0)
-        detail_scalar = .6f;
-      else if (Detail_settings.Object_complexity == 2)
-        detail_scalar = 1.2f;
-      if (pnt.p3_z < (Object_info[obj->id].med_lod_distance * detail_scalar))
-        model_num = obj->rtype.pobj_info.model_num;
-      else if (pnt.p3_z < (Object_info[obj->id].lo_lod_distance * detail_scalar)) {
-        if (Object_info[obj->id].med_render_handle != -1)
-          model_num = Object_info[obj->id].med_render_handle;
-        else {
-          model_num = obj->rtype.pobj_info.model_num;
-        }
-      } else {
-        if (Object_info[obj->id].lo_render_handle != -1)
-          model_num = Object_info[obj->id].lo_render_handle;
-        else {
-          model_num = obj->rtype.pobj_info.model_num;
-          if (Object_info[obj->id].med_render_handle != -1)
-            model_num = Object_info[obj->id].med_render_handle;
-          else
-            model_num = obj->rtype.pobj_info.model_num;
-        }
-      }
+      model_num = obj->rtype.pobj_info.model_num; // Always use the highest detail model
     } else if (obj->type == OBJ_MARKER) {
-      model_num = Marker_polynum;
+        model_num = Marker_polynum;
     } else if (obj->type == OBJ_PLAYER && !(Players[obj->id].flags & (PLAYER_FLAGS_DYING | PLAYER_FLAGS_DEAD))) {
-      g3Point pnt;
-      g3_RotatePoint(&pnt, &obj->pos);
-      int ship_num = Players[obj->id].ship_index;
-      float detail_scalar = 1.0;
-      if (Detail_settings.Object_complexity == 0)
-        detail_scalar = .6f;
-      else if (Detail_settings.Object_complexity == 2)
-        detail_scalar = 1.2f;
-      if (pnt.p3_z < (Ships[ship_num].med_lod_distance * detail_scalar))
+        model_num = obj->rtype.pobj_info.model_num; // Always use the highest detail model
+    } else {
         model_num = obj->rtype.pobj_info.model_num;
-      else if (pnt.p3_z < (Ships[ship_num].lo_lod_distance * detail_scalar)) {
-        if (Ships[ship_num].med_render_handle != -1)
-          model_num = Ships[ship_num].med_render_handle;
-        else {
-          model_num = obj->rtype.pobj_info.model_num;
-        }
-      } else {
-        if (Ships[ship_num].lo_render_handle != -1)
-          model_num = Ships[ship_num].lo_render_handle;
-        else {
-          model_num = obj->rtype.pobj_info.model_num;
-          if (Ships[ship_num].med_render_handle != -1)
-            model_num = Ships[ship_num].med_render_handle;
-          else
-            model_num = obj->rtype.pobj_info.model_num;
-        }
-      }
-    } else
+    }
+  } else {
       model_num = obj->rtype.pobj_info.model_num;
-  } else
-    model_num = obj->rtype.pobj_info.model_num;
+  }
   if (obj->type == OBJ_BUILDING && obj->flags & OF_USE_DESTROYED_POLYMODEL) {
-    if (Object_info[obj->id].lo_render_handle != -1)
-      model_num = Object_info[obj->id].lo_render_handle;
+    model_num = obj->rtype.pobj_info.model_num; // Always use the highest detail model even for destroyed buildings
   }
   // Set effects
   if (use_effect)
