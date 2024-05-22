@@ -23,7 +23,7 @@
 #include "cfile.h"
 
 #ifdef __LINUX__
-#include "linux/linux_fix.h" //needed for stricmp's throughout bitmap lib
+#include "linux_fix.h" //needed for stricmp's throughout bitmap lib
 #endif
 
 #define MAX_BITMAPS 5000

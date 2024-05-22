@@ -112,6 +112,6 @@ public:
 #if defined(WIN32)
 #include "win\Win32App.h"
 #elif defined(__LINUX__)
-#include "linux/lnxapp.h"
+#include "lnxapp.h"
 #endif
 #endif

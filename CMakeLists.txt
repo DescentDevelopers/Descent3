@@ -145,6 +145,7 @@ include_directories(
   "ddebug"  # -*-
   "fix"     # -*-
   "lib"     # TODO: Remove after untying all modules
+  "linux"   # -*-
   "Descent3"
   ${PLATFORM_INCLUDES}
 )
@@ -161,19 +162,17 @@ add_subdirectory(ddebug)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(dd_grwin32)
-  add_subdirectory(dd_vidwin32)
   add_subdirectory(win32)
   add_subdirectory(dd_sndlib)
   add_subdirectory(ddio_win)
 else()
   add_subdirectory(linux)
-  add_subdirectory(ddvid_lnx)
   add_subdirectory(dd_lnxsound)
-  add_subdirectory(lnxcontroller)
   add_subdirectory(ddio_lnx)
 endif()
 
 add_subdirectory(ddio_common)
+add_subdirectory(dd_video)
 add_subdirectory(fix)
 add_subdirectory(manage)
 add_subdirectory(grtext)

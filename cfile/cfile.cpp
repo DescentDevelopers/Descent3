@@ -29,7 +29,7 @@
 #include <io.h>
 #else
 // Linux Build Includes
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 #include "byteswap.h"

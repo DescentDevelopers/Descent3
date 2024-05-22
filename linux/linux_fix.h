@@ -20,7 +20,6 @@
 #define __LINUX_FIX_H_
 
 #include <sys/stat.h>
-#include <math.h>
 
 #define LOKI_VERSION ""
 
@@ -30,8 +29,8 @@ void GlobalFree(void *);
 void *GlobalAlloc(int flags, int size);
 void *GlobalLock(HGLOBAL hMem);
 void Sleep(int millis);
-char *itoa(int value, char *string, int radix);
 char *strupr(char *string);
+
 // Replace missing defines from stdlib.h
 #define _MAX_PATH 260  /* max. length of full pathname*/
 #define _MAX_FNAME 256 /* max. length of path component*/
@@ -45,25 +44,12 @@ char *strupr(char *string);
 // _stdcall replacement
 #define _stdcall __attribute__((stdcall))
 
-static inline int _filelength(int fd) {
-  struct stat statbuf;
-
-  if (fstat(fd, &statbuf) != 0) {
-    return -1;
-  }
-
-  return statbuf.st_size;
-}
-
 #ifndef stricmp
 #define stricmp(a, b) strcasecmp(a, b)
 #endif
 
 #define strnicmp(a, b, c) strncasecmp(a, b, c)
-#define _fstat(a, b) fstat(a, b)
-#define _fileno(a) fileno(a)
 #define strcmpi(a, b) stricmp(a, b)
-#define strcmpni(a, b, c) strnicmp(a, b, c)
 #define _chmod(a, b) chmod(a, b)
 #if defined(__aarch64__)
 #define _finite(a) isfinite(a)

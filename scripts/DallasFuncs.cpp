@@ -1217,14 +1217,11 @@ Parameters:
 $$END
 */
 void aShowHUDMessage(const char *format, ...) {
-#if defined(__LINUX__)
-#define _vsnprintf vsnprintf
-#endif
   msafe_struct mstruct;
   va_list args;
 
   va_start(args, format);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1252,7 +1249,7 @@ void aShowHUDMessageObj(const char *format, int objhandle, ...) {
   va_list args;
 
   va_start(args, objhandle);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1283,7 +1280,7 @@ void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ..
   va_list args;
 
   va_start(args, format);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
@@ -1314,7 +1311,7 @@ void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format,
   va_list args;
 
   va_start(args, objhandle);
-  _vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
+  vsnprintf(mstruct.message, sizeof(mstruct.message) - 1, format, args);
   va_end(args);
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
