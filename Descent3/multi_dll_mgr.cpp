@@ -608,7 +608,7 @@ int LoadMultiDLL(const char *name) {
   });
 
   // Make the hog filename
-  lib_name = Base_directory / "online" / name;
+  lib_name = std::filesystem::path("online") / name;
   lib_name.replace_extension(".d3c");
   // Make the dll filename
   dll_name = name;

@@ -148,30 +148,30 @@ extern std::filesystem::path Base_directory;
  */
 void cf_SetBaseDirectory(const std::filesystem::path &base_directory);
 
+/**
+ * Tries to find a relative path inside of Base_directory.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      Base_directory. You don’t have to get the capitalization
+ *                      of relative_path correct, even on macOS and Linux.
+ *
+ * @return An absolute path that’s inside Base_directory.
+ */
+std::filesystem::path cf_LocatePath(const std::filesystem::path &relative_path);
+
 // See if a file is in a hog
 bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
-// Parameters:  libname - the path & filename of the HOG file
-// NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
-//			be a fully-specified path name, or the current directory must not change.
+// Parameters:  libname - path to the HOG file, relative to Base_directory.
+// NOTE:	libname must be valid for the entire execution of the program.  Therefore, Base_directory
+// 			must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const std::filesystem::path &libname);
 
 // Closes a library file.
 // Parameters:  handle: the handle returned by cf_OpenLibrary()
 void cf_CloseLibrary(int handle);
-
-/**
- * Returns fixed case file name to actual case on disk for case-sensitive filesystems (Linux).
- * @param relative_path the fixed case name to map to reality
- * @param starting_dir optional directory to search within (default - current path)
- * @return filename with actual case name or empty path if there no mapping in filesystem
- * @note This function returns only filename without directory part, i.e.
- * cf_FindRealFileNameCaseInsensitive("test/test.txt") will return only "test.txt" on success.
- */
-std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &relative_path,
-                                                         const std::filesystem::path &starting_dir = ".");
 
 /**
  * Add directory path into paths to look in for files. If ext_list is empty,

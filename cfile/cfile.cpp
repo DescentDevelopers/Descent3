@@ -78,6 +78,68 @@ void cf_SetBaseDirectory(const std::filesystem::path &base_directory) {
   Base_directory = base_directory;
 }
 
+std::filesystem::path cf_LocatePathCaseInsensitiveHelper(const std::filesystem::path &relative_path) {
+#ifdef WIN32
+  std::filesystem::path result = Base_directory / relative_path;
+  if (std::filesystem::exists(result)) {
+    return result;
+  } else {
+    return {};
+  }
+#else
+  auto &starting_dir = Base_directory;
+  // Dumb check, maybe there already all ok?
+  if (exists((starting_dir / relative_path))) {
+    return starting_dir / relative_path;
+  }
+
+  std::filesystem::path result, search_path, search_file;
+
+  search_path = starting_dir / relative_path.parent_path();
+  search_file = relative_path.filename();
+
+  // If directory does not exist, nothing to search.
+  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
+    return {};
+  }
+
+
+  // Search component in search_path
+  auto const &it = std::filesystem::directory_iterator(search_path);
+
+  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
+  });
+
+  if (found != end(it)) {
+    // Match, append to result
+    result = found->path();
+    search_path = result;
+  } else {
+    // Component not found, mission failed
+    return {};
+  }
+
+  return result;
+#endif
+}
+
+/**
+ * Tries to find a relative path inside of Base_directory.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      Base_directory. You don’t have to get the capitalization
+ *                      of relative_path correct, even on macOS and Linux.
+ *
+ * @return If the path is found, an absolute path that’s inside
+ *         Base_directory. Otherwise, a path that probably doesn’t exist
+ *         will be returned.
+ */
+std::filesystem::path cf_LocatePath(const std::filesystem::path &relative_path) {
+  ASSERT(("realative_path should be a relative path.", relative_path.is_relative()));
+  return cf_LocatePathCaseInsensitiveHelper(relative_path);
+}
+
 // Generates a cfile error
 void ThrowCFileError(int type, CFILE *file, const char *msg) {
   cfe.read_write = type;
@@ -92,9 +154,9 @@ static void cf_Close();
 static CFILE *open_file_in_lib(const char *filename);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
-// Parameters:  libname - the path & filename of the HOG file
-// NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
-//			be a fully-specified path name, or the current directory must not change.
+// Parameters:  libname - path to the HOG file, relative to Base_directory.
+// NOTE:	libname must be valid for the entire execution of the program.  Therefore, Base_directory
+// 			must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const std::filesystem::path &libname) {
   FILE *fp;
@@ -106,25 +168,7 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
 
   // allocation library structure
   std::shared_ptr<library> lib = std::make_shared<library>();
-
-  // resolve library name
-  std::filesystem::path resolve_dir = libname.parent_path();
-  std::filesystem::path resolve_name = libname;
-
-  if (!resolve_dir.empty()) {
-    resolve_name = libname.filename();
-  }
-
-  std::filesystem::path t_out = cf_FindRealFileNameCaseInsensitive(resolve_name, resolve_dir);
-  if (t_out.empty()) {
-    return 0; // CF_NO_FILE
-  }
-  // re-assemble
-  if (!resolve_dir.empty())
-    lib->name = resolve_dir / t_out;
-  else
-    lib->name = t_out;
-
+  lib->name = cf_LocatePath(libname);
   fp = fopen(lib->name.u8string().c_str(), "rb");
   if (fp == nullptr) {
     return 0; // CF_NO_FILE;
@@ -363,42 +407,6 @@ CFILE *open_file_in_lib(const char *filename) {
   return nullptr;
 }
 
-std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &relative_path,
-                                                         const std::filesystem::path &starting_dir) {
-  // Dumb check, maybe there already all ok?
-  if (exists((starting_dir / relative_path))) {
-    return relative_path.filename();
-  }
-
-  std::filesystem::path result, search_path, search_file;
-
-  search_path = starting_dir / relative_path.parent_path();
-  search_file = relative_path.filename();
-
-  // If directory does not exist, nothing to search.
-  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
-    return {};
-  }
-
-  // Search component in search_path
-  auto const &it = std::filesystem::directory_iterator(search_path);
-
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto &dir_entry) {
-    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
-  });
-
-  if (found != end(it)) {
-    // Match, append to result
-    result = found->path();
-    search_path = result;
-  } else {
-    // Component not found, mission failed
-    return {};
-  }
-
-  return result.filename();
-}
-
 // look for the file in the specified directory
 static CFILE *open_file_in_directory(const std::filesystem::path &filename, const char *mode,
                                      const std::filesystem::path &directory);
@@ -413,9 +421,12 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   if (std::filesystem::is_directory(directory)) {
     // Make a full path
     using_filename = directory / filename;
-  } else {
-    // no directory specified, so just use filename passed
+  } else if (filename.is_absolute()) {
+    // no directory specified, and filename is an absolute path
     using_filename = filename;
+  } else {
+    // no directory specified, and filename is a relative path
+    using_filename = cf_LocatePath(filename);
   }
 
   // set read or write mode
@@ -426,34 +437,8 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   fp = fopen(using_filename.u8string().c_str(), tmode);
 
   if (!fp) {
-#if defined(POSIX)
-    // If we tried to open file for reading, assume there maybe case-sensitive files
-    if (tmode[0] == 'r') {
-      // Try different cases of the filename
-      using_filename = cf_FindRealFileNameCaseInsensitive(filename, directory);
-      if (using_filename.empty()) {
-        // just give up
-        return nullptr;
-      }
-
-      if (std::filesystem::is_directory(directory)) {
-        // Make a full path
-        using_filename = directory / using_filename;
-      }
-
-      fp = fopen(using_filename.u8string().c_str(), tmode);
-      if (!fp) {
-        // no dice
-        return nullptr;
-      }
-    } else {
-      // Error on writing file
-      return nullptr;
-    }
-#else
-    // We on incase-sensitive filesystem, no file means no file.
+    // File not found
     return nullptr;
-#endif
   } else {
     using_filename = filename;
   }

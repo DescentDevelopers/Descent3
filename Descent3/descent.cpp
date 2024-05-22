@@ -490,7 +490,7 @@ void Descent3() {
         };
 
         for (auto const &intro : intros) {
-          PlayMovie(Base_directory / "movies" / intro);
+          PlayMovie(intro);
         }
       }
 

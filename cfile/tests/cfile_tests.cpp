@@ -76,55 +76,41 @@ TEST(D3, CFileLibrary) {
   EXPECT_EQ(file_handle, nullptr);
 }
 
-TEST(D3, CFileCaseSensitiveSearchNew) {
+TEST(D3, CFileLocatePath) {
   const std::vector<std::filesystem::path> test_paths = {
       std::filesystem::path("TestDir") / "CamelCase.txt",
       std::filesystem::path("TestDir") / "lowercase.txt",
       std::filesystem::path("TestDir") / "UPPERCASE.TXT",
   };
 
-  std::filesystem::path filename_new = cf_FindRealFileNameCaseInsensitive("no-exist-file.txt", "no-exist-dir");
+  std::filesystem::path filename_new = cf_LocatePath(std::filesystem::path("no-exist-dir") / "no-exist-file.txt");
   EXPECT_TRUE(filename_new.empty());
 
-  filename_new = cf_FindRealFileNameCaseInsensitive("no-exist-file.txt");
+  filename_new = cf_LocatePath("no-exist-file.txt");
   EXPECT_TRUE(filename_new.empty());
 
   auto cwd = std::filesystem::current_path();
 
   for (auto const &item : test_paths) {
     auto directory = cwd / item.parent_path();
+    cf_SetBaseDirectory(directory);
     std::filesystem::path file = item.filename();
     std::string file_lc = item.filename().u8string();
     std::transform(file_lc.begin(), file_lc.end(), file_lc.begin(), ::tolower);
     std::string file_uc = item.filename().u8string();
     std::transform(file_uc.begin(), file_uc.end(), file_uc.begin(), ::toupper);
 
-    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_lc, directory).empty());
-    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_uc, directory).empty());
+    EXPECT_FALSE(cf_LocatePath(file_lc).empty());
+    EXPECT_FALSE(cf_LocatePath(file_uc).empty());
 
-    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(directory / file_lc).empty());
-    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(directory / file_uc).empty());
-
-    // Now try case-insensitive path with non-existing directory in search.
+    // Now try case-insensitive path with non-existing path.
     // Expected not found on case-sensitive fs.
     file_lc = item.u8string();
     std::transform(file_lc.begin(), file_lc.end(), file_lc.begin(), ::tolower);
     file_uc = item.u8string();
     std::transform(file_uc.begin(), file_uc.end(), file_uc.begin(), ::toupper);
 
-    if (std::filesystem::is_regular_file(file_lc)) {
-      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_lc, cwd).empty());
-      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_lc).empty());
-    } else {
-      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_lc, cwd).empty());
-      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_lc).empty());
-    }
-    if (std::filesystem::is_regular_file(file_uc)) {
-      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_uc, cwd).empty());
-      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_uc).empty());
-    } else {
-      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_uc, cwd).empty());
-      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_uc).empty());
-    }
+    EXPECT_TRUE(cf_LocatePath(file_lc).empty());
+    EXPECT_TRUE(cf_LocatePath(file_uc).empty());
   }
 }
