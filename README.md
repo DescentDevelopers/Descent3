@@ -73,22 +73,23 @@ The milestone needs testing on all platforms. Please report issues when found.
 3. If your version of Descent 3 is older than v1.4, then [update it to v1.4](http://descent3.com/downloads.php).
 4. Create a new folder named `D3-open-source`.
 5. Copy the following files from your installation of Descent 3 to `D3-open-source`:
-    - All `.hog` files, except for `d3-linux.hog`
+    - All `.hog` files
     - The `missions` folder
     - _(Optional)_ All `.pld` files
     - _(Optional)_ The `demo` folder
     - _(Optional)_ The `movies` folder
 6. Create the following folders in `D3-open-source`:
-    - `cache/`
     - `custom/`
     - `custom/cache/`
 7. Obtain new Descent 3 engine files:
     - If you want to use pre-built binaries, then download one of the artifacts from our latest CI run. You can find a list of CI runs [here](https://github.com/DescentDevelopers/Descent3/actions/workflows/build.yml?query=branch%3Amain).
     - If you want to build the engine files yourself, the follow [these instructions](#building). Once you build the engine files, they’ll be put in `builds/<platform>/Descent3/<build-type>/`. For example, if you’re using Linux and you create a “Release” build, then the files will be located at `builds/linux/Descent3/Release`.
-8. Copy all of the new engine files into `D3-open-source`.
+8. Copy all of the new engine files into `D3-open-source` and overwrite any conflicts.
 9. Run the game:
     - On Windows, run `D3-open-source\Descent3.exe`.
     - On other platforms, run `D3-open-source/Descent3`.
+10. Special notes:
+    - D3 Open Source compiles level scripts in their own hogfiles. Make sure you copy and overwrite `d3-{platform}.hog`.
 
 ## Building
 Build steps below assume you have already cloned the repository and entered it locally.
