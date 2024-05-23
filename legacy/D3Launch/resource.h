@@ -285,7 +285,7 @@
 #define IDC_MIXER_DS3D                  1037
 #define IDC_SLOW_CONNECTION             1038
 #define IDC_33K_CONNECTION              1038
-#define IDC_MIXER_AUREAL                1038
+#define IDC_MIXER_AUREAL                1038  // Unused
 #define IDC_56K_CONNECTION              1039
 #define IDC_BTN_PXO                     1039
 #define IDC_CABLE_CONNECTION            1040

@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <windows.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -108,17 +109,7 @@ static int m_resource_language = 0;
 #define VENDOR_NEXGEN 5
 #define VENDOR_UNKNOWN 6
 
-typedef struct {
-  unsigned char family, model, mask;
-  int CPUid_level;
-  int vendor;
-  unsigned int capability;
-  char vendor_id[16];
-} cpuinfo;
-
 int no_debug_dialog = 0;
-
-void getcpudata(cpuinfo *info);
 
 //	---------------------------------------------------------------------------
 //	Define our operating system specific extensions to the gameos system
@@ -151,17 +142,17 @@ public:
     final_shutdown = true;
   };
 
-  void run() { Descent3(); };
+  void run() { Descent3(); }
 
   //	returns 0 if we pass to default window handler.
-  virtual int WndProc(HWnd hwnd, unsigned msg, unsigned wParam, long lParam) {
+  virtual LResult WndProc(HWnd hwnd, unsigned msg, WParam wParam, LParam lParam) override {
     if (final_shutdown) {
       return oeWin32Application::WndProc(hwnd, msg, wParam, lParam);
     }
 
     switch (msg) {
     case WM_ACTIVATEAPP: {
-      if (wParam == false) {
+      if (wParam == FALSE) {
         this->deactivate();
 
         if (!shutdown) {
@@ -207,8 +198,6 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
   lstrcat(m_Basepath, "\\Descent3Demo2");
 #elif defined(OEM_V3)
   lstrcat(m_Basepath, "\\Descent3_OEM_V3");
-#elif defined(OEM_AUREAL2)
-  lstrcat(m_Basepath, "\\Descent3_OEM_A2");
 #elif defined(OEM_KATMAI)
   lstrcat(m_Basepath, "\\Descent3_OEM_KM");
 #elif defined(OEM)
@@ -371,46 +360,10 @@ inline void MessageBoxStr(int id) {
   MessageBox(NULL, txt, "Outrage Error", MB_OK);
 }
 
-// Returns true if this machine can support the CPUID instruction
-bool SupportsCPUID() {
-  bool enabled = true;
-
-  __try {
-
-    _asm {
-			pushad
-			__emit 0x0f // CPUID
-			__emit 0xa2 // CPUID
-			popad
-    }
-  } __except (1) {
-    enabled = false;
-  }
-
-  return enabled;
-}
-
 // Returns true if this machine can support katmai instructions
 bool SupportsKatmai() {
   // Note: we don't do anything Katmai specific -- just always enable it.
   return true;
-  /*
-  cpuinfo info;
-  getcpudata(&info);
-
-  char buffer[584];
-  sprintf(buffer,	"Vendor ID\t: %s\n"
-                                  "CPU Family\t: %c\n"
-                                  "Model\t\t: %d\n"
-                                  "Is Katmai\t: %s (Really: %s)\n",
-                                  info.vendor_id[0] ? info.vendor_id : "Unknown",
-                                  info.family + '0',
-                                  info.model,
-                                  (info.capability&0x02000000)?"Yes":"No",
-                                  ((info.capability&0x02000000)&&(info.vendor==VENDOR_INTEL) )?"Yes":"No");
-  mprintf((0,buffer));
-  return((info.capability&0x02000000)&&(info.vendor==VENDOR_INTEL) )?true:false;
-  */
 }
 
 // DirectX check, NT 4.0, 5.0, Win95 check.
@@ -494,88 +447,6 @@ bool Win32SystemCheck(HINSTANCE hInst) {
 
 end_win32_check:
   return retval;
-}
-
-void getcpudata(cpuinfo *info) {
-  unsigned char family, model, mask;
-  int level;
-  unsigned int capability;
-  unsigned int a, b, c;
-
-  if (SupportsCPUID()) {
-    _asm {
-			pushad;
-
-			xor eax,eax; // call CPUID with 0 -> return vendor ID
-
-			__emit 0x0f; // CPUID
-			__emit 0xa2; // CPUID
-
-			mov level,eax; // save CPUID level
-			mov a,ebx; // lo 4 chars
-			mov b,edx; // next 4 chars
-			mov c,ecx; // last 4 chars
-
-			or eax,eax; // do we have processor info as well?
-			je noinfo;
-
-			mov eax,1; // Use the CPUID instruction to get CPU type
-			__emit 0x0f; // CPUID
-			__emit 0xa2; // CPUID
-
-			mov cl,al; // save reg for future use
-			and ah,15; // mask processor family
-			mov family,ah;
-			and al,240; // mask model
-			shr al,4;
-			mov model,al;
-			and cl,15; // mask mask revision
-			mov mask,cl;
-			mov capability,edx;
-
-		noinfo:
-			popad;
-    }
-
-    // fill in the struct
-    memset(info->vendor_id, 0, 16);
-    memcpy(&info->vendor_id[0], &a, 4);
-    memcpy(&info->vendor_id[4], &b, 4);
-    memcpy(&info->vendor_id[8], &c, 4);
-    info->vendor_id[15] = '\0';
-
-    info->capability = capability;
-    info->CPUid_level = level;
-    info->family = family;
-    info->mask = mask;
-    info->model = model;
-
-    if (!strcmp(info->vendor_id, "GenuineIntel"))
-      info->vendor = VENDOR_INTEL;
-    else if (!strcmp(info->vendor_id, "AuthenticAMD"))
-      info->vendor = VENDOR_AMD;
-    else if (!strcmp(info->vendor_id, "CyrixInstead"))
-      info->vendor = VENDOR_CYRIX;
-    else if (!strcmp(info->vendor_id, "UMC UMC UMC "))
-      info->vendor = VENDOR_UMC;
-    else if (!strcmp(info->vendor_id, "CentaurHauls"))
-      info->vendor = VENDOR_CENTAUR;
-    else if (!strcmp(info->vendor_id, "NexGenDriven"))
-      info->vendor = VENDOR_NEXGEN;
-    else {
-      info->vendor = VENDOR_UNKNOWN;
-      info->vendor_id[0] = '\0';
-    }
-
-  } else {
-    info->capability = 0;
-    info->CPUid_level = 0;
-    info->family = 0;
-    info->mask = 0;
-    info->model = 0;
-    info->vendor_id[0] = '\0';
-    info->vendor = VENDOR_UNKNOWN;
-  }
 }
 
 //	---------------------------------------------------------------------------

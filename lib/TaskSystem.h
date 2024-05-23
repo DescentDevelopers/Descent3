@@ -50,13 +50,9 @@ typedef enum tTaskPriority { TASKPRIORITY_HIGHEST, TASKPRIORITY_NORMAL, TASKPRIO
 //	handle multitasking differently.
 
 class osEvent {
-#if defined(DD_ACCESS_RING)
 public:
-#else
-private:
-#endif // DD_ACCESS_RING_0
 #if defined(WIN32)
-  unsigned event_os_handle; // this is the Win32 Event Handle
+  void *event_os_handle;    // this is the Win32 Event Handle
 #endif                      // WIN32
 
 public:
@@ -71,15 +67,10 @@ public:
 };
 
 class osTask {
-#if defined(DD_ACCESS_RING)
 public:
-#else
-private:
-#endif // DD_ACCESS_RING_0
 #if defined(WIN32)
-  unsigned task_os_handle; // This is the Win32 EventHandle
-  unsigned task_os_id;     // Win32 Thread ID
-#endif                     // WIN32
+  void *task_os_handle;     // This is the Win32 Thread Handle
+#endif                      // WIN32
 
 public:
   osTask(unsigned (*func)(void *), tTaskPriority priority, void *parm = NULL);

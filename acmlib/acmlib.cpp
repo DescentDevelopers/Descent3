@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 AudioDecoder *Create_AudioDecoder(ReadFunction *reader, void *data, unsigned *pChannels, unsigned *pSampleRate,
-                                  long *pSampleCount) {
+                                  int32_t *pSampleCount) {
   return (AudioDecoder *)mem_malloc(sizeof(AudioDecoder));
 }
 

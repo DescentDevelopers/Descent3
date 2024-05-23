@@ -2982,18 +2982,17 @@ void MultiDoDoneObjects(ubyte *data) {
   // Skip header stuff
   SKIP_HEADER(data, &count);
   // Get the salt.
-  MD5 *playermd5 = Level_md5->Clone();
+  MD5 playermd5(*Level_md5);
   // Get the salt value from the server.
   int salt = MultiGetInt(data, &count);
   // process the salt through the md5
-  playermd5->MD5Update(salt);
+  playermd5.update(salt);
   // process the ships through the md5
   for (int i = 0; i < MAX_SHIPS; i++)
     if (Ships[i].used)
-      MultiProcessShipChecksum(playermd5, i);
+      MultiProcessShipChecksum(&playermd5, i);
   // save the digest value to send to the server
-  playermd5->MD5Final(NetPlayers[Player_num].digest);
-  MD5::Destroy(playermd5);
+  playermd5.digest(NetPlayers[Player_num].digest);
 
   NetPlayers[Player_num].sequence = NETSEQ_REQUEST_WORLD;
 

@@ -43,14 +43,14 @@
 #define END_OF_STREAM 256
 
 int CZip::hb_CompressFile(tVirtualFile *input, BITFILE *output) {
-  ulong *counts;
+  uint32_t *counts;
   tH0Node *nodes;
   tH0Code *codes;
   int root_node;
 
   int original_pos = VFtell(output->file);
 
-  counts = (ulong *)malloc(256 * sizeof(ulong));
+  counts = (uint32_t *)malloc(256 * sizeof(uint32_t));
   if (!counts)
     return -1;
   if ((nodes = (tH0Node *)malloc(514 * sizeof(tH0Node))) == NULL) {
@@ -63,7 +63,7 @@ int CZip::hb_CompressFile(tVirtualFile *input, BITFILE *output) {
     return -1;
   }
 
-  memset(counts, 0, 256 * sizeof(ulong));
+  memset(counts, 0, 256 * sizeof(uint32_t));
   memset(nodes, 0, 514 * sizeof(tH0Node));
   memset(codes, 0, 257 * sizeof(tH0Code));
 
@@ -169,8 +169,8 @@ void CZip::hb_input_counts(BITFILE *input, tH0Node *nodes) {
   nodes[END_OF_STREAM].count = 1;
 }
 
-void CZip::hb_count_bytes(tVirtualFile *input, ulong *counts) {
-  long input_marker;
+void CZip::hb_count_bytes(tVirtualFile *input, uint32_t *counts) {
+  int32_t input_marker;
   int c;
 
   input_marker = VFtell(input);
@@ -179,8 +179,8 @@ void CZip::hb_count_bytes(tVirtualFile *input, ulong *counts) {
   VFseek(input, input_marker, SEEK_SET);
 }
 
-void CZip::hb_scale_counts(ulong *counts, tH0Node *nodes) {
-  ulong max_count;
+void CZip::hb_scale_counts(uint32_t *counts, tH0Node *nodes) {
+  uint32_t max_count;
   int i;
 
   max_count = 0;
@@ -251,8 +251,8 @@ void CZip::hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint code_so_
 void CZip::hb_compress_data(tVirtualFile *input, BITFILE *output, tH0Code *codes) {
   int c;
   while ((c = VFgetc(input)) != EOF)
-    OutputBits(output, (ulong)codes[c].code, codes[c].code_bits);
-  OutputBits(output, (ulong)codes[END_OF_STREAM].code, codes[END_OF_STREAM].code_bits);
+    OutputBits(output, (uint32_t)codes[c].code, codes[c].code_bits);
+  OutputBits(output, (uint32_t)codes[END_OF_STREAM].code, codes[END_OF_STREAM].code_bits);
 }
 
 void CZip::hb_expand_data(BITFILE *input, tVirtualFile *output, tH0Node *nodes, int root_node) {

@@ -58,15 +58,17 @@
  */
 
 #include "ddio.h"
-#include "ddio_lnx.h"
 #include "pserror.h"
 #include "mem.h"
-#include "lnxfix.h"
+#include "linux_fix.h"
+
+#if MACOSX
+#include <cctype>
+#endif
 
 #include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -76,7 +78,6 @@
 #include <errno.h>
 #include <signal.h>
 #include <dirent.h>
-#include <ctype.h>
 
 #define _MAX_DIR 256
 

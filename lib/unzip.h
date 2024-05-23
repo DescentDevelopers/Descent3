@@ -38,6 +38,7 @@
 #ifndef __UNZIP_H
 #define __UNZIP_H
 
+#include <cstdint>
 #include <stdio.h>
 #include "pstypes.h"
 
@@ -120,7 +121,7 @@ private:
   bool m_open;
   char *m_zip;   // zip name
   FILE *m_fp;    // zip handler
-  long m_length; // length of zip file
+  int32_t m_length; // length of zip file
 
   char *m_ecd;           // end_of_cent_dir data
   unsigned m_ecd_length; // end_of_cent_dir length

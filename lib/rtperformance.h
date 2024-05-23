@@ -34,7 +34,7 @@
 // use INT64 for 64bit integers
 #ifdef USE_RTP
 #if defined(__LINUX__)
-#define INT64 long long
+#define INT64 int64_t
 #else
 #define INT64 signed __int64
 #endif

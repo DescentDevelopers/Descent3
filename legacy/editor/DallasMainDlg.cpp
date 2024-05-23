@@ -9352,7 +9352,7 @@ void CDallasMainDlg::ClearCustomScriptStorage(void)
 // Scans the file for the custom script block and count how many lines are in it
 int CDallasMainDlg::CountCustomScriptLines(CFILE *infile)
 {
-	long int start_pos;
+  int32_t start_pos;
 	int line_count;
 	char linebuf[2048];
 	bool done;

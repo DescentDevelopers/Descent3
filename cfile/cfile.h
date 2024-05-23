@@ -1,4 +1,22 @@
 /*
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+--- HISTORICAL COMMENTS FOLLOW ---
+
  * $Logfile: /DescentIII/Main/lib/CFILE.H $
  * $Revision: 16 $
  * $Date: 10/18/99 1:27p $
@@ -86,13 +104,13 @@ struct library;
 
 // The structure for a CFILE
 typedef struct CFILE {
-  char *name;     // pointer to filename
-  FILE *file;     // the file itself (on disk) or the HOG
-  int lib_handle; // the handle of the library, or -1
-  int size;       // length of this file
-  int lib_offset; // offset into HOG of start of file, or 0 if on disk
-  int position;   // current position in file
-  int flags;      // see values below
+  char *name;          // pointer to filename
+  FILE *file;          // the file itself (on disk) or the HOG
+  int32_t lib_handle;  // the handle of the library, or -1
+  uint32_t size;       // length of this file
+  uint32_t lib_offset; // offset into HOG of start of file, or 0 if on disk
+  uint32_t position;   // current position in file
+  uint32_t flags;      // see values below
 } CFILE;
 
 // Defines for cfile_error
@@ -103,9 +121,9 @@ enum CFileError {
 
 // The structure thrown by a cfile error
 typedef struct {
-  int read_write; // reading or writing?  See defines.
-  const char *msg;      // the error message
-  CFILE *file;    // the file that got the error
+  int read_write;  // reading or writing?  See defines.
+  const char *msg; // the error message
+  CFILE *file;     // the file that got the error
 } cfile_error;
 
 // Flags for CFILE struct
@@ -170,7 +188,7 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle);
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
-int cfilelength(CFILE *cfp);
+uint32_t cfilelength(CFILE *cfp);
 
 // Closes an open CFILE.
 // Parameters:  cfile - the file pointer returned by cfopen()
@@ -181,10 +199,10 @@ void cfclose(CFILE *cfp);
 int cfgetc(CFILE *cfp);
 
 // Just like stdio fseek(), except works on a CFILE
-int cfseek(CFILE *cfp, long int offset, int where);
+int cfseek(CFILE *cfp, long offset, int where);
 
 // Just like stdio ftell(), except works on a CFILE
-int cftell(CFILE *cfp);
+long cftell(CFILE *cfp);
 
 // Returns true if at EOF
 int cfeof(CFILE *cfp);
@@ -275,11 +293,11 @@ void cf_WriteByte(CFILE *cfp, int8_t b);
 
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteFloat(CFILE *cfp, float_t f);
+void cf_WriteFloat(CFILE *cfp, float f);
 
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteDouble(CFILE *cfp, double_t d);
+void cf_WriteDouble(CFILE *cfp, double d);
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write

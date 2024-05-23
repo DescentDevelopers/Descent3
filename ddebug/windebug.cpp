@@ -195,6 +195,7 @@
 #include <windows.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -334,8 +335,10 @@ int Debug_MessageBox(int type, const char *title, const char *str) {
 ///////////////////////////////////////////////////////////////////////////////
 //	This CODE SHOULD ONLY BE USED IN A DEBUGGABLE VERSION.
 
+#ifndef _WIN64
 #define SHOW_CALL_STACK // Uncomment SHOW_CALL_STACK to show the call stack in terminal cases
 // #define DUMPRAM
+#endif // _WIN64
 
 #ifdef SHOW_CALL_STACK
 
@@ -1052,7 +1055,7 @@ static void PrintFileTime(char *sztime, FILETIME ftime) {
 
 static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle) {
   char FmtString[2000];
-  unsigned long bytesout;
+  DWORD bytesout;
   char ModName[MAX_PATH];
   __try {
     if (GetModuleFileName(ModuleHandle, ModName, sizeof(ModName)) > 0) {
@@ -1097,7 +1100,7 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle) {
 
 static void RecordModuleList(HANDLE LogFile) {
   char FmtString[2000];
-  unsigned long bytesout;
+  DWORD bytesout;
   wsprintf(FmtString, "\r\n"
                       "Modules:\r\n");
   WriteFile(LogFile, FmtString, lstrlen(FmtString), &bytesout, 0);
@@ -1134,7 +1137,7 @@ static void RecordModuleList(HANDLE LogFile) {
 
 static void RecordSystemInformation(HANDLE LogFile) {
   char FmtString[2000];
-  unsigned long bytesout;
+  DWORD bytesout;
   FILETIME CurrentTime;
   GetSystemTimeAsFileTime(&CurrentTime);
   char TimeBuffer[100];
@@ -1187,6 +1190,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
     return EXCEPTION_CONTINUE_SEARCH;
   BeenHere = true;
 
+#ifndef _WIN64
   PEXCEPTION_RECORD Exception = data->ExceptionRecord;
   PCONTEXT Context = data->ContextRecord;
   const char *desc = GetExceptionDescription(Exception->ExceptionCode);
@@ -1215,16 +1219,16 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
     char *p = Debug_DumpInfo();
     lstrcpy(callstack, p);
 
-    unsigned long NumBytes;
+    DWORD NumBytes;
     SetFilePointer(LogFile, 0, 0, FILE_END);
 
     WriteFile(LogFile, topmsg, lstrlen(topmsg), &NumBytes, 0);
     WriteFile(LogFile, FORMATCRLF, lstrlen(FORMATCRLF), &NumBytes, 0);
 
     char Username[100];
-    unsigned long unamelen = 99;
+    DWORD unamelen = 99;
     char Machinename[200];
-    unsigned long cnamelen = 199;
+    DWORD cnamelen = 199;
     GetUserName(Username, &unamelen);
     GetComputerName(Machinename, &cnamelen);
     wsprintf(callstack, "Username: %s\r\nMachineName: %s\r\n", Username, Machinename);
@@ -1274,6 +1278,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
 
   if ((!Debug_break) && (!no_debug_dialog))
     Debug_ErrorBox(OSMBOX_OK, "Error", topmsg, bottommsg);
+#endif // _WIN64
 
   if (no_debug_dialog)
     exit(0);

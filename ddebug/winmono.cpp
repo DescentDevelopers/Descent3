@@ -127,7 +127,6 @@ SOCKADDR_IN tcp_log_addr;
 char tcp_log_buffer[MAX_TCPLOG_LEN];
 
 void nw_InitTCPLogging(char *ip, unsigned short port) {
-  unsigned long argp = 1;
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {
@@ -142,7 +141,8 @@ void nw_InitTCPLogging(char *ip, unsigned short port) {
   if (SOCKET_ERROR == bind(tcp_log_sock, (SOCKADDR *)&tcp_log_addr, sizeof(sockaddr))) {
     return;
   }
-  ioctlsocket(tcp_log_sock, FIONBIO, &argp);
+  unsigned long arg = 1;
+  ioctlsocket(tcp_log_sock, FIONBIO, &arg);
 
   tcp_log_addr.sin_addr.s_addr = inet_addr(ip);
   tcp_log_addr.sin_port = htons(port);
@@ -501,7 +501,9 @@ void con_mputc(int n, char c) {
 }
 
 void copy_row(int nwords, short *src, short *dest1, short *dest2) {
-
+// TODO: disabled for now to get the x64 build compiling
+// do we even need all this old 'mono' stuff anymore?
+#ifndef _WIN64
   __asm {
 		mov ecx,nwords
 		mov esi,src
@@ -526,6 +528,7 @@ void copy_row(int nwords, short *src, short *dest1, short *dest2) {
 		loop		rowloop				
 		done:
   }
+#endif // _WIN64
 }
 
 void con_scroll(int n) {

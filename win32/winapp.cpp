@@ -191,17 +191,17 @@ const uint kWindowStyle_Console = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_B
 
         We also allow the option of setting these handles from outside the Application object.
 */
-extern LRESULT WINAPI MyConProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam);
+extern LRESULT WINAPI MyConProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern void con_Defer();
 
 bool oeWin32Application::os_initialized = false;
 bool oeWin32Application::first_time = true;
 
 //	this is the app's window proc.
-LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam);
+LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 //	Creates the window handle and instance
-oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstance hinst) : oeApplication() {
+oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstance hinst) : oeApplication(), m_MsgFn{} {
   WNDCLASS wc;
   RECT rect;
 
@@ -531,7 +531,7 @@ tWin32OS oeWin32Application::version(int *major, int *minor, int *build, char *s
 }
 
 //	This Window Procedure is called from the global WindowProc.
-int oeWin32Application::WndProc(HWnd hwnd, unsigned msg, unsigned wParam, long lParam) {
+LResult oeWin32Application::WndProc(HWnd hwnd, unsigned msg, WParam wParam, LParam lParam) {
   switch (msg) {
   case WM_ACTIVATEAPP:
     m_AppActive = wParam ? true : false;
@@ -539,23 +539,20 @@ int oeWin32Application::WndProc(HWnd hwnd, unsigned msg, unsigned wParam, long l
     break;
   }
 
-  return DefWindowProc((HWND)hwnd, (UINT)msg, (UINT)wParam, (LPARAM)lParam);
+  return DefWindowProc((HWND)hwnd, (UINT)msg, (WPARAM)wParam, (LPARAM)lParam);
 }
 
 //	These functions allow you to add message handlers.
 bool oeWin32Application::add_handler(unsigned msg, tOEWin32MsgCallback fn) {
-  int i = 0;
-
   //	search for redundant callbacks.
-  for (i = 0; i < MAX_MSG_FUNCTIONS; i++) {
-    if (m_MsgFn[i].msg == msg && m_MsgFn[i].fn == fn)
+  for (const MessageFunction &rMsgFn : m_MsgFn)
+    if (rMsgFn.msg == msg && rMsgFn.fn == fn)
       return true;
-  }
 
-  for (i = 0; i < MAX_MSG_FUNCTIONS; i++) {
-    if (m_MsgFn[i].fn == NULL) {
-      m_MsgFn[i].msg = msg;
-      m_MsgFn[i].fn = fn;
+  for (MessageFunction &rMsgFn : m_MsgFn) {
+    if (rMsgFn.fn == nullptr) {
+      rMsgFn.msg = msg;
+      rMsgFn.fn = fn;
       return true;
     }
   }
@@ -567,14 +564,12 @@ bool oeWin32Application::add_handler(unsigned msg, tOEWin32MsgCallback fn) {
 
 // These functions remove a handler
 bool oeWin32Application::remove_handler(unsigned msg, tOEWin32MsgCallback fn) {
-  int i;
-
   if (!fn)
     DebugBreak();
 
-  for (i = 0; i < MAX_MSG_FUNCTIONS; i++) {
-    if (msg == m_MsgFn[i].msg && m_MsgFn[i].fn == fn) {
-      m_MsgFn[i].fn = NULL;
+  for (MessageFunction &rMsgFn : m_MsgFn) {
+    if (msg == rMsgFn.msg && rMsgFn.fn == fn) {
+      rMsgFn.fn = nullptr;
       return true;
     }
   }
@@ -583,24 +578,20 @@ bool oeWin32Application::remove_handler(unsigned msg, tOEWin32MsgCallback fn) {
 }
 
 // Run handler for message (added by add_handler)
-bool oeWin32Application::run_handler(HWnd wnd, unsigned msg, unsigned wParam, long lParam) {
-  int j;
+bool oeWin32Application::run_handler(HWnd wnd, unsigned msg, WParam wParam, LParam lParam) {
   //	run user-defined message handlers
   // the guess here is that any callback that returns a 0, will not want to handle the window's WndProc function.
-  for (j = 0; j < MAX_MSG_FUNCTIONS; j++)
-    if (msg == m_MsgFn[j].msg && m_MsgFn[j].fn) {
-      if (!(*m_MsgFn[j].fn)(wnd, msg, wParam, lParam))
+  for (const MessageFunction &rMsgFn : m_MsgFn)
+    if (msg == rMsgFn.msg && rMsgFn.fn)
+      if (!(*rMsgFn.fn)(wnd, msg, wParam, lParam))
         return false;
-    }
 
   return true;
 }
 
 void oeWin32Application::clear_handlers() {
-  int j;
-
-  for (j = 0; j < MAX_MSG_FUNCTIONS; j++)
-    m_MsgFn[j].fn = NULL;
+  for (MessageFunction &rMsgFn : m_MsgFn)
+    rMsgFn.fn = nullptr;
 }
 
 void oeWin32Application::delay(float secs) {
@@ -622,7 +613,7 @@ void oeWin32Application::delay(float secs) {
   } while (result == DEFER_PROCESS_ACTIVE || result == DEFER_PROCESS_INPUT_IDLE);
 }
 
-LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam) {
+LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   int i = -1;
   bool force_default = false;
 
@@ -708,11 +699,11 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam) {
   if (i == -1 || winapp == NULL || force_default)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 
-  if (!winapp->run_handler((HWnd)hWnd, (unsigned)msg, (unsigned)wParam, (long)lParam))
+  if (!winapp->run_handler((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam))
     return 0;
 
   // run user defined window procedure.
-  return (LRESULT)winapp->WndProc((HWnd)hWnd, (unsigned)msg, (unsigned)wParam, (long)lParam);
+  return (LRESULT)winapp->WndProc((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam);
 }
 
 // detect if application can handle what we want of it.

@@ -62,7 +62,7 @@ extern bool Directplay_lobby_launched_game;
 extern DPSESSIONDESC2 Directplay_sessions[MAX_DP_GAMES];
 extern int Num_directplay_games;
 
-extern unsigned long Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
+extern uint32_t Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
 
 // This is called when a game is started, so Directplay will be happy
 int dp_StartGame(char *gamename);
@@ -95,7 +95,7 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session);
 // the amount of buffer space you need
 // Otherwise, it will fill in the buffer with a bunch of null delimited
 // strings, with a double null at the end.
-int dp_GetModemChoices(char *buffer, unsigned long *size);
+int dp_GetModemChoices(char *buffer, LPDWORD size);
 
 // Register a DirectPlay lobby aware application
 // Use this so a directplay lobby provider such as zone.com can launch the game

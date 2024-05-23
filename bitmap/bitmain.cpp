@@ -322,7 +322,7 @@
 #define BM_FILETYPE_IFF 3
 int Num_of_bitmaps = 0;
 bms_bitmap GameBitmaps[MAX_BITMAPS];
-ulong Bitmap_memory_used = 0;
+uint32_t Bitmap_memory_used = 0;
 ubyte Bitmaps_initted = 0;
 /* modify these lines to establish data type */
 typedef bms_bitmap *bm_T;      /* type of item to be stored */

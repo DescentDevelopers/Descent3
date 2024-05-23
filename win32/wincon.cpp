@@ -67,7 +67,6 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include "DDAccess.h"
 #include "Application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
@@ -164,7 +163,7 @@ void con_Defer() {
 }
 
 // console window.
-LRESULT WINAPI MyConProc(HWND hWnd, UINT msg, UINT wParam, LPARAM lParam) {
+LRESULT WINAPI MyConProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   HDC hdc;
 
   switch (msg) {

@@ -488,8 +488,8 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
     return false;
   }
 
-  long bytes_per_buf = (SAMPLES_PER_STREAM_BUF * granularity);
-  long filelen = (sample_count / channels) * granularity;
+  int32_t bytes_per_buf = (SAMPLES_PER_STREAM_BUF * granularity);
+  int32_t filelen = (sample_count / channels) * granularity;
   int nbuffers = filelen / bytes_per_buf;
   if (nbuffers >= 0 && nbuffers <= 1) {
     if (filelen > 0) {

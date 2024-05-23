@@ -365,7 +365,7 @@ network_protocol NetworkProtocol = NP_NONE;
 int Sockets_initted = 0;
 int Network_initted = 0;
 
-unsigned long Net_fixed_ip = INADDR_NONE;
+uint32_t Net_fixed_ip = INADDR_NONE;
 // sockets for IPX and TCP
 
 SOCKET TCP_socket;
@@ -827,7 +827,7 @@ void nw_GetMyAddress(network_address *addr) {
 
 // Returns internet address format from string address format...ie "204.243.217.14"
 // turns into 1414829242
-unsigned long nw_GetHostAddressFromNumbers(char *str) {
+uint32_t nw_GetHostAddressFromNumbers(char *str) {
   // ASSERT (NetworkProtocol==NP_TCP);
 
   return inet_addr(str);
@@ -975,7 +975,7 @@ int nw_ReceiveReliable(SOCKET socketid, ubyte *buffer, int max_len) {
     dp_DirectPlayDispatch();
 
     // try and get a free buffer and return its size
-    if (nw_psnet_buffer_get_next_by_dpid((ubyte *)buffer, &max_len, socketid)) {
+    if (nw_psnet_buffer_get_next_by_packet_id((ubyte *)buffer, &max_len, socketid)) {
       return max_len;
     }
     return 0;
@@ -1879,7 +1879,7 @@ void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from) {
 
 // MTS: only used in this file
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpid) {
+int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t packet_id) {
   int idx;
   int found_buf = 0;
 
@@ -1890,10 +1890,10 @@ int nw_psnet_buffer_get_next_by_dpid(ubyte *data, int *length, unsigned long dpi
 
   // search until we find the lowest packet index id#
   for (idx = 0; idx < MAX_PACKET_BUFFERS; idx++) {
-    unsigned long *thisid;
-    thisid = (unsigned long *)&Psnet_buffers[idx].from_addr.address;
+    uint32_t *thisid;
+    thisid = (uint32_t *)&Psnet_buffers[idx].from_addr.address;
     // if we found the buffer
-    if ((Psnet_buffers[idx].sequence_number == Psnet_lowest_id) && (dpid == *thisid)) {
+    if ((Psnet_buffers[idx].sequence_number == Psnet_lowest_id) && (packet_id == *thisid)) {
       found_buf = 1;
       break;
     }
@@ -1957,10 +1957,10 @@ int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from) {
 // functions to get the status of a RAS connection
 unsigned int psnet_ras_status() {
   int rval;
-  unsigned long size, num_connections, i;
+  DWORD size, num_connections, i;
   RASCONN rasbuffer[25];
   HINSTANCE ras_handle;
-  unsigned long rasip = 0;
+  uint32_t rasip = 0;
   RASPPPIP projection;
   int Ras_connected;
 
@@ -2012,7 +2012,7 @@ unsigned int psnet_ras_status() {
 
   for (i = 0; i < num_connections; i++) {
     RASCONNSTATUS status;
-    unsigned long size;
+    DWORD size;
 
     mprintf((0, "Connection %d:\n", i));
     mprintf((0, "Entry Name: %s\n", rasbuffer[i].szEntryName));

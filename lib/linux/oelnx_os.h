@@ -106,7 +106,7 @@ public:
   virtual bool write(const char *label, int *entry);
 
   // get the current user's name from the os
-  virtual void get_user_name(char *buffer, ulong *size);
+  virtual void get_user_name(char *buffer, size_t *size);
 
 protected:
   // Additional Macintosh Functions, return true if successful

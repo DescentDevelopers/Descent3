@@ -150,8 +150,8 @@ typedef struct vmt_descent3_struct {
 	unsigned int lateral_thrust;
 	unsigned int rotational_thrust;
 	unsigned int sliding_pct;	//Percentage of the time you were sliding
-	unsigned long checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
-	unsigned long pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
+	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
+	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct)-4)
 #ifdef WIN32
@@ -733,17 +733,17 @@ void ValidIdle()
 	}
 }
 //This code will modify 4 bytes at a time, so make sure to pad it!!!
-void xorcode(void *data,unsigned int len,unsigned long hash)
+void xorcode(void *data,unsigned int len,uint32_t hash)
 {
 	return;
 	unsigned int i=0;
-	unsigned long *src = (unsigned long *)&data;
+	uint32_t *src = (uint32_t *)&data;
 
 	while(i<len)
 	{
 		*src = *src ^ hash;
 		src++;
-		i += sizeof(unsigned long);
+		i += sizeof(uint32_t);
 	}
 }
 

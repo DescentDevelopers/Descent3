@@ -116,6 +116,8 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <cstdint>
+
 #include "pstypes.h"
 #include "Macros.h"
 
@@ -258,7 +260,7 @@ void DestroyController(gameController *ctl);
 #if defined(WIN32)
 #include "win\WinController.h"
 #elif defined(__LINUX__)
-#include "linux/lnxcontroller.h"
+#include "lnxcontroller.h"
 #endif
 
 #endif

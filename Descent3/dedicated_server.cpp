@@ -791,12 +791,9 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/time.h>
 #include <unistd.h>
 
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #include "errno.h"
 #define BOOL bool
 #ifndef SOCKET
@@ -886,7 +883,7 @@ void ListenDedicatedSocket(void) {
 #endif
     if (!Dedicated_allow_remote) {
       // Check to see if this came in from the local address
-      unsigned long localhost = inet_addr("127.0.0.1");
+      uint32_t localhost = inet_addr("127.0.0.1");
       if (memcmp(&localhost, &conn_addr.sin_addr, sizeof(localhost)) != 0) {
         mprintf((0, "Rejecting connection from remote host!\n"));
         PrintDedicatedMessage(TXT_DS_REJECTREMOTE, inet_ntoa(conn_addr.sin_addr));

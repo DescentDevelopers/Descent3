@@ -34,6 +34,7 @@
  * $NoKeywords: $
  */
 
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -136,8 +137,8 @@ void CZip::OutputBit(BITFILE *bfile, int bit) {
   }
 }
 
-void CZip::OutputBits(BITFILE *bfile, ulong code, int count) {
-  ulong mask;
+void CZip::OutputBits(BITFILE *bfile, uint32_t code, int count) {
+  uint32_t mask;
   mask = 1L << (count - 1);
   while (mask != 0) {
     if (mask & code)
@@ -171,9 +172,9 @@ int CZip::InputBit(BITFILE *bfile) {
   return (value ? 1 : 0);
 }
 
-ulong CZip::InputBits(BITFILE *bfile, int bitcount) {
-  ulong mask;
-  ulong return_value;
+uint32_t CZip::InputBits(BITFILE *bfile, int bitcount) {
+  uint32_t mask;
+  uint32_t return_value;
 
   mask = 1L << (bitcount - 1);
   return_value = 0;

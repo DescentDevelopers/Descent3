@@ -18,11 +18,4 @@
 
 #include "log.h"
 
-void InitLog() {
-    // Set the logging pattern
-    spdlog::set_pattern("%T [%l] %s:%!:%# %v");
-
-    // Create and register a console logger
-    auto console = spdlog::stdout_logger_mt("console");
-    console->info("Logger initialized");
-}
+void InitLog() {}

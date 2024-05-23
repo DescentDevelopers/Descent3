@@ -20,19 +20,14 @@
 #if defined(WIN32)
 #include <windows.h>
 #elif defined(__LINUX__)
-#include "linux/linux_fix.h"
 #include "lnxscreenmode.h"
 #else
 #endif
 
-#include "DDAccess.h"
-#include "pstypes.h"
 #include "pserror.h"
 #include "mono.h"
 #include "3d.h"
 #include "renderer.h"
-#include "ddvid.h"
-#include "ddio.h"
 #include "application.h"
 #include "bitmap.h"
 #include "lightmap.h"
@@ -2190,8 +2185,6 @@ void rend_Screenshot(int bm_handle) {
       dest_data[(((h - 1) - i) * w) + t] = GR_RGB16(r, g, b);
     }
   }
-
-  mem_free(temp_data);
 }
 
 // Enables/disables writes the depth buffer

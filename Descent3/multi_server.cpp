@@ -972,18 +972,17 @@ void MultiSendDoneObjects(int slot) {
   mprintf((0, "Sending done objects\n"));
 
   // Take the level checksum and clone it.
-  MD5 *playermd5 = Level_md5->Clone();
+  MD5 playermd5(*Level_md5);
   // Generate a random salt value and send it to the client.
   int salt = ps_rand();
   // process the salt through the md5
-  playermd5->MD5Update(salt);
+  playermd5.update(salt);
   // process the ships through the md5
   for (int i = 0; i < MAX_SHIPS; i++)
     if (Ships[i].used)
-      MultiProcessShipChecksum(playermd5, i);
+      MultiProcessShipChecksum(&playermd5, i);
   // save the digest value in the netplayer slot
-  playermd5->MD5Final(NetPlayers[slot].digest);
-  MD5::Destroy(playermd5);
+  playermd5.digest(NetPlayers[slot].digest);
 
   size = START_DATA(MP_DONE_OBJECTS, data, &count);
   MultiAddInt(salt, data, &count);

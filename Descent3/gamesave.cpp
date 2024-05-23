@@ -1094,7 +1094,7 @@ void SGSObjects(CFILE *fp) {
 
     //	data universal to all objects that need to be saved.
     gs_WriteShort(fp, (short)op->id);
-    gs_WriteInt(fp, (long)op->flags);
+    gs_WriteInt(fp, static_cast<int32_t>(op->flags));
     gs_WriteByte(fp, (sbyte)op->control_type);
     gs_WriteByte(fp, (sbyte)op->movement_type);
     gs_WriteByte(fp, (sbyte)op->render_type);

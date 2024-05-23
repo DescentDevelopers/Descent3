@@ -23,7 +23,7 @@
 #include "cfile.h"
 
 #ifdef __LINUX__
-#include "linux/linux_fix.h" //needed for stricmp's throughout bitmap lib
+#include "linux_fix.h" //needed for stricmp's throughout bitmap lib
 #endif
 
 #define MAX_BITMAPS 5000
@@ -74,7 +74,7 @@ typedef struct chunked_bitmap {
   int *bm_array; // array of bitmap handles.
 } chunked_bitmap;
 extern bms_bitmap GameBitmaps[MAX_BITMAPS];
-extern ulong Bitmap_memory_used;
+extern uint32_t Bitmap_memory_used;
 
 // Sets all the bitmaps to unused
 void bm_InitBitmaps();

@@ -19,6 +19,8 @@
 #ifndef __CZIPFILE_H_
 #define __CZIPFILE_H_
 
+#include <cstdint>
+
 #define OCF_VERSION 0x01
 
 ////////////////////////////////////////
@@ -68,7 +70,6 @@
 #define ubyte unsigned char
 #define uint unsigned int
 #define ushort unsigned short
-#define ulong unsigned int
 
 typedef struct {
   ubyte type;
@@ -227,9 +228,9 @@ private:
   BITFILE *OpenInputBitFile(char *filename);
   BITFILE *OpenOutputBitFile(char *filename);
   void OutputBit(BITFILE *bfile, int bit);
-  void OutputBits(BITFILE *bfile, ulong code, int count);
+  void OutputBits(BITFILE *bfile, uint32_t code, int count);
   int InputBit(BITFILE *bfile);
-  ulong InputBits(BITFILE *bfile, int bitcount);
+  uint32_t InputBits(BITFILE *bfile, int bitcount);
   void CloseInputBitFile(BITFILE *bfile);
   void CloseOutputBitFile(BITFILE *bfile);
   void FilePrintBinary(FILE *file, uint code, int bits);
@@ -249,8 +250,8 @@ private:
   bool hb_ExpandFile(BITFILE *input, tVirtualFile *output);
   void hb_compress_data(tVirtualFile *input, BITFILE *output, tH0Code *codes);
   void hb_expand_data(BITFILE *input, tVirtualFile *output, tH0Node *nodes, int root_node);
-  void hb_count_bytes(tVirtualFile *input, ulong *long_counts);
-  void hb_scale_counts(ulong *long_counts, tH0Node *nodes);
+  void hb_count_bytes(tVirtualFile *input, uint32_t *long_counts);
+  void hb_scale_counts(uint32_t *long_counts, tH0Node *nodes);
   int hb_build_tree(tH0Node *nodes);
   void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint code_so_far, int bits, int node);
   void hb_output_counts(BITFILE *output, tH0Node *nodes);

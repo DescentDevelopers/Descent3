@@ -175,7 +175,6 @@
 // ----------------------------------------------------------------------------
 //	Keyboard Interface
 // ----------------------------------------------------------------------------
-#include "DDAccess.h"
 
 #include "pserror.h"
 #include "mono.h"
@@ -196,8 +195,8 @@ static struct tWinKeyData {
   LPDIRECTINPUTDEVICE lpdikey; // key device
   HANDLE evtnotify;            // notify event
   HHOOK winhook;               // windows hook
-  unsigned long thread;        // thread id
-                               //	osMutex keyframe_mutex;							// mutex between
+  uintptr_t thread;            // thread id
+  //osMutex keyframe_mutex;      // mutex between
                                // internal key frame and key thread.
   bool nextframe;              // used for mutexing between keyframe and thread.
   bool acquired;               // device acquired?
@@ -243,9 +242,8 @@ bool dikey_Acquire(LPDIRECTINPUTDEVICE lpdikey, bool acquire);
 bool ddio_Win_KeyInit();
 void ddio_Win_KeyClose();
 
-int ddio_KeyHandler(HWnd wnd, unsigned msg, unsigned wParam, long lParam);
+int ddio_KeyHandler(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-void CALLBACK key_TimerProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2);
 LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam);
 
 // DirectInput Keyboard Thread
@@ -290,7 +288,6 @@ retry_key_init:
       bool acquired = dikey_Acquire(lpdikey, true);
       if (acquired) {
         //	create keyboard thread
-        unsigned long thrid;
         WKD.thread_active = true;
         WKD.lpdikey = lpdikey;
         WKD.thread = 0;
@@ -299,8 +296,8 @@ retry_key_init:
         WKD.winhook = NULL;
         WKD.suspended = false;
         WKD.nextframe = false;
-        thrid = _beginthread(dikey_Thread, 0, NULL);
-        if (thrid == (unsigned long)(-1)) {
+        uintptr_t thrid = _beginthread(dikey_Thread, 0, nullptr);
+        if (thrid == -1) {
           mprintf((0, "DDIO: DI_Keyboard thread failed to initialize.\n"));
           WKD.thread_active = false;
           WKD.lpdikey = NULL;
@@ -731,14 +728,14 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
   return (!res);
 }
 
-int ddio_KeyHandler(HWnd wnd, unsigned msg, unsigned wParam, long lParam) {
+int ddio_KeyHandler(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   ubyte scan_code;
   float timer = timer_GetTime();
 
   if (!WKD.winhook)
     return 1;
 
-  switch ((UINT)msg) {
+  switch (msg) {
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
     scan_code = (unsigned char)((lParam >> 16) & 0xff);

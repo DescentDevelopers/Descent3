@@ -931,7 +931,7 @@ int frames_one_second = 0;
 int min_one_second = 0x7fffffff;
 int max_one_second = 0;
 
-longlong last_timer = 0;
+int64_t last_timer = 0;
 
 // contains information for the music system.
 tMusicSeqInfo Game_music_info;
@@ -2752,7 +2752,7 @@ unsigned int Frames_counted = 0;
 
 // Compute how long last frame took
 void CalcFrameTime(void) {
-  longlong current_timer;
+  int64_t current_timer;
 
   if (timer_paused)
     return;
@@ -3108,7 +3108,7 @@ void GameFrame(void) {
     // float start_delay = timer_GetTime();
     // Slow down the game if the user asked us to
 
-    longlong current_timer;
+    int64_t current_timer;
     unsigned int sleeptime;
     current_timer = timer_GetMSTime();
     if ((current_timer - last_timer) < Min_allowed_frametime) {

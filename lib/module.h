@@ -107,9 +107,9 @@ typedef struct {
 //==========================Linux Definitions============================
 
 #define MODPROCADDRESS void *
-#define DLLFUNCEXPORT
+#define DLLFUNCEXPORT __attribute__((visibility("default")))
 #define DLLFUNCIMPORT
-#define DLLEXPORT CPPEXTERN
+#define DLLEXPORT CPPEXTERN DLLFUNCEXPORT
 
 typedef struct {
   void *handle; // handle to the DLL

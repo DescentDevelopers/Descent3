@@ -441,7 +441,7 @@
 #include <errno.h>
 #include <string.h>
 #if defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 #include "descent.h"
 #include "manage.h"
@@ -564,7 +564,7 @@ void Read256TextureNames();
 // Sets up our table files, get their filenames, etc.
 // Returns 1 on success, zero on error
 int mng_InitTableFiles() {
-  ulong size = TABLE_NAME_LEN;
+  size_t size = TABLE_NAME_LEN;
   int answer;
   Database->get_user_name(TableUser, &size);
   if (FindArg("-filter"))

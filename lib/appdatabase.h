@@ -83,7 +83,7 @@ public:
   virtual bool write(const char *label, int entry) = 0;
 
   // get the current user's name.
-  virtual void get_user_name(char *buffer, ulong *size) = 0;
+  virtual void get_user_name(char *buffer, size_t *size) = 0;
 };
 
 // JCA: moved these from the Win32Database

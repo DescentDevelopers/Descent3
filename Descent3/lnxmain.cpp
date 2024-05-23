@@ -23,35 +23,25 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
+#include <csignal>
 #include <unistd.h>
-#include <ctype.h>
-#include <string.h>
-#include <signal.h>
-#include <sys/types.h>
-#include <time.h>
 
-#include "SDL.h"
+#include <SDL.h>
+
 #include "program.h"
-#include "mono.h"
 #include "descent.h"
 #include "application.h"
 #include "appdatabase.h"
-#include "pserror.h"
 #include "args.h"
 #include "init.h"
-#include "renderer.h"
 
 #include "ddio.h"
-#include "ddvid.h"
 #include "osiris_dll.h"
 #include "loki_utils.h"
 
 #include "log.h"
-
-#if defined(MACOSX)
-#include <SDL.h>
-#endif
 
 extern bool ddio_mouseGrabbed;
 int no_debug_dialog = 0;
@@ -184,7 +174,6 @@ void fatal_signal_handler(int signum) {
     break;
   }
 
-  sync(); // just in case.
   _exit(-10);
 }
 
@@ -362,14 +351,8 @@ static void check_beta() {
 int main(int argc, char *argv[]) {
   __orig_pwd = getcwd(NULL, 0);
 
-  /* Setup the spdlog system */
+  /* Setup the logging system */
   InitLog();
-
-  #ifdef DEBUG
-  spdlog::set_level(spdlog::level::debug);
-  #else
-  spdlog::set_level(spdlog::level::info);
-  #endif
 
   setbuf(stdout, NULL);
   setbuf(stderr, NULL);
@@ -466,8 +449,6 @@ int main(int argc, char *argv[]) {
 #endif
            D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
 
-  SPDLOG_INFO(game_version_buffer);
-
   game_version += 2; // skip those first newlines for loki_initialize.
 
   register_d3_args();
@@ -489,7 +470,7 @@ int main(int argc, char *argv[]) {
   setenv("SDL_VIDEODRIVER", "dummy", 1);
   #endif
 
-  int rc = SDL_Init(SDL_INIT_VIDEO);
+  int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {
     fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
     fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());

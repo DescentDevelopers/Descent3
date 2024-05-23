@@ -31,13 +31,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
-void STDCALL ShutdownDLL(void);
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
-void STDCALLPTR CreateInstance(int id);
-void STDCALL DestroyInstance(int id, void *ptr);
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
+DLLEXPORT void STDCALL ShutdownDLL(void);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT void STDCALLPTR CreateInstance(int id);
+DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
+DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -5788,7 +5788,7 @@ bool GuideBot::DoNotify(int me, tOSIRISEventInfo *data) {
     } else if (type == OBJ_ROBOT) {
       // 35% of the time, the buddy is happy enough to say something when
       // he hits a robot
-      if (rand() > RAND_MAX * 0.65f) {
+      if (rand() > static_cast<float>(RAND_MAX) * 0.65f) {
         DoMessage(TXT_GB_SHOOTROBOT, false, "GBotAcceptOrder1");
       }
     }

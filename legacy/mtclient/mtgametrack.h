@@ -155,7 +155,7 @@ typedef struct {
 	unsigned char game_type;	//1==freespace (GT_FREESPACE), 2==D3, 3==tuberacer, etc.
 	SOCKADDR_IN	addr;
 	int	type;	//Used to specify what to do ie. Add a new net game (GNT_GAMESTARTED), remove a net game (game over), etc.
-	unsigned long	sig;	//Unique identifier for client ACKs (The server always fills this in, the client responds)
+	uint32_t	sig;	//Unique identifier for client ACKs (The server always fills this in, the client responds)
 
 	char data[MAX_GT_GAME_DATA_SIZE];
 }game_packet_header;
@@ -209,14 +209,14 @@ typedef struct _active_games{
 typedef struct {
 	unsigned char game_type;
 	char game_name[MAX_GAME_LISTS_PER_PACKET][MAX_GENERIC_GAME_NAME_LEN];
-	unsigned long	game_server[MAX_GAME_LISTS_PER_PACKET];
+	uint32_t	game_server[MAX_GAME_LISTS_PER_PACKET];
 	unsigned short game_port[MAX_GAME_LISTS_PER_PACKET];
 }game_list;
 */
 
 typedef struct {
   unsigned char game_type;
-  unsigned long game_server[MAX_GAME_LISTS_PER_PACKET*4];
+  uint32_t game_server[MAX_GAME_LISTS_PER_PACKET*4];
   unsigned short game_port[MAX_GAME_LISTS_PER_PACKET*4];
 }game_list;
 

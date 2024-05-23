@@ -1883,7 +1883,10 @@ void FlushDataCache() {
   }
 
   mprintf((0, "Freed %d textures, %d models, and %d sounds.\n", texfreed, modelsfreed, soundsfreed));
-  rend_ResetCache();
+  // the renderer is never initialized in dedicated server mode, so don't try to reset things either
+  if (!Dedicated_server) {
+    rend_ResetCache();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

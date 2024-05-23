@@ -62,10 +62,10 @@
 
 static bool Timer_initialized = 0;
 // rcg06292000 not used with SDL.
-// static unsigned long long Timer_sys_start_time = 0;
-// static unsigned long long Timer_accum = 0,Timer_high_mark = 0;
+// static uint64_t Timer_sys_start_time = 0;
+// static uint64_t Timer_accum = 0,Timer_high_mark = 0;
 // void timer_Normalize();
-// unsigned long long timer_GetTickCount();
+// uint64_t timer_GetTickCount();
 
 //	---------------------------------------------------------------------------
 
@@ -87,10 +87,10 @@ void timer_Close() {
   Timer_initialized = 0;
 }
 
-float ddio_TickToSeconds(unsigned long ticks) {
+float ddio_TickToSeconds(uint32_t ticks) {
   // rcg06292000 not used with SDL.
-  //	unsigned long time_ms;
-  //	unsigned long long new_ticks = ticks;
+  //	uint32_t time_ms;
+  //	uint64_t new_ticks = ticks;
 
   //	timer_Normalize();
   //	time_ms = new_ticks;// - Timer_sys_start_time;
@@ -102,7 +102,7 @@ float ddio_TickToSeconds(unsigned long ticks) {
 
 float timer_GetTime() {
   // rcg06292000 ain't working.
-  //	unsigned long time_ms;
+  //	uint32_t time_ms;
   //	timer_Normalize();
   //	time_ms = timer_GetTickCount() - Timer_sys_start_time;
   //	return (float)((double)time_ms/((double)1000000.0));
@@ -111,12 +111,12 @@ float timer_GetTime() {
   return ((float)SDL_GetTicks() / 1000.0);
 }
 
-longlong timer_GetMSTime() {
+int64_t timer_GetMSTime() {
   // rcg06292000 not used with SDL.
-  //	unsigned long time_ms;
+  //	uint32_t time_ms;
   //	timer_Normalize();
   //	time_ms = timer_GetTickCount() - Timer_sys_start_time;
-  //	return (longlong)((double)time_ms/((double)1000.0));
+  //	return (int64_t)((double)time_ms/((double)1000.0));
 
   return (SDL_GetTicks());
 }
@@ -129,7 +129,7 @@ longlong timer_GetMSTime() {
 /*
 void timer_Normalize()
 {
-        unsigned long long new_time;
+        uint64_t new_time;
         new_time = timer_GetTickCount();
 
         if (new_time < Timer_sys_start_time) {
@@ -138,9 +138,9 @@ void timer_Normalize()
         }
 }
 
-unsigned long long timer_GetTickCount(void)
+uint64_t timer_GetTickCount(void)
 {
-        unsigned long long ret;
+        uint64_t ret;
         struct timeval t;
         gettimeofday(&t,NULL);
 

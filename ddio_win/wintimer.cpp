@@ -46,7 +46,7 @@ bool timerhi_Init(void);
 void timerhi_Close(void);
 float ddio_TickToSeconds(LARGE_INTEGER ticks);
 float timerhi_GetTime();
-longlong timerhi_GetMSTime();
+int64_t timerhi_GetMSTime();
 void timerhi_Normalize();
 LARGE_INTEGER Timer_hi_sys_start_time;
 LARGE_INTEGER Timer_hi_resolution;
@@ -146,7 +146,7 @@ void timer_Close() {
   Timer_initialized = 0;
 }
 
-float ddio_TickToSeconds(unsigned long ticks) {
+float ddio_TickToSeconds(uint32_t ticks) {
   if (Timer_use_highres_timer) {
     LARGE_INTEGER t;
     t.QuadPart = ticks;
@@ -181,7 +181,7 @@ float timer_GetTime() {
   return 0;
 }
 
-longlong timer_GetMSTime() {
+int64_t timer_GetMSTime() {
   if (Timer_use_highres_timer) {
     return timerhi_GetMSTime();
   } else {
@@ -201,7 +201,7 @@ longlong timer_GetMSTime() {
 //	Internal functions
 //	---------------------------------------------------------------------------
 //	hook in timer function at certain period.  returns a handle to this function
-DWORD timer_HookFunction(void(CALLBACK *fncptr)(UINT, UINT, DWORD, DWORD, DWORD), UINT delay) {
+DWORD timer_HookFunction(void(CALLBACK *fncptr)(UINT, UINT, DWORD_PTR, DWORD_PTR, DWORD_PTR), UINT delay) {
   DWORD time_event_id;
 
   time_event_id = timeSetEvent(delay, Timer_resolution, fncptr, 0, TIME_PERIODIC);
@@ -292,7 +292,7 @@ float timerhi_GetTime() {
 }
 
 // This should return a timer in milliseconds
-longlong timerhi_GetMSTime() {
+int64_t timerhi_GetMSTime() {
   LARGE_INTEGER time_tick;
 
   timerhi_Normalize();

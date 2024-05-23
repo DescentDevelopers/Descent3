@@ -49,20 +49,19 @@
  *
  */
 
+#ifdef LINUX
+#include <cstring>
+#endif
+
 #include "hlsoundlib.h"
 #include "ddsndgeometry.h"
 #include "sndrender.h"
 #include "room.h"
 #include "object.h"
-#include "descent.h"
 #include "application.h"
-#include "ddio.h"
 #include "soundload.h"
 #include "gametexture.h"
 
-#ifdef LINUX
-#include <string.h>
-#endif
 
 static llsGeometry *Geometry = NULL;
 static short Sound_room_list[SOUND_RENDER_ROOM_LIMIT + 1];

@@ -34,6 +34,7 @@
  * $NoKeywords: $
  */
 
+#include <cstdint>
 #undef RAND_MAX
 
 #define RAND_MAX 0x7fff

@@ -16,14 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-
-void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext);
-int _vsnprintf(char *buffer, size_t count, const char *format, va_list argptr);
-int stricmp(const char *string1, const char *string2);
+#include <cstring>
 
 void _splitpath(const char *srcPath, char *drive, char *path, char *filename, char *ext) {
   int pathStart = -1;
@@ -101,10 +94,6 @@ void _splitpath(const char *srcPath, char *drive, char *path, char *filename, ch
       path[0] = 0;
     }
   }
-}
-
-int _vsnprintf(char *buffer, size_t count, const char *format, va_list argptr) {
-  return vsnprintf(buffer, count, format, argptr);
 }
 
 int stricmp(const char *string1, const char *string2) { return strcasecmp(string1, string2); }

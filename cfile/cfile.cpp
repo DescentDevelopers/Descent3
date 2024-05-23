@@ -1,34 +1,35 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <errno.h>
-#include <ctype.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdarg>
+#include <cerrno>
+#include <cctype>
+#include <memory>
+#include <vector>
 #ifndef __LINUX__
 // Non-Linux Build Includes
 #include <io.h>
 #else
 // Linux Build Includes
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 #include "byteswap.h"
@@ -42,19 +43,19 @@
 // Library structures
 typedef struct {
   char name[PSFILENAME_LEN + 1]; // just the filename part
-  int offset;                    // offset into library file
-  int length;                    // length of this file
-  ulong timestamp;               // time and date of file
-  int flags;                     // misc flags
+  uint32_t offset;               // offset into library file
+  uint32_t length;               // length of this file
+  uint32_t timestamp;            // time and date of file
+  uint32_t flags;                // misc flags
 } library_entry;
 
 typedef struct library {
   char name[_MAX_PATH]; // includes path + filename
-  int nfiles;
-  library_entry *entries;
-  struct library *next;
-  int handle; // identifier for this lib
-  FILE *file; // pointer to file for this lib, if no one using it
+  uint32_t nfiles = 0;
+  std::vector<std::unique_ptr<library_entry>> entries;
+  std::shared_ptr<library> next;
+  int handle = 0;       // identifier for this lib
+  FILE *file = nullptr; // pointer to file for this lib, if no one using it
 } library;
 
 // entry in extension->path table
@@ -76,7 +77,7 @@ int N_paths = 0;
 #define MAX_EXTENSIONS 100
 ext_entry extensions[MAX_EXTENSIONS];
 int N_extensions;
-library *Libraries = NULL;
+std::shared_ptr<library> Libraries;
 int lib_handle = 0;
 
 // Structure thrown on disk error
@@ -104,18 +105,14 @@ static CFILE *open_file_in_lib(const char *filename);
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const char *libname) {
   FILE *fp;
-  char id[HOG_TAG_LEN];
-  int i, offset;
-  library *lib;
+  int i;
+  uint32_t offset;
   static int first_time = 1;
   tHogHeader header;
   tHogFileEntry entry;
 
-  // allocation library stucture
-  lib = (library *)mem_malloc(sizeof(*lib));
-  if (!lib) { // malloc error
-    return 0;
-  }
+  // allocation library structure
+  std::shared_ptr<library> lib = std::make_shared<library>();
 #ifdef __LINUX__
   // resolve library name
   char t_dir[_MAX_PATH];
@@ -131,7 +128,6 @@ int cf_OpenLibrary(const char *libname) {
   }
   char t_out[_MAX_PATH];
   if (!cf_FindRealFileNameCaseInsenstive(resolve_dir, resolve_name, t_out)) {
-    mem_free(lib);
     return 0; // CF_NO_FILE
   }
   // re-assemble
@@ -144,13 +140,7 @@ int cf_OpenLibrary(const char *libname) {
 #endif
   fp = fopen(lib->name, "rb");
   if (fp == nullptr) {
-    mem_free(lib);
     return 0; // CF_NO_FILE;
-  }
-  if (!fread(id, HOG_TAG_LEN, 1, fp) || strncmp(id, HOG_TAG_STR, HOG_TAG_LEN)) {
-    fclose(fp);
-    mem_free(lib);
-    return 0; // CF_BAD_FILE;
   }
   // check if this if first library opened
   if (first_time) {
@@ -160,25 +150,17 @@ int cf_OpenLibrary(const char *libname) {
   //	read HOG header
   if (!ReadHogHeader(fp, &header)) {
     fclose(fp);
-    mem_free(lib);
     return 0; // CF_BAD_LIB;
   }
-  // DAJ	lib->nfiles = INTEL_INT(header.nfiles);
   lib->nfiles = header.nfiles;
   //	allocate CFILE hog info.
-  lib->entries = (library_entry *)mem_malloc(sizeof(library_entry) * lib->nfiles);
-  if (!lib->entries) { // malloc error
-    fclose(fp);
-    mem_free(lib);
-    return 0;
-  }
+  lib->entries.reserve(lib->nfiles);
   lib->next = Libraries;
   Libraries = lib;
   // set data offset of first file
-  // DAJ	offset = INTEL_INT(header.file_data_offset);
   offset = header.file_data_offset;
   // Go to index start
-  fseek(fp, HOG_TAG_LEN + HOG_HDR_SIZE, SEEK_SET);
+  fseek(fp, HOG_HDR_SIZE, SEEK_SET);
 
   // read in index table
   for (i = 0; i < lib->nfiles; i++) {
@@ -187,20 +169,23 @@ int cf_OpenLibrary(const char *libname) {
       return 0;
     }
     // Make sure files are in order
-    ASSERT((i == 0) || (stricmp(entry.name, lib->entries[i - 1].name) >= 0));
+    ASSERT((i == 0) || (stricmp(entry.name, lib->entries[i - 1]->name) >= 0));
     // Copy into table
-    strcpy(lib->entries[i].name, entry.name);
-    lib->entries[i].flags = entry.flags;
-    lib->entries[i].length = entry.len;
-    lib->entries[i].offset = offset;
-    lib->entries[i].timestamp = entry.timestamp;
-    offset += lib->entries[i].length;
+    std::unique_ptr<library_entry> lib_entry = std::make_unique<library_entry>();
+    strcpy(lib_entry->name, entry.name);
+    lib_entry->flags = entry.flags;
+    lib_entry->length = entry.len;
+    lib_entry->offset = offset;
+    lib_entry->timestamp = entry.timestamp;
+    lib->entries.push_back(std::move(lib_entry));
+
+    offset += entry.len;
   }
   // assign a handle
   lib->handle = ++lib_handle;
   // Save the file pointer
   lib->file = fp;
-  // Sucess.  Return the handle
+  // Success.  Return the handle
   return lib->handle;
 }
 
@@ -209,7 +194,7 @@ int cf_OpenLibrary(const char *libname) {
  * @param handle the handle returned by cf_OpenLibrary()
  */
 void cf_CloseLibrary(int handle) {
-  library *lib, *prev = nullptr;
+  std::shared_ptr<library> lib, prev;
   for (lib = Libraries; lib; prev = lib, lib = lib->next) {
     if (lib->handle == handle) {
       if (prev)
@@ -218,8 +203,6 @@ void cf_CloseLibrary(int handle) {
         Libraries = lib->next;
       if (lib->file)
         fclose(lib->file);
-      mem_free(lib->entries);
-      mem_free(lib);
       return; // successful close
     }
   }
@@ -227,11 +210,9 @@ void cf_CloseLibrary(int handle) {
 
 // Closes down the CFILE system, freeing up all data, etc.
 void cf_Close() {
-  library *next;
+  std::shared_ptr<library> next;
   while (Libraries) {
     next = Libraries->next;
-    mem_free(Libraries->entries);
-    mem_free(Libraries);
     Libraries = next;
   }
 }
@@ -252,11 +233,11 @@ int cf_SetSearchPath(const char *path, ...) {
   va_list exts;
   va_start(exts, path);
   const char *ext = va_arg(exts, const char *);
-  if (ext == NULL)
+  if (ext == nullptr)
     paths[N_paths].specific = 0;
   else {
     paths[N_paths].specific = 1;
-    while (ext != NULL) {
+    while (ext != nullptr) {
       if (N_extensions >= MAX_EXTENSIONS) {
         va_end(exts);
         return 0;
@@ -291,9 +272,8 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   if (libhandle <= 0)
     return nullptr;
 
-  library *lib;
   CFILE *cfile;
-  lib = Libraries;
+  std::shared_ptr<library> lib = Libraries;
 
   // find the library that we want to use
   while (lib) {
@@ -308,13 +288,12 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   }
 
   // now do a binary search for the file entry
-  int i;
-  int first = 0, last = lib->nfiles - 1, c, found = 0;
+  int i, first = 0, last = lib->nfiles - 1, c, found = 0;
 
   do {
     i = (first + last) / 2;
-    c = stricmp(filename, lib->entries[i].name); // compare to current
-    if (c == 0) {                                // found it
+    c = stricmp(filename, lib->entries[i]->name); // compare to current
+    if (c == 0) {                                 // found it
       found = 1;
       break;
     }
@@ -347,11 +326,11 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   cfile = (CFILE *)mem_malloc(sizeof(*cfile));
   if (!cfile)
     Error("Out of memory in cf_OpenFileInLibrary()");
-  cfile->name = lib->entries[i].name;
+  cfile->name = lib->entries[i]->name;
   cfile->file = fp;
   cfile->lib_handle = lib->handle;
-  cfile->size = lib->entries[i].length;
-  cfile->lib_offset = lib->entries[i].offset;
+  cfile->size = lib->entries[i]->length;
+  cfile->lib_offset = lib->entries[i]->offset;
   cfile->position = 0;
   cfile->flags = 0;
   r = fseek(fp, cfile->lib_offset, SEEK_SET);
@@ -361,17 +340,16 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
 
 // searches through the open HOG files, and opens a file if it finds it in any of the libs
 CFILE *open_file_in_lib(const char *filename) {
-  library *lib;
   CFILE *cfile;
-  lib = Libraries;
+  std::shared_ptr<library> lib = Libraries;
   while (lib) {
     int i;
     // Do binary search for the file
     int first = 0, last = lib->nfiles - 1, c, found = 0;
     do {
       i = (first + last) / 2;
-      c = stricmp(filename, lib->entries[i].name); // compare to current
-      if (c == 0) {                                // found it
+      c = stricmp(filename, lib->entries[i]->name); // compare to current
+      if (c == 0) {                                 // found it
         found = 1;
         break;
       }
@@ -400,11 +378,11 @@ CFILE *open_file_in_lib(const char *filename) {
       cfile = (CFILE *)mem_malloc(sizeof(*cfile));
       if (!cfile)
         Error("Out of memory in open_file_in_lib()");
-      cfile->name = lib->entries[i].name;
+      cfile->name = lib->entries[i]->name;
       cfile->file = fp;
       cfile->lib_handle = lib->handle;
-      cfile->size = lib->entries[i].length;
-      cfile->lib_offset = lib->entries[i].offset;
+      cfile->size = lib->entries[i]->length;
+      cfile->lib_offset = lib->entries[i]->offset;
       cfile->position = 0;
       cfile->flags = 0;
       r = fseek(fp, cfile->lib_offset, SEEK_SET);
@@ -785,14 +763,14 @@ got_file:;
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
-int cfilelength(CFILE *cfp) { return cfp->size; }
+uint32_t cfilelength(CFILE *cfp) { return cfp->size; }
 
 // Closes an open CFILE.
 // Parameters:  cfile - the file pointer returned by cfopen()
 void cfclose(CFILE *cfp) {
   // Either give the file back to the library, or close it
   if (cfp->lib_handle != -1) {
-    library *lib;
+    std::shared_ptr<library> lib;
     for (lib = Libraries; lib; lib = lib->next) {
       if (lib->handle == cfp->lib_handle) { // found the library
         // if library doesn't already have a file, give it this one
@@ -854,8 +832,9 @@ int cfgetc(CFILE *cfp) {
   return c;
 }
 // Just like stdio fseek(), except works on a CFILE
-int cfseek(CFILE *cfp, long int offset, int where) {
-  int c, goal_position;
+int cfseek(CFILE *cfp, long offset, int where) {
+  int c;
+  long goal_position;
   switch (where) {
   case SEEK_SET:
     goal_position = offset;
@@ -875,7 +854,7 @@ int cfseek(CFILE *cfp, long int offset, int where) {
 }
 
 // Just like stdio ftell(), except works on a CFILE
-int cftell(CFILE *cfp) { return cfp->position; }
+long cftell(CFILE *cfp) { return cfp->position; }
 
 // Returns true if at EOF
 int cfeof(CFILE *cfp) { return (cfp->position >= cfp->size); }
@@ -921,7 +900,6 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
   }
   mprintf(
       (1, "Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name, errno));
-  ThrowCFileError(CFE_READING, cfp, error_msg);
   return 0;
 }
 // The following functions read numeric vales from a CFILE.  All values are
@@ -947,11 +925,9 @@ int16_t cf_ReadShort(CFILE *cfp) {
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int8_t cf_ReadByte(CFILE *cfp) {
-  int i;
-  i = cfgetc(cfp);
-  if (i == EOF)
-    ThrowCFileError(CFE_READING, cfp, cfeof(cfp) ? eof_error : strerror(errno));
-  return (int8_t)i;
+  int8_t i;
+  cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
+  return i;
 }
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -965,17 +941,7 @@ float cf_ReadFloat(CFILE *cfp) {
 double cf_ReadDouble(CFILE *cfp) {
   double f;
   cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
-#ifdef OUTRAGE_BIG_ENDIAN
-  {
-    double t;
-    int *sp = (int *)&f;
-    int *dp = (int *)&t;
-    dp[0] = SWAPINT(sp[1]);
-    dp[1] = SWAPINT(sp[0]);
-    f = t;
-  }
-#endif
-  return f;
+  return D3::convert_le<double>(f);
 }
 // Reads a string from a CFILE.  If the file is type binary, this
 // function reads until a NULL or EOF is found.  If the file is text,
@@ -988,7 +954,7 @@ double cf_ReadDouble(CFILE *cfp) {
 // Does not generate an exception on EOF
 int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
   int c;
-  uint count;
+  int count;
   char *bp;
   if (n == 0)
     return -1;
@@ -1083,25 +1049,16 @@ void cf_WriteByte(CFILE *cfp, int8_t b) {
 
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteFloat(CFILE *cfp, float_t f) {
+void cf_WriteFloat(CFILE *cfp, float f) {
   float t = INTEL_FLOAT(f);
   cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void cf_WriteDouble(CFILE *cfp, double_t d) {
-#ifdef OUTRAGE_BIG_ENDIAN
-  {
-    double t;
-    int *sp = (int *)&d;
-    int *dp = (int *)&t;
-    dp[0] = SWAPINT(sp[1]);
-    dp[1] = SWAPINT(sp[0]);
-    d = t;
-  }
-#endif
-  cf_WriteBytes((ubyte *)&d, sizeof(d), cfp);
+void cf_WriteDouble(CFILE *cfp, double d) {
+  auto t = D3::convert_le<double>(d);
+  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
 }
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
@@ -1234,7 +1191,7 @@ unsigned int cf_GetfileCRC(char *src) {
 }
 
 char cfile_search_wildcard[256];
-library *cfile_search_library = nullptr;
+std::shared_ptr<library> cfile_search_library;
 int cfile_search_curr_index = 0;
 bool cfile_search_ispattern = false;
 //	the following cf_LibraryFind function are similar to the ddio_Find functions as they look
@@ -1262,15 +1219,15 @@ bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer) {
 
   while (cfile_search_curr_index < cfile_search_library->nfiles) {
     if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index].name, 0, 0)) {
+      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
         // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index].name);
+        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
         cfile_search_curr_index++;
         return true;
       }
     } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index].name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index].name);
+      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
+        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
         cfile_search_curr_index++;
         return true;
       }
@@ -1284,15 +1241,15 @@ bool cf_LibraryFindFirst(int handle, const char *wildcard, char *buffer) {
 bool cf_LibraryFindNext(char *buffer) {
   while (cfile_search_curr_index < cfile_search_library->nfiles) {
     if (cfile_search_ispattern) {
-      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index].name, 0, 0)) {
+      if (PSGlobMatch(cfile_search_wildcard, cfile_search_library->entries[cfile_search_curr_index]->name, 0, 0)) {
         // it's a match
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index].name);
+        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
         cfile_search_curr_index++;
         return true;
       }
     } else {
-      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index].name, cfile_search_wildcard)) {
-        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index].name);
+      if (!stricmp(cfile_search_library->entries[cfile_search_curr_index]->name, cfile_search_wildcard)) {
+        strcpy(buffer, cfile_search_library->entries[cfile_search_curr_index]->name);
         cfile_search_curr_index++;
         return true;
       }
@@ -1308,59 +1265,8 @@ void cf_LibraryFindClose() {
   cfile_search_ispattern = false;
 }
 
-// returns hog cfile info, using a library handle opened via cf_OpenLibrary.
-bool cf_ReadHogFileEntry(int libr, const char *filename, tHogFileEntry *entry, int *fileoffset) {
-  // searches through the open HOG files, and opens a file if it finds it in any of the libs
-  library *lib;
-
-  lib = Libraries;
-
-  while (lib) {
-    int i;
-
-    if (lib->handle == libr || libr == -1) {
-      // Do binary search for the file
-      int first = 0, last = lib->nfiles - 1, c, found = 0;
-      do {
-
-        i = (first + last) / 2;
-        c = stricmp(filename, lib->entries[i].name); // compare to current
-
-        if (c == 0) { // found it
-          found = 1;
-          break;
-        }
-
-        if (first >= last) // exhausted search
-          break;
-
-        if (c > 0) // search key after check key
-          first = i + 1;
-        else // search key before check key
-          last = i - 1;
-
-      } while (true);
-
-      if (found) {
-        strcpy(entry->name, lib->entries[i].name);
-        entry->len = lib->entries[i].length;
-        entry->flags = lib->entries[i].flags;
-        entry->timestamp = lib->entries[i].timestamp;
-        *fileoffset = lib->entries[i].offset;
-        return true;
-      } else if (lib->handle == libr) {
-        break;
-      }
-    }
-
-    lib = lib->next;
-  }
-
-  return false;
-}
-
 bool cf_IsFileInHog(const char *filename, const char *hogname) {
-  library *lib = Libraries;
+  std::shared_ptr<library> lib = Libraries;
 
   while (lib) {
     if (stricmp(lib->name, hogname) == 0) {

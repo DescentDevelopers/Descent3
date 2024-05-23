@@ -193,6 +193,7 @@
 class oeApplication;
 
 #include <stdio.h>
+#include <cstdint>
 
 #include "pstypes.h"
 #include "ddio_common.h"
@@ -238,7 +239,7 @@ void timer_Close();
 float timer_GetTime();
 
 // returns time in milliseconds
-longlong timer_GetMSTime();
+int64_t timer_GetMSTime();
 
 //	hook in timer function at certain period.  returns a handle to this function
 //@@int timer_HookFunction(void (*fncptr)(), int period);
@@ -319,6 +320,9 @@ void ddio_MouseSetVCoords(int width, int height);
 //	---------------------------------------------------------------------------
 //	File Operations
 //	---------------------------------------------------------------------------
+
+// Gets the full path of the executable file
+bool ddio_GetBinaryPath(char *exec_path, size_t len);
 
 //	creates or destroys a directory or folder on disk
 //	This pathname is *RELATIVE* not fully qualified

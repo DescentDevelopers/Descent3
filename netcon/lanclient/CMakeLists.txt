@@ -2,6 +2,7 @@ set(CPPS lanclient.cpp)
 
 add_library(Direct_TCP_IP MODULE ${CPPS})
 set_target_properties(Direct_TCP_IP PROPERTIES PREFIX "")
+set_target_properties(Direct_TCP_IP PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")
 target_link_libraries(Direct_TCP_IP PRIVATE
   inetfile
@@ -20,3 +21,4 @@ add_custom_target(Direct_TCP_IP_Hog
   DEPENDS Direct_TCP_IP HogMaker
   COMMENT "Generate 'Direct TCP~IP.d3c'"
 )
+install(FILES "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c" DESTINATION ${CMAKE_INSTALL_DATADIR}/online)

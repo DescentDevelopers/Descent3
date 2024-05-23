@@ -63,12 +63,13 @@
 #include <cstdint>
 #include <cstdio>
 
-#define HOG_HDR_SIZE (64)
+#define HOG_HDR_SIZE (68)
 #define HOG_TAG_STR "HOG2"
 #define HOG_TAG_LEN (4)
 #define HOG_FILENAME_LEN (36)
 
 typedef struct tHogHeader {
+  char magic[HOG_TAG_LEN];   // magic "HOG2"
   uint32_t nfiles;           // number of files in header
   uint32_t file_data_offset; // offset in file to filedata.
 } tHogHeader;
@@ -82,8 +83,5 @@ typedef struct tHogFileEntry {
 
 bool ReadHogHeader(FILE *fp, tHogHeader *header);
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry);
-
-// returns hog cfile info, using a library handle opened via cf_OpenLibrary.
-bool cf_ReadHogFileEntry(int library, const char *filename, tHogFileEntry *entry, int *fileoffset);
 
 #endif
