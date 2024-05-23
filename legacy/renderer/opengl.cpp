@@ -2576,15 +2576,15 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
   if (a) {
     struct BzfPropMotifWmInfo {
     public:
-      long flags;
+      int32_t flags;
       Window wmWindow;
     };
 
     Atom type;
     int format;
-    unsigned long nitems;
-    unsigned long bytes_after;
-    long *mwmInfo;
+    uint32_t nitems;
+    uint32_t bytes_after;
+    int32_t *mwmInfo;
 
     XGetWindowProperty(dpy, rootwin, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
                        (unsigned char **)&mwmInfo);
@@ -2609,12 +2609,12 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
   if (isMWMRunning) {
     fprintf(stdout, "Motif Window Manager\n");
     // it's a Motif based window manager
-    long hints[4];
+    int32_t hints[4];
     hints[0] = 0;
     hints[1] = 0;
     hints[2] = 0;
     hints[3] = 0;
-    long *xhints;
+    int32_t *xhints;
 
     a = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
 
@@ -2622,8 +2622,8 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
       // get current hints
       Atom type;
       int format;
-      unsigned long nitems;
-      unsigned long bytes_after;
+      uint32_t nitems;
+      uint32_t bytes_after;
 
       XGetWindowProperty(dpy, window, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
                          (unsigned char **)&xhints);
@@ -2654,7 +2654,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
   }
 
   // now set position and size
-  long dummy;
+  int32_t dummy;
   XSizeHints xsh;
   XGetWMNormalHints(dpy, window, &xsh, &dummy);
   xsh.x = 0;

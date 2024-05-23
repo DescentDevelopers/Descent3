@@ -608,7 +608,7 @@ void CScriptStudio::RemoveAllSelections()
 //Replaces the selected word with the passed word
 void CScriptStudio::ReplaceSelected(char *replace_word)
 {
-	long start_index,end_index;
+  int32_t start_index,end_index;
 
 	UpdateData(false);
 

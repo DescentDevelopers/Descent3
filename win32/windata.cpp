@@ -257,7 +257,7 @@ bool oeWin32AppDatabase::write(const char *label, int entry) {
 }
 
 // get the current user's name from the os
-void oeWin32AppDatabase::get_user_name(char *buffer, ulong *size) { GetUserName(buffer, size); }
+void oeWin32AppDatabase::get_user_name(char *buffer, size_t *size) { GetUserName(buffer, reinterpret_cast<LPDWORD>(size)); }
 
 /////////////////////////////////////////////////////////////////////////////////
 // pass name of dll which contains desired language

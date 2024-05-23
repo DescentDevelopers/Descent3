@@ -72,6 +72,7 @@
  */
 #ifndef __DDIO_FORCEFEEDBACK_H_
 #define __DDIO_FORCEFEEDBACK_H_
+#include <cstdint>
 #include "pstypes.h"
 #include "string.h"
 #define kMAX_Str 80
@@ -162,31 +163,31 @@ typedef enum {
   kMaxEffectSubTypes
 } tEffType;
 typedef struct tEffectConstant {
-  long Mag; // +- 10,000
+  int32_t Mag; // +- 10,000
 } tEffConstant;
 typedef struct tEffectRamp {
-  long Start; // +- 10,000
-  long End;   // +- 10,000
+  int32_t Start; // +- 10,000
+  int32_t End;   // +- 10,000
 } tEffRamp;
 typedef struct tEffectWave {
   unsigned int Mag;   // 0 to 10,000
-  long Offset;         // +- 10,000
+  int32_t Offset;         // +- 10,000
   unsigned int Phase; // 0 to 35,999
   unsigned int Period;
 } tEffWave;
 typedef struct tEffectCondition {
-  long Offset;                      // +- 10,000
-  long PositiveCoefficient;         // +- 10,000
-  long NegativeCoefficient;         // +- 10,000
+  int32_t Offset;                      // +- 10,000
+  int32_t PositiveCoefficient;         // +- 10,000
+  int32_t NegativeCoefficient;         // +- 10,000
   unsigned int PositiveSaturation; // 0 to 10,000
   unsigned int NegativeSaturation; // 0 to 10,000
-  long DeadBand;                    // 0 to 10,000
+  int32_t DeadBand;                    // 0 to 10,000
 } tEffCondition;
 typedef struct tEffectCustom {
   int Channels;
   int Period;
   int Samples;
-  long *ForceData;
+  int32_t *ForceData;
 } tEffCustom;
 typedef union tEffectInfo {
   tEffConstant Constant;
@@ -213,7 +214,7 @@ typedef struct tFFB_Effect {
   tEffAxis Axis;
   tJoyButtons Trigger;
   unsigned int TriggerRepeatTime;
-  long Direction; // 0 to 360 deg.
+  int32_t Direction; // 0 to 360 deg.
   tEffEnvelope Envelope;
 } tFFB_Effect;
 extern bool ddForce_found;   // a Force Feedback device was found

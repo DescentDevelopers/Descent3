@@ -335,7 +335,7 @@ extern float Mouse_sensitivity;
 #define MOUSE_DEADZONE 0.00f
 
 static float WinControllerTimer = 0.0f;
-static longlong g_last_frame_timer_ms = -1;
+static int64_t g_last_frame_timer_ms = -1;
 static float g_accum_frame_time = 0.0f;
 
 //	Functions to create and destroy a game controller object.
@@ -375,7 +375,7 @@ gameWinController::~gameWinController() {}
 #define MOUSE_POLLING_TIME (1.0f / 20.0f)
 
 void gameWinController::poll() {
-  longlong cur_frame_timer_ms;
+  int64_t cur_frame_timer_ms;
 
   if (m_Suspended)
     return;

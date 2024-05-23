@@ -123,9 +123,9 @@ extern void (*Texture_functions[])(g3Point *, int);
 
 // Our shade tables
 extern ubyte TexShadeTable8[MAX_TEXTURE_SHADES][256];
-extern ulong TexShadeTable16[MAX_TEXTURE_SHADES][256];
+extern uint32_t TexShadeTable16[MAX_TEXTURE_SHADES][256];
 extern ubyte TexRevShadeTable8[MAX_TEXTURE_SHADES][256];
-extern ulong TexRevShadeTable16[MAX_TEXTURE_SHADES][256];
+extern uint32_t TexRevShadeTable16[MAX_TEXTURE_SHADES][256];
 
 int tex_Init();
 

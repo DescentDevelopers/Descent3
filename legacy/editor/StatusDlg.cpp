@@ -104,7 +104,7 @@ END_MESSAGE_MAP()
 //				calling CProgress::IncreaseProgress().  If you are going to use CProgress::SetProgressPercentage()
 //				then you should call the version of InitProgress(CWnd *parent) below.
 // Returns true if the progress dialog was created
-bool CProgress::InitProgress(fix min,fix max,long int iterations,CWnd *parent)
+bool CProgress::InitProgress(fix min,fix max,int32_t iterations,CWnd *parent)
 {
 	int nmin,nmax,Step;
 	nmin=FixToInt(min);
@@ -130,7 +130,7 @@ bool CProgress::InitProgress(fix min,fix max,long int iterations,CWnd *parent)
 	return true;
 }
 
-bool CProgress::InitProgress(int min,int max,long int iterations,CWnd *parent)
+bool CProgress::InitProgress(int min,int max,int32_t iterations,CWnd *parent)
 {
 	int Step;
 	

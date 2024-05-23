@@ -84,7 +84,7 @@ public:
   virtual bool write(const char *label, int entry);
 
   // get the current user's name.
-  virtual void get_user_name(char *buffer, ulong *size);
+  virtual void get_user_name(char *buffer, size_t *size);
 };
 
 // pass name of dll which contains desired language

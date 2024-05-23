@@ -502,7 +502,7 @@ int ui_DoFrame(bool input) {
     ui_DoWindowFocus();              //	determine window with current input focus.
     res = ui_ProcessFocusedWindow(); //	process focused window
 
-    //		longlong cur_time = timer_GetMSTime();
+    //		int64_t cur_time = timer_GetMSTime();
     while ((timer_GetTime() - UI_input.cur_time) < UI_FRAMETIME) {
     };
 

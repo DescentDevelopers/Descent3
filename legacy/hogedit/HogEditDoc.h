@@ -85,7 +85,7 @@ typedef struct hog_library_entry
 	char		path[PSPATHNAME_LEN];		// location of data file (filename not included)
 	char		name[PSFILENAME_LEN+1];		// just the filename
 	unsigned	length;						// length of this file
-	long		timestamp;					// time and date of file
+  int32_t		timestamp;					// time and date of file
 	int			flags;						// misc flags
 	int			offset;						// file offset in hog (or -1 if in .rib file)
 } hog_library_entry;

@@ -311,7 +311,7 @@ void DrawTerrainPoints (vector *view_pos,matrix *view_orient)
 typedef struct seg_edge {
 	union {
 		struct {short v0,v1;};
-		long vv;
+    int32_t vv;
 	};
 	ushort	type;
 } seg_edge;
@@ -332,7 +332,7 @@ int edge_list_size;		//set each frame
 //finds edge, filling in edge_ptr. if found old edge, returns index, else return -1
 int FindEdge(int v0,int v1,seg_edge **edge_ptr)
 {
-	long vv;
+  int32_t vv;
 	short hash,oldhash;
 	int ret;
 

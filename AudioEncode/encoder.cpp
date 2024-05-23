@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +24,7 @@
 #include "mono.h"
 #include "Aencode.h"
 
-long aenc_ReadSamp(void *data) {
+int32_t aenc_ReadSamp(void *data) {
   FILE *f = (FILE *)data;
   int a, b;
   a = getc(f);
@@ -33,13 +34,13 @@ long aenc_ReadSamp(void *data) {
   b = getc(f);
   if (b == EOF)
     return ReadSampleEof;
-  return (short)((b << 8) + a);
+  return (b << 8) | a;
 }
 
-int aenc_Compress(char *input_filename, char *output_filename, int *input_levels, int *input_samples, int *input_rate,
+bool aenc_Compress(char *input_filename, char *output_filename, int *input_levels, int *input_samples, int *input_rate,
                   int *input_channels, float *input_factor, float *input_volscale) {
   FILE *in, *out;
-  long result;
+  int32_t result;
 
   int levels, samples_per_subband;
   unsigned sample_rate, channels;
@@ -50,7 +51,7 @@ int aenc_Compress(char *input_filename, char *output_filename, int *input_levels
   in = fopen(input_filename, "rb");
   if (!in) {
     mprintf((0, "AENC: Unable to open %s for input.\n", input_filename));
-    return 0;
+    return false;
   }
 
   if (input_levels) {
@@ -114,7 +115,9 @@ int aenc_Compress(char *input_filename, char *output_filename, int *input_levels
     unsigned subbands = (2048 / samples_per_subband) >> 1;
 
     for (levels = 0; subbands; subbands >>= 1, ++levels)
-      ;
+    {
+
+    }
   }
 
   if (!sample_rate_set)
@@ -129,7 +132,7 @@ int aenc_Compress(char *input_filename, char *output_filename, int *input_levels
   out = fopen(output_filename, "wb");
   if (!out) {
     mprintf((0, "AENC: Unable to open %s for output.\n", output_filename));
-    return 0;
+    return false;
   }
 
   result = AudioEncode(aenc_ReadSamp, in, channels, sample_rate, volume_scale, out, levels, samples_per_subband,
@@ -138,5 +141,5 @@ int aenc_Compress(char *input_filename, char *output_filename, int *input_levels
   fclose(out);
   fclose(in);
 
-  return 1;
+  return result > 0;
 }

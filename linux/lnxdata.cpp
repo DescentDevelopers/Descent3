@@ -207,7 +207,7 @@ bool oeLnxAppDatabase::write(const char *label, int entry) {
 }
 
 // get the current user's name from the os
-void oeLnxAppDatabase::get_user_name(char *buffer, ulong *size) {
+void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
   struct passwd *pwuid = getpwuid(geteuid());
 
   if ((pwuid != NULL) && (pwuid->pw_name != NULL)) {

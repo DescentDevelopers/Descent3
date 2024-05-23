@@ -290,7 +290,7 @@ private:
   } m_ExtCtlStates[CT_MAX_EXTCTLS];
 
   //	thread info.
-  longlong m_frame_timer_ms;
+  int64_t m_frame_timer_ms;
   float m_frame_time;
 
   //	note id is id value from controller in control list.

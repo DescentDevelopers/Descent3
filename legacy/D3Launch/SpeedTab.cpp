@@ -104,9 +104,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-typedef LONGLONG longlong;
-
-
 /////////////////////////////////////////////////////////////////////////////
 // CSpeedTab property page
 
@@ -472,7 +469,7 @@ void CSpeedTab::OnBtnSpeedDetect()
 	array1 = new int[1024*1024];
 	array2 = new int[1024*1024];
 
-	longlong ct1, ct2, freq;
+	int64_t ct1, ct2, freq;
 	
 	QueryPerformanceCounter( (LARGE_INTEGER *)&ct1 );
 
@@ -502,7 +499,7 @@ void CSpeedTab::OnBtnSpeedDetect()
 	delete(array1);
 	delete(array2);
 
-	longlong deltat = (ct2-ct1)/count;
+	int64_t deltat = (ct2-ct1)/count;
 	
 	int speed = int(freq/deltat);
 
@@ -537,15 +534,15 @@ void CSpeedTab::OnBtnSpeedDetect()
 		
 		deltat = ct2-ct1;
 		
-		//longlong speed = (longlong(300)*freq)/(deltat*longlong(1024));
+		//int64_t speed = (int64_t(300)*freq)/(deltat*int64_t(1024));
 
 		int bpp = GetDeviceCaps(hScreenDC,BITSPIXEL);
 		int bpp1 = (bpp+7)/8;
 
-		longlong vram_speed = freq;
-		vram_speed /= (longlong)deltat;
-		vram_speed *= (longlong)(w*h*bpp1);
-		vram_speed /= (longlong)(1024*1024);
+		int64_t vram_speed = freq;
+		vram_speed /= (int64_t)deltat;
+		vram_speed *= (int64_t)(w*h*bpp1);
+		vram_speed /= (int64_t)(1024*1024);
 
 		speed = int(vram_speed);
 

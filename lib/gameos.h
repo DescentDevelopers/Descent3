@@ -138,7 +138,7 @@ public:
   virtual bool write(const char *label, int *entry) = 0;
 
   // get the current user's name from the os
-  virtual void get_user_name(char *buffer, ulong *size) = 0;
+  virtual void get_user_name(char *buffer, size_t *size) = 0;
 };
 //  Data structures
 typedef struct os_date {

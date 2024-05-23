@@ -74,7 +74,7 @@ typedef struct chunked_bitmap {
   int *bm_array; // array of bitmap handles.
 } chunked_bitmap;
 extern bms_bitmap GameBitmaps[MAX_BITMAPS];
-extern ulong Bitmap_memory_used;
+extern uint32_t Bitmap_memory_used;
 
 // Sets all the bitmaps to unused
 void bm_InitBitmaps();

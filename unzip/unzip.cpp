@@ -503,7 +503,7 @@ int ZIP::ReadZipDataToFile(zipentry *ent, FILE *file) {
 
 int ZIP::SeekToCompressedData(zipentry *ent) {
   char buf[LFH_NAME];
-  long offset;
+  int32_t offset;
 
   if (fseek(m_fp, ent->offset_lcl_hdr_frm_frst_disk, SEEK_SET) != 0) {
     return -1;

@@ -142,8 +142,8 @@ void CZip::ha_InitializeTree(tHATree *tree) {
 }
 
 void CZip::ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output) {
-  ulong code;
-  ulong current_bit;
+  uint32_t code;
+  uint32_t current_bit;
   int code_size;
   int current_node;
 
@@ -162,7 +162,7 @@ void CZip::ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output) {
   }
   OutputBits(output, code, code_size);
   if (tree->leaf[c] == -1) {
-    OutputBits(output, (ulong)c, 8);
+    OutputBits(output, (uint32_t)c, 8);
     ha_add_new_node(tree, c);
   }
 }

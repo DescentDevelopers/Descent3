@@ -193,6 +193,7 @@
 class oeApplication;
 
 #include <stdio.h>
+#include <cstdint>
 
 #include "pstypes.h"
 #include "ddio_common.h"
@@ -238,7 +239,7 @@ void timer_Close();
 float timer_GetTime();
 
 // returns time in milliseconds
-longlong timer_GetMSTime();
+int64_t timer_GetMSTime();
 
 //	hook in timer function at certain period.  returns a handle to this function
 //@@int timer_HookFunction(void (*fncptr)(), int period);
