@@ -26,7 +26,9 @@
 #include "d3edit.h"
 #include "ddio.h"
 #include "mem.h"
+
 #include <stdlib.h>
+#include <algorithm>
 
 #define TOP_FACE		0
 #define LEFT_FACE		1
@@ -38,7 +40,7 @@ float Hemicube_view_zoom=1.0;
 
 int rad_Drawing=0;
 
-g3Point Element_points[100];
+g3Point Element_points[100]; 
 rad_element *rad_MaxElement;
 
 rad_hemicube rad_Hemicube;
@@ -220,9 +222,9 @@ void CalculateFormFactorsHemiCube ()
 				float rff;
 				
 				if (rad_MaxSurface->surface_type==ST_SATELLITE)
-					rff= min (rad_FormFactors[ff_index],1.0);
+					rff= std::min(rad_FormFactors[ff_index],1.0f);
 				else	
-					rff= (float) min(rad_FormFactors[ff_index] * rad_MaxSurface->area / dest_element->area,1.0);
+					rff= (float) std::min(rad_FormFactors[ff_index] * rad_MaxSurface->area / dest_element->area,1.0f);
 
             // Get shooting patch unsent exitance
 				spectra shoot=rad_MaxSurface->exitance;

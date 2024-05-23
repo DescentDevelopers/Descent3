@@ -288,7 +288,7 @@ void DrawTerrainPoints (vector *view_pos,matrix *view_orient)
 
 	for (i=0;i<TERRAIN_DEPTH*TERRAIN_WIDTH;i++)
 	{
-		GetPreRotatedPoint (&terr_point.p3_vec,i%TERRAIN_WIDTH,i/TERRAIN_WIDTH,Terrain_seg[i].ypos);
+		GetPreRotatedPoint (&terr_point,i%TERRAIN_WIDTH,i/TERRAIN_WIDTH,Terrain_seg[i].ypos);
 		terr_point.p3_flags=0;
 		g3_CodePoint (&terr_point);
 		if (!terr_point.p3_codes)

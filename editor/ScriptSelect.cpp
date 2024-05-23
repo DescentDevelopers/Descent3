@@ -88,7 +88,7 @@ BOOL CScriptSelect::OnInitDialog()
 	CDialog::OnInitDialog();
 
 //	update names of scripts into listbox
-	m_ScriptCode = D3XReallocProgram(NULL, 0, 0, 0);
+	// m_ScriptCode = D3XReallocProgram(NULL, 0, 0, 0); LGT- undefined
 	UpdateScriptListbox();
 	if (m_ScriptName.IsEmpty()) 
 		scrlistbox->SelectString(-1, "null");
@@ -118,7 +118,7 @@ void CScriptSelect::OnDestroy()
 {
 	CDialog::OnDestroy();
 	
-	if (m_ScriptCode) D3XFreeProgram(m_ScriptCode);	
+	// if (m_ScriptCode) D3XFreeProgram(m_ScriptCode); LGT- undefined
 }
 
 

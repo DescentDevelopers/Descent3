@@ -1,6 +1,9 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
+*
+* Descent 3: Apex
+* Copyright (C) 2024 by Justin Marshall
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -34,3 +37,22 @@
 #include <afxole.h>			// MFC OLE support (ADDED BY SAMIR)
 #include <windows.h>
 
+
+// Various 64bit wrapper functions.
+#undef GetWindowLong
+#undef SetWindowLong
+#undef SetClassLong
+#undef LONG
+
+#define GWL_WNDPROC GWLP_WNDPROC
+#define SetClassLong SetClassLongPtr
+#define GetWindowLong GetWindowLongPtr
+#define SetWindowLong SetWindowLongPtr
+#define GWL_USERDATA GWLP_USERDATA
+#define GCL_HICON GCLP_HICON
+#define DWL_MSGRESULT DWLP_MSGRESULT
+#define DWL_DLGPROC DWLP_DLGPROC
+
+#ifndef GCL_HBRBACKGROUND
+#define GCL_HBRBACKGROUND (-10)
+#endif

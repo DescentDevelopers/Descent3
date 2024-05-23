@@ -35,8 +35,6 @@ lightmap_info *LightmapInfo = NULL;
 
 static uint16_t *Free_lmi_list = NULL;
 
-static void CloseLightmapInfos();
-
 void CloseLightmapInfos() {
   bool final_lightmap = true;
 

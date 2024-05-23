@@ -608,7 +608,7 @@ void CScriptStudio::RemoveAllSelections()
 //Replaces the selected word with the passed word
 void CScriptStudio::ReplaceSelected(char *replace_word)
 {
-  int32_t start_index,end_index;
+  long start_index,end_index;
 
 	UpdateData(false);
 
@@ -743,6 +743,7 @@ void CScriptStudio::HandleEditControl(int id, int code)
 
 bool InvokeScriptStudio(const char *filename, const char *scrname)
 {
+#if 0 // LGT: D3XReallocProgram undefined
 	char *source;
 	CScriptStudio studio;
 	tD3XProgram *script;
@@ -781,6 +782,9 @@ bool InvokeScriptStudio(const char *filename, const char *scrname)
 	D3XFreeProgram(script);
 
 	return ret;
+#else
+	return false;
+#endif
 }
 
 

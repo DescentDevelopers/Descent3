@@ -89,6 +89,7 @@ END_MESSAGE_MAP()
 
 void CD3XStringEditor::OnLoadscript() 
 {
+#if 0
 //	open either a level or a .d3x file
 	char openpath[_MAX_PATH+1];
 
@@ -125,6 +126,7 @@ void CD3XStringEditor::OnLoadscript()
 		m_pathname = openpath;
 		m_modified = false;
 	}
+#endif
 }
 
 void CD3XStringEditor::OnSelchangeStringlist() 
@@ -165,7 +167,7 @@ void CD3XStringEditor::OnKillfocusStringedit()
 void CD3XStringEditor::OnSave() 
 {
 	ASSERT(m_modified);
-
+#if 0
 // save program by loading it in first and reconstructin a new program obhect
 	CFILE *fp = cfopen(m_pathname, "rb");
 	if (fp) {
@@ -221,7 +223,7 @@ void CD3XStringEditor::OnSave()
 
 	m_modified = false;
 	GetDlgItem(IDC_SAVE)->EnableWindow(FALSE);
-
+#endif
 }
 
 void CD3XStringEditor::OnOK() 

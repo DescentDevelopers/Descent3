@@ -161,7 +161,7 @@ BOOL CScriptWizard::OnInitDialog()
 // listbox.
 	CComboBox *modcbox = (CComboBox *)GetDlgItem(IDC_SCRMOD_BOX);
 
-	m_ScriptCode = D3XReallocProgram(NULL, 0, 0, 0);					 
+	// m_ScriptCode = D3XReallocProgram(NULL, 0, 0, 0); // LGT: undefined					 
 	ResetScriptList();
 
 //	place all filenames of scripts into combo box
@@ -197,7 +197,7 @@ void CScriptWizard::OnDestroy()
 	CDialog::OnDestroy();
 	
 	if (m_ScriptCode) 
-		D3XFreeProgram(m_ScriptCode);	
+		// D3XFreeProgram(m_ScriptCode); // LGT: undefined	
 	ResetScriptList();
 }
 
@@ -616,8 +616,9 @@ void CScriptWizard::UpdateEventListbox()
 		scrlistbox->GetText(m_CurScriptSel, scrname);
 		id = FindScriptIDFromName(scrname);
 
-		for (i = 0; i < MAX_SCREVTS; i++)
-			listbox->AddString(Script_evt_names[i]);
+		// LGT- MAX_SCREVTS undefined
+		// for (i = 0; i < MAX_SCREVTS; i++)
+		// 	listbox->AddString(Script_evt_names[i]);
 
 		listbox->SetCurSel(m_CurEventSel);
 	}

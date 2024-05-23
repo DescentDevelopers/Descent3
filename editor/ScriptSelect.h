@@ -91,13 +91,16 @@ private:
 
 inline void SETUP_SCRIPTSELECT_OBJECT(CScriptSelect& sel, object *obj)
 {
+#if 0 // LGT: script undefined
 	sel.m_ScriptName = obj->script.name;
 	sel.m_NumParms = obj->script.num_parms;
-	obj->script.copy_parms(sel.m_Parm);	
+	obj->script.copy_parms(sel.m_Parm);
+#endif
 }
 
 inline void RETURN_SCRIPTSELECT_OBJECT(object *obj, CScriptSelect& sel)
 {
+#if 0 // LGT: script undefined
 	obj->script.set_parms(sel.m_NumParms, sel.m_Parm);
 	if (sel.m_ScriptName == "null") 
 		obj->script.set_name(NULL);
@@ -105,18 +108,22 @@ inline void RETURN_SCRIPTSELECT_OBJECT(object *obj, CScriptSelect& sel)
 		obj->script.set_name(sel.m_ScriptName);
 	obj->script.is_custom = (sel.m_CustomType==CUSTOM_SCRIPT_MASK) ? 1 : 0;
 
-	mprintf(0, "Script [%s:custom=%d] assigned.\n", sel.m_ScriptName, obj->script.is_custom);
+	mprintf((0, "Script [%s:custom=%d] assigned.\n", sel.m_ScriptName, obj->script.is_custom));
+#endif
 }
 
 inline void SETUP_SCRIPTSELECT_TRIGGER(CScriptSelect& sel, trigger *trig)
 {
+#if 0 // LGT: script undefined
 	sel.m_ScriptName = trig->script.name;
 	sel.m_NumParms = trig->script.num_parms;
 	trig->script.copy_parms(sel.m_Parm);	
+#endif
 }
 
 inline void RETURN_SCRIPTSELECT_TRIGGER(trigger *trig, CScriptSelect& sel)
 {
+#if 0 // LGT: script undefined
 	trig->script.set_parms(sel.m_NumParms, sel.m_Parm);
 	if (sel.m_ScriptName == "null") 
 		trig->script.set_name(NULL);
@@ -124,7 +131,8 @@ inline void RETURN_SCRIPTSELECT_TRIGGER(trigger *trig, CScriptSelect& sel)
 		trig->script.set_name(sel.m_ScriptName);
 	trig->script.is_custom = (sel.m_CustomType==CUSTOM_SCRIPT_MASK) ? 1 : 0;
 
-	mprintf(0, "Script [%s:custom=%d] assigned.\n", sel.m_ScriptName, trig->script.is_custom);
+	mprintf((0, "Script [%s:custom=%d] assigned.\n", sel.m_ScriptName, trig->script.is_custom));
+#endif
 }
 
 

@@ -1322,8 +1322,8 @@ public:
 
 	HTREEITEM ParseScriptNodeLine_v0(char *line, int linenum, HTREEITEM parent, bool &skip_all_children, HTREEITEM insert_before=TVI_LAST);
 	HTREEITEM ParseScriptNodeLine_v1U(char *line, int linenum, HTREEITEM parent, bool &skip_all_children, int version, HTREEITEM insert_before=TVI_LAST);
-	void ScriptFileParseError(int error_code, int linenum, int script_ID, char *name);
-	void SpecialScriptFileParseError(int linenum, int script_ID, char *type_name, char *name);
+	void ScriptFileParseError(int error_code, int linenum, int script_ID,const char *name);
+	void SpecialScriptFileParseError(int linenum, int script_ID, char *type_name,const char *name);
 	bool ValidateFunctionNode(HTREEITEM node, int linenum);
 
 	///////////////////////////////////

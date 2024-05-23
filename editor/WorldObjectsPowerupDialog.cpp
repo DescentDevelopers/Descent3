@@ -59,6 +59,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// LGT: missing powerup.cpp
+powerup Powerups[MAX_POWERUPS];
+
 /////////////////////////////////////////////////////////////////////////////
 // CWorldObjectsPowerupDialog dialog
 
@@ -115,6 +118,7 @@ END_MESSAGE_MAP()
 // powerup, and allocs a tracklock to keep track of it
 void CWorldObjectsPowerupDialog::OnAddNewPowerup() 
 {
+#if 0
 	char filename[255];
 	char cur_name[100];
 	int img_handle;
@@ -196,12 +200,13 @@ void CWorldObjectsPowerupDialog::OnAddNewPowerup()
 	RemapPowerups();
 	
 	UpdateDialog ();
-
+#endif
 }
 
 // This functions saves the current powerup to the net
 void CWorldObjectsPowerupDialog::OnCheckin() 
 {
+#if 0
 	int n=D3EditState.current_powerup;
 	mngs_Pagelock temp_pl;
 	int r;
@@ -276,6 +281,7 @@ void CWorldObjectsPowerupDialog::OnCheckin()
 			}
 		}
 	}
+#endif
 }
 
 // Deletes the current powerup 
@@ -283,6 +289,7 @@ void CWorldObjectsPowerupDialog::OnCheckin()
 // If its local only, it will get deleted from the local pagefile
 void CWorldObjectsPowerupDialog::OnDeletePowerup() 
 {
+#if 0
 	int answer,tl;
 	mngs_Pagelock pl;
 	int n=D3EditState.current_powerup;
@@ -340,12 +347,13 @@ void CWorldObjectsPowerupDialog::OnDeletePowerup()
 	
 	OutrageMessageBox ("Powerup deleted.");
 	UpdateDialog ();
-
+#endif
 }
 
 // This functions locks a powerup from the net.  
 void CWorldObjectsPowerupDialog::OnLockPowerup() 
 {
+#if 0
 	int n=D3EditState.current_powerup;
 	mngs_Pagelock temp_pl;
 	mngs_power_page powpage;
@@ -421,28 +429,31 @@ void CWorldObjectsPowerupDialog::OnLockPowerup()
 	}
 	mng_EraseLocker();
 
-	
+#endif	
 }
 
 // Gets the next powerup and sets it as the current one
 void CWorldObjectsPowerupDialog::OnNextPowerup() 
 {
+#if 0
 	D3EditState.current_powerup=GetNextPowerup(D3EditState.current_powerup);
 	UpdateDialog();
-	
+#endif
 }
 
 // Gets the previous powerup and sets it as the current one
 void CWorldObjectsPowerupDialog::OnPrev() 
 {
-
+#if 0
 	D3EditState.current_powerup=GetPrevPowerup(D3EditState.current_powerup);
 	UpdateDialog();
+#endif
 }
 
 // This simply gets a list of all the pages we have checked out
 void CWorldObjectsPowerupDialog::OnPowerupsOut() 
 {
+#if 0
 	char str[10000];
 	int total=0;
 
@@ -468,7 +479,7 @@ void CWorldObjectsPowerupDialog::OnPowerupsOut()
 		MessageBox (str,"Powerups",MB_OK);
 	}
 
-
+#endif
 }
 
 									
@@ -476,6 +487,7 @@ void CWorldObjectsPowerupDialog::OnPowerupsOut()
 // what stuff to flag as "checked out" the next time we start up
 void CWorldObjectsPowerupDialog::SavePowerupsOnClose()
 {
+#if 0
 	int i,t;
 
 
@@ -492,21 +504,24 @@ void CWorldObjectsPowerupDialog::SavePowerupsOnClose()
 			mng_ReplacePowPage (Powerups[t].name,t,1);
 		}
 	}
+#endif
 }
 
 
 void CWorldObjectsPowerupDialog::OnPaint() 
 {
+#if 0
 	CPaintDC dc(this); // device context for painting
 	
 	UpdateDialog();
 	
-	
+#endif
 }
 
 // Redraw the dialog based on our current powerup
 void CWorldObjectsPowerupDialog::UpdateDialog(void)
 {
+#if 0
 	CEdit *ebox;
 	CButton *bbox;
 	int n=D3EditState.current_powerup;
@@ -591,8 +606,9 @@ void CWorldObjectsPowerupDialog::UpdateDialog(void)
 	bbox = (CButton *)GetDlgItem(IDC_GRAVITY_CHECK);
 	bbox->SetCheck(Powerups[n].phys_info.flags & PF_GRAVITY);
 
-	bbox = (CButton *)GetDlgItem(IDC_MAGNETISM_CHECK);
-	bbox->SetCheck(Powerups[n].phys_info.flags & PF_MAGNETISM);
+	// FIXME Editor
+	// bbox = (CButton *)GetDlgItem(IDC_MAGNETISM_CHECK);
+	// bbox->SetCheck(Powerups[n].phys_info.flags & PF_MAGNETISM);
 
 	bbox = (CButton *)GetDlgItem(IDC_WIND_CHECK);
 	bbox->SetCheck(Powerups[n].phys_info.flags & PF_WIND);
@@ -607,18 +623,19 @@ void CWorldObjectsPowerupDialog::UpdateDialog(void)
 	SendDlgItemMessage( IDC_POWER_PULLDOWN, CB_SELECTSTRING,0,(LPARAM) (LPCTSTR) Powerups[n].name);
 
 	UpdatePowerupView();
-
+#endif
 }
 
 void CWorldObjectsPowerupDialog::UpdatePowerupView(void)
 {
+#if 0
 	int n=D3EditState.current_powerup;
 	CWnd *powwnd;
 	RECT rect;
 	int x, y, bm_handle,w,h;
 	static int frame=0;
-	static last_powerup=-1;
-	static last_image_handle=-1;
+	static int last_powerup=-1;
+	static int last_image_handle=-1;
 	
 	if (Num_powerups<1)
 		return;
@@ -677,12 +694,14 @@ void CWorldObjectsPowerupDialog::UpdatePowerupView(void)
 		delete vport;
 		m_PowerupSurf.free();
 	}
+#endif
 }
 
 
 
 BOOL CWorldObjectsPowerupDialog::OnInitDialog() 
 {
+
 	CDialog::OnInitDialog();
 	
 	CWnd::SetTimer(1,100,NULL);
@@ -709,6 +728,7 @@ BOOL CWorldObjectsPowerupDialog::DestroyWindow()
 
 void CWorldObjectsPowerupDialog::OnKillfocusPowerNameEdit() 
 {
+#if 0
 	CEdit *ebox;
 	int n=D3EditState.current_powerup;
 	char name[PAGENAME_LEN];
@@ -777,10 +797,12 @@ void CWorldObjectsPowerupDialog::OnKillfocusPowerNameEdit()
 	strcpy (Powerups[n].name,name);
 	UpdateDialog();
 	mng_EraseLocker();
+#endif
 }
 
 void CWorldObjectsPowerupDialog::OnKillfocusPowerupSizeEdit() 
 {
+#if 0
 	CEdit *ebox;
 	char str[20];
 	int n=D3EditState.current_powerup;
@@ -789,11 +811,12 @@ void CWorldObjectsPowerupDialog::OnKillfocusPowerupSizeEdit()
 	ebox->GetWindowText (str,20);
 
 	Powerups[n].size=atof (str);
-	
+#endif
 }
 
 void CWorldObjectsPowerupDialog::OnSelendokPowerPulldown() 
 {
+#if 0
 	int i,cur;
 	char name[200];
 
@@ -810,10 +833,12 @@ void CWorldObjectsPowerupDialog::OnSelendokPowerPulldown()
 
 	D3EditState.current_powerup=i;
 	UpdateDialog();
+#endif
 }
 
 void CWorldObjectsPowerupDialog::OnLoadImage() 
 {
+#if 0
 	char filename[255];
 	char curname[255];
 	int img_handle;
@@ -867,11 +892,12 @@ void CWorldObjectsPowerupDialog::OnLoadImage()
 	}
 
 	UpdateDialog();
-	
+#endif
 }
 
 void CWorldObjectsPowerupDialog::OnGravityCheck() 
 {
+#if 0
 	// TODO: Add your control notification handler code here
 	int n=D3EditState.current_powerup;
 	CButton *btn;
@@ -882,11 +908,13 @@ void CWorldObjectsPowerupDialog::OnGravityCheck()
 		Powerups[n].phys_info.flags |= PF_GRAVITY;
 	else
 		Powerups[n].phys_info.flags &= ~PF_GRAVITY;
+#endif
 
 }
 
 void CWorldObjectsPowerupDialog::OnMagnetismCheck() 
 {
+#if 0
 	// TODO: Add your control notification handler code here
 	int n=D3EditState.current_powerup;
 	CButton *btn;
@@ -898,7 +926,7 @@ void CWorldObjectsPowerupDialog::OnMagnetismCheck()
 	else
 		Powerups[n].phys_info.flags &= ~PF_MAGNETISM;
 
-	
+#endif
 }
 
 void CWorldObjectsPowerupDialog::OnWindCheck() 

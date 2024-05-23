@@ -103,6 +103,8 @@
 
 struct tD3XProgram;
 
+#define MAX_SCRPARAMS				256 // icecoldduke - getting to compile, not correct.
+
 //	Data structure for a default script name.  
 // There exists a list of these names too.
 struct tScriptName

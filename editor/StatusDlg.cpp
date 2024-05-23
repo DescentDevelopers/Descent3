@@ -130,31 +130,6 @@ bool CProgress::InitProgress(fix min,fix max,int32_t iterations,CWnd *parent)
 	return true;
 }
 
-bool CProgress::InitProgress(int min,int max,int32_t iterations,CWnd *parent)
-{
-	int Step;
-	
-	float delta;
-	delta=(float) ( ((float)(max-min))/((float)iterations));
-	while(delta<1.0)
-	{
-		delta*=10;
-		max*=10;
-	}
-	Step=(int)delta;
-	m_Max=max;
-	m_Min=min;
-
-	if(!iterations) return false;
-	m_StatusDlg=new CStatusDlg;
-	if(!m_StatusDlg) return false;
-	m_StatusDlg->Create(IDD_STATUSDLG,parent);
-	m_StatusDlg->ShowWindow(SW_SHOW);
-	m_StatusDlg->Init(min,max,Step);
-	return true;
-}
-
-
 //This is a quick way of initializing the progress indicator, with a range 0-100 step size 1.  This is what you
 //should call if you plan on using CProgress::SetProgressPercentage().  Again, parent can be NULL if you want it to
 //be the main application as the parent

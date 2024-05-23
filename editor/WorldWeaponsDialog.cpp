@@ -1375,8 +1375,8 @@ void CWorldWeaponsDialog::UpdateWeaponView()
 	RECT rect;
 	int x, y, bm_handle,w,h;
 	static int frame=0;
-	static last_weapon=-1;
-	static last_image_handle=-1;
+	static int last_weapon=-1;
+	static int last_image_handle=-1;
 	int clearit=0;
 	
 	if (Num_weapons<1)

@@ -460,6 +460,13 @@ CEditorApp::CEditorApp()
 
 CEditorApp theApp;
 
+// icecoldduke: these arent defined in code anywhere
+#define MAX_TEXTURE_SHADES 32
+uint8_t TexShadeTable8[MAX_TEXTURE_SHADES][256];
+uint64_t TexShadeTable16[MAX_TEXTURE_SHADES][256];
+uint8_t TexRevShadeTable8[MAX_TEXTURE_SHADES][256];
+uint64_t TexRevShadeTable16[MAX_TEXTURE_SHADES][256];
+
 /////////////////////////////////////////////////////////////////////////////
 // CEditorApp initialization
 

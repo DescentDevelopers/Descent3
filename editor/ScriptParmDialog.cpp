@@ -111,9 +111,10 @@ void CScriptParmDialog::DoDataExchange(CDataExchange* pDX)
 
 void CScriptParmDialog::ConvertToScriptParameter(tScriptParm *parm, const char *type, const char *text)
 {
+#if 0 // LGT: ->type and ZERO_SCRIPT_PARM undefined
 	ZERO_SCRIPT_PARM(parm);
 
-	if (!type || !text) 
+		if (!type || !text)
 		return;
 
 	if (strcmp(type, "vector") == 0) {
@@ -135,11 +136,13 @@ void CScriptParmDialog::ConvertToScriptParameter(tScriptParm *parm, const char *
 			sscanf(str, "%d",&num);
 		*((int *)&parm->val.x) = num;
 	}
+#endif
 }
 
 
 void CScriptParmDialog::ConvertParamToText(CString& text, tScriptParm *parm)
 {
+#if 0 // LGT: ->type undefined
 	if (parm->type == PARMTYPE_VECTOR) {
 		Int3();									// get samir.
 	}
@@ -149,6 +152,7 @@ void CScriptParmDialog::ConvertParamToText(CString& text, tScriptParm *parm)
 	else {
 		text.Format("0x%x",*((int *)&parm->val.x));
 	}
+#endif
 }
 
 

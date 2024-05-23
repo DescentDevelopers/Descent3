@@ -89,6 +89,8 @@ int lmi_w(int handle);
 // Gets the height of this lightmap_info handle
 int lmi_h(int handle);
 
+void CloseLightmapInfos();
+
 // Softens the edges of lightmaps so there are fewer artifaces
 void ShadeLightmapInfoEdges(int type);
 void BlurLightmapInfos(int type);

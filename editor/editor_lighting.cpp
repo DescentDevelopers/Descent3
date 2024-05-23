@@ -24,6 +24,7 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <windows.h>
 #include "3d.h"
 #include "texture.h"
@@ -1519,9 +1520,9 @@ void AssignRoomSurfaceToLightmap (int roomnum,int facenum,rad_surface *sp)
 					red=green=blue=0;
 				}
 
-				fr=min(1.0,sp->elements[i*xres+t].exitance.r+Ambient_red+Room_ambience_r[roomnum]);
-				fg=min(1.0,sp->elements[i*xres+t].exitance.g+Ambient_green+Room_ambience_g[roomnum]);
-				fb=min(1.0,sp->elements[i*xres+t].exitance.b+Ambient_blue+Room_ambience_b[roomnum]);
+				fr=std::min(1.0f,sp->elements[i*xres+t].exitance.r+Ambient_red+Room_ambience_r[roomnum]);
+				fg=std::min(1.0f,sp->elements[i*xres+t].exitance.g+Ambient_green+Room_ambience_g[roomnum]);
+				fb=std::min(1.0f,sp->elements[i*xres+t].exitance.b+Ambient_blue+Room_ambience_b[roomnum]);
 				
 				fr=(fr*255)+.5;
 				fg=(fg*255)+.5;
@@ -1539,9 +1540,9 @@ void AssignRoomSurfaceToLightmap (int roomnum,int facenum,rad_surface *sp)
 					blue/=2;
 				}
 
-				red=min(red,255);
-				green=min(green,255);
-				blue=min(blue,255);
+				red=std::min(red,255);
+				green=std::min(green,255);
+				blue=std::min(blue,255);
 
 
 				uint16_t texel=OPAQUE_FLAG|GR_RGB16(red,green,blue);
@@ -2332,13 +2333,13 @@ void DoRadiosityForTerrain ()
 		for (i=0;i<AREA_X*AREA_Z;i++)
 		{
 			// Add in ambient terrain light
-			terrain_sums[0][i].r=min(1.0,Light_surfaces[i*2].elements[0].exitance.r+Ambient_red);
-			terrain_sums[0][i].g=min(1.0,Light_surfaces[i*2].elements[0].exitance.g+Ambient_green);
-			terrain_sums[0][i].b=min(1.0,Light_surfaces[i*2].elements[0].exitance.b+Ambient_blue);
+			terrain_sums[0][i].r=std::min(1.0f,Light_surfaces[i*2].elements[0].exitance.r+Ambient_red);
+			terrain_sums[0][i].g=std::min(1.0f,Light_surfaces[i*2].elements[0].exitance.g+Ambient_green);
+			terrain_sums[0][i].b=std::min(1.0f,Light_surfaces[i*2].elements[0].exitance.b+Ambient_blue);
 
-			terrain_sums[1][i].r=min(1.0,Light_surfaces[i*2+1].elements[0].exitance.r+Ambient_red);
-			terrain_sums[1][i].g=min(1.0,Light_surfaces[i*2+1].elements[0].exitance.g+Ambient_green);
-			terrain_sums[1][i].b=min(1.0,Light_surfaces[i*2+1].elements[0].exitance.b+Ambient_blue);
+			terrain_sums[1][i].r=std::min(1.0f,Light_surfaces[i*2+1].elements[0].exitance.r+Ambient_red);
+			terrain_sums[1][i].g=std::min(1.0f,Light_surfaces[i*2+1].elements[0].exitance.g+Ambient_green);
+			terrain_sums[1][i].b=std::min(1.0f,Light_surfaces[i*2+1].elements[0].exitance.b+Ambient_blue);
 		}
 	
 
@@ -2567,9 +2568,9 @@ void DoRadiosityForTerrain ()
 	// Clip to 1.0
 	for (i=0;i<TERRAIN_DEPTH*TERRAIN_WIDTH;i++)
 	{
-		exitance[i].r=min(exitance[i].r,1.0);
-		exitance[i].g=min(exitance[i].g,1.0);
-		exitance[i].b=min(exitance[i].b,1.0);
+		exitance[i].r=std::min(exitance[i].r,1.0f);
+		exitance[i].g=std::min(exitance[i].g,1.0f);
+		exitance[i].b=std::min(exitance[i].b,1.0f);
 	}
 
 
@@ -2737,7 +2738,7 @@ void BuildLightmapUVs (int *room_list,int *face_list,int count,vector *lightmap_
 		// Figure out lightmap resolution
 	float xdiff=verts[rightmost_point].x-verts[leftmost_point].x;
 	float ydiff=verts[topmost_point].y-verts[bottommost_point].y;
-	float max_diff=(float)max(xdiff,ydiff);
+	float max_diff=(float)std::max(xdiff,ydiff);
 	
 	int lightmap_x_res=-1,lightmap_y_res=-1;
 	float xspacing=LightSpacing;

@@ -344,7 +344,7 @@ void CScriptLevelInterface::OnCompile()
 			if(MessageBox(buffer,"Congratulations",MB_YESNO)==IDYES){
 				ddio_MakePath(buffer,LocalScriptDir,filename,NULL);
 				if(!cfexist(buffer)){
-					sprintf(buffer,"I can't seem to find %s in your data\\scripts directory...Sorry,\nbut I can't automatically add it for you.\nYou'll have to manually add %s into the manage system.",filename);
+					sprintf(buffer,"I can't seem to find %s in your data\\scripts directory...Sorry,\nbut I can't automatically add it for you.\nYou'll have to manually add %s into the manage system.",filename, filename);
 					MessageBox(buffer,"Uh Oh!",MB_OK);
 				}else{
 					if(AddNewGameFile(buffer,"scripts")){
@@ -416,7 +416,7 @@ void CScriptLevelInterface::OnEditscript()
 			strcpy(buffer,"The specified path was not found.");
 			break;
 		case ERROR_BAD_FORMAT:  
-			strcpy(buffer,"The .exe file is invalid (non-Win32® .exe or error in .exe image).");
+			strcpy(buffer,"The .exe file is invalid (non-Win32ï¿½ .exe or error in .exe image).");
 			break;
 		case SE_ERR_ACCESSDENIED:  
 			strcpy(buffer,"The operating system denied access to the specified file.");

@@ -115,6 +115,7 @@ END_MESSAGE_MAP()
 
 void CWorldObjectsRobotDialog::OnAddNewRobot() 
 {
+#if 0 // LGT: undeclared symbols
 	char filename[255];
 	char cur_name[100];
 	int img_handle;
@@ -152,7 +153,7 @@ void CWorldObjectsRobotDialog::OnAddNewRobot()
 
 	while (finding_name)
 	{
-		sprintf (cur_name,"%s%d",dlg_open.GetFileName(),c);
+		// sprintf (cur_name,"%s%d",dlg_open.GetFileName(),c); // LGT: CString not char*
 		if (FindRobotName (cur_name)!=-1)
 			c++;
 		else
@@ -187,11 +188,12 @@ void CWorldObjectsRobotDialog::OnAddNewRobot()
 		
 	UpdateDialog ();
 
-	
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnCheckinRobot() 
 {
+#if 0 // LGT: undeclared symbols
 	int n=D3EditState.current_robot;
 	mngs_Pagelock temp_pl;
 	int r;
@@ -257,12 +259,13 @@ void CWorldObjectsRobotDialog::OnCheckinRobot()
 			}
 		}
 	}
-
+#endif
 	
 }
 
 void CWorldObjectsRobotDialog::OnDeleteRobot() 
 {
+#if 0 // LGT: undeclared symbols
 	int answer,tl;
 	mngs_Pagelock pl;
 	int n=D3EditState.current_robot;
@@ -323,12 +326,12 @@ void CWorldObjectsRobotDialog::OnDeleteRobot()
 	RemapRobots();
 
 	UpdateDialog ();
-
-	
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnLockRobot() 
 {
+#if 0 // LGT: undeclared symbols
 	int n=D3EditState.current_robot;
 	mngs_Pagelock temp_pl;
 	mngs_robot_page robotpage;
@@ -404,23 +407,28 @@ void CWorldObjectsRobotDialog::OnLockRobot()
 		}
 	}
 	mng_EraseLocker();
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnNextRobot() 
 {
+#if 0 // LGT: undeclared symbols
 	D3EditState.current_robot=GetNextRobot(D3EditState.current_robot);
 	UpdateDialog();
-	
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnPrevRobot() 
 {
+#if 0 // LGT: undeclared symbols
 	D3EditState.current_robot=GetPrevRobot(D3EditState.current_robot);
 	UpdateDialog();
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnRobotModel() 
 {
+#if 0 // LGT: undeclared symbols
 	char filename[255];
 	char curname[255];
 	int img_handle;
@@ -458,11 +466,12 @@ void CWorldObjectsRobotDialog::OnRobotModel()
 	cf_CopyFile (curname,filename);
 	
 	UpdateDialog();
-	
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnKillfocusRobotNameEdit() 
 {
+#if 0 // LGT: undeclared symbols
 	CEdit *ebox;
 	int n=D3EditState.current_robot;
 	char name[PAGENAME_LEN];
@@ -534,12 +543,13 @@ void CWorldObjectsRobotDialog::OnKillfocusRobotNameEdit()
 
 	RemapRobots();
 	UpdateDialog();
-	
+#endif
 	
 }
 
 void CWorldObjectsRobotDialog::OnSelendokRobotPulldown() 
 {
+#if 0 // LGT: undeclared symbols
 	int i,cur;
 	char name[200];
 
@@ -556,11 +566,12 @@ void CWorldObjectsRobotDialog::OnSelendokRobotPulldown()
 
 	D3EditState.current_robot=i;
 	UpdateDialog();
-		
+#endif
 }
 
 void CWorldObjectsRobotDialog::UpdateDialog() 
 {
+#if 0
 	CEdit *ebox;
 	CButton *bbox;
 	int n=D3EditState.current_robot;
@@ -629,12 +640,14 @@ void CWorldObjectsRobotDialog::UpdateDialog()
 	SendDlgItemMessage( IDC_ROBOT_PULLDOWN, CB_SELECTSTRING,0,(LPARAM) (LPCTSTR) Robots[n].name);
 
 	UpdateRobotView();
+#endif
 }
 
 #define NUM_ANIM_FRAMES	30
 
 void CWorldObjectsRobotDialog::UpdateRobotView(void)
 {
+#if 0
 	int n=D3EditState.current_robot;
 	CWnd *robotwnd;
 	RECT rect;
@@ -716,31 +729,35 @@ void CWorldObjectsRobotDialog::UpdateRobotView(void)
 
 	delete vport;
 	m_RobotSurf.free();
-	
+#endif
 }
 
 
 BOOL CWorldObjectsRobotDialog::OnInitDialog() 
 {
+#if 0 // LGT: undeclared symbols
 	CDialog::OnInitDialog();
 	
 	CWnd::SetTimer(1,50,NULL);
 
 	UpdateDialog();
-	
+#endif
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CWorldObjectsRobotDialog::OnTimer(UINT nIDEvent) 
 {
+#if 0 // LGT: undeclared symbols
 	UpdateRobotView();
 	
 	CDialog::OnTimer(nIDEvent);
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnKillfocusRobotSizeEdit() 
 {
+#if 0 // LGT: undeclared symbols
 	CEdit *ebox;
 	char str[20];
 	int n=D3EditState.current_robot;
@@ -749,10 +766,12 @@ void CWorldObjectsRobotDialog::OnKillfocusRobotSizeEdit()
 	ebox->GetWindowText (str,20);
 
 	Robots[n].size = atof (str);
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnRobotsOut() 
 {
+#if 0 // LGT: undeclared symbols
 	char str[10000];
 	int total=0;
 
@@ -777,12 +796,13 @@ void CWorldObjectsRobotDialog::OnRobotsOut()
 		// Display that string
 		MessageBox (str,"Robots",MB_OK);
 	}
-
+#endif
 }
 // When closing, save all our checked out robots locally so we know 
 // what stuff to flag as "checked out" the next time we start up
 void CWorldObjectsRobotDialog::SaveRobotsOnClose()
 {
+#if 0 // LGT: undeclared symbols
 	int i,t;
 
 
@@ -799,6 +819,7 @@ void CWorldObjectsRobotDialog::SaveRobotsOnClose()
 			mng_ReplaceRobotPage (Robots[t].name,t,1);
 		}
 	}
+#endif
 }
 
 
@@ -811,6 +832,7 @@ BOOL CWorldObjectsRobotDialog::DestroyWindow()
 
 void CWorldObjectsRobotDialog::OnDefineAnimstates() 
 {
+#if 0 // LGT: used undefined
 	int n=D3EditState.current_robot;
 
 	if (!Robots[n].used)
@@ -820,6 +842,7 @@ void CWorldObjectsRobotDialog::OnDefineAnimstates()
 
 	if (dlg.DoModal() == IDOK)		//Copy back into object
 		dlg.GetAnimData(Robots[n].anim);
+#endif
 }
 
 BOOL CWorldObjectsRobotDialog::OnHelpInfo(HELPINFO* pHelpInfo) 
@@ -832,6 +855,7 @@ BOOL CWorldObjectsRobotDialog::OnHelpInfo(HELPINFO* pHelpInfo)
 
 void CWorldObjectsRobotDialog::OnRobotUsesPhysics() 
 {
+#if 0 // LGT: undeclared symbols
 	int n=D3EditState.current_robot;
 	CButton *btn;
 	
@@ -843,21 +867,24 @@ void CWorldObjectsRobotDialog::OnRobotUsesPhysics()
 		Robots[n].flags &= ~OIF_USES_PHYSICS;
 
 	((CButton *)GetDlgItem(IDC_ROBOT_EDIT_PHYSICS))->EnableWindow(Robots[n].flags & OIF_USES_PHYSICS);
-
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnRobotEditPhysics() 
 {
+#if 0 // LGT: CopyPhysicsData undefined
 	CPhysicsDlg dlg;
 
 	CopyPhysicsData(&dlg,&Robots[D3EditState.current_robot].phys_info);
 
 	if (dlg.DoModal() == IDOK)
 		CopyPhysicsData(&Robots[D3EditState.current_robot].phys_info,&dlg);
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnRobotUsesAI() 
 {
+#if 0 // LGT: undeclared symbols
 	int n=D3EditState.current_robot;
 	CButton *btn;
 	
@@ -869,24 +896,29 @@ void CWorldObjectsRobotDialog::OnRobotUsesAI()
 		Robots[n].flags &= ~OIF_CONTROL_AI;
 
 	((CButton *)GetDlgItem(IDC_ROBOT_EDIT_AI))->EnableWindow(Robots[n].flags & OIF_CONTROL_AI);
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnRobotEditAI() 
 {
+#if 0 // LGT: CopyAIData undefined
 	CAISettingsDlg dlg;
 
 	CopyAIData(&dlg,&Robots[D3EditState.current_robot].ai_info);
 
 	if (dlg.DoModal() == IDOK)
 		CopyAIData(&Robots[D3EditState.current_robot].ai_info,&dlg);
+#endif
 }
 
 void CWorldObjectsRobotDialog::OnKillfocusScriptid() 
 {
+#if 0 // LGT: script_handle undefined
 //	really all this does is set the script item in memory.
 	CEdit *edit = (CEdit *)GetDlgItem(IDC_SCRIPTID);
 	char buf[8];
 
 	edit->GetWindowText(buf, sizeof(buf));
 	Robots[D3EditState.current_robot].script_handle = atoi(buf);
+#endif
 }

@@ -826,7 +826,6 @@
 #include "drawworld.h"
 #include "Group.h"
 #include "moveworld.h"
-#include "Osiris.h"
 #include "worldobjectsgenericdialog.h"
 #include "objinfo.h"
 #include "HFile.h"
@@ -868,7 +867,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_TOOLS_WORLD_OBJECTS_POWERUPS, OnToolsWorldObjectsPowerups)
 	ON_COMMAND(ID_TOOLS_WORLD_OBJECTS_ROBOTS, OnToolsWorldObjectsRobots)
 	ON_COMMAND(ID_SUBEDITORS_FONT, OnSubeditorsFont)
-	ON_WM_ACTIVATEAPP()
 	ON_COMMAND(ID_FILE_PLAY640X480, OnFilePlayin640x480)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_KEYPAD_TOGGLE, OnUpdateViewKeypadToggle)
 	ON_COMMAND(ID_VIEW_KEYPAD_TOGGLE, OnViewKeypadToggle)
@@ -1566,6 +1564,7 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 
 void CMainFrame::OnActivateApp(BOOL bActive, HTASK hTask) 
 {
+#if 0
 	CFrameWnd::OnActivateApp(bActive, hTask);
 	
 	if (bActive) {
@@ -1578,6 +1577,7 @@ void CMainFrame::OnActivateApp(BOOL bActive, HTASK hTask)
 	}
 
   ((oeWin32Application *)Descent)->run_handler(this->m_hWnd, WM_ACTIVATEAPP, (unsigned)bActive, 0);
+#endif
 }
 
 

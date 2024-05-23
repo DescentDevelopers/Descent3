@@ -70,7 +70,6 @@ class CProgress
 {
 public:
   bool InitProgress(fix min,fix max,int32_t iterations,CWnd *parent=NULL);
-  bool InitProgress(int min,int max,int32_t iterations,CWnd *parent);
 	bool InitProgress(CWnd *parent=NULL);
 	void DestroyProgress();
 	bool IncreaseProgress();

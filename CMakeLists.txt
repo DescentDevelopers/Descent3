@@ -15,6 +15,10 @@ option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  option(BUILD_EDITOR "Build internal editor" OFF)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -202,9 +206,11 @@ add_subdirectory(libmve)
 add_subdirectory(md5)
 add_subdirectory(libacm)
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+
+if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(editor)
 endif()
+
 add_subdirectory(Descent3)
 
 add_subdirectory(tools)

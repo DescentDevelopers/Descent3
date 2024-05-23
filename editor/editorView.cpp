@@ -1039,7 +1039,7 @@ void CEditorView::OnZbutton()
 {
 	// TODO: Add your command handler code here
 	Use_software_zbuffer=!Use_software_zbuffer;
-	tex_SetZBufferState (Use_software_zbuffer);
+	// tex_SetZBufferState (Use_software_zbuffer); // LGT: not defined
 	State_changed=1;
 	
 }

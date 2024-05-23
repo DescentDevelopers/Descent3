@@ -497,7 +497,6 @@
 
 #include "stdafx.h"
 
-#include "ddaccess.h"
 #include "TextureGrWnd.h"
 
 #include "application.h"
@@ -600,7 +599,7 @@ END_MESSAGE_MAP()
 void DrawPlayerOnWireframe();
 
 bool Disable_editor_rendering = 0;
-static first_time=1;
+static int first_time=1;
 
 extern int Just_returned_from_game;
 extern float Just_returned_time;
@@ -615,9 +614,9 @@ void CTextureGrWnd::TexGrStartOpenGL()
 	{
 		app=(oeWin32Application *)Descent;
 		StateLimited=1;
-    save_wnd = app->m_hWnd;
-    app->m_hWnd = m_hWnd;
-		rend_SetOpenGLWindowState (1,Descent,NULL);
+    save_wnd = (HWND)app->m_hWnd;
+    app->m_hWnd = (HWnd)m_hWnd;
+		// rend_SetOpenGLWindowState (1,Descent,NULL); // LGT: not defined anymore
 		rend_ClearScreen(0);
 		StateLimited=1;
 		UseMultitexture=0;
@@ -629,8 +628,8 @@ void CTextureGrWnd::TexGrStopOpenGL ()
 {
 	if (DoOpenGL)
 	{
-		rend_SetOpenGLWindowState (0,Descent,NULL);
-    app->m_hWnd = save_wnd;
+		// rend_SetOpenGLWindowState (0,Descent,NULL); // LGT: not defined anymore
+    app->m_hWnd = (HWnd)save_wnd;
 	}
 }
 
@@ -823,14 +822,14 @@ void CTextureGrWnd::OnPaint()
 
 			app=(oeWin32Application *)Descent;
 
-      save_wnd = app->m_hWnd;
-      app->m_hWnd = m_hWnd;
-			rend_SetOpenGLWindowState (1,Descent,NULL);
+      save_wnd = (HWND)app->m_hWnd;
+      app->m_hWnd = (HWnd)m_hWnd;
+			// rend_SetOpenGLWindowState (1,Descent,NULL);  // LGT: not defined anymore
 
 			rend_Flip();
 
-			rend_SetOpenGLWindowState (0,Descent,NULL);
-      app->m_hWnd = save_wnd;
+			// rend_SetOpenGLWindowState (0,Descent,NULL);  // LGT: not defined anymore
+      app->m_hWnd = (HWnd)save_wnd;
 		}
 		else
 		{
@@ -1178,7 +1177,7 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point)
 				//C + Click = Copy uv values from marked face
 				static int last_copy_marked_room=-1,last_copy_marked_face=-1;
 				static int last_copy_room=-1,last_copy_face=-1;
-				static count;
+				static int count;
 
 				if (Markedroomp == NULL) 
 				{

@@ -317,7 +317,7 @@ BOOL CBriefTextEdit::OnInitDialog()
 
 	int layout = -1;
 
-	for(i=0;i<(*PBnum_layouts);i++){
+	for(int i=0;i<(*PBnum_layouts);i++){
 		if(!stricmp(Briefing_screens[m_Screen].layout,PBlayouts[i].filename))
 			layout = i;
 	}

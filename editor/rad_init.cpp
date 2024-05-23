@@ -280,7 +280,7 @@ void UpdateUnsentValues ()
 	int i;
 	rad_surface *sat_surface;
 
-	static last_report_time=-10;
+	static int last_report_time=-10;
 
 	rad_TotalUnsent=0.0f;
 	rad_MaxSurface=NULL;
@@ -407,8 +407,8 @@ float GetMaxColor (spectra *sp)
 {
 	float m;
 
-	m=(float)max (sp->r,sp->g);
-	m=(float)max (sp->b,m);
+	m=std::max<float>(sp->r,sp->g);
+	m=std::max<float>(sp->b,m);
 
 	return m;
 }

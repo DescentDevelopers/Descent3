@@ -928,9 +928,9 @@ void CWorldObjectsPlayerDialog::UpdateShipView(void)
 	RECT rect;
 	int x, y, bm_handle,w,h,render_handle;
 	static int frame=0,spin_frame=0;
-	static last_ship=-1;
-	static last_model_handle=-1;
-	static ship_dir=0;
+	static int last_ship=-1;
+	static int last_model_handle=-1;
+	static int ship_dir=0;
 
 	
 	if (Num_ships<1)

@@ -237,6 +237,8 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "WorldTexturesDialog.h"
@@ -752,7 +754,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame)
 	int x, y, bm_handle,w,h;
 	static int last_frame=0;
 	static int last_texture=-1;
-	static last_tex_count=-1;
+	static int last_tex_count=-1;
 	int update_listbox=0;
 
 	DrawSwatch (IDC_TEXTURE_SWATCH,GameTextures[n].r,GameTextures[n].g,GameTextures[n].b);
@@ -2318,7 +2320,8 @@ void CWorldTexturesDialog::OnSaveAsTga()
 	if (! strchr(filename,'.'))
 		strcat(filename,".tga");
 
-	bm_SaveBitmapTGA (filename,GameTextures[n].bm_handle);
+	// FIXME: Save as PNG
+	// bm_SaveBitmapTGA (filename,GameTextures[n].bm_handle);
 	OutrageMessageBox ("TGA saved!");
 }
 
@@ -2327,8 +2330,8 @@ void CWorldTexturesDialog::DrawSwatch(int handle,float r,float g,float b)
 	CWnd *texwnd;
 	RECT rect;
 	int w,h;
-	float rmax=max(r,g);
-	rmax=max(rmax,b);
+	float rmax=std::max(r,g);
+	rmax=std::max(rmax,b);
 
 	if (rmax>=.001)
 	{

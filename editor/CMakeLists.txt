@@ -1,4 +1,3 @@
-# Set headers and source files
 set(HEADERS
     ../descent3/aiambient.h
     ../descent3/AIGoal.h
@@ -285,6 +284,7 @@ set(HEADERS
     WorldSoundsDialog.h
     WorldTexturesDialog.h
     WorldWeaponsDialog.h
+    d3x.h
 )
 
 set(SOURCE
@@ -511,6 +511,7 @@ set(SOURCE
     QuickCompile.cpp
     rad_cast.cpp
     rad_init.cpp
+    rad_hemicube.cpp
     Read3ds.cpp
     RobotEditWeaponsDialog.cpp
     roomkeypaddialog.cpp
@@ -561,38 +562,20 @@ set(SOURCE
     editor.rc
 )
 
-# Set platform-specific sources and libraries
-if (WIN32)
-    set(PLATFORM_LIBS dd_sndlib misc libimgui devcon dd_grwin32 dd_vidwin32 ddio_win win32 wsock32.lib winmm.lib Glu32.lib)
-    set(PLATFORM_SOURCES ../descent3/winmain.cpp)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
-elseif (UNIX AND NOT APPLE)
-    set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${SDL_LIBRARY} caca asound audio esd aa directfb m dl GLU)
-    set(PLATFORM_SOURCES loki_utils.c lnxmain.cpp)
-    set(CMAKE_EXE_LINKER_FLAGS "/usr/lib/libpulse-simple.so.0")
-elseif (APPLE)
-    set(PLATFORM_LIBS linux dd_lnxsound ddvid_lnx lnxcontroller ddio_lnx ${SDL_LIBRARY} ncurses)
-    set(PLATFORM_SOURCES loki_utils.c lnxmain.cpp SDLMain.m)
-    set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
-endif()
+# Editor only works in Windows
+set(PLATFORM_LIBS dd_grwin32 win32 wsock32.lib winmm.lib
+    ${DSOUND_LIBRARY} ${DINPUT_LIBRARY} ${DXGUID_LIBRARY} ${DDRAW_LIBRARY})
+set(PLATFORM_SOURCES ../descent3/winmain.cpp)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /SUBSYSTEM:WINDOWS /NODEFAULTLIB:LIBC")
 
-# Include directories
-include_directories(../lib ../ ../manage/)
 
-# Add executable
 add_executable(Descent3Editor ${HEADERS} ${SOURCE} ${PLATFORM_SOURCES})
+target_include_directories(Descent3Editor PRIVATE ../lib ../ ../manage/ ${PROJECT_BINARY_DIR}/lib)
 
 if(MSVC)
-    target_compile_definitions(Descent3Editor PUBLIC _CRT_SECURE_NO_WARNINGS _AFXDLL)
-endif()
-
-target_compile_definitions(Descent3Editor PUBLIC EDITOR)
-
-if (MSVC)
+    target_compile_definitions(Descent3Editor PUBLIC _CRT_SECURE_NO_WARNINGS _AFXDLL EDITOR)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} /Zc:forScope-")
 endif()
-
-target_include_directories(Descent3Editor PRIVATE ${PROJECT_BINARY_DIR}/lib)
 
 # Link libraries
 target_link_libraries(Descent3Editor
@@ -602,13 +585,16 @@ target_link_libraries(Descent3Editor
     cfile
     czip
     d3music
-    ddio_common
+    dd_video
+    ddio
+    ddebug
     libmve
     libacm
     fix
     grtext
     manage
     mem
+    misc
     model
     module
     movie
@@ -626,8 +612,8 @@ target_link_libraries(Descent3Editor
     ${PLATFORM_LIBS}
 )
 
-add_definitions(-DEDITOR)
-
 if (WIN32)
     set_target_properties(Descent3Editor PROPERTIES WIN32_EXECUTABLE ON)
 endif()
+
+install(TARGETS Descent3Editor RUNTIME)

@@ -123,7 +123,6 @@
 #include "d3x.h"
 #include "manage.h"
 #include "mission.h"
-#include "osiris.h"
 #include "gamefile.h"
 #include "pserror.h"
 #include "mem.h"
@@ -144,6 +143,7 @@ char *Level_script_source = NULL;
 //Table of scripts within script file
 tScriptName Script_names[MAX_SCRIPTS];
 
+#if 0 // LGT: MAX_SCREVTS undefined
 //	INCREMENT MAX_SCREVTS in ObjCScript when you add a new event!
 char *Script_evt_names[MAX_SCREVTS] = {
 	"EVT_AI_FRAME",
@@ -180,7 +180,7 @@ uint16_t Script_evt_ids[MAX_SCREVTS] = {
 	EVT_CLIENT_INTERVAL,
 	EVT_CLIENT_DESTROY
 };
-
+#endif
 
 //	function to find first free slot in script list.
 int FindFreeScriptSlot();
@@ -219,7 +219,7 @@ char *LoadScript(const char *filename)
 	memset(buffer,0,MAX_SCRIPT_LINE_SIZE);
 
 	ddio_MakePath(file_path,LocalLevelsDir,filename,NULL);
-//	mprintf(0,"Loading script from %s\n",file_path);
+//	mprintf((0,"Loading script from %s\n",file_path));
 	if(!cfexist(file_path)) 
 	{
 		return false;
@@ -266,7 +266,7 @@ void SaveScript(const char *filename, char *script)
 
 	file=cfopen(file_path,"wt");
 	cf_WriteString(file,script);
-//		mprintf(0,"Saving script to %s\n",file_path);
+//		mprintf((0,"Saving script to %s\n",file_path));
 	cfclose(file);
 }
 
@@ -280,23 +280,24 @@ void FreeScript(char *script)
 //	Generates a program from a script
 bool CompileScript(tD3XProgram *program, char *script)
 {
+#if 0 // LGT: D3XReallocProgram undefined. Legacy scripting system?
 	int nscr, nstr, d3xlen;
 	char *strbuf;								// string buffer grabbed from compile
 	tD3XInstruction *ins;					// temporary holder for code
 	tD3XPMap *map;								// temporary holder for map
 
 	if (!script) {
-		mprintf(1, "Unable to compile null script!\n");
+		mprintf((1, "Unable to compile null script!\n"));
 		return false;
 	}
 
 	if (program == NULL) {
-		mprintf(1, "You can't compile an uninitialized script!\n");
+		mprintf((1, "You can't compile an uninitialized script!\n"));
 		return false;
 	}
 
 	if(!osi_Compile(script, &d3xlen, &ins, &nscr, &map, &nstr, &strbuf)) {
-		mprintf(1, "Script failed to compile.\n");
+		mprintf((1, "Script failed to compile.\n"));
 		return false;
 	}
 
@@ -304,6 +305,9 @@ bool CompileScript(tD3XProgram *program, char *script)
 	D3XLoadProgramFromComponents(program, ins, map, strbuf);
 
 	return true;
+#else
+	return false;
+#endif
 }
 
 
@@ -315,7 +319,7 @@ void SaveScriptCode(const char *filename, tD3XProgram *program)
 //	write out default script program
 	ddio_MakePath(file_path,LocalLevelsDir,filename,NULL);
 	file = cfopen(file_path, "wb");
-	D3XSaveProgram(file, program);
+	// D3XSaveProgram(file, program); // LGT: function undefined
 	mprintf(0, "Saving %s.\n", filename);
 	cfclose(file);
 }
@@ -352,6 +356,7 @@ void ResetScriptList()
 
 bool GenerateScriptWizardInfo(tD3XProgram *prog, bool custom)
 {
+#if 0 // LGT: Legacy scripting system?
 	int i;
 
 	if (!prog) {
@@ -367,6 +372,9 @@ bool GenerateScriptWizardInfo(tD3XProgram *prog, bool custom)
 	}
 
 	return true;
+#else
+	return false;
+#endif
 }
 
 
@@ -607,18 +615,20 @@ int FindScriptIDFromName(const char *name)
 
 char *FindEventNameFromID(int id)
 {
+#if 0 // LGT: MAX_SCREVTS undefined
 	for (int i = 0; i < MAX_SCREVTS; i++)
 		if (id == Script_evt_ids[i]) return Script_evt_names[i];
-
+#endif
 	return NULL;
 }
 
 
 int FindEventIDFromName(const char *name)
 {
+#if 0 // LGT: MAX_SCREVTS undefined
 	for (int i = 0; i < MAX_SCREVTS; i++)
 		if (strcmp(name, Script_evt_names[i]) == 0) return Script_evt_ids[i];
-
+#endif
 	return 0;
 }
 

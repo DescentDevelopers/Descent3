@@ -19,6 +19,8 @@
 // WorldObjectsRobotDialog.h : header file
 //
 
+#include "../lib/gr.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CWorldObjectsRobotDialog dialog
 

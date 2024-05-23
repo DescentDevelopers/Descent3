@@ -148,6 +148,7 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 
 #include "stdafx.h"
 #include "editor.h"
@@ -739,8 +740,8 @@ void CTextureDialog::DrawSwatch(int handle,float r,float g,float b)
 	CWnd *texwnd;
 	RECT rect;
 	int w,h;
-	float rmax=max(r,g);
-	rmax=max(rmax,b);
+	float rmax=std::max(r,g);
+	rmax=std::max(rmax,b);
 
 	if (rmax>=.001)
 	{

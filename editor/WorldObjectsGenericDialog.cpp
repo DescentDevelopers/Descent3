@@ -1200,8 +1200,8 @@ void CWorldObjectsGenericDialog::UpdateObjectView(void)
 	int x, y, bm_handle,w,h;
 	static int frame=0,spin_frame=0;
 	static int last_object=-1;
-	static last_render_handle=-1;
-	static object_dir=0;
+	static int last_render_handle=-1;
+	static int object_dir=0;
 	
 	if (m_current == -1)
 		return;

@@ -211,6 +211,8 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "TerrainDialog.h"
@@ -445,8 +447,8 @@ void CTerrainDialog::UpdateDialog()
 	DrawSwatch (IDC_FOG_SWATCH,GR_COLOR_RED(Terrain_sky.fog_color),GR_COLOR_GREEN(Terrain_sky.fog_color),GR_COLOR_BLUE(Terrain_sky.fog_color));
 
 	// Draw satellite swatch
-	float maxc=max(Terrain_sky.satellite_r[Current_satellite],Terrain_sky.satellite_g[Current_satellite]);
-	maxc=max(Terrain_sky.satellite_b[Current_satellite],maxc);
+	float maxc=std::max(Terrain_sky.satellite_r[Current_satellite],Terrain_sky.satellite_g[Current_satellite]);
+	maxc=std::max(Terrain_sky.satellite_b[Current_satellite],maxc);
 
 	float r,g,b;
 
@@ -883,7 +885,7 @@ void CTerrainDialog::OnTerrpadPyramid()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=min(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((top+i)*TERRAIN_WIDTH)+(t+left);
 			
@@ -904,7 +906,7 @@ void CTerrainDialog::OnTerrpadPyramid()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=min(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((top+i)*TERRAIN_WIDTH)+(right-t);
 
@@ -924,7 +926,7 @@ void CTerrainDialog::OnTerrpadPyramid()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=min(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((bottom-i)*TERRAIN_WIDTH)+(left+t);
 
@@ -944,7 +946,7 @@ void CTerrainDialog::OnTerrpadPyramid()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=min(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((bottom-i)*TERRAIN_WIDTH)+(right-t);
 
@@ -1033,7 +1035,7 @@ void CTerrainDialog::OnTerrpadPancakes()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=max(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((top+i)*TERRAIN_WIDTH)+(t+left);
 			
@@ -1054,7 +1056,7 @@ void CTerrainDialog::OnTerrpadPancakes()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=max(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((top+i)*TERRAIN_WIDTH)+(right-t);
 
@@ -1074,7 +1076,7 @@ void CTerrainDialog::OnTerrpadPancakes()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=max(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((bottom-i)*TERRAIN_WIDTH)+(left+t);
 
@@ -1094,7 +1096,7 @@ void CTerrainDialog::OnTerrpadPancakes()
 			xa=FixToInt(xstep*t);
 			ya=FixToInt(ystep*i);
 
-			a=max(xa,ya);
+			a=std::max(xa,ya);
 
 			int seg=((bottom-i)*TERRAIN_WIDTH)+(right-t);
 

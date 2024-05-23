@@ -723,7 +723,7 @@ void CWireframeGrWnd::DrawTerrainCell(int seg)
 
 	x=segx;
 	y=segz;	// flip due to origin difference
-	uint16_t fadepixel;
+	uint16_t fadepixel = 0;
 
 	int bm_handle=GameTextures[Terrain_tex_seg[Terrain_seg[(y*TERRAIN_WIDTH+x)].texseg_index].tex_index].bm_handle;
 	lightval=Ubyte_to_float[Terrain_seg[y*TERRAIN_WIDTH+x].l]*(MAX_TEXTURE_SHADES-1);
@@ -731,7 +731,7 @@ void CWireframeGrWnd::DrawTerrainCell(int seg)
 	uint16_t pix;
 	
 	pix=*bm_data(bm_handle,0);
-	fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
+	// fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
 	
 	if (TerrainSelected[y*TERRAIN_WIDTH+x])
 	{
@@ -743,9 +743,9 @@ void CWireframeGrWnd::DrawTerrainCell(int seg)
 		green<<=2;
 		blue<<=2;
 
-		red=min(255,red);
-		green=min(255,green);
-		blue=min(255,blue);
+		red=std::min(255,red);
+		green=std::min(255,green);
+		blue=std::min(255,blue);
 					
 		fadepixel=GR_RGB16(red,green,blue);
 	}
@@ -820,9 +820,9 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 				green<<=2;
 				blue<<=2;
 
-				red=min(255,red);
-				green=min(255,green);
-				blue=min(255,blue);
+				red=std::min(255,red);
+				green=std::min(255,green);
+				blue=std::min(255,blue);
 					
 
 
@@ -901,9 +901,9 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 				green<<=2;
 				blue<<=2;
 
-				red=min(255,red);
-				green=min(255,green);
-				blue=min(255,blue);
+				red=std::min(255,red);
+				green=std::min(255,green);
+				blue=std::min(255,blue);
 					
 
 

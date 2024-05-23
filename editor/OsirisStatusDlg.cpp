@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "editor.h"
 #include "OsirisStatusDlg.h"
-#include "osiris.h"
+#include "d3x_op.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +85,7 @@ int COsirisStatusDlg::DoModal()
 
 BOOL COsirisStatusDlg::OnInitDialog() 
 {
+#if 0 // LGT: Legacy scripting?
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
@@ -122,7 +123,7 @@ BOOL COsirisStatusDlg::OnInitDialog()
 
 	
 	SetWindowText("Compiling Status...Done");
-
+#endif
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
