@@ -107,8 +107,11 @@
 #ifndef __MULTI_EXTERNAL_H_
 #define __MULTI_EXTERNAL_H_
 
-#if defined(LINUX)
-#include <string.h>
+#if defined(__LINUX__)
+#include <cstring>
+#include <cstdint>
+typedef uintptr_t DWORD;
+typedef int HANDLE;
 #endif
 
 #include "pstypes.h"
@@ -192,7 +195,7 @@ typedef struct {
   ubyte sequence; // where we are in the sequence chain
   ubyte pps;
   HANDLE hPlayerEvent;      // player event to use for directplay
-  unsigned long dpidPlayer; // directplay ID of player created
+  DWORD dpidPlayer; // directplay ID of player created
   float ping_time;
   float last_ping_time;
   ushort pilot_pic_id;

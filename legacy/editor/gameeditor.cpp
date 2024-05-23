@@ -563,7 +563,7 @@ void InitEditGameSystems();
 void DeswInitMainWindow(HINSTANCE hinst);
 void DeswCloseMainWindow();
 
-LRESULT WINAPI DescentWndProc(HWND hWnd,UINT msg,UINT wParam,LPARAM lParam);
+LRESULT WINAPI DescentWndProc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam);
 
 
 

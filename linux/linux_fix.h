@@ -38,7 +38,6 @@ char *strupr(char *string);
 #if !defined(MAX_PATH)
 #define MAX_PATH _MAX_PATH
 #endif
-#define HANDLE int
 // _cdecl replacement
 #define __cdecl __attribute__((cdecl))
 // _stdcall replacement

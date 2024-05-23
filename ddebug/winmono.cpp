@@ -127,7 +127,6 @@ SOCKADDR_IN tcp_log_addr;
 char tcp_log_buffer[MAX_TCPLOG_LEN];
 
 void nw_InitTCPLogging(char *ip, unsigned short port) {
-  unsigned long argp = 1;
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {
@@ -142,7 +141,8 @@ void nw_InitTCPLogging(char *ip, unsigned short port) {
   if (SOCKET_ERROR == bind(tcp_log_sock, (SOCKADDR *)&tcp_log_addr, sizeof(sockaddr))) {
     return;
   }
-  ioctlsocket(tcp_log_sock, FIONBIO, &argp);
+  unsigned long arg = 1;
+  ioctlsocket(tcp_log_sock, FIONBIO, &arg);
 
   tcp_log_addr.sin_addr.s_addr = inet_addr(ip);
   tcp_log_addr.sin_port = htons(port);

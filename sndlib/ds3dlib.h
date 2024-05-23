@@ -218,7 +218,7 @@
 #ifndef __ds3dlib_h__
 #define __ds3dlib_h__
 
-// #include <windows.h>
+#include <windows.h>
 // #include <mmsystem.h>		// Multi-media system support
 // #include "dsound.h"			// Direct sound header file
 
@@ -283,8 +283,8 @@ private:
   friend void __cdecl LoopStreamTimer(void *user_ptr);
 
   // Creates a sound buffer
-  long CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_lp_dsb, LPDIRECTSOUND3DBUFFER *lp_lp_dsb_3d,
-                      ulong sound_bytes, ulong frequency, bool f_is_stereo, bool f_is_16_bit);
+  HRESULT CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_lp_dsb, LPDIRECTSOUND3DBUFFER *lp_lp_dsb_3d,
+                      DWORD sound_bytes, DWORD frequency, bool f_is_stereo, bool f_is_16_bit);
 
   // Finds a free slot for a new sound, slot_uid is an SBID_xxx value.
 #ifdef _DEBUG
@@ -331,7 +331,7 @@ private:
   char m_sound_quality;
 
   // muted looped sound system
-  longlong m_timer_last_frametime;
+  int64_t m_timer_last_frametime;
   float m_cache_stress_timer;
 
 // clean interface

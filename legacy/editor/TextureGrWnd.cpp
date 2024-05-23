@@ -615,8 +615,8 @@ void CTextureGrWnd::TexGrStartOpenGL()
 	{
 		app=(oeWin32Application *)Descent;
 		StateLimited=1;
-		save_wnd=(HWND)app->m_hWnd;
-		app->m_hWnd=(HWnd)m_hWnd;
+    save_wnd = app->m_hWnd;
+    app->m_hWnd = m_hWnd;
 		rend_SetOpenGLWindowState (1,Descent,NULL);
 		rend_ClearScreen(0);
 		StateLimited=1;
@@ -630,7 +630,7 @@ void CTextureGrWnd::TexGrStopOpenGL ()
 	if (DoOpenGL)
 	{
 		rend_SetOpenGLWindowState (0,Descent,NULL);
-		app->m_hWnd=(HWnd)save_wnd;
+    app->m_hWnd = save_wnd;
 	}
 }
 
@@ -823,14 +823,14 @@ void CTextureGrWnd::OnPaint()
 
 			app=(oeWin32Application *)Descent;
 
-			save_wnd=(HWND)app->m_hWnd;
-			app->m_hWnd=(HWnd)m_hWnd;
+      save_wnd = app->m_hWnd;
+      app->m_hWnd = m_hWnd;
 			rend_SetOpenGLWindowState (1,Descent,NULL);
 
 			rend_Flip();
 
 			rend_SetOpenGLWindowState (0,Descent,NULL);
-			app->m_hWnd=(HWnd)save_wnd;
+      app->m_hWnd = save_wnd;
 		}
 		else
 		{

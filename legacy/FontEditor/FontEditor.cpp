@@ -76,10 +76,10 @@ class appFontKerner: public oeWin32Application
 	bool shutdown;																				 
 
 public:
-	appFontKerner(HInstance hinst): oeWin32Application(APPNAME, OEAPP_FULLSCREEN, hinst) { shutdown = false; };
+  appFontKerner(HINSTANCE hinst): oeWin32Application(APPNAME, OEAPP_FULLSCREEN, hinst) { shutdown = false; };
 
 //	returns 0 if we pass to default window handler.
-	virtual int WndProc( HWnd hwnd, unsigned msg, unsigned wParam, long lParam)
+  virtual int WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		switch (msg)
 		{
@@ -114,7 +114,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-	appFontKerner fontkern((HInstance)hInstance);
+  appFontKerner fontkern(hInstance);
 	int i;
 
 	fontkern.init();
