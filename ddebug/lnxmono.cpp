@@ -43,6 +43,7 @@
  *
  * $NoKeywords: $
  */
+#include "mono.h"
 
 #include <cassert>
 #include <cstdarg>
@@ -52,6 +53,7 @@
 #include <csignal>
 
 #include "debug.h"
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -75,7 +77,7 @@ static SOCKET tcp_log_sock;
 static struct sockaddr_in tcp_log_addr;
 static char tcp_log_buffer[MAX_TCPLOG_LEN];
 static int Console_fd = -1;
-static bool Mono_initialized = 0;
+static bool Mono_initialized = false;
 static bool Mono_use_real = false;
 static bool Mono_use_window_remote = false;
 static int Debug_logfile = 0;
@@ -366,13 +368,13 @@ void Debug_ConsoleExit() {
 #define MAX_ARGS 30
 #define MAX_CHARS_PER_ARG 100
 extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
-int FindArg(const char *which);
+extern int FindArg(const char *which);
 
 bool Debug_ConsoleInit() {
   int n = 0;
 
   if (Mono_initialized)
-    return 1;
+    return true;
 
   // Only use monochrome if D3_MONO environment var is set
   atexit(Debug_ConsoleExit);
@@ -380,7 +382,7 @@ bool Debug_ConsoleInit() {
   Console_fd = open("/dev/omono", O_WRONLY);
   if (Console_fd >= 0) {
     Mono_use_real = true;
-    Mono_initialized = 1;
+    Mono_initialized = true;
   }
 
   int arg;
@@ -396,11 +398,11 @@ bool Debug_ConsoleInit() {
       port = atoi(port_ptr);
       if (nw_InitTCPLogging(address, port)) {
         Mono_use_window_remote = true;
-        Mono_initialized = 1;
+        Mono_initialized = true;
       }
     }
   }
-  return 1;
+  return true;
 }
 
 void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window) {
