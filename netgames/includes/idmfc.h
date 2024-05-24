@@ -1163,7 +1163,7 @@ public:
   //	exists. These commands are not case sensitive.
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
-  virtual signed char AddInputCommand(const char *command, const char *description, void (*handler)(const char *),
+  virtual int8_t AddInputCommand(const char *command, const char *description, void (*handler)(const char *),
                                       bool allow_remotely = false) = 0;
 
   //	Does a check on on the pinfo info making sure it is valid
@@ -1915,7 +1915,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_DoDamageToPlayer(IDMFC *instance, int pnum, int
                                                          bool playsound = true);
 DLLEXPORT void DLLFUNCCALL IDMFC_StartUIWindow(IDMFC *instance, int id, void *user_data);
 DLLEXPORT void DLLFUNCCALL IDMFC_DisconnectMe(IDMFC *instance);
-DLLEXPORT signed char DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
+DLLEXPORT int8_t DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
                                                                void (*handler)(const char *));
 DLLEXPORT void DLLFUNCCALL IDMFC_CheckPInfo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableStatisticalMessages(IDMFC *instance, bool on);

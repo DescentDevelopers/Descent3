@@ -3305,7 +3305,7 @@ void strlowcpy(char *dest, const char *src) {
 //	command string to the given function handler. Returns 1 on success, -1 if out of memory, 0 if it already
 //	exists. These commands are not case sensitive.
 //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
-signed char DMFCBase::AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely) {
+int8_t DMFCBase::AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely) {
   ASSERT(command != NULL);
   ASSERT(handler != NULL);
 

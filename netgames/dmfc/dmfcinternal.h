@@ -1597,7 +1597,7 @@ public:
   //	exists. These commands are not case sensitive.
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
-  signed char AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely = false);
+  int8_t AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely = false);
 
   // DMFCBase::CanInputCommandBeUsedRemotely
   //

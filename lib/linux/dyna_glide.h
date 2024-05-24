@@ -167,7 +167,7 @@
 
 typedef uint8_t FxU8;
 
-typedef signed char FxI8;
+typedef int8_t FxI8;
 
 typedef unsigned short FxU16;
 

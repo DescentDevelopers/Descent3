@@ -28,7 +28,7 @@ typedef int32_t sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
 typedef uint8_t uint8;
-typedef signed char sint8;
+typedef int8_t sint8;
 
 struct BitsEncoder {
   FILE *m_outFile;   // var50 | offset 0x10

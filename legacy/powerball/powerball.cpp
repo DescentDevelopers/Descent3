@@ -954,7 +954,7 @@ void GetGameStartPacket(ubyte *data)
 	memcpy(TeamScores,&data[size],sizeof(int)*DLLMAX_TEAMS);	size+= (sizeof(int)*DLLMAX_TEAMS);
 
 	//who has the powerball
-	signed char temp;
+	int8_t temp;
 	memcpy(&temp,&data[size],sizeof(char));	size+=sizeof(char);
 	WhoHasPowerBall = temp;
 
@@ -993,7 +993,7 @@ void SendGameStartPacket(int pnum)
 	//add the team scores
 	memcpy(&data[size],TeamScores,sizeof(int)*DLLMAX_TEAMS); size += (sizeof(int)*DLLMAX_TEAMS);
 
-	signed char temp;
+	int8_t temp;
 	//who has the powerball if anyone
 	temp = WhoHasPowerBall;
 	memcpy(&data[size],&temp,sizeof(char));	size+= sizeof(char);

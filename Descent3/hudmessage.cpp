@@ -539,7 +539,7 @@ bool AddColoredHUDMessage(ddgr_color color, const char *format, ...) {
 // Adds a HUD message (similar to AddColoredHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
 bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
-  static signed char checked_command_line = -1;
+  static int8_t checked_command_line = -1;
 
   if (checked_command_line == -1) {
     if (FindArg("-playermessages") != 0) {
@@ -575,7 +575,7 @@ bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
 // Adds a HUD message (similar to AddHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
 bool AddFilteredHUDMessage(const char *format, ...) {
-  static signed char checked_command_line = -1;
+  static int8_t checked_command_line = -1;
 
   if (checked_command_line == -1) {
     if (FindArg("-playermessages") != 0) {

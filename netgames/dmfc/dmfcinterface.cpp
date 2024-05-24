@@ -896,7 +896,7 @@ void DLLFUNCCALL IDMFC_DisconnectMe(IDMFC *instance) {
   instance->DisconnectMe();
 }
 
-signed char DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
+int8_t DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
                                               void (*handler)(const char *)) {
   assert(instance != NULL);
   return instance->AddInputCommand(command, description, handler);

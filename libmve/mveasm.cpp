@@ -201,7 +201,7 @@ public:
   initme() {
     int x, y;
     int m4, m3, m2, m1;
-    signed char *ptr;
+    int8_t *ptr;
     uint8_t *uptr;
 
     // Do nfhpk_mov4l
@@ -277,7 +277,7 @@ public:
           }
 
     // do nfpk_ShiftP1
-    ptr = (signed char *)nfpk_ShiftP1;
+    ptr = (int8_t *)nfpk_ShiftP1;
     for (y = -8; y != 8; y++) {
       for (x = -8; x != 8; x++) {
 #ifdef OUTRAGE_BIG_ENDIAN
@@ -292,7 +292,7 @@ public:
     }
 
     // do nfpk_ShiftP2[]
-    ptr = (signed char *)nfpk_ShiftP2;
+    ptr = (int8_t *)nfpk_ShiftP2;
     for (y = 0; y != 8; y++) {
       for (x = 8; x != 15; x++) {
 #ifdef OUTRAGE_BIG_ENDIAN
@@ -534,14 +534,14 @@ void PkDecompWorker(const bool hiColor, const uint8_t *ops, const uint8_t *comp,
     unsigned short hax, ax;
   } reg_word;
   typedef struct {
-    signed char hah, hal, ah, al;
+    int8_t hah, hal, ah, al;
   } reg_byte;
 #else
   typedef struct {
     unsigned short ax, hax;
   } reg_word;
   typedef struct {
-    signed char al, ah, hal, hah;
+    int8_t al, ah, hal, hah;
   } reg_byte;
 #endif
 
