@@ -140,31 +140,63 @@ enum CFileExitStatus {
   CFES_IN_LIBRARY,
 };
 
-// The "root" directory of the D3 file tree
-extern std::filesystem::path Base_directory;
+/* The "root" directories of the D3 file tree
+ *
+ * Directories that come later in the list override directories that come
+ * earlier in the list. For example, if Base_directories[0] / "d3.hog" exists
+ * and Base_directories[1] / "d3.hog" also exists, then the one in
+ * Base_directories[1] will get used. The one in Base_directories[0] will be
+ * ignored.
+ */
+extern std::vector<std::filesystem::path> Base_directories;
 
 /* This function should be called at least once before you use anything else
  * from this module.
  */
-void cf_SetBaseDirectory(const std::filesystem::path &base_directory);
+void cf_AddBaseDirectory(const std::filesystem::path &base_directory);
+
+/* After you call this function, you must call cf_AddBaseDirectory() at least
+ * once before you use anything else from this module.
+ */
+void cf_ClearBaseDirectories();
 
 /**
- * Tries to find a relative path inside of Base_directory.
+ * Tries to find a relative path inside of one of the Base_directories.
  *
  * @param relative_path A relative path that we’ll hopefully find in
- *                      Base_directory. You don’t have to get the capitalization
- *                      of relative_path correct, even on macOS and Linux.
+ *                      one of the Base_directories. You don’t have to get the
+ *                      capitalization of relative_path correct, even on macOS
+ *                      and Linux.
  *
- * @return An absolute path that’s inside Base_directory.
+ * @return Either an absolute path that’s inside Base_directory or an empty path
+ *         if nothing is found.
  */
 std::filesystem::path cf_LocatePath(const std::filesystem::path &relative_path);
+
+/**
+ * Tries to find multiple relative paths inside of the Base_directories.
+ *
+ * @param relative_path A relative path that we’ll hopefully find in
+ *                      one or more of the Base_directories. You don’t have to
+ *                      get the capitalization of relative_path correct, even on
+ *                      macOS and Linux.
+ *
+ * @return A list of absolute paths. Each path will be inside one of the
+ *         Base_directories.
+ */
+std::vector<std::filesystem::path> cf_LocateMultiplePaths(const std::filesystem::path &relative_path);
+
+/* Not all Base_directories are necessarily writable, but this function will
+ * return one that should be writable.
+ */
+std::filesystem::path cf_GetWritableBaseDirectory();
 
 // See if a file is in a hog
 bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
-// Parameters:  libname - path to the HOG file, relative to Base_directory.
-// NOTE:	libname must be valid for the entire execution of the program.  Therefore, Base_directory
+// Parameters:  libname - path to the HOG file, relative to one of the Base_directories.
+// NOTE:	libname must be valid for the entire execution of the program.  Therefore, Base_directories
 // 			must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
 int cf_OpenLibrary(const std::filesystem::path &libname);
