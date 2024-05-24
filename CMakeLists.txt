@@ -12,8 +12,10 @@ project(Descent3
 
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
+option(ENABLE_GITHASH "Enables adding the hash identifier from the git respository." ON)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -64,24 +66,24 @@ if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
-add_custom_command(
-  OUTPUT ${PROJECT_BINARY_DIR}/Descent3/d3_version.h ALL
-  COMMAND ${CMAKE_COMMAND}
-    -D SOURCE_DIR=${PROJECT_SOURCE_DIR}
-    -D TARGET_DIR=${PROJECT_BINARY_DIR}
-    -D PROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
-    -D PROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}
-    -D PROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}
-    -P ${PROJECT_SOURCE_DIR}/cmake/CheckGit.cmake
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+set(GIT_HASH "")
+if(ENABLE_GITHASH)
+  find_package(Git QUIET)
+  if(GIT_FOUND)
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} describe --always --dirty
+      OUTPUT_VARIABLE GIT_HASH
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_QUIET
+    )
+  endif()
+endif()
+add_compile_definitions(D3_MAJORVER=${PROJECT_VERSION_MAJOR})
+add_compile_definitions(D3_MINORVER=${PROJECT_VERSION_MINOR})
+add_compile_definitions(D3_BUILD=${PROJECT_VERSION_PATCH})
+add_compile_definitions(D3_GIT_HASH="${GIT_HASH}")
 
 install(FILES README.md LICENSE DESTINATION ${CMAKE_INSTALL_DOCDIR})
-
-# rebuild version.hpp every time
-add_custom_target(get_git_hash ALL
-  DEPENDS ${PROJECT_BINARY_DIR}/Descent3/d3_version.h
-)
 
 if(UNIX)
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
