@@ -99,7 +99,7 @@ uint32_t InternalAudioDecoder::Read(void *pBuffer, uint32_t amount) {
   const int wordlen = 2;    // the only supported value
   const int sgned = 1;      // we want signed samples
   uint32_t totalBytesRead = 0;
-  uint8 *pBuf = reinterpret_cast<uint8 *>(pBuffer);
+  uint8_t *pBuf = reinterpret_cast<uint8_t *>(pBuffer);
 
   while (totalBytesRead < amount) {
     int numRead = acm_read(m_acm, pBuf, amount - totalBytesRead, bigendianp, wordlen, sgned);

@@ -27,7 +27,7 @@ typedef uint32_t uint32_t;
 typedef int32_t int32_t;
 typedef unsigned short uint16;
 typedef signed short sint16;
-typedef uint8_t uint8;
+typedef uint8_t uint8_t;
 typedef int8_t sint8;
 
 struct BitsEncoder {
@@ -41,7 +41,7 @@ struct BitsEncoder {
     m_bitCount += numBits;
 
     while (m_bitCount >= 8) {
-      uint8 v = m_bitData & 0xFF;
+      uint8_t v = m_bitData & 0xFF;
       putc(v, m_outFile);
 
       m_bitData >>= 8;
@@ -51,7 +51,7 @@ struct BitsEncoder {
 
   void Flush() {
     while (m_bitCount >= 8) {
-      uint8 v = m_bitData & 0xFF;
+      uint8_t v = m_bitData & 0xFF;
       putc(v, m_outFile);
 
       m_bitData >>= 8;
@@ -59,7 +59,7 @@ struct BitsEncoder {
     }
 
     if (m_bitCount > 0) {
-      uint8 v = m_bitData & 0xFF;
+      uint8_t v = m_bitData & 0xFF;
       putc(v, m_outFile);
       m_bitCount = 0;
       m_bitData = 0;
