@@ -89,8 +89,8 @@ asp Ambient_sound_patterns[MAX_AMBIENT_SOUND_PATTERNS];
 int Num_ambient_sound_patterns = 0;
 
 // Computes a floating-point pseudo-random number.
-// Returns value in the range 0..1, with the precision 1/RAND_MAX
-static float randf() { return ((float)ps_rand()) / ((float)RAND_MAX); }
+// Returns value in the range 0..1, with the precision 1/D3_RAND_MAX
+static float randf() { return ((float)ps_rand()) / ((float)D3_RAND_MAX); }
 
 // Process an Ambient Sound Pattern
 static void ProcessASP(asp *asp) {
@@ -105,7 +105,7 @@ static void ProcessASP(asp *asp) {
   if (asp->delay < 0.0) {
 
     // Figure out which sound to play
-    int roll = (ps_rand() * 100) / (RAND_MAX + 1); // roll = 0..99
+    int roll = (ps_rand() * 100) / (D3_RAND_MAX + 1); // roll = 0..99
     int s;
 
     for (s = 0; s < asp->num_sounds; s++)

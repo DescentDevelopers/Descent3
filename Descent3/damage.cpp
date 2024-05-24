@@ -1059,7 +1059,7 @@ void KillObject(object *objp, object *killer, float damage) {
   if (IS_GENERIC(objp->type)) {
 
     // Get random probability
-    int r = (ps_rand() * 100 / (RAND_MAX + 1)) + 1; // in range 1 to 100
+    int r = (ps_rand() * 100 / (D3_RAND_MAX + 1)) + 1; // in range 1 to 100
 
     // Loop through death types looking for chosen one
     for (int i = 0; i < MAX_DEATH_TYPES; i++) {
@@ -1072,7 +1072,7 @@ void KillObject(object *objp, object *killer, float damage) {
         delay_min = Object_info[objp->id].death_types[i].delay_min;
         delay_max = Object_info[objp->id].death_types[i].delay_max;
 
-        delay_time = delay_min + (delay_max - delay_min) * ps_rand() / RAND_MAX;
+        delay_time = delay_min + (delay_max - delay_min) * ps_rand() / D3_RAND_MAX;
 
         mprintf((0, "Using %d\n", i));
         break;
@@ -1108,15 +1108,15 @@ void SetFallingPhysics(object *objp) {
     if (proj < 0.0f)
       objp->mtype.phys_info.velocity -= proj * objp->orient.uvec;
 
-    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((float)ps_rand() / RAND_MAX) * 5.0);
+    objp->mtype.phys_info.velocity += objp->orient.uvec * (3.0f + ((float)ps_rand() / D3_RAND_MAX) * 5.0);
     objp->movement_type = MT_PHYSICS;
   } else { // not a walker
 
     // If not spinning much, give the object a good spin
     if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
-      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
     }
   }
 }
@@ -1134,9 +1134,9 @@ void SetFlyingPhysics(object *objp, bool tumbles) {
 
   if (tumbles) {
     // Make y spin a little bit more that x or z
-    objp->mtype.phys_info.rotvel.x = (float)((40000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.z = (float)((40000.0f * (float)(RAND_MAX / 2 - ps_rand())) / (float)(RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.x = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.z = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
   }
 
   if (objp->orient.uvec.y == 1.0f) {
@@ -1386,7 +1386,7 @@ bool ApplyDamageToGeneric(object *hit_obj, object *killer, int damage_type, floa
       //			if (!((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT)))
       //			{
       //				// Attached objects have a 50% chance of falling off their parent when they die
-      //				if(ps_rand() >= (RAND_MAX >> 1))
+      //				if(ps_rand() >= (D3_RAND_MAX >> 1))
       //				{
       //					UnattachFromParent(hit_obj);
       //				}

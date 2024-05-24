@@ -1986,7 +1986,7 @@ vector osipf_AIGetRoomPathPoint(int roomnum) {
       vector pos;
 
       ComputeTerrainSegmentCenter(&pos, cell);
-      pos.y += 15.0f + ((float)ps_rand() / (float)RAND_MAX) * 20; // between 15 and 35
+      pos.y += 15.0f + ((float)ps_rand() / (float)D3_RAND_MAX) * 20; // between 15 and 35
 
       return pos;
     }
@@ -3640,7 +3640,7 @@ void osipf_ObjKill(int handle, int killer_handle, float damage, int flags, float
     if (flags == -1) // no flags, so use default death
       KillObject(obj, killer, damage);
     else {
-      float delay_time = min_time + (max_time - min_time) * ps_rand() / RAND_MAX;
+      float delay_time = min_time + (max_time - min_time) * ps_rand() / D3_RAND_MAX;
       KillObject(obj, killer, damage, flags, delay_time);
     }
   }

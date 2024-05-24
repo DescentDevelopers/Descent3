@@ -1926,7 +1926,7 @@ bool compute_dodge_dir(vector *movement_dir, object *obj, object *dodge_obj) {
   }
 
   obj->ai_info->dodge_till_time =
-      Gametime + ((float)ps_rand() / (float)RAND_MAX) * (3.0f * obj->ai_info->life_preservation) + 1.0f;
+      Gametime + ((float)ps_rand() / (float)D3_RAND_MAX) * (3.0f * obj->ai_info->life_preservation) + 1.0f;
 
   *movement_dir += dodge_vec;
 
@@ -2402,7 +2402,7 @@ bool AiMelee(object *obj) {
     gi_fire attack_info;
     int attack_num;
 
-    if (!(ai_info->flags & AIF_MELEE1) || ((ai_info->flags & AIF_MELEE2) && (ps_rand() > (RAND_MAX >> 1)))) {
+    if (!(ai_info->flags & AIF_MELEE1) || ((ai_info->flags & AIF_MELEE2) && (ps_rand() > (D3_RAND_MAX >> 1)))) {
       attack_num = 1;
     } else {
       attack_num = 0;
@@ -2450,7 +2450,7 @@ void do_melee_attack(object *obj) {
         object *objptr = ObjGet(ai_info->target_handle);
 
         if (objptr) {
-          if (ps_rand() > RAND_MAX / 2) {
+          if (ps_rand() > D3_RAND_MAX / 2) {
             Sound_system.Play3dSound(SOUND_MELEE_HIT_0, SND_PRIORITY_HIGHEST, objptr);
             if (Game_mode & GM_MULTI)
               MultiPlay3dSound(SOUND_MELEE_HIT_0, OBJNUM(objptr), SND_PRIORITY_HIGHEST);
@@ -3060,7 +3060,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
             if (!(ai_info->flags & AIF_DISABLED)) {
               if (ai_info->flags & AIF_DODGE) {
                 if (ai_info->awareness > AWARE_BARELY) {
-                  if (ps_rand() < ai_info->dodge_percent * RAND_MAX) {
+                  if (ps_rand() < ai_info->dodge_percent * D3_RAND_MAX) {
                     vector fov_vec;
 
                     if (ai_info->vec_to_target_actual * (*AIDetermineFovVec(&Objects[AI_RenderedList[i]], &fov_vec)) >=
@@ -3099,7 +3099,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
           if (ai_info->notify_flags & (0x00000001 << notify_type)) {
             if (!(ai_info->flags & AIF_DISABLED)) {
               if (ai_info->flags & AIF_DODGE) {
-                if (ps_rand() < ai_info->dodge_percent * RAND_MAX) {
+                if (ps_rand() < ai_info->dodge_percent * D3_RAND_MAX) {
                   vector to_weapon = other_obj->pos - Objects[i].pos;
                   vm_NormalizeVector(&to_weapon);
 
@@ -3206,7 +3206,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
 
     bool f_enemy = AIObjEnemy(obj, new_enemy);
 
-    float rand_val = ps_rand() / (float)RAND_MAX;
+    float rand_val = ps_rand() / (float)D3_RAND_MAX;
 
     if (new_enemy && (new_enemy != obj)) {
       // 20% per hit of switching to hitting player
@@ -3222,7 +3222,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
           ai_info->flags |= AIF_DETERMINE_TARGET;
           obj->ai_info->next_target_update_time =
               Gametime + MIN_TARGET_UPDATE_INTERVAL +
-              ((float)ps_rand() / (float)RAND_MAX) * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
+              ((float)ps_rand() / (float)D3_RAND_MAX) * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
           AISetTarget(obj, new_enemy->handle);
         }
       }
@@ -3240,7 +3240,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
           ai_info->flags |= AIF_DETERMINE_TARGET;
           ai_info->next_target_update_time =
               Gametime + MIN_TARGET_UPDATE_INTERVAL +
-              ((float)ps_rand() / (float)RAND_MAX) * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
+              ((float)ps_rand() / (float)D3_RAND_MAX) * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
           AISetTarget(obj, other_obj->handle);
         }
       }
@@ -3527,7 +3527,7 @@ int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_r
 
   if (max_depth >= 0 && min_depth >= 0) {
     f_use_depth = true;
-    cur_depth = min_depth + (float)ps_rand() / (float)RAND_MAX * (max_depth - min_depth);
+    cur_depth = min_depth + (float)ps_rand() / (float)D3_RAND_MAX * (max_depth - min_depth);
   }
 
   do {
@@ -3688,7 +3688,7 @@ bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement) {
   bool f_no_scale = (IS_GENERIC(obj->type) && (Object_info[obj->id].flags & OIF_NO_DIFF_SCALE_MOVE)) ||
                     ((ai_info->flags & AIF_TEAM_MASK) == AIF_TEAM_REBEL);
 
-  ai_info->mem_time_till_next_update = 3.0f + (float)ps_rand() / (float)RAND_MAX * 2.0f;
+  ai_info->mem_time_till_next_update = 3.0f + (float)ps_rand() / (float)D3_RAND_MAX * 2.0f;
   memset(ai_info->memory, 0, sizeof(ai_mem) * AI_MEM_DEPTH);
   for (i = 0; i < AI_MEM_DEPTH; i++) {
     ai_info->memory[0].shields = obj->shields;
@@ -3751,7 +3751,7 @@ bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement) {
     p_info->anim_flags = AIAF_LOOPING;
 
     // Setup the initial animation state info
-    float rand_offset = ps_rand() / ((float)RAND_MAX);
+    float rand_offset = ps_rand() / ((float)D3_RAND_MAX);
     p_info->anim_start_frame = Object_info[obj->id].anim[ai_movement].elem[anim].from;
     p_info->anim_end_frame = Object_info[obj->id].anim[ai_movement].elem[anim].to;
     p_info->anim_time = Object_info[obj->id].anim[ai_movement].elem[anim].spc;
@@ -3783,7 +3783,7 @@ bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement) {
   ai_info->next_melee_time = Gametime;
   ai_info->next_flinch_time = Gametime;
   AISetTarget(obj, OBJECT_HANDLE_NONE);
-  ai_info->next_check_see_target_time = Gametime + (float)ps_rand() / (float)RAND_MAX;
+  ai_info->next_check_see_target_time = Gametime + (float)ps_rand() / (float)D3_RAND_MAX;
   ai_info->last_see_target_time = Gametime - CHECK_VIS_INFREQUENTLY_TIME * 2.0f;
   ai_info->last_hear_target_time = Gametime - CHECK_VIS_INFREQUENTLY_TIME * 2.0f;
   ai_info->last_render_time = -1.0f;
@@ -3791,11 +3791,11 @@ bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement) {
 
   if (ai_info->flags & AIF_FLUCTUATE_SPEED_PROPERTIES) {
     ai_info->max_velocity *=
-        1.0f + (((float)ps_rand() - RAND_MAX * 0.5f) / (RAND_MAX * 0.5f)) * MAX_FLUCTUATION_PERCENT;
+        1.0f + (((float)ps_rand() - D3_RAND_MAX * 0.5f) / (D3_RAND_MAX * 0.5f)) * MAX_FLUCTUATION_PERCENT;
     ai_info->max_delta_velocity *=
-        1.0f + (((float)ps_rand() - RAND_MAX * 0.5f) / (RAND_MAX * 0.5f)) * MAX_FLUCTUATION_PERCENT;
+        1.0f + (((float)ps_rand() - D3_RAND_MAX * 0.5f) / (D3_RAND_MAX * 0.5f)) * MAX_FLUCTUATION_PERCENT;
     ai_info->max_turn_rate *=
-        1.0f + (((float)ps_rand() - RAND_MAX * 0.5f) / (RAND_MAX * 0.5f)) * MAX_FLUCTUATION_PERCENT;
+        1.0f + (((float)ps_rand() - D3_RAND_MAX * 0.5f) / (D3_RAND_MAX * 0.5f)) * MAX_FLUCTUATION_PERCENT;
   }
 
   ai_info->notify_flags |= AI_NOTIFIES_ALWAYS_ON;
@@ -4061,11 +4061,11 @@ void AICheckTargetVis(object *obj) {
       if ((ai_info->status_reg & AISR_SEES_GOAL) ||
           Gametime - ai_info->last_see_target_time < CHECK_VIS_INFREQUENTLY_TIME)
         ai_info->next_check_see_target_time =
-            Gametime + .9 * MIN_VIS_CHECK_INTERVAL + .2 * MIN_VIS_CHECK_INTERVAL * ((float)ps_rand() / (float)RAND_MAX);
+            Gametime + .9 * MIN_VIS_CHECK_INTERVAL + .2 * MIN_VIS_CHECK_INTERVAL * ((float)ps_rand() / (float)D3_RAND_MAX);
       else
         ai_info->next_check_see_target_time =
             Gametime + .9 * CHECK_VIS_INFREQUENTLY_INTERVAL +
-            .2 * CHECK_VIS_INFREQUENTLY_INTERVAL * ((float)ps_rand() / (float)RAND_MAX);
+            .2 * CHECK_VIS_INFREQUENTLY_INTERVAL * ((float)ps_rand() / (float)D3_RAND_MAX);
     }
   }
 
@@ -5532,7 +5532,7 @@ void ai_fire(object *obj) {
             }
           } else {
             ai_info->status_reg &= ~AISR_RANGED_ATTACK;
-            obj->dynamic_wb[i].last_fire_time = Gametime + 1.0f + ps_rand() / (float)RAND_MAX;
+            obj->dynamic_wb[i].last_fire_time = Gametime + 1.0f + ps_rand() / (float)D3_RAND_MAX;
           }
         }
       }
@@ -5559,7 +5559,7 @@ static inline void do_awareness_based_anim_stuff(object *obj) {
 
       // Once a second we have a chance of doing a quirk
       if (new_time_int != last_time_int) {
-        if (ps_rand() < RAND_MAX * PERCENT_QUIRK_PER_SEC) {
+        if (ps_rand() < D3_RAND_MAX * PERCENT_QUIRK_PER_SEC) {
           next_anim = AS_QUIRK;
           GoalAddGoal(obj, AIG_SET_ANIM, (void *)&next_anim, ACTIVATION_BLEND_LEVEL);
         }
@@ -5579,7 +5579,7 @@ static inline void do_awareness_based_anim_stuff(object *obj) {
 
       // Once a second we have a chance of doing a quirk
       if (new_time_int != last_time_int) {
-        if (ps_rand() < RAND_MAX * PERCENT_TAUNT_PER_SEC) {
+        if (ps_rand() < D3_RAND_MAX * PERCENT_TAUNT_PER_SEC) {
           next_anim = AS_TAUNT;
           GoalAddGoal(obj, AIG_SET_ANIM, (void *)&next_anim, ACTIVATION_BLEND_LEVEL);
         }
@@ -5929,11 +5929,11 @@ void AIDetermineTarget(object *obj) {
   if (ai_info->awareness >= AWARE_BARELY)
     ai_info->next_target_update_time =
         Gametime + MIN_TARGET_UPDATE_INTERVAL +
-        ((float)ps_rand() / (float)RAND_MAX) * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
+        ((float)ps_rand() / (float)D3_RAND_MAX) * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
   else
     ai_info->next_target_update_time =
         Gametime + 2.0f * MIN_TARGET_UPDATE_INTERVAL +
-        ((float)ps_rand() / (float)RAND_MAX) * 2.0f * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
+        ((float)ps_rand() / (float)D3_RAND_MAX) * 2.0f * (MAX_TARGET_UPDATE_INTERVAL - MIN_TARGET_UPDATE_INTERVAL);
 
   // Chrishack -- if agression is over a value, NO switching targets!!!!!!!!!  Need to implement
   // Chrishack -- if frustration is over a value, act as hostile -- temp stuff AIF_TEAM_HOSTILE
@@ -5964,8 +5964,8 @@ void AIDetermineTarget(object *obj) {
       bool f_forgive_friend = false;
 
       if ((t) && (t->control_type == CT_AI) && ((t->ai_info->flags & AIF_TEAM_MASK) == AIF_TEAM_PTMC)) {
-        // Do the divide because we don't want RAND_MAX to go too high
-        if (ps_rand() / AI_FORGIVE_AGRESSION_MULTIPLIER > ai_info->agression * RAND_MAX) {
+        // Do the divide because we don't want D3_RAND_MAX to go too high
+        if (ps_rand() / AI_FORGIVE_AGRESSION_MULTIPLIER > ai_info->agression * D3_RAND_MAX) {
           f_forgive_friend = true;
         }
       }
@@ -6013,7 +6013,7 @@ void AIDoFreud(object *obj) {
   if (ai_info->goals[3].used == 0 && ai_info->awareness > AWARE_BARELY) {
     if (IS_GENERIC(obj->type) && mem[0].shields / Object_info[obj->id].hit_points < ai_info->life_preservation &&
         mem[0].num_enemy_shots_dodged > 0 && mem[0].num_friends < 2 &&
-        (float)ps_rand() / (float)RAND_MAX < ai_info->life_preservation) {
+        (float)ps_rand() / (float)D3_RAND_MAX < ai_info->life_preservation) {
       float time = 10.0f * ai_info->life_preservation + 5.0f;
 
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
@@ -6027,7 +6027,7 @@ void AIDoFreud(object *obj) {
     if (IS_GENERIC(obj->type) &&
         (mem[fear_depth].shields - mem[0].shields) / mem[fear_depth].shields >
             0.25f * (1.0f - ai_info->life_preservation) &&
-        (float)ps_rand() / (float)RAND_MAX < ai_info->life_preservation) {
+        (float)ps_rand() / (float)D3_RAND_MAX < ai_info->life_preservation) {
       float time = 10.0f * ai_info->life_preservation + 5.0f;
 
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
@@ -6059,7 +6059,7 @@ void AIDoMemFrame(object *obj) {
     int i;
 
     // Compute next analyze time
-    ai_info->mem_time_till_next_update = 3.0f + (float)ps_rand() / (float)RAND_MAX * 2.0f;
+    ai_info->mem_time_till_next_update = 3.0f + (float)ps_rand() / (float)D3_RAND_MAX * 2.0f;
 
     // Do the amount of friends/enemies left and the current shields before running Freud
     short near_objs[100];

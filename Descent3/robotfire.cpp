@@ -262,7 +262,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
     }
 
     if (static_wb->flags & WBF_RANDOM_FIRE_ORDER) {
-      p_dwb->cur_firing_mask = ((float)ps_rand() / (float)RAND_MAX) * static_wb->num_masks;
+      p_dwb->cur_firing_mask = ((float)ps_rand() / (float)D3_RAND_MAX) * static_wb->num_masks;
     } else {
       p_dwb->cur_firing_mask++;
     }

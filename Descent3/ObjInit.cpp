@@ -725,7 +725,7 @@ int ObjInitPlayer(object *objp) {
 int ObjInitGeneric(object *objp, bool reinit) {
   object_info *obj_info;
   int ret = 1;
-  float r_val = (float)ps_rand() / (float)RAND_MAX;
+  float r_val = (float)ps_rand() / (float)D3_RAND_MAX;
   if ((objp->id < 0) || (objp->id >= MAX_OBJECT_IDS)) {
     Int3();
     return 0;

@@ -321,17 +321,17 @@ void SpewEmitAll(void) {
 
         // do random computations
         if ((spew->random & SPEW_RAND_SIZE) != 0) {
-          size = spew->size + (((RAND_MAX >> 1) - ps_rand()) / (float)RAND_MAX) * spew->size * 0.5f;
+          size = spew->size + (((D3_RAND_MAX >> 1) - ps_rand()) / (float)D3_RAND_MAX) * spew->size * 0.5f;
         } else
           size = spew->size;
 
         if ((spew->random & SPEW_RAND_SPEED) != 0) {
-          speed = spew->speed + (((RAND_MAX >> 1) - ps_rand()) / (float)RAND_MAX) * spew->speed * 0.5f;
+          speed = spew->speed + (((D3_RAND_MAX >> 1) - ps_rand()) / (float)D3_RAND_MAX) * spew->speed * 0.5f;
         } else
           speed = spew->speed;
 
         if ((spew->random & SPEW_RAND_LIFETIME) != 0) {
-          lifetime = spew->lifetime + (((RAND_MAX >> 1) - ps_rand()) / (float)RAND_MAX) * spew->lifetime * 0.5f;
+          lifetime = spew->lifetime + (((D3_RAND_MAX >> 1) - ps_rand()) / (float)D3_RAND_MAX) * spew->lifetime * 0.5f;
         } else
           lifetime = spew->lifetime;
 

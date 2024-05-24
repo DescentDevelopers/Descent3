@@ -1576,7 +1576,7 @@ object *HomingAquireTarget(object *obj) {
                     }
                   }
                 } else {
-                  if (ps_rand() < RAND_MAX / 4) { // 1/4 chance of picking chaff
+                  if (ps_rand() < D3_RAND_MAX / 4) { // 1/4 chance of picking chaff
                     best_index = i;
                     break;
                   }
