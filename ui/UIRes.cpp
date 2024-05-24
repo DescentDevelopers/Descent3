@@ -47,7 +47,7 @@ int UITextItem::m_Sat = 0;
 int UITextItem::m_DefaultFont = 0;
 char UITextItem::dummy_str[4] = "";
 
-UITextItem::UITextItem(const char *text, ddgr_color color, ubyte alpha) {
+UITextItem::UITextItem(const char *text, ddgr_color color, uint8_t alpha) {
   int slen = strlen(text);
   if (slen > 0) {
     m_Text = mem_strdup(text);
@@ -66,7 +66,7 @@ UITextItem::UITextItem(const char *text, ddgr_color color, ubyte alpha) {
   m_Font = m_DefaultFont;
 }
 
-UITextItem::UITextItem(int font, const char *text, ddgr_color color, ubyte alpha) {
+UITextItem::UITextItem(int font, const char *text, ddgr_color color, uint8_t alpha) {
   int slen = strlen(text);
   if (slen > 0) {
     m_Text = mem_strdup(text);
@@ -169,13 +169,13 @@ const UITextItem &UITextItem::operator=(const UITextItem &item) {
 
 #define UISTIF_INCREASING 0x80000000
 
-UISnazzyTextItem::UISnazzyTextItem(unsigned flags, const char *text, ddgr_color color, ubyte alpha)
+UISnazzyTextItem::UISnazzyTextItem(unsigned flags, const char *text, ddgr_color color, uint8_t alpha)
     : UITextItem(text, color, alpha) {
   m_flags = 0; // must do, so that set_flags works.
   set_flags(flags);
 }
 
-UISnazzyTextItem::UISnazzyTextItem(unsigned flags, int font, const char *text, ddgr_color color, ubyte alpha)
+UISnazzyTextItem::UISnazzyTextItem(unsigned flags, int font, const char *text, ddgr_color color, uint8_t alpha)
     : UITextItem(font, text, color, alpha) {
   m_flags = 0; // must do, so that set_flags works.
   set_flags(flags);
@@ -232,7 +232,7 @@ bool UISnazzyTextItem::draw(int x, int y, tUIDrawClass draw_class) {
     b2 = b2 - b;
 
     set_color(GR_RGB(r + (int)(r2 * m_data.f), g + (int)(g2 * m_data.f), b + (int)(b2 * m_data.f)));
-    //	set_alpha((ubyte)(m_data.f*m_internaldata.i));
+    //	set_alpha((uint8_t)(m_data.f*m_internaldata.i));
     //	mprintf((0, "%x\n", (unsigned)get_color()));
   }
 

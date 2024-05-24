@@ -223,7 +223,7 @@ void GetPointInObjectSpace (vector *dest,vector *pos,object *obj,int subnum,int 
 void AssignLightmapsToObjectSurfaces (int surface_index,int terrain)
 {
 	int i,t,j;
-	ubyte rotated[MAX_LIGHTMAP_INFOS];
+	uint8_t rotated[MAX_LIGHTMAP_INFOS];
 
 	memset (rotated,0,MAX_LIGHTMAP_INFOS);
 
@@ -939,7 +939,7 @@ void BuildElementListForObjectFace (int objnum,int subnum,int facenum,rad_surfac
 
 #define MAX_COMBINES		50
 #define LM_ADJACENT_FACE_THRESHOLD	.95
-ubyte *ObjectsAlreadyCombined[MAX_OBJECTS];
+uint8_t *ObjectsAlreadyCombined[MAX_OBJECTS];
 
 // Given a submodel and a face, goes through the entire object and checks to see
 // if this face can share a lightmap with any other face
@@ -1065,7 +1065,7 @@ void CombineObjectLightmapUVs (object *obj,int lmi_type)
 		if (IsNonRenderableSubmodel (pm,i))
 			continue;
 		
-		ObjectsAlreadyCombined[i]=(ubyte *)mem_malloc (sm->num_faces);
+		ObjectsAlreadyCombined[i]=(uint8_t *)mem_malloc (sm->num_faces);
 		ASSERT (ObjectsAlreadyCombined[i]);
 		for (k=0;k<sm->num_faces;k++)
 			ObjectsAlreadyCombined[i][k]=0;

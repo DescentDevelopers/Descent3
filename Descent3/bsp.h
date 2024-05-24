@@ -59,7 +59,7 @@
 
 typedef struct {
   float a, b, c, d;
-  ubyte used;
+  uint8_t used;
 } bspplane;
 
 typedef struct {
@@ -76,7 +76,7 @@ typedef struct {
 } bsppolygon;
 
 typedef struct bspnode {
-  ubyte type;
+  uint8_t type;
   bspplane plane;
   ushort node_facenum;
   ushort node_roomnum;
@@ -126,7 +126,7 @@ int BSPGetMineChecksum();
 
 extern bsptree MineBSP;
 extern int BSPChecksum;
-extern ubyte BSP_initted;
-extern ubyte UseBSP;
+extern uint8_t BSP_initted;
+extern uint8_t UseBSP;
 
 #endif

@@ -649,7 +649,7 @@
 // Game global for current pilot
 pilot Current_pilot;
 char Default_pilot[_MAX_PATH] = {" "};
-ubyte ingame_difficulty = 1;
+uint8_t ingame_difficulty = 1;
 
 ///////////////////////////////////////////////
 // Internals (Globals for the file)
@@ -866,7 +866,7 @@ void PilotListSelectChangeCallback(int index) {
 
   pilot *Pilot = &working_pilot;
   char name[PILOT_STRING_SIZE];
-  ubyte difficulty;
+  uint8_t difficulty;
   bool profanity, audiotaunts;
   bool in_edit = false;
 
@@ -1307,7 +1307,7 @@ bool PilotCreate(pilot *Pilot, bool forceselection) {
       for (int id = 0; id < NUM_CONTROLLER_FUNCTIONS; id++) {
         ct_type type[2];
         ct_config_data value;
-        ubyte flags[2];
+        uint8_t flags[2];
         Controller->get_controller_function(Controller_needs[id].id, type, &value, flags);
         Pilot->controls[id].id = Controller_needs[id].id;
         Pilot->controls[id].type[0] = type[0];
@@ -1472,7 +1472,7 @@ bool PilotCopy(pilot *Src,pilot *Dest)
 {
         char sname[PILOT_STRING_SIZE];
         char sship[PAGENAME_LEN];
-        ubyte sdiff;
+        uint8_t sdiff;
 
         Src->get_name(sname);
         Src->get_ship(sship);
@@ -3912,8 +3912,8 @@ clean_up:
 
 // "Current Pilot" access functions
 void dCurrentPilotName(char *buffer) { Current_pilot.get_name(buffer); }
-ubyte dCurrentPilotDifficulty(void) {
-  ubyte d;
+uint8_t dCurrentPilotDifficulty(void) {
+  uint8_t d;
   Current_pilot.get_difficulty(&d);
   return d;
 }
@@ -3923,7 +3923,7 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   char filename[_MAX_PATH];
   char pfilename[_MAX_FNAME];
   char buffer[256];
-  ubyte temp_b;
+  uint8_t temp_b;
   ushort temp_s;
   int temp_i;
   int filever, i, nctlfuncs;
@@ -4025,7 +4025,7 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
       }
       length = cf_ReadByte(file);
       if (length) {
-        cf_ReadBytes((ubyte *)dummy, length, file);
+        cf_ReadBytes((uint8_t *)dummy, length, file);
       }
     }
   }
@@ -4061,8 +4061,8 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
 
     // new flags for each controller item.
     if (filever >= 0xb) {
-      Pilot->controls[y].flags[0] = (ubyte)cf_ReadByte(file);
-      Pilot->controls[y].flags[1] = (ubyte)cf_ReadByte(file);
+      Pilot->controls[y].flags[0] = (uint8_t)cf_ReadByte(file);
+      Pilot->controls[y].flags[1] = (uint8_t)cf_ReadByte(file);
     }
 
     if (keyconfig)

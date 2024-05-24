@@ -288,9 +288,9 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
 
   cur_x = x;
   for (i = 0; i < (int)strlen(str); i++) {
-    ubyte ch;
+    uint8_t ch;
     int w;
-    ch = (ubyte)str[i];
+    ch = (uint8_t)str[i];
     text_Font.get_char_info((int)ch, &w);
 
     if (ch == GR_COLOR_CHAR) {
@@ -300,7 +300,7 @@ void grViewport::draw_text_line_clip(int x, int y, char *str) {
       i += 4;
       if (i >= (int)strlen(str))
         Int3(); // This shouldn't happen too.
-      ch = (ubyte)str[i];
+      ch = (uint8_t)str[i];
     } else if (ch == '\t') { // tab char
       int space_width;
       text_Font.get_char_info(' ', &space_width);
@@ -342,9 +342,9 @@ void grViewport::draw_text_line(int x, int y, char *str) {
   */
   cur_x = x;
   for (i = 0; i < (int)strlen(str); i++) {
-    ubyte ch;
+    uint8_t ch;
 
-    ch = (ubyte)str[i];
+    ch = (uint8_t)str[i];
 
     if (ch == GR_COLOR_CHAR) {
       if ((i + 3) >= (int)strlen(str))
@@ -353,7 +353,7 @@ void grViewport::draw_text_line(int x, int y, char *str) {
       i += 4;
       if (i >= (int)strlen(str))
         Int3(); // This shouldn't happen too.
-      ch = (ubyte)str[i];
+      ch = (uint8_t)str[i];
     } else if (ch == '\t') { // tab char
       int space_width;
       text_Font.get_char_info(' ', &space_width);

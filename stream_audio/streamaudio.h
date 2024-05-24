@@ -180,9 +180,9 @@ typedef struct tOSFDigiHdr // this struct belongs to OSF_DIGITAL_STRM
 class OSFArchive {
   CFILE *m_fp;
   uint32_t m_length;    // file information stored such as length
-  ubyte m_type;     // stream type
-  ubyte m_comp;     // compression type
-  ubyte m_flags;    // format
+  uint8_t m_type;     // stream type
+  uint8_t m_comp;     // compression type
+  uint8_t m_flags;    // format
   uint32_t m_rate;      // frequency
   bool m_writemode; // are we in write mode?
   union {
@@ -198,14 +198,14 @@ public:
   bool Opened() const { return m_fp ? true : false; };
   void Rewind();
   //	write out operations.
-  bool SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, uint32_t length, void *hdr, const char *name);
-  bool WriteBlock(ubyte *blk, int size);
+  bool SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr, const char *name);
+  bool WriteBlock(uint8_t *blk, int size);
   //	read in operations.
-  int Read(ubyte *blk, int size);
+  int Read(uint8_t *blk, int size);
   //	get archive info.
-  ubyte StreamType() const { return m_type; };
-  ubyte StreamComp() const { return m_comp; };
-  ubyte StreamFormat() const { return m_flags; };
+  uint8_t StreamType() const { return m_type; };
+  uint8_t StreamComp() const { return m_comp; };
+  uint8_t StreamFormat() const { return m_flags; };
   uint32_t StreamRate() const { return m_rate; };
   uint32_t StreamLength() const { return m_length; };
   const char *StreamName() const { return (const char *)m_name; };
@@ -236,7 +236,7 @@ class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
   AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
   struct { // mixing buffers
-    ubyte *data;
+    uint8_t *data;
     int nbytes; // number of bytes of valid data.
     int flags;
     int id;
@@ -245,10 +245,10 @@ class AudioStream {
   float m_measure_timer; // timer for measure checking.
   float m_measure_time;  // amount of time per measure.
   float m_last_frametime;
-  ubyte m_sbufidx;   // stream position markers
-  ubyte m_fbufidx;   // file position markers
-  ubyte m_curbufidx; // current buffer in measure index
-  ubyte m_playcount;
+  uint8_t m_sbufidx;   // stream position markers
+  uint8_t m_fbufidx;   // file position markers
+  uint8_t m_curbufidx; // current buffer in measure index
+  uint8_t m_playcount;
   bool m_readahead;               // if stream is currently reading from disk
   bool m_readahead_finished_loop; // if a loop's readahead has finished
   short m_nbufs;                  // number of buffers streamed so far.
@@ -278,7 +278,7 @@ private:
   void End();                             // cleans up after a stop.
   void Reset();                           // resets to start of stream.
   bool OpenDigitalStream();               // opens and prepares a digital stream
-  bool ReopenDigitalStream(ubyte fbufidx, int nbufs);
+  bool ReopenDigitalStream(uint8_t fbufidx, int nbufs);
 
 private:
   //	attach a low level sound system to all streams.

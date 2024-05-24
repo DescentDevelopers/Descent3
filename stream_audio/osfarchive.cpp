@@ -95,7 +95,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
     //	okay, if we are in read mode, then we read in the header NOW
     memset(tag, 0, sizeof(tag));
     cfseek(m_fp, -OSF_HDR_SIZE, SEEK_END);
-    cf_ReadBytes((ubyte *)tag, strlen(OSF_TAG), m_fp);
+    cf_ReadBytes((uint8_t *)tag, strlen(OSF_TAG), m_fp);
     if (strcmp(OSF_TAG, tag) != 0) {
       mprintf((0, "Illegal OSF file format for %s.\n", filename));
       cfclose(m_fp);
@@ -104,9 +104,9 @@ bool OSFArchive::Open(const char *filename, bool write) {
     }
 
     //	read in rest of header.
-    m_type = (ubyte)cf_ReadByte(m_fp);
-    m_comp = (ubyte)cf_ReadByte(m_fp);
-    m_flags = (ubyte)cf_ReadByte(m_fp);
+    m_type = (uint8_t)cf_ReadByte(m_fp);
+    m_comp = (uint8_t)cf_ReadByte(m_fp);
+    m_flags = (uint8_t)cf_ReadByte(m_fp);
     m_rate = (uint32_t)cf_ReadByte(m_fp);
 
     if (m_type == OSF_DIGITAL_STRM) {
@@ -130,7 +130,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
     m_length = (uint32_t)cf_ReadInt(m_fp);
 
     cfseek(m_fp, -OSF_HDR_TITLE_OFS, SEEK_END);
-    if (!cf_ReadBytes((ubyte *)m_name, OSF_HDR_TITLE_LEN, m_fp)) {
+    if (!cf_ReadBytes((uint8_t *)m_name, OSF_HDR_TITLE_LEN, m_fp)) {
       mprintf((0, "Stream title not found for %s.\n", filename));
       cfclose(m_fp);
       m_fp = NULL;
@@ -174,7 +174,7 @@ void OSFArchive::Rewind() {
 }
 
 //	write out operations.
-bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, uint32_t length, void *hdr, const char *name) {
+bool OSFArchive::SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr, const char *name) {
   char chbuf[OSF_HDR_SIZE];
   int hdrstart, hdrcur;
 
@@ -184,12 +184,12 @@ bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, 
   //	write out data.
   try {
     char osftitle[OSF_HDR_TITLE_LEN];
-    memset((ubyte *)chbuf, 0, OSF_HDR_SIZE);
-    cf_WriteBytes((ubyte *)chbuf, OSF_HDR_SIZE, m_fp);
+    memset((uint8_t *)chbuf, 0, OSF_HDR_SIZE);
+    cf_WriteBytes((uint8_t *)chbuf, OSF_HDR_SIZE, m_fp);
     cfseek(m_fp, -OSF_HDR_SIZE, SEEK_CUR);
 
     hdrstart = cftell(m_fp);
-    if (!cf_WriteBytes((ubyte *)OSF_TAG, strlen(OSF_TAG), m_fp))
+    if (!cf_WriteBytes((uint8_t *)OSF_TAG, strlen(OSF_TAG), m_fp))
       return false;
 
     cf_WriteByte(m_fp, (int8_t)type);
@@ -215,7 +215,7 @@ bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, 
     cfseek(m_fp, OSF_HDR_TITLE_OFS - (hdrcur - hdrstart), SEEK_CUR);
     strncpy(osftitle, name, OSF_HDR_TITLE_LEN);
     osftitle[OSF_HDR_TITLE_LEN - 1] = 0;
-    if (!cf_WriteBytes((ubyte *)name, OSF_HDR_TITLE_LEN, m_fp))
+    if (!cf_WriteBytes((uint8_t *)name, OSF_HDR_TITLE_LEN, m_fp))
       return false;
   } catch (...) {
     return false;
@@ -224,10 +224,10 @@ bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, 
   return true;
 }
 
-bool OSFArchive::WriteBlock(ubyte *blk, int size) { return (cf_WriteBytes(blk, size, m_fp) < size) ? false : true; }
+bool OSFArchive::WriteBlock(uint8_t *blk, int size) { return (cf_WriteBytes(blk, size, m_fp) < size) ? false : true; }
 
 //	read in operations.
-int OSFArchive::Read(ubyte *blk, int size) {
+int OSFArchive::Read(uint8_t *blk, int size) {
   int retval;
   try {
     retval = cf_ReadBytes(blk, size, m_fp);

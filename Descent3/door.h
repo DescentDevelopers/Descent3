@@ -123,9 +123,9 @@
 
 typedef struct {
   char name[PAGENAME_LEN]; // name of the door
-  ubyte used;              // if this door is in use
-  ubyte flags;             // flags for this door
-  ubyte pad;               // keep alignment (pagename is 35 chars long)
+  uint8_t used;              // if this door is in use
+  uint8_t flags;             // flags for this door
+  uint8_t pad;               // keep alignment (pagename is 35 chars long)
   short hit_points;        // for blastable doors
   float total_open_time;   // time of animation to open door
   float total_close_time;  // time of animation to close door

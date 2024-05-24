@@ -30,7 +30,7 @@
  *
  *
  * 64    9/28/99 10:55a Jeff
- * changed size of pointer for mastertracker game from ubyte* to int*
+ * changed size of pointer for mastertracker game from uint8_t* to int*
  *
  * 63    8/15/99 4:36p Jeff
  * finished exporting all inventory class functions.  export object_info

@@ -70,7 +70,7 @@ void CZip::ha_PrepareCompress(void) {
   ha_InitializeTree(&Tree);
 }
 
-void CZip::ha_WriteRawByte(ubyte data, BITFILE *output) {
+void CZip::ha_WriteRawByte(uint8_t data, BITFILE *output) {
   if (!ok_to_raw_write)
     return;
   ha_EncodeSymbol(&Tree, data, output);
@@ -99,7 +99,7 @@ void CZip::ha_PrepareDecompress(void) {
   ha_InitializeTree(&Tree);
 }
 
-bool CZip::ha_ReadRawByte(ubyte *data, BITFILE *input) {
+bool CZip::ha_ReadRawByte(uint8_t *data, BITFILE *input) {
   if (!ok_to_raw_read)
     return false;
 

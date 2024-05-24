@@ -153,12 +153,12 @@
 #define CHEATSPOT 14
 bool IsCheater = false;
 bool Display_renderer_stats = false;
-ubyte Outline_release_mode = 0;
+uint8_t Outline_release_mode = 0;
 
 char CheatBuffer[] = "AAAAAAAAAAAAAAA";
 char OldCheatBuffer[] = "AAAAAAAAAAAAAAA";
 extern bool Force_one_texture;
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 
 const char *LamerCheats[] = {
     "?E9FI=()",  // gabbagabbahey
@@ -406,7 +406,7 @@ void DemoCheats(int key) {
 
   static int state = 0;
   if (!(memcmp(cryptstring, OutlineModeCheat, 8))) {
-    ubyte new_mode;
+    uint8_t new_mode;
     char buffer[128];
     switch (state) {
     case 0:
@@ -638,7 +638,7 @@ void DemoCheats(int key) {
 
   if (!(memcmp(cryptstring, SuicideCheat, 8))) {
     //"ZOD Strikes Revenge"
-    static ubyte buffer[20] = {0x80, 0x95, 0x9E, 0xFA, 0x89, 0xAE, 0xA8, 0xB3, 0xB1, 0xBF,
+    static uint8_t buffer[20] = {0x80, 0x95, 0x9E, 0xFA, 0x89, 0xAE, 0xA8, 0xB3, 0xB1, 0xBF,
                                0xA9, 0xFA, 0x88, 0xBF, 0xAC, 0xBF, 0xB4, 0xBD, 0xBF, 0xDA};
     char tb[20];
 

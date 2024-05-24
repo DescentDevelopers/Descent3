@@ -30,8 +30,8 @@
 typedef struct {
   ushort *data;     // 8bit data
   short cache_slot; // for the renderers use
-  ubyte width, height;
-  ubyte flags, pad;
+  uint8_t width, height;
+  uint8_t flags, pad;
 } bms_bumpmap;
 
 extern bms_bumpmap GameBumpmaps[MAX_BUMPMAPS];
@@ -52,7 +52,7 @@ void bump_FreeBumpmap(int handle);
 ushort *bump_data(int handle);
 
 // returns width or height of the passed in bumpmap
-ubyte bump_w(int handle);
-ubyte bump_h(int handle);
+uint8_t bump_w(int handle);
+uint8_t bump_h(int handle);
 
 #endif

@@ -466,8 +466,8 @@ int CountRoomFaceVerts(room *rp) {
 #endif
 
 // Vars for the room memory system
-ubyte *Room_mem_buf = NULL; // pointer to the rooms block of memory
-ubyte *Room_mem_ptr = NULL; // pointer to free memory in the rooms block
+uint8_t *Room_mem_buf = NULL; // pointer to the rooms block of memory
+uint8_t *Room_mem_ptr = NULL; // pointer to free memory in the rooms block
 int Room_mem_size;          // How big our chunk is
 
 // Closes down the room memory system.
@@ -495,7 +495,7 @@ void RoomMemInit(int nverts, int nfaces, int nfaceverts, int nportals) {
   if (Room_mem_buf)
     mem_free(Room_mem_buf);
 
-  Room_mem_buf = (ubyte *)mem_malloc(size);
+  Room_mem_buf = (uint8_t *)mem_malloc(size);
   Room_mem_size = size;
 
   Room_mem_ptr = Room_mem_buf;

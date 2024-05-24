@@ -294,7 +294,7 @@ int mng_ReadNewDoorPage(CFILE *infile, mngs_door_page *doorpage) {
 int mng_ReadDoorPage(CFILE *infile, mngs_door_page *doorpage) {
   int done = 0;
   char command;
-  ubyte len;
+  uint8_t len;
   int i;
 
   if (!Old_table_method)
@@ -364,7 +364,7 @@ int mng_ReadDoorPage(CFILE *infile, mngs_door_page *doorpage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificDoorPage(char *name, mngs_door_page *doorpage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
 
   char tablename[TABLE_NAME_LEN];

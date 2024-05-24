@@ -164,7 +164,7 @@ MenuItem::MenuItem() {
   strcpy(m_sTitle, " ");
 }
 
-MenuItem::MenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...) {
+MenuItem::MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int), ...) {
   m_bMoreToScroll = false;
   m_bAtBottom = false;
   m_iTopIndex = 0;
@@ -508,7 +508,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
   if(!ratio) useratio = aspratio; else useratio = *ratio;
   */
 
-  ubyte alpha_to_use = 255;
+  uint8_t alpha_to_use = 255;
 
 #define FLASHRATE 700.0 // alphas per second
 
@@ -519,7 +519,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
   while (units > 0) {
     if (m_AlphaDir) {
       // find the amount to adjust
-      ubyte amount = std::min<int>(255 - a, units);
+      uint8_t amount = std::min<int>(255 - a, units);
       units -= amount;
       a += amount;
       if (a >= 255) {
@@ -528,7 +528,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
       }
     } else {
       // find the amount to adjust
-      ubyte amount = std::min<int>(a, units);
+      uint8_t amount = std::min<int>(a, units);
       units -= amount;
       a -= amount;
       if (a <= 0) {
@@ -538,7 +538,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
     }
   }
 
-  m_Alpha = alpha_to_use = (ubyte)a;
+  m_Alpha = alpha_to_use = (uint8_t)a;
 
   ddgr_color color;
   int temp, maxx;
@@ -663,7 +663,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
 
   x += 5;
 
-  ubyte al;
+  uint8_t al;
 
   m_bMoreToScroll = (end_index < SubMenuCount) ? true : false;
   // m_bAtBottom = (m_bMoreToScroll)?((CurrSubMenu<end_index-1)?false:true):((CurrSubMenu<end_index)?false:true);

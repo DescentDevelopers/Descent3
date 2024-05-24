@@ -22,8 +22,8 @@
 
 extern vector Clip_plane_point;
 // code a point.  fills in the p3_codes field of the point, and returns the codes
-ubyte g3_CodePoint(g3Point *p) {
-  ubyte cc = 0;
+uint8_t g3_CodePoint(g3Point *p) {
+  uint8_t cc = 0;
 
   if (p->p3_x > p->p3_z)
     cc |= CC_OFF_RIGHT;
@@ -60,7 +60,7 @@ ubyte g3_CodePoint(g3Point *p) {
 }
 
 // rotates a point. returns codes.  does not check if already rotated
-ubyte g3_RotatePoint(g3Point *dest, vector *src) {
+uint8_t g3_RotatePoint(g3Point *dest, vector *src) {
   // store the pre-rotated point
   dest->p3_vecPreRot = *src;
 
@@ -133,7 +133,7 @@ vector *g3_RotateDeltaVec(vector *dest, vector *src) {
   return dest;
 }
 
-ubyte g3_AddDeltaVec(g3Point *dest, g3Point *src, vector *deltav) {
+uint8_t g3_AddDeltaVec(g3Point *dest, g3Point *src, vector *deltav) {
   dest->p3_vec = src->p3_vec + *deltav;
 
   dest->p3_flags = 0; // not projected

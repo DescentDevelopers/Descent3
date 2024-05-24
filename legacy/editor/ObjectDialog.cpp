@@ -705,7 +705,7 @@ void CObjectDialog::OnObjmovePH()
 
 int CObjectDialog::GetFreePlayerIndex()
 {
-	ubyte slots[MAX_NET_PLAYERS];
+	uint8_t slots[MAX_NET_PLAYERS];
 
 	memset (slots,0,MAX_NET_PLAYERS);
 

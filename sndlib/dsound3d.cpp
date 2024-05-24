@@ -64,7 +64,7 @@ static struct t_sb_loop_thread_data {
   bool thread_alive;
 } m_ds;
 
-static ubyte m_sb_cur_timeslice;
+static uint8_t m_sb_cur_timeslice;
 
 ////////////////////////////////////////////////////////////////////////////////
 // DSLOOP_STREAM_METHOD
@@ -227,7 +227,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
   sound_buffer_cache *sndcache;
   DWORD playp, writep, whichhalf;
   int i;
-  ubyte iteration;
+  uint8_t iteration;
 
   // validate thread
   m_ds.m_ll_sndsys = (win_llsSystem *)user_ptr;

@@ -113,7 +113,7 @@ void DoRadiosityForCurrentRoom (room *rp);
 extern rad_surface *Light_surfaces;
 extern rad_surface *Terrain_light_surfaces;
 
-extern ubyte *TerrainLightSpeedup[];
+extern uint8_t *TerrainLightSpeedup[];
 
 extern int Square_surfaces;
 extern int LightSpacing;

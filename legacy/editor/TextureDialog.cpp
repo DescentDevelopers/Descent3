@@ -266,7 +266,7 @@ END_MESSAGE_MAP()
 
 static CDialog *ParentDialog=NULL;
 static CTextureDialog *ParentTextureDialog=NULL;
-ubyte CurrentlyUsedTextures[MAX_TEXTURES];
+uint8_t CurrentlyUsedTextures[MAX_TEXTURES];
 bool Show_used=0;
 
 BOOL CTextureDialog::OnInitDialog() 

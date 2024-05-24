@@ -494,8 +494,8 @@ typedef struct ai_path_info {
   int goal_index;
 
   // Used by all paths
-  ubyte path_id[MAX_JOINED_PATHS];
-  ubyte path_type[MAX_JOINED_PATHS];
+  uint8_t path_id[MAX_JOINED_PATHS];
+  uint8_t path_type[MAX_JOINED_PATHS];
 
   // Used for static game paths
   ushort path_start_node[MAX_JOINED_PATHS];
@@ -551,8 +551,8 @@ typedef struct goal_enabler {
 
 typedef struct gi_fire {
   short cur_wb;       // for ranged attack
-  ubyte cur_mask;     // for ranged attack
-  ubyte melee_number; // this could be union'ed but it makes this struct word aligned
+  uint8_t cur_mask;     // for ranged attack
+  uint8_t melee_number; // this could be union'ed but it makes this struct word aligned
 } gi_fire;
 
 typedef struct g_steer {
@@ -624,7 +624,7 @@ typedef struct goal_info {
 typedef struct goal {
   uint32_t type;
   char subtype;
-  ubyte activation_level;
+  uint8_t activation_level;
   float creation_time;
 
   float min_influence;

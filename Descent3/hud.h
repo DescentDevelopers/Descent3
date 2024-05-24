@@ -474,13 +474,13 @@ typedef struct tHUDItem {
   short tx, ty;             // text version x and y.
   float grscalex, grscaley; // used to scale graphics.
 
-  ubyte id;    // id number.
-  ubyte type;  // custom of predefined hud item type.
+  uint8_t id;    // id number.
+  uint8_t type;  // custom of predefined hud item type.
   ushort stat; // stat mask (what class of hud items does this one belong to)
 
   ushort flags;           // more flags.
-  ubyte alpha;            // alpha of hud item
-  ubyte saturation_count; // how saturated is this hud item (how bright).
+  uint8_t alpha;            // alpha of hud item
+  uint8_t saturation_count; // how saturated is this hud item (how bright).
 
   ddgr_color color;  // color of hud item.
   ddgr_color tcolor; // text color of item.
@@ -594,17 +594,17 @@ int RenderHUDGetTextLineWidth(const char *string);
 int RenderHUDGetTextHeight(const char *string);
 
 //	renders a bitmap onto the hud
-void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, ubyte alpha,
+void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, uint8_t alpha,
                    int sat_count = 0);
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
+void RenderHUDText(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 
 //	flags for RenderHudText.
 #define HUDTEXT_CENTERED 1
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
+void RenderHUDTextFlags(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 
 // reset hud messages.
 void ResetHUDMessages();
@@ -651,7 +651,7 @@ struct tMsgList {
 
   tMsgList();
   void set_limit(int limit) { m_limit = limit; };
-  bool add(const char *msg, ubyte lvl = 0, ubyte hr = 0, ubyte min = 0, ubyte sec = 0);
+  bool add(const char *msg, uint8_t lvl = 0, uint8_t hr = 0, uint8_t min = 0, uint8_t sec = 0);
   const char *get(int i);
   void reset();
 };

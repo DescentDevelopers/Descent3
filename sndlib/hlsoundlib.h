@@ -254,7 +254,7 @@ class hlsSystem {
   int m_sounds_played;
 
   bool m_pause_new;
-  ubyte m_cur_environment; // current environment being played.
+  uint8_t m_cur_environment; // current environment being played.
   int n_lls_sounds;        // number of sounds that we want the low level mixer to mix.
 
   bool Emulate3dSound(int sound_obj_index);

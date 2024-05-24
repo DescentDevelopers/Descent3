@@ -134,7 +134,7 @@ int mng_ReadGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificGamefilePage(char *name, mngs_gamefile_page *gamefilepage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
   char tablename[TABLE_NAME_LEN];
 

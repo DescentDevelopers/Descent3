@@ -460,7 +460,7 @@ char *grSurface::lock(int *rowsize) {
 
   surf_Locked++; // increment lock counter for this surface
 
-  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (ubyte *)m_OrigDataPtr);
+  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (uint8_t *)m_OrigDataPtr);
 
   return m_DataPtr;
 }
@@ -507,7 +507,7 @@ char *grSurface::lock(int x, int y, int *rowsize) {
 
   surf_Locked++; // increment lock counter for this surface
 
-  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (ubyte *)m_OrigDataPtr);
+  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (uint8_t *)m_OrigDataPtr);
 
   return m_DataPtr;
 }
@@ -555,7 +555,7 @@ void grSurface::xlat8_16(char *data, int w, int h, char *pal) {
   int row, col;
   int rowsize_w;
   int height, width;
-  ubyte *upal = (ubyte *)pal;
+  uint8_t *upal = (uint8_t *)pal;
 
   dptr = (ushort *)m_DataPtr;
   sptr = (char *)data;
@@ -566,7 +566,7 @@ void grSurface::xlat8_16(char *data, int w, int h, char *pal) {
 
   for (row = 0; row < height; row++) {
     for (col = 0; col < width; col++) {
-      ubyte spix = sptr[col];
+      uint8_t spix = sptr[col];
       if (spix != 0) {
         int r = upal[spix * 3] >> 3;
         int g = upal[spix * 3 + 1] >> 2;

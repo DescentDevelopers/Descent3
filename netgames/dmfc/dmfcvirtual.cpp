@@ -283,7 +283,7 @@ void DMFCBase::Set_OnPlayerReconnect(void (*callback)(int player_num)) { UserOnP
 
 void DMFCBase::Set_OnPlayerConnect(void (*callback)(int player_num)) { UserOnPlayerConnect = callback; }
 
-void DMFCBase::Set_OnControlMessage(void (*callback)(ubyte msg, int from_pnum)) { UserOnControlMessage = callback; }
+void DMFCBase::Set_OnControlMessage(void (*callback)(uint8_t msg, int from_pnum)) { UserOnControlMessage = callback; }
 
 void DMFCBase::Set_OnAllowObserverChange(bool (*callback)(bool turnonobserver)) {
   UserOnAllowObserverChange = callback;
@@ -666,7 +666,7 @@ void DMFCBase::CallOnPlayerConnect(int player_num) {
     OnPlayerConnect(player_num);
 }
 
-void DMFCBase::CallOnControlMessage(ubyte msg, int from_pnum) {
+void DMFCBase::CallOnControlMessage(uint8_t msg, int from_pnum) {
   if (UserOnControlMessage)
     (*UserOnControlMessage)(msg, from_pnum);
   else

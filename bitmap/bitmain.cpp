@@ -323,7 +323,7 @@
 int Num_of_bitmaps = 0;
 bms_bitmap GameBitmaps[MAX_BITMAPS];
 uint32_t Bitmap_memory_used = 0;
-ubyte Bitmaps_initted = 0;
+uint8_t Bitmaps_initted = 0;
 /* modify these lines to establish data type */
 typedef bms_bitmap *bm_T;      /* type of item to be stored */
 typedef int bm_hashTableIndex; /* index into hash table */
@@ -998,7 +998,7 @@ void bm_MakeBad(int handle) {
 // Saves a bitmap to an open file.  Saves the bitmap as an OUTRAGE_COMPRESSED_OGF.
 // Returns -1 if something is wrong.
 int bm_SaveBitmap(CFILE *fp, int handle) {
-  ubyte dumbbyte = 0, image_type = OUTRAGE_1555_COMPRESSED_MIPPED, pixsize = 32, desc = 8 + 32;
+  uint8_t dumbbyte = 0, image_type = OUTRAGE_1555_COMPRESSED_MIPPED, pixsize = 32, desc = 8 + 32;
   int i, done = 0;
   int num_mips;
   mprintf((0, "Saving bitmap %s...\n", GameBitmaps[handle].name));
@@ -1048,7 +1048,7 @@ int bm_SaveBitmap(CFILE *fp, int handle) {
       }
       ASSERT(curptr < total);
       ushort curpix = src_data[curptr];
-      ubyte count = 1;
+      uint8_t count = 1;
       while (src_data[curptr + count] == curpix && count < 250 && (curptr + count) < total)
         count++;
       if (count == 1) {

@@ -69,12 +69,12 @@ ushort *Terrain_rotate_list; // which points have been sub/rotated this frame
 g3Point *World_point_buffer; // Rotated points
 
 // The min/max values for a particular region of terrain
-ubyte *Terrain_min_height_int[7];
-ubyte *Terrain_max_height_int[7];
+uint8_t *Terrain_min_height_int[7];
+uint8_t *Terrain_max_height_int[7];
 // Texture values for a particular region
 
 // Terrain dynamic lighting table
-ubyte Terrain_dynamic_table[TERRAIN_WIDTH * TERRAIN_DEPTH];
+uint8_t Terrain_dynamic_table[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
 // Terrain normals depending on LOD
 terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
@@ -83,13 +83,13 @@ terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
 float *TerrainDeltaBlocks[MAX_TERRAIN_LOD];
 
 // Tracks edges of LOD
-ubyte TerrainJoinMap[TERRAIN_WIDTH * TERRAIN_DEPTH];
+uint8_t TerrainJoinMap[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
 // Terrain Y values
 float Terrain_y_values[256];
 
 #if (defined(EDITOR) || defined(NEWEDITOR))
-ubyte TerrainSelected[TERRAIN_WIDTH * TERRAIN_DEPTH];
+uint8_t TerrainSelected[TERRAIN_WIDTH * TERRAIN_DEPTH];
 int Num_terrain_selected = 0;
 int Editor_LOD_engine_off = 1;
 bool Terrain_render_ext_room_objs = true;
@@ -100,13 +100,13 @@ int TSearch_on = 0, TSearch_found_type, TSearch_x, TSearch_y, TSearch_seg, TSear
 int Terrain_LOD_engine_off = 0;
 
 int TerrainEdgeTest[MAX_TERRAIN_LOD][16];
-ubyte TerrainEdgeJump[MAX_TERRAIN_LOD];
+uint8_t TerrainEdgeJump[MAX_TERRAIN_LOD];
 
 // Unique terrain geometry identifier
 int Terrain_checksum = -1;
 
 // Occlusion data for knowing what to draw
-ubyte Terrain_occlusion_map[256][32];
+uint8_t Terrain_occlusion_map[256][32];
 int Terrain_occlusion_checksum = -2;
 
 // returns the index of the highest float
@@ -673,7 +673,7 @@ void SetupSkyTexture() {
 }
 
 // Compute a parametric sphere for our sky.
-void SetupSky(float radius, int flags, ubyte randit) {
+void SetupSky(float radius, int flags, uint8_t randit) {
   int jump = 65536 / MAX_HORIZON_PIECES;
   int top = ((65536 / 4) * 3) + (65536 / 8);
 
@@ -819,7 +819,7 @@ int LoadPCXTerrain(char *filename) {
 
   total = width * height;
 
-  lando = (ubyte *)mem_malloc(total);
+  lando = (uint8_t *)mem_malloc(total);
 
   mprintf((0, "Heightmap is %d x %d\n", width, height));
 
@@ -981,8 +981,8 @@ void InitTerrain(void) {
     h = 1 << i;
 
     // Index 1 cuts the whole thing into 4ths, index 2 into 8ths, etc
-    Terrain_min_height_int[i] = (ubyte *)mem_malloc(w * h * sizeof(ubyte));
-    Terrain_max_height_int[i] = (ubyte *)mem_malloc(w * h * sizeof(ubyte));
+    Terrain_min_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
+    Terrain_max_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
 
     ASSERT(Terrain_min_height_int[i] != NULL);
     ASSERT(Terrain_max_height_int[i] != NULL);

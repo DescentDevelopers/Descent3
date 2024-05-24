@@ -71,8 +71,8 @@ static int Highlight_bmp = -1;
 #define AHD_EFFICIENCY 2
 #define ACM_PLAYERCOLOR 0
 #define ACM_NORMAL 1
-static ubyte Anarchy_hud_display = AHD_SCORE;
-static ubyte HUD_color_model = ACM_PLAYERCOLOR;
+static uint8_t Anarchy_hud_display = AHD_SCORE;
+static uint8_t HUD_color_model = ACM_PLAYERCOLOR;
 static bool display_my_welcome = false;
 
 static void DisplayHUDScores(struct tHUDItem *hitem);
@@ -127,7 +127,7 @@ void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -823,7 +823,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
     return;
 
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
   int y = (DMFCBase->GetGameWindowH() / 2) - ((height * 5) / 2);
   int x = 520;
   ddgr_color color = 0;

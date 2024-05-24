@@ -1960,7 +1960,7 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
     cur_room = &Rooms[next_rooms[cur_next_room_index]];
 
     // sort shit
-    ubyte msector = 0;
+    uint8_t msector = 0;
 
     if (min_xyz.x <= cur_room->bbf_min_xyz.x) {
       msector |= 0x01;
@@ -1983,7 +1983,7 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
 
     const short num_bbf_regions = cur_room->num_bbf_regions;
     short *num_faces_ptr = cur_room->num_bbf;
-    ubyte *bbf_val = cur_room->bbf_list_sector;
+    uint8_t *bbf_val = cur_room->bbf_list_sector;
     vector *region_min = cur_room->bbf_list_min_xyz;
     vector *region_max = cur_room->bbf_list_max_xyz;
     short **bbf_list_ptr = cur_room->bbf_list;
@@ -2348,7 +2348,7 @@ internal_try_again:
   //	mprintf((0, "Checking room %d ", ROOMNUM(cur_room)));
 
   // sort shit
-  ubyte msector = 0;
+  uint8_t msector = 0;
 
   if (min_xyz.x <= cur_room->bbf_min_xyz.x) {
     msector |= 0x01;
@@ -2371,7 +2371,7 @@ internal_try_again:
 
   const short num_bbf_regions = cur_room->num_bbf_regions;
   short *num_faces_ptr = cur_room->num_bbf;
-  ubyte *bbf_val = cur_room->bbf_list_sector;
+  uint8_t *bbf_val = cur_room->bbf_list_sector;
   vector *region_min = cur_room->bbf_list_min_xyz;
   vector *region_max = cur_room->bbf_list_max_xyz;
   short **bbf_list_ptr = cur_room->bbf_list;
@@ -4470,7 +4470,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   //	vector col_normal[32];
   int num_cols = 0;
   object *this_obj;
-  ubyte msector = 0;
+  uint8_t msector = 0;
 
   if (fvi_min_xyz.x <= cur_room->bbf_min_xyz.x) {
     msector |= 0x01;
@@ -4570,7 +4570,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   } else {
     const short num_bbf_regions = cur_room->num_bbf_regions;
     short *num_faces_ptr = cur_room->num_bbf;
-    ubyte *bbf_val = cur_room->bbf_list_sector;
+    uint8_t *bbf_val = cur_room->bbf_list_sector;
     vector *region_min = cur_room->bbf_list_min_xyz;
     vector *region_max = cur_room->bbf_list_max_xyz;
     short **bbf_list_ptr = cur_room->bbf_list;

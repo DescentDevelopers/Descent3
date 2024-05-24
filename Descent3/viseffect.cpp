@@ -564,7 +564,7 @@ int VisEffectInitType(vis_effect *vis) {
 
 // initialize a new viseffect.  adds to the list for the given room
 // returns the vis number
-int VisEffectCreate(ubyte type, ubyte id, int roomnum, vector *pos) {
+int VisEffectCreate(uint8_t type, uint8_t id, int roomnum, vector *pos) {
   int visnum;
   vis_effect *vis;
 
@@ -629,7 +629,7 @@ int VisEffectCreate(ubyte type, ubyte id, int roomnum, vector *pos) {
 // Creates vis effects but has the caller set their parameters
 // initialize a new viseffect.  adds to the list for the given room
 // returns the vis number
-int VisEffectCreateControlled(ubyte type, object *parent, ubyte id, int roomnum, vector *pos, float lifetime,
+int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos, float lifetime,
                               vector *velocity, int phys_flags, float size, float drag, float mass, bool isreal) {
   int visnum;
   vis_effect *vis;

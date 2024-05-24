@@ -373,7 +373,7 @@ typedef struct {
   short from, to;
   float spc;
   int anim_sound_index;
-  ubyte used;
+  uint8_t used;
 } anim_entry;
 
 typedef struct {
@@ -500,7 +500,7 @@ typedef struct {
 
   // Death information
   death_info death_types[MAX_DEATH_TYPES];    // the ways this object can die
-  ubyte death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
+  uint8_t death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
 
   // Valid for AI objects only
   t_ai_info *ai_info; // the AI info for this obj type

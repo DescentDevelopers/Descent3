@@ -70,7 +70,7 @@
  *
  * 15    8/27/98 6:23p Jeff
  * changed autoleveling in config so it is a slider...had to convert
- * global from bool->ubyte.  Added fast headlight and mirrored surfaces to
+ * global from bool->uint8_t.  Added fast headlight and mirrored surfaces to
  * config menu
  *
  * 14    8/19/98 2:19p Jeff
@@ -171,8 +171,8 @@ typedef struct tDetailSettings {
   bool Scorches_enabled;
   bool Weapon_coronas_enabled;
   bool Bumpmapping_enabled;
-  ubyte Specular_mapping_type;
-  ubyte Object_complexity; // 0 = low, 1 = medium, 2=high
+  uint8_t Specular_mapping_type;
+  uint8_t Object_complexity; // 0 = low, 1 = medium, 2=high
 } tDetailSettings;
 
 // Call this with one of the above defines to set the detail level to a predefined set (custom level is ignored)

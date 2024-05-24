@@ -566,7 +566,7 @@ void lgoal::SendStateToPlayer(int index, int pnum) {
   // now update the buddy handle list of the clients
   int count = 0;
   int size_offset;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   size_offset = START_DATA(MP_WORLD_STATES, data, &count);
 

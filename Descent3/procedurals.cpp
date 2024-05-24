@@ -75,16 +75,16 @@ static short Proc_free_list[MAX_PROC_ELEMENTS];
 ushort ProcFadeTable[32768];
 #define NUM_WATER_SHADES 64
 ushort WaterProcTableHi[NUM_WATER_SHADES][256];
-ubyte WaterProcTableLo[NUM_WATER_SHADES][256];
+uint8_t WaterProcTableLo[NUM_WATER_SHADES][256];
 const char *ProcNames[] = {"None",     "Line Lightning", "Sphere lightning", "Straight", "Rising Embers", "Random Embers",
                      "Spinners", "Roamers",        "Fountain",         "Cone",     "Fall Right",    "Fall Left",
                      "END"};
 const char *WaterProcNames[] = {"None", "Height blob", "Sine Blob", "Random Raindrops", "Random Blobdrops", "END"};
-static ubyte *ProcDestData;
+static uint8_t *ProcDestData;
 int pholdrand = 1;
 static inline int prand() { return (((pholdrand = pholdrand * 214013L + 2531011L) >> 16) & 0x7fff); }
 // Given an array of r,g,b values, generates a 16bit palette table for those colors
-void GeneratePaletteForProcedural(ubyte *r, ubyte *g, ubyte *b, ushort *pal) {
+void GeneratePaletteForProcedural(uint8_t *r, uint8_t *g, uint8_t *b, ushort *pal) {
   int i;
   float fr, fg, fb;
   for (i = 0; i < 256; i++) {
@@ -145,7 +145,7 @@ float GradNoise(float x, float y) {
 
   return LERP(wy, vy0, vy1);
 }
-extern ubyte EasterEgg;
+extern uint8_t EasterEgg;
 int Easter_egg_handle = -1;
 // Goes through our array and clears the slots out
 void InitProcedurals() {
@@ -272,11 +272,11 @@ int ProcElementFree(int index) {
   return 1;
 }
 // Draws a line into the passed in bitmap
-void DrawProceduralLine(int x1, int y1, int x2, int y2, ubyte color) {
+void DrawProceduralLine(int x1, int y1, int x2, int y2, uint8_t color) {
   int DY, DX;
   int i, x, y, yinc = 1, xinc = 1, error_term;
 
-  ubyte *surface_ptr = ProcDestData;
+  uint8_t *surface_ptr = ProcDestData;
 
   int xmask = PROC_SIZE - 1;
   int ymask = PROC_SIZE - 1;
@@ -338,7 +338,7 @@ void DrawProceduralLine(int x1, int y1, int x2, int y2, ubyte color) {
 // Fades an entire bitmap one step closer to black
 void FadeProcTexture(int tex_handle) {
   int total = PROC_SIZE * PROC_SIZE;
-  ubyte *src_data = ProcDestData;
+  uint8_t *src_data = ProcDestData;
   int fadeval;
   fadeval = 255 - GameTextures[tex_handle].procedural->heat;
   fadeval >>= 3;
@@ -357,9 +357,9 @@ void FadeProcTexture(int tex_handle) {
 // Heats an entire bitmap
 void HeatProcTexture(int tex_handle) {
   int total = PROC_SIZE * PROC_SIZE;
-  ubyte *src_data = ProcDestData;
-  ubyte val;
-  ubyte heat = GameTextures[tex_handle].procedural->heat;
+  uint8_t *src_data = ProcDestData;
+  uint8_t val;
+  uint8_t heat = GameTextures[tex_handle].procedural->heat;
   val = 255 - heat;
 
   for (int i = 0; i < total; i++, src_data++) {
@@ -371,12 +371,12 @@ void HeatProcTexture(int tex_handle) {
 // Fades and entire bitmap one step closer to black
 void BlendProcTexture(int tex_handle) {
   int total = PROC_SIZE * PROC_SIZE;
-  ubyte *src_data = (ubyte *)GameTextures[tex_handle].procedural->proc1;
-  ubyte *dest_data = (ubyte *)GameTextures[tex_handle].procedural->proc2;
-  ubyte *start_data = src_data;
+  uint8_t *src_data = (uint8_t *)GameTextures[tex_handle].procedural->proc1;
+  uint8_t *dest_data = (uint8_t *)GameTextures[tex_handle].procedural->proc2;
+  uint8_t *start_data = src_data;
   for (int i = 0; i < PROC_SIZE; i++) {
-    ubyte *downrow;
-    ubyte *start_row = src_data;
+    uint8_t *downrow;
+    uint8_t *start_row = src_data;
     // Get row underneath
     if (i != PROC_SIZE - 1)
       downrow = src_data + PROC_SIZE;
@@ -404,7 +404,7 @@ void BlendProcTexture(int tex_handle) {
   }
 }
 // Draws lightning into a bitmap
-void AddProcLightning(int x1, int y1, int x2, int y2, ubyte color, static_proc_element *proc) {
+void AddProcLightning(int x1, int y1, int x2, int y2, uint8_t color, static_proc_element *proc) {
   float dx = x2 - x1;
   float dy = y2 - y1;
 
@@ -470,7 +470,7 @@ void ClearAllProceduralsFromTexture(int texnum) {
   GameTextures[texnum].procedural->num_static_elements = 0;
 }
 // Adds one point to a bitmap
-void AddProcPoint(int x, int y, ubyte color) {
+void AddProcPoint(int x, int y, uint8_t color) {
   x &= (PROC_SIZE - 1);
   y &= (PROC_SIZE - 1);
 
@@ -478,7 +478,7 @@ void AddProcPoint(int x, int y, ubyte color) {
   ProcDestData[index] = color;
 }
 // Adds one point to a bitmap
-static inline void PlaceProcPoint(int x, int y, ubyte color) {
+static inline void PlaceProcPoint(int x, int y, uint8_t color) {
   x &= (PROC_SIZE - 1);
   y &= (PROC_SIZE - 1);
   ProcDestData[y * PROC_SIZE + x] = color;
@@ -1050,11 +1050,11 @@ void AddProcRaindrops(static_proc_element *proc, int handle) {
   int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
   if (proc->frequency && ((FrameCount + procnum) % proc->frequency))
     return;
-  ubyte proc_frequency = proc->frequency;
-  ubyte proc_size = proc->size;
-  ubyte proc_speed = proc->speed;
-  ubyte x1 = proc->x1;
-  ubyte y1 = proc->y1;
+  uint8_t proc_frequency = proc->frequency;
+  uint8_t proc_size = proc->size;
+  uint8_t proc_speed = proc->speed;
+  uint8_t x1 = proc->x1;
+  uint8_t y1 = proc->y1;
   proc->frequency = 0;
   proc->size = (ps_rand() % 3) + 1;
   proc->speed = std::max(0, proc_speed + ((ps_rand() % 10) - 5));
@@ -1071,11 +1071,11 @@ void AddProcBlobdrops(static_proc_element *proc, int handle) {
   int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
   if (proc->frequency && ((FrameCount + procnum) % proc->frequency))
     return;
-  ubyte proc_frequency = proc->frequency;
-  ubyte proc_size = proc->size;
-  ubyte proc_speed = proc->speed;
-  ubyte x1 = proc->x1;
-  ubyte y1 = proc->y1;
+  uint8_t proc_frequency = proc->frequency;
+  uint8_t proc_size = proc->size;
+  uint8_t proc_speed = proc->speed;
+  uint8_t x1 = proc->x1;
+  uint8_t y1 = proc->y1;
   proc->frequency = 0;
   proc->size = (ps_rand() % 6) + 4;
   proc->speed = std::max(0, proc_speed + ((ps_rand() % 50) - 25));
@@ -1236,11 +1236,11 @@ void AllocateMemoryForFireProcedural(int handle) {
     mem_free(procedural->proc1);
   if (procedural->proc2)
     mem_free(procedural->proc2);
-  GameTextures[handle].procedural->proc1 = (ubyte *)mem_malloc(w * h * 1);
+  GameTextures[handle].procedural->proc1 = (uint8_t *)mem_malloc(w * h * 1);
   ASSERT(GameTextures[handle].procedural->proc1);
   memset(GameTextures[handle].procedural->proc1, 0, w * h * 1);
 
-  GameTextures[handle].procedural->proc2 = (ubyte *)mem_malloc(w * h * 1);
+  GameTextures[handle].procedural->proc2 = (uint8_t *)mem_malloc(w * h * 1);
   ASSERT(GameTextures[handle].procedural->proc2);
   memset(GameTextures[handle].procedural->proc2, 0, w * h * 1);
   procedural->memory_type = PROC_MEMORY_TYPE_FIRE;
@@ -1252,7 +1252,7 @@ void EvaluateFireProcedural(int handle) {
   if (procedural->memory_type != PROC_MEMORY_TYPE_FIRE) {
     AllocateMemoryForFireProcedural(handle);
   }
-  ProcDestData = (ubyte *)procedural->proc1;
+  ProcDestData = (uint8_t *)procedural->proc1;
   // fade and the current texture
   FadeProcTexture(handle);
   // HeatProcTexture (handle);
@@ -1332,7 +1332,7 @@ void EvaluateFireProcedural(int handle) {
 
   // blend the current texture
   BlendProcTexture(handle);
-  ProcDestData = (ubyte *)procedural->proc2;
+  ProcDestData = (uint8_t *)procedural->proc2;
   int total = PROC_SIZE * PROC_SIZE;
   ushort *data = bm_data(dest_bitmap, 0);
   ushort *pal = procedural->palette;
@@ -1340,7 +1340,7 @@ void EvaluateFireProcedural(int handle) {
     *data = pal[*ProcDestData];
   }
   // Swap for next time
-  ubyte *temp = (ubyte *)procedural->proc1;
+  uint8_t *temp = (uint8_t *)procedural->proc1;
   procedural->proc1 = procedural->proc2;
   procedural->proc2 = temp;
 }

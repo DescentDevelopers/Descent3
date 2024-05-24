@@ -393,7 +393,7 @@ typedef struct {
   float start_depth, end_depth;
   float start_time;
   float total_time;
-  ubyte used;
+  uint8_t used;
 } room_changes;
 
 //

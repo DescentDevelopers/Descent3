@@ -281,13 +281,13 @@ typedef struct {
   short particle_handle;           // particle handle to texture
   short icon_handle;
   short scorch_handle;    // handle for scorch bitmap, or -1 for none
-  ubyte spawn_count;      // how many of spawn handle gets created
-  ubyte alternate_chance; // how often the alternate spawn weapon gets chosen (0 to 100)
+  uint8_t spawn_count;      // how many of spawn handle gets created
+  uint8_t alternate_chance; // how often the alternate spawn weapon gets chosen (0 to 100)
 
   uint16_t used;
 
-  ubyte particle_count;
-  ubyte terrain_damage_depth;
+  uint8_t particle_count;
+  uint8_t terrain_damage_depth;
 
   float terrain_damage_size;
 
@@ -451,7 +451,7 @@ void LoadWeaponSelectStates(CFILE *fp);
 void DrawAlphaBlendedScreen(float r, float g, float b, float alpha);
 
 // Does the weapon spray effect for an object
-void DoSprayEffect(object *obj, otype_wb_info *static_wb, ubyte wb_index);
+void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index);
 
 // Plays the animation that accompanies a weapon death
 void DoWeaponExploded(object *, vector *norm = NULL, vector *collision_point = NULL, object *hit_object = NULL);

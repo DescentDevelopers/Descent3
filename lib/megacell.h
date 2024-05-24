@@ -38,7 +38,7 @@ typedef struct {
 
   short texture_handles[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
   int flags;
-  ubyte used;
+  uint8_t used;
 } megacell;
 
 extern int Num_megacells;

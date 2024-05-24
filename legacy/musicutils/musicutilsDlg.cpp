@@ -679,7 +679,7 @@ void CMusicutilsDlg::OnToolsMakeStream()
 //	okay prompt for save location
 	if (savedlg.DoModal() == IDOK) {
 		OSFArchive osf;
-		ubyte strmtype=0, strmcomp=0, strmfmt=0, xforms;
+		uint8_t strmtype=0, strmcomp=0, strmfmt=0, xforms;
 		uint32_t rate;
 
 	// determine stream type.
@@ -688,7 +688,7 @@ void CMusicutilsDlg::OnToolsMakeStream()
 		strmfmt |= ((compdlg.m_Channels == 1) ? SAF_STEREO_MASK : SAF_MONO_MASK);
 		strmfmt |= ((compdlg.m_Resolution == 1) ? SAF_16BIT_MASK : SAF_8BIT_MASK);
 		rate = (compdlg.m_Frequency == 2) ? 44100 : (compdlg.m_Frequency == 1) ? 22050 : 11025;
-		xforms = (ubyte)compdlg.m_Xforms;
+		xforms = (uint8_t)compdlg.m_Xforms;
 
 	//	start file write.
 		destfilestr = savedlg.GetPathName();
@@ -738,9 +738,9 @@ void CMusicutilsDlg::OnToolsPlaySong()
 
 
 #define FILEBUFFER_LENGTH		(64 * 1024)
-static ubyte StaticFileBuffer[FILEBUFFER_LENGTH];
+static uint8_t StaticFileBuffer[FILEBUFFER_LENGTH];
 
-bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString& rawfilename, ubyte compression, ubyte format, uint32_t samples, const CString& realname, ubyte xforms, int measure)
+bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString& rawfilename, uint8_t compression, uint8_t format, uint32_t samples, const CString& realname, uint8_t xforms, int measure)
 {
 	FILE *fpin = NULL;
 	int i;

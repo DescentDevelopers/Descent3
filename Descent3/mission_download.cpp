@@ -155,7 +155,7 @@ msn_urls *msn_GetURL(network_address *net_addr) {
   int count = 0;
   int size;
   int tries = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   float start_time;
   network_address from_addr;
 
@@ -516,12 +516,12 @@ int msn_DownloadWithStatus(char *url, char *filename) {
   */
 }
 
-void msn_DoAskForURL(ubyte *indata, network_address *net_addr) {
+void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
   static msn_urls *url;
   int count = 0;
   int size;
   int i;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int num_urls = 0;
 
   if (Netgame.local_role == LR_SERVER) {
@@ -571,7 +571,7 @@ void msn_DoAskForURL(ubyte *indata, network_address *net_addr) {
   }
 }
 
-void msn_DoCurrMsnURLs(ubyte *data, network_address *net_addr) {
+void msn_DoCurrMsnURLs(uint8_t *data, network_address *net_addr) {
   int count = 0;
   int num_urls = 0;
   int i;

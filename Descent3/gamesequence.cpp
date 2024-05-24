@@ -1135,9 +1135,9 @@ void PageInGeneric(int);
 void PageInShip(int);
 
 // Data allocation arrays, for keeping track of what textures/sounds are level specific
-ubyte Models_to_free[MAX_POLY_MODELS];
-ubyte Textures_to_free[MAX_TEXTURES];
-ubyte Sounds_to_free[MAX_TEXTURES];
+uint8_t Models_to_free[MAX_POLY_MODELS];
+uint8_t Textures_to_free[MAX_TEXTURES];
+uint8_t Sounds_to_free[MAX_TEXTURES];
 
 #ifdef EDITOR
 extern vector editor_player_pos;

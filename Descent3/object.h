@@ -741,7 +741,7 @@ void ObjSetAABB(object *obj);
 
 // initialize a new object.  adds to the list for the given room
 // returns the object number
-int ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient,
+int ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient,
               int parent_handle = OBJECT_HANDLE_NONE);
 
 // remove object from the world
@@ -824,7 +824,7 @@ typedef struct {
   vector pos[MAX_POSITION_HISTORY];
 } tPosHistory;
 extern tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
-extern ubyte Object_position_head;
+extern uint8_t Object_position_head;
 extern int16_t Object_map_position_history[MAX_OBJECTS];
 extern float Last_position_history_update[MAX_POSITION_HISTORY]; // last gametime the positions were updated
 void ObjInitPositionHistory(object *obj);

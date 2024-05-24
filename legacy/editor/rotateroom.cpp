@@ -212,7 +212,7 @@ void RotateRooms(angle p,angle h,angle b)
 //Parameters:	dx,dy - how much to move the segment, releative to its right & up vectors
 void MoveFloatSegment(float dx,float dy)
 {
-	ubyte			selected_vert[MAX_VERTICES];
+	uint8_t			selected_vert[MAX_VERTICES];
 	matrix		segmat;
 	vector		deltav;
 	int			baseseg,baseside;

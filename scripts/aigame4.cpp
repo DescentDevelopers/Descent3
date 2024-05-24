@@ -33,11 +33,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -57,7 +57,7 @@ const char *GetStringFromTable(int index) {
 
 static void PortalBreakGlass(int portalnum, int roomnum);
 // Returns the new child's handle
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 static float Obj_GetObjDist(int me, int it, bool f_sub_rads);
 
@@ -71,7 +71,7 @@ void PortalBreakGlass(int portalnum, int roomnum) {
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -291,7 +291,7 @@ public:
 // able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 // TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 // write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   osicommon_Initialize((tOSIRISModuleInit *)func_list);
@@ -309,7 +309,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;

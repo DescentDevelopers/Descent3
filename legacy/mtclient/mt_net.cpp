@@ -146,7 +146,7 @@ extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 typedef int (*nw_Asyncgethostbyname_fp) (uint32_t *ip,int command, char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
-typedef int (*nw_SendWithID_fp) (ubyte id,ubyte *data,int len,network_address *who_to);
+typedef int (*nw_SendWithID_fp) (uint8_t id,uint8_t *data,int len,network_address *who_to);
 extern nw_SendWithID_fp DLLnw_SendWithID;
 typedef int (*PollUI_fp) (void);
 extern PollUI_fp DLLPollUI;
@@ -163,7 +163,7 @@ int SendGameTrackerPacker(void *packet)
 	send_address.port = htons(inaddr->sin_port);
 	send_address.connection_type = NP_TCP;
 
-	return DLLnw_SendWithID(PXO_NETID_GAME_TRACKER,(ubyte *)g_pack,INTEL_INT(g_pack->len),&send_address);
+	return DLLnw_SendWithID(PXO_NETID_GAME_TRACKER,(uint8_t *)g_pack,INTEL_INT(g_pack->len),&send_address);
 	
 }
 
@@ -290,6 +290,6 @@ int SendPilotTrackerPacket(void *packet)
 	memcpy(send_address.address,&inaddr->sin_addr, 4);
 	send_address.port = htons(inaddr->sin_port);
 	send_address.connection_type = NP_TCP;
-	return DLLnw_SendWithID(PXO_NETID_USER_TRACKER,(ubyte *)p_pack,INTEL_SHORT(p_pack->len),&send_address);
+	return DLLnw_SendWithID(PXO_NETID_USER_TRACKER,(uint8_t *)p_pack,INTEL_SHORT(p_pack->len),&send_address);
 	
 }

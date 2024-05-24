@@ -236,8 +236,8 @@ bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx,
         8-bit palette surface structures
 */
 typedef struct ddgr_rgb {
-  ubyte r, g, b; // RGB triplet
-  ubyte x;       // reserved...
+  uint8_t r, g, b; // RGB triplet
+  uint8_t x;       // reserved...
 } ddgr_rgb;
 
 typedef struct ddgr_palette {

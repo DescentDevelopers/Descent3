@@ -692,7 +692,7 @@ void DMFCBase::OnSpecialPacket(void) {
     return;
 
   // see if we have a handler for the ID, if so, call the handler, else do nothing
-  ubyte *data = Data->special_data;
+  uint8_t *data = Data->special_data;
   int id = data[0];
 
   tSPHandler *current;
@@ -948,7 +948,7 @@ void DMFCBase::OnPlayerConnect(int player_num) {
 //
 //
 //	There is a control message sent from someone
-void DMFCBase::OnControlMessage(ubyte msg, int from_pnum) {
+void DMFCBase::OnControlMessage(uint8_t msg, int from_pnum) {
   switch (msg) {
   case CM_KICKED: {
     DLLAddHUDMessage(DTXT_KICKEDMSG);
@@ -999,7 +999,7 @@ void DMFCBase::OnClientShowUI(int id, void *user_data) {
   case UIID_TEAMPLACEMENT: {
     bool clients_wait;
     bool call_from_game;
-    ubyte d = *(ubyte *)user_data;
+    uint8_t d = *(uint8_t *)user_data;
 
     clients_wait = (d & 0x01) ? true : false;
     call_from_game = (d & 0x02) ? false : true;

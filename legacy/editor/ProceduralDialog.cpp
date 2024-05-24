@@ -165,7 +165,7 @@ BOOL CProceduralDialog::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CProceduralDialog::PrintValue (int whichbox,ubyte val)
+void CProceduralDialog::PrintValue (int whichbox,uint8_t val)
 {
 	CEdit *ebox;
 	char str[255];
@@ -522,7 +522,7 @@ void CProceduralDialog::OnProceduralUpdate()
 }
 
 
-void CProceduralDialog::HarvestValue(int whichbox,ubyte *val) 
+void CProceduralDialog::HarvestValue(int whichbox,uint8_t *val) 
 {
 	CEdit *ebox;
 	char name[20];
@@ -546,7 +546,7 @@ void CProceduralDialog::OnImportPalette()
 {
 	CFILE *infile;
 	char filename[255];
-	ubyte r[256],g[256],b[256];
+	uint8_t r[256],g[256],b[256];
 	int n=D3EditState.texdlg_texture;
 
 	CString filter = "PCX files (*.pcx)|*.pcx||";

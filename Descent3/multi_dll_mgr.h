@@ -149,7 +149,7 @@ int PollUI(void);
 void RemoveUITextItem(void *item);
 void *CreateNewUITextItem(const char *newtext, uint32_t color, int font = -1);
 void RemoveUIBmpItem(void *item);
-void *CreateNewUIBmpItem(int handle, ubyte alpha);
+void *CreateNewUIBmpItem(int handle, uint8_t alpha);
 void CloseSplashScreen(void);
 void CreateSplashScreen(const char *msg, int usecancel);
 void *UIConsoleGadgetCreate(UIWindow *parentid, int id, int x, int y, int font, int cols, int rows, int flags);

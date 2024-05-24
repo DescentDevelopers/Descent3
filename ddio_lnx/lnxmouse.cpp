@@ -105,8 +105,8 @@ static struct mses_state {
 
 typedef struct t_mse_button_info {
   bool is_down[N_MSEBTNS];
-  ubyte down_count[N_MSEBTNS];
-  ubyte up_count[N_MSEBTNS];
+  uint8_t down_count[N_MSEBTNS];
+  uint8_t up_count[N_MSEBTNS];
   float time_down[N_MSEBTNS];
   float time_up[N_MSEBTNS];
 } t_mse_button_info;

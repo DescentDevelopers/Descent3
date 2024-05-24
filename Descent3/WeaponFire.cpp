@@ -1215,7 +1215,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   int objnum;
   object *obj;
   int parentnum = parent - Objects;
-  ubyte terrain = 0;
+  uint8_t terrain = 0;
 
   ASSERT(Weapons[weapon_num].used);
 
@@ -2277,7 +2277,7 @@ void DoFusionEffect(object *objp, int weapon_type) {
 }
 
 // Do the spray effect
-void DoSprayEffect(object *obj, otype_wb_info *static_wb, ubyte wb_index) {
+void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
   vector laser_pos, laser_dir;
   int cur_m_bit;
 
@@ -2664,7 +2664,7 @@ void StopOnOffWeapon(object *obj) {
 }
 
 // Starts an on/off weapon firing
-void StartOnOffWeapon(object *obj, ubyte wb_index) {
+void StartOnOffWeapon(object *obj, uint8_t wb_index) {
   // mprintf ((0,"Starting on/off weapon!\n"));
   obj->weapon_fire_flags |= WFF_ON_OFF;
 
@@ -2694,7 +2694,7 @@ void DoZoomStay() {
 }
 
 // Zooms in for this weapon
-void DoZoomEffect(player_weapon *pw, ubyte clear) {
+void DoZoomEffect(player_weapon *pw, uint8_t clear) {
   if (pw->firing_time < .5) {
     Players[Player_num].turn_scalar = 1.0;
     Render_FOV = D3_DEFAULT_FOV;

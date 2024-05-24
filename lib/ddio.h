@@ -220,13 +220,13 @@ void ddio_InternalKeySuspend();
 void ddio_InternalKeyResume();
 
 // returns if key is up or down
-bool ddio_InternalKeyState(ubyte key);
+bool ddio_InternalKeyState(uint8_t key);
 
 // returns internal key down time
-float ddio_InternalKeyDownTime(ubyte key);
+float ddio_InternalKeyDownTime(uint8_t key);
 
 // flush a key internally
-void ddio_InternalResetKey(ubyte key);
+void ddio_InternalResetKey(uint8_t key);
 
 // ----------------------------------------------------------------------------
 //	Device Dependent Timer Interface

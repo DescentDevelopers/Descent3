@@ -54,13 +54,13 @@ int VerifyMSafeObject(int objnum) {
 // this bool tells msafe if it's ok to process a call even though it's playing back a demo.
 bool Demo_call_ok = false;
 // Extracts the multisafe function to be executed on the client machine
-void MultiDoMSafeFunction(ubyte *data) {
+void MultiDoMSafeFunction(uint8_t *data) {
   msafe_struct base_mstruct;
   msafe_struct *mstruct = &base_mstruct;
   int count = 0;
 
   SKIP_HEADER(data, &count);
-  ubyte type = MultiGetUbyte(data, &count);
+  uint8_t type = MultiGetUbyte(data, &count);
   switch (type) {
   case MSAFE_WEATHER_RAIN:
     mstruct->state = MultiGetByte(data, &count);
@@ -507,14 +507,14 @@ void MultiDoMSafeFunction(ubyte *data) {
   }
 }
 
-void MultiSendMSafeFunction(ubyte type, msafe_struct *mstruct) {
+void MultiSendMSafeFunction(uint8_t type, msafe_struct *mstruct) {
   int sequence = -1;
   int to_slot = -1;
   uint32_t to_bitmask = 0xFFFFFFFF;
 
   ASSERT((Demo_flags == DF_RECORDING) || (Netgame.local_role == LR_SERVER));
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -1122,7 +1122,7 @@ void MultiSendMSafeFunction(ubyte type, msafe_struct *mstruct) {
 }
 
 // Resolves a powerup that the server is telling us about
-void MultiDoMSafePowerup(ubyte *data) {
+void MultiDoMSafePowerup(uint8_t *data) {
   int count = 0;
   msafe_struct base_mstruct;
   msafe_struct *mstruct = &base_mstruct;
@@ -1151,7 +1151,7 @@ void MultiSendMSafePowerup(msafe_struct *mstruct) {
 
   //	ASSERT (Netgame.local_role==LR_SERVER);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 

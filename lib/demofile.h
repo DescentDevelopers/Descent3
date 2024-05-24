@@ -167,7 +167,7 @@ void DemoWriteChangedObjects();
 void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
                          uint16_t weapobjnum, short gunnum);
 
-void DemoWriteObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+void DemoWriteObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj);
 
 void DemoWriteTurretChanged(uint16_t objnum);
@@ -226,17 +226,17 @@ void DemoReadPlayerInfo(void);
 
 void DemoPlayAutoDemo(void);
 
-void DemoWriteMSafe(ubyte *data, uint16_t len);
+void DemoWriteMSafe(uint8_t *data, uint16_t len);
 
 void DemoReadMSafe();
 
-void DemoWritePowerup(ubyte *data, uint16_t len);
+void DemoWritePowerup(uint8_t *data, uint16_t len);
 
 void DemoReadPowerups();
 
 void DemoReadCinematics();
 
-void DemoWriteCinematics(ubyte *data, uint16_t len);
+void DemoWriteCinematics(uint8_t *data, uint16_t len);
 
 void DemoWritePersistantHUDMessage(ddgr_color color, int x, int y, float time, int flags, int sound_index, char *msg);
 

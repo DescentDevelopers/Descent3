@@ -101,6 +101,6 @@ tHUDMode Cinematic_GetOldHudMode(void);
 // Only the demo system passing in a camera_handle, so it should never be explicitly passed by you
 void Cinematic_StartCanned(tCannedCinematicInfo *info, int camera_handle = -1);
 
-void Cinematic_DoDemoFileData(ubyte *data);
+void Cinematic_DoDemoFileData(uint8_t *data);
 
 #endif

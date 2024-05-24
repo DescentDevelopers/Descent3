@@ -169,8 +169,8 @@
 #define GRTEXTOP_SETCOLOR 0x2   // 1 ddgr_color
 #define GRTEXTOP_FANCYCOLOR 0x3 // 4 ddgr_colors
 #define GRTEXTOP_SETFONT 0x4    // 1 font handle (int)
-#define GRTEXTOP_SETALPHA 0x5   // 1 ubyte
-#define GRTEXTOP_PUTCHAR 0x6    // (2 shorts) 1 ubyte
+#define GRTEXTOP_SETALPHA 0x5   // 1 uint8_t
+#define GRTEXTOP_PUTCHAR 0x6    // (2 shorts) 1 uint8_t
 #define GRTEXTOP_SETFLAGS 0x7   // (flags) = 1 int.
 #define GRTEXTOP_SCALE 0x8      // 1 float (scale) scale current font.
 
@@ -179,7 +179,7 @@ int Grtext_spacing = 1;
 static char Grtext_buffer[GRTEXT_BUFLEN];
 static int Grtext_ptr = 0;
 static int Grtext_font = 0;
-static ubyte Grtext_alpha = 255;
+static uint8_t Grtext_alpha = 255;
 static int8_t Grtext_alphatype = ATF_TEXTURE + ATF_CONSTANT;
 static bool Grtext_shadow = false;
 static int Grtext_line_spacing = 1;
@@ -354,10 +354,10 @@ void grtext_SetFancyColor(ddgr_color col1, ddgr_color col2, ddgr_color col3, ddg
 }
 
 //	sets the alpha value for text
-void grtext_SetAlpha(ubyte alpha) {
+void grtext_SetAlpha(uint8_t alpha) {
   struct {
     char op;
-    ubyte alpha;
+    uint8_t alpha;
   } cmd;
 
   ASSERT((Grtext_ptr + sizeof(cmd)) < GRTEXT_BUFLEN);
@@ -370,7 +370,7 @@ void grtext_SetAlpha(ubyte alpha) {
 }
 
 //	gets font alpha
-ubyte grtext_GetAlpha() { return Grtext_alpha; }
+uint8_t grtext_GetAlpha() { return Grtext_alpha; }
 
 // toggles text saturation
 void grtext_SetFlags(int flags) {
@@ -503,7 +503,7 @@ void grtext_PutChar(int x, int y, int ch) {
   struct {
     char op;
     short x, y;
-    ubyte ch;
+    uint8_t ch;
   } cmd;
 
   ASSERT((Grtext_ptr + sizeof(cmd)) < GRTEXT_BUFLEN);
@@ -511,7 +511,7 @@ void grtext_PutChar(int x, int y, int ch) {
   cmd.op = GRTEXTOP_PUTCHAR;
   cmd.x = (short)x;
   cmd.y = (short)y;
-  cmd.ch = (ubyte)ch;
+  cmd.ch = (uint8_t)ch;
   memcpy(&Grtext_buffer[Grtext_ptr], &cmd, sizeof(cmd));
   Grtext_ptr += sizeof(cmd);
 }
@@ -596,7 +596,7 @@ void grtext_Render() {
     case GRTEXTOP_SETALPHA: {
       struct {
         char op;
-        ubyte alpha;
+        uint8_t alpha;
       } cmd;
 
       memcpy(&cmd, &Grtext_buffer[pos], sizeof(cmd));
@@ -639,7 +639,7 @@ void grtext_Render() {
       struct {
         char op;
         short x, y;
-        ubyte ch;
+        uint8_t ch;
       } cmd;
 
       memcpy(&cmd, &Grtext_buffer[pos], sizeof(cmd));
@@ -880,10 +880,10 @@ void grtext_DrawTextLineClip(int x, int y, char *str) {
 
   cur_x = x;
   for (i = 0; i < strsize; i++) {
-    ubyte ch, ch2;
+    uint8_t ch, ch2;
     int w;
-    ch = (ubyte)str[i];
-    ch2 = (ubyte)str[i + 1];
+    ch = (uint8_t)str[i];
+    ch2 = (uint8_t)str[i + 1];
 
     w = CHAR_WIDTH(Grtext_font, ch);
 
@@ -958,10 +958,10 @@ void grtext_DrawTextLine(int x, int y, char *str) {
   */
   cur_x = x;
   for (i = 0; i < strsize; i++) {
-    ubyte ch, ch2;
+    uint8_t ch, ch2;
     int w;
-    ch = (ubyte)str[i];
-    ch2 = (ubyte)str[i + 1];
+    ch = (uint8_t)str[i];
+    ch2 = (uint8_t)str[i + 1];
     w = CHAR_WIDTH(Grtext_font, ch);
 
     if (ch == GR_COLOR_CHAR) {

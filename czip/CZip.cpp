@@ -69,7 +69,7 @@ bool CZip::OpenInputArchive(char *filename, bool open_raw) {
   // read in the header based on what type of file it is
   if (open_raw) {
     // it should be a raw compressed file
-    ubyte type;
+    uint8_t type;
     if (ReadRawHeader(bfile->file, &type)) {
       ret = true;
       m_iCompressionType = type;
@@ -77,7 +77,7 @@ bool CZip::OpenInputArchive(char *filename, bool open_raw) {
     }
   } else {
     // it should be an OCF file
-    ubyte type;
+    uint8_t type;
     tFileInfo temp;
     if (ReadOCFHeader(bfile->file, &temp, &type)) {
       ret = true;
@@ -145,7 +145,7 @@ bool CZip::OpenOutputArchive(char *filename, bool open_raw, int compression_type
 
 //	Reads in a Raw type file header
 //	returns true on succes, if so, compr_type contains the compression type
-bool CZip::ReadRawHeader(tVirtualFile *file, ubyte *compr_type) {
+bool CZip::ReadRawHeader(tVirtualFile *file, uint8_t *compr_type) {
   int magic_num;
 
   if (!VFread(&magic_num, sizeof(int), 1, file))
@@ -155,7 +155,7 @@ bool CZip::ReadRawHeader(tVirtualFile *file, ubyte *compr_type) {
     return false;
 
   // it looks good, get our compression type and scram
-  ubyte type;
+  uint8_t type;
   if (!VFread(&type, 1, 1, bfile->file))
     return false;
 
@@ -167,7 +167,7 @@ bool CZip::ReadRawHeader(tVirtualFile *file, ubyte *compr_type) {
 
 //	Writes out a Raw type file header
 //	returns true on succes
-bool CZip::WriteRawHeader(tVirtualFile *file, ubyte compr_type) {
+bool CZip::WriteRawHeader(tVirtualFile *file, uint8_t compr_type) {
   int magic_num = 0x52415743;
 
   // check compression type!?
@@ -183,7 +183,7 @@ bool CZip::WriteRawHeader(tVirtualFile *file, ubyte compr_type) {
 
 //	Reads in an OCF header
 //	returns true on success, info is filled in the appropriate values,compr_type is compression type
-bool CZip::ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type) {
+bool CZip::ReadOCFHeader(tVirtualFile *file, tFileInfo *info, uint8_t *compr_type) {
   int magic_num;
 
   if (!VFread(&magic_num, sizeof(int), 1, file))
@@ -193,7 +193,7 @@ bool CZip::ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type)
     return false;
 
   // it looks good, its an OCF at least
-  ubyte version;
+  uint8_t version;
   if (!VFread(&version, 1, 1, file))
     return false;
 
@@ -201,12 +201,12 @@ bool CZip::ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type)
     return false;
 
   // version is corrent, fill in the rest
-  ubyte filename_size;
+  uint8_t filename_size;
   char buffer[300];
   int lo_time, hi_time;
-  ubyte ctype;
+  uint8_t ctype;
   int compressed_size, expand_size;
-  ubyte last_ditch_value;
+  uint8_t last_ditch_value;
 
   if (!VFread(&filename_size, 1, 1, file))
     return false;
@@ -251,11 +251,11 @@ bool CZip::ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type)
 
 //	Writes out an OCF header
 //	returns true on success
-bool CZip::WriteOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte compr_type, int header_pos) {
+bool CZip::WriteOCFHeader(tVirtualFile *file, tFileInfo *info, uint8_t compr_type, int header_pos) {
   int magic_num = 0x4D495241;
-  ubyte filename_size;
-  ubyte last_ditch_value;
-  ubyte version;
+  uint8_t filename_size;
+  uint8_t last_ditch_value;
+  uint8_t version;
   bool ret = false;
 
   int filepos = VFtell(file);         // save the position of the file restorfilepos:
@@ -306,7 +306,7 @@ restorfilepos:
 //	you must call this before you compress data, then when done, call the read WriteOCFHeader
 bool CZip::WriteDummyOCFHeader(tVirtualFile *file, char *filename) {
   int itemp = 0;
-  ubyte btemp = 0;
+  uint8_t btemp = 0;
 
   if (!VFwrite(&itemp, sizeof(int), 1, file))
     return false;
@@ -315,7 +315,7 @@ bool CZip::WriteDummyOCFHeader(tVirtualFile *file, char *filename) {
     return false;
 
   // version is corrent, fill in the rest
-  ubyte filename_size = strlen(filename);
+  uint8_t filename_size = strlen(filename);
 
   if (!VFwrite(&filename_size, 1, 1, file))
     return false;
@@ -488,7 +488,7 @@ bool CZip::ExtractFileFromArchive(char *filename, char *destfilename) {
   VFseek(bfile->file, pos, SEEK_SET);
 
   // read in header
-  ubyte compr_type;
+  uint8_t compr_type;
   if (!ReadOCFHeader(bfile->file, &current_file, &compr_type))
     return false;
 
@@ -522,8 +522,8 @@ int CZip::FindFileInOCF(tVirtualFile *file, char *filename) {
   VFseek(file, 0, SEEK_SET); // go to the beginning of the file
 
   int magic_num, pos;
-  ubyte version, filename_size;
-  ubyte buffer[300];
+  uint8_t version, filename_size;
+  uint8_t buffer[300];
   bool done = false;
   int compsize;
 
@@ -580,7 +580,7 @@ int CZip::GetOCFFileList(BITFILE *bfile, tFileInfo **info) {
   VFseek(file, 0, SEEK_SET); // go to the beginning of the file
 
   int magic_num, compsize;
-  ubyte filename_size;
+  uint8_t filename_size;
   bool done = false;
 
   while (!done) {
@@ -657,11 +657,11 @@ void CZip::WriteBytes(char *data, int count) {
   }
 }
 
-ubyte CZip::ReadRawByte(void) {
+uint8_t CZip::ReadRawByte(void) {
   if (!m_bRawType)
     return -1;
 
-  ubyte data = 0;
+  uint8_t data = 0;
   switch (m_iCompressionType) {
   case COMPT_HUFFADAPT_0:
     if (!ha_ReadRawByte(&data, bfile))
@@ -706,7 +706,7 @@ float CZip::ReadRawFloat(void) {
 
   return *((float *)&data);
 }
-void CZip::WriteRawByte(ubyte value) {
+void CZip::WriteRawByte(uint8_t value) {
   switch (m_iCompressionType) {
   case COMPT_HUFFADAPT_0:
     ha_WriteRawByte(value, bfile);
@@ -718,7 +718,7 @@ void CZip::WriteRawShort(ushort value) {
   if (!m_bRawType)
     return;
   // write 2 bytes
-  ubyte data;
+  uint8_t data;
   data = ((value & 0xFF00) >> 8);
   WriteRawByte(data);
   data = (value & 0xFF);
@@ -728,7 +728,7 @@ void CZip::WriteRawInt(uint32_t value) {
   if (!m_bRawType)
     return;
   // write 4 bytes
-  ubyte data;
+  uint8_t data;
   data = ((value & 0xFF000000) >> 24);
   WriteRawByte(data);
   data = ((value & 0xFF0000) >> 16);
@@ -742,7 +742,7 @@ void CZip::WriteRawFloat(float value) {
   if (!m_bRawType)
     return;
   // write 4 bytes
-  ubyte data;
+  uint8_t data;
   uint32_t v = 0;
   v = *((int *)&value);
 

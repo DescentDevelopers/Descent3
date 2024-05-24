@@ -114,8 +114,8 @@
 
 //////////////////////////////////////////////////////////////////////////////
 typedef struct tJoystickRecord {
-  ubyte valid; // is this a valid device.
-  ubyte flags; // defined in ddio_win.h
+  uint8_t valid; // is this a valid device.
+  uint8_t flags; // defined in ddio_win.h
   short spad;
 
   union {

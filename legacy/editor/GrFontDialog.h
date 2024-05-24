@@ -118,5 +118,5 @@ private:
 	ushort m_BgColor, m_BoxColor;
 	ushort m_FgColor;
 	BOOL m_FontProp;						// Proportional font.
-	ubyte m_Brightness;					// brightness * 10
+	uint8_t m_Brightness;					// brightness * 10
 };

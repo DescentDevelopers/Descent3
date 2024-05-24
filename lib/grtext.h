@@ -141,10 +141,10 @@ ddgr_color grtext_GetColor();
 void grtext_SetFancyColor(ddgr_color col1, ddgr_color col2, ddgr_color col3, ddgr_color col4);
 
 //	sets the alpha value for text
-void grtext_SetAlpha(ubyte alpha);
+void grtext_SetAlpha(uint8_t alpha);
 
 //	gets font alpha
-ubyte grtext_GetAlpha();
+uint8_t grtext_GetAlpha();
 
 // toggles text saturation
 void grtext_SetFlags(int flags);
@@ -216,10 +216,10 @@ const char *grtext_GetChar(const char *str, tGetCharInfo *ci);
 // we can load a font template into this structure.  call grfont_FreeTemplate(tFontTemplate) to free memory here.
 typedef struct tFontTemplate {
   ushort min_ascii, max_ascii;
-  ubyte *ch_widths;
-  ubyte *kern_data;
-  ubyte ch_height;
-  ubyte ch_maxwidth;  // max width of character in font.
+  uint8_t *ch_widths;
+  uint8_t *kern_data;
+  uint8_t ch_height;
+  uint8_t ch_maxwidth;  // max width of character in font.
   bool proportional;  // is this font proportional? if so use array of widths, else use maxwidth
   bool uppercase;     // uppercase font?
   bool monochromatic; // font is monochromatic?
@@ -273,7 +273,7 @@ ushort *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mono)
 bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft);
 
 // sets a font's template without saving...
-bool grfont_SetKerning(int font, ubyte *kern_data);
+bool grfont_SetKerning(int font, uint8_t *kern_data);
 
 // sets a font's tracking
 bool grfont_SetTracking(int font, int tracking);
@@ -299,13 +299,13 @@ typedef struct tFontFileInfo {
   short width, height; // width of widest character and height of longest char
   short flags;         // flags used by the character renderer
   short baseline;      // pixels given to lowercase below script line start at baseline
-  ubyte min_ascii;     // minimum ascii value used by font
-  ubyte max_ascii;     // max ascii value used by the font
+  uint8_t min_ascii;     // minimum ascii value used by font
+  uint8_t max_ascii;     // max ascii value used by the font
   short byte_width;    // width of a character in the font in bytes
-  ubyte *raw_data;     // pixel, map data.
-  ubyte **char_data;   // pointers to each character
-  ubyte *char_widths;  // individual pixel widths of each character
-  ubyte *kern_data;    // kerning information for specific letter combos
+  uint8_t *raw_data;     // pixel, map data.
+  uint8_t **char_data;   // pointers to each character
+  uint8_t *char_widths;  // individual pixel widths of each character
+  uint8_t *kern_data;    // kerning information for specific letter combos
 
   // FFI2 (newstyle) data
   tFontFileInfo2 ffi2;

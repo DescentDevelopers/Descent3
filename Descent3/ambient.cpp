@@ -305,7 +305,7 @@ void WriteAmbientData() {
   }
 
   // Write file ID & version
-  cf_WriteBytes((ubyte *)AMBIENT_FILE_ID, strlen(AMBIENT_FILE_ID), ofile);
+  cf_WriteBytes((uint8_t *)AMBIENT_FILE_ID, strlen(AMBIENT_FILE_ID), ofile);
   cf_WriteInt(ofile, AMBIENT_FILE_VERSION);
 
   // Write the number of patterns

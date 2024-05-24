@@ -392,14 +392,14 @@ typedef struct network_checksum_packet {
   int sequence_number;
   ushort flags;
   ushort checksum;
-  ubyte data[MAX_PACKET_SIZE];
+  uint8_t data[MAX_PACKET_SIZE];
 } network_checksum_packet;
 
 // definition for a non-checksum packet
 typedef struct network_packet {
   int sequence_number;
   ushort flags;
-  ubyte data[MAX_PACKET_SIZE];
+  uint8_t data[MAX_PACKET_SIZE];
 } network_naked_packet;
 
 // structure definition for our packet buffers
@@ -407,7 +407,7 @@ typedef struct network_packet_buffer {
   int sequence_number;
   int len;
   network_address from_addr;
-  ubyte data[MAX_PACKET_SIZE];
+  uint8_t data[MAX_PACKET_SIZE];
 } network_packet_buffer;
 
 #define MAX_PACKET_BUFFERS 96
@@ -455,24 +455,24 @@ static int Psnet_highest_id = 0;
 #endif
 #pragma pack(1)
 typedef struct {
-  ubyte type;                // packet type
-  ubyte compressed;          //
+  uint8_t type;                // packet type
+  uint8_t compressed;          //
   ushort seq;                // sequence packet 0-65535 used for ACKing also
   ushort data_len;           // length of data
   float send_time;           // Time the packet was sent, if an ACK the time the packet being ACK'd was sent.
-  ubyte data[NETBUFFERSIZE]; // Packet data
+  uint8_t data[NETBUFFERSIZE]; // Packet data
 } reliable_header;
 
 #define RELIABLE_PACKET_HEADER_ONLY_SIZE (sizeof(reliable_header) - NETBUFFERSIZE)
 #define MAX_PING_HISTORY 10
 
 typedef struct {
-  ubyte buffer[NETBUFFERSIZE];
+  uint8_t buffer[NETBUFFERSIZE];
 
 } reliable_net_sendbuffer;
 
 typedef struct {
-  ubyte buffer[NETBUFFERSIZE];
+  uint8_t buffer[NETBUFFERSIZE];
 } reliable_net_rcvbuffer;
 
 static SOCKET Reliable_UDP_socket = INVALID_SOCKET;
@@ -506,7 +506,7 @@ typedef struct {
   uint16_t theirsequence;            // This is the next sequence number the peer is expecting
   uint16_t rsequence[MAXNETBUFFERS]; // This is the sequence number of the given packet
 
-  ubyte ping_pos;
+  uint8_t ping_pos;
 
   network_address net_addr;         // A D3 network address structure
   network_protocol connection_type; // IPX, IP, modem, etc.
@@ -514,7 +514,7 @@ typedef struct {
   SOCKADDR addr;                                    // SOCKADDR of our peer
   reliable_net_sendbuffer *sbuffers[MAXNETBUFFERS]; // This is an array of pointers for quick sorting
   uint16_t ssequence[MAXNETBUFFERS];          // This is the sequence number of the given packet
-  ubyte send_urgent;
+  uint8_t send_urgent;
 } reliable_socket;
 
 static reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
@@ -892,7 +892,7 @@ uint32_t nw_GetThisIP() {
 
 // Calculates a unique ushort checksum for a stream of data
 ushort nw_CalculateChecksum(void *vptr, int len) {
-  ubyte *ptr = (ubyte *)vptr;
+  uint8_t *ptr = (uint8_t *)vptr;
   uint32_t sum1, sum2;
 
   sum1 = sum2 = 0;
@@ -915,15 +915,15 @@ int nw_Send(network_address *who_to, void *data, int len, int flags) {
     Int3();
   }
   if (NetDebugFile) {
-    ubyte *ptr = (ubyte *)data;
+    uint8_t *ptr = (uint8_t *)data;
     cfprintf(NetDebugFile, "nw_Send packet of type %d at %f seconds.\n", ptr[0], timer_GetTime());
   }
-  return nw_SendWithID(NWT_UNRELIABLE, (ubyte *)data, len, who_to);
+  return nw_SendWithID(NWT_UNRELIABLE, (uint8_t *)data, len, who_to);
 }
 
 // MTS: only used in this file?
-void nw_HandleUnreliableData(ubyte *data, int len, network_address *from_addr) {
-  nw_psnet_buffer_packet((ubyte *)data, len, from_addr);
+void nw_HandleUnreliableData(uint8_t *data, int len, network_address *from_addr) {
+  nw_psnet_buffer_packet((uint8_t *)data, len, from_addr);
 }
 
 // MTS: unused?
@@ -953,7 +953,7 @@ int nw_Receive(void *data, network_address *from_addr) {
   int buffer_size;
 
   // try and get a free buffer and return its size
-  if (nw_psnet_buffer_get_next((ubyte *)data, &buffer_size, from_addr)) {
+  if (nw_psnet_buffer_get_next((uint8_t *)data, &buffer_size, from_addr)) {
     return buffer_size;
   }
   return 0;
@@ -967,7 +967,7 @@ int ExtraBufferTempHack = 0;
 // 0 No packet ready to receive
 // >0 Buffer filled with the number of bytes recieved
 
-int nw_ReceiveReliable(SOCKET socketid, ubyte *buffer, int max_len) {
+int nw_ReceiveReliable(SOCKET socketid, uint8_t *buffer, int max_len) {
 
   int i;
   if (Use_DirectPlay) {
@@ -975,7 +975,7 @@ int nw_ReceiveReliable(SOCKET socketid, ubyte *buffer, int max_len) {
     dp_DirectPlayDispatch();
 
     // try and get a free buffer and return its size
-    if (nw_psnet_buffer_get_next_by_packet_id((ubyte *)buffer, &max_len, socketid)) {
+    if (nw_psnet_buffer_get_next_by_packet_id((uint8_t *)buffer, &max_len, socketid)) {
       return max_len;
     }
     return 0;
@@ -1076,7 +1076,7 @@ int nw_CheckListenSocket(network_address *from_addr) {
   return INVALID_SOCKET;
 }
 
-int nw_SendReliable(uint32_t socketid, ubyte *data, int length, bool urgent) {
+int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
   int i;
   int bytesout;
   int use_buffer = -1;
@@ -1150,7 +1150,7 @@ int nw_SendReliable(uint32_t socketid, ubyte *data, int length, bool urgent) {
       }
 
       // mprintf((0,"Sending reliable packet! Sequence %d\n",send_header.seq));
-      bytesout = nw_SendWithID(NWT_RELIABLE, (ubyte *)&send_header,
+      bytesout = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&send_header,
                                RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[use_buffer], &send_address);
 
       if ((bytesout == SOCKET_ERROR) && (WSAEWOULDBLOCK == WSAGetLastError())) {
@@ -1236,7 +1236,7 @@ void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_typ
     send_address.connection_type = NP_TCP;
   }
 
-  ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&ack_header, RELIABLE_PACKET_HEADER_ONLY_SIZE + sizeof(uint32_t),
+  ret = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&ack_header, RELIABLE_PACKET_HEADER_ONLY_SIZE + sizeof(uint32_t),
                       &send_address);
 }
 
@@ -1249,7 +1249,7 @@ void nw_DoNetworkIdle(void) {
 
 #define CONNECTSEQ 0x142 // Magic number for starting a connection, just so it isn't 0
 
-void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
+void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
   int i;
   int rcode = -1;
   short max_len = NETBUFFERSIZE;
@@ -1292,7 +1292,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
       send_address.connection_type = NP_TCP;
     }
 
-    int ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
+    int ret = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
     if ((ret == SOCKET_ERROR) && (WSAEWOULDBLOCK == WSAGetLastError())) {
       reliable_sockets[serverconn].last_packet_sent = timer_GetTime() - NETRETRYTIME;
@@ -1303,7 +1303,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
   network_protocol link_type = naddr->connection_type;
   network_address d3_rcv_addr;
   memcpy(&d3_rcv_addr, naddr, sizeof(network_address));
-  memcpy((ubyte *)&rcv_buff, data, len);
+  memcpy((uint8_t *)&rcv_buff, data, len);
   SOCKADDR_IN *rcvaddr, *rsockaddr;
 
   do {
@@ -1513,7 +1513,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
 }
 
 // MTS: only used in this file
-void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr) {
+void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_addr) {
 
   int i;
   static reliable_header ack_header;
@@ -1556,7 +1556,7 @@ void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr
             last_sent_iamhere = timer_GetTime();
 
             int rcode =
-                nw_SendWithID(NWT_RELIABLE, (ubyte *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
+                nw_SendWithID(NWT_RELIABLE, (uint8_t *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
             // int rcode = sendto(typeless_sock,(char
             // *)&conn_header,RELIABLE_PACKET_HEADER_ONLY_SIZE,0,addr,sizeof(SOCKADDR));
             if (rcode == SOCKET_ERROR) {
@@ -1634,7 +1634,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
   network_address d3_rcv_addr;
   memset(&d3_rcv_addr, 0, sizeof(network_address));
 
-  int ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
+  int ret = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
   if (SOCKET_ERROR == ret) {
     mprintf((0, "Unable to send packet in nw_ConnectToServer()! -- %d\n", WSAGetLastError()));
     return;
@@ -1654,7 +1654,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
     }
     if ((timer_GetTime() - time_sent_req) > 2) {
       mprintf((0, "Resending connect request.\n"));
-      int ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
+      int ret = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
       if (ret != SOCKET_ERROR) {
         time_sent_req = timer_GetTime();
       } else {
@@ -1715,7 +1715,7 @@ void nw_CloseSocket(SOCKET *sockp) {
     send_address.connection_type = NP_TCP;
   }
 
-  nw_SendWithID(NWT_RELIABLE, (ubyte *)&diss_conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
+  nw_SendWithID(NWT_RELIABLE, (uint8_t *)&diss_conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
   memset(&reliable_sockets[*sockp], 0, sizeof(reliable_socket));
   reliable_sockets[*sockp].status = RNF_UNUSED;
@@ -1761,8 +1761,8 @@ int nw_PingCompare(const void *arg1, const void *arg2) {
 #define COMPRESS_KEY 0xfd
 int nw_Compress(void *srcdata, void *destdata, int count) {
   int i;
-  ubyte *curr_src = (ubyte *)srcdata;
-  ubyte *currp = (ubyte *)destdata;
+  uint8_t *curr_src = (uint8_t *)srcdata;
+  uint8_t *currp = (uint8_t *)destdata;
   for (i = 0; i < count; i++) {
     // Woops, we have a char that matches our compress key, so add it as it's own type
     if (curr_src[i] == COMPRESS_KEY) {
@@ -1791,15 +1791,15 @@ int nw_Compress(void *srcdata, void *destdata, int count) {
       currp++;
     }
   }
-  return currp - (ubyte *)destdata;
+  return currp - (uint8_t *)destdata;
 }
 
 // MTS: only used in this file
 int nw_Uncompress(void *compdata, void *uncompdata, int count) {
   int i;
   int destlen = 0;
-  ubyte *comp_src = (ubyte *)compdata;
-  ubyte *currp = (ubyte *)uncompdata;
+  uint8_t *comp_src = (uint8_t *)compdata;
+  uint8_t *currp = (uint8_t *)uncompdata;
   for (i = 0; i < count; i++) {
     if (*comp_src == COMPRESS_KEY) {
       comp_src++;
@@ -1845,7 +1845,7 @@ void nw_psnet_buffer_init() {
 
 // MTS: only used in this file
 // buffer a packet (maintain order!)
-void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from) {
+void nw_psnet_buffer_packet(uint8_t *data, int length, network_address *from) {
   int idx;
   int found_buf = 0;
 
@@ -1879,7 +1879,7 @@ void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from) {
 
 // MTS: only used in this file
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t packet_id) {
+int nw_psnet_buffer_get_next_by_packet_id(uint8_t *data, int *length, uint32_t packet_id) {
   int idx;
   int found_buf = 0;
 
@@ -1917,7 +1917,7 @@ int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t pac
 
 // MTS: only used in this file
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from) {
+int nw_psnet_buffer_get_next(uint8_t *data, int *length, network_address *from) {
   int idx;
   int found_buf = 0;
 
@@ -2288,7 +2288,7 @@ int nw_ReccomendPPS() {
 // Register the networking library to call your function back
 // When data containing your ID is found
 // Returns non-zero if succesfull, Zero if this ID is already registered
-int nw_RegisterCallback(NetworkReceiveCallback nfp, ubyte id) {
+int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id) {
   ASSERT(id < 16);
 
   // rcg06212000 this happens all the time; let it slide.
@@ -2302,7 +2302,7 @@ int nw_RegisterCallback(NetworkReceiveCallback nfp, ubyte id) {
   return 0;
 }
 
-NetworkReceiveCallback nw_UnRegisterCallback(ubyte id) {
+NetworkReceiveCallback nw_UnRegisterCallback(uint8_t id) {
   NetworkReceiveCallback nfp;
   ASSERT(id < 16);
   nfp = Netcallbacks[id];
@@ -2310,14 +2310,14 @@ NetworkReceiveCallback nw_UnRegisterCallback(ubyte id) {
   return nfp;
 }
 
-int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
-  ubyte packet_data[1500];
+int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
+  uint8_t packet_data[1500];
   int send_this_packet = 1;
   SOCKET send_sock;
   SOCKADDR_IN sock_addr; // UDP/TCP socket structure
 
   int ret, send_len;
-  ubyte iaddr[6], *send_data;
+  uint8_t iaddr[6], *send_data;
   short port;
   fd_set wfds;
 
@@ -2338,7 +2338,7 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
 // mprintf((0,"Sending packet for id %d.\n",id));
 #ifdef WIN32
   if (Use_DirectPlay)
-    return dp_DirectPlaySend(who_to, (ubyte *)data, len, false);
+    return dp_DirectPlaySend(who_to, (uint8_t *)data, len, false);
 #endif
 
   // mprintf((1, "network: type %d\n", who_to->connection_type));
@@ -2364,8 +2364,8 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
   }
 
   /*
-  ubyte compdata[MAX_PACKET_SIZE*3];
-  ubyte testdata[MAX_PACKET_SIZE*3];
+  uint8_t compdata[MAX_PACKET_SIZE*3];
+  uint8_t testdata[MAX_PACKET_SIZE*3];
   int uncompsize;
 
   ////Int3();
@@ -2398,7 +2398,7 @@ int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to) {
   }
 
   send_len = len;
-  send_data = (ubyte *)packet_data;
+  send_data = (uint8_t *)packet_data;
 
   FD_ZERO(&wfds);
   FD_SET(send_sock, &wfds);
@@ -2448,7 +2448,7 @@ int nw_DoReceiveCallbacks(void) {
   socklen_t read_len, from_len;
   network_address from_addr;
 
-  ubyte packet_data[1500];
+  uint8_t packet_data[1500];
 
   nw_ReliableResend();
 
@@ -2494,7 +2494,7 @@ int nw_DoReceiveCallbacks(void) {
 #else
     memcpy(from_addr.address, &ip_addr.sin_addr.s_addr, 4);
 #endif
-    ubyte packet_id = (packet_data[0] & 0x0f);
+    uint8_t packet_id = (packet_data[0] & 0x0f);
     if (Netcallbacks[packet_id]) {
       // mprintf((0,"Calling network callback for id %d.\n",packet_id));
       int rlen = read_len - 1;
@@ -2596,7 +2596,7 @@ void nw_ReliableResend(void) {
           }
 
           // mprintf((0,"Resending reliable packet! Sequence %d\n",send_header.seq));
-          rcode = nw_SendWithID(NWT_RELIABLE, (ubyte *)&send_header,
+          rcode = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&send_header,
                                 RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i], &send_address);
 
           if ((rcode == SOCKET_ERROR) && (WSAEWOULDBLOCK == WSAGetLastError())) {
@@ -2638,7 +2638,7 @@ void nw_ReliableResend(void) {
           NetStatistics.tcp_total_bytes_resent += len;
         }
 
-        rcode = nw_SendWithID(NWT_RELIABLE, (ubyte *)&send_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
+        rcode = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&send_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, &send_address);
 
         if ((rcode != SOCKET_ERROR) && (WSAEWOULDBLOCK != WSAGetLastError())) {
           // It must have been sent

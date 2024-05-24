@@ -665,13 +665,13 @@ typedef struct {
   //	column_num:		which column (index into the PlayerListColumns array) it is working on
   //	x,y,w,h:		the (x,y) position of the upper left corner of the area, and the allowed width/height
   // handle the drawing in this function
-  void (*clbPlayerColumnBMP)(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use);
+  void (*clbPlayerColumnBMP)(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
   // Callback function when the stats manager needs to draw the custom bitmap on the detailed column
   //	precord_num:	contains the player record number of the player it displaying
   //	column_num:		which column (index into the DetailedColumns array) it is working on
   //	x,y,w,h:		the (x,y) position of the upper left corner of the area, and the allowed width/height
   // handle the drawing in this function
-  void (*clbDetailedColumnBMP)(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use);
+  void (*clbDetailedColumnBMP)(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
   // Callback function when the stats manager needs to display team info for a particular team
   //	team:			contains the team it's displaying about (0 = red, ... 3 = yellow)
   //	buffer:			buffer to fill in for your data

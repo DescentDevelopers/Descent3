@@ -142,16 +142,16 @@ typedef struct {
 typedef struct {
   int Score[2];
 } tPlayerStat; // Overall scores (throughout the game)
-static int pack_pstat(tPlayerStat *user_info, ubyte *data);
-static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
-int pack_pstat(tPlayerStat *user_info, ubyte *data) {
+static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
+static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
+int pack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
   MultiAddInt(user_info->Score[1], data, &count);
   return count;
 }
 
-int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
+int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   user_info->Score[0] = MultiGetInt(data, &count);
   user_info->Score[1] = MultiGetInt(data, &count);
@@ -248,7 +248,7 @@ void TeamScoreCallback(int team, char *buffer, int buffer_size) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -334,8 +334,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
   snd_damage = DLLFindSoundName("HitEnergy");
   snd_virus_pickup = DLLFindSoundName("Powerup pickup");
 
-  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, ubyte *))pack_pstat,
-                              (int (*)(void *, ubyte *))unpack_pstat);
+  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, uint8_t *))pack_pstat,
+                              (int (*)(void *, uint8_t *))unpack_pstat);
 
   virus_id = DLLFindObjectIDName("EntropyVirus");
 
@@ -1374,7 +1374,7 @@ do_disconnected_folk:
 quick_exit:;
 }
 
-void OnControlMessage(ubyte msg, int from_pnum) {
+void OnControlMessage(uint8_t msg, int from_pnum) {
   switch (msg) {
   case VIRUS_NOTENOUGHKILLS:
     DLLAddHUDMessage(TXT_CANTCARRY);
@@ -1648,7 +1648,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   int y = (DMFCBase->GetGameWindowH() / 2) - ((height * 3) / 2);
   int x = 520;
   int team;
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
 
   team = DMFCBase->GetMyTeam();
   DLLRenderHUDText(DMFCBase->GetTeamColor(team), alpha, 0, x, 0, TXT_TEAMINFO, DMFCBase->GetTeamString(team));

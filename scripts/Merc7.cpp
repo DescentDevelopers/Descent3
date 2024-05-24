@@ -37,13 +37,13 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte is_door);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t is_door);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL GetTriggerScriptID(int trigger_room, int trigger_face);
 DLLEXPORT int STDCALL GetCOScriptList(int **list, int **id_list);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -1169,7 +1169,7 @@ void aEmitSparks(float num_sparks, int objhandle) {
 #define SPECIAL_TIMER_MAX 256
 #define SPECIAL_TIMER_ID_LIMIT (SPECIAL_TIMER_ID_BASE + SPECIAL_TIMER_MAX * SPECIAL_TIMER_CLASSES - 1)
 
-inline int LEVEL_TIMER_UID(ubyte timer_class, ubyte index) {
+inline int LEVEL_TIMER_UID(uint8_t timer_class, uint8_t index) {
   return (SPECIAL_TIMER_ID_BASE + (timer_class % SPECIAL_TIMER_CLASSES) * SPECIAL_TIMER_MAX + index);
 }
 
@@ -1189,7 +1189,7 @@ Parameters:
 $$END
 */
 
-static ubyte ff_index = 0;
+static uint8_t ff_index = 0;
 static struct t_ff_enable_data {
   short room_number;
   short portal_num;
@@ -1225,7 +1225,7 @@ Parameters:
 $$END
 */
 
-static ubyte wind_fx_index = 0;
+static uint8_t wind_fx_index = 0;
 static struct t_wind_fx_data {
   int room_number;
   float x, y, z;
@@ -1312,11 +1312,11 @@ void cExecTimerEvent(int timerid) {
 #define GOAL_PRIORITY_HIGH 3
 #define GOAL_PRIORITY_LOW 0
 
-inline int LEVEL_GOAL_UID(ubyte goal_class, ubyte index) {
+inline int LEVEL_GOAL_UID(uint8_t goal_class, uint8_t index) {
   return (SPECIAL_TIMER_ID_BASE + (goal_class % SPECIAL_GOAL_CLASSES) * SPECIAL_GOAL_MAX + index);
 }
 
-static ubyte DC_Goal_Index = 0;
+static uint8_t DC_Goal_Index = 0;
 
 #define DC_N_DROIDS 32
 #define DC_EXIT_GOAL 0
@@ -2516,7 +2516,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) { return -1; }
 
 // ================
 // CreateInstance()
@@ -3146,7 +3146,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 // ==================
 // SaveRestoreState()
 // ==================
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 // ====================
 // GetTriggerScriptID()

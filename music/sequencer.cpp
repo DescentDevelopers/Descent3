@@ -352,7 +352,7 @@ void OutrageMusicSeq::ExecScript(music_stream *strm) {
 // get command
 next_ins:
   music_ins *cur_ins = &strm->ins[strm->ip];
-  ubyte cmd = cur_ins->cmd;
+  uint8_t cmd = cur_ins->cmd;
   tMusicVal val = cur_ins->opr.num;
   char *str = cur_ins->opr.str;
   const char *name;

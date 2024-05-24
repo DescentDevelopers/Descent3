@@ -285,7 +285,7 @@ void oms_stream::SEND_STRM_STOP() {
   m_q.send(evt);
 }
 
-void oms_stream::SEND_STRM_PLAY(float vol, ubyte count) {
+void oms_stream::SEND_STRM_PLAY(float vol, uint8_t count) {
   oms_q_evt evt;
 
   evt.cmd = OMS_STRM_PLAY;
@@ -310,7 +310,7 @@ void oms_stream::SEND_STRM_SWITCH(bool *switch_flag) {
   m_q.send(evt);
 }
 
-void oms_stream::SEND_STRM_NEXT(const char *fname, float vol, ubyte count, bool *switch_flag) {
+void oms_stream::SEND_STRM_NEXT(const char *fname, float vol, uint8_t count, bool *switch_flag) {
   oms_q_evt evt;
 
   evt.cmd = OMS_STRM_NEXT;

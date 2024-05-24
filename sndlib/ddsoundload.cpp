@@ -381,7 +381,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
         SoundFiles[sound_file_index].sample_8bit = (uint8_t *)GlobalAlloc(0, aligned_size);
         GlobalLock(SoundFiles[sound_file_index].sample_8bit);
 
-        cf_ReadBytes((ubyte *)SoundFiles[sound_file_index].sample_8bit, cksize, cfptr);
+        cf_ReadBytes((uint8_t *)SoundFiles[sound_file_index].sample_8bit, cksize, cfptr);
 
         if (aligned_size != cksize)
           memset(SoundFiles[sound_file_index].sample_8bit + cksize, 128, num_needed);

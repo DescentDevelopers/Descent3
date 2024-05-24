@@ -210,12 +210,12 @@ typedef struct
         int id;
         ct_type type[2];
         ct_config_data value;
-        ubyte flags[2];
+        uint8_t flags[2];
 } cntrldata;
 
 typedef struct
 {
-        ubyte highest_level;
+        uint8_t highest_level;
         bool finished;									// was mission finished?
 (different than highest level,btw) char mission_name[MSN_NAMELEN]; } tMissionData;
 
@@ -243,7 +243,7 @@ typedef struct
         ushort hud_stat;
         ushort hud_graphical_stat;
         // hud display mode
-        ubyte hud_mode;
+        uint8_t hud_mode;
         // do we read the controller port also (beyond keyboard/mouse)
         char read_controller;
         // axis sensitivities
@@ -334,7 +334,7 @@ extern char Default_pilot[_MAX_PATH];
 
 // "Current Pilot" access functions
 void dCurrentPilotName(char *buffer);
-ubyte dCurrentPilotDifficulty(void);
+uint8_t dCurrentPilotDifficulty(void);
 
 void IncrementPilotRestoredGamesForMission(pilot *Pilot, const char *mission_name);
 void IncrementPilotSavedGamesForMission(pilot *Pilot, const char *mission_name);

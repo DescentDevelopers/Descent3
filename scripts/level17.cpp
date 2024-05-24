@@ -37,13 +37,13 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte is_door);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t is_door);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL GetTriggerScriptID(int trigger_room, int trigger_face);
 DLLEXPORT int STDCALL GetCOScriptList(int **list, int **id_list);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -1920,7 +1920,7 @@ void STDCALL ShutdownDLL(void) { ClearMessageList(); }
 // ===============
 // GetGOScriptID()
 // ===============
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) { return -1; }
 
 // ================
 // CreateInstance()
@@ -2893,7 +2893,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 // ==================
 // SaveRestoreState()
 // ==================
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 // ====================
 // GetTriggerScriptID()

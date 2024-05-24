@@ -225,9 +225,9 @@ typedef struct tLevelNode {
   char *progress;  // File name containing the progress background screen
 
   //	level branching
-  ubyte lvlbranch0, lvlbranch1; // FORK or BRANCH command
-  ubyte secretlvl;              // SECRET command
-  ubyte pad;
+  uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
+  uint8_t secretlvl;              // SECRET command
+  uint8_t pad;
 } tLevelNode;
 
 // predefine mission state flags

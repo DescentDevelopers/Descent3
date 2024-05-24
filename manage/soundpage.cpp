@@ -254,7 +254,7 @@ int mng_ReadNewSoundPage(CFILE *infile, mngs_sound_page *soundpage) {
 int mng_ReadSoundPage(CFILE *infile, mngs_sound_page *soundpage) {
   int done = 0;
   char command;
-  ubyte len;
+  uint8_t len;
   int i;
   if (!Old_table_method)
     return mng_ReadNewSoundPage(infile, soundpage);
@@ -319,7 +319,7 @@ int mng_ReadSoundPage(CFILE *infile, mngs_sound_page *soundpage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificSoundPage(char *name, mngs_sound_page *soundpage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
   char tablename[TABLE_NAME_LEN];
   if (Loading_locals) {

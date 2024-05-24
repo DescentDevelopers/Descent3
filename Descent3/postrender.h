@@ -26,7 +26,7 @@
 #define PRT_WALL 2
 
 typedef struct {
-  ubyte type; // See types above
+  uint8_t type; // See types above
   union {
     short objnum;
     short visnum;

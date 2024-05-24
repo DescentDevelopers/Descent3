@@ -36,8 +36,8 @@ typedef struct {
   short *frames;    // bitmap indices
   float frame_time; // time (in seconds) of each frame
   int flags;
-  ubyte target_size; // what size this vclip should use (texture wise)
-  ubyte used;        // Is this vclip in use?
+  uint8_t target_size; // what size this vclip should use (texture wise)
+  uint8_t used;        // Is this vclip in use?
 } vclip;
 
 extern vclip GameVClips[MAX_VCLIPS];

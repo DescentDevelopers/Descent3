@@ -97,10 +97,10 @@ typedef struct tMusicSeqInfo {
   bool player_damaged;            // was player hit by enemy fire?
   bool player_invulnerable;       // is player invulnerable?
   bool player_terrain;            // is player in terrain (if not, in mine)
-  ubyte player_shield_level;      // what shield level the player is at? (0-10)
-  ubyte n_hostiles;               // number of hostiles
-  ubyte n_hostiles_player_killed; // number hostiles killed by player this frame.
-  ubyte pad;
+  uint8_t player_shield_level;      // what shield level the player is at? (0-10)
+  uint8_t n_hostiles;               // number of hostiles
+  uint8_t n_hostiles_player_killed; // number hostiles killed by player this frame.
+  uint8_t pad;
 
   float frametime; // frame time.
 

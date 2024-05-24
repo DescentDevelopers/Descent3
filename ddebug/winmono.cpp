@@ -90,7 +90,7 @@ static bool Mono_initialized = 0;
 static mono_element (*Mono_screen)[25][80];
 static char Dbgstr_format[512];
 static WINDOW Window[MAX_NUM_WINDOWS];
-static ubyte Mono_virtual_window_list[MAX_NUM_VWINDOWS];
+static uint8_t Mono_virtual_window_list[MAX_NUM_VWINDOWS];
 
 #ifndef RELEASE
 #define MAX_MONO_LENGTH 2048

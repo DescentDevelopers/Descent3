@@ -114,7 +114,7 @@ DDPIXELFORMAT TextureFormats[MAX_TEXTURE_FORMATS];
 
 bool D3D_multitexture_state = false;
 bool D3D_bumpmap_state = false;
-ubyte D3D_frame_started = 0;
+uint8_t D3D_frame_started = 0;
 float d3d_FogDiff = 0;
 
 // For verifying the texture/alpha types before rendering
@@ -1300,7 +1300,7 @@ bool d3d_UsingDX6() {
     DWORD dwType, dwLen;
 
     dwLen = 32;
-    lResult = RegQueryValueEx(hKey, "Version", NULL, &dwType, (ubyte *)version, &dwLen);
+    lResult = RegQueryValueEx(hKey, "Version", NULL, &dwType, (uint8_t *)version, &dwLen);
 
     if (lResult == ERROR_SUCCESS) {
       dx_version = atoi(strstr(version, ".") + 1);
@@ -1309,7 +1309,7 @@ bool d3d_UsingDX6() {
       DWORD dwType, dwLen;
 
       dwLen = 4;
-      lResult = RegQueryValueEx(hKey, "InstalledVersion", NULL, &dwType, (ubyte *)&val, &dwLen);
+      lResult = RegQueryValueEx(hKey, "InstalledVersion", NULL, &dwType, (uint8_t *)&val, &dwLen);
 
       if (lResult == ERROR_SUCCESS) {
 
@@ -2628,7 +2628,7 @@ void d3d_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
 void d3d_SetPixel(ddgr_color color, int x, int y) {}
 
 // Sets the alpha value
-void d3d_SetAlphaValue(ubyte val) {
+void d3d_SetAlphaValue(uint8_t val) {
   D3D_state.cur_alpha = val;
   d3d_SetAlphaMultiplier();
 }
@@ -3112,7 +3112,7 @@ void d3d_ReleaseLFBLock(renderer_lfb *lfb) {
   d3d_lfb_locked = 0;
 }
 
-ubyte d3d_Framebuffer_ready = 0;
+uint8_t d3d_Framebuffer_ready = 0;
 ushort *d3d_Framebuffer_translate = NULL;
 
 // Gets a renderer ready for a framebuffer copy, or stops a framebuffer copy

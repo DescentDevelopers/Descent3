@@ -367,7 +367,7 @@ void DLLFUNCCALL IDMFC_OnPlayerConnect(IDMFC *instance, int player_num) {
   instance->OnPlayerConnect(player_num);
 }
 
-void DLLFUNCCALL IDMFC_OnControlMessage(IDMFC *instance, ubyte msg, int from_pnum) {
+void DLLFUNCCALL IDMFC_OnControlMessage(IDMFC *instance, uint8_t msg, int from_pnum) {
   assert(instance != NULL);
   instance->OnControlMessage(msg, from_pnum);
 }
@@ -528,17 +528,17 @@ int DLLFUNCCALL IDMFC_GetMeObjNum(IDMFC *instance) {
   return instance->GetMeObjNum();
 }
 
-void DLLFUNCCALL IDMFC_RegisterPacketReceiver(IDMFC *instance, ubyte id, void (*func)(ubyte *)) {
+void DLLFUNCCALL IDMFC_RegisterPacketReceiver(IDMFC *instance, uint8_t id, void (*func)(uint8_t *)) {
   assert(instance != NULL);
   instance->RegisterPacketReceiver(id, func);
 }
 
-void DLLFUNCCALL IDMFC_StartPacket(IDMFC *instance, ubyte *data, ubyte id, int *count) {
+void DLLFUNCCALL IDMFC_StartPacket(IDMFC *instance, uint8_t *data, uint8_t id, int *count) {
   assert(instance != NULL);
   instance->StartPacket(data, id, count);
 }
 
-void DLLFUNCCALL IDMFC_SendPacket(IDMFC *instance, ubyte *data, int size, int destination) {
+void DLLFUNCCALL IDMFC_SendPacket(IDMFC *instance, uint8_t *data, int size, int destination) {
   assert(instance != NULL);
   instance->SendPacket(data, size, destination);
 }
@@ -563,17 +563,17 @@ void DLLFUNCCALL IDMFC_SendTeamAssignment(IDMFC *instance, int playernum, int te
   instance->SendTeamAssignment(playernum, team, spew_on_respawn);
 }
 
-void DLLFUNCCALL IDMFC_GetTeamAssignmentPacket(IDMFC *instance, ubyte *data) {
+void DLLFUNCCALL IDMFC_GetTeamAssignmentPacket(IDMFC *instance, uint8_t *data) {
   assert(instance != NULL);
   instance->GetTeamAssignmentPacket(data);
 }
 
-void DLLFUNCCALL IDMFC_GetChangeTeamPacket(IDMFC *instance, ubyte *data) {
+void DLLFUNCCALL IDMFC_GetChangeTeamPacket(IDMFC *instance, uint8_t *data) {
   assert(instance != NULL);
   instance->GetChangeTeamPacket(data);
 }
 
-void DLLFUNCCALL IDMFC_GetGameStateRequest(IDMFC *instance, ubyte *data) {
+void DLLFUNCCALL IDMFC_GetGameStateRequest(IDMFC *instance, uint8_t *data) {
   assert(instance != NULL);
   instance->GetGameStateRequest(data);
 }
@@ -583,7 +583,7 @@ void DLLFUNCCALL IDMFC_SendChangeTeamRequest(IDMFC *instance, int newteam, bool 
   instance->SendChangeTeamRequest(newteam, spew_onchange);
 }
 
-void DLLFUNCCALL IDMFC_GetDMFCGameInfo(IDMFC *instance, ubyte *data) {
+void DLLFUNCCALL IDMFC_GetDMFCGameInfo(IDMFC *instance, uint8_t *data) {
   assert(instance != NULL);
   instance->GetDMFCGameInfo(data);
 }
@@ -658,7 +658,7 @@ float DLLFUNCCALL IDMFC_ConvertHUDAlphaFloat(IDMFC *instance, float normal) {
   return instance->ConvertHUDAlpha(normal);
 }
 
-ubyte DLLFUNCCALL IDMFC_ConvertHUDAlphaByte(IDMFC *instance, ubyte normal) {
+uint8_t DLLFUNCCALL IDMFC_ConvertHUDAlphaByte(IDMFC *instance, uint8_t normal) {
   assert(instance != NULL);
   return instance->ConvertHUDAlpha(normal);
 }
@@ -689,12 +689,12 @@ void DLLFUNCCALL IDMFC_KillTimer(IDMFC *instance, int handle) {
   instance->KillTimer(handle);
 }
 
-void DLLFUNCCALL IDMFC_SwitchShowHudCallsignLevel(IDMFC *instance, ubyte level, bool announce) {
+void DLLFUNCCALL IDMFC_SwitchShowHudCallsignLevel(IDMFC *instance, uint8_t level, bool announce) {
   assert(instance != NULL);
   instance->SwitchShowHudCallsignLevel(level, announce);
 }
 
-void DLLFUNCCALL IDMFC_SwitchServerHudCallsignLevel(IDMFC *instance, ubyte level) {
+void DLLFUNCCALL IDMFC_SwitchServerHudCallsignLevel(IDMFC *instance, uint8_t level) {
   assert(instance != NULL);
   instance->SwitchServerHudCallsignLevel(level);
 }
@@ -739,12 +739,12 @@ int DLLFUNCCALL IDMFC_CFGCreateRecord(IDMFC *instance, char *name, char type, vo
   return instance->CFGCreateRecord(name, type, data);
 }
 
-void DLLFUNCCALL IDMFC_DecryptData(IDMFC *instance, ubyte *data, int size) {
+void DLLFUNCCALL IDMFC_DecryptData(IDMFC *instance, uint8_t *data, int size) {
   assert(instance != NULL);
   instance->DecryptData(data, size);
 }
 
-void DLLFUNCCALL IDMFC_EncryptData(IDMFC *instance, ubyte *data, int size) {
+void DLLFUNCCALL IDMFC_EncryptData(IDMFC *instance, uint8_t *data, int size) {
   assert(instance != NULL);
   instance->EncryptData(data, size);
 }
@@ -785,8 +785,8 @@ void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, const char *parent, int co
 }
 
 int DLLFUNCCALL IDMFC_SetupPlayerRecord(IDMFC *instance, int sizeof_individual_data,
-                                        int (*pack_callback)(void *user_info, ubyte *data),
-                                        int (*unpack_callback)(void *user_info, ubyte *data)) {
+                                        int (*pack_callback)(void *user_info, uint8_t *data),
+                                        int (*unpack_callback)(void *user_info, uint8_t *data)) {
   assert(instance != NULL);
   return instance->SetupPlayerRecord(sizeof_individual_data, pack_callback, unpack_callback);
 }
@@ -811,7 +811,7 @@ void DLLFUNCCALL IDMFC_SendRequestForPlayerRecords(IDMFC *instance) {
   instance->SendRequestForPlayerRecords();
 }
 
-void DLLFUNCCALL IDMFC_ReceiveRequestForPlayerRecords(IDMFC *instance, ubyte *data) {
+void DLLFUNCCALL IDMFC_ReceiveRequestForPlayerRecords(IDMFC *instance, uint8_t *data) {
   assert(instance != NULL);
   instance->ReceiveRequestForPlayerRecords(data);
 }
@@ -856,12 +856,12 @@ bool DLLFUNCCALL IDMFC_IsPlayerAlive(IDMFC *instance, int pnum) {
   return instance->IsPlayerAlive(pnum);
 }
 
-void DLLFUNCCALL IDMFC_SendControlMessageToPlayer(IDMFC *instance, int pnum, ubyte msg) {
+void DLLFUNCCALL IDMFC_SendControlMessageToPlayer(IDMFC *instance, int pnum, uint8_t msg) {
   assert(instance != NULL);
   instance->SendControlMessageToPlayer(pnum, msg);
 }
 
-void DLLFUNCCALL IDMFC_ReceiveControlMessage(IDMFC *instance, ubyte *data) {
+void DLLFUNCCALL IDMFC_ReceiveControlMessage(IDMFC *instance, uint8_t *data) {
   assert(instance != NULL);
   instance->ReceiveControlMessage(data);
 }
@@ -1392,7 +1392,7 @@ void DLLFUNCCALL IDMFC_Set_OnPlayerConnect(IDMFC *instance, void (*callback)(int
   instance->Set_OnPlayerConnect(callback);
 }
 
-void DLLFUNCCALL IDMFC_Set_OnControlMessage(IDMFC *instance, void (*callback)(ubyte msg, int from_pnum)) {
+void DLLFUNCCALL IDMFC_Set_OnControlMessage(IDMFC *instance, void (*callback)(uint8_t msg, int from_pnum)) {
   assert(instance != NULL);
   instance->Set_OnControlMessage(callback);
 }
@@ -1697,7 +1697,7 @@ void DLLFUNCCALL IDMFC_CallOnPlayerConnect(IDMFC *instance, int player_num) {
   instance->CallOnPlayerConnect(player_num);
 }
 
-void DLLFUNCCALL IDMFC_CallOnControlMessage(IDMFC *instance, ubyte msg, int from_pnum) {
+void DLLFUNCCALL IDMFC_CallOnControlMessage(IDMFC *instance, uint8_t msg, int from_pnum) {
   assert(instance != NULL);
   instance->CallOnControlMessage(msg, from_pnum);
 }

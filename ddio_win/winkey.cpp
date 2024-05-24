@@ -250,7 +250,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam);
 void __cdecl dikey_Thread(void *dp);
 
 // translates scan code to foreign equivs.
-ubyte xlate_scancode(ubyte scan_code);
+uint8_t xlate_scancode(uint8_t scan_code);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -370,9 +370,9 @@ void ddio_InternalKeyFrame() {}
 //////////////////////////////////////////////////////////////////////////////
 
 // returns if key is up or down
-bool ddio_InternalKeyState(ubyte key) { return WKeys[key].status; }
+bool ddio_InternalKeyState(uint8_t key) { return WKeys[key].status; }
 
-float ddio_InternalKeyDownTime(ubyte key) {
+float ddio_InternalKeyDownTime(uint8_t key) {
   float down_time = 0.0f;
   if (WKeys[key].status) {
     if (WKD.winhook) {
@@ -404,7 +404,7 @@ float ddio_InternalKeyDownTime(ubyte key) {
 }
 
 // flush a key internally
-void ddio_InternalResetKey(ubyte key) {
+void ddio_InternalResetKey(uint8_t key) {
   WKeys[key].down_ticks = 0;
   WKeys[key].up_ticks = 0;
   WKeys[key].status = false;
@@ -421,8 +421,8 @@ void ddio_InternalResetKey(ubyte key) {
 void ddio_SetKeyboardLanguage(int language) { DDIO_key_language = language; }
 
 // translates scan code to foreign equivs.
-ubyte xlate_scancode(ubyte scan_code) {
-  ubyte code = scan_code;
+uint8_t xlate_scancode(uint8_t scan_code) {
+  uint8_t code = scan_code;
 
   if (DDIO_key_language == KBLANG_FRENCH) {
     switch (scan_code) {
@@ -607,7 +607,7 @@ void __cdecl dikey_Thread(void *dp) {
       DWORD diobjitems = DIKEY_BUFFER_SIZE;
       HRESULT hr;
       //	SHORT async_key_state;
-      ubyte key;
+      uint8_t key;
 
       int i;
 
@@ -632,7 +632,7 @@ void __cdecl dikey_Thread(void *dp) {
           //	note that dwOfs is the acutal key that is either down or up, and dwData tells us if
           //	it is up or down.  So place on key array, and in queue.
           for (i = 0; i < (int)diobjitems; i++) {
-            key = xlate_scancode((ubyte)(diobjdata[i].dwOfs));
+            key = xlate_scancode((uint8_t)(diobjdata[i].dwOfs));
             if (diobjdata[i].dwData & 0x80) {
               if (WKeys[key].status) {
                 WKeys[key].up_ticks = 0;
@@ -729,7 +729,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam) {
 }
 
 int ddio_KeyHandler(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-  ubyte scan_code;
+  uint8_t scan_code;
   float timer = timer_GetTime();
 
   if (!WKD.winhook)

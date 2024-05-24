@@ -67,18 +67,18 @@
  *
  */
 
-#define ubyte uint8_t
+#define uint8_t uint8_t
 #define uint32_t uint32_t
 #define ushort uint16_t
 
 typedef struct {
-  ubyte type;
+  uint8_t type;
   int count;
   int size;      // only used for memory...size allocated for buffer
   int file_size; // max count we reached
   union {
     FILE *file;
-    ubyte *memory;
+    uint8_t *memory;
   };
 } tVirtualFile;
 
@@ -87,7 +87,7 @@ typedef struct {
 ////////////////////////
 typedef struct tBitFile {
   tVirtualFile *file;
-  ubyte mask;
+  uint8_t mask;
   int rack;
 } BITFILE;
 
@@ -178,11 +178,11 @@ public:
   //	Raw type compressed files operations only
   int ReadBytes(char *data, int count);
   void WriteBytes(char *data, int count);
-  ubyte ReadRawByte(void);
+  uint8_t ReadRawByte(void);
   ushort ReadRawShort(void);
   uint32_t ReadRawInt(void);
   float ReadRawFloat(void);
-  void WriteRawByte(ubyte value);
+  void WriteRawByte(uint8_t value);
   void WriteRawShort(ushort value);
   void WriteRawInt(uint32_t value);
   void WriteRawFloat(float value);
@@ -198,16 +198,16 @@ private:
   tFileInfo current_file;
   //	Reads in a Raw type file header
   //	returns true on succes, if so, compr_type contains the compression type
-  bool ReadRawHeader(tVirtualFile *file, ubyte *compr_type);
+  bool ReadRawHeader(tVirtualFile *file, uint8_t *compr_type);
   //	Writes out a Raw type file header
   //	returns true on succes
-  bool WriteRawHeader(tVirtualFile *file, ubyte compr_type);
+  bool WriteRawHeader(tVirtualFile *file, uint8_t compr_type);
   //	Reads in an OCF header
   //	returns true on success, info is filled in the appropriate values,compr_type is compression type
-  bool ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type);
+  bool ReadOCFHeader(tVirtualFile *file, tFileInfo *info, uint8_t *compr_type);
   //	Writes out an OCF header
   //	returns true on success
-  bool WriteOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte compr_type, int header_pos);
+  bool WriteOCFHeader(tVirtualFile *file, tFileInfo *info, uint8_t compr_type, int header_pos);
   //	Writes out a 'dummy' OCF header, just give what the final filename is
   //	you must call this before you compress data, then when done, call the read WriteOCFHeader
   bool WriteDummyOCFHeader(tVirtualFile *file, char *filename);
@@ -271,10 +271,10 @@ private:
   void ha_swap_nodes(tHATree *tree, int i, int j);
   void ha_add_new_node(tHATree *tree, int c);
   void ha_CloseRawDecompress(void);
-  bool ha_ReadRawByte(ubyte *data, BITFILE *input);
+  bool ha_ReadRawByte(uint8_t *data, BITFILE *input);
   void ha_PrepareDecompress(void);
   void ha_CloseRawCompress(BITFILE *output);
-  void ha_WriteRawByte(ubyte data, BITFILE *output);
+  void ha_WriteRawByte(uint8_t data, BITFILE *output);
   void ha_PrepareCompress(void);
 };
 

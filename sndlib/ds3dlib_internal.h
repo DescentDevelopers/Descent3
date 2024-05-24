@@ -71,13 +71,13 @@
 class win_llsSystem;
 
 typedef struct DSLOOPSTREAM {
-  ubyte method; // method 0 for streamed method, 1 for emulated method
-  ubyte playing;
-  ubyte please_close;
+  uint8_t method; // method 0 for streamed method, 1 for emulated method
+  uint8_t playing;
+  uint8_t please_close;
 
   union // dependant on method.
   {
-    ubyte close_on_next;
+    uint8_t close_on_next;
     int8_t loop_step; // method 1, = 0 for start loop, 1 = mid loop, 2 = end loop.
   };
 
@@ -92,7 +92,7 @@ typedef struct DSLOOPSTREAM {
   DWORD half_buffer_point;
   DWORD last_half;
   int num_written;
-  ubyte time_slice;
+  uint8_t time_slice;
   bool kill_me;
   bool f_sample_16bit;
   char silence_byte;

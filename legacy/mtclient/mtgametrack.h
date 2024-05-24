@@ -229,7 +229,7 @@ game_list * GetGameList();
 void RequestGameList();
 int SendGameOver();
 void StartTrackerGame(void *buffer);
-void HandleGamePacket(ubyte *data,int len, network_address *from);
+void HandleGamePacket(uint8_t *data,int len, network_address *from);
 void AckPacket(int sig);
 
 #ifdef WIN32

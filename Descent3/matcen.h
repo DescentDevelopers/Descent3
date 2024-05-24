@@ -62,7 +62,7 @@ private:
   char m_type;
   char m_creation_effect;
   short m_creation_texture;
-  ubyte m_cur_saturation_count;
+  uint8_t m_cur_saturation_count;
 
   int m_num_spawn_pnts;
 

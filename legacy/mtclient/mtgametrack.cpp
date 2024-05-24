@@ -141,7 +141,7 @@ typedef float( *timer_GetTime_fp) (void);
 
 extern timer_GetTime_fp DLLtimer_GetTime;
 
-typedef int (*nw_RegisterCallback_fp) (void * nfp, ubyte id);
+typedef int (*nw_RegisterCallback_fp) (void * nfp, uint8_t id);
 extern nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
 typedef int (*nw_DoReceiveCallbacks_fp)(void);
@@ -286,7 +286,7 @@ void IdleGameTracker()
 
 }
 
-void HandleGamePacket(ubyte *data,int len, network_address *from)
+void HandleGamePacket(uint8_t *data,int len, network_address *from)
 {
 
 	memcpy(&inpacket,data,sizeof(inpacket));

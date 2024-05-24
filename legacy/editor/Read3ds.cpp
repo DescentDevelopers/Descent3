@@ -151,9 +151,9 @@ material Materials[MAX_MATERIALS];
 
 typedef struct reading_face 
 {
-	ubyte		flags;						// flags for this face (see above)
+	uint8_t		flags;						// flags for this face (see above)
 	short		portal_num;					// which portal this face is part of, or -1 if none
-	ubyte		num_verts;					// how many vertices in this face
+	uint8_t		num_verts;					// how many vertices in this face
 	short		face_verts[MAX_VERTS_PER_FACE];				// index into list of vertices for this face
 	roomUVL	face_uvls[MAX_VERTS_PER_FACE];					// index into list of uvls for this face
 	vector	normal;						// the surface normal of this face

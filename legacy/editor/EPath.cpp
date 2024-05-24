@@ -82,7 +82,7 @@
 #include "object.h"
 #include "findintersection.h"
 
-ubyte Show_paths = 1;
+uint8_t Show_paths = 1;
 
 // Allocs a gamepath that a robot will follow.  Returns an index into the GamePaths
 // array 

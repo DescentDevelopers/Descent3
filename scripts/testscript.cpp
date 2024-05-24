@@ -31,11 +31,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -94,7 +94,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   for (int i = 0; i < MAX_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;
@@ -156,7 +156,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 //============================================
 // Script Implementation

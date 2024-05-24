@@ -497,7 +497,7 @@ int dp_ListDirectPlayGames() {
 // This function will look for incoming messages, and dispatch them accordingly
 void dp_DirectPlayDispatch() {
   HRESULT hr;
-  ubyte packet_data[32000];              // MAX_PACKET_SIZE+1];
+  uint8_t packet_data[32000];              // MAX_PACKET_SIZE+1];
   DWORD dwMsgBufferSize = 32000; // MAX_PACKET_SIZE;
   DPID idFrom = 0;
   DPID idTo = 0;
@@ -578,14 +578,14 @@ void dp_DirectPlayDispatch() {
         memset(&from_addr, 0, sizeof(network_address));
         from_addr.connection_type = NP_DIRECTPLAY;
         memcpy(from_addr.address, &idFrom, sizeof(DPID));
-        nw_psnet_buffer_packet((ubyte *)packet_data, dwMsgBufferSize, &from_addr);
+        nw_psnet_buffer_packet((uint8_t *)packet_data, dwMsgBufferSize, &from_addr);
       }
     }
   }
 }
 
 //	Send a packet to a direct play user
-int dp_DirectPlaySend(network_address *who_to, ubyte *data, int len, bool reliable) {
+int dp_DirectPlaySend(network_address *who_to, uint8_t *data, int len, bool reliable) {
   DPID idTo;
   HRESULT hr;
   uint32_t send_flags;

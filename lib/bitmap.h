@@ -61,10 +61,10 @@ typedef struct {
   ushort used;          // Is this bitmap free to be allocated?
 
   short cache_slot; // For use by the rendering lib
-  ubyte mip_levels;
-  ubyte flags;
+  uint8_t mip_levels;
+  uint8_t flags;
 
-  ubyte format;               // See bitmap format types above
+  uint8_t format;               // See bitmap format types above
   char name[BITMAP_NAME_LEN]; // Whats the name of this bitmap? (ie SteelWall)
 } bms_bitmap;
 

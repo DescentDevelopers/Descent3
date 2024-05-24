@@ -295,7 +295,7 @@ int AskToJoin(network_address *addr) {
   int count = 0;
   int size;
   int tries = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   float start_time;
   network_address from_addr;
 
@@ -421,7 +421,7 @@ int TryToJoinServer(network_address *addr) {
 
 // The server says we can join!
 // Client only
-void MultiDoConnectionAccepted(ubyte *data) {
+void MultiDoConnectionAccepted(uint8_t *data) {
   int count = 0;
   ushort server_version;
 
@@ -438,7 +438,7 @@ void MultiDoConnectionAccepted(ubyte *data) {
     mprintf((0, "Client/server versions match.\n"));
 
     // Check if we have the mission needed
-    ubyte len = MultiGetByte(data, &count);
+    uint8_t len = MultiGetByte(data, &count);
     memcpy(Netgame.mission, &data[count], len);
     count += len;
 
@@ -459,7 +459,7 @@ void MultiDoConnectionAccepted(ubyte *data) {
     SetGamemodeScript(Netgame.scriptname);
 
     // Get my player num and copy my name over
-    ubyte player_num = MultiGetByte(data, &count);
+    uint8_t player_num = MultiGetByte(data, &count);
     char name[CALLSIGN_LEN];
     netplayer tempplayer;
     strcpy(name, Players[Player_num].callsign);
@@ -501,7 +501,7 @@ void MultiDoConnectionAccepted(ubyte *data) {
 void MultiPollForConnectionAccepted() {
   float start_time;
   int connected = 0;
-  ubyte data[MAX_RECEIVE_SIZE];
+  uint8_t data[MAX_RECEIVE_SIZE];
 
   start_time = timer_GetTime();
 
@@ -526,7 +526,7 @@ void MultiPollForConnectionAccepted() {
 // is successfully talking to the client
 // Server only
 void MultiSendConnectionAccepted(int slotnum, SOCKET sock, network_address *addr) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -598,7 +598,7 @@ void MultiSendConnectionAccepted(int slotnum, SOCKET sock, network_address *addr
 int MultiPollForLevelInfo() {
   float start_time, ask_time, initial_start_time;
   int connected = 0;
-  ubyte data[MAX_RECEIVE_SIZE];
+  uint8_t data[MAX_RECEIVE_SIZE];
   network_address from_addr;
 
   ShowProgressScreen(TXT_MLTWAITSERVER);
@@ -718,7 +718,7 @@ void MultiProcessShipChecksum(MD5 *md5, int ship_index) {
 }
 
 // Server is telling us about the level
-void MultiDoLevelInfo(ubyte *data) {
+void MultiDoLevelInfo(uint8_t *data) {
   int count = 0;
   char pshipmodel[PAGENAME_LEN];
   Current_pilot.get_ship(pshipmodel);
@@ -750,7 +750,7 @@ void MultiDoLevelInfo(ubyte *data) {
 // Server only
 void MultiSendLevelInfo(int slot) {
   ASSERT(Netgame.local_role == LR_SERVER);
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -779,9 +779,9 @@ void MultiSendLevelInfo(int slot) {
 
 // Clients says he's ready for level info
 // so send it to him
-void MultiDoReadyForLevel(ubyte *data) {
+void MultiDoReadyForLevel(uint8_t *data) {
   int count = 0;
-  ubyte slot;
+  uint8_t slot;
   char ship_name[PAGENAME_LEN];
 
   // Skip header stuff
@@ -810,7 +810,7 @@ void MultiDoReadyForLevel(ubyte *data) {
 void MultiSendReadyForLevel() {
   ASSERT(Netgame.local_role != LR_SERVER);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -906,7 +906,7 @@ int SearchForLocalGamesTCP(uint32_t ask, ushort port) {
   int count = 0;
   int size;
   int tries = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   network_address check_addr, from_addr;
   check_addr.connection_type = NP_TCP;
   if (ask) {
@@ -935,7 +935,7 @@ int SearchForGamesPXO(uint32_t ask, ushort port) {
   int count = 0;
   int size;
   int tries = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   network_address check_addr, from_addr;
   check_addr.connection_type = NP_TCP;
   if (ask) {

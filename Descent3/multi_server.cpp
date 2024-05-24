@@ -166,7 +166,7 @@
  * prevention
  *
  * 231   5/03/99 4:22p Jeff
- * changed byte var to ubyte type for Linux
+ * changed byte var to uint8_t type for Linux
  *
  * 230   5/03/99 2:36p Jason
  * changes for multiplayer games
@@ -936,7 +936,7 @@ void MultiCheckListen() {
 // Tells the client that we're done sending players
 void MultiSendDonePlayers(int slot) {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending done players\n"));
@@ -952,7 +952,7 @@ void MultiSendDonePlayers(int slot) {
 // Tells the client that we're done sending buildings
 void MultiSendDoneBuildings(int slot) {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending done buildings\n"));
@@ -966,7 +966,7 @@ void MultiSendDoneBuildings(int slot) {
 // Tells the client that we're done sending objects
 void MultiSendDoneObjects(int slot) {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending done objects\n"));
@@ -994,7 +994,7 @@ void MultiSendDoneObjects(int slot) {
 // Tells the client that we're done sending the world states
 void MultiSendDoneWorldStates(int slot) {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending done world states\n"));
@@ -1020,7 +1020,7 @@ void MultiClearPlayerMarkers(int slot) {
 // Tells our clients that a player disconnected
 void MultiSendPlayerDisconnect(int slot) {
   int size, count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   size = START_DATA(MP_DISCONNECT, data, &count);
 
@@ -1112,7 +1112,7 @@ void MultiDisconnectPlayer(int slot) {
 void MultiSendPlayer(int slot, int which) {
   ASSERT(Netgame.local_role == LR_SERVER);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -1149,7 +1149,7 @@ void MultiSendPlayer(int slot, int which) {
   if (slot == which) {
     int myteam = GameDLLGetConnectingPlayersTeam(slot);
 
-    ubyte temp_team = (myteam == -1) ? 255 : myteam;
+    uint8_t temp_team = (myteam == -1) ? 255 : myteam;
     MultiAddByte(temp_team, data, &count);
 
     if (myteam >= 0 && myteam <= 4)
@@ -1162,7 +1162,7 @@ void MultiSendPlayer(int slot, int which) {
 
     MultiAddShort(Players[slot].start_index, data, &count);
   } else {
-    ubyte temp_team = (Players[which].team == -1) ? 255 : Players[which].team;
+    uint8_t temp_team = (Players[which].team == -1) ? 255 : Players[which].team;
     MultiAddByte(temp_team, data, &count);
   }
 
@@ -1204,7 +1204,7 @@ void MultiSendPlayer(int slot, int which) {
 void MultiSendBuildings(int slot) {
   ASSERT(Netgame.local_role == LR_SERVER);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -1253,7 +1253,7 @@ bool MultiIsValidMovedObject(object *obj) {
 }
 
 void MultiSendJoinDemoObjects(int slot) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset, i;
 
@@ -1283,7 +1283,7 @@ void MultiSendJoinDemoObjects(int slot) {
   nw_SendReliable(NetPlayers[slot].reliable_socket, data, count);
 }
 
-int StuffObjectIntoPacket(object *obj, ubyte *data) {
+int StuffObjectIntoPacket(object *obj, uint8_t *data) {
   uint32_t index;
   int count = 0;
   bool obj_is_dummy = false;
@@ -1335,7 +1335,7 @@ int StuffObjectIntoPacket(object *obj, ubyte *data) {
 
   if (obj->type == OBJ_MARKER) {
     // Add marker message to the end of this
-    ubyte len = strlen(MarkerMessages[obj->id]) + 1;
+    uint8_t len = strlen(MarkerMessages[obj->id]) + 1;
     MultiAddByte(len, data, &count);
     memcpy(data + count, MarkerMessages[obj->id], len);
     count += len;
@@ -1357,7 +1357,7 @@ int StuffObjectIntoPacket(object *obj, ubyte *data) {
 void MultiSendJoinObjects(int slot) {
   ASSERT(Netgame.local_role == LR_SERVER);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   ushort outgoing_objects[MAX_OBJECTS];
   int count = 0;
   int size_offset;
@@ -1417,7 +1417,7 @@ void MultiSendJoinObjects(int slot) {
     for (i = 0; i < num_objects_this_packet && !overflow; i++) {
       // Add objnum and id
       object *obj = &Objects[outgoing_objects[i + cur_object]];
-      ubyte obj_data[MAX_GAME_DATA_SIZE];
+      uint8_t obj_data[MAX_GAME_DATA_SIZE];
 
       int num_bytes = StuffObjectIntoPacket(obj, obj_data);
 
@@ -1447,7 +1447,7 @@ void MultiSendJoinObjects(int slot) {
   MultiSendJoinDemoObjects(slot);
 }
 
-void MultiStoreWorldPacket(int slot, ubyte *big_data, int *big_count, ubyte *cur_data, int *cur_count,
+void MultiStoreWorldPacket(int slot, uint8_t *big_data, int *big_count, uint8_t *cur_data, int *cur_count,
                            int *size_offset) {
   if (*big_count + *cur_count >= (MAX_GAME_DATA_SIZE - 3)) {
     mprintf((0, "Starting another world packet!\n"));
@@ -1474,8 +1474,8 @@ void MultiSendWorldStates(int slot) {
   int i;
   ASSERT(Netgame.local_role == LR_SERVER);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
-  ubyte cur_data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
+  uint8_t cur_data[MAX_GAME_DATA_SIZE];
   int cur_count;
   int count = 0;
   int size_offset;
@@ -1820,7 +1820,7 @@ void MultiSendWorldStates(int slot) {
 }
 
 // Sends this reliable packet to everyone except the server and the named slot
-void MultiSendReliablyToAllExcept(int except, ubyte *data, int size, int seq_threshold, bool urgent) {
+void MultiSendReliablyToAllExcept(int except, uint8_t *data, int size, int seq_threshold, bool urgent) {
   for (int i = 0; i < MAX_NET_PLAYERS; i++) {
     if (!(NetPlayers[i].flags & NPF_CONNECTED))
       continue;
@@ -1835,7 +1835,7 @@ void MultiSendReliablyToAllExcept(int except, ubyte *data, int size, int seq_thr
 }
 
 // Sends this nonreliable packet to everyone except the server and the named slot
-void MultiSendToAllExcept(int except, ubyte *data, int size, int seq_threshold) {
+void MultiSendToAllExcept(int except, uint8_t *data, int size, int seq_threshold) {
 
   ASSERT(Netgame.local_role == LR_SERVER);
   for (int i = 0; i < MAX_NET_PLAYERS; i++) {
@@ -1853,7 +1853,7 @@ void MultiSendToAllExcept(int except, ubyte *data, int size, int seq_threshold) 
 
 // Flushes all receive sockets so that there is no data coming from them
 void MultiFlushAllIncomingBuffers() {
-  ubyte *data;
+  uint8_t *data;
   network_address from_addr;
   int size;
 
@@ -1903,7 +1903,7 @@ void MultiCheckToRepositionPowerups() {
     if (obj->flags & OF_STOPPED_THIS_FRAME) {
       // Send out our positional change
       int count = 0;
-      ubyte data[MAX_GAME_DATA_SIZE];
+      uint8_t data[MAX_GAME_DATA_SIZE];
       int size = START_DATA(MP_POWERUP_REPOSITION, data, &count);
       changed++;
 
@@ -1982,11 +1982,11 @@ void MultiCheckToRespawnPowerups() {
 extern int Multi_occluded;
 // Sends out positional updates based on clients pps
 void MultiSendPositionalUpdates(int to_slot) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   // Figure out if we should send positional updates to players
   for (int i = 0; i < MAX_PLAYERS; i++) {
-    ubyte send_position = 0, timer_popped = 0;
+    uint8_t send_position = 0, timer_popped = 0;
 
     if ((Netgame.flags & NF_PEER_PEER) && i != Player_num)
       continue; // Don't send out other positions if in peer mode
@@ -2184,7 +2184,7 @@ void MultiSetupNonVisRobots(int slot, object *obj) { obj->generic_nonvis_flags |
 
 // Sends out a list of generics that this client can't see
 void MultiSendGenericNonVis(int slot, ushort *objarray, int num) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -2369,7 +2369,7 @@ bool MultiIsGenericVisibleToPlayer(int test_objnum, int to_slot) {
 void MultiDoServerRobotFrame(int slot) {
   int rcount = 0;
   int m = 0;
-  ubyte rdata[MAX_GAME_DATA_SIZE];
+  uint8_t rdata[MAX_GAME_DATA_SIZE];
 
   // send robot information for any robots that have moved.
   for (m = 0; m < Num_moved_robots[slot]; m++) {
@@ -2734,7 +2734,7 @@ void MultiDoServerFrame() {
 
 // Tells clients to execute dlls on their machines
 void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -2959,9 +2959,9 @@ int GetRankIndex(int pnum, char *rankbuf) {
 }
 
 // Tells the clients to change rank for a player
-void MultiSendChangeRank(int pnum, char *str, ubyte goodnews) {
+void MultiSendChangeRank(int pnum, char *str, uint8_t goodnews) {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending change rank!\n"));
@@ -2981,7 +2981,7 @@ void MultiSendChangeRank(int pnum, char *str, ubyte goodnews) {
 void ChangeRankIndex(int old_index, int pnum) {
   char str[255];
   int new_index = GetRankIndex(pnum);
-  ubyte goodnews = 1;
+  uint8_t goodnews = 1;
 
   if (old_index < new_index) // promoted
   {

@@ -95,8 +95,8 @@ typedef struct
 	vector *verts;
 	spectra exitance;
 	float area;
-	ubyte num_verts;
-	ubyte flags;  // see above
+	uint8_t num_verts;
+	uint8_t flags;  // see above
 } rad_element;
 
 #define VEF_REVERSE_SHOOT	1
@@ -105,7 +105,7 @@ typedef struct
 {
 	spectra color;
 	vector pos;	
-	ubyte flags;
+	uint8_t flags;
 } volume_element;
 
 #define ST_ROOM				0		// This is a room surface
@@ -125,28 +125,28 @@ typedef struct
 	spectra emittance;		
 	spectra exitance; 
 	float reflectivity;		// how much light bounces off 
-	ubyte xresolution;			// how many elements (resolution x resolution) for this face
-	ubyte yresolution;
+	uint8_t xresolution;			// how many elements (resolution x resolution) for this face
+	uint8_t yresolution;
 	rad_element *elements;	// list of elements for this surface
 	vector normal;				// normal of this surface
 	vector *verts;
 	
-	ubyte surface_type;		// See ST_ types above
+	uint8_t surface_type;		// See ST_ types above
 	
 	int	facenum;				// facenumber of room
 	int	roomnum;				// The roomnumber or terrain segment number
-	ubyte num_verts;
-	ubyte flags;
+	uint8_t num_verts;
+	uint8_t flags;
 
 	float surface_area,element_area;
 
-	ubyte x1,y1,x2,y2;		// Where in the lightmap our bounds are
+	uint8_t x1,y1,x2,y2;		// Where in the lightmap our bounds are
 } rad_surface;
 
 typedef struct
 {
 	vector pos;
-	ubyte code;
+	uint8_t code;
 
 } rad_point;
 

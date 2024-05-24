@@ -113,7 +113,7 @@ inline int WRITE_FONT_SHORT(FONTFILE ffile, short s) {
 	return fwrite(&s, sizeof(s), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_BYTE(FONTFILE ffile, ubyte c) {
+inline int WRITE_FONT_BYTE(FONTFILE ffile, uint8_t c) {
 	return fwrite(&c, sizeof(c), 1, (FILE *)ffile);
 }
 
@@ -488,7 +488,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft)
 	ft->baseline = m_CharHeight;
 	ft->min_ascii = 0;
 	ft->max_ascii = cur_char-1;
-	ft->raw_data = (ubyte *)m_DataBuffer;
+	ft->raw_data = (uint8_t *)m_DataBuffer;
 	ft->char_data = NULL;
 	ft->char_widths = m_CharWidths;
 	ft->kern_data= NULL;
@@ -619,9 +619,9 @@ int CGrFontDialog::read_font_char(int cur_char, int& bmx, int& bmy)
 
 BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 {
-	ubyte *tmp_data;
+	uint8_t *tmp_data;
 	short *tmp_widths;
-	ubyte **tmp_cdata;
+	uint8_t **tmp_cdata;
 	FONTFILE ffile;
 	uint32_t id = 0xfeedbaba;
 	int num_char;
@@ -681,21 +681,21 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 
 	if (ft->flags & FT_COLOR) {
 		WRITE_FONT_INT(ffile, (int)(m_DataPtr-m_DataBuffer)*sizeof(ushort));
-		WRITE_FONT_DATA(ffile, (ubyte *)m_DataBuffer, (m_DataPtr-m_DataBuffer)*sizeof(ushort), 1);
+		WRITE_FONT_DATA(ffile, (uint8_t *)m_DataBuffer, (m_DataPtr-m_DataBuffer)*sizeof(ushort), 1);
 	}
 	else {
 	// bitpack for mono font storage:: 16bpp -> 8 bits/1 byte
 		int i,x,y,w,cnt=0;
 		ushort *p = m_DataBuffer;
-		ubyte *bits;
+		uint8_t *bits;
 
-		bits = (ubyte *)mem_malloc(256 * MAX_FONT_CHARS);
+		bits = (uint8_t *)mem_malloc(256 * MAX_FONT_CHARS);
 
 		for (i = 0; i < num_char; i++)
 		{
 			for (y = 0; y < ft->height; y++) 
 			{
-				ubyte mask, datum;
+				uint8_t mask, datum;
 
 				w = (ft->flags & FT_PROPORTIONAL) ? tmp_widths[i] : ft->width;
 

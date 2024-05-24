@@ -285,7 +285,7 @@ static inline int get_weapon_icon(int player, int type) {
   return HUD_resources.wpn_bmp;
 }
 
-static void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *str);
+static void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *str);
 
 //////////////////////////////////////////////////////////////////////////////
 //	Hud item display routines.
@@ -701,7 +701,7 @@ void RenderHUDSecondary(tHUDItem *item) {
 
 void RenderHUDShipStatus(tHUDItem *item) {
   float clk_time_frame, inv_time_frame;
-  ubyte clk_alpha = 0, inv_alpha;
+  uint8_t clk_alpha = 0, inv_alpha;
 
   //	render text status
   if (Objects[Players[Player_num].objnum].effect_info->type_flags & EF_CLOAKED) {
@@ -858,7 +858,7 @@ int RenderHUDGetTextHeight(const char *string) {
   return (int)((str_height_curfont * aspect_y));
 }
 
-void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, ubyte alpha,
+void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, uint8_t alpha,
                    int sat_count) {
   int i;
 
@@ -886,7 +886,7 @@ void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, flo
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...) {
+void RenderHUDText(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...) {
   std::va_list arglist;
   char buf[128];
 
@@ -898,7 +898,7 @@ void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, con
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *str) {
+void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *str) {
   int i;
 
   grtext_SetAlpha(alpha);
@@ -922,7 +922,7 @@ void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, ubyte alpha, int sat_
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...) {
+void RenderHUDTextFlags(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...) {
   std::va_list arglist;
   char buf[128];
   int i;
@@ -974,7 +974,7 @@ void RenderHUDScore(tHUDItem *item) {
     int text_height = grfont_GetHeight(HUD_FONT);
     snprintf(buf, sizeof(buf), "%d   ", Score_added);
     w = RenderHUDGetTextLineWidth(buf); // * win_w/Game_window_w;
-    ubyte alpha = std::min<float>(HUD_ALPHA, HUD_ALPHA * 4 * Score_added_timer / SCORE_ADDED_TIME);
+    uint8_t alpha = std::min<float>(HUD_ALPHA, HUD_ALPHA * 4 * Score_added_timer / SCORE_ADDED_TIME);
     RenderHUDText(item->color, alpha, 0, item->x - w - win_w, item->y + text_height, buf);
     Score_added_timer -= Frametime;
   }

@@ -143,7 +143,7 @@ typedef CFILE *FONTFILE;
 
 static inline int READ_FONT_INT(FONTFILE ffile);
 static inline short READ_FONT_SHORT(FONTFILE ffile);
-static inline ubyte READ_FONT_BYTE(FONTFILE ffile);
+static inline uint8_t READ_FONT_BYTE(FONTFILE ffile);
 static inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem);
 static inline FONTFILE OPEN_FONT(char *filename, bool &success);
 static inline void CLOSE_FONT(FONTFILE ffile);
@@ -155,12 +155,12 @@ inline int READ_FONT_INT(FONTFILE ffile) { return cf_ReadInt(ffile); }
 
 inline short READ_FONT_SHORT(FONTFILE ffile) { return cf_ReadShort(ffile); }
 
-inline ubyte READ_FONT_BYTE(FONTFILE ffile) { return (ubyte)cf_ReadByte(ffile); }
+inline uint8_t READ_FONT_BYTE(FONTFILE ffile) { return (uint8_t)cf_ReadByte(ffile); }
 
 inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem) {
   int i;
 
-  i = cf_ReadBytes((ubyte *)buf, size * nelem, ffile);
+  i = cf_ReadBytes((uint8_t *)buf, size * nelem, ffile);
 
   ASSERT(i == (size * nelem));
 
@@ -420,8 +420,8 @@ void grFont::load(char *filename, int slot) {
   //		generate character data pointer table
   int bytesize = READ_FONT_INT(ff);
 
-  ft->raw_data = (ubyte *)mem_malloc(bytesize);
-  ft->char_data = (ubyte **)mem_malloc(num_char * sizeof(ubyte *));
+  ft->raw_data = (uint8_t *)mem_malloc(bytesize);
+  ft->char_data = (uint8_t **)mem_malloc(num_char * sizeof(uint8_t *));
 
   READ_FONT_DATA(ff, ft->raw_data, bytesize, 1);
 
@@ -436,7 +436,7 @@ void grFont::load(char *filename, int slot) {
         off += (ft->width * ft->height * BITS_TO_BYTES(BPP_16));
     }
   } else { // Monochrome
-    ubyte *ptr = ft->raw_data;
+    uint8_t *ptr = ft->raw_data;
     mprintf((0, "::mono"));
     for (i = 0; i < num_char; i++) {
       ft->char_data[i] = ptr;
@@ -474,18 +474,18 @@ void grFont::translate_to_surfaces(int slot) {
   //	create a 128x128 surface first.
   //	draw each character into surface until we need to create another
   //	surface.
-  ubyte u = 0, v = 0, w;
+  uint8_t u = 0, v = 0, w;
   int ch, num_ch;
-  ubyte surf_index = 0;
+  uint8_t surf_index = 0;
 
   num_ch = fntfile->max_ascii - fntfile->min_ascii + 1;
 
   //	initialize memory
-  fnt->ch_w = new ubyte[num_ch];
-  fnt->ch_h = new ubyte[num_ch];
-  fnt->ch_u = new ubyte[num_ch];
-  fnt->ch_v = new ubyte[num_ch];
-  fnt->ch_surf = new ubyte[num_ch];
+  fnt->ch_w = new uint8_t[num_ch];
+  fnt->ch_h = new uint8_t[num_ch];
+  fnt->ch_u = new uint8_t[num_ch];
+  fnt->ch_v = new uint8_t[num_ch];
+  fnt->ch_surf = new uint8_t[num_ch];
   fnt->ch_uf = new float[num_ch];
   fnt->ch_vf = new float[num_ch];
   fnt->ch_wf = new float[num_ch];
@@ -554,8 +554,8 @@ void grFont::translate_to_surfaces(int slot) {
 void grFont::translate_mono_char(grSurface *sf, int x, int y, int index, gr_font_file_record *ft, int width) {
   int row, col; // byte width of char
   int rowsize;
-  ubyte bit_mask = 0, byte;
-  ubyte *fp;
+  uint8_t bit_mask = 0, byte;
+  uint8_t *fp;
 
   fp = ft->char_data[index];
 
@@ -704,9 +704,9 @@ int grFont::get_char_info(int ch, int *width) {
   return 0;
 }
 
-ubyte *grFont::get_kern_info(ubyte c1, ubyte c2) {
+uint8_t *grFont::get_kern_info(uint8_t c1, uint8_t c2) {
   //	gr_font_file_record *ft;
-  //	ubyte *p;
+  //	uint8_t *p;
 
   //	p = ft->kern_data;
   //	ft = &grFont::m_FontList[m_FontHandle].font;

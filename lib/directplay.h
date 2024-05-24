@@ -74,7 +74,7 @@ void dp_EndGame();
 int dp_ListDirectPlayGames();
 
 //	Send a packet to a direct play user
-int dp_DirectPlaySend(network_address *who_to, ubyte *data, int len, bool reliable);
+int dp_DirectPlaySend(network_address *who_to, uint8_t *data, int len, bool reliable);
 
 // This function will look for incoming messages, and dispatch them accordingly
 void dp_DirectPlayDispatch();

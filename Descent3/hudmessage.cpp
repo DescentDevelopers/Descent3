@@ -377,7 +377,7 @@ static tDirtyRect HUD_msg_dirty_rect;
 
 static float Hud_timer = 0.0f;
 
-static ubyte Hud_persistent_msg_id = HUD_INVALID_ID;
+static uint8_t Hud_persistent_msg_id = HUD_INVALID_ID;
 static float Hud_persistent_msg_timer = 0.0f;
 static int Hud_persistent_msg_flags = 0;
 static int Hud_persistent_msg_current_len;
@@ -1486,7 +1486,7 @@ void ResetGameMessages() {
 void AddGameMessage(const char *msg) {
   int secs = (int)Gametime;
 
-  Game_msg_list.add(msg, (ubyte)Current_mission.cur_level, (secs / 3600), (secs / 60), secs % 60);
+  Game_msg_list.add(msg, (uint8_t)Current_mission.cur_level, (secs / 3600), (secs / 60), secs % 60);
 }
 
 void SGSGameMessages(CFILE *fp) {
@@ -1547,7 +1547,7 @@ tMsgList::tMsgList() {
   m_msg = NULL;
 }
 
-bool tMsgList::add(const char *msg, ubyte lvl, ubyte hr, ubyte min, ubyte sec) {
+bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_t sec) {
   char buf[2048];
 
   if (!m_limit)

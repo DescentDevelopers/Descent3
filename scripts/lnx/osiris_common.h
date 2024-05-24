@@ -927,7 +927,7 @@ typedef int OMMSHANDLE;
 #endif
 
 // define unsigned types;
-typedef uint8_t ubyte;
+typedef uint8_t uint8_t;
 typedef int8_t int8_t;
 typedef uint16_t ushort;
 typedef uint32_t uint32_t;
@@ -1020,7 +1020,7 @@ typedef struct {
 } tOSIRISEVTCREATED; // struct for EVT_CREATED data
 
 typedef struct {
-  ubyte is_dying;    // if this is !=0 than the event is coming because it is
+  uint8_t is_dying;    // if this is !=0 than the event is coming because it is
                      // really being destroyed.  Else it is due to the level ending.
 } tOSIRISEVTDESTROY; // struct for EVT_DESTROY data
 
@@ -1072,7 +1072,7 @@ typedef struct {
 
 typedef struct {
   int handle;
-  ubyte detonated;
+  uint8_t detonated;
 } tOSIRISEVTTIMERCANCEL; // struct for EVT_TIMERCANCEL data
 
 typedef struct {
@@ -1210,7 +1210,7 @@ typedef struct {
 #define KOI_ID 0     // this item is specifying a type/id of object NOT to kill
 #define KOI_HANDLE 1 // this item is specifying an object handle of an object NOT to kill
 typedef struct {
-  ubyte info_type;
+  uint8_t info_type;
   int id;
   int objhandle;
 } tKillObjectItem;
@@ -1225,8 +1225,8 @@ typedef struct {
   short portalnum;
   float fog_r, fog_g, fog_b, fog_depth;
   vector wind;
-  ubyte pulse_time;
-  ubyte pulse_offset;
+  uint8_t pulse_time;
+  uint8_t pulse_offset;
 
   // Objects/Players
   uint32_t objhandle;
@@ -1239,12 +1239,12 @@ typedef struct {
   uint32_t checksum;
   int path_id;
   float amount;
-  ubyte damage_type;
+  uint8_t damage_type;
   uint32_t killer_handle;
   float ammo;
-  ubyte playsound;
-  ubyte remove;
-  ubyte do_powerup;
+  uint8_t playsound;
+  uint8_t remove;
+  uint8_t do_powerup;
   vector velocity;
   vector rot_velocity;
   float rot_drag;
@@ -1259,12 +1259,12 @@ typedef struct {
   float anim_frame;
 
   // Spew
-  ubyte is_real;
-  ubyte random;
-  ubyte unused2; // was use_gunpoint
+  uint8_t is_real;
+  uint8_t random;
+  uint8_t unused2; // was use_gunpoint
   int8_t gunpoint;
-  ubyte effect_type;
-  ubyte phys_info;
+  uint8_t effect_type;
+  uint8_t phys_info;
   float drag, mass;
 
   // Unused
@@ -1274,7 +1274,7 @@ typedef struct {
   int randval;
 
   // Triggers
-  ubyte trigger_num;
+  uint8_t trigger_num;
 
   // sounds
   int sound_handle;
@@ -1284,7 +1284,7 @@ typedef struct {
   int index;
   float scalar;
   float interval;
-  ubyte state;
+  uint8_t state;
   int8_t slot;
   char message[MSAFE_MESSAGE_LENGTH];
   char name[MSAFE_NAME_LENGTH];

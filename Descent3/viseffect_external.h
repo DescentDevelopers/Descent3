@@ -83,13 +83,13 @@ typedef struct {
   ushort vertnum;
   ushort end_vertnum;
 
-  ubyte subnum, subnum2;
+  uint8_t subnum, subnum2;
 } vis_attach_info;
 
 typedef struct {
-  ubyte width;
-  ubyte height;
-  ubyte texture;
+  uint8_t width;
+  uint8_t height;
+  uint8_t texture;
 } axis_billboard_info;
 
 typedef struct {
@@ -118,8 +118,8 @@ typedef struct {
   vis_attach_info attach_info;
   axis_billboard_info billboard_info;
 
-  ubyte movement_type;
-  ubyte type, id;
+  uint8_t movement_type;
+  uint8_t type, id;
 } vis_effect;
 
 #endif

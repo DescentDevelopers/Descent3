@@ -723,7 +723,7 @@ int mng_DeleteDuplicatePagelocks() {
 int mng_UnlockPagelockSeries(const char *names[], int *pagetypes, int num) {
   ASSERT(num < 500);
 
-  ubyte already_done[500];
+  uint8_t already_done[500];
   memset(already_done, 0, 500);
 
   CFILE *infile, *outfile;

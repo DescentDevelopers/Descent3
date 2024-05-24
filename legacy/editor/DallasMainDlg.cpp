@@ -9645,13 +9645,13 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("#endif"));
 	O(("char		STDCALL InitializeDLL(tOSIRISModuleInit *func_list);"));
 	O(("void		STDCALL ShutdownDLL(void);"));
-	O(("int		STDCALL GetGOScriptID(const char *name,ubyte is_door);"));
+	O(("int		STDCALL GetGOScriptID(const char *name,uint8_t is_door);"));
 	O(("void		STDCALLPTR CreateInstance(int id);"));
 	O(("void		STDCALL DestroyInstance(int id,void *ptr);"));
 	O(("short	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
 	O(("int		STDCALL GetTriggerScriptID(int trigger_room, int trigger_face );"));
 	O(("int		STDCALL GetCOScriptList( int **list, int **id_list );"));
-	O(("int		STDCALL SaveRestoreState( void *file_ptr, ubyte saving_state );"));
+	O(("int		STDCALL SaveRestoreState( void *file_ptr, uint8_t saving_state );"));
 	O(("#ifdef __cplusplus"));
 	O(("}"));
 	O(("#endif"));
@@ -10060,7 +10060,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("// ==============="));
 	O(("// GetGOScriptID()"));
 	O(("// ==============="));
-	O(("int STDCALL GetGOScriptID(const char *name,ubyte isdoor)"));
+	O(("int STDCALL GetGOScriptID(const char *name,uint8_t isdoor)"));
 	O(("{"));
 	O(("	return -1;"));
 	O(("}"));
@@ -10173,7 +10173,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("// =================="));
 	O(("// SaveRestoreState()"));
 	O(("// =================="));
-	O(("int STDCALL SaveRestoreState( void *file_ptr, ubyte saving_state )"));
+	O(("int STDCALL SaveRestoreState( void *file_ptr, uint8_t saving_state )"));
 	O(("{"));
 	O(("	return 0;"));
 	O(("}"));

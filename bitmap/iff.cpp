@@ -94,7 +94,7 @@
 
 // Palette entry structure
 typedef struct {
-  ubyte r, g, b;
+  uint8_t r, g, b;
 } pal_entry;
 
 // structure of the header in the file
@@ -104,11 +104,11 @@ typedef struct iff_bitmap_header {
   short type;                  // see types above
   short transparentcolor;      // which color is transparent (if any)
   short pagewidth, pageheight; // width & height of source screen
-  ubyte nplanes;               // number of planes (8 for 256 color image)
-  ubyte masking, compression;  // see constants above
-  ubyte xaspect, yaspect;      // aspect ratio (usually 5/6)
+  uint8_t nplanes;               // number of planes (8 for 256 color image)
+  uint8_t masking, compression;  // see constants above
+  uint8_t xaspect, yaspect;      // aspect ratio (usually 5/6)
   pal_entry palette[256];      // the palette for this bitmap
-  ubyte *raw_data;             // ptr to array of data
+  uint8_t *raw_data;             // ptr to array of data
   short row_size;              // offset to next row
 } iff_bitmap_header;
 
@@ -213,7 +213,7 @@ int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
 
 //  the buffer pointed to by raw_data is stuffed with a pointer to decompressed pixel data
 int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
-  ubyte *p = bmheader->raw_data;
+  uint8_t *p = bmheader->raw_data;
   int width = 0, depth = 0, done = 0;
 
   if (bmheader->type == TYPE_PBM) {
@@ -243,8 +243,8 @@ int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
 
   } else if (bmheader->compression == cmpByteRun1) // compression
   {
-    ubyte *data_end = p + (bmheader->h * depth * width);
-    ubyte mask = (bmheader->masking == mskHasMask);
+    uint8_t *data_end = p + (bmheader->h * depth * width);
+    uint8_t mask = (bmheader->masking == mskHasMask);
     int cur_width = 0, skip_mask = 0;
     int command;
     int plane = 0;
@@ -312,9 +312,9 @@ int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
   cf_ReadInt(ifile); // longword, seems to be equal to 4.  Don't know what it is
 
   for (y = 0; y < bmheader->h; y++) {
-    ubyte n_items;
+    uint8_t n_items;
     int cnt = bmheader->w;
-    ubyte code;
+    uint8_t code;
 
     n_items = cf_ReadByte(ifile);
 
@@ -322,7 +322,7 @@ int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
       code = cf_ReadByte(ifile);
 
       if (code == 0) {
-        ubyte rep, val;
+        uint8_t rep, val;
 
         rep = cf_ReadByte(ifile);
         val = cf_ReadByte(ifile);
@@ -400,7 +400,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
         return ret;
       else {
 
-        bmheader->raw_data = (ubyte *)mem_malloc(bmheader->w * bmheader->h);
+        bmheader->raw_data = (uint8_t *)mem_malloc(bmheader->w * bmheader->h);
         if (!bmheader->raw_data)
           return IFF_NO_MEM;
       }
@@ -416,7 +416,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
       bmheader->w = prev_bm->w;
       bmheader->h = prev_bm->h;
       bmheader->type = prev_bm->type;
-      bmheader->raw_data = (ubyte *)mem_malloc(bmheader->w * bmheader->h);
+      bmheader->raw_data = (uint8_t *)mem_malloc(bmheader->w * bmheader->h);
 
       if (!bmheader->raw_data)
         return IFF_NO_MEM;
@@ -488,7 +488,7 @@ void bm_iff_convert_8_to_16(int dest_bm, iff_bitmap_header *iffbm) {
   for (int i = 0; i < iffbm->h; i++)
     for (int t = 0; t < iffbm->w; t++) {
       ushort pixel;
-      ubyte c = iffbm->raw_data[i * iffbm->w + t];
+      uint8_t c = iffbm->raw_data[i * iffbm->w + t];
 
       int r = iffbm->palette[c].r >> 1;
       int g = iffbm->palette[c].g >> 1;

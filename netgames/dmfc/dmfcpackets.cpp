@@ -123,8 +123,8 @@ const char *DMFCGetString(int d);
 // to the ID's given to this function.  If any match than it calls the handler given to process
 // the packet.
 // id = ID of the packet
-// func = Function handler to handle the packet.  Must be declared like void MyFunction(ubyte *data);
-void DMFCBase::RegisterPacketReceiver(ubyte id, void (*func)(ubyte *)) {
+// func = Function handler to handle the packet.  Must be declared like void MyFunction(uint8_t *data);
+void DMFCBase::RegisterPacketReceiver(uint8_t id, void (*func)(uint8_t *)) {
   // go to the last handler
   tSPHandler *current, *last;
 
@@ -155,7 +155,7 @@ void DMFCBase::RegisterPacketReceiver(ubyte id, void (*func)(ubyte *)) {
   current->type = SPH_FUNC;
   current->func = func;
 }
-void DMFCBase::RegisterPacketReceiver(ubyte id, void (DMFCBase::*func)(ubyte *)) {
+void DMFCBase::RegisterPacketReceiver(uint8_t id, void (DMFCBase::*func)(uint8_t *)) {
   // go to the last handler
   tSPHandler *current, *last;
 
@@ -197,7 +197,7 @@ void DMFCBase::RegisterPacketReceiver(ubyte id, void (DMFCBase::*func)(ubyte *))
 //   handler to
 //        call.
 //	 count = pointer to your packet index pointer
-void DMFCBase::StartPacket(ubyte *data, ubyte id, int *count) {
+void DMFCBase::StartPacket(uint8_t *data, uint8_t id, int *count) {
   *count = 0;
 
   MultiAddByte(id, data, count); // set the first byte (invisible to coder) as the id
@@ -210,7 +210,7 @@ void DMFCBase::StartPacket(ubyte *data, ubyte id, int *count) {
 //   size = size (in bytes) of the packet
 //   destination = either a player number, SP_ALL for all the players or SP_SERVER to send to the server (if you are a
 //   client)
-void DMFCBase::SendPacket(ubyte *data, int size, int destination) {
+void DMFCBase::SendPacket(uint8_t *data, int size, int destination) {
   ASSERT(size < MAX_GAME_DATA_SIZE - 2); // allow for a header by the d3
   if (size >= MAX_GAME_DATA_SIZE - 2)
     return;
@@ -255,7 +255,7 @@ void DMFCBase::SendPacket(ubyte *data, int size, int destination) {
 // DMFCBase::GetGameStateRequest
 //
 //		Receiver for the server from a client asking for the state of the game
-void DMFCBase::GetGameStateRequest(ubyte *data) {
+void DMFCBase::GetGameStateRequest(uint8_t *data) {
   int pnum;
   int count = 0;
   pnum = MultiGetInt(data, &count);
@@ -271,7 +271,7 @@ void DMFCBase::SendTeamAssignment(int playernum, int team, bool spew_onrespawn) 
   if (GetLocalRole() != LR_SERVER)
     return;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   StartPacket(data, SPID_TEAMASSIGNMENT, &count);
@@ -286,7 +286,7 @@ void DMFCBase::SendTeamAssignment(int playernum, int team, bool spew_onrespawn) 
 // DMFCBase::GetTeamAssignmentPacket
 //
 //     Reciever for the team assignment packet.
-void DMFCBase::GetTeamAssignmentPacket(ubyte *data) {
+void DMFCBase::GetTeamAssignmentPacket(uint8_t *data) {
   int count = 0;
   bool spew = MultiGetByte(data, &count) ? true : false;
 
@@ -302,7 +302,7 @@ void DMFCBase::GetTeamAssignmentPacket(ubyte *data) {
 // DMFCBase::GetChangeTeamPacket
 //
 //     Reciever for the change team packet.(Server Only)
-void DMFCBase::GetChangeTeamPacket(ubyte *data) {
+void DMFCBase::GetChangeTeamPacket(uint8_t *data) {
   if (GetLocalRole() != LR_SERVER)
     return;
   // We recieved a request for a player to change teams
@@ -338,7 +338,7 @@ void DMFCBase::GetChangeTeamPacket(ubyte *data) {
 //
 //		Sends a request to the server to change teams (Client Only)
 void DMFCBase::SendChangeTeamRequest(int newteam, bool spew_onrespawn) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   StartPacket(data, SPID_CHANGETEAM, &count);
@@ -353,10 +353,10 @@ void DMFCBase::SendChangeTeamRequest(int newteam, bool spew_onrespawn) {
 // DMFCBase::GetDMFCGameInfo
 //
 //		Receives information about the DMFC game
-void DMFCBase::GetDMFCGameInfo(ubyte *data) {
+void DMFCBase::GetDMFCGameInfo(uint8_t *data) {
   int count = 0;
 
-  ubyte level = MultiGetByte(data, &count); // server's HUD Callsign max level
+  uint8_t level = MultiGetByte(data, &count); // server's HUD Callsign max level
   m_bMakeClientsWait = MultiGetByte(data, &count) ? true : false;
   SwitchServerHudCallsignLevel(level);
 
@@ -387,7 +387,7 @@ void DMFCBase::GetDMFCGameInfo(ubyte *data) {
 void DMFCBase::SendDMFCGameInfo(int player) {
   int r_len, b_len, g_len, y_len;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   StartPacket(data, SPID_DMFCGAMEINFO, &count);
 
@@ -424,7 +424,7 @@ void DMFCBase::SendDMFCGameInfo(int player) {
 //	Updates a player about the 'real' game time
 void DMFCBase::SendRealGametime(int pnum) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   StartPacket(data, SPID_REALGAMETIME, &count);
 
@@ -444,7 +444,7 @@ void DMFCBase::SendRealGametime(int pnum) {
 // DMFCBase::GetRealGametime
 //
 //	handles a packet about updating the real game time
-void DMFCBase::GetRealGametimePacket(ubyte *data) {
+void DMFCBase::GetRealGametimePacket(uint8_t *data) {
   int count = 0;
 
   RealGametime = MultiGetFloat(data, &count);
@@ -470,11 +470,11 @@ void DMFCBase::SendRemoteKey(int pnum) {
   }
   if (precnum != -1) {
     int count = 0;
-    ubyte data[MAX_GAME_DATA_SIZE];
+    uint8_t data[MAX_GAME_DATA_SIZE];
 
     StartPacket(data, SPID_REMOTEKEY, &count);
 
-    ubyte *key = Remote_GetKey(precnum);
+    uint8_t *key = Remote_GetKey(precnum);
     memcpy(&data[count], key, 8);
     count += 8;
 
@@ -487,9 +487,9 @@ void DMFCBase::SendRemoteKey(int pnum) {
 // DMFCBase::GetRemoteKey
 //
 // Handles a new remote key from the server
-void DMFCBase::GetRemoteKey(ubyte *data) {
+void DMFCBase::GetRemoteKey(uint8_t *data) {
   int count = 0;
-  ubyte key[8];
+  uint8_t key[8];
   memcpy(key, &data[count], 8);
   count += 8;
   Remote_SetMyKey(key);
@@ -502,7 +502,7 @@ void DMFCBase::RequestGameState(void) {
   if (GetLocalRole() == LR_SERVER)
     return;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   StartPacket(data, SPID_REQGAMESTATE, &count);
 
   MultiAddInt(GetPlayerNum(), data, &count);
@@ -514,7 +514,7 @@ void DMFCBase::SendVersionToClient(int pnum) {
   if (GetLocalRole() != LR_SERVER)
     return;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   StartPacket(data, SPID_VERSIONID, &count);
 
@@ -524,7 +524,7 @@ void DMFCBase::SendVersionToClient(int pnum) {
   SendPacket(data, count, pnum);
 }
 
-void DMFCBase::GetDMFCVersionCheck(ubyte *data) {
+void DMFCBase::GetDMFCVersionCheck(uint8_t *data) {
   int major, minor, count = 0;
 
   major = MultiGetInt(data, &count);
@@ -546,7 +546,7 @@ void DMFCBase::SendRequestForPlayerRecords(void) {
   if (GetLocalRole() == LR_SERVER)
     return;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   StartPacket(data, SPID_PRECORDREQ, &count);
 
   MultiAddByte(GetPlayerNum(), data, &count);
@@ -558,7 +558,7 @@ void DMFCBase::SendRequestForPlayerRecords(void) {
 //
 //
 //	Recieves and processes a request for a player record
-void DMFCBase::ReceiveRequestForPlayerRecords(ubyte *data) {
+void DMFCBase::ReceiveRequestForPlayerRecords(uint8_t *data) {
   if (GetLocalRole() != LR_SERVER)
     return;
   int count = 0;
@@ -573,9 +573,9 @@ void DMFCBase::ReceiveRequestForPlayerRecords(ubyte *data) {
 //
 //
 //	Sends a [1 byte] control message to a player
-void DMFCBase::SendControlMessageToPlayer(int pnum, ubyte msg) {
+void DMFCBase::SendControlMessageToPlayer(int pnum, uint8_t msg) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   StartPacket(data, SPID_CONTROLMSG, &count);
 
   MultiAddByte(msg, data, &count);
@@ -593,15 +593,15 @@ void DMFCBase::SendControlMessageToPlayer(int pnum, ubyte msg) {
 //
 //
 //	Handles a control message
-void DMFCBase::ReceiveControlMessage(ubyte *data) {
+void DMFCBase::ReceiveControlMessage(uint8_t *data) {
   int count = 0;
-  ubyte msg = MultiGetByte(data, &count);
-  ubyte src = MultiGetByte(data, &count);
-  ubyte dst = MultiGetByte(data, &count);
+  uint8_t msg = MultiGetByte(data, &count);
+  uint8_t src = MultiGetByte(data, &count);
+  uint8_t dst = MultiGetByte(data, &count);
 
   if ((GetLocalRole() == LR_SERVER) && (dst != SP_SERVER || dst != GetPlayerNum())) {
     // forward this packet to the correct player
-    ubyte fdata[MAX_GAME_DATA_SIZE];
+    uint8_t fdata[MAX_GAME_DATA_SIZE];
     count = 0;
 
     StartPacket(fdata, SPID_CONTROLMSG, &count);
@@ -622,7 +622,7 @@ void DMFCBase::SendNetGameInfoSync(int to_who) {
   if (GetLocalRole() != LR_SERVER)
     return;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   StartPacket(data, SPID_NETGAMESYNC, &count);
 
@@ -641,7 +641,7 @@ void DMFCBase::SendNetGameInfoSync(int to_who) {
 // DMFCBase::ReceiveNetGameInfoSync
 //
 //  Receives a NetGame info sync packet from the server
-void DMFCBase::ReceiveNetGameInfoSync(ubyte *data) {
+void DMFCBase::ReceiveNetGameInfoSync(uint8_t *data) {
   int count = 0;
 
   Netgame->packets_per_second = MultiGetByte(data, &count);
@@ -668,7 +668,7 @@ void DMFCBase::SendNewTeamName(int team) {
     return;
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   StartPacket(data, SPID_NEWTEAMNAME, &count);
 
   MultiAddByte(team, data, &count);
@@ -680,7 +680,7 @@ void DMFCBase::SendNewTeamName(int team) {
 // DMFCBase::ReceiveNewTeamName
 //
 //	The server is telling us about a new team name
-void DMFCBase::ReceiveNewTeamName(ubyte *data) {
+void DMFCBase::ReceiveNewTeamName(uint8_t *data) {
   int count = 0;
   int team = MultiGetByte(data, &count);
 

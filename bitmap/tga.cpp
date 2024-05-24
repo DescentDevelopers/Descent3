@@ -241,7 +241,7 @@ int bm_tga_read_outrage_compressed16(CFILE *infile, int n, int num_mips, int typ
     while (count != total) {
       ASSERT(count < total);
 
-      ubyte command = tga_read_byte();
+      uint8_t command = tga_read_byte();
 
       if (Bad_tga)
         return 0;
@@ -324,8 +324,8 @@ int bm_tga_read_outrage_compressed16(CFILE *infile, int n, int num_mips, int typ
 
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error
 int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
-  ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
-  ubyte upside_down = 0;
+  uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
+  uint8_t upside_down = 0;
   ushort width, height;
   uint32_t pixel;
   int i, t, n, data8bit = 0, savepos;
@@ -419,8 +419,8 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
       int total = 0;
 
       while (total < (height * width)) {
-        ubyte command = cf_ReadByte(infile);
-        ubyte len = (command & 127) + 1;
+        uint8_t command = cf_ReadByte(infile);
+        uint8_t len = (command & 127) + 1;
 
         if (command & 128) // rle chunk
         {
@@ -452,9 +452,9 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
               pixel = cf_ReadInt(infile);
             else {
               int r, g, b;
-              b = (ubyte)cf_ReadByte(infile);
-              g = (ubyte)cf_ReadByte(infile);
-              r = (ubyte)cf_ReadByte(infile);
+              b = (uint8_t)cf_ReadByte(infile);
+              g = (uint8_t)cf_ReadByte(infile);
+              r = (uint8_t)cf_ReadByte(infile);
               pixel = (255 << 24) | (r << 16) | (g << 8) | b;
             }
             ushort newpix = bm_tga_translate_pixel(pixel, format);
@@ -477,9 +477,9 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
             pixel = cf_ReadInt(infile);
           else {
             int r, g, b;
-            b = (ubyte)cf_ReadByte(infile);
-            g = (ubyte)cf_ReadByte(infile);
-            r = (ubyte)cf_ReadByte(infile);
+            b = (uint8_t)cf_ReadByte(infile);
+            g = (uint8_t)cf_ReadByte(infile);
+            r = (uint8_t)cf_ReadByte(infile);
             pixel = (255 << 24) | (r << 16) | (g << 8) | b;
           }
 
@@ -511,7 +511,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
     Bad_tga = 0;
     Fake_file_size = numleft;
 
-    cf_ReadBytes((ubyte *)Tga_file_data, numleft, infile);
+    cf_ReadBytes((uint8_t *)Tga_file_data, numleft, infile);
 
     read_ok = bm_tga_read_outrage_compressed16(infile, n, num_mips, image_type);
   }
@@ -537,8 +537,8 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
 
 // Pages in bitmap index n.  Returns 1 if successful, 0 if not
 int bm_page_in_file(int n) {
-  ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
-  ubyte upside_down = 0;
+  uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
+  uint8_t upside_down = 0;
   ushort width, height;
   int i, data8bit = 0, savepos;
   int mipped = 0, file_mipped = 0;
@@ -669,7 +669,7 @@ int bm_page_in_file(int n) {
     Bad_tga = 0;
     Fake_file_size = numleft;
 
-    cf_ReadBytes((ubyte *)Tga_file_data, numleft, infile);
+    cf_ReadBytes((uint8_t *)Tga_file_data, numleft, infile);
 
     bm_tga_read_outrage_compressed16(infile, n, num_mips, image_type);
   }

@@ -1331,7 +1331,7 @@ void ProcessNormalKey(int key) {
       // decode the text macro by sending it off to the DLL
       // for processesing
       DLLInfo.input_string = Current_pilot.taunts[index];
-      DLLInfo.special_data = (ubyte *)HudInputMessage;
+      DLLInfo.special_data = (uint8_t *)HudInputMessage;
       DLLInfo.iParam = MAX_HUD_INPUT_LEN;
       CallGameDLL(EVT_CLIENT_DECODETEXTMACRO, &DLLInfo);
 

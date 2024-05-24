@@ -59,15 +59,15 @@ extern IDMFC *DMFCBase;
 #ifdef __cplusplus
 extern "C" {
 #endif
-DLLEXPORT void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use);
+DLLEXPORT void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use);
 DLLEXPORT void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data);
 DLLEXPORT void DLLFUNCCALL DLLGameClose();
 DLLEXPORT void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options);
-DLLEXPORT int DLLFUNCCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int DLLFUNCCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void DLLFUNCCALLPTR CreateInstance(int id);
 DLLEXPORT void DLLFUNCCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int DLLFUNCCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int DLLFUNCCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -93,7 +93,7 @@ void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int DLLFUNCCALL GetGOScriptID(const char *name, ubyte isdoor) { return -1; }
+int DLLFUNCCALL GetGOScriptID(const char *name, uint8_t isdoor) { return -1; }
 
 //	CreateInstance
 //	Purpose:
@@ -136,7 +136,7 @@ short DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventIn
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int DLLFUNCCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int DLLFUNCCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 
 #endif

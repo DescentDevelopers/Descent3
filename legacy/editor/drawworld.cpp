@@ -362,7 +362,7 @@ int FindEdge(int v0,int v1,seg_edge **edge_ptr)
 }
 
 //adds an edge to the edge list
-void AddEdge(int v0,int v1,ubyte type)
+void AddEdge(int v0,int v1,uint8_t type)
 {
 	int found;
 
@@ -390,7 +390,7 @@ void AddEdge(int v0,int v1,ubyte type)
 //inside the box.
 void CheckRoom(room *rp)
 {
-	ubyte	codes_and = 0xff;
+	uint8_t	codes_and = 0xff;
 	int vn;
 
 	//Rotate all the points
@@ -771,7 +771,7 @@ void DrawVertBox(vector *v,ddgr_color color)
 {
   	//Draw a box at the marked vert
   	g3Point p0;
-  	ubyte c0 = g3_RotatePoint(&p0,v);
+  	uint8_t c0 = g3_RotatePoint(&p0,v);
   	if (! c0) {		//on screen?
   		g3_ProjectPoint(&p0);
   		rend_SetFlatColor(color);

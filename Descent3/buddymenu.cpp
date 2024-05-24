@@ -184,7 +184,7 @@ void BuddyDisplay(void) {
 static void MultiAskforGuidebotMenu() {
   int size_offset;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   // Only process this if we are the client
   if (Netgame.local_role != LR_CLIENT) {
     Int3(); // We shouldn't be here... get Kevin
@@ -196,7 +196,7 @@ static void MultiAskforGuidebotMenu() {
   nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count);
 }
 
-static void MultiStuffGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
+static void MultiStuffGuidebotMenuData(uint8_t *data, int *count, gb_menu *menu) {
   int i;
   // Get the menu data and stick it here
   // length of the title
@@ -227,7 +227,7 @@ static void MultiStuffGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
 void MultiSendGuidebotMenuSelection(gb_com *command) {
   int size_offset;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   // Only process this if we are the client
   if (Netgame.local_role != LR_CLIENT) {
@@ -258,7 +258,7 @@ static void MultiSendGuidebotMenuText(gb_menu *menu, int slot) {
   int size_offset;
   int count = 0;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   // Only process this if we are the server
   if (Netgame.local_role != LR_SERVER) {
     Int3(); // We shouldn't be here... get Kevin
@@ -272,7 +272,7 @@ static void MultiSendGuidebotMenuText(gb_menu *menu, int slot) {
   nw_SendReliable(NetPlayers[slot].reliable_socket, data, count, false);
 }
 
-static void MultiReadGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
+static void MultiReadGuidebotMenuData(uint8_t *data, int *count, gb_menu *menu) {
 
   int i;
   // Get the menu data and stick it here
@@ -298,7 +298,7 @@ static void MultiReadGuidebotMenuData(ubyte *data, int *count, gb_menu *menu) {
   }
 }
 
-void MultiDoGuidebotMenuRequest(ubyte *data, int slot) {
+void MultiDoGuidebotMenuRequest(uint8_t *data, int slot) {
 
   int count = 0;
   SKIP_HEADER(data, &count);
@@ -351,7 +351,7 @@ void MultiDoGuidebotMenuRequest(ubyte *data, int slot) {
   }
 }
 
-void MultiDoGuidebotMenuData(ubyte *data) {
+void MultiDoGuidebotMenuData(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
   if (Netgame.local_role != LR_CLIENT) {

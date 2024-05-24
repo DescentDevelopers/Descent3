@@ -509,8 +509,8 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 // TODO: MTS: only used in this file
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
 int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
-  ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
-  ubyte upside_down = 0;
+  uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
+  uint8_t upside_down = 0;
   ushort width, height;
   uint32_t pixel;
   int i, t, n;

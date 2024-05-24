@@ -211,7 +211,7 @@ static uint32_t ice_f(uint32_t p, const IceSubkey *sk) {
 //
 // Encrypt a block of 8 bytes of data with the given ICE key.
 //
-void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
+void IceKey::encrypt(const uint8_t *ptext, uint8_t *ctext) const {
   int i;
   uint32_t l, r;
 
@@ -227,8 +227,8 @@ void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
   }
 
   for (i = 0; i < 4; i++) {
-    ctext[3 - i] = (ubyte)r & 0xff;
-    ctext[7 - i] = (ubyte)l & 0xff;
+    ctext[3 - i] = (uint8_t)r & 0xff;
+    ctext[7 - i] = (uint8_t)l & 0xff;
 
     r >>= 8;
     l >>= 8;
@@ -238,7 +238,7 @@ void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
 //
 // Decrypt a block of 8 bytes of data with the given ICE key.
 //
-void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
+void IceKey::decrypt(const uint8_t *ctext, uint8_t *ptext) const {
   int i;
   uint32_t l, r;
 
@@ -253,8 +253,8 @@ void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
   }
 
   for (i = 0; i < 4; i++) {
-    ptext[3 - i] = (ubyte)r & 0xff;
-    ptext[7 - i] = (ubyte)l & 0xff;
+    ptext[3 - i] = (uint8_t)r & 0xff;
+    ptext[7 - i] = (uint8_t)l & 0xff;
 
     r >>= 8;
     l >>= 8;
@@ -293,7 +293,7 @@ void IceKey::scheduleBuild(uint16_t *kb, int n, const int *keyrot) {
 //
 // Set the key schedule of an ICE key.
 //
-void IceKey::set(const ubyte *key) {
+void IceKey::set(const uint8_t *key) {
   int i;
 
   if (_rounds == 8) {

@@ -25,7 +25,7 @@ float View_zoom;
 
 float Far_clip_z = FLT_MAX; // set to a really really far distance initially
 
-ubyte Clip_custom = 0;
+uint8_t Clip_custom = 0;
 float Clip_plane_distance = 0;
 vector Clip_plane;
 

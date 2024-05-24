@@ -737,7 +737,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   START_VERIFY_SAVEFILE(fp);
   ASSERT(strlen(description) < sizeof(buf));
   strcpy(buf, description);
-  cf_WriteBytes((ubyte *)buf, sizeof(buf), fp);
+  cf_WriteBytes((uint8_t *)buf, sizeof(buf), fp);
   cf_WriteShort(fp, GAMESAVE_VERSION);
 
   SGSSnapshot(fp); // Save snapshot? MUST KEEP THIS HERE.
@@ -771,7 +771,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   // cf_WriteInt(fp,Times_game_restored);
   // Save weather
   cf_WriteInt(fp, sizeof(Weather));
-  cf_WriteBytes((ubyte *)&Weather, sizeof(Weather), fp);
+  cf_WriteBytes((uint8_t *)&Weather, sizeof(Weather), fp);
 
   // Save active doorways
   cf_WriteInt(fp, MAX_ACTIVE_DOORWAYS);
@@ -878,7 +878,7 @@ void SGSXlateTables(CFILE *fp) {
   END_VERIFY_SAVEFILE(fp, "Xlate save");
 }
 
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 //	initializes rooms
 void SGSRooms(CFILE *fp) {
   int i, f, p;
@@ -968,7 +968,7 @@ void SGSPlayers(CFILE *fp) {
   player *plr = &Players[0];
 
   gs_WriteShort(fp, sizeof(player));
-  cf_WriteBytes((ubyte *)plr, sizeof(player), fp);
+  cf_WriteBytes((uint8_t *)plr, sizeof(player), fp);
   if (plr->guided_obj)
     gs_WriteInt(fp, plr->guided_obj->handle);
 
@@ -990,7 +990,7 @@ void SGSVisEffects(CFILE *fp) {
 
   for (i = 0; i <= Highest_vis_effect_index; i++) {
     if (VisEffects[i].type != VIS_NONE)
-      cf_WriteBytes((ubyte *)&VisEffects[i], sizeof(vis_effect), fp);
+      cf_WriteBytes((uint8_t *)&VisEffects[i], sizeof(vis_effect), fp);
   }
 }
 
@@ -1014,7 +1014,7 @@ void SGSObjects(CFILE *fp) {
   cf_WriteShort(fp, (short)MAX_PLAYERS * 2);
   for (i = 0; i < MAX_PLAYERS * 2; i++) {
     cf_WriteShort(fp, strlen(MarkerMessages[i]) + 1);
-    cf_WriteBytes((ubyte *)MarkerMessages[i], strlen(MarkerMessages[i]) + 1, fp);
+    cf_WriteBytes((uint8_t *)MarkerMessages[i], strlen(MarkerMessages[i]) + 1, fp);
   }
 
   // this method should maintain the object list as it currently stands in the level
@@ -1070,7 +1070,7 @@ void SGSObjects(CFILE *fp) {
     // Store whether or not we have a pointer to lighting_info
     gs_WriteByte(fp, op->lighting_info ? 1 : 0);
     if (op->lighting_info) {
-      cf_WriteBytes((ubyte *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_WriteBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
     }
 
     // these objects FOR NOW won't be saved
@@ -1090,7 +1090,7 @@ void SGSObjects(CFILE *fp) {
     ii = (op->name) ? strlen(op->name) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((ubyte *)op->name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->name, ii, fp);
 
     //	data universal to all objects that need to be saved.
     gs_WriteShort(fp, (short)op->id);
@@ -1153,12 +1153,12 @@ void SGSObjects(CFILE *fp) {
     ii = (op->custom_default_script_name) ? strlen(op->custom_default_script_name) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((ubyte *)op->custom_default_script_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_script_name, ii, fp);
 
     ii = (op->custom_default_module_name) ? strlen(op->custom_default_module_name) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((ubyte *)op->custom_default_module_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_module_name, ii, fp);
 
     INSURE_SAVEFILE;
 
@@ -1169,13 +1169,13 @@ void SGSObjects(CFILE *fp) {
     //	write out all structures here.
     // movement info.
     gs_WriteShort(fp, sizeof(op->mtype));
-    cf_WriteBytes((ubyte *)&op->mtype, sizeof(op->mtype), fp);
+    cf_WriteBytes((uint8_t *)&op->mtype, sizeof(op->mtype), fp);
 
     INSURE_SAVEFILE;
 
     // Control info, determined by CONTROL_TYPE
     gs_WriteShort(fp, sizeof(op->ctype));
-    cf_WriteBytes((ubyte *)&op->ctype, sizeof(op->ctype), fp);
+    cf_WriteBytes((uint8_t *)&op->ctype, sizeof(op->ctype), fp);
 
     INSURE_SAVEFILE;
 
@@ -1185,14 +1185,14 @@ void SGSObjects(CFILE *fp) {
     INSURE_SAVEFILE;
     // save out rendering information
     gs_WriteShort(fp, sizeof(op->rtype));
-    cf_WriteBytes((ubyte *)&op->rtype, sizeof(op->rtype), fp);
+    cf_WriteBytes((uint8_t *)&op->rtype, sizeof(op->rtype), fp);
 
     cf_WriteFloat(fp, op->size);
     if (op->render_type == RT_POLYOBJ) {
       // Do Animation stuff
       custom_anim multi_anim_info;
       ObjGetAnimUpdate(i, &multi_anim_info);
-      cf_WriteBytes((ubyte *)&multi_anim_info, sizeof(multi_anim_info), fp);
+      cf_WriteBytes((uint8_t *)&multi_anim_info, sizeof(multi_anim_info), fp);
     }
 
     INSURE_SAVEFILE;
@@ -1224,7 +1224,7 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
     return;
 
   gs_WriteShort(fp, sizeof(ai_frame));
-  cf_WriteBytes((ubyte *)ai, sizeof(ai_frame), fp);
+  cf_WriteBytes((uint8_t *)ai, sizeof(ai_frame), fp);
 }
 
 //	saves script
@@ -1270,7 +1270,7 @@ void SGSObjEffects(CFILE *fp, const object *op) {
   gs_WriteByte(fp, (ei ? 1 : 0));
   if (ei) {
     gs_WriteShort(fp, sizeof(effect_info_s));
-    cf_WriteBytes((ubyte *)ei, sizeof(effect_info_s), fp);
+    cf_WriteBytes((uint8_t *)ei, sizeof(effect_info_s), fp);
   }
 }
 
@@ -1282,7 +1282,7 @@ void SGSObjWB(CFILE *fp, object *op, int num_wbs) {
     gs_WriteByte(fp, (int8_t)num_wbs);
     for (i = 0; i < num_wbs; i++) {
       dynamic_wb_info *dwb = &op->dynamic_wb[i];
-      cf_WriteBytes((ubyte *)dwb, sizeof(dynamic_wb_info), fp);
+      cf_WriteBytes((uint8_t *)dwb, sizeof(dynamic_wb_info), fp);
     }
   } else {
     gs_WriteByte(fp, 0);
@@ -1300,7 +1300,7 @@ void SGSSpew(CFILE *fp) {
   for (i = 0; i < MAX_SPEW_EFFECTS; i++) {
     gs_WriteByte(fp, SpewEffects[i].inuse ? true : false);
     if (SpewEffects[i].inuse)
-      cf_WriteBytes((ubyte *)&SpewEffects[i], sizeof(spewinfo), fp);
+      cf_WriteBytes((uint8_t *)&SpewEffects[i], sizeof(spewinfo), fp);
   }
 }
 

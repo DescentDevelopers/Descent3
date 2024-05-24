@@ -304,7 +304,7 @@ const char *GetString(int d) {
 typedef struct {
   int me_handle;
   int it_handle;
-  ubyte *special_data;
+  uint8_t *special_data;
   char *input_string;
   int input_key;
   union {
@@ -638,15 +638,15 @@ MultiDoConfigLoad_fp DLLMultiDoConfigLoad;
 typedef int (*MultiLoadSettings_fp)(const char *filename);
 MultiLoadSettings_fp DLLMultiLoadSettings;
 
-typedef void *(*NetworkReceiveCallback)(ubyte *data, int len, network_address *from);
+typedef void *(*NetworkReceiveCallback)(uint8_t *data, int len, network_address *from);
 
-typedef int (*nw_RegisterCallback_fp)(void *nfp, ubyte id);
+typedef int (*nw_RegisterCallback_fp)(void *nfp, uint8_t id);
 nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
-typedef NetworkReceiveCallback (*nw_UnRegisterCallback_fp)(ubyte id);
+typedef NetworkReceiveCallback (*nw_UnRegisterCallback_fp)(uint8_t id);
 nw_UnRegisterCallback_fp DLLnw_UnRegisterCallback;
 
-typedef int (*nw_SendWithID_fp)(ubyte id, ubyte *data, int len, network_address *who_to);
+typedef int (*nw_SendWithID_fp)(uint8_t id, uint8_t *data, int len, network_address *who_to);
 nw_SendWithID_fp DLLnw_SendWithID;
 
 typedef int (*nw_DoReceiveCallbacks_fp)(void);
@@ -781,7 +781,7 @@ int *DLLNum_network_games_known;
 bool *DLLDedicated_server;
 network_game *DLLNetwork_games;
 int MT_Initialized = 0;
-ubyte *DLLNewUIWindow_alpha;
+uint8_t *DLLNewUIWindow_alpha;
 float LastTrackerDataUpdate;
 void *pconsole = NULL;
 bool *DLLDP_active;

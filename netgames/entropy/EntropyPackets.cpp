@@ -55,7 +55,7 @@ extern object *dObjects;
 void SendTakeOverPacket(int newteam, int oldteam, int room, int victor) {
   int count = 0;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   DMFCBase->StartPacket(data, SPID_TAKEOVER, &count);
 
   MultiAddByte(newteam, data, &count);
@@ -66,8 +66,8 @@ void SendTakeOverPacket(int newteam, int oldteam, int room, int victor) {
   DMFCBase->SendPacket(data, count, SP_ALL);
 }
 
-void ReceiveTakeOverPacket(ubyte *data) {
-  ubyte newteam, oldteam;
+void ReceiveTakeOverPacket(uint8_t *data) {
+  uint8_t newteam, oldteam;
   int room;
   int count = 0;
   int victor;
@@ -80,7 +80,7 @@ void ReceiveTakeOverPacket(ubyte *data) {
 }
 
 // Handles when we get a new player packet
-void GetGameStartPacket(ubyte *data) {
+void GetGameStartPacket(uint8_t *data) {
   int i, count = 0;
 
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
@@ -106,7 +106,7 @@ void SendGameStartPacket(int pnum) {
   int count = 0;
   int i;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   DMFCBase->StartPacket(data, SPID_NEWPLAYER, &count);
 
   for (i = 0; i < DLLMAX_PLAYERS; i++) {
@@ -131,7 +131,7 @@ void SendGameStartPacket(int pnum) {
 
 void SendClientPickupVirus(int player_num) {
   int start, count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   DMFCBase->StartPacket(data, SPID_PICKUPVIRUS, &count);
   start = count;
 
@@ -140,7 +140,7 @@ void SendClientPickupVirus(int player_num) {
   DMFCBase->SendPacket(data, count, SP_ALL);
 }
 
-void ReceivePickupVirus(ubyte *data) {
+void ReceivePickupVirus(uint8_t *data) {
   int player_num, count = 0;
   player_num = MultiGetByte(data, &count);
 
@@ -191,7 +191,7 @@ void SendRoomInfo(int pnum) {
 
   int count = 0;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   DMFCBase->StartPacket(data, SPID_ROOMINFO, &count);
 
   for (i = 0; i < RoomCount; i++) {
@@ -207,7 +207,7 @@ void SendRoomInfo(int pnum) {
   free(room_info);
 }
 
-void ReceiveRoomInfo(ubyte *data) {
+void ReceiveRoomInfo(uint8_t *data) {
   int i, count = 0;
   int flag;
   char *room_info;
@@ -268,7 +268,7 @@ void ReceiveRoomInfo(ubyte *data) {
 void SendVirusCreate(object *obj) {
   int start, count = 0;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   DMFCBase->StartPacket(data, SPID_VIRUSCREATE, &count);
   start = count;
 
@@ -278,7 +278,7 @@ void SendVirusCreate(object *obj) {
   DMFCBase->SendPacket(data, count, SP_ALL);
 }
 
-void DoVirusCreate(ubyte *data) {
+void DoVirusCreate(uint8_t *data) {
   int s_objnum, l_objnum, count = 0;
 
   s_objnum = MultiGetInt(data, &count);

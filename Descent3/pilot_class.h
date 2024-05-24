@@ -150,7 +150,7 @@ IIIIIIIII N       N P      OOOO  R   R    T    A    A NN   NN    T
 #define PLTR_TOO_NEW 6       // pilot file too new
 
 typedef struct {
-  ubyte highest_level;            // highlest level completed in the mission
+  uint8_t highest_level;            // highlest level completed in the mission
   int ship_permissions;           // Ship permissions at highest level achieved
   bool finished;                  // was mission finished? (different than highest level,btw)
   char mission_name[MSN_NAMELEN]; // name of the mission (from the mission file)
@@ -162,7 +162,7 @@ typedef struct {
   int id;
   ct_type type[2];
   ct_config_data value;
-  ubyte flags[2];
+  uint8_t flags[2];
 } cntrldata;
 
 class pilot {
@@ -213,12 +213,12 @@ public:
   void get_multiplayer_data(char *logo = NULL, char *audio1 = NULL, char *audio2 = NULL, ushort *ppic = NULL,
                             char *audio3 = NULL, char *audio4 = NULL);
 
-  void set_difficulty(ubyte diff);
-  void get_difficulty(ubyte *diff);
+  void set_difficulty(uint8_t diff);
+  void get_difficulty(uint8_t *diff);
 
-  void set_hud_data(ubyte *hmode = NULL, ushort *hstat = NULL, ushort *hgraphicalstat = NULL, int *gw_w = NULL,
+  void set_hud_data(uint8_t *hmode = NULL, ushort *hstat = NULL, ushort *hgraphicalstat = NULL, int *gw_w = NULL,
                     int *gw_h = NULL);
-  void get_hud_data(ubyte *hmode = NULL, ushort *hstat = NULL, ushort *hgraphicalstat = NULL, int *gw_w = NULL,
+  void get_hud_data(uint8_t *hmode = NULL, ushort *hstat = NULL, ushort *hgraphicalstat = NULL, int *gw_w = NULL,
                     int *gw_h = NULL);
 
   void set_profanity_filter(bool enable);
@@ -285,8 +285,8 @@ private:
   char *guidebot_name; // guidebot name
 
   ushort picture_id; // pilot picture image id
-  ubyte difficulty;  // difficulty setting for this pilot (DIFFICULTY_*)
-  ubyte hud_mode;    // hud display mode
+  uint8_t difficulty;  // difficulty setting for this pilot (DIFFICULTY_*)
+  uint8_t hud_mode;    // hud display mode
   bool profanity_filter_on, audiotaunts;
 
   ushort hud_stat; // hud layout using the STAT mask
@@ -314,7 +314,7 @@ public:
   bool lrearview_enabled;
   bool rrearview_enabled; // are these small views enabled?
 
-  ubyte ingame_difficulty; // DAJ for optimization
+  uint8_t ingame_difficulty; // DAJ for optimization
 };
 
 #endif

@@ -117,13 +117,13 @@ ushort *bump_data(int handle) {
 }
 
 // returns width of bumpmap
-ubyte bump_w(int handle) {
+uint8_t bump_w(int handle) {
   ASSERT(GameBumpmaps[handle].flags & BUMPF_USED);
   return GameBumpmaps[handle].width;
 }
 
 // returns height of bumpmap
-ubyte bump_h(int handle) {
+uint8_t bump_h(int handle) {
   ASSERT(GameBumpmaps[handle].flags & BUMPF_USED);
   return GameBumpmaps[handle].height;
 }

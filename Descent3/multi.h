@@ -46,7 +46,7 @@
  *
  * 166   9/09/99 12:24p Kevin
  * Fixed a bug that was causing problems in the Mac version
- * (Game_is_master_tracker_game was defined as a ubyte in the game, but an
+ * (Game_is_master_tracker_game was defined as a uint8_t in the game, but an
  * int in the dll)
  *
  * 165   9/02/99 3:34p Jason
@@ -660,11 +660,11 @@ extern bool Multi_bail_ui_menu;
 #define PFP_FIRED 1          // the player fired this frame and the info should be packed in a player pos flag
 #define PFP_FIRED_RELIABLE 2 // used for secondaries of a non-peer to peer game
 typedef struct {
-  ubyte fired_on_this_frame;
-  ubyte wb_index;
-  ubyte fire_mask;
-  ubyte damage_scalar;
-  ubyte reliable;
+  uint8_t fired_on_this_frame;
+  uint8_t wb_index;
+  uint8_t fire_mask;
+  uint8_t damage_scalar;
+  uint8_t reliable;
   int dest_roomnum;
 } player_fire_packet;
 
@@ -724,7 +724,7 @@ typedef struct {
   vector pos;
   int objnum;
   int roomnum;
-  ubyte used;
+  uint8_t used;
   short original_id;
 } powerup_respawn;
 
@@ -737,7 +737,7 @@ extern powerup_timer Powerup_timer[];
 extern powerup_respawn Powerup_respawn[];
 extern network_game Network_games[];
 extern netplayer NetPlayers[MAX_NET_PLAYERS];
-extern ubyte Multi_receive_buffer[MAX_RECEIVE_SIZE];
+extern uint8_t Multi_receive_buffer[MAX_RECEIVE_SIZE];
 extern int Ok_to_join;
 extern int Num_powerup_respawn;
 extern int Num_powerup_timer;
@@ -757,22 +757,22 @@ extern int Multi_requested_damage_type;
 extern float Multi_requested_damage_amount;
 extern float Multi_additional_shields[];
 
-extern ubyte Multi_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
+extern uint8_t Multi_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
 extern int Multi_send_size[MAX_NET_PLAYERS];
 extern float Multi_last_sent_time[MAX_NET_PLAYERS][MAX_NET_PLAYERS];
 extern int Multi_additional_damage_type[MAX_NET_PLAYERS];
 
-extern ubyte Multi_reliable_urgent[MAX_NET_PLAYERS];
-extern ubyte Multi_reliable_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
+extern uint8_t Multi_reliable_urgent[MAX_NET_PLAYERS];
+extern uint8_t Multi_reliable_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
 extern int Multi_reliable_send_size[MAX_NET_PLAYERS];
 extern float Multi_reliable_last_send_time[MAX_NET_PLAYERS];
-extern ubyte Multi_reliable_sent_position[MAX_NET_PLAYERS];
+extern uint8_t Multi_reliable_sent_position[MAX_NET_PLAYERS];
 extern uint32_t Multi_visible_players[];
 
 extern int Got_level_info;
 extern int Got_new_game_time;
 // For keeping track of buildings that have changed
-extern ubyte Multi_building_states[];
+extern uint8_t Multi_building_states[];
 extern ushort Multi_num_buildings_changed;
 
 extern bool Multi_logo_state;
@@ -827,12 +827,12 @@ typedef struct vmt_descent3_struct {
 extern vmt_descent3_struct MTPilotinfo[MAX_NET_PLAYERS];
 
 // Display a menu based on what the server just told us about
-void MultiDoGuidebotMenuData(ubyte *data);
+void MultiDoGuidebotMenuData(uint8_t *data);
 
 // The user either wants a menu to display or they took an action off of the menu
-void MultiDoGuidebotMenuRequest(ubyte *data, int slot);
+void MultiDoGuidebotMenuRequest(uint8_t *data, int slot);
 
-void MultiProcessBigData(ubyte *buf, int len, network_address *from_addr);
+void MultiProcessBigData(uint8_t *buf, int len, network_address *from_addr);
 
 // Points the server_address variable at a new location
 void MultiSetServerAddress(network_address *addr);
@@ -844,7 +844,7 @@ void MultiDoFrame();
 int TryToJoinServer(network_address *addr);
 
 // The server says we can join!
-void MultiDoConnectionAccepted(ubyte *data);
+void MultiDoConnectionAccepted(uint8_t *data);
 
 // Polls for a connection message so we can finally join this game
 void MultiPollForConnectionAccepted();
@@ -860,7 +860,7 @@ void StartNewMultiplayerGame();
 void MultiCloseGame();
 
 // The server sends to everyone that the player is dead
-void MultiSendPlayerDead(int slot, ubyte fate);
+void MultiSendPlayerDead(int slot, uint8_t fate);
 
 // Called when you want to leave a netgame
 void MultiLeaveGame();
@@ -870,13 +870,13 @@ void MultiLeaveGame();
 void MultiProcessIncoming();
 
 // Starts a packet of data
-int START_DATA(int type, ubyte *data, int *count, ubyte reliable = 0);
+int START_DATA(int type, uint8_t *data, int *count, uint8_t reliable = 0);
 
 // End a pakcet of data
-void END_DATA(int count, ubyte *data, int offset);
+void END_DATA(int count, uint8_t *data, int offset);
 
 // Skip the header stuff
-void SKIP_HEADER(ubyte *data, int *count);
+void SKIP_HEADER(uint8_t *data, int *count);
 
 // Starts a level for multiplayer
 bool MultiStartNewLevel(int level);
@@ -886,7 +886,7 @@ int MultiCountPlayers();
 
 // Puts player "slot" position info into the passed in buffer
 // Returns the number of bytes used
-int MultiStuffPosition(int slot, ubyte *data);
+int MultiStuffPosition(int slot, uint8_t *data);
 
 // Sends a full packet out the the server
 // Resets the send_size variable
@@ -902,7 +902,7 @@ void MultiMakePlayerGhost(int slot);
 void MultiMakePlayerReal(int slot);
 
 // Sends a fire packet from a player
-void MultiSendFirePlayerWB(int playernum, ubyte wb_index, ubyte fire_mask, ubyte reliable = 0, float scalar = 1.0);
+void MultiSendFirePlayerWB(int playernum, uint8_t wb_index, uint8_t fire_mask, uint8_t reliable = 0, float scalar = 1.0);
 
 void MultiMakeMatrix(multi_orientation *dest, matrix *src);
 
@@ -942,33 +942,33 @@ int MultiMatchGeneric(uint32_t unique_id);
 void MultiSendMessageToServer(int, char *, int to = MULTI_SEND_MESSAGE_ALL);
 
 // Sends an object from the server to the client
-void MultiSendObject(object *obj, ubyte announce, ubyte demo_record = false);
+void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record = false);
 
 // Paints all the goal rooms in a level with their colors
 void MultiPaintGoalRooms(int *texcolors = NULL);
 
 // Sends a special script packet to a player
-void MultiSendSpecialPacket(int slot, ubyte *outdata, int size);
+void MultiSendSpecialPacket(int slot, uint8_t *outdata, int size);
 
 // Flushes all receive sockets so that there is no data coming from them
 void MultiFlushAllIncomingBuffers();
 
 // Tells all clients to remove a specified object
-void MultiSendRemoveObject(object *obj, ubyte playsound);
+void MultiSendRemoveObject(object *obj, uint8_t playsound);
 
 // Sends the special script packet to the server
-void MultiClientSendSpecialPacket(ubyte *outdata, int size);
+void MultiClientSendSpecialPacket(uint8_t *outdata, int size);
 
 // Sends info out on my guided missile into a slot
 // returns number of bytes in packet
-int MultiStuffGuidedInfo(ubyte, ubyte *);
+int MultiStuffGuidedInfo(uint8_t, uint8_t *);
 
 // Polls for a connection message so we can finally join this game
 // Client only
 int MultiPollForLevelInfo();
 
 // Server is telling us about the level
-void MultiDoLevelInfo(ubyte *data);
+void MultiDoLevelInfo(uint8_t *data);
 
 // Server is telling the client about the level currently playing
 // Server only
@@ -976,7 +976,7 @@ void MultiSendLevelInfo(int slot);
 
 // Clients says he's ready for level info
 // so send it to him
-void MultiDoReadyForLevel(ubyte *data);
+void MultiDoReadyForLevel(uint8_t *data);
 
 // Client is telling the server that he is ready for a level
 // Client only
@@ -992,10 +992,10 @@ void MultiEndLevel();
 void GetServerGameTime();
 
 // Send robot info
-int MultiStuffRobotPosition(uint16_t objectnum, ubyte *data);
+int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data);
 
 // Handle robot position
-void MultiDoRobotPos(ubyte *data);
+void MultiDoRobotPos(uint8_t *data);
 
 // Handle robot (or any AI created) weapon fire
 int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum);
@@ -1004,7 +1004,7 @@ int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint1
 void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, short seed);
 
 // handle robot damage
-void MultiDoRobotExplode(ubyte *data);
+void MultiDoRobotExplode(uint8_t *data);
 
 // Peer to peer request for damage
 void MultiSendRequestPeerDamage(object *, int, int, float);
@@ -1013,7 +1013,7 @@ void MultiSendRequestPeerDamage(object *, int, int, float);
 void MultiSendInitialRank(int pnum);
 
 // Tells the other players that a slot is starting/stopping its on/off weapon
-void MultiSendOnOff(object *obj, ubyte on, ubyte wb_index, ubyte fire_mask);
+void MultiSendOnOff(object *obj, uint8_t on, uint8_t wb_index, uint8_t fire_mask);
 
 // Tells all the clients to apply damage to a player
 void MultiSendAdditionalDamage(int slot, int type, float amount);
@@ -1025,19 +1025,19 @@ void MultiSendRequestCountermeasure(short objnum, int weapon_index);
 void MultiSendDamageObject(object *hit_obj, object *killer, float damage, int weaponid);
 
 // Handle message from server that robot/object took damage
-void MultiDoRobotDamage(ubyte *data);
+void MultiDoRobotDamage(uint8_t *data);
 
 // Add an object to the list of objects that need an animation update next player packet interval
 void MultiAddObjAnimUpdate(int objnum);
 
 // Stuff an animation update into a packet
-int MultiStuffObjAnimUpdate(uint16_t objnum, ubyte *data);
+int MultiStuffObjAnimUpdate(uint16_t objnum, uint8_t *data);
 
 // Handle an animation update
-void MultiDoObjAnimUpdate(ubyte *data);
+void MultiDoObjAnimUpdate(uint8_t *data);
 
 // Play a 3d sound that the server told us about
-void MultiDoPlay3dSound(ubyte *data);
+void MultiDoPlay3dSound(uint8_t *data);
 
 // Tell the clients to play a 3d sound
 void MultiPlay3dSound(short soundidx, ushort objnum, int priority);
@@ -1046,63 +1046,63 @@ void MultiPlay3dSound(short soundidx, ushort objnum, int priority);
 void MultiSendRobotFireSound(short soundidx, ushort objnum);
 
 // Play the robot sound that the server told us about
-void MultiDoRobotFireSound(ubyte *data);
+void MultiDoRobotFireSound(uint8_t *data);
 
 // Add a turret to the list of stuff to be updated
 void MultiAddObjTurretUpdate(int objnum);
 
 // Stuff turret data into a packet
-int MultiStuffTurretUpdate(uint16_t objnum, ubyte *data);
+int MultiStuffTurretUpdate(uint16_t objnum, uint8_t *data);
 
 // Handle a turret update from the server
-void MultiDoTurretUpdate(ubyte *data);
+void MultiDoTurretUpdate(uint8_t *data);
 
 // Handle a client use inventory item packet
-void MultiDoClientInventoryUseItem(int slot, ubyte *data);
+void MultiDoClientInventoryUseItem(int slot, uint8_t *data);
 
 // Send a request to use an inventory item to the server
 void MultiSendClientInventoryUseItem(int type, int id);
 
 // Handle a remove item from inventory
-void MultiDoClientInventoryRemoveItem(int slot, ubyte *data);
+void MultiDoClientInventoryRemoveItem(int slot, uint8_t *data);
 
 // Tell the clients to remove an item from a player's inventory
 void MultiSendInventoryRemoveItem(int slot, int type, int id);
 
 void MultiAddObjWBAnimUpdate(int objnum);
 
-int MultiStuffObjWBAnimUpdate(uint16_t objnum, ubyte *data);
+int MultiStuffObjWBAnimUpdate(uint16_t objnum, uint8_t *data);
 
-void MultiDoObjWBAnimUpdate(ubyte *data);
+void MultiDoObjWBAnimUpdate(uint8_t *data);
 
-void MultiDoBytesSent(ubyte *data);
+void MultiDoBytesSent(uint8_t *data);
 
 void MultiSendBytesSent(int slot);
 
 void MultiSendPPSSet(int pps);
 
-void MultiDoPPSSet(ubyte *data, int slot);
+void MultiDoPPSSet(uint8_t *data, int slot);
 
 void MultiSendGreetings(uint32_t id);
 
-void MultiDoGreetings(ubyte *data, network_address *addr);
+void MultiDoGreetings(uint8_t *data, network_address *addr);
 
 // We're asking to enter observer mode
 void MultiSendRequestToObserve(int mode, int on, int objnum);
 
 // Server is telling us about players that we can see
-void MultiDoVisiblePlayers(ubyte *data);
+void MultiDoVisiblePlayers(uint8_t *data);
 
 // Sends all the visible players to another player
 void MultiSendVisiblePlayers(int to_slot);
 
-void MultiDoFileReq(ubyte *data);
+void MultiDoFileReq(uint8_t *data);
 
-void MultiDoFileDenied(ubyte *data);
+void MultiDoFileDenied(uint8_t *data);
 
-void MultiDoFileData(ubyte *data);
+void MultiDoFileData(uint8_t *data);
 
-void MultiDoFileAck(ubyte *data);
+void MultiDoFileAck(uint8_t *data);
 
 //	Tells clients that a particular player's custom data is here and ready for downloading
 void MultiSendClientCustomData(int slot, int whoto = -1);
@@ -1121,10 +1121,10 @@ void MultiSendRequestShields(int type, float amount);
 
 // Tells the clients to ghost or unghost an object
 void MultiSendGhostObject(object *obj, bool ghost);
-void MultiDoGhostObject(ubyte *data);
+void MultiDoGhostObject(uint8_t *data);
 
 // Sends this nonreliable packet to everyone except the server and the named slot
-void MultiSendToAllExcept(int except, ubyte *data, int size, int seq_threshold);
+void MultiSendToAllExcept(int except, uint8_t *data, int size, int seq_threshold);
 
 // Tells the server about the weapons we're carrying
 void MultiSendWeaponsLoad();
@@ -1136,19 +1136,19 @@ void MultiSendBreakGlass(room *rp, int facenum);
 void MultiSendHeartbeat();
 
 // Ping functions to find the players latency
-void MultiDoPong(ubyte *data);
-void MultiDoPing(ubyte *data, network_address *addr);
+void MultiDoPong(uint8_t *data);
+void MultiDoPing(uint8_t *data, network_address *addr);
 void MultiSendPing(int slot);
-void MultiDoLagInfo(ubyte *data);
+void MultiDoLagInfo(uint8_t *data);
 
 // Stuffs a players firing information into a packet
-int MultiStuffPlayerFire(int slot, ubyte *data);
+int MultiStuffPlayerFire(int slot, uint8_t *data);
 
 // Stuffs request to move into a packet
-int MultiStuffRequestToMove(ubyte *data);
+int MultiStuffRequestToMove(uint8_t *data);
 
 // Stuff info for a guided missile
-int MultiStuffGuidedInfo(int slot, ubyte *data);
+int MultiStuffGuidedInfo(int slot, uint8_t *data);
 
 // Tell everyone I'm timingout my timeout weapon
 void MultiSendReleaseTimeoutMissile();
@@ -1170,33 +1170,33 @@ extern bool Multi_accept_state;
 void MultiSetAcceptState(bool state);
 
 void MultiSendAiWeaponFlags(object *obj, int flags, int wb_index);
-void MultiDoAiWeaponFlags(ubyte *data);
+void MultiDoAiWeaponFlags(uint8_t *data);
 void MultiSendAttach(object *parent, char parent_ap, object *child, char child_ap, bool f_aligned);
-void MultiDoAttach(ubyte *data);
+void MultiDoAttach(uint8_t *data);
 void MultiSendAttachRad(object *parent, char parent_ap, object *child, float rad);
-void MultiDoAttachRad(ubyte *data);
+void MultiDoAttachRad(uint8_t *data);
 void MultiSendUnattach(object *child);
-void MultiDoUnattach(ubyte *data);
+void MultiDoUnattach(uint8_t *data);
 
-void MultiDoJoinDemoObjects(ubyte *data);
+void MultiDoJoinDemoObjects(uint8_t *data);
 
 // Rank stuff
-void MultiDoChangeRank(ubyte *data);
+void MultiDoChangeRank(uint8_t *data);
 
 // Sets whether or not we want the logos to be displayed on ships
 void MultiSetLogoState(bool state);
 
 void MultiSendThiefSteal(int player, int item);
-void MultiDoThiefSteal(ubyte *data);
+void MultiDoThiefSteal(uint8_t *data);
 
 void MultiSetAudioTauntTime(float time, int to_who = -1);
-void MultiDoAudioTauntTime(ubyte *data);
+void MultiDoAudioTauntTime(uint8_t *data);
 
 // Server only function to clear a Guidebot for a disconnected player
 void MultiClearGuidebot(int slot);
 
 // Guided missile release
-void MultiDoMissileRelease(int from_slot, ubyte *data);
+void MultiDoMissileRelease(int from_slot, uint8_t *data);
 void MultiSendMissileRelease(int slot, bool is_guided);
 
 // Server telling a client what ship to switch to
@@ -1205,7 +1205,7 @@ void MultiBashPlayerShip(int slot, char *ship);
 // Strips a player bare of weapons
 void MultiSendStripPlayer(int slot);
 
-inline void MultiGetTypeID(ubyte *data, int *count, int *type, int *id) {
+inline void MultiGetTypeID(uint8_t *data, int *count, int *type, int *id) {
   *id = -1;
   *type = MultiGetByte(data, count);
 
@@ -1217,7 +1217,7 @@ inline void MultiGetTypeID(ubyte *data, int *count, int *type, int *id) {
     *id = MultiMatchGeneric(hash_value);
 }
 
-inline void MultiAddTypeID(int type, int id, ubyte *data, int *count) {
+inline void MultiAddTypeID(int type, int id, uint8_t *data, int *count) {
   uint32_t hash_value;
   hash_value = MultiGetMatchChecksum(type, id);
 

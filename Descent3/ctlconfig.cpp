@@ -403,7 +403,7 @@ t_cfg_element Cfg_joy_elements[] = {{-1, CtlText_WeaponGroup, CCITEM_WPN_X2, CCI
                                     {ctfBANK_RIGHTBUTTON, CtlText_BankRight, 0, 0}};
 #define N_JOY_CFG_FN (sizeof(Cfg_joy_elements) / sizeof(t_cfg_element))
 #define N_KEY_CFG_FN (sizeof(Cfg_key_elements) / sizeof(t_cfg_element))
-static void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte controller, ubyte elem, int8_t slot);
+static void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, uint8_t controller, uint8_t elem, int8_t slot);
 static void ctl_cfg_element_options_dialog(short fnid);
 // used for adjusting settings.
 static int weapon_select_dialog(int wpn, bool is_secondary);
@@ -469,7 +469,7 @@ void key_cfg_screen::process(int res) {
   for (i = 0; i < N_KEY_CFG_FN; i++) {
     if (m_elem[i].GetID() != -1 && m_elem[i].GetID() == res) {
       // we chose a slot to configure.
-      ubyte elem, controller;
+      uint8_t elem, controller;
       int8_t slot;
       ct_type elem_type;
       if (m_elem[i].GetActiveSlot() == CFGELEM_SLOT_CLEAR) {
@@ -577,7 +577,7 @@ void joy_cfg_screen::process(int res) {
   for (i = 0; i < N_JOY_CFG_FN; i++) {
     if (m_elem[i].GetID() != -1 && m_elem[i].GetID() == res) {
       // we chose a slot to configure.
-      ubyte elem, controller;
+      uint8_t elem, controller;
       int8_t slot;
       ct_type elem_type;
       if (m_elem[i].GetActiveSlot() == CFGELEM_SLOT_CLEAR) {
@@ -898,9 +898,9 @@ void wpnsel_cfg_screen::unrealize() {
 }
 //////////////////////////////////////////////////////////////////////////////
 // this will take out any repeats of element and slot in function id.
-void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, ubyte ctrl, ubyte elem, int8_t slot) {
+void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, uint8_t ctrl, uint8_t elem, int8_t slot) {
   ct_type ctype_fn[CTLBINDS_PER_FUNC];
-  ubyte cfgflags_fn[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags_fn[CTLBINDS_PER_FUNC];
   ct_config_data ccfgdata_fn;
   t_cfg_element *fn_list;
   tCfgDataParts cfgparts;
@@ -972,7 +972,7 @@ void ctl_cfg_element_options_dialog(short fnid) {
   int *inv_binding[CTLBINDS_PER_FUNC];
   bool *clear_binding[CTLBINDS_PER_FUNC];
   ct_type ctype_fn[CTLBINDS_PER_FUNC];
-  ubyte cfgflags_fn[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags_fn[CTLBINDS_PER_FUNC];
   ct_config_data ccfgdata_fn;
 
   tCfgDataParts cfgparts;

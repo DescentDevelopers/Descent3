@@ -1413,7 +1413,7 @@ void WriteAllDoorways(CFILE *ofile);
 typedef struct {
   int type, id;
   const char *name;
-  ubyte flag;
+  uint8_t flag;
 } tConvertObject;
 
 tConvertObject object_convert[] = {
@@ -1581,7 +1581,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
   if (fileversion >= 34)
     id = cf_ReadShort(ifile);
   else
-    id = (ubyte)cf_ReadByte(ifile);
+    id = (uint8_t)cf_ReadByte(ifile);
 
   // Translate id
   old_id = id;
@@ -1730,7 +1730,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     i = cf_ReadByte(ifile);
     if (i > 0) {
       objp->custom_default_script_name = (char *)mem_malloc(i + 1);
-      cf_ReadBytes((ubyte *)objp->custom_default_script_name, i, ifile);
+      cf_ReadBytes((uint8_t *)objp->custom_default_script_name, i, ifile);
       objp->custom_default_script_name[i] = '\0';
     } else {
       objp->custom_default_script_name = NULL;
@@ -1739,7 +1739,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     i = cf_ReadByte(ifile);
     if (i > 0) {
       objp->custom_default_module_name = (char *)mem_malloc(i + 1);
-      cf_ReadBytes((ubyte *)objp->custom_default_module_name, i, ifile);
+      cf_ReadBytes((uint8_t *)objp->custom_default_module_name, i, ifile);
       objp->custom_default_module_name[i] = '\0';
     } else {
       objp->custom_default_module_name = NULL;
@@ -2032,7 +2032,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
   // Check to see if there is a lightmap
   if ((fp->flags & FF_LIGHTMAP) && (version >= 19)) {
     if (version <= 29) {
-      ubyte w, h;
+      uint8_t w, h;
 
       w = cf_ReadByte(ifile);
       h = cf_ReadByte(ifile);
@@ -2102,7 +2102,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
     fp->light_multiple = 4;
 
   if (version >= 71) {
-    ubyte special = cf_ReadByte(ifile);
+    uint8_t special = cf_ReadByte(ifile);
     if (special) {
       if (version < 77) // Ignore old specular data
       {
@@ -2113,10 +2113,10 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
       } else {
         vector center;
 
-        ubyte smooth = 0;
-        ubyte num_smooth_verts = 0;
-        ubyte type = cf_ReadByte(ifile);
-        ubyte num = cf_ReadByte(ifile);
+        uint8_t smooth = 0;
+        uint8_t num_smooth_verts = 0;
+        uint8_t type = cf_ReadByte(ifile);
+        uint8_t num = cf_ReadByte(ifile);
 
         if (version >= 117) {
           // Read if smoothed
@@ -2224,7 +2224,7 @@ void RemoveDegenerateFaces(room *rp) {
 #define COMPRESS 1
 
 // Does a RLE compression run of the values given the byte array 'val'.
-int WriteCompressionByte(CFILE *fp, ubyte *val, int total, int just_count, int compress) {
+int WriteCompressionByte(CFILE *fp, uint8_t *val, int total, int just_count, int compress) {
   int done = 0;
   int written = 0;
   int curptr = 0;
@@ -2254,8 +2254,8 @@ int WriteCompressionByte(CFILE *fp, ubyte *val, int total, int just_count, int c
 
     ASSERT(curptr < total);
 
-    ubyte curval = val[curptr];
-    ubyte count = 1;
+    uint8_t curval = val[curptr];
+    uint8_t count = 1;
 
     while ((curptr + count) < total && val[curptr + count] == curval && count < 250)
       count++;
@@ -2315,7 +2315,7 @@ int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int
     ASSERT(curptr < total);
 
     ushort curval = val[curptr];
-    ubyte count = 1;
+    uint8_t count = 1;
 
     while ((curptr + count) < total && val[curptr + count] == curval && count < 250)
       count++;
@@ -2343,7 +2343,7 @@ int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int
 
 // Given an array of values, checks to see if it would be better to write it out
 // as a raw array or RLE array
-void CheckToWriteCompressByte(CFILE *fp, ubyte *vals, int total) {
+void CheckToWriteCompressByte(CFILE *fp, uint8_t *vals, int total) {
   int count = WriteCompressionByte(fp, vals, total, 1, COMPRESS);
 
   if (count >= total)
@@ -2363,9 +2363,9 @@ void CheckToWriteCompressShort(CFILE *fp, ushort *vals, int total) {
     WriteCompressionShort(fp, vals, total, 0, COMPRESS);
 }
 
-void ReadCompressionByte(CFILE *fp, ubyte *vals, int total) {
+void ReadCompressionByte(CFILE *fp, uint8_t *vals, int total) {
   int count = 0;
-  ubyte compressed = cf_ReadByte(fp);
+  uint8_t compressed = cf_ReadByte(fp);
 
   if (compressed == 0) {
     for (int i = 0; i < total; i++)
@@ -2376,17 +2376,17 @@ void ReadCompressionByte(CFILE *fp, ubyte *vals, int total) {
 
   while (count != total) {
     ASSERT(count < total);
-    ubyte command = cf_ReadByte(fp);
+    uint8_t command = cf_ReadByte(fp);
 
     if (command == 0) // next byte is raw
     {
-      ubyte height = cf_ReadByte(fp);
+      uint8_t height = cf_ReadByte(fp);
 
       vals[count] = height;
       count++;
     } else if (command >= 2 && command <= 250) // next pixel is run of pixels
     {
-      ubyte height = cf_ReadByte(fp);
+      uint8_t height = cf_ReadByte(fp);
       for (int k = 0; k < command; k++) {
         vals[count] = height;
         count++;
@@ -2399,7 +2399,7 @@ void ReadCompressionByte(CFILE *fp, ubyte *vals, int total) {
 void ReadCompressionShort(CFILE *fp, ushort *vals, int total) {
   int count = 0;
 
-  ubyte compressed = cf_ReadByte(fp);
+  uint8_t compressed = cf_ReadByte(fp);
 
   if (compressed == 0) {
     for (int i = 0; i < total; i++)
@@ -2410,7 +2410,7 @@ void ReadCompressionShort(CFILE *fp, ushort *vals, int total) {
 
   while (count != total) {
     ASSERT(count < total);
-    ubyte command = cf_ReadByte(fp);
+    uint8_t command = cf_ReadByte(fp);
 
     if (command == 0) // next byte is raw
     {
@@ -2576,7 +2576,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 
       if (size) {
 
-        rp->volume_lights = (ubyte *)mem_malloc(size);
+        rp->volume_lights = (uint8_t *)mem_malloc(size);
         ASSERT(rp->volume_lights); // ran out of memory!
       } else
         rp->volume_lights = NULL;
@@ -2606,7 +2606,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
     rp->ambient_sound = -1;
 
   //	read reverb value for room.
-  rp->env_reverb = (version >= 98) ? ((ubyte)cf_ReadByte(ifile)) : 0;
+  rp->env_reverb = (version >= 98) ? ((uint8_t)cf_ReadByte(ifile)) : 0;
 
   // Read damage
   if (version >= 108) {
@@ -2702,7 +2702,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
 
   for (i = 0; i < nummaps; i++) {
     int w, h, lmi;
-    ubyte type;
+    uint8_t type;
     if (nummaps >= 50) {
       if ((i % (nummaps / 50)) == 0) {
         LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL,
@@ -2784,7 +2784,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
                         CHUNK_LIGHTMAPS);
     }
     int w, h, lmi;
-    ubyte type;
+    uint8_t type;
 
     w = cf_ReadInt(fp);
     h = cf_ReadInt(fp);
@@ -2882,7 +2882,7 @@ void ReadTerrainHeightChunk(CFILE *fp, int version) {
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].ypos = cf_ReadByte(fp);
   } else {
-    ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
     ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++) {
@@ -3324,7 +3324,7 @@ void ReadTerrainSkyAndLightChunk(CFILE *fp, int version) {
         Terrain_dynamic_table[i] = cf_ReadByte(fp);
     }
   } else {
-    ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
@@ -3388,7 +3388,7 @@ void ReadTerrainTmapFlagChunk(CFILE *fp, int version) {
       }
     }
   } else {
-    ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
     ushort *short_vals = (ushort *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     if (version < 102) {
@@ -3443,7 +3443,7 @@ void ReadTerrainChunks(CFILE *fp, int version) {
   ResetTerrain();
 
   while (!done) {
-    cf_ReadBytes((ubyte *)chunk_name, 4, fp);
+    cf_ReadBytes((uint8_t *)chunk_name, 4, fp);
     terr_chunk_start = cftell(fp);
     terr_chunk_size = cf_ReadInt(fp);
 
@@ -3493,7 +3493,7 @@ void ReadPlayerStarts(CFILE *infile, int fileversion) {
 void VerifyObjectList() {
   int i;
 
-  ubyte already_listed[MAX_OBJECTS];
+  uint8_t already_listed[MAX_OBJECTS];
   memset(already_listed, 0, MAX_OBJECTS);
 
   for (i = 0; i <= Highest_room_index; i++) {
@@ -3619,7 +3619,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
     filelen = cfilelength(ifile);
 
     // Read & check tag
-    cf_ReadBytes((ubyte *)tag, 4, ifile);
+    cf_ReadBytes((uint8_t *)tag, 4, ifile);
     if (strncmp(tag, LEVEL_FILE_TAG, 4)) {
       cfclose(ifile);
       retval = 0;
@@ -3718,7 +3718,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
     while (!cfeof(ifile)) {
       char chunk_name[4];
 
-      cf_ReadBytes((ubyte *)chunk_name, 4, ifile);
+      cf_ReadBytes((uint8_t *)chunk_name, 4, ifile);
       chunk_start = cftell(ifile);
       chunk_size = cf_ReadInt(ifile);
       mprintf(
@@ -3779,7 +3779,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       } else if (ISCHUNK(CHUNK_OBJECT_HANDLES)) { // Read in any non-zero handles for deleted objects
         int handle, objnum;
 
-        ubyte already_loaded[MAX_OBJECTS];
+        uint8_t already_loaded[MAX_OBJECTS];
         memset(already_loaded, 0, MAX_OBJECTS);
 
         // Get the number of handles in the file
@@ -3910,7 +3910,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           strcat(path, name);
           strcat(path, ".scr");
           CFILE *ofile = cfopen(path, "wb");
-          ubyte buf[1000];
+          uint8_t buf[1000];
           int n = chunk_size, r;
           while (n) {
             r = cf_ReadBytes(buf, std::min(n, sizeof(buf)), ifile);
@@ -4077,8 +4077,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   // share 1 lightmap
 
   if (version >= 34 && !Dedicated_server) {
-    ubyte *lightmap_spoken_for = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
-    ubyte *free_lightmap_info = (ubyte *)mem_malloc(MAX_LIGHTMAP_INFOS);
+    uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
+    uint8_t *free_lightmap_info = (uint8_t *)mem_malloc(MAX_LIGHTMAP_INFOS);
     ASSERT(lightmap_spoken_for);
     memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
 
@@ -4212,12 +4212,12 @@ int WriteObject(CFILE *ofile, object *objp) {
   i = (objp->custom_default_script_name) ? strlen(objp->custom_default_script_name) : 0;
   cf_WriteByte(ofile, i);
   if (i > 0)
-    cf_WriteBytes((ubyte *)objp->custom_default_script_name, i, ofile);
+    cf_WriteBytes((uint8_t *)objp->custom_default_script_name, i, ofile);
 
   i = (objp->custom_default_module_name) ? strlen(objp->custom_default_module_name) : 0;
   cf_WriteByte(ofile, i);
   if (i > 0)
-    cf_WriteBytes((ubyte *)objp->custom_default_module_name, i, ofile);
+    cf_WriteBytes((uint8_t *)objp->custom_default_module_name, i, ofile);
 
   // If there is lightmap data for this object, write it out.
   if (objp->lighting_render_type == LRT_LIGHTMAPS) {
@@ -4322,7 +4322,7 @@ int WriteFace(CFILE *ofile, face *fp) {
 
   if (fp->special_handle != BAD_SPECIAL_FACE_INDEX) {
     // Write out special face stuff
-    ubyte smooth = 0;
+    uint8_t smooth = 0;
     cf_WriteByte(ofile, 1);
     cf_WriteByte(ofile, SpecialFaces[fp->special_handle].type);
     cf_WriteByte(ofile, 4);
@@ -4458,7 +4458,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
 int StartChunk(CFILE *ofile, char *chunk_name) {
   int chunk_start_pos;
 
-  cf_WriteBytes((ubyte *)chunk_name, 4, ofile);
+  cf_WriteBytes((uint8_t *)chunk_name, 4, ofile);
   chunk_start_pos = cftell(ofile);
   cf_WriteInt(ofile, 0); // placeholder for chunk len
 
@@ -4487,7 +4487,7 @@ void EndChunk(CFILE *ofile, int chunk_start_pos) {
 
 void WriteTerrainHeightChunk(CFILE *fp) {
   int i;
-  ubyte heightvals[TERRAIN_WIDTH * TERRAIN_DEPTH];
+  uint8_t heightvals[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
   int start_pos;
   start_pos = StartChunk(fp, CHUNK_TERRAIN_HEIGHT);
@@ -4795,7 +4795,7 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
   }
 
   // Write lighting
-  ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+  uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // l
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
@@ -4840,7 +4840,7 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
 void WriteTerrainTmapChunk(CFILE *fp) {
   int i;
 
-  ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+  uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
   ushort *short_vals = (ushort *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   int start_pos;
@@ -4884,7 +4884,7 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_count = 0;
 
   ushort *lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * sizeof(ushort));
-  ubyte *lightmap_spoken_for = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
+  uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
 
   ASSERT(lightmap_remap);
   ASSERT(lightmap_spoken_for);
@@ -5055,7 +5055,7 @@ int SaveLevel(char *filename, bool f_save_room_AABB) {
   try { // catch cfile errors
 
     // Write tag & version number
-    cf_WriteBytes((ubyte *)LEVEL_FILE_TAG, 4, ofile);
+    cf_WriteBytes((uint8_t *)LEVEL_FILE_TAG, 4, ofile);
     cf_WriteInt(ofile, LEVEL_FILE_VERSION);
 
     WriteGamePathsChunk(ofile);
@@ -5318,9 +5318,9 @@ int need_to_page_in = 0;
 int need_to_page_num = 0;
 void AlmostPageInGeneric(int id);
 
-ubyte texture_counted[MAX_BITMAPS];
-ubyte sound_counted[MAX_SOUNDS];
-ubyte poly_counted[MAX_POLY_MODELS];
+uint8_t texture_counted[MAX_BITMAPS];
+uint8_t sound_counted[MAX_SOUNDS];
+uint8_t poly_counted[MAX_POLY_MODELS];
 
 void AlmostPageInLevelTexture(int id) {
   if (id == -1 || id == 0)

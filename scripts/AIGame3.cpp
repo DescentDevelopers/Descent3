@@ -36,11 +36,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -62,10 +62,10 @@ const char *GetStringFromTable(int index) {
 // Function prototypes
 //-------------------
 
-static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-                      float lifetime, float interval, float longevity, float size, float speed, ubyte random);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+                      float lifetime, float interval, float longevity, float size, float speed, uint8_t random);
 // Returns the new child's handle
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 
 static int FindClosestPlayer(int objhandle);
@@ -259,8 +259,8 @@ void AI_SafeSetType(int obj_handle, int ai_type) {
 // Miscellaneous Utility Funcs
 // ============================
 
-int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-               float lifetime, float interval, float longevity, float size, float speed, ubyte random) {
+int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+               float lifetime, float interval, float longevity, float size, float speed, uint8_t random) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -283,7 +283,7 @@ int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -1528,7 +1528,7 @@ void STDCALL ShutdownDLL(void) {}
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;
@@ -1627,7 +1627,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 //============================================
 // Script Implementation

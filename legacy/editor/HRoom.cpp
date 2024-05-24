@@ -2096,7 +2096,7 @@ int FindNeighbor(room *rp,int facenum,int edgenum)
 	return -1;
 }
 
-void PropagateFromFace(room *rp,int facenum,ubyte *face_flags,bool matching_faces_only)
+void PropagateFromFace(room *rp,int facenum,uint8_t *face_flags,bool matching_faces_only)
 {
 	face *fp = &rp->faces[facenum];
 
@@ -2119,7 +2119,7 @@ void PropagateFromFace(room *rp,int facenum,ubyte *face_flags,bool matching_face
 //If matching_faces_only is set, only propagate if the face has the same texture
 void PropagateToAllFaces(room *rp,int facenum,bool matching_faces_only)
 {
-	ubyte face_flags[MAX_FACES_PER_ROOM];
+	uint8_t face_flags[MAX_FACES_PER_ROOM];
 
 	//Clear flags
 	for (int i=0;i<rp->num_faces;i++)

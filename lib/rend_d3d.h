@@ -91,7 +91,7 @@ void d3d_SetFogColor(ddgr_color fogcolor);
 void d3d_SetAlphaType(int8_t);
 
 // Sets the constant alpha value
-void d3d_SetAlphaValue(ubyte val);
+void d3d_SetAlphaValue(uint8_t val);
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
 // usefull for motion blur effect

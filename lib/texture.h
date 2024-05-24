@@ -122,9 +122,9 @@ typedef struct {
 extern void (*Texture_functions[])(g3Point *, int);
 
 // Our shade tables
-extern ubyte TexShadeTable8[MAX_TEXTURE_SHADES][256];
+extern uint8_t TexShadeTable8[MAX_TEXTURE_SHADES][256];
 extern uint32_t TexShadeTable16[MAX_TEXTURE_SHADES][256];
-extern ubyte TexRevShadeTable8[MAX_TEXTURE_SHADES][256];
+extern uint8_t TexRevShadeTable8[MAX_TEXTURE_SHADES][256];
 extern uint32_t TexRevShadeTable16[MAX_TEXTURE_SHADES][256];
 
 int tex_Init();
@@ -197,7 +197,7 @@ void tex_StartFrame(int x1, int y1, int x2, int y2);
 void tex_EndFrame();
 
 // Sets the software renderer to render to a particular place
-void tex_SetSoftwareParameters(float, int, int, int, ubyte *);
+void tex_SetSoftwareParameters(float, int, int, int, uint8_t *);
 
 // Fills in projection variables
 void tex_GetProjectionParameters(int *width, int *height);

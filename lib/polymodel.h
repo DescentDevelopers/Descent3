@@ -319,7 +319,7 @@ extern polymodel_light_type Polymodel_light_type;
 extern float Polylighting_static_red;
 extern float Polylighting_static_green;
 extern float Polylighting_static_blue;
-extern ubyte *Polylighting_gouraud;
+extern uint8_t *Polylighting_gouraud;
 extern vector *Polymodel_light_direction, Polymodel_fog_portal_vert, Polymodel_fog_plane, Polymodel_specular_pos,
     Polymodel_bump_pos;
 extern lightmap_object *Polylighting_lightmap_object;
@@ -354,17 +354,17 @@ int FindPolyModelName(const char *name);
 
 // This one is for static lighting - ie 1 light value for the entire model
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, float r, float g,
-                      float b, uint32_t f_render_sub = 0xFFFFFFFF, ubyte use_effect = 0, ubyte overlay = 0);
+                      float b, uint32_t f_render_sub = 0xFFFFFFFF, uint8_t use_effect = 0, uint8_t overlay = 0);
 
 // This one is for gouraud shading - the lightdir is the normalized light direction, and lightscalar is a 0-1 scalar to
 // apply
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, vector *lightdir,
-                      float r, float g, float b, uint32_t f_render_sub = 0xFFFFFFFF, ubyte use_effect = 0,
-                      ubyte overlay = 0);
+                      float r, float g, float b, uint32_t f_render_sub = 0xFFFFFFFF, uint8_t use_effect = 0,
+                      uint8_t overlay = 0);
 
 // This one is for lightmap rendering
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags,
-                      lightmap_object *lm_object, uint32_t f_render_sub, ubyte use_effect = 0, ubyte overlay = 0);
+                      lightmap_object *lm_object, uint32_t f_render_sub, uint8_t use_effect = 0, uint8_t overlay = 0);
 
 // gives the interpreter an array of points to use
 void g3_SetInterpPoints(g3Point *pointlist);
@@ -387,7 +387,7 @@ float GetNormalizedKeyframe(int handle, float num);
 void RemapPolyModels();
 
 // For macintosh, we must swap the interpreted model code
-void SwapPolymodelData(ubyte *data);
+void SwapPolymodelData(uint8_t *data);
 
 // Sets a positional instance
 void StartPolyModelPosInstance(vector *posvec);

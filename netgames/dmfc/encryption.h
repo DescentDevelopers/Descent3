@@ -47,10 +47,10 @@ public:
   IceKey(int n);
   ~IceKey();
 
-  void set(const ubyte *key);
+  void set(const uint8_t *key);
 
-  void encrypt(const ubyte *plaintext, ubyte *ciphertext) const;
-  void decrypt(const ubyte *ciphertext, ubyte *plaintext) const;
+  void encrypt(const uint8_t *plaintext, uint8_t *ciphertext) const;
+  void decrypt(const uint8_t *ciphertext, uint8_t *plaintext) const;
 
   int keySize(void) const;
   int blockSize(void) const;

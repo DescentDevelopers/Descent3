@@ -39,7 +39,7 @@
  *
  *
  * 14    6/23/99 3:36p Samir
- * took out #define ubyte
+ * took out #define uint8_t
  *
  * 13    3/02/99 5:50p Kevin
  * Ouch. Duplicate structures existed and were conflicting.
@@ -83,7 +83,7 @@
 
 #include "ui.h"
 
-// #define ubyte uint8_t
+// #define uint8_t uint8_t
 
 #define TRACKER_MENU_W 256
 #define TRACKER_MENU_H 256

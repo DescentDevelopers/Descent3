@@ -64,7 +64,7 @@ void MultiDisconnectPlayer(int slot);
 void MultiSendPlayer(int slot, int which);
 
 // Sends this reliable packet to everyone except the server and the named slot
-void MultiSendReliablyToAllExcept(int except, ubyte *data, int size, int seq_threshold = 0, bool urgent = 1);
+void MultiSendReliablyToAllExcept(int except, uint8_t *data, int size, int seq_threshold = 0, bool urgent = 1);
 
 // Tells clients to execute dlls on their machines
 void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info = NULL);

@@ -474,9 +474,9 @@ bool UseMultitexture = 0;
 bool UseWBuffer = 0;
 int Overlay_map = -1;
 int Bump_map = 0, Bumpmap_ready = 0;
-ubyte Overlay_type = OT_NONE;
+uint8_t Overlay_type = OT_NONE;
 float Z_bias = 0.0;
-ubyte Renderer_close_flag = 0, Renderer_initted = 0;
+uint8_t Renderer_close_flag = 0, Renderer_initted = 0;
 // Is this hardware or software rendered?
 renderer_type Renderer_type = RENDERER_SOFTWARE_16BIT;
 // Tells the software renderer whether or not to use mipping
@@ -1006,7 +1006,7 @@ void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, flo
   }
 }
 // Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte *framebuffer) {
+void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, uint8_t *framebuffer) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -1103,7 +1103,7 @@ void rend_SetZValues(float nearz, float farz) {
 // Sets a bitmap as a overlay map to rendered on top of the next texture map
 // a -1 value indicates no overlay map
 void rend_SetOverlayMap(int handle) { Overlay_map = handle; }
-void rend_SetOverlayType(ubyte type) { Overlay_type = type; }
+void rend_SetOverlayType(uint8_t type) { Overlay_type = type; }
 // Clears the display to a specified color
 void rend_ClearScreen(ddgr_color color) {
   switch (Renderer_type) {
@@ -1424,7 +1424,7 @@ void rend_SetAlphaType(int8_t atype) {
   }
 }
 // Sets the alpha value for constant alpha
-void rend_SetAlphaValue(ubyte val) {
+void rend_SetAlphaValue(uint8_t val) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -1778,7 +1778,7 @@ void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *da
   rend_ReleaseLFBLock(&lfb);
 }
 //	given a chunked bitmap, renders it.
-void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha) {
+void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, uint8_t alpha) {
   int *bm_array = chunk->bm_array;
   int w = chunk->w;
   int h = chunk->h;
@@ -1810,7 +1810,7 @@ void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha) {
   rend_SetZBufferState(1);
 }
 //	given a chunked bitmap, renders it.scaled
-void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, ubyte alpha) {
+void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, uint8_t alpha) {
   int *bm_array = chunk->bm_array;
   int w = chunk->w;
   int h = chunk->h;

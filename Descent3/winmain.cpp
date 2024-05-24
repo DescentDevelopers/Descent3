@@ -397,14 +397,14 @@ bool Win32SystemCheck(HINSTANCE hInst) {
   if (lResult == ERROR_SUCCESS) {
     char version[32];
     DWORD dwType, dwLen = 32;
-    lResult = RegQueryValueEx(hKey, "Version", NULL, &dwType, (ubyte *)version, &dwLen);
+    lResult = RegQueryValueEx(hKey, "Version", NULL, &dwType, (uint8_t *)version, &dwLen);
     if (lResult == ERROR_SUCCESS) {
       version_num = atoi(strstr(version, ".") + 1);
     } else {
       int val;
       DWORD dwType, dwLen = 4;
 
-      lResult = RegQueryValueEx(hKey, "InstalledVersion", NULL, &dwType, (ubyte *)&val, &dwLen);
+      lResult = RegQueryValueEx(hKey, "InstalledVersion", NULL, &dwType, (uint8_t *)&val, &dwLen);
       if (lResult == ERROR_SUCCESS) {
         version_num = val;
       }

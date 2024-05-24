@@ -114,18 +114,18 @@ typedef struct a_bank {
 } a_bank;
 
 typedef struct {
-  ubyte num_verts;
+  uint8_t num_verts;
   ushort lmi_handle;
   vector rvec, uvec;
   float *u2, *v2;
 } lightmap_object_face;
 
 typedef struct {
-  ubyte num_models;
+  uint8_t num_models;
 
   short num_faces[MAX_SUBOBJECTS];
   lightmap_object_face *lightmap_faces[MAX_SUBOBJECTS];
-  ubyte used;
+  uint8_t used;
 
 } lightmap_object;
 
@@ -180,7 +180,7 @@ typedef struct bsp_info {
 
   int8_t children[MAX_SUBOBJECTS]; // children of this submodel
   int parent;                     // what is parent for each submodel
-  ubyte num_children;
+  uint8_t num_children;
 
   vector min;
   vector max;
@@ -228,14 +228,14 @@ typedef struct poly_model {
   uint16_t used;
 
   int flags;       // PMF_flags, see above
-  ubyte new_style; // if 1, then this polymodel is in the new outrage format (oof)
+  uint8_t new_style; // if 1, then this polymodel is in the new outrage format (oof)
   int id;          // what the polygon model number is.  (Index in Poly_models)
   int version;
   char name[PAGENAME_LEN];
 
   int n_models;
   int model_data_size;
-  ubyte *model_data;
+  uint8_t *model_data;
 
   vector mins, maxs; // min,max for whole model
   vector view_pos;   // viewing position.  Default to {0,0,0}.

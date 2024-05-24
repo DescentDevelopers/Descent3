@@ -68,7 +68,7 @@ static int bm_pcx_24bit_alloc_file(CFILE *infile);
 
 // Loads a pcx file and converts it to 16 bit.  Returns bitmap handle or -1 on error
 int bm_pcx_alloc_file(CFILE *infile) {
-  ubyte temp[128];
+  uint8_t temp[128];
 
   cf_ReadBytes(temp, 128, infile);
   cfseek(infile, 0, SEEK_SET);
@@ -94,9 +94,9 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   int total, run = 0;
   int i, t;
   int src_bm;
-  ubyte pred[256], pgreen[256], pblue[256];
-  ubyte buf;
-  ubyte temp[128];
+  uint8_t pred[256], pgreen[256], pblue[256];
+  uint8_t buf;
+  uint8_t temp[128];
 
   cf_ReadBytes(temp, 4, infile);
 
@@ -117,7 +117,7 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   height = 1 + ymax - ymin;
   total = width * height;
 
-  ubyte *rawdata = (ubyte *)mem_malloc(width * height);
+  uint8_t *rawdata = (uint8_t *)mem_malloc(width * height);
   if (!rawdata)
     return -1; // no memory!
 
@@ -125,7 +125,7 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   while (run < total) {
     buf = cf_ReadByte(infile);
     if (buf >= 192) {
-      ubyte tb;
+      uint8_t tb;
       tb = cf_ReadByte(infile);
       for (i = 0; i < (buf - 192); i++, run++)
         rawdata[run] = tb;
@@ -158,7 +158,7 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   for (i = 0; i < height; i++) {
     for (t = 0; t < width; t++) {
       ushort pixel;
-      ubyte c = rawdata[i * width + t];
+      uint8_t c = rawdata[i * width + t];
 
       int r = pred[c];
       int g = pgreen[c];
@@ -183,8 +183,8 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
   int total, run = 0;
   int i, t;
   int src_bm;
-  ubyte buf;
-  ubyte temp[128];
+  uint8_t buf;
+  uint8_t temp[128];
 
   cf_ReadBytes(temp, 4, infile);
 
@@ -226,7 +226,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
   // scanline length
   total = 3 * BytesPerLine;
 
-  ubyte *rawdata = (ubyte *)mem_malloc(total * height);
+  uint8_t *rawdata = (uint8_t *)mem_malloc(total * height);
   if (!rawdata) {
     mprintf((0, "PCXLoad: Out of memory\n"));
     return -1; // no memory!
@@ -246,7 +246,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
     while (run < BytesPerLine) {
       buf = cf_ReadByte(infile);
       if (buf >= 192) {
-        ubyte tb;
+        uint8_t tb;
         tb = cf_ReadByte(infile);
         for (i = 0; i < (buf - 192); i++, run++, data_index++)
           rawdata[data_index] = tb;
@@ -262,7 +262,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
     while (run < BytesPerLine) {
       buf = cf_ReadByte(infile);
       if (buf >= 192) {
-        ubyte tb;
+        uint8_t tb;
         tb = cf_ReadByte(infile);
         for (i = 0; i < (buf - 192); i++, run++, data_index++)
           rawdata[data_index] = tb;
@@ -278,7 +278,7 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
     while (run < BytesPerLine) {
       buf = cf_ReadByte(infile);
       if (buf >= 192) {
-        ubyte tb;
+        uint8_t tb;
         tb = cf_ReadByte(infile);
         for (i = 0; i < (buf - 192); i++, run++, data_index++)
           rawdata[data_index] = tb;

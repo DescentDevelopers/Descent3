@@ -169,10 +169,10 @@ extern int AI_debug_robot_index;
 // Is my buddy in the level? (no if the handle is invalid)
 extern int Buddy_handle[MAX_PLAYERS];
 
-bool AINotify(object *obj, ubyte notify_type, void *info = NULL);
+bool AINotify(object *obj, uint8_t notify_type, void *info = NULL);
 void AIDoFrame(object *obj);
 void AIFrameAll(void);
-bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement);
+bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement);
 void AIInitAll(void);
 void AIPowerSwitch(object *obj, bool f_on);
 void AITurnTowardsDir(object *obj, /*velocity *new_vel,*/ vector *goal_dir /*, bool remain_level*/, float turn_rate);

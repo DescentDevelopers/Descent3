@@ -43,7 +43,7 @@ typedef struct game_event {
   int type;
   int id;
   int objhandle_detonator; // watch this object, if it dies/gets killed than cancel this game event
-  ubyte used;
+  uint8_t used;
   float start_time, end_time;
   int frame_born;
 

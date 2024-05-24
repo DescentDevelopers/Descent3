@@ -227,8 +227,8 @@ typedef struct {
 
 typedef struct {
   bool flash_state; // Is the button glowing?
-  ubyte click_type; // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
-  ubyte button_type;
+  uint8_t click_type; // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
+  uint8_t button_type;
   int sibling; // Sibling effect (for down/up arrows), -1 if none
   int parent;  // Parent effect (text for down/up arrows), -1 if it works with TelCom System
   int bm_handle;
@@ -246,9 +246,9 @@ typedef struct {
 } tButtonInfo;
 
 typedef struct {
-  ubyte type;     // Type of effect
-  ubyte monitor;  // Which monitor it belongs to
-  ubyte screen;   // What screen the effect belongs to
+  uint8_t type;     // Type of effect
+  uint8_t monitor;  // Which monitor it belongs to
+  uint8_t screen;   // What screen the effect belongs to
   bool tab_stop;  // This effect can have focus
   bool has_focus; // The effect currently has focus
 

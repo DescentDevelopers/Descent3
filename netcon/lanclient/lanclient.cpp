@@ -426,7 +426,7 @@ int MainMultiplayerMenu() {
   for (a = 0; a < MAX_NET_GAMES; a++)
     net_game_txt_items[a] = NULL;
   int ret = 0;
-  ubyte oldalpha = *DLLNewUIWindow_alpha;
+  uint8_t oldalpha = *DLLNewUIWindow_alpha;
   int cury = 40;
 
   DLLSetScreenMode(SM_MENU);

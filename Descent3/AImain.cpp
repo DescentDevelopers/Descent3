@@ -2888,7 +2888,7 @@ void AISeeTarget(object *obj, bool f_see) {
   }
 }
 
-bool AINotify(object *obj, ubyte notify_type, void *info) {
+bool AINotify(object *obj, uint8_t notify_type, void *info) {
   int next_anim;
   ai_frame *ai_info = obj->ai_info;
   //@$-tD3XEventArgs evtargs;
@@ -3669,7 +3669,7 @@ void ObjSetAIInfo(object *objp) {
   dest->biased_flight_max = src->biased_flight_max;
 }
 
-bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement) {
+bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement) {
   ai_frame *ai_info = obj->ai_info;
   ASSERT(ai_info);
   ASSERT(obj->control_type == CT_AI && obj->type != OBJ_NONE);
@@ -5368,7 +5368,7 @@ void ai_fire(object *obj) {
 
         obj->dynamic_wb[i].norm_turret_angle[j] = ta[best_dot];
 
-        ubyte last_t_d = obj->dynamic_wb[i].turret_direction[j];
+        uint8_t last_t_d = obj->dynamic_wb[i].turret_direction[j];
 
         if (dot[WB_MOVE_RIGHT] > dot[WB_MOVE_LEFT])
           obj->dynamic_wb[i].turret_direction[j] = WB_MOVE_RIGHT;

@@ -799,7 +799,7 @@ int GetDirectXVersion(void)
 				"Version",							// The values name
 				NULL,									// DWORD reserved
 				&dwType,								// What kind it is
-				(ubyte *) version, 				// value to set
+				(uint8_t *) version, 				// value to set
 				&dwLen								// How many bytes to set
 			);
 
@@ -818,7 +818,7 @@ int GetDirectXVersion(void)
 					"InstalledVersion",				// The values name
 					NULL,									// DWORD reserved
 					&dwType,								// What kind it is
-					(ubyte *) &val,					// value to set
+					(uint8_t *) &val,					// value to set
 					&dwLen								// How many bytes to set
 				);
 

@@ -78,7 +78,7 @@ tGraphColor GraphColors[MAX_GRAPH_NODES] = {
     {"Dk.Purple", GR_RGB(100, 4, 104)}};
 
 typedef struct {
-  ubyte data_input;
+  uint8_t data_input;
   int flags;
 
   union {

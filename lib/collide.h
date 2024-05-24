@@ -87,8 +87,8 @@
 #include "vecmat.h"
 #include "findintersection.h"
 
-extern ubyte CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
-extern ubyte CollisionRayResult[MAX_OBJECT_TYPES];
+extern uint8_t CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
+extern uint8_t CollisionRayResult[MAX_OBJECT_TYPES];
 
 void CollideInit();
 void collide_two_objects(object *A, object *B, vector *collision_point, vector *collision_normal,

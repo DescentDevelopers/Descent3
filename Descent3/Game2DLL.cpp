@@ -94,14 +94,14 @@ typedef struct {
 // The exported DLL function call prototypes
 #if defined(__LINUX__)
 typedef void DLLFUNCCALL (*DLLGameCall_fp)(int eventnum, dllinfo *data);
-typedef void DLLFUNCCALL (*DLLGameInit_fp)(int *api_func, ubyte *all_ok, int num_teams_to_use);
+typedef void DLLFUNCCALL (*DLLGameInit_fp)(int *api_func, uint8_t *all_ok, int num_teams_to_use);
 typedef void DLLFUNCCALL (*DLLGameClose_fp)();
 typedef void DLLFUNCCALL (*DLLGameGetName_fp)(char *buffer, int maxsize);
 typedef void DLLFUNCCALL (*DLLGameGetDesc_fp)(char **buffer, int maxsize, int lines);
 typedef void DLLFUNCCALL (*DLLGetGameInfo_fp)(tDLLOptions *options);
 #else
 typedef void(DLLFUNCCALL *DLLGameCall_fp)(int eventnum, dllinfo *data);
-typedef void(DLLFUNCCALL *DLLGameInit_fp)(int *api_func, ubyte *all_ok, int num_teams_to_use);
+typedef void(DLLFUNCCALL *DLLGameInit_fp)(int *api_func, uint8_t *all_ok, int num_teams_to_use);
 typedef void(DLLFUNCCALL *DLLGameClose_fp)();
 typedef void(DLLFUNCCALL *DLLGameGetName_fp)(char *buffer, int maxsize);
 typedef void(DLLFUNCCALL *DLLGameGetDesc_fp)(char **buffer, int maxsize, int lines);
@@ -703,7 +703,7 @@ int LoadGameDLL(const char *name, int num_teams_to_use) {
     first = 0;
   }
   void *api_fp;
-  ubyte ok = 1;
+  uint8_t ok = 1;
   api_fp = (void *)GetGameAPI;
 
   DLLGameInit((int *)api_fp, &ok, num_teams_to_use);
@@ -738,7 +738,7 @@ void CallGameDLL(int eventnum, dllinfo *data) {
 // Call this function right after a player connects to the game to see if a player is banned
 bool GameDLLIsAddressBanned(network_address *addr, const char *tracker_id) {
   ASSERT(addr);
-  DLLInfo.special_data = (ubyte *)addr;
+  DLLInfo.special_data = (uint8_t *)addr;
   // This used to be tracker_id, but storing a pointer as an int is a problem in 64 bit
   // and no code ever was populating the tracker id that I know of. -Kevin
   DLLInfo.iParam = 0;

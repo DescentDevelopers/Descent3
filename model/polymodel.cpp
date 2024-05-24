@@ -653,7 +653,7 @@ polymodel_light_type Polymodel_light_type = POLYMODEL_LIGHTING_STATIC;
 float Polylighting_static_red;
 float Polylighting_static_green;
 float Polylighting_static_blue;
-ubyte *Polylighting_gouraud;
+uint8_t *Polylighting_gouraud;
 lightmap_object *Polylighting_lightmap_object;
 
 vector *Polymodel_light_direction, Polymodel_fog_plane, Polymodel_specular_pos, Polymodel_fog_portal_vert,
@@ -1508,7 +1508,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       } else
         start_index = NULL;
 
-      ubyte tempbuf[2000];
+      uint8_t tempbuf[2000];
 
       for (i = 0; i < nfaces; i++) {
         ReadModelVector(&tvec, infile);
@@ -1572,7 +1572,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
         } else {
           pm->submodel[n].faces[i].texnum = -1;
-          ubyte r, g, b;
+          uint8_t r, g, b;
           r = cf_ReadByte(infile);
           g = cf_ReadByte(infile);
           b = cf_ReadByte(infile);
@@ -2843,7 +2843,7 @@ void DoneLightInstance() {
 
 // This is the static light version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, float r, float g,
-                      float b, uint32_t f_render_sub, ubyte use_effect, ubyte overlay) {
+                      float b, uint32_t f_render_sub, uint8_t use_effect, uint8_t overlay) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);
@@ -2921,7 +2921,7 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 
 // This draws a gouraud shaded version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, vector *lightdir,
-                      float r, float g, float b, uint32_t f_render_sub, ubyte use_effect, ubyte overlay) {
+                      float r, float g, float b, uint32_t f_render_sub, uint8_t use_effect, uint8_t overlay) {
   poly_model *po;
   vector light_vec = *lightdir;
 
@@ -3001,7 +3001,7 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 
 // This draws a lightmap shaded version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags,
-                      lightmap_object *lm_object, uint32_t f_render_sub, ubyte use_effect, ubyte overlay) {
+                      lightmap_object *lm_object, uint32_t f_render_sub, uint8_t use_effect, uint8_t overlay) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);

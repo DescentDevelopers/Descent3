@@ -162,7 +162,7 @@ bool GenericPageList::AddToList(GenericPageNode *new_node)
 bool GenericPageList::LoadTable (char *table_filename)
 {
 	CFILE *infile;
-	ubyte pagetype;
+	uint8_t pagetype;
 	int done;
 	uint32_t page_id;
 
@@ -227,7 +227,7 @@ bool GenericPageList::LoadTable (char *table_filename)
 bool GenericPageList::SaveTable (char *table_filename)
 {
 	CFILE *infile,*outfile;
-	ubyte pagetype,replaced=0;
+	uint8_t pagetype,replaced=0;
 	int done=0;
 	uint32_t page_id;
 	GenericPageNode *new_generic_page;

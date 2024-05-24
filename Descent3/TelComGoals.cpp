@@ -493,8 +493,8 @@ void TCGoalsRenderCallback(void) {
         rend_SetAlphaValue(255.0);
         rend_SetFiltering(1);
       } else {
-        ubyte alpha_to_use;
-        alpha_to_use = (ubyte)active_alpha;
+        uint8_t alpha_to_use;
+        alpha_to_use = (uint8_t)active_alpha;
         grtext_SetAlpha(alpha_to_use);
       }
     }

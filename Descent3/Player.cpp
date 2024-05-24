@@ -2034,7 +2034,7 @@ typedef struct tDeathSeq {
   float accel_mod;
   vector force_dir;
 
-  ubyte saved_ctrl_type;
+  uint8_t saved_ctrl_type;
   uint32_t saved_phys_flags;
   float saved_drag;
   vector saved_rotthrust;
@@ -3564,7 +3564,7 @@ void PlayerStopObserving(int slot) {
   }
 
   if (slot == Player_num) {
-    ubyte hud_mode;
+    uint8_t hud_mode;
     Current_pilot.get_hud_data(&hud_mode);
     AddHUDMessage(TXT_LEAVEOBS);
     SetHUDMode((tHUDMode)hud_mode);
@@ -3889,7 +3889,7 @@ void PlayerScoreAdd(int playernum, int points) {
 ////////////////////////////////////////////////////
 // Thief interface functions
 ////////////////////////////////////////////////////
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 void MakeObjectVisible(object *obj);
 
 // steals an item from the given player

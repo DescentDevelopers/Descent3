@@ -675,7 +675,7 @@ void SaveGroup(char *filename,group *g)
 		return;
 
 	//Write tag & version number
-	cf_WriteBytes((ubyte *) GROUP_FILE_TAG,4,ifile);
+	cf_WriteBytes((uint8_t *) GROUP_FILE_TAG,4,ifile);
 	cf_WriteInt(ifile,GROUP_FILE_VERSION);
 	cf_WriteInt(ifile,LEVEL_FILE_VERSION);
 
@@ -750,7 +750,7 @@ group *LoadGroup(char *filename)
 		return NULL;
 
 	//Read & check tag
-	cf_ReadBytes((ubyte *) tag,4,ifile);
+	cf_ReadBytes((uint8_t *) tag,4,ifile);
 	if (strncmp(tag,GROUP_FILE_TAG,4)) {
 		cfclose(ifile);
 		return NULL;

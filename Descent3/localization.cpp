@@ -631,7 +631,7 @@ char *_parse_escape_chars(char *buffer) {
         // see if we have a number
         if ((buffer[b_index] >= '0') && (buffer[b_index] <= '9')) {
           // we have a number, so parse the value
-          ubyte value = 0;
+          uint8_t value = 0;
           while ((buffer[b_index] >= '0') && (buffer[b_index] <= '9')) {
             value = (value * 10) + buffer[b_index] - '0';
             b_index++;

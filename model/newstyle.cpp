@@ -102,9 +102,9 @@
 #include "psrand.h"
 
 static float face_depth[MAX_POLYGON_VECS];
-static ubyte triangulated_faces[MAX_FACES_PER_ROOM];
+static uint8_t triangulated_faces[MAX_FACES_PER_ROOM];
 
-static ubyte FacingPass = 0;
+static uint8_t FacingPass = 0;
 static int Multicolor_texture = -1;
 
 static vector Fog_plane;
@@ -460,7 +460,7 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
                     }
 
                     // Draw red cross where upper left is
-                    ubyte c0;
+                    uint8_t c0;
                     g3Point p0;
                     p0.p3_flags=0;
                     c0 = g3_RotatePoint(&p0,&LightmapInfo[lmi_handle].upper_left);

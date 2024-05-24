@@ -172,7 +172,7 @@ extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 typedef float( *timer_GetTime_fp) (void);
 extern timer_GetTime_fp DLLtimer_GetTime;
 
-typedef int (*nw_RegisterCallback_fp) (void * nfp, ubyte id);
+typedef int (*nw_RegisterCallback_fp) (void * nfp, uint8_t id);
 extern nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
 typedef int (*nw_DoReceiveCallbacks_fp)(void);
@@ -532,7 +532,7 @@ void PollPTrackNet()
 
 int Motd_version = 0;
 
-void HandlePilotData(ubyte *data,int len, network_address *from)
+void HandlePilotData(uint8_t *data,int len, network_address *from)
 {
 	udp_packet_header inpacket;
 	vmt_descent3_struct *d3_pilot;

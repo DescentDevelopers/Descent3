@@ -194,7 +194,7 @@ int mng_ReadNewMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificMegacellPage(char *name, mngs_megacell_page *megacellpage, int local) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
 
   if (local)

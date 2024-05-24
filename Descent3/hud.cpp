@@ -589,8 +589,8 @@ void InitShipHUD(int ship) {
   HUD_resources.invpulse_bmp = -1;
 
   //	sets current hud mode static global
-  // DAJ	Current_pilot.get_hud_data((ubyte *)&Hud_mode);
-  ubyte hud_tmp;
+  // DAJ	Current_pilot.get_hud_data((uint8_t *)&Hud_mode);
+  uint8_t hud_tmp;
   Current_pilot.get_hud_data(&hud_tmp);
   Hud_mode = (tHUDMode)hud_tmp;
 }
@@ -759,8 +759,8 @@ redo_hud_switch:
   // save out current hud mode
   // JEFF: (only if going from HUD_FULLSCREEN->HUD_COCKPIT or vice-versa)
   if ((Hud_mode == HUD_FULLSCREEN && mode == HUD_COCKPIT) || (Hud_mode == HUD_COCKPIT && mode == HUD_FULLSCREEN)) {
-    ubyte bmode = mode; // DAJ MAC using enums always int
-    Current_pilot.set_hud_data((ubyte *)&bmode);
+    uint8_t bmode = mode; // DAJ MAC using enums always int
+    Current_pilot.set_hud_data((uint8_t *)&bmode);
     mprintf((0, "Saving new hud mode to pilot\n"));
     PltWriteFile(&Current_pilot);
   }
@@ -980,7 +980,7 @@ bool LGSHudState(CFILE *fp) {
 
   while ((stat_mask = (ushort)cf_ReadShort(fp)) != 0) {
     tHUDItem huditem;
-    ubyte item_type = (ubyte)cf_ReadByte(fp);
+    uint8_t item_type = (uint8_t)cf_ReadByte(fp);
 
     memset(&huditem, 0, sizeof(huditem));
     huditem.type = item_type;
@@ -995,7 +995,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
       huditem.flags = (ushort)cf_ReadShort(fp);
-      huditem.alpha = (ubyte)cf_ReadByte(fp);
+      huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.buffer_size = (int)cf_ReadShort(fp);
       huditem.render_fn = NULL; // use pointer to function void (*fn)(struct tHUDItem *)
@@ -1013,7 +1013,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
       huditem.flags = (ushort)cf_ReadShort(fp);
-      huditem.alpha = (ubyte)cf_ReadByte(fp);
+      huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.data.timer_handle = cf_ReadInt(fp);
       huditem.render_fn = RenderHUDTimer; // use pointer to function void (*fn)(struct tHUDItem *)
@@ -1340,7 +1340,7 @@ void RenderAuxHUDFrame() {
 char *GetControllerBindingText(int fidcont) {
   static char *cont_bind_txt;
   ct_type ctype[CTLBINDS_PER_FUNC];
-  ubyte cfgflags[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags[CTLBINDS_PER_FUNC];
   ct_config_data cfgdata;
   tCfgDataParts cfgparts;
   if (-1 == fidcont)
@@ -1352,8 +1352,8 @@ char *GetControllerBindingText(int fidcont) {
 
   Controller->get_controller_function(Cfg_joy_elements[fidcont].fn_id, ctype, &cfgdata, cfgflags);
   parse_config_data(&cfgparts, ctype[0], ctype[1], cfgdata);
-  ubyte one_binding = cfgparts.bind_0;
-  ubyte one_ctrlbind = cfgparts.ctrl_0;
+  uint8_t one_binding = cfgparts.bind_0;
+  uint8_t one_ctrlbind = cfgparts.ctrl_0;
 
   cont_bind_txt = (char *)cfg_binding_text(ctype[0], one_ctrlbind, one_binding);
   return cont_bind_txt;
@@ -1362,7 +1362,7 @@ char *GetControllerBindingText(int fidcont) {
 char *GetKeyBindingText(int fidkey) {
   static char *key_bind_txt;
   ct_type ctype[CTLBINDS_PER_FUNC];
-  ubyte cfgflags[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags[CTLBINDS_PER_FUNC];
   ct_config_data cfgdata;
   tCfgDataParts cfgparts;
   if (-1 == fidkey)
@@ -1374,8 +1374,8 @@ char *GetKeyBindingText(int fidkey) {
 
   Controller->get_controller_function(Cfg_key_elements[fidkey].fn_id, ctype, &cfgdata, cfgflags);
   parse_config_data(&cfgparts, ctype[0], ctype[1], cfgdata);
-  ubyte one_binding = cfgparts.bind_0;
-  ubyte one_ctrlbind = cfgparts.ctrl_0;
+  uint8_t one_binding = cfgparts.bind_0;
+  uint8_t one_ctrlbind = cfgparts.ctrl_0;
 
   key_bind_txt = (char *)cfg_binding_text(ctype[0], one_ctrlbind, one_binding);
   return key_bind_txt;
@@ -2152,9 +2152,9 @@ void LoadHudConfig(const char *filename, bool (*fn)(const char*, const char *, v
         tHUDItem hud_item;
         char operand[INFFILE_LINELEN];			// operand
         bool txpos = false, typos = false;
-        ubyte r=GR_COLOR_RED(HUD_COLOR);
-        ubyte g=GR_COLOR_GREEN(HUD_COLOR);
-        ubyte b=GR_COLOR_BLUE(HUD_COLOR);
+        uint8_t r=GR_COLOR_RED(HUD_COLOR);
+        uint8_t g=GR_COLOR_GREEN(HUD_COLOR);
+        uint8_t b=GR_COLOR_BLUE(HUD_COLOR);
 
 //	start over.
         ResetHud();
@@ -2178,9 +2178,9 @@ void LoadHudConfig(const char *filename, bool (*fn)(const char*, const char *, v
                         switch (cmd)
                         {
                         case HUDCMD_TYPE:	hud_item.type = atoi(operand); break;
-                        case HUDCMD_RED: r=(ubyte)atoi(operand); break;
-                        case HUDCMD_GREEN: g=(ubyte)atoi(operand); break;
-                        case HUDCMD_BLUE:	b=(ubyte)atoi(operand);	break;
+                        case HUDCMD_RED: r=(uint8_t)atoi(operand); break;
+                        case HUDCMD_GREEN: g=(uint8_t)atoi(operand); break;
+                        case HUDCMD_BLUE:	b=(uint8_t)atoi(operand);	break;
                         case HUDCMD_X:	hud_item.x = atoi(operand); break;
                         case HUDCMD_Y: hud_item.y = atoi(operand); break;
                         case HUDCMD_TX: hud_item.tx = atoi(operand); txpos = true; break;

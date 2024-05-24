@@ -114,11 +114,11 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *args, int level = 0, floa
                 int guid = -1, char subtype = 0);
 
 // Adds a ending condition to a goal
-int GoalAddDisabler(object *obj, int goal_index, ubyte ender_type, void *args, float percent = 1.0f,
+int GoalAddDisabler(object *obj, int goal_index, uint8_t ender_type, void *args, float percent = 1.0f,
                     float interval = 0.0f);
 
 // Adds a enabler condition to a goal
-int GoalAddEnabler(object *obj, int goal_index, ubyte enabler_type, void *arg_struct, float percent, float interval);
+int GoalAddEnabler(object *obj, int goal_index, uint8_t enabler_type, void *arg_struct, float percent, float interval);
 
 // Clears one goal
 void GoalClearGoal(object *obj, goal *goal_ptr, int notify_reason = AI_INVALID_INDEX);

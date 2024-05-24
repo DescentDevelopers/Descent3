@@ -144,7 +144,7 @@
 // ----------------------------------------------------------------------------
 
 static bool DDIO_key_init = 0;
-volatile ubyte DDIO_key_state[DDIO_MAX_KEYS];
+volatile uint8_t DDIO_key_state[DDIO_MAX_KEYS];
 volatile short DDIO_key_down_count[DDIO_MAX_KEYS];
 
 static struct t_key_queue {
@@ -182,7 +182,7 @@ float ddio_KeyDownTime(int key) {
   ASSERT(DDIO_key_init);
 
   //	snap off shift states, etc.
-  return ddio_InternalKeyDownTime((ubyte)(key & 0xff));
+  return ddio_InternalKeyDownTime((uint8_t)(key & 0xff));
 }
 
 //	return number of times a key's been down since last call.
@@ -195,7 +195,7 @@ int ddio_KeyDownCount(int key) {
 
 //	returns the state of an ADJUSTED KEY VALUE
 bool ddio_GetAdjKeyState(int adj_key) {
-  ubyte key_raw = adj_key & 0xff;
+  uint8_t key_raw = adj_key & 0xff;
   int key_test = 0;
 
   if (adj_key & KEY_SHIFTED) {

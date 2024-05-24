@@ -33,11 +33,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -192,7 +192,7 @@ private:
     float timer;
     float eye_timer;
     int8_t state;
-    ubyte melee_flags;
+    uint8_t melee_flags;
     short energy;
     short hits;
     int eye_obj;
@@ -289,7 +289,7 @@ void STDCALL ShutdownDLL(void) {}
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   int i;
   for (i = 0; i < NUM_IDS; i++) {
     if (strcmp(name, Script_names[i]) == 0) {
@@ -374,21 +374,21 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 static void FlushGoal(int me_handle, int goal_priority);
 static void SafeGoalClearAll(int obj_handle);
 static void AI_SafeSetType(int obj_handle, int ai_type);
-static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-                      float lifetime, float interval, float longevity, float size, float speed, ubyte random);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+                      float lifetime, float interval, float longevity, float size, float speed, uint8_t random);
 
 //////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -546,8 +546,8 @@ void AI_SafeSetType(int obj_handle, int ai_type) {
   }
 }
 
-int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-               float lifetime, float interval, float longevity, float size, float speed, ubyte random) {
+int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+               float lifetime, float interval, float longevity, float size, float speed, uint8_t random) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -1228,7 +1228,7 @@ void aiCreeper::OnInit(int me_handle) {
   memory->hits = 50;
 
   AI_Value(me_handle, VF_GET, AIV_I_FLAGS, &flags);
-  memory->melee_flags = (ubyte)(flags & (AIF_MELEE1 | AIF_MELEE2));
+  memory->melee_flags = (uint8_t)(flags & (AIF_MELEE1 | AIF_MELEE2));
 
   // set initial state of creeper
   set_state(me_handle, STATE_IDLE);

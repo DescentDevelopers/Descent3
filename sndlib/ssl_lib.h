@@ -294,8 +294,8 @@ typedef struct {
   int m_stream_bufsize;                                            // passed in
   void *user_data; // this is passed to the stream callback by the caller that defined this.
 
-  ubyte sample_skip_interval; // Allows us to skip samples (i.e. simulate lower sampling rates)
-  ubyte priority;             // priority of sound.
+  uint8_t sample_skip_interval; // Allows us to skip samples (i.e. simulate lower sampling rates)
+  uint8_t priority;             // priority of sound.
   ushort m_stream_format;     // passed in
 
   //	internal data.

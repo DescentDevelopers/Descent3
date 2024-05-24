@@ -135,7 +135,7 @@
 //	////////////////////////////////////////////////////////////////////////////
 //	generic event item for the queues.
 struct oms_q_evt {
-  ubyte cmd;
+  uint8_t cmd;
   union {
     float f;
     int i;
@@ -168,15 +168,15 @@ class oms_stream {
   } m_data2; // data for internal ops.
 
 private:
-  inline void STREAM_COMMANDP(ubyte cmd, void *p = NULL) {
+  inline void STREAM_COMMANDP(uint8_t cmd, void *p = NULL) {
     m_status.cmd = cmd;
     m_status.parm.p = p;
   }
-  inline void STREAM_COMMANDF(ubyte cmd, float cmdparm = 0) {
+  inline void STREAM_COMMANDF(uint8_t cmd, float cmdparm = 0) {
     m_status.cmd = cmd;
     m_status.parm.f = cmdparm;
   };
-  inline void STREAM_COMMANDI(ubyte cmd, int cmdparm = 0) {
+  inline void STREAM_COMMANDI(uint8_t cmd, int cmdparm = 0) {
     m_status.cmd = cmd;
     m_status.parm.f = cmdparm;
   };
@@ -207,10 +207,10 @@ public:
   void SEND_STRM_FADEOUT(float time);
   void SEND_STRM_FADEIN(float time);
   void SEND_STRM_STOP();
-  void SEND_STRM_PLAY(float vol, ubyte count);
+  void SEND_STRM_PLAY(float vol, uint8_t count);
   void SEND_STRM_FREE();
   void SEND_STRM_SWITCH(bool *switch_flag); // when stream is done, changes value of flag.
-  void SEND_STRM_NEXT(const char *fname, float vol, ubyte count,
+  void SEND_STRM_NEXT(const char *fname, float vol, uint8_t count,
                       bool *switch_flag); // specifies next stream to play in current stream.
 
   // return values (after process is called, this is updated.)
@@ -267,7 +267,7 @@ class OutrageMusicSeq {
 
   //	music scripting system.
   struct music_ins {
-    ubyte cmd; // OMFCMD_
+    uint8_t cmd; // OMFCMD_
     union {
       tMusicVal num;
       char *str;
@@ -294,7 +294,7 @@ class OutrageMusicSeq {
     bool immediate_switch; // immediate switch to new song.
     bool stream_idle;      // are we in a next switch?
     bool error;
-    ubyte pad[3];
+    uint8_t pad[3];
   };
 
   // data

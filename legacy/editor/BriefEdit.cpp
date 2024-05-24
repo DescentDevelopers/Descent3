@@ -238,7 +238,7 @@ void BriefEditFreeEffect(tBriefEffect *efx)
 	efx->type = BE_NONE;
 }
 
-void BuildMissionFlagMask(uint32_t mask,char *string,ubyte isset)
+void BuildMissionFlagMask(uint32_t mask,char *string,uint8_t isset)
 {
 	int counter = 0;
 	int index = 0;
@@ -262,7 +262,7 @@ void BuildMissionFlagMask(uint32_t mask,char *string,ubyte isset)
 //	BriefEditSaveScreens
 //
 //	Saves out the screens to a briefing file
-ubyte BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalValues *glob)
+uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalValues *glob)
 {
 	CFILE *file = cfopen(filename,"wt");
 	if(!file)
@@ -361,7 +361,7 @@ ubyte BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalVal
 						strcpy(tempbuffer,"None");
 					}
 
-					ubyte red,green,blue;
+					uint8_t red,green,blue;
 					red = GR_COLOR_RED(desc->color);
 					green = GR_COLOR_GREEN(desc->color);
 					blue = GR_COLOR_BLUE(desc->color);
@@ -1094,7 +1094,7 @@ void BEAddVoice(char *filename,int flags,char *description)
 //  BriefEditLoadScreens
 //
 //	Loads in screens from a briefing file
-ubyte BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *effect_combo,BriefGlobalValues *glob)
+uint8_t BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *effect_combo,BriefGlobalValues *glob)
 {
 	BEParseInfo.current_screen = 0;
 	BEParseInfo.title[0] = '\0';

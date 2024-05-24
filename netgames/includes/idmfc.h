@@ -521,7 +521,7 @@ public:
   //
   //
   //	There is a control message sent from someone
-  virtual void OnControlMessage(ubyte msg, int from_pnum) = 0;
+  virtual void OnControlMessage(uint8_t msg, int from_pnum) = 0;
 
   // DMFCBase::OnAllowObserverChange
   //
@@ -722,9 +722,9 @@ public:
   // to the ID's given to this function.  If any match than it calls the handler given to process
   // the packet.
   // id = ID of the packet
-  // func = Function handler to handle the packet.  Must be declared like void MyFunction(ubyte *data);
-  virtual void RegisterPacketReceiver(ubyte id, void (*func)(ubyte *)) = 0;
-  //@@@@virtual void RegisterPacketReceiver(ubyte id,void (DMFCBase::*func)(ubyte *)) = 0;
+  // func = Function handler to handle the packet.  Must be declared like void MyFunction(uint8_t *data);
+  virtual void RegisterPacketReceiver(uint8_t id, void (*func)(uint8_t *)) = 0;
+  //@@@@virtual void RegisterPacketReceiver(uint8_t id,void (DMFCBase::*func)(uint8_t *)) = 0;
 
   // DMFCBase::StartPacket
   //
@@ -736,7 +736,7 @@ public:
   //   handler to
   //        call.
   //	 count = pointer to your packet index pointer
-  virtual void StartPacket(ubyte *data, ubyte id, int *count) = 0;
+  virtual void StartPacket(uint8_t *data, uint8_t id, int *count) = 0;
 
   // DMFCBase::SendPacket
   //
@@ -745,7 +745,7 @@ public:
   //   size = size (in bytes) of the packet
   //   destination = either a player number, SP_ALL for all the players or SP_SERVER to send to the server (if you are a
   //   client)
-  virtual void SendPacket(ubyte *data, int size, int destination) = 0;
+  virtual void SendPacket(uint8_t *data, int size, int destination) = 0;
 
   // DMFCBase::GetTeamForNewPlayer
   //
@@ -778,17 +778,17 @@ public:
   // DMFCBase::GetTeamAssignmentPacket
   //
   //     Reciever for the team assignment packet.
-  virtual void GetTeamAssignmentPacket(ubyte *data) = 0;
+  virtual void GetTeamAssignmentPacket(uint8_t *data) = 0;
 
   // DMFCBase::GetChangeTeamPacket
   //
   //     Reciever for the change team packet.(Server Only)
-  virtual void GetChangeTeamPacket(ubyte *data) = 0;
+  virtual void GetChangeTeamPacket(uint8_t *data) = 0;
 
   // DMFCBase::GetGameStateRequest
   //
   //		Receiver for the server from a client asking for the state of the game
-  virtual void GetGameStateRequest(ubyte *data) = 0;
+  virtual void GetGameStateRequest(uint8_t *data) = 0;
 
   // DMFCBase::SendChangeTeamRequest
   //
@@ -799,7 +799,7 @@ public:
   // DMFCBase::GetDMFCGameInfo
   //
   //		Receives information about the DMFC game
-  virtual void GetDMFCGameInfo(ubyte *data) = 0;
+  virtual void GetDMFCGameInfo(uint8_t *data) = 0;
 
   // DMFCBase::SendDMFCGameInfo
   //
@@ -878,7 +878,7 @@ public:
   //
   //	  Returns a converted alpha based on what you give, it will be a more transparent if the onscreen menu is up
   virtual float ConvertHUDAlpha(float normal) = 0;
-  virtual ubyte ConvertHUDAlpha(ubyte normal) = 0;
+  virtual uint8_t ConvertHUDAlpha(uint8_t normal) = 0;
 
   // DMFCBase::ClipString
   //
@@ -911,13 +911,13 @@ public:
   //
   //
   //   Sets the level for displaying of Player's Callsigns on the HUD
-  virtual void SwitchShowHudCallsignLevel(ubyte level, bool announce = true) = 0;
+  virtual void SwitchShowHudCallsignLevel(uint8_t level, bool announce = true) = 0;
 
   // DMFCBase::SwitchServerHudCallsignLevel
   //
   //
   //	Sets the max level of HUD callsign displayage...determined by the server
-  virtual void SwitchServerHudCallsignLevel(ubyte level) = 0;
+  virtual void SwitchServerHudCallsignLevel(uint8_t level) = 0;
 
   // DMFCBase::GetCounterMeasureOwner
   //
@@ -963,12 +963,12 @@ public:
   // DMFCBase::DecryptData
   //
   // Decrypts a buffer of data
-  virtual void DecryptData(ubyte *data, int size) = 0;
+  virtual void DecryptData(uint8_t *data, int size) = 0;
 
   // DMFCBase::EncryptData
   //
   //	Encrypts (weak) a buffer of data
-  virtual void EncryptData(ubyte *data, int size) = 0;
+  virtual void EncryptData(uint8_t *data, int size) = 0;
 
   // DMFCBase::VersionCheck
   //
@@ -1034,8 +1034,8 @@ public:
   //	returns:	1 if size given was <=0 (if so all previous user stats will be removed)
   //				0 all went ok
   //				-1 out of memory (all user stats memory will be freed)
-  virtual int SetupPlayerRecord(int sizeof_individual_data, int (*pack_callback)(void *user_info, ubyte *data),
-                                int (*unpack_callback)(void *user_info, ubyte *data)) = 0;
+  virtual int SetupPlayerRecord(int sizeof_individual_data, int (*pack_callback)(void *user_info, uint8_t *data),
+                                int (*unpack_callback)(void *user_info, uint8_t *data)) = 0;
 
   // DMFCBase::GetPlayerRecordData
   //
@@ -1063,7 +1063,7 @@ public:
   //
   //
   //	Recieves and processes a request for a player record
-  virtual void ReceiveRequestForPlayerRecords(ubyte *data) = 0;
+  virtual void ReceiveRequestForPlayerRecords(uint8_t *data) = 0;
 
   // DMFCBase::IsPlayerBanned
   //
@@ -1110,13 +1110,13 @@ public:
   //
   //
   //	Sends a [1 byte] control message to a player
-  virtual void SendControlMessageToPlayer(int pnum, ubyte msg) = 0;
+  virtual void SendControlMessageToPlayer(int pnum, uint8_t msg) = 0;
 
   // DMFCBase::ReceiveControlMessage
   //
   //
   //	Handles a control message
-  virtual void ReceiveControlMessage(ubyte *data) = 0;
+  virtual void ReceiveControlMessage(uint8_t *data) = 0;
 
   // DMFCBase::FindPInfoStatFirst
   //
@@ -1372,7 +1372,7 @@ public:
   // bool SetStateItemList(int count, ... ); for MIT_STATE items
   // or
   // bool SetStateItemListArray(int count, char **array);	for MIT_STATE items
-  // virtual MenuItem *CreateMenuItem(const char *title,char type,ubyte flags,void (*fp)(int), ... ) = 0;
+  // virtual MenuItem *CreateMenuItem(const char *title,char type,uint8_t flags,void (*fp)(int), ... ) = 0;
 
   // DMFCBase::ReadInHostsAllowDeny
   //
@@ -1474,7 +1474,7 @@ public:
   virtual void Set_OnSaveStatsToFile(void (*callback)(void)) = 0;
   virtual void Set_OnPlayerReconnect(void (*callback)(int player_num)) = 0;
   virtual void Set_OnPlayerConnect(void (*callback)(int player_num)) = 0;
-  virtual void Set_OnControlMessage(void (*callback)(ubyte msg, int from_pnum)) = 0;
+  virtual void Set_OnControlMessage(void (*callback)(uint8_t msg, int from_pnum)) = 0;
   virtual void Set_OnAllowObserverChange(bool (*callback)(bool turnonobserver)) = 0;
   virtual void Set_OnClientShowUI(void (*callback)(int id, void *user_data)) = 0;
   virtual void Set_OnPrintScores(void (*callback)(int level)) = 0;
@@ -1546,7 +1546,7 @@ public:
   virtual void CallOnSaveStatsToFile(void) = 0;
   virtual void CallOnPlayerReconnect(int player_num) = 0;
   virtual void CallOnPlayerConnect(int player_num) = 0;
-  virtual void CallOnControlMessage(ubyte msg, int from_pnum) = 0;
+  virtual void CallOnControlMessage(uint8_t msg, int from_pnum) = 0;
   virtual bool CallOnAllowObserverChange(bool turnonobserver) = 0;
   virtual void CallOnClientShowUI(int id, void *user_data) = 0;
   virtual void CallOnPrintScores(int level) = 0;
@@ -1725,7 +1725,7 @@ Class creation interface functions
 */
 DLLEXPORT IDMFC DLLFUNCCALLPTR CreateDMFC(void);
 DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItem(void);
-DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, ubyte flags, void (*fp)(int),
+DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, uint8_t flags, void (*fp)(int),
                                                               tCustomMenu *custom_menu = NULL);
 DLLEXPORT IDmfcStats DLLFUNCCALLPTR CreateDmfcStats(void);
 
@@ -1801,7 +1801,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_OnGameStateRequest(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnSaveStatsToFile(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPlayerReconnect(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPlayerConnect(IDMFC *instance, int player_num);
-DLLEXPORT void DLLFUNCCALL IDMFC_OnControlMessage(IDMFC *instance, ubyte msg, int from_pnum);
+DLLEXPORT void DLLFUNCCALL IDMFC_OnControlMessage(IDMFC *instance, uint8_t msg, int from_pnum);
 DLLEXPORT bool DLLFUNCCALL IDMFC_OnAllowObserverChange(IDMFC *instance, bool turnonobserver);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientShowUI(IDMFC *instance, int id, void *user_data);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPrintScores(IDMFC *instance, int level);
@@ -1836,19 +1836,19 @@ DLLEXPORT void DLLFUNCCALL IDMFC_DoRandomDeathMessage(IDMFC *instance, int kille
                                                              uint32_t hash = -1);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetItObjNum(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetMeObjNum(IDMFC *instance);
-DLLEXPORT void DLLFUNCCALL IDMFC_RegisterPacketReceiver(IDMFC *instance, ubyte id, void (*func)(ubyte *));
-DLLEXPORT void DLLFUNCCALL IDMFC_StartPacket(IDMFC *instance, ubyte *data, ubyte id, int *count);
-DLLEXPORT void DLLFUNCCALL IDMFC_SendPacket(IDMFC *instance, ubyte *data, int size, int destination);
+DLLEXPORT void DLLFUNCCALL IDMFC_RegisterPacketReceiver(IDMFC *instance, uint8_t id, void (*func)(uint8_t *));
+DLLEXPORT void DLLFUNCCALL IDMFC_StartPacket(IDMFC *instance, uint8_t *data, uint8_t id, int *count);
+DLLEXPORT void DLLFUNCCALL IDMFC_SendPacket(IDMFC *instance, uint8_t *data, int size, int destination);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetTeamForNewPlayer(IDMFC *instance, int player_num, int num_teams);
 DLLEXPORT void DLLFUNCCALL IDMFC_SetNumberOfTeams(IDMFC *instance, int teams);
 DLLEXPORT void DLLFUNCCALL IDMFC_AutoTeamSelect(IDMFC *instance, bool turnon);
 DLLEXPORT void DLLFUNCCALL IDMFC_SendTeamAssignment(IDMFC *instance, int playernum, int team,
                                                            bool spew_on_respawn);
-DLLEXPORT void DLLFUNCCALL IDMFC_GetTeamAssignmentPacket(IDMFC *instance, ubyte *data);
-DLLEXPORT void DLLFUNCCALL IDMFC_GetChangeTeamPacket(IDMFC *instance, ubyte *data);
-DLLEXPORT void DLLFUNCCALL IDMFC_GetGameStateRequest(IDMFC *instance, ubyte *data);
+DLLEXPORT void DLLFUNCCALL IDMFC_GetTeamAssignmentPacket(IDMFC *instance, uint8_t *data);
+DLLEXPORT void DLLFUNCCALL IDMFC_GetChangeTeamPacket(IDMFC *instance, uint8_t *data);
+DLLEXPORT void DLLFUNCCALL IDMFC_GetGameStateRequest(IDMFC *instance, uint8_t *data);
 DLLEXPORT void DLLFUNCCALL IDMFC_SendChangeTeamRequest(IDMFC *instance, int newteam, bool spew_onchange);
-DLLEXPORT void DLLFUNCCALL IDMFC_GetDMFCGameInfo(IDMFC *instance, ubyte *data);
+DLLEXPORT void DLLFUNCCALL IDMFC_GetDMFCGameInfo(IDMFC *instance, uint8_t *data);
 DLLEXPORT void DLLFUNCCALL IDMFC_SendDMFCGameInfo(IDMFC *instance, int player);
 DLLEXPORT void DLLFUNCCALL IDMFC_RequestTeamChange(IDMFC *instance, int team, int pnum, bool spew_on_respawn);
 DLLEXPORT void DLLFUNCCALL IDMFC_RequestGameState(IDMFC *instance);
@@ -1864,15 +1864,15 @@ DLLEXPORT void DLLFUNCCALL IDMFC_GetSortedPlayerSlotsByEfficiency(IDMFC *instanc
                                                                          int maxsize);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsMenuUp(IDMFC *instance);
 DLLEXPORT float DLLFUNCCALL IDMFC_ConvertHUDAlphaFloat(IDMFC *instance, float normal);
-DLLEXPORT ubyte DLLFUNCCALL IDMFC_ConvertHUDAlphaByte(IDMFC *instance, ubyte normal);
+DLLEXPORT uint8_t DLLFUNCCALL IDMFC_ConvertHUDAlphaByte(IDMFC *instance, uint8_t normal);
 DLLEXPORT void DLLFUNCCALL IDMFC_ClipString(IDMFC *instance, int width, char *string, bool arrow);
 DLLEXPORT void DLLFUNCCALL IDMFC_DisplayOutrageLogo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_KillAllTimers(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_SetTimerInterval(IDMFC *instance, void (*func)(void), float intval,
                                                         float longevity, void (*onkill)(void) = NULL);
 DLLEXPORT void DLLFUNCCALL IDMFC_KillTimer(IDMFC *instance, int handle);
-DLLEXPORT void DLLFUNCCALL IDMFC_SwitchShowHudCallsignLevel(IDMFC *instance, ubyte level, bool announce = true);
-DLLEXPORT void DLLFUNCCALL IDMFC_SwitchServerHudCallsignLevel(IDMFC *instance, ubyte level);
+DLLEXPORT void DLLFUNCCALL IDMFC_SwitchShowHudCallsignLevel(IDMFC *instance, uint8_t level, bool announce = true);
+DLLEXPORT void DLLFUNCCALL IDMFC_SwitchServerHudCallsignLevel(IDMFC *instance, uint8_t level);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetCounterMeasureOwner(IDMFC *instance, object *robot);
 DLLEXPORT int DLLFUNCCALL IDMFC_CFGOpen(IDMFC *instance, char *filename);
 DLLEXPORT void DLLFUNCCALL IDMFC_CFGClose(IDMFC *instance);
@@ -1881,8 +1881,8 @@ DLLEXPORT int DLLFUNCCALL IDMFC_CFGCreateKey(IDMFC *instance, char *name);
 DLLEXPORT int DLLFUNCCALL IDMFC_CFGLookupKey(IDMFC *instance, char *name);
 DLLEXPORT int DLLFUNCCALL IDMFC_CFGLookupRecord(IDMFC *instance, char *record, void *data);
 DLLEXPORT int DLLFUNCCALL IDMFC_CFGCreateRecord(IDMFC *instance, char *name, char type, void *data);
-DLLEXPORT void DLLFUNCCALL IDMFC_DecryptData(IDMFC *instance, ubyte *data, int size);
-DLLEXPORT void DLLFUNCCALL IDMFC_EncryptData(IDMFC *instance, ubyte *data, int size);
+DLLEXPORT void DLLFUNCCALL IDMFC_DecryptData(IDMFC *instance, uint8_t *data, int size);
+DLLEXPORT void DLLFUNCCALL IDMFC_EncryptData(IDMFC *instance, uint8_t *data, int size);
 DLLEXPORT void DLLFUNCCALL IDMFC_VersionCheck(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_UpdatePInfo(IDMFC *instance, int victim, int killer, int amount);
 DLLEXPORT void DLLFUNCCALL IDMFC_ResetPInfo(IDMFC *instance);
@@ -1891,13 +1891,13 @@ DLLEXPORT bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const ch
 DLLEXPORT char DLLFUNCCALLPTR IDMFC_GetWeaponDeathMessage(IDMFC *instance, int index, bool *victim_first);
 DLLEXPORT void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, const char *parent, int count, char **array);
 DLLEXPORT int DLLFUNCCALL IDMFC_SetupPlayerRecord(IDMFC *instance, int sizeof_individual_data,
-                                                         int (*pack_callback)(void *user_info, ubyte *data),
-                                                         int (*unpack_callback)(void *user_info, ubyte *data));
+                                                         int (*pack_callback)(void *user_info, uint8_t *data),
+                                                         int (*unpack_callback)(void *user_info, uint8_t *data));
 DLLEXPORT void DLLFUNCCALLPTR IDMFC_GetPlayerRecordData(IDMFC *instance, int pnum);
 DLLEXPORT player_record DLLFUNCCALLPTR IDMFC_GetPlayerRecord(IDMFC *instance, int slot);
 DLLEXPORT player_record DLLFUNCCALLPTR IDMFC_GetPlayerRecordByPnum(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_SendRequestForPlayerRecords(IDMFC *instance);
-DLLEXPORT void DLLFUNCCALL IDMFC_ReceiveRequestForPlayerRecords(IDMFC *instance, ubyte *data);
+DLLEXPORT void DLLFUNCCALL IDMFC_ReceiveRequestForPlayerRecords(IDMFC *instance, uint8_t *data);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerBanned(IDMFC *instance, int pnum);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsAddressBanned(IDMFC *instance, network_address *addr, const char *tracker_id);
 DLLEXPORT void DLLFUNCCALL IDMFC_RemoveAllBans(IDMFC *instance);
@@ -1906,8 +1906,8 @@ DLLEXPORT char DLLFUNCCALLPTR IDMFC_GetBannedPlayerCallsign(IDMFC *instance, int
 DLLEXPORT int DLLFUNCCALL IDMFC_GetNumBannedPlayers(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_BanPlayerFromGame(IDMFC *instance, int pnum);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerAlive(IDMFC *instance, int pnum);
-DLLEXPORT void DLLFUNCCALL IDMFC_SendControlMessageToPlayer(IDMFC *instance, int pnum, ubyte msg);
-DLLEXPORT void DLLFUNCCALL IDMFC_ReceiveControlMessage(IDMFC *instance, ubyte *data);
+DLLEXPORT void DLLFUNCCALL IDMFC_SendControlMessageToPlayer(IDMFC *instance, int pnum, uint8_t msg);
+DLLEXPORT void DLLFUNCCALL IDMFC_ReceiveControlMessage(IDMFC *instance, uint8_t *data);
 DLLEXPORT bool DLLFUNCCALL IDMFC_FindPInfoStatFirst(IDMFC *instance, int slot, tPInfoStat *stat);
 DLLEXPORT bool DLLFUNCCALL IDMFC_FindPInfoStatNext(IDMFC *instance, tPInfoStat *stat);
 DLLEXPORT void DLLFUNCCALL IDMFC_FindPInfoStatClose(IDMFC *instance);
@@ -2050,7 +2050,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnSaveStatsToFile(IDMFC *instance, void (*c
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerReconnect(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerConnect(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnControlMessage(IDMFC *instance,
-                                                             void (*callback)(ubyte msg, int from_pnum));
+                                                             void (*callback)(uint8_t msg, int from_pnum));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnAllowObserverChange(IDMFC *instance,
                                                                   bool (*callback)(bool turnonobserver));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientShowUI(IDMFC *instance, void (*callback)(int id, void *user_data));
@@ -2125,7 +2125,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_CallOnGameStateRequest(IDMFC *instance, int pnu
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnSaveStatsToFile(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPlayerReconnect(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPlayerConnect(IDMFC *instance, int player_num);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnControlMessage(IDMFC *instance, ubyte msg, int from_pnum);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnControlMessage(IDMFC *instance, uint8_t msg, int from_pnum);
 DLLEXPORT bool DLLFUNCCALL IDMFC_CallOnAllowObserverChange(IDMFC *instance, bool turnonobserver);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientShowUI(IDMFC *instance, int id, void *user_data);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPrintScores(IDMFC *instance, int level);

@@ -1194,7 +1194,7 @@ int MainMultiplayerMenu ()
 	for(i=0;i<MAX_CHAT_CHANNELS;i++) chan_ti[i] = NULL;
 	for(i=0;i<CHAT_MAX_USERLIST;i++) user_ti[i] = NULL;
 	
-	ubyte oldalpha = *DLLNewUIWindow_alpha;
+	uint8_t oldalpha = *DLLNewUIWindow_alpha;
 
 	int colx1 = 0;
 	int colx2 = 148;
@@ -1989,7 +1989,7 @@ int SearchMasterTrackerGameMenu ()
 	int a;
 	bool hardexit = false;
 	for(a=0;a<MAX_NET_GAMES;a++) net_game_txt_items[a] = NULL;
-	ubyte oldalpha = *DLLNewUIWindow_alpha;
+	uint8_t oldalpha = *DLLNewUIWindow_alpha;
 
 	DLLSetScreenMode(SM_MENU);
 	*DLLNewUIWindow_alpha = 255;

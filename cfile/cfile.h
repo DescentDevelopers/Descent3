@@ -217,7 +217,7 @@ int cfexist(const char *filename);
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp);
+int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp);
 
 // The following functions read numeric vales from a CFILE.  All values are
 // stored in the file in Intel (little-endian) format.  These functions
@@ -261,7 +261,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp);
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-int cf_WriteBytes(const ubyte *buf, int count, CFILE *cfp);
+int cf_WriteBytes(const uint8_t *buf, int count, CFILE *cfp);
 
 // Writes a null-terminated string to a file.  If the file is type binary,
 // the string is terminated in the file with a null.  If the file is type

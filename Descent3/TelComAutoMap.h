@@ -55,6 +55,6 @@ bool TelComAutoMap(tTelComInfo *tcs);
 
 void AutomapClearVisMap();
 
-extern ubyte AutomapVisMap[];
+extern uint8_t AutomapVisMap[];
 
 #endif

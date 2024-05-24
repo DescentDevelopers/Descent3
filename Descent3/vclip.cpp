@@ -317,7 +317,7 @@ void PageInVClip(int vcnum) {
 
   mprintf((0, "Paging in vclip %s!\n", vc->name));
 
-  ubyte start_val = cf_ReadByte(infile);
+  uint8_t start_val = cf_ReadByte(infile);
   int version = 0;
   if (start_val != 127) {
     version = 0;

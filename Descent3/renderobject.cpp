@@ -623,13 +623,13 @@
 #define RO_STATIC 0
 #define RO_GOURAUD 1
 #define RO_LIGHTMAPS 2
-extern ubyte Use_motion_blur;
-ubyte RenderObjectType = RO_STATIC;
+extern uint8_t Use_motion_blur;
+uint8_t RenderObjectType = RO_STATIC;
 float RenderObjectStaticRedValue = 1.0f;
 float RenderObjectStaticGreenValue = 1.0f;
 float RenderObjectStaticBlueValue = 1.0f;
 float RenderObjectStaticScalar = 1.0f;
-ubyte *RenderObjectGouraudValue = NULL;
+uint8_t *RenderObjectGouraudValue = NULL;
 lightmap_object *RenderObjectLightmapObject = NULL;
 vector RenderObject_LightDirection;
 
@@ -998,11 +998,11 @@ void DrawShardObject(object *obj) {
   bool flip = 0;
   g3Point rotated_points[3];
   g3Point *pointlist[3];
-  ubyte codes_and = 0xff;
+  uint8_t codes_and = 0xff;
   g3_StartInstanceMatrix(&obj->pos, &obj->orient);
   // Build list of points and UVLs for this face
   for (int i = 0; i < 3; i++) {
-    ubyte c;
+    uint8_t c;
     g3Point *p = &rotated_points[i];
     c = g3_RotatePoint(p, &si->points[i]);
     codes_and &= c;
@@ -1779,7 +1779,7 @@ int Point_visible_last_frame = -1;
 // visible from the current view matrix
 int IsPointVisible(vector *pos, float size, float *pointz) {
   g3Point pnt;
-  ubyte ccode;
+  uint8_t ccode;
   static float last_render_fov = -1;
   static vector left_normal, right_normal, top_normal, bottom_normal, view_position;
   static matrix unscaled_matrix;
@@ -2110,7 +2110,7 @@ void DrawPlayerTypingIndicator(object *obj) {
     int bmh, bmw;
     g3Point *pntlist[32], points[4];
     g3Codes cc;
-    ubyte code;
+    uint8_t code;
 
     cc.cc_and = 0xFF;
     cc.cc_or = 0;

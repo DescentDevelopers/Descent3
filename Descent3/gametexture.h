@@ -248,14 +248,14 @@
 #define PROC_MEMORY_TYPE_WATER 2
 
 typedef struct {
-  ubyte type;
+  uint8_t type;
 
-  ubyte frequency;
-  ubyte speed;
-  ubyte color;
-  ubyte size;
+  uint8_t frequency;
+  uint8_t speed;
+  uint8_t color;
+  uint8_t size;
 
-  ubyte x1, y1, x2, y2;
+  uint8_t x1, y1, x2, y2;
 
 } static_proc_element;
 
@@ -269,16 +269,16 @@ typedef struct {
   static_proc_element *static_proc_elements;
   ushort num_static_elements;
 
-  ubyte memory_type;
+  uint8_t memory_type;
 
-  ubyte heat;
-  ubyte thickness;
-  ubyte light;
+  uint8_t heat;
+  uint8_t thickness;
+  uint8_t light;
 
   float last_evaluation_time;
   float evaluation_time;
   float osc_time;
-  ubyte osc_value;
+  uint8_t osc_value;
 
   int last_procedural_frame; // last frame a procedural was calculated for this texture
 } proc_struct;
@@ -303,8 +303,8 @@ typedef struct {
   float sound_volume; // The volume for this texture's sound
 
   short bumpmap;     // The bumpmap for this texture, or -1 if there is none
-  ubyte corona_type; // what type of corona this thing uses
-  ubyte used;        // is this texture free to be allocated?
+  uint8_t corona_type; // what type of corona this thing uses
+  uint8_t used;        // is this texture free to be allocated?
 
 } texture;
 

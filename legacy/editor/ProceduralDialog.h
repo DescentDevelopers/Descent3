@@ -81,8 +81,8 @@ private:
 	void UpdateDialog(void);
 	void UpdateProcView(void);
 	void MakeCurColor (void);
-	void HarvestValue (int,ubyte *);
-	void PrintValue (int,ubyte);
+	void HarvestValue (int,uint8_t *);
+	void PrintValue (int,uint8_t);
 	static_proc_element *CreateElement(int,int);
 	
 private:
@@ -93,9 +93,9 @@ private:
 	int m_button_down;
 	int m_proc_type;
 	int m_save_x,m_save_y;
-	ubyte m_cur_color;
-	ubyte m_speed,m_saturate,m_frequency;
-	ubyte m_size;
+	uint8_t m_cur_color;
+	uint8_t m_speed,m_saturate,m_frequency;
+	uint8_t m_size;
 };
 
 //{{AFX_INSERT_LOCATION}}

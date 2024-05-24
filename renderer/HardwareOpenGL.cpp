@@ -61,10 +61,10 @@ void rend_SetLightingState(light_state state);
 extern int gpu_Overlay_map;
 int Bump_map = 0;
 int Bumpmap_ready = 0;
-extern ubyte gpu_Overlay_type;
+extern uint8_t gpu_Overlay_type;
 float Z_bias = 0.0f;
-ubyte Renderer_close_flag = 0;
-extern ubyte Renderer_initted;
+uint8_t Renderer_close_flag = 0;
+extern uint8_t Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
 
@@ -135,8 +135,8 @@ PFNGLMULTITEXCOORD4FARBPROC oglMultiTexCoord4f = NULL;
 
 ushort *OpenGL_bitmap_remap = NULL;
 ushort *OpenGL_lightmap_remap = NULL;
-ubyte *OpenGL_bitmap_states = NULL;
-ubyte *OpenGL_lightmap_states = NULL;
+uint8_t *OpenGL_bitmap_states = NULL;
+uint8_t *OpenGL_lightmap_states = NULL;
 
 uint32_t *opengl_Upload_data = NULL;
 uint32_t *opengl_Translate_table = NULL;
@@ -285,9 +285,9 @@ int opengl_InitCache(void) {
   OpenGL_lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * 2);
   ASSERT(OpenGL_lightmap_remap);
 
-  OpenGL_bitmap_states = (ubyte *)mem_malloc(MAX_BITMAPS);
+  OpenGL_bitmap_states = (uint8_t *)mem_malloc(MAX_BITMAPS);
   ASSERT(OpenGL_bitmap_states);
-  OpenGL_lightmap_states = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
+  OpenGL_lightmap_states = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
   ASSERT(OpenGL_lightmap_states);
 
   Cur_texture_object_num = 1;
@@ -1488,7 +1488,7 @@ void opengl_ResetCache(void) {
   opengl_InitCache();
 }
 
-ubyte opengl_Framebuffer_ready = 0;
+uint8_t opengl_Framebuffer_ready = 0;
 chunked_bitmap opengl_Chunked_bitmap;
 
 void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {

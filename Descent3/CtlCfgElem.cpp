@@ -473,7 +473,7 @@ void Localize_ctl_bindings() {
 }
 
 //////////////////////////////////////////////////////////////////////////////
-const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding) {
+const char *cfg_binding_text(ct_type ctype, uint8_t ctrl, uint8_t binding) {
   const char *str;
 
   if (ctrl == NULL_CONTROLLER) {
@@ -511,15 +511,15 @@ const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding) {
 //////////////////////////////////////////////////////////////////////////////
 //
 class cfg_element_ui : public newuiMessageBox {
-  ubyte m_element;    // element passed and returned.
-  ubyte m_controller; // controller.
+  uint8_t m_element;    // element passed and returned.
+  uint8_t m_controller; // controller.
   int8_t m_alpha;      // used for fx.
   ct_type m_type;
 
 public:
-  void Create(const char *title, ct_type type, ubyte controller, ubyte element);
-  ubyte GetElement() const { return m_element; };
-  ubyte GetController() const { return m_controller; };
+  void Create(const char *title, ct_type type, uint8_t controller, uint8_t element);
+  uint8_t GetElement() const { return m_element; };
+  uint8_t GetController() const { return m_controller; };
   ct_type GetType() const { return m_type; };
   int DoUI();
 
@@ -537,7 +537,7 @@ UIBitmapItem *cfg_element::m_xbtn_bmp = NULL;
 short cfg_element::m_count = 0;
 
 // MTS: unused?
-bool key_cfg_element(ubyte *element, ubyte *flags);
+bool key_cfg_element(uint8_t *element, uint8_t *flags);
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -597,7 +597,7 @@ void cfg_element::OnDraw() {
 
   if (m_fnid != -1) {
     ct_type ctype[CTLBINDS_PER_FUNC];
-    ubyte cfgflags[CTLBINDS_PER_FUNC];
+    uint8_t cfgflags[CTLBINDS_PER_FUNC];
     ct_config_data cfgdata;
     tCfgDataParts cfgparts;
 
@@ -608,8 +608,8 @@ void cfg_element::OnDraw() {
 
     for (i = 0; i < N_CFGELEM_SLOTS; i++) {
       const char *txt;
-      ubyte one_binding = (i == 0) ? cfgparts.bind_0 : cfgparts.bind_1;
-      ubyte one_ctrlbind = (i == 0) ? cfgparts.ctrl_0 : cfgparts.ctrl_1;
+      uint8_t one_binding = (i == 0) ? cfgparts.bind_0 : cfgparts.bind_1;
+      uint8_t one_ctrlbind = (i == 0) ? cfgparts.ctrl_0 : cfgparts.ctrl_1;
 
       txt = cfg_binding_text(ctype[i], one_ctrlbind, one_binding);
 
@@ -654,7 +654,7 @@ void cfg_element::OnKeyDown(int key) {
     // clear binding.
     tCfgDataParts cfgparts;
     ct_type ctype_fn[CTLBINDS_PER_FUNC];
-    ubyte cfgflags_fn[CTLBINDS_PER_FUNC];
+    uint8_t cfgflags_fn[CTLBINDS_PER_FUNC];
     ct_config_data ccfgdata_fn;
 
     Controller->get_controller_function(m_fnid, ctype_fn, &ccfgdata_fn, cfgflags_fn);
@@ -759,13 +759,13 @@ void cfg_element::OnDestroy() {
 }
 
 // calls configuration routines
-bool cfg_element::Configure(ct_type *new_elem_type, ubyte *controller, ubyte *new_cfg_element, int8_t *cfg_slot) {
+bool cfg_element::Configure(ct_type *new_elem_type, uint8_t *controller, uint8_t *new_cfg_element, int8_t *cfg_slot) {
   cfg_element_ui cfg_box;
   ct_type ctype_fn[CTLBINDS_PER_FUNC];
-  ubyte cfgflags_fn[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags_fn[CTLBINDS_PER_FUNC];
   ct_config_data ccfgdata_fn;
   tCfgDataParts cfgparts;
-  ubyte element, ctrl;
+  uint8_t element, ctrl;
   bool configure = false;
 
   int8_t fnid = m_fnid;
@@ -844,13 +844,13 @@ bool cfg_element::Configure(ct_type *new_elem_type, ubyte *controller, ubyte *ne
 }
 
 //////////////////////////////////////////////////////////////////////////////
-bool key_cfg_element(ubyte *element, ubyte *flags) {
+bool key_cfg_element(uint8_t *element, uint8_t *flags) {
   //	put up configuration dialog
 
   return true;
 }
 
-void cfg_element_ui::Create(const char *title, ct_type type, ubyte controller, ubyte element) {
+void cfg_element_ui::Create(const char *title, ct_type type, uint8_t controller, uint8_t element) {
   m_controller = controller;
   m_element = element;
   m_type = type;
@@ -1039,7 +1039,7 @@ int cfg_element_ui::DoUI() {
 }
 
 void cfg_element_ui::OnDraw() {
-  UITextItem prompt(MONITOR9_NEWUI_FONT, "?", NEWUI_MONITORFONT_COLOR, (ubyte)(m_alpha * 8) + 127);
+  UITextItem prompt(MONITOR9_NEWUI_FONT, "?", NEWUI_MONITORFONT_COLOR, (uint8_t)(m_alpha * 8) + 127);
 
   newuiMessageBox::OnDraw();
 

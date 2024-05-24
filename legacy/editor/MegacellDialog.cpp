@@ -372,7 +372,7 @@ void CMegacellDialog::OnDeleteMegacell()
 	// Now delete those textures if need be
 	if (answer==IDYES)
 	{
-		ubyte can_delete[MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT];
+		uint8_t can_delete[MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT];
 		
 		memset (can_delete,0,MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT);
 		

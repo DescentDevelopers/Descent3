@@ -158,7 +158,7 @@ extern int Use_file_xfer;
 // Tell the server about my info, such as name, ship type, etc
 void MultiSendMyInfo() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending my info\n"));
@@ -224,7 +224,7 @@ void MultiSendMyInfo() {
 // Ask the server to tell me about the players
 void MultiSendRequestForPlayers() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for players\n"));
@@ -239,7 +239,7 @@ void MultiSendRequestForPlayers() {
 // Ask the server to tell me about the buildings
 void MultiSendRequestForBuildings() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for buildings\n"));
@@ -254,7 +254,7 @@ void MultiSendRequestForBuildings() {
 // Ask the server to tell me about the world
 void MultiSendRequestForWorldStates() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for world states\n"));
@@ -275,7 +275,7 @@ void MultiSendRequestForWorldStates() {
 // Ask the server to tell me about the objects
 void MultiSendRequestForObjects() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for objects\n"));
@@ -436,7 +436,7 @@ void MultiDoClientFrame() {
         }
       }
 
-      ubyte data[MAX_GAME_DATA_SIZE], count = 0, add_count = 0;
+      uint8_t data[MAX_GAME_DATA_SIZE], count = 0, add_count = 0;
 
       count = MultiStuffPosition(Player_num, data);
 

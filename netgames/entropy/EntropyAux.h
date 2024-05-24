@@ -51,14 +51,14 @@ Some common function prototypes
 =====================================================================
 */
 void SendRoomInfo(int pnum);
-void ReceiveRoomInfo(ubyte *data);
+void ReceiveRoomInfo(uint8_t *data);
 void SendClientPickupVirus(int player_num);
-void ReceivePickupVirus(ubyte *data);
+void ReceivePickupVirus(uint8_t *data);
 void SendGameStartPacket(int pnum);
-void GetGameStartPacket(ubyte *data);
+void GetGameStartPacket(uint8_t *data);
 void SendTakeOverPacket(int newteam, int oldteam, int room, int victor);
-void ReceiveTakeOverPacket(ubyte *data);
-void DoVirusCreate(ubyte *data);
+void ReceiveTakeOverPacket(uint8_t *data);
+void DoVirusCreate(uint8_t *data);
 void SendVirusCreate(object *obj);
 bool IsPlayerInEnemy(int pnum);
 void RemoveVirusFromPlayer(int player_num, bool remove_all);
@@ -70,7 +70,7 @@ bool PaintRoomWithTexture(int texture, int roomnum);
 // Take over functions
 void TakeOverRoom(int newteam, int oldteam, int room, int victor);
 void SendTakeOverPacket(int newteam, int oldteam, int room, int victor);
-void ReceiveTakeOverPacket(ubyte *data);
+void ReceiveTakeOverPacket(uint8_t *data);
 
 /*
 =====================================================================

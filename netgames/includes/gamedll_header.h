@@ -93,7 +93,7 @@ typedef struct {
 typedef struct {
   int me_handle;
   int it_handle;
-  ubyte *special_data;
+  uint8_t *special_data;
   char *input_string;
   int input_key;
   union {
@@ -163,15 +163,15 @@ DMFCDLLOUT(Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;)
 typedef void (*MultiSendClientExecuteDLL_fp)(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info);
 DMFCDLLOUT(MultiSendClientExecuteDLL_fp DLLMultiSendClientExecuteDLL;)
 
-// typedef void( *MultiSendObject_fp ) (object *obj,ubyte announce,ubyte demo_record=true);
-typedef void (*MultiSendObject_fp)(object *obj, ubyte announce, ubyte demo_record);
+// typedef void( *MultiSendObject_fp ) (object *obj,uint8_t announce,uint8_t demo_record=true);
+typedef void (*MultiSendObject_fp)(object *obj, uint8_t announce, uint8_t demo_record);
 DMFCDLLOUT(MultiSendObject_fp DLLMultiSendObject;)
 
 // typedef void( *MultiPaintGoalRooms_fp ) (int *texcolors=NULL);
 typedef void (*MultiPaintGoalRooms_fp)(int *texcolors);
 DMFCDLLOUT(MultiPaintGoalRooms_fp DLLMultiPaintGoalRooms;)
 
-typedef void (*MultiSendSpecialPacket_fp)(int slot, ubyte *outdata, int size);
+typedef void (*MultiSendSpecialPacket_fp)(int slot, uint8_t *outdata, int size);
 DMFCDLLOUT(MultiSendSpecialPacket_fp DLLMultiSendSpecialPacket;)
 
 typedef void (*ComputeRoomCenter_fp)(vector *vp, room *rp);
@@ -181,9 +181,9 @@ typedef int (*GetGoalRoomForTeam_fp)(int teamnum);
 DMFCDLLOUT(GetGoalRoomForTeam_fp DLLGetGoalRoomForTeam;)
 
 // ObjCreate without writing data to demo
-// typedef int( *ObjCreate_fp ) (ubyte type,ushort id,int roomnum,vector *pos,const matrix *orient,int parent_handle =
+// typedef int( *ObjCreate_fp ) (uint8_t type,ushort id,int roomnum,vector *pos,const matrix *orient,int parent_handle =
 // OBJECT_HANDLE_NONE);
-typedef int (*ObjCreate_fp)(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
+typedef int (*ObjCreate_fp)(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
 DMFCDLLOUT(ObjCreate_fp DLLObjCreate;)
 
 typedef int (*FindObjectIDName_fp)(const char *name);
@@ -280,11 +280,11 @@ typedef void (*grtext_SetFancyColor_fp)(ddgr_color col1, ddgr_color col2, ddgr_c
 DMFCDLLOUT(grtext_SetFancyColor_fp DLLgrtext_SetFancyColor;)
 
 //	sets the alpha value for text
-typedef void (*grtext_SetAlpha_fp)(ubyte alpha);
+typedef void (*grtext_SetAlpha_fp)(uint8_t alpha);
 DMFCDLLOUT(grtext_SetAlpha_fp DLLgrtext_SetAlpha;)
 
 //	gets font alpha
-typedef ubyte (*grtext_GetAlpha_fp)(void);
+typedef uint8_t (*grtext_GetAlpha_fp)(void);
 DMFCDLLOUT(grtext_GetAlpha_fp DLLgrtext_GetAlpha;)
 
 // sets the font for text
@@ -324,7 +324,7 @@ typedef void (*rend_DrawSimpleBitmap_fp)(int bm_handle, int x, int y);
 DMFCDLLOUT(rend_DrawSimpleBitmap_fp DLLrend_DrawSimpleBitmap;)
 
 // sends a special packet to the server
-typedef void (*MultiClientSendSpecialPacket_fp)(ubyte *outdate, int size);
+typedef void (*MultiClientSendSpecialPacket_fp)(uint8_t *outdate, int size);
 DMFCDLLOUT(MultiClientSendSpecialPacket_fp DLLMultiClientSendSpecialPacket;)
 
 // adds a blinking hud message
@@ -341,14 +341,14 @@ typedef void (*AddHUDItem_fp)(tHUDItem *item);
 DMFCDLLOUT(AddHUDItem_fp DLLAddHUDItem;)
 
 //	renders a bitmap onto the hud
-// typedef void (*RenderHUDQuad_fp) (int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, ubyte
+// typedef void (*RenderHUDQuad_fp) (int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, uint8_t
 // alpha, int sat_count=0);
 typedef void (*RenderHUDQuad_fp)(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm,
-                                 ubyte alpha, int sat_count);
+                                 uint8_t alpha, int sat_count);
 DMFCDLLOUT(RenderHUDQuad_fp DLLRenderHUDQuad;)
 
 //	renders text, scaled, alphaed, saturated,
-typedef void (*RenderHUDText_fp)(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
+typedef void (*RenderHUDText_fp)(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCDLLOUT(RenderHUDText_fp DLLRenderHUDText;)
 
 // Ends a multiplayer level and goes on to the next, Server only
@@ -379,11 +379,11 @@ typedef void (*bm_DestroyChunkedBitmap_fp)(chunked_bitmap *chunk);
 DMFCDLLOUT(bm_DestroyChunkedBitmap_fp DLLbm_DestroyChunkedBitmap;)
 
 //	given a chunked bitmap, renders it.
-typedef void (*rend_DrawChunkedBitmap_fp)(chunked_bitmap *chunk, int x, int y, ubyte alpha);
+typedef void (*rend_DrawChunkedBitmap_fp)(chunked_bitmap *chunk, int x, int y, uint8_t alpha);
 DMFCDLLOUT(rend_DrawChunkedBitmap_fp DLLrend_DrawChunkedBitmap;)
 
 //	given a chunked bitmap, renders it.scaled
-typedef void (*rend_DrawScaledChunkedBitmap_fp)(chunked_bitmap *chunk, int x, int y, int neww, int newh, ubyte alpha);
+typedef void (*rend_DrawScaledChunkedBitmap_fp)(chunked_bitmap *chunk, int x, int y, int neww, int newh, uint8_t alpha);
 DMFCDLLOUT(rend_DrawScaledChunkedBitmap_fp DLLrend_DrawScaledChunkedBitmap;)
 
 // Opens a file for reading or writing
@@ -415,7 +415,7 @@ DMFCDLLOUT(cfexist_fp DLLcfexist;)
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef int (*cf_ReadBytes_fp)(ubyte *buf, int count, CFILE *cfp);
+typedef int (*cf_ReadBytes_fp)(uint8_t *buf, int count, CFILE *cfp);
 DMFCDLLOUT(cf_ReadBytes_fp DLLcf_ReadBytes;)
 
 // The following functions read numeric vales from a CFILE.  All values are
@@ -466,7 +466,7 @@ DMFCDLLOUT(cf_ReadString_fp DLLcf_ReadString;)
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef int (*cf_WriteBytes_fp)(const ubyte *buf, int count, CFILE *cfp);
+typedef int (*cf_WriteBytes_fp)(const uint8_t *buf, int count, CFILE *cfp);
 DMFCDLLOUT(cf_WriteBytes_fp DLLcf_WriteBytes;)
 
 // Writes a null-terminated string to a file.  If the file is type binary,
@@ -537,7 +537,7 @@ typedef void (*DestroyStringTable_fp)(char **table, int size);
 DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
 
 //	renders text, scaled, alphaed, saturated,
-typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
+typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCDLLOUT(RenderHUDTextFlags_fp DLLRenderHUDTextFlags;)
 
 // Sets the FOV range at which the hud names will come on
@@ -731,7 +731,7 @@ DMFCDLLOUT(CreateNewUITextItem_fp DLLCreateNewUITextItem;)
 typedef void (*RemoveUIBmpItem_fp)(void *item);
 DMFCDLLOUT(RemoveUIBmpItem_fp DLLRemoveUIBmpItem;)
 
-typedef void *(*CreateNewUIBmpItem_fp)(int handle, ubyte alpha);
+typedef void *(*CreateNewUIBmpItem_fp)(int handle, uint8_t alpha);
 DMFCDLLOUT(CreateNewUIBmpItem_fp DLLCreateNewUIBmpItem;)
 
 typedef void *(*UIConsoleGadgetCreate_fp)(void *parentid, int id, int x, int y, int font, int cols, int rows,
@@ -1246,7 +1246,7 @@ typedef void (*rend_SetOverlayMap_fp)(int handle);
 DMFCDLLOUT(rend_SetOverlayMap_fp DLLrend_SetOverlayMap;)
 
 // Sets the type of overlay operation
-typedef void (*rend_SetOverlayType_fp)(ubyte type);
+typedef void (*rend_SetOverlayType_fp)(uint8_t type);
 DMFCDLLOUT(rend_SetOverlayType_fp DLLrend_SetOverlayType;)
 
 // Clears the display to a specified color
@@ -1274,7 +1274,7 @@ typedef void (*rend_SetAlphaType_fp)(int8_t);
 DMFCDLLOUT(rend_SetAlphaType_fp DLLrend_SetAlphaType;)
 
 // Sets the constant alpha value
-typedef void (*rend_SetAlphaValue_fp)(ubyte val);
+typedef void (*rend_SetAlphaValue_fp)(uint8_t val);
 DMFCDLLOUT(rend_SetAlphaValue_fp DLLrend_SetAlphaValue;)
 
 // Sets the wrap parameter
@@ -1373,7 +1373,7 @@ DMFCDLLOUT(VisEffectInitType_fp DLLVisEffectInitType;)
 
 // initialize a new viseffect.  adds to the list for the given room
 // returns the object number
-typedef int (*VisEffectCreate_fp)(ubyte type, ubyte id, int roomnum, vector *pos);
+typedef int (*VisEffectCreate_fp)(uint8_t type, uint8_t id, int roomnum, vector *pos);
 DMFCDLLOUT(VisEffectCreate_fp DLLVisEffectCreate;)
 
 // link the viseffect  into the list for its room
@@ -1410,9 +1410,9 @@ DMFCDLLOUT(CreateRandomLineSparks_fp DLLCreateRandomLineSparks;)
 // Creates vis effects but has the caller set their parameters
 // initialize a new viseffect.  adds to the list for the given room
 // returns the vis number
-// typedef int (*VisEffectCreateControlled_fp)(ubyte type,object *parent,ubyte id,int roomnum,vector *pos,float
+// typedef int (*VisEffectCreateControlled_fp)(uint8_t type,object *parent,uint8_t id,int roomnum,vector *pos,float
 // lifetime,vector *velocity,int phys_flags=0,float size=0,float mass=0.0f,float drag=0.0f,bool isreal=0);
-typedef int (*VisEffectCreateControlled_fp)(ubyte type, object *parent, ubyte id, int roomnum, vector *pos,
+typedef int (*VisEffectCreateControlled_fp)(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos,
                                             float lifetime, vector *velocity, int phys_flags, float size, float mass,
                                             float drag, bool isreal);
 DMFCDLLOUT(VisEffectCreateControlled_fp DLLVisEffectCreateControlled;)
@@ -1477,7 +1477,7 @@ DMFCDLLOUT(g3_CheckNormalFacing_fp DLLg3_CheckNormalFacing;)
 // Point definition and rotation functions:
 
 // rotates a point. returns codes.  does not check if already rotated
-typedef ubyte (*g3_RotatePoint_fp)(g3Point *dest, vector *src);
+typedef uint8_t (*g3_RotatePoint_fp)(g3Point *dest, vector *src);
 DMFCDLLOUT(g3_RotatePoint_fp DLLg3_RotatePoint;)
 
 // projects a point
@@ -1493,7 +1493,7 @@ typedef void (*g3_Point2Vec_fp)(vector *v, short sx, short sy);
 DMFCDLLOUT(g3_Point2Vec_fp DLLg3_Point2Vec;)
 
 // code a point.  fills in the p3_codes field of the point, and returns the codes
-typedef ubyte (*g3_CodePoint_fp)(g3Point *point);
+typedef uint8_t (*g3_CodePoint_fp)(g3Point *point);
 DMFCDLLOUT(g3_CodePoint_fp DLLg3_CodePoint;)
 
 // delta rotation functions
@@ -1505,7 +1505,7 @@ typedef vector *(*g3_RotateDeltaZ_fp)(vector *dest, float dz);
 DMFCDLLOUT(g3_RotateDeltaZ_fp DLLg3_RotateDeltaZ;)
 typedef vector *(*g3_RotateDeltaVec_fp)(vector *dest, vector *src);
 DMFCDLLOUT(g3_RotateDeltaVec_fp DLLg3_RotateDeltaVec;)
-typedef ubyte (*g3_AddDeltaVec_fp)(g3Point *dest, g3Point *src, vector *deltav);
+typedef uint8_t (*g3_AddDeltaVec_fp)(g3Point *dest, g3Point *src, vector *deltav);
 DMFCDLLOUT(g3_AddDeltaVec_fp DLLg3_AddDeltaVec;)
 
 // Drawing functions:
@@ -1553,7 +1553,7 @@ typedef void (*g3_DrawBox_fp)(ddgr_color color, g3Point *pnt, float rad);
 DMFCDLLOUT(g3_DrawBox_fp DLLg3_DrawBox;)
 
 // Sets up a custom clipping plane - g3_StartFrame must be called before this is called
-typedef void (*g3_SetCustomClipPlane_fp)(ubyte state, vector *pnt, vector *normal);
+typedef void (*g3_SetCustomClipPlane_fp)(uint8_t state, vector *pnt, vector *normal);
 DMFCDLLOUT(g3_SetCustomClipPlane_fp DLLg3_SetCustomClipPlane;)
 
 // sets the z distance of the far clipping plane

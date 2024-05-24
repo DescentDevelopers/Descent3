@@ -236,7 +236,7 @@ void writeline(char *format, ... )
 }
 
 
-ubyte DetermineScriptType(char *filename)
+uint8_t DetermineScriptType(char *filename)
 {
 	CFILE *file;
 	file = cfopen(filename,"rt");
@@ -246,7 +246,7 @@ ubyte DetermineScriptType(char *filename)
 
 	char buffer[4096];
 	bool done = false;
-	ubyte script_type = ST_GAME;
+	uint8_t script_type = ST_GAME;
 
 	cf_ReadString(buffer,4096,file);
 	while(!(cfeof(file) || done)){

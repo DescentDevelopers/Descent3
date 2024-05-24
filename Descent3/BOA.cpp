@@ -141,7 +141,7 @@
 
 #define BOA_VERSION 25
 
-static const ubyte bbf_lookup[27] = {(0),
+static const uint8_t bbf_lookup[27] = {(0),
                                      (0x01),
                                      (0x02),
                                      (0x04),
@@ -1560,8 +1560,8 @@ void MakeBOAVisTable(bool from_lighting) {
   int cur_check = BOAGetMineChecksum();
   int vis_stack[MAX_ROOMS * 10];
   int stack_count = 0;
-  ubyte already_checked[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
-  ubyte precomputed[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+  uint8_t already_checked[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+  uint8_t precomputed[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 
   // Removed this as we have to make a better checksum
 
@@ -2514,7 +2514,7 @@ void ComputeAABB(bool f_full) {
             f_part = true;
           }
 
-          ubyte sector = 0;
+          uint8_t sector = 0;
 
           if (f_part == false) {
             if (r_struct_list[i][count] == 0)
@@ -2934,7 +2934,7 @@ void ComputeAABB(bool f_full) {
               list[5] = true;
             }
 
-            ubyte sector = 0;
+            uint8_t sector = 0;
 
             for (x = 0; x < 6; x++) {
               if (list[x]) {

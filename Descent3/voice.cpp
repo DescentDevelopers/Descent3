@@ -91,8 +91,8 @@ public:
 private:
   char filenames[QUEUE_SIZE][_MAX_PATH];
   int flags[QUEUE_SIZE];
-  ubyte currvoice;
-  ubyte pos;
+  uint8_t currvoice;
+  uint8_t pos;
   char motherloadat;
   bool inuse[QUEUE_SIZE];
   bool full;

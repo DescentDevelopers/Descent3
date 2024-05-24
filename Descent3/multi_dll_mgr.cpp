@@ -321,7 +321,7 @@ void *callback = NULL;
 module MultiDLLHandle = {NULL};
 int SearchForLocalGamesTCP(uint32_t ask, ushort port);
 int SearchForGamesPXO(uint32_t ask, ushort port);
-extern ubyte NewUIWindow_alpha;
+extern uint8_t NewUIWindow_alpha;
 extern void DoScreenshot();
 extern void UpdateAndPackGameList(void);
 extern bool Multi_Gamelist_changed;
@@ -846,7 +846,7 @@ void RemoveUITextItem(void *item) {
   UITextItem *old_text_item = (UITextItem *)item;
   delete old_text_item;
 }
-void *CreateNewUIBmpItem(int handle, ubyte alpha) {
+void *CreateNewUIBmpItem(int handle, uint8_t alpha) {
   UIBitmapItem *new_bmp_item;
   new_bmp_item = new UIBitmapItem(handle, alpha);
   return new_bmp_item;

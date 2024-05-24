@@ -34,10 +34,10 @@
 typedef struct poly_wb_info {
   // Static Data  (Add to robot generic page)
   uint16_t num_gps;
-  ubyte gp_index[MAX_WB_GUNPOINTS];
+  uint8_t gp_index[MAX_WB_GUNPOINTS];
 
   // Turrets are listed from most important (greatest mobility) to least important
-  ubyte num_turrets;
+  uint8_t num_turrets;
   uint16_t turret_index[MAX_WB_TURRETS];
 
 } poly_wb_info;
@@ -50,17 +50,17 @@ typedef struct otype_wb_info {
   uint16_t fm_fire_sound_index[MAX_WB_FIRING_MASKS];
   uint16_t aiming_gp_index;
 
-  ubyte num_masks;
-  ubyte gp_fire_masks[MAX_WB_FIRING_MASKS];
+  uint8_t num_masks;
+  uint8_t gp_fire_masks[MAX_WB_FIRING_MASKS];
   float gp_fire_wait[MAX_WB_FIRING_MASKS];
 
-  ubyte gp_quad_fire_mask;
+  uint8_t gp_quad_fire_mask;
 
-  ubyte num_levels;
+  uint8_t num_levels;
   uint16_t gp_level_weapon_index[MAX_WB_UPGRADES];
   uint16_t gp_level_fire_sound_index[MAX_WB_UPGRADES];
 
-  ubyte aiming_flags;
+  uint8_t aiming_flags;
   float aiming_3d_dot; // These can be reused.
   float aiming_3d_dist;
   float aiming_XZ_dot;
@@ -87,9 +87,9 @@ typedef struct dynamic_wb_info {
 
   float norm_turret_angle[MAX_WB_TURRETS];
   float turret_next_think_time[MAX_WB_TURRETS];
-  ubyte turret_direction[MAX_WB_TURRETS];
+  uint8_t turret_direction[MAX_WB_TURRETS];
 
-  ubyte wb_anim_mask;
+  uint8_t wb_anim_mask;
   float wb_anim_frame;
 
   vector cur_target;

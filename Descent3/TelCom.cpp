@@ -796,8 +796,8 @@ bool TelComShow(bool ingame, bool ShipSelect) {
   // must do this to clear out keyboard events
   ddio_KeyFlush();
 
-  ubyte oldmip = Render_preferred_state.mipping;
-  ubyte oldbil = Render_preferred_state.filtering;
+  uint8_t oldmip = Render_preferred_state.mipping;
+  uint8_t oldbil = Render_preferred_state.filtering;
 
   if (!TelCom_init) {
     mprintf((0, "TELCOM SYSTEM WARNING: TelComInit() error!\n"));
@@ -1482,7 +1482,7 @@ void TelcomRenderClose(void) {
 }
 
 //	Renders the current screen for 1 frame
-void TelcomRenderScreen(bool poweron, bool powerup, ubyte power_effect) {
+void TelcomRenderScreen(bool poweron, bool powerup, uint8_t power_effect) {
   if (TC_current_screen == -1)
     return;
 
@@ -2157,7 +2157,7 @@ void TelcomCreateStaticOverlays(void) {
         if ((int)myrand(5) == 3)
           data[i + 4][j] = def_color;
         else {
-          ubyte grey = (ubyte)myrand(200) + 55;
+          uint8_t grey = (uint8_t)myrand(200) + 55;
           data[i + 4][j] = OPAQUE_FLAG | GR_RGB16(grey, grey, grey);
         }
       } else
@@ -2170,7 +2170,7 @@ void TelcomCreateStaticOverlays(void) {
         if ((int)myrand(5) == 3)
           data[i][j] = def_color;
         else {
-          ubyte grey = (ubyte)myrand(200) + 55;
+          uint8_t grey = (uint8_t)myrand(200) + 55;
           data[i][j] = OPAQUE_FLAG | GR_RGB16(grey, grey, grey);
         }
       } else
@@ -2188,7 +2188,7 @@ void TelcomCreateStaticOverlays(void) {
         if ((int)myrand(5) == 3)
           data[i][j] = def_color;
         else {
-          ubyte grey = (ubyte)myrand(200) + 55;
+          uint8_t grey = (uint8_t)myrand(200) + 55;
           data[i][j] = OPAQUE_FLAG | GR_RGB16(grey, grey, grey);
         }
       } else
@@ -3797,7 +3797,7 @@ void TCSSSCallback(void) {
   EndFrame();
 
   // Render the name of the selected ship
-  ubyte old_alpha = grtext_GetAlpha();
+  uint8_t old_alpha = grtext_GetAlpha();
   int old_font = grtext_GetFont();
   ddgr_color old_color = grtext_GetColor();
   grtext_SetAlpha(255);

@@ -1298,10 +1298,10 @@ extern bool Demo_call_ok;
 // The main entry point for all the multisafe functions
 // Pass the type of function you want, and then fill in the relevant fields
 // of the mstruct
-void msafe_CallFunction(ubyte type, msafe_struct *mstruct) {
+void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
   if ((Demo_flags == DF_PLAYBACK) && (!Demo_call_ok))
     return;
-  ubyte send_it = 1;
+  uint8_t send_it = 1;
   switch (type) {
   case MSAFE_WEATHER_RAIN:
     SetRainState(mstruct->state, mstruct->scalar);
@@ -2458,17 +2458,17 @@ bool AddPowerupEnergyToPlayer(int id) {
   return true;
 }
 // returns true if it was handled
-bool HandleCommonPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup);
-bool HandleWeaponPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup);
-bool HandleCounterMeasurePowerups(char *pname, msafe_struct *mstruct, ubyte *pickup);
-bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup);
+bool HandleCommonPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup);
+bool HandleWeaponPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup);
+bool HandleCounterMeasurePowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup);
+bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup);
 // Does whatever magic needs to be done to get the default powerups to work
 void msafe_DoPowerup(msafe_struct *mstruct) {
   char pname[255];
   strcpy(pname, Object_info[MOBJ->id].name);
   ASSERT(MOBJ->type == OBJ_POWERUP);
   ASSERT(IOBJ->type == OBJ_PLAYER);
-  ubyte pickup = 0;
+  uint8_t pickup = 0;
   // Now go through and do the magic for each powerup
   bool handled = false;
   handled = HandleCommonPowerups(pname, mstruct, &pickup);
@@ -2567,9 +2567,9 @@ void CheckForWeaponSelect(int id, int weapon_index) {
     }
   }
 }
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 // New spiffy table-based code
-bool HandleWeaponPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup) {
+bool HandleWeaponPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup) {
   object *player = ObjGet(mstruct->ithandle);
   object *powerup = ObjGet(mstruct->objhandle);
   int p;
@@ -2676,7 +2676,7 @@ bool HandleWeaponPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup) {
   return handled;
 }
 // returns true if it was handled
-bool HandleCommonPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup) {
+bool HandleCommonPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup) {
   int pnum = IOBJ->id;
   bool handled = false;
   // Shield bonus
@@ -2796,7 +2796,7 @@ bool HandleCommonPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup) {
   }
   return handled;
 }
-bool HandleCounterMeasurePowerups(char *pname, msafe_struct *mstruct, ubyte *pickup) {
+bool HandleCounterMeasurePowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup) {
   bool handled = false;
   // Chaff
   if (!stricmp("Chaff", pname)) {
@@ -2980,7 +2980,7 @@ bool HandleCounterMeasurePowerups(char *pname, msafe_struct *mstruct, ubyte *pic
   }
   return handled;
 }
-bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, ubyte *pickup) {
+bool HandleInventoryPowerups(char *pname, msafe_struct *mstruct, uint8_t *pickup) {
   bool handled = false;
   int pnum = IOBJ->id;
   // Afterburner cooler

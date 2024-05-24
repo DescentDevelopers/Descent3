@@ -245,7 +245,7 @@ static lodoff LODOffs[MAX_LODOFFS];
 static int Num_lodoffs = 0;
 
 // Render the terrain as flat?
-ubyte Flat_terrain = 0;
+uint8_t Flat_terrain = 0;
 
 // Variables for LOD engine
 static float ViewDistance1 = .68f, ViewDistance2 = 1.0f;
@@ -257,7 +257,7 @@ static vector *TS_View_position;
 static vector TS_PreRows[TERRAIN_DEPTH];
 static vector TS_FVectorAdd, TS_RVectorAdd;
 
-static ubyte Terrain_y_flags[256];
+static uint8_t Terrain_y_flags[256];
 static vector Terrain_y_cache[256];
 
 static ushort LOD_sort_bucket[MAX_TERRAIN_LOD][MAX_CELLS_TO_RENDER];
@@ -433,7 +433,7 @@ int GetVisibleTerrain(vector *eye, matrix *view_orient) {
   return cellcount;
 }
 
-__inline void CheckCellOccupancy(int x, int y, int *ccount, ubyte lod) {
+__inline void CheckCellOccupancy(int x, int y, int *ccount, uint8_t lod) {
   int n, simplemul, i;
 
   if (*ccount >= MAX_CELLS_TO_RENDER) {
@@ -511,10 +511,10 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
   int stack_y2[200];
   int stack_level[200];
   float testdist = VisibleTerrainZ;
-  ubyte ymin_int[4], ymax_int[4];
+  uint8_t ymin_int[4], ymax_int[4];
   int close;
-  ubyte same_side;
-  ubyte check_portal = 0;
+  uint8_t same_side;
+  uint8_t check_portal = 0;
   g3Point *pnt;
   int use_occlusion = 0;
   int src_occlusion_index;
@@ -633,7 +633,7 @@ int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount) {
 
     anded = 0xff;
     same_side = 0xff;
-    ubyte portal_and = 0xff;
+    uint8_t portal_and = 0xff;
 
     for (i = 0; i < 4; i++) {
       if (first) {

@@ -1210,7 +1210,7 @@ static short free_obj_list[MAX_OBJECTS];
 object Objects[MAX_OBJECTS];
 
 tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
-ubyte Object_position_head;
+uint8_t Object_position_head;
 int16_t Object_map_position_history[MAX_OBJECTS];
 short Object_map_position_free_slots[MAX_OBJECT_POS_HISTORY];
 uint16_t Num_free_object_position_history;
@@ -1680,7 +1680,7 @@ void ObjSetAABB(object *obj) {
 //-----------------------------------------------------------------------------
 // initialize a new object.  adds to the list for the given room
 // returns the object number
-int ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle) {
+int ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle) {
   int objnum;
   object *obj;
   int handle;
@@ -2398,7 +2398,7 @@ void DoFlyingControl(object *objp) {
   // Send an event to the Game DLLs so they can do any processing of game controls
   if (Game_mode & GM_MULTI) {
     DLLInfo.me_handle = DLLInfo.it_handle = objp->handle;
-    DLLInfo.special_data = (ubyte *)&controls;
+    DLLInfo.special_data = (uint8_t *)&controls;
     CallGameDLL(EVT_GAMEDOCONTROLS, &DLLInfo);
   }
 

@@ -32,11 +32,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
 DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -123,7 +123,7 @@ tPlayerTimerInfo RapidFirePlayerTimers[MAX_PLAYERS];
 
 typedef struct {
   int collided_object;
-  ubyte collided_pnum;
+  uint8_t collided_pnum;
 } rapidfirememory;
 
 class RapidFireScript : public GenericScript {
@@ -183,7 +183,7 @@ void STDCALL ShutdownDLL(void) {}
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   if (!isdoor) {
     for (int i = 0; i < NUM_IDS; i++) {
       if (!stricmp(ScriptIDInfo[i].name, name))
@@ -284,7 +284,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
 #define VERSION 0x01
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) {
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) {
   int size = 0;
 
   int i;

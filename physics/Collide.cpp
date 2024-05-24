@@ -865,8 +865,8 @@
 #define PLAYER_ROTATION_BY_FORCE_SCALAR 0.12f
 #define NONPLAYER_ROTATION_BY_FORCE_SCALAR 1.0f
 
-ubyte CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
-ubyte CollisionRayResult[MAX_OBJECT_TYPES];
+uint8_t CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
+uint8_t CollisionRayResult[MAX_OBJECT_TYPES];
 
 static bool IsOKToApplyForce(object *objp);
 static void bump_this_object(object *objp, object *other_objp, vector *force, vector *collision_pnt, int damage_flag);
@@ -2458,7 +2458,7 @@ void collide_generic_and_weapon(object *robotobj, object *weapon, vector *collis
                                 bool f_reverse_normal, fvi_info *hit_info) {
   object *parent_obj;
   float damage_to_apply;
-  ubyte electrical = (Weapons[weapon->id].flags & WF_ELECTRICAL) ? 1 : 0;
+  uint8_t electrical = (Weapons[weapon->id].flags & WF_ELECTRICAL) ? 1 : 0;
   bool f_stick = ((weapon->mtype.phys_info.flags & PF_STICK) != 0);
   bool f_energy = ((Weapons[weapon->id].flags & WF_MATTER_WEAPON) == 0);
   int damage_type;
@@ -2584,7 +2584,7 @@ void collide_player_and_weapon(object *playerobj, object *weapon, vector *collis
                                bool f_reverse_normal, fvi_info *hit_info) {
   object *parent_obj;
   float damage_to_apply;
-  ubyte electrical = Weapons[weapon->id].flags & WF_ELECTRICAL ? 1 : 0;
+  uint8_t electrical = Weapons[weapon->id].flags & WF_ELECTRICAL ? 1 : 0;
   bool f_stick = ((weapon->mtype.phys_info.flags & PF_STICK) != 0);
 
   if (f_reverse_normal)
@@ -2697,8 +2697,8 @@ void collide_two_objects(object *A, object *B, vector *collision_point, vector *
   int collision_type;
   int a_num = A - Objects;
   int b_num = B - Objects;
-  ubyte a_good = 0, b_good = 0;
-  ubyte a_hittime_good = 1, b_hittime_good = 1;
+  uint8_t a_good = 0, b_good = 0;
+  uint8_t a_hittime_good = 1, b_hittime_good = 1;
 
   // Only do omega particle collisions if specifically allowed
   extern bool Enable_omega_collions;
@@ -2952,7 +2952,7 @@ void CollideInit() {
 // Returns true if the object hits the wall, and false if should keep going though the wall (for breakable glass)
 bool collide_object_with_wall(object *A, float hitspeed, int hitseg, int hitwall, vector *hitpt, vector *wall_normal,
                               float hit_dot) {
-  ubyte do_event = 0;
+  uint8_t do_event = 0;
   bool ret = true;
 
   switch (A->type) {

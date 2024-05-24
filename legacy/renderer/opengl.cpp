@@ -65,7 +65,7 @@ extern int WindowGL;
 /*
 #ifndef NDEBUG
         GLenum GL_error_code;
-        const ubyte *GL_error_string;
+        const uint8_t *GL_error_string;
         #define CHECK_ERROR(x)	{	GL_error_code=dglGetError ();\
                                                                         if (GL_error_code!=GL_NO_ERROR)\
                                                                         {\
@@ -144,13 +144,13 @@ static float OpenGL_Alpha_factor = 1.0f;
 // This is for the Microsoft OpenGL reference driver
 // Setting this will turn off bilinear filtering and zbuffer so we can get decent
 // framerates to discern driver problems
-static ubyte Fast_test_render = 0;
+static uint8_t Fast_test_render = 0;
 #endif
 
 ushort *OpenGL_bitmap_remap;
 ushort *OpenGL_lightmap_remap;
-ubyte *OpenGL_bitmap_states;
-ubyte *OpenGL_lightmap_states;
+uint8_t *OpenGL_bitmap_states;
+uint8_t *OpenGL_lightmap_states;
 
 uint32_t *opengl_Upload_data = NULL;
 uint32_t *opengl_Translate_table = NULL;
@@ -243,7 +243,7 @@ void opengl_GetInformation() {
 
   /*	#ifndef RELEASE
                   // If this is the microsoft driver, then make stuff go faster
-                  const ubyte *renderer=dglGetString(GL_RENDERER);
+                  const uint8_t *renderer=dglGetString(GL_RENDERER);
                   if (!(strnicmp ((const char *)renderer,"GDI",3)))
                           Fast_test_render=1;
                   else
@@ -285,9 +285,9 @@ int opengl_InitCache() {
   OpenGL_lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * 2);
   ASSERT(OpenGL_lightmap_remap);
 
-  OpenGL_bitmap_states = (ubyte *)mem_malloc(MAX_BITMAPS);
+  OpenGL_bitmap_states = (uint8_t *)mem_malloc(MAX_BITMAPS);
   ASSERT(OpenGL_bitmap_states);
-  OpenGL_lightmap_states = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
+  OpenGL_lightmap_states = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
   ASSERT(OpenGL_lightmap_states);
 
   Cur_texture_object_num = 1;
@@ -2242,7 +2242,7 @@ void opengl_SetZBufferWriteMask(int state) {
 void opengl_SetFlatColor(ddgr_color color) { OpenGL_state.cur_color = color; }
 
 // Sets the constant alpha value
-void opengl_SetAlphaValue(ubyte val) {
+void opengl_SetAlphaValue(uint8_t val) {
   OpenGL_state.cur_alpha = val;
   opengl_SetAlphaMultiplier();
 }
@@ -2431,7 +2431,7 @@ void opengl_ResetCache() {
   opengl_InitCache();
 }
 
-ubyte opengl_Framebuffer_ready = 0;
+uint8_t opengl_Framebuffer_ready = 0;
 chunked_bitmap opengl_Chunked_bitmap;
 
 void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {

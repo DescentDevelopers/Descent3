@@ -93,7 +93,7 @@ float opengl_GetAspectRatio();
 void opengl_SetWrapType(wrap_type val);
 
 // Sets the constant alpha value
-void opengl_SetAlphaValue(ubyte val);
+void opengl_SetAlphaValue(uint8_t val);
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
 // usefull for motion blur effect

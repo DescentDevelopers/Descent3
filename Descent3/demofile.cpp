@@ -518,7 +518,7 @@ void DemoWriteChangedObjects() {
   }
 }
 
-void DemoWriteObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+void DemoWriteObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj) {
 
   if (Demo_flags == DF_RECORDING) {
@@ -654,7 +654,7 @@ void DemoWritePlayerDeath(object *player, bool melee, int fate) {
 
 void DemoReadPlayerDeath(void) {
   short playernum = cf_ReadShort(Demo_cfp);
-  ubyte melee = cf_ReadByte(Demo_cfp);
+  uint8_t melee = cf_ReadByte(Demo_cfp);
   int fate = cf_ReadInt(Demo_cfp);
   InitiatePlayerDeath(&Objects[playernum], melee ? true : false, fate);
 }
@@ -928,7 +928,7 @@ void DemoReadObj() {
 void DemoReadHudMessage() {
   char msg[HUD_MESSAGE_LENGTH];
   int color = cf_ReadInt(Demo_cfp);
-  ubyte blink = cf_ReadByte(Demo_cfp);
+  uint8_t blink = cf_ReadByte(Demo_cfp);
   cf_ReadString(msg, HUD_MESSAGE_LENGTH, Demo_cfp);
 
   if (color) {
@@ -1099,8 +1099,8 @@ void DemoReadWeaponFire() {
 
 void DemoReadObjCreate() {
   // float gametime;
-  ubyte type;
-  ubyte use_orient;
+  uint8_t type;
+  uint8_t use_orient;
   matrix orient;
   vector pos;
   int roomnum;
@@ -1153,10 +1153,10 @@ void DemoReadObjCreate() {
 // FrameDemoDelta = FrameCount
 // DemoFrameCount = 0;
 
-ubyte DemoLastOpcode = 0;
+uint8_t DemoLastOpcode = 0;
 
 void DemoFrame() {
-  ubyte opcode;
+  uint8_t opcode;
   if (Demo_flags != DF_PLAYBACK)
     return;
   if (!Demo_first_frame) {
@@ -1301,7 +1301,7 @@ void DemoFrame() {
   } while (!exit_loop);
 }
 
-void DemoWriteCinematics(ubyte *data, uint16_t len) {
+void DemoWriteCinematics(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_CINEMATICS);
   // Write a bunch of data
   mprintf((0, "Writing Cinematic data (%d bytes) to demo file.\n", len));
@@ -1310,40 +1310,40 @@ void DemoWriteCinematics(ubyte *data, uint16_t len) {
 }
 
 void DemoReadCinematics() {
-  ubyte buffer[1500];
+  uint8_t buffer[1500];
   ushort len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   mprintf((0, "Reading Cinematic data from demo file.\n"));
   Cinematic_DoDemoFileData(buffer);
 }
 
-void DemoWriteMSafe(ubyte *data, uint16_t len) {
+void DemoWriteMSafe(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_MSAFE);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
   //	mprintf((0,"Writing MSAFE data to demo file.\n"));
 }
 
-void DemoWritePowerup(ubyte *data, uint16_t len) {
+void DemoWritePowerup(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_POWERUP);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
 }
 
-extern void MultiDoMSafeFunction(ubyte *data);
+extern void MultiDoMSafeFunction(uint8_t *data);
 
 void DemoReadMSafe() {
-  ubyte buffer[1500];
+  uint8_t buffer[1500];
   ushort len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   // mprintf((0,"Reading MSAFE data from demo file.\n"));
   MultiDoMSafeFunction(buffer);
 }
 
-extern void MultiDoMSafePowerup(ubyte *data);
+extern void MultiDoMSafePowerup(uint8_t *data);
 
 void DemoReadPowerups() {
-  ubyte buffer[1500];
+  uint8_t buffer[1500];
   ushort len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   MultiDoMSafePowerup(buffer);
@@ -1372,7 +1372,7 @@ void DemoReadCollidePlayerWeapon(void) {
   short wep_objnum = cf_ReadShort(Demo_cfp);
   gs_ReadVector(Demo_cfp, collision_p);
   gs_ReadVector(Demo_cfp, collision_n);
-  ubyte b = cf_ReadByte(Demo_cfp);
+  uint8_t b = cf_ReadByte(Demo_cfp);
   f_reverse_normal = b ? true : false;
 
   real_weapnum = Demo_obj_map[wep_objnum];
@@ -1403,7 +1403,7 @@ void DemoReadCollideGenericWeapon(void) {
   short wep_objnum = cf_ReadShort(Demo_cfp);
   gs_ReadVector(Demo_cfp, collision_p);
   gs_ReadVector(Demo_cfp, collision_n);
-  ubyte b = cf_ReadByte(Demo_cfp);
+  uint8_t b = cf_ReadByte(Demo_cfp);
   f_reverse_normal = b ? true : false;
 
   real_weapnum = Demo_obj_map[wep_objnum];
@@ -1715,7 +1715,7 @@ void DemoWritePersistantHUDMessage(ddgr_color color, int x, int y, float time, i
   cf_WriteInt(Demo_cfp, flags);
   cf_WriteInt(Demo_cfp, sound_index);
   cf_WriteShort(Demo_cfp, strlen(msg) + 1);
-  cf_WriteBytes((const ubyte *)msg, strlen(msg) + 1, Demo_cfp);
+  cf_WriteBytes((const uint8_t *)msg, strlen(msg) + 1, Demo_cfp);
 }
 
 void DemoReadPersistantHUDMessage() {
@@ -1735,7 +1735,7 @@ void DemoReadPersistantHUDMessage() {
   sound_index = cf_ReadInt(Demo_cfp);
   int msglen = cf_ReadShort(Demo_cfp);
   fmt = (char *)mem_malloc(msglen);
-  cf_ReadBytes((ubyte *)fmt, msglen, Demo_cfp);
+  cf_ReadBytes((uint8_t *)fmt, msglen, Demo_cfp);
   AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt);
   mem_free(fmt);
 }

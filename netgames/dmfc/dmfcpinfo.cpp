@@ -311,7 +311,7 @@ int PInfo::GetSizeOfData(void) {
   return size;
 }
 
-void PInfo::PackData(ubyte *buffer) {
+void PInfo::PackData(uint8_t *buffer) {
   if (!buffer)
     return;
   tPKillerInfo *c;
@@ -337,7 +337,7 @@ void PInfo::PackData(ubyte *buffer) {
   }
 }
 
-bool PInfo::UnpackData(ubyte *buffer, int buffsize) {
+bool PInfo::UnpackData(uint8_t *buffer, int buffsize) {
   if (!buffer)
     return false;
   int count = 0;

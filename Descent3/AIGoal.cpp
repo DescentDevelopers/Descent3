@@ -1100,7 +1100,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
     gi_fire *attack_info = (gi_fire *)arg_struct;
     if ((ai_info->animation_type == AS_ALERT) || (ai_info->animation_type == AS_MELEE1 + 1) ||
         (ai_info->animation_type == AS_MELEE2 + 1)) {
-      ubyte m_num = attack_info->melee_number;
+      uint8_t m_num = attack_info->melee_number;
       char new_anim;
 
       if (m_num)
@@ -1231,7 +1231,7 @@ int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, fl
   return goal_index;
 }
 
-int GoalAddEnabler(object *obj, int goal_index, ubyte enabler_type, void *arg_struct, float percent, float interval) {
+int GoalAddEnabler(object *obj, int goal_index, uint8_t enabler_type, void *arg_struct, float percent, float interval) {
   ai_frame *ai_info = obj->ai_info;
   goal_enabler *e_info;
 

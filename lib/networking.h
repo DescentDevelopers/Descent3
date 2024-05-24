@@ -334,9 +334,9 @@ enum network_protocol : uint32_t
 };
 
 typedef struct {
-  ubyte address[6];
+  uint8_t address[6];
   ushort port;
-  ubyte net_id[4];
+  uint8_t net_id[4];
   network_protocol connection_type; // IPX, IP, modem, etc.
 } network_address;
 
@@ -399,12 +399,12 @@ void nw_FreePacket(int id);
 int nw_Receive(void *data, network_address *from_addr);
 
 // nw_SendReliable sends the given data through the given reliable socket.
-int nw_SendReliable(uint32_t socketid, ubyte *data, int length, bool urgent = false);
+int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent = false);
 
 // function which reads data off of a reliable socket.  recv() should read the totaly amount of data
 // available I believe.  (i.e. we shouldn't read only part of a message with one call....I may be wrong
 // and this may be a source of bugs).
-int nw_ReceiveReliable(SOCKET socket, ubyte *buffer, int max_len);
+int nw_ReceiveReliable(SOCKET socket, uint8_t *buffer, int max_len);
 
 // Returns the current protocol in use
 int nw_GetProtocolType();
@@ -430,13 +430,13 @@ int nw_PingCompare(const void *arg1, const void *arg2);
 void nw_psnet_buffer_init();
 
 // buffer a packet (maintain order!)
-void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from);
+void nw_psnet_buffer_packet(uint8_t *data, int length, network_address *from);
 
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from);
+int nw_psnet_buffer_get_next(uint8_t *data, int *length, network_address *from);
 
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t packet_id);
+int nw_psnet_buffer_get_next_by_packet_id(uint8_t *data, int *length, uint32_t packet_id);
 
 // This is all the reliable UDP stuff...
 #define MAXNETBUFFERS                                                                                                  \
@@ -467,7 +467,7 @@ int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t pac
 #define RNF_LIMBO 5        // between connecting and connected
 
 void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_type, float time_sent);
-void nw_WorkReliable(ubyte *data, int len, network_address *naddr);
+void nw_WorkReliable(uint8_t *data, int len, network_address *naddr);
 int nw_Compress(void *srcdata, void *destdata, int count);
 int nw_Uncompress(void *compdata, void *uncompdata, int count);
 
@@ -504,14 +504,14 @@ int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname);
 int nw_ReccomendPPS();
 void nw_DoNetworkIdle(void);
 
-typedef void *(*NetworkReceiveCallback)(ubyte *data, int len, network_address *from);
-int nw_RegisterCallback(NetworkReceiveCallback nfp, ubyte id);
-NetworkReceiveCallback nw_UnRegisterCallback(ubyte id);
-int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to);
+typedef void *(*NetworkReceiveCallback)(uint8_t *data, int len, network_address *from);
+int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id);
+NetworkReceiveCallback nw_UnRegisterCallback(uint8_t id);
+int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to);
 int nw_DoReceiveCallbacks(void);
-void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr);
-int nw_RegisterCallback(NetworkReceiveCallback nfp, ubyte id);
-void nw_HandleUnreliableData(ubyte *data, int len, network_address *from_addr);
+void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_addr);
+int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id);
+void nw_HandleUnreliableData(uint8_t *data, int len, network_address *from_addr);
 void nw_ReliableResend(void);
 int nw_CheckReliableSocket(int socknum);
 

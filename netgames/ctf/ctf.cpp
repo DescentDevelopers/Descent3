@@ -153,16 +153,16 @@ static int snd_hattrick_reg = -1;
 typedef struct {
   int Score[2];
 } tPlayerStat; // Overall scores (throughout the game)
-static int pack_pstat(tPlayerStat *user_info, ubyte *data);
-static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
-int pack_pstat(tPlayerStat *user_info, ubyte *data) {
+static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
+static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
+int pack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
   MultiAddInt(user_info->Score[1], data, &count);
   return count;
 }
 
-int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
+int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   user_info->Score[0] = MultiGetInt(data, &count);
   user_info->Score[1] = MultiGetInt(data, &count);
@@ -205,7 +205,7 @@ static void DisplayWelcomeMessage(int player_num);         // displays a welcome
 static void SortTeamScores(int *sortedindex, int *scores); // sorts an array of team scores, filling in the sorted index
                                                            // numbers
 static void DisplayHUDScores(struct tHUDItem *hitem);      // callback when the HUD info is to be drawn
-static void ReceiveGameState(ubyte *data); // callback when a gamestate packet is received from the server
+static void ReceiveGameState(uint8_t *data); // callback when a gamestate packet is received from the server
 static void SendGameState(int playernum);  // called when the server is to send gamestate packet to a client
 static void SetColoredBalls(
     int playernum,
@@ -214,18 +214,18 @@ static void ChangeNumberOfTeams(int newsize); // called when the number of teams
 static void DoFlagReturnedHome(int team);     // called to handle any events when a flag is returned home for a team
 static void DoLoseFlag(int team);             // called to handle any events when a team loses their flag
 static void TellClientsToAddorDelFlag(int pnum, int team, int objnum, bool add);
-static void ServerIsTellingMeToAddorDelAFlag(ubyte *data);
+static void ServerIsTellingMeToAddorDelAFlag(uint8_t *data);
 static void OnGetTokenString(char *src, char *dest, int dest_size);
 // returns the number of flags a player has, 0 if none, or an invalid pnum
 static int GetFlagCountForPlayer(int pnum);
 // returns the mask of which flags this player currently has
-static ubyte GetFlagMaskForPlayer(int pnum);
+static uint8_t GetFlagMaskForPlayer(int pnum);
 //	adds a flag to a player, as a precaution, it will go through all the players and makes sure that no one
 //	has the flag that is being added.  If they are adding the flag, than remove that flag from whoever we thought
 // had it 	it will return false if it had to remove a flag from a player
-static bool GivePlayerFlag(int pnum, ubyte team);
+static bool GivePlayerFlag(int pnum, uint8_t team);
 // this function takes a flag away from the player, useful for when he scores, spews, disconnects, or observer modes
-static void LoseFlagForPlayer(int pnum, ubyte team, bool remove_from_inven = true);
+static void LoseFlagForPlayer(int pnum, uint8_t team, bool remove_from_inven = true);
 
 ///////////////////////////////////////////////
 // localization info/functions
@@ -240,7 +240,7 @@ const char *GetString(int d) {
 }
 static void SaveStatsToFile(char *filename);
 static void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_size);
-static void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use);
+static void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
 
 // This function gets called by the game when it wants to learn some info about the game
 void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
@@ -268,7 +268,7 @@ void TeamScoreCallback(int team, char *buffer, int buffer_size) {
   snprintf(buffer, buffer_size, " %d", TeamScores[team]);
 }
 
-void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use) {
+void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
   int flagcount, flagmask;
 
@@ -299,7 +299,7 @@ void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h,
 
 ///////////////////////////////////////////////
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -380,8 +380,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
   DMFCBase->AddSuicideMessage(TXT_SUICIDE6);
 
   // setup the Playerstats struct so DMFC can handle it automatically when a new player enters the game
-  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, ubyte *))pack_pstat,
-                              (int (*)(void *, ubyte *))unpack_pstat);
+  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, uint8_t *))pack_pstat,
+                              (int (*)(void *, uint8_t *))unpack_pstat);
 
   DMFCBase->AddHUDItemCallback(HI_TEXT, DisplayHUDScores);
 
@@ -803,7 +803,7 @@ void OnServerCollide(object *me_obj, object *it_obj) {
         (it_obj->id == FlagIDs[GREEN_TEAM]) || (it_obj->id == FlagIDs[YELLOW_TEAM])) {
 
       // Start a packet for the collide
-      ubyte data[MAX_GAME_DATA_SIZE];
+      uint8_t data[MAX_GAME_DATA_SIZE];
       int count = 0;
       DMFCBase->StartPacket(data, SPID_COLLIDE, &count);
       int start = count;
@@ -832,7 +832,7 @@ void OnServerCollide(object *me_obj, object *it_obj) {
 //       2.1) Add flag to inventory
 //       2.2) Set rotating balls
 //       2.3) Print out message
-void OnClientCollide(ubyte *data) {
+void OnClientCollide(uint8_t *data) {
   object *me_obj, *it_obj;
   int me_roomnum;
   int count = 0;
@@ -1728,8 +1728,8 @@ void OnPrintScores(int level) {
 //	and other various settings related to a flag spew
 void HandlePlayerSpew(int pnum) {
   // Handle dropping the flag if the player had one
-  ubyte flaginfo = GetFlagCountForPlayer(pnum);
-  ubyte flagmask = GetFlagMaskForPlayer(pnum);
+  uint8_t flaginfo = GetFlagCountForPlayer(pnum);
+  uint8_t flagmask = GetFlagMaskForPlayer(pnum);
 
   if (flaginfo == 0) {
     return;
@@ -1800,7 +1800,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   if (!First_game_frame || DisplayScoreScreen) // interval hasn't been called yet or we are display the stats
     return;
 
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
 
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
 
@@ -2217,7 +2217,7 @@ void TellClientsToAddorDelFlag(int pnum, int team, int objnum, bool add) {
     DLLMultiSendObject(&dObjects[objnum], false, true);
   }
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size = 0;
   DMFCBase->StartPacket(data, SPID_ADDDELFLAG, &size);
 
@@ -2233,7 +2233,7 @@ void TellClientsToAddorDelFlag(int pnum, int team, int objnum, bool add) {
   DMFCBase->SendPacket(data, size, SP_ALL);
 }
 
-void ServerIsTellingMeToAddorDelAFlag(ubyte *data) {
+void ServerIsTellingMeToAddorDelAFlag(uint8_t *data) {
   int size = 0;
   int pnum, team;
   bool add;
@@ -2273,48 +2273,48 @@ void OnTimerScoreKill(void) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-int PackByte(ubyte byte, ubyte *buffer, int pos) {
+int PackByte(uint8_t byte, uint8_t *buffer, int pos) {
   buffer[pos] = byte;
   pos++;
   return pos;
 }
 
-int UnPackByte(ubyte *byte, ubyte *buffer, int pos) {
+int UnPackByte(uint8_t *byte, uint8_t *buffer, int pos) {
   *byte = buffer[pos];
   pos++;
   return pos;
 }
 
-int PackBytes(ubyte *bytes, int count, ubyte *buffer, int pos) {
+int PackBytes(uint8_t *bytes, int count, uint8_t *buffer, int pos) {
   memcpy(&buffer[pos], bytes, count);
   pos += count;
   return pos;
 }
 
-int UnPackBytes(ubyte *bytes, int count, ubyte *buffer, int pos) {
+int UnPackBytes(uint8_t *bytes, int count, uint8_t *buffer, int pos) {
   memcpy(bytes, &buffer[pos], count);
   pos += count;
   return pos;
 }
 
-int PackWord(ushort word, ubyte *buffer, int pos) { return PackBytes((ubyte *)&word, sizeof(ushort), buffer, pos); }
+int PackWord(ushort word, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&word, sizeof(ushort), buffer, pos); }
 
-int UnPackWord(ushort *word, ubyte *buffer, int pos) { return UnPackBytes((ubyte *)word, sizeof(ushort), buffer, pos); }
+int UnPackWord(ushort *word, uint8_t *buffer, int pos) { return UnPackBytes((uint8_t *)word, sizeof(ushort), buffer, pos); }
 
-int PackInt(int data, ubyte *buffer, int pos) { return PackBytes((ubyte *)&data, sizeof(int), buffer, pos); }
+int PackInt(int data, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&data, sizeof(int), buffer, pos); }
 
-int UnPackInt(int *data, ubyte *buffer, int pos) { return UnPackBytes((ubyte *)data, sizeof(int), buffer, pos); }
+int UnPackInt(int *data, uint8_t *buffer, int pos) { return UnPackBytes((uint8_t *)data, sizeof(int), buffer, pos); }
 
-int PackArray(ubyte *data, int size, int count, ubyte *buffer, int pos) {
+int PackArray(uint8_t *data, int size, int count, uint8_t *buffer, int pos) {
   return PackBytes(data, size * count, buffer, pos);
 }
 
-int UnPackArray(ubyte *data, int size, int count, ubyte *buffer, int pos) {
+int UnPackArray(uint8_t *data, int size, int count, uint8_t *buffer, int pos) {
   return UnPackBytes(data, size * count, buffer, pos);
 }
 
 void SendGameState(int pnum) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int i;
 
@@ -2372,7 +2372,7 @@ void SendGameState(int pnum) {
   DMFCBase->SendPacket(data, count, pnum);
 }
 
-void ReceiveGameState(ubyte *data) {
+void ReceiveGameState(uint8_t *data) {
   int count = 0;
   int num_teams;
   int i;
@@ -2482,7 +2482,7 @@ int GetFlagCountForPlayer(int pnum) {
 }
 
 //	returns the mask of which flags this player currently has
-ubyte GetFlagMaskForPlayer(int pnum) {
+uint8_t GetFlagMaskForPlayer(int pnum) {
   // 1st check the pnum, make sure it is OK, if it isn't, return 0, meaning no flags
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
     // invalid player number, return 0 flags
@@ -2491,7 +2491,7 @@ ubyte GetFlagMaskForPlayer(int pnum) {
   }
 
   int flag_mask = 0;
-  ubyte mask = 0x01;
+  uint8_t mask = 0x01;
 
   // 2nd go through all the teams flags, and check the player's inventory, see if they have the ID,
   // if so, OR the current mask to the running flag_mask
@@ -2510,7 +2510,7 @@ ubyte GetFlagMaskForPlayer(int pnum) {
 //	adds a flag to a player, as a precaution, it will go through all the players and makes sure that no one
 //	has the flag that is being added.  If they are adding the flag, than remove that flag from whoever we thought
 // had it 	it will return false if it had to remove a flag from a player
-bool GivePlayerFlag(int pnum, ubyte team) {
+bool GivePlayerFlag(int pnum, uint8_t team) {
   // 1st check the player num, make sure it is valid
   if (!DMFCBase->CheckPlayerNum(pnum)) {
     // not a valid player
@@ -2596,7 +2596,7 @@ bool GivePlayerFlag(int pnum, ubyte team) {
 }
 
 // this function takes a flag away from the player, useful for when he scores, spews, disconnects, or observer modes
-void LoseFlagForPlayer(int pnum, ubyte team, bool remove_from_inven) {
+void LoseFlagForPlayer(int pnum, uint8_t team, bool remove_from_inven) {
   // 1st check the player number
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
     mprintf((0, "CTF:Invalid pnum passed to LoseFlagForPlayer()\n"));

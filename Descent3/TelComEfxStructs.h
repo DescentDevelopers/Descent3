@@ -286,8 +286,8 @@ typedef struct {
   int jump_page;
   void (*internal)(int);
   float flash_time;
-  ubyte button_type; // Up arrow, Down Arrow, TelCom System
-  ubyte click_type;  // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
+  uint8_t button_type; // Up arrow, Down Arrow, TelCom System
+  uint8_t click_type;  // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
   bool flasher;
   bool tab_stop;
   uint32_t mission_mask_set, mission_mask_unset; // mission flag mask

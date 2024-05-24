@@ -111,7 +111,7 @@ void RenderTextStatic(tceffect *tce, float frametime, int xoff, int yoff, bool o
       color_to_use = DISABLED_TEXT_COLOR;
     }
   }
-  ubyte old_alpha = grtext_GetAlpha();
+  uint8_t old_alpha = grtext_GetAlpha();
   grtext_SetFont(Game_fonts[tce->textinfo.font_index]);
   grtext_SetColor(color_to_use);
   grtext_SetAlpha(tce->alpha);
@@ -202,7 +202,7 @@ void RenderTextType(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   strcpy(temp, tce->text_buffer);
   temp[ll] = '\0';
 
-  ubyte old_alpha = grtext_GetAlpha();
+  uint8_t old_alpha = grtext_GetAlpha();
   grtext_SetFont(Game_fonts[tce->textinfo.font_index]);
   char buff[1024];
   const char *nextline;
@@ -368,7 +368,7 @@ void RenderTextFade(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
       color_to_use = DISABLED_TEXT_COLOR;
     }
   }
-  ubyte old_alpha = grtext_GetAlpha();
+  uint8_t old_alpha = grtext_GetAlpha();
   grtext_SetFont(Game_fonts[tce->textinfo.font_index]);
   grtext_SetColor(color_to_use);
   grtext_SetAlpha(alpha);
@@ -645,7 +645,7 @@ void RenderBmpInvert(tceffect *tce, float frametime, int xoff, int yoff, bool ok
   if (tce->flags == TC_BMPF_OUT)
     k = 1 - k;
   inv = 255 - (255.0f * k);
-  ubyte r, g, b;
+  uint8_t r, g, b;
   int bh = bm_h(srcbmph, 0);
   int bw = bm_w(srcbmph, 0);
   int how_many = tce->bmpinfo.chunk_bmp.w * tce->bmpinfo.chunk_bmp.h;

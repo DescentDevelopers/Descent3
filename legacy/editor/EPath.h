@@ -39,7 +39,7 @@
 #include "vecmat.h"
 #include "gamepath.h"
 
-extern ubyte Show_paths;
+extern uint8_t Show_paths;
 
 // Allocs a gamepath that a robot will follow.  Returns an index into the GamePaths
 // array 

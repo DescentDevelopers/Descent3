@@ -1043,7 +1043,7 @@ int AllocLoadRoom (char *filename,bool bCenter,bool palette_room)
 
 				for (i=0;i<rp->num_faces;i++)
 				{
-					ubyte light_multiple=4;
+					uint8_t light_multiple=4;
 					if (room_version>=4)
 						light_multiple=cf_ReadByte(infile);
 						
@@ -3203,7 +3203,7 @@ int FindConnectedFace(room *rp,int facenum,int edgenum,int startface)
 //Writes errors to the error buffer
 int ComputeRoomShell(room *rp)
 {
-	ubyte shell_flags[MAX_FACES_PER_ROOM];
+	uint8_t shell_flags[MAX_FACES_PER_ROOM];
 	bool done=0;
 	int errors=0;
 	int f;

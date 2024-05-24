@@ -27,7 +27,7 @@
 typedef struct {
   char name[PAGENAME_LEN];
   char dir_name[PAGENAME_LEN];
-  ubyte used;
+  uint8_t used;
 } gamefile;
 
 extern int Num_gamefiles;

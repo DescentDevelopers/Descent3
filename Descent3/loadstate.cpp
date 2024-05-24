@@ -281,7 +281,7 @@ int LoadGameState(const char *pathname) {
   gs_Xlates = new gs_tables;
 
   // read in header and do version check.
-  cf_ReadBytes((ubyte *)desc, sizeof(desc), fp);
+  cf_ReadBytes((uint8_t *)desc, sizeof(desc), fp);
   version = (ushort)cf_ReadShort(fp);
   if (version < GAMESAVE_OLDVER) {
     Int3();
@@ -336,7 +336,7 @@ int LoadGameState(const char *pathname) {
       goto loadsg_error;
     }
   }
-  cf_ReadBytes((ubyte *)&Weather, sizeof(Weather), fp);
+  cf_ReadBytes((uint8_t *)&Weather, sizeof(Weather), fp);
 
   // Restore active doorways
   {
@@ -425,7 +425,7 @@ bool GetGameStateInfo(const char *pathname, char *description, int *bm_handle) {
   if (!fp)
     return false;
 
-  if (!cf_ReadBytes((ubyte *)desc, GAMESAVE_DESCLEN + 1, fp)) {
+  if (!cf_ReadBytes((uint8_t *)desc, GAMESAVE_DESCLEN + 1, fp)) {
     strcpy(description, TXT_ILLEGALSAVEGAME);
     goto savesg_error;
   }
@@ -536,7 +536,7 @@ int LGSMission(const char *msnname, int level) {
   return LGS_OK;
 }
 
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 
 //	initializes rooms
 int LGSRooms(CFILE *fp) {
@@ -557,7 +557,7 @@ int LGSRooms(CFILE *fp) {
   }
 
   for (i = 0; i <= highest_index; i++) {
-    ubyte used;
+    uint8_t used;
     gs_ReadByte(fp, used);
     if (used) {
       // reset lists
@@ -662,15 +662,15 @@ int LGSTriggers(CFILE *fp) {
 
 typedef struct {
   int obj_handle, dest_objhandle;
-  ubyte subnum, subnum2;
+  uint8_t subnum, subnum2;
 
   ushort modelnum;
   ushort vertnum, end_vertnum;
 } old_vis_attach_info;
 
 typedef struct {
-  ubyte type;
-  ubyte id;
+  uint8_t type;
+  uint8_t id;
 
   vector pos;
 
@@ -685,7 +685,7 @@ typedef struct {
   int roomnum;
   ushort flags;
   int phys_flags;
-  ubyte movement_type;
+  uint8_t movement_type;
   short custom_handle;
   ushort lighting_color;
 
@@ -742,7 +742,7 @@ int LGSVisEffects(CFILE *fp) {
     int roomnum, v;
     vis_effect vis;
 
-    cf_ReadBytes((ubyte *)&vis, sizeof(vis_effect), fp);
+    cf_ReadBytes((uint8_t *)&vis, sizeof(vis_effect), fp);
     roomnum = vis.roomnum;
 
     // Check for old struct, and if found, fix it
@@ -752,10 +752,10 @@ int LGSVisEffects(CFILE *fp) {
       old_vis_effect old_vis;
 
       // Copy new into old
-      memcpy((ubyte *)&old_vis, (ubyte *)&vis, sizeof(vis_effect));
+      memcpy((uint8_t *)&old_vis, (uint8_t *)&vis, sizeof(vis_effect));
 
       // Read extra data from old
-      cf_ReadBytes(((ubyte *)&old_vis) + sizeof(vis_effect), sizeof(old_vis_effect) - sizeof(vis_effect), fp);
+      cf_ReadBytes(((uint8_t *)&old_vis) + sizeof(vis_effect), sizeof(old_vis_effect) - sizeof(vis_effect), fp);
 
       // Copy from old to new struct
       CopyVisStruct(&vis, &old_vis);
@@ -790,7 +790,7 @@ int LGSPlayers(CFILE *fp) {
     return LGS_OUTDATEDVER;
   } else {
     int guided_handle;
-    cf_ReadBytes((ubyte *)plr, sizeof(player), fp);
+    cf_ReadBytes((uint8_t *)plr, sizeof(player), fp);
     if (plr->guided_obj) {
       gs_ReadInt(fp, guided_handle);
       plr->guided_obj = &Objects[guided_handle & HANDLE_OBJNUM_MASK];
@@ -850,7 +850,7 @@ int LGSObjects(CFILE *fp, int version) {
   int num_marker_msgs = cf_ReadShort(fp);
   for (i = 0; i < num_marker_msgs; i++) {
     int msg_len = cf_ReadShort(fp);
-    cf_ReadBytes((ubyte *)MarkerMessages[i], msg_len, fp);
+    cf_ReadBytes((uint8_t *)MarkerMessages[i], msg_len, fp);
   }
 
   highest_index = (int)cf_ReadShort(fp);
@@ -952,7 +952,7 @@ int LGSObjects(CFILE *fp, int version) {
     object_info *obji;
     door *door;
     int index, nattach, new_model, handle;
-    ubyte type, dummy_type;
+    uint8_t type, dummy_type;
     short sindex, size;
 
     //	if((i==98)||(i==100))
@@ -973,7 +973,7 @@ int LGSObjects(CFILE *fp, int version) {
       Osiris_EnableEvents(OEM_OBJECTS | OEM_TRIGGERS | OEM_LEVELS);
       continue;
     }
-    ubyte l_rend_type;
+    uint8_t l_rend_type;
     gs_ReadByte(fp, l_rend_type);
 
     // See if the object has changed from it's original lightmap type
@@ -989,13 +989,13 @@ int LGSObjects(CFILE *fp, int version) {
     op->lighting_render_type = l_rend_type;
 
     // Store whether or not we have a pointer to lighting_info
-    ubyte has_lightinfo;
+    uint8_t has_lightinfo;
     gs_ReadByte(fp, has_lightinfo);
     if (has_lightinfo) {
       if (!op->lighting_info) {
         op->lighting_info = (light_info *)mem_malloc(sizeof(*op->lighting_info));
       }
-      cf_ReadBytes((ubyte *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_ReadBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
     }
 
     // validate handle.
@@ -1024,7 +1024,7 @@ int LGSObjects(CFILE *fp, int version) {
       if (!op->name)
         Error("Out of memory");
 
-      cf_ReadBytes((ubyte *)op->name, j, fp);
+      cf_ReadBytes((uint8_t *)op->name, j, fp);
       op->name[j] = '\0';
     } else {
       op->name = NULL;
@@ -1152,7 +1152,7 @@ int LGSObjects(CFILE *fp, int version) {
       if (!op->custom_default_script_name)
         Error("Out of memory");
 
-      cf_ReadBytes((ubyte *)op->custom_default_script_name, j, fp);
+      cf_ReadBytes((uint8_t *)op->custom_default_script_name, j, fp);
       op->custom_default_script_name[j] = '\0';
     } else {
       op->custom_default_script_name = NULL;
@@ -1164,7 +1164,7 @@ int LGSObjects(CFILE *fp, int version) {
       if (!op->custom_default_module_name)
         Error("Out of memory");
 
-      cf_ReadBytes((ubyte *)op->custom_default_module_name, j, fp);
+      cf_ReadBytes((uint8_t *)op->custom_default_module_name, j, fp);
       op->custom_default_module_name[j] = '\0';
     } else {
       op->custom_default_module_name = NULL;
@@ -1184,7 +1184,7 @@ int LGSObjects(CFILE *fp, int version) {
       retval = LGS_OUTDATEDVER;
       goto done;
     }
-    cf_ReadBytes((ubyte *)&op->mtype, size, fp);
+    cf_ReadBytes((uint8_t *)&op->mtype, size, fp);
 
     VERIFY_SAVEFILE;
     // Control info, determined by CONTROL_TYPE
@@ -1194,7 +1194,7 @@ int LGSObjects(CFILE *fp, int version) {
       retval = LGS_OUTDATEDVER;
       goto done;
     }
-    cf_ReadBytes((ubyte *)&op->ctype, size, fp);
+    cf_ReadBytes((uint8_t *)&op->ctype, size, fp);
 
     VERIFY_SAVEFILE;
     // remap bitmap handle if this is a fireball!
@@ -1217,7 +1217,7 @@ int LGSObjects(CFILE *fp, int version) {
       retval = LGS_OUTDATEDVER;
       goto done;
     }
-    cf_ReadBytes((ubyte *)&op->rtype, size, fp);
+    cf_ReadBytes((uint8_t *)&op->rtype, size, fp);
 
     op->size = cf_ReadFloat(fp);
 
@@ -1317,7 +1317,7 @@ int LGSObjects(CFILE *fp, int version) {
       }
       // Do Animation stuff
       custom_anim multi_anim_info;
-      cf_ReadBytes((ubyte *)&multi_anim_info, sizeof(multi_anim_info), fp);
+      cf_ReadBytes((uint8_t *)&multi_anim_info, sizeof(multi_anim_info), fp);
       ObjSetAnimUpdate(i, &multi_anim_info);
       break;
     }
@@ -1457,7 +1457,7 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
   *pai = (ai_frame *)mem_malloc(size);
   ai = *pai;
 
-  cf_ReadBytes((ubyte *)ai, size, fp);
+  cf_ReadBytes((uint8_t *)ai, size, fp);
 
   return LGS_OK;
 }
@@ -1478,14 +1478,14 @@ int LGSObjEffects(CFILE *fp, object *op) {
     op->effect_info = (effect_info_s *)mem_malloc(size);
     effect_info_s *ei = op->effect_info;
 
-    cf_ReadBytes((ubyte *)ei, size, fp);
+    cf_ReadBytes((uint8_t *)ei, size, fp);
   }
 
   return LGS_OK;
 }
 
 //@@//	loads script
-//@@vector *LGSScript(CFILE *fp, script_info *script, ubyte *is_scripted, int *memsize)
+//@@vector *LGSScript(CFILE *fp, script_info *script, uint8_t *is_scripted, int *memsize)
 //@@{
 //@@	int i;
 //@@	char name[64];
@@ -1549,7 +1549,7 @@ int LGSObjWB(CFILE *fp, object *op) {
 
   for (i = 0; i < num_wbs; i++) {
     dynamic_wb_info *dwb = &dwba[i];
-    cf_ReadBytes((ubyte *)dwb, sizeof(dynamic_wb_info), fp);
+    cf_ReadBytes((uint8_t *)dwb, sizeof(dynamic_wb_info), fp);
   }
   op->dynamic_wb = dwba;
 
@@ -1571,10 +1571,10 @@ int LGSSpew(CFILE *fp) {
   gs_ReadShort(fp, spew_count);
 
   for (i = 0; i < MAX_SPEW_EFFECTS; i++) {
-    ubyte used;
+    uint8_t used;
     gs_ReadByte(fp, used);
     if (used)
-      cf_ReadBytes((ubyte *)&SpewEffects[i], sizeof(spewinfo), fp);
+      cf_ReadBytes((uint8_t *)&SpewEffects[i], sizeof(spewinfo), fp);
   }
 
   return LGS_OK;

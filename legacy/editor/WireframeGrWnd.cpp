@@ -797,7 +797,7 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 					
 			if (Renderer_type==RENDERER_SOFTWARE_8BIT)
 			{	
-				ubyte pixval;
+				uint8_t pixval;
 				pixval=*bm_data8(bm_handle,0);
 				fadepixel=BitmapFadePalettes[bm_pal_index(bm_handle)][lightval*256+pixval];
 			}

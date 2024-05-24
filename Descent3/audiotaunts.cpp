@@ -224,7 +224,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
   int samples, rate, chan;
   char temp_filename[_MAX_PATH];
   char osftemp_filename[_MAX_PATH];
-  ubyte *StaticFileBuffer = NULL;
+  uint8_t *StaticFileBuffer = NULL;
   *temp_filename = *osftemp_filename = '\0';
   OSFArchive osf;
   CFILE *fpin = NULL;
@@ -319,7 +319,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
                   wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
           }
 
-          cf_WriteBytes((ubyte *)wavdata.sample_16bit,amount_to_flush,file);
+          cf_WriteBytes((uint8_t *)wavdata.sample_16bit,amount_to_flush,file);
   }else{
           mprintf((0,"TAUNT: Confusion to bits per sample (%d)\n",wavdata.bits_per_sample));
           ret = false;
@@ -339,7 +339,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
     wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
   }
 
-  cf_WriteBytes((ubyte *)wavdata.sample_16bit, amount_to_flush, file);
+  cf_WriteBytes((uint8_t *)wavdata.sample_16bit, amount_to_flush, file);
   cfclose(file);
   file = NULL;
 
@@ -369,7 +369,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
   uint32_t filelen, nblocks, i;
   int format;
 
-  StaticFileBuffer = (ubyte *)mem_malloc(FILEBUFFER_LENGTH);
+  StaticFileBuffer = (uint8_t *)mem_malloc(FILEBUFFER_LENGTH);
   if (!StaticFileBuffer) {
     ret = false;
     mprintf((0, "Out of memory\n"));
@@ -711,9 +711,9 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
 
         wave->sample_length = aligned_size;
         wave->np_sample_length = cksize;
-        wave->sample_8bit = (ubyte *)mem_malloc(aligned_size);
+        wave->sample_8bit = (uint8_t *)mem_malloc(aligned_size);
 
-        cf_ReadBytes((ubyte *)wave->sample_8bit, cksize, cfptr);
+        cf_ReadBytes((uint8_t *)wave->sample_8bit, cksize, cfptr);
 
         if (aligned_size != cksize)
           memset(wave->sample_8bit + cksize, 128, num_needed);
@@ -730,7 +730,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
 
         wave->sample_16bit = (short *)mem_malloc(cksize + num_needed);
 
-        cf_ReadBytes((ubyte *)wave->sample_16bit, cksize, cfptr);
+        cf_ReadBytes((uint8_t *)wave->sample_16bit, cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
           wave->sample_16bit[count] = INTEL_SHORT(wave->sample_16bit[count]);
         }

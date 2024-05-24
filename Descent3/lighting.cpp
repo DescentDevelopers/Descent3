@@ -68,7 +68,7 @@ static ushort *Dynamic_lightmap_memory = NULL;
 static float Light_component_scalar[32];
 float Ubyte_to_float[256];
 
-static ubyte Lmi_spoken_for[MAX_LIGHTMAP_INFOS / 8];
+static uint8_t Lmi_spoken_for[MAX_LIGHTMAP_INFOS / 8];
 
 static dynamic_lightmap *Dynamic_lightmaps;
 static dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
@@ -149,7 +149,7 @@ void InitDynamicLighting() {
     memset(&Dynamic_lightmaps[i], 0, sizeof(dynamic_lightmap));
   }
 
-  // Setup ubyte to float
+  // Setup uint8_t to float
   for (i = 0; i < 256; i++)
     Ubyte_to_float[i] = (float)i / 255.0;
 
@@ -174,7 +174,7 @@ void InitDynamicLighting() {
 
 // Given a float, returns the index into the Ubyte_float_table that this number
 // corresponds to
-ubyte Float_to_ubyte(float fnum) {
+uint8_t Float_to_ubyte(float fnum) {
   int i;
 
   if (fnum < 0 || fnum > 1.0) {
@@ -557,7 +557,7 @@ struct light_instance_context {
 } Light_instance_stack[MAX_SUBOBJECTS];
 
 int Light_instance_depth = 0;
-ubyte Use_light_direction = 0;
+uint8_t Use_light_direction = 0;
 
 vector Light_position;
 vector Light_direction;
@@ -1605,7 +1605,7 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
 
 // TODO: MTS: Unused?
 // Sets pulse parameters for an entire room
-void SetRoomPulse(room *rp, ubyte pulse_time, ubyte pulse_offset) {
+void SetRoomPulse(room *rp, uint8_t pulse_time, uint8_t pulse_offset) {
   ASSERT(rp->used);
 
   rp->pulse_time = pulse_time;

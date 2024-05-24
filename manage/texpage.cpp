@@ -373,7 +373,7 @@ void mng_WriteTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
   if (texpage->tex_struct.flags & TF_PROCEDURAL) {
     // Write out the palette in two halves
     cf_WriteByte(outfile, TEXPAGE_COMMAND_FIRST_PROC_PAL);
-    cf_WriteByte(outfile, (ubyte)255);
+    cf_WriteByte(outfile, (uint8_t)255);
     for (i = 0; i < 255; i++) {
       ushort val = texpage->proc_palette[i];
       val >>= 8;
@@ -382,7 +382,7 @@ void mng_WriteTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
     }
 
     cf_WriteByte(outfile, TEXPAGE_COMMAND_SECOND_PROC_PAL);
-    cf_WriteByte(outfile, (ubyte)255);
+    cf_WriteByte(outfile, (uint8_t)255);
     for (i = 0; i < 255; i++) {
       ushort val = texpage->proc_palette[i];
       val &= 0xFF;
@@ -532,7 +532,7 @@ void mng_InitTexturePage(mngs_texture_page *texpage) {
 int mng_ReadTexturePage(CFILE *infile, mngs_texture_page *texpage) {
   int done = 0;
   char command;
-  ubyte len;
+  uint8_t len;
   int i;
   int proc_index = 0;
 
@@ -611,7 +611,7 @@ int mng_ReadTexturePage(CFILE *infile, mngs_texture_page *texpage) {
       break;
     case TEXPAGE_COMMAND_SECOND_PROC_PAL:
       for (i = 0; i < 255; i++) {
-        ubyte val = cf_ReadByte(infile);
+        uint8_t val = cf_ReadByte(infile);
         texpage->proc_palette[i] &= 0xFF00;
         texpage->proc_palette[i] |= val;
       }
@@ -760,7 +760,7 @@ int mng_ReadNewTexturePage(CFILE *infile, mngs_texture_page *texpage) {
 // If local is 1, deletes from the local table file
 int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
   CFILE *infile, *outfile;
-  ubyte pagetype, replaced = 0;
+  uint8_t pagetype, replaced = 0;
   int done = 0;
   int deleted = 0;
   memset(&texpage1, 0, sizeof(mngs_texture_page));
@@ -838,7 +838,7 @@ int mng_DeleteTexPageSeries(char *names[], int num_textures, int local) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificTexPage(char *name, mngs_texture_page *texpage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
   char tablename[TABLE_NAME_LEN];
@@ -955,8 +955,8 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 #endif
 
   // Try and load our textures bitmaps from the disk
-  ubyte pageable;
-  ubyte mipped = 1;
+  uint8_t pageable;
+  uint8_t mipped = 1;
 
   if (Network_up)
     pageable = 0;

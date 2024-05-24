@@ -585,7 +585,7 @@ int osipf_AIGoalFollowPathSimple(int objhandle, int path_id, int guid, int flags
   return GoalAddGoal(obj, AIG_FOLLOW_PATH, (void *)&path_info, slot, 1.0f, flags, guid);
 }
 
-int osipf_AIPowerSwitch(int objhandle, ubyte f_power_on) {
+int osipf_AIPowerSwitch(int objhandle, uint8_t f_power_on) {
   object *obj = ObjGet(objhandle);
   if (!obj) {
     mprintf((0, "Illegal Object passed to AIPowerSwitch\n"));
@@ -1632,7 +1632,7 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
   }
 }
 
-ubyte osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec) {
+uint8_t osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec) {
   object *objp = ObjGet(objhandle);
 
   if (!objp) {
@@ -2030,7 +2030,7 @@ float osipf_AIGetDistToObj(int objhandle, int otherobjhandle) {
   return dist;
 }
 
-int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, ubyte f_enable) {
+int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_enable) {
   object *obj = ObjGet(objhandle);
 
   if (obj == NULL) {
@@ -2101,7 +2101,7 @@ void osipf_GetGroundPos(int objhandle, int ground_number, vector *ground_pnt, ve
   PhysCalcGround(ground_pnt, ground_normal, obj, ground_number);
 }
 
-ubyte osipf_IsRoomValid(int roomnum) {
+uint8_t osipf_IsRoomValid(int roomnum) {
   if (roomnum == -1.0) {
     return 0;
   } else if (ROOMNUM_OUTSIDE(roomnum)) {
@@ -2158,7 +2158,7 @@ int osipf_GetAttachChildHandle(int objhandle, char attachpoint) {
   return (OBJECT_HANDLE_NONE);
 }
 
-int osipf_AttachObjectAP(int parenthandle, char parent_ap, int childhandle, char child_ap, ubyte f_use_aligned) {
+int osipf_AttachObjectAP(int parenthandle, char parent_ap, int childhandle, char child_ap, uint8_t f_use_aligned) {
   object *parent = ObjGet(parenthandle);
   object *child = ObjGet(childhandle);
 
@@ -2465,7 +2465,7 @@ int osipf_RayCast(int objhandle, vector *p0, vector *p1, int start_roomnum, floa
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int osipf_CFReadBytes(ubyte *buffer, int count, CFILE *cfp) { return cf_ReadBytes(buffer, count, cfp); }
+int osipf_CFReadBytes(uint8_t *buffer, int count, CFILE *cfp) { return cf_ReadBytes(buffer, count, cfp); }
 
 // The following functions read numeric vales from a CFILE.  All values are
 // stored in the file in Intel (little-endian) format.  These functions
@@ -2509,7 +2509,7 @@ int osipf_CFReadString(char *buf, size_t n, CFILE *cfp) { return cf_ReadString(b
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-int osipf_CFWriteBytes(const ubyte *buf, int count, CFILE *cfp) { return cf_WriteBytes(buf, count, cfp); }
+int osipf_CFWriteBytes(const uint8_t *buf, int count, CFILE *cfp) { return cf_WriteBytes(buf, count, cfp); }
 
 // Writes a null-terminated string to a file.  If the file is type binary,
 // the string is terminated in the file with a null.  If the file is type
@@ -2567,7 +2567,7 @@ void osipf_OpenMessageWindow(const char *title, ...) {
   Int3(); // ummm, this is a blank function, should we ever be calling it?
 }
 
-int osipf_ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+int osipf_ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                     vector *initial_velocity) {
   object *obj;
   int objnum;
@@ -2792,7 +2792,7 @@ void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *
 // Sets/Clears mission flags
 //	flag is which mission flag to set/clear (1-32)
 //	value is 0 to clear, or 1 to set
-void osipf_MissionFlagSet(int flag, ubyte value) {
+void osipf_MissionFlagSet(int flag, uint8_t value) {
   if (flag < 1 && flag > 32) {
     mprintf((0, "Invalid flag passed to osipf_MissionFlagSet(%d)\n", flag));
     return;
@@ -2901,7 +2901,7 @@ void osipf_CFclose(CFILE *file) { cfclose(file); }
 
 int osipf_CFtell(CFILE *file) { return cftell(file); }
 
-ubyte osipf_CFeof(CFILE *file) { return (cfeof(file) != 0) ? 1 : 0; }
+uint8_t osipf_CFeof(CFILE *file) { return (cfeof(file) != 0) ? 1 : 0; }
 
 void osipf_SoundStop(int s_handle, bool f_immediately) {
   // JEFF - sorry, this can't be  made multiplayer friendly

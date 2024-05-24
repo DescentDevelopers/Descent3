@@ -184,7 +184,7 @@ static matrix AM_view_orient;
 static tTelComInfo *AM_tcs;
 static int AM_ship_model_handle = -1;
 
-ubyte AutomapVisMap[MAX_ROOMS];
+uint8_t AutomapVisMap[MAX_ROOMS];
 
 static float AM_heading;
 static float AM_pitch;
@@ -193,12 +193,12 @@ int AM_terrain = 0, AM_realign = 0, AM_center_on_player = 0, AM_current_marker;
 
 static int Num_AM_rooms;
 static ushort AM_room_list[MAX_ROOMS];
-static ubyte AM_rooms_seen[MAX_ROOMS];
+static uint8_t AM_rooms_seen[MAX_ROOMS];
 static g3Point *AM_rotated_points = NULL; //[MAX_VERTS_PER_ROOM];
 
 static void TCAMCallback(void);
 
-static ubyte *Small_faces[MAX_ROOMS];
+static uint8_t *Small_faces[MAX_ROOMS];
 
 // clears out the list of visible rooms that we've seen
 void AutomapClearVisMap() { memset(AutomapVisMap, 0, MAX_ROOMS); }
@@ -207,7 +207,7 @@ void ClassifyAMFaces() {
   int i = 0;
   for (i = 0; i <= Highest_room_index; i++) {
     if (Rooms[i].used) {
-      Small_faces[i] = (ubyte *)mem_malloc(Rooms[i].num_faces);
+      Small_faces[i] = (uint8_t *)mem_malloc(Rooms[i].num_faces);
       ASSERT(Small_faces[i]);
 
       memset(Small_faces[i], 0, Rooms[i].num_faces);
@@ -418,14 +418,14 @@ void MakePointsFromMinMax(vector *corners, vector *minp, vector *maxp);
 // Else returns false
 bool IsRoomVisible(room *rp, float *nearz) {
   g3Point pnt;
-  ubyte ccode;
+  uint8_t ccode;
 
   vector corners[8];
 
   MakePointsFromMinMax(corners, &rp->min_xyz, &rp->max_xyz);
 
   *nearz = 90000000;
-  ubyte andbyte = 0xff;
+  uint8_t andbyte = 0xff;
   for (int t = 0; t < 8; t++) {
     g3_RotatePoint(&pnt, &corners[t]);
 

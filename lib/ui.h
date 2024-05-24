@@ -884,7 +884,7 @@ class UIListBox : public UIGadget {
   ddgr_color m_SelectColor;                // selected text color
   ddgr_color m_HiliteColor;                // color of hilite bar
   int m_LastMseX, m_LastMseY;              // used for double clicking.
-  ubyte m_Alpha;                           // alpha value of listbox.
+  uint8_t m_Alpha;                           // alpha value of listbox.
 
   bool MseCheckSelect(int x, int y);        // check if x and y selection hits a selected item.
   void SetInternalSelectedIndex(int index); //  call by listbox system.

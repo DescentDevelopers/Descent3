@@ -44,10 +44,10 @@
 
 typedef struct {
   uint32_t cent_file_header_sig;
-  ubyte version_made_by;
-  ubyte host_os;
-  ubyte version_needed_to_extract;
-  ubyte os_needed_to_extract;
+  uint8_t version_made_by;
+  uint8_t host_os;
+  uint8_t version_needed_to_extract;
+  uint8_t os_needed_to_extract;
   ushort general_purpose_bit_flag;
   ushort compression_method;
   ushort last_mod_file_time;
@@ -114,7 +114,7 @@ private:
   int ReadZipData(zipentry *ent, char *data);
   int ReadZipDataToFile(zipentry *ent, FILE *file);
   int SeekToCompressedData(zipentry *ent);
-  int InflateFile(FILE *in_file, unsigned in_size, ubyte *out_data, unsigned out_size);
+  int InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigned out_size);
   int InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned out_size);
 
 private:

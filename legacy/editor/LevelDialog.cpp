@@ -104,7 +104,7 @@ BOOL CLevelDialog::OnInitDialog()
 	if (N_selected_rooms) {
 		room *rp = &Rooms[Selected_rooms[0]];
 		int amb_sound = rp->ambient_sound;
-		ubyte env_preset = rp->env_reverb;
+		uint8_t env_preset = rp->env_reverb;
 
 		for (i = 1; i < N_selected_rooms; i++)
 		{
@@ -156,7 +156,7 @@ void CLevelDialog::OnOK()
 
 
 	if (cbox->GetCurSel() != CB_ERR) {
-		ubyte env_reverb=0;
+		uint8_t env_reverb=0;
 
 		cbox->GetLBText(cbox->GetCurSel(), selection);
 		for (i = 0; i < N_ENVAUDIO_PRESETS; i++)

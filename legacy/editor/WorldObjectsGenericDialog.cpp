@@ -1933,7 +1933,7 @@ int CWorldObjectsGenericDialog::GetTextureUsageForPolymodel (int modelnum)
 {
 	poly_model *pm=&Poly_models[modelnum];
 	int total=0;
-	ubyte already_used[100];
+	uint8_t already_used[100];
 
 	memset (already_used,0,100);
 

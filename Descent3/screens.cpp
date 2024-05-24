@@ -467,7 +467,7 @@ void SinglePlayerPostLevelResults() {
 
   snprintf(PLRLevel, sizeof(PLRLevel), "%s", Level_info.name);
   snprintf(PLRText[curline], sizeof(PLRText[curline]), "%s", TXT_PLTDIFFICULT);
-  ubyte dif;
+  uint8_t dif;
   Current_pilot.get_difficulty(&dif);
   snprintf(PLRVal[curline], sizeof(PLRVal[curline]), "%s", difficulty_levels[dif]);
   curline++;

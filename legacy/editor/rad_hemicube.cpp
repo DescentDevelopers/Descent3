@@ -565,7 +565,7 @@ void DrawRadiosityPoly(int nv,g3Point **pointlist,int id)
 	//Get codes for this polygon, and copy uvls into points
 	for (i=0;i<nv;i++) 
 	{
-		ubyte c;
+		uint8_t c;
 
 		c = pointlist[i]->p3_codes;
 

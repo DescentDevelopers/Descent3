@@ -479,9 +479,9 @@
 char **DMFCStringTable;
 int DMFCStringTableSize = 0;
 const char *_DMFCErrorString = "DMFC Missing String";
-ubyte seeds1[31] = {49, 73, 0,  44, 87, 253, 35, 74, 62, 250, 4,  247, 251, 72,  244, 30,
+uint8_t seeds1[31] = {49, 73, 0,  44, 87, 253, 35, 74, 62, 250, 4,  247, 251, 72,  244, 30,
                     59, 61, 60, 52, 50, 237, 23, 48, 56, 55,  65, 232, 231, 230, 0};
-ubyte seeds2[6] = {70, 95, 103, 102, 112, 0};
+uint8_t seeds2[6] = {70, 95, 103, 102, 112, 0};
 
 const char *DMFCGetString(int d) {
   if ((d < 0) || (d >= DMFCStringTableSize))
@@ -1829,13 +1829,13 @@ float DMFCBase::ConvertHUDAlpha(float normal) {
     return normal;
   return normal * 0.3f;
 }
-ubyte DMFCBase::ConvertHUDAlpha(ubyte normal) {
+uint8_t DMFCBase::ConvertHUDAlpha(uint8_t normal) {
   if (!IsMenuUp())
     return normal;
 
   float conv = ((float)normal);
   conv = conv * 0.3f;
-  return (ubyte)conv;
+  return (uint8_t)conv;
 }
 
 bool DMFCBase::DMFC_compare_slots(int a, int b) {
@@ -2024,7 +2024,7 @@ void DMFCBase::DisplayOutrageLogo(void) {
 //
 //
 //   Sets the level for displaying of Player's Callsigns on the HUD
-void DMFCBase::SwitchShowHudCallsignLevel(ubyte level, bool announce) {
+void DMFCBase::SwitchShowHudCallsignLevel(uint8_t level, bool announce) {
   m_iMyPreferredHUDCallsignLevel = level;
 
   if (level > m_iServerHUDCallsignLevel)
@@ -2062,7 +2062,7 @@ void DMFCBase::SwitchShowHudCallsignLevel(ubyte level, bool announce) {
 //
 //
 //	Sets the max level of HUD callsign displayage...determined by the server
-void DMFCBase::SwitchServerHudCallsignLevel(ubyte level) {
+void DMFCBase::SwitchServerHudCallsignLevel(uint8_t level) {
   switch (level) {
   case HUD_CALLSIGN_LEVEL_FULL:
     m_iServerHUDCallsignLevel = level;
@@ -2142,7 +2142,7 @@ int DMFCBase::GetCounterMeasureOwner(object *robot) {
 // DMFCBase::EncryptData
 //
 //	Encrypts (weak) a buffer of data
-void DMFCBase::EncryptData(ubyte *data, int size) {
+void DMFCBase::EncryptData(uint8_t *data, int size) {
   if (!data)
     return;
   if (size <= 0)
@@ -2159,7 +2159,7 @@ void DMFCBase::EncryptData(ubyte *data, int size) {
 // DMFCBase::DecryptData
 //
 // Decrypts a buffer of data
-void DMFCBase::DecryptData(ubyte *data, int size) {
+void DMFCBase::DecryptData(uint8_t *data, int size) {
   if (!data)
     return;
   if (size <= 0)
@@ -2631,8 +2631,8 @@ void DMFCBase::AddWeaponHashArray(const char *parent, int count, char **array) {
 //	returns:	1 if size given was <=0 (if so all previous user stats will be removed)
 //				0 all went ok
 //				-1 out of memory (all user stats memory will be freed)
-int DMFCBase::SetupPlayerRecord(int sizeof_individual_data, int (*pack_callback)(void *user_info, ubyte *data),
-                                int (*unpack_callback)(void *user_info, ubyte *data)) {
+int DMFCBase::SetupPlayerRecord(int sizeof_individual_data, int (*pack_callback)(void *user_info, uint8_t *data),
+                                int (*unpack_callback)(void *user_info, uint8_t *data)) {
   return PRec_SetupUserPRec(sizeof_individual_data, pack_callback, unpack_callback);
 }
 
@@ -4240,7 +4240,7 @@ void DMFCBase::RespawnPlayer(int pnum, bool spew_energy_and_shields, bool spew_e
 // If you are going to create submenus you MUST use this function. along with:
 // void SetState(int state);
 // bool SetStateItemList(int count, ... ); for MIT_STATE items
-MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...) {
+MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, void (*fp)(int), ...) {
   MenuItem *p;
 
   if (type != MIT_CUSTOM && type != MIT_STATE) {

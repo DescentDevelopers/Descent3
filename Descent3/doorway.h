@@ -125,9 +125,9 @@ extern int Active_doorways[MAX_ACTIVE_DOORWAYS];
 // A doorway (room) in the mine
 typedef struct doorway {
   int doornum;       // door type of this doorway
-  ubyte state;       // current state of doorway
-  ubyte flags;       // flags associated with a doorway
-  ubyte keys_needed; // used by trigger system.  these bits need to be set to activate door
+  uint8_t state;       // current state of doorway
+  uint8_t flags;       // flags associated with a doorway
+  uint8_t keys_needed; // used by trigger system.  these bits need to be set to activate door
   int8_t activenum;   // index into active doorways array, or -1 if not active
   float position;    // current position of door
   float dest_pos;    // destination position

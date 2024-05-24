@@ -309,7 +309,7 @@ int ValidateUser(validate_id_request *valid_id, char *trackerid);
 void xorcode(void *data,uint32_t len,uint32_t hash);
 extern int MTAVersionCheck(uint32_t oldver, char *URL);
 void VersionIdle();
-void HandlePilotData(ubyte *data,int len, network_address *from);
+void HandlePilotData(uint8_t *data,int len, network_address *from);
 
 #ifdef WIN32
 #pragma pack(pop,r_udp)

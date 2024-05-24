@@ -45,8 +45,8 @@
 #include "vibeinterface.h"
 
 // Global variables for physics system
-ubyte Default_player_terrain_leveling = 0;
-ubyte Default_player_room_leveling = 0;
+uint8_t Default_player_terrain_leveling = 0;
+uint8_t Default_player_room_leveling = 0;
 
 // Maximum iterations thru the simulation loop NOTE: It is assumed that the player loops >= non-player loops
 #define MAX_PLAYER_SIM_LOOPS 9

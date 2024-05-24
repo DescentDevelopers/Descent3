@@ -2198,7 +2198,7 @@ void newuiButton::OnDestroy() {
 }
 
 void newuiButton::OnDraw() {
-  ubyte alpha = IsDisabled() ? 128 : 255;
+  uint8_t alpha = IsDisabled() ? 128 : 255;
 
   if (GetStateItem(m_State)) {
     GetStateItem(m_State)->set_alpha(alpha);
@@ -3130,7 +3130,7 @@ void newuiListBox::OnDraw() {
 
   // draw text?
   int i;
-  ubyte alpha = 255;
+  uint8_t alpha = 255;
   bool auto_select = ((m_Flags & UILB_AUTOSELECT) > 0);
   bool use_scroll = true;
 
