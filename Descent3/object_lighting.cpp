@@ -156,7 +156,7 @@ void FindPlayerThrusterColor(int slot, float *r, float *g, float *b) {
   Int3(); // No thruster glow?
 }
 
-ubyte EasterEgg = 0;
+uint8_t EasterEgg = 0;
 #define EASTER_EGG_TIMER (3600 * 4)
 
 void ReflectRay(vector *, vector *, vector *);

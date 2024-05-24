@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 // CScriptSelect dialog
 
 
-CScriptSelect::CScriptSelect(ushort scr_type, int custom_type, CWnd* pParent /*=NULL*/)
+CScriptSelect::CScriptSelect(uint16_t scr_type, int custom_type, CWnd* pParent /*=NULL*/)
 	: CDialog(CScriptSelect::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CScriptSelect)
@@ -51,7 +51,7 @@ CScriptSelect::CScriptSelect(ushort scr_type, int custom_type, CWnd* pParent /*=
 
 	m_ScriptCode = NULL;
 	m_CurScriptSel = -1;
-	m_ScriptType = (ushort)scr_type;
+	m_ScriptType = (uint16_t)scr_type;
 	m_NumParms = 0;
 	m_CustomType = custom_type;
 }

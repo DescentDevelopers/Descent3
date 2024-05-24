@@ -39,7 +39,7 @@ class CScriptSelect : public CDialog
 {
 // Construction
 public:
-	CScriptSelect(ushort scr_type = 0xffff, int custom = CUSTOM_SCRIPT_MASK, CWnd* pParent=NULL);   // standard constructor
+	CScriptSelect(uint16_t scr_type = 0xffff, int custom = CUSTOM_SCRIPT_MASK, CWnd* pParent=NULL);   // standard constructor
 
 	int m_CurScriptSel;
 	
@@ -85,7 +85,7 @@ private:
 
 private:
 	tD3XProgram *m_ScriptCode;
-	ushort m_ScriptType;
+	uint16_t m_ScriptType;
 };
 
 

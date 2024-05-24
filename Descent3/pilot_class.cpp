@@ -203,7 +203,7 @@ void pilot::initialize(void) {
   guidebot_name = mem_strdup("GB");
   picture_id = PPIC_INVALID_ID;
   difficulty = DIFFICULTY_ROOKIE;
-  hud_mode = (ubyte)HUD_COCKPIT;
+  hud_mode = (uint8_t)HUD_COCKPIT;
   hud_stat = 0;
   hud_graphical_stat = STAT_STANDARD;
   game_window_w = Video_res_list[Game_video_resolution].width;
@@ -666,7 +666,7 @@ void pilot::get_ship(char *ship) {
   }
 }
 
-void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const ushort *ppic, const char *audio3, const char *audio4) {
+void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const uint16_t *ppic, const char *audio3, const char *audio4) {
   if (logo) {
     if (ship_logo) {
       mem_free(ship_logo);
@@ -747,7 +747,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
     write_pending = true;
   }
 }
-void pilot::get_multiplayer_data(char *logo, char *audio1, char *audio2, ushort *ppic, char *audio3, char *audio4) {
+void pilot::get_multiplayer_data(char *logo, char *audio1, char *audio2, uint16_t *ppic, char *audio3, char *audio4) {
   if (logo) {
     if (ship_logo) {
       strcpy(logo, ship_logo);
@@ -793,11 +793,11 @@ void pilot::get_multiplayer_data(char *logo, char *audio1, char *audio2, ushort 
   }
 }
 
-void pilot::set_difficulty(ubyte diff) {
+void pilot::set_difficulty(uint8_t diff) {
   difficulty = diff;
   write_pending = true;
 }
-void pilot::get_difficulty(ubyte *diff) {
+void pilot::get_difficulty(uint8_t *diff) {
   if (diff) {
     *diff = difficulty;
   }
@@ -848,7 +848,7 @@ void pilot::get_guidebot_name(char *name) {
   }
 }
 
-void pilot::set_hud_data(ubyte *hmode, ushort *hstat, ushort *hgraphicalstat, int *gw_w, int *gw_h) {
+void pilot::set_hud_data(uint8_t *hmode, uint16_t *hstat, uint16_t *hgraphicalstat, int *gw_w, int *gw_h) {
   if (hmode) {
     // should do checking here
     switch (*hmode) {
@@ -882,7 +882,7 @@ void pilot::set_hud_data(ubyte *hmode, ushort *hstat, ushort *hgraphicalstat, in
     write_pending = true;
   }
 }
-void pilot::get_hud_data(ubyte *hmode, ushort *hstat, ushort *hgraphicalstat, int *gw_w, int *gw_h) {
+void pilot::get_hud_data(uint8_t *hmode, uint16_t *hstat, uint16_t *hgraphicalstat, int *gw_w, int *gw_h) {
   if (hmode) {
     *hmode = hud_mode;
   }
@@ -1084,7 +1084,7 @@ void pilot::write_custom_multiplayer_data(CFILE *file) {
 
 void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
   char buffer[PAGENAME_LEN];
-  ushort temp;
+  uint16_t temp;
 
   cf_ReadString(buffer, PAGENAME_LEN, file);
   if (!skip) {
@@ -1142,7 +1142,7 @@ void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
 void pilot::write_difficulty(CFILE *file) { cf_WriteByte(file, difficulty); }
 
 void pilot::read_difficulty(CFILE *file, bool skip) {
-  ubyte temp;
+  uint8_t temp;
 
   temp = cf_ReadByte(file);
   if (!skip) {
@@ -1208,13 +1208,13 @@ void pilot::write_hud_data(CFILE *file) {
   cf_WriteInt(file, game_window_h);
 
   //	PFV_REARVIEWINFO
-  cf_WriteByte(file, (sbyte)lrearview_enabled);
-  cf_WriteByte(file, (sbyte)rrearview_enabled);
+  cf_WriteByte(file, (int8_t)lrearview_enabled);
+  cf_WriteByte(file, (int8_t)rrearview_enabled);
 }
 
 void pilot::read_hud_data(CFILE *file, bool skip) {
-  ubyte temp_b;
-  ushort temp_s;
+  uint8_t temp_b;
+  uint16_t temp_s;
   int temp_i;
 
   temp_b = cf_ReadByte(file);
@@ -1276,7 +1276,7 @@ void pilot::write_mission_data(CFILE *file) {
 
 void pilot::read_mission_data(CFILE *file, bool skip) {
   int temp_i, i, temp_perm;
-  ubyte temp_b1, temp_b2;
+  uint8_t temp_b1, temp_b2;
   int temp_restores = 0, temp_saves = 0;
   char temp_s[MSN_NAMELEN];
 
@@ -1377,8 +1377,8 @@ void pilot::write_controls(CFILE *file) {
     cf_WriteInt(file, (int)controls[i].type[0]);
     cf_WriteInt(file, (int)controls[i].type[1]);
     cf_WriteInt(file, (int)controls[i].value);
-    cf_WriteByte(file, (sbyte)controls[i].flags[0]);
-    cf_WriteByte(file, (sbyte)controls[i].flags[1]);
+    cf_WriteByte(file, (int8_t)controls[i].flags[0]);
+    cf_WriteByte(file, (int8_t)controls[i].flags[1]);
   }
 
   cf_WriteByte(file, N_MOUSE_AXIS);
@@ -1398,7 +1398,7 @@ void pilot::write_controls(CFILE *file) {
 
 void pilot::read_controls(CFILE *file, bool skip) {
   float temp_f;
-  ubyte temp_b;
+  uint8_t temp_b;
   int i;
 
   // Controller data
@@ -1433,8 +1433,8 @@ void pilot::read_controls(CFILE *file, bool skip) {
     controls[y].type[0] = type[0];
     controls[y].type[1] = type[1];
     controls[y].value = value;
-    controls[y].flags[0] = (ubyte)cf_ReadByte(file);
-    controls[y].flags[1] = (ubyte)cf_ReadByte(file);
+    controls[y].flags[0] = (uint8_t)cf_ReadByte(file);
+    controls[y].flags[1] = (uint8_t)cf_ReadByte(file);
 
     if (!skip)
       Controller->set_controller_function(controls[y].id, controls[y].type, controls[y].value, controls[y].flags);
@@ -1519,13 +1519,13 @@ void pilot::read_weapon_select(CFILE *file) {
 }
 
 void pilot::read_gameplay_toggles(CFILE *file, bool skip) {
-  ubyte count, i;
+  uint8_t count, i;
   bool toggles[16];
 
   for (i = 0; i < 16; i++)
     toggles[i] = false;
 
-  count = (ubyte)cf_ReadByte(file);
+  count = (uint8_t)cf_ReadByte(file);
   if (count > 16) {
     Int3();
     count = 16;
@@ -1549,7 +1549,7 @@ void pilot::write_gameplay_toggles(CFILE *file) {
   // number of toggles to write out!
   cf_WriteByte(file, 3);
 
-  cf_WriteByte(file, (sbyte)gameplay_toggles.guided_mainview);
-  cf_WriteByte(file, (sbyte)gameplay_toggles.show_reticle);
-  cf_WriteByte(file, (sbyte)gameplay_toggles.ship_noises);
+  cf_WriteByte(file, (int8_t)gameplay_toggles.guided_mainview);
+  cf_WriteByte(file, (int8_t)gameplay_toggles.show_reticle);
+  cf_WriteByte(file, (int8_t)gameplay_toggles.ship_noises);
 }

@@ -184,7 +184,7 @@
  * added multiple colored balls for players
  *
  * 54    6/25/98 12:45p Jeff
- * fixed callsign length, it was too short
+ * fixed callsign length, it was too int16_t
  *
  * 53    5/26/98 7:49p Samir
  * E3 version has a long afterburner.
@@ -430,7 +430,7 @@ extern int Current_waypoint;
 
 extern bool Player_has_camera;
 extern int Player_camera_objnum;
-extern uint Players_typing; // information about which players are typing messages (to display an icon)
+extern uint32_t Players_typing; // information about which players are typing messages (to display an icon)
 
 extern float Player_shields_saved_from_last_level;
 extern float Player_energy_saved_from_last_level;

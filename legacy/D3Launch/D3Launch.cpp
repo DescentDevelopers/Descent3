@@ -707,8 +707,8 @@ bool ProcessGlu32DLL(void)
 bool ProcessUpdatedVersionFile(void) 
 {
 	FILE *f;
-	uint cur_major, cur_minor, cur_build;
-	uint new_major, new_minor, new_build;
+	uint32_t cur_major, cur_minor, cur_build;
+	uint32_t new_major, new_minor, new_build;
 	char buffer[PSPATHNAME_LEN+1];
 	char verbuffer[PSPATHNAME_LEN+1];
 
@@ -799,7 +799,7 @@ int GetDirectXVersion(void)
 				"Version",							// The values name
 				NULL,									// DWORD reserved
 				&dwType,								// What kind it is
-				(ubyte *) version, 				// value to set
+				(uint8_t *) version, 				// value to set
 				&dwLen								// How many bytes to set
 			);
 
@@ -818,7 +818,7 @@ int GetDirectXVersion(void)
 					"InstalledVersion",				// The values name
 					NULL,									// DWORD reserved
 					&dwType,								// What kind it is
-					(ubyte *) &val,					// value to set
+					(uint8_t *) &val,					// value to set
 					&dwLen								// How many bytes to set
 				);
 

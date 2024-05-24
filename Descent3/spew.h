@@ -94,7 +94,7 @@ typedef struct point_info {
 } pointinfo;
 
 typedef struct spew_t {
-  ubyte flags;       // flags
+  uint8_t flags;       // flags
   bool inuse;        // if this slot is in use
   bool use_gunpoint; // is this a gunpoint based object (yes=true)
   bool real_obj;     // if this object should be treated as a real object (can hurt you) (yes=true)

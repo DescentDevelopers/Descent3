@@ -928,11 +928,11 @@ typedef int OMMSHANDLE;
 #endif
 
 // define unsigned types;
-typedef unsigned char ubyte;
-typedef signed char sbyte;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned int ddgr_color;
+typedef uint8_t uint8_t;
+typedef int8_t int8_t;
+typedef uint16_t uint16_t;
+typedef uint32_t uint32_t;
+typedef uint32_t ddgr_color;
 
 #ifndef NULL
 #define NULL 0

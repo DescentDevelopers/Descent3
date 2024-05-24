@@ -109,8 +109,8 @@ typedef struct tScriptName
 {
 // script info.
 	char name[MAX_SCRNAME];
-	ushort type;
-	ushort line;
+	uint16_t type;
+	uint16_t line;
 	bool iscustom;
 	bool used;
 
@@ -153,7 +153,7 @@ extern tScriptName Script_names[];
 
 //Script event names
 extern char *Script_evt_names[];
-extern ushort Script_evt_ids[];
+extern uint16_t Script_evt_ids[];
 
 
 bool NewScript(const char *filename);

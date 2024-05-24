@@ -294,9 +294,9 @@ typedef struct {
   int m_stream_bufsize;                                            // passed in
   void *user_data; // this is passed to the stream callback by the caller that defined this.
 
-  ubyte sample_skip_interval; // Allows us to skip samples (i.e. simulate lower sampling rates)
-  ubyte priority;             // priority of sound.
-  ushort m_stream_format;     // passed in
+  uint8_t sample_skip_interval; // Allows us to skip samples (i.e. simulate lower sampling rates)
+  uint8_t priority;             // priority of sound.
+  uint16_t m_stream_format;     // passed in
 
   //	internal data.
   int m_samples_played;
@@ -313,8 +313,8 @@ typedef struct sound_file_info {
   char used;
   int use_count; // how many buffers does this sound take up.
 
-  unsigned char *sample_8bit; // 8bit sound data
-  short *sample_16bit;        // 16bit sound data
+  uint8_t *sample_8bit; // 8bit sound data
+  int16_t *sample_16bit;        // 16bit sound data
 
   int sample_length;    // Length of sound in samples
   int np_sample_length; // non-padded
@@ -329,7 +329,7 @@ typedef struct sound_info {
 
   int loop_start;          // Start byte of repeated loop for looping samples
   int loop_end;            // End byte of repeating loop for looping samples
-  unsigned int flags;      // 2d/3d, variable frequency
+  uint32_t flags;      // 2d/3d, variable frequency
   float max_distance;      // Maximum distance in which a sound is heard
   float min_distance;      // Sound gets no louder at min_distance
   int inner_cone_angle;    // Angle in which sound is played at full base volume
@@ -485,7 +485,7 @@ public:
   virtual void SetSoundCard(const char *name) = 0;
 
   // Starts the sound library, maybe have it send back some information -- 3d support?
-  virtual int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) = 0;
+  virtual int InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played) = 0;
   // Cleans up after the Sound Library
   virtual void DestroySoundLib() = 0;
 
@@ -504,8 +504,8 @@ public:
 
   virtual void SetListener(pos_state *cur_pos) = 0;
   virtual int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
-                          bool f_looped, float reverb = 0.5f) = 0; //, unsigned short frequency)
-  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) = 0;
+                          bool f_looped, float reverb = 0.5f) = 0; //, uint16_t frequency)
+  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) = 0;
   virtual void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) = 0;
 
   virtual void StopAllSounds() = 0;
@@ -517,7 +517,7 @@ public:
   //	virtual void AdjustSound(int sound_uid, play_information *play_info) = 0;
 
   // Stops 2d and 3d sounds
-  virtual void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY) = 0;
+  virtual void StopSound(int sound_uid, uint8_t f_immediately = SKT_STOP_IMMEDIATELY) = 0;
 
   // Pause all sounds/resume all sounds
   virtual void PauseSounds() = 0;

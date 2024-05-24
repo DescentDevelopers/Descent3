@@ -68,7 +68,7 @@
 // CScriptMassCompile dialog
 #include "pstypes.h"
 
-ubyte DetermineScriptType(char *filename);
+uint8_t DetermineScriptType(char *filename);
 
 class CScriptMassCompile : public CDialog
 {

@@ -240,7 +240,7 @@ int Mem_high_water_mark = 0;
 typedef struct mem_alloc_info {
   int len;
   void *ptr;
-  unsigned short line;
+  uint16_t line;
   char file[17];
 } mem_alloc_info;
 
@@ -338,15 +338,15 @@ FILE *mem_out = NULL;
 int Mem_mallocs_since_last_sort = 0;
 /*
 #undef new
-void *operator new(unsigned int size, char *file, int line)
+void *operator new(uint32_t size, char *file, int line)
 {
   return mem_malloc_sub(size, file, line);
 }
-void *operator new [](unsigned int size, char *file, int line)
+void *operator new [](uint32_t size, char *file, int line)
 {
   return mem_malloc_sub(size, file, line);
 }
-void *operator new(unsigned int size)
+void *operator new(uint32_t size)
 {
         return mem_malloc_sub(size,"unknown",0);
 }
@@ -516,7 +516,7 @@ void *mem_malloc_sub(int size, const char *file, int line) {
 #else
   mi->ptr = HeapAlloc(Heap, HEAP_NO_SERIALIZE, size + 2);
   mi->len = size;
-  unsigned short mem_sig = MEM_GAURDIAN_SIG;
+  uint16_t mem_sig = MEM_GAURDIAN_SIG;
   memcpy(((char *)mi->ptr) + size, (void *)&mem_sig, 2);
   int flen = strlen(file);
   int lofs = 0;
@@ -582,7 +582,7 @@ void mem_free_sub(void *memblock) {
   if (mynode) {
     freemem = mynode->data;
     freemem->ptr = (void *)MEM_NO_MEMORY_PTR;
-    unsigned short mem_sig = MEM_GAURDIAN_SIG;
+    uint16_t mem_sig = MEM_GAURDIAN_SIG;
     if (memcmp((char *)memblock + freemem->len, &mem_sig, 2) != 0) {
       // Corrupted memory found when we went to free it.
       mprintf((0, "Memory block found to be damaged when it was freed!\n"));
@@ -649,7 +649,7 @@ void *mem_realloc_sub(void *memblock, int size) {
       deleteNode(&mem_info[i]);
 
       mem_info[i].ptr = HeapReAlloc(Heap, 0, memblock, size + 2);
-      unsigned short mem_sig = MEM_GAURDIAN_SIG;
+      uint16_t mem_sig = MEM_GAURDIAN_SIG;
       memcpy(((char *)mem_info[i].ptr) + size, (void *)&mem_sig, 2);
       mem_info[i].len = size;
       Total_mem_used += size;
@@ -851,7 +851,7 @@ void mem_heapcheck(void) {
     if (mem_info[i].ptr == (void *)MEM_NO_MEMORY_PTR)
       continue;
     freemem = &mem_info[i];
-    unsigned short mem_sig = MEM_GAURDIAN_SIG;
+    uint16_t mem_sig = MEM_GAURDIAN_SIG;
     if (memcmp((char *)freemem->ptr + freemem->len, &mem_sig, 2) != 0) {
       mprintf((0, "Memory block found to be damaged in mem_heapcheck()!\n"));
       mprintf((0, "Originally allocated from file %s, line %d\n", freemem->file, freemem->line));
@@ -864,7 +864,7 @@ hashTableIndex hash(T data) {
   /***********************************
    *  hash function applied to data  *
    ***********************************/
-  unsigned int hval = (unsigned int)data->ptr;
+  uint32_t hval = (uint32_t)data->ptr;
   return (hval % MEM_MAX_MALLOCS);
 }
 Node *insertNode(T data) {

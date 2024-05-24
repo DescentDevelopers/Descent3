@@ -267,7 +267,7 @@ struct bsp_info;
 struct g3Point;
 
 //	type to pass to functions that draw stats
-typedef ushort tStatMask;
+typedef uint16_t tStatMask;
 
 struct CFILE;
 
@@ -454,10 +454,10 @@ const char *GetMessageDestination(const char *message, int *destination);
 
 typedef struct t_dirty_rect {
   struct {
-    short l, t, r, b;
+    int16_t l, t, r, b;
   } r[3]; // three rectangles for each frame buffer (3 max)
 
-  void set(short l0, short t0, short r0, short b0) {
+  void set(int16_t l0, int16_t t0, int16_t r0, int16_t b0) {
     r[0].l = l0;
     r[0].t = t0;
     r[0].r = r0;
@@ -468,19 +468,19 @@ typedef struct t_dirty_rect {
 } tDirtyRect; // dirty rectangle for hud item (small hud version)
 
 typedef struct tHUDItem {
-  short x, y;
-  short xa, ya; // auxillary points
-  short xb, yb;
-  short tx, ty;             // text version x and y.
+  int16_t x, y;
+  int16_t xa, ya; // auxillary points
+  int16_t xb, yb;
+  int16_t tx, ty;             // text version x and y.
   float grscalex, grscaley; // used to scale graphics.
 
-  ubyte id;    // id number.
-  ubyte type;  // custom of predefined hud item type.
-  ushort stat; // stat mask (what class of hud items does this one belong to)
+  uint8_t id;    // id number.
+  uint8_t type;  // custom of predefined hud item type.
+  uint16_t stat; // stat mask (what class of hud items does this one belong to)
 
-  ushort flags;           // more flags.
-  ubyte alpha;            // alpha of hud item
-  ubyte saturation_count; // how saturated is this hud item (how bright).
+  uint16_t flags;           // more flags.
+  uint8_t alpha;            // alpha of hud item
+  uint8_t saturation_count; // how saturated is this hud item (how bright).
 
   ddgr_color color;  // color of hud item.
   ddgr_color tcolor; // text color of item.
@@ -551,7 +551,7 @@ void SetHUDMode(tHUDMode mode);
 void ToggleHUDMode();
 
 // sets the hud item state(what's visible, how it's drawn, etc)
-void SetHUDState(ushort hud_mask, ushort hud_gr_mask);
+void SetHUDState(uint16_t hud_mask, uint16_t hud_gr_mask);
 
 //	the current cockpit mode;
 tHUDMode GetHUDMode();
@@ -594,17 +594,17 @@ int RenderHUDGetTextLineWidth(const char *string);
 int RenderHUDGetTextHeight(const char *string);
 
 //	renders a bitmap onto the hud
-void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, ubyte alpha,
+void RenderHUDQuad(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, uint8_t alpha,
                    int sat_count = 0);
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDText(ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
+void RenderHUDText(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 
 //	flags for RenderHudText.
 #define HUDTEXT_CENTERED 1
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlags(int flags, ddgr_color col, ubyte alpha, int sat_count, int x, int y, const char *fmt, ...);
+void RenderHUDTextFlags(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 
 // reset hud messages.
 void ResetHUDMessages();
@@ -651,7 +651,7 @@ struct tMsgList {
 
   tMsgList();
   void set_limit(int limit) { m_limit = limit; };
-  bool add(const char *msg, ubyte lvl = 0, ubyte hr = 0, ubyte min = 0, ubyte sec = 0);
+  bool add(const char *msg, uint8_t lvl = 0, uint8_t hr = 0, uint8_t min = 0, uint8_t sec = 0);
   const char *get(int i);
   void reset();
 };

@@ -902,7 +902,7 @@ int mng_ReadNewWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
 int mng_ReadWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
   int done = 0;
   char command;
-  ubyte len;
+  uint8_t len;
   int i, t;
   int version = 0;
 
@@ -1159,7 +1159,7 @@ int mng_ReadWeaponPage(CFILE *infile, mngs_weapon_page *weaponpage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
   char tablename[TABLE_NAME_LEN];
@@ -1237,7 +1237,7 @@ try_again:;
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
 
   if (Loading_locals) {

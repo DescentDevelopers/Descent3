@@ -98,7 +98,7 @@ void QuickOpenCockpit();
 void QuickCloseCockpit();
 
 //	returns the submodel number of the monitor requested
-bsp_info *CockpitGetMonitorSubmodel(ushort monitor_flag);
+bsp_info *CockpitGetMonitorSubmodel(uint16_t monitor_flag);
 
 //	returns the polymodel for the hud
 poly_model *CockpitGetPolyModel();

@@ -377,7 +377,7 @@ static tDirtyRect HUD_msg_dirty_rect;
 
 static float Hud_timer = 0.0f;
 
-static ubyte Hud_persistent_msg_id = HUD_INVALID_ID;
+static uint8_t Hud_persistent_msg_id = HUD_INVALID_ID;
 static float Hud_persistent_msg_timer = 0.0f;
 static int Hud_persistent_msg_flags = 0;
 static int Hud_persistent_msg_current_len;
@@ -539,7 +539,7 @@ bool AddColoredHUDMessage(ddgr_color color, const char *format, ...) {
 // Adds a HUD message (similar to AddColoredHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
 bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
-  static signed char checked_command_line = -1;
+  static int8_t checked_command_line = -1;
 
   if (checked_command_line == -1) {
     if (FindArg("-playermessages") != 0) {
@@ -575,7 +575,7 @@ bool AddFilteredColoredHUDMessage(ddgr_color color, const char *format, ...) {
 // Adds a HUD message (similar to AddHUDMessage), however can be filtered out by
 // a "-playermessages" command line.
 bool AddFilteredHUDMessage(const char *format, ...) {
-  static signed char checked_command_line = -1;
+  static int8_t checked_command_line = -1;
 
   if (checked_command_line == -1) {
     if (FindArg("-playermessages") != 0) {
@@ -1079,7 +1079,7 @@ void RenderScrollingHUDMessages() {
 
   int shade;
   int text_height;
-  short l, t, r, b;
+  int16_t l, t, r, b;
   int i;
 
   // Check for wraps
@@ -1220,10 +1220,10 @@ void RenderHUDMessages() {
 
       if (item && Small_hud_flag) {
         grtext_SetFont(HUD_FONT);
-        short l = item->x * Max_window_w / DEFAULT_HUD_WIDTH;
-        short t = item->y * Max_window_h / DEFAULT_HUD_HEIGHT;
-        short r = l + grtext_GetTextLineWidth(item->data.text) + 10;
-        short b = t + grtext_GetTextHeight(item->data.text);
+        int16_t l = item->x * Max_window_w / DEFAULT_HUD_WIDTH;
+        int16_t t = item->y * Max_window_h / DEFAULT_HUD_HEIGHT;
+        int16_t r = l + grtext_GetTextLineWidth(item->data.text) + 10;
+        int16_t b = t + grtext_GetTextHeight(item->data.text);
         item->dirty_rect.set(l, t, r, b);
       }
 
@@ -1486,14 +1486,14 @@ void ResetGameMessages() {
 void AddGameMessage(const char *msg) {
   int secs = (int)Gametime;
 
-  Game_msg_list.add(msg, (ubyte)Current_mission.cur_level, (secs / 3600), (secs / 60), secs % 60);
+  Game_msg_list.add(msg, (uint8_t)Current_mission.cur_level, (secs / 3600), (secs / 60), secs % 60);
 }
 
 void SGSGameMessages(CFILE *fp) {
   int i = 0;
   const char *msg;
 
-  cf_WriteShort(fp, (short)Game_msg_list.m_nmsg);
+  cf_WriteShort(fp, (int16_t)Game_msg_list.m_nmsg);
 
   while ((msg = Game_msg_list.get(i++)) != NULL) {
     cf_WriteString(fp, msg);
@@ -1547,7 +1547,7 @@ tMsgList::tMsgList() {
   m_msg = NULL;
 }
 
-bool tMsgList::add(const char *msg, ubyte lvl, ubyte hr, ubyte min, ubyte sec) {
+bool tMsgList::add(const char *msg, uint8_t lvl, uint8_t hr, uint8_t min, uint8_t sec) {
   char buf[2048];
 
   if (!m_limit)

@@ -208,12 +208,12 @@ bool UpdateComplete;	// indicates that the update has successfully completed
 int update_launcher_status;	// indicates if the launcher itself needs updating
 
 CUpdateDlg *dlg;
-uint filesize;
+uint32_t filesize;
 WSADATA wsa_data; 	
 
 // Declare the function pointer to get the Patch apply function from the DLL
 extern "C" {
-	unsigned int (pascal *RTPatchApply32)( LPSTR cmdline, LPVOID (CALLBACK *lpfCallback)(UINT id, LPVOID lpParm), BOOL WaitFlag);
+	uint32_t (pascal *RTPatchApply32)( LPSTR cmdline, LPVOID (CALLBACK *lpfCallback)(UINT id, LPVOID lpParm), BOOL WaitFlag);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -486,7 +486,7 @@ void CUpdateDlg::OnYes()
 	// TODO: Add your control notification handler code here
 	char buffer[PSPATHNAME_LEN+1];
 	char verbuffer[PSPATHNAME_LEN+1], filebuffer[PSPATHNAME_LEN+1];
-	uint major, minor, build;
+	uint32_t major, minor, build;
 	int get_file_ret;
 	CString str_msg;
 	int line_num;
@@ -790,7 +790,7 @@ BOOL CUpdateDlg::OnInitDialog()
 char *CleanString(char *src)
 {
 	CString temp;
-	unsigned int j;
+	uint32_t j;
 
 	// Allocate a temporary string workspace
 	temp="";
@@ -968,9 +968,9 @@ BOOL CUpdateDlg::ApplyPatch()
 
 	patching=TRUE;
 	sprintf(patch_cmd_line,"-undo %s",PATCH_LOC_FNAME);
-	RTPatchApply32 = (unsigned int (__stdcall *)(char *,void *(__stdcall *)(unsigned int,void *),int))GetProcAddress(patchlib, "RTPatchApply32@12");
+	RTPatchApply32 = (uint32_t (__stdcall *)(char *,void *(__stdcall *)(uint32_t,void *),int))GetProcAddress(patchlib, "RTPatchApply32@12");
 	if (RTPatchApply32) {
-		m_progress.SetRange(0,short(0x8000));
+		m_progress.SetRange(0,int16_t(0x8000));
 		m_progress.SetPos(0);
 		dlg = this;
 		StatusBar(IDS_UPDATEDLG_BEG_PATCH);
@@ -1061,7 +1061,7 @@ int CUpdateDlg::UpdateTheLauncher()
 // Downloads a given remote file and saves it as a local file
 int CUpdateDlg::GetHTTPFile(char *remote, char *local)
 {
-	unsigned int LastPrintbytes = time(NULL);
+	uint32_t LastPrintbytes = time(NULL);
 	InetGetFile *inetfile;
 	WORD ver=MAKEWORD(1,1);
 	char URL[PSPATHNAME_LEN+1];

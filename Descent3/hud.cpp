@@ -465,7 +465,7 @@ float Hud_aspect_y = 1.0f;
 bool Small_hud_flag = false; // changes how hud items are drawn in small huds.
 
 // used by reticle system.
-static short Ret_x_off, Ret_y_off;
+static int16_t Ret_x_off, Ret_y_off;
 static char Reticle_prefix[PSFILENAME_LEN + 1];
 
 //	Hud mode of display
@@ -589,8 +589,8 @@ void InitShipHUD(int ship) {
   HUD_resources.invpulse_bmp = -1;
 
   //	sets current hud mode static global
-  // DAJ	Current_pilot.get_hud_data((ubyte *)&Hud_mode);
-  ubyte hud_tmp;
+  // DAJ	Current_pilot.get_hud_data((uint8_t *)&Hud_mode);
+  uint8_t hud_tmp;
   Current_pilot.get_hud_data(&hud_tmp);
   Hud_mode = (tHUDMode)hud_tmp;
 }
@@ -683,7 +683,7 @@ void SetHUDMode(tHUDMode mode) {
 //	do cockpit specific thing.
 redo_hud_switch:
   switch (mode) {
-    ushort cp_hud_stat, cp_hud_graphical_stat;
+    uint16_t cp_hud_stat, cp_hud_graphical_stat;
 
   case HUD_LETTERBOX:
     //	our objective here is to display a letterbox screen for the cockpit.
@@ -759,8 +759,8 @@ redo_hud_switch:
   // save out current hud mode
   // JEFF: (only if going from HUD_FULLSCREEN->HUD_COCKPIT or vice-versa)
   if ((Hud_mode == HUD_FULLSCREEN && mode == HUD_COCKPIT) || (Hud_mode == HUD_COCKPIT && mode == HUD_FULLSCREEN)) {
-    ubyte bmode = mode; // DAJ MAC using enums always int
-    Current_pilot.set_hud_data((ubyte *)&bmode);
+    uint8_t bmode = mode; // DAJ MAC using enums always int
+    Current_pilot.set_hud_data((uint8_t *)&bmode);
     mprintf((0, "Saving new hud mode to pilot\n"));
     PltWriteFile(&Current_pilot);
   }
@@ -780,7 +780,7 @@ void ToggleHUDMode() {
 }
 
 // sets the hud item state(what's visible, how it's drawn, etc)
-void SetHUDState(ushort hud_mask, ushort hud_gr_mask) {
+void SetHUDState(uint16_t hud_mask, uint16_t hud_gr_mask) {
   int i;
 
   Hud_stat_mask = (hud_mask | hud_gr_mask);
@@ -797,7 +797,7 @@ void SetHUDState(ushort hud_mask, ushort hud_gr_mask) {
 //	initializes items based off their type (information, etc.)
 void InitHUDItem(int new_item, tHUDItem *item) {
   ASSERT(new_item < MAX_HUD_ITEMS);
-  ushort stat = 0x0000;
+  uint16_t stat = 0x0000;
 
   item->id = new_item;
 
@@ -933,38 +933,38 @@ void SGSHudState(CFILE *fp) {
     huditem = &HUD_array[i];
     if (huditem->stat) {
       if (huditem->type == HUD_ITEM_CUSTOMTEXT2) {
-        cf_WriteShort(fp, (short)huditem->stat);
-        cf_WriteByte(fp, (sbyte)huditem->type);
+        cf_WriteShort(fp, (int16_t)huditem->stat);
+        cf_WriteByte(fp, (int8_t)huditem->type);
         cf_WriteShort(fp, huditem->x);
         cf_WriteShort(fp, huditem->y);
         cf_WriteInt(fp, huditem->color);
-        cf_WriteShort(fp, (short)huditem->flags);
-        cf_WriteByte(fp, (sbyte)huditem->alpha);
+        cf_WriteShort(fp, (int16_t)huditem->flags);
+        cf_WriteByte(fp, (int8_t)huditem->alpha);
 
-        cf_WriteShort(fp, (short)huditem->buffer_size);
+        cf_WriteShort(fp, (int16_t)huditem->buffer_size);
         cf_WriteString(fp, huditem->data.text);
         mprintf((0, "sg: saved customtext2 (%x,%x,bufsize=%d)\n", huditem->x, huditem->y, huditem->buffer_size));
       } else if (huditem->type == HUD_ITEM_TIMER) {
-        cf_WriteShort(fp, (short)huditem->stat);
-        cf_WriteByte(fp, (sbyte)huditem->type);
+        cf_WriteShort(fp, (int16_t)huditem->stat);
+        cf_WriteByte(fp, (int8_t)huditem->type);
         cf_WriteShort(fp, huditem->x);
         cf_WriteShort(fp, huditem->y);
         cf_WriteInt(fp, huditem->color);
-        cf_WriteShort(fp, (short)huditem->flags);
-        cf_WriteByte(fp, (sbyte)huditem->alpha);
+        cf_WriteShort(fp, (int16_t)huditem->flags);
+        cf_WriteByte(fp, (int8_t)huditem->alpha);
 
         cf_WriteInt(fp, huditem->data.timer_handle);
         mprintf((0, "sg: restored timer (%x,%x,timer_hndl=%d)\n", huditem->x, huditem->y, huditem->data.timer_handle));
       } else if (huditem->type == HUD_ITEM_CUSTOMTEXT) {
         // commented out because persistent hud messages are custom text, and its a mess to save the current
         // state of hud persistent messages.
-        //	cf_WriteShort(fp, (short)huditem->stat);
-        //	cf_WriteByte(fp, (sbyte)huditem->type);
+        //	cf_WriteShort(fp, (int16_t)huditem->stat);
+        //	cf_WriteByte(fp, (int8_t)huditem->type);
         //	cf_WriteShort(fp, huditem->x);
         //	cf_WriteShort(fp, huditem->y);
         //	cf_WriteInt(fp, huditem->color);
-        //	cf_WriteShort(fp, (short)huditem->flags);
-        //	cf_WriteByte(fp, (sbyte)huditem->alpha);
+        //	cf_WriteShort(fp, (int16_t)huditem->flags);
+        //	cf_WriteByte(fp, (int8_t)huditem->alpha);
         //
         //	cf_WriteString(fp, huditem->data.timer_handle);
       }
@@ -976,11 +976,11 @@ void SGSHudState(CFILE *fp) {
 
 bool LGSHudState(CFILE *fp) {
   //	restore hud items
-  ushort stat_mask = 0;
+  uint16_t stat_mask = 0;
 
-  while ((stat_mask = (ushort)cf_ReadShort(fp)) != 0) {
+  while ((stat_mask = (uint16_t)cf_ReadShort(fp)) != 0) {
     tHUDItem huditem;
-    ubyte item_type = (ubyte)cf_ReadByte(fp);
+    uint8_t item_type = (uint8_t)cf_ReadByte(fp);
 
     memset(&huditem, 0, sizeof(huditem));
     huditem.type = item_type;
@@ -994,8 +994,8 @@ bool LGSHudState(CFILE *fp) {
       huditem.x = cf_ReadShort(fp);
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
-      huditem.flags = (ushort)cf_ReadShort(fp);
-      huditem.alpha = (ubyte)cf_ReadByte(fp);
+      huditem.flags = (uint16_t)cf_ReadShort(fp);
+      huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.buffer_size = (int)cf_ReadShort(fp);
       huditem.render_fn = NULL; // use pointer to function void (*fn)(struct tHUDItem *)
@@ -1012,8 +1012,8 @@ bool LGSHudState(CFILE *fp) {
       huditem.x = cf_ReadShort(fp);
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
-      huditem.flags = (ushort)cf_ReadShort(fp);
-      huditem.alpha = (ubyte)cf_ReadByte(fp);
+      huditem.flags = (uint16_t)cf_ReadShort(fp);
+      huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.data.timer_handle = cf_ReadInt(fp);
       huditem.render_fn = RenderHUDTimer; // use pointer to function void (*fn)(struct tHUDItem *)
@@ -1176,8 +1176,8 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
         } else if (!strcmpi(command, "reticleoffset")) {
           int x, y;
           sscanf(operand, "%d,%d", &x, &y);
-          Ret_x_off = (short)x;
-          Ret_y_off = (short)y;
+          Ret_x_off = (int16_t)x;
+          Ret_y_off = (int16_t)y;
         } else if (fn && (*fn)(command, operand, ext_data)) {
           continue;
         } else {
@@ -1295,7 +1295,7 @@ void RenderAuxHUDFrame() {
     int cur_game_win_x = Game_window_x;
     int cur_game_win_y = Game_window_y;
     int i;
-    ushort stat_mask = Hud_stat_mask;
+    uint16_t stat_mask = Hud_stat_mask;
 
     // emulating hud that takes up entire screen
     Game_window_w = Max_window_w;
@@ -1340,7 +1340,7 @@ void RenderAuxHUDFrame() {
 char *GetControllerBindingText(int fidcont) {
   static char *cont_bind_txt;
   ct_type ctype[CTLBINDS_PER_FUNC];
-  ubyte cfgflags[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags[CTLBINDS_PER_FUNC];
   ct_config_data cfgdata;
   tCfgDataParts cfgparts;
   if (-1 == fidcont)
@@ -1352,8 +1352,8 @@ char *GetControllerBindingText(int fidcont) {
 
   Controller->get_controller_function(Cfg_joy_elements[fidcont].fn_id, ctype, &cfgdata, cfgflags);
   parse_config_data(&cfgparts, ctype[0], ctype[1], cfgdata);
-  ubyte one_binding = cfgparts.bind_0;
-  ubyte one_ctrlbind = cfgparts.ctrl_0;
+  uint8_t one_binding = cfgparts.bind_0;
+  uint8_t one_ctrlbind = cfgparts.ctrl_0;
 
   cont_bind_txt = (char *)cfg_binding_text(ctype[0], one_ctrlbind, one_binding);
   return cont_bind_txt;
@@ -1362,7 +1362,7 @@ char *GetControllerBindingText(int fidcont) {
 char *GetKeyBindingText(int fidkey) {
   static char *key_bind_txt;
   ct_type ctype[CTLBINDS_PER_FUNC];
-  ubyte cfgflags[CTLBINDS_PER_FUNC];
+  uint8_t cfgflags[CTLBINDS_PER_FUNC];
   ct_config_data cfgdata;
   tCfgDataParts cfgparts;
   if (-1 == fidkey)
@@ -1374,8 +1374,8 @@ char *GetKeyBindingText(int fidkey) {
 
   Controller->get_controller_function(Cfg_key_elements[fidkey].fn_id, ctype, &cfgdata, cfgflags);
   parse_config_data(&cfgparts, ctype[0], ctype[1], cfgdata);
-  ubyte one_binding = cfgparts.bind_0;
-  ubyte one_ctrlbind = cfgparts.ctrl_0;
+  uint8_t one_binding = cfgparts.bind_0;
+  uint8_t one_ctrlbind = cfgparts.ctrl_0;
 
   key_bind_txt = (char *)cfg_binding_text(ctype[0], one_ctrlbind, one_binding);
   return key_bind_txt;
@@ -1812,8 +1812,8 @@ const int Ret_sec_wb[MAX_WB_GUNPOINTS + 1] = {
 
 #define RETMASK_FLAG_AUXPRIMARY0 (1 << 8) // matches 9th bit (bit 8) of reticle mask
 
-static ushort Ret_prim_mask = 0;
-static ushort Ret_sec_mask = 0;
+static uint16_t Ret_prim_mask = 0;
+static uint16_t Ret_sec_mask = 0;
 
 //	Initializes Reticle on Hud.  Usually called when weapon changes.
 void InitReticle(int primary_slots, int secondary_slots) {
@@ -1916,7 +1916,7 @@ void ResetReticle() {
 }
 
 //	creates the reticle display bitmap mask to be used by the reticle renderer.
-static inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
+static inline uint16_t reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
   poly_model *pm = &Poly_models[pobj->rtype.pobj_info.model_num];
   dynamic_wb_info *dyn_wb = &pobj->dynamic_wb[wb_index];
   unsigned mask = 0;
@@ -1952,7 +1952,7 @@ static inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb
   return mask;
 }
 
-static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_mask, ushort gp_mask, const int *wb_elem_array) {
+static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, uint16_t on_mask, uint16_t gp_mask, const int *wb_elem_array) {
   int i, x, y;
   int bmp_handle;
   char align;
@@ -1996,7 +1996,7 @@ static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_ma
 
 //	renders the reticle
 void RenderReticle() {
-  static ushort primary_index_last_frame = 0xffff;
+  static uint16_t primary_index_last_frame = 0xffff;
   static bool quad_primary_last_frame = false;
   player *player = &Players[Player_num];
   object *pobj = &Objects[player->objnum];
@@ -2152,9 +2152,9 @@ void LoadHudConfig(const char *filename, bool (*fn)(const char*, const char *, v
         tHUDItem hud_item;
         char operand[INFFILE_LINELEN];			// operand
         bool txpos = false, typos = false;
-        ubyte r=GR_COLOR_RED(HUD_COLOR);
-        ubyte g=GR_COLOR_GREEN(HUD_COLOR);
-        ubyte b=GR_COLOR_BLUE(HUD_COLOR);
+        uint8_t r=GR_COLOR_RED(HUD_COLOR);
+        uint8_t g=GR_COLOR_GREEN(HUD_COLOR);
+        uint8_t b=GR_COLOR_BLUE(HUD_COLOR);
 
 //	start over.
         ResetHud();
@@ -2178,9 +2178,9 @@ void LoadHudConfig(const char *filename, bool (*fn)(const char*, const char *, v
                         switch (cmd)
                         {
                         case HUDCMD_TYPE:	hud_item.type = atoi(operand); break;
-                        case HUDCMD_RED: r=(ubyte)atoi(operand); break;
-                        case HUDCMD_GREEN: g=(ubyte)atoi(operand); break;
-                        case HUDCMD_BLUE:	b=(ubyte)atoi(operand);	break;
+                        case HUDCMD_RED: r=(uint8_t)atoi(operand); break;
+                        case HUDCMD_GREEN: g=(uint8_t)atoi(operand); break;
+                        case HUDCMD_BLUE:	b=(uint8_t)atoi(operand);	break;
                         case HUDCMD_X:	hud_item.x = atoi(operand); break;
                         case HUDCMD_Y: hud_item.y = atoi(operand); break;
                         case HUDCMD_TX: hud_item.tx = atoi(operand); txpos = true; break;

@@ -279,7 +279,7 @@ bool CDmfcStats::Initialize(tDmfcStatsInit *init_info) {
 
   m_highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   m_background_bmp = DLLbm_AllocBitmap(32, 32, 0);
-  ushort *data;
+  uint16_t *data;
 
   if (m_highlight_bmp == -1)
     m_highlight_bmp = BAD_BITMAP_HANDLE;
@@ -914,7 +914,7 @@ redisplay_list:
   DLLRenderHUDText(GR_WHITE, m_alpha, 0, x_to_use, curr_y, buffer);
   curr_y += (m_font_height + ROW_PIXEL_GAP);
 
-  ubyte streak_type = 0;
+  uint8_t streak_type = 0;
 
   if (!is_dedicated_server) {
     // none of this should be displayed for a dedicated server

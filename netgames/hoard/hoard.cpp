@@ -89,9 +89,9 @@ typedef struct {
   int Score[2];
   int HighestScore[2];
 } tPlayerStat;
-static int pack_pstat(tPlayerStat *user_info, ubyte *data);
-static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
-int pack_pstat(tPlayerStat *user_info, ubyte *data) {
+static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
+static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
+int pack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
   MultiAddInt(user_info->Score[1], data, &count);
@@ -100,7 +100,7 @@ int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   return count;
 }
 
-int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
+int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   user_info->Score[0] = MultiGetInt(data, &count);
   user_info->Score[1] = MultiGetInt(data, &count);
@@ -118,7 +118,7 @@ static int HoardOrbIcon = BAD_BITMAP_HANDLE;
 static bool DisplayBlink = true;
 static int WhoJustScored = -1;
 static int WhoJustScoredTimer = -1;
-static ubyte HUD_color_model = HCM_PLAYERCOLOR;
+static uint8_t HUD_color_model = HCM_PLAYERCOLOR;
 static int Highlight_bmp = -1;
 static bool display_my_welcome = false;
 
@@ -129,10 +129,10 @@ static void DisplayHUDScores(struct tHUDItem *hitem);
 static void SortPlayerScores(int *sortedindex, int size);
 static void DisplayWelcomeMessage(int player_num);
 static void DoBallsEffect(int i, int count);
-static void ReceiveHoardInv(ubyte *data);
+static void ReceiveHoardInv(uint8_t *data);
 static void SendHoardInv(int playernum);
 static void SaveStatsToFile(char *filename);
-static void ReceiveGameConfig(ubyte *data);
+static void ReceiveGameConfig(uint8_t *data);
 static void OnClientPlayerEntersGame(int player_num);
 
 static bool Config_displayed = false;
@@ -175,7 +175,7 @@ void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_si
   }
 }
 
-void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use) {
+void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
   float ratio = DEFAULT_HUD_WIDTH / ((float)DMFCBase->GetGameWindowW());
 
@@ -265,7 +265,7 @@ void DMFCInputCommand_MinCount(const char *input_string) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -351,8 +351,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
     return;
   }
 
-  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, ubyte *))pack_pstat,
-                              (int (*)(void *, ubyte *))unpack_pstat);
+  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, uint8_t *))pack_pstat,
+                              (int (*)(void *, uint8_t *))unpack_pstat);
 
   DMFCBase->RegisterPacketReceiver(SPID_INVINFO, ReceiveHoardInv);
   DMFCBase->RegisterPacketReceiver(SPID_GAMECONFIG, ReceiveGameConfig);
@@ -372,7 +372,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -1223,7 +1223,7 @@ void OnDisconnectSaveStatsToFile(void) {
 }
 
 // handles a hoard inventory packet
-void ReceiveHoardInv(ubyte *data) {
+void ReceiveHoardInv(uint8_t *data) {
   int x, i, count = 0;
   int size;
 
@@ -1244,7 +1244,7 @@ void ReceiveHoardInv(ubyte *data) {
 
 // sends a hoard inventory packet to a player
 void SendHoardInv(int playernum) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int i;
   int count = 0;
 
@@ -1274,7 +1274,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
 
   int x = 520;
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
   int y = (DMFCBase->GetGameWindowH() / 2) - ((height * 5) / 2);
   int rank = 1;
   ddgr_color color;
@@ -1487,7 +1487,7 @@ void OnTimerKill(void) {
 
 // game config send/receive
 void SendGameConfig(int towho) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   DMFCBase->StartPacket(data, SPID_GAMECONFIG, &count);
@@ -1497,7 +1497,7 @@ void SendGameConfig(int towho) {
   DMFCBase->SendPacket(data, count, towho);
 }
 
-void ReceiveGameConfig(ubyte *data) {
+void ReceiveGameConfig(uint8_t *data) {
   int count = 0;
   config.min_hoard = MultiGetByte(data, &count);
 }

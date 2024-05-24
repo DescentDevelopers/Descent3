@@ -36,11 +36,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -62,10 +62,10 @@ const char *GetStringFromTable(int index) {
 // Function prototypes
 //-------------------
 
-static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-                      float lifetime, float interval, float longevity, float size, float speed, ubyte random);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+                      float lifetime, float interval, float longevity, float size, float speed, uint8_t random);
 // Returns the new child's handle
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 
 static int FindClosestPlayer(int objhandle);
@@ -86,32 +86,32 @@ static void AI_SafeSetType(int obj_handle, int ai_type);
 //----------------
 
 // Name lookup globals
-static unsigned short energy_effect_id;       // weapon ID for the energy charge effect
-static unsigned short frag_burst_effect_id;   // weapon ID for the frag burst effect
-static unsigned short boss_frag_burst_id;     // weapon ID for the boss frag burst effect
-static unsigned short transfer_effect_id;     // texture ID for the energy transfer lightning effect
-static unsigned short heal_effect_id;         // texture ID for the heal lightning effect
-static unsigned short boss_heal_effect_id;    // texture ID for the boss heal lightning effect
-static unsigned short tractor_beam_effect_id; // texture ID for the tractor beam effect
-static unsigned short alien_organism_id;      // object type ID for the alien organism robot
-static unsigned short shield_blast_id;        // weapon ID for the HT shield blast effect
-static unsigned short ht_grenade_id;          // weapon ID for the HT grenade
-static unsigned short ht_grenade_effect_id;   // weapon ID for the HT grenade launch effect
-static unsigned short lifter_blast_effect_id; // weapon ID for the lifter blast effect
-static unsigned short lifter_stick_effect_id; // texture ID for lifter's night-stick lightning effect
-static unsigned short teleport_effect_id;     // weapon ID for teleporting effect
+static uint16_t energy_effect_id;       // weapon ID for the energy charge effect
+static uint16_t frag_burst_effect_id;   // weapon ID for the frag burst effect
+static uint16_t boss_frag_burst_id;     // weapon ID for the boss frag burst effect
+static uint16_t transfer_effect_id;     // texture ID for the energy transfer lightning effect
+static uint16_t heal_effect_id;         // texture ID for the heal lightning effect
+static uint16_t boss_heal_effect_id;    // texture ID for the boss heal lightning effect
+static uint16_t tractor_beam_effect_id; // texture ID for the tractor beam effect
+static uint16_t alien_organism_id;      // object type ID for the alien organism robot
+static uint16_t shield_blast_id;        // weapon ID for the HT shield blast effect
+static uint16_t ht_grenade_id;          // weapon ID for the HT grenade
+static uint16_t ht_grenade_effect_id;   // weapon ID for the HT grenade launch effect
+static uint16_t lifter_blast_effect_id; // weapon ID for the lifter blast effect
+static uint16_t lifter_stick_effect_id; // texture ID for lifter's night-stick lightning effect
+static uint16_t teleport_effect_id;     // weapon ID for teleporting effect
 
-static unsigned short ht_grenade_sound_id; // sound ID for firing the grenade
+static uint16_t ht_grenade_sound_id; // sound ID for firing the grenade
 
-static unsigned short powerup_id; // invisible powerup id
+static uint16_t powerup_id; // invisible powerup id
 
-static unsigned short boss_flapping_id; // flapping sound id
-static unsigned short boss_turf_id;     // turf id
-static unsigned short boss_see_id;
-static unsigned short boss_hurt_id;
+static uint16_t boss_flapping_id; // flapping sound id
+static uint16_t boss_turf_id;     // turf id
+static uint16_t boss_see_id;
+static uint16_t boss_hurt_id;
 
-static unsigned short lifter_pull_sound_id;
-static unsigned short lifter_amb_sound_id;
+static uint16_t lifter_pull_sound_id;
+static uint16_t lifter_amb_sound_id;
 
 // ==========================
 // AI Goal Related Functions
@@ -259,8 +259,8 @@ void AI_SafeSetType(int obj_handle, int ai_type) {
 // Miscellaneous Utility Funcs
 // ============================
 
-int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-               float lifetime, float interval, float longevity, float size, float speed, ubyte random) {
+int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+               float lifetime, float interval, float longevity, float size, float speed, uint8_t random) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -283,7 +283,7 @@ int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -604,7 +604,7 @@ class BaseObjScript {
 public:
   BaseObjScript();
   ~BaseObjScript();
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 // Priority Constants
@@ -867,7 +867,7 @@ private:
 
 public:
   AlienOrganism() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1004,7 +1004,7 @@ private:
 
 public:
   HeavyTrooper() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1106,7 +1106,7 @@ private:
 
 public:
   Lifter() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1332,7 +1332,7 @@ private:
 
 public:
   AlienBoss() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1401,7 +1401,7 @@ private:
 
 public:
   SecurityCamera() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1441,7 +1441,7 @@ private:
 
 public:
   CrowdControl() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------------
@@ -1528,7 +1528,7 @@ void STDCALL ShutdownDLL(void) {}
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;
@@ -1613,7 +1613,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((BaseObjScript *)ptr)->CallEvent(event, data);
 }
 
@@ -1627,7 +1627,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 //============================================
 // Script Implementation
@@ -1636,7 +1636,7 @@ BaseObjScript::BaseObjScript() {}
 
 BaseObjScript::~BaseObjScript() {}
 
-short BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
+int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //---------------------
 // AlienOrganism class
@@ -2300,7 +2300,7 @@ void AlienOrganism::UpdateSquad(int me) {
   n_scan = AI_GetNearbyObjs(&pos, room, ALIEN_SQUAD_RECRUIT_RADIUS, scan_objs, 25, false, true, false, true);
 
   for (i = 0; i < n_scan; i++) {
-    unsigned short id;
+    uint16_t id;
     Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
     // this is more rare than the types matching; so, do it first
@@ -2644,7 +2644,7 @@ void AlienOrganism::SetMode(int me, char mode) {
     // Make sure squad broken flag isn't set
     memory->squad_flags &= ~ALIEN_BROKEN;
 
-    // Calculate destination home point a short distance from actual landing point
+    // Calculate destination home point a int16_t distance from actual landing point
     end_pos = memory->home_pos + (memory->home_uvec * 20.0f);
 
     flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
@@ -3992,7 +3992,7 @@ void AlienOrganism::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
   /*
   int wpn_handle=damage_data->weapon_handle;
   int type;
-  unsigned short id;
+  uint16_t id;
 
   wpn_handle=damage_data->weapon_handle;
   Obj_Value(wpn_handle, VF_GET, OBJV_US_ID, &id);
@@ -4063,7 +4063,7 @@ void AlienOrganism::DoCollide(int me, tOSIRISEVTCOLLIDE *collide_data) {
 }
 
 // Receives all basic events and calls processesing functions
-short AlienOrganism::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t AlienOrganism::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4696,7 +4696,7 @@ void HeavyTrooper::DoCollide(int me, tOSIRISEVTCOLLIDE *collide_data) {
 }
 
 // Receives all basic events and calls processesing functions
-short HeavyTrooper::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t HeavyTrooper::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -5366,7 +5366,7 @@ void Lifter::DoCleanUp(int me) {
 }
 
 // Receives all basic events and calls processesing functions
-short Lifter::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Lifter::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -5772,7 +5772,7 @@ void AlienBoss::SetMode(int me, char mode) {
     movement_type = MT_PHYSICS;
     Obj_Value(me, VF_SET, OBJV_C_MOVEMENT_TYPE, &movement_type);
 
-    // Calculate destination home point a short distance from actual landing point
+    // Calculate destination home point a int16_t distance from actual landing point
     end_pos = memory->home_pos + (memory->home_uvec * 20.0f);
 
     flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
@@ -6941,7 +6941,7 @@ void AlienBoss::DoCleanUp(int me) {
 }
 
 // Receives all basic events and calls processesing functions
-short AlienBoss::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t AlienBoss::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7223,7 +7223,7 @@ bool SecurityCamera::DoNotify(int me, tOSIRISEventInfo *data) {
 }
 
 // Receives all basic events and calls processesing functions
-short SecurityCamera::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SecurityCamera::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7391,7 +7391,7 @@ bool CrowdControl::DoNotify(int me, tOSIRISEventInfo *data) {
 }
 
 // Receives all basic events and calls processesing functions
-short CrowdControl::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CrowdControl::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);

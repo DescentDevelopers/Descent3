@@ -111,12 +111,12 @@ private:
 	int m_FontPicBm;						// Font picture bitmap handle
 	int m_FontBmW, m_FontBmH;
 	int m_CharHeight;						// current character height.
-	short m_CharWidths[MAX_FONT_CHARS];
-	short m_CharMaxWidth;
-	ushort *m_FontBmData;
-	ushort *m_DataBuffer, *m_DataPtr;
-	ushort m_BgColor, m_BoxColor;
-	ushort m_FgColor;
+	int16_t m_CharWidths[MAX_FONT_CHARS];
+	int16_t m_CharMaxWidth;
+	uint16_t *m_FontBmData;
+	uint16_t *m_DataBuffer, *m_DataPtr;
+	uint16_t m_BgColor, m_BoxColor;
+	uint16_t m_FgColor;
 	BOOL m_FontProp;						// Proportional font.
-	ubyte m_Brightness;					// brightness * 10
+	uint8_t m_Brightness;					// brightness * 10
 };

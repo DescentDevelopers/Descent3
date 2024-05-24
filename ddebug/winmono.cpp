@@ -70,18 +70,18 @@ extern bool Debug_print_block = false;
 #define MAX_NUM_VWINDOWS 8
 
 typedef struct mono_element {
-  unsigned char character;
-  unsigned char attribute;
+  uint8_t character;
+  uint8_t attribute;
 } mono_element;
 
 typedef struct {
-  short first_row;
-  short height;
-  short first_col;
-  short width;
-  short cursor_row;
-  short cursor_col;
-  short open;
+  int16_t first_row;
+  int16_t height;
+  int16_t first_col;
+  int16_t width;
+  int16_t cursor_row;
+  int16_t cursor_col;
+  int16_t open;
   struct mono_element save_buf[25][80];
   struct mono_element text[25][80];
 } WINDOW;
@@ -90,7 +90,7 @@ static bool Mono_initialized = 0;
 static mono_element (*Mono_screen)[25][80];
 static char Dbgstr_format[512];
 static WINDOW Window[MAX_NUM_WINDOWS];
-static ubyte Mono_virtual_window_list[MAX_NUM_VWINDOWS];
+static uint8_t Mono_virtual_window_list[MAX_NUM_VWINDOWS];
 
 #ifndef RELEASE
 #define MAX_MONO_LENGTH 2048
@@ -126,7 +126,7 @@ SOCKET tcp_log_sock;
 SOCKADDR_IN tcp_log_addr;
 char tcp_log_buffer[MAX_TCPLOG_LEN];
 
-void nw_InitTCPLogging(char *ip, unsigned short port) {
+void nw_InitTCPLogging(char *ip, uint16_t port) {
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {
@@ -500,7 +500,7 @@ void con_mputc(int n, char c) {
   con_setcursor(ROW + CROW, COL + CCOL);
 }
 
-void copy_row(int nwords, short *src, short *dest1, short *dest2) {
+void copy_row(int nwords, int16_t *src, int16_t *dest1, int16_t *dest2) {
 // TODO: disabled for now to get the x64 build compiling
 // do we even need all this old 'mono' stuff anymore?
 #ifndef _WIN64
@@ -541,7 +541,7 @@ void con_scroll(int n) {
 
   col = 0;
   for (row = 0; row < (HEIGHT - 1); row++)
-    copy_row(WIDTH, (short *)&XCHAR(row + 1, col), (short *)&CHAR(row, col), (short *)&XCHAR(row, col));
+    copy_row(WIDTH, (int16_t *)&XCHAR(row + 1, col), (int16_t *)&CHAR(row, col), (int16_t *)&XCHAR(row, col));
 
   //		for ( col = 0; col < WIDTH; col++ )
   //		{
@@ -574,7 +574,7 @@ void con_setcursor(int row, int col) {
 }
 
 void con_drawbox(int n) {
-  short row, col;
+  int16_t row, col;
 
   if (!OPEN)
     return;
@@ -609,7 +609,7 @@ void con_drawbox(int n) {
 }
 
 void con_clear(int n) {
-  short row, col;
+  int16_t row, col;
 
   if (!OPEN)
     return;

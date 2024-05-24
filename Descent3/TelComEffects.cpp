@@ -1218,8 +1218,8 @@ bool CreateBmpStretch(tceffect *tce, const char *filename) {
     realy = 0;
 
     int wi, hi;
-    ushort *srcdata = bm_data(tce->bmpinfo.bm_handle, 0);
-    ushort *destdata;
+    uint16_t *srcdata = bm_data(tce->bmpinfo.bm_handle, 0);
+    uint16_t *destdata;
 
     realx = 0;
     realy = 0;

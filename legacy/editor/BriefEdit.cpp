@@ -238,11 +238,11 @@ void BriefEditFreeEffect(tBriefEffect *efx)
 	efx->type = BE_NONE;
 }
 
-void BuildMissionFlagMask(uint mask,char *string,ubyte isset)
+void BuildMissionFlagMask(uint32_t mask,char *string,uint8_t isset)
 {
 	int counter = 0;
 	int index = 0;
-	uint bit = 0x01;
+	uint32_t bit = 0x01;
 	char temp[10];
 
 	for(index=0;index<32;index++){
@@ -262,7 +262,7 @@ void BuildMissionFlagMask(uint mask,char *string,ubyte isset)
 //	BriefEditSaveScreens
 //
 //	Saves out the screens to a briefing file
-ubyte BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalValues *glob)
+uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalValues *glob)
 {
 	CFILE *file = cfopen(filename,"wt");
 	if(!file)
@@ -361,7 +361,7 @@ ubyte BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalVal
 						strcpy(tempbuffer,"None");
 					}
 
-					ubyte red,green,blue;
+					uint8_t red,green,blue;
 					red = GR_COLOR_RED(desc->color);
 					green = GR_COLOR_GREEN(desc->color);
 					blue = GR_COLOR_BLUE(desc->color);
@@ -1023,7 +1023,7 @@ void BEAddButtonEffect(LPTCBUTTONDESC desc,char *description,int id)
 	dest->jump_page = desc->jump_page;
 }
 
-void BEStartScreen(int screen_num,char *description,char *layout,uint mask_set,uint mask_unset)
+void BEStartScreen(int screen_num,char *description,char *layout,uint32_t mask_set,uint32_t mask_unset)
 {
 	int scr_to_add = -1;
 	for(int i=0;i<MAX_TELCOM_SCREENS;i++){
@@ -1094,7 +1094,7 @@ void BEAddVoice(char *filename,int flags,char *description)
 //  BriefEditLoadScreens
 //
 //	Loads in screens from a briefing file
-ubyte BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *effect_combo,BriefGlobalValues *glob)
+uint8_t BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *effect_combo,BriefGlobalValues *glob)
 {
 	BEParseInfo.current_screen = 0;
 	BEParseInfo.title[0] = '\0';

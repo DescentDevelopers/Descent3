@@ -119,7 +119,7 @@ static int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t
 static void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap);
 
 // just like the old bm_tga_translate_pixel function, but it stores the alpha in the alpha_value parameter
-ushort menutga_translate_pixel(int pixel, char *alpha_value) {
+uint16_t menutga_translate_pixel(int pixel, char *alpha_value) {
   int red = ((pixel >> 16) & 0xFF);
   int green = ((pixel >> 8) & 0xFF);
   int blue = ((pixel) & 0xFF);
@@ -130,7 +130,7 @@ ushort menutga_translate_pixel(int pixel, char *alpha_value) {
   int newred = red >> 3;
   int newgreen = green >> 3;
   int newblue = blue >> 3;
-  ushort newpix = OPAQUE_FLAG | (newred << 10) | (newgreen << 5) | (newblue);
+  uint16_t newpix = OPAQUE_FLAG | (newred << 10) | (newgreen << 5) | (newblue);
   if (alpha == 0)
     newpix = NEW_TRANSPARENT_COLOR;
 
@@ -151,7 +151,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
   }
 
   int curr_sl, x, y, count, num_hs = 0;
-  unsigned char alpha;
+  uint8_t alpha;
   char whats_there[256];
   int window_count;
 
@@ -207,7 +207,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       // Get start,end, scanlines and starting_y for each hotspot
       for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-          if ((unsigned)map[y * width + x] == (unsigned char)count) {
+          if ((unsigned)map[y * width + x] == (uint8_t)count) {
             if (last_y != y)
               sl_count++;
             if (hsmap->hs[count].starting_y > y)
@@ -268,7 +268,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
 void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap) {
   mprintf((0, "Processing %d windows\n", wndmap->num_of_windows));
   int x, y, count;
-  unsigned char alpha;
+  uint8_t alpha;
   bool newline = true;
 
   wndmap->wm = (window_box *)mem_malloc(sizeof(window_box) * wndmap->num_of_windows);
@@ -399,7 +399,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
     int x, y, real_x, real_y;
     int *left_x, *right_x, *top_y, *bottom_y;
     char *array;
-    unsigned char alpha;
+    uint8_t alpha;
 
     // left top
     left_x = &wndmap->wm[count].l_start_x;
@@ -509,10 +509,10 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 // TODO: MTS: only used in this file
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
 int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
-  ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
-  ubyte upside_down = 0;
-  ushort width, height;
-  unsigned int pixel;
+  uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
+  uint8_t upside_down = 0;
+  uint16_t width, height;
+  uint32_t pixel;
   int i, t, n;
   char alphavalue;
   CFILE *infile;
@@ -576,7 +576,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
     for (t = 0; t < width; t++) {
       pixel = cf_ReadInt(infile);
 
-      ushort newpix = menutga_translate_pixel(pixel, &alphavalue);
+      uint16_t newpix = menutga_translate_pixel(pixel, &alphavalue);
 
       if (upside_down) {
         GameBitmaps[n].data16[((height - 1) - i) * width + t] = newpix;
@@ -802,14 +802,14 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 
 void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b) {
   int real_x, real_y, awidth, ax, ay;
-  short *backdata, *cornerdata;
+  int16_t *backdata, *cornerdata;
   int back_rowsize, corner_rowsize;
 
   awidth = r - l;
   bm_ClearBitmap(corner_bmp);
-  backdata = (short *)bm_data(back_bmp, 0);
+  backdata = (int16_t *)bm_data(back_bmp, 0);
   back_rowsize = bm_rowsize(back_bmp, 0);
-  cornerdata = (short *)bm_data(corner_bmp, 0);
+  cornerdata = (int16_t *)bm_data(corner_bmp, 0);
   corner_rowsize = bm_rowsize(corner_bmp, 0);
 
   backdata += (t * (back_rowsize / 2));

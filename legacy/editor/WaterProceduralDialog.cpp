@@ -128,7 +128,7 @@ BOOL CWaterProceduralDialog::DestroyWindow()
 
 
 
-void CWaterProceduralDialog::PrintValue (int whichbox,ubyte val)
+void CWaterProceduralDialog::PrintValue (int whichbox,uint8_t val)
 {
 	CEdit *ebox;
 	char str[255];
@@ -315,7 +315,7 @@ void CWaterProceduralDialog::OnClearProcedurals()
 	ClearAllProceduralsFromTexture (D3EditState.texdlg_texture);
 }
 
-void CWaterProceduralDialog::HarvestValue(int whichbox,ubyte *val) 
+void CWaterProceduralDialog::HarvestValue(int whichbox,uint8_t *val) 
 {
 	CEdit *ebox;
 	char name[20];

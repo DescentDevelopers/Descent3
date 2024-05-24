@@ -118,7 +118,7 @@
 #include "module.h"
 #include "cfile.h"
 
-extern uint Osiris_game_checksum;
+extern uint32_t Osiris_game_checksum;
 extern tOSIRISModuleInit Osiris_module_init;
 
 //	Osiris_InitModuleLoader
@@ -250,7 +250,7 @@ extern void Osiris_CancelTimer(int handle);
 //	Osiris_TimerExists
 //	Purpose:
 //		Returns true if the timer is valid
-extern ubyte Osiris_TimerExists(int handle);
+extern uint8_t Osiris_TimerExists(int handle);
 
 //	Osiris_SaveSystemState
 //	Purpose:
@@ -322,11 +322,11 @@ extern bool Show_osiris_debug;
 //	Osiris_EnableEvents
 //	Purpose:
 //		Enables the passed in mask of event types to be called
-extern void Osiris_EnableEvents(ubyte mask);
+extern void Osiris_EnableEvents(uint8_t mask);
 //	Osiris_DisableEvents
 //	Purpose:
 //		Disables the passed in mask of event types
-extern void Osiris_DisableEvents(ubyte mask);
+extern void Osiris_DisableEvents(uint8_t mask);
 
 //	Osiris_DisableCreateEvents
 //	Purpose:

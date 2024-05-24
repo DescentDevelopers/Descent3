@@ -200,8 +200,8 @@ void ddio_SetKeyboardLanguage(int language);
 // ----------------------------------------------------------------------------
 
 //	array of key states.
-extern volatile short DDIO_key_down_count[];
-extern volatile ubyte DDIO_key_state[];
+extern volatile int16_t DDIO_key_down_count[];
+extern volatile uint8_t DDIO_key_state[];
 
 #define KEY_STATE(_c) DDIO_key_state[_c]
 #define DDIO_MAX_KEYS 256

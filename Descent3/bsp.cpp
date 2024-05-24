@@ -56,13 +56,13 @@
 #define BSP_TREE_VERSION 10003
 
 bsptree MineBSP;
-ubyte BSP_initted = 0;
+uint8_t BSP_initted = 0;
 static int ConvexSubspaces = 0, ConvexPolys = 0;
 static int Solids = 0, Empty = 0;
 
 int BSPChecksum = -1;
 // TODO: MTS: Only used here?
-ubyte UseBSP = 0;
+uint8_t UseBSP = 0;
 
 // Goes through all the valid points in the indoor engine and returns a unique
 // checksum
@@ -213,7 +213,7 @@ void SaveBSPNode(CFILE *outfile, bspnode *node) {
 // Loads a bsp node from an open file and recurses with its children
 void LoadBSPNode(CFILE *infile, bspnode **node) {
   // Get the node type
-  ubyte type = cf_ReadByte(infile);
+  uint8_t type = cf_ReadByte(infile);
 
   // Allocate the node and set its type
   *node = NewBSPNode();
@@ -449,8 +449,8 @@ int SplitPolygon(bspplane *plane, bsppolygon *testpoly, bsppolygon **frontpoly, 
 }
 
 char Twirly[] = {'|', '/', '-', '\\'};
-ubyte Plane_twirl = 0;
-ubyte Node_twirl = 0;
+uint8_t Plane_twirl = 0;
+uint8_t Node_twirl = 0;
 
 // Selects the best plane to partition with, returning the pointer to polygon to split with
 bsppolygon *SelectPlane(list **polylist) {
@@ -1070,7 +1070,7 @@ static inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
   return 1;
 }
 // see if a point in inside a face by projecting into 2d
-extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
+extern uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 // Returns true if passed in point collides with a nodes polygon
 static inline int BSPPointInPolygon(vector *pos, bspnode *node) {

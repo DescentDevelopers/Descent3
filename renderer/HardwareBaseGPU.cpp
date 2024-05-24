@@ -46,8 +46,8 @@ bool UseWBuffer = false;
 
 // General renderer states
 int gpu_Overlay_map = -1;
-ubyte gpu_Overlay_type = OT_NONE;
-ubyte Renderer_initted = 0;
+uint8_t gpu_Overlay_type = OT_NONE;
+uint8_t Renderer_initted = 0;
 
 // Generic GPU data
 rendering_state gpu_state;
@@ -120,10 +120,10 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
 }
 
 // Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte *framebuffer) {}
+void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, uint8_t *framebuffer) {}
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state) {
+void rend_SetFiltering(int8_t state) {
   gpu_state.cur_bilinear_state = state;
 }
 
@@ -142,7 +142,7 @@ void rend_SetZValues(float nearz, float farz) {
 // a -1 value indicates no overlay map
 void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
 
-void rend_SetOverlayType(ubyte type) { gpu_Overlay_type = type; }
+void rend_SetOverlayType(uint8_t type) { gpu_Overlay_type = type; }
 
 
 void rend_FillCircle(ddgr_color col, int x, int y, int rad) {}
@@ -178,7 +178,7 @@ void rend_DrawFontCharacter(int bm_handle, int x1, int y1, int x2, int y2, float
 }
 
 // Sets the alpha value for constant alpha
-void rend_SetAlphaValue(ubyte val) {
+void rend_SetAlphaValue(uint8_t val) {
   gpu_state.cur_alpha = val;
   gpu_Alpha_multiplier = rend_GetAlphaMultiplier();
 }
@@ -236,7 +236,7 @@ float rend_GetAspectRatio(void) {
 }
 
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize) {}
+void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize) {}
 
 // draws a scaled 2d bitmap to our buffer
 void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1, int color,
@@ -290,7 +290,7 @@ void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, flo
 }
 
 //	given a chunked bitmap, renders it.
-void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha) {
+void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, uint8_t alpha) {
   int *bm_array = chunk->bm_array;
   int w = chunk->w;
   int h = chunk->h;
@@ -323,7 +323,7 @@ void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha) {
 }
 
 //	given a chunked bitmap, renders it.scaled
-void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, ubyte alpha) {
+void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, uint8_t alpha) {
   int *bm_array = chunk->bm_array;
   int w = chunk->w;
   int h = chunk->h;

@@ -1164,7 +1164,7 @@ int Player_camera_objnum = -1;
 float Player_shields_saved_from_last_level = -1.0f;
 float Player_energy_saved_from_last_level = -1.0f;
 
-uint Players_typing; // information about which players are typing messages (to display an icon)
+uint32_t Players_typing; // information about which players are typing messages (to display an icon)
 
 static float Player_camera_last_sample_time = 0;
 static float Player_camera_last_follow_time = 0;
@@ -1394,7 +1394,7 @@ void InitPlayerNewGame(int slot) {
   Players[slot].num_deaths_total = 0;
   Players[slot].score = 0;
 
-  uint bit = (0x01 << slot);
+  uint32_t bit = (0x01 << slot);
   Players_typing &= ~bit;
 }
 
@@ -1449,7 +1449,7 @@ void InitPlayerNewLevel(int slot) {
     }
   }
 
-  uint bit = (0x01 << slot);
+  uint32_t bit = (0x01 << slot);
   Players_typing &= ~bit;
 
   // Give the player a GuideBot if he doesn't have one and if the GB isn't out there
@@ -2022,8 +2022,8 @@ typedef struct tDeathSeq {
 
   poly_model *dying_model;
 
-  short fate;
-  short breakup_count;
+  int16_t fate;
+  int16_t breakup_count;
   float initial_death_time;
   float time_dying;
   float max_time_dying;
@@ -2034,8 +2034,8 @@ typedef struct tDeathSeq {
   float accel_mod;
   vector force_dir;
 
-  ubyte saved_ctrl_type;
-  uint saved_phys_flags;
+  uint8_t saved_ctrl_type;
+  uint32_t saved_phys_flags;
   float saved_drag;
   vector saved_rotthrust;
 
@@ -2999,7 +2999,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
 
   // Spew out the inventory items
   object *temp_obj;
-  ushort inven_flags;
+  uint16_t inven_flags;
   int object_flags;
   bool spew_it;
 
@@ -3564,7 +3564,7 @@ void PlayerStopObserving(int slot) {
   }
 
   if (slot == Player_num) {
-    ubyte hud_mode;
+    uint8_t hud_mode;
     Current_pilot.get_hud_data(&hud_mode);
     AddHUDMessage(TXT_LEAVEOBS);
     SetHUDMode((tHUDMode)hud_mode);
@@ -3889,7 +3889,7 @@ void PlayerScoreAdd(int playernum, int points) {
 ////////////////////////////////////////////////////
 // Thief interface functions
 ////////////////////////////////////////////////////
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 void MakeObjectVisible(object *obj);
 
 // steals an item from the given player

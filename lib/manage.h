@@ -57,16 +57,16 @@
 #define PAGETYPE_GENERIC 10
 
 typedef struct {
-  ubyte pagetype; // of type PAGETYPE above
+  uint8_t pagetype; // of type PAGETYPE above
   char name[PAGENAME_LEN];
   char holder[PAGENAME_LEN];
 } mngs_Pagelock;
 
 typedef struct {
-  ubyte used;
-  ubyte overlay;
-  ubyte pagetype;
-  ubyte __pad;
+  uint8_t used;
+  uint8_t overlay;
+  uint8_t pagetype;
+  uint8_t __pad;
   int stack_filepos; // file position of this page in the tablefile (the value we are
                      // pushing, for addon tables)
   char name[PAGENAME_LEN];
@@ -160,8 +160,8 @@ void mng_CheckToCreateNetTables();
 void mng_InitLocalDirectories();
 void mng_InitNetDirectories();
 
-void mng_ReadDummyPage(CFILE *infile, ubyte pagetype);
-void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, ubyte pagetype);
+void mng_ReadDummyPage(CFILE *infile, uint8_t pagetype);
+void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, uint8_t pagetype);
 
 // Function for writing out "undefined" page...useful for placeholding
 void mng_WriteUnknownPage(CFILE *outfile);
@@ -253,7 +253,7 @@ bool IsPrimitiveOld(char *name);
 void UpdatePrimitive(char *localname, char *netname, char *primname, int pagetype, char *pagename);
 
 // Writes a chunk header.  Writes chunk id & placeholder length.  Returns chunk start pos
-int StartManagePage(CFILE *ofile, ubyte pagetype);
+int StartManagePage(CFILE *ofile, uint8_t pagetype);
 
 // Fill in page length when done writing
 void EndManagePage(CFILE *ofile, int chunk_start_pos);

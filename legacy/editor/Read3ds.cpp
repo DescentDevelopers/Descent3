@@ -151,13 +151,13 @@ material Materials[MAX_MATERIALS];
 
 typedef struct reading_face 
 {
-	ubyte		flags;						// flags for this face (see above)
-	short		portal_num;					// which portal this face is part of, or -1 if none
-	ubyte		num_verts;					// how many vertices in this face
-	short		face_verts[MAX_VERTS_PER_FACE];				// index into list of vertices for this face
+	uint8_t		flags;						// flags for this face (see above)
+	int16_t		portal_num;					// which portal this face is part of, or -1 if none
+	uint8_t		num_verts;					// how many vertices in this face
+	int16_t		face_verts[MAX_VERTS_PER_FACE];				// index into list of vertices for this face
 	roomUVL	face_uvls[MAX_VERTS_PER_FACE];					// index into list of uvls for this face
 	vector	normal;						// the surface normal of this face
-	short		tmap;							// texture numbers for this face
+	int16_t		tmap;							// texture numbers for this face
 } reading_face;
 
 typedef struct reading_room {
@@ -195,7 +195,7 @@ int RemoveDuplicateFacePoints(room *);
 // Return -1 on fail
 int Read3DSMaxFile(char *filename)
 {
-	ushort id;
+	uint16_t id;
 	int len;
 	CFILE *fp;
 	int i;
@@ -416,7 +416,7 @@ void ConvertHandiness( vector * v )
 // Parses a chunk of a 3dsmax file - this function calls itself
 void Parse3DSMaxChunk (CFILE *fp, int size)
 {
-	ushort id;
+	uint16_t id;
 	int len;
 	int level=Nest_level;
 	int i;
@@ -501,7 +501,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			case ID_MAT_APP:
 			{
 				char material_name[PAGENAME_LEN];
-				short n_faces,face;
+				int16_t n_faces,face;
 				int done=0;
 				int texnum;
 
@@ -561,7 +561,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			// Vertex list 
 			case ID_VERTLIST:
 			{
-				ushort num_verts=cf_ReadShort(fp);
+				uint16_t num_verts=cf_ReadShort(fp);
 				int i;
 
 				if (num_verts > MAX_VERTS_PER_ROOM)
@@ -586,8 +586,8 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 
 			case ID_FACELIST:
 			{
-				ushort num_faces=cf_ReadShort(fp);
-				ushort a,b,c,flags;
+				uint16_t num_faces=cf_ReadShort(fp);
+				uint16_t a,b,c,flags;
 				int i,t, j, this_size;
 
 				if (num_faces > MAX_READING_ROOM_FACES)
@@ -639,7 +639,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 				}
 
 				//get whatever is left in this segment
-				this_size = num_faces * ((4 * sizeof(short)) + (6*sizeof(float)));
+				this_size = num_faces * ((4 * sizeof(int16_t)) + (6*sizeof(float)));
 				if (len-6-this_size ) 
 					Parse3DSMaxChunk(fp,len-6-2-this_size);
 								
@@ -650,7 +650,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			case ID_MATRIX:
 			{
 				float room_matrix[12];
-				short i;
+				int16_t i;
 				for (i=0; i<12; i++ )
 					room_matrix[i] = cf_ReadFloat(fp);
 				break;		

@@ -475,7 +475,7 @@ void CScriptLevelInterface::OnCloseupSelectedScript()
 
 		strcpy(LastScriptSelected,buffer);
 
-		ubyte type = DetermineScriptType(buffer);
+                uint8_t type = DetermineScriptType(buffer);
 
 		switch(type){
 		case ST_GAME:

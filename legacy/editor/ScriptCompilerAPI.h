@@ -47,7 +47,7 @@
 #define ST_GAME		1
 typedef struct{
 	char source_filename[_MAX_PATH];
-	ubyte script_type;
+	uint8_t script_type;
 	void (*callback)(char *str);
 }tCompilerInfo;
 
@@ -58,5 +58,5 @@ typedef struct{
 
 
 int ScriptCompile(tCompilerInfo *ci);
-bool ScriptCreateEmptyScript(char *filename,ubyte script_type);
+bool ScriptCreateEmptyScript(char *filename,uint8_t script_type);
 #endif

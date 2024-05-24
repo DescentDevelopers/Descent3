@@ -33,11 +33,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -202,11 +202,11 @@ const char *GetStringFromTable(int index) {
 #define TXT_GB_I_FOUND_A_GB_POWERUP TXT(145)
 
 // Returns the new child's handle
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -344,7 +344,7 @@ class BaseObjScript {
 public:
   BaseObjScript();
   ~BaseObjScript();
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 typedef struct {
@@ -367,7 +367,7 @@ private:
 
 public:
   Pest() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -392,7 +392,7 @@ private:
 
 public:
   Stinger() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -460,7 +460,7 @@ private:
 
 public:
   SuperThief() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -477,8 +477,8 @@ typedef struct humonculous_data {
 
   float last_shields;
 
-  unsigned short mode;
-  unsigned short next_mode;
+  uint16_t mode;
+  uint16_t next_mode;
 
   vector land_pos;
   vector land_fvec;
@@ -495,7 +495,7 @@ typedef struct humonculous_data {
 
   int rocks[5];
 
-  short flags;
+  int16_t flags;
 } humonculous_data;
 
 class Humonculous : public BaseObjScript {
@@ -503,14 +503,14 @@ private:
   humonculous_data *memory;
 
   void DetermineDeathPos(int me, vector *dpos, int *droom);
-  bool SetMode(int me, unsigned short mode);
+  bool SetMode(int me, uint16_t mode);
   void DoInit(int me);
   void DoInterval(int me);
   bool DoNotify(int me, tOSIRISEventInfo *data);
 
 public:
   Humonculous() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -536,7 +536,7 @@ private:
 
 public:
   Dragon() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //----------------
@@ -556,7 +556,7 @@ private:
 
 public:
   Tracker() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -578,7 +578,7 @@ private:
 
 public:
   Lance() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -597,7 +597,7 @@ private:
 
 public:
   Flak() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -611,7 +611,7 @@ private:
 
 public:
   Seeker() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -629,7 +629,7 @@ private:
 
 public:
   SuperTrooper() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -675,7 +675,7 @@ private:
 
 public:
   Sparky() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -731,14 +731,14 @@ private:
   void DoInit(int me);
   void RemapAlert(int me, float start, float end, float time);
   void RemapWB(int me, float start, float fire, int fire_sound, float end, float time, float latency, int index,
-               unsigned short w_id, char f_mask);
+               uint16_t w_id, char f_mask);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
 
 public:
   Hellion() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -782,7 +782,7 @@ typedef struct {
 
   int flags;
 
-  unsigned short mantaray_id;
+  uint16_t mantaray_id;
 
   int leader_handle;
   int num_teammates;
@@ -812,7 +812,7 @@ private:
 
 public:
   MantaRay() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -829,7 +829,7 @@ typedef struct {
 
   int flags;
 
-  unsigned short skiff_id;
+  uint16_t skiff_id;
 
   int leader_handle;
   int num_teammates;
@@ -859,7 +859,7 @@ private:
 
 public:
   Skiff() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -885,7 +885,7 @@ typedef struct {
   bool f_hit_by_emd;
   float mode_time;
   char last_attack_mode;
-  unsigned short emd_id;
+  uint16_t emd_id;
   int tick_sound;
   float last_tick_time;
 
@@ -902,7 +902,7 @@ private:
 
 public:
   SpyHunter() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -930,7 +930,7 @@ class Sniper : public BaseObjScript {
 
 public:
   Sniper() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -958,7 +958,7 @@ class SniperNoRun : public BaseObjScript {
 
 public:
   SniperNoRun() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -983,7 +983,7 @@ class EvaderModA : public BaseObjScript {
 
 public:
   EvaderModA() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -1011,7 +1011,7 @@ class FlameRAS : public BaseObjScript {
 
 public:
   FlameRAS() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1049,7 +1049,7 @@ private:
 
 public:
   Jugg() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1074,7 +1074,7 @@ private:
 
 public:
   DTower() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1097,7 +1097,7 @@ private:
 
 public:
   DCollector() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1117,7 +1117,7 @@ private:
 
 public:
   CBall() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1138,7 +1138,7 @@ private:
 
 public:
   SixGun() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1155,7 +1155,7 @@ private:
   void DoInit(int me_handle);
 
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1196,7 +1196,7 @@ private:
 
 public:
   Sickle() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1210,7 +1210,7 @@ typedef struct {
 class BettyBomb : public BaseObjScript {
 public:
   BettyBomb() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 private:
   tBettyBombInfo *memory;
@@ -1224,7 +1224,7 @@ typedef struct {
 class BettyScript : public BaseObjScript {
 public:
   BettyScript() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   void DoInit(int me);
@@ -1244,7 +1244,7 @@ typedef struct {
 class ChaffScript : public BaseObjScript {
 public:
   ChaffScript() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   void DoInit(int me);
@@ -1262,7 +1262,7 @@ typedef struct {
 class ChaffChunkScript : public BaseObjScript {
 public:
   ChaffChunkScript() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   void DoInit(int me);
@@ -1284,7 +1284,7 @@ private:
 
 public:
   ProxMine() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -1294,7 +1294,7 @@ public:
 class Gunboy : public BaseObjScript {
 public:
   Gunboy() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1315,7 +1315,7 @@ private:
 
 public:
   GBPowerup() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1337,7 +1337,7 @@ private:
 
 public:
   JoshBell() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1350,7 +1350,7 @@ private:
 
 public:
   ExplodeOnContact() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1363,7 +1363,7 @@ private:
 
 public:
   DestroyOnContact() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1515,7 +1515,7 @@ typedef struct {
 
   float mode_time;
 
-  unsigned short mp_slot; // Owner's slot number
+  uint16_t mp_slot; // Owner's slot number
   int my_player;          // Owner's object reference
 
   bool f_parented; // Buddy will not collide with parent until it isn't parented
@@ -1566,7 +1566,7 @@ typedef struct {
   int amb_camera_handle;
 
   float next_powerup_check_time;
-  unsigned short powerup_ids[6];
+  uint16_t powerup_ids[6];
 } guidebot_data;
 
 class GuideBot : public BaseObjScript {
@@ -1591,7 +1591,7 @@ private:
 
 public:
   GuideBot() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1668,7 +1668,7 @@ static tThiefItems ThiefableItems[] = {
 static int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
 
 typedef struct {
-  unsigned short id;
+  uint16_t id;
   int owner;
 } inv_item; // not really inventory items, but items such as quads, automap, headlight, etc (non-weapons)
 
@@ -1727,7 +1727,7 @@ private:
 
 public:
   Thief() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -1815,7 +1815,7 @@ void SuperThief::SpewEverything(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   for (i = 0; i < memory->num_stolen_weapons; i++) {
-    unsigned short id;
+    uint16_t id;
     int j;
 
     for (j = 0; j < memory->stolen_weapons[i].amount; j++) {
@@ -1981,7 +1981,7 @@ bool SuperThief::DoSteal(int me, int it) {
       if (SuperThiefableItems[i].type == THIEFABLEITEM_PRIMARY) {
         amount = 0;
         if (SuperThiefableItems[i].autoselect > memory->cur_weapon) {
-          unsigned short wpn = Wpn_FindID(SuperThiefableItems[i].weapon_name);
+          uint16_t wpn = Wpn_FindID(SuperThiefableItems[i].weapon_name);
           int snd = Sound_FindId(SuperThiefableItems[i].fire_sound);
 
           Obj_WBValue(me, 1, VF_SET, WBSV_I_FIRE_SOUND, &snd, 0);
@@ -2035,7 +2035,7 @@ void SuperThief::DoInit(int me) {
 
   memory->laser_obj = CreateAndAttach(me, "STEmitter", OBJ_ROBOT, 2, 0, true, true);
 
-  unsigned short wpn = Wpn_FindID("Laser Level 1 - Red");
+  uint16_t wpn = Wpn_FindID("Laser Level 1 - Red");
   int snd = Sound_FindId("Laser level 1");
 
   strcpy(memory->weapon, "Laser Level 1 - Red");
@@ -2255,7 +2255,7 @@ void SuperThief::DoInterval(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short SuperThief::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SuperThief::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -2277,7 +2277,7 @@ short SuperThief::CallEvent(int event, tOSIRISEventInfo *data) {
   case EVT_MEMRESTORE: {
     memory = (superthief_data *)data->evt_memrestore.memory_ptr;
 
-    unsigned short wpn = Wpn_FindID(memory->weapon);
+    uint16_t wpn = Wpn_FindID(memory->weapon);
     int snd = Sound_FindId(memory->sound);
 
     Obj_WBValue(data->me_handle, 1, VF_SET, WBSV_I_FIRE_SOUND, &snd, 0);
@@ -2307,7 +2307,7 @@ private:
 
 public:
   FireAtDist() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -2327,7 +2327,7 @@ private:
 
 public:
   HatePTMC() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -2351,7 +2351,7 @@ private:
 
 public:
   Tubbs() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -2376,7 +2376,7 @@ private:
 
 public:
   OldScratch() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------
@@ -2442,7 +2442,7 @@ private:
 
 public:
   BarnSwallow() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //----------------
@@ -2459,7 +2459,7 @@ public:
 // able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 // TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 // write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   osicommon_Initialize((tOSIRISModuleInit *)func_list);
@@ -2477,7 +2477,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;
@@ -2763,7 +2763,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
   }
 }
 
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((BaseObjScript *)ptr)->CallEvent(event, data);
 }
 
@@ -2813,7 +2813,7 @@ BaseObjScript::BaseObjScript() {}
 
 BaseObjScript::~BaseObjScript() {}
 
-short BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
+int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //-----------------
 // Josh Bell
@@ -2842,7 +2842,7 @@ void JoshBell::DoCollide(int me) {
   }
 }
 
-short JoshBell::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t JoshBell::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED:
     DoInit(data->me_handle);
@@ -2877,7 +2877,7 @@ void ExplodeOnContact::DoCollide(int me, int it) {
   }
 }
 
-short ExplodeOnContact::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ExplodeOnContact::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE:
     DoCollide(data->me_handle, data->evt_collide.it_handle);
@@ -2901,7 +2901,7 @@ void DestroyOnContact::DoCollide(int me, int it) {
   }
 }
 
-short DestroyOnContact::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t DestroyOnContact::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE:
     DoCollide(data->me_handle, data->evt_collide.it_handle);
@@ -2933,7 +2933,7 @@ void Pest::DoInit(int me) {
   AI_SetType(me, AIT_EVADER1);
 }
 
-short Pest::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Pest::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -3039,7 +3039,7 @@ void Stinger::DoInterval(int me) {
   }
 }
 
-short Stinger::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Stinger::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -3076,7 +3076,7 @@ short Stinger::CallEvent(int event, tOSIRISEventInfo *data) {
 #define H_DOOR_WAIT_TIME 8.0f
 
 // Valid next modes from each mode (Humonculous Mode Valid Next)
-const short hm_valid_next_modes[11] = {
+const int16_t hm_valid_next_modes[11] = {
     (HM_INTRO_CUTSCENE),
     (HM_RANGED | HM_MELEE | HM_WALL_HIT | HM_MID_DAMAGE_TAUNT | HM_ABOUT_TO_FAKE_DEATH),
     (HM_RANGED | HM_MELEE | HM_WALL_HIT | HM_MID_DAMAGE_TAUNT | HM_ABOUT_TO_FAKE_DEATH),
@@ -3209,7 +3209,7 @@ bool Humonculous::DoNotify(int me, tOSIRISEventInfo *data) {
   return true;
 }
 
-bool Humonculous::SetMode(int me, unsigned short mode) {
+bool Humonculous::SetMode(int me, uint16_t mode) {
   int new_mode_index = -1;
   int old_mode_index = -1;
 
@@ -3791,7 +3791,7 @@ void Humonculous::DoInterval(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short Humonculous::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Humonculous::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -3838,7 +3838,7 @@ void Dragon::DoInit(int me) {
   AI_SetType(me, AIT_EVADER1);
 }
 
-short Dragon::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Dragon::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -3890,7 +3890,7 @@ void Tracker::DoInit(int me) {
   AI_SetType(me, AIT_EVADER1);
 }
 
-short Tracker::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Tracker::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -3953,7 +3953,7 @@ void Lance::DoFrame(int me) {
   }
 }
 
-short Lance::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Lance::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -3987,7 +3987,7 @@ void Flak::DoInit(int me) {
   AI_SetType(me, AIT_EVADER1);
 }
 
-short Flak::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Flak::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4071,7 +4071,7 @@ void SuperTrooper::DoInit(int me) {
   AI_SetType(me, AIT_EVADER1);
 }
 
-short SuperTrooper::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SuperTrooper::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL: {
     int body_handle = Obj_GetAttachChildHandle(data->me_handle, 0);
@@ -4222,7 +4222,7 @@ void Jugg::DoFrame(int me) {
   memory->last_frame = current_anim_frame;
 }
 
-short Jugg::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Jugg::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4334,7 +4334,7 @@ void DTower::DoFrame(int me) {
   memory->last_frame = current_anim_frame;
 }
 
-short DTower::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t DTower::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4394,7 +4394,7 @@ void DCollector::DoFrame(int me) {
   }
 }
 
-short DCollector::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t DCollector::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4446,7 +4446,7 @@ void CBall::DoFrame(int me) {
   }
 }
 
-short CBall::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CBall::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED:
     DoInit(data->me_handle);
@@ -4510,7 +4510,7 @@ bool SixGun::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
   return true;
 }
 
-short SixGun::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SixGun::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4545,7 +4545,7 @@ void ExplodeTimeOut::DoInit(int me) {
   memory->life_left = 160.0f;
 }
 
-short ExplodeTimeOut::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ExplodeTimeOut::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -5612,7 +5612,7 @@ void GuideBot::DoCollide(int me, tOSIRISEVTCOLLIDE *evt_collide) {
   // Add a buddy bot to you inventory  :)
   if (memory->f_pickup == true) {
     if (it_type == OBJ_PLAYER) {
-      unsigned short id;
+      uint16_t id;
       Obj_Value(evt_collide->it_handle, VF_GET, OBJV_US_ID, &id);
 
       if (id == memory->mp_slot) {
@@ -5855,7 +5855,7 @@ void GuideBot::DoPowerupCheck(int me) {
 
     for (i = 0; i < n_scan; i++) {
       int type;
-      short id;
+      int16_t id;
       Obj_Value(scan_objs[i], VF_GET, OBJV_I_TYPE, &type);
       Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
@@ -6174,7 +6174,7 @@ void GuideBot::DoFrame(int me) {
 
               mstruct.objhandle = me;
 
-              unsigned short id;
+              uint16_t id;
               Obj_Value(me, VF_GET, OBJV_US_ID, &id);
 
               if (Obj_FindID("GuideBot") == id) {
@@ -6211,7 +6211,7 @@ void GuideBot::DoFrame(int me) {
   memory->last_anim = anim;
 }
 
-short GuideBot::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t GuideBot::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     return (DoInit(data->me_handle, false) != false) ? CONTINUE_CHAIN | CONTINUE_DEFAULT : 0;
@@ -6692,7 +6692,7 @@ bool Thief::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
       f_success = DoSteal(me, target_handle, 1, false);
       DoSteal(me, target_handle, 2, f_success);
     } else if (target_type == OBJ_ROBOT) {
-      unsigned short id;
+      uint16_t id;
 
       Obj_Value(target_handle, VF_GET, OBJV_US_ID, &id);
       if (id == ROBOT_GUIDEBOT || id == ROBOT_GUIDEBOTRED) {
@@ -6841,7 +6841,7 @@ void Thief::SpewEverything(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   for (i = 0; i < memory->num_stolen_weapons; i++) {
-    unsigned short id;
+    uint16_t id;
     int j;
 
     for (j = 0; j < memory->stolen_weapons[i].amount; j++) {
@@ -6931,7 +6931,7 @@ void Thief::SpewEverything(int me) {
 
 void Thief::DoDestroy(int me, tOSIRISEVTDESTROY *evt_destroy) { SpewEverything(me); }
 
-short Thief::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Thief::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7205,7 +7205,7 @@ bool Sickle::DoNotify(int me_handle, tOSIRISEVTAINOTIFY *notify) {
   return true;
 }
 
-short Sickle::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Sickle::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7298,7 +7298,7 @@ void FireAtDist::DoFrame(int me) {
   }
 }
 
-short FireAtDist::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t FireAtDist::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7421,7 +7421,7 @@ void HatePTMC::DoFrame(int me) {
   }
 }
 
-short HatePTMC::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t HatePTMC::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7538,7 +7538,7 @@ bool Tubbs::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
   return true;
 }
 
-short Tubbs::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Tubbs::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7654,7 +7654,7 @@ bool OldScratch::DoSteal(int me, int it) {
         int room;
         vector pos;
         int j;
-        unsigned short id;
+        uint16_t id;
 
         Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
         Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
@@ -7799,7 +7799,7 @@ bool OldScratch::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
   return true;
 }
 
-short OldScratch::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t OldScratch::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7986,7 +7986,7 @@ void BarnSwallow::ComputeNest(int me) {
   vector pos;
   int room;
   int type;
-  unsigned short id;
+  uint16_t id;
 
   memory->num_friends = 0;
 
@@ -8008,7 +8008,7 @@ void BarnSwallow::ComputeNest(int me) {
   for (i = 0; i < n_scan; i++) {
     if (scan_objs[i] != me) {
       int c_type;
-      unsigned short c_id;
+      uint16_t c_id;
       Obj_Value(scan_objs[i], VF_GET, OBJV_I_TYPE, &c_type);
       Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &c_id);
 
@@ -8291,7 +8291,7 @@ bool BarnSwallow::SetMode(int me, char mode, int it) {
   return true;
 }
 
-short BarnSwallow::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t BarnSwallow::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_FRAME:
     DoFrame(data->me_handle);
@@ -8327,7 +8327,7 @@ void GBPowerup::DoInit(int me) {
   memory->next_check_time = Game_GetTime() + (float)rand() / (float)RAND_MAX; // Sead the powerups differently  :)
   memory->time_till_next_hud_message = 0.0f;
 
-  unsigned short short_id[6];
+  uint16_t short_id[6];
 
   short_id[0] = Obj_FindID("Buddyextinguisher");
   short_id[1] = Obj_FindID("buddywingnut");
@@ -8336,7 +8336,7 @@ void GBPowerup::DoInit(int me) {
   short_id[4] = Obj_FindID("buddyantivirus");
   short_id[5] = Obj_FindID("buddyspeed");
 
-  unsigned short id;
+  uint16_t id;
   Obj_Value(me, VF_GET, OBJV_US_ID, &id);
 
   memory->type = 5; // Forces it to the speed powerup if it didn't know what it was...
@@ -8364,7 +8364,7 @@ void GBPowerup::DoFrame(int me) {
 
     for (i = 0; i < n_scan; i++) {
       int type;
-      short id;
+      int16_t id;
       Obj_Value(scan_objs[i], VF_GET, OBJV_I_TYPE, &type);
       Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
@@ -8395,7 +8395,7 @@ void GBPowerup::DoFrame(int me) {
   }
 }
 
-short GBPowerup::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t GBPowerup::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL:
     memory->time_till_next_hud_message -= Game_GetFrameTime();
@@ -8608,7 +8608,7 @@ void Sparky::DoFrame(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short Sparky::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Sparky::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -8658,7 +8658,7 @@ void Hellion::RemapAlert(int me, float start, float end, float time) {
 }
 
 void Hellion::RemapWB(int me, float start, float fire, int fire_sound, float end, float time, float latency, int index,
-                      unsigned short w_id, char f_mask) {
+                      uint16_t w_id, char f_mask) {
   memory->start = start;
   memory->fire = fire;
   memory->end = end;
@@ -9120,7 +9120,7 @@ void Hellion::DoFrame(int me) {
   memory->last_frame = frame;
 }
 
-short Hellion::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Hellion::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -9158,7 +9158,7 @@ short Hellion::CallEvent(int event, tOSIRISEventInfo *data) {
   case EVT_MEMRESTORE: {
     memory = (hellion_data *)data->evt_memrestore.memory_ptr;
 
-    unsigned short wpn = Wpn_FindID(memory->weapon);
+    uint16_t wpn = Wpn_FindID(memory->weapon);
     int snd = Sound_FindId(memory->sound);
 
     RemapAlert(data->me_handle, memory->alert_start, memory->alert_end, memory->alert_time);
@@ -9294,7 +9294,7 @@ void MantaRay::UpdateSquad(int me) {
   n_scan = AI_GetNearbyObjs(&pos, room, 200.0f, scan_objs, 25, false, true, false, true);
 
   for (i = 0; i < n_scan; i++) {
-    unsigned short id;
+    uint16_t id;
     Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
     // this is more rare than the types matching; so, do it first
@@ -9572,7 +9572,7 @@ bool MantaRay::DoNotify(int me, tOSIRISEventInfo *data) {
   return true;
 }
 
-short MantaRay::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t MantaRay::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -9715,7 +9715,7 @@ void Skiff::UpdateSquad(int me) {
   n_scan = AI_GetNearbyObjs(&pos, room, 200.0f, scan_objs, 25, false, true, false, true);
 
   for (i = 0; i < n_scan; i++) {
-    unsigned short id;
+    uint16_t id;
     Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
     // this is more rare than the types matching; so, do it first
@@ -9973,7 +9973,7 @@ bool Skiff::DoNotify(int me, tOSIRISEventInfo *data) {
   return true;
 }
 
-short Skiff::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Skiff::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10064,7 +10064,7 @@ bool SpyHunter::DoNotify(int me, tOSIRISEventInfo *data) {
     Obj_Value(notify->it_handle, VF_GET, OBJV_I_TYPE, &type);
 
     if (type == OBJ_WEAPON) {
-      unsigned short id;
+      uint16_t id;
 
       Obj_Value(notify->it_handle, VF_GET, OBJV_US_ID, &id);
       if (id == memory->emd_id) {
@@ -10171,7 +10171,7 @@ void SpyHunter::DoFrame(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short SpyHunter::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SpyHunter::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10308,7 +10308,7 @@ void Sniper::DoFrame(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short Sniper::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Sniper::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10439,7 +10439,7 @@ void SniperNoRun::DoFrame(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short SniperNoRun::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SniperNoRun::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10558,7 +10558,7 @@ void EvaderModA::DoFrame(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short EvaderModA::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t EvaderModA::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10696,7 +10696,7 @@ void FlameRAS::DoFrame(int me) {
   memory->mode_time += Game_GetFrameTime();
 }
 
-short FlameRAS::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t FlameRAS::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10722,8 +10722,8 @@ void Seeker::DoInit(int me) {
   AI_SetType(me, AIT_AIS);
   AI_AddGoal(me, AIG_GET_TO_OBJ, 1, 1.0f, -1, GF_OBJ_IS_TARGET | GF_USE_BLINE_IF_SEES_GOAL, OBJECT_HANDLE_NONE);
 
-  unsigned short id;
-  unsigned short humon_seeker_id;
+  uint16_t id;
+  uint16_t humon_seeker_id;
 
   Obj_Value(me, VF_GET, OBJV_US_ID, &id);
   humon_seeker_id = Obj_FindID("HumonSeeker");
@@ -10766,7 +10766,7 @@ void Seeker::DoCollide(int me) {
   MSafe_CallFunction(MSAFE_OBJECT_REMOVE, &mo);
 }
 
-short Seeker::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Seeker::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -10828,7 +10828,7 @@ void ObjectRemove(int object) {
 // Bouncing Betty class
 //------------------
 
-short BettyBomb::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t BettyBomb::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_MEMRESTORE: {
     memory = (tBettyBombInfo *)data->evt_memrestore.memory_ptr;
@@ -10932,7 +10932,7 @@ void BettyScript::DoInit(int me) {
   memory->lasttime = 0;
 }
 
-short BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t BettyScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_MEMRESTORE: {
     memory = (tBettyInfo *)data->evt_memrestore.memory_ptr;
@@ -11093,7 +11093,7 @@ void ChaffScript::DoInterval(int handle) {
   }
 }
 
-short ChaffScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ChaffScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_MEMRESTORE: {
     memory = (tChaffInfo *)data->evt_memrestore.memory_ptr;
@@ -11184,7 +11184,7 @@ void ChaffChunkScript::DoCollide(tOSIRISEventInfo *data) {
   }
 }
 
-short ChaffChunkScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ChaffChunkScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_MEMRESTORE: {
     memory = (tChaffChunkInfo *)data->evt_memrestore.memory_ptr;
@@ -11234,7 +11234,7 @@ void ProxMine::DoCollide(int me) {
   MSafe_CallFunction(MSAFE_OBJECT_REMOVE, &mo);
 }
 
-short ProxMine::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ProxMine::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -11249,7 +11249,7 @@ short ProxMine::CallEvent(int event, tOSIRISEventInfo *data) {
 //------------------
 // Gunboy class
 //------------------
-short Gunboy::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Gunboy::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int parent = GetObjectParent(data->me_handle);

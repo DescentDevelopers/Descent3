@@ -194,7 +194,7 @@ const unsigned LVLFLAG_STARTMOVIE = 1, LVLFLAG_ENDMOVIE = 2, LVLFLAG_BRIEFING = 
                LVLFLAG_SCORE = 256, LVLFLAG_FINAL = 512;
 
 const int LVLOBJ_NUM = 4;
-const ushort LVLOBJF_SECONDARY1 = 1, LVLOBJF_SECONDARY2 = 2, LVLOBJF_SECONDARY3 = 4, LVLOBJF_SECONDARY4 = 8;
+const uint16_t LVLOBJF_SECONDARY1 = 1, LVLOBJF_SECONDARY2 = 2, LVLOBJF_SECONDARY3 = 4, LVLOBJF_SECONDARY4 = 8;
 
 // Struct for info about the current level
 typedef struct level_info {
@@ -225,9 +225,9 @@ typedef struct tLevelNode {
   char *progress;  // File name containing the progress background screen
 
   //	level branching
-  ubyte lvlbranch0, lvlbranch1; // FORK or BRANCH command
-  ubyte secretlvl;              // SECRET command
-  ubyte pad;
+  uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
+  uint8_t secretlvl;              // SECRET command
+  uint8_t pad;
 } tLevelNode;
 
 // predefine mission state flags

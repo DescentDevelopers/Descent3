@@ -38,7 +38,7 @@ public:
 	void UpdateView(void);
 	int m_Screen;
 	int bm_handle;
-	uint m_Set,m_UnSet;
+	uint32_t m_Set,m_UnSet;
 	grHardwareSurface m_ObjectSurf;
 
 // Dialog Data

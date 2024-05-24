@@ -136,7 +136,7 @@ void WBFireBattery(object *obj, otype_wb_info *static_wb, int poly_wb_index, int
   int first = 1;
   int saved_weapon_id = 0;
 
-  unsigned char fire_mask;
+  uint8_t fire_mask;
 
   if (p_dwb->flags & DWBF_QUAD)
     fire_mask = static_wb->gp_quad_fire_mask;

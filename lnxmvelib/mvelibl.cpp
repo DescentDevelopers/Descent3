@@ -51,12 +51,12 @@ unsigned opt_hscale_adj;
 
 #include "snd8to16.h"
 // len always specifies length of destination in bytes.
-unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned state);
-unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned state);
+unsigned sndDecompM16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned state);
+unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned state);
 
 static LnxWindow *mve_lpWin = NULL;
 
-unsigned int timeGetTime(void) {
+uint32_t timeGetTime(void) {
   struct timeval t;
   gettimeofday(&t, NULL);
 
@@ -130,20 +130,20 @@ static int sync_wait_quanta;
 static bool sync_late = FALSE;
 static bool sync_FrameDropped = FALSE;
 
-static void syncReset(unsigned int wait_quanta);
+static void syncReset(uint32_t wait_quanta);
 static void syncRelease(void);
-static bool syncInit(unsigned int period, unsigned wait_quanta);
+static bool syncInit(uint32_t period, unsigned wait_quanta);
 static bool syncWait(void);
 static void syncSync(void);
 
-static void syncReset(unsigned int wait_quanta) {
+static void syncReset(uint32_t wait_quanta) {
   sync_time = wait_quanta - timeGetTime() * 1000;
   sync_active = TRUE;
 }
 
 static void syncRelease(void) { sync_active = FALSE; }
 
-static bool syncInit(unsigned int period, unsigned wait_quanta) {
+static bool syncInit(uint32_t period, unsigned wait_quanta) {
   int new_wait_quanta = -(int32_t)(period * wait_quanta + (wait_quanta >> 1));
   // If timer is still running and has same timing
   // characteristics, assume we are trying to continue smoothly
@@ -211,8 +211,8 @@ static int io_handle;
 static ioHdrRec io_next_hdr;
 
 static bool ioReset(int h);
-static unsigned char *ioRead(unsigned qty);
-static unsigned char *ioNextRecord(void);
+static uint8_t *ioRead(unsigned qty);
+static uint8_t *ioNextRecord(void);
 static void ioRelease(void);
 
 void MVE_ioCallbacks(unsigned (*fn_read)(int handle, void *buf, unsigned count)) { io_read = fn_read; }
@@ -242,24 +242,24 @@ static bool ioReset(int h) {
 
 void MVE_memIO(void *p, unsigned size) { MemInit(&io_mem_buf, size, p); }
 
-static unsigned char *ioRead(unsigned len) {
-  unsigned char *buf;
+static uint8_t *ioRead(unsigned len) {
+  uint8_t *buf;
 
-  buf = (unsigned char *)MemAlloc(&io_mem_buf, len);
+  buf = (uint8_t *)MemAlloc(&io_mem_buf, len);
   if (!buf)
-    return (unsigned char *)NULL;
+    return (uint8_t *)NULL;
   if (!(*io_read)(io_handle, buf, len))
-    return (unsigned char *)NULL;
+    return (uint8_t *)NULL;
   return buf;
 }
 
-static unsigned char *ioNextRecord(void) {
-  unsigned char *buf;
+static uint8_t *ioNextRecord(void) {
+  uint8_t *buf;
   logLabel("StartRead");
   buf = ioRead(io_next_hdr.len + sizeof(ioHdrRec));
   logLabel("EndRead");
   if (!buf)
-    return (unsigned char *)NULL;
+    return (uint8_t *)NULL;
   io_next_hdr = *(ioHdrRec *)(buf + io_next_hdr.len);
   io_next_hdr.len = INTEL_SHORT(io_next_hdr.len);
   io_next_hdr.kind = INTEL_SHORT(io_next_hdr.kind);
@@ -279,7 +279,7 @@ static void ioRelease(void) { MemFree(&io_mem_buf); }
 static LnxSoundDevice *snd_ds = NULL;
 static LnxSoundBuffer *snd_buffer = NULL;
 static LinuxSoundCaps snd_buffer_caps;
-static unsigned int snd_write_cursor;
+static uint32_t snd_write_cursor;
 
 enum { snd_queue_max = 60 };
 
@@ -386,8 +386,8 @@ static void sndSync(void) {
 #if SOUND_SUPPORT
 
   int dsrval;
-  unsigned int dsbstatus;
-  unsigned int play_cursor, write_cursor, target;
+  uint32_t dsbstatus;
+  uint32_t play_cursor, write_cursor, target;
 
   bool need_resync;
 #endif
@@ -474,36 +474,36 @@ static void sndSync(void) {
 
 // For compressed streams, assumes len (which is in bytes) will be in multiples
 //  of 2 for mono and 4 for stereo.
-static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned len, unsigned state, bool init) {
+static unsigned sndAddHelper(uint8_t *dst, uint8_t **pSrc, unsigned len, unsigned state, bool init) {
 #if SOUND_SUPPORT
-  unsigned char *src;
+  uint8_t *src;
   src = *pSrc;
   if (!src)
     memset(dst, (snd_bits16 ? 0 : 0x80), len);
   else if (snd_comp16)
     if (!snd_stereo) {
       if (init) {
-        unsigned short swapper = *(unsigned short *)src;
+        uint16_t swapper = *(uint16_t *)src;
         state = INTEL_SHORT(swapper);
-        *(unsigned short *)dst = state;
+        *(uint16_t *)dst = state;
         src += 2;
         dst += 2;
         len -= 2;
       }
 
-      state = sndDecompM16((unsigned short *)dst, src, len >> 1, state);
+      state = sndDecompM16((uint16_t *)dst, src, len >> 1, state);
 
       src += len >> 1;
     } else {
       if (init) {
-        state = *(unsigned int *)src;
+        state = *(uint32_t *)src;
         state = INTEL_INT(state);
-        *(unsigned int *)dst = state;
+        *(uint32_t *)dst = state;
         src += 4;
         dst += 4;
         len -= 4;
       }
-      state = sndDecompS16((unsigned short *)dst, src, len >> 2, state);
+      state = sndDecompS16((uint16_t *)dst, src, len >> 2, state);
       src += len >> 1;
     }
   else {
@@ -517,16 +517,16 @@ static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned 
 #endif
 }
 
-static void sndAdd(const unsigned char *buf, unsigned len) {
+static void sndAdd(const uint8_t *buf, unsigned len) {
 #if SOUND_SUPPORT
 
   int dsrval;
-  unsigned int play_cursor, write_cursor;
-  unsigned int len1, len2;
+  uint32_t play_cursor, write_cursor;
+  uint32_t len1, len2;
 
   unsigned state = 0;
   bool init = TRUE;
-  unsigned char *ptr1, *ptr2;
+  uint8_t *ptr1, *ptr2;
 
   snd_pad = len;
 
@@ -592,17 +592,17 @@ static void sndResume(void) {
 static bool nf_memory_mode = FALSE;
 
 // NextFrame working storage
-static unsigned char *nf_dds_cur = NULL;
-static unsigned char *nf_dds_prv = NULL;
+static uint8_t *nf_dds_cur = NULL;
+static uint8_t *nf_dds_prv = NULL;
 static MemRec nf_mem_buf1;
 static MemRec nf_mem_buf2;
-unsigned char *nf_buf_cur;
-unsigned char *nf_buf_prv;
+uint8_t *nf_buf_cur;
+uint8_t *nf_buf_prv;
 
 // NextFrame parameters
-unsigned char nf_wqty; // (width/SWIDTH)
-unsigned char nf_hqty; // (height/SHEIGHT)
-unsigned char nf_fqty; // Number of fields
+uint8_t nf_wqty; // (width/SWIDTH)
+uint8_t nf_hqty; // (height/SHEIGHT)
+uint8_t nf_fqty; // Number of fields
 unsigned nf_hicolor;   // HiColor (0:none,1:normal,2:swapped)
 //  <derived quantities>
 unsigned nf_width;      // wqty * SWIDTH
@@ -621,8 +621,8 @@ unsigned nf_new_w;
 unsigned nf_new_h;
 
 // Hicolor format translation tables
-unsigned short nf_trans16_lo[256];
-unsigned short nf_trans16_hi[256];
+uint16_t nf_trans16_lo[256];
+uint16_t nf_trans16_hi[256];
 
 void MVE_memVID(void *p1, void *p2, unsigned size) {
   MemInit(&nf_mem_buf1, size, p1);
@@ -670,9 +670,9 @@ static bool nfConfig(int wqty, int hqty, int fqty, int hicolor) {
     }
   }
 
-  nf_wqty = (unsigned char)wqty;
-  nf_hqty = (unsigned char)hqty;
-  nf_fqty = (unsigned char)fqty;
+  nf_wqty = (uint8_t)wqty;
+  nf_hqty = (uint8_t)hqty;
+  nf_fqty = (uint8_t)fqty;
   nf_width = wqty * SWIDTH;
   nf_height = hqty * fqty * SHEIGHT;
   if (opt_fastmode)
@@ -702,8 +702,8 @@ static bool nfConfig(int wqty, int hqty, int fqty, int hicolor) {
     }
     int size = nf_width * nf_height << 1;
 
-    nf_dds_cur = (unsigned char *)malloc(size);
-    nf_dds_prv = (unsigned char *)malloc(size);
+    nf_dds_cur = (uint8_t *)malloc(size);
+    nf_dds_prv = (uint8_t *)malloc(size);
   }
 
   nf_new_line = nf_width * fqty - SWIDTH;
@@ -722,7 +722,7 @@ static bool nfConfig(int wqty, int hqty, int fqty, int hicolor) {
 }
 
 static bool nfLock(void) {
-  // nf_buf_cur = (unsigned char *)nf_dds_cur;
+  // nf_buf_cur = (uint8_t *)nf_dds_cur;
   int pitch;
   int x1, y1, x2, y2, mw;
   extern unsigned sf_ScreenHeight; // Height of modifiable screen
@@ -741,7 +741,7 @@ static bool nfLock(void) {
 
   LnxDraw_LockSurface(mve_lpWin, x1, y1, x2, y2, &nf_buf_cur, &pitch);
   memcpy(nf_buf_cur, nf_dds_cur, nf_width * nf_height);
-  nf_buf_prv = (unsigned char *)nf_dds_prv;
+  nf_buf_prv = (uint8_t *)nf_dds_prv;
   if (!nf_buf_cur || !nf_buf_prv)
     return FALSE;
   return TRUE;
@@ -774,9 +774,9 @@ static void nfAdvance(void) {
           y = (sf_ScreenHeight>>1) - (nf_height>>1);
           if(y<0) y = 0;
 
-          ret = LnxDraw_Blit(mve_lpWin,nf_dds_cur,(unsigned int)x,(unsigned int)y,mw,nf_height);
+          ret = LnxDraw_Blit(mve_lpWin,nf_dds_cur,(uint32_t)x,(uint32_t)y,mw,nf_height);
   */
-  unsigned char *tmp;
+  uint8_t *tmp;
   tmp = nf_dds_prv;
   nf_dds_prv = nf_dds_cur;
   nf_dds_cur = tmp;
@@ -785,14 +785,14 @@ static void nfAdvance(void) {
 // Decompress into subsection of current buffer specified
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
 //
-void nfHiColorDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfHiColorDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 
 // Decompress into subsection of current buffer specified
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfHiColorDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y,
+void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y,
                         unsigned w, unsigned h);
 
 // Non-HiColor versions
@@ -800,19 +800,19 @@ void nfHiColorDecompChg(unsigned short *chgs, unsigned short *parms, unsigned ch
 // Decompress into subsection of current buffer specified
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
 //
-void nfDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfHPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 
 // Decompress into subsection of current buffer specified
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y, unsigned w,
+void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w,
                  unsigned h);
 
 //---------------------------------------------------------------------
@@ -862,7 +862,7 @@ void nfDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *com
 //    contents.	If mouse moves, restore previous contents and redraw.
 //    Result will be a flickering mouse (mostly on, briefly off).
 
-static void (*sf_ShowFrame)(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+static void (*sf_ShowFrame)(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                             unsigned h, unsigned dstx, unsigned dsty, unsigned nf_hicolor) = NULL;
 
 unsigned sf_ResolutionHeight; // Height of screen
@@ -876,11 +876,11 @@ unsigned sf_hicolor;   // Hicolor mode (0:none,1:normal,2:swapped)
 // Banked screen parameters, Private, see mveliba.asm
 void *sf_SetBank;
 unsigned sf_WinGran;
-unsigned int sf_WinSize;
+uint32_t sf_WinSize;
 unsigned sf_WinGranPerSize;
 //{sf_WriteWinPtr and sf_WriteWinLimit replace sf_WriteWinSeg, see mveliba.asm}
-unsigned char *sf_WriteWinPtr;
-unsigned char *sf_WriteWinLimit;
+uint8_t *sf_WriteWinPtr;
+uint8_t *sf_WriteWinLimit;
 unsigned sf_WriteWin;
 
 //
@@ -891,12 +891,12 @@ static int sf_auto_mode = 0; // Current sf_auto mode.
 static void sfVGA(unsigned w, unsigned h, unsigned resw, unsigned resh);
 static void sfShowFrame(int dx, int dy, unsigned field);
 
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field);
 
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field);
 
 // Restrictions/Assumptions:
@@ -908,8 +908,8 @@ void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsi
 //	bl:  Window number (0 or 1)
 //	dx:  Window position in video memory in units of WinGran.
 //     on return, registers AX and DX are destroyed.
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
+                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
   sf_ScreenWidth = w;
   sf_ScreenHeight = h;
   sf_ResolutionWidth = w;
@@ -981,7 +981,7 @@ static void sfShowFrame(int dx, int dy, unsigned field) {
   logLabel("EndShow");
 }
 
-void MVE_sfCallbacks(void (*fn_ShowFrame)(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy,
+void MVE_sfCallbacks(void (*fn_ShowFrame)(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy,
                                           unsigned w, unsigned h, unsigned dstx, unsigned dsty, unsigned hicolor)) {
   sf_ShowFrame = fn_ShowFrame;
 }
@@ -1000,44 +1000,44 @@ void MVE_sfCallbacks(void (*fn_ShowFrame)(unsigned char *buf, unsigned bufw, uns
 //     on the screen is 2*h alternate lines.
 //
 
-void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty);
 
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                         unsigned dstx, unsigned dsty);
 
-static void sfShowFrameChg(int dx, int dy, unsigned short *chgs) { logLabel("StartShowChg"); }
+static void sfShowFrameChg(int dx, int dy, uint16_t *chgs) { logLabel("StartShowChg"); }
 
 //---------------------------------------------------------------------
 // Palette Management
 //---------------------
 #ifdef __USE_X86_ASM__ // AH
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count) { __asm__("int $3"); }
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count) { __asm__("int $3"); }
 #else
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
 #endif
 
-static void (*pal_SetPalette)(unsigned char *p, unsigned start, unsigned count) = MVE_SetPalette;
+static void (*pal_SetPalette)(uint8_t *p, unsigned start, unsigned count) = MVE_SetPalette;
 
-unsigned char pal_tbl[3 * 256]; // Private, see mveliba.asm
+uint8_t pal_tbl[3 * 256]; // Private, see mveliba.asm
 #if DBL_DBG
-unsigned char pal_tbl_old[3 * 256];
+uint8_t pal_tbl_old[3 * 256];
 #endif
-unsigned short pal15_tbl[256]; // Private, see mveliba.asm
+uint16_t pal15_tbl[256]; // Private, see mveliba.asm
 
-void MVE_palCallbacks(void (*fn_SetPalette)(unsigned char *p, unsigned start, unsigned count)) {
+void MVE_palCallbacks(void (*fn_SetPalette)(uint8_t *p, unsigned start, unsigned count)) {
   pal_SetPalette = fn_SetPalette;
 }
 
 static void palSetPalette(unsigned start, unsigned count) {
   if (!nf_hicolor)
-    (*pal_SetPalette)((unsigned char *)pal_tbl, start, count);
+    (*pal_SetPalette)((uint8_t *)pal_tbl, start, count);
 }
 
 static void palClrPalette(unsigned start, unsigned count) {
-  static unsigned char clr_pal_tbl[256 * 3];
+  static uint8_t clr_pal_tbl[256 * 3];
   if (!nf_hicolor)
-    (*pal_SetPalette)((unsigned char *)clr_pal_tbl, start, count);
+    (*pal_SetPalette)((uint8_t *)clr_pal_tbl, start, count);
 }
 
 // Old Synth: 0,21,6
@@ -1047,7 +1047,7 @@ static void palClrPalette(unsigned start, unsigned count) {
 //	      17,28,4
 //
 static void palMakeSynthPalette(int base_r, int range_r, int range_rb, int base_g, int range_g, int range_gb) {
-  unsigned char(*SynthPal)[3] = (unsigned char(*)[3])pal_tbl;
+  uint8_t(*SynthPal)[3] = (uint8_t(*)[3])pal_tbl;
   int i, j;
 
   for (i = 0; i < range_r; ++i)
@@ -1067,7 +1067,7 @@ static void palMakeSynthPalette(int base_r, int range_r, int range_rb, int base_
     }
 }
 
-static void palLoadPalette(unsigned char *buf, unsigned start, unsigned count) {
+static void palLoadPalette(uint8_t *buf, unsigned start, unsigned count) {
 #if DBL_DBG
   memcpy(pal_tbl_old, pal_tbl, 256 * 3);
 #endif
@@ -1077,15 +1077,15 @@ static void palLoadPalette(unsigned char *buf, unsigned start, unsigned count) {
 // If at least 11 palette entries aren't changed, this is more compact
 //  than uncompressed 256 entry palette.
 //
-void palLoadCompPalette(unsigned char *buf);
+void palLoadCompPalette(uint8_t *buf);
 
 //-----------------------------------------------------------------------
 // Graphics
 //----------
 
-void gfxVres(unsigned char misc, unsigned char *crtc);
+void gfxVres(uint8_t misc, uint8_t *crtc);
 
-static void ForceVres2(unsigned char misc, unsigned vt, unsigned height, unsigned vrs /*vpos*/, unsigned _2t4,
+static void ForceVres2(uint8_t misc, unsigned vt, unsigned height, unsigned vrs /*vpos*/, unsigned _2t4,
                        unsigned msl, unsigned bdr_b, unsigned bdr_t) {}
 
 void MVE_ForceVres350(void) {}
@@ -1095,7 +1095,7 @@ void MVE_ForceVresHalf(void) {}
 // If auto is set, and this function is being called to change mode
 //  for movie, be sure to turn auto back on after call!
 //
-unsigned MVE_gfxMode(short mode) { return FALSE; }
+unsigned MVE_gfxMode(int16_t mode) { return FALSE; }
 
 // Restore a text mode
 void MVE_gfxReset(void) {
@@ -1112,7 +1112,7 @@ static int (*rm_ctl)(void);
 static int rm_dx;
 static int rm_dy;
 static unsigned rm_track_bit;
-static unsigned char *rm_p;
+static uint8_t *rm_p;
 static unsigned rm_len;
 static bool rm_hold = FALSE;
 static bool rm_active = FALSE;
@@ -1178,7 +1178,7 @@ int MVE_rmHoldMovie(void) {
 
 int MVE_rmStepMovie(void) {
   unsigned len = rm_len;
-  unsigned char *p = rm_p;
+  uint8_t *p = rm_p;
 
   int result;
 
@@ -1190,8 +1190,8 @@ int MVE_rmStepMovie(void) {
   }
 
   for (;; p = ioNextRecord(), len = 0) {
-    unsigned short *DecompChg_chgs = (unsigned short *)NULL;
-    unsigned short *DecompChg_parms = (unsigned short *)NULL;
+    uint16_t *DecompChg_chgs = (uint16_t *)NULL;
+    uint16_t *DecompChg_parms = (uint16_t *)NULL;
 
     if (!p) {
       result = MVE_ERR_IO;
@@ -1344,7 +1344,7 @@ int MVE_rmStepMovie(void) {
         arg->TrackMask = INTEL_SHORT(arg->TrackMask);
         arg->qty = INTEL_SHORT(arg->qty);
         if (arg->TrackMask & rm_track_bit)
-          sndAdd((hdr.major == mcmd_sndAdd ? MCMD_DATA(arg) : (unsigned char *)NULL), arg->qty);
+          sndAdd((hdr.major == mcmd_sndAdd ? MCMD_DATA(arg) : (uint8_t *)NULL), arg->qty);
         continue;
       }
 
@@ -1354,7 +1354,7 @@ int MVE_rmStepMovie(void) {
         arg->minh = INTEL_SHORT(arg->minh);
         arg->mode = INTEL_SHORT(arg->mode);
         if (sf_auto) {
-          short mode = arg->mode;
+          int16_t mode = arg->mode;
           if (opt_fastmode && (opt_fastmode & 4) == 0)
             mode |= 0x8000;
           if (sf_auto_mode != mode)
@@ -1388,11 +1388,11 @@ int MVE_rmStepMovie(void) {
       }
 
       case mcmd_nfChanges: {
-        DecompChg_chgs = (unsigned short *)p;
+        DecompChg_chgs = (uint16_t *)p;
         continue;
       }
       case mcmd_nfParms: {
-        DecompChg_parms = (unsigned short *)p;
+        DecompChg_parms = (uint16_t *)p;
         continue;
       }
       case mcmd_nfDecompChg: {
@@ -1440,7 +1440,7 @@ int MVE_rmStepMovie(void) {
             goto done;
           }
 
-          nfHPkDecomp((unsigned char *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
+          nfHPkDecomp((uint8_t *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
 
           nfUnlock();
         } else if ((opt_fastmode & 3) == 1) {
@@ -1450,7 +1450,7 @@ int MVE_rmStepMovie(void) {
             goto done;
           }
 
-          nfPkDecompH((unsigned char *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
+          nfPkDecompH((uint8_t *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
 
           nfUnlock();
         } else if ((opt_fastmode & 3) == 2) {
@@ -1460,7 +1460,7 @@ int MVE_rmStepMovie(void) {
           }
           // Support for dithered mode disabled...
           //  so just use half mode instead
-          nfPkDecompH((unsigned char *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
+          nfPkDecompH((uint8_t *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
           nfUnlock();
         } else // opt_fastmode==0
         {
@@ -1470,7 +1470,7 @@ int MVE_rmStepMovie(void) {
             goto done;
           }
 
-          nfPkDecomp((unsigned char *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
+          nfPkDecomp((uint8_t *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
 
           nfUnlock();
         }
@@ -1583,22 +1583,22 @@ typedef struct _MVE_frstream {
   MemRec io_mem_buf;
   int io_handle;
   ioHdrRec io_next_hdr;
-  unsigned char *p;
+  uint8_t *p;
   unsigned len;
 
   // NextFrame working storage
   bool nf_memory_mode;
-  unsigned char *nf_dds_cur;
-  unsigned char *nf_dds_prv;
+  uint8_t *nf_dds_cur;
+  uint8_t *nf_dds_prv;
 
   MemRec nf_mem_buf1;
   MemRec nf_mem_buf2;
-  unsigned char *nf_buf_cur;
-  unsigned char *nf_buf_prv;
+  uint8_t *nf_buf_cur;
+  uint8_t *nf_buf_prv;
   // NextFrame parameters
-  unsigned char nf_wqty; // (width/SWIDTH)
-  unsigned char nf_hqty; // (height/SHEIGHT)
-  unsigned char nf_fqty; // Number of fields
+  uint8_t nf_wqty; // (width/SWIDTH)
+  uint8_t nf_hqty; // (height/SHEIGHT)
+  uint8_t nf_fqty; // Number of fields
   unsigned nf_hicolor;   // HiColor (0:none,1:normal,2:swapped)
   // NextFrame derived quantities
   unsigned nf_width;      // wqty * SWIDTH
@@ -1607,7 +1607,7 @@ typedef struct _MVE_frstream {
   unsigned nf_new_row0;   // SHEIGHT*width*2-width
   unsigned nf_back_right; // (SHEIGHT-1)*width
   // Palette
-  unsigned char pal_tbl[3 * 256];
+  uint8_t pal_tbl[3 * 256];
   unsigned pal_start, pal_count;
 
 } MVE_frStreamRec;
@@ -1697,9 +1697,9 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
   return frs;
 }
 
-int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned *height) {
+int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, unsigned *width, unsigned *height) {
   MVE_frStreamRec save;
-  unsigned char *p;
+  uint8_t *p;
   unsigned len;
   int result = 0;
 
@@ -1709,7 +1709,7 @@ int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned 
   len = frs->len;
 
   for (;; p = ioNextRecord(), len = 0) {
-    unsigned short *DecompChg_parms = (unsigned short *)NULL;
+    uint16_t *DecompChg_parms = (uint16_t *)NULL;
 
     if (!p) {
       result = MVE_ERR_IO;
@@ -1777,7 +1777,7 @@ int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned 
       }
 
       case mcmd_nfParms: {
-        DecompChg_parms = (unsigned short *)p;
+        DecompChg_parms = (uint16_t *)p;
         continue;
       }
 
@@ -1804,7 +1804,7 @@ int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned 
           result = MVE_ERR_LOST;
           goto done;
         }
-        nfPkDecomp((unsigned char *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
+        nfPkDecomp((uint8_t *)DecompChg_parms, MCMD_DATA(arg), arg->x, arg->y, arg->w, arg->h);
         nfUnlock();
         continue;
       }
@@ -1831,7 +1831,7 @@ done:
   return result;
 }
 
-void MVE_frPal(MVE_frStream frs, unsigned char **p, unsigned *start, unsigned *count) {
+void MVE_frPal(MVE_frStream frs, uint8_t **p, unsigned *start, unsigned *count) {
   *p = frs->pal_tbl;
   *start = frs->pal_start;
   *count = frs->pal_count;

@@ -146,7 +146,7 @@ char *dInven_GetPosIconName(Inventory *inven);
 char *dInven_GetPosName(Inventory *inven);
 // return information about the current position item
 // return true if it is a real object
-bool dInven_GetPosInfo(Inventory *inven, ushort &iflags, int &flags);
+bool dInven_GetPosInfo(Inventory *inven, uint16_t &iflags, int &flags);
 // returns the count of the item at the current position
 int dInven_GetPosCount(Inventory *inven);
 // returns true if the position pointer is at the begining of the inventory list

@@ -1320,12 +1320,12 @@ char *LocalizeLevelName(char *level);
 
 // Lightmap remap array
 int Num_lightmap_infos_read = 0;
-ushort LightmapInfoRemap[MAX_LIGHTMAP_INFOS];
+uint16_t LightmapInfoRemap[MAX_LIGHTMAP_INFOS];
 
 // Arrays for mapping saved data to the current data
-short texture_xlate[MAX_TEXTURES];
-short door_xlate[MAX_DOORS];
-short generic_xlate[MAX_OBJECT_IDS];
+int16_t texture_xlate[MAX_TEXTURES];
+int16_t door_xlate[MAX_DOORS];
+int16_t generic_xlate[MAX_OBJECT_IDS];
 
 #ifdef EDITOR
 extern float GlobalMultiplier;
@@ -1341,7 +1341,7 @@ extern float GlobalMultiplier;
 #define MAX_FAILED_XLATE_ITEMS 1500
 
 struct {
-  short type, id;
+  int16_t type, id;
   char name[PAGENAME_LEN];
 } Failed_xlate_items[MAX_FAILED_XLATE_ITEMS];
 
@@ -1413,7 +1413,7 @@ void WriteAllDoorways(CFILE *ofile);
 typedef struct {
   int type, id;
   const char *name;
-  ubyte flag;
+  uint8_t flag;
 } tConvertObject;
 
 tConvertObject object_convert[] = {
@@ -1581,7 +1581,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
   if (fileversion >= 34)
     id = cf_ReadShort(ifile);
   else
-    id = (ubyte)cf_ReadByte(ifile);
+    id = (uint8_t)cf_ReadByte(ifile);
 
   // Translate id
   old_id = id;
@@ -1635,11 +1635,11 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
   }
 
   // Read the flags
-  uint flags;
+  uint32_t flags;
   if (fileversion >= 101)
     flags = cf_ReadInt(ifile);
   else
-    flags = (ushort)cf_ReadShort(ifile);
+    flags = (uint16_t)cf_ReadShort(ifile);
 
   // Make sure no objects except viewers have the outside mine flags set
   ASSERT((type == OBJ_VIEWER) || !(flags & OF_OUTSIDE_MINE));
@@ -1730,7 +1730,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     i = cf_ReadByte(ifile);
     if (i > 0) {
       objp->custom_default_script_name = (char *)mem_malloc(i + 1);
-      cf_ReadBytes((ubyte *)objp->custom_default_script_name, i, ifile);
+      cf_ReadBytes((uint8_t *)objp->custom_default_script_name, i, ifile);
       objp->custom_default_script_name[i] = '\0';
     } else {
       objp->custom_default_script_name = NULL;
@@ -1739,7 +1739,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     i = cf_ReadByte(ifile);
     if (i > 0) {
       objp->custom_default_module_name = (char *)mem_malloc(i + 1);
-      cf_ReadBytes((ubyte *)objp->custom_default_module_name, i, ifile);
+      cf_ReadBytes((uint8_t *)objp->custom_default_module_name, i, ifile);
       objp->custom_default_module_name[i] = '\0';
     } else {
       objp->custom_default_module_name = NULL;
@@ -1759,10 +1759,10 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     }
 
     if (fileversion >= LEVEL_FILE_SCRIPTPARMS) {
-      short s = cf_ReadShort(ifile);
+      int16_t s = cf_ReadShort(ifile);
 
       for (i = 0; i < s; i++) {
-        sbyte stype = cf_ReadByte(ifile);
+        int8_t stype = cf_ReadByte(ifile);
         if (stype == PARMTYPE_NUMBER || stype == PARMTYPE_REF) {
           cf_ReadFloat(ifile);
         } else if (stype == PARMTYPE_VECTOR) {
@@ -1815,7 +1815,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       for (t = 0; t < num_faces; t++) {
         if (submodel_changed == 0 && model_changed == 0) {
           lightmap_object_face *fp = &objp->lm_object.lightmap_faces[i][t];
-          fp->lmi_handle = LightmapInfoRemap[(ushort)cf_ReadShort(ifile)];
+          fp->lmi_handle = LightmapInfoRemap[(uint16_t)cf_ReadShort(ifile)];
 
           if (!Dedicated_server)
             LightmapInfo[fp->lmi_handle].used++;
@@ -1927,9 +1927,9 @@ int ReadTrigger(CFILE *ifile, trigger *tp, int fileversion) {
       cf_ReadString(name, MAX_D3XID_NAME, ifile);
       if (fileversion >= LEVEL_FILE_TRIGPARMS) {
         int i;
-        short s = cf_ReadShort(ifile);
+        int16_t s = cf_ReadShort(ifile);
         for (i = 0; i < s; i++) {
-          sbyte type = cf_ReadByte(ifile);
+          int8_t type = cf_ReadByte(ifile);
           if (type == PARMTYPE_NUMBER || type == PARMTYPE_REF) {
             cf_ReadFloat(ifile);
           } else if (type == PARMTYPE_VECTOR) {
@@ -2032,7 +2032,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
   // Check to see if there is a lightmap
   if ((fp->flags & FF_LIGHTMAP) && (version >= 19)) {
     if (version <= 29) {
-      ubyte w, h;
+      uint8_t w, h;
 
       w = cf_ReadByte(ifile);
       h = cf_ReadByte(ifile);
@@ -2043,7 +2043,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
       fp->flags &= ~FF_LIGHTMAP;
     } else {
       // Read lightmap info handle
-      int lmi_handle = (ushort)cf_ReadShort(ifile);
+      int lmi_handle = (uint16_t)cf_ReadShort(ifile);
       if (!Dedicated_server) {
         fp->lmi_handle = LightmapInfoRemap[lmi_handle];
         LightmapInfo[fp->lmi_handle].used++;
@@ -2102,7 +2102,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
     fp->light_multiple = 4;
 
   if (version >= 71) {
-    ubyte special = cf_ReadByte(ifile);
+    uint8_t special = cf_ReadByte(ifile);
     if (special) {
       if (version < 77) // Ignore old specular data
       {
@@ -2113,10 +2113,10 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
       } else {
         vector center;
 
-        ubyte smooth = 0;
-        ubyte num_smooth_verts = 0;
-        ubyte type = cf_ReadByte(ifile);
-        ubyte num = cf_ReadByte(ifile);
+        uint8_t smooth = 0;
+        uint8_t num_smooth_verts = 0;
+        uint8_t type = cf_ReadByte(ifile);
+        uint8_t num = cf_ReadByte(ifile);
 
         if (version >= 117) {
           // Read if smoothed
@@ -2134,7 +2134,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
 
         for (i = 0; i < num; i++) {
           cf_ReadVector(ifile, &center);
-          ushort color = cf_ReadShort(ifile);
+          uint16_t color = cf_ReadShort(ifile);
 
           SpecialFaces[fp->special_handle].spec_instance[i].bright_center = center;
           SpecialFaces[fp->special_handle].spec_instance[i].bright_color = color;
@@ -2224,7 +2224,7 @@ void RemoveDegenerateFaces(room *rp) {
 #define COMPRESS 1
 
 // Does a RLE compression run of the values given the byte array 'val'.
-int WriteCompressionByte(CFILE *fp, ubyte *val, int total, int just_count, int compress) {
+int WriteCompressionByte(CFILE *fp, uint8_t *val, int total, int just_count, int compress) {
   int done = 0;
   int written = 0;
   int curptr = 0;
@@ -2254,8 +2254,8 @@ int WriteCompressionByte(CFILE *fp, ubyte *val, int total, int just_count, int c
 
     ASSERT(curptr < total);
 
-    ubyte curval = val[curptr];
-    ubyte count = 1;
+    uint8_t curval = val[curptr];
+    uint8_t count = 1;
 
     while ((curptr + count) < total && val[curptr + count] == curval && count < 250)
       count++;
@@ -2281,9 +2281,9 @@ int WriteCompressionByte(CFILE *fp, ubyte *val, int total, int just_count, int c
   return written;
 }
 
-// Does a RLE compression run of the values given the short array 'val'.
+// Does a RLE compression run of the values given the int16_t array 'val'.
 // If just_count is 1, doesn't write anything
-int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int compress) {
+int WriteCompressionShort(CFILE *fp, uint16_t *val, int total, int just_count, int compress) {
   int done = 0, written = 0;
 
   int curptr = 0;
@@ -2314,8 +2314,8 @@ int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int
 
     ASSERT(curptr < total);
 
-    ushort curval = val[curptr];
-    ubyte count = 1;
+    uint16_t curval = val[curptr];
+    uint8_t count = 1;
 
     while ((curptr + count) < total && val[curptr + count] == curval && count < 250)
       count++;
@@ -2343,7 +2343,7 @@ int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int
 
 // Given an array of values, checks to see if it would be better to write it out
 // as a raw array or RLE array
-void CheckToWriteCompressByte(CFILE *fp, ubyte *vals, int total) {
+void CheckToWriteCompressByte(CFILE *fp, uint8_t *vals, int total) {
   int count = WriteCompressionByte(fp, vals, total, 1, COMPRESS);
 
   if (count >= total)
@@ -2354,7 +2354,7 @@ void CheckToWriteCompressByte(CFILE *fp, ubyte *vals, int total) {
 
 // Given an array of values, checks to see if it would be better to write it out
 // as a raw array or RLE array
-void CheckToWriteCompressShort(CFILE *fp, ushort *vals, int total) {
+void CheckToWriteCompressShort(CFILE *fp, uint16_t *vals, int total) {
   int count = WriteCompressionShort(fp, vals, total, 1, COMPRESS);
 
   if (count >= total)
@@ -2363,9 +2363,9 @@ void CheckToWriteCompressShort(CFILE *fp, ushort *vals, int total) {
     WriteCompressionShort(fp, vals, total, 0, COMPRESS);
 }
 
-void ReadCompressionByte(CFILE *fp, ubyte *vals, int total) {
+void ReadCompressionByte(CFILE *fp, uint8_t *vals, int total) {
   int count = 0;
-  ubyte compressed = cf_ReadByte(fp);
+  uint8_t compressed = cf_ReadByte(fp);
 
   if (compressed == 0) {
     for (int i = 0; i < total; i++)
@@ -2376,17 +2376,17 @@ void ReadCompressionByte(CFILE *fp, ubyte *vals, int total) {
 
   while (count != total) {
     ASSERT(count < total);
-    ubyte command = cf_ReadByte(fp);
+    uint8_t command = cf_ReadByte(fp);
 
     if (command == 0) // next byte is raw
     {
-      ubyte height = cf_ReadByte(fp);
+      uint8_t height = cf_ReadByte(fp);
 
       vals[count] = height;
       count++;
     } else if (command >= 2 && command <= 250) // next pixel is run of pixels
     {
-      ubyte height = cf_ReadByte(fp);
+      uint8_t height = cf_ReadByte(fp);
       for (int k = 0; k < command; k++) {
         vals[count] = height;
         count++;
@@ -2396,10 +2396,10 @@ void ReadCompressionByte(CFILE *fp, ubyte *vals, int total) {
   }
 }
 
-void ReadCompressionShort(CFILE *fp, ushort *vals, int total) {
+void ReadCompressionShort(CFILE *fp, uint16_t *vals, int total) {
   int count = 0;
 
-  ubyte compressed = cf_ReadByte(fp);
+  uint8_t compressed = cf_ReadByte(fp);
 
   if (compressed == 0) {
     for (int i = 0; i < total; i++)
@@ -2410,17 +2410,17 @@ void ReadCompressionShort(CFILE *fp, ushort *vals, int total) {
 
   while (count != total) {
     ASSERT(count < total);
-    ubyte command = cf_ReadByte(fp);
+    uint8_t command = cf_ReadByte(fp);
 
     if (command == 0) // next byte is raw
     {
-      ushort height = cf_ReadShort(fp);
+      uint16_t height = cf_ReadShort(fp);
 
       vals[count] = height;
       count++;
     } else if (command >= 2 && command <= 250) // next pixel is run of pixels
     {
-      ushort height = cf_ReadShort(fp);
+      uint16_t height = cf_ReadShort(fp);
       for (int k = 0; k < command; k++) {
         vals[count] = height;
         count++;
@@ -2576,7 +2576,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 
       if (size) {
 
-        rp->volume_lights = (ubyte *)mem_malloc(size);
+        rp->volume_lights = (uint8_t *)mem_malloc(size);
         ASSERT(rp->volume_lights); // ran out of memory!
       } else
         rp->volume_lights = NULL;
@@ -2606,7 +2606,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
     rp->ambient_sound = -1;
 
   //	read reverb value for room.
-  rp->env_reverb = (version >= 98) ? ((ubyte)cf_ReadByte(ifile)) : 0;
+  rp->env_reverb = (version >= 98) ? ((uint8_t)cf_ReadByte(ifile)) : 0;
 
   // Read damage
   if (version >= 108) {
@@ -2632,7 +2632,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 }
 
 // Build a translation table for various items
-void BuildXlateTable(CFILE *ifile, int (*lookup_func)(const char *), short *xlate_table, int max_items, int type) {
+void BuildXlateTable(CFILE *ifile, int (*lookup_func)(const char *), int16_t *xlate_table, int max_items, int type) {
   char name[PAGENAME_LEN];
   int n;
   int i;
@@ -2669,7 +2669,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     return;
   }
 
-  ushort *lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * sizeof(ushort));
+  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
 
   nummaps = cf_ReadInt(fp);
 
@@ -2691,7 +2691,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     int lm_handle = lm_AllocLightmap(w, h);
 
     lightmap_remap[i] = lm_handle;
-    ushort *data = (ushort *)lm_data(lm_handle);
+    uint16_t *data = (uint16_t *)lm_data(lm_handle);
     ReadCompressionShort(fp, data, w * h);
   }
 
@@ -2702,7 +2702,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
 
   for (i = 0; i < nummaps; i++) {
     int w, h, lmi;
-    ubyte type;
+    uint8_t type;
     if (nummaps >= 50) {
       if ((i % (nummaps / 50)) == 0) {
         LoadLevelProgress(LOAD_PROGRESS_LOADING_LEVEL,
@@ -2765,10 +2765,10 @@ void ReadLightmapChunk(CFILE *fp, int version) {
 
   int nummaps;
   int i, t;
-  ushort *ded_dummy_data = NULL;
+  uint16_t *ded_dummy_data = NULL;
 
   if (Dedicated_server) {
-    ded_dummy_data = (ushort *)mem_malloc(128 * 128 * 2);
+    ded_dummy_data = (uint16_t *)mem_malloc(128 * 128 * 2);
     ASSERT(ded_dummy_data);
   }
 
@@ -2784,7 +2784,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
                         CHUNK_LIGHTMAPS);
     }
     int w, h, lmi;
-    ubyte type;
+    uint8_t type;
 
     w = cf_ReadInt(fp);
     h = cf_ReadInt(fp);
@@ -2835,12 +2835,12 @@ void ReadLightmapChunk(CFILE *fp, int version) {
       LightmapInfo[lmi].normal.z = 1;
     }
 
-    ushort *data;
+    uint16_t *data;
 
     if (Dedicated_server)
       data = ded_dummy_data;
     else
-      data = (ushort *)lm_data(LightmapInfo[lmi].lm_handle);
+      data = (uint16_t *)lm_data(LightmapInfo[lmi].lm_handle);
 
     if (version <= 37) {
       for (t = 0; t < w * h; t++)
@@ -2852,7 +2852,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
     // Adjust lightmap data to account for our new 1555 format
     if (version < 64) {
       for (t = 0; t < w * h; t++) {
-        ushort pixel = data[t];
+        uint16_t pixel = data[t];
 
         if (pixel == 0x07e0)
           pixel = NEW_TRANSPARENT_COLOR;
@@ -2882,7 +2882,7 @@ void ReadTerrainHeightChunk(CFILE *fp, int version) {
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
       Terrain_seg[i].ypos = cf_ReadByte(fp);
   } else {
-    ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
     ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++) {
@@ -3046,7 +3046,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
   max_rooms = cf_ReadInt(fp);
 
   if (version < 62) {
-    cfseek(fp, sizeof(short) * max_rooms * max_rooms, SEEK_CUR);
+    cfseek(fp, sizeof(int16_t) * max_rooms * max_rooms, SEEK_CUR);
 
     mprintf((0, "We will need to remake boa.  New cost structure added\n"));
     BOA_AABB_checksum = BOA_mine_checksum = 0;
@@ -3056,7 +3056,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
     ASSERT(max_rooms - 1 <= MAX_ROOMS + 8);
 
     if (version < 110 || (max_path_portals != MAX_PATH_PORTALS)) {
-      cfseek(fp, sizeof(short) * max_rooms * max_rooms + max_rooms * max_path_portals * sizeof(float), SEEK_CUR);
+      cfseek(fp, sizeof(int16_t) * max_rooms * max_rooms + max_rooms * max_path_portals * sizeof(float), SEEK_CUR);
 
       if (version >= 107) {
         // Read BOA terrain info (temporary, just so vis data works with multiplay)
@@ -3144,15 +3144,15 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       Rooms[i].bbf_max_xyz.z = cf_ReadFloat(fp);
 
       Rooms[i].num_bbf_regions = cf_ReadShort(fp);
-      Rooms[i].num_bbf = (short *)mem_malloc(sizeof(short) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list = (short **)mem_malloc(sizeof(short *) * Rooms[i].num_bbf_regions);
+      Rooms[i].num_bbf = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list = (int16_t **)mem_malloc(sizeof(int16_t *) * Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_min_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_max_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list_sector = (unsigned char *)mem_malloc(sizeof(char) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list_sector = (uint8_t *)mem_malloc(sizeof(char) * Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);
-        Rooms[i].bbf_list[j] = (short *)mem_malloc(sizeof(short) * Rooms[i].num_bbf[j]);
+        Rooms[i].bbf_list[j] = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf[j]);
       }
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
@@ -3324,7 +3324,7 @@ void ReadTerrainSkyAndLightChunk(CFILE *fp, int version) {
         Terrain_dynamic_table[i] = cf_ReadByte(fp);
     }
   } else {
-    ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     ReadCompressionByte(fp, byte_vals, TERRAIN_DEPTH * TERRAIN_WIDTH);
     for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
@@ -3388,8 +3388,8 @@ void ReadTerrainTmapFlagChunk(CFILE *fp, int version) {
       }
     }
   } else {
-    ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-    ushort *short_vals = (ushort *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint16_t *short_vals = (uint16_t *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     if (version < 102) {
       // Read tmap1
@@ -3443,7 +3443,7 @@ void ReadTerrainChunks(CFILE *fp, int version) {
   ResetTerrain();
 
   while (!done) {
-    cf_ReadBytes((ubyte *)chunk_name, 4, fp);
+    cf_ReadBytes((uint8_t *)chunk_name, 4, fp);
     terr_chunk_start = cftell(fp);
     terr_chunk_size = cf_ReadInt(fp);
 
@@ -3493,7 +3493,7 @@ void ReadPlayerStarts(CFILE *infile, int fileversion) {
 void VerifyObjectList() {
   int i;
 
-  ubyte already_listed[MAX_OBJECTS];
+  uint8_t already_listed[MAX_OBJECTS];
   memset(already_listed, 0, MAX_OBJECTS);
 
   for (i = 0; i <= Highest_room_index; i++) {
@@ -3619,7 +3619,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
     filelen = cfilelength(ifile);
 
     // Read & check tag
-    cf_ReadBytes((ubyte *)tag, 4, ifile);
+    cf_ReadBytes((uint8_t *)tag, 4, ifile);
     if (strncmp(tag, LEVEL_FILE_TAG, 4)) {
       cfclose(ifile);
       retval = 0;
@@ -3718,7 +3718,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
     while (!cfeof(ifile)) {
       char chunk_name[4];
 
-      cf_ReadBytes((ubyte *)chunk_name, 4, ifile);
+      cf_ReadBytes((uint8_t *)chunk_name, 4, ifile);
       chunk_start = cftell(ifile);
       chunk_size = cf_ReadInt(ifile);
       mprintf(
@@ -3779,7 +3779,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       } else if (ISCHUNK(CHUNK_OBJECT_HANDLES)) { // Read in any non-zero handles for deleted objects
         int handle, objnum;
 
-        ubyte already_loaded[MAX_OBJECTS];
+        uint8_t already_loaded[MAX_OBJECTS];
         memset(already_loaded, 0, MAX_OBJECTS);
 
         // Get the number of handles in the file
@@ -3910,7 +3910,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           strcat(path, name);
           strcat(path, ".scr");
           CFILE *ofile = cfopen(path, "wb");
-          ubyte buf[1000];
+          uint8_t buf[1000];
           int n = chunk_size, r;
           while (n) {
             r = cf_ReadBytes(buf, std::min(n, sizeof(buf)), ifile);
@@ -4077,8 +4077,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
   // share 1 lightmap
 
   if (version >= 34 && !Dedicated_server) {
-    ubyte *lightmap_spoken_for = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
-    ubyte *free_lightmap_info = (ubyte *)mem_malloc(MAX_LIGHTMAP_INFOS);
+    uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
+    uint8_t *free_lightmap_info = (uint8_t *)mem_malloc(MAX_LIGHTMAP_INFOS);
     ASSERT(lightmap_spoken_for);
     memset(lightmap_spoken_for, 0, MAX_LIGHTMAPS);
 
@@ -4212,12 +4212,12 @@ int WriteObject(CFILE *ofile, object *objp) {
   i = (objp->custom_default_script_name) ? strlen(objp->custom_default_script_name) : 0;
   cf_WriteByte(ofile, i);
   if (i > 0)
-    cf_WriteBytes((ubyte *)objp->custom_default_script_name, i, ofile);
+    cf_WriteBytes((uint8_t *)objp->custom_default_script_name, i, ofile);
 
   i = (objp->custom_default_module_name) ? strlen(objp->custom_default_module_name) : 0;
   cf_WriteByte(ofile, i);
   if (i > 0)
-    cf_WriteBytes((ubyte *)objp->custom_default_module_name, i, ofile);
+    cf_WriteBytes((uint8_t *)objp->custom_default_module_name, i, ofile);
 
   // If there is lightmap data for this object, write it out.
   if (objp->lighting_render_type == LRT_LIGHTMAPS) {
@@ -4232,7 +4232,7 @@ int WriteObject(CFILE *ofile, object *objp) {
         for (t = 0; t < objp->lm_object.num_faces[i]; t++) {
           lightmap_object_face *fp = &objp->lm_object.lightmap_faces[i][t];
           ASSERT(LightmapInfoRemap[fp->lmi_handle] != BAD_LMI_INDEX);
-          cf_WriteShort(ofile, (ushort)LightmapInfoRemap[fp->lmi_handle]);
+          cf_WriteShort(ofile, (uint16_t)LightmapInfoRemap[fp->lmi_handle]);
 
           cf_WriteVector(ofile, &fp->rvec);
           cf_WriteVector(ofile, &fp->uvec);
@@ -4305,7 +4305,7 @@ int WriteFace(CFILE *ofile, face *fp) {
     // Write UV2's
 
     ASSERT(LightmapInfoRemap[fp->lmi_handle] != BAD_LMI_INDEX);
-    cf_WriteShort(ofile, (ushort)LightmapInfoRemap[fp->lmi_handle]);
+    cf_WriteShort(ofile, (uint16_t)LightmapInfoRemap[fp->lmi_handle]);
 
     for (i = 0; i < fp->num_verts; i++) {
       cf_WriteFloat(ofile, fp->face_uvls[i].u2);
@@ -4322,7 +4322,7 @@ int WriteFace(CFILE *ofile, face *fp) {
 
   if (fp->special_handle != BAD_SPECIAL_FACE_INDEX) {
     // Write out special face stuff
-    ubyte smooth = 0;
+    uint8_t smooth = 0;
     cf_WriteByte(ofile, 1);
     cf_WriteByte(ofile, SpecialFaces[fp->special_handle].type);
     cf_WriteByte(ofile, 4);
@@ -4445,7 +4445,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
   // Write ambient sound pattern name
   cf_WriteString(ofile, (rp->ambient_sound == -1) ? "" : AmbientSoundPatternName(rp->ambient_sound));
 
-  cf_WriteByte(ofile, (sbyte)rp->env_reverb);
+  cf_WriteByte(ofile, (int8_t)rp->env_reverb);
 
   // Write damage
   cf_WriteFloat(ofile, rp->damage);
@@ -4458,7 +4458,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
 int StartChunk(CFILE *ofile, char *chunk_name) {
   int chunk_start_pos;
 
-  cf_WriteBytes((ubyte *)chunk_name, 4, ofile);
+  cf_WriteBytes((uint8_t *)chunk_name, 4, ofile);
   chunk_start_pos = cftell(ofile);
   cf_WriteInt(ofile, 0); // placeholder for chunk len
 
@@ -4487,7 +4487,7 @@ void EndChunk(CFILE *ofile, int chunk_start_pos) {
 
 void WriteTerrainHeightChunk(CFILE *fp) {
   int i;
-  ubyte heightvals[TERRAIN_WIDTH * TERRAIN_DEPTH];
+  uint8_t heightvals[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
   int start_pos;
   start_pos = StartChunk(fp, CHUNK_TERRAIN_HEIGHT);
@@ -4795,7 +4795,7 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
   }
 
   // Write lighting
-  ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+  uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   // l
   for (i = 0; i < TERRAIN_DEPTH * TERRAIN_WIDTH; i++)
@@ -4840,8 +4840,8 @@ void WriteTerrainSkyAndLightChunk(CFILE *fp) {
 void WriteTerrainTmapChunk(CFILE *fp) {
   int i;
 
-  ubyte *byte_vals = (ubyte *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-  ushort *short_vals = (ushort *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
+  uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
+  uint16_t *short_vals = (uint16_t *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   int start_pos;
   start_pos = StartChunk(fp, CHUNK_TERRAIN_TMAPS_FLAGS);
@@ -4883,8 +4883,8 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_info_count = 0;
   int lightmap_count = 0;
 
-  ushort *lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * sizeof(ushort));
-  ubyte *lightmap_spoken_for = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
+  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
+  uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
 
   ASSERT(lightmap_remap);
   ASSERT(lightmap_spoken_for);
@@ -4926,7 +4926,7 @@ void WriteLightmapChunk(CFILE *fp) {
         cf_WriteShort(fp, w);
         cf_WriteShort(fp, h);
 
-        ushort *data = lm_data(LightmapInfo[i].lm_handle);
+        uint16_t *data = lm_data(LightmapInfo[i].lm_handle);
         ASSERT(data != NULL);
 
         CheckToWriteCompressShort(fp, data, w * h);
@@ -5055,7 +5055,7 @@ int SaveLevel(char *filename, bool f_save_room_AABB) {
   try { // catch cfile errors
 
     // Write tag & version number
-    cf_WriteBytes((ubyte *)LEVEL_FILE_TAG, 4, ofile);
+    cf_WriteBytes((uint8_t *)LEVEL_FILE_TAG, 4, ofile);
     cf_WriteInt(ofile, LEVEL_FILE_VERSION);
 
     WriteGamePathsChunk(ofile);
@@ -5318,9 +5318,9 @@ int need_to_page_in = 0;
 int need_to_page_num = 0;
 void AlmostPageInGeneric(int id);
 
-ubyte texture_counted[MAX_BITMAPS];
-ubyte sound_counted[MAX_SOUNDS];
-ubyte poly_counted[MAX_POLY_MODELS];
+uint8_t texture_counted[MAX_BITMAPS];
+uint8_t sound_counted[MAX_SOUNDS];
+uint8_t poly_counted[MAX_POLY_MODELS];
 
 void AlmostPageInLevelTexture(int id) {
   if (id == -1 || id == 0)

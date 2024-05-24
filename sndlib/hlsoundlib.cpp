@@ -645,7 +645,7 @@ void hlsSystem::StopAllSounds() {
 
 void hlsSystem::BeginSoundFrame(bool f_in_game) {
   bool hwsound_support;   // if this is true, sound_render_system is being used
-  short *sound_room_list; // these values are only meant for sound render system
+  int16_t *sound_room_list; // these values are only meant for sound render system
   int i, n, counter = 0;
   pos_state listener_pos;
   const int num_samples_this_frame = (int)(Frametime * 22050);
@@ -1169,10 +1169,10 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   return m_sound_objects[i].m_hlsound_uid;
 }
 // General purpose 2d sound play function
-int hlsSystem::Play2dSound(int sound_index, float volume, float pan, unsigned short frequency) {
+int hlsSystem::Play2dSound(int sound_index, float volume, float pan, uint16_t frequency) {
   return hlsSystem::Play2dSound(sound_index, SND_PRIORITY_NORMAL, volume, pan, frequency);
 }
-int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pan, unsigned short frequency) {
+int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pan, uint16_t frequency) {
   int i = 0;
   int sound_uid;
   int sound_obj_index;
@@ -1317,7 +1317,7 @@ void hlsSystem::StopSoundImmediate(int hlsound_uid) {
   StopSound(sound_object_index, SKT_STOP_IMMEDIATELY);
 }
 // Forcefully ends a sound
-void hlsSystem::StopSound(int sound_obj_index, unsigned char f_stop_priority) {
+void hlsSystem::StopSound(int sound_obj_index, uint8_t f_stop_priority) {
   if (!m_f_hls_system_init)
     return;
   m_sound_objects[sound_obj_index].m_obj_type_flags &= (~SIF_LOOPING);
@@ -1348,7 +1348,7 @@ void hlsSystem::SetVolumeObject(int objhandle, float volume) {
 }
 // Queued sound functions
 // Adds a sound to a queue
-void hlsSystem::Add2dSoundQueued(int q_num, int sound_index, float volume, float pan, unsigned short frequency) {
+void hlsSystem::Add2dSoundQueued(int q_num, int sound_index, float volume, float pan, uint16_t frequency) {
   if (!m_f_hls_system_init)
     return;
 }

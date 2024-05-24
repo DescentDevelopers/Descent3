@@ -834,10 +834,10 @@ void AddEdgeInsert(int v0,int v1,int new_v)
 //					outbuf - the new polygon created by the part of the input polygon that was clipped away
 //					onv - the number of verys in outbuf
 //					num_vertices - pointer to the number of verts in the vertices array
-void ClipAgainstEdge(int nv,short *vertnums,vertex *vertices,int *num_vertices,vector *v0,vector *v1,vector *normal,short *inbuf,int *inv,short *outbuf,int *onv)
+void ClipAgainstEdge(int nv,int16_t *vertnums,vertex *vertices,int *num_vertices,vector *v0,vector *v1,vector *normal,int16_t *inbuf,int *inv,int16_t *outbuf,int *onv)
 {
 	int i,prev,next,check;
-	short *ip = inbuf,*op = outbuf;
+	int16_t *ip = inbuf,*op = outbuf;
 	vertex *curv,*prevv,*nextv;
 	int inside_points=0,outside_points=0;		//real inside/outside points, distinct from edge points
 
@@ -940,14 +940,14 @@ bool ClipFace(room *arp,int afacenum,room *brp,int bfacenum)
 	face *afp = &arp->faces[afacenum];
 	face *bfp = &brp->faces[bfacenum];
 	int edgenum;
-	short vbuf0[MAX_VERTS_PER_FACE],vbuf1[MAX_VERTS_PER_FACE];
-	short newface_verts[MAX_VERTS_PER_FACE][MAX_VERTS_PER_FACE];
+	int16_t vbuf0[MAX_VERTS_PER_FACE],vbuf1[MAX_VERTS_PER_FACE];
+	int16_t newface_verts[MAX_VERTS_PER_FACE][MAX_VERTS_PER_FACE];
 	int newface_nvs[MAX_VERTS_PER_FACE];
 	vertex newverts[MAX_VERTS_PER_FACE];
 	int newvertnums[MAX_VERTS_PER_FACE];
 	int num_newverts;
 	int num_newfaces = 0;
-	short *src,*dest;
+	int16_t *src,*dest;
 	int nv;
 	int i;
 
@@ -970,7 +970,7 @@ bool ClipFace(room *arp,int afacenum,room *brp,int bfacenum)
 	//Clip our polygon against each edge
 	for (edgenum=0;edgenum<bfp->num_verts;edgenum++) {
 		vector *v0,*v1;
-		short *outbuf = newface_verts[num_newfaces];
+		int16_t *outbuf = newface_verts[num_newfaces];
 		int *onv = &newface_nvs[num_newfaces];
 
 		v0 = &brp->verts[bfp->face_verts[(bfp->num_verts-edgenum)%bfp->num_verts]];
@@ -1568,7 +1568,7 @@ void JoinRoomsExact(room *attroomp,int attface,room *baseroomp,int baseface)
 	World_changed = 1;
 }
 
-bool FaceIsPlanar(int nv,short *face_verts,vector *normal,vector *verts);
+bool FaceIsPlanar(int nv,int16_t *face_verts,vector *normal,vector *verts);
 
 //Combine two faces, if they can be combined
 //Parameters:	rp - the room the faces are in
@@ -1580,7 +1580,7 @@ bool CombineFaces(room *rp,int face0,int face1)
 	face *fp0 = &rp->faces[face0], *fp1 = &rp->faces[face1];
 	int nv0 = fp0->num_verts, nv1 = fp1->num_verts;
 	int v0,v1;
-	short vertlist[MAX_VERTS_PER_FACE];
+	int16_t vertlist[MAX_VERTS_PER_FACE];
 	roomUVL uvllist[MAX_VERTS_PER_FACE];
 	int i,nv;
 	int first0,first1,n0,n1;
@@ -2096,7 +2096,7 @@ int FindNeighbor(room *rp,int facenum,int edgenum)
 	return -1;
 }
 
-void PropagateFromFace(room *rp,int facenum,ubyte *face_flags,bool matching_faces_only)
+void PropagateFromFace(room *rp,int facenum,uint8_t *face_flags,bool matching_faces_only)
 {
 	face *fp = &rp->faces[facenum];
 
@@ -2119,7 +2119,7 @@ void PropagateFromFace(room *rp,int facenum,ubyte *face_flags,bool matching_face
 //If matching_faces_only is set, only propagate if the face has the same texture
 void PropagateToAllFaces(room *rp,int facenum,bool matching_faces_only)
 {
-	ubyte face_flags[MAX_FACES_PER_ROOM];
+	uint8_t face_flags[MAX_FACES_PER_ROOM];
 
 	//Clear flags
 	for (int i=0;i<rp->num_faces;i++)
@@ -2693,7 +2693,7 @@ void BuildSmoothBridge(room *rp0,int facenum0,room *rp1,int facenum1)
 	World_changed = 1;
 }
 
-short New_face_verts[MAX_VERTS_PER_FACE];
+int16_t New_face_verts[MAX_VERTS_PER_FACE];
 int New_face_num_verts=-1;
 room *New_face_roomp;
 

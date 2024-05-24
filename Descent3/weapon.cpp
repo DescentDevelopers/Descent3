@@ -166,7 +166,7 @@
  * added reset reticle when setting a new weapon.
  *
  * 46    4/24/98 8:02a Samir
- * added a short weapon name array.
+ * added a int16_t weapon name array.
  *
  * 45    4/22/98 1:08p Chris
  * Fixed auto-firing of weapons after auto-selection
@@ -849,7 +849,7 @@ int AddWeaponToPlayer(int slot, int weap_index, int ammo) {
     int added = std::min(ship->max_ammo[weap_index] - Players[slot].weapon_ammo[weap_index], ammo);
 
     // now add it
-    Players[slot].weapon_ammo[weap_index] += (ushort)added;
+    Players[slot].weapon_ammo[weap_index] += (uint16_t)added;
   }
 
   if (slot == Player_num) {
@@ -879,24 +879,24 @@ int AddWeaponToPlayer(int slot, int weap_index, int ammo) {
 //	This is NOT a mask of weapons available to the player.  This is a mask of what CLASS of
 //	weapon this slot is currently in.  The code below checks this mask to see if it should
 //	select the higher class weapon in that slot when switching to that slot.
-static ushort Weapon_slot_mask = 0;
+static uint16_t Weapon_slot_mask = 0;
 
 void SelectPrimaryWeapon(int slot);
 void SelectSecondaryWeapon(int slot);
 void SetPrimaryWeapon(int index, int slot);
 void SetSecondaryWeapon(int index, int slot);
 
-static inline bool is_weapon_available(unsigned player_weapon_flags, int new_weapon, ushort ammo = 0xffff) {
+static inline bool is_weapon_available(unsigned player_weapon_flags, int new_weapon, uint16_t ammo = 0xffff) {
   return ((player_weapon_flags & HAS_FLAG(new_weapon)) && ammo > 0) ? true : false;
 }
 
 // used for sequencing
-void ResetWeaponSelectStates(ushort new_state) { Weapon_slot_mask = new_state; }
+void ResetWeaponSelectStates(uint16_t new_state) { Weapon_slot_mask = new_state; }
 
 void SaveWeaponSelectStates(CFILE *fp) { cf_WriteShort(fp, Weapon_slot_mask); }
 
 void LoadWeaponSelectStates(CFILE *fp) {
-  ushort state = (ushort)cf_ReadShort(fp);
+  uint16_t state = (uint16_t)cf_ReadShort(fp);
   ResetWeaponSelectStates(state);
 }
 
@@ -924,7 +924,7 @@ void SelectPrimaryWeapon(int slot) {
   //	do selection.  if we are selecting the same slot of weapon, then we select to the next
   //	level of weapon.  when going from highest level, go to lowest
   if (oldslot == slot) {
-    ushort nw_low = (plr->weapon[PW_PRIMARY].index + NUM_PRIMARY_SLOTS) % MAX_PRIMARY_WEAPONS;
+    uint16_t nw_low = (plr->weapon[PW_PRIMARY].index + NUM_PRIMARY_SLOTS) % MAX_PRIMARY_WEAPONS;
 
     if (is_weapon_available(avail_flags, nw_low)) {
       // toggle class of weapon in specified slot (save for selection)
@@ -1136,17 +1136,17 @@ void SetSecondaryWeapon(int index, int slot) {
 ///////////////////////////////////////////////////////////////////////////
 //	Weapon AUTO selection
 
-const ushort SELLIST_START = 0x7ffe, SELLIST_END = 0x7fff;
+const uint16_t SELLIST_START = 0x7ffe, SELLIST_END = 0x7fff;
 
-static ushort PrimaryWpnSelectList[] = {SELLIST_START, LASER_INDEX,  VAUSS_INDEX,       MICROWAVE_INDEX,
+static uint16_t PrimaryWpnSelectList[] = {SELLIST_START, LASER_INDEX,  VAUSS_INDEX,       MICROWAVE_INDEX,
                                         PLASMA_INDEX,  FUSION_INDEX, SUPER_LASER_INDEX, MASSDRIVER_INDEX,
                                         NAPALM_INDEX,  EMD_INDEX,    OMEGA_INDEX,       SELLIST_END};
 
-static ushort SecondaryWpnSelectList[] = {
+static uint16_t SecondaryWpnSelectList[] = {
     SELLIST_START, CONCUSSION_INDEX,           HOMING_INDEX,       IMPACTMORTAR_INDEX, SMART_INDEX,      MEGA_INDEX,
     FRAG_INDEX,    GUIDED_INDEX + WPNSEL_SKIP, NAPALMROCKET_INDEX, CYCLONE_INDEX,      BLACKSHARK_INDEX, SELLIST_END};
 
-ushort GetAutoSelectPrimaryWpnIdx(int slot) {
+uint16_t GetAutoSelectPrimaryWpnIdx(int slot) {
   int i = -1;
 
   while (PrimaryWpnSelectList[i + 1] != SELLIST_END) {
@@ -1158,7 +1158,7 @@ ushort GetAutoSelectPrimaryWpnIdx(int slot) {
   return WPNSEL_INVALID;
 }
 
-ushort GetAutoSelectSecondaryWpnIdx(int slot) {
+uint16_t GetAutoSelectSecondaryWpnIdx(int slot) {
   int i = -1;
 
   while (SecondaryWpnSelectList[i + 1] != SELLIST_END) {
@@ -1170,21 +1170,21 @@ ushort GetAutoSelectSecondaryWpnIdx(int slot) {
   return WPNSEL_INVALID;
 }
 
-void SetAutoSelectPrimaryWpnIdx(int slot, ushort idx) {
+void SetAutoSelectPrimaryWpnIdx(int slot, uint16_t idx) {
   if (slot < 0 || slot >= MAX_PRIMARY_WEAPONS)
     Int3();
 
   PrimaryWpnSelectList[slot + 1] = idx;
 }
 
-void SetAutoSelectSecondaryWpnIdx(int slot, ushort idx) {
+void SetAutoSelectSecondaryWpnIdx(int slot, uint16_t idx) {
   if (slot < 0 || slot >= MAX_SECONDARY_WEAPONS)
     Int3();
 
   SecondaryWpnSelectList[slot + 1] = idx;
 }
 
-const ushort IWPNSEL_SKIP = (ushort) ((~WPNSEL_SKIP) & 0xFFFF);
+const uint16_t IWPNSEL_SKIP = (uint16_t) ((~WPNSEL_SKIP) & 0xFFFF);
 
 #define WPNINDEX(_index) (sel_list[(_index)] & IWPNSEL_SKIP)
 
@@ -1194,7 +1194,7 @@ int SwitchPlayerWeapon(int weapon_type) {
   ship *ship;
   int new_index;
   void (*setwpnfunc)(int, int); // Call either primary or secondary set weapon function
-  ushort *sel_list;
+  uint16_t *sel_list;
   int plr_wpn_index;
 
   plr = &Players[Player_num];
@@ -1224,7 +1224,7 @@ int SwitchPlayerWeapon(int weapon_type) {
     } else if (WPNINDEX(new_index) == SELLIST_START) {
       new_index++;
     } else {
-      ushort wpn_index = WPNINDEX(new_index);
+      uint16_t wpn_index = WPNINDEX(new_index);
       otype_wb_info *wb = &ship->static_wb[wpn_index];
       int slot = (weapon_type == PW_SECONDARY)
                      ? (((wpn_index - SECONDARY_INDEX) % NUM_SECONDARY_SLOTS) + NUM_PRIMARY_SLOTS)
@@ -1266,7 +1266,7 @@ int SwitchPlayerWeapon(int weapon_type) {
 bool AutoSelectWeapon(int weapon_type, int new_wpn) {
   player *plr;
   ship *ship;
-  ushort *sel_list; // a weapon selection list
+  uint16_t *sel_list; // a weapon selection list
   int weapon_index; // the current weapon index
   int list_index;   // index into a selection list
   int list_initial; // initial index in list.
@@ -1302,7 +1302,7 @@ bool AutoSelectWeapon(int weapon_type, int new_wpn) {
       list_index--;
     if (!(sel_list[list_index] & WPNSEL_SKIP)) {
       if (list_initial >= list_index) {
-        ushort index = WPNINDEX(list_initial);
+        uint16_t index = WPNINDEX(list_initial);
         otype_wb_info *wb = &ship->static_wb[index];
         if (index >= SECONDARY_INDEX && wb->ammo_usage && (wb->ammo_usage <= plr->weapon_ammo[index])) {
           LOGFILE((_logfp, "keep current ammo weapon...(ind=%d)\n", list_index));
@@ -1323,7 +1323,7 @@ bool AutoSelectWeapon(int weapon_type, int new_wpn) {
   }
 
   while (1) {
-    ushort index = sel_list[list_index];
+    uint16_t index = sel_list[list_index];
     otype_wb_info *wb = &ship->static_wb[index];
 
     if (index == SELLIST_START) {

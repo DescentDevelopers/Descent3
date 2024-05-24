@@ -231,7 +231,7 @@ int GetNextRoom (int n);
 //					If the face is convex, returns -1
 //NOTE: A face could have multiple concavities, and this will only find the one with the 
 //lowest-numbered vertex
-int CheckFaceConcavity(int num_verts,short *face_verts,vector *normal,vector *verts);
+int CheckFaceConcavity(int num_verts,int16_t *face_verts,vector *normal,vector *verts);
 
 // Goes through each face of the passed room and sets the default uvs
 void AssignDefaultUVsToRoom (room *rp);
@@ -414,7 +414,7 @@ void RemoveAllDuplicateAndUnusedPoints();
 //Checks to see if a face is planar.
 //See if all the points are within a certain distance of an average point
 //Returns 1 if face is planar, 0 if not
-bool FaceIsPlanar(int nv,short *face_verts,vector *normal,vector *verts);
+bool FaceIsPlanar(int nv,int16_t *face_verts,vector *normal,vector *verts);
 
 //Checks to see if a face is planar.
 //See if all the points are within a certain distance of an average point

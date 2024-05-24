@@ -156,7 +156,7 @@ typedef struct {
   float lo_lod_distance;
 
   otype_wb_info static_wb[MAX_PLAYER_WEAPONS];
-  ubyte fire_flags[MAX_PLAYER_WEAPONS]; // how a particular weapon fires
+  uint8_t fire_flags[MAX_PLAYER_WEAPONS]; // how a particular weapon fires
   int max_ammo[MAX_PLAYER_WEAPONS];
 
   int firing_sound[MAX_PLAYER_WEAPONS];         // sound the weapon makes while button held down
@@ -170,7 +170,7 @@ typedef struct {
   float armor_scalar;
 
   int flags;
-  ubyte used;
+  uint8_t used;
 } ship;
 
 extern int Num_ships;

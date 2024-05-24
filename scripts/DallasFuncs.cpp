@@ -1285,7 +1285,7 @@ void aShowColoredHUDMessage(int red, int green, int blue, const char *format, ..
   mstruct.message[sizeof(mstruct.message) - 1] = 0; // if message too long, vsnprintf() won't terminate
 
   mstruct.state = 0; // means all players
-  mstruct.color = GR_RGB((ubyte)red, (ubyte)green, (ubyte)blue);
+  mstruct.color = GR_RGB((uint8_t)red, (uint8_t)green, (uint8_t)blue);
 
   MSafe_CallFunction(MSAFE_MISC_HUD_MESSAGE, &mstruct);
 }
@@ -1317,7 +1317,7 @@ void aShowColoredHUDMessageObj(int red, int green, int blue, const char *format,
 
   mstruct.state = 1;
   mstruct.objhandle = dfGetPlayer(objhandle);
-  mstruct.color = GR_RGB((ubyte)red, (ubyte)green, (ubyte)blue);
+  mstruct.color = GR_RGB((uint8_t)red, (uint8_t)green, (uint8_t)blue);
 
   MSafe_CallFunction(MSAFE_MISC_HUD_MESSAGE, &mstruct);
 }
@@ -2209,8 +2209,8 @@ void aRoomSetLightingPulse(int roomnum, float time, float offset) {
   msafe_struct mstruct;
 
   mstruct.roomnum = roomnum;
-  mstruct.pulse_time = (ubyte)(time * 100);
-  mstruct.pulse_offset = (ubyte)(offset * 100);
+  mstruct.pulse_time = (uint8_t)(time * 100);
+  mstruct.pulse_offset = (uint8_t)(offset * 100);
 
   MSafe_CallFunction(MSAFE_ROOM_LIGHT_PULSE, &mstruct);
 }
@@ -2256,8 +2256,8 @@ speed of each blob spew Randomize: if set than BlobSize, BlobSpeed and BlobLifet
 for each blob SpewHandle: Where to store the handle for this spewer
 $$END
 */
-void aTurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-                 float lifetime, float interval, float longevity, float size, float speed, ubyte random,
+void aTurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+                 float lifetime, float interval, float longevity, float size, float speed, uint8_t random,
                  int handle_slot) {
   msafe_struct mstruct;
 

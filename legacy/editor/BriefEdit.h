@@ -56,7 +56,7 @@ typedef struct{
 //
 //	struct for a briefing effect
 typedef struct{
-	ubyte type;							//type of effect (for union)
+	uint8_t type;							//type of effect (for union)
 	bool used;							//is the effect being used
 	int id;								//ID# used
 	char *text;							//buffer of text
@@ -79,7 +79,7 @@ typedef struct{
 	int root_effect;								//root effect to start the list
 	char layout[_MAX_PATH];							//layout screen to use
 	tBriefEffect effects[MAX_EFFECTS_PER_SCREEN];	//the effects for the screen
-	uint mission_mask_set,mission_mask_unset;
+	uint32_t mission_mask_set,mission_mask_unset;
 	int next,prev;									//next/prev screen in list
 }tBriefScreen;
 
@@ -116,12 +116,12 @@ void BriefEditFreeEffect(tBriefEffect *efx);
 //	BriefEditSaveScreens
 //
 //	Saves out the screens to a briefing file
-ubyte BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalValues *glob);
+uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalValues *glob);
 
 //  BriefEditLoadScreens
 //
 //	Loads in screens from a briefing file
-ubyte BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *effect_combo,BriefGlobalValues *glob);
+uint8_t BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *effect_combo,BriefGlobalValues *glob);
 
 
 #define MAX_LAYOUT_PREDEFS	10

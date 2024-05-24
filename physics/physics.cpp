@@ -45,8 +45,8 @@
 #include "vibeinterface.h"
 
 // Global variables for physics system
-ubyte Default_player_terrain_leveling = 0;
-ubyte Default_player_room_leveling = 0;
+uint8_t Default_player_terrain_leveling = 0;
+uint8_t Default_player_room_leveling = 0;
 
 // Maximum iterations thru the simulation loop NOTE: It is assumed that the player loops >= non-player loops
 #define MAX_PLAYER_SIM_LOOPS 9
@@ -401,9 +401,9 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
 
   // Fixed rate rotaters
   if (obj->mtype.phys_info.flags & PF_FIXED_ROT_VELOCITY) {
-    tangles.p = (short)(rotvel->x * frame_time);
-    tangles.h = (short)(rotvel->y * frame_time);
-    tangles.b = (short)(rotvel->z * frame_time);
+    tangles.p = (int16_t)(rotvel->x * frame_time);
+    tangles.h = (int16_t)(rotvel->y * frame_time);
+    tangles.b = (int16_t)(rotvel->z * frame_time);
 
     vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
     *orient = *orient * rotmat; // ObjSetOrient below
@@ -665,9 +665,9 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   }
 
   // Apply rotation to the "un-rollbanked" object
-  tangles.p = (short)(rotvel->x * frame_time); // Casting to short is required for aarch64 to avoid FCVTZU instruction which strips the negative sign
-  tangles.h = (short)(rotvel->y * frame_time);
-  tangles.b = (short)(rotvel->z * frame_time);
+  tangles.p = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU instruction which strips the negative sign
+  tangles.h = (int16_t)(rotvel->y * frame_time);
+  tangles.b = (int16_t)(rotvel->z * frame_time);
 
   vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
   *orient = *orient * rotmat; // ObjSetOrient is below
@@ -2989,7 +2989,7 @@ void do_vis_physics_sim(vis_effect *vis) {
   DebugBlockPrint("DV");
 }
 
-void phys_apply_force(object *obj, vector *force_vec, short weapon_index) {
+void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index) {
   if (obj->mtype.phys_info.mass == 0.0)
     return;
 

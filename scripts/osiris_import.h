@@ -106,9 +106,9 @@ static inline void Room_Value(int roomnum, char op, char vhandle, void *ptr, int
   Room_ValueFP(roomnum, op, vhandle, ptr, index);
 }
 
-//	ubyte Room_IsValid(int roomnum);
+//	uint8_t Room_IsValid(int roomnum);
 //	returns 0 if the room is not valid.  1 if the room is a terrain cell. 2 if the room is a room segment
-typedef ubyte (*Room_IsValid_fp)(int roomnum);
+typedef uint8_t (*Room_IsValid_fp)(int roomnum);
 OSIRISEXTERN Room_IsValid_fp Room_IsValid;
 
 //	int Obj_GetAttachParent(int childhandle);
@@ -126,10 +126,10 @@ OSIRISEXTERN Obj_GetNumAttachSlots_fp Obj_GetNumAttachSlots;
 typedef int (*Obj_GetAttachChildHandle_fp)(int objhandle, char attachpoint);
 OSIRISEXTERN Obj_GetAttachChildHandle_fp Obj_GetAttachChildHandle;
 
-//	int Obj_AttachObjectAP(int parenthandle,char parent_ap,int childhandle,char child_ap,ubyte f_use_aligned);
+//	int Obj_AttachObjectAP(int parenthandle,char parent_ap,int childhandle,char child_ap,uint8_t f_use_aligned);
 //	Attaches one object to another object based on their attach points
 typedef int (*Obj_AttachObjectAP_fp)(int parenthandle, char parent_ap, int childhandle, char child_ap,
-                                     ubyte f_use_aligned);
+                                     uint8_t f_use_aligned);
 OSIRISEXTERN Obj_AttachObjectAP_fp Obj_AttachObjectAP;
 
 //	int Obj_AttachObjectRad(int parenthandle,char parent_ap,int childhandle,float percent_rad);
@@ -170,8 +170,8 @@ static inline int AI_GoalFollowPathSimple(int objhandle, int path_id, int guid, 
   return AI_GoalFollowPathSimpleFP(objhandle, path_id, guid, flags, slot);
 }
 
-//	int AI_PowerSwitch(int objhandle,ubyte f_power_on);
-typedef int (*AI_PowerSwitch_fp)(int objhandle, ubyte f_power_on);
+//	int AI_PowerSwitch(int objhandle,uint8_t f_power_on);
+typedef int (*AI_PowerSwitch_fp)(int objhandle, uint8_t f_power_on);
 OSIRISEXTERN AI_PowerSwitch_fp AI_PowerSwitch;
 
 //	void AI_Value(int objhandle, char op, char vtype, void *ptr);
@@ -193,8 +193,8 @@ static inline void Matcen_Value(int matcen_handle, char op, char vtype, void *pt
   Matcen_ValueFP(matcen_handle, op, vtype, ptr, prod_index);
 }
 
-//	ubyte AI_TurnTowardsVectors(int objhandle,vector *fvec,vector *uvec);
-typedef ubyte (*AI_TurnTowardsVectors_fp)(int objhandle, vector *fvec, vector *uvec);
+//	uint8_t AI_TurnTowardsVectors(int objhandle,vector *fvec,vector *uvec);
+typedef uint8_t (*AI_TurnTowardsVectors_fp)(int objhandle, vector *fvec, vector *uvec);
 OSIRISEXTERN AI_TurnTowardsVectors_fp AI_TurnTowardsVectors;
 
 //	void AI_SetType(int objhandle,int type);
@@ -237,21 +237,21 @@ OSIRISEXTERN AI_FindEnergyCenter_fp AI_FindEnergyCenter;
 typedef float (*AI_GetDistToObj_fp)(int objhandle, int otherobjhandle);
 OSIRISEXTERN AI_GetDistToObj_fp AI_GetDistToObj;
 
-//	int AI_SetGoalFlags(int objhandle,int goal_handle,int flags,ubyte f_enable);
-typedef int (*AI_SetGoalFlags_fp)(int objhandle, int goal_handle, int flags, ubyte f_enable);
+//	int AI_SetGoalFlags(int objhandle,int goal_handle,int flags,uint8_t f_enable);
+typedef int (*AI_SetGoalFlags_fp)(int objhandle, int goal_handle, int flags, uint8_t f_enable);
 OSIRISEXTERN AI_SetGoalFlags_fp AI_SetGoalFlags;
 
 //	void AI_SetGoalCircleDist(int objhandle,int goal_handle,float dist);
 typedef void (*AI_SetGoalCircleDist_fp)(int objhandle, int goal_handle, float dist);
 OSIRISEXTERN AI_SetGoalCircleDist_fp AI_SetGoalCircleDist;
 
-//	int File_ReadBytes(ubyte *buffer, int count, void *fileptr);
+//	int File_ReadBytes(uint8_t *buffer, int count, void *fileptr);
 // Reads the specified number of bytes from a file into the buffer
 // DO NOT USE THIS TO READ STRUCTURES.  This function is for byte
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef int (*File_ReadBytes_fp)(ubyte *buffer, int count, void *fileptr);
+typedef int (*File_ReadBytes_fp)(uint8_t *buffer, int count, void *fileptr);
 OSIRISEXTERN File_ReadBytes_fp File_ReadBytes;
 
 //	int File_ReadInt(void *fileptr);
@@ -266,16 +266,16 @@ OSIRISEXTERN File_ReadBytes_fp File_ReadBytes;
 typedef int (*File_ReadInt_fp)(void *fileptr);
 OSIRISEXTERN File_ReadInt_fp File_ReadInt;
 
-//	short File_ReadShort(void *fileptr);
-// Read and return a short (16 bits)
+//	int16_t File_ReadShort(void *fileptr);
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef short (*File_ReadShort_fp)(void *fileptr);
+typedef int16_t (*File_ReadShort_fp)(void *fileptr);
 OSIRISEXTERN File_ReadShort_fp File_ReadShort;
 
-//	sbyte File_ReadByte(void *fileptr);
+//	int8_t File_ReadByte(void *fileptr);
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef sbyte (*File_ReadByte_fp)(void *fileptr);
+typedef int8_t (*File_ReadByte_fp)(void *fileptr);
 OSIRISEXTERN File_ReadByte_fp File_ReadByte;
 
 //	float File_ReadFloat(void *fileptr);
@@ -303,13 +303,13 @@ OSIRISEXTERN File_ReadDouble_fp File_ReadDouble;
 typedef int (*File_ReadString_fp)(char *buf, size_t n, void *fileptr);
 OSIRISEXTERN File_ReadString_fp File_ReadString;
 
-//	int File_WriteBytes(const ubyte *buf,int count,void *fileptr);
+//	int File_WriteBytes(const uint8_t *buf,int count,void *fileptr);
 // Writes the specified number of bytes from a file into the buffer
 // DO NOT USE THIS TO WRITE STRUCTURES.  This function is for byte
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef int (*File_WriteBytes_fp)(const ubyte *buf, int count, void *fileptr);
+typedef int (*File_WriteBytes_fp)(const uint8_t *buf, int count, void *fileptr);
 OSIRISEXTERN File_WriteBytes_fp File_WriteBytes;
 
 //	int File_WriteString(const char *buf,void *fileptr);
@@ -333,16 +333,16 @@ OSIRISEXTERN File_WriteString_fp File_WriteString;
 typedef void (*File_WriteInt_fp)(int i, void *fileptr);
 OSIRISEXTERN File_WriteInt_fp File_WriteInt;
 
-//	void File_WriteShort(short s,void *fileptr);
-// Write a short (16 bits)
+//	void File_WriteShort(int16_t s,void *fileptr);
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef void (*File_WriteShort_fp)(short s, void *fileptr);
+typedef void (*File_WriteShort_fp)(int16_t s, void *fileptr);
 OSIRISEXTERN File_WriteShort_fp File_WriteShort;
 
-//	void File_WriteByte(sbyte b,void *fileptr);
+//	void File_WriteByte(int8_t b,void *fileptr);
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef void (*File_WriteByte_fp)(sbyte b, void *fileptr);
+typedef void (*File_WriteByte_fp)(int8_t b, void *fileptr);
 OSIRISEXTERN File_WriteByte_fp File_WriteByte;
 
 //	void File_WriteFloat(float f,void *fileptr);
@@ -384,11 +384,11 @@ OSIRISEXTERN Scrpt_CreateTimer_fp Scrpt_CreateTimer;
 typedef void (*MSafe_DoPowerup_fp)(msafe_struct *mstruct);
 OSIRISEXTERN MSafe_DoPowerup_fp MSafe_DoPowerup;
 
-// int Obj_Create()(ubyte type,ushort id,int roomnum,vector *pos,const matrix *orient,int parent_handle)
-typedef int (*Obj_Create_fp)(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+// int Obj_Create()(uint8_t type,uint16_t id,int roomnum,vector *pos,const matrix *orient,int parent_handle)
+typedef int (*Obj_Create_fp)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                              vector *initial_velocity);
 OSIRISEXTERN Obj_Create_fp Obj_CreateFP;
-static inline int Obj_Create(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient = NULL,
+static inline int Obj_Create(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
                              int parent_handle = 0, vector *initial_velocity = NULL) {
   return Obj_CreateFP(type, id, roomnum, pos, orient, parent_handle, initial_velocity);
 }
@@ -407,8 +407,8 @@ static inline void Obj_WBValue(int obj_handle, char wb_index, char op, char vtyp
   Obj_WBValueFP(obj_handle, wb_index, op, vtype, ptr, g_index);
 }
 
-// ubyte Scrpt_TimerExists(int handle);
-typedef ubyte (*Scrpt_TimerExists_fp)(int handle);
+// uint8_t Scrpt_TimerExists(int handle);
+typedef uint8_t (*Scrpt_TimerExists_fp)(int handle);
 OSIRISEXTERN Scrpt_TimerExists_fp Scrpt_TimerExists;
 
 typedef void (*Matcen_Reset_fp)(int handle);
@@ -423,10 +423,10 @@ OSIRISEXTERN Matcen_Create_fp Matcen_Create;
 typedef int (*Matcen_FindID_fp)(char *str);
 OSIRISEXTERN Matcen_FindID_fp Matcen_FindID;
 
-//	void Msn_FlagSet(int flag,ubyte value);
+//	void Msn_FlagSet(int flag,uint8_t value);
 //	Sets/Clears mission flags. flag is which mission flag to set/clear (1-32)
 //	value is 0 to clear, or 1 to set
-typedef void (*Msn_FlagSet_fp)(int flag, ubyte value);
+typedef void (*Msn_FlagSet_fp)(int flag, uint8_t value);
 OSIRISEXTERN Msn_FlagSet_fp Msn_FlagSet;
 
 //	int Msn_FlagGet(int flag);
@@ -476,7 +476,7 @@ typedef int (*File_Tell_fp)(void *fileptr);
 OSIRISEXTERN File_Tell_fp File_Tell;
 
 //	returns 1 if the file is at the EOF, else 0 (like feof())
-typedef ubyte (*File_eof_fp)(void *fileptr);
+typedef uint8_t (*File_eof_fp)(void *fileptr);
 OSIRISEXTERN File_eof_fp File_eof;
 
 typedef void (*Sound_Stop_fp)(int s_handle, bool f_immediately);
@@ -530,7 +530,7 @@ OSIRISEXTERN AI_GetCurGoalIndex_fp AI_GetCurGoalIndex;
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different If the memory has already been allocated, it will
 // return the handle.
-typedef OMMSHANDLE (*OMMS_Malloc_fp)(size_t amount_of_memory, uint unique_identifier, char *script_identifier);
+typedef OMMSHANDLE (*OMMS_Malloc_fp)(size_t amount_of_memory, uint32_t unique_identifier, char *script_identifier);
 OSIRISEXTERN OMMS_Malloc_fp OMMS_Malloc;
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
@@ -560,14 +560,14 @@ OSIRISEXTERN OMMS_Free_fp OMMS_Free;
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-typedef OMMSHANDLE (*OMMS_Find_fp)(uint unique_identifier, char *script_identifier);
+typedef OMMSHANDLE (*OMMS_Find_fp)(uint32_t unique_identifier, char *script_identifier);
 OSIRISEXTERN OMMS_Find_fp OMMS_Find;
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
-                                ubyte *has_free_been_called);
+typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
+                                uint8_t *has_free_been_called);
 OSIRISEXTERN OMMS_GetInfo_fp OMMS_GetInfo;
 
 //	Starts an in-game cinematic sequence.  text_string is the text to be displayed

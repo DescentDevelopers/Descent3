@@ -114,9 +114,9 @@
 
 //////////////////////////////////////////////////////////////////////////////
 typedef struct tJoystickRecord {
-  ubyte valid; // is this a valid device.
-  ubyte flags; // defined in ddio_win.h
-  short spad;
+  uint8_t valid; // is this a valid device.
+  uint8_t flags; // defined in ddio_win.h
+  int16_t spad;
 
   union {
     int joyid;
@@ -129,8 +129,8 @@ typedef struct tJoystickRecord {
 
 //////////////////////////////////////////////////////////////////////////////
 static struct tJoystickLibraryData {
-  short init;                // library initialized?
-  short njoy;                // maximum number of joysticks supported.
+  int16_t init;                // library initialized?
+  int16_t njoy;                // maximum number of joysticks supported.
   tJoystickRecord *joystick; // list of joysticks.
 
   LPDIRECTINPUT lpdi; // if lpdi != NULL, we use direct input for joysticks
@@ -160,7 +160,7 @@ bool joy_chpro_hack = false; // flightstick pro hack for Win32 only
 bool joy_Init(bool emulation) {
   // Can we initialize DirectInput version?
   // Try to init forcefeedback (which initializes joysticks)
-  uint i, n; // = joyGetNumDevs();
+  uint32_t i, n; // = joyGetNumDevs();
 
   ddio_ff_AttachForce();
 
@@ -732,7 +732,7 @@ bool joyw_get_name(int joy_num, char *szReturnName, const char *szRegKey)
   Length = sizeof(szOEMName); // Get OEMNAME Configuration
 
   if (ERROR_SUCCESS !=
-      RegQueryValueEx(JoyConfigKey, (char *)KeyStr, NULL, NULL, (unsigned char *)&szOEMName, &Length)) {
+      RegQueryValueEx(JoyConfigKey, (char *)KeyStr, NULL, NULL, (uint8_t *)&szOEMName, &Length)) {
     return (false); // No OEM name listed return error
   }
   RegCloseKey(ConfigKey); // Closes the registry Key
@@ -748,7 +748,7 @@ bool joyw_get_name(int joy_num, char *szReturnName, const char *szRegKey)
   Length = MAX_PATH; // Get Name as listed in Control Panel
 
   if (ERROR_SUCCESS !=
-      RegQueryValueEx(OEMPropKey, REGSTR_VAL_JOYOEMNAME, NULL, NULL, (unsigned char *)szReturnName, &Length)) {
+      RegQueryValueEx(OEMPropKey, REGSTR_VAL_JOYOEMNAME, NULL, NULL, (uint8_t *)szReturnName, &Length)) {
     return (false); // No OEM name listed return error
   }
   RegCloseKey(OEMPropKey); // Closes the registry Key

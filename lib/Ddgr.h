@@ -103,8 +103,8 @@ class oeApplication;
 typedef struct ddgr_init_info {
   oeApplication *obj;  // the app object created by app calling
   char *subsystem;     // subsystem name (i.e. 'DirectDraw', 'GDI')
-  ushort windowed : 1; // are we running in a fullscreen or windowed mode
-  ushort debug : 1;    // are we running in debug mode?
+  uint16_t windowed : 1; // are we running in a fullscreen or windowed mode
+  uint16_t debug : 1;    // are we running in debug mode?
 } ddgr_init_info;
 
 /*	app = application object.
@@ -167,8 +167,8 @@ typedef struct ddgr_surface {
   void *obj;               // internal structure info to library
   char name[SURF_NAMELEN]; // name
   int w, h, bpp;           // width, height and bit depth
-  ushort type;             // how driver handles this surface
-  ushort flags;            // colorkeying, etc.
+  uint16_t type;             // how driver handles this surface
+  uint16_t flags;            // colorkeying, etc.
   int locks;               // lock count.
 } ddgr_surface;
 
@@ -177,7 +177,7 @@ typedef struct ddgr_surface {
         ddraw_surf = true	if this is a true DirectDraw surface, false if a GDI surface
         object_ptr = DirectDraw object if ddraw_surf = true, a HDC if a GDI surface.
 */
-void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint *object_ptr);
+void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint32_t *object_ptr);
 
 //	you must typecase this return value to LPDIRECTDRAW
 unsigned ddgr_GetDDrawObject();
@@ -236,8 +236,8 @@ bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx,
         8-bit palette surface structures
 */
 typedef struct ddgr_rgb {
-  ubyte r, g, b; // RGB triplet
-  ubyte x;       // reserved...
+  uint8_t r, g, b; // RGB triplet
+  uint8_t x;       // reserved...
 } ddgr_rgb;
 
 typedef struct ddgr_palette {

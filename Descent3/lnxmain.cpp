@@ -505,10 +505,10 @@ int main(int argc, char *argv[]) {
   if (FindArg("-game_checksum")) {
     extern tOSIRISModuleInit Osiris_module_init;
     extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit * st);
-    extern unsigned int Osiris_CreateGameChecksum(void);
+    extern uint32_t Osiris_CreateGameChecksum(void);
 
     Osiris_CreateModuleInitStruct(&Osiris_module_init);
-    unsigned int checksum = Osiris_CreateGameChecksum();
+    uint32_t checksum = Osiris_CreateGameChecksum();
     printf("Descent 3\n");
     printf("Game Checksum: %u\n", checksum);
     return (0);

@@ -61,10 +61,10 @@ void rend_SetLightingState(light_state state);
 extern int gpu_Overlay_map;
 int Bump_map = 0;
 int Bumpmap_ready = 0;
-extern ubyte gpu_Overlay_type;
+extern uint8_t gpu_Overlay_type;
 float Z_bias = 0.0f;
-ubyte Renderer_close_flag = 0;
-extern ubyte Renderer_initted;
+uint8_t Renderer_close_flag = 0;
+extern uint8_t Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
 
@@ -133,18 +133,18 @@ PFNGLCLIENTACTIVETEXTUREARBPROC oglClientActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD4FARBPROC oglMultiTexCoord4f = NULL;
 #endif
 
-ushort *OpenGL_bitmap_remap = NULL;
-ushort *OpenGL_lightmap_remap = NULL;
-ubyte *OpenGL_bitmap_states = NULL;
-ubyte *OpenGL_lightmap_states = NULL;
+uint16_t *OpenGL_bitmap_remap = NULL;
+uint16_t *OpenGL_lightmap_remap = NULL;
+uint8_t *OpenGL_bitmap_states = NULL;
+uint8_t *OpenGL_lightmap_states = NULL;
 
-uint *opengl_Upload_data = NULL;
-uint *opengl_Translate_table = NULL;
-uint *opengl_4444_translate_table = NULL;
+uint32_t *opengl_Upload_data = NULL;
+uint32_t *opengl_Translate_table = NULL;
+uint32_t *opengl_4444_translate_table = NULL;
 
-ushort *opengl_packed_Upload_data = NULL;
-ushort *opengl_packed_Translate_table = NULL;
-ushort *opengl_packed_4444_translate_table = NULL;
+uint16_t *opengl_packed_Upload_data = NULL;
+uint16_t *opengl_packed_Translate_table = NULL;
+uint16_t *opengl_packed_4444_translate_table = NULL;
 
 extern rendering_state gpu_state;
 extern renderer_preferred_state gpu_preferred_state;
@@ -280,14 +280,14 @@ int opengl_MakeTextureObject(int tn) {
 
 int opengl_InitCache(void) {
 
-  OpenGL_bitmap_remap = (ushort *)mem_malloc(MAX_BITMAPS * 2);
+  OpenGL_bitmap_remap = (uint16_t *)mem_malloc(MAX_BITMAPS * 2);
   ASSERT(OpenGL_bitmap_remap);
-  OpenGL_lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * 2);
+  OpenGL_lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * 2);
   ASSERT(OpenGL_lightmap_remap);
 
-  OpenGL_bitmap_states = (ubyte *)mem_malloc(MAX_BITMAPS);
+  OpenGL_bitmap_states = (uint8_t *)mem_malloc(MAX_BITMAPS);
   ASSERT(OpenGL_bitmap_states);
-  OpenGL_lightmap_states = (ubyte *)mem_malloc(MAX_LIGHTMAPS);
+  OpenGL_lightmap_states = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
   ASSERT(OpenGL_lightmap_states);
 
   Cur_texture_object_num = 1;
@@ -793,9 +793,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   }
 
   if (OpenGL_packed_pixels) {
-    opengl_packed_Upload_data = (ushort *)mem_malloc(2048 * 2048 * 2);
-    opengl_packed_Translate_table = (ushort *)mem_malloc(65536 * 2);
-    opengl_packed_4444_translate_table = (ushort *)mem_malloc(65536 * 2);
+    opengl_packed_Upload_data = (uint16_t *)mem_malloc(2048 * 2048 * 2);
+    opengl_packed_Translate_table = (uint16_t *)mem_malloc(65536 * 2);
+    opengl_packed_4444_translate_table = (uint16_t *)mem_malloc(65536 * 2);
 
     ASSERT(opengl_packed_Upload_data);
     ASSERT(opengl_packed_Translate_table);
@@ -820,7 +820,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         b = 0x1F;
 #endif
 
-      ushort pix;
+      uint16_t pix;
 
       if (!(i & OPAQUE_FLAG)) {
         pix = 0;
@@ -840,9 +840,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       opengl_packed_4444_translate_table[i] = INTEL_INT(pix);
     }
   } else {
-    opengl_Upload_data = (uint *)mem_malloc(2048 * 2048 * 4);
-    opengl_Translate_table = (uint *)mem_malloc(65536 * 4);
-    opengl_4444_translate_table = (uint *)mem_malloc(65536 * 4);
+    opengl_Upload_data = (uint32_t *)mem_malloc(2048 * 2048 * 4);
+    opengl_Translate_table = (uint32_t *)mem_malloc(65536 * 4);
+    opengl_4444_translate_table = (uint32_t *)mem_malloc(65536 * 4);
 
     ASSERT(opengl_Upload_data);
     ASSERT(opengl_Translate_table);
@@ -851,7 +851,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     mprintf((0, "Building OpenGL translate table...\n"));
 
     for (i = 0; i < 65536; i++) {
-      uint pix;
+      uint32_t pix;
       int r = (i >> 10) & 0x1f;
       int g = (i >> 5) & 0x1f;
       int b = i & 0x1f;
@@ -923,13 +923,13 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 void opengl_Close() {
   CHECK_ERROR(5)
 
-  uint *delete_list = (uint *)mem_malloc(Cur_texture_object_num * sizeof(int));
+  uint32_t *delete_list = (uint32_t *)mem_malloc(Cur_texture_object_num * sizeof(int));
   ASSERT(delete_list);
   for (int i = 1; i < Cur_texture_object_num; i++)
     delete_list[i] = i;
 
   if (Cur_texture_object_num > 1)
-    dglDeleteTextures(Cur_texture_object_num, (const uint *)delete_list);
+    dglDeleteTextures(Cur_texture_object_num, (const uint32_t *)delete_list);
 
   mem_free(delete_list);
 
@@ -1010,7 +1010,7 @@ void opengl_Close() {
 
 // Takes our 16bit format and converts it into the memory scheme that OpenGL wants
 void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int replace, int tn) {
-  ushort *bm_ptr;
+  uint16_t *bm_ptr;
 
   int w, h;
   int size;
@@ -1053,11 +1053,11 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
   if (OpenGL_packed_pixels) {
     if (map_type == MAP_TYPE_LIGHTMAP) {
-      ushort *left_data = (ushort *)opengl_packed_Upload_data;
+      uint16_t *left_data = (uint16_t *)opengl_packed_Upload_data;
       int bm_left = 0;
 
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
-        ushort *dest_data = left_data;
+        uint16_t *dest_data = left_data;
         for (int t = 0; t < w; t++) {
           *dest_data++ = opengl_packed_Translate_table[bm_ptr[bm_left + t]];
         }
@@ -1131,11 +1131,11 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
     }
   } else {
     if (map_type == MAP_TYPE_LIGHTMAP) {
-      uint *left_data = (uint *)opengl_Upload_data;
+      uint32_t *left_data = (uint32_t *)opengl_Upload_data;
       int bm_left = 0;
 
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
-        uint *dest_data = left_data;
+        uint32_t *dest_data = left_data;
         for (int t = 0; t < w; t++) {
           *dest_data++ = opengl_Translate_table[bm_ptr[bm_left + t]];
         }
@@ -1320,7 +1320,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
 // Chooses the correct filter type for the currently bound texture
 void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
   int magf;
-  sbyte dest_state;
+  int8_t dest_state;
 
   if (map_type == MAP_TYPE_LIGHTMAP) {
     magf = GET_FILTER_STATE(OpenGL_lightmap_states[handle]);
@@ -1488,7 +1488,7 @@ void opengl_ResetCache(void) {
   opengl_InitCache();
 }
 
-ubyte opengl_Framebuffer_ready = 0;
+uint8_t opengl_Framebuffer_ready = 0;
 chunked_bitmap opengl_Chunked_bitmap;
 
 void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
@@ -1526,9 +1526,9 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
   ASSERT(how_many_down > 0);
 
   // Now go through our big bitmap and partition it into pieces
-  ushort *src_data = bm_data(bm_handle, 0);
-  ushort *sdata;
-  ushort *ddata;
+  uint16_t *src_data = bm_data(bm_handle, 0);
+  uint16_t *sdata;
+  uint16_t *ddata;
 
   int shift;
   switch (iopt) {
@@ -1585,7 +1585,7 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
 }
 
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState(sbyte mipstate) {}
+void rend_SetMipState(int8_t mipstate) {}
 
 // Init our renderer
 int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state *pref_state) {
@@ -1694,7 +1694,7 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
 void rend_SetFlatColor(ddgr_color color) { gpu_state.cur_color = color; }
 
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(sbyte state) {
+void rend_SetFogState(int8_t state) {
   if (state == gpu_state.cur_fog_state)
     return;
 
@@ -1858,7 +1858,7 @@ void rend_Flip(void) {
 void rend_EndFrame(void) {}
 
 // Sets the state of z-buffering to on or off
-void rend_SetZBufferState(sbyte state) {
+void rend_SetZBufferState(int8_t state) {
   if (state == gpu_state.cur_zbuffer_state)
     return; // No redundant state setting
 
@@ -1945,7 +1945,7 @@ ddgr_color rend_GetPixel(int x, int y) {
 
 // Draws a line
 void rend_DrawLine(int x1, int y1, int x2, int y2) {
-  sbyte atype;
+  int8_t atype;
   light_state ltype;
   texture_type ttype;
   int color = gpu_state.cur_color;
@@ -2031,7 +2031,7 @@ void rend_SetLightingState(light_state state) {
   CHECK_ERROR(13)
 }
 
-void rend_SetAlphaType(sbyte atype) {
+void rend_SetAlphaType(int8_t atype) {
   if (atype == gpu_state.cur_alpha_type)
     return; // don't set it redundantly
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
@@ -2145,8 +2145,8 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 
 // Takes a screenshot of the current frame and puts it into the handle passed
 std::unique_ptr<NewBitmap> rend_Screenshot() {
-  ushort *dest_data;
-  uint *temp_data;
+  uint16_t *dest_data;
+  uint32_t *temp_data;
 
   int total = gpu_state.screen_width * gpu_state.screen_height;
   auto result = std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
@@ -2164,7 +2164,7 @@ std::unique_ptr<NewBitmap> rend_Screenshot() {
 // Takes a screenshot of the current frame and puts it into the handle passed
 void rend_Screenshot(int bm_handle) {
   auto screenshot = rend_Screenshot();
-  auto *temp_data = reinterpret_cast<uint*>(screenshot->getData());
+  auto *temp_data = reinterpret_cast<uint32_t*>(screenshot->getData());
 
   uint32_t w, h;
   screenshot->getSize(w, h);
@@ -2172,11 +2172,11 @@ void rend_Screenshot(int bm_handle) {
   ASSERT((bm_w(bm_handle, 0)) == gpu_state.screen_width);
   ASSERT((bm_h(bm_handle, 0)) == gpu_state.screen_height);
 
-  ushort* dest_data = bm_data(bm_handle, 0);
+  uint16_t* dest_data = bm_data(bm_handle, 0);
 
   for (int i = 0; i < h; i++) {
     for (int t = 0; t < w; t++) {
-      uint spix = temp_data[i * w + t];
+      uint32_t spix = temp_data[i * w + t];
 
       int r = spix & 0xff;
       int g = (spix >> 8) & 0xff;

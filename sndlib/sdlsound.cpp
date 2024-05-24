@@ -60,7 +60,7 @@ lnxsound::~lnxsound() {
 }
 
 // Starts the sound library, maybe have it send back some information -- 3d support?
-int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) {
+int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played) {
   SDL_AudioSpec spec;
 
   // setup mixer
@@ -118,8 +118,8 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char ma
   return true;
 }
 
-bool lnxsound::GetDeviceSettings(SDL_AudioDeviceID *device, unsigned int *freq, unsigned int *bit_depth,
-                                 unsigned int *channels) const {
+bool lnxsound::GetDeviceSettings(SDL_AudioDeviceID *device, uint32_t *freq, uint32_t *bit_depth,
+                                 uint32_t *channels) const {
   if (sound_device == 0)
     return false;
 
@@ -171,12 +171,12 @@ bool lnxsound::SetSoundQuality(char quality) {
         int count;
 
         ASSERT(SoundFiles[j].sample_8bit == nullptr);
-        SoundFiles[j].sample_8bit = (unsigned char *)GlobalAlloc(0, SoundFiles[j].sample_length);
+        SoundFiles[j].sample_8bit = (uint8_t *)GlobalAlloc(0, SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
         // (+128 biase).
         for (count = 0; count < (int)SoundFiles[j].sample_length; count++) {
-          SoundFiles[j].sample_8bit[count] = (unsigned char)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
+          SoundFiles[j].sample_8bit[count] = (uint8_t)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
         }
 
         GlobalFree(SoundFiles[j].sample_16bit);
@@ -201,9 +201,9 @@ char lnxsound::GetSoundMixer() { return SOUND_MIXER_SOFTWARE_16; }
 // Also put prioritization code in here
 //		ignore reserved slots
 #ifdef _DEBUG
-short lnxsound::FindFreeSoundSlot(int sound_index, float volume, int priority)
+int16_t lnxsound::FindFreeSoundSlot(int sound_index, float volume, int priority)
 #else
-short lnxsound::FindFreeSoundSlot(float volume, int priority)
+int16_t lnxsound::FindFreeSoundSlot(float volume, int priority)
 #endif
 {
   int current_slot;
@@ -270,7 +270,7 @@ short lnxsound::FindFreeSoundSlot(float volume, int priority)
 // Plays a 2d sound
 int lnxsound::PlaySound2d(play_information *play_info, int sound_index, float f_volume, float f_pan, bool f_looped) {
   sound_buffer_info *sb;
-  short sound_slot;
+  int16_t sound_slot;
 
   if (sound_device == 0) {
     return -1;
@@ -330,7 +330,7 @@ inline int lnxsound::ValidateUniqueId(int sound_uid) {
 }
 
 int lnxsound::PlayStream(play_information *play_info) {
-  short sound_slot;
+  int16_t sound_slot;
 
   ASSERT(play_info != nullptr);
 
@@ -373,7 +373,7 @@ void lnxsound::SetListener(pos_state *cur_pos) {
 }
 
 int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float adjusted_volume,
-                          bool f_looped, float reverb) //, unsigned short frequency
+                          bool f_looped, float reverb) //, uint16_t frequency
 {
   float volume = adjusted_volume; // Adjust base volume by sent volume, let 3d stuff do the rest
 
@@ -415,7 +415,7 @@ int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_stat
   return PlaySound2d(play_info, sound_index, volume, pan, f_looped);
 }
 
-void lnxsound::AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) {
+void lnxsound::AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) {
   int current_slot;
 
   if (sound_device == 0)
@@ -523,7 +523,7 @@ int lnxsound::IsSoundPlaying(int sound_index) {
 }
 
 // Stops 2d and 3d sounds
-void lnxsound::StopSound(int sound_uid, unsigned char f_immediately) {
+void lnxsound::StopSound(int sound_uid, uint8_t f_immediately) {
   int current_slot;
   sound_buffer_info *sb;
 

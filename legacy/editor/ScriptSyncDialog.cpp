@@ -43,7 +43,7 @@ bool ManageFindFirst(char *buffer,char *wildcard);
 bool ManageFindNext(char *buffer);
 void ManageFindClose(void);
 
-ubyte DetermineScriptType(char *filename);
+uint8_t DetermineScriptType(char *filename);
 
 // returns true if the given .cpp file is has an out of date dll (or non-existant).  Working
 //	dir MUST be set to data\scripts before calling this function

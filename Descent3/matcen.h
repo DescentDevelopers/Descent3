@@ -61,8 +61,8 @@ private:
   char m_control_type;
   char m_type;
   char m_creation_effect;
-  short m_creation_texture;
-  ubyte m_cur_saturation_count;
+  int16_t m_creation_texture;
+  uint8_t m_cur_saturation_count;
 
   int m_num_spawn_pnts;
 
@@ -77,7 +77,7 @@ private:
   int m_spawn_pnt[MAX_SPAWN_PNTS];
   vector m_spawn_vec[MAX_SPAWN_PNTS];
   vector m_spawn_normal[MAX_SPAWN_PNTS];
-  short m_spawn_vis_effects[MAX_MATCEN_EFFECT_SATURATION][MAX_SPAWN_PNTS];
+  int16_t m_spawn_vis_effects[MAX_MATCEN_EFFECT_SATURATION][MAX_SPAWN_PNTS];
 
   int m_max_prod;
 
@@ -86,8 +86,8 @@ private:
   int m_prod_priority[MAX_PROD_TYPES];
   int m_max_prod_type[MAX_PROD_TYPES];
 
-  short m_max_alive_children;
-  short m_num_alive;
+  int16_t m_max_alive_children;
+  int16_t m_num_alive;
   int *m_alive_list; // list of alive children
 
   float m_preprod_time;
@@ -135,8 +135,8 @@ public:
   matcen();
   ~matcen();
 
-  void SetCreationTexture(short texnum);
-  short GetCreationTexture();
+  void SetCreationTexture(int16_t texnum);
+  int16_t GetCreationTexture();
 
   char GetAttachType();
   bool SetAttachType(char type);

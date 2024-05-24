@@ -64,7 +64,7 @@
 
 
 static llsGeometry *Geometry = NULL;
-static short Sound_room_list[SOUND_RENDER_ROOM_LIMIT + 1];
+static int16_t Sound_room_list[SOUND_RENDER_ROOM_LIMIT + 1];
 
 //	resets sound geometry system (called beginning of each level)
 void SoundRenderReset() { Sound_room_list[0] = -1; }
@@ -175,11 +175,11 @@ void sound_render_room_geometry(int iroom, int slot) {
 //		next portal
 //	end routine
 //
-short *sound_render_audible_rooms(pos_state *listener_pos, float max_radius) {
+int16_t *sound_render_audible_rooms(pos_state *listener_pos, float max_radius) {
   int iroom = 0;
 
   sound_render_room_geometry(listener_pos->roomnum, iroom);
   Sound_room_list[iroom + 1] = -1;
 
-  return (short *)Sound_room_list;
+  return (int16_t *)Sound_room_list;
 }

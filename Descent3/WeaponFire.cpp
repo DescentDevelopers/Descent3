@@ -1215,7 +1215,7 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
   int objnum;
   object *obj;
   int parentnum = parent - Objects;
-  ubyte terrain = 0;
+  uint8_t terrain = 0;
 
   ASSERT(Weapons[weapon_num].used);
 
@@ -1865,14 +1865,14 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
     float diff_scale = DIFF_LEVEL / (MAX_DIFFICULTY_LEVELS - 1);
     float fs = (MAX_FIRE_SPREAD * (1.0f - diff_scale)) + (MIN_FIRE_SPREAD * diff_scale);
 
-    short fire_spread = obj->ai_info->fire_spread * fs;
+    int16_t fire_spread = obj->ai_info->fire_spread * fs;
 
     if ((obj->control_type == CT_AI && ((obj->ai_info->flags & AIF_TEAM_MASK) != AIF_TEAM_REBEL)) &&
         fire_spread < Diff_ai_min_fire_spread[DIFF_LEVEL] * fs) {
       fire_spread = Diff_ai_min_fire_spread[DIFF_LEVEL] * fs;
     }
 
-    short half_fire_spread = fire_spread >> 1;
+    int16_t half_fire_spread = fire_spread >> 1;
 
     if (fire_spread > 0) {
       p = (ps_rand() % fire_spread) - half_fire_spread;
@@ -1889,12 +1889,12 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
   if (Game_mode & GM_MULTI) {
     if (Netgame.local_role == LR_SERVER) {
       if (obj->control_type == CT_AI) {
-        MultiSendRobotFireWeapon(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (unsigned short)weapon_num);
+        MultiSendRobotFireWeapon(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (uint16_t)weapon_num);
       }
     }
   }
   if (Demo_flags == DF_RECORDING) {
-    DemoWriteWeaponFire(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (unsigned short)weapon_num, objnum,
+    DemoWriteWeaponFire(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (uint16_t)weapon_num, objnum,
                         gun_num);
   }
 
@@ -2277,7 +2277,7 @@ void DoFusionEffect(object *objp, int weapon_type) {
 }
 
 // Do the spray effect
-void DoSprayEffect(object *obj, otype_wb_info *static_wb, ubyte wb_index) {
+void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index) {
   vector laser_pos, laser_dir;
   int cur_m_bit;
 
@@ -2664,7 +2664,7 @@ void StopOnOffWeapon(object *obj) {
 }
 
 // Starts an on/off weapon firing
-void StartOnOffWeapon(object *obj, ubyte wb_index) {
+void StartOnOffWeapon(object *obj, uint8_t wb_index) {
   // mprintf ((0,"Starting on/off weapon!\n"));
   obj->weapon_fire_flags |= WFF_ON_OFF;
 
@@ -2694,7 +2694,7 @@ void DoZoomStay() {
 }
 
 // Zooms in for this weapon
-void DoZoomEffect(player_weapon *pw, ubyte clear) {
+void DoZoomEffect(player_weapon *pw, uint8_t clear) {
   if (pw->firing_time < .5) {
     Players[Player_num].turn_scalar = 1.0;
     Render_FOV = D3_DEFAULT_FOV;

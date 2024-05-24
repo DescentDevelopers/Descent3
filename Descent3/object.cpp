@@ -662,7 +662,7 @@
  * Rooms cannot cycle through anims
  *
  * 119   5/04/98 12:30p Matt
- * ObjCreate() now takes object id as a ushort
+ * ObjCreate() now takes object id as a uint16_t
  *
  * 118   5/04/98 12:28p Matt
  * Added shard objects
@@ -1199,7 +1199,7 @@
 object *Player_object = NULL; // the object that is the player
 object *Viewer_object = NULL; // which object we are seeing from
 
-static short free_obj_list[MAX_OBJECTS];
+static int16_t free_obj_list[MAX_OBJECTS];
 
 // Data for objects
 
@@ -1210,10 +1210,10 @@ static short free_obj_list[MAX_OBJECTS];
 object Objects[MAX_OBJECTS];
 
 tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
-ubyte Object_position_head;
-signed short Object_map_position_history[MAX_OBJECTS];
-short Object_map_position_free_slots[MAX_OBJECT_POS_HISTORY];
-unsigned short Num_free_object_position_history;
+uint8_t Object_position_head;
+int16_t Object_map_position_history[MAX_OBJECTS];
+int16_t Object_map_position_free_slots[MAX_OBJECT_POS_HISTORY];
+uint16_t Num_free_object_position_history;
 
 int Num_objects = 0;
 int Highest_object_index = 0;
@@ -1254,7 +1254,7 @@ char *Object_type_names[MAX_OBJECT_TYPES] = {
 #endif
 
 int Num_big_objects = 0;
-short BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
+int16_t BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
 
 /*
  *  Local Function Prototypes
@@ -1680,7 +1680,7 @@ void ObjSetAABB(object *obj) {
 //-----------------------------------------------------------------------------
 // initialize a new object.  adds to the list for the given room
 // returns the object number
-int ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle) {
+int ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle) {
   int objnum;
   object *obj;
   int handle;
@@ -2398,7 +2398,7 @@ void DoFlyingControl(object *objp) {
   // Send an event to the Game DLLs so they can do any processing of game controls
   if (Game_mode & GM_MULTI) {
     DLLInfo.me_handle = DLLInfo.it_handle = objp->handle;
-    DLLInfo.special_data = (ubyte *)&controls;
+    DLLInfo.special_data = (uint8_t *)&controls;
     CallGameDLL(EVT_GAMEDOCONTROLS, &DLLInfo);
   }
 
@@ -2554,7 +2554,7 @@ void ObjDoEffects(object *obj) {
       object *killer;
 
       if (obj->effect_info->damage_handle != OBJECT_HANDLE_NONE) {
-        uint sig = obj->effect_info->damage_handle & HANDLE_COUNT_MASK;
+        uint32_t sig = obj->effect_info->damage_handle & HANDLE_COUNT_MASK;
         int objnum = obj->effect_info->damage_handle & HANDLE_OBJNUM_MASK;
 
         if ((Objects[objnum].handle & HANDLE_COUNT_MASK) != sig)
@@ -3319,7 +3319,7 @@ void GetObjectPointInWorld(vector *dest, object *obj, int subnum, int vertnum) {
   *dest += obj->pos;
 }
 
-bool ObjGetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info) {
+bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info) {
   object *obj = &Objects[objnum];
 
   if ((objnum >= 0) && (obj->type != OBJ_NONE) && (obj->type != OBJ_WEAPON) && (obj->flags & OF_POLYGON_OBJECT)) {
@@ -3327,7 +3327,7 @@ bool ObjGetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info) {
     ai_frame *ai_info = obj->ai_info;
 
     multi_anim_info->server_time = Gametime;
-    multi_anim_info->server_anim_frame = (ushort)(pm->anim_frame * 256.0f);
+    multi_anim_info->server_anim_frame = (uint16_t)(pm->anim_frame * 256.0f);
 
     multi_anim_info->anim_start_frame = pm->anim_start_frame;
     multi_anim_info->anim_end_frame = pm->anim_end_frame;
@@ -3400,7 +3400,7 @@ void SetObjectControlType(object *obj, int control_type) {
   }
 }
 
-void ObjSetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info) {
+void ObjSetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info) {
   object *obj = &Objects[objnum];
   polyobj_info *pm;
 
@@ -3414,7 +3414,7 @@ void ObjSetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info) {
   }
 }
 
-void ObjGetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info) {
+void ObjGetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info) {
   object *obj = &Objects[objnum];
   poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
   polyobj_info *p_info = &obj->rtype.pobj_info;
@@ -3436,7 +3436,7 @@ void ObjGetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info) 
   }
 }
 
-void ObjSetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info) {
+void ObjSetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info) {
   object *obj = &Objects[objnum];
   poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
   polyobj_info *p_info = &obj->rtype.pobj_info;

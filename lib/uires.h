@@ -108,8 +108,8 @@ public:
   virtual int width() { return 0; };
   virtual int height() { return 0; };
   virtual tUIResClass class_type() { return uiItem; };
-  virtual void set_alpha(ubyte alpha){};
-  virtual ubyte get_alpha() const { return 0; };
+  virtual void set_alpha(uint8_t alpha){};
+  virtual uint8_t get_alpha() const { return 0; };
   virtual void set_color(ddgr_color col){};
   virtual ddgr_color get_color() const { return GR_BLACK; };
   virtual UIItem *CopyUIItem() { return NULL; };
@@ -120,9 +120,9 @@ public:
 //		text.  allows for alpha, color and different fonts.
 
 class UITextItem : public UIItem {
-  friend void SetUITextItemText(UITextItem *uit, char *newtext, unsigned int color);
+  friend void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color);
 
-  ubyte m_Alpha;      // alpha value of text.
+  uint8_t m_Alpha;      // alpha value of text.
   ddgr_color m_Color; // color of text.
   int m_Font;
 
@@ -144,8 +144,8 @@ public:
     m_Color = GR_WHITE;
     m_Font = m_DefaultFont;
   };
-  UITextItem(const char *text, ddgr_color color = GR_WHITE, ubyte alpha = 255);
-  UITextItem(int font, const char *text, ddgr_color color = GR_WHITE, ubyte alpha = 255);
+  UITextItem(const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
+  UITextItem(int font, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
   virtual ~UITextItem();
 
   //	if returns false, then it didn't draw.
@@ -157,13 +157,13 @@ public:
   virtual UIItem *CopyUIItem();
 
   //	set visual characteristics of text item
-  virtual void set_alpha(ubyte alpha) { m_Alpha = alpha; };
+  virtual void set_alpha(uint8_t alpha) { m_Alpha = alpha; };
   virtual void set_color(ddgr_color col) { m_Color = col; };
 
   void set_font(int font) { m_Font = font; };
 
   //	get visual characteristics of text item
-  virtual ubyte get_alpha() const { return m_Alpha; };
+  virtual uint8_t get_alpha() const { return m_Alpha; };
   virtual ddgr_color get_color() const { return m_Color; };
   int get_font() const { return m_Font; };
 
@@ -195,8 +195,8 @@ class UISnazzyTextItem : public UITextItem {
 
 public:
   UISnazzyTextItem() { m_flags = m_data.i = m_internaldata.i = 0; };
-  UISnazzyTextItem(unsigned flags, const char *text, ddgr_color color = GR_WHITE, ubyte alpha = 255);
-  UISnazzyTextItem(unsigned flags, int font, const char *text, ddgr_color color = GR_WHITE, ubyte alpha = 255);
+  UISnazzyTextItem(unsigned flags, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
+  UISnazzyTextItem(unsigned flags, int font, const char *text, ddgr_color color = GR_WHITE, uint8_t alpha = 255);
 
   void set_data(int data) { m_data.i = data; };
   void set_data(float data) { m_data.f = data; };
@@ -222,20 +222,20 @@ class UIBitmapItem : public UIItem {
     int handle;            // a simple bitmap
   } m_Bitmap;              // a bitmap.
 
-  ubyte m_Alpha; // alpha value of text.
+  uint8_t m_Alpha; // alpha value of text.
 
 public:
   UIBitmapItem() {
     m_IsValid = false;
     m_Alpha = 255;
   };
-  UIBitmapItem(chunked_bitmap *chunk, ubyte alpha = 255) {
+  UIBitmapItem(chunked_bitmap *chunk, uint8_t alpha = 255) {
     m_IsValid = true;
     m_Bitmap.chunk = chunk;
     m_Alpha = alpha;
     m_IsChunked = true;
   };
-  UIBitmapItem(int bm_handle, ubyte alpha = 255) {
+  UIBitmapItem(int bm_handle, uint8_t alpha = 255) {
     m_IsValid = true;
     m_Alpha = alpha;
     m_IsChunked = false;
@@ -266,14 +266,14 @@ public:
     m_IsChunked = false;
     m_Bitmap.handle = bm_handle;
   };
-  virtual void set_alpha(ubyte alpha) { // sets the alpha
+  virtual void set_alpha(uint8_t alpha) { // sets the alpha
     m_Alpha = alpha;
   };
 
   // get visual characteristics
   chunked_bitmap *get_chunked_bitmap() const { return (chunked_bitmap *)m_Bitmap.chunk; };
   int get_bitmap() const { return m_Bitmap.handle; };
-  virtual ubyte get_alpha() const { // gets alpha.
+  virtual uint8_t get_alpha() const { // gets alpha.
     return m_Alpha;
   };
 
@@ -286,10 +286,10 @@ public:
 
 class UIPrimativeItem : public UIItem {
   ddgr_color color;
-  ubyte alpha;
+  uint8_t alpha;
 
 public:
-  UIPrimativeItem(ddgr_color col, ubyte alph = 255) {
+  UIPrimativeItem(ddgr_color col, uint8_t alph = 255) {
     color = col;
     alpha = alph;
   };
@@ -298,8 +298,8 @@ public:
 
   virtual void set_color(ddgr_color col) { color = col; };
   virtual ddgr_color get_color() const { return color; };
-  virtual void set_alpha(ubyte alph) { alpha = alph; };
-  virtual ubyte get_alpha() const { return alpha; };
+  virtual void set_alpha(uint8_t alph) { alpha = alph; };
+  virtual uint8_t get_alpha() const { return alpha; };
 
   // const UIPrimativeItem& UIPrimativeItem::operator =(const UIPrimativeItem& item)	// JCA made Mac compatible
   const UIPrimativeItem &operator=(const UIPrimativeItem &item) {

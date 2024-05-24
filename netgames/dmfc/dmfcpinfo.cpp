@@ -285,10 +285,10 @@ int PInfo::GetExtraInfoSize(void) {
   size += sizeof(float);  // extra_info.observer_time
   size += sizeof(float);  // extrainfo.kill_time
   size += sizeof(float);  // extrainfo.death_time
-  size += sizeof(ushort); // extrainfo.kills_in_a_row
-  size += sizeof(ushort); // extrainfo.deaths_in_a_row
-  size += sizeof(sbyte);  // extrainfo.last_kill_num
-  size += sizeof(sbyte);  // extrainfo.last_death_num
+  size += sizeof(uint16_t); // extrainfo.kills_in_a_row
+  size += sizeof(uint16_t); // extrainfo.deaths_in_a_row
+  size += sizeof(int8_t);  // extrainfo.last_kill_num
+  size += sizeof(int8_t);  // extrainfo.last_death_num
   size += sizeof(char);   // extrainfo.got_revenge
 
   return size;
@@ -311,7 +311,7 @@ int PInfo::GetSizeOfData(void) {
   return size;
 }
 
-void PInfo::PackData(ubyte *buffer) {
+void PInfo::PackData(uint8_t *buffer) {
   if (!buffer)
     return;
   tPKillerInfo *c;
@@ -337,7 +337,7 @@ void PInfo::PackData(ubyte *buffer) {
   }
 }
 
-bool PInfo::UnpackData(ubyte *buffer, int buffsize) {
+bool PInfo::UnpackData(uint8_t *buffer, int buffsize) {
   if (!buffer)
     return false;
   int count = 0;

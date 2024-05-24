@@ -22,7 +22,7 @@
 
 namespace {
 
-const unsigned int md5_round_shifts[] = {7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21};
+const uint32_t md5_round_shifts[] = {7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21};
 
 const std::uint32_t md5_round_constants[] = {
     0xD76AA478UL, 0xE8C7B756UL, 0x242070DBUL, 0xC1BDCEEEUL, 0xF57C0FAFUL, 0x4787C62AUL, 0xA8304613UL, 0xFD469501UL,
@@ -38,7 +38,7 @@ std::uint32_t rotl_uint32(std::uint32_t a, std::uint32_t b) noexcept { return b 
 
 }; // namespace
 
-void MD5::round(std::array<std::uint32_t, 4> &sums, const unsigned char *block) const noexcept {
+void MD5::round(std::array<std::uint32_t, 4> &sums, const uint8_t *block) const noexcept {
   // break 64 bytes into 16 dwords
   std::uint32_t m[16];
   for (std::size_t i = 0; i < 16; ++i) {
@@ -50,9 +50,9 @@ void MD5::round(std::array<std::uint32_t, 4> &sums, const unsigned char *block) 
   std::uint32_t a = sums[0], b = sums[1], c = sums[2], d = sums[3];
 
   // 64 rounds...
-  for (unsigned int r = 0; r < 64; ++r) {
+  for (uint32_t r = 0; r < 64; ++r) {
     std::uint32_t f, g;
-    unsigned int s = md5_round_shifts[((r >> 2) & ~3) | (r & 3)];
+    uint32_t s = md5_round_shifts[((r >> 2) & ~3) | (r & 3)];
     switch (r >> 4) {
     case 0:
       f = (b & c) | (~b & d), g = r;
@@ -78,9 +78,9 @@ void MD5::round(std::array<std::uint32_t, 4> &sums, const unsigned char *block) 
   sums[0] += a, sums[1] += b, sums[2] += c, sums[3] += d;
 }
 
-void MD5::round(const unsigned char *block) noexcept { round(sums_, block); }
+void MD5::round(const uint8_t *block) noexcept { round(sums_, block); }
 
-void MD5::update(const unsigned char *data, std::size_t n) noexcept {
+void MD5::update(const uint8_t *data, std::size_t n) noexcept {
   message_len_ += n * 8;
 
   // if there is already some data in tmpbuf, check if we would fill it
@@ -115,12 +115,12 @@ void MD5::update(const unsigned char *data, std::size_t n) noexcept {
   }
 }
 
-void MD5::place_length(unsigned char *destination) const noexcept {
+void MD5::place_length(uint8_t *destination) const noexcept {
   for (std::size_t i = 0; i < 8; ++i)
-    destination[i] = static_cast<unsigned char>(message_len_ >> (8 * i));
+    destination[i] = static_cast<uint8_t>(message_len_ >> (8 * i));
 }
 
-std::array<unsigned char, 16> MD5::digest() const noexcept {
+std::array<uint8_t, 16> MD5::digest() const noexcept {
   // copies of sums and buffers
   auto sums = sums_;
   auto buf = tmpbuf_;
@@ -147,46 +147,46 @@ std::array<unsigned char, 16> MD5::digest() const noexcept {
   place_length(&buf[56]);
   round(sums, buf.data());
 
-  return {static_cast<unsigned char>(sums[0]),       static_cast<unsigned char>(sums[0] >> 8),
-          static_cast<unsigned char>(sums[0] >> 16), static_cast<unsigned char>(sums[0] >> 24),
-          static_cast<unsigned char>(sums[1]),       static_cast<unsigned char>(sums[1] >> 8),
-          static_cast<unsigned char>(sums[1] >> 16), static_cast<unsigned char>(sums[1] >> 24),
-          static_cast<unsigned char>(sums[2]),       static_cast<unsigned char>(sums[2] >> 8),
-          static_cast<unsigned char>(sums[2] >> 16), static_cast<unsigned char>(sums[2] >> 24),
-          static_cast<unsigned char>(sums[3]),       static_cast<unsigned char>(sums[3] >> 8),
-          static_cast<unsigned char>(sums[3] >> 16), static_cast<unsigned char>(sums[3] >> 24)};
+  return {static_cast<uint8_t>(sums[0]),       static_cast<uint8_t>(sums[0] >> 8),
+          static_cast<uint8_t>(sums[0] >> 16), static_cast<uint8_t>(sums[0] >> 24),
+          static_cast<uint8_t>(sums[1]),       static_cast<uint8_t>(sums[1] >> 8),
+          static_cast<uint8_t>(sums[1] >> 16), static_cast<uint8_t>(sums[1] >> 24),
+          static_cast<uint8_t>(sums[2]),       static_cast<uint8_t>(sums[2] >> 8),
+          static_cast<uint8_t>(sums[2] >> 16), static_cast<uint8_t>(sums[2] >> 24),
+          static_cast<uint8_t>(sums[3]),       static_cast<uint8_t>(sums[3] >> 8),
+          static_cast<uint8_t>(sums[3] >> 16), static_cast<uint8_t>(sums[3] >> 24)};
 }
 
 void MD5::update(float valin) noexcept {
   float val = INTEL_FLOAT(valin);
-  unsigned char *p = (unsigned char *)&val;
+  uint8_t *p = (uint8_t *)&val;
   update(p, sizeof(float));
 }
 
 void MD5::update(int valin) noexcept {
   int val = INTEL_INT(valin);
-  unsigned char *p = (unsigned char *)&val;
+  uint8_t *p = (uint8_t *)&val;
   update(p, sizeof(int));
 }
 
-void MD5::update(short valin) noexcept {
-  short val = INTEL_SHORT(valin);
-  unsigned char *p = (unsigned char *)&val;
-  update(p, sizeof(short));
+void MD5::update(int16_t valin) noexcept {
+  int16_t val = INTEL_SHORT(valin);
+  uint8_t *p = (uint8_t *)&val;
+  update(p, sizeof(int16_t));
 }
 
-void MD5::update(unsigned int valin) noexcept {
-  unsigned int val = INTEL_INT(valin);
-  unsigned char *p = (unsigned char *)&val;
-  update(p, sizeof(unsigned int));
+void MD5::update(uint32_t valin) noexcept {
+  uint32_t val = INTEL_INT(valin);
+  uint8_t *p = (uint8_t *)&val;
+  update(p, sizeof(uint32_t));
 }
 
-void MD5::update(unsigned char val) noexcept {
-  unsigned char *p = (unsigned char *)&val;
-  update(p, sizeof(unsigned char));
+void MD5::update(uint8_t val) noexcept {
+  uint8_t *p = (uint8_t *)&val;
+  update(p, sizeof(uint8_t));
 }
 
-void MD5::digest(unsigned char *destination) const noexcept {
+void MD5::digest(uint8_t *destination) const noexcept {
   auto digest_data = digest();
   std::copy(digest_data.begin(), digest_data.end(), destination);
 }

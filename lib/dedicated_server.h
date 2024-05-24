@@ -34,7 +34,7 @@ typedef struct {
   cvar_type type;
   void *dest_variable;
   int var_min, var_max;
-  short permissions;
+  int16_t permissions;
 } cvar_entry;
 
 extern bool Dedicated_server;
@@ -80,6 +80,6 @@ void DedicatedSocketputs(char *str);
 void ListenDedicatedSocket(void);
 
 // Init the socket and start listening
-void InitDedicatedSocket(ushort port);
+void InitDedicatedSocket(uint16_t port);
 
 #endif

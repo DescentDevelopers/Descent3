@@ -23,7 +23,7 @@
 #include "pilot.h"
 #include "difficulty_external.h"
 
-extern ubyte ingame_difficulty;
+extern uint8_t ingame_difficulty;
 
 // DAJ static global instead of subroutine call for speed
 #define DIFF_LEVEL (((Game_mode & GM_MULTI)) ? Netgame.difficulty : ingame_difficulty)

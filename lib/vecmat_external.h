@@ -43,8 +43,10 @@
 #ifndef VECMAT_EXTERNAL_H
 #define VECMAT_EXTERNAL_H
 
+#include <cstdint>
+
 // Angles are unsigned shorts
-typedef unsigned short angle; // make sure this matches up with fix.h
+typedef uint16_t angle; // make sure this matches up with fix.h
 
 typedef struct {
   angle p, h, b;

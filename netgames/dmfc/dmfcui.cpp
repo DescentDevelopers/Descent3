@@ -134,8 +134,8 @@ typedef struct {
 tTeamPlacementDialogInfo tpdi;
 
 #define TS_NOTINGAME -2
-sbyte TeamDlgInitialTeamSettings[DLLMAX_PLAYERS];
-sbyte TeamDlgFinalTeamSettings[DLLMAX_PLAYERS];
+int8_t TeamDlgInitialTeamSettings[DLLMAX_PLAYERS];
+int8_t TeamDlgFinalTeamSettings[DLLMAX_PLAYERS];
 
 // UpdateTeamPlacementDialog
 //

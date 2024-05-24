@@ -246,7 +246,7 @@ void mmItem::OnDraw() {
     ui_SetCharAlpha(255);
     ui_DrawString(m_colors[0], 0, 0, m_text);
     ui_DrawSetTextType(UI_TEXTTYPE_SATURATE);
-    ui_SetCharAlpha((ubyte)m_alpha);
+    ui_SetCharAlpha((uint8_t)m_alpha);
     for (i = 0; i < m_satcount; i++)
       ui_DrawString(m_colors[0], 0, 0, m_text);
   }

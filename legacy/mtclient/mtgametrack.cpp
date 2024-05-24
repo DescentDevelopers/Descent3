@@ -141,7 +141,7 @@ typedef float( *timer_GetTime_fp) (void);
 
 extern timer_GetTime_fp DLLtimer_GetTime;
 
-typedef int (*nw_RegisterCallback_fp) (void * nfp, ubyte id);
+typedef int (*nw_RegisterCallback_fp) (void * nfp, uint8_t id);
 extern nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
 typedef int (*nw_DoReceiveCallbacks_fp)(void);
@@ -171,8 +171,8 @@ float FirstGameOverPacket;
 
 int SendingGameOver;
 
-unsigned int TrackerAckdUs;
-unsigned int TrackerGameIsRunning;
+uint32_t TrackerAckdUs;
+uint32_t TrackerGameIsRunning;
 
 game_packet_header TrackerGameData;
 game_packet_header GameListReq;
@@ -184,7 +184,7 @@ game_packet_header inpacket;
 d3_net_game_data_tiny *D3TrackerGameData;
 
 extern int DLLnw_ListenPort;
-extern ushort DLLPXOPort;
+extern uint16_t DLLPXOPort;
 extern char *DLLPXO_hosted_lobby_name;
 
 int InitGameTrackerClient(int gametype)
@@ -234,7 +234,7 @@ int InitGameTrackerClient(int gametype)
 void IdleGameTracker()
 {
 	DLLnw_DoReceiveCallbacks();
-	//unsigned int bytesin;
+	//uint32_t bytesin;
 	//mprintf ((0,"IdleGameTracker() entered.\n"));
 	if((TrackerGameIsRunning)&&((DLLtimer_GetTime()-LastTrackerUpdate)>TRACKER_UPDATE_INTERVAL))
 	{
@@ -286,7 +286,7 @@ void IdleGameTracker()
 
 }
 
-void HandleGamePacket(ubyte *data,int len, network_address *from)
+void HandleGamePacket(uint8_t *data,int len, network_address *from)
 {
 
 	memcpy(&inpacket,data,sizeof(inpacket));

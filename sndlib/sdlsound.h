@@ -28,7 +28,7 @@ class sound_buffer_info;
 
 void lnxsound_SetError(int code);
 void lnxsound_ErrorText(const char *fmt, ...);
-inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, ushort frequency);
+inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, uint16_t frequency);
 
 class emulated_listener {
 public:
@@ -64,7 +64,7 @@ public:
   void GetEnvironmentToggles(t3dEnvironmentToggles *env) override;
 
   // Starts the sound library, maybe have it send back some information -- 3d support?
-  int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) override;
+  int InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played) override;
   // Cleans up after the Sound Library
   void DestroySoundLib() override;
 
@@ -84,7 +84,7 @@ public:
   void SetListener(pos_state *cur_pos) override;
   int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
                           bool f_looped, float reverb = 0.5f) override;
-  void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) override;
+  void AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) override;
   void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) override;
 
   void StopAllSounds() override;
@@ -96,7 +96,7 @@ public:
   //	virtual void AdjustSound(int sound_uid, play_information *play_info) = 0;
 
   // Stops 2d and 3d sounds
-  void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY) override;
+  void StopSound(int sound_uid, uint8_t f_immediately = SKT_STOP_IMMEDIATELY) override;
 
   // Pause all sounds/resume all sounds
   void PauseSounds() override;
@@ -117,18 +117,18 @@ public:
   //	decay 0.1 to 100 seconds, how long it takes for a sound to die.
   bool SetGlobalReverbProperties(float volume, float damping, float decay) override;
 
-  bool GetDeviceSettings(SDL_AudioDeviceID *sound_device, unsigned int *freq, unsigned int *bit_depth,
-                                 unsigned int *channels) const;
+  bool GetDeviceSettings(SDL_AudioDeviceID *sound_device, uint32_t *freq, uint32_t *bit_depth,
+                                 uint32_t *channels) const;
 
   friend void lnxsound_SetError(int code);
   friend void lnxsound_ErrorText(const char *fmt, ...);
-  friend inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, ushort frequency);
+  friend inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, uint16_t frequency);
 
 protected:
 #ifdef _DEBUG
-  short FindFreeSoundSlot(int sound_index, float volume, int priority);
+  int16_t FindFreeSoundSlot(int sound_index, float volume, int priority);
 #else
-  short FindFreeSoundSlot(float volume, int priority);
+  int16_t FindFreeSoundSlot(float volume, int priority);
 #endif
   // This function limits the number of sounds cached to 255(8bits) and 256 bit is for invalid channel
   // The purpose is to create unique signatures for each sound played (and allow for

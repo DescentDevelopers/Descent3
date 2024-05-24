@@ -33,11 +33,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -82,7 +82,7 @@ static const char *const Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperB
 //	ai base class
 class aiObjScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   // Handles all possible OSIRIS events.
@@ -147,18 +147,18 @@ private:
     int ammo_barrel;
     int gun_sight_obj;
     int camera_obj;
-    sbyte state;
-    sbyte snipe_points;
-    sbyte cur_snipe_point;
-    sbyte laser_targeted;
-    short backpack_hp; // points before destroy backpack.
-    short flee_hp;
+    int8_t state;
+    int8_t snipe_points;
+    int8_t cur_snipe_point;
+    int8_t laser_targeted;
+    int16_t backpack_hp; // points before destroy backpack.
+    int16_t flee_hp;
 
     // a Nx(N-1) array with a extra int for number of VALID connecting snipe points per snipe point.
     //	 note: obvious cases ignored (ptA->ptA)
     // used to create a quick map of snipe points for sniper to use.
     int snipe_point_handles[N_SNIPE_POINTS];
-    sbyte access_array[N_SNIPE_POINTS][N_SNIPE_POINTS];
+    int8_t access_array[N_SNIPE_POINTS][N_SNIPE_POINTS];
 
     //	used to keep track of targets black storm trooper knows about.  storm trooper must
     // SEE the target first before storing the target in memory.
@@ -191,10 +191,10 @@ private:
   struct t_creep_memory {
     float timer;
     float eye_timer;
-    sbyte state;
-    ubyte melee_flags;
-    short energy;
-    short hits;
+    int8_t state;
+    uint8_t melee_flags;
+    int16_t energy;
+    int16_t hits;
     int eye_obj;
   };
 
@@ -289,7 +289,7 @@ void STDCALL ShutdownDLL(void) {}
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   int i;
   for (i = 0; i < NUM_IDS; i++) {
     if (strcmp(name, Script_names[i]) == 0) {
@@ -360,7 +360,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((aiObjScript *)ptr)->CallEvent(event, data);
 }
 
@@ -374,21 +374,21 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 static void FlushGoal(int me_handle, int goal_priority);
 static void SafeGoalClearAll(int obj_handle);
 static void AI_SafeSetType(int obj_handle, int ai_type);
-static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-                      float lifetime, float interval, float longevity, float size, float speed, ubyte random);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+                      float lifetime, float interval, float longevity, float size, float speed, uint8_t random);
 
 //////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -546,8 +546,8 @@ void AI_SafeSetType(int obj_handle, int ai_type) {
   }
 }
 
-int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, ubyte isreal,
-               float lifetime, float interval, float longevity, float size, float speed, ubyte random) {
+int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
+               float lifetime, float interval, float longevity, float size, float speed, uint8_t random) {
   msafe_struct mstruct;
 
   mstruct.objhandle = objref;
@@ -572,7 +572,7 @@ int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag
 //////////////////////////////////////////////////////////////////////////////
 //	aiObjScript
 //		all ai scripts will have this as a base function.
-short aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     OnInit(data->me_handle);
@@ -733,11 +733,11 @@ void aiBlackStormTrooper::OnInit(int me_handle) {
     for (j = 0, n_pts = 0; j < memory->snipe_points; j++) {
       if (i != j) {
         if (AI_IsObjReachable(memory->snipe_point_handles[i], memory->snipe_point_handles[j])) {
-          memory->access_array[i][n_pts++] = (sbyte)j;
+          memory->access_array[i][n_pts++] = (int8_t)j;
         }
       }
     }
-    memory->access_array[i][N_SNIPE_POINTS - 1] = (sbyte)n_pts;
+    memory->access_array[i][N_SNIPE_POINTS - 1] = (int8_t)n_pts;
   }
 
   // initialize miscellaneous stuff
@@ -965,7 +965,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
 
 void aiBlackStormTrooper::OnDamaged(int me_handle, tOSIRISEVTDAMAGED *evt) {
   if (memory->state == STATE_BASE || memory->state == STATE_SNIPE) {
-    memory->flee_hp -= (short)evt->damage;
+    memory->flee_hp -= (int16_t)evt->damage;
     if (memory->flee_hp <= 0) {
       memory->flee_hp = 50;
       set_state(me_handle, STATE_HIDE);
@@ -1228,7 +1228,7 @@ void aiCreeper::OnInit(int me_handle) {
   memory->hits = 50;
 
   AI_Value(me_handle, VF_GET, AIV_I_FLAGS, &flags);
-  memory->melee_flags = (ubyte)(flags & (AIF_MELEE1 | AIF_MELEE2));
+  memory->melee_flags = (uint8_t)(flags & (AIF_MELEE1 | AIF_MELEE2));
 
   // set initial state of creeper
   set_state(me_handle, STATE_IDLE);
@@ -1237,7 +1237,7 @@ void aiCreeper::OnInit(int me_handle) {
 void aiCreeper::OnDamaged(int me_handle, tOSIRISEVTDAMAGED *evt) {
   if (memory->state == STATE_ATTACK) {
     if (memory->hits > -25) {
-      memory->hits = memory->hits - (sbyte)evt->damage;
+      memory->hits = memory->hits - (int8_t)evt->damage;
       //	mprintf(0, "[Creeper] hits = %d\n", memory->hits);
     }
     if (memory->hits < 0) {

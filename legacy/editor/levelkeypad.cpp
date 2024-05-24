@@ -372,7 +372,7 @@ void levelkeypad::UpdateDialog()
 	for(i = 0; i < 6; i++)
 	{
 		int j;
-		unsigned char x;
+		uint8_t x;
 
 		for(j = 1; j <= 3; j++)
 		{
@@ -1018,7 +1018,7 @@ void levelkeypad::OnSelendokAmbType6()
 void levelkeypad::SetAmbCharVal(char index, char item, int n_id)
 {
 	int ival;
-	unsigned char val;
+	uint8_t val;
 	char str[256];
 	
 	((CEdit *) GetDlgItem(n_id))->GetWindowText(str,255);
@@ -1122,7 +1122,7 @@ void levelkeypad::OnKillfocusAmbNGroups6()
 void levelkeypad::OnAmbOutside1() 
 {
 	CButton *bbox;
-	unsigned char x;
+	uint8_t x;
 
 	bbox = (CButton *)GetDlgItem(IDC_AMB_OUTSIDE1);
 	x = bbox->GetCheck();
@@ -1133,7 +1133,7 @@ void levelkeypad::OnAmbOutside1()
 void levelkeypad::OnAmbOutside2() 
 {
 	CButton *bbox;
-	unsigned char x;
+	uint8_t x;
 
 	bbox = (CButton *)GetDlgItem(IDC_AMB_OUTSIDE2);
 	x = bbox->GetCheck();
@@ -1144,7 +1144,7 @@ void levelkeypad::OnAmbOutside2()
 void levelkeypad::OnAmbOutside3() 
 {
 	CButton *bbox;
-	unsigned char x;
+	uint8_t x;
 
 	bbox = (CButton *)GetDlgItem(IDC_AMB_OUTSIDE3);
 	x = bbox->GetCheck();
@@ -1155,7 +1155,7 @@ void levelkeypad::OnAmbOutside3()
 void levelkeypad::OnAmbOutside4() 
 {
 	CButton *bbox;
-	unsigned char x;
+	uint8_t x;
 
 	bbox = (CButton *)GetDlgItem(IDC_AMB_OUTSIDE4);
 	x = bbox->GetCheck();
@@ -1166,7 +1166,7 @@ void levelkeypad::OnAmbOutside4()
 void levelkeypad::OnAmbOutside5() 
 {
 	CButton *bbox;
-	unsigned char x;
+	uint8_t x;
 
 	bbox = (CButton *)GetDlgItem(IDC_AMB_OUTSIDE5);
 	x = bbox->GetCheck();
@@ -1177,7 +1177,7 @@ void levelkeypad::OnAmbOutside5()
 void levelkeypad::OnAmbOutside6() 
 {
 	CButton *bbox;
-	unsigned char x;
+	uint8_t x;
 
 	bbox = (CButton *)GetDlgItem(IDC_AMB_OUTSIDE6);
 	x = bbox->GetCheck();

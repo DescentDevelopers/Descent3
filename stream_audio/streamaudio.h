@@ -144,7 +144,7 @@
 #include "TaskSystem.h"
 
 void *AudioStreamCB(void *user_data, int handle, int *size);
-int ADecodeFileRead(void *data, void *buf, unsigned int qty);
+int ADecodeFileRead(void *data, void *buf, uint32_t qty);
 int StreamPlay(const char *filename, float volume, int flags);
 void StreamStop(int handle);
 int StreamGetSoundHandle(int handle);
@@ -175,15 +175,15 @@ struct CFILE;
 //////////////////////////////////////////////////////////////////////////////
 typedef struct tOSFDigiHdr // this struct belongs to OSF_DIGITAL_STRM
 {
-  uint measure;
+  uint32_t measure;
 } tOSFDigiHdr;
 class OSFArchive {
   CFILE *m_fp;
-  uint m_length;    // file information stored such as length
-  ubyte m_type;     // stream type
-  ubyte m_comp;     // compression type
-  ubyte m_flags;    // format
-  uint m_rate;      // frequency
+  uint32_t m_length;    // file information stored such as length
+  uint8_t m_type;     // stream type
+  uint8_t m_comp;     // compression type
+  uint8_t m_flags;    // format
+  uint32_t m_rate;      // frequency
   bool m_writemode; // are we in write mode?
   union {
     tOSFDigiHdr digi;
@@ -198,16 +198,16 @@ public:
   bool Opened() const { return m_fp ? true : false; };
   void Rewind();
   //	write out operations.
-  bool SaveHeader(ubyte type, ubyte comp, ubyte flags, uint rate, uint length, void *hdr, const char *name);
-  bool WriteBlock(ubyte *blk, int size);
+  bool SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr, const char *name);
+  bool WriteBlock(uint8_t *blk, int size);
   //	read in operations.
-  int Read(ubyte *blk, int size);
+  int Read(uint8_t *blk, int size);
   //	get archive info.
-  ubyte StreamType() const { return m_type; };
-  ubyte StreamComp() const { return m_comp; };
-  ubyte StreamFormat() const { return m_flags; };
-  uint StreamRate() const { return m_rate; };
-  uint StreamLength() const { return m_length; };
+  uint8_t StreamType() const { return m_type; };
+  uint8_t StreamComp() const { return m_comp; };
+  uint8_t StreamFormat() const { return m_flags; };
+  uint32_t StreamRate() const { return m_rate; };
+  uint32_t StreamLength() const { return m_length; };
   const char *StreamName() const { return (const char *)m_name; };
   //	get header info.
   const void *StreamHeader() const { return (void *)&m_hdr.digi; };
@@ -236,7 +236,7 @@ class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
   AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
   struct { // mixing buffers
-    ubyte *data;
+    uint8_t *data;
     int nbytes; // number of bytes of valid data.
     int flags;
     int id;
@@ -245,20 +245,20 @@ class AudioStream {
   float m_measure_timer; // timer for measure checking.
   float m_measure_time;  // amount of time per measure.
   float m_last_frametime;
-  ubyte m_sbufidx;   // stream position markers
-  ubyte m_fbufidx;   // file position markers
-  ubyte m_curbufidx; // current buffer in measure index
-  ubyte m_playcount;
+  uint8_t m_sbufidx;   // stream position markers
+  uint8_t m_fbufidx;   // file position markers
+  uint8_t m_curbufidx; // current buffer in measure index
+  uint8_t m_playcount;
   bool m_readahead;               // if stream is currently reading from disk
   bool m_readahead_finished_loop; // if a loop's readahead has finished
-  short m_nbufs;                  // number of buffers streamed so far.
+  int16_t m_nbufs;                  // number of buffers streamed so far.
   play_information m_playinfo;    // used by llsSystem
   float m_volume;                 // volume of stream.
-  short m_state, m_laststate;     // current state of stream playing
+  int16_t m_state, m_laststate;     // current state of stream playing
   int m_llshandle;                // internal sound handle.
   int m_flags;                    // stream playing options.
-  short m_streamindex;            // index into active stream table.
-  short m_loopcount;              // loop counter.
+  int16_t m_streamindex;            // index into active stream table.
+  int16_t m_loopcount;              // loop counter.
   int m_bytesleft;                // number of bytes left in file
   int m_curmeasure;               // current measure.
   int m_playbytesleft, m_playbytestotal;
@@ -270,7 +270,7 @@ class AudioStream {
   bool m_start_on_frame_looped; // the stream that will play on next frame is looped.
 private:
   friend void *AudioStreamCB(void *user_data, int handle, int *size);
-  friend int ADecodeFileRead(void *data, void *buf, unsigned int qty);
+  friend int ADecodeFileRead(void *data, void *buf, uint32_t qty);
   void *StreamCallback(int *size);        // invoked by omsStreamCB.
   int ReadFileData(int buf, int len);     // reads in decompressed raw data.
   int ReadFileDirect(char *buf, int len); // reads in decompressed raw data.
@@ -278,7 +278,7 @@ private:
   void End();                             // cleans up after a stop.
   void Reset();                           // resets to start of stream.
   bool OpenDigitalStream();               // opens and prepares a digital stream
-  bool ReopenDigitalStream(ubyte fbufidx, int nbufs);
+  bool ReopenDigitalStream(uint8_t fbufidx, int nbufs);
 
 private:
   //	attach a low level sound system to all streams.

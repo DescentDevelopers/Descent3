@@ -67,7 +67,7 @@ int fonttool_get_kerning( int c1, int c2, int *pairnum=NULL);
 int fonttool_get_kerning( int c1, int c2, int *pairnum)
 {
 	int i;
-	ubyte *kern_data;
+	uint8_t *kern_data;
 
 
 	kern_data= Font_template.kern_data;
@@ -75,9 +75,9 @@ int fonttool_get_kerning( int c1, int c2, int *pairnum)
 		i=0;
 		while (kern_data[i] != 255)
 		{
-			if (kern_data[i] == (ubyte)c1 && kern_data[i+1] == (ubyte)c2) {
+			if (kern_data[i] == (uint8_t)c1 && kern_data[i+1] == (uint8_t)c2) {
 				if (pairnum) *pairnum = i/3;
-				return (int)((sbyte)kern_data[i+2]);
+				return (int)((int8_t)kern_data[i+2]);
 			}
 			i+=KERNINFO_PAIR_SIZE;
 		}
@@ -90,7 +90,7 @@ int fonttool_get_kerning( int c1, int c2, int *pairnum)
 void fonttool_set_kerning( int c1, int c2, int dist )
 {
 	int i,j;
-	ubyte *kern_data;
+	uint8_t *kern_data;
 
 	if (c1 == 255 || c2 == 255) {
 		mprintf((0, "seting illegal kerning of 255!\n"));
@@ -101,10 +101,10 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 
 	if (!kern_data) {
 	// create a one entry kern table.
-		kern_data = (ubyte *)mem_malloc(KERNINFO_PAIR_SIZE*2);
-		kern_data[0] = (ubyte)c1;
-		kern_data[1] = (ubyte)c2;
-		kern_data[2] = (sbyte)dist;
+		kern_data = (uint8_t *)mem_malloc(KERNINFO_PAIR_SIZE*2);
+		kern_data[0] = (uint8_t)c1;
+		kern_data[1] = (uint8_t)c2;
+		kern_data[2] = (int8_t)dist;
 		kern_data[3] = 255;
 		kern_data[4] = 255;
 		kern_data[5] = 0;
@@ -117,8 +117,8 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 	i=0;
 	while (kern_data[i] != 255)
 	{
-		if (kern_data[i] == (ubyte)c1 && kern_data[i+1] == (ubyte)c2) {
-			kern_data[i+2] = (sbyte)dist;
+		if (kern_data[i] == (uint8_t)c1 && kern_data[i+1] == (uint8_t)c2) {
+			kern_data[i+2] = (int8_t)dist;
 			if (dist == 0) {
 			//	remove this kerning pair.
 				j = i;
@@ -147,19 +147,19 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 	}
 
 // new entry.
-	ubyte *new_kern_data;
+	uint8_t *new_kern_data;
 	int n_pairs = i/KERNINFO_PAIR_SIZE;
 
-	new_kern_data = (ubyte *)mem_malloc((n_pairs+2)*sizeof(ubyte)*KERNINFO_PAIR_SIZE);
+	new_kern_data = (uint8_t *)mem_malloc((n_pairs+2)*sizeof(uint8_t)*KERNINFO_PAIR_SIZE);
 	for (i = 0; i < n_pairs; i++)
 	{
 		new_kern_data[i*KERNINFO_PAIR_SIZE] = kern_data[i*3];
 		new_kern_data[i*KERNINFO_PAIR_SIZE+1] = kern_data[i*3+1];
 		new_kern_data[i*KERNINFO_PAIR_SIZE+2] = kern_data[i*3+2];
 	}
-	new_kern_data[i*KERNINFO_PAIR_SIZE] = (ubyte)c1;
-	new_kern_data[i*KERNINFO_PAIR_SIZE+1] = (ubyte)c2;
-	new_kern_data[i*KERNINFO_PAIR_SIZE+2] = (sbyte)dist;
+	new_kern_data[i*KERNINFO_PAIR_SIZE] = (uint8_t)c1;
+	new_kern_data[i*KERNINFO_PAIR_SIZE+1] = (uint8_t)c2;
+	new_kern_data[i*KERNINFO_PAIR_SIZE+2] = (int8_t)dist;
 	i++;
 	new_kern_data[i*KERNINFO_PAIR_SIZE] = 255;
 	new_kern_data[i*KERNINFO_PAIR_SIZE+1] = 255;
@@ -194,7 +194,7 @@ void FontKern(const char *fnt_file_name)
 	int current_item = 0;
 	int num_items_displayed = 1;
 	bool done = false;
-	short text_alpha=255;
+	int16_t text_alpha=255;
 	int red_comp , green_comp, blue_comp;
 	ddgr_color text_color;
 
@@ -340,7 +340,7 @@ void FontKern(const char *fnt_file_name)
 			}
 
 			if (current_pair >= 0) {
-				ubyte *kern_data = &Font_template.kern_data[current_pair*3];
+				uint8_t *kern_data = &Font_template.kern_data[current_pair*3];
 				if (kern_data[3] != 255) {
 					current_pair++;
 					kern_data = &Font_template.kern_data[current_pair*3];
@@ -356,7 +356,7 @@ void FontKern(const char *fnt_file_name)
 			}
 
 			if (current_pair >= 0) {
-				ubyte *kern_data = &Font_template.kern_data[current_pair*3];
+				uint8_t *kern_data = &Font_template.kern_data[current_pair*3];
 				if (kern_data != Font_template.kern_data) {
 				// gosh, comparing pointers like this may not be the best method...this is shitty code...
 					current_pair--;
@@ -385,7 +385,7 @@ void FontKern(const char *fnt_file_name)
 		grtext_SetParameters(0,0,FIXED_SCREEN_WIDTH,FIXED_SCREEN_HEIGHT);	
 		grtext_SetFont(font_handle);
 		grtext_SetColor(text_color);
-		grtext_SetAlpha((ubyte)text_alpha);
+		grtext_SetAlpha((uint8_t)text_alpha);
 
 		rend_ClearScreen(GR_BLACK);
 		rend_DrawChunkedBitmap(&Editor_bkg, 0, 0, 255);
@@ -449,7 +449,7 @@ void FontKern(const char *fnt_file_name)
 		{
 			int tw,th;
 			ASSERT(Font_template.kern_data);
-			ubyte *kern_data = &Font_template.kern_data[i*3];
+			uint8_t *kern_data = &Font_template.kern_data[i*3];
 			if (i==current_pair) {
 				rend_SetFlatColor(GR_RGB(255,0,0));
 				rend_DrawLine(x,y,x+6,y+5);
@@ -503,12 +503,12 @@ void FontKernDump(const char *fnt_file_name)
 		sprintf(filename, "%s.kern", fnt_file_name);
 		fp = fopen(filename, "wt");
 		if (fp) {
-			ubyte *kern_data = Font_template.kern_data;
+			uint8_t *kern_data = Font_template.kern_data;
 			while (kern_data[0] != 255)
 			{
-				ubyte c1 = kern_data[0];
-				ubyte c2 = kern_data[1];
-				sbyte delta = (sbyte)kern_data[2];
+				uint8_t c1 = kern_data[0];
+				uint8_t c2 = kern_data[1];
+				int8_t delta = (int8_t)kern_data[2];
 
 				fprintf(fp, "%c %c  => %d spacing\n", c1,c2,(int)delta);
 				kern_data += 3;

@@ -64,7 +64,7 @@ const char *DMFCGetString(int d);
 
 typedef struct {
   bool authorized;   // whether the player is authorized
-  ubyte curr_key[8]; // current encryption key
+  uint8_t curr_key[8]; // current encryption key
 } tRemotePlayerData;
 
 static tRemotePlayerData Authorized_players[MAX_PLAYER_RECORDS];
@@ -72,26 +72,26 @@ static char Remote_Admin_pass[64];
 bool Use_remote_admin = false;
 static bool IAmAnAdmin = false;
 
-static void Remote_encrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *new_size, ubyte **new_buffer);
-static void Remote_decrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *new_size, ubyte **new_buffer);
+static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer);
+static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer);
 
 // Sends a string to the server (function encrypts it before sending)
 void Remote_SendStringToServer(const char *string);
 // Recieves a string from the server (function decrypts it)
-void Remote_RecieveStringFromServer(ubyte *data, char *buffer, int size);
+void Remote_RecieveStringFromServer(uint8_t *data, char *buffer, int size);
 // Sends a string to a client (function encrypts it before sending)
 void Remote_SendStringToClient(int client, const char *string);
 // Recieves a string from a client (function decrypts it)
-int Remote_RecieveStringFromClient(ubyte *data, char *buffer, int size);
+int Remote_RecieveStringFromClient(uint8_t *data, char *buffer, int size);
 // Handles remote admin packets from a client
-void Remote_HandleClientPacket(ubyte *data);
+void Remote_HandleClientPacket(uint8_t *data);
 // Handles remote admin packets from a client
-void Remote_HandleServerPacket(ubyte *data);
+void Remote_HandleServerPacket(uint8_t *data);
 
 // Sends a message from the server to a client
 void Remote_SendMessage(int client, const char *message);
 // Receives a message from the server
-void Remote_GetMessage(ubyte *data);
+void Remote_GetMessage(uint8_t *data);
 
 // Logs a player out from being an administrator
 void Remote_Logout(int precnum);
@@ -105,7 +105,7 @@ int FilterNonRemoteCommands(char *command);
 // Initializes the remote administration system
 void Remote_Initialize(void) {
   // initialize encryption keys
-  srand((unsigned int)time(0));
+  srand((uint32_t)time(0));
 
   int i, j;
   for (i = 0; i < MAX_PLAYER_RECORDS; i++) {
@@ -173,7 +173,7 @@ void Remote_ProcessFrame(void) {
 }
 
 // Gets the key for the given player record
-ubyte *Remote_GetKey(int prec) {
+uint8_t *Remote_GetKey(int prec) {
   ASSERT(prec >= 0 && prec < MAX_PLAYER_RECORDS);
   return Authorized_players[prec].curr_key;
 }
@@ -302,7 +302,7 @@ int translate_precptr_to_index(player_record *pr) {
 }
 
 // Sets a clients key
-void Remote_SetMyKey(ubyte key[8]) {
+void Remote_SetMyKey(uint8_t key[8]) {
   player_record *pr;
   pr = PRec_GetPRecordByPnum(basethis->GetPlayerNum());
   int prec = translate_precptr_to_index(pr);
@@ -432,7 +432,7 @@ void Remote_SendMessage(int client, const char *message) {
   }
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   basethis->StartPacket(data, SPID_SERVERREMOTEMSG, &count);
 
   MultiAddString(message, data, &count);
@@ -442,7 +442,7 @@ void Remote_SendMessage(int client, const char *message) {
 }
 
 // Receives a message from the server
-void Remote_GetMessage(ubyte *data) {
+void Remote_GetMessage(uint8_t *data) {
   int count = 0;
   char buffer[512];
 
@@ -460,7 +460,7 @@ void Remote_SendStringToServer(const char *string) {
 
   int slen;
   int new_strlen;
-  ubyte *packet_data;
+  uint8_t *packet_data;
 
   slen = strlen(string);
   player_record *pr;
@@ -472,7 +472,7 @@ void Remote_SendStringToServer(const char *string) {
     return;
   }
 
-  Remote_encrypt(Authorized_players[prec].curr_key, slen, (ubyte *)string, &new_strlen, &packet_data);
+  Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen, &packet_data);
 
   if (new_strlen == 0) {
     mprintf((0, "COULDN'T ENCRYPT\n"));
@@ -482,7 +482,7 @@ void Remote_SendStringToServer(const char *string) {
 
   // now we can send off the packet
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   basethis->StartPacket(data, SPID_REMOTETOSERVER, &count);
 
   MultiAddByte(prec, data, &count);
@@ -495,7 +495,7 @@ void Remote_SendStringToServer(const char *string) {
 }
 
 // Handles remote admin packets from a client
-void Remote_HandleServerPacket(ubyte *data) {
+void Remote_HandleServerPacket(uint8_t *data) {
   char buffer[512];
   Remote_RecieveStringFromServer(data, buffer, 512);
 
@@ -509,7 +509,7 @@ void Remote_HandleServerPacket(ubyte *data) {
 }
 
 // Recieves a string from the server (function decrypts it)
-void Remote_RecieveStringFromServer(ubyte *data, char *buffer, int size) {
+void Remote_RecieveStringFromServer(uint8_t *data, char *buffer, int size) {
   int count = 0;
   int len = MultiGetInt(data, &count);
 
@@ -526,13 +526,13 @@ void Remote_RecieveStringFromServer(ubyte *data, char *buffer, int size) {
   if (len <= 0)
     return;
 
-  ubyte *packet;
-  packet = (ubyte *)malloc(len);
+  uint8_t *packet;
+  packet = (uint8_t *)malloc(len);
   memcpy(packet, &data[count], len);
   count += len;
 
   int new_size;
-  ubyte *new_buffer;
+  uint8_t *new_buffer;
   Remote_decrypt(Authorized_players[prec].curr_key, len, packet, &new_size, &new_buffer);
   if (new_buffer) {
     strncpy(buffer, (char *)new_buffer, size - 1);
@@ -554,7 +554,7 @@ void Remote_SendStringToClient(int client, const char *string) {
 
   int slen;
   int new_strlen;
-  ubyte *packet_data;
+  uint8_t *packet_data;
 
   slen = strlen(string);
   player_record *pr;
@@ -572,7 +572,7 @@ void Remote_SendStringToClient(int client, const char *string) {
     return;
   }
 
-  Remote_encrypt(Authorized_players[prec].curr_key, slen, (ubyte *)string, &new_strlen, &packet_data);
+  Remote_encrypt(Authorized_players[prec].curr_key, slen, (uint8_t *)string, &new_strlen, &packet_data);
 
   if (new_strlen == 0) {
     mprintf((0, "COULDN'T ENCRYPT\n"));
@@ -582,7 +582,7 @@ void Remote_SendStringToClient(int client, const char *string) {
 
   // now we can send off the packet
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   basethis->StartPacket(data, SPID_REMOTETOCLIENT, &count);
 
   MultiAddInt(new_strlen, data, &count);
@@ -594,7 +594,7 @@ void Remote_SendStringToClient(int client, const char *string) {
 }
 
 // Handles remote admin packets from a client
-void Remote_HandleClientPacket(ubyte *data) {
+void Remote_HandleClientPacket(uint8_t *data) {
   char buffer[512];
   int prec = Remote_RecieveStringFromClient(data, buffer, 512);
   if (prec == -1)
@@ -604,7 +604,7 @@ void Remote_HandleClientPacket(ubyte *data) {
 }
 
 // Recieves a string from a client (function decrypts it)
-int Remote_RecieveStringFromClient(ubyte *data, char *buffer, int size) {
+int Remote_RecieveStringFromClient(uint8_t *data, char *buffer, int size) {
   int count = 0;
   int prec = MultiGetByte(data, &count);
   int len = MultiGetInt(data, &count);
@@ -616,13 +616,13 @@ int Remote_RecieveStringFromClient(ubyte *data, char *buffer, int size) {
   if (len <= 0)
     return -1;
 
-  ubyte *packet;
-  packet = (ubyte *)malloc(len);
+  uint8_t *packet;
+  packet = (uint8_t *)malloc(len);
   memcpy(packet, &data[count], len);
   count += len;
 
   int new_size;
-  ubyte *new_buffer;
+  uint8_t *new_buffer;
   Remote_decrypt(Authorized_players[prec].curr_key, len, packet, &new_size, &new_buffer);
   if (new_buffer) {
     size = (len < size) ? len + 1 : size;
@@ -637,7 +637,7 @@ int Remote_RecieveStringFromClient(ubyte *data, char *buffer, int size) {
   return prec;
 }
 
-void Remote_pad_buffer(int orig_size, const ubyte *orig_buffer, int *new_size, ubyte **new_buffer) {
+void Remote_pad_buffer(int orig_size, const uint8_t *orig_buffer, int *new_size, uint8_t **new_buffer) {
   // bump buffer up to size of mod 8
   *new_size = orig_size;
   if (orig_size < 8 || (orig_size % 8) != 0) {
@@ -646,7 +646,7 @@ void Remote_pad_buffer(int orig_size, const ubyte *orig_buffer, int *new_size, u
     *new_size = (chunks + 1) * 8;
   }
 
-  *new_buffer = (ubyte *)malloc(*new_size);
+  *new_buffer = (uint8_t *)malloc(*new_size);
   if (!(*new_buffer)) {
     *new_size = 0;
     return;
@@ -655,22 +655,22 @@ void Remote_pad_buffer(int orig_size, const ubyte *orig_buffer, int *new_size, u
   memcpy(*new_buffer, orig_buffer, orig_size);
 }
 
-static void Remote_encrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *new_size, ubyte **new_buffer) {
+static void Remote_encrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer) {
   *new_buffer = NULL;
 
-  ubyte *buff;
+  uint8_t *buff;
   Remote_pad_buffer(size_buffer, buffer, new_size, &buff);
   if (*new_size == 0)
     return;
 
   IceKey ice(0);
 
-  ice.set((ubyte *)key);
+  ice.set((uint8_t *)key);
 
   int i, num_chunks = 0;
   int chunk_offset = 0;
-  ubyte *cipher;
-  cipher = (ubyte *)malloc(*new_size);
+  uint8_t *cipher;
+  cipher = (uint8_t *)malloc(*new_size);
   if (!cipher)
     return;
 
@@ -684,22 +684,22 @@ static void Remote_encrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *ne
   *new_buffer = cipher;
 }
 
-static void Remote_decrypt(ubyte key[8], int size_buffer, ubyte *buffer, int *new_size, ubyte **new_buffer) {
+static void Remote_decrypt(uint8_t key[8], int size_buffer, uint8_t *buffer, int *new_size, uint8_t **new_buffer) {
   *new_buffer = NULL;
 
-  ubyte *buff;
+  uint8_t *buff;
   Remote_pad_buffer(size_buffer, buffer, new_size, &buff);
   if (*new_size == 0)
     return;
 
   IceKey ice(0);
 
-  ice.set((ubyte *)key);
+  ice.set((uint8_t *)key);
 
   int i, num_chunks = 0;
   int chunk_offset = 0;
-  ubyte *cipher;
-  cipher = (ubyte *)malloc(*new_size);
+  uint8_t *cipher;
+  cipher = (uint8_t *)malloc(*new_size);
   if (!cipher)
     return;
 

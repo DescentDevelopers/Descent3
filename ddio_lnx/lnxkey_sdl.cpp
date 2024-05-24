@@ -94,7 +94,7 @@ int sdlkey_to_ddiocode[27] = {0,     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, K
                               KEY_I, KEY_J, KEY_K, KEY_L, KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q,
                               KEY_R, KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X, KEY_Y, KEY_Z};
 
-static inline ubyte sdlkeycode_to_keycode(unsigned int sdlkeycode) {
+static inline uint8_t sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   // unceremoniously taken from Heretic source code with a few modifications.
   //  (by Outrage. Not Loki. We know better.  :)  --ryan.)
   int rc = sdlkeycode;
@@ -344,11 +344,11 @@ static inline ubyte sdlkeycode_to_keycode(unsigned int sdlkeycode) {
     break;
   }
 
-  return (ubyte)rc;
+  return (uint8_t)rc;
 }
 
 int sdlKeyFilter(const SDL_Event *event) {
-  ubyte kc = 0;
+  uint8_t kc = 0;
 
   if ((event->type != SDL_KEYUP) && (event->type != SDL_KEYDOWN))
     return (1);
@@ -428,13 +428,13 @@ bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info) {
 
 void ddio_sdl_InternalKeyClose() {}
 
-bool ddio_sdl_InternalKeyState(ubyte key) { return LKeys[key].status; }
+bool ddio_sdl_InternalKeyState(uint8_t key) { return LKeys[key].status; }
 
 void ddio_sdl_InternalKeySuspend() {}
 
 void ddio_sdl_InternalKeyResume() {}
 
-float ddio_sdl_InternalKeyDownTime(ubyte key) {
+float ddio_sdl_InternalKeyDownTime(uint8_t key) {
   float down_time = 0.0f;
   if (LKeys[key].status) {
     float timer = timer_GetTime();
@@ -448,7 +448,7 @@ float ddio_sdl_InternalKeyDownTime(ubyte key) {
   return down_time;
 }
 
-void ddio_sdl_InternalResetKey(ubyte key) {
+void ddio_sdl_InternalResetKey(uint8_t key) {
   LKeys[key].down_time = 0.0f;
   LKeys[key].up_time = 0.0f;
   LKeys[key].status = false;

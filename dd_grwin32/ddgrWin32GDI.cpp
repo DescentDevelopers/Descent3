@@ -124,9 +124,9 @@ bool ddgr_gdi_Init(oeApplication *app, bool fullscreen, bool ddraw) {
         }
         HDC hdc = GetDC(GDI_DATA(hPrimaryWnd));
 
-        if (GDI_DATA(devmodes[i].dmBitsPerPel) == (uint)GetDeviceCaps(hdc, BITSPIXEL) &&
-            GDI_DATA(devmodes[i].dmPelsWidth) == (uint)GetDeviceCaps(hdc, HORZRES) &&
-            GDI_DATA(devmodes[i].dmPelsHeight) == (uint)GetDeviceCaps(hdc, VERTRES))
+        if (GDI_DATA(devmodes[i].dmBitsPerPel) == (uint32_t)GetDeviceCaps(hdc, BITSPIXEL) &&
+            GDI_DATA(devmodes[i].dmPelsWidth) == (uint32_t)GetDeviceCaps(hdc, HORZRES) &&
+            GDI_DATA(devmodes[i].dmPelsHeight) == (uint32_t)GetDeviceCaps(hdc, VERTRES))
           GDI_DATA(olddispmode) = i;
 
         ReleaseDC(GDI_DATA(hPrimaryWnd), hdc);

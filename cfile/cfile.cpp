@@ -61,13 +61,13 @@ typedef struct library {
 // entry in extension->path table
 typedef struct {
   char ext[_MAX_EXT];
-  ubyte pathnum;
+  uint8_t pathnum;
 } ext_entry;
 
 // entry in list of paths
 typedef struct {
   char path[_MAX_PATH];
-  ubyte specific; // if non-zero, only for specific extensions
+  uint8_t specific; // if non-zero, only for specific extensions
 } path_entry;
 
 #define MAX_PATHS 100
@@ -796,7 +796,7 @@ void cfclose(CFILE *cfp) {
 // Returns a char or EOF
 int cfgetc(CFILE *cfp) {
   int c;
-  static unsigned char ch[3] = "\0\0";
+  static uint8_t ch[3] = "\0\0";
   if (cfp->position >= cfp->size)
     return EOF;
 
@@ -884,7 +884,7 @@ int cfexist(const char *filename) {
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
+int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
   int i;
   const char *error_msg = eof_error; // default error
   ASSERT(!(cfp->flags & CFF_TEXT));
@@ -912,35 +912,35 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int32_t cf_ReadInt(CFILE *cfp) {
   int32_t i;
-  cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
+  cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
   return INTEL_INT(i);
 }
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int16_t cf_ReadShort(CFILE *cfp) {
   int16_t i;
-  cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
+  cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
   return INTEL_SHORT(i);
 }
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int8_t cf_ReadByte(CFILE *cfp) {
   int8_t i;
-  cf_ReadBytes((ubyte *)&i, sizeof(i), cfp);
+  cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
   return i;
 }
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 float cf_ReadFloat(CFILE *cfp) {
   float f;
-  cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
+  cf_ReadBytes((uint8_t *)&f, sizeof(f), cfp);
   return INTEL_FLOAT(f);
 }
 // Read and return a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 double cf_ReadDouble(CFILE *cfp) {
   double f;
-  cf_ReadBytes((ubyte *)&f, sizeof(f), cfp);
+  cf_ReadBytes((uint8_t *)&f, sizeof(f), cfp);
   return D3::convert_le<double>(f);
 }
 // Reads a string from a CFILE.  If the file is type binary, this
@@ -980,7 +980,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp) {
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-int cf_WriteBytes(const ubyte *buf, int count, CFILE *cfp) {
+int cf_WriteBytes(const uint8_t *buf, int count, CFILE *cfp) {
   int i;
   if (!(cfp->flags & CFF_WRITING))
     return 0;
@@ -1002,7 +1002,7 @@ int cf_WriteString(CFILE *cfp, const char *buf) {
   int len;
   len = strlen(buf);
   if (len != 0) // write string
-    cf_WriteBytes((ubyte *)buf, len, cfp);
+    cf_WriteBytes((uint8_t *)buf, len, cfp);
   // Terminate with newline (text file) or NULL (binary file)
   cf_WriteByte(cfp, (cfp->flags & CFF_TEXT) ? '\n' : 0);
   return len + 1;
@@ -1026,14 +1026,14 @@ int cfprintf(CFILE *cfp, const char *format, ...) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteInt(CFILE *cfp, int32_t i) {
   int t = INTEL_INT(i);
-  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
+  cf_WriteBytes((uint8_t *)&t, sizeof(t), cfp);
 }
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteShort(CFILE *cfp, int16_t s) {
-  short t = INTEL_SHORT(s);
-  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
+  int16_t t = INTEL_SHORT(s);
+  cf_WriteBytes((uint8_t *)&t, sizeof(t), cfp);
 }
 
 // Write a byte (8 bits).
@@ -1051,14 +1051,14 @@ void cf_WriteByte(CFILE *cfp, int8_t b) {
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteFloat(CFILE *cfp, float f) {
   float t = INTEL_FLOAT(f);
-  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
+  cf_WriteBytes((uint8_t *)&t, sizeof(t), cfp);
 }
 
 // Write a double (64 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteDouble(CFILE *cfp, double d) {
   auto t = D3::convert_le<double>(d);
-  cf_WriteBytes((ubyte *)&t, sizeof(t), cfp);
+  cf_WriteBytes((uint8_t *)&t, sizeof(t), cfp);
 }
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
@@ -1078,9 +1078,9 @@ bool cf_CopyFile(char *dest, const char *src, int copytime) {
   int progress = 0;
   int readcount = 0;
 #define COPY_CHUNK_SIZE 5000
-  ubyte copybuf[COPY_CHUNK_SIZE];
+  uint8_t copybuf[COPY_CHUNK_SIZE];
   while (!cfeof(infile)) {
-    // ubyte c;
+    // uint8_t c;
 
     if (progress + COPY_CHUNK_SIZE <= infile->size) {
       readcount = COPY_CHUNK_SIZE;
@@ -1130,15 +1130,15 @@ void cf_Rewind(CFILE *fp) {
 #define CRC32_POLYNOMIAL 0xEDB88320L
 #define CRC_BUFFER_SIZE 5000
 
-unsigned int cf_CalculateFileCRC(CFILE *infile) {
+uint32_t cf_CalculateFileCRC(CFILE *infile) {
   int i, j;
-  ubyte crcbuf[CRC_BUFFER_SIZE];
+  uint8_t crcbuf[CRC_BUFFER_SIZE];
   static bool Cfile_crc_calculated = false;
-  static unsigned int CRCTable[256];
-  unsigned int crc;
-  unsigned int temp1;
-  unsigned int temp2;
-  unsigned int readlen;
+  static uint32_t CRCTable[256];
+  uint32_t crc;
+  uint32_t temp1;
+  uint32_t temp2;
+  uint32_t readlen;
 
   // Only make the lookup table once
   if (!Cfile_crc_calculated) {
@@ -1167,7 +1167,7 @@ unsigned int cf_CalculateFileCRC(CFILE *infile) {
       Int3();
       return 0xFFFFFFFF;
     }
-    for (unsigned int a = 0; a < readlen; a++) {
+    for (uint32_t a = 0; a < readlen; a++) {
       temp1 = (crc >> 8) & 0x00FFFFFFL;
       temp2 = CRCTable[((int)crc ^ crcbuf[a]) & 0xff];
       crc = temp1 ^ temp2;
@@ -1177,14 +1177,14 @@ unsigned int cf_CalculateFileCRC(CFILE *infile) {
   return crc ^ 0xffffffffl;
 }
 
-unsigned int cf_GetfileCRC(char *src) {
+uint32_t cf_GetfileCRC(char *src) {
   CFILE *infile;
 
   infile = (CFILE *)cfopen(src, "rb");
   if (!infile)
     return 0xFFFFFFFF;
 
-  unsigned int crc = cf_CalculateFileCRC(infile);
+  uint32_t crc = cf_CalculateFileCRC(infile);
   cfclose(infile);
 
   return crc;

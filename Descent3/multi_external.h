@@ -176,31 +176,31 @@ typedef struct {
   SOCKET reliable_socket;
   float last_packet_time;
   float packet_time; // for making sure we don't get position packets out of order
-  unsigned int total_bytes_sent;
-  unsigned int total_bytes_rcvd;
-  unsigned int secret_net_id;       //	We use this to determine who we are getting packets from
+  uint32_t total_bytes_sent;
+  uint32_t total_bytes_rcvd;
+  uint32_t secret_net_id;       //	We use this to determine who we are getting packets from
   int file_xfer_flags;              // Are we sending,receiving, or neither
-  unsigned int file_xfer_total_len; // Total length of the file we are receiving
-  unsigned int file_xfer_pos;       // Position for sending and/or receiving
-  unsigned int file_xfer_id;        // File id that we are sending
-  unsigned int file_xfer_who;       // Who the file is for
+  uint32_t file_xfer_total_len; // Total length of the file we are receiving
+  uint32_t file_xfer_pos;       // Position for sending and/or receiving
+  uint32_t file_xfer_id;        // File id that we are sending
+  uint32_t file_xfer_who;       // Who the file is for
   CFILE *file_xfer_cfile;           // File handle for src/target file
-  ushort position_counter;          // for making sure we don't get position packets out of order
+  uint16_t position_counter;          // for making sure we don't get position packets out of order
   char ship_logo[_MAX_PATH];
   char voice_taunt1[_MAX_PATH];
   char voice_taunt2[_MAX_PATH];
   char voice_taunt3[_MAX_PATH];
   char voice_taunt4[_MAX_PATH];
-  ubyte custom_file_seq;
-  ubyte sequence; // where we are in the sequence chain
-  ubyte pps;
+  uint8_t custom_file_seq;
+  uint8_t sequence; // where we are in the sequence chain
+  uint8_t pps;
   HANDLE hPlayerEvent;      // player event to use for directplay
   DWORD dpidPlayer; // directplay ID of player created
   float ping_time;
   float last_ping_time;
-  ushort pilot_pic_id;
+  uint16_t pilot_pic_id;
   float percent_loss;
-  unsigned char digest[16];
+  uint8_t digest[16];
 } netplayer;
 
 #define MISSION_NAME_LEN 50
@@ -211,15 +211,15 @@ typedef struct {
   char mission[MSN_NAMELEN];
   char mission_name[MISSION_NAME_LEN];
   char scriptname[NETGAME_SCRIPT_LEN];
-  ushort level_num;
-  ushort curr_num_players;
-  ushort max_num_players;
+  uint16_t level_num;
+  uint16_t curr_num_players;
+  uint16_t max_num_players;
   float server_response_time;
-  unsigned int flags;
+  uint32_t flags;
   float last_update;
   bool dedicated_server;
-  ubyte difficulty; // Game difficulty level
-  unsigned int handle;
+  uint8_t difficulty; // Game difficulty level
+  uint32_t handle;
 } network_game;
 
 // netgame flags
@@ -244,7 +244,7 @@ typedef struct {
 #define NF_COOP 0x40000             // This game is a cooperative game
 
 typedef struct {
-  ushort server_version; // This is so client and server code matches
+  uint16_t server_version; // This is so client and server code matches
   char name[NETGAME_NAME_LEN];
   char mission[MSN_NAMELEN];
   char mission_name[MISSION_NAME_LEN];
@@ -253,130 +253,130 @@ typedef struct {
   char connection_name[PAGENAME_LEN];
   network_address server_address; // The address of the server that we're talking to - not used if we are the server
 
-  ubyte local_role;
-  ubyte server_sequence;
+  uint8_t local_role;
+  uint8_t server_sequence;
   float last_server_time;   // last time we got a packet from the server
-  ubyte packets_per_second; // how many packets per second we'll send out
+  uint8_t packets_per_second; // how many packets per second we'll send out
   int flags;
   int timelimit; // how many minutes to play this level
   int killgoal;  // kill goal for this level
   int respawn_time;
   int max_players;
-  ubyte difficulty; // Game difficulty level
+  uint8_t difficulty; // Game difficulty level
   u_char digest[16];
 } netgame_info;
 
 // Inline functions for extracting/packing multiplayer data
-inline void MultiAddUbyte(ubyte element, ubyte *data, int *count) {
+inline void MultiAddUbyte(uint8_t element, uint8_t *data, int *count) {
   data[*count] = element;
-  *count += sizeof(ubyte);
+  *count += sizeof(uint8_t);
 }
 
-inline void MultiAddByte(ubyte element, ubyte *data, int *count) {
+inline void MultiAddByte(uint8_t element, uint8_t *data, int *count) {
   data[*count] = element;
-  *count += sizeof(ubyte);
+  *count += sizeof(uint8_t);
 }
 
-inline void MultiAddSbyte(sbyte element, ubyte *data, int *count) {
+inline void MultiAddSbyte(int8_t element, uint8_t *data, int *count) {
   data[*count] = element;
-  *count += sizeof(sbyte);
+  *count += sizeof(int8_t);
 }
 
-inline void MultiAddShort(short element, ubyte *data, int *count) {
-  *(short *)(data + *count) = INTEL_SHORT(element);
-  *count += sizeof(short);
+inline void MultiAddShort(int16_t element, uint8_t *data, int *count) {
+  *(int16_t *)(data + *count) = INTEL_SHORT(element);
+  *count += sizeof(int16_t);
 }
 
-inline void MultiAddUshort(ushort element, ubyte *data, int *count) {
-  *(ushort *)(data + *count) = INTEL_SHORT(element);
-  *count += sizeof(ushort);
+inline void MultiAddUshort(uint16_t element, uint8_t *data, int *count) {
+  *(uint16_t *)(data + *count) = INTEL_SHORT(element);
+  *count += sizeof(uint16_t);
 }
 
-inline void MultiAddInt(int element, ubyte *data, int *count) {
+inline void MultiAddInt(int element, uint8_t *data, int *count) {
   *(int *)(data + *count) = INTEL_INT(element);
   *count += sizeof(int);
 }
 
-inline void MultiAddUint(uint element, ubyte *data, int *count) {
-  *(uint *)(data + *count) = INTEL_INT(element);
-  *count += sizeof(uint);
+inline void MultiAddUint(uint32_t element, uint8_t *data, int *count) {
+  *(uint32_t *)(data + *count) = INTEL_INT(element);
+  *count += sizeof(uint32_t);
 }
 
-inline void MultiAddFloat(float element, ubyte *data, int *count) {
+inline void MultiAddFloat(float element, uint8_t *data, int *count) {
   *(float *)(data + *count) = INTEL_FLOAT(element);
   *count += sizeof(float);
 }
 
-inline void MultiAddString(const char *str, ubyte *data, int *count) {
+inline void MultiAddString(const char *str, uint8_t *data, int *count) {
   size_t len = strlen(str) + 1;
   assert(len <= 0xFF);
 
-  MultiAddByte((ubyte)len, data, count);
+  MultiAddByte((uint8_t)len, data, count);
   memcpy(&data[*count], str, len);
   *count += len;
 }
 
-inline ubyte MultiGetUbyte(ubyte *data, int *count) {
-  ubyte element = (*(ubyte *)(data + *count));
-  (*count) += sizeof(ubyte);
+inline uint8_t MultiGetUbyte(uint8_t *data, int *count) {
+  uint8_t element = (*(uint8_t *)(data + *count));
+  (*count) += sizeof(uint8_t);
   return element;
 }
 
-inline ubyte MultiGetByte(ubyte *data, int *count) {
-  ubyte element = (*(ubyte *)(data + *count));
-  (*count) += sizeof(ubyte);
+inline uint8_t MultiGetByte(uint8_t *data, int *count) {
+  uint8_t element = (*(uint8_t *)(data + *count));
+  (*count) += sizeof(uint8_t);
   return element;
 }
 
-inline sbyte MultiGetSbyte(ubyte *data, int *count) {
-  sbyte element = (*(sbyte *)(data + *count));
-  (*count) += sizeof(sbyte);
+inline int8_t MultiGetSbyte(uint8_t *data, int *count) {
+  int8_t element = (*(int8_t *)(data + *count));
+  (*count) += sizeof(int8_t);
   return element;
 }
 
-inline short MultiGetShort(ubyte *data, int *count) {
-  short element = (*(short *)(data + *count));
-  *count += sizeof(short);
+inline int16_t MultiGetShort(uint8_t *data, int *count) {
+  int16_t element = (*(int16_t *)(data + *count));
+  *count += sizeof(int16_t);
   return INTEL_SHORT(element);
 }
 
-inline ushort MultiGetUshort(ubyte *data, int *count) {
-  ushort element = (*(ushort *)(data + *count));
-  *count += sizeof(short);
+inline uint16_t MultiGetUshort(uint8_t *data, int *count) {
+  uint16_t element = (*(uint16_t *)(data + *count));
+  *count += sizeof(int16_t);
   return INTEL_SHORT(element);
 }
 
-inline int MultiGetInt(ubyte *data, int *count) {
+inline int MultiGetInt(uint8_t *data, int *count) {
   int element = (*(int *)(data + *count));
   *count += sizeof(int);
   return INTEL_INT(element);
 }
 
-inline uint MultiGetUint(ubyte *data, int *count) {
-  uint element = (*(uint *)(data + *count));
+inline uint32_t MultiGetUint(uint8_t *data, int *count) {
+  uint32_t element = (*(uint32_t *)(data + *count));
   *count += sizeof(int);
   return INTEL_INT(element);
 }
 
-inline float MultiGetFloat(ubyte *data, int *count) {
+inline float MultiGetFloat(uint8_t *data, int *count) {
   float element = (*(float *)(data + *count));
   *count += sizeof(float);
   return INTEL_FLOAT(element);
 }
 
-inline void MultiGetString(char *str, ubyte *data, int *count) {
-  ubyte len = MultiGetByte(data, count);
+inline void MultiGetString(char *str, uint8_t *data, int *count) {
+  uint8_t len = MultiGetByte(data, count);
   memcpy(str, &data[*count], len);
   *count += len;
 }
 
-inline void MultiAddVector(vector v, ubyte *data, int *count) {
+inline void MultiAddVector(vector v, uint8_t *data, int *count) {
   MultiAddFloat(v.x, data, count);
   MultiAddFloat(v.y, data, count);
   MultiAddFloat(v.z, data, count);
 }
 
-inline vector MultiGetVector(ubyte *data, int *count) {
+inline vector MultiGetVector(uint8_t *data, int *count) {
   vector v;
 
   v.x = MultiGetFloat(data, count);

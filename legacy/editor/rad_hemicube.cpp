@@ -428,7 +428,7 @@ void EndHemicubeDrawing (int face)
 		while ((key = ddio_KeyInKey())!= 0)
 			;
 
-		ushort surfval[90000];
+		uint16_t surfval[90000];
 		int ff_index=0;
 
 		for (i=0;i<rad_NumSurfaces;i++)
@@ -565,7 +565,7 @@ void DrawRadiosityPoly(int nv,g3Point **pointlist,int id)
 	//Get codes for this polygon, and copy uvls into points
 	for (i=0;i<nv;i++) 
 	{
-		ubyte c;
+		uint8_t c;
 
 		c = pointlist[i]->p3_codes;
 

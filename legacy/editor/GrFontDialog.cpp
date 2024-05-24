@@ -109,11 +109,11 @@ inline int WRITE_FONT_INT(FONTFILE ffile, int i) {
 	return fwrite(&i, sizeof(i), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_SHORT(FONTFILE ffile, short s) {
+inline int WRITE_FONT_SHORT(FONTFILE ffile, int16_t s) {
 	return fwrite(&s, sizeof(s), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_BYTE(FONTFILE ffile, ubyte c) {
+inline int WRITE_FONT_BYTE(FONTFILE ffile, uint8_t c) {
 	return fwrite(&c, sizeof(c), 1, (FILE *)ffile);
 }
 
@@ -409,14 +409,14 @@ void CGrFontDialog::OnKillfocusEditFontname()
 
 #define PIX(_x,_y) m_FontBmData[(_x) + (_y) * m_FontBmW]
 
-inline ushort MAKE_565_FROM_555(ushort jcol)
+inline uint16_t MAKE_565_FROM_555(uint16_t jcol)
 {
 	ddgr_color pix32=GR_16_TO_COLOR (jcol);
 	int red=GR_COLOR_RED(pix32);
 	int green=GR_COLOR_GREEN (pix32);
 	int blue=GR_COLOR_BLUE (pix32);
 
-	ushort newpix=((red>>3)<<11)|((green>>2)<<5)|(blue>>3);
+	uint16_t newpix=((red>>3)<<11)|((green>>2)<<5)|(blue>>3);
 	return newpix;
 }
 
@@ -436,7 +436,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft)
 	m_FgColor = NEW_TRANSPARENT_COLOR;
 
 	if (m_DataBuffer) delete[] m_DataBuffer;
-	m_DataBuffer = new ushort[1024*MAX_FONT_CHARS];
+	m_DataBuffer = new uint16_t[1024*MAX_FONT_CHARS];
 	m_DataPtr = m_DataBuffer;
 
 //	assume upper left pixel is background color, and first-found other
@@ -488,7 +488,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft)
 	ft->baseline = m_CharHeight;
 	ft->min_ascii = 0;
 	ft->max_ascii = cur_char-1;
-	ft->raw_data = (ubyte *)m_DataBuffer;
+	ft->raw_data = (uint8_t *)m_DataBuffer;
 	ft->char_data = NULL;
 	ft->char_widths = m_CharWidths;
 	ft->kern_data= NULL;
@@ -594,7 +594,7 @@ int CGrFontDialog::read_font_char(int cur_char, int& bmx, int& bmy)
 	for (y=0;y<h;y++)
 		for (x=0;x<w;x++) 
 		{
-			ushort c;
+			uint16_t c;
 
 			if ((c=PIX(bmx+1+x,bmy+1+y)) == m_BgColor)
 				c = 0x07e0;									// must go back 565 pure green (old transparent)
@@ -619,11 +619,11 @@ int CGrFontDialog::read_font_char(int cur_char, int& bmx, int& bmy)
 
 BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 {
-	ubyte *tmp_data;
-	short *tmp_widths;
-	ubyte **tmp_cdata;
+	uint8_t *tmp_data;
+	int16_t *tmp_widths;
+	uint8_t **tmp_cdata;
 	FONTFILE ffile;
-	uint id = 0xfeedbaba;
+	uint32_t id = 0xfeedbaba;
 	int num_char;
 	bool grayed_font;
 	CButton *gray_check = (CButton *)GetDlgItem(IDC_PROP_GRADIANT);
@@ -680,22 +680,22 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 	}
 
 	if (ft->flags & FT_COLOR) {
-		WRITE_FONT_INT(ffile, (int)(m_DataPtr-m_DataBuffer)*sizeof(ushort));
-		WRITE_FONT_DATA(ffile, (ubyte *)m_DataBuffer, (m_DataPtr-m_DataBuffer)*sizeof(ushort), 1);
+		WRITE_FONT_INT(ffile, (int)(m_DataPtr-m_DataBuffer)*sizeof(uint16_t));
+		WRITE_FONT_DATA(ffile, (uint8_t *)m_DataBuffer, (m_DataPtr-m_DataBuffer)*sizeof(uint16_t), 1);
 	}
 	else {
 	// bitpack for mono font storage:: 16bpp -> 8 bits/1 byte
 		int i,x,y,w,cnt=0;
-		ushort *p = m_DataBuffer;
-		ubyte *bits;
+		uint16_t *p = m_DataBuffer;
+		uint8_t *bits;
 
-		bits = (ubyte *)mem_malloc(256 * MAX_FONT_CHARS);
+		bits = (uint8_t *)mem_malloc(256 * MAX_FONT_CHARS);
 
 		for (i = 0; i < num_char; i++)
 		{
 			for (y = 0; y < ft->height; y++) 
 			{
-				ubyte mask, datum;
+				uint8_t mask, datum;
 
 				w = (ft->flags & FT_PROPORTIONAL) ? tmp_widths[i] : ft->width;
 

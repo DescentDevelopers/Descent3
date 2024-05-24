@@ -78,7 +78,7 @@ tGraphColor GraphColors[MAX_GRAPH_NODES] = {
     {"Dk.Purple", GR_RGB(100, 4, 104)}};
 
 typedef struct {
-  ubyte data_input;
+  uint8_t data_input;
   int flags;
 
   union {
@@ -275,7 +275,7 @@ void DebugGraph_Render(void) {
     // create the bitmap
     graph_bmp = bm_AllocBitmap(64, 64, 0);
     if (graph_bmp > BAD_BITMAP_HANDLE) {
-      ushort *data = bm_data(graph_bmp, 0);
+      uint16_t *data = bm_data(graph_bmp, 0);
       for (int i = 0; i < 64 * 64; i++) {
         data[i] = GR_RGB16(0, 0, 0) | OPAQUE_FLAG;
       }

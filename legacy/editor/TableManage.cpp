@@ -162,9 +162,9 @@ bool GenericPageList::AddToList(GenericPageNode *new_node)
 bool GenericPageList::LoadTable (char *table_filename)
 {
 	CFILE *infile;
-	ubyte pagetype;
+	uint8_t pagetype;
 	int done;
-	uint page_id;
+	uint32_t page_id;
 
 	GenericPageNode	*generic_page_node;
 	
@@ -227,9 +227,9 @@ bool GenericPageList::LoadTable (char *table_filename)
 bool GenericPageList::SaveTable (char *table_filename)
 {
 	CFILE *infile,*outfile;
-	ubyte pagetype,replaced=0;
+	uint8_t pagetype,replaced=0;
 	int done=0;
-	uint page_id;
+	uint32_t page_id;
 	GenericPageNode *new_generic_page;
 	mngs_generic_page genericpage;
 
@@ -375,9 +375,9 @@ void GenericPageList::SelectPrev(void)
 	}
 }
 
-void GenericPageList::SelectNode(uint list_index)
+void GenericPageList::SelectNode(uint32_t list_index)
 {
-	uint j;
+	uint32_t j;
 	GenericPageNode *node;
 
 	if(list_index<0 || list_index>(m_size-1))
@@ -453,7 +453,7 @@ void GenericPageList::SaveSelected(CEdit *description)
 	return;
 }
 
-GenericPageNode *GenericPageList::FindNode(uint page_id)
+GenericPageNode *GenericPageList::FindNode(uint32_t page_id)
 {
 	GenericPageNode *node, *found_node;
 

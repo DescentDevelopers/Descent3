@@ -927,11 +927,11 @@ typedef int OMMSHANDLE;
 #endif
 
 // define unsigned types;
-typedef unsigned char ubyte;
-typedef signed char sbyte;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned int ddgr_color;
+typedef uint8_t uint8_t;
+typedef int8_t int8_t;
+typedef uint16_t uint16_t;
+typedef uint32_t uint32_t;
+typedef uint32_t ddgr_color;
 
 #ifndef NULL
 #define NULL 0
@@ -990,7 +990,7 @@ typedef struct {
                            // will always be valid during the lifetime of the module
                            // DO NOT ALTER THE STRING IT POINTS TO.
 
-  uint game_checksum; // Checksum of game structures, if this doesn't match
+  uint32_t game_checksum; // Checksum of game structures, if this doesn't match
                       // the checksum at compile time, it is very likely that
                       // bad things can happen, and this module shouldn't initialize.
 
@@ -1020,7 +1020,7 @@ typedef struct {
 } tOSIRISEVTCREATED; // struct for EVT_CREATED data
 
 typedef struct {
-  ubyte is_dying;    // if this is !=0 than the event is coming because it is
+  uint8_t is_dying;    // if this is !=0 than the event is coming because it is
                      // really being destroyed.  Else it is due to the level ending.
 } tOSIRISEVTDESTROY; // struct for EVT_DESTROY data
 
@@ -1072,7 +1072,7 @@ typedef struct {
 
 typedef struct {
   int handle;
-  ubyte detonated;
+  uint8_t detonated;
 } tOSIRISEVTTIMERCANCEL; // struct for EVT_TIMERCANCEL data
 
 typedef struct {
@@ -1171,7 +1171,7 @@ typedef struct {
   0x008 // this timer should be auto-cancelled if object_handle_detonator dies, than the
         // timer auto-cancels
 typedef struct {
-  ushort flags;
+  uint16_t flags;
   int id;           // an optional id you can use to store, will be passed back on EVT_TIMER signal
   int repeat_count; // if OTF_REPEATER is set, this is how many times to repeat the signal (every
                     // interval).  -1 for infinite.
@@ -1199,7 +1199,7 @@ typedef struct {
 
 typedef struct {
   tOSIRISSCRIPTID my_id;
-  ushort id;
+  uint16_t id;
   int size;
 } tOSIRISMEMCHUNK;
 
@@ -1210,7 +1210,7 @@ typedef struct {
 #define KOI_ID 0     // this item is specifying a type/id of object NOT to kill
 #define KOI_HANDLE 1 // this item is specifying an object handle of an object NOT to kill
 typedef struct {
-  ubyte info_type;
+  uint8_t info_type;
   int id;
   int objhandle;
 } tKillObjectItem;
@@ -1220,31 +1220,31 @@ typedef struct {
 typedef struct {
   // Rooms
   int roomnum;
-  short facenum;
-  short texnum;
-  short portalnum;
+  int16_t facenum;
+  int16_t texnum;
+  int16_t portalnum;
   float fog_r, fog_g, fog_b, fog_depth;
   vector wind;
-  ubyte pulse_time;
-  ubyte pulse_offset;
+  uint8_t pulse_time;
+  uint8_t pulse_offset;
 
   // Objects/Players
-  uint objhandle;
-  uint ithandle;
+  uint32_t objhandle;
+  uint32_t ithandle;
   float shields, energy;
-  short start_tick;
-  short end_tick;
+  int16_t start_tick;
+  int16_t end_tick;
   float cycle_time;
   int type, id, aux_type, aux_id;
-  uint checksum;
+  uint32_t checksum;
   int path_id;
   float amount;
-  ubyte damage_type;
-  uint killer_handle;
+  uint8_t damage_type;
+  uint32_t killer_handle;
   float ammo;
-  ubyte playsound;
-  ubyte remove;
-  ubyte do_powerup;
+  uint8_t playsound;
+  uint8_t remove;
+  uint8_t do_powerup;
   vector velocity;
   vector rot_velocity;
   float rot_drag;
@@ -1259,22 +1259,22 @@ typedef struct {
   float anim_frame;
 
   // Spew
-  ubyte is_real;
-  ubyte random;
-  ubyte unused2; // was use_gunpoint
-  sbyte gunpoint;
-  ubyte effect_type;
-  ubyte phys_info;
+  uint8_t is_real;
+  uint8_t random;
+  uint8_t unused2; // was use_gunpoint
+  int8_t gunpoint;
+  uint8_t effect_type;
+  uint8_t phys_info;
   float drag, mass;
 
   // Unused
-  ushort unused; // was doorway_index
+  uint16_t unused; // was doorway_index
 
   // Weather
   int randval;
 
   // Triggers
-  ubyte trigger_num;
+  uint8_t trigger_num;
 
   // sounds
   int sound_handle;
@@ -1284,8 +1284,8 @@ typedef struct {
   int index;
   float scalar;
   float interval;
-  ubyte state;
-  sbyte slot;
+  uint8_t state;
+  int8_t slot;
   char message[MSAFE_MESSAGE_LENGTH];
   char name[MSAFE_NAME_LENGTH];
   int color;
@@ -1296,8 +1296,8 @@ typedef struct {
   int count;
   int flags;
   void *list;
-  unsigned int control_mask;
-  unsigned char control_val;
+  uint32_t control_mask;
+  uint8_t control_val;
 
   // Object lighting stuff
   float light_distance;

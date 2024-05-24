@@ -658,7 +658,7 @@ void CTerrainDialog::OnTerrpadSelectNone()
 void CTerrainDialog::OnTerrpadRotTexture() 
 {
 	int i;
-	ubyte touched[TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH];
+	uint8_t touched[TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH];
 	memset (touched,0,TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH);
 
 	for (i=0;i<TERRAIN_WIDTH*TERRAIN_DEPTH;i++)
@@ -1646,7 +1646,7 @@ void CTerrainDialog::OnSatelliteCheck()
 
 void CTerrainDialog::OnSmoothTerrain() 
 {
-	ubyte *src_data;
+	uint8_t *src_data;
 	int y,x;
 	
 	if (Num_terrain_selected==0)
@@ -1659,7 +1659,7 @@ void CTerrainDialog::OnSmoothTerrain()
 	if ((MessageBox("Are you sure you wish to smooth the terrain?  This operation cannot be undone.","Question",MB_YESNO))==IDNO)
 		return;
 
-	src_data=(ubyte *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
+	src_data=(uint8_t *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
 	ASSERT (src_data);	// Ran out of memory!
 
 	for (int i=0;i<TERRAIN_WIDTH*TERRAIN_DEPTH;i++)
@@ -1914,8 +1914,8 @@ void CTerrainDialog::OnSaveAsPcx()
 	{
 		for (int t=0;t<TERRAIN_WIDTH;t++)
 		{
-			ubyte val=Terrain_seg[(((TERRAIN_DEPTH-1)-i)*TERRAIN_WIDTH)+t].ypos;
-			ubyte runlen=0xc1;
+			uint8_t val=Terrain_seg[(((TERRAIN_DEPTH-1)-i)*TERRAIN_WIDTH)+t].ypos;
+			uint8_t runlen=0xc1;
 
 			cf_WriteByte (outfile,runlen);
 			cf_WriteByte (outfile,val);
@@ -1947,7 +1947,7 @@ void CTerrainDialog::OnNoExtRoomsObjs()
 }
 
 #define FILL_COLOR		1
-static ubyte *Terrain_heights,*Terrain_fill;
+static uint8_t *Terrain_heights,*Terrain_fill;
 
 #define PUSH_FILL(x) {fill_stack[stack_count]=x; Terrain_fill[x]=1; stack_count++; ASSERT (stack_count<65536);}
 #define POP_FILL() {stack_count--; cell=fill_stack[stack_count];}
@@ -1955,7 +1955,7 @@ static ubyte *Terrain_heights,*Terrain_fill;
 void FillTerrainHeights (int cell)
 {
 	terrain_segment *tseg=&Terrain_seg[cell];
-	ushort fill_stack[65536];
+	uint16_t fill_stack[65536];
 	int stack_count=0;
 
 	ASSERT (cell>=0 && cell<TERRAIN_WIDTH*TERRAIN_DEPTH);
@@ -2003,23 +2003,23 @@ void CTerrainDialog::OnTerrainOcclusion()
 	
 	int count=0;
 	int occlude_count=0;
-	ubyte *touch_buffer[256];
+	uint8_t *touch_buffer[256];
 
 	for (int i=0;i<256;i++)
 	{
 		memset (Terrain_occlusion_map[i],0,32);
-		touch_buffer[i]=(ubyte *)mem_malloc(256);
+		touch_buffer[i]=(uint8_t *)mem_malloc(256);
 		ASSERT (touch_buffer[i]);
 		memset (touch_buffer[i],255,256);
 	}
 
 
-	ubyte *save_buffer;
+	uint8_t *save_buffer;
 
 	// Build a height map so we can flood fill
-	Terrain_heights=(ubyte *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
-	Terrain_fill=(ubyte *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
-	save_buffer=(ubyte *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
+	Terrain_heights=(uint8_t *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
+	Terrain_fill=(uint8_t *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
+	save_buffer=(uint8_t *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
 
 	ASSERT (Terrain_heights);
 	ASSERT (save_buffer);
@@ -2351,7 +2351,7 @@ void CTerrainDialog::OnKillfocusRotateSpeedEdit()
 void CTerrainDialog::OnTileMore() 
 {
 	int i;
-	ubyte touched[TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH];
+	uint8_t touched[TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH];
 	memset (touched,0,TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH);
 
 	for (i=0;i<TERRAIN_WIDTH*TERRAIN_DEPTH;i++)
@@ -2381,7 +2381,7 @@ void CTerrainDialog::OnTileMore()
 void CTerrainDialog::OnTileLess() 
 {
 		int i;
-	ubyte touched[TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH];
+	uint8_t touched[TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH];
 	memset (touched,0,TERRAIN_TEX_WIDTH*TERRAIN_TEX_DEPTH);
 
 	for (i=0;i<TERRAIN_WIDTH*TERRAIN_DEPTH;i++)

@@ -56,7 +56,7 @@ terrain_sky Terrain_sky;
 
 #if (!defined(RELEASE) || defined(NEWEDITOR))
 // first object to render after cell has been rendered (only used for SW renderer)
-short Terrain_seg_render_objs[TERRAIN_WIDTH * TERRAIN_DEPTH];
+int16_t Terrain_seg_render_objs[TERRAIN_WIDTH * TERRAIN_DEPTH];
 #endif
 
 // Our lighting maps for the terrain, one for each quadrant (starting at lower left)
@@ -65,16 +65,16 @@ int TerrainLightmaps[4];
 // A list of terrain to render
 terrain_render_info Terrain_list[MAX_CELLS_TO_RENDER];
 
-ushort *Terrain_rotate_list; // which points have been sub/rotated this frame
+uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
 g3Point *World_point_buffer; // Rotated points
 
 // The min/max values for a particular region of terrain
-ubyte *Terrain_min_height_int[7];
-ubyte *Terrain_max_height_int[7];
+uint8_t *Terrain_min_height_int[7];
+uint8_t *Terrain_max_height_int[7];
 // Texture values for a particular region
 
 // Terrain dynamic lighting table
-ubyte Terrain_dynamic_table[TERRAIN_WIDTH * TERRAIN_DEPTH];
+uint8_t Terrain_dynamic_table[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
 // Terrain normals depending on LOD
 terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
@@ -83,13 +83,13 @@ terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
 float *TerrainDeltaBlocks[MAX_TERRAIN_LOD];
 
 // Tracks edges of LOD
-ubyte TerrainJoinMap[TERRAIN_WIDTH * TERRAIN_DEPTH];
+uint8_t TerrainJoinMap[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
 // Terrain Y values
 float Terrain_y_values[256];
 
 #if (defined(EDITOR) || defined(NEWEDITOR))
-ubyte TerrainSelected[TERRAIN_WIDTH * TERRAIN_DEPTH];
+uint8_t TerrainSelected[TERRAIN_WIDTH * TERRAIN_DEPTH];
 int Num_terrain_selected = 0;
 int Editor_LOD_engine_off = 1;
 bool Terrain_render_ext_room_objs = true;
@@ -100,13 +100,13 @@ int TSearch_on = 0, TSearch_found_type, TSearch_x, TSearch_y, TSearch_seg, TSear
 int Terrain_LOD_engine_off = 0;
 
 int TerrainEdgeTest[MAX_TERRAIN_LOD][16];
-ubyte TerrainEdgeJump[MAX_TERRAIN_LOD];
+uint8_t TerrainEdgeJump[MAX_TERRAIN_LOD];
 
 // Unique terrain geometry identifier
 int Terrain_checksum = -1;
 
 // Occlusion data for knowing what to draw
-ubyte Terrain_occlusion_map[256][32];
+uint8_t Terrain_occlusion_map[256][32];
 int Terrain_occlusion_checksum = -2;
 
 // returns the index of the highest float
@@ -673,7 +673,7 @@ void SetupSkyTexture() {
 }
 
 // Compute a parametric sphere for our sky.
-void SetupSky(float radius, int flags, ubyte randit) {
+void SetupSky(float radius, int flags, uint8_t randit) {
   int jump = 65536 / MAX_HORIZON_PIECES;
   int top = ((65536 / 4) * 3) + (65536 / 8);
 
@@ -797,10 +797,10 @@ void SetupSky(float radius, int flags, ubyte randit) {
 int LoadPCXTerrain(char *filename) {
   CFILE *infile;
   int run = 0, i, total, j, n;
-  short xmin, ymin, xmax, ymax;
+  int16_t xmin, ymin, xmax, ymax;
   int width, height;
-  unsigned char buf;
-  unsigned char *lando;
+  uint8_t buf;
+  uint8_t *lando;
 
   if ((infile = cfopen(filename, "rb")) == NULL)
     return (0);
@@ -819,14 +819,14 @@ int LoadPCXTerrain(char *filename) {
 
   total = width * height;
 
-  lando = (ubyte *)mem_malloc(total);
+  lando = (uint8_t *)mem_malloc(total);
 
   mprintf((0, "Heightmap is %d x %d\n", width, height));
 
   while (run < total) {
     buf = cf_ReadByte(infile);
     if (buf >= 192) {
-      unsigned char tb = 0;
+      uint8_t tb = 0;
       tb = cf_ReadByte(infile);
       for (i = 0; i < (buf - 192); i++, run++)
         lando[run] = tb;
@@ -950,7 +950,7 @@ void InitTerrain(void) {
 
   // Setup stuff for rendering
   if (!Dedicated_server) {
-    Terrain_rotate_list = (ushort *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(ushort));
+    Terrain_rotate_list = (uint16_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(uint16_t));
     ASSERT(Terrain_rotate_list);
 
     World_point_buffer = (g3Point *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(g3Point));
@@ -981,8 +981,8 @@ void InitTerrain(void) {
     h = 1 << i;
 
     // Index 1 cuts the whole thing into 4ths, index 2 into 8ths, etc
-    Terrain_min_height_int[i] = (ubyte *)mem_malloc(w * h * sizeof(ubyte));
-    Terrain_max_height_int[i] = (ubyte *)mem_malloc(w * h * sizeof(ubyte));
+    Terrain_min_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
+    Terrain_max_height_int[i] = (uint8_t *)mem_malloc(w * h * sizeof(uint8_t));
 
     ASSERT(Terrain_min_height_int[i] != NULL);
     ASSERT(Terrain_max_height_int[i] != NULL);
@@ -1040,8 +1040,8 @@ void UpdateSingleTerrainLightmap(int which) {
       int tseg = i * TERRAIN_WIDTH + t;
       terrain_segment *tp = &Terrain_seg[tseg];
 
-      ushort color = GR_RGB16(tp->r, tp->g, tp->b);
-      ushort *data = lm_data(TerrainLightmaps[which]);
+      uint16_t color = GR_RGB16(tp->r, tp->g, tp->b);
+      uint16_t *data = lm_data(TerrainLightmaps[which]);
 
       int x = t % 128;
       int y = 127 - (i % 128);
@@ -1111,8 +1111,8 @@ void UpdateTerrainLightmaps() {
       int y = 127 - (i % 128);
       int which = ((i / 128) * 2) + (t / 128);
 
-      ushort color = GR_RGB16(tp->r, tp->g, tp->b);
-      ushort *data = lm_data(TerrainLightmaps[which]);
+      uint16_t color = GR_RGB16(tp->r, tp->g, tp->b);
+      uint16_t *data = lm_data(TerrainLightmaps[which]);
 
       data[y * w + x] = OPAQUE_FLAG | color;
     }

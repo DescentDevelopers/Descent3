@@ -100,7 +100,7 @@
  *
  * 28    3/23/98 11:18a Chris
  * Added int fvi_QuickDistObjectList(vector *pos, int init_room_index,
- * float rad, short *object_index_list, int max_elements)
+ * float rad, int16_t *object_index_list, int max_elements)
  *
  *
  * 27    3/17/98 11:33a Chris
@@ -345,7 +345,7 @@ typedef struct fvi_query {
   vector *p0, *p1;
   int startroom;
   float rad;
-  short thisobjnum;
+  int16_t thisobjnum;
   int *ignore_obj_list;
   int flags;
 
@@ -373,8 +373,8 @@ extern int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdi
 
 // Face/Room list for some fvi call(s)
 typedef struct fvi_face_room_list {
-  ushort face_index;
-  ushort room_index;
+  uint16_t face_index;
+  uint16_t room_index;
 } fvi_face_room_list;
 
 #define MAX_RECORDED_FACES 200
@@ -391,7 +391,7 @@ extern int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fv
 extern int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quick_cell_list, int max_elements);
 
 // Returns the number of objects that are approximately within the specified radius
-int fvi_QuickDistObjectList(vector *pos, int init_roomnum, float rad, short *object_index_list, int max_elements,
+int fvi_QuickDistObjectList(vector *pos, int init_roomnum, float rad, int16_t *object_index_list, int max_elements,
                             bool f_lightmap_only, bool f_only_players_and_ais = false,
                             bool f_include_non_collide_objects = false, bool f_stop_at_closed_doors = false);
 
@@ -418,7 +418,7 @@ bool PolyCollideObject(object *obj);
 bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *collision_normal, object *obj,
                            vector *new_pos, int nv, vector **vertex_ptr_list, vector *face_normal, matrix *orient);
 
-extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
+extern uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 extern int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, const vector *p1,
                                     vector *sphere_pos, float sphere_rad, bool f_correcting, bool f_init_collisions);

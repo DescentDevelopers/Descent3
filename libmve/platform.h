@@ -19,6 +19,8 @@
 #ifndef MVEPLATFORM_H_
 #define MVEPLATFORM_H_
 
-unsigned int platform_timeGetTime(void);
+#include <cstdint>
+
+uint32_t platform_timeGetTime(void);
 
 #endif

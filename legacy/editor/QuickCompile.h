@@ -53,7 +53,7 @@ public:
 	CQuickCompile(char *scriptname,CWnd* pParent = NULL);   // standard constructor
 
 	char m_scriptname[_MAX_PATH];
-	sbyte ret_value;
+	int8_t ret_value;
 
 // Dialog Data
 	//{{AFX_DATA(CQuickCompile)

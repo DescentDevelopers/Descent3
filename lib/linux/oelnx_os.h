@@ -127,7 +127,7 @@ protected:
   Str255 mPrefsFolderName;
   OSType mPrefsFileType;
   FSSpec mPrefsFileSpec;
-  short mPrefsFileRefNum;
+  int16_t mPrefsFileRefNum;
 };
 
 /*******************************************

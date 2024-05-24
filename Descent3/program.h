@@ -167,7 +167,7 @@
 
 typedef struct t_program_version {
   int version_type;
-  ubyte major, minor, build;
+  uint8_t major, minor, build;
   bool debug : 1;    // are we in debug mode
   bool beta : 1;     // are we in beta testing mode
   bool release : 1;  // are we a final release candidate
@@ -183,6 +183,6 @@ extern program_version Program_version;
 #define PROGRAM(_c) Program_version._c
 
 //	functions
-void ProgramVersion(int version_type, ubyte major, ubyte minor, ubyte build);
+void ProgramVersion(int version_type, uint8_t major, uint8_t minor, uint8_t build);
 
 #endif

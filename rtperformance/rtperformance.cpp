@@ -82,8 +82,8 @@ float rtp_startlog_time;
 INT64 Runtime_performance_flags = RTI_FRAMETIME;
 INT64 Runtime_performance_clockfreq = 0;
 INT64 Runtime_performance_frame_counter = 0;
-unsigned int Runtime_performance_counter = 0;
-unsigned char Runtime_performance_enabled = 0;
+uint32_t Runtime_performance_counter = 0;
+uint8_t Runtime_performance_enabled = 0;
 
 tRTFrameInfo RTP_SingleFrame;
 #ifdef USE_RTP
@@ -98,8 +98,8 @@ void rtp_WriteBufferLog(void) {
 #ifdef USE_RTP
   Runtime_performance_enabled = 1; // make sure it's enabled for the macros
   // determine how many frames to write out
-  unsigned int Num_frames;
-  unsigned int counter;
+  uint32_t Num_frames;
+  uint32_t counter;
   char buffer[4096];
 
   Num_frames = std::min<unsigned>(Runtime_performance_counter, MAX_RTP_SAMPLES);

@@ -236,7 +236,7 @@ bool PageDataNode::operator < (const PageDataNode &node)
 bool PageDataNode::Load(CFILE *infile)
 {
 	cf_ReadString(name,PAGENAME_LEN,infile);
-	type=(ubyte)cf_ReadByte(infile);
+	type=(uint8_t)cf_ReadByte(infile);
 	flags=cf_ReadInt(infile);
 	tag_count=cf_ReadInt(infile);
 
@@ -247,7 +247,7 @@ bool PageDataNode::Load(CFILE *infile)
 bool PageDataNode::Save(CFILE *outfile)
 {
 	cf_WriteString(outfile,name);
-	cf_WriteByte(outfile,(sbyte)type);
+	cf_WriteByte(outfile,(int8_t)type);
 	cf_WriteInt(outfile,flags);
 	cf_WriteInt(outfile,tag_count);
 
@@ -405,7 +405,7 @@ UpdateControls:
 
 
 // Creates a new node and adds it to the list (if not already in it)
-bool PageDataList::AddToList(char *page_name, ubyte page_type, int page_flags) 
+bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags) 
 {
 	PageDataNode *new_node, *found_node;
 	CWaitCursor wc;
@@ -451,7 +451,7 @@ bool PageDataList::AddToList(char *page_name, ubyte page_type, int page_flags)
 
 
 // Searches for and removes matching node from the list 
-bool PageDataList::RemoveFromList(char *page_name, ubyte page_type) 
+bool PageDataList::RemoveFromList(char *page_name, uint8_t page_type) 
 {
 	int index;
 	LVFINDINFO find_info;
@@ -666,7 +666,7 @@ bool PageDataList::SaveList(char *list_filename)
 
 // Scans the list for a certain page, and returns a pointer to the
 // matching data node (or NULL if not found)
-PageDataNode *PageDataList::FindNode(char *page_name, ubyte page_type)
+PageDataNode *PageDataList::FindNode(char *page_name, uint8_t page_type)
 {
 	PageDataNode *node, *found_node;
 
@@ -820,7 +820,7 @@ bool PageDataList::ProcessPagesForLevel(char *level_filename, int process_type)
 
 
 // Either adds the given level page to the list, or removes it
-bool PageDataList::ProcessPage(char *page_name, ubyte page_type, int process_type, int flags)
+bool PageDataList::ProcessPage(char *page_name, uint8_t page_type, int process_type, int flags)
 {
 	CWaitCursor wc;
 
@@ -1469,7 +1469,7 @@ bool PageDataList::DetermineRequiredPages(int process_type)
 bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_filename)
 {
 	CFILE *infile,*outfile;
-	ubyte pagetype,replaced=0;
+	uint8_t pagetype,replaced=0;
 	int done=0,len;
 	int pages_written;
 	PageDataNode *node;
@@ -1863,7 +1863,7 @@ void PageDataList::SetTitleString(void)
 
 
 // Adds a page specified by the "Add Page" button
-bool PageDataList::AddPageFromUser(char *page_name, ubyte page_type)
+bool PageDataList::AddPageFromUser(char *page_name, uint8_t page_type)
 {
 	int id;
 	switch(page_type) {
@@ -1918,7 +1918,7 @@ bool PageDataList::AddPageFromUser(char *page_name, ubyte page_type)
 
 
 // Returns the pagetype for a given string (PAGETYPE_UNKNOWN if not valid)
-ubyte PageDataList::GetPageTypeFromString(char *text)
+uint8_t PageDataList::GetPageTypeFromString(char *text)
 {
 	int type;
 
@@ -1945,7 +1945,7 @@ ubyte PageDataList::GetPageTypeFromString(char *text)
 
 
 // Processes a page read in from text file
-bool PageDataList::ProcessPageFromFile(char *page_name, ubyte page_type, int process_type)
+bool PageDataList::ProcessPageFromFile(char *page_name, uint8_t page_type, int process_type)
 {
 	char ext[12];
 	int id;
@@ -2036,7 +2036,7 @@ bool PageDataList::ProcessPagesInTextFile(char *filename, int process_type)
 	int linenum;
 
 	char *pagename;
-	ubyte pagetype;
+	uint8_t pagetype;
 	char *pagetype_text;
 
 	CString pages_not_added;

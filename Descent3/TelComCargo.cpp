@@ -120,7 +120,7 @@
 #define LID_INVENTORY 5
 
 typedef struct {
-  ubyte type;
+  uint8_t type;
   const char *name;
   int id;
 } tLineInfo;

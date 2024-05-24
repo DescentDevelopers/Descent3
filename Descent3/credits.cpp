@@ -114,10 +114,10 @@ $$TABLE_GAMEFILE "credits.omf"
 
 typedef struct creditline {
   ddgr_color color;
-  ubyte type;
+  uint8_t type;
   char *text;
   creditline *next;
-  ushort startx, starty, endx, endy;
+  uint16_t startx, starty, endx, endy;
   float displaytime;
 } creditline;
 

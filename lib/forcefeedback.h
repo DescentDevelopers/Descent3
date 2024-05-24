@@ -170,17 +170,17 @@ typedef struct tEffectRamp {
   int32_t End;   // +- 10,000
 } tEffRamp;
 typedef struct tEffectWave {
-  unsigned int Mag;   // 0 to 10,000
+  uint32_t Mag;   // 0 to 10,000
   int32_t Offset;         // +- 10,000
-  unsigned int Phase; // 0 to 35,999
-  unsigned int Period;
+  uint32_t Phase; // 0 to 35,999
+  uint32_t Period;
 } tEffWave;
 typedef struct tEffectCondition {
   int32_t Offset;                      // +- 10,000
   int32_t PositiveCoefficient;         // +- 10,000
   int32_t NegativeCoefficient;         // +- 10,000
-  unsigned int PositiveSaturation; // 0 to 10,000
-  unsigned int NegativeSaturation; // 0 to 10,000
+  uint32_t PositiveSaturation; // 0 to 10,000
+  uint32_t NegativeSaturation; // 0 to 10,000
   int32_t DeadBand;                    // 0 to 10,000
 } tEffCondition;
 typedef struct tEffectCustom {
@@ -197,10 +197,10 @@ typedef union tEffectInfo {
   tEffCustom Custom;
 } tEffInfo;
 typedef struct tEffectEnvelope {
-  unsigned int AttackLevel;
-  unsigned int AttackTime;
-  unsigned int FadeLevel;
-  unsigned int FadeTime;
+  uint32_t AttackLevel;
+  uint32_t AttackTime;
+  uint32_t FadeLevel;
+  uint32_t FadeTime;
 } tEffEnvelope;
 typedef enum { kXAxisOnly, kYAxisOnly, kBothAxes } tEffAxis;
 typedef struct tFFB_Effect {
@@ -208,12 +208,12 @@ typedef struct tFFB_Effect {
   tEffType Type;
   // tEffInfo			TypeInfo[2];
   tEffInfo TypeInfo;
-  unsigned int Duration;
-  unsigned int Gain; // 0-10000 -- scales all magnitudes and envelope
-  unsigned int Period;
+  uint32_t Duration;
+  uint32_t Gain; // 0-10000 -- scales all magnitudes and envelope
+  uint32_t Period;
   tEffAxis Axis;
   tJoyButtons Trigger;
-  unsigned int TriggerRepeatTime;
+  uint32_t TriggerRepeatTime;
   int32_t Direction; // 0 to 360 deg.
   tEffEnvelope Envelope;
 } tFFB_Effect;
@@ -363,13 +363,13 @@ void ddio_ffb_DestroyAll(void);
 // Purpose:
 //    Play an effect that was previously created.
 // -------------------------------------------------------------------
-void ddio_ffb_effectPlay(short eID);
+void ddio_ffb_effectPlay(int16_t eID);
 // -------------------------------------------------------------------
 // ddio_ffb_effectStop
 // Purpose:
 //    Stop a single effect.
 // -------------------------------------------------------------------
-void ddio_ffb_effectStop(short eID);
+void ddio_ffb_effectStop(int16_t eID);
 // -------------------------------------------------------------------
 // ddio_ffb_effectStopAll
 // Purpose:
@@ -382,21 +382,21 @@ void ddio_ffb_effectStopAll(tDevice dev);
 //    Unload a single effect...  Necessary to make room for other
 //    effects.
 // -------------------------------------------------------------------
-void ddio_ffb_effectUnload(short eID);
+void ddio_ffb_effectUnload(int16_t eID);
 // -------------------------------------------------------------------
 // ddio_ffb_effectModify
 // Purpose:
 //    Modifies a single effect, only if the given parameters are
 //    different from what's currently loaded.
 // -------------------------------------------------------------------
-void ddio_ffb_effectModify(short eID, int *Direction, unsigned int *Duration, unsigned int *Gain, unsigned int *Period,
+void ddio_ffb_effectModify(int16_t eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
                            tEffInfo *TypeInfo, tEffEnvelope *Envelope);
 // -------------------------------------------------------------------
 // ddio_ffb_GetEffectData
 // Purpose:
 //    Retrieves affect data for the given parameters, pass NULL for those you don't want
 // -------------------------------------------------------------------
-void ddio_ffb_GetEffectData(short eID, int *Direction, unsigned int *Duration, unsigned int *Gain, unsigned int *Period,
+void ddio_ffb_GetEffectData(int16_t eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
                             tEffInfo *TypeInfo, tEffEnvelope *Envelope);
 // -------------------------------------------------------------------
 // ddio_ffjoy_EnableAutoCenter

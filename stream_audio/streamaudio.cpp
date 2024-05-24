@@ -432,7 +432,7 @@ bool AudioStream::IsReady() {
   return false;
 }
 //////////////////////////////////////////////////////////////////////////////
-bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
+bool AudioStream::ReopenDigitalStream(uint8_t fbufidx, int nbufs) {
   const tOSFDigiHdr *digihdr = (const tOSFDigiHdr *)m_archive.StreamHeader();
 
   m_bytesleft = m_archive.StreamLength();
@@ -445,10 +445,10 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
   }
 
   // instatiate decompression facility or use raw source data
-  unsigned int sample_count = 0;
-  unsigned int channels = 0;
+  uint32_t sample_count = 0;
+  uint32_t channels = 0;
   if (m_archive.StreamComp() == OSF_DIGIACM_STRM) {
-    unsigned int sample_rate;
+    uint32_t sample_rate;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
     if (!m_decoder) {
       delete m_decoder;
@@ -540,7 +540,7 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
       if (m_buffer[m_fbufidx].data) {
         mem_free(m_buffer[m_fbufidx].data);
       }
-      m_buffer[m_fbufidx].data = (ubyte *)mem_malloc(m_bufsize);
+      m_buffer[m_fbufidx].data = (uint8_t *)mem_malloc(m_bufsize);
     }
     m_buffer[m_fbufidx].nbytes = AudioStream::ReadFileData(m_fbufidx, m_bufsize);
     m_buffer[m_fbufidx].flags = 0;
@@ -747,9 +747,9 @@ void AudioStream::Reset() {
   if (m_decoder) {
     delete m_decoder;
 
-    unsigned int channels;
-    unsigned int sample_rate;
-    unsigned int sample_count;
+    uint32_t channels;
+    uint32_t sample_rate;
+    uint32_t sample_count;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
   }
 }
@@ -757,7 +757,7 @@ void AudioStream::Reset() {
 // invoked by AudioStreamCB.
 #pragma optimize("", off)
 void *AudioStream::StreamCallback(int *size) {
-  ubyte nextbuffer = (m_sbufidx + 1) % STRM_BUFCOUNT;
+  uint8_t nextbuffer = (m_sbufidx + 1) % STRM_BUFCOUNT;
   void *data = NULL;
   // we're not done yet.
   // adjust sound buffer to the next buffer
@@ -871,7 +871,7 @@ void AudioStream::UpdateData() {
       if (m_buffer[m_fbufidx].data) {
         mem_free(m_buffer[m_fbufidx].data);
       }
-      m_buffer[m_fbufidx].data = (ubyte *)mem_malloc(m_bufsize);
+      m_buffer[m_fbufidx].data = (uint8_t *)mem_malloc(m_bufsize);
     }
     m_buffer[m_fbufidx].nbytes = AudioStream::ReadFileData(m_fbufidx, m_bufsize);
     m_buffer[m_fbufidx].flags = 0;
@@ -922,7 +922,7 @@ int ADecodeFileRead(void *data, void *buf, unsigned qty) {
     stream->m_bytesleft -= iqty;
   }
 
-  return stream->m_archive.Read((ubyte *)buf, iqty);
+  return stream->m_archive.Read((uint8_t *)buf, iqty);
 }
 
 //	Router for stream callbacks.

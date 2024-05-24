@@ -128,7 +128,7 @@ int VisEffectInitType(vis_effect *vis);
 
 // initialize a new viseffect.  adds to the list for the given room
 // returns the object number
-int VisEffectCreate(ubyte type, ubyte id, int roomnum, vector *pos);
+int VisEffectCreate(uint8_t type, uint8_t id, int roomnum, vector *pos);
 
 // link the viseffect  into the list for its room
 // Does nothing for effects over terrain
@@ -164,12 +164,12 @@ void DrawVisEffect(vis_effect *vis);
 void CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int which_index = -1, float force_scalar = 1);
 
 // Creates a some line sparks that go in random directions
-void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, ushort color = 0, float force_scalar = 1);
+void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, uint16_t color = 0, float force_scalar = 1);
 
 // Creates vis effects but has the caller set their parameters
 // initialize a new viseffect.  adds to the list for the given room
 // returns the vis number
-int VisEffectCreateControlled(ubyte type, object *parent, ubyte id, int roomnum, vector *pos, float lifetime,
+int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos, float lifetime,
                               vector *velocity, int phys_flags = 0, float size = 0, float mass = 0.0f,
                               float drag = 0.0f, bool isreal = 0);
 

@@ -150,14 +150,14 @@ public:
 
 template <class T, int t_LEN> class tQueue {
   T m_items[t_LEN];
-  short m_head, m_tail;
+  int16_t m_head, m_tail;
 
 public:
   tQueue() { m_head = m_tail = 0; };
   ~tQueue(){};
 
   void send(T &item) { // sends an item onto the queue
-    short temp = m_tail + 1;
+    int16_t temp = m_tail + 1;
     if (temp == t_LEN)
       temp = 0;
     if (temp != m_head) {

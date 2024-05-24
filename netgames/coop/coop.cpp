@@ -116,17 +116,17 @@ typedef struct {
   int Score[2];
 } tPlayerStat;
 
-static int pack_pstat(tPlayerStat *user_info, ubyte *data);
-static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
+static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
+static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
 
-int pack_pstat(tPlayerStat *user_info, ubyte *data) {
+int pack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
   MultiAddInt(user_info->Score[1], data, &count);
   return count;
 }
 
-int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
+int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   user_info->Score[0] = MultiGetInt(data, &count);
   user_info->Score[1] = MultiGetInt(data, &count);
@@ -179,7 +179,7 @@ void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -226,7 +226,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -238,8 +238,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
   }
 
   DMFCBase->AddHUDItemCallback(HI_TEXT, DisplayHUDScores);
-  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, ubyte *))pack_pstat,
-                              (int (*)(void *, ubyte *))unpack_pstat);
+  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, uint8_t *))pack_pstat,
+                              (int (*)(void *, uint8_t *))unpack_pstat);
   DMFCBase->SetNumberOfTeams(1);
 
   netgame_info *netgameinfo = DMFCBase->GetNetgameInfo();
@@ -590,7 +590,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   int name_x = DMFCBase->GetGameWindowW() - name_width - 10;
 
   int pnum, index = 0;
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
 
   DLLgrtext_SetAlpha(alpha);
   char name[64];
@@ -832,7 +832,7 @@ void OnPLRInterval(void) {
   DLLgrtext_CenteredPrintf(0, y - height - 1, TXT_LEVELCOMPLETE);
 
   if (li) {
-    DLLgrtext_SetAlpha((ubyte)(alpha * 255.0f));
+    DLLgrtext_SetAlpha((uint8_t)(alpha * 255.0f));
     DLLgrtext_SetColor(GR_RGB(255, 255, 255));
     DLLgrtext_CenteredPrintf(0, y + 1, li->name);
   }

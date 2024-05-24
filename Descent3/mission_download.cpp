@@ -144,7 +144,7 @@ msn_urls msn_URL = {"", {"", "", "", "", ""}};
 msn_urls Net_msn_URLs;
 
 extern char Proxy_server[200];
-extern short Proxy_port;
+extern int16_t Proxy_port;
 
 int msn_ExtractZipFile(char *zipfilename, char *mn3name);
 
@@ -155,7 +155,7 @@ msn_urls *msn_GetURL(network_address *net_addr) {
   int count = 0;
   int size;
   int tries = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   float start_time;
   network_address from_addr;
 
@@ -516,12 +516,12 @@ int msn_DownloadWithStatus(char *url, char *filename) {
   */
 }
 
-void msn_DoAskForURL(ubyte *indata, network_address *net_addr) {
+void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
   static msn_urls *url;
   int count = 0;
   int size;
   int i;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int num_urls = 0;
 
   if (Netgame.local_role == LR_SERVER) {
@@ -552,7 +552,7 @@ void msn_DoAskForURL(ubyte *indata, network_address *net_addr) {
     // Number of URLs
     MultiAddByte(num_urls, data, &count);
     for (i = 0; i < num_urls; i++) {
-      ushort urllen = strlen(url->URL[i]) + 1;
+      uint16_t urllen = strlen(url->URL[i]) + 1;
       if ((count + urllen) >= MAX_GAME_DATA_SIZE) {
         // if for some reason the URLS exceed what a packet can send
         // rather than overflow the memory buffer, just don't send out the packet.
@@ -571,7 +571,7 @@ void msn_DoAskForURL(ubyte *indata, network_address *net_addr) {
   }
 }
 
-void msn_DoCurrMsnURLs(ubyte *data, network_address *net_addr) {
+void msn_DoCurrMsnURLs(uint8_t *data, network_address *net_addr) {
   int count = 0;
   int num_urls = 0;
   int i;
@@ -586,7 +586,7 @@ void msn_DoCurrMsnURLs(ubyte *data, network_address *net_addr) {
   num_urls = MultiGetByte(data, &count);
 
   for (i = 0; i < num_urls; i++) {
-    ushort urllen = MultiGetUshort(data, &count);
+    uint16_t urllen = MultiGetUshort(data, &count);
     memcpy(msn_URL.URL[i], data + count, urllen);
     count += urllen;
   }
@@ -788,7 +788,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
           }
         } else {
           // check the CRC
-          unsigned int crc = cf_GetfileCRC(output_filename);
+          uint32_t crc = cf_GetfileCRC(output_filename);
           if (crc == ze->crc32) {
             console.puts(GR_GREEN, "CRC OK");
 

@@ -175,11 +175,11 @@ static struct tAppNodes {
 } Win32_AppObjects[MAX_WIN32APPS];
 
 // system mouse info.
-short w32_msewhl_delta = 0; // -val = up, pos val = down, 0 = no change.
+int16_t w32_msewhl_delta = 0; // -val = up, pos val = down, 0 = no change.
 bool w32_mouseman_hack = false;
-const uint kWindowStyle_Windowed = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_MINIMIZEBOX;
-const uint kWindowStyle_FullScreen = WS_POPUP | WS_SYSMENU;
-const uint kWindowStyle_Console = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_MINIMIZEBOX;
+const uint32_t kWindowStyle_Windowed = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_MINIMIZEBOX;
+const uint32_t kWindowStyle_FullScreen = WS_POPUP | WS_SYSMENU;
+const uint32_t kWindowStyle_Console = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_MINIMIZEBOX;
 
 /*	Win32 Application Object
                 This object entails initialization and cleanup of all operating system
@@ -256,7 +256,7 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
 
     if (flags & OEAPP_WINDOWED) {
       // adjust the window size to take the menu into account
-      uint extendedStyle = (flags & OEAPP_TOPMOST) ? WS_EX_TOPMOST : 0;
+      uint32_t extendedStyle = (flags & OEAPP_TOPMOST) ? WS_EX_TOPMOST : 0;
       AdjustWindowRectEx(&rect, kWindowStyle_Windowed & ~WS_OVERLAPPED, FALSE, extendedStyle);
 #ifdef RELEASE
       cx = CW_USEDEFAULT;
@@ -653,7 +653,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
   case WM_SYSCOMMAND: {
     // bypass screen saver and system menu.
-    unsigned int maskedWParam = wParam & 0xFFF0;
+    uint32_t maskedWParam = wParam & 0xFFF0;
     if (maskedWParam == SC_SCREENSAVE || maskedWParam == SC_MONITORPOWER)
       return 0;
     if (maskedWParam == SC_KEYMENU)
@@ -685,7 +685,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
       if (msg != 0xcc41) {
         w32_msewhl_delta = HIWORD(wParam);
       } else {
-        w32_msewhl_delta = (short)(wParam);
+        w32_msewhl_delta = (int16_t)(wParam);
       }
     } else if (msg == WM_MOUSEWHEEL) {
       w32_msewhl_delta = HIWORD(wParam);

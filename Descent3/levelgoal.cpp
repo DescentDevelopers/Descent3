@@ -566,7 +566,7 @@ void lgoal::SendStateToPlayer(int index, int pnum) {
   // now update the buddy handle list of the clients
   int count = 0;
   int size_offset;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   size_offset = START_DATA(MP_WORLD_STATES, data, &count);
 
@@ -761,25 +761,25 @@ bool levelgoals::SaveLevelGoalInfo(CFILE *fptr) {
     len = strlen(name);
     cf_WriteShort(fptr, len);
     if (len) {
-      cf_WriteBytes((unsigned char *)name, len, fptr);
+      cf_WriteBytes((uint8_t *)name, len, fptr);
     }
 
     len = strlen(iname);
     cf_WriteShort(fptr, len);
     if (len) {
-      cf_WriteBytes((unsigned char *)iname, len, fptr);
+      cf_WriteBytes((uint8_t *)iname, len, fptr);
     }
 
     len = strlen(desc);
     cf_WriteShort(fptr, len);
     if (len) {
-      cf_WriteBytes((unsigned char *)desc, len, fptr);
+      cf_WriteBytes((uint8_t *)desc, len, fptr);
     }
 
     len = strlen(message);
     cf_WriteShort(fptr, len);
     if (len) {
-      cf_WriteBytes((unsigned char *)message, len, fptr);
+      cf_WriteBytes((uint8_t *)message, len, fptr);
     }
 
     num_items = Level_goals.GoalGetNumItems(i);
@@ -827,7 +827,7 @@ bool levelgoals::LoadLevelGoalInfo(CFILE *fptr) {
   CleanupAfterLevel();
 
   int i;
-  short version = cf_ReadShort(fptr);
+  int16_t version = cf_ReadShort(fptr);
   int num_goals = cf_ReadShort(fptr);
 
   for (i = 0; i < num_goals; i++) {
@@ -860,19 +860,19 @@ bool levelgoals::LoadLevelGoalInfo(CFILE *fptr) {
 
     len = cf_ReadShort(fptr);
     if (len) {
-      cf_ReadBytes((unsigned char *)name, len, fptr);
+      cf_ReadBytes((uint8_t *)name, len, fptr);
     }
     name[len] = '\0';
 
     len = cf_ReadShort(fptr);
     if (len) {
-      cf_ReadBytes((unsigned char *)iname, len, fptr);
+      cf_ReadBytes((uint8_t *)iname, len, fptr);
     }
     iname[len] = '\0';
 
     len = cf_ReadShort(fptr);
     if (len) {
-      cf_ReadBytes((unsigned char *)desc, len, fptr);
+      cf_ReadBytes((uint8_t *)desc, len, fptr);
     }
     desc[len] = '\0';
 
@@ -881,7 +881,7 @@ bool levelgoals::LoadLevelGoalInfo(CFILE *fptr) {
     } else {
       len = cf_ReadShort(fptr);
       if (len) {
-        cf_ReadBytes((unsigned char *)message, len, fptr);
+        cf_ReadBytes((uint8_t *)message, len, fptr);
       }
       message[len] = '\0';
     }

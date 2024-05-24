@@ -40,17 +40,17 @@
 extern float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
 typedef struct {
-  ushort *mem_ptr;
-  ubyte used;
+  uint16_t *mem_ptr;
+  uint8_t used;
 } dynamic_lightmap;
 
 typedef struct {
-  ushort lmi_handle;
+  uint16_t lmi_handle;
 } dynamic_face;
 
 typedef struct {
-  ushort cellnum;
-  ubyte r, g, b;
+  uint16_t cellnum;
+  uint8_t r, g, b;
 } dynamic_cell;
 
 // Sets up our dynamic lighting maps
@@ -82,7 +82,7 @@ int SearchLightQuadTree(face *fp, vector *rvec, vector *uvec, dynamic_face *dyna
 
 // Given a float, returns the index into the Ubyte_float_table that this number
 // corresponds to
-ubyte Float_to_ubyte(float fnum);
+uint8_t Float_to_ubyte(float fnum);
 
 extern float Ubyte_to_float[];
 
@@ -98,7 +98,7 @@ void CountFaceLights();
 void DoFaceLighting();
 
 // Sets pulse parameters for an entire room
-void SetRoomPulse(room *rp, ubyte pulse_time, ubyte pulse_offset);
+void SetRoomPulse(room *rp, uint8_t pulse_time, uint8_t pulse_offset);
 
 // Returns the total number of bytes needed for volume lighting in this room
 int GetVolumeSizeOfRoom(room *rp, int *w = NULL, int *h = NULL, int *d = NULL);

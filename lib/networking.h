@@ -164,25 +164,25 @@
 #include <winsock.h>
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->S_un.S_addr = value; }
-static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->S_un.S_addr; }
-static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
+static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, uint32_t value) { st->S_un.S_addr = value; }
+static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *value = st->S_un.S_addr; }
+static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, uint16_t s_w1, uint16_t s_w2) {
   st->S_un.S_un_w.s_w1 = s_w1;
   st->S_un.S_un_w.s_w2 = s_w2;
 }
-static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
+static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, uint16_t *s_w1, uint16_t *s_w2) {
   *s_w1 = st->S_un.S_un_w.s_w1;
   *s_w2 = st->S_un.S_un_w.s_w2;
 }
-static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
-                                unsigned char s_b4) {
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3,
+                                uint8_t s_b4) {
   st->S_un.S_un_b.s_b1 = s_b1;
   st->S_un.S_un_b.s_b2 = s_b2;
   st->S_un.S_un_b.s_b3 = s_b3;
   st->S_un.S_un_b.s_b4 = s_b4;
 }
-static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
-                                unsigned char *s_b4) {
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3,
+                                uint8_t *s_b4) {
   *s_b1 = st->S_un.S_un_b.s_b1;
   *s_b2 = st->S_un.S_un_b.s_b2;
   *s_b3 = st->S_un.S_un_b.s_b3;
@@ -241,48 +241,48 @@ static inline int WSAGetLastError() { return errno; }
 extern bool Use_DirectPlay;
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->s_addr = value; }
-static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->s_addr; }
-static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
+static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, uint32_t value) { st->s_addr = value; }
+static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *value = st->s_addr; }
+static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, uint16_t s_w1, uint16_t s_w2) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_un_w.s_w1 = s_w1;
   S_un.S_un_w.s_w2 = s_w2;
   st->s_addr = S_un.S_addr;
 }
-static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
+static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, uint16_t *s_w1, uint16_t *s_w2) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_addr = st->s_addr;
   *s_w1 = S_un.S_un_w.s_w1;
   *s_w2 = S_un.S_un_w.s_w2;
 }
-static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
-                                unsigned char s_b4) {
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3,
+                                uint8_t s_b4) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_un_b.s_b1 = s_b1;
@@ -291,16 +291,16 @@ static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, u
   S_un.S_un_b.s_b4 = s_b4;
   st->s_addr = S_un.S_addr;
 }
-static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
-                                unsigned char *s_b4) {
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3,
+                                uint8_t *s_b4) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_addr = st->s_addr;
@@ -334,9 +334,9 @@ enum network_protocol : uint32_t
 };
 
 typedef struct {
-  ubyte address[6];
-  ushort port;
-  ubyte net_id[4];
+  uint8_t address[6];
+  uint16_t port;
+  uint8_t net_id[4];
   network_protocol connection_type; // IPX, IP, modem, etc.
 } network_address;
 
@@ -344,7 +344,7 @@ extern BOOL DP_active;
 extern BOOL TCP_active;
 extern BOOL IPX_active;
 // Get the info from RAS
-unsigned int psnet_ras_status();
+uint32_t psnet_ras_status();
 
 // function to shutdown and close the given socket.  It takes a couple of things into consideration
 // when closing, such as possibly reiniting reliable sockets if they are closed here.
@@ -361,7 +361,7 @@ int nw_InitReliableSocket();
 int nw_CheckListenSocket(network_address *from_addr);
 
 // Inits the sockets that the application will be using
-void nw_InitSockets(ushort port);
+void nw_InitSockets(uint16_t port);
 
 // Connects a client to a server
 void nw_ConnectToServer(SOCKET *socket, network_address *server_addr);
@@ -374,14 +374,14 @@ uint32_t nw_GetHostAddressFromNumbers(char *str);
 void nw_GetNumbersFromHostAddress(network_address *address, char *str);
 
 // returns the ip address of this computer
-unsigned int nw_GetThisIP();
+uint32_t nw_GetThisIP();
 
 // function which checks the Listen_socket for possibly incoming requests to be connected.
 // returns 0 on error or nothing waiting.  1 if we should try to accept
 int nw_CheckListenSocket(network_address *from_addr);
 
-// Calculates a unique ushort checksum for a stream of data
-ushort nw_CalculateChecksum(void *vptr, int len);
+// Calculates a unique uint16_t checksum for a stream of data
+uint16_t nw_CalculateChecksum(void *vptr, int len);
 
 // Sends data on an unreliable socket
 int nw_Send(network_address *who_to, void *data, int len, int flags);
@@ -399,12 +399,12 @@ void nw_FreePacket(int id);
 int nw_Receive(void *data, network_address *from_addr);
 
 // nw_SendReliable sends the given data through the given reliable socket.
-int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent = false);
+int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent = false);
 
 // function which reads data off of a reliable socket.  recv() should read the totaly amount of data
 // available I believe.  (i.e. we shouldn't read only part of a message with one call....I may be wrong
 // and this may be a source of bugs).
-int nw_ReceiveReliable(SOCKET socket, ubyte *buffer, int max_len);
+int nw_ReceiveReliable(SOCKET socket, uint8_t *buffer, int max_len);
 
 // Returns the current protocol in use
 int nw_GetProtocolType();
@@ -430,13 +430,13 @@ int nw_PingCompare(const void *arg1, const void *arg2);
 void nw_psnet_buffer_init();
 
 // buffer a packet (maintain order!)
-void nw_psnet_buffer_packet(ubyte *data, int length, network_address *from);
+void nw_psnet_buffer_packet(uint8_t *data, int length, network_address *from);
 
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from);
+int nw_psnet_buffer_get_next(uint8_t *data, int *length, network_address *from);
 
 // get the index of the next packet in order!
-int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t packet_id);
+int nw_psnet_buffer_get_next_by_packet_id(uint8_t *data, int *length, uint32_t packet_id);
 
 // This is all the reliable UDP stuff...
 #define MAXNETBUFFERS                                                                                                  \
@@ -466,8 +466,8 @@ int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t pac
 #define RNF_CONNECTING 4   // We received the connecting message, but haven't told the game yet.
 #define RNF_LIMBO 5        // between connecting and connected
 
-void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link_type, float time_sent);
-void nw_WorkReliable(ubyte *data, int len, network_address *naddr);
+void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_type, float time_sent);
+void nw_WorkReliable(uint8_t *data, int len, network_address *naddr);
 int nw_Compress(void *srcdata, void *destdata, int count);
 int nw_Uncompress(void *compdata, void *uncompdata, int count);
 
@@ -476,7 +476,7 @@ int nw_Uncompress(void *compdata, void *uncompdata, int count);
 #define NW_AGHBN_READ 3
 
 typedef struct _async_dns_lookup {
-  unsigned int ip; // resolved host. Write only to worker thread.
+  uint32_t ip; // resolved host. Write only to worker thread.
   char *host;      // host name to resolve. read only to worker thread
   bool done;       // write only to the worker thread. Signals that the operation is complete
   bool error;      // write only to worker thread. Thread sets this if the name doesn't resolve
@@ -500,18 +500,18 @@ int CDECLCALL gethostbynameworker(void *parm);
 void CDECLCALL gethostbynameworker(void *parm);
 #endif
 
-int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname);
+int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname);
 int nw_ReccomendPPS();
 void nw_DoNetworkIdle(void);
 
-typedef void *(*NetworkReceiveCallback)(ubyte *data, int len, network_address *from);
-int nw_RegisterCallback(NetworkReceiveCallback nfp, ubyte id);
-NetworkReceiveCallback nw_UnRegisterCallback(ubyte id);
-int nw_SendWithID(ubyte id, ubyte *data, int len, network_address *who_to);
+typedef void *(*NetworkReceiveCallback)(uint8_t *data, int len, network_address *from);
+int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id);
+NetworkReceiveCallback nw_UnRegisterCallback(uint8_t id);
+int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to);
 int nw_DoReceiveCallbacks(void);
-void nw_HandleConnectResponse(ubyte *data, int len, network_address *server_addr);
-int nw_RegisterCallback(NetworkReceiveCallback nfp, ubyte id);
-void nw_HandleUnreliableData(ubyte *data, int len, network_address *from_addr);
+void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_addr);
+int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id);
+void nw_HandleUnreliableData(uint8_t *data, int len, network_address *from_addr);
 void nw_ReliableResend(void);
 int nw_CheckReliableSocket(int socknum);
 

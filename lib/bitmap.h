@@ -56,15 +56,15 @@
 #define BITMAP_FORMAT_4444 1
 
 typedef struct {
-  ushort *data16;       // 16bit data
-  ushort width, height; // Width and height in pixels
-  ushort used;          // Is this bitmap free to be allocated?
+  uint16_t *data16;       // 16bit data
+  uint16_t width, height; // Width and height in pixels
+  uint16_t used;          // Is this bitmap free to be allocated?
 
-  short cache_slot; // For use by the rendering lib
-  ubyte mip_levels;
-  ubyte flags;
+  int16_t cache_slot; // For use by the rendering lib
+  uint8_t mip_levels;
+  uint8_t flags;
 
-  ubyte format;               // See bitmap format types above
+  uint8_t format;               // See bitmap format types above
   char name[BITMAP_NAME_LEN]; // Whats the name of this bitmap? (ie SteelWall)
 } bms_bitmap;
 
@@ -117,9 +117,9 @@ int bm_mipped(int handle);
 //	a function to determine if a pixel in a bitmap is transparent
 bool bm_pixel_transparent(int bm_handle, int x, int y);
 //	a function to determine if a pixel in a bitmap is transparent
-ushort bm_pixel(int bm_handle, int x, int y);
+uint16_t bm_pixel(int bm_handle, int x, int y);
 // given a handle to a bitmap, returns a pointer to its data, or NULL if handle is invalid
-ushort *bm_data(int handle, int miplevel);
+uint16_t *bm_data(int handle, int miplevel);
 // Gets bits per pixel for a particular bitmap
 // As of 12/30/96 always returns 16
 int bm_bpp(int handle);

@@ -338,7 +338,7 @@ extern renderer_type Renderer_type;
 #define OT_BUMPMAP 5        // Draw a saturated bumpmap afterwards
 #define OT_BLEND_SATURATE 6 // Add a lightmap in
 
-extern ubyte Overlay_type;
+extern uint8_t Overlay_type;
 extern int Overlay_map;
 extern int Bumpmap_ready, Bump_map;
 extern float Z_bias;
@@ -426,17 +426,17 @@ typedef enum {
 } wrap_type;
 
 typedef struct {
-  sbyte initted;
+  int8_t initted;
 
-  sbyte cur_bilinear_state;
-  sbyte cur_zbuffer_state;
-  sbyte cur_fog_state;
-  sbyte cur_mip_state;
+  int8_t cur_bilinear_state;
+  int8_t cur_zbuffer_state;
+  int8_t cur_fog_state;
+  int8_t cur_mip_state;
 
   texture_type cur_texture_type;
   color_model cur_color_model;
   light_state cur_light_state;
-  sbyte cur_alpha_type;
+  int8_t cur_alpha_type;
 
   wrap_type cur_wrap_type;
 
@@ -448,7 +448,7 @@ typedef struct {
   ddgr_color cur_color;
   ddgr_color cur_fog_color;
 
-  sbyte cur_texture_quality; // 0-none, 1-linear, 2-perspective
+  int8_t cur_texture_quality; // 0-none, 1-linear, 2-perspective
 
   int clip_x1, clip_x2, clip_y1, clip_y2;
   int screen_width, screen_height;
@@ -456,17 +456,17 @@ typedef struct {
 } rendering_state;
 
 typedef struct {
-  ubyte mipping;
-  ubyte filtering;
+  uint8_t mipping;
+  uint8_t filtering;
   float gamma;
-  ubyte bit_depth;
+  uint8_t bit_depth;
   int width, height;
-  ubyte vsync_on;
+  uint8_t vsync_on;
 } renderer_preferred_state;
 
 typedef struct {
   int type;
-  ushort *data;
+  uint16_t *data;
   int bytes_per_row;
 } renderer_lfb;
 
@@ -488,10 +488,10 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type = MAP_TYPE
 void rend_DrawPolygon2D(int handle, g3Point **p, int nv);
 
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState(sbyte);
+void rend_SetMipState(int8_t);
 
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(sbyte on);
+void rend_SetFogState(int8_t on);
 
 // Sets the near and far plane of fog
 void rend_SetFogBorders(float fog_near, float fog_far);
@@ -518,10 +518,10 @@ void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, flo
                            int color = -1, float *alphas = NULL);
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state);
+void rend_SetFiltering(int8_t state);
 
 // Sets the state of zbuffering to on or off
-void rend_SetZBufferState(sbyte state);
+void rend_SetZBufferState(int8_t state);
 
 // Sets the near and far planes for z buffer
 void rend_SetZValues(float nearz, float farz);
@@ -530,7 +530,7 @@ void rend_SetZValues(float nearz, float farz);
 void rend_SetOverlayMap(int handle);
 
 // Sets the type of overlay operation
-void rend_SetOverlayType(ubyte type);
+void rend_SetOverlayType(uint8_t type);
 
 // Clears the display to a specified color
 void rend_ClearScreen(ddgr_color color);
@@ -566,10 +566,10 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
 void rend_SetFogColor(ddgr_color fogcolor);
 
 // sets the alpha type
-void rend_SetAlphaType(sbyte);
+void rend_SetAlphaType(int8_t);
 
 // Sets the constant alpha value
-void rend_SetAlphaValue(ubyte val);
+void rend_SetAlphaValue(uint8_t val);
 
 // Sets the overall alpha scale factor (all alpha values are scaled by this value)
 // usefull for motion blur effect
@@ -595,7 +595,7 @@ void rend_SetZBias(float z_bias);
 void rend_SetZBufferWriteMask(int state);
 
 // Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte *framebuffer);
+void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, uint8_t *framebuffer);
 
 // Fills in some variables so the 3d math routines know how to project
 void rend_GetProjectionParameters(int *width, int *height);
@@ -611,13 +611,13 @@ void rend_GetLFBLock(renderer_lfb *lfb);
 void rend_ReleaseLFBLock(renderer_lfb *lfb);
 
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize);
+void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize);
 
 //	given a chunked bitmap, renders it.
-void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha);
+void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, uint8_t alpha);
 
 //	given a chunked bitmap, renders it.scaled
-void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, ubyte alpha);
+void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, uint8_t alpha);
 
 // Draws a line using the states of the renderer
 void rend_DrawSpecialLine(g3Point *p0, g3Point *p1);

@@ -95,13 +95,13 @@
 #define LFH_XTRALN 0x1c
 #define LFH_NAME 0x1e
 
-ushort get_buffer_short(char *buf) {
-  ubyte *ubuf = (ubyte *)buf;
-  return ((ushort)ubuf[1] << 8) | (ushort)ubuf[0];
+uint16_t get_buffer_short(char *buf) {
+  uint8_t *ubuf = (uint8_t *)buf;
+  return ((uint16_t)ubuf[1] << 8) | (uint16_t)ubuf[0];
 }
-uint get_buffer_int(char *buf) {
-  ubyte *ubuf = (ubyte *)buf;
-  return ((uint)ubuf[3] << 24) | ((uint)ubuf[2] << 16) | ((uint)ubuf[1] << 8) | (uint)ubuf[0];
+uint32_t get_buffer_int(char *buf) {
+  uint8_t *ubuf = (uint8_t *)buf;
+  return ((uint32_t)ubuf[3] << 24) | ((uint32_t)ubuf[2] << 16) | ((uint32_t)ubuf[1] << 8) | (uint32_t)ubuf[0];
 }
 
 ZIP::ZIP() { m_open = false; }
@@ -382,7 +382,7 @@ int ZIP::ReadFile(zipentry *ent, char *data) {
     }
 
     // inflate the file
-    if (InflateFile(m_fp, ent->compressed_size, (ubyte *)data, ent->uncompressed_size)) {
+    if (InflateFile(m_fp, ent->compressed_size, (uint8_t *)data, ent->uncompressed_size)) {
       return -6;
     }
 
@@ -481,7 +481,7 @@ int ZIP::ReadZipDataToFile(zipentry *ent, FILE *file) {
   if (err != 0)
     return -2;
 
-  ubyte data[DATA_CHUNK_SIZE];
+  uint8_t data[DATA_CHUNK_SIZE];
   int size_remaining, amount;
   size_remaining = ent->compressed_size;
 
@@ -513,8 +513,8 @@ int ZIP::SeekToCompressedData(zipentry *ent) {
     return -1;
   }
 
-  ushort filename_length = get_buffer_short(buf + LFH_FNLN);
-  ushort extra_field_length = get_buffer_short(buf + LFH_XTRALN);
+  uint16_t filename_length = get_buffer_short(buf + LFH_FNLN);
+  uint16_t extra_field_length = get_buffer_short(buf + LFH_XTRALN);
 
   offset = ent->offset_lcl_hdr_frm_frst_disk + LFH_NAME + filename_length + extra_field_length;
 
@@ -526,9 +526,9 @@ int ZIP::SeekToCompressedData(zipentry *ent) {
 }
 
 // uses zlib to inflate the given data
-int ZIP::InflateFile(FILE *in_file, unsigned in_size, ubyte *out_data, unsigned out_size) {
+int ZIP::InflateFile(FILE *in_file, unsigned in_size, uint8_t *out_data, unsigned out_size) {
   int err;
-  unsigned char *in_buffer;
+  uint8_t *in_buffer;
   z_stream d_stream;
 
   d_stream.zalloc = 0;
@@ -550,7 +550,7 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, ubyte *out_data, unsigned 
     return -1;
   }
 
-  in_buffer = (ubyte *)malloc(INFLATE_INPUT_BUFFER_MAX + 1);
+  in_buffer = (uint8_t *)malloc(INFLATE_INPUT_BUFFER_MAX + 1);
   if (!in_buffer)
     return -1;
 
@@ -591,11 +591,11 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, ubyte *out_data, unsigned 
 
 // uses zlib to inflate the given data
 int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned out_size) {
-  ubyte out_data[DATA_CHUNK_SIZE];
+  uint8_t out_data[DATA_CHUNK_SIZE];
   int err;
-  unsigned int last_out;
-  unsigned char *in_buffer;
-  unsigned char *next_out;
+  uint32_t last_out;
+  uint8_t *in_buffer;
+  uint8_t *next_out;
   z_stream d_stream;
 
   d_stream.zalloc = 0;
@@ -619,7 +619,7 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
     return -1;
   }
 
-  in_buffer = (ubyte *)malloc(DATA_CHUNK_SIZE + 1);
+  in_buffer = (uint8_t *)malloc(DATA_CHUNK_SIZE + 1);
   if (!in_buffer)
     return -1;
 

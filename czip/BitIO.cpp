@@ -196,8 +196,8 @@ uint32_t CZip::InputBits(BITFILE *bfile, int bitcount) {
   return return_value;
 }
 
-void CZip::FilePrintBinary(FILE *file, uint code, int bits) {
-  uint mask;
+void CZip::FilePrintBinary(FILE *file, uint32_t code, int bits) {
+  uint32_t mask;
   mask = 1 << (bits - 1);
   while (mask != 0) {
     if (code & mask)
@@ -220,7 +220,7 @@ tVirtualFile *CZip::VFopen(const char *filename, const char *flags, int size) {
     f->count = 0;
     f->size = size;
     f->file_size = 0;
-    f->memory = (ubyte *)malloc(size);
+    f->memory = (uint8_t *)malloc(size);
     if (!f->memory) {
       free(f);
       return NULL;
@@ -302,7 +302,7 @@ int CZip::VFgetc(tVirtualFile *file) {
 }
 
 int CZip::VFwrite(void *buf, int size, int count, tVirtualFile *file) {
-  ubyte *buffer = (ubyte *)buf;
+  uint8_t *buffer = (uint8_t *)buf;
   if (file->type) {
     // memory
     int c = std::min(count, (file->size - file->count) / size);
@@ -321,7 +321,7 @@ int CZip::VFwrite(void *buf, int size, int count, tVirtualFile *file) {
 }
 
 int CZip::VFread(void *buf, int size, int count, tVirtualFile *file) {
-  ubyte *buffer = (ubyte *)buf;
+  uint8_t *buffer = (uint8_t *)buf;
   if (file->type) {
     // memory
     int c = std::min(count, (file->size - file->count) / size);

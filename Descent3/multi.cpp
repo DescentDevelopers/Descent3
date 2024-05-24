@@ -85,7 +85,7 @@
  *
  * 514   9/09/99 12:24p Kevin
  * Fixed a bug that was causing problems in the Mac version
- * (Game_is_master_tracker_game was defined as a ubyte in the game, but an
+ * (Game_is_master_tracker_game was defined as a uint8_t in the game, but an
  * int in the dll)
  *
  * 513   9/02/99 3:34p Jason
@@ -1722,11 +1722,11 @@ player_pos_suppress Player_pos_fix[MAX_PLAYERS];
 // If this is true, PXO games won't save the kills, deaths, etc.
 bool Multi_no_stats_saved = false;
 
-unsigned int Netgame_curr_handle = 1;
+uint32_t Netgame_curr_handle = 1;
 
-ushort Local_object_list[MAX_OBJECTS];
-ushort Server_object_list[MAX_OBJECTS];
-ushort Server_spew_list[MAX_SPEW_EFFECTS];
+uint16_t Local_object_list[MAX_OBJECTS];
+uint16_t Server_object_list[MAX_OBJECTS];
+uint16_t Server_spew_list[MAX_SPEW_EFFECTS];
 
 #ifndef RELEASE
 int Multi_packet_tracking[255];
@@ -1734,34 +1734,34 @@ int Multi_packet_tracking[255];
 
 // This is for clearing lightmapped objects on the client/server
 int Num_client_lm_objects, Num_server_lm_objects;
-ushort Client_lightmap_list[MAX_OBJECTS], Server_lightmap_list[MAX_OBJECTS];
+uint16_t Client_lightmap_list[MAX_OBJECTS], Server_lightmap_list[MAX_OBJECTS];
 
 // This is for breakable glass
-ushort Broke_glass_rooms[MAX_BROKE_GLASS], Broke_glass_faces[MAX_BROKE_GLASS];
+uint16_t Broke_glass_rooms[MAX_BROKE_GLASS], Broke_glass_faces[MAX_BROKE_GLASS];
 int Num_broke_glass = 0;
 
 // This is for getting out a menu if in multiplayer
 bool Multi_bail_ui_menu = false;
 
-uint Multi_generic_match_table[MAX_OBJECT_IDS];
-uint Multi_weapon_match_table[MAX_WEAPONS];
-ubyte Multi_receive_buffer[MAX_RECEIVE_SIZE];
+uint32_t Multi_generic_match_table[MAX_OBJECT_IDS];
+uint32_t Multi_weapon_match_table[MAX_WEAPONS];
+uint8_t Multi_receive_buffer[MAX_RECEIVE_SIZE];
 
-ubyte Multi_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
+uint8_t Multi_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
 int Multi_send_size[MAX_NET_PLAYERS];
 
 player_fire_packet Player_fire_packet[MAX_NET_PLAYERS];
 float Multi_last_sent_time[MAX_NET_PLAYERS][MAX_NET_PLAYERS];
 
-ubyte Multi_reliable_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
+uint8_t Multi_reliable_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
 int Multi_reliable_send_size[MAX_NET_PLAYERS];
 float Multi_reliable_last_send_time[MAX_NET_PLAYERS];
-ubyte Multi_reliable_sent_position[MAX_NET_PLAYERS];
-ubyte Multi_reliable_urgent[MAX_NET_PLAYERS];
+uint8_t Multi_reliable_sent_position[MAX_NET_PLAYERS];
+uint8_t Multi_reliable_urgent[MAX_NET_PLAYERS];
 
 // For keeping track of buildings that have changed
-ubyte Multi_building_states[MAX_OBJECTS];
-ushort Multi_num_buildings_changed = 0;
+uint8_t Multi_building_states[MAX_OBJECTS];
+uint16_t Multi_num_buildings_changed = 0;
 
 // For keeping track of powerup respawn points
 powerup_respawn Powerup_respawn[MAX_RESPAWNS];
@@ -1792,8 +1792,8 @@ char Tracker_id[TRACKER_ID_LEN];
 
 vmt_descent3_struct MTPilotinfo[MAX_NET_PLAYERS];
 
-short Multi_kills[MAX_NET_PLAYERS];
-short Multi_deaths[MAX_NET_PLAYERS];
+int16_t Multi_kills[MAX_NET_PLAYERS];
+int16_t Multi_deaths[MAX_NET_PLAYERS];
 
 int Got_new_game_time = 0;
 
@@ -1825,9 +1825,9 @@ char Multi_message_of_the_day[HUD_MESSAGE_LENGTH * 2] = {0};
 // Local function prototypes
 void SendDataChunk(int playernum);
 void DenyFile(int playernum, int filenum, int file_who);
-void MultiDoFileCancelled(ubyte *data);
-void MultiDoCustomPlayerData(ubyte *data);
-char *GetFileNameFromPlayerAndID(short playernum, short id);
+void MultiDoFileCancelled(uint8_t *data);
+void MultiDoCustomPlayerData(uint8_t *data);
+char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
 
 // Multiplayer position flags
 #define MPF_AFTERBURNER 1 // Afterburner is on
@@ -1869,19 +1869,19 @@ void BailOnMultiplayer(const char *message) {
 }
 
 // Adds the trunctuated position data to an outgoing packet
-void MultiAddPositionData(vector *pos, ubyte *data, int *count) {
+void MultiAddPositionData(vector *pos, uint8_t *data, int *count) {
   MultiAddUshort((pos->x * 16.0), data, count);
   MultiAddUshort((pos->z * 16.0), data, count);
   MultiAddFloat(pos->y, data, count);
 }
-void MultiExtractPositionData(vector *vec, ubyte *data, int *count) {
+void MultiExtractPositionData(vector *vec, uint8_t *data, int *count) {
   vec->x = ((float)MultiGetUshort(data, count)) / 16.0;
   vec->z = ((float)MultiGetUshort(data, count)) / 16.0;
   vec->y = MultiGetFloat(data, count);
 }
 
 void MultiSendBadChecksum(int slot) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size;
   int count = 0;
   size = START_DATA(MP_REJECTED_CHECKSUM, data, &count);
@@ -1891,10 +1891,10 @@ void MultiSendBadChecksum(int slot) {
 
 // Puts player "slot" position info into the passed in buffer
 // Returns the number of bytes used
-int MultiStuffPosition(int slot, ubyte *data) {
+int MultiStuffPosition(int slot, uint8_t *data) {
   int size;
   int count = 0;
-  ubyte flags = 0;
+  uint8_t flags = 0;
 
   object *obj = &Objects[Players[slot].objnum];
 
@@ -1997,7 +1997,7 @@ void DoNextPlayerFile(int playernum) {
 
 // Puts player "slot" position info into the passed in buffer
 // Returns the number of bytes used
-int MultiStuffRobotPosition(unsigned short objectnum, ubyte *data) {
+int MultiStuffRobotPosition(uint16_t objectnum, uint8_t *data) {
   int size;
   int count = 0;
   //@@multi_orientation mat;
@@ -2045,10 +2045,10 @@ int MultiStuffRobotPosition(unsigned short objectnum, ubyte *data) {
 
 // Puts player "slot" position info into the passed in buffer
 // Returns the number of bytes used
-int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum) {
+int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum) {
   int size;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   // mprintf((0,"Sending Robot %d fired.\n",objectnum));
   // Check to make sure we're the server
   if (Netgame.local_role != LR_SERVER) {
@@ -2073,7 +2073,7 @@ int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir,
   // count+=sizeof(vector);
   MultiAddVector(*dir, data, &count);
 
-  uint index = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
+  uint32_t index = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   MultiAddUint(index, data, &count);
 
   END_DATA(count, data, size);
@@ -2094,13 +2094,13 @@ int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir,
   return count;
 }
 
-void MultiDoRobotFire(ubyte *data) {
+void MultiDoRobotFire(uint8_t *data) {
   int count = 0;
-  unsigned short obj_num;
+  uint16_t obj_num;
   vector weapon_pos;
   vector weapon_dir;
-  unsigned int weapon_num;
-  uint uniqueid;
+  uint32_t weapon_num;
+  uint32_t uniqueid;
 
   if (Netgame.local_role == LR_SERVER) {
     Int3(); // Get Jason, a server got the multi do fire packet
@@ -2152,7 +2152,7 @@ void MultiAnnounceEffect(object *obj, float size, float time) {
 // the data to process_big_data
 void MultiProcessIncoming() {
   int size, i;
-  ubyte *data;
+  uint8_t *data;
   network_address from_addr;
 
   data = &(Multi_receive_buffer[0]);
@@ -2191,7 +2191,7 @@ void MultiProcessIncoming() {
 }
 
 // Starts a packet of data
-int START_DATA(int type, ubyte *data, int *count, ubyte reliable) {
+int START_DATA(int type, uint8_t *data, int *count, uint8_t reliable) {
   int size_offset;
 
   MultiAddByte(type, data, count);
@@ -2221,10 +2221,10 @@ int START_DATA(int type, ubyte *data, int *count, ubyte reliable) {
 }
 
 // End a pakcet of data
-void END_DATA(int count, ubyte *data, int offset) { MultiAddShort(count, data, &offset); }
+void END_DATA(int count, uint8_t *data, int offset) { MultiAddShort(count, data, &offset); }
 
 // Skips the header stuff at the beginning of a packet
-void SKIP_HEADER(ubyte *data, int *count) {
+void SKIP_HEADER(uint8_t *data, int *count) {
   MultiGetByte(data, count);
   MultiGetShort(data, count);
 }
@@ -2284,8 +2284,8 @@ int MultiMatchPlayerToAddress(network_address *from_addr) {
 // Gets info about a player
 // Server only
 extern int Buddy_handle[MAX_PLAYERS];
-bool AINotify(object *obj, ubyte notify_type, void *info);
-void MultiDoMyInfo(ubyte *data) {
+bool AINotify(object *obj, uint8_t notify_type, void *info);
+void MultiDoMyInfo(uint8_t *data) {
   int count = 0;
   char ship_name[PAGENAME_LEN];
   int length;
@@ -2293,7 +2293,7 @@ void MultiDoMyInfo(ubyte *data) {
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   if (!(NetPlayers[slot].flags & NPF_CONNECTED)) {
     mprintf((1, "ERROR!  We got a MY_INFO packet from a disconnected player!\n"));
     Int3(); // Get Jason
@@ -2301,7 +2301,7 @@ void MultiDoMyInfo(ubyte *data) {
   }
 
   // Copy the name out
-  ubyte len = MultiGetByte(data, &count);
+  uint8_t len = MultiGetByte(data, &count);
   if (len > CALLSIGN_LEN)
     length = CALLSIGN_LEN;
   else
@@ -2340,7 +2340,7 @@ void MultiDoMyInfo(ubyte *data) {
 
   Players[slot].time_in_game = timer_GetTime();
   if (Game_is_master_tracker_game) {
-    unsigned int mt_sig;
+    uint32_t mt_sig;
 
     Players[slot].kills = 0;
     Players[slot].deaths = 0;
@@ -2409,13 +2409,13 @@ void MultiDoMyInfo(ubyte *data) {
 
 // Tell a client about the players connected
 // Server only
-void MultiDoRequestPlayers(ubyte *data) {
+void MultiDoRequestPlayers(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   if (!(NetPlayers[slot].flags & NPF_CONNECTED)) {
     mprintf((1, "ERROR!  We got a MY_INFO packet from a disconnected player!\n"));
     Int3(); // Get Jason
@@ -2427,13 +2427,13 @@ void MultiDoRequestPlayers(ubyte *data) {
 
 // Tell a client about the buildings
 // Server only
-void MultiDoRequestBuildings(ubyte *data) {
+void MultiDoRequestBuildings(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   if (!(NetPlayers[slot].flags & NPF_CONNECTED)) {
     mprintf((1, "ERROR!  We got a request buildings packet from a disconnected player!\n"));
     Int3(); // Get Jason
@@ -2445,13 +2445,13 @@ void MultiDoRequestBuildings(ubyte *data) {
 
 // Tell a client about the objects
 // Server only
-void MultiDoRequestObjects(ubyte *data) {
+void MultiDoRequestObjects(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   if (!(NetPlayers[slot].flags & NPF_CONNECTED)) {
     mprintf((1, "ERROR!  We got a request object packet from a disconnected player!\n"));
     Int3(); // Get Jason
@@ -2463,14 +2463,14 @@ void MultiDoRequestObjects(ubyte *data) {
 
 // Tell a client about the objects
 // Server only
-void MultiDoRequestWorldStates(ubyte *data) {
+void MultiDoRequestWorldStates(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
-  ubyte rxdigest[16];
+  uint8_t rxdigest[16];
   for (int i = 0; i < 16; i++) {
     rxdigest[i] = MultiGetByte(data, &count);
   }
@@ -2510,7 +2510,7 @@ void MultiDoRequestWorldStates(ubyte *data) {
 
 // The server is telling me about a player in the game
 // Client only
-void MultiDoPlayer(ubyte *data) {
+void MultiDoPlayer(uint8_t *data) {
   int count = 0;
   char ship_name[PAGENAME_LEN];
 
@@ -2520,7 +2520,7 @@ void MultiDoPlayer(ubyte *data) {
   SKIP_HEADER(data, &count);
 
   // Get slotnumber
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   // Reset some local stuff for this player
   if (slot != Player_num) {
@@ -2532,7 +2532,7 @@ void MultiDoPlayer(ubyte *data) {
   }
 
   // Get name
-  ubyte len = MultiGetByte(data, &count);
+  uint8_t len = MultiGetByte(data, &count);
   memcpy(Players[slot].callsign, &data[count], len);
   count += len;
 
@@ -2571,7 +2571,7 @@ void MultiDoPlayer(ubyte *data) {
   }
 
   // Get team
-  ubyte temp_team = MultiGetByte(data, &count);
+  uint8_t temp_team = MultiGetByte(data, &count);
   Players[slot].team = (temp_team == 255) ? -1 : temp_team;
 
   // Get team start
@@ -2581,7 +2581,7 @@ void MultiDoPlayer(ubyte *data) {
   }
 
   // Get observer mode
-  ubyte observing = MultiGetByte(data, &count);
+  uint8_t observing = MultiGetByte(data, &count);
 
   // Put in address
   memcpy(&NetPlayers[slot].addr, data + count, sizeof(network_address));
@@ -2646,7 +2646,7 @@ void MultiDoPlayer(ubyte *data) {
 // Tells all our clients about a new player entering the game
 void MultiSendNewPlayer(int slot) {}
 
-void MultiDoPlayerEnteredGame(ubyte *data) {
+void MultiDoPlayerEnteredGame(uint8_t *data) {
   int count = 0;
   char ship_name[PAGENAME_LEN];
   int length;
@@ -2657,14 +2657,14 @@ void MultiDoPlayerEnteredGame(ubyte *data) {
   SKIP_HEADER(data, &count);
 
   // Get slot number for this player
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   if (slot > MAX_PLAYERS)
     return;
 
   ScoreAPIPlayerJoin(slot);
   // get name
-  ubyte len = MultiGetByte(data, &count);
+  uint8_t len = MultiGetByte(data, &count);
 
   if (len > CALLSIGN_LEN)
     length = CALLSIGN_LEN;
@@ -2744,7 +2744,7 @@ void MultiDoPlayerEnteredGame(ubyte *data) {
 void MultiSendPlayerEnteredGame(int which) {
   MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -2805,13 +2805,13 @@ void MultiSendPlayerEnteredGame(int which) {
 
 // Client is saying that he's entering the game
 // Server only
-void MultiDoEnteringGame(ubyte *data) {
+void MultiDoEnteringGame(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   if (!(NetPlayers[slot].flags & NPF_CONNECTED)) {
     Int3(); // Get Jason
@@ -2850,7 +2850,7 @@ void MultiDoEnteringGame(ubyte *data) {
 // Tell the server I'm entering the game
 void MultiSendEnteringGame() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending entering game\n"));
@@ -2866,7 +2866,7 @@ void MultiSendEnteringGame() {
 // Server only
 void MultiSendDamagePlayer(int slot, int weapon_id, int type, float amount) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
@@ -2882,7 +2882,7 @@ void MultiSendDamagePlayer(int slot, int weapon_id, int type, float amount) {
 }
 
 // The server says to damage a player, so do it!
-void MultiDoDamagePlayer(ubyte *data) {
+void MultiDoDamagePlayer(uint8_t *data) {
 
   if (Netgame.local_role != LR_CLIENT) {
     Int3();
@@ -2892,9 +2892,9 @@ void MultiDoDamagePlayer(ubyte *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
-  ubyte weapon_id = MultiGetByte(data, &count);
-  ubyte type = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
+  uint8_t weapon_id = MultiGetByte(data, &count);
+  uint8_t type = MultiGetByte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
   ApplyDamageToPlayer(&Objects[Players[slot].objnum], NULL, type, amount, 1, weapon_id);
@@ -2946,13 +2946,13 @@ void MultiMakePlayerReal(int slot) {
 }
 
 // Server is telling us that its done sending players
-void MultiDoDonePlayers(ubyte *data) {
+void MultiDoDonePlayers(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte num = MultiGetByte(data, &count);
+  uint8_t num = MultiGetByte(data, &count);
   if (MultiCountPlayers() != num) {
     mprintf((1, "ERROR!  We don't have the correct number of players!"));
     Int3(); // Get Jason
@@ -2963,7 +2963,7 @@ void MultiDoDonePlayers(ubyte *data) {
 }
 
 // Server is telling us that its done sending buildings
-void MultiDoDoneBuildings(ubyte *data) {
+void MultiDoDoneBuildings(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
 
   int count = 0;
@@ -2974,7 +2974,7 @@ void MultiDoDoneBuildings(ubyte *data) {
 }
 
 // Server is telling us that its done sending objects
-void MultiDoDoneObjects(ubyte *data) {
+void MultiDoDoneObjects(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
 
   int count = 0;
@@ -3014,7 +3014,7 @@ void MultiDoDoneObjects(ubyte *data) {
 }
 
 // Server is telling us that its done sending objects
-void MultiDoDoneWorldStates(ubyte *data) {
+void MultiDoDoneWorldStates(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
 
   int count = 0;
@@ -3059,14 +3059,14 @@ void MultiExtractMatrix(matrix *dest, multi_orientation *src) {
   dest->fvec.z = (float)src->multi_matrix[8] / 32767.0;
 }
 
-void MultiDoPlayerPos(ubyte *data) {
+void MultiDoPlayerPos(uint8_t *data) {
   int use_smoothing = (Netgame.flags & NF_USE_SMOOTHING);
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   // Make sure its not out of order
   float packet_time = MultiGetFloat(data, &count);
@@ -3078,16 +3078,16 @@ void MultiDoPlayerPos(ubyte *data) {
 
   vector pos;
   matrix orient;
-  ushort short_roomnum;
+  uint16_t short_roomnum;
   int roomnum;
 
   // Get position
   MultiExtractPositionData(&pos, data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
@@ -3123,14 +3123,14 @@ void MultiDoPlayerPos(ubyte *data) {
   //	obj->mtype.phys_info.velocity=vel;
 
   // Get weapon states
-  ubyte windex = MultiGetByte(data, &count);
+  uint8_t windex = MultiGetByte(data, &count);
   Players[slot].weapon[PW_PRIMARY].index = windex & 0x0F;
   Players[slot].weapon[PW_SECONDARY].index = (windex >> 4) + 10;
 
   // Get energy
   Players[slot].energy = MultiGetUbyte(data, &count);
   // Get flags
-  ubyte flags = MultiGetByte(data, &count);
+  uint8_t flags = MultiGetByte(data, &count);
 
   // Do special stuff for non-visible objects
   bool visible = true;
@@ -3239,14 +3239,14 @@ void MultiDoPlayerPos(ubyte *data) {
   }
 }
 
-void MultiDoRobotPos(ubyte *data) {
+void MultiDoRobotPos(uint8_t *data) {
   int count = 0;
   //@@multi_orientation multi_mat;
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ushort server_objnum = MultiGetUshort(data, &count);
-  ushort objectnum = Server_object_list[server_objnum];
+  uint16_t server_objnum = MultiGetUshort(data, &count);
+  uint16_t objectnum = Server_object_list[server_objnum];
   if (objectnum == 65535 || !(Objects[objectnum].flags & OF_SERVER_OBJECT)) {
     mprintf((0, "Bad robotposition object number!\n"));
     return;
@@ -3255,22 +3255,22 @@ void MultiDoRobotPos(ubyte *data) {
 
   vector pos;
   matrix orient;
-  ushort short_roomnum;
+  uint16_t short_roomnum;
   int roomnum;
 
   // Get position
   MultiExtractPositionData(&pos, data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
   // Get room and terrain flag
   short_roomnum = MultiGetUshort(data, &count);
-  ubyte terrain = MultiGetByte(data, &count);
+  uint8_t terrain = MultiGetByte(data, &count);
 
   roomnum = short_roomnum;
   if (terrain)
@@ -3292,7 +3292,7 @@ void MultiDoRobotPos(ubyte *data) {
 }
 
 // Stuffs a players firing information into a packet
-int MultiStuffPlayerFire(int slot, ubyte *data) {
+int MultiStuffPlayerFire(int slot, uint8_t *data) {
   int size_offset;
   int count = 0;
 
@@ -3329,14 +3329,14 @@ void MultiSubtractAmmoToFire(int slot, int wb_index) {
 
 #define MPFF_QUADED 128
 // Sends a fire packet from a player
-void MultiSendFirePlayerWB(int playernum, ubyte wb_index, ubyte fire_mask, ubyte reliable, float scalar) {
+void MultiSendFirePlayerWB(int playernum, uint8_t wb_index, uint8_t fire_mask, uint8_t reliable, float scalar) {
   // Send quaded info if needed
-  ubyte index_to_send = wb_index;
+  uint8_t index_to_send = wb_index;
 
   if (Objects[Players[playernum].objnum].dynamic_wb[wb_index].flags & DWBF_QUAD)
     index_to_send |= MPFF_QUADED;
 
-  ubyte damage_scalar = (scalar * 64.0);
+  uint8_t damage_scalar = (scalar * 64.0);
 
   Player_fire_packet[playernum].fire_mask = fire_mask;
   Player_fire_packet[playernum].damage_scalar = damage_scalar;
@@ -3358,7 +3358,7 @@ void MultiSendFirePlayerWB(int playernum, ubyte wb_index, ubyte fire_mask, ubyte
 }
 
 // Does player firing
-void MultiDoFirePlayerWB(ubyte *data) {
+void MultiDoFirePlayerWB(uint8_t *data) {
   int count = 0, ok_to_fire = 1;
 
   // Skip header stuff
@@ -3426,7 +3426,7 @@ void MultiDoFirePlayerWB(ubyte *data) {
 
 // Tell everyone I'm quitting
 void MultiSendLeaveGame() {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -3478,7 +3478,7 @@ void MultiLeaveGame() {
 }
 
 // Releases a missile that belongs to a player
-void MultiDoReleaseTimeoutMissile(ubyte *data) {
+void MultiDoReleaseTimeoutMissile(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -3495,7 +3495,7 @@ void MultiDoReleaseTimeoutMissile(ubyte *data) {
 
 // Tell everyone I'm timingout my timeout weapon
 void MultiSendReleaseTimeoutMissile() {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -3516,7 +3516,7 @@ void MultiSendReleaseTimeoutMissile() {
 
 // Tells all the clients who are trying to join to piss off until the next level
 void MultiSendConnectBail() {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
   bool wait_to_send = false;
@@ -3569,7 +3569,7 @@ void MultiEndLevel() {
 }
 
 // server is telling us the level has ended
-void MultiDoLevelEnded(ubyte *data) {
+void MultiDoLevelEnded(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -3600,7 +3600,7 @@ void MultiDoLevelEnded(ubyte *data) {
 void MultiSendLevelEnded(int success, int next_level) {
   MULTI_ASSERT(Netgame.local_role == LR_SERVER, NULL);
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -3639,7 +3639,7 @@ void MultiSendLevelEnded(int success, int next_level) {
 
 extern void MultiClearPlayerMarkers(int slot);
 // Do leave game stuff
-void MultiDoLeaveGame(ubyte *data) {
+void MultiDoLeaveGame(uint8_t *data) {
   int count = 0;
 
   mprintf((0, "In MultiDoLeaveGame!\n"));
@@ -3647,7 +3647,7 @@ void MultiDoLeaveGame(ubyte *data) {
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   if (NetPlayers[slot].flags & NPF_CONNECTED) {
     if (NetPlayers[slot].sequence == NETSEQ_PLAYING) {
@@ -3696,7 +3696,7 @@ void MultiDoLeaveGame(ubyte *data) {
   ScoreAPIPlayerLeft(slot);
 }
 
-void MultiDoServerQuit(ubyte *data) {
+void MultiDoServerQuit(uint8_t *data) {
   ShowProgressScreen(TXT_MLTSERVERQUIT);
   // Abort all file transfers
   // ddio_DeleteFile(NetPlayers[filewho].file_xfer_cfile->name);
@@ -3720,13 +3720,13 @@ void MultiDoServerQuit(ubyte *data) {
   Sleep(2000);
 }
 
-void MultiDoDisconnect(ubyte *data) {
+void MultiDoDisconnect(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   if (NetPlayers[slot].flags & NPF_CONNECTED) {
     if (NetPlayers[slot].file_xfer_flags != NETFILE_NONE) {
@@ -3754,7 +3754,7 @@ void MultiDoDisconnect(ubyte *data) {
   ScoreAPIPlayerLeft(slot);
 }
 
-void MultiDoServerRejectedChecksum(ubyte *data) {
+void MultiDoServerRejectedChecksum(uint8_t *data) {
   int count = 0;
 
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
@@ -3766,7 +3766,7 @@ void MultiDoServerRejectedChecksum(ubyte *data) {
 }
 
 // Lets us know if the server says its ok to join
-void MultiDoJoinResponse(ubyte *data) {
+void MultiDoJoinResponse(uint8_t *data) {
   int count = 0;
 
   MULTI_ASSERT(Netgame.local_role == LR_CLIENT, NULL);
@@ -3794,8 +3794,8 @@ int MultiFindFreeSlot() {
 
 // Someone is asking to join our game
 // Tell them if its ok
-void MultiDoAskToJoin(ubyte *data, network_address *from_addr) {
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+void MultiDoAskToJoin(uint8_t *data, network_address *from_addr) {
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   int incount = 0;
   int size;
@@ -3831,8 +3831,8 @@ void MultiDoAskToJoin(ubyte *data, network_address *from_addr) {
 }
 
 // Someone is asking about our game
-void MultiDoGetGameInfo(ubyte *data, network_address *from_addr) {
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+void MultiDoGetGameInfo(uint8_t *data, network_address *from_addr) {
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
   network_address my_addr;
@@ -3887,7 +3887,7 @@ void MultiDoGetGameInfo(ubyte *data, network_address *from_addr) {
     count += len;
 
     MultiAddShort(Current_mission.cur_level, outdata, &count);
-    unsigned short icurrplayers = 0;
+    uint16_t icurrplayers = 0;
     for (int i = 0; i < MAX_NET_PLAYERS; i++) {
       if (Dedicated_server) {
         if (i == Player_num)
@@ -3918,8 +3918,8 @@ void MultiDoGetGameInfo(ubyte *data, network_address *from_addr) {
 }
 
 // Someone is asking about our PXO game
-void MultiDoGetPXOGameInfo(ubyte *data, network_address *from_addr) {
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+void MultiDoGetPXOGameInfo(uint8_t *data, network_address *from_addr) {
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
   float ping_time;
@@ -3971,7 +3971,7 @@ void MultiDoGetPXOGameInfo(ubyte *data, network_address *from_addr) {
     count += len;
 
     MultiAddShort(Current_mission.cur_level, outdata, &count);
-    unsigned short icurrplayers = 0;
+    uint16_t icurrplayers = 0;
     int i = 0;
 
     for (i = 0; i < MAX_NET_PLAYERS; i++) {
@@ -4006,7 +4006,7 @@ void MultiDoGetPXOGameInfo(ubyte *data, network_address *from_addr) {
 bool Multi_Gamelist_changed = false;
 
 // A server is telling us about a game we've requested
-void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
+void MultiDoGameInfo(uint8_t *data, network_address *from_addr) {
   int count = 0;
 
   char name[NETGAME_NAME_LEN];
@@ -4072,7 +4072,7 @@ void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
 
   ping_time = MultiGetFloat(data, &count);
 
-  unsigned int flags = MultiGetInt(data, &count);
+  uint32_t flags = MultiGetInt(data, &count);
   bool dedicated = MultiGetByte(data, &count) ? true : false;
 
   int diff = MultiGetByte(data, &count);
@@ -4123,9 +4123,9 @@ void MultiSendBlowupBuilding(int hit_objnum, int killer_objnum, float damage) {
 
   int count = 0;
   int size_offset = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
-  ushort short_damage = damage;
+  uint16_t short_damage = damage;
 
   size_offset = START_DATA(MP_BLOWUP_BUILDING, data, &count, 1);
   MultiAddShort(hit_objnum, data, &count);
@@ -4143,15 +4143,15 @@ void MultiSendBlowupBuilding(int hit_objnum, int killer_objnum, float damage) {
 }
 
 // Blowup a building because the server told us so
-void MultiDoBlowupBuilding(ubyte *data) {
+void MultiDoBlowupBuilding(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
 
-  ushort hit_objnum = MultiGetUshort(data, &count);
-  ushort killer_objnum = MultiGetUshort(data, &count);
-  ushort damage = MultiGetUshort(data, &count);
-  ushort seed = MultiGetUshort(data, &count);
+  uint16_t hit_objnum = MultiGetUshort(data, &count);
+  uint16_t killer_objnum = MultiGetUshort(data, &count);
+  uint16_t damage = MultiGetUshort(data, &count);
+  uint16_t seed = MultiGetUshort(data, &count);
 
   if (Objects[hit_objnum].type != OBJ_BUILDING) {
     Int3(); // Get Jason, trying to blowup a non-building
@@ -4168,13 +4168,13 @@ void MultiDoBlowupBuilding(ubyte *data) {
 }
 
 // Server is telling us about buildings to get rid of
-void MultiDoBuilding(ubyte *data) {
+void MultiDoBuilding(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
-  ubyte num = MultiGetByte(data, &count);
+  uint8_t num = MultiGetByte(data, &count);
   for (int i = 0; i < num; i++) {
-    ushort objnum = MultiGetUshort(data, &count);
+    uint16_t objnum = MultiGetUshort(data, &count);
     if (Objects[objnum].type != OBJ_BUILDING) {
       mprintf((0, "Error! Server says objnum %d is a building and its not!\n", objnum));
     } else {
@@ -4198,9 +4198,9 @@ void MultiDoBuilding(ubyte *data) {
 
 doorway *GetDoorwayFromObject(int door_obj_handle);
 // Server is telling us the world state
-void MultiDoWorldStates(ubyte *data) {
+void MultiDoWorldStates(uint8_t *data) {
   int count = 0;
-  ubyte world_type;
+  uint8_t world_type;
 
   SKIP_HEADER(data, &count);
 
@@ -4211,7 +4211,7 @@ void MultiDoWorldStates(ubyte *data) {
     case WS_ROOM_WIND: {
       // Room wind
 
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].wind.x = MultiGetFloat(data, &count);
       Rooms[roomnum].wind.y = MultiGetFloat(data, &count);
       Rooms[roomnum].wind.z = MultiGetFloat(data, &count);
@@ -4222,12 +4222,12 @@ void MultiDoWorldStates(ubyte *data) {
     }
     case WS_ROOM_FOG: {
       // Room wind
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].fog_depth = MultiGetFloat(data, &count);
       Rooms[roomnum].fog_r = ((float)MultiGetUbyte(data, &count)) / 255.0;
       Rooms[roomnum].fog_g = ((float)MultiGetUbyte(data, &count)) / 255.0;
       Rooms[roomnum].fog_b = ((float)MultiGetUbyte(data, &count)) / 255.0;
-      ubyte state = MultiGetUbyte(data, &count);
+      uint8_t state = MultiGetUbyte(data, &count);
       if (state)
         Rooms[roomnum].flags |= RF_FOG;
       else
@@ -4238,8 +4238,8 @@ void MultiDoWorldStates(ubyte *data) {
 
     case WS_ROOM_LIGHTING: {
       // Room lighting
-      ubyte state;
-      short roomnum = MultiGetShort(data, &count);
+      uint8_t state;
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].pulse_time = MultiGetUbyte(data, &count);
       Rooms[roomnum].pulse_offset = MultiGetUbyte(data, &count);
       state = MultiGetUbyte(data, &count);
@@ -4258,8 +4258,8 @@ void MultiDoWorldStates(ubyte *data) {
     }
     case WS_ROOM_REFUEL: {
       // Room fueling
-      short roomnum = MultiGetShort(data, &count);
-      ubyte state = MultiGetUbyte(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      uint8_t state = MultiGetUbyte(data, &count);
       if (state)
         Rooms[roomnum].flags |= RF_FUELCEN;
       else
@@ -4268,43 +4268,43 @@ void MultiDoWorldStates(ubyte *data) {
       break;
     }
     case WS_ROOM_TEXTURE: {
-      short roomnum = MultiGetShort(data, &count);
-      short facenum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t facenum = MultiGetShort(data, &count);
       char str[255];
       MultiGetString(str, data, &count);
       ChangeRoomFaceTexture(roomnum, facenum, FindTextureName(IGNORE_TABLE(str)));
       break;
     }
     case WS_ROOM_GLASS: {
-      short roomnum = MultiGetShort(data, &count);
-      short facenum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t facenum = MultiGetShort(data, &count);
       BreakGlassFace(&Rooms[roomnum], facenum);
       break;
     }
     case WS_ROOM_PORTAL_RENDER: {
-      short roomnum = MultiGetShort(data, &count);
-      short portalnum = MultiGetShort(data, &count);
-      ubyte flags = MultiGetByte(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t portalnum = MultiGetShort(data, &count);
+      uint8_t flags = MultiGetByte(data, &count);
       Rooms[roomnum].portals[portalnum].flags = flags;
       break;
     }
     case WS_ROOM_PORTAL_BLOCK: {
-      short roomnum = MultiGetShort(data, &count);
-      short portalnum = MultiGetShort(data, &count);
-      ubyte flags = MultiGetByte(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t portalnum = MultiGetShort(data, &count);
+      uint8_t flags = MultiGetByte(data, &count);
       Rooms[roomnum].portals[portalnum].flags = flags;
       break;
     }
     case WS_ROOM_DAMAGE: {
       // Room wind
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].damage = MultiGetFloat(data, &count);
       Rooms[roomnum].damage_type = MultiGetUbyte(data, &count);
       break;
     }
     case WS_ROOM_GOALSPECFLAG: {
       // goals & special flags
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       int mask = (RF_SPECIAL1 | RF_SPECIAL2 | RF_SPECIAL3 | RF_SPECIAL4 | RF_SPECIAL5 | RF_SPECIAL6 | RF_GOAL1 |
                   RF_GOAL2 | RF_GOAL3 | RF_GOAL4);
       int change_mask = MultiGetInt(data, &count);
@@ -4320,7 +4320,7 @@ void MultiDoWorldStates(ubyte *data) {
     }
     case WS_BUDDYBOTS: {
       int b_index = MultiGetByte(data, &count);
-      ushort serv_objnum = MultiGetUshort(data, &count);
+      uint16_t serv_objnum = MultiGetUshort(data, &count);
       int local_objnum = Server_object_list[serv_objnum];
 
       ASSERT(Objects[local_objnum].type != OBJ_NONE);
@@ -4335,7 +4335,7 @@ void MultiDoWorldStates(ubyte *data) {
     }
     case WS_BUDDYBOTUPDATE: {
       int b_index = MultiGetByte(data, &count);
-      ushort serv_objnum = MultiGetUshort(data, &count);
+      uint16_t serv_objnum = MultiGetUshort(data, &count);
       int local_objnum = Server_object_list[serv_objnum];
 
       ASSERT(Objects[local_objnum].type != OBJ_NONE);
@@ -4371,7 +4371,7 @@ void MultiDoWorldStates(ubyte *data) {
       dp = GetDoorwayFromObject(Objects[objnum].handle);
 
       int state = MultiGetByte(data, &count);
-      ubyte locked = MultiGetByte(data, &count);
+      uint8_t locked = MultiGetByte(data, &count);
       if (locked)
         dp->flags |= DF_LOCKED;
       else
@@ -4423,7 +4423,7 @@ void MultiDoWorldStates(ubyte *data) {
       int goal_index = MultiGetUshort(data, &count);
       int priority = MultiGetInt(data, &count);
 
-      ubyte len = MultiGetByte(data, &count);
+      uint8_t len = MultiGetByte(data, &count);
       memcpy(name, &data[count], len);
       count += len;
 
@@ -4442,7 +4442,7 @@ void MultiDoWorldStates(ubyte *data) {
       spewinfo spew;
       mprintf((0, "Got a spew packet!\n"));
 
-      ushort spewnum = MultiGetShort(data, &count);
+      uint16_t spewnum = MultiGetShort(data, &count);
 
       if (MultiGetByte(data, &count))
         spew.use_gunpoint = true;
@@ -4485,7 +4485,7 @@ void MultiDoWorldStates(ubyte *data) {
       spew.size = MultiGetFloat(data, &count);
       spew.speed = MultiGetFloat(data, &count);
 
-      ushort local_spewnum = SpewCreate(&spew);
+      uint16_t local_spewnum = SpewCreate(&spew);
       ASSERT(local_spewnum != -1); // DAJ -1FIX
       local_spewnum &= 0xFF;       // Adjust for handle
       Server_spew_list[spewnum] = local_spewnum;
@@ -4552,7 +4552,7 @@ void MultiDoWorldStates(ubyte *data) {
   }
 }
 
-void MultiDoJoinDemoObjects(ubyte *data) {
+void MultiDoJoinDemoObjects(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -4579,11 +4579,11 @@ void MultiDoJoinDemoObjects(ubyte *data) {
 }
 
 // Server is telling us about objects in the game
-void MultiDoJoinObjects(ubyte *data) {
+void MultiDoJoinObjects(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
-  ubyte num_objects = MultiGetByte(data, &count);
+  uint8_t num_objects = MultiGetByte(data, &count);
 
   mprintf((0, "Got join object packet. Num objects=%d\n", num_objects));
 
@@ -4591,8 +4591,8 @@ void MultiDoJoinObjects(ubyte *data) {
     bool obj_is_dummy = false;
 
     // Extract info about this object
-    ushort server_objnum = MultiGetUshort(data, &count);
-    ubyte type = MultiGetByte(data, &count);
+    uint16_t server_objnum = MultiGetUshort(data, &count);
+    uint8_t type = MultiGetByte(data, &count);
 
     //@@mprintf ((0,"Got join objnum %d from server. Type=%d\n",server_objnum,type));
 
@@ -4601,10 +4601,10 @@ void MultiDoJoinObjects(ubyte *data) {
       type = MultiGetByte(data, &count);
     }
 
-    uint checksum;
+    uint32_t checksum;
     matrix orient;
-    ubyte name_len = 0;
-    ubyte num_persist_vars = 0;
+    uint8_t name_len = 0;
+    uint8_t num_persist_vars = 0;
 
     vm_MakeIdentity(&orient);
 
@@ -4642,9 +4642,9 @@ void MultiDoJoinObjects(ubyte *data) {
       id = 0;
 
     vector pos;
-    ushort short_roomnum;
-    ubyte terrain = 0;
-    ubyte lifeleft = 255;
+    uint16_t short_roomnum;
+    uint8_t terrain = 0;
+    uint8_t lifeleft = 255;
     int roomnum;
 
     if (type != OBJ_DOOR) {
@@ -4661,7 +4661,7 @@ void MultiDoJoinObjects(ubyte *data) {
 
     if (type == OBJ_MARKER) {
       // Get message if marker
-      ubyte len = MultiGetByte(data, &count);
+      uint8_t len = MultiGetByte(data, &count);
       memcpy(MarkerMessages[id], &data[count], len);
       count += len;
     }
@@ -4715,7 +4715,7 @@ void MultiDoJoinObjects(ubyte *data) {
 }
 
 // Starts a death sequence of a player
-void MultiDoPlayerDead(ubyte *data) {
+void MultiDoPlayerDead(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -4733,9 +4733,9 @@ void MultiDoPlayerDead(ubyte *data) {
 }
 
 // The server sends to everyone that the player is dead
-void MultiSendPlayerDead(int slot, ubyte fate) {
+void MultiSendPlayerDead(int slot, uint8_t fate) {
   MULTI_ASSERT(Netgame.local_role == LR_SERVER, "Client in SendPlayerDead!");
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -4766,12 +4766,12 @@ void MultiSendPlayerDead(int slot, ubyte fate) {
 }
 
 // A player is coming back from the dead...restore his ship!
-void MultiDoRenewPlayer(ubyte *data) {
+void MultiDoRenewPlayer(uint8_t *data) {
   int count = 0;
   bool add_guidebot = false;
 
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   int start_slot = MultiGetShort(data, &count);
 
   if (MultiGetByte(data, &count)) {
@@ -4803,7 +4803,7 @@ void MultiDoRenewPlayer(ubyte *data) {
 void MultiSendRenewPlayer(int slot) {
   MULTI_ASSERT(Netgame.local_role == LR_SERVER, "Client in SendRenewPlayer!");
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
 
@@ -4839,20 +4839,20 @@ void MultiSendRenewPlayer(int slot) {
 }
 
 // This player says he's done dying
-void MultiDoEndPlayerDeath(ubyte *data) {
+void MultiDoEndPlayerDeath(uint8_t *data) {
   MULTI_ASSERT(Netgame.local_role == LR_SERVER, "Client in DoEndPlayerDeath!");
 
   int count = 0;
 
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
 
   if (Players[slot].flags & PLAYER_FLAGS_DEAD || Players[slot].flags & PLAYER_FLAGS_DYING)
     MultiSendRenewPlayer(slot);
 }
 void GetServerGameTime() {
   MULTI_ASSERT(Netgame.local_role != LR_SERVER, "Server in GetServerGameTime!");
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size;
   mprintf((0, "Requesting gametime from server\n"));
@@ -4862,8 +4862,8 @@ void GetServerGameTime() {
   END_DATA(count, outdata, size);
   nw_Send(&Netgame.server_address, outdata, count, 0);
 }
-void MultiDoGameTimeReq(ubyte *data, network_address *from_addr) {
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+void MultiDoGameTimeReq(uint8_t *data, network_address *from_addr) {
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   int incount = 0;
   int size;
@@ -4882,7 +4882,7 @@ void MultiDoGameTimeReq(ubyte *data, network_address *from_addr) {
   nw_Send(from_addr, outdata, count, 0);
 }
 
-void MultiDoSetGameTime(ubyte *data) {
+void MultiDoSetGameTime(uint8_t *data) {
   float req_time;
   float server_latency;
   float server_game_time;
@@ -4907,7 +4907,7 @@ void MultiDoSetGameTime(ubyte *data) {
 // Tell the server that I'm done dying
 void MultiSendEndPlayerDeath() {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   mprintf((0, "Sending end player death packet!\n"));
@@ -4924,7 +4924,7 @@ void MultiSendEndPlayerDeath() {
 }
 
 // Prints out a message we got from the server
-void MultiDoMessageFromServer(ubyte *data) {
+void MultiDoMessageFromServer(uint8_t *data) {
   static int sound_id = -2;
   int count = 0;
   char message[255];
@@ -4932,7 +4932,7 @@ void MultiDoMessageFromServer(ubyte *data) {
   SKIP_HEADER(data, &count);
 
   ddgr_color color = MultiGetInt(data, &count);
-  ubyte len = MultiGetByte(data, &count);
+  uint8_t len = MultiGetByte(data, &count);
 
   memcpy(message, &data[count], len);
   count += len;
@@ -4952,7 +4952,7 @@ void MultiDoMessageFromServer(ubyte *data) {
 // Sends a message from the server to the client
 void MultiSendMessageFromServer(int color, char *message, int to) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -4960,7 +4960,7 @@ void MultiSendMessageFromServer(int color, char *message, int to) {
   size_offset = START_DATA(MP_MESSAGE_FROM_SERVER, data, &count, 1);
   MultiAddInt(color, data, &count);
 
-  ubyte len = strlen(message) + 1;
+  uint8_t len = strlen(message) + 1;
 
   MultiAddByte(len, data, &count);
 
@@ -5016,16 +5016,16 @@ void MultiSendMessageFromServer(int color, char *message, int to) {
 }
 
 // Prints out a message we got from the server
-void MultiDoMessageToServer(ubyte *data) {
+void MultiDoMessageToServer(uint8_t *data) {
   int count = 0;
   char message[255];
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
-  int towho = (sbyte)MultiGetByte(data, &count);
-  ubyte len = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
+  int towho = (int8_t)MultiGetByte(data, &count);
+  uint8_t len = MultiGetByte(data, &count);
 
   memcpy(message, &data[count], len);
   count += len;
@@ -5036,14 +5036,14 @@ void MultiDoMessageToServer(ubyte *data) {
 // Sends a message from the server to the client
 void MultiSendMessageToServer(int color, char *message, int to_who) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_MESSAGE_TO_SERVER, data, &count);
   MultiAddByte(Player_num, data, &count);
   MultiAddByte(to_who, data, &count);
 
-  ubyte len = strlen(message) + 1;
+  uint8_t len = strlen(message) + 1;
 
   MultiAddByte(len, data, &count);
 
@@ -5057,16 +5057,16 @@ void MultiSendMessageToServer(int color, char *message, int to_who) {
 }
 
 // Executes a dll that the server says to
-void MultiDoExecuteDLL(ubyte *data) {
+void MultiDoExecuteDLL(uint8_t *data) {
   int count = 0;
   float fParam = 0;
   ptrdiff_t iParam = 0;
 
   SKIP_HEADER(data, &count);
 
-  ushort eventnum = MultiGetShort(data, &count);
-  short me_objnum = MultiGetShort(data, &count);
-  short it_objnum = MultiGetShort(data, &count);
+  uint16_t eventnum = MultiGetShort(data, &count);
+  int16_t me_objnum = MultiGetShort(data, &count);
+  int16_t it_objnum = MultiGetShort(data, &count);
 
   if (MultiGetByte(data, &count)) {
     // we need to extract out parameters
@@ -5106,8 +5106,8 @@ void MultiDoExecuteDLL(ubyte *data) {
     }
   }
 
-  short local_me_objnum;
-  short local_it_objnum;
+  int16_t local_me_objnum;
+  int16_t local_it_objnum;
 
   if (me_objnum == -1)
     local_me_objnum = -1;
@@ -5156,7 +5156,7 @@ void MultiDoExecuteDLL(ubyte *data) {
 }
 
 // Server is telling us to create an object
-void MultiDoObject(ubyte *data) {
+void MultiDoObject(uint8_t *data) {
   int count = 0;
   int parent_handle;
   bool self_parent = false;
@@ -5164,7 +5164,7 @@ void MultiDoObject(ubyte *data) {
   SKIP_HEADER(data, &count);
 
   // Extract info about this object
-  ubyte announce = MultiGetByte(data, &count);
+  uint8_t announce = MultiGetByte(data, &count);
   int server_objnum = MultiGetUshort(data, &count);
   int parent_objnum = MultiGetUshort(data, &count);
 
@@ -5187,14 +5187,14 @@ void MultiDoObject(ubyte *data) {
     parent_handle = Objects[local_parent].handle;
   }
 
-  ubyte type = MultiGetByte(data, &count);
-  uint checksum = MultiGetUint(data, &count);
-  ubyte dummy_type = OBJ_NONE;
+  uint8_t type = MultiGetByte(data, &count);
+  uint32_t checksum = MultiGetUint(data, &count);
+  uint8_t dummy_type = OBJ_NONE;
   if (type == OBJ_DUMMY) // we need to get the original type
     dummy_type = MultiGetByte(data, &count);
 
   /*char name[255];
-  ubyte len=MultiGetByte (data,&count);
+  uint8_t len=MultiGetByte (data,&count);
   memcpy (name,&data[count],len);*/
 
   int id;
@@ -5239,21 +5239,21 @@ void MultiDoObject(ubyte *data) {
 
   if (type != OBJ_POWERUP && type != OBJ_DUMMY) {
     // Extract orientation
-    ushort p = MultiGetShort(data, &count);
-    ushort h = MultiGetShort(data, &count);
-    ushort b = MultiGetShort(data, &count);
+    uint16_t p = MultiGetShort(data, &count);
+    uint16_t h = MultiGetShort(data, &count);
+    uint16_t b = MultiGetShort(data, &count);
 
     vm_AnglesToMatrix(&orient, p, h, b);
     orientp = &orient;
   }
 
   // Get movement type
-  ubyte mtype = MultiGetByte(data, &count);
+  uint8_t mtype = MultiGetByte(data, &count);
 
   // Get room/cell stuff
-  ushort short_roomnum = MultiGetUshort(data, &count);
-  ubyte terrain = MultiGetByte(data, &count);
-  ubyte lifeleft = MultiGetUbyte(data, &count);
+  uint16_t short_roomnum = MultiGetUshort(data, &count);
+  uint8_t terrain = MultiGetByte(data, &count);
+  uint8_t lifeleft = MultiGetUbyte(data, &count);
   int roomnum = short_roomnum;
 
   if (terrain)
@@ -5292,7 +5292,7 @@ void MultiDoObject(ubyte *data) {
 
   if (obj->type == OBJ_MARKER) {
     // Get message if marker
-    ubyte len = MultiGetByte(data, &count);
+    uint8_t len = MultiGetByte(data, &count);
     memcpy(MarkerMessages[obj->id], &data[count], len);
     count += len;
   }
@@ -5340,11 +5340,11 @@ void MultiDoObject(ubyte *data) {
 }
 
 // Sends an object from the server to the client
-void MultiSendObject(object *obj, ubyte announce, ubyte demo_record) {
+void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   if (obj->type != OBJ_WEAPON)
@@ -5359,7 +5359,7 @@ void MultiSendObject(object *obj, ubyte announce, ubyte demo_record) {
 
   size_offset = START_DATA(MP_OBJECT, data, &count, 1);
 
-  uint index = MultiGetMatchChecksum(obj->type, obj->id);
+  uint32_t index = MultiGetMatchChecksum(obj->type, obj->id);
 
   // Send server object number
   MultiAddByte(announce, data, &count);
@@ -5418,7 +5418,7 @@ void MultiSendObject(object *obj, ubyte announce, ubyte demo_record) {
 
   if (obj->type == OBJ_MARKER) {
     // Add marker message to the end of this
-    ubyte len = strlen(MarkerMessages[obj->id]) + 1;
+    uint8_t len = strlen(MarkerMessages[obj->id]) + 1;
     MultiAddByte(len, data, &count);
     memcpy(data + count, MarkerMessages[obj->id], len);
     count += len;
@@ -5439,14 +5439,14 @@ void MultiSendObject(object *obj, ubyte announce, ubyte demo_record) {
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_OBJECTS, true);
 }
 
-void MultiDoGuidedInfo(ubyte *data) {
+void MultiDoGuidedInfo(uint8_t *data) {
   int count = 0;
 
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
-  ubyte release = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
+  uint8_t release = MultiGetByte(data, &count);
 
   if (Players[slot].guided_obj == NULL)
     return;
@@ -5455,21 +5455,21 @@ void MultiDoGuidedInfo(ubyte *data) {
 
   vector pos;
   matrix orient;
-  ushort short_roomnum;
+  uint16_t short_roomnum;
   int roomnum;
 
   MultiExtractPositionData(&pos, data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
   // Get room and terrain flag
   short_roomnum = MultiGetUshort(data, &count);
-  ubyte terrain = MultiGetByte(data, &count);
+  uint8_t terrain = MultiGetByte(data, &count);
 
   roomnum = short_roomnum;
   if (terrain)
@@ -5490,7 +5490,7 @@ void MultiDoGuidedInfo(ubyte *data) {
 }
 
 // Stuff info for a guided missile
-int MultiStuffGuidedInfo(int slot, ubyte *data) {
+int MultiStuffGuidedInfo(int slot, uint8_t *data) {
   int count = 0;
   int size_offset;
   object *obj = Players[slot].guided_obj;
@@ -5537,10 +5537,10 @@ int MultiStuffGuidedInfo(int slot, ubyte *data) {
 }
 
 // Guided missile release
-void MultiDoMissileRelease(int slot, ubyte *data) {
+void MultiDoMissileRelease(int slot, uint8_t *data) {
   // if we are the server, we'll have to forward this packet to the clients
   int count = 0;
-  unsigned char pnum_release;
+  uint8_t pnum_release;
 
   SKIP_HEADER(data, &count);
 
@@ -5594,10 +5594,10 @@ void MultiSendMissileRelease(int slot, bool is_guided) {
 
   // everything looks ok, fire off this packet
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
-  unsigned char byte_to_send;
+  uint8_t byte_to_send;
   byte_to_send = slot;
   if (is_guided)
     byte_to_send |= 0x80;
@@ -5627,9 +5627,9 @@ void MultiSendMissileRelease(int slot, bool is_guided) {
 }
 
 // Calls the scripts packet extractor code
-void MultiDoSpecialPacket(ubyte *data) {
+void MultiDoSpecialPacket(uint8_t *data) {
   int count = 0;
-  ubyte indata[MAX_GAME_DATA_SIZE];
+  uint8_t indata[MAX_GAME_DATA_SIZE];
 
   SKIP_HEADER(data, &count);
   int size = MultiGetInt(data, &count);
@@ -5642,11 +5642,11 @@ void MultiDoSpecialPacket(ubyte *data) {
 }
 
 // Sends the special script packet to a player
-void MultiSendSpecialPacket(int slot, ubyte *outdata, int size) {
+void MultiSendSpecialPacket(int slot, uint8_t *outdata, int size) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_SPECIAL_PACKET, data, &count, 1);
@@ -5663,11 +5663,11 @@ void MultiSendSpecialPacket(int slot, ubyte *outdata, int size) {
 }
 
 // Sends the special script packet to the server
-void MultiClientSendSpecialPacket(ubyte *outdata, int size) {
+void MultiClientSendSpecialPacket(uint8_t *outdata, int size) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_SPECIAL_PACKET, data, &count);
@@ -5684,20 +5684,20 @@ void MultiClientSendSpecialPacket(ubyte *outdata, int size) {
 }
 
 // Server is telling us to remove an object
-void MultiDoRemoveObject(ubyte *data) {
+void MultiDoRemoveObject(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
 
-  ushort server_objnum = MultiGetUshort(data, &count);
-  ubyte type = MultiGetByte(data, &count);
+  uint16_t server_objnum = MultiGetUshort(data, &count);
+  uint8_t type = MultiGetByte(data, &count);
 
-  ubyte sound = MultiGetByte(data, &count);
+  uint8_t sound = MultiGetByte(data, &count);
 
   // Get name to help track down bug
   /*#ifndef RELEASE
           char name[255];
-          ubyte len=MultiGetByte (data,&count);
+          uint8_t len=MultiGetByte (data,&count);
           memcpy (name,&data[count],len);
           count+=len;
   #endif*/
@@ -5751,11 +5751,11 @@ void MultiDoRemoveObject(ubyte *data) {
 }
 
 // Tells all clients to remove a specified object
-void MultiSendRemoveObject(object *obj, ubyte playsound) {
+void MultiSendRemoveObject(object *obj, uint8_t playsound) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_REMOVE_OBJECT, data, &count, 1);
@@ -5770,7 +5770,7 @@ void MultiSendRemoveObject(object *obj, ubyte playsound) {
   MultiAddByte(playsound, data, &count);
 
   /*#ifndef RELEASE
-          ubyte len = strlen(Object_info[obj->id].name)+1;
+          uint8_t len = strlen(Object_info[obj->id].name)+1;
           MultiAddByte (len,data,&count);
           memcpy (data+count,Object_info[obj->id].name,len);
           count+=len;
@@ -5781,7 +5781,7 @@ void MultiSendRemoveObject(object *obj, ubyte playsound) {
 }
 
 // Repositions a powerup to be where it should be
-void MultiDoPowerupReposition(ubyte *data) {
+void MultiDoPowerupReposition(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -5800,8 +5800,8 @@ void MultiDoPowerupReposition(ubyte *data) {
   // count+=sizeof(vector);
   pos = MultiGetVector(data, &count);
 
-  ushort short_roomnum = MultiGetUshort(data, &count);
-  ubyte terrain = MultiGetByte(data, &count);
+  uint16_t short_roomnum = MultiGetUshort(data, &count);
+  uint8_t terrain = MultiGetByte(data, &count);
 
   int roomnum = short_roomnum;
   if (terrain)
@@ -5813,7 +5813,7 @@ void MultiDoPowerupReposition(ubyte *data) {
 }
 
 // Client is telling us about weapons and energy he has
-void MultiDoWeaponsLoad(ubyte *data) {
+void MultiDoWeaponsLoad(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -5848,7 +5848,7 @@ void MultiDoWeaponsLoad(ubyte *data) {
 // Plus about the viewers we're looking at
 void MultiSendWeaponsLoad() {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   int size_offset = START_DATA(MP_WEAPONS_LOAD, data, &count);
 
@@ -5885,9 +5885,9 @@ void MultiSendWeaponsLoad() {
 }
 
 // Tells the other players that a slot is starting/stopping its on/off weapon
-void MultiSendOnOff(object *obj, ubyte on, ubyte wb_index, ubyte fire_mask) {
+void MultiSendOnOff(object *obj, uint8_t on, uint8_t wb_index, uint8_t fire_mask) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   int slot = obj->id;
 
@@ -5905,15 +5905,15 @@ void MultiSendOnOff(object *obj, ubyte on, ubyte wb_index, ubyte fire_mask) {
 }
 
 // Server is telling us to start/stop and on/off weapon
-void MultiDoOnOff(ubyte *data) {
+void MultiDoOnOff(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
-  ubyte on = MultiGetByte(data, &count);
-  ubyte wb_index = MultiGetByte(data, &count);
-  ubyte fire_mask = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
+  uint8_t on = MultiGetByte(data, &count);
+  uint8_t wb_index = MultiGetByte(data, &count);
+  uint8_t fire_mask = MultiGetByte(data, &count);
 
   if (on) {
     Objects[Players[slot].objnum].weapon_fire_flags |= WFF_ON_OFF;
@@ -5937,7 +5937,7 @@ void MultiDoOnOff(ubyte *data) {
 void MultiSendAdditionalDamage(int slot, int type, float amount) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_ADDITIONAL_DAMAGE, data, &count, 1);
@@ -5954,7 +5954,7 @@ void MultiSendAdditionalDamage(int slot, int type, float amount) {
 }
 
 // Server is telling us to apply damage to a player
-void MultiDoAdditionalDamage(ubyte *data) {
+void MultiDoAdditionalDamage(uint8_t *data) {
   int count = 0;
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_CLIENT);
@@ -5963,8 +5963,8 @@ void MultiDoAdditionalDamage(ubyte *data) {
 
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
-  ubyte type = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
+  uint8_t type = MultiGetByte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
   if (amount < 0) // add to shields
@@ -5984,7 +5984,7 @@ void MultiSendRequestShields(int type, float amount) {
     return;
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_REQUEST_SHIELDS, data, &count);
@@ -5999,7 +5999,7 @@ void MultiSendRequestShields(int type, float amount) {
 }
 
 // Someone wants us to give them shields
-void MultiDoRequestShields(ubyte *data) {
+void MultiDoRequestShields(uint8_t *data) {
   if (Netgame.local_role != LR_SERVER)
     return;
 
@@ -6007,8 +6007,8 @@ void MultiDoRequestShields(ubyte *data) {
 
   SKIP_HEADER(data, &count);
 
-  ubyte pnum = MultiGetByte(data, &count);
-  ubyte type = MultiGetByte(data, &count);
+  uint8_t pnum = MultiGetByte(data, &count);
+  uint8_t type = MultiGetByte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
   if (type == SHIELD_REQUEST_ENERGY_TO_SHIELD) {
@@ -6034,7 +6034,7 @@ void MultiSendRequestDamage(int type, float amount) {
     return;
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_REQUEST_DAMAGE, data, &count);
@@ -6049,7 +6049,7 @@ void MultiSendRequestDamage(int type, float amount) {
 }
 
 // Someone wants us to damage them
-void MultiDoRequestDamage(ubyte *data) {
+void MultiDoRequestDamage(uint8_t *data) {
   if (Netgame.local_role != LR_SERVER)
     return;
 
@@ -6057,29 +6057,29 @@ void MultiDoRequestDamage(ubyte *data) {
 
   SKIP_HEADER(data, &count);
 
-  ubyte pnum = MultiGetByte(data, &count);
-  ubyte type = MultiGetByte(data, &count);
+  uint8_t pnum = MultiGetByte(data, &count);
+  uint8_t type = MultiGetByte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
   ApplyDamageToPlayer(&Objects[Players[pnum].objnum], &Objects[Players[pnum].objnum], type, amount);
 }
 
 // Server is telling us to create a countermeasure
-void MultiDoRequestCountermeasure(ubyte *data) {
+void MultiDoRequestCountermeasure(uint8_t *data) {
   int count = 0;
 
   mprintf((0, "Got request for countermeasure!\n"));
 
   SKIP_HEADER(data, &count);
 
-  ushort parent_objnum = MultiGetShort(data, &count);
+  uint16_t parent_objnum = MultiGetShort(data, &count);
 
   if (Netgame.local_role != LR_SERVER) {
     parent_objnum = Server_object_list[parent_objnum];
     MULTI_ASSERT_NOMESSAGE(parent_objnum != 65535);
   }
 
-  uint checksum = MultiGetUint(data, &count);
+  uint32_t checksum = MultiGetUint(data, &count);
 
   int id = MultiMatchWeapon(checksum);
 
@@ -6100,16 +6100,16 @@ void MultiDoRequestCountermeasure(ubyte *data) {
 }
 
 // We're asking the server to create a countermeasure for us
-void MultiSendRequestCountermeasure(short objnum, int weapon_index) {
+void MultiSendRequestCountermeasure(int16_t objnum, int weapon_index) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_REQUEST_COUNTERMEASURE, data, &count);
 
   MultiAddShort(objnum, data, &count);
 
-  uint index = MultiGetMatchChecksum(OBJ_WEAPON, weapon_index);
+  uint32_t index = MultiGetMatchChecksum(OBJ_WEAPON, weapon_index);
   MultiAddUint(index, data, &count);
 
   END_DATA(count, data, size_offset);
@@ -6123,15 +6123,15 @@ void MultiSendRequestCountermeasure(short objnum, int weapon_index) {
 }
 
 // Server is telling us about a player who is changing his observer mode
-void MultiDoObserverChange(ubyte *data) {
+void MultiDoObserverChange(uint8_t *data) {
   int count = 0;
   int objnum = -1;
 
   SKIP_HEADER(data, &count);
 
   int slot = MultiGetByte(data, &count);
-  ubyte mode = MultiGetByte(data, &count);
-  ubyte on = MultiGetByte(data, &count);
+  uint8_t mode = MultiGetByte(data, &count);
+  uint8_t on = MultiGetByte(data, &count);
   int restart_slot = MultiGetShort(data, &count);
   if (mode == OBSERVER_MODE_PIGGYBACK) {
     if (Netgame.local_role == LR_SERVER)
@@ -6155,7 +6155,7 @@ void MultiDoObserverChange(ubyte *data) {
 }
 
 // Someone is asking us for permission to enter observer mode
-void MultiDoRequestToObserve(ubyte *data) {
+void MultiDoRequestToObserve(uint8_t *data) {
   int count = 0;
   int objnum;
 
@@ -6165,9 +6165,9 @@ void MultiDoRequestToObserve(ubyte *data) {
 
   SKIP_HEADER(data, &count);
 
-  ubyte slot = MultiGetByte(data, &count);
-  ubyte mode = MultiGetByte(data, &count);
-  ubyte on = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
+  uint8_t mode = MultiGetByte(data, &count);
+  uint8_t on = MultiGetByte(data, &count);
 
   if (mode == OBSERVER_MODE_PIGGYBACK)
     objnum = MultiGetInt(data, &count);
@@ -6175,7 +6175,7 @@ void MultiDoRequestToObserve(ubyte *data) {
   if ((Objects[Players[slot].objnum].type == OBJ_PLAYER && on) ||
       (Objects[Players[slot].objnum].type == OBJ_OBSERVER && !on)) {
     int newcount = 0;
-    ubyte newdata[MAX_GAME_DATA_SIZE];
+    uint8_t newdata[MAX_GAME_DATA_SIZE];
     int size_offset;
 
     size_offset = START_DATA(MP_OBSERVER_CHANGE, newdata, &newcount);
@@ -6204,7 +6204,7 @@ void MultiDoRequestToObserve(ubyte *data) {
 // We're asking to enter observer mode
 void MultiSendRequestToObserve(int mode, int on, int objnum) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   // Check to see if the player has enough shields to enter
@@ -6236,7 +6236,7 @@ void MultiSendRequestToObserve(int mode, int on, int objnum) {
 }
 
 // Server is telling us about players that we can see
-void MultiDoVisiblePlayers(ubyte *data) {
+void MultiDoVisiblePlayers(uint8_t *data) {
   int count = 0;
   int i;
 
@@ -6281,7 +6281,7 @@ void MultiDoVisiblePlayers(ubyte *data) {
 // Sends all the visible players to another player
 void MultiSendVisiblePlayers(int to_slot) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_VISIBLE_PLAYERS, data, &count);
@@ -6296,7 +6296,7 @@ void MultiSendVisiblePlayers(int to_slot) {
   nw_Send(&NetPlayers[to_slot].addr, data, count, 0);
 }
 
-void MultiDoRequestPeerDamage(ubyte *data, network_address *from_addr) {
+void MultiDoRequestPeerDamage(uint8_t *data, network_address *from_addr) {
   int count = 0;
 
   if (Netgame.local_role != LR_SERVER)
@@ -6305,9 +6305,9 @@ void MultiDoRequestPeerDamage(ubyte *data, network_address *from_addr) {
   SKIP_HEADER(data, &count);
 
   int pnum = MultiGetByte(data, &count);
-  ushort killer_objnum = MultiGetUshort(data, &count);
-  ubyte weapon_id = MultiGetUbyte(data, &count);
-  ubyte damage_type = MultiGetUbyte(data, &count);
+  uint16_t killer_objnum = MultiGetUshort(data, &count);
+  uint8_t weapon_id = MultiGetUbyte(data, &count);
+  uint8_t damage_type = MultiGetUbyte(data, &count);
   float amount = MultiGetFloat(data, &count);
 
   if (killer_objnum == 65535 || Objects[killer_objnum].type == OBJ_NONE)
@@ -6320,7 +6320,7 @@ void MultiDoRequestPeerDamage(ubyte *data, network_address *from_addr) {
 // Tell the server to damage us
 void MultiSendRequestPeerDamage(object *killer, int weapon_id, int damage_type, float amount) {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   if (Netgame.local_role == LR_SERVER)
@@ -6551,11 +6551,11 @@ void MultiSendFullReliablePacket(int slot, int flags) {
 }
 
 // Given a string, returns a unique integer for that string
-uint MultiGetUniqueIDFromString(char *plainstring) {
+uint32_t MultiGetUniqueIDFromString(char *plainstring) {
   int i, t, len;
-  uint ret;
-  ubyte cryptstring[PAGENAME_LEN];
-  uint vals[4];
+  uint32_t ret;
+  uint8_t cryptstring[PAGENAME_LEN];
+  uint32_t vals[4];
 
   len = strlen(plainstring);
 
@@ -6568,7 +6568,7 @@ uint MultiGetUniqueIDFromString(char *plainstring) {
 
   for (i = 0; i < 4; i++) {
     cryptstring[i] = 0;
-    ubyte backbyte;
+    uint8_t backbyte;
 
     if (i == 0)
       backbyte = 0x9a;
@@ -6576,8 +6576,8 @@ uint MultiGetUniqueIDFromString(char *plainstring) {
       backbyte = plainstring[i - 1];
 
     for (t = 0; t < len; t++) {
-      ubyte a = plainstring[t];
-      ubyte b = plainstring[i % (t + 1)];
+      uint8_t a = plainstring[t];
+      uint8_t b = plainstring[i % (t + 1)];
 
       a *= a;
       b *= b * b;
@@ -6599,7 +6599,7 @@ uint MultiGetUniqueIDFromString(char *plainstring) {
 }
 
 // Returns the unique id of a given object type/id
-uint MultiGetMatchChecksum(int type, int id) {
+uint32_t MultiGetMatchChecksum(int type, int id) {
   switch (type) {
   case OBJ_POWERUP:
   case OBJ_ROBOT:
@@ -6622,7 +6622,7 @@ uint MultiGetMatchChecksum(int type, int id) {
 }
 
 // Return index of generic that has matching table entry
-int MultiMatchGeneric(uint unique_id) {
+int MultiMatchGeneric(uint32_t unique_id) {
   for (int i = 0; i < MAX_OBJECT_IDS; i++)
     if (Multi_generic_match_table[i] == unique_id)
       return i;
@@ -6631,7 +6631,7 @@ int MultiMatchGeneric(uint unique_id) {
 }
 
 // Return index of generic that has matching table entry
-int MultiMatchWeapon(uint unique_id) {
+int MultiMatchWeapon(uint32_t unique_id) {
   for (int i = 0; i < MAX_WEAPONS; i++)
     if (Multi_weapon_match_table[i] == unique_id)
       return i;
@@ -6651,7 +6651,7 @@ void MultiBuildMatchTables() {
   // Build generic tables
   for (i = 0; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type != OBJ_NONE) {
-      uint val = MultiGetUniqueIDFromString(Object_info[i].name);
+      uint32_t val = MultiGetUniqueIDFromString(Object_info[i].name);
       val += Object_info[i].type;
 
       // See if there is a hash collision.  If so, increment the value and retry
@@ -6670,7 +6670,7 @@ void MultiBuildMatchTables() {
   // Build weapon tables
   for (i = 0; i < MAX_WEAPONS; i++) {
     if (Weapons[i].used) {
-      uint val = MultiGetUniqueIDFromString(Weapons[i].name);
+      uint32_t val = MultiGetUniqueIDFromString(Weapons[i].name);
 
       // See if there is a hash collision.  If so, increment the value and retry
       while ((MultiMatchWeapon(val)) != -1) {
@@ -6735,11 +6735,11 @@ void MultiPaintGoalRooms(int *texcolors) {
   }
 }
 
-void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, short seed) {
+void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, int16_t seed) {
   int size;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
-  ushort hit_objnum, killer_objnum;
+  uint8_t data[MAX_GAME_DATA_SIZE];
+  uint16_t hit_objnum, killer_objnum;
 
   // mprintf((0,"MultiSendExplodeObject Hit obj:%d Killer Obj: %d\n",OBJNUM(hit_obj),OBJNUM(killer)));
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -6767,10 +6767,10 @@ void MultiSendKillObject(object *hit_obj, object *killer, float damage, int deat
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_OBJECTS, false);
 }
 
-void MultiDoRobotExplode(ubyte *data) {
+void MultiDoRobotExplode(uint8_t *data) {
   int count = 0;
   float damage, delay;
-  ushort hit_objnum, killer_objnum, seed;
+  uint16_t hit_objnum, killer_objnum, seed;
   int death_flags;
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -6816,8 +6816,8 @@ void MultiDoRobotExplode(ubyte *data) {
 void MultiSendDamageObject(object *hit_obj, object *killer, float damage, int weaponid) {
   int size;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
-  ushort hit_objnum, killer_objnum;
+  uint8_t data[MAX_GAME_DATA_SIZE];
+  uint16_t hit_objnum, killer_objnum;
 
   // mprintf((0,"MultiSendDamageObject Hit obj:%d Killer Obj: %d\n",OBJNUM(hit_obj),OBJNUM(killer)));
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -6837,11 +6837,11 @@ void MultiSendDamageObject(object *hit_obj, object *killer, float damage, int we
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_PLAYING, false);
 }
 
-void MultiDoRobotDamage(ubyte *data) {
+void MultiDoRobotDamage(uint8_t *data) {
   int count = 0;
   float damage;
   int weaponid;
-  ushort hit_objnum, killer_objnum;
+  uint16_t hit_objnum, killer_objnum;
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
   SKIP_HEADER(data, &count);
@@ -6893,7 +6893,7 @@ void MultiAddObjAnimUpdate(int objnum) {
   }
 }
 
-int MultiStuffObjAnimUpdate(unsigned short objnum, ubyte *data) {
+int MultiStuffObjAnimUpdate(uint16_t objnum, uint8_t *data) {
   custom_anim multi_anim_info;
   int count = 0;
   int size = 0;
@@ -6923,7 +6923,7 @@ int MultiStuffObjAnimUpdate(unsigned short objnum, ubyte *data) {
   return 0;
 }
 
-void MultiDoObjAnimUpdate(ubyte *data) {
+void MultiDoObjAnimUpdate(uint8_t *data) {
   custom_anim multi_anim_info;
   int objnum;
   int count = 0;
@@ -6952,9 +6952,9 @@ void MultiDoObjAnimUpdate(ubyte *data) {
   }
 }
 
-void MultiDoPlay3dSound(ubyte *data) {
+void MultiDoPlay3dSound(uint8_t *data) {
   int objnum;
-  short soundidx;
+  int16_t soundidx;
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
 
@@ -6963,7 +6963,7 @@ void MultiDoPlay3dSound(ubyte *data) {
   objnum = Server_object_list[serverobjnum];
 
   soundidx = MultiGetShort(data, &count);
-  ubyte priority = MultiGetByte(data, &count);
+  uint8_t priority = MultiGetByte(data, &count);
 
   if (objnum == 65535 || !(Objects[objnum].flags & OF_SERVER_OBJECT)) {
     mprintf((0, "Bad server objnum(%d) in MultiDoPlay3dSound().\n", serverobjnum));
@@ -6974,8 +6974,8 @@ void MultiDoPlay3dSound(ubyte *data) {
   Sound_system.Play3dSound(soundidx, &Objects[objnum], priority);
 }
 
-void MultiPlay3dSound(short soundidx, ushort objnum, int priority) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+void MultiPlay3dSound(int16_t soundidx, uint16_t objnum, int priority) {
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -7003,10 +7003,10 @@ void MultiPlay3dSound(short soundidx, ushort objnum, int priority) {
   }
 }
 
-void MultiSendRobotFireSound(short soundidx, ushort objnum) {
+void MultiSendRobotFireSound(int16_t soundidx, uint16_t objnum) {
   int size;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   // mprintf((0,"&"));//KBTEST
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
   // mprintf((0,"Sending Robot %d fire sound.\n",objnum));
@@ -7037,9 +7037,9 @@ void MultiSendRobotFireSound(short soundidx, ushort objnum) {
   }
 }
 
-void MultiDoRobotFireSound(ubyte *data) {
+void MultiDoRobotFireSound(uint8_t *data) {
   int objnum;
-  short soundidx;
+  int16_t soundidx;
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
   SKIP_HEADER(data, &count);
@@ -7084,7 +7084,7 @@ void MultiAddObjTurretUpdate(int objnum) {
   }
 }
 
-int MultiStuffTurretUpdate(unsigned short objnum, ubyte *data) {
+int MultiStuffTurretUpdate(uint16_t objnum, uint8_t *data) {
   int count = 0;
   int size = 0;
   multi_turret multi_turret_info;
@@ -7119,11 +7119,11 @@ int MultiStuffTurretUpdate(unsigned short objnum, ubyte *data) {
   return count;
 }
 
-void MultiDoTurretUpdate(ubyte *data) {
+void MultiDoTurretUpdate(uint8_t *data) {
 
   multi_turret multi_turret_info;
   int objnum;
-  ushort num_turrets;
+  uint16_t num_turrets;
   float turr_time;
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -7161,7 +7161,7 @@ void MultiSendClientInventoryUseItem(int type, int id) {
   }
 
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   // Client sends this only
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -7197,11 +7197,11 @@ void MultiSendClientInventoryUseItem(int type, int id) {
   }
 }
 
-void MultiDoClientInventoryUseItem(int slot, ubyte *data) {
+void MultiDoClientInventoryUseItem(int slot, uint8_t *data) {
   int count = 0;
   int type;
   int id;
-  unsigned int hash;
+  uint32_t hash;
 
   // Only the server receives this
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -7269,11 +7269,11 @@ void MultiDoClientInventoryUseItem(int slot, ubyte *data) {
 }
 
 // Handle a remove item from inventory
-void MultiDoClientInventoryRemoveItem(int slot, ubyte *data) {
+void MultiDoClientInventoryRemoveItem(int slot, uint8_t *data) {
   int count = 0;
   int type;
   int id;
-  unsigned int hash;
+  uint32_t hash;
   int pnum;
 
   // Only the server receives this
@@ -7325,7 +7325,7 @@ void MultiSendInventoryRemoveItem(int slot, int type, int id) {
   }
 
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   if (id == -1) {
@@ -7347,7 +7347,7 @@ void MultiSendInventoryRemoveItem(int slot, int type, int id) {
     // type/id
     MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
     size = START_DATA(MP_REMOVE_INVENTORY_ITEM, data, &count, 1);
-    MultiAddUshort((ushort)type, data, &count);
+    MultiAddUshort((uint16_t)type, data, &count);
     MultiAddUint(MultiGetMatchChecksum(type, id), data, &count);
     MultiAddByte(slot, data, &count);
     END_DATA(count, data, size);
@@ -7362,7 +7362,7 @@ void MultiSetAudioTauntTime(float time, int to_who) {
   time = taunt_DelayTime(); // make sure it is valid
 
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   size = START_DATA(MP_SERVER_AUDIOTAUNT_TIME, data, &count, 1);
@@ -7379,7 +7379,7 @@ void MultiSetAudioTauntTime(float time, int to_who) {
   }
 }
 
-void MultiDoAudioTauntTime(ubyte *data) {
+void MultiDoAudioTauntTime(uint8_t *data) {
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
 
@@ -7416,7 +7416,7 @@ void MultiAddObjWBAnimUpdate(int objnum) {
   }
 }
 
-int MultiStuffObjWBAnimUpdate(unsigned short objnum, ubyte *data) {
+int MultiStuffObjWBAnimUpdate(uint16_t objnum, uint8_t *data) {
   // multi_anim multi_anim_info;
   int count = 0;
   int size = 0;
@@ -7448,7 +7448,7 @@ int MultiStuffObjWBAnimUpdate(unsigned short objnum, ubyte *data) {
   return 0;
 }
 
-void MultiDoObjWBAnimUpdate(ubyte *data) {
+void MultiDoObjWBAnimUpdate(uint8_t *data) {
   // multi_anim multi_anim_info;
   // int objnum;
   int count = 0;
@@ -7474,7 +7474,7 @@ void MultiDoObjWBAnimUpdate(ubyte *data) {
 
 void MultiSendBytesSent(int slot) {
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   // Server sends this only
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -7492,9 +7492,9 @@ void MultiSendBytesSent(int slot) {
 
 #define MIN(a, b) ((a < b) ? a : b)
 
-void MultiDoBytesSent(ubyte *data) {
+void MultiDoBytesSent(uint8_t *data) {
   int count = 0;
-  unsigned int server_sent;
+  uint32_t server_sent;
   float drop_ratio;
   SKIP_HEADER(data, &count);
   server_sent = MultiGetUint(data, &count);
@@ -7546,7 +7546,7 @@ void MultiDoBytesSent(ubyte *data) {
 
 void MultiSendPPSSet(int pps) {
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   // Client sends this only
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -7557,16 +7557,16 @@ void MultiSendPPSSet(int pps) {
   nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count, false);
 }
 
-void MultiDoPPSSet(ubyte *data, int slot) {
+void MultiDoPPSSet(uint8_t *data, int slot) {
   int count = 0;
   SKIP_HEADER(data, &count);
   NetPlayers[slot].pps = MultiGetByte(data, &count);
   mprintf((0, "%s changed his PPS to %d\n", Players[slot].callsign, NetPlayers[slot].pps));
 }
 
-void MultiSendGreetings(unsigned int id) {
+void MultiSendGreetings(uint32_t id) {
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   // Client sends this only
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -7577,10 +7577,10 @@ void MultiSendGreetings(unsigned int id) {
   nw_Send(&Netgame.server_address, data, count, 0);
 }
 
-void MultiDoGreetings(ubyte *data, network_address *addr) {
+void MultiDoGreetings(uint8_t *data, network_address *addr) {
   int count = 0;
   SKIP_HEADER(data, &count);
-  unsigned int id = MultiGetUint(data, &count);
+  uint32_t id = MultiGetUint(data, &count);
   int i;
   //	mprintf((0,"Got a greeting packet with an id of %d\n"));
   for (i = 0; i < MAX_NET_PLAYERS; i++) {
@@ -7598,9 +7598,9 @@ void MultiDoGreetings(ubyte *data, network_address *addr) {
 // file_id = NETFILE_ID_???? type
 //	file_who = If you are the client who's file you want from the server
 //	who = player number of who you are asking for the file
-void MultiAskForFile(ushort file_id, ushort file_who, ushort who) {
+void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   //@@mprintf((0,"Asking player %d for a file (%d) from player %d\n",who,file_id,file_who));
   if (NetPlayers[who].file_xfer_flags != NETFILE_NONE) {
@@ -7665,12 +7665,12 @@ void MultiAskForFile(ushort file_id, ushort file_who, ushort who) {
   }
 }
 
-void MultiDoFileReq(ubyte *data) {
+void MultiDoFileReq(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
-  ushort filenum = MultiGetUshort(data, &count);
-  ushort filewho = MultiGetUshort(data, &count);
-  ushort playernum = MultiGetUshort(data, &count);
+  uint16_t filenum = MultiGetUshort(data, &count);
+  uint16_t filewho = MultiGetUshort(data, &count);
+  uint16_t playernum = MultiGetUshort(data, &count);
   // If we are the server, someone want's a file. Either start sending it to them, or deny the request
   if (NetPlayers[playernum].file_xfer_flags == NETFILE_NONE) {
     // FIXME!! Figure out what file to open
@@ -7708,7 +7708,7 @@ void MultiDoFileReq(ubyte *data) {
 
 void DenyFile(int playernum, int filenum, int file_who) {
   int size = 0;
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   size = START_DATA(MP_FILE_DENIED, outdata, &count);
   MultiAddUshort(filenum, outdata, &count);
@@ -7725,7 +7725,7 @@ void DenyFile(int playernum, int filenum, int file_who) {
 
 void MultiCancelFile(int playernum, int filenum, int file_who) {
   int size = 0;
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int count = 0;
   // Send message to our peer and abort the xfer
   if (NetPlayers[playernum].file_xfer_cfile) {
@@ -7746,28 +7746,28 @@ void MultiCancelFile(int playernum, int filenum, int file_who) {
     nw_SendReliable(NetPlayers[Player_num].reliable_socket, outdata, count);
   }
 }
-void MultiDoFileDenied(ubyte *data) {
+void MultiDoFileDenied(uint8_t *data) {
   // We asked for a file, but the request was denied for some reason
   int count = 0;
   SKIP_HEADER(data, &count);
-  ushort filenum = MultiGetUshort(data, &count);
-  ushort playernum = MultiGetUshort(data, &count);
-  ushort filewho = MultiGetUshort(data, &count);
+  uint16_t filenum = MultiGetUshort(data, &count);
+  uint16_t playernum = MultiGetUshort(data, &count);
+  uint16_t filewho = MultiGetUshort(data, &count);
   mprintf((0, "Got a file denied packet from %d\n", playernum));
 
   DoNextPlayerFile(filewho);
 }
 
-void MultiDoFileData(ubyte *data) {
+void MultiDoFileData(uint8_t *data) {
   // File data. We asked for it, now the server is sending it to us.
-  unsigned int total_len; // Length of the entire file
-  unsigned int curr_len;  // Length of file sent so far
-  ushort file_id;         // Defines which file this is
-  ushort playernum;       // Who is sending us the file
-  ushort data_len;        // between 1-450 bytes
-  // ushort	file_who;
+  uint32_t total_len; // Length of the entire file
+  uint32_t curr_len;  // Length of file sent so far
+  uint16_t file_id;         // Defines which file this is
+  uint16_t playernum;       // Who is sending us the file
+  uint16_t data_len;        // between 1-450 bytes
+  // uint16_t	file_who;
   int count = 0;
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int outcount = 0;
   int size;
 
@@ -7836,10 +7836,10 @@ void MultiDoFileData(ubyte *data) {
   }
 }
 
-void MultiDoFileAck(ubyte *data) {
+void MultiDoFileAck(uint8_t *data) {
   // If we are transferring a file, and someone ACK's us, simply send them the next bit of data they are waiting for
-  ubyte playernum; // Who is acking us
-  uint len_recvd;  // Total number of bytes received so far
+  uint8_t playernum; // Who is acking us
+  uint32_t len_recvd;  // Total number of bytes received so far
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -7859,15 +7859,15 @@ void MultiDoFileAck(ubyte *data) {
 
 void SendDataChunk(int playernum) {
   int outcount = 0;
-  static ubyte outdata[MAX_PACKET_SIZE];
-  static ubyte readbuf[MAX_PACKET_SIZE];
+  static uint8_t outdata[MAX_PACKET_SIZE];
+  static uint8_t readbuf[MAX_PACKET_SIZE];
   int size;
   int dataread;
   int done = 0;
   // mprintf((0,"Sending a data chunk to %d.\n",playernum));
   // Read the next chunk of the file and send it!
   if ((DATA_CHUNK_SIZE + NetPlayers[playernum].file_xfer_pos) >
-      (unsigned int)NetPlayers[playernum].file_xfer_cfile->size) {
+      (uint32_t)NetPlayers[playernum].file_xfer_cfile->size) {
     dataread = NetPlayers[playernum].file_xfer_cfile->size - NetPlayers[playernum].file_xfer_pos;
     // This is the end of the file
     mprintf((0, "End of file detected!\n"));
@@ -7914,9 +7914,9 @@ void SendDataChunk(int playernum) {
   NetPlayers[playernum].file_xfer_pos += dataread;
 }
 
-void MultiDoFileCancelled(ubyte *data) {
-  unsigned short playernum; // Who is telling us the file is cancelled
-  unsigned short filewho;   // Who's file is being cancelled
+void MultiDoFileCancelled(uint8_t *data) {
+  uint16_t playernum; // Who is telling us the file is cancelled
+  uint16_t filewho;   // Who's file is being cancelled
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -7937,7 +7937,7 @@ void MultiDoFileCancelled(ubyte *data) {
 
 // ddio_splitpath
 void MultiSendClientCustomData(int slot, int whoto) {
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   char csum_filename[(_MAX_PATH * 2) + 64];
   char path[_MAX_PATH];
   char ext[_MAX_PATH];
@@ -7969,7 +7969,7 @@ void MultiSendClientCustomData(int slot, int whoto) {
       strcpy(csum_filename, NetPlayers[slot].ship_logo);
     }
   }
-  unsigned short logo_len = strlen(csum_filename) + 1;
+  uint16_t logo_len = strlen(csum_filename) + 1;
   MultiAddUshort(logo_len, data, &count);
   memcpy(data + count, csum_filename, logo_len);
   count += logo_len;
@@ -8009,7 +8009,7 @@ void MultiSendClientCustomData(int slot, int whoto) {
         strcpy(csum_filename, filename);
       }
     }
-    unsigned short vt_len = strlen(csum_filename) + 1;
+    uint16_t vt_len = strlen(csum_filename) + 1;
     MultiAddUshort(vt_len, data, &count);
     memcpy(data + count, csum_filename, vt_len);
     count += vt_len;
@@ -8030,8 +8030,8 @@ void MultiSendClientCustomData(int slot, int whoto) {
   }
 }
 
-void MultiDoCustomPlayerData(ubyte *data) {
-  unsigned short playernum; // Who has data we are interested in
+void MultiDoCustomPlayerData(uint8_t *data) {
+  uint16_t playernum; // Who has data we are interested in
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -8040,14 +8040,14 @@ void MultiDoCustomPlayerData(ubyte *data) {
     return;
   mprintf((0, "Got custom data in MultiDoCustomPlayerData()\n"));
   NetPlayers[playernum].custom_file_seq = NETFILE_ID_SHIP_TEX; // First in the sequence of files we will request
-  short logo_len = MultiGetUshort(data, &count);
+  int16_t logo_len = MultiGetUshort(data, &count);
   memcpy(NetPlayers[playernum].ship_logo, data + count, logo_len);
   count += logo_len;
   mprintf((0, "%s uses custom ship logo %s\n", Players[playernum].callsign, NetPlayers[playernum].ship_logo));
 
   for (int t = 0; t < 4; t++) {
     char *filename;
-    short vt_len;
+    int16_t vt_len;
 
     switch (t) {
     case 0:
@@ -8070,7 +8070,7 @@ void MultiDoCustomPlayerData(ubyte *data) {
   }
 }
 
-char *GetFileNameFromPlayerAndID(short playernum, short id) {
+char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
   static char rval[_MAX_PATH * 2];
 
   rval[0] = '\0';
@@ -8134,8 +8134,8 @@ void MultiSendGhostObject(object *obj, bool ghost) {
   MULTI_ASSERT_NOMESSAGE(obj);
 
   int count = 0;
-  ushort objnum;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint16_t objnum;
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   size_offset = START_DATA(MP_GHOST_OBJECT, data, &count, 1);
@@ -8151,11 +8151,11 @@ void MultiSendGhostObject(object *obj, bool ghost) {
     MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_OBJECTS, false);
 }
 
-void MultiDoGhostObject(ubyte *data) {
+void MultiDoGhostObject(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
-  ushort server_objnum, objnum;
+  uint16_t server_objnum, objnum;
   bool ghost;
 
   server_objnum = MultiGetUshort(data, &count);
@@ -8181,7 +8181,7 @@ void MultiDoGhostObject(ubyte *data) {
 // Sends a ping request to a player
 void MultiSendPing(int slot) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   if (slot == Player_num)
@@ -8195,14 +8195,14 @@ void MultiSendPing(int slot) {
   nw_Send(&NetPlayers[slot].addr, data, count, 0);
 }
 
-void MultiDoPing(ubyte *data, network_address *addr) {
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+void MultiDoPing(uint8_t *data, network_address *addr) {
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int outcount = 0;
   int count = 0;
   int size_offset;
 
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   float pingtime = MultiGetFloat(data, &count);
 
   // Now send a response
@@ -8214,14 +8214,14 @@ void MultiDoPing(ubyte *data, network_address *addr) {
   nw_Send(addr, outdata, outcount, 0);
 }
 
-void MultiDoPong(ubyte *data) {
-  ubyte outdata[MAX_GAME_DATA_SIZE];
+void MultiDoPong(uint8_t *data) {
+  uint8_t outdata[MAX_GAME_DATA_SIZE];
   int outcount = 0;
   int count = 0;
   int size_offset;
 
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   float pingtime = MultiGetFloat(data, &count);
   NetPlayers[slot].ping_time = timer_GetTime() - pingtime;
 
@@ -8235,15 +8235,15 @@ void MultiDoPong(ubyte *data) {
   }
 }
 
-void MultiDoLagInfo(ubyte *data) {
+void MultiDoLagInfo(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
-  ubyte slot = MultiGetByte(data, &count);
+  uint8_t slot = MultiGetByte(data, &count);
   NetPlayers[slot].ping_time = MultiGetFloat(data, &count);
 }
 
 // the server is telling us to play an audio taunt
-void MultiDoPlayTaunt(ubyte *data) {
+void MultiDoPlayTaunt(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
   int pnum = MultiGetByte(data, &count);
@@ -8258,7 +8258,7 @@ void MultiSendPlayTaunt(int pnum, int index) {
     return;
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_SERVER_PLAY_TAUNT, data, &count);
   MultiAddByte(pnum, data, &count);
@@ -8269,7 +8269,7 @@ void MultiSendPlayTaunt(int pnum, int index) {
 }
 
 // process a request by a client to play an audio taunt
-void MultiDoRequestPlayTaunt(ubyte *data) {
+void MultiDoRequestPlayTaunt(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -8322,7 +8322,7 @@ void MultiSendRequestPlayTaunt(int index) {
   Time_last_taunt_request = t;
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset = START_DATA(MP_CLIENT_PLAY_TAUNT, data, &count);
 
   MultiAddByte(Player_num, data, &count);
@@ -8338,7 +8338,7 @@ void MultiSendRequestPlayTaunt(int index) {
 }
 
 // the server is telling us that about a player's message-type state (is [not] typing a message)
-void MultiDoTypeIcon(ubyte *data) {
+void MultiDoTypeIcon(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
   int pnum = MultiGetByte(data, &count);
@@ -8346,7 +8346,7 @@ void MultiDoTypeIcon(ubyte *data) {
 
   ASSERT(pnum >= 0 && pnum < MAX_PLAYERS);
 
-  uint bit = 0x01;
+  uint32_t bit = 0x01;
   bit = bit << pnum;
 
   if (typing) {
@@ -8361,7 +8361,7 @@ void MultiDoTypeIcon(ubyte *data) {
 // tell the clients that a player is [not] typing a message
 void MultiSendTypeIcon(int pnum, bool typing_message) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_SEND_TYPE_ICON, data, &count);
   MultiAddByte(pnum, data, &count);
@@ -8372,7 +8372,7 @@ void MultiSendTypeIcon(int pnum, bool typing_message) {
 }
 
 // process a request by a client that he is [not] typing a message
-void MultiDoRequestTypeIcon(ubyte *data) {
+void MultiDoRequestTypeIcon(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -8384,13 +8384,13 @@ void MultiDoRequestTypeIcon(ubyte *data) {
 
 // Client is telling the server that he is [not] typing a hud message
 void MultiSendRequestTypeIcon(bool typing_message) {
-  uint bit = (0x01 << Player_num);
+  uint32_t bit = (0x01 << Player_num);
 
   if (typing_message && (bit & Players_typing))
     return; // already typing no need to request
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset = START_DATA(MP_REQUEST_TYPE_ICON, data, &count);
 
   MultiAddByte(Player_num, data, &count);
@@ -8407,7 +8407,7 @@ void MultiSendRequestTypeIcon(bool typing_message) {
 
 void MultiSendAiWeaponFlags(object *obj, int flags, int wb_index) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_AIWEAP_FLAGS, data, &count);
   MultiAddUshort(OBJNUM(obj), data, &count);
@@ -8417,13 +8417,13 @@ void MultiSendAiWeaponFlags(object *obj, int flags, int wb_index) {
   MultiSendToAllExcept(Player_num, data, count, NETSEQ_OBJECTS);
 }
 
-void MultiDoAiWeaponFlags(ubyte *data) {
+void MultiDoAiWeaponFlags(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
   int flags;
   int wb_index;
-  short obj_num = Server_object_list[MultiGetUshort(data, &count)];
+  int16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
   flags = MultiGetInt(data, &count);
   wb_index = MultiGetByte(data, &count);
   if (obj_num == 65535) {
@@ -8444,7 +8444,7 @@ void MultiDoAiWeaponFlags(ubyte *data) {
 
 void MultiSendAttach(object *parent, char parent_ap, object *child, char child_ap, bool f_aligned) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_ATTACH_OBJ, data, &count);
   MultiAddUshort(OBJNUM(parent), data, &count);
@@ -8456,7 +8456,7 @@ void MultiSendAttach(object *parent, char parent_ap, object *child, char child_a
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_WORLD, false);
 }
 
-void MultiDoAttach(ubyte *data) {
+void MultiDoAttach(uint8_t *data) {
 
   object *parent;
   char parent_ap;
@@ -8467,10 +8467,10 @@ void MultiDoAttach(ubyte *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
-  ushort parent_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t parent_num = Server_object_list[MultiGetUshort(data, &count)];
   parent_ap = MultiGetByte(data, &count);
   parent = &Objects[parent_num];
-  ushort child_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t child_num = Server_object_list[MultiGetUshort(data, &count)];
   child_ap = MultiGetByte(data, &count);
   child = &Objects[child_num];
   f_aligned = MultiGetByte(data, &count) ? true : false;
@@ -8494,7 +8494,7 @@ void MultiDoAttach(ubyte *data) {
 
 void MultiSendAttachRad(object *parent, char parent_ap, object *child, float rad) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_ATTACH_RAD_OBJ, data, &count);
   MultiAddUshort(OBJNUM(parent), data, &count);
@@ -8505,7 +8505,7 @@ void MultiSendAttachRad(object *parent, char parent_ap, object *child, float rad
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_WORLD, false);
 }
 
-void MultiDoAttachRad(ubyte *data) {
+void MultiDoAttachRad(uint8_t *data) {
 
   object *parent;
   char parent_ap;
@@ -8515,10 +8515,10 @@ void MultiDoAttachRad(ubyte *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
-  ushort parent_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t parent_num = Server_object_list[MultiGetUshort(data, &count)];
   parent_ap = MultiGetByte(data, &count);
   parent = &Objects[parent_num];
-  ushort child_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t child_num = Server_object_list[MultiGetUshort(data, &count)];
   rad = MultiGetFloat(data, &count);
   child = &Objects[child_num];
 
@@ -8541,7 +8541,7 @@ void MultiDoAttachRad(ubyte *data) {
 
 void MultiSendUnattach(object *child) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
   ASSERT(Objects[OBJNUM(child)].flags & OF_CLIENT_KNOWS);
@@ -8552,14 +8552,14 @@ void MultiSendUnattach(object *child) {
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_OBJECTS, false);
 }
 
-void MultiDoUnattach(ubyte *data) {
+void MultiDoUnattach(uint8_t *data) {
   object *child;
 
   int count = 0;
   SKIP_HEADER(data, &count);
   int server_objnum = MultiGetUshort(data, &count);
   ASSERT(server_objnum >= 0 && server_objnum < MAX_OBJECTS);
-  ushort child_num = Server_object_list[server_objnum];
+  uint16_t child_num = Server_object_list[server_objnum];
   child = &Objects[child_num];
   if (child_num == 65535) {
     mprintf((0, "Client/Server object lists don't match! (Server num %d)\n", child_num));
@@ -8575,7 +8575,7 @@ void MultiSendThiefSteal(int player, int item) {
   MULTI_ASSERT_NOMESSAGE(player >= 0 && player < MAX_PLAYERS);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_THIEF_STEAL, data, &count);
   MultiAddInt(item, data, &count);
@@ -8585,7 +8585,7 @@ void MultiSendThiefSteal(int player, int item) {
   MultiSendReliablyToAllExcept(Player_num, data, count, NETSEQ_OBJECTS, false);
 }
 
-void MultiDoThiefSteal(ubyte *data) {
+void MultiDoThiefSteal(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
   int item = MultiGetInt(data, &count);
@@ -8599,7 +8599,7 @@ void MultiSetLogoState(bool state) {
   mprintf((0, "Setting multi_logo_state to %d\n", state));
 }
 
-void MultiDoPermissionToFire(ubyte *data) {
+void MultiDoPermissionToFire(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -8617,15 +8617,15 @@ void MultiDoPermissionToFire(ubyte *data) {
   pos = MultiGetVector(data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
   // Get room and terrain flag
-  ushort short_roomnum = MultiGetUshort(data, &count);
-  ubyte outside = MultiGetByte(data, &count);
+  uint16_t short_roomnum = MultiGetUshort(data, &count);
+  uint8_t outside = MultiGetByte(data, &count);
   int roomnum;
 
   if (outside)
@@ -8678,7 +8678,7 @@ void MultiSendPermissionToFire(int pnum) {
   object *obj = &Objects[Players[pnum].objnum];
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_PERMISSION_TO_FIRE, data, &count);
   MultiAddByte(pnum, data, &count);
@@ -8724,7 +8724,7 @@ void MultiSendPermissionToFire(int pnum) {
 }
 
 // A client is asking for permission to fire
-void MultiDoRequestToFire(ubyte *data) {
+void MultiDoRequestToFire(uint8_t *data) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
@@ -8749,15 +8749,15 @@ void MultiDoRequestToFire(ubyte *data) {
 // We're asking the servers permission to fire
 void MultiSendRequestToFire(int wb_index, int fire_mask, float scalar) {
   // Send quaded info if needed
-  ubyte index_to_send = wb_index;
+  uint8_t index_to_send = wb_index;
 
   if (Objects[Players[Player_num].objnum].dynamic_wb[wb_index].flags & DWBF_QUAD)
     index_to_send |= MPFF_QUADED;
 
-  ubyte damage_scalar = (scalar * 64.0);
+  uint8_t damage_scalar = (scalar * 64.0);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_REQUEST_TO_FIRE, data, &count);
 
@@ -8786,7 +8786,7 @@ void MultiSendRequestToFire(int wb_index, int fire_mask, float scalar) {
 }
 
 // Server is processing a request for a marker
-void MultiDoRequestMarker(ubyte *data) {
+void MultiDoRequestMarker(uint8_t *data) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
@@ -8794,7 +8794,7 @@ void MultiDoRequestMarker(ubyte *data) {
   SKIP_HEADER(data, &count);
 
   int pnum = MultiGetByte(data, &count);
-  ubyte len = MultiGetByte(data, &count);
+  uint8_t len = MultiGetByte(data, &count);
   memcpy(message, &data[count], len);
   count += len;
 
@@ -8836,13 +8836,13 @@ void MultiDoRequestMarker(ubyte *data) {
 // Client is asking for a marker
 void MultiSendRequestForMarker(char *message) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_REQUEST_MARKER, data, &count);
 
   MultiAddByte(Player_num, data, &count);
 
-  ubyte len = strlen(message) + 1;
+  uint8_t len = strlen(message) + 1;
   MultiAddByte(len, data, &count);
   memcpy(data + count, message, len);
   count += len;
@@ -8856,7 +8856,7 @@ void MultiSendRequestForMarker(char *message) {
 }
 
 // The server is telling me to adjust my position
-void MultiDoAdjustPosition(ubyte *data) {
+void MultiDoAdjustPosition(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -8948,7 +8948,7 @@ void MultiSendAdjustPosition(int slot, float timestamp) {
 
   int size_offset;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   object *obj = &Objects[Players[slot].objnum];
 
@@ -8972,7 +8972,7 @@ void MultiSendAdjustPosition(int slot, float timestamp) {
 
 float Last_update_time[MAX_PLAYERS];
 // Client is asking permission to move
-void MultiDoRequestToMove(ubyte *data) {
+void MultiDoRequestToMove(uint8_t *data) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
@@ -9008,9 +9008,9 @@ void MultiDoRequestToMove(ubyte *data) {
   rotthrust = MultiGetVector(data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
@@ -9055,7 +9055,7 @@ void MultiDoRequestToMove(ubyte *data) {
 }
 
 // Sets up a packet so that we can request to move from server
-int MultiStuffRequestToMove(ubyte *data) {
+int MultiStuffRequestToMove(uint8_t *data) {
   int size_offset;
   int count = 0;
 
@@ -9095,13 +9095,13 @@ int MultiStuffRequestToMove(ubyte *data) {
 }
 
 // Server is giving us a list of objects that aren't visible
-void MultiDoGenericNonVis(ubyte *data) {
+void MultiDoGenericNonVis(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
   int num = MultiGetShort(data, &count);
   for (int i = 0; i < num; i++) {
-    ushort objnum = MultiGetUshort(data, &count);
+    uint16_t objnum = MultiGetUshort(data, &count);
 
     objnum = Server_object_list[objnum];
     if (objnum == 65535 || !(Objects[objnum].flags & OF_SERVER_OBJECT)) {
@@ -9121,7 +9121,7 @@ void MultiSendBreakGlass(room *rp, int facenum) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_BREAK_GLASS, data, &count);
 
@@ -9134,7 +9134,7 @@ void MultiSendBreakGlass(room *rp, int facenum) {
 }
 
 // Server is telling us to break some glass
-void MultiDoBreakGlass(ubyte *data) {
+void MultiDoBreakGlass(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -9145,7 +9145,7 @@ void MultiDoBreakGlass(ubyte *data) {
 }
 
 // Server says a player has changed rank!
-void MultiDoChangeRank(ubyte *data) {
+void MultiDoChangeRank(uint8_t *data) {
   int count = 0;
   char str[255];
   SKIP_HEADER(data, &count);
@@ -9172,7 +9172,7 @@ void MultiDoChangeRank(ubyte *data) {
 }
 
 // Server is telling me to strip bare!
-void MultiDoStripPlayer(int slot, ubyte *data) {
+void MultiDoStripPlayer(int slot, uint8_t *data) {
   if (slot != 0) {
     // server didnt send this to us?!
     Int3();
@@ -9241,7 +9241,7 @@ void MultiSendStripPlayer(int slot) {
   }
 
   int count = 0, save_count;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_STRIP_PLAYER, data, &count);
   save_count = count;
@@ -9267,7 +9267,7 @@ void MultiSendStripPlayer(int slot) {
 }
 
 // Server is telling me about a player rank
-void MultiDoInitialRank(ubyte *data) {
+void MultiDoInitialRank(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
@@ -9284,7 +9284,7 @@ void MultiSendInitialRank(int pnum) {
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
 
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
   size_offset = START_DATA(MP_INITIAL_RANK, data, &count);
   MultiAddByte(pnum, data, &count);
@@ -9342,7 +9342,7 @@ void MultiClearGuidebot(int slot) {
   // now update the buddy handle list of the clients
   int count = 0;
   int size_offset;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   mprintf((0, "Sending Buddy_handle update to clients for Buddy#%d\n", slot));
 
@@ -9360,7 +9360,7 @@ void MultiClearGuidebot(int slot) {
 }
 
 void RequestPlayerList(network_address *addr) {
-  ubyte outdata[10];
+  uint8_t outdata[10];
   int count = 0;
   int size;
 
@@ -9371,14 +9371,14 @@ void RequestPlayerList(network_address *addr) {
 
 // a client is requesting a list of players... so give it to em!
 void DoReqPlayerList(network_address *addr) {
-  ubyte outdata[((CALLSIGN_LEN + 1) * MAX_NET_PLAYERS) + 1];
+  uint8_t outdata[((CALLSIGN_LEN + 1) * MAX_NET_PLAYERS) + 1];
   int count = 0;
   int size;
 
   memset(outdata, 0, sizeof(outdata));
   size = START_DATA(MP_PLAYERLIST_DATA, outdata, &count);
 
-  unsigned short icurrplayers = 0;
+  uint16_t icurrplayers = 0;
   int i = 0;
   if (Dedicated_server) {
     // Skip the server player
@@ -9403,7 +9403,7 @@ void DoReqPlayerList(network_address *addr) {
 char *Multi_recieved_player_list = NULL;
 bool Multi_got_player_list = false;
 
-void DoPlayerListData(ubyte *data, int len) {
+void DoPlayerListData(uint8_t *data, int len) {
   int count = 0;
   if (Multi_recieved_player_list == NULL) {
     mprintf((0, "Received a player list packet when we weren't expecting one. Ignoring.\n"));
@@ -9417,7 +9417,7 @@ void DoPlayerListData(ubyte *data, int len) {
 // Tell a player what ship they are supposed to switch to
 // if the one they chose isn't allowed.
 void MultiBashPlayerShip(int slot, char *ship) {
-  ubyte outdata[100];
+  uint8_t outdata[100];
   int count = 0;
   int size;
 
@@ -9430,7 +9430,7 @@ void MultiBashPlayerShip(int slot, char *ship) {
 
 int ObjInitTypeSpecific(object *objp, bool reinitializing);
 
-void MultiDoBashPlayerShip(ubyte *data) {
+void MultiDoBashPlayerShip(uint8_t *data) {
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -9477,7 +9477,7 @@ void MultiSendHeartbeat() {
     time_scalar = .5; // Server sends out twice as fast
 
   if ((timer_GetTime() - last_heartbeat) > (HEARTBEAT_INTERVAL * time_scalar)) {
-    ubyte outdata[100];
+    uint8_t outdata[100];
     int count = 0;
     int size;
 
@@ -9499,8 +9499,8 @@ void MultiSendHeartbeat() {
 }
 
 //-----------------------------------------------
-void MultiDoMSafeFunction(ubyte *data);
-void MultiDoMSafePowerup(ubyte *data);
+void MultiDoMSafeFunction(uint8_t *data);
+void MultiDoMSafePowerup(uint8_t *data);
 
 // This allows us to specify under what sequences certain packets are accepted
 #define ACCEPT_CONDITION(s, e)                                                                                         \
@@ -9511,8 +9511,8 @@ void MultiDoMSafePowerup(ubyte *data);
 // #define ACCEPT_CONDITION(s,e)
 
 // Takes the individual packet types and passes their data to the appropriate routines
-void MultiProcessData(ubyte *data, int len, int slot, network_address *from_addr) {
-  ubyte type = data[0];
+void MultiProcessData(uint8_t *data, int len, int slot, network_address *from_addr) {
+  uint8_t type = data[0];
   len = len;
   int sequence = -1;
 
@@ -9948,9 +9948,9 @@ void MultiProcessData(ubyte *data, int len, int slot, network_address *from_addr
 
 // Takes a bunch of messages, check them for validity,
 // and pass them to multi_process_data.
-void MultiProcessBigData(ubyte *buf, int len, network_address *from_addr) {
+void MultiProcessBigData(uint8_t *buf, int len, network_address *from_addr) {
   int type, bytes_processed = 0;
-  short sub_len;
+  int16_t sub_len;
   int slot = 0;
   int last_type = -1, last_len = -1;
 
@@ -9978,7 +9978,7 @@ void MultiProcessBigData(ubyte *buf, int len, network_address *from_addr) {
 
   while (bytes_processed < len) {
     type = buf[bytes_processed];
-    sub_len = INTEL_SHORT((*(short *)(buf + bytes_processed + 1)));
+    sub_len = INTEL_SHORT((*(int16_t *)(buf + bytes_processed + 1)));
 
     if (sub_len < 3 || type == 0 || (len - bytes_processed) < 2) {
       mprintf((0, "Got a corrupted packet!\n"));
@@ -9988,7 +9988,7 @@ void MultiProcessBigData(ubyte *buf, int len, network_address *from_addr) {
 
     if ((bytes_processed + sub_len) > len) {
       mprintf(
-          (1, "multi_process_bigdata: packet type %d too short (%d>%d)!\n", type, (bytes_processed + sub_len), len));
+          (1, "multi_process_bigdata: packet type %d too int16_t (%d>%d)!\n", type, (bytes_processed + sub_len), len));
       Int3();
       return;
     }

@@ -21,24 +21,24 @@
 
 /* These are our global variables for passing values - AH */
 /* For _asm_sndDecompM16 */
-unsigned short *sndDecompM16_dst;
-unsigned char *sndDecompM16_src;
-unsigned int sndDecompM16_len;
-unsigned int sndDecompM16_prev;
-unsigned int sndDecompM16_return;
+uint16_t *sndDecompM16_dst;
+uint8_t *sndDecompM16_src;
+uint32_t sndDecompM16_len;
+uint32_t sndDecompM16_prev;
+uint32_t sndDecompM16_return;
 /* For _asm_sndDecompM16 */
-unsigned short *sndDecompS16_dst;
-unsigned char *sndDecompS16_src;
-unsigned int sndDecompS16_len;
-unsigned int sndDecompS16_prev;
-unsigned int sndDecompS16_return;
+uint16_t *sndDecompS16_dst;
+uint8_t *sndDecompS16_src;
+uint32_t sndDecompS16_len;
+uint32_t sndDecompS16_prev;
+uint32_t sndDecompS16_return;
 /* For _asm_nfHPkDecomp */
-unsigned char *nfHPkDecomp_ops;
-unsigned char *nfHPkDecomp_comp;
-unsigned int nfHPkDecomp_x;
-unsigned int nfHPkDecomp_y;
-unsigned int nfHPkDecomp_w;
-unsigned int nfHPkDecomp_h;
+uint8_t *nfHPkDecomp_ops;
+uint8_t *nfHPkDecomp_comp;
+uint32_t nfHPkDecomp_x;
+uint32_t nfHPkDecomp_y;
+uint32_t nfHPkDecomp_w;
+uint32_t nfHPkDecomp_h;
 
 #ifdef __cplusplus /* Avoid C++ name mangling - AH */
 extern "C" {
@@ -57,7 +57,7 @@ int global_unlock_memory_pointers[MAX_MEM_UNLOCK_POINTS]; // _asm_selfModify() s
 
 int allow_self_modification(void) {
   int i;
-  unsigned int page_start;
+  uint32_t page_start;
 
   for (i = 0; i < MAX_MEM_UNLOCK_POINTS; i++)
     global_unlock_memory_pointers[i] = 0;
@@ -72,7 +72,7 @@ int allow_self_modification(void) {
     }
   return (1);
 }
-unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompM16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev) {
   sndDecompM16_dst = dst;
   sndDecompM16_src = src;
   sndDecompM16_len = len;
@@ -81,7 +81,7 @@ unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned le
   return (sndDecompM16_return);
 }
 
-unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev) {
   sndDecompS16_dst = dst;
   sndDecompS16_src = src;
   sndDecompS16_len = len;
@@ -95,8 +95,8 @@ void nfPkConfig(void) {
   return;
 }
 
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned int x, unsigned int y, unsigned int w,
-                 unsigned int h) {
+void nfHPkDecomp(uint8_t *ops, uint8_t *comp, uint32_t x, uint32_t y, uint32_t w,
+                 uint32_t h) {
   nfHPkDecomp_ops = ops;
   nfHPkDecomp_comp = comp;
   nfHPkDecomp_x = x;
@@ -111,35 +111,35 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned int x, unsign
 /* Non-Implemented functions (from inside mveasm.cpp - AH) */
 /***********************************************************/
 
-void nfHiColorDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfHiColorDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y,
+void nfHiColorDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y,
                         unsigned w, unsigned h);
-void nfDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y, unsigned w,
+void nfDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w,
                  unsigned h);
 void nfPkPal(void);
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecompD(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                         unsigned dstx, unsigned dsty);
-void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty);
-void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                           unsigned dstx, unsigned dsty);
-void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                                  unsigned dstx, unsigned dsty);
 
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
-void palLoadCompPalette(unsigned char *buf);
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
+void palLoadCompPalette(uint8_t *buf);
 void gfxMode(unsigned mode);
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res);
-void gfxGetCrtc(unsigned char *crtc);
-void gfxVres(unsigned char misc, unsigned char *crtc);
+void gfxLoadCrtc(uint8_t *crtc, uint8_t chain4, uint8_t res);
+void gfxGetCrtc(uint8_t *crtc);
+void gfxVres(uint8_t misc, uint8_t *crtc);
 void MVE_gfxWaitRetrace(int state);
 void MVE_gfxSetSplit(unsigned line);
 
@@ -151,53 +151,53 @@ void MVE_gfxSetSplit(unsigned line);
 #define int3 raise(SIGTRAP);
 #endif
 
-void nfHiColorDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
-void nfHiColorDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y,
+void nfHiColorDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
+void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y,
                         unsigned w, unsigned h) {
   int3
 }
-void nfDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
-void nfDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y, unsigned w,
+void nfDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
+void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w,
                  unsigned h) {
   int3
 }
 void nfPkPal(void) { int3 }
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
+void nfPkDecompD(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3 }
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
   int3
 }
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
   int3
 }
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                         unsigned dstx, unsigned dsty) {
   int3
 }
-void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty) {
   int3
 }
-void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                           unsigned dstx, unsigned dsty) {
   int3
 }
-void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                                  unsigned dstx, unsigned dsty) {
   int3
 }
 /* Avoid name mangling issues by moving this into mvelibl.cpp - AH
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count)
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count)
 {
         int3
 } */
-void palLoadCompPalette(unsigned char *buf) { int3 }
+void palLoadCompPalette(uint8_t *buf) { int3 }
 void gfxMode(unsigned mode) { int3 }
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res) { int3 }
-void gfxGetCrtc(unsigned char *crtc) { int3 }
-void gfxVres(unsigned char misc, unsigned char *crtc) { int3 }
+void gfxLoadCrtc(uint8_t *crtc, uint8_t chain4, uint8_t res) { int3 }
+void gfxGetCrtc(uint8_t *crtc) { int3 }
+void gfxVres(uint8_t misc, uint8_t *crtc) { int3 }
 void MVE_gfxWaitRetrace(int state) { int3 }
 void MVE_gfxSetSplit(unsigned line) { int3 }

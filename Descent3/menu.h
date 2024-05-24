@@ -95,7 +95,7 @@ typedef struct {
   int num_items;
 
   menu_item items[MAX_MENU_ITEMS];
-  ubyte used;
+  uint8_t used;
 } menu;
 
 //	returns whether we decided to quit the game or not

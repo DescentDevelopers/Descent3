@@ -20,6 +20,7 @@
 #include "config.h"
 #endif
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,7 +71,7 @@ static int load_bits(ACMStream *acm)
 {
 	int err;
 	unsigned data, got;
-	unsigned char *p = acm->buf + acm->buf_pos;
+	uint8_t *p = acm->buf + acm->buf_pos;
 	switch (acm->buf_size - acm->buf_pos) {
 	default:
 		data = 0;
@@ -115,7 +116,7 @@ static int get_bits_reload(ACMStream *acm, unsigned bits)
 	bits -= got;
 
 	if (acm->buf_size - acm->buf_pos >= 4) {
-		unsigned char *p = acm->buf + acm->buf_pos;
+		uint8_t *p = acm->buf + acm->buf_pos;
 		acm->buf_pos += 4;
 		b_data = p[0] + (p[1] << 8) + (p[2] << 16) + (p[3] << 24);
 		b_avail = 32;
@@ -195,7 +196,7 @@ static int f_bad(ACMStream *acm, unsigned ind, unsigned col)
 
 static int f_linear(ACMStream *acm, unsigned ind, unsigned col)
 {
-	unsigned int i;
+	uint32_t i;
 	int b, middle = 1 << (ind - 1);
 
 	for (i = 0; i < acm->info.acm_rows; i++) {
@@ -507,9 +508,9 @@ static int fill_block(ACMStream *acm)
 
 static void juggle(int *wrap_p, int *block_p, unsigned sub_len, unsigned sub_count)
 {
-	unsigned int i, j;
+	uint32_t i, j;
 	int *p;
-	unsigned int r0, r1, r2, r3;
+	uint32_t r0, r1, r2, r3;
 	for (i = 0; i < sub_len; i++) {
 		p = block_p;
 		r0 = wrap_p[0];
@@ -614,7 +615,7 @@ static int decode_block(ACMStream *acm)
  * Output formats
  ******************************/
 
-static unsigned char *out_s16le(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_s16le(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = *src++ >> shift;
@@ -624,7 +625,7 @@ static unsigned char *out_s16le(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static unsigned char *out_s16be(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_s16be(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = *src++ >> shift;
@@ -634,7 +635,7 @@ static unsigned char *out_s16be(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static unsigned char *out_u16le(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_u16le(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = (*src++ >> shift) + 0x8000;
@@ -644,7 +645,7 @@ static unsigned char *out_u16le(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static unsigned char *out_u16be(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_u16be(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = (*src++ >> shift) + 0x8000;
@@ -654,10 +655,10 @@ static unsigned char *out_u16be(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static int output_values(int *src, unsigned char *dst, int n,
+static int output_values(int *src, uint8_t *dst, int n,
 		int acm_level, int bigendianp, int wordlen, int sgned)
 {
-	unsigned char *res = NULL;
+	uint8_t *res = NULL;
 	if (wordlen == 2) {
 		if (bigendianp == 0) {
 			if (sgned)
@@ -686,13 +687,13 @@ static int output_values(int *src, unsigned char *dst, int n,
 
 static int read_wavc_header(ACMStream *acm)
 {
-	static const unsigned short expect[12] = {
+	static const uint16_t expect[12] = {
 		/* 'V1.0', raw_size, acm_size */
 		0x3156, 0x302E, 0,0, 0,0,
 		/* hdrlen?, chans?, bits?, hz */
 		28,0, 1, 16, 22050, 0
 	};
-	unsigned short i, buf[12];
+	uint16_t i, buf[12];
 
 	for (i = 0; i < 12; i++)
 		GET_BITS(buf[i], acm, 16);
@@ -711,7 +712,7 @@ static int read_wavc_header(ACMStream *acm)
 
 static int read_header(ACMStream *acm)
 {
-	unsigned int tmp;
+	uint32_t tmp;
 
 	/* read header */
 

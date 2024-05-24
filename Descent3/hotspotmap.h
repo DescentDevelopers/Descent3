@@ -109,6 +109,6 @@ void ExportHotSpot(const char *filename, hotspotmap_t *hsmap); // Exports a hots
 void DisplayHotSpots(hotspotmap_t *hsmap,
                      windowmap_t *wndmap); // Displays the hotspots of the given hotspot map to the screen (in blue)
 void FreeHotSpotMapInternals(hotspotmap_t *hsmap); // Deletes allocated memory within a hotspotmap struct
-ushort menutga_translate_pixel(int pixel, char *alpha_value);
+uint16_t menutga_translate_pixel(int pixel, char *alpha_value);
 
 #endif

@@ -31,14 +31,14 @@
 #define LF_BRAND_NEW 8 // This lightmap is brand new and hasn't been to the video card yet
 
 typedef struct {
-  ubyte width, height; // Width and height in pixels
-  ushort *data;        // 16bit data
+  uint8_t width, height; // Width and height in pixels
+  uint16_t *data;        // 16bit data
 
-  ushort used;
-  ubyte flags;
-  short cache_slot;         // for the renderers use
-  ubyte square_res;         // for renderers use
-  ubyte cx1, cy1, cx2, cy2; // Change x and y coords
+  uint16_t used;
+  uint8_t flags;
+  int16_t cache_slot;         // for the renderers use
+  uint8_t square_res;         // for renderers use
+  uint8_t cx1, cy1, cx2, cy2; // Change x and y coords
 } bms_lightmap;
 
 extern bms_lightmap GameLightmaps[MAX_LIGHTMAPS];
@@ -62,6 +62,6 @@ int lm_w(int handle);
 int lm_h(int handle);
 
 // returns a lightmaps data else NULL if something is wrong
-ushort *lm_data(int handle);
+uint16_t *lm_data(int handle);
 
 #endif

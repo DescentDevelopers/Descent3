@@ -31,17 +31,17 @@
 
 typedef struct {
   vector bright_center;
-  ushort bright_color;
+  uint16_t bright_color;
 } specular_instance;
 
 #define SFF_SPEC_OBJECT 1
 #define SFF_SPEC_SMOOTH 2
 
 typedef struct {
-  ubyte type; // See types (above)
-  ubyte num;  // Number of instances
-  ubyte used;
-  ubyte flags;
+  uint8_t type; // See types (above)
+  uint8_t num;  // Number of instances
+  uint8_t used;
+  uint8_t flags;
 
   specular_instance *spec_instance;
 

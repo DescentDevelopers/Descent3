@@ -142,13 +142,13 @@ public:
 };
 //  Data structures
 typedef struct os_date {
-  ushort year; // 1-65535 A.D. (or C.E.)
-  ubyte month;
-  ubyte day;
-  ubyte hour;
-  ubyte min;
-  ubyte sec;
-  ubyte pad; // to keep dword aligned
+  uint16_t year; // 1-65535 A.D. (or C.E.)
+  uint8_t month;
+  uint8_t day;
+  uint8_t hour;
+  uint8_t min;
+  uint8_t sec;
+  uint8_t pad; // to keep dword aligned
 } os_date;
 //	---------------------------------------------------------------------------
 //	Debug system functions

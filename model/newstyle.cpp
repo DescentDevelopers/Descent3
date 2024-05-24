@@ -102,9 +102,9 @@
 #include "psrand.h"
 
 static float face_depth[MAX_POLYGON_VECS];
-static ubyte triangulated_faces[MAX_FACES_PER_ROOM];
+static uint8_t triangulated_faces[MAX_FACES_PER_ROOM];
 
-static ubyte FacingPass = 0;
+static uint8_t FacingPass = 0;
 static int Multicolor_texture = -1;
 
 static vector Fog_plane;
@@ -112,7 +112,7 @@ static float Fog_distance, Fog_eye_distance;
 static vector Fog_view_pos, Specular_view_pos, Bump_view_pos;
 static matrix Unscaled_bumpmap_matrix;
 
-static int ModelFaceSortFunc(const short *a, const short *b);
+static int ModelFaceSortFunc(const int16_t *a, const int16_t *b);
 static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum);
 static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum);
 static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum);
@@ -132,7 +132,7 @@ static void RotateModelPoints(poly_model *pm, bsp_info *sm);
 
 static float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bool f_use_all_frames);
 
-int ModelFaceSortFunc(const short *a, const short *b) {
+int ModelFaceSortFunc(const int16_t *a, const int16_t *b) {
   float az, bz;
 
   az = face_depth[*a];
@@ -421,7 +421,7 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
                     int h=lmi_h (lmi_handle);
                     vector rvec=lfp->rvec*lmi_ptr->xspacing;
                     vector uvec=lfp->uvec*lmi_ptr->yspacing;
-                    ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+                    uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 
                     for (int i=0;i<w*h;i++)
                     {
@@ -460,7 +460,7 @@ inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum) {
                     }
 
                     // Draw red cross where upper left is
-                    ubyte c0;
+                    uint8_t c0;
                     g3Point p0;
                     p0.p3_flags=0;
                     c0 = g3_RotatePoint(&p0,&LightmapInfo[lmi_handle].upper_left);
@@ -749,7 +749,7 @@ void RenderSubmodelFacesSorted(poly_model *pm, bsp_info *sm) {
 void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
   int i;
   int modelnum = sm - pm->submodel;
-  short alpha_faces[MAX_FACES_PER_ROOM], num_alpha_faces = 0;
+  int16_t alpha_faces[MAX_FACES_PER_ROOM], num_alpha_faces = 0;
   int rcount = 0;
   vector view_pos;
 
@@ -1024,7 +1024,7 @@ void RotateModelPoints(poly_model *pm, bsp_info *sm) {
 #endif
 }
 
-void RenderSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub) {
+void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   int i;
   matrix lightmatrix;
 
@@ -1133,7 +1133,7 @@ pop_lighting:
   DoneLightInstance();
 }
 
-int RenderPolygonModel(poly_model *pm, uint f_render_sub) {
+int RenderPolygonModel(poly_model *pm, uint32_t f_render_sub) {
   ASSERT(pm->new_style == 1);
   int i = 0;
 

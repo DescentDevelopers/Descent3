@@ -114,7 +114,7 @@ DDPIXELFORMAT TextureFormats[MAX_TEXTURE_FORMATS];
 
 bool D3D_multitexture_state = false;
 bool D3D_bumpmap_state = false;
-ubyte D3D_frame_started = 0;
+uint8_t D3D_frame_started = 0;
 float d3d_FogDiff = 0;
 
 // For verifying the texture/alpha types before rendering
@@ -551,7 +551,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
 
   HRESULT ddrval;
   int w, h;
-  ushort *src_data;
+  uint16_t *src_data;
 
   // mprintf ((0,"Uploading bitmap %d type %d\n",handle,map_type));
   // mprintf ((0,"Slot=%d handle=%d\n",slot,handle));
@@ -606,7 +606,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
       return;
     }
 
-    ushort *dest_data = (ushort *)surf_desc.lpSurface;
+    uint16_t *dest_data = (uint16_t *)surf_desc.lpSurface;
 
     memcpy(dest_data, src_data, w * h * 2);
 
@@ -635,7 +635,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
       return;
     }
 
-    ushort *left_data = (ushort *)surf_desc.lpSurface;
+    uint16_t *left_data = (uint16_t *)surf_desc.lpSurface;
     int bm_left = 0;
     int size = GameLightmaps[handle].square_res;
 
@@ -647,7 +647,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
       bm_left += (w * y1);
 
       for (int i = 0; i < ph; i++, left_data += size, bm_left += w) {
-        ushort *dest_data = left_data;
+        uint16_t *dest_data = left_data;
         for (int t = 0; t < w; t++) {
           *dest_data++ = src_data[bm_left + t];
         }
@@ -660,7 +660,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
 
     else {
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
-        ushort *dest_data = left_data;
+        uint16_t *dest_data = left_data;
         for (int t = 0; t < w; t++) {
           *dest_data++ = src_data[bm_left + t];
         }
@@ -688,7 +688,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
         src_data = bm_data(handle, i);
         w = bm_w(handle, i);
         h = bm_h(handle, i);
-        ushort *dest_data = (ushort *)surf_desc.lpSurface;
+        uint16_t *dest_data = (uint16_t *)surf_desc.lpSurface;
 
         // Copy the raw data into the directx surface
         int pitch_diff = (surf_desc.lPitch / 2) - w;
@@ -725,7 +725,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
         return;
       }
 
-      ushort *dest_data = (ushort *)surf_desc.lpSurface;
+      uint16_t *dest_data = (uint16_t *)surf_desc.lpSurface;
 
       memcpy(dest_data, src_data, w * h * 2);
 
@@ -1300,7 +1300,7 @@ bool d3d_UsingDX6() {
     DWORD dwType, dwLen;
 
     dwLen = 32;
-    lResult = RegQueryValueEx(hKey, "Version", NULL, &dwType, (ubyte *)version, &dwLen);
+    lResult = RegQueryValueEx(hKey, "Version", NULL, &dwType, (uint8_t *)version, &dwLen);
 
     if (lResult == ERROR_SUCCESS) {
       dx_version = atoi(strstr(version, ".") + 1);
@@ -1309,7 +1309,7 @@ bool d3d_UsingDX6() {
       DWORD dwType, dwLen;
 
       dwLen = 4;
-      lResult = RegQueryValueEx(hKey, "InstalledVersion", NULL, &dwType, (ubyte *)&val, &dwLen);
+      lResult = RegQueryValueEx(hKey, "InstalledVersion", NULL, &dwType, (uint8_t *)&val, &dwLen);
 
       if (lResult == ERROR_SUCCESS) {
 
@@ -2300,7 +2300,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
   // Now draw an overlay
   if (Overlay_type != OT_NONE) {
     if (Overlay_type == OT_BLEND || Overlay_type == OT_BLEND_SATURATE) {
-      sbyte atype = D3D_state.cur_alpha_type;
+      int8_t atype = D3D_state.cur_alpha_type;
 
       if (Overlay_type == OT_BLEND)
         d3d_SetAlphaType(AT_LIGHTMAP_BLEND);
@@ -2526,8 +2526,8 @@ void d3d_SetColorModel(color_model state) {
 }
 
 // Sets the state of bilinear filtering for our textures
-void d3d_SetFiltering(sbyte state) {
-  sbyte curstate = (sbyte)state;
+void d3d_SetFiltering(int8_t state) {
+  int8_t curstate = (int8_t)state;
 
   if (curstate == D3D_state.cur_bilinear_state)
     return;
@@ -2546,7 +2546,7 @@ void d3d_SetFiltering(sbyte state) {
 }
 
 // Sets the state of zbuffering to on or off
-void d3d_SetZBufferState(sbyte state) {
+void d3d_SetZBufferState(int8_t state) {
   if (state == D3D_state.cur_zbuffer_state)
     return;
 
@@ -2628,7 +2628,7 @@ void d3d_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
 void d3d_SetPixel(ddgr_color color, int x, int y) {}
 
 // Sets the alpha value
-void d3d_SetAlphaValue(ubyte val) {
+void d3d_SetAlphaValue(uint8_t val) {
   D3D_state.cur_alpha = val;
   d3d_SetAlphaMultiplier();
 }
@@ -2660,7 +2660,7 @@ void d3d_SetAlwaysAlpha(bool state) {
 }
 
 // Sets the type of alpha blending you want
-void d3d_SetAlphaType(sbyte atype) {
+void d3d_SetAlphaType(int8_t atype) {
 
   if (atype == D3D_state.cur_alpha_type)
     return; // No redundant state setting
@@ -2761,7 +2761,7 @@ void d3d_SetFogBorders(float nearz, float farz) {
 }
 
 // Sets the fog state to on or off
-void d3d_SetFogState(sbyte state) {
+void d3d_SetFogState(int8_t state) {
   if (!d3d_CanFog)
     state = 0;
 
@@ -2929,7 +2929,7 @@ void d3d_DrawSpecialLine(g3Point *p0, g3Point *p1) {
                              D3DDP_DONOTCLIP | D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS);
 }
 
-void d3d_SetMipState(sbyte state) {
+void d3d_SetMipState(int8_t state) {
   D3D_state.cur_mip_state = state;
 
   if (d3d_CanMip && state) {
@@ -3021,7 +3021,7 @@ void d3d_GetRenderState(rendering_state *rstate) { memcpy(rstate, &D3D_state, si
 
 // Sets the coplanar z bias for rendered polygons
 void d3d_SetCoplanarPolygonOffset(float factor) {
-  short depth_level;
+  int16_t depth_level;
 
   if (d3d_ZBias && !d3d_WBuffer) {
     depth_level = (factor * 2);
@@ -3091,7 +3091,7 @@ void d3d_GetLFBLock(renderer_lfb *lfb) {
   ddrval = lpBackBuffer->Lock(NULL, &surf_desc, DDLOCK_WAIT, NULL);
 
   if (ddrval == DD_OK) {
-    lfb->data = (ushort *)surf_desc.lpSurface;
+    lfb->data = (uint16_t *)surf_desc.lpSurface;
     lfb->bytes_per_row = surf_desc.lPitch;
     d3d_lfb_locked = 1;
   } else {
@@ -3112,8 +3112,8 @@ void d3d_ReleaseLFBLock(renderer_lfb *lfb) {
   d3d_lfb_locked = 0;
 }
 
-ubyte d3d_Framebuffer_ready = 0;
-ushort *d3d_Framebuffer_translate = NULL;
+uint8_t d3d_Framebuffer_ready = 0;
+uint16_t *d3d_Framebuffer_translate = NULL;
 
 // Gets a renderer ready for a framebuffer copy, or stops a framebuffer copy
 void d3d_SetFrameBufferCopyState(bool state) {
@@ -3123,7 +3123,7 @@ void d3d_SetFrameBufferCopyState(bool state) {
     ASSERT(d3d_Framebuffer_ready == 0);
     ASSERT(D3D_preferred_state.bit_depth == 16);
     d3d_Framebuffer_ready = 1;
-    d3d_Framebuffer_translate = (ushort *)mem_malloc(32768 * 2);
+    d3d_Framebuffer_translate = (uint16_t *)mem_malloc(32768 * 2);
 
     ASSERT(d3d_Framebuffer_translate);
 
@@ -3176,8 +3176,8 @@ void d3d_CopyBitmapToFramebuffer(int bm_handle, int x, int y) {
   int w = bm_w(bm_handle, 0);
   int h = bm_h(bm_handle, 0);
 
-  ushort *dptr = lfb.data;
-  ushort *sptr = (ushort *)bm_data(bm_handle, 0);
+  uint16_t *dptr = lfb.data;
+  uint16_t *sptr = (uint16_t *)bm_data(bm_handle, 0);
 
   dptr += (y * (lfb.bytes_per_row / 2));
   dptr += x;
@@ -3195,7 +3195,7 @@ void d3d_CopyBitmapToFramebuffer(int bm_handle, int x, int y) {
 
 // Takes a screenshot of the frontbuffer and puts it into the passed bitmap handle
 void d3d_Screenshot(int bm_handle) {
-  ushort *dest_data;
+  uint16_t *dest_data;
   int i, t;
   DDSURFACEDESC2 surf_desc;
   HRESULT ddrval;
@@ -3228,10 +3228,10 @@ void d3d_Screenshot(int bm_handle) {
       int shorts_per_row = surf_desc.lPitch / 2;
       bool bit15 = (ddpf.dwGBitMask == 0x03e0) ? true : false;
 
-      ushort pix;
+      uint16_t pix;
 
-      ushort *rptr;
-      rptr = (ushort *)surf_desc.lpSurface;
+      uint16_t *rptr;
+      rptr = (uint16_t *)surf_desc.lpSurface;
 
       // Go through and read our pixels
 
@@ -3279,10 +3279,10 @@ void d3d_Screenshot(int bm_handle) {
       int shorts_per_row = surf_desc.lPitch / 2;
       int ints_per_row = surf_desc.lPitch / 4;
 
-      uint pix;
+      uint32_t pix;
 
-      uint *rptr;
-      rptr = (uint *)surf_desc.lpSurface;
+      uint32_t *rptr;
+      rptr = (uint32_t *)surf_desc.lpSurface;
 
       // Go through and read our pixels
       for (i = 0; i < h; i++) {
@@ -3297,7 +3297,7 @@ void d3d_Screenshot(int bm_handle) {
           g = std::min(255, (float)g * 1.4f);
           b = std::min(255, (float)b * 1.4f);
 
-          short short_pix = GR_RGB16(r, g, b);
+          int16_t short_pix = GR_RGB16(r, g, b);
 
           dest_data[i * w + t] = OPAQUE_FLAG | short_pix;
         }

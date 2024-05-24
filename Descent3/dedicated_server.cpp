@@ -150,7 +150,7 @@ static char Dummy_dedicated_string[_MAX_PATH];
 
 // If true, allow remote connections
 static int Dedicated_allow_remote = 0;
-static ushort Dedicated_listen_port = 2092;
+static uint16_t Dedicated_listen_port = 2092;
 static char dedicated_telnet_password[65];
 static int Dedicated_num_teams = 1;
 
@@ -830,14 +830,14 @@ SOCKET dedicated_listen_socket = INVALID_SOCKET;
 
 #define DEDICATED_LOGIN_PROMPT TXT_DS_ENTERPASS
 
-void InitDedicatedSocket(ushort port) {
+void InitDedicatedSocket(uint16_t port) {
   SOCKADDR_IN sock_addr;
 
   memset(&sock_addr, 0, sizeof(SOCKADDR_IN));
   sock_addr.sin_family = AF_INET;
-  unsigned int my_ip;
+  uint32_t my_ip;
   my_ip = nw_GetThisIP();
-  memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint));
+  memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint32_t));
   sock_addr.sin_port = htons(port);
 
   dedicated_listen_socket = socket(AF_INET, SOCK_STREAM, 0);

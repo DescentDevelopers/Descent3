@@ -204,7 +204,7 @@ void osipf_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun
 
 // Returns room values (Index is optional and not always used)
 void osipf_RoomValue(int roomnum, char op, char vhandle, void *ptr, int index = 0);
-ubyte osipf_IsRoomValid(int roomnum);
+uint8_t osipf_IsRoomValid(int roomnum);
 
 // Returns player only values (Index is optional and not always used)
 void osipf_PlayerValue(int obj_handle, char op, char vhandle, void *ptr, int index = 0);
@@ -214,7 +214,7 @@ void osipf_ObjectCustomAnim(int handle, float start, float end, float time, char
 int osipf_GetAttachParent(int childhandle);
 int osipf_GetNumAttachSlots(int objhandle);
 int osipf_GetAttachChildHandle(int objhandle, char attachpoint);
-int osipf_AttachObjectAP(int parenthandle, char parent_ap, int childhandle, char child_ap, ubyte f_use_aligned);
+int osipf_AttachObjectAP(int parenthandle, char parent_ap, int childhandle, char child_ap, uint8_t f_use_aligned);
 int osipf_AttachObjectRad(int parenthandle, char parent_ap, int childhandle, float percent_rad);
 void osipf_UnattachFromParent(int objhandle);
 void osipf_UnattachChild(int objhandle, char parent_ap);
@@ -233,19 +233,19 @@ int osipf_AIFindEnergyCenter(int objhandle);
 float osipf_AIGetDistToObj(int objhandle, int otherobjhandle);
 
 void osipf_AISetType(int objhandle, int type);
-int osipf_AIPowerSwitch(int objhandle, ubyte f_power_on);
+int osipf_AIPowerSwitch(int objhandle, uint8_t f_power_on);
 
 int osipf_AIGoalAdd(int objhandle, int goal_type, int level, float influence, int guid, int flags, ...);
 int osipf_AIGoalAddEnabler(int objhandle, int goal_index, int enabler_type, float percent, float interval, void *ptr);
 void osipf_AIGoalClear(int objhandle, int goal_index);
 int osipf_AIGoalFollowPathSimple(int objhandle, int path_id, int guid, int flags, int slot = 3);
 void osipf_AISetGoalCircleDist(int objhandle, int goal_handle, float dist);
-int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, ubyte f_enable);
+int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_enable);
 
-ubyte osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec);
-ubyte osipf_AIMoveTowardsPosition(int objhandle, vector *pos, int *roomnum, float scalar, bool f_bline,
+uint8_t osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec);
+uint8_t osipf_AIMoveTowardsPosition(int objhandle, vector *pos, int *roomnum, float scalar, bool f_bline,
                                   bool f_bline_if_vis);
-ubyte osipf_AIMoveTowardsDir(int objhandle, vector *dir, float scalar);
+uint8_t osipf_AIMoveTowardsDir(int objhandle, vector *dir, float scalar);
 
 void osipf_AIValue(int objhandle, char op, char vtype, void *ptr);
 
@@ -254,7 +254,7 @@ void osipf_AIValue(int objhandle, char op, char vtype, void *ptr);
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int osipf_CFReadBytes(ubyte *buffer, int count, CFILE *cfp);
+int osipf_CFReadBytes(uint8_t *buffer, int count, CFILE *cfp);
 
 // The following functions read numeric vales from a CFILE.  All values are
 // stored in the file in Intel (little-endian) format.  These functions
@@ -266,13 +266,13 @@ int osipf_CFReadBytes(ubyte *buffer, int count, CFILE *cfp);
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int osipf_CFReadInt(CFILE *cfp);
 
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-short osipf_CFReadShort(CFILE *cfp);
+int16_t osipf_CFReadShort(CFILE *cfp);
 
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-sbyte osipf_CFReadByte(CFILE *cfp);
+int8_t osipf_CFReadByte(CFILE *cfp);
 
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -298,7 +298,7 @@ int osipf_CFReadString(char *buf, size_t n, CFILE *cfp);
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-int osipf_CFWriteBytes(const ubyte *buf, int count, CFILE *cfp);
+int osipf_CFWriteBytes(const uint8_t *buf, int count, CFILE *cfp);
 
 // Writes a null-terminated string to a file.  If the file is type binary,
 // the string is terminated in the file with a null.  If the file is type
@@ -317,13 +317,13 @@ int osipf_CFWriteString(const char *buf, CFILE *cfp);
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void osipf_CFWriteInt(int i, CFILE *cfp);
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void osipf_CFWriteShort(short s, CFILE *cfp);
+void osipf_CFWriteShort(int16_t s, CFILE *cfp);
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void osipf_CFWriteByte(sbyte b, CFILE *cfp);
+void osipf_CFWriteByte(int8_t b, CFILE *cfp);
 
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
@@ -341,7 +341,7 @@ void osipf_SetAllControls(bool enabled);
 void osipf_SetControls(int fn, bool enabled);
 
 // Creates an object
-int osipf_ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient = NULL,
+int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
                     int parent_handle = OBJECT_HANDLE_NONE, vector *velocity = NULL);
 
 // OBJECT Properties.
@@ -363,7 +363,7 @@ int osipf_MatcenFindId(char *str);
 // Sets/Clears mission flags
 //	flag is which mission flag to set/clear (1-32)
 //	value is 0 to clear, or 1 to set
-void osipf_MissionFlagSet(int flag, ubyte value);
+void osipf_MissionFlagSet(int flag, uint8_t value);
 
 // Gets a mission flag
 //	flag is what mission flag to get.  Returns 1 if set, 0 if not.
@@ -384,7 +384,7 @@ void osipf_CFclose(CFILE *file);
 int osipf_CFtell(CFILE *file);
 
 //	returns 1 if the file is at the EOF, else 0 (like feof())
-ubyte osipf_CFeof(CFILE *file);
+uint8_t osipf_CFeof(CFILE *file);
 
 void osipf_SoundStop(int s_handle, bool f_immediately = false);
 int osipf_SoundPlay2d(int obj_handle, int s_id, float volume = 1.0f);

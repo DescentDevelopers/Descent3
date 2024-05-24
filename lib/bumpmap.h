@@ -28,10 +28,10 @@
 #define BUMPF_CHANGED 2
 
 typedef struct {
-  ushort *data;     // 8bit data
-  short cache_slot; // for the renderers use
-  ubyte width, height;
-  ubyte flags, pad;
+  uint16_t *data;     // 8bit data
+  int16_t cache_slot; // for the renderers use
+  uint8_t width, height;
+  uint8_t flags, pad;
 } bms_bumpmap;
 
 extern bms_bumpmap GameBumpmaps[MAX_BUMPMAPS];
@@ -49,10 +49,10 @@ int bump_AllocBumpmap(int w, int h);
 void bump_FreeBumpmap(int handle);
 
 // returns a bumpmaps data else NULL if something is wrong
-ushort *bump_data(int handle);
+uint16_t *bump_data(int handle);
 
 // returns width or height of the passed in bumpmap
-ubyte bump_w(int handle);
-ubyte bump_h(int handle);
+uint8_t bump_w(int handle);
+uint8_t bump_h(int handle);
 
 #endif

@@ -47,16 +47,16 @@ void ambient_life::GetALValue(char i, char field, void *ptr) {
     *((int *)ptr) = m_type[i];
     break;
   case ALI_TOTAL:
-    *((unsigned char *)ptr) = m_total[i];
+    *((uint8_t *)ptr) = m_total[i];
     break;
   case ALI_MAX:
-    *((unsigned char *)ptr) = m_max[i];
+    *((uint8_t *)ptr) = m_max[i];
     break;
   case ALI_MIN:
-    *((unsigned char *)ptr) = m_min[i];
+    *((uint8_t *)ptr) = m_min[i];
     break;
   case ALI_FLAGS:
-    *((unsigned char *)ptr) = m_flags[i];
+    *((uint8_t *)ptr) = m_flags[i];
     break;
   }
 }
@@ -77,16 +77,16 @@ void ambient_life::SetALValue(char i, char field, void *ptr) {
     m_type[i] = *((int *)ptr);
     break;
   case ALI_TOTAL:
-    m_total[i] = *((unsigned char *)ptr);
+    m_total[i] = *((uint8_t *)ptr);
     break;
   case ALI_MAX:
-    m_max[i] = *((unsigned char *)ptr);
+    m_max[i] = *((uint8_t *)ptr);
     break;
   case ALI_MIN:
-    m_min[i] = *((unsigned char *)ptr);
+    m_min[i] = *((uint8_t *)ptr);
     break;
   case ALI_FLAGS:
-    m_flags[i] = *((unsigned char *)ptr);
+    m_flags[i] = *((uint8_t *)ptr);
     break;
   }
 
@@ -136,7 +136,7 @@ void ambient_life::ALReset() {
 
 void ambient_life::SaveData(CFILE *fp) {
   int i, j;
-  short len;
+  int16_t len;
 
   cf_WriteInt(fp, AL_VERSION);
 

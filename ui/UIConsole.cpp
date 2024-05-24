@@ -136,7 +136,7 @@ void UIConsoleGadget::OnDestroy() {
 //	functions
 void UIConsoleGadget::puts(ddgr_color col, const char *str) {
   int len = strlen(str);
-  ubyte r = GR_COLOR_RED(col), g = GR_COLOR_GREEN(col), b = GR_COLOR_BLUE(col);
+  uint8_t r = GR_COLOR_RED(col), g = GR_COLOR_GREEN(col), b = GR_COLOR_BLUE(col);
   char *linebuf;
 
   if (len >= m_PutsBufLen) {

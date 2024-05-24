@@ -379,8 +379,8 @@ class newuiResources {
       int bm_handle;
       chunked_bitmap chunk;
     };
-    short chunked; // is it a bitmap handle or chunk
-    short n_count;
+    int16_t chunked; // is it a bitmap handle or chunk
+    int16_t n_count;
     char *filename;             // filename of bitmap.
   } m_list[N_NEWUI_BMPS_TOTAL]; // list of bitmaps.
 
@@ -406,7 +406,7 @@ class newuiCheckBox : public newuiButton, public UICheckBox {
 public:
   newuiCheckBox();
 
-  void Create(UIWindow *wnd, short id, const char *name, short x, short y, bool is_long = false);
+  void Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, bool is_long = false);
 
 protected:
   virtual void OnDraw(); // this will use the newuiButton drawing scheme
@@ -424,7 +424,7 @@ class newuiRadioButton : public newuiButton, public UIRadioButton {
 public:
   newuiRadioButton();
 
-  void Create(UIWindow *wnd, UIRadioButton *prev_rb, short id, const char *name, short x, short y,
+  void Create(UIWindow *wnd, UIRadioButton *prev_rb, int16_t id, const char *name, int16_t x, int16_t y,
               bool is_long = false);
 
 protected:
@@ -445,8 +445,8 @@ protected:
 #define SUBGADGET_RIGHT 0x2
 
 class newuiSlider : public UIGadget {
-  short m_pos;
-  short m_unitrange;
+  int16_t m_pos;
+  int16_t m_unitrange;
   UIBitmapItem *m_bar_bmp;
   UISnazzyTextItem *m_title;
   newuiArrowButton m_minus_btn;
@@ -456,12 +456,12 @@ class newuiSlider : public UIGadget {
 public:
   newuiSlider();
 
-  void Create(UIWindow *wnd, short id, const char *name, short x, short y, short range);
-  void Offset(short offs);
-  void SetPos(short pos);
-  void SetRange(short range);
-  short GetPos() const { return m_pos; };
-  short GetRange() const { return m_unitrange; };
+  void Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t range);
+  void Offset(int16_t offs);
+  void SetPos(int16_t pos);
+  void SetRange(int16_t range);
+  int16_t GetPos() const { return m_pos; };
+  int16_t GetRange() const { return m_unitrange; };
   void SetUnits(tSliderSettings *settings);
 
 protected:
@@ -483,7 +483,7 @@ class newuiEditBox : public UIEdit {
 public:
   newuiEditBox();
 
-  void Create(UIWindow *wnd, short id, const char *name, short x, short y, short w, short flags);
+  void Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t w, int16_t flags);
   void EnableOnQuickEscapeBehavior(bool do_it);
 
 protected:
@@ -863,10 +863,10 @@ void newuiMenu::Create() {
 }
 
 //	sets current option to display.
-void newuiMenu::SetCurrentOption(short id) { m_newoptionid = id; }
+void newuiMenu::SetCurrentOption(int16_t id) { m_newoptionid = id; }
 
 // returns current option
-short newuiMenu::GetCurrentOption() const {
+int16_t newuiMenu::GetCurrentOption() const {
   if (m_cursheetidx != -1) {
     return m_sheetbtn[m_cursheetidx].GetID();
   }
@@ -877,7 +877,7 @@ short newuiMenu::GetCurrentOption() const {
 newuiSheet *newuiMenu::GetCurrentSheet() const { return m_cursheet; }
 
 // when a new option is ready.   at this point the system sets the focus on this option
-void newuiMenu::SetOnOptionFocusCB(void (*fn)(newuiMenu *, short, void *), void *data) {
+void newuiMenu::SetOnOptionFocusCB(void (*fn)(newuiMenu *, int16_t, void *), void *data) {
   m_option_focus_cb = fn;
   m_option_focus_cb_data = data;
 }
@@ -936,7 +936,7 @@ int newuiMenu::DoUI() {
   for (i = 0; i < m_nsheets; i++) {
     if (i != m_cursheetidx) {
       if (res == m_sheetbtn[i].GetID() && m_hassheet[i]) {
-        m_newoptionid = (short)res;
+        m_newoptionid = (int16_t)res;
         break;
       }
     }
@@ -952,7 +952,7 @@ int newuiMenu::DoUI() {
 
 // when a new sheet is realized, this function will be called.
 // passed in: the menu object, the old option and the new option respectively
-void newuiMenu::SetOnOptionSwitchCB(void (*fn)(newuiMenu *, short, short, void *), void *data) {
+void newuiMenu::SetOnOptionSwitchCB(void (*fn)(newuiMenu *, int16_t, int16_t, void *), void *data) {
   m_activate_sheet_cb = fn;
   m_activate_sheet_cb_data = data;
 }
@@ -964,11 +964,11 @@ void newuiMenu::SetOnUIFrameCB(void (*fn)()) {
 }
 
 //	adds an option to a menu, returns a newuiSheet object to add user interface to.
-void newuiMenu::AddSimpleOption(short id, const char *title, int yoff) {
+void newuiMenu::AddSimpleOption(int16_t id, const char *title, int yoff) {
   newuiMenu::AddOption(id, title, 0, false, yoff);
 }
 
-newuiSheet *newuiMenu::AddOption(short id, const char *title, int size, bool has_sheet, int yoff) {
+newuiSheet *newuiMenu::AddOption(int16_t id, const char *title, int size, bool has_sheet, int yoff) {
   newuiMenuOptionButton *last_btn = NULL;
 
   if (m_nsheets == N_NEWUI_SHEETS) {
@@ -1076,7 +1076,7 @@ void newuiLargeMenu::Create() {
 }
 
 //	adds an option to a menu, returns a newuiSheet object to add user interface to.
-newuiSheet *newuiLargeMenu::AddOption(short id, const char *title, int size) {
+newuiSheet *newuiLargeMenu::AddOption(int16_t id, const char *title, int size) {
   return newuiMenu::AddOption(id, title, size);
 }
 
@@ -1282,7 +1282,7 @@ void newuiSheet::Reset() {
 }
 
 //	set focus on this gadget specified by id upon realization.
-void newuiSheet::SetInitialFocusedGadget(short id) { m_initial_focus_id = id; }
+void newuiSheet::SetInitialFocusedGadget(int16_t id) { m_initial_focus_id = id; }
 
 // call this to initialize gadgets specified above in parent window
 void newuiSheet::Realize() {
@@ -1307,7 +1307,7 @@ void newuiSheet::Realize() {
     newuiHotspot *hot;
     UIText *text;
     UIStatic *bmp;
-    short flags;
+    int16_t flags;
     bool bval;
 
     switch (desc->type) {
@@ -1676,7 +1676,7 @@ void newuiSheet::UpdateChanges() {
   for (i = 0; i < m_ngadgets; i++) {
     newuiSheet::t_gadget_desc *desc = &m_gadgetlist[i];
     bool bval;
-    short sval;
+    int16_t sval;
     char sbuftest[EDIT_BUFLEN_MAX];
 
     switch (desc->type) {
@@ -1744,7 +1744,7 @@ void newuiSheet::UpdateReturnValues() {
   for (i = 0; i < m_ngadgets; i++) {
     newuiSheet::t_gadget_desc *desc = &m_gadgetlist[i];
     bool bval;
-    short sval;
+    int16_t sval;
     char sbuftest[EDIT_BUFLEN_MAX];
 
     if (desc->obj.gadget) {
@@ -1841,7 +1841,7 @@ bool newuiSheet::HasChanged(int *iptr) {
   return false;
 }
 
-bool newuiSheet::HasChanged(short *sptr) {
+bool newuiSheet::HasChanged(int16_t *sptr) {
   int i;
 
   ASSERT(m_realized);
@@ -1885,13 +1885,13 @@ bool newuiSheet::HasChanged(char *cptr) {
   return false;
 }
 
-UIGadget *newuiSheet::GetGadget(short id) {
+UIGadget *newuiSheet::GetGadget(int16_t id) {
   int i;
 
   for (i = 0; i < m_ngadgets; i++) {
     newuiSheet::t_gadget_desc *desc = &m_gadgetlist[i];
 
-    if (desc->obj.gadget && id == (short)desc->obj.gadget->GetID()) {
+    if (desc->obj.gadget && id == (int16_t)desc->obj.gadget->GetID()) {
       switch (desc->type) {
       case GADGET_STATIC_TXT:
         return desc->obj.gadget;
@@ -1934,7 +1934,7 @@ UIGadget *newuiSheet::GetGadget(short id) {
   return NULL;
 }
 
-newuiSheet::t_gadget_desc *newuiSheet::AddGadget(short id, sbyte type, const char *title) {
+newuiSheet::t_gadget_desc *newuiSheet::AddGadget(int16_t id, int8_t type, const char *title) {
   int i = m_ngadgets;
 
   ASSERT(!m_realized);
@@ -1959,7 +1959,7 @@ newuiSheet::t_gadget_desc *newuiSheet::AddGadget(short id, sbyte type, const cha
 }
 
 //	creates gadget list.
-void newuiSheet::NewGroup(const char *title, short x, short y, tAlignment align, short pix_offset) {
+void newuiSheet::NewGroup(const char *title, int16_t x, int16_t y, tAlignment align, int16_t pix_offset) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(-1, (align == NEWUI_ALIGN_HORIZ) ? GADGET_HGROUP : GADGET_GROUP, title);
   gadget->parm.s[0] = x;
   gadget->parm.s[1] = y;
@@ -1967,59 +1967,59 @@ void newuiSheet::NewGroup(const char *title, short x, short y, tAlignment align,
 }
 
 //	adds standard button to current group.
-void newuiSheet::AddButton(const char *title, short id, short flags) {
+void newuiSheet::AddButton(const char *title, int16_t id, int16_t flags) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_BUTTON, title);
   gadget->parm.i = flags;
 }
 
 //	adds standard long button to current group.
-void newuiSheet::AddLongButton(const char *title, short id, short flags) {
+void newuiSheet::AddLongButton(const char *title, int16_t id, int16_t flags) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LBUTTON, title);
   gadget->parm.i = flags;
 }
 
 //	adds checkbox to current group.  initial state of checkbox can be set.
-bool *newuiSheet::AddCheckBox(const char *title, bool init_state, short id) {
+bool *newuiSheet::AddCheckBox(const char *title, bool init_state, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_CHECKBOX, title);
   gadget->parm.b = init_state;
   return &gadget->parm.b;
 }
 
 //	adds checkbox to current group.  initial state of checkbox can be set.
-bool *newuiSheet::AddLongCheckBox(const char *title, bool init_state, short id) {
+bool *newuiSheet::AddLongCheckBox(const char *title, bool init_state, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LCHECKBOX, title);
   gadget->parm.b = init_state;
   return &gadget->parm.b;
 }
 
 // adds a radio button to current group.  initial state of radio may be set
-int *newuiSheet::AddFirstRadioButton(const char *title, short id) {
+int *newuiSheet::AddFirstRadioButton(const char *title, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_RADIO, title);
   gadget->parm.i = 0;
   return &gadget->parm.i;
 }
 
 // adds a radio button to current group.  initial state of radio may be set
-void newuiSheet::AddRadioButton(const char *title, short id) {
+void newuiSheet::AddRadioButton(const char *title, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_RADIO, title);
   gadget->parm.i = -1;
 }
 
 // adds a radio button to current group.  initial state of radio may be set
-int *newuiSheet::AddFirstLongRadioButton(const char *title, short id) {
+int *newuiSheet::AddFirstLongRadioButton(const char *title, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LRADIO, title);
   gadget->parm.i = 0;
   return &gadget->parm.i;
 }
 
 // adds a radio button to current group.  initial state of radio may be set
-void newuiSheet::AddLongRadioButton(const char *title, short id) {
+void newuiSheet::AddLongRadioButton(const char *title, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LRADIO, title);
   gadget->parm.i = -1;
 }
 
 // adds a slider, set the range for it too.
-short *newuiSheet::AddSlider(const char *title, short range, short init_pos, tSliderSettings *settings, short id) {
+int16_t *newuiSheet::AddSlider(const char *title, int16_t range, int16_t init_pos, tSliderSettings *settings, int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_SLIDER, title);
   gadget->parm.s[0] = init_pos;
   gadget->parm.s[1] = range;
@@ -2064,7 +2064,7 @@ char *newuiSheet::AddChangeableText(int buflen) {
 }
 
 // adds a hotspot :(, should word wrap too.
-void newuiSheet::AddHotspot(const char *title, short w, short h, short id, bool group) {
+void newuiSheet::AddHotspot(const char *title, int16_t w, int16_t h, int16_t id, bool group) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_HOTSPOT, title);
   gadget->parm.s[0] = w;
   gadget->parm.s[1] = h;
@@ -2072,7 +2072,7 @@ void newuiSheet::AddHotspot(const char *title, short w, short h, short id, bool 
 }
 
 // adds a listbox
-newuiListBox *newuiSheet::AddListBox(short w, short h, short id, ushort flags) {
+newuiListBox *newuiSheet::AddListBox(int16_t w, int16_t h, int16_t id, uint16_t flags) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LISTBOX, NULL);
   newuiListBox *lb = new newuiListBox;
   lb->Create(m_parent, id, 0, 0, w, h, flags);
@@ -2082,7 +2082,7 @@ newuiListBox *newuiSheet::AddListBox(short w, short h, short id, ushort flags) {
 }
 
 // adds a listbox
-newuiComboBox *newuiSheet::AddComboBox(short id, ushort flags) {
+newuiComboBox *newuiSheet::AddComboBox(int16_t id, uint16_t flags) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_COMBOBOX, NULL);
   newuiComboBox *cb = new newuiComboBox;
   cb->Create(m_parent, id, 0, 0, flags);
@@ -2092,8 +2092,8 @@ newuiComboBox *newuiSheet::AddComboBox(short id, ushort flags) {
 }
 
 // adds an edit box
-char *newuiSheet::AddEditBox(const char *title, short maxlen, short w, short id, short flags, bool on_escape_quit) {
-  sbyte type = GADGET_EDITBOX;
+char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16_t id, int16_t flags, bool on_escape_quit) {
+  int8_t type = GADGET_EDITBOX;
   if (flags & UIED_PASSWORD) {
     type = GADGET_EDITBOXPASS;
   } else if (flags & UIED_NUMBERS) {
@@ -2128,7 +2128,7 @@ newuiButton::newuiButton() {
   m_text = NULL;
 }
 
-void newuiButton::Create(UIWindow *menu, short id, const char *name, short x, short y, short flags) {
+void newuiButton::Create(UIWindow *menu, int16_t id, const char *name, int16_t x, int16_t y, int16_t flags) {
   UITextItem item{""};
   UIButton::Create(menu, id, &item, x, y, 10, 8, flags | UIF_FIT);
 
@@ -2145,7 +2145,7 @@ void newuiButton::Create(UIWindow *menu, short id, const char *name, short x, sh
   newuiButton::InitStates(name, (flags & NEWUI_BTNF_LONG) != 0);
 }
 
-void newuiTinyButton::Create(UIWindow *wnd, short id, const char *name, short x, short y) {
+void newuiTinyButton::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y) {
   m_bkg = Newui_resources.Load(NEWUI_TINYBTN_FILE);
   m_litbkg = Newui_resources.Load(NEWUI_TINYBTNLIT_FILE);
   newuiButton::Create(wnd, id, name, x, y);
@@ -2159,7 +2159,7 @@ void newuiButton::OnFormat() {
   UIGadget::OnFormat();
 }
 
-void newuiButton::InitStates(const char *name, bool is_long, short flags) {
+void newuiButton::InitStates(const char *name, bool is_long, int16_t flags) {
   if (!m_bkg) {
     m_bkg = Newui_resources.Load(is_long ? NEWUI_LBTN_FILE : NEWUI_BTN_FILE);
   }
@@ -2198,7 +2198,7 @@ void newuiButton::OnDestroy() {
 }
 
 void newuiButton::OnDraw() {
-  ubyte alpha = IsDisabled() ? 128 : 255;
+  uint8_t alpha = IsDisabled() ? 128 : 255;
 
   if (GetStateItem(m_State)) {
     GetStateItem(m_State)->set_alpha(alpha);
@@ -2230,8 +2230,8 @@ void newuiButton::OnGainFocus() {
 //////////////////////////////////////////////////////////////////////////////
 //	CLASS a large option button used in menus.
 
-void newuiMenuOptionButton::Create(newuiMenu *menu, newuiMenuOptionButton *last, short id, const char *name, short x,
-                                   short y, bool mono_press) {
+void newuiMenuOptionButton::Create(newuiMenu *menu, newuiMenuOptionButton *last, int16_t id, const char *name, int16_t x,
+                                   int16_t y, bool mono_press) {
   m_bkg = Newui_resources.Load(NEWUI_LRGBTN_FILE);
   m_litbkg = Newui_resources.Load(NEWUI_LRGBTNLIT_FILE);
   m_text = GadgetLargeText(name);
@@ -2299,7 +2299,7 @@ void newuiMenuOptionButton::OnKeyUp(int key) {}
 //////////////////////////////////////////////////////////////////////////////
 //	CLASS creates an arrow button that is sensitive to touch (when down, always select)
 
-void newuiArrowButton::Create(UIWindow *wnd, short id, short type, const char *name, short x, short y) {
+void newuiArrowButton::Create(UIWindow *wnd, int16_t id, int16_t type, const char *name, int16_t x, int16_t y) {
   switch (type) {
   case NEWUI_ARROW_LEFT:
     m_bkg = Newui_resources.Load(NEWUI_LARR_FILE);
@@ -2401,7 +2401,7 @@ void newuiArrowButton::OnDraw() {
 
 newuiCheckBox::newuiCheckBox() {}
 
-void newuiCheckBox::Create(UIWindow *wnd, short id, const char *name, short x, short y, bool is_long) {
+void newuiCheckBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, bool is_long) {
   m_bkg = Newui_resources.Load(is_long ? NEWUI_LCHKBTN_FILE : NEWUI_CHKBTN_FILE);
   m_litbkg = Newui_resources.Load(is_long ? NEWUI_LCHKBTNLIT_FILE : NEWUI_CHKBTNLIT_FILE);
 
@@ -2418,7 +2418,7 @@ void newuiCheckBox::OnDraw() { newuiButton::OnDraw(); }
 
 newuiRadioButton::newuiRadioButton() {}
 
-void newuiRadioButton::Create(UIWindow *wnd, UIRadioButton *prev_rb, short id, const char *name, short x, short y,
+void newuiRadioButton::Create(UIWindow *wnd, UIRadioButton *prev_rb, int16_t id, const char *name, int16_t x, int16_t y,
                               bool is_long) {
   m_bkg = Newui_resources.Load(is_long ? NEWUI_LBTN_FILE : NEWUI_BTN_FILE);
   m_litbkg = Newui_resources.Load(is_long ? NEWUI_LCHKBTNLIT_FILE : NEWUI_CHKBTNLIT_FILE);
@@ -2440,7 +2440,7 @@ newuiSlider::newuiSlider() {
   m_title = NULL;
 }
 
-void newuiSlider::Create(UIWindow *wnd, short id, const char *name, short x, short y, short range) {
+void newuiSlider::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t range) {
   ASSERT(range > 0);
 
   if (name) {
@@ -2456,9 +2456,9 @@ void newuiSlider::Create(UIWindow *wnd, short id, const char *name, short x, sho
   m_unit_settings.type = -1;
 }
 
-void newuiSlider::Offset(short offs) { newuiSlider::SetPos(m_pos + offs); }
+void newuiSlider::Offset(int16_t offs) { newuiSlider::SetPos(m_pos + offs); }
 
-void newuiSlider::SetPos(short pos) {
+void newuiSlider::SetPos(int16_t pos) {
   if (pos < 0)
     pos = 0;
   if (pos > m_unitrange)
@@ -2466,11 +2466,11 @@ void newuiSlider::SetPos(short pos) {
   m_pos = pos;
 }
 
-void newuiSlider::SetRange(short range) { m_unitrange = range; }
+void newuiSlider::SetRange(int16_t range) { m_unitrange = range; }
 
 // when gadget is added to a window (AddGadget is called)
 void newuiSlider::OnAttachToWindow() {
-  short bx = m_X, by = m_Y;
+  int16_t bx = m_X, by = m_Y;
 
   if (m_title) {
     by += m_title->height() + 5;
@@ -2647,7 +2647,7 @@ newuiListBox::newuiListBox() {
   m_click_time = 0.0f;
 }
 
-void newuiListBox::Create(UIWindow *wnd, short id, short x, short y, short w, short h, ushort flags) {
+void newuiListBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t flags) {
   m_ItemList = NULL;
   m_Virt2Real = NULL;
   m_Real2Virt = NULL;
@@ -2673,9 +2673,9 @@ void newuiListBox::Create(UIWindow *wnd, short id, short x, short y, short w, sh
   m_pieces[NW_PIECE_IDX] = Newui_resources.Load(NEWUI_LB_NW_FILE);
 
   // determine true width and height (snap width and height to 32 pixel boundaries
-  short p_w = LB_PIECE_WIDTH, p_h = LB_PIECE_HEIGHT;
-  short t_width = (w / p_w);
-  short t_height = (h / p_h);
+  int16_t p_w = LB_PIECE_WIDTH, p_h = LB_PIECE_HEIGHT;
+  int16_t t_width = (w / p_w);
+  int16_t t_height = (h / p_h);
   if (w % p_w)
     t_width++;
   if (h % p_h)
@@ -3130,7 +3130,7 @@ void newuiListBox::OnDraw() {
 
   // draw text?
   int i;
-  ubyte alpha = 255;
+  uint8_t alpha = 255;
   bool auto_select = ((m_Flags & UILB_AUTOSELECT) > 0);
   bool use_scroll = true;
 
@@ -3390,7 +3390,7 @@ void newuiListBox::OnDetachFromWindow() {
   m_up_btn.Destroy();
 }
 
-void newuiListBox::Offset(short offs) {
+void newuiListBox::Offset(int16_t offs) {
   m_Index = m_Index + offs;
   if (m_Index < 0) {
     m_Index = 0;
@@ -3410,7 +3410,7 @@ newuiComboBox::newuiComboBox() {
   m_Index = 0;
 }
 
-void newuiComboBox::Create(UIWindow *wnd, short id, short x, short y, ushort flags) {
+void newuiComboBox::Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, uint16_t flags) {
   m_ItemList = NULL;
   m_Virt2Real = NULL;
   m_Real2Virt = NULL;
@@ -3911,7 +3911,7 @@ void newuiComboBox::OnDetachFromWindow() {
 
 newuiEditBox::newuiEditBox() { m_title = NULL; }
 
-void newuiEditBox::Create(UIWindow *wnd, short id, const char *name, short x, short y, short w, short flags) {
+void newuiEditBox::Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t w, int16_t flags) {
   //	if (name) {
   //		m_title = new UISnazzyTextItem(0, MONITOR9_NEWUI_FONT, name, NEWUI_MONITORFONT_COLOR);
   //	}
@@ -3967,7 +3967,7 @@ void newuiEditBox::OnKeyDown(int key) {
 
 newuiHotspot::newuiHotspot() { m_title = NULL; }
 
-void newuiHotspot::Create(UIWindow *wnd, short id, const char *title, short x, short y, short w, short h, short flags) {
+void newuiHotspot::Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags) {
   if (title) {
     m_title = mem_strdup(title);
   } else {
@@ -4077,7 +4077,7 @@ newuiTiledWindow::newuiTiledWindow() {
   m_realized = false;
 }
 
-void newuiTiledWindow::Create(const char *title, short x, short y, short w, short h, int flags) {
+void newuiTiledWindow::Create(const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int flags) {
   if (title) {
     ASSERT(strlen(title) < (sizeof(m_title) - 1));
   }

@@ -145,11 +145,11 @@ typedef struct vmt_descent3_struct {
 	int suicides;
 	int online_time;
 	int games_played;
-	unsigned int security;
-	unsigned char virgin_pilot;	//This pilot was just created if TRUE
-	unsigned int lateral_thrust;
-	unsigned int rotational_thrust;
-	unsigned int sliding_pct;	//Percentage of the time you were sliding
+	uint32_t security;
+	uint8_t virgin_pilot;	//This pilot was just created if TRUE
+	uint32_t lateral_thrust;
+	uint32_t rotational_thrust;
+	uint32_t sliding_pct;	//Percentage of the time you were sliding
 	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
 	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
@@ -172,7 +172,7 @@ extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 typedef float( *timer_GetTime_fp) (void);
 extern timer_GetTime_fp DLLtimer_GetTime;
 
-typedef int (*nw_RegisterCallback_fp) (void * nfp, ubyte id);
+typedef int (*nw_RegisterCallback_fp) (void * nfp, uint8_t id);
 extern nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
 typedef int (*nw_DoReceiveCallbacks_fp)(void);
@@ -220,7 +220,7 @@ float MOTDFirstSent;
 float MOTDLastSent;
 
 char *Motdptr;
-unsigned int Motd_maxlen;
+uint32_t Motd_maxlen;
 
 int ValidState;
 
@@ -234,7 +234,7 @@ float VersionLastSent;
 char *VersionURL;
 
 
-unsigned int ValidSecurity;
+uint32_t ValidSecurity;
 
 char *Psztracker_id;
 
@@ -255,7 +255,7 @@ int InitPilotTrackerClient()
 	VersionState = VERSION_STATE_IDLE;
 
 	srand(DLLtimer_GetTime());
-	ValidSecurity = (unsigned int)rand();
+	ValidSecurity = (uint32_t)rand();
 	//Build the request packet
 	PacketHeader.type = UNT_LOGIN_AUTH_REQUEST;//UNT_VALIDAT_ID_REQUEST;
 	PacketHeader.len = INTEL_SHORT(PACKED_HEADER_ONLY_SIZE+sizeof(validate_id_request));
@@ -459,7 +459,7 @@ int GetD3PilotData(vmt_descent3_struct *d3_pilot,char *pilot_name,char *tracker_
 
 
 //Send an ACK to the server
-void AckServer(unsigned int sig)
+void AckServer(uint32_t sig)
 {
 	udp_packet_header ack_pack;
 
@@ -532,7 +532,7 @@ void PollPTrackNet()
 
 int Motd_version = 0;
 
-void HandlePilotData(ubyte *data,int len, network_address *from)
+void HandlePilotData(uint8_t *data,int len, network_address *from)
 {
 	udp_packet_header inpacket;
 	vmt_descent3_struct *d3_pilot;
@@ -687,7 +687,7 @@ int ValidateUser(validate_id_request *valid_id, char *trackerid)
 		{
 			/*
 			//First, flush the input buffer for the socket
-			unsigned int bytesin;
+			uint32_t bytesin;
 			udp_packet_header inpacket;
 			do
 			{
@@ -695,7 +695,7 @@ int ValidateUser(validate_id_request *valid_id, char *trackerid)
 			}while(bytesin && (bytesin!=-1));
 			*/
 			Psztracker_id = trackerid;
-			ValidSecurity = (unsigned int)rand();
+			ValidSecurity = (uint32_t)rand();
 			PacketHeader.security = ValidSecurity;
 			//strcpy(ValidIDReq->tracker_id,valid_id->tracker_id);
 			strcpy(ValidIDReq->login,valid_id->login);
@@ -733,10 +733,10 @@ void ValidIdle()
 	}
 }
 //This code will modify 4 bytes at a time, so make sure to pad it!!!
-void xorcode(void *data,unsigned int len,uint32_t hash)
+void xorcode(void *data,uint32_t len,uint32_t hash)
 {
 	return;
-	unsigned int i=0;
+	uint32_t i=0;
 	uint32_t *src = (uint32_t *)&data;
 
 	while(i<len)
@@ -774,7 +774,7 @@ void VersionIdle()
 //  0	Still waiting for response from tracker/Idle
 //  1	Version received (URL[0] will not be NULL if we have the URL which means we need a newer version)
 //Call once with the real version, then poll with the version set to 0 URL is a pointer to a char buff(max size == 200) that will be filled if/when we get a URL response
-int MTAVersionCheck(unsigned int oldver, char *URL)
+int MTAVersionCheck(uint32_t oldver, char *URL)
 {
 
 	int res = DLLPollUI();
@@ -808,7 +808,7 @@ int MTAVersionCheck(unsigned int oldver, char *URL)
 		{
 			/*
 			//First, flush the input buffer for the socket
-			unsigned int bytesin;
+			uint32_t bytesin;
 			udp_packet_header inpacket;
 			do
 			{

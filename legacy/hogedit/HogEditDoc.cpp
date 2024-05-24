@@ -654,9 +654,9 @@ bool CHogEditDoc::DeleteFilenameList(char **filenames)
 }
 
 // Return estimate (in bytes) of the final Hog File Size
-unsigned int CHogEditDoc::CalcHogFileSize(void)
+uint32_t CHogEditDoc::CalcHogFileSize(void)
 {
-	unsigned int total;
+	uint32_t total;
 	POSITION pos;
 	hog_library_entry temp_entry;
 
@@ -823,7 +823,7 @@ int CHogEditDoc::CreateNewHogFromCurrentHog(char *src_hog_fname, char *target_ho
 	}
 
 	//write number of files
-	ubyte filler = 0xff;
+	uint8_t filler = 0xff;
 	header.nfiles = (unsigned)nfiles;
 	header.file_data_offset = strlen(HOG_TAG_STR) + HOG_HDR_SIZE + (sizeof(tHogFileEntry) * header.nfiles);
 
@@ -842,7 +842,7 @@ int CHogEditDoc::CreateNewHogFromCurrentHog(char *src_hog_fname, char *target_ho
 
 	// write out filler
 	for(i=0; i < HOG_HDR_SIZE-sizeof(tHogHeader); i++)
-		if (!fwrite(&filler,sizeof(ubyte),1,hog_fp))	{
+		if (!fwrite(&filler,sizeof(uint8_t),1,hog_fp))	{
 			delete[] table;
 			fclose(hog_fp);
 			strcpy(hogerr_filename,dest_hog_fname);

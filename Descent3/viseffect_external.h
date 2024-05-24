@@ -71,7 +71,7 @@
 #define VF_NO_Z_ADJUST 128
 #define VF_LINK_TO_VIEWER 256 // Always link into the room that the viewer is in
 
-extern ushort max_vis_effects;
+extern uint16_t max_vis_effects;
 
 struct object;
 
@@ -79,17 +79,17 @@ typedef struct {
   int obj_handle;
   int dest_objhandle;
 
-  ushort modelnum;
-  ushort vertnum;
-  ushort end_vertnum;
+  uint16_t modelnum;
+  uint16_t vertnum;
+  uint16_t end_vertnum;
 
-  ubyte subnum, subnum2;
+  uint8_t subnum, subnum2;
 } vis_attach_info;
 
 typedef struct {
-  ubyte width;
-  ubyte height;
-  ubyte texture;
+  uint8_t width;
+  uint8_t height;
+  uint8_t texture;
 } axis_billboard_info;
 
 typedef struct {
@@ -107,19 +107,19 @@ typedef struct {
 
   int phys_flags;
 
-  short custom_handle;
-  ushort lighting_color;
+  int16_t custom_handle;
+  uint16_t lighting_color;
 
-  ushort flags;
+  uint16_t flags;
 
-  short next;
-  short prev;
+  int16_t next;
+  int16_t prev;
 
   vis_attach_info attach_info;
   axis_billboard_info billboard_info;
 
-  ubyte movement_type;
-  ubyte type, id;
+  uint8_t movement_type;
+  uint8_t type, id;
 } vis_effect;
 
 #endif

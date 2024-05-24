@@ -55,16 +55,16 @@
 #define LMI_EXTERNAL_ROOM_OBJECT 6
 
 typedef struct {
-  ubyte xspacing, yspacing;
-  ushort lm_handle;
+  uint8_t xspacing, yspacing;
+  uint16_t lm_handle;
   vector upper_left, normal;
-  ubyte width, height, x1, y1;
-  ubyte used;
+  uint8_t width, height, x1, y1;
+  uint8_t used;
 
-  ushort dynamic;
-  short spec_map;
+  uint16_t dynamic;
+  int16_t spec_map;
 
-  ubyte type; // see LMI_types above
+  uint8_t type; // see LMI_types above
 } lightmap_info;
 
 extern lightmap_info *LightmapInfo;

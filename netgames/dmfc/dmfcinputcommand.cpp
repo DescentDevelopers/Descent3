@@ -444,7 +444,7 @@ void DMFCInputCommand_HudCallsigns(const char *input_string) {
     return;
   }
 
-  ubyte level = HUD_CALLSIGN_LEVEL_NONE;
+  uint8_t level = HUD_CALLSIGN_LEVEL_NONE;
   if (!stricmp(s, DTXT_OSM_FULL))
     level = HUD_CALLSIGN_LEVEL_FULL;
   else if (!stricmp(s, DTXT_IC_TEAM))
@@ -473,7 +473,7 @@ void DMFCInputCommand_ServerHudCallsigns(const char *input_string) {
     return;
   }
 
-  ubyte level = HUD_CALLSIGN_LEVEL_NONE;
+  uint8_t level = HUD_CALLSIGN_LEVEL_NONE;
   if (!stricmp(s, DTXT_OSM_FULL))
     level = HUD_CALLSIGN_LEVEL_FULL;
   else if (!stricmp(s, DTXT_IC_TEAM))
@@ -807,7 +807,7 @@ void DMFCInputCommand_KillMsgFilter(const char *input_string) {
     return;
   }
 
-  ubyte level = DM_FILTER_FULL;
+  uint8_t level = DM_FILTER_FULL;
   if (!stricmp(s, DTXT_PLAIN_NONE))
     level = DM_FILTER_NONE;
   else if (!stricmp(s, DTXT_OSM_SIMPLE))

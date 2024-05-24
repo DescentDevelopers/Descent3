@@ -319,9 +319,9 @@
 
 void *callback = NULL;
 module MultiDLLHandle = {NULL};
-int SearchForLocalGamesTCP(unsigned int ask, ushort port);
-int SearchForGamesPXO(unsigned int ask, ushort port);
-extern ubyte NewUIWindow_alpha;
+int SearchForLocalGamesTCP(uint32_t ask, uint16_t port);
+int SearchForGamesPXO(uint32_t ask, uint16_t port);
+extern uint8_t NewUIWindow_alpha;
 extern void DoScreenshot();
 extern void UpdateAndPackGameList(void);
 extern bool Multi_Gamelist_changed;
@@ -381,8 +381,8 @@ extern int Num_modems_found;
 #endif
 #define DLL_BRIEFING_FONT 1
 #define DLL_BIG_BRIEFING_FONT 2
-extern unsigned short nw_ListenPort;
-extern ushort PXOPort;
+extern uint16_t nw_ListenPort;
+extern uint16_t PXOPort;
 
 void GetMultiAPI(multi_api *api) {
   // make the compiler happy
@@ -698,7 +698,7 @@ void CallMultiDLL(int eventnum) {
   if (MultiDLLHandle.handle && DLLMultiCall)
     DLLMultiCall(eventnum);
 }
-void SetUITextItemText(UITextItem *uit, char *newtext, unsigned int color) {
+void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color) {
   // This function is currently broken!
   strcpy(uit->m_Text, newtext);
   uit->set_color(color);
@@ -822,7 +822,7 @@ int PollUI(void) {
   }
   return result;
 }
-void *CreateNewUITextItem(const char *newtext, unsigned int color, int font) {
+void *CreateNewUITextItem(const char *newtext, uint32_t color, int font) {
   UITextItem *new_text_item;
   if (font == -1) {
     new_text_item = new UITextItem(newtext);
@@ -846,7 +846,7 @@ void RemoveUITextItem(void *item) {
   UITextItem *old_text_item = (UITextItem *)item;
   delete old_text_item;
 }
-void *CreateNewUIBmpItem(int handle, ubyte alpha) {
+void *CreateNewUIBmpItem(int handle, uint8_t alpha) {
   UIBitmapItem *new_bmp_item;
   new_bmp_item = new UIBitmapItem(handle, alpha);
   return new_bmp_item;
@@ -898,9 +898,9 @@ void *UIConsoleGadgetCreate(UIWindow *parentid, int id, int x, int y, int font, 
   return newconsole;
 }
 void UIConsoleGadgetputs(UIConsoleGadget *item, const char *str) {
-  unsigned char r = 0;
-  unsigned char g = 230;
-  unsigned char b = 0;
+  uint8_t r = 0;
+  uint8_t g = 230;
+  uint8_t b = 0;
   if (*str == 1) {
     str++;
     r = *str;
@@ -1006,8 +1006,8 @@ typedef struct player_killed {
 typedef struct player_score_matrix {
   int num_players;
   char name[MAX_NET_PLAYERS][CALLSIGN_LEN + 1];
-  short deaths[MAX_NET_PLAYERS];
-  short kills[MAX_NET_PLAYERS];
+  int16_t deaths[MAX_NET_PLAYERS];
+  int16_t kills[MAX_NET_PLAYERS];
 } player_score_matrix;
 // The chokepoint function to call the dll function
 void CallMultiScoreDLL(int eventnum, void *data) {

@@ -106,7 +106,7 @@ static uint64_t Timer_sys_start_time = 0;
 static uint64_t Timer_accum = 0, Timer_high_mark = 0;
 
 static float nw_TCPLoggingTimer(void) {
-  unsigned int time_ms;
+  uint32_t time_ms;
   uint64_t ret;
 
   struct timeval t;
@@ -140,7 +140,7 @@ static bool nw_TCPLoggingTimer_Init(void) {
   return true;
 }
 
-static unsigned char outgoing_mono_packet[512];
+static uint8_t outgoing_mono_packet[512];
 static volatile int outgoing_packet_size = 0;
 static volatile float outgoing_last_time_sent = 0;
 static volatile bool outgoing_packet_flush = false;
@@ -194,7 +194,7 @@ void *nw_TCPLoggingWorker(void *arg) {
   return NULL;
 }
 
-bool nw_InitTCPLogging(char *ip, unsigned short port) {
+bool nw_InitTCPLogging(char *ip, uint16_t port) {
 #if DLOPEN_PTHREAD
   // load up the pthread library
   void *lib = dlopen("libpthread.so", RTLD_GLOBAL | RTLD_NOW);
@@ -207,7 +207,7 @@ bool nw_InitTCPLogging(char *ip, unsigned short port) {
   dpthread_self = (pthread_self_fp)dlsym(lib, "pthread_self");
 #endif
 
-  unsigned int argp = 1;
+  uint32_t argp = 1;
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {
@@ -282,7 +282,7 @@ bool nw_InitTCPLogging(char *ip, unsigned short port) {
 
 void nw_TCPPrintf(int n, char *format, ...) { return; }
 
-void nw_SendMonoPacket(unsigned char *data, int size) {
+void nw_SendMonoPacket(uint8_t *data, int size) {
   if (tcp_log_sock == INVALID_SOCKET) {
     return;
   }
@@ -350,11 +350,11 @@ void Debug_LogClose() {
   }
 }
 
-// void Debug_SetSpewFilter(uint spew_filter)
-void Debug_SetSpewFilter(uint) {}
+// void Debug_SetSpewFilter(uint32_t spew_filter)
+void Debug_SetSpewFilter(uint32_t) {}
 
-// uint Debug_GetSpewFilter(uint spew_filter)
-uint Debug_GetSpewFilter(uint) { return 0; }
+// uint32_t Debug_GetSpewFilter(uint32_t spew_filter)
+uint32_t Debug_GetSpewFilter(uint32_t) { return 0; }
 
 void Debug_ConsoleExit() {
   if (Console_fd >= 0)
@@ -391,7 +391,7 @@ bool Debug_ConsoleInit() {
     if (port_ptr) {
       *port_ptr = '\0';
       port_ptr++;
-      unsigned short port;
+      uint16_t port;
       port = atoi(port_ptr);
       if (nw_InitTCPLogging(address, port)) {
         Mono_use_window_remote = true;
@@ -416,7 +416,7 @@ void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window) {
                           0x02	0x01   0-3	  Window handle to be redirected
   */
   // create the packet and send it off
-  unsigned char packet[3];
+  uint8_t packet[3];
   packet[0x00] = 0x02;            // control code
   packet[0x01] = virtual_window;  // virtual_handle
   packet[0x02] = physical_window; // physical_handle
@@ -450,7 +450,7 @@ void Debug_ConsoleOpen(int n, int row, int col, int width, int height, const cha
    */
 
   // create the packet and send it off
-  unsigned char packet[512];
+  uint8_t packet[512];
   int len = (title) ? strlen(title) : 1;
   packet[0x00] = 0x00;   // control code
   packet[0x01] = n;      // window_handle
@@ -487,7 +487,7 @@ void Debug_ConsoleClose(int n) {
 
    */
   // create the packet and send it off
-  unsigned char packet[2];
+  uint8_t packet[2];
   packet[0x00] = 0x01; // control code
   packet[0x01] = n;    // window_handle
 
@@ -538,10 +538,10 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
 
   // create the packet and send it off
   text_len = std::min(text_len, 512);
-  unsigned char packet[518];
+  uint8_t packet[518];
   packet[0x00] = 0x03; // control code
   packet[0x01] = n;    // window_handle
-  *((unsigned short *)&packet[0x02]) = text_len;
+  *((uint16_t *)&packet[0x02]) = text_len;
   memcpy(&packet[0x04], Mono_buffer, text_len);
 
   // send the packet
@@ -575,13 +575,13 @@ void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {
                           0x06   [0x04]  ----   Text string (not \0 terminated)
   */
   // create the packet and send it off
-  unsigned char packet[518];
+  uint8_t packet[518];
   text_len = std::min(text_len, 512);
   packet[0x00] = 0x04; // control code
   packet[0x01] = n;    // window_handle
   packet[0x02] = row;  // row
   packet[0x03] = col;  // col
-  *((unsigned short *)&packet[0x04]) = text_len;
+  *((uint16_t *)&packet[0x04]) = text_len;
   memcpy(&packet[0x06], Mono_buffer, text_len);
 
   // send the packet

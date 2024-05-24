@@ -188,7 +188,7 @@ struct tSliderSettings {
 
 class newuiSheet {
   int m_sx, m_sy;           // origin of sheet gadgets relative to parent.
-  short m_initial_focus_id; // gadget that will have focus upon realization.
+  int16_t m_initial_focus_id; // gadget that will have focus upon realization.
 
 public:
   newuiSheet();
@@ -218,48 +218,48 @@ public:
 
   // call these functions to determine if a pointer's value has changed after call to UpdateReturnValues (internal)
   bool HasChanged(bool *bptr);
-  bool HasChanged(short *sptr);
+  bool HasChanged(int16_t *sptr);
   bool HasChanged(int *iptr);
   bool HasChanged(char *cptr);
 
   // obtain's pointer to gadget of respective item.  it is your responsibility to typecast the gadget
   // only works if you specified an ID!  Also the sheet must have been realized by now.
-  UIGadget *GetGadget(short id);
+  UIGadget *GetGadget(int16_t id);
 
   //	set focus on this gadget specified by id upon realization.
-  void SetInitialFocusedGadget(short id);
+  void SetInitialFocusedGadget(int16_t id);
 
   //	creates gadget list.pix_offset is the pixel offset from the group title to the first control.
-  void NewGroup(const char *title, short x, short y, tAlignment align = NEWUI_ALIGN_VERT, short pix_offset = -1);
+  void NewGroup(const char *title, int16_t x, int16_t y, tAlignment align = NEWUI_ALIGN_VERT, int16_t pix_offset = -1);
 
   //	adds standard button to current group. (flags see NEWUI_BTNF_xxxx)
-  void AddButton(const char *title, short id, short flags = 0);
+  void AddButton(const char *title, int16_t id, int16_t flags = 0);
 
   // adds a long button (flags see NEWUI_BTNF_xxxx)
-  void AddLongButton(const char *title, short id, short flags = 0);
+  void AddLongButton(const char *title, int16_t id, int16_t flags = 0);
 
   //	adds checkbox to current group.  initial state of checkbox can be set.
-  bool *AddCheckBox(const char *title, bool init_state = false, short id = DEFAULT_NEWUID);
+  bool *AddCheckBox(const char *title, bool init_state = false, int16_t id = DEFAULT_NEWUID);
 
   //	adds long checkbox to current group.  initial state of checkbox can be set.
-  bool *AddLongCheckBox(const char *title, bool init_state = false, short id = DEFAULT_NEWUID);
+  bool *AddLongCheckBox(const char *title, bool init_state = false, int16_t id = DEFAULT_NEWUID);
 
   // adds a radio button to current group.  initial state of radio may be set
   // pointer returned will return index of radio button in group currently selected.
-  int *AddFirstRadioButton(const char *title, short id = DEFAULT_NEWUID);
+  int *AddFirstRadioButton(const char *title, int16_t id = DEFAULT_NEWUID);
 
   // adds a radio button to current group.  initial state of radio may be set
-  void AddRadioButton(const char *title, short id = DEFAULT_NEWUID);
+  void AddRadioButton(const char *title, int16_t id = DEFAULT_NEWUID);
 
   // adds a radio button to current group.  initial state of radio may be set
-  int *AddFirstLongRadioButton(const char *title, short id = DEFAULT_NEWUID);
+  int *AddFirstLongRadioButton(const char *title, int16_t id = DEFAULT_NEWUID);
 
   // adds a radio button to current group.  initial state of radio may be set
-  void AddLongRadioButton(const char *title, short id = DEFAULT_NEWUID);
+  void AddLongRadioButton(const char *title, int16_t id = DEFAULT_NEWUID);
 
-  // adds a slider, set the range for it too., returns two values, short[0] = position, short[1] = range
-  short *AddSlider(const char *title, short range, short init_pos = 0, tSliderSettings *settings = NULL,
-                   short id = DEFAULT_NEWUID);
+  // adds a slider, set the range for it too., returns two values, int16_t[0] = position, int16_t[1] = range
+  int16_t *AddSlider(const char *title, int16_t range, int16_t init_pos = 0, tSliderSettings *settings = NULL,
+                   int16_t id = DEFAULT_NEWUID);
 
   //	adds a static text item
   void AddText(const char *text, ...);
@@ -271,17 +271,17 @@ public:
   char *AddChangeableText(int buflen);
 
   // adds a listbox
-  newuiListBox *AddListBox(short w, short h, short id, ushort flags = 0);
+  newuiListBox *AddListBox(int16_t w, int16_t h, int16_t id, uint16_t flags = 0);
 
   // adds a listbox
-  newuiComboBox *AddComboBox(short id, ushort flags = 0);
+  newuiComboBox *AddComboBox(int16_t id, uint16_t flags = 0);
 
   // adds an edit box
-  char *AddEditBox(const char *title, short maxlen = NEWUI_EDIT_BUFLEN, short w = 0, short id = DEFAULT_NEWUID,
-                   short flags = 0, bool return_on_esc = false);
+  char *AddEditBox(const char *title, int16_t maxlen = NEWUI_EDIT_BUFLEN, int16_t w = 0, int16_t id = DEFAULT_NEWUID,
+                   int16_t flags = 0, bool return_on_esc = false);
 
   // adds a hotspot :(, should word wrap too.
-  void AddHotspot(const char *title, short w, short h, short id, bool group = false);
+  void AddHotspot(const char *title, int16_t w, int16_t h, int16_t id, bool group = false);
 
   // THESE FUNCTIONS ARE CALLED BY FRAMEWORK, BUT IF YOU NEED TO DO SOME CUSTOM UI HANDLING, THESE
   // FUNCTIONS ARE MADE PUBLIC.
@@ -296,13 +296,13 @@ public:
 
 private:
   struct t_gadget_desc {
-    sbyte type;   // enumerated ui gadget type
+    int8_t type;   // enumerated ui gadget type
     bool changed; // parameters are different than defaults?
-    short id;     // id value
+    int16_t id;     // id value
     char *title;  // title of gadget
     union {
       int i;
-      short s[2];
+      int16_t s[2];
       bool b;
       void *p;
     } parm; // parameter list.
@@ -326,7 +326,7 @@ private:
   bool m_realized;
   char *m_title;
 
-  t_gadget_desc *AddGadget(short id, sbyte type, const char *title);
+  t_gadget_desc *AddGadget(int16_t id, int8_t type, const char *title);
 
 public:
   const char *GetTitle() { return m_title; };
@@ -339,7 +339,7 @@ public:
   newuiButton();
 
   // see (NEWUI_BTNF_xxx) flags
-  void Create(UIWindow *wnd, short id, const char *name, short x, short y, short flags = 0);
+  void Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y, int16_t flags = 0);
 
 protected:
   virtual void OnDraw();    // overridable draws the background first
@@ -352,7 +352,7 @@ protected:
   UISnazzyTextItem *m_text;
 
   // this is used in multiple inheritance cases.(flags are additional attributes usually passed when creating gadget)
-  void InitStates(const char *name, bool is_long, short flags = 0);
+  void InitStates(const char *name, bool is_long, int16_t flags = 0);
 
 public:
   UISnazzyTextItem *GetTitle() { return m_text; };
@@ -362,7 +362,7 @@ public:
 
 class newuiMenuOptionButton : public newuiButton {
 public:
-  void Create(newuiMenu *menu, newuiMenuOptionButton *last, short id, const char *name, short x, short y,
+  void Create(newuiMenu *menu, newuiMenuOptionButton *last, int16_t id, const char *name, int16_t x, int16_t y,
               bool m_mono_press);
 
 protected:
@@ -378,7 +378,7 @@ private:
 
 class newuiTinyButton : public newuiButton {
 public:
-  void Create(UIWindow *wnd, short id, const char *name, short x, short y);
+  void Create(UIWindow *wnd, int16_t id, const char *name, int16_t x, int16_t y);
 };
 
 //	CLASS creates an arrow button that is sensitive to touch (when down, always select)
@@ -387,7 +387,7 @@ class newuiArrowButton : public newuiButton {
 public:
   newuiArrowButton(){};
 
-  void Create(UIWindow *wnd, short id, short type, const char *name, short x, short y);
+  void Create(UIWindow *wnd, int16_t id, int16_t type, const char *name, int16_t x, int16_t y);
   void Show(bool show = true); // this will activate or deactivate a button.
 
 protected:
@@ -410,7 +410,7 @@ public:
   newuiListBox();
 
   // creates listbox
-  void Create(UIWindow *wnd, short id, short x, short y, short w, short h, ushort flags);
+  void Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, int16_t w, int16_t h, uint16_t flags);
 
   // functions to add or remove items,
   void AddItem(const char *name);
@@ -461,7 +461,7 @@ private:
   int m_last_mse_x, m_last_mse_y;
   int m_last_selected_index;
   float m_click_time; // time in between clicks.
-  sbyte m_nclicks;
+  int8_t m_nclicks;
   bool m_mse_clicked;
 
   newuiArrowButton m_up_btn; // buttons to scroll.
@@ -469,7 +469,7 @@ private:
 
   UIBitmapItem *m_pieces[N_DIRECTIONS]; // bitmap pieces
 
-  void Offset(short offs);
+  void Offset(int16_t offs);
   void SetInternalCurrentIndex(int index);
 };
 
@@ -480,7 +480,7 @@ public:
   newuiComboBox();
 
   // creates listbox
-  void Create(UIWindow *wnd, short id, short x, short y, ushort flags);
+  void Create(UIWindow *wnd, int16_t id, int16_t x, int16_t y, uint16_t flags);
 
   // functions to add or remove items,
   void AddItem(const char *name);
@@ -529,13 +529,13 @@ private:
 class newuiHotspot : public UIGadget {
 private:
   char *m_title;
-  short m_alpha, m_alpha_adjust;
+  int16_t m_alpha, m_alpha_adjust;
   float m_mse_timer;
 
 public:
   newuiHotspot();
 
-  void Create(UIWindow *wnd, short id, const char *title, short x, short y, short w, short h, short flags = 0);
+  void Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags = 0);
   const char *GetTitle() const { return m_title; };
 
 protected:
@@ -563,14 +563,14 @@ public:
   void Create();
 
   //	adds an option to a menu, returns a newuiSheet object to add user interface to.
-  newuiSheet *AddOption(short id, const char *title, int size = NEWUIMENU_SMALL, bool has_sheet = true, int yoff = 0);
-  void AddSimpleOption(short id, const char *title, int yoff = 0);
+  newuiSheet *AddOption(int16_t id, const char *title, int size = NEWUIMENU_SMALL, bool has_sheet = true, int yoff = 0);
+  void AddSimpleOption(int16_t id, const char *title, int yoff = 0);
 
   //	sets current option to display.
-  void SetCurrentOption(short id);
+  void SetCurrentOption(int16_t id);
 
   // returns current option
-  short GetCurrentOption() const;
+  int16_t GetCurrentOption() const;
 
   // returns current sheet
   newuiSheet *GetCurrentSheet() const;
@@ -586,10 +586,10 @@ public:
 public:
   // when a new option is realized, this function will be called.
   // passed in: the menu object, the old option and the new option and an optional pointer respectively
-  void SetOnOptionSwitchCB(void (*fn)(newuiMenu *, short, short, void *), void *data);
+  void SetOnOptionSwitchCB(void (*fn)(newuiMenu *, int16_t, int16_t, void *), void *data);
 
   // when a new option is ready.   at this point the system sets the focus on this option
-  void SetOnOptionFocusCB(void (*fn)(newuiMenu *, short, void *), void *data);
+  void SetOnOptionFocusCB(void (*fn)(newuiMenu *, int16_t, void *), void *data);
 
   // equivalent of SetUICallback, called before gadgets are drawn
   void SetOnUIFrameCB(void (*fn)());
@@ -610,12 +610,12 @@ private:
   int m_optionsx, m_optionsy; // option button placements
   int m_titlex, m_titley;     // title location.
   tAlignment m_align;         // alignment of text
-  short m_newoptionid;        // tells that a new option has been selected.
-  short m_cursheetidx;
+  int16_t m_newoptionid;        // tells that a new option has been selected.
+  int16_t m_cursheetidx;
   bool m_refreshgadgets; // refreshes gadgets on current sheet.
 
-  void (*m_activate_sheet_cb)(newuiMenu *, short, short, void *);
-  void (*m_option_focus_cb)(newuiMenu *, short, void *);
+  void (*m_activate_sheet_cb)(newuiMenu *, int16_t, int16_t, void *);
+  void (*m_option_focus_cb)(newuiMenu *, int16_t, void *);
   void (*m_uiframe_cb)();
 
   void *m_activate_sheet_cb_data;
@@ -630,7 +630,7 @@ public:
   void Create();
 
   //	adds an option to a menu, returns a newuiSheet object to add user interface to.
-  newuiSheet *AddOption(short id, const char *title, int size = NEWUIMENU_MEDIUM);
+  newuiSheet *AddOption(int16_t id, const char *title, int size = NEWUIMENU_MEDIUM);
 };
 
 //	CLASS, small message box
@@ -668,7 +668,7 @@ class newuiTiledWindow : public UIWindow {
 public:
   newuiTiledWindow();
 
-  void Create(const char *title, short x, short y, short w, short h, int flags = 0);
+  void Create(const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int flags = 0);
 
   // grab a newui interface from it.
   newuiSheet *GetSheet();
@@ -714,27 +714,27 @@ private:
 
 #define F_APPROXIMATE(_f) ((_f) + 0.000001f)
 
-inline short CALC_SLIDER_POS_FLOAT(float val, const tSliderSettings *settings, short range) {
-  short curpos;
-  curpos = (short)F_APPROXIMATE(((val - settings->min_val.f) * range) / (settings->max_val.f - settings->min_val.f));
+inline int16_t CALC_SLIDER_POS_FLOAT(float val, const tSliderSettings *settings, int16_t range) {
+  int16_t curpos;
+  curpos = (int16_t)F_APPROXIMATE(((val - settings->min_val.f) * range) / (settings->max_val.f - settings->min_val.f));
   return curpos;
 }
 
-inline short CALC_SLIDER_POS_INT(int val, const tSliderSettings *settings, short range) {
-  short curpos;
+inline int16_t CALC_SLIDER_POS_INT(int val, const tSliderSettings *settings, int16_t range) {
+  int16_t curpos;
   float num = (float)((val - settings->min_val.i) * range);
   float dem = (float)((settings->max_val.i - settings->min_val.i));
-  curpos = (short)F_APPROXIMATE(num / dem);
+  curpos = (int16_t)F_APPROXIMATE(num / dem);
   return curpos;
 }
 
-inline float CALC_SLIDER_FLOAT_VALUE(short val, float min, float max, short range) {
+inline float CALC_SLIDER_FLOAT_VALUE(int16_t val, float min, float max, int16_t range) {
   float retval;
   retval = F_APPROXIMATE((max - min) * val / range) + min;
   return retval;
 }
 
-inline int CALC_SLIDER_INT_VALUE(short val, int min, int max, short range) {
+inline int CALC_SLIDER_INT_VALUE(int16_t val, int min, int max, int16_t range) {
   int retval;
   float num = (float)((max - min) * val);
   retval = (int)(F_APPROXIMATE(num / range)) + min;

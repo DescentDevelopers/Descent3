@@ -79,8 +79,8 @@ protected:
 private:
 	void UpdateDialog(void);
 	void UpdateProcView(void);
-	void HarvestValue(int whichbox,ubyte *val);
-	void PrintValue (int,ubyte);
+	void HarvestValue(int whichbox,uint8_t *val);
+	void PrintValue (int,uint8_t);
 	static_proc_element *CreateElement(int,int);
 	
 private:
@@ -89,9 +89,9 @@ private:
 	int m_button_down;
 	int m_proc_type;
 	int m_save_x,m_save_y;
-	short m_height;
-	ubyte m_frequency;
-	ubyte m_size;
+	int16_t m_height;
+	uint8_t m_frequency;
+	uint8_t m_size;
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -204,7 +204,7 @@ int AllocVClip() {
   for (i = 0; i < MAX_VCLIPS; i++) {
     if (GameVClips[i].used == 0) {
       memset(&GameVClips[i], 0, sizeof(vclip));
-      GameVClips[i].frames = (short *)mem_malloc(VCLIP_MAX_FRAMES * sizeof(short));
+      GameVClips[i].frames = (int16_t *)mem_malloc(VCLIP_MAX_FRAMES * sizeof(int16_t));
       ASSERT(GameVClips[i].frames);
       GameVClips[i].frame_time = DEFAULT_FRAMETIME;
       GameVClips[i].flags = VCF_NOT_RESIDENT;
@@ -256,7 +256,7 @@ int SaveVClip(const char *filename, int num) {
 
   // write out the header for this vclip
   cf_WriteByte(outfile, 127);
-  cf_WriteByte(outfile, (sbyte)VCLIP_VERSION);
+  cf_WriteByte(outfile, (int8_t)VCLIP_VERSION);
 
   cf_WriteByte(outfile, vc->num_frames);
   // cf_WriteFloat (outfile,vc->play_time);
@@ -317,7 +317,7 @@ void PageInVClip(int vcnum) {
 
   mprintf((0, "Paging in vclip %s!\n", vc->name));
 
-  ubyte start_val = cf_ReadByte(infile);
+  uint8_t start_val = cf_ReadByte(infile);
   int version = 0;
   if (start_val != 127) {
     version = 0;
@@ -460,7 +460,7 @@ int AllocLoadVClip(const char *filename, int texture_size, int mipped, int pagea
 int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int format) {
   CFILE *infile;
   char name[PAGENAME_LEN];
-  unsigned int i, done = 0;
+  uint32_t i, done = 0;
 
   ASSERT(filename != NULL);
 

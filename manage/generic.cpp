@@ -1339,7 +1339,7 @@ int mng_ReadNewGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
 int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
   int done = 0;
   char command;
-  ushort len;
+  uint16_t len;
   int i, temp, version = 0, t;
 
   if (!Old_table_method)
@@ -1752,7 +1752,7 @@ int mng_ReadGenericPage(CFILE *infile, mngs_generic_page *genericpage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificGenericPage(char *name, mngs_generic_page *genericpage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
   char tablename[TABLE_NAME_LEN];

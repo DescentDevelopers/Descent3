@@ -2602,7 +2602,7 @@ extern float Room_multiplier[];
 
 int IsNonRenderableSubmodel(poly_model *pm,int submodelnum);
 
-extern ushort *Free_lmi_list;
+extern uint16_t *Free_lmi_list;
 
 void CMainFrame::OnTestTest1() 
 {
@@ -2753,7 +2753,7 @@ void CMainFrame::OnTestTest2()
 extern char error_buf[];
 extern int error_buf_offset;
 void CheckError(const char *str,...);
-uint check_point_to_face(vector *colp, vector* face_normal,int nv,vector **vertex_ptr_list);
+uint32_t check_point_to_face(vector *colp, vector* face_normal,int nv,vector **vertex_ptr_list);
 
 void LookForFVICracks()
 {

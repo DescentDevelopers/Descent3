@@ -88,7 +88,7 @@
 #include "Chttpget.h"
 
 extern char *Proxy_server;
-extern short Proxy_port;
+extern int16_t Proxy_port;
 
 
 #ifdef __LINUX__
@@ -138,7 +138,7 @@ void InetGetFile::AbortGet()
 	}
 }
 
-InetGetFile::InetGetFile(char *URL,char *localfile,char *proxyip,short proxyport)
+InetGetFile::InetGetFile(char *URL,char *localfile,char *proxyip,int16_t proxyport)
 {
 	m_HardError = 0;
 	http=NULL;

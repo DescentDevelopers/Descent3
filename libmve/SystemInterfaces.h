@@ -19,6 +19,8 @@
 #ifndef MVE_SYSTEM_INTERFACES_H__
 #define MVE_SYSTEM_INTERFACES_H__
 
+#include <cstdint>
+
 // Max&Min values for settings
 #define LNXSND_VOLUME_MAX 0
 #define LNXSND_VOLUME_MIN -10000
@@ -43,26 +45,26 @@
 #define LNXSND_CAPS_LOCHARDWARE 0x0004
 
 struct SoundWAVEFormatEx {
-  unsigned short wFormatTag;
-  unsigned short nChannels;
-  unsigned int nSamplesPerSec;
-  unsigned int nAvgBytesPerSec;
-  unsigned short nBlockAlign;
-  unsigned short wBitsPerSample;
-  unsigned short cbSize;
+  uint16_t wFormatTag;
+  uint16_t nChannels;
+  uint32_t nSamplesPerSec;
+  uint32_t nAvgBytesPerSec;
+  uint16_t nBlockAlign;
+  uint16_t wBitsPerSample;
+  uint16_t cbSize;
 };
 #define SOUND_WAVE_FORMAT_PCM 0x01
 
 struct SysSoundCaps {
-  unsigned int dwFlags;
-  unsigned int dwBufferBytes;
+  uint32_t dwFlags;
+  uint32_t dwBufferBytes;
 };
 
 class SysSoundBufferDesc {
 public:
   SoundWAVEFormatEx *lpwfxFormat;
-  unsigned int dwBufferBytes;
-  unsigned int dwFlags;
+  uint32_t dwBufferBytes;
+  uint32_t dwFlags;
 };
 
 class ISysSoundBuffer {
@@ -87,7 +89,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  virtual int SetVolume(signed int vol) = 0;
+  virtual int SetVolume(int32_t vol) = 0;
 
   ///////////////////////////
   // SetPan
@@ -98,7 +100,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  virtual int SetPan(signed int pan) = 0;
+  virtual int SetPan(int32_t pan) = 0;
 
   /////////////////////////
   // Stop
@@ -119,7 +121,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  virtual int Play(unsigned int flags) = 0;
+  virtual int Play(uint32_t flags) = 0;
 
   ////////////////////////////
   // GetCaps
@@ -139,7 +141,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  virtual int GetStatus(unsigned int *status) = 0;
+  virtual int GetStatus(uint32_t *status) = 0;
 
   ///////////////////////////////////////
   // GetCurrentPosition
@@ -149,7 +151,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  virtual int GetCurrentPosition(unsigned int *ppos, unsigned int *wpos) = 0;
+  virtual int GetCurrentPosition(uint32_t *ppos, uint32_t *wpos) = 0;
 
   ///////////////////////////////////////
   // SetCurrentPosition
@@ -159,7 +161,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  virtual int SetCurrentPosition(unsigned int pos) = 0;
+  virtual int SetCurrentPosition(uint32_t pos) = 0;
 
   /////////////////////////
   // Lock
@@ -170,8 +172,8 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  virtual int Lock(unsigned int pos, unsigned int numbytes, void **ptr1, unsigned int *numbytes1, void **ptr2,
-                   unsigned int *numbytes2, unsigned int flags) = 0;
+  virtual int Lock(uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1, void **ptr2,
+                   uint32_t *numbytes2, uint32_t flags) = 0;
 
   ///////////////////////////
   // Unlock
@@ -181,7 +183,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  virtual int Unlock(void *ptr1, unsigned int num1, void *ptr2, unsigned int num2) = 0;
+  virtual int Unlock(void *ptr1, uint32_t num1, void *ptr2, uint32_t num2) = 0;
 };
 
 class ISoundDevice {

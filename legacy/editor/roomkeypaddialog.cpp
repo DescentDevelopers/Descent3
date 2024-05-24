@@ -1644,7 +1644,7 @@ void CRoomKeypadDialog::OnSelchangeRoompadDamageType()
 {
 	CComboBox *box = (CComboBox *) GetDlgItem(IDC_ROOMPAD_DAMAGETYPE);
 	
-	Curroomp->damage_type = (sbyte) box->GetItemData(box->GetCurSel());
+	Curroomp->damage_type = (int8_t) box->GetItemData(box->GetCurSel());
 }
 
 void CRoomKeypadDialog::OnRenderShell() 

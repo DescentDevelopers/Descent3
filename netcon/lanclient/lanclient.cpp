@@ -321,7 +321,7 @@ using namespace lanclient;
 #define JEFF_GREEN GR_RGB(40, 255, 40)
 #define NETPOLLINTERVAL 10.0
 
-extern int MTAVersionCheck(unsigned int oldver, char *URL);
+extern int MTAVersionCheck(uint32_t oldver, char *URL);
 /////////////////////////////
 // Defines
 
@@ -426,7 +426,7 @@ int MainMultiplayerMenu() {
   for (a = 0; a < MAX_NET_GAMES; a++)
     net_game_txt_items[a] = NULL;
   int ret = 0;
-  ubyte oldalpha = *DLLNewUIWindow_alpha;
+  uint8_t oldalpha = *DLLNewUIWindow_alpha;
   int cury = 40;
 
   DLLSetScreenMode(SM_MENU);
@@ -617,9 +617,9 @@ int MainMultiplayerMenu() {
       break;
     case 9: {
       // Scan a specific IP
-      unsigned short iport = DEFAULT_GAME_PORT;
+      uint16_t iport = DEFAULT_GAME_PORT;
       looklocal = 0;
-      unsigned int iaddr;
+      uint32_t iaddr;
       lastgamesfound = 0;
       DLLEditGetText(edit_box, szdip, 25);
       // Make this IP the default
@@ -692,8 +692,8 @@ int MainMultiplayerMenu() {
 
 // MTS: only used in this file
 void AutoLoginAndJoinGame(void) {
-  unsigned short port;
-  unsigned int iaddr;
+  uint16_t port;
+  uint32_t iaddr;
 
   *DLLMultiGameStarting = 0;
 
@@ -711,7 +711,7 @@ void AutoLoginAndJoinGame(void) {
 
   network_address s_address;
   iaddr = inet_addr(DLLAuto_login_addr);
-  memcpy(&s_address.address, &iaddr, sizeof(unsigned int));
+  memcpy(&s_address.address, &iaddr, sizeof(uint32_t));
   s_address.port = port;
   s_address.connection_type = NP_TCP;
   *DLLGame_is_master_tracker_game = 0;

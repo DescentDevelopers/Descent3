@@ -223,7 +223,7 @@ extern int DoAI;
 extern bool Game_being_played_from_quick_play;
 #endif
 #endif
-extern unsigned short Demo_obj_map[MAX_OBJECTS];
+extern uint16_t Demo_obj_map[MAX_OBJECTS];
 
 struct {
   // some important, pre-computed times
@@ -246,7 +246,7 @@ struct {
   int bmp_handle;
   int longest_line;
 
-  uint flags;
+  uint32_t flags;
 
   tHUDMode old_hudmode;
 
@@ -273,7 +273,7 @@ struct {
 #define CDI_CANNED 1
 
 typedef struct {
-  ubyte cinematic_type; // canned/not canned
+  uint8_t cinematic_type; // canned/not canned
   int camera_objhandle; // object handle for camera to use
 
   char *text_string; // not canned text string
@@ -371,7 +371,7 @@ void Cinematic_Init(void) {
 
   gc_fade_bmp_handle = bm_AllocBitmap(32, 32, 0);
   if (gc_fade_bmp_handle > BAD_BITMAP_HANDLE) {
-    ushort *data = bm_data(gc_fade_bmp_handle, 0);
+    uint16_t *data = bm_data(gc_fade_bmp_handle, 0);
     int i, size = 32 * 32;
 
     for (i = 0; i < size; i++)
@@ -382,7 +382,7 @@ void Cinematic_Init(void) {
 
   gc_fadewhite_bmp_handle = bm_AllocBitmap(32, 32, 0);
   if (gc_fadewhite_bmp_handle > BAD_BITMAP_HANDLE) {
-    ushort *data = bm_data(gc_fadewhite_bmp_handle, 0);
+    uint16_t *data = bm_data(gc_fadewhite_bmp_handle, 0);
     int i, size = 32 * 32;
 
     for (i = 0; i < size; i++)
@@ -794,7 +794,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
     // create overlay bitmap
     GameCinema.bmp_handle = bm_AllocBitmap(128, 128, 0);
     if (GameCinema.bmp_handle > BAD_BITMAP_HANDLE) {
-      ushort *data = bm_data(GameCinema.bmp_handle, 0);
+      uint16_t *data = bm_data(GameCinema.bmp_handle, 0);
       for (int j = 0; j < 128 * 128; j++) {
         data[j] = GR_RGB16(0, 0, 0) | OPAQUE_FLAG;
       }
@@ -1300,7 +1300,7 @@ void Cinematic_DrawText(void) {
   case GCF_TEXT_WIPEIN: {
     // first 1/3 is alpha in
     // last 2/3 is solid
-    ubyte alpha = 0;
+    uint8_t alpha = 0;
 
     if (perc > 0.33f) {
       // middle 1/3
@@ -1308,7 +1308,7 @@ void Cinematic_DrawText(void) {
     } else if (perc <= 0.33f) {
       // first 1/3
       float new_p = perc / 0.33f;
-      alpha = (ubyte)(new_p * 255.0f);
+      alpha = (uint8_t)(new_p * 255.0f);
     }
     grtext_SetAlpha(alpha);
 
@@ -1362,7 +1362,7 @@ void Cinematic_DrawText(void) {
     // first 1/3 is alpha in
     // middle 1/3 is solid
     // last 1/3 is alpha out
-    ubyte alpha;
+    uint8_t alpha;
 
     if (perc > 0.33f && perc <= 0.66f) {
       // middle 1/3
@@ -1370,7 +1370,7 @@ void Cinematic_DrawText(void) {
     } else if (perc <= 0.33f) {
       // first 1/3
       float new_p = perc / 0.33f;
-      alpha = (ubyte)(new_p * 255.0f);
+      alpha = (uint8_t)(new_p * 255.0f);
     } else {
       // last 1/3
       float new_p = (perc - 0.66f) / 0.33f;
@@ -1378,7 +1378,7 @@ void Cinematic_DrawText(void) {
         new_p = 0.0f;
       if (new_p > 1.0f)
         new_p = 1.0f;
-      alpha = (ubyte)(255.0f - (new_p * 255.0f));
+      alpha = (uint8_t)(255.0f - (new_p * 255.0f));
     }
     grtext_SetAlpha(alpha);
 
@@ -1634,7 +1634,7 @@ void Cinematic_DoEndTransition(void) {
       if (gc_temp_bmp_handle > BAD_BITMAP_HANDLE) {
         float fade_out_perc = 1.0f - ((perc - CUTOFF) / (1.0f - CUTOFF));
         int grey = 255.0f * fade_out_perc;
-        ushort *data = bm_data(gc_temp_bmp_handle, 0);
+        uint16_t *data = bm_data(gc_temp_bmp_handle, 0);
         int i, size = 32 * 32;
 
         for (i = 0; i < size; i++)
@@ -2208,20 +2208,20 @@ void Cinematic_StartCanned(tCannedCinematicInfo *info, int camera_handle) {
 //==================================================
 // Demo file support
 //==================================================
-static void mf_WriteInt(ubyte *buffer, int *pointer, int data);
-static void mf_WriteShort(ubyte *buffer, int *pointer, short data);
-static void mf_WriteByte(ubyte *buffer, int *pointer, ubyte data);
-static void mf_WriteFloat(ubyte *buffer, int *pointer, float data);
-static void mf_WriteBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
-static void mf_WriteString(ubyte *buffer, int *pointer, const char *string);
-static int mf_ReadInt(ubyte *buffer, int *pointer);
-static short mf_ReadShort(ubyte *buffer, int *pointer);
-static ubyte mf_ReadByte(ubyte *buffer, int *pointer);
-static float mf_ReadFloat(ubyte *buffer, int *pointer);
-static void mf_ReadBytes(ubyte *buffer, int *pointer, ubyte *data, int len);
-static void mf_ReadString(ubyte *buffer, int *pointer, char *string);
+static void mf_WriteInt(uint8_t *buffer, int *pointer, int data);
+static void mf_WriteShort(uint8_t *buffer, int *pointer, int16_t data);
+static void mf_WriteByte(uint8_t *buffer, int *pointer, uint8_t data);
+static void mf_WriteFloat(uint8_t *buffer, int *pointer, float data);
+static void mf_WriteBytes(uint8_t *buffer, int *pointer, uint8_t *data, int len);
+static void mf_WriteString(uint8_t *buffer, int *pointer, const char *string);
+static int mf_ReadInt(uint8_t *buffer, int *pointer);
+static int16_t mf_ReadShort(uint8_t *buffer, int *pointer);
+static uint8_t mf_ReadByte(uint8_t *buffer, int *pointer);
+static float mf_ReadFloat(uint8_t *buffer, int *pointer);
+static void mf_ReadBytes(uint8_t *buffer, int *pointer, uint8_t *data, int len);
+static void mf_ReadString(uint8_t *buffer, int *pointer, char *string);
 
-void Cinematic_DoDemoFileData(ubyte *buffer) {
+void Cinematic_DoDemoFileData(uint8_t *buffer) {
   int count = 0;
   char text_string[512];
   tCannedCinematicInfo canned_data;
@@ -2316,7 +2316,7 @@ void Cinematic_DoDemoFileData(ubyte *buffer) {
 }
 
 void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info) {
-  ubyte buffer[1500];
+  uint8_t buffer[1500];
   int count = 0;
 
   // what kind of cinematic are we saving
@@ -2410,32 +2410,32 @@ void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info) {
   DemoWriteCinematics(buffer, count);
 }
 
-void mf_WriteInt(ubyte *buffer, int *pointer, int data) {
+void mf_WriteInt(uint8_t *buffer, int *pointer, int data) {
   memcpy(&buffer[(*pointer)], &data, sizeof(int));
   (*pointer) += sizeof(int);
 }
 
-void mf_WriteShort(ubyte *buffer, int *pointer, short data) {
-  memcpy(&buffer[(*pointer)], &data, sizeof(short));
-  (*pointer) += sizeof(short);
+void mf_WriteShort(uint8_t *buffer, int *pointer, int16_t data) {
+  memcpy(&buffer[(*pointer)], &data, sizeof(int16_t));
+  (*pointer) += sizeof(int16_t);
 }
 
-void mf_WriteByte(ubyte *buffer, int *pointer, ubyte data) {
-  memcpy(&buffer[(*pointer)], &data, sizeof(ubyte));
-  (*pointer) += sizeof(ubyte);
+void mf_WriteByte(uint8_t *buffer, int *pointer, uint8_t data) {
+  memcpy(&buffer[(*pointer)], &data, sizeof(uint8_t));
+  (*pointer) += sizeof(uint8_t);
 }
 
-void mf_WriteFloat(ubyte *buffer, int *pointer, float data) {
+void mf_WriteFloat(uint8_t *buffer, int *pointer, float data) {
   memcpy(&buffer[(*pointer)], &data, sizeof(float));
   (*pointer) += sizeof(float);
 }
 
-void mf_WriteBytes(ubyte *buffer, int *pointer, ubyte *data, int len) {
+void mf_WriteBytes(uint8_t *buffer, int *pointer, uint8_t *data, int len) {
   memcpy(&buffer[(*pointer)], data, len);
   (*pointer) += len;
 }
 
-void mf_WriteString(ubyte *buffer, int *pointer, const char *string) {
+void mf_WriteString(uint8_t *buffer, int *pointer, const char *string) {
   while (*string) {
     mf_WriteByte(buffer, pointer, (*string));
     string++;
@@ -2443,41 +2443,41 @@ void mf_WriteString(ubyte *buffer, int *pointer, const char *string) {
   mf_WriteByte(buffer, pointer, (*string));
 }
 
-int mf_ReadInt(ubyte *buffer, int *pointer) {
+int mf_ReadInt(uint8_t *buffer, int *pointer) {
   int value;
   memcpy(&value, &buffer[(*pointer)], sizeof(value));
   (*pointer) += sizeof(value);
   return value;
 }
 
-short mf_ReadShort(ubyte *buffer, int *pointer) {
-  short value;
+int16_t mf_ReadShort(uint8_t *buffer, int *pointer) {
+  int16_t value;
   memcpy(&value, &buffer[(*pointer)], sizeof(value));
   (*pointer) += sizeof(value);
   return value;
 }
 
-ubyte mf_ReadByte(ubyte *buffer, int *pointer) {
-  ubyte value;
+uint8_t mf_ReadByte(uint8_t *buffer, int *pointer) {
+  uint8_t value;
   memcpy(&value, &buffer[(*pointer)], sizeof(value));
   (*pointer) += sizeof(value);
   return value;
 }
 
-float mf_ReadFloat(ubyte *buffer, int *pointer) {
+float mf_ReadFloat(uint8_t *buffer, int *pointer) {
   float value;
   memcpy(&value, &buffer[(*pointer)], sizeof(value));
   (*pointer) += sizeof(value);
   return value;
 }
 
-void mf_ReadBytes(ubyte *buffer, int *pointer, ubyte *data, int len) {
+void mf_ReadBytes(uint8_t *buffer, int *pointer, uint8_t *data, int len) {
   memcpy(data, &buffer[(*pointer)], len);
   (*pointer) += len;
 }
 
-void mf_ReadString(ubyte *buffer, int *pointer, char *string) {
-  ubyte data;
+void mf_ReadString(uint8_t *buffer, int *pointer, char *string) {
+  uint8_t data;
   data = mf_ReadByte(buffer, pointer);
   while (data) {
     *string = data;

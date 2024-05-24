@@ -59,12 +59,12 @@
 static struct t_sb_loop_thread_data {
   win_llsSystem *m_ll_sndsys;
   uintptr_t thread_handle;
-  short no_callbacks;
+  int16_t no_callbacks;
   bool request_kill;
   bool thread_alive;
 } m_ds;
 
-static ubyte m_sb_cur_timeslice;
+static uint8_t m_sb_cur_timeslice;
 
 ////////////////////////////////////////////////////////////////////////////////
 // DSLOOP_STREAM_METHOD
@@ -153,7 +153,7 @@ void sb_loop_stream_copy(sound_buffer_info *sb, char *ptr, DWORD len) {
 void sb_loop_stream_fillhalf(sound_buffer_info *sb, DWORD half) {
   char *ptr1 = NULL;
   char *ptr2 = NULL;
-  uint len1, len2;
+  uint32_t len1, len2;
 
   if (sb_lock_buffer(sb, half, sb->s->half_buffer_point, (void **)&ptr1, &len1, (void **)&ptr2, &len2)) {
     // memset(ptr1, sb->s->silence_byte, len1);
@@ -211,7 +211,7 @@ new_data:
 void sb_stream_fillhalf(sound_buffer_info *sb, DWORD half) {
   char *ptr1 = NULL;
   char *ptr2 = NULL;
-  uint len1, len2;
+  uint32_t len1, len2;
 
   if (sb_lock_buffer(sb, half, sb->s->half_buffer_point, (void **)&ptr1, &len1, (void **)&ptr2, &len2)) {
     sb_stream_copy(sb, ptr1, len1);
@@ -227,7 +227,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
   sound_buffer_cache *sndcache;
   DWORD playp, writep, whichhalf;
   int i;
-  ubyte iteration;
+  uint8_t iteration;
 
   // validate thread
   m_ds.m_ll_sndsys = (win_llsSystem *)user_ptr;
@@ -261,7 +261,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
             continue; // just continue
           } else if ((iteration % 4) == (sb->s->time_slice % 4)) {
             // update streamed buffer only when allowed
-            playp = sb_get_current_position(sb, (uint *)&writep);
+            playp = sb_get_current_position(sb, (uint32_t *)&writep);
             whichhalf = (playp < sb->s->half_buffer_point) ? 0 : sb->s->half_buffer_point;
 
             if (whichhalf != sb->s->last_half) {
@@ -284,7 +284,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
             continue; // just continue
           } else if ((iteration % 4) == (sb->s->time_slice % 4)) {
             // update looped buffer only when allowed
-            playp = sb_get_current_position(sb, (uint *)&writep);
+            playp = sb_get_current_position(sb, (uint32_t *)&writep);
             whichhalf = (playp < sb->s->half_buffer_point) ? 0 : sb->s->half_buffer_point;
 
             if (whichhalf != sb->s->last_half) {
@@ -434,7 +434,7 @@ void sb_stream_buffered_update(sound_buffer_info *sb) {
   DWORD playp, writep, whichhalf;
   ASSERT((sb->m_status & SSF_BUFFERED_STRM));
 
-  playp = sb_get_current_position(sb, (uint *)&writep);
+  playp = sb_get_current_position(sb, (uint32_t *)&writep);
   whichhalf = (playp < sb->s->half_buffer_point) ? 0 : sb->s->half_buffer_point;
 
   if (whichhalf != sb->s->last_half) {

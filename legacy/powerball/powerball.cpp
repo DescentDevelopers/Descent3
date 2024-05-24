@@ -76,7 +76,7 @@ CDmfcStats stat;
 // Prototypes
 void DisplayHUDScores(struct tHUDItem *hitem);
 void DisplayStats(void);
-void GetGameStartPacket(ubyte *data);
+void GetGameStartPacket(uint8_t *data);
 void SendGameStartPacket(int pnum);
 bool GetPowerBallInfo(int id);
 void UpdatePowerBallEffectOnPlayer(int pnum,bool pickedup);
@@ -93,7 +93,7 @@ void SaveStatsToFile(char *filename);
 void HandlePlayerCollideWithPowerball(object *pobj,object *pball);
 void HandlePlayerLosingPowerball(object *pball);
 void HandleWeaponCollide(object *me_obj,object *it_obj);
-void GetCollideInfo(ubyte *data);
+void GetCollideInfo(uint8_t *data);
 void SendCollideInfo(object *pobj,object *wobj,int towho,vector *point,vector *normal);
 
 void DetermineScore(int precord_num,int column_num,char *buffer,int buffer_size)
@@ -115,7 +115,7 @@ void TeamScoreCallback(int team,char *buffer,int buffer_size)
 	sprintf(buffer," %d",TeamScores[team]);
 }
 
-void ShowStatBitmap(int precord_num,int column_num,int x,int y,int w,int h,ubyte alpha_to_use)
+void ShowStatBitmap(int precord_num,int column_num,int x,int y,int w,int h,uint8_t alpha_to_use)
 {
 	player_record *pr = PBall.GetPlayerRecord(precord_num);
 	
@@ -134,7 +134,7 @@ void DLLFUNCCALL DLLGetGameInfo (tDLLOptions *options)
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit (int *api_func,ubyte *all_ok)
+void DLLFUNCCALL DLLGameInit (int *api_func,uint8_t *all_ok)
 {
 	*all_ok = 1;
 	PBall.LoadFunctions(api_func);
@@ -228,7 +228,7 @@ void DLLFUNCCALL DLLGameInit (int *api_func,ubyte *all_ok)
 
 	PBallHazehandle = DLLbm_AllocBitmap(32,32,0);
 	if(PBallHazehandle>BAD_BITMAP_HANDLE){
-		ushort *data = DLLbm_data(PBallHazehandle,0);
+		uint16_t *data = DLLbm_data(PBallHazehandle,0);
 		for(int i=0;i<32*32;i++){
 			data[i] = GR_RGB16(80,200,255)|OPAQUE_FLAG;
 		}
@@ -946,7 +946,7 @@ void DisplayHUDScores(struct tHUDItem *hitem)
 	}
 }
 
-void GetGameStartPacket(ubyte *data)
+void GetGameStartPacket(uint8_t *data)
 {
 	int size = 0;
 
@@ -954,7 +954,7 @@ void GetGameStartPacket(ubyte *data)
 	memcpy(TeamScores,&data[size],sizeof(int)*DLLMAX_TEAMS);	size+= (sizeof(int)*DLLMAX_TEAMS);
 
 	//who has the powerball
-	signed char temp;
+	int8_t temp;
 	memcpy(&temp,&data[size],sizeof(char));	size+=sizeof(char);
 	WhoHasPowerBall = temp;
 
@@ -987,13 +987,13 @@ void SendGameStartPacket(int pnum)
 	int maxsize = sizeof(int)*DLLMAX_TEAMS + 2*sizeof(char);
 	int size = 0;
 
-	ubyte *data = PBall.StartPacket(maxsize,SPID_NEWPLAYER);
+	uint8_t *data = PBall.StartPacket(maxsize,SPID_NEWPLAYER);
 	memset(data,0,maxsize);
 
 	//add the team scores
 	memcpy(&data[size],TeamScores,sizeof(int)*DLLMAX_TEAMS); size += (sizeof(int)*DLLMAX_TEAMS);
 
-	signed char temp;
+	int8_t temp;
 	//who has the powerball if anyone
 	temp = WhoHasPowerBall;
 	memcpy(&data[size],&temp,sizeof(char));	size+= sizeof(char);
@@ -1184,10 +1184,10 @@ void DMFCApp::OnServerWeaponCollide(object *pobj,object *wobj,vector *point,vect
 
 void SendCollideInfo(object *pobj,object *wobj,int towho,vector *point,vector *normal)
 {
-	int maxsize = (sizeof(float)*26) + (sizeof(ushort)*1);
+	int maxsize = (sizeof(float)*26) + (sizeof(uint16_t)*1);
 	int size = 0;
 
-	ubyte *data = PBall.StartPacket(maxsize,SPID_COLLIDE);
+	uint8_t *data = PBall.StartPacket(maxsize,SPID_COLLIDE);
 	memset(data,0,maxsize);
 
 	memcpy(&data[size],&wobj->mtype.phys_info.rotvel,3*sizeof(float)); size+=(sizeof(float)*3);
@@ -1200,20 +1200,20 @@ void SendCollideInfo(object *pobj,object *wobj,int towho,vector *point,vector *n
 	memcpy(&data[size],&wobj->orient.uvec,sizeof(float)*3); size+=(sizeof(float)*3);
 	memcpy(&data[size],point,sizeof(float)*3); size+=(sizeof(float)*3);
 	memcpy(&data[size],normal,sizeof(float)*3); size+=(sizeof(float)*3);
-	ushort id = (pobj-PBall.Objects);
-	memcpy(&data[size],&id,sizeof(ushort)); size+= sizeof(ushort);
+	uint16_t id = (pobj-PBall.Objects);
+	memcpy(&data[size],&id,sizeof(uint16_t)); size+= sizeof(uint16_t);
 
 	//we're done
 	PBall.SendPacket(maxsize,towho);
 }
 
-void GetCollideInfo(ubyte *data)
+void GetCollideInfo(uint8_t *data)
 {
 	int size = 0;
 	vector rotvel,velocity,pos,point,normal;
 	matrix orient;
 	float mass,fsize;
-	ushort id;
+	uint16_t id;
 	int objnum;
 
 	memcpy(&rotvel,&data[size],3*sizeof(float)); size+=(sizeof(float)*3);
@@ -1227,7 +1227,7 @@ void GetCollideInfo(ubyte *data)
 	memcpy(&point,&data[size],sizeof(float)*3); size+=(sizeof(float)*3);
 	memcpy(&normal,&data[size],sizeof(float)*3); size+=(sizeof(float)*3);
 
-	memcpy(&id,&data[size],sizeof(ushort)); size+= sizeof(ushort);
+	memcpy(&id,&data[size],sizeof(uint16_t)); size+= sizeof(uint16_t);
 
 	objnum = PBall.ConvertServerToLocalObjnum(id);
 	ASSERT(objnum!=-1);

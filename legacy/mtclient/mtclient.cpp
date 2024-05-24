@@ -469,12 +469,12 @@ d3_net_game_data_tiny DLLD3_tracker_info;
 
 pxo_game_list PXOGamelist[MAX_GAMELIST_ITEMS];
 int NextGameItemNo = 0;
-ushort DLLPXOPort = 0;
+uint16_t DLLPXOPort = 0;
 
 void AutoLoginAndStartGame ();
 
 
-int GetGameByHandle(unsigned int handle)
+int GetGameByHandle(uint32_t handle)
 {
 	int j;
 	for(j=0;j<*DLLNum_network_games_known;j++)
@@ -487,7 +487,7 @@ int GetGameByHandle(unsigned int handle)
 	return -1;
 }
 
-int GetPXOItemByHandle(unsigned int handle)
+int GetPXOItemByHandle(uint32_t handle)
 {
 	int i;
 	for(i=0;i<MAX_GAMELIST_ITEMS;i++)
@@ -717,7 +717,7 @@ void DLLFUNCCALL DLLMultiInit (int *api_func)
 	InitOTSockets();
 #endif
 	#include "mdllinit.h"
-	DLLPXOPort = (ushort)API.vp[32];
+	DLLPXOPort = (uint16_t)API.vp[32];
 	DLLmprintf((0,"Inside DLLMultiInit...\n"));
 	*DLLUse_DirectPlay = false;
 	Auto_start=false;
@@ -1194,7 +1194,7 @@ int MainMultiplayerMenu ()
 	for(i=0;i<MAX_CHAT_CHANNELS;i++) chan_ti[i] = NULL;
 	for(i=0;i<CHAT_MAX_USERLIST;i++) user_ti[i] = NULL;
 	
-	ubyte oldalpha = *DLLNewUIWindow_alpha;
+	uint8_t oldalpha = *DLLNewUIWindow_alpha;
 
 	int colx1 = 0;
 	int colx2 = 148;
@@ -1989,7 +1989,7 @@ int SearchMasterTrackerGameMenu ()
 	int a;
 	bool hardexit = false;
 	for(a=0;a<MAX_NET_GAMES;a++) net_game_txt_items[a] = NULL;
-	ubyte oldalpha = *DLLNewUIWindow_alpha;
+	uint8_t oldalpha = *DLLNewUIWindow_alpha;
 
 	DLLSetScreenMode(SM_MENU);
 	*DLLNewUIWindow_alpha = 255;
@@ -2644,7 +2644,7 @@ int MTVersionCheck(void)
 		CopyFile(szbakdll,szolddll,FALSE);
 		return 0;
 	}
-	unsigned int mtver;
+	uint32_t mtver;
 	DLLAVGetVersion((int *)&mtver);
 	if(MTAVersionCheck(mtver,MTUpdateURL))
 	{
@@ -2904,7 +2904,7 @@ int JoinPrivateLobby(void)
 		case UID_OK:
 			{
 				DLLEditGetText(chan_edit,priv_channel,MAX_CHAT_SEND_LEN);
-				for(unsigned int i=0;i<strlen(priv_channel);i++)
+				for(uint32_t i=0;i<strlen(priv_channel);i++)
 				{
 					if(priv_channel[i]==' ')
 					{
@@ -3026,7 +3026,7 @@ int FindPilot(void)
 					break;
 				}
 				strcpy(message,p+1);
-				for(unsigned int i=0;i<strlen(message);i++) 
+				for(uint32_t i=0;i<strlen(message);i++) 
 					if(message[i]=='_') message[i] = ' ';
 				sprintf(fmt_msg,TXT_PXO_CANBEFOUNDIN,pilot_name,message);
 				if(pconsole)
@@ -3313,7 +3313,7 @@ void AutoLoginAndJoinGame(void)
 	int loginlen = LOGIN_LEN;
 	int passlen = PASSWORD_LEN;
 	int valret;
-	unsigned short port;
+	uint16_t port;
 	uint32_t iaddr;
 	
 	*DLLMultiGameStarting = 0;

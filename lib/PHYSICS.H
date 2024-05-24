@@ -28,7 +28,7 @@
  *
  * 9     8/27/98 6:23p Jeff
  * changed autoleveling in config so it is a slider...had to convert
- * global from bool->ubyte.  Added fast headlight and mirrored surfaces to
+ * global from bool->uint8_t.  Added fast headlight and mirrored surfaces to
  * config menu
  *
  * 8     6/15/98 7:01a Chris
@@ -84,8 +84,8 @@ extern float Gravity_strength;
 extern int Physics_player_verbose;
 #endif
 
-extern ubyte Default_player_terrain_leveling;
-extern ubyte Default_player_room_leveling;
+extern uint8_t Default_player_terrain_leveling;
+extern uint8_t Default_player_room_leveling;
 
 bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rotforce, vector *rotvel, angle *turn_roll);
 void PhysicsDoSimLinear(const object &obj, const vector &pos, const vector &force, vector &velocity,
@@ -105,7 +105,7 @@ void do_walking_sim(object *obj);
 
 // Applies an instantaneous force on an object, resulting in an instantaneous
 // change in velocity.
-void phys_apply_force(object *obj, vector *force_vec, short weapon_index = -1);
+void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index = -1);
 void phys_apply_rot(object *obj, vector *force_vec);
 
 // this routine will set the thrust for an object to a value that will

@@ -24,7 +24,7 @@
 
 // draws a line. takes two points.  returns true if drew
 void g3_DrawLine(ddgr_color color, g3Point *p0, g3Point *p1) {
-  ubyte codes_or;
+  uint8_t codes_or;
   bool was_clipped = 0;
 
   if (p0->p3_codes & p1->p3_codes)
@@ -65,7 +65,7 @@ void g3_DrawLine(ddgr_color color, g3Point *p0, g3Point *p1) {
 
 // draws a line based on the current setting of render states. takes two points.  returns true if drew
 void g3_DrawSpecialLine(g3Point *p0, g3Point *p1) {
-  ubyte codes_or;
+  uint8_t codes_or;
   bool was_clipped = 0;
 
   if (p0->p3_codes & p1->p3_codes)
@@ -180,7 +180,7 @@ int g3_DrawPoly(int nv, g3Point **pointlist, int bm, int map_type, g3Codes *clip
           //Get codes for this polygon, and copy uvls into points
           for( i = 0; i < nv; ++i )
           {
-                  ubyte c = pointlist[i]->p3_codes;
+                  uint8_t c = pointlist[i]->p3_codes;
                   cc.cc_and &= c;
                   cc.cc_or  |= c;
           }

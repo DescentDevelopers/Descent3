@@ -72,7 +72,7 @@
 #define OPAQUE_FLAG OPAQUE_FLAG16
 
 //	a new color definition
-typedef uint ddgr_color;
+typedef uint32_t ddgr_color;
 
 // Color constants
 static const ddgr_color GR_NULL = 0xffffffff, // don't do a thing with this.
@@ -84,15 +84,15 @@ static const ddgr_color GR_NULL = 0xffffffff, // don't do a thing with this.
 //	MACROS
 static inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b); }
 
-static inline ushort GR_RGB16(int r, int g, int b) { return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3)); }
+static inline uint16_t GR_RGB16(int r, int g, int b) { return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3)); }
 
-static inline ushort GR_COLOR_TO_16(ddgr_color c) {
+static inline uint16_t GR_COLOR_TO_16(ddgr_color c) {
   int r, g, b;
   r = ((c & 0x00ff0000) >> 16);
   g = ((c & 0x0000ff00) >> 8);
   b = (c & 0x000000ff);
 
-  return (ushort)(((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
+  return (uint16_t)(((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
 }
 
 static inline int GR_COLOR_RED(ddgr_color c) {
@@ -110,7 +110,7 @@ static inline int GR_COLOR_BLUE(ddgr_color c) {
   return (int)b;
 }
 
-static inline ddgr_color GR_16_TO_COLOR(ushort col) {
+static inline ddgr_color GR_16_TO_COLOR(uint16_t col) {
   int r, g, b;
 
   r = (col & 0x7c00) >> 7;

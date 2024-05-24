@@ -716,7 +716,7 @@ bool LoadCurrentSaveGame() {
 bool SaveGameState(const char *pathname, const char *description) {
   CFILE *fp;
   char buf[GAMESAVE_DESCLEN + 1];
-  short pending_music_region;
+  int16_t pending_music_region;
 
   fp = cfopen(pathname, "wb");
   if (!fp)
@@ -737,7 +737,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   START_VERIFY_SAVEFILE(fp);
   ASSERT(strlen(description) < sizeof(buf));
   strcpy(buf, description);
-  cf_WriteBytes((ubyte *)buf, sizeof(buf), fp);
+  cf_WriteBytes((uint8_t *)buf, sizeof(buf), fp);
   cf_WriteShort(fp, GAMESAVE_VERSION);
 
   SGSSnapshot(fp); // Save snapshot? MUST KEEP THIS HERE.
@@ -748,7 +748,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   //	write out gamemode information
 
   //	write out mission level information
-  cf_WriteShort(fp, (short)Current_mission.cur_level);
+  cf_WriteShort(fp, (int16_t)Current_mission.cur_level);
 
   if (Current_mission.filename && (strcmpi("d3_2.mn3", Current_mission.filename) == 0)) {
     cf_WriteString(fp, "d3.mn3");
@@ -771,7 +771,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   // cf_WriteInt(fp,Times_game_restored);
   // Save weather
   cf_WriteInt(fp, sizeof(Weather));
-  cf_WriteBytes((ubyte *)&Weather, sizeof(Weather), fp);
+  cf_WriteBytes((uint8_t *)&Weather, sizeof(Weather), fp);
 
   // Save active doorways
   cf_WriteInt(fp, MAX_ACTIVE_DOORWAYS);
@@ -838,7 +838,7 @@ bool SaveGameState(const char *pathname, const char *description) {
 void SGSXlateTables(CFILE *fp) {
   START_VERIFY_SAVEFILE(fp);
   //	create object info translation table
-  short i, highest_index = -1;
+  int16_t i, highest_index = -1;
 
   for (i = 0; i < MAX_OBJECT_IDS; i++)
     if (Object_info[i].type != OBJ_NONE)
@@ -878,12 +878,12 @@ void SGSXlateTables(CFILE *fp) {
   END_VERIFY_SAVEFILE(fp, "Xlate save");
 }
 
-extern ubyte AutomapVisMap[MAX_ROOMS];
+extern uint8_t AutomapVisMap[MAX_ROOMS];
 //	initializes rooms
 void SGSRooms(CFILE *fp) {
   int i, f, p;
 
-  gs_WriteShort(fp, (short)Highest_room_index);
+  gs_WriteShort(fp, (int16_t)Highest_room_index);
 
   gs_WriteShort(fp, MAX_ROOMS);
 
@@ -951,7 +951,7 @@ void SGSEvents(CFILE *fp) {}
 void SGSTriggers(CFILE *fp) {
   int i;
 
-  gs_WriteShort(fp, (short)Num_triggers);
+  gs_WriteShort(fp, (int16_t)Num_triggers);
 
   for (i = 0; i < Num_triggers; i++) {
     gs_WriteShort(fp, Triggers[i].flags);
@@ -968,7 +968,7 @@ void SGSPlayers(CFILE *fp) {
   player *plr = &Players[0];
 
   gs_WriteShort(fp, sizeof(player));
-  cf_WriteBytes((ubyte *)plr, sizeof(player), fp);
+  cf_WriteBytes((uint8_t *)plr, sizeof(player), fp);
   if (plr->guided_obj)
     gs_WriteInt(fp, plr->guided_obj->handle);
 
@@ -986,11 +986,11 @@ void SGSVisEffects(CFILE *fp) {
     if (VisEffects[i].type != VIS_NONE)
       count++;
 
-  gs_WriteShort(fp, (short)count);
+  gs_WriteShort(fp, (int16_t)count);
 
   for (i = 0; i <= Highest_vis_effect_index; i++) {
     if (VisEffects[i].type != VIS_NONE)
-      cf_WriteBytes((ubyte *)&VisEffects[i], sizeof(vis_effect), fp);
+      cf_WriteBytes((uint8_t *)&VisEffects[i], sizeof(vis_effect), fp);
   }
 }
 
@@ -1011,14 +1011,14 @@ void SGSObjects(CFILE *fp) {
 
   // Save marker info (text)
   cf_WriteInt(fp, Marker_message);
-  cf_WriteShort(fp, (short)MAX_PLAYERS * 2);
+  cf_WriteShort(fp, (int16_t)MAX_PLAYERS * 2);
   for (i = 0; i < MAX_PLAYERS * 2; i++) {
     cf_WriteShort(fp, strlen(MarkerMessages[i]) + 1);
-    cf_WriteBytes((ubyte *)MarkerMessages[i], strlen(MarkerMessages[i]) + 1, fp);
+    cf_WriteBytes((uint8_t *)MarkerMessages[i], strlen(MarkerMessages[i]) + 1, fp);
   }
 
   // this method should maintain the object list as it currently stands in the level
-  cf_WriteShort(fp, (short)Highest_object_index);
+  cf_WriteShort(fp, (int16_t)Highest_object_index);
 
   // save what objects are stuck to each other
   cf_WriteInt(fp, MAX_OBJECTS);
@@ -1061,16 +1061,16 @@ void SGSObjects(CFILE *fp) {
 
     gs_WriteInt(fp, 0xBADB0B);
     // we don't save deleted objects or room objects since they're reconstructed on loadlevel
-    gs_WriteByte(fp, (sbyte)op->type);
+    gs_WriteByte(fp, (int8_t)op->type);
 
     if (op->type == OBJ_NONE)
       continue;
-    gs_WriteByte(fp, (sbyte)op->lighting_render_type);
+    gs_WriteByte(fp, (int8_t)op->lighting_render_type);
 
     // Store whether or not we have a pointer to lighting_info
     gs_WriteByte(fp, op->lighting_info ? 1 : 0);
     if (op->lighting_info) {
-      cf_WriteBytes((ubyte *)op->lighting_info, sizeof(*op->lighting_info), fp);
+      cf_WriteBytes((uint8_t *)op->lighting_info, sizeof(*op->lighting_info), fp);
     }
 
     // these objects FOR NOW won't be saved
@@ -1078,7 +1078,7 @@ void SGSObjects(CFILE *fp) {
     ASSERT((op->handle & HANDLE_OBJNUM_MASK) == i);
 
     // type and handle info.
-    gs_WriteByte(fp, (sbyte)op->dummy_type);
+    gs_WriteByte(fp, (int8_t)op->dummy_type);
     //	positional information
     gs_WriteInt(fp, op->roomnum);
     gs_WriteVector(fp, op->pos);
@@ -1090,16 +1090,16 @@ void SGSObjects(CFILE *fp) {
     ii = (op->name) ? strlen(op->name) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((ubyte *)op->name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->name, ii, fp);
 
     //	data universal to all objects that need to be saved.
-    gs_WriteShort(fp, (short)op->id);
+    gs_WriteShort(fp, (int16_t)op->id);
     gs_WriteInt(fp, static_cast<int32_t>(op->flags));
-    gs_WriteByte(fp, (sbyte)op->control_type);
-    gs_WriteByte(fp, (sbyte)op->movement_type);
-    gs_WriteByte(fp, (sbyte)op->render_type);
+    gs_WriteByte(fp, (int8_t)op->control_type);
+    gs_WriteByte(fp, (int8_t)op->movement_type);
+    gs_WriteByte(fp, (int8_t)op->render_type);
 
-    gs_WriteShort(fp, (short)op->renderframe);
+    gs_WriteShort(fp, (int16_t)op->renderframe);
     gs_WriteFloat(fp, op->size);
     gs_WriteFloat(fp, op->shields);
     gs_WriteByte(fp, op->contains_type);
@@ -1153,29 +1153,29 @@ void SGSObjects(CFILE *fp) {
     ii = (op->custom_default_script_name) ? strlen(op->custom_default_script_name) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((ubyte *)op->custom_default_script_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_script_name, ii, fp);
 
     ii = (op->custom_default_module_name) ? strlen(op->custom_default_module_name) : 0;
     gs_WriteByte(fp, ii);
     if (ii > 0)
-      cf_WriteBytes((ubyte *)op->custom_default_module_name, ii, fp);
+      cf_WriteBytes((uint8_t *)op->custom_default_module_name, ii, fp);
 
     INSURE_SAVEFILE;
 
-    gs_WriteShort(fp, (short)op->position_counter);
+    gs_WriteShort(fp, (int16_t)op->position_counter);
 
     INSURE_SAVEFILE;
 
     //	write out all structures here.
     // movement info.
     gs_WriteShort(fp, sizeof(op->mtype));
-    cf_WriteBytes((ubyte *)&op->mtype, sizeof(op->mtype), fp);
+    cf_WriteBytes((uint8_t *)&op->mtype, sizeof(op->mtype), fp);
 
     INSURE_SAVEFILE;
 
     // Control info, determined by CONTROL_TYPE
     gs_WriteShort(fp, sizeof(op->ctype));
-    cf_WriteBytes((ubyte *)&op->ctype, sizeof(op->ctype), fp);
+    cf_WriteBytes((uint8_t *)&op->ctype, sizeof(op->ctype), fp);
 
     INSURE_SAVEFILE;
 
@@ -1185,14 +1185,14 @@ void SGSObjects(CFILE *fp) {
     INSURE_SAVEFILE;
     // save out rendering information
     gs_WriteShort(fp, sizeof(op->rtype));
-    cf_WriteBytes((ubyte *)&op->rtype, sizeof(op->rtype), fp);
+    cf_WriteBytes((uint8_t *)&op->rtype, sizeof(op->rtype), fp);
 
     cf_WriteFloat(fp, op->size);
     if (op->render_type == RT_POLYOBJ) {
       // Do Animation stuff
       custom_anim multi_anim_info;
       ObjGetAnimUpdate(i, &multi_anim_info);
-      cf_WriteBytes((ubyte *)&multi_anim_info, sizeof(multi_anim_info), fp);
+      cf_WriteBytes((uint8_t *)&multi_anim_info, sizeof(multi_anim_info), fp);
     }
 
     INSURE_SAVEFILE;
@@ -1224,7 +1224,7 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
     return;
 
   gs_WriteShort(fp, sizeof(ai_frame));
-  cf_WriteBytes((ubyte *)ai, sizeof(ai_frame), fp);
+  cf_WriteBytes((uint8_t *)ai, sizeof(ai_frame), fp);
 }
 
 //	saves script
@@ -1253,7 +1253,7 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
 //@@// write out thread data if necessary
 //@@	if (script->thread) {
 //@@		const vector *mem = D3XGetThreadMem(script->thread->mem_handle);
-//@@		ushort mem_size = script->thread->prog->map[script->thread->prog_idx].mem;
+//@@		uint16_t mem_size = script->thread->prog->map[script->thread->prog_idx].mem;
 //@@
 //@@		gs_WriteShort(fp, mem_size);
 //@@		if (mem) {
@@ -1270,7 +1270,7 @@ void SGSObjEffects(CFILE *fp, const object *op) {
   gs_WriteByte(fp, (ei ? 1 : 0));
   if (ei) {
     gs_WriteShort(fp, sizeof(effect_info_s));
-    cf_WriteBytes((ubyte *)ei, sizeof(effect_info_s), fp);
+    cf_WriteBytes((uint8_t *)ei, sizeof(effect_info_s), fp);
   }
 }
 
@@ -1279,10 +1279,10 @@ void SGSObjWB(CFILE *fp, object *op, int num_wbs) {
   int i;
 
   if (op->dynamic_wb) {
-    gs_WriteByte(fp, (sbyte)num_wbs);
+    gs_WriteByte(fp, (int8_t)num_wbs);
     for (i = 0; i < num_wbs; i++) {
       dynamic_wb_info *dwb = &op->dynamic_wb[i];
-      cf_WriteBytes((ubyte *)dwb, sizeof(dynamic_wb_info), fp);
+      cf_WriteBytes((uint8_t *)dwb, sizeof(dynamic_wb_info), fp);
     }
   } else {
     gs_WriteByte(fp, 0);
@@ -1296,11 +1296,11 @@ void SGSObjSpecial(CFILE *fp, const object *op) {}
 void SGSSpew(CFILE *fp) {
   int i;
 
-  gs_WriteShort(fp, (short)spew_count);
+  gs_WriteShort(fp, (int16_t)spew_count);
   for (i = 0; i < MAX_SPEW_EFFECTS; i++) {
     gs_WriteByte(fp, SpewEffects[i].inuse ? true : false);
     if (SpewEffects[i].inuse)
-      cf_WriteBytes((ubyte *)&SpewEffects[i], sizeof(spewinfo), fp);
+      cf_WriteBytes((uint8_t *)&SpewEffects[i], sizeof(spewinfo), fp);
   }
 }
 
@@ -1388,7 +1388,7 @@ void SGSSnapshot(CFILE *fp) {
 //@@			gs_WriteInt(fp, op->ctype.powerup_info.flags);
 //@@			break;
 //@@		case CT_SPLINTER:			//Splinter
-//@@			gs_WriteByte(fp, (sbyte)op_splint->subobj_num);
+//@@			gs_WriteByte(fp, (int8_t)op_splint->subobj_num);
 //@@			gs_WriteShort(fp, op_splint->facenum);
 //@@			for (j = 0; j < MAX_VERTS_PER_SPLINTER; j++)
 //@@				gs_WriteVector(fp, op_splint->verts[j]);
@@ -1665,7 +1665,7 @@ void SGSSnapshot(CFILE *fp) {
 //@@			gs_WriteFloat(fp, ei->volume_old_room);
 //@@//		}
 //@@//		if (ei->type_flags & EF_VOLUME_LIT) {
-//@@			gs_WriteByte(fp, (sbyte)ei->dynamic_this_frame);
+//@@			gs_WriteByte(fp, (int8_t)ei->dynamic_this_frame);
 //@@			gs_WriteFloat(fp, ei->dynamic_red);
 //@@			gs_WriteFloat(fp, ei->dynamic_green);
 //@@			gs_WriteFloat(fp, ei->dynamic_blue);

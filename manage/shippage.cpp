@@ -613,7 +613,7 @@ int mng_ReadNewShipPage(CFILE *infile, mngs_ship_page *shippage) {
 int mng_ReadShipPage(CFILE *infile, mngs_ship_page *shippage) {
   int done = 0;
   char command;
-  ubyte len;
+  uint8_t len;
   int i;
   int version = 0;
 
@@ -786,21 +786,21 @@ int mng_ReadShipPage(CFILE *infile, mngs_ship_page *shippage) {
       break;
     }
     case SHIPPAGE_COMMAND_FIRE_FLAGS: {
-      ubyte slot;
+      uint8_t slot;
 
       slot = cf_ReadByte(infile);
       shippage->ship_struct.fire_flags[slot] = cf_ReadByte(infile);
       break;
     }
     case SHIPPAGE_COMMAND_MAX_AMMO: {
-      ubyte slot;
+      uint8_t slot;
 
       slot = cf_ReadByte(infile);
       shippage->ship_struct.max_ammo[slot] = cf_ReadInt(infile);
       break;
     }
     case SHIPPAGE_COMMAND_RESOURCE_USAGE: {
-      ubyte slot;
+      uint8_t slot;
 
       slot = cf_ReadByte(infile);
       shippage->ship_struct.static_wb[slot].energy_usage = cf_ReadFloat(infile);
@@ -834,7 +834,7 @@ int mng_ReadShipPage(CFILE *infile, mngs_ship_page *shippage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificShipPage(char *name, mngs_ship_page *shippage, int offset) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
   char tablename[TABLE_NAME_LEN];

@@ -53,15 +53,17 @@
 #ifndef CTLCONFIG_H
 #define CTLCONFIG_H
 
+#include <cstdint>
+
 #define CTLCONFIG_KEYBOARD 0
 #define CTLCONFIG_CONTROLLER 1
 #define CTLCONFIG_WPNSEL 2
 
 typedef struct t_cfg_element {
-  short fn_id; // -1 = group start
-  short text;  // text string id.
-  short x;
-  short y; // location (for groups only)
+  int16_t fn_id; // -1 = group start
+  int16_t text;  // text string id.
+  int16_t x;
+  int16_t y; // location (for groups only)
 } t_cfg_element;
 
 extern t_cfg_element Cfg_key_elements[];

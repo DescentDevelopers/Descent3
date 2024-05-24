@@ -631,7 +631,7 @@ void UIListBox::OnDraw() {
 
   //	draw all items in box that can be visible.
   int x, y, i;
-  ubyte alpha;
+  uint8_t alpha;
 
   x = m_TextOffX;
   y = m_TextOffY;
@@ -666,7 +666,7 @@ void UIListBox::OnDraw() {
     //			ui_DrawRect(m_HiliteColor, x,y,m_W-m_TextOffX,y+m_ItemList[i]->height()+2);
     //		}
 
-    m_ItemList[i]->set_alpha((ubyte)alpha);
+    m_ItemList[i]->set_alpha((uint8_t)alpha);
     if (m_SelectedIndex == i) {
       ddgr_color old_color = m_ItemList[i]->get_color();
       m_ItemList[i]->set_color(m_SelectColor);

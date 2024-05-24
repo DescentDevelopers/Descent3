@@ -1357,7 +1357,7 @@ void LoadControlConfig(pilot *plt) {
     int id = Current_pilot.controls[i].id;
     ct_type type[2];
     ct_config_data ccfgdata;
-    ubyte flags[2];
+    uint8_t flags[2];
 
     type[0] = plt->controls[i].type[0];
     type[1] = plt->controls[i].type[1];
@@ -1387,7 +1387,7 @@ void SaveControlConfig(pilot *plt) {
   for (int i = 0; i < NUM_CONTROLLER_FUNCTIONS; i++) {
     ct_type ctype[2];
     ct_config_data ccfgdata;
-    ubyte flags[2];
+    uint8_t flags[2];
     Controller->get_controller_function(Controller_needs[i].id, ctype, &ccfgdata, flags);
 
     plt->controls[i].id = Controller_needs[i].id;

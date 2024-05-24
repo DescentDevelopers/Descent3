@@ -441,23 +441,23 @@ bool Show_osiris_debug = false;
 #if defined(__LINUX__)
 typedef char DLLFUNCCALL (*InitializeDLL_fp)(tOSIRISModuleInit *function_list);
 typedef void DLLFUNCCALL (*ShutdownDLL_fp)(void);
-typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, ubyte isdoor);
+typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, uint8_t isdoor);
 typedef void DLLFUNCCALL *(*CreateInstance_fp)(int id);
 typedef void DLLFUNCCALL (*DestroyInstance_fp)(int id, void *ptr);
-typedef short DLLFUNCCALL (*CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
+typedef int16_t DLLFUNCCALL (*CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
 typedef int DLLFUNCCALL (*GetTriggerScriptID_fp)(int trigger_room, int trigger_face);
 typedef int DLLFUNCCALL (*GetCOScriptList_fp)(int **list, int **id_list);
-typedef int DLLFUNCCALL (*SaveRestoreState_fp)(void *file_ptr, ubyte saving_state);
+typedef int DLLFUNCCALL (*SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
 #else
 typedef char(DLLFUNCCALL *InitializeDLL_fp)(tOSIRISModuleInit *function_list);
 typedef void(DLLFUNCCALL *ShutdownDLL_fp)(void);
-typedef int(DLLFUNCCALL *GetGOScriptID_fp)(const char *name, ubyte isdoor);
+typedef int(DLLFUNCCALL *GetGOScriptID_fp)(const char *name, uint8_t isdoor);
 typedef void *(DLLFUNCCALL *CreateInstance_fp)(int id);
 typedef void(DLLFUNCCALL *DestroyInstance_fp)(int id, void *ptr);
-typedef short(DLLFUNCCALL *CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
+typedef int16_t(DLLFUNCCALL *CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
 typedef int(DLLFUNCCALL *GetTriggerScriptID_fp)(int trigger_room, int trigger_face);
 typedef int(DLLFUNCCALL *GetCOScriptList_fp)(int **list, int **id_list);
-typedef int(DLLFUNCCALL *SaveRestoreState_fp)(void *file_ptr, ubyte saving_state);
+typedef int(DLLFUNCCALL *SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
 #endif
 
 typedef struct tRefObj {
@@ -468,9 +468,9 @@ typedef struct tRefObj {
 } tRefObj;
 
 typedef struct {
-  ubyte flags;
-  ubyte extracted_id;
-  ushort reference_count;
+  uint8_t flags;
+  uint8_t extracted_id;
+  uint16_t reference_count;
   InitializeDLL_fp InitializeDLL;
   ShutdownDLL_fp ShutdownDLL;
   GetGOScriptID_fp GetGOScriptID;
@@ -494,21 +494,21 @@ static tOSIRISModule OSIRIS_loaded_modules[MAX_LOADED_MODULES];
 tOSIRISModuleInit Osiris_module_init;
 struct {
   bool level_loaded;
-  ushort num_customs;
-  ushort dll_id;
+  uint16_t num_customs;
+  uint16_t dll_id;
   int *custom_ids;
   int *custom_handles;
   void *instance;
 } tOSIRISCurrentLevel;
 struct {
   bool mission_loaded;
-  ushort dll_id;
+  uint16_t dll_id;
 } tOSIRISCurrentMission;
 
 #define OESF_USED 0x0001
 #define OESF_MISSION 0x0002 // mission dlls
 typedef struct {
-  ubyte flags;
+  uint8_t flags;
   char *temp_filename;
   char *real_filename;
 } tExtractedScriptInfo;
@@ -529,7 +529,7 @@ static void Osiris_SaveOMMS(CFILE *file);
 //		Generates a checksum of the game's structures, to give to the modules
 //	so they can use to compare to the time when they were compiled, to see
 //	if they are compatible.
-uint Osiris_CreateGameChecksum(void);
+uint32_t Osiris_CreateGameChecksum(void);
 //	Osiris_IsEventEnabled
 //	Purpose:
 //		Returns true if the event is allowed to be called
@@ -543,9 +543,9 @@ extern void Cinematic_StartCannedScript(tCannedCinematicInfo *info);
 static void Osiris_DumpLoadedObjects(char *file);
 static void Osiris_ForceUnloadModules(void);
 
-uint Osiris_game_checksum;
+uint32_t Osiris_game_checksum;
 
-static ubyte Osiris_event_mask = OEM_OBJECTS | OEM_TRIGGERS | OEM_LEVELS;
+static uint8_t Osiris_event_mask = OEM_OBJECTS | OEM_TRIGGERS | OEM_LEVELS;
 static bool Osiris_create_events_disabled = false;
 static bool Osiris_level_script_loaded = false;
 
@@ -626,8 +626,8 @@ void Osiris_InitModuleLoader(void) {
 //		Generates a checksum of the game's structures, to give to the modules
 //	so they can use to compare to the time when they were compiled, to see
 //	if they are compatible.
-uint Osiris_CreateGameChecksum(void) {
-  uint value = 0xe1e1b0b0;
+uint32_t Osiris_CreateGameChecksum(void) {
+  uint32_t value = 0xe1e1b0b0;
 
   value += sizeof(object);
   value += sizeof(player) * 2;
@@ -1995,7 +1995,7 @@ bool Osiris_CallLevelEvent(int event, tOSIRISEventInfo *data) {
 
     if (instance) {
       data->me_handle = OBJECT_HANDLE_NONE; // its a level script!...no me
-      short ret;
+      int16_t ret;
 
       ret = OSIRIS_loaded_modules[dll_id].CallInstanceEvent(0, instance, event, data);
       if (aux_event != -1) {
@@ -2058,7 +2058,7 @@ bool Osiris_CallTriggerEvent(int trignum, int event, tOSIRISEventInfo *ei) {
   instance = Triggers[trignum].osiris_script.script_instance;
 
   if (instance) {
-    short ret;
+    int16_t ret;
     ret = OSIRIS_loaded_modules[dll_id].CallInstanceEvent(script_id, instance, event, ei);
 
     if (aux_event != -1) {
@@ -2075,12 +2075,12 @@ bool Osiris_CallTriggerEvent(int trignum, int event, tOSIRISEventInfo *ei) {
 //	Osiris_EnableEvents
 //	Purpose:
 //		Enables the passed in mask of event types to be called
-void Osiris_EnableEvents(ubyte mask) { Osiris_event_mask |= mask; }
+void Osiris_EnableEvents(uint8_t mask) { Osiris_event_mask |= mask; }
 
 //	Osiris_DisableEvents
 //	Purpose:
 //		Disables the passed in mask of event types
-void Osiris_DisableEvents(ubyte mask) { Osiris_event_mask &= ~mask; }
+void Osiris_DisableEvents(uint8_t mask) { Osiris_event_mask &= ~mask; }
 
 //	Osiris_DisableCreateEvents
 //	Purpose:
@@ -2144,7 +2144,7 @@ bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data) {
   int dll_id;
   int aux_event = -1; // event value
   tOSIRISScript *os;
-  short ret = CONTINUE_CHAIN | CONTINUE_DEFAULT;
+  int16_t ret = CONTINUE_CHAIN | CONTINUE_DEFAULT;
 
   if (event == EVT_AI_NOTIFY) {
     switch (data->evt_ai_notify.notify_type) {
@@ -2268,7 +2268,7 @@ bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data) {
 #define OITF_LEVELTIMER 0x0008
 #define OITF_CANCELONDEAD 0x0010
 typedef struct {
-  ushort flags;
+  uint16_t flags;
   union {
     int objhandle;
     int trignum;
@@ -2534,7 +2534,7 @@ void Osiris_CancelTimerID(int id) {
 //	Osiris_TimerExists
 //	Purpose:
 //		Returns true if the timer is valid
-ubyte Osiris_TimerExists(int handle) {
+uint8_t Osiris_TimerExists(int handle) {
   int id = GET_SLOT(handle);
 
   if (id < 0 || id >= MAX_OSIRIS_TIMERS)
@@ -2636,7 +2636,7 @@ void Osiris_SaveSystemState(CFILE *file) {
       // get the length of the module name
       int module_name_length = strlen(OSIRIS_loaded_modules[i].module_name) + 1;
       cf_WriteByte(file, module_name_length);
-      cf_WriteBytes((ubyte *)OSIRIS_loaded_modules[i].module_name, module_name_length, file);
+      cf_WriteBytes((uint8_t *)OSIRIS_loaded_modules[i].module_name, module_name_length, file);
 
       // now here is the tricky part, save the current fileposition, write a dummy 0 int
       int saved_file_pos = cftell(file);
@@ -2696,7 +2696,7 @@ bool Osiris_RestoreSystemState(CFILE *file) {
     return false;
   }
 
-  ubyte version = (ubyte)cf_ReadByte(file);
+  uint8_t version = (uint8_t)cf_ReadByte(file);
 
   num_bytes_to_be_restored = cf_ReadInt(file);
 
@@ -2765,7 +2765,7 @@ bool Osiris_RestoreSystemState(CFILE *file) {
     int module_handle;
 
     read_module_namelen = cf_ReadByte(file);
-    cf_ReadBytes((ubyte *)read_module_name, read_module_namelen, file);
+    cf_ReadBytes((uint8_t *)read_module_name, read_module_namelen, file);
     read_module_name[read_module_namelen] = '\0';
 
     read_module_globalsize = cf_ReadInt(file);
@@ -3019,7 +3019,7 @@ void Osiris_SaveMemoryChunks(CFILE *file) {
       break;
     }
     cf_WriteInt(file, curr->chunk_id.id);
-    cf_WriteBytes((ubyte *)curr->memory, curr->chunk_id.size, file);
+    cf_WriteBytes((uint8_t *)curr->memory, curr->chunk_id.size, file);
     curr = curr->next;
   }
 
@@ -3072,7 +3072,7 @@ void Osiris_RestoreMemoryChunks(CFILE *file) {
       if (!memchunk->memory) {
         Error("Out of memory");
       }
-      cf_ReadBytes((ubyte *)memchunk->memory, memchunk->chunk_id.size, file);
+      cf_ReadBytes((uint8_t *)memchunk->memory, memchunk->chunk_id.size, file);
       memchunk->next = NULL;
 
       // ok, the node is setup, add it to the linked list
@@ -3297,7 +3297,7 @@ the script)
 // Returns -1 if there isn't enough available memory
 // Returns -2 if the unique identifier passed in is already used, but the requested amount_of_memory is different
 // If the memory has already been allocated, it will return the handle.
-OMMSHANDLE OMMS_Malloc(size_t amount_of_memory,uint unique_identifier,char *script_identifier);
+OMMSHANDLE OMMS_Malloc(size_t amount_of_memory,uint32_t unique_identifier,char *script_identifier);
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
 //	attached to a module, the memory will not be deleted. (Increments the reference count)
@@ -3323,37 +3323,37 @@ subtracts).
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-OMMSHANDLE OMMS_Find(uint unique_identifier,char *script_identifier);
+OMMSHANDLE OMMS_Find(uint32_t unique_identifier,char *script_identifier);
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char OMMS_GetInfo(OMMSHANDLE handle,uint *mem_size,uint *uid,ushort *reference_count,ubyte *has_free_been_called);
+char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t *has_free_been_called);
 
 
 ******************************************************************************
 */
 
 typedef struct tOMMSNode {
-  unsigned short id;
-  unsigned int size_of_memory;
-  unsigned int unique_id;
-  unsigned short reference_count;
-  unsigned char free_called;
+  uint16_t id;
+  uint32_t size_of_memory;
+  uint32_t unique_id;
+  uint16_t reference_count;
+  uint8_t free_called;
   void *memory_ptr;
   tOMMSNode *next;
 } tOMMSNode;
 
 typedef struct tOMMSHashNode {
   char *script_name;
-  unsigned short base_id;
+  uint16_t base_id;
   tOMMSNode *root;
   tOMMSHashNode *next;
 } tOMMSHashNode;
 
 tOMMSHashNode *OMMS_Hash_node_root = NULL;
-unsigned short OMMS_Current_base_id = 0;
-unsigned short OMMS_Current_id = 0;
+uint16_t OMMS_Current_base_id = 0;
+uint16_t OMMS_Current_id = 0;
 
 //	Searches through the hash nodes and looks for the one associated with
 //	the script name, if one doesn't exist it will create one (if autocreate is true).
@@ -3363,9 +3363,9 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate);
 tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node);
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
-tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, unsigned int uid, bool autocreate);
+tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate);
 //	Removes the OMMS node for the given HashNode (completly remove)
-void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, unsigned int uid);
+void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid);
 //	Reduces the reference count for an OMMSNode by 1
 void Osiris_OMMS_ReduceRefCount(tOMMSHashNode *root, tOMMSNode *node);
 //	Calls free on a node
@@ -3380,7 +3380,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash = NULL
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different Returns -3 if the unique identifier passed in is
 // already used, same size requested
-static OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint unique_identifier, char *script_identifier);
+static OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifier, char *script_identifier);
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
 //	attached to a module, the memory will not be deleted. (Increments the reference count)
@@ -3406,13 +3406,13 @@ static void Osiris_OMMS_Free(OMMSHANDLE handle);
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-static OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier);
+static OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier);
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
-                                ubyte *has_free_been_called);
+static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
+                                uint8_t *has_free_been_called);
 
 void Osiris_InitOMMS(void) {
   OMMS_Current_base_id = 0;
@@ -3451,7 +3451,7 @@ void Osiris_SaveOMMS(CFILE *file) {
     length = (currhash->script_name) ? strlen(currhash->script_name) : 0;
     cf_WriteByte(file, length);
     if (length)
-      cf_WriteBytes((ubyte *)currhash->script_name, length, file);
+      cf_WriteBytes((uint8_t *)currhash->script_name, length, file);
 
     // now go through all the nodes and write their data
     tOMMSNode *node;
@@ -3467,7 +3467,7 @@ void Osiris_SaveOMMS(CFILE *file) {
       cf_WriteInt(file, node->unique_id);
       cf_WriteInt(file, node->size_of_memory);
       if (node->size_of_memory)
-        cf_WriteBytes((ubyte *)node->memory_ptr, node->size_of_memory, file);
+        cf_WriteBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
 
       node = node->next;
     }
@@ -3485,8 +3485,8 @@ void Osiris_SaveOMMS(CFILE *file) {
 void Osiris_RestoreOMMS(CFILE *file) {
   ASSERT(OMMS_Hash_node_root == NULL);
 
-  OMMS_Current_base_id = (unsigned short)cf_ReadShort(file);
-  OMMS_Current_id = (unsigned short)cf_ReadShort(file);
+  OMMS_Current_base_id = (uint16_t)cf_ReadShort(file);
+  OMMS_Current_id = (uint16_t)cf_ReadShort(file);
 
   tOMMSHashNode *currhash;
   tOMMSNode *node;
@@ -3509,7 +3509,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
     currhash->root = NULL;
     currhash->script_name = NULL;
 
-    currhash->base_id = (unsigned short)cf_ReadShort(file);
+    currhash->base_id = (uint16_t)cf_ReadShort(file);
 
     // read length of string
     int length = cf_ReadByte(file);
@@ -3518,7 +3518,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
       if (!currhash->script_name)
         Error("Out of Memory");
       else
-        cf_ReadBytes((ubyte *)currhash->script_name, length, file);
+        cf_ReadBytes((uint8_t *)currhash->script_name, length, file);
     }
 
     node = NULL;
@@ -3538,10 +3538,10 @@ void Osiris_RestoreOMMS(CFILE *file) {
       node->memory_ptr = NULL;
       node->next = NULL;
 
-      node->id = (unsigned short)cf_ReadShort(file);
+      node->id = (uint16_t)cf_ReadShort(file);
 
       node->free_called = (cf_ReadByte(file)) ? true : false;
-      node->reference_count = (ushort)cf_ReadShort(file);
+      node->reference_count = (uint16_t)cf_ReadShort(file);
       node->unique_id = cf_ReadInt(file);
       node->size_of_memory = cf_ReadInt(file);
       if (node->size_of_memory) {
@@ -3549,7 +3549,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
         if (!node->memory_ptr)
           Error("Out of memory");
 
-        cf_ReadBytes((ubyte *)node->memory_ptr, node->size_of_memory, file);
+        cf_ReadBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
       }
     } // end reading nodes
   }   // end reading hash nodes
@@ -3626,7 +3626,7 @@ tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node) {
 
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
-tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, unsigned int uid, bool autocreate) {
+tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate) {
   tOMMSNode *curr = root->root;
 
   if (!root->root) {
@@ -3672,7 +3672,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, unsigned int uid, bool auto
 }
 
 //	Removes the OMMS node for the given HashNode (completly remove)
-void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, unsigned int uid) {
+void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
   tOMMSNode *curr = root->root;
   tOMMSNode *node_to_free = NULL;
 
@@ -3738,8 +3738,8 @@ void Osiris_OMMS_CallFreeForNode(tOMMSHashNode *root, tOMMSNode *node) {
 tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
   tOMMSHashNode *hashcurr = OMMS_Hash_node_root;
   tOMMSNode *nodecurr;
-  unsigned short base_id;
-  unsigned short id;
+  uint16_t base_id;
+  uint16_t id;
   base_id = ((handle & 0xFFFF0000) >> 16);
   id = (handle & 0x0000FFFF);
 
@@ -3770,7 +3770,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different If the memory has already been allocated, it will
 // return the handle.
-OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint unique_identifier, char *script_identifier) {
+OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifier, char *script_identifier) {
   ASSERT(amount_of_memory > 0);
   if (amount_of_memory <= 0)
     return -1;
@@ -3852,7 +3852,7 @@ void Osiris_OMMS_Free(OMMSHANDLE handle) {
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier) {
+OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier) {
   tOMMSHashNode *hash = Osiris_OMMS_FindHashNode(script_identifier, false);
   if (!hash)
     return -1;
@@ -3869,8 +3869,8 @@ OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier) {
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
-                         ubyte *has_free_been_called) {
+char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
+                         uint8_t *has_free_been_called) {
   if (mem_size)
     *mem_size = 0;
   if (uid)

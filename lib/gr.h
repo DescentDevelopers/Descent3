@@ -132,7 +132,7 @@ typedef enum grTextAlign { // used to align text along viewport
 } grTextAlign;
 
 typedef struct tCharProperties {
-  ubyte alpha;
+  uint8_t alpha;
   ddgr_color col[4];
 } tCharProperties;
 
@@ -151,16 +151,16 @@ const int MAX_FONTS = 16, MAX_FONT_BITMAPS = 12;
 #define DEFAULT_FONT 0
 
 typedef struct gr_font_file_record {
-  short width, height;      // width of widest character and height of longest char
-  short flags;              // flags used by the character renderer
-  short baseline;           // pixels given to lowercase below script line start at baseline
-  ubyte min_ascii;          // minimum ascii value used by font
-  ubyte max_ascii;          // max ascii value used by the font
-  short byte_width;         // width of a character in the font in bytes
-  ubyte *raw_data;          // pixel, map data.
-  ubyte **char_data;        // pointers to each character
-  short *char_widths;       // individual pixel widths of each character
-  unsigned char *kern_data; // kerning information for specific letter combos
+  int16_t width, height;      // width of widest character and height of longest char
+  int16_t flags;              // flags used by the character renderer
+  int16_t baseline;           // pixels given to lowercase below script line start at baseline
+  uint8_t min_ascii;          // minimum ascii value used by font
+  uint8_t max_ascii;          // max ascii value used by the font
+  int16_t byte_width;         // width of a character in the font in bytes
+  uint8_t *raw_data;          // pixel, map data.
+  uint8_t **char_data;        // pointers to each character
+  int16_t *char_widths;       // individual pixel widths of each character
+  uint8_t *kern_data; // kerning information for specific letter combos
 } gr_font_file_record;
 
 typedef struct gr_font_record {
@@ -169,7 +169,7 @@ typedef struct gr_font_record {
   int references;             // number of references of that font
   int bmps[MAX_FONT_BITMAPS]; // font bitmap handles
   grMemorySurface *surfs[MAX_FONT_BITMAPS];
-  ubyte *ch_u, *ch_v, *ch_w, *ch_h, *ch_surf;
+  uint8_t *ch_u, *ch_v, *ch_w, *ch_h, *ch_surf;
   float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
   gr_font_file_record font;
 
@@ -210,7 +210,7 @@ private:
   static void translate_to_surfaces(int slot);
   static void translate_mono_char(grSurface *sf, int x, int y, int index, gr_font_file_record *ft, int width);
 
-  ubyte *get_kern_info(ubyte c1, ubyte c2);
+  uint8_t *get_kern_info(uint8_t c1, uint8_t c2);
   void charblt16(grSurface *dsf, ddgr_color col, int dx, int dy, grSurface *ssf, int sx, int sy, int sw, int sh);
 
 public: // Accessor functions

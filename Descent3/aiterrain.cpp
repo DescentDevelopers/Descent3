@@ -58,7 +58,7 @@
 #define AI_MAX_SEGS_CHECKED 200
 
 static int ai_num_segs_checked = 0;
-static ubyte ai_terrain_check_list[((TERRAIN_WIDTH * TERRAIN_DEPTH) >> 3) + 1];
+static uint8_t ai_terrain_check_list[((TERRAIN_WIDTH * TERRAIN_DEPTH) >> 3) + 1];
 static int ai_segs_checked[AI_MAX_SEGS_CHECKED];
 #ifdef _DEBUG
 static int ai_num_checks_since_init = 0;

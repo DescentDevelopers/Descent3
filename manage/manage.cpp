@@ -514,7 +514,7 @@ FILETIME TableTimeThreshold;
 void BuildOldFileList(FILETIME threshold);
 #endif
 typedef struct {
-  ubyte type;
+  uint8_t type;
   char name[PAGENAME_LEN];
 } old_file;
 #define MAX_OLDFILE_ELEMENTS 10000
@@ -1020,7 +1020,7 @@ static mngs_gamefile_page gamefilepage;
 // TO DEAL WITH YOUR PAGE TYPE.  IF YOU FORGET, YOU CAN CORRUPT THE PAGEFILE!!!!!
 //------------------------------------------------------------------------------
 // Given a pagetype, reads it in but discards it.  Useful for parsing.
-void mng_ReadDummyPage(CFILE *infile, ubyte pagetype) {
+void mng_ReadDummyPage(CFILE *infile, uint8_t pagetype) {
   switch (pagetype) {
   case PAGETYPE_TEXTURE:
     mng_ReadNewTexturePage(infile, &texpage);
@@ -1063,7 +1063,7 @@ void mng_ReadDummyPage(CFILE *infile, ubyte pagetype) {
 }
 // Reads a page in that we don't care about, and writes it right back out
 // This is useful for replacing a specific page in a file but ignoring others
-void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, ubyte pagetype) {
+void mng_ReadWriteDummyPage(CFILE *infile, CFILE *outfile, uint8_t pagetype) {
   switch (pagetype) {
   case PAGETYPE_TEXTURE:
     // Read it in, write it out.
@@ -1233,7 +1233,7 @@ int mng_RenamePage(char *oldname, char *newname, int pagetype) {
 // If you want your data to be in the game, it must hook into this function
 int mng_LoadNetPages(int show_progress) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   char tablename[TABLE_NAME_LEN];
   float start_time;
   int n_pages = 0;
@@ -1422,7 +1422,7 @@ int mng_LoadNetPages(int show_progress) {
 // Loads and allocs all pages found locally
 int mng_LoadLocalPages() {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int len;
 
   mprintf((0, "Overlaying local pages..."));
@@ -1667,7 +1667,7 @@ void ReorderPagelocks() {
 // This helps in the load time of a table file.
 void ReorderPages(int local) {
   CFILE *infile, *outfile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0;
   int len;
 #ifdef CLEANING_PAGELOCKS
@@ -2034,7 +2034,7 @@ void UpdatePrimitive(char *localname, char *netname, char *primname, int pagetyp
   }
 }
 // Writes a chunk header.  Writes chunk id & placeholder length.  Returns chunk start pos
-int StartManagePage(CFILE *ofile, ubyte pagetype) {
+int StartManagePage(CFILE *ofile, uint8_t pagetype) {
   int chunk_start_pos;
   // Write pagetype
   cf_WriteByte(ofile, pagetype);
@@ -2098,7 +2098,7 @@ void mng_AssignAndWritePage(int handle, int pagetype, CFILE *outfile) {
 // Returns 0 on error, else 1 if all is good
 int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype, int local) {
   CFILE *infile, *outfile;
-  ubyte pagetype, replaced = 0;
+  uint8_t pagetype, replaced = 0;
   int done = 0, len;
   mprintf((0, "Replacing '%s' with '%s' (%s).\n", srcname, destname, local ? "locally" : "to network"));
 
@@ -2122,7 +2122,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
     return 0;
   }
   // Allocate memory for copying
-  ubyte *copybuffer = (ubyte *)mem_malloc(COPYBUFFER_SIZE);
+  uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
   if (!copybuffer) {
     mprintf((0, "Couldn't allocate memory to replace page %s!\n", srcname));
     cfclose(infile);
@@ -2266,7 +2266,7 @@ int mng_ReplacePage(char *srcname, char *destname, int handle, int dest_pagetype
 // If local is 1, deletes from the local table file
 int mng_DeletePage(char *name, int dest_pagetype, int local) {
   CFILE *infile, *outfile;
-  ubyte pagetype, replaced = 0;
+  uint8_t pagetype, replaced = 0;
   int done = 0;
   int deleted = 0;
 
@@ -2292,7 +2292,7 @@ int mng_DeletePage(char *name, int dest_pagetype, int local) {
     return 0;
   }
   // Allocate memory for copying
-  ubyte *copybuffer = (ubyte *)mem_malloc(COPYBUFFER_SIZE);
+  uint8_t *copybuffer = (uint8_t *)mem_malloc(COPYBUFFER_SIZE);
   if (!copybuffer) {
     mprintf((0, "Couldn't allocate memory to delete page!\n"));
     cfclose(infile);
@@ -2954,7 +2954,7 @@ char *Addon_filename;
 // Loads and allocs all pages found locally
 void mng_LoadAddonPages() {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int len;
 
   // Set flag & Clear error count

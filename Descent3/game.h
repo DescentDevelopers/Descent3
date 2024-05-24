@@ -309,7 +309,7 @@ typedef struct gamemode {
 // Structure for a terrain sound "band"
 typedef struct {
   int sound_index;               // the sound to play
-  ubyte low_alt, high_alt;       // top & bottom of range of sound
+  uint8_t low_alt, high_alt;       // top & bottom of range of sound
   float low_volume, high_volume; // volume at top & bottom of range
 } terrain_sound_band;
 

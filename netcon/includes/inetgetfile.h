@@ -167,7 +167,7 @@ bool inet_LoadThreadLib(void);
 class InetGetFile {
 public:
   InetGetFile(char *URL, char *localfile);
-  InetGetFile(char *URL, char *localfile, char *proxyip, short proxyport);
+  InetGetFile(char *URL, char *localfile, char *proxyip, int16_t proxyport);
   ~InetGetFile();
   BOOL IsFileReceived();
   BOOL IsFileError();
@@ -200,7 +200,7 @@ protected:
 
 int main(int argc,char **argv)
 {
-        unsigned int LastPrintbytes = time(NULL);
+        uint32_t LastPrintbytes = time(NULL);
         InetGetFile *inetfile;
         WSADATA	ws_data;
         WORD ver=MAKEWORD(1,1);

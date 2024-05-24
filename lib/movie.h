@@ -52,15 +52,15 @@ intptr_t mve_SequenceFrame(intptr_t handle, int fhandle, bool sequence, int *bm_
 bool mve_SequenceClose(intptr_t handle, int fhandle);
 
 //	sets render frame boundaries.
-void mve_SetRenderProperties(short x, short y, short w, short h, renderer_type type, bool hicolor);
+void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, renderer_type type, bool hicolor);
 
 // called every frame.
 typedef void (*MovieFrameCallback_fp)(int x, int y, int movieFrameNum);
 void mve_SetCallback(MovieFrameCallback_fp callBack);
 
 // call to print out text.
-void mve_Puts(short x, short y, ddgr_color col, const char *txt);
+void mve_Puts(int16_t x, int16_t y, ddgr_color col, const char *txt);
 
-void mve_ClearRect(short x1, short y1, short x2, short y2);
+void mve_ClearRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2);
 
 #endif

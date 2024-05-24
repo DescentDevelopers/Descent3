@@ -56,7 +56,7 @@ void PPic_CloseDatabase(void);
 //		Given a pilot callsign it will search the database
 //	and return the number of pilots that match the name
 // ---------------------------------------------------------
-ushort PPic_QueryPilot(char *pilot_name);
+uint16_t PPic_QueryPilot(char *pilot_name);
 
 // ---------------------------------------------------------
 // PPic_FindFirst
@@ -66,7 +66,7 @@ ushort PPic_QueryPilot(char *pilot_name);
 //	if it couldn't find any pilots matching.  It returns
 //	the pilot id.
 // ----------------------------------------------------------
-bool PPic_FindFirst(char *pilot_name, ushort *pilot_id);
+bool PPic_FindFirst(char *pilot_name, uint16_t *pilot_id);
 
 // ----------------------------------------------------------
 // PPic_FindNext
@@ -76,7 +76,7 @@ bool PPic_FindFirst(char *pilot_name, ushort *pilot_id);
 //	an initial call to PPic_FindFirst().  It returns the
 //	pilot id.
 // ----------------------------------------------------------
-bool PPic_FindNext(ushort *pilot_id);
+bool PPic_FindNext(uint16_t *pilot_id);
 
 // ----------------------------------------------------------
 // PPic_FindClose
@@ -91,7 +91,7 @@ void PPic_FindClose(void);
 //		Given a pilot id, it will return the pilot name of
 //	the pilot name.  Returns false if it's an invalid pilot id.
 // ----------------------------------------------------------
-bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize);
+bool PPic_GetPilot(uint16_t pilot_id, char *pilot_name, int buffersize);
 
 // ----------------------------------------------------------
 // PPic_GetBitmapHandle
@@ -101,6 +101,6 @@ bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize);
 //	bm_FreeBitmap().  Returns -1 if it was an illegal pilot id.
 //	Returns BAD_BITMAP_HANDLE if it couldn't open the bitmap.
 // ----------------------------------------------------------
-int PPic_GetBitmapHandle(ushort pilot_id);
+int PPic_GetBitmapHandle(uint16_t pilot_id);
 
 #endif

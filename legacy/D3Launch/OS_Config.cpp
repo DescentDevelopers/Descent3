@@ -233,8 +233,8 @@ Cleanup:
 		RegCloseKey(hKey);
 }
 
-// Writes an unsigned int to the INI file.  
-void os_config_write_uint( char *section, char *name, uint value )
+// Writes an uint32_t to the INI file.  
+void os_config_write_uint( char *section, char *name, uint32_t value )
 {
 	HKEY hKey = NULL;
 	DWORD dwDisposition;
@@ -332,7 +332,7 @@ char * os_config_read_string( char *section, char *name, char *default_value )
 									 name,											// The values name
 									 NULL,											// DWORD reserved
 	                         &dwType,										// What kind it is
-									 (ubyte *)&tmp_string_data,						// value to set
+									 (uint8_t *)&tmp_string_data,						// value to set
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
@@ -379,7 +379,7 @@ char * os_config_read_string_ex( char *keyname, char *name, char *default_value 
 									 name,											// The values name
 									 NULL,											// DWORD reserved
 	                         &dwType,										// What kind it is
-									 (ubyte *)&tmp_string_data_ex,						// value to set
+									 (uint8_t *)&tmp_string_data_ex,						// value to set
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
@@ -431,7 +431,7 @@ char * os_config_read_string2( char *section, char *name, char *default_value )
 									 name,											// The values name
 									 NULL,											// DWORD reserved
 	                         &dwType,										// What kind it is
-									 (ubyte *)&tmp_string_data,						// value to set
+									 (uint8_t *)&tmp_string_data,						// value to set
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
@@ -451,13 +451,13 @@ Cleanup:
 
 // Reads a string from the INI file.  Default_value must 
 // be passed, and if 'name' isn't found, then returns default_value
-uint  os_config_read_uint( char *section, char *name, uint default_value )
+uint32_t  os_config_read_uint( char *section, char *name, uint32_t default_value )
 {
 	HKEY hKey = NULL;
 	DWORD dwType, dwLen;
 	char keyname[1024];
 	LONG lResult;
-	uint tmp_val;
+	uint32_t tmp_val;
 
 
 	if ( section )	{
@@ -487,7 +487,7 @@ uint  os_config_read_uint( char *section, char *name, uint default_value )
 									 name,											// The values name
 									 NULL,											// DWORD reserved
 	                         &dwType,										// What kind it is
-									 (ubyte *)&tmp_val,						// value to set
+									 (uint8_t *)&tmp_val,						// value to set
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{

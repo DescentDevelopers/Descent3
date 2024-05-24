@@ -41,10 +41,10 @@ typedef struct {
   int sample_length;
   int np_sample_length;
   int samples_per_second;
-  short bits_per_sample;
-  short number_channels;
-  unsigned char *sample_8bit;
-  short *sample_16bit;
+  int16_t bits_per_sample;
+  int16_t number_channels;
+  uint8_t *sample_8bit;
+  int16_t *sample_16bit;
 } tWaveFile;
 
 // returns:
@@ -224,7 +224,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
   int samples, rate, chan;
   char temp_filename[_MAX_PATH];
   char osftemp_filename[_MAX_PATH];
-  ubyte *StaticFileBuffer = NULL;
+  uint8_t *StaticFileBuffer = NULL;
   *temp_filename = *osftemp_filename = '\0';
   OSFArchive osf;
   CFILE *fpin = NULL;
@@ -319,7 +319,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
                   wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
           }
 
-          cf_WriteBytes((ubyte *)wavdata.sample_16bit,amount_to_flush,file);
+          cf_WriteBytes((uint8_t *)wavdata.sample_16bit,amount_to_flush,file);
   }else{
           mprintf((0,"TAUNT: Confusion to bits per sample (%d)\n",wavdata.bits_per_sample));
           ret = false;
@@ -339,7 +339,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
     wavdata.sample_16bit[count] = INTEL_SHORT(wavdata.sample_16bit[count]);
   }
 
-  cf_WriteBytes((ubyte *)wavdata.sample_16bit, amount_to_flush, file);
+  cf_WriteBytes((uint8_t *)wavdata.sample_16bit, amount_to_flush, file);
   cfclose(file);
   file = NULL;
 
@@ -366,10 +366,10 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
   // to osf format
   //	start writing out data.
   tOSFDigiHdr digihdr;
-  uint filelen, nblocks, i;
+  uint32_t filelen, nblocks, i;
   int format;
 
-  StaticFileBuffer = (ubyte *)mem_malloc(FILEBUFFER_LENGTH);
+  StaticFileBuffer = (uint8_t *)mem_malloc(FILEBUFFER_LENGTH);
   if (!StaticFileBuffer) {
     ret = false;
     mprintf((0, "Out of memory\n"));
@@ -385,7 +385,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
     goto error;
   }
 
-  filelen = (uint)cfilelength(fpin);
+  filelen = (uint32_t)cfilelength(fpin);
   nblocks = filelen / FILEBUFFER_LENGTH;
 
   if (!osf.Open(outputfilename, true)) {
@@ -500,21 +500,21 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
 
   cfptr = NULL;
   char format_type[80];       // ASCII name of format type
-  unsigned short fmttag = 0;  // Numerical format type
-  unsigned int ckid;         // Current chunk's ID
-  unsigned int cksize;       // Current chunk's size in bytes
-  unsigned int filesize;     // Size of the sound file
-  unsigned int nextseek = 0; // Location of the next seek
-  unsigned int aligned_size; // Sound files are aligned to SOUND_FILE_SAMPLE_ALIGNMENT samples
+  uint16_t fmttag = 0;  // Numerical format type
+  uint32_t ckid;         // Current chunk's ID
+  uint32_t cksize;       // Current chunk's size in bytes
+  uint32_t filesize;     // Size of the sound file
+  uint32_t nextseek = 0; // Location of the next seek
+  uint32_t aligned_size; // Sound files are aligned to SOUND_FILE_SAMPLE_ALIGNMENT samples
 
   // Sound format information
   int samples_per_second;
-  short bits_per_sample;
-  short number_channels;
+  int16_t bits_per_sample;
+  int16_t number_channels;
   char error_code = 0;
 
   // Used to read temporary long values
-  unsigned int temp_long;
+  uint32_t temp_long;
 
   // Flags for if we previously read data or a format
   char f_data, f_fmt = 0;
@@ -530,7 +530,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   }
 
   // Make sure that it is a RIFF format
-  temp_long = (unsigned int)cf_ReadInt(cfptr);
+  temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x46464952) {
     error_code = 2;
     mprintf((0, "TAUNT: Wav Load: %s is not a RIFF format file\n", filename));
@@ -542,7 +542,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   filesize += cftell(cfptr);
 
   // Make sure it is a wave file
-  temp_long = (unsigned int)cf_ReadInt(cfptr);
+  temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x45564157) {
     error_code = 3;
     mprintf((0, "TAUNT: Wav Load:  %s is not a WAVE file\n", filename));
@@ -579,7 +579,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
       }
 
       // Read in the format type
-      fmttag = (unsigned short)cf_ReadShort(cfptr);
+      fmttag = (uint16_t)cf_ReadShort(cfptr);
 
       switch (fmttag) {
       // We only support WAVE_FORMAT_PCM currently
@@ -711,9 +711,9 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
 
         wave->sample_length = aligned_size;
         wave->np_sample_length = cksize;
-        wave->sample_8bit = (ubyte *)mem_malloc(aligned_size);
+        wave->sample_8bit = (uint8_t *)mem_malloc(aligned_size);
 
-        cf_ReadBytes((ubyte *)wave->sample_8bit, cksize, cfptr);
+        cf_ReadBytes((uint8_t *)wave->sample_8bit, cksize, cfptr);
 
         if (aligned_size != cksize)
           memset(wave->sample_8bit + cksize, 128, num_needed);
@@ -728,9 +728,9 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
           wave->sample_length = cksize / 2 + num_needed / 2;
         }
 
-        wave->sample_16bit = (short *)mem_malloc(cksize + num_needed);
+        wave->sample_16bit = (int16_t *)mem_malloc(cksize + num_needed);
 
-        cf_ReadBytes((ubyte *)wave->sample_16bit, cksize, cfptr);
+        cf_ReadBytes((uint8_t *)wave->sample_16bit, cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
           wave->sample_16bit[count] = INTEL_SHORT(wave->sample_16bit[count]);
         }
@@ -757,12 +757,12 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   if (wave->sample_16bit == NULL) {
     ASSERT(wave->sample_8bit);
 
-    wave->sample_16bit = (short *)mem_malloc(wave->sample_length * sizeof(short));
+    wave->sample_16bit = (int16_t *)mem_malloc(wave->sample_length * sizeof(int16_t));
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).
     for (count = 0; count < (int)wave->sample_length; count++) {
-      wave->sample_16bit[count] = (((short)wave->sample_8bit[count]) - 128) * 256;
+      wave->sample_16bit[count] = (((int16_t)wave->sample_8bit[count]) - 128) * 256;
     }
 
     mem_free(wave->sample_8bit);

@@ -682,7 +682,7 @@
  *
  * 113   8/27/98 6:23p Jeff
  * changed autoleveling in config so it is a slider...had to convert
- * global from bool->ubyte.  Added fast headlight and mirrored surfaces to
+ * global from bool->uint8_t.  Added fast headlight and mirrored surfaces to
  * config menu
  *
  * 112   8/19/98 2:19p Jeff
@@ -1031,7 +1031,7 @@ static chunked_bitmap Title_bitmap;
 static bool Init_systems_init = false;
 static bool Graphics_init = false;
 static bool Title_bitmap_init = false;
-ubyte Use_motion_blur = 0;
+uint8_t Use_motion_blur = 0;
 
 // The "root" directory of the D3 file tree
 char Base_directory[_MAX_PATH];
@@ -1195,12 +1195,12 @@ void SaveGameSettings() {
   // Write out force feedback
   Database->write("EnableJoystickFF", D3Use_force_feedback);
   Database->write("ForceFeedbackAutoCenter", D3Force_auto_center);
-  ubyte force_gain;
+  uint8_t force_gain;
   if (D3Force_gain < 0.0f)
     D3Force_gain = 0.0f;
   if (D3Force_gain > 1.0f)
     D3Force_gain = 1.0f;
-  force_gain = (ubyte)((100.0f * D3Force_gain) + 0.5f);
+  force_gain = (uint8_t)((100.0f * D3Force_gain) + 0.5f);
   Database->write("ForceFeedbackGain", force_gain);
 
 #ifndef RELEASE // never save this value out in release.
@@ -1321,7 +1321,7 @@ void LoadGameSettings() {
   // force feedback stuff
   Database->read("EnableJoystickFF", &D3Use_force_feedback);
   Database->read("ForceFeedbackAutoCenter", &D3Force_auto_center);
-  ubyte force_gain;
+  uint8_t force_gain;
   Database->read("ForceFeedbackGain", &force_gain, sizeof(force_gain));
   if (force_gain > 100)
     force_gain = 100;
@@ -1835,8 +1835,8 @@ void InitDedicatedServer() {
 int ServerTimeout = 0;
 float LastPacketReceived;
 
-ushort Gameport = D3_DEFAULT_PORT;
-ushort PXOPort = 0;
+uint16_t Gameport = D3_DEFAULT_PORT;
+uint16_t PXOPort = 0;
 // Initialiaze everything before data load
 void InitD3Systems1(bool editor) {
 #if defined(RELEASE)

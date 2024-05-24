@@ -178,13 +178,13 @@ typedef struct {
 
 typedef struct tTelComInfo {
   box Monitor_coords[MAX_MONITOR];
-  ubyte Screen_state[MAX_TELCOM_SCREENS];
+  uint8_t Screen_state[MAX_TELCOM_SCREENS];
   tTCEvent Telcom_event_queue[MAX_TELCOM_EVENTS]; // Event queue for TelCom System
   int TranslateSysKey[TCSYS_MAXKEYS];
   int current_status;
   bool Telcom_systemkey_states[TCSYS_MAXKEYS];
   float Telcom_mouse_downtime;
-  ubyte state;
+  uint8_t state;
   int TelComSysKeyEnable;
 } tTelComInfo;
 extern tTelComInfo Telcom_system;
@@ -200,7 +200,7 @@ void TelcomRenderInit(void);
 //	Closes down the Telcom rendering engine
 void TelcomRenderClose(void);
 //	Renders the current screen for 1 frame
-void TelcomRenderScreen(bool poweron = true, bool powerup = false, ubyte power_effect = 1);
+void TelcomRenderScreen(bool poweron = true, bool powerup = false, uint8_t power_effect = 1);
 //	Sets what screen should be drawn by the Telcom
 void TelcomRenderSetScreen(int screen);
 //	Sets the callback of the Render.  This will get called after Effects are drawn, before the screen overlays

@@ -77,13 +77,13 @@ bool ddio_null_InternalKeyInit(ddio_init_info *init_info) {
 
 void ddio_null_InternalKeyClose() {}
 
-bool ddio_null_InternalKeyState(ubyte key) { return LKeys[key].status; }
+bool ddio_null_InternalKeyState(uint8_t key) { return LKeys[key].status; }
 
 void ddio_null_InternalKeySuspend() {}
 
 void ddio_null_InternalKeyResume() {}
 
-float ddio_null_InternalKeyDownTime(ubyte key) {
+float ddio_null_InternalKeyDownTime(uint8_t key) {
   float down_time = 0.0f;
   if (LKeys[key].status) {
     float timer = timer_GetTime();
@@ -97,7 +97,7 @@ float ddio_null_InternalKeyDownTime(ubyte key) {
   return down_time;
 }
 
-void ddio_null_InternalResetKey(ubyte key) {
+void ddio_null_InternalResetKey(uint8_t key) {
   LKeys[key].down_time = 0.0f;
   LKeys[key].up_time = 0.0f;
   LKeys[key].status = false;

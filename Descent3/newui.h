@@ -299,7 +299,7 @@ typedef struct tLargeBitmap {
 } tLargeBitmap;
 
 //	alpha for all NewUIWindows.
-extern ubyte NewUIWindow_alpha;
+extern uint8_t NewUIWindow_alpha;
 
 //////////////////////////////////////////////////////////////////////////////
 //	Core interface with UI system

@@ -57,6 +57,8 @@
 #ifndef _CFTP_HEADER_
 #define _CFTP_HEADER_
 
+#include <cstdint>
+
 #define FTP_STATE_INTERNAL_ERROR 0
 #define FTP_STATE_SOCKET_ERROR 1
 #define FTP_STATE_URL_PARSING_ERROR 2
@@ -91,8 +93,8 @@ public:
   CFtpGet(char *URL, char *localfile, char *Username = NULL, char *Password = NULL);
   ~CFtpGet();
   int GetStatus();
-  unsigned int GetBytesIn();
-  unsigned int GetTotalBytes();
+  uint32_t GetBytesIn();
+  uint32_t GetTotalBytes();
   void AbortGet();
 
   void WorkerThread();
@@ -100,16 +102,16 @@ public:
 protected:
   int ConnectControlSocket();
   int LoginHost();
-  unsigned int SendFTPCommand(char *command);
-  unsigned int ReadFTPServerReply();
-  unsigned int GetFile();
-  unsigned int IssuePort();
-  unsigned int ReadDataChannel();
+  uint32_t SendFTPCommand(char *command);
+  uint32_t ReadFTPServerReply();
+  uint32_t GetFile();
+  uint32_t IssuePort();
+  uint32_t ReadDataChannel();
   void FlushControlChannel();
 
-  unsigned int m_iBytesIn;
-  unsigned int m_iBytesTotal;
-  unsigned int m_State;
+  uint32_t m_iBytesIn;
+  uint32_t m_iBytesTotal;
+  uint32_t m_State;
 
   bool m_Aborting;
   bool m_Aborted;

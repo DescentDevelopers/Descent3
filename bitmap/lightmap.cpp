@@ -31,7 +31,7 @@
 #include <algorithm>
 
 static int Num_of_lightmaps = 0;
-static ushort Free_lightmap_list[MAX_LIGHTMAPS];
+static uint16_t Free_lightmap_list[MAX_LIGHTMAPS];
 bms_lightmap GameLightmaps[MAX_LIGHTMAPS];
 static int Lightmap_mem_used = 0;
 // Sets all the lightmaps to unused
@@ -66,7 +66,7 @@ int lm_AllocLightmap(int w, int h) {
   // If no go on the malloc, bail out with -1
 
   memset(&GameLightmaps[n], 0, sizeof(bms_lightmap));
-  GameLightmaps[n].data = (ushort *)mem_malloc((w * h * 2));
+  GameLightmaps[n].data = (uint16_t *)mem_malloc((w * h * 2));
   if (!GameLightmaps[n].data) {
     mprintf((0, "NOT ENOUGHT MEMORY FOR LIGHTMAP!\n"));
     Int3();
@@ -135,8 +135,8 @@ int lm_h(int handle) {
   return (h);
 }
 // returns a lightmaps data else NULL if something is wrong
-ushort *lm_data(int handle) {
-  ushort *d;
+uint16_t *lm_data(int handle) {
+  uint16_t *d;
   if (!GameLightmaps[handle].used) {
     Int3();
     return NULL;

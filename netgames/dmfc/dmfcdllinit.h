@@ -30,7 +30,7 @@
  *
  *
  * 64    9/28/99 10:55a Jeff
- * changed size of pointer for mastertracker game from ubyte* to int*
+ * changed size of pointer for mastertracker game from uint8_t* to int*
  *
  * 63    8/15/99 4:36p Jeff
  * finished exporting all inventory class functions.  export object_info
@@ -589,8 +589,8 @@ ShieldDelta = (float *)API.vp[7];
 Game_interface_mode = (int *)API.vp[8];
 LocalD3Dir = (char *)API.vp[9];
 m_bTrackerGame = (int *)API.vp[10];
-Local_object_list = (ushort *)API.vp[11];
-Server_object_list = (ushort *)API.vp[12];
+Local_object_list = (uint16_t *)API.vp[11];
+Server_object_list = (uint16_t *)API.vp[12];
 Dedicated_server = (bool *)API.vp[13];
 Player_colors = (ddgr_color *)API.vp[14];
 Hud_aspect_x = (float *)API.vp[15];

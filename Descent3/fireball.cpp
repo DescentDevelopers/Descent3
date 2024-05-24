@@ -693,21 +693,21 @@ void InitFireballs() {
   }
 
   // convert the grey spark into grayscale
-  ushort *data;
+  uint16_t *data;
   int size;
   float recip32 = 1.0f / 32.0f;
   data = bm_data(Fireballs[GRAY_SPARK_INDEX].bm_handle, 0);
   size = bm_w(Fireballs[GRAY_SPARK_INDEX].bm_handle, 0) * bm_h(Fireballs[GRAY_SPARK_INDEX].bm_handle, 0);
   for (i = 0; i < size; i++) {
-    ushort col565 = data[i];
+    uint16_t col565 = data[i];
     if (col565 == 0x07e0) {
       data[i] = NEW_TRANSPARENT_COLOR;
     } else {
-      ubyte r = (ubyte)((col565 & 0xf800) >> 11);
-      ubyte g = (ubyte)((col565 & 0x07c0) >> 6);
-      ubyte b = (ubyte)(col565 & 0x001f);
+      uint8_t r = (uint8_t)((col565 & 0xf800) >> 11);
+      uint8_t g = (uint8_t)((col565 & 0x07c0) >> 6);
+      uint8_t b = (uint8_t)(col565 & 0x001f);
       float brightness = ((r * 0.30f) + (g * 0.59f) + (b * 0.11f)) * recip32;
-      ubyte elem = (ubyte)(255.0f * brightness);
+      uint8_t elem = (uint8_t)(255.0f * brightness);
       if (brightness > 1.0f)
         elem = 255;
       data[i] = GR_RGB16(elem, elem, elem) | OPAQUE_FLAG;
@@ -1141,7 +1141,7 @@ void DoDeathSpew(object *parent) {
   ASSERT(IS_GENERIC(parent->type));
   int i, j;
   int num_last_type = 0;
-  unsigned char f_dspew = Object_info[parent->id].f_dspew;
+  uint8_t f_dspew = Object_info[parent->id].f_dspew;
 
   if (!parent)
     return;
@@ -1789,7 +1789,7 @@ void MakeShockwave(object *explode_obj_ptr, int parent_handle) {
     DoConcussiveForce(explode_obj_ptr, parent_handle);
   }
 }
-// object *object_create_explosion_sub(object *explode_obj_ptr, short segnum, vms_vector * position, fix size, int
+// object *object_create_explosion_sub(object *explode_obj_ptr, int16_t segnum, vms_vector * position, fix size, int
 // vclip_type, fix maxdamage, fix maxdistance, fix maxforce, int parent )
 void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_scalar) {
   int objnum;
@@ -1798,7 +1798,7 @@ void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_
   float maxforce = explode_obj_ptr->impact_force;
   float maxdistance = explode_obj_ptr->impact_size;
   float effect_distance;
-  short parent;
+  int16_t parent;
   object *parent_obj;
   if (explode_obj_ptr->type == OBJ_SHOCKWAVE) {
     effect_distance =
@@ -2053,7 +2053,7 @@ int CreateSmolderingObject(vector *pos, int index, float lifetime, float max_siz
 }
 // Draws a colored alpha disk...useful for cool lighting effects
 void DrawColoredDisk(vector *pos, float r, float g, float b, float inner_alpha, float outer_alpha, float size,
-                     ubyte saturate, ubyte lod) {
+                     uint8_t saturate, uint8_t lod) {
   rend_SetZBufferWriteMask(0);
   DrawColoredRing(pos, r, g, b, inner_alpha, outer_alpha, size, 0, saturate, lod);
   rend_SetZBufferWriteMask(1);
@@ -2072,7 +2072,7 @@ void DrawColoredGlow(vector *pos, float r, float g, float b, float size) {
 
 // Draws a colored alpha ring...useful for cool lighting effects
 void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, float outer_alpha, float size,
-                     float inner_ring_ratio, ubyte saturate, ubyte lod) {
+                     float inner_ring_ratio, uint8_t saturate, uint8_t lod) {
   static vector circleVecs[3][32];
   static int lodSegments[3] = {32, 16, 8};
   static bool firstCall = true;
@@ -2151,7 +2151,7 @@ void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, 
 
 // TODO: MTS: not used?
 // Draws a sphere with the appropriate texture.  If texture=-1, then uses rgb as colors
-void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size, int texture, ubyte saturate) {
+void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size, int texture, uint8_t saturate) {
   static vector sphere_vecs[16][16];
   static int first = 1;
   g3Point sphere_points[16][16], *pntlist[4], draw_points[4];

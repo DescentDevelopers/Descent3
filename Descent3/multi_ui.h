@@ -35,5 +35,5 @@ void MultiDoConfigSave(void);
 void MultiGameOptionsMenu(int alloptions);
 int ReturnMultiplayerGameMenu(void);
 int MultiLevelSelection(void);
-bool DoPlayerMouselookCheck(unsigned int flags);
+bool DoPlayerMouselookCheck(uint32_t flags);
 #endif

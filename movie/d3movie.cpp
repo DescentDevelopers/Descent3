@@ -54,9 +54,9 @@ namespace {
 MovieFrameCallback_fp Movie_callback = NULL;
 char MovieDir[512];
 char SoundCardName[512];
-ushort CurrentPalette[256];
+uint16_t CurrentPalette[256];
 int Movie_bm_handle = -1;
-uint Movie_current_framenum = 0;
+uint32_t Movie_current_framenum = 0;
 bool Movie_looping = false;
 
 #ifndef NO_MOVIES
@@ -93,7 +93,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  int SetVolume(signed int vol) { return m_pBuffer->SetVolume(vol); }
+  int SetVolume(int32_t vol) { return m_pBuffer->SetVolume(vol); }
 
   ///////////////////////////
   // SetPan
@@ -104,7 +104,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  int SetPan(signed int pan) { return m_pBuffer->SetPan(pan); }
+  int SetPan(int32_t pan) { return m_pBuffer->SetPan(pan); }
 
   /////////////////////////
   // Stop
@@ -125,7 +125,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Play(unsigned int flags) {
+  int Play(uint32_t flags) {
     DWORD dsFlags = (flags & LNXSND_LOOPING) ? DSBPLAY_LOOPING : 0;
     return m_pBuffer->Play(0, 0, dsFlags);
   }
@@ -158,7 +158,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int GetStatus(unsigned int *status) { return m_pBuffer->GetStatus(reinterpret_cast<LPDWORD>(status)); }
+  int GetStatus(uint32_t *status) { return m_pBuffer->GetStatus(reinterpret_cast<LPDWORD>(status)); }
 
   ///////////////////////////////////////
   // GetCurrentPosition
@@ -168,7 +168,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int GetCurrentPosition(unsigned int *ppos, unsigned int *wpos) {
+  int GetCurrentPosition(uint32_t *ppos, uint32_t *wpos) {
     return m_pBuffer->GetCurrentPosition(reinterpret_cast<LPDWORD>(ppos), reinterpret_cast<LPDWORD>(wpos));
   }
 
@@ -180,7 +180,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int SetCurrentPosition(unsigned int pos) { return m_pBuffer->SetCurrentPosition(pos); }
+  int SetCurrentPosition(uint32_t pos) { return m_pBuffer->SetCurrentPosition(pos); }
 
   /////////////////////////
   // Lock
@@ -191,8 +191,8 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Lock(unsigned int pos, unsigned int numbytes, void **ptr1, unsigned int *numbytes1, void **ptr2,
-           unsigned int *numbytes2, unsigned int flags) {
+  int Lock(uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1, void **ptr2,
+           uint32_t *numbytes2, uint32_t flags) {
     return m_pBuffer->Lock(pos, numbytes, ptr1, reinterpret_cast<LPDWORD>(numbytes1), ptr2,
                            reinterpret_cast<LPDWORD>(numbytes2), flags);
   }
@@ -205,7 +205,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Unlock(void *ptr1, unsigned int num1, void *ptr2, unsigned int num2) {
+  int Unlock(void *ptr1, uint32_t num1, void *ptr2, uint32_t num2) {
     return m_pBuffer->Unlock(ptr1, num1, ptr2, num2);
   }
 };
@@ -288,7 +288,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  int SetVolume(signed int vol) { return LnxSoundBuffer_SetVolume(m_pBuffer, vol); }
+  int SetVolume(int32_t vol) { return LnxSoundBuffer_SetVolume(m_pBuffer, vol); }
 
   ///////////////////////////
   // SetPan
@@ -299,7 +299,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  int SetPan(signed int pan) { return LnxSoundBuffer_SetPan(m_pBuffer, pan); }
+  int SetPan(int32_t pan) { return LnxSoundBuffer_SetPan(m_pBuffer, pan); }
 
   /////////////////////////
   // Stop
@@ -320,8 +320,8 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Play(unsigned int flags) {
-    unsigned int dsFlags = (flags & LNXSND_LOOPING) ? LNXSND_LOOPING : 0;
+  int Play(uint32_t flags) {
+    uint32_t dsFlags = (flags & LNXSND_LOOPING) ? LNXSND_LOOPING : 0;
     return LnxSoundBuffer_Play(m_pBuffer, dsFlags);
   }
 
@@ -343,7 +343,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int GetStatus(unsigned int *status) { return LnxSoundBuffer_GetStatus(m_pBuffer, status); }
+  int GetStatus(uint32_t *status) { return LnxSoundBuffer_GetStatus(m_pBuffer, status); }
 
   ///////////////////////////////////////
   // GetCurrentPosition
@@ -353,7 +353,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int GetCurrentPosition(unsigned int *ppos, unsigned int *wpos) {
+  int GetCurrentPosition(uint32_t *ppos, uint32_t *wpos) {
 
     return LnxSoundBuffer_GetCurrentPosition(m_pBuffer, ppos, wpos);
   }
@@ -366,7 +366,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int SetCurrentPosition(unsigned int pos) { return LnxSoundBuffer_SetCurrentPosition(m_pBuffer, pos); }
+  int SetCurrentPosition(uint32_t pos) { return LnxSoundBuffer_SetCurrentPosition(m_pBuffer, pos); }
 
   /////////////////////////
   // Lock
@@ -377,8 +377,8 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Lock(unsigned int pos, unsigned int numbytes, void **ptr1, unsigned int *numbytes1, void **ptr2,
-           unsigned int *numbytes2, unsigned int flags) {
+  int Lock(uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1, void **ptr2,
+           uint32_t *numbytes2, uint32_t flags) {
     return LnxSoundBuffer_Lock(m_pBuffer, pos, numbytes, ptr1, numbytes1, ptr2, numbytes2, flags);
   }
 
@@ -390,7 +390,7 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Unlock(void *ptr1, unsigned int num1, void *ptr2, unsigned int num2) {
+  int Unlock(void *ptr1, uint32_t num1, void *ptr2, uint32_t num2) {
     return LnxSoundBuffer_Unlock(m_pBuffer, ptr1, num1, ptr2, num2);
   }
 };
@@ -432,14 +432,14 @@ public:
 #endif
 } // namespace
 
-static void *CallbackAlloc(unsigned int size);
+static void *CallbackAlloc(uint32_t size);
 static void CallbackFree(void *p);
-static unsigned int CallbackFileRead(int hFile, void *pBuffer, unsigned int bufferCount);
+static uint32_t CallbackFileRead(int hFile, void *pBuffer, uint32_t bufferCount);
 static void InitializePalette();
-static void CallbackSetPalette(unsigned char *pBuffer, unsigned int start, unsigned int count);
-static void CallbackShowFrame(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int sx,
-                              unsigned int sy, unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty,
-                              unsigned int hicolor);
+static void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count);
+static void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
+                              uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
+                              uint32_t hicolor);
 
 #ifndef NO_MOVIES
 static bool mve_InitSound(oeApplication *app, MovieSoundDevice &device);
@@ -465,7 +465,7 @@ void mve_SetCallback(MovieFrameCallback_fp callBack) {
 }
 
 // used to tell movie library how to render movies.
-void mve_SetRenderProperties(short x, short y, short w, short h, renderer_type type, bool hicolor) {}
+void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, renderer_type type, bool hicolor) {}
 
 #ifdef __LINUX__
 // locates the case-sensitive movie file name
@@ -590,12 +590,12 @@ int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
 #endif
 }
 
-void *CallbackAlloc(unsigned int size) { return mem_malloc(size); }
+void *CallbackAlloc(uint32_t size) { return mem_malloc(size); }
 
 void CallbackFree(void *p) { mem_free(p); }
 
-unsigned int CallbackFileRead(int hFile, void *pBuffer, unsigned int bufferCount) {
-  unsigned int numRead = read(hFile, pBuffer, bufferCount);
+uint32_t CallbackFileRead(int hFile, void *pBuffer, uint32_t bufferCount) {
+  uint32_t numRead = read(hFile, pBuffer, bufferCount);
   return (numRead == bufferCount) ? 1 : 0;
 }
 
@@ -605,14 +605,14 @@ void InitializePalette() {
   }
 }
 
-void CallbackSetPalette(unsigned char *pBuffer, unsigned int start, unsigned int count) {
+void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count) {
 #ifndef NO_MOVIES
   pBuffer += start * 3;
 
-  for (unsigned int i = 0; i < count; ++i) {
-    unsigned int r = pBuffer[0] << 2;
-    unsigned int g = pBuffer[1] << 2;
-    unsigned int b = pBuffer[2] << 2;
+  for (uint32_t i = 0; i < count; ++i) {
+    uint32_t r = pBuffer[0] << 2;
+    uint32_t g = pBuffer[1] << 2;
+    uint32_t b = pBuffer[2] << 2;
     pBuffer += 3;
 
     CurrentPalette[start + i] = OPAQUE_FLAG | GR_RGB16(r, g, b);
@@ -632,7 +632,7 @@ int NextPow2(int n) {
 }
 
 #ifndef NO_MOVIES
-void BlitToMovieBitmap(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int hicolor,
+void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hicolor,
                        bool usePow2Texture, int &texW, int &texH) {
   // get some sizes
   int drawWidth = hicolor ? (bufw >> 1) : bufw;
@@ -654,16 +654,16 @@ void BlitToMovieBitmap(unsigned char *buf, unsigned int bufw, unsigned int bufh,
     Movie_bm_handle = bm_AllocBitmap(texW, texH, 0);
   }
 
-  unsigned short *pPixelData = (ushort *)bm_data(Movie_bm_handle, 0);
+  uint16_t *pPixelData = (uint16_t *)bm_data(Movie_bm_handle, 0);
   GameBitmaps[Movie_bm_handle].flags |= BF_CHANGED;
   if (hicolor) {
-    unsigned short *wBuf = (unsigned short *)buf;
+    uint16_t *wBuf = (uint16_t *)buf;
     for (int y = 0; y < drawHeight; ++y) {
       for (int x = 0; x < drawWidth; ++x) {
-        unsigned short col16 = *wBuf++;
-        unsigned int b = ((col16 >> 11) & 0x1F) << 3;
-        unsigned int g = ((col16 >> 5) & 0x3F) << 2;
-        unsigned int r = ((col16 >> 0) & 0x1F) << 3;
+        uint16_t col16 = *wBuf++;
+        uint32_t b = ((col16 >> 11) & 0x1F) << 3;
+        uint32_t g = ((col16 >> 5) & 0x3F) << 2;
+        uint32_t r = ((col16 >> 0) & 0x1F) << 3;
         pPixelData[x] = OPAQUE_FLAG | GR_RGB16(r, g, b);
       }
 
@@ -672,7 +672,7 @@ void BlitToMovieBitmap(unsigned char *buf, unsigned int bufw, unsigned int bufh,
   } else {
     for (int y = 0; y < drawHeight; ++y) {
       for (int x = 0; x < drawWidth; ++x) {
-        unsigned char palIndex = *buf++;
+        uint8_t palIndex = *buf++;
         pPixelData[x] = CurrentPalette[palIndex];
       }
 
@@ -681,8 +681,8 @@ void BlitToMovieBitmap(unsigned char *buf, unsigned int bufw, unsigned int bufh,
   }
 }
 
-void CallbackShowFrame(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int sx, unsigned int sy,
-                       unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty, unsigned int hicolor) {
+void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy,
+                       uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty, uint32_t hicolor) {
   // prepare our bitmap
   int texW, texH;
   BlitToMovieBitmap(buf, bufw, bufh, hicolor, true, texW, texH);
@@ -776,14 +776,14 @@ intptr_t mve_SequenceFrame(intptr_t handle, int fhandle, bool sequence, int *bm_
 reread_frame:
 
   // get the next frame of data
-  unsigned char *pBuffer = NULL;
+  uint8_t *pBuffer = NULL;
   err = MVE_frGet((MVE_frStream)handle, &pBuffer, &sw, &sh, &hicolor);
 
   // refresh our palette
   {
-    unsigned int palstart = 0;
-    unsigned int palcount = 0;
-    unsigned char *pal = NULL;
+    uint32_t palstart = 0;
+    uint32_t palcount = 0;
+    uint8_t *pal = NULL;
     MVE_frPal((MVE_frStream)handle, &pal, &palstart, &palcount);
     CallbackSetPalette(pal, palstart, palcount);
   }
@@ -842,7 +842,7 @@ bool mve_SequenceClose(intptr_t hMovie, int hFile) {
 #endif
 }
 
-void mve_Puts(short x, short y, ddgr_color col, const char *txt) {
+void mve_Puts(int16_t x, int16_t y, ddgr_color col, const char *txt) {
   grtext_SetFont(BRIEFING_FONT);
   grtext_SetColor(col);
   grtext_SetAlpha(255);
@@ -851,7 +851,7 @@ void mve_Puts(short x, short y, ddgr_color col, const char *txt) {
   grtext_Flush();
 }
 
-void mve_ClearRect(short x1, short y1, short x2, short y2) {
+void mve_ClearRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
   // Note: I can not figure out how to clear, and then write over it with text. It always covers my text!
   // rend_FillRect( GR_BLACK, x1, y1, x2, y2 );
 }

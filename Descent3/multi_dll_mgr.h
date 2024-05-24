@@ -116,7 +116,7 @@ void FreeMultiDLL();
 int LoadMultiDLL(const char *name);
 void CallMultiDLL(int eventnum);
 
-void SetUITextItemText(UITextItem *uit, char *newtext, unsigned int color);
+void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color);
 void *NewUIWindowCreate(int x, int y, int w, int h, int flags);
 void NewUIWindowDestroy(NewUIWindow *deswin);
 void NewUIWindowOpen(NewUIWindow *deswin);
@@ -147,9 +147,9 @@ void *HotSpotCreate(UIWindow *parentwin, int id, int key, UIItem *txtitemoff, UI
 void HotSpotSetStates(UIHotspot *hs, UIItem *texton, UIItem *textoff);
 int PollUI(void);
 void RemoveUITextItem(void *item);
-void *CreateNewUITextItem(const char *newtext, unsigned int color, int font = -1);
+void *CreateNewUITextItem(const char *newtext, uint32_t color, int font = -1);
 void RemoveUIBmpItem(void *item);
-void *CreateNewUIBmpItem(int handle, ubyte alpha);
+void *CreateNewUIBmpItem(int handle, uint8_t alpha);
 void CloseSplashScreen(void);
 void CreateSplashScreen(const char *msg, int usecancel);
 void *UIConsoleGadgetCreate(UIWindow *parentid, int id, int x, int y, int font, int cols, int rows, int flags);

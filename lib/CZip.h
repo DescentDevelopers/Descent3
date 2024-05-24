@@ -67,18 +67,18 @@
  *
  */
 
-#define ubyte unsigned char
-#define uint unsigned int
-#define ushort unsigned short
+#define uint8_t uint8_t
+#define uint32_t uint32_t
+#define uint16_t uint16_t
 
 typedef struct {
-  ubyte type;
+  uint8_t type;
   int count;
   int size;      // only used for memory...size allocated for buffer
   int file_size; // max count we reached
   union {
     FILE *file;
-    ubyte *memory;
+    uint8_t *memory;
   };
 } tVirtualFile;
 
@@ -87,7 +87,7 @@ typedef struct {
 ////////////////////////
 typedef struct tBitFile {
   tVirtualFile *file;
-  ubyte mask;
+  uint8_t mask;
   int rack;
 } BITFILE;
 
@@ -95,13 +95,13 @@ typedef struct tBitFile {
 // HuffmanBasic		///////
 /////////////////////////
 typedef struct tHuffman0TreeNode {
-  uint count;
-  uint saved_count;
+  uint32_t count;
+  uint32_t saved_count;
   int child0, child1;
 } tH0Node;
 
 typedef struct {
-  uint code;
+  uint32_t code;
   int code_bits;
 } tH0Code;
 
@@ -111,7 +111,7 @@ typedef struct {
 #define SYMBOL_COUNT 258
 #define NODE_TABLE_COUNT ((SYMBOL_COUNT * 2) - 1)
 typedef struct tHANode {
-  uint weight;
+  uint32_t weight;
   int parent;
   bool child_is_leaf;
   int child;
@@ -178,13 +178,13 @@ public:
   //	Raw type compressed files operations only
   int ReadBytes(char *data, int count);
   void WriteBytes(char *data, int count);
-  ubyte ReadRawByte(void);
-  ushort ReadRawShort(void);
-  uint ReadRawInt(void);
+  uint8_t ReadRawByte(void);
+  uint16_t ReadRawShort(void);
+  uint32_t ReadRawInt(void);
   float ReadRawFloat(void);
-  void WriteRawByte(ubyte value);
-  void WriteRawShort(ushort value);
-  void WriteRawInt(uint value);
+  void WriteRawByte(uint8_t value);
+  void WriteRawShort(uint16_t value);
+  void WriteRawInt(uint32_t value);
   void WriteRawFloat(float value);
   bool RawEOF(void);
 
@@ -198,16 +198,16 @@ private:
   tFileInfo current_file;
   //	Reads in a Raw type file header
   //	returns true on succes, if so, compr_type contains the compression type
-  bool ReadRawHeader(tVirtualFile *file, ubyte *compr_type);
+  bool ReadRawHeader(tVirtualFile *file, uint8_t *compr_type);
   //	Writes out a Raw type file header
   //	returns true on succes
-  bool WriteRawHeader(tVirtualFile *file, ubyte compr_type);
+  bool WriteRawHeader(tVirtualFile *file, uint8_t compr_type);
   //	Reads in an OCF header
   //	returns true on success, info is filled in the appropriate values,compr_type is compression type
-  bool ReadOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte *compr_type);
+  bool ReadOCFHeader(tVirtualFile *file, tFileInfo *info, uint8_t *compr_type);
   //	Writes out an OCF header
   //	returns true on success
-  bool WriteOCFHeader(tVirtualFile *file, tFileInfo *info, ubyte compr_type, int header_pos);
+  bool WriteOCFHeader(tVirtualFile *file, tFileInfo *info, uint8_t compr_type, int header_pos);
   //	Writes out a 'dummy' OCF header, just give what the final filename is
   //	you must call this before you compress data, then when done, call the read WriteOCFHeader
   bool WriteDummyOCFHeader(tVirtualFile *file, char *filename);
@@ -233,7 +233,7 @@ private:
   uint32_t InputBits(BITFILE *bfile, int bitcount);
   void CloseInputBitFile(BITFILE *bfile);
   void CloseOutputBitFile(BITFILE *bfile);
-  void FilePrintBinary(FILE *file, uint code, int bits);
+  void FilePrintBinary(FILE *file, uint32_t code, int bits);
   tVirtualFile *VFopen(const char *filename, const char *flags, int size = 0);
   int VFclose(tVirtualFile *f);
   int VFputc(int value, tVirtualFile *file);
@@ -253,7 +253,7 @@ private:
   void hb_count_bytes(tVirtualFile *input, uint32_t *long_counts);
   void hb_scale_counts(uint32_t *long_counts, tH0Node *nodes);
   int hb_build_tree(tH0Node *nodes);
-  void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint code_so_far, int bits, int node);
+  void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint32_t code_so_far, int bits, int node);
   void hb_output_counts(BITFILE *output, tH0Node *nodes);
   void hb_input_counts(BITFILE *input, tH0Node *nodes);
 
@@ -264,17 +264,17 @@ private:
   int ha_CompressFile(tVirtualFile *input, BITFILE *output);
   void ha_ExpandFile(BITFILE *input, tVirtualFile *output);
   void ha_InitializeTree(tHATree *tree);
-  void ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output);
+  void ha_EncodeSymbol(tHATree *tree, uint32_t c, BITFILE *output);
   int ha_DecodeSymbol(tHATree *tree, BITFILE *input);
   void ha_UpdateModel(tHATree *tree, int c);
   void ha_RebuildTree(tHATree *tree);
   void ha_swap_nodes(tHATree *tree, int i, int j);
   void ha_add_new_node(tHATree *tree, int c);
   void ha_CloseRawDecompress(void);
-  bool ha_ReadRawByte(ubyte *data, BITFILE *input);
+  bool ha_ReadRawByte(uint8_t *data, BITFILE *input);
   void ha_PrepareDecompress(void);
   void ha_CloseRawCompress(BITFILE *output);
-  void ha_WriteRawByte(ubyte data, BITFILE *output);
+  void ha_WriteRawByte(uint8_t data, BITFILE *output);
   void ha_PrepareCompress(void);
 };
 

@@ -352,7 +352,7 @@ void OutrageMusicSeq::ExecScript(music_stream *strm) {
 // get command
 next_ins:
   music_ins *cur_ins = &strm->ins[strm->ip];
-  ubyte cmd = cur_ins->cmd;
+  uint8_t cmd = cur_ins->cmd;
   tMusicVal val = cur_ins->opr.num;
   char *str = cur_ins->opr.str;
   const char *name;
@@ -576,7 +576,7 @@ next_ins:
 // start a song, stopping the old either cleanly (on measure) or abruptly.
 void OutrageMusicSeq::StartSong(int song, bool clean_switch) {
   if (m_curregion >= 0) {
-    m_pending_song = GetSong(m_curregion, (short)song);
+    m_pending_song = GetSong(m_curregion, (int16_t)song);
   } else {
     m_pending_song = NULL;
   }
@@ -652,7 +652,7 @@ char *OutrageMusicSeq::alloc_and_copy_str(const char *str) {
 }
 
 //	Music list management
-OutrageMusicSeq::music_stream *OutrageMusicSeq::AddToList(short region, short theme_type, int len,
+OutrageMusicSeq::music_stream *OutrageMusicSeq::AddToList(int16_t region, int16_t theme_type, int len,
                                                           const music_ins *ins) {
   tListNode<music_stream> *node = new tListNode<OutrageMusicSeq::music_stream>;
 
@@ -682,7 +682,7 @@ void OutrageMusicSeq::FreeList() {
   m_music_list.free();
 }
 
-OutrageMusicSeq::music_stream *OutrageMusicSeq::GetSong(short region, short theme_type) {
+OutrageMusicSeq::music_stream *OutrageMusicSeq::GetSong(int16_t region, int16_t theme_type) {
   tListNode<music_stream> *node = m_music_list.start();
   music_stream *strm = NULL;
   int i;
@@ -733,9 +733,9 @@ OutrageMusicSeq::music_stream *OutrageMusicSeq::GetSong(short region, short them
 //@@	while (init_strm != m_dominant_strm);
 //@@}
 
-void OutrageMusicSeq::SetCurrentRegion(short region) { m_curregion = region; }
+void OutrageMusicSeq::SetCurrentRegion(int16_t region) { m_curregion = region; }
 
-short OutrageMusicSeq::GetCurrentRegion() const { return m_curregion; }
+int16_t OutrageMusicSeq::GetCurrentRegion() const { return m_curregion; }
 
 // get current loop playing
 const char *OutrageMusicSeq::GetCurrentLoopName(int *count) {
@@ -749,7 +749,7 @@ const char *OutrageMusicSeq::GetCurrentLoopName(int *count) {
 }
 
 // gets current region PLAYING, not PENDING like above.
-short OutrageMusicSeq::GetPlayingRegion() const {
+int16_t OutrageMusicSeq::GetPlayingRegion() const {
   if (m_playing_song) {
     return m_playing_song->region;
   }

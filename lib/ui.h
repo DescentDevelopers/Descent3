@@ -385,8 +385,8 @@ class UIGadget : public UIObject {
   //	information for gadgets
 private:
   int m_ID;      // id value of gadget.
-  short m_Datum; // used to pass info around.
-  ushort m_Hotkey;
+  int16_t m_Datum; // used to pass info around.
+  uint16_t m_Hotkey;
   int m_SavedW, m_SavedH; // saved values of width and height.
   bool m_Disabled;        // is gadget disabled?
 
@@ -477,8 +477,8 @@ public:
   //	settings
   void SetHotkey(int key); // set this when key is pressed, selects gadget.
   int GetID() const { return m_ID; };
-  short GetDatum() const { return m_Datum; };
-  void SetDatum(short datum) { m_Datum = datum; };
+  int16_t GetDatum() const { return m_Datum; };
+  void SetDatum(int16_t datum) { m_Datum = datum; };
   bool IsDisabled() { return m_Disabled; }; // returns disabled state.
   void Disable() { m_Disabled = true; };    // disables gadget.
   void Enable() { m_Disabled = false; };    // enables gadget.
@@ -884,7 +884,7 @@ class UIListBox : public UIGadget {
   ddgr_color m_SelectColor;                // selected text color
   ddgr_color m_HiliteColor;                // color of hilite bar
   int m_LastMseX, m_LastMseY;              // used for double clicking.
-  ubyte m_Alpha;                           // alpha value of listbox.
+  uint8_t m_Alpha;                           // alpha value of listbox.
 
   bool MseCheckSelect(int x, int y);        // check if x and y selection hits a selected item.
   void SetInternalSelectedIndex(int index); //  call by listbox system.

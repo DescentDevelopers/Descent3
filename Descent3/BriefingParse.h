@@ -69,7 +69,7 @@ typedef struct {
   void (*AddPolyEffect)(LPTCPOLYDESC desc, const char *description);
   void (*AddSoundEffect)(LPTCSNDDESC desc, const char *description);
   void (*AddButtonEffect)(LPTCBUTTONDESC desc, const char *description, int id);
-  void (*StartScreen)(int screen_num, const char *description, const char *layout, uint mask_set, uint mask_unset);
+  void (*StartScreen)(int screen_num, const char *description, const char *layout, uint32_t mask_set, uint32_t mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();
   void (*SetTitle)(const char *title);
@@ -100,7 +100,7 @@ private:
   void (*AddPolyEffect)(LPTCPOLYDESC desc, const char *description);
   void (*AddSoundEffect)(LPTCSNDDESC desc, const char *description);
   void (*AddButtonEffect)(LPTCBUTTONDESC desc, const char *description, int id);
-  void (*StartScreen)(int screen_num, const char *desc, const char *layout, uint mask_set, uint mask_unset);
+  void (*StartScreen)(int screen_num, const char *desc, const char *layout, uint32_t mask_set, uint32_t mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();
   void (*SetTitle)(const char *title);

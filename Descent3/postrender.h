@@ -26,14 +26,14 @@
 #define PRT_WALL 2
 
 typedef struct {
-  ubyte type; // See types above
+  uint8_t type; // See types above
   union {
-    short objnum;
-    short visnum;
-    short facenum;
+    int16_t objnum;
+    int16_t visnum;
+    int16_t facenum;
   };
 
-  short roomnum;
+  int16_t roomnum;
   float z;
 } postrender_struct;
 

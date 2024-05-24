@@ -58,7 +58,7 @@ void HogFileEntry::SetRealPath(const std::filesystem::path &input) {
 }
 
 std::array<char, 36> char_tolower(std::array<char, 36> s) {
-  std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
+  std::transform(s.begin(), s.end(), s.begin(), [](uint8_t c) { return std::tolower(c); });
   return s;
 }
 

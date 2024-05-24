@@ -462,15 +462,15 @@
 #include <algorithm>
 
 // DAJ vis_effect VisEffects[max_vis_effects];
-// DAJ ushort VisDeadList[max_vis_effects];
-// DAJ static short Vis_free_list[max_vis_effects];
+// DAJ uint16_t VisDeadList[max_vis_effects];
+// DAJ static int16_t Vis_free_list[max_vis_effects];
 
 vis_effect *VisEffects = NULL;
 
-static short *Vis_free_list = NULL;
-ushort *VisDeadList = NULL;
+static int16_t *Vis_free_list = NULL;
+uint16_t *VisDeadList = NULL;
 
-ushort max_vis_effects = 0;
+uint16_t max_vis_effects = 0;
 
 int NumVisDead = 0;
 int Highest_vis_effect_index = 0;
@@ -487,7 +487,7 @@ void ShutdownVisEffects() {
 
 // Goes through our array and clears the slots out
 void InitVisEffects() {
-  static ushort old_max_vis = 0;
+  static uint16_t old_max_vis = 0;
   max_vis_effects = MAX_VIS_EFFECTS; // always peg to max on PC
 
   if (old_max_vis == max_vis_effects)
@@ -495,12 +495,12 @@ void InitVisEffects() {
 
   if (VisEffects != NULL) {
     VisEffects = (vis_effect *)mem_realloc(VisEffects, sizeof(vis_effect) * max_vis_effects);
-    VisDeadList = (ushort *)mem_realloc(VisDeadList, sizeof(ushort) * max_vis_effects);
-    Vis_free_list = (short *)mem_realloc(Vis_free_list, sizeof(short) * max_vis_effects);
+    VisDeadList = (uint16_t *)mem_realloc(VisDeadList, sizeof(uint16_t) * max_vis_effects);
+    Vis_free_list = (int16_t *)mem_realloc(Vis_free_list, sizeof(int16_t) * max_vis_effects);
   } else if (VisEffects == NULL) {
     VisEffects = (vis_effect *)mem_malloc(sizeof(vis_effect) * max_vis_effects);
-    VisDeadList = (ushort *)mem_malloc(sizeof(ushort) * max_vis_effects);
-    Vis_free_list = (short *)mem_malloc(sizeof(short) * max_vis_effects);
+    VisDeadList = (uint16_t *)mem_malloc(sizeof(uint16_t) * max_vis_effects);
+    Vis_free_list = (int16_t *)mem_malloc(sizeof(int16_t) * max_vis_effects);
   }
   for (int i = 0; i < max_vis_effects; i++) {
     VisEffects[i].type = VIS_NONE;
@@ -564,7 +564,7 @@ int VisEffectInitType(vis_effect *vis) {
 
 // initialize a new viseffect.  adds to the list for the given room
 // returns the vis number
-int VisEffectCreate(ubyte type, ubyte id, int roomnum, vector *pos) {
+int VisEffectCreate(uint8_t type, uint8_t id, int roomnum, vector *pos) {
   int visnum;
   vis_effect *vis;
 
@@ -629,7 +629,7 @@ int VisEffectCreate(ubyte type, ubyte id, int roomnum, vector *pos) {
 // Creates vis effects but has the caller set their parameters
 // initialize a new viseffect.  adds to the list for the given room
 // returns the vis number
-int VisEffectCreateControlled(ubyte type, object *parent, ubyte id, int roomnum, vector *pos, float lifetime,
+int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos, float lifetime,
                               vector *velocity, int phys_flags, float size, float drag, float mass, bool isreal) {
   int visnum;
   vis_effect *vis;
@@ -810,7 +810,7 @@ void FreeAllVisEffects() {
 }
 
 // Creates a some sparks that go in random directions
-void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, ushort color, float force_scalar) {
+void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, uint16_t color, float force_scalar) {
   // Make more sparks if Katmai
   if (Katmai)
     num_sparks *= 2;
@@ -2047,7 +2047,7 @@ void VisEffectMoveOne(vis_effect *vis) {
   // Do attached viseffect stuff here
   if (vis->flags & VF_ATTACHED) {
     int objnum = vis->attach_info.obj_handle & HANDLE_OBJNUM_MASK;
-    uint sig = vis->attach_info.obj_handle & HANDLE_COUNT_MASK;
+    uint32_t sig = vis->attach_info.obj_handle & HANDLE_COUNT_MASK;
     object *obj = &Objects[objnum];
 
     if ((obj->flags & OF_DEAD) || (obj->handle & HANDLE_COUNT_MASK) != sig) {
@@ -2062,7 +2062,7 @@ void VisEffectMoveOne(vis_effect *vis) {
         if (vis->flags & VF_PLANAR) {
           // Do object to object attachment
           int dest_objnum = vis->attach_info.dest_objhandle & HANDLE_OBJNUM_MASK;
-          uint dest_sig = vis->attach_info.dest_objhandle & HANDLE_COUNT_MASK;
+          uint32_t dest_sig = vis->attach_info.dest_objhandle & HANDLE_COUNT_MASK;
           object *dest_obj = &Objects[dest_objnum];
 
           if ((dest_obj->flags & OF_DEAD) || (dest_obj->handle & HANDLE_COUNT_MASK) != dest_sig) {

@@ -1331,7 +1331,7 @@ void ProcessNormalKey(int key) {
       // decode the text macro by sending it off to the DLL
       // for processesing
       DLLInfo.input_string = Current_pilot.taunts[index];
-      DLLInfo.special_data = (ubyte *)HudInputMessage;
+      DLLInfo.special_data = (uint8_t *)HudInputMessage;
       DLLInfo.iParam = MAX_HUD_INPUT_LEN;
       CallGameDLL(EVT_CLIENT_DECODETEXTMACRO, &DLLInfo);
 
@@ -2748,7 +2748,7 @@ void StartTime() {
 float Min_frametime = 500;
 float Max_frametime = 0;
 float Avg_frametime = 0;
-unsigned int Frames_counted = 0;
+uint32_t Frames_counted = 0;
 
 // Compute how long last frame took
 void CalcFrameTime(void) {
@@ -3109,10 +3109,10 @@ void GameFrame(void) {
     // Slow down the game if the user asked us to
 
     int64_t current_timer;
-    unsigned int sleeptime;
+    uint32_t sleeptime;
     current_timer = timer_GetMSTime();
     if ((current_timer - last_timer) < Min_allowed_frametime) {
-      sleeptime = (unsigned int)Min_allowed_frametime - (current_timer - last_timer);
+      sleeptime = (uint32_t)Min_allowed_frametime - (current_timer - last_timer);
       // mprintf((0,"Sleeping for %d ms\n",sleeptime));
       Sleep(sleeptime);
     }

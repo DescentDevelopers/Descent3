@@ -165,17 +165,17 @@
 
 */
 
-typedef unsigned char FxU8;
+typedef uint8_t FxU8;
 
-typedef signed char FxI8;
+typedef int8_t FxI8;
 
-typedef unsigned short FxU16;
+typedef uint16_t FxU16;
 
-typedef signed short FxI16;
+typedef int16_t FxI16;
 
-typedef signed int FxI32;
+typedef int32_t FxI32;
 
-typedef unsigned int FxU32;
+typedef uint32_t FxU32;
 
 typedef int FxBool;
 
@@ -189,7 +189,7 @@ typedef double FxDouble;
 
 */
 
-typedef unsigned int FxColor_t;
+typedef uint32_t FxColor_t;
 
 typedef struct {
   float r, g, b, a;

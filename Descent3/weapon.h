@@ -156,7 +156,7 @@
  * Added death_dot and bounce sound for weapons
  *
  * 46    4/24/98 8:02a Samir
- * added a short weapon name array.
+ * added a int16_t weapon name array.
  *
  * 45    4/19/98 5:00p Jason
  * added cool napalm effect, plus made object effects dynamically
@@ -270,24 +270,24 @@ typedef struct {
   float player_damage;             // how much damage a full impact causes a player
   float generic_damage;            // how much damage a full impact causes a robot
   float alpha;                     // What alpha to draw this weapon with
-  short sounds[MAX_WEAPON_SOUNDS]; // sounds for various things
-  short hud_image_handle;          //  a handle to a bitmap or vclip for the hud display
-  short fire_image_handle;         //  model or bitmap.  Shown when you fire this weapon
-  short explode_image_handle;      //  exploding vclip
-  short smoke_handle;              //  smoke trail handle to texture
-  short spawn_handle;              // weapon handle that gets spawned
-  short alternate_spawn_handle;    // weapon handle that gets spawned (sometimes)
-  short robot_spawn_handle;        // robot that gets spawned as a countermeasure
-  short particle_handle;           // particle handle to texture
-  short icon_handle;
-  short scorch_handle;    // handle for scorch bitmap, or -1 for none
-  ubyte spawn_count;      // how many of spawn handle gets created
-  ubyte alternate_chance; // how often the alternate spawn weapon gets chosen (0 to 100)
+  int16_t sounds[MAX_WEAPON_SOUNDS]; // sounds for various things
+  int16_t hud_image_handle;          //  a handle to a bitmap or vclip for the hud display
+  int16_t fire_image_handle;         //  model or bitmap.  Shown when you fire this weapon
+  int16_t explode_image_handle;      //  exploding vclip
+  int16_t smoke_handle;              //  smoke trail handle to texture
+  int16_t spawn_handle;              // weapon handle that gets spawned
+  int16_t alternate_spawn_handle;    // weapon handle that gets spawned (sometimes)
+  int16_t robot_spawn_handle;        // robot that gets spawned as a countermeasure
+  int16_t particle_handle;           // particle handle to texture
+  int16_t icon_handle;
+  int16_t scorch_handle;    // handle for scorch bitmap, or -1 for none
+  uint8_t spawn_count;      // how many of spawn handle gets created
+  uint8_t alternate_chance; // how often the alternate spawn weapon gets chosen (0 to 100)
 
-  unsigned short used;
+  uint16_t used;
 
-  ubyte particle_count;
-  ubyte terrain_damage_depth;
+  uint8_t particle_count;
+  uint8_t terrain_damage_depth;
 
   float terrain_damage_size;
 
@@ -440,7 +440,7 @@ bool IsWeaponSecondary(int index);
 
 // used for sequencing
 //	resets memory for what slots have high priority weapons (laser->super_laser, for instance) when user selects
-void ResetWeaponSelectStates(ushort new_state = 0);
+void ResetWeaponSelectStates(uint16_t new_state = 0);
 
 //	save and load weapon state information
 void SaveWeaponSelectStates(CFILE *fp);
@@ -451,7 +451,7 @@ void LoadWeaponSelectStates(CFILE *fp);
 void DrawAlphaBlendedScreen(float r, float g, float b, float alpha);
 
 // Does the weapon spray effect for an object
-void DoSprayEffect(object *obj, otype_wb_info *static_wb, ubyte wb_index);
+void DoSprayEffect(object *obj, otype_wb_info *static_wb, uint8_t wb_index);
 
 // Plays the animation that accompanies a weapon death
 void DoWeaponExploded(object *, vector *norm = NULL, vector *collision_point = NULL, object *hit_object = NULL);
@@ -478,20 +478,20 @@ void CreateRobotSpawnFromWeapon(object *obj);
 void CreateCountermeasureFromObject(object *parent, int weapon_id);
 
 //////////////////////////////////////////////////////////////////////////////
-const ushort WPNSEL_SKIP = 0x8000, WPNSEL_INVALID = 0xffff;
+const uint16_t WPNSEL_SKIP = 0x8000, WPNSEL_INVALID = 0xffff;
 
-const ushort DefaultPrimarySelectList[MAX_PRIMARY_WEAPONS] = {
+const uint16_t DefaultPrimarySelectList[MAX_PRIMARY_WEAPONS] = {
     LASER_INDEX,       VAUSS_INDEX,      MICROWAVE_INDEX, PLASMA_INDEX, FUSION_INDEX,
     SUPER_LASER_INDEX, MASSDRIVER_INDEX, NAPALM_INDEX,    EMD_INDEX,    OMEGA_INDEX};
 
-const ushort DefaultSecondarySelectList[MAX_SECONDARY_WEAPONS] = {
+const uint16_t DefaultSecondarySelectList[MAX_SECONDARY_WEAPONS] = {
     CONCUSSION_INDEX,           HOMING_INDEX,       IMPACTMORTAR_INDEX, SMART_INDEX,     MEGA_INDEX, FRAG_INDEX,
     GUIDED_INDEX + WPNSEL_SKIP, NAPALMROCKET_INDEX, CYCLONE_INDEX,      BLACKSHARK_INDEX};
 
 // weapon auto selection info.
-ushort GetAutoSelectPrimaryWpnIdx(int slot);
-ushort GetAutoSelectSecondaryWpnIdx(int slot);
-void SetAutoSelectPrimaryWpnIdx(int slot, ushort idx);
-void SetAutoSelectSecondaryWpnIdx(int slot, ushort idx);
+uint16_t GetAutoSelectPrimaryWpnIdx(int slot);
+uint16_t GetAutoSelectSecondaryWpnIdx(int slot);
+void SetAutoSelectPrimaryWpnIdx(int slot, uint16_t idx);
+void SetAutoSelectSecondaryWpnIdx(int slot, uint16_t idx);
 
 #endif

@@ -87,8 +87,8 @@
 #include "vecmat.h"
 #include "findintersection.h"
 
-extern ubyte CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
-extern ubyte CollisionRayResult[MAX_OBJECT_TYPES];
+extern uint8_t CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
+extern uint8_t CollisionRayResult[MAX_OBJECT_TYPES];
 
 void CollideInit();
 void collide_two_objects(object *A, object *B, vector *collision_point, vector *collision_normal,
@@ -116,7 +116,7 @@ extern void collide_player_and_nasty_robot(object *player, object *robot, vector
 extern void net_destroy_controlcen(object *controlcen);
 extern void collide_player_and_powerup(object *player, object *powerup, vector *collision_point);
 // extern int check_effect_blowup(segment *seg,int side,vector *pnt, object *blower, int force_blowup_flag);
-extern void apply_damage_to_controlcen(object *controlcen, float damage, short who);
+extern void apply_damage_to_controlcen(object *controlcen, float damage, int16_t who);
 extern void bump_one_object(object *obj0, vector *hit_dir, float damage);
 
 extern void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum);

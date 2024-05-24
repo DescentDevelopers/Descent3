@@ -207,7 +207,7 @@ typedef struct g3UVL {
 
 // Structure to store clipping codes in a word
 typedef struct g3Codes {
-  ubyte cc_or, cc_and;
+  uint8_t cc_or, cc_and;
 } g3Codes;
 
 // flags for point structure
@@ -233,9 +233,9 @@ typedef struct g3Codes {
 // if rotated, and flag to indicate if projected.
 typedef struct g3Point {
   float p3_sx, p3_sy;  // screen x&y
-  ubyte p3_codes;      // clipping codes
-  ubyte p3_flags;      // projected?
-  short p3_pad;        // keep structure longword aligned
+  uint8_t p3_codes;      // clipping codes
+  uint8_t p3_flags;      // projected?
+  int16_t p3_pad;        // keep structure longword aligned
   vector p3_vec;       // x,y,z of rotated point
   vector p3_vecPreRot; // original XYZ of the point
   g3UVL p3_uvl;        // uv & lighting values
@@ -302,7 +302,7 @@ void g3_GetFOV(float *fov_x, float *fov_y);
 
 // get zoom.  For a given window size, return the zoom which will achieve
 // the given FOV along the given axis.
-float g3_GetZoom(char axis, float fov, short window_width, short window_height);
+float g3_GetZoom(char axis, float fov, int16_t window_width, int16_t window_height);
 
 // returns the normalized, unscaled view vectors
 void g3_GetViewVectors(vector *forward, vector *up, vector *right);
@@ -317,7 +317,7 @@ bool g3_CheckNormalFacing(vector *v, vector *norm);
 g3Codes g3_CheckCodes(int nv, g3Point **pointlist);
 
 // rotates a point. returns codes.  does not check if already rotated
-ubyte g3_RotatePoint(g3Point *dest, vector *src);
+uint8_t g3_RotatePoint(g3Point *dest, vector *src);
 
 // projects a point
 void g3_ProjectPoint(g3Point *point);
@@ -326,17 +326,17 @@ void g3_ProjectPoint(g3Point *point);
 float g3_CalcPointDepth(vector *pnt);
 
 // from a 2d point, compute the vector through that point
-void g3_Point2Vec(vector *v, short sx, short sy);
+void g3_Point2Vec(vector *v, int16_t sx, int16_t sy);
 
 // code a point.  fills in the p3_codes field of the point, and returns the codes
-ubyte g3_CodePoint(g3Point *point);
+uint8_t g3_CodePoint(g3Point *point);
 
 // delta rotation functions
 vector *g3_RotateDeltaX(vector *dest, float dx);
 vector *g3_RotateDeltaY(vector *dest, float dy);
 vector *g3_RotateDeltaZ(vector *dest, float dz);
 vector *g3_RotateDeltaVec(vector *dest, vector *src);
-ubyte g3_AddDeltaVec(g3Point *dest, g3Point *src, vector *deltav);
+uint8_t g3_AddDeltaVec(g3Point *dest, g3Point *src, vector *deltav);
 
 // Drawing functions:
 // draw a polygon
@@ -392,7 +392,7 @@ void g3_RemapInterpColors(void);
 void g3_DrawBox(ddgr_color color, g3Point *pnt, float rad);
 
 // Sets up a custom clipping plane - g3_StartFrame must be called before this is called
-void g3_SetCustomClipPlane(ubyte state, vector *pnt, vector *normal);
+void g3_SetCustomClipPlane(uint8_t state, vector *pnt, vector *normal);
 
 // sets the z distance of the far clipping plane
 void g3_SetFarClipZ(float z);

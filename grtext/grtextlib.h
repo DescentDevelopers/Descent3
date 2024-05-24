@@ -42,8 +42,8 @@
 #include "pstypes.h"
 
 typedef struct tCharBlt {
-  ushort ch;
-  ushort clipped; // if =1, use sx,sy,sw,sh
+  uint16_t ch;
+  uint16_t clipped; // if =1, use sx,sy,sw,sh
   int x, y;
   float dsw, dsh; // scale vertical and horiz.
   int sx, sy;     // source rectangle within character in pixels.

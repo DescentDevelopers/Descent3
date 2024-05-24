@@ -843,14 +843,14 @@ void matcen::SaveData(CFILE *fp) {
   cf_WriteInt(fp, m_sound_active_handle);
 }
 
-extern short texture_xlate[];
+extern int16_t texture_xlate[];
 void matcen::LoadData(CFILE *fp) {
   int i, j;
   int len;
 
-  short max_spawn_pnts;
-  short max_prod_types;
-  short max_matcen_sounds;
+  int16_t max_spawn_pnts;
+  int16_t max_prod_types;
+  int16_t max_matcen_sounds;
 
   int version = cf_ReadInt(fp);
 
@@ -1721,9 +1721,9 @@ bool matcen::SetCreationEffect(char effect_index) {
   return true;
 }
 
-void matcen::SetCreationTexture(short texnum) { m_creation_texture = texnum; }
+void matcen::SetCreationTexture(int16_t texnum) { m_creation_texture = texnum; }
 
-short matcen::GetCreationTexture() { return m_creation_texture; }
+int16_t matcen::GetCreationTexture() { return m_creation_texture; }
 
 int matcen::GetSound(char sound_type) {
   if (sound_type >= 0 && sound_type < MAX_MATCEN_SOUNDS) {

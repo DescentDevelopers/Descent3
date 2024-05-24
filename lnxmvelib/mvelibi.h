@@ -71,9 +71,9 @@ typedef unsigned bool;
 
 typedef struct _mve_hdr {
   char FileType[20];      // MVE_FILE_TYPE
-  unsigned short HdrSize; // sizeof(mve_hdr)
-  unsigned short version; // MVE_FILE_VERSION
-  unsigned short id;      // ~MVE_FILE_VERSION+0x1234
+  uint16_t HdrSize; // sizeof(mve_hdr)
+  uint16_t version; // MVE_FILE_VERSION
+  uint16_t id;      // ~MVE_FILE_VERSION+0x1234
 } mve_hdr;
 
 //------------------------------
@@ -81,9 +81,9 @@ typedef struct _mve_hdr {
 //------------------------------
 
 typedef struct _io_hdr {
-  unsigned short len;  // Length of record data (pad to even)
-  unsigned short kind; // See IO_REC_xxx
-                       //	unsigned char data[0];	// Record data
+  uint16_t len;  // Length of record data (pad to even)
+  uint16_t kind; // See IO_REC_xxx
+                       //	uint8_t data[0];	// Record data
 } ioHdrRec;
 
 // This record classifications simplify utilities which must operate on
@@ -101,13 +101,13 @@ typedef struct _io_hdr {
 //------------------------------
 //
 
-#define MCMD_DATA(arg) ((unsigned char *)((arg) + 1))
+#define MCMD_DATA(arg) ((uint8_t *)((arg) + 1))
 
 typedef struct _mcmd_hdr {
-  unsigned short len;  // Length of data (pad to even)
-  unsigned char major; // Major opcode
-  unsigned char minor; // Minor opcode
-                       //	unsigned char data[0];	// Opcode data
+  uint16_t len;  // Length of data (pad to even)
+  uint8_t major; // Major opcode
+  uint8_t minor; // Minor opcode
+                       //	uint8_t data[0];	// Opcode data
 } mcmd_hdr;
 
 #define mcmd_end 0 // End processing of movie
@@ -116,13 +116,13 @@ typedef struct _mcmd_hdr {
 
 #define mcmd_syncInit 2
 typedef struct _syncInit {
-  unsigned int period;       // period of quanta
-  unsigned short wait_quanta; // # of quanta per frame
+  uint32_t period;       // period of quanta
+  uint16_t wait_quanta; // # of quanta per frame
 } marg_syncInit;
 
 #define mcmd_sndConfigure 3
 typedef struct _sndConfigure {
-  unsigned short rate; // 65536-(256E6/(frequency*(stereo+1)))
+  uint16_t rate; // 65536-(256E6/(frequency*(stereo+1)))
                        // comp16 is a minor opcode 1 field
                        //  It indicates that 16-bit data has been compressed to 8-bits.
                        //  When it is set, bits16 will also be set.
@@ -130,46 +130,46 @@ typedef struct _sndConfigure {
                        //   by remaining compressed 8-bit samples.
                        //  For stereo, there will be two initial 16-bit samples.
                        //   and compressed streams will be interleaved.
-                       // unsigned short stereo:1, bits16:1, comp16:1;
+                       // uint16_t stereo:1, bits16:1, comp16:1;
 #ifdef OUTRAGE_BIG_ENDIAN
-  unsigned char bitpadder : 5;
+  uint8_t bitpadder : 5;
 #endif
-  unsigned char stereo : 1, bits16 : 1, comp16 : 1;
-  unsigned char dummy1;
-  unsigned short frequency;
+  uint8_t stereo : 1, bits16 : 1, comp16 : 1;
+  uint8_t dummy1;
+  uint16_t frequency;
   // Minor opcode 1 extends buflen to be a long
-  unsigned int buflen;
+  uint32_t buflen;
 } marg_sndConfigure;
 
 #define mcmd_sndSync 4
 
 #define mcmd_nfConfig 5
 typedef struct _nfConfig {
-  unsigned short wqty;
-  unsigned short hqty;
+  uint16_t wqty;
+  uint16_t hqty;
   // Minor opcode 1 fields:
-  unsigned short fqty;
+  uint16_t fqty;
   // Minor opcode 2 fields:
-  unsigned short hicolor; /*0=256-color, 1=HiColor, 2=HiColorSwapped*/
+  uint16_t hicolor; /*0=256-color, 1=HiColor, 2=HiColorSwapped*/
 } marg_nfConfig;
 
 #define mcmd_nfDecomp 6
 #define mcmd_nfDecompChg 16
 #define mcmd_nfPkDecomp 17
 typedef struct _nfDecomp {
-  unsigned short prev;   // info:Prev frames+1 needed for full picture
-  unsigned short iframe; // info:Current internal frame #
-  unsigned short x;
-  unsigned short y;
-  unsigned short w;
-  unsigned short h;
-  // unsigned short advance:1;
+  uint16_t prev;   // info:Prev frames+1 needed for full picture
+  uint16_t iframe; // info:Current internal frame #
+  uint16_t x;
+  uint16_t y;
+  uint16_t w;
+  uint16_t h;
+  // uint16_t advance:1;
 #ifdef OUTRAGE_BIG_ENDIAN
-  unsigned char bitpadder : 7;
+  uint8_t bitpadder : 7;
 #endif
-  unsigned char advance : 1;
-  unsigned char dummy1;
-  //	unsigned char comp[0];
+  uint8_t advance : 1;
+  uint8_t dummy1;
+  //	uint8_t comp[0];
 } marg_nfDecomp;
 
 #define mcmd_sfShowFrame 7
@@ -177,43 +177,43 @@ typedef struct _nfDecomp {
 #define mcmd_sfPkShowFrameChg 18
 #endif
 typedef struct _sfShowFrame {
-  unsigned short pal_start;
-  unsigned short pal_count;
+  uint16_t pal_start;
+  uint16_t pal_count;
   // Minor opcode 1 fields:
-  unsigned short field; // 0:none, 2:send to even, 3:send to odd
+  uint16_t field; // 0:none, 2:send to even, 3:send to odd
 } marg_sfShowFrame;
 
 #define mcmd_sndAdd 8
 #define mcmd_sndSilence 9
 typedef struct _sndAdd {
-  unsigned short iframe; // info: iframe # of sound
-  unsigned short TrackMask;
-  unsigned short qty; // Uncompressed audio size in bytes
-  //	unsigned char data[0];
+  uint16_t iframe; // info: iframe # of sound
+  uint16_t TrackMask;
+  uint16_t qty; // Uncompressed audio size in bytes
+  //	uint8_t data[0];
 } marg_sndAdd;
 
 #define mcmd_gfxMode 10
 typedef struct _gfxMode {
-  unsigned short minw;
-  unsigned short minh;
-  unsigned short mode;
+  uint16_t minw;
+  uint16_t minh;
+  uint16_t mode;
 } marg_gfxMode;
 
 #define mcmd_palMakeSynthPalette 11
 typedef struct _palMakeSynthPalette {
-  unsigned char base_r;
-  unsigned char range_r;
-  unsigned char range_rb;
-  unsigned char base_g;
-  unsigned char range_g;
-  unsigned char range_gb;
+  uint8_t base_r;
+  uint8_t range_r;
+  uint8_t range_rb;
+  uint8_t base_g;
+  uint8_t range_g;
+  uint8_t range_gb;
 } marg_palMakeSynthPalette;
 
 #define mcmd_palLoadPalette 12
 typedef struct _palLoadPalette {
-  unsigned short start;
-  unsigned short count;
-  //	unsigned char data[0];
+  uint16_t start;
+  uint16_t count;
+  //	uint8_t data[0];
 } marg_palLoadPalette;
 
 #define mcmd_palLoadCompPalette 13
@@ -227,13 +227,13 @@ typedef struct _palLoadPalette {
 #define mcmd_nfPkInfo 19
 #define mcmd_nfHPkInfo 20
 typedef struct _nfPkInfo {
-  unsigned int error; // scaled by 10000
-  unsigned short usage[64];
+  uint32_t error; // scaled by 10000
+  uint16_t usage[64];
 } marg_nfPkInfo;
 
 #define mcmd_idcode 21
 typedef struct _idcode {
-  unsigned int idcode; // Code identifying version mcomp used to create
+  uint32_t idcode; // Code identifying version mcomp used to create
 } marg_idcode;
 
 #if __SC__

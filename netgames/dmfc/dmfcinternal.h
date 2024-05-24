@@ -34,7 +34,7 @@
  * the server bashes it down.
  *
  * 75    9/28/99 10:55a Jeff
- * changed size of pointer for mastertracker game from ubyte* to int*
+ * changed size of pointer for mastertracker game from uint8_t* to int*
  *
  * 74    8/21/99 12:32a Jeff
  * Changed the name of the GetRealGametime function to
@@ -293,11 +293,11 @@ typedef struct {
 } tDeathMsg;
 
 typedef struct tSPHandler {
-  void (*func)(ubyte *); // Function handler to handle the packet
-  void (DMFCBase::*DMFCfunc)(ubyte *);
+  void (*func)(uint8_t *); // Function handler to handle the packet
+  void (DMFCBase::*DMFCfunc)(uint8_t *);
   tSPHandler *next; // Pointer to next handler
   int type;
-  ubyte ID; // ID of special packet
+  uint8_t ID; // ID of special packet
 } tSPHandler;
 
 // Struct for Input Command nodes (commands that begin with $)
@@ -310,7 +310,7 @@ typedef struct tInputCommandNode {
 } tInputCommandNode;
 
 typedef struct tPKillerInfo {
-  ubyte slot;
+  uint8_t slot;
   int kills;
   tPKillerInfo *next;
 } tPKillerInfo;
@@ -321,10 +321,10 @@ typedef struct {
   float kill_time;        // time of latest kill
   float death_time;       // time of latest death
   float observer_time;    // time the player entered observer mode (or 0 if not)
-  ushort kills_in_a_row;  // Number of kills in a row for this player
-  ushort deaths_in_a_row; // Number of deaths in a row for this player
-  sbyte last_kill_num;    // Player record num of last person this player killed
-  sbyte last_death_num;   // Player record num of the player that last killed this player
+  uint16_t kills_in_a_row;  // Number of kills in a row for this player
+  uint16_t deaths_in_a_row; // Number of deaths in a row for this player
+  int8_t last_kill_num;    // Player record num of last person this player killed
+  int8_t last_death_num;   // Player record num of the player that last killed this player
   char got_revenge;       // 1 if revenge has been made on last killer
 } tPExtraInfo;
 
@@ -340,8 +340,8 @@ public:
   void ResetAll(void);
   int GetSizeOfData(void);
   int GetExtraInfoSize(void);
-  void PackData(ubyte *buffer);
-  bool UnpackData(ubyte *buffer, int buffsize);
+  void PackData(uint8_t *buffer);
+  bool UnpackData(uint8_t *buffer, int buffsize);
   tPExtraInfo *GetExtraInfo(void);
   void HandleKill(int killer_num);
   void HandleDeath(int victim_num);
@@ -361,7 +361,7 @@ private:
 class MenuItem : public IMenuItem {
 public:
   MenuItem();
-  MenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...); // the last parameters are the state items, which
+  MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int), ...); // the last parameters are the state items, which
                                                                        // is an int (the number of states), followed by
                                                                        // an int (the initial state), followed by a
                                                                        // a list of char * to the names of the items
@@ -423,8 +423,8 @@ private:
   // no submenus are allowed to be added to a MIT_PLIST, as this is automatically handled
   // no submenus are allowed for MIT_STATEITEM as they are specific ends for a MIT_STATE submenu
   char m_cType;
-  ubyte m_iFlags;
-  ubyte m_Alpha;
+  uint8_t m_iFlags;
+  uint8_t m_Alpha;
   bool m_AlphaDir;
   int m_iTopIndex;
   bool m_bMoreToScroll, m_bAtBottom;
@@ -511,9 +511,9 @@ protected:
   // callback for DSCOL_CUSTOM column types for detailed
   void (*m_DColCallback)(int precord_num, int column_num, char *buffer, int buffer_size);
   // callback for DSCOL_BMP column types for Player list (bitmaps)
-  void (*m_PLColCallbackBMP)(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use);
+  void (*m_PLColCallbackBMP)(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
   // callback for DSCOL_BMP column types for detailed (bitmaps)
-  void (*m_DColCallbackBMP)(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use);
+  void (*m_DColCallbackBMP)(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use);
   // callback for team data
   void (*m_TeamCallback)(int team, char *buffer, int buffer_size);
   // name of the multiplayer game
@@ -555,7 +555,7 @@ protected:
   // does this guy have multiple pages?
   bool m_has_multiple_pages;
   // alpha of the items
-  ubyte m_alpha;
+  uint8_t m_alpha;
   float alpha_in_time;
 
   // validates all the variables
@@ -569,8 +569,8 @@ protected:
 };
 
 typedef struct tHostsNode {
-  unsigned int ip;
-  unsigned int mask;
+  uint32_t ip;
+  uint32_t mask;
   tHostsNode *next;
 } tHostsNode; // Allow/Deny IP address nodes
 
@@ -919,7 +919,7 @@ public:
   //
   //
   //	There is a control message sent from someone
-  virtual void OnControlMessage(ubyte msg, int from_pnum);
+  virtual void OnControlMessage(uint8_t msg, int from_pnum);
 
   // DMFCBase::OnAllowObserverChange
   //
@@ -1102,7 +1102,7 @@ public:
   //     killernum = object number of the killer
   //     victimnum = object number of the victim
   //		    hash = hash index of the weapon killer, -1 if none
-  void DoRandomDeathMessage(int killernum, int victimnum, uint hash = -1);
+  void DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash = -1);
 
   // DMFCBase::GetItObjNum
   //
@@ -1120,9 +1120,9 @@ public:
   // to the ID's given to this function.  If any match than it calls the handler given to process
   // the packet.
   // id = ID of the packet
-  // func = Function handler to handle the packet.  Must be declared like void MyFunction(ubyte *data);
-  void RegisterPacketReceiver(ubyte id, void (*func)(ubyte *));
-  void RegisterPacketReceiver(ubyte id, void (DMFCBase::*func)(ubyte *));
+  // func = Function handler to handle the packet.  Must be declared like void MyFunction(uint8_t *data);
+  void RegisterPacketReceiver(uint8_t id, void (*func)(uint8_t *));
+  void RegisterPacketReceiver(uint8_t id, void (DMFCBase::*func)(uint8_t *));
 
   // DMFCBase::StartPacket
   //
@@ -1134,7 +1134,7 @@ public:
   //   handler to
   //        call.
   //	 count = pointer to your packet index pointer
-  void StartPacket(ubyte *data, ubyte id, int *count);
+  void StartPacket(uint8_t *data, uint8_t id, int *count);
 
   // DMFCBase::SendPacket
   //
@@ -1143,7 +1143,7 @@ public:
   //   size = size (in bytes) of the packet
   //   destination = either a player number, SP_ALL for all the players or SP_SERVER to send to the server (if you are a
   //   client)
-  void SendPacket(ubyte *data, int size, int destination);
+  void SendPacket(uint8_t *data, int size, int destination);
 
   // DMFCBase::GetTeamForNewPlayer
   //
@@ -1176,17 +1176,17 @@ public:
   // DMFCBase::GetTeamAssignmentPacket
   //
   //     Reciever for the team assignment packet.
-  void GetTeamAssignmentPacket(ubyte *data);
+  void GetTeamAssignmentPacket(uint8_t *data);
 
   // DMFCBase::GetChangeTeamPacket
   //
   //     Reciever for the change team packet.(Server Only)
-  void GetChangeTeamPacket(ubyte *data);
+  void GetChangeTeamPacket(uint8_t *data);
 
   // DMFCBase::GetGameStateRequest
   //
   //		Receiver for the server from a client asking for the state of the game
-  void GetGameStateRequest(ubyte *data);
+  void GetGameStateRequest(uint8_t *data);
 
   // DMFCBase::SendChangeTeamRequest
   //
@@ -1197,7 +1197,7 @@ public:
   // DMFCBase::GetDMFCGameInfo
   //
   //		Receives information about the DMFC game
-  void GetDMFCGameInfo(ubyte *data);
+  void GetDMFCGameInfo(uint8_t *data);
 
   // DMFCBase::SendDMFCGameInfo
   //
@@ -1207,7 +1207,7 @@ public:
   // DMFCBase::GetRemoteKey
   //
   // Handles a new remote key from the server
-  void GetRemoteKey(ubyte *data);
+  void GetRemoteKey(uint8_t *data);
 
   // DMFCBase::SendRemoteKey
   //
@@ -1286,7 +1286,7 @@ public:
   //
   //	  Returns a converted alpha based on what you give, it will be a more transparent if the onscreen menu is up
   float ConvertHUDAlpha(float normal);
-  ubyte ConvertHUDAlpha(ubyte normal);
+  uint8_t ConvertHUDAlpha(uint8_t normal);
 
   // DMFCBase::ClipString
   //
@@ -1329,13 +1329,13 @@ public:
   //
   //
   //   Sets the level for displaying of Player's Callsigns on the HUD
-  void SwitchShowHudCallsignLevel(ubyte level, bool announce = true);
+  void SwitchShowHudCallsignLevel(uint8_t level, bool announce = true);
 
   // DMFCBase::SwitchServerHudCallsignLevel
   //
   //
   //	Sets the max level of HUD callsign displayage...determined by the server
-  void SwitchServerHudCallsignLevel(ubyte level);
+  void SwitchServerHudCallsignLevel(uint8_t level);
 
   // DMFCBase::GetCounterMeasureOwner
   //
@@ -1381,12 +1381,12 @@ public:
   // DMFCBase::DecryptData
   //
   // Decrypts a buffer of data
-  void DecryptData(ubyte *data, int size);
+  void DecryptData(uint8_t *data, int size);
 
   // DMFCBase::EncryptData
   //
   //	Encrypts (weak) a buffer of data
-  void EncryptData(ubyte *data, int size);
+  void EncryptData(uint8_t *data, int size);
 
   // DMFCBase::VersionCheck
   //
@@ -1458,8 +1458,8 @@ public:
   //	returns:	1 if size given was <=0 (if so all previous user stats will be removed)
   //				0 all went ok
   //				-1 out of memory (all user stats memory will be freed)
-  int SetupPlayerRecord(int sizeof_individual_data, int (*pack_callback)(void *user_info, ubyte *data),
-                        int (*unpack_callback)(void *user_info, ubyte *data));
+  int SetupPlayerRecord(int sizeof_individual_data, int (*pack_callback)(void *user_info, uint8_t *data),
+                        int (*unpack_callback)(void *user_info, uint8_t *data));
 
   // DMFCBase::GetPlayerRecordData
   //
@@ -1487,7 +1487,7 @@ public:
   //
   //
   //	Recieves and processes a request for a player record
-  void ReceiveRequestForPlayerRecords(ubyte *data);
+  void ReceiveRequestForPlayerRecords(uint8_t *data);
 
   // DMFCBase::IsPlayerBanned
   //
@@ -1534,13 +1534,13 @@ public:
   //
   //
   //	Sends a [1 byte] control message to a player
-  void SendControlMessageToPlayer(int pnum, ubyte msg);
+  void SendControlMessageToPlayer(int pnum, uint8_t msg);
 
   // DMFCBase::ReceiveControlMessage
   //
   //
   //	Handles a control message
-  void ReceiveControlMessage(ubyte *data);
+  void ReceiveControlMessage(uint8_t *data);
 
   // DMFCBase::SendRealGametime
   //
@@ -1550,7 +1550,7 @@ public:
   // DMFCBase::GetRealGametime
   //
   //	handles a packet about updating the real game time
-  void GetRealGametimePacket(ubyte *data);
+  void GetRealGametimePacket(uint8_t *data);
 
   // DMFCBase::FindPInfoStatFirst
   //
@@ -1597,7 +1597,7 @@ public:
   //	exists. These commands are not case sensitive.
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
-  signed char AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely = false);
+  int8_t AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely = false);
 
   // DMFCBase::CanInputCommandBeUsedRemotely
   //
@@ -1822,7 +1822,7 @@ public:
   // If you are going to create submenus you MUST use this function. along with:
   // void SetState(int state);
   // bool SetStateItemList(int count, ... ); for MIT_STATE items
-  MenuItem *CreateMenuItem(const char *title, char type, ubyte flags, void (*fp)(int), ...);
+  MenuItem *CreateMenuItem(const char *title, char type, uint8_t flags, void (*fp)(int), ...);
 
   // DMFCBase::ReadInHostsAllowDeny
   //
@@ -1997,7 +1997,7 @@ public:
 protected:
   void SetPlayerInfo(int pnum);
   void SendVersionToClient(int pnum);
-  void GetDMFCVersionCheck(ubyte *data);
+  void GetDMFCVersionCheck(uint8_t *data);
   bool DMFC_compare_slots(int a, int b);
   bool DMFC_compare_slots_efficiency(int a, int b);
 
@@ -2090,15 +2090,15 @@ private:
   bool m_bDisplayOutrageLogo;
   int *m_bTrackerGame;
   bool *Dedicated_server;
-  ubyte m_iServerHUDCallsignLevel;
-  ubyte m_iMyPreferredHUDCallsignLevel; // what the user selected for callsign level
-  ubyte m_iMyCurrentHUDCallsignLevel;   // might be lower than preferred level if limited by server
-  ubyte m_iDeathMessageFilter;
+  uint8_t m_iServerHUDCallsignLevel;
+  uint8_t m_iMyPreferredHUDCallsignLevel; // what the user selected for callsign level
+  uint8_t m_iMyCurrentHUDCallsignLevel;   // might be lower than preferred level if limited by server
+  uint8_t m_iDeathMessageFilter;
   int m_iNumBanPlayers;
   int m_iUIWindowID;
   void *m_UIUserData;
-  ushort *Local_object_list;
-  ushort *Server_object_list;
+  uint16_t *Local_object_list;
+  uint16_t *Server_object_list;
   tHostsNode *m_DenyList;
   tHostsNode *m_AllowList;
   bool LossGuageEnabled;
@@ -2114,7 +2114,7 @@ private:
   int *Camera_view_mode;
 
   char DatabaseRegisteredName[MAX_DBNAME_SIZE];
-  signed short players_in_game[MAX_PLAYER_RECORDS];
+  int16_t players_in_game[MAX_PLAYER_RECORDS];
 
   // DMFCBase::InitializeForLevel
   //
@@ -2132,7 +2132,7 @@ private:
   // DMFCBase::ReceiveNetGameInfoSync
   //
   //  Receives a NetGame info sync packet from the server
-  void ReceiveNetGameInfoSync(ubyte *data);
+  void ReceiveNetGameInfoSync(uint8_t *data);
   // DMFCBase::SendNewTeamName
   //
   //	Tells the clients about a team's new name
@@ -2140,7 +2140,7 @@ private:
   // DMFCBase::ReceiveNewTeamName
   //
   //	The server is telling us about a new team name
-  void ReceiveNewTeamName(ubyte *data);
+  void ReceiveNewTeamName(uint8_t *data);
 
   //	DMFCBase::ParseStartupScript
   //
@@ -2223,7 +2223,7 @@ public:
   void Set_OnSaveStatsToFile(void (*callback)(void));
   void Set_OnPlayerReconnect(void (*callback)(int player_num));
   void Set_OnPlayerConnect(void (*callback)(int player_num));
-  void Set_OnControlMessage(void (*callback)(ubyte msg, int from_pnum));
+  void Set_OnControlMessage(void (*callback)(uint8_t msg, int from_pnum));
   void Set_OnAllowObserverChange(bool (*callback)(bool turnonobserver));
   void Set_OnClientShowUI(void (*callback)(int id, void *user_data));
   void Set_OnPrintScores(void (*callback)(int level));
@@ -2287,7 +2287,7 @@ public:
   void CallOnSaveStatsToFile(void);
   void CallOnPlayerReconnect(int player_num);
   void CallOnPlayerConnect(int player_num);
-  void CallOnControlMessage(ubyte msg, int from_pnum);
+  void CallOnControlMessage(uint8_t msg, int from_pnum);
   bool CallOnAllowObserverChange(bool turnonobserver);
   void CallOnClientShowUI(int id, void *user_data);
   void CallOnPrintScores(int level);
@@ -2357,7 +2357,7 @@ private:
   void (*UserOnSaveStatsToFile)(void);
   void (*UserOnPlayerReconnect)(int player_num);
   void (*UserOnPlayerConnect)(int player_num);
-  void (*UserOnControlMessage)(ubyte msg, int from_pnum);
+  void (*UserOnControlMessage)(uint8_t msg, int from_pnum);
   bool (*UserOnAllowObserverChange)(bool turnonobserver);
   void (*UserOnClientShowUI)(int id, void *user_data);
   void (*UserOnPrintScores)(int level);
@@ -2850,14 +2850,14 @@ void Remote_Initialize(void);
 // Processes remote administration for the frame
 void Remote_ProcessFrame(void);
 // Gets the key for the given player record
-ubyte *Remote_GetKey(int prec);
+uint8_t *Remote_GetKey(int prec);
 // Enables/Disables remote administration
 void Remote_Enable(bool enable);
 // sets the administration password for the server
 // pass in an unencrypted password
 void Remote_SetPassword(char *password);
 // Sets a clients key
-void Remote_SetMyKey(ubyte key[8]);
+void Remote_SetMyKey(uint8_t key[8]);
 // handles a remote command (client side)
 void Remote_ClientProcess(const char *command);
 // Lists the players logged in
@@ -2924,8 +2924,8 @@ void PRec_Close(void);
 //				0 all went ok
 //				-1 out of memory (all user stats memory will be freed)
 //				-2 invalid callbacks
-int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_info, ubyte *data),
-                       int (*unpack_callback)(void *user_info, ubyte *data));
+int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_info, uint8_t *data),
+                       int (*unpack_callback)(void *user_info, uint8_t *data));
 //	Given a pnum it will return the PRec slot of that player, or -1 if it's not a valid player
 int PRec_GetPlayerSlot(int pnum);
 //	Given a PRec slot, it returns a pointer to the user stats struct, NULL if error, or PRec_SetupUserPRec
@@ -2957,7 +2957,7 @@ void PRec_LevelReset(void);
 //	Sends the Player records info to the given client
 void PRec_SendPRecToPlayer(int pnum);
 //	Receives the Player records info from the server
-void PRec_ReceivePRecFromServer(ubyte *data);
+void PRec_ReceivePRecFromServer(uint8_t *data);
 //	Sets the team of a player given the pnum
 void PRec_SetPlayerTeam(int pnum, int team);
 //	Gets the team of a player given the pnum

@@ -126,7 +126,7 @@ void con_Puts(int window, const char *str);
 //////////////////////////////////////////////////
 // Functions
 void con_Update(int windows) {
-  if (!Con_init) // console hasn't been initialized yet, short circuit
+  if (!Con_init) // console hasn't been initialized yet, int16_t circuit
     return;
 
   if (Console_mode == Console_null || Console_mode == Console_raw) {
@@ -153,7 +153,7 @@ void con_Update(int windows) {
 }
 
 void con_Printf(const char *fmt, ...) {
-  if (!Con_init) // console hasn't been initialized yet, short circuit
+  if (!Con_init) // console hasn't been initialized yet, int16_t circuit
     return;
 
   char buf[CON_MAX_STRINGLEN];
@@ -496,7 +496,7 @@ void con_DoKeyboard(void) {
     default:
       if (Con_inp_pos < (Con_cols - 2)) {
         // Add the character to the text buffer.
-        unsigned char str[2];
+        uint8_t str[2];
         str[0] = ddio_KeyToAscii(keypressed);
         str[1] = 0;
         if (str[0] != 255) {

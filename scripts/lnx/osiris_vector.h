@@ -30,7 +30,7 @@ const vector Zero_vector = {0.0f, 0.0f, 0.0f};
 #pragma warning(disable : 4244)
 
 // Angles are unsigned shorts
-typedef unsigned short angle;
+typedef uint16_t angle;
 
 // The basic fixed-point type
 typedef int32_t fix;
@@ -70,7 +70,7 @@ fix FloatToFixFast(float num);
 #define ShortToFix(num) (((int32_t)(num)) << FIX_SHIFT)
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
-#define FixToShort(num) ((short)((num) >> FIX_SHIFT))
+#define FixToShort(num) ((int16_t)((num) >> FIX_SHIFT))
 
 // Tables for trig functions
 float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation
@@ -971,7 +971,7 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
   }
 }
 
-void vm_SinCos(unsigned short a, float *s, float *c) {
+void vm_SinCos(uint16_t a, float *s, float *c) {
   if (s)
     *s = FixSin(a);
   if (c)

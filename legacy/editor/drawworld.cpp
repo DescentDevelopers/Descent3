@@ -310,17 +310,17 @@ void DrawTerrainPoints (vector *view_pos,matrix *view_orient)
 
 typedef struct seg_edge {
 	union {
-		struct {short v0,v1;};
+		struct {int16_t v0,v1;};
     int32_t vv;
 	};
-	ushort	type;
+	uint16_t	type;
 } seg_edge;
 
 #define MAX_EDGES (MAX_VERTS_PER_ROOM*2)
 
 seg_edge edge_list[MAX_EDGES];
 
-short	used_list[MAX_EDGES];	//which entries in edge_list have been used
+int16_t	used_list[MAX_EDGES];	//which entries in edge_list have been used
 int n_used;
 
 int edge_list_size;		//set each frame
@@ -333,7 +333,7 @@ int edge_list_size;		//set each frame
 int FindEdge(int v0,int v1,seg_edge **edge_ptr)
 {
   int32_t vv;
-	short hash,oldhash;
+	int16_t hash,oldhash;
 	int ret;
 
 	vv = (v1<<16) + v0;
@@ -362,7 +362,7 @@ int FindEdge(int v0,int v1,seg_edge **edge_ptr)
 }
 
 //adds an edge to the edge list
-void AddEdge(int v0,int v1,ubyte type)
+void AddEdge(int v0,int v1,uint8_t type)
 {
 	int found;
 
@@ -390,7 +390,7 @@ void AddEdge(int v0,int v1,ubyte type)
 //inside the box.
 void CheckRoom(room *rp)
 {
-	ubyte	codes_and = 0xff;
+	uint8_t	codes_and = 0xff;
 	int vn;
 
 	//Rotate all the points
@@ -771,7 +771,7 @@ void DrawVertBox(vector *v,ddgr_color color)
 {
   	//Draw a box at the marked vert
   	g3Point p0;
-  	ubyte c0 = g3_RotatePoint(&p0,v);
+  	uint8_t c0 = g3_RotatePoint(&p0,v);
   	if (! c0) {		//on screen?
   		g3_ProjectPoint(&p0);
   		rend_SetFlatColor(color);

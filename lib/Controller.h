@@ -146,8 +146,8 @@ typedef struct ct_function {
   int id;           // identifier for the function (like forward thrust)
   ct_format format; // what format should the return value be for this function
   ct_type ctype[2]; // type of controller requested for this id. (1 for each value packed.)
-  ubyte value[2];   // corresponding value to ctype
-  ubyte flags[2];   // flags.
+  uint8_t value[2];   // corresponding value to ctype
+  uint8_t flags[2];   // flags.
 } ct_function;
 
 typedef struct ct_packet {
@@ -163,7 +163,7 @@ typedef unsigned ct_config_data; // passed by controller system to the outside, 
 #define CTPK_MOUSE 0x2         // this is coming from a mouse device. default is joystick/keyboard.
 
 //	element values
-const ubyte CT_X_AXIS = 1, // AXIS constants for ctAxis
+const uint8_t CT_X_AXIS = 1, // AXIS constants for ctAxis
     CT_Y_AXIS = 2, CT_Z_AXIS = 3, CT_R_AXIS = 4, CT_U_AXIS = 5, CT_V_AXIS = 6,
             CT_NUM_AXES = 6; // number of axes
 
@@ -182,12 +182,12 @@ const ubyte CT_X_AXIS = 1, // AXIS constants for ctAxis
 #define CONTROLLER_CTL2_VALUE(_b) CONTROLLER_KEY2_VALUE(_b)
 #define CONTROLLER_CTL_VALUE(_l, _h) makeshort(_h, _l)
 
-#define CONTROLLER_CTL1_INFO(_b) ((sbyte)lobyte(_b))
-#define CONTROLLER_CTL2_INFO(_b) ((sbyte)hibyte(_b))
+#define CONTROLLER_CTL1_INFO(_b) ((int8_t)lobyte(_b))
+#define CONTROLLER_CTL2_INFO(_b) ((int8_t)hibyte(_b))
 #define CONTROLLER_CTL_INFO(_l, _h) makeshort(_h, _l)
 
-#define CONTROLLER_VALUE(_l) ((ushort)loword(_l))
-#define CONTROLLER_INFO(_l) ((short)hiword(_l))
+#define CONTROLLER_VALUE(_l) ((uint16_t)loword(_l))
+#define CONTROLLER_INFO(_l) ((int16_t)hiword(_l))
 #define MAKE_CONFIG_DATA(_c, _v) makeword(_c, _v)
 
 #define CTLBINDS_PER_FUNC 2
@@ -214,10 +214,10 @@ public:
   virtual ct_config_data get_controller_value(ct_type type_req) = 0;
 
   //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
-  virtual void set_controller_function(int id, const ct_type *type, ct_config_data value, const ubyte *flags) = 0;
+  virtual void set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) = 0;
 
   //	returns information about a requested function (type must be of an array == CTLBINDS_PER_FUNC)
-  virtual void get_controller_function(int id, ct_type *type, ct_config_data *value, ubyte *flags) = 0;
+  virtual void get_controller_function(int id, ct_type *type, ct_config_data *value, uint8_t *flags) = 0;
 
   //	temporarily enables or disables a function
   virtual void enable_function(int id, bool enable) = 0;
@@ -226,10 +226,10 @@ public:
   virtual bool get_packet(int id, ct_packet *packet, ct_format alt_format = ctNoFormat) = 0;
 
   // gets sensitivity of axis item
-  virtual float get_axis_sensitivity(ct_type axis_type, ubyte axis) = 0;
+  virtual float get_axis_sensitivity(ct_type axis_type, uint8_t axis) = 0;
 
   // sets sensitivity of axis item
-  virtual void set_axis_sensitivity(ct_type axis_type, ubyte axis, float val) = 0;
+  virtual void set_axis_sensitivity(ct_type axis_type, uint8_t axis, float val) = 0;
 
   // assigns an individual function
   virtual int assign_function(ct_function *fn) = 0;
@@ -238,7 +238,7 @@ public:
   virtual void mask_controllers(bool joystick, bool mouse) = 0;
 
   // retrieves binding text for desired function, binding, etc.
-  virtual const char *get_binding_text(ct_type type, ubyte ctrl, ubyte bind) = 0;
+  virtual const char *get_binding_text(ct_type type, uint8_t ctrl, uint8_t bind) = 0;
 
   // get raw values for the controllers
   virtual int get_mouse_raw_values(int *x, int *y) = 0;

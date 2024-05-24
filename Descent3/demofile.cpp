@@ -308,8 +308,8 @@ static float Demo_frame_time = 0;
 static float Demo_last_pinfo;
 float Demo_frame_ofs;
 static int Demo_auto_idx = 0;
-unsigned int Demo_flags = 0;
-unsigned short Demo_obj_map[MAX_OBJECTS];
+uint32_t Demo_flags = 0;
+uint16_t Demo_obj_map[MAX_OBJECTS];
 static bool Demo_turretchanged[MAX_OBJECTS];
 bool Demo_looping = false;
 bool Demo_paused = false;
@@ -328,7 +328,7 @@ extern gs_tables *gs_Xlates;
 extern float Min_frametime;
 extern float Max_frametime;
 extern float Avg_frametime;
-extern unsigned int Frames_counted;
+extern uint32_t Frames_counted;
 extern bool Game_paused;
 
 static bool Demo_play_fast = false;
@@ -467,9 +467,9 @@ void DemoWriteChangedObj(object *op) {
   }
 }
 
-void DemoWriteWeaponFire(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum,
-                         unsigned short weapobjnum, short gunnum) {
-  uint uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
+void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
+                         uint16_t weapobjnum, int16_t gunnum) {
+  uint32_t uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   if (weapobjnum == -1)
     return;
   if (!Weapons[weaponnum].used) {
@@ -487,7 +487,7 @@ void DemoWriteWeaponFire(unsigned short objectnum, vector *pos, vector *dir, uns
   }
 }
 
-void DemoWriteHudMessage(unsigned int color, bool blink, char *msg) {
+void DemoWriteHudMessage(uint32_t color, bool blink, char *msg) {
   if (Demo_flags == DF_RECORDING) {
     cf_WriteByte(Demo_cfp, DT_HUD_MESSAGE);
     cf_WriteInt(Demo_cfp, color);
@@ -518,7 +518,7 @@ void DemoWriteChangedObjects() {
   }
 }
 
-void DemoWriteObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+void DemoWriteObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj) {
 
   if (Demo_flags == DF_RECORDING) {
@@ -547,18 +547,18 @@ void DemoWriteObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const m
 #define MAX_COOP_TURRETS 400
 extern float turret_holder[MAX_COOP_TURRETS];
 
-void DemoWriteTurretChanged(unsigned short objnum) { Demo_turretchanged[objnum] = true; }
+void DemoWriteTurretChanged(uint16_t objnum) { Demo_turretchanged[objnum] = true; }
 
 void DemoReadTurretChanged(void) {
   multi_turret multi_turret_info;
   int objnum;
-  ushort num_turrets;
+  uint16_t num_turrets;
   float turr_time;
   int count = 0;
   float do_time;
 
   do_time = cf_ReadFloat(Demo_cfp);
-  short old_objnum = cf_ReadShort(Demo_cfp);
+  int16_t old_objnum = cf_ReadShort(Demo_cfp);
   objnum = Demo_obj_map[old_objnum];
 
   turr_time = cf_ReadFloat(Demo_cfp);
@@ -576,7 +576,7 @@ void DemoReadTurretChanged(void) {
   }
 }
 
-void DemoWriteObjAnimChanged(unsigned short objnum) {
+void DemoWriteObjAnimChanged(uint16_t objnum) {
 
   custom_anim multi_anim_info;
   if (ObjGetAnimUpdate(objnum, &multi_anim_info)) // Checks if obj is still alive and all
@@ -631,12 +631,12 @@ void DemoWriteKillObject(object *hit_obj, object *killer, float damage, int deat
 }
 
 void DemoReadKillObject(void) {
-  short hit_objnum = cf_ReadShort(Demo_cfp);
-  short killer = cf_ReadShort(Demo_cfp);
+  int16_t hit_objnum = cf_ReadShort(Demo_cfp);
+  int16_t killer = cf_ReadShort(Demo_cfp);
   float damage = cf_ReadFloat(Demo_cfp);
   int death_flags = cf_ReadInt(Demo_cfp);
   float delay = cf_ReadFloat(Demo_cfp);
-  short seed = cf_ReadShort(Demo_cfp);
+  int16_t seed = cf_ReadShort(Demo_cfp);
 
   if (!(IS_GENERIC(Objects[hit_objnum].type) || (Objects[hit_objnum].type == OBJ_DOOR)))
     return; // bail if invalid object type
@@ -653,13 +653,13 @@ void DemoWritePlayerDeath(object *player, bool melee, int fate) {
 }
 
 void DemoReadPlayerDeath(void) {
-  short playernum = cf_ReadShort(Demo_cfp);
-  ubyte melee = cf_ReadByte(Demo_cfp);
+  int16_t playernum = cf_ReadShort(Demo_cfp);
+  uint8_t melee = cf_ReadByte(Demo_cfp);
   int fate = cf_ReadInt(Demo_cfp);
   InitiatePlayerDeath(&Objects[playernum], melee ? true : false, fate);
 }
 
-void DemoWrite2DSound(short soundidx, float volume) {
+void DemoWrite2DSound(int16_t soundidx, float volume) {
   cf_WriteByte(Demo_cfp, DT_2D_SOUND);
   cf_WriteShort(Demo_cfp, soundidx);
   cf_WriteFloat(Demo_cfp, volume);
@@ -672,7 +672,7 @@ void DemoRead2DSound(void) {
   Sound_system.Play2dSound(soundidx, volume);
 }
 
-void DemoWrite3DSound(short soundidx, ushort objnum, int priority, float volume) {
+void DemoWrite3DSound(int16_t soundidx, uint16_t objnum, int priority, float volume) {
   cf_WriteByte(Demo_cfp, DT_3D_SOUND);
   cf_WriteShort(Demo_cfp, objnum);
   cf_WriteShort(Demo_cfp, soundidx);
@@ -681,7 +681,7 @@ void DemoWrite3DSound(short soundidx, ushort objnum, int priority, float volume)
 
 void DemoRead3DSound(void) {
   int objnum;
-  short soundidx;
+  int16_t soundidx;
   float volume;
 
   objnum = cf_ReadShort(Demo_cfp);
@@ -737,7 +737,7 @@ int DemoPlaybackFile(char *filename) {
 extern bool IsRestoredGame;
 int DemoReadHeader() {
   char szsig[10];
-  short ver;
+  int16_t ver;
   char demo_mission[_MAX_PATH];
   int level_num;
   int frame_count;
@@ -892,7 +892,7 @@ int DemoReadHeader() {
 }
 
 void DemoReadObj() {
-  short objnum;
+  int16_t objnum;
   object *obj;
   vector pos;
   matrix orient;
@@ -928,7 +928,7 @@ void DemoReadObj() {
 void DemoReadHudMessage() {
   char msg[HUD_MESSAGE_LENGTH];
   int color = cf_ReadInt(Demo_cfp);
-  ubyte blink = cf_ReadByte(Demo_cfp);
+  uint8_t blink = cf_ReadByte(Demo_cfp);
   cf_ReadString(msg, HUD_MESSAGE_LENGTH, Demo_cfp);
 
   if (color) {
@@ -943,9 +943,9 @@ void DemoReadHudMessage() {
 void DemoReadWeaponFire() {
   vector pos, dir;
   float gametime;
-  uint uniqueid;
+  uint32_t uniqueid;
   object *obj;
-  short weaponnum, objnum, weapobjnum;
+  int16_t weaponnum, objnum, weapobjnum;
   vector laser_pos, laser_dir;
 
   // Mass driver is hack
@@ -969,7 +969,7 @@ void DemoReadWeaponFire() {
   }
 
   gametime = cf_ReadFloat(Demo_cfp);
-  short old_objnum = cf_ReadShort(Demo_cfp);
+  int16_t old_objnum = cf_ReadShort(Demo_cfp);
   objnum = Demo_obj_map[old_objnum];
   obj = &Objects[objnum];
   ASSERT(Objects[objnum].type != OBJ_NONE);
@@ -981,7 +981,7 @@ void DemoReadWeaponFire() {
   laser_dir = dir;
   weaponnum = MultiMatchWeapon(uniqueid);
   weapobjnum = cf_ReadShort(Demo_cfp);
-  short gunnum = cf_ReadShort(Demo_cfp);
+  int16_t gunnum = cf_ReadShort(Demo_cfp);
   ASSERT(uniqueid != 0xffffffff);
   ASSERT(dir != Zero_vector);
 
@@ -996,7 +996,7 @@ void DemoReadWeaponFire() {
     }
   }
 
-  unsigned short new_weap_objnum = CreateAndFireWeapon(&pos, &dir, &Objects[objnum], weaponnum);
+  uint16_t new_weap_objnum = CreateAndFireWeapon(&pos, &dir, &Objects[objnum], weaponnum);
   if (0xffff == new_weap_objnum) {
     Int3();
     return;
@@ -1007,7 +1007,7 @@ void DemoReadWeaponFire() {
            weapobjnum));
 
   Demo_obj_map[weapobjnum] = new_weap_objnum;
-  short weapon_num = weaponnum;
+  int16_t weapon_num = weaponnum;
 
   if (Weapons[weapon_num].sounds[WSI_FLYING] != SOUND_NONE_INDEX)
     Sound_system.Play3dSound(Weapons[weapon_num].sounds[WSI_FLYING], &Objects[objnum]);
@@ -1099,12 +1099,12 @@ void DemoReadWeaponFire() {
 
 void DemoReadObjCreate() {
   // float gametime;
-  ubyte type;
-  ubyte use_orient;
+  uint8_t type;
+  uint8_t use_orient;
   matrix orient;
   vector pos;
   int roomnum;
-  short id;
+  int16_t id;
   int parent_handle;
   object *obj;
 
@@ -1137,11 +1137,11 @@ void DemoReadObjCreate() {
     Int3(); // What is this?
   }
 
-  short new_objnum = ObjCreate(type, id, roomnum, &pos, use_orient ? &orient : NULL, parent_handle);
+  int16_t new_objnum = ObjCreate(type, id, roomnum, &pos, use_orient ? &orient : NULL, parent_handle);
   if (new_objnum > -1) { // DAJ -1FIX
     obj = &Objects[new_objnum];
 
-    short oldobjnum = cf_ReadShort(Demo_cfp);
+    int16_t oldobjnum = cf_ReadShort(Demo_cfp);
     Demo_obj_map[oldobjnum] = new_objnum;
     // MSAFE needs this list too
     Server_object_list[oldobjnum] = new_objnum;
@@ -1153,10 +1153,10 @@ void DemoReadObjCreate() {
 // FrameDemoDelta = FrameCount
 // DemoFrameCount = 0;
 
-ubyte DemoLastOpcode = 0;
+uint8_t DemoLastOpcode = 0;
 
 void DemoFrame() {
-  ubyte opcode;
+  uint8_t opcode;
   if (Demo_flags != DF_PLAYBACK)
     return;
   if (!Demo_first_frame) {
@@ -1301,7 +1301,7 @@ void DemoFrame() {
   } while (!exit_loop);
 }
 
-void DemoWriteCinematics(ubyte *data, unsigned short len) {
+void DemoWriteCinematics(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_CINEMATICS);
   // Write a bunch of data
   mprintf((0, "Writing Cinematic data (%d bytes) to demo file.\n", len));
@@ -1310,41 +1310,41 @@ void DemoWriteCinematics(ubyte *data, unsigned short len) {
 }
 
 void DemoReadCinematics() {
-  ubyte buffer[1500];
-  ushort len = cf_ReadShort(Demo_cfp);
+  uint8_t buffer[1500];
+  uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   mprintf((0, "Reading Cinematic data from demo file.\n"));
   Cinematic_DoDemoFileData(buffer);
 }
 
-void DemoWriteMSafe(ubyte *data, unsigned short len) {
+void DemoWriteMSafe(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_MSAFE);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
   //	mprintf((0,"Writing MSAFE data to demo file.\n"));
 }
 
-void DemoWritePowerup(ubyte *data, unsigned short len) {
+void DemoWritePowerup(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_POWERUP);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
 }
 
-extern void MultiDoMSafeFunction(ubyte *data);
+extern void MultiDoMSafeFunction(uint8_t *data);
 
 void DemoReadMSafe() {
-  ubyte buffer[1500];
-  ushort len = cf_ReadShort(Demo_cfp);
+  uint8_t buffer[1500];
+  uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   // mprintf((0,"Reading MSAFE data from demo file.\n"));
   MultiDoMSafeFunction(buffer);
 }
 
-extern void MultiDoMSafePowerup(ubyte *data);
+extern void MultiDoMSafePowerup(uint8_t *data);
 
 void DemoReadPowerups() {
-  ubyte buffer[1500];
-  ushort len = cf_ReadShort(Demo_cfp);
+  uint8_t buffer[1500];
+  uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   MultiDoMSafePowerup(buffer);
 }
@@ -1367,12 +1367,12 @@ void DemoReadCollidePlayerWeapon(void) {
   vector collision_p;
   vector collision_n;
   bool f_reverse_normal;
-  unsigned short real_weapnum;
-  short plr_objnum = cf_ReadShort(Demo_cfp);
-  short wep_objnum = cf_ReadShort(Demo_cfp);
+  uint16_t real_weapnum;
+  int16_t plr_objnum = cf_ReadShort(Demo_cfp);
+  int16_t wep_objnum = cf_ReadShort(Demo_cfp);
   gs_ReadVector(Demo_cfp, collision_p);
   gs_ReadVector(Demo_cfp, collision_n);
-  ubyte b = cf_ReadByte(Demo_cfp);
+  uint8_t b = cf_ReadByte(Demo_cfp);
   f_reverse_normal = b ? true : false;
 
   real_weapnum = Demo_obj_map[wep_objnum];
@@ -1398,12 +1398,12 @@ void DemoReadCollideGenericWeapon(void) {
   vector collision_p;
   vector collision_n;
   bool f_reverse_normal;
-  unsigned short real_weapnum;
-  short gen_objnum = cf_ReadShort(Demo_cfp);
-  short wep_objnum = cf_ReadShort(Demo_cfp);
+  uint16_t real_weapnum;
+  int16_t gen_objnum = cf_ReadShort(Demo_cfp);
+  int16_t wep_objnum = cf_ReadShort(Demo_cfp);
   gs_ReadVector(Demo_cfp, collision_p);
   gs_ReadVector(Demo_cfp, collision_n);
-  ubyte b = cf_ReadByte(Demo_cfp);
+  uint8_t b = cf_ReadByte(Demo_cfp);
   f_reverse_normal = b ? true : false;
 
   real_weapnum = Demo_obj_map[wep_objnum];
@@ -1470,9 +1470,9 @@ void DemoWriteAttachObjRad(object *parent, char parent_ap, object *child, float 
 }
 
 void DemoReadAttachObjRad(void) {
-  short old_objnum;
-  short parent_num;
-  short child_num;
+  int16_t old_objnum;
+  int16_t parent_num;
+  int16_t child_num;
   char parent_ap;
   float rad;
   old_objnum = cf_ReadShort(Demo_cfp);
@@ -1494,9 +1494,9 @@ void DemoWriteAttachObj(object *parent, char parent_ap, object *child, char chil
 }
 
 void DemoReadAttachObj(void) {
-  short old_objnum;
-  short parent_num;
-  short child_num;
+  int16_t old_objnum;
+  int16_t parent_num;
+  int16_t child_num;
   char parent_ap;
   char child_ap;
   bool f_aligned;
@@ -1516,8 +1516,8 @@ void DemoWriteUnattachObj(object *child) {
 }
 
 void DemoReadUnattachObj(void) {
-  short old_objnum = cf_ReadShort(Demo_cfp);
-  short unattach_objnum = Demo_obj_map[old_objnum];
+  int16_t old_objnum = cf_ReadShort(Demo_cfp);
+  int16_t unattach_objnum = Demo_obj_map[old_objnum];
   UnattachFromParent(&Objects[unattach_objnum]);
 }
 
@@ -1593,15 +1593,15 @@ void DemoPostPlaybackMenu(void) {
   // Game_paused = false;
 }
 
-void DemoWriteObjWeapFireFlagChanged(short objnum) {
+void DemoWriteObjWeapFireFlagChanged(int16_t objnum) {
   cf_WriteByte(Demo_cfp, DT_WEAP_FIRE_FLAG);
   cf_WriteShort(Demo_cfp, objnum);
   cf_WriteByte(Demo_cfp, Objects[objnum].weapon_fire_flags);
 }
 
 void DemoReadObjWeapFireFlagChanged(void) {
-  short oldobjnum = cf_ReadShort(Demo_cfp);
-  short newobjnum = Demo_obj_map[oldobjnum];
+  int16_t oldobjnum = cf_ReadShort(Demo_cfp);
+  int16_t newobjnum = Demo_obj_map[oldobjnum];
   Objects[newobjnum].weapon_fire_flags = cf_ReadByte(Demo_cfp);
 }
 
@@ -1715,7 +1715,7 @@ void DemoWritePersistantHUDMessage(ddgr_color color, int x, int y, float time, i
   cf_WriteInt(Demo_cfp, flags);
   cf_WriteInt(Demo_cfp, sound_index);
   cf_WriteShort(Demo_cfp, strlen(msg) + 1);
-  cf_WriteBytes((const ubyte *)msg, strlen(msg) + 1, Demo_cfp);
+  cf_WriteBytes((const uint8_t *)msg, strlen(msg) + 1, Demo_cfp);
 }
 
 void DemoReadPersistantHUDMessage() {
@@ -1727,7 +1727,7 @@ void DemoReadPersistantHUDMessage() {
   int sound_index;
   char *fmt;
 
-  color = (unsigned int)cf_ReadInt(Demo_cfp);
+  color = (uint32_t)cf_ReadInt(Demo_cfp);
   x = cf_ReadInt(Demo_cfp);
   y = cf_ReadInt(Demo_cfp);
   time = cf_ReadFloat(Demo_cfp);
@@ -1735,7 +1735,7 @@ void DemoReadPersistantHUDMessage() {
   sound_index = cf_ReadInt(Demo_cfp);
   int msglen = cf_ReadShort(Demo_cfp);
   fmt = (char *)mem_malloc(msglen);
-  cf_ReadBytes((ubyte *)fmt, msglen, Demo_cfp);
+  cf_ReadBytes((uint8_t *)fmt, msglen, Demo_cfp);
   AddPersistentHUDMessage(color, x, y, time, flags, sound_index, fmt);
   mem_free(fmt);
 }
@@ -1746,8 +1746,8 @@ void DemoWriteSetObjDead(object *obj) {
 }
 
 void DemoReadSetObjDead() {
-  short oldobjnum = cf_ReadShort(Demo_cfp);
-  short local_objnum = Demo_obj_map[oldobjnum];
+  int16_t oldobjnum = cf_ReadShort(Demo_cfp);
+  int16_t local_objnum = Demo_obj_map[oldobjnum];
 
   Objects[local_objnum].flags |= OF_SERVER_SAYS_DELETE;
   SetObjectDeadFlag(&Objects[local_objnum]);
@@ -1868,8 +1868,8 @@ void DemoWriteObjLifeLeft(object *obj) {
 }
 
 void DemoReadObjLifeLeft(void) {
-  short oldobjnum = cf_ReadShort(Demo_cfp);
-  short local_objnum = Demo_obj_map[oldobjnum];
+  int16_t oldobjnum = cf_ReadShort(Demo_cfp);
+  int16_t local_objnum = Demo_obj_map[oldobjnum];
 
   if (cf_ReadByte(Demo_cfp)) {
     Objects[local_objnum].flags |= OF_USES_LIFELEFT;

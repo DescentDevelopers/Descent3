@@ -84,22 +84,22 @@ typedef struct {
   float y;    // Y position of the lower left corner of the terrain cell
   float mody; // The modified y position of this cell - used for LOD
 
-  ubyte l, r, g, b;
+  uint8_t l, r, g, b;
 
-  short objects;      // Index of the first object in this cell
-  short texseg_index; // index into the tex_segment array
+  int16_t objects;      // Index of the first object in this cell
+  int16_t texseg_index; // index into the tex_segment array
 
-  ubyte flags;   // various flags
-  ubyte lm_quad; // which lightmap quad this index belongs to
-  ubyte ypos;    // this is so we don't have to constantly convert
+  uint8_t flags;   // various flags
+  uint8_t lm_quad; // which lightmap quad this index belongs to
+  uint8_t ypos;    // this is so we don't have to constantly convert
                  // floats to ints when traversing the terrain
                  // it's the integer version of pos.y
-  ubyte pad;     // for alignment
+  uint8_t pad;     // for alignment
 } terrain_segment;
 
 typedef struct {
-  ubyte rotation;
-  short tex_index;
+  uint8_t rotation;
+  int16_t tex_index;
 } terrain_tex_segment;
 
 // Data for LOD shutoff code
@@ -117,7 +117,7 @@ typedef struct {
   float horizon_u[MAX_HORIZON_PIECES][5];
   float horizon_v[MAX_HORIZON_PIECES][5];
 
-  short dome_texture;
+  int16_t dome_texture;
 
   float radius;
   float rotate_rate;
@@ -132,13 +132,13 @@ typedef struct {
 
   vector star_vectors[MAX_STARS];
   vector satellite_vectors[MAX_SATELLITES];
-  ubyte satellite_flags[MAX_SATELLITES];
+  uint8_t satellite_flags[MAX_SATELLITES];
   float satellite_size[MAX_SATELLITES];
 
-  ubyte num_satellites;
-  ubyte num_stars;
+  uint8_t num_satellites;
+  uint8_t num_stars;
 
-  short satellite_texture[MAX_SATELLITES];
+  int16_t satellite_texture[MAX_SATELLITES];
 
   vector lightsource;
   angle lightangle;
@@ -160,17 +160,17 @@ typedef struct {
 
 typedef struct {
   int terrain_seg;
-  ubyte num_segs;
-  short mine_segs[50];
+  uint8_t num_segs;
+  int16_t mine_segs[50];
 } terrain_mine_list;
 
 typedef struct {
   float z;
-  ushort right_edge, left_edge, top_edge, bottom_edge; // for fixing tjoint problems
-  ubyte right_count, left_count, top_count, bottom_count;
-  ushort segment; // what segment to render
-  ubyte lod;      // what level of detail: 0=16x16, 1=8x8, 2=4x4, 3=2x2, 4=just this segment (1x1)
-  ubyte pad;
+  uint16_t right_edge, left_edge, top_edge, bottom_edge; // for fixing tjoint problems
+  uint8_t right_count, left_count, top_count, bottom_count;
+  uint16_t segment; // what segment to render
+  uint8_t lod;      // what level of detail: 0=16x16, 1=8x8, 2=4x4, 3=2x2, 4=just this segment (1x1)
+  uint8_t pad;
 } terrain_render_info;
 
 typedef struct {
@@ -178,11 +178,11 @@ typedef struct {
   vector normal2; // Lower right triangle
 } terrain_normals;
 
-extern ubyte Terrain_dynamic_table[];
+extern uint8_t Terrain_dynamic_table[];
 extern terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];
 
 // Occlusion data for knowing what to draw
-extern ubyte Terrain_occlusion_map[256][32];
+extern uint8_t Terrain_occlusion_map[256][32];
 extern int Terrain_occlusion_checksum;
 
 extern int Check_terrain_portal;
@@ -195,13 +195,13 @@ extern int GlobalTransCount, TotalDepth;
 extern int TerrainEdgeTest[MAX_TERRAIN_LOD][16];
 
 extern terrain_render_info Terrain_list[];
-extern ushort TS_FrameCount;
+extern uint16_t TS_FrameCount;
 
 extern float VisibleTerrainZ;
 extern float Terrain_average_height;
 
 extern float Clip_scale_left, Clip_scale_right, Clip_scale_top, Clip_scale_bot;
-extern ubyte Terrain_from_mine;
+extern uint8_t Terrain_from_mine;
 
 extern float Last_terrain_render_time;
 
@@ -209,7 +209,7 @@ extern terrain_segment Terrain_seg[TERRAIN_WIDTH * TERRAIN_DEPTH];
 extern terrain_tex_segment Terrain_tex_seg[TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH];
 
 // first object to render after cell has been rendered (only used for SW renderer)
-extern short Terrain_seg_render_objs[];
+extern int16_t Terrain_seg_render_objs[];
 
 #ifdef RELEASE
 #define TERRAIN_REGION(x) ((Terrain_seg[0x7FFFFFFF & x].flags & TFM_REGION_MASK) >> 5)
@@ -235,22 +235,22 @@ extern int Terrain_LOD_engine_off;
 
 extern float Terrain_texture_distance; // how far we should texture before going to flat shad
 
-extern ubyte TerrainJoinMap[];
+extern uint8_t TerrainJoinMap[];
 extern float *TerrainDeltaBlocks[];
-extern ubyte *Terrain_max_height_int[];
-extern ubyte *Terrain_min_height_int[];
-extern ubyte Fast_terrain;
-extern ubyte Flat_terrain;
-extern ubyte Show_invisible_terrain;
+extern uint8_t *Terrain_max_height_int[];
+extern uint8_t *Terrain_min_height_int[];
+extern uint8_t Fast_terrain;
+extern uint8_t Flat_terrain;
+extern uint8_t Show_invisible_terrain;
 
 extern int Camera_direction, Sort_direction;
 
 #if (defined(_DEBUG) || defined(NEWEDITOR))
-extern ubyte TerrainSelected[];
+extern uint8_t TerrainSelected[];
 extern int Num_terrain_selected;
 #endif
 
-extern ushort *Terrain_rotate_list; // which points have been sub/rotated this frame
+extern uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
 extern g3Point *World_point_buffer; // Rotated points
 
 #define TSEARCH_FOUND_TERRAIN 0
@@ -278,7 +278,7 @@ extern int CheckToRenderSky(int);
 // left,top,right,bot are optional parameters.  Omiting them (or setting them to -1) will
 // render to the whole screen.  Passing valid values will only render tiles visible in the
 // specified window (though it won't clip those tiles to the window)
-void RenderTerrain(ubyte from_mine, int left = -1, int top = -1, int right = -1, int bot = -1);
+void RenderTerrain(uint8_t from_mine, int left = -1, int top = -1, int right = -1, int bot = -1);
 
 void GetPreRotatedPoint(g3Point *, int, int, int);
 void GenerateTerrainLight();
@@ -308,7 +308,7 @@ void ComputeTerrainSegmentCenter(vector *pos, int segnum);
 // Also now can return the normal at that ground point
 float GetTerrainGroundPoint(vector *pos, vector *normal = NULL);
 
-void SetupSky(float radius, int flags, ubyte randit = 0);
+void SetupSky(float radius, int flags, uint8_t randit = 0);
 
 // Builds the surface normal for terrain segment n
 void BuildNormalForTerrainSegment(int n);
@@ -327,7 +327,7 @@ void GenerateLightSource();
 int GetFurthestMineSegment(int mine_seg);
 
 // codes a point for visibility in the window passed to RenderTerrain()
-ubyte CodeTerrainPoint(g3Point *p);
+uint8_t CodeTerrainPoint(g3Point *p);
 
 // Generates info for the LOD engine...must be called after the geometry changes
 void GenerateLODDeltas();

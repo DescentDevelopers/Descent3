@@ -909,8 +909,8 @@ void CD3LaunchDlg::OnBtnPlay()
 
 	if (ffhwnd) {
 		CFindFastDlg findfastdlg;
-		uint disable_ffast = os_config_read_uint(szSectionName, "FindFastDisable",1);
-		uint show_ffast_dlg = os_config_read_uint(szSectionName, "ShowFindFastDlg",1);
+		uint32_t disable_ffast = os_config_read_uint(szSectionName, "FindFastDisable",1);
+		uint32_t show_ffast_dlg = os_config_read_uint(szSectionName, "ShowFindFastDlg",1);
 
 		if (show_ffast_dlg || !disable_ffast) {
 			int iDisableFF;

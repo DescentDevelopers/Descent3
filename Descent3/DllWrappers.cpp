@@ -320,7 +320,7 @@ char *dInven_GetPosName(Inventory *inven) { return inven->GetPosName(); }
 
 // return information about the current position item
 // return true if it is a real object
-bool dInven_GetPosInfo(Inventory *inven, ushort &iflags, int &flags) { return inven->GetPosInfo(iflags, flags); }
+bool dInven_GetPosInfo(Inventory *inven, uint16_t &iflags, int &flags) { return inven->GetPosInfo(iflags, flags); }
 
 // returns the count of the item at the current position
 int dInven_GetPosCount(Inventory *inven) { return inven->GetPosCount(); }

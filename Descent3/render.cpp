@@ -83,9 +83,9 @@ void RotateRoomPoints(room *rp, vector4 *world_vecs);
 
 static int Faces_rendered = 0;
 extern float GetFPS();
-extern ubyte Outline_release_mode;
+extern uint8_t Outline_release_mode;
 // 3d point for each vertex for use during rendering a room
-ubyte Room_clips[MAX_VERTS_PER_ROOM]; // used for face culling
+uint8_t Room_clips[MAX_VERTS_PER_ROOM]; // used for face culling
 // default face reflectivity
 float Face_reflectivity = 0.5;
 // the position of the viewer - valid while a frame is being rendered
@@ -114,8 +114,8 @@ int No_render_windows_hack = -1;
 #else  // ifdef _DEBUG
 // If true, draw white outline for each polygon
 int Render_portals = 0;
-ubyte Outline_mode = 0;
-ubyte Shell_render_flag = 0;
+uint8_t Outline_mode = 0;
+uint8_t Shell_render_flag = 0;
 bool Outline_alpha = 0;
 bool Outline_lightmaps = 0;
 bool Render_floating_triggers = 0;
@@ -147,13 +147,13 @@ int Clear_window = 2; // 1 = Clear whole background window, 2 = clear view porta
 char Rooms_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
 int Facing_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
 // For keeping track of portal recursion
-ubyte Room_depth_list[MAX_ROOMS + MAX_PALETTE_ROOMS];
-short Render_list[MAX_RENDER_ROOMS];
-short External_room_list[MAX_ROOMS];
+uint8_t Room_depth_list[MAX_ROOMS + MAX_PALETTE_ROOMS];
+int16_t Render_list[MAX_RENDER_ROOMS];
+int16_t External_room_list[MAX_ROOMS];
 int N_external_rooms;
 // For rendering specular faces
 #define MAX_SPECULAR_FACES 2500
-short Specular_faces[MAX_SPECULAR_FACES];
+int16_t Specular_faces[MAX_SPECULAR_FACES];
 int Num_specular_faces_to_render = 0;
 int Num_real_specular_faces_to_render = 0; // Non-invisible specular faces
 typedef struct {
@@ -162,7 +162,7 @@ typedef struct {
 } smooth_spec_vert;
 smooth_spec_vert Smooth_verts[MAX_VERTS_PER_ROOM];
 // For scorch rendering
-ushort Scorches_to_render[MAX_FACES_PER_ROOM];
+uint16_t Scorches_to_render[MAX_FACES_PER_ROOM];
 int Num_scorches_to_render = 0;
 // For rendering volumetric fog
 #define MAX_FOGGED_ROOMS_PER_FRAME 8
@@ -173,24 +173,24 @@ int Room_fog_plane_check = 0;
 float Room_fog_distance = 0;
 float Room_fog_eye_distance = 0;
 vector Room_fog_plane, Room_fog_portal_vert;
-short Fog_faces[MAX_FACES_PER_ROOM];
+int16_t Fog_faces[MAX_FACES_PER_ROOM];
 int Num_fog_faces_to_render = 0;
 #define MAX_EXTERNAL_ROOMS 100
 vector External_room_corners[MAX_EXTERNAL_ROOMS][8];
-ubyte External_room_codes[MAX_EXTERNAL_ROOMS];
-ubyte External_room_project_net[MAX_EXTERNAL_ROOMS];
+uint8_t External_room_codes[MAX_EXTERNAL_ROOMS];
+uint8_t External_room_project_net[MAX_EXTERNAL_ROOMS];
 // For light glows
 #define MAX_LIGHT_GLOWS 100
 #define LGF_USED 1
 #define LGF_INCREASING 2
 #define LGF_FAST 4
 typedef struct {
-  short roomnum;
-  short facenum;
+  int16_t roomnum;
+  int16_t facenum;
   float size;
   vector center;
   float scalar;
-  ubyte flags;
+  uint8_t flags;
 } light_glow;
 light_glow LightGlows[MAX_LIGHT_GLOWS];
 light_glow LightGlowsThisFrame[MAX_LIGHT_GLOWS];
@@ -206,9 +206,9 @@ vector Global_alter_vec = {19, -19, 19};
 bool Render_mirror_for_room = false;
 int Mirror_room;
 int Num_mirrored_rooms;
-short Mirrored_room_list[MAX_ROOMS];
-ubyte Mirrored_room_checked[MAX_ROOMS];
-short Mirror_rooms[MAX_ROOMS];
+int16_t Mirrored_room_list[MAX_ROOMS];
+uint8_t Mirrored_room_checked[MAX_ROOMS];
+int16_t Mirror_rooms[MAX_ROOMS];
 int Num_mirror_rooms = 0;
 //
 //  UTILITY FUNCS
@@ -294,7 +294,7 @@ int first_terminal_room;
 void OutlineCurrentFace(room *rp, int facenum, int edgenum, int vertnum, ddgr_color face_color, ddgr_color edge_color) {
   face *fp = &rp->faces[facenum];
   g3Point p0, p1;
-  ubyte c0, c1;
+  uint8_t c0, c1;
   int v;
   for (v = 0; v < fp->num_verts; v++) {
     c0 = g3_RotatePoint(&p0, &rp->verts[fp->face_verts[v]]);
@@ -336,7 +336,7 @@ static void DrawPlacedRoomFace(room *rp, vector *rotpoint, matrix *rotmat, vecto
   face *fp = &rp->faces[facenum];
 
   g3Point p0, p1;
-  ubyte c0, c1;
+  uint8_t c0, c1;
   int v;
   for (v = 0; v < fp->num_verts; v++) {
     vector tv;
@@ -560,7 +560,7 @@ void MarkFacingFaces(int roomnum, vector *world_verts) {
 // Returns true if the external room is visible from the passed in portal
 int ExternalRoomVisibleFromPortal(int index, clip_wnd *wnd) {
   int i;
-  ubyte code = 0xff;
+  uint8_t code = 0xff;
   g3Point pnt;
   // This is a stupid hack to prevent really large buildings from popping in and out of view
   if (External_room_project_net[index])
@@ -658,10 +658,10 @@ void MarkFacesForRendering(int roomnum, clip_wnd *wnd) {
   int objnum;
   for (objnum = rp->objects; (objnum != -1); objnum = Objects[objnum].next) {
     object *obj = &Objects[objnum];
-    ubyte anded = 0xff;
+    uint8_t anded = 0xff;
     g3Point pnts[8];
     vector vecs[8];
-    ubyte code;
+    uint8_t code;
     if (rp->flags & RF_DOOR) // Render all objects in a door room
     {
       obj->flags |= OF_SAFE_TO_RENDER;
@@ -712,7 +712,7 @@ void RotateAllExternalRooms() {
       room *rp = &Rooms[roomnum];
       MakePointsFromMinMax(corners, &rp->min_xyz, &rp->max_xyz);
 
-      ubyte andbyte = 0xff;
+      uint8_t andbyte = 0xff;
       g3Point pnt;
       External_room_codes[i] = 0xff;
       External_room_project_net[i] = 0;
@@ -883,7 +883,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
 
         // First we must rotate and clip this polygon
         for (k = 0; k < this_fp->num_verts; k++) {
-          ubyte c = g3_RotatePoint(&Combined_portal_points[num_points + k], &rp->verts[this_fp->face_verts[k]]);
+          uint8_t c = g3_RotatePoint(&Combined_portal_points[num_points + k], &rp->verts[this_fp->face_verts[k]]);
           combine_cc.cc_or |= c;
           combine_cc.cc_and &= c;
         }
@@ -967,7 +967,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
       for (i = 0; i < 4; i++) {
         Combined_portal_points[i] = four_points[i];
         Combined_portal_points[i].p3_flags &= ~(PF_PROJECTED | PF_TEMP_POINT);
-        ubyte c = Combined_portal_points[i].p3_codes;
+        uint8_t c = Combined_portal_points[i].p3_codes;
         cc.cc_and &= c;
         cc.cc_or |= c;
       }
@@ -976,7 +976,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
       for (i = 0; i < nv; i++) {
         g3_RotatePoint(&Combined_portal_points[i], &rp->verts[fp->face_verts[i]]);
 
-        ubyte c = Combined_portal_points[i].p3_codes;
+        uint8_t c = Combined_portal_points[i].p3_codes;
         cc.cc_and &= c;
         cc.cc_or |= c;
       }
@@ -1070,7 +1070,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
 }
 // compare function for room z sort
 float Room_z_depth[MAX_ROOMS + MAX_PALETTE_ROOMS];
-static int Room_z_sort_func(const short *a, const short *b) {
+static int Room_z_sort_func(const int16_t *a, const int16_t *b) {
   float az, bz;
   az = Room_z_depth[*a];
   bz = Room_z_depth[*b];
@@ -1286,8 +1286,8 @@ void RenderSpecularFacesFlat(room *rp) {
   static float lm_red[32], lm_green[32], lm_blue[32];
   int num_smooth_faces = 0;
   int num_smooth_used = 0;
-  ushort smooth_faces[MAX_FACES_PER_ROOM];
-  ushort smooth_used[MAX_VERTS_PER_ROOM];
+  uint16_t smooth_faces[MAX_FACES_PER_ROOM];
+  uint16_t smooth_used[MAX_VERTS_PER_ROOM];
   int i;
   ASSERT(Num_specular_faces_to_render > 0);
   if (!UseHardware)
@@ -1337,7 +1337,7 @@ void RenderSpecularFacesFlat(room *rp) {
       continue;
 
     int lm_handle;
-    ushort *data;
+    uint16_t *data;
     int w, h;
 
     if (fp->lmi_handle == 65535) {
@@ -1346,7 +1346,7 @@ void RenderSpecularFacesFlat(room *rp) {
     }
 
     lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-    data = (ushort *)lm_data(lm_handle);
+    data = (uint16_t *)lm_data(lm_handle);
     w = lm_w(lm_handle);
     h = lm_h(lm_handle);
 
@@ -1356,7 +1356,7 @@ void RenderSpecularFacesFlat(room *rp) {
       float scalar = 0;
       float u, v;
       int int_u, int_v;
-      ushort texel;
+      uint16_t texel;
       int r, g, b;
       float vr, vg, vb;
 
@@ -1383,7 +1383,7 @@ void RenderSpecularFacesFlat(room *rp) {
         }*/
 
         for (t = 0; t < limit; t++) {
-          ushort color;
+          uint16_t color;
           vector incident_norm;
           float spec_scalar;
 
@@ -1654,7 +1654,7 @@ void RenderLightmapFace(room *rp, int facenum) {
   face *fp = &rp->faces[facenum];
   g3Point *pointlist[MAX_VERTS_PER_FACE];
   g3Point pointbuffer[MAX_VERTS_PER_FACE];
-  ubyte face_code = 255;
+  uint8_t face_code = 255;
   if (NoLightmaps)
     return;
   if (fp->lmi_handle == BAD_LMI_INDEX)
@@ -1732,7 +1732,7 @@ void RenderFace(room *rp, int facenum) {
   int bm_handle;
   float uchange = 0, vchange = 0;
   texture_type tt;
-  ubyte do_triangle_test = 0;
+  uint8_t do_triangle_test = 0;
   g3Codes face_cc;
   static int first = 1;
   static float lm_red[32], lm_green[32], lm_blue[32];
@@ -1847,7 +1847,7 @@ void RenderFace(room *rp, int facenum) {
 
     if (fp->flags & FF_LIGHTMAP) {
       int lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-      ushort *data = (ushort *)lm_data(lm_handle);
+      uint16_t *data = (uint16_t *)lm_data(lm_handle);
       int w = lm_w(lm_handle);
       int h = lm_h(lm_handle);
 
@@ -1857,7 +1857,7 @@ void RenderFace(room *rp, int facenum) {
         g3Point *p = &pointbuffer[i];
         int int_u = u;
         int int_v = v;
-        ushort texel = data[int_v * w + int_u];
+        uint16_t texel = data[int_v * w + int_u];
         int r = (texel >> 10) & 0x1f;
         int g = (texel >> 5) & 0x1f;
         int b = (texel) & 0x1f;
@@ -2056,7 +2056,7 @@ draw_fog:
       ASSERT(fp->lmi_handle != BAD_LMI_INDEX);
 
       lightmap_info *lmi = &LightmapInfo[fp->lmi_handle];
-      ushort *src_data = (ushort *)lm_data(lmi->lm_handle);
+      uint16_t *src_data = (uint16_t *)lm_data(lmi->lm_handle);
       matrix facematrix;
       vector fvec = -lmi->normal;
       vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
@@ -2129,7 +2129,7 @@ draw_fog:
 }
 static float face_depth[MAX_FACES_PER_ROOM];
 // compare function for room face sort
-static int room_face_sort_func(const short *a, const short *b) {
+static int room_face_sort_func(const int16_t *a, const int16_t *b) {
   float az, bz;
   az = face_depth[*a];
   bz = face_depth[*b];
@@ -2707,7 +2707,7 @@ void BuildMirroredRoomListSub(int start_room_num, clip_wnd *wnd) {
       temp_vec = *vec - (*mirror_norm * (dist_from_mirror * 2));
       g3_RotatePoint(&portal_points[i], &temp_vec);
 
-      ubyte c = portal_points[i].p3_codes;
+      uint8_t c = portal_points[i].p3_codes;
       cc.cc_and &= c;
       cc.cc_or |= c;
     }
@@ -2877,7 +2877,7 @@ void RenderMirroredRoom(room *rp) {
 #if (defined(RELEASE) && defined(KATMAI))
   vector4 kat_vecs[MAX_VERTS_PER_ROOM];
 #endif
-  ushort save_flags[MAX_FACES_PER_ROOM];
+  uint16_t save_flags[MAX_FACES_PER_ROOM];
   bool restore_index = true;
   int save_index = Global_buffer_index;
 
@@ -3028,7 +3028,7 @@ static inline void IsRoomDynamicValid(room *rp, int x, int y, int z, float *r, f
   int h = rp->volume_height;
   int d = rp->volume_depth;
 
-  ubyte color = rp->volume_lights[(z * w * h) + (y * w) + x];
+  uint8_t color = rp->volume_lights[(z * w * h) + (y * w) + x];
 
   *r = (float)((color >> 5) / 7.0);
   *g = (float)((color >> 2) & 0x07) / 7.0;
@@ -3120,7 +3120,7 @@ void GetRoomDynamicScalar(vector *pos, room *rp, float *r, float *g, float *b) {
   (*g) *= Room_light_val;
   (*b) *= Room_light_val;
 }
-ubyte Trick_type = 0;
+uint8_t Trick_type = 0;
 // Render the objects and viseffects in a room.  Do a simple sort
 void RenderRoomObjects(room *rp) {
   int n_objs = 0, objnum, i, visnum;
@@ -3399,7 +3399,7 @@ void RenderRoomOutline(room *rp) {
   for (fn = 0; fn < rp->num_faces; fn++) {
     face *fp = &rp->faces[fn];
     g3Point p0, p1;
-    ubyte c0, c1;
+    uint8_t c0, c1;
     int v;
     ddgr_color color;
     for (v = 0; v < fp->num_verts; v++) {
@@ -3617,8 +3617,8 @@ void SortStates(state_limited_element *state_array, int cellcount) {
   int l, r;
   l = 0;
   r = cellcount - 1;
-  ushort state_stack_counter = 0;
-  ushort state_stack[2000];
+  uint16_t state_stack_counter = 0;
+  uint16_t state_stack[2000];
 
   while (1) {
     while (r > l) {
@@ -3685,7 +3685,7 @@ void ConsolidateMineMirrors() {
       rp->mirror_face = 0;
       continue;
     }
-    rp->mirror_faces_list = (ushort *)mem_malloc(num_mirror_faces * sizeof(ushort));
+    rp->mirror_faces_list = (uint16_t *)mem_malloc(num_mirror_faces * sizeof(uint16_t));
     ASSERT(rp->mirror_faces_list);
     rp->num_mirror_faces = num_mirror_faces;
     // Now go through and fill in our list
@@ -3804,7 +3804,7 @@ void RenderBlankScreen(void) { rend_ClearScreen(GR_BLACK); }
 //					roomnum,facenum - these are filled in with the found values
 //					if room<0, then an object was found, and the object number is -room-1
 // Returns:		1 if found a room, else 0
-/*int FindRoomFace(short x,short y,int start_roomnum,int *roomnum,int *facenum)
+/*int FindRoomFace(int16_t x,int16_t y,int start_roomnum,int *roomnum,int *facenum)
 {
         //Init search mode
         search_mode = -1;
@@ -3826,7 +3826,7 @@ void RenderBlankScreen(void) { rend_ClearScreen(GR_BLACK); }
 //					start_roomnum - where to start rendering
 //					roomnum,facenum,lumel_num - these are filled in with the found values
 // Returns:		1 if found a room, else 0
-/*int FindLightmapFace(short x,short y,int start_roomnum,int *roomnum,int *facenum,int *lumel_num)
+/*int FindLightmapFace(int16_t x,int16_t y,int start_roomnum,int *roomnum,int *facenum,int *lumel_num)
 {
         Search_lightmaps=1;
         search_x = x; search_y = y;

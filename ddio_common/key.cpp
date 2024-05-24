@@ -144,11 +144,11 @@
 // ----------------------------------------------------------------------------
 
 static bool DDIO_key_init = 0;
-volatile ubyte DDIO_key_state[DDIO_MAX_KEYS];
-volatile short DDIO_key_down_count[DDIO_MAX_KEYS];
+volatile uint8_t DDIO_key_state[DDIO_MAX_KEYS];
+volatile int16_t DDIO_key_down_count[DDIO_MAX_KEYS];
 
 static struct t_key_queue {
-  ushort buffer[KEY_QUEUE_SIZE]; // Keyboard buffer queue
+  uint16_t buffer[KEY_QUEUE_SIZE]; // Keyboard buffer queue
   int tail;
   int head;
 } DDIO_key_queue;
@@ -182,7 +182,7 @@ float ddio_KeyDownTime(int key) {
   ASSERT(DDIO_key_init);
 
   //	snap off shift states, etc.
-  return ddio_InternalKeyDownTime((ubyte)(key & 0xff));
+  return ddio_InternalKeyDownTime((uint8_t)(key & 0xff));
 }
 
 //	return number of times a key's been down since last call.
@@ -195,7 +195,7 @@ int ddio_KeyDownCount(int key) {
 
 //	returns the state of an ADJUSTED KEY VALUE
 bool ddio_GetAdjKeyState(int adj_key) {
-  ubyte key_raw = adj_key & 0xff;
+  uint8_t key_raw = adj_key & 0xff;
   int key_test = 0;
 
   if (adj_key & KEY_SHIFTED) {
@@ -310,7 +310,7 @@ void ddio_AddKeyToQueue(int key) {
     temp = 0;
 
   if (temp != DDIO_key_queue.head) {
-    DDIO_key_queue.buffer[DDIO_key_queue.tail] = (ushort)keycode;
+    DDIO_key_queue.buffer[DDIO_key_queue.tail] = (uint16_t)keycode;
     DDIO_key_queue.tail = temp;
     //	mprintf((1, "%d ", keycode));
   }
@@ -331,7 +331,7 @@ void ddio_UpdateKeyState(int key, bool isdown) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static unsigned char ascii_table[128] = {
+static uint8_t ascii_table[128] = {
     255, 255, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 255, 255, 'q', 'w', 'e', 'r', 't', 'y',
     'u', 'i', 'o', 'p', '[', ']', 255, 255, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', 39,  '`', 255, '\\',
     'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 255, '*', 255, ' ', 255, 255, 255, 255, 255, 255, 255, 255,
@@ -339,7 +339,7 @@ static unsigned char ascii_table[128] = {
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255};
 
-static unsigned char shifted_ascii_table[128] = {
+static uint8_t shifted_ascii_table[128] = {
     255, 255, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 255, 255, 'Q', 'W', 'E', 'R', 'T', 'Y',
     'U', 'I', 'O', 'P', '{', '}', 255, 255, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 255, '|',
     'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 255, 255, 255, ' ', 255, 255, 255, 255, 255, 255, 255, 255,

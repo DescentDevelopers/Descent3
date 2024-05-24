@@ -26,29 +26,29 @@
 #include <signal.h>
 #endif
 
-extern unsigned char *nf_buf_cur;
-extern unsigned char *nf_buf_prv;
+extern uint8_t *nf_buf_cur;
+extern uint8_t *nf_buf_prv;
 extern unsigned nf_new_x;
 extern unsigned nf_new_y;
 extern unsigned nf_new_w;
 extern unsigned nf_new_h;
-extern unsigned char nf_fqty;  // Number of fields
+extern uint8_t nf_fqty;  // Number of fields
 extern unsigned nf_new_row0;   // SHEIGHT*width*2-width
 extern unsigned nf_width;      // wqty * SWIDTH
 extern unsigned nf_new_line;   // width - SWIDTH
 extern unsigned nf_back_right; // (SHEIGHT-1)*width
 
-extern signed short snd_8to16[256];
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, int x, int y, int w, int h);
+extern int16_t snd_8to16[256];
+void nfHPkDecomp(uint8_t *ops, uint8_t *comp, int x, int y, int w, int h);
 void nfPkConfig(void);
-unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
-unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
+unsigned sndDecompM16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev);
+unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev);
 
-void Trans16Blk(unsigned char *edi, unsigned char *idx);
-void call_hnfxycshift(unsigned int eax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right);
-void call_hnfxypshift(unsigned int eax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right,
+void Trans16Blk(uint8_t *edi, uint8_t *idx);
+void call_hnfxycshift(uint32_t eax, uint8_t **medi, uint8_t **mesi, int nfpk_back_right);
+void call_hnfxypshift(uint32_t eax, uint8_t **medi, uint8_t **mesi, int nfpk_back_right,
                       int DiffBufPtrs);
-void call_hnfshift(unsigned int meax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right);
+void call_hnfshift(uint32_t meax, uint8_t **medi, uint8_t **mesi, int nfpk_back_right);
 
 //--------------------------------------------------------------------
 // Sound Management
@@ -58,8 +58,8 @@ void call_hnfshift(unsigned int meax, unsigned char **medi, unsigned char **mesi
 // (src is len bytes, dst is len*2 bytes)
 // prev is the previous decompression state or zero.
 // Returns new decompression state.
-unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
-  unsigned int i, eax, ebx;
+unsigned sndDecompM16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev) {
+  uint32_t i, eax, ebx;
   if (len == 0)
     return prev;
   eax = prev;
@@ -83,9 +83,9 @@ unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned le
 //	(It encodes the 16-bit states of the two stereo channels
 //	in its low and high order 16-bit halves.)
 //	Returns new decompression state.
-unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev) {
   unsigned re = 0;
-  unsigned int eax, edx, ebx, i;
+  uint32_t eax, edx, ebx, i;
 
   if (len == 0) {
     return prev;
@@ -115,8 +115,8 @@ unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned le
 }
 
 typedef struct {
-  unsigned char *comp;
-  unsigned char *tbuf;
+  uint8_t *comp;
+  uint8_t *tbuf;
   int new_row, DiffBufPtrs, parms_sz;
   unsigned x, y, w, h;
 } tNextFrame;
@@ -147,41 +147,41 @@ void NF_DECOMP_INIT(bool HI_COLOR_FLAG, tNextFrame *nf) {
 //----------------------------------------------------------------------
 
 // signed 8-bit y * nf_width
-signed int nfpk_ShiftY[256];
+int32_t nfpk_ShiftY[256];
 
 // Constant tables
 
 // 8-bit -8:7 x nf_width +  -8:7
-signed short nfpk_ShiftP1[256];
-signed short nfpk_ShiftP2[256];
+int16_t nfpk_ShiftP1[256];
+int16_t nfpk_ShiftP2[256];
 
 // Constant tables
 //		mov eax, ebx/ecx
 // EBX = 0
 // ECX = 1
-unsigned char nfhpk_mov4l[64];
+uint8_t nfhpk_mov4l[64];
 
 //	mov ds:[edi+0/4/8/12], ebx/edx/ecx/ebp
 // EBX = 0
 // EDX = 1
 // ECX = 2
 // EBP = 3
-unsigned char nfhpk_mov8[1024];
+uint8_t nfhpk_mov8[1024];
 
 //	mov eax, ebx/edx/ecx/ebp
 // EBX = 0
 // EDX = 1
 // ECX = 2
 // EBP = 3
-unsigned char nfhpk_mov4[1024];
+uint8_t nfhpk_mov4[1024];
 
 class initme {
 public:
   initme() {
     int x, y;
     int m4, m3, m2, m1;
-    signed char *ptr;
-    unsigned char *uptr;
+    int8_t *ptr;
+    uint8_t *uptr;
 
     // Do nfhpk_mov4l
     uptr = nfhpk_mov4l;
@@ -231,7 +231,7 @@ public:
             uptr++;
           }
     // do nfpk_ShiftP1
-    ptr = (signed char *)nfpk_ShiftP1;
+    ptr = (int8_t *)nfpk_ShiftP1;
 
     for (y = -8; y != 8; y++) {
       for (x = -8; x != 8; x++) {
@@ -247,7 +247,7 @@ public:
     }
 
     // do nfpk_ShiftP2[]
-    ptr = (signed char *)nfpk_ShiftP2;
+    ptr = (int8_t *)nfpk_ShiftP2;
 
     for (y = 0; y != 8; y++) {
       for (x = 8; x != 15; x++) {
@@ -316,19 +316,19 @@ void nfPkConfig(void) {
   }
 }
 
-extern unsigned short nf_trans16_lo[256];
-extern unsigned short nf_trans16_hi[256];
+extern uint16_t nf_trans16_lo[256];
+extern uint16_t nf_trans16_hi[256];
 
 // NOTE: EAX is destroyed after this call (actually the value of
 // nf_trans16_hi[idx+1]
-void Trans16(unsigned short *dst, unsigned short *idx, bool mask) {
+void Trans16(uint16_t *dst, uint16_t *idx, bool mask) {
   *dst = nf_trans16_lo[*idx];
   *dst |= nf_trans16_hi[*(idx + 1)];
 }
 
 //	HiColor version
 //
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
+void nfHPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
   tNextFrame nf;
   nf.w = w;
   nf.h = h;
@@ -336,9 +336,9 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
   nf.y = y;
 
   int nfpk_back_right, wcnt;
-  unsigned char *bcomp;
-  unsigned char *esi, *edi;
-  unsigned char opcode;
+  uint8_t *bcomp;
+  uint8_t *esi, *edi;
+  uint8_t opcode;
 
   NF_DECOMP_INIT(1, &nf);
 
@@ -347,7 +347,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
   esi = comp;
   edi = nf.tbuf;
 
-  unsigned short swapped = (*(unsigned short *)esi);
+  uint16_t swapped = (*(uint16_t *)esi);
   swapped = INTEL_SHORT(swapped);
   bcomp = swapped + esi;
   esi = esi + 2;
@@ -375,7 +375,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         edi += SWIDTH * 2;
       } break;
       case 2: {
-        unsigned int eax;
+        uint32_t eax;
         eax = *bcomp;
         bcomp++;
         eax = nfpk_ShiftP2[eax];
@@ -387,21 +387,21 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         // Near shift from newer part of current buffer
 #ifdef OUTRAGE_BIG_ENDIAN
         typedef struct {
-          unsigned short hax, ax;
+          uint16_t hax, ax;
         } reg_word;
         typedef struct {
-          signed char hah, hal, ah, al;
+          int8_t hah, hal, ah, al;
         } reg_byte;
 #else
         typedef struct {
-          unsigned short ax, hax;
+          uint16_t ax, hax;
         } reg_word;
         typedef struct {
-          signed char al, ah, hal, hah;
+          int8_t al, ah, hal, hah;
         } reg_byte;
 #endif
         union {
-          unsigned int eax;
+          uint32_t eax;
           reg_word word;
           reg_byte byte;
         } myeax;
@@ -420,21 +420,21 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         // Near shift from previous buffer
 #ifdef OUTRAGE_BIG_ENDIAN
         typedef struct {
-          unsigned short hax, ax;
+          uint16_t hax, ax;
         } reg_word;
         typedef struct {
-          signed char hah, hal, ah, al;
+          int8_t hah, hal, ah, al;
         } reg_byte;
 #else
         typedef struct {
-          unsigned short ax, hax;
+          uint16_t ax, hax;
         } reg_word;
         typedef struct {
-          signed char al, ah, hal, hah;
+          int8_t al, ah, hal, hah;
         } reg_byte;
 #endif
         union {
-          unsigned int eax;
+          uint32_t eax;
           reg_word word;
           reg_byte byte;
         } myeax;
@@ -448,16 +448,16 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
 
       } break;
       case 5: {
-        unsigned short swapper = *(unsigned short *)(esi);
-        unsigned int eax = INTEL_SHORT(swapper);
+        uint16_t swapper = *(uint16_t *)(esi);
+        uint32_t eax = INTEL_SHORT(swapper);
         esi += 2;
         call_hnfxypshift(eax, &edi, &esi, nfpk_back_right, nf.DiffBufPtrs);
       } break;
       case 6: {
         // Far shift from current buffer
-        unsigned int val1, val2;
+        uint32_t val1, val2;
 
-        unsigned short swapper = *(unsigned short *)(esi);
+        uint16_t swapper = *(uint16_t *)(esi);
         val1 = INTEL_SHORT(swapper);
         esi += 2;
 
@@ -478,20 +478,20 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       } break;
       case 7: {
         bool donf23 = false;
-        unsigned short val;
+        uint16_t val;
         int rep_count, max_repcount;
 
-        val = *(unsigned short *)esi;
+        val = *(uint16_t *)esi;
         val = INTEL_SHORT(val);
         if (val & 0x8000) {
           donf23 = true;
         }
 
         if (!donf23) {
-          unsigned int colors[4];
+          uint32_t colors[4];
           max_repcount = 8;
 
-          unsigned int temp_color;
+          uint32_t temp_color;
           temp_color = nf_trans16_lo[*(esi + 2)] | nf_trans16_hi[*(esi + 3)];
           temp_color = (nf_trans16_lo[*(esi + 0)] | nf_trans16_hi[*(esi + 1)]) | (temp_color << 16);
 
@@ -502,21 +502,21 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = (colors[2] & 0xFFFF0000) | (colors[1] & 0xFFFF);
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             idx = rep_count + 4;
-            color_idx = *(unsigned int *)(nfhpk_mov8 + ((*(esi + idx)) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov8 + ((*(esi + idx)) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + 4) = w2;
-            *(unsigned int *)(edi + 8) = w3;
-            *(unsigned int *)(edi + 12) = w4;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + 4) = w2;
+            *(uint32_t *)(edi + 8) = w3;
+            *(uint32_t *)(edi + 12) = w4;
             if (rep_count != (max_repcount - 1))
               edi += nf_width;
           }
@@ -524,18 +524,18 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           esi += 12;
           edi -= nfpk_back_right;
         } else {
-          unsigned int colors[2];
+          uint32_t colors[2];
           max_repcount = 4;
 
-          unsigned int temp;
+          uint32_t temp;
           temp = nf_trans16_lo[*(esi)] | nf_trans16_hi[*(esi + 1)];
           colors[0] = (temp << 16) | temp;
           temp = nf_trans16_lo[*(esi + 2)] | nf_trans16_hi[*(esi + 3)];
           colors[1] = (temp << 16) | temp;
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             // 4l,4h,5l,5h (nibbles)
@@ -554,20 +554,20 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
               break;
             }
 
-            color_idx = *(unsigned int *)(nfhpk_mov4l + (idx * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov4l + (idx * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + nf_width) = w1;
-            *(unsigned int *)(edi + 4) = w2;
-            *(unsigned int *)(edi + nf_width + 4) = w2;
-            *(unsigned int *)(edi + 8) = w3;
-            *(unsigned int *)(edi + nf_width + 8) = w3;
-            *(unsigned int *)(edi + 12) = w4;
-            *(unsigned int *)(edi + nf_width + 12) = w4;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + nf_width) = w1;
+            *(uint32_t *)(edi + 4) = w2;
+            *(uint32_t *)(edi + nf_width + 4) = w2;
+            *(uint32_t *)(edi + 8) = w3;
+            *(uint32_t *)(edi + nf_width + 8) = w3;
+            *(uint32_t *)(edi + 12) = w4;
+            *(uint32_t *)(edi + nf_width + 12) = w4;
             if (rep_count != (max_repcount - 1))
               edi = edi + nf_width * 2;
           }
@@ -579,13 +579,13 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       case 8: {
         bool donf24 = false;
         bool donf40 = false;
-        unsigned short val;
+        uint16_t val;
         int rep_count, max_repcount;
 
-        val = *(unsigned short *)esi;
+        val = *(uint16_t *)esi;
         val = INTEL_SHORT(val);
         if (val & 0x8000) {
-          val = *(unsigned short *)(esi + 8);
+          val = *(uint16_t *)(esi + 8);
           val = INTEL_SHORT(val);
           if (val & 0x8000) {
             donf40 = true;
@@ -595,10 +595,10 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (!donf24 && !donf40) {
-          unsigned int colors[4];
+          uint32_t colors[4];
           max_repcount = 8;
 
-          unsigned int tempcolor;
+          uint32_t tempcolor;
           tempcolor = nf_trans16_lo[*(esi + 2)] | nf_trans16_hi[*(esi + 3)];
           tempcolor = (tempcolor << 16) | (nf_trans16_lo[*(esi + 0)] | nf_trans16_hi[*(esi + 1)]);
           colors[2] = tempcolor;
@@ -608,8 +608,8 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = (colors[2] & 0xFFFF0000) | (colors[1] & 0xFFFF);
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             switch (rep_count) {
@@ -639,17 +639,17 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
               break;
             }
 
-            color_idx = *(unsigned int *)(nfhpk_mov8 + (*(esi + idx) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov8 + (*(esi + idx) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + 4) = w2;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + 4) = w2;
             edi += nf_width;
-            *(unsigned int *)(edi + 0) = w3;
-            *(unsigned int *)(edi + 4) = w4;
+            *(uint32_t *)(edi + 0) = w3;
+            *(uint32_t *)(edi + 4) = w4;
             if (rep_count != (max_repcount - 1))
               edi += nf_width;
 
@@ -691,10 +691,10 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (donf24) {
-          unsigned int colors[4];
+          uint32_t colors[4];
           max_repcount = 8;
 
-          unsigned int tempcolor;
+          uint32_t tempcolor;
           tempcolor = nf_trans16_lo[*(esi + 2)] | nf_trans16_hi[*(esi + 3)];
           tempcolor = (tempcolor << 16) | (nf_trans16_lo[*(esi + 0)] | nf_trans16_hi[*(esi + 1)]);
           colors[2] = tempcolor;
@@ -704,8 +704,8 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = (colors[2] & 0xFFFF0000) | (colors[1] & 0xFFFF);
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             switch (rep_count) {
@@ -735,17 +735,17 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
               break;
             }
 
-            color_idx = *(unsigned int *)(nfhpk_mov8 + (*(esi + idx) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov8 + (*(esi + idx) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + 4) = w2;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + 4) = w2;
             edi += nf_width;
-            *(unsigned int *)(edi + 0) = w3;
-            *(unsigned int *)(edi + 4) = w4;
+            *(uint32_t *)(edi + 0) = w3;
+            *(uint32_t *)(edi + 4) = w4;
             if (rep_count != (max_repcount - 1))
               edi += nf_width;
 
@@ -767,10 +767,10 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (donf40) {
-          unsigned int colors[4];
+          uint32_t colors[4];
           max_repcount = 8;
 
-          unsigned int tempcolor;
+          uint32_t tempcolor;
           tempcolor = nf_trans16_lo[*(esi + 2)] | nf_trans16_hi[*(esi + 3)];
           tempcolor = (tempcolor << 16) | (nf_trans16_lo[*(esi + 0)] | nf_trans16_hi[*(esi + 1)]);
           colors[2] = tempcolor;
@@ -780,8 +780,8 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = (colors[2] & 0xFFFF0000) | (colors[1] & 0xFFFF);
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             switch (rep_count) {
@@ -811,16 +811,16 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
               break;
             }
 
-            color_idx = *(unsigned int *)(nfhpk_mov8 + (*(esi + idx) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov8 + (*(esi + idx) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + 4) = w2;
-            *(unsigned int *)(edi + 8) = w3;
-            *(unsigned int *)(edi + 12) = w4;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + 4) = w2;
+            *(uint32_t *)(edi + 8) = w3;
+            *(uint32_t *)(edi + 12) = w4;
             if (rep_count != (max_repcount - 1))
               edi += nf_width;
 
@@ -843,13 +843,13 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         bool donf41 = false;
         bool donf25 = false;
         bool donf57 = false;
-        unsigned short val;
+        uint16_t val;
         int rep_count, max_repcount;
 
-        val = *(unsigned short *)esi;
+        val = *(uint16_t *)esi;
         val = INTEL_SHORT(val);
         if (val & 0x8000) {
-          val = *(unsigned short *)(esi + 4);
+          val = *(uint16_t *)(esi + 4);
           val = INTEL_SHORT(val);
           if (val & 0x8000) {
             donf57 = true;
@@ -858,7 +858,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           }
 
         } else {
-          val = *(unsigned short *)(esi + 4);
+          val = *(uint16_t *)(esi + 4);
           val = INTEL_SHORT(val);
           if (val & 0x8000) {
             donf25 = true;
@@ -866,7 +866,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (donf57) {
-          unsigned short colors[4];
+          uint16_t colors[4];
           max_repcount = 8;
 
           colors[0] = nf_trans16_lo[*(esi)] | nf_trans16_hi[*(esi + 1)];
@@ -875,32 +875,32 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = nf_trans16_lo[*(esi + 6)] | nf_trans16_hi[*(esi + 7)];
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             idx = rep_count + 8;
-            color_idx = *(unsigned int *)(nfhpk_mov4 + ((*(esi + idx)) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov4 + ((*(esi + idx)) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
             if (rep_count % 2) {
-              *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + nf_width + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + nf_width + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
 
-              *(unsigned int *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + nf_width + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + nf_width + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
 
               if (rep_count != (max_repcount - 1))
                 edi = edi + nf_width * 2;
             } else {
-              *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + nf_width) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + nf_width) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
 
-              *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + nf_width + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + nf_width + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
             }
           }
 
@@ -910,7 +910,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (donf41) {
-          unsigned int colors[4];
+          uint32_t colors[4];
           max_repcount = 8;
 
           colors[0] = nf_trans16_lo[*(esi)] | nf_trans16_hi[*(esi + 1)];
@@ -923,21 +923,21 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = ((colors[3]) << 16) | colors[3];
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             idx = rep_count + 8;
-            color_idx = *(unsigned int *)(nfhpk_mov8 + (*(esi + idx) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov8 + (*(esi + idx) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + 4) = w2;
-            *(unsigned int *)(edi + 8) = w3;
-            *(unsigned int *)(edi + 12) = w4;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + 4) = w2;
+            *(uint32_t *)(edi + 8) = w3;
+            *(uint32_t *)(edi + 12) = w4;
 
             if (rep_count != (max_repcount - 1))
               edi += nf_width;
@@ -948,7 +948,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (donf25) {
-          unsigned int colors[4];
+          uint32_t colors[4];
           max_repcount = 4;
 
           colors[0] = nf_trans16_lo[*(esi)] | nf_trans16_hi[*(esi + 1)];
@@ -961,26 +961,26 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = ((colors[3]) << 16) | colors[3];
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             idx = rep_count + 8;
 
-            color_idx = *(unsigned int *)(nfhpk_mov4 + ((*(esi + idx)) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov4 + ((*(esi + idx)) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
-            *(unsigned int *)(edi + 0) = w1;
-            *(unsigned int *)(edi + nf_width) = w1;
-            *(unsigned int *)(edi + 4) = w2;
-            *(unsigned int *)(edi + nf_width + 4) = w2;
-            *(unsigned int *)(edi + 8) = w3;
-            *(unsigned int *)(edi + nf_width + 8) = w3;
-            *(unsigned int *)(edi + 12) = w4;
-            *(unsigned int *)(edi + nf_width + 12) = w4;
+            *(uint32_t *)(edi + 0) = w1;
+            *(uint32_t *)(edi + nf_width) = w1;
+            *(uint32_t *)(edi + 4) = w2;
+            *(uint32_t *)(edi + nf_width + 4) = w2;
+            *(uint32_t *)(edi + 8) = w3;
+            *(uint32_t *)(edi + nf_width + 8) = w3;
+            *(uint32_t *)(edi + 12) = w4;
+            *(uint32_t *)(edi + nf_width + 12) = w4;
 
             if (rep_count != (max_repcount - 1))
               edi = edi + nf_width * 2;
@@ -992,7 +992,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         }
 
         if (!donf25 && !donf41 && !donf57) {
-          unsigned short colors[4];
+          uint16_t colors[4];
           max_repcount = 16;
 
           colors[0] = nf_trans16_lo[*(esi)] | nf_trans16_hi[*(esi + 1)];
@@ -1001,27 +1001,27 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
           colors[3] = nf_trans16_lo[*(esi + 6)] | nf_trans16_hi[*(esi + 7)];
 
           for (rep_count = 0; rep_count < max_repcount; rep_count++) {
-            unsigned int w1, w2, w3, w4;
-            unsigned int color_idx;
+            uint32_t w1, w2, w3, w4;
+            uint32_t color_idx;
             int idx;
 
             idx = rep_count + 8;
 
-            color_idx = *(unsigned int *)(nfhpk_mov4 + ((*(esi + idx)) * 4));
+            color_idx = *(uint32_t *)(nfhpk_mov4 + ((*(esi + idx)) * 4));
             w1 = colors[color_idx & 0x000000FF];
             w2 = colors[(color_idx & 0x0000FF00) >> 8];
             w3 = colors[(color_idx & 0x00FF0000) >> 16];
             w4 = colors[(color_idx & 0xFF000000) >> 24];
 
             if (rep_count % 2) {
-              *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
 
               if (rep_count != (max_repcount - 1))
                 edi += nf_width;
             } else {
-              *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
             }
           }
 
@@ -1033,14 +1033,14 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         // 2x2 4x4x2 (32 bytes) or 2x1 4x8x2 (24 bytes) or 1x2 4x8x2 (24 bytes)
         int val1;
         int rep_count;
-        unsigned short colors[4];
+        uint16_t colors[4];
         bool do26 = false;
         bool do42 = false;
 
-        unsigned short swapper = *(unsigned short *)esi;
+        uint16_t swapper = *(uint16_t *)esi;
         val1 = INTEL_SHORT(swapper);
         if (val1 & 0x8000) {
-          swapper = *(unsigned short *)(esi + 16);
+          swapper = *(uint16_t *)(esi + 16);
           val1 = INTEL_SHORT(swapper);
           if (val1 & 0x8000) {
             do42 = true;
@@ -1056,8 +1056,8 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         colors[3] = nf_trans16_lo[*(esi + 6)] | nf_trans16_hi[*(esi + 7)];
 
         for (rep_count = 0; rep_count < 16; rep_count++) {
-          unsigned int w1, w2, w3, w4;
-          unsigned int color_idx;
+          uint32_t w1, w2, w3, w4;
+          uint32_t color_idx;
           int idx;
 
           if (!do26 && !do42) {
@@ -1163,28 +1163,28 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
               break;
             }
           }
-          color_idx = *(unsigned int *)(nfhpk_mov4 + (*(esi + idx) * 4));
+          color_idx = *(uint32_t *)(nfhpk_mov4 + (*(esi + idx) * 4));
           w1 = colors[color_idx & 0x000000FF];
           w2 = colors[(color_idx & 0x0000FF00) >> 8];
           w3 = colors[(color_idx & 0x00FF0000) >> 16];
           w4 = colors[(color_idx & 0xFF000000) >> 24];
 
           if (!do42) {
-            *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-            *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+            *(uint32_t *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+            *(uint32_t *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
 
             if (rep_count != 15)
               edi += nf_width;
           } else {
             if (rep_count % 2) {
-              *(unsigned int *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 8) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
 
               if (rep_count != 15)
                 edi += nf_width;
             } else {
-              *(unsigned int *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
-              *(unsigned int *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 0) = (w1 & 0xFFFF) | ((w2 & 0xFFFF) << 16);
+              *(uint32_t *)(edi + 4) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
             }
           }
 
@@ -1279,40 +1279,40 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       case 12: {
         // low 4x4x16 (32 bytes)
         int i;
-        unsigned int eax, ebx;
+        uint32_t eax, ebx;
 
         for (i = 0; i < 4; i++) {
-          eax = *(unsigned char *)(esi + i * 8 + 0);
+          eax = *(uint8_t *)(esi + i * 8 + 0);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 1);
+          eax = *(uint8_t *)(esi + i * 8 + 1);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
-          *(unsigned int *)(edi + 0) = eax;
-          *(unsigned int *)(edi + nf_width) = eax;
+          *(uint32_t *)(edi + 0) = eax;
+          *(uint32_t *)(edi + nf_width) = eax;
 
-          eax = *(unsigned char *)(esi + i * 8 + 2);
+          eax = *(uint8_t *)(esi + i * 8 + 2);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 3);
+          eax = *(uint8_t *)(esi + i * 8 + 3);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
-          *(unsigned int *)(edi + 4) = eax;
-          *(unsigned int *)(edi + nf_width + 4) = eax;
+          *(uint32_t *)(edi + 4) = eax;
+          *(uint32_t *)(edi + nf_width + 4) = eax;
 
-          eax = *(unsigned char *)(esi + i * 8 + 4);
+          eax = *(uint8_t *)(esi + i * 8 + 4);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 5);
+          eax = *(uint8_t *)(esi + i * 8 + 5);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
-          *(unsigned int *)(edi + 8) = eax;
-          *(unsigned int *)(edi + nf_width + 8) = eax;
+          *(uint32_t *)(edi + 8) = eax;
+          *(uint32_t *)(edi + nf_width + 8) = eax;
 
-          eax = *(unsigned char *)(esi + i * 8 + 6);
+          eax = *(uint8_t *)(esi + i * 8 + 6);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 7);
+          eax = *(uint8_t *)(esi + i * 8 + 7);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
-          *(unsigned int *)(edi + 12) = eax;
-          *(unsigned int *)(edi + nf_width + 12) = eax;
+          *(uint32_t *)(edi + 12) = eax;
+          *(uint32_t *)(edi + nf_width + 12) = eax;
 
           if (i != 3)
             edi = edi + nf_width * 2;
@@ -1324,7 +1324,7 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       } break;
       case 13: {
         // 2x2 4x4x0 (8 bytes)
-        unsigned int temp, ebx, ecx;
+        uint32_t temp, ebx, ecx;
 
         temp = nf_trans16_lo[(*esi)] | nf_trans16_hi[(*(esi + 1))];
         ebx = ((temp & 0xFFFF) << 16) | (temp & 0xFFFF);
@@ -1332,25 +1332,25 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         temp = nf_trans16_lo[(*(esi + 2))] | nf_trans16_hi[(*(esi + 3))];
         ecx = ((temp & 0xFFFF) << 16) | (temp & 0xFFFF);
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ecx;
-        *(unsigned int *)(edi + 12) = ecx;
-        *(unsigned int *)(edi + nf_width) = ebx;
-        *(unsigned int *)(edi + nf_width + 4) = ebx;
-        *(unsigned int *)(edi + nf_width + 8) = ecx;
-        *(unsigned int *)(edi + nf_width + 12) = ecx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ecx;
+        *(uint32_t *)(edi + 12) = ecx;
+        *(uint32_t *)(edi + nf_width) = ebx;
+        *(uint32_t *)(edi + nf_width + 4) = ebx;
+        *(uint32_t *)(edi + nf_width + 8) = ecx;
+        *(uint32_t *)(edi + nf_width + 12) = ecx;
 
         edi = edi + nf_width * 2;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ecx;
-        *(unsigned int *)(edi + 12) = ecx;
-        *(unsigned int *)(edi + nf_width) = ebx;
-        *(unsigned int *)(edi + nf_width + 4) = ebx;
-        *(unsigned int *)(edi + nf_width + 8) = ecx;
-        *(unsigned int *)(edi + nf_width + 12) = ecx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ecx;
+        *(uint32_t *)(edi + 12) = ecx;
+        *(uint32_t *)(edi + nf_width) = ebx;
+        *(uint32_t *)(edi + nf_width + 4) = ebx;
+        *(uint32_t *)(edi + nf_width + 8) = ecx;
+        *(uint32_t *)(edi + nf_width + 12) = ecx;
 
         edi = edi + nf_width * 2;
 
@@ -1360,25 +1360,25 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
         temp = nf_trans16_lo[(*(esi + 6))] | nf_trans16_hi[(*(esi + 7))];
         ecx = ((temp & 0xFFFF) << 16) | (temp & 0xFFFF);
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ecx;
-        *(unsigned int *)(edi + 12) = ecx;
-        *(unsigned int *)(edi + nf_width) = ebx;
-        *(unsigned int *)(edi + nf_width + 4) = ebx;
-        *(unsigned int *)(edi + nf_width + 8) = ecx;
-        *(unsigned int *)(edi + nf_width + 12) = ecx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ecx;
+        *(uint32_t *)(edi + 12) = ecx;
+        *(uint32_t *)(edi + nf_width) = ebx;
+        *(uint32_t *)(edi + nf_width + 4) = ebx;
+        *(uint32_t *)(edi + nf_width + 8) = ecx;
+        *(uint32_t *)(edi + nf_width + 12) = ecx;
 
         edi = edi + nf_width * 2;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ecx;
-        *(unsigned int *)(edi + 12) = ecx;
-        *(unsigned int *)(edi + nf_width) = ebx;
-        *(unsigned int *)(edi + nf_width + 4) = ebx;
-        *(unsigned int *)(edi + nf_width + 8) = ecx;
-        *(unsigned int *)(edi + nf_width + 12) = ecx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ecx;
+        *(uint32_t *)(edi + 12) = ecx;
+        *(uint32_t *)(edi + nf_width) = ebx;
+        *(uint32_t *)(edi + nf_width + 4) = ebx;
+        *(uint32_t *)(edi + nf_width + 8) = ecx;
+        *(uint32_t *)(edi + nf_width + 12) = ecx;
 
         edi += nf_width;
         edi -= nfpk_back_right;
@@ -1386,57 +1386,57 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
       } break;
       case 14: {
         //   8x8x0 (2 bytes)
-        unsigned int ecx, ebx;
+        uint32_t ecx, ebx;
         ecx = nf_trans16_lo[*(esi)] | nf_trans16_hi[*(esi + 1)];
         esi += 2;
         ebx = ((ecx & 0xFFFF) << 16) | (ecx & 0xFFFF);
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
         edi += nf_width;
 
-        *(unsigned int *)(edi + 0) = ebx;
-        *(unsigned int *)(edi + 4) = ebx;
-        *(unsigned int *)(edi + 8) = ebx;
-        *(unsigned int *)(edi + 12) = ebx;
+        *(uint32_t *)(edi + 0) = ebx;
+        *(uint32_t *)(edi + 4) = ebx;
+        *(uint32_t *)(edi + 8) = ebx;
+        *(uint32_t *)(edi + 12) = ebx;
 
         edi -= nfpk_back_right;
       } break;
@@ -1462,19 +1462,19 @@ void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y
   } while (h != 0);
 }
 
-void Trans16Blk(unsigned char *edi, unsigned char *idx) {
-  *((unsigned short *)(edi + 0)) = nf_trans16_lo[*(idx + 0)] | nf_trans16_hi[*(idx + 1)];
-  *((unsigned short *)(edi + 2)) = nf_trans16_lo[*(idx + 2)] | nf_trans16_hi[*(idx + 3)];
-  *((unsigned short *)(edi + 4)) = nf_trans16_lo[*(idx + 4)] | nf_trans16_hi[*(idx + 5)];
-  *((unsigned short *)(edi + 6)) = nf_trans16_lo[*(idx + 6)] | nf_trans16_hi[*(idx + 7)];
-  *((unsigned short *)(edi + 8)) = nf_trans16_lo[*(idx + 8)] | nf_trans16_hi[*(idx + 9)];
-  *((unsigned short *)(edi + 10)) = nf_trans16_lo[*(idx + 10)] | nf_trans16_hi[*(idx + 11)];
-  *((unsigned short *)(edi + 12)) = nf_trans16_lo[*(idx + 12)] | nf_trans16_hi[*(idx + 13)];
-  *((unsigned short *)(edi + 14)) = nf_trans16_lo[*(idx + 14)] | nf_trans16_hi[*(idx + 15)];
+void Trans16Blk(uint8_t *edi, uint8_t *idx) {
+  *((uint16_t *)(edi + 0)) = nf_trans16_lo[*(idx + 0)] | nf_trans16_hi[*(idx + 1)];
+  *((uint16_t *)(edi + 2)) = nf_trans16_lo[*(idx + 2)] | nf_trans16_hi[*(idx + 3)];
+  *((uint16_t *)(edi + 4)) = nf_trans16_lo[*(idx + 4)] | nf_trans16_hi[*(idx + 5)];
+  *((uint16_t *)(edi + 6)) = nf_trans16_lo[*(idx + 6)] | nf_trans16_hi[*(idx + 7)];
+  *((uint16_t *)(edi + 8)) = nf_trans16_lo[*(idx + 8)] | nf_trans16_hi[*(idx + 9)];
+  *((uint16_t *)(edi + 10)) = nf_trans16_lo[*(idx + 10)] | nf_trans16_hi[*(idx + 11)];
+  *((uint16_t *)(edi + 12)) = nf_trans16_lo[*(idx + 12)] | nf_trans16_hi[*(idx + 13)];
+  *((uint16_t *)(edi + 14)) = nf_trans16_lo[*(idx + 14)] | nf_trans16_hi[*(idx + 15)];
 }
 
-void call_hnfxycshift(unsigned int eax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right) {
-  unsigned int ebx;
+void call_hnfxycshift(uint32_t eax, uint8_t **medi, uint8_t **mesi, int nfpk_back_right) {
+  uint32_t ebx;
   ebx = ((eax & 0xFF00) >> 8);
 
   if (eax & 0x80) {
@@ -1489,9 +1489,9 @@ void call_hnfxycshift(unsigned int eax, unsigned char **medi, unsigned char **me
   call_hnfshift(eax, medi, mesi, nfpk_back_right);
 }
 
-void call_hnfxypshift(unsigned int eax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right,
+void call_hnfxypshift(uint32_t eax, uint8_t **medi, uint8_t **mesi, int nfpk_back_right,
                       int DiffBufPtrs) {
-  unsigned int ebx;
+  uint32_t ebx;
   ebx = ((eax & 0xFF00) >> 8);
 
   if (eax & 0x80) {
@@ -1507,8 +1507,8 @@ void call_hnfxypshift(unsigned int eax, unsigned char **medi, unsigned char **me
   call_hnfshift(eax, medi, mesi, nfpk_back_right);
 }
 
-void call_hnfshift(unsigned int meax, unsigned char **medi, unsigned char **mesi, int nfpk_back_right) {
-  unsigned char *esi, *edi, *saved_esi;
+void call_hnfshift(uint32_t meax, uint8_t **medi, uint8_t **mesi, int nfpk_back_right) {
+  uint8_t *esi, *edi, *saved_esi;
   int i;
 
   edi = *medi;
@@ -1516,7 +1516,7 @@ void call_hnfshift(unsigned int meax, unsigned char **medi, unsigned char **mesi
   esi = edi + meax;
 
   for (i = 0; i < 8; i++) {
-#define HNFSHIFT_WRITEOUT(x) *(unsigned int *)(edi + x) = *(unsigned int *)(esi + x);
+#define HNFSHIFT_WRITEOUT(x) *(uint32_t *)(edi + x) = *(uint32_t *)(esi + x);
 
     HNFSHIFT_WRITEOUT(0);
     HNFSHIFT_WRITEOUT(4);
@@ -1541,35 +1541,35 @@ void call_hnfshift(unsigned int meax, unsigned char **medi, unsigned char **mesi
 ////////////////////////////////////////////////
 // Non-Implemented Functions
 ////////////////////////////////////////////////
-void nfHiColorDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfHiColorDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y,
+void nfHiColorDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y,
                         unsigned w, unsigned h);
-void nfDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y, unsigned w,
+void nfDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w,
                  unsigned h);
 void nfPkPal(void);
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecompD(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                         unsigned dstx, unsigned dsty);
-void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty);
-void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                           unsigned dstx, unsigned dsty);
-void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                                  unsigned dstx, unsigned dsty);
 
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
-void palLoadCompPalette(unsigned char *buf);
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
+void palLoadCompPalette(uint8_t *buf);
 void gfxMode(unsigned mode);
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res);
-void gfxGetCrtc(unsigned char *crtc);
-void gfxVres(unsigned char misc, unsigned char *crtc);
+void gfxLoadCrtc(uint8_t *crtc, uint8_t chain4, uint8_t res);
+void gfxGetCrtc(uint8_t *crtc);
+void gfxVres(uint8_t misc, uint8_t *crtc);
 void MVE_gfxWaitRetrace(int state);
 void MVE_gfxSetSplit(unsigned line);
 
@@ -1582,49 +1582,49 @@ void MVE_gfxSetSplit(unsigned line);
 #define int3() raise(SIGTRAP)
 #endif
 
-void nfHiColorDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
-void nfHiColorDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y,
+void nfHiColorDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
+void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y,
                         unsigned w, unsigned h) {
   int3();
 }
-void nfDecomp(unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
-void nfDecompChg(unsigned short *chgs, unsigned short *parms, unsigned char *comp, unsigned x, unsigned y, unsigned w,
+void nfDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
+void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w,
                  unsigned h) {
   int3();
 }
 void nfPkPal(void) { int3(); }
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
+void nfPkDecompD(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { int3(); }
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
   int3();
 }
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
   int3();
 }
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                         unsigned dstx, unsigned dsty) {
   int3();
 }
-void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty) {
   int3();
 }
-void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                           unsigned dstx, unsigned dsty) {
   int3();
 }
-void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                                  unsigned dstx, unsigned dsty) {
   int3();
 }
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count) { int3(); }
-void palLoadCompPalette(unsigned char *buf) { int3(); }
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count) { int3(); }
+void palLoadCompPalette(uint8_t *buf) { int3(); }
 void gfxMode(unsigned mode) { int3(); }
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res) { int3(); }
-void gfxGetCrtc(unsigned char *crtc) { int3(); }
-void gfxVres(unsigned char misc, unsigned char *crtc) { int3(); }
+void gfxLoadCrtc(uint8_t *crtc, uint8_t chain4, uint8_t res) { int3(); }
+void gfxGetCrtc(uint8_t *crtc) { int3(); }
+void gfxVres(uint8_t misc, uint8_t *crtc) { int3(); }
 void MVE_gfxWaitRetrace(int state) { int3(); }
 void MVE_gfxSetSplit(unsigned line) { int3(); }

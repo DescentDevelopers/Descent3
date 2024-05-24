@@ -73,17 +73,17 @@ typedef struct {
   int Score[2];
 } tPlayerStat;
 
-static int pack_pstat(tPlayerStat *user_info, ubyte *data);
-static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
+static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
+static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
 
-int pack_pstat(tPlayerStat *user_info, ubyte *data) {
+int pack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
   MultiAddInt(user_info->Score[1], data, &count);
   return count;
 }
 
-int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
+int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   user_info->Score[0] = MultiGetInt(data, &count);
   user_info->Score[1] = MultiGetInt(data, &count);
@@ -99,7 +99,7 @@ static int HyperOrbIcon = -1;
 static bool DisplayFlagBlink = true;
 static int WhoJustScoredTimer = -1;
 static int HyperMoveTimer = -1;
-static ubyte HUD_color_model = HCM_PLAYERCOLOR;
+static uint8_t HUD_color_model = HCM_PLAYERCOLOR;
 static int Highlight_bmp = -1;
 static bool display_my_welcome = false;
 
@@ -120,7 +120,7 @@ const char *GetStringFromTable(int d) {
 
 static void SwitchHUDColor(int i);
 // handles a Hyper Anarchy Game State packet
-static void ReceiveHyperGameState(ubyte *data);
+static void ReceiveHyperGameState(uint8_t *data);
 // sends a Hyper Anarchy Game State packet
 static void SendHyperGameState(int playernum);
 // Displays HUD scores
@@ -145,7 +145,7 @@ static void CreateHyperOrbInRoom(int room);
 // Given the objnum and room it will move the HyperOrb to the center of that room. Objnum better be valid.
 static void MoveHyperOrbToRoomCenter(int objnum, int room);
 // handles a Hyper Anarchy Object Placement packet
-static void ReceiveHyperPos(ubyte *data);
+static void ReceiveHyperPos(uint8_t *data);
 // Searches through all the objects and looks for the HyperOrb, returns it's objnum. -1 if it doesn't exist
 static int FindHyperObjectNum(void);
 // Searches through all the player's inventory, returns the pnum of the player who has the HyperOrb, -1
@@ -166,7 +166,7 @@ void DetermineScore(int precord_num, int column_num, char *buffer, int buffer_si
   snprintf(buffer, buffer_size, "%d[%d]", stat->Score[DSTAT_LEVEL], stat->Score[DSTAT_OVERALL]);
 }
 
-void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use) {
+void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
 
   if (pr && pr->state == STATE_INGAME) {
@@ -192,7 +192,7 @@ void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -267,8 +267,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
   }
 
   // setup the Playerstats struct so DMFC can handle it automatically when a new player enters the game
-  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, ubyte *))pack_pstat,
-                              (int (*)(void *, ubyte *))unpack_pstat);
+  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, uint8_t *))pack_pstat,
+                              (int (*)(void *, uint8_t *))unpack_pstat);
 
   DMFCBase->RegisterPacketReceiver(SPID_HYPERINFO, ReceiveHyperGameState);
   DMFCBase->RegisterPacketReceiver(SPID_HYPERPOS, ReceiveHyperPos);
@@ -290,7 +290,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -1098,7 +1098,7 @@ void OnDisconnectSaveStatsToFile(void) {
 /////////////////////////////////////////////////////////////
 
 // handles a Hyper Anarchy Game State packet
-void ReceiveHyperGameState(ubyte *data) {
+void ReceiveHyperGameState(uint8_t *data) {
   // remove all the HyperOrbs from everyone's inventory
   for (int i = 0; i < DLLMAX_PLAYERS; i++)
     DLLInvRemove(i, OBJ_POWERUP, HyperOrbID);
@@ -1118,7 +1118,7 @@ void ReceiveHyperGameState(ubyte *data) {
 void SendHyperGameState(int playernum) {
   bool updateall = false;
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   DMFCBase->StartPacket(data, SPID_HYPERINFO, &count);
 
   if ((WhoHasOrb != -1) && (!DMFCBase->CheckPlayerNum(WhoHasOrb))) {
@@ -1152,7 +1152,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
     return;
 
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
   int y = (DMFCBase->GetGameWindowH() / 2) - ((height * 5) / 2);
   int x = 510;
   int rank = 1;
@@ -1425,7 +1425,7 @@ void MoveHyperOrbToRoomCenter(int objnum, int room) {
   DLLComputeRoomCenter(&home_pos, &((DMFCBase->GetRooms())[room]));
   DLLObjSetPos(&dObjects[objnum], &home_pos, room, NULL, false);
   if (DMFCBase->GetLocalRole() == LR_SERVER) { // tell the clients to move
-    ubyte data[MAX_GAME_DATA_SIZE];
+    uint8_t data[MAX_GAME_DATA_SIZE];
     int count = 0;
 
     DMFCBase->StartPacket(data, SPID_HYPERPOS, &count);
@@ -1435,7 +1435,7 @@ void MoveHyperOrbToRoomCenter(int objnum, int room) {
 }
 
 // handles a Hyper Anarchy Object Placement packet
-void ReceiveHyperPos(ubyte *data) {
+void ReceiveHyperPos(uint8_t *data) {
   int count = 0;
   int room = MultiGetInt(data, &count);
 

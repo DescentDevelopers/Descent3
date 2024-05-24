@@ -186,7 +186,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames)
 	}
 
 //write number of files
-	ubyte filler = 0xff;
+	uint8_t filler = 0xff;
 	header.nfiles = (unsigned)nfiles;
 	header.file_data_offset = strlen(HOG_TAG_STR) + HOG_HDR_SIZE + (sizeof(tHogFileEntry) * header.nfiles);
 
@@ -200,7 +200,7 @@ int NewHogFile(const char *hogname, int nfiles, const char **filenames)
 		fclose(hog_fp);
 		return HOGMAKER_OUTFILE;
 	}
-	if (!fwrite(&filler,sizeof(ubyte),HOG_HDR_SIZE-sizeof(tHogHeader),hog_fp))	{
+	if (!fwrite(&filler,sizeof(uint8_t),HOG_HDR_SIZE-sizeof(tHogHeader),hog_fp))	{
 		delete[] table;
 		fclose(hog_fp);
 		return HOGMAKER_OUTFILE;

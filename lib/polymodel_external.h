@@ -114,31 +114,31 @@ typedef struct a_bank {
 } a_bank;
 
 typedef struct {
-  ubyte num_verts;
-  ushort lmi_handle;
+  uint8_t num_verts;
+  uint16_t lmi_handle;
   vector rvec, uvec;
   float *u2, *v2;
 } lightmap_object_face;
 
 typedef struct {
-  ubyte num_models;
+  uint8_t num_models;
 
-  short num_faces[MAX_SUBOBJECTS];
+  int16_t num_faces[MAX_SUBOBJECTS];
   lightmap_object_face *lightmap_faces[MAX_SUBOBJECTS];
-  ubyte used;
+  uint8_t used;
 
 } lightmap_object;
 
 typedef struct polyface {
-  sbyte nverts;
-  short *vertnums;
+  int8_t nverts;
+  int16_t *vertnums;
   float *u;
   float *v;
 
   // float *u2,*v2;						// For lightmaps only
 
   ddgr_color color;
-  short texnum;
+  int16_t texnum;
 
   vector normal;
 } polyface;
@@ -171,16 +171,16 @@ typedef struct bsp_info {
   vector *face_min;
   vector *face_max;
 
-  short *vertnum_memory;
+  int16_t *vertnum_memory;
   float *u_memory;
   float *v_memory;
 
   int nverts;
   int num_faces; // amount of faces (NEWSTYLE);
 
-  sbyte children[MAX_SUBOBJECTS]; // children of this submodel
+  int8_t children[MAX_SUBOBJECTS]; // children of this submodel
   int parent;                     // what is parent for each submodel
-  ubyte num_children;
+  uint8_t num_children;
 
   vector min;
   vector max;
@@ -194,8 +194,8 @@ typedef struct bsp_info {
   int *keyframe_angles;  // The destination angles for each key frame
   vector *keyframe_pos;
   matrix *keyframe_matrix; // the combined rotation matrices up to frame n
-  ushort *tick_pos_remap;  // For looking up keyframes fast
-  ushort *tick_ang_remap;  // For looking up keyframes fast
+  uint16_t *tick_pos_remap;  // For looking up keyframes fast
+  uint16_t *tick_ang_remap;  // For looking up keyframes fast
   int *rot_start_time;
   int *pos_start_time;
 
@@ -225,17 +225,17 @@ typedef struct bsp_info {
 
 // used to describe a polygon model
 typedef struct poly_model {
-  unsigned short used;
+  uint16_t used;
 
   int flags;       // PMF_flags, see above
-  ubyte new_style; // if 1, then this polymodel is in the new outrage format (oof)
+  uint8_t new_style; // if 1, then this polymodel is in the new outrage format (oof)
   int id;          // what the polygon model number is.  (Index in Poly_models)
   int version;
   char name[PAGENAME_LEN];
 
   int n_models;
   int model_data_size;
-  ubyte *model_data;
+  uint8_t *model_data;
 
   vector mins, maxs; // min,max for whole model
   vector view_pos;   // viewing position.  Default to {0,0,0}.
@@ -248,7 +248,7 @@ typedef struct poly_model {
 
   float rad;
   int n_textures;
-  short textures[MAX_MODEL_TEXTURES]; // a list of bitmap indices
+  int16_t textures[MAX_MODEL_TEXTURES]; // a list of bitmap indices
 
   bsp_info *submodel; // an array of size n_models of submodel info.
   int num_key_angles;

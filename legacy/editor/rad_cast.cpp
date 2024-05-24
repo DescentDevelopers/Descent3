@@ -860,7 +860,7 @@ void CalculateVolumeLightsForRay (float total_sphere_dist,vector *src_center)
 		if (sphere_dist>.1)
 		{
 			fvi_face_room_list facelist[5000];
-			ubyte check_room[MAX_VOLUME_ELEMENTS];
+			uint8_t check_room[MAX_VOLUME_ELEMENTS];
 
 			memset (check_room,0,MAX_VOLUME_ELEMENTS);
 

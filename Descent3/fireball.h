@@ -180,11 +180,11 @@
 typedef struct {
   char name[PAGENAME_LEN]; // The filename of this animation
 
-  ubyte type;       // type of fireball, see above
-  ubyte tex_size;   // What size texture to use for this animation
+  uint8_t type;       // type of fireball, see above
+  uint8_t tex_size;   // What size texture to use for this animation
   float total_life; // How long this animation should last (in seconds)
   float size;       // How big this explosion is
-  short bm_handle;  // The handle to the vlip
+  int16_t bm_handle;  // The handle to the vlip
 } fireball;
 
 extern fireball Fireballs[];
@@ -250,11 +250,11 @@ void DrawBlastRingObject(object *obj);
 
 // Draws a colored alpha disk...useful for cool lighting effects
 void DrawColoredDisk(vector *pos, float r, float g, float b, float inner_alpha, float outer_alpha, float size,
-                     ubyte saturate = 0, ubyte lod = 1);
+                     uint8_t saturate = 0, uint8_t lod = 1);
 
 // Draws a colored alpha ring...useful for cool lighting effects
 void DrawColoredRing(vector *pos, float r, float g, float b, float inner_alpha, float outer_alpha, float size,
-                     float inner_ring_ratio, ubyte saturate = 0, ubyte lod = 1);
+                     float inner_ring_ratio, uint8_t saturate = 0, uint8_t lod = 1);
 
 // Creates a blast ring from an event
 void DoBlastRingEvent(int eventnum, void *data);
@@ -279,7 +279,7 @@ int GetRandomSmallExplosion();
 int GetRandomBillowingExplosion();
 
 // Draws a sphere with the appropriate texture.  If texture=-1, then uses rgb as colors
-void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size, int texture, ubyte saturate = 1);
+void DrawSphere(vector *pos, float r, float g, float b, float alpha, float size, int texture, uint8_t saturate = 1);
 
 // Creates end points that simulate lightning
 void CreateLightningRodPositions(vector *src, vector *dest, vector *world_vecs, int num_segments, float rand_mag,

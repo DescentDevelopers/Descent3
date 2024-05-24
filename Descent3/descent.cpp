@@ -442,7 +442,7 @@ void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_tim
 extern int CD_inserted;
 
 char Proxy_server[200] = "";
-short Proxy_port = 80;
+int16_t Proxy_port = 80;
 
 void Descent3() {
   int type;

@@ -206,8 +206,8 @@ typedef struct {
 	char login[LOGIN_LEN];				//Login id
 	char password[PASSWORD_LEN];		//password
 	char email[EMAIL_LEN];				//Email Address
-	unsigned char showemail;			//0==don't show 1 == show
-	unsigned char showname	;			//0==don't show 1 == show
+	uint8_t showemail;			//0==don't show 1 == show
+	uint8_t showname	;			//0==don't show 1 == show
 } new_id_request;
 
 
@@ -228,8 +228,8 @@ typedef struct {
 	char login[LOGIN_LEN];				//Login id (new)
 	char password[PASSWORD_LEN];		//password (new)
 	char email[EMAIL_LEN];				//Email Address (new)
-	unsigned char showemail;			//0==don't show 1 == show
-	unsigned char showname	;			//0==don't show 1 == show
+	uint8_t showemail;			//0==don't show 1 == show
+	uint8_t showname	;			//0==don't show 1 == show
 } update_id_request;
 
 typedef struct {
@@ -239,14 +239,14 @@ typedef struct {
 
 
 typedef struct {
-	unsigned char type; //Type of request
-	unsigned short len; //Length of total packet, including this header
+	uint8_t type; //Type of request
+	uint16_t len; //Length of total packet, including this header
 	uint32_t code;	//For control messages
-	unsigned short xcode; //For control/NAK messages and for sigs.
+	uint16_t xcode; //For control/NAK messages and for sigs.
 	uint32_t sig;	//To identify unique return ACKs
 	uint32_t security; // Just a random value, we store the last value used in the user record
 									// So we don't process the same request twice.
-	unsigned char data[MAX_UDP_DATA_LENGH];
+	uint8_t data[MAX_UDP_DATA_LENGH];
 } udp_packet_header;
 
 #ifdef WIN32
@@ -281,11 +281,11 @@ typedef struct vmt_descent3_struct {
 	int suicides;
 	int online_time;
 	int games_played;
-	unsigned int security;
-	unsigned char virgin_pilot;	//This pilot was just created if TRUE
-	unsigned int lateral_thrust;
-	unsigned int rotational_thrust;
-	unsigned int sliding_pct;	//Percentage of the time you were sliding
+	uint32_t security;
+	uint8_t virgin_pilot;	//This pilot was just created if TRUE
+	uint32_t lateral_thrust;
+	uint32_t rotational_thrust;
+	uint32_t sliding_pct;	//Percentage of the time you were sliding
 	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
 	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
@@ -298,7 +298,7 @@ typedef struct vmt_descent3_struct {
 int GetD3MOTD(char *szmotd,int maxlen);
 //Function prototypes
 int InitPilotTrackerClient();
-void AckServer(unsigned int sig);
+void AckServer(uint32_t sig);
 
 int SendD3PilotData(vmt_descent3_struct *d3_pilot);
 int GetD3PilotData(vmt_descent3_struct *d3_pilot,char *pilot_name,char *tracker_id);
@@ -306,10 +306,10 @@ void PollPTrackNet();
 void ValidIdle();
 //int ValidateUser(validate_id_request *valid_id);
 int ValidateUser(validate_id_request *valid_id, char *trackerid);
-void xorcode(void *data,unsigned int len,uint32_t hash);
-extern int MTAVersionCheck(unsigned int oldver, char *URL);
+void xorcode(void *data,uint32_t len,uint32_t hash);
+extern int MTAVersionCheck(uint32_t oldver, char *URL);
 void VersionIdle();
-void HandlePilotData(ubyte *data,int len, network_address *from);
+void HandlePilotData(uint8_t *data,int len, network_address *from);
 
 #ifdef WIN32
 #pragma pack(pop,r_udp)

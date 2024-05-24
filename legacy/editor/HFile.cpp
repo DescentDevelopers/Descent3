@@ -690,7 +690,7 @@ void ShowLevelStats()
 	int num_redgoals=0,num_bluegoals=0,num_greengoals=0,num_yellowgoals=0;
 	int num_sp1=0,num_sp2=0,num_sp3=0,num_sp4=0,num_sp5=0,num_sp6=0;
 
-	ubyte lightmaps_used[MAX_LIGHTMAPS];
+	uint8_t lightmaps_used[MAX_LIGHTMAPS];
 
 	object *objp;
 	#define BUF_LEN 5000
@@ -786,7 +786,7 @@ void ShowLevelStats()
 		{
 			if (lightmaps_used[i])
 			{
-				ushort *data=lm_data (i);
+				uint16_t *data=lm_data (i);
 				int w=lm_w(i);
 				int h=lm_h(i);
 

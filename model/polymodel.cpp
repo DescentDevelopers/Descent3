@@ -653,7 +653,7 @@ polymodel_light_type Polymodel_light_type = POLYMODEL_LIGHTING_STATIC;
 float Polylighting_static_red;
 float Polylighting_static_green;
 float Polylighting_static_blue;
-ubyte *Polylighting_gouraud;
+uint8_t *Polylighting_gouraud;
 lightmap_object *Polylighting_lightmap_object;
 
 vector *Polymodel_light_direction, Polymodel_fog_plane, Polymodel_specular_pos, Polymodel_fog_portal_vert,
@@ -678,7 +678,7 @@ static void SetNormalizedTimeAnimTimed(float frame, float *normalized_time, poly
 static void FreeAllModels();
 /// Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
 /// position/angle of each corresponding subobject.
-static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subobj_flags);
+static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t subobj_flags);
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
 
 int findtextbmpname = 0;
@@ -1508,7 +1508,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       } else
         start_index = NULL;
 
-      ubyte tempbuf[2000];
+      uint8_t tempbuf[2000];
 
       for (i = 0; i < nfaces; i++) {
         ReadModelVector(&tvec, infile);
@@ -1533,7 +1533,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       // Allocate our space
       if (current_count) {
-        sm->vertnum_memory = (short *)mem_malloc(current_count * sizeof(short));
+        sm->vertnum_memory = (int16_t *)mem_malloc(current_count * sizeof(int16_t));
         ASSERT(sm->vertnum_memory);
 
         sm->u_memory = (float *)mem_malloc(current_count * sizeof(float));
@@ -1572,7 +1572,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
         } else {
           pm->submodel[n].faces[i].texnum = -1;
-          ubyte r, g, b;
+          uint8_t r, g, b;
           r = cf_ReadByte(infile);
           g = cf_ReadByte(infile);
           b = cf_ReadByte(infile);
@@ -1821,7 +1821,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           int num_ticks = (pm->submodel[i].rot_track_max - pm->submodel[i].rot_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_ang_remap = (ushort *)mem_malloc(num_ticks * 2);
+            pm->submodel[i].tick_ang_remap = (uint16_t *)mem_malloc(num_ticks * 2);
             ASSERT(pm->submodel[i].tick_ang_remap);
           } else {
             pm->submodel[i].tick_ang_remap = NULL;
@@ -1892,7 +1892,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           int num_ticks = (pm->submodel[i].pos_track_max - pm->submodel[i].pos_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_pos_remap = (ushort *)mem_malloc(num_ticks * 2);
+            pm->submodel[i].tick_pos_remap = (uint16_t *)mem_malloc(num_ticks * 2);
             ASSERT(pm->submodel[i].tick_pos_remap);
           } else {
             pm->submodel[i].tick_pos_remap = NULL;
@@ -2611,7 +2611,7 @@ void SetPolymodelEffect(polymodel_effect *poly_effect) { Polymodel_effect = *pol
 
 // Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
 // position/angle of each corresponding subobject
-void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subobj_flags) {
+void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t subobj_flags) {
   int i;
 
   ASSERT(!(po->flags & PMF_NOT_RESIDENT));
@@ -2745,7 +2745,7 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subo
 }
 
 // Sets the position and rotation of a polymodel.  Used for rendering and collision detection
-void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint subobj_flags) {
+void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint32_t subobj_flags) {
   ASSERT(!(po->flags & PMF_NOT_RESIDENT));
 
   if (po->flags & PMF_TIMED) {
@@ -2843,7 +2843,7 @@ void DoneLightInstance() {
 
 // This is the static light version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, float r, float g,
-                      float b, uint f_render_sub, ubyte use_effect, ubyte overlay) {
+                      float b, uint32_t f_render_sub, uint8_t use_effect, uint8_t overlay) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);
@@ -2921,7 +2921,7 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 
 // This draws a gouraud shaded version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, vector *lightdir,
-                      float r, float g, float b, uint f_render_sub, ubyte use_effect, ubyte overlay) {
+                      float r, float g, float b, uint32_t f_render_sub, uint8_t use_effect, uint8_t overlay) {
   poly_model *po;
   vector light_vec = *lightdir;
 
@@ -3001,7 +3001,7 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 
 // This draws a lightmap shaded version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags,
-                      lightmap_object *lm_object, uint f_render_sub, ubyte use_effect, ubyte overlay) {
+                      lightmap_object *lm_object, uint32_t f_render_sub, uint8_t use_effect, uint8_t overlay) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);

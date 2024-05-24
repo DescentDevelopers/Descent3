@@ -64,6 +64,8 @@
 #ifndef _CHTTPGET_HEADER_
 #define _CHTTPGET_HEADER_
 
+#include <cstdint>
+
 #define HTTP_STATE_INTERNAL_ERROR 0
 #define HTTP_STATE_SOCKET_ERROR 1
 #define HTTP_STATE_URL_PARSING_ERROR 2
@@ -84,13 +86,13 @@
 class ChttpGet {
 public:
   ChttpGet(char *URL, char *localfile);
-  ChttpGet(char *URL, char *localfile, char *proxyip, unsigned short proxyport);
+  ChttpGet(char *URL, char *localfile, char *proxyip, uint16_t proxyport);
   void PrepSocket(char *URL);
   ~ChttpGet();
   void GetFile(char *URL, char *localfile);
   int GetStatus();
-  unsigned int GetBytesIn();
-  unsigned int GetTotalBytes();
+  uint32_t GetBytesIn();
+  uint32_t GetTotalBytes();
   void AbortGet();
   void WorkerThread();
   bool m_Aborted;
@@ -98,14 +100,14 @@ public:
 protected:
   int ConnectSocket();
   char *GetHTTPLine();
-  unsigned int ReadDataChannel();
-  unsigned int m_iBytesIn;
-  unsigned int m_iBytesTotal;
-  unsigned int m_State;
+  uint32_t ReadDataChannel();
+  uint32_t m_iBytesIn;
+  uint32_t m_iBytesTotal;
+  uint32_t m_State;
   bool m_ProxyEnabled;
   char *m_ProxyIP;
   char m_URL[MAX_URL_LEN];
-  unsigned short m_ProxyPort;
+  uint16_t m_ProxyPort;
 
   char m_szUserName[100];
   char m_szPassword[100];

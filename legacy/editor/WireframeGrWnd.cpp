@@ -622,7 +622,7 @@ void EndWireframeSel(editorSelectorManager *esm)
 void CWireframeGrWnd::DrawPlayerOnTerrain() 
 {
 	static int lastx=-1,lastz=-1;
-	static ushort last_color;
+	static uint16_t last_color;
 
 	int seg=GetTerrainCellFromPos (&Viewer_object->pos);
 	if (seg<0)
@@ -694,14 +694,14 @@ void CWireframeGrWnd::SetMagCoords(int x1,int y1,int x2,int y2)
 void CWireframeGrWnd::DrawTerrainCell(int seg)
 {
 	grSurface *cur_surf;
-	ushort *destptr;
+	uint16_t *destptr;
 	int lightval;
 	int i,t,x,y;
 	int segx=seg%TERRAIN_WIDTH;
 	int segz=seg/TERRAIN_WIDTH;
 	
 	cur_surf=m_grViewport->lock();
-	destptr=(ushort*)cur_surf->data();
+	destptr=(uint16_t*)cur_surf->data();
 	int rowsize=cur_surf->rowsize()/2;
 	int x1,y1,x2,y2;
 
@@ -723,12 +723,12 @@ void CWireframeGrWnd::DrawTerrainCell(int seg)
 
 	x=segx;
 	y=segz;	// flip due to origin difference
-	ushort fadepixel;
+	uint16_t fadepixel;
 
 	int bm_handle=GameTextures[Terrain_tex_seg[Terrain_seg[(y*TERRAIN_WIDTH+x)].texseg_index].tex_index].bm_handle;
 	lightval=Ubyte_to_float[Terrain_seg[y*TERRAIN_WIDTH+x].l]*(MAX_TEXTURE_SHADES-1);
 			
-	ushort pix;
+	uint16_t pix;
 	
 	pix=*bm_data(bm_handle,0);
 	fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
@@ -765,12 +765,12 @@ void CWireframeGrWnd::DrawTerrainCell(int seg)
 void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix *view_orient,float view_dist)
 {
 	grSurface *cur_surf;
-	ushort *destptr;
+	uint16_t *destptr;
 	int lightval;
 	int i,t;
 	
 	cur_surf=vp->lock();
-	destptr=(ushort*)cur_surf->data();
+	destptr=(uint16_t*)cur_surf->data();
 	int rowsize=cur_surf->rowsize()/2;
 	int x1,y1,x2,y2;
 
@@ -790,20 +790,20 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 
 			y=(TERRAIN_DEPTH-1)-y;	// flip due to origin difference
 
-			ushort fadepixel;
+			uint16_t fadepixel;
 
 			int bm_handle=GameTextures[Terrain_seg[y*TERRAIN_WIDTH+x].tex_index].bm_handle;
 			lightval=(Terrain_seg[y*TERRAIN_WIDTH+x].light)*(MAX_TEXTURE_SHADES-1);
 					
 			if (Renderer_type==RENDERER_SOFTWARE_8BIT)
 			{	
-				ubyte pixval;
+				uint8_t pixval;
 				pixval=*bm_data8(bm_handle,0);
 				fadepixel=BitmapFadePalettes[bm_pal_index(bm_handle)][lightval*256+pixval];
 			}
 			else
 			{
-				ushort pix;
+				uint16_t pix;
 				
 				pix=*bm_data(bm_handle,0);
 				fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
@@ -840,12 +840,12 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix *view_orient,float view_dist)
 {
 	grSurface *cur_surf;
-	ushort *destptr;
+	uint16_t *destptr;
 	float lightval;
 	int i,t;
 	
 	cur_surf=vp->lock();
-	destptr=(ushort*)cur_surf->data();
+	destptr=(uint16_t*)cur_surf->data();
 	int rowsize=cur_surf->rowsize()/2;
 	int x1,y1,x2,y2;
 
@@ -867,13 +867,13 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 
 			y=(TERRAIN_DEPTH-1)-y;	// flip due to origin difference
 
-			ushort fadepixel;
+			uint16_t fadepixel;
 
 			int bm_handle=GameTextures[Terrain_tex_seg[Terrain_seg[y*TERRAIN_WIDTH+x].texseg_index].tex_index].bm_handle;
 			lightval=Ubyte_to_float[(Terrain_seg[y*TERRAIN_WIDTH+x].l)];
 					
-			ushort pix;
-			ushort *data=bm_data(bm_handle,0);
+			uint16_t pix;
+			uint16_t *data=bm_data(bm_handle,0);
 			int w=bm_w(bm_handle,0);
 
 			subx=(u & 0xFFFF)*w;

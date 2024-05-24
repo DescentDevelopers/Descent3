@@ -210,7 +210,7 @@ typedef struct tGauge {
   int first_vert;
   bool functional; // is this gauge working?
   bool just_init;  // gauge just initialized?
-  ushort mask;     // mask of stat for gauge
+  uint16_t mask;     // mask of stat for gauge
   int state;       // gauge dependent state data.
   union {          // data for gauge.
     int i;
@@ -292,16 +292,16 @@ static void RenderAfterburnMonitor(tGauge *gauge, bool modified);
 static void DrawGaugeMonitor(g3Point *pts, int bm, float brightness, float *alphas);
 
 //	renders a square texture onto the screen.
-static void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, ubyte alpha, bool saturate);
+static void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, uint8_t alpha, bool saturate);
 
 //	renders a square texture onto the screen.
-static void DrawGaugeQuad(g3Point *pts, int bm, ubyte alpha = 255, bool saturate = false);
+static void DrawGaugeQuad(g3Point *pts, int bm, uint8_t alpha = 255, bool saturate = false);
 
 //	renders a flat poly onto the screen with given color
-static void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, ubyte alpha);
+static void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, uint8_t alpha);
 
 //	renders a flat poly onto the screen with 4 colors (for each vertex)
-static void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, ubyte alpha);
+static void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, uint8_t alpha);
 
 // correctly orders monitor vertices based off of UVs
 static int GetFirstVert(bsp_info *sm);
@@ -321,13 +321,13 @@ static inline int GAUGE_INDEX(tStatMask mask) {
 //	Initialization routines
 
 //	initializes cockpit gauges
-void InitGauges(ushort gauge_mask) {
+void InitGauges(uint16_t gauge_mask) {
   Gauge_mask = gauge_mask;
   Gauge_mask_modified = Gauge_mask;
   int gauge = 0;
 
   for (int i = 0; i < NUM_GAUGES; i++) {
-    ushort mask = Gauge_mask & (1 << i);
+    uint16_t mask = Gauge_mask & (1 << i);
 
     if (mask == STAT_SHIELDS) {
       Gauge_list[gauge].monitor = CockpitGetMonitorSubmodel(SHIELD_MONITOR);
@@ -369,7 +369,7 @@ void InitGauges(ushort gauge_mask) {
 //	deinitializes cockpit gauges
 void CloseGauges() {
   for (int i = 0; i < NUM_GAUGES; i++) {
-    ushort mask = Gauge_mask & (1 << i);
+    uint16_t mask = Gauge_mask & (1 << i);
     Gauge_list[i].monitor = NULL;
   }
   Gauge_mask = 0;
@@ -474,7 +474,7 @@ void FlagGaugesModified(tStatMask mask_modified) { Gauge_mask_modified |= mask_m
 
 //	sets whether the gauges are functional
 void FlagGaugesFunctional(tStatMask mask) {
-  ushort i = 0x8000, j = NUM_GAUGES;
+  uint16_t i = 0x8000, j = NUM_GAUGES;
 
   while (i) {
     if (mask & i)
@@ -486,7 +486,7 @@ void FlagGaugesFunctional(tStatMask mask) {
 
 //	sets whether the gauges are functional
 void FlagGaugesNonfunctional(tStatMask mask) {
-  ushort i = 0x8000, j = NUM_GAUGES;
+  uint16_t i = 0x8000, j = NUM_GAUGES;
 
   while (i) {
     if (mask & i)
@@ -726,7 +726,7 @@ void RenderShipMonitor(tGauge *gauge, bool modified) {
   if (!gauge->functional)
     return;
 
-  ubyte alpha = 255;
+  uint8_t alpha = 255;
   if (Objects[Players[Player_num].objnum].effect_info->type_flags & EF_CLOAKED) {
     float time_frame = Objects[Players[Player_num].objnum].effect_info->cloak_time;
     if (time_frame < HUD_CLOAKEND_TIME) {
@@ -745,7 +745,7 @@ void RenderShipMonitor(tGauge *gauge, bool modified) {
     g3_GetUnscaledMatrix(&view_matrix);
 
     float inv_time_frame = (Gametime - (int)Gametime);
-    float inv_alpha = (ubyte)(255 * (1.0f - (inv_time_frame / 2.0f)));
+    float inv_alpha = (uint8_t)(255 * (1.0f - (inv_time_frame / 2.0f)));
     g3Point invpts[4];
     int i;
 
@@ -843,12 +843,12 @@ void DrawGaugeMonitor(g3Point *pts, int bm, float brightness, float *alphas) {
 }
 
 //	renders a square texture onto the screen.
-void DrawGaugeQuad(g3Point *pts, int bm, ubyte alpha, bool saturate) {
+void DrawGaugeQuad(g3Point *pts, int bm, uint8_t alpha, bool saturate) {
   DrawGaugeQuad(pts, bm, 0, 0, 1, 1, alpha, saturate);
 }
 
 //	renders a square texture onto the screen.
-void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, ubyte alpha, bool saturate) {
+void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1, uint8_t alpha, bool saturate) {
   g3Point *pntlist[4];
   g3Point pnts[4];
 
@@ -887,14 +887,14 @@ void DrawGaugeQuad(g3Point *pts, int bm, float u0, float v0, float u1, float v1,
 }
 
 //	renders a flat poly onto the screen with given color
-void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, ubyte alpha) {
+void DrawGaugeQuadFlat(g3Point *pts, float r, float g, float b, uint8_t alpha) {
   float ar[4] = {r, r, r, r}, ag[4] = {g, g, g, g}, ab[4] = {b, b, b, b};
 
   DrawGaugeQuadFlat(pts, ar, ag, ab, alpha);
 }
 
 //	renders a flat poly onto the screen with 4 colors (for each vertex)
-void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, ubyte alpha) {
+void DrawGaugeQuadFlat(g3Point *pts, float *r, float *g, float *b, uint8_t alpha) {
   g3Point *pntlist[4];
   g3Point pnts[4];
 

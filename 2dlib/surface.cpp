@@ -95,10 +95,10 @@
 #include "renderer.h"
 
 static inline unsigned XLAT_RGB_TO_16(ddgr_color c) {
-  unsigned char r, g, b;
-  r = (unsigned char)((c & 0x00ff0000) >> 16);
-  g = (unsigned char)((c & 0x0000ff00) >> 8);
-  b = (unsigned char)(c & 0x000000ff);
+  uint8_t r, g, b;
+  r = (uint8_t)((c & 0x00ff0000) >> 16);
+  g = (uint8_t)((c & 0x0000ff00) >> 8);
+  b = (uint8_t)(c & 0x000000ff);
 
   return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
 }
@@ -158,8 +158,8 @@ void grSurface::create(int w, int h, int bpp, unsigned type, unsigned flags, con
   ddsfObj.w = w;
   ddsfObj.h = h;
   ddsfObj.bpp = bpp;
-  ddsfObj.type = (ushort)type;
-  ddsfObj.flags = (ushort)flags;
+  ddsfObj.type = (uint16_t)type;
+  ddsfObj.flags = (uint16_t)flags;
 
   if (name)
     strncpy(ddsfObj.name, name, 15);
@@ -408,9 +408,9 @@ void grSurface::replace_color(ddgr_color sc, ddgr_color dc) {
 
   switch (ddsfObj.bpp) {
   case BPP_16: {
-    ushort *data = (ushort *)m_DataPtr;
+    uint16_t *data = (uint16_t *)m_DataPtr;
     int rowsize_w = m_DataRowsize / 2;
-    ushort scc = XLAT_RGB_TO_16(sc), dcc = XLAT_RGB_TO_16(dc);
+    uint16_t scc = XLAT_RGB_TO_16(sc), dcc = XLAT_RGB_TO_16(dc);
 
     for (int y = 0; y < ddsfObj.h; y++) {
       for (int x = 0; x < ddsfObj.w; x++)
@@ -460,7 +460,7 @@ char *grSurface::lock(int *rowsize) {
 
   surf_Locked++; // increment lock counter for this surface
 
-  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (ubyte *)m_OrigDataPtr);
+  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (uint8_t *)m_OrigDataPtr);
 
   return m_DataPtr;
 }
@@ -507,7 +507,7 @@ char *grSurface::lock(int x, int y, int *rowsize) {
 
   surf_Locked++; // increment lock counter for this surface
 
-  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (ubyte *)m_OrigDataPtr);
+  rend_SetSoftwareParameters(ddgr_GetAspectRatio(), ddsfObj.w, ddsfObj.h, m_DataRowsize, (uint8_t *)m_OrigDataPtr);
 
   return m_DataPtr;
 }
@@ -550,14 +550,14 @@ void grSurface::xlat8_16(char *data, int w, int h, char *pal) {
   /*	copy from 8bit source bitmap to destination surface just created and
           locked
   */
-  ushort *dptr;
+  uint16_t *dptr;
   char *sptr;
   int row, col;
   int rowsize_w;
   int height, width;
-  ubyte *upal = (ubyte *)pal;
+  uint8_t *upal = (uint8_t *)pal;
 
-  dptr = (ushort *)m_DataPtr;
+  dptr = (uint16_t *)m_DataPtr;
   sptr = (char *)data;
   rowsize_w = m_DataRowsize / 2;
 
@@ -566,12 +566,12 @@ void grSurface::xlat8_16(char *data, int w, int h, char *pal) {
 
   for (row = 0; row < height; row++) {
     for (col = 0; col < width; col++) {
-      ubyte spix = sptr[col];
+      uint8_t spix = sptr[col];
       if (spix != 0) {
         int r = upal[spix * 3] >> 3;
         int g = upal[spix * 3 + 1] >> 2;
         int b = upal[spix * 3 + 2] >> 3;
-        ushort destpix = (r << 11) | (g << 5) | b;
+        uint16_t destpix = (r << 11) | (g << 5) | b;
 
         dptr[col] = destpix;
       } else
@@ -588,7 +588,7 @@ void grSurface::xlat16_16(char *data, int w, int h, int format) {
           This function performs scaling if the source width and height don't match
           that of the destinations - JL
   */
-  ushort *sptr, *dptr;
+  uint16_t *sptr, *dptr;
   int row, col;
   int rowsize_w;
   int height, width;
@@ -596,8 +596,8 @@ void grSurface::xlat16_16(char *data, int w, int h, int format) {
   fix ystep = IntToFix(h) / ddsfObj.h;
   fix fu = 0, fv = 0;
 
-  dptr = (ushort *)m_DataPtr;
-  sptr = (ushort *)data;
+  dptr = (uint16_t *)m_DataPtr;
+  sptr = (uint16_t *)data;
   rowsize_w = m_DataRowsize / 2;
 
   height = ddsfObj.h;
@@ -633,20 +633,20 @@ void grSurface::xlat16_16(char *data, int w, int h, int format) {
 }
 
 void grSurface::xlat16_24(char *data, int w, int h) {
-  ushort *sptr;
+  uint16_t *sptr;
   char *dptr;
   int scol, dcol, row;
   int height, width;
 
   dptr = (char *)m_DataPtr;
-  sptr = (ushort *)data;
+  sptr = (uint16_t *)data;
   height = SET_MIN(h, ddsfObj.h);
   width = SET_MIN(w, ddsfObj.w);
 
   for (row = 0; row < height; row++) {
     dcol = 0;
     for (scol = 0; scol < width; scol++) {
-      ushort pix;
+      uint16_t pix;
       ddgr_color new_color;
       char r, g, b;
       pix = sptr[scol];
@@ -668,11 +668,11 @@ void grSurface::xlat16_24(char *data, int w, int h) {
 
 void grSurface::xlat24_16(char *data, int w, int h) {
   char *sptr;
-  ushort *dptr;
+  uint16_t *dptr;
   int scol, dcol, row;
   int rowsize_w, height, width;
 
-  dptr = (ushort *)m_DataPtr;
+  dptr = (uint16_t *)m_DataPtr;
   sptr = (char *)data;
   rowsize_w = m_DataRowsize / 2;
   height = SET_MIN(h, ddsfObj.h);
@@ -681,12 +681,12 @@ void grSurface::xlat24_16(char *data, int w, int h) {
   for (row = 0; row < height; row++) {
     scol = 0;
     for (dcol = 0; dcol < width; dcol++) {
-      ushort pix;
+      uint16_t pix;
       char r, g, b;
       r = sptr[scol++];
       g = sptr[scol++];
       b = sptr[scol++];
-      pix = ((ushort)(r >> 3) << 11) + ((ushort)(g >> 2) << 5) + ((ushort)(b >> 3));
+      pix = ((uint16_t)(r >> 3) << 11) + ((uint16_t)(g >> 2) << 5) + ((uint16_t)(b >> 3));
       dptr[dcol] = pix;
     }
     sptr += (w * 3);
@@ -696,13 +696,13 @@ void grSurface::xlat24_16(char *data, int w, int h) {
 
 void grSurface::xlat32_16(char *data, int w, int h) {
   unsigned *sptr;
-  ushort *dptr;
+  uint16_t *dptr;
   int col, row;
   int rowsize_w, height, width;
 
   ASSERT((w % 4) == 0);
 
-  dptr = (ushort *)m_DataPtr;
+  dptr = (uint16_t *)m_DataPtr;
   sptr = (unsigned *)data;
   rowsize_w = m_DataRowsize / 2;
   height = SET_MIN(h, ddsfObj.h);
@@ -711,12 +711,12 @@ void grSurface::xlat32_16(char *data, int w, int h) {
   for (row = 0; row < height; row++) {
     for (col = 0; col < width; col++) {
       unsigned pix;
-      ushort spix;
+      uint16_t spix;
 
       pix = sptr[col];
-      spix = (ushort)(pix & 0x000000f8) >> 3;
-      spix |= (ushort)(pix & 0x0000fc00) >> 5;
-      spix |= (ushort)(pix & 0x00f80000) >> 8;
+      spix = (uint16_t)(pix & 0x000000f8) >> 3;
+      spix |= (uint16_t)(pix & 0x0000fc00) >> 5;
+      spix |= (uint16_t)(pix & 0x00f80000) >> 8;
       dptr[col] = spix;
     }
     sptr += w;

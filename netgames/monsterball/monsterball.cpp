@@ -207,10 +207,10 @@ typedef struct {
   int BadScore[2];
 } tPlayerStat;
 
-static int pack_pstat(tPlayerStat *user_info, ubyte *data);
-static int unpack_pstat(tPlayerStat *user_info, ubyte *data);
+static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
+static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
 
-int pack_pstat(tPlayerStat *user_info, ubyte *data) {
+int pack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   MultiAddInt(user_info->Score[0], data, &count);
   MultiAddInt(user_info->Score[1], data, &count);
@@ -219,7 +219,7 @@ int pack_pstat(tPlayerStat *user_info, ubyte *data) {
   return count;
 }
 
-int unpack_pstat(tPlayerStat *user_info, ubyte *data) {
+int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   int count = 0;
   user_info->Score[0] = MultiGetInt(data, &count);
   user_info->Score[1] = MultiGetInt(data, &count);
@@ -283,7 +283,7 @@ const char *GetStringFromTable(int d) {
 // Prototypes
 static void DisplayHUDScores(struct tHUDItem *hitem);
 static void DisplayStats(void);
-static void GetGameStartPacket(ubyte *data);
+static void GetGameStartPacket(uint8_t *data);
 static void SendGameStartPacket(int pnum);
 static bool GetMonsterballInfo(int id);
 static void SortTeams(void);
@@ -297,7 +297,7 @@ static void OnTimerRegenKill(void);
 static void SaveStatsToFile(char *filename);
 static void SortPlayerSlots(int *sorted_list, int count);
 static void SendLastHitInfo(void);
-static void GetLastHitInfo(ubyte *data);
+static void GetLastHitInfo(uint8_t *data);
 
 static void HandlePickupPowerball(object *owner);
 static void HandleLosePowerball(bool play_sound);
@@ -333,7 +333,7 @@ void TeamScoreCallback(int team, char *buffer, int buffer_size) {
   snprintf(buffer, buffer_size, " %d", TeamScores[team]);
 }
 
-void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, ubyte alpha_to_use) {
+void ShowStatBitmap(int precord_num, int column_num, int x, int y, int w, int h, uint8_t alpha_to_use) {
   player_record *pr = DMFCBase->GetPlayerRecord(precord_num);
 
   if (!pr || pr->state != STATE_INGAME)
@@ -363,7 +363,7 @@ void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -424,8 +424,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
   DMFCBase->AddSuicideMessage(TXT_SUICIDEA);
 
   // setup the Playerstats struct so DMFC can handle it automatically when a new player enters the game
-  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, ubyte *))pack_pstat,
-                              (int (*)(void *, ubyte *))unpack_pstat);
+  DMFCBase->SetupPlayerRecord(sizeof(tPlayerStat), (int (*)(void *, uint8_t *))pack_pstat,
+                              (int (*)(void *, uint8_t *))unpack_pstat);
 
   // register special packet receivers
   DMFCBase->RegisterPacketReceiver(SPID_NEWPLAYER, GetGameStartPacket);
@@ -445,7 +445,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -1672,7 +1672,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
   int y, x, team, p;
 
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)255);
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)255);
 
   if (!ValidateOwner(&p, NULL)) {
     p = -1;
@@ -1737,14 +1737,14 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   }
 }
 
-void GetLastHitInfo(ubyte *data) {
+void GetLastHitInfo(uint8_t *data) {
   int size = 0;
 
-  LastHitPnum = (sbyte)MultiGetByte(data, &size);
+  LastHitPnum = (int8_t)MultiGetByte(data, &size);
 }
 void SendLastHitInfo(void) {
   int size = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   DMFCBase->StartPacket(data, SPID_HITINFO, &size);
 
@@ -1753,7 +1753,7 @@ void SendLastHitInfo(void) {
   DMFCBase->SendPacket(data, size, SP_ALL);
 }
 
-void GetGameStartPacket(ubyte *data) {
+void GetGameStartPacket(uint8_t *data) {
   int i, count = 0;
 
   // team scores
@@ -1762,8 +1762,8 @@ void GetGameStartPacket(ubyte *data) {
   }
 
   // who has the Monsterball
-  sbyte temp;
-  temp = (sbyte)MultiGetByte(data, &count);
+  int8_t temp;
+  temp = (int8_t)MultiGetByte(data, &count);
   if (temp == -1) {
     Monsterball_info.owner_handle = OBJECT_HANDLE_NONE;
   } else {
@@ -1775,7 +1775,7 @@ void GetGameStartPacket(ubyte *data) {
 
   monsterball_info_set = true;
 
-  temp = (sbyte)MultiGetByte(data, &count);
+  temp = (int8_t)MultiGetByte(data, &count);
   NumOfTeams = temp;
 
   // we need to find the objnum of the Monsterball...its there somewhere
@@ -1799,7 +1799,7 @@ void GetGameStartPacket(ubyte *data) {
 
 void SendGameStartPacket(int pnum) {
   int i, count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   DMFCBase->StartPacket(data, SPID_NEWPLAYER, &count);
 
@@ -1808,7 +1808,7 @@ void SendGameStartPacket(int pnum) {
     MultiAddInt(TeamScores[i], data, &count);
   }
 
-  sbyte temp;
+  int8_t temp;
   int p;
 
   // who has the Monsterball if anyone
@@ -2110,7 +2110,7 @@ void DoMonsterballScoreEffect(void) {
   float lifetime = 4.0f;
   float thickness = 17.5f;
   float slidetime = 0.3f;
-  ushort color = GR_RGB16(30, 255, 30);
+  uint16_t color = GR_RGB16(30, 255, 30);
   int numtiles = 1;
   bool autotile = true;
   int sat_count = 2;

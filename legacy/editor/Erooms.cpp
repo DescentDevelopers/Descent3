@@ -814,7 +814,7 @@ void SaveRoom (int n,char *filename)
 	CFILE *outfile;
 	int headsize,savepos,vertsize,facesize,texsize;
 	int highest_index=0;
-	short Room_to_texture[MAX_TEXTURES];
+	int16_t Room_to_texture[MAX_TEXTURES];
 	int t,found_it=0;
 	
 	// Make sure its in use!
@@ -862,7 +862,7 @@ void SaveRoom (int n,char *filename)
 	// figure out correct texture ordering
 	for (i=0;i<Rooms[n].num_faces;i++)
 	{
-		short index=Rooms[n].faces[i].tmap;
+		int16_t index=Rooms[n].faces[i].tmap;
 
 		for (found_it=0,t=0;t<highest_index;t++)
 		{
@@ -966,7 +966,7 @@ int AllocLoadRoom (char *filename,bool bCenter,bool palette_room)
 	room *rp;
 	char texture_names[MAX_TEXTURES][PAGENAME_LEN];
 	int highest_index;
-	short tex_index;
+	int16_t tex_index;
 	int room_version=0;
 
 	infile=(CFILE *)cfopen (filename,"rb");
@@ -1043,14 +1043,14 @@ int AllocLoadRoom (char *filename,bool bCenter,bool palette_room)
 
 				for (i=0;i<rp->num_faces;i++)
 				{
-					ubyte light_multiple=4;
+					uint8_t light_multiple=4;
 					if (room_version>=4)
 						light_multiple=cf_ReadByte(infile);
 						
 					int nverts = cf_ReadInt (infile);
 
 					//rp->faces[i].num_verts=cf_ReadInt (infile);
-					//rp->faces[i].face_verts=(short *)mem_malloc (sizeof(short)*rp->faces[i].num_verts);
+					//rp->faces[i].face_verts=(int16_t *)mem_malloc (sizeof(int16_t)*rp->faces[i].num_verts);
 					//rp->faces[i].face_uvls=(g3UVL *)mem_malloc (sizeof(g3UVL)*rp->faces[i].num_verts);
 
 					InitRoomFace(&rp->faces[i],nverts);
@@ -1160,7 +1160,7 @@ void GetIJ(const vector *normal,int *ii,int *jj);
 //					If the face is convex, returns -1
 //NOTE: A face could have multiple concavities, and this will only find the one with the 
 //lowest-numbered vertex
-int CheckFaceConcavity(int num_verts,short *face_verts,vector *normal,vector *verts)
+int CheckFaceConcavity(int num_verts,int16_t *face_verts,vector *normal,vector *verts)
 {
 	int ii,jj;
 	float i0,j0,i1,j1;
@@ -1252,7 +1252,7 @@ void CopyFace(face *dfp,face *sfp)
 //Checks to see if a face is planar.
 //See if all the points are within a certain distance of an average point
 //Returns 1 if face is planar, 0 if not
-bool FaceIsPlanar(int nv,short *face_verts,vector *normal,vector *verts)
+bool FaceIsPlanar(int nv,int16_t *face_verts,vector *normal,vector *verts)
 {
 	//Triangles are always planar
 	if (nv == 3)
@@ -1315,7 +1315,7 @@ void FixConcaveFaces (room *rp,int *facelist,int facecount)
 				{
 					int nverts=rp->faces[t].num_verts;
 
-					newfaces[t].face_verts = (short *) mem_malloc(nverts * sizeof(short));  
+					newfaces[t].face_verts = (int16_t *) mem_malloc(nverts * sizeof(int16_t));  
 					ASSERT(newfaces[t].face_verts != NULL);
 					newfaces[t].face_uvls  = (roomUVL *) mem_malloc(nverts * sizeof(roomUVL)); 
 					ASSERT(newfaces[t].face_uvls != NULL);
@@ -1337,7 +1337,7 @@ void FixConcaveFaces (room *rp,int *facelist,int facecount)
 				{
 					int nverts=3;
 
-					newfaces[t].face_verts = (short *) mem_malloc(nverts * sizeof(short));  
+					newfaces[t].face_verts = (int16_t *) mem_malloc(nverts * sizeof(int16_t));  
 					ASSERT(newfaces[t].face_verts != NULL);
 					newfaces[t].face_uvls  = (roomUVL *) mem_malloc(nverts * sizeof(roomUVL)); 
 					ASSERT(newfaces[t].face_uvls != NULL);
@@ -1418,7 +1418,7 @@ void ReInitRoomFace(face *fp,int nverts)
 	mem_free(fp->face_verts);
 	mem_free(fp->face_uvls);
 
-	fp->face_verts = (short *) mem_malloc(nverts * sizeof(*fp->face_verts));  ASSERT(fp->face_verts != NULL);
+	fp->face_verts = (int16_t *) mem_malloc(nverts * sizeof(*fp->face_verts));  ASSERT(fp->face_verts != NULL);
 	fp->face_uvls = (roomUVL *) mem_malloc(nverts * sizeof(*fp->face_uvls));  ASSERT(fp->face_uvls != NULL);
 }
 
@@ -2644,7 +2644,7 @@ next_face:;
 // Counts the number of unique textures in a level, plus gives names of textures used
 void CountUniqueTextures ()
 {
-	ushort *texture_tracking=(ushort *)mem_malloc (MAX_TEXTURES*2);
+	uint16_t *texture_tracking=(uint16_t *)mem_malloc (MAX_TEXTURES*2);
 	ASSERT (texture_tracking);
 	memset (texture_tracking,0,MAX_TEXTURES*2);
 
@@ -3123,7 +3123,7 @@ recheck_face:;
 				else {
 					for (v=0;v<fp->num_verts;v++) {
 						if (fp->face_verts[v] == fp->face_verts[(v+2)%fp->num_verts]) {
-							short tverts[MAX_VERTS_PER_FACE];
+							int16_t tverts[MAX_VERTS_PER_FACE];
 							roomUVL tuvls[MAX_VERTS_PER_FACE];
 
 							for (int i=0;i<fp->num_verts-2;i++) {
@@ -3203,7 +3203,7 @@ int FindConnectedFace(room *rp,int facenum,int edgenum,int startface)
 //Writes errors to the error buffer
 int ComputeRoomShell(room *rp)
 {
-	ubyte shell_flags[MAX_FACES_PER_ROOM];
+	uint8_t shell_flags[MAX_FACES_PER_ROOM];
 	bool done=0;
 	int errors=0;
 	int f;

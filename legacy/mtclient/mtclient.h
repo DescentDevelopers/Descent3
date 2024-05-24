@@ -35,7 +35,7 @@
  * PXO & multiplayer fixes for the patch
  * 
  * 15    6/23/99 3:36p Samir
- * took out #define  ubyte
+ * took out #define  uint8_t
  * 
  * 14    3/02/99 5:50p Kevin
  * Ouch. Duplicate structures existed and were conflicting.
@@ -81,7 +81,7 @@
 #include "ui.h"
 
 
-//#define ubyte unsigned char
+//#define uint8_t uint8_t
 
 #define TRACKER_MENU_W		256
 #define TRACKER_MENU_H		256
@@ -112,17 +112,17 @@ typedef struct s_pxo_game_list
 	char mission_name[MAX_MISSION_NAME_LEN];
 	char mission_file[MAX_MISSION_FILE_LEN];
 	char script[MAX_SCRIPT_LEN];
-	short level;
-	short curr_players;
-	short max_players;
+	int16_t level;
+	int16_t curr_players;
+	int16_t max_players;
 	float ping;
-	unsigned int flags;
+	uint32_t flags;
 	char format_string[MAX_FORMAT_STRING];
 	
 	bool dedicated;
 	*/
 	bool used;
-	unsigned int handle;
+	uint32_t handle;
 	void *ti;
 	int lb_no;
 }pxo_game_list;

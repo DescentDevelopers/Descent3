@@ -92,8 +92,8 @@ player_record Player_records[MAX_PLAYER_RECORDS];
 int Pnum_to_PRec[DLLMAX_PLAYERS];
 
 // callback pointers for packet packing and unpacking
-int (*Player_record_pack_cb)(void *user_info, ubyte *data);
-int (*Player_record_unpack_cb)(void *user_info, ubyte *data);
+int (*Player_record_pack_cb)(void *user_info, uint8_t *data);
+int (*Player_record_unpack_cb)(void *user_info, uint8_t *data);
 
 //	Initializes the Player records
 void PRec_Init(void) {
@@ -147,8 +147,8 @@ void PRec_Close(void) {
 //				0 all went ok
 //				-1 out of memory (all user stats memory will be freed)
 //				-2 invalid callbacks
-int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_info, ubyte *data),
-                       int (*unpack_callback)(void *user_info, ubyte *data)) {
+int PRec_SetupUserPRec(int sizeof_user_stats, int (*pack_callback)(void *user_info, uint8_t *data),
+                       int (*unpack_callback)(void *user_info, uint8_t *data)) {
   ASSERT(pack_callback != NULL);
   ASSERT(unpack_callback != NULL);
   if (!pack_callback || !unpack_callback)
@@ -455,7 +455,7 @@ void PRec_SetPlayerTeam(int pnum, int team) {
   Player_records[slot].team = team;
 }
 
-void MultiPackNetworkAddress(network_address *addr, ubyte *data, int *count) {
+void MultiPackNetworkAddress(network_address *addr, uint8_t *data, int *count) {
   memcpy(&data[*count], addr->address, 6);
   (*count) += 6;
   MultiAddUshort(addr->port, data, count);
@@ -464,7 +464,7 @@ void MultiPackNetworkAddress(network_address *addr, ubyte *data, int *count) {
   MultiAddByte(addr->connection_type, data, count);
 }
 
-void MultiUnpackNetworkAddress(network_address *addr, ubyte *data, int *count) {
+void MultiUnpackNetworkAddress(network_address *addr, uint8_t *data, int *count) {
   memcpy(addr->address, &data[*count], 6);
   (*count) += 6;
   addr->port = MultiGetUshort(data, count);
@@ -473,7 +473,7 @@ void MultiUnpackNetworkAddress(network_address *addr, ubyte *data, int *count) {
   addr->connection_type = (network_protocol)MultiGetByte(data, count);
 }
 
-void MultiPackDStats(t_dstat *stat, ubyte *data, int *count) {
+void MultiPackDStats(t_dstat *stat, uint8_t *data, int *count) {
   MultiAddInt(stat->kills[0], data, count);
   MultiAddInt(stat->kills[1], data, count);
   MultiAddInt(stat->deaths[0], data, count);
@@ -482,7 +482,7 @@ void MultiPackDStats(t_dstat *stat, ubyte *data, int *count) {
   MultiAddInt(stat->suicides[1], data, count);
 }
 
-void MultiUnpackDStats(t_dstat *stat, ubyte *data, int *count) {
+void MultiUnpackDStats(t_dstat *stat, uint8_t *data, int *count) {
   stat->kills[0] = MultiGetInt(data, count);
   stat->kills[1] = MultiGetInt(data, count);
   stat->deaths[0] = MultiGetInt(data, count);
@@ -496,7 +496,7 @@ void PRec_SendPRecToPlayer(int pnum) {
   if (basethis->GetLocalRole() != LR_SERVER)
     return;
 
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int callsignlen, totalsize, totalcount;
   totalsize = totalcount = 0;
   int pinfo_size, count;
@@ -510,7 +510,7 @@ void PRec_SendPRecToPlayer(int pnum) {
       else
         pinfo_size = 0;
 
-      ubyte tracker_len = 0;
+      uint8_t tracker_len = 0;
 
       if (Player_records[i].tracker_id) {
         tracker_len = strlen(Player_records[i].tracker_id);
@@ -573,7 +573,7 @@ void PRec_SendPRecToPlayer(int pnum) {
 }
 
 //	Receives the Player records info from the server
-void PRec_ReceivePRecFromServer(ubyte *data) {
+void PRec_ReceivePRecFromServer(uint8_t *data) {
   int count = 0;
   int callsignlen;
   int slot = MultiGetByte(data, &count); // unpack byte (record num)
@@ -596,7 +596,7 @@ void PRec_ReceivePRecFromServer(ubyte *data) {
   if (MultiGetByte(data, &count)) {
     ASSERT(basethis->IsMasterTrackerGame() != 0);
     // there is tracker_id data coming in
-    ubyte len = MultiGetByte(data, &count);
+    uint8_t len = MultiGetByte(data, &count);
     pr->tracker_id = (char *)malloc(len + 1);
 
     if (pr->tracker_id) {

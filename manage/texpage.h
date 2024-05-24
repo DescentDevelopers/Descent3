@@ -32,23 +32,23 @@ typedef struct {
 
   int num_proc_elements;
 
-  ubyte proc_heat, proc_light, proc_thickness, osc_value;
+  uint8_t proc_heat, proc_light, proc_thickness, osc_value;
 
   float proc_evaluation_time, osc_time;
 
-  ubyte proc_type[MAX_PROC_ELEMENTS];
+  uint8_t proc_type[MAX_PROC_ELEMENTS];
 
-  ubyte proc_frequency[MAX_PROC_ELEMENTS];
-  ubyte proc_speed[MAX_PROC_ELEMENTS];
+  uint8_t proc_frequency[MAX_PROC_ELEMENTS];
+  uint8_t proc_speed[MAX_PROC_ELEMENTS];
 
-  ubyte proc_size[MAX_PROC_ELEMENTS];
+  uint8_t proc_size[MAX_PROC_ELEMENTS];
 
-  ubyte proc_x1[MAX_PROC_ELEMENTS];
-  ubyte proc_y1[MAX_PROC_ELEMENTS];
-  ubyte proc_x2[MAX_PROC_ELEMENTS];
-  ubyte proc_y2[MAX_PROC_ELEMENTS];
+  uint8_t proc_x1[MAX_PROC_ELEMENTS];
+  uint8_t proc_y1[MAX_PROC_ELEMENTS];
+  uint8_t proc_x2[MAX_PROC_ELEMENTS];
+  uint8_t proc_y2[MAX_PROC_ELEMENTS];
 
-  ushort proc_palette[256];
+  uint16_t proc_palette[256];
 } mngs_texture_page;
 
 // Texture page functions

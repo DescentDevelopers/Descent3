@@ -61,11 +61,11 @@ inline int WRITE_FONT_INT(FONTFILE ffile, int i) {
 	return fwrite(&i, sizeof(i), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_SHORT(FONTFILE ffile, short s) {
+inline int WRITE_FONT_SHORT(FONTFILE ffile, int16_t s) {
 	return fwrite(&s, sizeof(s), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_BYTE(FONTFILE ffile, ubyte c) {
+inline int WRITE_FONT_BYTE(FONTFILE ffile, uint8_t c) {
 	return fwrite(&c, sizeof(c), 1, (FILE *)ffile);
 }
 
@@ -151,14 +151,14 @@ void message_box(const char *fmt, ...)
 
 
 static bool m_FontProp;
-static ubyte m_CharWidths[MAX_FONT_CHARS];
-static short m_CharHeight;
-static short m_CharMaxWidth;
-static ushort *m_FontBmData;
-static ushort *m_DataBuffer, *m_DataPtr;
+static uint8_t m_CharWidths[MAX_FONT_CHARS];
+static int16_t m_CharHeight;
+static int16_t m_CharMaxWidth;
+static uint16_t *m_FontBmData;
+static uint16_t *m_DataBuffer, *m_DataPtr;
 static int m_FontType;
 static int m_FontBmW, m_FontBmH;
-static ushort m_FgColor, m_BgColor, m_BoxColor;
+static uint16_t m_FgColor, m_BgColor, m_BoxColor;
 
 #define PIX(_x,_y) m_FontBmData[(_x) + (_y) * m_FontBmW]
 
@@ -237,7 +237,7 @@ int read_font_char(int cur_char, int& bmx, int& bmy)
 	for (y=0;y<h;y++)
 		for (x=0;x<w;x++) 
 		{
-			ushort c;
+			uint16_t c;
 
 			if ((c=PIX(bmx+1+x,bmy+1+y)) == m_BgColor)
 				c = 0;										// OLD COMMENT-must go back 565 pure green (old transparent)
@@ -296,7 +296,7 @@ bool extract_font(int bm_handle, tFontFileInfo *ft)
 	m_FontType = MONOCHROME_FONT;
 	m_FgColor = NEW_TRANSPARENT_COLOR;
 
-	m_DataBuffer = new ushort[1024*MAX_FONT_CHARS];
+	m_DataBuffer = new uint16_t[1024*MAX_FONT_CHARS];
 	m_DataPtr = m_DataBuffer;
 
 //	assume upper left pixel is background color, and first-found other
@@ -349,7 +349,7 @@ bool extract_font(int bm_handle, tFontFileInfo *ft)
 	ft->baseline = m_CharHeight;
 	ft->min_ascii = 0;
 	ft->max_ascii = cur_char-1;
-	ft->raw_data = (ubyte *)m_DataBuffer;
+	ft->raw_data = (uint8_t *)m_DataBuffer;
 	ft->char_data = NULL;
 	ft->char_widths = m_CharWidths;
 	ft->kern_data= NULL;
@@ -430,7 +430,7 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
 	WRITE_FONT_BYTE(ffile, ft.max_ascii);
 	WRITE_FONT_DATA(ffile, fontname, 32, 1);
 
-	WRITE_FONT_SHORT(ffile, (short)ft.ffi2.tracking);
+	WRITE_FONT_SHORT(ffile, (int16_t)ft.ffi2.tracking);
 	WRITE_FONT_DATA(ffile, ft.ffi2.reserved, sizeof(ft.ffi2.reserved),1);
 	
 	num_char = (int)(ft.max_ascii - ft.min_ascii + 1);
@@ -442,22 +442,22 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
 	}
 
 	if (ft.flags & FT_COLOR) {
-		WRITE_FONT_INT(ffile, (int)(m_DataPtr-m_DataBuffer)*sizeof(ushort));
-		WRITE_FONT_DATA(ffile, (ubyte *)m_DataBuffer, (m_DataPtr-m_DataBuffer)*sizeof(ushort), 1);
+		WRITE_FONT_INT(ffile, (int)(m_DataPtr-m_DataBuffer)*sizeof(uint16_t));
+		WRITE_FONT_DATA(ffile, (uint8_t *)m_DataBuffer, (m_DataPtr-m_DataBuffer)*sizeof(uint16_t), 1);
 	}
 	else {
 	// bitpack for mono font storage:: 16bpp -> 8 bits/1 byte
 		int i,x,y,w,cnt=0;
-		ushort *p = m_DataBuffer;
-		ubyte *bits;
+		uint16_t *p = m_DataBuffer;
+		uint8_t *bits;
 
-		bits = (ubyte *)mem_malloc(256 * MAX_FONT_CHARS);
+		bits = (uint8_t *)mem_malloc(256 * MAX_FONT_CHARS);
 
 		for (i = 0; i < num_char; i++)
 		{
 			for (y = 0; y < ft.height; y++) 
 			{
-				ubyte mask, datum;
+				uint8_t mask, datum;
 
 				w = (ft.flags & FT_PROPORTIONAL) ? ft.char_widths[i] : ft.width;
 

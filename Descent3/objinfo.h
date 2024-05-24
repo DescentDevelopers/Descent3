@@ -370,10 +370,10 @@ extern char *Anim_state_names[];
 
 // Info for an animation state
 typedef struct {
-  short from, to;
+  int16_t from, to;
   float spc;
   int anim_sound_index;
-  ubyte used;
+  uint8_t used;
 } anim_entry;
 
 typedef struct {
@@ -389,7 +389,7 @@ typedef struct {
 
 // Death info for an object type
 typedef struct {
-  uint flags;      // death flags
+  uint32_t flags;      // death flags
   float delay_min; // if delay, min amount
   float delay_max; // if delay, max amount
 } death_info;
@@ -477,11 +477,11 @@ typedef struct {
   char *description;                   // used for inventory
   char icon_name[MAX_INVEN_ICON_SIZE]; // used for inventory
 
-  short sounds[MAX_OBJ_SOUNDS]; // list of sound handles
-  short dspew[MAX_DSPEW_TYPES];
+  int16_t sounds[MAX_OBJ_SOUNDS]; // list of sound handles
+  int16_t dspew[MAX_DSPEW_TYPES];
   float dspew_percent[MAX_DSPEW_TYPES];
-  short dspew_number[MAX_DSPEW_TYPES];
-  unsigned char f_dspew;
+  int16_t dspew_number[MAX_DSPEW_TYPES];
+  uint8_t f_dspew;
 
   // Valid for physics objects only
   physics_info phys_info; // the physics data for this obj type
@@ -500,7 +500,7 @@ typedef struct {
 
   // Death information
   death_info death_types[MAX_DEATH_TYPES];    // the ways this object can die
-  ubyte death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
+  uint8_t death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
 
   // Valid for AI objects only
   t_ai_info *ai_info; // the AI info for this obj type

@@ -214,7 +214,7 @@ typedef struct tInvenInfo {
   char *icon_name;
   char *name;
   int flags;
-  ushort iflags; // Inventory item flags
+  uint16_t iflags; // Inventory item flags
   int type;
   int id;
 } tInvenInfo;
@@ -228,7 +228,7 @@ typedef struct inven_item {
                // if INVF_OBJECT, this is -1
   int oid;     // countermeasure powerup id
   int flags;   // misc flags
-  ushort pad2; // keep alignment
+  uint16_t pad2; // keep alignment
 
   int count; // how many of this type/id (not INVF_OBJECT)
 
@@ -236,7 +236,7 @@ typedef struct inven_item {
   char *icon_name;
   char *name;
 
-  ushort iflags; // Inventory item flags
+  uint16_t iflags; // Inventory item flags
 
   inven_item *next, *prev; // pointer to next inventory item
 } inven_item;
@@ -288,7 +288,7 @@ public:
   char *GetPosName(void);
   // return information about the current position item
   // return true if it is a real object
-  bool GetPosInfo(ushort &iflags, int &flags);
+  bool GetPosInfo(uint16_t &iflags, int &flags);
   // returns the count of the item at the current position
   int GetPosCount(void);
   // returns true if the position pointer is at the begining of the inventory list

@@ -23,8 +23,8 @@
 #include "player_external_struct.h"
 
 // This is copy of actual Osiris_CreateGameChecksum(void) from OsirisLoadandBind.cpp
-uint Osiris_CreateGameChecksumTest() {
-  uint value = 0xe1e1b0b0;
+uint32_t Osiris_CreateGameChecksumTest() {
+  uint32_t value = 0xe1e1b0b0;
 
   value += sizeof(object);
   value += sizeof(player) * 2;

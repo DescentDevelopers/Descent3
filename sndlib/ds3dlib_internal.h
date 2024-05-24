@@ -71,14 +71,14 @@
 class win_llsSystem;
 
 typedef struct DSLOOPSTREAM {
-  ubyte method; // method 0 for streamed method, 1 for emulated method
-  ubyte playing;
-  ubyte please_close;
+  uint8_t method; // method 0 for streamed method, 1 for emulated method
+  uint8_t playing;
+  uint8_t please_close;
 
   union // dependant on method.
   {
-    ubyte close_on_next;
-    sbyte loop_step; // method 1, = 0 for start loop, 1 = mid loop, 2 = end loop.
+    uint8_t close_on_next;
+    int8_t loop_step; // method 1, = 0 for start loop, 1 = mid loop, 2 = end loop.
   };
 
   union // dependant on method.
@@ -92,7 +92,7 @@ typedef struct DSLOOPSTREAM {
   DWORD half_buffer_point;
   DWORD last_half;
   int num_written;
-  ubyte time_slice;
+  uint8_t time_slice;
   bool kill_me;
   bool f_sample_16bit;
   char silence_byte;
@@ -127,8 +127,8 @@ typedef struct tPSBInfo {
     pos_state *cur_pos;
   };
   float reverb;
-  ushort freq;
-  ushort priority;
+  uint16_t freq;
+  uint16_t priority;
   bool looping;
 } tPSBInfo;
 
@@ -156,16 +156,16 @@ public:
   LPDIRECTSOUND3DBUFFER m_sound_buffer_3d; // Used for 3d interface
   LPKSPROPERTYSET m_lpksps;                // used mainly for EAX 2.0 but is a direct sound object.
 
-  short m_mixer_type;  // aureal, ds3d, ds_8?
-  short m_buffer_type; // Buffer type 2d or 3d
+  int16_t m_mixer_type;  // aureal, ds3d, ds_8?
+  int16_t m_buffer_type; // Buffer type 2d or 3d
 
   char *sample_data;
   int sample_length; // used for storage purposes.
 
   bool stereo;
-  sbyte bps;
-  unsigned char m_status; // Sound status
-  unsigned char pad;
+  int8_t bps;
+  uint8_t m_status; // Sound status
+  uint8_t pad;
 
   float m_volume; // kept for priority.
 };
@@ -180,14 +180,14 @@ void sb_free_buffer(sound_buffer_info *sb);
 bool sb_load_buffer(sound_buffer_info *sb, void *sample_data, int length);
 
 // update current position of sound buffer
-int sb_get_current_position(sound_buffer_info *sb, uint *writep);
+int sb_get_current_position(sound_buffer_info *sb, uint32_t *writep);
 
 // locks a sound buffer
-bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes, void **lplpvAudioPtr1,
-                    uint *lpdwAudioBytes1, void **lplpvAudioPtr2, uint *lpdwAudioBytes2);
+bool sb_lock_buffer(sound_buffer_info *sb, uint32_t dwWriteCursor, uint32_t dwWriteBytes, void **lplpvAudioPtr1,
+                    uint32_t *lpdwAudioBytes1, void **lplpvAudioPtr2, uint32_t *lpdwAudioBytes2);
 
 // unlocks an allocated sound buffer
-bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint len1, void *ptr2, uint len2);
+bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint32_t len1, void *ptr2, uint32_t len2);
 
 // this will initialize the looping thread
 bool sb_loop_thread_init(win_llsSystem *lls);

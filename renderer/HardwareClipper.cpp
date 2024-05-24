@@ -254,7 +254,7 @@ g3Point *ClipEdge(int plane_flag, g3Point *on_pnt, g3Point *off_pnt) {
 }
 
 // clips a line to the viewing pyramid.
-void ClipLine(g3Point **p0, g3Point **p1, ubyte codes_or) {
+void ClipLine(g3Point **p0, g3Point **p1, uint8_t codes_or) {
   int plane_flag;
   g3Point *old_p1;
 
@@ -373,7 +373,7 @@ g3Point **g3_ClipPolygon(g3Point **pointlist, int *nv, g3Codes *cc) {
 void g3_SetFarClipZ(float z) { Far_clip_z = z; }
 
 // Sets up a custom clipping plane - g3_StartFrame must be called before this is called
-void g3_SetCustomClipPlane(ubyte state, vector *pnt, vector *normal) {
+void g3_SetCustomClipPlane(uint8_t state, vector *pnt, vector *normal) {
   Clip_custom = state;
   if (state) {
     vector tempv;

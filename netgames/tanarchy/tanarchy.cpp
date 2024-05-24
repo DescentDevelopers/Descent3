@@ -95,7 +95,7 @@ static int SortedPlayers[MAX_PLAYER_RECORDS];
 static bool DisplayScoreScreen;
 static bool display_my_welcome = false;
 
-static void GetGameStartPacket(ubyte *data);
+static void GetGameStartPacket(uint8_t *data);
 static void SendGameStartPacket(int pnum);
 static void DisplayScores(void);
 static void DisplayHUDScores(struct tHUDItem *hitem);
@@ -151,7 +151,7 @@ void DLLFUNCCALL DLLGetGameInfo(tDLLOptions *options) {
 }
 
 // Initializes the game function pointers
-void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use) {
+void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_use) {
   *all_ok = 1;
   DMFCBase = CreateDMFC();
   if (!DMFCBase) {
@@ -224,7 +224,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, ubyte *all_ok, int num_teams_to_use)
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -837,7 +837,7 @@ void OnDisconnectSaveStatsToFile(void) {
 }
 
 // Handles when we get a new player packet
-void GetGameStartPacket(ubyte *data) {
+void GetGameStartPacket(uint8_t *data) {
   // get the team scores
   DLLmprintf((0, "Receiving Team Scores from server\n"));
   int count = 0, i;
@@ -849,7 +849,7 @@ void GetGameStartPacket(ubyte *data) {
 // Handles sending a new player packet
 void SendGameStartPacket(int pnum) {
   int count = 0;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
 
   DMFCBase->StartPacket(data, SPID_NEWPLAYER, &count);
 
@@ -876,7 +876,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
   int height = DLLgrfont_GetHeight((DMFCBase->GetGameFontTranslateArray())[HUD_FONT_INDEX]) + 3;
   int y = (DMFCBase->GetGameWindowH() / 2) - ((height * NUM_TEAMS) / 2);
   int x = 520;
-  ubyte alpha = DMFCBase->ConvertHUDAlpha((ubyte)((DisplayScoreScreen) ? 128 : 255));
+  uint8_t alpha = DMFCBase->ConvertHUDAlpha((uint8_t)((DisplayScoreScreen) ? 128 : 255));
   int team;
 
   //	char name[30];

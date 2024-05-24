@@ -140,7 +140,7 @@ public:
 	int UpdatedFileCheck(hog_library_entry *entry);
 	bool ExtractFile(int file_pos, unsigned file_len, char *out_fname);
 
-	unsigned int CalcHogFileSize(void);
+	uint32_t CalcHogFileSize(void);
 
 	FILE *FindFileInHog(char *hog_fname,tHogFileEntry *table_entry);
 

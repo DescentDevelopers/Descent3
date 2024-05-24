@@ -19,6 +19,8 @@
 #ifndef _RUN_TIME_PROFILING_
 #define _RUN_TIME_PROFILING_
 
+#include <cstdint>
+
 // uncomment the following if you want to enable Run-time Profiling
 #ifndef RELEASE
 #define USE_RTP
@@ -39,7 +41,7 @@
 #define INT64 signed __int64
 #endif
 #else
-#define INT64 unsigned char
+#define INT64 uint8_t
 #endif
 
 
@@ -269,7 +271,7 @@ typedef struct {
 // ------------------------------
 extern tRTFrameInfo RTP_SingleFrame;
 extern INT64 Runtime_performance_clockfreq;
-extern unsigned char Runtime_performance_enabled;
+extern uint8_t Runtime_performance_enabled;
 
 /*
 void rtp_Init

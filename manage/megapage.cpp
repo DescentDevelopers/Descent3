@@ -132,7 +132,7 @@ void mng_WriteNewMegacellPage(CFILE *outfile, mngs_megacell_page *megacellpage) 
 int mng_ReadMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
   int done = 0;
   char command;
-  ushort len;
+  uint16_t len;
   int i, temp;
   if (!Old_table_method)
     return mng_ReadNewMegacellPage(infile, megacellpage);
@@ -194,7 +194,7 @@ int mng_ReadNewMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
 // Returns 0 on error or couldn't find, else 1 if all is good
 int mng_FindSpecificMegacellPage(char *name, mngs_megacell_page *megacellpage, int local) {
   CFILE *infile;
-  ubyte pagetype;
+  uint8_t pagetype;
   int done = 0, found = 0;
 
   if (local)

@@ -16,17 +16,19 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
+
 #if _WIN32
 #include <windows.h>
 #include <MMSystem.h>
 
-unsigned int platform_timeGetTime(void) { return timeGetTime(); }
+uint32_t platform_timeGetTime(void) { return timeGetTime(); }
 
 #else
 #include <unistd.h>
 #include <sys/time.h>
 
-unsigned int platform_timeGetTime(void) {
+uint32_t platform_timeGetTime(void) {
   struct timeval t;
   gettimeofday(&t, NULL);
 

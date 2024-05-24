@@ -141,7 +141,7 @@
 
 #define BOA_VERSION 25
 
-static const ubyte bbf_lookup[27] = {(0),
+static const uint8_t bbf_lookup[27] = {(0),
                                      (0x01),
                                      (0x02),
                                      (0x04),
@@ -169,7 +169,7 @@ static const ubyte bbf_lookup[27] = {(0),
                                      (0x08 | 0x04 | 0x10),
                                      (0x08 | 0x10 | 0x20)};
 
-unsigned short BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+uint16_t BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 float BOA_cost_array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_PATH_PORTALS];
 int BOA_mine_checksum = 0;
 int BOA_vis_checksum = 0; // this checksum is for the VIS bit of the boa array
@@ -647,7 +647,7 @@ void compute_mine_info() {
 void add_terrain_cell(int cell, int t_region, char *checked) {
   int depth = 0;
   int i;
-  unsigned short stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
+  uint16_t stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
   char on_stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++)
@@ -1362,7 +1362,7 @@ void ValidateRoomPathPoint(int room, char *message, int len) {
     char new_message[300];
     snprintf(new_message, sizeof(new_message), "Room %d has a bad center point\n", room);
 
-    if (strlen(message) + strlen(new_message) < (unsigned int)len) {
+    if (strlen(message) + strlen(new_message) < (uint32_t)len) {
       strcat(message, new_message);
     }
   }
@@ -1560,8 +1560,8 @@ void MakeBOAVisTable(bool from_lighting) {
   int cur_check = BOAGetMineChecksum();
   int vis_stack[MAX_ROOMS * 10];
   int stack_count = 0;
-  ubyte already_checked[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
-  ubyte precomputed[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+  uint8_t already_checked[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+  uint8_t precomputed[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 
   // Removed this as we have to make a better checksum
 
@@ -2100,7 +2100,7 @@ void MakeBOA(void) {
 
 static int Current_sort_room;
 
-static int face_sort_func1(const short *a, const short *b) {
+static int face_sort_func1(const int16_t *a, const int16_t *b) {
   if (Rooms[Current_sort_room].faces[*a].min_xyz.y > Rooms[Current_sort_room].faces[*b].min_xyz.y)
     return -1;
   else if (Rooms[Current_sort_room].faces[*a].min_xyz.y < Rooms[Current_sort_room].faces[*b].min_xyz.y)
@@ -2109,7 +2109,7 @@ static int face_sort_func1(const short *a, const short *b) {
     return 0;
 }
 
-static int face_sort_func2(const short *a, const short *b) {
+static int face_sort_func2(const int16_t *a, const int16_t *b) {
   if (Rooms[Current_sort_room].faces[*a].max_xyz.y < Rooms[Current_sort_room].faces[*b].max_xyz.y)
     return -1;
   else if (Rooms[Current_sort_room].faces[*a].max_xyz.y > Rooms[Current_sort_room].faces[*b].max_xyz.y)
@@ -2143,21 +2143,21 @@ void ComputeAABB(bool f_full) {
       }
     }
 
-    short *num_structs_per_room = (short *)mem_malloc((Highest_room_index + 1) * sizeof(short));
-    short **r_struct_list;
+    int16_t *num_structs_per_room = (int16_t *)mem_malloc((Highest_room_index + 1) * sizeof(int16_t));
+    int16_t **r_struct_list;
 
     // Allocate the structure that tells what struct each face is in
-    r_struct_list = (short **)mem_malloc((Highest_room_index + 1) * sizeof(short *));
+    r_struct_list = (int16_t **)mem_malloc((Highest_room_index + 1) * sizeof(int16_t *));
     for (i = 0; i <= Highest_room_index; i++) {
       if (Rooms[i].used) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        r_struct_list[i] = (short *)mem_malloc(Rooms[i].num_faces * sizeof(short));
+        r_struct_list[i] = (int16_t *)mem_malloc(Rooms[i].num_faces * sizeof(int16_t));
       }
     }
 
-    short count;
+    int16_t count;
 
     BOA_AABB_checksum = cur_check;
     mprintf((0, " (full)!\n"));
@@ -2244,12 +2244,12 @@ void ComputeAABB(bool f_full) {
         if (BOA_AABB_ROOM_checksum[i] != 0 && BOA_AABB_ROOM_checksum[i] == computed_room_check[i])
           continue;
 
-        short *nfaces;
+        int16_t *nfaces;
         bool *used;
 
         int n_new;
 
-        nfaces = (short *)mem_malloc(sizeof(short) * rp->num_faces);
+        nfaces = (int16_t *)mem_malloc(sizeof(int16_t) * rp->num_faces);
         used = (bool *)mem_malloc(sizeof(bool) * rp->num_faces);
 
         for (count1 = 0; count1 < rp->num_faces; count1++) {
@@ -2418,14 +2418,14 @@ void ComputeAABB(bool f_full) {
 
         // temporary malloc
         rp->num_bbf_regions = 27 + num_structs_per_room[i] - 1;
-        rp->bbf_list = (short **)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(short *));
+        rp->bbf_list = (int16_t **)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(int16_t *));
         for (x = 0; x < MAX_REGIONS_PER_ROOM; x++) {
-          rp->bbf_list[x] = (short *)mem_malloc(rp->num_faces * sizeof(short));
+          rp->bbf_list[x] = (int16_t *)mem_malloc(rp->num_faces * sizeof(int16_t));
         }
-        rp->num_bbf = (short *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(short));
+        rp->num_bbf = (int16_t *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(int16_t));
         rp->bbf_list_min_xyz = (vector *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(vector));
         rp->bbf_list_max_xyz = (vector *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(vector));
-        rp->bbf_list_sector = (unsigned char *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(unsigned char));
+        rp->bbf_list_sector = (uint8_t *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(uint8_t));
 
         for (x = 0; x < 27; x++) {
           rp->bbf_list_sector[x] = bbf_lookup[x];
@@ -2514,7 +2514,7 @@ void ComputeAABB(bool f_full) {
             f_part = true;
           }
 
-          ubyte sector = 0;
+          uint8_t sector = 0;
 
           if (f_part == false) {
             if (r_struct_list[i][count] == 0)
@@ -2706,7 +2706,7 @@ void ComputeAABB(bool f_full) {
 
           if (rp->num_bbf[i] == 0) {
             for (j = i + 1; j < rp->num_bbf_regions; j++) {
-              short *temp = rp->bbf_list[j - 1];
+              int16_t *temp = rp->bbf_list[j - 1];
 
               rp->bbf_list[j - 1] = rp->bbf_list[j];
               rp->bbf_list[j] = temp;
@@ -2841,7 +2841,7 @@ void ComputeAABB(bool f_full) {
 
           if (rp->num_bbf[i] == 0) {
             for (j = i + 1; j < rp->num_bbf_regions; j++) {
-              short *temp = rp->bbf_list[j - 1];
+              int16_t *temp = rp->bbf_list[j - 1];
 
               rp->bbf_list[j - 1] = rp->bbf_list[j];
               rp->bbf_list[j] = temp;
@@ -2934,7 +2934,7 @@ void ComputeAABB(bool f_full) {
               list[5] = true;
             }
 
-            ubyte sector = 0;
+            uint8_t sector = 0;
 
             for (x = 0; x < 6; x++) {
               if (list[x]) {
@@ -2960,18 +2960,18 @@ void ComputeAABB(bool f_full) {
           continue;
 
         for (j = 0; j < rp->num_bbf_regions; j++) {
-          rp->bbf_list[j] = (short *)mem_realloc(rp->bbf_list[j], (sizeof(short) * rp->num_bbf[j]));
+          rp->bbf_list[j] = (int16_t *)mem_realloc(rp->bbf_list[j], (sizeof(int16_t) * rp->num_bbf[j]));
         }
         for (j = rp->num_bbf_regions; j < MAX_REGIONS_PER_ROOM; j++) {
           mem_free(rp->bbf_list[j]);
         }
 
-        rp->bbf_list = (short **)mem_realloc(rp->bbf_list, rp->num_bbf_regions * sizeof(short *));
-        rp->num_bbf = (short *)mem_realloc(rp->num_bbf, rp->num_bbf_regions * sizeof(short));
+        rp->bbf_list = (int16_t **)mem_realloc(rp->bbf_list, rp->num_bbf_regions * sizeof(int16_t *));
+        rp->num_bbf = (int16_t *)mem_realloc(rp->num_bbf, rp->num_bbf_regions * sizeof(int16_t));
         rp->bbf_list_min_xyz = (vector *)mem_realloc(rp->bbf_list_min_xyz, rp->num_bbf_regions * sizeof(vector));
         rp->bbf_list_max_xyz = (vector *)mem_realloc(rp->bbf_list_max_xyz, rp->num_bbf_regions * sizeof(vector));
         rp->bbf_list_sector =
-            (unsigned char *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(unsigned char));
+            (uint8_t *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(uint8_t));
       }
     }
 

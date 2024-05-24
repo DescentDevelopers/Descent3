@@ -112,10 +112,10 @@
 typedef struct {
   int roomface;       // room number & face number combined into an int
   vector pos;         // the position of the center of the scorch mark
-  ubyte handle_index; // which mark?
-  sbyte rx, ry, rz;   // right vector
-  sbyte ux, uy, uz;   // up vector
-  ubyte size;         // floating-point size times 16
+  uint8_t handle_index; // which mark?
+  int8_t rx, ry, rz;   // right vector
+  int8_t ux, uy, uz;   // up vector
+  uint8_t size;         // floating-point size times 16
 } scorch;
 
 // How many scorch marks

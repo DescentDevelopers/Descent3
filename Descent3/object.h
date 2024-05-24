@@ -271,7 +271,7 @@
  * Added hit_death_dot
  *
  * 100   5/04/98 12:30p Matt
- * ObjCreate() now takes object id as a ushort
+ * ObjCreate() now takes object id as a uint16_t
  *
  * 99    5/04/98 12:28p Matt
  * Added shard objects
@@ -694,7 +694,7 @@ extern object *Viewer_object; // which object we are seeing from
 
 #define MAX_BIG_OBJECTS 350
 extern int Num_big_objects;
-extern short BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
+extern int16_t BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
 
 // Compute the object number from an object pointer
 #define OBJNUM(objp) (objp - Objects)
@@ -741,7 +741,7 @@ void ObjSetAABB(object *obj);
 
 // initialize a new object.  adds to the list for the given room
 // returns the object number
-int ObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient,
+int ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient,
               int parent_handle = OBJECT_HANDLE_NONE);
 
 // remove object from the world
@@ -798,11 +798,11 @@ void GetObjectPointInWorld(vector *dest, object *obj, int subnum, int vertnum);
 
 // These functions are for setting and getting an objects animation information
 // (used in multiplayer games and the like)
-bool ObjGetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info);
-void ObjSetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info);
+bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info);
+void ObjSetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info);
 
-void ObjGetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info);
-void ObjSetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info);
+void ObjGetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info);
+void ObjSetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info);
 
 // Returns the original parent for the given object.  Returns self if it has no parent
 object *ObjGetUltimateParent(object *child);
@@ -824,8 +824,8 @@ typedef struct {
   vector pos[MAX_POSITION_HISTORY];
 } tPosHistory;
 extern tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
-extern ubyte Object_position_head;
-extern signed short Object_map_position_history[MAX_OBJECTS];
+extern uint8_t Object_position_head;
+extern int16_t Object_map_position_history[MAX_OBJECTS];
 extern float Last_position_history_update[MAX_POSITION_HISTORY]; // last gametime the positions were updated
 void ObjInitPositionHistory(object *obj);
 void ObjFreePositionHistory(object *obj);

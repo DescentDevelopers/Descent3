@@ -30,15 +30,15 @@ extern int Join_response_strings[];
 #define MAX_CHANGED_OBJECTS 700
 
 extern int Changed_anim[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-extern unsigned short Num_changed_anim[MAX_NET_PLAYERS];
+extern uint16_t Num_changed_anim[MAX_NET_PLAYERS];
 
 extern int Changed_wb_anim[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-extern unsigned short Num_changed_wb_anim[MAX_NET_PLAYERS];
+extern uint16_t Num_changed_wb_anim[MAX_NET_PLAYERS];
 
 extern int Changed_turret[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-extern unsigned short Num_changed_turret[MAX_NET_PLAYERS];
+extern uint16_t Num_changed_turret[MAX_NET_PLAYERS];
 
-extern unsigned int Secret_net_id;
+extern uint32_t Secret_net_id;
 #define JOIN_ANSWER_OK 0
 #define JOIN_ANSWER_NOT_SERVER 1
 #define JOIN_ANSWER_REJECTED 2
@@ -64,7 +64,7 @@ void MultiDisconnectPlayer(int slot);
 void MultiSendPlayer(int slot, int which);
 
 // Sends this reliable packet to everyone except the server and the named slot
-void MultiSendReliablyToAllExcept(int except, ubyte *data, int size, int seq_threshold = 0, bool urgent = 1);
+void MultiSendReliablyToAllExcept(int except, uint8_t *data, int size, int seq_threshold = 0, bool urgent = 1);
 
 // Tells clients to execute dlls on their machines
 void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int to, dllinfo *info = NULL);

@@ -102,13 +102,13 @@
 #define GAMESAVE_DESCLEN 31 // gamesave description maximum length.
 
 typedef struct gs_tables {
-  short model_handles[MAX_POLY_MODELS];
-  short obji_indices[MAX_OBJECT_IDS];
-  short bm_handles[MAX_BITMAPS];
-  short tex_handles[MAX_TEXTURES];
-  short door_handles[MAX_DOORS];
-  short ship_handles[MAX_SHIPS];
-  short wpn_handles[MAX_WEAPONS];
+  int16_t model_handles[MAX_POLY_MODELS];
+  int16_t obji_indices[MAX_OBJECT_IDS];
+  int16_t bm_handles[MAX_BITMAPS];
+  int16_t tex_handles[MAX_TEXTURES];
+  int16_t door_handles[MAX_DOORS];
+  int16_t ship_handles[MAX_SHIPS];
+  int16_t wpn_handles[MAX_WEAPONS];
 } gs_tables;
 
 //	savegame version info.
@@ -157,7 +157,7 @@ int LoadGameState(const char *pathname);
     gs_WriteVector((_f), (_m).uvec);                                                                                   \
     gs_WriteVector((_f), (_m).fvec);                                                                                   \
   } while (0)
-#define gs_WriteAngle(_f, _a) cf_WriteShort(_f, (short)(_a))
+#define gs_WriteAngle(_f, _a) cf_WriteShort(_f, (int16_t)(_a))
 #define gs_WriteByte(_f, _b) cf_WriteByte(_f, _b)
 #define gs_WriteShort(_f, _s) cf_WriteShort(_f, _s)
 #define gs_WriteInt(_f, _i) cf_WriteInt(_f, _i)
@@ -283,7 +283,7 @@ int LGSObjEffects(CFILE *fp, object *op);
 int LGSObjWB(CFILE *fp, object *op);
 
 //	loads script
-//@@vector *LGSScript(CFILE *fp, script_info *script, ubyte *is_scripted, int *memsize);
+//@@vector *LGSScript(CFILE *fp, script_info *script, uint8_t *is_scripted, int *memsize);
 
 // loads special object info
 int LGSObjSpecial(CFILE *fp, object *op);

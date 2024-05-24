@@ -850,7 +850,7 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame)
 		CWnd *texwnd;
 		RECT rect;
 		int x, y, bm_handle;
-		ushort *src_data,*dest_data;
+		uint16_t *src_data,*dest_data;
 		int bump_handle;
 
 		if (m_bumpmap==0)
@@ -867,8 +867,8 @@ void CWorldTexturesDialog::UpdateTextureViews(int frame)
 		bm_handle=bm_AllocBitmap (BUMP_WIDTH,BUMP_HEIGHT,0);
 		ASSERT (bm_handle>=0);
 
-		src_data=(ushort *)bump_data(bump_handle);
-		dest_data=(ushort *)bm_data(bm_handle,0);
+		src_data=(uint16_t *)bump_data(bump_handle);
+		dest_data=(uint16_t *)bm_data(bm_handle,0);
 
 		memcpy (dest_data,src_data,BUMP_WIDTH*BUMP_HEIGHT*2);
 
@@ -1720,7 +1720,7 @@ int CWorldTexturesDialog::LoadITLFile (char *filename,int type)
 {
 	CFILE *infile;
 	char name[PAGENAME_LEN];
-	unsigned int i,done=0,total=0;
+	uint32_t i,done=0,total=0;
 	char cur_name[100];
 	int tex_handle,tex_list[200];
 	int c=1,finding_name=1;
@@ -2455,9 +2455,9 @@ void CWorldTexturesDialog::OnImportBump()
 	ASSERT (src_bump>=0);
 
 	// Do the memcopy from the bitmap to the bumpmap
-	ushort *src_data,*dest_data;
-	src_data=(ushort *)bm_data(bm_handle,0);
-	dest_data=(ushort *)bump_data(src_bump);
+	uint16_t *src_data,*dest_data;
+	src_data=(uint16_t *)bm_data(bm_handle,0);
+	dest_data=(uint16_t *)bump_data(src_bump);
 
 	memcpy (dest_data,src_data,BUMP_WIDTH*BUMP_HEIGHT*2);
 

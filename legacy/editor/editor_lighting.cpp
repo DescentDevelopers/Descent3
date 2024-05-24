@@ -70,7 +70,7 @@ vector ScratchUVecs[MAX_LIGHTMAP_INFOS];
 float Room_multiplier[MAX_ROOMS+MAX_PALETTE_ROOMS];
 float Room_ambience_r[MAX_ROOMS+MAX_PALETTE_ROOMS],Room_ambience_g[MAX_ROOMS+MAX_PALETTE_ROOMS],Room_ambience_b[MAX_ROOMS+MAX_PALETTE_ROOMS];
 
-ubyte *TerrainLightSpeedup[MAX_SATELLITES];
+uint8_t *TerrainLightSpeedup[MAX_SATELLITES];
 
 int LightSpacing=LIGHTMAP_SPACING;
 int BestFit=0;
@@ -82,8 +82,8 @@ float Ambient_red=0.0f,Ambient_green=0.0f,Ambient_blue=0.0f;
 
 void DoTerrainDynamicTable ();
 
-ubyte *Lightmap_mask=NULL;
-static ubyte *Lmi_spoken_for;
+uint8_t *Lightmap_mask=NULL;
+static uint8_t *Lmi_spoken_for;
 int Squeeze_lightmap_handle=-1;
 
 int FindEmptyMaskSpot (int w,int h,int *dest_x,int *dest_y)
@@ -122,7 +122,7 @@ int FindEmptyMaskSpot (int w,int h,int *dest_x,int *dest_y)
 	return 0;
 }
 
-void CopySqueezeBodyAndEdges (ushort *dest_data,ushort *src_data,int w,int h,int dest_x,int dest_y)
+void CopySqueezeBodyAndEdges (uint16_t *dest_data,uint16_t *src_data,int w,int h,int dest_x,int dest_y)
 {
 	int i,t;
 
@@ -181,11 +181,11 @@ void CopySqueezeBodyAndEdges (ushort *dest_data,ushort *src_data,int w,int h,int
 	Lightmap_mask[((dest_y+h+1)*128)+(dest_x+w+1)]=1;
 }
 
-void CopySqueezeDataForRooms (int roomnum,int facenum,ushort *dest_data,int dest_x,int dest_y)
+void CopySqueezeDataForRooms (int roomnum,int facenum,uint16_t *dest_data,int dest_x,int dest_y)
 {
 	room *rp=&Rooms[roomnum];
 	lightmap_info *lmi_ptr=&LightmapInfo[rp->faces[facenum].lmi_handle];
-	ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+	uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 
 	int w=lmi_ptr->width;
 	int h=lmi_ptr->height;
@@ -249,11 +249,11 @@ void CopySqueezeDataForRooms (int roomnum,int facenum,ushort *dest_data,int dest
 	
 }
 
-void CopySqueezeDataForObject (object *obj,int subnum,int facenum,ushort *dest_data,int dest_x,int dest_y)
+void CopySqueezeDataForObject (object *obj,int subnum,int facenum,uint16_t *dest_data,int dest_x,int dest_y)
 {
 	lightmap_object_face *fp=&obj->lm_object.lightmap_faces[subnum][facenum];
 	lightmap_info *lmi_ptr=&LightmapInfo[fp->lmi_handle];
-	ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+	uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 	int t,k;
 
 	int w=lmi_ptr->width;
@@ -458,8 +458,8 @@ void SqueezeLightmaps (int external,int target_roomnum)
 	int i,t,k;
 	mprintf ((0,"Squeezing %s lightmaps, please wait...\n",external?"external":"internal"));
 
-	Lmi_spoken_for=(ubyte *)mem_malloc (MAX_LIGHTMAP_INFOS);
-	Lightmap_mask=(ubyte *)mem_malloc (128*128);
+	Lmi_spoken_for=(uint8_t *)mem_malloc (MAX_LIGHTMAP_INFOS);
+	Lightmap_mask=(uint8_t *)mem_malloc (128*128);
 	Squeeze_lightmap_handle=-1;
 
 
@@ -516,7 +516,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 			{
 				memset (Lightmap_mask,0,128*128);
 				Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-				ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+				uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 				memset (fill_data,0,128*128*2);
 			}
 
@@ -558,7 +558,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 				memset (Lightmap_mask,0,128*128);
 				Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-				ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+				uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 				memset (fill_data,0,128*128*2);
 
 				ASSERT (Lmi_spoken_for[lmi_handle]==0);
@@ -607,7 +607,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 					{
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 					}
 
@@ -661,7 +661,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 
 						ASSERT (Lmi_spoken_for[lmi_handle]==0);
@@ -727,7 +727,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 					{
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 					}
 
@@ -781,7 +781,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 
 						ASSERT (Lmi_spoken_for[lmi_handle]==0);
@@ -911,7 +911,7 @@ void AssignVolumeSpectraToRoom (int roomnum)
 					g<<=2;
 					int b=(this_spectra->b*3);
 
-					ubyte volume_color=r|g|b;
+					uint8_t volume_color=r|g|b;
 
 					if (!UseVolumeLights)
 						rp->volume_lights[(i*w*h)+(t*w)+j]=255;
@@ -1007,7 +1007,7 @@ void DoRadiosityForRooms ()
 			Rooms[roomnum].volume_height=vh;
 			Rooms[roomnum].volume_depth=vd;
 
-			Rooms[roomnum].volume_lights=(ubyte *)mem_malloc (vw*vh*vd);
+			Rooms[roomnum].volume_lights=(uint8_t *)mem_malloc (vw*vh*vd);
 			ASSERT (Rooms[roomnum].volume_lights);
 
 			Volume_elements[roomnum]=(volume_element *)mem_malloc ((vw*vh*vd)*sizeof(volume_element));
@@ -1490,7 +1490,7 @@ void AssignRoomSurfaceToLightmap (int roomnum,int facenum,rad_surface *sp)
 	ASSERT (lw>=2);
 	ASSERT (lh>=2);
 
-	ushort *dest_data=lm_data (LightmapInfo[lmi_handle].lm_handle);
+	uint16_t *dest_data=lm_data (LightmapInfo[lmi_handle].lm_handle);
 
 	// Set face pointer
 	if (GameTextures[fp->tmap].flags & TF_ALPHA)
@@ -1544,7 +1544,7 @@ void AssignRoomSurfaceToLightmap (int roomnum,int facenum,rad_surface *sp)
 				blue=min(blue,255);
 
 
-				ushort texel=OPAQUE_FLAG|GR_RGB16(red,green,blue);
+				uint16_t texel=OPAQUE_FLAG|GR_RGB16(red,green,blue);
 							  
 				dest_data[(i+y1)*lw+(t+x1)]=texel;
 			}
@@ -1678,9 +1678,9 @@ void SetRadClipLines (vector *tp,vector *rp,vector *bp,vector *lp)
 	rad_ClipLeft=lp;
 }
 
-ubyte CodeRadPoint (rad_point *rp)
+uint8_t CodeRadPoint (rad_point *rp)
 {
-	ubyte code=0;
+	uint8_t code=0;
 	if (rp->pos.x<rad_ClipLeft->x)
 		code |=CC_OFF_LEFT;
 	if (rp->pos.x>rad_ClipRight->x)
@@ -1699,8 +1699,8 @@ void ClipSurfaceElement (vector *surf_verts,rad_element *ep,vector *clip_verts,i
 	rad_point src_verts[50];
 	rad_point dest_verts[50];
 	rad_point *slist,*dlist;
-	ubyte and=0xff;
-	ubyte or=0;
+	uint8_t and=0xff;
+	uint8_t or=0;
 	int i;
 
 	ASSERT (nv<50);
@@ -2063,7 +2063,7 @@ void DoRadiosityForTerrain ()
 
 	for (i=0;i<Terrain_sky.num_satellites;i++)
 	{
-		TerrainLightSpeedup[i]=(ubyte *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
+		TerrainLightSpeedup[i]=(uint8_t *)mem_malloc (TERRAIN_WIDTH*TERRAIN_DEPTH);
 		ASSERT (TerrainLightSpeedup[i]);
 	}
 
@@ -2874,7 +2874,7 @@ void BuildLightmapUVs (int *room_list,int *face_list,int count,vector *lightmap_
 
 #define MAX_COMBINES		50
 #define LM_ADJACENT_FACE_THRESHOLD	.999
-ubyte *RoomsAlreadyCombined[MAX_ROOMS];
+uint8_t *RoomsAlreadyCombined[MAX_ROOMS];
 
 /*
 // Returns number of verts in dest if face a can be safely combined with face b
@@ -3202,7 +3202,7 @@ void ComputeAllRoomLightmapUVs (int external)
 			if (!external && (Rooms[i].flags & RF_EXTERNAL))
 				continue;
 
-			RoomsAlreadyCombined[i]=(ubyte *)mem_malloc (Rooms[i].num_faces);
+			RoomsAlreadyCombined[i]=(uint8_t *)mem_malloc (Rooms[i].num_faces);
 			ASSERT (RoomsAlreadyCombined[i]);
 			for (k=0;k<Rooms[i].num_faces;k++)
 				RoomsAlreadyCombined[i][k]=0;
@@ -3385,13 +3385,13 @@ void CreateNormalMapForFace (room *rp,face *fp)
 	int vlt,vlb,vrt,vrb,max_y_vertex,top_y,bottom_y,height;
 	int no_height=0,no_width=0,no_right=0,no_left=0;
 	lightmap_info *lmi_ptr=&LightmapInfo[fp->lmi_handle];
-	ushort *src_data=lm_data(lmi_ptr->lm_handle);
+	uint16_t *src_data=lm_data(lmi_ptr->lm_handle);
 
 	matrix facematrix;
 	vector fvec=-lmi_ptr->normal;
 	vm_VectorToMatrix(&facematrix,&fvec,NULL,NULL);
 
-	sfp->normal_map=(ubyte *)mem_malloc (w*h*3);
+	sfp->normal_map=(uint8_t *)mem_malloc (w*h*3);
 	ASSERT (sfp->normal_map);
 
 	for (int i=0;i<(w*h);i++)
@@ -3712,7 +3712,7 @@ void SetupSpecularLighting (int external)
 	int t,k;
 	int not_combined=0;
 	
-	RoomsAlreadyCombined[roomnum]=(ubyte *)mem_malloc (Rooms[roomnum].num_faces);
+	RoomsAlreadyCombined[roomnum]=(uint8_t *)mem_malloc (Rooms[roomnum].num_faces);
 	ASSERT (RoomsAlreadyCombined[roomnum]);
 	for (k=0;k<Rooms[roomnum].num_faces;k++)
 		RoomsAlreadyCombined[roomnum][k]=0;

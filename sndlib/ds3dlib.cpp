@@ -230,7 +230,7 @@ static void *GameWindowHandle;
 
 win_llsSystem *ll_sound_ptr;
 emulated_listener *g_emulated_listener = NULL; // silly hack (Samir)
-short Global_DS_alloced_sounds = 0;
+int16_t Global_DS_alloced_sounds = 0;
 
 int *Fast_mixer = NULL;
 int Fast_mixer_len = 0;
@@ -276,7 +276,7 @@ win_llsSystem::~win_llsSystem(void) {
   SetSoundCard(NULL);
 }
 
-inline void opti_8m_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
                         const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -303,7 +303,7 @@ inline void opti_8m_mix(unsigned char *cur_sample_8bit, const int num_write, int
   samples_played += (i / 2);
 }
 
-inline void opti_8s_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
                         const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -333,7 +333,7 @@ inline void opti_8s_mix(unsigned char *cur_sample_8bit, const int num_write, int
   samples_played += (i / 2);
 }
 
-inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_16m_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
                          const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -360,7 +360,7 @@ inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samp
   samples_played += (i / 2);
 }
 
-inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
                          const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -502,7 +502,7 @@ inline void sb_adjust_properties_3d(sound_buffer_info *sb, float f_volume, pos_s
   }
 }
 
-inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, ushort frequency) {
+inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, uint16_t frequency) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 
@@ -527,22 +527,22 @@ inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float
 }
 
 // functions for different APIs
-int sb_get_current_position(sound_buffer_info *sb, uint *writep) {
+int sb_get_current_position(sound_buffer_info *sb, uint32_t *writep) {
   DWORD playp, wp;
 
   if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     if (sb->m_sound_buffer && sb->m_sound_buffer->GetCurrentPosition(&playp, &wp) == DS_OK) {
-      *writep = (uint)wp;
+      *writep = (uint32_t)wp;
     } else {
       playp = (DWORD)(-1);
-      *writep = (uint)(-1);
+      *writep = (uint32_t)(-1);
     }
   }
 
-  return (uint)playp;
+  return (uint32_t)playp;
 }
 
-inline void sb_set_current_position(sound_buffer_info *sb, uint pos) {
+inline void sb_set_current_position(sound_buffer_info *sb, uint32_t pos) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 
@@ -582,8 +582,8 @@ void sb_stop_buffer(sound_buffer_info *sb) {
   }
 }
 
-bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes, void **lplpvAudioPtr1,
-                    uint *lpdwAudioBytes1, void **lplpvAudioPtr2, uint *lpdwAudioBytes2) {
+bool sb_lock_buffer(sound_buffer_info *sb, uint32_t dwWriteCursor, uint32_t dwWriteBytes, void **lplpvAudioPtr1,
+                    uint32_t *lpdwAudioBytes1, void **lplpvAudioPtr2, uint32_t *lpdwAudioBytes2) {
   DWORD len1, len2;
 
   if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
@@ -605,7 +605,7 @@ bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes
   return false;
 }
 
-bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint len1, void *ptr2, uint len2) {
+bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint32_t len1, void *ptr2, uint32_t len2) {
   if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     sb->m_sound_buffer->Unlock(ptr1, len1, ptr2, len2);
     return true;
@@ -632,7 +632,7 @@ bool sb_load_buffer(sound_buffer_info *sb, void *sample_data, int length) {
 // mixing and effects (writes data to the locked primary buffer)
 void StreamMixer(char *ptr, int len) {
   int i;
-  short *mixer_buffer16 = (short *)ptr;
+  int16_t *mixer_buffer16 = (int16_t *)ptr;
   int current_slot = 0;
   bool f_loop;
   bool f_mono;
@@ -659,7 +659,7 @@ void StreamMixer(char *ptr, int len) {
   while (current_slot < ll_sound_ptr->m_sound_mixer.m_max_sounds_played) {
     sound_buffer_info *cur_buf = &ll_sound_ptr->m_sound_mixer.m_sound_cache[current_slot];
     int num_samples = buff_len;
-    // mixer_buffer16 = (short *) ptr;
+    // mixer_buffer16 = (int16_t *) ptr;
     fast_mix_ptr = Fast_mixer;
     f_mono = true;
 
@@ -669,8 +669,8 @@ void StreamMixer(char *ptr, int len) {
       float r_volume = cur_buf->play_info->right_volume;
       int skip_interval = cur_buf->play_info->sample_skip_interval;
       int samples_played = cur_buf->play_info->m_samples_played;
-      short *sample_16bit;
-      unsigned char *sample_8bit;
+      int16_t *sample_16bit;
+      uint8_t *sample_8bit;
       int np_sample_length;
       int sample_length;
       int loop_start;
@@ -679,24 +679,24 @@ void StreamMixer(char *ptr, int len) {
       if (cur_buf->m_status & SSF_PLAY_STREAMING) {
         switch (cur_buf->play_info->m_stream_format) {
         case SIF_STREAMING_16_M:
-          sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+          sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
           sample_8bit = NULL;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           break;
         case SIF_STREAMING_8_M:
           sample_16bit = NULL;
-          sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+          sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size;
           break;
         case SIF_STREAMING_16_S:
-          sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+          sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
           sample_8bit = NULL;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 4;
           f_mono = false;
           break;
         case SIF_STREAMING_8_S:
           sample_16bit = NULL;
-          sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+          sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           f_mono = false;
           break;
@@ -824,8 +824,8 @@ void StreamMixer(char *ptr, int len) {
 
       // Mix at 16 bits per sample
       if (skip_interval == 0) {
-        short *cur_sample_16bit = sample_16bit;
-        unsigned char *cur_sample_8bit = sample_8bit;
+        int16_t *cur_sample_16bit = sample_16bit;
+        uint8_t *cur_sample_8bit = sample_8bit;
 
         if (f_mono) {
           if (sample_8bit) {
@@ -955,19 +955,19 @@ void StreamMixer(char *ptr, int len) {
             if (cur_buf->play_info->m_stream_data) {
               switch (cur_buf->play_info->m_stream_format) {
               case SIF_STREAMING_16_M:
-                sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+                sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 2;
                 break;
               case SIF_STREAMING_8_M:
-                sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+                sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size;
                 break;
               case SIF_STREAMING_16_S:
-                sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+                sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 4;
                 break;
               case SIF_STREAMING_8_S:
-                sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+                sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 2;
                 break;
               default:
@@ -1383,7 +1383,7 @@ void win_llsSystem::SetSoundCard(const char *name) {
 }
 
 // Initializes the sound library
-int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char MaxSoundsPlayed) // add playlist info
+int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t MaxSoundsPlayed) // add playlist info
 {
   GUID card_guid, zero_card_guid;
   GUID *pguid = NULL;
@@ -1817,7 +1817,7 @@ void win_llsSystem::update_directsound_sb(sound_buffer_info *sb, bool update_loo
 
 // Stops the sound from playing  -- f_immediately is used for looping samples -- i.e. so we can
 // play the end of loop snipit
-void win_llsSystem::StopSound(int sound_uid, unsigned char f_immediately) {
+void win_llsSystem::StopSound(int sound_uid, uint8_t f_immediately) {
   int current_slot;
   sound_buffer_info *sb;
 
@@ -1918,9 +1918,9 @@ TryLockAgainLabel:
 //		ignore reserved slots
 
 #ifdef _DEBUG
-short win_llsSystem::FindFreeSoundSlot(int sound_index, float volume, int priority)
+int16_t win_llsSystem::FindFreeSoundSlot(int sound_index, float volume, int priority)
 #else
-short win_llsSystem::FindFreeSoundSlot(float volume, int priority)
+int16_t win_llsSystem::FindFreeSoundSlot(float volume, int priority)
 #endif
 {
   int current_slot;
@@ -2000,7 +2000,7 @@ short win_llsSystem::FindFreeSoundSlot(float volume, int priority)
 int win_llsSystem::PlaySound2d(play_information *play_info, int sound_index, float f_volume, float f_pan,
                                bool f_looped) {
   sound_buffer_info *sb = NULL;
-  short sound_slot;
+  int16_t sound_slot;
 
   if (!m_f_sound_lib_init) {
     return -1;
@@ -2265,7 +2265,7 @@ void win_llsSystem::DSStartStreaming(sound_buffer_info *sb, float volume, float 
 }
 
 int win_llsSystem::PlayStream(play_information *play_info) {
-  short sound_slot;
+  int16_t sound_slot;
   DWORD ds_flags = 0;
 
   ASSERT(play_info != NULL);
@@ -2652,12 +2652,12 @@ bool win_llsSystem::SetSoundQuality(char quality) {
         int count;
 
         ASSERT(SoundFiles[j].sample_8bit == NULL);
-        SoundFiles[j].sample_8bit = (unsigned char *)GlobalAlloc(0, SoundFiles[j].sample_length);
+        SoundFiles[j].sample_8bit = (uint8_t *)GlobalAlloc(0, SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
         // (+128 biase).
         for (count = 0; count < (int)SoundFiles[j].sample_length; count++) {
-          SoundFiles[j].sample_8bit[count] = (unsigned char)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
+          SoundFiles[j].sample_8bit[count] = (uint8_t)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
         }
 
         GlobalFree(SoundFiles[j].sample_16bit);
@@ -2708,7 +2708,7 @@ void win_llsSystem::SetListener(pos_state *cur_pos) {
 }
 
 // AdjustSound2d -- adjusts the volume, pan, and freq. of a sound
-void win_llsSystem::AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) {
+void win_llsSystem::AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) {
   int current_slot;
 
   if (!m_f_sound_lib_init)
@@ -2801,7 +2801,7 @@ void win_llsSystem::AdjustSound(int sound_uid, pos_state *cur_pos, float adjuste
 
 int win_llsSystem::PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float adjusted_volume,
                                bool f_looped, float reverb) {
-  short sound_slot;
+  int16_t sound_slot;
   DWORD ds_flags = 0;
   float volume;
 
@@ -2949,7 +2949,7 @@ int win_llsSystem::SetSoundPos(int sound_uid, int pos) {
 // These work in samples to make things easier in the long run
 int win_llsSystem::GetSoundPos(int sound_uid) {
   int current_slot;
-  uint temp, pos;
+  uint32_t temp, pos;
 
   if (!m_f_sound_lib_init)
     return -1;

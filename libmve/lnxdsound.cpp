@@ -48,9 +48,9 @@ static LnxSoundDevice LinuxSoundDevice;
 
 static bool StartupSoundSystem(LnxSoundDevice *dev);
 static void ShutdownSoundSystem(void);
-static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, unsigned char *buf, unsigned int len);
-static unsigned int LinuxSoundMixNormalize(LnxSoundBuffer *dsb, unsigned char *buf, unsigned int len);
-static unsigned int LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len);
+static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, uint8_t *buf, uint32_t len);
+static uint32_t LinuxSoundMixNormalize(LnxSoundBuffer *dsb, uint8_t *buf, uint32_t len);
+static uint32_t LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len);
 static void LinuxSoundMixBuffersIntoMain(int len);
 static void LinuxSoundThreadHandler(void *unused, Uint8 *stream, int len);
 
@@ -116,7 +116,7 @@ int LnxSound_CreateSoundBuffer(LnxSoundDevice *dev, LnxBufferDesc *lbdesc, LnxSo
     (*lsndb)->buffer_len = lbdesc->dwBufferBytes;
     (*lsndb)->freq = lbdesc->lpwfxFormat->nSamplesPerSec;
 
-    (*lsndb)->buffer = (unsigned char *)malloc((*lsndb)->buffer_len);
+    (*lsndb)->buffer = (uint8_t *)malloc((*lsndb)->buffer_len);
     if (!(*lsndb)->buffer) {
       free(*lsndb);
       *lsndb = NULL;
@@ -236,7 +236,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff) {
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol) {
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, int32_t vol) {
   if (!buff)
     return -1;
 
@@ -260,9 +260,9 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol) {
 
   double vt;
   vt = (double)(buff->volume - (buff->pan > 0 ? buff->pan : 0));
-  buff->left_vol = (unsigned int)(pow(2.0, vt / 600.0) * 32768.0);
+  buff->left_vol = (uint32_t)(pow(2.0, vt / 600.0) * 32768.0);
   vt = (double)(buff->volume + (buff->pan < 0 ? buff->pan : 0));
-  buff->right_vol = (unsigned int)(pow(2.0, vt / 600.0) * 32768.0);
+  buff->right_vol = (uint32_t)(pow(2.0, vt / 600.0) * 32768.0);
 
   exit_critical();
 
@@ -278,7 +278,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol) {
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed int pan) {
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, int32_t pan) {
   if (!buff)
     return -1;
 
@@ -295,9 +295,9 @@ int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed int pan) {
 
   double pt;
   pt = (double)(buff->volume - (buff->pan > 0 ? buff->pan : 0));
-  buff->left_vol = (unsigned int)(pow(2.0, pt / 600.0) * 32768.0);
+  buff->left_vol = (uint32_t)(pow(2.0, pt / 600.0) * 32768.0);
   pt = (double)(buff->volume + (buff->pan < 0 ? buff->pan : 0));
-  buff->right_vol = (unsigned int)(pow(2.0, pt / 600.0) * 32768.0);
+  buff->right_vol = (uint32_t)(pow(2.0, pt / 600.0) * 32768.0);
 
   exit_critical();
 
@@ -331,7 +331,7 @@ int LnxSoundBuffer_Stop(LnxSoundBuffer *buff) {
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Play(LnxSoundBuffer *buff, unsigned int flags) {
+int LnxSoundBuffer_Play(LnxSoundBuffer *buff, uint32_t flags) {
   if (!buff)
     return -1;
 
@@ -369,7 +369,7 @@ int LnxSoundBuffer_GetCaps(LnxSoundBuffer *buff, LinuxSoundCaps *caps) {
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_GetStatus(LnxSoundBuffer *buff, unsigned int *status) {
+int LnxSoundBuffer_GetStatus(LnxSoundBuffer *buff, uint32_t *status) {
   if (!status || !buff)
     return -1;
 
@@ -390,7 +390,7 @@ int LnxSoundBuffer_GetStatus(LnxSoundBuffer *buff, unsigned int *status) {
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_GetCurrentPosition(LnxSoundBuffer *buff, unsigned int *ppos, unsigned int *wpos) {
+int LnxSoundBuffer_GetCurrentPosition(LnxSoundBuffer *buff, uint32_t *ppos, uint32_t *wpos) {
   if (!buff)
     return -1;
 
@@ -410,7 +410,7 @@ int LnxSoundBuffer_GetCurrentPosition(LnxSoundBuffer *buff, unsigned int *ppos, 
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff, unsigned int pos) {
+int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff, uint32_t pos) {
   if (!buff)
     return -1;
 
@@ -429,8 +429,8 @@ int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff, unsigned int pos) {
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, unsigned int pos, unsigned int numbytes, void **ptr1,
-                        unsigned int *numbytes1, void **ptr2, unsigned int *numbytes2, unsigned int flags) {
+int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, uint32_t pos, uint32_t numbytes, void **ptr1,
+                        uint32_t *numbytes1, void **ptr2, uint32_t *numbytes2, uint32_t flags) {
   if (!buff)
     return -1;
 
@@ -445,17 +445,17 @@ int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, unsigned int pos, unsigned int num
   assert(ptr1 != ptr2);
 
   if (pos + numbytes <= buff->buffer_len) {
-    *(unsigned char **)ptr1 = buff->buffer + pos;
+    *(uint8_t **)ptr1 = buff->buffer + pos;
     *numbytes1 = numbytes;
     if (ptr2)
-      *(unsigned char **)ptr2 = NULL;
+      *(uint8_t **)ptr2 = NULL;
     if (numbytes2)
       *numbytes2 = 0;
   } else {
-    *(unsigned char **)ptr1 = buff->buffer + pos;
+    *(uint8_t **)ptr1 = buff->buffer + pos;
     *numbytes1 = buff->buffer_len - pos;
     if (ptr2)
-      *(unsigned char **)ptr2 = buff->buffer;
+      *(uint8_t **)ptr2 = buff->buffer;
     if (numbytes2)
       *numbytes2 = numbytes - (buff->buffer_len - pos);
   }
@@ -470,7 +470,7 @@ int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, unsigned int pos, unsigned int num
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Unlock(LnxSoundBuffer *buff, void *ptr1, unsigned int num1, void *ptr2, unsigned int num2) {
+int LnxSoundBuffer_Unlock(LnxSoundBuffer *buff, void *ptr1, uint32_t num1, void *ptr2, uint32_t num2) {
   if (!buff)
     return -1;
 
@@ -521,8 +521,8 @@ static bool StartupSoundSystem(LnxSoundDevice *dev) {
 //	Shutsdown the sound processing thread
 static void ShutdownSoundSystem(void) { SDL_CloseAudio(); }
 
-static inline void GetValues(const LnxSoundBuffer *dsb, unsigned char *buf, unsigned int *fl, unsigned int *fr) {
-  signed short *bufs = (signed short *)buf;
+static inline void GetValues(const LnxSoundBuffer *dsb, uint8_t *buf, uint32_t *fl, uint32_t *fr) {
+  int16_t *bufs = (int16_t *)buf;
 
   // 8 bit stereo
   if ((dsb->wfx.wBitsPerSample == 8) && dsb->wfx.nChannels == 2) {
@@ -554,8 +554,8 @@ static inline void GetValues(const LnxSoundBuffer *dsb, unsigned char *buf, unsi
   return;
 }
 
-static inline void SetValues(unsigned char *buf, unsigned int fl, unsigned int fr) {
-  signed short *bufs = (signed short *)buf;
+static inline void SetValues(uint8_t *buf, uint32_t fl, uint32_t fr) {
+  int16_t *bufs = (int16_t *)buf;
 
   // 8 bit stereo
   if ((LnxBuffers[0]->wfx.wBitsPerSample == 8) && (LnxBuffers[0]->wfx.nChannels == 2)) {
@@ -585,17 +585,17 @@ static inline void SetValues(unsigned char *buf, unsigned int fl, unsigned int f
   return;
 }
 
-static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, unsigned char *buf, unsigned int len) {
-  unsigned int i, inc = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
-  unsigned char *bpc = buf;
-  signed short *bps = (signed short *)buf;
+static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, uint8_t *buf, uint32_t len) {
+  uint32_t i, inc = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
+  uint8_t *bpc = buf;
+  int16_t *bps = (int16_t *)buf;
 
   if ((!(dsb->lbdesc.dwFlags & LNXSND_CAPS_CTRLPAN) || (dsb->pan == 0)) &&
       (!(dsb->lbdesc.dwFlags & LNXSND_CAPS_CTRLVOLUME) || (dsb->volume == 0)))
     return;
 
   for (i = 0; i < len; i += inc) {
-    unsigned int val;
+    uint32_t val;
     switch (inc) {
     case 1: {
       val = *bpc - 128;
@@ -613,11 +613,11 @@ static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, unsigned char *buf, uns
   }
 }
 
-static unsigned int LinuxSoundMixNormalize(LnxSoundBuffer *dsb, unsigned char *buf, unsigned int len) {
-  unsigned int i, size, ipos, ilen, fieldL = 0, fieldR = 0;
-  unsigned char *ibp, *obp;
-  unsigned int iAdvance = dsb->wfx.nBlockAlign;
-  unsigned int oAdvance = LnxBuffers[0]->wfx.nBlockAlign;
+static uint32_t LinuxSoundMixNormalize(LnxSoundBuffer *dsb, uint8_t *buf, uint32_t len) {
+  uint32_t i, size, ipos, ilen, fieldL = 0, fieldR = 0;
+  uint8_t *ibp, *obp;
+  uint32_t iAdvance = dsb->wfx.nBlockAlign;
+  uint32_t oAdvance = LnxBuffers[0]->wfx.nBlockAlign;
 
   ibp = dsb->buffer + dsb->play_cursor;
   obp = buf;
@@ -625,7 +625,7 @@ static unsigned int LinuxSoundMixNormalize(LnxSoundBuffer *dsb, unsigned char *b
   if ((dsb->freq == LnxBuffers[0]->wfx.nSamplesPerSec) &&
       (dsb->wfx.wBitsPerSample == LnxBuffers[0]->wfx.wBitsPerSample) &&
       (dsb->wfx.nChannels == LnxBuffers[0]->wfx.nChannels)) {
-    if ((ibp + len) < (unsigned char *)(dsb->buffer + dsb->buffer_len))
+    if ((ibp + len) < (uint8_t *)(dsb->buffer + dsb->buffer_len))
       memcpy(obp, ibp, len);
     else {
       memcpy(obp, ibp, dsb->buffer_len - dsb->play_cursor);
@@ -642,7 +642,7 @@ static unsigned int LinuxSoundMixNormalize(LnxSoundBuffer *dsb, unsigned char *b
       ilen += iAdvance;
       SetValues(obp, fieldL, fieldR);
       obp += oAdvance;
-      if (ibp >= (unsigned char *)(dsb->buffer + dsb->buffer_len))
+      if (ibp >= (uint8_t *)(dsb->buffer + dsb->buffer_len))
         ibp = dsb->buffer;
     }
     return (ilen);
@@ -676,11 +676,11 @@ int DoMulDiv(int nNumber, int nNumerator, int nDenominator) {
 
 static void *TempSoundBuffer = NULL;
 static int TempSoundBufferLen = 0;
-static unsigned int LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
-  unsigned int i, ilen, advance = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
-  unsigned char *buf, *ibuf, *obuf;
-  signed int temp, field;
-  signed short *ibufs, *obufs;
+static uint32_t LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
+  uint32_t i, ilen, advance = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
+  uint8_t *buf, *ibuf, *obuf;
+  int32_t temp, field;
+  int16_t *ibufs, *obufs;
 
   if (!(dsb->flags & LNXSND_LOOPING)) {
     temp = DoMulDiv(LnxBuffers[0]->wfx.nAvgBytesPerSec, dsb->buffer_len, dsb->bps) -
@@ -701,12 +701,12 @@ static unsigned int LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
     if (nb) {
       TempSoundBuffer = nb;
       TempSoundBufferLen = len;
-      buf = ibuf = (unsigned char *)nb;
+      buf = ibuf = (uint8_t *)nb;
     } else {
       return 0;
     }
   } else {
-    buf = ibuf = (unsigned char *)TempSoundBuffer;
+    buf = ibuf = (uint8_t *)TempSoundBuffer;
   }
 
   ilen = LinuxSoundMixNormalize(dsb, ibuf, len);
@@ -716,8 +716,8 @@ static unsigned int LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
 
   obuf = LnxBuffers[0]->buffer + LnxBuffers[0]->play_cursor;
   for (i = 0; i < len; i += advance) {
-    obufs = (signed short *)obuf;
-    ibufs = (signed short *)ibuf;
+    obufs = (int16_t *)obuf;
+    ibufs = (int16_t *)ibuf;
     if (LnxBuffers[0]->wfx.wBitsPerSample == 16) {
       field = *ibufs;
       field += *obufs;
@@ -733,7 +733,7 @@ static unsigned int LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
     }
     ibuf += advance;
     obuf += advance;
-    if (obuf >= (unsigned char *)(LnxBuffers[0]->buffer + LnxBuffers[0]->buffer_len))
+    if (obuf >= (uint8_t *)(LnxBuffers[0]->buffer + LnxBuffers[0]->buffer_len))
       obuf = LnxBuffers[0]->buffer;
   }
 

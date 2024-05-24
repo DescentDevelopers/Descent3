@@ -32,11 +32,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -79,22 +79,22 @@ static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
 
 class ClutterScript {
 public:
-  virtual short CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 };
 
 class FragCrate : public ClutterScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class NapalmBarrel : public ClutterScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class AliencuplinkScript : public ClutterScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 typedef struct {
@@ -104,14 +104,14 @@ typedef struct {
 class TNTHighYield : public ClutterScript {
 public:
   TNTHighYield() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tTNTHighYield *memory;
 };
 
 class TNTMedYield : public ClutterScript {
 public:
   TNTMedYield() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   float *memory;
 };
 
@@ -121,13 +121,13 @@ typedef struct {
 class FallingRock : public ClutterScript {
 public:
   FallingRock() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory;
 };
 class LavaRock : public ClutterScript {
 public:
   LavaRock() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory;
 };
 
@@ -171,7 +171,7 @@ void STDCALL ShutdownDLL(void) {}
 //	or OBJ_ROBOT), therefore, a 1 is passed in for isdoor if the given object name refers to a
 //	door, else it is a 0.  The return value is the unique identifier, else -1 if the script
 //	does not exist in the DLL.
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   if (!isdoor) {
     for (int i = 0; i < NumScriptIDs; i++) {
       if (!stricmp(name, ScriptIDs[i].name))
@@ -258,7 +258,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((ClutterScript *)ptr)->CallEvent(event, data);
 }
 
@@ -272,7 +272,7 @@ short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *
 //	able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 int GetObjectType(int object) {
   msafe_struct ms;
@@ -290,7 +290,7 @@ int GetObjectID(int object) {
   return ms.id;
 }
 
-short FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
@@ -311,7 +311,7 @@ short FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
@@ -351,7 +351,7 @@ short NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short AliencuplinkScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t AliencuplinkScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     int handle, id, room;
@@ -392,7 +392,7 @@ float GetObjectShields(int object) {
   return mstruct.shields;
 }
 
-short TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;
@@ -443,7 +443,7 @@ short TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;
@@ -540,7 +540,7 @@ short TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;
@@ -574,7 +574,7 @@ short FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;

@@ -89,8 +89,8 @@ void MVE_dsbSetPan(int32_t lPan);
 ** is just used for window centering and for determining
 ** how and when to do palette callbacks.
 */
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
+                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
 
 /* This function alters the display from 640x480 or 640x400 to 640x350 resolution.
  */
@@ -113,21 +113,21 @@ void MVE_ForceVresHalf(void);
 ** This function replaces calls to the default MVE_ShowFrame function
 **  with calls to your function, which can itself call MVE_ShowFrame.
 */
-typedef void mve_cb_ShowFrame(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+typedef void mve_cb_ShowFrame(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                               unsigned h, unsigned dstx, unsigned dsty, unsigned hicolor);
 void MVE_sfCallbacks(mve_cb_ShowFrame *fn_ShowFrame);
 
-typedef void mve_cb_SetPalette(unsigned char *p, unsigned start, unsigned count);
+typedef void mve_cb_SetPalette(uint8_t *p, unsigned start, unsigned count);
 void MVE_palCallbacks(mve_cb_SetPalette *fn_SetPalette);
 
 /* I'm pulling this, since it removes a C/C++ name mangling conflict - AH
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
 */
 
 /* Configure the software for a graphics mode, optionally setting the
 **  display to that mode (see the MVE_GFX_xxx constants defined below).
 */
-unsigned MVE_gfxMode(short mode);
+unsigned MVE_gfxMode(int16_t mode);
 
 /* Reset the screen to text mode (usually done before exiting a program).
  */
@@ -258,7 +258,7 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
 **  to a direct draw surface containing the frame in buf,
 **  and its width and height in w and h.
 */
-int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned *height);
+int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, unsigned *width, unsigned *height);
 
 /* MVE_frPal
 **  After each successful call to MVE_frGet(), this call may be used to
@@ -276,7 +276,7 @@ int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned *width, unsigned 
 **  the values will be returned.
 **
 */
-void MVE_frPal(MVE_frStream frs, unsigned char **pPaltbl, unsigned *pStart, unsigned *pCount);
+void MVE_frPal(MVE_frStream frs, uint8_t **pPaltbl, unsigned *pStart, unsigned *pCount);
 
 /* MVE_frClose
 **  Closes the specified Frame Reader Stream frs.

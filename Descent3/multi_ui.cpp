@@ -389,7 +389,7 @@ int MainMultiplayerMenu() {
   char sznetgame[MAX_NET_DLL_LEN] = "";
   int netgamelen = MAX_NET_DLL_LEN;
   int i;
-  unsigned int j;
+  uint32_t j;
 
   for (i = 0; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type == OBJ_POWERUP) {
@@ -516,7 +516,7 @@ int MainMultiplayerMenu() {
       dllcount++;
     }
 
-    unsigned int len;
+    uint32_t len;
     while ((ddio_FindNextFile(buffer)) && (dllcount < MAX_DLLS)) {
       ddio_SplitPath(buffer, fdir, fname, fext);
       len = strlen(fname);
@@ -573,7 +573,7 @@ int MainMultiplayerMenu() {
     case UID_OK: {
       menu_wnd.Close();
       lists->GetCurrentItem(seldll, _MAX_PATH);
-      unsigned int len = strlen(seldll);
+      uint32_t len = strlen(seldll);
 
       for (j = 0; j < len; j++) {
         if (seldll[j] == '/') {
@@ -595,7 +595,7 @@ int MainMultiplayerMenu() {
       // Help
       {
         lists->GetCurrentItem(seldll, _MAX_PATH);
-        unsigned int len = strlen(seldll);
+        uint32_t len = strlen(seldll);
         for (j = 0; j < len; j++) {
           if (seldll[j] == '/') {
             seldll[j] = '~';
@@ -1698,7 +1698,7 @@ int MultiLevelSelection(void) {
   return Current_mission.cur_level;
 }
 
-bool DoPlayerMouselookCheck(unsigned int flags) {
+bool DoPlayerMouselookCheck(uint32_t flags) {
   if (Current_pilot.mouselook_control) {
     if (flags & NF_ALLOW_MLOOK) {
       return true;

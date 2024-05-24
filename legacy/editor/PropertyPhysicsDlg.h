@@ -68,7 +68,7 @@ public:
 	float	m_fThrustZ;
 	BOOL	m_bTurnroll;
 	float	m_fTurnrollRatio;
-	short	m_sTurnrollAngle;
+	int16_t	m_sTurnrollAngle;
 	BOOL	m_bUsesThrust;
 	float	m_fVelocityX;
 	float	m_fVelocityY;

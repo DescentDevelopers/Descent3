@@ -666,7 +666,7 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
   }
 }
 
-void vm_SinCos(unsigned short a, float *s, float *c) {
+void vm_SinCos(uint16_t a, float *s, float *c) {
   if (s)
     *s = FixSin(a);
   if (c)

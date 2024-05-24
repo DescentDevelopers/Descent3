@@ -86,7 +86,7 @@
  * added auto pps
  *
  * 39    12/08/98 4:52p Jeff
- * changed the pilot pics packing to use Ushort instead of short just for
+ * changed the pilot pics packing to use Ushort instead of int16_t just for
  * my conscience...removed some annoying mprintf's too
  *
  * 38    12/01/98 5:48p Jeff
@@ -158,7 +158,7 @@ extern int Use_file_xfer;
 // Tell the server about my info, such as name, ship type, etc
 void MultiSendMyInfo() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending my info\n"));
@@ -204,7 +204,7 @@ void MultiSendMyInfo() {
   MultiAddByte(pps, data, &count);
 
   // pilot picture id
-  ushort ppic_id;
+  uint16_t ppic_id;
   Current_pilot.get_multiplayer_data(NULL, NULL, NULL, &ppic_id);
   MultiAddUshort(ppic_id, data, &count);
 
@@ -224,7 +224,7 @@ void MultiSendMyInfo() {
 // Ask the server to tell me about the players
 void MultiSendRequestForPlayers() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for players\n"));
@@ -239,7 +239,7 @@ void MultiSendRequestForPlayers() {
 // Ask the server to tell me about the buildings
 void MultiSendRequestForBuildings() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for buildings\n"));
@@ -254,7 +254,7 @@ void MultiSendRequestForBuildings() {
 // Ask the server to tell me about the world
 void MultiSendRequestForWorldStates() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for world states\n"));
@@ -275,7 +275,7 @@ void MultiSendRequestForWorldStates() {
 // Ask the server to tell me about the objects
 void MultiSendRequestForObjects() {
   int size;
-  ubyte data[MAX_GAME_DATA_SIZE];
+  uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
   mprintf((0, "Sending request for objects\n"));
@@ -436,7 +436,7 @@ void MultiDoClientFrame() {
         }
       }
 
-      ubyte data[MAX_GAME_DATA_SIZE], count = 0, add_count = 0;
+      uint8_t data[MAX_GAME_DATA_SIZE], count = 0, add_count = 0;
 
       count = MultiStuffPosition(Player_num, data);
 

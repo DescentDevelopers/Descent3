@@ -217,7 +217,7 @@ int cfexist(const char *filename);
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes read.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp);
+int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp);
 
 // The following functions read numeric vales from a CFILE.  All values are
 // stored in the file in Intel (little-endian) format.  These functions
@@ -229,7 +229,7 @@ int cf_ReadBytes(ubyte *buf, int count, CFILE *cfp);
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int32_t cf_ReadInt(CFILE *cfp);
 
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int16_t cf_ReadShort(CFILE *cfp);
 
@@ -261,7 +261,7 @@ int cf_ReadString(char *buf, size_t n, CFILE *cfp);
 // data, such as a string or a bitmap of 8-bit pixels.
 // Returns the number of bytes written.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-int cf_WriteBytes(const ubyte *buf, int count, CFILE *cfp);
+int cf_WriteBytes(const uint8_t *buf, int count, CFILE *cfp);
 
 // Writes a null-terminated string to a file.  If the file is type binary,
 // the string is terminated in the file with a null.  If the file is type
@@ -283,7 +283,7 @@ int cfprintf(CFILE *cfp, const char *format, ...);
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteInt(CFILE *cfp, int32_t i);
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteShort(CFILE *cfp, int16_t s);
 
@@ -318,8 +318,8 @@ void cf_ChangeFileAttributes(const char *name, int attr);
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
-unsigned int cf_GetfileCRC(char *src);
-unsigned int cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
+uint32_t cf_GetfileCRC(char *src);
+uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
 // the following cf_LibraryFind function are similar to the ddio_Find functions as they look
 // for files that match the wildcard passed in, however, this is to be used for hog files.

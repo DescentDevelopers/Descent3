@@ -547,7 +547,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
         bool done = false;
         bool layout_found = false;
         char layout_scr[_MAX_PATH];
-        uint mission_mask_set = 0, mission_mask_unset = 0;
+        uint32_t mission_mask_set = 0, mission_mask_unset = 0;
         description[0] = '\0';
         PARSE_INT(current_screen);
 
@@ -857,7 +857,7 @@ bool CBriefParse::ParseButtonEffect(const char *p) {
   char flash_name[256];
   char flash_name_focus[256];
   char d[128];
-  uint mission_mask_set = 0, mission_mask_unset = 0;
+  uint32_t mission_mask_set = 0, mission_mask_unset = 0;
   d[0] = '\0';
 
   strcpy(flash_name, " ");

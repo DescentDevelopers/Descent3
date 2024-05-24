@@ -2888,7 +2888,7 @@ void AISeeTarget(object *obj, bool f_see) {
   }
 }
 
-bool AINotify(object *obj, ubyte notify_type, void *info) {
+bool AINotify(object *obj, uint8_t notify_type, void *info) {
   int next_anim;
   ai_frame *ai_info = obj->ai_info;
   //@$-tD3XEventArgs evtargs;
@@ -3146,7 +3146,7 @@ bool AINotify(object *obj, ubyte notify_type, void *info) {
     int i;
 
     if (hptr->f_directly_player) {
-      short heard_noise_obj[50];
+      int16_t heard_noise_obj[50];
       int num_objs = fvi_QuickDistObjectList(&obj->pos, obj->roomnum, hptr->max_dist, heard_noise_obj, 50, false, true,
                                              false, true);
 
@@ -3669,7 +3669,7 @@ void ObjSetAIInfo(object *objp) {
   dest->biased_flight_max = src->biased_flight_max;
 }
 
-bool AIInit(object *obj, ubyte ai_class, ubyte ai_type, ubyte ai_movement) {
+bool AIInit(object *obj, uint8_t ai_class, uint8_t ai_type, uint8_t ai_movement) {
   ai_frame *ai_info = obj->ai_info;
   ASSERT(ai_info);
   ASSERT(obj->control_type == CT_AI && obj->type != OBJ_NONE);
@@ -4297,7 +4297,7 @@ void AIDoTrackFrame(object *obj) {
       track_distance = GoalDetermineTrackDist(obj);
 
     if (track_distance > 0.0f) {
-      short near_objs[10];
+      int16_t near_objs[10];
       int num_near = fvi_QuickDistObjectList(&obj->pos, obj->roomnum, ai_info->avoid_friends_distance + track_distance,
                                              near_objs, 10, false, true, false, true);
       float dist;
@@ -4740,7 +4740,7 @@ void ai_move(object *obj) {
 
           f_goal_found = true;
 
-          short near_objs[10];
+          int16_t near_objs[10];
 
           float avoid_dist;
 
@@ -5088,7 +5088,7 @@ void ai_move(object *obj) {
               }
 
               if (obj->movement_type == MT_WALKING) {
-                short robots[6];
+                int16_t robots[6];
                 int num_robots =
                     fvi_QuickDistObjectList(&obj->pos, obj->roomnum, 30.0f, robots, 6, false, true, false, true);
                 vector d = Zero_vector;
@@ -5368,7 +5368,7 @@ void ai_fire(object *obj) {
 
         obj->dynamic_wb[i].norm_turret_angle[j] = ta[best_dot];
 
-        ubyte last_t_d = obj->dynamic_wb[i].turret_direction[j];
+        uint8_t last_t_d = obj->dynamic_wb[i].turret_direction[j];
 
         if (dot[WB_MOVE_RIGHT] > dot[WB_MOVE_LEFT])
           obj->dynamic_wb[i].turret_direction[j] = WB_MOVE_RIGHT;
@@ -5942,7 +5942,7 @@ void AIDetermineTarget(object *obj) {
   if ((ai_info->flags & AIF_TEAM_MASK) == AIF_TEAM_NEUTRAL || (ai_info->flags & AIF_ACT_AS_NEUTRAL_UNTIL_SHOT)) {
     best_obj = NULL;
   } else if ((ai_info->flags & AIF_TEAM_MASK) != AIF_TEAM_PTMC) {
-    short list[50];
+    int16_t list[50];
     int num = fvi_QuickDistObjectList(&obj->pos, obj->roomnum, MAX_SEE_TARGET_DIST, list, 50, false, true, false, true);
 
     for (i = 0; i < num; i++) {
@@ -6062,7 +6062,7 @@ void AIDoMemFrame(object *obj) {
     ai_info->mem_time_till_next_update = 3.0f + (float)ps_rand() / (float)D3_RAND_MAX * 2.0f;
 
     // Do the amount of friends/enemies left and the current shields before running Freud
-    short near_objs[100];
+    int16_t near_objs[100];
     float dist = 100.0f;
 
     // chrishack -- there must be a better way...

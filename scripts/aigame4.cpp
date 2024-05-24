@@ -33,11 +33,11 @@ extern "C" {
 #endif
 DLLEXPORT char STDCALL InitializeDLL(tOSIRISModuleInit *func_list);
 DLLEXPORT void STDCALL ShutdownDLL(void);
-DLLEXPORT int STDCALL GetGOScriptID(const char *name, ubyte isdoor);
+DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
-DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
 #endif
@@ -57,7 +57,7 @@ const char *GetStringFromTable(int index) {
 
 static void PortalBreakGlass(int portalnum, int roomnum);
 // Returns the new child's handle
-static int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap,
+static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
 static float Obj_GetObjDist(int me, int it, bool f_sub_rads);
 
@@ -71,7 +71,7 @@ void PortalBreakGlass(int portalnum, int roomnum) {
 }
 
 // Returns the new child's handle
-int CreateAndAttach(int me, const char *child_name, ubyte child_type, char parent_ap, char child_ap, bool f_aligned,
+int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap, bool f_aligned,
                     bool f_set_parent) {
   int child_handle = OBJECT_HANDLE_NONE;
   int child_id = Obj_FindID(child_name);
@@ -127,7 +127,7 @@ class BaseObjScript {
 public:
   BaseObjScript();
   ~BaseObjScript();
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 typedef struct {
@@ -148,7 +148,7 @@ private:
 
 public:
   CombWallHit() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -166,7 +166,7 @@ private:
 
 public:
   DropTarget() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -183,7 +183,7 @@ class Gun : public BaseObjScript {
 
 public:
   Gun() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -200,7 +200,7 @@ private:
 
 public:
   Casing() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -261,7 +261,7 @@ private:
 
 public:
   MercEndBoss() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //------------------
@@ -274,7 +274,7 @@ private:
 
 public:
   HangLight() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //----------------
@@ -291,7 +291,7 @@ public:
 // able to be used.  IT IS VERY IMPORTANT WHEN SAVING THE STATE TO RETURN THE NUMBER OF _BYTES_ WROTE
 // TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 // write data to the file_ptr, 0 when you should read in the data.
-int STDCALL SaveRestoreState(void *file_ptr, ubyte saving_state) { return 0; }
+int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
 
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   osicommon_Initialize((tOSIRISModuleInit *)func_list);
@@ -309,7 +309,7 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
 void STDCALL ShutdownDLL(void) {}
 
-int STDCALL GetGOScriptID(const char *name, ubyte isdoor) {
+int STDCALL GetGOScriptID(const char *name, uint8_t isdoor) {
   for (int i = 0; i < NUM_IDS; i++) {
     if (!stricmp(name, ScriptInfo[i].name)) {
       return ScriptInfo[i].id;
@@ -371,7 +371,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
   }
 }
 
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((BaseObjScript *)ptr)->CallEvent(event, data);
 }
 
@@ -421,7 +421,7 @@ BaseObjScript::BaseObjScript() {}
 
 BaseObjScript::~BaseObjScript() {}
 
-short BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
+int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //------------------
 // MercEndBoss class
@@ -1080,7 +1080,7 @@ void MercEndBoss::DoFrame(int me) {
   memory->last_frame = frame;
 }
 
-short MercEndBoss::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t MercEndBoss::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     int type;
@@ -1144,7 +1144,7 @@ short MercEndBoss::CallEvent(int event, tOSIRISEventInfo *data) {
 // Gun class
 //------------------
 
-short Gun::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Gun::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT: {
     tOSIRISMEMCHUNK ch;
@@ -1211,7 +1211,7 @@ short Gun::CallEvent(int event, tOSIRISEventInfo *data) {
 // Casing class
 //------------------
 
-short Casing::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Casing::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     tOSIRISMEMCHUNK ch;
@@ -1248,7 +1248,7 @@ short Casing::CallEvent(int event, tOSIRISEventInfo *data) {
 // CombWallHit class
 //------------------
 
-short CombWallHit::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CombWallHit::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     tOSIRISMEMCHUNK ch;
@@ -1286,7 +1286,7 @@ short CombWallHit::CallEvent(int event, tOSIRISEventInfo *data) {
 // DropTarget class
 //------------------
 
-short DropTarget::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t DropTarget::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     tOSIRISMEMCHUNK ch;
@@ -1339,7 +1339,7 @@ short DropTarget::CallEvent(int event, tOSIRISEventInfo *data) {
 
 void HangLight::DoInit(int me) { CreateAndAttach(me, "MERC3_danglinglightbulb", OBJ_CLUTTER, 0, 0, true, true); }
 
-short HangLight::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t HangLight::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED:
     DoInit(data->me_handle);

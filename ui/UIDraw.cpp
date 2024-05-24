@@ -90,7 +90,7 @@ static int m_UIDrawLeft;
 static int m_UIDrawTop;
 static int m_UIDrawRight;
 static int m_UIDrawBottom;
-static ubyte m_UIDrawAlpha, m_UICharAlpha;
+static uint8_t m_UIDrawAlpha, m_UICharAlpha;
 static int m_UITextFlags = 0;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ void ui_SetTextClip(int left, int top, int right, int bottom) { grtext_SetParame
 void ui_ResetTextClip() { grtext_SetParameters(m_UIDrawLeft, m_UIDrawTop, m_UIDrawRight, m_UIDrawBottom); }
 
 //	draw primatives
-void ui_DrawSetAlpha(ubyte alpha) { m_UIDrawAlpha = alpha; }
+void ui_DrawSetAlpha(uint8_t alpha) { m_UIDrawAlpha = alpha; }
 
 void ui_DrawLine(ddgr_color color, int x1, int y1, int x2, int y2) {
   if (color == TRANSPARENT_COLOR32)
@@ -187,7 +187,7 @@ void ui_DrawRect(ddgr_color color, int l, int t, int r, int b) {
 }
 
 //	draws all textures derived from ui_bm_handle.
-void ui_DrawBitmap(UIBitmapItem *bi, int x, int y, ubyte alpha) {
+void ui_DrawBitmap(UIBitmapItem *bi, int x, int y, uint8_t alpha) {
   if (bi->is_chunked()) {
     chunked_bitmap *chunk = bi->get_chunked_bitmap();
     rend_DrawChunkedBitmap(chunk, x, y, alpha);
@@ -245,7 +245,7 @@ int ui_DrawGetFont() { return grtext_GetFont(); }
 
 int ui_GetFontHeight() { return grfont_GetHeight(grtext_GetFont()); }
 
-void ui_SetCharAlpha(ubyte alpha) { m_UICharAlpha = alpha; }
+void ui_SetCharAlpha(uint8_t alpha) { m_UICharAlpha = alpha; }
 
 int ui_GetTextWidth(const char *text) { return grtext_GetLineWidth((char *)text); }
 

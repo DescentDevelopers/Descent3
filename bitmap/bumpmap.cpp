@@ -25,7 +25,7 @@
 #include "mem.h"
 
 static int Num_of_bumpmaps = 0;
-static ushort Free_bumpmap_list[MAX_BUMPMAPS];
+static uint16_t Free_bumpmap_list[MAX_BUMPMAPS];
 
 bms_bumpmap GameBumpmaps[MAX_BUMPMAPS];
 static int Bumpmap_mem_used = 0;
@@ -70,7 +70,7 @@ int bump_AllocBumpmap(int w, int h) {
 
   memset(&GameBumpmaps[n], 0, sizeof(bms_bumpmap));
 
-  GameBumpmaps[n].data = (ushort *)mem_malloc(w * h * 2);
+  GameBumpmaps[n].data = (uint16_t *)mem_malloc(w * h * 2);
   if (!GameBumpmaps[n].data) {
     mprintf((0, "NOT ENOUGHT MEMORY FOR BUMPMAP!\n"));
     Int3();
@@ -103,8 +103,8 @@ void bump_FreeBumpmap(int handle) {
 }
 
 // returns a bumpmaps data else NULL if something is wrong
-ushort *bump_data(int handle) {
-  ushort *d;
+uint16_t *bump_data(int handle) {
+  uint16_t *d;
 
   if (!(GameBumpmaps[handle].flags & BUMPF_USED)) {
     Int3();
@@ -117,13 +117,13 @@ ushort *bump_data(int handle) {
 }
 
 // returns width of bumpmap
-ubyte bump_w(int handle) {
+uint8_t bump_w(int handle) {
   ASSERT(GameBumpmaps[handle].flags & BUMPF_USED);
   return GameBumpmaps[handle].width;
 }
 
 // returns height of bumpmap
-ubyte bump_h(int handle) {
+uint8_t bump_h(int handle) {
   ASSERT(GameBumpmaps[handle].flags & BUMPF_USED);
   return GameBumpmaps[handle].height;
 }

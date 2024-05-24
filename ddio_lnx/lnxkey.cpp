@@ -78,22 +78,22 @@ volatile struct tLnxKeys {
 // null mode ddio
 bool ddio_null_InternalKeyInit(ddio_init_info *init_info);
 void ddio_null_InternalKeyClose();
-bool ddio_null_InternalKeyState(ubyte key);
+bool ddio_null_InternalKeyState(uint8_t key);
 void ddio_null_InternalKeySuspend();
 void ddio_null_InternalKeyResume();
-float ddio_null_InternalKeyDownTime(ubyte key);
-void ddio_null_InternalResetKey(ubyte key);
+float ddio_null_InternalKeyDownTime(uint8_t key);
+void ddio_null_InternalResetKey(uint8_t key);
 bool ddio_null_KeyFrame();
 void ddio_null_InternalKeyFrame(void);
 
 // sdl mode ddio
 bool ddio_sdl_InternalKeyInit(ddio_init_info *init_info);
 void ddio_sdl_InternalKeyClose();
-bool ddio_sdl_InternalKeyState(ubyte key);
+bool ddio_sdl_InternalKeyState(uint8_t key);
 void ddio_sdl_InternalKeySuspend();
 void ddio_sdl_InternalKeyResume();
-float ddio_sdl_InternalKeyDownTime(ubyte key);
-void ddio_sdl_InternalResetKey(ubyte key);
+float ddio_sdl_InternalKeyDownTime(uint8_t key);
+void ddio_sdl_InternalResetKey(uint8_t key);
 bool ddio_sdl_KeyFrame();
 void ddio_sdl_InternalKeyFrame(void);
 
@@ -138,7 +138,7 @@ void ddio_InternalKeyClose() {
   }
 }
 
-bool ddio_InternalKeyState(ubyte key) {
+bool ddio_InternalKeyState(uint8_t key) {
   switch (Keyboard_mode) {
   case Input_null:
     return ddio_null_InternalKeyState(key);
@@ -169,7 +169,7 @@ void ddio_InternalKeyResume() {
   }
 }
 
-float ddio_InternalKeyDownTime(ubyte key) {
+float ddio_InternalKeyDownTime(uint8_t key) {
   switch (Keyboard_mode) {
   case Input_null:
     return ddio_null_InternalKeyDownTime(key);
@@ -180,7 +180,7 @@ float ddio_InternalKeyDownTime(ubyte key) {
   return 0.0f;
 }
 
-void ddio_InternalResetKey(ubyte key) {
+void ddio_InternalResetKey(uint8_t key) {
   switch (Keyboard_mode) {
   case Input_null:
     ddio_null_InternalResetKey(key);

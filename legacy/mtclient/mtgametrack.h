@@ -151,8 +151,8 @@
 #define GAME_HEADER_ONLY_SIZE		(sizeof(game_packet_header)-MAX_GT_GAME_DATA_SIZE)
 
 typedef struct {
-	unsigned int len;				//Length of entire packet;
-	unsigned char game_type;	//1==freespace (GT_FREESPACE), 2==D3, 3==tuberacer, etc.
+	uint32_t len;				//Length of entire packet;
+	uint8_t game_type;	//1==freespace (GT_FREESPACE), 2==D3, 3==tuberacer, etc.
 	SOCKADDR_IN	addr;
 	int	type;	//Used to specify what to do ie. Add a new net game (GNT_GAMESTARTED), remove a net game (game over), etc.
 	uint32_t	sig;	//Unique identifier for client ACKs (The server always fills this in, the client responds)
@@ -201,23 +201,23 @@ typedef struct {
 typedef struct _active_games{
 	int game_type; //ie. GT_FREESPACE GT_DESCENT3, etc.
 	SOCKADDR	addr;
-	unsigned int last_update;	//Time we last got an update from this game
+	uint32_t last_update;	//Time we last got an update from this game
 	char	data[MAX_GT_GAME_DATA_SIZE]; //memory to hold the game specific data
 	_active_games *next;
 }active_games;
 /*
 typedef struct {
-	unsigned char game_type;
+	uint8_t game_type;
 	char game_name[MAX_GAME_LISTS_PER_PACKET][MAX_GENERIC_GAME_NAME_LEN];
 	uint32_t	game_server[MAX_GAME_LISTS_PER_PACKET];
-	unsigned short game_port[MAX_GAME_LISTS_PER_PACKET];
+	uint16_t game_port[MAX_GAME_LISTS_PER_PACKET];
 }game_list;
 */
 
 typedef struct {
-  unsigned char game_type;
+  uint8_t game_type;
   uint32_t game_server[MAX_GAME_LISTS_PER_PACKET*4];
-  unsigned short game_port[MAX_GAME_LISTS_PER_PACKET*4];
+  uint16_t game_port[MAX_GAME_LISTS_PER_PACKET*4];
 }game_list;
 
 //Function prototypes
@@ -229,7 +229,7 @@ game_list * GetGameList();
 void RequestGameList();
 int SendGameOver();
 void StartTrackerGame(void *buffer);
-void HandleGamePacket(ubyte *data,int len, network_address *from);
+void HandleGamePacket(uint8_t *data,int len, network_address *from);
 void AckPacket(int sig);
 
 #ifdef WIN32

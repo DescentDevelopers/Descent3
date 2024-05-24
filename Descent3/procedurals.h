@@ -46,23 +46,23 @@
 #define PROC_WATER_BLOBDROPS 4
 
 typedef struct {
-  ubyte type;
+  uint8_t type;
   fix dx, dy;
-  ubyte frames_left;
-  ubyte speed;
-  ubyte color;
+  uint8_t frames_left;
+  uint8_t speed;
+  uint8_t color;
 
-  ubyte size;
+  uint8_t size;
 
   fix x1, y1;
 
-  short prev, next;
+  int16_t prev, next;
 } dynamic_proc_element;
 
 extern dynamic_proc_element DynamicProcElements[];
 extern const char *ProcNames[], *WaterProcNames[];
 
-extern ushort DefaultProcPalette[];
+extern uint16_t DefaultProcPalette[];
 
 // Goes through our array and clears the slots out
 void InitProcedurals();
@@ -92,6 +92,6 @@ int ProcElementAllocate();
 int ProcElementFree(int index);
 
 // Given an array of r,g,b values, generates a 16bit palette table for those colors
-void GeneratePaletteForProcedural(ubyte *r, ubyte *g, ubyte *b, ushort *pal);
+void GeneratePaletteForProcedural(uint8_t *r, uint8_t *g, uint8_t *b, uint16_t *pal);
 
 #endif

@@ -484,7 +484,7 @@ void NewUIClose() {
 //	DoWaitMessage(false);
 void DoWaitMessage(bool enable, const char *message) {
   static bool opened = false;
-  static ubyte cur_pos = 0;
+  static uint8_t cur_pos = 0;
   float curpos_f;
 
   //	if (1) return;
@@ -848,7 +848,7 @@ void DrawLargeBitmap(tLargeBitmap *bmp, int x, int y, float alpha) {
 ///////////////////////////////////////////////////////////////////////////////
 //	Listbox procedure.
 
-ubyte NewUIWindow_alpha = 192;
+uint8_t NewUIWindow_alpha = 192;
 
 NewUIWindow::NewUIWindow() : UIWindow() {}
 

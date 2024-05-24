@@ -568,7 +568,7 @@ void CLightingDialog::UpdateDialog()
 		sprintf (str,"%f",aval);
 		ebox->SetWindowText (str);
 
-		ubyte pval=Curroomp->pulse_time;
+		uint8_t pval=Curroomp->pulse_time;
 
 		ebox=(CEdit *) GetDlgItem (IDC_PULSE_TIME_EDIT);
 		sprintf (str,"%d",pval);

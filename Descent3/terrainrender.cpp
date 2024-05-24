@@ -836,11 +836,11 @@ void DrawSky(vector *veye, matrix *vorient);
 function_mode View_mode;
 int ManageFramerate = 0;
 int MinAllowableFramerate = 15;
-ubyte Fast_terrain = 1;
+uint8_t Fast_terrain = 1;
 float Far_fog_border;
 vector Terrain_viewer_eye;
-ubyte Terrain_from_mine = 0;
-ubyte Show_invisible_terrain = 0;
+uint8_t Terrain_from_mine = 0;
+uint8_t Show_invisible_terrain = 0;
 int Terrain_objects_drawn = 0;
 vector Last_frame_stars[MAX_STARS];
 float Terrain_texture_distance = DEFAULT_TEXTURE_DISTANCE;
@@ -877,8 +877,8 @@ void InitTerrainRenderSpeedups() {
   }
 }
 // codes a point for visibility in the window passed to RenderTerrain()
-ubyte CodeTerrainPoint(g3Point *p) {
-  ubyte cc = 0;
+uint8_t CodeTerrainPoint(g3Point *p) {
+  uint8_t cc = 0;
   if (p->p3_sx > Clip_scale_right)
     cc |= CC_OFF_RIGHT;
   if (p->p3_sx < Clip_scale_left)
@@ -895,7 +895,7 @@ int IsTerrainDynamicChecked(int seg, int bit) {
     return 1;
   if (bit >= 8)
     return 1;
-  ubyte val = Terrain_dynamic_table[seg] & (1 << bit);
+  uint8_t val = Terrain_dynamic_table[seg] & (1 << bit);
   if (val)
     return 1;
   return 0;
@@ -960,7 +960,7 @@ static int obj_sort_func(const obj_sort_item *a, const obj_sort_item *b) {
 // Returns true if the object is outside of our terrain portal
 int ObjectOutOfPortal(object *obj) {
   g3Point pnt1, pnt2;
-  ubyte anded = 0xff;
+  uint8_t anded = 0xff;
   g3_RotatePoint(&pnt1, &obj->min_xyz);
   if (pnt1.p3_codes & CC_BEHIND)
     return 0;
@@ -1015,13 +1015,13 @@ int ShootRaysToObject(object *obj) {
 bool ExternalRoomVisible(room *rp, vector *center, float *zdist) {
   ASSERT(rp->flags & RF_EXTERNAL);
   g3Point pnt;
-  ubyte ccode;
+  uint8_t ccode;
 
   vector corners[8];
   g3_RotatePoint(&pnt, center);
   *zdist = pnt.p3_z;
   MakePointsFromMinMax(corners, &rp->min_xyz, &rp->max_xyz);
-  ubyte andbyte = 0xff;
+  uint8_t andbyte = 0xff;
   for (int t = 0; t < 8; t++) {
     g3_RotatePoint(&pnt, &corners[t]);
     ccode = g3_CodePoint(&pnt);
@@ -1308,7 +1308,7 @@ void DrawCloudLayer() {
 // left,top,right,bot are optional parameters.  Omiting them (or setting them to -1) will
 // render to the whole screen.  Passing valid values will only render tiles visible in the
 // specified window (though it won't clip those tiles to the window)
-void RenderTerrain(ubyte from_mine, int left, int top, int right, int bot) {
+void RenderTerrain(uint8_t from_mine, int left, int top, int right, int bot) {
   static int first = 1;
   if (first) {
     InitTerrainRenderSpeedups();

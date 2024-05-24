@@ -35,7 +35,7 @@ typedef struct {
   int lightning_color;         // the color of the lightning
   int sky_flash_color;         // the color of the sky when lightning occurs
 
-  ubyte lightning_sequence;
+  uint8_t lightning_sequence;
 
   float last_lightning_evaluation_time;
   float lightning_interval_time;

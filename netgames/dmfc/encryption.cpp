@@ -39,11 +39,11 @@
 
 class IceSubkey {
 public:
-  unsigned int val[3];
+  uint32_t val[3];
 };
 
 // the S-boxes
-static unsigned int ice_sbox[4][1024];
+static uint32_t ice_sbox[4][1024];
 static int ice_sboxes_initialised = 0;
 
 // modulo values for the S-boxes
@@ -55,7 +55,7 @@ static const int ice_sxor[4][4] = {
     {0x83, 0x85, 0x9b, 0xcd}, {0xcc, 0xa7, 0xad, 0x41}, {0x4b, 0x2e, 0xd4, 0x33}, {0xea, 0xcb, 0x2e, 0x04}};
 
 // Permutation values for the P-box
-static const unsigned int ice_pbox[32] = {
+static const uint32_t ice_pbox[32] = {
     0x00000001, 0x00000080, 0x00000400, 0x00002000, 0x00080000, 0x00200000, 0x01000000, 0x40000000,
     0x00000008, 0x00000020, 0x00000100, 0x00004000, 0x00010000, 0x00800000, 0x04000000, 0x20000000,
     0x00000004, 0x00000010, 0x00000200, 0x00008000, 0x00020000, 0x00400000, 0x08000000, 0x10000000,
@@ -69,8 +69,8 @@ static const int ice_keyrot[16] = {0, 1, 2, 3, 2, 1, 3, 0, 1, 3, 2, 0, 3, 1, 0, 
 // Just like arithmetic multiplication, except that additions and
 // subtractions are replaced by XOR.
 //
-static uint gf_mult(uint a, uint b, uint m) {
-  uint res = 0;
+static uint32_t gf_mult(uint32_t a, uint32_t b, uint32_t m) {
+  uint32_t res = 0;
 
   while (b) {
     if (b & 1)
@@ -90,8 +90,8 @@ static uint gf_mult(uint a, uint b, uint m) {
 // Galois Field exponentiation.
 // Raise the base to the power of 7, modulo m.
 //
-static unsigned int gf_exp7(uint b, uint m) {
-  uint x;
+static uint32_t gf_exp7(uint32_t b, uint32_t m) {
+  uint32_t x;
 
   if (b == 0)
     return 0;
@@ -106,9 +106,9 @@ static unsigned int gf_exp7(uint b, uint m) {
 //
 // Carry out the ICE 32-bit P-box permutation.
 //
-static unsigned int ice_perm32(unsigned int x) {
-  unsigned int res = 0;
-  const unsigned int *pbox = ice_pbox;
+static uint32_t ice_perm32(uint32_t x) {
+  uint32_t res = 0;
+  const uint32_t *pbox = ice_pbox;
 
   while (x) {
     if (x & 1)
@@ -130,7 +130,7 @@ static void ice_sboxes_init(void) {
   for (i = 0; i < 1024; i++) {
     int col = (i >> 1) & 0xff;
     int row = (i & 0x1) | ((i & 0x200) >> 8);
-    unsigned int x;
+    uint32_t x;
 
     x = gf_exp7(col ^ ice_sxor[0][row], ice_smod[0][row]) << 24;
     ice_sbox[0][i] = ice_perm32(x);
@@ -186,9 +186,9 @@ IceKey::~IceKey() {
 //
 // The single round ICE f function.
 //
-static unsigned int ice_f(unsigned int p, const IceSubkey *sk) {
-  unsigned int tl, tr; /* Expanded 40-bit values */
-  unsigned int al, ar; /* Salted expanded 40-bit values */
+static uint32_t ice_f(uint32_t p, const IceSubkey *sk) {
+  uint32_t tl, tr; /* Expanded 40-bit values */
+  uint32_t al, ar; /* Salted expanded 40-bit values */
 
   // Left half expansion
   tl = ((p >> 16) & 0x3ff) | (((p >> 14) | (p << 18)) & 0xffc00);
@@ -211,14 +211,14 @@ static unsigned int ice_f(unsigned int p, const IceSubkey *sk) {
 //
 // Encrypt a block of 8 bytes of data with the given ICE key.
 //
-void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
+void IceKey::encrypt(const uint8_t *ptext, uint8_t *ctext) const {
   int i;
-  unsigned int l, r;
+  uint32_t l, r;
 
-  l = (((unsigned int)ptext[0]) << 24) | (((unsigned int)ptext[1]) << 16) | (((unsigned int)ptext[2]) << 8) |
+  l = (((uint32_t)ptext[0]) << 24) | (((uint32_t)ptext[1]) << 16) | (((uint32_t)ptext[2]) << 8) |
       ptext[3];
 
-  r = (((unsigned int)ptext[4]) << 24) | (((unsigned int)ptext[5]) << 16) | (((unsigned int)ptext[6]) << 8) |
+  r = (((uint32_t)ptext[4]) << 24) | (((uint32_t)ptext[5]) << 16) | (((uint32_t)ptext[6]) << 8) |
       ptext[7];
 
   for (i = 0; i < _rounds; i += 2) {
@@ -227,8 +227,8 @@ void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
   }
 
   for (i = 0; i < 4; i++) {
-    ctext[3 - i] = (ubyte)r & 0xff;
-    ctext[7 - i] = (ubyte)l & 0xff;
+    ctext[3 - i] = (uint8_t)r & 0xff;
+    ctext[7 - i] = (uint8_t)l & 0xff;
 
     r >>= 8;
     l >>= 8;
@@ -238,13 +238,13 @@ void IceKey::encrypt(const ubyte *ptext, ubyte *ctext) const {
 //
 // Decrypt a block of 8 bytes of data with the given ICE key.
 //
-void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
+void IceKey::decrypt(const uint8_t *ctext, uint8_t *ptext) const {
   int i;
-  unsigned int l, r;
+  uint32_t l, r;
 
-  l = (((unsigned int)ctext[0]) << 24) | (((unsigned int)ctext[1]) << 16) | (((unsigned int)ctext[2]) << 8) |
+  l = (((uint32_t)ctext[0]) << 24) | (((uint32_t)ctext[1]) << 16) | (((uint32_t)ctext[2]) << 8) |
       ctext[3];
-  r = (((unsigned int)ctext[4]) << 24) | (((unsigned int)ctext[5]) << 16) | (((unsigned int)ctext[6]) << 8) |
+  r = (((uint32_t)ctext[4]) << 24) | (((uint32_t)ctext[5]) << 16) | (((uint32_t)ctext[6]) << 8) |
       ctext[7];
 
   for (i = _rounds - 1; i > 0; i -= 2) {
@@ -253,8 +253,8 @@ void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
   }
 
   for (i = 0; i < 4; i++) {
-    ptext[3 - i] = (ubyte)r & 0xff;
-    ptext[7 - i] = (ubyte)l & 0xff;
+    ptext[3 - i] = (uint8_t)r & 0xff;
+    ptext[7 - i] = (uint8_t)l & 0xff;
 
     r >>= 8;
     l >>= 8;
@@ -264,7 +264,7 @@ void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
 //
 // Set 8 rounds [n, n+7] of the key schedule of an ICE key.
 //
-void IceKey::scheduleBuild(unsigned short *kb, int n, const int *keyrot) {
+void IceKey::scheduleBuild(uint16_t *kb, int n, const int *keyrot) {
   int i;
 
   for (i = 0; i < 8; i++) {
@@ -277,10 +277,10 @@ void IceKey::scheduleBuild(unsigned short *kb, int n, const int *keyrot) {
 
     for (j = 0; j < 15; j++) {
       int k;
-      unsigned int *curr_sk = &isk->val[j % 3];
+      uint32_t *curr_sk = &isk->val[j % 3];
 
       for (k = 0; k < 4; k++) {
-        ushort *curr_kb = &kb[(kr + k) & 3];
+        uint16_t *curr_kb = &kb[(kr + k) & 3];
         int bit = *curr_kb & 1;
 
         *curr_sk = (*curr_sk << 1) | bit;
@@ -293,11 +293,11 @@ void IceKey::scheduleBuild(unsigned short *kb, int n, const int *keyrot) {
 //
 // Set the key schedule of an ICE key.
 //
-void IceKey::set(const ubyte *key) {
+void IceKey::set(const uint8_t *key) {
   int i;
 
   if (_rounds == 8) {
-    ushort kb[4];
+    uint16_t kb[4];
 
     for (i = 0; i < 4; i++) {
       kb[3 - i] = (key[i * 2] << 8) | key[i * 2 + 1];
@@ -309,7 +309,7 @@ void IceKey::set(const ubyte *key) {
 
   for (i = 0; i < _size; i++) {
     int j;
-    ushort kb[4];
+    uint16_t kb[4];
 
     for (j = 0; j < 4; j++) {
       kb[3 - j] = (key[i * 8 + j * 2] << 8) | key[i * 8 + j * 2 + 1];

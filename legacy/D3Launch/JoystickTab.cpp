@@ -384,7 +384,7 @@ int GetJoystickName(int joy_num,char *szRegKey,char *szReturnName)
    sprintf((char *)KeyStr,(char *)REGSTR_VAL_JOYNOEMNAME,joy_num+1);   
    Length=sizeof(szOEMName);                        	// Get OEMNAME Configuration
    
-   if( ERROR_SUCCESS != RegQueryValueEx( JoyConfigKey,(char *)KeyStr,NULL,NULL,(unsigned char *)&szOEMName,&Length))
+   if( ERROR_SUCCESS != RegQueryValueEx( JoyConfigKey,(char *)KeyStr,NULL,NULL,(uint8_t *)&szOEMName,&Length))
       {
         return( 1 );                                	// No OEM name listed return error
       }
@@ -402,7 +402,7 @@ int GetJoystickName(int joy_num,char *szRegKey,char *szReturnName)
       }
    Length=MAX_PATH;                        	// Get Name as listed in Control Panel
    
-   if( ERROR_SUCCESS != RegQueryValueEx( OEMPropKey,REGSTR_VAL_JOYOEMNAME,NULL,NULL,(unsigned char *)szReturnName,&Length))
+   if( ERROR_SUCCESS != RegQueryValueEx( OEMPropKey,REGSTR_VAL_JOYOEMNAME,NULL,NULL,(uint8_t *)szReturnName,&Length))
       {
         return( 1 );                              	 // No OEM name listed return error
       }

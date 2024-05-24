@@ -39,7 +39,7 @@ typedef struct {
 typedef struct {
   int me_handle;
   int it_handle;
-  ubyte *special_data;
+  uint8_t *special_data;
   char *input_string;
   int input_key;
   union {
