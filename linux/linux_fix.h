@@ -37,13 +37,11 @@ char *strupr(char *string);
 #define _MAX_PATH 260  /* max. length of full pathname*/
 #define _MAX_FNAME 256 /* max. length of path component*/
 #define _MAX_EXT 256   /* max. length of extension component*/
-#if !defined(MAX_PATH)
-#define MAX_PATH _MAX_PATH
-#endif
+
 // _cdecl replacement
 #define __cdecl __attribute__((cdecl))
-// _stdcall replacement
-#define _stdcall __attribute__((stdcall))
+// __stdcall replacement
+#define __stdcall __attribute__((stdcall))
 
 #define stricmp(a, b) strcasecmp(a, b)
 #define strnicmp(a, b, c) strncasecmp(a, b, c)
