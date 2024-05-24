@@ -36,7 +36,7 @@ public:
   //   pBuffer: The buffer to receive the data into
   //    amount: How much data to read
   // Returns the number of bytes read - zero when we're at the end of the file
-  uint32 Read(void *pBuffer, uint32 amount);
+  uint32_t Read(void *pBuffer, uint32_t amount);
 
   ACMStream *m_acm = nullptr;
   ReadDataFunction m_readerFunction;
@@ -94,11 +94,11 @@ InternalAudioDecoder::~InternalAudioDecoder() {
 //   pBuffer: The buffer to receive the data into
 //    amount: How much data to read
 // Returns the number of bytes read - zero when we're at the end of the file
-uint32 InternalAudioDecoder::Read(void *pBuffer, uint32 amount) {
+uint32_t InternalAudioDecoder::Read(void *pBuffer, uint32_t amount) {
   const int bigendianp = 0; // we want little endian samples - TODO: or only on little endian platforms?
   const int wordlen = 2;    // the only supported value
   const int sgned = 1;      // we want signed samples
-  uint32 totalBytesRead = 0;
+  uint32_t totalBytesRead = 0;
   uint8 *pBuf = reinterpret_cast<uint8 *>(pBuffer);
 
   while (totalBytesRead < amount) {
@@ -129,9 +129,9 @@ uint32 InternalAudioDecoder::Read(void *pBuffer, uint32 amount) {
 // (in case you want to pre-allocate a buffer to load them all into memory).
 IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction,
                                            void *pReaderData,
-                                           uint32 &numChannels,
-                                           uint32 &sampleRate,
-                                           uint32 &sampleCount) {
+                                           uint32_t &numChannels,
+                                           uint32_t &sampleRate,
+                                           uint32_t &sampleCount) {
   // allocate our decoder
   InternalAudioDecoder *pDecoder =
       new InternalAudioDecoder(readerFunction, pReaderData);

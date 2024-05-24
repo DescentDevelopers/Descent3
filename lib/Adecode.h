@@ -20,7 +20,7 @@
 #define AUDIODECODE_H_
 
 namespace AudioDecoder {
-typedef uint32_t uint32;
+typedef uint32_t uint32_t;
 typedef int32_t sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
@@ -35,7 +35,7 @@ public:
   //   pBuffer: The buffer to receive the data from
   //    amount: How much data to read
   // Returns the number of bytes read - zero when we're at the end of the file
-  virtual uint32 Read(void *pBuffer, uint32 amount) = 0;
+  virtual uint32_t Read(void *pBuffer, uint32_t amount) = 0;
 };
 
 // Create an audio decoder
@@ -47,8 +47,8 @@ public:
 // (e.g. 22050), and the number of samples contained in the compressed file
 // (in case you want to pre-allocate a buffer to load them all into memory).
 typedef sint32 (*ReadDataFunction)(void *pData, void *pBuffer, uint32_t amount);
-IAudioDecoder *CreateDecoder(ReadDataFunction reader, void *pData, uint32 &numChannels, uint32 &sampleRate,
-                             uint32 &sampleCount);
+IAudioDecoder *CreateDecoder(ReadDataFunction reader, void *pData, uint32_t &numChannels, uint32_t &sampleRate,
+                             uint32_t &sampleCount);
 
 } // namespace AudioDecoder
 

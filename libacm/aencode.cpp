@@ -23,7 +23,7 @@
 #include <assert.h>
 #include "Aencode.h"
 
-typedef uint32_t uint32;
+typedef uint32_t uint32_t;
 typedef int32_t sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
@@ -32,12 +32,12 @@ typedef int8_t sint8;
 
 struct BitsEncoder {
   FILE *m_outFile;   // var50 | offset 0x10
-  uint32 m_bitData;  // var4C | offset 0x14
-  uint32 m_bitCount; // var48 | offset 0x18
+  uint32_t m_bitData;  // var4C | offset 0x14
+  uint32_t m_bitCount; // var48 | offset 0x18
 
-  void WriteBits(sint32 val, uint32 numBits) {
+  void WriteBits(sint32 val, uint32_t numBits) {
     assert((numBits + m_bitCount) <= 32);
-    m_bitData |= static_cast<uint32>(val << m_bitCount);
+    m_bitData |= static_cast<uint32_t>(val << m_bitCount);
     m_bitCount += numBits;
 
     while (m_bitCount >= 8) {
@@ -70,7 +70,7 @@ struct BitsEncoder {
 struct Encoder {
   ReadSampleFunction *m_reader;           // var60         | offset 0x00
   void *m_pReaderData;                    // var5C         | offset 0x04
-  uint32 m_sampleCount;                   // var58         | offset 0x08
+  uint32_t m_sampleCount;                   // var58         | offset 0x08
   float m_volume;                         // var54         | offset 0x0C
   BitsEncoder m_bits;                     // var50 - var48 | offset 0x10 - 0x18
   sint8 m_levels;                         // var44*        | offset 0x1C
@@ -87,26 +87,26 @@ struct Encoder {
   sint32 m_someVal;                       // var1C         | offset 0x44
   float *m_lo_filter;                     // var18         | offset 0x48
   float *m_hi_filter;                     // var14         | offset 0x4C
-  uint32 *m_pFormatIdPerColumn;           // var10         | offset 0x50
+  uint32_t *m_pFormatIdPerColumn;           // var10         | offset 0x50
   sint32 m_currBlockBitPower;             // var0C         | offset 0x54
   sint32 m_currBlockBitValue;             // var08         | offset 0x58
   sint32 m_threshold;                     // var04         | offset 0x5C
 };
 
-typedef void (*WriteBandFunc)(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt0(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt3_16(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt17(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt18(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt19(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt20(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt21(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt22(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt23(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt24(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt26(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt27(Encoder &enc, sint32 colIndex, uint32 packerId);
-void WriteBand_Fmt29(Encoder &enc, sint32 colIndex, uint32 packerId);
+typedef void (*WriteBandFunc)(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt0(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt3_16(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt17(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt18(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt19(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt20(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt21(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt22(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt23(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt24(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt26(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt27(Encoder &enc, sint32 colIndex, uint32_t packerId);
+void WriteBand_Fmt29(Encoder &enc, sint32 colIndex, uint32_t packerId);
 
 WriteBandFunc WriteBand_tbl[] = {WriteBand_Fmt0,
                                  NULL,
@@ -153,9 +153,9 @@ const float T911 = -32767.0f;
 const float T913 = 32767.0f;
 const float T1266 = 0.0f;
 
-void WriteBand_Fmt0(Encoder &enc, sint32 colIndex, uint32 formatId) {}
+void WriteBand_Fmt0(Encoder &enc, sint32 colIndex, uint32_t formatId) {}
 
-void WriteBand_Fmt3_16(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt3_16(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = float(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockValue);
@@ -175,7 +175,7 @@ void WriteBand_Fmt3_16(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt17(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt17(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBitValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBitValue = currBitValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBitValue);
@@ -213,7 +213,7 @@ void WriteBand_Fmt17(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt18(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt18(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockBitValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockBitValue = enc.m_currBlockBitValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockBitValue);
@@ -242,7 +242,7 @@ void WriteBand_Fmt18(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt19(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt19(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockBitValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockBitValue = currBlockBitValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockBitValue);
@@ -291,7 +291,7 @@ void WriteBand_Fmt19(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt20(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt20(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockValue);
@@ -333,7 +333,7 @@ void WriteBand_Fmt20(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt21(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt21(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockValue);
@@ -367,7 +367,7 @@ void WriteBand_Fmt21(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt22(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt22(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockValue);
@@ -418,7 +418,7 @@ void WriteBand_Fmt22(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt23(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt23(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockValue);
@@ -473,7 +473,7 @@ void WriteBand_Fmt23(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt24(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt24(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockBitValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockBitValue = currBlockBitValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockBitValue);
@@ -513,7 +513,7 @@ void WriteBand_Fmt24(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt26(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt26(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = static_cast<sint32>(ceilf(-32767.0f / currBlockValue));
@@ -563,7 +563,7 @@ void WriteBand_Fmt26(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt27(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt27(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBlockValue = static_cast<float>(enc.m_currBlockBitValue);
   const float halfCurrBlockValue = currBlockValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBlockValue);
@@ -598,7 +598,7 @@ void WriteBand_Fmt27(Encoder &enc, sint32 colIndex, uint32 formatId) {
   }
 }
 
-void WriteBand_Fmt29(Encoder &enc, sint32 colIndex, uint32 formatId) {
+void WriteBand_Fmt29(Encoder &enc, sint32 colIndex, uint32_t formatId) {
   const float currBitValue = (float)enc.m_currBlockBitValue;
   const float halfCurrBitValue = currBitValue * 0.5f;
   const sint32 minValue = (sint32)ceilf(-32767.0f / currBitValue);
@@ -683,7 +683,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
     }
   }
 
-  enc.m_pFormatIdPerColumn = reinterpret_cast<uint32 *>(malloc(enc.m_numColumns * sizeof(uint32)));
+  enc.m_pFormatIdPerColumn = reinterpret_cast<uint32_t *>(malloc(enc.m_numColumns * sizeof(uint32_t)));
   if (enc.m_pFormatIdPerColumn == NULL)
     return 0;
 
@@ -767,7 +767,7 @@ void transform_all(Encoder &enc) {
 }
 
 sint32 calc_bits(Encoder &enc, sint32 val) {
-  static uint32 calc_bits_data[] = {0x00, 0x13, 0x16, 0x03, 0x1D, 0x00};
+  static uint32_t calc_bits_data[] = {0x00, 0x13, 0x16, 0x03, 0x1D, 0x00};
 
   sint32 bitPower = 3;
   sint32 result = enc.m_numColumns * 5 + 20;
@@ -927,7 +927,7 @@ void WriteBands(Encoder &enc) {
   enc.m_bits.WriteBits(enc.m_currBlockBitValue, 16);
 
   for (int i = 0; i < enc.m_numColumns; ++i) {
-    const uint32 formatId = enc.m_pFormatIdPerColumn[i];
+    const uint32_t formatId = enc.m_pFormatIdPerColumn[i];
     enc.m_bits.WriteBits(formatId, 5);
 //    int32_t currPos = ftell(enc.m_bits.m_outFile);
     WriteBand_tbl[formatId](enc, i, formatId);
