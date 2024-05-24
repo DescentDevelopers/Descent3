@@ -1081,7 +1081,7 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
   //	check if valid cockpit file
   cf_ReadString(srcline, sizeof(srcline), fp);
 
-  if (strcmpi(srcline, "[hud file]") == 0) {
+  if (stricmp(srcline, "[hud file]") == 0) {
     tHUDItem hud_item;
 
     memset(&hud_item, 0, sizeof(hud_item));
@@ -1108,54 +1108,54 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
           continue;
 
         //	find command,
-        if (!strcmpi(command, "type")) {
+        if (!stricmp(command, "type")) {
           //	get operand.
           hud_item.type = atoi(operand);
-        } else if (!strcmpi(command, "pos")) {
+        } else if (!stricmp(command, "pos")) {
           //	get two numbers from line
           int ix, iy;
           sscanf(operand, "%d,%d", &ix, &iy);
           hud_item.x = ix;
           hud_item.y = iy;
-        } else if (!strcmpi(command, "posA")) {
+        } else if (!stricmp(command, "posA")) {
           //	get two numbers from line
           int ix, iy;
           sscanf(operand, "%d,%d", &ix, &iy);
           hud_item.xa = ix;
           hud_item.ya = iy;
-        } else if (!strcmpi(command, "posB")) {
+        } else if (!stricmp(command, "posB")) {
           //	get two numbers from line
           int ix, iy;
           sscanf(operand, "%d,%d", &ix, &iy);
           hud_item.xb = ix;
           hud_item.yb = iy;
-        } else if (!strcmpi(command, "grscale")) {
+        } else if (!stricmp(command, "grscale")) {
           sscanf(operand, "%f,%f", &hud_item.grscalex, &hud_item.grscaley);
-        } else if (!strcmpi(command, "textpos")) {
+        } else if (!stricmp(command, "textpos")) {
           //	get two numbers from line
           int ix, iy;
           sscanf(operand, "%d,%d", &ix, &iy);
           hud_item.tx = ix;
           hud_item.ty = iy;
           text_pos = true;
-        } else if (!strcmpi(command, "alpha")) {
+        } else if (!stricmp(command, "alpha")) {
           // get alpha value.
           hud_item.alpha = atoi(operand);
-        } else if (!strcmpi(command, "sat")) {
+        } else if (!stricmp(command, "sat")) {
           // saturation count
           hud_item.saturation_count = atoi(operand);
-        } else if (!strcmpi(command, "rgb")) {
+        } else if (!stricmp(command, "rgb")) {
           // saturation count
           int r, g, b;
           sscanf(operand, "%d,%d,%d", &r, &g, &b);
           hud_item.color = GR_RGB(r, g, b);
-        } else if (!strcmpi(command, "textrgb")) {
+        } else if (!stricmp(command, "textrgb")) {
           int r, g, b;
           sscanf(operand, "%d,%d,%d", &r, &g, &b);
           hud_item.tcolor = GR_RGB(r, g, b);
-        } else if (!strcmpi(command, "special")) {
+        } else if (!stricmp(command, "special")) {
           hud_item.stat |= STAT_SPECIAL;
-        } else if (!strcmpi(command, "create")) {
+        } else if (!stricmp(command, "create")) {
           //	create hud item.
           if (!text_pos) {
             hud_item.tx = hud_item.x;
@@ -1170,10 +1170,10 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
           hud_item.color = HUD_COLOR;
           hud_item.tcolor = HUD_COLOR;
           text_pos = false;
-        } else if (!strcmpi(command, "reticleprefix")) {
+        } else if (!stricmp(command, "reticleprefix")) {
           // copy prefix of reticle bitmaps.
           strcpy(Reticle_prefix, operand);
-        } else if (!strcmpi(command, "reticleoffset")) {
+        } else if (!stricmp(command, "reticleoffset")) {
           int x, y;
           sscanf(operand, "%d,%d", &x, &y);
           Ret_x_off = (int16_t)x;

@@ -866,7 +866,7 @@ const char *GetMultiCDPath(const char *file) {
       vol_filename = temp_filename;
     }
 
-    if (strcmpi(vol_filename, file) == 0) {
+    if (stricmp(vol_filename, file) == 0) {
       volume = file_volumes[i].volume;
       ddio_MakePath(fullpath, LocalD3Dir, file_volumes[i].localpath, file, NULL);
       // See if the file is in the local dir already.
@@ -874,7 +874,7 @@ const char *GetMultiCDPath(const char *file) {
         return fullpath;
       }
 #ifdef _DEBUG
-      else if (strcmpi(file_volumes[i].localpath, "movies") == 0) {
+      else if (stricmp(file_volumes[i].localpath, "movies") == 0) {
         // if one specified a directory where the movies are located.
         int arg = FindArg("-moviedir");
         if (arg) {

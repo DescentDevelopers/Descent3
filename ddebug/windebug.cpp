@@ -193,9 +193,9 @@
 #include "mono.h"
 
 #include <windows.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstdint>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -630,7 +630,7 @@ void PE_Debug::DumpSymbolInfo(DumpBuffer &dumpBuffer, DWORD relativeAddress) {
     // Microsoft uses sections that only _begin_ with .text
     const char *symName = GetSymbolName(currentSym);
 
-    if (strnicmp(symName, ".text", 5) == 0 || strcmpi(symName, "CODE") == 0) {
+    if (strnicmp(symName, ".text", 5) == 0 || stricmp(symName, "CODE") == 0) {
       if (currentSym->Value <= relativeAddress) {
         PIMAGE_AUX_SYMBOL auxSym = (PIMAGE_AUX_SYMBOL)(currentSym + 1);
         if (currentSym->Value + auxSym->Section.Length >= relativeAddress) {
@@ -694,7 +694,7 @@ void PE_Debug::DumpSymbolInfo(DumpBuffer &dumpBuffer, DWORD relativeAddress) {
   if (fileSymbol) {
     const char *auxSym = (const char *)(fileSymbol + 1);
 
-    if (strcmpi(latestFile, auxSym)) {
+    if (stricmp(latestFile, auxSym)) {
       strcpy(latestFile, auxSym);
       // JAS      dumpBuffer.Printf( "  file: %s\r\n", auxSym ) ;
     }
@@ -810,7 +810,7 @@ int PE_Debug::DumpDebugInfo(DumpBuffer &dumpBuffer, const BYTE *caller, HINSTANC
   GetModuleFileName(hInstance, module, MAX_MODULENAME_LEN);
 
   // New module
-  if (strcmpi(latestModule, module)) {
+  if (stricmp(latestModule, module)) {
     strcpy(latestModule, module);
     // JAS    dumpBuffer.Printf( "Module: %s\r\n", module );
     MapFileInMemory(module);

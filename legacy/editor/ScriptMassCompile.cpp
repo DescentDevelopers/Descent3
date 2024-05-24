@@ -218,7 +218,7 @@ void writeline(char *format, ... )
 	char buffer[2048];
 	va_list marker;
 	va_start(marker,format);
-	vsprintf(buffer,format,marker);
+        std::vsprintf(buffer,format,marker);
 	va_end(marker);
 
 	MassScriptEditContent += buffer;
@@ -343,7 +343,7 @@ void CScriptMassCompile::SetStepText(int step,char *format,...)
 	char buffer[1024];
 	va_list marker;
 	va_start(marker,format);
-	vsprintf(buffer,format,marker);
+        std::vsprintf(buffer,format,marker);
 	va_end(marker);
 
 	CWnd *wnd;

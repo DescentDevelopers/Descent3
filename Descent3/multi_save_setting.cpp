@@ -154,7 +154,7 @@ int MultiLoadSettings(const char *filename) {
     if (!tokval) {
       continue;
     }
-    if (strcmpi(toklabel, "NAME") == 0) {
+    if (stricmp(toklabel, "NAME") == 0) {
       strcpy(Netgame.name, tokval);
       // Do this so the name can still have spaces
       tokval = strtok(NULL, seps);
@@ -163,7 +163,7 @@ int MultiLoadSettings(const char *filename) {
         strcat(Netgame.name, tokval);
         tokval = strtok(NULL, seps);
       }
-    } else if (strcmpi(toklabel, "MISSION") == 0) {
+    } else if (stricmp(toklabel, "MISSION") == 0) {
       strcpy(Netgame.mission, tokval);
       // Do this so the mission can still have spaces
       tokval = strtok(NULL, seps);
@@ -172,7 +172,7 @@ int MultiLoadSettings(const char *filename) {
         strcat(Netgame.mission, tokval);
         tokval = strtok(NULL, seps);
       }
-    } else if (strcmpi(toklabel, "SCRIPT") == 0) {
+    } else if (stricmp(toklabel, "SCRIPT") == 0) {
       strcpy(Netgame.scriptname, tokval);
       // Do this so the script can still have spaces
       tokval = strtok(NULL, seps);
@@ -181,66 +181,66 @@ int MultiLoadSettings(const char *filename) {
         strcat(Netgame.scriptname, tokval);
         tokval = strtok(NULL, seps);
       }
-    } else if (strcmpi(toklabel, "PPS") == 0) {
+    } else if (stricmp(toklabel, "PPS") == 0) {
       Netgame.packets_per_second = atoi(tokval);
-    } else if (strcmpi(toklabel, "PEERPEER") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "PEERPEER") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_PEER_PEER;
       else
         Netgame.flags &= ~NF_PEER_PEER;
-    } else if (strcmpi(toklabel, "PERMISSABLE") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "PERMISSABLE") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_PERMISSABLE;
       else
         Netgame.flags &= ~NF_PERMISSABLE;
-    } else if (strcmpi(toklabel, "RANDOMIZERESPAWN") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "RANDOMIZERESPAWN") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_RANDOMIZE_RESPAWN;
       else
         Netgame.flags &= ~NF_RANDOMIZE_RESPAWN;
-    } else if (strcmpi(toklabel, "ACCWEAP") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "ACCWEAP") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_USE_ACC_WEAP;
       else
         Netgame.flags &= ~NF_USE_ACC_WEAP;
-    } else if (strcmpi(toklabel, "ROTVEL") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "ROTVEL") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_SENDROTVEL;
       else
         Netgame.flags &= ~NF_SENDROTVEL;
-    } else if (strcmpi(toklabel, "USESMOOTHING") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "USESMOOTHING") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_USE_SMOOTHING;
       else
         Netgame.flags &= ~NF_USE_SMOOTHING;
-    } else if (strcmpi(toklabel, "BRIGHTPLAYERS") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "BRIGHTPLAYERS") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_BRIGHT_PLAYERS;
       else
         Netgame.flags &= ~NF_BRIGHT_PLAYERS;
-    } else if (strcmpi(toklabel, "MAXPLAYERS") == 0) {
+    } else if (stricmp(toklabel, "MAXPLAYERS") == 0) {
       Netgame.max_players = atoi(tokval);
-    } else if (strcmpi(toklabel, "RESPAWNTIME") == 0) {
+    } else if (stricmp(toklabel, "RESPAWNTIME") == 0) {
       Netgame.respawn_time = atoi(tokval);
-    } else if (strcmpi(toklabel, "KILLGOAL") == 0) {
+    } else if (stricmp(toklabel, "KILLGOAL") == 0) {
       Netgame.killgoal = atoi(tokval);
       if (Netgame.killgoal)
         Netgame.flags |= NF_KILLGOAL;
       else
         Netgame.flags &= ~NF_KILLGOAL;
 
-    } else if (strcmpi(toklabel, "TIMELIMIT") == 0) {
+    } else if (stricmp(toklabel, "TIMELIMIT") == 0) {
       Netgame.timelimit = atoi(tokval);
       if (Netgame.timelimit)
         Netgame.flags |= NF_TIMER;
       else
         Netgame.flags &= ~NF_TIMER;
-    } else if (strcmpi(toklabel, "OBJBAN") == 0) {
+    } else if (stricmp(toklabel, "OBJBAN") == 0) {
       objid = FindObjectIDName(tokval);
       if (objid != -1) {
         Object_info[objid].multi_allowed = 0;
       }
-    } else if (strcmpi(toklabel, "SHIPBAN") == 0) {
+    } else if (stricmp(toklabel, "SHIPBAN") == 0) {
       // Do this so the name can have spaces
       char buf[100];
       strcpy(buf, tokval);
@@ -251,12 +251,12 @@ int MultiLoadSettings(const char *filename) {
         tokval = strtok(NULL, seps);
       }
       PlayerSetShipPermission(-1, buf, 0);
-    } else if (strcmpi(toklabel, "MLOOK") == 0) {
-      if (strcmpi(tokval, "true") == 0)
+    } else if (stricmp(toklabel, "MLOOK") == 0) {
+      if (stricmp(tokval, "true") == 0)
         Netgame.flags |= NF_ALLOW_MLOOK;
       else
         Netgame.flags &= ~NF_ALLOW_MLOOK;
-    } else if (strcmpi(toklabel, "DIFFICULTY") == 0) {
+    } else if (stricmp(toklabel, "DIFFICULTY") == 0) {
       Netgame.difficulty = atoi(tokval);
       if ((Netgame.difficulty > 4) || (Netgame.difficulty < 0))
         Netgame.difficulty = 0;

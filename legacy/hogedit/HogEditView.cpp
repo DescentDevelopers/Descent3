@@ -641,7 +641,7 @@ void CHogEditView::OnActionDelete()
 			{
 				last_pos=pos;
 				entry = doc->Library.filelist.GetNext(pos);
-				if (!strcmpi(entry.name, name) && !strcmpi(entry.path, path)) { 
+				if (!stricmp(entry.name, name) && !stricmp(entry.path, path)) { 
 					doc->Library.filelist.RemoveAt(last_pos);
 					break;
 				}
@@ -725,7 +725,7 @@ void CHogEditView::OnActionCreate()
 	CWaitCursor wc;
 
 	if(check_name) {
-		if(strcmpi(doc->Library.filename,hog_name.GetBuffer(0))!=0) {
+		if(stricmp(doc->Library.filename,hog_name.GetBuffer(0))!=0) {
 			DocModified=TRUE;
 			UpdateTitle(doc->m_DocumentName,DocModified);
 		}
@@ -1008,7 +1008,7 @@ void CHogEditView::OnActionExtract()
 			while (pos!=NULL)
 			{
 				entry = doc->Library.filelist.GetNext(pos);
-				if (!strcmpi(entry.name, name)) { 
+				if (!stricmp(entry.name, name)) { 
 
 					if(!doc->ExtractFile(entry.offset,entry.length,entry.name)) {
 						if(num_errors==0) {

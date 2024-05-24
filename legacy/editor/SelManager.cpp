@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
 
 #ifdef NEWEDITOR
 	#include "../neweditor/stdafx.h"
@@ -62,8 +63,8 @@ void editorSelectorManager::StartSelection(CWnd *wnd, void (*func)(editorSelecto
 
 			m_OwnerWnd->GetClientRect(&client_rect);
 			r_l = m_l; r_t = m_t; r_r = m_r; r_b = m_b;
-			if (r_r < r_l) SWAP(r_l, r_r);
-			if (r_b < r_t) SWAP(r_t, r_b);
+                        if (r_r < r_l) std::swap(r_l, r_r);
+                        if (r_b < r_t) std::swap(r_t, r_b);
 			if (r_l < client_rect.left) r_l = client_rect.left;
 			if (r_t < client_rect.top) r_t = client_rect.top;
 			if (r_r > client_rect.right) r_r = client_rect.right;
@@ -98,8 +99,8 @@ void editorSelectorManager::GetSelectedRect(int *l, int *t, int *r, int *b)
 //	make sure selected rectangle is clipped to the owner window and normalized.
 	m_OwnerWnd->GetClientRect(&client_rect);
 
-	if (m_r < m_l) SWAP(m_l, m_r);
-	if (m_b < m_t) SWAP(m_t, m_b);
+        if (m_r < m_l) std::swap(m_l, m_r);
+        if (m_b < m_t) std::swap(m_t, m_b);
 	if (m_l < client_rect.left) m_l = client_rect.left;
 	if (m_t < client_rect.top) m_t = client_rect.top;
 	if (m_r > client_rect.right) m_r = client_rect.right;
@@ -154,8 +155,8 @@ void editorSelectorManager::Defer()
 
 	//	get current selected rect, normalize rectangle if left,top is invalid for drawing.
 		r_l = m_l; r_t = m_t; r_r = m_r; r_b = m_b;
-		if (r_r < r_l) SWAP(r_l, r_r);
-		if (r_b < r_t) SWAP(r_t, r_b);
+                if (r_r < r_l) std::swap(r_l, r_r);
+                if (r_b < r_t) std::swap(r_t, r_b);
 		if (r_l < client_rect.left) r_l = client_rect.left;
 		if (r_t < client_rect.top) r_t = client_rect.top;
 		if (r_r > client_rect.right) r_r = client_rect.right;
@@ -166,8 +167,8 @@ void editorSelectorManager::Defer()
 		m_b = m_b + mdy;
 
 		r_l = m_l; r_t = m_t; r_r = m_r; r_b = m_b;
-		if (r_r < r_l) SWAP(r_l, r_r);
-		if (r_b < r_t) SWAP(r_t, r_b);
+                if (r_r < r_l) std::swap(r_l, r_r);
+                if (r_b < r_t) std::swap(r_t, r_b);
 		if (r_l < client_rect.left) r_l = client_rect.left;
 		if (r_t < client_rect.top) r_t = client_rect.top;
 		if (r_r > client_rect.right) r_r = client_rect.right;
@@ -203,8 +204,8 @@ void editorSelectorManager::EndSelection()
 // clip drawing rectangle to owner window.
 	m_OwnerWnd->GetClientRect(&client_rect);
 	r_l = m_l; r_t = m_t; r_r = m_r; r_b = m_b;
-	if (r_r < r_l) SWAP(r_l, r_r);
-	if (r_b < r_t) SWAP(r_t, r_b);
+        if (r_r < r_l) std::swap(r_l, r_r);
+        if (r_b < r_t) std::swap(r_t, r_b);
 	if (r_l < client_rect.left) r_l = client_rect.left;
 	if (r_t < client_rect.top) r_t = client_rect.top;
 	if (r_r > client_rect.right) r_r = client_rect.right;

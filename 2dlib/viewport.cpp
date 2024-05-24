@@ -104,6 +104,8 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+
 #include "gr.h"
 #include "lib2d.h"
 #include "renderer.h"
@@ -377,9 +379,9 @@ int grViewport::clip_rect(int &l, int &t, int &r, int &b) {
   int clipped = 0;
 
   if (l > r)
-    SWAP(l, r);
+    std::swap(l, r);
   if (t > b)
-    SWAP(t, b);
+    std::swap(t, b);
 
   if (l > CLIP_RIGHT || t > CLIP_BOTTOM || r < CLIP_LEFT || b < CLIP_TOP)
     return 2;

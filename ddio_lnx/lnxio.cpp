@@ -55,8 +55,8 @@
 // Linux IO System Main Library Interface
 // ----------------------------------------------------------------------------
 
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdarg>
 
 #ifdef MACOSX
 #include <mach-o/dyld.h>
@@ -97,7 +97,7 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   va_list arglist;
 
   va_start(arglist, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, arglist);
+  std::vsnprintf(buf, sizeof(buf), fmt, arglist);
   va_end(arglist);
 
   mprintf((0, "%s\n", buf));

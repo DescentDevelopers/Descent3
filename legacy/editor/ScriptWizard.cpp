@@ -363,7 +363,7 @@ void CScriptWizard::OnEditScript()
 
 //	rebuild list of scripts from changes in source code that may have happened.
 	ResetScriptList();
-	if (strcmpi(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0) 
+	if (stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0) 
 		GenerateScriptWizardInfo(m_ScriptSource, false);
 	else
 		GenerateScriptWizardInfo(m_ScriptSource, true);
@@ -562,7 +562,7 @@ void CScriptWizard::LoadCurrentModule()
 //	compile and generate list of script names.
 	ResetScriptList();
 	if (m_ScriptSource) {
-		if (strcmpi(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0) 
+		if (stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0) 
 			GenerateScriptWizardInfo(m_ScriptSource, false);
 		else
 			GenerateScriptWizardInfo(m_ScriptSource, true);
@@ -582,9 +582,9 @@ void CScriptWizard::UpdateScriptListbox()
 	for (i = 0; i < MAX_SCRIPTS; i++)
 	{
 		if (Script_names[i].used)
-			if (!strcmpi(ScriptFileName, DEFAULT_SCRIPT_NAME) && !Script_names[i].iscustom)
+			if (!stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) && !Script_names[i].iscustom)
 				scrlistbox->AddString(Script_names[i].name);
-			else if (strcmpi(ScriptFileName, DEFAULT_SCRIPT_NAME) && Script_names[i].iscustom)
+			else if (stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) && Script_names[i].iscustom)
 				scrlistbox->AddString(Script_names[i].name);
 	}
 
@@ -645,7 +645,7 @@ void CScriptWizard::UpdateDialogButtons()
 	char str[128];
 
 //	take care of script locking and unlocking buttons
-	if (strcmpi(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0) 
+	if (stricmp(ScriptFileName, DEFAULT_SCRIPT_NAME) == 0) 
 		n = FindGamefileName(ScriptFileName);
 	else 
 		n = -1;

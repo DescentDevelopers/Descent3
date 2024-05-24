@@ -40,6 +40,9 @@
  *
  * $NoKeywords: $
  */
+
+#include <algorithm>
+
 #include "procedurals.h"
 #include "bitmap.h"
 #include "gr.h"
@@ -55,7 +58,6 @@
 #include <memory.h>
 #include "psrand.h"
 
-#include <algorithm>
 
 #define BRIGHT_COLOR 254
 #define PROC_SIZE 128
@@ -283,8 +285,8 @@ void DrawProceduralLine(int x1, int y1, int x2, int y2, uint8_t color) {
 
   // Check to see if our x coords are reversed
   if (x1 > x2) {
-    SWAP(x1, x2);
-    SWAP(y1, y2);
+    std::swap(x1, x2);
+    std::swap(y1, y2);
   }
   DX = x2 - x1;
   DY = y2 - y1;

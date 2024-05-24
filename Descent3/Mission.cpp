@@ -704,7 +704,7 @@ static inline bool IS_MN3_FILE(const char *fname) {
   char name[PSFILENAME_LEN + 1];
   char ext[PSFILENAME_LEN + 1];
   ddio_SplitPath(fname, NULL, name, ext);
-  return (strcmpi(ext, ".mn3") == 0) ? true : false;
+  return (stricmp(ext, ".mn3") == 0) ? true : false;
 }
 
 static inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
@@ -884,20 +884,20 @@ bool LoadMission(const char *mssn) {
 //	ShowProgressScreen(TXT_LOADINGLEVEL);
 #if (defined(OEM) || defined(DEMO))
 #ifdef OEM
-  if (strcmpi(mssn, "d3oem.mn3") == 0)
+  if (stricmp(mssn, "d3oem.mn3") == 0)
     return DemoMission(0);
 #elif defined(DEMO)
-  if (strcmpi(mssn, "d3demo.mn3") == 0)
+  if (stricmp(mssn, "d3demo.mn3") == 0)
     return DemoMission(0);
 #endif
-  else if (strcmpi(mssn, "polaris.d3l") == 0)
+  else if (stricmp(mssn, "polaris.d3l") == 0)
     return DemoMission(1);
-  else if (strcmpi(mssn, "thecore.d3l") == 0)
+  else if (stricmp(mssn, "thecore.d3l") == 0)
     return DemoMission(2);
-  else if (strcmpi(mssn, "taurus.d3l") == 0)
+  else if (stricmp(mssn, "taurus.d3l") == 0)
     return DemoMission(3);
 #ifdef OEM
-  else if (strcmpi(mssn, "training.mn3") == 0)
+  else if (stricmp(mssn, "training.mn3") == 0)
     return DemoMission(4);
 #endif
 #else
@@ -921,11 +921,11 @@ bool LoadMission(const char *mssn) {
 
   // Correct for mission split hack
 
-  if (strcmpi(mssn, "d3_2.mn3") == 0) {
+  if (stricmp(mssn, "d3_2.mn3") == 0) {
     strcpy(mission, "d3_2.mn3");
     strcpy(pathname, "d3_2.mn3");
 
-  } else if (strcmpi(mssn, "d3.mn3") == 0) {
+  } else if (stricmp(mssn, "d3.mn3") == 0) {
     strcpy(mission, "d3.mn3");
     strcpy(pathname, "d3.mn3");
 
@@ -980,33 +980,33 @@ bool LoadMission(const char *mssn) {
       CleanupStr(operand, srcline + strlen(command) + 1, sizeof(operand));
       if (strlen(command) && indesc)
         indesc = 0;
-      if (!strcmpi(command, "NAME")) {
+      if (!stricmp(command, "NAME")) {
         strncpy(msn->name, operand, MSN_NAMELEN - 1);
-      } else if (!strcmpi(command, "MULTI")) {
-        if (strcmpi("no", operand) == 0)
+      } else if (!stricmp(command, "MULTI")) {
+        if (stricmp("no", operand) == 0)
           msn->multiplayable = false;
-      } else if (!strcmpi(command, "SINGLE")) {
-        if (strcmpi("no", operand) == 0)
+      } else if (!stricmp(command, "SINGLE")) {
+        if (stricmp("no", operand) == 0)
           msn->singleplayable = false;
-      } else if (!strcmpi(command, "TRAINER")) {
+      } else if (!stricmp(command, "TRAINER")) {
         if (curlvlnum == 0) {
           msn->training_mission = true;
         } else {
           strcpy(errtext, TXT_MSN_MSNCOMMAND);
           goto msnfile_error;
         }
-      } else if (!strcmpi(command, "AUTHOR")) {
+      } else if (!stricmp(command, "AUTHOR")) {
         strncpy(msn->author, operand, MSN_NAMELEN - 1);
-      } else if (!strcmpi(command, "KEYWORDS")) {
+      } else if (!stricmp(command, "KEYWORDS")) {
         // Don't do anything with this
-      } else if (!strcmpi(command, "DESCRIPTION") || indesc) {
+      } else if (!stricmp(command, "DESCRIPTION") || indesc) {
         //	multi-line descriptions require the strcat.  the initial
         //	strings should be empty for this to work.
         strcat(msn->desc, operand);
         if (indesc)
           strcat(msn->desc, "\n");
         indesc = 1; // this is a multiline command
-      } else if (!strcmpi(command, "URL")) {
+      } else if (!stricmp(command, "URL")) {
         if (curlvlnum != 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1020,7 +1020,7 @@ bool LoadMission(const char *mssn) {
             }
           }
         }
-      } else if (!strcmpi(command, "SHIP")) {
+      } else if (!stricmp(command, "SHIP")) {
         // there is a different default ship
         if (curlvlnum != 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
@@ -1036,13 +1036,13 @@ bool LoadMission(const char *mssn) {
             Int3();
           }
         }
-      } else if (!strcmpi(command, "EMAIL")) {
+      } else if (!stricmp(command, "EMAIL")) {
         if (curlvlnum != 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
         } else
           strncpy(msn->email, operand, MSN_URLLEN - 1);
-      } else if (!strcmpi(command, "SCORE")) {
+      } else if (!stricmp(command, "SCORE")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1052,7 +1052,7 @@ bool LoadMission(const char *mssn) {
           if (!lvls[curlvlnum - 1].score)
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "PROGRESS")) {
+      } else if (!stricmp(command, "PROGRESS")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1061,7 +1061,7 @@ bool LoadMission(const char *mssn) {
           if (!lvls[curlvlnum - 1].progress)
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "HOG")) {
+      } else if (!stricmp(command, "HOG")) {
         if (curlvlnum == 0) {
           msn->hog = mem_strdup(operand);
           if (!msn->hog)
@@ -1071,7 +1071,7 @@ bool LoadMission(const char *mssn) {
           if (!(lvls[curlvlnum - 1].hog = mem_strdup(operand)))
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "NUMLEVELS")) {
+      } else if (!stricmp(command, "NUMLEVELS")) {
         if (curlvlnum != 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1086,7 +1086,7 @@ bool LoadMission(const char *mssn) {
           memset(lvls, 0, sizeof(tLevelNode) * value);
           numlevels = value;
         }
-      } else if (!strcmpi(command, "LEVEL")) {
+      } else if (!stricmp(command, "LEVEL")) {
         // first check if number of level is greater than num_levels
         if ((curlvlnum == numlevels) && (numlevels != -1)) {
           strcpy(errtext, TXT_MSN_NUMLVLSINVALID);
@@ -1100,7 +1100,7 @@ bool LoadMission(const char *mssn) {
           strcpy(errtext, TXT_MSN_LVLNUMINVALID);
           goto msnfile_error;
         }
-      } else if (!strcmpi(command, "INTROMOVIE")) {
+      } else if (!stricmp(command, "INTROMOVIE")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1109,7 +1109,7 @@ bool LoadMission(const char *mssn) {
           if (!(lvls[curlvlnum - 1].moviename = mem_strdup(operand)))
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "INTRODEFAULT")) {
+      } else if (!stricmp(command, "INTRODEFAULT")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1118,7 +1118,7 @@ bool LoadMission(const char *mssn) {
           if (!(lvls[curlvlnum - 1].moviename = mem_strdup(operand)))
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "ENDMOVIE")) {
+      } else if (!stricmp(command, "ENDMOVIE")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1127,7 +1127,7 @@ bool LoadMission(const char *mssn) {
           if (!(lvls[curlvlnum - 1].endmovie = mem_strdup(operand)))
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "MINE")) {
+      } else if (!stricmp(command, "MINE")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1135,7 +1135,7 @@ bool LoadMission(const char *mssn) {
           if (!(lvls[curlvlnum - 1].filename = mem_strdup(operand)))
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "SECRET")) {
+      } else if (!stricmp(command, "SECRET")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1143,7 +1143,7 @@ bool LoadMission(const char *mssn) {
           lvls[curlvlnum - 1].flags |= LVLFLAG_SPAWNSECRET;
           lvls[curlvlnum - 1].secretlvl = atoi(operand);
         }
-      } else if (!strcmpi(command, "BRIEFING")) {
+      } else if (!stricmp(command, "BRIEFING")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1152,7 +1152,7 @@ bool LoadMission(const char *mssn) {
           if (!(lvls[curlvlnum - 1].briefname = mem_strdup(operand)))
             goto fatal_error;
         }
-      } else if (!strcmpi(command, "BRANCH")) {
+      } else if (!stricmp(command, "BRANCH")) {
         // first check if number of level is greater than num_levels
         int lvlnum;
         if (curlvlnum == 0) {
@@ -1166,7 +1166,7 @@ bool LoadMission(const char *mssn) {
         }
         lvls[curlvlnum - 1].flags |= LVLFLAG_BRANCH;
         lvls[curlvlnum - 1].lvlbranch0 = lvlnum;
-      } else if (!strcmpi(command, "ENDMISSION")) {
+      } else if (!stricmp(command, "ENDMISSION")) {
         if (curlvlnum == 0) {
           strcpy(errtext, TXT_MSN_LVLCOMMAND);
           goto msnfile_error;
@@ -1760,32 +1760,32 @@ bool GetMissionInfo(const char *msnfile, tMissionInfo *msn) {
       CleanupStr(operand, srcline + strlen(command) + 1, sizeof(operand));
       if (strlen(command) && indesc)
         indesc = false;
-      if (!strcmpi(command, "NAME")) {
+      if (!stricmp(command, "NAME")) {
         strncpy(msn->name, operand, MSN_NAMELEN - 1);
-      } else if (!strcmpi(command, "MULTI")) {
-        if (strcmpi("no", operand) == 0)
+      } else if (!stricmp(command, "MULTI")) {
+        if (stricmp("no", operand) == 0)
           msn->multi = false;
-      } else if (!strcmpi(command, "SINGLE")) {
-        if (strcmpi("no", operand) == 0)
+      } else if (!stricmp(command, "SINGLE")) {
+        if (stricmp("no", operand) == 0)
           msn->single = false;
-      } else if (!strcmpi(command, "TRAINER")) {
+      } else if (!stricmp(command, "TRAINER")) {
         msn->training = true;
-      } else if (!strcmpi(command, "AUTHOR")) {
+      } else if (!stricmp(command, "AUTHOR")) {
         strncpy(msn->author, operand, MSN_NAMELEN - 1);
-      } else if (!strcmpi(command, "DESCRIPTION") || indesc) {
+      } else if (!stricmp(command, "DESCRIPTION") || indesc) {
         //	multi-line descriptions require the strcat.  the initial
         //	strings should be empty for this to work.
         strcat(msn->desc, operand);
         if (indesc)
           strcat(msn->desc, "\n");
         indesc = true; // this is a multiline command
-      } else if (!strcmpi(command, "NUMLEVELS")) {
+      } else if (!stricmp(command, "NUMLEVELS")) {
         //	get number of levels
         int value = atoi(operand);
         msn->n_levels = value;
-      } else if (!strcmpi(command, "LEVEL")) {
+      } else if (!stricmp(command, "LEVEL")) {
         break;
-      } else if (!strcmpi(command, "KEYWORDS")) {
+      } else if (!stricmp(command, "KEYWORDS")) {
         // Read in all the keywords
         strncpy(msn->keywords, operand, MAX_KEYWORDLEN);
       }
@@ -1853,12 +1853,12 @@ bool mn3_Open(const char *mn3file) {
   ddio_SplitPath(mn3file, NULL, filename, ext);
 
   //	char voice_hog[_MAX_PATH*2];
-  if ((strcmpi(filename, "d3") == 0) || (strcmpi(filename, "training") == 0)) {
+  if ((stricmp(filename, "d3") == 0) || (stricmp(filename, "training") == 0)) {
     // Open audio hog file
     // ddio_MakePath(voice_hog, D3MissionsDir, "d3voice1.hog", NULL);//Audio for levels 1-4
     const char *v = GetMultiCDPath("d3voice1.hog");
     Mission_voice_hog_handle = cf_OpenLibrary(v);
-  } else if (strcmpi(filename, "d3_2") == 0) {
+  } else if (stricmp(filename, "d3_2") == 0) {
     // Open audio hog file
     // ddio_MakePath(voice_hog, D3MissionsDir, "d3voice2.hog", NULL);//Audio for levels 5-17
     const char *v = GetMultiCDPath("d3voice2.hog");
@@ -1876,7 +1876,7 @@ bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn) {
   char pathname[PSPATHNAME_LEN];
   char filename[PSFILENAME_LEN + 1];
 
-  if (strcmpi(mn3file, "d3.mn3") == 0) {
+  if (stricmp(mn3file, "d3.mn3") == 0) {
     const char *p = GetMultiCDPath((char *)mn3file);
     if (!p)
       return false;
@@ -1981,7 +1981,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
     }
     if (strnicmp(mod_keywords[i], MODMINGOALS, MODMINGOALSLEN) == 0) {
       goalsneeded = atoi(mod_keywords[i] + MODMINGOALSLEN);
-    } else if (strcmpi("GOALPERTEAM", mod_keywords[i]) == 0) {
+    } else if (stricmp("GOALPERTEAM", mod_keywords[i]) == 0) {
       goal_per_team = true;
     } else {
       bool found_keyword = false;
@@ -1990,7 +1990,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
         if (msn_keywords[a][0] == 0) {
           continue;
         }
-        if (strcmpi(msn_keywords[a], mod_keywords[i]) == 0) {
+        if (stricmp(msn_keywords[a], mod_keywords[i]) == 0) {
           // Woohoo! it's found
           found_keyword = true;
           break;

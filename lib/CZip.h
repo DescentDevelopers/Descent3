@@ -19,7 +19,11 @@
 #ifndef __CZIPFILE_H_
 #define __CZIPFILE_H_
 
+#include <cstdio>
 #include <cstdint>
+#ifdef __LINUX__
+#include "linux_fix.h"
+#endif
 
 #define OCF_VERSION 0x01
 

@@ -959,8 +959,8 @@ void grfont_XlateColorChar(int bmp_handle, int x, int y, int index, tFontFileInf
   sptr = (uint16_t *)ft->char_data[index];
   rowsize_w = bm_rowsize(bmp_handle, 0) / 2;
 
-  // height = SET_MIN(h, ddsfObj.h);
-  // width = SET_MIN(w, ddsfObj.w);
+  // height = std::min(h, ddsfObj.h);
+  // width = std::min(w, ddsfObj.w);
   dptr = dptr + (y * rowsize_w);
 
   if (ft->flags & FT_FMT4444) {
@@ -999,8 +999,8 @@ void grfont_XlateColorGrayChar(int bmp_handle, int x, int y, int index, tFontFil
   sptr = (uint16_t *)ft->char_data[index];
   rowsize_w = bm_rowsize(bmp_handle, 0) / 2;
 
-  // height = SET_MIN(h, ddsfObj.h);
-  // width = SET_MIN(w, ddsfObj.w);
+  // height = std::min(h, ddsfObj.h);
+  // width = std::min(w, ddsfObj.w);
   dptr = dptr + (y * rowsize_w);
 
   float recip32 = 1.0f / 32.0f;

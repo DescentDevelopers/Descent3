@@ -730,7 +730,7 @@ UIBitmapItem *newuiResources::Load(const char *filename) {
         free_slot = i;
       }
     } else {
-      if (strcmpi(filename, m_list[i].filename) == 0) {
+      if (stricmp(filename, m_list[i].filename) == 0) {
         break;
       }
     }
@@ -2892,7 +2892,7 @@ void newuiListBox::RemoveItem(const char *name) {
 
   for (i = 0; i < m_NumItems; i++) {
     int res;
-    res = (m_Flags & UILB_CASESENSITIVE) ? strcmpi(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
     if (res == 0) {
       found = i;
       mem_free(m_ItemList[found]);
@@ -3049,7 +3049,7 @@ bool newuiListBox::SetCurrentItem(const char *name) {
   int i, found = 0;
 
   for (i = 0; i < m_NumItems; i++) {
-    int res = (m_Flags & UILB_CASESENSITIVE) ? strcmpi(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    int res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
     if (res == 0) {
       SetCurrentIndex(m_Real2Virt[i]);
       found = 1;
@@ -3632,7 +3632,7 @@ void newuiComboBox::RemoveItem(const char *name) {
 
   for (i = 0; i < m_NumItems; i++) {
     int res;
-    res = (m_Flags & UILB_CASESENSITIVE) ? strcmpi(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
     if (res == 0) {
       found = i;
       mem_free(m_ItemList[found]);
@@ -3759,7 +3759,7 @@ bool newuiComboBox::SetCurrentItem(const char *name) {
   int i, found = 0;
 
   for (i = 0; i < m_NumItems; i++) {
-    int res = (m_Flags & UILB_CASESENSITIVE) ? strcmpi(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
+    int res = (m_Flags & UILB_CASESENSITIVE) ? stricmp(m_ItemList[i], name) : strcmp(m_ItemList[i], name);
     if (res == 0) {
       SetCurrentIndex(m_Real2Virt[i]);
       found = 1;

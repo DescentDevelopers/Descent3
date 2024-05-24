@@ -370,8 +370,8 @@ void OutToFile(char *format, ...)
 	if(CurrentOutputFile==NULL) return;
 
 	va_list marker;
-	va_start(marker,format);
-	vsprintf(buffer,format,marker);
+        va_start(marker,format);
+        std::vsprintf(buffer,format,marker);
 	cf_WriteString(CurrentOutputFile,buffer);
 	va_end(marker);
 }

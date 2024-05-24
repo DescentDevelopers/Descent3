@@ -39,20 +39,21 @@
  * $NoKeywords: $
  */
 
+#include <cstdlib>
+#include <cstdarg>
+#include <cstring>
+#include <cstdio>
+#include <cctype>
+
+#include <algorithm>
+
 #include "application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
 #include "mono.h"
 // #include "local_malloc.h"
 #include "pstring.h"
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdio.h>
 #include <unistd.h>
-#include <ctype.h>
-
-#include <algorithm>
 
 static char *Con_raw_read_buf = NULL;                     // The next buffer of text from user input
 static char *Con_raw_inp_buf = NULL, Con_raw_inp_pos = 0; // Currently updating input buffer of text (and it's position)
@@ -67,7 +68,7 @@ void con_raw_Printf(const char *fmt, ...) {
   char buffer[1024];
   va_list args;
   va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::vsnprintf(buffer, sizeof(buffer), fmt, args);
   va_end(args);
   con_raw_Puts(0, buffer);
 }

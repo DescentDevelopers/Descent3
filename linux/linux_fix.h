@@ -31,6 +31,8 @@ void *GlobalLock(HGLOBAL hMem);
 void Sleep(int millis);
 char *strupr(char *string);
 
+#define _stat stat
+
 // Replace missing defines from stdlib.h
 #define _MAX_PATH 260  /* max. length of full pathname*/
 #define _MAX_FNAME 256 /* max. length of path component*/
@@ -43,12 +45,8 @@ char *strupr(char *string);
 // _stdcall replacement
 #define _stdcall __attribute__((stdcall))
 
-#ifndef stricmp
 #define stricmp(a, b) strcasecmp(a, b)
-#endif
-
 #define strnicmp(a, b, c) strncasecmp(a, b, c)
-#define strcmpi(a, b) stricmp(a, b)
 #define _chmod(a, b) chmod(a, b)
 #if defined(__aarch64__)
 #define _finite(a) isfinite(a)

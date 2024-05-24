@@ -20,7 +20,7 @@
 #include <windows.h>
 #include "ddraw.h"
 #elif defined(__LINUX__)
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #include "lnxscreenmode.h"
 #else
 #endif

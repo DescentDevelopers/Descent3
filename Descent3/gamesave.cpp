@@ -473,7 +473,7 @@ void SaveGameDialog() {
           hot = (newuiHotspot *)sheet->GetGadget(SAVE_HOTSPOT_ID + i);
           hot_desc = hot->GetTitle();
 
-          if (occupied_slot[i] && strcmpi(hot_desc, desc) == 0 && slot != i) {
+          if (occupied_slot[i] && stricmp(hot_desc, desc) == 0 && slot != i) {
             DoMessageBox("", TXT_SAVEGAMEDUP, MSGBOX_OK);
             goto reenter_save;
           }
@@ -750,7 +750,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   //	write out mission level information
   cf_WriteShort(fp, (int16_t)Current_mission.cur_level);
 
-  if (Current_mission.filename && (strcmpi("d3_2.mn3", Current_mission.filename) == 0)) {
+  if (Current_mission.filename && (stricmp("d3_2.mn3", Current_mission.filename) == 0)) {
     cf_WriteString(fp, "d3.mn3");
   } else {
     cf_WriteString(fp, Current_mission.filename ? Current_mission.filename : "");

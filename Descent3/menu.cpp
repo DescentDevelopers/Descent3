@@ -933,18 +933,18 @@ bool ProcessCommandLine() {
 #ifdef DEMO
     szurl[strlen("d3demo2://") - 1] = '\0'; // Should make the string "d3demo:/"
     p = szurl + strlen("d3demo2://");       // pointer to the first character of the url after the //
-    if (strcmpi(szurl, "d3demo2:/") == 0) {
+    if (stricmp(szurl, "d3demo2:/") == 0) {
       mprintf((0, "Got a url passed: %s\n", p));
     }
 #else
     szurl[strlen("descent3://") - 1] = '\0'; // Should make the string "descent3:/"
     p = szurl + strlen("descent3://");       // pointer to the first character of the url after the //
-    if (strcmpi(szurl, "descent3:/") == 0) {
+    if (stricmp(szurl, "descent3:/") == 0) {
       mprintf((0, "Got a url passed: %s\n", p));
     }
 #endif
     tokp = strtok(p, "/");
-    if (strcmpi(tokp, "ip") == 0) {
+    if (stricmp(tokp, "ip") == 0) {
       tokp = strtok(NULL, "/");
       Auto_login_port[0] = '\0';
       strcpy(Auto_login_addr, tokp);
@@ -961,7 +961,7 @@ bool ProcessCommandLine() {
       } else {
         mprintf((0, "Couldn't load DLL.\n"));
       }
-    } else if (strcmpi(tokp, "pxo") == 0) {
+    } else if (stricmp(tokp, "pxo") == 0) {
       tokp = strtok(NULL, "/");
       Auto_login_port[0] = '\0';
       strcpy(Auto_login_addr, tokp);
@@ -1077,7 +1077,7 @@ static inline int count_missions(const char *pathname, const char *wildcard) {
       const char *name;
       ddio_MakePath(fullpath, pathname, filename, NULL);
 
-      if (strcmpi("d3_2.mn3", filename) == 0)
+      if (stricmp("d3_2.mn3", filename) == 0)
         continue;
       mprintf((0, "Mission path:%s\n", fullpath));
       name = GetMissionName(filename);
@@ -1108,7 +1108,7 @@ static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, cha
       tMissionInfo msninfo;
       if (n_maxfiles > c) {
         ddio_MakePath(fullpath, pathname, filename, NULL);
-        if (strcmpi("d3_2.mn3", filename) == 0)
+        if (stricmp("d3_2.mn3", filename) == 0)
           continue;
         if (GetMissionInfo(filename, &msninfo) && msninfo.name[0] && msninfo.single) {
           // if (!msninfo.training || (msninfo.training && Current_pilot.find_mission_data(TRAINING_MISSION_NAME)!= -1))
@@ -1236,7 +1236,7 @@ bool MenuNewGame() {
   for (k = 0; k < n_missions; k++) {
     if (!filelist[k])
       continue;
-    if (strcmpi(filelist[k], "d3.mn3") == 0) {
+    if (stricmp(filelist[k], "d3.mn3") == 0) {
       found = true;
       break;
     }

@@ -44,16 +44,18 @@
  * $NoKeywords: $
  */
 
+#include <cassert>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cerrno>
+#include <csignal>
+
 #include "debug.h"
-#include <assert.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <memory.h>
-#include <signal.h>
 
 // -------- Start TCP/IP Mono Logging Section
 #include <sys/socket.h>
@@ -63,7 +65,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <errno.h>
 
 #define MAX_TCPLOG_LEN 2000
 #define SOCKET int
@@ -509,7 +510,7 @@ static char Mono_buffer[MAX_MONO_BUFFER];
 void Debug_ConsolePrintf(int n, const char *format, ...) {
   va_list marker;
   va_start(marker, format);
-  int text_len = vsnprintf(Mono_buffer, MAX_MONO_BUFFER, format, marker);
+  int text_len = std::vsnprintf(Mono_buffer, MAX_MONO_BUFFER, format, marker);
   va_end(marker);
 
   if (n == 0) {
@@ -559,7 +560,7 @@ void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {
 
   va_list marker;
   va_start(marker, format);
-  int text_len = vsnprintf(Mono_buffer, MAX_MONO_BUFFER, format, marker);
+  int text_len = std::vsnprintf(Mono_buffer, MAX_MONO_BUFFER, format, marker);
   va_end(marker);
 
   /*

@@ -22,8 +22,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
+#include "linux_fix.h"
 
 void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext);
-int stricmp(const char *string1, const char *string2);
 
 #endif

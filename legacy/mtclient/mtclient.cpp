@@ -2383,7 +2383,7 @@ void CheckPXOForAnomalies(void)
 				continue;
 			if(i==j)
 				continue;
-			if(strcmpi(DLLMPlayers[i].tracker_id,DLLMPlayers[j].tracker_id)==0)
+			if(stricmp(DLLMPlayers[i].tracker_id,DLLMPlayers[j].tracker_id)==0)
 			{
 				//Ok, what we have here is multiple users with the same tracker ID.
 				//This is bad. It could be user error, but it could be something worse.

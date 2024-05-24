@@ -5,8 +5,8 @@
 #include <io.h>
 #include <ctype.h>
 #include <time.h>
-#include <sys\stat.h>
-#include <sys\utime.h>
+#include <sys/stat.h>
+#include <sys/utime.h>
 
 //#include "mvlfile.h"		//for old D2 movie libraries
 #include "hogfile.h"			//new D3 hogs

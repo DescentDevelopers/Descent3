@@ -601,7 +601,7 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
 #ifdef OEM
   return 1;
 #else
-  if ((strcmpi(filename, "d3_2.mn3") == 0) || (strcmpi(filename, "d3.mn3") == 0)) {
+  if ((stricmp(filename, "d3_2.mn3") == 0) || (stricmp(filename, "d3.mn3") == 0)) {
     const char *p = GetMultiCDPath(filename);
     return p ? 1 : 0;
   }

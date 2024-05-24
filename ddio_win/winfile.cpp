@@ -147,7 +147,7 @@
 #include "pserror.h"
 #include "mem.h"
 #include <stdarg.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #include <io.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -589,7 +589,7 @@ const char *ddio_GetCDDrive(const char *vol) {
         mprintf((0, "Call to GetVolumeInformation() failed. Last error = %d\n", GetLastError()));
       }
 
-      if (strcmpi(volume, vol) == 0) {
+      if (stricmp(volume, vol) == 0) {
         return drivepath;
       }
     }

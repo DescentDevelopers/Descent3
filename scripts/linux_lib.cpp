@@ -95,5 +95,3 @@ void _splitpath(const char *srcPath, char *drive, char *path, char *filename, ch
     }
   }
 }
-
-int stricmp(const char *string1, const char *string2) { return strcasecmp(string1, string2); }

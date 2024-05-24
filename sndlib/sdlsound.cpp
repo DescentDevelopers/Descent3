@@ -757,7 +757,7 @@ void lnxsound_ErrorText(const char *fmt, ...) {
   char buffer[384];
   va_list args;
   va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  std::vsnprintf(buffer, sizeof(buffer), fmt, args);
   va_end(args);
 
   ll_sound_ptr->ErrorText(buffer);

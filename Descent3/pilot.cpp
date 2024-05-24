@@ -2906,7 +2906,7 @@ bool PltSelectShip(pilot *Pilot) {
     if (Ships[i].used) {
       ship_info.idlist[count] = i;
 #ifdef DEMO
-      if (strcmpi(Ships[i].name, DEFAULT_SHIP) == 0) {
+      if (stricmp(Ships[i].name, DEFAULT_SHIP) == 0) {
 #endif
 	  // make sure they have mercenary in order to play with Black Pyro
 	  if (!stricmp(Ships[i].name, "Black Pyro")) {

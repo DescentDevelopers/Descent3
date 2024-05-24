@@ -34,16 +34,17 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstdio>
 #include <cstdint>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
+#include <cerrno>
+
 #include <sys/stat.h>
 #include <errno.h>
 #include <Macros.h>
 #include "CZip.h"
-
-#include <algorithm>
 
 BITFILE *CZip::OpenInputBitFile(char *filename) {
   BITFILE *bit_file;

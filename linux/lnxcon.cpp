@@ -56,20 +56,20 @@
  * $NoKeywords: $
  */
 
+#include <cstdarg>
+#include <cstring>
+#include <cstdio>
+#include <cctype>
+#include <algorithm>
+
 #include "application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
 #include "mono.h"
 #include "pstring.h"
-#include <stdarg.h>
-#include <string.h>
-#include <stdio.h>
 #include <unistd.h>
-#include <ctype.h>
 
 #include "linux/dyna_curses.h"
-
-#include <algorithm>
 
 //////////////////////////////////////////////////
 // Defines
@@ -161,7 +161,7 @@ void con_Printf(const char *fmt, ...) {
 
   //	filter out messages
   va_start(args, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, args);
+  std::vsnprintf(buf, sizeof(buf), fmt, args);
   va_end(args);
 
   //	filter out unprintable characters
