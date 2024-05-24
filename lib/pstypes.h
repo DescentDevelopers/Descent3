@@ -24,24 +24,7 @@
 
 #ifdef __LINUX__
 #include "linux_fix.h"
-#endif
-
-// define unsigned types;
-typedef uint8_t uint8_t;
-typedef int8_t int8_t;
-typedef uint16_t uint16_t;
-typedef uint32_t uint32_t;
-typedef unsigned long ulong;
-
-#ifdef _MSC_VER // only Visual C++ has __int64
-typedef __int64 longlong;
-#else
-typedef long long longlong;
-#endif
-
-#ifndef NULL
-#define NULL 0
-#endif
+#endifs
 
 // The maximum length for a file name, including extension.  It *does not* include the
 // terminating NULL, so a buffer to hold a filename needs to be PSFILENAME_LEN+1 bytes long.
