@@ -28,7 +28,7 @@ typedef int32_t int32_t;
 typedef unsigned short uint16;
 typedef signed short sint16;
 typedef uint8_t uint8_t;
-typedef int8_t sint8;
+typedef int8_t int8_t;
 
 struct BitsEncoder {
   FILE *m_outFile;   // var50 | offset 0x10
@@ -73,8 +73,8 @@ struct Encoder {
   uint32_t m_sampleCount;                   // var58         | offset 0x08
   float m_volume;                         // var54         | offset 0x0C
   BitsEncoder m_bits;                     // var50 - var48 | offset 0x10 - 0x18
-  sint8 m_levels;                         // var44*        | offset 0x1C
-  sint8 m_pad[3];                         //   43, 42, 41
+  int8_t m_levels;                         // var44*        | offset 0x1C
+  int8_t m_pad[3];                         //   43, 42, 41
   int32_t m_numColumns;                    // var40         | offset 0x20
   int32_t m_samples_per_subband;           // var3C         | offset 0x24
   int32_t m_samplesPerBlock;               // var38         | offset 0x28
@@ -650,7 +650,7 @@ int bits_init(BitsEncoder &bits, FILE *out) {
   return 1;
 }
 
-int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_filter[], sint8 levels,
+int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_filter[], int8_t levels,
                  int samples_per_subband) {
   enc.m_someVal = someVal;
   enc.m_lo_filter = std_lo_filter;
@@ -667,7 +667,7 @@ int SetupEncoder(Encoder &enc, int someVal, float std_lo_filter[], float std_hi_
     return 0;
 
   if (levels >= 0) {
-    for (sint8 i = 0; i <= levels; ++i) {
+    for (int8_t i = 0; i <= levels; ++i) {
       int extraSamples = 0;
       if (i != levels) {
         extraSamples = (someVal - 1) << i;
