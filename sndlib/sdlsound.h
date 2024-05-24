@@ -64,7 +64,7 @@ public:
   void GetEnvironmentToggles(t3dEnvironmentToggles *env) override;
 
   // Starts the sound library, maybe have it send back some information -- 3d support?
-  int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) override;
+  int InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played) override;
   // Cleans up after the Sound Library
   void DestroySoundLib() override;
 
@@ -96,7 +96,7 @@ public:
   //	virtual void AdjustSound(int sound_uid, play_information *play_info) = 0;
 
   // Stops 2d and 3d sounds
-  void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY) override;
+  void StopSound(int sound_uid, uint8_t f_immediately = SKT_STOP_IMMEDIATELY) override;
 
   // Pause all sounds/resume all sounds
   void PauseSounds() override;

@@ -2587,7 +2587,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
     int32_t *mwmInfo;
 
     XGetWindowProperty(dpy, rootwin, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
-                       (unsigned char **)&mwmInfo);
+                       (uint8_t **)&mwmInfo);
 
     if (mwmInfo) {
       // get the mwm window from the properties
@@ -2626,7 +2626,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
       uint32_t bytes_after;
 
       XGetWindowProperty(dpy, window, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
-                         (unsigned char **)&xhints);
+                         (uint8_t **)&xhints);
 
       if (xhints) {
         hints[0] = xhints[0];
@@ -2640,7 +2640,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
     hints[0] |= 2; // MWM_HINTS_DECORATIONS flag
     hints[2] = 0;  // no decorations
 
-    XChangeProperty(dpy, window, a, a, 32, PropModeReplace, (unsigned char *)&hints, 4);
+    XChangeProperty(dpy, window, a, a, 32, PropModeReplace, (uint8_t *)&hints, 4);
 
     noWM = False;
   } else {

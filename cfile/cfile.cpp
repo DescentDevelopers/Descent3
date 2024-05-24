@@ -796,7 +796,7 @@ void cfclose(CFILE *cfp) {
 // Returns a char or EOF
 int cfgetc(CFILE *cfp) {
   int c;
-  static unsigned char ch[3] = "\0\0";
+  static uint8_t ch[3] = "\0\0";
   if (cfp->position >= cfp->size)
     return EOF;
 

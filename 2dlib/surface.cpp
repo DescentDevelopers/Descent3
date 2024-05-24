@@ -95,10 +95,10 @@
 #include "renderer.h"
 
 static inline unsigned XLAT_RGB_TO_16(ddgr_color c) {
-  unsigned char r, g, b;
-  r = (unsigned char)((c & 0x00ff0000) >> 16);
-  g = (unsigned char)((c & 0x0000ff00) >> 8);
-  b = (unsigned char)(c & 0x000000ff);
+  uint8_t r, g, b;
+  r = (uint8_t)((c & 0x00ff0000) >> 16);
+  g = (uint8_t)((c & 0x0000ff00) >> 8);
+  b = (uint8_t)(c & 0x000000ff);
 
   return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
 }

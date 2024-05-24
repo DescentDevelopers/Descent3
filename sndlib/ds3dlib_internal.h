@@ -164,8 +164,8 @@ public:
 
   bool stereo;
   sbyte bps;
-  unsigned char m_status; // Sound status
-  unsigned char pad;
+  uint8_t m_status; // Sound status
+  uint8_t pad;
 
   float m_volume; // kept for priority.
 };

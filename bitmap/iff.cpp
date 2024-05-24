@@ -305,7 +305,7 @@ void bm_iff_skip_chunk(CFILE *ifile, uint32_t len) {
 
 // modify passed bitmap
 int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
-  unsigned char *p = bmheader->raw_data;
+  uint8_t *p = bmheader->raw_data;
   int y;
   int32_t chunk_end = cftell(ifile) + len;
 
@@ -432,7 +432,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
 
     case IFF_SIG_CMAP: {
       int ncolors = (int)(len / 3), cnum;
-      unsigned char r, g, b;
+      uint8_t r, g, b;
 
       for (cnum = 0; cnum < ncolors; cnum++) {
         r = cf_ReadByte(ifile);

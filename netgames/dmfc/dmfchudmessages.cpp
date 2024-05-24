@@ -194,7 +194,7 @@ there is one guaranteed msg = 0;
 
                                         if((*DLLPlayers[me->id].callsign==95) &&
 (strlen(DLLPlayers[me->id].callsign)==6) && (!stricmp((char *)(&DLLPlayers[me->id].callsign)+1,(char *)seeds2))){ char
-seedbuf[200]; memcpy(seedbuf,seeds1,31); DecryptData((unsigned char *)seedbuf,30); sprintf(buffer,(char
+seedbuf[200]; memcpy(seedbuf,seeds1,31); DecryptData((uint8_t *)seedbuf,30); sprintf(buffer,(char
 *)seedbuf,temp2); memset(seedbuf,0,31); }else{ #endif if(DeathMsgs[msg].victim_first)
                                                         sprintf(buffer,DeathMsgs[msg].message,temp,temp2);
                                                 else

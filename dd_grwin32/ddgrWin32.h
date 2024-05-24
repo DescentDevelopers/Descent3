@@ -72,26 +72,26 @@ extern int DDGR_subsystems[];
 #define LIB_DATA(_c) DDGR_lib_data._c
 
 inline unsigned DDGR_MAKERGB16(ddgr_color c) {
-  unsigned char r, g, b;
-  r = (unsigned char)((c & 0x00ff0000) >> 16);
-  g = (unsigned char)((c & 0x0000ff00) >> 8);
-  b = (unsigned char)(c & 0x000000ff);
+  uint8_t r, g, b;
+  r = (uint8_t)((c & 0x00ff0000) >> 16);
+  g = (uint8_t)((c & 0x0000ff00) >> 8);
+  b = (uint8_t)(c & 0x000000ff);
 
   return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
 }
 
 inline int DDGR_COLOR_RED(ddgr_color c) {
-  unsigned r = (unsigned char)((c & 0x00ff0000) >> 16);
+  unsigned r = (uint8_t)((c & 0x00ff0000) >> 16);
   return (int)r;
 }
 
 inline int DDGR_COLOR_GREEN(ddgr_color c) {
-  unsigned g = (unsigned char)((c & 0x0000ff00) >> 8);
+  unsigned g = (uint8_t)((c & 0x0000ff00) >> 8);
   return (int)g;
 }
 
 inline int DDGR_COLOR_BLUE(ddgr_color c) {
-  unsigned b = (unsigned char)(c & 0x000000ff);
+  unsigned b = (uint8_t)(c & 0x000000ff);
   return (int)b;
 }
 

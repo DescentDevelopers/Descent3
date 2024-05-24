@@ -22,13 +22,13 @@
 #include "mvelibi.h"
 #include <string.h>
 
-extern unsigned char *nf_buf_cur;
-extern unsigned char *nf_buf_prv;
+extern uint8_t *nf_buf_cur;
+extern uint8_t *nf_buf_prv;
 extern unsigned nf_new_x;
 extern unsigned nf_new_y;
 extern unsigned nf_new_w;
 extern unsigned nf_new_h;
-extern unsigned char nf_fqty;  // Number of fields
+extern uint8_t nf_fqty;  // Number of fields
 extern unsigned nf_new_row0;   // SHEIGHT*width*2-width
 extern unsigned nf_width;      // wqty * SWIDTH
 extern unsigned nf_new_line;   // width - SWIDTH
@@ -39,19 +39,19 @@ extern unsigned short nf_trans16_lo[256];
 extern unsigned short nf_trans16_hi[256];
 
 extern signed short snd_8to16[256];
-void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned char *comp, const unsigned x,
+void PkDecompWorker(const bool hiColor, const uint8_t *ops, const uint8_t *comp, const unsigned x,
                     const unsigned y, const unsigned w, const unsigned h);
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, int x, int y, int w, int h);
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfHPkDecomp(uint8_t *ops, uint8_t *comp, int x, int y, int w, int h);
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 void nfPkConfig(void);
-unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
-unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev);
+unsigned sndDecompM16(unsigned short *dst, const uint8_t *src, unsigned len, unsigned prev);
+unsigned sndDecompS16(unsigned short *dst, const uint8_t *src, unsigned len, unsigned prev);
 
-void Trans16Blk(unsigned char *edi, const unsigned char *idx);
-void DOnf_xycshift(const bool hiColor, const uint32_t eax, unsigned char *&edi, const int nfpk_back_right);
-void DOnf_xypshift(const bool hiColor, const uint32_t eax, unsigned char *&edi, const int nfpk_back_right,
+void Trans16Blk(uint8_t *edi, const uint8_t *idx);
+void DOnf_xycshift(const bool hiColor, const uint32_t eax, uint8_t *&edi, const int nfpk_back_right);
+void DOnf_xypshift(const bool hiColor, const uint32_t eax, uint8_t *&edi, const int nfpk_back_right,
                    const int DiffBufPtrs);
-void DOnf_shift(const bool hiColor, int eax, unsigned char *&edi, const int nfpk_back_right);
+void DOnf_shift(const bool hiColor, int eax, uint8_t *&edi, const int nfpk_back_right);
 
 //--------------------------------------------------------------------
 // Sound Management
@@ -61,7 +61,7 @@ void DOnf_shift(const bool hiColor, int eax, unsigned char *&edi, const int nfpk
 // (src is len bytes, dst is len*2 bytes)
 // prev is the previous decompression state or zero.
 // Returns new decompression state.
-unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompM16(unsigned short *dst, const uint8_t *src, unsigned len, unsigned prev) {
   uint32_t i, eax, ebx;
   if (len == 0)
     return prev;
@@ -86,7 +86,7 @@ unsigned sndDecompM16(unsigned short *dst, const unsigned char *src, unsigned le
 //	(It encodes the 16-bit states of the two stereo channels
 //	in its low and high order 16-bit halves.)
 //	Returns new decompression state.
-unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned len, unsigned prev) {
+unsigned sndDecompS16(unsigned short *dst, const uint8_t *src, unsigned len, unsigned prev) {
   unsigned re = 0;
   uint32_t eax, edx, ebx, i;
 
@@ -118,7 +118,7 @@ unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned le
 }
 
 typedef struct {
-  unsigned char *tbuf;
+  uint8_t *tbuf;
   int new_row, DiffBufPtrs;
   unsigned x, y, w, h;
 } tNextFrame;
@@ -161,40 +161,40 @@ signed short nfpk_ShiftP2[256];
 //		mov eax, ebx/ecx
 // EBX = 0
 // ECX = 1
-unsigned char nfhpk_mov4l[64];
+uint8_t nfhpk_mov4l[64];
 
 //		mov ax, bx,cx
 // EBX = 0
 // ECX = 1
-unsigned char nfpk_mov4l[64];
+uint8_t nfpk_mov4l[64];
 
 //	mov ds:[edi+0/4/8/12], ebx/edx/ecx/ebp
 // EBX = 0
 // EDX = 1
 // ECX = 2
 // EBP = 3
-unsigned char nfhpk_mov8[1024];
+uint8_t nfhpk_mov8[1024];
 
 //  mov ax,	bx/dx/cx/bp
 // BX = 0
 // DX = 1
 // CX = 2
 // BP = 3
-unsigned char nfpk_mov8[1024];
+uint8_t nfpk_mov8[1024];
 
 //	mov eax, ebx/edx/ecx/ebp
 // EBX = 0
 // EDX = 1
 // ECX = 2
 // EBP = 3
-unsigned char nfhpk_mov4[1024];
+uint8_t nfhpk_mov4[1024];
 
 //  mov al, bl/bh/cl/ch
 // BL = 0
 // BH = 1
 // CL = 2
 // CH = 3
-unsigned char nfpk_mov4[1024];
+uint8_t nfpk_mov4[1024];
 
 class initme {
 public:
@@ -202,7 +202,7 @@ public:
     int x, y;
     int m4, m3, m2, m1;
     signed char *ptr;
-    unsigned char *uptr;
+    uint8_t *uptr;
 
     // Do nfhpk_mov4l
     uptr = nfhpk_mov4l;
@@ -374,10 +374,10 @@ void nfPkConfig(void) {
   }
 }
 
-unsigned short Trans16(const unsigned char *idx) { return nf_trans16_lo[idx[0]] | nf_trans16_hi[idx[1]]; }
+unsigned short Trans16(const uint8_t *idx) { return nf_trans16_lo[idx[0]] | nf_trans16_hi[idx[1]]; }
 
-int SkipOpcode(int opcode_to_use, bool hiColor, const unsigned char *&esi, const unsigned char *&bcomp,
-               unsigned char *&edi) {
+int SkipOpcode(int opcode_to_use, bool hiColor, const uint8_t *&esi, const uint8_t *&bcomp,
+               uint8_t *&edi) {
   switch (opcode_to_use) {
   case 0:
   case 1:
@@ -519,15 +519,15 @@ int SkipOpcode(int opcode_to_use, bool hiColor, const unsigned char *&esi, const
 
 //	HiColor version
 //
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
+void nfHPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
   PkDecompWorker(true, ops, comp, x, y, w, h);
 }
 
-void nfPkDecomp(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
+void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
   PkDecompWorker(false, ops, comp, x, y, w, h);
 }
 
-void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned char *comp, const unsigned x,
+void PkDecompWorker(const bool hiColor, const uint8_t *ops, const uint8_t *comp, const unsigned x,
                     const unsigned y, unsigned w, unsigned h) {
 #ifdef OUTRAGE_BIG_ENDIAN
   typedef struct {
@@ -556,10 +556,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
 
   int nfpk_back_right = nf_back_right - kSWidthScaled;
 
-  const unsigned char *esi = comp;
-  unsigned char *edi = nf.tbuf;
+  const uint8_t *esi = comp;
+  uint8_t *edi = nf.tbuf;
 
-  const unsigned char *bcomp = NULL;
+  const uint8_t *bcomp = NULL;
   if (hiColor) {
     uint32_t bcompOffset = IntelSwapper(*((const unsigned short *)esi));
     bcomp = esi + bcompOffset;
@@ -578,7 +578,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
     bool first_opcode = true;
     bool skipNextOpCode = false;
 
-    unsigned char opcode = *ops++;
+    uint8_t opcode = *ops++;
     int opcode_to_use = opcode & 0xF;
 
   do_next_opcode:
@@ -753,11 +753,11 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           colors[3] = tcHi | (tcHi << 8);
         }
 
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
         const int kOffset = (hiColor) ? 4 : 2;
         const int max_repcount = 8;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
-          const unsigned char *color_idx = lookupTable + (esi[rep_count + kOffset] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[rep_count + kOffset] * 4);
 #ifdef OUTRAGE_BIG_ENDIAN
           uint32_t w1 = colors[color_idx[3]];
           uint32_t w2 = colors[color_idx[2]];
@@ -801,8 +801,8 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           colors[1] = tcHi | (tcHi << 8);
         }
 
-        const unsigned char *esiOffset = (hiColor) ? (esi + 4) : (esi + 2);
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov4l : nfpk_mov4l;
+        const uint8_t *esiOffset = (hiColor) ? (esi + 4) : (esi + 2);
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov4l : nfpk_mov4l;
         const int max_repcount = 4;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx;
@@ -821,7 +821,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             break;
           }
 
-          const unsigned char *color_idx = lookupTable + (idx * 4);
+          const uint8_t *color_idx = lookupTable + (idx * 4);
 #ifdef OUTRAGE_BIG_ENDIAN
           uint32_t w1 = colors[color_idx[3]];
           uint32_t w2 = colors[color_idx[2]];
@@ -919,11 +919,11 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           repLookup[6] -= 8;
           repLookup[7] -= 8;
         }
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
 
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = repLookup[rep_count];
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
 #ifdef OUTRAGE_BIG_ENDIAN
           uint32_t w1 = colors[color_idx[3]];
           uint32_t w2 = colors[color_idx[2]];
@@ -1045,12 +1045,12 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           repLookupTable[7] -= 4;
         }
 
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
 
         int max_repcount = 8;
         for (int rep_count = 0; rep_count < max_repcount; rep_count++) {
           int idx = repLookupTable[rep_count];
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
           uint32_t w1 = colors[color_idx[0]];
           uint32_t w2 = colors[color_idx[1]];
           uint32_t w3 = colors[color_idx[2]];
@@ -1131,12 +1131,12 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           repLookupTable[6] -= 4;
           repLookupTable[7] -= 4;
         }
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov8;
 
         int max_repcount = 8;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = repLookupTable[rep_count];
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
 #ifdef OUTRAGE_BIG_ENDIAN
           uint32_t w1 = colors[color_idx[3]];
           uint32_t w2 = colors[color_idx[2]];
@@ -1233,10 +1233,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         }
 
         const int max_repcount = 8;
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = rep_count + ((hiColor) ? 8 : 4);
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
 
           uint32_t w1 = colors[color_idx[0]];
           uint32_t w2 = colors[color_idx[1]];
@@ -1252,15 +1252,15 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
               *(uint32_t *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
               *(uint32_t *)(edi + nf_width + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
             } else {
-              *(unsigned char *)(edi + 4) = w4;
-              *(unsigned char *)(edi + 5) = w3;
-              *(unsigned char *)(edi + 6) = w2;
-              *(unsigned char *)(edi + 7) = w1;
+              *(uint8_t *)(edi + 4) = w4;
+              *(uint8_t *)(edi + 5) = w3;
+              *(uint8_t *)(edi + 6) = w2;
+              *(uint8_t *)(edi + 7) = w1;
 
-              *(unsigned char *)(edi + nf_width + 4) = w4;
-              *(unsigned char *)(edi + nf_width + 5) = w3;
-              *(unsigned char *)(edi + nf_width + 6) = w2;
-              *(unsigned char *)(edi + nf_width + 7) = w1;
+              *(uint8_t *)(edi + nf_width + 4) = w4;
+              *(uint8_t *)(edi + nf_width + 5) = w3;
+              *(uint8_t *)(edi + nf_width + 6) = w2;
+              *(uint8_t *)(edi + nf_width + 7) = w1;
             }
 #else
             if (hiColor) {
@@ -1270,15 +1270,15 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
               *(uint32_t *)(edi + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
               *(uint32_t *)(edi + nf_width + 12) = (w3 & 0xFFFF) | ((w4 & 0xFFFF) << 16);
             } else {
-              *(unsigned char *)(edi + 4) = w1;
-              *(unsigned char *)(edi + 5) = w2;
-              *(unsigned char *)(edi + 6) = w3;
-              *(unsigned char *)(edi + 7) = w4;
+              *(uint8_t *)(edi + 4) = w1;
+              *(uint8_t *)(edi + 5) = w2;
+              *(uint8_t *)(edi + 6) = w3;
+              *(uint8_t *)(edi + 7) = w4;
 
-              *(unsigned char *)(edi + nf_width + 4) = w1;
-              *(unsigned char *)(edi + nf_width + 5) = w2;
-              *(unsigned char *)(edi + nf_width + 6) = w3;
-              *(unsigned char *)(edi + nf_width + 7) = w4;
+              *(uint8_t *)(edi + nf_width + 4) = w1;
+              *(uint8_t *)(edi + nf_width + 5) = w2;
+              *(uint8_t *)(edi + nf_width + 6) = w3;
+              *(uint8_t *)(edi + nf_width + 7) = w4;
             }
 #endif
             edi += nf_width * 2;
@@ -1328,10 +1328,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         }
 
         const int max_repcount = 8;
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov4;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov8 : nfpk_mov4;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = rep_count + ((hiColor) ? 8 : 4);
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
           uint32_t w1 = colors[color_idx[0]];
           uint32_t w2 = colors[color_idx[1]];
           uint32_t w3 = colors[color_idx[2]];
@@ -1343,14 +1343,14 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             *(uint32_t *)(edi + 8) = w2;
             *(uint32_t *)(edi + 12) = w1;
           } else {
-            *(unsigned char *)(edi + 0) = w4;
-            *(unsigned char *)(edi + 1) = w4;
-            *(unsigned char *)(edi + 2) = w3;
-            *(unsigned char *)(edi + 3) = w3;
-            *(unsigned char *)(edi + 4) = w2;
-            *(unsigned char *)(edi + 5) = w2;
-            *(unsigned char *)(edi + 6) = w1;
-            *(unsigned char *)(edi + 7) = w1;
+            *(uint8_t *)(edi + 0) = w4;
+            *(uint8_t *)(edi + 1) = w4;
+            *(uint8_t *)(edi + 2) = w3;
+            *(uint8_t *)(edi + 3) = w3;
+            *(uint8_t *)(edi + 4) = w2;
+            *(uint8_t *)(edi + 5) = w2;
+            *(uint8_t *)(edi + 6) = w1;
+            *(uint8_t *)(edi + 7) = w1;
           }
 #else
           if (hiColor) {
@@ -1359,14 +1359,14 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
             *(uint32_t *)(edi + 8) = w3;
             *(uint32_t *)(edi + 12) = w4;
           } else {
-            *(unsigned char *)(edi + 0) = w1;
-            *(unsigned char *)(edi + 1) = w1;
-            *(unsigned char *)(edi + 2) = w2;
-            *(unsigned char *)(edi + 3) = w2;
-            *(unsigned char *)(edi + 4) = w3;
-            *(unsigned char *)(edi + 5) = w3;
-            *(unsigned char *)(edi + 6) = w4;
-            *(unsigned char *)(edi + 7) = w4;
+            *(uint8_t *)(edi + 0) = w1;
+            *(uint8_t *)(edi + 1) = w1;
+            *(uint8_t *)(edi + 2) = w2;
+            *(uint8_t *)(edi + 3) = w2;
+            *(uint8_t *)(edi + 4) = w3;
+            *(uint8_t *)(edi + 5) = w3;
+            *(uint8_t *)(edi + 6) = w4;
+            *(uint8_t *)(edi + 7) = w4;
           }
 
 #endif
@@ -1394,11 +1394,11 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           colors[3] = esi[3];
         }
 
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
         const int max_repcount = 4;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = rep_count + (hiColor ? 8 : 4);
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
           uint32_t w1 = colors[color_idx[0]];
           uint32_t w2 = colors[color_idx[1]];
           uint32_t w3 = colors[color_idx[2]];
@@ -1454,11 +1454,11 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           colors[3] = esi[3];
         }
 
-        const unsigned char *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
+        const uint8_t *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
         const int max_repcount = 16;
         for (int rep_count = 0; rep_count < max_repcount; ++rep_count) {
           int idx = rep_count + ((hiColor) ? 8 : 4);
-          const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+          const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
 
           uint32_t w1 = colors[color_idx[0]];
           uint32_t w2 = colors[color_idx[1]];
@@ -1560,10 +1560,10 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         }
       }
 
-      const unsigned char *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
+      const uint8_t *lookupTable = (hiColor) ? nfhpk_mov4 : nfpk_mov4;
       for (int rep_count = 0; rep_count < 16; ++rep_count) {
         int idx = repLookup[rep_count];
-        const unsigned char *color_idx = lookupTable + (esi[idx] * 4);
+        const uint8_t *color_idx = lookupTable + (esi[idx] * 4);
         uint32_t w1 = colors[color_idx[0]];
         uint32_t w2 = colors[color_idx[1]];
         uint32_t w3 = colors[color_idx[2]];
@@ -1752,7 +1752,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
         ediW[0] = (esiW[14]);
         ediW[1] = (esiW[15]);
         esi += 64;
-        edi = ((unsigned char *)ediW);
+        edi = ((uint8_t *)ediW);
       }
       edi -= nfpk_back_right;
     } break;
@@ -1762,33 +1762,33 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
           // low 4x4x16 (32 bytes)
           uint32_t eax, ebx;
 
-          eax = *(unsigned char *)(esi + i * 8 + 0);
+          eax = *(uint8_t *)(esi + i * 8 + 0);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 1);
+          eax = *(uint8_t *)(esi + i * 8 + 1);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
           *(uint32_t *)(edi + 0) = eax;
           *(uint32_t *)(edi + nf_width) = eax;
 
-          eax = *(unsigned char *)(esi + i * 8 + 2);
+          eax = *(uint8_t *)(esi + i * 8 + 2);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 3);
+          eax = *(uint8_t *)(esi + i * 8 + 3);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
           *(uint32_t *)(edi + 4) = eax;
           *(uint32_t *)(edi + nf_width + 4) = eax;
 
-          eax = *(unsigned char *)(esi + i * 8 + 4);
+          eax = *(uint8_t *)(esi + i * 8 + 4);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 5);
+          eax = *(uint8_t *)(esi + i * 8 + 5);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
           *(uint32_t *)(edi + 8) = eax;
           *(uint32_t *)(edi + nf_width + 8) = eax;
 
-          eax = *(unsigned char *)(esi + i * 8 + 6);
+          eax = *(uint8_t *)(esi + i * 8 + 6);
           ebx = nf_trans16_lo[eax];
-          eax = *(unsigned char *)(esi + i * 8 + 7);
+          eax = *(uint8_t *)(esi + i * 8 + 7);
           ebx |= nf_trans16_hi[eax];
           eax = ((ebx & 0xFFFF) << 16) | (ebx & 0xFFFF);
           *(uint32_t *)(edi + 12) = eax;
@@ -1820,7 +1820,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
       if (hiColor) {
         // 2x2 4x4x0 (8 bytes)
         for (int i = 0; i < 2; ++i) {
-          const unsigned char *loopEsi = esi + (i * 4);
+          const uint8_t *loopEsi = esi + (i * 4);
 
           uint32_t temp = nf_trans16_lo[loopEsi[0]] | nf_trans16_hi[loopEsi[1]];
           uint32_t ebx = ((temp & 0xFFFF) << 16) | (temp & 0xFFFF);
@@ -1940,7 +1940,7 @@ void PkDecompWorker(const bool hiColor, const unsigned char *ops, const unsigned
   } while (h != 0);
 }
 
-void Trans16Blk(unsigned char *edi, const unsigned char *idx) {
+void Trans16Blk(uint8_t *edi, const uint8_t *idx) {
   *((unsigned short *)(edi + 0)) = nf_trans16_lo[*(idx + 0)] | nf_trans16_hi[*(idx + 1)];
   *((unsigned short *)(edi + 2)) = nf_trans16_lo[*(idx + 2)] | nf_trans16_hi[*(idx + 3)];
   *((unsigned short *)(edi + 4)) = nf_trans16_lo[*(idx + 4)] | nf_trans16_hi[*(idx + 5)];
@@ -1951,7 +1951,7 @@ void Trans16Blk(unsigned char *edi, const unsigned char *idx) {
   *((unsigned short *)(edi + 14)) = nf_trans16_lo[*(idx + 14)] | nf_trans16_hi[*(idx + 15)];
 }
 
-void DOnf_xycshift(const bool hiColor, const uint32_t eax, unsigned char *&edi, const int nfpk_back_right) {
+void DOnf_xycshift(const bool hiColor, const uint32_t eax, uint8_t *&edi, const int nfpk_back_right) {
   uint32_t ebx = (eax >> 8) & 0xFF;
 
   // get the lower byte of the offset, but sign extend it
@@ -1971,7 +1971,7 @@ void DOnf_xycshift(const bool hiColor, const uint32_t eax, unsigned char *&edi, 
   DOnf_shift(hiColor, offset, edi, nfpk_back_right);
 }
 
-void DOnf_xypshift(const bool hiColor, const uint32_t eax, unsigned char *&edi, const int nfpk_back_right,
+void DOnf_xypshift(const bool hiColor, const uint32_t eax, uint8_t *&edi, const int nfpk_back_right,
                    const int DiffBufPtrs) {
   uint32_t ebx = (eax >> 8) & 0xFF;
 
@@ -1993,10 +1993,10 @@ void DOnf_xypshift(const bool hiColor, const uint32_t eax, unsigned char *&edi, 
 }
 
 // Copy the 128/64 bytes from an offset of edi to edi is.
-void DOnf_shift(const bool hiColor, const int offset, unsigned char *&edi, const int nfpk_back_right) {
+void DOnf_shift(const bool hiColor, const int offset, uint8_t *&edi, const int nfpk_back_right) {
   union ptr {
     uint32_t *pAsInt;
-    unsigned char *pAsChar;
+    uint8_t *pAsChar;
   };
   ptr dstBuffer;
   dstBuffer.pAsChar = edi;
@@ -2025,38 +2025,38 @@ void DOnf_shift(const bool hiColor, const int offset, unsigned char *&edi, const
 ////////////////////////////////////////////////
 // Non-Implemented Functions
 ////////////////////////////////////////////////
-void nfHiColorDecomp(const unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfHiColorDecompChg(const unsigned short *chgs, const unsigned short *parms, const unsigned char *comp, unsigned x,
+void nfHiColorDecomp(const uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfHiColorDecompChg(const unsigned short *chgs, const unsigned short *parms, const uint8_t *comp, unsigned x,
                         unsigned y, unsigned w, unsigned h);
-void nfDecomp(const unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const unsigned char *comp, unsigned x,
+void nfDecomp(const uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const uint8_t *comp, unsigned x,
                  unsigned y, unsigned w, unsigned h);
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h);
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void nfPkDecompD(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field);
 void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
                         unsigned dstx, unsigned dsty);
 void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
                                unsigned dstx, unsigned dsty);
-void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                           unsigned dstx, unsigned dsty);
-void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                                  unsigned dstx, unsigned dsty);
 
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
-void palLoadCompPalette(unsigned char *buf);
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
+void palLoadCompPalette(uint8_t *buf);
 void gfxMode(unsigned mode);
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res);
-void gfxGetCrtc(unsigned char *crtc);
-void gfxVres(unsigned char misc, unsigned char *crtc);
+void gfxLoadCrtc(uint8_t *crtc, uint8_t chain4, uint8_t res);
+void gfxGetCrtc(uint8_t *crtc);
+void gfxVres(uint8_t misc, uint8_t *crtc);
 void MVE_gfxWaitRetrace(int state);
 void MVE_gfxSetSplit(unsigned line);
 
 
-void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, uint32_t _x, uint32_t _y, uint32_t _w,
+void DECOMP_BODY(bool HI_COLOR_FLAG, const uint8_t *&comp, uint32_t _x, uint32_t _y, uint32_t _w,
                  uint32_t _h) {
   uint32_t HI_COLOR_SCALE = (HI_COLOR_FLAG) ? 2 : 1;
 
@@ -2068,16 +2068,16 @@ void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, uint32_t _x, ui
   NF_DECOMP_INIT(HI_COLOR_FLAG ? 1 : 0, &nf);
 
   uint32_t parms_sz = (nf.w * nf.h * nf_fqty) << 1;
-  const unsigned char *compData = comp + parms_sz;
+  const uint8_t *compData = comp + parms_sz;
 
   // New Data
   //=====================
 
   // Iterate over params and copy new hires data to appropriate sections.
-  unsigned char *curr_tbuf = nf.tbuf;
+  uint8_t *curr_tbuf = nf.tbuf;
   const unsigned short *compAsWord = (const unsigned short *)comp;
-  for (unsigned char fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
-    unsigned char *this_tbuf = curr_tbuf;
+  for (uint8_t fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
+    uint8_t *this_tbuf = curr_tbuf;
     for (uint32_t ch = nf.h; ch != 0; --ch, this_tbuf += nf.new_row) {
       for (uint32_t cl = nf.w; cl != 0; --cl) {
         int flags = (int)IntelSwapper(*compAsWord++);
@@ -2116,8 +2116,8 @@ void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, uint32_t _x, ui
   //   esi will be computed as +- 16K relative to edi.
   compAsWord = (const unsigned short *)comp;
   curr_tbuf = nf.tbuf;
-  for (unsigned char fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
-    unsigned char *this_tbuf = curr_tbuf;
+  for (uint8_t fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
+    uint8_t *this_tbuf = curr_tbuf;
     for (uint32_t ch = nf.h; ch != 0; --ch, this_tbuf += nf.new_row) {
       for (uint32_t cl = nf.w; cl != 0; --cl) {
         int flags = (int)IntelSwapper(*compAsWord++);
@@ -2127,7 +2127,7 @@ void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, uint32_t _x, ui
         }
 
         // Make esi absolute
-        unsigned char *src = this_tbuf;
+        uint8_t *src = this_tbuf;
         if (flags > 0) {
           // jg
           src += (flags - 0x4000) * HI_COLOR_SCALE;
@@ -2156,7 +2156,7 @@ void DECOMP_BODY(bool HI_COLOR_FLAG, const unsigned char *&comp, uint32_t _x, ui
 }
 
 void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsigned short *&parms,
-                     const unsigned char *&comp, uint32_t _x, uint32_t _y, uint32_t _w, uint32_t _h) {
+                     const uint8_t *&comp, uint32_t _x, uint32_t _y, uint32_t _w, uint32_t _h) {
   uint32_t HI_COLOR_SCALE = (HI_COLOR_FLAG) ? 2 : 1;
 
   tNextFrame nf;
@@ -2169,11 +2169,11 @@ void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsi
   // Iterate over params and copy new hires data to appropriate sections.
   const unsigned short *pChgs = chgs;
   uint32_t eax = 0;
-  const unsigned char *compData = comp;
-  unsigned char *curr_tbuf = nf.tbuf;
+  const uint8_t *compData = comp;
+  uint8_t *curr_tbuf = nf.tbuf;
   const unsigned short *curr_parms = parms;
-  for (unsigned char fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
-    unsigned char *this_tbuf = curr_tbuf;
+  for (uint8_t fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
+    uint8_t *this_tbuf = curr_tbuf;
     for (uint32_t ch = nf.h; ch != 0; --ch, this_tbuf += nf.new_row) {
       for (uint32_t cl = nf.w; cl != 0; --cl) {
         eax *= 2;
@@ -2224,8 +2224,8 @@ void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsi
   pChgs = chgs;
   eax = 0;
 
-  for (unsigned char fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
-    unsigned char *this_tbuf = curr_tbuf;
+  for (uint8_t fqIt = nf_fqty; fqIt != 0; --fqIt, curr_tbuf += nf_width) {
+    uint8_t *this_tbuf = curr_tbuf;
     for (uint32_t ch = nf.h; ch != 0; --ch, this_tbuf += nf.new_row) {
       for (uint32_t cl = nf.w; cl != 0; --cl) {
         eax *= 2;
@@ -2246,7 +2246,7 @@ void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsi
         }
 
         // Make esi absolute
-        unsigned char *src = this_tbuf;
+        uint8_t *src = this_tbuf;
         if (flags > 0) {
           src += (flags - 0x4000) * HI_COLOR_SCALE;
         } else {
@@ -2273,7 +2273,7 @@ void DECOMP_CHG_BODY(bool HI_COLOR_FLAG, const unsigned short *&chgs, const unsi
 }
 
 // Decompress into subsection of current buffer specified by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
-void nfHiColorDecomp(const unsigned char *comp, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+void nfHiColorDecomp(const uint8_t *comp, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
   DECOMP_BODY(true, comp, x, y, w, h);
 }
 
@@ -2281,14 +2281,14 @@ void nfHiColorDecomp(const unsigned char *comp, uint32_t x, uint32_t y, uint32_t
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
-void nfHiColorDecompChg(const unsigned short *chgs, const unsigned short *parms, const unsigned char *comp, unsigned x,
+void nfHiColorDecompChg(const unsigned short *chgs, const unsigned short *parms, const uint8_t *comp, unsigned x,
                         unsigned y, unsigned w, unsigned h) {
   DECOMP_CHG_BODY(true, chgs, parms, comp, x, y, w, h);
 }
 
 // Decompress into subsection of current buffer specified
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
-void nfDecomp(const unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
+void nfDecomp(const uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) {
   if (nf_hicolor) {
     nfHiColorDecomp(comp, x, y, w, h);
     return;
@@ -2301,7 +2301,7 @@ void nfDecomp(const unsigned char *comp, unsigned x, unsigned y, unsigned w, uns
 //  by x,y,w,h in units of SWIDTHxSHEIGHT (8x8).
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
-void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const unsigned char *comp, unsigned x,
+void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const uint8_t *comp, unsigned x,
                  unsigned y, unsigned w, unsigned h) {
   if (nf_hicolor) {
     nfHiColorDecompChg(chgs, parms, comp, x, y, w, h);
@@ -2311,13 +2311,13 @@ void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const 
   DECOMP_CHG_BODY(false, chgs, parms, comp, x, y, w, h);
 }
 
-void nfPkDecompH(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { debug_break(); }
-void nfPkDecompD(unsigned char *ops, unsigned char *comp, unsigned x, unsigned y, unsigned w, unsigned h) { debug_break(); }
-void mve_ShowFrameField(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void nfPkDecompH(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { debug_break(); }
+void nfPkDecompD(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h) { debug_break(); }
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                         unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
   debug_break();
 }
-void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
                           unsigned h, unsigned dstx, unsigned dsty, unsigned field) {
   debug_break();
 }
@@ -2329,19 +2329,19 @@ void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, 
                                unsigned dstx, unsigned dsty) {
   debug_break();
 }
-void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                           unsigned dstx, unsigned dsty) {
   debug_break();
 }
-void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned char *ops,
+void mve_sfPkHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint8_t *ops,
                                  unsigned dstx, unsigned dsty) {
   debug_break();
 }
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count) { debug_break(); }
-void palLoadCompPalette(unsigned char *buf) { debug_break(); }
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count) { debug_break(); }
+void palLoadCompPalette(uint8_t *buf) { debug_break(); }
 void gfxMode(unsigned mode) { debug_break(); }
-void gfxLoadCrtc(unsigned char *crtc, unsigned char chain4, unsigned char res) { debug_break(); }
-void gfxGetCrtc(unsigned char *crtc) { debug_break(); }
-void gfxVres(unsigned char misc, unsigned char *crtc) { debug_break(); }
+void gfxLoadCrtc(uint8_t *crtc, uint8_t chain4, uint8_t res) { debug_break(); }
+void gfxGetCrtc(uint8_t *crtc) { debug_break(); }
+void gfxVres(uint8_t misc, uint8_t *crtc) { debug_break(); }
 void MVE_gfxWaitRetrace(int state) { debug_break(); }
 void MVE_gfxSetSplit(unsigned line) { debug_break(); }

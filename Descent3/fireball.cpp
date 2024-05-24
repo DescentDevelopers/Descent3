@@ -1141,7 +1141,7 @@ void DoDeathSpew(object *parent) {
   ASSERT(IS_GENERIC(parent->type));
   int i, j;
   int num_last_type = 0;
-  unsigned char f_dspew = Object_info[parent->id].f_dspew;
+  uint8_t f_dspew = Object_info[parent->id].f_dspew;
 
   if (!parent)
     return;

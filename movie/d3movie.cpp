@@ -436,8 +436,8 @@ static void *CallbackAlloc(uint32_t size);
 static void CallbackFree(void *p);
 static uint32_t CallbackFileRead(int hFile, void *pBuffer, uint32_t bufferCount);
 static void InitializePalette();
-static void CallbackSetPalette(unsigned char *pBuffer, uint32_t start, uint32_t count);
-static void CallbackShowFrame(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
+static void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count);
+static void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
                               uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
                               uint32_t hicolor);
 
@@ -605,7 +605,7 @@ void InitializePalette() {
   }
 }
 
-void CallbackSetPalette(unsigned char *pBuffer, uint32_t start, uint32_t count) {
+void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count) {
 #ifndef NO_MOVIES
   pBuffer += start * 3;
 
@@ -632,7 +632,7 @@ int NextPow2(int n) {
 }
 
 #ifndef NO_MOVIES
-void BlitToMovieBitmap(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_t hicolor,
+void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hicolor,
                        bool usePow2Texture, int &texW, int &texH) {
   // get some sizes
   int drawWidth = hicolor ? (bufw >> 1) : bufw;
@@ -672,7 +672,7 @@ void BlitToMovieBitmap(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_
   } else {
     for (int y = 0; y < drawHeight; ++y) {
       for (int x = 0; x < drawWidth; ++x) {
-        unsigned char palIndex = *buf++;
+        uint8_t palIndex = *buf++;
         pPixelData[x] = CurrentPalette[palIndex];
       }
 
@@ -681,7 +681,7 @@ void BlitToMovieBitmap(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_
   }
 }
 
-void CallbackShowFrame(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy,
+void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy,
                        uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty, uint32_t hicolor) {
   // prepare our bitmap
   int texW, texH;
@@ -776,14 +776,14 @@ intptr_t mve_SequenceFrame(intptr_t handle, int fhandle, bool sequence, int *bm_
 reread_frame:
 
   // get the next frame of data
-  unsigned char *pBuffer = NULL;
+  uint8_t *pBuffer = NULL;
   err = MVE_frGet((MVE_frStream)handle, &pBuffer, &sw, &sh, &hicolor);
 
   // refresh our palette
   {
     uint32_t palstart = 0;
     uint32_t palcount = 0;
-    unsigned char *pal = NULL;
+    uint8_t *pal = NULL;
     MVE_frPal((MVE_frStream)handle, &pal, &palstart, &palcount);
     CallbackSetPalette(pal, palstart, palcount);
   }

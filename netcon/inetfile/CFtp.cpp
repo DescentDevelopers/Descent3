@@ -386,7 +386,7 @@ uint32_t CFtpGet::IssuePort() {
 #else
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
       unsigned short s_w1, s_w2;

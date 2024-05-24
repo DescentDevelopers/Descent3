@@ -313,7 +313,7 @@ typedef struct sound_file_info {
   char used;
   int use_count; // how many buffers does this sound take up.
 
-  unsigned char *sample_8bit; // 8bit sound data
+  uint8_t *sample_8bit; // 8bit sound data
   short *sample_16bit;        // 16bit sound data
 
   int sample_length;    // Length of sound in samples
@@ -485,7 +485,7 @@ public:
   virtual void SetSoundCard(const char *name) = 0;
 
   // Starts the sound library, maybe have it send back some information -- 3d support?
-  virtual int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) = 0;
+  virtual int InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played) = 0;
   // Cleans up after the Sound Library
   virtual void DestroySoundLib() = 0;
 
@@ -517,7 +517,7 @@ public:
   //	virtual void AdjustSound(int sound_uid, play_information *play_info) = 0;
 
   // Stops 2d and 3d sounds
-  virtual void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY) = 0;
+  virtual void StopSound(int sound_uid, uint8_t f_immediately = SKT_STOP_IMMEDIATELY) = 0;
 
   // Pause all sounds/resume all sounds
   virtual void PauseSounds() = 0;

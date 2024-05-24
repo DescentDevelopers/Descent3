@@ -79,7 +79,7 @@ typedef struct _mve_hdr {
 typedef struct _io_hdr {
   unsigned short len;  // Length of record data (pad to even)
   unsigned short kind; // See IO_REC_xxx
-                       //	unsigned char data[0];	// Record data
+                       //	uint8_t data[0];	// Record data
   void SwapBytes() {
     len = IntelSwapper(len);
     kind = IntelSwapper(kind);
@@ -101,13 +101,13 @@ typedef struct _io_hdr {
 //------------------------------
 //
 
-#define MCMD_DATA(arg) ((unsigned char *)((arg) + 1))
+#define MCMD_DATA(arg) ((uint8_t *)((arg) + 1))
 
 typedef struct _mcmd_hdr {
   unsigned short len;  // Length of data (pad to even)
-  unsigned char major; // Major opcode
-  unsigned char minor; // Minor opcode
-                       //	unsigned char data[0];	// Opcode data
+  uint8_t major; // Major opcode
+  uint8_t minor; // Minor opcode
+                       //	uint8_t data[0];	// Opcode data
   void SwapBytes() { len = IntelSwapper(len); }
 } mcmd_hdr;
 
@@ -136,12 +136,12 @@ typedef struct _sndConfigure {
                        //  For stereo, there will be two initial 16-bit samples.
                        //   and compressed streams will be interleaved.
 #ifdef OUTRAGE_BIG_ENDIAN
-  unsigned char pad : 5;
-  unsigned char stereo : 1, bits16 : 1, comp16 : 1;
-  unsigned char pad2;
+  uint8_t pad : 5;
+  uint8_t stereo : 1, bits16 : 1, comp16 : 1;
+  uint8_t pad2;
 #else
-  unsigned char stereo : 1, bits16 : 1, comp16 : 1;
-  unsigned char pad;
+  uint8_t stereo : 1, bits16 : 1, comp16 : 1;
+  uint8_t pad;
 #endif
   unsigned short frequency;
   // Minor opcode 1 extends buflen to be a long
@@ -182,9 +182,9 @@ typedef struct _nfDecomp {
   unsigned short w;
   unsigned short h;
 #ifdef OUTRAGE_BIG_ENDIAN
-  unsigned char bitpadder : 7;
-  unsigned char advance : 1;
-  unsigned char dummy1;
+  uint8_t bitpadder : 7;
+  uint8_t advance : 1;
+  uint8_t dummy1;
 #else
   unsigned short advance : 1;
   unsigned short pad : 15;
@@ -222,7 +222,7 @@ typedef struct _sndAdd {
   unsigned short iframe; // info: iframe # of sound
   unsigned short TrackMask;
   unsigned short qty; // Uncompressed audio size in bytes
-  //	unsigned char data[0];
+  //	uint8_t data[0];
   void SwapBytes() {
     iframe = IntelSwapper(iframe);
     TrackMask = IntelSwapper(TrackMask);
@@ -244,12 +244,12 @@ typedef struct _gfxMode {
 
 #define mcmd_palMakeSynthPalette 11
 typedef struct _palMakeSynthPalette {
-  unsigned char base_r;
-  unsigned char range_r;
-  unsigned char range_rb;
-  unsigned char base_g;
-  unsigned char range_g;
-  unsigned char range_gb;
+  uint8_t base_r;
+  uint8_t range_r;
+  uint8_t range_rb;
+  uint8_t base_g;
+  uint8_t range_g;
+  uint8_t range_gb;
   void SwapBytes() {}
 } marg_palMakeSynthPalette;
 
@@ -257,7 +257,7 @@ typedef struct _palMakeSynthPalette {
 typedef struct _palLoadPalette {
   unsigned short start;
   unsigned short count;
-  //	unsigned char data[0];
+  //	uint8_t data[0];
   void SwapBytes() {
     start = IntelSwapper(start);
     count = IntelSwapper(count);

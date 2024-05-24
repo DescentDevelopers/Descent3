@@ -165,7 +165,7 @@
 
 */
 
-typedef unsigned char FxU8;
+typedef uint8_t FxU8;
 
 typedef signed char FxI8;
 

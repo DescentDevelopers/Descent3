@@ -83,7 +83,7 @@ typedef struct _mve_hdr {
 typedef struct _io_hdr {
   unsigned short len;  // Length of record data (pad to even)
   unsigned short kind; // See IO_REC_xxx
-                       //	unsigned char data[0];	// Record data
+                       //	uint8_t data[0];	// Record data
 } ioHdrRec;
 
 // This record classifications simplify utilities which must operate on
@@ -101,13 +101,13 @@ typedef struct _io_hdr {
 //------------------------------
 //
 
-#define MCMD_DATA(arg) ((unsigned char *)((arg) + 1))
+#define MCMD_DATA(arg) ((uint8_t *)((arg) + 1))
 
 typedef struct _mcmd_hdr {
   unsigned short len;  // Length of data (pad to even)
-  unsigned char major; // Major opcode
-  unsigned char minor; // Minor opcode
-                       //	unsigned char data[0];	// Opcode data
+  uint8_t major; // Major opcode
+  uint8_t minor; // Minor opcode
+                       //	uint8_t data[0];	// Opcode data
 } mcmd_hdr;
 
 #define mcmd_end 0 // End processing of movie
@@ -132,10 +132,10 @@ typedef struct _sndConfigure {
                        //   and compressed streams will be interleaved.
                        // unsigned short stereo:1, bits16:1, comp16:1;
 #ifdef OUTRAGE_BIG_ENDIAN
-  unsigned char bitpadder : 5;
+  uint8_t bitpadder : 5;
 #endif
-  unsigned char stereo : 1, bits16 : 1, comp16 : 1;
-  unsigned char dummy1;
+  uint8_t stereo : 1, bits16 : 1, comp16 : 1;
+  uint8_t dummy1;
   unsigned short frequency;
   // Minor opcode 1 extends buflen to be a long
   uint32_t buflen;
@@ -165,11 +165,11 @@ typedef struct _nfDecomp {
   unsigned short h;
   // unsigned short advance:1;
 #ifdef OUTRAGE_BIG_ENDIAN
-  unsigned char bitpadder : 7;
+  uint8_t bitpadder : 7;
 #endif
-  unsigned char advance : 1;
-  unsigned char dummy1;
-  //	unsigned char comp[0];
+  uint8_t advance : 1;
+  uint8_t dummy1;
+  //	uint8_t comp[0];
 } marg_nfDecomp;
 
 #define mcmd_sfShowFrame 7
@@ -189,7 +189,7 @@ typedef struct _sndAdd {
   unsigned short iframe; // info: iframe # of sound
   unsigned short TrackMask;
   unsigned short qty; // Uncompressed audio size in bytes
-  //	unsigned char data[0];
+  //	uint8_t data[0];
 } marg_sndAdd;
 
 #define mcmd_gfxMode 10
@@ -201,19 +201,19 @@ typedef struct _gfxMode {
 
 #define mcmd_palMakeSynthPalette 11
 typedef struct _palMakeSynthPalette {
-  unsigned char base_r;
-  unsigned char range_r;
-  unsigned char range_rb;
-  unsigned char base_g;
-  unsigned char range_g;
-  unsigned char range_gb;
+  uint8_t base_r;
+  uint8_t range_r;
+  uint8_t range_rb;
+  uint8_t base_g;
+  uint8_t range_g;
+  uint8_t range_gb;
 } marg_palMakeSynthPalette;
 
 #define mcmd_palLoadPalette 12
 typedef struct _palLoadPalette {
   unsigned short start;
   unsigned short count;
-  //	unsigned char data[0];
+  //	uint8_t data[0];
 } marg_palLoadPalette;
 
 #define mcmd_palLoadCompPalette 13

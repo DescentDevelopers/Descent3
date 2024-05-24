@@ -67,7 +67,7 @@
  *
  */
 
-#define ubyte unsigned char
+#define ubyte uint8_t
 #define uint32_t uint32_t
 #define ushort unsigned short
 

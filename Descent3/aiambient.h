@@ -38,17 +38,17 @@
 class ambient_life {
   // Editor settable values
   int m_type[MAX_AL_TYPES];
-  unsigned char m_total[MAX_AL_TYPES];
-  unsigned char m_max[MAX_AL_TYPES];
-  unsigned char m_min[MAX_AL_TYPES];
-  unsigned char m_flags[MAX_AL_TYPES];
+  uint8_t m_total[MAX_AL_TYPES];
+  uint8_t m_max[MAX_AL_TYPES];
+  uint8_t m_min[MAX_AL_TYPES];
+  uint8_t m_flags[MAX_AL_TYPES];
 
   // These are never set or gotten from outside of the class
-  unsigned char m_cur_num[MAX_AL_TYPES];
+  uint8_t m_cur_num[MAX_AL_TYPES];
   int m_handle[MAX_AL_TYPES][MAX_ALS_PER_TYPE];
 
   // Don't save these...
-  unsigned char m_next_size[MAX_AL_TYPES];
+  uint8_t m_next_size[MAX_AL_TYPES];
   float m_next_do_time[MAX_AL_TYPES];
 
   void ComputeNextSize(char index);

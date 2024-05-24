@@ -52,7 +52,7 @@ std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen) {
   std::size_t out_size;
 
   // Trim leading space
-  while (std::isspace((unsigned char)*src))
+  while (std::isspace((uint8_t)*src))
     src++;
 
   // All spaces?
@@ -63,7 +63,7 @@ std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen) {
 
   // Trim trailing space
   end = src + std::strlen(src) - 1;
-  while (end > src && std::isspace((unsigned char)*end))
+  while (end > src && std::isspace((uint8_t)*end))
     end--;
   end++;
 

@@ -83,7 +83,7 @@ typedef struct otype_wb_info {
 typedef struct dynamic_wb_info {
   // Dynamic Data
   float last_fire_time;
-  unsigned char cur_firing_mask;
+  uint8_t cur_firing_mask;
 
   float norm_turret_angle[MAX_WB_TURRETS];
   float turret_next_think_time[MAX_WB_TURRETS];

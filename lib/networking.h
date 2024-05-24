@@ -174,15 +174,15 @@ static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1,
   *s_w1 = st->S_un.S_un_w.s_w1;
   *s_w2 = st->S_un.S_un_w.s_w2;
 }
-static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
-                                unsigned char s_b4) {
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3,
+                                uint8_t s_b4) {
   st->S_un.S_un_b.s_b1 = s_b1;
   st->S_un.S_un_b.s_b2 = s_b2;
   st->S_un.S_un_b.s_b3 = s_b3;
   st->S_un.S_un_b.s_b4 = s_b4;
 }
-static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
-                                unsigned char *s_b4) {
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3,
+                                uint8_t *s_b4) {
   *s_b1 = st->S_un.S_un_b.s_b1;
   *s_b2 = st->S_un.S_un_b.s_b2;
   *s_b3 = st->S_un.S_un_b.s_b3;
@@ -246,7 +246,7 @@ static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *
 static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
       unsigned short s_w1, s_w2;
@@ -261,7 +261,7 @@ static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, 
 static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
       unsigned short s_w1, s_w2;
@@ -273,11 +273,11 @@ static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1,
   *s_w1 = S_un.S_un_w.s_w1;
   *s_w2 = S_un.S_un_w.s_w2;
 }
-static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, unsigned char s_b2, unsigned char s_b3,
-                                unsigned char s_b4) {
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3,
+                                uint8_t s_b4) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
       unsigned short s_w1, s_w2;
@@ -291,11 +291,11 @@ static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, u
   S_un.S_un_b.s_b4 = s_b4;
   st->s_addr = S_un.S_addr;
 }
-static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, unsigned char *s_b2, unsigned char *s_b3,
-                                unsigned char *s_b4) {
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3,
+                                uint8_t *s_b4) {
   union {
     struct {
-      unsigned char s_b1, s_b2, s_b3, s_b4;
+      uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
       unsigned short s_w1, s_w2;

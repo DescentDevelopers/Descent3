@@ -2425,7 +2425,7 @@ void ComputeAABB(bool f_full) {
         rp->num_bbf = (short *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(short));
         rp->bbf_list_min_xyz = (vector *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(vector));
         rp->bbf_list_max_xyz = (vector *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(vector));
-        rp->bbf_list_sector = (unsigned char *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(unsigned char));
+        rp->bbf_list_sector = (uint8_t *)mem_malloc(MAX_REGIONS_PER_ROOM * sizeof(uint8_t));
 
         for (x = 0; x < 27; x++) {
           rp->bbf_list_sector[x] = bbf_lookup[x];
@@ -2971,7 +2971,7 @@ void ComputeAABB(bool f_full) {
         rp->bbf_list_min_xyz = (vector *)mem_realloc(rp->bbf_list_min_xyz, rp->num_bbf_regions * sizeof(vector));
         rp->bbf_list_max_xyz = (vector *)mem_realloc(rp->bbf_list_max_xyz, rp->num_bbf_regions * sizeof(vector));
         rp->bbf_list_sector =
-            (unsigned char *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(unsigned char));
+            (uint8_t *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(uint8_t));
       }
     }
 

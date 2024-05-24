@@ -496,7 +496,7 @@ void con_DoKeyboard(void) {
     default:
       if (Con_inp_pos < (Con_cols - 2)) {
         // Add the character to the text buffer.
-        unsigned char str[2];
+        uint8_t str[2];
         str[0] = ddio_KeyToAscii(keypressed);
         str[1] = 0;
         if (str[0] != 255) {

@@ -200,7 +200,7 @@ typedef struct {
   float last_ping_time;
   ushort pilot_pic_id;
   float percent_loss;
-  unsigned char digest[16];
+  uint8_t digest[16];
 } netplayer;
 
 #define MISSION_NAME_LEN 50

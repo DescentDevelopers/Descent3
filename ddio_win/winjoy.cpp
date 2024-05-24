@@ -732,7 +732,7 @@ bool joyw_get_name(int joy_num, char *szReturnName, const char *szRegKey)
   Length = sizeof(szOEMName); // Get OEMNAME Configuration
 
   if (ERROR_SUCCESS !=
-      RegQueryValueEx(JoyConfigKey, (char *)KeyStr, NULL, NULL, (unsigned char *)&szOEMName, &Length)) {
+      RegQueryValueEx(JoyConfigKey, (char *)KeyStr, NULL, NULL, (uint8_t *)&szOEMName, &Length)) {
     return (false); // No OEM name listed return error
   }
   RegCloseKey(ConfigKey); // Closes the registry Key
@@ -748,7 +748,7 @@ bool joyw_get_name(int joy_num, char *szReturnName, const char *szRegKey)
   Length = MAX_PATH; // Get Name as listed in Control Panel
 
   if (ERROR_SUCCESS !=
-      RegQueryValueEx(OEMPropKey, REGSTR_VAL_JOYOEMNAME, NULL, NULL, (unsigned char *)szReturnName, &Length)) {
+      RegQueryValueEx(OEMPropKey, REGSTR_VAL_JOYOEMNAME, NULL, NULL, (uint8_t *)szReturnName, &Length)) {
     return (false); // No OEM name listed return error
   }
   RegCloseKey(OEMPropKey); // Closes the registry Key

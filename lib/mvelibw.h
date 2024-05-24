@@ -94,7 +94,7 @@ void __cdecl MVE_dsbSetPan(int32_t lPan);
 */
 void __cdecl
 MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth,
-	   unsigned WriteWin, unsigned char *WriteWinPtr,
+	   unsigned WriteWin, uint8_t *WriteWinPtr,
 	   uint32_t WinSize, unsigned WinGran,
 	   void *SetBank, unsigned hicolor);
 
@@ -128,12 +128,12 @@ typedef void __cdecl mve_cb_ShowFrame
 void __cdecl MVE_sfCallbacks(mve_cb_ShowFrame *fn_ShowFrame);
 
 typedef void __cdecl mve_cb_SetPalette
-		  (unsigned char *p, unsigned start, unsigned count);
+		  (uint8_t *p, unsigned start, unsigned count);
 void __cdecl
 MVE_palCallbacks(mve_cb_SetPalette *fn_SetPalette);
 
 void __cdecl
-MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
+MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
 
 /* Configure the software for a graphics mode, optionally setting the
 **  display to that mode (see the MVE_GFX_xxx constants defined below).
@@ -296,7 +296,7 @@ int __cdecl MVE_frGet(MVE_frStream frs,
 **
 */
 void __cdecl MVE_frPal(MVE_frStream frs,
-					   unsigned char **pPaltbl, unsigned *pStart, unsigned *pCount);
+					   uint8_t **pPaltbl, unsigned *pStart, unsigned *pCount);
 
 /* MVE_frClose
 **  Closes the specified Frame Reader Stream frs.

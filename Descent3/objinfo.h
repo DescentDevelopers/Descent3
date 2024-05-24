@@ -481,7 +481,7 @@ typedef struct {
   short dspew[MAX_DSPEW_TYPES];
   float dspew_percent[MAX_DSPEW_TYPES];
   short dspew_number[MAX_DSPEW_TYPES];
-  unsigned char f_dspew;
+  uint8_t f_dspew;
 
   // Valid for physics objects only
   physics_info phys_info; // the physics data for this obj type

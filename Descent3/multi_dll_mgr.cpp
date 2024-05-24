@@ -898,9 +898,9 @@ void *UIConsoleGadgetCreate(UIWindow *parentid, int id, int x, int y, int font, 
   return newconsole;
 }
 void UIConsoleGadgetputs(UIConsoleGadget *item, const char *str) {
-  unsigned char r = 0;
-  unsigned char g = 230;
-  unsigned char b = 0;
+  uint8_t r = 0;
+  uint8_t g = 230;
+  uint8_t b = 0;
   if (*str == 1) {
     str++;
     r = *str;

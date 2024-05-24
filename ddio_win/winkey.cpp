@@ -738,7 +738,7 @@ int ddio_KeyHandler(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
   switch (msg) {
   case WM_KEYDOWN:
   case WM_SYSKEYDOWN:
-    scan_code = (unsigned char)((lParam >> 16) & 0xff);
+    scan_code = (uint8_t)((lParam >> 16) & 0xff);
     if (lParam & 0x01000000)
       scan_code |= 0x80;
 
@@ -759,7 +759,7 @@ int ddio_KeyHandler(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
   case WM_KEYUP:
   case WM_SYSKEYUP:
-    scan_code = (unsigned char)((lParam >> 16) & 0xff);
+    scan_code = (uint8_t)((lParam >> 16) & 0xff);
     if (lParam & 0x01000000)
       scan_code |= 0x80;
 

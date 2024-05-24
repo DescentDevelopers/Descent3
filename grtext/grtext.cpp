@@ -196,7 +196,7 @@ static void grtext_DrawTextLineClip(int x, int y, char *str);
 
 #define XORVAL 205
 #define MAX_BAD_WORD_LEN 10
-typedef unsigned char badword[MAX_BAD_WORD_LEN];
+typedef uint8_t badword[MAX_BAD_WORD_LEN];
 // These all need to be lower case!
 static badword bad_words[] = {
     // These are just XOR'd with XORVAL

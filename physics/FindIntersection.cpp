@@ -901,12 +901,12 @@ bool FVI_always_check_ceiling = false;
 float Ceiling_height = MAX_TERRAIN_HEIGHT;
 
 // Bit fields for quick 'already-checked' checking
-static unsigned char
+static uint8_t
     fvi_visit_list[MAX_ROOMS / 8 + 1]; // This bit-field provides a fast check if a mine segment has been visited
-static unsigned char
+static uint8_t
     fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
                            1]; // This bit-field provides a fast check if a terrain segment has been visited
-static unsigned char
+static uint8_t
     fvi_terrain_obj_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
                                1]; // This bit-field provides a fast check if a terrain segment has been visited
 

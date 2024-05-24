@@ -224,7 +224,7 @@ void ReadAmbientData() {
   }
 
   // Read file ID
-  cf_ReadBytes((unsigned char *)file_id, strlen(AMBIENT_FILE_ID), ifile);
+  cf_ReadBytes((uint8_t *)file_id, strlen(AMBIENT_FILE_ID), ifile);
   if (strncmp(file_id, AMBIENT_FILE_ID, strlen(AMBIENT_FILE_ID)) != 0) {
     Int3();
     cfclose(ifile);

@@ -318,8 +318,8 @@ private:
   unsigned short m_total_sounds_played; // Used for unique ids and for stats
 
   // Sound library status
-  unsigned char m_f_sound_lib_init;   // Flag is set if sound library is initialized	-- cmphack
-  unsigned char m_f_sound_lib_status; // Paused or running							--
+  uint8_t m_f_sound_lib_init;   // Flag is set if sound library is initialized	-- cmphack
+  uint8_t m_f_sound_lib_status; // Paused or running							--
                                       // cmphack
 
   // May not need some of these
@@ -327,7 +327,7 @@ private:
   int m_primary_alignment;
   int m_current_frequency; //                   					-- cmphack
 
-  unsigned char m_primary_bit_depth; // 16 or 8 bits per sample				-- cmphack
+  uint8_t m_primary_bit_depth; // 16 or 8 bits per sample				-- cmphack
   char m_sound_quality;
 
   // muted looped sound system
@@ -357,7 +357,7 @@ public:
   ~win_llsSystem(void);
 
   // Starts the sound library
-  virtual int InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played);
+  virtual int InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played);
 
   // Cleans up after the Sound Library
   virtual void DestroySoundLib(void);
@@ -400,7 +400,7 @@ public:
   virtual bool UnlockSound(int sound_uid);
 
   // Stops 2d and 3d sounds
-  virtual void StopSound(int sound_uid, unsigned char f_immediately = SKT_STOP_IMMEDIATELY);
+  virtual void StopSound(int sound_uid, uint8_t f_immediately = SKT_STOP_IMMEDIATELY);
 
   // Pause all sounds/resume all sounds
   virtual void PauseSounds(void);

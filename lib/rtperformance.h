@@ -39,7 +39,7 @@
 #define INT64 signed __int64
 #endif
 #else
-#define INT64 unsigned char
+#define INT64 uint8_t
 #endif
 
 
@@ -269,7 +269,7 @@ typedef struct {
 // ------------------------------
 extern tRTFrameInfo RTP_SingleFrame;
 extern INT64 Runtime_performance_clockfreq;
-extern unsigned char Runtime_performance_enabled;
+extern uint8_t Runtime_performance_enabled;
 
 /*
 void rtp_Init

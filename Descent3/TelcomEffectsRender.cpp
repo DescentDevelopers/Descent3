@@ -322,7 +322,7 @@ void RenderTextFade(tceffect *tce, float frametime, int xoff, int yoff, bool ok_
   if (tce->speed == 0)
     tce->speed = 0.0001f;
   float amount = tce->age * (255.0 / tce->speed);
-  unsigned char alpha;
+  uint8_t alpha;
   if (tce->flags == TC_TEXTF_IN) {
     // fade in, but not fade out
     tce->alpha += amount;

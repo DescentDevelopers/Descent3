@@ -70,7 +70,7 @@ static int load_bits(ACMStream *acm)
 {
 	int err;
 	unsigned data, got;
-	unsigned char *p = acm->buf + acm->buf_pos;
+	uint8_t *p = acm->buf + acm->buf_pos;
 	switch (acm->buf_size - acm->buf_pos) {
 	default:
 		data = 0;
@@ -115,7 +115,7 @@ static int get_bits_reload(ACMStream *acm, unsigned bits)
 	bits -= got;
 
 	if (acm->buf_size - acm->buf_pos >= 4) {
-		unsigned char *p = acm->buf + acm->buf_pos;
+		uint8_t *p = acm->buf + acm->buf_pos;
 		acm->buf_pos += 4;
 		b_data = p[0] + (p[1] << 8) + (p[2] << 16) + (p[3] << 24);
 		b_avail = 32;
@@ -614,7 +614,7 @@ static int decode_block(ACMStream *acm)
  * Output formats
  ******************************/
 
-static unsigned char *out_s16le(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_s16le(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = *src++ >> shift;
@@ -624,7 +624,7 @@ static unsigned char *out_s16le(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static unsigned char *out_s16be(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_s16be(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = *src++ >> shift;
@@ -634,7 +634,7 @@ static unsigned char *out_s16be(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static unsigned char *out_u16le(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_u16le(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = (*src++ >> shift) + 0x8000;
@@ -644,7 +644,7 @@ static unsigned char *out_u16le(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static unsigned char *out_u16be(int *src, unsigned char *dst, unsigned n, unsigned shift)
+static uint8_t *out_u16be(int *src, uint8_t *dst, unsigned n, unsigned shift)
 {
 	while (n--) {
 		int val = (*src++ >> shift) + 0x8000;
@@ -654,10 +654,10 @@ static unsigned char *out_u16be(int *src, unsigned char *dst, unsigned n, unsign
 	return dst;
 }
 
-static int output_values(int *src, unsigned char *dst, int n,
+static int output_values(int *src, uint8_t *dst, int n,
 		int acm_level, int bigendianp, int wordlen, int sgned)
 {
-	unsigned char *res = NULL;
+	uint8_t *res = NULL;
 	if (wordlen == 2) {
 		if (bigendianp == 0) {
 			if (sgned)

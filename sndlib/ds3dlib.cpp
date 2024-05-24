@@ -276,7 +276,7 @@ win_llsSystem::~win_llsSystem(void) {
   SetSoundCard(NULL);
 }
 
-inline void opti_8m_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
                         const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -303,7 +303,7 @@ inline void opti_8m_mix(unsigned char *cur_sample_8bit, const int num_write, int
   samples_played += (i / 2);
 }
 
-inline void opti_8s_mix(unsigned char *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, int *mixer_buffer16,
                         const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -670,7 +670,7 @@ void StreamMixer(char *ptr, int len) {
       int skip_interval = cur_buf->play_info->sample_skip_interval;
       int samples_played = cur_buf->play_info->m_samples_played;
       short *sample_16bit;
-      unsigned char *sample_8bit;
+      uint8_t *sample_8bit;
       int np_sample_length;
       int sample_length;
       int loop_start;
@@ -685,7 +685,7 @@ void StreamMixer(char *ptr, int len) {
           break;
         case SIF_STREAMING_8_M:
           sample_16bit = NULL;
-          sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+          sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size;
           break;
         case SIF_STREAMING_16_S:
@@ -696,7 +696,7 @@ void StreamMixer(char *ptr, int len) {
           break;
         case SIF_STREAMING_8_S:
           sample_16bit = NULL;
-          sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+          sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           f_mono = false;
           break;
@@ -825,7 +825,7 @@ void StreamMixer(char *ptr, int len) {
       // Mix at 16 bits per sample
       if (skip_interval == 0) {
         short *cur_sample_16bit = sample_16bit;
-        unsigned char *cur_sample_8bit = sample_8bit;
+        uint8_t *cur_sample_8bit = sample_8bit;
 
         if (f_mono) {
           if (sample_8bit) {
@@ -959,7 +959,7 @@ void StreamMixer(char *ptr, int len) {
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 2;
                 break;
               case SIF_STREAMING_8_M:
-                sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+                sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size;
                 break;
               case SIF_STREAMING_16_S:
@@ -967,7 +967,7 @@ void StreamMixer(char *ptr, int len) {
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 4;
                 break;
               case SIF_STREAMING_8_S:
-                sample_8bit = (unsigned char *)cur_buf->play_info->m_stream_data;
+                sample_8bit = (uint8_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 2;
                 break;
               default:
@@ -1383,7 +1383,7 @@ void win_llsSystem::SetSoundCard(const char *name) {
 }
 
 // Initializes the sound library
-int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char MaxSoundsPlayed) // add playlist info
+int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t MaxSoundsPlayed) // add playlist info
 {
   GUID card_guid, zero_card_guid;
   GUID *pguid = NULL;
@@ -1817,7 +1817,7 @@ void win_llsSystem::update_directsound_sb(sound_buffer_info *sb, bool update_loo
 
 // Stops the sound from playing  -- f_immediately is used for looping samples -- i.e. so we can
 // play the end of loop snipit
-void win_llsSystem::StopSound(int sound_uid, unsigned char f_immediately) {
+void win_llsSystem::StopSound(int sound_uid, uint8_t f_immediately) {
   int current_slot;
   sound_buffer_info *sb;
 
@@ -2652,12 +2652,12 @@ bool win_llsSystem::SetSoundQuality(char quality) {
         int count;
 
         ASSERT(SoundFiles[j].sample_8bit == NULL);
-        SoundFiles[j].sample_8bit = (unsigned char *)GlobalAlloc(0, SoundFiles[j].sample_length);
+        SoundFiles[j].sample_8bit = (uint8_t *)GlobalAlloc(0, SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
         // (+128 biase).
         for (count = 0; count < (int)SoundFiles[j].sample_length; count++) {
-          SoundFiles[j].sample_8bit[count] = (unsigned char)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
+          SoundFiles[j].sample_8bit[count] = (uint8_t)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
         }
 
         GlobalFree(SoundFiles[j].sample_16bit);

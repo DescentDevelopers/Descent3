@@ -799,8 +799,8 @@ int LoadPCXTerrain(char *filename) {
   int run = 0, i, total, j, n;
   short xmin, ymin, xmax, ymax;
   int width, height;
-  unsigned char buf;
-  unsigned char *lando;
+  uint8_t buf;
+  uint8_t *lando;
 
   if ((infile = cfopen(filename, "rb")) == NULL)
     return (0);
@@ -826,7 +826,7 @@ int LoadPCXTerrain(char *filename) {
   while (run < total) {
     buf = cf_ReadByte(infile);
     if (buf >= 192) {
-      unsigned char tb = 0;
+      uint8_t tb = 0;
       tb = cf_ReadByte(infile);
       for (i = 0; i < (buf - 192); i++, run++)
         lando[run] = tb;

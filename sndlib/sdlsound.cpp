@@ -60,7 +60,7 @@ lnxsound::~lnxsound() {
 }
 
 // Starts the sound library, maybe have it send back some information -- 3d support?
-int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char max_sounds_played) {
+int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_sounds_played) {
   SDL_AudioSpec spec;
 
   // setup mixer
@@ -171,12 +171,12 @@ bool lnxsound::SetSoundQuality(char quality) {
         int count;
 
         ASSERT(SoundFiles[j].sample_8bit == nullptr);
-        SoundFiles[j].sample_8bit = (unsigned char *)GlobalAlloc(0, SoundFiles[j].sample_length);
+        SoundFiles[j].sample_8bit = (uint8_t *)GlobalAlloc(0, SoundFiles[j].sample_length);
 
         // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
         // (+128 biase).
         for (count = 0; count < (int)SoundFiles[j].sample_length; count++) {
-          SoundFiles[j].sample_8bit[count] = (unsigned char)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
+          SoundFiles[j].sample_8bit[count] = (uint8_t)((((int)SoundFiles[j].sample_16bit[count]) + 32767) >> 8);
         }
 
         GlobalFree(SoundFiles[j].sample_16bit);
@@ -523,7 +523,7 @@ int lnxsound::IsSoundPlaying(int sound_index) {
 }
 
 // Stops 2d and 3d sounds
-void lnxsound::StopSound(int sound_uid, unsigned char f_immediately) {
+void lnxsound::StopSound(int sound_uid, uint8_t f_immediately) {
   int current_slot;
   sound_buffer_info *sb;
 

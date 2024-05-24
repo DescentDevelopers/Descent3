@@ -32,7 +32,7 @@ std::string hexdigest_after_n_rounds_of_fuzz(int n) {
     md5.update((int)2);
     md5.update((short)3);
     md5.update((uint32_t)4U);
-    md5.update((unsigned char)5);
+    md5.update((uint8_t)5);
   }
 
   std::ostringstream hexdigest;

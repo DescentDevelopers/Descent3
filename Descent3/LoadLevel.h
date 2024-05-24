@@ -718,14 +718,14 @@ inline void AppendToLevelChecksum(vector val) {
   Level_md5->update(val.z);
 }
 
-inline void AppendToLevelChecksum(unsigned char val) {
+inline void AppendToLevelChecksum(uint8_t val) {
   if (!Level_md5) {
     return;
   }
   Level_md5->update(val);
 }
 
-inline void GetLevelMD5Sum(unsigned char digest[16]) {
+inline void GetLevelMD5Sum(uint8_t digest[16]) {
   if (!Level_md5) {
     for (int i = 0; i < 16; i++)
       digest[i] = 0;

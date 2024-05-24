@@ -81,7 +81,7 @@ void MVE_dsbSetPan(int32_t lPan);
 // Under windows, the information provided by this function
 // is just used for window centering and for determining
 // how and when to do palette callbacks.
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
                 uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
 
 // This function alters the display from 640x480 or 640x400 to 640x350 resolution.
@@ -99,15 +99,15 @@ void MVE_ForceVresHalf(void);
 //	 or modify which portions of the screen are updated.
 // This function replaces calls to the default MVE_ShowFrame function
 //  with calls to your function, which can itself call MVE_ShowFrame.
-typedef void (*mve_cb_ShowFrame)(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
+typedef void (*mve_cb_ShowFrame)(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
                                  uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
                                  uint32_t hicolor);
 void MVE_sfCallbacks(mve_cb_ShowFrame fn_ShowFrame);
 
-typedef void mve_cb_SetPalette(unsigned char *p, unsigned start, unsigned count);
+typedef void mve_cb_SetPalette(uint8_t *p, unsigned start, unsigned count);
 void MVE_palCallbacks(mve_cb_SetPalette *fn_SetPalette);
 
-void MVE_SetPalette(unsigned char *p, unsigned start, unsigned count);
+void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
 
 // Configure the software for a graphics mode, optionally setting the
 //  display to that mode (see the MVE_GFX_xxx constants defined below).
@@ -222,7 +222,7 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
 //  If successful, MVE_frGet(frs, &buf, &w, &h) returns a pointer
 //  to a surface containing the frame in pBuf,
 //  and its width and height in w and h.
-int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, uint32_t *width, uint32_t *height, uint32_t *hicolor);
+int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, uint32_t *width, uint32_t *height, uint32_t *hicolor);
 
 // MVE_frPal
 //  After each successful call to MVE_frGet(), this call may be used to
@@ -239,7 +239,7 @@ int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, uint32_t *width, uint32_t 
 //  polling each frame instead, and must be passed pointers to the variables where
 //  the values will be returned.
 //
-void MVE_frPal(MVE_frStream frs, unsigned char **pPaltbl, unsigned *pStart, unsigned *pCount);
+void MVE_frPal(MVE_frStream frs, uint8_t **pPaltbl, unsigned *pStart, unsigned *pCount);
 
 // MVE_frClose
 //  Closes the specified Frame Reader Stream frs.

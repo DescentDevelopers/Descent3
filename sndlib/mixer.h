@@ -24,7 +24,7 @@
 class sound_buffer {
 public:
   virtual int GetNumBufferBytes(void) = 0;
-  virtual void Write(unsigned char *buffer, int amount) = 0;
+  virtual void Write(uint8_t *buffer, int amount) = 0;
 
 private:
 };
@@ -71,8 +71,8 @@ public:
 
   bool stereo;
   sbyte bps;
-  unsigned char m_status; // Sound status
-  unsigned char pad;
+  uint8_t m_status; // Sound status
+  uint8_t pad;
 };
 
 typedef struct {
@@ -110,7 +110,7 @@ private:
   int m_primary_alignment;
   int m_BufferSize;
 
-  unsigned char *m_buffer;
+  uint8_t *m_buffer;
 
   int *m_max_sounds_available;
   sound_buffer_info *m_sound_cache;

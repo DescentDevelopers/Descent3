@@ -55,7 +55,7 @@ typedef struct {
   //	bool            WindowPreCreated;
   //	XVisualInfo     viVisualInfo;
   //	Colormap        cmColorMap;
-  unsigned char *lpBuffer;
+  uint8_t *lpBuffer;
   //	GC              m_GC;
   //	XImage          *lpImage;
   //	XShmSegmentInfo shmInfo;
@@ -64,7 +64,7 @@ typedef struct {
   bool fullScreen;
 
   uint32_t lock_x, lock_y, lock_w, lock_h;
-  unsigned char *lock_ptr;
+  uint8_t *lock_ptr;
 } LnxWindow;
 
 //////////////////////
@@ -110,14 +110,14 @@ int LnxDraw_DestroyWindow(LnxWindow *handle);
 //       true : success
 //       false : error
 bool LnxDraw_LockSurface(LnxWindow *wnd, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2,
-                         unsigned char **ptr, int *pitch);
+                         uint8_t **ptr, int *pitch);
 
 //////////////////////////
 // LnxDraw_UnlockSurface
 //////////////////////////
 // Unlocks the window surface, blitting the buffer
 //
-void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr);
+void LnxDraw_UnlockSurface(LnxWindow *wnd, uint8_t *ptr);
 
 ////////////////////////////
 /// LnxDraw_Blit
@@ -128,7 +128,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr);
 //       0 : no error
 //      -1 : invalid parameter
 //      -2 : unknown error
-int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+int LnxDraw_Blit(LnxWindow *wnd, uint8_t *ptr, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 
 ////////////////////////
 // LnxDraw_GetRGBMasks

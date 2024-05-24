@@ -5540,7 +5540,7 @@ int MultiStuffGuidedInfo(int slot, ubyte *data) {
 void MultiDoMissileRelease(int slot, ubyte *data) {
   // if we are the server, we'll have to forward this packet to the clients
   int count = 0;
-  unsigned char pnum_release;
+  uint8_t pnum_release;
 
   SKIP_HEADER(data, &count);
 
@@ -5597,7 +5597,7 @@ void MultiSendMissileRelease(int slot, bool is_guided) {
   ubyte data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
-  unsigned char byte_to_send;
+  uint8_t byte_to_send;
   byte_to_send = slot;
   if (is_guided)
     byte_to_send |= 0x80;

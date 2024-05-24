@@ -24,7 +24,7 @@ typedef uint32_t uint32;
 typedef int32_t sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
-typedef unsigned char uint8;
+typedef uint8_t uint8;
 typedef signed char sint8;
 
 class IAudioDecoder {

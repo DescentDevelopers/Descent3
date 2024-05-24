@@ -83,7 +83,7 @@ INT64 Runtime_performance_flags = RTI_FRAMETIME;
 INT64 Runtime_performance_clockfreq = 0;
 INT64 Runtime_performance_frame_counter = 0;
 uint32_t Runtime_performance_counter = 0;
-unsigned char Runtime_performance_enabled = 0;
+uint8_t Runtime_performance_enabled = 0;
 
 tRTFrameInfo RTP_SingleFrame;
 #ifdef USE_RTP

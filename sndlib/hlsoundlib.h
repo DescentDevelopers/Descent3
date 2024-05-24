@@ -264,7 +264,7 @@ class hlsSystem {
   inline int ValidateUniqueId(int hl_sound_uid);
 
   // Forcefully ends a sound
-  void StopSound(int sound_obj_index, unsigned char f_immediately = SKT_STOP_IMMEDIATELY);
+  void StopSound(int sound_obj_index, uint8_t f_immediately = SKT_STOP_IMMEDIATELY);
 
 private:
   int Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj, int priority, float volume, int flags,

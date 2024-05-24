@@ -32,10 +32,10 @@ static uint32_t dwOriginalWidth, dwOriginalHeight;
 static LnxWindow **WindowList;
 static int NumWindows = 0;
 // static int GetXSharedMemory(int size);
-inline void BltBuffer16ToPixMap24(unsigned char *pixmap, unsigned char *buffer, int width, int height);
-inline void BltBuffer32ToPixMap24(unsigned char *pixmap, unsigned char *buffer, int width, int height);
-inline void BltBuffer16ToPixMap16(unsigned char *pixmap, unsigned char *buffer, int width, int height);
-inline void BltBuffer32ToPixMap16(unsigned char *pixmap, unsigned char *buffer, int width, int height);
+inline void BltBuffer16ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, int height);
+inline void BltBuffer32ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, int height);
+inline void BltBuffer16ToPixMap16(uint8_t *pixmap, uint8_t *buffer, int width, int height);
+inline void BltBuffer32ToPixMap16(uint8_t *pixmap, uint8_t *buffer, int width, int height);
 
 static SDL_Rect dispSize;
 
@@ -292,7 +292,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
   //	valuemask = GCGraphicsExposures;
 
   //	wnd->m_GC = XCreateGC(lpDisplay,wnd->wWindow,valuemask,&xgcvalues);
-  //	wnd->lock_ptr = (unsigned char *)malloc(wnd->dwWidth*wnd->dwHeight<<1);
+  //	wnd->lock_ptr = (uint8_t *)malloc(wnd->dwWidth*wnd->dwHeight<<1);
 
   //	int id = GetXSharedMemory(wnd->dwWidth*wnd->dwHeight<<1);
   //	if(id<0)
@@ -309,7 +309,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
   // fprintf(stdout,"Draw: %s shared memory\n",(wnd->bHaveSharedMemory)?"Using":"Not Using");
 
   // Initial clear
-  unsigned char *lock_ptr;
+  uint8_t *lock_ptr;
   int lock_pitch;
   if (LnxDraw_LockSurface(wnd, 0, 0, wnd->dwWidth - 1, wnd->dwHeight - 1, &lock_ptr, &lock_pitch)) {
     memset(lock_ptr, 0, wnd->dwWidth * wnd->dwHeight << 1);
@@ -390,7 +390,7 @@ int LnxDraw_DestroyWindow(LnxWindow *handle) {
 // Returns:
 //       true : success
 //       false : error
-bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, unsigned y2, unsigned char **ptr,
+bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, unsigned y2, uint8_t **ptr,
                          int *pitch) {
 #if 1
   SDL_Log("!!! FIXME no movie window %s:%d\n", __FILE__, __LINE__);
@@ -454,7 +454,7 @@ bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, 
                   wnd->lpImage->data = (char *)wnd->lock_ptr;
           }
 
-          *ptr = (unsigned char *)wnd->lpImage->data;
+          *ptr = (uint8_t *)wnd->lpImage->data;
           wnd->lock_x = x1;
           wnd->lock_y = y1;
           wnd->lock_w = w;
@@ -469,7 +469,7 @@ bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, 
   int imgHeight = y2 - y1;
   int linesDown = (wnd->dwHeight - imgHeight) / 2;
 
-  *ptr = ((unsigned char *)wnd->surface->pixels) + ((wnd->surface->format->BytesPerPixel * wnd->dwWidth) * linesDown);
+  *ptr = ((uint8_t *)wnd->surface->pixels) + ((wnd->surface->format->BytesPerPixel * wnd->dwWidth) * linesDown);
   return true;
 #endif
 }
@@ -479,7 +479,7 @@ bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned x1, unsigned y1, unsigned x2, 
 //////////////////////////
 // Unlocks the window surface, blitting the buffer
 //
-void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
+void LnxDraw_UnlockSurface(LnxWindow *wnd, uint8_t *ptr) {
 #if 1
   SDL_Log("!!! FIXME no movie window %s:%d\n", __FILE__, __LINE__);
 #else
@@ -540,7 +540,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
 //       0 : no error
 //      -1 : invalid parameter
 //      -2 : unknown error
-int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+int LnxDraw_Blit(LnxWindow *wnd, uint8_t *ptr, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
   return 0;
   /*
           if(!wnd || !ptr)
@@ -552,15 +552,15 @@ int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, uint32_t x, uint32_t y, uin
                   //check for best case
                   if(x==0 && y==0 && w==wnd->dwWidth && h==wnd->dwHeight)
                   {
-                          BltBuffer16ToPixMap16((unsigned char *)wnd->lpImage->data,ptr,wnd->dwWidth,wnd->dwHeight);
+                          BltBuffer16ToPixMap16((uint8_t *)wnd->lpImage->data,ptr,wnd->dwWidth,wnd->dwHeight);
                   }else
                   {
                           int num_rows_to_blit;
                           int start_row,pitch;
-                          unsigned char *curr_dest,*curr_src;
+                          uint8_t *curr_dest,*curr_src;
 
                           pitch = wnd->dwWidth<<1;
-                          curr_dest = (unsigned char *)wnd->lpImage->data + (y*pitch) + (x<<1);
+                          curr_dest = (uint8_t *)wnd->lpImage->data + (y*pitch) + (x<<1);
                           curr_src = ptr;
                           num_rows_to_blit = h;
 
@@ -711,13 +711,13 @@ static int GetXSharedMemory(int size) {
   return (0);
 }
 
-inline void BltBuffer32ToPixMap16(unsigned char *pixmap, unsigned char *buffer, int width, int height) {
-  unsigned char *data;
+inline void BltBuffer32ToPixMap16(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
+  uint8_t *data;
   unsigned short int l;
   int r, g, b, a;
   uint32_t c;
 
-  data = (unsigned char *)pixmap;
+  data = (uint8_t *)pixmap;
   for (l = height * width; l > 0; l--) {
     c = *(uint32_t *)buffer;
     a = ((c & 0xff000000) >> 24);
@@ -732,19 +732,19 @@ inline void BltBuffer32ToPixMap16(unsigned char *pixmap, unsigned char *buffer, 
   }
 }
 
-inline void BltBuffer16ToPixMap16(unsigned char *pixmap, unsigned char *buffer, int width, int height) {
-  unsigned char *data;
-  data = (unsigned char *)pixmap;
+inline void BltBuffer16ToPixMap16(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
+  uint8_t *data;
+  data = (uint8_t *)pixmap;
   memcpy(data, buffer, (width * height) << 1);
 }
 
-inline void BltBuffer32ToPixMap24(unsigned char *pixmap, unsigned char *buffer, int width, int height) {
-  unsigned char *data;
+inline void BltBuffer32ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
+  uint8_t *data;
   unsigned short int l;
   int r, g, b, a;
   uint32_t c;
 
-  data = (unsigned char *)pixmap;
+  data = (uint8_t *)pixmap;
   for (l = height * width; l > 0; l--) {
     c = *(uint32_t *)buffer;
     a = ((c & 0xff000000) >> 24);
@@ -759,13 +759,13 @@ inline void BltBuffer32ToPixMap24(unsigned char *pixmap, unsigned char *buffer, 
   }
 }
 
-inline void BltBuffer16ToPixMap24(unsigned char *pixmap, unsigned char *buffer, int width, int height) {
-  unsigned char *data;
+inline void BltBuffer16ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
+  uint8_t *data;
   unsigned short int l;
   int r, g, b, a;
   unsigned short c;
 
-  data = (unsigned char *)pixmap;
+  data = (uint8_t *)pixmap;
   for (l = height * width; l > 0; l--) {
     c = *(unsigned short *)buffer;
     a = ((c & 0x8000) >> 15);

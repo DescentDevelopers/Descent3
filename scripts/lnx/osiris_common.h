@@ -927,7 +927,7 @@ typedef int OMMSHANDLE;
 #endif
 
 // define unsigned types;
-typedef unsigned char ubyte;
+typedef uint8_t ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
 typedef uint32_t uint32_t;
@@ -1297,7 +1297,7 @@ typedef struct {
   int flags;
   void *list;
   uint32_t control_mask;
-  unsigned char control_val;
+  uint8_t control_val;
 
   // Object lighting stuff
   float light_distance;

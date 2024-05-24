@@ -672,7 +672,7 @@ mod_FreeModule_fp DLLmod_FreeModule;
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
-typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module *handle, const char *symstr, unsigned char parmbytes);
+typedef MODPROCADDRESS (*mod_GetSymbol_fp)(module *handle, const char *symstr, uint8_t parmbytes);
 mod_GetSymbol_fp DLLmod_GetSymbol;
 
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
@@ -735,7 +735,7 @@ typedef struct vmt_descent3_struct {
   int online_time;
   int games_played;
   uint32_t security;
-  unsigned char virgin_pilot; // This pilot was just created if TRUE
+  uint8_t virgin_pilot; // This pilot was just created if TRUE
   uint32_t lateral_thrust;
   uint32_t rotational_thrust;
   uint32_t sliding_pct; // Percentage of the time you were sliding

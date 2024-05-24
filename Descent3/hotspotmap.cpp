@@ -151,7 +151,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
   }
 
   int curr_sl, x, y, count, num_hs = 0;
-  unsigned char alpha;
+  uint8_t alpha;
   char whats_there[256];
   int window_count;
 
@@ -207,7 +207,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
       // Get start,end, scanlines and starting_y for each hotspot
       for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-          if ((unsigned)map[y * width + x] == (unsigned char)count) {
+          if ((unsigned)map[y * width + x] == (uint8_t)count) {
             if (last_y != y)
               sl_count++;
             if (hsmap->hs[count].starting_y > y)
@@ -268,7 +268,7 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
 void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap) {
   mprintf((0, "Processing %d windows\n", wndmap->num_of_windows));
   int x, y, count;
-  unsigned char alpha;
+  uint8_t alpha;
   bool newline = true;
 
   wndmap->wm = (window_box *)mem_malloc(sizeof(window_box) * wndmap->num_of_windows);
@@ -399,7 +399,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
     int x, y, real_x, real_y;
     int *left_x, *right_x, *top_y, *bottom_y;
     char *array;
-    unsigned char alpha;
+    uint8_t alpha;
 
     // left top
     left_x = &wndmap->wm[count].l_start_x;

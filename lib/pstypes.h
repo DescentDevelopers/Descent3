@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 // define unsigned types;
-typedef unsigned char ubyte;
+typedef uint8_t ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
 typedef uint32_t uint32_t;

@@ -80,7 +80,7 @@ typedef struct {
   uint32_t flags;
   uint32_t left_vol, right_vol;
 
-  unsigned char *buffer;
+  uint8_t *buffer;
 
   int32_t volume;
   int32_t pan;

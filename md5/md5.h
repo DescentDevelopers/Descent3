@@ -25,23 +25,23 @@
 class MD5 {
 private:
   std::array<std::uint32_t, 4> sums_{0x67452301UL, 0XEFCDAB89UL, 0x98BADCFEUL, 0x10325476UL};
-  std::array<unsigned char, 64> tmpbuf_;
+  std::array<uint8_t, 64> tmpbuf_;
   std::size_t tmpbuf_n_{0};
   std::uint64_t message_len_{0};
 
-  void round(const unsigned char *block) noexcept;
-  void round(std::array<std::uint32_t, 4> &sums, const unsigned char *block) const noexcept;
-  void place_length(unsigned char *destination) const noexcept;
+  void round(const uint8_t *block) noexcept;
+  void round(std::array<std::uint32_t, 4> &sums, const uint8_t *block) const noexcept;
+  void place_length(uint8_t *destination) const noexcept;
 
 public:
-  void update(const unsigned char *data, std::size_t n) noexcept;
+  void update(const uint8_t *data, std::size_t n) noexcept;
   void update(float val) noexcept;
   void update(int val) noexcept;
   void update(uint32_t val) noexcept;
-  void update(unsigned char val) noexcept;
+  void update(uint8_t val) noexcept;
   void update(short val) noexcept;
-  std::array<unsigned char, 16> digest() const noexcept;
-  void digest(unsigned char *destination) const noexcept;
+  std::array<uint8_t, 16> digest() const noexcept;
+  void digest(uint8_t *destination) const noexcept;
 };
 
 #endif // MD5_H

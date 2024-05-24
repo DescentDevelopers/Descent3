@@ -232,11 +232,11 @@
 #define MAX_D3X_REGS 32
 
 typedef struct tD3XInstruction {
-  unsigned char opc; /* Opcode */
+  uint8_t opc; /* Opcode */
   union {
     struct /* Register and or immediate */
     {
-      unsigned char d;
+      uint8_t d;
       union {
         int i;
         float f;
@@ -244,17 +244,17 @@ typedef struct tD3XInstruction {
     } ri;
     struct /* register <- Address-Immediate indirect addressing */
     {
-      unsigned char d, a;
+      uint8_t d, a;
       unsigned short imm;
     } aii;
     struct /* jump absolute <- register  or jump/call absolute (r = 0xff) */
     {
       unsigned short abs;
-      unsigned char r;
+      uint8_t r;
     } ra;
     struct /* register <- Address-Immediate indirect addressing */
     {
-      unsigned char d, s;
+      uint8_t d, s;
     } rr;
   } opr; /* Operand depends on Opcode */
 } tD3XInstruction;

@@ -160,7 +160,7 @@ typedef struct gr_font_file_record {
   ubyte *raw_data;          // pixel, map data.
   ubyte **char_data;        // pointers to each character
   short *char_widths;       // individual pixel widths of each character
-  unsigned char *kern_data; // kerning information for specific letter combos
+  uint8_t *kern_data; // kerning information for specific letter combos
 } gr_font_file_record;
 
 typedef struct gr_font_record {

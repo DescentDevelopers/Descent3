@@ -43,7 +43,7 @@ typedef struct {
   int samples_per_second;
   short bits_per_sample;
   short number_channels;
-  unsigned char *sample_8bit;
+  uint8_t *sample_8bit;
   short *sample_16bit;
 } tWaveFile;
 

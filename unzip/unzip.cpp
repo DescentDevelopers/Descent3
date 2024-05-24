@@ -528,7 +528,7 @@ int ZIP::SeekToCompressedData(zipentry *ent) {
 // uses zlib to inflate the given data
 int ZIP::InflateFile(FILE *in_file, unsigned in_size, ubyte *out_data, unsigned out_size) {
   int err;
-  unsigned char *in_buffer;
+  uint8_t *in_buffer;
   z_stream d_stream;
 
   d_stream.zalloc = 0;
@@ -594,8 +594,8 @@ int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned
   ubyte out_data[DATA_CHUNK_SIZE];
   int err;
   uint32_t last_out;
-  unsigned char *in_buffer;
-  unsigned char *next_out;
+  uint8_t *in_buffer;
+  uint8_t *next_out;
   z_stream d_stream;
 
   d_stream.zalloc = 0;

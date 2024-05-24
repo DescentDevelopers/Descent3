@@ -3339,7 +3339,7 @@ typedef struct tOMMSNode {
   uint32_t size_of_memory;
   uint32_t unique_id;
   unsigned short reference_count;
-  unsigned char free_called;
+  uint8_t free_called;
   void *memory_ptr;
   tOMMSNode *next;
 } tOMMSNode;

@@ -103,7 +103,7 @@ typedef struct vmt_descent3_struct {
 	int online_time;
 	int games_played;
 	uint32_t security;
-	unsigned char virgin_pilot;	//This pilot was just created if TRUE
+	uint8_t virgin_pilot;	//This pilot was just created if TRUE
 	uint32_t lateral_thrust;
 	uint32_t rotational_thrust;
 	uint32_t sliding_pct;	//Percentage of the time you were sliding

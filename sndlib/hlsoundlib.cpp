@@ -1317,7 +1317,7 @@ void hlsSystem::StopSoundImmediate(int hlsound_uid) {
   StopSound(sound_object_index, SKT_STOP_IMMEDIATELY);
 }
 // Forcefully ends a sound
-void hlsSystem::StopSound(int sound_obj_index, unsigned char f_stop_priority) {
+void hlsSystem::StopSound(int sound_obj_index, uint8_t f_stop_priority) {
   if (!m_f_hls_system_init)
     return;
   m_sound_objects[sound_obj_index].m_obj_type_flags &= (~SIF_LOOPING);

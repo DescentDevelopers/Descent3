@@ -70,8 +70,8 @@ extern bool Debug_print_block = false;
 #define MAX_NUM_VWINDOWS 8
 
 typedef struct mono_element {
-  unsigned char character;
-  unsigned char attribute;
+  uint8_t character;
+  uint8_t attribute;
 } mono_element;
 
 typedef struct {
