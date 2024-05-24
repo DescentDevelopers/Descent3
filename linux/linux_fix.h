@@ -31,6 +31,8 @@ void *GlobalLock(HGLOBAL hMem);
 void Sleep(int millis);
 char *strupr(char *string);
 
+#define _stat stat
+
 // Replace missing defines from stdlib.h
 #define _MAX_PATH 260  /* max. length of full pathname*/
 #define _MAX_FNAME 256 /* max. length of path component*/

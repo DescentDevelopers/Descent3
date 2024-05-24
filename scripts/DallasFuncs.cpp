@@ -708,6 +708,7 @@
  *
  */
 
+#include <cstdio>
 #include <cstring>
 #include <cstdarg>
 #include <cfloat>

@@ -18,10 +18,10 @@
 
 // generic.cpp
 // 0.1
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdarg>
 #include "osiris_import.h"
 #include "osiris_common.h"
 

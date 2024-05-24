@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 
 void _splitpath(const char *path, char *drive, char *dir, char *fname, char *ext);
 

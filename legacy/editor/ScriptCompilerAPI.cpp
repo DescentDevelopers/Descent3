@@ -332,8 +332,8 @@ void outputtofile(char *format, ...)
 {
 	char buffer[1024];
 	va_list marker;
-	va_start(marker,format);
-	vsprintf(buffer,format,marker);
+        va_start(marker,format);
+        std::vsprintf(buffer,format,marker);
 	cf_WriteString(CurrentFile,buffer);
 	va_end(marker);
 }

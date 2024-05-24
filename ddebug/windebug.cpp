@@ -193,9 +193,9 @@
 #include "mono.h"
 
 #include <windows.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdint.h>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstdint>
 
 ///////////////////////////////////////////////////////////////////////////////
 

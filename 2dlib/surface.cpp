@@ -563,8 +563,8 @@ void grSurface::xlat8_16(char *data, int w, int h, char *pal) {
   sptr = (char *)data;
   rowsize_w = m_DataRowsize / 2;
 
-  height = SET_MIN(h, ddsfObj.h);
-  width = SET_MIN(w, ddsfObj.w);
+  height = std::min(h, ddsfObj.h);
+  width = std::min(w, ddsfObj.w);
 
   for (row = 0; row < height; row++) {
     for (col = 0; col < width; col++) {
@@ -677,8 +677,8 @@ void grSurface::xlat24_16(char *data, int w, int h) {
   dptr = (uint16_t *)m_DataPtr;
   sptr = (char *)data;
   rowsize_w = m_DataRowsize / 2;
-  height = SET_MIN(h, ddsfObj.h);
-  width = SET_MIN(w, ddsfObj.w);
+  height = std::min(h, ddsfObj.h);
+  width = std::min(w, ddsfObj.w);
 
   for (row = 0; row < height; row++) {
     scol = 0;

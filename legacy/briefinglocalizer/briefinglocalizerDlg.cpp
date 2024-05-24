@@ -24,7 +24,7 @@
 #include "briefinglocalizerDlg.h"
 
 #ifdef __LINUX__
-#include "linux/linux_fix.h"
+#include "linux_fix.h"
 #endif
 
 #include <sys/types.h>
