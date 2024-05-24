@@ -28,7 +28,7 @@
 #define BUMPF_CHANGED 2
 
 typedef struct {
-  ushort *data;     // 8bit data
+  uint16_t *data;     // 8bit data
   short cache_slot; // for the renderers use
   uint8_t width, height;
   uint8_t flags, pad;
@@ -49,7 +49,7 @@ int bump_AllocBumpmap(int w, int h);
 void bump_FreeBumpmap(int handle);
 
 // returns a bumpmaps data else NULL if something is wrong
-ushort *bump_data(int handle);
+uint16_t *bump_data(int handle);
 
 // returns width or height of the passed in bumpmap
 uint8_t bump_w(int handle);

@@ -1264,7 +1264,7 @@ int Inventory::GetPosCount(void) {
 // return information about the current position item
 // returns true if the pos is a real object in the game
 // returns false if the pos is just a type/id inventory item
-bool Inventory::GetPosInfo(ushort &iflags, int &flags) {
+bool Inventory::GetPosInfo(uint16_t &iflags, int &flags) {
   if (!pos) {
     iflags = 0;
     flags = 0;

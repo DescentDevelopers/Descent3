@@ -929,7 +929,7 @@ typedef int OMMSHANDLE;
 // define unsigned types;
 typedef uint8_t uint8_t;
 typedef int8_t int8_t;
-typedef uint16_t ushort;
+typedef uint16_t uint16_t;
 typedef uint32_t uint32_t;
 typedef uint32_t ddgr_color;
 
@@ -1171,7 +1171,7 @@ typedef struct {
   0x008 // this timer should be auto-cancelled if object_handle_detonator dies, than the
         // timer auto-cancels
 typedef struct {
-  ushort flags;
+  uint16_t flags;
   int id;           // an optional id you can use to store, will be passed back on EVT_TIMER signal
   int repeat_count; // if OTF_REPEATER is set, this is how many times to repeat the signal (every
                     // interval).  -1 for infinite.
@@ -1199,7 +1199,7 @@ typedef struct {
 
 typedef struct {
   tOSIRISSCRIPTID my_id;
-  ushort id;
+  uint16_t id;
   int size;
 } tOSIRISMEMCHUNK;
 
@@ -1268,7 +1268,7 @@ typedef struct {
   float drag, mass;
 
   // Unused
-  ushort unused; // was doorway_index
+  uint16_t unused; // was doorway_index
 
   // Weather
   int randval;

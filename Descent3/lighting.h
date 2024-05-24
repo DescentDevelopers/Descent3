@@ -40,16 +40,16 @@
 extern float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
 typedef struct {
-  ushort *mem_ptr;
+  uint16_t *mem_ptr;
   uint8_t used;
 } dynamic_lightmap;
 
 typedef struct {
-  ushort lmi_handle;
+  uint16_t lmi_handle;
 } dynamic_face;
 
 typedef struct {
-  ushort cellnum;
+  uint16_t cellnum;
   uint8_t r, g, b;
 } dynamic_cell;
 

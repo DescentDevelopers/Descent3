@@ -375,7 +375,7 @@ void mng_WriteTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
     cf_WriteByte(outfile, TEXPAGE_COMMAND_FIRST_PROC_PAL);
     cf_WriteByte(outfile, (uint8_t)255);
     for (i = 0; i < 255; i++) {
-      ushort val = texpage->proc_palette[i];
+      uint16_t val = texpage->proc_palette[i];
       val >>= 8;
 
       cf_WriteByte(outfile, val);
@@ -384,7 +384,7 @@ void mng_WriteTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
     cf_WriteByte(outfile, TEXPAGE_COMMAND_SECOND_PROC_PAL);
     cf_WriteByte(outfile, (uint8_t)255);
     for (i = 0; i < 255; i++) {
-      ushort val = texpage->proc_palette[i];
+      uint16_t val = texpage->proc_palette[i];
       val &= 0xFF;
 
       cf_WriteByte(outfile, val);
@@ -470,7 +470,7 @@ void mng_WriteNewTexturePage(CFILE *outfile, mngs_texture_page *texpage) {
   if (texpage->tex_struct.flags & TF_PROCEDURAL) {
     // Write procedural palette
     for (i = 0; i < 255; i++) {
-      ushort val = texpage->proc_palette[i];
+      uint16_t val = texpage->proc_palette[i];
       cf_WriteShort(outfile, val);
     }
 
@@ -603,7 +603,7 @@ int mng_ReadTexturePage(CFILE *infile, mngs_texture_page *texpage) {
       break;
     case TEXPAGE_COMMAND_FIRST_PROC_PAL:
       for (i = 0; i < 255; i++) {
-        ushort val = cf_ReadByte(infile);
+        uint16_t val = cf_ReadByte(infile);
         val <<= 8;
         texpage->proc_palette[i] &= 0xFF;
         texpage->proc_palette[i] |= val;
@@ -693,7 +693,7 @@ int mng_ReadNewTexturePage(CFILE *infile, mngs_texture_page *texpage) {
 
   if (texpage->tex_struct.flags & TF_PROCEDURAL) {
     for (i = 0; i < 255; i++) {
-      ushort val = cf_ReadShort(infile);
+      uint16_t val = cf_ReadShort(infile);
       texpage->proc_palette[i] = val;
     }
 

@@ -127,8 +127,8 @@ void SortPostrenders() {
   l = 0;
   r = Num_postrenders - 1;
 
-  ushort state_stack_counter = 0;
-  ushort state_stack[MAX_POSTRENDERS];
+  uint16_t state_stack_counter = 0;
+  uint16_t state_stack[MAX_POSTRENDERS];
 
   while (1) {
     while (r > l) {

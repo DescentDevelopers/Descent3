@@ -31,7 +31,7 @@
 
 typedef struct {
   vector bright_center;
-  ushort bright_color;
+  uint16_t bright_color;
 } specular_instance;
 
 #define SFF_SPEC_OBJECT 1

@@ -469,7 +469,7 @@ d3_net_game_data_tiny DLLD3_tracker_info;
 
 pxo_game_list PXOGamelist[MAX_GAMELIST_ITEMS];
 int NextGameItemNo = 0;
-ushort DLLPXOPort = 0;
+uint16_t DLLPXOPort = 0;
 
 void AutoLoginAndStartGame ();
 
@@ -717,7 +717,7 @@ void DLLFUNCCALL DLLMultiInit (int *api_func)
 	InitOTSockets();
 #endif
 	#include "mdllinit.h"
-	DLLPXOPort = (ushort)API.vp[32];
+	DLLPXOPort = (uint16_t)API.vp[32];
 	DLLmprintf((0,"Inside DLLMultiInit...\n"));
 	*DLLUse_DirectPlay = false;
 	Auto_start=false;

@@ -445,7 +445,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -2110,7 +2110,7 @@ void DoMonsterballScoreEffect(void) {
   float lifetime = 4.0f;
   float thickness = 17.5f;
   float slidetime = 0.3f;
-  ushort color = GR_RGB16(30, 255, 30);
+  uint16_t color = GR_RGB16(30, 255, 30);
   int numtiles = 1;
   bool autotile = true;
   int sat_count = 2;

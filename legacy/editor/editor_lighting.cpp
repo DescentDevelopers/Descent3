@@ -122,7 +122,7 @@ int FindEmptyMaskSpot (int w,int h,int *dest_x,int *dest_y)
 	return 0;
 }
 
-void CopySqueezeBodyAndEdges (ushort *dest_data,ushort *src_data,int w,int h,int dest_x,int dest_y)
+void CopySqueezeBodyAndEdges (uint16_t *dest_data,uint16_t *src_data,int w,int h,int dest_x,int dest_y)
 {
 	int i,t;
 
@@ -181,11 +181,11 @@ void CopySqueezeBodyAndEdges (ushort *dest_data,ushort *src_data,int w,int h,int
 	Lightmap_mask[((dest_y+h+1)*128)+(dest_x+w+1)]=1;
 }
 
-void CopySqueezeDataForRooms (int roomnum,int facenum,ushort *dest_data,int dest_x,int dest_y)
+void CopySqueezeDataForRooms (int roomnum,int facenum,uint16_t *dest_data,int dest_x,int dest_y)
 {
 	room *rp=&Rooms[roomnum];
 	lightmap_info *lmi_ptr=&LightmapInfo[rp->faces[facenum].lmi_handle];
-	ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+	uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 
 	int w=lmi_ptr->width;
 	int h=lmi_ptr->height;
@@ -249,11 +249,11 @@ void CopySqueezeDataForRooms (int roomnum,int facenum,ushort *dest_data,int dest
 	
 }
 
-void CopySqueezeDataForObject (object *obj,int subnum,int facenum,ushort *dest_data,int dest_x,int dest_y)
+void CopySqueezeDataForObject (object *obj,int subnum,int facenum,uint16_t *dest_data,int dest_x,int dest_y)
 {
 	lightmap_object_face *fp=&obj->lm_object.lightmap_faces[subnum][facenum];
 	lightmap_info *lmi_ptr=&LightmapInfo[fp->lmi_handle];
-	ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+	uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 	int t,k;
 
 	int w=lmi_ptr->width;
@@ -516,7 +516,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 			{
 				memset (Lightmap_mask,0,128*128);
 				Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-				ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+				uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 				memset (fill_data,0,128*128*2);
 			}
 
@@ -558,7 +558,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 				memset (Lightmap_mask,0,128*128);
 				Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-				ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+				uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 				memset (fill_data,0,128*128*2);
 
 				ASSERT (Lmi_spoken_for[lmi_handle]==0);
@@ -607,7 +607,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 					{
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 					}
 
@@ -661,7 +661,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 
 						ASSERT (Lmi_spoken_for[lmi_handle]==0);
@@ -727,7 +727,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 					{
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 					}
 
@@ -781,7 +781,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 						memset (Lightmap_mask,0,128*128);
 						Squeeze_lightmap_handle=lm_AllocLightmap(128,128);
-						ushort *fill_data=(ushort *)lm_data(Squeeze_lightmap_handle);
+						uint16_t *fill_data=(uint16_t *)lm_data(Squeeze_lightmap_handle);
 						memset (fill_data,0,128*128*2);
 
 						ASSERT (Lmi_spoken_for[lmi_handle]==0);
@@ -1490,7 +1490,7 @@ void AssignRoomSurfaceToLightmap (int roomnum,int facenum,rad_surface *sp)
 	ASSERT (lw>=2);
 	ASSERT (lh>=2);
 
-	ushort *dest_data=lm_data (LightmapInfo[lmi_handle].lm_handle);
+	uint16_t *dest_data=lm_data (LightmapInfo[lmi_handle].lm_handle);
 
 	// Set face pointer
 	if (GameTextures[fp->tmap].flags & TF_ALPHA)
@@ -1544,7 +1544,7 @@ void AssignRoomSurfaceToLightmap (int roomnum,int facenum,rad_surface *sp)
 				blue=min(blue,255);
 
 
-				ushort texel=OPAQUE_FLAG|GR_RGB16(red,green,blue);
+				uint16_t texel=OPAQUE_FLAG|GR_RGB16(red,green,blue);
 							  
 				dest_data[(i+y1)*lw+(t+x1)]=texel;
 			}
@@ -3385,7 +3385,7 @@ void CreateNormalMapForFace (room *rp,face *fp)
 	int vlt,vlb,vrt,vrb,max_y_vertex,top_y,bottom_y,height;
 	int no_height=0,no_width=0,no_right=0,no_left=0;
 	lightmap_info *lmi_ptr=&LightmapInfo[fp->lmi_handle];
-	ushort *src_data=lm_data(lmi_ptr->lm_handle);
+	uint16_t *src_data=lm_data(lmi_ptr->lm_handle);
 
 	matrix facematrix;
 	vector fvec=-lmi_ptr->normal;

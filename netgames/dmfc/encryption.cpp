@@ -280,7 +280,7 @@ void IceKey::scheduleBuild(uint16_t *kb, int n, const int *keyrot) {
       uint32_t *curr_sk = &isk->val[j % 3];
 
       for (k = 0; k < 4; k++) {
-        ushort *curr_kb = &kb[(kr + k) & 3];
+        uint16_t *curr_kb = &kb[(kr + k) & 3];
         int bit = *curr_kb & 1;
 
         *curr_sk = (*curr_sk << 1) | bit;
@@ -297,7 +297,7 @@ void IceKey::set(const uint8_t *key) {
   int i;
 
   if (_rounds == 8) {
-    ushort kb[4];
+    uint16_t kb[4];
 
     for (i = 0; i < 4; i++) {
       kb[3 - i] = (key[i * 2] << 8) | key[i * 2 + 1];
@@ -309,7 +309,7 @@ void IceKey::set(const uint8_t *key) {
 
   for (i = 0; i < _size; i++) {
     int j;
-    ushort kb[4];
+    uint16_t kb[4];
 
     for (j = 0; j < 4; j++) {
       kb[3 - j] = (key[i * 8 + j * 2] << 8) | key[i * 8 + j * 2 + 1];

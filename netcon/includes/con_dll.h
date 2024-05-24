@@ -465,7 +465,7 @@ static inline void DLLMultiStartServer(int playing, char *scriptname, int dedica
 typedef void (*ShowProgressScreen_fp)(char *, char *);
 ShowProgressScreen_fp DLLShowProgressScreen;
 
-typedef int (*SearchForLocalGamesTCP_fp)(uint32_t, ushort);
+typedef int (*SearchForLocalGamesTCP_fp)(uint32_t, uint16_t);
 SearchForLocalGamesTCP_fp DLLSearchForLocalGamesTCP;
 
 typedef int (*nw_GetHostAddressFromNumbers_fp)(char *str);
@@ -548,7 +548,7 @@ OldEditGetText_fp DLLOldEditGetText;
 typedef void (*ToggleUICallback_fp)(int state);
 ToggleUICallback_fp DLLToggleUICallback;
 
-typedef int (*SearchForGamesPXO_fp)(uint32_t ask, ushort port);
+typedef int (*SearchForGamesPXO_fp)(uint32_t ask, uint16_t port);
 SearchForGamesPXO_fp DLLSearchForGamesPXO;
 
 typedef void (*SetOldEditBufferLen_fp)(void *item, int len);

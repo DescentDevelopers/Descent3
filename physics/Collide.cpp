@@ -1068,9 +1068,9 @@ void DoWallEffects(object *weapon, int surface_tmap) {
     if ((ps_rand() % 4) == 0) {
       int num_rubble = (ps_rand() % 3) + 1;
       int bm_handle = GetTextureBitmap(texp - GameTextures, 0);
-      ushort *data = bm_data(bm_handle, 0);
+      uint16_t *data = bm_data(bm_handle, 0);
 
-      ushort color = data[(bm_w(bm_handle, 0) * (bm_h(bm_handle, 0) / 2)) + (bm_w(bm_handle, 0) / 2)];
+      uint16_t color = data[(bm_w(bm_handle, 0) * (bm_h(bm_handle, 0) / 2)) + (bm_w(bm_handle, 0) / 2)];
 
       for (int i = 0; i < num_rubble; i++) {
         int visnum;
@@ -2551,7 +2551,7 @@ void collide_generic_and_weapon(object *robotobj, object *weapon, vector *collis
     }
     if (!electrical) {
       light_info *li = &Weapons[weapon->id].lighting_info;
-      ushort color = GR_RGB16(li->red_light2 * 255, li->green_light2 * 255, li->blue_light2 * 255);
+      uint16_t color = GR_RGB16(li->red_light2 * 255, li->green_light2 * 255, li->blue_light2 * 255);
       CreateRandomLineSparks(3 + ps_rand() % 6, &weapon->pos, weapon->roomnum, color);
     }
   }

@@ -222,8 +222,8 @@ private:
 
   struct t_controller {
     int id;
-    ushort flags;
-    ushort buttons;
+    uint16_t flags;
+    uint16_t buttons;
     unsigned btnmask;
     float normalizer[CT_NUM_AXES];
     float sens[CT_NUM_AXES];

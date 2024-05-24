@@ -428,7 +428,7 @@ void EndHemicubeDrawing (int face)
 		while ((key = ddio_KeyInKey())!= 0)
 			;
 
-		ushort surfval[90000];
+		uint16_t surfval[90000];
 		int ff_index=0;
 
 		for (i=0;i<rad_NumSurfaces;i++)

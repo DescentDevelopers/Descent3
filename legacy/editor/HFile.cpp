@@ -786,7 +786,7 @@ void ShowLevelStats()
 		{
 			if (lightmaps_used[i])
 			{
-				ushort *data=lm_data (i);
+				uint16_t *data=lm_data (i);
 				int w=lm_w(i);
 				int h=lm_h(i);
 

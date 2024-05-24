@@ -266,8 +266,8 @@ int LoadGameState(const char *pathname) {
   int retval = LGS_OK;
   char desc[GAMESAVE_DESCLEN + 1];
   char path[PSPATHNAME_LEN];
-  ushort version;
-  ushort curlevel;
+  uint16_t version;
+  uint16_t curlevel;
   short pending_music_region;
   IsRestoredGame = true;
   //	load in stuff
@@ -282,7 +282,7 @@ int LoadGameState(const char *pathname) {
 
   // read in header and do version check.
   cf_ReadBytes((uint8_t *)desc, sizeof(desc), fp);
-  version = (ushort)cf_ReadShort(fp);
+  version = (uint16_t)cf_ReadShort(fp);
   if (version < GAMESAVE_OLDVER) {
     Int3();
     retval = LGS_OUTDATEDVER;
@@ -303,7 +303,7 @@ int LoadGameState(const char *pathname) {
   //	read in gamemode info.
 
   //	read in mission level info.
-  curlevel = (ushort)cf_ReadShort(fp);
+  curlevel = (uint16_t)cf_ReadShort(fp);
   cf_ReadString(path, sizeof(path), fp);
 
   if ((curlevel > 4) && (strcmpi(path, "d3.mn3") == 0)) {
@@ -664,8 +664,8 @@ typedef struct {
   int obj_handle, dest_objhandle;
   uint8_t subnum, subnum2;
 
-  ushort modelnum;
-  ushort vertnum, end_vertnum;
+  uint16_t modelnum;
+  uint16_t vertnum, end_vertnum;
 } old_vis_attach_info;
 
 typedef struct {
@@ -683,11 +683,11 @@ typedef struct {
   float creation_time;
 
   int roomnum;
-  ushort flags;
+  uint16_t flags;
   int phys_flags;
   uint8_t movement_type;
   short custom_handle;
-  ushort lighting_color;
+  uint16_t lighting_color;
 
   vis_attach_info attach_info;
   axis_billboard_info billboard_info;
@@ -1489,7 +1489,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
 //@@{
 //@@	int i;
 //@@	char name[64];
-//@@	ushort nparms;
+//@@	uint16_t nparms;
 //@@	tScriptParm *parms = NULL;
 //@@
 //@@//	ugh, write out script info.

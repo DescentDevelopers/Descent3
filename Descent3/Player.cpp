@@ -2999,7 +2999,7 @@ void PlayerSpewInventory(object *obj, bool spew_energy_and_shield, bool spew_non
 
   // Spew out the inventory items
   object *temp_obj;
-  ushort inven_flags;
+  uint16_t inven_flags;
   int object_flags;
   bool spew_it;
 

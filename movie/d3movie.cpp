@@ -54,7 +54,7 @@ namespace {
 MovieFrameCallback_fp Movie_callback = NULL;
 char MovieDir[512];
 char SoundCardName[512];
-ushort CurrentPalette[256];
+uint16_t CurrentPalette[256];
 int Movie_bm_handle = -1;
 uint32_t Movie_current_framenum = 0;
 bool Movie_looping = false;
@@ -654,7 +654,7 @@ void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hico
     Movie_bm_handle = bm_AllocBitmap(texW, texH, 0);
   }
 
-  uint16_t *pPixelData = (ushort *)bm_data(Movie_bm_handle, 0);
+  uint16_t *pPixelData = (uint16_t *)bm_data(Movie_bm_handle, 0);
   GameBitmaps[Movie_bm_handle].flags |= BF_CHANGED;
   if (hicolor) {
     uint16_t *wBuf = (uint16_t *)buf;

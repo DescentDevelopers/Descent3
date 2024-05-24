@@ -271,7 +271,7 @@
  * Added hit_death_dot
  *
  * 100   5/04/98 12:30p Matt
- * ObjCreate() now takes object id as a ushort
+ * ObjCreate() now takes object id as a uint16_t
  *
  * 99    5/04/98 12:28p Matt
  * Added shard objects
@@ -741,7 +741,7 @@ void ObjSetAABB(object *obj);
 
 // initialize a new object.  adds to the list for the given room
 // returns the object number
-int ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient,
+int ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient,
               int parent_handle = OBJECT_HANDLE_NONE);
 
 // remove object from the world

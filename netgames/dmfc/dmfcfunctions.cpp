@@ -139,7 +139,7 @@ DMFCFUNCTION void (*DLLMultiPaintGoalRooms)(int *texcolors);
 DMFCFUNCTION void (*DLLMultiSendSpecialPacket)(int slot, uint8_t *outdata, int size);
 DMFCFUNCTION void (*DLLComputeRoomCenter)(vector *vp, room *rp);
 DMFCFUNCTION int (*DLLGetGoalRoomForTeam)(int teamnum);
-DMFCFUNCTION int (*DLLObjCreate)(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient,
+DMFCFUNCTION int (*DLLObjCreate)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient,
                                  int parent_handle);
 DMFCFUNCTION int (*DLLFindObjectIDName)(const char *name);
 DMFCFUNCTION void (*DLLObjSetPosNoMark)(object *objp, vector *newpos, int roomnum, matrix *orient,
@@ -187,7 +187,7 @@ DMFCFUNCTION void (*DLLRenderHUDQuad)(int x, int y, int w, int h, float u0, floa
                                       uint8_t alpha, int sat_count);
 DMFCFUNCTION void (*DLLRenderHUDText)(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 DMFCFUNCTION void (*DLLMultiEndLevel)(void);
-DMFCFUNCTION ushort *(*DLLbm_data)(int handle, int miplevel);
+DMFCFUNCTION uint16_t *(*DLLbm_data)(int handle, int miplevel);
 DMFCFUNCTION int (*DLLbm_AllocBitmap)(int w, int h, int add_mem);
 DMFCFUNCTION void (*DLLrend_FillRect)(ddgr_color color, int x1, int y1, int x2, int y2);
 DMFCFUNCTION bool (*DLLbm_CreateChunkedBitmap)(int bm_handle, chunked_bitmap *chunk);
@@ -318,8 +318,8 @@ DMFCFUNCTION int (*DLLSliderGetPos)(void *slider);
 DMFCFUNCTION void (*DLLSliderSetSelectChangeCallback)(void *slider, void (*fn)(int));
 DMFCFUNCTION void (*DLLSliderSetSelectChangeCallbackWData)(void *slider, void (*fn)(int, void *), void *ptr);
 DMFCFUNCTION void (*DLLTextSetTitle)(void *text, void *textitem);
-DMFCFUNCTION bool (*DLLPPic_GetPilot)(ushort pilot_id, char *pilot_name, int buffersize);
-DMFCFUNCTION int (*DLLPPic_GetBitmapHandle)(ushort pilot_id);
+DMFCFUNCTION bool (*DLLPPic_GetPilot)(uint16_t pilot_id, char *pilot_name, int buffersize);
+DMFCFUNCTION int (*DLLPPic_GetBitmapHandle)(uint16_t pilot_id);
 DMFCFUNCTION void (*DLLrend_DrawLine)(int x1, int y1, int x2, int y2);
 DMFCFUNCTION void (*DLLrend_SetFlatColor)(ddgr_color color);
 DMFCFUNCTION void (*DLLMultiSetLogoState)(bool state);
@@ -419,7 +419,7 @@ DMFCFUNCTION void (*DLLrend_SetZBias)(float z_bias);
 DMFCFUNCTION void (*DLLrend_SetZBufferWriteMask)(int state);
 DMFCFUNCTION void (*DLLrend_GetLFBLock)(renderer_lfb *lfb);
 DMFCFUNCTION void (*DLLrend_ReleaseLFBLock)(renderer_lfb *lfb);
-DMFCFUNCTION void (*DLLrend_DrawLFBBitmap)(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize);
+DMFCFUNCTION void (*DLLrend_DrawLFBBitmap)(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize);
 DMFCFUNCTION void (*DLLrend_DrawSpecialLine)(g3Point *p0, g3Point *p1);
 DMFCFUNCTION int (*DLLfvi_FindIntersection)(fvi_query *fq, fvi_info *hit_data, bool no_subdivision);
 DMFCFUNCTION int (*DLLfvi_QuickDistFaceList)(int init_room_index, vector *pos, float rad,
@@ -443,7 +443,7 @@ DMFCFUNCTION void (*DLLVisEffectRelink)(int visnum, int newroomnum);
 DMFCFUNCTION void (*DLLVisEffectDelete)(int visnum);
 DMFCFUNCTION void (*DLLCreateRandomSparks)(int num_sparks, vector *pos, int roomnum, int which_index,
                                            float force_scalar);
-DMFCFUNCTION void (*DLLCreateRandomLineSparks)(int num_sparks, vector *pos, int roomnum, ushort color,
+DMFCFUNCTION void (*DLLCreateRandomLineSparks)(int num_sparks, vector *pos, int roomnum, uint16_t color,
                                                float force_scalar);
 DMFCFUNCTION int (*DLLVisEffectCreateControlled)(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos,
                                                  float lifetime, vector *velocity, int phys_flags, float size,
@@ -513,7 +513,7 @@ DMFCFUNCTION bool (*Inven_GetAuxPosTypeID)(Inventory *inven, int &type, int &id)
 DMFCFUNCTION char *(*Inven_GetPosDescription)(Inventory *inven);
 DMFCFUNCTION char *(*Inven_GetPosIconName)(Inventory *inven);
 DMFCFUNCTION char *(*Inven_GetPosName)(Inventory *inven);
-DMFCFUNCTION bool (*Inven_GetPosInfo)(Inventory *inven, ushort &iflags, int &flags);
+DMFCFUNCTION bool (*Inven_GetPosInfo)(Inventory *inven, uint16_t &iflags, int &flags);
 DMFCFUNCTION int (*Inven_GetPosCount)(Inventory *inven);
 DMFCFUNCTION bool (*Inven_AtBeginning)(Inventory *inven);
 DMFCFUNCTION bool (*Inven_AtEnd)(Inventory *inven);

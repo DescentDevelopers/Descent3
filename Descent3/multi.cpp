@@ -1724,9 +1724,9 @@ bool Multi_no_stats_saved = false;
 
 uint32_t Netgame_curr_handle = 1;
 
-ushort Local_object_list[MAX_OBJECTS];
-ushort Server_object_list[MAX_OBJECTS];
-ushort Server_spew_list[MAX_SPEW_EFFECTS];
+uint16_t Local_object_list[MAX_OBJECTS];
+uint16_t Server_object_list[MAX_OBJECTS];
+uint16_t Server_spew_list[MAX_SPEW_EFFECTS];
 
 #ifndef RELEASE
 int Multi_packet_tracking[255];
@@ -1734,10 +1734,10 @@ int Multi_packet_tracking[255];
 
 // This is for clearing lightmapped objects on the client/server
 int Num_client_lm_objects, Num_server_lm_objects;
-ushort Client_lightmap_list[MAX_OBJECTS], Server_lightmap_list[MAX_OBJECTS];
+uint16_t Client_lightmap_list[MAX_OBJECTS], Server_lightmap_list[MAX_OBJECTS];
 
 // This is for breakable glass
-ushort Broke_glass_rooms[MAX_BROKE_GLASS], Broke_glass_faces[MAX_BROKE_GLASS];
+uint16_t Broke_glass_rooms[MAX_BROKE_GLASS], Broke_glass_faces[MAX_BROKE_GLASS];
 int Num_broke_glass = 0;
 
 // This is for getting out a menu if in multiplayer
@@ -1761,7 +1761,7 @@ uint8_t Multi_reliable_urgent[MAX_NET_PLAYERS];
 
 // For keeping track of buildings that have changed
 uint8_t Multi_building_states[MAX_OBJECTS];
-ushort Multi_num_buildings_changed = 0;
+uint16_t Multi_num_buildings_changed = 0;
 
 // For keeping track of powerup respawn points
 powerup_respawn Powerup_respawn[MAX_RESPAWNS];
@@ -3078,16 +3078,16 @@ void MultiDoPlayerPos(uint8_t *data) {
 
   vector pos;
   matrix orient;
-  ushort short_roomnum;
+  uint16_t short_roomnum;
   int roomnum;
 
   // Get position
   MultiExtractPositionData(&pos, data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
@@ -3245,8 +3245,8 @@ void MultiDoRobotPos(uint8_t *data) {
   // Skip header stuff
   SKIP_HEADER(data, &count);
 
-  ushort server_objnum = MultiGetUshort(data, &count);
-  ushort objectnum = Server_object_list[server_objnum];
+  uint16_t server_objnum = MultiGetUshort(data, &count);
+  uint16_t objectnum = Server_object_list[server_objnum];
   if (objectnum == 65535 || !(Objects[objectnum].flags & OF_SERVER_OBJECT)) {
     mprintf((0, "Bad robotposition object number!\n"));
     return;
@@ -3255,16 +3255,16 @@ void MultiDoRobotPos(uint8_t *data) {
 
   vector pos;
   matrix orient;
-  ushort short_roomnum;
+  uint16_t short_roomnum;
   int roomnum;
 
   // Get position
   MultiExtractPositionData(&pos, data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
@@ -4125,7 +4125,7 @@ void MultiSendBlowupBuilding(int hit_objnum, int killer_objnum, float damage) {
   int size_offset = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
 
-  ushort short_damage = damage;
+  uint16_t short_damage = damage;
 
   size_offset = START_DATA(MP_BLOWUP_BUILDING, data, &count, 1);
   MultiAddShort(hit_objnum, data, &count);
@@ -4148,10 +4148,10 @@ void MultiDoBlowupBuilding(uint8_t *data) {
 
   SKIP_HEADER(data, &count);
 
-  ushort hit_objnum = MultiGetUshort(data, &count);
-  ushort killer_objnum = MultiGetUshort(data, &count);
-  ushort damage = MultiGetUshort(data, &count);
-  ushort seed = MultiGetUshort(data, &count);
+  uint16_t hit_objnum = MultiGetUshort(data, &count);
+  uint16_t killer_objnum = MultiGetUshort(data, &count);
+  uint16_t damage = MultiGetUshort(data, &count);
+  uint16_t seed = MultiGetUshort(data, &count);
 
   if (Objects[hit_objnum].type != OBJ_BUILDING) {
     Int3(); // Get Jason, trying to blowup a non-building
@@ -4174,7 +4174,7 @@ void MultiDoBuilding(uint8_t *data) {
   SKIP_HEADER(data, &count);
   uint8_t num = MultiGetByte(data, &count);
   for (int i = 0; i < num; i++) {
-    ushort objnum = MultiGetUshort(data, &count);
+    uint16_t objnum = MultiGetUshort(data, &count);
     if (Objects[objnum].type != OBJ_BUILDING) {
       mprintf((0, "Error! Server says objnum %d is a building and its not!\n", objnum));
     } else {
@@ -4320,7 +4320,7 @@ void MultiDoWorldStates(uint8_t *data) {
     }
     case WS_BUDDYBOTS: {
       int b_index = MultiGetByte(data, &count);
-      ushort serv_objnum = MultiGetUshort(data, &count);
+      uint16_t serv_objnum = MultiGetUshort(data, &count);
       int local_objnum = Server_object_list[serv_objnum];
 
       ASSERT(Objects[local_objnum].type != OBJ_NONE);
@@ -4335,7 +4335,7 @@ void MultiDoWorldStates(uint8_t *data) {
     }
     case WS_BUDDYBOTUPDATE: {
       int b_index = MultiGetByte(data, &count);
-      ushort serv_objnum = MultiGetUshort(data, &count);
+      uint16_t serv_objnum = MultiGetUshort(data, &count);
       int local_objnum = Server_object_list[serv_objnum];
 
       ASSERT(Objects[local_objnum].type != OBJ_NONE);
@@ -4442,7 +4442,7 @@ void MultiDoWorldStates(uint8_t *data) {
       spewinfo spew;
       mprintf((0, "Got a spew packet!\n"));
 
-      ushort spewnum = MultiGetShort(data, &count);
+      uint16_t spewnum = MultiGetShort(data, &count);
 
       if (MultiGetByte(data, &count))
         spew.use_gunpoint = true;
@@ -4485,7 +4485,7 @@ void MultiDoWorldStates(uint8_t *data) {
       spew.size = MultiGetFloat(data, &count);
       spew.speed = MultiGetFloat(data, &count);
 
-      ushort local_spewnum = SpewCreate(&spew);
+      uint16_t local_spewnum = SpewCreate(&spew);
       ASSERT(local_spewnum != -1); // DAJ -1FIX
       local_spewnum &= 0xFF;       // Adjust for handle
       Server_spew_list[spewnum] = local_spewnum;
@@ -4591,7 +4591,7 @@ void MultiDoJoinObjects(uint8_t *data) {
     bool obj_is_dummy = false;
 
     // Extract info about this object
-    ushort server_objnum = MultiGetUshort(data, &count);
+    uint16_t server_objnum = MultiGetUshort(data, &count);
     uint8_t type = MultiGetByte(data, &count);
 
     //@@mprintf ((0,"Got join objnum %d from server. Type=%d\n",server_objnum,type));
@@ -4642,7 +4642,7 @@ void MultiDoJoinObjects(uint8_t *data) {
       id = 0;
 
     vector pos;
-    ushort short_roomnum;
+    uint16_t short_roomnum;
     uint8_t terrain = 0;
     uint8_t lifeleft = 255;
     int roomnum;
@@ -5064,7 +5064,7 @@ void MultiDoExecuteDLL(uint8_t *data) {
 
   SKIP_HEADER(data, &count);
 
-  ushort eventnum = MultiGetShort(data, &count);
+  uint16_t eventnum = MultiGetShort(data, &count);
   short me_objnum = MultiGetShort(data, &count);
   short it_objnum = MultiGetShort(data, &count);
 
@@ -5239,9 +5239,9 @@ void MultiDoObject(uint8_t *data) {
 
   if (type != OBJ_POWERUP && type != OBJ_DUMMY) {
     // Extract orientation
-    ushort p = MultiGetShort(data, &count);
-    ushort h = MultiGetShort(data, &count);
-    ushort b = MultiGetShort(data, &count);
+    uint16_t p = MultiGetShort(data, &count);
+    uint16_t h = MultiGetShort(data, &count);
+    uint16_t b = MultiGetShort(data, &count);
 
     vm_AnglesToMatrix(&orient, p, h, b);
     orientp = &orient;
@@ -5251,7 +5251,7 @@ void MultiDoObject(uint8_t *data) {
   uint8_t mtype = MultiGetByte(data, &count);
 
   // Get room/cell stuff
-  ushort short_roomnum = MultiGetUshort(data, &count);
+  uint16_t short_roomnum = MultiGetUshort(data, &count);
   uint8_t terrain = MultiGetByte(data, &count);
   uint8_t lifeleft = MultiGetUbyte(data, &count);
   int roomnum = short_roomnum;
@@ -5455,15 +5455,15 @@ void MultiDoGuidedInfo(uint8_t *data) {
 
   vector pos;
   matrix orient;
-  ushort short_roomnum;
+  uint16_t short_roomnum;
   int roomnum;
 
   MultiExtractPositionData(&pos, data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
@@ -5689,7 +5689,7 @@ void MultiDoRemoveObject(uint8_t *data) {
 
   SKIP_HEADER(data, &count);
 
-  ushort server_objnum = MultiGetUshort(data, &count);
+  uint16_t server_objnum = MultiGetUshort(data, &count);
   uint8_t type = MultiGetByte(data, &count);
 
   uint8_t sound = MultiGetByte(data, &count);
@@ -5800,7 +5800,7 @@ void MultiDoPowerupReposition(uint8_t *data) {
   // count+=sizeof(vector);
   pos = MultiGetVector(data, &count);
 
-  ushort short_roomnum = MultiGetUshort(data, &count);
+  uint16_t short_roomnum = MultiGetUshort(data, &count);
   uint8_t terrain = MultiGetByte(data, &count);
 
   int roomnum = short_roomnum;
@@ -6072,7 +6072,7 @@ void MultiDoRequestCountermeasure(uint8_t *data) {
 
   SKIP_HEADER(data, &count);
 
-  ushort parent_objnum = MultiGetShort(data, &count);
+  uint16_t parent_objnum = MultiGetShort(data, &count);
 
   if (Netgame.local_role != LR_SERVER) {
     parent_objnum = Server_object_list[parent_objnum];
@@ -6305,7 +6305,7 @@ void MultiDoRequestPeerDamage(uint8_t *data, network_address *from_addr) {
   SKIP_HEADER(data, &count);
 
   int pnum = MultiGetByte(data, &count);
-  ushort killer_objnum = MultiGetUshort(data, &count);
+  uint16_t killer_objnum = MultiGetUshort(data, &count);
   uint8_t weapon_id = MultiGetUbyte(data, &count);
   uint8_t damage_type = MultiGetUbyte(data, &count);
   float amount = MultiGetFloat(data, &count);
@@ -6739,7 +6739,7 @@ void MultiSendKillObject(object *hit_obj, object *killer, float damage, int deat
   int size;
   int count = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
-  ushort hit_objnum, killer_objnum;
+  uint16_t hit_objnum, killer_objnum;
 
   // mprintf((0,"MultiSendExplodeObject Hit obj:%d Killer Obj: %d\n",OBJNUM(hit_obj),OBJNUM(killer)));
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -6770,7 +6770,7 @@ void MultiSendKillObject(object *hit_obj, object *killer, float damage, int deat
 void MultiDoRobotExplode(uint8_t *data) {
   int count = 0;
   float damage, delay;
-  ushort hit_objnum, killer_objnum, seed;
+  uint16_t hit_objnum, killer_objnum, seed;
   int death_flags;
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -6817,7 +6817,7 @@ void MultiSendDamageObject(object *hit_obj, object *killer, float damage, int we
   int size;
   int count = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
-  ushort hit_objnum, killer_objnum;
+  uint16_t hit_objnum, killer_objnum;
 
   // mprintf((0,"MultiSendDamageObject Hit obj:%d Killer Obj: %d\n",OBJNUM(hit_obj),OBJNUM(killer)));
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -6841,7 +6841,7 @@ void MultiDoRobotDamage(uint8_t *data) {
   int count = 0;
   float damage;
   int weaponid;
-  ushort hit_objnum, killer_objnum;
+  uint16_t hit_objnum, killer_objnum;
 
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
   SKIP_HEADER(data, &count);
@@ -6974,7 +6974,7 @@ void MultiDoPlay3dSound(uint8_t *data) {
   Sound_system.Play3dSound(soundidx, &Objects[objnum], priority);
 }
 
-void MultiPlay3dSound(short soundidx, ushort objnum, int priority) {
+void MultiPlay3dSound(short soundidx, uint16_t objnum, int priority) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size = 0;
@@ -7003,7 +7003,7 @@ void MultiPlay3dSound(short soundidx, ushort objnum, int priority) {
   }
 }
 
-void MultiSendRobotFireSound(short soundidx, ushort objnum) {
+void MultiSendRobotFireSound(short soundidx, uint16_t objnum) {
   int size;
   int count = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
@@ -7123,7 +7123,7 @@ void MultiDoTurretUpdate(uint8_t *data) {
 
   multi_turret multi_turret_info;
   int objnum;
-  ushort num_turrets;
+  uint16_t num_turrets;
   float turr_time;
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
@@ -7347,7 +7347,7 @@ void MultiSendInventoryRemoveItem(int slot, int type, int id) {
     // type/id
     MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
     size = START_DATA(MP_REMOVE_INVENTORY_ITEM, data, &count, 1);
-    MultiAddUshort((ushort)type, data, &count);
+    MultiAddUshort((uint16_t)type, data, &count);
     MultiAddUint(MultiGetMatchChecksum(type, id), data, &count);
     MultiAddByte(slot, data, &count);
     END_DATA(count, data, size);
@@ -7598,7 +7598,7 @@ void MultiDoGreetings(uint8_t *data, network_address *addr) {
 // file_id = NETFILE_ID_???? type
 //	file_who = If you are the client who's file you want from the server
 //	who = player number of who you are asking for the file
-void MultiAskForFile(ushort file_id, ushort file_who, ushort who) {
+void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who) {
   int size = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -7668,9 +7668,9 @@ void MultiAskForFile(ushort file_id, ushort file_who, ushort who) {
 void MultiDoFileReq(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
-  ushort filenum = MultiGetUshort(data, &count);
-  ushort filewho = MultiGetUshort(data, &count);
-  ushort playernum = MultiGetUshort(data, &count);
+  uint16_t filenum = MultiGetUshort(data, &count);
+  uint16_t filewho = MultiGetUshort(data, &count);
+  uint16_t playernum = MultiGetUshort(data, &count);
   // If we are the server, someone want's a file. Either start sending it to them, or deny the request
   if (NetPlayers[playernum].file_xfer_flags == NETFILE_NONE) {
     // FIXME!! Figure out what file to open
@@ -7750,9 +7750,9 @@ void MultiDoFileDenied(uint8_t *data) {
   // We asked for a file, but the request was denied for some reason
   int count = 0;
   SKIP_HEADER(data, &count);
-  ushort filenum = MultiGetUshort(data, &count);
-  ushort playernum = MultiGetUshort(data, &count);
-  ushort filewho = MultiGetUshort(data, &count);
+  uint16_t filenum = MultiGetUshort(data, &count);
+  uint16_t playernum = MultiGetUshort(data, &count);
+  uint16_t filewho = MultiGetUshort(data, &count);
   mprintf((0, "Got a file denied packet from %d\n", playernum));
 
   DoNextPlayerFile(filewho);
@@ -7762,10 +7762,10 @@ void MultiDoFileData(uint8_t *data) {
   // File data. We asked for it, now the server is sending it to us.
   uint32_t total_len; // Length of the entire file
   uint32_t curr_len;  // Length of file sent so far
-  ushort file_id;         // Defines which file this is
-  ushort playernum;       // Who is sending us the file
-  ushort data_len;        // between 1-450 bytes
-  // ushort	file_who;
+  uint16_t file_id;         // Defines which file this is
+  uint16_t playernum;       // Who is sending us the file
+  uint16_t data_len;        // between 1-450 bytes
+  // uint16_t	file_who;
   int count = 0;
   uint8_t outdata[MAX_GAME_DATA_SIZE];
   int outcount = 0;
@@ -8134,7 +8134,7 @@ void MultiSendGhostObject(object *obj, bool ghost) {
   MULTI_ASSERT_NOMESSAGE(obj);
 
   int count = 0;
-  ushort objnum;
+  uint16_t objnum;
   uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
 
@@ -8155,7 +8155,7 @@ void MultiDoGhostObject(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
-  ushort server_objnum, objnum;
+  uint16_t server_objnum, objnum;
   bool ghost;
 
   server_objnum = MultiGetUshort(data, &count);
@@ -8467,10 +8467,10 @@ void MultiDoAttach(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
-  ushort parent_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t parent_num = Server_object_list[MultiGetUshort(data, &count)];
   parent_ap = MultiGetByte(data, &count);
   parent = &Objects[parent_num];
-  ushort child_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t child_num = Server_object_list[MultiGetUshort(data, &count)];
   child_ap = MultiGetByte(data, &count);
   child = &Objects[child_num];
   f_aligned = MultiGetByte(data, &count) ? true : false;
@@ -8515,10 +8515,10 @@ void MultiDoAttachRad(uint8_t *data) {
   int count = 0;
   SKIP_HEADER(data, &count);
 
-  ushort parent_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t parent_num = Server_object_list[MultiGetUshort(data, &count)];
   parent_ap = MultiGetByte(data, &count);
   parent = &Objects[parent_num];
-  ushort child_num = Server_object_list[MultiGetUshort(data, &count)];
+  uint16_t child_num = Server_object_list[MultiGetUshort(data, &count)];
   rad = MultiGetFloat(data, &count);
   child = &Objects[child_num];
 
@@ -8559,7 +8559,7 @@ void MultiDoUnattach(uint8_t *data) {
   SKIP_HEADER(data, &count);
   int server_objnum = MultiGetUshort(data, &count);
   ASSERT(server_objnum >= 0 && server_objnum < MAX_OBJECTS);
-  ushort child_num = Server_object_list[server_objnum];
+  uint16_t child_num = Server_object_list[server_objnum];
   child = &Objects[child_num];
   if (child_num == 65535) {
     mprintf((0, "Client/Server object lists don't match! (Server num %d)\n", child_num));
@@ -8617,14 +8617,14 @@ void MultiDoPermissionToFire(uint8_t *data) {
   pos = MultiGetVector(data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
   // Get room and terrain flag
-  ushort short_roomnum = MultiGetUshort(data, &count);
+  uint16_t short_roomnum = MultiGetUshort(data, &count);
   uint8_t outside = MultiGetByte(data, &count);
   int roomnum;
 
@@ -9008,9 +9008,9 @@ void MultiDoRequestToMove(uint8_t *data) {
   rotthrust = MultiGetVector(data, &count);
 
   // Get orientation
-  ushort p = MultiGetShort(data, &count);
-  ushort h = MultiGetShort(data, &count);
-  ushort b = MultiGetShort(data, &count);
+  uint16_t p = MultiGetShort(data, &count);
+  uint16_t h = MultiGetShort(data, &count);
+  uint16_t b = MultiGetShort(data, &count);
 
   vm_AnglesToMatrix(&orient, p, h, b);
 
@@ -9101,7 +9101,7 @@ void MultiDoGenericNonVis(uint8_t *data) {
 
   int num = MultiGetShort(data, &count);
   for (int i = 0; i < num; i++) {
-    ushort objnum = MultiGetUshort(data, &count);
+    uint16_t objnum = MultiGetUshort(data, &count);
 
     objnum = Server_object_list[objnum];
     if (objnum == 65535 || !(Objects[objnum].flags & OF_SERVER_OBJECT)) {

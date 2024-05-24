@@ -296,7 +296,7 @@ typedef struct {
 
   uint8_t sample_skip_interval; // Allows us to skip samples (i.e. simulate lower sampling rates)
   uint8_t priority;             // priority of sound.
-  ushort m_stream_format;     // passed in
+  uint16_t m_stream_format;     // passed in
 
   //	internal data.
   int m_samples_played;

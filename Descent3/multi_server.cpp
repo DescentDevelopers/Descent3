@@ -676,16 +676,16 @@ void MultiProcessShipChecksum(MD5 *md5, int ship_index);
 int GameDLLGetConnectingPlayersTeam(int slot);
 
 int Moved_robots[MAX_NET_PLAYERS][MAX_CHANGED_OBJECTS];
-ushort Num_moved_robots[MAX_NET_PLAYERS];
+uint16_t Num_moved_robots[MAX_NET_PLAYERS];
 
 int Changed_anim[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-ushort Num_changed_anim[MAX_NET_PLAYERS];
+uint16_t Num_changed_anim[MAX_NET_PLAYERS];
 
 int Changed_wb_anim[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-ushort Num_changed_wb_anim[MAX_NET_PLAYERS];
+uint16_t Num_changed_wb_anim[MAX_NET_PLAYERS];
 
 int Changed_turret[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-ushort Num_changed_turret[MAX_NET_PLAYERS];
+uint16_t Num_changed_turret[MAX_NET_PLAYERS];
 
 float last_sent_bytes[MAX_NET_PLAYERS];
 float Multi_last_send_visible[MAX_NET_PLAYERS];
@@ -1216,7 +1216,7 @@ void MultiSendBuildings(int slot) {
 
   for (int i = 0; i < MAX_OBJECTS; i++) {
     if (Multi_building_states[i] != 0) {
-      MultiAddShort((ushort)i, data, &count);
+      MultiAddShort((uint16_t)i, data, &count);
     }
   }
 
@@ -1264,7 +1264,7 @@ void MultiSendJoinDemoObjects(int slot) {
     }
   }
 
-  ASSERT((num_demo_objects * sizeof(ushort) + sizeof(ushort)) < MAX_GAME_DATA_SIZE);
+  ASSERT((num_demo_objects * sizeof(uint16_t) + sizeof(uint16_t)) < MAX_GAME_DATA_SIZE);
 
   mprintf((0, "Sending DemoJoinObjects (%d)\n", num_demo_objects));
 
@@ -1358,14 +1358,14 @@ void MultiSendJoinObjects(int slot) {
   ASSERT(Netgame.local_role == LR_SERVER);
 
   uint8_t data[MAX_GAME_DATA_SIZE];
-  ushort outgoing_objects[MAX_OBJECTS];
+  uint16_t outgoing_objects[MAX_OBJECTS];
   int count = 0;
   int size_offset;
   int i;
 
   mprintf((0, "Sending MP_JOIN_OBJECTS packet to player %d!\n", slot));
 
-  ushort total_objects = 0;
+  uint16_t total_objects = 0;
   last_sent_bytes[slot] = timer_GetTime();
 
   Num_moved_robots[slot] = 0;
@@ -2183,7 +2183,7 @@ void MultiUpdateRobotMovedList(int slot) {
 void MultiSetupNonVisRobots(int slot, object *obj) { obj->generic_nonvis_flags |= (1 << slot); }
 
 // Sends out a list of generics that this client can't see
-void MultiSendGenericNonVis(int slot, ushort *objarray, int num) {
+void MultiSendGenericNonVis(int slot, uint16_t *objarray, int num) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size_offset;
@@ -2207,7 +2207,7 @@ void MultiSendGenericNonVis(int slot, ushort *objarray, int num) {
 // Does the bookkeeping that needs to be done for non visible generic objects and a player
 void MultiDoNonVisGenericForSlot(int slot) {
   // Keep track of the ones we need to send about
-  ushort send_out[MAX_OBJECTS];
+  uint16_t send_out[MAX_OBJECTS];
   int num_to_send = 0;
   int i;
 

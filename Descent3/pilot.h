@@ -240,8 +240,8 @@ typedef struct
         //controller settings
         cntrldata controls[NUM_CONTROLLER_FUNCTIONS];
         // hud layout using the STAT mask
-        ushort hud_stat;
-        ushort hud_graphical_stat;
+        uint16_t hud_stat;
+        uint16_t hud_graphical_stat;
         // hud display mode
         uint8_t hud_mode;
         // do we read the controller port also (beyond keyboard/mouse)
@@ -252,7 +252,7 @@ typedef struct
         int game_window_w, game_window_h;
 
         //pilot picture image id
-        ushort picture_id;
+        uint16_t picture_id;
 
         //number of mission's flown
         int num_missions_flown;

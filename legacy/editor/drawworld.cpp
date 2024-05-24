@@ -313,7 +313,7 @@ typedef struct seg_edge {
 		struct {short v0,v1;};
     int32_t vv;
 	};
-	ushort	type;
+	uint16_t	type;
 } seg_edge;
 
 #define MAX_EDGES (MAX_VERTS_PER_ROOM*2)

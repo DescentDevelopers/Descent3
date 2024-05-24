@@ -1821,7 +1821,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           int num_ticks = (pm->submodel[i].rot_track_max - pm->submodel[i].rot_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_ang_remap = (ushort *)mem_malloc(num_ticks * 2);
+            pm->submodel[i].tick_ang_remap = (uint16_t *)mem_malloc(num_ticks * 2);
             ASSERT(pm->submodel[i].tick_ang_remap);
           } else {
             pm->submodel[i].tick_ang_remap = NULL;
@@ -1892,7 +1892,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           int num_ticks = (pm->submodel[i].pos_track_max - pm->submodel[i].pos_track_min);
 
           if (num_ticks > 0) {
-            pm->submodel[i].tick_pos_remap = (ushort *)mem_malloc(num_ticks * 2);
+            pm->submodel[i].tick_pos_remap = (uint16_t *)mem_malloc(num_ticks * 2);
             ASSERT(pm->submodel[i].tick_pos_remap);
           } else {
             pm->submodel[i].tick_pos_remap = NULL;

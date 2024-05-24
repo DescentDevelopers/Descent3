@@ -279,7 +279,7 @@ bool CDmfcStats::Initialize(tDmfcStatsInit *init_info) {
 
   m_highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   m_background_bmp = DLLbm_AllocBitmap(32, 32, 0);
-  ushort *data;
+  uint16_t *data;
 
   if (m_highlight_bmp == -1)
     m_highlight_bmp = BAD_BITMAP_HANDLE;

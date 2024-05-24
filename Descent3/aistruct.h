@@ -485,10 +485,10 @@ typedef struct ain_hear {
 #define AIP_MOVE_LIST 2
 
 typedef struct ai_path_info {
-  ushort cur_path;
-  ushort cur_node;
+  uint16_t cur_path;
+  uint16_t cur_node;
 
-  ushort num_paths;
+  uint16_t num_paths;
 
   int goal_uid; // which goal generated this path
   int goal_index;
@@ -498,9 +498,9 @@ typedef struct ai_path_info {
   uint8_t path_type[MAX_JOINED_PATHS];
 
   // Used for static game paths
-  ushort path_start_node[MAX_JOINED_PATHS];
-  ushort path_end_node[MAX_JOINED_PATHS];
-  ushort path_flags[MAX_JOINED_PATHS];
+  uint16_t path_start_node[MAX_JOINED_PATHS];
+  uint16_t path_end_node[MAX_JOINED_PATHS];
+  uint16_t path_flags[MAX_JOINED_PATHS];
 } ai_path_info;
 
 // Used for predefined move lists (off of normal static paths)

@@ -611,7 +611,7 @@ void TCGoalsRenderCallback(void) {
 
   if (TG_MouseOffset_x == -1) {
     // determine bottom-right x/y of mouse cursor
-    ushort *data = bm_data(TC_cursor, 0);
+    uint16_t *data = bm_data(TC_cursor, 0);
     int width = bm_w(TC_cursor, 0);
     int index = width * bm_h(TC_cursor, 0) - 1;
     while (index > 0 && (!(data[index] & OPAQUE_FLAG)))
@@ -702,7 +702,7 @@ bool TelComGoalStatus(tTelComInfo *tcs) {
   if (bm_handle <= BAD_BITMAP_HANDLE) {
     bm_handle = bm_AllocBitmap(32, 32, 0);
     if (bm_handle > BAD_BITMAP_HANDLE) {
-      ushort *data = bm_data(bm_handle, 0);
+      uint16_t *data = bm_data(bm_handle, 0);
       for (int i = 0; i < 1024; i++) {
         data[i] = GR_RGB16(0, 0, 0) | OPAQUE_FLAG;
       }

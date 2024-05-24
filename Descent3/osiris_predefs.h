@@ -341,7 +341,7 @@ void osipf_SetAllControls(bool enabled);
 void osipf_SetControls(int fn, bool enabled);
 
 // Creates an object
-int osipf_ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient = NULL,
+int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
                     int parent_handle = OBJECT_HANDLE_NONE, vector *velocity = NULL);
 
 // OBJECT Properties.

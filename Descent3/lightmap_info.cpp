@@ -33,7 +33,7 @@
 int Num_of_lightmap_info = 0;
 lightmap_info *LightmapInfo = NULL;
 
-static ushort *Free_lmi_list = NULL;
+static uint16_t *Free_lmi_list = NULL;
 
 static void CloseLightmapInfos();
 
@@ -60,7 +60,7 @@ void InitLightmapInfo(int nummaps) {
   if (nummaps == 0) {
     LightmapInfo = (lightmap_info *)mem_malloc(MAX_LIGHTMAP_INFOS * sizeof(lightmap_info));
     ASSERT(LightmapInfo);
-    Free_lmi_list = (ushort *)mem_malloc(MAX_LIGHTMAP_INFOS * sizeof(ushort));
+    Free_lmi_list = (uint16_t *)mem_malloc(MAX_LIGHTMAP_INFOS * sizeof(uint16_t));
     ASSERT(Free_lmi_list);
 
     for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
@@ -72,7 +72,7 @@ void InitLightmapInfo(int nummaps) {
                   else {
                   LightmapInfo=(lightmap_info *)mem_malloc (nummaps*sizeof(lightmap_info));
                   ASSERT (LightmapInfo);
-                  Free_lmi_list=(ushort *)mem_malloc (nummaps*sizeof(ushort));
+                  Free_lmi_list=(uint16_t *)mem_malloc (nummaps*sizeof(uint16_t));
                   ASSERT (Free_lmi_list);
 
 
@@ -128,7 +128,7 @@ int AllocLightmapInfo(int w, int h, int type, bool alloc_lightmap) {
     LightmapInfo[n].lm_handle = lm_AllocLightmap(w, h);
     ASSERT(LightmapInfo[n].lm_handle != BAD_LM_INDEX); // Make sure we have a valid lightmap
 
-    ushort *dest_data = lm_data(LightmapInfo[n].lm_handle);
+    uint16_t *dest_data = lm_data(LightmapInfo[n].lm_handle);
 
     // Set the lightmap to be transparent
     for (i = 0; i < w * h; i++)
@@ -200,13 +200,13 @@ void ShadeLightmapInfoEdges(int type) {
 
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
     if (LightmapInfo[i].used && LightmapInfo[i].type == type) {
-      ushort *src_data;
-      ushort *dest_data = lm_data(LightmapInfo[i].lm_handle);
+      uint16_t *src_data;
+      uint16_t *dest_data = lm_data(LightmapInfo[i].lm_handle);
       int w = lmi_w(i);
       int h = lmi_h(i);
       int x, y;
 
-      src_data = (ushort *)mem_malloc(w * h * 2);
+      src_data = (uint16_t *)mem_malloc(w * h * 2);
       ASSERT(src_data);
 
       memcpy(src_data, dest_data, w * h * 2);
@@ -217,7 +217,7 @@ void ShadeLightmapInfoEdges(int type) {
             int r = 0, g = 0, b = 0;
             int num = 0;
             ddgr_color color;
-            ushort color16;
+            uint16_t color16;
 
             // Left edge
             if (x != 0) {
@@ -332,13 +332,13 @@ void BlurLightmapInfos(int type) {
 
   for (i = 0; i < MAX_LIGHTMAP_INFOS; i++) {
     if (LightmapInfo[i].used && LightmapInfo[i].type == type) {
-      ushort *src_data;
-      ushort *dest_data = lm_data(LightmapInfo[i].lm_handle);
+      uint16_t *src_data;
+      uint16_t *dest_data = lm_data(LightmapInfo[i].lm_handle);
       int w = lmi_w(i);
       int h = lmi_h(i);
       int x, y;
 
-      src_data = (ushort *)mem_malloc(w * h * 2);
+      src_data = (uint16_t *)mem_malloc(w * h * 2);
       ASSERT(src_data);
 
       memcpy(src_data, dest_data, w * h * 2);
@@ -349,7 +349,7 @@ void BlurLightmapInfos(int type) {
             int r = 0, g = 0, b = 0;
             int num = 0;
             ddgr_color color;
-            ushort color16;
+            uint16_t color16;
 
             color16 = src_data[y * w + (x)];
             color = GR_16_TO_COLOR(color16);

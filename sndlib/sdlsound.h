@@ -28,7 +28,7 @@ class sound_buffer_info;
 
 void lnxsound_SetError(int code);
 void lnxsound_ErrorText(const char *fmt, ...);
-inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, ushort frequency);
+inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, uint16_t frequency);
 
 class emulated_listener {
 public:
@@ -122,7 +122,7 @@ public:
 
   friend void lnxsound_SetError(int code);
   friend void lnxsound_ErrorText(const char *fmt, ...);
-  friend inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, ushort frequency);
+  friend inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, uint16_t frequency);
 
 protected:
 #ifdef _DEBUG

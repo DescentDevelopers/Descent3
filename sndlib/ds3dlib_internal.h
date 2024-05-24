@@ -127,8 +127,8 @@ typedef struct tPSBInfo {
     pos_state *cur_pos;
   };
   float reverb;
-  ushort freq;
-  ushort priority;
+  uint16_t freq;
+  uint16_t priority;
   bool looping;
 } tPSBInfo;
 

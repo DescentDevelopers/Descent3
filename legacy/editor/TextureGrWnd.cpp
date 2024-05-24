@@ -1786,7 +1786,7 @@ void ShowRadView()
 	CTextureGrWnd *tview=theApp.textured_view;	
 
 	cur_surf=rad_Viewport->lock();
-	ushort *dest=(ushort *)cur_surf->data();
+	uint16_t *dest=(uint16_t *)cur_surf->data();
 	int rowsize=cur_surf->rowsize()/2;
 
 	int height=cur_surf->height();

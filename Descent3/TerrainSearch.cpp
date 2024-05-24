@@ -233,7 +233,7 @@
 
 static int EvaluateBlock(int x, int z, int lod);
 
-ushort TS_FrameCount = 0xFFFF;
+uint16_t TS_FrameCount = 0xFFFF;
 
 static int SearchQuadTree(int x1, int y1, int x2, int y2, int dir, int *ccount);
 int GlobalTransCount = 0;
@@ -260,8 +260,8 @@ static vector TS_FVectorAdd, TS_RVectorAdd;
 static uint8_t Terrain_y_flags[256];
 static vector Terrain_y_cache[256];
 
-static ushort LOD_sort_bucket[MAX_TERRAIN_LOD][MAX_CELLS_TO_RENDER];
-static ushort LOD_sort_num[MAX_TERRAIN_LOD];
+static uint16_t LOD_sort_bucket[MAX_TERRAIN_LOD][MAX_CELLS_TO_RENDER];
+static uint16_t LOD_sort_num[MAX_TERRAIN_LOD];
 
 // Variable to determine if we're in editor or game
 extern function_mode View_mode;
@@ -390,7 +390,7 @@ void Terrain_start_frame(vector *eye, matrix *view_orient) {
   }
 
   memset(Terrain_y_flags, 0, 256);
-  memset(LOD_sort_num, 0, MAX_TERRAIN_LOD * sizeof(ushort));
+  memset(LOD_sort_num, 0, MAX_TERRAIN_LOD * sizeof(uint16_t));
 
   PreRotateTerrain();
 }

@@ -146,8 +146,8 @@ extern tGameToggles Game_toggles;
 #define RES_1600X1200 6
 // stored resolution list and desired game resolution
 typedef struct tVideoResolution {
-  ushort width;
-  ushort height;
+  uint16_t width;
+  uint16_t height;
 } tVideoResolution;
 
 extern tVideoResolution Video_res_list[];

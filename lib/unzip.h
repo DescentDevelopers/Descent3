@@ -48,18 +48,18 @@ typedef struct {
   uint8_t host_os;
   uint8_t version_needed_to_extract;
   uint8_t os_needed_to_extract;
-  ushort general_purpose_bit_flag;
-  ushort compression_method;
-  ushort last_mod_file_time;
-  ushort last_mod_file_date;
+  uint16_t general_purpose_bit_flag;
+  uint16_t compression_method;
+  uint16_t last_mod_file_time;
+  uint16_t last_mod_file_date;
   uint32_t crc32;
   uint32_t compressed_size;
   uint32_t uncompressed_size;
-  ushort filename_length;
-  ushort extra_field_length;
-  ushort file_comment_length;
-  ushort disk_number_start;
-  ushort internal_file_attrib;
+  uint16_t filename_length;
+  uint16_t extra_field_length;
+  uint16_t file_comment_length;
+  uint16_t disk_number_start;
+  uint16_t internal_file_attrib;
   uint32_t external_file_attrib;
   uint32_t offset_lcl_hdr_frm_frst_disk;
   char *name;
@@ -134,13 +134,13 @@ private:
 
   // end_of_cent_dir
   uint32_t m_end_of_cent_dir_sig;
-  ushort m_number_of_this_disk;
-  ushort m_number_of_disk_start_cent_dir;
-  ushort m_total_entries_cent_dir_this_disk;
-  ushort m_total_entries_cent_dir;
+  uint16_t m_number_of_this_disk;
+  uint16_t m_number_of_disk_start_cent_dir;
+  uint16_t m_total_entries_cent_dir_this_disk;
+  uint16_t m_total_entries_cent_dir;
   uint32_t m_size_of_cent_dir;
   uint32_t m_offset_to_start_of_cent_dir;
-  ushort m_zipfile_comment_length;
+  uint16_t m_zipfile_comment_length;
   char *m_zipfile_comment; // pointer in ecd
 };
 

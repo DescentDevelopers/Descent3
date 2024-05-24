@@ -117,7 +117,7 @@ typedef struct creditline {
   uint8_t type;
   char *text;
   creditline *next;
-  ushort startx, starty, endx, endy;
+  uint16_t startx, starty, endx, endy;
   float displaytime;
 } creditline;
 

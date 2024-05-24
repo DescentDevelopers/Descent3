@@ -693,13 +693,13 @@ void InitFireballs() {
   }
 
   // convert the grey spark into grayscale
-  ushort *data;
+  uint16_t *data;
   int size;
   float recip32 = 1.0f / 32.0f;
   data = bm_data(Fireballs[GRAY_SPARK_INDEX].bm_handle, 0);
   size = bm_w(Fireballs[GRAY_SPARK_INDEX].bm_handle, 0) * bm_h(Fireballs[GRAY_SPARK_INDEX].bm_handle, 0);
   for (i = 0; i < size; i++) {
-    ushort col565 = data[i];
+    uint16_t col565 = data[i];
     if (col565 == 0x07e0) {
       data[i] = NEW_TRANSPARENT_COLOR;
     } else {

@@ -552,7 +552,7 @@ void msn_DoAskForURL(uint8_t *indata, network_address *net_addr) {
     // Number of URLs
     MultiAddByte(num_urls, data, &count);
     for (i = 0; i < num_urls; i++) {
-      ushort urllen = strlen(url->URL[i]) + 1;
+      uint16_t urllen = strlen(url->URL[i]) + 1;
       if ((count + urllen) >= MAX_GAME_DATA_SIZE) {
         // if for some reason the URLS exceed what a packet can send
         // rather than overflow the memory buffer, just don't send out the packet.
@@ -586,7 +586,7 @@ void msn_DoCurrMsnURLs(uint8_t *data, network_address *net_addr) {
   num_urls = MultiGetByte(data, &count);
 
   for (i = 0; i < num_urls; i++) {
-    ushort urllen = MultiGetUshort(data, &count);
+    uint16_t urllen = MultiGetUshort(data, &count);
     memcpy(msn_URL.URL[i], data + count, urllen);
     count += urllen;
   }

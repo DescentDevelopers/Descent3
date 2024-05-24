@@ -371,7 +371,7 @@ void Cinematic_Init(void) {
 
   gc_fade_bmp_handle = bm_AllocBitmap(32, 32, 0);
   if (gc_fade_bmp_handle > BAD_BITMAP_HANDLE) {
-    ushort *data = bm_data(gc_fade_bmp_handle, 0);
+    uint16_t *data = bm_data(gc_fade_bmp_handle, 0);
     int i, size = 32 * 32;
 
     for (i = 0; i < size; i++)
@@ -382,7 +382,7 @@ void Cinematic_Init(void) {
 
   gc_fadewhite_bmp_handle = bm_AllocBitmap(32, 32, 0);
   if (gc_fadewhite_bmp_handle > BAD_BITMAP_HANDLE) {
-    ushort *data = bm_data(gc_fadewhite_bmp_handle, 0);
+    uint16_t *data = bm_data(gc_fadewhite_bmp_handle, 0);
     int i, size = 32 * 32;
 
     for (i = 0; i < size; i++)
@@ -794,7 +794,7 @@ bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int came
     // create overlay bitmap
     GameCinema.bmp_handle = bm_AllocBitmap(128, 128, 0);
     if (GameCinema.bmp_handle > BAD_BITMAP_HANDLE) {
-      ushort *data = bm_data(GameCinema.bmp_handle, 0);
+      uint16_t *data = bm_data(GameCinema.bmp_handle, 0);
       for (int j = 0; j < 128 * 128; j++) {
         data[j] = GR_RGB16(0, 0, 0) | OPAQUE_FLAG;
       }
@@ -1634,7 +1634,7 @@ void Cinematic_DoEndTransition(void) {
       if (gc_temp_bmp_handle > BAD_BITMAP_HANDLE) {
         float fade_out_perc = 1.0f - ((perc - CUTOFF) / (1.0f - CUTOFF));
         int grey = 255.0f * fade_out_perc;
-        ushort *data = bm_data(gc_temp_bmp_handle, 0);
+        uint16_t *data = bm_data(gc_temp_bmp_handle, 0);
         int i, size = 32 * 32;
 
         for (i = 0; i < size; i++)

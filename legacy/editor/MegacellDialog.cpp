@@ -413,7 +413,7 @@ void CMegacellDialog::OnDeleteMegacell()
 
 		int num_to_delete=0;
 		char *texnames[MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT];
-		ushort texindices[MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT];
+		uint16_t texindices[MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT];
 
 		for (i=0;i<MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT;i++)
 		{
@@ -1299,8 +1299,8 @@ void CMegacellDialog::OnImportTiny()
 
 			ASSERT (bm_handle>=0);
 
-			ushort *dest_data=bm_data (bm_handle,0);
-			ushort *src_data=bm_data(src_handle,0);
+			uint16_t *dest_data=bm_data (bm_handle,0);
+			uint16_t *src_data=bm_data(src_handle,0);
 
 			for (int ty=0;ty<32;ty++,u=startx,v+=dv)
 			{
@@ -1309,7 +1309,7 @@ void CMegacellDialog::OnImportTiny()
 					int cu=u;
 					int cv=v;
 
-					ushort pix=src_data[cv*w+cu];
+					uint16_t pix=src_data[cv*w+cu];
 					dest_data[ty*32+tx]=pix;
 				}
 			}
@@ -1441,8 +1441,8 @@ void CMegacellDialog::OnImportSky()
 
 			ASSERT (bm_handle>=0);
 
-			ushort *dest_data=bm_data (bm_handle,0);
-			ushort *src_data=bm_data(src_handle,0);
+			uint16_t *dest_data=bm_data (bm_handle,0);
+			uint16_t *src_data=bm_data(src_handle,0);
 
 			for (int ty=0;ty<SKY_TEXTURE_SIZE;ty++,u=startx,v+=dv)
 			{
@@ -1451,7 +1451,7 @@ void CMegacellDialog::OnImportSky()
 					int cu=u;
 					int cv=v;
 
-					ushort pix=src_data[cv*w+cu];
+					uint16_t pix=src_data[cv*w+cu];
 					dest_data[ty*SKY_TEXTURE_SIZE+tx]=pix;
 				}
 			}
@@ -1569,8 +1569,8 @@ void CMegacellDialog::OnImportSkyBand()
 
 		ASSERT (bm_handle>=0);
 
-		ushort *dest_data=bm_data (bm_handle,0);
-		ushort *src_data=bm_data(src_handle,0);
+		uint16_t *dest_data=bm_data (bm_handle,0);
+		uint16_t *src_data=bm_data(src_handle,0);
 
 		for (int ty=0;ty<SKY_BAND_SIZE;ty++,u=startx,v+=dv)
 		{
@@ -1579,7 +1579,7 @@ void CMegacellDialog::OnImportSkyBand()
 				int cu=u;
 				int cv=v;
 
-				ushort pix=src_data[cv*w+cu];
+				uint16_t pix=src_data[cv*w+cu];
 				dest_data[ty*SKY_BAND_SIZE+tx]=pix;
 			}
 		}

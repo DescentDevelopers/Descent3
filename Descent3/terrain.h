@@ -166,9 +166,9 @@ typedef struct {
 
 typedef struct {
   float z;
-  ushort right_edge, left_edge, top_edge, bottom_edge; // for fixing tjoint problems
+  uint16_t right_edge, left_edge, top_edge, bottom_edge; // for fixing tjoint problems
   uint8_t right_count, left_count, top_count, bottom_count;
-  ushort segment; // what segment to render
+  uint16_t segment; // what segment to render
   uint8_t lod;      // what level of detail: 0=16x16, 1=8x8, 2=4x4, 3=2x2, 4=just this segment (1x1)
   uint8_t pad;
 } terrain_render_info;
@@ -195,7 +195,7 @@ extern int GlobalTransCount, TotalDepth;
 extern int TerrainEdgeTest[MAX_TERRAIN_LOD][16];
 
 extern terrain_render_info Terrain_list[];
-extern ushort TS_FrameCount;
+extern uint16_t TS_FrameCount;
 
 extern float VisibleTerrainZ;
 extern float Terrain_average_height;
@@ -250,7 +250,7 @@ extern uint8_t TerrainSelected[];
 extern int Num_terrain_selected;
 #endif
 
-extern ushort *Terrain_rotate_list; // which points have been sub/rotated this frame
+extern uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
 extern g3Point *World_point_buffer; // Rotated points
 
 #define TSEARCH_FOUND_TERRAIN 0

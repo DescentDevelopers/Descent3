@@ -265,9 +265,9 @@ typedef struct {
   void *proc2;                 // back page of procedural
   short procedural_bitmap;     // handle to the bitmap holding the finished procedural
 
-  ushort *palette;
+  uint16_t *palette;
   static_proc_element *static_proc_elements;
-  ushort num_static_elements;
+  uint16_t num_static_elements;
 
   uint8_t memory_type;
 

@@ -386,7 +386,7 @@ class UIGadget : public UIObject {
 private:
   int m_ID;      // id value of gadget.
   short m_Datum; // used to pass info around.
-  ushort m_Hotkey;
+  uint16_t m_Hotkey;
   int m_SavedW, m_SavedH; // saved values of width and height.
   bool m_Disabled;        // is gadget disabled?
 

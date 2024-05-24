@@ -969,15 +969,15 @@ void TelCom_BltToScreen(int dx, int dy, chunked_bitmap *src_bmp, int sx, int sy,
 }
 
 void TelCom_BltToMem(int dest_bmp, int dx, int dy, int src_bmp, int sx, int sy, int sw, int sh, bool trans) {
-  ushort *dbits;
-  ushort *sbits;
+  uint16_t *dbits;
+  uint16_t *sbits;
   int srowsize_w, drowsize_w, row, col;
 
   //	set up blt.
   srowsize_w = bm_w(src_bmp, 0); // rowsize in shorts
   drowsize_w = bm_w(dest_bmp, 0);
-  dbits = (ushort *)bm_data(dest_bmp, 0) + (dy * drowsize_w) + dx;
-  sbits = (ushort *)bm_data(src_bmp, 0) + (sy * srowsize_w) + sx;
+  dbits = (uint16_t *)bm_data(dest_bmp, 0) + (dy * drowsize_w) + dx;
+  sbits = (uint16_t *)bm_data(src_bmp, 0) + (sy * srowsize_w) + sx;
 
   if (trans) {
     for (row = 0; row < sh; row++) {
@@ -1049,7 +1049,7 @@ int LoadTelcomBitmap(const char *filename, chunked_bitmap *chunk) {
   // make monitor windows transparent
   menutga_LoadHotSpotMap(bm_handle, IGNORE_TABLE(HOTSPOT_DISPLAY), &hotspotmap, &windowmap);
 
-  ushort *data = bm_data(bm_handle, 0);
+  uint16_t *data = bm_data(bm_handle, 0);
   int wnd, x, y, bmw;
   int bord_left, bord_right, bord_top, bord_bottom;
 
@@ -2056,7 +2056,7 @@ void TelcomCreateScanLine(void) {
   int start_pixel;
   start_pixel = 0;
 
-  ushort *data = bm_data(scanline_handle, 0);
+  uint16_t *data = bm_data(scanline_handle, 0);
 
   int x, y;
   for (y = 0; y < 32; y++) {
@@ -2125,11 +2125,11 @@ void TelcomCreateStaticOverlays(void) {
   int saturation = 10;
   int result;
   float amount;
-  ushort *data[8];
+  uint16_t *data[8];
 
   amount = ((float)saturation) * 0.4f;
 
-  ushort def_color = OPAQUE_FLAG | GR_RGB16(24, 255, 0);
+  uint16_t def_color = OPAQUE_FLAG | GR_RGB16(24, 255, 0);
 
   size = 64 * 64;
   for (i = 0; i < 4; i++) {
@@ -2269,7 +2269,7 @@ void TelcomInitPowerEffect(void) {
     return;
 
   int i;
-  ushort *bmpdata = bm_data(PowerBmps[0], 0);
+  uint16_t *bmpdata = bm_data(PowerBmps[0], 0);
   for (i = 0; i < 32 * 32; i++)
     bmpdata[i] = OPAQUE_FLAG | GR_RGB(0, 0, 0);
 

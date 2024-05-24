@@ -70,7 +70,7 @@ typedef struct otype_wb_info {
   float anim_end_frame[MAX_WB_FIRING_MASKS];
   float anim_time[MAX_WB_FIRING_MASKS];
 
-  ushort flags;
+  uint16_t flags;
 
   float energy_usage, ammo_usage;
 } otype_wb_info;

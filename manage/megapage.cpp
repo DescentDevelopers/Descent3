@@ -132,7 +132,7 @@ void mng_WriteNewMegacellPage(CFILE *outfile, mngs_megacell_page *megacellpage) 
 int mng_ReadMegacellPage(CFILE *infile, mngs_megacell_page *megacellpage) {
   int done = 0;
   char command;
-  ushort len;
+  uint16_t len;
   int i, temp;
   if (!Old_table_method)
     return mng_ReadNewMegacellPage(infile, megacellpage);

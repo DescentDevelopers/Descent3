@@ -114,7 +114,7 @@ static int PPic_GetIndexFromID(int id);
 //	Purpose:
 //		Returns the file offset of the given pilot id. -1 if not found
 // -------------------------------------
-static int PPic_GetOffsetByID(ushort pilot_id);
+static int PPic_GetOffsetByID(uint16_t pilot_id);
 
 //===========================================================================
 
@@ -210,7 +210,7 @@ void PPic_CloseDatabase(void) {
 //		Given a pilot callsign it will search the database
 //	and return the number of pilots that match the name
 // ---------------------------------------------------------
-ushort PPic_QueryPilot(char *pilot_name) {
+uint16_t PPic_QueryPilot(char *pilot_name) {
   if (!PilotPic_init)
     return 0;
 
@@ -237,8 +237,8 @@ ushort PPic_QueryPilot(char *pilot_name) {
     name_buffer[name_size] = '\0';
 
     // next read in pilot_id
-    ushort pilot_id;
-    pilot_id = (ushort)cf_ReadShort(file);
+    uint16_t pilot_id;
+    pilot_id = (uint16_t)cf_ReadShort(file);
 
     // next read past the bitmap name
     uint8_t bmp_size;
@@ -266,7 +266,7 @@ ushort PPic_QueryPilot(char *pilot_name) {
 //	if it couldn't find any pilots matching.  It returns
 //	the pilot id.
 // ----------------------------------------------------------
-bool PPic_FindFirst(char *pilot_name, ushort *pilot_id) {
+bool PPic_FindFirst(char *pilot_name, uint16_t *pilot_id) {
   if (!PilotPic_init)
     return false;
 
@@ -291,8 +291,8 @@ bool PPic_FindFirst(char *pilot_name, ushort *pilot_id) {
   name_buffer[name_size] = '\0';
 
   // next read in pilot_id
-  ushort pid;
-  pid = (ushort)cf_ReadShort(file);
+  uint16_t pid;
+  pid = (uint16_t)cf_ReadShort(file);
 
   // next read past the bitmap name
   uint8_t bmp_size;
@@ -317,7 +317,7 @@ bool PPic_FindFirst(char *pilot_name, ushort *pilot_id) {
 //	an initial call to PPic_FindFirst().  It returns the
 //	pilot id.
 // ----------------------------------------------------------
-bool PPic_FindNext(ushort *pilot_id) {
+bool PPic_FindNext(uint16_t *pilot_id) {
   if (!PilotPic_init)
     return false;
 
@@ -341,8 +341,8 @@ bool PPic_FindNext(ushort *pilot_id) {
   name_buffer[name_size] = '\0';
 
   // next read in pilot_id
-  ushort pid;
-  pid = (ushort)cf_ReadShort(file);
+  uint16_t pid;
+  pid = (uint16_t)cf_ReadShort(file);
 
   // next read past the bitmap name
   uint8_t bmp_size;
@@ -375,7 +375,7 @@ void PPic_FindClose(void) {
 //		Given a pilot id, it will return the pilot name of
 //	the pilot name.  Returns false if it's an invalid pilot id.
 // ----------------------------------------------------------
-bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize) {
+bool PPic_GetPilot(uint16_t pilot_id, char *pilot_name, int buffersize) {
   if (!PilotPic_init)
     return false;
 
@@ -417,7 +417,7 @@ bool PPic_GetPilot(ushort pilot_id, char *pilot_name, int buffersize) {
 //	bm_FreeBitmap().  Returns -1 if it was an illegal pilot id.
 //	Returns BAD_BITMAP_HANDLE if it couldn't open the bitmap.
 // ----------------------------------------------------------
-int PPic_GetBitmapHandle(ushort pilot_id) {
+int PPic_GetBitmapHandle(uint16_t pilot_id) {
   if (!PilotPic_init)
     return -1;
 
@@ -448,8 +448,8 @@ int PPic_GetBitmapHandle(ushort pilot_id) {
   name_buffer[name_size] = '\0';
 
   // next read in pilot_id
-  ushort pid;
-  pid = (ushort)cf_ReadShort(PilotPic_database_index_handle);
+  uint16_t pid;
+  pid = (uint16_t)cf_ReadShort(PilotPic_database_index_handle);
 
   // next read past the bitmap name
   uint8_t bmp_size;
@@ -472,10 +472,10 @@ int PPic_GetBitmapHandle(ushort pilot_id) {
 // this maps a pilot_id to an index file offset
 typedef struct {
   int offset;
-  ushort id;
+  uint16_t id;
 } tPilotPicIdOffset;
 tPilotPicIdOffset *Pilot_id_to_offset = NULL;
-ushort *Sorted_Pilot_id_to_offset = NULL;
+uint16_t *Sorted_Pilot_id_to_offset = NULL;
 int PilotPic_count = 0;
 
 // this maps the alphabet to an index file offset (first pilot_name that begins with the letter)
@@ -517,7 +517,7 @@ bool PPic_BuildDatabases(void) {
   // allocate all the memory we're going to need
   // -------------------------------------------
   Pilot_id_to_offset = (tPilotPicIdOffset *)mem_malloc(sizeof(tPilotPicIdOffset) * PilotPic_count);
-  Sorted_Pilot_id_to_offset = (ushort *)mem_malloc(sizeof(ushort) * PilotPic_count);
+  Sorted_Pilot_id_to_offset = (uint16_t *)mem_malloc(sizeof(uint16_t) * PilotPic_count);
   if (!Pilot_id_to_offset) {
     // out of memory!!!
     mprintf((0, "PPIC: Out of memory allocating index database\n"));
@@ -551,8 +551,8 @@ bool PPic_BuildDatabases(void) {
     }
 
     // next read in pilot_id
-    ushort pilot_id;
-    pilot_id = (ushort)cf_ReadShort(file);
+    uint16_t pilot_id;
+    pilot_id = (uint16_t)cf_ReadShort(file);
 
     // next read past the bitmap name
     uint8_t bmp_size;
@@ -668,8 +668,8 @@ int PPic_JumpToPilot(char *pilot_name) {
     name_buffer[name_size] = '\0';
 
     // next read in pilot_id
-    ushort pilot_id;
-    pilot_id = (ushort)cf_ReadShort(file);
+    uint16_t pilot_id;
+    pilot_id = (uint16_t)cf_ReadShort(file);
 
     // next read past the bitmap name
     uint8_t bmp_size;
@@ -707,7 +707,7 @@ int PPic_JumpToPilot(char *pilot_name) {
 //	Purpose:
 //		Returns the file offset of the given pilot id. -1 if not found
 // -------------------------------------
-int PPic_GetOffsetByID(ushort pilot_id) {
+int PPic_GetOffsetByID(uint16_t pilot_id) {
   int index = PPic_GetIndexFromID(pilot_id);
   if (index == -1)
     return -1;

@@ -271,10 +271,10 @@ public:
   char *AddChangeableText(int buflen);
 
   // adds a listbox
-  newuiListBox *AddListBox(short w, short h, short id, ushort flags = 0);
+  newuiListBox *AddListBox(short w, short h, short id, uint16_t flags = 0);
 
   // adds a listbox
-  newuiComboBox *AddComboBox(short id, ushort flags = 0);
+  newuiComboBox *AddComboBox(short id, uint16_t flags = 0);
 
   // adds an edit box
   char *AddEditBox(const char *title, short maxlen = NEWUI_EDIT_BUFLEN, short w = 0, short id = DEFAULT_NEWUID,
@@ -410,7 +410,7 @@ public:
   newuiListBox();
 
   // creates listbox
-  void Create(UIWindow *wnd, short id, short x, short y, short w, short h, ushort flags);
+  void Create(UIWindow *wnd, short id, short x, short y, short w, short h, uint16_t flags);
 
   // functions to add or remove items,
   void AddItem(const char *name);
@@ -480,7 +480,7 @@ public:
   newuiComboBox();
 
   // creates listbox
-  void Create(UIWindow *wnd, short id, short x, short y, ushort flags);
+  void Create(UIWindow *wnd, short id, short x, short y, uint16_t flags);
 
   // functions to add or remove items,
   void AddItem(const char *name);

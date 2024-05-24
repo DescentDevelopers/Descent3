@@ -136,7 +136,7 @@ typedef struct roomUVL {
 
 // an n-sided polygon used as part of a room or portal
 typedef struct face {
-  ushort flags;     // flags for this face (see above)
+  uint16_t flags;     // flags for this face (see above)
   uint8_t num_verts;  // how many vertices in this face
   int8_t portal_num; // which portal this face is part of, or -1 if none
 
@@ -144,7 +144,7 @@ typedef struct face {
   roomUVL *face_uvls;      // index into list of uvls for this face
   vector normal;           // the surface normal of this face
   short tmap;              // texture numbers for this face
-  ushort lmi_handle;       // the lightmap info number for this face
+  uint16_t lmi_handle;       // the lightmap info number for this face
   short special_handle;    // the index into the special_faces array
   uint8_t renderframe;       // what frame this face was last rendered (for lighting)
   uint8_t light_multiple;    // what multiple to times by
@@ -247,7 +247,7 @@ typedef struct room {
   short vis_effects;         // index of first visual effect in this room
   short mirror_face;         // Index of face that this room is to be mirrored by
   uint8_t num_mirror_faces;    // Number of faces in this room that have the same texture as the mirror
-  ushort *mirror_faces_list; // the list of faces in this room that have the same texture as the mirror
+  uint16_t *mirror_faces_list; // the list of faces in this room that have the same texture as the mirror
   float damage;              // The damage per second applied to players (& maybe others) in room
 
   vector path_pnt;      // Point used by the path system

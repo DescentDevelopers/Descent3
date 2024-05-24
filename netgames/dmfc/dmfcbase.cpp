@@ -912,7 +912,7 @@ void DMFCBase::GameInit(int teams) {
 
   MenuBackgroundBMP = DLLbm_AllocBitmap(32, 32, 0);
   if (MenuBackgroundBMP > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(MenuBackgroundBMP, 0);
+    uint16_t *data = DLLbm_data(MenuBackgroundBMP, 0);
     int j;
     for (j = 0; j < 32 * 32; j++)
       data[j] = OPAQUE_FLAG | GR_RGB(0, 0, 0);

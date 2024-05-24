@@ -922,9 +922,9 @@ static bool fvi_zero_rad;
 
 // Unordered list of rooms and terrain cells that this fvi call visited.
 // DAJ changed to ushorts to save memory
-static ushort fvi_rooms_visited[MAX_ROOMS];         // This should be a small number (100 to 1000)
-static ushort fvi_cells_visited[MAX_CELLS_VISITED]; // Use this so that we do not have to use 256x256 elements
-static ushort fvi_cells_obj_visited[MAX_CELLS_VISITED];
+static uint16_t fvi_rooms_visited[MAX_ROOMS];         // This should be a small number (100 to 1000)
+static uint16_t fvi_cells_visited[MAX_CELLS_VISITED]; // Use this so that we do not have to use 256x256 elements
+static uint16_t fvi_cells_obj_visited[MAX_CELLS_VISITED];
 
 // Fvi wall collision stuff
 static float fvi_wall_sphere_rad;

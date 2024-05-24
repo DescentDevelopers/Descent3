@@ -148,7 +148,7 @@ volatile uint8_t DDIO_key_state[DDIO_MAX_KEYS];
 volatile short DDIO_key_down_count[DDIO_MAX_KEYS];
 
 static struct t_key_queue {
-  ushort buffer[KEY_QUEUE_SIZE]; // Keyboard buffer queue
+  uint16_t buffer[KEY_QUEUE_SIZE]; // Keyboard buffer queue
   int tail;
   int head;
 } DDIO_key_queue;
@@ -310,7 +310,7 @@ void ddio_AddKeyToQueue(int key) {
     temp = 0;
 
   if (temp != DDIO_key_queue.head) {
-    DDIO_key_queue.buffer[DDIO_key_queue.tail] = (ushort)keycode;
+    DDIO_key_queue.buffer[DDIO_key_queue.tail] = (uint16_t)keycode;
     DDIO_key_queue.tail = temp;
     //	mprintf((1, "%d ", keycode));
   }

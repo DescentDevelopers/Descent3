@@ -428,7 +428,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   Highlight_bmp = DLLbm_AllocBitmap(32, 32, 0);
   if (Highlight_bmp > BAD_BITMAP_HANDLE) {
-    ushort *data = DLLbm_data(Highlight_bmp, 0);
+    uint16_t *data = DLLbm_data(Highlight_bmp, 0);
     if (!data) {
       // bail on out of here
       *all_ok = 0;
@@ -2297,9 +2297,9 @@ int UnPackBytes(uint8_t *bytes, int count, uint8_t *buffer, int pos) {
   return pos;
 }
 
-int PackWord(ushort word, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&word, sizeof(ushort), buffer, pos); }
+int PackWord(uint16_t word, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&word, sizeof(uint16_t), buffer, pos); }
 
-int UnPackWord(ushort *word, uint8_t *buffer, int pos) { return UnPackBytes((uint8_t *)word, sizeof(ushort), buffer, pos); }
+int UnPackWord(uint16_t *word, uint8_t *buffer, int pos) { return UnPackBytes((uint8_t *)word, sizeof(uint16_t), buffer, pos); }
 
 int PackInt(int data, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&data, sizeof(int), buffer, pos); }
 
@@ -2343,7 +2343,7 @@ void SendGameState(int pnum) {
     MultiAddInt(HasFlag[i], data, &count);
   }
 
-  ushort server_objnums[DLLMAX_TEAMS];
+  uint16_t server_objnums[DLLMAX_TEAMS];
   for (i = 0; i < DLLMAX_TEAMS; i++) {
     if (ChildFlags[i] == OBJECT_HANDLE_NONE) {
       // slot not in use
@@ -2421,7 +2421,7 @@ void ReceiveGameState(uint8_t *data) {
     }
   }
 
-  ushort server_objnums[DLLMAX_TEAMS];
+  uint16_t server_objnums[DLLMAX_TEAMS];
   // unpack attached flag handles
   for (i = 0; i < DLLMAX_TEAMS; i++) {
     server_objnums[i] = MultiGetUshort(data, &count);
@@ -2431,7 +2431,7 @@ void ReceiveGameState(uint8_t *data) {
   for (i = 0; i < DLLMAX_TEAMS; i++) {
     if (server_objnums[i] != 65535) {
       // we should have a real object here
-      ushort our_objnum = DMFCBase->ConvertServerToLocalObjnum(server_objnums[i]);
+      uint16_t our_objnum = DMFCBase->ConvertServerToLocalObjnum(server_objnums[i]);
 
       if (our_objnum == -1) {
         // fatal error

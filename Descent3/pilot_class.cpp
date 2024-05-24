@@ -666,7 +666,7 @@ void pilot::get_ship(char *ship) {
   }
 }
 
-void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const ushort *ppic, const char *audio3, const char *audio4) {
+void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const uint16_t *ppic, const char *audio3, const char *audio4) {
   if (logo) {
     if (ship_logo) {
       mem_free(ship_logo);
@@ -747,7 +747,7 @@ void pilot::set_multiplayer_data(const char *logo, const char *audio1, const cha
     write_pending = true;
   }
 }
-void pilot::get_multiplayer_data(char *logo, char *audio1, char *audio2, ushort *ppic, char *audio3, char *audio4) {
+void pilot::get_multiplayer_data(char *logo, char *audio1, char *audio2, uint16_t *ppic, char *audio3, char *audio4) {
   if (logo) {
     if (ship_logo) {
       strcpy(logo, ship_logo);
@@ -848,7 +848,7 @@ void pilot::get_guidebot_name(char *name) {
   }
 }
 
-void pilot::set_hud_data(uint8_t *hmode, ushort *hstat, ushort *hgraphicalstat, int *gw_w, int *gw_h) {
+void pilot::set_hud_data(uint8_t *hmode, uint16_t *hstat, uint16_t *hgraphicalstat, int *gw_w, int *gw_h) {
   if (hmode) {
     // should do checking here
     switch (*hmode) {
@@ -882,7 +882,7 @@ void pilot::set_hud_data(uint8_t *hmode, ushort *hstat, ushort *hgraphicalstat, 
     write_pending = true;
   }
 }
-void pilot::get_hud_data(uint8_t *hmode, ushort *hstat, ushort *hgraphicalstat, int *gw_w, int *gw_h) {
+void pilot::get_hud_data(uint8_t *hmode, uint16_t *hstat, uint16_t *hgraphicalstat, int *gw_w, int *gw_h) {
   if (hmode) {
     *hmode = hud_mode;
   }
@@ -1084,7 +1084,7 @@ void pilot::write_custom_multiplayer_data(CFILE *file) {
 
 void pilot::read_custom_multiplayer_data(CFILE *file, bool skip) {
   char buffer[PAGENAME_LEN];
-  ushort temp;
+  uint16_t temp;
 
   cf_ReadString(buffer, PAGENAME_LEN, file);
   if (!skip) {
@@ -1214,7 +1214,7 @@ void pilot::write_hud_data(CFILE *file) {
 
 void pilot::read_hud_data(CFILE *file, bool skip) {
   uint8_t temp_b;
-  ushort temp_s;
+  uint16_t temp_s;
   int temp_i;
 
   temp_b = cf_ReadByte(file);

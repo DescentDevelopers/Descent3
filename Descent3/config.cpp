@@ -566,7 +566,7 @@ static void config_gamma() {
   if (gamma_bitmap <= 0) {
     gamma_bitmap = 0;
   } else {
-    ushort *dest_data = (ushort *)bm_data(gamma_bitmap, 0);
+    uint16_t *dest_data = (uint16_t *)bm_data(gamma_bitmap, 0);
     int addval = 0;
     int i, t;
 
@@ -1082,7 +1082,7 @@ struct hud_menu {
   // sets the menu up.
   newuiSheet *setup(newuiMenu *menu) {
     int y, sel;
-    ushort stat, grstat;
+    uint16_t stat, grstat;
 
     sheet = menu->AddOption(IDV_HCONFIG, TXT_OPTHUD, NEWUIMENU_MEDIUM);
     parent_menu = menu;
@@ -1121,8 +1121,8 @@ struct hud_menu {
   // retreive values from property sheet here.
   void finish() {
     int sel;
-    ushort hud_new_stat = STAT_MESSAGES + STAT_CUSTOM;
-    ushort hud_new_grstat = 0;
+    uint16_t hud_new_stat = STAT_MESSAGES + STAT_CUSTOM;
+    uint16_t hud_new_grstat = 0;
 
     sel = *ship_status;
     if (sel == 1)

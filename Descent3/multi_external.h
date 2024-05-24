@@ -185,7 +185,7 @@ typedef struct {
   uint32_t file_xfer_id;        // File id that we are sending
   uint32_t file_xfer_who;       // Who the file is for
   CFILE *file_xfer_cfile;           // File handle for src/target file
-  ushort position_counter;          // for making sure we don't get position packets out of order
+  uint16_t position_counter;          // for making sure we don't get position packets out of order
   char ship_logo[_MAX_PATH];
   char voice_taunt1[_MAX_PATH];
   char voice_taunt2[_MAX_PATH];
@@ -198,7 +198,7 @@ typedef struct {
   DWORD dpidPlayer; // directplay ID of player created
   float ping_time;
   float last_ping_time;
-  ushort pilot_pic_id;
+  uint16_t pilot_pic_id;
   float percent_loss;
   uint8_t digest[16];
 } netplayer;
@@ -211,9 +211,9 @@ typedef struct {
   char mission[MSN_NAMELEN];
   char mission_name[MISSION_NAME_LEN];
   char scriptname[NETGAME_SCRIPT_LEN];
-  ushort level_num;
-  ushort curr_num_players;
-  ushort max_num_players;
+  uint16_t level_num;
+  uint16_t curr_num_players;
+  uint16_t max_num_players;
   float server_response_time;
   uint32_t flags;
   float last_update;
@@ -244,7 +244,7 @@ typedef struct {
 #define NF_COOP 0x40000             // This game is a cooperative game
 
 typedef struct {
-  ushort server_version; // This is so client and server code matches
+  uint16_t server_version; // This is so client and server code matches
   char name[NETGAME_NAME_LEN];
   char mission[MSN_NAMELEN];
   char mission_name[MISSION_NAME_LEN];
@@ -287,9 +287,9 @@ inline void MultiAddShort(short element, uint8_t *data, int *count) {
   *count += sizeof(short);
 }
 
-inline void MultiAddUshort(ushort element, uint8_t *data, int *count) {
-  *(ushort *)(data + *count) = INTEL_SHORT(element);
-  *count += sizeof(ushort);
+inline void MultiAddUshort(uint16_t element, uint8_t *data, int *count) {
+  *(uint16_t *)(data + *count) = INTEL_SHORT(element);
+  *count += sizeof(uint16_t);
 }
 
 inline void MultiAddInt(int element, uint8_t *data, int *count) {
@@ -340,8 +340,8 @@ inline short MultiGetShort(uint8_t *data, int *count) {
   return INTEL_SHORT(element);
 }
 
-inline ushort MultiGetUshort(uint8_t *data, int *count) {
-  ushort element = (*(ushort *)(data + *count));
+inline uint16_t MultiGetUshort(uint8_t *data, int *count) {
+  uint16_t element = (*(uint16_t *)(data + *count));
   *count += sizeof(short);
   return INTEL_SHORT(element);
 }

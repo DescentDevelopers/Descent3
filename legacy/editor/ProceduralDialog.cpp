@@ -200,7 +200,7 @@ void CProceduralDialog::UpdateDialog ()
 
 	Desktop_surf->attach_to_window((unsigned)m_hWnd);
 
-	ushort *data=bm_data(m_palette_bitmap,0);
+	uint16_t *data=bm_data(m_palette_bitmap,0);
 
 	for (i=0;i<h;i++)
 	{

@@ -69,12 +69,12 @@
 uint8_t perm[TABSIZE];
 static float Noise_table[TABSIZE * 3];
 dynamic_proc_element DynamicProcElements[MAX_PROC_ELEMENTS];
-ushort DefaultProcPalette[256];
+uint16_t DefaultProcPalette[256];
 int Num_proc_elements = 0;
 static short Proc_free_list[MAX_PROC_ELEMENTS];
-ushort ProcFadeTable[32768];
+uint16_t ProcFadeTable[32768];
 #define NUM_WATER_SHADES 64
-ushort WaterProcTableHi[NUM_WATER_SHADES][256];
+uint16_t WaterProcTableHi[NUM_WATER_SHADES][256];
 uint8_t WaterProcTableLo[NUM_WATER_SHADES][256];
 const char *ProcNames[] = {"None",     "Line Lightning", "Sphere lightning", "Straight", "Rising Embers", "Random Embers",
                      "Spinners", "Roamers",        "Fountain",         "Cone",     "Fall Right",    "Fall Left",
@@ -84,7 +84,7 @@ static uint8_t *ProcDestData;
 int pholdrand = 1;
 static inline int prand() { return (((pholdrand = pholdrand * 214013L + 2531011L) >> 16) & 0x7fff); }
 // Given an array of r,g,b values, generates a 16bit palette table for those colors
-void GeneratePaletteForProcedural(uint8_t *r, uint8_t *g, uint8_t *b, ushort *pal) {
+void GeneratePaletteForProcedural(uint8_t *r, uint8_t *g, uint8_t *b, uint16_t *pal) {
   int i;
   float fr, fg, fb;
   for (i = 0; i < 256; i++) {
@@ -935,8 +935,8 @@ void DrawWaterNoLight(int handle) {
   int offset = 0;
   proc_struct *procedural = GameTextures[handle].procedural;
   int dest_bitmap = procedural->procedural_bitmap;
-  ushort *dest_data = (ushort *)bm_data(dest_bitmap, 0);
-  ushort *src_data = (ushort *)bm_data(GameTextures[handle].bm_handle, 0);
+  uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
+  uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
   short *ptr = (short *)procedural->proc1;
   for (y = 0; y < PROC_SIZE; y++) {
     for (x = 0; x < PROC_SIZE; x++, offset++) {
@@ -962,12 +962,12 @@ void DrawWaterNoLight(int handle) {
 void DrawWaterWithLight(int handle, int lightval) {
   int dx, dy;
   int x, y;
-  ushort c;
+  uint16_t c;
   int offset = 0;
   proc_struct *procedural = GameTextures[handle].procedural;
   int dest_bitmap = procedural->procedural_bitmap;
-  ushort *dest_data = (ushort *)bm_data(dest_bitmap, 0);
-  ushort *src_data = (ushort *)bm_data(GameTextures[handle].bm_handle, 0);
+  uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
+  uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
   short *ptr = (short *)procedural->proc1;
   for (y = 0; y < PROC_SIZE; y++) {
     int ychange, ychange2;
@@ -1136,11 +1136,11 @@ void AllocateMemoryForWaterProcedural(int handle) {
     mem_free(procedural->proc1);
   if (procedural->proc2)
     mem_free(procedural->proc2);
-  GameTextures[handle].procedural->proc1 = (ushort *)mem_malloc(w * h * 2);
+  GameTextures[handle].procedural->proc1 = (uint16_t *)mem_malloc(w * h * 2);
   ASSERT(GameTextures[handle].procedural->proc1);
   memset(GameTextures[handle].procedural->proc1, 0, w * h * 2);
 
-  GameTextures[handle].procedural->proc2 = (ushort *)mem_malloc(w * h * 2);
+  GameTextures[handle].procedural->proc2 = (uint16_t *)mem_malloc(w * h * 2);
   ASSERT(GameTextures[handle].procedural->proc2);
   memset(GameTextures[handle].procedural->proc2, 0, w * h * 2);
   procedural->memory_type = PROC_MEMORY_TYPE_WATER;
@@ -1173,7 +1173,7 @@ void EvaluateWaterProcedural(int handle) {
   }
   if (EasterEgg) {
     if (Easter_egg_handle != -1) {
-      ushort *src_data = bm_data(Easter_egg_handle, 0);
+      uint16_t *src_data = bm_data(Easter_egg_handle, 0);
       short *dest_data = (short *)GameTextures[handle].procedural->proc1;
       int sw = bm_w(Easter_egg_handle, 0);
       int sh = bm_w(Easter_egg_handle, 0);
@@ -1334,8 +1334,8 @@ void EvaluateFireProcedural(int handle) {
   BlendProcTexture(handle);
   ProcDestData = (uint8_t *)procedural->proc2;
   int total = PROC_SIZE * PROC_SIZE;
-  ushort *data = bm_data(dest_bitmap, 0);
-  ushort *pal = procedural->palette;
+  uint16_t *data = bm_data(dest_bitmap, 0);
+  uint16_t *pal = procedural->palette;
   for (i = 0; i < total; i++, data++, ProcDestData++) {
     *data = pal[*ProcDestData];
   }

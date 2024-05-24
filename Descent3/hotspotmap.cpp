@@ -119,7 +119,7 @@ static int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t
 static void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap);
 
 // just like the old bm_tga_translate_pixel function, but it stores the alpha in the alpha_value parameter
-ushort menutga_translate_pixel(int pixel, char *alpha_value) {
+uint16_t menutga_translate_pixel(int pixel, char *alpha_value) {
   int red = ((pixel >> 16) & 0xFF);
   int green = ((pixel >> 8) & 0xFF);
   int blue = ((pixel) & 0xFF);
@@ -130,7 +130,7 @@ ushort menutga_translate_pixel(int pixel, char *alpha_value) {
   int newred = red >> 3;
   int newgreen = green >> 3;
   int newblue = blue >> 3;
-  ushort newpix = OPAQUE_FLAG | (newred << 10) | (newgreen << 5) | (newblue);
+  uint16_t newpix = OPAQUE_FLAG | (newred << 10) | (newgreen << 5) | (newblue);
   if (alpha == 0)
     newpix = NEW_TRANSPARENT_COLOR;
 
@@ -511,7 +511,7 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
   uint8_t upside_down = 0;
-  ushort width, height;
+  uint16_t width, height;
   uint32_t pixel;
   int i, t, n;
   char alphavalue;
@@ -576,7 +576,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
     for (t = 0; t < width; t++) {
       pixel = cf_ReadInt(infile);
 
-      ushort newpix = menutga_translate_pixel(pixel, &alphavalue);
+      uint16_t newpix = menutga_translate_pixel(pixel, &alphavalue);
 
       if (upside_down) {
         GameBitmaps[n].data16[((height - 1) - i) * width + t] = newpix;

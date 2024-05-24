@@ -600,7 +600,7 @@ vector editor_player_pos;
 matrix editor_player_orient;
 int editor_player_roomnum;
 
-ushort *Save_sky_data=NULL;
+uint16_t *Save_sky_data=NULL;
 
 void GameToEditor(bool set_viewer_from_player)
 {
@@ -715,7 +715,7 @@ void GameToEditor(bool set_viewer_from_player)
 		{
 			// It was changed during rendering
 			bm_ChangeSize (dome_bm,256,256);
-			ushort *dest_data=(ushort *)bm_data(dome_bm,0);
+			uint16_t *dest_data=(uint16_t *)bm_data(dome_bm,0);
 			memcpy (dest_data,Save_sky_data,256*256*2);
 		}
 
@@ -756,10 +756,10 @@ void EditorToGame()
 	int dome_bm=GetTextureBitmap (Terrain_sky.dome_texture,0);
 	if (bm_w(dome_bm,0)==256)
 	{
-		Save_sky_data=(ushort *)mem_malloc (256*256*2);
+		Save_sky_data=(uint16_t *)mem_malloc (256*256*2);
 		ASSERT (Save_sky_data);
 	
-		ushort *src_data=bm_data(dome_bm,0);
+		uint16_t *src_data=bm_data(dome_bm,0);
 		memcpy (Save_sky_data,src_data,256*256*2);
 	}
 

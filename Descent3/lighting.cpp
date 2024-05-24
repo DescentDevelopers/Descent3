@@ -64,7 +64,7 @@ typedef struct {
 
 float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
-static ushort *Dynamic_lightmap_memory = NULL;
+static uint16_t *Dynamic_lightmap_memory = NULL;
 static float Light_component_scalar[32];
 float Ubyte_to_float[256];
 
@@ -72,12 +72,12 @@ static uint8_t Lmi_spoken_for[MAX_LIGHTMAP_INFOS / 8];
 
 static dynamic_lightmap *Dynamic_lightmaps;
 static dynamic_face Dynamic_face_list[MAX_DYNAMIC_FACES];
-static ushort Specular_face_list[MAX_DYNAMIC_FACES];
+static uint16_t Specular_face_list[MAX_DYNAMIC_FACES];
 static volume_object Dynamic_volume_object_list[MAX_VOLUME_OBJECTS];
 static dynamic_cell Dynamic_cell_list[MAX_DYNAMIC_CELLS];
 static int Specular_maps[NUM_DYNAMIC_CLASSES];
 
-static ushort Edges_to_blend[MAX_DYNAMIC_LIGHTMAPS];
+static uint16_t Edges_to_blend[MAX_DYNAMIC_LIGHTMAPS];
 static int Num_edges_to_blend = 0;
 
 static int Num_specular_faces = 0;
@@ -139,7 +139,7 @@ void InitDynamicLighting() {
     DYNAMIC_LIGHTMAP_MEMORY = 500000;
   }
 
-  Dynamic_lightmap_memory = (ushort *)mem_malloc(DYNAMIC_LIGHTMAP_MEMORY);
+  Dynamic_lightmap_memory = (uint16_t *)mem_malloc(DYNAMIC_LIGHTMAP_MEMORY);
 
   // Init our records list
   Dynamic_lightmaps = (dynamic_lightmap *)mem_malloc(sizeof(dynamic_lightmap) * MAX_DYNAMIC_LIGHTMAPS);
@@ -220,8 +220,8 @@ void BlendLightingEdges(lightmap_info *lmi_ptr) {
   int h = lmi_h(lmi_handle);
   int w = lmi_w(lmi_handle);
   int lm_handle = lmi_ptr->lm_handle;
-  ushort *dest_data = (ushort *)lm_data(lm_handle);
-  ushort *src_data = dest_data;
+  uint16_t *dest_data = (uint16_t *)lm_data(lm_handle);
+  uint16_t *src_data = dest_data;
   int dest_x = lmi_ptr->x1 - 1;
   int dest_y = lmi_ptr->y1 - 1;
   int i;
@@ -263,12 +263,12 @@ void BlendLightingEdges(lightmap_info *lmi_ptr) {
 void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, float red_scale, float green_scale,
                                  float blue_scale, vector *light_direction, float dot_range) {
   int i, lm_handle, t;
-  ushort *dest_data;
+  uint16_t *dest_data;
   vector rad;
   room *rp = &Rooms[roomnum];
   vector Light_min_xyz;
   vector Light_max_xyz;
-  ushort lmilist[MAX_DYNAMIC_FACES];
+  uint16_t lmilist[MAX_DYNAMIC_FACES];
   int num_spoken_for = 0;
 
   int red_limit = 31;
@@ -391,7 +391,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
     if (lmi_ptr->dynamic != BAD_LM_INDEX) // already lit, so just adjust, not start over
     {
       lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-      dest_data = (ushort *)lm_data(lm_handle);
+      dest_data = (uint16_t *)lm_data(lm_handle);
 
       if (start_x + lmi_ptr->x1 < GameLightmaps[lm_handle].cx1)
         GameLightmaps[lm_handle].cx1 = start_x + lmi_ptr->x1;
@@ -421,9 +421,9 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
       }
 
       // Now copy our source data to our dest data so we have a base to work with
-      ushort *src_data;
+      uint16_t *src_data;
 
-      src_data = (ushort *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
+      src_data = (uint16_t *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
       dest_data = Dynamic_lightmaps[dynamic_handle].mem_ptr;
 
       for (int y = 0, index = 0; y < yres; y++) {
@@ -486,7 +486,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
       for (int x = 0; x < width; x++, element_vec += (facematrix.rvec * lmi_ptr->xspacing)) {
         int lightmap_texel_num = texel_num + x;
 
-        ushort lightmap_texel = dest_data[lightmap_texel_num];
+        uint16_t lightmap_texel = dest_data[lightmap_texel_num];
 
         if (!(lightmap_texel & OPAQUE_FLAG))
           continue;
@@ -607,8 +607,8 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
   int i, t;
   int subnum = sm - pm->submodel;
   int lm_handle;
-  ushort *dest_data;
-  ushort lmilist[MAX_DYNAMIC_FACES];
+  uint16_t *dest_data;
+  uint16_t lmilist[MAX_DYNAMIC_FACES];
   int num_spoken_for = 0;
 
   int red_limit = 31;
@@ -738,7 +738,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
     if (lmi_ptr->dynamic != BAD_LM_INDEX) // already lit, so just adjust, not start over
     {
       lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-      dest_data = (ushort *)lm_data(lm_handle);
+      dest_data = (uint16_t *)lm_data(lm_handle);
 
       if (start_x + lmi_ptr->x1 < GameLightmaps[lm_handle].cx1)
         GameLightmaps[lm_handle].cx1 = start_x + lmi_ptr->x1;
@@ -770,9 +770,9 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
       }
 
       // Now copy our source data to our dest data so we have a base to work with
-      ushort *src_data;
+      uint16_t *src_data;
 
-      src_data = (ushort *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
+      src_data = (uint16_t *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
       dest_data = Dynamic_lightmaps[dynamic_handle].mem_ptr;
 
       for (int y = 0, index = 0; y < yres; y++) {
@@ -835,7 +835,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
       for (int x = 0; x < width; x++, element_vec += (facematrix.rvec * lmi_ptr->xspacing)) {
         int lightmap_texel_num = texel_num + x;
 
-        ushort lightmap_texel = dest_data[lightmap_texel_num];
+        uint16_t lightmap_texel = dest_data[lightmap_texel_num];
 
         if (!(lightmap_texel & OPAQUE_FLAG))
           continue;
@@ -1056,11 +1056,11 @@ void ApplyLightingToObjects(vector *pos, int roomnum, float light_dist, float re
 void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_scale, float green_scale,
                           float blue_scale, vector *light_direction, float dot_range) {
   fvi_face_room_list facelist[MAX_DYNAMIC_FACES];
-  ushort lmilist[MAX_DYNAMIC_FACES];
+  uint16_t lmilist[MAX_DYNAMIC_FACES];
   int num_spoken_for = 0;
 
   int num_faces, i, t, lm_handle;
-  ushort *dest_data;
+  uint16_t *dest_data;
   int faces_misreported = 0;
 
   if (Dedicated_server)
@@ -1196,7 +1196,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
     if (lmi_ptr->dynamic != BAD_LM_INDEX) // already lit, so just adjust, not start over
     {
       lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-      dest_data = (ushort *)lm_data(lm_handle);
+      dest_data = (uint16_t *)lm_data(lm_handle);
 
       if (start_x + lmi_ptr->x1 < GameLightmaps[lm_handle].cx1)
         GameLightmaps[lm_handle].cx1 = start_x + lmi_ptr->x1;
@@ -1226,9 +1226,9 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
       }
 
       // Now copy our source data to our dest data so we have a base to work with
-      ushort *src_data;
+      uint16_t *src_data;
 
-      src_data = (ushort *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
+      src_data = (uint16_t *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
       dest_data = Dynamic_lightmaps[dynamic_handle].mem_ptr;
 
       for (int y = 0, index = 0; y < yres; y++) {
@@ -1291,7 +1291,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
       for (int x = 0; x < width; x++, element_vec += (facematrix.rvec * lmi_ptr->xspacing)) {
         int lightmap_texel_num = texel_num + x;
 
-        ushort lightmap_texel = dest_data[lightmap_texel_num];
+        uint16_t lightmap_texel = dest_data[lightmap_texel_num];
 
         if (!(lightmap_texel & OPAQUE_FLAG))
           continue;
@@ -1409,8 +1409,8 @@ void ClearDynamicLightmaps() {
     int lm_handle = LightmapInfo[lmi_handle].lm_handle;
     lightmap_info *lmi_ptr = &LightmapInfo[lmi_handle];
 
-    ushort *src_data = Dynamic_lightmaps[dynamic_handle].mem_ptr;
-    ushort *dest_data = (ushort *)lm_data(lm_handle);
+    uint16_t *src_data = Dynamic_lightmaps[dynamic_handle].mem_ptr;
+    uint16_t *dest_data = (uint16_t *)lm_data(lm_handle);
 
     int lmw = lm_w(lm_handle);
 
@@ -1446,8 +1446,8 @@ void ClearDynamicLightmaps() {
     int whichmap = ((seg_z / 128) * 2) + (seg_x / 128);
     whichmap = TerrainLightmaps[whichmap];
 
-    ushort color = OPAQUE_FLAG | GR_RGB16(Terrain_seg[cellnum].r, Terrain_seg[cellnum].g, Terrain_seg[cellnum].b);
-    ushort *data = lm_data(whichmap);
+    uint16_t color = OPAQUE_FLAG | GR_RGB16(Terrain_seg[cellnum].r, Terrain_seg[cellnum].g, Terrain_seg[cellnum].b);
+    uint16_t *data = lm_data(whichmap);
 
     data[subz * 128 + subx] = color;
 
@@ -1594,8 +1594,8 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
         tseg->b = std::min<float>(blue_limit, b + (scalar * blue_scale * 255));
     }
 
-    ushort color = OPAQUE_FLAG | GR_RGB16(tseg->r, tseg->g, tseg->b);
-    ushort *data = lm_data(whichmap);
+    uint16_t color = OPAQUE_FLAG | GR_RGB16(tseg->r, tseg->g, tseg->b);
+    uint16_t *data = lm_data(whichmap);
 
     ASSERT(data);
 
@@ -1658,8 +1658,8 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
         int cl=GetLightmapClass (square_res);
         int lm_handle;
 
-        ushort *dest_data;
-        ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+        uint16_t *dest_data;
+        uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 
         if (lmi_ptr->spec_map==-1)
         {
@@ -1677,7 +1677,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                 lm_handle=LightmapInfo[dynamic_lmi_handle].lm_handle;
 
                 lmi_ptr->spec_map=lm_handle;
-                dest_data=(ushort *)lm_data(lm_handle);
+                dest_data=(uint16_t *)lm_data(lm_handle);
 
                 memset (dest_data,0,xres*yres*2);
 
@@ -1716,7 +1716,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                 {
                         int lightmap_texel_num=texel_num+x;
 
-                        ushort lightmap_texel=src_data[lightmap_texel_num];
+                        uint16_t lightmap_texel=src_data[lightmap_texel_num];
 
                         if (! (lightmap_texel & OPAQUE_FLAG))
                                 continue;
@@ -1761,7 +1761,7 @@ incident_norm=element_vec-SpecialFaces[fp->special_handle].spec_instance[i].brig
                                         int index=((float)(MAX_SPECULAR_INCREMENTS-1)*dotp);
                                         float val=Specular_tables[material_type][index];
 
-                                        ushort color=SpecialFaces[fp->special_handle].spec_instance[i].bright_color;
+                                        uint16_t color=SpecialFaces[fp->special_handle].spec_instance[i].bright_color;
                                         int r=color >> 10 & 0x1f;
                                         int g=color >> 5 & 0x1f;
                                         int b=color & 0x1f;
@@ -1821,8 +1821,8 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
         int cl=GetLightmapClass (square_res);
         int lm_handle;
 
-        ushort *dest_data;
-        ushort *src_data=(ushort *)lm_data(lmi_ptr->lm_handle);
+        uint16_t *dest_data;
+        uint16_t *src_data=(uint16_t *)lm_data(lmi_ptr->lm_handle);
 
         if (lmi_ptr->spec_map==-1)
         {
@@ -1840,7 +1840,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                 lm_handle=LightmapInfo[dynamic_lmi_handle].lm_handle;
 
                 lmi_ptr->spec_map=lm_handle;
-                dest_data=(ushort *)lm_data(lm_handle);
+                dest_data=(uint16_t *)lm_data(lm_handle);
 
                 memset (dest_data,0,xres*yres*2);
 
@@ -1850,7 +1850,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
         else
         {
                 lm_handle=lmi_ptr->spec_map;
-                dest_data=(ushort *)lm_data(lm_handle);
+                dest_data=(uint16_t *)lm_data(lm_handle);
         }
 
 
@@ -1920,7 +1920,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                                 norm.z=Normal_table[SpecialFaces[fp->special_handle].normal_map[lightmap_texel_num*3+2]];
                         }
 
-                        ushort lightmap_texel=src_data[lightmap_texel_num];
+                        uint16_t lightmap_texel=src_data[lightmap_texel_num];
 
                         if (! (lightmap_texel & OPAQUE_FLAG))
                                 continue;
@@ -1967,7 +1967,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                                         int index=((float)(MAX_SPECULAR_INCREMENTS-1)*dotp);
                                         float val=Specular_tables[material_type][index];
 
-                                        ushort color=SpecialFaces[fp->special_handle].spec_instance[i].bright_color;
+                                        uint16_t color=SpecialFaces[fp->special_handle].spec_instance[i].bright_color;
                                         int r=color >> 10 & 0x1f;
                                         int g=color >> 5 & 0x1f;
                                         int b=color & 0x1f;
@@ -2000,7 +2000,7 @@ void DestroyLight(int roomnum, int facenum) {
   float r, g, b;
   fvi_face_room_list facelist[MAX_DYNAMIC_FACES];
   int num_faces, i;
-  ushort lmilist[MAX_DYNAMIC_FACES];
+  uint16_t lmilist[MAX_DYNAMIC_FACES];
   int num_spoken_for = 0;
 
   if (Dedicated_server)
@@ -2136,9 +2136,9 @@ void DestroyLight(int roomnum, int facenum) {
     ASSERT(height > 0);
 
     // Now copy our source data to our dest data so we have a base to work with
-    ushort *dest_data;
+    uint16_t *dest_data;
 
-    dest_data = (ushort *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
+    dest_data = (uint16_t *)lm_data(LightmapInfo[fp->lmi_handle].lm_handle);
     int lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
 
     if (!(GameLightmaps[lm_handle].flags & LF_LIMITS)) {
@@ -2182,7 +2182,7 @@ void DestroyLight(int roomnum, int facenum) {
       for (int x = 0; x < width; x++, element_vec += (facematrix.rvec * lmi_ptr->xspacing)) {
         int lightmap_texel_num = texel_num + x;
 
-        ushort lightmap_texel = dest_data[lightmap_texel_num];
+        uint16_t lightmap_texel = dest_data[lightmap_texel_num];
 
         if (!(lightmap_texel & OPAQUE_FLAG))
           continue;

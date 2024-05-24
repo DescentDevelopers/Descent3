@@ -1253,7 +1253,7 @@ void SGSObjAI(CFILE *fp, const ai_frame *ai) {
 //@@// write out thread data if necessary
 //@@	if (script->thread) {
 //@@		const vector *mem = D3XGetThreadMem(script->thread->mem_handle);
-//@@		ushort mem_size = script->thread->prog->map[script->thread->prog_idx].mem;
+//@@		uint16_t mem_size = script->thread->prog->map[script->thread->prog_idx].mem;
 //@@
 //@@		gs_WriteShort(fp, mem_size);
 //@@		if (mem) {

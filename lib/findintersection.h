@@ -373,8 +373,8 @@ extern int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdi
 
 // Face/Room list for some fvi call(s)
 typedef struct fvi_face_room_list {
-  ushort face_index;
-  ushort room_index;
+  uint16_t face_index;
+  uint16_t room_index;
 } fvi_face_room_list;
 
 #define MAX_RECORDED_FACES 200

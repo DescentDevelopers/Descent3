@@ -163,7 +163,7 @@ char *Script_evt_names[MAX_SCREVTS] = {
 	"EVT_CLIENT_DESTROY",
 };
 
-ushort Script_evt_ids[MAX_SCREVTS] = {
+uint16_t Script_evt_ids[MAX_SCREVTS] = {
 	EVT_AI_FRAME,
 	EVT_AI_NOTIFY,
 	EVT_AI_INIT,
@@ -324,7 +324,7 @@ void SaveScriptCode(const char *filename, tD3XProgram *program)
 //////////////////////////////////////////////////////////////////////////////
 //	LIST FUNCTIONS
 
-inline int AddScriptToList(char *name, ushort type, bool custom)
+inline int AddScriptToList(char *name, uint16_t type, bool custom)
 {
 	int slot = FindFreeScriptSlot();
 	strcpy(Script_names[slot].name, name);
@@ -386,7 +386,7 @@ bool GenerateScriptWizardInfo(char *script, bool custom)
 	int i, index, line;
 	int state;								// 0 = nothing, 1 = typeword, 2 = scriptword
 	int slot, strsize;
-	ushort type=0xffff;
+	uint16_t type=0xffff;
 
 	inword = false;
 	index = 0;

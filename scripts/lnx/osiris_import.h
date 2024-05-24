@@ -356,8 +356,8 @@ OSIRISEXTERN Scrpt_CreateTimer_fp Scrpt_CreateTimer;
 typedef void (*MSafe_DoPowerup_fp)(msafe_struct *mstruct);
 OSIRISEXTERN MSafe_DoPowerup_fp MSafe_DoPowerup;
 
-// int Obj_Create()(uint8_t type,ushort id,int roomnum,vector *pos,const matrix *orient,int parent_handle)
-typedef int (*Obj_Create_fp)(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient = NULL,
+// int Obj_Create()(uint8_t type,uint16_t id,int roomnum,vector *pos,const matrix *orient,int parent_handle)
+typedef int (*Obj_Create_fp)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
                              int parent_handle = OBJECT_HANDLE_NONE, vector *initial_velocity = NULL);
 OSIRISEXTERN Obj_Create_fp Obj_Create;
 
@@ -506,7 +506,7 @@ OSIRISEXTERN OMMS_Find_fp OMMS_Find;
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, ushort *reference_count,
+typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
                                 uint8_t *has_free_been_called);
 OSIRISEXTERN OMMS_GetInfo_fp OMMS_GetInfo;
 

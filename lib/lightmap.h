@@ -32,9 +32,9 @@
 
 typedef struct {
   uint8_t width, height; // Width and height in pixels
-  ushort *data;        // 16bit data
+  uint16_t *data;        // 16bit data
 
-  ushort used;
+  uint16_t used;
   uint8_t flags;
   short cache_slot;         // for the renderers use
   uint8_t square_res;         // for renderers use
@@ -62,6 +62,6 @@ int lm_w(int handle);
 int lm_h(int handle);
 
 // returns a lightmaps data else NULL if something is wrong
-ushort *lm_data(int handle);
+uint16_t *lm_data(int handle);
 
 #endif

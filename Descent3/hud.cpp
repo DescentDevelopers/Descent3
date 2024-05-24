@@ -683,7 +683,7 @@ void SetHUDMode(tHUDMode mode) {
 //	do cockpit specific thing.
 redo_hud_switch:
   switch (mode) {
-    ushort cp_hud_stat, cp_hud_graphical_stat;
+    uint16_t cp_hud_stat, cp_hud_graphical_stat;
 
   case HUD_LETTERBOX:
     //	our objective here is to display a letterbox screen for the cockpit.
@@ -780,7 +780,7 @@ void ToggleHUDMode() {
 }
 
 // sets the hud item state(what's visible, how it's drawn, etc)
-void SetHUDState(ushort hud_mask, ushort hud_gr_mask) {
+void SetHUDState(uint16_t hud_mask, uint16_t hud_gr_mask) {
   int i;
 
   Hud_stat_mask = (hud_mask | hud_gr_mask);
@@ -797,7 +797,7 @@ void SetHUDState(ushort hud_mask, ushort hud_gr_mask) {
 //	initializes items based off their type (information, etc.)
 void InitHUDItem(int new_item, tHUDItem *item) {
   ASSERT(new_item < MAX_HUD_ITEMS);
-  ushort stat = 0x0000;
+  uint16_t stat = 0x0000;
 
   item->id = new_item;
 
@@ -976,9 +976,9 @@ void SGSHudState(CFILE *fp) {
 
 bool LGSHudState(CFILE *fp) {
   //	restore hud items
-  ushort stat_mask = 0;
+  uint16_t stat_mask = 0;
 
-  while ((stat_mask = (ushort)cf_ReadShort(fp)) != 0) {
+  while ((stat_mask = (uint16_t)cf_ReadShort(fp)) != 0) {
     tHUDItem huditem;
     uint8_t item_type = (uint8_t)cf_ReadByte(fp);
 
@@ -994,7 +994,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.x = cf_ReadShort(fp);
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
-      huditem.flags = (ushort)cf_ReadShort(fp);
+      huditem.flags = (uint16_t)cf_ReadShort(fp);
       huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.buffer_size = (int)cf_ReadShort(fp);
@@ -1012,7 +1012,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.x = cf_ReadShort(fp);
       huditem.y = cf_ReadShort(fp);
       huditem.color = (ddgr_color)cf_ReadInt(fp);
-      huditem.flags = (ushort)cf_ReadShort(fp);
+      huditem.flags = (uint16_t)cf_ReadShort(fp);
       huditem.alpha = (uint8_t)cf_ReadByte(fp);
 
       huditem.data.timer_handle = cf_ReadInt(fp);
@@ -1295,7 +1295,7 @@ void RenderAuxHUDFrame() {
     int cur_game_win_x = Game_window_x;
     int cur_game_win_y = Game_window_y;
     int i;
-    ushort stat_mask = Hud_stat_mask;
+    uint16_t stat_mask = Hud_stat_mask;
 
     // emulating hud that takes up entire screen
     Game_window_w = Max_window_w;
@@ -1812,8 +1812,8 @@ const int Ret_sec_wb[MAX_WB_GUNPOINTS + 1] = {
 
 #define RETMASK_FLAG_AUXPRIMARY0 (1 << 8) // matches 9th bit (bit 8) of reticle mask
 
-static ushort Ret_prim_mask = 0;
-static ushort Ret_sec_mask = 0;
+static uint16_t Ret_prim_mask = 0;
+static uint16_t Ret_sec_mask = 0;
 
 //	Initializes Reticle on Hud.  Usually called when weapon changes.
 void InitReticle(int primary_slots, int secondary_slots) {
@@ -1916,7 +1916,7 @@ void ResetReticle() {
 }
 
 //	creates the reticle display bitmap mask to be used by the reticle renderer.
-static inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
+static inline uint16_t reticle_mask(object *pobj, otype_wb_info *static_wb, int wb_index) {
   poly_model *pm = &Poly_models[pobj->rtype.pobj_info.model_num];
   dynamic_wb_info *dyn_wb = &pobj->dynamic_wb[wb_index];
   unsigned mask = 0;
@@ -1952,7 +1952,7 @@ static inline ushort reticle_mask(object *pobj, otype_wb_info *static_wb, int wb
   return mask;
 }
 
-static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_mask, ushort gp_mask, const int *wb_elem_array) {
+static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, uint16_t on_mask, uint16_t gp_mask, const int *wb_elem_array) {
   int i, x, y;
   int bmp_handle;
   char align;
@@ -1996,7 +1996,7 @@ static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, ushort on_ma
 
 //	renders the reticle
 void RenderReticle() {
-  static ushort primary_index_last_frame = 0xffff;
+  static uint16_t primary_index_last_frame = 0xffff;
   static bool quad_primary_last_frame = false;
   player *player = &Players[Player_num];
   object *pobj = &Objects[player->objnum];

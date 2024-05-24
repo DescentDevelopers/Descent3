@@ -204,7 +204,7 @@ void MultiSendMyInfo() {
   MultiAddByte(pps, data, &count);
 
   // pilot picture id
-  ushort ppic_id;
+  uint16_t ppic_id;
   Current_pilot.get_multiplayer_data(NULL, NULL, NULL, &ppic_id);
   MultiAddUshort(ppic_id, data, &count);
 

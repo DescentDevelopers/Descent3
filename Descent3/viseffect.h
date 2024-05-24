@@ -164,7 +164,7 @@ void DrawVisEffect(vis_effect *vis);
 void CreateRandomSparks(int num_sparks, vector *pos, int roomnum, int which_index = -1, float force_scalar = 1);
 
 // Creates a some line sparks that go in random directions
-void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, ushort color = 0, float force_scalar = 1);
+void CreateRandomLineSparks(int num_sparks, vector *pos, int roomnum, uint16_t color = 0, float force_scalar = 1);
 
 // Creates vis effects but has the caller set their parameters
 // initialize a new viseffect.  adds to the list for the given room

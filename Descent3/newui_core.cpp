@@ -2072,7 +2072,7 @@ void newuiSheet::AddHotspot(const char *title, short w, short h, short id, bool 
 }
 
 // adds a listbox
-newuiListBox *newuiSheet::AddListBox(short w, short h, short id, ushort flags) {
+newuiListBox *newuiSheet::AddListBox(short w, short h, short id, uint16_t flags) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_LISTBOX, NULL);
   newuiListBox *lb = new newuiListBox;
   lb->Create(m_parent, id, 0, 0, w, h, flags);
@@ -2082,7 +2082,7 @@ newuiListBox *newuiSheet::AddListBox(short w, short h, short id, ushort flags) {
 }
 
 // adds a listbox
-newuiComboBox *newuiSheet::AddComboBox(short id, ushort flags) {
+newuiComboBox *newuiSheet::AddComboBox(short id, uint16_t flags) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_COMBOBOX, NULL);
   newuiComboBox *cb = new newuiComboBox;
   cb->Create(m_parent, id, 0, 0, flags);
@@ -2647,7 +2647,7 @@ newuiListBox::newuiListBox() {
   m_click_time = 0.0f;
 }
 
-void newuiListBox::Create(UIWindow *wnd, short id, short x, short y, short w, short h, ushort flags) {
+void newuiListBox::Create(UIWindow *wnd, short id, short x, short y, short w, short h, uint16_t flags) {
   m_ItemList = NULL;
   m_Virt2Real = NULL;
   m_Real2Virt = NULL;
@@ -3410,7 +3410,7 @@ newuiComboBox::newuiComboBox() {
   m_Index = 0;
 }
 
-void newuiComboBox::Create(UIWindow *wnd, short id, short x, short y, ushort flags) {
+void newuiComboBox::Create(UIWindow *wnd, short id, short x, short y, uint16_t flags) {
   m_ItemList = NULL;
   m_Virt2Real = NULL;
   m_Real2Virt = NULL;

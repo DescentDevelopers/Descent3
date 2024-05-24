@@ -470,7 +470,7 @@ typedef struct tRefObj {
 typedef struct {
   uint8_t flags;
   uint8_t extracted_id;
-  ushort reference_count;
+  uint16_t reference_count;
   InitializeDLL_fp InitializeDLL;
   ShutdownDLL_fp ShutdownDLL;
   GetGOScriptID_fp GetGOScriptID;
@@ -494,15 +494,15 @@ static tOSIRISModule OSIRIS_loaded_modules[MAX_LOADED_MODULES];
 tOSIRISModuleInit Osiris_module_init;
 struct {
   bool level_loaded;
-  ushort num_customs;
-  ushort dll_id;
+  uint16_t num_customs;
+  uint16_t dll_id;
   int *custom_ids;
   int *custom_handles;
   void *instance;
 } tOSIRISCurrentLevel;
 struct {
   bool mission_loaded;
-  ushort dll_id;
+  uint16_t dll_id;
 } tOSIRISCurrentMission;
 
 #define OESF_USED 0x0001
@@ -2268,7 +2268,7 @@ bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data) {
 #define OITF_LEVELTIMER 0x0008
 #define OITF_CANCELONDEAD 0x0010
 typedef struct {
-  ushort flags;
+  uint16_t flags;
   union {
     int objhandle;
     int trignum;
@@ -3328,7 +3328,7 @@ OMMSHANDLE OMMS_Find(uint32_t unique_identifier,char *script_identifier);
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,ushort *reference_count,uint8_t *has_free_been_called);
+char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t *has_free_been_called);
 
 
 ******************************************************************************
@@ -3411,7 +3411,7 @@ static OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_iden
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, ushort *reference_count,
+static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
                                 uint8_t *has_free_been_called);
 
 void Osiris_InitOMMS(void) {
@@ -3541,7 +3541,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
       node->id = (uint16_t)cf_ReadShort(file);
 
       node->free_called = (cf_ReadByte(file)) ? true : false;
-      node->reference_count = (ushort)cf_ReadShort(file);
+      node->reference_count = (uint16_t)cf_ReadShort(file);
       node->unique_id = cf_ReadInt(file);
       node->size_of_memory = cf_ReadInt(file);
       if (node->size_of_memory) {
@@ -3869,7 +3869,7 @@ OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier)
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, ushort *reference_count,
+char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, uint16_t *reference_count,
                          uint8_t *has_free_been_called) {
   if (mem_size)
     *mem_size = 0;

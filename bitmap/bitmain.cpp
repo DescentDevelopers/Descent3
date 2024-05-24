@@ -484,7 +484,7 @@ int bm_AllocateMemoryForIndex(int n, int w, int h, int add_mem) {
   // If no go on the malloc, bail out with -1
 
   int size = (w * h * 2) + (add_mem) + 2;
-  GameBitmaps[n].data16 = (ushort *)mem_malloc(size);
+  GameBitmaps[n].data16 = (uint16_t *)mem_malloc(size);
   if (!GameBitmaps[n].data16) {
     Int3(); // Ran out of memory!
     return -1;
@@ -836,7 +836,7 @@ int bm_AllocLoadFileBitmap(const char *fname, int mipped, int format) {
     {
       int w = bm_w(src_bm, 0);
       int h = bm_h(src_bm, 0);
-      ushort *src_data, *dest_data;
+      uint16_t *src_data, *dest_data;
 
       if (overlay) {
         bm_AllocateMemoryForIndex(n, w, h, mipped * (((w * h * 2) / 3)));
@@ -846,8 +846,8 @@ int bm_AllocLoadFileBitmap(const char *fname, int mipped, int format) {
         GameBitmaps[n].format = GameBitmaps[src_bm].format;
       }
       ASSERT(n >= 0);
-      src_data = (ushort *)bm_data(src_bm, 0);
-      dest_data = (ushort *)bm_data(n, 0);
+      src_data = (uint16_t *)bm_data(src_bm, 0);
+      dest_data = (uint16_t *)bm_data(n, 0);
       memcpy(dest_data, src_data, w * h * 2);
 
       bm_FreeBitmap(src_bm);
@@ -961,12 +961,12 @@ int bm_AllocLoadBitmap(CFILE *infile, int mipped, int format) {
     {
       int w = bm_w(src_bm, 0);
       int h = bm_h(src_bm, 0);
-      ushort *src_data, *dest_data;
+      uint16_t *src_data, *dest_data;
 
       n = bm_AllocBitmap(w, h, mipped * (((w * h * 2) / 3)));
       ASSERT(n >= 0);
-      src_data = (ushort *)bm_data(src_bm, 0);
-      dest_data = (ushort *)bm_data(n, 0);
+      src_data = (uint16_t *)bm_data(src_bm, 0);
+      dest_data = (uint16_t *)bm_data(n, 0);
       memcpy(dest_data, src_data, w * h * 2);
 
       bm_FreeBitmap(src_bm);
@@ -978,7 +978,7 @@ int bm_AllocLoadBitmap(CFILE *infile, int mipped, int format) {
 // Given a handle, makes a big random shape to let you know you are screwed.
 void bm_MakeBad(int handle) {
   int i, t, limit;
-  ushort *dest;
+  uint16_t *dest;
   ASSERT(GameBitmaps[handle].used);
   if (handle != BAD_BITMAP_HANDLE)
     Int3(); // hmm, you're assigning a random bitmap to something other than
@@ -1039,7 +1039,7 @@ int bm_SaveBitmap(CFILE *fp, int handle) {
   for (int m = 0; m < num_mips; m++) {
     int curptr = 0;
     int total = bm_w(handle, m) * bm_h(handle, m);
-    ushort *src_data = (ushort *)bm_data(handle, m);
+    uint16_t *src_data = (uint16_t *)bm_data(handle, m);
     done = 0;
     while (!done) {
       if (curptr == total) {
@@ -1047,7 +1047,7 @@ int bm_SaveBitmap(CFILE *fp, int handle) {
         continue;
       }
       ASSERT(curptr < total);
-      ushort curpix = src_data[curptr];
+      uint16_t curpix = src_data[curptr];
       uint8_t count = 1;
       while (src_data[curptr + count] == curpix && count < 250 && (curptr + count) < total)
         count++;
@@ -1180,8 +1180,8 @@ int bm_mipped(int handle) {
   return 0;
 }
 // returns a bitmaps data (based on given miplevel), else NULL if something is wrong
-ushort *bm_data(int handle, int miplevel) {
-  ushort *d;
+uint16_t *bm_data(int handle, int miplevel) {
+  uint16_t *d;
   int i;
   if (!GameBitmaps[handle].used) {
     Int3();
@@ -1212,7 +1212,7 @@ void bm_GenerateMipMaps(int handle) {
 
   int levels = bm_miplevels(handle);
 
-  ushort *destdata;
+  uint16_t *destdata;
   for (int miplevel = 1; miplevel < levels; miplevel++) {
     width /= 2;
     height /= 2;
@@ -1222,16 +1222,16 @@ void bm_GenerateMipMaps(int handle) {
 
       for (int t = 0; t < width; t++) {
         int adjwidth = (t * jump); // find our x offset
-        ushort *srcptr = bm_data(handle, miplevel - 1);
+        uint16_t *srcptr = bm_data(handle, miplevel - 1);
         srcptr += (adjheight + adjwidth);
 
         int rsum, gsum, bsum, asum;
         rsum = gsum = bsum = asum = 0;
-        ushort destpix = 0;
+        uint16_t destpix = 0;
         if (GameBitmaps[handle].format == BITMAP_FORMAT_1555) {
           for (int y = 0; y < 2; y++)
             for (int x = 0; x < 2; x++) {
-              ushort pix = srcptr[y * bm_w(handle, miplevel - 1) + x];
+              uint16_t pix = srcptr[y * bm_w(handle, miplevel - 1) + x];
               int r = (pix >> 10) & 0x1f;
               int g = (pix >> 5) & 0x1f;
               int b = (pix & 0x1f);
@@ -1255,7 +1255,7 @@ void bm_GenerateMipMaps(int handle) {
         } else if (GameBitmaps[handle].format == BITMAP_FORMAT_4444) {
           for (int y = 0; y < 2; y++)
             for (int x = 0; x < 2; x++) {
-              ushort pix = srcptr[y * bm_w(handle, miplevel - 1) + x];
+              uint16_t pix = srcptr[y * bm_w(handle, miplevel - 1) + x];
               int a = (pix >> 12) & 0x0f;
               int r = (pix >> 8) & 0x0f;
               int g = (pix >> 4) & 0x0f;
@@ -1288,8 +1288,8 @@ int bm_bpp(int handle) { return BPP_16; }
 // Given two bitmaps, scales the data from src to the size of dest
 // Not a particularly fast implementation
 void bm_ScaleBitmapToBitmap(int dest, int src) {
-  ushort *dp = bm_data(dest, 0);
-  ushort *sp = bm_data(src, 0);
+  uint16_t *dp = bm_data(dest, 0);
+  uint16_t *sp = bm_data(src, 0);
   ASSERT(GameBitmaps[dest].used && dp);
   ASSERT(GameBitmaps[src].used && sp);
   int smipped = bm_mipped(src);
@@ -1303,19 +1303,19 @@ void bm_ScaleBitmapToBitmap(int dest, int src) {
   int dw = bm_w(dest, 0);
   int dh = bm_h(dest, 0);
   int i, t;
-  ushort *sdata;
-  ushort *ddata;
+  uint16_t *sdata;
+  uint16_t *ddata;
   if (sw == dw && sh == dh) {
     if (smipped)
       limit = bm_miplevels(src);
     else
       limit = 1;
     for (i = 0; i < limit; i++) {
-      sdata = (ushort *)bm_data(src, i);
-      ddata = (ushort *)bm_data(dest, i);
+      sdata = (uint16_t *)bm_data(src, i);
+      ddata = (uint16_t *)bm_data(dest, i);
       dw = bm_w(dest, i);
       dh = bm_h(dest, i);
-      memcpy(ddata, sdata, dw * dh * sizeof(ushort));
+      memcpy(ddata, sdata, dw * dh * sizeof(uint16_t));
     }
     return;
   }
@@ -1329,8 +1329,8 @@ void bm_ScaleBitmapToBitmap(int dest, int src) {
     dw = bm_w(dest, m);
     dh = bm_h(dest, m);
 
-    sdata = (ushort *)bm_data(src, m);
-    ddata = (ushort *)bm_data(dest, m);
+    sdata = (uint16_t *)bm_data(src, m);
+    ddata = (uint16_t *)bm_data(dest, m);
     // These are our interpolant variables
     float xstep = (float)sw / (float)dw;
     float ystep = (float)sh / (float)dh;
@@ -1356,7 +1356,7 @@ int bm_rowsize(int handle, int miplevel) {
 bool bm_pixel_transparent(int bm_handle, int x, int y) {
   if ((bm_data(bm_handle, 0)) == NULL)
     return 0; // only check 16bit stuff
-  ushort *data = bm_data(bm_handle, 0);
+  uint16_t *data = bm_data(bm_handle, 0);
   data = data + (bm_w(bm_handle, 0) * y) + x;
   if (GameBitmaps[bm_handle].format == BITMAP_FORMAT_4444) {
     int pix = *data;
@@ -1369,10 +1369,10 @@ bool bm_pixel_transparent(int bm_handle, int x, int y) {
   return false;
 }
 //	a function to determine if a pixel in a bitmap is transparent
-ushort bm_pixel(int bm_handle, int x, int y) {
+uint16_t bm_pixel(int bm_handle, int x, int y) {
   if ((bm_data(bm_handle, 0)) == NULL)
     return 0; // only check 16bit stuff
-  ushort *data = bm_data(bm_handle, 0);
+  uint16_t *data = bm_data(bm_handle, 0);
   data = data + (bm_w(bm_handle, 0) * y) + x;
   return *data;
 }
@@ -1382,7 +1382,7 @@ int bm_SetBitmapIfTransparent(int handle) {
     return 0; // only check 16bit stuff
   int w = bm_w(handle, 0);
   int h = bm_h(handle, 0);
-  ushort *data = bm_data(handle, 0);
+  uint16_t *data = bm_data(handle, 0);
   if (GameBitmaps[handle].format == BITMAP_FORMAT_4444) {
     for (int i = 0; i < w * h; i++) {
       int pix = data[i] >> 12;
@@ -1406,7 +1406,7 @@ int bm_SetBitmapIfTransparent(int handle) {
 void bm_ClearBitmap(int handle) {
   int dx, dy;
   // DAJ	int rowsize_w = bm_rowsize(handle,0) >> 1;
-  ushort *bmpdata = bm_data(handle, 0);
+  uint16_t *bmpdata = bm_data(handle, 0);
   int w = bm_w(handle, 0);
   int h = bm_h(handle, 0);
   for (dy = 0; dy < h; dy++) {
@@ -1457,9 +1457,9 @@ bool bm_CreateChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
     bm_ClearBitmap(bm_array[i]);
   }
   // Now go through our big bitmap and partition it into pieces
-  ushort *src_data = bm_data(bm_handle, 0);
-  ushort *sdata;
-  ushort *ddata;
+  uint16_t *src_data = bm_data(bm_handle, 0);
+  uint16_t *sdata;
+  uint16_t *ddata;
   int shift;
   switch (iopt) {
   case 32:

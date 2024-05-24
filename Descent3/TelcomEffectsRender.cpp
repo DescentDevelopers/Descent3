@@ -411,7 +411,7 @@ void RenderBmpStatic(tceffect *tce, float frametime, int xoff, int yoff, bool ok
   BltBmpToScreen(tce->pos_x + glitch_dx + xoff, tce->pos_y + glitch_dy + yoff, &tce->bmpinfo.chunk_bmp);
   tce->age += frametime;
 }
-void BlurBitmapArea(ushort *srcbm, ushort *dstbm, short width, short height, short startx, short starty, short bmw) {
+void BlurBitmapArea(uint16_t *srcbm, uint16_t *dstbm, short width, short height, short startx, short starty, short bmw) {
   int pixel_count, blue_total, red_total, green_total;
   pixel_count = width * height;
   blue_total = red_total = green_total = 0;
@@ -429,7 +429,7 @@ void BlurBitmapArea(ushort *srcbm, ushort *dstbm, short width, short height, sho
         green_total += GR_COLOR_GREEN(GR_16_TO_COLOR(srcbm[pos]));
       }
     }
-  ushort col;
+  uint16_t col;
   if (red_total + green_total + blue_total)
     col = OPAQUE_FLAG | GR_RGB16(red_total / pixel_count, green_total / pixel_count, blue_total / pixel_count);
   else
@@ -462,7 +462,7 @@ void RenderBmpBlur(tceffect *tce, float frametime, int xoff, int yoff, bool ok_t
   if ((tce->flags == TC_BMPF_IN) && (tce->bmpinfo.stage > BLUR_STAGES))
     done = true;
 
-  ushort *src, *dest;
+  uint16_t *src, *dest;
   int rowsize, w, h;
 
   if (!done) {
@@ -493,7 +493,7 @@ void RenderBmpBlur(tceffect *tce, float frametime, int xoff, int yoff, bool ok_t
     int how_many_across = tce->bmpinfo.chunk_bmp.w;
     int bh = tce->bmpinfo.chunk_bmp.ph;
     int bw = tce->bmpinfo.chunk_bmp.pw;
-    ushort *src_data = bm_data(dbm_handle, 0);
+    uint16_t *src_data = bm_data(dbm_handle, 0);
     for (y = 0; y < bh; y++) {
       for (x = 0; x < bw; x++) {
         int piece_y = y / dim;
@@ -501,8 +501,8 @@ void RenderBmpBlur(tceffect *tce, float frametime, int xoff, int yoff, bool ok_t
         int sub_x = x % dim;
         int sub_y = y % dim;
         int bm = tce->bmpinfo.chunk_bmp.bm_array[piece_y * how_many_across + piece_x];
-        ushort *dest_data = bm_data(bm, 0);
-        ushort pix = src_data[y * bw + x];
+        uint16_t *dest_data = bm_data(bm, 0);
+        uint16_t pix = src_data[y * bw + x];
         dest_data[sub_y * dim + sub_x] = pix;
       }
     }
@@ -535,7 +535,7 @@ void RenderBmpScanline(tceffect *tce, float frametime, int xoff, int yoff, bool 
   int x, y;
   int sbm_handle = tce->bmpinfo.bm_handle;
   int dbm_handle = tce->bmpinfo.temp_bmhandle;
-  ushort *src, *dest;
+  uint16_t *src, *dest;
   int rowsize, w, h, xx, yy, stage;
   float k;
   if (dbm_handle == BAD_BITMAP_HANDLE)
@@ -596,7 +596,7 @@ void RenderBmpScanline(tceffect *tce, float frametime, int xoff, int yoff, bool 
     int how_many_across = tce->bmpinfo.chunk_bmp.w;
     int bh = tce->bmpinfo.chunk_bmp.ph;
     int bw = tce->bmpinfo.chunk_bmp.pw;
-    ushort *src_data = bm_data(dbm_handle, 0);
+    uint16_t *src_data = bm_data(dbm_handle, 0);
     int x, y;
     for (y = 0; y < bh; y++) {
       for (x = 0; x < bw; x++) {
@@ -605,8 +605,8 @@ void RenderBmpScanline(tceffect *tce, float frametime, int xoff, int yoff, bool 
         int sub_x = x % dim;
         int sub_y = y % dim;
         int bm = tce->bmpinfo.chunk_bmp.bm_array[piece_y * how_many_across + piece_x];
-        ushort *dest_data = bm_data(bm, 0);
-        ushort pix = src_data[y * bw + x];
+        uint16_t *dest_data = bm_data(bm, 0);
+        uint16_t pix = src_data[y * bw + x];
         dest_data[sub_y * dim + sub_x] = pix;
       }
     }
@@ -663,10 +663,10 @@ void RenderBmpInvert(tceffect *tce, float frametime, int xoff, int yoff, bool ok
     shift = 7;
     break;
   }
-  ushort *src_data = bm_data(srcbmph, 0);
-  ushort *sdata;
-  ushort *ddata;
-  ushort pix;
+  uint16_t *src_data = bm_data(srcbmph, 0);
+  uint16_t *sdata;
+  uint16_t *ddata;
+  uint16_t pix;
   int maxx, maxy;
   int windex, hindex;
   int s_y, s_x, d_y, d_x;

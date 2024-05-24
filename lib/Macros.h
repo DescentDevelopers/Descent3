@@ -48,7 +48,7 @@
  * added cleanup string 'macro'.
  *
  * 4     5/15/98 3:13p Samir
- * added some ushort/byte macros.
+ * added some uint16_t/byte macros.
  *
  * 3     3/31/98 7:48p Samir
  * fixed horrible makeword macro bug.

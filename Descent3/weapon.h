@@ -440,7 +440,7 @@ bool IsWeaponSecondary(int index);
 
 // used for sequencing
 //	resets memory for what slots have high priority weapons (laser->super_laser, for instance) when user selects
-void ResetWeaponSelectStates(ushort new_state = 0);
+void ResetWeaponSelectStates(uint16_t new_state = 0);
 
 //	save and load weapon state information
 void SaveWeaponSelectStates(CFILE *fp);
@@ -478,20 +478,20 @@ void CreateRobotSpawnFromWeapon(object *obj);
 void CreateCountermeasureFromObject(object *parent, int weapon_id);
 
 //////////////////////////////////////////////////////////////////////////////
-const ushort WPNSEL_SKIP = 0x8000, WPNSEL_INVALID = 0xffff;
+const uint16_t WPNSEL_SKIP = 0x8000, WPNSEL_INVALID = 0xffff;
 
-const ushort DefaultPrimarySelectList[MAX_PRIMARY_WEAPONS] = {
+const uint16_t DefaultPrimarySelectList[MAX_PRIMARY_WEAPONS] = {
     LASER_INDEX,       VAUSS_INDEX,      MICROWAVE_INDEX, PLASMA_INDEX, FUSION_INDEX,
     SUPER_LASER_INDEX, MASSDRIVER_INDEX, NAPALM_INDEX,    EMD_INDEX,    OMEGA_INDEX};
 
-const ushort DefaultSecondarySelectList[MAX_SECONDARY_WEAPONS] = {
+const uint16_t DefaultSecondarySelectList[MAX_SECONDARY_WEAPONS] = {
     CONCUSSION_INDEX,           HOMING_INDEX,       IMPACTMORTAR_INDEX, SMART_INDEX,     MEGA_INDEX, FRAG_INDEX,
     GUIDED_INDEX + WPNSEL_SKIP, NAPALMROCKET_INDEX, CYCLONE_INDEX,      BLACKSHARK_INDEX};
 
 // weapon auto selection info.
-ushort GetAutoSelectPrimaryWpnIdx(int slot);
-ushort GetAutoSelectSecondaryWpnIdx(int slot);
-void SetAutoSelectPrimaryWpnIdx(int slot, ushort idx);
-void SetAutoSelectSecondaryWpnIdx(int slot, ushort idx);
+uint16_t GetAutoSelectPrimaryWpnIdx(int slot);
+uint16_t GetAutoSelectSecondaryWpnIdx(int slot);
+void SetAutoSelectPrimaryWpnIdx(int slot, uint16_t idx);
+void SetAutoSelectSecondaryWpnIdx(int slot, uint16_t idx);
 
 #endif

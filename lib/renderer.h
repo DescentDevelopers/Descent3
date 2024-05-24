@@ -466,7 +466,7 @@ typedef struct {
 
 typedef struct {
   int type;
-  ushort *data;
+  uint16_t *data;
   int bytes_per_row;
 } renderer_lfb;
 
@@ -611,7 +611,7 @@ void rend_GetLFBLock(renderer_lfb *lfb);
 void rend_ReleaseLFBLock(renderer_lfb *lfb);
 
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize);
+void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize);
 
 //	given a chunked bitmap, renders it.
 void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, uint8_t alpha);

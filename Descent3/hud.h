@@ -267,7 +267,7 @@ struct bsp_info;
 struct g3Point;
 
 //	type to pass to functions that draw stats
-typedef ushort tStatMask;
+typedef uint16_t tStatMask;
 
 struct CFILE;
 
@@ -476,9 +476,9 @@ typedef struct tHUDItem {
 
   uint8_t id;    // id number.
   uint8_t type;  // custom of predefined hud item type.
-  ushort stat; // stat mask (what class of hud items does this one belong to)
+  uint16_t stat; // stat mask (what class of hud items does this one belong to)
 
-  ushort flags;           // more flags.
+  uint16_t flags;           // more flags.
   uint8_t alpha;            // alpha of hud item
   uint8_t saturation_count; // how saturated is this hud item (how bright).
 
@@ -551,7 +551,7 @@ void SetHUDMode(tHUDMode mode);
 void ToggleHUDMode();
 
 // sets the hud item state(what's visible, how it's drawn, etc)
-void SetHUDState(ushort hud_mask, ushort hud_gr_mask);
+void SetHUDState(uint16_t hud_mask, uint16_t hud_gr_mask);
 
 //	the current cockpit mode;
 tHUDMode GetHUDMode();

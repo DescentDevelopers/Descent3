@@ -562,11 +562,11 @@ void grFont::translate_mono_char(grSurface *sf, int x, int y, int index, gr_font
   switch (sf->bpp()) {
   case BPP_16: {
     /*	draw one-bit one color. */
-    ushort *dest_ptr;
-    ushort col_w = GR_COLOR_TO_16(GR_RGB(255, 255, 255));
+    uint16_t *dest_ptr;
+    uint16_t col_w = GR_COLOR_TO_16(GR_RGB(255, 255, 255));
     int rowsize_w;
 
-    dest_ptr = (ushort *)sf->lock(&rowsize);
+    dest_ptr = (uint16_t *)sf->lock(&rowsize);
     rowsize_w = sf->rowsize() / 2;
     dest_ptr += (y * rowsize_w) + x;
 
@@ -723,14 +723,14 @@ uint8_t *grFont::get_kern_info(uint8_t c1, uint8_t c2) {
 }
 
 void grFont::charblt16(grSurface *dsf, ddgr_color col, int dx, int dy, grSurface *ssf, int sx, int sy, int sw, int sh) {
-  ushort *dbits;
-  ushort *sbits;
+  uint16_t *dbits;
+  uint16_t *sbits;
   int srowsize_w, drowsize_w, row, coln;
-  ushort scol = GR_COLOR_TO_16(col);
+  uint16_t scol = GR_COLOR_TO_16(col);
 
-  dbits = (ushort *)dsf->lock(&drowsize_w);
+  dbits = (uint16_t *)dsf->lock(&drowsize_w);
   if (dbits) {
-    sbits = (ushort *)ssf->lock(&srowsize_w);
+    sbits = (uint16_t *)ssf->lock(&srowsize_w);
     if (sbits) {
       srowsize_w >>= 1; // rowsize in shorts
       drowsize_w >>= 1;

@@ -433,7 +433,7 @@ int AllocateProceduralForTexture(int handle) {
 
   GameTextures[handle].procedural->memory_type = PROC_MEMORY_TYPE_NONE;
 
-  GameTextures[handle].procedural->palette = (ushort *)mem_malloc(256 * 2);
+  GameTextures[handle].procedural->palette = (uint16_t *)mem_malloc(256 * 2);
 
   GameTextures[handle].procedural->last_procedural_frame = -1;
   GameTextures[handle].procedural->heat = 128;
@@ -762,12 +762,12 @@ void BuildTextureBumpmaps(int texhandle) {
   buffer = (int8_t *)mem_malloc(w * h);
   ASSERT(buffer);
 
-  ushort *src_data = (ushort *)bm_data(GameTextures[texhandle].bm_handle, 0);
+  uint16_t *src_data = (uint16_t *)bm_data(GameTextures[texhandle].bm_handle, 0);
 
   // create the grayscale
   for (i = 0; i < h; i++) {
     for (t = 0; t < w; t++) {
-      ushort color = src_data[i * w + t];
+      uint16_t color = src_data[i * w + t];
 
       int red = ((color >> 10) & 0x1f) << 3;
       int green = ((color >> 5) & 0x1f) << 3;
@@ -777,7 +777,7 @@ void BuildTextureBumpmaps(int texhandle) {
     }
   }
 
-  ushort *dest_data = (ushort *)bump_data(bump);
+  uint16_t *dest_data = (uint16_t *)bump_data(bump);
 
   for (i = 0; i < h; i++) {
     int8_t *pDst = (int8_t *)(dest_data + i * w);

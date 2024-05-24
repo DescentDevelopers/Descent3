@@ -181,9 +181,9 @@ typedef int (*GetGoalRoomForTeam_fp)(int teamnum);
 DMFCDLLOUT(GetGoalRoomForTeam_fp DLLGetGoalRoomForTeam;)
 
 // ObjCreate without writing data to demo
-// typedef int( *ObjCreate_fp ) (uint8_t type,ushort id,int roomnum,vector *pos,const matrix *orient,int parent_handle =
+// typedef int( *ObjCreate_fp ) (uint8_t type,uint16_t id,int roomnum,vector *pos,const matrix *orient,int parent_handle =
 // OBJECT_HANDLE_NONE);
-typedef int (*ObjCreate_fp)(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
+typedef int (*ObjCreate_fp)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
 DMFCDLLOUT(ObjCreate_fp DLLObjCreate;)
 
 typedef int (*FindObjectIDName_fp)(const char *name);
@@ -356,7 +356,7 @@ typedef void (*MultiEndLevel_fp)(void);
 DMFCDLLOUT(MultiEndLevel_fp DLLMultiEndLevel;)
 
 // returns a pointer to the data in a bitmap
-typedef ushort *(*bm_data_fp)(int handle, int miplevel);
+typedef uint16_t *(*bm_data_fp)(int handle, int miplevel);
 DMFCDLLOUT(bm_data_fp DLLbm_data;)
 
 // Allocs a bitmap of w x h size
@@ -889,13 +889,13 @@ DMFCDLLOUT(ObjGet_fp DLLObjGet;)
 
 //		Given a pilot id, it will return the pilot name of
 //	the pilot name.  Returns false if it's an invalid pilot id.
-typedef bool (*PPic_GetPilot_fp)(ushort pilot_id, char *pilot_name, int buffersize);
+typedef bool (*PPic_GetPilot_fp)(uint16_t pilot_id, char *pilot_name, int buffersize);
 DMFCDLLOUT(PPic_GetPilot_fp DLLPPic_GetPilot;)
 
 //		Given a pilot id, it will return a handle to the bitmap for the pilot.
 //  MAKE SURE YOU FREE THE BITMAP WITH DLLbm_FreeBitmap().  Returns -1 if it was an illegal pilot id.
 //	Returns BAD_BITMAP_HANDLE if it couldn't open the bitmap.
-typedef int (*PPic_GetBitmapHandle_fp)(ushort pilot_id);
+typedef int (*PPic_GetBitmapHandle_fp)(uint16_t pilot_id);
 DMFCDLLOUT(PPic_GetBitmapHandle_fp DLLPPic_GetBitmapHandle;)
 
 // Draws a line
@@ -1299,7 +1299,7 @@ typedef void (*rend_ReleaseLFBLock_fp)(renderer_lfb *lfb);
 DMFCDLLOUT(rend_ReleaseLFBLock_fp DLLrend_ReleaseLFBLock;)
 
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-typedef void (*rend_DrawLFBBitmap_fp)(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize);
+typedef void (*rend_DrawLFBBitmap_fp)(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize);
 DMFCDLLOUT(rend_DrawLFBBitmap_fp DLLrend_DrawLFBBitmap;)
 
 // Draws a line using the states of the renderer
@@ -1402,9 +1402,9 @@ typedef void (*CreateRandomSparks_fp)(int num_sparks, vector *pos, int roomnum, 
 DMFCDLLOUT(CreateRandomSparks_fp DLLCreateRandomSparks;)
 
 // Creates a some line sparks that go in random directions
-// typedef void (*CreateRandomLineSparks_fp) (int num_sparks,vector *pos,int roomnum,ushort color=0,float
+// typedef void (*CreateRandomLineSparks_fp) (int num_sparks,vector *pos,int roomnum,uint16_t color=0,float
 // force_scalar=1);
-typedef void (*CreateRandomLineSparks_fp)(int num_sparks, vector *pos, int roomnum, ushort color, float force_scalar);
+typedef void (*CreateRandomLineSparks_fp)(int num_sparks, vector *pos, int roomnum, uint16_t color, float force_scalar);
 DMFCDLLOUT(CreateRandomLineSparks_fp DLLCreateRandomLineSparks;)
 
 // Creates vis effects but has the caller set their parameters
@@ -1710,7 +1710,7 @@ DMFCDLLOUT(dInven_GetPosName_fp Inven_GetPosName;)
 
 // return information about the current position item
 // return true if it is a real object
-typedef bool (*dInven_GetPosInfo_fp)(Inventory *inven, ushort &iflags, int &flags);
+typedef bool (*dInven_GetPosInfo_fp)(Inventory *inven, uint16_t &iflags, int &flags);
 DMFCDLLOUT(dInven_GetPosInfo_fp Inven_GetPosInfo;)
 
 // returns the count of the item at the current position

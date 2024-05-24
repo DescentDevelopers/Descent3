@@ -1297,7 +1297,7 @@ int8_t gameWinController::get_button_controller(uint8_t btn) {
 //	returns the controller with a pov hat
 int8_t gameWinController::get_pov_controller(uint8_t pov) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
-  ushort pov_flag = CTF_POV << (pov);
+  uint16_t pov_flag = CTF_POV << (pov);
 
   for (int i = 2; i < m_NumControls; i++)
     if ((m_ControlList[i].flags & pov_flag) && m_ControlList[i].id != CTID_INVALID)
@@ -1598,7 +1598,7 @@ const char *gameWinController::get_binding_text(ct_type type, uint8_t ctrl, uint
   case ctPOV2:
   case ctPOV3:
   case ctPOV4: {
-    ushort povpos = bind;
+    uint16_t povpos = bind;
 
     if (type == ctPOV) {
       pov_n = 0;

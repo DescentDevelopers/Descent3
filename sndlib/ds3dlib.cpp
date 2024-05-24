@@ -502,7 +502,7 @@ inline void sb_adjust_properties_3d(sound_buffer_info *sb, float f_volume, pos_s
   }
 }
 
-inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, ushort frequency) {
+inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float f_pan, uint16_t frequency) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 

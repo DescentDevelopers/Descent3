@@ -228,7 +228,7 @@ void DLLFUNCCALL DLLGameInit (int *api_func,uint8_t *all_ok)
 
 	PBallHazehandle = DLLbm_AllocBitmap(32,32,0);
 	if(PBallHazehandle>BAD_BITMAP_HANDLE){
-		ushort *data = DLLbm_data(PBallHazehandle,0);
+		uint16_t *data = DLLbm_data(PBallHazehandle,0);
 		for(int i=0;i<32*32;i++){
 			data[i] = GR_RGB16(80,200,255)|OPAQUE_FLAG;
 		}
@@ -1184,7 +1184,7 @@ void DMFCApp::OnServerWeaponCollide(object *pobj,object *wobj,vector *point,vect
 
 void SendCollideInfo(object *pobj,object *wobj,int towho,vector *point,vector *normal)
 {
-	int maxsize = (sizeof(float)*26) + (sizeof(ushort)*1);
+	int maxsize = (sizeof(float)*26) + (sizeof(uint16_t)*1);
 	int size = 0;
 
 	uint8_t *data = PBall.StartPacket(maxsize,SPID_COLLIDE);
@@ -1200,8 +1200,8 @@ void SendCollideInfo(object *pobj,object *wobj,int towho,vector *point,vector *n
 	memcpy(&data[size],&wobj->orient.uvec,sizeof(float)*3); size+=(sizeof(float)*3);
 	memcpy(&data[size],point,sizeof(float)*3); size+=(sizeof(float)*3);
 	memcpy(&data[size],normal,sizeof(float)*3); size+=(sizeof(float)*3);
-	ushort id = (pobj-PBall.Objects);
-	memcpy(&data[size],&id,sizeof(ushort)); size+= sizeof(ushort);
+	uint16_t id = (pobj-PBall.Objects);
+	memcpy(&data[size],&id,sizeof(uint16_t)); size+= sizeof(uint16_t);
 
 	//we're done
 	PBall.SendPacket(maxsize,towho);
@@ -1213,7 +1213,7 @@ void GetCollideInfo(uint8_t *data)
 	vector rotvel,velocity,pos,point,normal;
 	matrix orient;
 	float mass,fsize;
-	ushort id;
+	uint16_t id;
 	int objnum;
 
 	memcpy(&rotvel,&data[size],3*sizeof(float)); size+=(sizeof(float)*3);
@@ -1227,7 +1227,7 @@ void GetCollideInfo(uint8_t *data)
 	memcpy(&point,&data[size],sizeof(float)*3); size+=(sizeof(float)*3);
 	memcpy(&normal,&data[size],sizeof(float)*3); size+=(sizeof(float)*3);
 
-	memcpy(&id,&data[size],sizeof(ushort)); size+= sizeof(ushort);
+	memcpy(&id,&data[size],sizeof(uint16_t)); size+= sizeof(uint16_t);
 
 	objnum = PBall.ConvertServerToLocalObjnum(id);
 	ASSERT(objnum!=-1);

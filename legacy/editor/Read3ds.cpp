@@ -195,7 +195,7 @@ int RemoveDuplicateFacePoints(room *);
 // Return -1 on fail
 int Read3DSMaxFile(char *filename)
 {
-	ushort id;
+	uint16_t id;
 	int len;
 	CFILE *fp;
 	int i;
@@ -416,7 +416,7 @@ void ConvertHandiness( vector * v )
 // Parses a chunk of a 3dsmax file - this function calls itself
 void Parse3DSMaxChunk (CFILE *fp, int size)
 {
-	ushort id;
+	uint16_t id;
 	int len;
 	int level=Nest_level;
 	int i;
@@ -561,7 +561,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			// Vertex list 
 			case ID_VERTLIST:
 			{
-				ushort num_verts=cf_ReadShort(fp);
+				uint16_t num_verts=cf_ReadShort(fp);
 				int i;
 
 				if (num_verts > MAX_VERTS_PER_ROOM)
@@ -586,8 +586,8 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 
 			case ID_FACELIST:
 			{
-				ushort num_faces=cf_ReadShort(fp);
-				ushort a,b,c,flags;
+				uint16_t num_faces=cf_ReadShort(fp);
+				uint16_t a,b,c,flags;
 				int i,t, j, this_size;
 
 				if (num_faces > MAX_READING_ROOM_FACES)

@@ -2644,7 +2644,7 @@ next_face:;
 // Counts the number of unique textures in a level, plus gives names of textures used
 void CountUniqueTextures ()
 {
-	ushort *texture_tracking=(ushort *)mem_malloc (MAX_TEXTURES*2);
+	uint16_t *texture_tracking=(uint16_t *)mem_malloc (MAX_TEXTURES*2);
 	ASSERT (texture_tracking);
 	memset (texture_tracking,0,MAX_TEXTURES*2);
 

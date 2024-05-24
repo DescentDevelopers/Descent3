@@ -423,7 +423,7 @@ int TryToJoinServer(network_address *addr) {
 // Client only
 void MultiDoConnectionAccepted(uint8_t *data) {
   int count = 0;
-  ushort server_version;
+  uint16_t server_version;
 
   // Skip header
   SKIP_HEADER(data, &count);
@@ -902,7 +902,7 @@ void MultiCloseGame() {
 
 #define GET_GAME_INFO_TIME 2
 // Fills in the passed in buffers with the info of the games that are on this subnet
-int SearchForLocalGamesTCP(uint32_t ask, ushort port) {
+int SearchForLocalGamesTCP(uint32_t ask, uint16_t port) {
   int count = 0;
   int size;
   int tries = 0;
@@ -931,7 +931,7 @@ int SearchForLocalGamesTCP(uint32_t ask, ushort port) {
 }
 
 // Fills in the passed in buffers with the info of the games that are on this subnet
-int SearchForGamesPXO(uint32_t ask, ushort port) {
+int SearchForGamesPXO(uint32_t ask, uint16_t port) {
   int count = 0;
   int size;
   int tries = 0;

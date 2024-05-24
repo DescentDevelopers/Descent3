@@ -390,15 +390,15 @@ network_address My_addr;
 
 typedef struct network_checksum_packet {
   int sequence_number;
-  ushort flags;
-  ushort checksum;
+  uint16_t flags;
+  uint16_t checksum;
   uint8_t data[MAX_PACKET_SIZE];
 } network_checksum_packet;
 
 // definition for a non-checksum packet
 typedef struct network_packet {
   int sequence_number;
-  ushort flags;
+  uint16_t flags;
   uint8_t data[MAX_PACKET_SIZE];
 } network_naked_packet;
 
@@ -457,8 +457,8 @@ static int Psnet_highest_id = 0;
 typedef struct {
   uint8_t type;                // packet type
   uint8_t compressed;          //
-  ushort seq;                // sequence packet 0-65535 used for ACKing also
-  ushort data_len;           // length of data
+  uint16_t seq;                // sequence packet 0-65535 used for ACKing also
+  uint16_t data_len;           // length of data
   float send_time;           // Time the packet was sent, if an ACK the time the packet being ACK'd was sent.
   uint8_t data[NETBUFFERSIZE]; // Packet data
 } reliable_header;
@@ -501,7 +501,7 @@ typedef struct {
   float last_sent;           // The last time we sent a packet (used for NAGLE emulation)
   int waiting_packet_number; // Which packet has data in it that is waiting for the interval to send
 
-  ushort status;                           // Status of this connection
+  uint16_t status;                           // Status of this connection
   uint16_t oursequence;              // This is the next sequence number the application is expecting
   uint16_t theirsequence;            // This is the next sequence number the peer is expecting
   uint16_t rsequence[MAXNETBUFFERS]; // This is the sequence number of the given packet
@@ -731,7 +731,7 @@ void nw_SetSocketOptions(SOCKET sock) {
 uint16_t nw_ListenPort = 0;
 
 // Inits the sockets that the application will be using
-void nw_InitSockets(ushort port) {
+void nw_InitSockets(uint16_t port) {
 
   nw_ListenPort = port;
   // UDP/TCP socket structure
@@ -890,8 +890,8 @@ uint32_t nw_GetThisIP() {
   return local_address.sin_addr.s_addr;
 }
 
-// Calculates a unique ushort checksum for a stream of data
-ushort nw_CalculateChecksum(void *vptr, int len) {
+// Calculates a unique uint16_t checksum for a stream of data
+uint16_t nw_CalculateChecksum(void *vptr, int len) {
   uint8_t *ptr = (uint8_t *)vptr;
   uint32_t sum1, sum2;
 

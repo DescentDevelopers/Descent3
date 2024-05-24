@@ -48,7 +48,7 @@ typedef struct {
   uint8_t proc_x2[MAX_PROC_ELEMENTS];
   uint8_t proc_y2[MAX_PROC_ELEMENTS];
 
-  ushort proc_palette[256];
+  uint16_t proc_palette[256];
 } mngs_texture_page;
 
 // Texture page functions

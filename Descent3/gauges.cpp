@@ -210,7 +210,7 @@ typedef struct tGauge {
   int first_vert;
   bool functional; // is this gauge working?
   bool just_init;  // gauge just initialized?
-  ushort mask;     // mask of stat for gauge
+  uint16_t mask;     // mask of stat for gauge
   int state;       // gauge dependent state data.
   union {          // data for gauge.
     int i;
@@ -321,13 +321,13 @@ static inline int GAUGE_INDEX(tStatMask mask) {
 //	Initialization routines
 
 //	initializes cockpit gauges
-void InitGauges(ushort gauge_mask) {
+void InitGauges(uint16_t gauge_mask) {
   Gauge_mask = gauge_mask;
   Gauge_mask_modified = Gauge_mask;
   int gauge = 0;
 
   for (int i = 0; i < NUM_GAUGES; i++) {
-    ushort mask = Gauge_mask & (1 << i);
+    uint16_t mask = Gauge_mask & (1 << i);
 
     if (mask == STAT_SHIELDS) {
       Gauge_list[gauge].monitor = CockpitGetMonitorSubmodel(SHIELD_MONITOR);
@@ -369,7 +369,7 @@ void InitGauges(ushort gauge_mask) {
 //	deinitializes cockpit gauges
 void CloseGauges() {
   for (int i = 0; i < NUM_GAUGES; i++) {
-    ushort mask = Gauge_mask & (1 << i);
+    uint16_t mask = Gauge_mask & (1 << i);
     Gauge_list[i].monitor = NULL;
   }
   Gauge_mask = 0;
@@ -474,7 +474,7 @@ void FlagGaugesModified(tStatMask mask_modified) { Gauge_mask_modified |= mask_m
 
 //	sets whether the gauges are functional
 void FlagGaugesFunctional(tStatMask mask) {
-  ushort i = 0x8000, j = NUM_GAUGES;
+  uint16_t i = 0x8000, j = NUM_GAUGES;
 
   while (i) {
     if (mask & i)
@@ -486,7 +486,7 @@ void FlagGaugesFunctional(tStatMask mask) {
 
 //	sets whether the gauges are functional
 void FlagGaugesNonfunctional(tStatMask mask) {
-  ushort i = 0x8000, j = NUM_GAUGES;
+  uint16_t i = 0x8000, j = NUM_GAUGES;
 
   while (i) {
     if (mask & i)

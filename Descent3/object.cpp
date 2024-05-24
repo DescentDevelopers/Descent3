@@ -662,7 +662,7 @@
  * Rooms cannot cycle through anims
  *
  * 119   5/04/98 12:30p Matt
- * ObjCreate() now takes object id as a ushort
+ * ObjCreate() now takes object id as a uint16_t
  *
  * 118   5/04/98 12:28p Matt
  * Added shard objects
@@ -1680,7 +1680,7 @@ void ObjSetAABB(object *obj) {
 //-----------------------------------------------------------------------------
 // initialize a new object.  adds to the list for the given room
 // returns the object number
-int ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle) {
+int ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle) {
   int objnum;
   object *obj;
   int handle;
@@ -3327,7 +3327,7 @@ bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info) {
     ai_frame *ai_info = obj->ai_info;
 
     multi_anim_info->server_time = Gametime;
-    multi_anim_info->server_anim_frame = (ushort)(pm->anim_frame * 256.0f);
+    multi_anim_info->server_anim_frame = (uint16_t)(pm->anim_frame * 256.0f);
 
     multi_anim_info->anim_start_frame = pm->anim_start_frame;
     multi_anim_info->anim_end_frame = pm->anim_end_frame;

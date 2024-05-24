@@ -65,7 +65,7 @@ int TerrainLightmaps[4];
 // A list of terrain to render
 terrain_render_info Terrain_list[MAX_CELLS_TO_RENDER];
 
-ushort *Terrain_rotate_list; // which points have been sub/rotated this frame
+uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
 g3Point *World_point_buffer; // Rotated points
 
 // The min/max values for a particular region of terrain
@@ -950,7 +950,7 @@ void InitTerrain(void) {
 
   // Setup stuff for rendering
   if (!Dedicated_server) {
-    Terrain_rotate_list = (ushort *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(ushort));
+    Terrain_rotate_list = (uint16_t *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(uint16_t));
     ASSERT(Terrain_rotate_list);
 
     World_point_buffer = (g3Point *)mem_malloc(TERRAIN_WIDTH * TERRAIN_DEPTH * sizeof(g3Point));
@@ -1040,8 +1040,8 @@ void UpdateSingleTerrainLightmap(int which) {
       int tseg = i * TERRAIN_WIDTH + t;
       terrain_segment *tp = &Terrain_seg[tseg];
 
-      ushort color = GR_RGB16(tp->r, tp->g, tp->b);
-      ushort *data = lm_data(TerrainLightmaps[which]);
+      uint16_t color = GR_RGB16(tp->r, tp->g, tp->b);
+      uint16_t *data = lm_data(TerrainLightmaps[which]);
 
       int x = t % 128;
       int y = 127 - (i % 128);
@@ -1111,8 +1111,8 @@ void UpdateTerrainLightmaps() {
       int y = 127 - (i % 128);
       int which = ((i / 128) * 2) + (t / 128);
 
-      ushort color = GR_RGB16(tp->r, tp->g, tp->b);
-      ushort *data = lm_data(TerrainLightmaps[which]);
+      uint16_t color = GR_RGB16(tp->r, tp->g, tp->b);
+      uint16_t *data = lm_data(TerrainLightmaps[which]);
 
       data[y * w + x] = OPAQUE_FLAG | color;
     }

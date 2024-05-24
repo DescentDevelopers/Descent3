@@ -133,8 +133,8 @@ PFNGLCLIENTACTIVETEXTUREARBPROC oglClientActiveTextureARB = NULL;
 PFNGLMULTITEXCOORD4FARBPROC oglMultiTexCoord4f = NULL;
 #endif
 
-ushort *OpenGL_bitmap_remap = NULL;
-ushort *OpenGL_lightmap_remap = NULL;
+uint16_t *OpenGL_bitmap_remap = NULL;
+uint16_t *OpenGL_lightmap_remap = NULL;
 uint8_t *OpenGL_bitmap_states = NULL;
 uint8_t *OpenGL_lightmap_states = NULL;
 
@@ -142,9 +142,9 @@ uint32_t *opengl_Upload_data = NULL;
 uint32_t *opengl_Translate_table = NULL;
 uint32_t *opengl_4444_translate_table = NULL;
 
-ushort *opengl_packed_Upload_data = NULL;
-ushort *opengl_packed_Translate_table = NULL;
-ushort *opengl_packed_4444_translate_table = NULL;
+uint16_t *opengl_packed_Upload_data = NULL;
+uint16_t *opengl_packed_Translate_table = NULL;
+uint16_t *opengl_packed_4444_translate_table = NULL;
 
 extern rendering_state gpu_state;
 extern renderer_preferred_state gpu_preferred_state;
@@ -280,9 +280,9 @@ int opengl_MakeTextureObject(int tn) {
 
 int opengl_InitCache(void) {
 
-  OpenGL_bitmap_remap = (ushort *)mem_malloc(MAX_BITMAPS * 2);
+  OpenGL_bitmap_remap = (uint16_t *)mem_malloc(MAX_BITMAPS * 2);
   ASSERT(OpenGL_bitmap_remap);
-  OpenGL_lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * 2);
+  OpenGL_lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * 2);
   ASSERT(OpenGL_lightmap_remap);
 
   OpenGL_bitmap_states = (uint8_t *)mem_malloc(MAX_BITMAPS);
@@ -793,9 +793,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   }
 
   if (OpenGL_packed_pixels) {
-    opengl_packed_Upload_data = (ushort *)mem_malloc(2048 * 2048 * 2);
-    opengl_packed_Translate_table = (ushort *)mem_malloc(65536 * 2);
-    opengl_packed_4444_translate_table = (ushort *)mem_malloc(65536 * 2);
+    opengl_packed_Upload_data = (uint16_t *)mem_malloc(2048 * 2048 * 2);
+    opengl_packed_Translate_table = (uint16_t *)mem_malloc(65536 * 2);
+    opengl_packed_4444_translate_table = (uint16_t *)mem_malloc(65536 * 2);
 
     ASSERT(opengl_packed_Upload_data);
     ASSERT(opengl_packed_Translate_table);
@@ -820,7 +820,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         b = 0x1F;
 #endif
 
-      ushort pix;
+      uint16_t pix;
 
       if (!(i & OPAQUE_FLAG)) {
         pix = 0;
@@ -1010,7 +1010,7 @@ void opengl_Close() {
 
 // Takes our 16bit format and converts it into the memory scheme that OpenGL wants
 void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int replace, int tn) {
-  ushort *bm_ptr;
+  uint16_t *bm_ptr;
 
   int w, h;
   int size;
@@ -1053,11 +1053,11 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
   if (OpenGL_packed_pixels) {
     if (map_type == MAP_TYPE_LIGHTMAP) {
-      ushort *left_data = (ushort *)opengl_packed_Upload_data;
+      uint16_t *left_data = (uint16_t *)opengl_packed_Upload_data;
       int bm_left = 0;
 
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
-        ushort *dest_data = left_data;
+        uint16_t *dest_data = left_data;
         for (int t = 0; t < w; t++) {
           *dest_data++ = opengl_packed_Translate_table[bm_ptr[bm_left + t]];
         }
@@ -1526,9 +1526,9 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
   ASSERT(how_many_down > 0);
 
   // Now go through our big bitmap and partition it into pieces
-  ushort *src_data = bm_data(bm_handle, 0);
-  ushort *sdata;
-  ushort *ddata;
+  uint16_t *src_data = bm_data(bm_handle, 0);
+  uint16_t *sdata;
+  uint16_t *ddata;
 
   int shift;
   switch (iopt) {
@@ -2145,7 +2145,7 @@ void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
 
 // Takes a screenshot of the current frame and puts it into the handle passed
 std::unique_ptr<NewBitmap> rend_Screenshot() {
-  ushort *dest_data;
+  uint16_t *dest_data;
   uint32_t *temp_data;
 
   int total = gpu_state.screen_width * gpu_state.screen_height;
@@ -2172,7 +2172,7 @@ void rend_Screenshot(int bm_handle) {
   ASSERT((bm_w(bm_handle, 0)) == gpu_state.screen_width);
   ASSERT((bm_h(bm_handle, 0)) == gpu_state.screen_height);
 
-  ushort* dest_data = bm_data(bm_handle, 0);
+  uint16_t* dest_data = bm_data(bm_handle, 0);
 
   for (int i = 0; i < h; i++) {
     for (int t = 0; t < w; t++) {

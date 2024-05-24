@@ -142,7 +142,7 @@ public:
 };
 //  Data structures
 typedef struct os_date {
-  ushort year; // 1-65535 A.D. (or C.E.)
+  uint16_t year; // 1-65535 A.D. (or C.E.)
   uint8_t month;
   uint8_t day;
   uint8_t hour;

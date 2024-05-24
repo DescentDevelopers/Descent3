@@ -27,7 +27,7 @@
 int Num_of_special_faces = 0;
 special_face SpecialFaces[MAX_SPECIAL_FACES];
 
-static ushort Free_special_face_list[MAX_SPECIAL_FACES];
+static uint16_t Free_special_face_list[MAX_SPECIAL_FACES];
 
 // Sets all the special faces to unused
 void InitSpecialFaces() {

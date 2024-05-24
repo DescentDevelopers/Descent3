@@ -920,8 +920,8 @@ void grfont_XlateMonoChar(int bmp_handle, int x, int y, int index, tFontFileInfo
   fp = ft->char_data[index];
 
   /*	draw one-bit one color. */
-  ushort *dest_ptr;
-  ushort col_w = GR_COLOR_TO_16(GR_RGB(255, 255, 255));
+  uint16_t *dest_ptr;
+  uint16_t col_w = GR_COLOR_TO_16(GR_RGB(255, 255, 255));
   int rowsize_w;
 
   dest_ptr = bm_data(bmp_handle, 0);
@@ -951,12 +951,12 @@ void grfont_XlateColorChar(int bmp_handle, int x, int y, int index, tFontFileInf
           This function performs scaling if the source width and height don't match
           that of the destinations - JL
   */
-  ushort *dptr, *sptr;
+  uint16_t *dptr, *sptr;
   int row, col;
   int rowsize_w;
 
   dptr = bm_data(bmp_handle, 0);
-  sptr = (ushort *)ft->char_data[index];
+  sptr = (uint16_t *)ft->char_data[index];
   rowsize_w = bm_rowsize(bmp_handle, 0) / 2;
 
   // height = SET_MIN(h, ddsfObj.h);
@@ -974,7 +974,7 @@ void grfont_XlateColorChar(int bmp_handle, int x, int y, int index, tFontFileInf
     // old style
     for (row = 0; row < ft->height; row++) {
       for (col = 0; col < width; col++) {
-        ushort col565 = *(sptr++);
+        uint16_t col565 = *(sptr++);
         if (col565 == 0x07e0)
           dptr[x + col] = NEW_TRANSPARENT_COLOR;
         else
@@ -991,12 +991,12 @@ void grfont_XlateColorGrayChar(int bmp_handle, int x, int y, int index, tFontFil
           This function performs scaling if the source width and height don't match
           that of the destinations - JL
   */
-  ushort *dptr, *sptr;
+  uint16_t *dptr, *sptr;
   int row, col;
   int rowsize_w;
 
   dptr = bm_data(bmp_handle, 0);
-  sptr = (ushort *)ft->char_data[index];
+  sptr = (uint16_t *)ft->char_data[index];
   rowsize_w = bm_rowsize(bmp_handle, 0) / 2;
 
   // height = SET_MIN(h, ddsfObj.h);
@@ -1007,7 +1007,7 @@ void grfont_XlateColorGrayChar(int bmp_handle, int x, int y, int index, tFontFil
 
   for (row = 0; row < ft->height; row++) {
     for (col = 0; col < width; col++) {
-      ushort col565 = *(sptr++);
+      uint16_t col565 = *(sptr++);
       if (col565 == 0x07e0)
         dptr[x + col] = NEW_TRANSPARENT_COLOR;
       else {
@@ -1028,7 +1028,7 @@ void grfont_XlateColorGrayChar(int bmp_handle, int x, int y, int index, tFontFil
 void grfont_ClearBitmap(int bmp_handle) {
   int dx, dy;
   int rowsize_w = bm_rowsize(bmp_handle, 0) / 2;
-  ushort *bmpdata = bm_data(bmp_handle, 0);
+  uint16_t *bmpdata = bm_data(bmp_handle, 0);
 
   for (dy = 0; dy < bm_h(bmp_handle, 0); dy++) {
     for (dx = 0; dx < rowsize_w; dx++)
@@ -1073,7 +1073,7 @@ int grfont_KeyToAscii(int font, int key) {
 // returns the raw bitmap data for a character in a font, its width and height
 // returned data should be in 565 hicolor format if (*mono) is false.  if (*mono) is true,
 //	then a bitmask will be returned, and you should treat a bit as a pixel.
-ushort *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mono) {
+uint16_t *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mono) {
   tFontFileInfo *fntfile;
   tFontInfo *fnt;
 
@@ -1100,7 +1100,7 @@ ushort *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mono)
 
   *h = fnt->font.height;
 
-  return (ushort *)fnt->font.char_data[ch];
+  return (uint16_t *)fnt->font.char_data[ch];
 }
 
 //	returns a character's width

@@ -113,10 +113,10 @@ private:
 	int m_CharHeight;						// current character height.
 	short m_CharWidths[MAX_FONT_CHARS];
 	short m_CharMaxWidth;
-	ushort *m_FontBmData;
-	ushort *m_DataBuffer, *m_DataPtr;
-	ushort m_BgColor, m_BoxColor;
-	ushort m_FgColor;
+	uint16_t *m_FontBmData;
+	uint16_t *m_DataBuffer, *m_DataPtr;
+	uint16_t m_BgColor, m_BoxColor;
+	uint16_t m_FgColor;
 	BOOL m_FontProp;						// Proportional font.
 	uint8_t m_Brightness;					// brightness * 10
 };

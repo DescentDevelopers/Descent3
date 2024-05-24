@@ -321,8 +321,8 @@ typedef struct {
   float kill_time;        // time of latest kill
   float death_time;       // time of latest death
   float observer_time;    // time the player entered observer mode (or 0 if not)
-  ushort kills_in_a_row;  // Number of kills in a row for this player
-  ushort deaths_in_a_row; // Number of deaths in a row for this player
+  uint16_t kills_in_a_row;  // Number of kills in a row for this player
+  uint16_t deaths_in_a_row; // Number of deaths in a row for this player
   int8_t last_kill_num;    // Player record num of last person this player killed
   int8_t last_death_num;   // Player record num of the player that last killed this player
   char got_revenge;       // 1 if revenge has been made on last killer
@@ -2097,8 +2097,8 @@ private:
   int m_iNumBanPlayers;
   int m_iUIWindowID;
   void *m_UIUserData;
-  ushort *Local_object_list;
-  ushort *Server_object_list;
+  uint16_t *Local_object_list;
+  uint16_t *Server_object_list;
   tHostsNode *m_DenyList;
   tHostsNode *m_AllowList;
   bool LossGuageEnabled;

@@ -153,11 +153,11 @@ int bm_pcx_8bit_alloc_file(CFILE *infile) {
   if (src_bm < 0)
     return -1; // probably out of memory
 
-  ushort *data = bm_data(src_bm, 0);
+  uint16_t *data = bm_data(src_bm, 0);
 
   for (i = 0; i < height; i++) {
     for (t = 0; t < width; t++) {
-      ushort pixel;
+      uint16_t pixel;
       uint8_t c = rawdata[i * width + t];
 
       int r = pred[c];
@@ -294,12 +294,12 @@ int bm_pcx_24bit_alloc_file(CFILE *infile) {
   if (src_bm < 0)
     return -1; // probably out of memory
 
-  ushort *data = bm_data(src_bm, 0);
+  uint16_t *data = bm_data(src_bm, 0);
 
   for (i = 0; i < height; i++) {
     for (t = 0; t < width; t++) {
       int r, g, b;
-      ushort pixel;
+      uint16_t pixel;
 
       r = rawdata[(i * total) + (0 * BytesPerLine) + t];
       g = rawdata[(i * total) + (1 * BytesPerLine) + t];

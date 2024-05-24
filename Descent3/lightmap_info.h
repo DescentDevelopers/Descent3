@@ -56,12 +56,12 @@
 
 typedef struct {
   uint8_t xspacing, yspacing;
-  ushort lm_handle;
+  uint16_t lm_handle;
   vector upper_left, normal;
   uint8_t width, height, x1, y1;
   uint8_t used;
 
-  ushort dynamic;
+  uint16_t dynamic;
   short spec_map;
 
   uint8_t type; // see LMI_types above

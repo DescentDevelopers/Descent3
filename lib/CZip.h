@@ -69,7 +69,7 @@
 
 #define uint8_t uint8_t
 #define uint32_t uint32_t
-#define ushort uint16_t
+#define uint16_t uint16_t
 
 typedef struct {
   uint8_t type;
@@ -179,11 +179,11 @@ public:
   int ReadBytes(char *data, int count);
   void WriteBytes(char *data, int count);
   uint8_t ReadRawByte(void);
-  ushort ReadRawShort(void);
+  uint16_t ReadRawShort(void);
   uint32_t ReadRawInt(void);
   float ReadRawFloat(void);
   void WriteRawByte(uint8_t value);
-  void WriteRawShort(ushort value);
+  void WriteRawShort(uint16_t value);
   void WriteRawInt(uint32_t value);
   void WriteRawFloat(float value);
   bool RawEOF(void);

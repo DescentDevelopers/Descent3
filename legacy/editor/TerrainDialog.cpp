@@ -1955,7 +1955,7 @@ static uint8_t *Terrain_heights,*Terrain_fill;
 void FillTerrainHeights (int cell)
 {
 	terrain_segment *tseg=&Terrain_seg[cell];
-	ushort fill_stack[65536];
+	uint16_t fill_stack[65536];
 	int stack_count=0;
 
 	ASSERT (cell>=0 && cell<TERRAIN_WIDTH*TERRAIN_DEPTH);

@@ -335,7 +335,7 @@ enum network_protocol : uint32_t
 
 typedef struct {
   uint8_t address[6];
-  ushort port;
+  uint16_t port;
   uint8_t net_id[4];
   network_protocol connection_type; // IPX, IP, modem, etc.
 } network_address;
@@ -361,7 +361,7 @@ int nw_InitReliableSocket();
 int nw_CheckListenSocket(network_address *from_addr);
 
 // Inits the sockets that the application will be using
-void nw_InitSockets(ushort port);
+void nw_InitSockets(uint16_t port);
 
 // Connects a client to a server
 void nw_ConnectToServer(SOCKET *socket, network_address *server_addr);
@@ -380,8 +380,8 @@ uint32_t nw_GetThisIP();
 // returns 0 on error or nothing waiting.  1 if we should try to accept
 int nw_CheckListenSocket(network_address *from_addr);
 
-// Calculates a unique ushort checksum for a stream of data
-ushort nw_CalculateChecksum(void *vptr, int len);
+// Calculates a unique uint16_t checksum for a stream of data
+uint16_t nw_CalculateChecksum(void *vptr, int len);
 
 // Sends data on an unreliable socket
 int nw_Send(network_address *who_to, void *data, int len, int flags);

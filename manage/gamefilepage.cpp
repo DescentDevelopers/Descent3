@@ -91,7 +91,7 @@ int mng_ReadNewGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage) {
 int mng_ReadGamefilePage(CFILE *infile, mngs_gamefile_page *gamefilepage) {
   int done = 0;
   char command;
-  ushort len;
+  uint16_t len;
   int i;
 
   if (!Old_table_method)

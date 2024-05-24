@@ -1759,7 +1759,7 @@ float rend_GetAspectRatio() {
   }
 }
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *data, int rowsize) {
+void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize) {
   renderer_lfb lfb;
   int i, t;
   lfb.type = LFB_LOCK_WRITE;
@@ -1770,7 +1770,7 @@ void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort *da
   }
   for (i = 0; i < h; i++) {
     for (t = 0; t < w; t++) {
-      ushort pix = data[((sy + i) * (rowsize / 2)) + sx + t];
+      uint16_t pix = data[((sy + i) * (rowsize / 2)) + sx + t];
       if (pix & OPAQUE_FLAG)
         lfb.data[((dy + i) * (lfb.bytes_per_row / 2)) + dx + t] = pix;
     }

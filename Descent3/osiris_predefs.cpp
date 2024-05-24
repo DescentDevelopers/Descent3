@@ -33,7 +33,7 @@
  * Made sure the wb is a valid index
  *
  * 126   11/04/99 3:08p Jeff
- * fixed ushort check with -1 bug
+ * fixed uint16_t check with -1 bug
  *
  * 125   11/03/99 10:20a Chris
  * Added the ability to find out if a room is volatile
@@ -1403,10 +1403,10 @@ void osipf_ObjectValue(int handle, char op, char var_handle, void *ptr, int inde
     break;
   case OBJV_US_ID:
     if (op == VF_SET) {
-      m.id = *(ushort *)ptr;
+      m.id = *(uint16_t *)ptr;
       msafe_CallFunction(MSAFE_OBJECT_ID, &m);
     } else if (op == VF_GET)
-      (*(ushort *)ptr) = obj->id;
+      (*(uint16_t *)ptr) = obj->id;
     break;
   case OBJV_V_POS:
     if (op == VF_SET) {
@@ -2567,12 +2567,12 @@ void osipf_OpenMessageWindow(const char *title, ...) {
   Int3(); // ummm, this is a blank function, should we ever be calling it?
 }
 
-int osipf_ObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+int osipf_ObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                     vector *initial_velocity) {
   object *obj;
   int objnum;
 
-  if (id == 65535) // since it is a ushort, this is == -1
+  if (id == 65535) // since it is a uint16_t, this is == -1
     return OBJECT_HANDLE_NONE;
 
   if (((roomnum >= 0) && (roomnum <= Highest_room_index) && (Rooms[roomnum].used)) || (ROOMNUM_OUTSIDE(roomnum))) {

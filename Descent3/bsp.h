@@ -78,8 +78,8 @@ typedef struct {
 typedef struct bspnode {
   uint8_t type;
   bspplane plane;
-  ushort node_facenum;
-  ushort node_roomnum;
+  uint16_t node_facenum;
+  uint16_t node_roomnum;
   int8_t node_subnum;
 
   bspnode *front;

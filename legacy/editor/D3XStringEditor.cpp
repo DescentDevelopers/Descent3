@@ -114,7 +114,7 @@ void CD3XStringEditor::OnLoadscript()
 		}
 
 		list->ResetContent();
-		for (ushort i = 0; i < prog->nstr; i++)
+		for (uint16_t i = 0; i < prog->nstr; i++)
 			list->AddString(prog->strlist[i]);
 		list->EnableWindow();
 

@@ -122,7 +122,7 @@ bool grMemorySurface::init(int w, int h, int bpp, char *data, int rowsize, unsig
   ddsfObj.h = h;
   ddsfObj.bpp = bpp;
   ddsfObj.type = SURFTYPE_MEMORY;
-  ddsfObj.flags = (ushort)flags;
+  ddsfObj.flags = (uint16_t)flags;
   if (name)
     strncpy(ddsfObj.name, name, 15);
 
@@ -240,11 +240,11 @@ void gr_mem_surf_Clear(ddgr_surface *dsf, ddgr_color col, int l, int t, int w, i
 
   switch (dbm->bpp) {
   case BPP_16: {
-    ushort *sptr;
-    ushort scol;
+    uint16_t *sptr;
+    uint16_t scol;
 
-    scol = (ushort)GR_COLOR_TO_16(col);
-    sptr = (ushort *)dbm->data + (t * ((dbm->rowsize) >> 1));
+    scol = (uint16_t)GR_COLOR_TO_16(col);
+    sptr = (uint16_t *)dbm->data + (t * ((dbm->rowsize) >> 1));
 
     for (int y = t; y < (t + h); y++) {
       for (int x = l; x < (l + w); x++)
@@ -314,15 +314,15 @@ bool gr_mem_surf_AttachHandle(ddgr_surface *sf, unsigned handle) { return true; 
 
 bool gr_bm_mem_Blt16(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh) {
   mem_bitmap *dbm = (mem_bitmap *)dsf->obj, *sbm = (mem_bitmap *)ssf->obj;
-  ushort *dbits;
-  ushort *sbits;
+  uint16_t *dbits;
+  uint16_t *sbits;
   int srowsize_w, drowsize_w, row, col;
 
   //	set up blt.
   srowsize_w = sbm->rowsize >> 1; // rowsize in shorts
   drowsize_w = dbm->rowsize >> 1;
-  dbits = (ushort *)dbm->data + (dy * drowsize_w) + dx;
-  sbits = (ushort *)sbm->data + (sy * srowsize_w) + sx;
+  dbits = (uint16_t *)dbm->data + (dy * drowsize_w) + dx;
+  sbits = (uint16_t *)sbm->data + (sy * srowsize_w) + sx;
 
   for (row = 0; row < sh; row++) {
     for (col = 0; col < sw; col++)
@@ -336,15 +336,15 @@ bool gr_bm_mem_Blt16(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int s
 
 bool gr_bm_mem_Blt16ck(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx, int sy, int sw, int sh) {
   mem_bitmap *dbm = (mem_bitmap *)dsf->obj, *sbm = (mem_bitmap *)ssf->obj;
-  ushort *dbits;
-  ushort *sbits;
+  uint16_t *dbits;
+  uint16_t *sbits;
   int srowsize_w, drowsize_w, row, col;
 
   //	set up blt.
   srowsize_w = sbm->rowsize >> 1; // rowsize in shorts
   drowsize_w = dbm->rowsize >> 1;
-  dbits = (ushort *)dbm->data + (dy * drowsize_w) + dx;
-  sbits = (ushort *)sbm->data + (sy * srowsize_w) + sx;
+  dbits = (uint16_t *)dbm->data + (dy * drowsize_w) + dx;
+  sbits = (uint16_t *)sbm->data + (sy * srowsize_w) + sx;
 
   for (row = 0; row < sh; row++) {
     for (col = 0; col < sw; col++) {

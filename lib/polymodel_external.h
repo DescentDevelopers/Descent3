@@ -115,7 +115,7 @@ typedef struct a_bank {
 
 typedef struct {
   uint8_t num_verts;
-  ushort lmi_handle;
+  uint16_t lmi_handle;
   vector rvec, uvec;
   float *u2, *v2;
 } lightmap_object_face;
@@ -194,8 +194,8 @@ typedef struct bsp_info {
   int *keyframe_angles;  // The destination angles for each key frame
   vector *keyframe_pos;
   matrix *keyframe_matrix; // the combined rotation matrices up to frame n
-  ushort *tick_pos_remap;  // For looking up keyframes fast
-  ushort *tick_ang_remap;  // For looking up keyframes fast
+  uint16_t *tick_pos_remap;  // For looking up keyframes fast
+  uint16_t *tick_ang_remap;  // For looking up keyframes fast
   int *rot_start_time;
   int *pos_start_time;
 

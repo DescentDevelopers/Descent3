@@ -481,13 +481,13 @@ void bm_iff_convert_8_to_16(int dest_bm, iff_bitmap_header *iffbm) {
   ASSERT(bm_w(dest_bm, 0) == iffbm->w);
   ASSERT(bm_h(dest_bm, 0) == iffbm->h);
 
-  ushort *data;
+  uint16_t *data;
 
-  data = (ushort *)bm_data(dest_bm, 0);
+  data = (uint16_t *)bm_data(dest_bm, 0);
 
   for (int i = 0; i < iffbm->h; i++)
     for (int t = 0; t < iffbm->w; t++) {
-      ushort pixel;
+      uint16_t pixel;
       uint8_t c = iffbm->raw_data[i * iffbm->w + t];
 
       int r = iffbm->palette[c].r >> 1;

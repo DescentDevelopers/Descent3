@@ -215,7 +215,7 @@ const char *grtext_GetChar(const char *str, tGetCharInfo *ci);
 
 // we can load a font template into this structure.  call grfont_FreeTemplate(tFontTemplate) to free memory here.
 typedef struct tFontTemplate {
-  ushort min_ascii, max_ascii;
+  uint16_t min_ascii, max_ascii;
   uint8_t *ch_widths;
   uint8_t *kern_data;
   uint8_t ch_height;
@@ -264,7 +264,7 @@ int grfont_KeyToAscii(int font, int key);
 // returns the raw bitmap data for a character in a font, its width and height
 // returned data should be in 565 hicolor format if (*mono) is false.  if (*mono) is true,
 //	then a bitmask will be returned, and you should treat a bit as a pixel.
-ushort *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mono);
+uint16_t *grfont_GetRawCharacterData(int font, int ch, int *w, int *h, bool *mono);
 
 /////////////////////////////////////////////////////////////////////
 // EDITING FUNCTIONS ONLY

@@ -1171,7 +1171,7 @@ void PilotSelect(void) {
       if (PPic_QueryPilot(pname)) {
         ShowPilotPicDialog(&working_pilot);
       } else {
-        ushort pid;
+        uint16_t pid;
         pid = PPIC_INVALID_ID;
         working_pilot.set_multiplayer_data(NULL, NULL, NULL, &pid);
 
@@ -3690,8 +3690,8 @@ struct {
   int blank_bmp;
   int curr_bmp;
   int curr_index;
-  ushort size;
-  ushort *id_list;
+  uint16_t size;
+  uint16_t *id_list;
   newuiListBox *listbox;
   UIStatic *bmp_disp;
 } PPicDlgInfo;
@@ -3752,13 +3752,13 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   Pilot->get_name(pname);
 
-  ushort num_pilots = PPic_QueryPilot(pname);
+  uint16_t num_pilots = PPic_QueryPilot(pname);
   int blank_bmp_handle;
 
   // only display the dialog if there is a pilot to choose from
   if (num_pilots == 0) {
     mprintf((0, "No Pilot Pics available for %s\n", pname));
-    ushort pid;
+    uint16_t pid;
     pid = PPIC_INVALID_ID;
     Pilot->set_multiplayer_data(NULL, NULL, NULL, &pid);
 
@@ -3768,7 +3768,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   blank_bmp_handle = bm_AllocBitmap(64, 64, 0);
   if (blank_bmp_handle <= BAD_BITMAP_HANDLE) {
-    ushort pid;
+    uint16_t pid;
     pid = PPIC_INVALID_ID;
     Pilot->set_multiplayer_data(NULL, NULL, NULL, &pid);
 
@@ -3776,7 +3776,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
     DoMessageBox(TXT_ERROR, TXT_ERRCREATINGDIALOG, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     return;
   }
-  ushort *data = bm_data(blank_bmp_handle, 0);
+  uint16_t *data = bm_data(blank_bmp_handle, 0);
   for (int i = 0; i < 64 * 64; i++) {
     data[i] = GR_RGB16(0, 0, 0) | OPAQUE_FLAG;
   }
@@ -3808,8 +3808,8 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   // Initialize PPicDlgInfo data
   // ---------------------------
-  ushort *id_list;
-  id_list = (ushort *)mem_malloc(num_pilots * sizeof(ushort));
+  uint16_t *id_list;
+  id_list = (uint16_t *)mem_malloc(num_pilots * sizeof(uint16_t));
 
   if (!id_list) {
     // out of memory
@@ -3826,7 +3826,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   // fill in dialog data
   // -------------------
-  ushort temp_id;
+  uint16_t temp_id;
   int idx;
   idx = 0;
 
@@ -3847,7 +3847,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
   list->AddItem(TXT_NONE);
 
   char temp_buffer[PILOT_STRING_SIZE + 6];
-  ushort ppic_id;
+  uint16_t ppic_id;
   Pilot->get_multiplayer_data(NULL, NULL, NULL, &ppic_id);
 
   Pilot->get_name(pname);
@@ -3886,7 +3886,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
   }
 
   selected_index = list->GetCurrentIndex();
-  ushort pid;
+  uint16_t pid;
   if (selected_index == 0) {
     pid = PPIC_INVALID_ID;
   } else {
@@ -3924,7 +3924,7 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   char pfilename[_MAX_FNAME];
   char buffer[256];
   uint8_t temp_b;
-  ushort temp_s;
+  uint16_t temp_s;
   int temp_i;
   int filever, i, nctlfuncs;
 
@@ -3988,15 +3988,15 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
 
   // added in version 0x9
   int n;
-  ushort widx;
+  uint16_t widx;
   n = (int)cf_ReadByte(file);
   for (i = 0; i < n; i++) {
-    widx = (ushort)cf_ReadShort(file);
+    widx = (uint16_t)cf_ReadShort(file);
     SetAutoSelectPrimaryWpnIdx(i, widx);
   }
   n = (int)cf_ReadByte(file);
   for (i = 0; i < n; i++) {
-    widx = (ushort)cf_ReadShort(file);
+    widx = (uint16_t)cf_ReadShort(file);
     SetAutoSelectSecondaryWpnIdx(i, widx);
   }
 

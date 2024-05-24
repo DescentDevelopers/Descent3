@@ -319,8 +319,8 @@
 
 void *callback = NULL;
 module MultiDLLHandle = {NULL};
-int SearchForLocalGamesTCP(uint32_t ask, ushort port);
-int SearchForGamesPXO(uint32_t ask, ushort port);
+int SearchForLocalGamesTCP(uint32_t ask, uint16_t port);
+int SearchForGamesPXO(uint32_t ask, uint16_t port);
 extern uint8_t NewUIWindow_alpha;
 extern void DoScreenshot();
 extern void UpdateAndPackGameList(void);
@@ -382,7 +382,7 @@ extern int Num_modems_found;
 #define DLL_BRIEFING_FONT 1
 #define DLL_BIG_BRIEFING_FONT 2
 extern uint16_t nw_ListenPort;
-extern ushort PXOPort;
+extern uint16_t PXOPort;
 
 void GetMultiAPI(multi_api *api) {
   // make the compiler happy

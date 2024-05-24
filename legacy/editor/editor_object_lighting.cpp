@@ -111,7 +111,7 @@ void ApplyLightmapToObjectSurface (object *obj,int subnum,int facenum,rad_surfac
 	ASSERT (lw>=2);
 	ASSERT (lh>=2);
 
-	ushort *dest_data=lm_data (LightmapInfo[lmi_handle].lm_handle);
+	uint16_t *dest_data=lm_data (LightmapInfo[lmi_handle].lm_handle);
 
 	for (i=0;i<yres;i++)
 	{

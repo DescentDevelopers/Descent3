@@ -56,7 +56,7 @@ public:
   int blockSize(void) const;
 
 private:
-  void scheduleBuild(ushort *k, int n, const int *keyrot);
+  void scheduleBuild(uint16_t *k, int n, const int *keyrot);
 
   int _size;
   int _rounds;

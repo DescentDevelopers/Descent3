@@ -2602,7 +2602,7 @@ extern float Room_multiplier[];
 
 int IsNonRenderableSubmodel(poly_model *pm,int submodelnum);
 
-extern ushort *Free_lmi_list;
+extern uint16_t *Free_lmi_list;
 
 void CMainFrame::OnTestTest1() 
 {

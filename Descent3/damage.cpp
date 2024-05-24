@@ -1451,9 +1451,9 @@ void ShakePlayer() {
 
   float mag = Shake_magnitude;
 
-  ushort pitch_adjust = ((ps_rand() % 5) - 2) * mag;
-  ushort bank_adjust = ((ps_rand() % 5) - 2) * mag;
-  ushort heading_adjust = ((ps_rand() % 5) - 2) * mag;
+  uint16_t pitch_adjust = ((ps_rand() % 5) - 2) * mag;
+  uint16_t bank_adjust = ((ps_rand() % 5) - 2) * mag;
+  uint16_t heading_adjust = ((ps_rand() % 5) - 2) * mag;
   matrix m, tempm;
 
   Old_player_orient = Player_object->orient;

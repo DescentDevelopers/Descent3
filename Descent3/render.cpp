@@ -162,7 +162,7 @@ typedef struct {
 } smooth_spec_vert;
 smooth_spec_vert Smooth_verts[MAX_VERTS_PER_ROOM];
 // For scorch rendering
-ushort Scorches_to_render[MAX_FACES_PER_ROOM];
+uint16_t Scorches_to_render[MAX_FACES_PER_ROOM];
 int Num_scorches_to_render = 0;
 // For rendering volumetric fog
 #define MAX_FOGGED_ROOMS_PER_FRAME 8
@@ -1286,8 +1286,8 @@ void RenderSpecularFacesFlat(room *rp) {
   static float lm_red[32], lm_green[32], lm_blue[32];
   int num_smooth_faces = 0;
   int num_smooth_used = 0;
-  ushort smooth_faces[MAX_FACES_PER_ROOM];
-  ushort smooth_used[MAX_VERTS_PER_ROOM];
+  uint16_t smooth_faces[MAX_FACES_PER_ROOM];
+  uint16_t smooth_used[MAX_VERTS_PER_ROOM];
   int i;
   ASSERT(Num_specular_faces_to_render > 0);
   if (!UseHardware)
@@ -1337,7 +1337,7 @@ void RenderSpecularFacesFlat(room *rp) {
       continue;
 
     int lm_handle;
-    ushort *data;
+    uint16_t *data;
     int w, h;
 
     if (fp->lmi_handle == 65535) {
@@ -1346,7 +1346,7 @@ void RenderSpecularFacesFlat(room *rp) {
     }
 
     lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-    data = (ushort *)lm_data(lm_handle);
+    data = (uint16_t *)lm_data(lm_handle);
     w = lm_w(lm_handle);
     h = lm_h(lm_handle);
 
@@ -1356,7 +1356,7 @@ void RenderSpecularFacesFlat(room *rp) {
       float scalar = 0;
       float u, v;
       int int_u, int_v;
-      ushort texel;
+      uint16_t texel;
       int r, g, b;
       float vr, vg, vb;
 
@@ -1383,7 +1383,7 @@ void RenderSpecularFacesFlat(room *rp) {
         }*/
 
         for (t = 0; t < limit; t++) {
-          ushort color;
+          uint16_t color;
           vector incident_norm;
           float spec_scalar;
 
@@ -1847,7 +1847,7 @@ void RenderFace(room *rp, int facenum) {
 
     if (fp->flags & FF_LIGHTMAP) {
       int lm_handle = LightmapInfo[fp->lmi_handle].lm_handle;
-      ushort *data = (ushort *)lm_data(lm_handle);
+      uint16_t *data = (uint16_t *)lm_data(lm_handle);
       int w = lm_w(lm_handle);
       int h = lm_h(lm_handle);
 
@@ -1857,7 +1857,7 @@ void RenderFace(room *rp, int facenum) {
         g3Point *p = &pointbuffer[i];
         int int_u = u;
         int int_v = v;
-        ushort texel = data[int_v * w + int_u];
+        uint16_t texel = data[int_v * w + int_u];
         int r = (texel >> 10) & 0x1f;
         int g = (texel >> 5) & 0x1f;
         int b = (texel) & 0x1f;
@@ -2056,7 +2056,7 @@ draw_fog:
       ASSERT(fp->lmi_handle != BAD_LMI_INDEX);
 
       lightmap_info *lmi = &LightmapInfo[fp->lmi_handle];
-      ushort *src_data = (ushort *)lm_data(lmi->lm_handle);
+      uint16_t *src_data = (uint16_t *)lm_data(lmi->lm_handle);
       matrix facematrix;
       vector fvec = -lmi->normal;
       vm_VectorToMatrix(&facematrix, &fvec, NULL, NULL);
@@ -2877,7 +2877,7 @@ void RenderMirroredRoom(room *rp) {
 #if (defined(RELEASE) && defined(KATMAI))
   vector4 kat_vecs[MAX_VERTS_PER_ROOM];
 #endif
-  ushort save_flags[MAX_FACES_PER_ROOM];
+  uint16_t save_flags[MAX_FACES_PER_ROOM];
   bool restore_index = true;
   int save_index = Global_buffer_index;
 
@@ -3617,8 +3617,8 @@ void SortStates(state_limited_element *state_array, int cellcount) {
   int l, r;
   l = 0;
   r = cellcount - 1;
-  ushort state_stack_counter = 0;
-  ushort state_stack[2000];
+  uint16_t state_stack_counter = 0;
+  uint16_t state_stack[2000];
 
   while (1) {
     while (r > l) {
@@ -3685,7 +3685,7 @@ void ConsolidateMineMirrors() {
       rp->mirror_face = 0;
       continue;
     }
-    rp->mirror_faces_list = (ushort *)mem_malloc(num_mirror_faces * sizeof(ushort));
+    rp->mirror_faces_list = (uint16_t *)mem_malloc(num_mirror_faces * sizeof(uint16_t));
     ASSERT(rp->mirror_faces_list);
     rp->num_mirror_faces = num_mirror_faces;
     // Now go through and fill in our list

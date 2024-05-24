@@ -32,8 +32,8 @@ typedef struct mem_bitmap {
   char *data;
   short bpp;
   int rowsize;
-  ushort alloced : 2;
-  ushort flag : 14;
+  uint16_t alloced : 2;
+  uint16_t flag : 14;
 } mem_bitmap;
 
 #define MEMFLAG_TRANSBLT 1

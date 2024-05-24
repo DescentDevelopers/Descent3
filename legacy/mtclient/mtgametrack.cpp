@@ -184,7 +184,7 @@ game_packet_header inpacket;
 d3_net_game_data_tiny *D3TrackerGameData;
 
 extern int DLLnw_ListenPort;
-extern ushort DLLPXOPort;
+extern uint16_t DLLPXOPort;
 extern char *DLLPXO_hosted_lobby_name;
 
 int InitGameTrackerClient(int gametype)

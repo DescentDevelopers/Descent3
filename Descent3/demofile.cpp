@@ -518,7 +518,7 @@ void DemoWriteChangedObjects() {
   }
 }
 
-void DemoWriteObjCreate(uint8_t type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
+void DemoWriteObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj) {
 
   if (Demo_flags == DF_RECORDING) {
@@ -552,7 +552,7 @@ void DemoWriteTurretChanged(uint16_t objnum) { Demo_turretchanged[objnum] = true
 void DemoReadTurretChanged(void) {
   multi_turret multi_turret_info;
   int objnum;
-  ushort num_turrets;
+  uint16_t num_turrets;
   float turr_time;
   int count = 0;
   float do_time;
@@ -672,7 +672,7 @@ void DemoRead2DSound(void) {
   Sound_system.Play2dSound(soundidx, volume);
 }
 
-void DemoWrite3DSound(short soundidx, ushort objnum, int priority, float volume) {
+void DemoWrite3DSound(short soundidx, uint16_t objnum, int priority, float volume) {
   cf_WriteByte(Demo_cfp, DT_3D_SOUND);
   cf_WriteShort(Demo_cfp, objnum);
   cf_WriteShort(Demo_cfp, soundidx);
@@ -1311,7 +1311,7 @@ void DemoWriteCinematics(uint8_t *data, uint16_t len) {
 
 void DemoReadCinematics() {
   uint8_t buffer[1500];
-  ushort len = cf_ReadShort(Demo_cfp);
+  uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   mprintf((0, "Reading Cinematic data from demo file.\n"));
   Cinematic_DoDemoFileData(buffer);
@@ -1334,7 +1334,7 @@ extern void MultiDoMSafeFunction(uint8_t *data);
 
 void DemoReadMSafe() {
   uint8_t buffer[1500];
-  ushort len = cf_ReadShort(Demo_cfp);
+  uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   // mprintf((0,"Reading MSAFE data from demo file.\n"));
   MultiDoMSafeFunction(buffer);
@@ -1344,7 +1344,7 @@ extern void MultiDoMSafePowerup(uint8_t *data);
 
 void DemoReadPowerups() {
   uint8_t buffer[1500];
-  ushort len = cf_ReadShort(Demo_cfp);
+  uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
   MultiDoMSafePowerup(buffer);
 }

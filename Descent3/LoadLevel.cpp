@@ -1320,7 +1320,7 @@ char *LocalizeLevelName(char *level);
 
 // Lightmap remap array
 int Num_lightmap_infos_read = 0;
-ushort LightmapInfoRemap[MAX_LIGHTMAP_INFOS];
+uint16_t LightmapInfoRemap[MAX_LIGHTMAP_INFOS];
 
 // Arrays for mapping saved data to the current data
 short texture_xlate[MAX_TEXTURES];
@@ -1639,7 +1639,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
   if (fileversion >= 101)
     flags = cf_ReadInt(ifile);
   else
-    flags = (ushort)cf_ReadShort(ifile);
+    flags = (uint16_t)cf_ReadShort(ifile);
 
   // Make sure no objects except viewers have the outside mine flags set
   ASSERT((type == OBJ_VIEWER) || !(flags & OF_OUTSIDE_MINE));
@@ -1815,7 +1815,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       for (t = 0; t < num_faces; t++) {
         if (submodel_changed == 0 && model_changed == 0) {
           lightmap_object_face *fp = &objp->lm_object.lightmap_faces[i][t];
-          fp->lmi_handle = LightmapInfoRemap[(ushort)cf_ReadShort(ifile)];
+          fp->lmi_handle = LightmapInfoRemap[(uint16_t)cf_ReadShort(ifile)];
 
           if (!Dedicated_server)
             LightmapInfo[fp->lmi_handle].used++;
@@ -2043,7 +2043,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
       fp->flags &= ~FF_LIGHTMAP;
     } else {
       // Read lightmap info handle
-      int lmi_handle = (ushort)cf_ReadShort(ifile);
+      int lmi_handle = (uint16_t)cf_ReadShort(ifile);
       if (!Dedicated_server) {
         fp->lmi_handle = LightmapInfoRemap[lmi_handle];
         LightmapInfo[fp->lmi_handle].used++;
@@ -2134,7 +2134,7 @@ int ReadFace(CFILE *ifile, face *fp, int version) {
 
         for (i = 0; i < num; i++) {
           cf_ReadVector(ifile, &center);
-          ushort color = cf_ReadShort(ifile);
+          uint16_t color = cf_ReadShort(ifile);
 
           SpecialFaces[fp->special_handle].spec_instance[i].bright_center = center;
           SpecialFaces[fp->special_handle].spec_instance[i].bright_color = color;
@@ -2283,7 +2283,7 @@ int WriteCompressionByte(CFILE *fp, uint8_t *val, int total, int just_count, int
 
 // Does a RLE compression run of the values given the short array 'val'.
 // If just_count is 1, doesn't write anything
-int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int compress) {
+int WriteCompressionShort(CFILE *fp, uint16_t *val, int total, int just_count, int compress) {
   int done = 0, written = 0;
 
   int curptr = 0;
@@ -2314,7 +2314,7 @@ int WriteCompressionShort(CFILE *fp, ushort *val, int total, int just_count, int
 
     ASSERT(curptr < total);
 
-    ushort curval = val[curptr];
+    uint16_t curval = val[curptr];
     uint8_t count = 1;
 
     while ((curptr + count) < total && val[curptr + count] == curval && count < 250)
@@ -2354,7 +2354,7 @@ void CheckToWriteCompressByte(CFILE *fp, uint8_t *vals, int total) {
 
 // Given an array of values, checks to see if it would be better to write it out
 // as a raw array or RLE array
-void CheckToWriteCompressShort(CFILE *fp, ushort *vals, int total) {
+void CheckToWriteCompressShort(CFILE *fp, uint16_t *vals, int total) {
   int count = WriteCompressionShort(fp, vals, total, 1, COMPRESS);
 
   if (count >= total)
@@ -2396,7 +2396,7 @@ void ReadCompressionByte(CFILE *fp, uint8_t *vals, int total) {
   }
 }
 
-void ReadCompressionShort(CFILE *fp, ushort *vals, int total) {
+void ReadCompressionShort(CFILE *fp, uint16_t *vals, int total) {
   int count = 0;
 
   uint8_t compressed = cf_ReadByte(fp);
@@ -2414,13 +2414,13 @@ void ReadCompressionShort(CFILE *fp, ushort *vals, int total) {
 
     if (command == 0) // next byte is raw
     {
-      ushort height = cf_ReadShort(fp);
+      uint16_t height = cf_ReadShort(fp);
 
       vals[count] = height;
       count++;
     } else if (command >= 2 && command <= 250) // next pixel is run of pixels
     {
-      ushort height = cf_ReadShort(fp);
+      uint16_t height = cf_ReadShort(fp);
       for (int k = 0; k < command; k++) {
         vals[count] = height;
         count++;
@@ -2669,7 +2669,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     return;
   }
 
-  ushort *lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * sizeof(ushort));
+  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
 
   nummaps = cf_ReadInt(fp);
 
@@ -2691,7 +2691,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
     int lm_handle = lm_AllocLightmap(w, h);
 
     lightmap_remap[i] = lm_handle;
-    ushort *data = (ushort *)lm_data(lm_handle);
+    uint16_t *data = (uint16_t *)lm_data(lm_handle);
     ReadCompressionShort(fp, data, w * h);
   }
 
@@ -2765,10 +2765,10 @@ void ReadLightmapChunk(CFILE *fp, int version) {
 
   int nummaps;
   int i, t;
-  ushort *ded_dummy_data = NULL;
+  uint16_t *ded_dummy_data = NULL;
 
   if (Dedicated_server) {
-    ded_dummy_data = (ushort *)mem_malloc(128 * 128 * 2);
+    ded_dummy_data = (uint16_t *)mem_malloc(128 * 128 * 2);
     ASSERT(ded_dummy_data);
   }
 
@@ -2835,12 +2835,12 @@ void ReadLightmapChunk(CFILE *fp, int version) {
       LightmapInfo[lmi].normal.z = 1;
     }
 
-    ushort *data;
+    uint16_t *data;
 
     if (Dedicated_server)
       data = ded_dummy_data;
     else
-      data = (ushort *)lm_data(LightmapInfo[lmi].lm_handle);
+      data = (uint16_t *)lm_data(LightmapInfo[lmi].lm_handle);
 
     if (version <= 37) {
       for (t = 0; t < w * h; t++)
@@ -2852,7 +2852,7 @@ void ReadLightmapChunk(CFILE *fp, int version) {
     // Adjust lightmap data to account for our new 1555 format
     if (version < 64) {
       for (t = 0; t < w * h; t++) {
-        ushort pixel = data[t];
+        uint16_t pixel = data[t];
 
         if (pixel == 0x07e0)
           pixel = NEW_TRANSPARENT_COLOR;
@@ -3389,7 +3389,7 @@ void ReadTerrainTmapFlagChunk(CFILE *fp, int version) {
     }
   } else {
     uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-    ushort *short_vals = (ushort *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
+    uint16_t *short_vals = (uint16_t *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
 
     if (version < 102) {
       // Read tmap1
@@ -4232,7 +4232,7 @@ int WriteObject(CFILE *ofile, object *objp) {
         for (t = 0; t < objp->lm_object.num_faces[i]; t++) {
           lightmap_object_face *fp = &objp->lm_object.lightmap_faces[i][t];
           ASSERT(LightmapInfoRemap[fp->lmi_handle] != BAD_LMI_INDEX);
-          cf_WriteShort(ofile, (ushort)LightmapInfoRemap[fp->lmi_handle]);
+          cf_WriteShort(ofile, (uint16_t)LightmapInfoRemap[fp->lmi_handle]);
 
           cf_WriteVector(ofile, &fp->rvec);
           cf_WriteVector(ofile, &fp->uvec);
@@ -4305,7 +4305,7 @@ int WriteFace(CFILE *ofile, face *fp) {
     // Write UV2's
 
     ASSERT(LightmapInfoRemap[fp->lmi_handle] != BAD_LMI_INDEX);
-    cf_WriteShort(ofile, (ushort)LightmapInfoRemap[fp->lmi_handle]);
+    cf_WriteShort(ofile, (uint16_t)LightmapInfoRemap[fp->lmi_handle]);
 
     for (i = 0; i < fp->num_verts; i++) {
       cf_WriteFloat(ofile, fp->face_uvls[i].u2);
@@ -4841,7 +4841,7 @@ void WriteTerrainTmapChunk(CFILE *fp) {
   int i;
 
   uint8_t *byte_vals = (uint8_t *)mem_malloc(TERRAIN_DEPTH * TERRAIN_WIDTH);
-  ushort *short_vals = (ushort *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
+  uint16_t *short_vals = (uint16_t *)mem_malloc(2 * TERRAIN_DEPTH * TERRAIN_WIDTH);
 
   int start_pos;
   start_pos = StartChunk(fp, CHUNK_TERRAIN_TMAPS_FLAGS);
@@ -4883,7 +4883,7 @@ void WriteLightmapChunk(CFILE *fp) {
   int lightmap_info_count = 0;
   int lightmap_count = 0;
 
-  ushort *lightmap_remap = (ushort *)mem_malloc(MAX_LIGHTMAPS * sizeof(ushort));
+  uint16_t *lightmap_remap = (uint16_t *)mem_malloc(MAX_LIGHTMAPS * sizeof(uint16_t));
   uint8_t *lightmap_spoken_for = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
 
   ASSERT(lightmap_remap);
@@ -4926,7 +4926,7 @@ void WriteLightmapChunk(CFILE *fp) {
         cf_WriteShort(fp, w);
         cf_WriteShort(fp, h);
 
-        ushort *data = lm_data(LightmapInfo[i].lm_handle);
+        uint16_t *data = lm_data(LightmapInfo[i].lm_handle);
         ASSERT(data != NULL);
 
         CheckToWriteCompressShort(fp, data, w * h);

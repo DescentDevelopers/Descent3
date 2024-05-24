@@ -215,7 +215,7 @@ volatile struct tWinKeys {
   };
   bool status;     // is it down?
   bool mutex_flag; // done for mutexing between ddio_Internal and KeyThread
-  ushort mutex_data;
+  uint16_t mutex_data;
 } WKeys[DDIO_MAX_KEYS];
 
 static int DDIO_key_language = KBLANG_AMERICAN;

@@ -670,9 +670,9 @@ typedef struct {
 
 extern netgame_info Netgame;
 
-extern ushort Local_object_list[];
-extern ushort Server_object_list[];
-extern ushort Server_spew_list[];
+extern uint16_t Local_object_list[];
+extern uint16_t Server_object_list[];
+extern uint16_t Server_spew_list[];
 
 #define MAX_RECEIVE_SIZE 4096
 #define MAX_NETWORK_GAMES 100
@@ -748,7 +748,7 @@ extern bool Got_heartbeat;
 
 // This is for breakable glass
 #define MAX_BROKE_GLASS 100
-extern ushort Broke_glass_rooms[], Broke_glass_faces[];
+extern uint16_t Broke_glass_rooms[], Broke_glass_faces[];
 extern int Num_broke_glass;
 
 // For keeping track of damage and shields
@@ -773,7 +773,7 @@ extern int Got_level_info;
 extern int Got_new_game_time;
 // For keeping track of buildings that have changed
 extern uint8_t Multi_building_states[];
-extern ushort Multi_num_buildings_changed;
+extern uint16_t Multi_num_buildings_changed;
 
 extern bool Multi_logo_state;
 
@@ -786,7 +786,7 @@ extern int Game_is_master_tracker_game;
 #define TRACKER_ID_LEN 10 // Don't change this!
 extern char Tracker_id[TRACKER_ID_LEN];
 
-extern ushort Turrett_position_counter[MAX_OBJECTS];
+extern uint16_t Turrett_position_counter[MAX_OBJECTS];
 
 #define LOGIN_LEN 33
 #define REAL_NAME_LEN 66
@@ -1040,10 +1040,10 @@ void MultiDoObjAnimUpdate(uint8_t *data);
 void MultiDoPlay3dSound(uint8_t *data);
 
 // Tell the clients to play a 3d sound
-void MultiPlay3dSound(short soundidx, ushort objnum, int priority);
+void MultiPlay3dSound(short soundidx, uint16_t objnum, int priority);
 
 // Tell the client to play a sound because a robot fired
-void MultiSendRobotFireSound(short soundidx, ushort objnum);
+void MultiSendRobotFireSound(short soundidx, uint16_t objnum);
 
 // Play the robot sound that the server told us about
 void MultiDoRobotFireSound(uint8_t *data);
@@ -1109,7 +1109,7 @@ void MultiSendClientCustomData(int slot, int whoto = -1);
 
 void MultiCancelFile(int playernum, int filenum, int file_who);
 
-void MultiAskForFile(ushort file_id, ushort file_who, ushort who);
+void MultiAskForFile(uint16_t file_id, uint16_t file_who, uint16_t who);
 
 void DoNextPlayerFile(int playernum);
 

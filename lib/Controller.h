@@ -186,7 +186,7 @@ const uint8_t CT_X_AXIS = 1, // AXIS constants for ctAxis
 #define CONTROLLER_CTL2_INFO(_b) ((int8_t)hibyte(_b))
 #define CONTROLLER_CTL_INFO(_l, _h) makeshort(_h, _l)
 
-#define CONTROLLER_VALUE(_l) ((ushort)loword(_l))
+#define CONTROLLER_VALUE(_l) ((uint16_t)loword(_l))
 #define CONTROLLER_INFO(_l) ((short)hiword(_l))
 #define MAKE_CONFIG_DATA(_c, _v) makeword(_c, _v)
 

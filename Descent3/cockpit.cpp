@@ -589,7 +589,7 @@ float KeyframeAnimateCockpit() {
 //////////////////////////////////////////////////////////////////////////////
 //
 //	returns the submodel number of the monitor requested
-bsp_info *CockpitGetMonitorSubmodel(ushort monitor_flag) {
+bsp_info *CockpitGetMonitorSubmodel(uint16_t monitor_flag) {
   int i;
   ASSERT(Cockpit_info.model_num > -1);
   for (i = 0; i < Poly_models[Cockpit_info.model_num].n_models; i++) {

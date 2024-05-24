@@ -285,8 +285,8 @@ int PInfo::GetExtraInfoSize(void) {
   size += sizeof(float);  // extra_info.observer_time
   size += sizeof(float);  // extrainfo.kill_time
   size += sizeof(float);  // extrainfo.death_time
-  size += sizeof(ushort); // extrainfo.kills_in_a_row
-  size += sizeof(ushort); // extrainfo.deaths_in_a_row
+  size += sizeof(uint16_t); // extrainfo.kills_in_a_row
+  size += sizeof(uint16_t); // extrainfo.deaths_in_a_row
   size += sizeof(int8_t);  // extrainfo.last_kill_num
   size += sizeof(int8_t);  // extrainfo.last_death_num
   size += sizeof(char);   // extrainfo.got_revenge

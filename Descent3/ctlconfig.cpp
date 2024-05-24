@@ -737,7 +737,7 @@ void wpnsel_cfg_screen::process(int res) {
   // do different uis
   if (do_disable_ui) {
     ASSERT(m_selection_status == -1 && slot != -1);
-    ushort wpnidx = is_secondary ? GetAutoSelectSecondaryWpnIdx(slot) : GetAutoSelectPrimaryWpnIdx(slot);
+    uint16_t wpnidx = is_secondary ? GetAutoSelectSecondaryWpnIdx(slot) : GetAutoSelectPrimaryWpnIdx(slot);
     wpnidx = wpnidx ^ WPNSEL_SKIP;
     if (is_secondary) {
       SetAutoSelectSecondaryWpnIdx(slot, wpnidx);
@@ -750,7 +750,7 @@ void wpnsel_cfg_screen::process(int res) {
   // see if the user has selected another (in the same category)
   //
   else if (do_swap_ui) {
-    ushort wpnidx;
+    uint16_t wpnidx;
     if (slot != -1) {
       if (m_selection_status == -1) {
         m_switch_slot = slot;
@@ -774,7 +774,7 @@ void wpnsel_cfg_screen::process(int res) {
         }
       } else {
         int slot_idx = m_switch_slot;
-        ushort new_wpnidx =
+        uint16_t new_wpnidx =
             is_secondary ? GetAutoSelectSecondaryWpnIdx(m_switch_slot) : GetAutoSelectPrimaryWpnIdx(m_switch_slot);
 
         ASSERT(m_switch_slot != -1);
@@ -1081,7 +1081,7 @@ int weapon_select_dialog(int wpn, bool is_secondary) {
   newuiListBox *lbox;
   newuiSheet *sheet;
   int res, i;
-  ushort retval;
+  uint16_t retval;
   wpn &= (~WPNSEL_SKIP);
   wnd.Create(NULL, 0, 0, 320, 288);
   sheet = wnd.GetSheet();

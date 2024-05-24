@@ -95,9 +95,9 @@
 #define LFH_XTRALN 0x1c
 #define LFH_NAME 0x1e
 
-ushort get_buffer_short(char *buf) {
+uint16_t get_buffer_short(char *buf) {
   uint8_t *ubuf = (uint8_t *)buf;
-  return ((ushort)ubuf[1] << 8) | (ushort)ubuf[0];
+  return ((uint16_t)ubuf[1] << 8) | (uint16_t)ubuf[0];
 }
 uint32_t get_buffer_int(char *buf) {
   uint8_t *ubuf = (uint8_t *)buf;
@@ -513,8 +513,8 @@ int ZIP::SeekToCompressedData(zipentry *ent) {
     return -1;
   }
 
-  ushort filename_length = get_buffer_short(buf + LFH_FNLN);
-  ushort extra_field_length = get_buffer_short(buf + LFH_XTRALN);
+  uint16_t filename_length = get_buffer_short(buf + LFH_FNLN);
+  uint16_t extra_field_length = get_buffer_short(buf + LFH_XTRALN);
 
   offset = ent->offset_lcl_hdr_frm_frst_disk + LFH_NAME + filename_length + extra_field_length;
 

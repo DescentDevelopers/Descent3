@@ -1835,8 +1835,8 @@ void InitDedicatedServer() {
 int ServerTimeout = 0;
 float LastPacketReceived;
 
-ushort Gameport = D3_DEFAULT_PORT;
-ushort PXOPort = 0;
+uint16_t Gameport = D3_DEFAULT_PORT;
+uint16_t PXOPort = 0;
 // Initialiaze everything before data load
 void InitD3Systems1(bool editor) {
 #if defined(RELEASE)
