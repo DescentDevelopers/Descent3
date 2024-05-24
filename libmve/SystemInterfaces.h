@@ -19,6 +19,8 @@
 #ifndef MVE_SYSTEM_INTERFACES_H__
 #define MVE_SYSTEM_INTERFACES_H__
 
+#include <cstdint>
+
 // Max&Min values for settings
 #define LNXSND_VOLUME_MAX 0
 #define LNXSND_VOLUME_MIN -10000

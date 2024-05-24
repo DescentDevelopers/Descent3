@@ -41,6 +41,7 @@
 #include <cctype>
 
 #include "pstring.h"
+#include <cstdint>
 
 // CleanupStr
 //    This function strips all leading and trailing spaces, keeping internal spaces. This goes for tabs too.

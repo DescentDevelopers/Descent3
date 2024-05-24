@@ -19,7 +19,8 @@
 #ifndef _TYPES_H
 #define _TYPES_H
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstdint>
 
 // define unsigned types;
 typedef uint8_t uint8_t;

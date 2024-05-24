@@ -70,6 +70,8 @@
 #ifndef __DLMODULE_H_
 #define __DLMODULE_H_
 
+#include <cstdint>
+
 #ifdef __cplusplus
 #define CPPEXTERN extern "C"
 #else

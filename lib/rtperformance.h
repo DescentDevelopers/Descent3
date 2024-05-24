@@ -19,6 +19,8 @@
 #ifndef _RUN_TIME_PROFILING_
 #define _RUN_TIME_PROFILING_
 
+#include <cstdint>
+
 // uncomment the following if you want to enable Run-time Profiling
 #ifndef RELEASE
 #define USE_RTP

@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstdint>
+
 #if _WIN32
 #include <windows.h>
 #include <MMSystem.h>
