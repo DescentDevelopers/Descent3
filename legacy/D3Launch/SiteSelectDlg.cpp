@@ -169,7 +169,7 @@ void CSiteSelectDlg::SetColumnWidths(void)
 BOOL CSiteSelectDlg::ParseSiteFile(void)
 {
 	SITE_ENTRY site_entry;
-	char filebuffer[PSPATHNAME_LEN+1];
+	char filebuffer[_MAX_PATH+1];
 	int field;
 	FILE *f;
 
@@ -181,7 +181,7 @@ BOOL CSiteSelectDlg::ParseSiteFile(void)
 	field=0;
 	strcpy(filebuffer,"");
 	while (!feof(f)) {
-		fgets(filebuffer, PSPATHNAME_LEN, f);
+		fgets(filebuffer, _MAX_PATH, f);
 		if(strlen(filebuffer)>0 && filebuffer[strlen(filebuffer) - 1] == '\n')
 			filebuffer[strlen(filebuffer) - 1] = '\0';
 

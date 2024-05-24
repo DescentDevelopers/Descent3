@@ -296,8 +296,8 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 		}
 
 		// Copy Dallas files (if doing a 'Save As')
-		char old_filename[PSPATHNAME_LEN+1];
-		char new_filename[PSPATHNAME_LEN+1];
+		char old_filename[_MAX_PATH+1];
+		char new_filename[_MAX_PATH+1];
 
 		CString old_level_fname, new_level_fname;
 		old_level_fname = GetPathName();

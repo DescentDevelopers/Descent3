@@ -82,7 +82,7 @@
 //	the following structures are slightly modified versions of the CFILE hog structs
 struct hog_library_entry
 {
-	char		path[PSPATHNAME_LEN];		// location of data file (filename not included)
+	char		path[_MAX_PATH];		// location of data file (filename not included)
 	char		name[PSFILENAME_LEN+1];		// just the filename
 	unsigned	length;						// length of this file
   int32_t		timestamp;					// time and date of file
@@ -93,7 +93,7 @@ struct hog_library_entry
 // the hog library structure
 struct hog_library
 {
-	char filename[PSPATHNAME_LEN];			// full hog file path (including filename)
+	char filename[_MAX_PATH];			// full hog file path (including filename)
 	int flags;								// misc flags for the hog file
 	int num_entries;						// number of entries in the hog file
 	CList <hog_library_entry, hog_library_entry&> filelist;

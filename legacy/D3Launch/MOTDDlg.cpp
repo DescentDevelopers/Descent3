@@ -82,7 +82,7 @@ BOOL CMOTDDlg::OnInitDialog()
 // Reads the message of the day text into the list box 
 BOOL CMOTDDlg::ParseMOTDFile(void)
 {
-	char filebuffer[PSPATHNAME_LEN+1];
+	char filebuffer[_MAX_PATH+1];
 	FILE *f;
 
 	f = fopen(MOTD_LOC_FNAME, "rt");
@@ -91,7 +91,7 @@ BOOL CMOTDDlg::ParseMOTDFile(void)
 	}
 
 	while (!feof(f)) {
-		fgets(filebuffer, PSPATHNAME_LEN, f);
+		fgets(filebuffer, _MAX_PATH, f);
 		if(strlen(filebuffer)>0 && filebuffer[strlen(filebuffer) - 1] == '\n')
 			filebuffer[strlen(filebuffer) - 1] = '\0';
 		m_TextList.AddString(filebuffer);

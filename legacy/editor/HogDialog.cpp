@@ -77,7 +77,7 @@ hog_library *open_hogfile(char *hogname)
 {
 	FILE *fp, *fplst;
 	char *strptr;
-	char filename[MAX_PATH];
+	char filename[_MAX_PATH];
 	int id, nfiles;
 	int i,offset,t;
 	index_entry *index;

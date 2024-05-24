@@ -536,9 +536,9 @@ class NewUIFileDialog : public NewUIGameWindow {
 
   UITextItem *m_FileItems; // file item array.
 
-  char m_SearchPath[PSPATHNAME_LEN];
+  char m_SearchPath[_MAX_PATH];
   char m_SearchExt[PSFILENAME_LEN + 1];
-  char m_NewPath[PSPATHNAME_LEN];
+  char m_NewPath[_MAX_PATH];
 
 private:
   void UpdateList();

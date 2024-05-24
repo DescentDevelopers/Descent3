@@ -340,7 +340,7 @@ void QuickSaveGame() {
   } else {
     // verify savegame still exists in the appropriate slot, if not just run dialog, if so then save
     char filename[PSFILENAME_LEN + 1];
-    char pathname[PSPATHNAME_LEN];
+    char pathname[_MAX_PATH];
     char desc[GAMESAVE_DESCLEN + 1];
     FILE *fp;
     int i;
@@ -372,8 +372,8 @@ void SaveGameDialog() {
   newuiSheet *sheet;
   int i, res;
 
-  char savegame_dir[PSPATHNAME_LEN];
-  char pathname[PSPATHNAME_LEN];
+  char savegame_dir[_MAX_PATH];
+  char pathname[_MAX_PATH];
   char filename[PSFILENAME_LEN + 1];
   char desc[GAMESAVE_DESCLEN + 1];
   bool occupied_slot[N_SAVE_SLOTS];
@@ -573,8 +573,8 @@ bool LoadGameDialog() {
   int i, res;
   bool retval = true;
 
-  char savegame_dir[PSPATHNAME_LEN];
-  char pathname[PSPATHNAME_LEN];
+  char savegame_dir[_MAX_PATH];
+  char pathname[_MAX_PATH];
   char filename[PSFILENAME_LEN + 1];
   char desc[GAMESAVE_DESCLEN + 1];
   bool occupied_slot[N_SAVE_SLOTS], loadgames_avail = false;

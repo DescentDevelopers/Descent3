@@ -181,7 +181,7 @@
 void LoadLevelProgress(int step, float percent, const char *chunk = NULL);
 
 //	array constants
-const int MSN_FILENAMELEN = PSPATHNAME_LEN, MSN_URLLEN = 256;
+const int MSN_FILENAMELEN = _MAX_PATH, MSN_URLLEN = 256;
 
 #define MAX_KEYWORDLEN 300
 

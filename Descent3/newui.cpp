@@ -1273,8 +1273,8 @@ void NewUIFileDialog::SetSearchPath(const char *path) { strcpy(m_SearchPath, pat
 const char *NewUIFileDialog::GetFilename() { return m_NewPath; }
 
 void NewUIFileDialog::UpdateList() {
-  char search_str[PSPATHNAME_LEN];
-  char filename[PSPATHNAME_LEN];
+  char search_str[_MAX_PATH];
+  char filename[_MAX_PATH];
 
   // remove items from listbox, free them.
   while (m_ListBox.GetNumItems()) {
@@ -1325,7 +1325,7 @@ bool NewUIFileDialog::DoModal() {
     case UID_FILELIST:
       index = m_ListBox.GetSelectedIndex();
       filename = ((UITextItem *)m_ListBox.GetItem(index))->GetBuffer();
-      ASSERT(strlen(filename) < (PSPATHNAME_LEN));
+      ASSERT(strlen(filename) < (_MAX_PATH));
       strcpy(m_NewPath, filename);
       return_value = true;
       exit_menu = true;
@@ -1355,9 +1355,9 @@ void NewUIFileDialog::OnDestroy() {
 //@@	NewUIListBox m_ListBox;
 //@@	NewUIButton m_Ok;
 //@@
-//@@	char m_SearchPath[PSPATHNAME_LEN];
+//@@	char m_SearchPath[_MAX_PATH];
 //@@	char m_SearchExt[PSFILENAME_LEN];
-//@@	char m_NewPath[PSPATHNAME_LEN];
+//@@	char m_NewPath[_MAX_PATH];
 //@@
 //@@public:
 //@@	void Create(int x, int y, int w, int h, const char *path, const char *ext);

@@ -170,7 +170,7 @@ static int           maskFFB                       = 0;
 static int           numJoy                        = 0;
 static int           numEffects                    = 0;
 static char          isWheel[kMaxJoy];
-static char          joyName[kMaxJoy][MAX_PATH];
+static char          joyName[kMaxJoy][_MAX_PATH];
 static DWORD         dwAxes[2]                     = { DIJOFS_X, DIJOFS_Y };
 
 // Private Functions

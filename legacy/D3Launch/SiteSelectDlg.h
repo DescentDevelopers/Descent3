@@ -33,11 +33,11 @@
 #define SITE_FILE_COMMENT_CHAR	';'
 
 // Structure for the site entries
-typedef struct SITE_ENTRY {
-	char name[PSPATHNAME_LEN+1];		// The name/description of the site
-	char url[PSPATHNAME_LEN+1];			// Just the base http/ftp address
-	char location[PSPATHNAME_LEN+1];	// Where the site is located
-	char path[PSPATHNAME_LEN+1];		// The remote directory and patch filename
+struct SITE_ENTRY {
+	char name[_MAX_PATH+1];		// The name/description of the site
+	char url[_MAX_PATH+1];			// Just the base http/ftp address
+	char location[_MAX_PATH+1];	// Where the site is located
+	char path[_MAX_PATH+1];		// The remote directory and patch filename
 };
 
 #define NO_SITE_CHOSEN	-1
@@ -58,7 +58,7 @@ public:
 	SITE_ENTRY site_entries[MAX_SITES];		// array of site entries
 	int num_sites;							// the number of sites in memory
 	int chosen_site;						// the index of the chosen site
-	char download_path[PSPATHNAME_LEN*2+1];	// the full patch download path
+	char download_path[_MAX_PATH*2+1];	// the full patch download path
 
 // Dialog Data
 	//{{AFX_DATA(CSiteSelectDlg)

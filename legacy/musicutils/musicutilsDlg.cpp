@@ -1097,7 +1097,7 @@ CMusicutilsDlg::tSongItem *CMusicutilsDlg::InsertSong(HTREEITEM hTree, const tSo
 	strSong += "  (";
 	strSong += (song->strSongPath + ")");
 
-	song->hTreeItem = InsertLeaf(hTree, strSong.GetBuffer(PSPATHNAME_LEN+64), (LPARAM)song);
+	song->hTreeItem = InsertLeaf(hTree, strSong.GetBuffer(_MAX_PATH+64), (LPARAM)song);
 
 	song->hTI_repeat = NULL;
 	if (hTree != hIntroLeaf && hTree != hEndCombatLeaf) {

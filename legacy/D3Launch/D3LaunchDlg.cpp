@@ -1491,12 +1491,12 @@ void CD3LaunchDlg::OnBtnLight()
 // Locates the user's CD-ROM drive
 int CD3LaunchDlg::find_cd_drive(char *subdir)
 {
-	char oldpath[MAX_PATH];
+	char oldpath[_MAX_PATH];
 	char volume[256];
 	int i;
 	int cdrom_drive=-1;
 
-	GetCurrentDirectory(MAX_PATH, oldpath);
+	GetCurrentDirectory(_MAX_PATH, oldpath);
 
 	for (i = 0; i < 26; i++) 
 	{
@@ -1587,8 +1587,8 @@ typedef int (CALLBACK *LPFN_DIRECTXSETUP)(HWND, LPSTR, DWORD);
 void CD3LaunchDlg::InstallDirectX() 
 {
 	OSVERSIONINFO ver;
-	char CD_path[MAX_PATH];
-	char DLL_path[MAX_PATH];
+	char CD_path[_MAX_PATH];
+	char DLL_path[_MAX_PATH];
 	int cd_drive_num;
 
 	// check if running under NT
@@ -1607,8 +1607,8 @@ void CD3LaunchDlg::InstallDirectX()
 		return;
 	}
 
-	char original_path[MAX_PATH];
-	_getcwd(original_path, MAX_PATH-1);
+	char original_path[_MAX_PATH];
+	_getcwd(original_path, _MAX_PATH-1);
 
 	sprintf(CD_path,"%c:\\", 'a' + cd_drive_num );	
 	strcat(CD_path, "directx6");
@@ -1721,7 +1721,7 @@ void CD3LaunchDlg::RunOpenGLSetup()
 	if(dlg.DoModal()==IDCANCEL) return;
 
 	// run the install program
-	char CD_path[MAX_PATH];
+	char CD_path[_MAX_PATH];
 	int cd_drive_num;
 
 	cd_drive_num = launcher_get_CD_path(CD_path,1,"\\GLSetup");
@@ -1729,8 +1729,8 @@ void CD3LaunchDlg::RunOpenGLSetup()
 		return;
 	}
 
-	char original_path[MAX_PATH];
-	_getcwd(original_path, MAX_PATH-1);
+	char original_path[_MAX_PATH];
+	_getcwd(original_path, _MAX_PATH-1);
 
 	sprintf(CD_path,"%c:\\", 'a' + cd_drive_num );	
 	strcat(CD_path, "GLSetup");

@@ -83,7 +83,7 @@ private:
 	PageDataNode *m_tail;
 	int m_size;
 
-	char m_LevelFilenames[MAX_LEVEL_FILENAMES][PSPATHNAME_LEN];
+	char m_LevelFilenames[MAX_LEVEL_FILENAMES][_MAX_PATH];
 	int m_NumLevelFilenames;
 
 	// Dialog controls

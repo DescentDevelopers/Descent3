@@ -71,7 +71,7 @@ private:
 
   struct sym_info // full runtime symbol
   {
-    char name[PSPATHNAME_LEN];
+    char name[_MAX_PATH];
     char *text;
   };
 

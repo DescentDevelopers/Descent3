@@ -45,7 +45,7 @@ int __stdcall CDirDialog::BrowseCtrlCallback(HWND hwnd, UINT uMsg, LPARAM lParam
     else if( uMsg == BFFM_SELCHANGED )
     {
         LPITEMIDLIST pidl = (LPITEMIDLIST) lParam;
-        char selection[MAX_PATH];
+        char selection[_MAX_PATH];
         if( ! ::SHGetPathFromIDList(pidl, selection) )
             selection[0] = '\0';
 
@@ -93,7 +93,7 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent)
 
     if (!m_strInitDir.IsEmpty ())
     {
-        OLECHAR       olePath[MAX_PATH];
+        OLECHAR       olePath[_MAX_PATH];
         ULONG         chEaten;
         ULONG         dwAttributes;
         HRESULT       hr;
@@ -106,8 +106,8 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent)
             //
             // IShellFolder::ParseDisplayName requires the file name be in Unicode.
             //
-            MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, m_strInitDir.GetBuffer(MAX_PATH), -1,
-                                olePath, MAX_PATH);
+            MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, m_strInitDir.GetBuffer(_MAX_PATH), -1,
+                                olePath, _MAX_PATH);
 
             m_strInitDir.ReleaseBuffer (-1);
             //
@@ -130,7 +130,7 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent)
         }
     }
     bInfo.hwndOwner = pwndParent == NULL ? NULL : pwndParent->GetSafeHwnd();
-    bInfo.pszDisplayName = m_strPath.GetBuffer (MAX_PATH);
+    bInfo.pszDisplayName = m_strPath.GetBuffer (_MAX_PATH);
     bInfo.lpszTitle = (m_strTitle.IsEmpty()) ? "Open" : m_strTitle;
     bInfo.ulFlags = BIF_RETURNFSANCESTORS
                     | BIF_RETURNONLYFSDIRS
@@ -146,7 +146,7 @@ BOOL CDirDialog::DoBrowse(CWnd *pwndParent)
     m_strPath.ReleaseBuffer();
     m_iImageIndex = bInfo.iImage;
 
-    if (::SHGetPathFromIDList(pidl, m_strPath.GetBuffer(MAX_PATH)) == FALSE)
+    if (::SHGetPathFromIDList(pidl, m_strPath.GetBuffer(_MAX_PATH)) == FALSE)
     {
         pMalloc ->Free(pidl);
         pMalloc ->Release();

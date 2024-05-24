@@ -709,8 +709,8 @@ bool ProcessUpdatedVersionFile(void)
 	FILE *f;
 	uint32_t cur_major, cur_minor, cur_build;
 	uint32_t new_major, new_minor, new_build;
-	char buffer[PSPATHNAME_LEN+1];
-	char verbuffer[PSPATHNAME_LEN+1];
+	char buffer[_MAX_PATH+1];
+	char verbuffer[_MAX_PATH+1];
 
 	// See if the updated version text file exists
 	f = fopen(UPDATED_VERSION_FNAME, "rt");
@@ -726,7 +726,7 @@ bool ProcessUpdatedVersionFile(void)
 	while (!feof(f)) {
 
 		// Read the line into a temporary buffer
-		fgets(buffer, PSPATHNAME_LEN, f);
+		fgets(buffer, _MAX_PATH, f);
 
 		// take the \n off the end of it
 		if(strlen(buffer)>0 && buffer[strlen(buffer) - 1] == '\n')
@@ -909,10 +909,10 @@ void SetLauncherTitleString(void)
 // Starts up the online registration program
 void Register(bool wait_until_done)
 {
-	char original_path[MAX_PATH+1];
-	char ereg_path[MAX_PATH+1];
+	char original_path[_MAX_PATH+1];
+	char ereg_path[_MAX_PATH+1];
 
-	_getcwd(original_path, MAX_PATH);
+	_getcwd(original_path, _MAX_PATH);
 	strcpy(ereg_path,original_path);
 	strcat(ereg_path,"\\ereg");
 	_chdir(ereg_path);

@@ -679,7 +679,7 @@
 level_info Level_info;
 tMission Current_mission;
 tLevelNode *Current_level = NULL;
-char D3MissionsDir[PSPATHNAME_LEN];
+char D3MissionsDir[_MAX_PATH];
 extern int Times_game_restored;
 extern msn_urls Net_msn_URLs;
 
@@ -907,15 +907,15 @@ bool LoadMission(const char *mssn) {
   tMission *msn;
   CFILE *fp = NULL; // Mission file
   char errtext[80]; // Stores error if unable to read mission
-  char msnfname[PSPATHNAME_LEN];
-  char mission[PSPATHNAME_LEN];
+  char msnfname[_MAX_PATH];
+  char mission[_MAX_PATH];
   int srclinenum = 0; // Current line of source.
   int curlvlnum;      // Current level number
   int numlevels;      // Number of levels required to read in.
   int cur_objective;  // current objective reading.
   bool indesc;        // are we in a multi-line block
   bool res = false;   // used to specify if no error has occurred.
-  char pathname[PSPATHNAME_LEN];
+  char pathname[_MAX_PATH];
   ResetMission(); // Reset everything.
                   // open MN3 if filename passed was an mn3 file.
 
@@ -1647,7 +1647,7 @@ bool Skip_next_movie = false;
 //	---------------------------------------------------------------------------
 //	 play movie
 void DoMissionMovie(const char *movie) {
-  char temppath[PSPATHNAME_LEN];
+  char temppath[_MAX_PATH];
   if (PROGRAM(windowed)) {
     mprintf(0, "Skipping movie...can't do in windowed mode!\n");
     return;
@@ -1824,12 +1824,12 @@ int Mission_voice_hog_handle = 0;
 //	MN3 based mission functions.
 // loads the msn file from the mn3 file specified, specifies the hog and table file.
 bool mn3_Open(const char *mn3file) {
-  char pathname[PSPATHNAME_LEN];
+  char pathname[_MAX_PATH];
   char filename[PSFILENAME_LEN + 1];
   char ext[PSFILENAME_LEN];
   int mn3_handle;
   // concatanate the mn3 extension if it isn't there.
-  char tempMn3File[PSPATHNAME_LEN];
+  char tempMn3File[_MAX_PATH];
   if (!IS_MN3_FILE(mn3file)) {
     strncpy(tempMn3File, mn3file, sizeof(tempMn3File) - 1);
     tempMn3File[sizeof(tempMn3File) - 1] = 0;
@@ -1873,7 +1873,7 @@ bool mn3_Open(const char *mn3file) {
 bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn) {
   int handle;
   bool retval;
-  char pathname[PSPATHNAME_LEN];
+  char pathname[_MAX_PATH];
   char filename[PSFILENAME_LEN + 1];
 
   if (stricmp(mn3file, "d3.mn3") == 0) {
