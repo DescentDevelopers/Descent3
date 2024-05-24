@@ -120,7 +120,7 @@ public:
 //		text.  allows for alpha, color and different fonts.
 
 class UITextItem : public UIItem {
-  friend void SetUITextItemText(UITextItem *uit, char *newtext, unsigned int color);
+  friend void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color);
 
   ubyte m_Alpha;      // alpha value of text.
   ddgr_color m_Color; // color of text.

@@ -95,7 +95,7 @@ void __cdecl MVE_dsbSetPan(int32_t lPan);
 void __cdecl
 MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth,
 	   unsigned WriteWin, unsigned char *WriteWinPtr,
-	   unsigned int WinSize, unsigned WinGran,
+	   uint32_t WinSize, unsigned WinGran,
 	   void *SetBank, unsigned hicolor);
 
 /* This function alters the display from 640x480 or 640x400 to 640x350 resolution.

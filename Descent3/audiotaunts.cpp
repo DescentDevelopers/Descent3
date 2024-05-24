@@ -501,11 +501,11 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   cfptr = NULL;
   char format_type[80];       // ASCII name of format type
   unsigned short fmttag = 0;  // Numerical format type
-  unsigned int ckid;         // Current chunk's ID
-  unsigned int cksize;       // Current chunk's size in bytes
-  unsigned int filesize;     // Size of the sound file
-  unsigned int nextseek = 0; // Location of the next seek
-  unsigned int aligned_size; // Sound files are aligned to SOUND_FILE_SAMPLE_ALIGNMENT samples
+  uint32_t ckid;         // Current chunk's ID
+  uint32_t cksize;       // Current chunk's size in bytes
+  uint32_t filesize;     // Size of the sound file
+  uint32_t nextseek = 0; // Location of the next seek
+  uint32_t aligned_size; // Sound files are aligned to SOUND_FILE_SAMPLE_ALIGNMENT samples
 
   // Sound format information
   int samples_per_second;
@@ -514,7 +514,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   char error_code = 0;
 
   // Used to read temporary long values
-  unsigned int temp_long;
+  uint32_t temp_long;
 
   // Flags for if we previously read data or a format
   char f_data, f_fmt = 0;
@@ -530,7 +530,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   }
 
   // Make sure that it is a RIFF format
-  temp_long = (unsigned int)cf_ReadInt(cfptr);
+  temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x46464952) {
     error_code = 2;
     mprintf((0, "TAUNT: Wav Load: %s is not a RIFF format file\n", filename));
@@ -542,7 +542,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   filesize += cftell(cfptr);
 
   // Make sure it is a wave file
-  temp_long = (unsigned int)cf_ReadInt(cfptr);
+  temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x45564157) {
     error_code = 3;
     mprintf((0, "TAUNT: Wav Load:  %s is not a WAVE file\n", filename));

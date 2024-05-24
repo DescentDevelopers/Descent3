@@ -30,12 +30,12 @@ typedef struct {
 } LnxVideoDesc;
 
 typedef struct {
-  unsigned int bpp;      // bits per pixel.
-  unsigned int dwFlags;  // flags for window
-  unsigned int dwWidth;  // width of the created window
-  unsigned int dwHeight; // height of the created window
-  unsigned int dwXPos;   // Top-Left X position
-  unsigned int dwYPos;   // Top-Left Y position
+  uint32_t bpp;      // bits per pixel.
+  uint32_t dwFlags;  // flags for window
+  uint32_t dwWidth;  // width of the created window
+  uint32_t dwHeight; // height of the created window
+  uint32_t dwXPos;   // Top-Left X position
+  uint32_t dwYPos;   // Top-Left Y position
 
   char *lpszName; // Window name
   //	Window *pre_created_window; // Window already created
@@ -59,11 +59,11 @@ typedef struct {
   //	GC              m_GC;
   //	XImage          *lpImage;
   //	XShmSegmentInfo shmInfo;
-  unsigned int dwWidth;  // width of the created window
-  unsigned int dwHeight; // height of the created window
+  uint32_t dwWidth;  // width of the created window
+  uint32_t dwHeight; // height of the created window
   bool fullScreen;
 
-  unsigned int lock_x, lock_y, lock_w, lock_h;
+  uint32_t lock_x, lock_y, lock_w, lock_h;
   unsigned char *lock_ptr;
 } LnxWindow;
 
@@ -109,7 +109,7 @@ int LnxDraw_DestroyWindow(LnxWindow *handle);
 // Returns:
 //       true : success
 //       false : error
-bool LnxDraw_LockSurface(LnxWindow *wnd, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2,
+bool LnxDraw_LockSurface(LnxWindow *wnd, uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2,
                          unsigned char **ptr, int *pitch);
 
 //////////////////////////
@@ -128,7 +128,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr);
 //       0 : no error
 //      -1 : invalid parameter
 //      -2 : unknown error
-int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, unsigned int x, unsigned int y, unsigned int w, unsigned int h);
+int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 
 ////////////////////////
 // LnxDraw_GetRGBMasks
@@ -138,6 +138,6 @@ int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, unsigned int x, unsigned in
 // Returns:
 //       0 : no error
 //      -1 : invalid parameters
-int LnxDraw_GetRGBMasks(LnxWindow *wnd, unsigned int *r, unsigned int *g, unsigned int *b);
+int LnxDraw_GetRGBMasks(LnxWindow *wnd, uint32_t *r, uint32_t *g, uint32_t *b);
 
 #endif

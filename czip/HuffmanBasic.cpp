@@ -156,7 +156,7 @@ void CZip::hb_input_counts(BITFILE *input, tH0Node *nodes) {
       if ((c = VFgetc(input->file)) == EOF) {
         //	fatal_error( "Error reading byte counts\n" );
       } else
-        nodes[i].count = (unsigned int)c;
+        nodes[i].count = (uint32_t)c;
     if ((first = VFgetc(input->file)) == EOF) {
       //   fatal_error( "Error reading byte counts\n" );
     }

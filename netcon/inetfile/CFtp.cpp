@@ -258,9 +258,9 @@ CFtpGet::~CFtpGet() {
 // Returns a value to specify the status (ie. connecting/connected/transferring/done)
 int CFtpGet::GetStatus() { return m_State; }
 
-unsigned int CFtpGet::GetBytesIn() { return m_iBytesIn; }
+uint32_t CFtpGet::GetBytesIn() { return m_iBytesIn; }
 
-unsigned int CFtpGet::GetTotalBytes() { return m_iBytesTotal; }
+uint32_t CFtpGet::GetTotalBytes() { return m_iBytesTotal; }
 
 // This function does all the work -- connects on a blocking socket
 // then sends the appropriate user and password commands
@@ -280,7 +280,7 @@ void CFtpGet::WorkerThread() {
   m_Aborted = true;
 }
 
-unsigned int CFtpGet::GetFile() {
+uint32_t CFtpGet::GetFile() {
 
   // Start off by changing into the proper dir.
   char szCommandString[256];
@@ -351,13 +351,13 @@ unsigned int CFtpGet::GetFile() {
   return 1;
 }
 
-unsigned int CFtpGet::IssuePort() {
+uint32_t CFtpGet::IssuePort() {
 
   char szCommandString[200];
   SOCKADDR_IN listenaddr;  // Socket address structure
   socklen_t iLength;       // Length of the address structure
-  unsigned int nLocalPort; // Local port for listening
-  unsigned int nReplyCode; // FTP server reply code
+  uint32_t nLocalPort; // Local port for listening
+  uint32_t nReplyCode; // FTP server reply code
 
   // Get the address for the hListenSocket
   iLength = sizeof(listenaddr);
@@ -391,10 +391,10 @@ unsigned int CFtpGet::IssuePort() {
     struct {
       unsigned short s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
-  S_un.S_addr = (unsigned int)listenaddr.sin_addr.s_addr;
+  S_un.S_addr = (uint32_t)listenaddr.sin_addr.s_addr;
   // Format the PORT command with the correct numbers.
   snprintf(szCommandString, sizeof(szCommandString), "PORT %d,%d,%d,%d,%d,%d\r\n", S_un.S_un_b.s_b1, S_un.S_un_b.s_b2,
            S_un.S_un_b.s_b3, S_un.S_un_b.s_b4, nLocalPort & 0xFF, nLocalPort >> 8);
@@ -473,7 +473,7 @@ int CFtpGet::LoginHost() {
   return 1;
 }
 
-unsigned int CFtpGet::SendFTPCommand(char *command) {
+uint32_t CFtpGet::SendFTPCommand(char *command) {
 
   FlushControlChannel();
   // Send the FTP command
@@ -487,12 +487,12 @@ unsigned int CFtpGet::SendFTPCommand(char *command) {
   return (ReadFTPServerReply());
 }
 
-unsigned int CFtpGet::ReadFTPServerReply() {
-  unsigned int rcode;
-  unsigned int iBytesRead;
+uint32_t CFtpGet::ReadFTPServerReply() {
+  uint32_t rcode;
+  uint32_t iBytesRead;
   char chunk[2];
   char szcode[5];
-  unsigned int igotcrlf = 0;
+  uint32_t igotcrlf = 0;
   memset(recv_buffer, 0, 1000);
   do {
     chunk[0] = '\0';
@@ -535,7 +535,7 @@ unsigned int CFtpGet::ReadFTPServerReply() {
   return (rcode);
 }
 
-unsigned int CFtpGet::ReadDataChannel() {
+uint32_t CFtpGet::ReadDataChannel() {
   char sDataBuffer[4096]; // Data-storage buffer for the data channel
   int nBytesRecv;         // Bytes received from the data channel
   m_State = FTP_STATE_RECEIVING;

@@ -2166,7 +2166,7 @@ void StripCRCFileName(const char *src, char *dest) {
   char hexstring[9];
   strncpy(hexstring, &src[eon + 1], 8);
   hexstring[8] = '\0';
-  unsigned int crc;
+  uint32_t crc;
   crc = axtoi(hexstring);
 
   if (crc == 0) {
@@ -2195,7 +2195,7 @@ bool CreateCRCFileName(const char *src, char *dest) {
   if (cfexist(src) != CFES_ON_DISK)
     return false;
 
-  unsigned int crc_value = cf_GetfileCRC((char *)src);
+  uint32_t crc_value = cf_GetfileCRC((char *)src);
   if (crc_value == 0) {
     mprintf((0, "CRC WARNING: A CRC of 0 HAS BEEN GENERATED!\n"));
   }
@@ -2226,7 +2226,7 @@ bool CreateCRCFileName(const char *src, char *base, char *newfilename) {
   if (cfexist(src) != CFES_ON_DISK)
     return false;
 
-  unsigned int crc_value = cf_GetfileCRC((char *)src);
+  uint32_t crc_value = cf_GetfileCRC((char *)src);
   if (crc_value == 0) {
     mprintf((0, "CRC WARNING: A CRC of 0 HAS BEEN GENERATED!\n"));
   }

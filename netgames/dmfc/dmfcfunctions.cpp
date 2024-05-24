@@ -236,7 +236,7 @@ DMFCFUNCTION int (*DLLFindTextureName)(const char *name);
 DMFCFUNCTION bool (*DLLApplyDamageToPlayer)(object *playerobj, object *killer, int damage_type, float damage_amount,
                                             int server_says, int weapon_id, bool playsound);
 DMFCFUNCTION int (*DLLMultiMatchGeneric)(uint unique_id);
-DMFCFUNCTION void (*DLLSetUITextItemText)(void *uit, char *newtext, unsigned int color);
+DMFCFUNCTION void (*DLLSetUITextItemText)(void *uit, char *newtext, uint32_t color);
 DMFCFUNCTION void *(*DLLNewUIWindowCreate)(int x, int y, int w, int h, int flags);
 DMFCFUNCTION void (*DLLNewUIWindowDestroy)(void *deswin);
 DMFCFUNCTION void (*DLLNewUIWindowOpen)(void *deswin);
@@ -266,7 +266,7 @@ DMFCFUNCTION void *(*DLLHotSpotCreate)(void *parentwin, int id, int key, void *t
                                        int y, int w, int h, int flags);
 DMFCFUNCTION int (*DLLPollUI)(void);
 DMFCFUNCTION void (*DLLRemoveUITextItem)(void *item);
-DMFCFUNCTION void *(*DLLCreateNewUITextItem)(const char *newtext, unsigned int color, int font);
+DMFCFUNCTION void *(*DLLCreateNewUITextItem)(const char *newtext, uint32_t color, int font);
 DMFCFUNCTION void (*DLLRemoveUIBmpItem)(void *item);
 DMFCFUNCTION void *(*DLLCreateNewUIBmpItem)(int handle, ubyte alpha);
 DMFCFUNCTION void *(*DLLUIConsoleGadgetCreate)(void *parentid, int id, int x, int y, int font, int cols, int rows,
@@ -329,7 +329,7 @@ DMFCFUNCTION void (*DLLInitPlayerNewShip)(int slot, int inven_reset);
 DMFCFUNCTION void *(*DLLCheckBoxCreate)(void *parent, int id, void *title, int x, int y, int w, int h, int flags);
 DMFCFUNCTION void (*DLLCheckBoxSetCheck)(void *cb, bool state);
 DMFCFUNCTION bool (*DLLCheckBoxIsChecked)(void *cb);
-DMFCFUNCTION unsigned int (*DLLnw_GetHostAddressFromNumbers)(char *str);
+DMFCFUNCTION uint32_t (*DLLnw_GetHostAddressFromNumbers)(char *str);
 DMFCFUNCTION void (*TableFilesClear)(void);
 DMFCFUNCTION bool (*TableFileAdd)(char *filename);
 DMFCFUNCTION void (*DLLDebugBreak_callback_stop)(void);

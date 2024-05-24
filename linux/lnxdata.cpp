@@ -166,7 +166,7 @@ bool oeLnxAppDatabase::read(const char *label, void *entry, int wordsize) {
     *((unsigned short *)entry) = (unsigned short)data;
     break;
   case 4:
-    *((unsigned int *)entry) = (unsigned int)data;
+    *((uint32_t *)entry) = (uint32_t)data;
     break;
   default:
     mprintf((0, "Unable to read key %s, unsupported size", label));

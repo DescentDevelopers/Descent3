@@ -370,11 +370,11 @@ void ForceEffectsPlay(int id, float *scale, int *direction) {
     return;
 
   if (scale || direction) {
-    unsigned int *ns = NULL;
-    unsigned int new_gain;
+    uint32_t *ns = NULL;
+    uint32_t new_gain;
 
     if (scale) {
-      new_gain = (unsigned int)(10000.0f * (*scale));
+      new_gain = (uint32_t)(10000.0f * (*scale));
       ns = &new_gain;
     }
 
@@ -410,14 +410,14 @@ void ForceEffectsPlay(int id, float *scale, vector *direction) {
 
   if (scale || direction) {
     int *d = NULL;
-    unsigned int *ns = NULL;
-    unsigned int new_gain;
+    uint32_t *ns = NULL;
+    uint32_t new_gain;
 
     if (direction)
       d = &new_dir;
 
     if (scale) {
-      new_gain = (unsigned int)(10000.0f * (*scale));
+      new_gain = (uint32_t)(10000.0f * (*scale));
       ns = &new_gain;
     }
 

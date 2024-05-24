@@ -150,14 +150,14 @@ BOOL CSiteSelectDlg::OnInitDialog()
 // Calculates column widths and sets them
 void CSiteSelectDlg::SetColumnWidths(void)
 {
-	unsigned int w0, w1, w2;
+	uint32_t w0, w1, w2;
 
 	RECT rect;
     m_SiteList.GetClientRect(&rect);
 
-	w0=unsigned int(rect.right*SITE_NAME_COLUMN_WIDTH);
-	w1=unsigned int(rect.right*SITE_ADDRESS_COLUMN_WIDTH);
-	w2=unsigned int(rect.right*SITE_LOCATION_COLUMN_WIDTH);
+	w0=uint32_t(rect.right*SITE_NAME_COLUMN_WIDTH);
+	w1=uint32_t(rect.right*SITE_ADDRESS_COLUMN_WIDTH);
+	w2=uint32_t(rect.right*SITE_LOCATION_COLUMN_WIDTH);
 
 	m_SiteList.SetColumnWidth(SITE_NAME_COLUMN,w0);
 	m_SiteList.SetColumnWidth(SITE_ADDRESS_COLUMN,w1);

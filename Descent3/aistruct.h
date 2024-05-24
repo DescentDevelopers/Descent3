@@ -622,7 +622,7 @@ typedef struct goal_info {
 
 // Goal structure
 typedef struct goal {
-  unsigned int type;
+  uint32_t type;
   char subtype;
   ubyte activation_level;
   float creation_time;

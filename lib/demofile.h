@@ -108,7 +108,7 @@
 
 extern char Demo_fname[_MAX_PATH * 2];
 
-extern unsigned int Demo_flags;
+extern uint32_t Demo_flags;
 extern bool Demo_paused;
 extern bool Demo_do_one_frame;
 extern bool Demo_restart;
@@ -160,7 +160,7 @@ void DemoWriteHeader();
 
 void DemoStartNewFrame();
 
-void DemoWriteHudMessage(unsigned int color, bool blink, char *msg);
+void DemoWriteHudMessage(uint32_t color, bool blink, char *msg);
 
 void DemoWriteChangedObjects();
 

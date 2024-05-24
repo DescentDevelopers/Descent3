@@ -116,7 +116,7 @@ typedef struct _mcmd_hdr {
 
 #define mcmd_syncInit 2
 typedef struct _syncInit {
-  unsigned int period;       // period of quanta
+  uint32_t period;       // period of quanta
   unsigned short wait_quanta; // # of quanta per frame
 } marg_syncInit;
 
@@ -138,7 +138,7 @@ typedef struct _sndConfigure {
   unsigned char dummy1;
   unsigned short frequency;
   // Minor opcode 1 extends buflen to be a long
-  unsigned int buflen;
+  uint32_t buflen;
 } marg_sndConfigure;
 
 #define mcmd_sndSync 4
@@ -227,13 +227,13 @@ typedef struct _palLoadPalette {
 #define mcmd_nfPkInfo 19
 #define mcmd_nfHPkInfo 20
 typedef struct _nfPkInfo {
-  unsigned int error; // scaled by 10000
+  uint32_t error; // scaled by 10000
   unsigned short usage[64];
 } marg_nfPkInfo;
 
 #define mcmd_idcode 21
 typedef struct _idcode {
-  unsigned int idcode; // Code identifying version mcomp used to create
+  uint32_t idcode; // Code identifying version mcomp used to create
 } marg_idcode;
 
 #if __SC__

@@ -445,10 +445,10 @@ bool AudioStream::ReopenDigitalStream(ubyte fbufidx, int nbufs) {
   }
 
   // instatiate decompression facility or use raw source data
-  unsigned int sample_count = 0;
-  unsigned int channels = 0;
+  uint32_t sample_count = 0;
+  uint32_t channels = 0;
   if (m_archive.StreamComp() == OSF_DIGIACM_STRM) {
-    unsigned int sample_rate;
+    uint32_t sample_rate;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
     if (!m_decoder) {
       delete m_decoder;
@@ -747,9 +747,9 @@ void AudioStream::Reset() {
   if (m_decoder) {
     delete m_decoder;
 
-    unsigned int channels;
-    unsigned int sample_rate;
-    unsigned int sample_count;
+    uint32_t channels;
+    uint32_t sample_rate;
+    uint32_t sample_count;
     m_decoder = AudioDecoder::CreateDecoder(ADecodeFileRead, this, channels, sample_rate, sample_count);
   }
 }

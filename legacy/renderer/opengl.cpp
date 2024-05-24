@@ -2596,7 +2596,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
 
       // verify that window is a child of the root window
       Window root, parent, *children;
-      unsigned int numChildren;
+      uint32_t numChildren;
       if (XQueryTree(dpy, mwmWindow, &root, &parent, &children, &numChildren)) {
         XFree(children);
         if (parent == rootwin)

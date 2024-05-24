@@ -37,7 +37,7 @@ public:
   void update(const unsigned char *data, std::size_t n) noexcept;
   void update(float val) noexcept;
   void update(int val) noexcept;
-  void update(unsigned int val) noexcept;
+  void update(uint32_t val) noexcept;
   void update(unsigned char val) noexcept;
   void update(short val) noexcept;
   std::array<unsigned char, 16> digest() const noexcept;

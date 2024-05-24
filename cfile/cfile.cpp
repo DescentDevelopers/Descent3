@@ -1130,15 +1130,15 @@ void cf_Rewind(CFILE *fp) {
 #define CRC32_POLYNOMIAL 0xEDB88320L
 #define CRC_BUFFER_SIZE 5000
 
-unsigned int cf_CalculateFileCRC(CFILE *infile) {
+uint32_t cf_CalculateFileCRC(CFILE *infile) {
   int i, j;
   ubyte crcbuf[CRC_BUFFER_SIZE];
   static bool Cfile_crc_calculated = false;
-  static unsigned int CRCTable[256];
-  unsigned int crc;
-  unsigned int temp1;
-  unsigned int temp2;
-  unsigned int readlen;
+  static uint32_t CRCTable[256];
+  uint32_t crc;
+  uint32_t temp1;
+  uint32_t temp2;
+  uint32_t readlen;
 
   // Only make the lookup table once
   if (!Cfile_crc_calculated) {
@@ -1167,7 +1167,7 @@ unsigned int cf_CalculateFileCRC(CFILE *infile) {
       Int3();
       return 0xFFFFFFFF;
     }
-    for (unsigned int a = 0; a < readlen; a++) {
+    for (uint32_t a = 0; a < readlen; a++) {
       temp1 = (crc >> 8) & 0x00FFFFFFL;
       temp2 = CRCTable[((int)crc ^ crcbuf[a]) & 0xff];
       crc = temp1 ^ temp2;
@@ -1177,14 +1177,14 @@ unsigned int cf_CalculateFileCRC(CFILE *infile) {
   return crc ^ 0xffffffffl;
 }
 
-unsigned int cf_GetfileCRC(char *src) {
+uint32_t cf_GetfileCRC(char *src) {
   CFILE *infile;
 
   infile = (CFILE *)cfopen(src, "rb");
   if (!infile)
     return 0xFFFFFFFF;
 
-  unsigned int crc = cf_CalculateFileCRC(infile);
+  uint32_t crc = cf_CalculateFileCRC(infile);
   cfclose(infile);
 
   return crc;

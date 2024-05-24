@@ -38,7 +38,7 @@ extern unsigned short Num_changed_wb_anim[MAX_NET_PLAYERS];
 extern int Changed_turret[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
 extern unsigned short Num_changed_turret[MAX_NET_PLAYERS];
 
-extern unsigned int Secret_net_id;
+extern uint32_t Secret_net_id;
 #define JOIN_ANSWER_OK 0
 #define JOIN_ANSWER_NOT_SERVER 1
 #define JOIN_ANSWER_REJECTED 2

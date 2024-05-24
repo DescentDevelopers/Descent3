@@ -1473,7 +1473,7 @@ void gameWinController::mouse_geteval() {
     return;
 
   int x, y, dx, dy;
-  unsigned int btnmask = (unsigned int)ddio_MouseGetState(&x, &y, &dx, &dy);
+  uint32_t btnmask = (uint32_t)ddio_MouseGetState(&x, &y, &dx, &dy);
 
   m_MseState.m_deltaX = dx;
   m_MseState.m_deltaY = dy;

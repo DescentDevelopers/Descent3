@@ -23,7 +23,7 @@
 #include <assert.h>
 #include "Aencode.h"
 
-typedef unsigned int uint32;
+typedef uint32_t uint32;
 typedef signed int sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
@@ -877,7 +877,7 @@ sint32 calc_bits(Encoder &enc, sint32 val) {
         eax = ~minValue;
       }
 
-      if (maxValue > 0 && ((unsigned int)(eax) < (unsigned int)(maxValue))) {
+      if (maxValue > 0 && ((uint32_t)(eax) < (uint32_t)(maxValue))) {
         eax = maxValue;
       }
 

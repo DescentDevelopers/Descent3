@@ -116,13 +116,13 @@ typedef struct s_pxo_game_list
 	short curr_players;
 	short max_players;
 	float ping;
-	unsigned int flags;
+	uint32_t flags;
 	char format_string[MAX_FORMAT_STRING];
 	
 	bool dedicated;
 	*/
 	bool used;
-	unsigned int handle;
+	uint32_t handle;
 	void *ti;
 	int lb_no;
 }pxo_game_list;

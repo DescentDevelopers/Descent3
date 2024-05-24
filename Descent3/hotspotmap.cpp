@@ -512,7 +512,7 @@ int menutga_alloc_file(const char *name, char *hsmap[1], int *w, int *h) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
   ubyte upside_down = 0;
   ushort width, height;
-  unsigned int pixel;
+  uint32_t pixel;
   int i, t, n;
   char alphavalue;
   CFILE *infile;

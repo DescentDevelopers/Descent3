@@ -56,7 +56,7 @@ unsigned sndDecompS16(unsigned short *dst, const unsigned char *src, unsigned le
 
 static LnxWindow *mve_lpWin = NULL;
 
-unsigned int timeGetTime(void) {
+uint32_t timeGetTime(void) {
   struct timeval t;
   gettimeofday(&t, NULL);
 
@@ -130,20 +130,20 @@ static int sync_wait_quanta;
 static bool sync_late = FALSE;
 static bool sync_FrameDropped = FALSE;
 
-static void syncReset(unsigned int wait_quanta);
+static void syncReset(uint32_t wait_quanta);
 static void syncRelease(void);
-static bool syncInit(unsigned int period, unsigned wait_quanta);
+static bool syncInit(uint32_t period, unsigned wait_quanta);
 static bool syncWait(void);
 static void syncSync(void);
 
-static void syncReset(unsigned int wait_quanta) {
+static void syncReset(uint32_t wait_quanta) {
   sync_time = wait_quanta - timeGetTime() * 1000;
   sync_active = TRUE;
 }
 
 static void syncRelease(void) { sync_active = FALSE; }
 
-static bool syncInit(unsigned int period, unsigned wait_quanta) {
+static bool syncInit(uint32_t period, unsigned wait_quanta) {
   int new_wait_quanta = -(int32_t)(period * wait_quanta + (wait_quanta >> 1));
   // If timer is still running and has same timing
   // characteristics, assume we are trying to continue smoothly
@@ -279,7 +279,7 @@ static void ioRelease(void) { MemFree(&io_mem_buf); }
 static LnxSoundDevice *snd_ds = NULL;
 static LnxSoundBuffer *snd_buffer = NULL;
 static LinuxSoundCaps snd_buffer_caps;
-static unsigned int snd_write_cursor;
+static uint32_t snd_write_cursor;
 
 enum { snd_queue_max = 60 };
 
@@ -386,8 +386,8 @@ static void sndSync(void) {
 #if SOUND_SUPPORT
 
   int dsrval;
-  unsigned int dsbstatus;
-  unsigned int play_cursor, write_cursor, target;
+  uint32_t dsbstatus;
+  uint32_t play_cursor, write_cursor, target;
 
   bool need_resync;
 #endif
@@ -496,9 +496,9 @@ static unsigned sndAddHelper(unsigned char *dst, unsigned char **pSrc, unsigned 
       src += len >> 1;
     } else {
       if (init) {
-        state = *(unsigned int *)src;
+        state = *(uint32_t *)src;
         state = INTEL_INT(state);
-        *(unsigned int *)dst = state;
+        *(uint32_t *)dst = state;
         src += 4;
         dst += 4;
         len -= 4;
@@ -521,8 +521,8 @@ static void sndAdd(const unsigned char *buf, unsigned len) {
 #if SOUND_SUPPORT
 
   int dsrval;
-  unsigned int play_cursor, write_cursor;
-  unsigned int len1, len2;
+  uint32_t play_cursor, write_cursor;
+  uint32_t len1, len2;
 
   unsigned state = 0;
   bool init = TRUE;
@@ -774,7 +774,7 @@ static void nfAdvance(void) {
           y = (sf_ScreenHeight>>1) - (nf_height>>1);
           if(y<0) y = 0;
 
-          ret = LnxDraw_Blit(mve_lpWin,nf_dds_cur,(unsigned int)x,(unsigned int)y,mw,nf_height);
+          ret = LnxDraw_Blit(mve_lpWin,nf_dds_cur,(uint32_t)x,(uint32_t)y,mw,nf_height);
   */
   unsigned char *tmp;
   tmp = nf_dds_prv;
@@ -876,7 +876,7 @@ unsigned sf_hicolor;   // Hicolor mode (0:none,1:normal,2:swapped)
 // Banked screen parameters, Private, see mveliba.asm
 void *sf_SetBank;
 unsigned sf_WinGran;
-unsigned int sf_WinSize;
+uint32_t sf_WinSize;
 unsigned sf_WinGranPerSize;
 //{sf_WriteWinPtr and sf_WriteWinLimit replace sf_WriteWinSeg, see mveliba.asm}
 unsigned char *sf_WriteWinPtr;
@@ -909,7 +909,7 @@ void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsi
 //	dx:  Window position in video memory in units of WinGran.
 //     on return, registers AX and DX are destroyed.
 void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
+                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
   sf_ScreenWidth = w;
   sf_ScreenHeight = h;
   sf_ResolutionWidth = w;

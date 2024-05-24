@@ -68,7 +68,7 @@ int SerialCheck(void);
 void SerialError(int error);
 
 // returns the serialnumber of the user
-unsigned int SerialGetSerialNum(void);
+uint32_t SerialGetSerialNum(void);
 
 /////////////////////////////////////////////////////////////////////////////
 //	These are the functions used for serialization

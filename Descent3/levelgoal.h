@@ -55,7 +55,7 @@ private:
                          // been completed, else we *possibly* can complete the goal more than
                          // once.
   int m_priority;
-  unsigned int m_flags;
+  uint32_t m_flags;
 
   void GoalComplete(int handle, bool announce);
   void SendMultiUpdate(int handle);

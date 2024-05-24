@@ -164,8 +164,8 @@
 #include <winsock.h>
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->S_un.S_addr = value; }
-static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->S_un.S_addr; }
+static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, uint32_t value) { st->S_un.S_addr = value; }
+static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *value = st->S_un.S_addr; }
 static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
   st->S_un.S_un_w.s_w1 = s_w1;
   st->S_un.S_un_w.s_w2 = s_w2;
@@ -241,8 +241,8 @@ static inline int WSAGetLastError() { return errno; }
 extern bool Use_DirectPlay;
 
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
-static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, unsigned int value) { st->s_addr = value; }
-static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, unsigned int *value) { *value = st->s_addr; }
+static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, uint32_t value) { st->s_addr = value; }
+static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *value = st->s_addr; }
 static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
   union {
     struct {
@@ -251,7 +251,7 @@ static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, 
     struct {
       unsigned short s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_un_w.s_w1 = s_w1;
@@ -266,7 +266,7 @@ static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1,
     struct {
       unsigned short s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_addr = st->s_addr;
@@ -282,7 +282,7 @@ static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, unsigned char s_b1, u
     struct {
       unsigned short s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_un_b.s_b1 = s_b1;
@@ -300,7 +300,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, unsigned char *s_b1, 
     struct {
       unsigned short s_w1, s_w2;
     } S_un_w;
-    unsigned int S_addr;
+    uint32_t S_addr;
   } S_un;
 
   S_un.S_addr = st->s_addr;
@@ -344,7 +344,7 @@ extern BOOL DP_active;
 extern BOOL TCP_active;
 extern BOOL IPX_active;
 // Get the info from RAS
-unsigned int psnet_ras_status();
+uint32_t psnet_ras_status();
 
 // function to shutdown and close the given socket.  It takes a couple of things into consideration
 // when closing, such as possibly reiniting reliable sockets if they are closed here.
@@ -374,7 +374,7 @@ uint32_t nw_GetHostAddressFromNumbers(char *str);
 void nw_GetNumbersFromHostAddress(network_address *address, char *str);
 
 // returns the ip address of this computer
-unsigned int nw_GetThisIP();
+uint32_t nw_GetThisIP();
 
 // function which checks the Listen_socket for possibly incoming requests to be connected.
 // returns 0 on error or nothing waiting.  1 if we should try to accept
@@ -399,7 +399,7 @@ void nw_FreePacket(int id);
 int nw_Receive(void *data, network_address *from_addr);
 
 // nw_SendReliable sends the given data through the given reliable socket.
-int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent = false);
+int nw_SendReliable(uint32_t socketid, ubyte *data, int length, bool urgent = false);
 
 // function which reads data off of a reliable socket.  recv() should read the totaly amount of data
 // available I believe.  (i.e. we shouldn't read only part of a message with one call....I may be wrong
@@ -466,7 +466,7 @@ int nw_psnet_buffer_get_next_by_packet_id(ubyte *data, int *length, uint32_t pac
 #define RNF_CONNECTING 4   // We received the connecting message, but haven't told the game yet.
 #define RNF_LIMBO 5        // between connecting and connected
 
-void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link_type, float time_sent);
+void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_type, float time_sent);
 void nw_WorkReliable(ubyte *data, int len, network_address *naddr);
 int nw_Compress(void *srcdata, void *destdata, int count);
 int nw_Uncompress(void *compdata, void *uncompdata, int count);
@@ -476,7 +476,7 @@ int nw_Uncompress(void *compdata, void *uncompdata, int count);
 #define NW_AGHBN_READ 3
 
 typedef struct _async_dns_lookup {
-  unsigned int ip; // resolved host. Write only to worker thread.
+  uint32_t ip; // resolved host. Write only to worker thread.
   char *host;      // host name to resolve. read only to worker thread
   bool done;       // write only to the worker thread. Signals that the operation is complete
   bool error;      // write only to worker thread. Thread sets this if the name doesn't resolve
@@ -500,7 +500,7 @@ int CDECLCALL gethostbynameworker(void *parm);
 void CDECLCALL gethostbynameworker(void *parm);
 #endif
 
-int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname);
+int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname);
 int nw_ReccomendPPS();
 void nw_DoNetworkIdle(void);
 

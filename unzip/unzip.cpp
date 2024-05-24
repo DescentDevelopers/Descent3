@@ -593,7 +593,7 @@ int ZIP::InflateFile(FILE *in_file, unsigned in_size, ubyte *out_data, unsigned 
 int ZIP::InflateFileToFile(FILE *in_file, unsigned in_size, FILE *file, unsigned out_size) {
   ubyte out_data[DATA_CHUNK_SIZE];
   int err;
-  unsigned int last_out;
+  uint32_t last_out;
   unsigned char *in_buffer;
   unsigned char *next_out;
   z_stream d_stream;

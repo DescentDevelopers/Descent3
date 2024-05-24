@@ -474,7 +474,7 @@ ushort DLLPXOPort = 0;
 void AutoLoginAndStartGame ();
 
 
-int GetGameByHandle(unsigned int handle)
+int GetGameByHandle(uint32_t handle)
 {
 	int j;
 	for(j=0;j<*DLLNum_network_games_known;j++)
@@ -487,7 +487,7 @@ int GetGameByHandle(unsigned int handle)
 	return -1;
 }
 
-int GetPXOItemByHandle(unsigned int handle)
+int GetPXOItemByHandle(uint32_t handle)
 {
 	int i;
 	for(i=0;i<MAX_GAMELIST_ITEMS;i++)
@@ -2644,7 +2644,7 @@ int MTVersionCheck(void)
 		CopyFile(szbakdll,szolddll,FALSE);
 		return 0;
 	}
-	unsigned int mtver;
+	uint32_t mtver;
 	DLLAVGetVersion((int *)&mtver);
 	if(MTAVersionCheck(mtver,MTUpdateURL))
 	{
@@ -2904,7 +2904,7 @@ int JoinPrivateLobby(void)
 		case UID_OK:
 			{
 				DLLEditGetText(chan_edit,priv_channel,MAX_CHAT_SEND_LEN);
-				for(unsigned int i=0;i<strlen(priv_channel);i++)
+				for(uint32_t i=0;i<strlen(priv_channel);i++)
 				{
 					if(priv_channel[i]==' ')
 					{
@@ -3026,7 +3026,7 @@ int FindPilot(void)
 					break;
 				}
 				strcpy(message,p+1);
-				for(unsigned int i=0;i<strlen(message);i++) 
+				for(uint32_t i=0;i<strlen(message);i++) 
 					if(message[i]=='_') message[i] = ' ';
 				sprintf(fmt_msg,TXT_PXO_CANBEFOUNDIN,pilot_name,message);
 				if(pconsole)

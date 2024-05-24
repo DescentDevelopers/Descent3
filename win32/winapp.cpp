@@ -653,7 +653,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
   case WM_SYSCOMMAND: {
     // bypass screen saver and system menu.
-    unsigned int maskedWParam = wParam & 0xFFF0;
+    uint32_t maskedWParam = wParam & 0xFFF0;
     if (maskedWParam == SC_SCREENSAVE || maskedWParam == SC_MONITORPOWER)
       return 0;
     if (maskedWParam == SC_KEYMENU)

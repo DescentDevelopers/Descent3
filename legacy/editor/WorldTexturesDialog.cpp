@@ -1720,7 +1720,7 @@ int CWorldTexturesDialog::LoadITLFile (char *filename,int type)
 {
 	CFILE *infile;
 	char name[PAGENAME_LEN];
-	unsigned int i,done=0,total=0;
+	uint32_t i,done=0,total=0;
 	char cur_name[100];
 	int tex_handle,tex_list[200];
 	int c=1,finding_name=1;

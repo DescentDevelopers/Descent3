@@ -705,7 +705,7 @@ int Player_count = 0; // The total number of players playing the game
 
 extern int Use_file_xfer;
 
-unsigned int Secret_net_id = 0;
+uint32_t Secret_net_id = 0;
 // Stars a multiplayer server.  If playing is non-zero, then the server is a player in the
 // game
 // Server only

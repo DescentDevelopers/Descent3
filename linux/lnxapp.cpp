@@ -118,7 +118,7 @@ char *strupr(char *string) {
   return string;
 }
 
-static unsigned int LinuxAppFlags = 0;
+static uint32_t LinuxAppFlags = 0;
 // static Display *LinuxAppDisplay=NULL;
 static bool LinuxAppSetAtExit = false;
 static bool LinuxAppDontCallShutdown = false;

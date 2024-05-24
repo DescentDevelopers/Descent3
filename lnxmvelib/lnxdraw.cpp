@@ -28,7 +28,7 @@
 
 // static Display *lpDisplay      = NULL;
 static int nDefaultScreen = -1;
-static unsigned int dwOriginalWidth, dwOriginalHeight;
+static uint32_t dwOriginalWidth, dwOriginalHeight;
 static LnxWindow **WindowList;
 static int NumWindows = 0;
 // static int GetXSharedMemory(int size);
@@ -104,7 +104,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
   //		return -2;
 
   // determine what we have to work with (currently)
-  //	unsigned int display_width,display_height;
+  //	uint32_t display_width,display_height;
   //	display_width = DisplayWidth(lpDisplay,nDefaultScreen);
   //	display_height = DisplayHeight(lpDisplay,nDefaultScreen);
 
@@ -214,7 +214,7 @@ int LnxDraw_CreateWindow(LnxWindowDesc *ldesc, LnxWindow **lphandle) {
                   wnd->lpXvisual = wnd->viVisualInfo.visual;
                   wnd->cmColorMap = DefaultColormapOfScreen(DefaultScreenOfDisplay(lpDisplay));
 
-                  unsigned int attrib_mask;
+                  uint32_t attrib_mask;
                   XSetWindowAttributes attrib;
 
                   // setup some attribute and hints for actual window creation
@@ -522,7 +522,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
   SDL_UpdateRect(wnd->surface, 0, 0, wnd->dwWidth, wnd->dwHeight);
 
 #ifdef __DUMP_MVE_TO_DISK
-  static unsigned int framenum = 0;
+  static uint32_t framenum = 0;
   char filename[100];
   snprintf(filename, sizeof(filename), "./mve/frame%lu.bmp", framenum);
   SDL_SaveBMP(wnd->surface, filename);
@@ -540,7 +540,7 @@ void LnxDraw_UnlockSurface(LnxWindow *wnd, unsigned char *ptr) {
 //       0 : no error
 //      -1 : invalid parameter
 //      -2 : unknown error
-int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, unsigned int x, unsigned int y, unsigned int w, unsigned int h) {
+int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
   return 0;
   /*
           if(!wnd || !ptr)
@@ -608,7 +608,7 @@ int LnxDraw_Blit(LnxWindow *wnd, unsigned char *ptr, unsigned int x, unsigned in
 // Returns:
 //       0 : no error
 //      -1 : invalid parameters
-int LnxDraw_GetRGBMasks(LnxWindow *wnd, unsigned int *r, unsigned int *g, unsigned int *b) {
+int LnxDraw_GetRGBMasks(LnxWindow *wnd, uint32_t *r, uint32_t *g, uint32_t *b) {
   return -1;
   if (!wnd || !r || !g || !b)
     return -1;
@@ -715,18 +715,18 @@ inline void BltBuffer32ToPixMap16(unsigned char *pixmap, unsigned char *buffer, 
   unsigned char *data;
   unsigned short int l;
   int r, g, b, a;
-  unsigned int c;
+  uint32_t c;
 
   data = (unsigned char *)pixmap;
   for (l = height * width; l > 0; l--) {
-    c = *(unsigned int *)buffer;
+    c = *(uint32_t *)buffer;
     a = ((c & 0xff000000) >> 24);
     r = ((c & 0x00ff0000) >> 16);
     g = ((c & 0x0000ff00) >> 8);
     b = (c & 0x000000ff);
 
     if (a)
-      *(unsigned int *)data = (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
+      *(uint32_t *)data = (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
     data += 2;
     buffer += 4;
   }
@@ -742,18 +742,18 @@ inline void BltBuffer32ToPixMap24(unsigned char *pixmap, unsigned char *buffer, 
   unsigned char *data;
   unsigned short int l;
   int r, g, b, a;
-  unsigned int c;
+  uint32_t c;
 
   data = (unsigned char *)pixmap;
   for (l = height * width; l > 0; l--) {
-    c = *(unsigned int *)buffer;
+    c = *(uint32_t *)buffer;
     a = ((c & 0xff000000) >> 24);
     r = ((c & 0x00ff0000) >> 16);
     g = ((c & 0x0000ff00) >> 8);
     b = (c & 0x000000ff);
 
     if (a)
-      *(unsigned int *)data = ((r << 16) + (g << 8) + b);
+      *(uint32_t *)data = ((r << 16) + (g << 8) + b);
     data += 4;
     buffer += 4;
   }
@@ -774,7 +774,7 @@ inline void BltBuffer16ToPixMap24(unsigned char *pixmap, unsigned char *buffer, 
     b = (c & 0x001F);
 
     if (a)
-      *(unsigned int *)data = ((r << 19) + (g << 11) + (b << 3));
+      *(uint32_t *)data = ((r << 19) + (g << 11) + (b << 3));
     data += 4;
     buffer += 2;
   }

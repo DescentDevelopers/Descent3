@@ -225,7 +225,7 @@ public:
   sound_object() { m_obj_type_flags = SIF_UNUSED; }
 
 public:
-  unsigned int m_obj_type_flags;
+  uint32_t m_obj_type_flags;
   int m_sound_uid;
   int m_sound_index;
   int m_hlsound_uid;

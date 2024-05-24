@@ -476,7 +476,7 @@ void MultiDoConnectionAccepted(ubyte *data) {
     mprintf((0, "Server is sending %d packets per second\n", Netgame.packets_per_second));
 
     // Get the secret code we will use to identify ourselves to the server
-    unsigned int secret_code = MultiGetUint(data, &count);
+    uint32_t secret_code = MultiGetUint(data, &count);
 
     // Get the peer-peer flag
     int flags = MultiGetInt(data, &count);
@@ -902,7 +902,7 @@ void MultiCloseGame() {
 
 #define GET_GAME_INFO_TIME 2
 // Fills in the passed in buffers with the info of the games that are on this subnet
-int SearchForLocalGamesTCP(unsigned int ask, ushort port) {
+int SearchForLocalGamesTCP(uint32_t ask, ushort port) {
   int count = 0;
   int size;
   int tries = 0;
@@ -931,7 +931,7 @@ int SearchForLocalGamesTCP(unsigned int ask, ushort port) {
 }
 
 // Fills in the passed in buffers with the info of the games that are on this subnet
-int SearchForGamesPXO(unsigned int ask, ushort port) {
+int SearchForGamesPXO(uint32_t ask, ushort port) {
   int count = 0;
   int size;
   int tries = 0;

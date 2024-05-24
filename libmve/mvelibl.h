@@ -82,7 +82,7 @@ void MVE_dsbSetPan(int32_t lPan);
 // is just used for window centering and for determining
 // how and when to do palette callbacks.
 void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
+                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
 
 // This function alters the display from 640x480 or 640x400 to 640x350 resolution.
 void MVE_ForceVres350(void);
@@ -99,9 +99,9 @@ void MVE_ForceVresHalf(void);
 //	 or modify which portions of the screen are updated.
 // This function replaces calls to the default MVE_ShowFrame function
 //  with calls to your function, which can itself call MVE_ShowFrame.
-typedef void (*mve_cb_ShowFrame)(unsigned char *buf, unsigned int bufw, unsigned int bufh, unsigned int sx,
-                                 unsigned int sy, unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty,
-                                 unsigned int hicolor);
+typedef void (*mve_cb_ShowFrame)(unsigned char *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
+                                 uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
+                                 uint32_t hicolor);
 void MVE_sfCallbacks(mve_cb_ShowFrame fn_ShowFrame);
 
 typedef void mve_cb_SetPalette(unsigned char *p, unsigned start, unsigned count);
@@ -222,7 +222,7 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
 //  If successful, MVE_frGet(frs, &buf, &w, &h) returns a pointer
 //  to a surface containing the frame in pBuf,
 //  and its width and height in w and h.
-int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned int *width, unsigned int *height, unsigned int *hicolor);
+int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, uint32_t *width, uint32_t *height, uint32_t *hicolor);
 
 // MVE_frPal
 //  After each successful call to MVE_frGet(), this call may be used to

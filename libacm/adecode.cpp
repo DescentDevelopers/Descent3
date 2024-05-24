@@ -50,7 +50,7 @@ public:
 int AcmReadFunc(void *ptr, int size, int n, void *datasrc) {
   InternalAudioDecoder *iad = reinterpret_cast<InternalAudioDecoder *>(datasrc);
   int ret =
-      iad->m_readerFunction(iad->m_pReaderData, ptr, (unsigned int)size * n);
+      iad->m_readerFunction(iad->m_pReaderData, ptr, (uint32_t)size * n);
   // ret < 0: error, ret == 0: EOF, ret > 0: read ret bytes of data
   // apparently acm_io_callbacks::read() expects pretty much the same behavior,
   // except that for > 0 it's not number of bytes but number of items (like in

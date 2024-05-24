@@ -614,7 +614,7 @@ DMFCDLLOUT(ApplyDamageToPlayer_fp DLLApplyDamageToPlayer;)
 typedef int (*MultiMatchGeneric_fp)(uint unique_id);
 DMFCDLLOUT(MultiMatchGeneric_fp DLLMultiMatchGeneric;)
 
-typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, unsigned int color);
+typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, uint32_t color);
 DMFCDLLOUT(SetUITextItemText_fp DLLSetUITextItemText;)
 
 typedef void *(*NewUIWindowCreate_fp)(int x, int y, int w, int h, int flags);
@@ -724,8 +724,8 @@ DMFCDLLOUT(PollUI_fp DLLPollUI;)
 typedef void (*RemoveUITextItem_fp)(void *item);
 DMFCDLLOUT(RemoveUITextItem_fp DLLRemoveUITextItem;)
 
-// typedef void *(*CreateNewUITextItem_fp)(const char *newtext,unsigned int color,int font=-1);
-typedef void *(*CreateNewUITextItem_fp)(const char *newtext, unsigned int color, int font);
+// typedef void *(*CreateNewUITextItem_fp)(const char *newtext,uint32_t color,int font=-1);
+typedef void *(*CreateNewUITextItem_fp)(const char *newtext, uint32_t color, int font);
 DMFCDLLOUT(CreateNewUITextItem_fp DLLCreateNewUITextItem;)
 
 typedef void (*RemoveUIBmpItem_fp)(void *item);
@@ -926,7 +926,7 @@ DMFCDLLOUT(InitPlayerNewShip_fp DLLInitPlayerNewShip;)
 
 // Returns internet address format from string address format...ie "204.243.217.14"
 // turns into 1414829242
-typedef unsigned int (*nw_GetHostAddressFromNumbers_fp)(char *str);
+typedef uint32_t (*nw_GetHostAddressFromNumbers_fp)(char *str);
 DMFCDLLOUT(nw_GetHostAddressFromNumbers_fp DLLnw_GetHostAddressFromNumbers;)
 
 //	Removes all addon table files from D3 (really shouldn't be called, automatically done)

@@ -242,8 +242,8 @@ void joy_GetRawPos(tJoystick joy, tJoyPos *pos) {
   pos->v = (pos->v + 32767);
 }
 
-static inline unsigned int map_hat(Uint8 value) {
-  unsigned int mapped = 0;
+static inline uint32_t map_hat(Uint8 value) {
+  uint32_t mapped = 0;
 
   switch (value) {
   case SDL_HAT_CENTERED:
@@ -287,7 +287,7 @@ void joy_GetPos(tJoystick joy, tJoyPos *pos) {
   //	retrieve joystick info from the net, or locally.
   stick = Joysticks[joy].handle;
   if (stick) {
-    unsigned int mask;
+    uint32_t mask;
 
     mask = Joysticks[joy].caps.axes_mask;
     pos->x = SDL_JoystickGetAxis(stick, 0);

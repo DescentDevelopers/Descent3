@@ -2828,7 +2828,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
     return false;
   }
 
-  unsigned int address;
+  uint32_t address;
   tHostsNode *curr;
 
   memcpy(&address, &addr->address, 4);
@@ -4279,8 +4279,8 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
   char save_buffer[256];
 
   char s_ip[16], s_mask[16];
-  unsigned int ip_address;
-  unsigned int mask;
+  uint32_t ip_address;
+  uint32_t mask;
   char *ptr;
 
   while (!DLLcfeof(file)) {

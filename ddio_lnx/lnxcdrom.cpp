@@ -503,7 +503,7 @@ bool system_cdroms::Mount(void) {
   /*  don't do this.
   // Not mounted? Do it ourselves.
       // so we now have our directory, try to mount
-      unsigned int int rwflag = MS_MGC_VAL|MS_RDONLY;
+      uint32_t int rwflag = MS_MGC_VAL|MS_RDONLY;
       int ret = mount(name,m_MountedDir,"iso9660",rwflag,NULL);
       if(ret!=0)
       {

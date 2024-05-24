@@ -931,8 +931,8 @@ typedef int OMMSHANDLE;
 typedef unsigned char ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned int ddgr_color;
+typedef uint32_t uint;
+typedef uint32_t ddgr_color;
 
 #ifndef NULL
 #define NULL 0

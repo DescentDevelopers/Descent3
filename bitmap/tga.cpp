@@ -327,7 +327,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
   ubyte image_id_len, color_map_type, image_type, pixsize, descriptor;
   ubyte upside_down = 0;
   ushort width, height;
-  unsigned int pixel;
+  uint32_t pixel;
   int i, t, n, data8bit = 0, savepos;
   int mipped = 0;
   int num_mips = 1;

@@ -25,7 +25,7 @@
 typedef unsigned char ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
-typedef unsigned int uint;
+typedef uint32_t uint;
 typedef unsigned long ulong;
 
 #ifdef _MSC_VER // only Visual C++ has __int64

@@ -233,7 +233,7 @@ Cleanup:
 		RegCloseKey(hKey);
 }
 
-// Writes an unsigned int to the INI file.  
+// Writes an uint32_t to the INI file.  
 void os_config_write_uint( char *section, char *name, uint value )
 {
 	HKEY hKey = NULL;

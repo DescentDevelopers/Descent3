@@ -318,8 +318,8 @@ void cf_ChangeFileAttributes(const char *name, int attr);
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
-unsigned int cf_GetfileCRC(char *src);
-unsigned int cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
+uint32_t cf_GetfileCRC(char *src);
+uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
 // the following cf_LibraryFind function are similar to the ddio_Find functions as they look
 // for files that match the wildcard passed in, however, this is to be used for hog files.

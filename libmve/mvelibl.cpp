@@ -128,20 +128,20 @@ static int sync_wait_quanta = 0;
 static bool sync_late = false;
 static bool sync_FrameDropped = false;
 
-static void syncReset(unsigned int wait_quanta);
+static void syncReset(uint32_t wait_quanta);
 static void syncRelease(void);
-static bool syncInit(unsigned int period, unsigned wait_quanta);
+static bool syncInit(uint32_t period, unsigned wait_quanta);
 static bool syncWait(void);
 static void syncSync(void);
 
-static void syncReset(unsigned int wait_quanta) {
+static void syncReset(uint32_t wait_quanta) {
   sync_time = wait_quanta - platform_timeGetTime() * 1000;
   sync_active = true;
 }
 
 static void syncRelease(void) { sync_active = false; }
 
-static bool syncInit(unsigned int period, unsigned wait_quanta) {
+static bool syncInit(uint32_t period, unsigned wait_quanta) {
   int new_wait_quanta = -(int32_t)(period * wait_quanta + (wait_quanta >> 1));
 
   // If timer is still running and has same timing
@@ -279,7 +279,7 @@ static void ioRelease(void) { MemFree(&io_mem_buf); }
 static ISoundDevice *snd_ds = NULL;
 static ISysSoundBuffer *snd_buffer = NULL;
 static SysSoundCaps snd_buffer_caps;
-static unsigned int snd_write_cursor = 0;
+static uint32_t snd_write_cursor = 0;
 
 enum { snd_queue_max = 60 };
 
@@ -385,9 +385,9 @@ static void sndSync(void) {
   if (!snd_ds || !snd_buffer)
     return;
 
-  unsigned int dsbstatus;
-  unsigned int target;
-  unsigned int play_cursor, write_cursor;
+  uint32_t dsbstatus;
+  uint32_t target;
+  uint32_t play_cursor, write_cursor;
 #define set_target(t)                                                                                                  \
   (target = (snd_queue[snd_empty].ptr + (t) + snd_buffer_caps.dwBufferBytes) % snd_buffer_caps.dwBufferBytes)
 #define target_pending()                                                                                               \
@@ -489,8 +489,8 @@ static unsigned sndAddHelper(unsigned char *dst, const unsigned char **pSrc, uns
         src += len >> 1;
       } else {
         if (init) {
-          state = IntelSwapper(*(unsigned int *)src);
-          *(unsigned int *)dst = state;
+          state = IntelSwapper(*(uint32_t *)src);
+          *(uint32_t *)dst = state;
           src += 4;
           dst += 4;
           len -= 4;
@@ -514,8 +514,8 @@ static unsigned sndAddHelper(unsigned char *dst, const unsigned char **pSrc, uns
 static void sndAdd(const unsigned char *buf, unsigned len) {
 #if SOUND_SUPPORT
   int dsrval;
-  unsigned int play_cursor, write_cursor;
-  unsigned int len1, len2;
+  uint32_t play_cursor, write_cursor;
+  uint32_t len1, len2;
 
   unsigned state = 0;
   bool init = true;
@@ -677,9 +677,9 @@ static bool nfConfig(int wqty, int hqty, int fqty, int hicolor) {
 
   {
     if (hicolor) {
-      const unsigned int pal_rmask = 0x001F;
-      const unsigned int pal_bmask = 0xF800;
-      const unsigned int pal_gmask = 0x07E0;
+      const uint32_t pal_rmask = 0x001F;
+      const uint32_t pal_bmask = 0xF800;
+      const uint32_t pal_gmask = 0x07E0;
 
       const int pal_rshift = ffs(pal_rmask) - 4;
       const int pal_gshift = ffs(pal_gmask) - 4;
@@ -830,7 +830,7 @@ static unsigned sf_hicolor = 0; // Hicolor mode (0:none,1:normal,2:swapped)
 // Banked screen parameters, Private, see mveliba.asm
 void *sf_SetBank = NULL;
 unsigned sf_WinGran = 0;
-unsigned int sf_WinSize = 0;
+uint32_t sf_WinSize = 0;
 unsigned sf_WinGranPerSize = 0;
 //{sf_WriteWinPtr and sf_WriteWinLimit replace sf_WriteWinSeg, see mveliba.asm}
 unsigned char *sf_WriteWinPtr = NULL;
@@ -863,7 +863,7 @@ void mve_ShowFrameFieldHi(unsigned char *buf, unsigned bufw, unsigned bufh, unsi
 //	dx:  Window position in video memory in units of WinGran.
 //     on return, registers AX and DX are destroyed.
 void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, unsigned char *WriteWinPtr,
-                unsigned int WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
+                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
   sf_ScreenWidth = w;
   sf_ScreenHeight = h;
   sf_ResolutionWidth = w;
@@ -1618,8 +1618,8 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
   return frs;
 }
 
-int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, unsigned int *width, unsigned int *height,
-              unsigned int *hicolor) {
+int MVE_frGet(MVE_frStream frs, unsigned char **pBuf, uint32_t *width, uint32_t *height,
+              uint32_t *hicolor) {
   MVE_frStreamRec save;
   unsigned char *p;
   unsigned len;

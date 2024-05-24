@@ -797,7 +797,7 @@ int GetDLLRequirements(const char *name, char *requirements, int buflen) {
   }
   strncpy(requirements, opt.requirements, buflen - 1);
   requirements[buflen - 1] = '\0';
-  unsigned int opt_req_len = strlen(opt.requirements);
+  uint32_t opt_req_len = strlen(opt.requirements);
   if (opt_req_len > strlen(requirements)) {
     // too small of a buffer!
     mprintf((0, "Too small of a buffer to fill in all requirements!...need %d\n", opt_req_len + 1));

@@ -654,9 +654,9 @@ bool CHogEditDoc::DeleteFilenameList(char **filenames)
 }
 
 // Return estimate (in bytes) of the final Hog File Size
-unsigned int CHogEditDoc::CalcHogFileSize(void)
+uint32_t CHogEditDoc::CalcHogFileSize(void)
 {
-	unsigned int total;
+	uint32_t total;
 	POSITION pos;
 	hog_library_entry temp_entry;
 

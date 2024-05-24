@@ -31,7 +31,7 @@ std::string hexdigest_after_n_rounds_of_fuzz(int n) {
     md5.update((float)1.0f);
     md5.update((int)2);
     md5.update((short)3);
-    md5.update((unsigned int)4U);
+    md5.update((uint32_t)4U);
     md5.update((unsigned char)5);
   }
 
@@ -40,7 +40,7 @@ std::string hexdigest_after_n_rounds_of_fuzz(int n) {
   auto digest = md5.digest();
 
   for (int i = 0; i < 16; ++i)
-    hexdigest << std::setw(2) << std::setfill('0') << std::nouppercase << static_cast<unsigned int>(digest[i]);
+    hexdigest << std::setw(2) << std::setfill('0') << std::nouppercase << static_cast<uint32_t>(digest[i]);
 
   return hexdigest.str();
 }

@@ -23,22 +23,22 @@
 /* For _asm_sndDecompM16 */
 unsigned short *sndDecompM16_dst;
 unsigned char *sndDecompM16_src;
-unsigned int sndDecompM16_len;
-unsigned int sndDecompM16_prev;
-unsigned int sndDecompM16_return;
+uint32_t sndDecompM16_len;
+uint32_t sndDecompM16_prev;
+uint32_t sndDecompM16_return;
 /* For _asm_sndDecompM16 */
 unsigned short *sndDecompS16_dst;
 unsigned char *sndDecompS16_src;
-unsigned int sndDecompS16_len;
-unsigned int sndDecompS16_prev;
-unsigned int sndDecompS16_return;
+uint32_t sndDecompS16_len;
+uint32_t sndDecompS16_prev;
+uint32_t sndDecompS16_return;
 /* For _asm_nfHPkDecomp */
 unsigned char *nfHPkDecomp_ops;
 unsigned char *nfHPkDecomp_comp;
-unsigned int nfHPkDecomp_x;
-unsigned int nfHPkDecomp_y;
-unsigned int nfHPkDecomp_w;
-unsigned int nfHPkDecomp_h;
+uint32_t nfHPkDecomp_x;
+uint32_t nfHPkDecomp_y;
+uint32_t nfHPkDecomp_w;
+uint32_t nfHPkDecomp_h;
 
 #ifdef __cplusplus /* Avoid C++ name mangling - AH */
 extern "C" {
@@ -57,7 +57,7 @@ int global_unlock_memory_pointers[MAX_MEM_UNLOCK_POINTS]; // _asm_selfModify() s
 
 int allow_self_modification(void) {
   int i;
-  unsigned int page_start;
+  uint32_t page_start;
 
   for (i = 0; i < MAX_MEM_UNLOCK_POINTS; i++)
     global_unlock_memory_pointers[i] = 0;
@@ -95,8 +95,8 @@ void nfPkConfig(void) {
   return;
 }
 
-void nfHPkDecomp(unsigned char *ops, unsigned char *comp, unsigned int x, unsigned int y, unsigned int w,
-                 unsigned int h) {
+void nfHPkDecomp(unsigned char *ops, unsigned char *comp, uint32_t x, uint32_t y, uint32_t w,
+                 uint32_t h) {
   nfHPkDecomp_ops = ops;
   nfHPkDecomp_comp = comp;
   nfHPkDecomp_x = x;

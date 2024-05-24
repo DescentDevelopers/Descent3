@@ -480,7 +480,7 @@ static SOCKET Reliable_UDP_socket = INVALID_SOCKET;
 static float first_sent_iamhere = 0;
 static float last_sent_iamhere = 0;
 
-static unsigned int serverconn = 0xFFFFFFFF;
+static uint32_t serverconn = 0xFFFFFFFF;
 
 #ifdef WIN32
 #pragma pack(pop, r_udp)
@@ -496,7 +496,7 @@ typedef struct {
   float last_packet_received; // For a given connection, this is the last packet we received
   float last_packet_sent;
   float pings[MAX_PING_HISTORY];
-  unsigned int num_ping_samples;
+  uint32_t num_ping_samples;
   float mean_ping;
   float last_sent;           // The last time we sent a packet (used for NAGLE emulation)
   int waiting_packet_number; // Which packet has data in it that is waiting for the interval to send
@@ -754,7 +754,7 @@ void nw_InitSockets(ushort port) {
     memset(&sock_addr, 0, sizeof(SOCKADDR_IN));
     sock_addr.sin_family = AF_INET;
 
-    unsigned int my_ip;
+    uint32_t my_ip;
 
     my_ip = nw_GetThisIP();
 
@@ -774,10 +774,10 @@ void nw_InitSockets(ushort port) {
 
 tcp_done:
   int ret;
-  unsigned int isocktrue = 1;
+  uint32_t isocktrue = 1;
 
   setsockopt(TCP_socket, SOL_SOCKET, SO_REUSEADDR, (LPSTR)&isocktrue, sizeof(isocktrue));
-  ret = setsockopt(TCP_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(unsigned int));
+  ret = setsockopt(TCP_socket, SOL_SOCKET, SO_BROADCAST, (LPSTR)&isocktrue, sizeof(uint32_t));
   if (ret == SOCKET_ERROR) {
     int wserr;
     wserr = WSAGetLastError();
@@ -856,7 +856,7 @@ void nw_GetNumbersFromHostAddress(network_address *address, char *str) {
 #define CLOSE_TIMEOUT_TIME 3 // 3 seconds
 
 // returns the ip address of this computer
-unsigned int nw_GetThisIP() {
+uint32_t nw_GetThisIP() {
   SOCKADDR_IN local_address;
   int address_size = sizeof(SOCKADDR);
 
@@ -893,7 +893,7 @@ unsigned int nw_GetThisIP() {
 // Calculates a unique ushort checksum for a stream of data
 ushort nw_CalculateChecksum(void *vptr, int len) {
   ubyte *ptr = (ubyte *)vptr;
-  unsigned int sum1, sum2;
+  uint32_t sum1, sum2;
 
   sum1 = sum2 = 0;
 
@@ -1076,7 +1076,7 @@ int nw_CheckListenSocket(network_address *from_addr) {
   return INVALID_SOCKET;
 }
 
-int nw_SendReliable(unsigned int socketid, ubyte *data, int length, bool urgent) {
+int nw_SendReliable(uint32_t socketid, ubyte *data, int length, bool urgent) {
   int i;
   int bytesout;
   int use_buffer = -1;
@@ -1214,15 +1214,15 @@ int nw_InitReliableSocket() {
   return 1;
 }
 // MTS: only used in this file
-void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link_type, float time_sent) {
+void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_type, float time_sent) {
   int ret;
   reliable_header ack_header;
   ack_header.type = RNT_ACK;
   // mprintf((0,"Sending ACK for sig %d.\n",sig));
-  ack_header.data_len = INTEL_SHORT((short)sizeof(unsigned int));
+  ack_header.data_len = INTEL_SHORT((short)sizeof(uint32_t));
   ack_header.send_time = INTEL_FLOAT(time_sent);
   sig = INTEL_INT(sig);
-  memcpy(&ack_header.data, &sig, sizeof(unsigned int));
+  memcpy(&ack_header.data, &sig, sizeof(uint32_t));
 
   network_address send_address;
   memset(&send_address, 0, sizeof(network_address));
@@ -1236,7 +1236,7 @@ void nw_SendReliableAck(SOCKADDR *raddr, unsigned int sig, network_protocol link
     send_address.connection_type = NP_TCP;
   }
 
-  ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&ack_header, RELIABLE_PACKET_HEADER_ONLY_SIZE + sizeof(unsigned int),
+  ret = nw_SendWithID(NWT_RELIABLE, (ubyte *)&ack_header, RELIABLE_PACKET_HEADER_ONLY_SIZE + sizeof(uint32_t),
                       &send_address);
 }
 
@@ -1257,7 +1257,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
   static SOCKADDR rcv_addr;
   int bytesin = 0;
   int addrlen = sizeof(SOCKADDR);
-  unsigned int rcvid; // The id of who we actually received a packet from, as opposed to socketid parm
+  uint32_t rcvid; // The id of who we actually received a packet from, as opposed to socketid parm
 
   if (NP_TCP == naddr->connection_type) {
     SOCKADDR_IN *inaddr = (SOCKADDR_IN *)&rcv_addr;
@@ -1433,7 +1433,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
           rsocket->ping_pos = 0;
         }
         for (i = 0; i < MAXNETBUFFERS; i++) {
-          unsigned int *acksig = (unsigned int *)&rcv_buff.data;
+          uint32_t *acksig = (uint32_t *)&rcv_buff.data;
           *acksig = INTEL_INT(*acksig);
           if (rsocket)
             if (rsocket->sbuffers[i])
@@ -1955,7 +1955,7 @@ int nw_psnet_buffer_get_next(ubyte *data, int *length, network_address *from) {
 #ifdef WIN32
 // MTS: only used in this file
 // functions to get the status of a RAS connection
-unsigned int psnet_ras_status() {
+uint32_t psnet_ras_status() {
   int rval;
   DWORD size, num_connections, i;
   RASCONN rasbuffer[25];
@@ -2108,7 +2108,7 @@ void nw_LoadThreadLibrary(void) {
 void CDECLCALL gethostbynameworker(void *parm);
 #endif
 
-int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
+int nw_Asyncgethostbyname(uint32_t *ip, int command, char *hostname) {
 
   if (command == NW_AGHBN_LOOKUP) {
     if (lastaslu) {
@@ -2126,7 +2126,7 @@ int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
 #if (!defined(__LINUX__))
     async_dns_lookup *newaslu;
     newaslu = (async_dns_lookup *)mem_malloc(sizeof(async_dns_lookup));
-    memset(&newaslu->ip, 0, sizeof(unsigned int));
+    memset(&newaslu->ip, 0, sizeof(uint32_t));
     newaslu->host = hostname;
     newaslu->done = false;
     newaslu->error = false;
@@ -2134,7 +2134,7 @@ int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
     lastaslu = newaslu;
     aslu.done = false;
 #else
-    memset(&aslu.ip, 0, sizeof(unsigned int));
+    memset(&aslu.ip, 0, sizeof(uint32_t));
     aslu.host = hostname;
     aslu.done = false;
     aslu.error = false;
@@ -2159,7 +2159,7 @@ int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
                     }
                     else
                     {
-                            memcpy(&lastaslu->ip,he->h_addr_list[0],sizeof(unsigned int));
+                            memcpy(&lastaslu->ip,he->h_addr_list[0],sizeof(uint32_t));
                             lastaslu->done = true;
                             memcpy(&aslu,lastaslu,sizeof(async_dns_lookup));
                     }
@@ -2177,7 +2177,7 @@ int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
     if (he == NULL) {
       lastaslu->error = true;
     } else {
-      memcpy(&lastaslu->ip, he->h_addr_list[0], sizeof(unsigned int));
+      memcpy(&lastaslu->ip, he->h_addr_list[0], sizeof(uint32_t));
       lastaslu->done = true;
       memcpy(&aslu, lastaslu, sizeof(async_dns_lookup));
     }
@@ -2203,7 +2203,7 @@ int nw_Asyncgethostbyname(unsigned int *ip, int command, char *hostname) {
 #endif
 
       lastaslu = NULL;
-      memcpy(ip, &aslu.ip, sizeof(unsigned int));
+      memcpy(ip, &aslu.ip, sizeof(uint32_t));
       return 1;
     } else if (aslu.error) {
       // rcg06212000 join the thread.
@@ -2247,7 +2247,7 @@ void CDECLCALL gethostbynameworker(void *parm)
     return;
 #endif
   } else if (!lookup->abort) {
-    memcpy(&lookup->ip, he->h_addr_list[0], sizeof(unsigned int));
+    memcpy(&lookup->ip, he->h_addr_list[0], sizeof(uint32_t));
     mprintf((0, "IPLOOKUP: [%s] is %d.%d.%d.%d ...", lookup->host, (lookup->ip & 0x000000FF),
              (lookup->ip & 0x0000FF00) >> 8, (lookup->ip & 0x00FF0000) >> 16, (lookup->ip & 0xFF000000) >> 24));
     // memcpy(&aslu,lookup,sizeof(async_dns_lookup));

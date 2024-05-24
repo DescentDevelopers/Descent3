@@ -546,7 +546,7 @@ BOOL CALLBACK FFEnumCallback(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 // -------------------------------------------------------------------
 int ddio_ffjoy_Query(int dev, int* but_flags, int* axis_flags)
 {
-	unsigned int                     i,bit;
+	uint32_t                     i,bit;
 	DIDEVCAPS               DICaps; 
 	DIDEVICEOBJECTINSTANCE  DIObjInst; 
 	DWORD                   DIAxisOFS[6] =			{	DIJOFS_X,
@@ -1036,9 +1036,9 @@ void ddio_ffb_effectUnload(short eID)
 //    Modifies a single effect, only if the given parameters are
 //    different from what's currently loaded.
 // -------------------------------------------------------------------
-void ddio_ffb_effectModify(short eID, int*	Direction, unsigned int* Duration, unsigned int* Gain, unsigned int* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
+void ddio_ffb_effectModify(short eID, int*	Direction, uint32_t* Duration, uint32_t* Gain, uint32_t* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
 {
-	unsigned int flags = 0;
+	uint32_t flags = 0;
 	
 	//return;
 
@@ -1101,7 +1101,7 @@ void ddio_ffb_effectModify(short eID, int*	Direction, unsigned int* Duration, un
 // Purpose:
 //    Retrieves affect data for the given parameters, pass NULL for those you don't want
 // -------------------------------------------------------------------
-void ddio_ffb_GetEffectData(short eID, int*	Direction, unsigned int* Duration, unsigned int* Gain, unsigned int* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
+void ddio_ffb_GetEffectData(short eID, int*	Direction, uint32_t* Duration, uint32_t* Gain, uint32_t* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
 {
 	if (Direction){
 		*Direction = ddEffect[eID].direction[0];
@@ -1500,7 +1500,7 @@ void ddio_ffb_DestroyAll(void) {}
 
 void ddio_ffb_effectPlay(short eID) {}
 
-void ddio_ffb_effectModify(short eID, int *Direction, unsigned int *Duration, unsigned int *Gain, unsigned int *Period,
+void ddio_ffb_effectModify(short eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
                            tEffInfo *TypeInfo, tEffEnvelope *Envelope) {}
 
 int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect *eff) { return -1; }

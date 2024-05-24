@@ -189,15 +189,15 @@ void CHogEditView::OnInitialUpdate()
 void CHogEditView::SetColumnWidths(void)
 {
 	CListCtrl& lcp = GetListCtrl();
-	unsigned int w0, w1, w2, w3, w4;
+	uint32_t w0, w1, w2, w3, w4;
 
 	RECT rect;
     lcp.GetClientRect(&rect);
 
-	w0=unsigned int(rect.right*FILE_NAME_COLUMN_WIDTH);
-	w1=unsigned int(rect.right*FILE_TYPE_COLUMN_WIDTH);
-	w2=unsigned int(rect.right*FILE_DIR_COLUMN_WIDTH);
-	w3=unsigned int(rect.right*FILE_SIZE_COLUMN_WIDTH);
+	w0=uint32_t(rect.right*FILE_NAME_COLUMN_WIDTH);
+	w1=uint32_t(rect.right*FILE_TYPE_COLUMN_WIDTH);
+	w2=uint32_t(rect.right*FILE_DIR_COLUMN_WIDTH);
+	w3=uint32_t(rect.right*FILE_SIZE_COLUMN_WIDTH);
 	w4=rect.right-(w0+w1+w2+w3);
 
 	lcp.SetColumnWidth(FILE_NAME_COLUMN,w0);

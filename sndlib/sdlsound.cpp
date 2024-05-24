@@ -118,8 +118,8 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, unsigned char ma
   return true;
 }
 
-bool lnxsound::GetDeviceSettings(SDL_AudioDeviceID *device, unsigned int *freq, unsigned int *bit_depth,
-                                 unsigned int *channels) const {
+bool lnxsound::GetDeviceSettings(SDL_AudioDeviceID *device, uint32_t *freq, uint32_t *bit_depth,
+                                 uint32_t *channels) const {
   if (sound_device == 0)
     return false;
 

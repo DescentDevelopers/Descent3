@@ -809,13 +809,13 @@ typedef struct vmt_descent3_struct {
   int suicides;
   int online_time;
   int games_played;
-  unsigned int security;
+  uint32_t security;
   unsigned char virgin_pilot; // This pilot was just created if TRUE
-  unsigned int lateral_thrust;
-  unsigned int rotational_thrust;
-  unsigned int sliding_pct; // Percentage of the time you were sliding
-  unsigned int checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
-  unsigned int pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
+  uint32_t lateral_thrust;
+  uint32_t rotational_thrust;
+  uint32_t sliding_pct; // Percentage of the time you were sliding
+  uint32_t checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
+  uint32_t pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #if defined(WIN32)
@@ -1083,7 +1083,7 @@ void MultiSendPPSSet(int pps);
 
 void MultiDoPPSSet(ubyte *data, int slot);
 
-void MultiSendGreetings(unsigned int id);
+void MultiSendGreetings(uint32_t id);
 
 void MultiDoGreetings(ubyte *data, network_address *addr);
 

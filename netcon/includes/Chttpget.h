@@ -89,8 +89,8 @@ public:
   ~ChttpGet();
   void GetFile(char *URL, char *localfile);
   int GetStatus();
-  unsigned int GetBytesIn();
-  unsigned int GetTotalBytes();
+  uint32_t GetBytesIn();
+  uint32_t GetTotalBytes();
   void AbortGet();
   void WorkerThread();
   bool m_Aborted;
@@ -98,10 +98,10 @@ public:
 protected:
   int ConnectSocket();
   char *GetHTTPLine();
-  unsigned int ReadDataChannel();
-  unsigned int m_iBytesIn;
-  unsigned int m_iBytesTotal;
-  unsigned int m_State;
+  uint32_t ReadDataChannel();
+  uint32_t m_iBytesIn;
+  uint32_t m_iBytesTotal;
+  uint32_t m_State;
   bool m_ProxyEnabled;
   char *m_ProxyIP;
   char m_URL[MAX_URL_LEN];

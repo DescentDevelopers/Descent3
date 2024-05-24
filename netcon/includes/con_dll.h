@@ -330,7 +330,7 @@ typedef struct {
 typedef void (*GetMultiAPI_fp)(multi_api *api);
 GetMultiAPI_fp DLLGetMultiAPI;
 
-typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, unsigned int color);
+typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, uint32_t color);
 SetUITextItemText_fp DLLSetUITextItemText;
 
 typedef void *(*NewUIWindowCreate_fp)(int x, int y, int w, int h, int flags);
@@ -465,7 +465,7 @@ static inline void DLLMultiStartServer(int playing, char *scriptname, int dedica
 typedef void (*ShowProgressScreen_fp)(char *, char *);
 ShowProgressScreen_fp DLLShowProgressScreen;
 
-typedef int (*SearchForLocalGamesTCP_fp)(unsigned int, ushort);
+typedef int (*SearchForLocalGamesTCP_fp)(uint32_t, ushort);
 SearchForLocalGamesTCP_fp DLLSearchForLocalGamesTCP;
 
 typedef int (*nw_GetHostAddressFromNumbers_fp)(char *str);
@@ -487,9 +487,9 @@ GetMissionName_fp DLLGetMissionName;
 typedef void (*RemoveUITextItem_fp)(void *item);
 RemoveUITextItem_fp DLLRemoveUITextItem;
 
-typedef void *(*CreateNewUITextItem_fp)(const char *newtext, unsigned int color, int font);
+typedef void *(*CreateNewUITextItem_fp)(const char *newtext, uint32_t color, int font);
 CreateNewUITextItem_fp DLLCreateNewUITextItemFP;
-static inline void *DLLCreateNewUITextItem(const char *newtext, unsigned int color, int font = -1) {
+static inline void *DLLCreateNewUITextItem(const char *newtext, uint32_t color, int font = -1) {
   return DLLCreateNewUITextItemFP(newtext, color, font);
 }
 
@@ -548,7 +548,7 @@ OldEditGetText_fp DLLOldEditGetText;
 typedef void (*ToggleUICallback_fp)(int state);
 ToggleUICallback_fp DLLToggleUICallback;
 
-typedef int (*SearchForGamesPXO_fp)(unsigned int ask, ushort port);
+typedef int (*SearchForGamesPXO_fp)(uint32_t ask, ushort port);
 SearchForGamesPXO_fp DLLSearchForGamesPXO;
 
 typedef void (*SetOldEditBufferLen_fp)(void *item, int len);
@@ -579,7 +579,7 @@ dp_ListDirectPlayGames_fp DLLdp_ListDirectPlayGames;
 typedef int (*dp_InitDirectPlay_fp)(char *conn_name, void *parms, int num_elements);
 dp_InitDirectPlay_fp DLLdp_InitDirectPlay;
 
-typedef int (*dp_GetModemChoices_fp)(char *buffer, unsigned int *size);
+typedef int (*dp_GetModemChoices_fp)(char *buffer, uint32_t *size);
 dp_GetModemChoices_fp DLLdp_GetModemChoices;
 #endif
 
@@ -620,7 +620,7 @@ typedef void (*dp_EndGame_fp)();
 dp_EndGame_fp DLLdp_EndGame;
 #endif
 
-typedef int (*nw_Asyncgethostbyname_fp)(unsigned int *ip, int command, char *hostname);
+typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, char *hostname);
 nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*nw_ReccomendPPS_fp)();
@@ -691,7 +691,7 @@ UpdateAndPackGameList_fp DLLUpdateAndPackGameList;
 typedef int (*MultiLevelSelection_fp)(void);
 MultiLevelSelection_fp DLLMultiLevelSelection;
 
-typedef bool (*DoPlayerMouselookCheck_fp)(unsigned int flags);
+typedef bool (*DoPlayerMouselookCheck_fp)(uint32_t flags);
 DoPlayerMouselookCheck_fp DLLDoPlayerMouselookCheck;
 
 typedef int (*CheckMissionForScript_fp)(char *mission, char *script, int dedicated_server_num_teams);
@@ -711,7 +711,7 @@ int DLLUIClass_CurrID = 0xD0;
 #define JEFF_GREEN GR_RGB(40, 255, 40)
 #define NETPOLLINTERVAL 10.0
 
-extern int MTAVersionCheck(unsigned int oldver, char *URL);
+extern int MTAVersionCheck(uint32_t oldver, char *URL);
 
 #define LOGIN_LEN 33
 #define REAL_NAME_LEN 66
@@ -734,13 +734,13 @@ typedef struct vmt_descent3_struct {
   int suicides;
   int online_time;
   int games_played;
-  unsigned int security;
+  uint32_t security;
   unsigned char virgin_pilot; // This pilot was just created if TRUE
-  unsigned int lateral_thrust;
-  unsigned int rotational_thrust;
-  unsigned int sliding_pct; // Percentage of the time you were sliding
-  unsigned int checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
-  unsigned int pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
+  uint32_t lateral_thrust;
+  uint32_t rotational_thrust;
+  uint32_t sliding_pct; // Percentage of the time you were sliding
+  uint32_t checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
+  uint32_t pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #ifdef WIN32
@@ -757,7 +757,7 @@ typedef struct vmt_descent3_struct {
 #define DLLmprintf(args)
 #endif
 
-unsigned int MTClientVer = 100;
+uint32_t MTClientVer = 100;
 
 char MTUpdateURL[300] = "";
 

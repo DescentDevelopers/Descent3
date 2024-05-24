@@ -2263,7 +2263,7 @@ void msafe_CallFunction(ubyte type, msafe_struct *mstruct) {
       if (Game_mode & GM_MULTI && Netgame.local_role == LR_CLIENT) {
         ASSERT(objp->flags & OF_SERVER_OBJECT);
       }
-      if (objp->flags != (unsigned int)mstruct->flags) {
+      if (objp->flags != (uint32_t)mstruct->flags) {
         objp->flags = mstruct->flags;
       } else {
         send_it = false;
@@ -2294,7 +2294,7 @@ void msafe_CallFunction(ubyte type, msafe_struct *mstruct) {
   case MSAFE_OBJECT_PHYSICS_FLAGS: {
     object *objp = ObjGet(mstruct->objhandle);
     if (objp) {
-      if (objp->mtype.phys_info.flags != (unsigned int)mstruct->physics_flags) {
+      if (objp->mtype.phys_info.flags != (uint32_t)mstruct->physics_flags) {
         objp->mtype.phys_info.flags = mstruct->physics_flags;
         objp->change_flags |= OCF_PHYS_FLAGS;
       } else {

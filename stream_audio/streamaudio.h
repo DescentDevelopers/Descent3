@@ -144,7 +144,7 @@
 #include "TaskSystem.h"
 
 void *AudioStreamCB(void *user_data, int handle, int *size);
-int ADecodeFileRead(void *data, void *buf, unsigned int qty);
+int ADecodeFileRead(void *data, void *buf, uint32_t qty);
 int StreamPlay(const char *filename, float volume, int flags);
 void StreamStop(int handle);
 int StreamGetSoundHandle(int handle);
@@ -270,7 +270,7 @@ class AudioStream {
   bool m_start_on_frame_looped; // the stream that will play on next frame is looped.
 private:
   friend void *AudioStreamCB(void *user_data, int handle, int *size);
-  friend int ADecodeFileRead(void *data, void *buf, unsigned int qty);
+  friend int ADecodeFileRead(void *data, void *buf, uint32_t qty);
   void *StreamCallback(int *size);        // invoked by omsStreamCB.
   int ReadFileData(int buf, int len);     // reads in decompressed raw data.
   int ReadFileDirect(char *buf, int len); // reads in decompressed raw data.

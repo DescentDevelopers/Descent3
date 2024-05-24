@@ -68,7 +68,7 @@
  */
 
 #define ubyte unsigned char
-#define uint unsigned int
+#define uint uint32_t
 #define ushort unsigned short
 
 typedef struct {

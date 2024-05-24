@@ -176,14 +176,14 @@ typedef struct {
   SOCKET reliable_socket;
   float last_packet_time;
   float packet_time; // for making sure we don't get position packets out of order
-  unsigned int total_bytes_sent;
-  unsigned int total_bytes_rcvd;
-  unsigned int secret_net_id;       //	We use this to determine who we are getting packets from
+  uint32_t total_bytes_sent;
+  uint32_t total_bytes_rcvd;
+  uint32_t secret_net_id;       //	We use this to determine who we are getting packets from
   int file_xfer_flags;              // Are we sending,receiving, or neither
-  unsigned int file_xfer_total_len; // Total length of the file we are receiving
-  unsigned int file_xfer_pos;       // Position for sending and/or receiving
-  unsigned int file_xfer_id;        // File id that we are sending
-  unsigned int file_xfer_who;       // Who the file is for
+  uint32_t file_xfer_total_len; // Total length of the file we are receiving
+  uint32_t file_xfer_pos;       // Position for sending and/or receiving
+  uint32_t file_xfer_id;        // File id that we are sending
+  uint32_t file_xfer_who;       // Who the file is for
   CFILE *file_xfer_cfile;           // File handle for src/target file
   ushort position_counter;          // for making sure we don't get position packets out of order
   char ship_logo[_MAX_PATH];
@@ -215,11 +215,11 @@ typedef struct {
   ushort curr_num_players;
   ushort max_num_players;
   float server_response_time;
-  unsigned int flags;
+  uint32_t flags;
   float last_update;
   bool dedicated_server;
   ubyte difficulty; // Game difficulty level
-  unsigned int handle;
+  uint32_t handle;
 } network_game;
 
 // netgame flags

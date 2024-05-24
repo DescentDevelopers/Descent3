@@ -20,7 +20,7 @@
 #define AUDIODECODE_H_
 
 namespace AudioDecoder {
-typedef unsigned int uint32;
+typedef uint32_t uint32;
 typedef signed int sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
@@ -46,7 +46,7 @@ public:
 // and also returns the number of channels (1 or 2), the sample rate
 // (e.g. 22050), and the number of samples contained in the compressed file
 // (in case you want to pre-allocate a buffer to load them all into memory).
-typedef sint32 (*ReadDataFunction)(void *pData, void *pBuffer, unsigned int amount);
+typedef sint32 (*ReadDataFunction)(void *pData, void *pBuffer, uint32_t amount);
 IAudioDecoder *CreateDecoder(ReadDataFunction reader, void *pData, uint32 &numChannels, uint32 &sampleRate,
                              uint32 &sampleCount);
 

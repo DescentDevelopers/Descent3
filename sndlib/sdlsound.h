@@ -117,8 +117,8 @@ public:
   //	decay 0.1 to 100 seconds, how long it takes for a sound to die.
   bool SetGlobalReverbProperties(float volume, float damping, float decay) override;
 
-  bool GetDeviceSettings(SDL_AudioDeviceID *sound_device, unsigned int *freq, unsigned int *bit_depth,
-                                 unsigned int *channels) const;
+  bool GetDeviceSettings(SDL_AudioDeviceID *sound_device, uint32_t *freq, uint32_t *bit_depth,
+                                 uint32_t *channels) const;
 
   friend void lnxsound_SetError(int code);
   friend void lnxsound_ErrorText(const char *fmt, ...);

@@ -3336,8 +3336,8 @@ char OMMS_GetInfo(OMMSHANDLE handle,uint *mem_size,uint *uid,ushort *reference_c
 
 typedef struct tOMMSNode {
   unsigned short id;
-  unsigned int size_of_memory;
-  unsigned int unique_id;
+  uint32_t size_of_memory;
+  uint32_t unique_id;
   unsigned short reference_count;
   unsigned char free_called;
   void *memory_ptr;
@@ -3363,9 +3363,9 @@ tOMMSHashNode *Osiris_OMMS_FindHashNode(char *script_name, bool autocreate);
 tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node);
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
-tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, unsigned int uid, bool autocreate);
+tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate);
 //	Removes the OMMS node for the given HashNode (completly remove)
-void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, unsigned int uid);
+void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid);
 //	Reduces the reference count for an OMMSNode by 1
 void Osiris_OMMS_ReduceRefCount(tOMMSHashNode *root, tOMMSNode *node);
 //	Calls free on a node
@@ -3626,7 +3626,7 @@ tOMMSHashNode *Osiris_OMMS_DeleteHashNode(tOMMSHashNode *node) {
 
 //	finds an OMMS node, given the hash node to start at.  If it isn't
 //	found than one is created. NULL if out of memory.
-tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, unsigned int uid, bool autocreate) {
+tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, uint32_t uid, bool autocreate) {
   tOMMSNode *curr = root->root;
 
   if (!root->root) {
@@ -3672,7 +3672,7 @@ tOMMSNode *Osiris_OMMS_FindNode(tOMMSHashNode *root, unsigned int uid, bool auto
 }
 
 //	Removes the OMMS node for the given HashNode (completly remove)
-void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, unsigned int uid) {
+void Osiris_OMMS_RemoveNode(tOMMSHashNode *root, uint32_t uid) {
   tOMMSNode *curr = root->root;
   tOMMSNode *node_to_free = NULL;
 

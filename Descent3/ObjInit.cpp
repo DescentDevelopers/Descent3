@@ -814,7 +814,7 @@ int ObjInitGeneric(object *objp, bool reinit) {
     poly_model *pm = &Poly_models[objp->rtype.pobj_info.model_num];
     int num_wbs = pm->num_wbs;
 
-    if ((objp->dynamic_wb != NULL) && ((unsigned int)num_wbs != mem_size(objp->dynamic_wb) / sizeof(dynamic_wb_info)))
+    if ((objp->dynamic_wb != NULL) && ((uint32_t)num_wbs != mem_size(objp->dynamic_wb) / sizeof(dynamic_wb_info)))
     {
       mem_free(objp->dynamic_wb);
       objp->dynamic_wb = NULL;

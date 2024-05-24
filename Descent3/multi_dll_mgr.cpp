@@ -319,8 +319,8 @@
 
 void *callback = NULL;
 module MultiDLLHandle = {NULL};
-int SearchForLocalGamesTCP(unsigned int ask, ushort port);
-int SearchForGamesPXO(unsigned int ask, ushort port);
+int SearchForLocalGamesTCP(uint32_t ask, ushort port);
+int SearchForGamesPXO(uint32_t ask, ushort port);
 extern ubyte NewUIWindow_alpha;
 extern void DoScreenshot();
 extern void UpdateAndPackGameList(void);
@@ -698,7 +698,7 @@ void CallMultiDLL(int eventnum) {
   if (MultiDLLHandle.handle && DLLMultiCall)
     DLLMultiCall(eventnum);
 }
-void SetUITextItemText(UITextItem *uit, char *newtext, unsigned int color) {
+void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color) {
   // This function is currently broken!
   strcpy(uit->m_Text, newtext);
   uit->set_color(color);
@@ -822,7 +822,7 @@ int PollUI(void) {
   }
   return result;
 }
-void *CreateNewUITextItem(const char *newtext, unsigned int color, int font) {
+void *CreateNewUITextItem(const char *newtext, uint32_t color, int font) {
   UITextItem *new_text_item;
   if (font == -1) {
     new_text_item = new UITextItem(newtext);

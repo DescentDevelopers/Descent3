@@ -569,8 +569,8 @@ protected:
 };
 
 typedef struct tHostsNode {
-  unsigned int ip;
-  unsigned int mask;
+  uint32_t ip;
+  uint32_t mask;
   tHostsNode *next;
 } tHostsNode; // Allow/Deny IP address nodes
 

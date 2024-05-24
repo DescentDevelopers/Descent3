@@ -273,7 +273,7 @@ private:
   struct t_msestate {
     int m_deltaX, m_deltaY, m_deltaZ;
     int m_absX, m_absY;
-    unsigned int m_buttonMask;
+    uint32_t m_buttonMask;
   } m_MseState;
 
   struct t_extctlstate {

@@ -943,7 +943,7 @@ int GoalAllocSlot(object *obj, int level, float influence) {
 }
 
 // Adds a goal to the object
-int GoalAddGoal(object *obj, unsigned int goal_type, void *arg_struct, int level, float influence, int f_goal, int guid,
+int GoalAddGoal(object *obj, uint32_t goal_type, void *arg_struct, int level, float influence, int f_goal, int guid,
                 char subtype) {
   ai_frame *ai_info = obj->ai_info;
   int goal_index = AI_INVALID_INDEX;

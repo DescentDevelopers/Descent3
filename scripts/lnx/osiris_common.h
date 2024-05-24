@@ -930,8 +930,8 @@ typedef int OMMSHANDLE;
 typedef unsigned char ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned int ddgr_color;
+typedef uint32_t uint;
+typedef uint32_t ddgr_color;
 
 #ifndef NULL
 #define NULL 0
@@ -1296,7 +1296,7 @@ typedef struct {
   int count;
   int flags;
   void *list;
-  unsigned int control_mask;
+  uint32_t control_mask;
   unsigned char control_val;
 
   // Object lighting stuff

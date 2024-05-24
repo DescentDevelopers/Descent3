@@ -102,11 +102,11 @@ typedef struct vmt_descent3_struct {
 	int suicides;
 	int online_time;
 	int games_played;
-	unsigned int security;
+	uint32_t security;
 	unsigned char virgin_pilot;	//This pilot was just created if TRUE
-	unsigned int lateral_thrust;
-	unsigned int rotational_thrust;
-	unsigned int sliding_pct;	//Percentage of the time you were sliding
+	uint32_t lateral_thrust;
+	uint32_t rotational_thrust;
+	uint32_t sliding_pct;	//Percentage of the time you were sliding
 	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
 	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
 } vmt_descent3_struct;
@@ -143,7 +143,7 @@ typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
 
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 
-typedef int (*nw_Asyncgethostbyname_fp) (unsigned int *ip,int command, char *hostname);
+typedef int (*nw_Asyncgethostbyname_fp) (uint32_t *ip,int command, char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*nw_SendWithID_fp) (ubyte id,ubyte *data,int len,network_address *who_to);
@@ -176,7 +176,7 @@ void InitMTSockets(void)
 	WORD ver=MAKEWORD(1,1);
 #endif
 	int rcode;
-	unsigned int ip;
+	uint32_t ip;
 #ifdef WIN32
 	int error=WSAStartup(ver,&ws_data);
 	if (error!=0)

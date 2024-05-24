@@ -308,7 +308,7 @@ static float Demo_frame_time = 0;
 static float Demo_last_pinfo;
 float Demo_frame_ofs;
 static int Demo_auto_idx = 0;
-unsigned int Demo_flags = 0;
+uint32_t Demo_flags = 0;
 unsigned short Demo_obj_map[MAX_OBJECTS];
 static bool Demo_turretchanged[MAX_OBJECTS];
 bool Demo_looping = false;
@@ -328,7 +328,7 @@ extern gs_tables *gs_Xlates;
 extern float Min_frametime;
 extern float Max_frametime;
 extern float Avg_frametime;
-extern unsigned int Frames_counted;
+extern uint32_t Frames_counted;
 extern bool Game_paused;
 
 static bool Demo_play_fast = false;
@@ -487,7 +487,7 @@ void DemoWriteWeaponFire(unsigned short objectnum, vector *pos, vector *dir, uns
   }
 }
 
-void DemoWriteHudMessage(unsigned int color, bool blink, char *msg) {
+void DemoWriteHudMessage(uint32_t color, bool blink, char *msg) {
   if (Demo_flags == DF_RECORDING) {
     cf_WriteByte(Demo_cfp, DT_HUD_MESSAGE);
     cf_WriteInt(Demo_cfp, color);
@@ -1727,7 +1727,7 @@ void DemoReadPersistantHUDMessage() {
   int sound_index;
   char *fmt;
 
-  color = (unsigned int)cf_ReadInt(Demo_cfp);
+  color = (uint32_t)cf_ReadInt(Demo_cfp);
   x = cf_ReadInt(Demo_cfp);
   y = cf_ReadInt(Demo_cfp);
   time = cf_ReadFloat(Demo_cfp);

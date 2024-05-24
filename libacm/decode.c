@@ -195,7 +195,7 @@ static int f_bad(ACMStream *acm, unsigned ind, unsigned col)
 
 static int f_linear(ACMStream *acm, unsigned ind, unsigned col)
 {
-	unsigned int i;
+	uint32_t i;
 	int b, middle = 1 << (ind - 1);
 
 	for (i = 0; i < acm->info.acm_rows; i++) {
@@ -507,9 +507,9 @@ static int fill_block(ACMStream *acm)
 
 static void juggle(int *wrap_p, int *block_p, unsigned sub_len, unsigned sub_count)
 {
-	unsigned int i, j;
+	uint32_t i, j;
 	int *p;
-	unsigned int r0, r1, r2, r3;
+	uint32_t r0, r1, r2, r3;
 	for (i = 0; i < sub_len; i++) {
 		p = block_p;
 		r0 = wrap_p[0];
@@ -711,7 +711,7 @@ static int read_wavc_header(ACMStream *acm)
 
 static int read_header(ACMStream *acm)
 {
-	unsigned int tmp;
+	uint32_t tmp;
 
 	/* read header */
 

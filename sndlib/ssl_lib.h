@@ -329,7 +329,7 @@ typedef struct sound_info {
 
   int loop_start;          // Start byte of repeated loop for looping samples
   int loop_end;            // End byte of repeating loop for looping samples
-  unsigned int flags;      // 2d/3d, variable frequency
+  uint32_t flags;      // 2d/3d, variable frequency
   float max_distance;      // Maximum distance in which a sound is heard
   float min_distance;      // Sound gets no louder at min_distance
   int inner_cone_angle;    // Angle in which sound is played at full base volume

@@ -22,7 +22,7 @@
 
 namespace {
 
-const unsigned int md5_round_shifts[] = {7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21};
+const uint32_t md5_round_shifts[] = {7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21};
 
 const std::uint32_t md5_round_constants[] = {
     0xD76AA478UL, 0xE8C7B756UL, 0x242070DBUL, 0xC1BDCEEEUL, 0xF57C0FAFUL, 0x4787C62AUL, 0xA8304613UL, 0xFD469501UL,
@@ -50,9 +50,9 @@ void MD5::round(std::array<std::uint32_t, 4> &sums, const unsigned char *block) 
   std::uint32_t a = sums[0], b = sums[1], c = sums[2], d = sums[3];
 
   // 64 rounds...
-  for (unsigned int r = 0; r < 64; ++r) {
+  for (uint32_t r = 0; r < 64; ++r) {
     std::uint32_t f, g;
-    unsigned int s = md5_round_shifts[((r >> 2) & ~3) | (r & 3)];
+    uint32_t s = md5_round_shifts[((r >> 2) & ~3) | (r & 3)];
     switch (r >> 4) {
     case 0:
       f = (b & c) | (~b & d), g = r;
@@ -175,10 +175,10 @@ void MD5::update(short valin) noexcept {
   update(p, sizeof(short));
 }
 
-void MD5::update(unsigned int valin) noexcept {
-  unsigned int val = INTEL_INT(valin);
+void MD5::update(uint32_t valin) noexcept {
+  uint32_t val = INTEL_INT(valin);
   unsigned char *p = (unsigned char *)&val;
-  update(p, sizeof(unsigned int));
+  update(p, sizeof(uint32_t));
 }
 
 void MD5::update(unsigned char val) noexcept {

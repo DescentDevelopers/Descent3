@@ -130,7 +130,7 @@ void CDallasUserTypesDlg::OnAddButton()
 	// Check if the message name is valid
 	char *valname=dlg.m_PromptData.GetBuffer(0);
 	if(strlen(valname)==0) return;
-	for(unsigned int j=0;j<strlen(valname);j++)
+	for(uint32_t j=0;j<strlen(valname);j++)
 		if(!isalnum(valname[j]) && valname[j]!='_' && valname[j]!=' ') {
 			MessageBox("That name is invalid!\n\nA value name may only contain letters and numbers","Invalid Name Error",MB_OK|MB_ICONEXCLAMATION);
 			return;
@@ -191,7 +191,7 @@ void CDallasUserTypesDlg::OnChangeButton()
 	// Check if the value name is valid
 	char *valname=dlg.m_PromptData.GetBuffer(0);
 	if(strlen(valname)==0) return;
-	for(unsigned int j=0;j<strlen(valname);j++)
+	for(uint32_t j=0;j<strlen(valname);j++)
 		if(!isalnum(valname[j]) && valname[j]!='_' && valname[j]!=' ') {
 			MessageBox("That name is invalid!\n\nA value name may only contain letters and numbers","Invalid Name Error",MB_OK|MB_ICONEXCLAMATION);
 			return;

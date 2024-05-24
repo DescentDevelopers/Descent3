@@ -94,7 +94,7 @@ int sdlkey_to_ddiocode[27] = {0,     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, K
                               KEY_I, KEY_J, KEY_K, KEY_L, KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q,
                               KEY_R, KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X, KEY_Y, KEY_Z};
 
-static inline ubyte sdlkeycode_to_keycode(unsigned int sdlkeycode) {
+static inline ubyte sdlkeycode_to_keycode(uint32_t sdlkeycode) {
   // unceremoniously taken from Heretic source code with a few modifications.
   //  (by Outrage. Not Loki. We know better.  :)  --ryan.)
   int rc = sdlkeycode;

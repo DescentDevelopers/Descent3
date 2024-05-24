@@ -56,7 +56,7 @@ inline unsigned short IntelSwapper(unsigned short a) { return INTEL_SHORT(a); }
 
 inline short IntelSwapper(short a) { return INTEL_SHORT(a); }
 
-inline unsigned int IntelSwapper(unsigned int a) { return INTEL_INT(a); }
+inline uint32_t IntelSwapper(uint32_t a) { return INTEL_INT(a); }
 
 inline int IntelSwapper(int a) { return INTEL_INT(a); }
 

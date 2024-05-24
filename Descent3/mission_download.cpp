@@ -788,7 +788,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
           }
         } else {
           // check the CRC
-          unsigned int crc = cf_GetfileCRC(output_filename);
+          uint32_t crc = cf_GetfileCRC(output_filename);
           if (crc == ze->crc32) {
             console.puts(GR_GREEN, "CRC OK");
 

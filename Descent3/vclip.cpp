@@ -460,7 +460,7 @@ int AllocLoadVClip(const char *filename, int texture_size, int mipped, int pagea
 int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int format) {
   CFILE *infile;
   char name[PAGENAME_LEN];
-  unsigned int i, done = 0;
+  uint32_t i, done = 0;
 
   ASSERT(filename != NULL);
 

@@ -155,13 +155,13 @@ BOOL TableFileFilter::OnInitDialog()
 // Calculates column widths and sets them
 void TableFileFilter::SetColumnWidths(void)
 {
-	unsigned int w0, w1;
+	uint32_t w0, w1;
 
 	RECT rect;
     m_DataList.GetClientRect(&rect);
 
-	w0=unsigned int(rect.right*PAGE_NAME_COLUMN_WIDTH);
-	w1=unsigned int(rect.right*PAGE_TYPE_COLUMN_WIDTH);
+	w0=uint32_t(rect.right*PAGE_NAME_COLUMN_WIDTH);
+	w1=uint32_t(rect.right*PAGE_TYPE_COLUMN_WIDTH);
 
 	m_DataList.SetColumnWidth(PAGE_NAME_COLUMN,w0);
 	m_DataList.SetColumnWidth(PAGE_TYPE_COLUMN,w1);

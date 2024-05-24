@@ -338,15 +338,15 @@ FILE *mem_out = NULL;
 int Mem_mallocs_since_last_sort = 0;
 /*
 #undef new
-void *operator new(unsigned int size, char *file, int line)
+void *operator new(uint32_t size, char *file, int line)
 {
   return mem_malloc_sub(size, file, line);
 }
-void *operator new [](unsigned int size, char *file, int line)
+void *operator new [](uint32_t size, char *file, int line)
 {
   return mem_malloc_sub(size, file, line);
 }
-void *operator new(unsigned int size)
+void *operator new(uint32_t size)
 {
         return mem_malloc_sub(size,"unknown",0);
 }
@@ -864,7 +864,7 @@ hashTableIndex hash(T data) {
   /***********************************
    *  hash function applied to data  *
    ***********************************/
-  unsigned int hval = (unsigned int)data->ptr;
+  uint32_t hval = (uint32_t)data->ptr;
   return (hval % MEM_MAX_MALLOCS);
 }
 Node *insertNode(T data) {

@@ -151,7 +151,7 @@
 #define GAME_HEADER_ONLY_SIZE		(sizeof(game_packet_header)-MAX_GT_GAME_DATA_SIZE)
 
 typedef struct {
-	unsigned int len;				//Length of entire packet;
+	uint32_t len;				//Length of entire packet;
 	unsigned char game_type;	//1==freespace (GT_FREESPACE), 2==D3, 3==tuberacer, etc.
 	SOCKADDR_IN	addr;
 	int	type;	//Used to specify what to do ie. Add a new net game (GNT_GAMESTARTED), remove a net game (game over), etc.
@@ -201,7 +201,7 @@ typedef struct {
 typedef struct _active_games{
 	int game_type; //ie. GT_FREESPACE GT_DESCENT3, etc.
 	SOCKADDR	addr;
-	unsigned int last_update;	//Time we last got an update from this game
+	uint32_t last_update;	//Time we last got an update from this game
 	char	data[MAX_GT_GAME_DATA_SIZE]; //memory to hold the game specific data
 	_active_games *next;
 }active_games;

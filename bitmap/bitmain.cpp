@@ -374,7 +374,7 @@ bm_hashTableIndex bm_hash(bm_T data) {
    *  hash function applied to data  *
    ***********************************/
   char *p = data->name;
-  unsigned int hval = strlen(p);
+  uint32_t hval = strlen(p);
 
   while (*p) {
     hval += tolower(*p);
@@ -631,7 +631,7 @@ void bm_FreeBitmapMain(int handle) {
 }
 // Returns -1 if this name is not already in use, else index of bitmap that is using name
 int bm_TestName(const char *src) {
-  unsigned int i, limit;
+  uint32_t i, limit;
 
   char namedest[256];
   char path[256], ext[256], filename[256];
@@ -652,7 +652,7 @@ int bm_TestName(const char *src) {
 }
 // gets the filename from a path, plus appends our .ogf extension
 void bm_ChangeEndName(const char *src, char *dest) {
-  unsigned int i, limit;
+  uint32_t i, limit;
   int last = -1;
   int curnum = -1;
   char namedest[256+16];

@@ -47,7 +47,7 @@ extern mem_malloc_fp DLLmem_malloc;
 typedef void (*mem_free_fp) (void *memblock);
 extern mem_free_fp DLLmem_free;
 
-typedef int (*nw_Asyncgethostbyname_fp) (unsigned int *ip,int command, char *hostname);
+typedef int (*nw_Asyncgethostbyname_fp) (uint32_t *ip,int command, char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*PollUI_fp) (void);
@@ -142,7 +142,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 	if(!Socket_connecting)
 	{
 		strcpy(Nick_name,nickname);
-		for(unsigned int l=0;l<strlen(Nick_name);l++) 
+		for(uint32_t l=0;l<strlen(Nick_name);l++) 
 			if(Nick_name[l]==' ') Nick_name[l] = '_';
 		strcpy(Orignial_nick_name,nickname);
 		strcpy(Chat_tracker_id,trackerid);
@@ -207,7 +207,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 		*/
 
 		int rcode;
-		unsigned int ip;
+		uint32_t ip;
 
 		DLLnw_Asyncgethostbyname(&ip,NW_AGHBN_LOOKUP,chat_server);
 		do
@@ -527,7 +527,7 @@ const char *ChatGetString(void)
 		bytesread = recv(Chatsock,ch,1,0);
 		if(bytesread==SOCKET_ERROR)
 		{
-			unsigned int lerror = WSAGetLastError();
+			uint32_t lerror = WSAGetLastError();
 #ifndef __LINUX__
 			if(WSAEWOULDBLOCK != lerror)
 #else

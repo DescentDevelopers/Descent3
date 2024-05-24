@@ -1722,7 +1722,7 @@ player_pos_suppress Player_pos_fix[MAX_PLAYERS];
 // If this is true, PXO games won't save the kills, deaths, etc.
 bool Multi_no_stats_saved = false;
 
-unsigned int Netgame_curr_handle = 1;
+uint32_t Netgame_curr_handle = 1;
 
 ushort Local_object_list[MAX_OBJECTS];
 ushort Server_object_list[MAX_OBJECTS];
@@ -2099,7 +2099,7 @@ void MultiDoRobotFire(ubyte *data) {
   unsigned short obj_num;
   vector weapon_pos;
   vector weapon_dir;
-  unsigned int weapon_num;
+  uint32_t weapon_num;
   uint uniqueid;
 
   if (Netgame.local_role == LR_SERVER) {
@@ -2340,7 +2340,7 @@ void MultiDoMyInfo(ubyte *data) {
 
   Players[slot].time_in_game = timer_GetTime();
   if (Game_is_master_tracker_game) {
-    unsigned int mt_sig;
+    uint32_t mt_sig;
 
     Players[slot].kills = 0;
     Players[slot].deaths = 0;
@@ -4072,7 +4072,7 @@ void MultiDoGameInfo(ubyte *data, network_address *from_addr) {
 
   ping_time = MultiGetFloat(data, &count);
 
-  unsigned int flags = MultiGetInt(data, &count);
+  uint32_t flags = MultiGetInt(data, &count);
   bool dedicated = MultiGetByte(data, &count) ? true : false;
 
   int diff = MultiGetByte(data, &count);
@@ -7201,7 +7201,7 @@ void MultiDoClientInventoryUseItem(int slot, ubyte *data) {
   int count = 0;
   int type;
   int id;
-  unsigned int hash;
+  uint32_t hash;
 
   // Only the server receives this
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role == LR_SERVER);
@@ -7273,7 +7273,7 @@ void MultiDoClientInventoryRemoveItem(int slot, ubyte *data) {
   int count = 0;
   int type;
   int id;
-  unsigned int hash;
+  uint32_t hash;
   int pnum;
 
   // Only the server receives this
@@ -7494,7 +7494,7 @@ void MultiSendBytesSent(int slot) {
 
 void MultiDoBytesSent(ubyte *data) {
   int count = 0;
-  unsigned int server_sent;
+  uint32_t server_sent;
   float drop_ratio;
   SKIP_HEADER(data, &count);
   server_sent = MultiGetUint(data, &count);
@@ -7564,7 +7564,7 @@ void MultiDoPPSSet(ubyte *data, int slot) {
   mprintf((0, "%s changed his PPS to %d\n", Players[slot].callsign, NetPlayers[slot].pps));
 }
 
-void MultiSendGreetings(unsigned int id) {
+void MultiSendGreetings(uint32_t id) {
   int size = 0;
   ubyte data[MAX_GAME_DATA_SIZE];
   int count = 0;
@@ -7580,7 +7580,7 @@ void MultiSendGreetings(unsigned int id) {
 void MultiDoGreetings(ubyte *data, network_address *addr) {
   int count = 0;
   SKIP_HEADER(data, &count);
-  unsigned int id = MultiGetUint(data, &count);
+  uint32_t id = MultiGetUint(data, &count);
   int i;
   //	mprintf((0,"Got a greeting packet with an id of %d\n"));
   for (i = 0; i < MAX_NET_PLAYERS; i++) {
@@ -7760,8 +7760,8 @@ void MultiDoFileDenied(ubyte *data) {
 
 void MultiDoFileData(ubyte *data) {
   // File data. We asked for it, now the server is sending it to us.
-  unsigned int total_len; // Length of the entire file
-  unsigned int curr_len;  // Length of file sent so far
+  uint32_t total_len; // Length of the entire file
+  uint32_t curr_len;  // Length of file sent so far
   ushort file_id;         // Defines which file this is
   ushort playernum;       // Who is sending us the file
   ushort data_len;        // between 1-450 bytes
@@ -7867,7 +7867,7 @@ void SendDataChunk(int playernum) {
   // mprintf((0,"Sending a data chunk to %d.\n",playernum));
   // Read the next chunk of the file and send it!
   if ((DATA_CHUNK_SIZE + NetPlayers[playernum].file_xfer_pos) >
-      (unsigned int)NetPlayers[playernum].file_xfer_cfile->size) {
+      (uint32_t)NetPlayers[playernum].file_xfer_cfile->size) {
     dataread = NetPlayers[playernum].file_xfer_cfile->size - NetPlayers[playernum].file_xfer_pos;
     // This is the end of the file
     mprintf((0, "End of file detected!\n"));

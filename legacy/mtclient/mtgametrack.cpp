@@ -171,8 +171,8 @@ float FirstGameOverPacket;
 
 int SendingGameOver;
 
-unsigned int TrackerAckdUs;
-unsigned int TrackerGameIsRunning;
+uint32_t TrackerAckdUs;
+uint32_t TrackerGameIsRunning;
 
 game_packet_header TrackerGameData;
 game_packet_header GameListReq;
@@ -234,7 +234,7 @@ int InitGameTrackerClient(int gametype)
 void IdleGameTracker()
 {
 	DLLnw_DoReceiveCallbacks();
-	//unsigned int bytesin;
+	//uint32_t bytesin;
 	//mprintf ((0,"IdleGameTracker() entered.\n"));
 	if((TrackerGameIsRunning)&&((DLLtimer_GetTime()-LastTrackerUpdate)>TRACKER_UPDATE_INTERVAL))
 	{

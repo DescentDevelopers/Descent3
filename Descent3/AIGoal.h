@@ -110,7 +110,7 @@
 void GoalClearAll(object *obj);
 
 // Adds a new goal
-int GoalAddGoal(object *obj, unsigned int goal_type, void *args, int level = 0, float influence = 1.0f, int f_goal = 0,
+int GoalAddGoal(object *obj, uint32_t goal_type, void *args, int level = 0, float influence = 1.0f, int f_goal = 0,
                 int guid = -1, char subtype = 0);
 
 // Adds a ending condition to a goal

@@ -254,14 +254,14 @@ void ddio_ffb_effectUnload(short) {}
 //    Modifies a single effect, only if the given parameters are
 //    different from what's currently loaded.
 // -------------------------------------------------------------------
-void ddio_ffb_effectModify(short, int *, unsigned int *, unsigned int *, unsigned int *, tEffInfo *, tEffEnvelope *) {}
+void ddio_ffb_effectModify(short, int *, uint32_t *, uint32_t *, uint32_t *, tEffInfo *, tEffEnvelope *) {}
 
 // -------------------------------------------------------------------
 // ddio_ffb_GetEffectData
 // Purpose:
 //    Retrieves affect data for the given parameters, pass NULL for those you don't want
 // -------------------------------------------------------------------
-void ddio_ffb_GetEffectData(short, int *, unsigned int *, unsigned int *, unsigned int *, tEffInfo *, tEffEnvelope *) {}
+void ddio_ffb_GetEffectData(short, int *, uint32_t *, uint32_t *, uint32_t *, tEffInfo *, tEffEnvelope *) {}
 
 // -------------------------------------------------------------------
 // ddio_ffjoy_EnableAutoCenter
