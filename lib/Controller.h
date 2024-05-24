@@ -182,8 +182,8 @@ const ubyte CT_X_AXIS = 1, // AXIS constants for ctAxis
 #define CONTROLLER_CTL2_VALUE(_b) CONTROLLER_KEY2_VALUE(_b)
 #define CONTROLLER_CTL_VALUE(_l, _h) makeshort(_h, _l)
 
-#define CONTROLLER_CTL1_INFO(_b) ((sbyte)lobyte(_b))
-#define CONTROLLER_CTL2_INFO(_b) ((sbyte)hibyte(_b))
+#define CONTROLLER_CTL1_INFO(_b) ((int8_t)lobyte(_b))
+#define CONTROLLER_CTL2_INFO(_b) ((int8_t)hibyte(_b))
 #define CONTROLLER_CTL_INFO(_l, _h) makeshort(_h, _l)
 
 #define CONTROLLER_VALUE(_l) ((ushort)loword(_l))

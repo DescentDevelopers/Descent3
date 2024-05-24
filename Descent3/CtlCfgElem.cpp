@@ -513,7 +513,7 @@ const char *cfg_binding_text(ct_type ctype, ubyte ctrl, ubyte binding) {
 class cfg_element_ui : public newuiMessageBox {
   ubyte m_element;    // element passed and returned.
   ubyte m_controller; // controller.
-  sbyte m_alpha;      // used for fx.
+  int8_t m_alpha;      // used for fx.
   ct_type m_type;
 
 public:
@@ -544,7 +544,7 @@ bool key_cfg_element(ubyte *element, ubyte *flags);
 
 void cfg_element::Create(UIWindow *wnd, int str_i, int x, int y, int fnid, int id) {
   m_title = TXT(str_i);
-  m_fnid = (sbyte)fnid;
+  m_fnid = (int8_t)fnid;
   m_slot = 0;
   m_curslot = -1;
   m_flags = 0;
@@ -679,7 +679,7 @@ void cfg_element::OnMouseBtnDown(int btn) {
   if (btn == UILMSEBTN) {
     int gadmx = SCREEN_TO_GAD_X(this, UI_input.mx), gadmy = SCREEN_TO_GAD_Y(this, UI_input.my);
     int x = 0;
-    sbyte curslot;
+    int8_t curslot;
 
     // determine what is the current slot
     curslot = -1;
@@ -759,7 +759,7 @@ void cfg_element::OnDestroy() {
 }
 
 // calls configuration routines
-bool cfg_element::Configure(ct_type *new_elem_type, ubyte *controller, ubyte *new_cfg_element, sbyte *cfg_slot) {
+bool cfg_element::Configure(ct_type *new_elem_type, ubyte *controller, ubyte *new_cfg_element, int8_t *cfg_slot) {
   cfg_element_ui cfg_box;
   ct_type ctype_fn[CTLBINDS_PER_FUNC];
   ubyte cfgflags_fn[CTLBINDS_PER_FUNC];
@@ -768,8 +768,8 @@ bool cfg_element::Configure(ct_type *new_elem_type, ubyte *controller, ubyte *ne
   ubyte element, ctrl;
   bool configure = false;
 
-  sbyte fnid = m_fnid;
-  sbyte slot = m_slot;
+  int8_t fnid = m_fnid;
+  int8_t slot = m_slot;
 
   if (m_fnid == -1) {
     Int3(); // get samir
@@ -886,14 +886,14 @@ void cfg_element_ui::Create(const char *title, ct_type type, ubyte controller, u
 
 #define GCV_CONTROLLER(_r) (CONTROLLER_CTL1_INFO(CONTROLLER_INFO(ccfgdata)))
 #define GCV_VALUE(_r) (CONTROLLER_CTL1_VALUE(CONTROLLER_VALUE(ccfgdata)))
-#define GCV_VALID_RESULT(_r) (CONTROLLER_CTL1_INFO(CONTROLLER_INFO(ccfgdata)) != (sbyte)NULL_CONTROLLER)
+#define GCV_VALID_RESULT(_r) (CONTROLLER_CTL1_INFO(CONTROLLER_INFO(ccfgdata)) != (int8_t)NULL_CONTROLLER)
 
 int cfg_element_ui::DoUI() {
   extern void ddio_MouseQueueFlush();
 
   int retval = UID_OK;
   bool quit = false, catch_press = false;
-  sbyte adj;
+  int8_t adj;
 
   m_alpha = 16;
   adj = -1;

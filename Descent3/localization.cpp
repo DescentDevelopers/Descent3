@@ -144,7 +144,7 @@ int Localization_GetLanguage(void) { return Localization_language; }
 
 int GetTotalStringCount(void);
 int LoadStringFile(const char *filename, int starting_offset);
-sbyte _parse_line_information(char *line);
+int8_t _parse_line_information(char *line);
 char *_parse_string_tag(char *buffer);
 char *_parse_escape_chars(char *buffer);
 
@@ -554,7 +554,7 @@ int LoadStringFile(const char *filename, int starting_offset) {
 }
 
 // returns STAG_* information about the line
-sbyte _parse_line_information(char *line) {
+int8_t _parse_line_information(char *line) {
   for (int i = 0; i < Num_languages; i++) {
     if (Language_tags[i].length == -1)
       Language_tags[i].length = strlen(Language_tags[i].tag);
@@ -572,7 +572,7 @@ sbyte _parse_line_information(char *line) {
 
 // parses a string_tag out
 char *_parse_string_tag(char *buffer) {
-  sbyte i = _parse_line_information(buffer);
+  int8_t i = _parse_line_information(buffer);
 
   switch (i) {
   case STAG_CONTINUE:

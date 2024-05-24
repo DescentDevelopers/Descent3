@@ -1061,11 +1061,11 @@ void SGSObjects(CFILE *fp) {
 
     gs_WriteInt(fp, 0xBADB0B);
     // we don't save deleted objects or room objects since they're reconstructed on loadlevel
-    gs_WriteByte(fp, (sbyte)op->type);
+    gs_WriteByte(fp, (int8_t)op->type);
 
     if (op->type == OBJ_NONE)
       continue;
-    gs_WriteByte(fp, (sbyte)op->lighting_render_type);
+    gs_WriteByte(fp, (int8_t)op->lighting_render_type);
 
     // Store whether or not we have a pointer to lighting_info
     gs_WriteByte(fp, op->lighting_info ? 1 : 0);
@@ -1078,7 +1078,7 @@ void SGSObjects(CFILE *fp) {
     ASSERT((op->handle & HANDLE_OBJNUM_MASK) == i);
 
     // type and handle info.
-    gs_WriteByte(fp, (sbyte)op->dummy_type);
+    gs_WriteByte(fp, (int8_t)op->dummy_type);
     //	positional information
     gs_WriteInt(fp, op->roomnum);
     gs_WriteVector(fp, op->pos);
@@ -1095,9 +1095,9 @@ void SGSObjects(CFILE *fp) {
     //	data universal to all objects that need to be saved.
     gs_WriteShort(fp, (short)op->id);
     gs_WriteInt(fp, static_cast<int32_t>(op->flags));
-    gs_WriteByte(fp, (sbyte)op->control_type);
-    gs_WriteByte(fp, (sbyte)op->movement_type);
-    gs_WriteByte(fp, (sbyte)op->render_type);
+    gs_WriteByte(fp, (int8_t)op->control_type);
+    gs_WriteByte(fp, (int8_t)op->movement_type);
+    gs_WriteByte(fp, (int8_t)op->render_type);
 
     gs_WriteShort(fp, (short)op->renderframe);
     gs_WriteFloat(fp, op->size);
@@ -1279,7 +1279,7 @@ void SGSObjWB(CFILE *fp, object *op, int num_wbs) {
   int i;
 
   if (op->dynamic_wb) {
-    gs_WriteByte(fp, (sbyte)num_wbs);
+    gs_WriteByte(fp, (int8_t)num_wbs);
     for (i = 0; i < num_wbs; i++) {
       dynamic_wb_info *dwb = &op->dynamic_wb[i];
       cf_WriteBytes((ubyte *)dwb, sizeof(dynamic_wb_info), fp);
@@ -1388,7 +1388,7 @@ void SGSSnapshot(CFILE *fp) {
 //@@			gs_WriteInt(fp, op->ctype.powerup_info.flags);
 //@@			break;
 //@@		case CT_SPLINTER:			//Splinter
-//@@			gs_WriteByte(fp, (sbyte)op_splint->subobj_num);
+//@@			gs_WriteByte(fp, (int8_t)op_splint->subobj_num);
 //@@			gs_WriteShort(fp, op_splint->facenum);
 //@@			for (j = 0; j < MAX_VERTS_PER_SPLINTER; j++)
 //@@				gs_WriteVector(fp, op_splint->verts[j]);
@@ -1665,7 +1665,7 @@ void SGSSnapshot(CFILE *fp) {
 //@@			gs_WriteFloat(fp, ei->volume_old_room);
 //@@//		}
 //@@//		if (ei->type_flags & EF_VOLUME_LIT) {
-//@@			gs_WriteByte(fp, (sbyte)ei->dynamic_this_frame);
+//@@			gs_WriteByte(fp, (int8_t)ei->dynamic_this_frame);
 //@@			gs_WriteFloat(fp, ei->dynamic_red);
 //@@			gs_WriteFloat(fp, ei->dynamic_green);
 //@@			gs_WriteFloat(fp, ei->dynamic_blue);

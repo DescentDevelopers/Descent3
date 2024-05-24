@@ -928,7 +928,7 @@ typedef int OMMSHANDLE;
 
 // define unsigned types;
 typedef uint8_t ubyte;
-typedef int8_t sbyte;
+typedef int8_t int8_t;
 typedef uint16_t ushort;
 typedef uint32_t uint32_t;
 typedef uint32_t ddgr_color;
@@ -1262,7 +1262,7 @@ typedef struct {
   ubyte is_real;
   ubyte random;
   ubyte unused2; // was use_gunpoint
-  sbyte gunpoint;
+  int8_t gunpoint;
   ubyte effect_type;
   ubyte phys_info;
   float drag, mass;
@@ -1285,7 +1285,7 @@ typedef struct {
   float scalar;
   float interval;
   ubyte state;
-  sbyte slot;
+  int8_t slot;
   char message[MSAFE_MESSAGE_LENGTH];
   char name[MSAFE_NAME_LENGTH];
   int color;

@@ -1740,7 +1740,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
 void GetLastHitInfo(ubyte *data) {
   int size = 0;
 
-  LastHitPnum = (sbyte)MultiGetByte(data, &size);
+  LastHitPnum = (int8_t)MultiGetByte(data, &size);
 }
 void SendLastHitInfo(void) {
   int size = 0;
@@ -1762,8 +1762,8 @@ void GetGameStartPacket(ubyte *data) {
   }
 
   // who has the Monsterball
-  sbyte temp;
-  temp = (sbyte)MultiGetByte(data, &count);
+  int8_t temp;
+  temp = (int8_t)MultiGetByte(data, &count);
   if (temp == -1) {
     Monsterball_info.owner_handle = OBJECT_HANDLE_NONE;
   } else {
@@ -1775,7 +1775,7 @@ void GetGameStartPacket(ubyte *data) {
 
   monsterball_info_set = true;
 
-  temp = (sbyte)MultiGetByte(data, &count);
+  temp = (int8_t)MultiGetByte(data, &count);
   NumOfTeams = temp;
 
   // we need to find the objnum of the Monsterball...its there somewhere
@@ -1808,7 +1808,7 @@ void SendGameStartPacket(int pnum) {
     MultiAddInt(TeamScores[i], data, &count);
   }
 
-  sbyte temp;
+  int8_t temp;
   int p;
 
   // who has the Monsterball if anyone

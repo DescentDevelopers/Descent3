@@ -1934,7 +1934,7 @@ UIGadget *newuiSheet::GetGadget(short id) {
   return NULL;
 }
 
-newuiSheet::t_gadget_desc *newuiSheet::AddGadget(short id, sbyte type, const char *title) {
+newuiSheet::t_gadget_desc *newuiSheet::AddGadget(short id, int8_t type, const char *title) {
   int i = m_ngadgets;
 
   ASSERT(!m_realized);
@@ -2093,7 +2093,7 @@ newuiComboBox *newuiSheet::AddComboBox(short id, ushort flags) {
 
 // adds an edit box
 char *newuiSheet::AddEditBox(const char *title, short maxlen, short w, short id, short flags, bool on_escape_quit) {
-  sbyte type = GADGET_EDITBOX;
+  int8_t type = GADGET_EDITBOX;
   if (flags & UIED_PASSWORD) {
     type = GADGET_EDITBOXPASS;
   } else if (flags & UIED_NUMBERS) {

@@ -323,8 +323,8 @@ typedef struct {
   float observer_time;    // time the player entered observer mode (or 0 if not)
   ushort kills_in_a_row;  // Number of kills in a row for this player
   ushort deaths_in_a_row; // Number of deaths in a row for this player
-  sbyte last_kill_num;    // Player record num of last person this player killed
-  sbyte last_death_num;   // Player record num of the player that last killed this player
+  int8_t last_kill_num;    // Player record num of last person this player killed
+  int8_t last_death_num;   // Player record num of the player that last killed this player
   char got_revenge;       // 1 if revenge has been made on last killer
 } tPExtraInfo;
 

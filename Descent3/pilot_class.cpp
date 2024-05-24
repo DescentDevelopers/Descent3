@@ -1208,8 +1208,8 @@ void pilot::write_hud_data(CFILE *file) {
   cf_WriteInt(file, game_window_h);
 
   //	PFV_REARVIEWINFO
-  cf_WriteByte(file, (sbyte)lrearview_enabled);
-  cf_WriteByte(file, (sbyte)rrearview_enabled);
+  cf_WriteByte(file, (int8_t)lrearview_enabled);
+  cf_WriteByte(file, (int8_t)rrearview_enabled);
 }
 
 void pilot::read_hud_data(CFILE *file, bool skip) {
@@ -1377,8 +1377,8 @@ void pilot::write_controls(CFILE *file) {
     cf_WriteInt(file, (int)controls[i].type[0]);
     cf_WriteInt(file, (int)controls[i].type[1]);
     cf_WriteInt(file, (int)controls[i].value);
-    cf_WriteByte(file, (sbyte)controls[i].flags[0]);
-    cf_WriteByte(file, (sbyte)controls[i].flags[1]);
+    cf_WriteByte(file, (int8_t)controls[i].flags[0]);
+    cf_WriteByte(file, (int8_t)controls[i].flags[1]);
   }
 
   cf_WriteByte(file, N_MOUSE_AXIS);
@@ -1549,7 +1549,7 @@ void pilot::write_gameplay_toggles(CFILE *file) {
   // number of toggles to write out!
   cf_WriteByte(file, 3);
 
-  cf_WriteByte(file, (sbyte)gameplay_toggles.guided_mainview);
-  cf_WriteByte(file, (sbyte)gameplay_toggles.show_reticle);
-  cf_WriteByte(file, (sbyte)gameplay_toggles.ship_noises);
+  cf_WriteByte(file, (int8_t)gameplay_toggles.guided_mainview);
+  cf_WriteByte(file, (int8_t)gameplay_toggles.show_reticle);
+  cf_WriteByte(file, (int8_t)gameplay_toggles.ship_noises);
 }

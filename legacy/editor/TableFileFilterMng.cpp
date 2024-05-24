@@ -247,7 +247,7 @@ bool PageDataNode::Load(CFILE *infile)
 bool PageDataNode::Save(CFILE *outfile)
 {
 	cf_WriteString(outfile,name);
-	cf_WriteByte(outfile,(sbyte)type);
+	cf_WriteByte(outfile,(int8_t)type);
 	cf_WriteInt(outfile,flags);
 	cf_WriteInt(outfile,tag_count);
 

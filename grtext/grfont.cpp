@@ -518,7 +518,7 @@ bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
   ft->newstyle = (ft_flags & FT_FMT4444) ? true : false;
   ft->ffi2 = (ft_flags & FT_FFI2) ? true : false;
 
-  ft->ch_tracking = (sbyte)((ft_flags & FT_FFI2) ? ffi2.tracking : 0);
+  ft->ch_tracking = (int8_t)((ft_flags & FT_FFI2) ? ffi2.tracking : 0);
 
   CLOSE_FONT(ff);
 
@@ -1115,7 +1115,7 @@ int grfont_GetKernedSpacing(int font, int ch1, int ch2) {
     ubyte *kern = ft->kern_data;
     while (kern[0] != 255) {
       if (ch1 == kern[0] && ch2 == kern[1]) {
-        return (int)((sbyte)kern[2]);
+        return (int)((int8_t)kern[2]);
       }
       kern += 3;
     }
@@ -1129,7 +1129,7 @@ int grfont_GetKernedSpacingTemp(const tFontTemplate *ft, int ch1, int ch2) {
     ubyte *kern = ft->kern_data;
     while (kern[0] != 255) {
       if (ch1 == kern[0] && ch2 == kern[1]) {
-        return (int)((sbyte)kern[2]);
+        return (int)((int8_t)kern[2]);
       }
       kern += 3;
     }

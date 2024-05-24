@@ -182,7 +182,7 @@ const char *lnxgameController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
   }
 
   case ctMouseAxis: {
-    str = ddio_MouseGetAxisText(((sbyte)bind) - 1);
+    str = ddio_MouseGetAxisText(((int8_t)bind) - 1);
     return str;
   }
 
@@ -198,7 +198,7 @@ const char *lnxgameController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
   }
 
   case ctMouseButton: {
-    str = ddio_MouseGetBtnText(((sbyte)bind) - 1);
+    str = ddio_MouseGetBtnText(((int8_t)bind) - 1);
     return str;
   }
 
@@ -508,7 +508,7 @@ bool lnxgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
 
   for (i = 0; i < CTLBINDS_PER_FUNC; i++) {
     ubyte value = m_ElementList[id].value[i];
-    sbyte controller = m_ElementList[id].ctl[i];
+    int8_t controller = m_ElementList[id].ctl[i];
 
     if (controller == -1 || m_ControlList[controller].id == CTID_INVALID) {
       continue;
@@ -939,7 +939,7 @@ bool lnxgameController::enum_controllers() {
 }
 
 //	returns the controller with a pov hat
-sbyte lnxgameController::get_pov_controller(ubyte pov) {
+int8_t lnxgameController::get_pov_controller(ubyte pov) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   ushort pov_flag = CTF_POV << (pov);
 
@@ -950,7 +950,7 @@ sbyte lnxgameController::get_pov_controller(ubyte pov) {
   return NULL_LNXCONTROLLER;
 }
 
-sbyte lnxgameController::get_button_controller(ubyte btn) {
+int8_t lnxgameController::get_button_controller(ubyte btn) {
   unsigned mask;
 
   //	buttons range from 1-CT_MAX_BUTTONS
@@ -973,7 +973,7 @@ sbyte lnxgameController::get_button_controller(ubyte btn) {
   return NULL_LNXCONTROLLER;
 }
 
-sbyte lnxgameController::get_axis_controller(ubyte axis) {
+int8_t lnxgameController::get_axis_controller(ubyte axis) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   if (axis == NULL_BINDING)
     return NULL_LNXCONTROLLER;
@@ -1035,7 +1035,7 @@ void lnxgameController::assign_element(int id, ct_element *elem) {
   }
 }
 
-float lnxgameController::get_button_value(sbyte controller, ct_format format, ubyte button) {
+float lnxgameController::get_button_value(int8_t controller, ct_format format, ubyte button) {
   float val = (float)0.0;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
@@ -1108,7 +1108,7 @@ float lnxgameController::get_button_value(sbyte controller, ct_format format, ub
 }
 
 //	note controller is index into ControlList.
-float lnxgameController::get_axis_value(sbyte controller, ubyte axis, ct_format format, bool invert) {
+float lnxgameController::get_axis_value(int8_t controller, ubyte axis, ct_format format, bool invert) {
   struct lnxgameController::t_controller *ctldev;
   float val = (float)0.0;
   float normalizer, axisval = 0, nullzone; //, senszone;
@@ -1278,7 +1278,7 @@ float lnxgameController::get_axis_value(sbyte controller, ubyte axis, ct_format 
 }
 
 //	do some pov stuff
-float lnxgameController::get_pov_value(sbyte controller, ct_format format, ubyte pov_number, ubyte pov) {
+float lnxgameController::get_pov_value(int8_t controller, ct_format format, ubyte pov_number, ubyte pov) {
   float val = (float)0.0;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {

@@ -436,7 +436,7 @@ DMFCDLLOUT(cf_ReadShort_fp DLLcf_ReadShort;)
 
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef sbyte (*cf_ReadByte_fp)(CFILE *cfp);
+typedef int8_t (*cf_ReadByte_fp)(CFILE *cfp);
 DMFCDLLOUT(cf_ReadByte_fp DLLcf_ReadByte;)
 
 // Read and return a float (32 bits)
@@ -491,7 +491,7 @@ DMFCDLLOUT(cf_WriteShort_fp DLLcf_WriteShort;)
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef void (*cf_WriteByte_fp)(CFILE *cfp, sbyte b);
+typedef void (*cf_WriteByte_fp)(CFILE *cfp, int8_t b);
 DMFCDLLOUT(cf_WriteByte_fp DLLcf_WriteByte;)
 
 // Write a float (32 bits)
@@ -1212,7 +1212,7 @@ typedef bool (*GetFrameParameters_fp)(int *x1, int *y1, int *x2, int *y2);
 DMFCDLLOUT(GetFrameParameters_fp DLLGetFrameParameters;)
 
 // Sets the state of zbuffering to on or off
-typedef void (*rend_SetZBufferState_fp)(sbyte state);
+typedef void (*rend_SetZBufferState_fp)(int8_t state);
 DMFCDLLOUT(rend_SetZBufferState_fp DLLrend_SetZBufferState;)
 
 typedef void (*rend_SetLighting_fp)(light_state);
@@ -1230,15 +1230,15 @@ typedef void (*rend_DrawPolygon_fp)(int handle, g3Point **p, int nv, int map_typ
 DMFCDLLOUT(rend_DrawPolygon_fp DLLrend_DrawPolygon;)
 
 // Tells the software renderer whether or not to use mipping
-typedef void (*rend_SetMipState_fp)(sbyte);
+typedef void (*rend_SetMipState_fp)(int8_t);
 DMFCDLLOUT(rend_SetMipState_fp DLLrend_SetMipState;)
 
 // Sets the fog state to TRUE or FALSE
-typedef void (*rend_SetFogState_fp)(sbyte on);
+typedef void (*rend_SetFogState_fp)(int8_t on);
 DMFCDLLOUT(rend_SetFogState_fp DLLrend_SetFogState;)
 
 // Sets the state of bilinear filtering for our textures
-typedef void (*rend_SetFiltering_fp)(sbyte state);
+typedef void (*rend_SetFiltering_fp)(int8_t state);
 DMFCDLLOUT(rend_SetFiltering_fp DLLrend_SetFiltering;)
 
 // Sets a bitmap as an overlay to rendered on top of the next texture map
@@ -1270,7 +1270,7 @@ typedef void (*rend_DrawCircle_fp)(int x, int y, int rad);
 DMFCDLLOUT(rend_DrawCircle_fp DLLrend_DrawCircle;)
 
 // sets the alpha type
-typedef void (*rend_SetAlphaType_fp)(sbyte);
+typedef void (*rend_SetAlphaType_fp)(int8_t);
 DMFCDLLOUT(rend_SetAlphaType_fp DLLrend_SetAlphaType;)
 
 // Sets the constant alpha value

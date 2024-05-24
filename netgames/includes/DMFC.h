@@ -564,7 +564,7 @@ typedef struct {
   void *user_info;          // Multiplayer Mod user defined struct pointer
   int user_info_size;       // Size of user_info;
 
-  sbyte team;   // The player's team (for when they reconnect)
+  int8_t team;   // The player's team (for when they reconnect)
   PInfo *pinfo; // Pointer to player info (who killed whom)
 } player_record;
 

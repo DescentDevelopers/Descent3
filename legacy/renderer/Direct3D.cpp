@@ -2300,7 +2300,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
   // Now draw an overlay
   if (Overlay_type != OT_NONE) {
     if (Overlay_type == OT_BLEND || Overlay_type == OT_BLEND_SATURATE) {
-      sbyte atype = D3D_state.cur_alpha_type;
+      int8_t atype = D3D_state.cur_alpha_type;
 
       if (Overlay_type == OT_BLEND)
         d3d_SetAlphaType(AT_LIGHTMAP_BLEND);
@@ -2526,8 +2526,8 @@ void d3d_SetColorModel(color_model state) {
 }
 
 // Sets the state of bilinear filtering for our textures
-void d3d_SetFiltering(sbyte state) {
-  sbyte curstate = (sbyte)state;
+void d3d_SetFiltering(int8_t state) {
+  int8_t curstate = (int8_t)state;
 
   if (curstate == D3D_state.cur_bilinear_state)
     return;
@@ -2546,7 +2546,7 @@ void d3d_SetFiltering(sbyte state) {
 }
 
 // Sets the state of zbuffering to on or off
-void d3d_SetZBufferState(sbyte state) {
+void d3d_SetZBufferState(int8_t state) {
   if (state == D3D_state.cur_zbuffer_state)
     return;
 
@@ -2660,7 +2660,7 @@ void d3d_SetAlwaysAlpha(bool state) {
 }
 
 // Sets the type of alpha blending you want
-void d3d_SetAlphaType(sbyte atype) {
+void d3d_SetAlphaType(int8_t atype) {
 
   if (atype == D3D_state.cur_alpha_type)
     return; // No redundant state setting
@@ -2761,7 +2761,7 @@ void d3d_SetFogBorders(float nearz, float farz) {
 }
 
 // Sets the fog state to on or off
-void d3d_SetFogState(sbyte state) {
+void d3d_SetFogState(int8_t state) {
   if (!d3d_CanFog)
     state = 0;
 
@@ -2929,7 +2929,7 @@ void d3d_DrawSpecialLine(g3Point *p0, g3Point *p1) {
                              D3DDP_DONOTCLIP | D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS);
 }
 
-void d3d_SetMipState(sbyte state) {
+void d3d_SetMipState(int8_t state) {
   D3D_state.cur_mip_state = state;
 
   if (d3d_CanMip && state) {

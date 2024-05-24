@@ -54,10 +54,10 @@ void d3d_SetLightingState(light_state state);
 void d3d_SetColorModel(color_model state);
 
 // Sets the state of bilinear filtering for our textures
-void d3d_SetFiltering(sbyte state);
+void d3d_SetFiltering(int8_t state);
 
 // Sets the state of zbuffering to on or off
-void d3d_SetZBufferState(sbyte state);
+void d3d_SetZBufferState(int8_t state);
 
 // Sets the near/far z values for zbuffering
 void d3d_SetZValues(float nearz, float farz);
@@ -79,7 +79,7 @@ void d3d_SetPixel(ddgr_color color, int x, int y);
 void d3d_SetFogBorders(float nearz, float farz);
 
 // Sets the fog state to on or off
-void d3d_SetFogState(sbyte state);
+void d3d_SetFogState(int8_t state);
 
 // Draws a 2d line
 void d3d_DrawLine(int x1, int y1, int x2, int y2);
@@ -88,7 +88,7 @@ void d3d_DrawLine(int x1, int y1, int x2, int y2);
 void d3d_SetFogColor(ddgr_color fogcolor);
 
 // sets the alpha type
-void d3d_SetAlphaType(sbyte);
+void d3d_SetAlphaType(int8_t);
 
 // Sets the constant alpha value
 void d3d_SetAlphaValue(ubyte val);
@@ -121,7 +121,7 @@ float d3d_GetAspectRatio();
 // Draws a line using the states set by the renderer lib
 void d3d_DrawSpecialLine(g3Point *p0, g3Point *p1);
 
-void d3d_SetMipState(sbyte);
+void d3d_SetMipState(int8_t);
 
 // Sets up a some global preferences for glide
 int d3d_SetPreferredState(renderer_preferred_state *pref_state);

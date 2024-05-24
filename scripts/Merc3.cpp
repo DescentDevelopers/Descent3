@@ -1645,7 +1645,7 @@ const t_animation_data Gravity_state_xlates[3][3] = {
     {{0, 0}, {10, 15}, {0, 5}}, {{21, 25}, {31, 35}, {26, 30}}, {{5, 10}, {16, 20}, {30, 30}}};
 
 //	this should be saved...
-sbyte Gravity_room_box_states[N_ROOMS][N_BOXES];
+int8_t Gravity_room_box_states[N_ROOMS][N_BOXES];
 
 /*
 $$ENUM Region
@@ -1818,7 +1818,7 @@ void cGravityRoomBoxStates(int gravity_room, int gravity_type) {
 
   for (i = 1; i < (N_BOXES + 1); i++) {
     char objname[64];
-    sbyte cur_box_state = Gravity_room_box_states[gravity_room - 1][i - 1];
+    int8_t cur_box_state = Gravity_room_box_states[gravity_room - 1][i - 1];
 
     if ((gravity_type != cur_box_state) || (gravity_type == cur_box_state && gravity_type == G_NONE)) {
       snprintf(objname, sizeof(objname), "r%dBox%d", gravity_room, i);
@@ -1854,7 +1854,7 @@ void cUpdateGravityRoomBoxStates(int gravity_room) {
 
   for (i = 1; i < (N_BOXES + 1); i++) {
     char objname[64];
-    sbyte cur_box_state = Gravity_room_box_states[gravity_room - 1][i - 1];
+    int8_t cur_box_state = Gravity_room_box_states[gravity_room - 1][i - 1];
     if (cur_box_state == G_NONE) {
       snprintf(objname, sizeof(objname), "r%dBox%d", gravity_room, i);
       handle = Scrpt_FindObjectName(objname);

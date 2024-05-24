@@ -69,7 +69,7 @@ typedef struct {
 
   short roomnum;
   short facenum;
-  sbyte subnum;
+  int8_t subnum;
 
   int color;
 
@@ -80,7 +80,7 @@ typedef struct bspnode {
   bspplane plane;
   ushort node_facenum;
   ushort node_roomnum;
-  sbyte node_subnum;
+  int8_t node_subnum;
 
   bspnode *front;
   bspnode *back;

@@ -188,7 +188,7 @@ void tex_SetTextureType(texture_type);
 void tex_SetFogBorders(float fog_near, float fog_far);
 
 // Sets the alpha type
-void tex_SetAlphaType(sbyte);
+void tex_SetAlphaType(int8_t);
 
 // ZBuffer variables
 void tex_SetZBufferState(int state);

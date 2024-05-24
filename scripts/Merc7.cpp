@@ -1364,8 +1364,8 @@ void DCDetermineObjFate(int objhandle, bool new_droid);
 // if there are none, then return a random index??
 inline int FIND_FREE_INDEX(unsigned mask, unsigned max_items, bool allow_duplicates) {
   int i;
-  sbyte indices[32];
-  sbyte nindices = 0;
+  int8_t indices[32];
+  int8_t nindices = 0;
 
   for (i = 0; i < max_items; i++) {
     if ((mask & (1 << i)) == 0) {
@@ -1908,8 +1908,8 @@ void dsCustomSave(void *fileptr) {
   for (i = 0; i < 8; i++) {
     File_WriteShort(ff_enable_data[i].room_number, fileptr);
     File_WriteShort(ff_enable_data[i].portal_num, fileptr);
-    File_WriteByte((sbyte)(ff_enable_data[i].state), fileptr);
-    File_WriteByte((sbyte)(ff_enable_data[i].double_sided), fileptr);
+    File_WriteByte((int8_t)(ff_enable_data[i].state), fileptr);
+    File_WriteByte((int8_t)(ff_enable_data[i].double_sided), fileptr);
   }
 
   File_WriteByte(wind_fx_index, fileptr);

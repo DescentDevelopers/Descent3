@@ -227,7 +227,7 @@ typedef struct tFontTemplate {
   bool ffi2;          // new font info added.
 
   // ffi2 style (font file info 2)
-  sbyte ch_tracking; // global tracking for font.
+  int8_t ch_tracking; // global tracking for font.
 } tFontTemplate;
 
 //	clears out font buffer.

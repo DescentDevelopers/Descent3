@@ -62,7 +62,7 @@ void sound_render_room_geometry(int roomnum, int slot);
 
 // check if a room exists in room list.
 inline bool sound_render_room_in_list(short room, short *list) {
-  sbyte idx = 0;
+  int8_t idx = 0;
   while (list[idx] != -1) {
     if (room == list[idx]) {
       return true;

@@ -23,7 +23,7 @@
 
 // define unsigned types;
 typedef uint8_t ubyte;
-typedef int8_t sbyte;
+typedef int8_t int8_t;
 typedef uint16_t ushort;
 typedef uint32_t uint32_t;
 typedef unsigned long ulong;

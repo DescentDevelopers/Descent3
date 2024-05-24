@@ -296,7 +296,7 @@ public:
 
 private:
   struct t_gadget_desc {
-    sbyte type;   // enumerated ui gadget type
+    int8_t type;   // enumerated ui gadget type
     bool changed; // parameters are different than defaults?
     short id;     // id value
     char *title;  // title of gadget
@@ -326,7 +326,7 @@ private:
   bool m_realized;
   char *m_title;
 
-  t_gadget_desc *AddGadget(short id, sbyte type, const char *title);
+  t_gadget_desc *AddGadget(short id, int8_t type, const char *title);
 
 public:
   const char *GetTitle() { return m_title; };
@@ -461,7 +461,7 @@ private:
   int m_last_mse_x, m_last_mse_y;
   int m_last_selected_index;
   float m_click_time; // time in between clicks.
-  sbyte m_nclicks;
+  int8_t m_nclicks;
   bool m_mse_clicked;
 
   newuiArrowButton m_up_btn; // buttons to scroll.

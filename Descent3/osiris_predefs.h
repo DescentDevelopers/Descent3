@@ -272,7 +272,7 @@ short osipf_CFReadShort(CFILE *cfp);
 
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-sbyte osipf_CFReadByte(CFILE *cfp);
+int8_t osipf_CFReadByte(CFILE *cfp);
 
 // Read and return a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -323,7 +323,7 @@ void osipf_CFWriteShort(short s, CFILE *cfp);
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void osipf_CFWriteByte(sbyte b, CFILE *cfp);
+void osipf_CFWriteByte(int8_t b, CFILE *cfp);
 
 // Write a float (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write

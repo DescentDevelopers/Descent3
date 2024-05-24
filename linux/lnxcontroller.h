@@ -22,7 +22,7 @@
 #include "Controller.h"
 #include "joystick.h"
 
-#define NULL_LNXCONTROLLER ((sbyte)NULL_CONTROLLER)
+#define NULL_LNXCONTROLLER ((int8_t)NULL_CONTROLLER)
 
 const int CTF_POV = 64, // POV control
     CTF_POV2 = 128,     // POV 2
@@ -122,7 +122,7 @@ private:
 
   struct ct_element {
     ct_format format;
-    sbyte ctl[CTLBINDS_PER_FUNC];
+    int8_t ctl[CTLBINDS_PER_FUNC];
     ubyte value[CTLBINDS_PER_FUNC];
     ct_type ctype[CTLBINDS_PER_FUNC];
     ubyte flags[2];
@@ -135,22 +135,22 @@ private:
   void assign_element(int id, ct_element *elem);
 
   //	this returns an index into the control list.
-  sbyte get_axis_controller(ubyte axis);
+  int8_t get_axis_controller(ubyte axis);
 
   //	returns controller with specified button
-  sbyte get_button_controller(ubyte btn);
+  int8_t get_button_controller(ubyte btn);
 
   //	returns the controller with a pov hat
-  sbyte get_pov_controller(ubyte pov);
+  int8_t get_pov_controller(ubyte pov);
 
   //	note controller is index into ControlList.
-  float get_axis_value(sbyte controller, ubyte axis, ct_format format, bool invert = false);
+  float get_axis_value(int8_t controller, ubyte axis, ct_format format, bool invert = false);
 
   //	get value of button in  seconds, presses, etc.
-  float get_button_value(sbyte controller, ct_format format, ubyte button);
+  float get_button_value(int8_t controller, ct_format format, ubyte button);
 
   //	get value of pov (using JOYPOV values)
-  float get_pov_value(sbyte controller, ct_format format, ubyte pov_number, ubyte pov);
+  float get_pov_value(int8_t controller, ct_format format, ubyte pov_number, ubyte pov);
 
   //	get keyboard info
   float get_key_value(int key, ct_format format);

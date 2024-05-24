@@ -123,7 +123,7 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
 void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte *framebuffer) {}
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state) {
+void rend_SetFiltering(int8_t state) {
   gpu_state.cur_bilinear_state = state;
 }
 

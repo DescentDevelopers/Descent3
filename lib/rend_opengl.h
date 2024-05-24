@@ -55,10 +55,10 @@ void opengl_SetLightingState(light_state state);
 void opengl_SetColorModel(color_model state);
 
 // Sets the state of bilinear filtering for our textures
-void opengl_SetFiltering(sbyte state);
+void opengl_SetFiltering(int8_t state);
 
 // Sets the state of zbuffering to on or off
-void opengl_SetZBufferState(sbyte state);
+void opengl_SetZBufferState(int8_t state);
 
 // Sets the near/far z values for zbuffering
 void opengl_SetZValues(float nearz, float farz);
@@ -80,7 +80,7 @@ void opengl_SetPixel(ddgr_color color, int x, int y);
 void opengl_SetFogBorders(float nearz, float farz);
 
 // Sets the fog state to on or off
-void opengl_SetFogState(sbyte state);
+void opengl_SetFogState(int8_t state);
 
 // Fills in projection variables
 void opengl_GetProjectionParameters(int *width, int *height);
@@ -103,7 +103,7 @@ void opengl_SetAlphaFactor(float val);
 float opengl_GetAlphaFactor(void);
 
 // Sets the type of alpha blending you want
-void opengl_SetAlphaType(sbyte atype);
+void opengl_SetAlphaType(int8_t atype);
 
 // Sets whether or not to write into the zbuffer
 void opengl_SetZBufferWriteMask(int state);

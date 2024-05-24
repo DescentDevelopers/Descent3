@@ -934,24 +934,24 @@ void SGSHudState(CFILE *fp) {
     if (huditem->stat) {
       if (huditem->type == HUD_ITEM_CUSTOMTEXT2) {
         cf_WriteShort(fp, (short)huditem->stat);
-        cf_WriteByte(fp, (sbyte)huditem->type);
+        cf_WriteByte(fp, (int8_t)huditem->type);
         cf_WriteShort(fp, huditem->x);
         cf_WriteShort(fp, huditem->y);
         cf_WriteInt(fp, huditem->color);
         cf_WriteShort(fp, (short)huditem->flags);
-        cf_WriteByte(fp, (sbyte)huditem->alpha);
+        cf_WriteByte(fp, (int8_t)huditem->alpha);
 
         cf_WriteShort(fp, (short)huditem->buffer_size);
         cf_WriteString(fp, huditem->data.text);
         mprintf((0, "sg: saved customtext2 (%x,%x,bufsize=%d)\n", huditem->x, huditem->y, huditem->buffer_size));
       } else if (huditem->type == HUD_ITEM_TIMER) {
         cf_WriteShort(fp, (short)huditem->stat);
-        cf_WriteByte(fp, (sbyte)huditem->type);
+        cf_WriteByte(fp, (int8_t)huditem->type);
         cf_WriteShort(fp, huditem->x);
         cf_WriteShort(fp, huditem->y);
         cf_WriteInt(fp, huditem->color);
         cf_WriteShort(fp, (short)huditem->flags);
-        cf_WriteByte(fp, (sbyte)huditem->alpha);
+        cf_WriteByte(fp, (int8_t)huditem->alpha);
 
         cf_WriteInt(fp, huditem->data.timer_handle);
         mprintf((0, "sg: restored timer (%x,%x,timer_hndl=%d)\n", huditem->x, huditem->y, huditem->data.timer_handle));
@@ -959,12 +959,12 @@ void SGSHudState(CFILE *fp) {
         // commented out because persistent hud messages are custom text, and its a mess to save the current
         // state of hud persistent messages.
         //	cf_WriteShort(fp, (short)huditem->stat);
-        //	cf_WriteByte(fp, (sbyte)huditem->type);
+        //	cf_WriteByte(fp, (int8_t)huditem->type);
         //	cf_WriteShort(fp, huditem->x);
         //	cf_WriteShort(fp, huditem->y);
         //	cf_WriteInt(fp, huditem->color);
         //	cf_WriteShort(fp, (short)huditem->flags);
-        //	cf_WriteByte(fp, (sbyte)huditem->alpha);
+        //	cf_WriteByte(fp, (int8_t)huditem->alpha);
         //
         //	cf_WriteString(fp, huditem->data.timer_handle);
       }

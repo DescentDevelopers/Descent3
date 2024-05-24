@@ -256,7 +256,7 @@ int SaveVClip(const char *filename, int num) {
 
   // write out the header for this vclip
   cf_WriteByte(outfile, 127);
-  cf_WriteByte(outfile, (sbyte)VCLIP_VERSION);
+  cf_WriteByte(outfile, (int8_t)VCLIP_VERSION);
 
   cf_WriteByte(outfile, vc->num_frames);
   // cf_WriteFloat (outfile,vc->play_time);

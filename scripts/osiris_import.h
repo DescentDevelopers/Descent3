@@ -272,10 +272,10 @@ OSIRISEXTERN File_ReadInt_fp File_ReadInt;
 typedef short (*File_ReadShort_fp)(void *fileptr);
 OSIRISEXTERN File_ReadShort_fp File_ReadShort;
 
-//	sbyte File_ReadByte(void *fileptr);
+//	int8_t File_ReadByte(void *fileptr);
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef sbyte (*File_ReadByte_fp)(void *fileptr);
+typedef int8_t (*File_ReadByte_fp)(void *fileptr);
 OSIRISEXTERN File_ReadByte_fp File_ReadByte;
 
 //	float File_ReadFloat(void *fileptr);
@@ -339,10 +339,10 @@ OSIRISEXTERN File_WriteInt_fp File_WriteInt;
 typedef void (*File_WriteShort_fp)(short s, void *fileptr);
 OSIRISEXTERN File_WriteShort_fp File_WriteShort;
 
-//	void File_WriteByte(sbyte b,void *fileptr);
+//	void File_WriteByte(int8_t b,void *fileptr);
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef void (*File_WriteByte_fp)(sbyte b, void *fileptr);
+typedef void (*File_WriteByte_fp)(int8_t b, void *fileptr);
 OSIRISEXTERN File_WriteByte_fp File_WriteByte;
 
 //	void File_WriteFloat(float f,void *fileptr);

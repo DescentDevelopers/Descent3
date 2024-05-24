@@ -130,7 +130,7 @@ typedef struct {
 } lightmap_object;
 
 typedef struct polyface {
-  sbyte nverts;
+  int8_t nverts;
   short *vertnums;
   float *u;
   float *v;
@@ -178,7 +178,7 @@ typedef struct bsp_info {
   int nverts;
   int num_faces; // amount of faces (NEWSTYLE);
 
-  sbyte children[MAX_SUBOBJECTS]; // children of this submodel
+  int8_t children[MAX_SUBOBJECTS]; // children of this submodel
   int parent;                     // what is parent for each submodel
   ubyte num_children;
 

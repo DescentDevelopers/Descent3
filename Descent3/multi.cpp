@@ -5024,7 +5024,7 @@ void MultiDoMessageToServer(ubyte *data) {
   SKIP_HEADER(data, &count);
 
   ubyte slot = MultiGetByte(data, &count);
-  int towho = (sbyte)MultiGetByte(data, &count);
+  int towho = (int8_t)MultiGetByte(data, &count);
   ubyte len = MultiGetByte(data, &count);
 
   memcpy(message, &data[count], len);

@@ -277,9 +277,9 @@ inline void MultiAddByte(ubyte element, ubyte *data, int *count) {
   *count += sizeof(ubyte);
 }
 
-inline void MultiAddSbyte(sbyte element, ubyte *data, int *count) {
+inline void MultiAddSbyte(int8_t element, ubyte *data, int *count) {
   data[*count] = element;
-  *count += sizeof(sbyte);
+  *count += sizeof(int8_t);
 }
 
 inline void MultiAddShort(short element, ubyte *data, int *count) {
@@ -328,9 +328,9 @@ inline ubyte MultiGetByte(ubyte *data, int *count) {
   return element;
 }
 
-inline sbyte MultiGetSbyte(ubyte *data, int *count) {
-  sbyte element = (*(sbyte *)(data + *count));
-  (*count) += sizeof(sbyte);
+inline int8_t MultiGetSbyte(ubyte *data, int *count) {
+  int8_t element = (*(int8_t *)(data + *count));
+  (*count) += sizeof(int8_t);
   return element;
 }
 

@@ -75,7 +75,7 @@ static struct mses_state {
   bool emulated;           // are we emulating direct input?
   bool acquired;
   bool suspended;
-  sbyte cursor_count;
+  int8_t cursor_count;
   float x_aspect, y_aspect; // used in calculating coordinates returned from ddio_MouseGetState
   HANDLE hmseevt;           // signaled if mouse input is awaiting.
   short dx, dy, dz, imm_dz;

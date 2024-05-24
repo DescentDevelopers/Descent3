@@ -77,7 +77,7 @@ int fonttool_get_kerning( int c1, int c2, int *pairnum)
 		{
 			if (kern_data[i] == (ubyte)c1 && kern_data[i+1] == (ubyte)c2) {
 				if (pairnum) *pairnum = i/3;
-				return (int)((sbyte)kern_data[i+2]);
+				return (int)((int8_t)kern_data[i+2]);
 			}
 			i+=KERNINFO_PAIR_SIZE;
 		}
@@ -104,7 +104,7 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 		kern_data = (ubyte *)mem_malloc(KERNINFO_PAIR_SIZE*2);
 		kern_data[0] = (ubyte)c1;
 		kern_data[1] = (ubyte)c2;
-		kern_data[2] = (sbyte)dist;
+		kern_data[2] = (int8_t)dist;
 		kern_data[3] = 255;
 		kern_data[4] = 255;
 		kern_data[5] = 0;
@@ -118,7 +118,7 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 	while (kern_data[i] != 255)
 	{
 		if (kern_data[i] == (ubyte)c1 && kern_data[i+1] == (ubyte)c2) {
-			kern_data[i+2] = (sbyte)dist;
+			kern_data[i+2] = (int8_t)dist;
 			if (dist == 0) {
 			//	remove this kerning pair.
 				j = i;
@@ -159,7 +159,7 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 	}
 	new_kern_data[i*KERNINFO_PAIR_SIZE] = (ubyte)c1;
 	new_kern_data[i*KERNINFO_PAIR_SIZE+1] = (ubyte)c2;
-	new_kern_data[i*KERNINFO_PAIR_SIZE+2] = (sbyte)dist;
+	new_kern_data[i*KERNINFO_PAIR_SIZE+2] = (int8_t)dist;
 	i++;
 	new_kern_data[i*KERNINFO_PAIR_SIZE] = 255;
 	new_kern_data[i*KERNINFO_PAIR_SIZE+1] = 255;
@@ -508,7 +508,7 @@ void FontKernDump(const char *fnt_file_name)
 			{
 				ubyte c1 = kern_data[0];
 				ubyte c2 = kern_data[1];
-				sbyte delta = (sbyte)kern_data[2];
+				int8_t delta = (int8_t)kern_data[2];
 
 				fprintf(fp, "%c %c  => %d spacing\n", c1,c2,(int)delta);
 				kern_data += 3;

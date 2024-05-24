@@ -138,7 +138,7 @@ typedef struct roomUVL {
 typedef struct face {
   ushort flags;     // flags for this face (see above)
   ubyte num_verts;  // how many vertices in this face
-  sbyte portal_num; // which portal this face is part of, or -1 if none
+  int8_t portal_num; // which portal this face is part of, or -1 if none
 
   short *face_verts;       // index into list of vertices for this face
   roomUVL *face_uvls;      // index into list of uvls for this face

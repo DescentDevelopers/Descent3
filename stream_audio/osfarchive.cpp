@@ -192,9 +192,9 @@ bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, 
     if (!cf_WriteBytes((ubyte *)OSF_TAG, strlen(OSF_TAG), m_fp))
       return false;
 
-    cf_WriteByte(m_fp, (sbyte)type);
-    cf_WriteByte(m_fp, (sbyte)comp);
-    cf_WriteByte(m_fp, (sbyte)flags);
+    cf_WriteByte(m_fp, (int8_t)type);
+    cf_WriteByte(m_fp, (int8_t)comp);
+    cf_WriteByte(m_fp, (int8_t)flags);
 
     if (type == OSF_DIGITAL_STRM) {
       tOSFDigiHdr *digihdr = (tOSFDigiHdr *)hdr;

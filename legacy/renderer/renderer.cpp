@@ -480,7 +480,7 @@ ubyte Renderer_close_flag = 0, Renderer_initted = 0;
 // Is this hardware or software rendered?
 renderer_type Renderer_type = RENDERER_SOFTWARE_16BIT;
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState(sbyte mipstate) {
+void rend_SetMipState(int8_t mipstate) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -713,7 +713,7 @@ void rend_SetFlatColor(ddgr_color color) {
   }
 }
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(sbyte on) {
+void rend_SetFogState(int8_t on) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -1023,7 +1023,7 @@ void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, 
   }
 }
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state) {
+void rend_SetFiltering(int8_t state) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -1049,7 +1049,7 @@ void rend_SetFiltering(sbyte state) {
   }
 }
 // Sets the state of zbuffering to on or off
-void rend_SetZBufferState(sbyte state) {
+void rend_SetZBufferState(int8_t state) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -1395,7 +1395,7 @@ void rend_SetFogColor(ddgr_color fogcolor) {
     break;
   }
 }
-void rend_SetAlphaType(sbyte atype) {
+void rend_SetAlphaType(int8_t atype) {
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:

@@ -78,7 +78,7 @@ typedef struct DSLOOPSTREAM {
   union // dependant on method.
   {
     ubyte close_on_next;
-    sbyte loop_step; // method 1, = 0 for start loop, 1 = mid loop, 2 = end loop.
+    int8_t loop_step; // method 1, = 0 for start loop, 1 = mid loop, 2 = end loop.
   };
 
   union // dependant on method.
@@ -163,7 +163,7 @@ public:
   int sample_length; // used for storage purposes.
 
   bool stereo;
-  sbyte bps;
+  int8_t bps;
   uint8_t m_status; // Sound status
   uint8_t pad;
 

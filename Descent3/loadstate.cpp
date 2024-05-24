@@ -1442,7 +1442,7 @@ done:;
 int LGSObjAI(CFILE *fp, ai_frame **pai) {
   ai_frame *ai;
   short size;
-  sbyte read_ai;
+  int8_t read_ai;
 
   *pai = NULL;
 
@@ -1465,7 +1465,7 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
 //	loads fx
 int LGSObjEffects(CFILE *fp, object *op) {
   short size;
-  sbyte do_read;
+  int8_t do_read;
 
   op->effect_info = NULL;
 
@@ -1539,7 +1539,7 @@ int LGSObjEffects(CFILE *fp, object *op) {
 int LGSObjWB(CFILE *fp, object *op) {
   dynamic_wb_info *dwba = NULL;
   int i;
-  sbyte num_wbs;
+  int8_t num_wbs;
 
   gs_ReadByte(fp, num_wbs);
   if (!num_wbs)
@@ -1592,7 +1592,7 @@ int LGSMatcens(CFILE *fp) {
 
 int LGSSnapshot(CFILE *fp) {
   int bm_handle = -1;
-  sbyte valid_snapshot = 0;
+  int8_t valid_snapshot = 0;
 
   // get snapshot byte
   valid_snapshot = cf_ReadByte(fp);
@@ -1874,7 +1874,7 @@ int LGSSnapshot(CFILE *fp) {
 //@@int LGSObjAIGoal(CFILE *fp, goal *g)
 //@@{
 //@@	int i;
-//@@	sbyte used;
+//@@	int8_t used;
 //@@
 //@@	gs_ReadByte(fp, used);
 //@@	g->used = used ? true : false;

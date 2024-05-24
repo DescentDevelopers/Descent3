@@ -180,7 +180,7 @@ static char Grtext_buffer[GRTEXT_BUFLEN];
 static int Grtext_ptr = 0;
 static int Grtext_font = 0;
 static ubyte Grtext_alpha = 255;
-static sbyte Grtext_alphatype = ATF_TEXTURE + ATF_CONSTANT;
+static int8_t Grtext_alphatype = ATF_TEXTURE + ATF_CONSTANT;
 static bool Grtext_shadow = false;
 static int Grtext_line_spacing = 1;
 static int Grtext_tabspace = 0;

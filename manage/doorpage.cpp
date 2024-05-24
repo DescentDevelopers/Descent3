@@ -213,7 +213,7 @@ void mng_WriteDoorPage(CFILE *outfile, mngs_door_page *doorpage) {
   cf_WriteString(outfile, "");
 
   cf_WriteByte(outfile, DOORPAGE_COMMAND_FLAGS);
-  cf_WriteByte(outfile, sizeof(sbyte));
+  cf_WriteByte(outfile, sizeof(int8_t));
   cf_WriteByte(outfile, doorpage->door_struct.flags);
 
   Int3(); // this shouldn't be called -- hit points not written out

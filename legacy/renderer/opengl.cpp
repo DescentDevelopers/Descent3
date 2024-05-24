@@ -1346,7 +1346,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
 // Chooses the correct filter type for the currently bound texture
 void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
   int magf;
-  sbyte dest_state;
+  int8_t dest_state;
 
   if (map_type == MAP_TYPE_LIGHTMAP) {
     magf = GET_FILTER_STATE(OpenGL_lightmap_states[handle]);
@@ -1976,7 +1976,7 @@ void opengl_SetColorModel(color_model state) {
 }
 
 // Sets the state of bilinear filtering for our textures
-void opengl_SetFiltering(sbyte state) {
+void opengl_SetFiltering(int8_t state) {
 #ifndef RELEASE
   if (Fast_test_render)
     state = 0;
@@ -1986,7 +1986,7 @@ void opengl_SetFiltering(sbyte state) {
 }
 
 // Sets the state of zbuffering to on or off
-void opengl_SetZBufferState(sbyte state) {
+void opengl_SetZBufferState(int8_t state) {
 #ifndef RELEASE
   if (Fast_test_render)
     state = 0;
@@ -2115,7 +2115,7 @@ void opengl_SetFogBorders(float nearz, float farz) {
 }
 
 // Sets the fog state to on or off
-void opengl_SetFogState(sbyte state) {
+void opengl_SetFogState(int8_t state) {
   if (state == OpenGL_state.cur_fog_state)
     return; // No redundant state setting
 
@@ -2148,7 +2148,7 @@ float opengl_GetAspectRatio() {
 }
 
 // Sets the type of alpha blending you want
-void opengl_SetAlphaType(sbyte atype) {
+void opengl_SetAlphaType(int8_t atype) {
   if (atype == OpenGL_state.cur_alpha_type)
     return; // don't set it redundantly
 
@@ -2259,7 +2259,7 @@ void opengl_GetRenderState(rendering_state *rstate) { memcpy(rstate, &OpenGL_sta
 
 // draws a line
 void opengl_DrawLine(int x1, int y1, int x2, int y2) {
-  sbyte atype;
+  int8_t atype;
   light_state ltype;
   texture_type ttype;
   int color = OpenGL_state.cur_color;

@@ -1762,7 +1762,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
       short s = cf_ReadShort(ifile);
 
       for (i = 0; i < s; i++) {
-        sbyte stype = cf_ReadByte(ifile);
+        int8_t stype = cf_ReadByte(ifile);
         if (stype == PARMTYPE_NUMBER || stype == PARMTYPE_REF) {
           cf_ReadFloat(ifile);
         } else if (stype == PARMTYPE_VECTOR) {
@@ -1929,7 +1929,7 @@ int ReadTrigger(CFILE *ifile, trigger *tp, int fileversion) {
         int i;
         short s = cf_ReadShort(ifile);
         for (i = 0; i < s; i++) {
-          sbyte type = cf_ReadByte(ifile);
+          int8_t type = cf_ReadByte(ifile);
           if (type == PARMTYPE_NUMBER || type == PARMTYPE_REF) {
             cf_ReadFloat(ifile);
           } else if (type == PARMTYPE_VECTOR) {
@@ -4445,7 +4445,7 @@ int WriteRoom(CFILE *ofile, room *rp) {
   // Write ambient sound pattern name
   cf_WriteString(ofile, (rp->ambient_sound == -1) ? "" : AmbientSoundPatternName(rp->ambient_sound));
 
-  cf_WriteByte(ofile, (sbyte)rp->env_reverb);
+  cf_WriteByte(ofile, (int8_t)rp->env_reverb);
 
   // Write damage
   cf_WriteFloat(ofile, rp->damage);

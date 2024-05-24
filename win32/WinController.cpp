@@ -446,7 +446,7 @@ bool gameWinController::get_packet(int id, ct_packet *packet, ct_format alt_form
 
   for (i = 0; i < CTLBINDS_PER_FUNC; i++) {
     ubyte value = m_ElementList[id].value[i];
-    sbyte controller = m_ElementList[id].ctl[i];
+    int8_t controller = m_ElementList[id].ctl[i];
 
     if (controller == -1 || m_ControlList[controller].id == CTID_INVALID) {
       continue;
@@ -811,7 +811,7 @@ unsigned gameWinController::get_joy_raw_values(int *x, int *y) {
 }
 
 //	note controller is index into ControlList.
-float gameWinController::get_axis_value(sbyte controller, ubyte axis, ct_format format, bool invert) {
+float gameWinController::get_axis_value(int8_t controller, ubyte axis, ct_format format, bool invert) {
   if (controller <= NULL_WINCONTROLLER || controller >= CT_MAX_CONTROLLERS)
     return 0.0f;
 
@@ -977,7 +977,7 @@ float gameWinController::get_axis_value(sbyte controller, ubyte axis, ct_format 
   return val;
 }
 
-float gameWinController::get_button_value(sbyte controller, ct_format format, ubyte button) {
+float gameWinController::get_button_value(int8_t controller, ct_format format, ubyte button) {
   float val = (float)0.0;
 
   if (controller <= NULL_WINCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
@@ -1050,7 +1050,7 @@ float gameWinController::get_button_value(sbyte controller, ct_format format, ub
 }
 
 //	do some pov stuff
-float gameWinController::get_pov_value(sbyte controller, ct_format format, ubyte pov_number, ubyte pov) {
+float gameWinController::get_pov_value(int8_t controller, ct_format format, ubyte pov_number, ubyte pov) {
   float val = (float)0.0;
 
   if (controller <= NULL_WINCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
@@ -1259,7 +1259,7 @@ void gameWinController::assign_element(int id, ct_element *elem) {
   }
 }
 
-sbyte gameWinController::get_axis_controller(ubyte axis) {
+int8_t gameWinController::get_axis_controller(ubyte axis) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   if (axis == NULL_BINDING)
     return NULL_WINCONTROLLER;
@@ -1271,7 +1271,7 @@ sbyte gameWinController::get_axis_controller(ubyte axis) {
   return NULL_WINCONTROLLER;
 }
 
-sbyte gameWinController::get_button_controller(ubyte btn) {
+int8_t gameWinController::get_button_controller(ubyte btn) {
   unsigned mask;
 
   //	buttons range from 1-CT_MAX_BUTTONS
@@ -1295,7 +1295,7 @@ sbyte gameWinController::get_button_controller(ubyte btn) {
 }
 
 //	returns the controller with a pov hat
-sbyte gameWinController::get_pov_controller(ubyte pov) {
+int8_t gameWinController::get_pov_controller(ubyte pov) {
   //	start from controller 2 because 0, and 1 are reserved for keyboard and mouse
   ushort pov_flag = CTF_POV << (pov);
 
@@ -1574,7 +1574,7 @@ const char *gameWinController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
   }
 
   case ctMouseAxis: {
-    str = ddio_MouseGetAxisText(((sbyte)bind) - 1);
+    str = ddio_MouseGetAxisText(((int8_t)bind) - 1);
     return str;
   }
 
@@ -1590,7 +1590,7 @@ const char *gameWinController::get_binding_text(ct_type type, ubyte ctrl, ubyte 
   }
 
   case ctMouseButton: {
-    str = ddio_MouseGetBtnText(((sbyte)bind) - 1);
+    str = ddio_MouseGetBtnText(((int8_t)bind) - 1);
     return str;
   }
 

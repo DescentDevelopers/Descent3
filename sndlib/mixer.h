@@ -70,7 +70,7 @@ public:
   float m_volume;
 
   bool stereo;
-  sbyte bps;
+  int8_t bps;
   uint8_t m_status; // Sound status
   uint8_t pad;
 };

@@ -739,7 +739,7 @@ void FreeTextureBumpmaps(int tex_handle) {
 // Builds the bumpmaps for the past in texture
 void BuildTextureBumpmaps(int texhandle) {
   int i, t;
-  sbyte *buffer;
+  int8_t *buffer;
 
   if (GameTextures[texhandle].flags & TF_ANIMATED)
     return; // No bumps for animated textures
@@ -759,7 +759,7 @@ void BuildTextureBumpmaps(int texhandle) {
   GameTextures[texhandle].bumpmap = bump;
 
   // allocate memory for our buffer
-  buffer = (sbyte *)mem_malloc(w * h);
+  buffer = (int8_t *)mem_malloc(w * h);
   ASSERT(buffer);
 
   ushort *src_data = (ushort *)bm_data(GameTextures[texhandle].bm_handle, 0);
@@ -773,14 +773,14 @@ void BuildTextureBumpmaps(int texhandle) {
       int green = ((color >> 5) & 0x1f) << 3;
       int blue = ((color) & 0x1f) << 3;
 
-      buffer[i * w + t] = (sbyte)(0.29 * red + 0.60 * green + 0.11 * blue);
+      buffer[i * w + t] = (int8_t)(0.29 * red + 0.60 * green + 0.11 * blue);
     }
   }
 
   ushort *dest_data = (ushort *)bump_data(bump);
 
   for (i = 0; i < h; i++) {
-    sbyte *pDst = (sbyte *)(dest_data + i * w);
+    int8_t *pDst = (int8_t *)(dest_data + i * w);
     for (t = 0; t < w; t++) {
       int v00, v01, v10;
 
@@ -798,8 +798,8 @@ void BuildTextureBumpmaps(int texhandle) {
 
       int iDu = v00 - v01; // The delta-u bump value
       int iDv = v00 - v10; // The delta-v bump value
-      *pDst++ = (sbyte)iDu;
-      *pDst++ = (sbyte)iDv;
+      *pDst++ = (int8_t)iDu;
+      *pDst++ = (int8_t)iDv;
     }
   }
 

@@ -426,17 +426,17 @@ typedef enum {
 } wrap_type;
 
 typedef struct {
-  sbyte initted;
+  int8_t initted;
 
-  sbyte cur_bilinear_state;
-  sbyte cur_zbuffer_state;
-  sbyte cur_fog_state;
-  sbyte cur_mip_state;
+  int8_t cur_bilinear_state;
+  int8_t cur_zbuffer_state;
+  int8_t cur_fog_state;
+  int8_t cur_mip_state;
 
   texture_type cur_texture_type;
   color_model cur_color_model;
   light_state cur_light_state;
-  sbyte cur_alpha_type;
+  int8_t cur_alpha_type;
 
   wrap_type cur_wrap_type;
 
@@ -448,7 +448,7 @@ typedef struct {
   ddgr_color cur_color;
   ddgr_color cur_fog_color;
 
-  sbyte cur_texture_quality; // 0-none, 1-linear, 2-perspective
+  int8_t cur_texture_quality; // 0-none, 1-linear, 2-perspective
 
   int clip_x1, clip_x2, clip_y1, clip_y2;
   int screen_width, screen_height;
@@ -488,10 +488,10 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type = MAP_TYPE
 void rend_DrawPolygon2D(int handle, g3Point **p, int nv);
 
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState(sbyte);
+void rend_SetMipState(int8_t);
 
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(sbyte on);
+void rend_SetFogState(int8_t on);
 
 // Sets the near and far plane of fog
 void rend_SetFogBorders(float fog_near, float fog_far);
@@ -518,10 +518,10 @@ void rend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, float u0, flo
                            int color = -1, float *alphas = NULL);
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state);
+void rend_SetFiltering(int8_t state);
 
 // Sets the state of zbuffering to on or off
-void rend_SetZBufferState(sbyte state);
+void rend_SetZBufferState(int8_t state);
 
 // Sets the near and far planes for z buffer
 void rend_SetZValues(float nearz, float farz);
@@ -566,7 +566,7 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
 void rend_SetFogColor(ddgr_color fogcolor);
 
 // sets the alpha type
-void rend_SetAlphaType(sbyte);
+void rend_SetAlphaType(int8_t);
 
 // Sets the constant alpha value
 void rend_SetAlphaValue(ubyte val);

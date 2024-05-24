@@ -93,16 +93,16 @@ class cfg_element : public UIGadget {
   static UIBitmapItem *m_btn_bmp_lit, *m_btn_bmp, *m_xbtn_bmp_lit, *m_xbtn_bmp;
   static short m_count;
   const char *m_title;
-  sbyte m_fnid, m_flags;   // fnflags : 1 if invert btn visible
-  sbyte m_slot, m_curslot; // what slow is in focus and number of slots.
+  int8_t m_fnid, m_flags;   // fnflags : 1 if invert btn visible
+  int8_t m_slot, m_curslot; // what slow is in focus and number of slots.
   ubyte m_slot_alpha;
-  sbyte m_blink_state;
+  int8_t m_blink_state;
 
 public:
   void Create(UIWindow *wnd, int str_i, int x, int y, int fnid, int id);
-  sbyte GetActiveSlot() const { return m_slot; };
+  int8_t GetActiveSlot() const { return m_slot; };
   bool Configure(ct_type *elem_type, ubyte *controller, ubyte *new_elem,
-                 sbyte *slot); // calls configuration routines (returns true if approved)
+                 int8_t *slot); // calls configuration routines (returns true if approved)
 
 protected:
   virtual void OnDraw();

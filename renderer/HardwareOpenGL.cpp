@@ -1320,7 +1320,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
 // Chooses the correct filter type for the currently bound texture
 void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
   int magf;
-  sbyte dest_state;
+  int8_t dest_state;
 
   if (map_type == MAP_TYPE_LIGHTMAP) {
     magf = GET_FILTER_STATE(OpenGL_lightmap_states[handle]);
@@ -1585,7 +1585,7 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
 }
 
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState(sbyte mipstate) {}
+void rend_SetMipState(int8_t mipstate) {}
 
 // Init our renderer
 int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state *pref_state) {
@@ -1694,7 +1694,7 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
 void rend_SetFlatColor(ddgr_color color) { gpu_state.cur_color = color; }
 
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(sbyte state) {
+void rend_SetFogState(int8_t state) {
   if (state == gpu_state.cur_fog_state)
     return;
 
@@ -1858,7 +1858,7 @@ void rend_Flip(void) {
 void rend_EndFrame(void) {}
 
 // Sets the state of z-buffering to on or off
-void rend_SetZBufferState(sbyte state) {
+void rend_SetZBufferState(int8_t state) {
   if (state == gpu_state.cur_zbuffer_state)
     return; // No redundant state setting
 
@@ -1945,7 +1945,7 @@ ddgr_color rend_GetPixel(int x, int y) {
 
 // Draws a line
 void rend_DrawLine(int x1, int y1, int x2, int y2) {
-  sbyte atype;
+  int8_t atype;
   light_state ltype;
   texture_type ttype;
   int color = gpu_state.cur_color;
@@ -2031,7 +2031,7 @@ void rend_SetLightingState(light_state state) {
   CHECK_ERROR(13)
 }
 
-void rend_SetAlphaType(sbyte atype) {
+void rend_SetAlphaType(int8_t atype) {
   if (atype == gpu_state.cur_alpha_type)
     return; // don't set it redundantly
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))

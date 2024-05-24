@@ -147,10 +147,10 @@ private:
     int ammo_barrel;
     int gun_sight_obj;
     int camera_obj;
-    sbyte state;
-    sbyte snipe_points;
-    sbyte cur_snipe_point;
-    sbyte laser_targeted;
+    int8_t state;
+    int8_t snipe_points;
+    int8_t cur_snipe_point;
+    int8_t laser_targeted;
     short backpack_hp; // points before destroy backpack.
     short flee_hp;
 
@@ -158,7 +158,7 @@ private:
     //	 note: obvious cases ignored (ptA->ptA)
     // used to create a quick map of snipe points for sniper to use.
     int snipe_point_handles[N_SNIPE_POINTS];
-    sbyte access_array[N_SNIPE_POINTS][N_SNIPE_POINTS];
+    int8_t access_array[N_SNIPE_POINTS][N_SNIPE_POINTS];
 
     //	used to keep track of targets black storm trooper knows about.  storm trooper must
     // SEE the target first before storing the target in memory.
@@ -191,7 +191,7 @@ private:
   struct t_creep_memory {
     float timer;
     float eye_timer;
-    sbyte state;
+    int8_t state;
     ubyte melee_flags;
     short energy;
     short hits;
@@ -733,11 +733,11 @@ void aiBlackStormTrooper::OnInit(int me_handle) {
     for (j = 0, n_pts = 0; j < memory->snipe_points; j++) {
       if (i != j) {
         if (AI_IsObjReachable(memory->snipe_point_handles[i], memory->snipe_point_handles[j])) {
-          memory->access_array[i][n_pts++] = (sbyte)j;
+          memory->access_array[i][n_pts++] = (int8_t)j;
         }
       }
     }
-    memory->access_array[i][N_SNIPE_POINTS - 1] = (sbyte)n_pts;
+    memory->access_array[i][N_SNIPE_POINTS - 1] = (int8_t)n_pts;
   }
 
   // initialize miscellaneous stuff
@@ -1237,7 +1237,7 @@ void aiCreeper::OnInit(int me_handle) {
 void aiCreeper::OnDamaged(int me_handle, tOSIRISEVTDAMAGED *evt) {
   if (memory->state == STATE_ATTACK) {
     if (memory->hits > -25) {
-      memory->hits = memory->hits - (sbyte)evt->damage;
+      memory->hits = memory->hits - (int8_t)evt->damage;
       //	mprintf(0, "[Creeper] hits = %d\n", memory->hits);
     }
     if (memory->hits < 0) {

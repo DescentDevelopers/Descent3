@@ -128,7 +128,7 @@ typedef struct doorway {
   ubyte state;       // current state of doorway
   ubyte flags;       // flags associated with a doorway
   ubyte keys_needed; // used by trigger system.  these bits need to be set to activate door
-  sbyte activenum;   // index into active doorways array, or -1 if not active
+  int8_t activenum;   // index into active doorways array, or -1 if not active
   float position;    // current position of door
   float dest_pos;    // destination position
   int sound_handle;  // handle of last sound played
