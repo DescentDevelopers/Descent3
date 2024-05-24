@@ -105,7 +105,7 @@ void do_walking_sim(object *obj);
 
 // Applies an instantaneous force on an object, resulting in an instantaneous
 // change in velocity.
-void phys_apply_force(object *obj, vector *force_vec, short weapon_index = -1);
+void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index = -1);
 void phys_apply_rot(object *obj, vector *force_vec);
 
 // this routine will set the thrust for an object to a value that will

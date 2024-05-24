@@ -55,13 +55,13 @@ void sound_render_end_frame();
 // the radius is actually scaled according to orientation.  radius is maximum radius, really, which is forward
 //	minimum radius will be rear view.
 // returns list of rooms rendered (-1 = end of list!)
-short *sound_render_audible_rooms(pos_state *listener_pos, float max_radius = SOUND_RENDER_RADIUS);
+int16_t *sound_render_audible_rooms(pos_state *listener_pos, float max_radius = SOUND_RENDER_RADIUS);
 
 // render one room's geometry
 void sound_render_room_geometry(int roomnum, int slot);
 
 // check if a room exists in room list.
-inline bool sound_render_room_in_list(short room, short *list) {
+inline bool sound_render_room_in_list(int16_t room, int16_t *list) {
   int8_t idx = 0;
   while (list[idx] != -1) {
     if (room == list[idx]) {

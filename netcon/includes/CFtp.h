@@ -57,6 +57,8 @@
 #ifndef _CFTP_HEADER_
 #define _CFTP_HEADER_
 
+#include <cstdint>
+
 #define FTP_STATE_INTERNAL_ERROR 0
 #define FTP_STATE_SOCKET_ERROR 1
 #define FTP_STATE_URL_PARSING_ERROR 2

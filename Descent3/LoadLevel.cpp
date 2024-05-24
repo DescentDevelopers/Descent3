@@ -1323,9 +1323,9 @@ int Num_lightmap_infos_read = 0;
 uint16_t LightmapInfoRemap[MAX_LIGHTMAP_INFOS];
 
 // Arrays for mapping saved data to the current data
-short texture_xlate[MAX_TEXTURES];
-short door_xlate[MAX_DOORS];
-short generic_xlate[MAX_OBJECT_IDS];
+int16_t texture_xlate[MAX_TEXTURES];
+int16_t door_xlate[MAX_DOORS];
+int16_t generic_xlate[MAX_OBJECT_IDS];
 
 #ifdef EDITOR
 extern float GlobalMultiplier;
@@ -1341,7 +1341,7 @@ extern float GlobalMultiplier;
 #define MAX_FAILED_XLATE_ITEMS 1500
 
 struct {
-  short type, id;
+  int16_t type, id;
   char name[PAGENAME_LEN];
 } Failed_xlate_items[MAX_FAILED_XLATE_ITEMS];
 
@@ -1759,7 +1759,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     }
 
     if (fileversion >= LEVEL_FILE_SCRIPTPARMS) {
-      short s = cf_ReadShort(ifile);
+      int16_t s = cf_ReadShort(ifile);
 
       for (i = 0; i < s; i++) {
         int8_t stype = cf_ReadByte(ifile);
@@ -1927,7 +1927,7 @@ int ReadTrigger(CFILE *ifile, trigger *tp, int fileversion) {
       cf_ReadString(name, MAX_D3XID_NAME, ifile);
       if (fileversion >= LEVEL_FILE_TRIGPARMS) {
         int i;
-        short s = cf_ReadShort(ifile);
+        int16_t s = cf_ReadShort(ifile);
         for (i = 0; i < s; i++) {
           int8_t type = cf_ReadByte(ifile);
           if (type == PARMTYPE_NUMBER || type == PARMTYPE_REF) {
@@ -2281,7 +2281,7 @@ int WriteCompressionByte(CFILE *fp, uint8_t *val, int total, int just_count, int
   return written;
 }
 
-// Does a RLE compression run of the values given the short array 'val'.
+// Does a RLE compression run of the values given the int16_t array 'val'.
 // If just_count is 1, doesn't write anything
 int WriteCompressionShort(CFILE *fp, uint16_t *val, int total, int just_count, int compress) {
   int done = 0, written = 0;
@@ -2632,7 +2632,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 }
 
 // Build a translation table for various items
-void BuildXlateTable(CFILE *ifile, int (*lookup_func)(const char *), short *xlate_table, int max_items, int type) {
+void BuildXlateTable(CFILE *ifile, int (*lookup_func)(const char *), int16_t *xlate_table, int max_items, int type) {
   char name[PAGENAME_LEN];
   int n;
   int i;
@@ -3046,7 +3046,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
   max_rooms = cf_ReadInt(fp);
 
   if (version < 62) {
-    cfseek(fp, sizeof(short) * max_rooms * max_rooms, SEEK_CUR);
+    cfseek(fp, sizeof(int16_t) * max_rooms * max_rooms, SEEK_CUR);
 
     mprintf((0, "We will need to remake boa.  New cost structure added\n"));
     BOA_AABB_checksum = BOA_mine_checksum = 0;
@@ -3056,7 +3056,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
     ASSERT(max_rooms - 1 <= MAX_ROOMS + 8);
 
     if (version < 110 || (max_path_portals != MAX_PATH_PORTALS)) {
-      cfseek(fp, sizeof(short) * max_rooms * max_rooms + max_rooms * max_path_portals * sizeof(float), SEEK_CUR);
+      cfseek(fp, sizeof(int16_t) * max_rooms * max_rooms + max_rooms * max_path_portals * sizeof(float), SEEK_CUR);
 
       if (version >= 107) {
         // Read BOA terrain info (temporary, just so vis data works with multiplay)
@@ -3144,15 +3144,15 @@ void ReadRoomAABBChunk(CFILE *fp, int version) {
       Rooms[i].bbf_max_xyz.z = cf_ReadFloat(fp);
 
       Rooms[i].num_bbf_regions = cf_ReadShort(fp);
-      Rooms[i].num_bbf = (short *)mem_malloc(sizeof(short) * Rooms[i].num_bbf_regions);
-      Rooms[i].bbf_list = (short **)mem_malloc(sizeof(short *) * Rooms[i].num_bbf_regions);
+      Rooms[i].num_bbf = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf_regions);
+      Rooms[i].bbf_list = (int16_t **)mem_malloc(sizeof(int16_t *) * Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_min_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_max_xyz = (vector *)mem_malloc(sizeof(vector) * Rooms[i].num_bbf_regions);
       Rooms[i].bbf_list_sector = (uint8_t *)mem_malloc(sizeof(char) * Rooms[i].num_bbf_regions);
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {
         Rooms[i].num_bbf[j] = cf_ReadShort(fp);
-        Rooms[i].bbf_list[j] = (short *)mem_malloc(sizeof(short) * Rooms[i].num_bbf[j]);
+        Rooms[i].bbf_list[j] = (int16_t *)mem_malloc(sizeof(int16_t) * Rooms[i].num_bbf[j]);
       }
 
       for (j = 0; j < Rooms[i].num_bbf_regions; j++) {

@@ -36,7 +36,7 @@ typedef struct {
 
   uint16_t used;
   uint8_t flags;
-  short cache_slot;         // for the renderers use
+  int16_t cache_slot;         // for the renderers use
   uint8_t square_res;         // for renderers use
   uint8_t cx1, cy1, cx2, cy2; // Change x and y coords
 } bms_lightmap;

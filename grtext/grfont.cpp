@@ -157,7 +157,7 @@ static bool Font_init = false;
 typedef CFILE *FONTFILE;
 
 static inline int READ_FONT_INT(FONTFILE ffile);
-static inline short READ_FONT_SHORT(FONTFILE ffile);
+static inline int16_t READ_FONT_SHORT(FONTFILE ffile);
 static inline uint8_t READ_FONT_BYTE(FONTFILE ffile);
 static inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem);
 static inline FONTFILE OPEN_FONT(char *filename);
@@ -165,7 +165,7 @@ static inline void CLOSE_FONT(FONTFILE ffile);
 
 inline int READ_FONT_INT(FONTFILE ffile) { return cf_ReadInt(ffile); }
 
-inline short READ_FONT_SHORT(FONTFILE ffile) { return cf_ReadShort(ffile); }
+inline int16_t READ_FONT_SHORT(FONTFILE ffile) { return cf_ReadShort(ffile); }
 
 inline uint8_t READ_FONT_BYTE(FONTFILE ffile) { return (uint8_t)cf_ReadByte(ffile); }
 
@@ -199,7 +199,7 @@ inline void CLOSE_FONT(FONTFILE ffile) { cfclose(ffile); }
 typedef FILE *FONTFILE2;
 
 static inline int WRITE_FONT_INT(FONTFILE2 ffile, int i);
-static inline int WRITE_FONT_SHORT(FONTFILE2 ffile, short s);
+static inline int WRITE_FONT_SHORT(FONTFILE2 ffile, int16_t s);
 static inline int WRITE_FONT_BYTE(FONTFILE2 ffile, uint8_t c);
 static inline int WRITE_FONT_DATA(FONTFILE2 ffile, void *buf, int size, int nelem);
 static inline FONTFILE2 OPEN_FONT2(char *filename);
@@ -207,7 +207,7 @@ static inline void CLOSE_FONT2(FONTFILE2 ffile);
 
 inline int WRITE_FONT_INT(FONTFILE2 ffile, int i) { return fwrite(&i, sizeof(i), 1, (FILE *)ffile); }
 
-inline int WRITE_FONT_SHORT(FONTFILE2 ffile, short s) { return fwrite(&s, sizeof(s), 1, (FILE *)ffile); }
+inline int WRITE_FONT_SHORT(FONTFILE2 ffile, int16_t s) { return fwrite(&s, sizeof(s), 1, (FILE *)ffile); }
 
 inline int WRITE_FONT_BYTE(FONTFILE2 ffile, uint8_t c) { return fwrite(&c, sizeof(c), 1, (FILE *)ffile); }
 
@@ -456,7 +456,7 @@ void grfont_Free(int handle) {
 bool grfont_LoadTemplate(const char *fname, tFontTemplate *ft) {
   FONTFILE ff;
   char fontname[32];
-  short ft_width, ft_height, ft_flags, ft_minasc, ft_maxasc, num_char, i;
+  int16_t ft_width, ft_height, ft_flags, ft_minasc, ft_maxasc, num_char, i;
   tFontFileInfo2 ffi2;
 
   //	open file.
@@ -647,7 +647,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   WRITE_FONT_DATA(ffout, tempstr, 32, 1);
 
   if (fnt.flags & FT_FFI2) {
-    WRITE_FONT_SHORT(ffout, (short)ft->ch_tracking);
+    WRITE_FONT_SHORT(ffout, (int16_t)ft->ch_tracking);
     WRITE_FONT_DATA(ffout, ffi2.reserved, sizeof(ffi2.reserved), 1);
   }
 
@@ -656,7 +656,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   //	Write widths now if necessary.(FT_PROPORTIONAL)
   if (fnt.flags & FT_PROPORTIONAL) {
     for (int i = 0; i < num_char; i++)
-      WRITE_FONT_SHORT(ffout, (short)fnt.char_widths[i]);
+      WRITE_FONT_SHORT(ffout, (int16_t)fnt.char_widths[i]);
   }
 
   if (fnt.flags & FT_KERNED) {
@@ -669,7 +669,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
 
     ASSERT((n_bytes % 3) == 0);
     n_pairs = n_bytes / 3;
-    WRITE_FONT_SHORT(ffout, (short)n_pairs);
+    WRITE_FONT_SHORT(ffout, (int16_t)n_pairs);
 
     for (i = 0; i < n_pairs; i++) {
       WRITE_FONT_BYTE(ffout, ch[i * 3]);
@@ -729,7 +729,7 @@ bool grfont_SetTracking(int font, int tracking) {
 
   tFontInfo *oldft = &Fonts[font];
 
-  oldft->font.ffi2.tracking = (short)tracking;
+  oldft->font.ffi2.tracking = (int16_t)tracking;
 
   return false;
 }

@@ -504,8 +504,8 @@ void BNode_ClearBNodeInfo(void) {
 }
 
 // Unused?
-bool BNode_MakeSubPath(short sroom, short spnt, short eroom, short epnt, int flags, float size, short *roomlist,
-                       short *pnts, int max_elements) {
+bool BNode_MakeSubPath(int16_t sroom, int16_t spnt, int16_t eroom, int16_t epnt, int flags, float size, int16_t *roomlist,
+                       int16_t *pnts, int max_elements) {
   return false;
 }
 

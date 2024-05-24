@@ -40,8 +40,8 @@ typedef struct t_mse_button_info {
 } t_mse_button_info;
 
 typedef struct t_mse_event {
-  short btn;
-  short state;
+  int16_t btn;
+  int16_t state;
 } t_mse_event;
 
 #define MOUSE_ZMIN 0 // mouse wheel z min and max (increments of 120 = 10 units)
@@ -67,9 +67,9 @@ static bool DDIO_mouse_init = 0;
 static struct mses_state {
   LPDIRECTINPUTDEVICE lpdimse;
   RECT brect;              // limit rectangle of absolute mouse coords
-  short x, y, z;           // current x,y,z in absolute mouse coords
-  short cx, cy, cz;        // prior values of x,y,z from last mouse frame
-  short zmin, zmax;        // 3 dimensional mouse devices use this
+  int16_t x, y, z;           // current x,y,z in absolute mouse coords
+  int16_t cx, cy, cz;        // prior values of x,y,z from last mouse frame
+  int16_t zmin, zmax;        // 3 dimensional mouse devices use this
   int btn_mask, btn_flags; // btn_flags are the avaiable buttons on this device in mask form.
   float timer;             // done to keep track of mouse polling. [ISB] this is in InjectD3 but not here?
   bool emulated;           // are we emulating direct input?
@@ -78,9 +78,9 @@ static struct mses_state {
   int8_t cursor_count;
   float x_aspect, y_aspect; // used in calculating coordinates returned from ddio_MouseGetState
   HANDLE hmseevt;           // signaled if mouse input is awaiting.
-  short dx, dy, dz, imm_dz;
-  short mode;         // mode of mouse operation.
-  short nbtns, naxis; // device caps.
+  int16_t dx, dy, dz, imm_dz;
+  int16_t mode;         // mode of mouse operation.
+  int16_t nbtns, naxis; // device caps.
 } DDIO_mouse_state;
 
 // Normally mouse events use ticks, attempting to use timer_GetTime which has more accuracy to smooth over bug with
@@ -368,7 +368,7 @@ int RawInputHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
 
         if (buttons & RI_MOUSE_WHEEL) {
-          wheelAccum += (int)(short)rawinput->data.mouse.usButtonData;
+          wheelAccum += (int)(int16_t)rawinput->data.mouse.usButtonData;
           if (wheelAccum >= WHEEL_DELTA) {
             DIM_buttons.down_count[MSEBTN_WHL_UP]++;
             DIM_buttons.up_count[MSEBTN_WHL_UP]++;
@@ -401,17 +401,17 @@ int RawInputHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
       // check bounds of mouse cursor.
       if (DDIO_mouse_state.x < DDIO_mouse_state.brect.left)
-        DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.left;
+        DDIO_mouse_state.x = (int16_t)DDIO_mouse_state.brect.left;
       if (DDIO_mouse_state.x >= DDIO_mouse_state.brect.right)
-        DDIO_mouse_state.x = (short)DDIO_mouse_state.brect.right - 1;
+        DDIO_mouse_state.x = (int16_t)DDIO_mouse_state.brect.right - 1;
       if (DDIO_mouse_state.y < DDIO_mouse_state.brect.top)
-        DDIO_mouse_state.y = (short)DDIO_mouse_state.brect.top;
+        DDIO_mouse_state.y = (int16_t)DDIO_mouse_state.brect.top;
       if (DDIO_mouse_state.y >= DDIO_mouse_state.brect.bottom)
-        DDIO_mouse_state.y = (short)DDIO_mouse_state.brect.bottom - 1;
+        DDIO_mouse_state.y = (int16_t)DDIO_mouse_state.brect.bottom - 1;
       if (DDIO_mouse_state.z > DDIO_mouse_state.zmax)
-        DDIO_mouse_state.z = (short)DDIO_mouse_state.zmax;
+        DDIO_mouse_state.z = (int16_t)DDIO_mouse_state.zmax;
       if (DDIO_mouse_state.z < DDIO_mouse_state.zmin)
-        DDIO_mouse_state.z = (short)DDIO_mouse_state.zmin;
+        DDIO_mouse_state.z = (int16_t)DDIO_mouse_state.zmin;
     }
 
     free(buf);

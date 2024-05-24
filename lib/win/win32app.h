@@ -226,6 +226,6 @@ private:
 };
 
 // system mouse info.
-extern short w32_msewhl_delta; // value of mouse wheel delta for frame
+extern int16_t w32_msewhl_delta; // value of mouse wheel delta for frame
 
 #endif

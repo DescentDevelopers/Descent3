@@ -429,9 +429,9 @@ DMFCDLLOUT(cf_ReadBytes_fp DLLcf_ReadBytes;)
 typedef int (*cf_ReadInt_fp)(CFILE *cfp);
 DMFCDLLOUT(cf_ReadInt_fp DLLcf_ReadInt;)
 
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef short (*cf_ReadShort_fp)(CFILE *cfp);
+typedef int16_t (*cf_ReadShort_fp)(CFILE *cfp);
 DMFCDLLOUT(cf_ReadShort_fp DLLcf_ReadShort;)
 
 // Read and return a byte (8 bits)
@@ -484,9 +484,9 @@ DMFCDLLOUT(cf_WriteString_fp DLLcf_WriteString;)
 typedef void (*cf_WriteInt_fp)(CFILE *cfp, int i);
 DMFCDLLOUT(cf_WriteInt_fp DLLcf_WriteInt;)
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef void (*cf_WriteShort_fp)(CFILE *cfp, short s);
+typedef void (*cf_WriteShort_fp)(CFILE *cfp, int16_t s);
 DMFCDLLOUT(cf_WriteShort_fp DLLcf_WriteShort;)
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
@@ -976,8 +976,8 @@ DMFCDLLOUT(vm_MatrixMulVector_fp DLLvm_MatrixMulVector;)
 
 // Applies an instantaneous force on an object, resulting in an instantaneous
 // change in velocity.
-// typedef void (*phys_apply_force_fp)(object *obj,vector *force_vec,short weapon_index=-1);
-typedef void (*phys_apply_force_fp)(object *obj, vector *force_vec, short weapon_index);
+// typedef void (*phys_apply_force_fp)(object *obj,vector *force_vec,int16_t weapon_index=-1);
+typedef void (*phys_apply_force_fp)(object *obj, vector *force_vec, int16_t weapon_index);
 DMFCDLLOUT(phys_apply_force_fp DLLphys_apply_force;)
 
 typedef void (*phys_apply_rot_fp)(object *obj, vector *force_vec);
@@ -1332,10 +1332,10 @@ typedef int (*fvi_QuickDistCellList_fp)(int init_cell_index, vector *pos, float 
 DMFCDLLOUT(fvi_QuickDistCellList_fp DLLfvi_QuickDistCellList;)
 
 // Returns the number of objects that are approximately within the specified radius
-// typedef int (*fvi_QuickDistObjectList_fp)(vector *pos, int init_roomnum, float rad, short *object_index_list, int
+// typedef int (*fvi_QuickDistObjectList_fp)(vector *pos, int init_roomnum, float rad, int16_t *object_index_list, int
 // max_elements, bool f_lightmap_only, bool f_only_players_and_ais = false, bool f_include_non_collide_objects = false,
 // bool f_stop_at_closed_doors = false);
-typedef int (*fvi_QuickDistObjectList_fp)(vector *pos, int init_roomnum, float rad, short *object_index_list,
+typedef int (*fvi_QuickDistObjectList_fp)(vector *pos, int init_roomnum, float rad, int16_t *object_index_list,
                                           int max_elements, bool f_lightmap_only, bool f_only_players_and_ais,
                                           bool f_include_non_collide_objects, bool f_stop_at_closed_doors);
 DMFCDLLOUT(fvi_QuickDistObjectList_fp DLLfvi_QuickDistObjectList;)
@@ -1489,7 +1489,7 @@ typedef float (*g3_CalcPointDepth_fp)(vector *pnt);
 DMFCDLLOUT(g3_CalcPointDepth_fp DLLg3_CalcPointDepth;)
 
 // from a 2d point, compute the vector through that point
-typedef void (*g3_Point2Vec_fp)(vector *v, short sx, short sy);
+typedef void (*g3_Point2Vec_fp)(vector *v, int16_t sx, int16_t sy);
 DMFCDLLOUT(g3_Point2Vec_fp DLLg3_Point2Vec;)
 
 // code a point.  fills in the p3_codes field of the point, and returns the codes

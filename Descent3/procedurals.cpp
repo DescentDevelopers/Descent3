@@ -71,7 +71,7 @@ static float Noise_table[TABSIZE * 3];
 dynamic_proc_element DynamicProcElements[MAX_PROC_ELEMENTS];
 uint16_t DefaultProcPalette[256];
 int Num_proc_elements = 0;
-static short Proc_free_list[MAX_PROC_ELEMENTS];
+static int16_t Proc_free_list[MAX_PROC_ELEMENTS];
 uint16_t ProcFadeTable[32768];
 #define NUM_WATER_SHADES 64
 uint16_t WaterProcTableHi[NUM_WATER_SHADES][256];
@@ -815,8 +815,8 @@ void CalcWater2(int handle, int density) {
   int count = PROC_SIZE + 1;
   proc_struct *procedural = GameTextures[handle].procedural;
 
-  short *newptr = (short *)procedural->proc2;
-  short *oldptr = (short *)procedural->proc1;
+  int16_t *newptr = (int16_t *)procedural->proc2;
+  int16_t *oldptr = (int16_t *)procedural->proc1;
 
   int x, y;
 
@@ -878,8 +878,8 @@ void CalcWater(int handle, int density) {
   int count = PROC_SIZE + 1;
   proc_struct *procedural = GameTextures[handle].procedural;
 
-  short *newptr = (short *)procedural->proc2;
-  short *oldptr = (short *)procedural->proc1;
+  int16_t *newptr = (int16_t *)procedural->proc2;
+  int16_t *oldptr = (int16_t *)procedural->proc1;
 
   int x, y;
 
@@ -937,7 +937,7 @@ void DrawWaterNoLight(int handle) {
   int dest_bitmap = procedural->procedural_bitmap;
   uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
-  short *ptr = (short *)procedural->proc1;
+  int16_t *ptr = (int16_t *)procedural->proc1;
   for (y = 0; y < PROC_SIZE; y++) {
     for (x = 0; x < PROC_SIZE; x++, offset++) {
       if (x == PROC_SIZE - 1)
@@ -968,7 +968,7 @@ void DrawWaterWithLight(int handle, int lightval) {
   int dest_bitmap = procedural->procedural_bitmap;
   uint16_t *dest_data = (uint16_t *)bm_data(dest_bitmap, 0);
   uint16_t *src_data = (uint16_t *)bm_data(GameTextures[handle].bm_handle, 0);
-  short *ptr = (short *)procedural->proc1;
+  int16_t *ptr = (int16_t *)procedural->proc1;
   for (y = 0; y < PROC_SIZE; y++) {
     int ychange, ychange2;
     if (y == PROC_SIZE - 1) {
@@ -1015,7 +1015,7 @@ void AddProcHeightBlob(static_proc_element *proc, int handle) {
   int rquad;
   int cx, cy, cyq;
   int left, top, right, bottom;
-  short *dest_data = (short *)GameTextures[handle].procedural->proc1;
+  int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
   int x = proc->x1;
   int y = proc->y1;
   int procnum = proc - GameTextures[handle].procedural->static_proc_elements;
@@ -1100,7 +1100,7 @@ void AddProcSineBlob(static_proc_element *proc, int handle) {
   int radius = proc->size;
   int radsquare = radius * radius;
   float length = (1024.0 / (float)radius) * (1024.0 / (float)radius);
-  short *dest_data = (short *)GameTextures[handle].procedural->proc1;
+  int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
   int height = proc->speed;
   radsquare = (radius * radius);
   left = -radius;
@@ -1174,7 +1174,7 @@ void EvaluateWaterProcedural(int handle) {
   if (EasterEgg) {
     if (Easter_egg_handle != -1) {
       uint16_t *src_data = bm_data(Easter_egg_handle, 0);
-      short *dest_data = (short *)GameTextures[handle].procedural->proc1;
+      int16_t *dest_data = (int16_t *)GameTextures[handle].procedural->proc1;
       int sw = bm_w(Easter_egg_handle, 0);
       int sh = bm_w(Easter_egg_handle, 0);
       int x1 = (PROC_SIZE / 2) - (sw / 2);
@@ -1224,7 +1224,7 @@ void EvaluateWaterProcedural(int handle) {
   }
   CalcWater(handle, thickness);
   // Swap for next time
-  short *temp = (short *)procedural->proc1;
+  int16_t *temp = (int16_t *)procedural->proc1;
   procedural->proc1 = procedural->proc2;
   procedural->proc2 = temp;
 }

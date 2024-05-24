@@ -36,7 +36,7 @@ DLLEXPORT void STDCALL ShutdownDLL(void);
 DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
@@ -82,7 +82,7 @@ static const char *const Script_names[NUM_IDS] = {"Samir's Pest", "StormTrooperB
 //	ai base class
 class aiObjScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   // Handles all possible OSIRIS events.
@@ -151,8 +151,8 @@ private:
     int8_t snipe_points;
     int8_t cur_snipe_point;
     int8_t laser_targeted;
-    short backpack_hp; // points before destroy backpack.
-    short flee_hp;
+    int16_t backpack_hp; // points before destroy backpack.
+    int16_t flee_hp;
 
     // a Nx(N-1) array with a extra int for number of VALID connecting snipe points per snipe point.
     //	 note: obvious cases ignored (ptA->ptA)
@@ -193,8 +193,8 @@ private:
     float eye_timer;
     int8_t state;
     uint8_t melee_flags;
-    short energy;
-    short hits;
+    int16_t energy;
+    int16_t hits;
     int eye_obj;
   };
 
@@ -360,7 +360,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((aiObjScript *)ptr)->CallEvent(event, data);
 }
 
@@ -572,7 +572,7 @@ int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag
 //////////////////////////////////////////////////////////////////////////////
 //	aiObjScript
 //		all ai scripts will have this as a base function.
-short aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t aiObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     OnInit(data->me_handle);
@@ -965,7 +965,7 @@ void aiBlackStormTrooper::OnInterval(tOSIRISEventInfo *data) {
 
 void aiBlackStormTrooper::OnDamaged(int me_handle, tOSIRISEVTDAMAGED *evt) {
   if (memory->state == STATE_BASE || memory->state == STATE_SNIPE) {
-    memory->flee_hp -= (short)evt->damage;
+    memory->flee_hp -= (int16_t)evt->damage;
     if (memory->flee_hp <= 0) {
       memory->flee_hp = 50;
       set_state(me_handle, STATE_HIDE);

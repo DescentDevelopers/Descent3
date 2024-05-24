@@ -99,21 +99,21 @@ typedef struct {
 
 // structure of the header in the file
 typedef struct iff_bitmap_header {
-  short w, h;                  // width and height of this bitmap
-  short x, y;                  // generally unused
-  short type;                  // see types above
-  short transparentcolor;      // which color is transparent (if any)
-  short pagewidth, pageheight; // width & height of source screen
+  int16_t w, h;                  // width and height of this bitmap
+  int16_t x, y;                  // generally unused
+  int16_t type;                  // see types above
+  int16_t transparentcolor;      // which color is transparent (if any)
+  int16_t pagewidth, pageheight; // width & height of source screen
   uint8_t nplanes;               // number of planes (8 for 256 color image)
   uint8_t masking, compression;  // see constants above
   uint8_t xaspect, yaspect;      // aspect ratio (usually 5/6)
   pal_entry palette[256];      // the palette for this bitmap
   uint8_t *raw_data;             // ptr to array of data
-  short row_size;              // offset to next row
+  int16_t row_size;              // offset to next row
 } iff_bitmap_header;
 
-short iff_transparent_color;
-short iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is valid
+int16_t iff_transparent_color;
+int16_t iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is valid
 
 #define MIN(a, b) ((a < b) ? a : b)
 

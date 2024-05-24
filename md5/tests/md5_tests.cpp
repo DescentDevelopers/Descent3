@@ -30,7 +30,7 @@ std::string hexdigest_after_n_rounds_of_fuzz(int n) {
   for (int i = 0; i < n; ++i) {
     md5.update((float)1.0f);
     md5.update((int)2);
-    md5.update((short)3);
+    md5.update((int16_t)3);
     md5.update((uint32_t)4U);
     md5.update((uint8_t)5);
   }

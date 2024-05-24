@@ -1079,7 +1079,7 @@ void RenderScrollingHUDMessages() {
 
   int shade;
   int text_height;
-  short l, t, r, b;
+  int16_t l, t, r, b;
   int i;
 
   // Check for wraps
@@ -1220,10 +1220,10 @@ void RenderHUDMessages() {
 
       if (item && Small_hud_flag) {
         grtext_SetFont(HUD_FONT);
-        short l = item->x * Max_window_w / DEFAULT_HUD_WIDTH;
-        short t = item->y * Max_window_h / DEFAULT_HUD_HEIGHT;
-        short r = l + grtext_GetTextLineWidth(item->data.text) + 10;
-        short b = t + grtext_GetTextHeight(item->data.text);
+        int16_t l = item->x * Max_window_w / DEFAULT_HUD_WIDTH;
+        int16_t t = item->y * Max_window_h / DEFAULT_HUD_HEIGHT;
+        int16_t r = l + grtext_GetTextLineWidth(item->data.text) + 10;
+        int16_t b = t + grtext_GetTextHeight(item->data.text);
         item->dirty_rect.set(l, t, r, b);
       }
 
@@ -1493,7 +1493,7 @@ void SGSGameMessages(CFILE *fp) {
   int i = 0;
   const char *msg;
 
-  cf_WriteShort(fp, (short)Game_msg_list.m_nmsg);
+  cf_WriteShort(fp, (int16_t)Game_msg_list.m_nmsg);
 
   while ((msg = Game_msg_list.get(i++)) != NULL) {
     cf_WriteString(fp, msg);

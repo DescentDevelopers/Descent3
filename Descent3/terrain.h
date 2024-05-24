@@ -86,8 +86,8 @@ typedef struct {
 
   uint8_t l, r, g, b;
 
-  short objects;      // Index of the first object in this cell
-  short texseg_index; // index into the tex_segment array
+  int16_t objects;      // Index of the first object in this cell
+  int16_t texseg_index; // index into the tex_segment array
 
   uint8_t flags;   // various flags
   uint8_t lm_quad; // which lightmap quad this index belongs to
@@ -99,7 +99,7 @@ typedef struct {
 
 typedef struct {
   uint8_t rotation;
-  short tex_index;
+  int16_t tex_index;
 } terrain_tex_segment;
 
 // Data for LOD shutoff code
@@ -117,7 +117,7 @@ typedef struct {
   float horizon_u[MAX_HORIZON_PIECES][5];
   float horizon_v[MAX_HORIZON_PIECES][5];
 
-  short dome_texture;
+  int16_t dome_texture;
 
   float radius;
   float rotate_rate;
@@ -138,7 +138,7 @@ typedef struct {
   uint8_t num_satellites;
   uint8_t num_stars;
 
-  short satellite_texture[MAX_SATELLITES];
+  int16_t satellite_texture[MAX_SATELLITES];
 
   vector lightsource;
   angle lightangle;
@@ -161,7 +161,7 @@ typedef struct {
 typedef struct {
   int terrain_seg;
   uint8_t num_segs;
-  short mine_segs[50];
+  int16_t mine_segs[50];
 } terrain_mine_list;
 
 typedef struct {
@@ -209,7 +209,7 @@ extern terrain_segment Terrain_seg[TERRAIN_WIDTH * TERRAIN_DEPTH];
 extern terrain_tex_segment Terrain_tex_seg[TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH];
 
 // first object to render after cell has been rendered (only used for SW renderer)
-extern short Terrain_seg_render_objs[];
+extern int16_t Terrain_seg_render_objs[];
 
 #ifdef RELEASE
 #define TERRAIN_REGION(x) ((Terrain_seg[0x7FFFFFFF & x].flags & TFM_REGION_MASK) >> 5)

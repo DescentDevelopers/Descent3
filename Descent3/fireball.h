@@ -184,7 +184,7 @@ typedef struct {
   uint8_t tex_size;   // What size texture to use for this animation
   float total_life; // How long this animation should last (in seconds)
   float size;       // How big this explosion is
-  short bm_handle;  // The handle to the vlip
+  int16_t bm_handle;  // The handle to the vlip
 } fireball;
 
 extern fireball Fireballs[];

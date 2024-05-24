@@ -201,7 +201,7 @@ DMFCFUNCTION int (*DLLcfeof)(CFILE *cfp);
 DMFCFUNCTION int (*DLLcfexist)(const char *filename);
 DMFCFUNCTION int (*DLLcf_ReadBytes)(uint8_t *buf, int count, CFILE *cfp);
 DMFCFUNCTION int (*DLLcf_ReadInt)(CFILE *cfp);
-DMFCFUNCTION short (*DLLcf_ReadShort)(CFILE *cfp);
+DMFCFUNCTION int16_t (*DLLcf_ReadShort)(CFILE *cfp);
 DMFCFUNCTION int8_t (*DLLcf_ReadByte)(CFILE *cfp);
 DMFCFUNCTION float (*DLLcf_ReadFloat)(CFILE *cfp);
 DMFCFUNCTION double (*DLLcf_ReadDouble)(CFILE *cfp);
@@ -209,7 +209,7 @@ DMFCFUNCTION int (*DLLcf_ReadString)(char *buf, size_t n, CFILE *cfp);
 DMFCFUNCTION int (*DLLcf_WriteBytes)(const uint8_t *buf, int count, CFILE *cfp);
 DMFCFUNCTION int (*DLLcf_WriteString)(CFILE *cfp, const char *buf);
 DMFCFUNCTION void (*DLLcf_WriteInt)(CFILE *cfp, int i);
-DMFCFUNCTION void (*DLLcf_WriteShort)(CFILE *cfp, short s);
+DMFCFUNCTION void (*DLLcf_WriteShort)(CFILE *cfp, int16_t s);
 DMFCFUNCTION void (*DLLcf_WriteByte)(CFILE *cfp, int8_t b);
 DMFCFUNCTION void (*DLLcf_WriteFloat)(CFILE *cfp, float f);
 DMFCFUNCTION void (*DLLcf_WriteDouble)(CFILE *cfp, double d);
@@ -342,7 +342,7 @@ DMFCFUNCTION bool (*DLLUnattachChild)(object *parent, char parent_ap);
 DMFCFUNCTION bool (*DLLUnattachFromParent)(object *child);
 DMFCFUNCTION float (*DLLvm_GetMagnitude)(vector *);
 DMFCFUNCTION void (*DLLvm_MatrixMulVector)(vector *, vector *, matrix *);
-DMFCFUNCTION void (*DLLphys_apply_force)(object *obj, vector *force_vec, short weapon_index);
+DMFCFUNCTION void (*DLLphys_apply_force)(object *obj, vector *force_vec, int16_t weapon_index);
 DMFCFUNCTION void (*DLLphys_apply_rot)(object *obj, vector *force_vec);
 DMFCFUNCTION void (*DLLvm_TransposeMatrix)(matrix *);
 DMFCFUNCTION void (*DLLvm_CrossProduct)(vector *, vector *, vector *);
@@ -426,7 +426,7 @@ DMFCFUNCTION int (*DLLfvi_QuickDistFaceList)(int init_room_index, vector *pos, f
                                              fvi_face_room_list *quick_fr_list, int max_elements);
 DMFCFUNCTION int (*DLLfvi_QuickDistCellList)(int init_cell_index, vector *pos, float rad, int *quick_cell_list,
                                              int max_elements);
-DMFCFUNCTION int (*DLLfvi_QuickDistObjectList)(vector *pos, int init_roomnum, float rad, short *object_index_list,
+DMFCFUNCTION int (*DLLfvi_QuickDistObjectList)(vector *pos, int init_roomnum, float rad, int16_t *object_index_list,
                                                int max_elements, bool f_lightmap_only, bool f_only_players_and_ais,
                                                bool f_include_non_collide_objects, bool f_stop_at_closed_doors);
 DMFCFUNCTION bool (*DLLfvi_QuickRoomCheck)(vector *pos, room *cur_room, bool try_again);
@@ -464,7 +464,7 @@ DMFCFUNCTION bool (*DLLg3_CheckNormalFacing)(vector *v, vector *norm);
 DMFCFUNCTION uint8_t (*DLLg3_RotatePoint)(g3Point *dest, vector *src);
 DMFCFUNCTION void (*DLLg3_ProjectPoint)(g3Point *point);
 DMFCFUNCTION float (*DLLg3_CalcPointDepth)(vector *pnt);
-DMFCFUNCTION void (*DLLg3_Point2Vec)(vector *v, short sx, short sy);
+DMFCFUNCTION void (*DLLg3_Point2Vec)(vector *v, int16_t sx, int16_t sy);
 DMFCFUNCTION uint8_t (*DLLg3_CodePoint)(g3Point *point);
 DMFCFUNCTION vector *(*DLLg3_RotateDeltaX)(vector *dest, float dx);
 DMFCFUNCTION vector *(*DLLg3_RotateDeltaY)(vector *dest, float dy);

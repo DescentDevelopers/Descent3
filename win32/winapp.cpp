@@ -175,7 +175,7 @@ static struct tAppNodes {
 } Win32_AppObjects[MAX_WIN32APPS];
 
 // system mouse info.
-short w32_msewhl_delta = 0; // -val = up, pos val = down, 0 = no change.
+int16_t w32_msewhl_delta = 0; // -val = up, pos val = down, 0 = no change.
 bool w32_mouseman_hack = false;
 const uint32_t kWindowStyle_Windowed = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER | WS_MINIMIZEBOX;
 const uint32_t kWindowStyle_FullScreen = WS_POPUP | WS_SYSMENU;
@@ -685,7 +685,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
       if (msg != 0xcc41) {
         w32_msewhl_delta = HIWORD(wParam);
       } else {
-        w32_msewhl_delta = (short)(wParam);
+        w32_msewhl_delta = (int16_t)(wParam);
       }
     } else if (msg == WM_MOUSEWHEEL) {
       w32_msewhl_delta = HIWORD(wParam);

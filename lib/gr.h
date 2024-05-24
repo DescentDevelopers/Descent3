@@ -151,15 +151,15 @@ const int MAX_FONTS = 16, MAX_FONT_BITMAPS = 12;
 #define DEFAULT_FONT 0
 
 typedef struct gr_font_file_record {
-  short width, height;      // width of widest character and height of longest char
-  short flags;              // flags used by the character renderer
-  short baseline;           // pixels given to lowercase below script line start at baseline
+  int16_t width, height;      // width of widest character and height of longest char
+  int16_t flags;              // flags used by the character renderer
+  int16_t baseline;           // pixels given to lowercase below script line start at baseline
   uint8_t min_ascii;          // minimum ascii value used by font
   uint8_t max_ascii;          // max ascii value used by the font
-  short byte_width;         // width of a character in the font in bytes
+  int16_t byte_width;         // width of a character in the font in bytes
   uint8_t *raw_data;          // pixel, map data.
   uint8_t **char_data;        // pointers to each character
-  short *char_widths;       // individual pixel widths of each character
+  int16_t *char_widths;       // individual pixel widths of each character
   uint8_t *kern_data; // kerning information for specific letter combos
 } gr_font_file_record;
 

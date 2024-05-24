@@ -144,7 +144,7 @@ bool ObjectPaste()
 
 	if(!ObjectInBuffer) return false;
 
-	short next,prev;
+	int16_t next,prev;
 	int roomnum;
 	vector pos;
 	matrix orient;

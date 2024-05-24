@@ -89,7 +89,7 @@ private:
 	int m_button_down;
 	int m_proc_type;
 	int m_save_x,m_save_y;
-	short m_height;
+	int16_t m_height;
 	uint8_t m_frequency;
 	uint8_t m_size;
 };

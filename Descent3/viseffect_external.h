@@ -107,13 +107,13 @@ typedef struct {
 
   int phys_flags;
 
-  short custom_handle;
+  int16_t custom_handle;
   uint16_t lighting_color;
 
   uint16_t flags;
 
-  short next;
-  short prev;
+  int16_t next;
+  int16_t prev;
 
   vis_attach_info attach_info;
   axis_billboard_info billboard_info;

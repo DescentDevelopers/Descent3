@@ -126,9 +126,9 @@ public:
 
 protected:
 #ifdef _DEBUG
-  short FindFreeSoundSlot(int sound_index, float volume, int priority);
+  int16_t FindFreeSoundSlot(int sound_index, float volume, int priority);
 #else
-  short FindFreeSoundSlot(float volume, int priority);
+  int16_t FindFreeSoundSlot(float volume, int priority);
 #endif
   // This function limits the number of sounds cached to 255(8bits) and 256 bit is for invalid channel
   // The purpose is to create unique signatures for each sound played (and allow for

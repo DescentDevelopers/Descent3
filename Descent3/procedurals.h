@@ -56,7 +56,7 @@ typedef struct {
 
   fix x1, y1;
 
-  short prev, next;
+  int16_t prev, next;
 } dynamic_proc_element;
 
 extern dynamic_proc_element DynamicProcElements[];

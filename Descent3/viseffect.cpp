@@ -463,11 +463,11 @@
 
 // DAJ vis_effect VisEffects[max_vis_effects];
 // DAJ uint16_t VisDeadList[max_vis_effects];
-// DAJ static short Vis_free_list[max_vis_effects];
+// DAJ static int16_t Vis_free_list[max_vis_effects];
 
 vis_effect *VisEffects = NULL;
 
-static short *Vis_free_list = NULL;
+static int16_t *Vis_free_list = NULL;
 uint16_t *VisDeadList = NULL;
 
 uint16_t max_vis_effects = 0;
@@ -496,11 +496,11 @@ void InitVisEffects() {
   if (VisEffects != NULL) {
     VisEffects = (vis_effect *)mem_realloc(VisEffects, sizeof(vis_effect) * max_vis_effects);
     VisDeadList = (uint16_t *)mem_realloc(VisDeadList, sizeof(uint16_t) * max_vis_effects);
-    Vis_free_list = (short *)mem_realloc(Vis_free_list, sizeof(short) * max_vis_effects);
+    Vis_free_list = (int16_t *)mem_realloc(Vis_free_list, sizeof(int16_t) * max_vis_effects);
   } else if (VisEffects == NULL) {
     VisEffects = (vis_effect *)mem_malloc(sizeof(vis_effect) * max_vis_effects);
     VisDeadList = (uint16_t *)mem_malloc(sizeof(uint16_t) * max_vis_effects);
-    Vis_free_list = (short *)mem_malloc(sizeof(short) * max_vis_effects);
+    Vis_free_list = (int16_t *)mem_malloc(sizeof(int16_t) * max_vis_effects);
   }
   for (int i = 0; i < max_vis_effects; i++) {
     VisEffects[i].type = VIS_NONE;

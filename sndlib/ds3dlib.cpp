@@ -230,7 +230,7 @@ static void *GameWindowHandle;
 
 win_llsSystem *ll_sound_ptr;
 emulated_listener *g_emulated_listener = NULL; // silly hack (Samir)
-short Global_DS_alloced_sounds = 0;
+int16_t Global_DS_alloced_sounds = 0;
 
 int *Fast_mixer = NULL;
 int Fast_mixer_len = 0;
@@ -333,7 +333,7 @@ inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samp
   samples_played += (i / 2);
 }
 
-inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_16m_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
                          const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -360,7 +360,7 @@ inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samp
   samples_played += (i / 2);
 }
 
-inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
+inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played, int *mixer_buffer16,
                          const float l_volume, const float r_volume) {
   int i;
   int *mb = mixer_buffer16;
@@ -632,7 +632,7 @@ bool sb_load_buffer(sound_buffer_info *sb, void *sample_data, int length) {
 // mixing and effects (writes data to the locked primary buffer)
 void StreamMixer(char *ptr, int len) {
   int i;
-  short *mixer_buffer16 = (short *)ptr;
+  int16_t *mixer_buffer16 = (int16_t *)ptr;
   int current_slot = 0;
   bool f_loop;
   bool f_mono;
@@ -659,7 +659,7 @@ void StreamMixer(char *ptr, int len) {
   while (current_slot < ll_sound_ptr->m_sound_mixer.m_max_sounds_played) {
     sound_buffer_info *cur_buf = &ll_sound_ptr->m_sound_mixer.m_sound_cache[current_slot];
     int num_samples = buff_len;
-    // mixer_buffer16 = (short *) ptr;
+    // mixer_buffer16 = (int16_t *) ptr;
     fast_mix_ptr = Fast_mixer;
     f_mono = true;
 
@@ -669,7 +669,7 @@ void StreamMixer(char *ptr, int len) {
       float r_volume = cur_buf->play_info->right_volume;
       int skip_interval = cur_buf->play_info->sample_skip_interval;
       int samples_played = cur_buf->play_info->m_samples_played;
-      short *sample_16bit;
+      int16_t *sample_16bit;
       uint8_t *sample_8bit;
       int np_sample_length;
       int sample_length;
@@ -679,7 +679,7 @@ void StreamMixer(char *ptr, int len) {
       if (cur_buf->m_status & SSF_PLAY_STREAMING) {
         switch (cur_buf->play_info->m_stream_format) {
         case SIF_STREAMING_16_M:
-          sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+          sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
           sample_8bit = NULL;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           break;
@@ -689,7 +689,7 @@ void StreamMixer(char *ptr, int len) {
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size;
           break;
         case SIF_STREAMING_16_S:
-          sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+          sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
           sample_8bit = NULL;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 4;
           f_mono = false;
@@ -824,7 +824,7 @@ void StreamMixer(char *ptr, int len) {
 
       // Mix at 16 bits per sample
       if (skip_interval == 0) {
-        short *cur_sample_16bit = sample_16bit;
+        int16_t *cur_sample_16bit = sample_16bit;
         uint8_t *cur_sample_8bit = sample_8bit;
 
         if (f_mono) {
@@ -955,7 +955,7 @@ void StreamMixer(char *ptr, int len) {
             if (cur_buf->play_info->m_stream_data) {
               switch (cur_buf->play_info->m_stream_format) {
               case SIF_STREAMING_16_M:
-                sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+                sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 2;
                 break;
               case SIF_STREAMING_8_M:
@@ -963,7 +963,7 @@ void StreamMixer(char *ptr, int len) {
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size;
                 break;
               case SIF_STREAMING_16_S:
-                sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+                sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 4;
                 break;
               case SIF_STREAMING_8_S:
@@ -1918,9 +1918,9 @@ TryLockAgainLabel:
 //		ignore reserved slots
 
 #ifdef _DEBUG
-short win_llsSystem::FindFreeSoundSlot(int sound_index, float volume, int priority)
+int16_t win_llsSystem::FindFreeSoundSlot(int sound_index, float volume, int priority)
 #else
-short win_llsSystem::FindFreeSoundSlot(float volume, int priority)
+int16_t win_llsSystem::FindFreeSoundSlot(float volume, int priority)
 #endif
 {
   int current_slot;
@@ -2000,7 +2000,7 @@ short win_llsSystem::FindFreeSoundSlot(float volume, int priority)
 int win_llsSystem::PlaySound2d(play_information *play_info, int sound_index, float f_volume, float f_pan,
                                bool f_looped) {
   sound_buffer_info *sb = NULL;
-  short sound_slot;
+  int16_t sound_slot;
 
   if (!m_f_sound_lib_init) {
     return -1;
@@ -2265,7 +2265,7 @@ void win_llsSystem::DSStartStreaming(sound_buffer_info *sb, float volume, float 
 }
 
 int win_llsSystem::PlayStream(play_information *play_info) {
-  short sound_slot;
+  int16_t sound_slot;
   DWORD ds_flags = 0;
 
   ASSERT(play_info != NULL);
@@ -2801,7 +2801,7 @@ void win_llsSystem::AdjustSound(int sound_uid, pos_state *cur_pos, float adjuste
 
 int win_llsSystem::PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float adjusted_volume,
                                bool f_looped, float reverb) {
-  short sound_slot;
+  int16_t sound_slot;
   DWORD ds_flags = 0;
   float volume;
 

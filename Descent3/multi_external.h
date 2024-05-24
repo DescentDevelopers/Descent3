@@ -282,9 +282,9 @@ inline void MultiAddSbyte(int8_t element, uint8_t *data, int *count) {
   *count += sizeof(int8_t);
 }
 
-inline void MultiAddShort(short element, uint8_t *data, int *count) {
-  *(short *)(data + *count) = INTEL_SHORT(element);
-  *count += sizeof(short);
+inline void MultiAddShort(int16_t element, uint8_t *data, int *count) {
+  *(int16_t *)(data + *count) = INTEL_SHORT(element);
+  *count += sizeof(int16_t);
 }
 
 inline void MultiAddUshort(uint16_t element, uint8_t *data, int *count) {
@@ -334,15 +334,15 @@ inline int8_t MultiGetSbyte(uint8_t *data, int *count) {
   return element;
 }
 
-inline short MultiGetShort(uint8_t *data, int *count) {
-  short element = (*(short *)(data + *count));
-  *count += sizeof(short);
+inline int16_t MultiGetShort(uint8_t *data, int *count) {
+  int16_t element = (*(int16_t *)(data + *count));
+  *count += sizeof(int16_t);
   return INTEL_SHORT(element);
 }
 
 inline uint16_t MultiGetUshort(uint8_t *data, int *count) {
   uint16_t element = (*(uint16_t *)(data + *count));
-  *count += sizeof(short);
+  *count += sizeof(int16_t);
   return INTEL_SHORT(element);
 }
 

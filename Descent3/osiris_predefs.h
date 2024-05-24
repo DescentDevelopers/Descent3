@@ -266,9 +266,9 @@ int osipf_CFReadBytes(uint8_t *buffer, int count, CFILE *cfp);
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int osipf_CFReadInt(CFILE *cfp);
 
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-short osipf_CFReadShort(CFILE *cfp);
+int16_t osipf_CFReadShort(CFILE *cfp);
 
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -317,9 +317,9 @@ int osipf_CFWriteString(const char *buf, CFILE *cfp);
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void osipf_CFWriteInt(int i, CFILE *cfp);
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void osipf_CFWriteShort(short s, CFILE *cfp);
+void osipf_CFWriteShort(int16_t s, CFILE *cfp);
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write

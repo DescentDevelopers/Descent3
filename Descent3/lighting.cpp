@@ -992,7 +992,7 @@ void ApplyVolumeLightToObject(vector *pos, object *obj, float light_dist, float 
 // Applies lighting to all objects in a certain distance
 void ApplyLightingToObjects(vector *pos, int roomnum, float light_dist, float red_scale, float green_scale,
                             float blue_scale, vector *light_direction, float dot_range) {
-  short objlist[MAX_DYNAMIC_FACES];
+  int16_t objlist[MAX_DYNAMIC_FACES];
   int num_objects, i;
   float normalized_time[MAX_SUBOBJECTS];
 

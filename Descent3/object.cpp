@@ -1199,7 +1199,7 @@
 object *Player_object = NULL; // the object that is the player
 object *Viewer_object = NULL; // which object we are seeing from
 
-static short free_obj_list[MAX_OBJECTS];
+static int16_t free_obj_list[MAX_OBJECTS];
 
 // Data for objects
 
@@ -1212,7 +1212,7 @@ object Objects[MAX_OBJECTS];
 tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
 uint8_t Object_position_head;
 int16_t Object_map_position_history[MAX_OBJECTS];
-short Object_map_position_free_slots[MAX_OBJECT_POS_HISTORY];
+int16_t Object_map_position_free_slots[MAX_OBJECT_POS_HISTORY];
 uint16_t Num_free_object_position_history;
 
 int Num_objects = 0;
@@ -1254,7 +1254,7 @@ char *Object_type_names[MAX_OBJECT_TYPES] = {
 #endif
 
 int Num_big_objects = 0;
-short BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
+int16_t BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
 
 /*
  *  Local Function Prototypes

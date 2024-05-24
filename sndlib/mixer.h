@@ -61,8 +61,8 @@ public:
   // Not needed by the software mixer
   volatile DSLOOPSTREAM *s; // Streaming info for a looping sample
 
-  short m_mixer_type;  // ds3d, ds_8?
-  short m_buffer_type; // Buffer type 2d or 3d
+  int16_t m_mixer_type;  // ds3d, ds_8?
+  int16_t m_buffer_type; // Buffer type 2d or 3d
 
   char *sample_data;
   int sample_length; // used for storage purposes.

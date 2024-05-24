@@ -372,7 +372,7 @@ bool ScriptCreateEmptyLevelScript(char *filename)
 	O(("int     STDCALL GetGOScriptID(const char *name,uint8_t is_door);"));
 	O(("void	STDCALLPTR CreateInstance(int id);"));
 	O(("void	STDCALL DestroyInstance(int id,void *ptr);"));
-	O(("short	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
+	O(("int16_t	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
 	O(("int		STDCALL GetTriggerScriptID(int trigger_room, int trigger_face );"));
 	O(("int		STDCALL GetCOScriptList( int **list, int **id_list );"));
 	O(("int		STDCALL SaveRestoreState( void *file_ptr, uint8_t saving_state );"));
@@ -485,7 +485,7 @@ bool ScriptCreateEmptyLevelScript(char *filename)
 	O(("//	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority"));
 	O(("//	scripts return value."));
 	O(("//	The only reserved ID is 0, which must be used for the level script"));
-	O(("short STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)"));
+	O(("int16_t STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)"));
 	O(("{"));
 	O(("	return CONTINUE_CHAIN|CONTINUE_DEFAULT;"));
 	O(("}"));
@@ -571,7 +571,7 @@ bool ScriptCreateEmptyGameScript(char *filename)
 	O(("int     STDCALL GetGOScriptID(const char *name,uint8_t isdoor);"));
 	O(("void	STDCALLPTR CreateInstance(int id);"));
 	O(("void	STDCALL DestroyInstance(int id,void *ptr);"));
-	O(("short	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
+	O(("int16_t	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
 	O(("int		STDCALL SaveRestoreState( void *file_ptr, uint8_t saving_state );"));
 	O(("#ifdef __cplusplus"));
 	O(("}"));
@@ -678,7 +678,7 @@ bool ScriptCreateEmptyGameScript(char *filename)
 	O(("//	the game for that event.  This only pertains to certain events.  If the chain continues"));
 	O(("//	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority"));
 	O(("//	scripts return value."));
-	O(("short STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)"));
+	O(("int16_t STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)"));
 	O(("{"));
 	O(("	return CONTINUE_CHAIN|CONTINUE_DEFAULT;"));
 	O(("}"));

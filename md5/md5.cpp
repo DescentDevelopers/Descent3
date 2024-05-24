@@ -169,10 +169,10 @@ void MD5::update(int valin) noexcept {
   update(p, sizeof(int));
 }
 
-void MD5::update(short valin) noexcept {
-  short val = INTEL_SHORT(valin);
+void MD5::update(int16_t valin) noexcept {
+  int16_t val = INTEL_SHORT(valin);
   uint8_t *p = (uint8_t *)&val;
-  update(p, sizeof(short));
+  update(p, sizeof(int16_t));
 }
 
 void MD5::update(uint32_t valin) noexcept {

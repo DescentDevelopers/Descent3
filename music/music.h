@@ -222,15 +222,15 @@ public:
 class oms_tracklist {
   char **m_fnamelist; // filename list
   char **m_symlist;   // symbolic list
-  short m_numtracks;  // number of tracks
-  short m_maxtracks;
+  int16_t m_numtracks;  // number of tracks
+  int16_t m_maxtracks;
   bool m_init; // determines if initialized
 
 public:
   oms_tracklist();
   ~oms_tracklist();
 
-  void init(short maxtracks); // initializes track list system
+  void init(int16_t maxtracks); // initializes track list system
   void free();                // frees track list system
   void reset();               // resets track list to 0
 
@@ -244,7 +244,7 @@ public:
 //		this is an intermediate between song playback and event driven music.
 //		the calling application must act as the 'brain' in most cases.
 
-typedef short tMusicVal; // used for paramaters
+typedef int16_t tMusicVal; // used for paramaters
 
 inline float NORMALIZE_MUSICVAL(tMusicVal val) { return ((float)val) / 255.0f; }
 inline tMusicVal QUANTIZE_MUSICVAL(float fval) { return (fval * 255); }
@@ -279,11 +279,11 @@ class OutrageMusicSeq {
     oms_stream *old_strm; // previous stream.
     const char *loop_name;
     const char *pending_loop_name; // loop name preparing to play.
-    short region;                  // region id.
-    short type;
+    int16_t region;                  // region id.
+    int16_t type;
     music_ins *ins; // intro, combat, etc. section
-    short last_ip;  // last ip value
-    short ip;
+    int16_t last_ip;  // last ip value
+    int16_t ip;
     tMusicVal b_reg;       // branch register
     tMusicVal c_reg;       // compare regs
     tMusicVal p_reg;       // play count register.
@@ -311,13 +311,13 @@ class OutrageMusicSeq {
   oms_tracklist m_tracklist;        // sequencer track list.
   tList<music_stream> m_music_list; // list of tracks.
 
-  short m_curregion; // current region.
+  int16_t m_curregion; // current region.
 
 private:
   //	Music list management
-  music_stream *AddToList(short region, short theme_type, int n_inst, const music_ins *ins);
+  music_stream *AddToList(int16_t region, int16_t theme_type, int n_inst, const music_ins *ins);
   void FreeList();
-  music_stream *GetSong(short region, short theme_type);
+  music_stream *GetSong(int16_t region, int16_t theme_type);
   bool LoadTheme(const char *file); // takes a filename containing oms data.
 
   void ExecScript(music_stream *strm);
@@ -377,11 +377,11 @@ public:
   tMusicVal GetRegister(int parm);
 
   // region setting
-  void SetCurrentRegion(short region);
-  short GetCurrentRegion() const;
+  void SetCurrentRegion(int16_t region);
+  int16_t GetCurrentRegion() const;
 
   // gets current region PLAYING, not PENDING like above.
-  short GetPlayingRegion() const;
+  int16_t GetPlayingRegion() const;
 
   // get current loop playing
   const char *GetCurrentLoopName(int *loop_count);

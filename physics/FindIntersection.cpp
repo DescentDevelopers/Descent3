@@ -381,7 +381,7 @@
  *
  * 115   3/23/98 11:18a Chris
  * Added int fvi_QuickDistObjectList(vector *pos, int init_room_index,
- * float rad, short *object_index_list, int max_elements)
+ * float rad, int16_t *object_index_list, int max_elements)
  *
  *
  * 114   3/18/98 10:12p Chris
@@ -1981,12 +1981,12 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
       msector |= 0x20;
     }
 
-    const short num_bbf_regions = cur_room->num_bbf_regions;
-    short *num_faces_ptr = cur_room->num_bbf;
+    const int16_t num_bbf_regions = cur_room->num_bbf_regions;
+    int16_t *num_faces_ptr = cur_room->num_bbf;
     uint8_t *bbf_val = cur_room->bbf_list_sector;
     vector *region_min = cur_room->bbf_list_min_xyz;
     vector *region_max = cur_room->bbf_list_max_xyz;
-    short **bbf_list_ptr = cur_room->bbf_list;
+    int16_t **bbf_list_ptr = cur_room->bbf_list;
 
     // Do the actual wall collsion stuff here!
     for (int test1 = 0; test1 < num_bbf_regions; test1++) {
@@ -1995,7 +1995,7 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
             region_max->x < min_xyz.x || region_max->y < min_xyz.y || region_max->z < min_xyz.z)
           goto skip_region;
 
-        short *cur_face_index_ptr = *bbf_list_ptr;
+        int16_t *cur_face_index_ptr = *bbf_list_ptr;
 
         for (int sort_list_cur = 0; sort_list_cur < (*num_faces_ptr); sort_list_cur++) {
           i = *cur_face_index_ptr;
@@ -2112,7 +2112,7 @@ int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quic
   return num_cells;
 }
 
-int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, short *object_index_list, int max_elements,
+int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t *object_index_list, int max_elements,
                             bool f_lightmap_only, bool f_only_players_and_ais, bool f_include_non_collide_objects,
                             bool f_stop_at_closed_doors) {
   int num_objects = 0;
@@ -2369,12 +2369,12 @@ internal_try_again:
     msector |= 0x20;
   }
 
-  const short num_bbf_regions = cur_room->num_bbf_regions;
-  short *num_faces_ptr = cur_room->num_bbf;
+  const int16_t num_bbf_regions = cur_room->num_bbf_regions;
+  int16_t *num_faces_ptr = cur_room->num_bbf;
   uint8_t *bbf_val = cur_room->bbf_list_sector;
   vector *region_min = cur_room->bbf_list_min_xyz;
   vector *region_max = cur_room->bbf_list_max_xyz;
-  short **bbf_list_ptr = cur_room->bbf_list;
+  int16_t **bbf_list_ptr = cur_room->bbf_list;
 
   // Do the actual wall collsion stuff here!
   for (int test1 = 0; test1 < num_bbf_regions; test1++) {
@@ -2383,7 +2383,7 @@ internal_try_again:
           region_max->x < min_xyz.x || region_max->y < min_xyz.y || region_max->z < min_xyz.z)
         goto skip_region;
 
-      short *cur_face_index_ptr = *bbf_list_ptr;
+      int16_t *cur_face_index_ptr = *bbf_list_ptr;
 
       for (int sort_list_cur = 0; sort_list_cur < (*num_faces_ptr); sort_list_cur++) {
         i = *cur_face_index_ptr;
@@ -2393,7 +2393,7 @@ internal_try_again:
         vector *vertex_ptr_list[MAX_VERTS_PER_FACE];
         int face_hit_type;
         vector wall_norm;
-        short count;
+        int16_t count;
         bool f_backface;
 
         if (cur_room->faces[i].flags & FF_NOT_SHELL)
@@ -2546,7 +2546,7 @@ void make_trigger_face_list(int last_sim_faces) {
     vector wall_norm;
     vector colp;
     vector hit_point;
-    short count;
+    int16_t count;
     room *cur_room = &Rooms[Fvi_recorded_faces[x].room_index];
     int i = Fvi_recorded_faces[x].face_index;
     float cur_dist;
@@ -3000,7 +3000,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
         int num_int_poly = 0;
         vector int_points_box[12];
         vector int_points_poly[32];
-        short int_faces = 0;
+        int16_t int_faces = 0;
         bool f_int_box = false;
         bool f_int_poly = false;
 
@@ -4461,7 +4461,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   vector hit_point; // where we hit
   float cur_dist;   // distance to hit point
   const room *cur_room = &Rooms[room_index];
-  short i;
+  int16_t i;
   int next_portals[MAX_NEXT_PORTALS];
   int num_next_portals = 0;
   int next_portal_index;
@@ -4511,7 +4511,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   if (fvi_query_ptr->flags & FQ_IGNORE_WALLS) {
     vector face_normal;
     vector *vertex_ptr_list[MAX_VERTS_PER_FACE];
-    short count;
+    int16_t count;
     bool f_backface;
     int face_info;
     int j; //, k;
@@ -4568,12 +4568,12 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
       }
     }
   } else {
-    const short num_bbf_regions = cur_room->num_bbf_regions;
-    short *num_faces_ptr = cur_room->num_bbf;
+    const int16_t num_bbf_regions = cur_room->num_bbf_regions;
+    int16_t *num_faces_ptr = cur_room->num_bbf;
     uint8_t *bbf_val = cur_room->bbf_list_sector;
     vector *region_min = cur_room->bbf_list_min_xyz;
     vector *region_max = cur_room->bbf_list_max_xyz;
-    short **bbf_list_ptr = cur_room->bbf_list;
+    int16_t **bbf_list_ptr = cur_room->bbf_list;
 
     // Do the actual wall collsion stuff here!
     for (int test1 = 0; test1 < num_bbf_regions; test1++) {
@@ -4587,7 +4587,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
                                            (float *)&fvi_movement_delta) == false)
           goto skip_region;
 
-        short *cur_face_index_ptr = *bbf_list_ptr;
+        int16_t *cur_face_index_ptr = *bbf_list_ptr;
 
         for (int sort_list_cur = 0; sort_list_cur < (*num_faces_ptr); sort_list_cur++) {
           vector face_normal;
@@ -4595,7 +4595,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
           int face_hit_type;
           vector wall_norm;
           vector colp;
-          short count;
+          int16_t count;
           bool f_backface;
           int face_info;
           face *cur_face;

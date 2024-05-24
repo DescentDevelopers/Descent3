@@ -1220,9 +1220,9 @@ typedef struct {
 typedef struct {
   // Rooms
   int roomnum;
-  short facenum;
-  short texnum;
-  short portalnum;
+  int16_t facenum;
+  int16_t texnum;
+  int16_t portalnum;
   float fog_r, fog_g, fog_b, fog_depth;
   vector wind;
   uint8_t pulse_time;
@@ -1232,8 +1232,8 @@ typedef struct {
   uint32_t objhandle;
   uint32_t ithandle;
   float shields, energy;
-  short start_tick;
-  short end_tick;
+  int16_t start_tick;
+  int16_t end_tick;
   float cycle_time;
   int type, id, aux_type, aux_id;
   uint32_t checksum;

@@ -131,7 +131,7 @@ void ChatInit(void)
 // exists (Scourge1 for instance)
 int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 {
-	short chat_port;
+	int16_t chat_port;
 	char chat_server[50];
 	char *p;
 	unsigned long argp = 1;

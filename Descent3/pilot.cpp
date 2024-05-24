@@ -929,7 +929,7 @@ void PilotListSelectChangeCallback(int index) {
   PilotChooseDialogInfo.initial_call = false;
 }
 
-void selectcb(newuiMenu *menu, short id, void *data) {
+void selectcb(newuiMenu *menu, int16_t id, void *data) {
   pilot_select_menu *select = (pilot_select_menu *)data;
   if (id == IDP_SELECT) {
     menu->SetFocusOnGadget(select->pilot_list);

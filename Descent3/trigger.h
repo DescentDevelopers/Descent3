@@ -117,8 +117,8 @@ typedef struct trigger {
   char name[TRIG_NAME_LEN + 1]; // the name of this trigger
   int roomnum;                  // the room this trigger is in
   int facenum;                  // the face to which this trigger is attched
-  short flags;                  // flags for this trigger
-  short activator;              // flags for what can activate this trigger
+  int16_t flags;                  // flags for this trigger
+  int16_t activator;              // flags for what can activate this trigger
   // This is allocated when the level is started
   tOSIRISTriggerScript osiris_script;
 } trigger;

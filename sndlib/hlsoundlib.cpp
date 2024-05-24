@@ -645,7 +645,7 @@ void hlsSystem::StopAllSounds() {
 
 void hlsSystem::BeginSoundFrame(bool f_in_game) {
   bool hwsound_support;   // if this is true, sound_render_system is being used
-  short *sound_room_list; // these values are only meant for sound render system
+  int16_t *sound_room_list; // these values are only meant for sound render system
   int i, n, counter = 0;
   pos_state listener_pos;
   const int num_samples_this_frame = (int)(Frametime * 22050);

@@ -34,7 +34,7 @@ typedef struct {
   cvar_type type;
   void *dest_variable;
   int var_min, var_max;
-  short permissions;
+  int16_t permissions;
 } cvar_entry;
 
 extern bool Dedicated_server;

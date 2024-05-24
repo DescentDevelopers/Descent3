@@ -413,7 +413,7 @@ typedef struct network_packet_buffer {
 #define MAX_PACKET_BUFFERS 96
 
 static network_packet_buffer Packet_buffers[MAX_PACKET_BUFFERS]; // buffer to hold packets sent to us
-static short Packet_free_list[MAX_PACKET_BUFFERS];               // contains id's of free packet buffers
+static int16_t Packet_free_list[MAX_PACKET_BUFFERS];               // contains id's of free packet buffers
 static int Num_packet_buffers;
 static int Largest_packet_index = 0;
 
@@ -491,8 +491,8 @@ static uint32_t serverconn = 0xFFFFFFFF;
 typedef struct {
 
   float timesent[MAXNETBUFFERS];
-  short send_len[MAXNETBUFFERS];
-  short recv_len[MAXNETBUFFERS];
+  int16_t send_len[MAXNETBUFFERS];
+  int16_t recv_len[MAXNETBUFFERS];
   float last_packet_received; // For a given connection, this is the last packet we received
   float last_packet_sent;
   float pings[MAX_PING_HISTORY];
@@ -930,7 +930,7 @@ void nw_HandleUnreliableData(uint8_t *data, int len, network_address *from_addr)
 // routine to "free" a packet buffer
 void nw_FreePacket(int id) {
   Packet_buffers[id].sequence_number = -1;
-  Packet_free_list[--Num_packet_buffers] = (short)id;
+  Packet_free_list[--Num_packet_buffers] = (int16_t)id;
   if (Largest_packet_index == id)
     while ((--Largest_packet_index > 0) && (Packet_buffers[Largest_packet_index].sequence_number == -1))
       ;
@@ -1219,7 +1219,7 @@ void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_typ
   reliable_header ack_header;
   ack_header.type = RNT_ACK;
   // mprintf((0,"Sending ACK for sig %d.\n",sig));
-  ack_header.data_len = INTEL_SHORT((short)sizeof(uint32_t));
+  ack_header.data_len = INTEL_SHORT((int16_t)sizeof(uint32_t));
   ack_header.send_time = INTEL_FLOAT(time_sent);
   sig = INTEL_INT(sig);
   memcpy(&ack_header.data, &sig, sizeof(uint32_t));
@@ -1252,7 +1252,7 @@ void nw_DoNetworkIdle(void) {
 void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
   int i;
   int rcode = -1;
-  short max_len = NETBUFFERSIZE;
+  int16_t max_len = NETBUFFERSIZE;
   static reliable_header rcv_buff;
   static SOCKADDR rcv_addr;
   int bytesin = 0;
@@ -1278,8 +1278,8 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
     reliable_header conn_header;
     // Now send I_AM_HERE packet
     conn_header.type = RNT_I_AM_HERE;
-    conn_header.seq = INTEL_SHORT((short)(~CONNECTSEQ));
-    conn_header.data_len = INTEL_SHORT((short)0);
+    conn_header.seq = INTEL_SHORT((int16_t)(~CONNECTSEQ));
+    conn_header.data_len = INTEL_SHORT((int16_t)0);
     last_sent_iamhere = timer_GetTime();
     network_address send_address;
     memset(&send_address, 0, sizeof(network_address));
@@ -1549,8 +1549,8 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
             mprintf((0, "Succesfully connected to server in nw_ConnectToServer().\n"));
             // Now send I_AM_HERE packet
             conn_header.type = RNT_I_AM_HERE;
-            conn_header.seq = INTEL_SHORT((short)(~CONNECTSEQ));
-            conn_header.data_len = INTEL_SHORT((short)0);
+            conn_header.seq = INTEL_SHORT((int16_t)(~CONNECTSEQ));
+            conn_header.data_len = INTEL_SHORT((int16_t)0);
             serverconn = i;
             first_sent_iamhere = timer_GetTime();
             last_sent_iamhere = timer_GetTime();
@@ -1616,7 +1616,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
   }
 
   conn_header.type = RNT_REQ_CONN;
-  conn_header.seq = INTEL_SHORT((short)CONNECTSEQ);
+  conn_header.seq = INTEL_SHORT((int16_t)CONNECTSEQ);
   conn_header.data_len = 0;
 
   timeout.tv_sec = 0;
@@ -1699,7 +1699,7 @@ void nw_CloseSocket(SOCKET *sockp) {
     }
   }
   diss_conn_header.type = RNT_DISCONNECT;
-  diss_conn_header.seq = INTEL_SHORT((short)(CONNECTSEQ));
+  diss_conn_header.seq = INTEL_SHORT((int16_t)(CONNECTSEQ));
   diss_conn_header.data_len = 0;
   if (*sockp == serverconn)
     serverconn = -1;
@@ -2318,7 +2318,7 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
 
   int ret, send_len;
   uint8_t iaddr[6], *send_data;
-  short port;
+  int16_t port;
   fd_set wfds;
 
   ASSERT(data);
@@ -2518,7 +2518,7 @@ int nw_DoReceiveCallbacks(void) {
 void nw_ReliableResend(void) {
   int i, j;
   int rcode = -1;
-  short max_len = NETBUFFERSIZE;
+  int16_t max_len = NETBUFFERSIZE;
   static reliable_header rcv_buff;
   static SOCKADDR rcv_addr;
   int bytesin = 0;
@@ -2614,8 +2614,8 @@ void nw_ReliableResend(void) {
         reliable_header send_header;
         // mprintf((0,"Resending reliable packet in nw_WorkReliable().\n"));
         send_header.send_time = INTEL_FLOAT(timer_GetTime());
-        send_header.seq = INTEL_SHORT((short)0);
-        send_header.data_len = INTEL_SHORT((short)0);
+        send_header.seq = INTEL_SHORT((int16_t)0);
+        send_header.data_len = INTEL_SHORT((int16_t)0);
         send_header.type = RNT_HEARTBEAT;
 
         rcode = -1;

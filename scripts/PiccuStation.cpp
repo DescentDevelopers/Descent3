@@ -40,7 +40,7 @@ DLLEXPORT void STDCALL ShutdownDLL(void);
 DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t is_door);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL GetTriggerScriptID(int trigger_room, int trigger_face);
 DLLEXPORT int STDCALL GetCOScriptList(int **list, int **id_list);
 DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
@@ -137,382 +137,382 @@ class BaseScript {
 public:
   BaseScript();
   ~BaseScript();
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class LevelScript_0000 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_2109 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_206D : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_306C : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1869 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_186A : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_184A : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_4049 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0961 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0960 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_095F : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_095E : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_3072 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_406F : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B3C : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1338 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1337 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1339 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_133A : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1B35 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1B34 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1B41 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1336 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_6856 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B40 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B30 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B31 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1B2E : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B2F : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B32 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_232D : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B3F : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B3B : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B3D : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_0B3E : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class CustomObjectScript_1195 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0005 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0004 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0003 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0012 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0002 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0000 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0013 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0014 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0016 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0017 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0015 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_001B : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_001A : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0019 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0018 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_001F : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0009 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_001E : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_001D : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_000F : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_000B : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_001C : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_000D : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0007 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_000E : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_002B : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_002A : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0029 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0028 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0027 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0025 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0026 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_000A : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0024 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0021 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0023 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0020 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_0022 : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class TriggerScript_002C : public BaseScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 // ======================
@@ -1855,7 +1855,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 // ===================
 // CallInstanceEvent()
 // ===================
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   switch (id) {
   case ID_LEVEL_0000:
   case ID_CUSTOM_OBJECT_2109:
@@ -2137,12 +2137,12 @@ BaseScript::BaseScript() {}
 
 BaseScript::~BaseScript() {}
 
-short BaseScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t BaseScript::CallEvent(int event, tOSIRISEventInfo *data) {
   mprintf(0, "BaseScript::CallEvent()\n");
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_SAVESTATE: {
     tOSIRISEVTSAVESTATE *event_data = &data->evt_savestate;
@@ -2373,7 +2373,7 @@ short LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_2109::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_2109::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2394,7 +2394,7 @@ short CustomObjectScript_2109::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_206D::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_206D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2417,7 +2417,7 @@ short CustomObjectScript_206D::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_306C::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_306C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY: {
     tOSIRISEVTDESTROY *event_data = &data->evt_destroy;
@@ -2440,7 +2440,7 @@ short CustomObjectScript_306C::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1869::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1869::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2467,7 +2467,7 @@ short CustomObjectScript_1869::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_186A::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_186A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2494,7 +2494,7 @@ short CustomObjectScript_186A::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_184A::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_184A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2522,7 +2522,7 @@ short CustomObjectScript_184A::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_4049::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_4049::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2550,7 +2550,7 @@ short CustomObjectScript_4049::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0961::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0961::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2602,7 +2602,7 @@ short CustomObjectScript_0961::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0960::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0960::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2654,7 +2654,7 @@ short CustomObjectScript_0960::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_095F::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_095F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2706,7 +2706,7 @@ short CustomObjectScript_095F::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_095E::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_095E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2758,7 +2758,7 @@ short CustomObjectScript_095E::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_3072::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_3072::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2786,7 +2786,7 @@ short CustomObjectScript_3072::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_406F::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_406F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -2814,7 +2814,7 @@ short CustomObjectScript_406F::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B3C::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B3C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2846,7 +2846,7 @@ short CustomObjectScript_0B3C::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1338::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1338::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2867,7 +2867,7 @@ short CustomObjectScript_1338::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1337::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1337::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2889,7 +2889,7 @@ short CustomObjectScript_1337::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1339::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1339::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2911,7 +2911,7 @@ short CustomObjectScript_1339::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_133A::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_133A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2933,7 +2933,7 @@ short CustomObjectScript_133A::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1B35::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1B35::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2955,7 +2955,7 @@ short CustomObjectScript_1B35::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1B34::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1B34::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2977,7 +2977,7 @@ short CustomObjectScript_1B34::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1B41::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1B41::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -2999,7 +2999,7 @@ short CustomObjectScript_1B41::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1336::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1336::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_TIMER: {
     tOSIRISEVTTIMER *event_data = &data->evt_timer;
@@ -3021,7 +3021,7 @@ short CustomObjectScript_1336::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_6856::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_6856::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3046,7 +3046,7 @@ short CustomObjectScript_6856::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B40::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B40::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AIN_MOVIE_END: {
     tOSIRISEVTAINOTIFY *event_data = &data->evt_ain_movie_end;
@@ -3078,7 +3078,7 @@ short CustomObjectScript_0B40::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B30::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B30::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3098,7 +3098,7 @@ short CustomObjectScript_0B30::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B31::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B31::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3118,7 +3118,7 @@ short CustomObjectScript_0B31::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1B2E::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1B2E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3138,7 +3138,7 @@ short CustomObjectScript_1B2E::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B2F::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B2F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3158,7 +3158,7 @@ short CustomObjectScript_0B2F::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B32::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B32::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3178,7 +3178,7 @@ short CustomObjectScript_0B32::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_232D::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_232D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3198,7 +3198,7 @@ short CustomObjectScript_232D::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B3F::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B3F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3218,7 +3218,7 @@ short CustomObjectScript_0B3F::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B3B::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B3B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3238,7 +3238,7 @@ short CustomObjectScript_0B3B::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B3D::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B3D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3258,7 +3258,7 @@ short CustomObjectScript_0B3D::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_0B3E::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_0B3E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CHILD_DIED: {
     tOSIRISEVTCHILDDIED *event_data = &data->evt_child_died;
@@ -3278,7 +3278,7 @@ short CustomObjectScript_0B3E::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short CustomObjectScript_1195::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CustomObjectScript_1195::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY: {
     tOSIRISEVTDESTROY *event_data = &data->evt_destroy;
@@ -3301,7 +3301,7 @@ short CustomObjectScript_1195::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3319,7 +3319,7 @@ short TriggerScript_0005::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3346,7 +3346,7 @@ short TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0003::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0003::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3373,7 +3373,7 @@ short TriggerScript_0003::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0012::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0012::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3391,7 +3391,7 @@ short TriggerScript_0012::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3409,7 +3409,7 @@ short TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3427,7 +3427,7 @@ short TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0013::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0013::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3445,7 +3445,7 @@ short TriggerScript_0013::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0014::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0014::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3468,7 +3468,7 @@ short TriggerScript_0014::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0016::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0016::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3495,7 +3495,7 @@ short TriggerScript_0016::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0017::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0017::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3522,7 +3522,7 @@ short TriggerScript_0017::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0015::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0015::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3549,7 +3549,7 @@ short TriggerScript_0015::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_001B::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_001B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3576,7 +3576,7 @@ short TriggerScript_001B::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_001A::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_001A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3603,7 +3603,7 @@ short TriggerScript_001A::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0019::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0019::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3630,7 +3630,7 @@ short TriggerScript_0019::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0018::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0018::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3657,7 +3657,7 @@ short TriggerScript_0018::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_001F::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_001F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3675,7 +3675,7 @@ short TriggerScript_001F::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0009::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0009::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3693,7 +3693,7 @@ short TriggerScript_0009::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_001E::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_001E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3711,7 +3711,7 @@ short TriggerScript_001E::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_001D::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_001D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3729,7 +3729,7 @@ short TriggerScript_001D::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_000F::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_000F::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3747,7 +3747,7 @@ short TriggerScript_000F::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3774,7 +3774,7 @@ short TriggerScript_000B::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_001C::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_001C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3792,7 +3792,7 @@ short TriggerScript_001C::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_000D::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_000D::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3810,7 +3810,7 @@ short TriggerScript_000D::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0007::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0007::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3828,7 +3828,7 @@ short TriggerScript_0007::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_000E::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_000E::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3846,7 +3846,7 @@ short TriggerScript_000E::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_002B::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_002B::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3864,7 +3864,7 @@ short TriggerScript_002B::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_002A::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_002A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3882,7 +3882,7 @@ short TriggerScript_002A::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0029::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0029::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3900,7 +3900,7 @@ short TriggerScript_0029::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0028::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0028::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3918,7 +3918,7 @@ short TriggerScript_0028::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0027::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0027::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3936,7 +3936,7 @@ short TriggerScript_0027::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0025::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0025::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3954,7 +3954,7 @@ short TriggerScript_0025::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0026::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0026::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3972,7 +3972,7 @@ short TriggerScript_0026::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_000A::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_000A::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -3990,7 +3990,7 @@ short TriggerScript_000A::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0024::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0024::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -4008,7 +4008,7 @@ short TriggerScript_0024::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0021::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0021::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -4026,7 +4026,7 @@ short TriggerScript_0021::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0023::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0023::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -4044,7 +4044,7 @@ short TriggerScript_0023::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0020::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0020::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -4062,7 +4062,7 @@ short TriggerScript_0020::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_0022::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_0022::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;
@@ -4080,7 +4080,7 @@ short TriggerScript_0022::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TriggerScript_002C::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TriggerScript_002C::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     tOSIRISEVTCOLLIDE *event_data = &data->evt_collide;

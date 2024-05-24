@@ -61,7 +61,7 @@ inline int WRITE_FONT_INT(FONTFILE ffile, int i) {
 	return fwrite(&i, sizeof(i), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_SHORT(FONTFILE ffile, short s) {
+inline int WRITE_FONT_SHORT(FONTFILE ffile, int16_t s) {
 	return fwrite(&s, sizeof(s), 1, (FILE *)ffile);
 }
 
@@ -152,8 +152,8 @@ void message_box(const char *fmt, ...)
 
 static bool m_FontProp;
 static uint8_t m_CharWidths[MAX_FONT_CHARS];
-static short m_CharHeight;
-static short m_CharMaxWidth;
+static int16_t m_CharHeight;
+static int16_t m_CharMaxWidth;
 static uint16_t *m_FontBmData;
 static uint16_t *m_DataBuffer, *m_DataPtr;
 static int m_FontType;
@@ -430,7 +430,7 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
 	WRITE_FONT_BYTE(ffile, ft.max_ascii);
 	WRITE_FONT_DATA(ffile, fontname, 32, 1);
 
-	WRITE_FONT_SHORT(ffile, (short)ft.ffi2.tracking);
+	WRITE_FONT_SHORT(ffile, (int16_t)ft.ffi2.tracking);
 	WRITE_FONT_DATA(ffile, ft.ffi2.reserved, sizeof(ft.ffi2.reserved),1);
 	
 	num_char = (int)(ft.max_ascii - ft.min_ascii + 1);

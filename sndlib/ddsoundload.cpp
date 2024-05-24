@@ -131,8 +131,8 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
   // Sound format information
   int samples_per_second;
-  short bits_per_sample;
-  short number_channels;
+  int16_t bits_per_sample;
+  int16_t number_channels;
 
   // Used to read temporary long values
   uint32_t temp_long;
@@ -398,7 +398,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
           SoundFiles[sound_file_index].sample_length = cksize / 2 + num_needed / 2;
         }
 
-        SoundFiles[sound_file_index].sample_16bit = (short *)GlobalAlloc(0, cksize + num_needed);
+        SoundFiles[sound_file_index].sample_16bit = (int16_t *)GlobalAlloc(0, cksize + num_needed);
         GlobalLock(SoundFiles[sound_file_index].sample_16bit);
         cf_ReadBytes((uint8_t *)SoundFiles[sound_file_index].sample_16bit, cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
@@ -467,14 +467,14 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
   } else if (SoundFiles[sound_file_index].sample_16bit == NULL && f_high_quality) {
     SoundFiles[sound_file_index].sample_16bit =
-        (short *)GlobalAlloc(0, SoundFiles[sound_file_index].sample_length * sizeof(short));
+        (int16_t *)GlobalAlloc(0, SoundFiles[sound_file_index].sample_length * sizeof(int16_t));
     GlobalLock(SoundFiles[sound_file_index].sample_16bit);
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {
       SoundFiles[sound_file_index].sample_16bit[count] =
-          (((short)SoundFiles[sound_file_index].sample_8bit[count]) - 128) * 256;
+          (((int16_t)SoundFiles[sound_file_index].sample_8bit[count]) - 128) * 256;
     }
 
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {

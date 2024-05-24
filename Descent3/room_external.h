@@ -140,12 +140,12 @@ typedef struct face {
   uint8_t num_verts;  // how many vertices in this face
   int8_t portal_num; // which portal this face is part of, or -1 if none
 
-  short *face_verts;       // index into list of vertices for this face
+  int16_t *face_verts;       // index into list of vertices for this face
   roomUVL *face_uvls;      // index into list of uvls for this face
   vector normal;           // the surface normal of this face
-  short tmap;              // texture numbers for this face
+  int16_t tmap;              // texture numbers for this face
   uint16_t lmi_handle;       // the lightmap info number for this face
-  short special_handle;    // the index into the special_faces array
+  int16_t special_handle;    // the index into the special_faces array
   uint8_t renderframe;       // what frame this face was last rendered (for lighting)
   uint8_t light_multiple;    // what multiple to times by
   vector min_xyz, max_xyz; // min & max extents of this face (for FVI)
@@ -163,10 +163,10 @@ typedef struct face {
 // a connection between two rooms
 typedef struct portal {
   int flags;         // flags for this portal
-  short portal_face; // the face for this portal
-  short croom;       // the room this portal connects to
-  short cportal;     // the portal in croom this portal connects to
-  short bnode_index;
+  int16_t portal_face; // the face for this portal
+  int16_t croom;       // the room this portal connects to
+  int16_t cportal;     // the portal in croom this portal connects to
+  int16_t bnode_index;
   int combine_master; // For rendering combined portals
   vector path_pnt;    // Point used by the path system
 } portal;
@@ -229,32 +229,32 @@ typedef struct room {
   // Hierarchical bounding boxes for this room
   vector bbf_min_xyz;
   vector bbf_max_xyz;
-  short num_bbf_regions;
-  short pad1;
-  short **bbf_list;
-  short *num_bbf;
+  int16_t num_bbf_regions;
+  int16_t pad1;
+  int16_t **bbf_list;
+  int16_t *num_bbf;
   vector *bbf_list_min_xyz;
   vector *bbf_list_max_xyz;
   uint8_t *bbf_list_sector;
 
   bn_list bn_info;
 
-  short wpb_index;           // world point buffer index - where this room starts
+  int16_t wpb_index;           // world point buffer index - where this room starts
   uint8_t pulse_time;          // each room can has a pulse time
   uint8_t pulse_offset;        // each room has a timer offset for which it pulses
   vector wind;               // Wind vector for the room
   int ambient_sound;         // Index of ambient sound pattern for this room, or -1 if none
-  short vis_effects;         // index of first visual effect in this room
-  short mirror_face;         // Index of face that this room is to be mirrored by
+  int16_t vis_effects;         // index of first visual effect in this room
+  int16_t mirror_face;         // Index of face that this room is to be mirrored by
   uint8_t num_mirror_faces;    // Number of faces in this room that have the same texture as the mirror
   uint16_t *mirror_faces_list; // the list of faces in this room that have the same texture as the mirror
   float damage;              // The damage per second applied to players (& maybe others) in room
 
   vector path_pnt;      // Point used by the path system
   uint8_t *volume_lights; // Pointer to memory for our volumetric lighting
-  short volume_width;   // The dimensions of our volumetric room
-  short volume_height;
-  short volume_depth;
+  int16_t volume_width;   // The dimensions of our volumetric room
+  int16_t volume_height;
+  int16_t volume_depth;
   float fog_depth;           // How far until fog is totally opaque
   float fog_r, fog_g, fog_b; // Fog color
 

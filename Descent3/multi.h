@@ -698,7 +698,7 @@ extern uint16_t Server_spew_list[];
 
 // A semi-compressed orientation matrix for multiplayer games
 typedef struct {
-  short multi_matrix[9];
+  int16_t multi_matrix[9];
 } multi_orientation;
 
 static inline void MultiMatrixMakeEndianFriendly(multi_orientation *mmat) {
@@ -725,7 +725,7 @@ typedef struct {
   int objnum;
   int roomnum;
   uint8_t used;
-  short original_id;
+  int16_t original_id;
 } powerup_respawn;
 
 typedef struct {
@@ -1001,7 +1001,7 @@ void MultiDoRobotPos(uint8_t *data);
 int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum);
 
 // Send robot damage
-void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, short seed);
+void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, int16_t seed);
 
 // handle robot damage
 void MultiDoRobotExplode(uint8_t *data);
@@ -1019,7 +1019,7 @@ void MultiSendOnOff(object *obj, uint8_t on, uint8_t wb_index, uint8_t fire_mask
 void MultiSendAdditionalDamage(int slot, int type, float amount);
 
 // We're asking the server to create a countermeasure for us
-void MultiSendRequestCountermeasure(short objnum, int weapon_index);
+void MultiSendRequestCountermeasure(int16_t objnum, int weapon_index);
 
 // Tell the client that an object took damage
 void MultiSendDamageObject(object *hit_obj, object *killer, float damage, int weaponid);
@@ -1040,10 +1040,10 @@ void MultiDoObjAnimUpdate(uint8_t *data);
 void MultiDoPlay3dSound(uint8_t *data);
 
 // Tell the clients to play a 3d sound
-void MultiPlay3dSound(short soundidx, uint16_t objnum, int priority);
+void MultiPlay3dSound(int16_t soundidx, uint16_t objnum, int priority);
 
 // Tell the client to play a sound because a robot fired
-void MultiSendRobotFireSound(short soundidx, uint16_t objnum);
+void MultiSendRobotFireSound(int16_t soundidx, uint16_t objnum);
 
 // Play the robot sound that the server told us about
 void MultiDoRobotFireSound(uint8_t *data);

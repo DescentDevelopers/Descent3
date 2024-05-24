@@ -29,7 +29,7 @@
 
 typedef struct {
   uint16_t *data;     // 8bit data
-  short cache_slot; // for the renderers use
+  int16_t cache_slot; // for the renderers use
   uint8_t width, height;
   uint8_t flags, pad;
 } bms_bumpmap;

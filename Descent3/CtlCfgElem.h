@@ -91,7 +91,7 @@
 //
 class cfg_element : public UIGadget {
   static UIBitmapItem *m_btn_bmp_lit, *m_btn_bmp, *m_xbtn_bmp_lit, *m_xbtn_bmp;
-  static short m_count;
+  static int16_t m_count;
   const char *m_title;
   int8_t m_fnid, m_flags;   // fnflags : 1 if invert btn visible
   int8_t m_slot, m_curslot; // what slow is in focus and number of slots.

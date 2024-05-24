@@ -9648,7 +9648,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("int		STDCALL GetGOScriptID(const char *name,uint8_t is_door);"));
 	O(("void		STDCALLPTR CreateInstance(int id);"));
 	O(("void		STDCALL DestroyInstance(int id,void *ptr);"));
-	O(("short	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
+	O(("int16_t	STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);"));
 	O(("int		STDCALL GetTriggerScriptID(int trigger_room, int trigger_face );"));
 	O(("int		STDCALL GetCOScriptList( int **list, int **id_list );"));
 	O(("int		STDCALL SaveRestoreState( void *file_ptr, uint8_t saving_state );"));
@@ -9692,14 +9692,14 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("public:"));
 	O(("	BaseScript();"));
 	O(("	~BaseScript();"));
-	O(("	virtual short CallEvent(int event, tOSIRISEventInfo *data);"));
+	O(("	virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);"));
 	O(("};"));
 	O((""));
 
 	// Write out the level script class definition
 	O(("class %s : public BaseScript {",LEVEL_CLASS_NAME));
 	O(("public:"));
-	O(("	short CallEvent(int event, tOSIRISEventInfo *data);"));
+	O(("	int16_t CallEvent(int event, tOSIRISEventInfo *data);"));
 	O(("};"));
 	O((""));
 
@@ -9708,7 +9708,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 		if(m_ScriptGroupingList[j].owner_type==OBJECT_TYPE) {
 			O(("class %s : public BaseScript {",CreateScriptClassName(j)));
 			O(("public:"));
-			O(("	short CallEvent(int event, tOSIRISEventInfo *data);"));
+			O(("	int16_t CallEvent(int event, tOSIRISEventInfo *data);"));
 			O(("};"));
 			O((""));
 		}
@@ -9718,7 +9718,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 		if(m_ScriptGroupingList[j].owner_type==TRIGGER_TYPE) {
 			O(("class %s : public BaseScript {",CreateScriptClassName(j)));
 			O(("public:"));
-			O(("	short CallEvent(int event, tOSIRISEventInfo *data);"));
+			O(("	int16_t CallEvent(int event, tOSIRISEventInfo *data);"));
 			O(("};"));
 			O((""));
 		}
@@ -10141,7 +10141,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("// ==================="));
 	O(("// CallInstanceEvent()"));
 	O(("// ==================="));
-	O(("short STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)"));
+	O(("int16_t STDCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)"));
 	O(("{"));
 	O(("	switch(id) {"));
 
@@ -10282,7 +10282,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("}"));
 	O((""));	
 
-	O(("short BaseScript::CallEvent(int event,tOSIRISEventInfo *data)"));
+	O(("int16_t BaseScript::CallEvent(int event,tOSIRISEventInfo *data)"));
 	O(("{"));
 	O(("	mprintf(0,\"BaseScript::CallEvent()\\n\");"));
 	O(("	return CONTINUE_CHAIN|CONTINUE_DEFAULT;"));
@@ -10290,7 +10290,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O((""));
 
 	// Create the Level Script Class' CallEvent() method
-	O(("short %s::CallEvent(int event,tOSIRISEventInfo *data)",LEVEL_CLASS_NAME));
+	O(("int16_t %s::CallEvent(int event,tOSIRISEventInfo *data)",LEVEL_CLASS_NAME));
 	O(("{"));
 	O(("	switch(event) { "));
 
@@ -10311,7 +10311,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	// Create the CallEvent() methods for each custom object script class
 	for(j=0;j<m_NumScriptGroups;j++)
 		if(m_ScriptGroupingList[j].owner_type==OBJECT_TYPE) {
-			O(("short %s::CallEvent(int event,tOSIRISEventInfo *data)",CreateScriptClassName(j)));
+			O(("int16_t %s::CallEvent(int event,tOSIRISEventInfo *data)",CreateScriptClassName(j)));
 			O(("{"));
 			O(("	switch(event) { "));
 
@@ -10328,7 +10328,7 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	// Create the CallEvent() methods for each trigger script class
 	for(j=0;j<m_NumScriptGroups;j++)
 		if(m_ScriptGroupingList[j].owner_type==TRIGGER_TYPE) {
-			O(("short %s::CallEvent(int event,tOSIRISEventInfo *data)",CreateScriptClassName(j)));
+			O(("int16_t %s::CallEvent(int event,tOSIRISEventInfo *data)",CreateScriptClassName(j)));
 			O(("{"));
 			O(("	switch(event) { "));
 

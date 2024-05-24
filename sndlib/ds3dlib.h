@@ -288,9 +288,9 @@ private:
 
   // Finds a free slot for a new sound, slot_uid is an SBID_xxx value.
 #ifdef _DEBUG
-  short FindFreeSoundSlot(int sound_index, float volume, int priority);
+  int16_t FindFreeSoundSlot(int sound_index, float volume, int priority);
 #else
-  short FindFreeSoundSlot(float volume, int priority);
+  int16_t FindFreeSoundSlot(float volume, int priority);
 #endif
 
   // updates a directsound buffer

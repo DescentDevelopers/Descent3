@@ -123,7 +123,7 @@ typedef struct {
 typedef struct {
   uint8_t num_models;
 
-  short num_faces[MAX_SUBOBJECTS];
+  int16_t num_faces[MAX_SUBOBJECTS];
   lightmap_object_face *lightmap_faces[MAX_SUBOBJECTS];
   uint8_t used;
 
@@ -131,14 +131,14 @@ typedef struct {
 
 typedef struct polyface {
   int8_t nverts;
-  short *vertnums;
+  int16_t *vertnums;
   float *u;
   float *v;
 
   // float *u2,*v2;						// For lightmaps only
 
   ddgr_color color;
-  short texnum;
+  int16_t texnum;
 
   vector normal;
 } polyface;
@@ -171,7 +171,7 @@ typedef struct bsp_info {
   vector *face_min;
   vector *face_max;
 
-  short *vertnum_memory;
+  int16_t *vertnum_memory;
   float *u_memory;
   float *v_memory;
 
@@ -248,7 +248,7 @@ typedef struct poly_model {
 
   float rad;
   int n_textures;
-  short textures[MAX_MODEL_TEXTURES]; // a list of bitmap indices
+  int16_t textures[MAX_MODEL_TEXTURES]; // a list of bitmap indices
 
   bsp_info *submodel; // an array of size n_models of submodel info.
   int num_key_angles;

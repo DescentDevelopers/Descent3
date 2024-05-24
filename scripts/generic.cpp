@@ -35,7 +35,7 @@ DLLEXPORT void STDCALL ShutdownDLL(void);
 DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
@@ -88,7 +88,7 @@ tScriptIDInfo ScriptIDInfo[NUM_IDS] = {
 class GenericScript {
 public:
   GenericScript() {}
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
 };
@@ -96,7 +96,7 @@ protected:
 class GenericDoor : public GenericScript {
 public:
   GenericDoor() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 typedef struct {
@@ -106,14 +106,14 @@ typedef struct {
 class ForceWallScript : public GenericScript {
 public:
   ForceWallScript();
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   forcewallmemory *memory;
 };
 
 class WingNutScript : public GenericScript {
 public:
   WingNutScript() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 typedef struct {
@@ -130,7 +130,7 @@ class RapidFireScript : public GenericScript {
 public:
   RapidFireScript();
 
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   rapidfirememory *memory;
 };
 
@@ -259,7 +259,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   switch (id) {
   case GENERIC_POWERUP_SCRIPTID:
   case GENERIC_DOOR_SCRIPTID:
@@ -313,7 +313,7 @@ int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) {
   return size;
 }
 
-short GenericScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t GenericScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     msafe_struct ms;
@@ -331,7 +331,7 @@ short GenericScript::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short GenericDoor::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t GenericDoor::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     msafe_struct ms;
@@ -385,7 +385,7 @@ short GenericDoor::CallEvent(int event, tOSIRISEventInfo *data) {
 RapidFireScript::RapidFireScript() { memory = NULL; }
 
 #define RAPIDFIRE_RECHARGE 0.7f
-short RapidFireScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t RapidFireScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     tOSIRISMEMCHUNK ch;
@@ -529,7 +529,7 @@ short RapidFireScript::CallEvent(int event, tOSIRISEventInfo *data) {
 
 ForceWallScript::ForceWallScript() { memory = NULL; }
 
-short ForceWallScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ForceWallScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
 
   case EVT_CREATED: {
@@ -626,7 +626,7 @@ short ForceWallScript::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short WingNutScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t WingNutScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE: {
     msafe_struct ms;

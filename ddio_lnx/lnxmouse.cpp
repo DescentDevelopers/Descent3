@@ -112,8 +112,8 @@ typedef struct t_mse_button_info {
 } t_mse_button_info;
 
 typedef struct t_mse_event {
-  short btn;
-  short state;
+  int16_t btn;
+  int16_t state;
 } t_mse_event;
 
 static t_mse_button_info DIM_buttons;

@@ -229,7 +229,7 @@ int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp);
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int32_t cf_ReadInt(CFILE *cfp);
 
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int16_t cf_ReadShort(CFILE *cfp);
 
@@ -283,7 +283,7 @@ int cfprintf(CFILE *cfp, const char *format, ...);
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteInt(CFILE *cfp, int32_t i);
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteShort(CFILE *cfp, int16_t s);
 

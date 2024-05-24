@@ -1006,8 +1006,8 @@ typedef struct player_killed {
 typedef struct player_score_matrix {
   int num_players;
   char name[MAX_NET_PLAYERS][CALLSIGN_LEN + 1];
-  short deaths[MAX_NET_PLAYERS];
-  short kills[MAX_NET_PLAYERS];
+  int16_t deaths[MAX_NET_PLAYERS];
+  int16_t kills[MAX_NET_PLAYERS];
 } player_score_matrix;
 // The chokepoint function to call the dll function
 void CallMultiScoreDLL(int eventnum, void *data) {

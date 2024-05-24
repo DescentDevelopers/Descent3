@@ -129,11 +129,11 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
   int theme_type;
   music_ins temp_ins_buf[MAX_MUSIC_INSTRUCTIONS];
   int temp_ins_idx = 0;
-  short cur_region;
+  int16_t cur_region;
   struct {
     char *name;
-    short index;
-    short region;
+    int16_t index;
+    int16_t region;
   } labels[MAX_FILE_LABELS];
   int n_labels = 0, n_relabels = 0;
   bool in_region = false;
@@ -307,7 +307,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
 
       case OMFCMD_ENDSECTION:
         ADD_NEW_INS_NUM(OMFCMD_ENDSECTION, 0);
-        if (!AddToList((short)cur_region, (short)theme_type, temp_ins_idx, temp_ins_buf)) {
+        if (!AddToList((int16_t)cur_region, (int16_t)theme_type, temp_ins_idx, temp_ins_buf)) {
           cmd = OMFFILEERR_ADDSECTION;
           goto force_error;
         }

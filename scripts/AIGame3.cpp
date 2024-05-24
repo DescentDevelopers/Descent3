@@ -39,7 +39,7 @@ DLLEXPORT void STDCALL ShutdownDLL(void);
 DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
@@ -604,7 +604,7 @@ class BaseObjScript {
 public:
   BaseObjScript();
   ~BaseObjScript();
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 // Priority Constants
@@ -867,7 +867,7 @@ private:
 
 public:
   AlienOrganism() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1004,7 +1004,7 @@ private:
 
 public:
   HeavyTrooper() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1106,7 +1106,7 @@ private:
 
 public:
   Lifter() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1332,7 +1332,7 @@ private:
 
 public:
   AlienBoss() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1401,7 +1401,7 @@ private:
 
 public:
   SecurityCamera() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //---------------------
@@ -1441,7 +1441,7 @@ private:
 
 public:
   CrowdControl() {}
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 //-----------------------
@@ -1613,7 +1613,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((BaseObjScript *)ptr)->CallEvent(event, data);
 }
 
@@ -1636,7 +1636,7 @@ BaseObjScript::BaseObjScript() {}
 
 BaseObjScript::~BaseObjScript() {}
 
-short BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
+int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 
 //---------------------
 // AlienOrganism class
@@ -2644,7 +2644,7 @@ void AlienOrganism::SetMode(int me, char mode) {
     // Make sure squad broken flag isn't set
     memory->squad_flags &= ~ALIEN_BROKEN;
 
-    // Calculate destination home point a short distance from actual landing point
+    // Calculate destination home point a int16_t distance from actual landing point
     end_pos = memory->home_pos + (memory->home_uvec * 20.0f);
 
     flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
@@ -4063,7 +4063,7 @@ void AlienOrganism::DoCollide(int me, tOSIRISEVTCOLLIDE *collide_data) {
 }
 
 // Receives all basic events and calls processesing functions
-short AlienOrganism::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t AlienOrganism::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -4696,7 +4696,7 @@ void HeavyTrooper::DoCollide(int me, tOSIRISEVTCOLLIDE *collide_data) {
 }
 
 // Receives all basic events and calls processesing functions
-short HeavyTrooper::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t HeavyTrooper::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -5366,7 +5366,7 @@ void Lifter::DoCleanUp(int me) {
 }
 
 // Receives all basic events and calls processesing functions
-short Lifter::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t Lifter::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -5772,7 +5772,7 @@ void AlienBoss::SetMode(int me, char mode) {
     movement_type = MT_PHYSICS;
     Obj_Value(me, VF_SET, OBJV_C_MOVEMENT_TYPE, &movement_type);
 
-    // Calculate destination home point a short distance from actual landing point
+    // Calculate destination home point a int16_t distance from actual landing point
     end_pos = memory->home_pos + (memory->home_uvec * 20.0f);
 
     flags = FQ_CHECK_OBJS | FQ_IGNORE_POWERUPS | FQ_IGNORE_WEAPONS | FQ_IGNORE_MOVING_OBJECTS |
@@ -6941,7 +6941,7 @@ void AlienBoss::DoCleanUp(int me) {
 }
 
 // Receives all basic events and calls processesing functions
-short AlienBoss::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t AlienBoss::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7223,7 +7223,7 @@ bool SecurityCamera::DoNotify(int me, tOSIRISEventInfo *data) {
 }
 
 // Receives all basic events and calls processesing functions
-short SecurityCamera::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t SecurityCamera::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);
@@ -7391,7 +7391,7 @@ bool CrowdControl::DoNotify(int me, tOSIRISEventInfo *data) {
 }
 
 // Receives all basic events and calls processesing functions
-short CrowdControl::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t CrowdControl::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     DoInit(data->me_handle);

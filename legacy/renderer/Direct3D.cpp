@@ -3021,7 +3021,7 @@ void d3d_GetRenderState(rendering_state *rstate) { memcpy(rstate, &D3D_state, si
 
 // Sets the coplanar z bias for rendered polygons
 void d3d_SetCoplanarPolygonOffset(float factor) {
-  short depth_level;
+  int16_t depth_level;
 
   if (d3d_ZBias && !d3d_WBuffer) {
     depth_level = (factor * 2);
@@ -3297,7 +3297,7 @@ void d3d_Screenshot(int bm_handle) {
           g = std::min(255, (float)g * 1.4f);
           b = std::min(255, (float)b * 1.4f);
 
-          short short_pix = GR_RGB16(r, g, b);
+          int16_t short_pix = GR_RGB16(r, g, b);
 
           dest_data[i * w + t] = OPAQUE_FLAG | short_pix;
         }

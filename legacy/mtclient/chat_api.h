@@ -47,7 +47,7 @@ typedef struct _Chat_channel
 
 typedef struct _Chat_command
 {
-	short command;
+	int16_t command;
 	char	data[100];
 	_Chat_command *next;
 }Chat_command;

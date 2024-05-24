@@ -144,7 +144,7 @@ msn_urls msn_URL = {"", {"", "", "", "", ""}};
 msn_urls Net_msn_URLs;
 
 extern char Proxy_server[200];
-extern short Proxy_port;
+extern int16_t Proxy_port;
 
 int msn_ExtractZipFile(char *zipfilename, char *mn3name);
 

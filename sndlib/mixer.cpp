@@ -29,13 +29,13 @@
 #define VOLUME_FIX_BITS 1024
 
 static inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played,
-                               short *mixer_buffer16, const float l_volume, const float r_volume);
+                               int16_t *mixer_buffer16, const float l_volume, const float r_volume);
 static inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played,
-                               short *mixer_buffer16, const float l_volume, const float r_volume);
-static inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samples_played,
-                                short *mixer_buffer16, const float l_volume, const float r_volume);
-static inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samples_played,
-                                short *mixer_buffer16, const float l_volume, const float r_volume);
+                               int16_t *mixer_buffer16, const float l_volume, const float r_volume);
+static inline void opti_16m_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played,
+                                int16_t *mixer_buffer16, const float l_volume, const float r_volume);
+static inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played,
+                                int16_t *mixer_buffer16, const float l_volume, const float r_volume);
 
 software_mixer::software_mixer() {
   m_init = false;
@@ -104,7 +104,7 @@ void software_mixer::DoFrame(void) {
 // mixing and effects (writes data to the locked primary buffer)
 void software_mixer::StreamMixer(char *ptr, int len) {
   int i;
-  short *mixer_buffer16 = (short *)ptr;
+  int16_t *mixer_buffer16 = (int16_t *)ptr;
   int current_slot = 0;
   bool f_loop;
   bool f_mono;
@@ -133,7 +133,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
   while (current_slot < (*m_max_sounds_available)) {
     sound_buffer_info *cur_buf = &m_sound_cache[current_slot];
     int num_samples = buff_len;
-    mixer_buffer16 = (short *)ptr;
+    mixer_buffer16 = (int16_t *)ptr;
     f_mono = true;
 
     // Find slots with sounds in them
@@ -142,7 +142,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
       float r_volume = cur_buf->play_info->right_volume;
       int skip_interval = cur_buf->play_info->sample_skip_interval;
       int samples_played = cur_buf->play_info->m_samples_played;
-      short *sample_16bit;
+      int16_t *sample_16bit;
       uint8_t *sample_8bit;
       int np_sample_length = 0;
       int sample_length;
@@ -152,7 +152,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
       if (cur_buf->m_status & SSF_PLAY_STREAMING) {
         switch (cur_buf->play_info->m_stream_format) {
         case SIF_STREAMING_16_M:
-          sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+          sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
           sample_8bit = NULL;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 2;
           break;
@@ -162,7 +162,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size;
           break;
         case SIF_STREAMING_16_S:
-          sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+          sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
           sample_8bit = NULL;
           np_sample_length = sample_length = cur_buf->play_info->m_stream_size / 4;
           f_mono = false;
@@ -292,7 +292,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
 
       // Mix at 16 bits per sample
       if (skip_interval == 0) {
-        short *cur_sample_16bit = sample_16bit;
+        int16_t *cur_sample_16bit = sample_16bit;
         uint8_t *cur_sample_8bit = sample_8bit;
 
         if (f_mono) {
@@ -349,8 +349,8 @@ void software_mixer::StreamMixer(char *ptr, int len) {
             if (r_sample > 32767)
               r_sample = 32767;
 
-            mixer_buffer16[i] = (short)l_sample;
-            mixer_buffer16[i + 1] = (short)r_sample;
+            mixer_buffer16[i] = (int16_t)l_sample;
+            mixer_buffer16[i + 1] = (int16_t)r_sample;
           }
         } else {
           for (i = 0; i < (num_write << 1); i += 2) {
@@ -411,8 +411,8 @@ void software_mixer::StreamMixer(char *ptr, int len) {
             if (r_sample > 32767)
               r_sample = 32767;
 
-            mixer_buffer16[i] = (short)l_sample;
-            mixer_buffer16[i + 1] = (short)r_sample;
+            mixer_buffer16[i] = (int16_t)l_sample;
+            mixer_buffer16[i + 1] = (int16_t)r_sample;
           }
         }
       }
@@ -436,7 +436,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
             if (cur_buf->play_info->m_stream_data) {
               switch (cur_buf->play_info->m_stream_format) {
               case SIF_STREAMING_16_M:
-                sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+                sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 2;
                 break;
               case SIF_STREAMING_8_M:
@@ -444,7 +444,7 @@ void software_mixer::StreamMixer(char *ptr, int len) {
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size;
                 break;
               case SIF_STREAMING_16_S:
-                sample_16bit = (short *)cur_buf->play_info->m_stream_data;
+                sample_16bit = (int16_t *)cur_buf->play_info->m_stream_data;
                 loop_end = sample_length = np_sample_length = cur_buf->play_info->m_stream_size / 4;
                 break;
               case SIF_STREAMING_8_S:
@@ -485,17 +485,17 @@ void software_mixer::StreamMixer(char *ptr, int len) {
   }
 }
 
-inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, short *mixer_buffer16,
+inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, int16_t *mixer_buffer16,
                         const float l_volume, const float r_volume) {
   int i;
-  short *mb = mixer_buffer16;
+  int16_t *mb = mixer_buffer16;
 
   for (i = 0; i < (num_write << 1); i += 2) {
-    short sample;
+    int16_t sample;
     int l_sample;
     int r_sample;
 
-    sample = (((short)(*cur_sample_8bit)) - (short)128) << 8;
+    sample = (((int16_t)(*cur_sample_8bit)) - (int16_t)128) << 8;
     cur_sample_8bit++;
 
     l_sample = *mb + (sample * l_volume);
@@ -512,27 +512,27 @@ inline void opti_8m_mix(uint8_t *cur_sample_8bit, const int num_write, int &samp
     if (r_sample > 32767)
       r_sample = 32767;
 
-    *mb = (short)l_sample;
+    *mb = (int16_t)l_sample;
     mb++;
-    *mb = (short)r_sample;
+    *mb = (int16_t)r_sample;
     mb++;
   }
 }
 
-inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, short *mixer_buffer16,
+inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samples_played, int16_t *mixer_buffer16,
                         const float l_volume, const float r_volume) {
   int i;
-  short *mb = mixer_buffer16;
+  int16_t *mb = mixer_buffer16;
 
   for (i = 0; i < (num_write << 1); i += 2) {
-    short lsample;
-    short rsample;
+    int16_t lsample;
+    int16_t rsample;
     int l_sample;
     int r_sample;
 
-    lsample = (((short)(*cur_sample_8bit)) - (short)128) << 8;
+    lsample = (((int16_t)(*cur_sample_8bit)) - (int16_t)128) << 8;
     cur_sample_8bit++;
-    rsample = (((short)(*cur_sample_8bit)) - (short)128) << 8;
+    rsample = (((int16_t)(*cur_sample_8bit)) - (int16_t)128) << 8;
     cur_sample_8bit++;
 
     l_sample = *mb + (lsample * l_volume);
@@ -549,20 +549,20 @@ inline void opti_8s_mix(uint8_t *cur_sample_8bit, const int num_write, int &samp
     if (r_sample > 32767)
       r_sample = 32767;
 
-    *mb = (short)l_sample;
+    *mb = (int16_t)l_sample;
     mb++;
-    *mb = (short)r_sample;
+    *mb = (int16_t)r_sample;
     mb++;
   }
 }
 
-inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samples_played, short *mixer_buffer16,
+inline void opti_16m_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played, int16_t *mixer_buffer16,
                          const float l_volume, const float r_volume) {
   int i;
-  short *mb = mixer_buffer16;
+  int16_t *mb = mixer_buffer16;
 
   for (i = 0; i < (num_write << 1); i += 2) {
-    short sample;
+    int16_t sample;
     int l_sample;
     int r_sample;
 
@@ -583,21 +583,21 @@ inline void opti_16m_mix(short *cur_sample_16bit, const int num_write, int &samp
     if (r_sample > 32767)
       r_sample = 32767;
 
-    *mb = (short)l_sample;
+    *mb = (int16_t)l_sample;
     mb++;
-    *mb = (short)r_sample;
+    *mb = (int16_t)r_sample;
     mb++;
   }
 }
 
-inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samples_played, short *mixer_buffer16,
+inline void opti_16s_mix(int16_t *cur_sample_16bit, const int num_write, int &samples_played, int16_t *mixer_buffer16,
                          const float l_volume, const float r_volume) {
   int i;
-  short *mb = mixer_buffer16;
+  int16_t *mb = mixer_buffer16;
 
   for (i = 0; i < (num_write << 1); i += 2) {
-    short lsample;
-    short rsample;
+    int16_t lsample;
+    int16_t rsample;
     int l_sample;
     int r_sample;
 
@@ -620,9 +620,9 @@ inline void opti_16s_mix(short *cur_sample_16bit, const int num_write, int &samp
     if (r_sample > 32767)
       r_sample = 32767;
 
-    *mb = (short)l_sample;
+    *mb = (int16_t)l_sample;
     mb++;
-    *mb = (short)r_sample;
+    *mb = (int16_t)r_sample;
     *mb++;
   }
 }

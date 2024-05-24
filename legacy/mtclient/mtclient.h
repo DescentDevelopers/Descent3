@@ -112,9 +112,9 @@ typedef struct s_pxo_game_list
 	char mission_name[MAX_MISSION_NAME_LEN];
 	char mission_file[MAX_MISSION_FILE_LEN];
 	char script[MAX_SCRIPT_LEN];
-	short level;
-	short curr_players;
-	short max_players;
+	int16_t level;
+	int16_t curr_players;
+	int16_t max_players;
 	float ping;
 	uint32_t flags;
 	char format_string[MAX_FORMAT_STRING];

@@ -465,7 +465,7 @@ float Hud_aspect_y = 1.0f;
 bool Small_hud_flag = false; // changes how hud items are drawn in small huds.
 
 // used by reticle system.
-static short Ret_x_off, Ret_y_off;
+static int16_t Ret_x_off, Ret_y_off;
 static char Reticle_prefix[PSFILENAME_LEN + 1];
 
 //	Hud mode of display
@@ -933,24 +933,24 @@ void SGSHudState(CFILE *fp) {
     huditem = &HUD_array[i];
     if (huditem->stat) {
       if (huditem->type == HUD_ITEM_CUSTOMTEXT2) {
-        cf_WriteShort(fp, (short)huditem->stat);
+        cf_WriteShort(fp, (int16_t)huditem->stat);
         cf_WriteByte(fp, (int8_t)huditem->type);
         cf_WriteShort(fp, huditem->x);
         cf_WriteShort(fp, huditem->y);
         cf_WriteInt(fp, huditem->color);
-        cf_WriteShort(fp, (short)huditem->flags);
+        cf_WriteShort(fp, (int16_t)huditem->flags);
         cf_WriteByte(fp, (int8_t)huditem->alpha);
 
-        cf_WriteShort(fp, (short)huditem->buffer_size);
+        cf_WriteShort(fp, (int16_t)huditem->buffer_size);
         cf_WriteString(fp, huditem->data.text);
         mprintf((0, "sg: saved customtext2 (%x,%x,bufsize=%d)\n", huditem->x, huditem->y, huditem->buffer_size));
       } else if (huditem->type == HUD_ITEM_TIMER) {
-        cf_WriteShort(fp, (short)huditem->stat);
+        cf_WriteShort(fp, (int16_t)huditem->stat);
         cf_WriteByte(fp, (int8_t)huditem->type);
         cf_WriteShort(fp, huditem->x);
         cf_WriteShort(fp, huditem->y);
         cf_WriteInt(fp, huditem->color);
-        cf_WriteShort(fp, (short)huditem->flags);
+        cf_WriteShort(fp, (int16_t)huditem->flags);
         cf_WriteByte(fp, (int8_t)huditem->alpha);
 
         cf_WriteInt(fp, huditem->data.timer_handle);
@@ -958,12 +958,12 @@ void SGSHudState(CFILE *fp) {
       } else if (huditem->type == HUD_ITEM_CUSTOMTEXT) {
         // commented out because persistent hud messages are custom text, and its a mess to save the current
         // state of hud persistent messages.
-        //	cf_WriteShort(fp, (short)huditem->stat);
+        //	cf_WriteShort(fp, (int16_t)huditem->stat);
         //	cf_WriteByte(fp, (int8_t)huditem->type);
         //	cf_WriteShort(fp, huditem->x);
         //	cf_WriteShort(fp, huditem->y);
         //	cf_WriteInt(fp, huditem->color);
-        //	cf_WriteShort(fp, (short)huditem->flags);
+        //	cf_WriteShort(fp, (int16_t)huditem->flags);
         //	cf_WriteByte(fp, (int8_t)huditem->alpha);
         //
         //	cf_WriteString(fp, huditem->data.timer_handle);
@@ -1176,8 +1176,8 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
         } else if (!strcmpi(command, "reticleoffset")) {
           int x, y;
           sscanf(operand, "%d,%d", &x, &y);
-          Ret_x_off = (short)x;
-          Ret_y_off = (short)y;
+          Ret_x_off = (int16_t)x;
+          Ret_y_off = (int16_t)y;
         } else if (fn && (*fn)(command, operand, ext_data)) {
           continue;
         } else {

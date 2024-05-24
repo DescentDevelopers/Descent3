@@ -167,7 +167,7 @@ bool inet_LoadThreadLib(void);
 class InetGetFile {
 public:
   InetGetFile(char *URL, char *localfile);
-  InetGetFile(char *URL, char *localfile, char *proxyip, short proxyport);
+  InetGetFile(char *URL, char *localfile, char *proxyip, int16_t proxyport);
   ~InetGetFile();
   BOOL IsFileReceived();
   BOOL IsFileError();

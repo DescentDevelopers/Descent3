@@ -30,7 +30,7 @@
 
 typedef struct mem_bitmap {
   char *data;
-  short bpp;
+  int16_t bpp;
   int rowsize;
   uint16_t alloced : 2;
   uint16_t flag : 14;

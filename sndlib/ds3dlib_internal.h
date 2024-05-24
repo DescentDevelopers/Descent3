@@ -156,8 +156,8 @@ public:
   LPDIRECTSOUND3DBUFFER m_sound_buffer_3d; // Used for 3d interface
   LPKSPROPERTYSET m_lpksps;                // used mainly for EAX 2.0 but is a direct sound object.
 
-  short m_mixer_type;  // aureal, ds3d, ds_8?
-  short m_buffer_type; // Buffer type 2d or 3d
+  int16_t m_mixer_type;  // aureal, ds3d, ds_8?
+  int16_t m_buffer_type; // Buffer type 2d or 3d
 
   char *sample_data;
   int sample_length; // used for storage purposes.

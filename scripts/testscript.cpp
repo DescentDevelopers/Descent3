@@ -34,7 +34,7 @@ DLLEXPORT void STDCALL ShutdownDLL(void);
 DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
@@ -57,7 +57,7 @@ class BaseObjScript {
 public:
   BaseObjScript();
   ~BaseObjScript();
-  virtual short CallEvent(int event, tOSIRISEventInfo *data);
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 protected:
   bool called;
@@ -72,7 +72,7 @@ typedef struct {
 class ShieldOrb : public BaseObjScript {
 public:
   ShieldOrb() { info = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 
 private:
   tShieldOrbInfo *info;
@@ -83,7 +83,7 @@ private:
 //------------------
 class EnergyOrb : public BaseObjScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
@@ -132,7 +132,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
   };
 }
 
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   switch (id) {
   case ID_SHIELD_ORB:
   case ID_ENERGY_ORB:
@@ -165,7 +165,7 @@ BaseObjScript::BaseObjScript() { called = false; }
 
 BaseObjScript::~BaseObjScript() {}
 
-short BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_INTERVAL:
     mprintf(0, ".");
@@ -208,7 +208,7 @@ short BaseObjScript::CallEvent(int event, tOSIRISEventInfo *data) {
 // --------------
 // Shield orb
 // --------------
-short ShieldOrb::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t ShieldOrb::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE:
     if (!called) {
@@ -285,7 +285,7 @@ short ShieldOrb::CallEvent(int event, tOSIRISEventInfo *data) {
 // --------------
 // Energy orb
 // --------------
-short EnergyOrb::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t EnergyOrb::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_COLLIDE:
     if (!called) {

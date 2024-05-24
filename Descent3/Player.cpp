@@ -2022,8 +2022,8 @@ typedef struct tDeathSeq {
 
   poly_model *dying_model;
 
-  short fate;
-  short breakup_count;
+  int16_t fate;
+  int16_t breakup_count;
   float initial_death_time;
   float time_dying;
   float max_time_dying;

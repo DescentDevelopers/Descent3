@@ -251,14 +251,14 @@ class AudioStream {
   uint8_t m_playcount;
   bool m_readahead;               // if stream is currently reading from disk
   bool m_readahead_finished_loop; // if a loop's readahead has finished
-  short m_nbufs;                  // number of buffers streamed so far.
+  int16_t m_nbufs;                  // number of buffers streamed so far.
   play_information m_playinfo;    // used by llsSystem
   float m_volume;                 // volume of stream.
-  short m_state, m_laststate;     // current state of stream playing
+  int16_t m_state, m_laststate;     // current state of stream playing
   int m_llshandle;                // internal sound handle.
   int m_flags;                    // stream playing options.
-  short m_streamindex;            // index into active stream table.
-  short m_loopcount;              // loop counter.
+  int16_t m_streamindex;            // index into active stream table.
+  int16_t m_loopcount;              // loop counter.
   int m_bytesleft;                // number of bytes left in file
   int m_curmeasure;               // current measure.
   int m_playbytesleft, m_playbytestotal;

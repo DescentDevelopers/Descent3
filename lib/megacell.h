@@ -36,7 +36,7 @@ typedef struct {
   int8_t width;
   int8_t height;
 
-  short texture_handles[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
+  int16_t texture_handles[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
   int flags;
   uint8_t used;
 } megacell;

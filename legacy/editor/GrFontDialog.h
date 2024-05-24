@@ -111,8 +111,8 @@ private:
 	int m_FontPicBm;						// Font picture bitmap handle
 	int m_FontBmW, m_FontBmH;
 	int m_CharHeight;						// current character height.
-	short m_CharWidths[MAX_FONT_CHARS];
-	short m_CharMaxWidth;
+	int16_t m_CharWidths[MAX_FONT_CHARS];
+	int16_t m_CharMaxWidth;
 	uint16_t *m_FontBmData;
 	uint16_t *m_DataBuffer, *m_DataPtr;
 	uint16_t m_BgColor, m_BoxColor;

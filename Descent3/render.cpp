@@ -148,12 +148,12 @@ char Rooms_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
 int Facing_visited[MAX_ROOMS + MAX_PALETTE_ROOMS];
 // For keeping track of portal recursion
 uint8_t Room_depth_list[MAX_ROOMS + MAX_PALETTE_ROOMS];
-short Render_list[MAX_RENDER_ROOMS];
-short External_room_list[MAX_ROOMS];
+int16_t Render_list[MAX_RENDER_ROOMS];
+int16_t External_room_list[MAX_ROOMS];
 int N_external_rooms;
 // For rendering specular faces
 #define MAX_SPECULAR_FACES 2500
-short Specular_faces[MAX_SPECULAR_FACES];
+int16_t Specular_faces[MAX_SPECULAR_FACES];
 int Num_specular_faces_to_render = 0;
 int Num_real_specular_faces_to_render = 0; // Non-invisible specular faces
 typedef struct {
@@ -173,7 +173,7 @@ int Room_fog_plane_check = 0;
 float Room_fog_distance = 0;
 float Room_fog_eye_distance = 0;
 vector Room_fog_plane, Room_fog_portal_vert;
-short Fog_faces[MAX_FACES_PER_ROOM];
+int16_t Fog_faces[MAX_FACES_PER_ROOM];
 int Num_fog_faces_to_render = 0;
 #define MAX_EXTERNAL_ROOMS 100
 vector External_room_corners[MAX_EXTERNAL_ROOMS][8];
@@ -185,8 +185,8 @@ uint8_t External_room_project_net[MAX_EXTERNAL_ROOMS];
 #define LGF_INCREASING 2
 #define LGF_FAST 4
 typedef struct {
-  short roomnum;
-  short facenum;
+  int16_t roomnum;
+  int16_t facenum;
   float size;
   vector center;
   float scalar;
@@ -206,9 +206,9 @@ vector Global_alter_vec = {19, -19, 19};
 bool Render_mirror_for_room = false;
 int Mirror_room;
 int Num_mirrored_rooms;
-short Mirrored_room_list[MAX_ROOMS];
+int16_t Mirrored_room_list[MAX_ROOMS];
 uint8_t Mirrored_room_checked[MAX_ROOMS];
-short Mirror_rooms[MAX_ROOMS];
+int16_t Mirror_rooms[MAX_ROOMS];
 int Num_mirror_rooms = 0;
 //
 //  UTILITY FUNCS
@@ -1070,7 +1070,7 @@ void BuildRoomListSub(int start_room_num, clip_wnd *wnd, int depth) {
 }
 // compare function for room z sort
 float Room_z_depth[MAX_ROOMS + MAX_PALETTE_ROOMS];
-static int Room_z_sort_func(const short *a, const short *b) {
+static int Room_z_sort_func(const int16_t *a, const int16_t *b) {
   float az, bz;
   az = Room_z_depth[*a];
   bz = Room_z_depth[*b];
@@ -2129,7 +2129,7 @@ draw_fog:
 }
 static float face_depth[MAX_FACES_PER_ROOM];
 // compare function for room face sort
-static int room_face_sort_func(const short *a, const short *b) {
+static int room_face_sort_func(const int16_t *a, const int16_t *b) {
   float az, bz;
   az = face_depth[*a];
   bz = face_depth[*b];
@@ -3804,7 +3804,7 @@ void RenderBlankScreen(void) { rend_ClearScreen(GR_BLACK); }
 //					roomnum,facenum - these are filled in with the found values
 //					if room<0, then an object was found, and the object number is -room-1
 // Returns:		1 if found a room, else 0
-/*int FindRoomFace(short x,short y,int start_roomnum,int *roomnum,int *facenum)
+/*int FindRoomFace(int16_t x,int16_t y,int start_roomnum,int *roomnum,int *facenum)
 {
         //Init search mode
         search_mode = -1;
@@ -3826,7 +3826,7 @@ void RenderBlankScreen(void) { rend_ClearScreen(GR_BLACK); }
 //					start_roomnum - where to start rendering
 //					roomnum,facenum,lumel_num - these are filled in with the found values
 // Returns:		1 if found a room, else 0
-/*int FindLightmapFace(short x,short y,int start_roomnum,int *roomnum,int *facenum,int *lumel_num)
+/*int FindLightmapFace(int16_t x,int16_t y,int start_roomnum,int *roomnum,int *facenum,int *lumel_num)
 {
         Search_lightmaps=1;
         search_x = x; search_y = y;

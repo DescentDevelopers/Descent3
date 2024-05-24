@@ -156,7 +156,7 @@
  * Added death_dot and bounce sound for weapons
  *
  * 46    4/24/98 8:02a Samir
- * added a short weapon name array.
+ * added a int16_t weapon name array.
  *
  * 45    4/19/98 5:00p Jason
  * added cool napalm effect, plus made object effects dynamically
@@ -270,17 +270,17 @@ typedef struct {
   float player_damage;             // how much damage a full impact causes a player
   float generic_damage;            // how much damage a full impact causes a robot
   float alpha;                     // What alpha to draw this weapon with
-  short sounds[MAX_WEAPON_SOUNDS]; // sounds for various things
-  short hud_image_handle;          //  a handle to a bitmap or vclip for the hud display
-  short fire_image_handle;         //  model or bitmap.  Shown when you fire this weapon
-  short explode_image_handle;      //  exploding vclip
-  short smoke_handle;              //  smoke trail handle to texture
-  short spawn_handle;              // weapon handle that gets spawned
-  short alternate_spawn_handle;    // weapon handle that gets spawned (sometimes)
-  short robot_spawn_handle;        // robot that gets spawned as a countermeasure
-  short particle_handle;           // particle handle to texture
-  short icon_handle;
-  short scorch_handle;    // handle for scorch bitmap, or -1 for none
+  int16_t sounds[MAX_WEAPON_SOUNDS]; // sounds for various things
+  int16_t hud_image_handle;          //  a handle to a bitmap or vclip for the hud display
+  int16_t fire_image_handle;         //  model or bitmap.  Shown when you fire this weapon
+  int16_t explode_image_handle;      //  exploding vclip
+  int16_t smoke_handle;              //  smoke trail handle to texture
+  int16_t spawn_handle;              // weapon handle that gets spawned
+  int16_t alternate_spawn_handle;    // weapon handle that gets spawned (sometimes)
+  int16_t robot_spawn_handle;        // robot that gets spawned as a countermeasure
+  int16_t particle_handle;           // particle handle to texture
+  int16_t icon_handle;
+  int16_t scorch_handle;    // handle for scorch bitmap, or -1 for none
   uint8_t spawn_count;      // how many of spawn handle gets created
   uint8_t alternate_chance; // how often the alternate spawn weapon gets chosen (0 to 100)
 

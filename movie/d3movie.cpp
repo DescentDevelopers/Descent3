@@ -465,7 +465,7 @@ void mve_SetCallback(MovieFrameCallback_fp callBack) {
 }
 
 // used to tell movie library how to render movies.
-void mve_SetRenderProperties(short x, short y, short w, short h, renderer_type type, bool hicolor) {}
+void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, renderer_type type, bool hicolor) {}
 
 #ifdef __LINUX__
 // locates the case-sensitive movie file name
@@ -842,7 +842,7 @@ bool mve_SequenceClose(intptr_t hMovie, int hFile) {
 #endif
 }
 
-void mve_Puts(short x, short y, ddgr_color col, const char *txt) {
+void mve_Puts(int16_t x, int16_t y, ddgr_color col, const char *txt) {
   grtext_SetFont(BRIEFING_FONT);
   grtext_SetColor(col);
   grtext_SetAlpha(255);
@@ -851,7 +851,7 @@ void mve_Puts(short x, short y, ddgr_color col, const char *txt) {
   grtext_Flush();
 }
 
-void mve_ClearRect(short x1, short y1, short x2, short y2) {
+void mve_ClearRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
   // Note: I can not figure out how to clear, and then write over it with text. It always covers my text!
   // rend_FillRect( GR_BLACK, x1, y1, x2, y2 );
 }

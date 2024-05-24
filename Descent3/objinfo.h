@@ -370,7 +370,7 @@ extern char *Anim_state_names[];
 
 // Info for an animation state
 typedef struct {
-  short from, to;
+  int16_t from, to;
   float spc;
   int anim_sound_index;
   uint8_t used;
@@ -477,10 +477,10 @@ typedef struct {
   char *description;                   // used for inventory
   char icon_name[MAX_INVEN_ICON_SIZE]; // used for inventory
 
-  short sounds[MAX_OBJ_SOUNDS]; // list of sound handles
-  short dspew[MAX_DSPEW_TYPES];
+  int16_t sounds[MAX_OBJ_SOUNDS]; // list of sound handles
+  int16_t dspew[MAX_DSPEW_TYPES];
   float dspew_percent[MAX_DSPEW_TYPES];
-  short dspew_number[MAX_DSPEW_TYPES];
+  int16_t dspew_number[MAX_DSPEW_TYPES];
   uint8_t f_dspew;
 
   // Valid for physics objects only

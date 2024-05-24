@@ -142,7 +142,7 @@
 typedef CFILE *FONTFILE;
 
 static inline int READ_FONT_INT(FONTFILE ffile);
-static inline short READ_FONT_SHORT(FONTFILE ffile);
+static inline int16_t READ_FONT_SHORT(FONTFILE ffile);
 static inline uint8_t READ_FONT_BYTE(FONTFILE ffile);
 static inline int READ_FONT_DATA(FONTFILE ffile, void *buf, int size, int nelem);
 static inline FONTFILE OPEN_FONT(char *filename, bool &success);
@@ -153,7 +153,7 @@ static inline void CLOSE_FONT(FONTFILE ffile);
 
 inline int READ_FONT_INT(FONTFILE ffile) { return cf_ReadInt(ffile); }
 
-inline short READ_FONT_SHORT(FONTFILE ffile) { return cf_ReadShort(ffile); }
+inline int16_t READ_FONT_SHORT(FONTFILE ffile) { return cf_ReadShort(ffile); }
 
 inline uint8_t READ_FONT_BYTE(FONTFILE ffile) { return (uint8_t)cf_ReadByte(ffile); }
 
@@ -405,7 +405,7 @@ void grFont::load(char *filename, int slot) {
 
   //	Read in all widths
   if (ft->flags & FT_PROPORTIONAL) {
-    ft->char_widths = new short[num_char];
+    ft->char_widths = new int16_t[num_char];
     for (i = 0; i < num_char; i++)
       ft->char_widths[i] = READ_FONT_SHORT(ff);
     mprintf((0, "::proportional"));

@@ -54,7 +54,7 @@
 // overloading
 inline uint16_t IntelSwapper(uint16_t a) { return INTEL_SHORT(a); }
 
-inline short IntelSwapper(short a) { return INTEL_SHORT(a); }
+inline int16_t IntelSwapper(int16_t a) { return INTEL_SHORT(a); }
 
 inline uint32_t IntelSwapper(uint32_t a) { return INTEL_INT(a); }
 

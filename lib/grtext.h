@@ -290,18 +290,18 @@ void grfont_Spew(int font, int x, int y);
 
 typedef struct tFontFileInfo2 // to maintain compatibility with older fonts (64 bytes long)
 {
-  short tracking;
+  int16_t tracking;
   char reserved[62];
 } tFontFileInfo2;
 
 //	font data structure internal to library but available for font editors
 typedef struct tFontFileInfo {
-  short width, height; // width of widest character and height of longest char
-  short flags;         // flags used by the character renderer
-  short baseline;      // pixels given to lowercase below script line start at baseline
+  int16_t width, height; // width of widest character and height of longest char
+  int16_t flags;         // flags used by the character renderer
+  int16_t baseline;      // pixels given to lowercase below script line start at baseline
   uint8_t min_ascii;     // minimum ascii value used by font
   uint8_t max_ascii;     // max ascii value used by the font
-  short byte_width;    // width of a character in the font in bytes
+  int16_t byte_width;    // width of a character in the font in bytes
   uint8_t *raw_data;     // pixel, map data.
   uint8_t **char_data;   // pointers to each character
   uint8_t *char_widths;  // individual pixel widths of each character

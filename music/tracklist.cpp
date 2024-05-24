@@ -56,7 +56,7 @@ oms_tracklist::oms_tracklist() {
 oms_tracklist::~oms_tracklist() { oms_tracklist::free(); }
 
 // initializes track list system
-void oms_tracklist::init(short maxtracks) {
+void oms_tracklist::init(int16_t maxtracks) {
   if (!m_init) {
     m_maxtracks = maxtracks;
     m_numtracks = 0;

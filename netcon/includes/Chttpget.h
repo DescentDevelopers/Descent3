@@ -64,6 +64,8 @@
 #ifndef _CHTTPGET_HEADER_
 #define _CHTTPGET_HEADER_
 
+#include <cstdint>
+
 #define HTTP_STATE_INTERNAL_ERROR 0
 #define HTTP_STATE_SOCKET_ERROR 1
 #define HTTP_STATE_URL_PARSING_ERROR 2

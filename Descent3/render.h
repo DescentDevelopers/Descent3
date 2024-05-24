@@ -188,7 +188,7 @@ extern bool Render_inside_only;
 #define Lighting_on 1
 #define Outline_mode 0
 #endif
-extern short use_opengl_1555_format; // DAJ
+extern int16_t use_opengl_1555_format; // DAJ
 
 #ifndef RELEASE
 extern int Mine_depth;
@@ -218,7 +218,7 @@ extern vector Room_fog_plane, Room_fog_portal_vert;
 struct face;
 
 typedef struct {
-  short roomnum;
+  int16_t roomnum;
   float close_dist;
   face *close_face;
 } fog_portal_data;
@@ -264,7 +264,7 @@ void RenderMine(int viewer_roomnum, int flag_automap = 0, int called_from_terrai
 //					roomnum,facenum - these are filled in with the found values
 //					if room<0, then an object was found, and the object number is -room-1
 // Returns:		1 if found a room, else 0
-int FindRoomFace(short x, short y, int start_roomnum, int *roomnum, int *facenum);
+int FindRoomFace(int16_t x, int16_t y, int start_roomnum, int *roomnum, int *facenum);
 
 // finds what room,face,lumel is visible at a given screen x & y
 // Everything must be set up just like for RenderMineRoom(), and presumably is the same as
@@ -273,7 +273,7 @@ int FindRoomFace(short x, short y, int start_roomnum, int *roomnum, int *facenum
 //					start_roomnum - where to start rendering
 //					roomnum,facenum,lumel_num - these are filled in with the found values
 // Returns:		1 if found a room, else 0
-int FindLightmapFace(short x, short y, int start_roomnum, int *roomnum, int *facenum, int *lumel_num);
+int FindLightmapFace(int16_t x, int16_t y, int start_roomnum, int *roomnum, int *facenum, int *lumel_num);
 
 // This is needed for small view cameras
 // It clears the facing array so that it is recomputed

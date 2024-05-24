@@ -1792,8 +1792,8 @@ char Tracker_id[TRACKER_ID_LEN];
 
 vmt_descent3_struct MTPilotinfo[MAX_NET_PLAYERS];
 
-short Multi_kills[MAX_NET_PLAYERS];
-short Multi_deaths[MAX_NET_PLAYERS];
+int16_t Multi_kills[MAX_NET_PLAYERS];
+int16_t Multi_deaths[MAX_NET_PLAYERS];
 
 int Got_new_game_time = 0;
 
@@ -1827,7 +1827,7 @@ void SendDataChunk(int playernum);
 void DenyFile(int playernum, int filenum, int file_who);
 void MultiDoFileCancelled(uint8_t *data);
 void MultiDoCustomPlayerData(uint8_t *data);
-char *GetFileNameFromPlayerAndID(short playernum, short id);
+char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id);
 
 // Multiplayer position flags
 #define MPF_AFTERBURNER 1 // Afterburner is on
@@ -4211,7 +4211,7 @@ void MultiDoWorldStates(uint8_t *data) {
     case WS_ROOM_WIND: {
       // Room wind
 
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].wind.x = MultiGetFloat(data, &count);
       Rooms[roomnum].wind.y = MultiGetFloat(data, &count);
       Rooms[roomnum].wind.z = MultiGetFloat(data, &count);
@@ -4222,7 +4222,7 @@ void MultiDoWorldStates(uint8_t *data) {
     }
     case WS_ROOM_FOG: {
       // Room wind
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].fog_depth = MultiGetFloat(data, &count);
       Rooms[roomnum].fog_r = ((float)MultiGetUbyte(data, &count)) / 255.0;
       Rooms[roomnum].fog_g = ((float)MultiGetUbyte(data, &count)) / 255.0;
@@ -4239,7 +4239,7 @@ void MultiDoWorldStates(uint8_t *data) {
     case WS_ROOM_LIGHTING: {
       // Room lighting
       uint8_t state;
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].pulse_time = MultiGetUbyte(data, &count);
       Rooms[roomnum].pulse_offset = MultiGetUbyte(data, &count);
       state = MultiGetUbyte(data, &count);
@@ -4258,7 +4258,7 @@ void MultiDoWorldStates(uint8_t *data) {
     }
     case WS_ROOM_REFUEL: {
       // Room fueling
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       uint8_t state = MultiGetUbyte(data, &count);
       if (state)
         Rooms[roomnum].flags |= RF_FUELCEN;
@@ -4268,43 +4268,43 @@ void MultiDoWorldStates(uint8_t *data) {
       break;
     }
     case WS_ROOM_TEXTURE: {
-      short roomnum = MultiGetShort(data, &count);
-      short facenum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t facenum = MultiGetShort(data, &count);
       char str[255];
       MultiGetString(str, data, &count);
       ChangeRoomFaceTexture(roomnum, facenum, FindTextureName(IGNORE_TABLE(str)));
       break;
     }
     case WS_ROOM_GLASS: {
-      short roomnum = MultiGetShort(data, &count);
-      short facenum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t facenum = MultiGetShort(data, &count);
       BreakGlassFace(&Rooms[roomnum], facenum);
       break;
     }
     case WS_ROOM_PORTAL_RENDER: {
-      short roomnum = MultiGetShort(data, &count);
-      short portalnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t portalnum = MultiGetShort(data, &count);
       uint8_t flags = MultiGetByte(data, &count);
       Rooms[roomnum].portals[portalnum].flags = flags;
       break;
     }
     case WS_ROOM_PORTAL_BLOCK: {
-      short roomnum = MultiGetShort(data, &count);
-      short portalnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
+      int16_t portalnum = MultiGetShort(data, &count);
       uint8_t flags = MultiGetByte(data, &count);
       Rooms[roomnum].portals[portalnum].flags = flags;
       break;
     }
     case WS_ROOM_DAMAGE: {
       // Room wind
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       Rooms[roomnum].damage = MultiGetFloat(data, &count);
       Rooms[roomnum].damage_type = MultiGetUbyte(data, &count);
       break;
     }
     case WS_ROOM_GOALSPECFLAG: {
       // goals & special flags
-      short roomnum = MultiGetShort(data, &count);
+      int16_t roomnum = MultiGetShort(data, &count);
       int mask = (RF_SPECIAL1 | RF_SPECIAL2 | RF_SPECIAL3 | RF_SPECIAL4 | RF_SPECIAL5 | RF_SPECIAL6 | RF_GOAL1 |
                   RF_GOAL2 | RF_GOAL3 | RF_GOAL4);
       int change_mask = MultiGetInt(data, &count);
@@ -5065,8 +5065,8 @@ void MultiDoExecuteDLL(uint8_t *data) {
   SKIP_HEADER(data, &count);
 
   uint16_t eventnum = MultiGetShort(data, &count);
-  short me_objnum = MultiGetShort(data, &count);
-  short it_objnum = MultiGetShort(data, &count);
+  int16_t me_objnum = MultiGetShort(data, &count);
+  int16_t it_objnum = MultiGetShort(data, &count);
 
   if (MultiGetByte(data, &count)) {
     // we need to extract out parameters
@@ -5106,8 +5106,8 @@ void MultiDoExecuteDLL(uint8_t *data) {
     }
   }
 
-  short local_me_objnum;
-  short local_it_objnum;
+  int16_t local_me_objnum;
+  int16_t local_it_objnum;
 
   if (me_objnum == -1)
     local_me_objnum = -1;
@@ -6100,7 +6100,7 @@ void MultiDoRequestCountermeasure(uint8_t *data) {
 }
 
 // We're asking the server to create a countermeasure for us
-void MultiSendRequestCountermeasure(short objnum, int weapon_index) {
+void MultiSendRequestCountermeasure(int16_t objnum, int weapon_index) {
   int count = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
   int size_offset;
@@ -6735,7 +6735,7 @@ void MultiPaintGoalRooms(int *texcolors) {
   }
 }
 
-void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, short seed) {
+void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, int16_t seed) {
   int size;
   int count = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
@@ -6954,7 +6954,7 @@ void MultiDoObjAnimUpdate(uint8_t *data) {
 
 void MultiDoPlay3dSound(uint8_t *data) {
   int objnum;
-  short soundidx;
+  int16_t soundidx;
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
 
@@ -6974,7 +6974,7 @@ void MultiDoPlay3dSound(uint8_t *data) {
   Sound_system.Play3dSound(soundidx, &Objects[objnum], priority);
 }
 
-void MultiPlay3dSound(short soundidx, uint16_t objnum, int priority) {
+void MultiPlay3dSound(int16_t soundidx, uint16_t objnum, int priority) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
   int size = 0;
@@ -7003,7 +7003,7 @@ void MultiPlay3dSound(short soundidx, uint16_t objnum, int priority) {
   }
 }
 
-void MultiSendRobotFireSound(short soundidx, uint16_t objnum) {
+void MultiSendRobotFireSound(int16_t soundidx, uint16_t objnum) {
   int size;
   int count = 0;
   uint8_t data[MAX_GAME_DATA_SIZE];
@@ -7039,7 +7039,7 @@ void MultiSendRobotFireSound(short soundidx, uint16_t objnum) {
 
 void MultiDoRobotFireSound(uint8_t *data) {
   int objnum;
-  short soundidx;
+  int16_t soundidx;
   int count = 0;
   MULTI_ASSERT_NOMESSAGE(Netgame.local_role != LR_SERVER);
   SKIP_HEADER(data, &count);
@@ -8040,14 +8040,14 @@ void MultiDoCustomPlayerData(uint8_t *data) {
     return;
   mprintf((0, "Got custom data in MultiDoCustomPlayerData()\n"));
   NetPlayers[playernum].custom_file_seq = NETFILE_ID_SHIP_TEX; // First in the sequence of files we will request
-  short logo_len = MultiGetUshort(data, &count);
+  int16_t logo_len = MultiGetUshort(data, &count);
   memcpy(NetPlayers[playernum].ship_logo, data + count, logo_len);
   count += logo_len;
   mprintf((0, "%s uses custom ship logo %s\n", Players[playernum].callsign, NetPlayers[playernum].ship_logo));
 
   for (int t = 0; t < 4; t++) {
     char *filename;
-    short vt_len;
+    int16_t vt_len;
 
     switch (t) {
     case 0:
@@ -8070,7 +8070,7 @@ void MultiDoCustomPlayerData(uint8_t *data) {
   }
 }
 
-char *GetFileNameFromPlayerAndID(short playernum, short id) {
+char *GetFileNameFromPlayerAndID(int16_t playernum, int16_t id) {
   static char rval[_MAX_PATH * 2];
 
   rval[0] = '\0';
@@ -8423,7 +8423,7 @@ void MultiDoAiWeaponFlags(uint8_t *data) {
 
   int flags;
   int wb_index;
-  short obj_num = Server_object_list[MultiGetUshort(data, &count)];
+  int16_t obj_num = Server_object_list[MultiGetUshort(data, &count)];
   flags = MultiGetInt(data, &count);
   wb_index = MultiGetByte(data, &count);
   if (obj_num == 65535) {
@@ -9950,7 +9950,7 @@ void MultiProcessData(uint8_t *data, int len, int slot, network_address *from_ad
 // and pass them to multi_process_data.
 void MultiProcessBigData(uint8_t *buf, int len, network_address *from_addr) {
   int type, bytes_processed = 0;
-  short sub_len;
+  int16_t sub_len;
   int slot = 0;
   int last_type = -1, last_len = -1;
 
@@ -9978,7 +9978,7 @@ void MultiProcessBigData(uint8_t *buf, int len, network_address *from_addr) {
 
   while (bytes_processed < len) {
     type = buf[bytes_processed];
-    sub_len = INTEL_SHORT((*(short *)(buf + bytes_processed + 1)));
+    sub_len = INTEL_SHORT((*(int16_t *)(buf + bytes_processed + 1)));
 
     if (sub_len < 3 || type == 0 || (len - bytes_processed) < 2) {
       mprintf((0, "Got a corrupted packet!\n"));
@@ -9988,7 +9988,7 @@ void MultiProcessBigData(uint8_t *buf, int len, network_address *from_addr) {
 
     if ((bytes_processed + sub_len) > len) {
       mprintf(
-          (1, "multi_process_bigdata: packet type %d too short (%d>%d)!\n", type, (bytes_processed + sub_len), len));
+          (1, "multi_process_bigdata: packet type %d too int16_t (%d>%d)!\n", type, (bytes_processed + sub_len), len));
       Int3();
       return;
     }

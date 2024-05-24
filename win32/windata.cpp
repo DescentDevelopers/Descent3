@@ -199,7 +199,7 @@ bool oeWin32AppDatabase::read(const char *label, void *entry, int wordsize) {
     *((char *)entry) = (char)t;
     break;
   case 2:
-    *((short *)entry) = (short)t;
+    *((int16_t *)entry) = (int16_t)t;
     break;
   case 4:
     *((int *)entry) = (int)t;

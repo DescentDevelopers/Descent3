@@ -2209,13 +2209,13 @@ void Cinematic_StartCanned(tCannedCinematicInfo *info, int camera_handle) {
 // Demo file support
 //==================================================
 static void mf_WriteInt(uint8_t *buffer, int *pointer, int data);
-static void mf_WriteShort(uint8_t *buffer, int *pointer, short data);
+static void mf_WriteShort(uint8_t *buffer, int *pointer, int16_t data);
 static void mf_WriteByte(uint8_t *buffer, int *pointer, uint8_t data);
 static void mf_WriteFloat(uint8_t *buffer, int *pointer, float data);
 static void mf_WriteBytes(uint8_t *buffer, int *pointer, uint8_t *data, int len);
 static void mf_WriteString(uint8_t *buffer, int *pointer, const char *string);
 static int mf_ReadInt(uint8_t *buffer, int *pointer);
-static short mf_ReadShort(uint8_t *buffer, int *pointer);
+static int16_t mf_ReadShort(uint8_t *buffer, int *pointer);
 static uint8_t mf_ReadByte(uint8_t *buffer, int *pointer);
 static float mf_ReadFloat(uint8_t *buffer, int *pointer);
 static void mf_ReadBytes(uint8_t *buffer, int *pointer, uint8_t *data, int len);
@@ -2415,9 +2415,9 @@ void mf_WriteInt(uint8_t *buffer, int *pointer, int data) {
   (*pointer) += sizeof(int);
 }
 
-void mf_WriteShort(uint8_t *buffer, int *pointer, short data) {
-  memcpy(&buffer[(*pointer)], &data, sizeof(short));
-  (*pointer) += sizeof(short);
+void mf_WriteShort(uint8_t *buffer, int *pointer, int16_t data) {
+  memcpy(&buffer[(*pointer)], &data, sizeof(int16_t));
+  (*pointer) += sizeof(int16_t);
 }
 
 void mf_WriteByte(uint8_t *buffer, int *pointer, uint8_t data) {
@@ -2450,8 +2450,8 @@ int mf_ReadInt(uint8_t *buffer, int *pointer) {
   return value;
 }
 
-short mf_ReadShort(uint8_t *buffer, int *pointer) {
-  short value;
+int16_t mf_ReadShort(uint8_t *buffer, int *pointer) {
+  int16_t value;
   memcpy(&value, &buffer[(*pointer)], sizeof(value));
   (*pointer) += sizeof(value);
   return value;

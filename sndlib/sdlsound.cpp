@@ -201,9 +201,9 @@ char lnxsound::GetSoundMixer() { return SOUND_MIXER_SOFTWARE_16; }
 // Also put prioritization code in here
 //		ignore reserved slots
 #ifdef _DEBUG
-short lnxsound::FindFreeSoundSlot(int sound_index, float volume, int priority)
+int16_t lnxsound::FindFreeSoundSlot(int sound_index, float volume, int priority)
 #else
-short lnxsound::FindFreeSoundSlot(float volume, int priority)
+int16_t lnxsound::FindFreeSoundSlot(float volume, int priority)
 #endif
 {
   int current_slot;
@@ -270,7 +270,7 @@ short lnxsound::FindFreeSoundSlot(float volume, int priority)
 // Plays a 2d sound
 int lnxsound::PlaySound2d(play_information *play_info, int sound_index, float f_volume, float f_pan, bool f_looped) {
   sound_buffer_info *sb;
-  short sound_slot;
+  int16_t sound_slot;
 
   if (sound_device == 0) {
     return -1;
@@ -330,7 +330,7 @@ inline int lnxsound::ValidateUniqueId(int sound_uid) {
 }
 
 int lnxsound::PlayStream(play_information *play_info) {
-  short sound_slot;
+  int16_t sound_slot;
 
   ASSERT(play_info != nullptr);
 

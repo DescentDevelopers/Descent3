@@ -1865,14 +1865,14 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
     float diff_scale = DIFF_LEVEL / (MAX_DIFFICULTY_LEVELS - 1);
     float fs = (MAX_FIRE_SPREAD * (1.0f - diff_scale)) + (MIN_FIRE_SPREAD * diff_scale);
 
-    short fire_spread = obj->ai_info->fire_spread * fs;
+    int16_t fire_spread = obj->ai_info->fire_spread * fs;
 
     if ((obj->control_type == CT_AI && ((obj->ai_info->flags & AIF_TEAM_MASK) != AIF_TEAM_REBEL)) &&
         fire_spread < Diff_ai_min_fire_spread[DIFF_LEVEL] * fs) {
       fire_spread = Diff_ai_min_fire_spread[DIFF_LEVEL] * fs;
     }
 
-    short half_fire_spread = fire_spread >> 1;
+    int16_t half_fire_spread = fire_spread >> 1;
 
     if (fire_spread > 0) {
       p = (ps_rand() % fire_spread) - half_fire_spread;

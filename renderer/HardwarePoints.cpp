@@ -87,7 +87,7 @@ void g3_ProjectPoint(g3Point *p) {
 }
 
 // from a 2d point, compute the vector through that point
-void g3_Point2Vec(vector *v, short sx, short sy) {
+void g3_Point2Vec(vector *v, int16_t sx, int16_t sy) {
   vector tempv;
   matrix tempm;
 

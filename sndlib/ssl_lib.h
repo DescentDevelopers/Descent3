@@ -314,7 +314,7 @@ typedef struct sound_file_info {
   int use_count; // how many buffers does this sound take up.
 
   uint8_t *sample_8bit; // 8bit sound data
-  short *sample_16bit;        // 16bit sound data
+  int16_t *sample_16bit;        // 16bit sound data
 
   int sample_length;    // Length of sound in samples
   int np_sample_length; // non-padded

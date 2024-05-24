@@ -260,10 +260,10 @@ typedef struct {
 } static_proc_element;
 
 typedef struct {
-  short dynamic_proc_elements; // list of dynamic procedural texture elements
+  int16_t dynamic_proc_elements; // list of dynamic procedural texture elements
   void *proc1;                 // pointer for procedural page
   void *proc2;                 // back page of procedural
-  short procedural_bitmap;     // handle to the bitmap holding the finished procedural
+  int16_t procedural_bitmap;     // handle to the bitmap holding the finished procedural
 
   uint16_t *palette;
   static_proc_element *static_proc_elements;
@@ -302,7 +302,7 @@ typedef struct {
   int sound;          // The sound this texture makes
   float sound_volume; // The volume for this texture's sound
 
-  short bumpmap;     // The bumpmap for this texture, or -1 if there is none
+  int16_t bumpmap;     // The bumpmap for this texture, or -1 if there is none
   uint8_t corona_type; // what type of corona this thing uses
   uint8_t used;        // is this texture free to be allocated?
 

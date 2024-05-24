@@ -235,7 +235,7 @@ typedef struct g3Point {
   float p3_sx, p3_sy;  // screen x&y
   uint8_t p3_codes;      // clipping codes
   uint8_t p3_flags;      // projected?
-  short p3_pad;        // keep structure longword aligned
+  int16_t p3_pad;        // keep structure longword aligned
   vector p3_vec;       // x,y,z of rotated point
   vector p3_vecPreRot; // original XYZ of the point
   g3UVL p3_uvl;        // uv & lighting values
@@ -302,7 +302,7 @@ void g3_GetFOV(float *fov_x, float *fov_y);
 
 // get zoom.  For a given window size, return the zoom which will achieve
 // the given FOV along the given axis.
-float g3_GetZoom(char axis, float fov, short window_width, short window_height);
+float g3_GetZoom(char axis, float fov, int16_t window_width, int16_t window_height);
 
 // returns the normalized, unscaled view vectors
 void g3_GetViewVectors(vector *forward, vector *up, vector *right);
@@ -326,7 +326,7 @@ void g3_ProjectPoint(g3Point *point);
 float g3_CalcPointDepth(vector *pnt);
 
 // from a 2d point, compute the vector through that point
-void g3_Point2Vec(vector *v, short sx, short sy);
+void g3_Point2Vec(vector *v, int16_t sx, int16_t sy);
 
 // code a point.  fills in the p3_codes field of the point, and returns the codes
 uint8_t g3_CodePoint(g3Point *point);

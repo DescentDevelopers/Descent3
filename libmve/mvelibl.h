@@ -111,7 +111,7 @@ void MVE_SetPalette(uint8_t *p, unsigned start, unsigned count);
 
 // Configure the software for a graphics mode, optionally setting the
 //  display to that mode (see the MVE_GFX_xxx constants defined below).
-bool MVE_gfxMode(short mode);
+bool MVE_gfxMode(int16_t mode);
 
 // Reset the screen to text mode (usually done before exiting a program).
 void MVE_gfxReset(void);

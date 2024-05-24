@@ -266,10 +266,10 @@ OSIRISEXTERN File_ReadBytes_fp File_ReadBytes;
 typedef int (*File_ReadInt_fp)(void *fileptr);
 OSIRISEXTERN File_ReadInt_fp File_ReadInt;
 
-//	short File_ReadShort(void *fileptr);
-// Read and return a short (16 bits)
+//	int16_t File_ReadShort(void *fileptr);
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-typedef short (*File_ReadShort_fp)(void *fileptr);
+typedef int16_t (*File_ReadShort_fp)(void *fileptr);
 OSIRISEXTERN File_ReadShort_fp File_ReadShort;
 
 //	int8_t File_ReadByte(void *fileptr);
@@ -333,10 +333,10 @@ OSIRISEXTERN File_WriteString_fp File_WriteString;
 typedef void (*File_WriteInt_fp)(int i, void *fileptr);
 OSIRISEXTERN File_WriteInt_fp File_WriteInt;
 
-//	void File_WriteShort(short s,void *fileptr);
-// Write a short (16 bits)
+//	void File_WriteShort(int16_t s,void *fileptr);
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-typedef void (*File_WriteShort_fp)(short s, void *fileptr);
+typedef void (*File_WriteShort_fp)(int16_t s, void *fileptr);
 OSIRISEXTERN File_WriteShort_fp File_WriteShort;
 
 //	void File_WriteByte(int8_t b,void *fileptr);

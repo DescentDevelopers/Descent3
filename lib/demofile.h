@@ -106,6 +106,8 @@
 #ifndef _DEMO_FILE_HEADER_
 #define _DEMO_FILE_HEADER_
 
+#include <cstdint>
+
 extern char Demo_fname[_MAX_PATH * 2];
 
 extern uint32_t Demo_flags;
@@ -165,7 +167,7 @@ void DemoWriteHudMessage(uint32_t color, bool blink, char *msg);
 void DemoWriteChangedObjects();
 
 void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
-                         uint16_t weapobjnum, short gunnum);
+                         uint16_t weapobjnum, int16_t gunnum);
 
 void DemoWriteObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj);
@@ -186,7 +188,7 @@ void DemoWriteKillObject(object *hit_obj, object *killer, float damage, int deat
 
 void DemoWritePlayerDeath(object *player, bool melee, int fate = -1);
 
-void DemoWrite3DSound(short soundidx, uint16_t objnum, int priority, float volume = 0.5f);
+void DemoWrite3DSound(int16_t soundidx, uint16_t objnum, int priority, float volume = 0.5f);
 
 void DemoWriteCollidePlayerWeapon(object *playerobj, object *weapon, vector *collision_point, vector *collision_normal,
                                   bool f_reverse_normal, void *hit_info);
@@ -218,7 +220,7 @@ void DemoPostPlaybackMenu(void);
 
 void DemoReadObjWeapFireFlagChanged(void);
 
-void DemoWriteObjWeapFireFlagChanged(short objnum);
+void DemoWriteObjWeapFireFlagChanged(int16_t objnum);
 
 void DemoWritePlayerInfo(void);
 
@@ -254,7 +256,7 @@ void DemoReadPlayerTypeChange(void);
 void DemoWriteObjLifeLeft(object *obj);
 void DemoReadObjLifeLeft(void);
 
-void DemoWrite2DSound(short soundidx, float volume = 0.5f);
+void DemoWrite2DSound(int16_t soundidx, float volume = 0.5f);
 void DemoRead2DSound(void);
 
 #endif

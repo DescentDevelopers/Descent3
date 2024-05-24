@@ -86,7 +86,7 @@
  * added auto pps
  *
  * 39    12/08/98 4:52p Jeff
- * changed the pilot pics packing to use Ushort instead of short just for
+ * changed the pilot pics packing to use Ushort instead of int16_t just for
  * my conscience...removed some annoying mprintf's too
  *
  * 38    12/01/98 5:48p Jeff

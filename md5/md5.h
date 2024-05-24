@@ -39,7 +39,7 @@ public:
   void update(int val) noexcept;
   void update(uint32_t val) noexcept;
   void update(uint8_t val) noexcept;
-  void update(short val) noexcept;
+  void update(int16_t val) noexcept;
   std::array<uint8_t, 16> digest() const noexcept;
   void digest(uint8_t *destination) const noexcept;
 };

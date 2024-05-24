@@ -136,7 +136,7 @@ void ambient_life::ALReset() {
 
 void ambient_life::SaveData(CFILE *fp) {
   int i, j;
-  short len;
+  int16_t len;
 
   cf_WriteInt(fp, AL_VERSION);
 

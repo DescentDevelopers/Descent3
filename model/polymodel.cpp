@@ -1533,7 +1533,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
       // Allocate our space
       if (current_count) {
-        sm->vertnum_memory = (short *)mem_malloc(current_count * sizeof(short));
+        sm->vertnum_memory = (int16_t *)mem_malloc(current_count * sizeof(int16_t));
         ASSERT(sm->vertnum_memory);
 
         sm->u_memory = (float *)mem_malloc(current_count * sizeof(float));

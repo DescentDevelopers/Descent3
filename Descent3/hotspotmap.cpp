@@ -802,14 +802,14 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 
 void makecorner(int corner_bmp, int back_bmp, const char *tmap, int l, int t, int r, int b) {
   int real_x, real_y, awidth, ax, ay;
-  short *backdata, *cornerdata;
+  int16_t *backdata, *cornerdata;
   int back_rowsize, corner_rowsize;
 
   awidth = r - l;
   bm_ClearBitmap(corner_bmp);
-  backdata = (short *)bm_data(back_bmp, 0);
+  backdata = (int16_t *)bm_data(back_bmp, 0);
   back_rowsize = bm_rowsize(back_bmp, 0);
-  cornerdata = (short *)bm_data(corner_bmp, 0);
+  cornerdata = (int16_t *)bm_data(corner_bmp, 0);
   corner_rowsize = bm_rowsize(corner_bmp, 0);
 
   backdata += (t * (back_rowsize / 2));

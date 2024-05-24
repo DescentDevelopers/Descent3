@@ -109,7 +109,7 @@ inline int WRITE_FONT_INT(FONTFILE ffile, int i) {
 	return fwrite(&i, sizeof(i), 1, (FILE *)ffile);
 }
 
-inline int WRITE_FONT_SHORT(FONTFILE ffile, short s) {
+inline int WRITE_FONT_SHORT(FONTFILE ffile, int16_t s) {
 	return fwrite(&s, sizeof(s), 1, (FILE *)ffile);
 }
 
@@ -620,7 +620,7 @@ int CGrFontDialog::read_font_char(int cur_char, int& bmx, int& bmy)
 BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 {
 	uint8_t *tmp_data;
-	short *tmp_widths;
+	int16_t *tmp_widths;
 	uint8_t **tmp_cdata;
 	FONTFILE ffile;
 	uint32_t id = 0xfeedbaba;

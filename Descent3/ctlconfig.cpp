@@ -299,7 +299,7 @@
 
 // used for adjusting settings.
 #define CFG_AXIS_SENS_RANGE 20
-const short UID_JOYCFG = 0x1000;
+const int16_t UID_JOYCFG = 0x1000;
 
 
 //	Setup of config screens.
@@ -403,8 +403,8 @@ t_cfg_element Cfg_joy_elements[] = {{-1, CtlText_WeaponGroup, CCITEM_WPN_X2, CCI
                                     {ctfBANK_RIGHTBUTTON, CtlText_BankRight, 0, 0}};
 #define N_JOY_CFG_FN (sizeof(Cfg_joy_elements) / sizeof(t_cfg_element))
 #define N_KEY_CFG_FN (sizeof(Cfg_key_elements) / sizeof(t_cfg_element))
-static void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, uint8_t controller, uint8_t elem, int8_t slot);
-static void ctl_cfg_element_options_dialog(short fnid);
+static void ctl_cfg_set_and_verify_changes(int16_t fnid, ct_type elem_type, uint8_t controller, uint8_t elem, int8_t slot);
+static void ctl_cfg_element_options_dialog(int16_t fnid);
 // used for adjusting settings.
 static int weapon_select_dialog(int wpn, bool is_secondary);
 #define UID_KEYCFG_ID 0x1000
@@ -473,9 +473,9 @@ void key_cfg_screen::process(int res) {
       int8_t slot;
       ct_type elem_type;
       if (m_elem[i].GetActiveSlot() == CFGELEM_SLOT_CLEAR) {
-        ctl_cfg_element_options_dialog((short)(res - UID_KEYCFG_ID));
+        ctl_cfg_element_options_dialog((int16_t)(res - UID_KEYCFG_ID));
       } else if (m_elem[i].Configure(&elem_type, &controller, &elem, &slot)) {
-        ctl_cfg_set_and_verify_changes((short)(res - UID_KEYCFG_ID), elem_type, controller, elem, slot);
+        ctl_cfg_set_and_verify_changes((int16_t)(res - UID_KEYCFG_ID), elem_type, controller, elem, slot);
       }
       break;
     }
@@ -581,9 +581,9 @@ void joy_cfg_screen::process(int res) {
       int8_t slot;
       ct_type elem_type;
       if (m_elem[i].GetActiveSlot() == CFGELEM_SLOT_CLEAR) {
-        ctl_cfg_element_options_dialog((short)(res - UID_JOYCFG_ID));
+        ctl_cfg_element_options_dialog((int16_t)(res - UID_JOYCFG_ID));
       } else if (m_elem[i].Configure(&elem_type, &controller, &elem, &slot)) {
-        ctl_cfg_set_and_verify_changes((short)(res - UID_JOYCFG_ID), elem_type, controller, elem, slot);
+        ctl_cfg_set_and_verify_changes((int16_t)(res - UID_JOYCFG_ID), elem_type, controller, elem, slot);
       }
       break;
     }
@@ -898,7 +898,7 @@ void wpnsel_cfg_screen::unrealize() {
 }
 //////////////////////////////////////////////////////////////////////////////
 // this will take out any repeats of element and slot in function id.
-void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, uint8_t ctrl, uint8_t elem, int8_t slot) {
+void ctl_cfg_set_and_verify_changes(int16_t fnid, ct_type elem_type, uint8_t ctrl, uint8_t elem, int8_t slot) {
   ct_type ctype_fn[CTLBINDS_PER_FUNC];
   uint8_t cfgflags_fn[CTLBINDS_PER_FUNC];
   ct_config_data ccfgdata_fn;
@@ -966,7 +966,7 @@ void ctl_cfg_set_and_verify_changes(short fnid, ct_type elem_type, uint8_t ctrl,
   Controller->set_controller_function(fnid, ctype_fn, ccfgdata_fn, cfgflags_fn);
 }
 // used as a help/options dialog for each controller config element
-void ctl_cfg_element_options_dialog(short fnid) {
+void ctl_cfg_element_options_dialog(int16_t fnid) {
   newuiTiledWindow wnd;
   newuiSheet *sheet;
   int *inv_binding[CTLBINDS_PER_FUNC];
@@ -1137,12 +1137,12 @@ void joystick_settings_dialog() {
   newuiTiledWindow wnd;
   newuiSheet *sheet;
   int res, i, y;
-  short curpos;
+  int16_t curpos;
   tSliderSettings slider_set;
   char axis_str[N_JOY_AXIS] = {'X', 'Y', 'Z', 'R', 'U', 'V'};
-  short *joy_sens[N_JOY_AXIS];
-  short *mse_sens[N_MOUSE_AXIS];
-  short *ff_gain = NULL;
+  int16_t *joy_sens[N_JOY_AXIS];
+  int16_t *mse_sens[N_MOUSE_AXIS];
+  int16_t *ff_gain = NULL;
   bool *ff_enabled = NULL;
   bool *ff_auto_center = NULL;
   bool ff_auto_center_support = false;
@@ -1208,7 +1208,7 @@ void joystick_settings_dialog() {
       // ----------------------------------------------
       ff_auto_center = sheet->AddLongCheckBox(TXT_CFG_FFAUTOCENTER, ForceIsAutoCenter());
     }
-    curpos = (short)(ForceGetGain() * 50.0f);
+    curpos = (int16_t)(ForceGetGain() * 50.0f);
     slider_set.type = SLIDER_UNITS_PERCENT;
     ff_gain = sheet->AddSlider(TXT_CFG_FORCEGAIN, 50, curpos, &slider_set);
   }
@@ -1265,9 +1265,9 @@ void key_settings_dialog() {
   newuiTiledWindow wnd;
   newuiSheet *sheet;
   int res;
-  short curpos;
+  int16_t curpos;
   tSliderSettings slider_set;
-  short *key_ramp_speed;
+  int16_t *key_ramp_speed;
   wnd.Create(TXT_KEYSETTINGS, 0, 0, 384, 256);
   sheet = wnd.GetSheet();
   sheet->NewGroup(NULL, 0, 30);
@@ -1301,7 +1301,7 @@ typedef struct t_ctlcfgswitchcb_data {
   cfg_screen *curcfg;
 } t_ctlcfgswitchcb_data;
 // called when we switch menus
-void CtlConfigSwitchCB(newuiMenu *menu, short old_option_id, short new_option_id, void *data) {
+void CtlConfigSwitchCB(newuiMenu *menu, int16_t old_option_id, int16_t new_option_id, void *data) {
   t_ctlcfgswitchcb_data *cfgdata = (t_ctlcfgswitchcb_data *)data;
   // performs custom gadget deinitialization and reinitilization
   if (cfgdata->curcfg) {

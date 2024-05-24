@@ -965,7 +965,7 @@ int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect* eff)
 // Purpose:
 //    Play an effect that was previously created.
 // -------------------------------------------------------------------
-void ddio_ffb_effectPlay(short eID)
+void ddio_ffb_effectPlay(int16_t eID)
 {
 	if(eID<0 || eID>=DDIO_FF_MAXEFFECTS){
 		Int3();	//invalid eID
@@ -993,7 +993,7 @@ ff_try:
 // Purpose:
 //    Stop a single effect.
 // -------------------------------------------------------------------
-void ddio_ffb_effectStop(short eID)
+void ddio_ffb_effectStop(int16_t eID)
 {
 	if(eID<0 || eID>=DDIO_FF_MAXEFFECTS){
 		Int3();	//invalid eID
@@ -1020,7 +1020,7 @@ void ddio_ffb_effectStopAll(tDevice dev)
 //    Unload a single effect...  Necessary to make room for other
 //    effects.
 // -------------------------------------------------------------------
-void ddio_ffb_effectUnload(short eID)
+void ddio_ffb_effectUnload(int16_t eID)
 {
 	if(eID<0 || eID>=DDIO_FF_MAXEFFECTS){
 		Int3();	//invalid eID
@@ -1036,7 +1036,7 @@ void ddio_ffb_effectUnload(short eID)
 //    Modifies a single effect, only if the given parameters are
 //    different from what's currently loaded.
 // -------------------------------------------------------------------
-void ddio_ffb_effectModify(short eID, int*	Direction, uint32_t* Duration, uint32_t* Gain, uint32_t* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
+void ddio_ffb_effectModify(int16_t eID, int*	Direction, uint32_t* Duration, uint32_t* Gain, uint32_t* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
 {
 	uint32_t flags = 0;
 	
@@ -1101,7 +1101,7 @@ void ddio_ffb_effectModify(short eID, int*	Direction, uint32_t* Duration, uint32
 // Purpose:
 //    Retrieves affect data for the given parameters, pass NULL for those you don't want
 // -------------------------------------------------------------------
-void ddio_ffb_GetEffectData(short eID, int*	Direction, uint32_t* Duration, uint32_t* Gain, uint32_t* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
+void ddio_ffb_GetEffectData(int16_t eID, int*	Direction, uint32_t* Duration, uint32_t* Gain, uint32_t* Period, tEffInfo* TypeInfo, tEffEnvelope* Envelope)
 {
 	if (Direction){
 		*Direction = ddEffect[eID].direction[0];
@@ -1498,9 +1498,9 @@ bool ddio_ffjoy_SupportAutoCenter(tDevice dev) { return false; }
 
 void ddio_ffb_DestroyAll(void) {}
 
-void ddio_ffb_effectPlay(short eID) {}
+void ddio_ffb_effectPlay(int16_t eID) {}
 
-void ddio_ffb_effectModify(short eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
+void ddio_ffb_effectModify(int16_t eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
                            tEffInfo *TypeInfo, tEffEnvelope *Envelope) {}
 
 int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect *eff) { return -1; }

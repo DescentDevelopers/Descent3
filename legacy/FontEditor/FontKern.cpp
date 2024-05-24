@@ -194,7 +194,7 @@ void FontKern(const char *fnt_file_name)
 	int current_item = 0;
 	int num_items_displayed = 1;
 	bool done = false;
-	short text_alpha=255;
+	int16_t text_alpha=255;
 	int red_comp , green_comp, blue_comp;
 	ddgr_color text_color;
 

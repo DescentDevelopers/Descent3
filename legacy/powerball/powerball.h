@@ -110,7 +110,7 @@ extern "C"
 	DLLEXPORT int DLLFUNCCALL GetGOScriptID(char *name,uint8_t isdoor);
 	DLLEXPORT void DLLFUNCCALLPTR CreateInstance(int id);
 	DLLEXPORT void DLLFUNCCALL DestroyInstance(int id,void *ptr);
-	DLLEXPORT short DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);
+	DLLEXPORT int16_t DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data);
 	DLLEXPORT int DLLFUNCCALL SaveRestoreState( void *file_ptr, uint8_t saving_state );
 }
 
@@ -172,7 +172,7 @@ void DLLFUNCCALL DestroyInstance(int id,void *ptr)
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)
+int16_t DLLFUNCCALL CallInstanceEvent(int id,void *ptr,int event,tOSIRISEventInfo *data)
 {
 	return CONTINUE_CHAIN|CONTINUE_DEFAULT;
 }

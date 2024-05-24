@@ -116,7 +116,7 @@
 typedef struct tJoystickRecord {
   uint8_t valid; // is this a valid device.
   uint8_t flags; // defined in ddio_win.h
-  short spad;
+  int16_t spad;
 
   union {
     int joyid;
@@ -129,8 +129,8 @@ typedef struct tJoystickRecord {
 
 //////////////////////////////////////////////////////////////////////////////
 static struct tJoystickLibraryData {
-  short init;                // library initialized?
-  short njoy;                // maximum number of joysticks supported.
+  int16_t init;                // library initialized?
+  int16_t njoy;                // maximum number of joysticks supported.
   tJoystickRecord *joystick; // list of joysticks.
 
   LPDIRECTINPUT lpdi; // if lpdi != NULL, we use direct input for joysticks

@@ -508,7 +508,7 @@ typedef struct ai_move_path {
   vector pos;
   matrix orient;
 
-  short path_id;
+  int16_t path_id;
 } ai_move_path;
 
 typedef struct path_information {
@@ -550,7 +550,7 @@ typedef struct goal_enabler {
 // plus it would make sure the our slots do not fill up in bad or degenerate ways.
 
 typedef struct gi_fire {
-  short cur_wb;       // for ranged attack
+  int16_t cur_wb;       // for ranged attack
   uint8_t cur_mask;     // for ranged attack
   uint8_t melee_number; // this could be union'ed but it makes this struct word aligned
 } gi_fire;
@@ -583,15 +583,15 @@ typedef struct {
 
 typedef struct {
   float rad;
-  short flags;
+  int16_t flags;
   char parent_ap;
   char child_ap;
 } g_attach;
 
 typedef struct {
-  short start_node;
-  short end_node;
-  short cur_node;
+  int16_t start_node;
+  int16_t end_node;
+  int16_t cur_node;
 } g_static_path;
 
 typedef struct goal_info {
@@ -716,14 +716,14 @@ typedef struct ain_weapon_hit_info {
 typedef struct ai_mem {
   // Computed at end of memory frame
   float shields;
-  short num_enemies;
-  short num_friends;
+  int16_t num_enemies;
+  int16_t num_friends;
 
   // Incremented during the memory frame
-  short num_times_hit;
-  short num_enemy_shots_fired;
-  short num_hit_enemy;
-  short num_enemy_shots_dodged;
+  int16_t num_times_hit;
+  int16_t num_enemy_shots_fired;
+  int16_t num_hit_enemy;
+  int16_t num_enemy_shots_dodged;
 } ai_mem;
 
 //-------------------------------------------------
@@ -757,7 +757,7 @@ typedef struct ai_frame {
 
   int sound[MAX_AI_SOUNDS]; // AI sounds,
   float last_sound_time[MAX_AI_SOUNDS];
-  short last_played_sound_index;
+  int16_t last_played_sound_index;
 
   char movement_type;
   char movement_subtype;
@@ -869,8 +869,8 @@ public:
   vector pos[MAX_NODES];
   int roomnum[MAX_NODES];
 
-  short num_nodes;
-  short use_count;
+  int16_t num_nodes;
+  int16_t use_count;
 
   int owner_handle;
 };

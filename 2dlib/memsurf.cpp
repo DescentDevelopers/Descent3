@@ -224,7 +224,7 @@ bool gr_mem_surf_Init(ddgr_surface *sf, char *data, int rowsize) {
 
   mbm->data = data;
   mbm->rowsize = rowsize;
-  mbm->bpp = (short)sf->bpp;
+  mbm->bpp = (int16_t)sf->bpp;
   mbm->flag = 0;
 
   sf->obj = (void *)mbm;

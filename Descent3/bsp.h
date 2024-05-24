@@ -67,8 +67,8 @@ typedef struct {
   int nv;
   bspplane plane;
 
-  short roomnum;
-  short facenum;
+  int16_t roomnum;
+  int16_t facenum;
   int8_t subnum;
 
   int color;

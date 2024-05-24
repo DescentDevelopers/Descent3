@@ -2307,9 +2307,9 @@ void osipf_MatcenValue(int matcen_id, char op, char var_handle, void *ptr, int i
     break;
   case MTNV_S_CREATION_TEXTURE:
     if (op == VF_GET)
-      (*(short *)ptr) = Matcen[matcen_id]->GetCreationTexture();
+      (*(int16_t *)ptr) = Matcen[matcen_id]->GetCreationTexture();
     else if (op == VF_SET)
-      Matcen[matcen_id]->SetCreationTexture(*(short *)ptr);
+      Matcen[matcen_id]->SetCreationTexture(*(int16_t *)ptr);
     break;
 
   case MTNV_C_NUM_SPAWN_PTS:
@@ -2477,9 +2477,9 @@ int osipf_CFReadBytes(uint8_t *buffer, int count, CFILE *cfp) { return cf_ReadBy
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int osipf_CFReadInt(CFILE *cfp) { return cf_ReadInt(cfp); }
 
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-short osipf_CFReadShort(CFILE *cfp) { return cf_ReadShort(cfp); }
+int16_t osipf_CFReadShort(CFILE *cfp) { return cf_ReadShort(cfp); }
 
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
@@ -2528,9 +2528,9 @@ int osipf_CFWriteString(const char *buf, CFILE *cfp) { return cf_WriteString(cfp
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void osipf_CFWriteInt(int i, CFILE *cfp) { cf_WriteInt(cfp, i); }
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
-void osipf_CFWriteShort(short s, CFILE *cfp) { cf_WriteShort(cfp, s); }
+void osipf_CFWriteShort(int16_t s, CFILE *cfp) { cf_WriteShort(cfp, s); }
 
 // Write a byte (8 bits).  If the byte is a newline & the file is a text file, writes a CR/LF pair.
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
@@ -3319,12 +3319,12 @@ void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *
 int osipf_AIGetNearbyObjs(vector *pos, int init_roomnum, float rad, int *object_handle_list, int max_elements,
                           bool f_lightmap_only, bool f_only_players_and_ais, bool f_include_non_collide_objects,
                           bool f_stop_at_closed_doors) {
-  short *s_list;
+  int16_t *s_list;
   int num_close;
   int i;
   int count = 0;
 
-  s_list = (short *)mem_malloc(sizeof(short) * max_elements);
+  s_list = (int16_t *)mem_malloc(sizeof(int16_t) * max_elements);
 
   num_close = fvi_QuickDistObjectList(pos, init_roomnum, rad, s_list, max_elements, f_lightmap_only,
                                       f_only_players_and_ais, f_include_non_collide_objects, f_stop_at_closed_doors);

@@ -152,12 +152,12 @@ material Materials[MAX_MATERIALS];
 typedef struct reading_face 
 {
 	uint8_t		flags;						// flags for this face (see above)
-	short		portal_num;					// which portal this face is part of, or -1 if none
+	int16_t		portal_num;					// which portal this face is part of, or -1 if none
 	uint8_t		num_verts;					// how many vertices in this face
-	short		face_verts[MAX_VERTS_PER_FACE];				// index into list of vertices for this face
+	int16_t		face_verts[MAX_VERTS_PER_FACE];				// index into list of vertices for this face
 	roomUVL	face_uvls[MAX_VERTS_PER_FACE];					// index into list of uvls for this face
 	vector	normal;						// the surface normal of this face
-	short		tmap;							// texture numbers for this face
+	int16_t		tmap;							// texture numbers for this face
 } reading_face;
 
 typedef struct reading_room {
@@ -501,7 +501,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			case ID_MAT_APP:
 			{
 				char material_name[PAGENAME_LEN];
-				short n_faces,face;
+				int16_t n_faces,face;
 				int done=0;
 				int texnum;
 
@@ -639,7 +639,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 				}
 
 				//get whatever is left in this segment
-				this_size = num_faces * ((4 * sizeof(short)) + (6*sizeof(float)));
+				this_size = num_faces * ((4 * sizeof(int16_t)) + (6*sizeof(float)));
 				if (len-6-this_size ) 
 					Parse3DSMaxChunk(fp,len-6-2-this_size);
 								
@@ -650,7 +650,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			case ID_MATRIX:
 			{
 				float room_matrix[12];
-				short i;
+				int16_t i;
 				for (i=0; i<12; i++ )
 					room_matrix[i] = cf_ReadFloat(fp);
 				break;		

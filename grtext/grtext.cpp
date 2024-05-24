@@ -446,20 +446,20 @@ void grtext_CenteredPrintf(int xoff, int y, const char *fmt, ...) {
 void grtext_Puts(int x, int y, const char *str) {
   struct {
     char op;
-    short x, y;
+    int16_t x, y;
   } cmd;
 
   ASSERT((Grtext_ptr + sizeof(cmd) + strlen(str) + 1) < GRTEXT_BUFLEN);
 
   cmd.op = GRTEXTOP_PUTS;
-  cmd.x = (short)x;
-  cmd.y = (short)y;
+  cmd.x = (int16_t)x;
+  cmd.y = (int16_t)y;
 
   ASSERT((Grtext_ptr + sizeof(cmd) + strlen(str) + 1) < GRTEXT_BUFLEN);
 
   cmd.op = GRTEXTOP_PUTS;
-  cmd.x = (short)x;
-  cmd.y = (short)y;
+  cmd.x = (int16_t)x;
+  cmd.y = (int16_t)y;
   memcpy(&Grtext_buffer[Grtext_ptr], &cmd, sizeof(cmd));
   Grtext_ptr += sizeof(cmd);
   strcpy(&Grtext_buffer[Grtext_ptr], str);
@@ -502,15 +502,15 @@ void grtext_Puts(int x, int y, const char *str) {
 void grtext_PutChar(int x, int y, int ch) {
   struct {
     char op;
-    short x, y;
+    int16_t x, y;
     uint8_t ch;
   } cmd;
 
   ASSERT((Grtext_ptr + sizeof(cmd)) < GRTEXT_BUFLEN);
 
   cmd.op = GRTEXTOP_PUTCHAR;
-  cmd.x = (short)x;
-  cmd.y = (short)y;
+  cmd.x = (int16_t)x;
+  cmd.y = (int16_t)y;
   cmd.ch = (uint8_t)ch;
   memcpy(&Grtext_buffer[Grtext_ptr], &cmd, sizeof(cmd));
   Grtext_ptr += sizeof(cmd);
@@ -618,7 +618,7 @@ void grtext_Render() {
     case GRTEXTOP_PUTS: {
       struct {
         char op;
-        short x, y;
+        int16_t x, y;
       } cmd;
 
       memcpy(&cmd, &Grtext_buffer[pos], sizeof(cmd));
@@ -638,7 +638,7 @@ void grtext_Render() {
       tCharBlt cbi;
       struct {
         char op;
-        short x, y;
+        int16_t x, y;
         uint8_t ch;
       } cmd;
 

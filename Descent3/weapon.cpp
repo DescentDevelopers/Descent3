@@ -166,7 +166,7 @@
  * added reset reticle when setting a new weapon.
  *
  * 46    4/24/98 8:02a Samir
- * added a short weapon name array.
+ * added a int16_t weapon name array.
  *
  * 45    4/22/98 1:08p Chris
  * Fixed auto-firing of weapons after auto-selection

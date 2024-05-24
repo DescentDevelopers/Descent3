@@ -444,7 +444,7 @@ typedef void DLLFUNCCALL (*ShutdownDLL_fp)(void);
 typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, uint8_t isdoor);
 typedef void DLLFUNCCALL *(*CreateInstance_fp)(int id);
 typedef void DLLFUNCCALL (*DestroyInstance_fp)(int id, void *ptr);
-typedef short DLLFUNCCALL (*CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
+typedef int16_t DLLFUNCCALL (*CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
 typedef int DLLFUNCCALL (*GetTriggerScriptID_fp)(int trigger_room, int trigger_face);
 typedef int DLLFUNCCALL (*GetCOScriptList_fp)(int **list, int **id_list);
 typedef int DLLFUNCCALL (*SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
@@ -454,7 +454,7 @@ typedef void(DLLFUNCCALL *ShutdownDLL_fp)(void);
 typedef int(DLLFUNCCALL *GetGOScriptID_fp)(const char *name, uint8_t isdoor);
 typedef void *(DLLFUNCCALL *CreateInstance_fp)(int id);
 typedef void(DLLFUNCCALL *DestroyInstance_fp)(int id, void *ptr);
-typedef short(DLLFUNCCALL *CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
+typedef int16_t(DLLFUNCCALL *CallInstanceEvent_fp)(int id, void *ptr, int event, tOSIRISEventInfo *data);
 typedef int(DLLFUNCCALL *GetTriggerScriptID_fp)(int trigger_room, int trigger_face);
 typedef int(DLLFUNCCALL *GetCOScriptList_fp)(int **list, int **id_list);
 typedef int(DLLFUNCCALL *SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
@@ -1995,7 +1995,7 @@ bool Osiris_CallLevelEvent(int event, tOSIRISEventInfo *data) {
 
     if (instance) {
       data->me_handle = OBJECT_HANDLE_NONE; // its a level script!...no me
-      short ret;
+      int16_t ret;
 
       ret = OSIRIS_loaded_modules[dll_id].CallInstanceEvent(0, instance, event, data);
       if (aux_event != -1) {
@@ -2058,7 +2058,7 @@ bool Osiris_CallTriggerEvent(int trignum, int event, tOSIRISEventInfo *ei) {
   instance = Triggers[trignum].osiris_script.script_instance;
 
   if (instance) {
-    short ret;
+    int16_t ret;
     ret = OSIRIS_loaded_modules[dll_id].CallInstanceEvent(script_id, instance, event, ei);
 
     if (aux_event != -1) {
@@ -2144,7 +2144,7 @@ bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data) {
   int dll_id;
   int aux_event = -1; // event value
   tOSIRISScript *os;
-  short ret = CONTINUE_CHAIN | CONTINUE_DEFAULT;
+  int16_t ret = CONTINUE_CHAIN | CONTINUE_DEFAULT;
 
   if (event == EVT_AI_NOTIFY) {
     switch (data->evt_ai_notify.notify_type) {

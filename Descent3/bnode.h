@@ -80,11 +80,11 @@
 #define MAX_BNODES_PER_ROOM 127
 
 typedef struct bn_edge {
-  short end_room;
+  int16_t end_room;
   char end_index;
 
-  short flags;
-  short cost;
+  int16_t flags;
+  int16_t cost;
 
   float max_rad;
 } bn_edge;

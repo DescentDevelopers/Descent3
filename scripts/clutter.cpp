@@ -35,7 +35,7 @@ DLLEXPORT void STDCALL ShutdownDLL(void);
 DLLEXPORT int STDCALL GetGOScriptID(const char *name, uint8_t isdoor);
 DLLEXPORT void STDCALLPTR CreateInstance(int id);
 DLLEXPORT void STDCALL DestroyInstance(int id, void *ptr);
-DLLEXPORT short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
+DLLEXPORT int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data);
 DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #ifdef __cplusplus
 }
@@ -79,22 +79,22 @@ static int NumScriptIDs = sizeof(ScriptIDs) / sizeof(tScriptInfo);
 
 class ClutterScript {
 public:
-  virtual short CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
+  virtual int16_t CallEvent(int event, tOSIRISEventInfo *data) { return CONTINUE_CHAIN | CONTINUE_DEFAULT; }
 };
 
 class FragCrate : public ClutterScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class NapalmBarrel : public ClutterScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 class AliencuplinkScript : public ClutterScript {
 public:
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
 typedef struct {
@@ -104,14 +104,14 @@ typedef struct {
 class TNTHighYield : public ClutterScript {
 public:
   TNTHighYield() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tTNTHighYield *memory;
 };
 
 class TNTMedYield : public ClutterScript {
 public:
   TNTMedYield() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   float *memory;
 };
 
@@ -121,13 +121,13 @@ typedef struct {
 class FallingRock : public ClutterScript {
 public:
   FallingRock() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory;
 };
 class LavaRock : public ClutterScript {
 public:
   LavaRock() { memory = NULL; }
-  short CallEvent(int event, tOSIRISEventInfo *data);
+  int16_t CallEvent(int event, tOSIRISEventInfo *data);
   tFallingRock *memory;
 };
 
@@ -258,7 +258,7 @@ void STDCALL DestroyInstance(int id, void *ptr) {
 //	the game for that event.  This only pertains to certain events.  If the chain continues
 //	after this script, than the CONTINUE_DEFAULT setting will be overridden by lower priority
 //	scripts return value.
-short STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
+int16_t STDCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEventInfo *data) {
   return ((ClutterScript *)ptr)->CallEvent(event, data);
 }
 
@@ -290,7 +290,7 @@ int GetObjectID(int object) {
   return ms.id;
 }
 
-short FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
@@ -311,7 +311,7 @@ short FragCrate::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_DESTROY:
     vector pos;
@@ -351,7 +351,7 @@ short NapalmBarrel::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short AliencuplinkScript::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t AliencuplinkScript::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_AI_INIT:
     int handle, id, room;
@@ -392,7 +392,7 @@ float GetObjectShields(int object) {
   return mstruct.shields;
 }
 
-short TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;
@@ -443,7 +443,7 @@ short TNTMedYield::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;
@@ -540,7 +540,7 @@ short TNTHighYield::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;
@@ -574,7 +574,7 @@ short FallingRock::CallEvent(int event, tOSIRISEventInfo *data) {
   return CONTINUE_CHAIN | CONTINUE_DEFAULT;
 }
 
-short LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
+int16_t LavaRock::CallEvent(int event, tOSIRISEventInfo *data) {
   switch (event) {
   case EVT_CREATED: {
     int i;

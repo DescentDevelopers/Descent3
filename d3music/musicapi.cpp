@@ -61,7 +61,7 @@ static struct {
   int cur_song;      // current song
   int n_hostiles;    // number of hostiles ai thinks there are.
   tMusicVal trigger;
-  short pending_region;   // pending region change.
+  int16_t pending_region;   // pending region change.
   bool was_toggled_on;    // music was turned on by user.
   bool immediate_switch;  // force switch immediately for regions
   bool restart_sequencer; // restarts sequencer next frame.
@@ -273,7 +273,7 @@ void D3MusicAI(tMusicSeqInfo *music_info) {
 
   //@@// if no hostiles and mood != mood_default, then modify mood until it equals 0 again.  do it every second.
   //@@	if (MusicAI.mood != MusicAI.mood_default) {
-  //@@		short mod = (MusicAI.flags & MUSICAIF_HOSTILES) ? 1 : 2;
+  //@@		int16_t mod = (MusicAI.flags & MUSICAIF_HOSTILES) ? 1 : 2;
   //@@		float time_mod = (MusicAI.flags & MUSICAIF_HOSTILES) ? 0.2f : 0.2f;
   //@@		if (MusicAI.mood_timer >= time_mod) {
   //@@			if (MusicAI.mood > MusicAI.mood_default) {
@@ -414,7 +414,7 @@ void D3MusicSongSelector() {
 }
 
 //	set music region
-void D3MusicSetRegion(short region, bool immediate) {
+void D3MusicSetRegion(int16_t region, bool immediate) {
   if (Music_seq.GetCurrentRegion() != region) {
     MusicAI.immediate_switch = immediate;
     MusicAI.pending_region = region;
@@ -427,10 +427,10 @@ void D3MusicSetRegion(short region, bool immediate) {
 }
 
 // retreives current region
-short D3MusicGetRegion() { return Music_seq.GetPlayingRegion(); }
+int16_t D3MusicGetRegion() { return Music_seq.GetPlayingRegion(); }
 
 // retreives current PLAYING region.
-short D3MusicGetPendingRegion() { return MusicAI.pending_region; }
+int16_t D3MusicGetPendingRegion() { return MusicAI.pending_region; }
 
 // starts special in-game cinematic music
 void D3MusicStartCinematic() {}

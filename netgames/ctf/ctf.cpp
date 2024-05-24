@@ -876,7 +876,7 @@ void OnClientCollide(uint8_t *data) {
 
   // Did player collide with his own team's flag?
   if (fteam == pteam) {
-    short flag_count = 0;
+    int16_t flag_count = 0;
     vector fpos;
     int groom;
     int flagcount;

@@ -915,7 +915,7 @@ int32_t cf_ReadInt(CFILE *cfp) {
   cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
   return INTEL_INT(i);
 }
-// Read and return a short (16 bits)
+// Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
 int16_t cf_ReadShort(CFILE *cfp) {
   int16_t i;
@@ -1029,10 +1029,10 @@ void cf_WriteInt(CFILE *cfp, int32_t i) {
   cf_WriteBytes((uint8_t *)&t, sizeof(t), cfp);
 }
 
-// Write a short (16 bits)
+// Write a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on write
 void cf_WriteShort(CFILE *cfp, int16_t s) {
-  short t = INTEL_SHORT(s);
+  int16_t t = INTEL_SHORT(s);
   cf_WriteBytes((uint8_t *)&t, sizeof(t), cfp);
 }
 

@@ -310,7 +310,7 @@ void DrawTerrainPoints (vector *view_pos,matrix *view_orient)
 
 typedef struct seg_edge {
 	union {
-		struct {short v0,v1;};
+		struct {int16_t v0,v1;};
     int32_t vv;
 	};
 	uint16_t	type;
@@ -320,7 +320,7 @@ typedef struct seg_edge {
 
 seg_edge edge_list[MAX_EDGES];
 
-short	used_list[MAX_EDGES];	//which entries in edge_list have been used
+int16_t	used_list[MAX_EDGES];	//which entries in edge_list have been used
 int n_used;
 
 int edge_list_size;		//set each frame
@@ -333,7 +333,7 @@ int edge_list_size;		//set each frame
 int FindEdge(int v0,int v1,seg_edge **edge_ptr)
 {
   int32_t vv;
-	short hash,oldhash;
+	int16_t hash,oldhash;
 	int ret;
 
 	vv = (v1<<16) + v0;

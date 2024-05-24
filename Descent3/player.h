@@ -184,7 +184,7 @@
  * added multiple colored balls for players
  *
  * 54    6/25/98 12:45p Jeff
- * fixed callsign length, it was too short
+ * fixed callsign length, it was too int16_t
  *
  * 53    5/26/98 7:49p Samir
  * E3 version has a long afterburner.

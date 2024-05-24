@@ -112,7 +112,7 @@ static float Fog_distance, Fog_eye_distance;
 static vector Fog_view_pos, Specular_view_pos, Bump_view_pos;
 static matrix Unscaled_bumpmap_matrix;
 
-static int ModelFaceSortFunc(const short *a, const short *b);
+static int ModelFaceSortFunc(const int16_t *a, const int16_t *b);
 static inline void RenderSubmodelFace(poly_model *pm, bsp_info *sm, int facenum);
 static inline void RenderSubmodelLightmapFace(poly_model *pm, bsp_info *sm, int facenum);
 static inline void RenderSubmodelFaceFogged(poly_model *pm, bsp_info *sm, int facenum);
@@ -132,7 +132,7 @@ static void RotateModelPoints(poly_model *pm, bsp_info *sm);
 
 static float ComputeDefaultSizeFunc(int handle, float *size_ptr, vector *offset_ptr, bool f_use_all_frames);
 
-int ModelFaceSortFunc(const short *a, const short *b) {
+int ModelFaceSortFunc(const int16_t *a, const int16_t *b) {
   float az, bz;
 
   az = face_depth[*a];
@@ -749,7 +749,7 @@ void RenderSubmodelFacesSorted(poly_model *pm, bsp_info *sm) {
 void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
   int i;
   int modelnum = sm - pm->submodel;
-  short alpha_faces[MAX_FACES_PER_ROOM], num_alpha_faces = 0;
+  int16_t alpha_faces[MAX_FACES_PER_ROOM], num_alpha_faces = 0;
   int rcount = 0;
   vector view_pos;
 

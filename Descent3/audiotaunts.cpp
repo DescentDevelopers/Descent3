@@ -41,10 +41,10 @@ typedef struct {
   int sample_length;
   int np_sample_length;
   int samples_per_second;
-  short bits_per_sample;
-  short number_channels;
+  int16_t bits_per_sample;
+  int16_t number_channels;
   uint8_t *sample_8bit;
-  short *sample_16bit;
+  int16_t *sample_16bit;
 } tWaveFile;
 
 // returns:
@@ -509,8 +509,8 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
 
   // Sound format information
   int samples_per_second;
-  short bits_per_sample;
-  short number_channels;
+  int16_t bits_per_sample;
+  int16_t number_channels;
   char error_code = 0;
 
   // Used to read temporary long values
@@ -728,7 +728,7 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
           wave->sample_length = cksize / 2 + num_needed / 2;
         }
 
-        wave->sample_16bit = (short *)mem_malloc(cksize + num_needed);
+        wave->sample_16bit = (int16_t *)mem_malloc(cksize + num_needed);
 
         cf_ReadBytes((uint8_t *)wave->sample_16bit, cksize, cfptr);
         for (count = 0; count < (int)cksize / 2; count++) {
@@ -757,12 +757,12 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   if (wave->sample_16bit == NULL) {
     ASSERT(wave->sample_8bit);
 
-    wave->sample_16bit = (short *)mem_malloc(wave->sample_length * sizeof(short));
+    wave->sample_16bit = (int16_t *)mem_malloc(wave->sample_length * sizeof(int16_t));
 
     // NOTE:  Interesting note on sound conversion:  16 bit sounds are signed (0 biase).  8 bit sounds are unsigned
     // (+128 biase).
     for (count = 0; count < (int)wave->sample_length; count++) {
-      wave->sample_16bit[count] = (((short)wave->sample_8bit[count]) - 128) * 256;
+      wave->sample_16bit[count] = (((int16_t)wave->sample_8bit[count]) - 128) * 256;
     }
 
     mem_free(wave->sample_8bit);

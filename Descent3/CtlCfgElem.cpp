@@ -385,7 +385,7 @@ static char Ctltext_KeyBindings[][16] = {"",
                                          "",
                                          ""};
 
-static short key_binding_indices[] = {
+static int16_t key_binding_indices[] = {
     KEY_BACKSP,    KEY_TAB,      KEY_ENTER, KEY_LCTRL,     KEY_LSHIFT,   KEY_RSHIFT, KEY_PADMULTIPLY, KEY_LALT,
     KEY_SPACEBAR,  KEY_CAPSLOCK, 0x45,      KEY_SCROLLOCK, KEY_PAD7,     KEY_PAD8,   KEY_PAD9,        KEY_PADMINUS,
     KEY_PAD4,      KEY_PAD5,     KEY_PAD6,  KEY_PADPLUS,   KEY_PAD1,     KEY_PAD2,   KEY_PAD3,        KEY_PAD0,
@@ -534,7 +534,7 @@ UIBitmapItem *cfg_element::m_btn_bmp_lit = NULL;
 UIBitmapItem *cfg_element::m_btn_bmp = NULL;
 UIBitmapItem *cfg_element::m_xbtn_bmp_lit = NULL;
 UIBitmapItem *cfg_element::m_xbtn_bmp = NULL;
-short cfg_element::m_count = 0;
+int16_t cfg_element::m_count = 0;
 
 // MTS: unused?
 bool key_cfg_element(uint8_t *element, uint8_t *flags);

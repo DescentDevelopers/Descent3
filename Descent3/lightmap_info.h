@@ -62,7 +62,7 @@ typedef struct {
   uint8_t used;
 
   uint16_t dynamic;
-  short spec_map;
+  int16_t spec_map;
 
   uint8_t type; // see LMI_types above
 } lightmap_info;

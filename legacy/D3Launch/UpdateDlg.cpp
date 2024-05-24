@@ -970,7 +970,7 @@ BOOL CUpdateDlg::ApplyPatch()
 	sprintf(patch_cmd_line,"-undo %s",PATCH_LOC_FNAME);
 	RTPatchApply32 = (uint32_t (__stdcall *)(char *,void *(__stdcall *)(uint32_t,void *),int))GetProcAddress(patchlib, "RTPatchApply32@12");
 	if (RTPatchApply32) {
-		m_progress.SetRange(0,short(0x8000));
+		m_progress.SetRange(0,int16_t(0x8000));
 		m_progress.SetPos(0);
 		dlg = this;
 		StatusBar(IDS_UPDATEDLG_BEG_PATCH);

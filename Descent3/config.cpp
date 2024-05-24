@@ -556,8 +556,8 @@ static void config_gamma() {
   newuiTiledWindow gamma_wnd;
   newuiSheet *sheet;
   tSliderSettings slider_set;
-  short *gamma_slider;
-  short curpos;
+  int16_t *gamma_slider;
+  int16_t curpos;
   int res, gamma_bitmap = -1;
   float init_gamma;
 
@@ -772,11 +772,11 @@ struct sound_menu {
   newuiMenu *parent_menu;
   int ls_sound_id, sound_id;
 
-  short *fxvolume, *musicvolume; // volume sliders
-  short *fxquantity;             // sound fx quantity limit
+  int16_t *fxvolume, *musicvolume; // volume sliders
+  int16_t *fxquantity;             // sound fx quantity limit
   int *fxquality;                // sfx quality low/high
 
-  short old_fxquantity;
+  int16_t old_fxquantity;
 
 #ifdef _DEBUG
   int *sndmixer;
@@ -796,10 +796,10 @@ struct sound_menu {
     sheet->NewGroup(NULL, 0, 0);
 
     slider_set.type = SLIDER_UNITS_PERCENT;
-    fxvolume = sheet->AddSlider(TXT_SOUNDVOL, 10, (short)(Sound_system.GetMasterVolume() * 10), &slider_set);
+    fxvolume = sheet->AddSlider(TXT_SOUNDVOL, 10, (int16_t)(Sound_system.GetMasterVolume() * 10), &slider_set);
 
     slider_set.type = SLIDER_UNITS_PERCENT;
-    musicvolume = sheet->AddSlider(TXT_SNDMUSVOL, 10, (short)(D3MusicGetVolume() * 10), &slider_set);
+    musicvolume = sheet->AddSlider(TXT_SNDMUSVOL, 10, (int16_t)(D3MusicGetVolume() * 10), &slider_set);
 
     // sound fx quality radio list.
     if (GetFunctionMode() != GAME_MODE && GetFunctionMode() != EDITOR_GAME_MODE) {
@@ -1184,7 +1184,7 @@ struct details_menu {
   int *objcomp;                       // object complexity radio
   bool *specmap, *headlight, *mirror, // check boxes
       *dynamic, *fog, *coronas, *procedurals, *powerup_halo, *scorches, *weapon_coronas;
-  short *pixel_err, // 0-27 (1-28)
+  int16_t *pixel_err, // 0-27 (1-28)
       *rend_dist;   // 0-120 (80-200)
 
   int *texture_quality;
@@ -1323,12 +1323,12 @@ void details_menu::set_preset_details(int setting) {
   iTemp = MAXIMUM_TERRAIN_DETAIL - ds.Pixel_error - MINIMUM_TERRAIN_DETAIL;
   if (iTemp < 0)
     iTemp = 0;
-  *pixel_err = (short)(iTemp);
+  *pixel_err = (int16_t)(iTemp);
   iTemp = (int)((ds.Terrain_render_distance / ((float)TERRAIN_SIZE)) - MINIMUM_RENDER_DIST);
   if (iTemp < 0)
     iTemp = 0;
   iTemp = iTemp / 2;
-  *rend_dist = (short)(iTemp);
+  *rend_dist = (int16_t)(iTemp);
   *objcomp = ds.Object_complexity;
   *specmap = ds.Specular_lighting;
   *headlight = ds.Fast_headlight_on;

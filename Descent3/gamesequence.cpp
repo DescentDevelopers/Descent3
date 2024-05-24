@@ -2249,7 +2249,7 @@ bool PageInSound(int id) {
   if (Dedicated_server)
     return false;
 
-  // sometimes, id passed was 0xffff which seems like a short -1.  The if statement
+  // sometimes, id passed was 0xffff which seems like a int16_t -1.  The if statement
   // ensures that the array Sounds_to_free is dealt with properly.
   if (Sound_system.CheckAndForceSoundDataAlloc(id)) {
     Sounds_to_free[id] = 1;

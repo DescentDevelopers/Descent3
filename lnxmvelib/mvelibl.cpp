@@ -1095,7 +1095,7 @@ void MVE_ForceVresHalf(void) {}
 // If auto is set, and this function is being called to change mode
 //  for movie, be sure to turn auto back on after call!
 //
-unsigned MVE_gfxMode(short mode) { return FALSE; }
+unsigned MVE_gfxMode(int16_t mode) { return FALSE; }
 
 // Restore a text mode
 void MVE_gfxReset(void) {
@@ -1354,7 +1354,7 @@ int MVE_rmStepMovie(void) {
         arg->minh = INTEL_SHORT(arg->minh);
         arg->mode = INTEL_SHORT(arg->mode);
         if (sf_auto) {
-          short mode = arg->mode;
+          int16_t mode = arg->mode;
           if (opt_fastmode && (opt_fastmode & 4) == 0)
             mode |= 0x8000;
           if (sf_auto_mode != mode)

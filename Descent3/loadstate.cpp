@@ -268,7 +268,7 @@ int LoadGameState(const char *pathname) {
   char path[PSPATHNAME_LEN];
   uint16_t version;
   uint16_t curlevel;
-  short pending_music_region;
+  int16_t pending_music_region;
   IsRestoredGame = true;
   //	load in stuff
   fp = cfopen(pathname, "rb");
@@ -474,7 +474,7 @@ savesg_error:
 int LGSXlateTables(CFILE *fp) {
   START_VERIFY_SAVEFILE(fp);
   int retval = LGS_OK;
-  short i, num, index;
+  int16_t i, num, index;
   char name[64];
 
   //	load object info translation table
@@ -541,15 +541,15 @@ extern uint8_t AutomapVisMap[MAX_ROOMS];
 //	initializes rooms
 int LGSRooms(CFILE *fp) {
   int retval = LGS_OK;
-  short i, p, highest_index;
+  int16_t i, p, highest_index;
 
   gs_ReadShort(fp, highest_index);
-  if (highest_index != (short)Highest_room_index) {
+  if (highest_index != (int16_t)Highest_room_index) {
     Int3();
     return LGS_CORRUPTLEVEL;
   }
 
-  short num_rooms;
+  int16_t num_rooms;
   gs_ReadShort(fp, num_rooms);
 
   for (i = 0; i < num_rooms; i++) {
@@ -628,10 +628,10 @@ int LGSEvents(CFILE *fp) {
 
 //	loads in and sets these triggers
 int LGSTriggers(CFILE *fp) {
-  short i, n_trigs = 0;
+  int16_t i, n_trigs = 0;
 
   gs_ReadShort(fp, n_trigs);
-  if (n_trigs != (short)Num_triggers) {
+  if (n_trigs != (int16_t)Num_triggers) {
     Int3();
     return LGS_CORRUPTLEVEL;
   }
@@ -686,7 +686,7 @@ typedef struct {
   uint16_t flags;
   int phys_flags;
   uint8_t movement_type;
-  short custom_handle;
+  int16_t custom_handle;
   uint16_t lighting_color;
 
   vis_attach_info attach_info;
@@ -694,8 +694,8 @@ typedef struct {
 
   vector end_pos;
 
-  short next;
-  short prev;
+  int16_t next;
+  int16_t prev;
 } old_vis_effect;
 
 void CopyVisStruct(vis_effect *vis, old_vis_effect *old_vis) {
@@ -733,7 +733,7 @@ void CopyVisStruct(vis_effect *vis, old_vis_effect *old_vis) {
 
 // save viseffects
 int LGSVisEffects(CFILE *fp) {
-  short i, count = 0;
+  int16_t i, count = 0;
 
   gs_ReadShort(fp, count);
 
@@ -778,7 +778,7 @@ int LGSVisEffects(CFILE *fp) {
 // players
 int LGSPlayers(CFILE *fp) {
   player *plr = &Players[0];
-  short size;
+  int16_t size;
 
   // must do this if we read player struct as whole.
   plr->inventory.Reset(false, INVRESET_ALL);
@@ -953,7 +953,7 @@ int LGSObjects(CFILE *fp, int version) {
     door *door;
     int index, nattach, new_model, handle;
     uint8_t type, dummy_type;
-    short sindex, size;
+    int16_t sindex, size;
 
     //	if((i==98)||(i==100))
     //		Int3();
@@ -1242,7 +1242,7 @@ int LGSObjects(CFILE *fp, int version) {
     case RT_POLYOBJ: // be sure to use translated handles for polyobjs and textures
     {
       // the paging mess.  must update size of object accordingly.
-      sindex = (short)op->rtype.pobj_info.model_num;
+      sindex = (int16_t)op->rtype.pobj_info.model_num;
       new_model = (sindex > -1) ? gs_Xlates->model_handles[sindex] : -1;
       if ((new_model != op->rtype.pobj_info.model_num) || (Poly_models[new_model].flags & PMF_NOT_RESIDENT)) {
         switch (type) {
@@ -1275,7 +1275,7 @@ int LGSObjects(CFILE *fp, int version) {
       }
       op->rtype.pobj_info.model_num = new_model;
 
-      sindex = (short)op->rtype.pobj_info.dying_model_num;
+      sindex = (int16_t)op->rtype.pobj_info.dying_model_num;
       new_model = (sindex > -1) ? gs_Xlates->model_handles[sindex] : -1;
       if (new_model != op->rtype.pobj_info.dying_model_num) {
         switch (type) {
@@ -1323,7 +1323,7 @@ int LGSObjects(CFILE *fp, int version) {
     }
 
     case RT_SHARD:
-      sindex = (short)op->rtype.shard_info.tmap;
+      sindex = (int16_t)op->rtype.shard_info.tmap;
       op->rtype.shard_info.tmap = (sindex > -1) ? gs_Xlates->tex_handles[sindex] : -1;
       break;
 
@@ -1441,7 +1441,7 @@ done:;
 //	loads ai
 int LGSObjAI(CFILE *fp, ai_frame **pai) {
   ai_frame *ai;
-  short size;
+  int16_t size;
   int8_t read_ai;
 
   *pai = NULL;
@@ -1464,7 +1464,7 @@ int LGSObjAI(CFILE *fp, ai_frame **pai) {
 
 //	loads fx
 int LGSObjEffects(CFILE *fp, object *op) {
-  short size;
+  int16_t size;
   int8_t do_read;
 
   op->effect_info = NULL;
@@ -1610,7 +1610,7 @@ int LGSSnapshot(CFILE *fp) {
 //@@		{
 //@@		case MT_SHOCKWAVE:
 //@@			{
-//@@				short bound;
+//@@				int16_t bound;
 //@@				gs_ReadShort(fp, bound);
 //@@				if (bound < (sizeof(op_wave->damaged_list)/sizeof(uint32_t))) {
 //@@					Int3();

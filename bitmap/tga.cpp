@@ -153,7 +153,7 @@ static int Fake_file_size = 0;
 
 static inline char tga_read_byte();
 static inline int tga_read_int();
-static inline short tga_read_short();
+static inline int16_t tga_read_short();
 static uint16_t bm_tga_translate_pixel(int pixel, int format);
 static int bm_tga_read_outrage_compressed16(CFILE *infile, int n, int num_mips, int type);
 
@@ -180,8 +180,8 @@ inline int tga_read_int() {
 
   return INTEL_INT(i);
 }
-inline short tga_read_short() {
-  short i;
+inline int16_t tga_read_short() {
+  int16_t i;
 
   // Check for bad file
   if (Fake_pos + 2 > Fake_file_size) {
@@ -189,7 +189,7 @@ inline short tga_read_short() {
     return 0;
   }
 
-  i = *(short *)(Tga_file_data + Fake_pos);
+  i = *(int16_t *)(Tga_file_data + Fake_pos);
   Fake_pos += 2;
 
   return INTEL_SHORT(i);

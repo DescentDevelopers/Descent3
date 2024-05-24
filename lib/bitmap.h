@@ -60,7 +60,7 @@ typedef struct {
   uint16_t width, height; // Width and height in pixels
   uint16_t used;          // Is this bitmap free to be allocated?
 
-  short cache_slot; // For use by the rendering lib
+  int16_t cache_slot; // For use by the rendering lib
   uint8_t mip_levels;
   uint8_t flags;
 

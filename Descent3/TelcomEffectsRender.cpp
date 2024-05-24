@@ -411,12 +411,12 @@ void RenderBmpStatic(tceffect *tce, float frametime, int xoff, int yoff, bool ok
   BltBmpToScreen(tce->pos_x + glitch_dx + xoff, tce->pos_y + glitch_dy + yoff, &tce->bmpinfo.chunk_bmp);
   tce->age += frametime;
 }
-void BlurBitmapArea(uint16_t *srcbm, uint16_t *dstbm, short width, short height, short startx, short starty, short bmw) {
+void BlurBitmapArea(uint16_t *srcbm, uint16_t *dstbm, int16_t width, int16_t height, int16_t startx, int16_t starty, int16_t bmw) {
   int pixel_count, blue_total, red_total, green_total;
   pixel_count = width * height;
   blue_total = red_total = green_total = 0;
-  short x, y;
-  short pos;
+  int16_t x, y;
+  int16_t pos;
   if (!pixel_count)
     return;
 

@@ -694,7 +694,7 @@ extern object *Viewer_object; // which object we are seeing from
 
 #define MAX_BIG_OBJECTS 350
 extern int Num_big_objects;
-extern short BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
+extern int16_t BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
 
 // Compute the object number from an object pointer
 #define OBJNUM(objp) (objp - Objects)

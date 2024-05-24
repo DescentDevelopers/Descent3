@@ -827,7 +827,7 @@ bool levelgoals::LoadLevelGoalInfo(CFILE *fptr) {
   CleanupAfterLevel();
 
   int i;
-  short version = cf_ReadShort(fptr);
+  int16_t version = cf_ReadShort(fptr);
   int num_goals = cf_ReadShort(fptr);
 
   for (i = 0; i < num_goals; i++) {

@@ -70,7 +70,7 @@ fix FloatToFixFast(float num);
 #define ShortToFix(num) (((int32_t)(num)) << FIX_SHIFT)
 #define FixToFloat(num) (((float)(num)) / FLOAT_SCALER)
 #define FixToInt(num) ((num) >> FIX_SHIFT)
-#define FixToShort(num) ((short)((num) >> FIX_SHIFT))
+#define FixToShort(num) ((int16_t)((num) >> FIX_SHIFT))
 
 // Tables for trig functions
 float sincos_table[321]; // 256 entries + 64 sin-only + 1 for interpolation

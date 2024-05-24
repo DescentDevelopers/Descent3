@@ -363,13 +363,13 @@ void ddio_ffb_DestroyAll(void);
 // Purpose:
 //    Play an effect that was previously created.
 // -------------------------------------------------------------------
-void ddio_ffb_effectPlay(short eID);
+void ddio_ffb_effectPlay(int16_t eID);
 // -------------------------------------------------------------------
 // ddio_ffb_effectStop
 // Purpose:
 //    Stop a single effect.
 // -------------------------------------------------------------------
-void ddio_ffb_effectStop(short eID);
+void ddio_ffb_effectStop(int16_t eID);
 // -------------------------------------------------------------------
 // ddio_ffb_effectStopAll
 // Purpose:
@@ -382,21 +382,21 @@ void ddio_ffb_effectStopAll(tDevice dev);
 //    Unload a single effect...  Necessary to make room for other
 //    effects.
 // -------------------------------------------------------------------
-void ddio_ffb_effectUnload(short eID);
+void ddio_ffb_effectUnload(int16_t eID);
 // -------------------------------------------------------------------
 // ddio_ffb_effectModify
 // Purpose:
 //    Modifies a single effect, only if the given parameters are
 //    different from what's currently loaded.
 // -------------------------------------------------------------------
-void ddio_ffb_effectModify(short eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
+void ddio_ffb_effectModify(int16_t eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
                            tEffInfo *TypeInfo, tEffEnvelope *Envelope);
 // -------------------------------------------------------------------
 // ddio_ffb_GetEffectData
 // Purpose:
 //    Retrieves affect data for the given parameters, pass NULL for those you don't want
 // -------------------------------------------------------------------
-void ddio_ffb_GetEffectData(short eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
+void ddio_ffb_GetEffectData(int16_t eID, int *Direction, uint32_t *Duration, uint32_t *Gain, uint32_t *Period,
                             tEffInfo *TypeInfo, tEffEnvelope *Envelope);
 // -------------------------------------------------------------------
 // ddio_ffjoy_EnableAutoCenter

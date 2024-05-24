@@ -1789,7 +1789,7 @@ void MakeShockwave(object *explode_obj_ptr, int parent_handle) {
     DoConcussiveForce(explode_obj_ptr, parent_handle);
   }
 }
-// object *object_create_explosion_sub(object *explode_obj_ptr, short segnum, vms_vector * position, fix size, int
+// object *object_create_explosion_sub(object *explode_obj_ptr, int16_t segnum, vms_vector * position, fix size, int
 // vclip_type, fix maxdamage, fix maxdistance, fix maxforce, int parent )
 void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_scalar) {
   int objnum;
@@ -1798,7 +1798,7 @@ void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_
   float maxforce = explode_obj_ptr->impact_force;
   float maxdistance = explode_obj_ptr->impact_size;
   float effect_distance;
-  short parent;
+  int16_t parent;
   object *parent_obj;
   if (explode_obj_ptr->type == OBJ_SHOCKWAVE) {
     effect_distance =

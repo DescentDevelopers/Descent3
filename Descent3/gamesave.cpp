@@ -716,7 +716,7 @@ bool LoadCurrentSaveGame() {
 bool SaveGameState(const char *pathname, const char *description) {
   CFILE *fp;
   char buf[GAMESAVE_DESCLEN + 1];
-  short pending_music_region;
+  int16_t pending_music_region;
 
   fp = cfopen(pathname, "wb");
   if (!fp)
@@ -748,7 +748,7 @@ bool SaveGameState(const char *pathname, const char *description) {
   //	write out gamemode information
 
   //	write out mission level information
-  cf_WriteShort(fp, (short)Current_mission.cur_level);
+  cf_WriteShort(fp, (int16_t)Current_mission.cur_level);
 
   if (Current_mission.filename && (strcmpi("d3_2.mn3", Current_mission.filename) == 0)) {
     cf_WriteString(fp, "d3.mn3");
@@ -838,7 +838,7 @@ bool SaveGameState(const char *pathname, const char *description) {
 void SGSXlateTables(CFILE *fp) {
   START_VERIFY_SAVEFILE(fp);
   //	create object info translation table
-  short i, highest_index = -1;
+  int16_t i, highest_index = -1;
 
   for (i = 0; i < MAX_OBJECT_IDS; i++)
     if (Object_info[i].type != OBJ_NONE)
@@ -883,7 +883,7 @@ extern uint8_t AutomapVisMap[MAX_ROOMS];
 void SGSRooms(CFILE *fp) {
   int i, f, p;
 
-  gs_WriteShort(fp, (short)Highest_room_index);
+  gs_WriteShort(fp, (int16_t)Highest_room_index);
 
   gs_WriteShort(fp, MAX_ROOMS);
 
@@ -951,7 +951,7 @@ void SGSEvents(CFILE *fp) {}
 void SGSTriggers(CFILE *fp) {
   int i;
 
-  gs_WriteShort(fp, (short)Num_triggers);
+  gs_WriteShort(fp, (int16_t)Num_triggers);
 
   for (i = 0; i < Num_triggers; i++) {
     gs_WriteShort(fp, Triggers[i].flags);
@@ -986,7 +986,7 @@ void SGSVisEffects(CFILE *fp) {
     if (VisEffects[i].type != VIS_NONE)
       count++;
 
-  gs_WriteShort(fp, (short)count);
+  gs_WriteShort(fp, (int16_t)count);
 
   for (i = 0; i <= Highest_vis_effect_index; i++) {
     if (VisEffects[i].type != VIS_NONE)
@@ -1011,14 +1011,14 @@ void SGSObjects(CFILE *fp) {
 
   // Save marker info (text)
   cf_WriteInt(fp, Marker_message);
-  cf_WriteShort(fp, (short)MAX_PLAYERS * 2);
+  cf_WriteShort(fp, (int16_t)MAX_PLAYERS * 2);
   for (i = 0; i < MAX_PLAYERS * 2; i++) {
     cf_WriteShort(fp, strlen(MarkerMessages[i]) + 1);
     cf_WriteBytes((uint8_t *)MarkerMessages[i], strlen(MarkerMessages[i]) + 1, fp);
   }
 
   // this method should maintain the object list as it currently stands in the level
-  cf_WriteShort(fp, (short)Highest_object_index);
+  cf_WriteShort(fp, (int16_t)Highest_object_index);
 
   // save what objects are stuck to each other
   cf_WriteInt(fp, MAX_OBJECTS);
@@ -1093,13 +1093,13 @@ void SGSObjects(CFILE *fp) {
       cf_WriteBytes((uint8_t *)op->name, ii, fp);
 
     //	data universal to all objects that need to be saved.
-    gs_WriteShort(fp, (short)op->id);
+    gs_WriteShort(fp, (int16_t)op->id);
     gs_WriteInt(fp, static_cast<int32_t>(op->flags));
     gs_WriteByte(fp, (int8_t)op->control_type);
     gs_WriteByte(fp, (int8_t)op->movement_type);
     gs_WriteByte(fp, (int8_t)op->render_type);
 
-    gs_WriteShort(fp, (short)op->renderframe);
+    gs_WriteShort(fp, (int16_t)op->renderframe);
     gs_WriteFloat(fp, op->size);
     gs_WriteFloat(fp, op->shields);
     gs_WriteByte(fp, op->contains_type);
@@ -1162,7 +1162,7 @@ void SGSObjects(CFILE *fp) {
 
     INSURE_SAVEFILE;
 
-    gs_WriteShort(fp, (short)op->position_counter);
+    gs_WriteShort(fp, (int16_t)op->position_counter);
 
     INSURE_SAVEFILE;
 
@@ -1296,7 +1296,7 @@ void SGSObjSpecial(CFILE *fp, const object *op) {}
 void SGSSpew(CFILE *fp) {
   int i;
 
-  gs_WriteShort(fp, (short)spew_count);
+  gs_WriteShort(fp, (int16_t)spew_count);
   for (i = 0; i < MAX_SPEW_EFFECTS; i++) {
     gs_WriteByte(fp, SpewEffects[i].inuse ? true : false);
     if (SpewEffects[i].inuse)

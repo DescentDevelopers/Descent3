@@ -56,7 +56,7 @@ terrain_sky Terrain_sky;
 
 #if (!defined(RELEASE) || defined(NEWEDITOR))
 // first object to render after cell has been rendered (only used for SW renderer)
-short Terrain_seg_render_objs[TERRAIN_WIDTH * TERRAIN_DEPTH];
+int16_t Terrain_seg_render_objs[TERRAIN_WIDTH * TERRAIN_DEPTH];
 #endif
 
 // Our lighting maps for the terrain, one for each quadrant (starting at lower left)
@@ -797,7 +797,7 @@ void SetupSky(float radius, int flags, uint8_t randit) {
 int LoadPCXTerrain(char *filename) {
   CFILE *infile;
   int run = 0, i, total, j, n;
-  short xmin, ymin, xmax, ymax;
+  int16_t xmin, ymin, xmax, ymax;
   int width, height;
   uint8_t buf;
   uint8_t *lando;

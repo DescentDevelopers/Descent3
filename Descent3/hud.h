@@ -454,10 +454,10 @@ const char *GetMessageDestination(const char *message, int *destination);
 
 typedef struct t_dirty_rect {
   struct {
-    short l, t, r, b;
+    int16_t l, t, r, b;
   } r[3]; // three rectangles for each frame buffer (3 max)
 
-  void set(short l0, short t0, short r0, short b0) {
+  void set(int16_t l0, int16_t t0, int16_t r0, int16_t b0) {
     r[0].l = l0;
     r[0].t = t0;
     r[0].r = r0;
@@ -468,10 +468,10 @@ typedef struct t_dirty_rect {
 } tDirtyRect; // dirty rectangle for hud item (small hud version)
 
 typedef struct tHUDItem {
-  short x, y;
-  short xa, ya; // auxillary points
-  short xb, yb;
-  short tx, ty;             // text version x and y.
+  int16_t x, y;
+  int16_t xa, ya; // auxillary points
+  int16_t xb, yb;
+  int16_t tx, ty;             // text version x and y.
   float grscalex, grscaley; // used to scale graphics.
 
   uint8_t id;    // id number.
