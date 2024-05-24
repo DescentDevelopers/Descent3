@@ -141,7 +141,7 @@ void CZip::ha_InitializeTree(tHATree *tree) {
     tree->leaf[i] = -1;
 }
 
-void CZip::ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output) {
+void CZip::ha_EncodeSymbol(tHATree *tree, uint32_t c, BITFILE *output) {
   uint32_t code;
   uint32_t current_bit;
   int code_size;
@@ -207,7 +207,7 @@ void CZip::ha_UpdateModel(tHATree *tree, int c) {
 
 void CZip::ha_RebuildTree(tHATree *tree) {
   int i, j, k;
-  uint weight;
+  uint32_t weight;
   j = tree->next_free_node - 1;
   for (i = j; i >= ROOT_NODE; i--) {
     if (tree->nodes[i].child_is_leaf) {

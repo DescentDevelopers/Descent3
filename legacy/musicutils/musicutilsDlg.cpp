@@ -680,7 +680,7 @@ void CMusicutilsDlg::OnToolsMakeStream()
 	if (savedlg.DoModal() == IDOK) {
 		OSFArchive osf;
 		ubyte strmtype=0, strmcomp=0, strmfmt=0, xforms;
-		uint rate;
+		uint32_t rate;
 
 	// determine stream type.
 		strmtype = OSF_DIGITAL_STRM;
@@ -740,11 +740,11 @@ void CMusicutilsDlg::OnToolsPlaySong()
 #define FILEBUFFER_LENGTH		(64 * 1024)
 static ubyte StaticFileBuffer[FILEBUFFER_LENGTH];
 
-bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString& rawfilename, ubyte compression, ubyte format, uint samples, const CString& realname, ubyte xforms, int measure)
+bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString& rawfilename, ubyte compression, ubyte format, uint32_t samples, const CString& realname, ubyte xforms, int measure)
 {
 	FILE *fpin = NULL;
 	int i;
-	uint filelen;
+	uint32_t filelen;
 	int nblocks;
 
 	if (compression == OSF_DIGIACM_STRM ) {
@@ -801,7 +801,7 @@ bool CMusicutilsDlg::SaveDigitalStream(OSFArchive *osf, const CString& rawfilena
 
 	ASSERT(fpin);
 
-	filelen = (uint)_filelength(fileno(fpin));
+	filelen = (uint32_t)_filelength(fileno(fpin));
 	nblocks = filelen / FILEBUFFER_LENGTH;
 
 //	write out data.

@@ -1635,7 +1635,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
   }
 
   // Read the flags
-  uint flags;
+  uint32_t flags;
   if (fileversion >= 101)
     flags = cf_ReadInt(ifile);
   else

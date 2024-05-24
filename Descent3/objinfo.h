@@ -389,7 +389,7 @@ typedef struct {
 
 // Death info for an object type
 typedef struct {
-  uint flags;      // death flags
+  uint32_t flags;      // death flags
   float delay_min; // if delay, min amount
   float delay_max; // if delay, max amount
 } death_info;

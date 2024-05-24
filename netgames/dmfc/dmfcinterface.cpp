@@ -513,7 +513,7 @@ void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, const char *string) {
   instance->AddSuicideMessage(string);
 }
 
-void DLLFUNCCALL IDMFC_DoRandomDeathMessage(IDMFC *instance, int killernum, int victimnum, uint hash) {
+void DLLFUNCCALL IDMFC_DoRandomDeathMessage(IDMFC *instance, int killernum, int victimnum, uint32_t hash) {
   assert(instance != NULL);
   instance->DoRandomDeathMessage(killernum, victimnum, hash);
 }

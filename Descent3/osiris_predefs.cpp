@@ -2799,7 +2799,7 @@ void osipf_MissionFlagSet(int flag, ubyte value) {
   }
 
   flag--;
-  uint bit = 0x01;
+  uint32_t bit = 0x01;
   bit = bit << flag;
 
   if (!value) {
@@ -2818,7 +2818,7 @@ int osipf_MissionFlagGet(int flag) {
   }
 
   flag--;
-  uint bit = 0x01;
+  uint32_t bit = 0x01;
   bit = bit << flag;
 
   if (Current_mission.game_state_flags & bit)

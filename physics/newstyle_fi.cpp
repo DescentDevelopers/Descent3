@@ -68,8 +68,8 @@ static void newstyle_StartInstanceAngles(vector *pos, angvec *angles);
 
 /// pops the old context
 static void newstyle_DoneInstance();
-static void CollideSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub);
-static void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, uint f_render_sub);
+static void CollideSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub);
+static void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, uint32_t f_render_sub);
 
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis) {
   float x, y, z;
@@ -316,7 +316,7 @@ static void newstyle_DoneInstance() {
   }
 }
 
-void CollideSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub) {
+void CollideSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   // Don't collide with door housings (That is the 'room' portion of the door)
   if ((sm->flags & SOF_SHELL) || (sm->flags & SOF_FRONTFACE))
     return;
@@ -337,7 +337,7 @@ void CollideSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub) {
   DonePolyModelPosInstance();
 }
 
-void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, uint f_render_sub) {
+void CollidePolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, uint32_t f_render_sub) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);

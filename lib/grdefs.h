@@ -72,7 +72,7 @@
 #define OPAQUE_FLAG OPAQUE_FLAG16
 
 //	a new color definition
-typedef uint ddgr_color;
+typedef uint32_t ddgr_color;
 
 // Color constants
 static const ddgr_color GR_NULL = 0xffffffff, // don't do a thing with this.

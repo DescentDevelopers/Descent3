@@ -306,7 +306,7 @@ $$TABLE_SOUND "PlayerDeath"
 //  killer_obj = object pointer to the object that killed the player
 //  victim_pnum = player number of the player that got killed
 void DMFCBase::OnClientPlayerKilled(object *killer_obj, int victim_pnum) {
-  uint hash = 0xFFFFFFFF;
+  uint32_t hash = 0xFFFFFFFF;
   int kpnum;
   player_record *kpr, *vpr;
 
@@ -318,7 +318,7 @@ void DMFCBase::OnClientPlayerKilled(object *killer_obj, int victim_pnum) {
 
       // now we need to extract out the weapon of the kill
       if (Data->iParam != -1)
-        hash = (uint)Data->iParam;
+        hash = (uint32_t)Data->iParam;
     } else if (killer_obj->type == OBJ_ROBOT || (killer_obj->type == OBJ_BUILDING && killer_obj->ai_info)) {
       // countermeasure kill
       kpnum = GetCounterMeasureOwner(killer_obj);

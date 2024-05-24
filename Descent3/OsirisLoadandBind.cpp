@@ -529,7 +529,7 @@ static void Osiris_SaveOMMS(CFILE *file);
 //		Generates a checksum of the game's structures, to give to the modules
 //	so they can use to compare to the time when they were compiled, to see
 //	if they are compatible.
-uint Osiris_CreateGameChecksum(void);
+uint32_t Osiris_CreateGameChecksum(void);
 //	Osiris_IsEventEnabled
 //	Purpose:
 //		Returns true if the event is allowed to be called
@@ -543,7 +543,7 @@ extern void Cinematic_StartCannedScript(tCannedCinematicInfo *info);
 static void Osiris_DumpLoadedObjects(char *file);
 static void Osiris_ForceUnloadModules(void);
 
-uint Osiris_game_checksum;
+uint32_t Osiris_game_checksum;
 
 static ubyte Osiris_event_mask = OEM_OBJECTS | OEM_TRIGGERS | OEM_LEVELS;
 static bool Osiris_create_events_disabled = false;
@@ -626,8 +626,8 @@ void Osiris_InitModuleLoader(void) {
 //		Generates a checksum of the game's structures, to give to the modules
 //	so they can use to compare to the time when they were compiled, to see
 //	if they are compatible.
-uint Osiris_CreateGameChecksum(void) {
-  uint value = 0xe1e1b0b0;
+uint32_t Osiris_CreateGameChecksum(void) {
+  uint32_t value = 0xe1e1b0b0;
 
   value += sizeof(object);
   value += sizeof(player) * 2;
@@ -3297,7 +3297,7 @@ the script)
 // Returns -1 if there isn't enough available memory
 // Returns -2 if the unique identifier passed in is already used, but the requested amount_of_memory is different
 // If the memory has already been allocated, it will return the handle.
-OMMSHANDLE OMMS_Malloc(size_t amount_of_memory,uint unique_identifier,char *script_identifier);
+OMMSHANDLE OMMS_Malloc(size_t amount_of_memory,uint32_t unique_identifier,char *script_identifier);
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
 //	attached to a module, the memory will not be deleted. (Increments the reference count)
@@ -3323,12 +3323,12 @@ subtracts).
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-OMMSHANDLE OMMS_Find(uint unique_identifier,char *script_identifier);
+OMMSHANDLE OMMS_Find(uint32_t unique_identifier,char *script_identifier);
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char OMMS_GetInfo(OMMSHANDLE handle,uint *mem_size,uint *uid,ushort *reference_count,ubyte *has_free_been_called);
+char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,ushort *reference_count,ubyte *has_free_been_called);
 
 
 ******************************************************************************
@@ -3380,7 +3380,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash = NULL
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different Returns -3 if the unique identifier passed in is
 // already used, same size requested
-static OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint unique_identifier, char *script_identifier);
+static OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifier, char *script_identifier);
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
 //	attached to a module, the memory will not be deleted. (Increments the reference count)
@@ -3406,12 +3406,12 @@ static void Osiris_OMMS_Free(OMMSHANDLE handle);
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-static OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier);
+static OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier);
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
+static char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, ushort *reference_count,
                                 ubyte *has_free_been_called);
 
 void Osiris_InitOMMS(void) {
@@ -3770,7 +3770,7 @@ tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different If the memory has already been allocated, it will
 // return the handle.
-OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint unique_identifier, char *script_identifier) {
+OMMSHANDLE Osiris_OMMS_Malloc(size_t amount_of_memory, uint32_t unique_identifier, char *script_identifier) {
   ASSERT(amount_of_memory > 0);
   if (amount_of_memory <= 0)
     return -1;
@@ -3852,7 +3852,7 @@ void Osiris_OMMS_Free(OMMSHANDLE handle) {
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier) {
+OMMSHANDLE Osiris_OMMS_Find(uint32_t unique_identifier, char *script_identifier) {
   tOMMSHashNode *hash = Osiris_OMMS_FindHashNode(script_identifier, false);
   if (!hash)
     return -1;
@@ -3869,7 +3869,7 @@ OMMSHANDLE Osiris_OMMS_Find(uint unique_identifier, char *script_identifier) {
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
+char Osiris_OMMS_GetInfo(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, ushort *reference_count,
                          ubyte *has_free_been_called) {
   if (mem_size)
     *mem_size = 0;

@@ -678,7 +678,7 @@ static void SetNormalizedTimeAnimTimed(float frame, float *normalized_time, poly
 static void FreeAllModels();
 /// Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
 /// position/angle of each corresponding subobject.
-static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subobj_flags);
+static void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t subobj_flags);
 static void BuildModelAngleMatrix(matrix *mat, angle ang, vector *axis);
 
 int findtextbmpname = 0;
@@ -2611,7 +2611,7 @@ void SetPolymodelEffect(polymodel_effect *poly_effect) { Polymodel_effect = *pol
 
 // Given a model pointer and an array of floats that go from 0..1, calculate the interpolated
 // position/angle of each corresponding subobject
-void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subobj_flags) {
+void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint32_t subobj_flags) {
   int i;
 
   ASSERT(!(po->flags & PMF_NOT_RESIDENT));
@@ -2745,7 +2745,7 @@ void SetModelAnglesAndPosTimed(poly_model *po, float *normalized_time, uint subo
 }
 
 // Sets the position and rotation of a polymodel.  Used for rendering and collision detection
-void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint subobj_flags) {
+void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint32_t subobj_flags) {
   ASSERT(!(po->flags & PMF_NOT_RESIDENT));
 
   if (po->flags & PMF_TIMED) {
@@ -2843,7 +2843,7 @@ void DoneLightInstance() {
 
 // This is the static light version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, float r, float g,
-                      float b, uint f_render_sub, ubyte use_effect, ubyte overlay) {
+                      float b, uint32_t f_render_sub, ubyte use_effect, ubyte overlay) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);
@@ -2921,7 +2921,7 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 
 // This draws a gouraud shaded version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, vector *lightdir,
-                      float r, float g, float b, uint f_render_sub, ubyte use_effect, ubyte overlay) {
+                      float r, float g, float b, uint32_t f_render_sub, ubyte use_effect, ubyte overlay) {
   poly_model *po;
   vector light_vec = *lightdir;
 
@@ -3001,7 +3001,7 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 
 // This draws a lightmap shaded version
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags,
-                      lightmap_object *lm_object, uint f_render_sub, ubyte use_effect, ubyte overlay) {
+                      lightmap_object *lm_object, uint32_t f_render_sub, ubyte use_effect, ubyte overlay) {
   poly_model *po;
 
   ASSERT(Poly_models[model_num].used);

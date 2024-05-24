@@ -570,11 +570,11 @@ typedef void (*assertdll_fp)(int x, const char *expression, const char *file, in
 DMFCDLLOUT(assertdll_fp DLLassert;)
 
 // Return index of generic that has matching table entry
-typedef int (*MultiMatchWeapon_fp)(uint unique_id);
+typedef int (*MultiMatchWeapon_fp)(uint32_t unique_id);
 DMFCDLLOUT(MultiMatchWeapon_fp DLLMultiMatchWeapon;)
 
 // Returns the unique id of a given object type/id
-typedef uint (*MultiGetMatchChecksum_fp)(int type, int id);
+typedef uint32_t (*MultiGetMatchChecksum_fp)(int type, int id);
 DMFCDLLOUT(MultiGetMatchChecksum_fp DLLMultiGetMatchChecksum;)
 
 // Searches thru all weapons for a specific name, returns -1 if not found
@@ -611,7 +611,7 @@ typedef bool (*ApplyDamageToPlayer_fp)(object *playerobj, object *killer, int da
 DMFCDLLOUT(ApplyDamageToPlayer_fp DLLApplyDamageToPlayer;)
 
 // Return index of generic that has matching table entry
-typedef int (*MultiMatchGeneric_fp)(uint unique_id);
+typedef int (*MultiMatchGeneric_fp)(uint32_t unique_id);
 DMFCDLLOUT(MultiMatchGeneric_fp DLLMultiMatchGeneric;)
 
 typedef void (*SetUITextItemText_fp)(void *uit, char *newtext, uint32_t color);

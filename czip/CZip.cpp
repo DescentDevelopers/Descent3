@@ -680,12 +680,12 @@ ushort CZip::ReadRawShort(void) {
   data = (data << 8) | (ReadRawByte());
   return data;
 }
-uint CZip::ReadRawInt(void) {
+uint32_t CZip::ReadRawInt(void) {
   if (!m_bRawType)
     return -1;
 
   // need to read 4 bytes
-  uint data = 0;
+  uint32_t data = 0;
   data = ReadRawByte();
   data = (data << 8) | (ReadRawByte());
   data = (data << 8) | (ReadRawByte());
@@ -724,7 +724,7 @@ void CZip::WriteRawShort(ushort value) {
   data = (value & 0xFF);
   WriteRawByte(data);
 }
-void CZip::WriteRawInt(uint value) {
+void CZip::WriteRawInt(uint32_t value) {
   if (!m_bRawType)
     return;
   // write 4 bytes
@@ -743,7 +743,7 @@ void CZip::WriteRawFloat(float value) {
     return;
   // write 4 bytes
   ubyte data;
-  uint v = 0;
+  uint32_t v = 0;
   v = *((int *)&value);
 
   data = ((v & 0xFF000000) >> 24);

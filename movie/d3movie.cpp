@@ -56,7 +56,7 @@ char MovieDir[512];
 char SoundCardName[512];
 ushort CurrentPalette[256];
 int Movie_bm_handle = -1;
-uint Movie_current_framenum = 0;
+uint32_t Movie_current_framenum = 0;
 bool Movie_looping = false;
 
 #ifndef NO_MOVIES

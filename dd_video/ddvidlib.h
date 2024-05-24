@@ -104,7 +104,7 @@ void ddvidfs_CloseVideo();
 void ddvidfs_VideoFlip();
 
 //	returns the directdraw object
-uint ddvidfs_GetDirectDrawObject();
+uint32_t ddvidfs_GetDirectDrawObject();
 
 // inits windowed system
 bool ddvidwin_Init();

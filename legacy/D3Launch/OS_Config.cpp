@@ -234,7 +234,7 @@ Cleanup:
 }
 
 // Writes an uint32_t to the INI file.  
-void os_config_write_uint( char *section, char *name, uint value )
+void os_config_write_uint( char *section, char *name, uint32_t value )
 {
 	HKEY hKey = NULL;
 	DWORD dwDisposition;
@@ -451,13 +451,13 @@ Cleanup:
 
 // Reads a string from the INI file.  Default_value must 
 // be passed, and if 'name' isn't found, then returns default_value
-uint  os_config_read_uint( char *section, char *name, uint default_value )
+uint32_t  os_config_read_uint( char *section, char *name, uint32_t default_value )
 {
 	HKEY hKey = NULL;
 	DWORD dwType, dwLen;
 	char keyname[1024];
 	LONG lResult;
-	uint tmp_val;
+	uint32_t tmp_val;
 
 
 	if ( section )	{

@@ -3279,10 +3279,10 @@ void d3d_Screenshot(int bm_handle) {
       int shorts_per_row = surf_desc.lPitch / 2;
       int ints_per_row = surf_desc.lPitch / 4;
 
-      uint pix;
+      uint32_t pix;
 
-      uint *rptr;
-      rptr = (uint *)surf_desc.lpSurface;
+      uint32_t *rptr;
+      rptr = (uint32_t *)surf_desc.lpSurface;
 
       // Go through and read our pixels
       for (i = 0; i < h; i++) {

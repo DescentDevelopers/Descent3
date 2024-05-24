@@ -245,7 +245,7 @@ static char pbtitle[100];
 static bool ok_to_parse_screen = false;
 static int skipped_screens;
 
-static bool IsMissionMaskOK(uint set, uint unset);
+static bool IsMissionMaskOK(uint32_t set, uint32_t unset);
 static void ReplaceHotTag(char *string, int tag);
 static bool ParseForHotTags(char *src, char **dest);
 static bool PlayBriefing(tTelComInfo *tcs);
@@ -255,7 +255,7 @@ static void PBAddMovieEffect(LPTCMOVIEDESC desc, char *description);
 static void PBAddBkgEffect(LPTCBKGDESC desc, char *description);
 static void PBAddPolyEffect(LPTCPOLYDESC desc, char *description);
 static void PBAddButtonEffect(LPTCBUTTONDESC desc, char *description, int id);
-static void PBStartScreen(int screen_num, char *description, char *layout, uint mask_set, uint mask_unset);
+static void PBStartScreen(int screen_num, char *description, char *layout, uint32_t mask_set, uint32_t mask_unset);
 static void PBEndScreen();
 static bool PBLoopCallback();
 static void PBSetTitle(char *title);
@@ -263,10 +263,10 @@ static void PBSetStatic(float amount);
 static void PBSetGlitch(float amount);
 static void PBAddVoice(char *filename, int flags, char *description);
 
-bool IsMissionMaskOK(uint set, uint unset) {
-  uint Gamemissionmask = Current_mission.game_state_flags;
+bool IsMissionMaskOK(uint32_t set, uint32_t unset) {
+  uint32_t Gamemissionmask = Current_mission.game_state_flags;
 
-  uint fGamemissionmask;
+  uint32_t fGamemissionmask;
   fGamemissionmask = Gamemissionmask ^ 0xFFFFFFFF;
 
   if (!(((set & Gamemissionmask) == set) && ((unset & fGamemissionmask) == unset))) {
@@ -504,7 +504,7 @@ void PBAddButtonEffect(LPTCBUTTONDESC desc, const char *description, int id) {
   }
 }
 
-void PBStartScreen(int screen_num, const char *description, const char *layout, uint mask_set, uint mask_unset) {
+void PBStartScreen(int screen_num, const char *description, const char *layout, uint32_t mask_set, uint32_t mask_unset) {
   if (!IsMissionMaskOK(mask_set, mask_unset)) {
     ok_to_parse_screen = false;
     skipped_screens++;

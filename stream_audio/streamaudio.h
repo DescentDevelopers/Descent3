@@ -175,15 +175,15 @@ struct CFILE;
 //////////////////////////////////////////////////////////////////////////////
 typedef struct tOSFDigiHdr // this struct belongs to OSF_DIGITAL_STRM
 {
-  uint measure;
+  uint32_t measure;
 } tOSFDigiHdr;
 class OSFArchive {
   CFILE *m_fp;
-  uint m_length;    // file information stored such as length
+  uint32_t m_length;    // file information stored such as length
   ubyte m_type;     // stream type
   ubyte m_comp;     // compression type
   ubyte m_flags;    // format
-  uint m_rate;      // frequency
+  uint32_t m_rate;      // frequency
   bool m_writemode; // are we in write mode?
   union {
     tOSFDigiHdr digi;
@@ -198,7 +198,7 @@ public:
   bool Opened() const { return m_fp ? true : false; };
   void Rewind();
   //	write out operations.
-  bool SaveHeader(ubyte type, ubyte comp, ubyte flags, uint rate, uint length, void *hdr, const char *name);
+  bool SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, uint32_t length, void *hdr, const char *name);
   bool WriteBlock(ubyte *blk, int size);
   //	read in operations.
   int Read(ubyte *blk, int size);
@@ -206,8 +206,8 @@ public:
   ubyte StreamType() const { return m_type; };
   ubyte StreamComp() const { return m_comp; };
   ubyte StreamFormat() const { return m_flags; };
-  uint StreamRate() const { return m_rate; };
-  uint StreamLength() const { return m_length; };
+  uint32_t StreamRate() const { return m_rate; };
+  uint32_t StreamLength() const { return m_length; };
   const char *StreamName() const { return (const char *)m_name; };
   //	get header info.
   const void *StreamHeader() const { return (void *)&m_hdr.digi; };

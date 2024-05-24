@@ -837,7 +837,7 @@ void InitDedicatedSocket(ushort port) {
   sock_addr.sin_family = AF_INET;
   uint32_t my_ip;
   my_ip = nw_GetThisIP();
-  memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint));
+  memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint32_t));
   sock_addr.sin_port = htons(port);
 
   dedicated_listen_socket = socket(AF_INET, SOCK_STREAM, 0);

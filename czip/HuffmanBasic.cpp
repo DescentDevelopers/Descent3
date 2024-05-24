@@ -194,7 +194,7 @@ void CZip::hb_scale_counts(uint32_t *counts, tH0Node *nodes) {
   max_count = max_count / 255;
   max_count = max_count + 1;
   for (i = 0; i < 256; i++) {
-    nodes[i].count = (uint)(counts[i] / max_count);
+    nodes[i].count = (uint32_t)(counts[i] / max_count);
     if (nodes[i].count == 0 && counts[i] != 0)
       nodes[i].count = 1;
   }
@@ -235,7 +235,7 @@ int CZip::hb_build_tree(tH0Node *nodes) {
   return (next_free);
 }
 
-void CZip::hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint code_so_far, int bits, int node) {
+void CZip::hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint32_t code_so_far, int bits, int node) {
   if (node <= END_OF_STREAM) {
     codes[node].code = code_so_far;
     codes[node].code_bits = bits;

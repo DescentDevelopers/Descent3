@@ -199,7 +199,7 @@ void ddvidfs_VideoFlip() {
 }
 
 //	returns the directdraw object
-uint ddvidfs_GetDirectDrawObject() { return (uint)DDVideo_info.lpDD; }
+uint32_t ddvidfs_GetDirectDrawObject() { return (uint32_t)DDVideo_info.lpDD; }
 
 //	DirectDraw Display mode enumeration callback
 HRESULT WINAPI DDEnumModesCallback(LPDDSURFACEDESC lpDDSurfaceDesc, LPVOID lpContext) {

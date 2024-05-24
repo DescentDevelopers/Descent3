@@ -930,7 +930,7 @@ typedef int OMMSHANDLE;
 typedef unsigned char ubyte;
 typedef signed char sbyte;
 typedef unsigned short ushort;
-typedef uint32_t uint;
+typedef uint32_t uint32_t;
 typedef uint32_t ddgr_color;
 
 #ifndef NULL
@@ -990,7 +990,7 @@ typedef struct {
                            // will always be valid during the lifetime of the module
                            // DO NOT ALTER THE STRING IT POINTS TO.
 
-  uint game_checksum; // Checksum of game structures, if this doesn't match
+  uint32_t game_checksum; // Checksum of game structures, if this doesn't match
                       // the checksum at compile time, it is very likely that
                       // bad things can happen, and this module shouldn't initialize.
 
@@ -1229,18 +1229,18 @@ typedef struct {
   ubyte pulse_offset;
 
   // Objects/Players
-  uint objhandle;
-  uint ithandle;
+  uint32_t objhandle;
+  uint32_t ithandle;
   float shields, energy;
   short start_tick;
   short end_tick;
   float cycle_time;
   int type, id, aux_type, aux_id;
-  uint checksum;
+  uint32_t checksum;
   int path_id;
   float amount;
   ubyte damage_type;
-  uint killer_handle;
+  uint32_t killer_handle;
   float ammo;
   ubyte playsound;
   ubyte remove;

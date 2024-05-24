@@ -350,11 +350,11 @@ void Debug_LogClose() {
   }
 }
 
-// void Debug_SetSpewFilter(uint spew_filter)
-void Debug_SetSpewFilter(uint) {}
+// void Debug_SetSpewFilter(uint32_t spew_filter)
+void Debug_SetSpewFilter(uint32_t) {}
 
-// uint Debug_GetSpewFilter(uint spew_filter)
-uint Debug_GetSpewFilter(uint) { return 0; }
+// uint32_t Debug_GetSpewFilter(uint32_t spew_filter)
+uint32_t Debug_GetSpewFilter(uint32_t) { return 0; }
 
 void Debug_ConsoleExit() {
   if (Console_fd >= 0)

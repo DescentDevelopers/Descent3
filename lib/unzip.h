@@ -43,7 +43,7 @@
 #include "pstypes.h"
 
 typedef struct {
-  uint cent_file_header_sig;
+  uint32_t cent_file_header_sig;
   ubyte version_made_by;
   ubyte host_os;
   ubyte version_needed_to_extract;
@@ -52,16 +52,16 @@ typedef struct {
   ushort compression_method;
   ushort last_mod_file_time;
   ushort last_mod_file_date;
-  uint crc32;
-  uint compressed_size;
-  uint uncompressed_size;
+  uint32_t crc32;
+  uint32_t compressed_size;
+  uint32_t uncompressed_size;
   ushort filename_length;
   ushort extra_field_length;
   ushort file_comment_length;
   ushort disk_number_start;
   ushort internal_file_attrib;
-  uint external_file_attrib;
-  uint offset_lcl_hdr_frm_frst_disk;
+  uint32_t external_file_attrib;
+  uint32_t offset_lcl_hdr_frm_frst_disk;
   char *name;
 } zipentry;
 
@@ -133,13 +133,13 @@ private:
   zipentry m_ent; // buffer for readzip
 
   // end_of_cent_dir
-  uint m_end_of_cent_dir_sig;
+  uint32_t m_end_of_cent_dir_sig;
   ushort m_number_of_this_disk;
   ushort m_number_of_disk_start_cent_dir;
   ushort m_total_entries_cent_dir_this_disk;
   ushort m_total_entries_cent_dir;
-  uint m_size_of_cent_dir;
-  uint m_offset_to_start_of_cent_dir;
+  uint32_t m_size_of_cent_dir;
+  uint32_t m_offset_to_start_of_cent_dir;
   ushort m_zipfile_comment_length;
   char *m_zipfile_comment; // pointer in ecd
 };

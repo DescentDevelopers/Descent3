@@ -689,7 +689,7 @@ ushort Num_changed_turret[MAX_NET_PLAYERS];
 
 float last_sent_bytes[MAX_NET_PLAYERS];
 float Multi_last_send_visible[MAX_NET_PLAYERS];
-uint Multi_visible_players[MAX_NET_PLAYERS];
+uint32_t Multi_visible_players[MAX_NET_PLAYERS];
 extern int Buddy_handle[MAX_PLAYERS];
 extern char Multi_message_of_the_day[];
 
@@ -1284,7 +1284,7 @@ void MultiSendJoinDemoObjects(int slot) {
 }
 
 int StuffObjectIntoPacket(object *obj, ubyte *data) {
-  uint index;
+  uint32_t index;
   int count = 0;
   bool obj_is_dummy = false;
 

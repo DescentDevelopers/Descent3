@@ -1102,7 +1102,7 @@ public:
   //     killernum = object number of the killer
   //     victimnum = object number of the victim
   //		    hash = hash index of the weapon killer, -1 if none
-  void DoRandomDeathMessage(int killernum, int victimnum, uint hash = -1);
+  void DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash = -1);
 
   // DMFCBase::GetItObjNum
   //

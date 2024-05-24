@@ -297,9 +297,9 @@ inline void MultiAddInt(int element, ubyte *data, int *count) {
   *count += sizeof(int);
 }
 
-inline void MultiAddUint(uint element, ubyte *data, int *count) {
-  *(uint *)(data + *count) = INTEL_INT(element);
-  *count += sizeof(uint);
+inline void MultiAddUint(uint32_t element, ubyte *data, int *count) {
+  *(uint32_t *)(data + *count) = INTEL_INT(element);
+  *count += sizeof(uint32_t);
 }
 
 inline void MultiAddFloat(float element, ubyte *data, int *count) {
@@ -352,8 +352,8 @@ inline int MultiGetInt(ubyte *data, int *count) {
   return INTEL_INT(element);
 }
 
-inline uint MultiGetUint(ubyte *data, int *count) {
-  uint element = (*(uint *)(data + *count));
+inline uint32_t MultiGetUint(ubyte *data, int *count) {
+  uint32_t element = (*(uint32_t *)(data + *count));
   *count += sizeof(int);
   return INTEL_INT(element);
 }

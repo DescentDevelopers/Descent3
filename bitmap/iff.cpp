@@ -131,13 +131,13 @@ short iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is val
 #define IFF_SIG_ANHD 10
 
 static int bm_iff_get_sig(CFILE *f);
-static int bm_iff_parse_bmhd(CFILE *ifile, uint len, iff_bitmap_header *bmheader);
+static int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader);
 
 /// the buffer pointed to by raw_data is stuffed with a pointer to decompressed pixel data
 static int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader);
 
 /// the buffer pointed to by raw_data is stuffed with a pointer to bitplane pixel data
-static void bm_iff_skip_chunk(CFILE *ifile, uint len);
+static void bm_iff_skip_chunk(CFILE *ifile, uint32_t len);
 
 /// modify passed bitmap
 static int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader);
@@ -173,7 +173,7 @@ int bm_iff_get_sig(CFILE *f) {
 
   return (IFF_SIG_UNKNOWN);
 }
-int bm_iff_parse_bmhd(CFILE *ifile, uint len, iff_bitmap_header *bmheader) {
+int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
   len = len;
 
   bmheader->w = cf_ReadShort(ifile);
@@ -296,8 +296,8 @@ int bm_iff_parse_body(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
 }
 
 //  the buffer pointed to by raw_data is stuffed with a pointer to bitplane pixel data
-void bm_iff_skip_chunk(CFILE *ifile, uint len) {
-  uint i;
+void bm_iff_skip_chunk(CFILE *ifile, uint32_t len) {
+  uint32_t i;
 
   for (i = 0; i < len; i++)
     cf_ReadByte(ifile);
@@ -372,7 +372,7 @@ int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader) {
 // read an PBM
 // Pass pointer to opened file, and to empty bitmap_header structure, and form length
 int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_header *prev_bm) {
-  uint sig, len;
+  uint32_t sig, len;
   int done = 0;
 
   while (!done) {

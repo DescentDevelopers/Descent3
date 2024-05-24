@@ -354,17 +354,17 @@ int FindPolyModelName(const char *name);
 
 // This one is for static lighting - ie 1 light value for the entire model
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, float r, float g,
-                      float b, uint f_render_sub = 0xFFFFFFFF, ubyte use_effect = 0, ubyte overlay = 0);
+                      float b, uint32_t f_render_sub = 0xFFFFFFFF, ubyte use_effect = 0, ubyte overlay = 0);
 
 // This one is for gouraud shading - the lightdir is the normalized light direction, and lightscalar is a 0-1 scalar to
 // apply
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags, vector *lightdir,
-                      float r, float g, float b, uint f_render_sub = 0xFFFFFFFF, ubyte use_effect = 0,
+                      float r, float g, float b, uint32_t f_render_sub = 0xFFFFFFFF, ubyte use_effect = 0,
                       ubyte overlay = 0);
 
 // This one is for lightmap rendering
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags,
-                      lightmap_object *lm_object, uint f_render_sub, ubyte use_effect = 0, ubyte overlay = 0);
+                      lightmap_object *lm_object, uint32_t f_render_sub, ubyte use_effect = 0, ubyte overlay = 0);
 
 // gives the interpreter an array of points to use
 void g3_SetInterpPoints(g3Point *pointlist);
@@ -410,8 +410,8 @@ float ComputeDefaultSize(int type, int handle, float *size_ptr);
 int CountFacesInPolymodel(poly_model *pm);
 
 // Rendering functions
-int RenderPolygonModel(poly_model *, uint f_render_sub = 0xFFFFFFFF);
-void RenderSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub);
+int RenderPolygonModel(poly_model *, uint32_t f_render_sub = 0xFFFFFFFF);
+void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub);
 
 //	returns point within polymodel/submodel in world coordinates.
 void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix *orient, int subnum, vector *pos,
@@ -435,7 +435,7 @@ poly_model *GetPolymodelPointer(int polynum);
 void FreePolymodelData(int i);
 
 // Sets the position and rotation of a polymodel.  Used for rendering and collision detection
-void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint subobj_flags = 0xFFFFFFFF);
+void SetModelAnglesAndPos(poly_model *po, float *normalized_time, uint32_t subobj_flags = 0xFFFFFFFF);
 
 extern void DoneLightInstance();
 extern void StartLightInstance(vector *, matrix *);

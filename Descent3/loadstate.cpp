@@ -1612,13 +1612,13 @@ int LGSSnapshot(CFILE *fp) {
 //@@			{
 //@@				short bound;
 //@@				gs_ReadShort(fp, bound);
-//@@				if (bound < (sizeof(op_wave->damaged_list)/sizeof(uint))) {
+//@@				if (bound < (sizeof(op_wave->damaged_list)/sizeof(uint32_t))) {
 //@@					Int3();
 //@@					retval = LGS_OUTDATEDVER;
 //@@					goto lgsobjs_fail;
 //@@				}
-//@@				for (j = 0; j < sizeof(op_wave->damaged_list)/sizeof(uint); j++)
-//@@					gs_ReadInt(fp, (uint)op_wave->damaged_list[j]);
+//@@				for (j = 0; j < sizeof(op_wave->damaged_list)/sizeof(uint32_t); j++)
+//@@					gs_ReadInt(fp, (uint32_t)op_wave->damaged_list[j]);
 //@@			}
 //@@			break;
 //@@		default:

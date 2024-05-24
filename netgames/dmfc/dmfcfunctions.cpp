@@ -226,8 +226,8 @@ DMFCFUNCTION void (*DLLGetUltimateParentForObject)(object **parent, object *chil
 DMFCFUNCTION void (*DLLSetObjectDeadFlagRaw)(object *obj, bool tell_clients_to_remove, bool tell_clients_to_play_sound);
 DMFCFUNCTION void (*DLLSetObjectDeadFlag)(object *obj, bool tell_clients_to_remove, bool tell_clients_to_play_sound);
 DMFCFUNCTION void (*FatalError)(const char *reason);
-DMFCFUNCTION int (*DLLMultiMatchWeapon)(uint unique_id);
-DMFCFUNCTION uint (*DLLMultiGetMatchChecksum)(int type, int id);
+DMFCFUNCTION int (*DLLMultiMatchWeapon)(uint32_t unique_id);
+DMFCFUNCTION uint32_t (*DLLMultiGetMatchChecksum)(int type, int id);
 DMFCFUNCTION int (*DLLFindWeaponName)(const char *name);
 DMFCFUNCTION int (*DLLcf_OpenLibrary)(const char *libname);
 DMFCFUNCTION void (*DLLcf_CloseLibrary)(int handle);
@@ -235,7 +235,7 @@ DMFCFUNCTION void (*DLLMultiSendRequestToObserve)(int mode, int on, int objnum);
 DMFCFUNCTION int (*DLLFindTextureName)(const char *name);
 DMFCFUNCTION bool (*DLLApplyDamageToPlayer)(object *playerobj, object *killer, int damage_type, float damage_amount,
                                             int server_says, int weapon_id, bool playsound);
-DMFCFUNCTION int (*DLLMultiMatchGeneric)(uint unique_id);
+DMFCFUNCTION int (*DLLMultiMatchGeneric)(uint32_t unique_id);
 DMFCFUNCTION void (*DLLSetUITextItemText)(void *uit, char *newtext, uint32_t color);
 DMFCFUNCTION void *(*DLLNewUIWindowCreate)(int x, int y, int w, int h, int flags);
 DMFCFUNCTION void (*DLLNewUIWindowDestroy)(void *deswin);

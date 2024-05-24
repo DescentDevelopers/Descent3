@@ -208,7 +208,7 @@ bool UpdateComplete;	// indicates that the update has successfully completed
 int update_launcher_status;	// indicates if the launcher itself needs updating
 
 CUpdateDlg *dlg;
-uint filesize;
+uint32_t filesize;
 WSADATA wsa_data; 	
 
 // Declare the function pointer to get the Patch apply function from the DLL
@@ -486,7 +486,7 @@ void CUpdateDlg::OnYes()
 	// TODO: Add your control notification handler code here
 	char buffer[PSPATHNAME_LEN+1];
 	char verbuffer[PSPATHNAME_LEN+1], filebuffer[PSPATHNAME_LEN+1];
-	uint major, minor, build;
+	uint32_t major, minor, build;
 	int get_file_ret;
 	CString str_msg;
 	int line_num;

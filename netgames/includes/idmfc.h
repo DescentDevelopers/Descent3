@@ -704,7 +704,7 @@ public:
   //     killernum = object number of the killer
   //     victimnum = object number of the victim
   //		    hash = hash index of the weapon killer, -1 if none
-  virtual void DoRandomDeathMessage(int killernum, int victimnum, uint hash = -1) = 0;
+  virtual void DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash = -1) = 0;
 
   // DMFCBase::GetItObjNum
   //
@@ -1833,7 +1833,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_AutoDeathMessage(IDMFC *instance, bool turnon);
 DLLEXPORT void DLLFUNCCALL IDMFC_AddDeathMessage(IDMFC *instance, const char *string, bool victim_first = true);
 DLLEXPORT void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, const char *string);
 DLLEXPORT void DLLFUNCCALL IDMFC_DoRandomDeathMessage(IDMFC *instance, int killernum, int victimnum,
-                                                             uint hash = -1);
+                                                             uint32_t hash = -1);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetItObjNum(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetMeObjNum(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_RegisterPacketReceiver(IDMFC *instance, ubyte id, void (*func)(ubyte *));

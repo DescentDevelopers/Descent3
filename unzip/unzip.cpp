@@ -99,9 +99,9 @@ ushort get_buffer_short(char *buf) {
   ubyte *ubuf = (ubyte *)buf;
   return ((ushort)ubuf[1] << 8) | (ushort)ubuf[0];
 }
-uint get_buffer_int(char *buf) {
+uint32_t get_buffer_int(char *buf) {
   ubyte *ubuf = (ubyte *)buf;
-  return ((uint)ubuf[3] << 24) | ((uint)ubuf[2] << 16) | ((uint)ubuf[1] << 8) | (uint)ubuf[0];
+  return ((uint32_t)ubuf[3] << 24) | ((uint32_t)ubuf[2] << 16) | ((uint32_t)ubuf[1] << 8) | (uint32_t)ubuf[0];
 }
 
 ZIP::ZIP() { m_open = false; }

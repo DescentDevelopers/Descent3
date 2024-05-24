@@ -1743,8 +1743,8 @@ int Num_broke_glass = 0;
 // This is for getting out a menu if in multiplayer
 bool Multi_bail_ui_menu = false;
 
-uint Multi_generic_match_table[MAX_OBJECT_IDS];
-uint Multi_weapon_match_table[MAX_WEAPONS];
+uint32_t Multi_generic_match_table[MAX_OBJECT_IDS];
+uint32_t Multi_weapon_match_table[MAX_WEAPONS];
 ubyte Multi_receive_buffer[MAX_RECEIVE_SIZE];
 
 ubyte Multi_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
@@ -2073,7 +2073,7 @@ int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir,
   // count+=sizeof(vector);
   MultiAddVector(*dir, data, &count);
 
-  uint index = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
+  uint32_t index = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   MultiAddUint(index, data, &count);
 
   END_DATA(count, data, size);
@@ -2100,7 +2100,7 @@ void MultiDoRobotFire(ubyte *data) {
   vector weapon_pos;
   vector weapon_dir;
   uint32_t weapon_num;
-  uint uniqueid;
+  uint32_t uniqueid;
 
   if (Netgame.local_role == LR_SERVER) {
     Int3(); // Get Jason, a server got the multi do fire packet
@@ -4601,7 +4601,7 @@ void MultiDoJoinObjects(ubyte *data) {
       type = MultiGetByte(data, &count);
     }
 
-    uint checksum;
+    uint32_t checksum;
     matrix orient;
     ubyte name_len = 0;
     ubyte num_persist_vars = 0;
@@ -5188,7 +5188,7 @@ void MultiDoObject(ubyte *data) {
   }
 
   ubyte type = MultiGetByte(data, &count);
-  uint checksum = MultiGetUint(data, &count);
+  uint32_t checksum = MultiGetUint(data, &count);
   ubyte dummy_type = OBJ_NONE;
   if (type == OBJ_DUMMY) // we need to get the original type
     dummy_type = MultiGetByte(data, &count);
@@ -5359,7 +5359,7 @@ void MultiSendObject(object *obj, ubyte announce, ubyte demo_record) {
 
   size_offset = START_DATA(MP_OBJECT, data, &count, 1);
 
-  uint index = MultiGetMatchChecksum(obj->type, obj->id);
+  uint32_t index = MultiGetMatchChecksum(obj->type, obj->id);
 
   // Send server object number
   MultiAddByte(announce, data, &count);
@@ -6079,7 +6079,7 @@ void MultiDoRequestCountermeasure(ubyte *data) {
     MULTI_ASSERT_NOMESSAGE(parent_objnum != 65535);
   }
 
-  uint checksum = MultiGetUint(data, &count);
+  uint32_t checksum = MultiGetUint(data, &count);
 
   int id = MultiMatchWeapon(checksum);
 
@@ -6109,7 +6109,7 @@ void MultiSendRequestCountermeasure(short objnum, int weapon_index) {
 
   MultiAddShort(objnum, data, &count);
 
-  uint index = MultiGetMatchChecksum(OBJ_WEAPON, weapon_index);
+  uint32_t index = MultiGetMatchChecksum(OBJ_WEAPON, weapon_index);
   MultiAddUint(index, data, &count);
 
   END_DATA(count, data, size_offset);
@@ -6551,11 +6551,11 @@ void MultiSendFullReliablePacket(int slot, int flags) {
 }
 
 // Given a string, returns a unique integer for that string
-uint MultiGetUniqueIDFromString(char *plainstring) {
+uint32_t MultiGetUniqueIDFromString(char *plainstring) {
   int i, t, len;
-  uint ret;
+  uint32_t ret;
   ubyte cryptstring[PAGENAME_LEN];
-  uint vals[4];
+  uint32_t vals[4];
 
   len = strlen(plainstring);
 
@@ -6599,7 +6599,7 @@ uint MultiGetUniqueIDFromString(char *plainstring) {
 }
 
 // Returns the unique id of a given object type/id
-uint MultiGetMatchChecksum(int type, int id) {
+uint32_t MultiGetMatchChecksum(int type, int id) {
   switch (type) {
   case OBJ_POWERUP:
   case OBJ_ROBOT:
@@ -6622,7 +6622,7 @@ uint MultiGetMatchChecksum(int type, int id) {
 }
 
 // Return index of generic that has matching table entry
-int MultiMatchGeneric(uint unique_id) {
+int MultiMatchGeneric(uint32_t unique_id) {
   for (int i = 0; i < MAX_OBJECT_IDS; i++)
     if (Multi_generic_match_table[i] == unique_id)
       return i;
@@ -6631,7 +6631,7 @@ int MultiMatchGeneric(uint unique_id) {
 }
 
 // Return index of generic that has matching table entry
-int MultiMatchWeapon(uint unique_id) {
+int MultiMatchWeapon(uint32_t unique_id) {
   for (int i = 0; i < MAX_WEAPONS; i++)
     if (Multi_weapon_match_table[i] == unique_id)
       return i;
@@ -6651,7 +6651,7 @@ void MultiBuildMatchTables() {
   // Build generic tables
   for (i = 0; i < MAX_OBJECT_IDS; i++) {
     if (Object_info[i].type != OBJ_NONE) {
-      uint val = MultiGetUniqueIDFromString(Object_info[i].name);
+      uint32_t val = MultiGetUniqueIDFromString(Object_info[i].name);
       val += Object_info[i].type;
 
       // See if there is a hash collision.  If so, increment the value and retry
@@ -6670,7 +6670,7 @@ void MultiBuildMatchTables() {
   // Build weapon tables
   for (i = 0; i < MAX_WEAPONS; i++) {
     if (Weapons[i].used) {
-      uint val = MultiGetUniqueIDFromString(Weapons[i].name);
+      uint32_t val = MultiGetUniqueIDFromString(Weapons[i].name);
 
       // See if there is a hash collision.  If so, increment the value and retry
       while ((MultiMatchWeapon(val)) != -1) {
@@ -7839,7 +7839,7 @@ void MultiDoFileData(ubyte *data) {
 void MultiDoFileAck(ubyte *data) {
   // If we are transferring a file, and someone ACK's us, simply send them the next bit of data they are waiting for
   ubyte playernum; // Who is acking us
-  uint len_recvd;  // Total number of bytes received so far
+  uint32_t len_recvd;  // Total number of bytes received so far
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -8346,7 +8346,7 @@ void MultiDoTypeIcon(ubyte *data) {
 
   ASSERT(pnum >= 0 && pnum < MAX_PLAYERS);
 
-  uint bit = 0x01;
+  uint32_t bit = 0x01;
   bit = bit << pnum;
 
   if (typing) {
@@ -8384,7 +8384,7 @@ void MultiDoRequestTypeIcon(ubyte *data) {
 
 // Client is telling the server that he is [not] typing a hud message
 void MultiSendRequestTypeIcon(bool typing_message) {
-  uint bit = (0x01 << Player_num);
+  uint32_t bit = (0x01 << Player_num);
 
   if (typing_message && (bit & Players_typing))
     return; // already typing no need to request

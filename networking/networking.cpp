@@ -758,7 +758,7 @@ void nw_InitSockets(ushort port) {
 
     my_ip = nw_GetThisIP();
 
-    memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint));
+    memcpy(&sock_addr.sin_addr.s_addr, &my_ip, sizeof(uint32_t));
 
     sock_addr.sin_port = htons(port);
     if (bind(TCP_socket, (SOCKADDR *)&sock_addr, sizeof(sock_addr)) == SOCKET_ERROR) {

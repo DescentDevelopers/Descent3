@@ -2071,7 +2071,7 @@ void DrawPlayerTypingIndicator(object *obj) {
     return;
   if (NetPlayers[slot].sequence != NETSEQ_PLAYING)
     return;
-  uint bit = (0x01 << slot);
+  uint32_t bit = (0x01 << slot);
   if (!(Players_typing & bit))
     return;
   if (obj->effect_info && obj->effect_info->type_flags & EF_CLOAKED)

@@ -110,7 +110,7 @@ const char *DMFCGetString(int d);
 //     killernum = object number of the killer
 //     victimnum = object number of the victim
 //		    hash = hash index of the weapon killer, -1 if none
-void DMFCBase::DoRandomDeathMessage(int killernum,int victimnum,uint hash)
+void DMFCBase::DoRandomDeathMessage(int killernum,int victimnum,uint32_t hash)
 {
         object *it,*me;
 
@@ -255,7 +255,7 @@ seedbuf[200]; memcpy(seedbuf,seeds1,31); DecryptData((unsigned char *)seedbuf,30
 //     killernum = object number of the killer
 //     victimnum = object number of the victim
 //		    hash = hash index of the weapon killer, -1 if none
-void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint hash) {
+void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash) {
   object *it, *me;
 
   if (killernum != -1)

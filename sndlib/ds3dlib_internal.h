@@ -180,14 +180,14 @@ void sb_free_buffer(sound_buffer_info *sb);
 bool sb_load_buffer(sound_buffer_info *sb, void *sample_data, int length);
 
 // update current position of sound buffer
-int sb_get_current_position(sound_buffer_info *sb, uint *writep);
+int sb_get_current_position(sound_buffer_info *sb, uint32_t *writep);
 
 // locks a sound buffer
-bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes, void **lplpvAudioPtr1,
-                    uint *lpdwAudioBytes1, void **lplpvAudioPtr2, uint *lpdwAudioBytes2);
+bool sb_lock_buffer(sound_buffer_info *sb, uint32_t dwWriteCursor, uint32_t dwWriteBytes, void **lplpvAudioPtr1,
+                    uint32_t *lpdwAudioBytes1, void **lplpvAudioPtr2, uint32_t *lpdwAudioBytes2);
 
 // unlocks an allocated sound buffer
-bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint len1, void *ptr2, uint len2);
+bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint32_t len1, void *ptr2, uint32_t len2);
 
 // this will initialize the looping thread
 bool sb_loop_thread_init(win_llsSystem *lls);

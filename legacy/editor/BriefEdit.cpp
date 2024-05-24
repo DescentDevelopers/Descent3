@@ -238,11 +238,11 @@ void BriefEditFreeEffect(tBriefEffect *efx)
 	efx->type = BE_NONE;
 }
 
-void BuildMissionFlagMask(uint mask,char *string,ubyte isset)
+void BuildMissionFlagMask(uint32_t mask,char *string,ubyte isset)
 {
 	int counter = 0;
 	int index = 0;
-	uint bit = 0x01;
+	uint32_t bit = 0x01;
 	char temp[10];
 
 	for(index=0;index<32;index++){
@@ -1023,7 +1023,7 @@ void BEAddButtonEffect(LPTCBUTTONDESC desc,char *description,int id)
 	dest->jump_page = desc->jump_page;
 }
 
-void BEStartScreen(int screen_num,char *description,char *layout,uint mask_set,uint mask_unset)
+void BEStartScreen(int screen_num,char *description,char *layout,uint32_t mask_set,uint32_t mask_unset)
 {
 	int scr_to_add = -1;
 	for(int i=0;i<MAX_TELCOM_SCREENS;i++){

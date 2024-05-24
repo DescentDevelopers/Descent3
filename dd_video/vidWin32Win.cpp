@@ -72,10 +72,10 @@ bool ddvidwin_Init() {
   while (EnumDisplaySettings(NULL, i, &devmode)) {
     HDC hdc = CreateCompatibleDC(NULL);
 
-    if (devmode.dmBitsPerPel == (uint)GetDeviceCaps(hdc, BITSPIXEL) &&
-        devmode.dmPelsWidth == (uint)GetSystemMetrics(SM_CXSCREEN) &&
-        devmode.dmPelsHeight == (uint)GetSystemMetrics(SM_CYSCREEN)) {
-      if (DDVideo_info.app->NT() && devmode.dmDisplayFrequency == (uint)GetDeviceCaps(hdc, VREFRESH))
+    if (devmode.dmBitsPerPel == (uint32_t)GetDeviceCaps(hdc, BITSPIXEL) &&
+        devmode.dmPelsWidth == (uint32_t)GetSystemMetrics(SM_CXSCREEN) &&
+        devmode.dmPelsHeight == (uint32_t)GetSystemMetrics(SM_CYSCREEN)) {
+      if (DDVideo_info.app->NT() && devmode.dmDisplayFrequency == (uint32_t)GetDeviceCaps(hdc, VREFRESH))
         DDVideo_info.gdi.olddevmode = i;
       else if (!DDVideo_info.app->NT())
         DDVideo_info.gdi.olddevmode = i;

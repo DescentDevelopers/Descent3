@@ -510,7 +510,7 @@ void MultiDoMSafeFunction(ubyte *data) {
 void MultiSendMSafeFunction(ubyte type, msafe_struct *mstruct) {
   int sequence = -1;
   int to_slot = -1;
-  uint to_bitmask = 0xFFFFFFFF;
+  uint32_t to_bitmask = 0xFFFFFFFF;
 
   ASSERT((Demo_flags == DF_RECORDING) || (Netgame.local_role == LR_SERVER));
 

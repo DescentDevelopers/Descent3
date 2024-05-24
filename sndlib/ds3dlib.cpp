@@ -527,22 +527,22 @@ inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float
 }
 
 // functions for different APIs
-int sb_get_current_position(sound_buffer_info *sb, uint *writep) {
+int sb_get_current_position(sound_buffer_info *sb, uint32_t *writep) {
   DWORD playp, wp;
 
   if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     if (sb->m_sound_buffer && sb->m_sound_buffer->GetCurrentPosition(&playp, &wp) == DS_OK) {
-      *writep = (uint)wp;
+      *writep = (uint32_t)wp;
     } else {
       playp = (DWORD)(-1);
-      *writep = (uint)(-1);
+      *writep = (uint32_t)(-1);
     }
   }
 
-  return (uint)playp;
+  return (uint32_t)playp;
 }
 
-inline void sb_set_current_position(sound_buffer_info *sb, uint pos) {
+inline void sb_set_current_position(sound_buffer_info *sb, uint32_t pos) {
   if (!ll_sound_ptr->m_in_sound_frame)
     ll_sound_ptr->m_pending_actions = true;
 
@@ -582,8 +582,8 @@ void sb_stop_buffer(sound_buffer_info *sb) {
   }
 }
 
-bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes, void **lplpvAudioPtr1,
-                    uint *lpdwAudioBytes1, void **lplpvAudioPtr2, uint *lpdwAudioBytes2) {
+bool sb_lock_buffer(sound_buffer_info *sb, uint32_t dwWriteCursor, uint32_t dwWriteBytes, void **lplpvAudioPtr1,
+                    uint32_t *lpdwAudioBytes1, void **lplpvAudioPtr2, uint32_t *lpdwAudioBytes2) {
   DWORD len1, len2;
 
   if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
@@ -605,7 +605,7 @@ bool sb_lock_buffer(sound_buffer_info *sb, uint dwWriteCursor, uint dwWriteBytes
   return false;
 }
 
-bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint len1, void *ptr2, uint len2) {
+bool sb_unlock_buffer(sound_buffer_info *sb, void *ptr1, uint32_t len1, void *ptr2, uint32_t len2) {
   if (sb->m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     sb->m_sound_buffer->Unlock(ptr1, len1, ptr2, len2);
     return true;
@@ -2949,7 +2949,7 @@ int win_llsSystem::SetSoundPos(int sound_uid, int pos) {
 // These work in samples to make things easier in the long run
 int win_llsSystem::GetSoundPos(int sound_uid) {
   int current_slot;
-  uint temp, pos;
+  uint32_t temp, pos;
 
   if (!m_f_sound_lib_init)
     return -1;

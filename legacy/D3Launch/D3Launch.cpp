@@ -707,8 +707,8 @@ bool ProcessGlu32DLL(void)
 bool ProcessUpdatedVersionFile(void) 
 {
 	FILE *f;
-	uint cur_major, cur_minor, cur_build;
-	uint new_major, new_minor, new_build;
+	uint32_t cur_major, cur_minor, cur_build;
+	uint32_t new_major, new_minor, new_build;
 	char buffer[PSPATHNAME_LEN+1];
 	char verbuffer[PSPATHNAME_LEN+1];
 

@@ -2047,7 +2047,7 @@ void VisEffectMoveOne(vis_effect *vis) {
   // Do attached viseffect stuff here
   if (vis->flags & VF_ATTACHED) {
     int objnum = vis->attach_info.obj_handle & HANDLE_OBJNUM_MASK;
-    uint sig = vis->attach_info.obj_handle & HANDLE_COUNT_MASK;
+    uint32_t sig = vis->attach_info.obj_handle & HANDLE_COUNT_MASK;
     object *obj = &Objects[objnum];
 
     if ((obj->flags & OF_DEAD) || (obj->handle & HANDLE_COUNT_MASK) != sig) {
@@ -2062,7 +2062,7 @@ void VisEffectMoveOne(vis_effect *vis) {
         if (vis->flags & VF_PLANAR) {
           // Do object to object attachment
           int dest_objnum = vis->attach_info.dest_objhandle & HANDLE_OBJNUM_MASK;
-          uint dest_sig = vis->attach_info.dest_objhandle & HANDLE_COUNT_MASK;
+          uint32_t dest_sig = vis->attach_info.dest_objhandle & HANDLE_COUNT_MASK;
           object *dest_obj = &Objects[dest_objnum];
 
           if ((dest_obj->flags & OF_DEAD) || (dest_obj->handle & HANDLE_COUNT_MASK) != dest_sig) {

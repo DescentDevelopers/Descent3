@@ -160,7 +160,7 @@ bool joy_chpro_hack = false; // flightstick pro hack for Win32 only
 bool joy_Init(bool emulation) {
   // Can we initialize DirectInput version?
   // Try to init forcefeedback (which initializes joysticks)
-  uint i, n; // = joyGetNumDevs();
+  uint32_t i, n; // = joyGetNumDevs();
 
   ddio_ff_AttachForce();
 

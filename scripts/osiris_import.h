@@ -530,7 +530,7 @@ OSIRISEXTERN AI_GetCurGoalIndex_fp AI_GetCurGoalIndex;
 // the script) Returns -1 if there isn't enough available memory Returns -2 if the unique identifier passed in is
 // already used, but the requested amount_of_memory is different If the memory has already been allocated, it will
 // return the handle.
-typedef OMMSHANDLE (*OMMS_Malloc_fp)(size_t amount_of_memory, uint unique_identifier, char *script_identifier);
+typedef OMMSHANDLE (*OMMS_Malloc_fp)(size_t amount_of_memory, uint32_t unique_identifier, char *script_identifier);
 OSIRISEXTERN OMMS_Malloc_fp OMMS_Malloc;
 
 //	Attaches to a block of global OMMS memory.  As long as at least one module (or script) is
@@ -560,13 +560,13 @@ OSIRISEXTERN OMMS_Free_fp OMMS_Free;
 //	in the unique_identifier and the script_identifier that was passed in the OMMS_Malloc().
 //	Note: script_identifier is really the filename of the module that called the OMMS_Malloc().
 //	Returns -1 if the module was never OMMS_Malloc()'d.
-typedef OMMSHANDLE (*OMMS_Find_fp)(uint unique_identifier, char *script_identifier);
+typedef OMMSHANDLE (*OMMS_Find_fp)(uint32_t unique_identifier, char *script_identifier);
 OSIRISEXTERN OMMS_Find_fp OMMS_Find;
 
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint *mem_size, uint *uid, ushort *reference_count,
+typedef char (*OMMS_GetInfo_fp)(OMMSHANDLE handle, uint32_t *mem_size, uint32_t *uid, ushort *reference_count,
                                 ubyte *has_free_been_called);
 OSIRISEXTERN OMMS_GetInfo_fp OMMS_GetInfo;
 

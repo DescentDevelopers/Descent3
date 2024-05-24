@@ -273,12 +273,12 @@ bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx,
 
 //	returns internal information about an ddgr_surface (only to low level libraries, on par with the ddgr
 //	library).
-void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint *object_ptr) {
+void ddgr_surf_GetPrivateData(ddgr_surface *sf, bool *ddraw_surf, uint32_t *object_ptr) {
   switch (LIB_DATA(subsystem)) {
   case DDGR_DX_SUBSYSTEM: {
     tDXSurface *bm = (tDXSurface *)sf->obj;
     *ddraw_surf = true;
-    *object_ptr = (bm->backbuffer == true) ? (uint)(bm->lpddsback) : (uint)(bm->lpdds);
+    *object_ptr = (bm->backbuffer == true) ? (uint32_t)(bm->lpddsback) : (uint32_t)(bm->lpdds);
     break;
   }
   default:

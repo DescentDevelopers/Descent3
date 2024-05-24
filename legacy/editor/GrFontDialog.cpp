@@ -623,7 +623,7 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 	short *tmp_widths;
 	ubyte **tmp_cdata;
 	FONTFILE ffile;
-	uint id = 0xfeedbaba;
+	uint32_t id = 0xfeedbaba;
 	int num_char;
 	bool grayed_font;
 	CButton *gray_check = (CButton *)GetDlgItem(IDC_PROP_GRADIANT);

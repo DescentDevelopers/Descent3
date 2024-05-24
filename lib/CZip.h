@@ -68,7 +68,7 @@
  */
 
 #define ubyte unsigned char
-#define uint uint32_t
+#define uint32_t uint32_t
 #define ushort unsigned short
 
 typedef struct {
@@ -95,13 +95,13 @@ typedef struct tBitFile {
 // HuffmanBasic		///////
 /////////////////////////
 typedef struct tHuffman0TreeNode {
-  uint count;
-  uint saved_count;
+  uint32_t count;
+  uint32_t saved_count;
   int child0, child1;
 } tH0Node;
 
 typedef struct {
-  uint code;
+  uint32_t code;
   int code_bits;
 } tH0Code;
 
@@ -111,7 +111,7 @@ typedef struct {
 #define SYMBOL_COUNT 258
 #define NODE_TABLE_COUNT ((SYMBOL_COUNT * 2) - 1)
 typedef struct tHANode {
-  uint weight;
+  uint32_t weight;
   int parent;
   bool child_is_leaf;
   int child;
@@ -180,11 +180,11 @@ public:
   void WriteBytes(char *data, int count);
   ubyte ReadRawByte(void);
   ushort ReadRawShort(void);
-  uint ReadRawInt(void);
+  uint32_t ReadRawInt(void);
   float ReadRawFloat(void);
   void WriteRawByte(ubyte value);
   void WriteRawShort(ushort value);
-  void WriteRawInt(uint value);
+  void WriteRawInt(uint32_t value);
   void WriteRawFloat(float value);
   bool RawEOF(void);
 
@@ -233,7 +233,7 @@ private:
   uint32_t InputBits(BITFILE *bfile, int bitcount);
   void CloseInputBitFile(BITFILE *bfile);
   void CloseOutputBitFile(BITFILE *bfile);
-  void FilePrintBinary(FILE *file, uint code, int bits);
+  void FilePrintBinary(FILE *file, uint32_t code, int bits);
   tVirtualFile *VFopen(const char *filename, const char *flags, int size = 0);
   int VFclose(tVirtualFile *f);
   int VFputc(int value, tVirtualFile *file);
@@ -253,7 +253,7 @@ private:
   void hb_count_bytes(tVirtualFile *input, uint32_t *long_counts);
   void hb_scale_counts(uint32_t *long_counts, tH0Node *nodes);
   int hb_build_tree(tH0Node *nodes);
-  void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint code_so_far, int bits, int node);
+  void hb_convert_tree_to_code(tH0Node *nodes, tH0Code *codes, uint32_t code_so_far, int bits, int node);
   void hb_output_counts(BITFILE *output, tH0Node *nodes);
   void hb_input_counts(BITFILE *input, tH0Node *nodes);
 
@@ -264,7 +264,7 @@ private:
   int ha_CompressFile(tVirtualFile *input, BITFILE *output);
   void ha_ExpandFile(BITFILE *input, tVirtualFile *output);
   void ha_InitializeTree(tHATree *tree);
-  void ha_EncodeSymbol(tHATree *tree, uint c, BITFILE *output);
+  void ha_EncodeSymbol(tHATree *tree, uint32_t c, BITFILE *output);
   int ha_DecodeSymbol(tHATree *tree, BITFILE *input);
   void ha_UpdateModel(tHATree *tree, int c);
   void ha_RebuildTree(tHATree *tree);

@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 // CBriefMissionFlagsDlg dialog
 
 
-CBriefMissionFlagsDlg::CBriefMissionFlagsDlg(uint setflags,uint unsetflags,CWnd* pParent /*=NULL*/)
+CBriefMissionFlagsDlg::CBriefMissionFlagsDlg(uint32_t setflags,uint32_t unsetflags,CWnd* pParent /*=NULL*/)
 	: CDialog(CBriefMissionFlagsDlg::IDD, pParent)
 {
 	m_Set = setflags;
@@ -130,7 +130,7 @@ void CBriefMissionFlagsDlg::OnOK()
 
 	m_Set = m_UnSet = 0;
 
-	uint bit = 0x01;
+	uint32_t bit = 0x01;
 	int i,value;
 
 	for(i=0;i<32;i++){
@@ -186,7 +186,7 @@ BOOL CBriefMissionFlagsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	uint bit = 0x01;
+	uint32_t bit = 0x01;
 	int i;
 
 	//First go through the set bits

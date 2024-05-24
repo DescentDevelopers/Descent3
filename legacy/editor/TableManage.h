@@ -33,7 +33,7 @@ private:
 	GenericPageNode *next;
 
 	mngs_generic_page	genericpage;	// Generic Page Data
-	uint				page_id;		// Page's file index (i.e. the page_id'th page in file)
+	uint32_t				page_id;		// Page's file index (i.e. the page_id'th page in file)
 
 public:
 	GenericPageNode::GenericPageNode();
@@ -47,7 +47,7 @@ class GenericPageList {
 private:
 	GenericPageNode *m_head;
 	GenericPageNode *m_tail;
-	uint m_size;
+	uint32_t m_size;
 
 	CString m_TableFilename;
 	bool	m_TableLoaded;
@@ -55,7 +55,7 @@ private:
 	bool	m_TableModified;
 
 	GenericPageNode *m_SelectedNode;
-	uint			m_SelectedIndex;
+	uint32_t			m_SelectedIndex;
 	
 public:
 	GenericPageList::GenericPageList();
@@ -71,11 +71,11 @@ public:
 	bool SaveTable(char *table_filename);
 	bool FillFromList(CComboBox *list);
 
-	GenericPageNode *FindNode(uint page_id);
+	GenericPageNode *FindNode(uint32_t page_id);
 
 	void SelectNext(void);
 	void SelectPrev(void);
-	void SelectNode(uint list_index);
+	void SelectNode(uint32_t list_index);
 	void DisplaySelected(CComboBox *list, CEdit *description);
 	void SaveSelected(CEdit *description);
 

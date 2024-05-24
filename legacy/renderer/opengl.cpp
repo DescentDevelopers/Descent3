@@ -152,9 +152,9 @@ ushort *OpenGL_lightmap_remap;
 ubyte *OpenGL_bitmap_states;
 ubyte *OpenGL_lightmap_states;
 
-uint *opengl_Upload_data = NULL;
-uint *opengl_Translate_table = NULL;
-uint *opengl_4444_translate_table = NULL;
+uint32_t *opengl_Upload_data = NULL;
+uint32_t *opengl_Translate_table = NULL;
+uint32_t *opengl_4444_translate_table = NULL;
 
 ushort *opengl_packed_Upload_data = NULL;
 ushort *opengl_packed_Translate_table = NULL;
@@ -881,9 +881,9 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
       opengl_packed_4444_translate_table[i] = pix;
     }
   } else {
-    opengl_Upload_data = (uint *)mem_malloc(256 * 256 * 4);
-    opengl_Translate_table = (uint *)mem_malloc(65536 * 4);
-    opengl_4444_translate_table = (uint *)mem_malloc(65536 * 4);
+    opengl_Upload_data = (uint32_t *)mem_malloc(256 * 256 * 4);
+    opengl_Translate_table = (uint32_t *)mem_malloc(65536 * 4);
+    opengl_4444_translate_table = (uint32_t *)mem_malloc(65536 * 4);
 
     ASSERT(opengl_Upload_data);
     ASSERT(opengl_Translate_table);
@@ -892,7 +892,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     mprintf((0, "Building OpenGL translate table...\n"));
 
     for (i = 0; i < 65536; i++) {
-      uint pix;
+      uint32_t pix;
       int r = (i >> 10) & 0x1f;
       int g = (i >> 5) & 0x1f;
       int b = i & 0x1f;
@@ -969,13 +969,13 @@ D3DError:
 void opengl_Close() {
   CHECK_ERROR(5)
 
-  uint *delete_list = (uint *)mem_malloc(Cur_texture_object_num * sizeof(int));
+  uint32_t *delete_list = (uint32_t *)mem_malloc(Cur_texture_object_num * sizeof(int));
   ASSERT(delete_list);
   for (int i = 1; i < Cur_texture_object_num; i++)
     delete_list[i] = i;
 
   if (Cur_texture_object_num > 1)
-    dglDeleteTextures(Cur_texture_object_num, (const uint *)delete_list);
+    dglDeleteTextures(Cur_texture_object_num, (const uint32_t *)delete_list);
 
   mem_free(delete_list);
 
@@ -1168,11 +1168,11 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
   } else {
     if (map_type == MAP_TYPE_LIGHTMAP) {
-      uint *left_data = (uint *)opengl_Upload_data;
+      uint32_t *left_data = (uint32_t *)opengl_Upload_data;
       int bm_left = 0;
 
       for (int i = 0; i < h; i++, left_data += size, bm_left += w) {
-        uint *dest_data = left_data;
+        uint32_t *dest_data = left_data;
         for (int t = 0; t < w; t++) {
           *dest_data++ = opengl_Translate_table[bm_ptr[bm_left + t]];
         }
@@ -1824,7 +1824,7 @@ void opengl_EndFrame() {}
 // Takes a screenshot of the frontbuffer and puts it into the passed bitmap handle
 void opengl_Screenshot(int bm_handle) {
   ushort *dest_data;
-  uint *temp_data;
+  uint32_t *temp_data;
   int i, t;
   int total = OpenGL_state.screen_width * OpenGL_state.screen_height;
 
@@ -1834,7 +1834,7 @@ void opengl_Screenshot(int bm_handle) {
   int w = bm_w(bm_handle, 0);
   int h = bm_h(bm_handle, 0);
 
-  temp_data = (uint *)mem_malloc(total * 4);
+  temp_data = (uint32_t *)mem_malloc(total * 4);
   ASSERT(temp_data); // Ran out of memory?
 
   dest_data = bm_data(bm_handle, 0);
@@ -1844,7 +1844,7 @@ void opengl_Screenshot(int bm_handle) {
 
   for (i = 0; i < h; i++) {
     for (t = 0; t < w; t++) {
-      uint spix = temp_data[i * w + t];
+      uint32_t spix = temp_data[i * w + t];
 
       int r = spix & 0xff;
       int g = (spix >> 8) & 0xff;

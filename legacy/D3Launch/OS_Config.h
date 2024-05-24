@@ -50,8 +50,8 @@
 
 void os_config_write_string( char *section, char *name, char *value );
 char *os_config_read_string( char *section, char *name, char *default_value );
-uint  os_config_read_uint( char *section, char *name, uint default_value );
-void os_config_write_uint( char *section, char *name, uint value );
+uint32_t  os_config_read_uint( char *section, char *name, uint32_t default_value );
+void os_config_write_uint( char *section, char *name, uint32_t value );
 char *os_config_read_string_ex( char *keyname, char *name, char *default_value );
 
 extern char *szSectionName;

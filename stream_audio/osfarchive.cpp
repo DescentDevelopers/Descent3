@@ -107,7 +107,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
     m_type = (ubyte)cf_ReadByte(m_fp);
     m_comp = (ubyte)cf_ReadByte(m_fp);
     m_flags = (ubyte)cf_ReadByte(m_fp);
-    m_rate = (uint)cf_ReadByte(m_fp);
+    m_rate = (uint32_t)cf_ReadByte(m_fp);
 
     if (m_type == OSF_DIGITAL_STRM) {
       if (m_rate == 11)
@@ -118,7 +118,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
         m_rate = 44100;
 
       //	read in aux header based off of type.
-      m_hdr.digi.measure = (uint)cf_ReadInt(m_fp);
+      m_hdr.digi.measure = (uint32_t)cf_ReadInt(m_fp);
     } else {
       mprintf((0, "Unsupported OSF file type in %s!\n", filename));
       cfclose(m_fp);
@@ -127,7 +127,7 @@ bool OSFArchive::Open(const char *filename, bool write) {
     }
 
     //	read length.
-    m_length = (uint)cf_ReadInt(m_fp);
+    m_length = (uint32_t)cf_ReadInt(m_fp);
 
     cfseek(m_fp, -OSF_HDR_TITLE_OFS, SEEK_END);
     if (!cf_ReadBytes((ubyte *)m_name, OSF_HDR_TITLE_LEN, m_fp)) {
@@ -174,7 +174,7 @@ void OSFArchive::Rewind() {
 }
 
 //	write out operations.
-bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint rate, uint length, void *hdr, const char *name) {
+bool OSFArchive::SaveHeader(ubyte type, ubyte comp, ubyte flags, uint32_t rate, uint32_t length, void *hdr, const char *name) {
   char chbuf[OSF_HDR_SIZE];
   int hdrstart, hdrcur;
 

@@ -767,7 +767,7 @@ extern ubyte Multi_reliable_send_buffer[MAX_NET_PLAYERS][MAX_GAME_DATA_SIZE];
 extern int Multi_reliable_send_size[MAX_NET_PLAYERS];
 extern float Multi_reliable_last_send_time[MAX_NET_PLAYERS];
 extern ubyte Multi_reliable_sent_position[MAX_NET_PLAYERS];
-extern uint Multi_visible_players[];
+extern uint32_t Multi_visible_players[];
 
 extern int Got_level_info;
 extern int Got_new_game_time;
@@ -921,7 +921,7 @@ int MultiMatchRobot(int unique_id);
 void MultiBuildMatchTables();
 
 // Return index of generic that has matching table entry
-int MultiMatchWeapon(uint unique_id);
+int MultiMatchWeapon(uint32_t unique_id);
 
 // Tell my clients about damage done to a player
 void MultiSendDamagePlayer(int, int, int type, float amount);
@@ -933,10 +933,10 @@ void MultiSendMessageFromServer(int, char *, int to = MULTI_SEND_MESSAGE_ALL);
 void MultiSendEndPlayerDeath();
 
 // Returns the unique id of a given object type/id
-uint MultiGetMatchChecksum(int type, int id);
+uint32_t MultiGetMatchChecksum(int type, int id);
 
 // Return index of generic that has matching table entry
-int MultiMatchGeneric(uint unique_id);
+int MultiMatchGeneric(uint32_t unique_id);
 
 // Sends a message from client to server
 void MultiSendMessageToServer(int, char *, int to = MULTI_SEND_MESSAGE_ALL);
@@ -1209,7 +1209,7 @@ inline void MultiGetTypeID(ubyte *data, int *count, int *type, int *id) {
   *id = -1;
   *type = MultiGetByte(data, count);
 
-  uint hash_value = MultiGetUint(data, count);
+  uint32_t hash_value = MultiGetUint(data, count);
 
   if ((*type) == OBJ_WEAPON)
     *id = MultiMatchWeapon(hash_value);
@@ -1218,7 +1218,7 @@ inline void MultiGetTypeID(ubyte *data, int *count, int *type, int *id) {
 }
 
 inline void MultiAddTypeID(int type, int id, ubyte *data, int *count) {
-  uint hash_value;
+  uint32_t hash_value;
   hash_value = MultiGetMatchChecksum(type, id);
 
   MultiAddByte(type, data, count);

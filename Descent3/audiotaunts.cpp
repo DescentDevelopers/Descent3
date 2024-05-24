@@ -366,7 +366,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
   // to osf format
   //	start writing out data.
   tOSFDigiHdr digihdr;
-  uint filelen, nblocks, i;
+  uint32_t filelen, nblocks, i;
   int format;
 
   StaticFileBuffer = (ubyte *)mem_malloc(FILEBUFFER_LENGTH);
@@ -385,7 +385,7 @@ bool taunt_ImportWave(char *wave_filename, char *outputfilename) {
     goto error;
   }
 
-  filelen = (uint)cfilelength(fpin);
+  filelen = (uint32_t)cfilelength(fpin);
   nblocks = filelen / FILEBUFFER_LENGTH;
 
   if (!osf.Open(outputfilename, true)) {

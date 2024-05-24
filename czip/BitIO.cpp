@@ -196,8 +196,8 @@ uint32_t CZip::InputBits(BITFILE *bfile, int bitcount) {
   return return_value;
 }
 
-void CZip::FilePrintBinary(FILE *file, uint code, int bits) {
-  uint mask;
+void CZip::FilePrintBinary(FILE *file, uint32_t code, int bits) {
+  uint32_t mask;
   mask = 1 << (bits - 1);
   while (mask != 0) {
     if (code & mask)

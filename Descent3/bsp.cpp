@@ -1070,7 +1070,7 @@ static inline int BSPInMinMax(vector *pos, vector *min_xyz, vector *max_xyz) {
   return 1;
 }
 // see if a point in inside a face by projecting into 2d
-extern uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
+extern uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list);
 
 // Returns true if passed in point collides with a nodes polygon
 static inline int BSPPointInPolygon(vector *pos, bspnode *node) {

@@ -79,7 +79,7 @@ typedef struct{
 	int root_effect;								//root effect to start the list
 	char layout[_MAX_PATH];							//layout screen to use
 	tBriefEffect effects[MAX_EFFECTS_PER_SCREEN];	//the effects for the screen
-	uint mission_mask_set,mission_mask_unset;
+	uint32_t mission_mask_set,mission_mask_unset;
 	int next,prev;									//next/prev screen in list
 }tBriefScreen;
 

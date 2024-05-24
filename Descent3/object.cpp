@@ -2554,7 +2554,7 @@ void ObjDoEffects(object *obj) {
       object *killer;
 
       if (obj->effect_info->damage_handle != OBJECT_HANDLE_NONE) {
-        uint sig = obj->effect_info->damage_handle & HANDLE_COUNT_MASK;
+        uint32_t sig = obj->effect_info->damage_handle & HANDLE_COUNT_MASK;
         int objnum = obj->effect_info->damage_handle & HANDLE_OBJNUM_MASK;
 
         if ((Objects[objnum].handle & HANDLE_COUNT_MASK) != sig)

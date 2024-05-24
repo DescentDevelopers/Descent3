@@ -186,7 +186,7 @@ typedef struct {
   // type
   int type;
   // mission flag mask
-  uint mission_mask_set, mission_mask_unset;
+  uint32_t mission_mask_set, mission_mask_unset;
 } TCTEXTDESC, *LPTCTEXTDESC;
 typedef struct {
   // type
@@ -206,7 +206,7 @@ typedef struct {
   // filename
   char filename[MAX_FILELEN]; // MUST BE FILLED IN
   // mission flag mask
-  uint mission_mask_set, mission_mask_unset;
+  uint32_t mission_mask_set, mission_mask_unset;
 } TCBMPDESC, *LPTCBMPDESC;
 typedef struct {
   // fill in with whats valid
@@ -224,7 +224,7 @@ typedef struct {
   // time to wait until starting the movie
   float waittime; //(Default: 0.0f)
   // mission flag mask
-  uint mission_mask_set, mission_mask_unset;
+  uint32_t mission_mask_set, mission_mask_unset;
 } TCMOVIEDESC, *LPTCMOVIEDESC;
 typedef struct {
   // whats defined for the struct
@@ -238,7 +238,7 @@ typedef struct {
   // how long to wait until effect start
   float waittime; //(Default: 0.0f)
   // mission flag mask
-  uint mission_mask_set, mission_mask_unset;
+  uint32_t mission_mask_set, mission_mask_unset;
 } TCBKGDESC, *LPTCBKGDESC;
 typedef struct {
   // whats defined for the struct
@@ -258,7 +258,7 @@ typedef struct {
   // polymodel name
   char polyname[MAX_FILELEN];
   // mission flag mask
-  uint mission_mask_set, mission_mask_unset;
+  uint32_t mission_mask_set, mission_mask_unset;
 } TCPOLYDESC, *LPTCPOLYDESC;
 typedef struct {
   // whats defined for the struct
@@ -272,7 +272,7 @@ typedef struct {
   // sound name
   char filename[MAX_FILELEN];
   // mission flag mask
-  uint mission_mask_set, mission_mask_unset;
+  uint32_t mission_mask_set, mission_mask_unset;
 } TCSNDDESC, *LPTCSNDDESC;
 typedef struct {
   char filename[MAX_FILELEN];
@@ -290,7 +290,7 @@ typedef struct {
   ubyte click_type;  // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
   bool flasher;
   bool tab_stop;
-  uint mission_mask_set, mission_mask_unset; // mission flag mask
+  uint32_t mission_mask_set, mission_mask_unset; // mission flag mask
 } TCBUTTONDESC, *LPTCBUTTONDESC;
 
 //==================

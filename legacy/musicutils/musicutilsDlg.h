@@ -85,7 +85,7 @@ private:
 	void NewTheme();
 	void OpenThemeFile(const CString& filename);
 	void SaveThemeFile();
-	bool SaveDigitalStream(OSFArchive *osf, const CString& rawfilename, ubyte compression, ubyte format, uint samples, 
+	bool SaveDigitalStream(OSFArchive *osf, const CString& rawfilename, ubyte compression, ubyte format, uint32_t samples, 
 			const CString& realname, ubyte xforms, int measure);
 	void GetStreamInfo(const CString &filename, CString& realname);
 

@@ -118,7 +118,7 @@
 #include "module.h"
 #include "cfile.h"
 
-extern uint Osiris_game_checksum;
+extern uint32_t Osiris_game_checksum;
 extern tOSIRISModuleInit Osiris_module_init;
 
 //	Osiris_InitModuleLoader

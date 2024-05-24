@@ -144,10 +144,10 @@ protected:
 	BOOL GetMOTD();
 
 	// User's current version
-	uint UsrMajor, UsrMinor, UsrBuild;
+	uint32_t UsrMajor, UsrMinor, UsrBuild;
 
 	// Newest version available
-	uint NewMajor, NewMinor, NewBuild; 
+	uint32_t NewMajor, NewMinor, NewBuild; 
 
 	// Generated message map functions
 	//{{AFX_MSG(CUpdateDlg)

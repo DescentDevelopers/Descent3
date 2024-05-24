@@ -469,7 +469,7 @@ void DemoWriteChangedObj(object *op) {
 
 void DemoWriteWeaponFire(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum,
                          unsigned short weapobjnum, short gunnum) {
-  uint uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
+  uint32_t uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   if (weapobjnum == -1)
     return;
   if (!Weapons[weaponnum].used) {
@@ -943,7 +943,7 @@ void DemoReadHudMessage() {
 void DemoReadWeaponFire() {
   vector pos, dir;
   float gametime;
-  uint uniqueid;
+  uint32_t uniqueid;
   object *obj;
   short weaponnum, objnum, weapobjnum;
   vector laser_pos, laser_dir;

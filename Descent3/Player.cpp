@@ -1164,7 +1164,7 @@ int Player_camera_objnum = -1;
 float Player_shields_saved_from_last_level = -1.0f;
 float Player_energy_saved_from_last_level = -1.0f;
 
-uint Players_typing; // information about which players are typing messages (to display an icon)
+uint32_t Players_typing; // information about which players are typing messages (to display an icon)
 
 static float Player_camera_last_sample_time = 0;
 static float Player_camera_last_follow_time = 0;
@@ -1394,7 +1394,7 @@ void InitPlayerNewGame(int slot) {
   Players[slot].num_deaths_total = 0;
   Players[slot].score = 0;
 
-  uint bit = (0x01 << slot);
+  uint32_t bit = (0x01 << slot);
   Players_typing &= ~bit;
 }
 
@@ -1449,7 +1449,7 @@ void InitPlayerNewLevel(int slot) {
     }
   }
 
-  uint bit = (0x01 << slot);
+  uint32_t bit = (0x01 << slot);
   Players_typing &= ~bit;
 
   // Give the player a GuideBot if he doesn't have one and if the GB isn't out there
@@ -2035,7 +2035,7 @@ typedef struct tDeathSeq {
   vector force_dir;
 
   ubyte saved_ctrl_type;
-  uint saved_phys_flags;
+  uint32_t saved_phys_flags;
   float saved_drag;
   vector saved_rotthrust;
 

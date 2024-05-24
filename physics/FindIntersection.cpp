@@ -1101,13 +1101,13 @@ static const int ij_table[3][2] = {
 #define IT_POINT 3 // touches vertex
 
 // see if a point in inside a face by projecting into 2d
-uint check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list) {
+uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector **vertex_ptr_list) {
   vector_array *colp_array; // Axis-independant version of the collision point
   vector_array *norm;       // Axis-independant version of the plane's normal
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge
-  uint edgemask;            // Bit-field for which side we are outside of
+  uint32_t edgemask;            // Bit-field for which side we are outside of
   float check_i, check_j;   // (i,j) checkpoint for 2d in/out test
   vector_array *v0, *v1;    // Vertices of the current line segment in the 2d in/out check loop
 
@@ -1602,7 +1602,7 @@ float rad, vector *ep0, vector *ep1)
 // check if a sphere intersects a face
 int check_sphere_to_face(vector *colp, vector *intp, float *col_dist, vector *wall_norm, const vector *p0,
                          const vector *p1, vector *face_normal, int nv, float rad, vector **vertex_ptr_list) {
-  uint edgemask;
+  uint32_t edgemask;
 
   ASSERT(nv > 0 && nv <= 32); // otherwise, we overflow the edgemask -- if we hit this we need to make edgemask a long
                               // long and adjust the other functions accordingly

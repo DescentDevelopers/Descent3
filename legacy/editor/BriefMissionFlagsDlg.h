@@ -32,7 +32,7 @@ class CBriefMissionFlagsDlg : public CDialog
 {
 // Construction
 public:
-	CBriefMissionFlagsDlg(uint setflags,uint unsetflags,CWnd* pParent = NULL);   // standard constructor
+	CBriefMissionFlagsDlg(uint32_t setflags,uint32_t unsetflags,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CBriefMissionFlagsDlg)
@@ -80,7 +80,7 @@ public:
 	//}}AFX_VIRTUAL
 
 public:
-	uint m_Set,m_UnSet;
+	uint32_t m_Set,m_UnSet;
 
 // Implementation
 protected:

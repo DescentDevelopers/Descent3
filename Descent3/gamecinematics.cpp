@@ -246,7 +246,7 @@ struct {
   int bmp_handle;
   int longest_line;
 
-  uint flags;
+  uint32_t flags;
 
   tHUDMode old_hudmode;
 

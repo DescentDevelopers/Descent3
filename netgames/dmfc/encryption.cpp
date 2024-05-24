@@ -69,8 +69,8 @@ static const int ice_keyrot[16] = {0, 1, 2, 3, 2, 1, 3, 0, 1, 3, 2, 0, 3, 1, 0, 
 // Just like arithmetic multiplication, except that additions and
 // subtractions are replaced by XOR.
 //
-static uint gf_mult(uint a, uint b, uint m) {
-  uint res = 0;
+static uint32_t gf_mult(uint32_t a, uint32_t b, uint32_t m) {
+  uint32_t res = 0;
 
   while (b) {
     if (b & 1)
@@ -90,8 +90,8 @@ static uint gf_mult(uint a, uint b, uint m) {
 // Galois Field exponentiation.
 // Raise the base to the power of 7, modulo m.
 //
-static uint32_t gf_exp7(uint b, uint m) {
-  uint x;
+static uint32_t gf_exp7(uint32_t b, uint32_t m) {
+  uint32_t x;
 
   if (b == 0)
     return 0;

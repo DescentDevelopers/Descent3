@@ -1024,7 +1024,7 @@ void RotateModelPoints(poly_model *pm, bsp_info *sm) {
 #endif
 }
 
-void RenderSubmodel(poly_model *pm, bsp_info *sm, uint f_render_sub) {
+void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
   int i;
   matrix lightmatrix;
 
@@ -1133,7 +1133,7 @@ pop_lighting:
   DoneLightInstance();
 }
 
-int RenderPolygonModel(poly_model *pm, uint f_render_sub) {
+int RenderPolygonModel(poly_model *pm, uint32_t f_render_sub) {
   ASSERT(pm->new_style == 1);
   int i = 0;
 
