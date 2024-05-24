@@ -825,7 +825,7 @@ typedef struct {
 } tPosHistory;
 extern tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
 extern ubyte Object_position_head;
-extern signed short Object_map_position_history[MAX_OBJECTS];
+extern int16_t Object_map_position_history[MAX_OBJECTS];
 extern float Last_position_history_update[MAX_POSITION_HISTORY]; // last gametime the positions were updated
 void ObjInitPositionHistory(object *obj);
 void ObjFreePositionHistory(object *obj);

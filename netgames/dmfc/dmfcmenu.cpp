@@ -512,7 +512,7 @@ void MenuItem::Draw(int x, int y, int height, int bmp, float *not_used) {
 
 #define FLASHRATE 700.0 // alphas per second
 
-  signed short a = m_Alpha;
+  int16_t a = m_Alpha;
   int units = (int)FLASHRATE * (*basethis->Frametime);
 
   // do alphaing effect

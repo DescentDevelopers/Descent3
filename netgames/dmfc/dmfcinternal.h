@@ -2114,7 +2114,7 @@ private:
   int *Camera_view_mode;
 
   char DatabaseRegisteredName[MAX_DBNAME_SIZE];
-  signed short players_in_game[MAX_PLAYER_RECORDS];
+  int16_t players_in_game[MAX_PLAYER_RECORDS];
 
   // DMFCBase::InitializeForLevel
   //

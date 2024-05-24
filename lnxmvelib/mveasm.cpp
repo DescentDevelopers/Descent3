@@ -38,7 +38,7 @@ extern unsigned nf_width;      // wqty * SWIDTH
 extern unsigned nf_new_line;   // width - SWIDTH
 extern unsigned nf_back_right; // (SHEIGHT-1)*width
 
-extern signed short snd_8to16[256];
+extern int16_t snd_8to16[256];
 void nfHPkDecomp(uint8_t *ops, uint8_t *comp, int x, int y, int w, int h);
 void nfPkConfig(void);
 unsigned sndDecompM16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned prev);
@@ -152,8 +152,8 @@ int32_t nfpk_ShiftY[256];
 // Constant tables
 
 // 8-bit -8:7 x nf_width +  -8:7
-signed short nfpk_ShiftP1[256];
-signed short nfpk_ShiftP2[256];
+int16_t nfpk_ShiftP1[256];
+int16_t nfpk_ShiftP2[256];
 
 // Constant tables
 //		mov eax, ebx/ecx

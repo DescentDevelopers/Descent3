@@ -1211,7 +1211,7 @@ object Objects[MAX_OBJECTS];
 
 tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
 ubyte Object_position_head;
-signed short Object_map_position_history[MAX_OBJECTS];
+int16_t Object_map_position_history[MAX_OBJECTS];
 short Object_map_position_free_slots[MAX_OBJECT_POS_HISTORY];
 uint16_t Num_free_object_position_history;
 

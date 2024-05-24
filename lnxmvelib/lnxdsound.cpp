@@ -506,7 +506,7 @@ static bool StartupSoundSystem(LnxSoundDevice *dev) {
 static void ShutdownSoundSystem(void) { SDL_CloseAudio(); }
 
 static inline void GetValues(const LnxSoundBuffer *dsb, uint8_t *buf, uint32_t *fl, uint32_t *fr) {
-  signed short *bufs = (signed short *)buf;
+  int16_t *bufs = (int16_t *)buf;
 
   // 8 bit stereo
   if ((dsb->wfx.wBitsPerSample == 8) && dsb->wfx.nChannels == 2) {
@@ -539,7 +539,7 @@ static inline void GetValues(const LnxSoundBuffer *dsb, uint8_t *buf, uint32_t *
 }
 
 static inline void SetValues(uint8_t *buf, uint32_t fl, uint32_t fr) {
-  signed short *bufs = (signed short *)buf;
+  int16_t *bufs = (int16_t *)buf;
 
   // 8 bit stereo
   if ((LnxBuffers[0]->wfx.wBitsPerSample == 8) && (LnxBuffers[0]->wfx.nChannels == 2)) {
@@ -572,7 +572,7 @@ static inline void SetValues(uint8_t *buf, uint32_t fl, uint32_t fr) {
 static void LinuxSoundMixWithVolume(LnxSoundBuffer *dsb, uint8_t *buf, uint32_t len) {
   uint32_t i, inc = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
   uint8_t *bpc = buf;
-  signed short *bps = (signed short *)buf;
+  int16_t *bps = (int16_t *)buf;
 
   if ((!(dsb->lbdesc.dwFlags & LNXSND_CAPS_CTRLPAN) || (dsb->pan == 0)) &&
       (!(dsb->lbdesc.dwFlags & LNXSND_CAPS_CTRLVOLUME) || (dsb->volume == 0)))
@@ -664,7 +664,7 @@ static uint32_t LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
   uint32_t i, ilen, advance = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
   uint8_t *buf, *ibuf, *obuf;
   int32_t temp, field;
-  signed short *ibufs, *obufs;
+  int16_t *ibufs, *obufs;
 
   if (!(dsb->flags & LNXSND_LOOPING)) {
     temp = DoMulDiv(LnxBuffers[0]->wfx.nAvgBytesPerSec, dsb->buffer_len, dsb->bps) -
@@ -700,8 +700,8 @@ static uint32_t LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
 
   obuf = LnxBuffers[0]->buffer + LnxBuffers[0]->play_cursor;
   for (i = 0; i < len; i += advance) {
-    obufs = (signed short *)obuf;
-    ibufs = (signed short *)ibuf;
+    obufs = (int16_t *)obuf;
+    ibufs = (int16_t *)ibuf;
     if (LnxBuffers[0]->wfx.wBitsPerSample == 16) {
       field = *ibufs;
       field += *obufs;

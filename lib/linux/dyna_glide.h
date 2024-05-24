@@ -171,7 +171,7 @@ typedef int8_t FxI8;
 
 typedef uint16_t FxU16;
 
-typedef signed short FxI16;
+typedef int16_t FxI16;
 
 typedef int32_t FxI32;
 

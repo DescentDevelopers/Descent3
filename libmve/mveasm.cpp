@@ -38,7 +38,7 @@ extern unsigned nf_hicolor;
 extern uint16_t nf_trans16_lo[256];
 extern uint16_t nf_trans16_hi[256];
 
-extern signed short snd_8to16[256];
+extern int16_t snd_8to16[256];
 void PkDecompWorker(const bool hiColor, const uint8_t *ops, const uint8_t *comp, const unsigned x,
                     const unsigned y, const unsigned w, const unsigned h);
 void nfHPkDecomp(uint8_t *ops, uint8_t *comp, int x, int y, int w, int h);
@@ -154,8 +154,8 @@ int32_t nfpk_ShiftY[256];
 // Constant tables
 
 // 8-bit -8:7 x nf_width +  -8:7
-signed short nfpk_ShiftP1[256];
-signed short nfpk_ShiftP2[256];
+int16_t nfpk_ShiftP1[256];
+int16_t nfpk_ShiftP2[256];
 
 // Constant tables
 //		mov eax, ebx/ecx

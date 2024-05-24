@@ -23,7 +23,7 @@ namespace AudioDecoder {
 typedef uint32_t uint32_t;
 typedef int32_t int32_t;
 typedef uint16_t uint16;
-typedef signed short sint16;
+typedef int16_t sint16;
 typedef uint8_t uint8_t;
 typedef int8_t int8_t;
 
