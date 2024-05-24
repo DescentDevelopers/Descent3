@@ -173,7 +173,7 @@ typedef unsigned short FxU16;
 
 typedef signed short FxI16;
 
-typedef signed int FxI32;
+typedef int32_t FxI32;
 
 typedef uint32_t FxU32;
 

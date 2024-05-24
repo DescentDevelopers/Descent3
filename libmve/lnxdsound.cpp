@@ -236,7 +236,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff) {
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol) {
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, int32_t vol) {
   if (!buff)
     return -1;
 
@@ -278,7 +278,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol) {
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed int pan) {
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, int32_t pan) {
   if (!buff)
     return -1;
 
@@ -679,7 +679,7 @@ static int TempSoundBufferLen = 0;
 static uint32_t LinuxSoundMixInMainBuffer(LnxSoundBuffer *dsb, int len) {
   uint32_t i, ilen, advance = (LnxBuffers[0]->wfx.wBitsPerSample >> 3);
   unsigned char *buf, *ibuf, *obuf;
-  signed int temp, field;
+  int32_t temp, field;
   signed short *ibufs, *obufs;
 
   if (!(dsb->flags & LNXSND_LOOPING)) {

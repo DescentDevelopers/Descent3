@@ -24,7 +24,7 @@
 #include "Aencode.h"
 
 typedef uint32_t uint32;
-typedef signed int sint32;
+typedef int32_t sint32;
 typedef unsigned short uint16;
 typedef signed short sint16;
 typedef unsigned char uint8;

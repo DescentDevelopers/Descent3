@@ -149,7 +149,7 @@ void NF_DECOMP_INIT(bool HI_COLOR_FLAG, tNextFrame *nf) {
 //----------------------------------------------------------------------
 
 // signed 8-bit y * nf_width
-signed int nfpk_ShiftY[256];
+int32_t nfpk_ShiftY[256];
 
 // Constant tables
 

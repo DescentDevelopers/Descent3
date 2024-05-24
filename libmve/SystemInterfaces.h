@@ -87,7 +87,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  virtual int SetVolume(signed int vol) = 0;
+  virtual int SetVolume(int32_t vol) = 0;
 
   ///////////////////////////
   // SetPan
@@ -98,7 +98,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  virtual int SetPan(signed int pan) = 0;
+  virtual int SetPan(int32_t pan) = 0;
 
   /////////////////////////
   // Stop

@@ -93,7 +93,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  int SetVolume(signed int vol) { return m_pBuffer->SetVolume(vol); }
+  int SetVolume(int32_t vol) { return m_pBuffer->SetVolume(vol); }
 
   ///////////////////////////
   // SetPan
@@ -104,7 +104,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  int SetPan(signed int pan) { return m_pBuffer->SetPan(pan); }
+  int SetPan(int32_t pan) { return m_pBuffer->SetPan(pan); }
 
   /////////////////////////
   // Stop
@@ -288,7 +288,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set volume
   //       -2 : Invalid parameters
-  int SetVolume(signed int vol) { return LnxSoundBuffer_SetVolume(m_pBuffer, vol); }
+  int SetVolume(int32_t vol) { return LnxSoundBuffer_SetVolume(m_pBuffer, vol); }
 
   ///////////////////////////
   // SetPan
@@ -299,7 +299,7 @@ public:
   //        0 : no error
   //       -1 : Cannot set pan
   //       -2 : Invalid parameters
-  int SetPan(signed int pan) { return LnxSoundBuffer_SetPan(m_pBuffer, pan); }
+  int SetPan(int32_t pan) { return LnxSoundBuffer_SetPan(m_pBuffer, pan); }
 
   /////////////////////////
   // Stop

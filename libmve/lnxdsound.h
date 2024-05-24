@@ -47,8 +47,8 @@ typedef struct {
 
   unsigned char *buffer;
 
-  signed int volume;
-  signed int pan;
+  int32_t volume;
+  int32_t pan;
 
   WAVEFORMATEX wfx;
 
@@ -90,7 +90,7 @@ int LnxSoundBuffer_Release(LnxSoundBuffer *buff);
 //        0 : no error
 //       -1 : Cannot set volume
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol);
+int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, int32_t vol);
 
 ///////////////////////////
 // LnxSoundBuffer_SetPan
@@ -101,7 +101,7 @@ int LnxSoundBuffer_SetVolume(LnxSoundBuffer *buff, signed int vol);
 //        0 : no error
 //       -1 : Cannot set pan
 //       -2 : Invalid parameters
-int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, signed int pan);
+int LnxSoundBuffer_SetPan(LnxSoundBuffer *buff, int32_t pan);
 
 /////////////////////////
 // LnxSoundBuffer_Stop
