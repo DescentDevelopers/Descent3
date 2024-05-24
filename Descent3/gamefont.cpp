@@ -149,7 +149,7 @@ int LoadFont(const char *font_name) {
   if (handle == -1)
     Error(TXT_ERRNOFONT, font_name);
 
-  mprintf((0, "Font <%s> height = %d\n", font_name, grfont_GetHeight(handle)));
+  mprintf(0, "Font <%s> height = %d\n", font_name, grfont_GetHeight(handle));
 
   return handle;
 }

@@ -76,7 +76,7 @@ bool llsGeometry::Init(llsSystem *snd_sys) {
   }
 
   if (!m_lib_init) {
-    mprintf((0, "DDSNDGEO: Failed to initialize geometry interface.\n"));
+    mprintf(0, "DDSNDGEO: Failed to initialize geometry interface.\n");
     return false;
   }
 
@@ -94,7 +94,7 @@ bool llsGeometry::Init(llsSystem *snd_sys) {
   CreateMaterial(SNDGEO_MATERIAL_WATER, 1.0f, 0.3f, 0.8f, 0.7f);
   CreateMaterial(SNDGEO_MATERIAL_METAL, 0.1f, 0.1f, 0.95f, 0.85f);
 
-  mprintf((0, "DDSNDGEO: Initialized.\n"));
+  mprintf(0, "DDSNDGEO: Initialized.\n");
   return true;
 }
 
@@ -116,7 +116,7 @@ void llsGeometry::Shutdown() {
   m_snd_system = NULL;
   m_lib_init = false;
 
-  mprintf((0, "DDSNDGEO: Shutdown.\n"));
+  mprintf(0, "DDSNDGEO: Shutdown.\n");
 }
 
 void llsGeometry::StartFrame() {
@@ -126,9 +126,9 @@ void llsGeometry::StartFrame() {
 }
 
 void llsGeometry::EndFrame() {
-  mprintf_at((3, 4, 20, "sndpoly=%04d", n_primatives_used));
-  mprintf_at((3, 4, 38, "sndmat=%04d", n_materials_used));
-  mprintf_at((3, 5, 20, "sndref=%04d", n_reflections_used));
+  mprintf_at(3, 4, 20, "sndpoly=%04d", n_primatives_used);
+  mprintf_at(3, 4, 38, "sndmat=%04d", n_materials_used);
+  mprintf_at(3, 5, 20, "sndref=%04d", n_reflections_used);
 }
 
 // polygon lists

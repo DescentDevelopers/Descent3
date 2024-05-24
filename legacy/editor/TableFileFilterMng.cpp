@@ -430,7 +430,7 @@ bool PageDataList::AddToList(char *page_name, uint8_t page_type, int page_flags)
 	// Allocate memory for the new node
 	new_node=new PageDataNode;
 	if(new_node==NULL) {
-		mprintf((0,"ERROR: Could not allocate new PageDataNode!\n"));
+		mprintf(0,"ERROR: Could not allocate new PageDataNode!\n");
 		return FALSE;
 	}
 
@@ -541,7 +541,7 @@ bool PageDataList::LoadList(char *list_filename)
 	infile=cfopen (list_filename,"rb");
 	if (!infile)
 	{
-		mprintf ((0,"Couldn't open the input list file!\n"));
+		mprintf(0,"Couldn't open the input list file!\n");
 		return FALSE;
 	}
 
@@ -560,7 +560,7 @@ bool PageDataList::LoadList(char *list_filename)
 		// Allocate memory for the new node
 		new_node=new PageDataNode;
 		if(new_node==NULL) {
-			mprintf((0,"ERROR: Could not allocate new PageDataNode!\n"));
+			mprintf(0,"ERROR: Could not allocate new PageDataNode!\n");
 			return FALSE;
 		}
 
@@ -620,7 +620,7 @@ bool PageDataList::SaveList(char *list_filename)
 	outfile=cfopen (list_filename,"wb");
 	if (!outfile)
 	{
-		mprintf ((0,"Couldn't open the output list file!\n"));
+		mprintf(0,"Couldn't open the output list file!\n");
 		return FALSE;
 	}
 
@@ -1215,7 +1215,7 @@ bool PageDataList::DetermineRequiredPages(int process_type)
 				}
 				else
 				{
-					mprintf ((0,"Couldn't find polymodel %s!\n",Gamefiles[i].name));
+					mprintf(0,"Couldn't find polymodel %s!\n",Gamefiles[i].name);
 					Int3();
 				}
 			}
@@ -1501,14 +1501,14 @@ bool PageDataList::CreateNewTableFile(char *new_table_filename, char *src_table_
 	infile=cfopen (src_table_filename,"rb");
 	if (!infile)
 	{
-		mprintf ((0,"Couldn't open input table file!\n"));
+		mprintf(0,"Couldn't open input table file!\n");
 		return FALSE;
 	}
 
 	outfile=cfopen (new_table_filename,"wb");
 	if (!outfile)
 	{
-		mprintf ((0,"Couldn't open output table file!\n"));
+		mprintf(0,"Couldn't open output table file!\n");
 		cfclose (infile);
 		return FALSE;
 	}
@@ -2012,7 +2012,7 @@ bool PageDataList::ProcessPageFromFile(char *page_name, uint8_t page_type, int p
 				}
 				else
 				{
-					mprintf ((0,"Couldn't find polymodel %s!\n",page_name));
+					mprintf(0,"Couldn't find polymodel %s!\n",page_name);
 					Int3();
 				}
 			}
@@ -2177,7 +2177,7 @@ void OpenFilterLogFiles(void)
 	remaining_log_file=cfopen (fullpath,"wt");
 	if (remaining_log_file==NULL)
 	{
-		mprintf ((0,"Couldn't open \"Remaining Pages\" log file!\n"));
+		mprintf(0,"Couldn't open \"Remaining Pages\" log file!\n");
 		return;
 	}
 
@@ -2185,7 +2185,7 @@ void OpenFilterLogFiles(void)
 	removed_log_file=cfopen (fullpath,"wt");
 	if (removed_log_file==NULL)
 	{
-		mprintf ((0,"Couldn't open \"Removed Pages\" log file!\n"));
+		mprintf(0,"Couldn't open \"Removed Pages\" log file!\n");
 		return;
 	}
 }

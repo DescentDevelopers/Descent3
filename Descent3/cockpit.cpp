@@ -250,7 +250,7 @@ static void LoadCockpitInfo(const char *ckt_file, tCockpitCfgInfo *info);
 void InitCockpit(int ship_index) {
   tCockpitCfgInfo cfginfo;
   int i;
-  mprintf((0, "Initializing cockpit.\n"));
+  mprintf(0, "Initializing cockpit.\n");
   LoadCockpitInfo(Ships[ship_index].cockpit_name, &cfginfo);
   // initialize special hud/cockpit images unique to this ship
   for (i = 0; i < NUM_SHIELD_GAUGE_FRAMES; i++) {
@@ -263,7 +263,7 @@ void InitCockpit(int ship_index) {
   HUD_resources.invpulse_bmp = bm_AllocLoadFileBitmap(IGNORE_TABLE(cfginfo.invpulseimg), 0);
   if (cfginfo.modelname[0] == 0) {
     Cockpit_info.model_num = -1;
-    mprintf((0, "No cockpit found for ship.\n"));
+    mprintf(0, "No cockpit found for ship.\n");
     return;
   }
   // initialize cockpit.
@@ -456,7 +456,7 @@ void RenderCockpit() {
   //	position cockpit correctly.
   bsp_info *viewer_subobj = CockpitGetMonitorSubmodel(SOF_VIEWER);
   if (!viewer_subobj) {
-    mprintf((0, "Cockpit missing viewer!\n"));
+    mprintf(0, "Cockpit missing viewer!\n");
     return;
   }
   view_z =
@@ -550,8 +550,7 @@ float KeyframeAnimateCockpit() {
 
   newkeyframe = Cockpit_info.this_keyframe + (Cockpit_info.next_keyframe - Cockpit_info.this_keyframe) *
                                                  (Cockpit_info.frame_time / COCKPIT_ANIM_TIME);
-  //	mprintf((0, "this=%.1f next=%.1f ft=%.1f\n", Cockpit_info.this_keyframe, Cockpit_info.next_keyframe,
-  // Cockpit_info.frame_time)); 	going up in keyframes
+  // mprintf(0, "this=%.1f next=%.1f ft=%.1f\n", Cockpit_info.this_keyframe, Cockpit_info.next_keyframe, Cockpit_info.frame_time)); // going up in keyframes
   if (Cockpit_info.this_keyframe < Cockpit_info.next_keyframe) {
     if (newkeyframe >= Cockpit_info.next_keyframe) {
       Cockpit_info.frame_time = 0.0f;

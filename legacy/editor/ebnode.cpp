@@ -156,7 +156,7 @@ bool EBNode_VerifyGraph()
 
 	if(!BNode_allocated)
 	{
-		mprintf((0, "EBNode Verify: No BNodes for this level\n"));
+		mprintf(0, "EBNode Verify: No BNodes for this level\n");
 		return false;
 	}
 
@@ -221,7 +221,7 @@ bool EBNode_VerifyGraph()
 			{
 				if(nlist->nodes[j].edges[k].max_rad < 5.0f)
 				{
-					mprintf((0, "EBNode Verify: Removed a skinny edge.\n"));
+					mprintf(0, "EBNode Verify: Removed a skinny edge.\n");
 					EBNode_RemoveEdge(j, i, nlist->nodes[j].edges[k].end_index, nlist->nodes[j].edges[k].end_room);
 					k--;
 				}
@@ -243,7 +243,7 @@ bool EBNode_VerifyGraph()
 			{
 				if(Rooms[i].portals[j].bnode_index >= 0 && Rooms[i].portals[j].bnode_index >= Rooms[i].bn_info.num_nodes)
 				{
-					mprintf((0, "EBNode: Bashed an invalid node\n"));
+					mprintf(0, "EBNode: Bashed an invalid node\n");
 					Rooms[i].portals[j].bnode_index = -1;
 				}
 				else if(Rooms[i].portals[j].bnode_index < 0)
@@ -274,7 +274,7 @@ bool EBNode_VerifyGraph()
 						vector pos;
 						pos = rp->portals[j].path_pnt + rp->faces[rp->portals[j].portal_face].normal * 0.75f;
 						rp->portals[j].bnode_index = EBNode_AddNode(i, &pos, false, false);
-						mprintf((0, "EBNode Verify: Added a portal node\n"));
+						mprintf(0, "EBNode Verify: Added a portal node\n");
 					}
 				}
 			}
@@ -320,7 +320,7 @@ bool EBNode_VerifyGraph()
 				{
 					if(Rooms[i].portals[j].bnode_index >= 0)
 					{
-						mprintf((0, "EBNode Verify: Removed a node.\n"));
+						mprintf(0, "EBNode Verify: Removed a node.\n");
 						EBNode_RemoveNode(i, Rooms[i].portals[j].bnode_index);
 					}
 					continue;
@@ -332,7 +332,7 @@ bool EBNode_VerifyGraph()
 					{
 						if(Rooms[i].portals[j].bnode_index >= 0)
 						{
-							mprintf((0, "EBNode Verify: Removed a node.\n"));
+							mprintf(0, "EBNode Verify: Removed a node.\n");
 							EBNode_RemoveNode(i, Rooms[i].portals[j].bnode_index);
 						}
 						continue;
@@ -343,7 +343,7 @@ bool EBNode_VerifyGraph()
 				{
 					if(Rooms[i].portals[j].bnode_index >= 0)
 					{
-						mprintf((0, "EBNode Verify: Removed a node.\n"));
+						mprintf(0, "EBNode Verify: Removed a node.\n");
 						EBNode_RemoveNode(i, Rooms[i].portals[j].bnode_index);
 					}
 					continue;
@@ -376,7 +376,7 @@ bool EBNode_VerifyGraph()
 						
 						if(xxx >= BOA_num_connect[TERRAIN_REGION(roomnum)])
 						{
-							mprintf((0, "EBNode Verify:  External room isn't in terrain region list\n"));
+							mprintf(0, "EBNode Verify:  External room isn't in terrain region list\n");
 							f_verified = false;
 							continue;
 						}
@@ -384,7 +384,7 @@ bool EBNode_VerifyGraph()
 						rp->portals[j].bnode_index = EBNode_AddNode(roomnum, &pos, false, false);
 						ASSERT(rp->portals[j].bnode_index >= 0);
 						EBNode_AutoEdgeNode(rp->portals[j].bnode_index, roomnum);
-						mprintf((0, "EBNode Verify: Added a node and autoedged it.\n"));
+						mprintf(0, "EBNode Verify: Added a node and autoedged it.\n");
 
 						if(ci >= 0)
 						{
@@ -398,7 +398,7 @@ bool EBNode_VerifyGraph()
 						rp->portals[j].bnode_index = EBNode_AddNode(i, &pos, false, false);
 						ASSERT(rp->portals[j].bnode_index >= 0);
 						EBNode_AutoEdgeNode(rp->portals[j].bnode_index, i);
-						mprintf((0, "EBNode Verify: Added a node and autoedged it.\n"));
+						mprintf(0, "EBNode Verify: Added a node and autoedged it.\n");
 
 						int cr = rp->portals[j].croom;
 						int ci = Rooms[cr].portals[rp->portals[j].cportal].bnode_index;
@@ -449,7 +449,7 @@ bool EBNode_VerifyGraph()
 			{
 				if(nlist->nodes[j].edges[k].max_rad < 5.0f)
 				{
-					mprintf((0, "EBNode Verify: Removed a skinny edge.\n"));
+					mprintf(0, "EBNode Verify: Removed a skinny edge.\n");
 					EBNode_RemoveEdge(j, i, nlist->nodes[j].edges[k].end_index, nlist->nodes[j].edges[k].end_room);
 					k--;
 				}
@@ -459,7 +459,7 @@ bool EBNode_VerifyGraph()
 			{
 				if(nlist->nodes[j].edges[k].end_room <= Highest_room_index && !Rooms[nlist->nodes[j].edges[k].end_room].used)
 				{
-					mprintf((0, "EBNode Verify: Removed a edge to a non-existant room. Room %d, node %d, edge %d\n", i, j, k));
+					mprintf(0, "EBNode Verify: Removed a edge to a non-existant room. Room %d, node %d, edge %d\n", i, j, k);
 					EBNode_RemoveEdge(j, i, nlist->nodes[j].edges[k].end_index, nlist->nodes[j].edges[k].end_room);
 					k--;
 				}
@@ -487,7 +487,7 @@ bool EBNode_VerifyGraph()
 			{
 				if(nlist->nodes[j].edges[k].max_rad < 5.0f)
 				{
-					mprintf((0, "Skinny Edge - from r%d n%d to r%d n%d\n", i, j, nlist->nodes[j].edges[k].end_room, nlist->nodes[j].edges[k].end_index));
+					mprintf(0, "Skinny Edge - from r%d n%d to r%d n%d\n", i, j, nlist->nodes[j].edges[k].end_room, nlist->nodes[j].edges[k].end_index);
 					f_verified = false;
 				}
 			}
@@ -512,7 +512,7 @@ bool EBNode_VerifyGraph()
 			{
 				if(!BNode_FindPath(i, j, k, 0.0f))
 				{
-					mprintf((0, "BNODE ERROR: No path from %d to %d in room %d\n", j + 1, k + 1, i));
+					mprintf(0, "BNODE ERROR: No path from %d to %d in room %d\n", j + 1, k + 1, i);
 					f_verified = false;
 				}
 			}
@@ -522,9 +522,9 @@ bool EBNode_VerifyGraph()
 	BNode_verified = f_verified;
 	
 	if(f_verified)
-		mprintf((0, "EBNode:  VERIFY OK!\n"));
+		mprintf(0, "EBNode:  VERIFY OK!\n");
 	else
-		mprintf((0, "EBNode:  VERIFY FAILED!\n"));
+		mprintf(0, "EBNode:  VERIFY FAILED!\n");
 
 	return f_verified;
 }
@@ -1225,7 +1225,7 @@ void EBNode_MakeDefaultTerrainNodes(int region)
 
 	ASSERT(region >= 0 || region < BOA_num_terrain_regions);
 
-	mprintf((0, "TR %d has %d nodes\n", region, BOA_num_connect[region]));
+	mprintf(0, "TR %d has %d nodes\n", region, BOA_num_connect[region]);
 
 	// Adds the nodes from portals
 	for(i = 0; i < BOA_num_connect[region]; i++)

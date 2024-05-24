@@ -550,7 +550,7 @@ void CAmbientSoundPattern::OnASPUndoLock()
 
 	//Delete local page
 	if (!mng_DeletePage (AMBIENT_FILE_NAME,PAGETYPE_GAMEFILE,1)) {
-		mprintf ((0,ErrorString));
+		mprintf(0,ErrorString);
 		Int3();
 	}
 

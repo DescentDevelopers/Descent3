@@ -232,7 +232,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnClientPlayerEntersGame(OnClientPlayerEntersGame);
 
   DLLCreateStringTable("hyper.str", &StringTable, &StringTableSize);
-  DLLmprintf((0, "%d strings loaded from string table\n", StringTableSize));
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -261,7 +261,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   HyperOrbID = DLLFindObjectIDName("Hyperorb");
   if (HyperOrbID == -1) {
-    DLLmprintf((0, "Hyper Anarchy: BIG WARNING, COULDN'T FIND HyperOrb ID...YOUR GAME IS IN JEOPARDY!\n"));
+    DLLmprintf(0, "Hyper Anarchy: BIG WARNING, COULDN'T FIND HyperOrb ID...YOUR GAME IS IN JEOPARDY!\n");
     *all_ok = 0;
     return;
   }
@@ -470,9 +470,9 @@ void OnServerGameCreated(void) {
 void OnServerLevelStart(void) {
   // Now create a hyper orb in a random room -eek
   if (HyperOrbID != -1) {
-    DLLmprintf((0, "Attempting to create HyperOrb in a random room\n"));
+    DLLmprintf(0, "Attempting to create HyperOrb in a random room\n");
     int room = GetRandomValidRoom();
-    DLLmprintf((0, "Room %d selected\n", room));
+    DLLmprintf(0, "Room %d selected\n", room);
     // We got a good room
     // Safe to create the flag
     CreateHyperOrbInRoom(room);
@@ -754,7 +754,7 @@ void OnServerCollide(object *me_obj, object *it_obj) {
   if ((me_obj->type == OBJ_PLAYER) && (DLLInvCheckItem(it_obj->id, OBJ_POWERUP, HyperOrbID))) {
     /*
     //Two Players collided...one had orb
-    DLLmprintf((0,"Player2Player\n"));
+    DLLmprintf(0,"Player2Player\n");
     DMFCBase->CallClientEvent(EVT_CLIENT_GAMECOLLIDE,DMFCBase->GetMeObjNum(),DMFCBase->GetItObjNum(),-1);
     DMFCBase->CallOnClientCollide(me_obj,it_obj);
     */
@@ -875,7 +875,7 @@ void OnClientPlayerKilled(object *killer_obj, int victim_pnum) {
     // check the score to see if we hit the limit
     if ((DMFCBase->GetScoreLimit(&score))) {
       if (score <= stat->Score[DSTAT_LEVEL]) {
-        DLLmprintf((0, "Score limit reached\n"));
+        DLLmprintf(0, "Score limit reached\n");
         DMFCBase->EndLevel();
       }
     }
@@ -907,7 +907,7 @@ void SaveStatsToFile(char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf((0, "Unable to open output file\n"));
+    DLLmprintf(0, "Unable to open output file\n");
     return;
   }
 
@@ -1108,7 +1108,7 @@ void ReceiveHyperGameState(uint8_t *data) {
   KillCount = MultiGetInt(data, &count);
 
   if (WhoHasOrb != -1) {
-    DLLmprintf((0, "%s has the score orb!\n", dPlayers[WhoHasOrb].callsign));
+    DLLmprintf(0, "%s has the score orb!\n", dPlayers[WhoHasOrb].callsign);
     DLLInvAddTypeID(WhoHasOrb, OBJ_POWERUP, HyperOrbID, -1, -1, 0, NULL);
   }
   UpdateEffect();
@@ -1384,7 +1384,7 @@ int GetRandomValidRoom(void) {
     room = rand() % (DMFCBase->GetHighestRoomIndex() + 1);
     if ((!ROOMNUM_OUTSIDE(room)) && ((DMFCBase->GetRooms())[room].used)) {
       if (!((DMFCBase->GetRooms())[room].flags & RF_EXTERNAL)) {
-        DLLmprintf((0, "Room %d selected\n", room));
+        DLLmprintf(0, "Room %d selected\n", room);
         return room;
       }
     }

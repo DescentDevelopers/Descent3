@@ -450,7 +450,7 @@ static bool checkDevMount(const char *device, const char *mntfname, char *mountp
 
   FILE *mountFile = setmntent(mntfname, "r");
   if (mountFile == NULL) {
-    mprintf((0, "setmntent(\"%s\", \"r\"); failed!  errno == (%d).", mntfname, errno));
+    mprintf(0, "setmntent(\"%s\", \"r\"); failed!  errno == (%d).", mntfname, errno);
     Int3();
     return (false);
   } // if
@@ -570,7 +570,7 @@ bool system_cdroms::UnMount(void) {
                   return true;
           }else
           {
-                  mprintf((0,"Error %d trying to unmount %s\n",errno,name));
+                  mprintf(0,"Error %d trying to unmount %s\n",errno,name);
                   //lock it again...something went wrong
                   LockDevice();
                   return false;
@@ -644,7 +644,7 @@ bool system_cdroms::PrepareForVolume(char *volume, char *mountpoint) {
       return true;
     } else {
       // we couldn't mount!
-      mprintf((0, "CDROM: Unable to mount drive though we must have it mounted\n"));
+      mprintf(0, "CDROM: Unable to mount drive though we must have it mounted\n");
       Int3();
       return false;
     }
@@ -654,7 +654,7 @@ bool system_cdroms::PrepareForVolume(char *volume, char *mountpoint) {
   // lets unmount the drive so the user can switch CDs
   bool ret = UnMount();
   if (!ret) {
-    mprintf((0, "Unable to unmount drive\n"));
+    mprintf(0, "Unable to unmount drive\n");
   }
 
   return false;
@@ -671,13 +671,13 @@ void system_cdroms::FindDefaultDevice(void) {
   // 0 is SDL's default CD-ROM drive id. But use -1 if there are none.
   if (GetNumCDRoms() <= 0) {
     m_DeviceToUse = -1;
-    mprintf((0, "CDROM: No drives found to be made default!"));
+    mprintf(0, "CDROM: No drives found to be made default!");
     return;
   }    // if
   else // there WAS at least one drive...
   {
     m_DeviceToUse = 0; // default device.
-    mprintf((0, "CDROM: Making device \"%s\" default CD-ROM drive.", CDName(m_DeviceToUse)));
+    mprintf(0, "CDROM: Making device \"%s\" default CD-ROM drive.", CDName(m_DeviceToUse));
   } // else
 
   // we found the device we want to use for our CD-ROM.
@@ -705,7 +705,7 @@ void system_cdroms::QueryDefaultDevice(void) {
   const char *device = CDName(m_DeviceToUse);
 
   if (IsDeviceMounted(device, mountpoint, sizeof(mountpoint))) {
-    mprintf((0, "CDROM: Default device already mounted at %s...\n", mountpoint));
+    mprintf(0, "CDROM: Default device already mounted at %s...\n", mountpoint);
 
     // save the mountpoint for use
     strcpy(m_MountedDir, mountpoint);
@@ -766,7 +766,7 @@ void system_cdroms::QueryDefaultDevice(void) {
     	}
 
     	// save the mountpoint for use
-    	mprintf((0,"CDROM: Mountpoint created for device %s at %s\n",device,mountpoint));
+    	mprintf(0,"CDROM: Mountpoint created for device %s at %s\n",device,mountpoint);
     	strcpy(m_MountedDir,mountpoint);
     	m_CreatedMountPoint = true;
     } // if
@@ -801,7 +801,7 @@ void system_cdroms::LockDevice(void) {
                   retval = ioctl(fileid,CDC_LOCK,arg);
                   if(retval<0)
                   {
-                          mprintf((0,"CDROM: ioctl error locking drive (%d)\n",retval));
+                          mprintf(0,"CDROM: ioctl error locking drive (%d)\n",retval);
                   }
                   close(fileid);
           }
@@ -825,7 +825,7 @@ void system_cdroms::UnLockDevice(void) {
                   retval = ioctl(fileid,CDC_LOCK,arg);
                   if(retval<0)
                   {
-                          mprintf((0,"CDROM: ioctl error unlocking drive (%d)\n",retval));
+                          mprintf(0,"CDROM: ioctl error unlocking drive (%d)\n",retval);
                   }
                   close(fileid);
           }

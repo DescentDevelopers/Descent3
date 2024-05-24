@@ -492,7 +492,7 @@ void HObjectMove(int objnum, float dx, float dy, float dz)
 	object *ref_obj;						//the object in whose frame of reference we're moving
 
 	if (objnum == -1) {
-		mprintf((0, "HObjectMove:No current object.\n"));
+		mprintf(0, "HObjectMove:No current object.\n");
 		return;
 	}
 
@@ -635,7 +635,7 @@ bool MoveObject(object * obj, vector *newpos)
 
 	fate = fvi_FindIntersection(&fq, &hit_info);
 
-	mprintf((0,"fate = %d\n", fate));
+	mprintf(0,"fate = %d\n", fate);
 
 	//Check for object can't move, meaning it's stuck in the wall
 	if (fate == HIT_WALL)

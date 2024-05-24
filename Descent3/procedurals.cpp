@@ -157,7 +157,7 @@ void InitProcedurals() {
   // Load easter egg bitmap
   Easter_egg_handle = bm_AllocLoadFileBitmap("FreakyEye.ogf", 0);
   if (Easter_egg_handle == -1) {
-    mprintf((0, "Failed to load easter egg!\n"));
+    mprintf(0, "Failed to load easter egg!\n");
   }
   for (i = 0; i < MAX_PROC_ELEMENTS; i++) {
     DynamicProcElements[i].type = PROC_NONE;
@@ -240,7 +240,7 @@ void InitProcedurals() {
           int g=((WaterProcTableHi[i][127]>>5) & 0x1f);
           g+=((WaterProcTableLo[i][255]>>5) & 0x1f);
           int b=(WaterProcTableLo[i][255]) & 0x1f;
-          mprintf ((0,"index=%d r=%d g=%d b=%d\n",i,r,g,b));
+          mprintf(0,"index=%d r=%d g=%d b=%d\n",i,r,g,b);
   }*/
   // Init our default palette
   for (i = 0; i < 128; i++) {
@@ -254,7 +254,7 @@ void InitProcedurals() {
 // Returns the next free procelement
 int ProcElementAllocate() {
   if (Num_proc_elements == MAX_PROC_ELEMENTS) {
-    // mprintf ((0,"Couldn't allocate proc element!\n"));
+    // mprintf(0,"Couldn't allocate proc element!\n");
     return -1;
   }
 
@@ -1352,7 +1352,7 @@ void EvaluateProcedural(int handle) {
 
   int dest_bitmap = procedural->procedural_bitmap;
   if (bm_w(dest_bitmap, 0) != PROC_SIZE) {
-    mprintf((0, "Couldn't evaluate procedural because its not %d x %d!\n", PROC_SIZE, PROC_SIZE));
+    mprintf(0, "Couldn't evaluate procedural because its not %d x %d!\n", PROC_SIZE, PROC_SIZE);
     return;
   }
   if (GameTextures[handle].flags & TF_WATER_PROCEDURAL)

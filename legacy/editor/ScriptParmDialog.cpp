@@ -223,11 +223,11 @@ BOOL CScriptParmDialog::OnInitDialog()
 //@@
 //@@		m_ContextWnd = pWnd;
 //@@		if(!popup.TrackPopupMenu(TPM_LEFTALIGN,point.x,point.y,this,NULL)) {
-//@@			mprintf((0,"TrackPopupMenu error!\n"));
+//@@			mprintf(0,"TrackPopupMenu error!\n");
 //@@		}
 //@@	}
 //@@	else {
-//@@		mprintf((1, "Failed to create shortcut menu!\n"));
+//@@		mprintf(1, "Failed to create shortcut menu!\n");
 //@@	}
 //@@}
 

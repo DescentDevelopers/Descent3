@@ -168,7 +168,7 @@ int read_font_char(int cur_char, int& bmx, int& bmy)
 	int w,h,x,y;
 	bool box_edge = false;
 
-	mprintf((0," %d-(%d,%d)",cur_char,bmx,bmy));
+	mprintf(0," %d-(%d,%d)",cur_char,bmx,bmy);
 
 	while (PIX(bmx+1,bmy+1) == m_BoxColor)
 		bmx++;		//deal with double-thick vertical lines
@@ -244,7 +244,7 @@ int read_font_char(int cur_char, int& bmx, int& bmy)
 			else if (! (m_FgColor & 0xf000))			// 4444 check for alpha
 				m_FgColor = c; 
 			else if (m_FgColor != c) { 				// OLD_COMMENT-c here is 1555 !! remember this.
-				m_FontType = COLOR_FONT;				//	mprintf((0, "%d,%d\n", bmx+1+x, bmy+1+y));
+				m_FontType = COLOR_FONT;				//	mprintf(0, "%d,%d\n", bmx+1+x, bmy+1+y);
 			}
 
 //			if (c != 0) 
@@ -302,7 +302,7 @@ bool extract_font(int bm_handle, tFontFileInfo *ft)
 //	assume upper left pixel is background color, and first-found other
 //	color is box color
 	m_BgColor = PIX(0,0);
-	mprintf((0, "m_BgColor=%04x\n", m_BgColor));
+	mprintf(0, "m_BgColor=%04x\n", m_BgColor);
 
 	for (bmy = 0;bmy  < m_FontBmH; bmy++) 
 	{
@@ -311,11 +311,11 @@ bool extract_font(int bm_handle, tFontFileInfo *ft)
 	}				
 
 	m_BoxColor = PIX(bmx,bmy);
-	mprintf((0, "m_BoxColor=%04x\n", m_BoxColor));
+	mprintf(0, "m_BoxColor=%04x\n", m_BoxColor);
 
 //	Get all data from current line.
-	mprintf((0, "Parsing font..."));
-	mprintf((0," read_characters: "));
+	mprintf(0, "Parsing font...");
+	mprintf(0," read_characters: ");
 
 	for (cur_char=0;bmy < m_FontBmH && cur_char<MAX_FONT_CHARS;) 
 	{
@@ -339,7 +339,7 @@ bool extract_font(int bm_handle, tFontFileInfo *ft)
 //		if (PIX(bmx,bmy+1) != m_BoxColor) 
 //			break;
 	}  
-	mprintf((0, "\nDone!\n"));			
+	mprintf(0, "\nDone!\n");			
 
 //	now fill in font information & store it into our file record. this information
 //	can be used to save the font
@@ -410,7 +410,7 @@ void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_
 	ft.ffi2.tracking = 0;
 
 //	write to file
-	mprintf((0, "Saving font data..."));
+	mprintf(0, "Saving font data...");
 	ffile = OPEN_FONT((char *)fnt_file_dest);
 	if (!ffile) {
 		Error("Unable to save font %s.", fnt_file_dest);

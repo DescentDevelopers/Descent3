@@ -554,7 +554,7 @@ void RenderScreen(int screen, tTelComInfo *tsys, float Frametime) {
 
     node = TCEffects[node].next;
   }
-  // mprintf((0,"Effect Count: %d effects\n",count));
+  // mprintf(0,"Effect Count: %d effects\n",count);
 }
 
 // Renders an effect
@@ -623,7 +623,7 @@ void SendEventToEffect(int effect, int event, int parm1, int parm2) {
   }
 
   // if we got here than the event queue is filled up
-  mprintf((0, "Warning: Event queue filled up for effect %d\n", effect));
+  mprintf(0, "Warning: Event queue filled up for effect %d\n", effect);
 }
 
 //	Pops off an event for processesing, returns -1 if no event available
@@ -962,7 +962,7 @@ int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id) {
   if (tce->buttoninfo.bm_handle == -1) {
     desc->w = desc->h = 0;
     tce->buttoninfo.bm_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", desc->filename));
+    mprintf(0, "Unable to load bmp '%s'\n", desc->filename);
   } else {
     desc->w = bm_w(tce->buttoninfo.bm_handle, 0);
     desc->h = bm_h(tce->buttoninfo.bm_handle, 0);
@@ -973,7 +973,7 @@ int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id) {
   tce->buttoninfo.bmfocus_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(desc->filename_focus), 0);
   if (tce->buttoninfo.bmfocus_handle == -1) {
     tce->buttoninfo.bmfocus_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", desc->filename_focus));
+    mprintf(0, "Unable to load bmp '%s'\n", desc->filename_focus);
   } else {
     bm_CreateChunkedBitmap(tce->buttoninfo.bmfocus_handle, &tce->buttoninfo.chunkfocus_bmp);
   }
@@ -983,7 +983,7 @@ int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id) {
   if (desc->flasher) {
     tce->buttoninfo.flash_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(desc->flash_filename), 0);
     if (tce->buttoninfo.flash_handle == -1) {
-      mprintf((0, "Unable to load bmp '%s'\n", desc->flash_filename));
+      mprintf(0, "Unable to load bmp '%s'\n", desc->flash_filename);
     } else {
       bm_CreateChunkedBitmap(tce->buttoninfo.flash_handle, &tce->buttoninfo.flash_chunk);
     }
@@ -995,7 +995,7 @@ int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id) {
   if (desc->flasher) {
     tce->buttoninfo.flashfocus_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(desc->flash_filename_focus), 0);
     if (tce->buttoninfo.flashfocus_handle == -1) {
-      mprintf((0, "Unable to load bmp '%s'\n", desc->flash_filename_focus));
+      mprintf(0, "Unable to load bmp '%s'\n", desc->flash_filename_focus);
     } else {
       bm_CreateChunkedBitmap(tce->buttoninfo.flashfocus_handle, &tce->buttoninfo.flashfocus_chunk);
     }
@@ -1109,7 +1109,7 @@ bool CreateBmpStatic(tceffect *tce, const char *filename) {
   tce->bmpinfo.bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
   if (tce->bmpinfo.bm_handle == -1) {
     tce->bmpinfo.bm_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", filename));
+    mprintf(0, "Unable to load bmp '%s'\n", filename);
   } else
     bm_CreateChunkedBitmap(tce->bmpinfo.bm_handle, &tce->bmpinfo.chunk_bmp);
   return true;
@@ -1122,7 +1122,7 @@ bool CreateBmpBlur(tceffect *tce, const char *filename) {
   tce->bmpinfo.bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
   if (tce->bmpinfo.bm_handle == -1) {
     tce->bmpinfo.bm_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", filename));
+    mprintf(0, "Unable to load bmp '%s'\n", filename);
   } else {
     tce->bmpinfo.temp_bmhandle = bm_AllocBitmap(bm_w(tce->bmpinfo.bm_handle, 0), bm_h(tce->bmpinfo.bm_handle, 0), 0);
     if (tce->bmpinfo.temp_bmhandle == -1)
@@ -1147,7 +1147,7 @@ bool CreateBmpScanline(tceffect *tce, const char *filename) {
   tce->bmpinfo.temp_bmhandle = BAD_BITMAP_HANDLE;
   if (tce->bmpinfo.bm_handle == -1) {
     tce->bmpinfo.bm_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", filename));
+    mprintf(0, "Unable to load bmp '%s'\n", filename);
   } else {
     tce->bmpinfo.temp_bmhandle = bm_AllocBitmap(bm_w(tce->bmpinfo.bm_handle, 0), bm_h(tce->bmpinfo.bm_handle, 0), 0);
     if (tce->bmpinfo.temp_bmhandle == -1)
@@ -1167,7 +1167,7 @@ bool CreateBmpInvert(tceffect *tce, const char *filename) {
   tce->bmpinfo.temp_bmhandle = BAD_BITMAP_HANDLE;
   if (tce->bmpinfo.bm_handle == -1) {
     tce->bmpinfo.bm_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", filename));
+    mprintf(0, "Unable to load bmp '%s'\n", filename);
   } else {
     tce->bmpinfo.temp_bmhandle = bm_AllocBitmap(bm_w(tce->bmpinfo.bm_handle, 0), bm_h(tce->bmpinfo.bm_handle, 0), 0);
     if (tce->bmpinfo.temp_bmhandle == -1)
@@ -1188,7 +1188,7 @@ bool CreateBmpStretch(tceffect *tce, const char *filename) {
   tce->bmpinfo.bm_count = 0;
   if (tce->bmpinfo.bm_handle == -1) {
     tce->bmpinfo.bm_handle = BAD_BITMAP_HANDLE;
-    mprintf((0, "Unable to load bmp '%s'\n", filename));
+    mprintf(0, "Unable to load bmp '%s'\n", filename);
   } else {
     // determine how many wide we need
     int src_w = bm_w(tce->bmpinfo.bm_handle, 0);
@@ -1267,7 +1267,7 @@ bool CreateBackground(tceffect *tce) { return true; }
 bool CreateSound(tceffect *tce, const char *filename) {
   tce->soundinfo.handle = FindSoundName(IGNORE_TABLE(filename));
   if (tce->soundinfo.handle == -1) {
-    mprintf((0, "Unable to find sound '%s'\n", filename));
+    mprintf(0, "Unable to find sound '%s'\n", filename);
   }
   return true;
 }

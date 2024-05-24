@@ -549,7 +549,7 @@ int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state 
     OpenGL_window_initted = 0;
   }
 #endif
-  mprintf((0, "Renderer init is set to %d\n", Renderer_initted));
+  mprintf(0, "Renderer init is set to %d\n", Renderer_initted);
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -616,7 +616,7 @@ int rend_Init(renderer_type state, oeApplication *app, renderer_preferred_state 
 #endif // #ifdef DEDICATED_ONLY
 }
 void rend_Close() {
-  mprintf((0, "CLOSE:Renderer init is set to %d\n", Renderer_initted));
+  mprintf(0, "CLOSE:Renderer init is set to %d\n", Renderer_initted);
   if (!Renderer_initted)
     return;
 #ifdef USE_OPENGL
@@ -772,7 +772,7 @@ void rend_SetFogBorders(float fog_near, float fog_far) {
 }
 void rend_SetRendererType(renderer_type state) {
   Renderer_type = state;
-  mprintf((0, "RendererType is set to %d.\n", state));
+  mprintf(0, "RendererType is set to %d.\n", state);
 }
 void rend_SetLighting(light_state state) {
   switch (Renderer_type) {
@@ -1158,7 +1158,7 @@ void rend_ClearZBuffer() {
 }
 // Clears the zbuffer for the screen
 void rend_ResetCache() {
-  mprintf((0, "Resetting texture cache!\n"));
+  mprintf(0, "Resetting texture cache!\n");
   switch (Renderer_type) {
   case RENDERER_SOFTWARE_16BIT:
   case RENDERER_SOFTWARE_8BIT:
@@ -1694,7 +1694,7 @@ void rend_GetProjectionParameters(int *width, int *height) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for this lib!\n"));
+    mprintf(0, "Function not implemented for this lib!\n");
     Int3();
     break;
   }
@@ -1709,7 +1709,7 @@ void rend_GetProjectionScreenParameters(int &screenLX, int &screenTY, int &scree
   } break;
 
   default:
-    mprintf((0, "Function not implemented for this lib!\n"));
+    mprintf(0, "Function not implemented for this lib!\n");
     Int3();
     break;
   }
@@ -1752,7 +1752,7 @@ float rend_GetAspectRatio() {
     break;
 #endif
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     return -1;
     Int3();
     break;
@@ -1765,7 +1765,7 @@ void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t *
   lfb.type = LFB_LOCK_WRITE;
   rend_GetLFBLock(&lfb);
   if (lfb.data == NULL) {
-    mprintf((0, "Couldn't get lock in rend_DrawLFBBitmap!\n"));
+    mprintf(0, "Couldn't get lock in rend_DrawLFBBitmap!\n");
     return;
   }
   for (i = 0; i < h; i++) {
@@ -1877,7 +1877,7 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -1899,7 +1899,7 @@ void rend_SetGammaValue(float val) {
   case RENDERER_DIRECT3D:
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -1940,7 +1940,7 @@ void rend_GetRenderState(rendering_state *rstate) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -1969,7 +1969,7 @@ void rend_CopyBitmapToFramebuffer(int bm_handle, int x, int y) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -1994,7 +1994,7 @@ void rend_SetFrameBufferCopyState(bool state) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2014,7 +2014,7 @@ void rend_SetResolution(int width, int height) {
   case RENDERER_DIRECT3D:
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2037,7 +2037,7 @@ void rend_CloseOpenGLWindow() {
   opengl_Close();
   WindowGL = 0;
   OpenGL_window_initted = 0;
-  mprintf((1, "SHUTTING DOWN WINDOWED OPENGL!"));
+  mprintf(1, "SHUTTING DOWN WINDOWED OPENGL!");
 #endif
 }
 // Sets the state of the OpenGLWindow to on or off
@@ -2091,7 +2091,7 @@ void rend_SetCoplanarPolygonOffset(float factor) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2112,7 +2112,7 @@ void rend_PreUploadTextureToCard(int handle, int map_type) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2133,7 +2133,7 @@ void rend_FreePreUploadedTexture(int handle, int map_type) {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2160,7 +2160,7 @@ int rend_LowVidMem() {
   case RENDERER_DIRECT3D:
     return 0;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2180,7 +2180,7 @@ int rend_SupportsBumpmapping() {
 #endif
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2199,7 +2199,7 @@ void rend_SetBumpmapReadyState(int state, int map) {
     Bump_map = map;
     break;
   default:
-    mprintf((0, "Function not implemented for the lib!\n"));
+    mprintf(0, "Function not implemented for the lib!\n");
     Int3();
     break;
   }
@@ -2221,7 +2221,7 @@ void *rend_RetrieveDirectDrawObj(void **frontsurf, void **backsurf) {
 #endif
       break;
     default:
-      mprintf((0, "Function not implemented for the lib!\n"));
+      mprintf(0, "Function not implemented for the lib!\n");
       Int3();
       break;
     }
@@ -2254,7 +2254,7 @@ void rend_GetStatistics(tRendererStats *stats) {
 #endif
       break;
     default:
-      mprintf((0, "Function not implemented for the lib!\n"));
+      mprintf(0, "Function not implemented for the lib!\n");
       Int3();
       break;
     }

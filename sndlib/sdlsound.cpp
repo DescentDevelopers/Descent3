@@ -104,7 +104,7 @@ int lnxsound::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t max_soun
     return false;
   }
 
-  mprintf((0, "Sound: Hardware configured. Kicking off stream thread..."));
+  mprintf(0, "Sound: Hardware configured. Kicking off stream thread...");
   SDL_PauseAudioDevice(sound_device, 0);
 
   m_total_sounds_played = 0;
@@ -251,17 +251,17 @@ int16_t lnxsound::FindFreeSoundSlot(float volume, int priority)
     if (throw_out_slot > -1) {
       sb = &sound_cache[throw_out_slot];
       StopSound(sb->m_unique_id, SKT_HOLD_UNTIL_STOP);
-      mprintf((0, "DDSNDLIB: Replace sound (p:%d) with sound (p:%d) in slot %d\n", sb->play_info->priority, priority,
-               throw_out_slot));
+      mprintf(0, "DDSNDLIB: Replace sound (p:%d) with sound (p:%d) in slot %d\n", sb->play_info->priority, priority,
+               throw_out_slot);
       return throw_out_slot;
     }
   }
 
 #ifdef _DEBUG
   if (sound_index > -1) {
-    mprintf((0, "DDSNDLIB: Sound %s with priority (%d) too low.\n", Sounds[sound_index].name, priority));
+    mprintf(0, "DDSNDLIB: Sound %s with priority (%d) too low.\n", Sounds[sound_index].name, priority);
   } else {
-    mprintf((0, "DDSNDLIB: Sound unknown with priority (%d) too low.\n", priority));
+    mprintf(0, "DDSNDLIB: Sound unknown with priority (%d) too low.\n", priority);
   }
 #endif
   return -1;
@@ -289,7 +289,7 @@ int lnxsound::PlaySound2d(play_information *play_info, int sound_index, float f_
 
   // do common processing.
   if (SoundFiles[Sounds[sound_index].sample_index].used == 0) {
-    mprintf((0, "Tryed to play %d sound, it DNE.\n", sound_index));
+    mprintf(0, "Tryed to play %d sound, it DNE.\n", sound_index);
     return -1;
   }
 #ifdef _DEBUG
@@ -614,7 +614,7 @@ bool lnxsound::CheckAndForceSoundDataAlloc(int sound_index) {
   if (!result)
     return false;
 
-  mprintf((0, "Sound %s loaded.\n", SoundFiles[sound_file_index].name));
+  mprintf(0, "Sound %s loaded.\n", SoundFiles[sound_file_index].name);
 
   return true;
 }
@@ -633,7 +633,7 @@ void lnxsound::SoundStartFrame() {
   // perform necessary functions if sound events are pending for frame, this doesn't have to do anything
   // if the mixer doesn't require such actions.  Aureal does though.
   if (m_pending_actions) {
-    mprintf((0, "pending actions\n"));
+    mprintf(0, "pending actions\n");
   }
 
   m_in_sound_frame = true;
@@ -682,13 +682,13 @@ void lnxsound::SoundStartFrame() {
   }
 
 #ifdef _DEBUG
-  mprintf_at((3, 2, 0, "LNS: %02d/%02d", counter, MAX_SOUNDS_PLAYING_AT_ONCE));
-  mprintf_at((3, 3, 1, "Lp: %02d", loop_counter));
-  mprintf_at((3, 4, 1, "St: %02d", stream_counter));
-  mprintf_at((3, 5, 0, " Ot: %02d", counter - loop_counter - stream_counter));
+  mprintf_at(3, 2, 0, "LNS: %02d/%02d", counter, MAX_SOUNDS_PLAYING_AT_ONCE);
+  mprintf_at(3, 3, 1, "Lp: %02d", loop_counter);
+  mprintf_at(3, 4, 1, "St: %02d", stream_counter);
+  mprintf_at(3, 5, 0, " Ot: %02d", counter - loop_counter - stream_counter);
 
-  mprintf_at((3, 2, 20, "P5:%02d P4:%02d P3:%02d", n_p5, n_p4, n_p3));
-  mprintf_at((3, 3, 20, "P2:%02d P1:%02d P0:%02d", n_p2, n_p1, n_p0));
+  mprintf_at(3, 2, 20, "P5:%02d P4:%02d P3:%02d", n_p5, n_p4, n_p3);
+  mprintf_at(3, 3, 20, "P2:%02d P1:%02d P0:%02d", n_p2, n_p1, n_p0);
 #endif
 }
 

@@ -239,12 +239,12 @@ void UIEdit::Activate() {
   UI_current_editbox = this;
   m_UpdateCount = false;
 
-  //	mprintf((0, "activating edit box\n"));
+  //	mprintf(0, "activating edit box\n");
 }
 
 // deactivates edit box (use if you know what you're doing.)
 void UIEdit::Deactivate() {
-  //	mprintf((0, "deactivating edit box\n"));
+  //	mprintf(0, "deactivating edit box\n");
 
   m_Active = false;
   UI_current_editbox = NULL;
@@ -267,13 +267,13 @@ void UIEdit::OnDestroy() {
 
 // override: behavior when gadget loses input focus.
 void UIEdit::OnLostFocus() {
-  //	mprintf((0, "Edit control lost focus.\n"));
+  //	mprintf(0, "Edit control lost focus.\n");
   UIEdit::Deactivate();
 }
 
 // override: behavior when gadget gains input focus.
 void UIEdit::OnGainFocus() {
-  //	mprintf((0, "Edit control gained focus.\n"));
+  //	mprintf(0, "Edit control gained focus.\n");
 }
 
 // behavior when gadget is being drawn.
@@ -387,7 +387,7 @@ void UIEdit::OnKeyDown(int key) {
         for (i = len; i >= m_CurPos; i--)
           m_TextBuf[i + 1] = m_TextBuf[i];
         // adjust scroll region if cursor will go out of visible region.
-        mprintf((0, "scroll=%d, curpos=%d\n", m_ScrollThresh, m_CurPos));
+        mprintf(0, "scroll=%d, curpos=%d\n", m_ScrollThresh, m_CurPos);
         //				if (m_ScrollThresh<=m_CurPos && m_ScrollThresh)
         //					m_StartPos++;
         m_TextBuf[m_CurPos++] = (char)ascii;

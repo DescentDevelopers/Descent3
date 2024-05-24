@@ -149,7 +149,7 @@ void DeleteScorch(int index) {
   scorch *sp;
   int i;
 
-  // mprintf((0,"Deleting scorch %d\n",index));
+  // mprintf(0,"Deleting scorch %d\n",index);
 
   // Look through all the scorches to see if there are other scorches on the same face
   for (i = Scorch_start, sp = &Scorches[Scorch_start];;) {
@@ -171,7 +171,7 @@ void DeleteScorch(int index) {
 
   // If we're here, there are no other scorches on the face, so clear the flag
   Rooms[RF_ROOM(roomface)].faces[RF_FACE(roomface)].flags &= ~FF_SCORCHED;
-  // mprintf((0,"Clearing scorch flag from %d:%d\n",RF_ROOM(roomface),RF_FACE(roomface)));
+  // mprintf(0,"Clearing scorch flag from %d:%d\n",RF_ROOM(roomface),RF_FACE(roomface));
 }
 
 // Add a scorch mark

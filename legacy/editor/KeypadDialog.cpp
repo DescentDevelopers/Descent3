@@ -328,7 +328,7 @@ void CKeypadDialog::InitScrollBars(int vis_w, int vis_h)
 	si.fMask  = SIF_RANGE | SIF_POS | SIF_PAGE; 
 	si.nMin   = 0; 
 
-//	mprintf((0, "%d,%d -> %d,%d\n", m_fullwidth, m_fullheight, vis_w, vis_h));
+//	mprintf(0, "%d,%d -> %d,%d\n", m_fullwidth, m_fullheight, vis_w, vis_h);
 
 	if (m_fullwidth > vis_w) 
 		hscroll = true;
@@ -346,7 +346,7 @@ void CKeypadDialog::InitScrollBars(int vis_w, int vis_h)
 	else {
 		ShowScrollBar(SB_HORZ, FALSE);
 		ScrollWindowEx(m_hpos, 0, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE);
-//		mprintf((0, "hoff=%d\n", m_hpos));
+//		mprintf(0, "hoff=%d\n", m_hpos);
 	}
 	
 	if (vscroll) {
@@ -361,7 +361,7 @@ void CKeypadDialog::InitScrollBars(int vis_w, int vis_h)
 	else {
 		ShowScrollBar(SB_VERT, FALSE);
 		ScrollWindowEx(0, m_vpos, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN | SW_INVALIDATE | SW_ERASE); 
-//		mprintf((0, "voff=%d\n", m_vpos));
+//		mprintf(0, "voff=%d\n", m_vpos);
 	}
 
 	m_hpos = 0;

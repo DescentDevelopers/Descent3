@@ -422,7 +422,7 @@ void UIListBox::RemoveItem(const UIItem *item) {
     }
   }
   if (found == -1) {
-    mprintf((0, "UIListBox:: Didn't find item to remove!\n"));
+    mprintf(0, "UIListBox:: Didn't find item to remove!\n");
     return;
   }
 
@@ -486,7 +486,7 @@ void UIListBox::SelectItem(const UIItem *item) {
     }
   }
   if (!found) {
-    mprintf((0, "UIListBox::SelectItem item not found!\n"));
+    mprintf(0, "UIListBox::SelectItem item not found!\n");
   }
 }
 
@@ -755,14 +755,14 @@ void UIListBox::OnMouseBtnDown(int btn) {
     if (m_MouseState == 1 || m_MouseState == 2) { // single click pass or double clicking
                                                   // handle first slow delay scrolling (like keyboard input)
       if ((m_ClickTime + KEYDOWN_FIRST_DELAY) > UI_TIME()) {
-        //	mprintf((0, "old=%.3f  cur=%.3f\n", m_ClickTime, UI_TIME()));
+        //	mprintf(0, "old=%.3f  cur=%.3f\n", m_ClickTime, UI_TIME());
         return;
       } else
         m_MouseState = 3;
     } else if (m_MouseState == 3) {
       // handle repeat scrolling (note this is if the user has scrolled once already.
       if ((m_ClickTime + KEYDOWN_REPEAT_DELAY) > UI_TIME()) {
-        //	mprintf((0, "old=%.3f  cur=%.3f\n", m_ClickTime, UI_TIME()));
+        //	mprintf(0, "old=%.3f  cur=%.3f\n", m_ClickTime, UI_TIME());
         return;
       }
     } else if (m_MouseState == 0) {
@@ -784,7 +784,7 @@ void UIListBox::OnMouseBtnDown(int btn) {
     }
 
     m_ClickTime = UI_TIME(); // use for scroll timing, this should be reset on button release
-    // mprintf((0, "new=%.3f\n", m_ClickTime));
+    // mprintf(0, "new=%.3f\n", m_ClickTime);
 
     // code here should allow for continuous scrolling on mouse down.
     // we need to add timing so scrolling isn't do damn quick.

@@ -704,14 +704,14 @@ BOOL CEditorApp::OnIdle(LONG lCount)
 	//	note that if a slew key was pressed, the main view is out of keyboard focus, set
 	//	keyboard focus to the main_view.
 		if (main_view && main_view != CWnd::GetFocus()) {
-			mprintf((0,"Restoring focus to main view.\n"));
+			mprintf(0,"Restoring focus to main view.\n");
 			main_view->SetFocus();
 		}
 	}
 	else if (KEY_STATE(KEY_LCTRL) || KEY_STATE(KEY_RCTRL)) {
 	//	this is done to support CTRL-KEYPAD functions if input focus is not in main view
 		if (main_view && main_view != CWnd::GetFocus()) {
-			mprintf((0,"Restoring focus to main view.\n"));
+			mprintf(0,"Restoring focus to main view.\n");
 			main_view->SetFocus();
 		}
 	}
@@ -720,7 +720,7 @@ BOOL CEditorApp::OnIdle(LONG lCount)
 		if (main_view && main_view != CWnd::GetFocus()) {
 			CRuntimeClass *wndtype = CWnd::GetFocus()->GetRuntimeClass();
 			if (strcmp(wndtype->m_lpszClassName, "CEdit")) {
-				mprintf((0,"Restoring focus to main view.\n"));
+				mprintf(0,"Restoring focus to main view.\n");
 				main_view->SetFocus();
 			}
 		}
@@ -827,7 +827,7 @@ void SaveEditorSettings()
 
 	res = Editor_database.lookup_record("editor");
 	if (!res) {
-		mprintf((0,"Can't get editor registry path\n"));
+		mprintf(0,"Can't get editor registry path\n");
 		Int3();
 		return;
 	}
@@ -889,7 +889,7 @@ void LoadEditorSettings()
 
 	res = Editor_database.lookup_record("editor");
 	if (!res) {
-		mprintf((0,"Can't get editor registry path\n"));
+		mprintf(0,"Can't get editor registry path\n");
 		Int3();
 		return;
 	}
@@ -1022,7 +1022,7 @@ CDocument* CEditorApp::OpenDocumentFile(LPCTSTR lpszFileName)
 			//	this, and then if so to close the current document
 				if (AfxMessageBox("This will discard all changes made to the level.\nDo you want to continue?", MB_YESNO)
 					== IDYES) {
-					mprintf((0, "Restoring %s...\n", lpszFileName));
+					mprintf(0, "Restoring %s...\n", lpszFileName);
 					main_doc->OnOpenDocument(lpszFileName);
 			}
 	}

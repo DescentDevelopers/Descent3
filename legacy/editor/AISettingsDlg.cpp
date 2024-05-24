@@ -117,7 +117,7 @@ CAISettingsDlg::CAISettingsDlg(t_ai_info *ai_info,CWnd* pParent /*=NULL*/)
 	m_ai_max_turn_rate = ai_info->max_turn_rate;
 
 	m_ai_fov = acos(ai_info->fov)*(360.0/PI);
-//	mprintf((0, "FOV = %f\n.", ai_info->fov));
+//	mprintf(0, "FOV = %f\n.", ai_info->fov);
 
 	m_orient_to_vel = (ai_info->flags & AIF_ORIENT_TO_VEL) != 0; 
 	m_xz_dist = (ai_info->flags & AIF_XZ_DIST) != 0; 
@@ -502,7 +502,7 @@ void CAISettingsDlg::OnOK()
 		m_ai_info->flags |= AIF_TEAM_HOSTILE;
 	else
 	{
-		mprintf((0, "ERROR: No team\n"));
+		mprintf(0, "ERROR: No team\n");
 		Int3();
 	}
 

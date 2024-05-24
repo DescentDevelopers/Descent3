@@ -134,7 +134,7 @@ bool ddio_InternalInit(ddio_init_info *init_info) {
   ASSERT(!DDIO_init);
 
   //	Initialize DirectInput subsystem
-  mprintf((0, "DI system initializing.\n"));
+  mprintf(0, "DI system initializing.\n");
 
   // Try to open DirectX 5.00
   dires = DirectInputCreate((HINSTANCE)obj->m_hInstance, DIRECTINPUT_VERSION, &lpdi, NULL);
@@ -175,7 +175,7 @@ void ddio_InternalClose() {
   DInputData.lpdi = NULL;
   DDIO_init = 0;
 
-  mprintf((0, "DI system closed.\n"));
+  mprintf(0, "DI system closed.\n");
 }
 
 #ifdef _DEBUG
@@ -187,9 +187,9 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   std::vsnprintf(buf, 128, fmt, arglist);
   va_end(arglist);
 
-  mprintf((0, "DDIO: %s\n", buf));
+  mprintf(0, "DDIO: %s\n", buf);
   if (err) {
-    mprintf((1, "DIERR %x.\n", err));
+    mprintf(1, "DIERR %x.\n", err);
   }
 }
 #endif

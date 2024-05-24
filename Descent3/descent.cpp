@@ -684,7 +684,7 @@ void ShowStaticScreen(char *bitmap_filename, bool timed, float delay_time) {
 
     bm_DestroyChunkedBitmap(&splash_bm);
   } else {
-    mprintf((0, "Couldn't load %s.\n", bitmap_filename));
+    mprintf(0, "Couldn't load %s.\n", bitmap_filename);
   }
 
   ui_SetScreenMode(Max_window_w, Max_window_h);

@@ -752,7 +752,7 @@ void CWorldObjectsGenericDialog::OnGenericAddNew()
 		Object_info[object_handle].lighting_info.lighting_render_type=LRT_GOURAUD;
 			
 	// Finally, save a local copy of the model/anim and alloc a tracklock
-	mprintf ((0,"Making a copy of this model locally...\n"));
+	mprintf(0,"Making a copy of this model locally...\n");
 
 	char destname[100];
 	sprintf (destname,"%s\\%s",LocalModelsDir,Poly_models[Object_info[object_handle].render_handle].name);
@@ -922,7 +922,7 @@ void CWorldObjectsGenericDialog::OnGenericDelete()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (Object_info[m_current].name,PAGETYPE_GENERIC,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -1308,7 +1308,7 @@ void CWorldObjectsGenericDialog::OnSelendokGenericNamePulldown()
 	i = FindObjectIDName(name);
 		
 	if (i==-1) {
-		mprintf ((0,"Possible corrupted object list, but probably nothing."));
+		mprintf(0,"Possible corrupted object list, but probably nothing.");
 	}
 	else {
 		ASSERT(Object_info[i].type == m_type);
@@ -1495,7 +1495,7 @@ void CWorldObjectsGenericDialog::OnGenericUndoLock()
 
 	//Delete local page
 	if (!mng_DeletePage (Object_info[m_current].name,PAGETYPE_GENERIC,1)) {
-		mprintf ((0,ErrorString));
+		mprintf(0,ErrorString);
 		Int3();
 	}
 

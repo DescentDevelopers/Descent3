@@ -123,7 +123,7 @@ void SetObjectDeadFlagDLL(object *obj, bool tell_clients_to_remove, bool tell_cl
 void assertdll(int x, const char *expression, const char *file, int line) {
 #ifndef RELEASE
   if (!(unsigned)(x)) {
-    mprintf((0, "Assertion failed (%s) in %s line %d.\n", expression, file, line));
+    mprintf(0, "Assertion failed (%s) in %s line %d.\n", expression, file, line);
     if (Debug_break)
       DEBUG_BREAK();
     else

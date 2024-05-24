@@ -693,7 +693,7 @@ void wpnsel_cfg_screen::finish() {}
 void wpnsel_cfg_screen::process(int res) {
   int slot, i;
   bool is_secondary = false, do_swap_ui = false, do_disable_ui = false, update_buttons = false;
-  mprintf((0, "res=%d\n", res));
+  mprintf(0, "res=%d\n", res);
   if (m_selection_status == -1) {
     if (res == UID_RESETDEFAULTS) {
       for (i = 0; i < MAX_PRIMARY_WEAPONS; i++)
@@ -732,7 +732,7 @@ void wpnsel_cfg_screen::process(int res) {
     is_secondary = true;
     do_disable_ui = true;
   }
-  mprintf((0, "slot=%d\n", slot));
+  mprintf(0, "slot=%d\n", slot);
 
   // do different uis
   if (do_disable_ui) {

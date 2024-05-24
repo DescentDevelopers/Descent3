@@ -351,7 +351,7 @@ void CMegacellDialog::OnDeleteMegacell()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (Megacells[n].name,PAGETYPE_MEGACELL,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -496,7 +496,7 @@ void CMegacellDialog::OnSelendokMegacellPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted megacell list, but probably nothing."));
+		mprintf(0,"Possible corrupted megacell list, but probably nothing.");
 		UpdateDialog();
 	}
 
@@ -969,7 +969,7 @@ void CMegacellDialog::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			//	ok, new_pos will be an index into the listbox, NOT the texture list.
 			//	so we will get the number of texture rows we went up or down and change 
 			//	tex_start accordingly.
-				mprintf((0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, m_TexListPos));
+				mprintf(0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, m_TexListPos);
 				if (new_pos < m_TexListPos) TextureListUp(abs(m_TexListPos-new_pos));
 				if (new_pos > m_TexListPos) TextureListDown(abs(new_pos-m_TexListPos));
 
@@ -1147,7 +1147,7 @@ void CMegacellDialog::OnCopyMegacell()
 	for (i=0;i<MAX_MEGACELL_WIDTH*MAX_MEGACELL_HEIGHT;i++)
 		m_CopyMegacell.texture_handles[i]=Megacells[n].texture_handles[i];
 	
-	mprintf ((0,"Megacell copied.\n"));
+	mprintf(0,"Megacell copied.\n");
 }
 
 void CMegacellDialog::OnPasteMegacell() 
@@ -1174,7 +1174,7 @@ void CMegacellDialog::CheckinTexture(int n,int tracklock_num)
 
 	if (!GameTextures[n].used)
 	{
-		mprintf ((0,"Whoa, trying to save non-used texture %s!\n",GameTextures[n].name));
+		mprintf(0,"Whoa, trying to save non-used texture %s!\n",GameTextures[n].name);
 		return;
 	}
 
@@ -1222,7 +1222,7 @@ void CMegacellDialog::CheckinTexture(int n,int tracklock_num)
 					bm_SaveFileBitmap (fname,GameTextures[n].bm_handle);
 				}
 
-				mprintf ((0,"%s texture checked in.\n",GameTextures[n].name));
+				mprintf(0,"%s texture checked in.\n",GameTextures[n].name);
 				int dret=mng_DeletePage (GameTextures[n].name,PAGETYPE_TEXTURE,1);
 				
 				ASSERT (dret==1);
@@ -1345,7 +1345,7 @@ void CMegacellDialog::OnImportTiny()
 
 			// Save this textures image locally
 			sprintf (filename,"%s\\%s",LocalManageGraphicsDir,GameBitmaps[GameTextures[tex_handle].bm_handle].name);
-			mprintf ((0,"Saving bitmap %s from megacell!\n",GameBitmaps[bm_handle].name));
+			mprintf(0,"Saving bitmap %s from megacell!\n",GameBitmaps[bm_handle].name);
 			bm_SaveFileBitmap (filename,GameTextures[tex_handle].bm_handle);
 		
 			// Allocate a track lock for this texture
@@ -1485,7 +1485,7 @@ void CMegacellDialog::OnImportSky()
 
 			// Save this textures image locally
 			sprintf (filename,"%s\\%s",LocalManageGraphicsDir,GameBitmaps[GameTextures[tex_handle].bm_handle].name);
-			mprintf ((0,"Saving bitmap %s from megacell!\n",GameBitmaps[bm_handle].name));
+			mprintf(0,"Saving bitmap %s from megacell!\n",GameBitmaps[bm_handle].name);
 			bm_SaveFileBitmap (filename,GameTextures[tex_handle].bm_handle);
 		
 			// Allocate a track lock for this texture
@@ -1617,7 +1617,7 @@ void CMegacellDialog::OnImportSkyBand()
 
 		// Save this textures image locally
 		sprintf (filename,"%s\\%s",LocalManageGraphicsDir,GameBitmaps[GameTextures[tex_handle].bm_handle].name);
-		mprintf ((0,"Saving bitmap %s from megacell!\n",GameBitmaps[bm_handle].name));
+		mprintf(0,"Saving bitmap %s from megacell!\n",GameBitmaps[bm_handle].name);
 		bm_SaveFileBitmap (filename,GameTextures[tex_handle].bm_handle);
 		
 		// Allocate a track lock for this texture

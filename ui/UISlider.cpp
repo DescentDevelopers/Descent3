@@ -200,7 +200,7 @@ void UISlider::OnMouseBtnDown(int btn) {
     else if (new_pos >= m_Range)
       new_pos = m_Range - 1;
     if (new_pos != m_Pos) {
-      //	mprintf((0, "x=%d, interval=%d, pos=%d\n", x, m_IntervalWidth, new_pos));
+      //	mprintf(0, "x=%d, interval=%d, pos=%d\n", x, m_IntervalWidth, new_pos);
       OnSelect();
     }
     m_Pos = new_pos;

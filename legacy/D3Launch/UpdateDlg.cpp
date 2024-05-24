@@ -1245,7 +1245,7 @@ void CUpdateDlg::CloseHTTP()
 	DeferMessages();
 
 	if (WSACleanup())	{
-		//mprintf(( "Error closing wsock!" ));
+		//mprintf( "Error closing wsock!" );
 	}
 
 	StatusBar(IDS_UPDATEDLG_WAITING);

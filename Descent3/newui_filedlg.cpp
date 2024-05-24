@@ -210,7 +210,7 @@ void FileSelectCallback(int index) {
 
   strncpy(path_edit, file, _MAX_PATH - 1);
   path_edit[_MAX_PATH - 1] = '\0';
-  mprintf((0, "New Path: %s\n", path_edit));
+  mprintf(0, "New Path: %s\n", path_edit);
   fdlg_working_sheet->UpdateChanges();
 }
 
@@ -453,9 +453,9 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
   }
 
   if (ret) {
-    mprintf((0, "Selected Filename: %s\n", path));
+    mprintf(0, "Selected Filename: %s\n", path);
   } else {
-    mprintf((0, "Cancel!\n"));
+    mprintf(0, "Cancel!\n");
   }
 
   window.Close();

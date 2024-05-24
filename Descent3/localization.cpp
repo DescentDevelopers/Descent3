@@ -313,7 +313,7 @@ try_english:
 
     // no strings found
     Localization_language = old_language;
-    mprintf((0, "Localization: Warning, 0 strings found in %s\n", filename));
+    mprintf(0, "Localization: Warning, 0 strings found in %s\n", filename);
     *table = NULL;
     *size = 0;
     return true;
@@ -418,7 +418,7 @@ try_english:
 
   cfclose(file);
 
-  mprintf((0, "String Table (%s) loaded with %d strings\n", filename, *size));
+  mprintf(0, "String Table (%s) loaded with %d strings\n", filename, *size);
   Localization_language = old_language;
 
   return (scount == (*size));

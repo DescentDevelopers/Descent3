@@ -899,7 +899,7 @@ struct sound_menu {
     D3MusicSetVolume((*musicvolume) / 10.0f);
 
     if (fxquantity) {
-      mprintf((1, "oldquant %d newquant %d\n", old_fxquantity, *fxquantity));
+      mprintf(1, "oldquant %d newquant %d\n", old_fxquantity, *fxquantity);
       if (old_fxquantity != (*fxquantity)) {
         Sound_system.SetLLSoundQuantity((*fxquantity) + MIN_SOUNDS_MIXED);
       }
@@ -1162,8 +1162,8 @@ struct hud_menu {
 
     Current_pilot.set_hud_data(NULL, &hud_new_stat, &hud_new_grstat);
 
-    // mprintf((0, "pilot hud stat=%x\n", Current_pilot.hud_stat));
-    // mprintf((0, "pilot hud grstat=%x\n", Current_pilot.hud_graphical_stat));
+    // mprintf(0, "pilot hud stat=%x\n", Current_pilot.hud_stat);
+    // mprintf(0, "pilot hud grstat=%x\n", Current_pilot.hud_graphical_stat);
 
     // modify current hud stats if in game.
     if ((GetFunctionMode() == EDITOR_GAME_MODE || GetFunctionMode() == GAME_MODE) && GetHUDMode() == HUD_FULLSCREEN) {
@@ -1365,7 +1365,7 @@ void OptionsMenu() {
   while (state != 2) {
     if (state == 1) {
       // enter controller config menu
-      mprintf((0, "CONTROLLER CONFIG MENU HERE!\n"));
+      mprintf(0, "CONTROLLER CONFIG MENU HERE!\n");
       CtlConfig(CTLCONFIG_KEYBOARD);
       state = 0; // goto options menu.
     } else {

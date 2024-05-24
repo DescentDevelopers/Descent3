@@ -219,7 +219,7 @@ void grFont::close_system() {
   }
 
   // we should free any fonts currently allocated here.
-  mprintf((0, "Freeing cached fonts..."));
+  mprintf(0, "Freeing cached fonts...");
   for (int i = 0; i < MAX_FONTS; i++) {
     gr_font_record *ft;
     if (grFont::m_FontList[i].references) {
@@ -389,7 +389,7 @@ void grFont::load(char *filename, int slot) {
     Error("Illegal font file: %s.\n", filename);
   }
 
-  mprintf((0, "%s font.\n", grFont::m_FontList[slot].name));
+  mprintf(0, "%s font.\n", grFont::m_FontList[slot].name);
 
   ft->width = READ_FONT_SHORT(ff);
   ft->height = READ_FONT_SHORT(ff);
@@ -399,7 +399,7 @@ void grFont::load(char *filename, int slot) {
   ft->max_ascii = READ_FONT_BYTE(ff);
   READ_FONT_DATA(ff, fontname, 32, 1);
 
-  mprintf((0, "  <ht %d>::<min %d>::<max %d>::<base %d>", ft->height, ft->min_ascii, ft->max_ascii, ft->baseline));
+  mprintf(0, "  <ht %d>::<min %d>::<max %d>::<base %d>", ft->height, ft->min_ascii, ft->max_ascii, ft->baseline);
 
   num_char = ft->max_ascii - ft->min_ascii + 1;
 
@@ -408,7 +408,7 @@ void grFont::load(char *filename, int slot) {
     ft->char_widths = new int16_t[num_char];
     for (i = 0; i < num_char; i++)
       ft->char_widths[i] = READ_FONT_SHORT(ff);
-    mprintf((0, "::proportional"));
+    mprintf(0, "::proportional");
   } else {
     ft->char_widths = NULL;
   }
@@ -427,7 +427,7 @@ void grFont::load(char *filename, int slot) {
 
   if (ft->flags & FT_COLOR) {
     int off = 0;
-    mprintf((0, "::color"));
+    mprintf(0, "::color");
     for (i = 0; i < num_char; i++) {
       ft->char_data[i] = ft->raw_data + off;
       if (ft->flags & FT_PROPORTIONAL)
@@ -437,7 +437,7 @@ void grFont::load(char *filename, int slot) {
     }
   } else { // Monochrome
     uint8_t *ptr = ft->raw_data;
-    mprintf((0, "::mono"));
+    mprintf(0, "::mono");
     for (i = 0; i < num_char; i++) {
       ft->char_data[i] = ptr;
       if (ft->flags & FT_PROPORTIONAL)
@@ -453,7 +453,7 @@ void grFont::load(char *filename, int slot) {
   //	Then read in
   CLOSE_FONT(ff);
 
-  mprintf((0, "\n"));
+  mprintf(0, "\n");
 
   grFont::m_FontList[slot].font = fnt;
 

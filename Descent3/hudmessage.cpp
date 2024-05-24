@@ -687,7 +687,7 @@ void CorrectHudMessage(char *str) {
   if (grtext_GetTextLineWidth(str) <= Game_window_w)
     return;
 
-  mprintf((0, "Message '%s' is too long!\n", str));
+  mprintf(0, "Message '%s' is too long!\n", str);
   // the line is too long, we need to shorten it, but when we do, we need to make sure that it isn't in the middle
   // of a color (0x01 0xFF 0xFF 0xFF)
   str[HUD_MESSAGE_LENGTH - 1] = '\0';
@@ -1824,7 +1824,7 @@ void MsgListConsole::DoInput() {
       m_bufline = m_bufline + offset_count;
 
       if (offset_count < 0) {
-        mprintf((0, "bufline=%d\n", m_bufline));
+        mprintf(0, "bufline=%d\n", m_bufline);
       }
 
       while (offset_count < 0) {
@@ -1845,7 +1845,7 @@ void MsgListConsole::DoInput() {
       m_bufline = m_bufline + offset_count;
 
       if (offset_count > 0) {
-        mprintf((0, "bufline=%d\n", m_bufline));
+        mprintf(0, "bufline=%d\n", m_bufline);
       }
 
       while (offset_count > 0) {

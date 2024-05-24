@@ -364,16 +364,16 @@ bool mod_LoadModule(module *handle, const char *imodfilename, int flags) {
     strcat(fname, ext);
 
     if (!mod_FindRealFileNameCaseInsenstive(dir, fname, nname)) {
-      mprintf((0, "Module Load Err: %s\n", dlerror()));
+      mprintf(0, "Module Load Err: %s\n", dlerror());
       ModLastError = MODERR_MODNOTFOUND;
       return false;
     } else {
       // ok we have a different filename
       dd_MakePath(modfilename, dir, nname, NULL);
-      mprintf((0, "MOD: Attempting to open %s instead of %s\n", modfilename, fname));
+      mprintf(0, "MOD: Attempting to open %s instead of %s\n", modfilename, fname);
       handle->handle = dlopen(modfilename, f);
       if (!handle->handle) {
-        mprintf((0, "Module Load Err: %s\n", dlerror()));
+        mprintf(0, "Module Load Err: %s\n", dlerror());
         ModLastError = MODERR_MODNOTFOUND;
         return false;
       }
@@ -510,7 +510,7 @@ bool dd_SetWorkingDir(const char *path) { return (chdir(path)) ? false : true; }
 
 // These functions allow one to find a file
 static int globerrfn(const char *path, int err) {
-  mprintf((0, "Error accessing %s: %s .... \n", path, strerror(err)));
+  mprintf(0, "Error accessing %s: %s .... \n", path, strerror(err));
   return 0;
 }
 
@@ -538,7 +538,7 @@ bool CModFindFiles::Start(const char *wildcard, char *namebuf) {
   flags = GLOB_MARK;
   rc = glob(wildcard, flags, globerrfn, &ffres);
   if (rc == GLOB_NOSPACE) {
-    mprintf((0, "Out of space during glob\n"));
+    mprintf(0, "Out of space during glob\n");
     globindex = -1;
     return false;
   }
@@ -602,7 +602,7 @@ bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *fname
       strcat(file_to_use, t_ext);
       real_file = (char *)file_to_use;
 
-      mprintf((1, "MOD: Found directory \"%s\" in filename, new filename is \"%s\"\n", real_dir, real_file));
+      mprintf(1, "MOD: Found directory \"%s\" in filename, new filename is \"%s\"\n", real_dir, real_file);
     } else {
       use_dir = false;
       real_dir = NULL;
@@ -699,7 +699,7 @@ bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *fname
 
     if (found_match) {
       strcpy(new_filename, namebuffer);
-      mprintf((1, "MOD: Using \"%s\" instead of \"%s\"\n", new_filename, real_file));
+      mprintf(1, "MOD: Using \"%s\" instead of \"%s\"\n", new_filename, real_file);
       break;
     }
   }

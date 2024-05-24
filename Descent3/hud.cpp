@@ -625,7 +625,7 @@ void AddHUDItem(tHUDItem *item) {
   }
 
   if (i == MAX_HUD_ITEMS) {
-    mprintf((0, "Unable to add hud item (type=%d).\n", item->type));
+    mprintf(0, "Unable to add hud item (type=%d).\n", item->type);
   }
 }
 
@@ -761,7 +761,7 @@ redo_hud_switch:
   if ((Hud_mode == HUD_FULLSCREEN && mode == HUD_COCKPIT) || (Hud_mode == HUD_COCKPIT && mode == HUD_FULLSCREEN)) {
     uint8_t bmode = mode; // DAJ MAC using enums always int
     Current_pilot.set_hud_data((uint8_t *)&bmode);
-    mprintf((0, "Saving new hud mode to pilot\n"));
+    mprintf(0, "Saving new hud mode to pilot\n");
     PltWriteFile(&Current_pilot);
   }
 
@@ -943,7 +943,7 @@ void SGSHudState(CFILE *fp) {
 
         cf_WriteShort(fp, (int16_t)huditem->buffer_size);
         cf_WriteString(fp, huditem->data.text);
-        mprintf((0, "sg: saved customtext2 (%x,%x,bufsize=%d)\n", huditem->x, huditem->y, huditem->buffer_size));
+        mprintf(0, "sg: saved customtext2 (%x,%x,bufsize=%d)\n", huditem->x, huditem->y, huditem->buffer_size);
       } else if (huditem->type == HUD_ITEM_TIMER) {
         cf_WriteShort(fp, (int16_t)huditem->stat);
         cf_WriteByte(fp, (int8_t)huditem->type);
@@ -954,7 +954,7 @@ void SGSHudState(CFILE *fp) {
         cf_WriteByte(fp, (int8_t)huditem->alpha);
 
         cf_WriteInt(fp, huditem->data.timer_handle);
-        mprintf((0, "sg: restored timer (%x,%x,timer_hndl=%d)\n", huditem->x, huditem->y, huditem->data.timer_handle));
+        mprintf(0, "sg: restored timer (%x,%x,timer_hndl=%d)\n", huditem->x, huditem->y, huditem->data.timer_handle);
       } else if (huditem->type == HUD_ITEM_CUSTOMTEXT) {
         // commented out because persistent hud messages are custom text, and its a mess to save the current
         // state of hud persistent messages.
@@ -1005,7 +1005,7 @@ bool LGSHudState(CFILE *fp) {
       cf_ReadString(buffer, huditem.buffer_size, fp);
       UpdateCustomtext2HUDItem(buffer);
       mem_free(buffer);
-      mprintf((0, "lg: restored customtext2 (%x,%x,bufsize=%d)\n", huditem.x, huditem.y, huditem.buffer_size));
+      mprintf(0, "lg: restored customtext2 (%x,%x,bufsize=%d)\n", huditem.x, huditem.y, huditem.buffer_size);
       break;
 
     case HUD_ITEM_TIMER:
@@ -1018,7 +1018,7 @@ bool LGSHudState(CFILE *fp) {
       huditem.data.timer_handle = cf_ReadInt(fp);
       huditem.render_fn = RenderHUDTimer; // use pointer to function void (*fn)(struct tHUDItem *)
       AddHUDItem(&huditem);
-      mprintf((0, "lg: restored timer (%x,%x,timer_hndl=%d)\n", huditem.x, huditem.y, huditem.data.timer_handle));
+      mprintf(0, "lg: restored timer (%x,%x,timer_hndl=%d)\n", huditem.x, huditem.y, huditem.data.timer_handle);
       break;
 
     // case HUD_ITEM_CUSTOMTEXT:
@@ -1074,7 +1074,7 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
   //	open file
   fp = cfopen(filename, "rt");
   if (!fp) {
-    mprintf((0, "Unable to find hud.inf file.\n"));
+    mprintf(0, "Unable to find hud.inf file.\n");
     return;
   }
 
@@ -1181,14 +1181,14 @@ void LoadHUDConfig(const char *filename, bool (*fn)(const char *, const char *, 
         } else if (fn && (*fn)(command, operand, ext_data)) {
           continue;
         } else {
-          mprintf((0, "Error reading hud file.\n"));
+          mprintf(0, "Error reading hud file.\n");
           Int3(); // contact samir.
           break;
         }
       }
     }
   } else {
-    mprintf((0, "Not a valid hud file.\n"));
+    mprintf(0, "Not a valid hud file.\n");
   }
 
   // use any reticle specified.
@@ -1258,7 +1258,7 @@ void RenderHUDFrame() {
   CallGameDLL(EVT_CLIENT_HUD_INTERVAL, &DLLInfo);
 
   rend_SetZBufferState(1);
-  mprintf_at((2, 0, 0, "FPS: %f", GetFPS()));
+  mprintf_at(2, 0, 0, "FPS: %f", GetFPS());
 }
 
 // renders hud frame before any graphics are drawn
@@ -1827,7 +1827,7 @@ void InitReticle(int primary_slots, int secondary_slots) {
       Reticle_elem_array[i].bmp_off = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
       if (Reticle_elem_array[i].bmp_off <= BAD_BITMAP_HANDLE) {
         Reticle_elem_array[i].bmp_off = -1;
-        mprintf((0, "Unable to load %s reticle image.\n", filename));
+        mprintf(0, "Unable to load %s reticle image.\n", filename);
       }
     } else {
       Reticle_elem_array[i].bmp_off = -1;
@@ -1837,7 +1837,7 @@ void InitReticle(int primary_slots, int secondary_slots) {
       snprintf(filename, sizeof(filename), "%s%s", Reticle_prefix, Reticle_image_names[i][1]);
       Reticle_elem_array[i].bmp_on = bm_AllocLoadFileBitmap(IGNORE_TABLE(filename), 0);
       if (Reticle_elem_array[i].bmp_on <= BAD_BITMAP_HANDLE) {
-        mprintf((0, "Unable to load %s reticle image.\n", filename));
+        mprintf(0, "Unable to load %s reticle image.\n", filename);
         Reticle_elem_array[i].bmp_on = -1;
       }
     } else {

@@ -121,7 +121,7 @@ dpconnections dpconns[MAX_DIRECTPLAY_CONNECTIONS];
 BOOL FAR PASCAL DirectPlayEnumConnectionsCallback(LPCGUID lpguidSP, LPVOID lpConnection, DWORD dwConnectionSize,
                                                   LPCDPNAME lpName, DWORD dwFlags, LPVOID lpContext) {
 
-  mprintf((0, "Directplay connection found: %s\n", lpName->lpszShortNameA));
+  mprintf(0, "Directplay connection found: %s\n", lpName->lpszShortNameA);
   // Do something with the list of connections
   for (int i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn == NULL) {
@@ -131,7 +131,7 @@ BOOL FAR PASCAL DirectPlayEnumConnectionsCallback(LPCGUID lpguidSP, LPVOID lpCon
       return (TRUE);
     }
   }
-  mprintf((0, "No space for Directplay entry.\n"));
+  mprintf(0, "No space for Directplay entry.\n");
 
   return (TRUE);
 }
@@ -142,12 +142,15 @@ BOOL FAR PASCAL EnumSessionsCallback(LPCDPSESSIONDESC2 lpSessionDesc, LPDWORD lp
     return (FALSE);
 
   if (Num_directplay_games < MAX_DP_GAMES) {
-    mprintf((0, "Found Directplay game[%d]: %s\n", Num_directplay_games, lpSessionDesc->lpszSessionNameA));
+    mprintf(0, "Found Directplay game[%d]: %s\n", Num_directplay_games, lpSessionDesc->lpszSessionNameA);
     memcpy(&Directplay_sessions[Num_directplay_games], lpSessionDesc, sizeof(DPSESSIONDESC2));
     strcpy(Directplay_session_desc[Num_directplay_games], lpSessionDesc->lpszSessionNameA);
     Directplay_sessions[Num_directplay_games].lpszSessionNameA = Directplay_session_desc[Num_directplay_games];
-    // mprintf((0,"Found Directplay game[%d]:
-    // %s\n",Num_directplay_games,Directplay_sessions[Num_directplay_games].lpszSessionNameA));
+/*
+    mprintf(0,"Found Directplay game[%d]: %s\n",
+             Num_directplay_games,
+             Directplay_sessions[Num_directplay_games].lpszSessionNameA);
+*/
     Num_directplay_games++;
   } else
     return FALSE;
@@ -167,13 +170,13 @@ int dp_SelectDirectPlayConnection(char *name) {
     lpAddress = NULL;
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, name) == 0) {
-        mprintf((0, "Found DirectPlay connection: %s\n", name));
+        mprintf(0, "Found DirectPlay connection: %s\n", name);
         connection = dpconns[i].conn;
         break;
       }
     }
     if (!connection) {
-      mprintf((0, "Unable to find DirectPlay connection: %s\n", name));
+      mprintf(0, "Unable to find DirectPlay connection: %s\n", name);
       return 0;
     }
   } else
@@ -192,22 +195,22 @@ int dp_SelectDirectPlayConnection(char *name) {
   }
 
   if (FAILED(hr)) {
-    mprintf((0, "lpDirectPlay4A->InitializeConnection() failed.\n"));
+    mprintf(0, "lpDirectPlay4A->InitializeConnection() failed.\n");
     switch (hr) {
     case DPERR_ALREADYINITIALIZED:
-      mprintf((0, "Error: DPERR_ALREADYINITIALIZED\n"));
+      mprintf(0, "Error: DPERR_ALREADYINITIALIZED\n");
       break;
     case DPERR_INVALIDFLAGS:
-      mprintf((0, "Error: DPERR_INVALIDFLAGS\n"));
+      mprintf(0, "Error: DPERR_INVALIDFLAGS\n");
       break;
     case DPERR_INVALIDPARAMS:
-      mprintf((0, "Error: DPERR_INVALIDPARAMS\n"));
+      mprintf(0, "Error: DPERR_INVALIDPARAMS\n");
       break;
     case DPERR_UNAVAILABLE:
-      mprintf((0, "Error: DPERR_UNAVAILABLE\n"));
+      mprintf(0, "Error: DPERR_UNAVAILABLE\n");
       break;
     default:
-      mprintf((0, "Error: Unknown\n"));
+      mprintf(0, "Error: Unknown\n");
     }
 
     return 0;
@@ -249,20 +252,19 @@ int dp_InitDirectPlay(char *conn_name, void *parms, int num_elements) {
         hr = lpDirectPlayLobby3A->CreateCompoundAddress((LPDPCOMPOUNDADDRESSELEMENT)parms, num_elements, lpAddress,
                                                         &dwAddressSize);
         if (FAILED(hr)) {
-          mprintf((0, "lpDirectPlayLobby3A->CreateCompoundAddress() failed. DirectPlay *NOT* initialized!\n"));
+          mprintf(0, "lpDirectPlayLobby3A->CreateCompoundAddress() failed. DirectPlay *NOT* initialized!\n");
           return 0;
         } else {
-          mprintf((0, "lpDirectPlayLobby3A->CreateCompoundAddress() succeeded!\n"));
+          mprintf(0, "lpDirectPlayLobby3A->CreateCompoundAddress() succeeded!\n");
         }
       } else {
-        mprintf((0, "lpDirectPlayLobby3A->CreateCompoundAddress() buffer size request failed. DirectPlay *NOT* "
-                    "initialized!\n"));
+        mprintf(0, "lpDirectPlayLobby3A->CreateCompoundAddress() buffer size request failed. DirectPlay *NOT* initialized!\n");
       }
     }
   }
   if (dp_SelectDirectPlayConnection(conn)) {
     DP_active = TRUE;
-    mprintf((0, "DirectPlay Initialized\n"));
+    mprintf(0, "DirectPlay Initialized\n");
     return 1;
   }
   return 0;
@@ -270,7 +272,7 @@ int dp_InitDirectPlay(char *conn_name, void *parms, int num_elements) {
 
 // Everyone should call this when leaving the game.
 void dp_EndGame() {
-  mprintf((0, "Ending DirectPlay game.\n"));
+  mprintf(0, "Ending DirectPlay game.\n");
   if ((!DP_active) || (!lpDirectPlay4A))
     return;
   lpDirectPlay4A->Close();
@@ -284,10 +286,10 @@ int dp_StartGame(char *gamename) {
   DPNAME server_player;
   DPSESSIONDESC2 sessionDesc;
 
-  mprintf((0, "Starting DirectPlay game: %s\n", gamename));
+  mprintf(0, "Starting DirectPlay game: %s\n", gamename);
 
   if ((!DP_active) || (!lpDirectPlay4A)) {
-    mprintf((0, "Can't start game because DirectPlay isn't initialized!\n"));
+    mprintf(0, "Can't start game because DirectPlay isn't initialized!\n");
     return 0;
   }
   // Host a new session.
@@ -320,7 +322,7 @@ int dp_StartGame(char *gamename) {
                                                       FALSE, // initial event reset
                                                       NULL); // no name
     if (NetPlayers[Player_num].hPlayerEvent == NULL) {
-      mprintf((0, "Failed to create directplay notification event!\n"));
+      mprintf(0, "Failed to create directplay notification event!\n");
       dp_EndGame();
       DP_active = false;
       return 0;
@@ -328,28 +330,28 @@ int dp_StartGame(char *gamename) {
     hres = lpDirectPlay4A->CreatePlayer(&NetPlayers[Player_num].dpidPlayer, &server_player,
                                         NetPlayers[Player_num].hPlayerEvent, NULL, 0, DPPLAYER_SERVERPLAYER);
     if (FAILED(hres)) {
-      mprintf((0, "Failed to create directplay player in dp_StartGame()\n"));
+      mprintf(0, "Failed to create directplay player in dp_StartGame()\n");
       switch (hres) {
       case DPERR_CANTADDPLAYER:
-        mprintf((0, "Unable to create player. Error code: DPERR_CANTADDPLAYER\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_CANTADDPLAYER\n");
         break;
       case DPERR_CANTCREATEPLAYER:
-        mprintf((0, "Unable to create player. Error code: DPERR_CANTCREATEPLAYER\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_CANTCREATEPLAYER\n");
         break;
       case DPERR_CONNECTIONLOST:
-        mprintf((0, "Unable to create player. Error code: DPERR_CONNECTIONLOST\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_CONNECTIONLOST\n");
         break;
       case DPERR_INVALIDFLAGS:
-        mprintf((0, "Unable to create player. Error code: DPERR_INVALIDFLAGS\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_INVALIDFLAGS\n");
         break;
       case DPERR_INVALIDPARAMS:
-        mprintf((0, "Unable to create player. Error code: DPERR_INVALIDPARAMS\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_INVALIDPARAMS\n");
         break;
       case DPERR_NOCONNECTION:
-        mprintf((0, "Unable to create player. Error code: DPERR_NOCONNECTION\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_NOCONNECTION\n");
         break;
       default:
-        mprintf((0, "Unable to create player. Error code: Unknown\n"));
+        mprintf(0, "Unable to create player. Error code: Unknown\n");
         break;
       }
       return 0;
@@ -360,73 +362,73 @@ int dp_StartGame(char *gamename) {
     switch (hres) {
 
     case DPERR_ACCESSDENIED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ACCESSDENIED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ACCESSDENIED)!\n");
       break;
     case DPERR_ALREADYINITIALIZED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ALREADYINITIALIZED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ALREADYINITIALIZED)!\n");
       break;
     case DPERR_AUTHENTICATIONFAILED:
-      mprintf((0, "Failed to create Directplay session (DPERR_AUTHENTICATIONFAILED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_AUTHENTICATIONFAILED)!\n");
       break;
     case DPERR_CANNOTCREATESERVER:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANNOTCREATESERVER)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANNOTCREATESERVER)!\n");
       break;
     case DPERR_CANTLOADCAPI:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANTLOADCAPI)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANTLOADCAPI)!\n");
       break;
     case DPERR_CANTLOADSECURITYPACKAGE:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANTLOADSECURITYPACKAGE)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANTLOADSECURITYPACKAGE)!\n");
       break;
     case DPERR_CANTLOADSSPI:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANTLOADSSPI)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANTLOADSSPI)!\n");
       break;
     case DPERR_CONNECTING:
-      mprintf((0, "Failed to create Directplay session (DPERR_CONNECTING)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CONNECTING)!\n");
       break;
     case DPERR_CONNECTIONLOST:
-      mprintf((0, "Failed to create Directplay session (DPERR_CONNECTIONLOST)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CONNECTIONLOST)!\n");
       break;
     case DPERR_ENCRYPTIONFAILED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ENCRYPTIONFAILED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ENCRYPTIONFAILED)!\n");
       break;
     case DPERR_ENCRYPTIONNOTSUPPORTED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ENCRYPTIONNOTSUPPORTED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ENCRYPTIONNOTSUPPORTED)!\n");
       break;
     case DPERR_INVALIDFLAGS:
-      mprintf((0, "Failed to create Directplay session (DPERR_INVALIDFLAGS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_INVALIDFLAGS)!\n");
       break;
     case DPERR_INVALIDPARAMS:
-      mprintf((0, "Failed to create Directplay session (DPERR_INVALIDPARAMS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_INVALIDPARAMS)!\n");
       break;
     case DPERR_INVALIDPASSWORD:
-      mprintf((0, "Failed to create Directplay session (DPERR_INVALIDPASSWORD)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_INVALIDPASSWORD)!\n");
       break;
     case DPERR_LOGONDENIED:
-      mprintf((0, "Failed to create Directplay session (DPERR_LOGONDENIED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_LOGONDENIED)!\n");
       break;
     case DPERR_NOCONNECTION:
-      mprintf((0, "Failed to create Directplay session (DPERR_NOCONNECTION)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_NOCONNECTION)!\n");
       break;
     case DPERR_NONEWPLAYERS:
-      mprintf((0, "Failed to create Directplay session (DPERR_NONEWPLAYERS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_NONEWPLAYERS)!\n");
       break;
     case DPERR_NOSESSIONS:
-      mprintf((0, "Failed to create Directplay session (DPERR_NOSESSIONS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_NOSESSIONS)!\n");
       break;
     case DPERR_SIGNFAILED:
-      mprintf((0, "Failed to create Directplay session (DPERR_SIGNFAILED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_SIGNFAILED)!\n");
       break;
     case DPERR_TIMEOUT:
-      mprintf((0, "Failed to create Directplay session (DPERR_TIMEOUT)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_TIMEOUT)!\n");
       break;
     case DPERR_UNINITIALIZED:
-      mprintf((0, "Failed to create Directplay session (DPERR_UNINITIALIZED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_UNINITIALIZED)!\n");
       break;
     case DPERR_USERCANCEL:
-      mprintf((0, "Failed to create Directplay session (DPERR_USERCANCEL)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_USERCANCEL)!\n");
       break;
     default:
-      mprintf((0, "Failed to create Directplay session (unknown)!\n"));
+      mprintf(0, "Failed to create Directplay session (unknown)!\n");
     }
   }
   return 0;
@@ -449,47 +451,47 @@ int dp_ListDirectPlayGames() {
   hr = lpDirectPlay4A->EnumSessions(&sessionDesc, 0, EnumSessionsCallback, 0,
                                     DPENUMSESSIONS_AVAILABLE | DPENUMSESSIONS_RETURNSTATUS | DPENUMSESSIONS_ASYNC);
   if (hr == DPERR_CONNECTING) {
-    mprintf((0, "Waiting for EnumSessions() to connect.\n"));
+    mprintf(0, "Waiting for EnumSessions() to connect.\n");
     return DPERR_CONNECTING;
   }
 
   if FAILED (hr) {
-    mprintf((0, "Unable to EnumSessions() for Directplay.\n"));
+    mprintf(0, "Unable to EnumSessions() for Directplay.\n");
     switch (hr) {
     case DPERR_CONNECTING:
-      mprintf((0, "Error code: DPERR_CONNECTING\n"));
+      mprintf(0, "Error code: DPERR_CONNECTING\n");
       break;
     case DPERR_CONNECTIONLOST:
-      mprintf((0, "Error code: DPERR_CONNECTIONLOST\n"));
+      mprintf(0, "Error code: DPERR_CONNECTIONLOST\n");
       break;
     case DPERR_EXCEPTION:
-      mprintf((0, "Error code: DPERR_EXCEPTION\n"));
+      mprintf(0, "Error code: DPERR_EXCEPTION\n");
       break;
     case DPERR_GENERIC:
-      mprintf((0, "Error code: DPERR_GENERIC\n"));
+      mprintf(0, "Error code: DPERR_GENERIC\n");
       break;
     case DPERR_INVALIDOBJECT:
-      mprintf((0, "Error code: DPERR_INVALIDOBJECT\n"));
+      mprintf(0, "Error code: DPERR_INVALIDOBJECT\n");
       break;
     case DPERR_INVALIDPARAMS:
-      mprintf((0, "Error code: DPERR_INVALIDPARAMS\n"));
+      mprintf(0, "Error code: DPERR_INVALIDPARAMS\n");
       break;
     case DPERR_NOCONNECTION:
-      mprintf((0, "Error code: DPERR_NOCONNECTION\n"));
+      mprintf(0, "Error code: DPERR_NOCONNECTION\n");
       break;
     case DPERR_UNINITIALIZED:
-      mprintf((0, "Error code: DPERR_UNINITIALIZED\n"));
+      mprintf(0, "Error code: DPERR_UNINITIALIZED\n");
       break;
     case DPERR_USERCANCEL:
-      mprintf((0, "Error code: DPERR_USERCANCEL\n"));
+      mprintf(0, "Error code: DPERR_USERCANCEL\n");
       break;
     default:
-      mprintf((0, "Error code: Unknown\n"));
+      mprintf(0, "Error code: Unknown\n");
       break;
     }
     return DPERR_NOCONNECTION;
   } else
-    mprintf((0, "EnumSessions() returned DP_OK\n"));
+    mprintf(0, "EnumSessions() returned DP_OK\n");
 
   return DP_OK;
 }
@@ -505,7 +507,7 @@ void dp_DirectPlayDispatch() {
   LPDPMSG_CREATEPLAYERORGROUP new_player_msg;
   // Put messages in the buffers
   if ((!DP_active) || (!lpDirectPlay4A)) {
-    mprintf((0, "Can't dispatch DirectPlay message because DirectPlay isn't active!\n"));
+    mprintf(0, "Can't dispatch DirectPlay message because DirectPlay isn't active!\n");
     return;
   }
 
@@ -513,26 +515,26 @@ void dp_DirectPlayDispatch() {
   if (FAILED(hr)) {
     switch (hr) {
     case DPERR_BUFFERTOOSMALL:
-      mprintf((0, "Error: lpDirectPlay4A->Receive() returned DPERR_BUFFERTOOSMALL -- needs %d\n", dwMsgBufferSize));
+      mprintf(0, "Error: lpDirectPlay4A->Receive() returned DPERR_BUFFERTOOSMALL -- needs %d\n", dwMsgBufferSize);
       break;
     case DPERR_GENERIC:
-      mprintf((0, "Error: lpDirectPlay4A->Receive() returned DPERR_GENERIC\n"));
+      mprintf(0, "Error: lpDirectPlay4A->Receive() returned DPERR_GENERIC\n");
       break;
     case DPERR_INVALIDOBJECT:
-      mprintf((0, "Error: lpDirectPlay4A->Receive() returned DPERR_INVALIDOBJECT\n"));
+      mprintf(0, "Error: lpDirectPlay4A->Receive() returned DPERR_INVALIDOBJECT\n");
       break;
     case DPERR_INVALIDPARAMS:
-      mprintf((0, "Error: lpDirectPlay4A->Receive() returned DPERR_INVALIDPARAMS\n"));
+      mprintf(0, "Error: lpDirectPlay4A->Receive() returned DPERR_INVALIDPARAMS\n");
       break;
     case DPERR_INVALIDPLAYER:
-      mprintf((0, "Error: lpDirectPlay4A->Receive() returned DPERR_INVALIDPLAYER\n"));
+      mprintf(0, "Error: lpDirectPlay4A->Receive() returned DPERR_INVALIDPLAYER\n");
       break;
     case DPERR_NOMESSAGES:
       // Not really an error....
-      // mprintf((0,"Error: lpDirectPlay4A->Receive() returned DPERR_NOMESSAGES\n"));
+      // mprintf(0,"Error: lpDirectPlay4A->Receive() returned DPERR_NOMESSAGES\n");
       break;
     default:
-      mprintf((0, "Unknown error code from DirectPlay::Receive() -- %x\n", hr));
+      mprintf(0, "Unknown error code from DirectPlay::Receive() -- %x\n", hr);
     }
   } else {
     // Now we have actual data -- do something with it.
@@ -543,7 +545,7 @@ void dp_DirectPlayDispatch() {
       case DPSYS_CREATEPLAYERORGROUP:
         // New player joined the game
         {
-          mprintf((0, "Got a DPSYS_CREATEPLAYERORGROUP packet!\n"));
+          mprintf(0, "Got a DPSYS_CREATEPLAYERORGROUP packet!\n");
           new_player_msg = (LPDPMSG_CREATEPLAYERORGROUP)lpMsg;
           // Store this player's info
           for (int i = 0; i < MAX_PENDING_NEW_CONNECTIONS; i++) {
@@ -568,11 +570,11 @@ void dp_DirectPlayDispatch() {
         break;
       default:
         Int3(); // Get Kevin
-        mprintf((0, "Unknown system message from DirectPlay! %d\n", lpMsg->dwType));
+        mprintf(0, "Unknown system message from DirectPlay! %d\n", lpMsg->dwType);
       }
     } else {
       if (dwMsgBufferSize >= MAX_PACKET_SIZE) {
-        mprintf((0, "Error: Packet too large for D3 to handle! Discarding!!!!!\n"));
+        mprintf(0, "Error: Packet too large for D3 to handle! Discarding!!!!!\n");
       } else {
         // Presumably this is from a player we know about...
         memset(&from_addr, 0, sizeof(network_address));
@@ -590,7 +592,7 @@ int dp_DirectPlaySend(network_address *who_to, uint8_t *data, int len, bool reli
   HRESULT hr;
   uint32_t send_flags;
   if ((!DP_active) || (!lpDirectPlay4A)) {
-    mprintf((0, "Can't send DirectPlay message because DirectPlay isn't active!\n"));
+    mprintf(0, "Can't send DirectPlay message because DirectPlay isn't active!\n");
     return 0;
   }
 
@@ -619,22 +621,22 @@ void dp_DirectPlayDestroyPlayer(DPID who) {
   if (FAILED(hr)) {
     switch (hr) {
     case DPERR_ACCESSDENIED:
-      mprintf((0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_ACCESSDENIED.\n"));
+      mprintf(0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_ACCESSDENIED.\n");
       break;
     case DPERR_CONNECTIONLOST:
-      mprintf((0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_CONNECTIONLOST.\n"));
+      mprintf(0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_CONNECTIONLOST.\n");
       break;
     case DPERR_INVALIDOBJECT:
-      mprintf((0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_INVALIDOBJECT.\n"));
+      mprintf(0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_INVALIDOBJECT.\n");
       break;
     case DPERR_INVALIDPLAYER:
-      mprintf((0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_INVALIDPLAYER.\n"));
+      mprintf(0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_INVALIDPLAYER.\n");
       break;
     case DPERR_UNAVAILABLE:
-      mprintf((0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_UNAVAILABLE.\n"));
+      mprintf(0, "lpDirectPlay4A->DestroyPlayer() returned DPERR_UNAVAILABLE.\n");
       break;
     default:
-      mprintf((0, "Unknown error returned by nw_DirectPlayDestroyPlayer() -- %x\n", hr));
+      mprintf(0, "Unknown error returned by nw_DirectPlayDestroyPlayer() -- %x\n", hr);
     }
   }
 }
@@ -646,7 +648,7 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session) {
   do {
     hr = lpDirectPlay4A->Open(session, DPOPEN_JOIN | DPOPEN_RETURNSTATUS);
     if (DPERR_CONNECTING == hr) {
-      mprintf((0, "Waiting for Directplay session to start(DPERR_CONNECTING)!\n"));
+      mprintf(0, "Waiting for Directplay session to start(DPERR_CONNECTING)!\n");
       Sleep(50);
     }
   } while (DPERR_CONNECTING == hr);
@@ -654,70 +656,70 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session) {
     switch (hr) {
 
     case DPERR_ACCESSDENIED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ACCESSDENIED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ACCESSDENIED)!\n");
       break;
     case DPERR_ALREADYINITIALIZED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ALREADYINITIALIZED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ALREADYINITIALIZED)!\n");
       break;
     case DPERR_AUTHENTICATIONFAILED:
-      mprintf((0, "Failed to create Directplay session (DPERR_AUTHENTICATIONFAILED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_AUTHENTICATIONFAILED)!\n");
       break;
     case DPERR_CANNOTCREATESERVER:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANNOTCREATESERVER)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANNOTCREATESERVER)!\n");
       break;
     case DPERR_CANTLOADCAPI:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANTLOADCAPI)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANTLOADCAPI)!\n");
       break;
     case DPERR_CANTLOADSECURITYPACKAGE:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANTLOADSECURITYPACKAGE)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANTLOADSECURITYPACKAGE)!\n");
       break;
     case DPERR_CANTLOADSSPI:
-      mprintf((0, "Failed to create Directplay session (DPERR_CANTLOADSSPI)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CANTLOADSSPI)!\n");
       break;
     case DPERR_CONNECTIONLOST:
-      mprintf((0, "Failed to create Directplay session (DPERR_CONNECTIONLOST)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_CONNECTIONLOST)!\n");
       break;
     case DPERR_ENCRYPTIONFAILED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ENCRYPTIONFAILED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ENCRYPTIONFAILED)!\n");
       break;
     case DPERR_ENCRYPTIONNOTSUPPORTED:
-      mprintf((0, "Failed to create Directplay session (DPERR_ENCRYPTIONNOTSUPPORTED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_ENCRYPTIONNOTSUPPORTED)!\n");
       break;
     case DPERR_INVALIDFLAGS:
-      mprintf((0, "Failed to create Directplay session (DPERR_INVALIDFLAGS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_INVALIDFLAGS)!\n");
       break;
     case DPERR_INVALIDPARAMS:
-      mprintf((0, "Failed to create Directplay session (DPERR_INVALIDPARAMS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_INVALIDPARAMS)!\n");
       break;
     case DPERR_INVALIDPASSWORD:
-      mprintf((0, "Failed to create Directplay session (DPERR_INVALIDPASSWORD)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_INVALIDPASSWORD)!\n");
       break;
     case DPERR_LOGONDENIED:
-      mprintf((0, "Failed to create Directplay session (DPERR_LOGONDENIED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_LOGONDENIED)!\n");
       break;
     case DPERR_NOCONNECTION:
-      mprintf((0, "Failed to create Directplay session (DPERR_NOCONNECTION)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_NOCONNECTION)!\n");
       break;
     case DPERR_NONEWPLAYERS:
-      mprintf((0, "Failed to create Directplay session (DPERR_NONEWPLAYERS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_NONEWPLAYERS)!\n");
       break;
     case DPERR_NOSESSIONS:
-      mprintf((0, "Failed to create Directplay session (DPERR_NOSESSIONS)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_NOSESSIONS)!\n");
       break;
     case DPERR_SIGNFAILED:
-      mprintf((0, "Failed to create Directplay session (DPERR_SIGNFAILED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_SIGNFAILED)!\n");
       break;
     case DPERR_TIMEOUT:
-      mprintf((0, "Failed to create Directplay session (DPERR_TIMEOUT)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_TIMEOUT)!\n");
       break;
     case DPERR_UNINITIALIZED:
-      mprintf((0, "Failed to create Directplay session (DPERR_UNINITIALIZED)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_UNINITIALIZED)!\n");
       break;
     case DPERR_USERCANCEL:
-      mprintf((0, "Failed to create Directplay session (DPERR_USERCANCEL)!\n"));
+      mprintf(0, "Failed to create Directplay session (DPERR_USERCANCEL)!\n");
       break;
     default:
-      mprintf((0, "Failed to create Directplay session (unknown)!\n"));
+      mprintf(0, "Failed to create Directplay session (unknown)!\n");
     }
     // return 0;
   } else {
@@ -728,13 +730,13 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session) {
     client_player.lpszShortNameA = Players[Player_num].callsign;
     client_player.lpszLongNameA = NULL;
 
-    mprintf((0, "Creating local player...\n"));
+    mprintf(0, "Creating local player...\n");
     NetPlayers[Player_num].hPlayerEvent = CreateEvent(NULL,  // no security
                                                       FALSE, // auto reset
                                                       FALSE, // initial event reset
                                                       NULL); // no name
     if (NetPlayers[Player_num].hPlayerEvent == NULL) {
-      mprintf((0, "Failed to create directplay notification event!\n"));
+      mprintf(0, "Failed to create directplay notification event!\n");
       dp_EndGame();
       DP_active = false;
       return 0;
@@ -742,28 +744,28 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session) {
     hres = lpDirectPlay4A->CreatePlayer(&NetPlayers[Player_num].dpidPlayer, &client_player,
                                         NetPlayers[Player_num].hPlayerEvent, NULL, 0, 0);
     if (FAILED(hres)) {
-      mprintf((0, "Failed to create directplay player in dp_DirectPlayJoinGame()\n"));
+      mprintf(0, "Failed to create directplay player in dp_DirectPlayJoinGame()\n");
       switch (hres) {
       case DPERR_CANTADDPLAYER:
-        mprintf((0, "Unable to create player. Error code: DPERR_CANTADDPLAYER\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_CANTADDPLAYER\n");
         break;
       case DPERR_CANTCREATEPLAYER:
-        mprintf((0, "Unable to create player. Error code: DPERR_CANTCREATEPLAYER\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_CANTCREATEPLAYER\n");
         break;
       case DPERR_CONNECTIONLOST:
-        mprintf((0, "Unable to create player. Error code: DPERR_CONNECTIONLOST\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_CONNECTIONLOST\n");
         break;
       case DPERR_INVALIDFLAGS:
-        mprintf((0, "Unable to create player. Error code: DPERR_INVALIDFLAGS\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_INVALIDFLAGS\n");
         break;
       case DPERR_INVALIDPARAMS:
-        mprintf((0, "Unable to create player. Error code: DPERR_INVALIDPARAMS\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_INVALIDPARAMS\n");
         break;
       case DPERR_NOCONNECTION:
-        mprintf((0, "Unable to create player. Error code: DPERR_NOCONNECTION\n"));
+        mprintf(0, "Unable to create player. Error code: DPERR_NOCONNECTION\n");
         break;
       default:
-        mprintf((0, "Unable to create player. Error code: Unknown\n"));
+        mprintf(0, "Unable to create player. Error code: Unknown\n");
         break;
       }
       return 0;
@@ -775,7 +777,7 @@ int dp_DirectPlayJoinGame(LPDPSESSIONDESC2 session) {
 
 void dp_ShutdownDirectPlay() {
   int i;
-  mprintf((0, "Freeing DirectPlay memory\n"));
+  mprintf(0, "Freeing DirectPlay memory\n");
   for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
     if (dpconns[i].conn != NULL) {
       mem_free(dpconns[i].conn);
@@ -790,11 +792,11 @@ void dp_ShutdownDirectPlay() {
   lpAddress = NULL;
   lpdplconnection = NULL;
   // Delete any previous directplay instance
-  mprintf((0, "Releasing DirectPlay COM object (lpDirectPlay4A)\n"));
+  mprintf(0, "Releasing DirectPlay COM object (lpDirectPlay4A)\n");
   // if(lpDirectPlay4A)
   //	lpDirectPlay4A->Release();
   // lpDirectPlay4A = NULL;
-  mprintf((0, "Done shutting down DirectPlay.\n"));
+  mprintf(0, "Done shutting down DirectPlay.\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -818,7 +820,7 @@ BOOL FAR PASCAL EnumModemAddress(REFGUID lpguidDataType, DWORD dwDataSize, LPCVO
   if (IsEqualGUID(lpguidDataType, DPAID_Modem)) {
     // loop over all strings in list
     while (strlen(lpszStr)) {
-      mprintf((0, "Found modem: %s\n", lpszStr));
+      mprintf(0, "Found modem: %s\n", lpszStr);
       if (Num_modems_found < MAX_MODEMS) {
         // store modem name
         strcpy(Modems_found[Num_modems_found].name, lpszStr);
@@ -852,13 +854,13 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
 
     for (i = 0; i < MAX_DIRECTPLAY_CONNECTIONS; i++) {
       if (stricmp(dpconns[i].name, "Modem Connection For DirectPlay") == 0) {
-        // mprintf((0,"Found DirectPlay connection: %s\n",name));
+        // mprintf(0,"Found DirectPlay connection: %s\n",name);
         connection = dpconns[i].conn;
         break;
       }
     }
     if (!connection) {
-      mprintf((0, "Unable to find DirectPlay Modem connection.\n"));
+      mprintf(0, "Unable to find DirectPlay Modem connection.\n");
       return 0;
     }
 
@@ -875,22 +877,22 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
     }
 
     if (FAILED(hr)) {
-      mprintf((0, "lpTempDP4->InitializeConnection() failed.\n"));
+      mprintf(0, "lpTempDP4->InitializeConnection() failed.\n");
       switch (hr) {
       case DPERR_ALREADYINITIALIZED:
-        mprintf((0, "Error: DPERR_ALREADYINITIALIZED\n"));
+        mprintf(0, "Error: DPERR_ALREADYINITIALIZED\n");
         break;
       case DPERR_INVALIDFLAGS:
-        mprintf((0, "Error: DPERR_INVALIDFLAGS\n"));
+        mprintf(0, "Error: DPERR_INVALIDFLAGS\n");
         break;
       case DPERR_INVALIDPARAMS:
-        mprintf((0, "Error: DPERR_INVALIDPARAMS\n"));
+        mprintf(0, "Error: DPERR_INVALIDPARAMS\n");
         break;
       case DPERR_UNAVAILABLE:
-        mprintf((0, "Error: DPERR_UNAVAILABLE\n"));
+        mprintf(0, "Error: DPERR_UNAVAILABLE\n");
         break;
       default:
-        mprintf((0, "Error: Unknown\n"));
+        mprintf(0, "Error: Unknown\n");
       }
 
       return 0;
@@ -906,7 +908,7 @@ int dp_GetModemChoices(char *buffer, LPDWORD size) {
       if (SUCCEEDED(hr))
         lpDirectPlayLobby3A->EnumAddress(EnumModemAddress, buffer, *size, 0);
       else
-        mprintf((0, "Couldn't create IID_IDirectPlayLobby3A COM Instance!\n"));
+        mprintf(0, "Couldn't create IID_IDirectPlayLobby3A COM Instance!\n");
     }
 
     lpTempDP4->Release();
@@ -941,31 +943,31 @@ void dp_RegisterLobbyApplication(char *appname, char *exefile, char *exepath, ch
 
   HRESULT hr;
 
-  mprintf((0, "Registering DirectPlay Lobby application:\n"));
-  mprintf((0, "AppDesc.lpszApplicationNameA = %s\n", appname));
-  mprintf((0, "AppDesc.lpszFilenameA = %s\n", exefile));
-  mprintf((0, "AppDesc.lpszCommandLineA = %s\n", arguments));
-  mprintf((0, "AppDesc.lpszPathA = %s\n", exepath));
-  mprintf((0, "AppDesc.lpszCurrentDirectoryA = %s\n", workingdir));
-  mprintf((0, "AppDesc.lpszDescriptionA = %s\n", description));
+  mprintf(0, "Registering DirectPlay Lobby application:\n");
+  mprintf(0, "AppDesc.lpszApplicationNameA = %s\n", appname);
+  mprintf(0, "AppDesc.lpszFilenameA = %s\n", exefile);
+  mprintf(0, "AppDesc.lpszCommandLineA = %s\n", arguments);
+  mprintf(0, "AppDesc.lpszPathA = %s\n", exepath);
+  mprintf(0, "AppDesc.lpszCurrentDirectoryA = %s\n", workingdir);
+  mprintf(0, "AppDesc.lpszDescriptionA = %s\n", description);
 
   hr = CoCreateInstance(CLSID_DirectPlayLobby, NULL, CLSCTX_INPROC_SERVER, IID_IDirectPlayLobby3A,
                         (LPVOID *)&lpDirectPlayLobby3A);
   if (SUCCEEDED(hr)) {
     hr = lpDirectPlayLobby3A->RegisterApplication(0, &AppDesc);
     if (FAILED(hr)) {
-      mprintf((0, "IDirectPlayLobby3::RegisterApplication() failed.\n"));
+      mprintf(0, "IDirectPlayLobby3::RegisterApplication() failed.\n");
       if (hr == DPERR_INVALIDFLAGS)
-        mprintf((0, "Error = DPERR_INVALIDFLAGS\n"));
+        mprintf(0, "Error = DPERR_INVALIDFLAGS\n");
       else if (hr == DPERR_INVALIDPARAMS)
-        mprintf((0, "Error = DPERR_INVALIDPARAMS\n"));
+        mprintf(0, "Error = DPERR_INVALIDPARAMS\n");
       else
-        mprintf((0, "Error = ??????????? %x\n", hr));
+        mprintf(0, "Error = ??????????? %x\n", hr);
     } else {
-      mprintf((0, "IDirectPlayLobby3::RegisterApplication() succeded.\n"));
+      mprintf(0, "IDirectPlayLobby3::RegisterApplication() succeded.\n");
     }
   } else {
-    mprintf((0, "IDirectPlayLobby3 CoCreateInstance() failed.\n"));
+    mprintf(0, "IDirectPlayLobby3 CoCreateInstance() failed.\n");
     return;
   }
 
@@ -989,12 +991,12 @@ bool dp_DidLobbyLaunchGame() {
     hr = lpDirectPlayLobby3A->GetConnectionSettings(0, NULL, &buffersize);
     if (FAILED(hr)) {
       if (hr == DPERR_NOTLOBBIED) {
-        mprintf((0, "Application not started from a lobby.\n"));
+        mprintf(0, "Application not started from a lobby.\n");
         lpDirectPlayLobby3A->Release();
         lpDirectPlayLobby3A = NULL;
         return false;
       }
-      mprintf((0, "Unable to determine DirectPlay lobby connection info buffer size!!!\n"));
+      mprintf(0, "Unable to determine DirectPlay lobby connection info buffer size!!!\n");
       lpDirectPlayLobby3A->Release();
       lpDirectPlayLobby3A = NULL;
       return false;
@@ -1004,21 +1006,21 @@ bool dp_DidLobbyLaunchGame() {
     lpDirectPlayLobby3A->Release();
     lpDirectPlayLobby3A = NULL;
     if (FAILED(hr)) {
-      mprintf((0, "IDirectPlayLobby3::GetConnectionSettings() failed.\n"));
+      mprintf(0, "IDirectPlayLobby3::GetConnectionSettings() failed.\n");
       if (hr == DPERR_NOTLOBBIED) {
-        mprintf((0, "Application not started from a lobby.\n"));
+        mprintf(0, "Application not started from a lobby.\n");
         return false;
       } else {
-        mprintf((0, "Unknown error from IDirectPlayLobby3::GetConnectionSettings().\n"));
+        mprintf(0, "Unknown error from IDirectPlayLobby3::GetConnectionSettings().\n");
         return false;
       }
     } else {
-      mprintf((0, "Application was started from a lobby.\n"));
+      mprintf(0, "Application was started from a lobby.\n");
       Directplay_lobby_launched_game = true;
       return true;
     }
   } else {
-    mprintf((0, "IDirectPlayLobby3 CoCreateInstance() failed.\n"));
+    mprintf(0, "IDirectPlayLobby3 CoCreateInstance() failed.\n");
   }
   return false;
 }

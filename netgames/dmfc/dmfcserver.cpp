@@ -122,7 +122,7 @@ void DMFCBase::OnServerPlayerKilled(object *killer_obj, int victim_pnum) {
   else {
     Data->iParam = (int)DLLMultiGetMatchChecksum(OBJ_WEAPON, Data->iParam);
     if (Data->iParam == -1) {
-      mprintf((0, "Unable to generate checksum for weapon id\n"));
+      mprintf(0, "Unable to generate checksum for weapon id\n");
     }
   }
 
@@ -239,7 +239,7 @@ void DMFCBase::OnServerLevelStart(void) {
   if (GetLocalRole() == LR_SERVER && IAmDedicatedServer()) {
     if (DedicatedLevelWait > 0) {
       // time to stop waiting!
-      mprintf((0, "Telling clients to wait\n"));
+      mprintf(0, "Telling clients to wait\n");
       DPrintf("\nMaking Clients Wait %.2f seconds\n", DedicatedLevelWait);
       PauseRealGameTime(true);
       MakeClientsWait(true);

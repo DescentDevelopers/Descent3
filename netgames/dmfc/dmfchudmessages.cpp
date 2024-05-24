@@ -133,21 +133,21 @@ void DMFCBase::DoRandomDeathMessage(int killernum,int victimnum,uint32_t hash)
 
         if(me){
                 if(it)
-                        mprintf((0,"[Killer: T=%d I=%d] [Victim: T=%d I=%d]\n",it->type,it->id,me->type,me->id));
+                        mprintf(0,"[Killer: T=%d I=%d] [Victim: T=%d I=%d]\n",it->type,it->id,me->type,me->id);
                 else
-                        mprintf((0,"[Killer: NOT KNOWN] [Victim: T=%d I=%d]\n",me->type,me->id));
+                        mprintf(0,"[Killer: NOT KNOWN] [Victim: T=%d I=%d]\n",me->type,me->id);
         }else{
                 if(it)
-                        mprintf((0,"[Killer: T=%d I=%d] [Victim: NOT KNOWN]\n",it->type,it->id));
+                        mprintf(0,"[Killer: T=%d I=%d] [Victim: NOT KNOWN]\n",it->type,it->id);
                 else
-                        mprintf((0,"[Killer: NOT KNOWN] [Victim: NOT KNOWN]\n"));
+                        mprintf(0,"[Killer: NOT KNOWN] [Victim: NOT KNOWN]\n");
         }
 
         if(me){
                 if((hash!=0xFFFFFFFF)&&(me->type==OBJ_PLAYER)&& ( (me->id==GetPlayerNum()) || ((rand()%3)==1) ) ){
                         weapon_index = DLLMultiMatchWeapon(hash);
                         if(weapon_index==-1){
-                                mprintf((0,"Server Weapon Doesn't Match!\n"));
+                                mprintf(0,"Server Weapon Doesn't Match!\n");
                         }
                 }
         }
@@ -226,8 +226,8 @@ seedbuf[200]; memcpy(seedbuf,seeds1,31); DecryptData((uint8_t *)seedbuf,30); spr
                 }
         }else{
                 //either me or it doesn't exist
-                mprintf((0,"**********************************************************************\n"));
-                mprintf((0,"Either me or it doesn't exist for death message\n"));
+                mprintf(0,"**********************************************************************\n");
+                mprintf(0,"Either me or it doesn't exist for death message\n");
 
                 if(me){
                         //only the killer doesn't exist
@@ -278,7 +278,7 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash)
     if ((hash != 0xFFFFFFFF) && (me->type == OBJ_PLAYER) && ((me->id == GetPlayerNum()) || ((rand() % 3) == 1))) {
       weapon_index = DLLMultiMatchWeapon(hash);
       if (weapon_index == -1) {
-        mprintf((0, "Server Weapon Doesn't Match!\n"));
+        mprintf(0, "Server Weapon Doesn't Match!\n");
       }
     }
   }
@@ -373,8 +373,8 @@ void DMFCBase::DoRandomDeathMessage(int killernum, int victimnum, uint32_t hash)
     }
   } else {
     // either me or it doesn't exist
-    mprintf((0, "**********************************************************************\n"));
-    mprintf((0, "Either me or it doesn't exist for death message\n"));
+    mprintf(0, "**********************************************************************\n");
+    mprintf(0, "Either me or it doesn't exist for death message\n");
 
     if (me) {
       // only the killer doesn't exist

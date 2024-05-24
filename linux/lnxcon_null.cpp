@@ -81,4 +81,4 @@ bool con_null_Create(void) {
 void con_null_Destroy(void) {}
 
 // put some data up on the screen
-void con_null_Puts(int window, const char *str) { mprintf((0, str)); }
+void con_null_Puts(int window, const char *str) { mprintf(0, str); }

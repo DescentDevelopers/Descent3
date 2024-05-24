@@ -432,7 +432,7 @@ int ShootRayFromPoint (vector *src,vector *dest,rad_surface *src_surf,rad_surfac
 	dist=vm_VectorDistance(&hit_info.hit_pnt,&temp_dest);
 	if (dist>.1)
 	{
-		//mprintf ((0,"Didn't hit!\n"));
+		//mprintf(0,"Didn't hit!\n");
 		return 0;
 	}
 
@@ -516,7 +516,7 @@ float GetFormFactorForElementAndSatellite (rad_surface *dest_surf,rad_element *d
 	form_factor/=dest_element->num_verts;
 
 	if (form_factor>1)
-			mprintf ((0,"form factor >1!\n"));
+			mprintf(0,"form factor >1!\n");
 
 	
 	return form_factor;
@@ -690,7 +690,7 @@ float GetFormFactorForElement (rad_surface *dest_surf,rad_element *dest_element,
 			ff=(vm_DotProduct (&src_norm_ray,&src_normal) * vm_DotProduct(&dest_normal,&dest_norm_ray))/((3.14 * ray_length * ray_length)+ray_area);
 	
 			if (ff>1)
-				mprintf ((0,"ff >1!\n"));
+				mprintf(0,"ff >1!\n");
 
 			if (ff>0)
 				temp_factor+=ff;
@@ -727,7 +727,7 @@ float GetFormFactorForElement (rad_surface *dest_surf,rad_element *dest_element,
 		form_factor+=temp_factor;
 
 		if (form_factor>1)
-			mprintf ((0,"form factor >1! val=%f\n",form_factor));
+			mprintf(0,"form factor >1! val=%f\n",form_factor);
 	}
 
 	
@@ -810,7 +810,7 @@ float GetFormFactorForElementSuperDetail (rad_surface *dest_surf,rad_element *de
 		ff=(vm_DotProduct (&src_norm_ray,&src_normal) * vm_DotProduct(&dest_normal,&dest_norm_ray))/((3.14 * ray_length * ray_length)+ray_area);
 
 		if (ff>1)
-			mprintf ((0,"ff >1!\n"));
+			mprintf(0,"ff >1!\n");
 
 		if (ff>0)
 			temp_factor+=ff;
@@ -843,7 +843,7 @@ float GetFormFactorForElementSuperDetail (rad_surface *dest_surf,rad_element *de
 	form_factor+=temp_factor;
 
 	if (form_factor>1)
-		mprintf ((0,"form factor >1! val=%f\n",form_factor));
+		mprintf(0,"form factor >1! val=%f\n",form_factor);
 
 	return form_factor;
 }
@@ -1123,8 +1123,8 @@ void CalculateFormFactorsRaycast ()
 
 			if ((raycount%1000)==0)
 			{
-				mprintf_at((2,4,0,"Ray=%d      ",raycount));
-				mprintf_at((2,5,0,"Ignore=%d    ",Rays_ignored));
+				mprintf_at(2,4,0,"Ray=%d      ",raycount);
+				mprintf_at(2,5,0,"Ignore=%d    ",Rays_ignored);
 			}
 
 			raycount++;
@@ -1203,8 +1203,8 @@ void CalculateFormFactorsRaycast ()
 		if (rad_MaxSurface->surface_type==ST_ROOM && Calculate_specular_lighting)
 			CheckToUpdateSpecularFace (dest_surf,&Current_max_specular_color,NULL);
 		
-		//mprintf_at((2,4,0,"Ray=%d      ",raycount));
-		//mprintf_at((2,5,0,"Ignore=%d    ",Rays_ignored));
+		//mprintf_at(2,4,0,"Ray=%d      ",raycount);
+		//mprintf_at(2,5,0,"Ignore=%d    ",Rays_ignored);
 	}
 }
 

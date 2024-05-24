@@ -197,9 +197,9 @@ void UpdateTeamPlacementDialog(void) {
           tpdi.trans[team][curr_lb_count[team]] = i; // update the translator
           curr_lb_count[team]++;
         } else
-          mprintf((0, "Couldn't create text item\n"));
+          mprintf(0, "Couldn't create text item\n");
       } else {
-        mprintf((0, "Listbox not valid!\n"));
+        mprintf(0, "Listbox not valid!\n");
       }
     } else {
       TeamDlgInitialTeamSettings[i] = TeamDlgFinalTeamSettings[i] = TS_NOTINGAME;
@@ -829,7 +829,7 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
 
   UpdateWaitForPlayersDialog();
 
-  mprintf((0, "1:Entering UI Loop\n"));
+  mprintf(0, "1:Entering UI Loop\n");
 
   while (!exit_menu) {
     int res;
@@ -840,11 +840,11 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
     }
     switch (res) {
     case NEWUIRES_FORCEQUIT:
-      mprintf((0, "1:Got a force quit\n"));
+      mprintf(0, "1:Got a force quit\n");
       exit_menu = true;
       break;
     case UID_OK: // exit menu
-      mprintf((0, "1:Got a regular quit\n"));
+      mprintf(0, "1:Got a regular quit\n");
       exit_menu = true;
       break;
     case 10: // kick player
@@ -879,7 +879,7 @@ void DMFCBase::DoDMFCUIWaitForPlayers(bool clients_wait) {
     };
   }
 
-  mprintf((0, "1:Out of UI Loop\n"));
+  mprintf(0, "1:Out of UI Loop\n");
 
   // the wait is over, let them in
   if (clients_wait) {

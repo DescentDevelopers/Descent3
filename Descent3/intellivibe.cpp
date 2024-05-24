@@ -72,7 +72,7 @@ static IntelliVIBE_DoQuaterFrame_fp IVIBE_DoQuaterFrame = NULL;
 #define TEST_MODULE(x)                                                                                                 \
   {                                                                                                                    \
     if (!(x)) {                                                                                                        \
-      mprintf((0, "IntelliVIBE unable to find: %s\n", #x));                                                            \
+      mprintf(0, "IntelliVIBE unable to find: %s\n", #x);                                                            \
       mod_FreeModule(&IntelliVIBE_module);                                                                             \
       IntelliVIBE_module.handle = NULL;                                                                                \
       return;                                                                                                          \
@@ -80,7 +80,7 @@ static IntelliVIBE_DoQuaterFrame_fp IVIBE_DoQuaterFrame = NULL;
   }
 void VIBE_Init(oeApplication *app) {
   if (!mod_LoadModule(&IntelliVIBE_module, "ivibe_D3.dll")) {
-    mprintf((0, "Unable to load IntelliVIBE DLL\n"));
+    mprintf(0, "Unable to load IntelliVIBE DLL\n");
     IntelliVIBE_module.handle = NULL;
     return;
   }
@@ -102,7 +102,7 @@ void VIBE_Init(oeApplication *app) {
 
   ASSERT(IVIBE_Initialize != NULL);
   if (!IVIBE_Initialize(&info)) {
-    mprintf((0, "IntelliVIBE_Initialize failed\n"));
+    mprintf(0, "IntelliVIBE_Initialize failed\n");
     mod_FreeModule(&IntelliVIBE_module);
     IntelliVIBE_module.handle = NULL;
     return;

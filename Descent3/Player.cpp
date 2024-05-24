@@ -1237,7 +1237,7 @@ void FindPlayerStarts() {
       unique++;
     }
 
-  mprintf((0, "There are %d unique start positions in this level\n", unique));
+  mprintf(0, "There are %d unique start positions in this level\n", unique);
 
   // Now create the extra players
   if (Game_mode & GM_MULTI) {
@@ -1306,7 +1306,7 @@ int PlayerGetRandomStartPosition(int slot) {
   if (Team_game) {
 
     int team = PlayerGetTeam(slot);
-    mprintf((0, "Picking team start position, team=%d.\n", team));
+    mprintf(0, "Picking team start position, team=%d.\n", team);
     int num_avail = 0;
     int avail_array[MAX_PLAYERS];
 
@@ -1332,7 +1332,7 @@ int PlayerGetRandomStartPosition(int slot) {
   int num;
   int done = 0;
   int badcount = 0;
-  mprintf((0, "Picking non-team start position.\n"));
+  mprintf(0, "Picking non-team start position.\n");
   while (!done) {
     num = ps_rand() % (Highest_player_start + 1);
     if (Players[num].start_roomnum != -1) {
@@ -1354,7 +1354,7 @@ int PlayerGetRandomStartPosition(int slot) {
         badcount++;
         if (badcount >= 15) // give up after fifteen tries
         {
-          mprintf((0, "Stopping cuz I couldn't find a valid player position!\n"));
+          mprintf(0, "Stopping cuz I couldn't find a valid player position!\n");
           done = 1;
         }
       } else
@@ -1362,7 +1362,7 @@ int PlayerGetRandomStartPosition(int slot) {
     }
   }
 
-  mprintf((0, "Picked index for start position %d\n", num));
+  mprintf(0, "Picked index for start position %d\n", num);
 
   return num;
 }
@@ -2051,13 +2051,13 @@ static tDeathSeq Death[MAX_NET_PLAYERS];
 
 void debug_deathtype(int slot, int damage) {
   if (Death[slot].fate == DEATH_INSTANT)
-    mprintf((0, "INSTANT DEATH "));
+    mprintf(0, "INSTANT DEATH ");
   else if (Death[slot].fate == DEATH_FALL)
-    mprintf((0, "FALLING DEATH "));
+    mprintf(0, "FALLING DEATH ");
   else if (Death[slot].fate == DEATH_BREAKUP)
-    mprintf((0, "BREAKUP DEATH "));
+    mprintf(0, "BREAKUP DEATH ");
   else
-    mprintf((0, "UNKNOWN DEATH "));
+    mprintf(0, "UNKNOWN DEATH ");
 }
 
 float MoveDeathCam(int slot, vector *vec, float distance);
@@ -2141,7 +2141,7 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
   if (slot == Player_num) {
     objnum = ObjCreate(OBJ_CAMERA, 0, playerobj->roomnum, &playerobj->pos, &playerobj->orient);
     if (objnum == -1) {
-      mprintf((0, "Failed to create death cam.\n"));
+      mprintf(0, "Failed to create death cam.\n");
       Int3();
     } else {
       Death[slot].camera = &Objects[objnum];
@@ -2189,7 +2189,7 @@ void StartPlayerDeath(int slot, float damage, bool melee, int fate) {
     Death[slot].dying_model = GetPolymodelPointer(playerobj->rtype.pobj_info.model_num);
     playerobj->rtype.pobj_info.subobj_flags = 0xffffffff;
     //		playerobj->rtype.pobj_info.subobj_flags = ~(0xffffffff << (Death[slot].dying_model->n_models));
-    //		mprintf((0, "initflags=%08x\n", playerobj->rtype.pobj_info.subobj_flags));
+    //		mprintf(0, "initflags=%08x\n", playerobj->rtype.pobj_info.subobj_flags);
   } else {
     // This ship has no dying model so dont break up
     if (Death[slot].fate == DEATH_BREAKUP)
@@ -2345,7 +2345,7 @@ void DoNewPlayerDeathFrame(int slot) {
 
       if (hit_data.hit_type[0] == HIT_WALL) {
         //	death camera's view is obstructed, move the death cam
-        //	mprintf((0, "Death cam view obstructed, changing view...\n"));
+        //	mprintf(0, "Death cam view obstructed, changing view...\n");
         vm_MakeRandomVector(&directional);
         MoveDeathCam(slot, &directional, MEDIAN_DEATHCAM_DIST);
       }
@@ -2373,7 +2373,7 @@ void DoNewPlayerDeathFrame(int slot) {
           } else {
             PlayerShipBreakup(playerobj, 20.0f + (ps_rand() % 10));
             Death[slot].breakup_count++;
-            //	mprintf((0, "Breakup!\n"));
+            //	mprintf(0, "Breakup!\n");
           }
         }
       }
@@ -2416,7 +2416,7 @@ void DoNewPlayerDeathFrame(int slot) {
     }
   }
 
-  // mprintf ((0,"Playerobj size=%f\n",playerobj->size));
+  // mprintf(0,"Playerobj size=%f\n",playerobj->size);
 }
 
 #define TARGET_DEGREE (170 / 2)
@@ -2759,7 +2759,7 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   objnum = ObjCreate(OBJ_DEBRIS, 0, parent->roomnum, &parent->pos, &parent->orient);
 
   if (objnum < 0 || objnum > Highest_object_index) {
-    mprintf((0, "WARNING: No object slots.  Dead GB not created!\n"));
+    mprintf(0, "WARNING: No object slots.  Dead GB not created!\n");
     return;
   }
 
@@ -2850,7 +2850,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
   int objnum = ObjCreate(type, id, parent->roomnum, &parent->pos, NULL, parent->handle);
 
   if (objnum < 0) {
-    mprintf((0, "Couldn't spew object!\n"));
+    mprintf(0, "Couldn't spew object!\n");
     return -1;
   }
 
@@ -3234,14 +3234,13 @@ void PlayerShipSpewPartSub(object *obj, bsp_info *submodel, float magnitude) {
       VisEffects[visnum].lifeleft *= 2.0f;
       rand_vec = (-rand_vec) * (magnitude * 25.0f);
       phys_apply_force(obj, &rand_vec);
-      //	mprintf((0, "Breakoff fireball size: %f, lifeleft: %f\n", Objects[objnum].size,
-      // Objects[objnum].lifeleft));
+      // mprintf(0, "Breakoff fireball size: %f, lifeleft: %f\n", Objects[objnum].size, Objects[objnum].lifeleft);
     }
   }
 
   //	mark subobject dead
   obj->rtype.pobj_info.subobj_flags &= (~(1 << subobjnum));
-  // mprintf((0, "%d:sobj=%08x\n", subobjnum, obj->rtype.pobj_info.subobj_flags));
+  // mprintf(0, "%d:sobj=%08x\n", subobjnum, obj->rtype.pobj_info.subobj_flags);
 }
 
 //	Moves death camera a certain distance based off of direction from vec from
@@ -3550,7 +3549,7 @@ void PlayerSwitchToObserver(int slot, int observer_mode, int piggy_objnum) {
     SetObjectControlType(obj, CT_NONE);
     Players[slot].piggy_objnum = piggy_objnum;
     Players[slot].piggy_sig = Objects[piggy_objnum].handle & HANDLE_COUNT_MASK;
-    mprintf((0, "Object %d is observing object %d!\n", obj - Objects, piggy_objnum));
+    mprintf(0, "Object %d is observing object %d!\n", obj - Objects, piggy_objnum);
   }
 }
 
@@ -3674,7 +3673,7 @@ bool PlayerResetShipPermissions(int pnum, bool set_default) {
 
   int perm;
 
-  mprintf((0, "Reseting ship permissions\n"));
+  mprintf(0, "Reseting ship permissions\n");
 
   if (set_default)
     perm = Default_ship_permission;
@@ -3765,7 +3764,7 @@ void DoEnergyToShields(int pnum) {
 // Sets the start position that the player will respawn at
 void PlayerAddWaypoint(int index) {
   ASSERT(Players[index].start_roomnum != -1); // Invalid start position specified
-  mprintf((0, "Current waypoint is now %d\n", index));
+  mprintf(0, "Current waypoint is now %d\n", index);
   Current_waypoint = index;
 
   // A manual waypoint blows away all auto-waypoints
@@ -3834,7 +3833,7 @@ void SetAutoWaypoint(object *objp) {
   if (!OBJECT_OUTSIDE(objp)) {
     // delete the next two lines
     if (pp->current_auto_waypoint_room != objp->roomnum) {
-      mprintf((0, "Setting auto-waypoint in room %d\n", objp->roomnum));
+      mprintf(0, "Setting auto-waypoint in room %d\n", objp->roomnum);
     }
     pp->current_auto_waypoint_room = objp->roomnum;
   }
@@ -3861,7 +3860,7 @@ void MovePlayerToWaypoint(object *objp) {
   } else {
     ASSERT(Current_waypoint != -1);
 
-    mprintf((0, "Resetting player ship to waypoint %d\n", Current_waypoint));
+    mprintf(0, "Resetting player ship to waypoint %d\n", Current_waypoint);
     ObjSetPos(objp, &Players[Current_waypoint].start_pos, Players[Current_waypoint].start_roomnum,
               &Players[Current_waypoint].start_orient, false);
   }

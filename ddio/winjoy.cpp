@@ -168,7 +168,7 @@ bool joy_Init(bool emulation) {
 
   // initializes forcefeedback system?
   if (ddio_ff_Init()) {
-    mprintf((0, "DDForce: Force Feedback Joystick Found\n"));
+    mprintf(0, "DDForce: Force Feedback Joystick Found\n");
   }
 
   // initialize data structures.
@@ -453,7 +453,7 @@ void joymm_get_pos(tJoystick handle, tJoyPos *pos) {
   if (joy_chpro_hack) {
     if (ji.dwButtons > 0 && ji.dwButtons <= 32) {
       pos->buttons = 1 << (ji.dwButtons - 1);
-      mprintf((0, "btns=%x\n", pos->buttons));
+      mprintf(0, "btns=%x\n", pos->buttons);
     }
   } else {
     pos->buttons = (unsigned)ji.dwButtons;
@@ -462,8 +462,8 @@ void joymm_get_pos(tJoystick handle, tJoyPos *pos) {
   pos->btn = (unsigned)ji.dwButtonNumber;
 
 #ifdef _DEBUG
-  mprintf_at((4, handle + 1, 0, "%d:X:%04d Y:%04d Z:%04d %d:R:%04d U:%04d V:%04d", handle, pos->x, pos->y, pos->z,
-              pos->r, pos->u, pos->v, pos->buttons));
+  mprintf_at(4, handle + 1, 0, "%d:X:%04d Y:%04d Z:%04d %d:R:%04d U:%04d V:%04d", handle, pos->x, pos->y, pos->z,
+              pos->r, pos->u, pos->v, pos->buttons);
 #endif
 }
 
@@ -562,10 +562,10 @@ retry_joy_input:
   }
 
 #ifdef _DEBUG
-  mprintf_at((4, (handle * 2) + 1, 0, "J%d:X:%04d Y:%04d Z:%04d Rz:%04d S0:%04d S1:%04d", handle, pos->x, pos->y,
-              pos->z, pos->r, pos->u, pos->v));
-  mprintf_at((4, (handle * 2) + 2, 0, "   POV0:%04d POV1:%04d POV2:%04d POV3:%04d", handle, pos->pov[0], pos->pov[1],
-              pos->pov[2], pos->pov[3]));
+  mprintf_at(4, (handle * 2) + 1, 0, "J%d:X:%04d Y:%04d Z:%04d Rz:%04d S0:%04d S1:%04d", handle, pos->x, pos->y,
+              pos->z, pos->r, pos->u, pos->v);
+  mprintf_at(4, (handle * 2) + 2, 0, "   POV0:%04d POV1:%04d POV2:%04d POV3:%04d", handle, pos->pov[0], pos->pov[1],
+              pos->pov[2], pos->pov[3]);
 #endif
 }
 
@@ -607,7 +607,7 @@ tJoystick joydi_init_stick(int ffjoyid) {
         dicaps.dwSize = sizeof(DIDEVCAPS);
 
         if (lpdidev2->GetCapabilities(&dicaps) != DI_OK) {
-          mprintf((0, "ddio_ffjoy_Query: Failed getting device caps\n"));
+          mprintf(0, "ddio_ffjoy_Query: Failed getting device caps\n");
           return -1;
         }
 

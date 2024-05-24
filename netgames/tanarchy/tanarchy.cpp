@@ -185,7 +185,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NUM_TEAMS);
   DLLCreateStringTable("tanarchy.str", &StringTable, &StringTableSize);
-  DLLmprintf((0, "%d strings loaded from string table\n", StringTableSize));
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -622,7 +622,7 @@ void SaveStatsToFile(char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf((0, "Unable to open output file\n"));
+    DLLmprintf(0, "Unable to open output file\n");
     return;
   }
 
@@ -839,7 +839,7 @@ void OnDisconnectSaveStatsToFile(void) {
 // Handles when we get a new player packet
 void GetGameStartPacket(uint8_t *data) {
   // get the team scores
-  DLLmprintf((0, "Receiving Team Scores from server\n"));
+  DLLmprintf(0, "Receiving Team Scores from server\n");
   int count = 0, i;
   for (i = 0; i < NUM_TEAMS; i++) {
     TeamScore[i] = MultiGetInt(data, &count);
@@ -860,7 +860,7 @@ void SendGameStartPacket(int pnum) {
   }
 
   // we're done
-  DLLmprintf((0, "Sending Team Scores to %s\n", dPlayers[pnum].callsign));
+  DLLmprintf(0, "Sending Team Scores to %s\n", dPlayers[pnum].callsign);
   DMFCBase->SendPacket(data, count, pnum);
 }
 

@@ -125,7 +125,7 @@ void oms_stream::Process(float frmtime) {
   case OMS_STRM_SWITCH:
     STREAM_COMMANDP(OMS_STRM_SWITCH, evt.parm.p);
     m_stream.Stop(true, &m_data.i);
-    mprintf((0, "%d-%d ", m_data.i, m_stream.State()));
+    mprintf(0, "%d-%d ", m_data.i, m_stream.State());
     break;
 
   case OMS_STRM_NEXT:
@@ -193,7 +193,7 @@ bool oms_stream::processCommand() {
   case OMS_STRM_SWITCH:
     // if current measure is greater than initial measure at switch, then we will stop
     // this stream and send a play command to the current dominant stream.
-    //	mprintf((0, "%d-%d ",m_data.i, m_stream.State()));
+    //	mprintf(0, "%d-%d ",m_data.i, m_stream.State());
     if (m_data.i || m_stream.State() == STRM_STOPPED || m_stream.State() == STRM_INVALID) {
       bool *still_playing = (bool *)m_status.parm.p;
       *still_playing = false;
@@ -243,7 +243,7 @@ void oms_stream::processQLoad(const char *fname) {
     STREAM_COMMANDP(OMS_STRM_LOAD, (void *)fname);
     m_data.p = (void *)fname;
   } else {
-    mprintf((0, "OMS: Couldn't load song %s.\n", fname));
+    mprintf(0, "OMS: Couldn't load song %s.\n", fname);
 
     STREAM_COMMANDI(OMS_STRM_FREE);
     m_valid_result = true;

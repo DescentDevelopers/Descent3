@@ -160,7 +160,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnPrintScores(OnPrintScores);
 
   DLLCreateStringTable("Anarchy.str", &StringTable, &StringTableSize);
-  mprintf((0, "%d strings loaded from string table\n", StringTableSize));
+  mprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -550,7 +550,7 @@ void SaveStatsToFile(char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    mprintf((0, "Unable to open output file\n"));
+    mprintf(0, "Unable to open output file\n");
     return;
   }
 

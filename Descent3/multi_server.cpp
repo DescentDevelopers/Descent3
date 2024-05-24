@@ -783,7 +783,7 @@ void MultiStartServer(int playing, char *scriptname, int dedicated_server_num_te
     if (t == 0)
       t = 5.0f;
 
-    mprintf((0, "MULTI: Setting audio taunt delay time to %.2f seconds\n", t));
+    mprintf(0, "MULTI: Setting audio taunt delay time to %.2f seconds\n", t);
     taunt_SetDelayTime(t);
   } else {
     taunt_SetDelayTime(5.0f);
@@ -853,7 +853,7 @@ int CheckMissionForScript(char *mission, char *script, int dedicated_server_num_
   GetDLLNumTeamInfo(script, &min_teams, &max_teams);
 
   if (min_teams > teams) {
-    mprintf((0, "This multiplayer game requires more teams than the mission supports!\n"));
+    mprintf(0, "This multiplayer game requires more teams than the mission supports!\n");
     return SCRIPTBADFORMISSION;
   }
   // Use whatever is smaller, the dll's max teams, or what the missions supports
@@ -927,7 +927,7 @@ void MultiCheckListen() {
 
     // if we didn't find a player, close the socket
     if (i == MAX_NET_PLAYERS) {
-      mprintf((0, "Got accept on my listen socket, but no free slots.  Closing socket.\n"));
+      mprintf(0, "Got accept on my listen socket, but no free slots.  Closing socket.\n");
       nw_CloseSocket(&sock);
     }
   }
@@ -939,7 +939,7 @@ void MultiSendDonePlayers(int slot) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending done players\n"));
+  mprintf(0, "Sending done players\n");
 
   size = START_DATA(MP_DONE_PLAYERS, data, &count);
   int num = MultiCountPlayers();
@@ -955,7 +955,7 @@ void MultiSendDoneBuildings(int slot) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending done buildings\n"));
+  mprintf(0, "Sending done buildings\n");
 
   size = START_DATA(MP_DONE_BUILDINGS, data, &count);
   END_DATA(count, data, size);
@@ -969,7 +969,7 @@ void MultiSendDoneObjects(int slot) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending done objects\n"));
+  mprintf(0, "Sending done objects\n");
 
   // Take the level checksum and clone it.
   MD5 playermd5(*Level_md5);
@@ -997,7 +997,7 @@ void MultiSendDoneWorldStates(int slot) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending done world states\n"));
+  mprintf(0, "Sending done world states\n");
 
   size = START_DATA(MP_DONE_WORLD_STATES, data, &count);
   END_DATA(count, data, size);
@@ -1053,20 +1053,24 @@ void MultiDisconnectDeadPlayers() {
       float cur_time = timer_GetTime();
 
       if (!nw_CheckReliableSocket(NetPlayers[i].reliable_socket)) {
-        mprintf((0, "Disconnecting player %d because the reliable socket closed.\n", i));
+        mprintf(0, "Disconnecting player %d because the reliable socket closed.\n", i);
         AddHUDMessage("%s (%s)", TXT_RELIABLE_OVERRUN, Players[i].callsign);
         MultiDisconnectPlayer(i);
       } else if (NetPlayers[i].sequence > NETSEQ_LEVEL_START && NetPlayers[i].sequence != NETSEQ_LEVEL_END) {
         if (cur_time - NetPlayers[i].last_packet_time > DISCONNECT_TIME) {
-          mprintf((0, "8sec disconnecting player %d.  Last packet time=%f Sequence=%d\n", i,
-                   cur_time - NetPlayers[i].last_packet_time, NetPlayers[i].sequence));
+          mprintf(0, "8sec disconnecting player %d.  Last packet time=%f Sequence=%d\n",
+                  i,
+                  cur_time - NetPlayers[i].last_packet_time,
+                  NetPlayers[i].sequence);
           MultiDisconnectPlayer(i);
         }
       } else // If not playing (ie joining, give them longer)
       {
         if (cur_time - NetPlayers[i].last_packet_time > (DISCONNECT_TIME * 15)) {
-          mprintf((0, "Too long...disconnecting player %d.  Last packet time=%f Sequence=%d\n", i,
-                   cur_time - NetPlayers[i].last_packet_time, NetPlayers[i].sequence));
+          mprintf(0, "Too long...disconnecting player %d.  Last packet time=%f Sequence=%d\n",
+                  i,
+                  cur_time - NetPlayers[i].last_packet_time,
+                  NetPlayers[i].sequence);
           MultiDisconnectPlayer(i);
         }
       }
@@ -1083,7 +1087,7 @@ void MultiDisconnectPlayer(int slot) {
   CallGameDLL(EVT_GAMEPLAYERDISCONNECT, &DLLInfo);
 
   if (NetPlayers[slot].flags & NPF_CONNECTED) {
-    mprintf((0, "Disconnecting player %d (%s)...\n", slot, Players[slot].callsign));
+    mprintf(0, "Disconnecting player %d (%s)...\n", slot, Players[slot].callsign);
     if (NetPlayers[slot].file_xfer_flags != NETFILE_NONE) {
       MultiCancelFile(slot, NetPlayers[slot].custom_file_seq, NetPlayers[slot].file_xfer_who);
     }
@@ -1103,7 +1107,7 @@ void MultiDisconnectPlayer(int slot) {
     Players[slot].flags = 0;
 
   } else
-    mprintf((0, "Trying to disconnect a non-existant player!\n"));
+    mprintf(0, "Trying to disconnect a non-existant player!\n");
 }
 
 // Sends existing players to a joining player
@@ -1116,7 +1120,7 @@ void MultiSendPlayer(int slot, int which) {
   int count = 0;
   int size_offset;
 
-  mprintf((0, "Sending MP_PLAYER packet to player %d!\n", slot));
+  mprintf(0, "Sending MP_PLAYER packet to player %d!\n", slot);
 
   size_offset = START_DATA(MP_PLAYER, data, &count);
 
@@ -1208,7 +1212,7 @@ void MultiSendBuildings(int slot) {
   int count = 0;
   int size_offset;
 
-  mprintf((0, "Sending MP_BUILDING packet to player %d!\n", slot));
+  mprintf(0, "Sending MP_BUILDING packet to player %d!\n", slot);
 
   size_offset = START_DATA(MP_BUILDING, data, &count);
 
@@ -1266,7 +1270,7 @@ void MultiSendJoinDemoObjects(int slot) {
 
   ASSERT((num_demo_objects * sizeof(uint16_t) + sizeof(uint16_t)) < MAX_GAME_DATA_SIZE);
 
-  mprintf((0, "Sending DemoJoinObjects (%d)\n", num_demo_objects));
+  mprintf(0, "Sending DemoJoinObjects (%d)\n", num_demo_objects);
 
   count = 0;
   size_offset = START_DATA(MP_SEND_DEMO_OBJECT_FLAGS, data, &count);
@@ -1363,7 +1367,7 @@ void MultiSendJoinObjects(int slot) {
   int size_offset;
   int i;
 
-  mprintf((0, "Sending MP_JOIN_OBJECTS packet to player %d!\n", slot));
+  mprintf(0, "Sending MP_JOIN_OBJECTS packet to player %d!\n", slot);
 
   uint16_t total_objects = 0;
   last_sent_bytes[slot] = timer_GetTime();
@@ -1450,7 +1454,7 @@ void MultiSendJoinObjects(int slot) {
 void MultiStoreWorldPacket(int slot, uint8_t *big_data, int *big_count, uint8_t *cur_data, int *cur_count,
                            int *size_offset) {
   if (*big_count + *cur_count >= (MAX_GAME_DATA_SIZE - 3)) {
-    mprintf((0, "Starting another world packet!\n"));
+    mprintf(0, "Starting another world packet!\n");
     MultiAddByte(WS_END, big_data, big_count);
     END_DATA(*big_count, big_data, *size_offset);
 
@@ -1480,7 +1484,7 @@ void MultiSendWorldStates(int slot) {
   int count = 0;
   int size_offset;
 
-  mprintf((0, "Sending MP_WORLD_STATES packet to player %d!\n", slot));
+  mprintf(0, "Sending MP_WORLD_STATES packet to player %d!\n", slot);
 
   size_offset = START_DATA(MP_WORLD_STATES, data, &count);
 
@@ -1795,7 +1799,7 @@ void MultiSendWorldStates(int slot) {
       MultiStoreWorldPacket(slot, data, &count, cur_data, &cur_count, &size_offset);
     }
   }
-  mprintf((0, "Send %d spew events\n", spewcount));
+  mprintf(0, "Send %d spew events\n", spewcount);
 
   // Send buddybot handles if needed
   if (Netgame.flags & NF_ALLOWGUIDEBOT) {
@@ -1926,7 +1930,7 @@ void MultiCheckToRepositionPowerups() {
   }
 
   if (changed > 0) {
-    mprintf((0, "Stopped=%d\n", changed));
+    mprintf(0, "Stopped=%d\n", changed);
   }
 }
 
@@ -1953,13 +1957,13 @@ void MultiCheckToRespawnPowerups() {
       }
 
       if (num_cand == 0) {
-        mprintf((0, "Couldn't find a good spot to respawn!!!\n"));
+        mprintf(0, "Couldn't find a good spot to respawn!!!\n");
         return;
       }
 
       t = candidates[ps_rand() % num_cand];
 
-      mprintf((0, "Respawning powerup with id of %d.\n", Powerup_timer[i].id));
+      mprintf(0, "Respawning powerup with id of %d.\n", Powerup_timer[i].id);
       Powerup_respawn[t].used = 1;
       int objnum =
           ObjCreate(OBJ_POWERUP, Powerup_timer[i].id, Powerup_respawn[t].roomnum, &Powerup_respawn[t].pos, NULL);
@@ -2137,7 +2141,7 @@ void MultiSendPositionalUpdates(int to_slot) {
 
         // TODO: SEND RELIABLE WEAPON FIRE HERE
         if (Player_fire_packet[i].fired_on_this_frame == PFP_FIRED_RELIABLE) {
-          // mprintf((0,"NEED TO SEND RELIABLE FIRE FOR %d\n",i));
+          // mprintf(0,"NEED TO SEND RELIABLE FIRE FOR %d\n",i);
           count = MultiStuffPlayerFire(i, data);
           nw_SendReliable(NetPlayers[to_slot].reliable_socket, data, count, true);
         }
@@ -2161,7 +2165,7 @@ void MultiUpdateRobotMovedList(int slot) {
     if (MultiIsValidMovedObject(obj)) {
       if ((obj->flags & OF_MOVED_THIS_FRAME)) {
         skip_this_obj = false;
-        // mprintf ((0,"Object %d (type=%d) moved this frame!\n",a,obj->type));
+        // mprintf(0,"Object %d (type=%d) moved this frame!\n",a,obj->type);
         // Check to see if this robot is on the list already
         for (int b = 0; b < Num_moved_robots[slot] && !skip_this_obj; b++) {
           if (Moved_robots[slot][b] == obj->handle) {
@@ -2377,7 +2381,7 @@ void MultiDoServerRobotFrame(int slot) {
     int objnum = Moved_robots[slot][m] & HANDLE_OBJNUM_MASK;
 
     if (Moved_robots[slot][m] != Objects[objnum].handle) {
-      mprintf((0, "Caught handle objnum problem!\n"));
+      mprintf(0, "Caught handle objnum problem!\n");
       continue;
     }
 
@@ -2409,7 +2413,7 @@ void MultiDoServerRobotFrame(int slot) {
     object *obj = &Objects[objnum];
 
     if (Changed_anim[m][slot] != obj->handle) {
-      mprintf((0, "Caught anim handle objnum problem!\n"));
+      mprintf(0, "Caught anim handle objnum problem!\n");
       continue;
     }
 
@@ -2437,7 +2441,7 @@ void MultiDoServerRobotFrame(int slot) {
     object *obj = &Objects[objnum];
 
     if (Changed_turret[m][slot] != obj->handle) {
-      mprintf((0, "Caught turret handle objnum problem!\n"));
+      mprintf(0, "Caught turret handle objnum problem!\n");
       continue;
     }
 
@@ -2465,7 +2469,7 @@ void MultiDoServerRobotFrame(int slot) {
     object *obj = &Objects[objnum];
 
     if (Changed_wb_anim[m][slot] != obj->handle) {
-      mprintf((0, "Caught wb anim handle objnum problem!\n"));
+      mprintf(0, "Caught wb anim handle objnum problem!\n");
       continue;
     }
 
@@ -2725,7 +2729,7 @@ void MultiDoServerFrame() {
   for (i = 0; i < MAX_NET_PLAYERS; i++)
     Player_fire_packet[i].fired_on_this_frame = PFP_NO_FIRED;
 
-  mprintf_at((2, 5, 0, "Occ=%d  ", Multi_occluded));
+  mprintf_at(2, 5, 0, "Occ=%d  ", Multi_occluded);
 
   // If this is a dedicated server then we should get possible input
   if (Dedicated_server)
@@ -2742,8 +2746,8 @@ void MultiSendClientExecuteDLL(int eventnum, int me_objnum, int it_objnum, int t
 
   if (to == Player_num)
     return;
-  // mprintf ((0,"Sending MP_EXECUTE_DLL packet to slot %d! type=%d
-  // id=%d\n",to,Objects[me_objnum].type,Objects[me_objnum].id));
+  // mprintf(0,"Sending MP_EXECUTE_DLL packet to slot %d! type=%d
+  // id=%d\n",to,Objects[me_objnum].type,Objects[me_objnum].id);
 
   size_offset = START_DATA(MP_EXECUTE_DLL, data, &count, 1);
 
@@ -2915,7 +2919,7 @@ float CalculateNewRanking (object *obj_a,object *obj_b,int won)
         if (new_rank<0)
                 new_rank=0;
 
-        mprintf ((0,"Player %s rating is now %f\n",Players[obj_a->id].callsign,new_rank));
+        mprintf(0,"Player %s rating is now %f\n",Players[obj_a->id].callsign,new_rank);
 
         return new_rank;
 }
@@ -2964,7 +2968,7 @@ void MultiSendChangeRank(int pnum, char *str, uint8_t goodnews) {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending change rank!\n"));
+  mprintf(0, "Sending change rank!\n");
 
   size = START_DATA(MP_CHANGE_RANK, data, &count);
   MultiAddByte(pnum, data, &count);

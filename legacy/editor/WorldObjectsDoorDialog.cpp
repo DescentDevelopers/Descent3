@@ -316,7 +316,7 @@ void CWorldObjectsDoorDialog::OnAddDoor()
 	Doors[door_handle].model_handle=img_handle;
 
 	// Finally, save a local copy of the model/anim and alloc a tracklock
-	mprintf ((0,"Making a copy of this model locally...\n"));
+	mprintf(0,"Making a copy of this model locally...\n");
 
 	char destname[100];
 	sprintf (destname,"%s\\%s",LocalModelsDir,Poly_models[Doors[door_handle].model_handle].name);
@@ -653,7 +653,7 @@ void CWorldObjectsDoorDialog::OnDeleteDoor()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (Doors[n].name,PAGETYPE_DOOR,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -1007,7 +1007,7 @@ void CWorldObjectsDoorDialog::OnSelendokDoorPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted door list, but probably nothing."));
+		mprintf(0,"Possible corrupted door list, but probably nothing.");
 		UpdateDialog();
 	}
 

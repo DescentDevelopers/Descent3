@@ -235,7 +235,7 @@ void CViewerPropDlg::OnOrientCommitButton()
 	m_BankEdit.GetWindowText(buf,sizeof(buf));
 	b = atof(buf) * 65536 / 360;
 
-	mprintf((0,"Agngles %x %x %x\n",p,h,b));
+	mprintf(0,"Agngles %x %x %x\n",p,h,b);
 
 	vm_AnglesToMatrix(&Viewer_object->orient,p,h,b);
 

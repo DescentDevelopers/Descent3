@@ -298,7 +298,7 @@ int ddio_ffjoy_Init(void)
 		ddio_ff_Init();
 		
 		if (!DI){
-			mprintf((0,"ddio_ffjoy_Init: Dinput not initialized yet\n"));
+			mprintf(0,"ddio_ffjoy_Init: Dinput not initialized yet\n");
 			return FALSE;
 		}
 	}
@@ -364,7 +364,7 @@ int ddio_ff_Acquire(tDevice dev)
             }break;
          default:
 			 if (dev > kAllDevices){
-				 mprintf((0,"ddio_ff_Acquire: Invalid device ID, out of range\n"));
+				 mprintf(0,"ddio_ff_Acquire: Invalid device ID, out of range\n");
 				 return 0;
 			 }else{
 				 if (DID2_Joy[dev]){
@@ -374,7 +374,7 @@ int ddio_ff_Acquire(tDevice dev)
 			 }break;
 		}
 	}else
-		mprintf((0,"ddio_ff_Acquire: Direct Input object not initialized...\n"));
+		mprintf(0,"ddio_ff_Acquire: Direct Input object not initialized...\n");
 
 	return cnt;
 }
@@ -419,7 +419,7 @@ int ddio_ff_Unacquire(tDevice dev)
             }break;
          default:
 			 if (dev > kAllDevices){
-				 mprintf((0,"ddio_ff_Unacquire: Invalid device ID, out of range\n"));
+				 mprintf(0,"ddio_ff_Unacquire: Invalid device ID, out of range\n");
 				 return 0;
 			 }else{
 				 if (DID2_Joy[dev]){
@@ -429,7 +429,7 @@ int ddio_ff_Unacquire(tDevice dev)
 			 }break;
 		}
 	}else
-		mprintf((0,"ddio_ff_Unacquire: Direct Input object not initialized...\n"));
+		mprintf(0,"ddio_ff_Unacquire: Direct Input object not initialized...\n");
 
 	return cnt;
 }
@@ -444,7 +444,7 @@ static int ddio_ff_SetCoopLevel(tDevice dev, int coop_level)
 
 	if (!(hwin=(HWND)getwindowhandle()))
 	{
-		mprintf((0,"ddio_ff_SetCoopLevel: couldn't get window handle\n"));
+		mprintf(0,"ddio_ff_SetCoopLevel: couldn't get window handle\n");
 	}
 
 	// Set a single joystick
@@ -454,7 +454,7 @@ static int ddio_ff_SetCoopLevel(tDevice dev, int coop_level)
 			// Set the cooperative level to share the device
 			// ---------------------------------------------
 			if (IDirectInputDevice2_SetCooperativeLevel(DID2_Joy[dev], (HWND)getwindowhandle(), coop_level)!= DI_OK){ 
-				mprintf((0,"ddio_ff_SetCoopLevel: Could not set dinput device coop level\n"));
+				mprintf(0,"ddio_ff_SetCoopLevel: Could not set dinput device coop level\n");
 				return 0; 
 			}
 		}
@@ -496,14 +496,14 @@ BOOL CALLBACK FFEnumCallback(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 	// Create an instance of the device
 	// --------------------------------   
 	if (IDirectInput_CreateDevice(pdi, pdinst->guidInstance, &pdev, NULL)!= DI_OK){ 
-		mprintf((0,"DIEnumJoysticks_Callback: Could not create dinput device obj\n"));
+		mprintf(0,"DIEnumJoysticks_Callback: Could not create dinput device obj\n");
 		return DIENUM_CONTINUE; 
 	}
 
 	// Set the data format to the default
 	// ---------------------------------- 
 	if (IDirectInputDevice_SetDataFormat(pdev, &c_dfDIJoystick)!= DI_OK){ 
-		mprintf((0,"DIEnumJoysticks_Callback: Could not set dinput device data format\n"));
+		mprintf(0,"DIEnumJoysticks_Callback: Could not set dinput device data format\n");
 		IDirectInputDevice_Unacquire(pdev);
 		IDirectInputDevice_Release (pdev); 
 		return DIENUM_CONTINUE; 
@@ -512,7 +512,7 @@ BOOL CALLBACK FFEnumCallback(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 	// Get the DID2 from DID1 
 	// ----------------------
 	if (IDirectInputDevice_QueryInterface(pdev, IID_IDirectInputDevice2, (void **) &DID2_Joy[numJoy])!= DI_OK){
-		mprintf((0,"DIEnumJoysticks_Callback: QueryInterface did not return DI_OK\n"));
+		mprintf(0,"DIEnumJoysticks_Callback: QueryInterface did not return DI_OK\n");
 		IDirectInputDevice_Unacquire(pdev);
 		IDirectInputDevice_Release (pdev);
 		return DIENUM_CONTINUE; 
@@ -521,7 +521,7 @@ BOOL CALLBACK FFEnumCallback(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 	// Set the cooperative level 
 	// -------------------------
 	if (!ddio_ff_SetCoopLevel((tDevice)numJoy, DDIO_JOY_COOP_FLAGS)){
-		mprintf((0,"DIEnumJoysticks_Callback: Could not set dinput coop level\n"));
+		mprintf(0,"DIEnumJoysticks_Callback: Could not set dinput coop level\n");
 		return FALSE;
 	}
 
@@ -561,13 +561,13 @@ int ddio_ffjoy_Query(int dev, int* but_flags, int* axis_flags)
 	if (!DI){
 		ddio_ff_Init();
 		if (!DI){
-			mprintf((0,"ddio_ffjoy_Query: Dinput not initialized yet\n"));
+			mprintf(0,"ddio_ffjoy_Query: Dinput not initialized yet\n");
 			return FALSE;
 		}
 	}
 
 	if (!DID2_Joy[dev]){
-		mprintf((0,"ddio_ffjoy_Query: device not found #%d\n",dev));
+		mprintf(0,"ddio_ffjoy_Query: device not found #%d\n",dev);
 		return 0;
 	}
 
@@ -582,12 +582,12 @@ int ddio_ffjoy_Query(int dev, int* but_flags, int* axis_flags)
 	DICaps.dwSize = sizeof(DIDEVCAPS);
 
 	if (IDirectInputDevice2_GetCapabilities(DID2_Joy[dev],&DICaps) != DI_OK){
-		mprintf((0,"ddio_ffjoy_Query: Failed getting device caps\n"));
+		mprintf(0,"ddio_ffjoy_Query: Failed getting device caps\n");
 		return 0;
 	}
 
 	if (DICaps.dwFlags & DIDC_FORCEFEEDBACK){
-		mprintf((0,"ddio_ff_joy_Query: ffb support\n"));
+		mprintf(0,"ddio_ff_joy_Query: ffb support\n");
 		maskFFB |= 1<<dev;
 	}
 
@@ -873,7 +873,7 @@ int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect* eff)
 	HRESULT hr;
 
 	if (numEffects >= DDIO_FF_MAXEFFECTS){
-		mprintf((0,"ddio_ffb_effectCreate: Reached hardcoded limit for # of effects.\n"));
+		mprintf(0,"ddio_ffb_effectCreate: Reached hardcoded limit for # of effects.\n");
 		return -1;
 	}
 
@@ -933,7 +933,7 @@ int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect* eff)
 		ddEffect[numEffects].general.cbTypeSpecificParams    = sizeof(DICONDITION);
 		break;
 	default:
-		mprintf((0,"ddio_ffb_effectCreate: bad effect subType\n"));
+		mprintf(0,"ddio_ffb_effectCreate: bad effect subType\n");
 		return -1;
 	}
 
@@ -948,10 +948,10 @@ int ddio_ffb_effectCreate(tDevice dev, tFFB_Effect* eff)
 		numEffects++;
 		return (numEffects-1);
 	case DIERR_DEVICENOTREG:
-		mprintf((0,"ddio_ffb_effectCreate: effect not created, DIERR_DEVICENOTREG\n"));
+		mprintf(0,"ddio_ffb_effectCreate: effect not created, DIERR_DEVICENOTREG\n");
 		return -1;
 	case DIERR_DEVICEFULL:
-		mprintf((0,"ddio_ffb_effectCreate: effect not created, DIERR_DEVICEFULL\n"));
+		mprintf(0,"ddio_ffb_effectCreate: effect not created, DIERR_DEVICEFULL\n");
 		return -1;
 	default:
 		PrintDirectInputErrorString(hr,"Force Effect Create");
@@ -1144,26 +1144,26 @@ void ddio_ffb_GetEffectData(int16_t eID, int*	Direction, uint32_t* Duration, uin
 static int ddio_ffjoy_AcquireErr(HRESULT res, int dev_num)
 {
 	if (res == DI_OK){
-		mprintf((0,"device #%d acquired\n",dev_num));
+		mprintf(0,"device #%d acquired\n",dev_num);
 		return TRUE;
 	}
 	else
 	if (res == S_FALSE){
-		mprintf((0,"device #%d already acquired\n",dev_num));
+		mprintf(0,"device #%d already acquired\n",dev_num);
 		return TRUE;
 	}
 	else
 	if (res == DIERR_INVALIDPARAM){
-		mprintf((0,"device %d DIERR_INVALIDPARAM\n",dev_num));
+		mprintf(0,"device %d DIERR_INVALIDPARAM\n",dev_num);
 		return FALSE;
 	}
 	else
 	if (res == DIERR_OTHERAPPHASPRIO){
-		mprintf((0,"device %d DIERR_OTHERAPPHASPRIO\n",dev_num));
+		mprintf(0,"device %d DIERR_OTHERAPPHASPRIO\n",dev_num);
 		return TRUE;
 	}
 	else
-		mprintf((0,"Unknown Error acquiring device %d\n",dev_num));
+		mprintf(0,"Unknown Error acquiring device %d\n",dev_num);
 	
 	return FALSE;
 }
@@ -1176,26 +1176,26 @@ static int ddio_ffjoy_AcquireErr(HRESULT res, int dev_num)
 static int ddio_ffjoy_UnacquireErr(HRESULT res, int dev_num)
 {
 	if (res == DI_OK){
-		mprintf((0,"device #%d unacquired\n",dev_num));
+		mprintf(0,"device #%d unacquired\n",dev_num);
 		return TRUE;
 	}
 	else
 	if (res == S_FALSE){
-		mprintf((0,"device #%d already unacquired\n",dev_num));
+		mprintf(0,"device #%d already unacquired\n",dev_num);
 		return TRUE;
 	}
 	else
 	if (res == DIERR_INVALIDPARAM){
-		mprintf((0,"device %d DIERR_INVALIDPARAM\n",dev_num));
+		mprintf(0,"device %d DIERR_INVALIDPARAM\n",dev_num);
 		return FALSE;
 	}
 	else
 	if (res == DIERR_OTHERAPPHASPRIO){
-		mprintf((0,"device %d DIERR_OTHERAPPHASPRIO\n",dev_num));
+		mprintf(0,"device %d DIERR_OTHERAPPHASPRIO\n",dev_num);
 		return TRUE;
 	}
 	else
-		mprintf((0,"Unknown Error unacquiring device %d\n",dev_num));
+		mprintf(0,"Unknown Error unacquiring device %d\n",dev_num);
 	
 	return FALSE;
 }
@@ -1232,7 +1232,7 @@ void ddio_LoadImmersionDLL(void)
 	
 	if(ImmersionHandle==NULL){
 		//not found
-		mprintf((0,"Force: Unable to find Immersion DLL\n"));
+		mprintf(0,"Force: Unable to find Immersion DLL\n");
 		return;
 	}
 
@@ -1244,12 +1244,12 @@ void ddio_LoadImmersionDLL(void)
 	if( !d_IFLoadProjectFile	||
 		!d_IFReleaseProject		||
 		!d_IFCreateEffects){
-		mprintf((0,"Force: Unable to bind Immersion functions\n"));
+		mprintf(0,"Force: Unable to bind Immersion functions\n");
 		ddio_FreeImmersionDLL();
 		return;
 	}
 
-	mprintf((0,"Immersion IFORCE2 DLL loaded successfully\n"));
+	mprintf(0,"Immersion IFORCE2 DLL loaded successfully\n");
 }
 
 void ddio_FreeImmersionDLL(void)
@@ -1274,7 +1274,7 @@ FORCEPROJECT ddio_ForceLoadProject(char *filename,tDevice dev)
 	}
 
 	if( dev < 0 || dev >kMaxJoy ){
-		mprintf((0,"illegal device id passed to ddio_ForceLoadProject() - %d\n",(int)dev));
+		mprintf(0,"illegal device id passed to ddio_ForceLoadProject() - %d\n",(int)dev);
 		return NULL;
 	}
 
@@ -1381,7 +1381,7 @@ void PrintDirectInputErrorString( HRESULT hr,const char *format, ... )
 
 	if(hr==S_FALSE){
 		strcat(buffer,"*S_FALSE\n");
-		mprintf((0,buffer));
+		mprintf(0,buffer);
 		return;
 	}
 
@@ -1467,7 +1467,7 @@ void PrintDirectInputErrorString( HRESULT hr,const char *format, ... )
 		strcat(buffer,"*The function called is not supported at this time. This value is equal to the E_NOTIMPL standard COM return value. \n");
 	if(hr==E_PENDING)
 		strcat(buffer,"*Data is not yet available.\n");
-	mprintf((0,buffer));
+	mprintf(0,buffer);
 }
 
 #else

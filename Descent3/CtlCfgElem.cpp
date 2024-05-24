@@ -970,10 +970,10 @@ int cfg_element_ui::DoUI() {
         m_element = GCV_VALUE(ccfgdata);
         m_controller = GCV_CONTROLLER(ccfgdata);
         catch_press = true;
-        //	mprintf((0, "HERE?\n"));
+        //	mprintf(0, "HERE?\n");
       } else if (catch_press) {
         quit = true;
-        //	mprintf((0, "THERE?\n"));
+        //	mprintf(0, "THERE?\n");
       }
       break;
     }

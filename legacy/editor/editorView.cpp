@@ -559,7 +559,7 @@ void CEditorView::OnInitialUpdate()
 
 	wnd->Invalidate(FALSE);
 
-	mprintf((0, "CEditorView::OnInitialUpdate.\n"));
+	mprintf(0, "CEditorView::OnInitialUpdate.\n");
 }
 
 
@@ -660,7 +660,7 @@ void CEditorView::OnButtonOutline()
 	GetCursorPos(&pnt);
 
 	if(!popup.TrackPopupMenu(TPM_LEFTALIGN,pnt.x-20,pnt.y-10,this,NULL))
-		mprintf((0,"TrackPopupMenu error!\n"));
+		mprintf(0,"TrackPopupMenu error!\n");
 
 //	Outline_mode ^= OM_ON;
 //	EditorStatus("Outline mode turned %s",OUTLINE_ON(0)?"ON":"OFF");

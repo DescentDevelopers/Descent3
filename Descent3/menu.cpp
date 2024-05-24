@@ -791,7 +791,7 @@ int MainMenu() {
     } else if (MultiDLLGameStarting) {
       // Go back into the multiplayer DLL @ the game list
 
-      mprintf((0, "Returning to Multiplayer!\n"));
+      mprintf(0, "Returning to Multiplayer!\n");
 
       if (ReturnMultiplayerGameMenu()) {
         exit_menu = 1;
@@ -866,9 +866,9 @@ int MainMenu() {
     case IDV_MULTIPLAYER: {
       IsCheater = false;
       main_menu.SetMusicRegion(MULTI_MUSIC_REGION);
-      mprintf((0, "Multiplayer!\n"));
+      mprintf(0, "Multiplayer!\n");
       // make all ships available
-      mprintf((0, "Making all ships available\n"));
+      mprintf(0, "Making all ships available\n");
       for (int i = 0; i < MAX_SHIPS; i++) {
         if (Ships[i].used)
           PlayerSetShipPermission(-1, Ships[i].name, true);
@@ -934,13 +934,13 @@ bool ProcessCommandLine() {
     szurl[strlen("d3demo2://") - 1] = '\0'; // Should make the string "d3demo:/"
     p = szurl + strlen("d3demo2://");       // pointer to the first character of the url after the //
     if (stricmp(szurl, "d3demo2:/") == 0) {
-      mprintf((0, "Got a url passed: %s\n", p));
+      mprintf(0, "Got a url passed: %s\n", p);
     }
 #else
     szurl[strlen("descent3://") - 1] = '\0'; // Should make the string "descent3:/"
     p = szurl + strlen("descent3://");       // pointer to the first character of the url after the //
     if (stricmp(szurl, "descent3:/") == 0) {
-      mprintf((0, "Got a url passed: %s\n", p));
+      mprintf(0, "Got a url passed: %s\n", p);
     }
 #endif
     tokp = strtok(p, "/");
@@ -953,13 +953,13 @@ bool ProcessCommandLine() {
       if (LoadMultiDLL("Direct TCP~IP")) {
         CallMultiDLL(MT_AUTO_LOGIN);
         if (MultiDLLGameStarting) {
-          mprintf((0, "Successfully connected to server at specified url.\n"));
+          mprintf(0, "Successfully connected to server at specified url.\n");
           exit_menu = 1;
         } else {
-          mprintf((0, "Couldn't connect to server at specified url.\n"));
+          mprintf(0, "Couldn't connect to server at specified url.\n");
         }
       } else {
-        mprintf((0, "Couldn't load DLL.\n"));
+        mprintf(0, "Couldn't load DLL.\n");
       }
     } else if (stricmp(tokp, "pxo") == 0) {
       tokp = strtok(NULL, "/");
@@ -970,13 +970,13 @@ bool ProcessCommandLine() {
       if (LoadMultiDLL("parallax online")) {
         CallMultiDLL(MT_AUTO_LOGIN);
         if (MultiDLLGameStarting) {
-          mprintf((0, "Successfully connected to server at specified url.\n"));
+          mprintf(0, "Successfully connected to server at specified url.\n");
           exit_menu = 1;
         } else {
-          mprintf((0, "Couldn't connect to server at specified url.\n"));
+          mprintf(0, "Couldn't connect to server at specified url.\n");
         }
       } else {
-        mprintf((0, "Couldn't load DLL.\n"));
+        mprintf(0, "Couldn't load DLL.\n");
       }
     }
   } else if ((!Auto_connected) && (FindArg("-pxo"))) {
@@ -1079,16 +1079,16 @@ static inline int count_missions(const char *pathname, const char *wildcard) {
 
       if (stricmp("d3_2.mn3", filename) == 0)
         continue;
-      mprintf((0, "Mission path:%s\n", fullpath));
+      mprintf(0, "Mission path:%s\n", fullpath);
       name = GetMissionName(filename);
       GetMissionInfo(filename, &msninfo);
       if (name && name[0] && msninfo.single) {
-        mprintf((0, "Name:%s\n", name));
+        mprintf(0, "Name:%s\n", name);
         c++;
         if (!(c % 2))
           DoWaitMessage(true);
       } else {
-        mprintf((0, "Illegal mission:%s\n", fullpath));
+        mprintf(0, "Illegal mission:%s\n", fullpath);
       }
       filename[0] = 0;
     } while (ddio_FindNextFile(filename));

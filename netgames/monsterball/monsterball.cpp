@@ -417,7 +417,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NumOfTeams);
   DLLCreateStringTable("monster.str", &StringTable, &StringTableSize);
-  DLLmprintf((0, "%d strings loaded from string table\n", StringTableSize));
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
 
   // add the death and suicide messages
   DMFCBase->AddDeathMessage(TXT_KILLEDA, true);
@@ -792,7 +792,7 @@ void HandlePickupPowerball(object *owner) {
     bool ret = DLLAttachObject(owner, 0, bobj, 0, true);
     if (!ret) {
       // blah!
-      mprintf((0, "COULDN'T ATTACH MONSTERBALL TO PLAYER!!!!!!\n"));
+      mprintf(0, "COULDN'T ATTACH MONSTERBALL TO PLAYER!!!!!!\n");
     }
   }
 
@@ -1064,7 +1064,7 @@ void OnClientLevelStart(void) {
 
   DLLMultiPaintGoalRooms(NULL);
 
-  DLLmprintf((0, "Getting Monsterball info\n"));
+  DLLmprintf(0, "Getting Monsterball info\n");
   if (!GetMonsterballInfo(DLLFindObjectIDName(IGNORE_TABLE(MONSTERBALL_ID_NAME)))) {
     FatalError("Error finding Monsterball room\n");
   }
@@ -1432,7 +1432,7 @@ void SaveStatsToFile(char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf((0, "Unable to open output file\n"));
+    DLLmprintf(0, "Unable to open output file\n");
     return;
   }
 
@@ -1779,7 +1779,7 @@ void GetGameStartPacket(uint8_t *data) {
   NumOfTeams = temp;
 
   // we need to find the objnum of the Monsterball...its there somewhere
-  DLLmprintf((0, "Looking for Monsterball in level\n"));
+  DLLmprintf(0, "Looking for Monsterball in level\n");
   int objnum = -1;
 
   for (i = 0; i < MAX_OBJECTS; i++) {
@@ -1789,7 +1789,7 @@ void GetGameStartPacket(uint8_t *data) {
       break;
     }
   }
-  DLLmprintf((0, "Monsterball %s\n", (objnum == -1) ? "Not Found" : "Found"));
+  DLLmprintf(0, "Monsterball %s\n", (objnum == -1) ? "Not Found" : "Found");
   if (objnum == -1) {
     FatalError("Couldn't Find Monsterball when it should be there");
   }
@@ -1824,7 +1824,7 @@ void SendGameStartPacket(int pnum) {
   MultiAddByte(temp, data, &count);
 
   // we're done
-  DLLmprintf((0, "Sending Game State to %s\n", dPlayers[pnum].callsign));
+  DLLmprintf(0, "Sending Game State to %s\n", dPlayers[pnum].callsign);
   DMFCBase->SendPacket(data, count, pnum);
 }
 

@@ -257,7 +257,7 @@ void CWorldSoundsDialog::OnAddSound()
 	Sounds[sound_handle].sample_index=raw_handle;
 
 	// Finally, save a local copy of the .wav and alloc a tracklock
-	mprintf ((0,"Making a copy of this sound locally...\n"));
+	mprintf(0,"Making a copy of this sound locally...\n");
 
 	char destname[100];
 	sprintf (destname,"%s\\%s",LocalSoundsDir,SoundFiles[Sounds[sound_handle].sample_index].name);
@@ -384,7 +384,7 @@ void CWorldSoundsDialog::OnDeleteSound()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (Sounds[n].name,PAGETYPE_SOUND,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -632,7 +632,7 @@ void CWorldSoundsDialog::OnSelendokSoundPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted sound list, but probably nothing."));
+		mprintf(0,"Possible corrupted sound list, but probably nothing.");
 		UpdateDialog();
 	}
 

@@ -1096,7 +1096,7 @@ void PreInitD3Systems() {
   int iframelmtarg = FindArg("-limitframe");
   if (iframelmtarg) {
     Min_allowed_frametime = atoi(GameArgs[iframelmtarg + 1]);
-    mprintf((0, "Using %d as a minimum frametime\n", Min_allowed_frametime));
+    mprintf(0, "Using %d as a minimum frametime\n", Min_allowed_frametime);
   } else {
     if (FindArg("-dedicated"))
       Min_allowed_frametime = 30;
@@ -1106,25 +1106,25 @@ void PreInitD3Systems() {
   iframelmtarg = FindArg("-framecap");
   if (iframelmtarg) {
     Min_allowed_frametime = ((float)1.0 / (float)atoi(GameArgs[iframelmtarg + 1])) * 1000;
-    mprintf((0, "Using %d as a minimum frametime\n", Min_allowed_frametime));
+    mprintf(0, "Using %d as a minimum frametime\n", Min_allowed_frametime);
   } else {
     // Default to a framecap of 60
     Min_allowed_frametime = (1.0 / 60.0) * 1000;
-    mprintf((0, "Using default framecap of 60\n"));
+    mprintf(0, "Using default framecap of 60\n");
   }
 
   // Mouselook sensitivity!
   int msensearg = FindArg("-mlooksens");
   if (msensearg) {
     Mouselook_sensitivity = kAnglesPerDegree * atof(GameArgs[msensearg + 1]);
-    mprintf((0, "Using mouselook sensitivity of %f\n", Mouselook_sensitivity));
+    mprintf(0, "Using mouselook sensitivity of %f\n", Mouselook_sensitivity);
   }
 
   // Mouse sensitivity (non-mouselook)
   msensearg = FindArg("-mousesens");
   if (msensearg) {
     Mouse_sensitivity = atof(GameArgs[msensearg + 1]);
-    mprintf((0, "Using mouse sensitivity of %f\n", Mouse_sensitivity));
+    mprintf(0, "Using mouse sensitivity of %f\n", Mouse_sensitivity);
   }
 
   grtext_Init();
@@ -1437,7 +1437,7 @@ void InitIOSystems(bool editor) {
        std::string baseDirectoryString = executablePath.parent_path().string();
        strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
        Base_directory[sizeof(Base_directory) - 1] = '\0';
-       mprintf((0, "Using working directory of %s\n", Base_directory));
+       mprintf(0, "Using working directory of %s\n", Base_directory);
       }
     } else {
        ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
@@ -1483,7 +1483,7 @@ void InitIOSystems(bool editor) {
   // Setup temp directory
   INIT_MESSAGE(("Setting up temp directory."));
   SetupTempDirectory();
-  mprintf((0, "Removing any temp files left over from last execution\n"));
+  mprintf(0, "Removing any temp files left over from last execution\n");
   DeleteTempFiles();
 
   //	create directory system.
@@ -1604,7 +1604,7 @@ void InitStringTable() {
   if (string_count == 0)
     Error("Couldn't find the string table.");
   else
-    mprintf((0, "%d strings loaded from the string tables\n", string_count));
+    mprintf(0, "%d strings loaded from the string tables\n", string_count);
 }
 
 void InitGraphics(bool editor) {
@@ -1694,8 +1694,13 @@ void UpdateInitMessage(float amount) {
   if (Init_in_editor)
     return;
   InitMessage(Init_messagebar_text, (amount * Init_messagebar_portion) + Init_messagebar_offset);
-  //	mprintf((0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n", amount, Init_messagebar_portion,
-  // Init_messagebar_offset, (amount*Init_messagebar_portion)+Init_messagebar_offset));
+/*
+  mprintf(0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n",
+          amount,
+          Init_messagebar_portion,
+          Init_messagebar_offset,
+          (amount*Init_messagebar_portion)+Init_messagebar_offset);
+*/
 }
 
 void InitMessage(const char *c, float progress) {
@@ -1793,7 +1798,7 @@ void IntroScreen() {
 #else
   int bm_handle = bm_AllocLoadFileBitmap("oemmenu.ogf", 0);
 #endif
-  mprintf((0, "Intro screen!.\n"));
+  mprintf(0, "Intro screen!.\n");
 
   if (bm_handle > -1) {
     if (!bm_CreateChunkedBitmap(bm_handle, &Title_bitmap))
@@ -1804,7 +1809,7 @@ void IntroScreen() {
     Title_bitmap_init = true;
     InitMessage(NULL);
   } else {
-    mprintf((1, "Unable to find d3.tga.\n"));
+    mprintf(1, "Unable to find d3.tga.\n");
   }
 }
 
@@ -2024,7 +2029,7 @@ void SetupTempDirectory(void) {
   // NOTE: No string tables are available at this point
   //--------------------------------------------------
 
-  mprintf((0, "Setting up temp directory\n"));
+  mprintf(0, "Setting up temp directory\n");
 
   int t_arg = FindArg("-tempdir");
   if (t_arg) {
@@ -2044,7 +2049,7 @@ void SetupTempDirectory(void) {
 
   // verify that we can write to the temp directory
   if (!ddio_GetTempFileName(Descent3_temp_directory, "d3t", tempfilename)) {
-    mprintf((0, "Unable to get temp file name\n"));
+    mprintf(0, "Unable to get temp file name\n");
     Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
     exit(1);
   }
@@ -2053,7 +2058,7 @@ void SetupTempDirectory(void) {
   CFILE *file = cfopen(tempfilename, "wb");
   if (!file) {
     // unable to open file for writing
-    mprintf((0, "Unable to open temp file name for writing\n"));
+    mprintf(0, "Unable to open temp file name for writing\n");
     Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
     exit(1);
   }
@@ -2065,7 +2070,7 @@ void SetupTempDirectory(void) {
   file = cfopen(tempfilename, "rb");
   if (!file) {
     // unable to open file for reading
-    mprintf((0, "Unable to open temp file name for reading\n"));
+    mprintf(0, "Unable to open temp file name for reading\n");
     ddio_DeleteFile(tempfilename);
     Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
     exit(1);
@@ -2073,7 +2078,7 @@ void SetupTempDirectory(void) {
 
   if (cf_ReadInt(file) != 0x56) {
     // verify failed
-    mprintf((0, "Temp file verify failed\n"));
+    mprintf(0, "Temp file verify failed\n");
     cfclose(file);
     ddio_DeleteFile(tempfilename);
     Error("Unable to set temporary directory to: \"%s\"", Descent3_temp_directory);
@@ -2085,40 +2090,40 @@ void SetupTempDirectory(void) {
   // temp directory is valid!
   ddio_DeleteFile(tempfilename);
 
-  mprintf((0, "Temp Directory Set To: \"%s\"\n", Descent3_temp_directory));
+  mprintf(0, "Temp Directory Set To: \"%s\"\n", Descent3_temp_directory);
 
   // Lock the directory
   int lock_res = ddio_CreateLockFile(Descent3_temp_directory);
   switch (lock_res) {
   case 1:
-    mprintf((0, "Lock file created in temp dir\n"));
+    mprintf(0, "Lock file created in temp dir\n");
     break;
   case 2:
-    mprintf((0, "Lock file created in temp dir (deleted dead lock)\n"));
+    mprintf(0, "Lock file created in temp dir (deleted dead lock)\n");
     break;
   case 3:
-    mprintf((0, "Lock file created in temp dir (lock already exists)\n"));
+    mprintf(0, "Lock file created in temp dir (lock already exists)\n");
     break;
   case 0:
-    mprintf((0, "Lock file NOT created in temp dir\n"));
+    mprintf(0, "Lock file NOT created in temp dir\n");
     Error("Unable to set temporary directory to: \"%s\"\nThe directory is in use, please use -tempdir to set a "
           "different temp directory",
           Descent3_temp_directory);
     exit(1);
     break;
   case -1:
-    mprintf((0, "Illegal directory for Lock file\n"));
+    mprintf(0, "Illegal directory for Lock file\n");
     Error("Unable to set temporary directory to: \"%s\"\nIllegal directory for lock file", Descent3_temp_directory);
     exit(1);
     break;
   case -2:
-    mprintf((0, "Illegal Lock file, unable to create\n"));
+    mprintf(0, "Illegal Lock file, unable to create\n");
     Error("Unable to set temporary directory to: \"%s\"\nInvalid lock file located in directory",
           Descent3_temp_directory);
     exit(1);
     break;
   case -3:
-    mprintf((0, "Error creating Lock file\n"));
+    mprintf(0, "Error creating Lock file\n");
     Error("Unable to set temporary directory to: \"%s\"\nUnable to create lock file", Descent3_temp_directory);
     exit(1);
     break;
@@ -2165,7 +2170,7 @@ void ShutdownD3() {
   if (!Init_systems_init)
     return;
 
-  mprintf((0, "Shutting down D3...\n"));
+  mprintf(0, "Shutting down D3...\n");
 
   // Close forcefeedback effects
   ForceShutdown();
@@ -2212,7 +2217,7 @@ void RestartD3() {
   if (!Init_systems_init)
     return;
 
-  mprintf((0, "Restarting D3...\n"));
+  mprintf(0, "Restarting D3...\n");
 
   if (!FindArg("-windowed")) {
     if (Dedicated_server) {

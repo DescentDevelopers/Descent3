@@ -349,7 +349,7 @@ int CObjectListDialog::GetObjHandleFromItem(HTREEITEM hItem)
 		if (leaf->hItem == hItem) 
 			return leaf->handle;
 
-//	mprintf((0, "ObjectListDialog: Unable to find handle in object tree!!\n"));
+//	mprintf(0, "ObjectListDialog: Unable to find handle in object tree!!\n");
 
 	return -1;
 }

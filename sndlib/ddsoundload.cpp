@@ -157,7 +157,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     if (e_type)
       *e_type = SND_LOAD_ERROR_NO_FILE;
 
-    mprintf((0, "SOUND LOADER: %s not found\n", filename));
+    mprintf(0, "SOUND LOADER: %s not found\n", filename);
     goto error_state;
   }
 
@@ -171,7 +171,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   // Make sure that it is a RIFF format
   temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x46464952) {
-    mprintf((0, "SOUND LOADER: %s is not a RIFF format file\n", filename));
+    mprintf(0, "SOUND LOADER: %s is not a RIFF format file\n", filename);
     goto error_state;
   }
 
@@ -182,7 +182,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   // Make sure it is a wave file
   temp_long = (uint32_t)cf_ReadInt(cfptr);
   if (temp_long != 0x45564157) {
-    mprintf((0, "SOUND LOADER:  %s is not a WAVE file\n", filename));
+    mprintf(0, "SOUND LOADER:  %s is not a WAVE file\n", filename);
     goto error_state;
   }
   nextseek = cftell(cfptr);
@@ -197,7 +197,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     ckid = cf_ReadInt(cfptr);
     cksize = cf_ReadInt(cfptr);
     if (cksize <= 0) {
-      mprintf((0, "SOUND LOADER: %s has an invalid block length\n", filename));
+      mprintf(0, "SOUND LOADER: %s has an invalid block length\n", filename);
       goto error_state;
     }
 
@@ -209,7 +209,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     case 0x20746D66: // Format Chunk
       // Make sure that this format was not preceeded by another format without data inbetween them.
       if (f_fmt) {
-        mprintf((0, "Sound Loader: Found 2 formats in a row in file %s\n", filename));
+        mprintf(0, "Sound Loader: Found 2 formats in a row in file %s\n", filename);
         goto error_state;
       }
 
@@ -280,24 +280,24 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
       // Currently, we only support PCM wave files
       if (fmttag != 0x0001) {
-        mprintf((0, "SOUND LOADER: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.\n", filename,
-                 format_type));
+        mprintf(0, "SOUND LOADER: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.\n", filename,
+                 format_type);
         goto error_state;
       }
 
       // Get the number of channels
       number_channels = cf_ReadShort(cfptr);
       if (number_channels != 1) {
-        mprintf((0, "SOUND LOADER: Invalid number of channels(%d)in %s, we want mono samples only.\n", number_channels,
-                 filename));
+        mprintf(0, "SOUND LOADER: Invalid number of channels(%d)in %s, we want mono samples only.\n", number_channels,
+                 filename);
         goto error_state;
       }
 
       // Get the number of samples per second
       samples_per_second = cf_ReadInt(cfptr);
       if (samples_per_second != 22050) {
-        mprintf((0, "SOUND LOADER: Invalid sample per second(%d)in %s, we want 22k samples only.\n", samples_per_second,
-                 filename));
+        mprintf(0, "SOUND LOADER: Invalid sample per second(%d)in %s, we want 22k samples only.\n", samples_per_second,
+                 filename);
         goto error_state;
       }
 
@@ -310,8 +310,8 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       // Get the Bits per sample
       bits_per_sample = cf_ReadShort(cfptr);
       if (bits_per_sample != 8 && bits_per_sample != 16) {
-        mprintf((0, "SOUND LOADER: Invalid bits per sample(%d)in %s, we want 8 or 16 bit samples only.\n",
-                 bits_per_sample, filename));
+        mprintf(0, "SOUND LOADER: Invalid bits per sample(%d)in %s, we want 8 or 16 bit samples only.\n",
+                 bits_per_sample, filename);
         goto error_state;
       }
 
@@ -359,7 +359,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     // Data Chunk
     case 0x61746164:
       if (!f_fmt) {
-        mprintf((0, "SOUND LOADER: Format Chunk not defined before Data Chunk\n"));
+        mprintf(0, "SOUND LOADER: Format Chunk not defined before Data Chunk\n");
         goto error_state;
       }
 
@@ -417,7 +417,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
 
     // Undefined chunk
     default:
-      // mprintf((0, "\nSOUND LOADER: Unknown Chunk in %s, attempting to continue.\n", filename));
+      // mprintf(0, "\nSOUND LOADER: Unknown Chunk in %s, attempting to continue.\n", filename);
       break;
     }
   }
@@ -426,12 +426,12 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   cfclose(cfptr);
 
   if (SoundFiles[sound_file_index].sample_8bit != NULL) {
-    mprintf((0, "Sound file %s is 8bit please make a 16bit version", filename));
+    mprintf(0, "Sound file %s is 8bit please make a 16bit version", filename);
   }
 
   // Make sure we got data and format information
   if (SoundFiles[sound_file_index].sample_8bit == NULL && SoundFiles[sound_file_index].sample_16bit == NULL) {
-    mprintf((0, "SOUND LOADER: Did not find data and/or format in %s.\n", filename));
+    mprintf(0, "SOUND LOADER: Did not find data and/or format in %s.\n", filename);
     goto error_state;
   } else if (SoundFiles[sound_file_index].sample_8bit != NULL && !f_high_quality) {
     // Doing the volume clipping with the low quality (8 bit) sound requires some tricky math -- see chris

@@ -576,7 +576,7 @@ void UIWindow::Render() {
       gadget->OnDraw();
       ui_EndDraw();
     } else {
-      mprintf((0, "WINDOW: Gadget clipped on screen border (%d,%d,%d,%d)\n", l, t, r, b));
+      mprintf(0, "WINDOW: Gadget clipped on screen border (%d,%d,%d,%d)\n", l, t, r, b);
       //			Int3();
     }
 

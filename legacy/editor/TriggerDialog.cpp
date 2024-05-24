@@ -838,7 +838,7 @@ try_again:;
 void CTriggerDialog::OnTrigEditScript() 
 {
 	
-	mprintf((0,"Edit script for trigger %d\n",Current_trigger));
+	mprintf(0,"Edit script for trigger %d\n",Current_trigger);
 	
 
 	// Make sure Dallas is open

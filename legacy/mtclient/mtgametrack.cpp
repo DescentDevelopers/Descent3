@@ -148,9 +148,9 @@ typedef int (*nw_DoReceiveCallbacks_fp)(void);
 extern nw_DoReceiveCallbacks_fp DLLnw_DoReceiveCallbacks;
 
 #if ( defined(MONO) && (!defined(RELEASE)) )
-#define DLLmprintf(args)	DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 #else
-#define DLLmprintf(args)
+#define DLLmprintf(...)
 #endif
 
 typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
@@ -235,7 +235,7 @@ void IdleGameTracker()
 {
 	DLLnw_DoReceiveCallbacks();
 	//uint32_t bytesin;
-	//mprintf ((0,"IdleGameTracker() entered.\n"));
+	//mprintf(0,"IdleGameTracker() entered.\n");
 	if((TrackerGameIsRunning)&&((DLLtimer_GetTime()-LastTrackerUpdate)>TRACKER_UPDATE_INTERVAL))
 	{
 		
@@ -244,7 +244,7 @@ void IdleGameTracker()
 		time( &aclock );                 /* Get time in seconds */
 		newtime = localtime( &aclock ); 
 		//Time to update the tracker again
-		DLLmprintf((0,"[%.24s] Updating the PXO game tracker!\n",asctime(newtime)));
+		DLLmprintf(0,"[%.24s] Updating the PXO game tracker!\n",asctime(newtime));
 		SendGameTrackerPacker(&TrackerGameData);
 		//		sendto(gamesock,(const char *)&TrackerGameData,TrackerGameData.len,0,(SOCKADDR *)&gtrackaddr,sizeof(SOCKADDR_IN));
 		TrackerAckdUs = 0;
@@ -260,7 +260,7 @@ void IdleGameTracker()
 		time( &aclock );                 /* Get time in seconds */
 		newtime = localtime( &aclock ); 
 		//Time to update the tracker again
-		DLLmprintf((0,"[%.24s] (Resending) Updating the PXO game tracker!\n",asctime(newtime)));
+		DLLmprintf(0,"[%.24s] (Resending) Updating the PXO game tracker!\n",asctime(newtime));
 
 		SendGameTrackerPacker(&TrackerGameData);
 		TrackerAckdUs = 0;
@@ -307,11 +307,11 @@ void HandleGamePacket(uint8_t *data,int len, network_address *from)
 		case GNT_GAMELIST_LITE_DATA:
 			if(len < (GAME_HEADER_ONLY_SIZE + sizeof(game_list)))
 			{
-				DLLmprintf((0,"(%d) packet is too small!\n",len));
+				DLLmprintf(0,"(%d) packet is too small!\n",len);
 
 			}
 			//Woohoo! Game data! put it in the buffer (if one's free)
-			//DLLmprintf ((0,"GNT_GAMELIST_LITE_DATA received.\n"));
+			//DLLmprintf(0,"GNT_GAMELIST_LITE_DATA received.\n");
 			for(int i=0;i<MAX_GAME_BUFFERS;i++)
 			{
 				if(GameBuffer[i].game_type==GT_UNUSED)
@@ -323,7 +323,7 @@ void HandleGamePacket(uint8_t *data,int len, network_address *from)
 			}
 			break;
 		}
-		//mprintf ((0,"Sending ACK.\n"));
+		//mprintf(0,"Sending ACK.\n");
 		AckPacket(inpacket.sig);			
 	}
 }
@@ -423,7 +423,7 @@ void StartTrackerGame(void *buffer)
 	time( &aclock );                 /* Get time in seconds */
 	newtime = localtime( &aclock ); 
 	//Time to update the tracker again
-	DLLmprintf((0,"[%.24s] Updating the PXO game tracker with a new game!\n",asctime(newtime)));
+	DLLmprintf(0,"[%.24s] Updating the PXO game tracker with a new game!\n",asctime(newtime));
 	
 	if(GameType==GT_FREESPACE)
 	{

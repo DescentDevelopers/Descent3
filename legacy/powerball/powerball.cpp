@@ -140,7 +140,7 @@ void DLLFUNCCALL DLLGameInit (int *api_func,uint8_t *all_ok)
 	PBall.LoadFunctions(api_func);
 	PBall.GameInit(NumOfTeams);
 	//DLLCreateStringTable("tanarchy.str",&StringTable,&StringTableSize);
-	//DLLmprintf((0,"%d strings loaded from string table\n",StringTableSize));
+	//DLLmprintf(0,"%d strings loaded from string table\n",StringTableSize);
 
 	//add the death and suicide messages
 	PBall.AddDeathMessage("%s was killed by %s",true);
@@ -457,7 +457,7 @@ void DMFCApp::OnClientLevelStart(void)
 
 	DLLMultiPaintGoalRooms();
 
-	DLLmprintf((0,"Getting powerball info\n"));
+	DLLmprintf(0,"Getting powerball info\n");
 	if(!GetPowerBallInfo(DLLFindObjectIDName(IGNORE_TABLE(POWERBALL_ID_NAME)))){
 		FatalError("Error finding Powerball room\n");
 	}
@@ -715,7 +715,7 @@ void SaveStatsToFile(char *filename)
 	CFILE *file;
 	DLLOpenCFILE(&file,filename,"wt");
 	if(!file){
-		DLLmprintf((0,"Unable to open output file\n"));
+		DLLmprintf(0,"Unable to open output file\n");
 		return;
 	}
 
@@ -967,7 +967,7 @@ void GetGameStartPacket(uint8_t *data)
 	}
 	
 	//we need to find the objnum of the PowerBall...its there somewhere
-	DLLmprintf((0,"Looking for powerball in level\n"));
+	DLLmprintf(0,"Looking for powerball in level\n");
 	for(int i=0;i<MAX_OBJECTS;i++){
 		if( (PBall.Objects[i].type==OBJ_POWERUP) && (PBall.Objects[i].id==PowerBallID) ){
 			//here it is
@@ -975,7 +975,7 @@ void GetGameStartPacket(uint8_t *data)
 			break;
 		}
 	}
-	DLLmprintf((0,"Powerball %s\n",(PowerBallObjnum==-1)?"Not Found":"Found"));
+	DLLmprintf(0,"Powerball %s\n",(PowerBallObjnum==-1)?"Not Found":"Found");
 	if(PowerBallObjnum==-1){
 		FatalError("Couldn't Find PowerBall when it should be there");
 	}
@@ -1003,7 +1003,7 @@ void SendGameStartPacket(int pnum)
 	memcpy(&data[size],&temp,sizeof(char));	size+=sizeof(char);
 
 	//we're done
-	DLLmprintf((0,"Sending Game State to %s\n",PBall.Players[pnum].callsign));
+	DLLmprintf(0,"Sending Game State to %s\n",PBall.Players[pnum].callsign);
 	PBall.SendPacket(maxsize,pnum);
 }
 
@@ -1144,7 +1144,7 @@ void HandlePlayerCollideWithPowerball(object *pobj,object *pball)
 	int ret = DLLAttachObject(pobj,0,pball,0,true);
 	if(!ret){
 		//couldn't attach the flag
-		mprintf((0,"PBALL: COULDN'T ATTACH BALL TO PLAYER\n"));
+		mprintf(0,"PBALL: COULDN'T ATTACH BALL TO PLAYER\n");
 	}
 }
 
@@ -1158,7 +1158,7 @@ void HandlePlayerLosingPowerball(object *pball)
 	
 void HandleWeaponCollide(object *me_obj,object *it_obj)
 {
-	mprintf((0,"Weapon Collide\n"));
+	mprintf(0,"Weapon Collide\n");
 }
 
 

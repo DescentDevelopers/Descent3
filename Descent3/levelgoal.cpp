@@ -561,7 +561,7 @@ void lgoal::SendStateToPlayer(int index, int pnum) {
   if (!(NetPlayers[pnum].flags & NPF_CONNECTED && NetPlayers[pnum].sequence == NETSEQ_PLAYING))
     return;
 
-  mprintf((0, "Sending modified LevelGoal %d to player %d\n", index, pnum));
+  mprintf(0, "Sending modified LevelGoal %d to player %d\n", index, pnum);
 
   // now update the buddy handle list of the clients
   int count = 0;

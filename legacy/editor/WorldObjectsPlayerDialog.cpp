@@ -250,7 +250,7 @@ void CWorldObjectsPlayerDialog::OnAddPship()
 	Ships[ship_handle].model_handle=img_handle;
 
 	// Finally, save a local copy of the model/anim and alloc a tracklock
-	mprintf ((0,"Making a copy of this model locally...\n"));
+	mprintf(0,"Making a copy of this model locally...\n");
 
 	char destname[100];
 	sprintf (destname,"%s\\%s",LocalModelsDir,Poly_models[Ships[ship_handle].model_handle].name);
@@ -400,7 +400,7 @@ void CWorldObjectsPlayerDialog::OnPshipDelete()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (Ships[n].name,PAGETYPE_SHIP,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -713,7 +713,7 @@ void CWorldObjectsPlayerDialog::OnSelendokPshipPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted ship list, but probably nothing."));
+		mprintf(0,"Possible corrupted ship list, but probably nothing.");
 		UpdateDialog();
 	}
 

@@ -1752,7 +1752,7 @@ void CBriefEdit::OnBriefScreenAdd()
 		combo->SetCurSel(sel);
 		OnSelchangeBriefScreenList();
 		UpdateLayoutBitmap();
-		mprintf((0,"Added a screen\n"));
+		mprintf(0,"Added a screen\n");
 	}	
 }
 
@@ -1975,13 +1975,13 @@ void CBriefEdit::ParseLayoutScreenFile(char *filename)
 
 	if(num_layouts<=0){
 		cfclose(file);
-		mprintf((0,"Zero or less Layout Screens in Layout File\n"));
+		mprintf(0,"Zero or less Layout Screens in Layout File\n");
 		return;
 	}
 
 	layouts = (tLayoutScreen *)mem_malloc(sizeof(tLayoutScreen)*num_layouts);
 	if(!layouts){
-		mprintf((0,"Out of memory loading layout screens...trying to load %d screens\n",num_layouts));
+		mprintf(0,"Out of memory loading layout screens...trying to load %d screens\n",num_layouts);
 		num_layouts = 0;
 		cfclose(file);
 		return;

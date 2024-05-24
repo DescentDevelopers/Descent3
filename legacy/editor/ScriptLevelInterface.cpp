@@ -1070,7 +1070,7 @@ bool DeleteGamefile(char *tempbuffer)
 	if (mng_CheckIfPageOwned (&pl,TableUser)!=1){
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (tempbuffer,PAGETYPE_GAMEFILE,1)){
-			mprintf ((0,ErrorString));
+                        mprintf(0,ErrorString);
 			Int3();
 		}else{
 			removed = true;
@@ -1120,7 +1120,7 @@ bool AddNewGameFile(char *fullpath,char *directory)
 	strcpy (Gamefiles[gamefile_handle].dir_name,directory);
 
 	// Finally, save a local copy of the model/anim and alloc a tracklock
-	mprintf ((0,"Making a copy of this file locally...\n"));
+        mprintf(0,"Making a copy of this file locally...\n");
 
 	char destname[100];
 	ddio_MakePath(destname,LocalD3Dir,"data",directory,Gamefiles[gamefile_handle].name,NULL);
@@ -1317,7 +1317,7 @@ bool UndoCheckOutGamefile(char *tempbuffer)
 
 	//Delete local page
 	if (!mng_DeletePage (Gamefiles[n].name,PAGETYPE_GAMEFILE,1)) {
-		mprintf ((0,ErrorString));
+                mprintf(0,ErrorString);
 		Int3();
 	}
 
@@ -2395,7 +2395,7 @@ bool IsScriptOutofSync(char *name)
 	
 	strcat(filename,".dll");
 	ddio_MakePath(path,LocalScriptDir,filename,NULL);
-	mprintf((0,"	Checking %s...",filename));
+        mprintf(0,"	Checking %s...",filename);
 
 	if(mod_LoadModule(&mod,path))
 	{
@@ -2406,10 +2406,10 @@ bool IsScriptOutofSync(char *name)
 			{
 				//dll does not initialize...out of synce
 				out_of_sync = true;
-				mprintf((0,"OUT OF SYNC!\n"));
+                                mprintf(0,"OUT OF SYNC!\n");
 			}else
 			{
-				mprintf((0,"Not Out of Sync\n"));
+                                mprintf(0,"Not Out of Sync\n");
 				shutdowndll	= (ShutdownDLL_fp)mod_GetSymbol(&mod,"ShutdownDLL",0);
 				if(shutdowndll)
 				{
@@ -2419,12 +2419,12 @@ bool IsScriptOutofSync(char *name)
 		}else
 		{
 			//unable to load
-			mprintf((0,"UNABLE TO GET INITIALIZEDLL\n"));
+                        mprintf(0,"UNABLE TO GET INITIALIZEDLL\n");
 		}
 
 		mod_FreeModule(&mod);
 	}else{
-		mprintf((0,"MODULE NOT FOUND\n"));
+                mprintf(0,"MODULE NOT FOUND\n");
 	}
 
 	return out_of_sync;
@@ -2450,14 +2450,14 @@ int AreScriptsOutofDate(void)
 	ddio_GetWorkingDir(old_dir,_MAX_PATH);
 	
 	// First check for out-of-sync scripts (attempt load aigame and generic)
-	mprintf((0,"Checking for out of sync scripts...\n"));
+        mprintf(0,"Checking for out of sync scripts...\n");
 	if(IsScriptOutofSync("aigame.dll")||IsScriptOutofSync("generic.dll"))
 	{
 		OutrageMessageBox(MBOX_OK,"WARNING! You have out of sync scripts...you MUST recompile your scripts!!!!!");
 	}
 
 
-	mprintf((0,"Checking for out of date scripts..."));	
+        mprintf(0,"Checking for out of date scripts...");
 	ddio_SetWorkingDir(LocalScriptDir);
 
 	for (int i=0;i<MAX_GAMEFILES;i++){
@@ -2472,7 +2472,7 @@ int AreScriptsOutofDate(void)
 
 	ddio_SetWorkingDir(old_dir);
 
-	mprintf((0,"Found %d OOD scripts\n",count));
+        mprintf(0,"Found %d OOD scripts\n",count);
 	return count;
 	*/
 }

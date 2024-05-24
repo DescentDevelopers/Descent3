@@ -209,14 +209,14 @@ void CGrFontDialog::OnNew()
 	if (m_FontPicBm > -1) bm_FreeBitmap(m_FontPicBm);
 	m_FontPicBm = -1;
 	
-	mprintf((0, "Loading font template: %s...", filename));
+	mprintf(0, "Loading font template: %s...", filename);
 	bm_handle = bm_AllocLoadFileBitmap(filename, 0);
 	if (bm_handle<0) {
-		mprintf((0, "shit!\n"));
+		mprintf(0, "shit!\n");
 		OutrageMessageBox ("Couldn't open the font template file.");
 		return;
 	}
-	mprintf((0, "finished!\n"));
+	mprintf(0, "finished!\n");
 
 	m_FontPicBm = bm_handle;
 
@@ -452,8 +452,8 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft)
 	m_BoxColor = PIX(bmx,bmy);
 
 //	Get all data from current line.
-	mprintf((0, "Parsing font..."));
-	mprintf((0," read_characters: "));
+	mprintf(0, "Parsing font...");
+	mprintf(0," read_characters: ");
 
 	for (cur_char=0;bmy < m_FontBmH && cur_char<MAX_FONT_CHARS;) 
 	{
@@ -461,7 +461,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft)
 		if (cur_char == -1) {
 			delete[] m_DataBuffer;
 			m_DataBuffer = NULL;
-			mprintf((0, "fuck!\n"));
+			mprintf(0, "fuck!\n");
 			return FALSE;
 		}
 		bmy += m_CharHeight+1;
@@ -478,7 +478,7 @@ BOOL CGrFontDialog::extract_font(gr_font_file_record *ft)
 //		if (PIX(bmx,bmy+1) != m_BoxColor) 
 //			break;
 	}  
-	mprintf((0, "\nDone!\n"));			
+	mprintf(0, "\nDone!\n");			
 
 //	now fill in font information & store it into our file record. this information
 //	can be used to save the font
@@ -529,7 +529,7 @@ int CGrFontDialog::read_font_char(int cur_char, int& bmx, int& bmy)
 	int w,h,x,y;
 	bool box_edge = false;
 
-	mprintf((0," %d-(%d,%d)",cur_char,bmx,bmy));
+	mprintf(0," %d-(%d,%d)",cur_char,bmx,bmy);
 
 	while (PIX(bmx+1,bmy+1) == m_BoxColor)
 		bmx++;		//deal with double-thick vertical lines
@@ -602,7 +602,7 @@ int CGrFontDialog::read_font_char(int cur_char, int& bmx, int& bmy)
 				m_FgColor = c; 
 			else if (m_FgColor != c) { 	// c here is 1555 !! remember this.
 				m_FontType = COLOR_FONT;				
-			 //	mprintf((0, "%d,%d\n", bmx+1+x, bmy+1+y));
+			 //	mprintf(0, "%d,%d\n", bmx+1+x, bmy+1+y);
 			}
 
 			if (c != 0x07e0) 
@@ -647,7 +647,7 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 	ft->kern_data= NULL;
 
 //	write to file
-	mprintf((0, "Saving font data..."));
+	mprintf(0, "Saving font data...");
    //	sprintf(filename, "%s\\%s", LocalManageGraphicsDir, m_FontFileName);
 	ffile = OPEN_FONT(m_FontFileName);
 	if (!ffile) {
@@ -727,7 +727,7 @@ BOOL CGrFontDialog::save_font_file(gr_font_file_record *ft)
 
 //	Close font.
 	CLOSE_FONT(ffile);
-	mprintf((0, "Done.\n"));
+	mprintf(0, "Done.\n");
 
 	ft->raw_data = tmp_data;
 	ft->char_widths = tmp_widths;

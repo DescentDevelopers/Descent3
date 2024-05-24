@@ -359,7 +359,7 @@ void DemoToggleRecording() {
       strcat(szfile, ".dem");
     }
     ddio_MakePath(Demo_fname, Base_directory, "demo", szfile, NULL);
-    mprintf((0, "Saving demo to file: %s\n", Demo_fname));
+    mprintf(0, "Saving demo to file: %s\n", Demo_fname);
     // Try to create the file
     Demo_cfp = cfopen(Demo_fname, "wb");
     if (Demo_cfp) {
@@ -507,14 +507,14 @@ void DemoWriteChangedObjects() {
           (Objects[i].type == OBJ_CAMERA)) {
         if ((Objects[i].flags & OF_MOVED_THIS_FRAME)) //||(Objects[i].mtype.phys_info.velocity!=Zero_vector))
         {
-          // mprintf((0,"Object moved this frame! type = %d\n",Objects[i].type));
+          // mprintf(0,"Object moved this frame! type = %d\n",Objects[i].type);
           DemoWriteChangedObj(&Objects[i]);
           // num_changed++;
         }
       }
     }
     //	if(num_changed)
-    //		mprintf((0,"%d Objects moved this frame!\n",num_changed));
+    //		mprintf(0,"%d Objects moved this frame!\n",num_changed);
   }
 }
 
@@ -571,7 +571,7 @@ void DemoReadTurretChanged(void) {
   }
 
   if (Objects[objnum].type != OBJ_NONE) {
-    // mprintf((0,"Updating turret %d!\n",objnum));
+    // mprintf(0,"Updating turret %d!\n",objnum);
     ObjSetTurretUpdate(objnum, &multi_turret_info);
   }
 }
@@ -699,7 +699,7 @@ int DemoFrameCount = 0;
 
 int DemoPlaybackFile(char *filename) {
   is_multi_demo = false;
-  mprintf((0, "Playing back demo file!\n"));
+  mprintf(0, "Playing back demo file!\n");
   MultiBuildMatchTables();
   if (FindArg("-makemovie")) {
     Demo_make_movie = true;
@@ -742,14 +742,14 @@ int DemoReadHeader() {
   int level_num;
   int frame_count;
   float demo_gametime;
-  mprintf((0, "Reading demo header...\n"));
+  mprintf(0, "Reading demo header...\n");
   ASSERT(Demo_flags == DF_PLAYBACK);
   cf_ReadString((char *)szsig, 10, Demo_cfp);
   ver = cf_ReadShort(Demo_cfp);
 
   if (strcmp(szsig, D3_DEMO_SIG) != 0) {
     if (strcmp(szsig, D3_DEMO_SIG_NEW) != 0) {
-      mprintf((0, "Bad demo header signature!\n"));
+      mprintf(0, "Bad demo header signature!\n");
       return 0;
     }
   }
@@ -772,12 +772,12 @@ int DemoReadHeader() {
 
     SetCurrentLevel(level_num);
     if (!LoadAndStartCurrentLevel()) {
-      mprintf((0, "Couldn't start new level to play back the demo!\n"));
+      mprintf(0, "Couldn't start new level to play back the demo!\n");
       Osiris_EnableCreateEvents();
       return 0;
     }
   } else {
-    mprintf((0, "Couldn't load the level to play back the demo!\n"));
+    mprintf(0, "Couldn't load the level to play back the demo!\n");
     Osiris_EnableCreateEvents();
     return 0;
   }
@@ -821,7 +821,7 @@ int DemoReadHeader() {
     LGSSpew(Demo_cfp);
 
     if (!Osiris_RestoreSystemState(Demo_cfp)) {
-      mprintf((0, "Error restoring Osiris\n"));
+      mprintf(0, "Error restoring Osiris\n");
       return 0;
     }
 
@@ -844,7 +844,7 @@ int DemoReadHeader() {
     Camera_view_mode[0] = Camera_view_mode[2] = 0; //(0==CV_NONE)  Force reinitialization
     RestoreCameraRearviews();
   } catch (...) {
-    mprintf((0, "Someone threw an exception while reading the demo header!\n"));
+    mprintf(0, "Someone threw an exception while reading the demo header!\n");
     return 0;
   }
 
@@ -1003,8 +1003,8 @@ void DemoReadWeaponFire() {
   }
   Objects[new_weap_objnum].ctype.laser_info.src_gun_num = gunnum;
 
-  mprintf((0, "Player %d Firing weapon (%d) -- using objnum %d (old num = %d)\n", obj->id, weaponnum, new_weap_objnum,
-           weapobjnum));
+  mprintf(0, "Player %d Firing weapon (%d) -- using objnum %d (old num = %d)\n",
+          obj->id, weaponnum, new_weap_objnum, weapobjnum);
 
   Demo_obj_map[weapobjnum] = new_weap_objnum;
   int16_t weapon_num = weaponnum;
@@ -1116,7 +1116,7 @@ void DemoReadObjCreate() {
   parent_handle = cf_ReadInt(Demo_cfp);
   if (use_orient)
     gs_ReadMatrix(Demo_cfp, orient);
-  // mprintf((0,"Creating object ype: %d id: %d room: %d\n",type,id,roomnum));
+  // mprintf(0,"Creating object ype: %d id: %d room: %d\n",type,id,roomnum);
 
   // xlate id to new id.
   switch (type) {
@@ -1171,7 +1171,7 @@ void DemoFrame() {
       float tdelta = timer_GetTime();
       // if(Gametime<Demo_next_frame)
       //{
-      //	mprintf((0,"!%.3f!",Demo_next_frame-Gametime));
+      //	mprintf(0,"!%.3f!",Demo_next_frame-Gametime);
       //}
 
       while ((Gametime + Demo_frame_ofs) < Demo_next_frame) {
@@ -1179,7 +1179,7 @@ void DemoFrame() {
       }
     }
   } else {
-    // mprintf((0,"This is the first frame in the demo playback!(%f)\n",Demo_next_frame));
+    // mprintf(0,"This is the first frame in the demo playback!(%f)\n",Demo_next_frame);
     Gametime = Demo_next_frame;
     Demo_frame_time = 0;
     Demo_first_frame = false;
@@ -1190,10 +1190,10 @@ void DemoFrame() {
     // Keep going until we hit a new frame
     try {
       opcode = cf_ReadByte(Demo_cfp);
-      // mprintf((0,"Demo ocode: %d\n",opcode));
+      // mprintf(0,"Demo ocode: %d\n",opcode);
     } catch (...) {
       // End of file, so we're done playing the demo
-      mprintf((0, "End of demo file!"));
+      mprintf(0, "End of demo file!");
       strcpy(Old_demo_fname, Demo_fname);
       DemoAbort();
       // Do some cool stuff here, like end of demo stats or exit to the main menu
@@ -1286,7 +1286,7 @@ void DemoFrame() {
       DemoReadObjLifeLeft();
       break;
     default:
-      mprintf((0, "ERROR! Unknown opcode in demo file!(%d) last code: %d\n", opcode, DemoLastOpcode));
+      mprintf(0, "ERROR! Unknown opcode in demo file!(%d) last code: %d\n", opcode, DemoLastOpcode);
       // Int3();
       DemoAbort();
       if (Demo_looping) {
@@ -1304,7 +1304,7 @@ void DemoFrame() {
 void DemoWriteCinematics(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_CINEMATICS);
   // Write a bunch of data
-  mprintf((0, "Writing Cinematic data (%d bytes) to demo file.\n", len));
+  mprintf(0, "Writing Cinematic data (%d bytes) to demo file.\n", len);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
 }
@@ -1313,7 +1313,7 @@ void DemoReadCinematics() {
   uint8_t buffer[1500];
   uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
-  mprintf((0, "Reading Cinematic data from demo file.\n"));
+  mprintf(0, "Reading Cinematic data from demo file.\n");
   Cinematic_DoDemoFileData(buffer);
 }
 
@@ -1321,7 +1321,7 @@ void DemoWriteMSafe(uint8_t *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_MSAFE);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
-  //	mprintf((0,"Writing MSAFE data to demo file.\n"));
+  //	mprintf(0,"Writing MSAFE data to demo file.\n");
 }
 
 void DemoWritePowerup(uint8_t *data, uint16_t len) {
@@ -1336,7 +1336,7 @@ void DemoReadMSafe() {
   uint8_t buffer[1500];
   uint16_t len = cf_ReadShort(Demo_cfp);
   cf_ReadBytes(buffer, len, Demo_cfp);
-  // mprintf((0,"Reading MSAFE data from demo file.\n"));
+  // mprintf(0,"Reading MSAFE data from demo file.\n");
   MultiDoMSafeFunction(buffer);
 }
 
@@ -1380,7 +1380,7 @@ void DemoReadCollidePlayerWeapon(void) {
     collide_player_and_weapon(&Objects[plr_objnum], &Objects[real_weapnum], &collision_p, &collision_n,
                               f_reverse_normal, NULL);
   } else {
-    mprintf((0, "Unable to map weapon number for collision in demo playback!\n"));
+    mprintf(0, "Unable to map weapon number for collision in demo playback!\n");
   }
 }
 
@@ -1411,7 +1411,7 @@ void DemoReadCollideGenericWeapon(void) {
     collide_generic_and_weapon(&Objects[gen_objnum], &Objects[real_weapnum], &collision_p, &collision_n,
                                f_reverse_normal, NULL);
   } else {
-    mprintf((0, "Unable to map weapon number for collision in demo playback!\n"));
+    mprintf(0, "Unable to map weapon number for collision in demo playback!\n");
   }
 }
 
@@ -1616,7 +1616,7 @@ void DemoWritePlayerInfo(void) {
 
       if ((a >= 0) && (obj->type != OBJ_NONE) && (obj->type != OBJ_WEAPON) && (obj->flags & OF_POLYGON_OBJECT) &&
           (p_info->multi_turret_info.num_turrets)) {
-        mprintf((0, "Turret %d updated!\n", a));
+        mprintf(0, "Turret %d updated!\n", a);
         multi_turret_info.keyframes = (float *)&turret_holder;
         ObjGetTurretUpdate(a, &multi_turret_info);
 

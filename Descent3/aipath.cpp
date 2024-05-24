@@ -43,12 +43,12 @@ static void AIUpdatePathInfo(q_item **node_list, int start, int end) {
 
   AIAltPathNumNodes = 0;
 
-  //	mprintf((0, "start crash loop\n"));
+  //	mprintf(0, "start crash loop\n");
   while (cur_room != -1) {
     AIAltPath[AIAltPathNumNodes++] = cur_room;
     cur_room = node_list[cur_room]->parent;
   }
-  //	mprintf((0, "end crash loop\n"));
+  //	mprintf(0, "end crash loop\n");
 
   // Reverse the list (so it is what we want)
   for (i = 0; i < (AIAltPathNumNodes >> 1); i++) {
@@ -73,7 +73,7 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
 
   q_item *node_list[MAX_ROOMS + 8];
 
-  //	mprintf((0, "AI: Finding an alternate path from %d to %d\n", i, j));
+  //	mprintf(0, "AI: Finding an alternate path from %d to %d\n", i, j);
 
   if (i == -1 || j == -1) {
     delete start_node;
@@ -173,7 +173,7 @@ bool AIFindAltPath(object *obj, int i, int j, float *dist) {
 
   // Mark as an impossible path.
 
-  //	mprintf((0, "Found an impossible path\n"));
+  //	mprintf(0, "Found an impossible path\n");
 
 done:
   for (counter = 0; counter < MAX_ROOMS + 8; counter++) {
@@ -201,7 +201,7 @@ done:
     }
   }
 
-  //	mprintf((0, "Done\n"));
+  //	mprintf(0, "Done\n");
   return f_found;
 }
 
@@ -356,14 +356,14 @@ void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved) {
   vector cur_pos;
 
   AIPathGetCurrentNodePos(aip, &cur_pos);
-  //	mprintf((0, "Cur pos = %f,%f,%f\n", XYZ(&cur_pos)));
+  //	mprintf(0, "Cur pos = %f,%f,%f\n", XYZ(&cur_pos));
 
-  //	mprintf((0, "1 R %d, Goal p %d, n %d\n", f_reverse, p, n));
+  //	mprintf(0, "1 R %d, Goal p %d, n %d\n", f_reverse, p, n);
 
-  //	mprintf((0, "s %f, %f, %f\n", XYZ(&obj->pos)));
-  //	mprintf((0, "l %f, %f, %f\n", XYZ(&obj->last_pos)));
+  //	mprintf(0, "s %f, %f, %f\n", XYZ(&obj->pos));
+  //	mprintf(0, "l %f, %f, %f\n", XYZ(&obj->last_pos));
 
-  //	mprintf((0, "%d is at Node %d\n", OBJNUM(obj), n));
+  //	mprintf(0, "%d is at Node %d\n", OBJNUM(obj), n);
 
   bool f_force_complete_stopping = false;
 
@@ -389,14 +389,14 @@ void AIPathMoveTurnTowardsNode(object *obj, vector *mdir, bool *f_moved) {
   }
   //	removed check if(f_reverse && (path_info->next_node < path_info->start_node))
   //	removed check {
-  //	removed check	mprintf((0, "AI ERROR: Fixed a bad predefined path next_node to goal_node"));
+  //	removed check	mprintf(0, "AI ERROR: Fixed a bad predefined path next_node to goal_node");
   //	removed check	path_info->next_node = path_info->start_node;
   //	removed check	Int3();
   //	removed check }
   // removed check
   //	removed check if(!(f_reverse) && path_info->next_node > path_info->end_node)
   //	removed check {
-  //	removed check	mprintf((0, "AI ERROR: Fixed a bad predefined path next_node to goal_node"));
+  //	removed check	mprintf(0, "AI ERROR: Fixed a bad predefined path next_node to goal_node");
   //	removed check	path_info->next_node = path_info->end_node;
   //	removed check	Int3();
   // removed check }
@@ -490,33 +490,33 @@ pass_node:
   }
 
   if (f_pass_node) {
-    //		mprintf((0, "f_pass_node\n"));
+    //		mprintf(0, "f_pass_node\n");
 
     if (((f_reverse) && AIPathAtStart(aip)) || ((!f_reverse) && AIPathAtEnd(aip))) {
-      //			mprintf((0, "At end node: "));
+      //			mprintf(0, "At end node: ");
 
       switch (g_ptr->flags & GFM_END_OF_PATH) {
       case GF_PATH_REVERSE_AT_END:
-        //					mprintf((0, "End reverse dir\n"));
+        //					mprintf(0, "End reverse dir\n");
         if (f_reverse)
           g_ptr->flags &= ~GF_PATH_MOVE_REVERSE_DIR;
         else
           g_ptr->flags |= GF_PATH_MOVE_REVERSE_DIR;
         return;
       case GF_PATH_CIRCLE_AT_END:
-        //					mprintf((0, "End circle dir\n"));
+        //					mprintf(0, "End circle dir\n");
         if (f_reverse)
           AIPathSetAtEnd(aip);
         else
           AIPathSetAtStart(aip);
         return;
       default:
-        //					mprintf((0, "End kill goal\n"));
+        //					mprintf(0, "End kill goal\n");
         AIPathComplete(obj);
         return;
       }
     } else {
-      //			mprintf((0, "Passed node\n"));
+      //			mprintf(0, "Passed node\n");
       if (g_ptr->flags & GF_PATH_MOVE_REVERSE_DIR)
         AIPathMoveToPrevNode(aip);
       else
@@ -568,7 +568,7 @@ static bool AIPathGetDPathSlot(int *slot, int handle) {
     }
   }
 
-  mprintf((0, "Out of dynamic paths"));
+  mprintf(0, "Out of dynamic paths");
   ASSERT(0); // -- get chris
   return false;
 }
@@ -605,7 +605,7 @@ static bool AIPathAddDPath(ai_path_info *aip, int handle) {
   bool status;
 
   if (aip->num_paths >= MAX_JOINED_PATHS) {
-    mprintf((0, "AI ERROR: Tried to join too many paths (Adding dpath)\n"));
+    mprintf(0, "AI ERROR: Tried to join too many paths (Adding dpath)\n");
     return false;
   }
 
@@ -630,7 +630,7 @@ static bool AIPathAddStaticPath(ai_path_info *aip, int path_id, int start_index,
   // chrishack -- validation code is needed
 
   if (aip->num_paths >= MAX_JOINED_PATHS) {
-    mprintf((0, "AI ERROR: Tried to join too many paths (Adding spath)\n"));
+    mprintf(0, "AI ERROR: Tried to join too many paths (Adding spath)\n");
     return false;
   }
 
@@ -1019,7 +1019,7 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: In free path\n"));
+    mprintf(0, "AI Note: In free path\n");
   }
 #endif
   AIPathFreePath(aip);
@@ -1105,7 +1105,7 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
             AIGenerateAltBOAPath(start_pos, end_pos, aip, &slot, &cur_node, handle);
 
           if (!f_path_exists) {
-            mprintf((0, "Warning Alt path from %d to %d failed.\n", *start_room, *end_room));
+            mprintf(0, "Warning Alt path from %d to %d failed.\n", *start_room, *end_room);
           }
         }
       } else if (!f_bline_ok) {
@@ -1137,11 +1137,11 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
     } else {
       f_path_exists = false;
       // if(!(0x80000000 & *start_room) || !(0x80000000 & *end_room))
-      // mprintf((0, "No path available from %d to %d\n", *start_room, *end_room));
+      // mprintf(0, "No path available from %d to %d\n", *start_room, *end_room);
 
 #ifdef _DEBUG
       if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-        mprintf((0, "AI Note: In free path\n"));
+        mprintf(0, "AI Note: In free path\n");
       }
 #endif
 
@@ -1150,13 +1150,13 @@ bool AIPathAllocPath(object *obj, ai_frame *ai_info, void *goal_ptr, int *start_
     }
   } else {
     f_path_exists = false;
-    mprintf((0, "No dynamic paths left\n"));
+    mprintf(0, "No dynamic paths left\n");
   }
 
   if (!f_path_exists) {
 #ifdef _DEBUG
     if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf((0, "AI Note: In free path\n"));
+      mprintf(0, "AI Note: In free path\n");
     }
 #endif
 
@@ -1174,7 +1174,7 @@ bool AIPathSetAsStaticPath(object *obj, void *goal_ptr, int path_id, int start_n
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: In free path\n"));
+    mprintf(0, "AI Note: In free path\n");
   }
 #endif
   AIPathFreePath(aip);
@@ -1230,7 +1230,7 @@ bool MakeTestPath(int *start_room, vector *pos) {
   //	#ifdef _DEBUG
   //	if(AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index)
   //	{
-  //		mprintf((0, "AI Note: In free path\n"));
+  //		mprintf(0, "AI Note: In free path\n");
   //	}
   //	#endif
   AIPathFreePath(&ai_info.path);

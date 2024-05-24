@@ -241,7 +241,7 @@ void CheckTrigger(int roomnum, int facenum, object *objp, int event_type) {
 
     // Check if this object is a valid activator for this trigger
     if (tp->activator & type) {
-      mprintf((0, "Hit trigger %d\n", tp - Triggers));
+      mprintf(0, "Hit trigger %d\n", tp - Triggers);
 
       // Execute this trigger's script
       tOSIRISEventInfo ei;

@@ -126,7 +126,7 @@ void CFilePageDialog::OnAddFile()
 		strcpy (Gamefiles[gamefile_handle].dir_name,dlg.m_SelectedDestDir);
 
 		// Finally, save a local copy of the model/anim and alloc a tracklock
-		mprintf ((0,"Making a copy of '%s' locally...\n",cur_name));
+		mprintf(0,"Making a copy of '%s' locally...\n",cur_name);
 
 		char destname[100];
 		ddio_MakePath(destname,LocalD3Dir,"data",dlg.m_SelectedDestDir,Gamefiles[gamefile_handle].name,NULL);
@@ -357,7 +357,7 @@ void CFilePageDialog::OnDeleteFile()
 			mng_FreeTrackLock (tl);
 			if (!mng_DeletePage (Gamefiles[n].name,PAGETYPE_GAMEFILE,1))
 			{
-				mprintf ((0,ErrorString));
+				mprintf(0,ErrorString);
 				Int3();
 			}
 		}

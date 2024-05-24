@@ -709,10 +709,10 @@ void FreeRoom(room *rp) {
 void FreeAllRooms() {
   int rn;
   room *rp;
-  mprintf((1, "Freeing rooms...Higest_room_index %d\n", Highest_room_index));
+  mprintf(1, "Freeing rooms...Higest_room_index %d\n", Highest_room_index);
   for (rn = 0, rp = Rooms; rn <= Highest_room_index; rn++, rp++) {
     if (rp->used) {
-      //			mprintf((2, "rn %d\n", rn));
+      //			mprintf(2, "rn %d\n", rn);
       FreeRoom(rp);
     }
   }
@@ -721,7 +721,7 @@ void FreeAllRooms() {
 
   RoomMemClose();
 
-  //	mprintf((2,"Done\n"));
+  //	mprintf(2,"Done\n");
 }
 
 #ifdef EDITOR
@@ -799,7 +799,7 @@ bool ComputeFaceNormal(room *rp, int facenum) {
   ok = ComputeNormal(&fp->normal, fp->num_verts, fp->face_verts, rp->verts);
 
   if (!ok) {
-    mprintf((1, "Warning: Low precision normal for room:face = %d:%d\n", ROOMNUM(rp), facenum));
+    mprintf(1, "Warning: Low precision normal for room:face = %d:%d\n", ROOMNUM(rp), facenum);
   }
 
   return ok;
@@ -835,8 +835,11 @@ bool ComputeNormal(vector *normal, int num_verts, short *vertnum_list, vector *v
   }
 
   if (largest_mag < MIN_NORMAL_MAG) {
-    mprintf((1, "Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f\n", largest_mag, normal->x, normal->y,
-             normal->z));
+    mprintf(1, "Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f\n",
+            largest_mag,
+            normal->x,
+            normal->y,
+            normal->z);
     return 0;
   } else
     return 1;
@@ -1233,7 +1236,7 @@ int FindFirstUsedRoom() {
 //	returns true on successs
 bool ChangeRoomFaceTexture(int room_num, int face_num, int texture) {
   if ((room_num < 0) || (room_num > Highest_room_index) || ROOMNUM_OUTSIDE(room_num) || (!Rooms[room_num].used)) {
-    mprintf((0, "Invalid room passed to ChangeRoomFaceTexture\n"));
+    mprintf(0, "Invalid room passed to ChangeRoomFaceTexture\n");
     Int3();
     return false;
   }
@@ -1241,16 +1244,15 @@ bool ChangeRoomFaceTexture(int room_num, int face_num, int texture) {
   room *rp = &Rooms[room_num];
 
   if (face_num < 0 || face_num >= rp->num_faces) {
-    mprintf((0,
-             "Invalid face number passed to ChangeRoomFaceTexture.  Room=%d, you gave face #%d, there are only %d in "
-             "the room\n",
-             room_num, face_num, rp->num_faces));
+    mprintf(0, "Invalid face number passed to ChangeRoomFaceTexture."
+               "  Room=%d, you gave face #%d, there are only %d in the room\n",
+             room_num, face_num, rp->num_faces);
     Int3();
     return false;
   }
 
   if (texture == -1) {
-    mprintf((0, "not a valid texture, passed to ChangeRoomFaceTexture\n"));
+    mprintf(0, "not a valid texture, passed to ChangeRoomFaceTexture\n");
     Int3();
     return false;
   }

@@ -69,17 +69,18 @@ void nw_TCPPrintf(int n, char *format, ...);
 #if (!defined(RELEASE)) && defined(LOGGER)
 extern bool Debug_print_block;
 // Prints a formatted string to the debug window
-#define mprintf(args) Debug_ConsolePrintf args
+#define mprintf(...) Debug_ConsolePrintf(__VA_ARGS__)
 // Prints a formatted string on window n at row, col.
-#define mprintf_at(args) Debug_ConsolePrintfAt args
-#define DebugBlockPrint(args)                                                                                          \
+#define mprintf_at(...) Debug_ConsolePrintfAt(__VA_ARGS__)
+#define DebugBlockPrint(...)                                                                                          \
   do {                                                                                                                 \
     if (Debug_print_block)                                                                                             \
-      mprintf_at((1, 5, 51, args));                                                                                    \
+      mprintf_at(1, 5, 51, __VA_ARGS__);                                                                                    \
   } while (0)
 #else // ifdef _DEBUG
-#define mprintf(args) // DAJ defined in target headers
-#define mprintf_at(args)
-#define DebugBlockPrint(args)
+ // DAJ defined in target headers
+#define mprintf(...)
+#define mprintf_at(...)
+#define DebugBlockPrint(...)
 #endif // ifdef _DEBUG
 #endif

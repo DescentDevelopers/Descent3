@@ -172,7 +172,7 @@ bool GenericPageList::LoadTable (char *table_filename)
 
 	if (!infile)
 	{
-		//mprintf ((0,"Couldn't open table file to reorder!\n"));
+		//mprintf(0,"Couldn't open table file to reorder!\n");
 		//Int3();
 		return FALSE;
 	}
@@ -242,14 +242,14 @@ bool GenericPageList::SaveTable (char *table_filename)
 	infile=cfopen (m_TableFilename,"rb");
 	if (!infile)
 	{
-		mprintf ((0,"Couldn't open table file to replace generic!\n"));
+		mprintf(0,"Couldn't open table file to replace generic!\n");
 		return FALSE;
 	}
 
 	outfile=cfopen (TEMP_TABLE_FILENAME,"wb");
 	if (!outfile)
 	{
-		mprintf ((0,"Couldn't open temp table file to replace generic!\n"));
+		mprintf(0,"Couldn't open temp table file to replace generic!\n");
 		cfclose (infile);
 		return FALSE;
 	}

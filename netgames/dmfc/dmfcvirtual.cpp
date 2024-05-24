@@ -991,7 +991,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
     TranslateTextMacro(src_string, dest_string, dest_size);
   } break;
   default:
-    DLLmprintf((0, "DMFC Warning: Unhandled Event #%X\n", eventnum));
+    DLLmprintf(0, "DMFC Warning: Unhandled Event #%X\n", eventnum);
     break;
   }
 }

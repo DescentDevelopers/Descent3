@@ -117,7 +117,7 @@ bool PlayMovie(const char *moviename) {
 
   bool retval = true;
   if (mveerr != MVELIB_NOERROR) {
-    mprintf((1, "Movie error %d.\n", mveerr));
+    mprintf(1, "Movie error %d.\n", mveerr);
     retval = false;
   }
 

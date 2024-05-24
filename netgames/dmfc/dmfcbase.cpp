@@ -781,7 +781,7 @@ void DMFCBase::GameInit(int teams) {
   LoadSettings();
 
   DLLCreateStringTable("dmfc.str", &DMFCStringTable, &DMFCStringTableSize);
-  mprintf((0, "DMFC Note: %d strings loaded from string table\n", DMFCStringTableSize));
+  mprintf(0, "DMFC Note: %d strings loaded from string table\n", DMFCStringTableSize);
 
   // initialize player records
   PRec_Init();
@@ -1544,7 +1544,7 @@ int DMFCBase::GetMeObjNum(void) {
 void DMFCBase::OnGameStateRequest(int pnum) {
   if (pnum == -1)
     return;
-  mprintf((0, "%s is requesting Game State information\n", Players[pnum].callsign));
+  mprintf(0, "%s is requesting Game State information\n", Players[pnum].callsign);
 }
 
 // DMFCBase::GetTeamForNewPlayer
@@ -2052,7 +2052,7 @@ void DMFCBase::SwitchShowHudCallsignLevel(uint8_t level, bool announce) {
       DLLAddHUDMessage(DTXT_HUDLEVEL_NONE);
     break;
   default:
-    mprintf((0, "DMFC: Invalid HUD Name Level\n"));
+    mprintf(0, "DMFC: Invalid HUD Name Level\n");
     return;
     break;
   };
@@ -2077,7 +2077,7 @@ void DMFCBase::SwitchServerHudCallsignLevel(uint8_t level) {
     DLLAddHUDMessage(DTXT_SHUDLEVEL_NONE);
     break;
   default:
-    mprintf((0, "DMFC: Invalid Server HUD Name Level\n"));
+    mprintf(0, "DMFC: Invalid Server HUD Name Level\n");
     return;
     break;
   }
@@ -2206,7 +2206,7 @@ void DMFCBase::UpdatePInfo(int victim, int killer, int amount) {
   id = FindPInfo(killer);
 
   if ((id == NULL) || (victim_slot == -1)) {
-    mprintf((0, "Unable to find PInfos\n"));
+    mprintf(0, "Unable to find PInfos\n");
     return;
   }
 
@@ -2220,7 +2220,7 @@ void DMFCBase::UpdatePInfo(int victim, int killer, int amount) {
   int killer_slot = PRec_GetPlayerSlot(killer);
 
   if ((vpi == NULL) || (killer_slot == -1)) {
-    mprintf((0, "Unable to find PInfos\n"));
+    mprintf(0, "Unable to find PInfos\n");
     return;
   }
 
@@ -2492,14 +2492,14 @@ bool DMFCBase::SetWeaponDeathMessage(const char *weapon_name, const char *messag
 
   int weapon_index = DLLFindWeaponName(IGNORE_TABLE(weapon_name));
   if (weapon_index == -1) {
-    mprintf((0, "Unable to set WeaponMessage for %s...can't find it\n", weapon_name));
+    mprintf(0, "Unable to set WeaponMessage for %s...can't find it\n", weapon_name);
     return false;
   }
 
   int real_weapon = WeaponHash[weapon_index];
 
   if (real_weapon == -1) {
-    mprintf((0, "You forgot to call AddWeaponHash before adding this Message\n"));
+    mprintf(0, "You forgot to call AddWeaponHash before adding this Message\n");
     return false;
   }
 
@@ -2549,7 +2549,7 @@ void DMFCBase::AddWeaponHash(const char *parent, ...) {
 
   int parent_id = DLLFindWeaponName(IGNORE_TABLE(parent));
   if (parent_id == -1) {
-    mprintf((0, "Unable to find parent weapon ID in AddWeaponHash (%s)\n", parent));
+    mprintf(0, "Unable to find parent weapon ID in AddWeaponHash (%s)\n", parent);
     return;
   }
 
@@ -2593,7 +2593,7 @@ void DMFCBase::AddWeaponHashArray(const char *parent, int count, char **array) {
 
   int parent_id = DLLFindWeaponName(IGNORE_TABLE(parent));
   if (parent_id == -1) {
-    mprintf((0, "Unable to find parent weapon ID in AddWeaponHash (%s)\n", parent));
+    mprintf(0, "Unable to find parent weapon ID in AddWeaponHash (%s)\n", parent);
     return;
   }
 
@@ -2669,7 +2669,7 @@ player_record *DMFCBase::GetPlayerRecordByPnum(int pnum) {
 //   Puts a temp ban on a player which will only last the duration of the game
 void DMFCBase::BanPlayerFromGame(int pnum) {
   if (pnum >= 0 && pnum < DLLMAX_PLAYERS) {
-    mprintf((0, "Banning %s\n", Players[pnum].callsign));
+    mprintf(0, "Banning %s\n", Players[pnum].callsign);
     DPrintf(DTXT_DEDS_BAN, Players[pnum].callsign);
     tBanItem *c;
     c = m_BanList;
@@ -2698,7 +2698,7 @@ void DMFCBase::BanPlayerFromGame(int pnum) {
 
     m_iNumBanPlayers++;
   } else {
-    mprintf((0, "Unable to ban player...pnum not valid\n"));
+    mprintf(0, "Unable to ban player...pnum not valid\n");
     DPrintf(DTXT_DEDS_BAN_ERROR);
   }
 }
@@ -2777,10 +2777,10 @@ bool DMFCBase::RemoveBan(int index) {
 //
 //	returns true is the given pnum is banned from the game
 bool DMFCBase::IsPlayerBanned(int pnum) {
-  mprintf((0, "Checking a ban on a player..."));
+  mprintf(0, "Checking a ban on a player...");
 
   if (pnum < 0 || pnum >= DLLMAX_PLAYERS) {
-    mprintf((0, "Playernum not valid\n"));
+    mprintf(0, "Playernum not valid\n");
     return false;
   }
 
@@ -2798,16 +2798,16 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   tBanItem *c;
   c = m_BanList;
 
-  mprintf((0, "Checking a ban on an address..."));
+  mprintf(0, "Checking a ban on an address...");
 
   while (c) {
     if (addr && CompareNetworkAddress(&c->addr, addr, false)) {
-      mprintf((0, "Player addr IS BANNED\n"));
+      mprintf(0, "Player addr IS BANNED\n");
       return true;
     }
     if (*m_bTrackerGame) {
       if (tracker_id && !strcmp(tracker_id, c->tracker_id)) {
-        mprintf((0, "Player tid IS BANNED\n"));
+        mprintf(0, "Player tid IS BANNED\n");
         return true;
       }
     }
@@ -2816,7 +2816,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   }
 
   if (!addr) {
-    mprintf((0, "Player not banned\n"));
+    mprintf(0, "Player not banned\n");
     return false;
   }
 
@@ -2824,7 +2824,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   // the hosts.allow/.deny
 
   if (addr->connection_type != NP_TCP) {
-    mprintf((0, "Player not banned\n"));
+    mprintf(0, "Player not banned\n");
     return false;
   }
 
@@ -2839,7 +2839,7 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // its a match
-      mprintf((0, "Player not banned\n"));
+      mprintf(0, "Player not banned\n");
       return false;
     }
     curr = curr->next;
@@ -2851,13 +2851,13 @@ bool DMFCBase::IsAddressBanned(network_address *addr, const char *tracker_id) {
   while (curr) {
     if ((address & curr->mask) == (curr->ip & curr->mask)) {
       // its a match
-      mprintf((0, "Player IS banned\n"));
+      mprintf(0, "Player IS banned\n");
       return true;
     }
     curr = curr->next;
   }
 
-  mprintf((0, "Player not banned\n"));
+  mprintf(0, "Player not banned\n");
   return false;
 }
 
@@ -2888,7 +2888,7 @@ void DMFCBase::DoDamageToPlayer(int pnum, int type, float amount, bool playsound
 //	Prepares the game so that you can display UI stuff
 void DMFCBase::StartUIWindow(int id, void *user_data) {
   if (m_iUIWindowID != -1) {
-    mprintf((0, "DMFCBase::StartUIWindow(): A Window ID (0x%X) is already defined\n", m_iUIWindowID));
+    mprintf(0, "DMFCBase::StartUIWindow(): A Window ID (0x%X) is already defined\n", m_iUIWindowID);
     return;
   }
 
@@ -3006,7 +3006,7 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
   /*
   if(!stricmp(command_string,"$help dump"))
   {
-          mprintf((0,"Dumping help commands to file\n"));
+          mprintf(0,"Dumping help commands to file\n");
           tInputCommandNode *node = m_InputCommandRootNode;
 
           CFILE *file;
@@ -3099,115 +3099,115 @@ void DMFCBase::InputCommandFree(void) {
 //	be placed in here.
 void DMFCBase::InputCommandInit(void) {
   if (AddInputCommand(DTXT_IC_ALLOWTEAMCHANGE, DTXT_IC_ALLOWTEAMCHANGED, DMFCInputCommand_AllowTeamChange, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_AUTOBALANCE, DTXT_IC_AUTOBALANCED, DMFCInputCommand_AutoBalance, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_AUTOSAVEDISC, DTXT_IC_AUTOSAVEDISCD, DMFCInputCommand_AutoSaveDisconnect, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_AUTOSAVELEVEL, DTXT_IC_AUTOSAVELEVELD, DMFCInputCommand_AutoSaveLevel, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_BALANCE, DTXT_IC_BALANCED, DMFCInputCommand_Balance, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_BAN, DTXT_IC_BAND, DMFCInputCommand_Ban, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_BANLIST, DTXT_IC_BANLISTD, DMFCInputCommand_BanList) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_CHANGETEAM, DTXT_IC_CHANGETEAMD, DMFCInputCommand_ChangeTeam, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_ENDLEVEL, DTXT_IC_ENDLEVELD, DMFCInputCommand_EndLevel, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_HELP, DTXT_IC_HELPD, DMFCInputCommand_Help) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_HUDNAME, DTXT_IC_HUDNAMED, DMFCInputCommand_HudCallsigns) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_KICK, DTXT_IC_KICKD, DMFCInputCommand_Kick, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_KILLMSGFILTER, DTXT_IC_KILLMSGFILTERD, DMFCInputCommand_KillMsgFilter) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_NETGAMEINFO, DTXT_IC_NETGAMEINFO, DMFCInputCommand_NetGameInfo) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_OBSERVER, DTXT_IC_OBSERVERD, DMFCInputCommand_Observer) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_PIGGYBACK, DTXT_IC_PIGGYBACKD, DMFCInputCommand_Piggyback) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_PLAYERINFO, DTXT_IC_PLAYERINFOD, DMFCInputCommand_PlayerInfo) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_PLAYERS, DTXT_IC_PLAYERSD, DMFCInputCommand_Players) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_REHASH, DTXT_IC_REHASHD, DMFCInputCommand_Rehash, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_REMOTE, DTXT_IC_REMOTED, DMFCInputCommand_Remote) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_REMOTEADMIN, DTXT_IC_REMOTEADMIND, DMFCInputCommand_RemoteAdmin, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_REMOTEADMINLOGOUT, DTXT_IC_REMOTEADMINLOGOUTD, DMFCInputCommand_RemoteAdminLogout) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_REMOTEADMINPASS, DTXT_IC_REMOTEADMINPASSD, DMFCInputCommand_RemoteAdminPass, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_REMOVEBAN, DTXT_IC_REMOVEBAND, DMFCInputCommand_RemoveBan, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SAVESTATS, DTXT_IC_SAVESTATSD, DMFCInputCommand_SaveStats, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SCORES, DTXT_IC_SCORESD, DMFCInputCommand_Scores) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SERVERHUDNAMES, DTXT_IC_SERVERHUDNAMESD, DMFCInputCommand_ServerHudCallsigns, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SETGOALLIMIT, DTXT_IC_SETGOALLIMITD, DMFCInputCommand_SetGoalLimit, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SETMAXPLAYERS, DTXT_IC_SETMAXPLAYERSD, DMFCInputCommand_SetMaxPlayers, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SETPPS, DTXT_IC_SETPPSD, DMFCInputCommand_SetPPS, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SETRESPAWNTIME, DTXT_IC_SETRESPAWNTIMED, DMFCInputCommand_SetRespawnTime, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SETTEAMNAME, DTXT_IC_SETTEAMNAMED, DMFCInputCommand_SetTeamName, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_SETTIMELIMIT, DTXT_IC_SETTIMELIMITD, DMFCInputCommand_SetTimeLimit, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_STATMSGS, DTXT_IC_STATMSGSD, DMFCInputCommand_StatMsgs) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_TEAM, DTXT_IC_TEAMD, DMFCInputCommand_Team) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_WAIT, DTXT_IC_WAITD, DMFCInputCommand_Wait, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 
   if (AddInputCommand(DTXT_IC_WARP, DTXT_IC_WARPD, DMFCInputCommand_Warp, true) < 1)
-    mprintf((0, "DMFC Warning: Error Adding Input Command\n"));
+    mprintf(0, "DMFC Warning: Error Adding Input Command\n");
 }
 
 // Returns true if the input command can be called remotely
@@ -4385,7 +4385,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
       }
 
       // we now have a valid mask (s_mask) and a valid ip (s_ip)
-      mprintf((0, "IP: %s   Mask: %s\n", s_ip, s_mask));
+      mprintf(0, "IP: %s   Mask: %s\n", s_ip, s_mask);
       ip_address = DLLnw_GetHostAddressFromNumbers(s_ip);
       mask = DLLnw_GetHostAddressFromNumbers(s_mask);
 
@@ -4406,7 +4406,7 @@ void ParseHostsFile(char *filename, tHostsNode **root) {
     }
 
   error_parse:
-    mprintf((0, "Error parsing IP Address Mask: %s\n", save_buffer));
+    mprintf(0, "Error parsing IP Address Mask: %s\n", save_buffer);
 
   noerror_parse:;
   }
@@ -4433,11 +4433,11 @@ void DMFCBase::ReadInHostsAllowDeny(void) {
 
   // parse away
   if (deny_exist) {
-    mprintf((0, "Parsing hosts.deny\n"));
+    mprintf(0, "Parsing hosts.deny\n");
     ParseHostsFile(deny_fn, &m_DenyList);
   }
   if (allow_exist) {
-    mprintf((0, "Parsing hosts.allow\n"));
+    mprintf(0, "Parsing hosts.allow\n");
     ParseHostsFile(allow_fn, &m_AllowList);
   }
 }
@@ -4502,7 +4502,7 @@ void DMFCBase::ParseStartupScript(void) {
   if ((autoexec_arg = DLLFindArg("-autoexec")) != 0) {
     // a specific autoexec.dmfc file was specified, use that
     strcpy(path, GetGameArg(autoexec_arg + 1));
-    mprintf((0, "Override AUTOEXEC.DMFC to %s\n", path));
+    mprintf(0, "Override AUTOEXEC.DMFC to %s\n", path);
   } else {
     // use the default autoexec.dmfc
     DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", NULL);
@@ -4527,7 +4527,7 @@ void DMFCBase::ParseStartupScript(void) {
     }
 
     if (!ok_to_read) {
-      mprintf((0, "AUTOEXEC.DMFC: Line too long\n"));
+      mprintf(0, "AUTOEXEC.DMFC: Line too long\n");
     } else {
       if (buffer[1] == '$') {
         InputCommandHandle(&buffer[1]);
@@ -4920,8 +4920,9 @@ int DMFCBase::GetConnectingPlayerTeam(int slot) {
 
     // we need to reconnect the player to the player records before we get the team
     if (!PRec_ReconnectPlayerToSlot(slot, prec_num, Players, NetPlayers)) {
-      mprintf((0, "Unable to reassign reconnecting player (%s) to Player Record slot #%d\n", Players[slot].callsign,
-               prec_num));
+      mprintf(0, "Unable to reassign reconnecting player (%s) to Player Record slot #%d\n",
+              Players[slot].callsign,
+              prec_num);
       Int3();
     } else {
       team = PRec_GetPlayerTeam(slot);
@@ -4944,7 +4945,7 @@ int DMFCBase::GetConnectingPlayerTeam(int slot) {
     }
   }
 
-  mprintf((0, "CONNECTING PLAYER (%s): Team assigned to %d\n", Players[slot].callsign, team));
+  mprintf(0, "CONNECTING PLAYER (%s): Team assigned to %d\n", Players[slot].callsign, team);
 
   return team;
 }
@@ -5058,7 +5059,7 @@ void DMFCBase::TranslateTextMacro(const char *src, char *destination, int dest_s
 
           // now replace the token...
           *token_string = '\0';
-          mprintf((0, "Looking for token for %s\n", token));
+          mprintf(0, "Looking for token for %s\n", token);
           CallOnGetTokenString(token, token_string, 512);
 
           // make sure we don't go too far

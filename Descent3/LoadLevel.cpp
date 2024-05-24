@@ -1551,8 +1551,7 @@ void ConvertObject(int *type, int *id) {
           ASSERT(object_convert[convert_to].id >= 0);
 
           if (object_convert[convert_to].id >= 0) {
-            mprintf(
-                (0, "LEVELLOAD: Converting: '%s' -> '%s'\n", object_convert[i].name, object_convert[convert_to].name));
+            mprintf(0, "LEVELLOAD: Converting: '%s' -> '%s'\n", object_convert[i].name, object_convert[convert_to].name);
 
             new_id = object_convert[convert_to].id;
             new_type = object_convert[convert_to].type;
@@ -1797,7 +1796,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     num_models = cf_ReadByte(ifile);
     if (pm->n_models != num_models) {
       model_changed = 1;
-      mprintf((0, "Polymodel %s has changed since this level was lit!\n", pm->name));
+      mprintf(0, "Polymodel %s has changed since this level was lit!\n", pm->name);
     }
 
     if (!model_changed)
@@ -1886,7 +1885,7 @@ int ReadObject(CFILE *ifile, object *objp, int handle, int fileversion) {
     }
 
     if (clear_lightmaps) {
-      mprintf((0, "Freeing lightmaps because model %s  has changed since this level was saved!\n", pm->name));
+      mprintf(0, "Freeing lightmaps because model %s  has changed since this level was saved!\n", pm->name);
       ClearObjectLightmaps(objp);
     }
   }
@@ -2212,7 +2211,7 @@ void RemoveDegenerateFaces(room *rp) {
     face *fp = &rp->faces[f];
 
     if ((fp->normal.x == 0.0) && (fp->normal.y == 0.0) && (fp->normal.z == 0.0)) {
-      mprintf((0, "Deleting face %d from room %d\n", f, ROOMNUM(rp)));
+      mprintf(0, "Deleting face %d from room %d\n", f, ROOMNUM(rp));
       DeleteRoomFace(rp, f);
       n_degenerate_faces_removed++;
     }
@@ -2500,7 +2499,7 @@ int ReadRoom(CFILE *ifile, room *rp, int version) {
 
     // Check for bad normal
     if (!t) {
-      mprintf((1, "WARNING:  Room %d face %d has bad normal!\n", rp - Rooms, i));
+      mprintf(1, "WARNING:  Room %d face %d has bad normal!\n", rp - Rooms, i);
     }
   }
 
@@ -2673,7 +2672,7 @@ void ReadNewLightmapChunk(CFILE *fp, int version) {
 
   nummaps = cf_ReadInt(fp);
 
-  mprintf((0, "Reading %d unique lightmaps\n", nummaps));
+  mprintf(0, "Reading %d unique lightmaps\n", nummaps);
 
   for (i = 0; i < nummaps; i++) {
     int w, h;
@@ -3048,7 +3047,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
   if (version < 62) {
     cfseek(fp, sizeof(int16_t) * max_rooms * max_rooms, SEEK_CUR);
 
-    mprintf((0, "We will need to remake boa.  New cost structure added\n"));
+    mprintf(0, "We will need to remake boa.  New cost structure added\n");
     BOA_AABB_checksum = BOA_mine_checksum = 0;
   } else {
     max_path_portals = cf_ReadInt(fp);
@@ -3063,7 +3062,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
         cfseek(fp, max_rooms * sizeof(float), SEEK_CUR);
       }
 
-      mprintf((0, "We will need to remake boa.  Data size changed\n"));
+      mprintf(0, "We will need to remake boa.  Data size changed\n");
       BOA_AABB_checksum = BOA_mine_checksum = 0;
     } else {
       for (i = 0; i <= max_rooms; i++) {
@@ -3082,7 +3081,7 @@ void ReadBOAChunk(CFILE *fp, int version) {
       BOA_num_terrain_regions = cf_ReadInt(fp);
 
       if (version < 112) {
-        mprintf((0, "We will need to remake boa.\n"));
+        mprintf(0, "We will need to remake boa.\n");
         BOA_AABB_checksum = BOA_mine_checksum = 0;
       } else {
         int i, j;
@@ -3721,8 +3720,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       cf_ReadBytes((uint8_t *)chunk_name, 4, ifile);
       chunk_start = cftell(ifile);
       chunk_size = cf_ReadInt(ifile);
-      mprintf(
-          (0, "Chunk: %c%c%c%c, size=%d\n", chunk_name[0], chunk_name[1], chunk_name[2], chunk_name[3], chunk_size));
+      mprintf(0, "Chunk: %c%c%c%c, size=%d\n", chunk_name[0], chunk_name[1], chunk_name[2], chunk_name[3], chunk_size);
 
       if (ISCHUNK(CHUNK_TEXTURE_NAMES))
         ReadTextureList(ifile);
@@ -3762,7 +3760,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
           roomnum = (version >= 96) ? cf_ReadShort(ifile) : i;
           ReadRoom(ifile, &Rooms[roomnum], version);
         }
-        mprintf((1, "%d degenerate faces removed\n", n_degenerate_faces_removed));
+        mprintf(1, "%d degenerate faces removed\n", n_degenerate_faces_removed);
 
         Highest_room_index = roomnum;
         ASSERT(Highest_room_index < MAX_ROOMS);
@@ -3825,8 +3823,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
             Objects[objnum].type = OBJ_NONE;                                 // kill the object
           } else {
             if (!ROOMNUM_OUTSIDE(roomnum) && Rooms[roomnum].flags & RF_EXTERNAL) {
-              mprintf((0, "Internal object %d linked to external room %d (type = %d)!!!\n", objnum, roomnum,
-                       Objects[objnum].type));
+              mprintf(0, "Internal object %d linked to external room %d (type = %d)!!!\n", objnum, roomnum, Objects[objnum].type);
               if (Objects[objnum].type == OBJ_VIEWER)
                 Objects[objnum].type = OBJ_NONE; // kill the object
               else {
@@ -4027,8 +4024,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       }
 #endif       // ifdef EDITOR
       else { // unknown chunk
-        mprintf((0, "  Unknown chunk: %c%c%c%c, size=%d\n", chunk_name[0], chunk_name[1], chunk_name[2], chunk_name[3],
-                 chunk_size));
+        mprintf(0, "  Unknown chunk: %c%c%c%c, size=%d\n", chunk_name[0], chunk_name[1], chunk_name[2], chunk_name[3], chunk_size);
       }
 
       // Go to end of chunk
@@ -4039,7 +4035,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 
   } // try
   catch (cfile_error *cfe) {
-    mprintf((0, "Error reading: file = <%s>, error = \"%s\"\n", cfe->file->name, cfe->msg));
+    mprintf(0, "Error reading: file = <%s>, error = \"%s\"\n", cfe->file->name, cfe->msg);
     ASSERT(cfe->read_write == CFE_READING);
 #if (defined(EDITOR) || defined(NEWEDITOR))
     if (GetFunctionMode() == EDITOR_MODE)
@@ -4136,7 +4132,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
 #ifndef NEWEDITOR
   CountDataToPageIn();
 #endif
-  // mprintf((0,"%d bytes of data to page in...\n",total));
+  // mprintf(0,"%d bytes of data to page in...\n",total);
 
 end_loadlevel:
 #ifdef EDITOR
@@ -4153,7 +4149,7 @@ end_loadlevel:
   }
 
   // Debug log the current sum
-  mprintf((0, "End of load level checksum = %s\n", GetCurrentSumString()));
+  mprintf(0, "End of load level checksum = %s\n", GetCurrentSumString());
   // Done
   return retval;
 }
@@ -4222,7 +4218,7 @@ int WriteObject(CFILE *ofile, object *objp) {
   // If there is lightmap data for this object, write it out.
   if (objp->lighting_render_type == LRT_LIGHTMAPS) {
     if (objp->lm_object.used == 0) {
-      mprintf((0, "Warning: Object %d is set for lightmaps but has no lightmap data!\n", objp - Objects));
+      mprintf(0, "Warning: Object %d is set for lightmaps but has no lightmap data!\n", objp - Objects);
       cf_WriteByte(ofile, 0);
     } else {
       cf_WriteByte(ofile, 1);
@@ -4294,7 +4290,7 @@ int WriteFace(CFILE *ofile, face *fp) {
   if ((fp->flags & FF_LIGHTMAP) &&
       (fp->lmi_handle == BAD_LMI_INDEX || LightmapInfoRemap[fp->lmi_handle] == BAD_LMI_INDEX)) {
     fp->flags &= ~FF_LIGHTMAP;
-    mprintf((0, "Almost saved a bogus lightmap!\n"));
+    mprintf(0, "Almost saved a bogus lightmap!\n");
   }
 
   cf_WriteShort(ofile, fp->flags);
@@ -4315,7 +4311,7 @@ int WriteFace(CFILE *ofile, face *fp) {
 
   if (fp->light_multiple == 186) {
     fp->light_multiple = 4; // Get Jason, I'm looking for this bug!  Its safe to go past it, but I'm just on the lookout
-    mprintf((0, "Bogus light multiple detected...bashing!\n"));
+    mprintf(0, "Bogus light multiple detected...bashing!\n");
   }
 
   cf_WriteByte(ofile, fp->light_multiple);
@@ -5297,7 +5293,7 @@ int SaveLevel(char *filename, bool f_save_room_AABB) {
     EndChunk(ofile, chunk_start_pos);
 
   } catch (cfile_error *cfe) {
-    mprintf((0, "Error writing: file = <%s>, msg = \"%s\"\n", cfe->file->name, cfe->msg));
+    mprintf(0, "Error writing: file = <%s>, msg = \"%s\"\n", cfe->file->name, cfe->msg);
     ASSERT(cfe->read_write == CFE_WRITING);
     EditorMessageBox("Error writing file %s: %s", cfe->file->name, cfe->msg);
     cfclose(ofile);
@@ -5626,7 +5622,7 @@ void AlmostPageInAllData() {
   AlmostPageInLevelTexture(FindTextureName("LightFlareStar"));
   AlmostPageInLevelTexture(FindTextureName("LightFlare"));
 
-  // mprintf((0,"%d bytes to page in for the ship.\n",need_to_page_in));
+  // mprintf(0,"%d bytes to page in for the ship.\n",need_to_page_in);
   // Get static fireballs
   for (i = 0; i < NUM_FIREBALLS; i++) {
     char name[PAGENAME_LEN];
@@ -5637,7 +5633,7 @@ void AlmostPageInAllData() {
     if (id != -1)
       AlmostPageInLevelTexture(id);
   }
-  // mprintf((0,"%d bytes to page in for fireballs.\n",need_to_page_in));
+  // mprintf(0,"%d bytes to page in for fireballs.\n",need_to_page_in);
   // Get static sounds
   for (i = 0; i < NUM_STATIC_SOUNDS; i++) {
     int sid = FindSoundName(IGNORE_TABLE(Static_sound_names[i]));
@@ -5645,7 +5641,7 @@ void AlmostPageInAllData() {
     if (sid != -1)
       AlmostPageInSound(sid);
   }
-  // mprintf((0,"%d bytes to page in for static sounds.\n",need_to_page_in));
+  // mprintf(0,"%d bytes to page in for static sounds.\n",need_to_page_in);
   // First get textures
   for (i = 0; i <= Highest_room_index; i++) {
     if (!Rooms[i].used)
@@ -5656,7 +5652,7 @@ void AlmostPageInAllData() {
       AlmostPageInLevelTexture(rp->faces[t].tmap);
     }
   }
-  // mprintf((0,"%d bytes to page in for room textures.\n",need_to_page_in));
+  // mprintf(0,"%d bytes to page in for room textures.\n",need_to_page_in);
   // Touch all terrain textures
   for (i = 0; i < TERRAIN_TEX_WIDTH * TERRAIN_TEX_DEPTH; i++) {
     AlmostPageInLevelTexture(Terrain_tex_seg[i].tex_index);
@@ -5668,7 +5664,7 @@ void AlmostPageInAllData() {
 
   for (i = 0; i < Terrain_sky.num_satellites; i++)
     AlmostPageInLevelTexture(Terrain_sky.satellite_texture[i]);
-  // mprintf((0,"%d bytes to page in for the terrain.\n",need_to_page_in));
+  // mprintf(0,"%d bytes to page in for the terrain.\n",need_to_page_in);
   // Touch all objects
   for (i = 0; i <= Highest_object_index; i++) {
     object *obj = &Objects[i];
@@ -5683,7 +5679,7 @@ void AlmostPageInAllData() {
       continue;
     }
   }
-  // mprintf((0,"%d bytes to page in for objects.\n",need_to_page_in));
+  // mprintf(0,"%d bytes to page in for objects.\n",need_to_page_in);
 }
 
 // Go through all the data needing to be paged in, add it all up.
@@ -5736,7 +5732,7 @@ char *LocalizeLevelName(char *level) {
   Localization_SetLanguage(LANGUAGE_ENGLISH);
   // Save the current language, then bash it to english
   if (!CreateStringTable("level_names.str", &english_names, &num_english_names)) {
-    mprintf((0, "Couldn't open level_names stringtable!\n"));
+    mprintf(0, "Couldn't open level_names stringtable!\n");
     Localization_SetLanguage(save_lang);
     strcpy(local_name, level);
     return local_name;
@@ -5746,7 +5742,7 @@ char *LocalizeLevelName(char *level) {
   Localization_SetLanguage(save_lang);
 
   if (!CreateStringTable("level_names.str", &local_names, &num_local_names)) {
-    mprintf((0, "Couldn't open level_names stringtable!\n"));
+    mprintf(0, "Couldn't open level_names stringtable!\n");
     // destroy the english stringtable...
     DestroyStringTable(english_names, num_english_names);
 

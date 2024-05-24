@@ -725,7 +725,7 @@ int CObjectDialog::GetFreePlayerIndex()
 	{
 		if (slots[i]==0)
 		{
-			mprintf ((0,"Making new ship with id of %d...\n",i));
+			mprintf(0,"Making new ship with id of %d...\n",i);
 			return i;
 		}
 	}
@@ -743,7 +743,7 @@ void CObjectDialog::OnObjectPlaceObject()
 		objid=GetFreePlayerIndex();
 		if (objid==-1)
 		{
-			mprintf ((0,"No more player slots!  You already have %d players in this level!\n",MAX_NET_PLAYERS));
+			mprintf(0,"No more player slots!  You already have %d players in this level!\n",MAX_NET_PLAYERS);
 			return;
 		}
 
@@ -754,7 +754,7 @@ void CObjectDialog::OnObjectPlaceObject()
 	ASSERT(objid > -1);
 
 	if (!HObjectPlace(D3EditState.current_obj_type, objid)) {
-		mprintf((0, "Attempt to place object outside mine failed!\n"));
+		mprintf(0, "Attempt to place object outside mine failed!\n");
 	}	
 }
 

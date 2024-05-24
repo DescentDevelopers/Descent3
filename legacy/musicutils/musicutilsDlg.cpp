@@ -402,7 +402,7 @@ void CMusicutilsDlg::OpenThemeFile(const CString& filename)
 {
 #define CLEAR_PATHLIST for (iter = 0; iter < 16; curpath[iter++][0]=0);	iter = 0
 
-	mprintf((0, "Opening music theme file...\n"));
+	mprintf(0, "Opening music theme file...\n");
 
 	InfFile inf;
 	char operand[INFFILE_LINELEN];			// operand
@@ -495,7 +495,7 @@ void CMusicutilsDlg::OpenThemeFile(const CString& filename)
 
 force_error:
 		if (cmd == INFFILE_ERROR) 
-			mprintf((0,"Error in music file %s line %d.\n", filename, inf.line()));
+			mprintf(0,"Error in music file %s line %d.\n", filename, inf.line());
 	}
 
 	inf.Close();
@@ -512,7 +512,7 @@ void CMusicutilsDlg::SaveThemeFile()
 	char filename[PSFILENAME_LEN], ext[PSFILENAME_LEN];
 	int iter;
 
-	mprintf((0, "Saving music theme file...\n"));
+	mprintf(0, "Saving music theme file...\n");
 
 //	okay, we need to extract each tree item and create the necessary 'code' for
 //	musical theme file.

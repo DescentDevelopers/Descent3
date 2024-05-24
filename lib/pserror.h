@@ -212,7 +212,7 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
 #define ASSERT(x)                                                                                                      \
   do {                                                                                                                 \
     if (!(unsigned)(x)) {                                                                                              \
-      mprintf((0, "Assertion failed (%s) in %s line %d.\n", #x, __FILE__, __LINE__));                                  \
+      mprintf(0, "Assertion failed (%s) in %s line %d.\n", #x, __FILE__, __LINE__);                                  \
       if (Debug_break)                                                                                                 \
         DEBUG_BREAK();                                                                                                 \
       else                                                                                                             \
@@ -221,7 +221,7 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
   } while (0)
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
+    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
     if (Debug_break)                                                                                                   \
       DEBUG_BREAK();                                                                                                   \
     else                                                                                                               \
@@ -246,7 +246,7 @@ static inline void SetDebugBreakHandlers(void (*stop)(), void (*resume)()) {
 #define ASSERT(x) SDL_assert(x)
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
+    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
     if (Debug_break)                                                                                                   \
       DEBUG_BREAK();                                                                                                   \
     else                                                                                                               \

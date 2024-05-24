@@ -311,7 +311,7 @@ void BuildMinMaxTerrain() {
   int row_width, xoffset, yoffset, total_rows;
   int minheight, maxheight, cellheight;
 
-  mprintf((0, "Building min/max terrain table.\n"));
+  mprintf(0, "Building min/max terrain table.\n");
 
   // Calculate our integer y positions (0-255)
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++) {
@@ -821,7 +821,7 @@ int LoadPCXTerrain(char *filename) {
 
   lando = (uint8_t *)mem_malloc(total);
 
-  mprintf((0, "Heightmap is %d x %d\n", width, height));
+  mprintf(0, "Heightmap is %d x %d\n", width, height);
 
   while (run < total) {
     buf = cf_ReadByte(infile);

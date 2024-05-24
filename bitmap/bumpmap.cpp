@@ -46,7 +46,7 @@ void bump_InitBumpmaps() {
 void bump_ShutdownBumpmaps(void) {
   int i;
 
-  mprintf((0, "Freeing all bumpmap memory.\n"));
+  mprintf(0, "Freeing all bumpmap memory.\n");
 
   for (i = 0; i < MAX_BUMPMAPS; i++) {
     while (GameBumpmaps[i].flags & BUMPF_USED)
@@ -72,7 +72,7 @@ int bump_AllocBumpmap(int w, int h) {
 
   GameBumpmaps[n].data = (uint16_t *)mem_malloc(w * h * 2);
   if (!GameBumpmaps[n].data) {
-    mprintf((0, "NOT ENOUGHT MEMORY FOR BUMPMAP!\n"));
+    mprintf(0, "NOT ENOUGHT MEMORY FOR BUMPMAP!\n");
     Int3();
     return BAD_BUMP_INDEX;
   }

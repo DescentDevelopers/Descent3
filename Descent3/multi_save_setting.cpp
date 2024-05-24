@@ -261,7 +261,7 @@ int MultiLoadSettings(const char *filename) {
       if ((Netgame.difficulty > 4) || (Netgame.difficulty < 0))
         Netgame.difficulty = 0;
     } else {
-      mprintf((0, "Unknown line in multiplayer config file %s\t%s\n", toklabel, tokval));
+      mprintf(0, "Unknown line in multiplayer config file %s\t%s\n", toklabel, tokval);
     }
   };
   return 1;

@@ -293,7 +293,7 @@ BOOL CPhysicsDlg::OnInitDialog()
 		bbox->SetCheck (true);
 		break;
 	default:
-		mprintf((0, "ERROR: Invalid gravity flags cannot have PF_GRAVITY and PF_REVERSE_GRAVITY\n"));
+		mprintf(0, "ERROR: Invalid gravity flags cannot have PF_GRAVITY and PF_REVERSE_GRAVITY\n");
 //		Int3();
 		break;
 	}

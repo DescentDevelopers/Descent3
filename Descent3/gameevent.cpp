@@ -155,7 +155,7 @@ void ProcessNormalEvents() {
           // the object has died, kill the event
           FreeEvent(i);
           skip_event = true;
-          mprintf((0, "Game Event %d cancelled\n", i));
+          mprintf(0, "Game Event %d cancelled\n", i);
         }
       }
 
@@ -208,7 +208,7 @@ int CreateNewEvent(int type, int id, float length, void *data, int size, void (*
 
   num = AllocEvent();
   if (num == -1) {
-    mprintf((0, "WARNING: Event (type %d, id %d) did not get allocated\n", type, id));
+    mprintf(0, "WARNING: Event (type %d, id %d) did not get allocated\n", type, id);
     return -1; // couldn't do this event, no slots free
   }
 

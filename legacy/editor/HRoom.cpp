@@ -563,8 +563,8 @@ void ComputePlacedRoomMatrix()
 	vm_VectorToMatrix(&srcmat,&t,NULL,NULL);
 	vm_VectorAngleToMatrix(&Placed_room_orient,&Placed_room_orient.fvec,Placed_room_angle);
 
-	mprintf((0,"srcmat: %f %f %f\n",vm_GetMagnitude(&srcmat.fvec),vm_GetMagnitude(&srcmat.rvec),vm_GetMagnitude(&srcmat.uvec)));
-	mprintf((0,"orient: %f %f %f\n",vm_GetMagnitude(&Placed_room_orient.fvec),vm_GetMagnitude(&Placed_room_orient.rvec),vm_GetMagnitude(&Placed_room_orient.uvec)));
+	mprintf(0,"srcmat: %f %f %f\n",vm_GetMagnitude(&srcmat.fvec),vm_GetMagnitude(&srcmat.rvec),vm_GetMagnitude(&srcmat.uvec));
+	mprintf(0,"orient: %f %f %f\n",vm_GetMagnitude(&Placed_room_orient.fvec),vm_GetMagnitude(&Placed_room_orient.rvec),vm_GetMagnitude(&Placed_room_orient.uvec));
 
 	//Make sure the matrices are ok
 	vm_Orthogonalize(&srcmat);
@@ -573,7 +573,7 @@ void ComputePlacedRoomMatrix()
 	//Compute matrix to rotate src -> dest
  	vm_MatrixMulTMatrix(&Placed_room_rotmat,&srcmat,&Placed_room_orient);
 
-	mprintf((0,"rotmat: %f %f %f\n",vm_GetMagnitude(&Placed_room_rotmat.fvec),vm_GetMagnitude(&Placed_room_rotmat.rvec),vm_GetMagnitude(&Placed_room_rotmat.uvec)));
+	mprintf(0,"rotmat: %f %f %f\n",vm_GetMagnitude(&Placed_room_rotmat.fvec),vm_GetMagnitude(&Placed_room_rotmat.rvec),vm_GetMagnitude(&Placed_room_rotmat.uvec));
 
 	//Make sure the matrix is ok
 	vm_Orthogonalize(&Placed_room_rotmat);
@@ -2331,7 +2331,7 @@ recheck_face:;
 						}
 					}
 					if (f2 == rp->num_faces) {		//didn't find a match
-						//mprintf((0,"Couldn't find shared edge for %d:%d edge %d\n",r,f,v));
+						//mprintf(0,"Couldn't find shared edge for %d:%d edge %d\n",r,f,v);
 						possible_tjoints++;
 
 						//Look for vert on this edge
@@ -2357,7 +2357,7 @@ recheck_face:;
 									  			float d0 = vm_VectorDistance(&rp->verts[tt0],&rp->verts[vv0]);
 									  			float d1 = vm_VectorDistance(&rp->verts[tt0],&rp->verts[vv1]);
 												if ((d0 < edge_len) && (d1 < edge_len)) {
-													mprintf((0,"Adding %d to edge %d of %d:%d (from face %d)\n",tt0,v,r,f,f2));
+													mprintf(0,"Adding %d to edge %d of %d:%d (from face %d)\n",tt0,v,r,f,f2);
 													AddVertToFace(rp,f,tt0,v);
 													tjoints_fixed++;
 													goto recheck_face;
@@ -2384,8 +2384,8 @@ recheck_face:;
 		}
 	}
 
-	mprintf((0,"%d possible t-joints\n",possible_tjoints));
-	mprintf((0,"points_are_same_count = %d\n",points_are_same_count));
+	mprintf(0,"%d possible t-joints\n",possible_tjoints);
+	mprintf(0,"points_are_same_count = %d\n",points_are_same_count);
 
 	OutrageMessageBox(	"Level fix results:\n\n"
 								"    %d points added to portals\n"

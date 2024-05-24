@@ -237,14 +237,14 @@ bool Debug_Init(bool debugger, bool con_debug) {
 
     if (!Debug_NT) {
       Debug_ConsoleOpen(2, 1, 61, 18, 6, "Stats");
-      mprintf((0, "Win95 system.\n"));
+      mprintf(0, "Win95 system.\n");
     } else {
-      mprintf((0, "WinNT system.\n"));
+      mprintf(0, "WinNT system.\n");
     }
   }
 
   if (Debug_break) {
-    mprintf((0, "Debug Break enabled.\n"));
+    mprintf(0, "Debug Break enabled.\n");
   }
 
 #endif // ifndef RELEASE

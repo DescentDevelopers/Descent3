@@ -323,7 +323,7 @@ int CBriefParse::ParseBriefing(const char *filename) {
 
   strcpy(title, " ");
 
-  mprintf((0, "Parsing <%s>\n", filename));
+  mprintf(0, "Parsing <%s>\n", filename);
 
   // Open the file
   ifile = cfopen(filename, "rt");
@@ -822,12 +822,12 @@ int CBriefParse::ParseBriefing(const char *filename) {
 done_parsing:;
 
   if (abort) {
-    mprintf((0, "Parse aborted\n"));
+    mprintf(0, "Parse aborted\n");
   } else if (!parse_error) {
     if (reading_text) {
       ParseError("Missing '$endtext'");
     } else {
-      mprintf((0, "Parse sucessful\n"));
+      mprintf(0, "Parse sucessful\n");
     }
   }
 
@@ -1185,9 +1185,9 @@ done_parsing:
 
 // Generates an parsing error
 void CBriefParse::ParseError(const char *msg, const char *p) {
-  mprintf((0, "ERROR, line %d: %s\n", linenum, msg));
+  mprintf(0, "ERROR, line %d: %s\n", linenum, msg);
   if (p) {
-    mprintf((0, "  %s\n", p));
+    mprintf(0, "  %s\n", p);
   }
 
   parse_error = 1;

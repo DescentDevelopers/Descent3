@@ -109,10 +109,10 @@ bool EAX_Create(GUID *pGuid, LPDIRECTSOUND *lpds) {
       return false;
     }
 
-    mprintf((0, "EAX 2.0 support detected.\n"));
+    mprintf(0, "EAX 2.0 support detected.\n");
     hr = (*DLLEAXDirectSoundCreate)(pGuid, &EAX.m_lpds, NULL);
   } else {
-    mprintf((0, "EAX 1.0 support detected.\n"));
+    mprintf(0, "EAX 1.0 support detected.\n");
     hr = DirectSoundCreate(pGuid, &EAX.m_lpds, NULL);
   }
 
@@ -183,7 +183,7 @@ bool EAX_SetPrimaryBuffer() {
 
   if (EAX.m_lpksps == NULL) {
     if (FAILED(EAX.m_lpdsb->QueryInterface(IID_IKsPropertySet, (LPVOID *)&EAX.m_lpksps))) {
-      mprintf((0, "EAX: Error failed to query property set interface.\n"));
+      mprintf(0, "EAX: Error failed to query property set interface.\n");
       Int3();
       retval = false;
       goto error_sub;
@@ -226,7 +226,7 @@ bool EAX_SetPrimaryBuffer() {
 
 error_sub:
   if (retval == false) {
-    mprintf((0, "EAX: Error failed to query environmental support.\n"));
+    mprintf(0, "EAX: Error failed to query environmental support.\n");
     Int3();
     if (EAX.m_lpksps) {
       EAX.m_lpksps->Release();

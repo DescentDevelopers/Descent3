@@ -650,7 +650,7 @@ void CTextureGrWnd::Render()
 			Successive_count++;
 			if (Successive_count<2)
 			{
-				mprintf ((0,"Not doing opengl!\n"));
+				mprintf(0,"Not doing opengl!\n");
 				DoOpenGL=0;
 				first_time=1;
 			}
@@ -853,7 +853,7 @@ void CTextureGrWnd::OnPaint()
 
 void CTextureGrWnd::OnDestroy() 
 {
-//	mprintf((0, "CTextureGrWnd::OnDestroy:: m_grScreen\n"));
+//	mprintf(0, "CTextureGrWnd::OnDestroy:: m_grScreen\n");
 	CGrWnd::OnDestroy();
 	theApp.textured_view = NULL;
 }
@@ -1026,7 +1026,7 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point)
 			if (TSearch_found_type==TSEARCH_FOUND_OBJECT)
 			{
 				// Found an object
-				mprintf ((0,"Found an object! objnum=%d\n",TSearch_seg));
+				mprintf(0,"Found an object! objnum=%d\n",TSearch_seg);
 				SelectObject(TSearch_seg);
 				// start object moving if mouse down in an object.
 				ObjMoveManager.Start(this, m_grViewport->width(), m_grViewport->height(), &m_ViewPos, &m_ViewMatrix, point.x, point.y);							
@@ -1118,7 +1118,7 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		int roomnum,facenum;
 
-		//	mprintf((0,"ButtonDown %d,%d\n",point.x,point.y));
+		//	mprintf(0,"ButtonDown %d,%d\n",point.x,point.y);
 		TSearch_found_type=-1;
 		TSearch_seg=-1;
 		TSearch_on=1;
@@ -1221,7 +1221,7 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					vec=Rooms[roomnum].verts[Rooms[roomnum].faces[facenum].face_verts[i]];
 					float dist = vec.x*norm.x+vec.y*norm.y+vec.z*norm.z+plane_dist;
-					mprintf ((0,"Vertex %d distance from plane=%f\n",i,dist));
+					mprintf(0,"Vertex %d distance from plane=%f\n",i,dist);
 				}
 			}
 			else if (KEY_STATE(KEY_V))
@@ -1231,11 +1231,11 @@ void CTextureGrWnd::OnLButtonDown(UINT nFlags, CPoint point)
 				int roomb=(Curroomp - Rooms);
 				int answer=BOA_IsVisible(rooma,roomb);
 
-				mprintf ((0,"Answer 1 is %d\n",answer));
+				mprintf(0,"Answer 1 is %d\n",answer);
 
 				answer=BOA_IsVisible(roomb,rooma);
 
-				mprintf ((0,"Answer 2 is %d\n",answer));
+				mprintf(0,"Answer 2 is %d\n",answer);
 			}
 			else 
 			{									//Just change curface
@@ -1368,7 +1368,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point)
 			newobjnum = TSearch_seg;
 			do_popup = true;
 	
-			mprintf ((0,"Found an object! objnum=%d\n",newobjnum));
+			mprintf(0,"Found an object! objnum=%d\n",newobjnum);
 			SelectObject(newobjnum);
 
 			Render();
@@ -1395,7 +1395,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point)
 			roomnum=TSearch_seg;
 			facenum=TSearch_face;
 			m_StartFlip = FALSE;			// unsignal flip.
-			mprintf((0,"found point: %d %d %d\n",roomnum,facenum));
+			mprintf(0,"found point: %d %d %d\n",roomnum,facenum);
 
 			do_popup = true;
 
@@ -1422,7 +1422,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point)
 		if(popup.CreatePopupMenu())
 			ret=SetupPopup(&popup,title);
 		else {
-			mprintf((0,"Warning: Could not create popup menu!\n"));
+			mprintf(0,"Warning: Could not create popup menu!\n");
 			ret=false;
 		}
 
@@ -1448,7 +1448,7 @@ void CTextureGrWnd::OnRButtonDown(UINT nFlags, CPoint point)
 
 		if (ret)
 			if(!popup.TrackPopupMenu(TPM_LEFTALIGN,point.x,point.y+20,this,NULL))
-				mprintf((0,"TrackPopupMenu error!\n"));
+				mprintf(0,"TrackPopupMenu error!\n");
 	}
 
 	TexGrStopOpenGL();
@@ -1470,72 +1470,72 @@ bool CTextureGrWnd::SetupPopup(CMenu *popup,char *title)
 	if(!popup->AppendMenu(MF_STRING+MF_DISABLED,POPUP_OBJNAME,title?title:"(no name)"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Title to popup\n"));
+		mprintf(0,"Warning: Could not add Title to popup\n");
 	}
 	if(!popup->AppendMenu(MF_SEPARATOR))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add seperator to popup\n"));
+		mprintf(0,"Warning: Could not add seperator to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_COPY,"Copy"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Copy to popup\n"));
+		mprintf(0,"Warning: Could not add Copy to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_CUT,"Cut"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Cut to popup\n"));
+		mprintf(0,"Warning: Could not add Cut to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_PASTE,"Paste"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Paste to popup\n"));
+		mprintf(0,"Warning: Could not add Paste to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_DELETE,"Delete"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Delete to popup\n"));
+		mprintf(0,"Warning: Could not add Delete to popup\n");
 	}
 	if(!popup->AppendMenu(MF_SEPARATOR))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add seperator to popup\n"));
+		mprintf(0,"Warning: Could not add seperator to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_EDITNAME,"Edit Name"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Edit Name to popup\n"));
+		mprintf(0,"Warning: Could not add Edit Name to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_SOUND,"Sound"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Sound to popup\n"));
+		mprintf(0,"Warning: Could not add Sound to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_EDITSCRIPT,"Edit Dallas Scripts"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Edit Script to popup\n"));
+		mprintf(0,"Warning: Could not add Edit Script to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_NEWSCRIPT,"New Dallas Script"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add New Script to popup\n"));
+		mprintf(0,"Warning: Could not add New Script to popup\n");
 	}
 	if(!popup->AppendMenu(MF_STRING,POPUP_CUSTOMDEFAULTSCRIPT,"Set a custom default script"))
 	{
 		ret=false;
-		mprintf((0,"Warning: Could not add Set a custom default script to popup\n"));
+		mprintf(0,"Warning: Could not add Set a custom default script to popup\n");
 	}
 	//@@if(!popup->AppendMenu(MF_STRING,POPUP_PROPERTIES,"Properties"))
 	//@@{
 	//@@	ret=false;
-	//@@	mprintf((0,"Warning: Could not add Properties to popup\n"));
+	//@@	mprintf(0,"Warning: Could not add Properties to popup\n");
 	//@@}
 	//@@if(!popup->AppendMenu(MF_STRING,POPUP_COPYID,"Copy UID"))
 	//@@{
 	//@@	ret=false;
-	//@@	mprintf((0,"Warning: Could not add Copy UID to popup\n"));
+	//@@	mprintf(0,"Warning: Could not add Copy UID to popup\n");
 	//@@}
 	return ret;
 }
@@ -1605,7 +1605,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 		{
 			case POPUP_EDITSCRIPT: 
 				{
-					mprintf((0,"Edit script for object %d\n",Cur_object_index));
+					mprintf(0,"Edit script for object %d\n",Cur_object_index);
 					//Nate: Add code here to edit/view an object's scripts
 
 					// Make sure Dallas is open
@@ -1629,7 +1629,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 
 			case POPUP_NEWSCRIPT:
 				{
-					mprintf((0,"Add new script for object %d\n",Cur_object_index));
+					mprintf(0,"Add new script for object %d\n",Cur_object_index);
 					//Nate: Add code here to create a new script for an object
 
 					// Make sure Dallas is open
@@ -1742,7 +1742,7 @@ BOOL CTextureGrWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			//@@	{
 			//@@		CObjectPropertiesDialog prop_dlg;
 			//@@		object *curobj=&Objects[Cur_object_index];
-			//@@		mprintf((0,"Properties selected\n")); 
+			//@@		mprintf(0,"Properties selected\n"); 
 			//@@		if(prop_dlg.DoModal()==IDOK) UpdateProperties(&prop_dlg);
 			//@@		break;
 			//@@	}

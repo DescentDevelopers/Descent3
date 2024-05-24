@@ -233,7 +233,7 @@ bool UISnazzyTextItem::draw(int x, int y, tUIDrawClass draw_class) {
 
     set_color(GR_RGB(r + (int)(r2 * m_data.f), g + (int)(g2 * m_data.f), b + (int)(b2 * m_data.f)));
     //	set_alpha((uint8_t)(m_data.f*m_internaldata.i));
-    //	mprintf((0, "%x\n", (unsigned)get_color()));
+    //	mprintf(0, "%x\n", (unsigned)get_color());
   }
 
   return UITextItem::draw(x, y, draw_class);

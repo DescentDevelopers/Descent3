@@ -1074,7 +1074,7 @@ void KillObject(object *objp, object *killer, float damage) {
 
         delay_time = delay_min + (delay_max - delay_min) * ps_rand() / D3_RAND_MAX;
 
-        mprintf((0, "Using %d\n", i));
+        mprintf(0, "Using %d\n", i);
         break;
       }
       r -= p;
@@ -1166,7 +1166,7 @@ float GetDeathAnimTime(object *objp) {
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_frame) /
                          (objp->rtype.pobj_info.anim_end_frame - objp->rtype.pobj_info.anim_start_frame);
       extra_time = std::min<float>(extra_time, 3.0); // limit extra time to 3 seconds
-      mprintf((0, "extra_time = %2f\n", extra_time));
+      mprintf(0, "extra_time = %2f\n", extra_time);
 
       death_time = Object_info[objp->id].anim[objp->ai_info->movement_type].elem[AS_DEATH].spc + 0.25 + extra_time;
     }
@@ -1269,7 +1269,7 @@ void KillObject(object *objp, object *killer, float damage, int death_flags, flo
         SetObjectControlType(objp, CT_DYING_AND_AI);
         int next_anim = AS_DEATH;
         GoalAddGoal(objp, AIG_SET_ANIM, (void *)&next_anim, ACTIVATION_BLEND_LEVEL);
-        mprintf((0, "Start dying anim "));
+        mprintf(0, "Start dying anim ");
       }
     }
 

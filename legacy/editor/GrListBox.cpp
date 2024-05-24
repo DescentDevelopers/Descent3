@@ -195,7 +195,7 @@ void CGrListBox::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		//	tex_start accordingly.
 			SCROLLINFO si;
 
-		//	mprintf((0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, cur_pos));
+		//	mprintf(0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, cur_pos);
 			if (new_pos < cur_pos) RowUp(cur_pos-new_pos);
 			if (new_pos > cur_pos) RowDown(new_pos-cur_pos);
 
@@ -231,11 +231,11 @@ bool CGrListBox::RowUp(int rows, bool draw)
 
 		olditem = m_ListItem;
 		m_ListItem = ListPrevItem(m_ListItem);
-		//mprintf((0, "m_ListItem = %d\n", m_ListItem));
+		//mprintf(0, "m_ListItem = %d\n", m_ListItem);
 		if (m_ListItem > olditem) {
 			m_ListItem = olditem;
 			done = 1;
-		//	mprintf((0, "m_ListItem = %d\n", m_ListItem));
+		//	mprintf(0, "m_ListItem = %d\n", m_ListItem);
 		}
 		else if (old<=m_ListItem)	{
 			m_ListItem=old;

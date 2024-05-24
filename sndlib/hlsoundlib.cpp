@@ -508,7 +508,7 @@ void hlsSystem::SetLLSoundQuantity(int n_sounds) {
     n_sounds = MAX_SOUNDS_MIXED;
   }
   n_lls_sounds = n_sounds;
-  mprintf((1, "SNDLIB: Allow %d sounds to be mixed.\n", n_sounds));
+  mprintf(1, "SNDLIB: Allow %d sounds to be mixed.\n", n_sounds);
   if (m_f_hls_system_init) {
     InitSoundLib(NULL, Sound_mixer, Sound_quality, false);
   }
@@ -562,7 +562,7 @@ int hlsSystem::InitSoundLib(oeApplication *sos, char mixer_type, char quality, b
 void hlsSystem::KillSoundLib(bool f_kill_sound_list) {
   int i;
   if (m_f_hls_system_init) {
-    mprintf((1, "m_sounds_played %d\n", m_sounds_played));
+    mprintf(1, "m_sounds_played %d\n", m_sounds_played);
     // clean up stream system
     AudioStream::Shutdown();
     for (i = 0; i < MAX_SOUND_OBJECTS; i++) {
@@ -632,7 +632,7 @@ void hlsSystem::StopAllSounds() {
 
   SoundRenderReset();
 
-  mprintf((0, "Stopped all sounds\n"));
+  mprintf(0, "Stopped all sounds\n");
 }
 // Code for the beginning and ending of a frame of action
 // Begin_sound_frame(listener pos/orient/velocity)
@@ -708,7 +708,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
       counter++;
       //			oldvolume = m_sound_objects[i].volume;
       //			oldpan = m_sound_objects[i].pan;
-      //			mprintf((0, "SO %d playing: uid %d\n", i, m_sound_objects[i].m_sound_uid));
+      //			mprintf(0, "SO %d playing: uid %d\n", i, m_sound_objects[i].m_sound_uid);
       // Handle high-level only sounds
       if (m_sound_objects[i].m_obj_type_flags & SIF_TOO_FAR) {
         if (m_sound_objects[i].m_obj_type_flags & SIF_LOOPING) {
@@ -742,7 +742,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
           if (m_sound_objects[i].m_sound_uid != -1) {
             m_sound_objects[i].m_obj_type_flags &= (~SIF_TOO_FAR);
           } else {
-            // mprintf((0, "LLSound full 3\n"));
+            // mprintf(0, "LLSound full 3\n");
           }
         }
         continue;
@@ -797,7 +797,7 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
                 fvi_info hit_data;
                 fvi_query fq;
 
-                //	mprintf((0, "Obstruction test.\n"));
+                //	mprintf(0, "Obstruction test.\n");
 
                 hit_data.hit_type[0] = HIT_WALL;
                 fq.p1 = &Viewer_object->pos;
@@ -822,11 +822,11 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
       }
     }
   }
-  // mprintf((0, "BeginSoundFrame: used sound_objects %d\n", counter));
+  // mprintf(0, "BeginSoundFrame: used sound_objects %d\n", counter);
 end_beginsoundframe:
   AudioStream::Frame();
   DebugBlockPrint("DS");
-  mprintf_at((3, 1, 0, "HNS: %04d", counter));
+  mprintf_at(3, 1, 0, "HNS: %04d", counter);
 }
 
 // Plays the deffered 3d stuff
@@ -1113,8 +1113,8 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   }
   // no free slots? hmmm....
   if (i >= MAX_SOUND_OBJECTS) {
-    mprintf((2, "HLSOUNDLIB HOLY COW: Over %d sounds trying to play(beyond max) - %s\n", MAX_SOUND_OBJECTS,
-             Sounds[sound_index].name));
+    mprintf(2, "HLSOUNDLIB HOLY COW: Over %d sounds trying to play(beyond max) - %s\n", MAX_SOUND_OBJECTS,
+             Sounds[sound_index].name);
     //		Int3();
     return -1;
   }
@@ -1157,7 +1157,7 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   }
   if (m_sound_objects[i].m_sound_uid == -1) {
     m_sound_objects[i].m_obj_type_flags |= SIF_TOO_FAR;
-    // mprintf((0, "LLSound full 2\n"));
+    // mprintf(0, "LLSound full 2\n");
   } else if (!f_audible) {
     m_sound_objects[i].m_obj_type_flags |= SIF_TOO_FAR;
   }
@@ -1205,10 +1205,10 @@ int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pa
     if (m_sound_objects[i].m_obj_type_flags == SIF_UNUSED)
       break;
   }
-  //	mprintf((0, "HL %d\n", i));
+  //	mprintf(0, "HL %d\n", i);
   //	ASSERT(i < MAX_SOUND_OBJECTS);
   if (i >= MAX_SOUND_OBJECTS) {
-    mprintf((3, "Play2DSound: Max Sounds Objects used\n"));
+    mprintf(3, "Play2DSound: Max Sounds Objects used\n");
     //		Int3();
     return -1;
   }
@@ -1226,11 +1226,11 @@ int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pa
   //	m_sound_objects[i].play_info.sample_skip_interval = static_skip;
   //
   //	if(m_sound_objects[i].play_info.sample_skip_interval == 0)
-  //		mprintf((0, "22.5k\n"));
+  //		mprintf(0, "22.5k\n");
   //	else if (m_sound_objects[i].play_info.sample_skip_interval == 1)
-  //		mprintf((0, "11.25k\n"));
+  //		mprintf(0, "11.25k\n");
   //	else
-  //		mprintf((0, "5.75k\n"));
+  //		mprintf(0, "5.75k\n");
   m_sound_objects[i].m_sound_index = sound_index;
   m_sound_objects[i].m_sound_uid =
       m_ll_sound_ptr->PlaySound2d(&m_sound_objects[i].play_info, sound_index, volume * m_master_volume, pan,
@@ -1239,7 +1239,7 @@ int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pa
   if (m_sound_objects[i].m_sound_uid == -1) {
     m_sound_objects[i].m_obj_type_flags = SIF_UNUSED;
     m_sound_objects[i].m_hlsound_uid = -1;
-    mprintf((1, "Play2DSound: $%d Unplayed\n", i));
+    mprintf(1, "Play2DSound: $%d Unplayed\n", i);
     return -1;
   }
 
@@ -1263,7 +1263,7 @@ int hlsSystem::PlayStream(int unique_handle, void *data, int size, int stream_fo
       break;
   }
   if (i >= MAX_SOUND_OBJECTS) {
-    mprintf((2, "PlayStream:Max Sounds Objects\n"));
+    mprintf(2, "PlayStream:Max Sounds Objects\n");
     //		Int3();
     return -1;
   }
@@ -1287,7 +1287,7 @@ int hlsSystem::PlayStream(int unique_handle, void *data, int size, int stream_fo
   if (m_sound_objects[i].m_sound_uid == -1) {
     m_sound_objects[i].m_obj_type_flags = SIF_UNUSED;
     m_sound_objects[i].m_hlsound_uid = -1;
-    mprintf((2, "LLSound full 1\n"));
+    mprintf(2, "LLSound full 1\n");
     return -1;
   }
 
@@ -1323,7 +1323,7 @@ void hlsSystem::StopSound(int sound_obj_index, uint8_t f_stop_priority) {
   m_sound_objects[sound_obj_index].m_obj_type_flags &= (~SIF_LOOPING);
 
   if (m_sound_objects[sound_obj_index].m_sound_uid != -1) {
-    mprintf((1, "stopSound %d \n", m_sound_objects[sound_obj_index].m_sound_uid));
+    mprintf(1, "stopSound %d \n", m_sound_objects[sound_obj_index].m_sound_uid);
     m_ll_sound_ptr->StopSound(m_sound_objects[sound_obj_index].m_sound_uid, f_stop_priority);
   }
   if (f_stop_priority == SKT_STOP_IMMEDIATELY || m_sound_objects[sound_obj_index].m_sound_uid == -1) {

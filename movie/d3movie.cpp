@@ -503,7 +503,7 @@ int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
   char real_name[_MAX_PATH];
 #ifdef __LINUX__
   if (!mve_FindMovieFileRealName(pMovieName, real_name)) {
-    mprintf((0, "MOVIE: No such file %s\n", pMovieName));
+    mprintf(0, "MOVIE: No such file %s\n", pMovieName);
     return MVELIB_FILE_ERROR;
   }
 #else
@@ -512,7 +512,7 @@ int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
   // open movie file.
   int hFile = open(real_name, O_RDONLY | O_BINARY);
   if (hFile == -1) {
-    mprintf((0, "MOVIE: Unable to open %s\n", real_name));
+    mprintf(0, "MOVIE: Unable to open %s\n", real_name);
     return MVELIB_FILE_ERROR;
   }
 
@@ -532,14 +532,14 @@ int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
 
   MovieSoundDevice soundDevice;
   if (!mve_InitSound(pApp, soundDevice)) {
-    mprintf((0, "Failed to initialize sound\n"));
+    mprintf(0, "Failed to initialize sound\n");
     close(hFile);
     return MVELIB_INIT_ERROR;
   }
 
   int result = MVE_rmPrepMovie(hFile, -1, -1, 0);
   if (result != 0) {
-    mprintf((0, "PrepMovie result = %d\n", result));
+    mprintf(0, "PrepMovie result = %d\n", result);
     close(hFile);
     mve_CloseSound(soundDevice);
     return MVELIB_INIT_ERROR;
@@ -727,7 +727,7 @@ intptr_t mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app
   char real_name[_MAX_PATH];
 #ifdef __LINUX__
   if (!mve_FindMovieFileRealName(mvename, real_name)) {
-    mprintf((0, "MOVIE: No such file %s\n", mvename));
+    mprintf(0, "MOVIE: No such file %s\n", mvename);
     *fhandle = -1;
     return 0;
   }
@@ -737,7 +737,7 @@ intptr_t mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app
   int hfile = open(real_name, O_RDONLY | O_BINARY);
 
   if (hfile == -1) {
-    mprintf((1, "MOVIE: Unable to open %s\n", real_name));
+    mprintf(1, "MOVIE: Unable to open %s\n", real_name);
     *fhandle = -1;
     return 0;
   }

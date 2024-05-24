@@ -148,7 +148,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
     return false;
 
   if (!inf.Open(file, "[theme file]", OMFLex)) {
-    mprintf((0, "Unable to find requested theme %s or bad file.\n", file));
+    mprintf(0, "Unable to find requested theme %s or bad file.\n", file);
     return false;
   }
 
@@ -210,10 +210,10 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
     }
   force_pre_error:
     if (cmd == INFFILE_ERROR) {
-      mprintf((0, "Error in music file %s line %d.\n", file, inf.line()));
+      mprintf(0, "Error in music file %s line %d.\n", file, inf.line());
       Int3();
     } else if (cmd == OMFFILEERR_LBLOVERFLOW) {
-      mprintf((0, "Error in music file %s line %d (too many labels).\n", file, inf.line()));
+      mprintf(0, "Error in music file %s line %d (too many labels).\n", file, inf.line());
       Int3();
     }
   }
@@ -222,7 +222,7 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
 
   // reopen for SECOND PASS (actual code read)
   if (!inf.Open(file, "[theme file]", OMFLex)) {
-    mprintf((0, "Unable to find requested theme %s or bad file.\n", file));
+    mprintf(0, "Unable to find requested theme %s or bad file.\n", file);
     return false;
   }
 
@@ -357,13 +357,13 @@ bool OutrageMusicSeq::LoadTheme(const char *file) {
 
   force_error:
     if (cmd == INFFILE_ERROR) {
-      mprintf((0, "Error in music file %s line %d.\n", file, inf.line()));
+      mprintf(0, "Error in music file %s line %d.\n", file, inf.line());
       Int3();
     } else if (cmd == OMFFILEERR_ADDSECTION) {
-      mprintf((0, "Error in music file %s line %d (failed to add section).\n", file, inf.line()));
+      mprintf(0, "Error in music file %s line %d (failed to add section).\n", file, inf.line());
       Int3();
     } else if (cmd == OMFFILEERR_INSOVERFLOW) {
-      mprintf((0, "Error in music file %s line %d (too many instructions).\n", file, inf.line()));
+      mprintf(0, "Error in music file %s line %d (too many instructions).\n", file, inf.line());
       Int3();
     }
   }

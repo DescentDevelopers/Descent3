@@ -124,7 +124,7 @@ HRESULT WINAPI gr_d3d_enum( LPGUID lpGUID,
 {
 	int use_it = 0;
 	
-//	mprintf(( "Found 3d device %s: %s\n",  lpDeviceName, lpDeviceDescription ));
+//	mprintf( "Found 3d device %s: %s\n",  lpDeviceName, lpDeviceDescription );
 
 	if ( lpHWDesc && lpHWDesc->dwFlags != 0 )	{
 		use_it = 1;
@@ -166,7 +166,7 @@ BOOL WINAPI gr_d2d_enum( LPGUID lpGUID,
 	
 	d3d_device *d2d = (d3d_device *)&D2D_devices[Num_d2d_devices++];
 
-//	mprintf(( "Found 2d device %s: %s\n",  lpDeviceName, lpDeviceDescription ));
+//	mprintf( "Found 2d device %s: %s\n",  lpDeviceName, lpDeviceDescription );
 	
 	if ( lpGUID )	{
 		memmove( &d2d->guid_2d, lpGUID, sizeof(GUID) );
@@ -263,7 +263,7 @@ D3DError:
 		lpDD1->Release();
 		lpDD1 = NULL;
 	}
-	//mprintf(( "Direct3D Polling failed.\n" ));
+	//mprintf( "Direct3D Polling failed.\n" );
 
 	return;
 }
@@ -274,7 +274,7 @@ void check_glide()
 	module *GlideDLLHandle;
 
 	if ( !(GlideDLLHandle=LoadGlideDLL()) ) 	{
-		//mprintf(( "Glide DLL not found!\n" ));
+		//mprintf( "Glide DLL not found!\n" );
 		return;
 	}
 

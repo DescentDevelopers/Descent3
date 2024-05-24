@@ -90,7 +90,7 @@ void CD3Splash::PutText(char *buf)
 
 	lstrcpy(&m_TextLines[m_CurLine-1][0], buf);
 
-//	mprintf((1, "%d:%s",m_CurLine-1, m_TextLines[m_CurLine-1]));
+//	mprintf(1, "%d:%s",m_CurLine-1, m_TextLines[m_CurLine-1]);
 	
 	SetRect(&rect, SPLASHTEXT_LEFT, SPLASHTEXT_TOP, SPLASHTEXT_RIGHT, SPLASHTEXT_BOTTOM);
 	InvalidateRect(&rect, FALSE);
