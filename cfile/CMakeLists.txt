@@ -5,6 +5,9 @@ set(CPPS
 )
 
 add_library(cfile STATIC ${CPPS})
+target_link_libraries(cfile PRIVATE
+  ddio
+)
 target_include_directories(cfile PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/cfile

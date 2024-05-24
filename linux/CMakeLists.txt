@@ -17,3 +17,6 @@ target_include_directories(linux PUBLIC
   ${PROJECT_SOURCE_DIR}/linux
   >
 )
+target_link_libraries(linux PRIVATE
+  ddio
+)

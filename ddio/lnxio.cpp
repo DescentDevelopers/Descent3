@@ -55,17 +55,16 @@
 // Linux IO System Main Library Interface
 // ----------------------------------------------------------------------------
 
-#include <cstdio>
 #include <cstdarg>
+#include <cstdio>
 
 #ifdef MACOSX
 #include <mach-o/dyld.h>
 #endif
 
-#include "pserror.h"
 #include "application.h"
-#include "ddio_lnx.h"
 #include "ddio.h"
+#include "pserror.h"
 
 bool DDIO_init = false;
 oeLnxApplication *Lnx_app_obj = NULL;

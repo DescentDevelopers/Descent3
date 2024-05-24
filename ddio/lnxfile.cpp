@@ -57,27 +57,26 @@
  * $NoKeywords: $
  */
 
+#include <cerrno>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <csignal>
+#include <dirent.h>
+#include <fcntl.h>
+#include <glob.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <utime.h>
+
+#if MACOSX
+#include <ctype.h>
+#endif
+
 #include "ddio.h"
 #include "pserror.h"
 #include "mem.h"
-#include "linux_fix.h"
-
-#if MACOSX
-#include <cctype>
-#endif
-
-#include <stdlib.h>
-#include <stdarg.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <utime.h>
-#include <glob.h>
-#include <string.h>
-#include <errno.h>
-#include <signal.h>
-#include <dirent.h>
 
 #define _MAX_DIR 256
 

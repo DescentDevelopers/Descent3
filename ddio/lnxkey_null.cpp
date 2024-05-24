@@ -38,19 +38,7 @@
  * $NoKeywords: $
  */
 
-#include "pserror.h"
-#include "mono.h"
 #include "ddio.h"
-#include "ddio_lnx.h"
-#include "application.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <fcntl.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/types.h>
 
 extern volatile struct tLnxKeys {
   union {

@@ -49,19 +49,9 @@
 // ----------------------------------------------------------------------------
 //	Keyboard Interface
 // ----------------------------------------------------------------------------
-#include "pserror.h"
-#include "mono.h"
-#include "ddio.h"
-#include "ddio_lnx.h"
 #include "application.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
+#include "ddio.h"
+#include "mono.h"
 
 volatile struct tLnxKeys {
   union {

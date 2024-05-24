@@ -24,9 +24,8 @@
 #ifndef DDIO_LNX_H
 #define DDIO_LNX_H
 
-#include "pstypes.h"
+#include "application.h"
 
-class oeLnxApplication;
 extern oeLnxApplication *Lnx_app_obj;
 
 #endif

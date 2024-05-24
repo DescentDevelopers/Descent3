@@ -24,6 +24,7 @@ set(CPPS
 add_library(manage STATIC ${HEADERS} ${CPPS})
 target_link_libraries(manage PRIVATE
   cfile
+  ddio
   sndlib
   stream_audio
 )

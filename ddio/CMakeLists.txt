@@ -1,0 +1,34 @@
+set(CPPS
+  ddio.cpp
+  key.cpp
+  $<$<PLATFORM_ID:Darwin,Linux>:
+    lnxfile.cpp
+    lnxforcefeedback.cpp
+    lnxio.cpp
+    sdljoy.cpp
+    lnxkey.cpp
+    lnxkey_null.cpp
+    lnxmouse.cpp
+    lnxtimer.cpp
+    lnxcdrom.cpp
+    lnxkey_sdl.cpp
+  >
+  $<$<PLATFORM_ID:Windows>:
+    winfile.cpp
+    winforcefeedback.cpp
+    winio.cpp
+    winjoy.cpp
+    winkey.cpp
+    winmouse.cpp
+    wintimer.cpp
+  >
+)
+add_library(ddio STATIC ${CPPS})
+target_link_libraries(ddio
+  ddebug
+)
+target_include_directories(ddio PUBLIC
+  $<BUILD_INTERFACE:
+  ${PROJECT_SOURCE_DIR}/ddio
+  >
+)

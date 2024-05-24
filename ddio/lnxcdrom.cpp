@@ -86,15 +86,13 @@
  * $NoKeywords: $
  */
 
-#include <sys/types.h>
-#include <stdlib.h>
-#include <sys/stat.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
+#include <sys/stat.h>
 #include <unistd.h>
-#include "mem.h"
+
 #include "mono.h"
 #include "ddio.h"
 #include "debug.h"

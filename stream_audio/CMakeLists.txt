@@ -4,7 +4,8 @@ set(CPPS
   streamaudio.cpp)
 
 add_library(stream_audio STATIC ${HEADERS} ${CPPS})
-target_link_libraries(stream_audio
+target_link_libraries(stream_audio PRIVATE
+  ddio
   libacm
   sndlib
 )

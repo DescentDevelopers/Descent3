@@ -190,9 +190,7 @@
 #ifndef DDIO_H
 #define DDIO_H
 
-class oeApplication;
-
-#include <stdio.h>
+#include <cstdio>
 #include <cstdint>
 
 #include "pstypes.h"
