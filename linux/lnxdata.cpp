@@ -163,7 +163,7 @@ bool oeLnxAppDatabase::read(const char *label, void *entry, int wordsize) {
     *((uint8_t *)entry) = (uint8_t)data;
     break;
   case 2:
-    *((unsigned short *)entry) = (unsigned short)data;
+    *((uint16_t *)entry) = (uint16_t)data;
     break;
   case 4:
     *((uint32_t *)entry) = (uint32_t)data;

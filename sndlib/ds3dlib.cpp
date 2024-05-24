@@ -2708,7 +2708,7 @@ void win_llsSystem::SetListener(pos_state *cur_pos) {
 }
 
 // AdjustSound2d -- adjusts the volume, pan, and freq. of a sound
-void win_llsSystem::AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) {
+void win_llsSystem::AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) {
   int current_slot;
 
   if (!m_f_sound_lib_init)

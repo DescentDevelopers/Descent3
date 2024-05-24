@@ -373,7 +373,7 @@ void lnxsound::SetListener(pos_state *cur_pos) {
 }
 
 int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float adjusted_volume,
-                          bool f_looped, float reverb) //, unsigned short frequency
+                          bool f_looped, float reverb) //, uint16_t frequency
 {
   float volume = adjusted_volume; // Adjust base volume by sent volume, let 3d stuff do the rest
 
@@ -415,7 +415,7 @@ int lnxsound::PlaySound3d(play_information *play_info, int sound_index, pos_stat
   return PlaySound2d(play_info, sound_index, volume, pan, f_looped);
 }
 
-void lnxsound::AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) {
+void lnxsound::AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) {
   int current_slot;
 
   if (sound_device == 0)

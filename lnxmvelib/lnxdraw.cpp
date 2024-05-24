@@ -713,7 +713,7 @@ static int GetXSharedMemory(int size) {
 
 inline void BltBuffer32ToPixMap16(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
   uint8_t *data;
-  unsigned short int l;
+  uint16_t int l;
   int r, g, b, a;
   uint32_t c;
 
@@ -740,7 +740,7 @@ inline void BltBuffer16ToPixMap16(uint8_t *pixmap, uint8_t *buffer, int width, i
 
 inline void BltBuffer32ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
   uint8_t *data;
-  unsigned short int l;
+  uint16_t int l;
   int r, g, b, a;
   uint32_t c;
 
@@ -761,13 +761,13 @@ inline void BltBuffer32ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, i
 
 inline void BltBuffer16ToPixMap24(uint8_t *pixmap, uint8_t *buffer, int width, int height) {
   uint8_t *data;
-  unsigned short int l;
+  uint16_t int l;
   int r, g, b, a;
-  unsigned short c;
+  uint16_t c;
 
   data = (uint8_t *)pixmap;
   for (l = height * width; l > 0; l--) {
-    c = *(unsigned short *)buffer;
+    c = *(uint16_t *)buffer;
     a = ((c & 0x8000) >> 15);
     r = ((c & 0x7C00) >> 10);
     g = ((c & 0x03E0) >> 5);

@@ -798,11 +798,11 @@ void GetObjectPointInWorld(vector *dest, object *obj, int subnum, int vertnum);
 
 // These functions are for setting and getting an objects animation information
 // (used in multiplayer games and the like)
-bool ObjGetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info);
-void ObjSetAnimUpdate(unsigned short objnum, custom_anim *multi_anim_info);
+bool ObjGetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info);
+void ObjSetAnimUpdate(uint16_t objnum, custom_anim *multi_anim_info);
 
-void ObjGetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info);
-void ObjSetTurretUpdate(unsigned short objnum, multi_turret *multi_turret_info);
+void ObjGetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info);
+void ObjSetTurretUpdate(uint16_t objnum, multi_turret *multi_turret_info);
 
 // Returns the original parent for the given object.  Returns self if it has no parent
 object *ObjGetUltimateParent(object *child);

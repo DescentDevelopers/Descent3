@@ -166,11 +166,11 @@
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
 static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, uint32_t value) { st->S_un.S_addr = value; }
 static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *value = st->S_un.S_addr; }
-static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
+static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, uint16_t s_w1, uint16_t s_w2) {
   st->S_un.S_un_w.s_w1 = s_w1;
   st->S_un.S_un_w.s_w2 = s_w2;
 }
-static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
+static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, uint16_t *s_w1, uint16_t *s_w2) {
   *s_w1 = st->S_un.S_un_w.s_w1;
   *s_w2 = st->S_un.S_un_w.s_w2;
 }
@@ -243,13 +243,13 @@ extern bool Use_DirectPlay;
 // helper macros for working with SOCKADDR_IN to make it look nicer between windows and Linux
 static inline void INADDR_SET_SUN_SADDR(struct in_addr *st, uint32_t value) { st->s_addr = value; }
 static inline void INADDR_GET_SUN_SADDR(struct in_addr *st, uint32_t *value) { *value = st->s_addr; }
-static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, unsigned short s_w2) {
+static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, uint16_t s_w1, uint16_t s_w2) {
   union {
     struct {
       uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
     uint32_t S_addr;
   } S_un;
@@ -258,13 +258,13 @@ static inline void INADDR_SET_SUN_SUNW(struct in_addr *st, unsigned short s_w1, 
   S_un.S_un_w.s_w2 = s_w2;
   st->s_addr = S_un.S_addr;
 }
-static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, unsigned short *s_w1, unsigned short *s_w2) {
+static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, uint16_t *s_w1, uint16_t *s_w2) {
   union {
     struct {
       uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
     uint32_t S_addr;
   } S_un;
@@ -280,7 +280,7 @@ static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t
       uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
     uint32_t S_addr;
   } S_un;
@@ -298,7 +298,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
       uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
     uint32_t S_addr;
   } S_un;

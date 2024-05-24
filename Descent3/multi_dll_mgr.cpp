@@ -381,7 +381,7 @@ extern int Num_modems_found;
 #endif
 #define DLL_BRIEFING_FONT 1
 #define DLL_BIG_BRIEFING_FONT 2
-extern unsigned short nw_ListenPort;
+extern uint16_t nw_ListenPort;
 extern ushort PXOPort;
 
 void GetMultiAPI(multi_api *api) {

@@ -30,13 +30,13 @@ extern int Join_response_strings[];
 #define MAX_CHANGED_OBJECTS 700
 
 extern int Changed_anim[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-extern unsigned short Num_changed_anim[MAX_NET_PLAYERS];
+extern uint16_t Num_changed_anim[MAX_NET_PLAYERS];
 
 extern int Changed_wb_anim[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-extern unsigned short Num_changed_wb_anim[MAX_NET_PLAYERS];
+extern uint16_t Num_changed_wb_anim[MAX_NET_PLAYERS];
 
 extern int Changed_turret[MAX_CHANGED_OBJECTS][MAX_NET_PLAYERS];
-extern unsigned short Num_changed_turret[MAX_NET_PLAYERS];
+extern uint16_t Num_changed_turret[MAX_NET_PLAYERS];
 
 extern uint32_t Secret_net_id;
 #define JOIN_ANSWER_OK 0

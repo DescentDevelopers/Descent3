@@ -284,7 +284,7 @@ typedef struct {
   ubyte spawn_count;      // how many of spawn handle gets created
   ubyte alternate_chance; // how often the alternate spawn weapon gets chosen (0 to 100)
 
-  unsigned short used;
+  uint16_t used;
 
   ubyte particle_count;
   ubyte terrain_damage_depth;

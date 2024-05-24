@@ -225,7 +225,7 @@ typedef struct bsp_info {
 
 // used to describe a polygon model
 typedef struct poly_model {
-  unsigned short used;
+  uint16_t used;
 
   int flags;       // PMF_flags, see above
   ubyte new_style; // if 1, then this polymodel is in the new outrage format (oof)

@@ -124,7 +124,7 @@
 #define MAX_BOA_TERRAIN_REGIONS 8
 
 extern float BOA_cost_array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_PATH_PORTALS];
-extern unsigned short BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+extern uint16_t BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 extern int BOA_mine_checksum;
 extern int BOA_AABB_checksum;
 extern int BOA_vis_checksum;

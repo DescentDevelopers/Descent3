@@ -169,7 +169,7 @@ typedef uint8_t FxU8;
 
 typedef int8_t FxI8;
 
-typedef unsigned short FxU16;
+typedef uint16_t FxU16;
 
 typedef signed short FxI16;
 

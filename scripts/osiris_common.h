@@ -930,7 +930,7 @@ typedef int OMMSHANDLE;
 // define unsigned types;
 typedef uint8_t ubyte;
 typedef int8_t sbyte;
-typedef unsigned short ushort;
+typedef uint16_t ushort;
 typedef uint32_t uint32_t;
 typedef uint32_t ddgr_color;
 

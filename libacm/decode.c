@@ -686,13 +686,13 @@ static int output_values(int *src, uint8_t *dst, int n,
 
 static int read_wavc_header(ACMStream *acm)
 {
-	static const unsigned short expect[12] = {
+	static const uint16_t expect[12] = {
 		/* 'V1.0', raw_size, acm_size */
 		0x3156, 0x302E, 0,0, 0,0,
 		/* hdrlen?, chans?, bits?, hz */
 		28,0, 1, 16, 22050, 0
 	};
-	unsigned short i, buf[12];
+	uint16_t i, buf[12];
 
 	for (i = 0; i < 12; i++)
 		GET_BITS(buf[i], acm, 16);

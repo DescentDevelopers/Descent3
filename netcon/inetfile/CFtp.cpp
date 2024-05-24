@@ -389,7 +389,7 @@ uint32_t CFtpGet::IssuePort() {
       uint8_t s_b1, s_b2, s_b3, s_b4;
     } S_un_b;
     struct {
-      unsigned short s_w1, s_w2;
+      uint16_t s_w1, s_w2;
     } S_un_w;
     uint32_t S_addr;
   } S_un;

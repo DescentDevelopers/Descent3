@@ -502,9 +502,9 @@ typedef struct {
   int waiting_packet_number; // Which packet has data in it that is waiting for the interval to send
 
   ushort status;                           // Status of this connection
-  unsigned short oursequence;              // This is the next sequence number the application is expecting
-  unsigned short theirsequence;            // This is the next sequence number the peer is expecting
-  unsigned short rsequence[MAXNETBUFFERS]; // This is the sequence number of the given packet
+  uint16_t oursequence;              // This is the next sequence number the application is expecting
+  uint16_t theirsequence;            // This is the next sequence number the peer is expecting
+  uint16_t rsequence[MAXNETBUFFERS]; // This is the sequence number of the given packet
 
   ubyte ping_pos;
 
@@ -513,7 +513,7 @@ typedef struct {
   reliable_net_rcvbuffer *rbuffers[MAXNETBUFFERS];
   SOCKADDR addr;                                    // SOCKADDR of our peer
   reliable_net_sendbuffer *sbuffers[MAXNETBUFFERS]; // This is an array of pointers for quick sorting
-  unsigned short ssequence[MAXNETBUFFERS];          // This is the sequence number of the given packet
+  uint16_t ssequence[MAXNETBUFFERS];          // This is the sequence number of the given packet
   ubyte send_urgent;
 } reliable_socket;
 
@@ -728,7 +728,7 @@ void nw_SetSocketOptions(SOCKET sock) {
   */
 }
 
-unsigned short nw_ListenPort = 0;
+uint16_t nw_ListenPort = 0;
 
 // Inits the sockets that the application will be using
 void nw_InitSockets(ushort port) {
@@ -905,7 +905,7 @@ ushort nw_CalculateChecksum(void *vptr, int len) {
   }
   sum2 %= 255;
 
-  return (unsigned short)((sum1 << 8) + sum2);
+  return (uint16_t)((sum1 << 8) + sum2);
 }
 
 // Sends data on an unreliable socket
@@ -1477,7 +1477,7 @@ void nw_WorkReliable(ubyte *data, int len, network_address *naddr) {
 
         } else {
           // Sequence is high, so prepare for wrap around
-          if (((unsigned short)(INTEL_SHORT(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
+          if (((uint16_t)(INTEL_SHORT(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
             mprintf((0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq)));
             savepacket = 0;
           }

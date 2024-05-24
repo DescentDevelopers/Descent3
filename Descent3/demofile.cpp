@@ -309,7 +309,7 @@ static float Demo_last_pinfo;
 float Demo_frame_ofs;
 static int Demo_auto_idx = 0;
 uint32_t Demo_flags = 0;
-unsigned short Demo_obj_map[MAX_OBJECTS];
+uint16_t Demo_obj_map[MAX_OBJECTS];
 static bool Demo_turretchanged[MAX_OBJECTS];
 bool Demo_looping = false;
 bool Demo_paused = false;
@@ -467,8 +467,8 @@ void DemoWriteChangedObj(object *op) {
   }
 }
 
-void DemoWriteWeaponFire(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum,
-                         unsigned short weapobjnum, short gunnum) {
+void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
+                         uint16_t weapobjnum, short gunnum) {
   uint32_t uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   if (weapobjnum == -1)
     return;
@@ -547,7 +547,7 @@ void DemoWriteObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const m
 #define MAX_COOP_TURRETS 400
 extern float turret_holder[MAX_COOP_TURRETS];
 
-void DemoWriteTurretChanged(unsigned short objnum) { Demo_turretchanged[objnum] = true; }
+void DemoWriteTurretChanged(uint16_t objnum) { Demo_turretchanged[objnum] = true; }
 
 void DemoReadTurretChanged(void) {
   multi_turret multi_turret_info;
@@ -576,7 +576,7 @@ void DemoReadTurretChanged(void) {
   }
 }
 
-void DemoWriteObjAnimChanged(unsigned short objnum) {
+void DemoWriteObjAnimChanged(uint16_t objnum) {
 
   custom_anim multi_anim_info;
   if (ObjGetAnimUpdate(objnum, &multi_anim_info)) // Checks if obj is still alive and all
@@ -996,7 +996,7 @@ void DemoReadWeaponFire() {
     }
   }
 
-  unsigned short new_weap_objnum = CreateAndFireWeapon(&pos, &dir, &Objects[objnum], weaponnum);
+  uint16_t new_weap_objnum = CreateAndFireWeapon(&pos, &dir, &Objects[objnum], weaponnum);
   if (0xffff == new_weap_objnum) {
     Int3();
     return;
@@ -1301,7 +1301,7 @@ void DemoFrame() {
   } while (!exit_loop);
 }
 
-void DemoWriteCinematics(ubyte *data, unsigned short len) {
+void DemoWriteCinematics(ubyte *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_CINEMATICS);
   // Write a bunch of data
   mprintf((0, "Writing Cinematic data (%d bytes) to demo file.\n", len));
@@ -1317,14 +1317,14 @@ void DemoReadCinematics() {
   Cinematic_DoDemoFileData(buffer);
 }
 
-void DemoWriteMSafe(ubyte *data, unsigned short len) {
+void DemoWriteMSafe(ubyte *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_MSAFE);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
   //	mprintf((0,"Writing MSAFE data to demo file.\n"));
 }
 
-void DemoWritePowerup(ubyte *data, unsigned short len) {
+void DemoWritePowerup(ubyte *data, uint16_t len) {
   cf_WriteByte(Demo_cfp, DT_POWERUP);
   cf_WriteShort(Demo_cfp, len);
   cf_WriteBytes(data, len, Demo_cfp);
@@ -1367,7 +1367,7 @@ void DemoReadCollidePlayerWeapon(void) {
   vector collision_p;
   vector collision_n;
   bool f_reverse_normal;
-  unsigned short real_weapnum;
+  uint16_t real_weapnum;
   short plr_objnum = cf_ReadShort(Demo_cfp);
   short wep_objnum = cf_ReadShort(Demo_cfp);
   gs_ReadVector(Demo_cfp, collision_p);
@@ -1398,7 +1398,7 @@ void DemoReadCollideGenericWeapon(void) {
   vector collision_p;
   vector collision_n;
   bool f_reverse_normal;
-  unsigned short real_weapnum;
+  uint16_t real_weapnum;
   short gen_objnum = cf_ReadShort(Demo_cfp);
   short wep_objnum = cf_ReadShort(Demo_cfp);
   gs_ReadVector(Demo_cfp, collision_p);

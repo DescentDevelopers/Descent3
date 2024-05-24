@@ -33,12 +33,12 @@
 // Attach to the polymodel
 typedef struct poly_wb_info {
   // Static Data  (Add to robot generic page)
-  unsigned short num_gps;
+  uint16_t num_gps;
   ubyte gp_index[MAX_WB_GUNPOINTS];
 
   // Turrets are listed from most important (greatest mobility) to least important
   ubyte num_turrets;
-  unsigned short turret_index[MAX_WB_TURRETS];
+  uint16_t turret_index[MAX_WB_TURRETS];
 
 } poly_wb_info;
 
@@ -46,9 +46,9 @@ typedef struct poly_wb_info {
 
 // Attach to a object type
 typedef struct otype_wb_info {
-  unsigned short gp_weapon_index[MAX_WB_GUNPOINTS];
-  unsigned short fm_fire_sound_index[MAX_WB_FIRING_MASKS];
-  unsigned short aiming_gp_index;
+  uint16_t gp_weapon_index[MAX_WB_GUNPOINTS];
+  uint16_t fm_fire_sound_index[MAX_WB_FIRING_MASKS];
+  uint16_t aiming_gp_index;
 
   ubyte num_masks;
   ubyte gp_fire_masks[MAX_WB_FIRING_MASKS];
@@ -57,8 +57,8 @@ typedef struct otype_wb_info {
   ubyte gp_quad_fire_mask;
 
   ubyte num_levels;
-  unsigned short gp_level_weapon_index[MAX_WB_UPGRADES];
-  unsigned short gp_level_fire_sound_index[MAX_WB_UPGRADES];
+  uint16_t gp_level_weapon_index[MAX_WB_UPGRADES];
+  uint16_t gp_level_fire_sound_index[MAX_WB_UPGRADES];
 
   ubyte aiming_flags;
   float aiming_3d_dot; // These can be reused.

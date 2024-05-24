@@ -245,11 +245,11 @@ typedef struct tD3XInstruction {
     struct /* register <- Address-Immediate indirect addressing */
     {
       uint8_t d, a;
-      unsigned short imm;
+      uint16_t imm;
     } aii;
     struct /* jump absolute <- register  or jump/call absolute (r = 0xff) */
     {
-      unsigned short abs;
+      uint16_t abs;
       uint8_t r;
     } ra;
     struct /* register <- Address-Immediate indirect addressing */
@@ -291,10 +291,10 @@ typedef struct tD3XInstruction {
 
 typedef struct tD3XPMap {
   char name[MAX_D3XID_NAME];
-  unsigned short ip;
-  unsigned short mem;
-  unsigned short type;
-  unsigned short parms;
+  uint16_t ip;
+  uint16_t mem;
+  uint16_t type;
+  uint16_t parms;
 } tD3XPMap;
 
 #define D3X_TAG "D3X5"

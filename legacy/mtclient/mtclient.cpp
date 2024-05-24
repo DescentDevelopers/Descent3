@@ -3313,7 +3313,7 @@ void AutoLoginAndJoinGame(void)
 	int loginlen = LOGIN_LEN;
 	int passlen = PASSWORD_LEN;
 	int valret;
-	unsigned short port;
+	uint16_t port;
 	uint32_t iaddr;
 	
 	*DLLMultiGameStarting = 0;

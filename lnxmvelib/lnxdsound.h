@@ -50,13 +50,13 @@ typedef struct {
 } LnxSoundDevice;
 
 typedef struct {
-  unsigned short wFormatTag;
-  unsigned short nChannels;
+  uint16_t wFormatTag;
+  uint16_t nChannels;
   uint32_t nSamplesPerSec;
   uint32_t nAvgBytesPerSec;
-  unsigned short nBlockAlign;
-  unsigned short wBitsPerSample;
-  unsigned short cbSize;
+  uint16_t nBlockAlign;
+  uint16_t wBitsPerSample;
+  uint16_t cbSize;
 } WAVEFORMATEX; // Taken from Windows for porting
 #define WAVE_FORMAT_PCM 0x01
 
@@ -89,7 +89,7 @@ typedef struct {
 
   LnxBufferDesc lbdesc;
 
-  unsigned short freq;
+  uint16_t freq;
   char playing;
   char __pad;
 } LnxSoundBuffer;

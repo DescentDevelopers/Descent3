@@ -84,7 +84,7 @@
 class ChttpGet {
 public:
   ChttpGet(char *URL, char *localfile);
-  ChttpGet(char *URL, char *localfile, char *proxyip, unsigned short proxyport);
+  ChttpGet(char *URL, char *localfile, char *proxyip, uint16_t proxyport);
   void PrepSocket(char *URL);
   ~ChttpGet();
   void GetFile(char *URL, char *localfile);
@@ -105,7 +105,7 @@ protected:
   bool m_ProxyEnabled;
   char *m_ProxyIP;
   char m_URL[MAX_URL_LEN];
-  unsigned short m_ProxyPort;
+  uint16_t m_ProxyPort;
 
   char m_szUserName[100];
   char m_szPassword[100];

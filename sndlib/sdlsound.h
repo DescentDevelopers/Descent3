@@ -84,7 +84,7 @@ public:
   void SetListener(pos_state *cur_pos) override;
   int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
                           bool f_looped, float reverb = 0.5f) override;
-  void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) override;
+  void AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) override;
   void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) override;
 
   void StopAllSounds() override;

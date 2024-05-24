@@ -3335,10 +3335,10 @@ char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,ushort *ref
 */
 
 typedef struct tOMMSNode {
-  unsigned short id;
+  uint16_t id;
   uint32_t size_of_memory;
   uint32_t unique_id;
-  unsigned short reference_count;
+  uint16_t reference_count;
   uint8_t free_called;
   void *memory_ptr;
   tOMMSNode *next;
@@ -3346,14 +3346,14 @@ typedef struct tOMMSNode {
 
 typedef struct tOMMSHashNode {
   char *script_name;
-  unsigned short base_id;
+  uint16_t base_id;
   tOMMSNode *root;
   tOMMSHashNode *next;
 } tOMMSHashNode;
 
 tOMMSHashNode *OMMS_Hash_node_root = NULL;
-unsigned short OMMS_Current_base_id = 0;
-unsigned short OMMS_Current_id = 0;
+uint16_t OMMS_Current_base_id = 0;
+uint16_t OMMS_Current_id = 0;
 
 //	Searches through the hash nodes and looks for the one associated with
 //	the script name, if one doesn't exist it will create one (if autocreate is true).
@@ -3485,8 +3485,8 @@ void Osiris_SaveOMMS(CFILE *file) {
 void Osiris_RestoreOMMS(CFILE *file) {
   ASSERT(OMMS_Hash_node_root == NULL);
 
-  OMMS_Current_base_id = (unsigned short)cf_ReadShort(file);
-  OMMS_Current_id = (unsigned short)cf_ReadShort(file);
+  OMMS_Current_base_id = (uint16_t)cf_ReadShort(file);
+  OMMS_Current_id = (uint16_t)cf_ReadShort(file);
 
   tOMMSHashNode *currhash;
   tOMMSNode *node;
@@ -3509,7 +3509,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
     currhash->root = NULL;
     currhash->script_name = NULL;
 
-    currhash->base_id = (unsigned short)cf_ReadShort(file);
+    currhash->base_id = (uint16_t)cf_ReadShort(file);
 
     // read length of string
     int length = cf_ReadByte(file);
@@ -3538,7 +3538,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
       node->memory_ptr = NULL;
       node->next = NULL;
 
-      node->id = (unsigned short)cf_ReadShort(file);
+      node->id = (uint16_t)cf_ReadShort(file);
 
       node->free_called = (cf_ReadByte(file)) ? true : false;
       node->reference_count = (ushort)cf_ReadShort(file);
@@ -3738,8 +3738,8 @@ void Osiris_OMMS_CallFreeForNode(tOMMSHashNode *root, tOMMSNode *node) {
 tOMMSNode *Osiris_OMMS_FindHandle(OMMSHANDLE handle, tOMMSHashNode **hash) {
   tOMMSHashNode *hashcurr = OMMS_Hash_node_root;
   tOMMSNode *nodecurr;
-  unsigned short base_id;
-  unsigned short id;
+  uint16_t base_id;
+  uint16_t id;
   base_id = ((handle & 0xFFFF0000) >> 16);
   id = (handle & 0x0000FFFF);
 

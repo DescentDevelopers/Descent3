@@ -842,7 +842,7 @@ void osipf_PlayerValue(int obj_handle, char op, char vhandle, void *ptr, int ind
 
   case PLYSV_US_WEAPON_POWERUP_ID: {
     if (op == VF_GET)
-      *(unsigned short *)ptr = Ships[Players[id].ship_index].spew_powerup[index];
+      *(uint16_t *)ptr = Ships[Players[id].ship_index].spew_powerup[index];
   } break;
   case PLYSV_I_WEAPON_AMMO:
     if (op == VF_GET)
@@ -2712,9 +2712,9 @@ void osipf_ObjWBValue(int obj_handle, char wb_index, char op, char vtype, void *
     break;
   case WBSV_US_GUNPT_WEAPON_ID:
     if (op == VF_SET) {
-      static_wb->gp_weapon_index[g_index] = *((unsigned short *)ptr);
+      static_wb->gp_weapon_index[g_index] = *((uint16_t *)ptr);
     } else if (op == VF_GET) {
-      *((unsigned short *)ptr) = static_wb->gp_weapon_index[g_index];
+      *((uint16_t *)ptr) = static_wb->gp_weapon_index[g_index];
     }
     break;
   case WBSV_V_GUNPT_POS:

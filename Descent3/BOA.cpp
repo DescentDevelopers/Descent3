@@ -169,7 +169,7 @@ static const ubyte bbf_lookup[27] = {(0),
                                      (0x08 | 0x04 | 0x10),
                                      (0x08 | 0x10 | 0x20)};
 
-unsigned short BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
+uint16_t BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 float BOA_cost_array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_PATH_PORTALS];
 int BOA_mine_checksum = 0;
 int BOA_vis_checksum = 0; // this checksum is for the VIS bit of the boa array
@@ -647,7 +647,7 @@ void compute_mine_info() {
 void add_terrain_cell(int cell, int t_region, char *checked) {
   int depth = 0;
   int i;
-  unsigned short stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
+  uint16_t stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
   char on_stack[TERRAIN_WIDTH * TERRAIN_DEPTH];
 
   for (i = 0; i < TERRAIN_WIDTH * TERRAIN_DEPTH; i++)

@@ -240,9 +240,9 @@ typedef struct {
 
 typedef struct {
 	uint8_t type; //Type of request
-	unsigned short len; //Length of total packet, including this header
+	uint16_t len; //Length of total packet, including this header
 	uint32_t code;	//For control messages
-	unsigned short xcode; //For control/NAK messages and for sigs.
+	uint16_t xcode; //For control/NAK messages and for sigs.
 	uint32_t sig;	//To identify unique return ACKs
 	uint32_t security; // Just a random value, we store the last value used in the user record
 									// So we don't process the same request twice.

@@ -264,7 +264,7 @@ void IceKey::decrypt(const ubyte *ctext, ubyte *ptext) const {
 //
 // Set 8 rounds [n, n+7] of the key schedule of an ICE key.
 //
-void IceKey::scheduleBuild(unsigned short *kb, int n, const int *keyrot) {
+void IceKey::scheduleBuild(uint16_t *kb, int n, const int *keyrot) {
   int i;
 
   for (i = 0; i < 8; i++) {

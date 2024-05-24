@@ -1997,7 +1997,7 @@ void DoNextPlayerFile(int playernum) {
 
 // Puts player "slot" position info into the passed in buffer
 // Returns the number of bytes used
-int MultiStuffRobotPosition(unsigned short objectnum, ubyte *data) {
+int MultiStuffRobotPosition(uint16_t objectnum, ubyte *data) {
   int size;
   int count = 0;
   //@@multi_orientation mat;
@@ -2045,7 +2045,7 @@ int MultiStuffRobotPosition(unsigned short objectnum, ubyte *data) {
 
 // Puts player "slot" position info into the passed in buffer
 // Returns the number of bytes used
-int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum) {
+int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum) {
   int size;
   int count = 0;
   ubyte data[MAX_GAME_DATA_SIZE];
@@ -2096,7 +2096,7 @@ int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir,
 
 void MultiDoRobotFire(ubyte *data) {
   int count = 0;
-  unsigned short obj_num;
+  uint16_t obj_num;
   vector weapon_pos;
   vector weapon_dir;
   uint32_t weapon_num;
@@ -3887,7 +3887,7 @@ void MultiDoGetGameInfo(ubyte *data, network_address *from_addr) {
     count += len;
 
     MultiAddShort(Current_mission.cur_level, outdata, &count);
-    unsigned short icurrplayers = 0;
+    uint16_t icurrplayers = 0;
     for (int i = 0; i < MAX_NET_PLAYERS; i++) {
       if (Dedicated_server) {
         if (i == Player_num)
@@ -3971,7 +3971,7 @@ void MultiDoGetPXOGameInfo(ubyte *data, network_address *from_addr) {
     count += len;
 
     MultiAddShort(Current_mission.cur_level, outdata, &count);
-    unsigned short icurrplayers = 0;
+    uint16_t icurrplayers = 0;
     int i = 0;
 
     for (i = 0; i < MAX_NET_PLAYERS; i++) {
@@ -6893,7 +6893,7 @@ void MultiAddObjAnimUpdate(int objnum) {
   }
 }
 
-int MultiStuffObjAnimUpdate(unsigned short objnum, ubyte *data) {
+int MultiStuffObjAnimUpdate(uint16_t objnum, ubyte *data) {
   custom_anim multi_anim_info;
   int count = 0;
   int size = 0;
@@ -7084,7 +7084,7 @@ void MultiAddObjTurretUpdate(int objnum) {
   }
 }
 
-int MultiStuffTurretUpdate(unsigned short objnum, ubyte *data) {
+int MultiStuffTurretUpdate(uint16_t objnum, ubyte *data) {
   int count = 0;
   int size = 0;
   multi_turret multi_turret_info;
@@ -7416,7 +7416,7 @@ void MultiAddObjWBAnimUpdate(int objnum) {
   }
 }
 
-int MultiStuffObjWBAnimUpdate(unsigned short objnum, ubyte *data) {
+int MultiStuffObjWBAnimUpdate(uint16_t objnum, ubyte *data) {
   // multi_anim multi_anim_info;
   int count = 0;
   int size = 0;
@@ -7915,8 +7915,8 @@ void SendDataChunk(int playernum) {
 }
 
 void MultiDoFileCancelled(ubyte *data) {
-  unsigned short playernum; // Who is telling us the file is cancelled
-  unsigned short filewho;   // Who's file is being cancelled
+  uint16_t playernum; // Who is telling us the file is cancelled
+  uint16_t filewho;   // Who's file is being cancelled
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -7969,7 +7969,7 @@ void MultiSendClientCustomData(int slot, int whoto) {
       strcpy(csum_filename, NetPlayers[slot].ship_logo);
     }
   }
-  unsigned short logo_len = strlen(csum_filename) + 1;
+  uint16_t logo_len = strlen(csum_filename) + 1;
   MultiAddUshort(logo_len, data, &count);
   memcpy(data + count, csum_filename, logo_len);
   count += logo_len;
@@ -8009,7 +8009,7 @@ void MultiSendClientCustomData(int slot, int whoto) {
         strcpy(csum_filename, filename);
       }
     }
-    unsigned short vt_len = strlen(csum_filename) + 1;
+    uint16_t vt_len = strlen(csum_filename) + 1;
     MultiAddUshort(vt_len, data, &count);
     memcpy(data + count, csum_filename, vt_len);
     count += vt_len;
@@ -8031,7 +8031,7 @@ void MultiSendClientCustomData(int slot, int whoto) {
 }
 
 void MultiDoCustomPlayerData(ubyte *data) {
-  unsigned short playernum; // Who has data we are interested in
+  uint16_t playernum; // Who has data we are interested in
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -9378,7 +9378,7 @@ void DoReqPlayerList(network_address *addr) {
   memset(outdata, 0, sizeof(outdata));
   size = START_DATA(MP_PLAYERLIST_DATA, outdata, &count);
 
-  unsigned short icurrplayers = 0;
+  uint16_t icurrplayers = 0;
   int i = 0;
   if (Dedicated_server) {
     // Skip the server player

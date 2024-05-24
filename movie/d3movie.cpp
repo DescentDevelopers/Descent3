@@ -654,13 +654,13 @@ void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hico
     Movie_bm_handle = bm_AllocBitmap(texW, texH, 0);
   }
 
-  unsigned short *pPixelData = (ushort *)bm_data(Movie_bm_handle, 0);
+  uint16_t *pPixelData = (ushort *)bm_data(Movie_bm_handle, 0);
   GameBitmaps[Movie_bm_handle].flags |= BF_CHANGED;
   if (hicolor) {
-    unsigned short *wBuf = (unsigned short *)buf;
+    uint16_t *wBuf = (uint16_t *)buf;
     for (int y = 0; y < drawHeight; ++y) {
       for (int x = 0; x < drawWidth; ++x) {
-        unsigned short col16 = *wBuf++;
+        uint16_t col16 = *wBuf++;
         uint32_t b = ((col16 >> 11) & 0x1F) << 3;
         uint32_t g = ((col16 >> 5) & 0x3F) << 2;
         uint32_t r = ((col16 >> 0) & 0x1F) << 3;

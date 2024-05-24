@@ -789,7 +789,7 @@ bool *DLLUse_DirectPlay;
 bool *DLLMulti_Gamelist_changed;
 bool *DLLSupports_score_api;
 // bool * DLLMulti_no_stats_saved;
-unsigned short DLLnw_ListenPort;
+uint16_t DLLnw_ListenPort;
 
 char szloginid[LOGIN_LEN] = "";
 char sztrackerid[TRACKER_ID_LEN] = "";

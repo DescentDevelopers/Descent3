@@ -86,32 +86,32 @@ static void AI_SafeSetType(int obj_handle, int ai_type);
 //----------------
 
 // Name lookup globals
-static unsigned short energy_effect_id;       // weapon ID for the energy charge effect
-static unsigned short frag_burst_effect_id;   // weapon ID for the frag burst effect
-static unsigned short boss_frag_burst_id;     // weapon ID for the boss frag burst effect
-static unsigned short transfer_effect_id;     // texture ID for the energy transfer lightning effect
-static unsigned short heal_effect_id;         // texture ID for the heal lightning effect
-static unsigned short boss_heal_effect_id;    // texture ID for the boss heal lightning effect
-static unsigned short tractor_beam_effect_id; // texture ID for the tractor beam effect
-static unsigned short alien_organism_id;      // object type ID for the alien organism robot
-static unsigned short shield_blast_id;        // weapon ID for the HT shield blast effect
-static unsigned short ht_grenade_id;          // weapon ID for the HT grenade
-static unsigned short ht_grenade_effect_id;   // weapon ID for the HT grenade launch effect
-static unsigned short lifter_blast_effect_id; // weapon ID for the lifter blast effect
-static unsigned short lifter_stick_effect_id; // texture ID for lifter's night-stick lightning effect
-static unsigned short teleport_effect_id;     // weapon ID for teleporting effect
+static uint16_t energy_effect_id;       // weapon ID for the energy charge effect
+static uint16_t frag_burst_effect_id;   // weapon ID for the frag burst effect
+static uint16_t boss_frag_burst_id;     // weapon ID for the boss frag burst effect
+static uint16_t transfer_effect_id;     // texture ID for the energy transfer lightning effect
+static uint16_t heal_effect_id;         // texture ID for the heal lightning effect
+static uint16_t boss_heal_effect_id;    // texture ID for the boss heal lightning effect
+static uint16_t tractor_beam_effect_id; // texture ID for the tractor beam effect
+static uint16_t alien_organism_id;      // object type ID for the alien organism robot
+static uint16_t shield_blast_id;        // weapon ID for the HT shield blast effect
+static uint16_t ht_grenade_id;          // weapon ID for the HT grenade
+static uint16_t ht_grenade_effect_id;   // weapon ID for the HT grenade launch effect
+static uint16_t lifter_blast_effect_id; // weapon ID for the lifter blast effect
+static uint16_t lifter_stick_effect_id; // texture ID for lifter's night-stick lightning effect
+static uint16_t teleport_effect_id;     // weapon ID for teleporting effect
 
-static unsigned short ht_grenade_sound_id; // sound ID for firing the grenade
+static uint16_t ht_grenade_sound_id; // sound ID for firing the grenade
 
-static unsigned short powerup_id; // invisible powerup id
+static uint16_t powerup_id; // invisible powerup id
 
-static unsigned short boss_flapping_id; // flapping sound id
-static unsigned short boss_turf_id;     // turf id
-static unsigned short boss_see_id;
-static unsigned short boss_hurt_id;
+static uint16_t boss_flapping_id; // flapping sound id
+static uint16_t boss_turf_id;     // turf id
+static uint16_t boss_see_id;
+static uint16_t boss_hurt_id;
 
-static unsigned short lifter_pull_sound_id;
-static unsigned short lifter_amb_sound_id;
+static uint16_t lifter_pull_sound_id;
+static uint16_t lifter_amb_sound_id;
 
 // ==========================
 // AI Goal Related Functions
@@ -2300,7 +2300,7 @@ void AlienOrganism::UpdateSquad(int me) {
   n_scan = AI_GetNearbyObjs(&pos, room, ALIEN_SQUAD_RECRUIT_RADIUS, scan_objs, 25, false, true, false, true);
 
   for (i = 0; i < n_scan; i++) {
-    unsigned short id;
+    uint16_t id;
     Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
     // this is more rare than the types matching; so, do it first
@@ -3992,7 +3992,7 @@ void AlienOrganism::DoDamage(int me, tOSIRISEVTDAMAGED *damage_data) {
   /*
   int wpn_handle=damage_data->weapon_handle;
   int type;
-  unsigned short id;
+  uint16_t id;
 
   wpn_handle=damage_data->weapon_handle;
   Obj_Value(wpn_handle, VF_GET, OBJV_US_ID, &id);

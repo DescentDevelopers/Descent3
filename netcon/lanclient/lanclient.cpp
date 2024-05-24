@@ -617,7 +617,7 @@ int MainMultiplayerMenu() {
       break;
     case 9: {
       // Scan a specific IP
-      unsigned short iport = DEFAULT_GAME_PORT;
+      uint16_t iport = DEFAULT_GAME_PORT;
       looklocal = 0;
       uint32_t iaddr;
       lastgamesfound = 0;
@@ -692,7 +692,7 @@ int MainMultiplayerMenu() {
 
 // MTS: only used in this file
 void AutoLoginAndJoinGame(void) {
-  unsigned short port;
+  uint16_t port;
   uint32_t iaddr;
 
   *DLLMultiGameStarting = 0;

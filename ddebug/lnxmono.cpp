@@ -194,7 +194,7 @@ void *nw_TCPLoggingWorker(void *arg) {
   return NULL;
 }
 
-bool nw_InitTCPLogging(char *ip, unsigned short port) {
+bool nw_InitTCPLogging(char *ip, uint16_t port) {
 #if DLOPEN_PTHREAD
   // load up the pthread library
   void *lib = dlopen("libpthread.so", RTLD_GLOBAL | RTLD_NOW);
@@ -391,7 +391,7 @@ bool Debug_ConsoleInit() {
     if (port_ptr) {
       *port_ptr = '\0';
       port_ptr++;
-      unsigned short port;
+      uint16_t port;
       port = atoi(port_ptr);
       if (nw_InitTCPLogging(address, port)) {
         Mono_use_window_remote = true;
@@ -541,7 +541,7 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
   uint8_t packet[518];
   packet[0x00] = 0x03; // control code
   packet[0x01] = n;    // window_handle
-  *((unsigned short *)&packet[0x02]) = text_len;
+  *((uint16_t *)&packet[0x02]) = text_len;
   memcpy(&packet[0x04], Mono_buffer, text_len);
 
   // send the packet
@@ -581,7 +581,7 @@ void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...) {
   packet[0x01] = n;    // window_handle
   packet[0x02] = row;  // row
   packet[0x03] = col;  // col
-  *((unsigned short *)&packet[0x04]) = text_len;
+  *((uint16_t *)&packet[0x04]) = text_len;
   memcpy(&packet[0x06], Mono_buffer, text_len);
 
   // send the packet

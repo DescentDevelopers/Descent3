@@ -55,8 +55,8 @@ extern unsigned sf_ScreenWidth;
 
 #include "snd8to16.h"
 // len always specifies length of destination in bytes.
-unsigned sndDecompM16(unsigned short *dst, const uint8_t *src, unsigned len, unsigned state);
-unsigned sndDecompS16(unsigned short *dst, const uint8_t *src, unsigned len, unsigned state);
+unsigned sndDecompM16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned state);
+unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned state);
 
 //----------------------------------------------------------------------
 // Memory Management
@@ -477,14 +477,14 @@ static unsigned sndAddHelper(uint8_t *dst, const uint8_t **pSrc, unsigned len, u
     if (snd_comp16) {
       if (!snd_stereo) {
         if (init) {
-          state = IntelSwapper(*(unsigned short *)src);
-          *(unsigned short *)dst = state;
+          state = IntelSwapper(*(uint16_t *)src);
+          *(uint16_t *)dst = state;
           src += 2;
           dst += 2;
           len -= 2;
         }
 
-        state = sndDecompM16((unsigned short *)dst, src, len >> 1, state);
+        state = sndDecompM16((uint16_t *)dst, src, len >> 1, state);
 
         src += len >> 1;
       } else {
@@ -495,7 +495,7 @@ static unsigned sndAddHelper(uint8_t *dst, const uint8_t **pSrc, unsigned len, u
           dst += 4;
           len -= 4;
         }
-        state = sndDecompS16((unsigned short *)dst, src, len >> 2, state);
+        state = sndDecompS16((uint16_t *)dst, src, len >> 2, state);
         src += len >> 1;
       }
     } else {
@@ -617,8 +617,8 @@ unsigned nf_new_w = 0;
 unsigned nf_new_h = 0;
 
 // Hicolor format translation tables
-unsigned short nf_trans16_lo[256];
-unsigned short nf_trans16_hi[256];
+uint16_t nf_trans16_lo[256];
+uint16_t nf_trans16_hi[256];
 
 void MVE_memVID(void *p1, void *p2, unsigned size) {
   MemInit(&nf_mem_buf1, size, p1);
@@ -747,7 +747,7 @@ void nfHiColorDecomp(const uint8_t *comp, unsigned x, unsigned y, unsigned w, un
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfHiColorDecompChg(const unsigned short *chgs, const unsigned short *parms, const uint8_t *comp, unsigned x,
+void nfHiColorDecompChg(const uint16_t *chgs, const uint16_t *parms, const uint8_t *comp, unsigned x,
                         unsigned y, unsigned w, unsigned h);
 
 // Non-HiColor versions
@@ -767,7 +767,7 @@ void nfHPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfDecompChg(const unsigned short *chgs, const unsigned short *parms, const uint8_t *comp, unsigned x,
+void nfDecompChg(const uint16_t *chgs, const uint16_t *parms, const uint8_t *comp, unsigned x,
                  unsigned y, unsigned w, unsigned h);
 
 //---------------------------------------------------------------------
@@ -963,13 +963,13 @@ void MVE_sfCallbacks(mve_cb_ShowFrame fn_ShowFrame) { sf_ShowFrame = fn_ShowFram
 //     on the screen is 2*h alternate lines.
 //
 
-void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty);
 
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, unsigned short *chgs,
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                         unsigned dstx, unsigned dsty);
 
-static void sfShowFrameChg(int dx, int dy, unsigned short *chgs) { logLabel("StartShowChg"); }
+static void sfShowFrameChg(int dx, int dy, uint16_t *chgs) { logLabel("StartShowChg"); }
 
 //---------------------------------------------------------------------
 // Palette Management
@@ -981,7 +981,7 @@ uint8_t pal_tbl[3 * 256]; // Private, see mveliba.asm
 #if DBL_DBG
 uint8_t pal_tbl_old[3 * 256];
 #endif
-unsigned short pal15_tbl[256]; // Private, see mveliba.asm
+uint16_t pal15_tbl[256]; // Private, see mveliba.asm
 
 void MVE_palCallbacks(void (*fn_SetPalette)(uint8_t *p, unsigned start, unsigned count)) {
   pal_SetPalette = fn_SetPalette;
@@ -1151,8 +1151,8 @@ int MVE_rmStepMovie(void) {
   }
 
   for (;; p = ioNextRecord(), len = 0) {
-    unsigned short *DecompChg_chgs = (unsigned short *)NULL;
-    unsigned short *DecompChg_parms = (unsigned short *)NULL;
+    uint16_t *DecompChg_chgs = (uint16_t *)NULL;
+    uint16_t *DecompChg_parms = (uint16_t *)NULL;
 
     if (!p) {
       result = MVE_ERR_IO;
@@ -1351,11 +1351,11 @@ int MVE_rmStepMovie(void) {
       }
 
       case mcmd_nfChanges: {
-        DecompChg_chgs = (unsigned short *)p;
+        DecompChg_chgs = (uint16_t *)p;
         continue;
       }
       case mcmd_nfParms: {
-        DecompChg_parms = (unsigned short *)p;
+        DecompChg_parms = (uint16_t *)p;
         continue;
       }
       case mcmd_nfDecompChg: {
@@ -1631,7 +1631,7 @@ int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, uint32_t *width, uint32_t *heigh
   len = frs->len;
 
   for (;; p = ioNextRecord(), len = 0) {
-    unsigned short *DecompChg_parms = (unsigned short *)NULL;
+    uint16_t *DecompChg_parms = (uint16_t *)NULL;
 
     if (!p) {
       result = MVE_ERR_IO;
@@ -1696,7 +1696,7 @@ int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, uint32_t *width, uint32_t *heigh
       }
 
       case mcmd_nfParms: {
-        DecompChg_parms = (unsigned short *)p;
+        DecompChg_parms = (uint16_t *)p;
         continue;
       }
 

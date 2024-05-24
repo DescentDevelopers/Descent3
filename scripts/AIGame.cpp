@@ -477,8 +477,8 @@ typedef struct humonculous_data {
 
   float last_shields;
 
-  unsigned short mode;
-  unsigned short next_mode;
+  uint16_t mode;
+  uint16_t next_mode;
 
   vector land_pos;
   vector land_fvec;
@@ -503,7 +503,7 @@ private:
   humonculous_data *memory;
 
   void DetermineDeathPos(int me, vector *dpos, int *droom);
-  bool SetMode(int me, unsigned short mode);
+  bool SetMode(int me, uint16_t mode);
   void DoInit(int me);
   void DoInterval(int me);
   bool DoNotify(int me, tOSIRISEventInfo *data);
@@ -731,7 +731,7 @@ private:
   void DoInit(int me);
   void RemapAlert(int me, float start, float end, float time);
   void RemapWB(int me, float start, float fire, int fire_sound, float end, float time, float latency, int index,
-               unsigned short w_id, char f_mask);
+               uint16_t w_id, char f_mask);
   void DoFrame(int me);
   bool DoNotify(int me_handle, tOSIRISEventInfo *data);
   void SetMode(int me, char mode);
@@ -782,7 +782,7 @@ typedef struct {
 
   int flags;
 
-  unsigned short mantaray_id;
+  uint16_t mantaray_id;
 
   int leader_handle;
   int num_teammates;
@@ -829,7 +829,7 @@ typedef struct {
 
   int flags;
 
-  unsigned short skiff_id;
+  uint16_t skiff_id;
 
   int leader_handle;
   int num_teammates;
@@ -885,7 +885,7 @@ typedef struct {
   bool f_hit_by_emd;
   float mode_time;
   char last_attack_mode;
-  unsigned short emd_id;
+  uint16_t emd_id;
   int tick_sound;
   float last_tick_time;
 
@@ -1515,7 +1515,7 @@ typedef struct {
 
   float mode_time;
 
-  unsigned short mp_slot; // Owner's slot number
+  uint16_t mp_slot; // Owner's slot number
   int my_player;          // Owner's object reference
 
   bool f_parented; // Buddy will not collide with parent until it isn't parented
@@ -1566,7 +1566,7 @@ typedef struct {
   int amb_camera_handle;
 
   float next_powerup_check_time;
-  unsigned short powerup_ids[6];
+  uint16_t powerup_ids[6];
 } guidebot_data;
 
 class GuideBot : public BaseObjScript {
@@ -1668,7 +1668,7 @@ static tThiefItems ThiefableItems[] = {
 static int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
 
 typedef struct {
-  unsigned short id;
+  uint16_t id;
   int owner;
 } inv_item; // not really inventory items, but items such as quads, automap, headlight, etc (non-weapons)
 
@@ -1815,7 +1815,7 @@ void SuperThief::SpewEverything(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   for (i = 0; i < memory->num_stolen_weapons; i++) {
-    unsigned short id;
+    uint16_t id;
     int j;
 
     for (j = 0; j < memory->stolen_weapons[i].amount; j++) {
@@ -1981,7 +1981,7 @@ bool SuperThief::DoSteal(int me, int it) {
       if (SuperThiefableItems[i].type == THIEFABLEITEM_PRIMARY) {
         amount = 0;
         if (SuperThiefableItems[i].autoselect > memory->cur_weapon) {
-          unsigned short wpn = Wpn_FindID(SuperThiefableItems[i].weapon_name);
+          uint16_t wpn = Wpn_FindID(SuperThiefableItems[i].weapon_name);
           int snd = Sound_FindId(SuperThiefableItems[i].fire_sound);
 
           Obj_WBValue(me, 1, VF_SET, WBSV_I_FIRE_SOUND, &snd, 0);
@@ -2035,7 +2035,7 @@ void SuperThief::DoInit(int me) {
 
   memory->laser_obj = CreateAndAttach(me, "STEmitter", OBJ_ROBOT, 2, 0, true, true);
 
-  unsigned short wpn = Wpn_FindID("Laser Level 1 - Red");
+  uint16_t wpn = Wpn_FindID("Laser Level 1 - Red");
   int snd = Sound_FindId("Laser level 1");
 
   strcpy(memory->weapon, "Laser Level 1 - Red");
@@ -2277,7 +2277,7 @@ short SuperThief::CallEvent(int event, tOSIRISEventInfo *data) {
   case EVT_MEMRESTORE: {
     memory = (superthief_data *)data->evt_memrestore.memory_ptr;
 
-    unsigned short wpn = Wpn_FindID(memory->weapon);
+    uint16_t wpn = Wpn_FindID(memory->weapon);
     int snd = Sound_FindId(memory->sound);
 
     Obj_WBValue(data->me_handle, 1, VF_SET, WBSV_I_FIRE_SOUND, &snd, 0);
@@ -3209,7 +3209,7 @@ bool Humonculous::DoNotify(int me, tOSIRISEventInfo *data) {
   return true;
 }
 
-bool Humonculous::SetMode(int me, unsigned short mode) {
+bool Humonculous::SetMode(int me, uint16_t mode) {
   int new_mode_index = -1;
   int old_mode_index = -1;
 
@@ -5612,7 +5612,7 @@ void GuideBot::DoCollide(int me, tOSIRISEVTCOLLIDE *evt_collide) {
   // Add a buddy bot to you inventory  :)
   if (memory->f_pickup == true) {
     if (it_type == OBJ_PLAYER) {
-      unsigned short id;
+      uint16_t id;
       Obj_Value(evt_collide->it_handle, VF_GET, OBJV_US_ID, &id);
 
       if (id == memory->mp_slot) {
@@ -6174,7 +6174,7 @@ void GuideBot::DoFrame(int me) {
 
               mstruct.objhandle = me;
 
-              unsigned short id;
+              uint16_t id;
               Obj_Value(me, VF_GET, OBJV_US_ID, &id);
 
               if (Obj_FindID("GuideBot") == id) {
@@ -6692,7 +6692,7 @@ bool Thief::DoNotify(int me, tOSIRISEVTAINOTIFY *notify) {
       f_success = DoSteal(me, target_handle, 1, false);
       DoSteal(me, target_handle, 2, f_success);
     } else if (target_type == OBJ_ROBOT) {
-      unsigned short id;
+      uint16_t id;
 
       Obj_Value(target_handle, VF_GET, OBJV_US_ID, &id);
       if (id == ROBOT_GUIDEBOT || id == ROBOT_GUIDEBOTRED) {
@@ -6841,7 +6841,7 @@ void Thief::SpewEverything(int me) {
   Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
 
   for (i = 0; i < memory->num_stolen_weapons; i++) {
-    unsigned short id;
+    uint16_t id;
     int j;
 
     for (j = 0; j < memory->stolen_weapons[i].amount; j++) {
@@ -7654,7 +7654,7 @@ bool OldScratch::DoSteal(int me, int it) {
         int room;
         vector pos;
         int j;
-        unsigned short id;
+        uint16_t id;
 
         Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
         Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
@@ -7986,7 +7986,7 @@ void BarnSwallow::ComputeNest(int me) {
   vector pos;
   int room;
   int type;
-  unsigned short id;
+  uint16_t id;
 
   memory->num_friends = 0;
 
@@ -8008,7 +8008,7 @@ void BarnSwallow::ComputeNest(int me) {
   for (i = 0; i < n_scan; i++) {
     if (scan_objs[i] != me) {
       int c_type;
-      unsigned short c_id;
+      uint16_t c_id;
       Obj_Value(scan_objs[i], VF_GET, OBJV_I_TYPE, &c_type);
       Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &c_id);
 
@@ -8327,7 +8327,7 @@ void GBPowerup::DoInit(int me) {
   memory->next_check_time = Game_GetTime() + (float)rand() / (float)RAND_MAX; // Sead the powerups differently  :)
   memory->time_till_next_hud_message = 0.0f;
 
-  unsigned short short_id[6];
+  uint16_t short_id[6];
 
   short_id[0] = Obj_FindID("Buddyextinguisher");
   short_id[1] = Obj_FindID("buddywingnut");
@@ -8336,7 +8336,7 @@ void GBPowerup::DoInit(int me) {
   short_id[4] = Obj_FindID("buddyantivirus");
   short_id[5] = Obj_FindID("buddyspeed");
 
-  unsigned short id;
+  uint16_t id;
   Obj_Value(me, VF_GET, OBJV_US_ID, &id);
 
   memory->type = 5; // Forces it to the speed powerup if it didn't know what it was...
@@ -8658,7 +8658,7 @@ void Hellion::RemapAlert(int me, float start, float end, float time) {
 }
 
 void Hellion::RemapWB(int me, float start, float fire, int fire_sound, float end, float time, float latency, int index,
-                      unsigned short w_id, char f_mask) {
+                      uint16_t w_id, char f_mask) {
   memory->start = start;
   memory->fire = fire;
   memory->end = end;
@@ -9158,7 +9158,7 @@ short Hellion::CallEvent(int event, tOSIRISEventInfo *data) {
   case EVT_MEMRESTORE: {
     memory = (hellion_data *)data->evt_memrestore.memory_ptr;
 
-    unsigned short wpn = Wpn_FindID(memory->weapon);
+    uint16_t wpn = Wpn_FindID(memory->weapon);
     int snd = Sound_FindId(memory->sound);
 
     RemapAlert(data->me_handle, memory->alert_start, memory->alert_end, memory->alert_time);
@@ -9294,7 +9294,7 @@ void MantaRay::UpdateSquad(int me) {
   n_scan = AI_GetNearbyObjs(&pos, room, 200.0f, scan_objs, 25, false, true, false, true);
 
   for (i = 0; i < n_scan; i++) {
-    unsigned short id;
+    uint16_t id;
     Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
     // this is more rare than the types matching; so, do it first
@@ -9715,7 +9715,7 @@ void Skiff::UpdateSquad(int me) {
   n_scan = AI_GetNearbyObjs(&pos, room, 200.0f, scan_objs, 25, false, true, false, true);
 
   for (i = 0; i < n_scan; i++) {
-    unsigned short id;
+    uint16_t id;
     Obj_Value(scan_objs[i], VF_GET, OBJV_US_ID, &id);
 
     // this is more rare than the types matching; so, do it first
@@ -10064,7 +10064,7 @@ bool SpyHunter::DoNotify(int me, tOSIRISEventInfo *data) {
     Obj_Value(notify->it_handle, VF_GET, OBJV_I_TYPE, &type);
 
     if (type == OBJ_WEAPON) {
-      unsigned short id;
+      uint16_t id;
 
       Obj_Value(notify->it_handle, VF_GET, OBJV_US_ID, &id);
       if (id == memory->emd_id) {
@@ -10722,8 +10722,8 @@ void Seeker::DoInit(int me) {
   AI_SetType(me, AIT_AIS);
   AI_AddGoal(me, AIG_GET_TO_OBJ, 1, 1.0f, -1, GF_OBJ_IS_TARGET | GF_USE_BLINE_IF_SEES_GOAL, OBJECT_HANDLE_NONE);
 
-  unsigned short id;
-  unsigned short humon_seeker_id;
+  uint16_t id;
+  uint16_t humon_seeker_id;
 
   Obj_Value(me, VF_GET, OBJV_US_ID, &id);
   humon_seeker_id = Obj_FindID("HumonSeeker");

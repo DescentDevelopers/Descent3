@@ -126,7 +126,7 @@ SOCKET tcp_log_sock;
 SOCKADDR_IN tcp_log_addr;
 char tcp_log_buffer[MAX_TCPLOG_LEN];
 
-void nw_InitTCPLogging(char *ip, unsigned short port) {
+void nw_InitTCPLogging(char *ip, uint16_t port) {
   int addrlen = sizeof(SOCKADDR_IN);
   tcp_log_sock = socket(AF_INET, SOCK_STREAM, 0);
   if (INVALID_SOCKET == tcp_log_sock) {

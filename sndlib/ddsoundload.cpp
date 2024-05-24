@@ -121,7 +121,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   CFILE *cfptr;
 
   char format_type[80];       // ASCII name of format type
-  unsigned short fmttag = 0;  // Numerical format type
+  uint16_t fmttag = 0;  // Numerical format type
   uint32_t ckid;         // Current chunk's ID
   uint32_t cksize;       // Current chunk's size in bytes
   uint32_t filesize;     // Size of the sound file
@@ -214,7 +214,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       }
 
       // Read in the format type
-      fmttag = (unsigned short)cf_ReadShort(cfptr);
+      fmttag = (uint16_t)cf_ReadShort(cfptr);
 
       switch (fmttag) {
       // We only support WAVE_FORMAT_PCM currently

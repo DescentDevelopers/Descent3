@@ -1311,7 +1311,7 @@ char *GetChannelList(void)
 	return Chan_list;
 }
 
-void AddChannel(char *channel,unsigned short numusers,char *topic)
+void AddChannel(char *channel,uint16_t numusers,char *topic)
 {
 	Currchannel = Firstchannel;
 	if(Firstchannel==NULL)

@@ -388,7 +388,7 @@ create_new_library(char *hogname, int nfiles, char **filenames)
 	//write files (& build index)
 	for (i=0;i<nfiles;i++) {
 		FILE *ifp;
-	   unsigned short date,time;
+	   uint16_t date,time;
 
 		ifp = fopen(filenames[i],"rb");
 		if ( ifp == NULL )	{

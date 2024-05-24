@@ -688,7 +688,7 @@ inline void AppendToLevelChecksum(uint32_t val) {
   Level_md5->update(val);
 }
 
-inline void AppendToLevelChecksum(unsigned short val) {
+inline void AppendToLevelChecksum(uint16_t val) {
   if (!Level_md5) {
     return;
   }

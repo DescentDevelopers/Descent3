@@ -504,8 +504,8 @@ public:
 
   virtual void SetListener(pos_state *cur_pos) = 0;
   virtual int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
-                          bool f_looped, float reverb = 0.5f) = 0; //, unsigned short frequency)
-  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency) = 0;
+                          bool f_looped, float reverb = 0.5f) = 0; //, uint16_t frequency)
+  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) = 0;
   virtual void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) = 0;
 
   virtual void StopAllSounds() = 0;

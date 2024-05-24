@@ -322,10 +322,10 @@ public:
 
   // 2d functions
   int Play2dSound(int sound_index, float volume = MAX_GAME_VOLUME / 2, float pan = 0.0,
-                  unsigned short frequency = 22050);
+                  uint16_t frequency = 22050);
 
   int Play2dSound(int sound_index, int priority, float volume = MAX_GAME_VOLUME / 2, float pan = 0.0,
-                  unsigned short frequency = 22050);
+                  uint16_t frequency = 22050);
 
   int Update2dSound(int hlsound_uid, float volume, float pan);
 
@@ -344,7 +344,7 @@ public:
   float GetMasterVolume();
 
   // Queued sound functions
-  void Add2dSoundQueued(int q_num, int sound_index, float volume, float pan, unsigned short frequency);
+  void Add2dSoundQueued(int q_num, int sound_index, float volume, float pan, uint16_t frequency);
   void KillQueue(int q_num = 0);
   void KillAllQueues();
 

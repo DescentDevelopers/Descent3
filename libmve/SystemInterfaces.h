@@ -43,13 +43,13 @@
 #define LNXSND_CAPS_LOCHARDWARE 0x0004
 
 struct SoundWAVEFormatEx {
-  unsigned short wFormatTag;
-  unsigned short nChannels;
+  uint16_t wFormatTag;
+  uint16_t nChannels;
   uint32_t nSamplesPerSec;
   uint32_t nAvgBytesPerSec;
-  unsigned short nBlockAlign;
-  unsigned short wBitsPerSample;
-  unsigned short cbSize;
+  uint16_t nBlockAlign;
+  uint16_t wBitsPerSample;
+  uint16_t cbSize;
 };
 #define SOUND_WAVE_FORMAT_PCM 0x01
 

@@ -1169,10 +1169,10 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   return m_sound_objects[i].m_hlsound_uid;
 }
 // General purpose 2d sound play function
-int hlsSystem::Play2dSound(int sound_index, float volume, float pan, unsigned short frequency) {
+int hlsSystem::Play2dSound(int sound_index, float volume, float pan, uint16_t frequency) {
   return hlsSystem::Play2dSound(sound_index, SND_PRIORITY_NORMAL, volume, pan, frequency);
 }
-int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pan, unsigned short frequency) {
+int hlsSystem::Play2dSound(int sound_index, int priority, float volume, float pan, uint16_t frequency) {
   int i = 0;
   int sound_uid;
   int sound_obj_index;
@@ -1348,7 +1348,7 @@ void hlsSystem::SetVolumeObject(int objhandle, float volume) {
 }
 // Queued sound functions
 // Adds a sound to a queue
-void hlsSystem::Add2dSoundQueued(int q_num, int sound_index, float volume, float pan, unsigned short frequency) {
+void hlsSystem::Add2dSoundQueued(int q_num, int sound_index, float volume, float pan, uint16_t frequency) {
   if (!m_f_hls_system_init)
     return;
 }

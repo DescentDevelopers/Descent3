@@ -115,7 +115,7 @@ extern bool Demo_restart;
 extern bool Demo_auto_play;
 extern bool Demo_make_movie;
 extern float Demo_frame_ofs;
-extern unsigned short Demo_obj_map[MAX_OBJECTS];
+extern uint16_t Demo_obj_map[MAX_OBJECTS];
 #define DF_NONE 0
 #define DF_RECORDING 1
 #define DF_PLAYBACK 2
@@ -164,13 +164,13 @@ void DemoWriteHudMessage(uint32_t color, bool blink, char *msg);
 
 void DemoWriteChangedObjects();
 
-void DemoWriteWeaponFire(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum,
-                         unsigned short weapobjnum, short gunnum);
+void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
+                         uint16_t weapobjnum, short gunnum);
 
 void DemoWriteObjCreate(ubyte type, ushort id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj);
 
-void DemoWriteTurretChanged(unsigned short objnum);
+void DemoWriteTurretChanged(uint16_t objnum);
 
 int DemoReadHeader();
 
@@ -200,7 +200,7 @@ void DemoReadCollideGenericWeapon(void);
 
 void DemoReadNewFrame(void);
 
-void DemoWriteObjAnimChanged(unsigned short objnum);
+void DemoWriteObjAnimChanged(uint16_t objnum);
 
 void DemoWriteAttachObjRad(object *parent, char parent_ap, object *child, float rad);
 
@@ -226,17 +226,17 @@ void DemoReadPlayerInfo(void);
 
 void DemoPlayAutoDemo(void);
 
-void DemoWriteMSafe(ubyte *data, unsigned short len);
+void DemoWriteMSafe(ubyte *data, uint16_t len);
 
 void DemoReadMSafe();
 
-void DemoWritePowerup(ubyte *data, unsigned short len);
+void DemoWritePowerup(ubyte *data, uint16_t len);
 
 void DemoReadPowerups();
 
 void DemoReadCinematics();
 
-void DemoWriteCinematics(ubyte *data, unsigned short len);
+void DemoWriteCinematics(ubyte *data, uint16_t len);
 
 void DemoWritePersistantHUDMessage(ddgr_color color, int x, int y, float time, int flags, int sound_index, char *msg);
 

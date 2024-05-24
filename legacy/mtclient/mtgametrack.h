@@ -210,14 +210,14 @@ typedef struct {
 	uint8_t game_type;
 	char game_name[MAX_GAME_LISTS_PER_PACKET][MAX_GENERIC_GAME_NAME_LEN];
 	uint32_t	game_server[MAX_GAME_LISTS_PER_PACKET];
-	unsigned short game_port[MAX_GAME_LISTS_PER_PACKET];
+	uint16_t game_port[MAX_GAME_LISTS_PER_PACKET];
 }game_list;
 */
 
 typedef struct {
   uint8_t game_type;
   uint32_t game_server[MAX_GAME_LISTS_PER_PACKET*4];
-  unsigned short game_port[MAX_GAME_LISTS_PER_PACKET*4];
+  uint16_t game_port[MAX_GAME_LISTS_PER_PACKET*4];
 }game_list;
 
 //Function prototypes

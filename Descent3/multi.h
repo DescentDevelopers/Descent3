@@ -992,13 +992,13 @@ void MultiEndLevel();
 void GetServerGameTime();
 
 // Send robot info
-int MultiStuffRobotPosition(unsigned short objectnum, ubyte *data);
+int MultiStuffRobotPosition(uint16_t objectnum, ubyte *data);
 
 // Handle robot position
 void MultiDoRobotPos(ubyte *data);
 
 // Handle robot (or any AI created) weapon fire
-int MultiSendRobotFireWeapon(unsigned short objectnum, vector *pos, vector *dir, unsigned short weaponnum);
+int MultiSendRobotFireWeapon(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum);
 
 // Send robot damage
 void MultiSendKillObject(object *hit_obj, object *killer, float damage, int death_flags, float delay, short seed);
@@ -1031,7 +1031,7 @@ void MultiDoRobotDamage(ubyte *data);
 void MultiAddObjAnimUpdate(int objnum);
 
 // Stuff an animation update into a packet
-int MultiStuffObjAnimUpdate(unsigned short objnum, ubyte *data);
+int MultiStuffObjAnimUpdate(uint16_t objnum, ubyte *data);
 
 // Handle an animation update
 void MultiDoObjAnimUpdate(ubyte *data);
@@ -1052,7 +1052,7 @@ void MultiDoRobotFireSound(ubyte *data);
 void MultiAddObjTurretUpdate(int objnum);
 
 // Stuff turret data into a packet
-int MultiStuffTurretUpdate(unsigned short objnum, ubyte *data);
+int MultiStuffTurretUpdate(uint16_t objnum, ubyte *data);
 
 // Handle a turret update from the server
 void MultiDoTurretUpdate(ubyte *data);
@@ -1071,7 +1071,7 @@ void MultiSendInventoryRemoveItem(int slot, int type, int id);
 
 void MultiAddObjWBAnimUpdate(int objnum);
 
-int MultiStuffObjWBAnimUpdate(unsigned short objnum, ubyte *data);
+int MultiStuffObjWBAnimUpdate(uint16_t objnum, ubyte *data);
 
 void MultiDoObjWBAnimUpdate(ubyte *data);
 

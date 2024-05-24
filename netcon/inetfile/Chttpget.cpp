@@ -191,7 +191,7 @@ void ChttpGet::AbortGet() {
 #endif
 }
 
-ChttpGet::ChttpGet(char *URL, char *localfile, char *proxyip, unsigned short proxyport) {
+ChttpGet::ChttpGet(char *URL, char *localfile, char *proxyip, uint16_t proxyport) {
   m_ProxyEnabled = true;
   m_ProxyIP = proxyip;
   m_ProxyPort = proxyport;

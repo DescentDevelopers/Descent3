@@ -30,7 +30,7 @@ const vector Zero_vector = {0.0f, 0.0f, 0.0f};
 #pragma warning(disable : 4244)
 
 // Angles are unsigned shorts
-typedef unsigned short angle;
+typedef uint16_t angle;
 
 // The basic fixed-point type
 typedef int32_t fix;
@@ -971,7 +971,7 @@ void vm_VectorToMatrix(matrix *m, vector *fvec, vector *uvec, vector *rvec) {
   }
 }
 
-void vm_SinCos(unsigned short a, float *s, float *c) {
+void vm_SinCos(uint16_t a, float *s, float *c) {
   if (s)
     *s = FixSin(a);
   if (c)

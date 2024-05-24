@@ -90,7 +90,7 @@ typedef struct {
   int image_handle;              // Either a vclip or a polygon model
   char model_name[PAGENAME_LEN]; // used for remapping powerups which contain models
   int flags;
-  unsigned short used;
+  uint16_t used;
 
   short sounds[MAX_POWERUP_SOUNDS];
 

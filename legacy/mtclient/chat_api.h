@@ -39,7 +39,7 @@ typedef struct _Chat_user
 typedef struct _Chat_channel
 {
 	char channel_name[33];
-	unsigned short users;
+	uint16_t users;
 	char topic[100];
 	 _Chat_channel *next;
 }Chat_channel;
@@ -73,5 +73,5 @@ void RemoveAllChatUsers(void);
 void AddChatCommandToQueue(int command,void *data,int len);
 Chat_command *GetChatCommandFromQueue(void);
 void FlushChatCommandQueue(void);
-void AddChannel(char *channel,unsigned short numusers,char *topic);
+void AddChannel(char *channel,uint16_t numusers,char *topic);
 void FlushChannelList(void);

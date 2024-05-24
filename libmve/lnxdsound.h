@@ -54,7 +54,7 @@ typedef struct {
 
   LnxBufferDesc lbdesc;
 
-  unsigned short freq;
+  uint16_t freq;
   char playing;
   char __pad;
 } LnxSoundBuffer;

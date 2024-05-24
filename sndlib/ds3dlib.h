@@ -242,8 +242,8 @@ struct tPSBInfo;
 class sound_buffer_cache {
 public:
   class sound_buffer_info *m_sound_cache; // List of all sounds current sounds
-  unsigned short m_max_sounds_played;     // Maximum sounds played at any given moment
-  unsigned short m_cur_sounds_played;     // Current number of sounds playing
+  uint16_t m_max_sounds_played;     // Maximum sounds played at any given moment
+  uint16_t m_cur_sounds_played;     // Current number of sounds playing
   unsigned m_loop_method;                 // what method do we do looping sounds (direct sound only)
 
 public:
@@ -315,7 +315,7 @@ private:
 
 private:
   // Total samples played since start of library
-  unsigned short m_total_sounds_played; // Used for unique ids and for stats
+  uint16_t m_total_sounds_played; // Used for unique ids and for stats
 
   // Sound library status
   uint8_t m_f_sound_lib_init;   // Flag is set if sound library is initialized	-- cmphack
@@ -373,8 +373,8 @@ public:
 
   virtual void SetListener(pos_state *cur_pos);
   virtual int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
-                          bool f_looped, float reverb = 0.5f); //, unsigned short frequency)
-  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, unsigned short frequency);
+                          bool f_looped, float reverb = 0.5f); //, uint16_t frequency)
+  virtual void AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency);
   virtual void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f);
 
   // Sample cache and list of samples

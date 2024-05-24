@@ -837,7 +837,7 @@ void aEmitSparks(float num_sparks, int objhandle) {
 }
 
 bool names_looked_up = false;
-unsigned short guidebot_id;
+uint16_t guidebot_id;
 
 #define MAX_SCAN_OBJECTS 20
 
@@ -861,7 +861,7 @@ void aKillBotsNearObj(int objhandle) {
   int scan_objs[MAX_SCAN_OBJECTS];
   int n_scan;
   int n, i;
-  unsigned short id;
+  uint16_t id;
 
   if (!qObjExists(objhandle))
     return;

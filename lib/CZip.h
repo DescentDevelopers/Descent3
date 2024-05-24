@@ -69,7 +69,7 @@
 
 #define ubyte uint8_t
 #define uint32_t uint32_t
-#define ushort unsigned short
+#define ushort uint16_t
 
 typedef struct {
   ubyte type;

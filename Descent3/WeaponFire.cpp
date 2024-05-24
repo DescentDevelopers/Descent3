@@ -1889,12 +1889,12 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
   if (Game_mode & GM_MULTI) {
     if (Netgame.local_role == LR_SERVER) {
       if (obj->control_type == CT_AI) {
-        MultiSendRobotFireWeapon(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (unsigned short)weapon_num);
+        MultiSendRobotFireWeapon(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (uint16_t)weapon_num);
       }
     }
   }
   if (Demo_flags == DF_RECORDING) {
-    DemoWriteWeaponFire(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (unsigned short)weapon_num, objnum,
+    DemoWriteWeaponFire(obj->handle & HANDLE_OBJNUM_MASK, &laser_pos, &laser_dir, (uint16_t)weapon_num, objnum,
                         gun_num);
   }
 
