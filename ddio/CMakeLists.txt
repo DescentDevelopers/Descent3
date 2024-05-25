@@ -1,4 +1,5 @@
 set(CPPS
+  chrono_timer.cpp
   ddio.cpp
   key.cpp
   $<$<PLATFORM_ID:Darwin,Linux>:
@@ -9,7 +10,6 @@ set(CPPS
     lnxkey.cpp
     lnxkey_null.cpp
     lnxmouse.cpp
-    lnxtimer.cpp
     lnxcdrom.cpp
     lnxkey_sdl.cpp
   >
@@ -20,7 +20,6 @@ set(CPPS
     winjoy.cpp
     winkey.cpp
     winmouse.cpp
-    wintimer.cpp
   >
 )
 add_library(ddio STATIC ${CPPS})

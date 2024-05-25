@@ -107,7 +107,7 @@ bool ddio_Init(ddio_init_info *init_info) {
   res = ddio_InternalInit(init_info);
   if (res) {
     if (first_time) { // initialize once and only once.
-      timer_Init(0, init_info->use_lo_res_time);
+      timer_Init();
     }
     if (!ddio_KeyInit(init_info))
       Error("Failed to initialize keyboard system.");
