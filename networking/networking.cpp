@@ -525,12 +525,11 @@ static reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
 
 int make_nonblocking(SOCKET sock)
 {
-  SOCKET rval;
 #ifdef WIN32
   unsigned long arg = 1;
   return ioctlsocket(sock, FIONBIO, &arg);
 #else // WIN32
-  return fcntl(sock, F_SETFL, fcntl(rval, F_GETFL, 0) | O_NONBLOCK);
+  return fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK);
 #endif
 }
 
