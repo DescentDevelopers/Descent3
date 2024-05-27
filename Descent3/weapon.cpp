@@ -1230,7 +1230,7 @@ int SwitchPlayerWeapon(int weapon_type) {
                      ? (((wpn_index - SECONDARY_INDEX) % NUM_SECONDARY_SLOTS) + NUM_PRIMARY_SLOTS)
                      : (wpn_index % NUM_PRIMARY_SLOTS);
 
-      // mprintf((0, "wpn_index = %d\n", wpn_index));
+      // mprintf(0, "wpn_index = %d\n", wpn_index);
 
       if ((Players[Player_num].weapon_flags & HAS_FLAG(wpn_index)) && !(sel_list[new_index] & WPNSEL_SKIP)) {
 
@@ -1253,7 +1253,7 @@ int SwitchPlayerWeapon(int weapon_type) {
       }
 
       new_index++;
-      // mprintf((0, "new_index = %d\n", new_index));
+      // mprintf(0, "new_index = %d\n", new_index);
     }
   }
 

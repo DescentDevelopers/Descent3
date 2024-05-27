@@ -375,7 +375,7 @@ void DoObjectLight(object *obj) {
       int factor = li->flicker_distance;
 
       if (factor == 0) {
-        mprintf((0, "You have a flicker_slightly light that has a flicker factor of zero!\n"));
+        mprintf(0, "You have a flicker_slightly light that has a flicker factor of zero!\n");
         return;
       }
 
@@ -463,12 +463,12 @@ void ClearObjectLightmaps(object *obj) {
     poly_model *pm = &Poly_models[obj->rtype.pobj_info.model_num];
     ASSERT(pm->n_models < MAX_SUBOBJECTS);
 
-    mprintf((1, "CLEAR %d %s", obj->handle, obj->name));
+    mprintf(1, "CLEAR %d %s", obj->handle, obj->name);
 
     int faceCount = 0;
     for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
       if (!IsNonRenderableSubmodel(pm, Mnum)) {
-        mprintf((1, " %X\n", obj->lm_object.lightmap_faces[Mnum][0].u2));
+        mprintf(1, " %X\n", obj->lm_object.lightmap_faces[Mnum][0].u2);
         mem_free(obj->lm_object.lightmap_faces[Mnum][0].u2);
         break;
       }
@@ -528,7 +528,7 @@ void SetupObjectLightmapMemory(object *obj) {
   ASSERT(pm->n_models < MAX_SUBOBJECTS);
   int uv2size = 0;
 
-  mprintf((1, "SETUP %d %s", obj->handle, obj->name));
+  mprintf(1, "SETUP %d %s", obj->handle, obj->name);
   for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
     if (IsNonRenderableSubmodel(pm, Mnum)) {
       obj->lm_object.num_faces[Mnum] = 0;
@@ -552,7 +552,7 @@ void SetupObjectLightmapMemory(object *obj) {
   }
   if (uv2size) {
     float *uvblock = (float *)mem_malloc(2 * uv2size * sizeof(float));
-    mprintf((1, " %X %d\n", uvblock, uv2size));
+    mprintf(1, " %X %d\n", uvblock, uv2size);
 
     for (Mnum = 0; Mnum < pm->n_models; Mnum++) {
       if (!IsNonRenderableSubmodel(pm, Mnum)) {

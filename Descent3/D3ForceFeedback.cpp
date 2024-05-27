@@ -142,12 +142,12 @@ void ForceInit(void) {
     D3Force_init = true;
     D3Force_pause = false;
 
-    mprintf((0, "Force: High Level Force Feedback system initialized\n"));
+    mprintf(0, "Force: High Level Force Feedback system initialized\n");
   } else {
     D3Force_init = false;
     D3Force_pause = false;
 
-    mprintf((0, "Force: Force Feedback System Not Found\n"));
+    mprintf(0, "Force: Force Feedback System Not Found\n");
   }
 
   for (int i = 0; i < DDIO_FF_MAXEFFECTS; i++) {
@@ -194,7 +194,7 @@ void ForceClose(void) {
   D3Force_pause = false;
   D3Force_init = false;
 
-  mprintf((0, "Force: Shutting down high level force feedback\n"));
+  mprintf(0, "Force: Shutting down high level force feedback\n");
   ForceEffectsClose();
 
   for (int i = 0; i < DDIO_FF_MAXEFFECTS; i++) {
@@ -213,7 +213,7 @@ void ForceShutdown(void) {
 
   ForceClose();
   if (D3Force_init) {
-    mprintf((0, "Force: Shutting down Force Feedback System\n"));
+    mprintf(0, "Force: Shutting down Force Feedback System\n");
     ddio_ffb_Pause(kJoy1);
   }
 }
@@ -228,7 +228,7 @@ void ForceRestart(void) {
   D3Force_pause = false;
 
   if (D3Force_init) {
-    mprintf((0, "Force: Restarting Force Feedback System\n"));
+    mprintf(0, "Force: Restarting Force Feedback System\n");
     ddio_ff_Acquire(kJoy1);
     ddio_ffb_Continue(kJoy1);
 
@@ -261,7 +261,7 @@ void ForceRestart(void) {
 // ------------------------------------------------------------------
 void ForceDisable(void) {
   if (D3Force_init) {
-    mprintf((0, "Force: Disabling Force Feedback System\n"));
+    mprintf(0, "Force: Disabling Force Feedback System\n");
     //@@ddio_ffb_Disable(kJoy1);
     D3Use_force_feedback = false;
   }
@@ -274,7 +274,7 @@ void ForceDisable(void) {
 // ------------------------------------------------------------------
 void ForceEnable(void) {
   if (D3Force_init) {
-    mprintf((0, "Force: Enabling Force Feedback System\n"));
+    mprintf(0, "Force: Enabling Force Feedback System\n");
     //@@ddio_ffb_Enable(kJoy1);
     D3Use_force_feedback = true;
   }

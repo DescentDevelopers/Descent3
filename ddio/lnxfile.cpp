@@ -118,7 +118,7 @@ int ddio_GetFileLength(FILE *filePtr) {
     fstat(filedes, &info);
     size = info.st_size;
   } else {
-    mprintf((0, "Tried getting length of NULL fileptr!\n"));
+    mprintf(0, "Tried getting length of NULL fileptr!\n");
     Int3();
   }
   return size;
@@ -291,7 +291,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 glob_t ffres = {0, NULL, 0};
 int globindex = -1;
 static int globerrfn(const char *path, int err) {
-  mprintf((0, "Error accessing %s: %s .... \n", path, strerror(err)));
+  mprintf(0, "Error accessing %s: %s .... \n", path, strerror(err));
   return 0;
 }
 
@@ -396,7 +396,7 @@ bool ddio_FindFileStart(const char *wildcard, char *namebuf) {
   flags = GLOB_MARK | GLOB_PERIOD | GLOB_TILDE;
   rc = glob(wildcard, flags, globerrfn, &ffres);
   if (rc == GLOB_NOSPACE) {
-    mprintf((0, "Out of space during glob\n"));
+    mprintf(0, "Out of space during glob\n");
     globindex = -1;
     return false;
   }
@@ -794,7 +794,7 @@ int ddio_CheckLockFile(const char *dir) {
   FILE *file;
 
   snprintf(buffer, bufferLen, "%s/%s", dir, ".lock");
-  mprintf((0, "LockFile: Checking [%s]...", buffer));
+  mprintf(0, "LockFile: Checking [%s]...", buffer);
   chmod(buffer, S_IREAD | S_IWRITE);
   file = fopen(buffer, "rb");
 
@@ -857,7 +857,7 @@ int ddio_CheckLockFile(const char *dir) {
         // technically this shouldn't happen, but I get it
         // when the pid no longer exists...so I'm going to
         // pretend it doesn't
-        mprintf((0, "Error sending signal to pid for lock check (%d)\n", f_pid));
+        mprintf(0, "Error sending signal to pid for lock check (%d)\n", f_pid);
         // perror ("Error sending signal to pid for lock check, maybe remove lock file in temp directory");
         // ddio_SetWorkingDir(old_directory);
         // return 0;

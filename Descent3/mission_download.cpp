@@ -327,7 +327,7 @@ int msn_DownloadWithStatus(char *url, char *filename) {
           //now see if the rest of the extension is ZIP
           if(!stricmp(url_ptr,".ZIP"))
           {
-                  mprintf((0,"We're downloading a zip file!!!\n"));
+                  mprintf(0,"We're downloading a zip file!!!\n");
                   file_is_zip = true;
           }
   }
@@ -420,12 +420,12 @@ int msn_DownloadWithStatus(char *url, char *filename) {
           {
 
                   //Update the dialog
-                  //mprintf((0,"!"));
+                  //mprintf(0,"!");
 
                   if(getmsnfile->IsFileReceived())
                   {
                           //File transfer successful!
-                          mprintf((0,"Succesfully received the file!\n"));
+                          mprintf(0,"Succesfully received the file!\n");
                           exit_menu = 1;
 
                           if(file_is_zip)
@@ -444,7 +444,7 @@ int msn_DownloadWithStatus(char *url, char *filename) {
                           DoMessageBox(TXT_ERROR,TXT_FMTCANTDNLD,MSGBOX_OK);
                           //Delete the file that didn't finish!
                           ddio_DeleteFile(qualfile);
-                          mprintf((0,"Couldn't download the file! Error: %d\n",getmsnfile->GetErrorCode()));
+                          mprintf(0,"Couldn't download the file! Error: %d\n",getmsnfile->GetErrorCode());
                           exit_menu = 1;
                           ret = 0;
                   }
@@ -494,11 +494,11 @@ int msn_DownloadWithStatus(char *url, char *filename) {
                   texts[6].Create (&menu_wnd,&rate_text,MSN_COL_1,MSN_ROW_4,0);
 
                   progress.Update(((float)((float)received_bytes)/((float)total_bytes)));
-                  //mprintf((0,"@"));
+                  //mprintf(0,"@");
           }
-          //mprintf((0,"-In"));
+          //mprintf(0,"-In");
           res = PollUI();
-          //mprintf((0,"-Out"));
+          //mprintf(0,"-Out");
           switch(res)
           {
           case UID_CANCEL:
@@ -619,7 +619,7 @@ int msn_CheckGetMission(network_address *net_addr, char *filename) {
     int sel = msn_ShowDownloadChoices(murls);
     if (sel != -1) {
       // Get the item that was selected!
-      mprintf((0, "Downloading missions file from %s\n", murls->URL[sel]));
+      mprintf(0, "Downloading missions file from %s\n", murls->URL[sel]);
       if (msn_DownloadWithStatus(murls->URL[sel], filename)) {
         return 1;
       }
@@ -695,9 +695,9 @@ void _get_zipfilename(char *output, char *directory, char *zipfilename) {
 // return 1 on success
 int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
 
-  mprintf((0, "Extracting ZIP File (%s) to missions directory\n", zipfilename));
+  mprintf(0, "Extracting ZIP File (%s) to missions directory\n", zipfilename);
   if (!cfexist(zipfilename)) {
-    mprintf((0, "Zip file doesn't exist\n"));
+    mprintf(0, "Zip file doesn't exist\n");
     return 0;
   }
 
@@ -712,7 +712,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   zipentry *ze;
 
   if (!zfile.OpenZip(zipfilename)) {
-    mprintf((0, "Unable to open zip file\n"));
+    mprintf(0, "Unable to open zip file\n");
     return 0;
   }
 
@@ -734,7 +734,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
     Descent->defer();
     process_file = true;
 
-    mprintf((0, "Processesing: %s\n", ze->name));
+    mprintf(0, "Processesing: %s\n", ze->name);
 
     if (ze->compression_method == 0x0000 || ze->compression_method == 0x0008) {
       char *rfile = strrchr(ze->name, '/');
@@ -754,7 +754,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
         snprintf(buffer, sizeof(buffer), "%s already exists. Overwrite?", output_filename);
         if (DoMessageBox("Confirm", buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
           // delete the file
-          mprintf((0, "Deleting %s\n", zipfilename));
+          mprintf(0, "Deleting %s\n", zipfilename);
           if (!ddio_DeleteFile(output_filename)) {
             process_file = false;
             console.puts(GR_GREEN, "[Unable to Write] ");
@@ -776,10 +776,10 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
         int ret = zfile.ExtractFile(ze, output_filename);
         if (ret < 0) {
           if (ret == -9) {
-            mprintf((0, " Error writing to file\n"));
+            mprintf(0, " Error writing to file\n");
             snprintf(buffer, sizeof(buffer), "\nError writing to file (Out of space?)");
           } else {
-            mprintf((0, " Error %d extracting file\n", ret));
+            mprintf(0, " Error %d extracting file\n", ret);
             snprintf(buffer, sizeof(buffer), "\nError %d extracting file", ret);
           }
           console.puts(GR_GREEN, buffer);
@@ -804,7 +804,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
       }
 
     } else {
-      mprintf((0, "Unsupported compression for file (%s)\n", ze->name));
+      mprintf(0, "Unsupported compression for file (%s)\n", ze->name);
       console.puts(GR_GREEN, "Unsupported compression!!");
     }
 
@@ -817,7 +817,7 @@ int msn_ExtractZipFile(char *zipfilename, char *mn3name) {
   if (DoMessageBox("Confirm", "Do you want to delete the zip file? It is no longer needed.", MSGBOX_YESNO,
                    UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     // delete the file
-    mprintf((0, "Deleting %s\n", zipfilename));
+    mprintf(0, "Deleting %s\n", zipfilename);
     ddio_DeleteFile(zipfilename);
   }
 
@@ -876,7 +876,7 @@ int CheckGetD3M(char *d3m) {
   strcat(modurl, fixedd3m);
 
   lowurl = mem_strdup(_strlwr(modurl));
-  mprintf((0, "Downloading mod file from %s\n", modurl));
+  mprintf(0, "Downloading mod file from %s\n", modurl);
 
   if (ModDownloadWithStatus(modurl, d3m)) {
     mem_free(fixedd3m);
@@ -915,7 +915,7 @@ int ModDownloadWithStatus(char *url, char *filename) {
           //now see if the rest of the extension is ZIP
           if(!stricmp(url_ptr,".ZIP"))
           {
-                  mprintf((0,"We're downloading a zip file!!!\n"));
+                  mprintf(0,"We're downloading a zip file!!!\n");
                   file_is_zip = true;
           }
   }
@@ -1011,12 +1011,12 @@ int ModDownloadWithStatus(char *url, char *filename) {
           {
 
                   //Update the dialog
-                  //mprintf((0,"!"));
+                  //mprintf(0,"!");
 
                   if(getmsnfile->IsFileReceived())
                   {
                           //File transfer successful!
-                          mprintf((0,"Succesfully received the file!\n"));
+                          mprintf(0,"Succesfully received the file!\n");
                           exit_menu = 1;
 
                           if(file_is_zip)
@@ -1035,7 +1035,7 @@ int ModDownloadWithStatus(char *url, char *filename) {
                           DoMessageBox(TXT_ERROR,TXT_FMTCANTDNLD,MSGBOX_OK);
                           //Delete the file that didn't finish!
                           ddio_DeleteFile(qualfile);
-                          mprintf((0,"Couldn't download the file! Error: %d\n",getmsnfile->GetErrorCode()));
+                          mprintf(0,"Couldn't download the file! Error: %d\n",getmsnfile->GetErrorCode());
                           exit_menu = 1;
                           ret = 0;
                   }
@@ -1085,11 +1085,11 @@ int ModDownloadWithStatus(char *url, char *filename) {
                   texts[6].Create (&menu_wnd,&rate_text,MSN_COL_1,MSN_ROW_4,0);
 
                   progress.Update(((float)((float)received_bytes)/((float)total_bytes)));
-                  //mprintf((0,"@"));
+                  //mprintf(0,"@");
           }
-          //mprintf((0,"-In"));
+          //mprintf(0,"-In");
           res = PollUI();
-          //mprintf((0,"-Out"));
+          //mprintf(0,"-Out");
           switch(res)
           {
           case UID_CANCEL:

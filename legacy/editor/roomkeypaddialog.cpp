@@ -540,7 +540,7 @@ void CRoomKeypadDialog::OnSelendokRoomPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted room list, but probably nothing."));
+		mprintf(0,"Possible corrupted room list, but probably nothing.");
 		UpdateDialog();
 	}
 
@@ -1725,9 +1725,9 @@ void CRoomKeypadDialog::OnBadCenterpoints()
 	char message[10000];
 	message[0] = '\0';
 
-	mprintf((0, "Computing bad centers\n"));
+	mprintf(0, "Computing bad centers\n");
 	BOA_ComputePathPoints(message, 10000);
-	mprintf((0, "Done computing bad centers... List in clipboard.\n"));
+	mprintf(0, "Done computing bad centers... List in clipboard.\n");
 	DumpTextToClipboard(message);
 }
 

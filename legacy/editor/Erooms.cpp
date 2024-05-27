@@ -823,7 +823,7 @@ void SaveRoom (int n,char *filename)
 	outfile=(CFILE *)cfopen (filename,"wb");
 	if (!outfile)
 	{
-		mprintf ((0,"Couldn't save room %s!\n",filename));
+		mprintf(0,"Couldn't save room %s!\n",filename);
 		Int3();
 		return;
 	}
@@ -951,7 +951,7 @@ void SaveRoom (int n,char *filename)
 
 	cfclose (outfile);
 
-	mprintf ((0,"Room file %s saved.\n",filename));
+	mprintf(0,"Room file %s saved.\n",filename);
 
 }
 
@@ -1196,7 +1196,7 @@ int CheckFaceConcavity(int num_verts,int16_t *face_verts,vector *normal,vector *
 		dot /= sqrt(i0*i0 + j0*j0) * sqrt(i1*i1 + j1*j1);
 
 		if (dot > CONCAVITY_TOLERANCE) {		//we have a concavity!
-			//mprintf((0,"Concavity check dot = %f\n",dot));
+			//mprintf(0,"Concavity check dot = %f\n",dot);
 			return vn;								//..so return this vertex number
 		}
 	}
@@ -1217,7 +1217,7 @@ bool ResetRoomFaceNormals(room *rp)
 			bad_normals++;
 
 	if (bad_normals > 0) {
-		mprintf((1,"Warning: Room %d has %d bad or low-precision normals\n",ROOMNUM(rp),bad_normals));
+		mprintf(1,"Warning: Room %d has %d bad or low-precision normals\n",ROOMNUM(rp),bad_normals);
 		return 0;
 	}
 	else
@@ -1295,7 +1295,7 @@ void FixConcaveFaces (room *rp,int *facelist,int facecount)
 			int num_new_faces=concave_count-3;
 			ASSERT (num_new_faces>0);
 
-			mprintf ((0,"Creating %d new faces from face %d!\n",num_new_faces,facelist[i]));
+			mprintf(0,"Creating %d new faces from face %d!\n",num_new_faces,facelist[i]);
 
 			// copy the concave vert indices for later use
 			for (t=0;t<concave_count;t++)
@@ -2397,7 +2397,7 @@ void RemoveDuplicateFaces(room *rp)
 
 		if (dup != -1) {
 			DeleteRoomFace(rp,i);
-			mprintf((0,"Removed face %d (duplicate of face %d) from room %d\n",i,dup,r));
+			mprintf(0,"Removed face %d (duplicate of face %d) from room %d\n",i,dup,r);
 			removed++;
 			i--;
 		}
@@ -2856,7 +2856,7 @@ void VerifyMine()
 
 	//Show message if errors
 	if (errors) {
-		mprintf((0,"Error buf size = %d\n",strlen(error_buf)));
+		mprintf(0,"Error buf size = %d\n",strlen(error_buf));
 		DumpTextToClipboard(error_buf);
 		OutrageMessageBox(
 			"Mine check results:\n"
@@ -3234,7 +3234,7 @@ int ComputeRoomShell(room *rp)
 						//See if any additional faces
 						t2 = FindConnectedFace(rp,f,e,t+1);
 						if (t2 != -1) {
-							//mprintf((0,"Room %d face %d: Found second connection for edge %d (face %d)\n",ROOMNUM(rp),f,e,t));
+							//mprintf(0,"Room %d face %d: Found second connection for edge %d (face %d)\n",ROOMNUM(rp),f,e,t);
 							//CheckError("Room %d face %d: Found second connection for edge %d (face %d)\n",ROOMNUM(rp),f,e,t);
 						}
 						else {	//No double-edge, so add connected face
@@ -3244,7 +3244,7 @@ int ComputeRoomShell(room *rp)
 						}
 					}
 					else {
-						//mprintf((0,"Room %d face %d: No connection for edge %d\n",ROOMNUM(rp),f,e));
+						//mprintf(0,"Room %d face %d: No connection for edge %d\n",ROOMNUM(rp),f,e);
 						CheckError("Room %d face %d: No connection for edge %d\n",ROOMNUM(rp),f,e);
 						shell_flags[f] = SHELL_ERROR;
 						errors++;
@@ -3288,7 +3288,7 @@ int ComputeAllRoomShells()
 
 	error_buf_offset = 0;
 
-	mprintf((0,"Computing room shells..."));
+	mprintf(0,"Computing room shells...");
 
 	for (r=0,rp=Rooms;r<=Highest_room_index;r++,rp++) {
 		if (rp->used && (rp->num_portals > 0) && !(rp->flags & RF_EXTERNAL)) {
@@ -3298,9 +3298,9 @@ int ComputeAllRoomShells()
 		}
 	}
 
-	mprintf((0,"Done\n"));
+	mprintf(0,"Done\n");
 
-	mprintf((0,"Error buf size = %d\n",strlen(error_buf)));
+	mprintf(0,"Error buf size = %d\n",strlen(error_buf));
 
 	DumpTextToClipboard(error_buf);
 

@@ -235,7 +235,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
   sndcache = &m_ds.m_ll_sndsys->m_sound_mixer;
   iteration = 0;
 
-  mprintf((0, "DS3DLIB: Looping thread begins.\n"));
+  mprintf(0, "DS3DLIB: Looping thread begins.\n");
 
   // main thread body
   while (!m_ds.request_kill) {
@@ -256,7 +256,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
           // streams will stop at the request of the application always, unlike looping buffers (see below)
           if (sb->s->please_close) {
             sb_loop_thread_clean_buffer(sb);
-            //	mprintf((0, "ds thread pleas_close request processed.\n"));
+            //	mprintf(0, "ds thread pleas_close request processed.\n");
           } else if (sb->m_status & SSF_PAUSED) {
             continue; // just continue
           } else if ((iteration % 4) == (sb->s->time_slice % 4)) {
@@ -272,7 +272,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
                 sb->s->last_half = whichhalf;
               }
             }
-            //	mprintf((0, "ds thread stream update.\n"));
+            //	mprintf(0, "ds thread stream update.\n");
           }
         } else if (!(sb->m_status & SSF_BUFFERED_LOOP)) {
           // this slot is a looping slot.  check to see if app requested closing this loop.
@@ -307,7 +307,7 @@ void __cdecl sb_loop_thread(void *user_ptr) {
   // invalidate thread
   m_ds.thread_alive = false;
   m_ds.m_ll_sndsys = NULL;
-  mprintf((0, "DS3DLIB: Looping thread done.\n"));
+  mprintf(0, "DS3DLIB: Looping thread done.\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -336,7 +336,7 @@ bool sb_loop_thread_init(win_llsSystem *lls) {
 
 void sb_loop_thread_kill() {
   if (m_ds.thread_alive) {
-    mprintf((0, "DS3DLIB: Killing looping thread.\n"));
+    mprintf(0, "DS3DLIB: Killing looping thread.\n");
     m_ds.request_kill = true;
     while (m_ds.thread_alive) {
       Sleep(DSPB_TICK_MILLISECONDS);
@@ -438,7 +438,7 @@ void sb_stream_buffered_update(sound_buffer_info *sb) {
   whichhalf = (playp < sb->s->half_buffer_point) ? 0 : sb->s->half_buffer_point;
 
   if (whichhalf != sb->s->last_half) {
-    //	mprintf((0, "DSOUND3D: event triggered. Updating stream half %d.\n", sb->s->last_half));
+    //	mprintf(0, "DSOUND3D: event triggered. Updating stream half %d.\n", sb->s->last_half);
     if (sb->s->close_on_next) {
       extern win_llsSystem *ll_sound_ptr;
       ll_sound_ptr->StopSound(sb->m_unique_id);
@@ -455,7 +455,7 @@ void sb_stream_buffered_update(sound_buffer_info *sb) {
                           ll_sound_ptr->StopSound(sb->m_unique_id);
                   }
                   else {
-                          mprintf((0, "DSOUND3D: event triggered. Updating stream half %d.\n", sb->s->last_half));
+                          mprintf(0, "DSOUND3D: event triggered. Updating stream half %d.\n", sb->s->last_half);
                           A3D_ClearSourceWaveEvents(sb->m_snd_obj);
                           sb_stream_fillhalf(sb, sb->s->last_half);
                           sb->s->last_half = (sb->s->last_half) ?  0 : sb->s->half_buffer_point;
@@ -573,7 +573,7 @@ void sb_buffered_loop_step(win_llsSystem *lls, sound_buffer_info *sb, int force_
     sb->s->loop_step++;
   }
   if (!sound_length && sb->s->loop_step == 2) {
-    //	mprintf((0, "DS3DLIB: Buffered loop %d advancing to post-end step (done)\n", sb->m_unique_id));
+    //	mprintf(0, "DS3DLIB: Buffered loop %d advancing to post-end step (done)\n", sb->m_unique_id);
     lls->StopSound(sb->m_unique_id);
     return;
   } else {
@@ -612,5 +612,5 @@ void sb_buffered_loop_step(win_llsSystem *lls, sound_buffer_info *sb, int force_
   // must be at end to initiate thread management.
   sb->s->playing = 1;
 
-  //	mprintf((0, "DDSNDLIB: Buffered loop %d advancing to step %d.\n", sb->m_unique_id, sb->s->loop_step));
+  //	mprintf(0, "DDSNDLIB: Buffered loop %d advancing to step %d.\n", sb->m_unique_id, sb->s->loop_step);
 }

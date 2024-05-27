@@ -83,7 +83,7 @@ void FreeGamePath(int n) {
     return;
 
   mem_free(GamePaths[n].pathnodes);
-  mprintf((0, "Path %d lost some\n", n));
+  mprintf(0, "Path %d lost some\n", n);
 
   GamePaths[n].num_nodes = 0;
   GamePaths[n].used = 0;

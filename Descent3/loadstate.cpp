@@ -1125,7 +1125,7 @@ int LGSObjects(CFILE *fp, int version) {
         f_allocated = 1;
 
       if (f_allocated) {
-        // mprintf((0,"Object %d has %d attach points.\n",i,nattach));
+        // mprintf(0,"Object %d has %d attach points.\n",i,nattach);
         op->attach_children = (int *)mem_malloc(sizeof(int) * nattach);
         for (j = 0; j < nattach; j++)
           gs_ReadInt(fp, op->attach_children[j]);
@@ -1294,7 +1294,7 @@ int LGSObjects(CFILE *fp, int version) {
       poly_model *pm = &Poly_models[op->rtype.pobj_info.model_num];
 
       if (pm->n_attach) {
-        mprintf((0, "*Object %d has %d attach points.\n", i, pm->n_attach));
+        mprintf(0, "*Object %d has %d attach points.\n", i, pm->n_attach);
       }
 
       polyobj_info *p_info = &op->rtype.pobj_info;
@@ -1399,8 +1399,7 @@ int LGSObjects(CFILE *fp, int version) {
       ObjLink(OBJNUM(op), newroom);
       ObjSetOrient(op, &objmat[i]);
       if (op->type == OBJ_ROOM) {
-        mprintf((0, "Object %d is a room and Is%s a big object. Size=%f\n", i, (op->flags & OF_BIG_OBJECT) ? "" : "n't",
-                 op->size));
+        mprintf(0, "Object %d is a room and Is%s a big object. Size=%f\n", i, (op->flags & OF_BIG_OBJECT) ? "" : "n't", op->size);
         if ((op->size >= ((TERRAIN_SIZE * (float)1))) && !(op->flags & OF_BIG_OBJECT)) {
           BigObjAdd(i);
         }
@@ -1408,22 +1407,26 @@ int LGSObjects(CFILE *fp, int version) {
         ObjSetAABB(op);
       }
     }
-    /*
-    if((op->attach_ultimate_handle)&&(OBJECT_HANDLE_NONE!=op->attach_ultimate_handle))
-    {
-            mprintf((0,"Object %d has an ultimate parent of %d
-    (%d)\n",i,OBJNUM(ObjGet(op->attach_ultimate_handle)),op->attach_parent_handle )); ASSERT(op->flags&OF_ATTACHED);
+/*
+    if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_ultimate_handle)) {
+      mprintf(0, "Object %d has an ultimate parent of %d (%d)\n",
+              i,
+              OBJNUM(ObjGet(op->attach_ultimate_handle)),
+              op->attach_parent_handle);
+      ASSERT(op->flags & OF_ATTACHED);
     }
-    if((op->attach_ultimate_handle)&&(OBJECT_HANDLE_NONE!=op->attach_parent_handle))
-    {
-            mprintf((0,"Object %d has a parent of %d
-    (%d)\n",i,OBJNUM(ObjGet(op->attach_parent_handle)),op->attach_parent_handle )); ASSERT(op->flags&OF_ATTACHED);
+    if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_parent_handle)) {
+      mprintf(0, "Object %d has a parent of %d (%d)\n",
+              i,
+              OBJNUM(ObjGet(op->attach_parent_handle)),
+              op->attach_parent_handle);
+      ASSERT(op->flags & OF_ATTACHED);
     }
     */
   }
-  mprintf((0, "Objects[121].prev=%d\n", Objects[121].prev));
+  mprintf(0, "Objects[121].prev=%d\n", Objects[121].prev);
   ResetFreeObjects();
-  mprintf((0, "highest obj index = %d, ", Highest_object_index));
+  mprintf(0, "highest obj index = %d, ", Highest_object_index);
   ObjReInitPositionHistory();
 
   END_VERIFY_SAVEFILE(fp, "Objects load");

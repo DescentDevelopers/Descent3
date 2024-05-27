@@ -256,7 +256,7 @@ int ddio_KeyInKey() {
 
   if (DDIO_key_queue.head != DDIO_key_queue.tail) {
     key = (unsigned)DDIO_key_queue.buffer[DDIO_key_queue.head];
-    //	mprintf((1, "%x ", key));
+    //	mprintf(1, "%x ", key);
     DDIO_key_queue.head++;
     if (DDIO_key_queue.head >= KEY_QUEUE_SIZE)
       DDIO_key_queue.head = 0;
@@ -309,7 +309,7 @@ void ddio_AddKeyToQueue(int key) {
   if (temp != DDIO_key_queue.head) {
     DDIO_key_queue.buffer[DDIO_key_queue.tail] = (uint16_t)keycode;
     DDIO_key_queue.tail = temp;
-    //	mprintf((1, "%d ", keycode));
+    //	mprintf(1, "%d ", keycode);
   }
 }
 

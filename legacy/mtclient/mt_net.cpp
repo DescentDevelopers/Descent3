@@ -131,7 +131,7 @@ SOCKADDR_IN	ptrackaddr;
 SOCKADDR_IN	ctrackaddr;
 SOCKADDR_IN sockaddr;
 
-#define DLLmprintf(args)	DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 
 
 #define NW_AGHBN_CANCEL		1
@@ -181,13 +181,13 @@ void InitMTSockets(void)
 	int error=WSAStartup(ver,&ws_data);
 	if (error!=0)
 	{
-		DLLmprintf ((0,"There was an error initializing networking! Error=%d\n",error));
+		DLLmprintf(0,"There was an error initializing networking! Error=%d\n",error);
 		return;
 	}
 	else
 #endif
 	{
-		DLLmprintf ((0,"Network initted successfully!\n"));
+		DLLmprintf(0,"Network initted successfully!\n");
 	}
 
 	{
@@ -199,7 +199,7 @@ void InitMTSockets(void)
 	
 		gtrackaddr.sin_family = AF_INET; 
 		//This would be a good place to resolve the IP based on a domain name
-		DLLmprintf((0,"Looking up hostname: %s.\n",GAMETRACKERNAME));
+		DLLmprintf(0,"Looking up hostname: %s.\n",GAMETRACKERNAME);
 		
 		DLLnw_Asyncgethostbyname(&ip,NW_AGHBN_LOOKUP,GAMETRACKERNAME);
 			
@@ -218,8 +218,8 @@ void InitMTSockets(void)
 		
 		if(rcode!=1)
 		{
-			DLLmprintf((0,"Unable to gethostbyname(\"%s\").\n",GAMETRACKERNAME));
-			DLLmprintf((0,"WSAGetLastError() returned %d.\n",WSAGetLastError() ));
+			DLLmprintf(0,"Unable to gethostbyname(\"%s\").\n",GAMETRACKERNAME);
+			DLLmprintf(0,"WSAGetLastError() returned %d.\n",WSAGetLastError() );
 			DLLnw_Asyncgethostbyname(NULL,NW_AGHBN_CANCEL,NULL);
 			return ;
 		}
@@ -235,7 +235,7 @@ void InitMTSockets(void)
 		sockaddr.sin_family = AF_INET; 
 		sockaddr.sin_addr.s_addr = INADDR_ANY; 
 		sockaddr.sin_port = 0;//htons(REGPORT);
-		DLLmprintf((0,"Looking up hostname: %s.\n",PILOTTRACKERNAME));
+		DLLmprintf(0,"Looking up hostname: %s.\n",PILOTTRACKERNAME);
 		DLLnw_Asyncgethostbyname(&ip,NW_AGHBN_LOOKUP,PILOTTRACKERNAME);
 		do
 		{
@@ -252,8 +252,8 @@ void InitMTSockets(void)
 
 		if(rcode!=1)
 		{
-			DLLmprintf((0,"Unable to gethostbyname(\"%s\").\n",PILOTTRACKERNAME));
-			DLLmprintf((0,"WSAGetLastError() returned %d.\n",WSAGetLastError() ));
+			DLLmprintf(0,"Unable to gethostbyname(\"%s\").\n",PILOTTRACKERNAME);
+			DLLmprintf(0,"WSAGetLastError() returned %d.\n",WSAGetLastError() );
 			DLLnw_Asyncgethostbyname(NULL,NW_AGHBN_CANCEL,NULL);
 			return;
 		}
@@ -270,10 +270,10 @@ void InitMTSockets(void)
 void CloseMTSockets(void)
 {	
 #ifdef WIN32
-	if (WSACleanup())	
-	{
-		DLLmprintf((0, "Error closing wsock!\n") );
-	}
+  if (WSACleanup())
+  {
+    DLLmprintf(0, "Error closing wsock!\n");
+  }
 #endif
 }
 

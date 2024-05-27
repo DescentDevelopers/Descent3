@@ -88,12 +88,12 @@ void os_config_remove( char *section, char *name )
 	// remove the value
 	if ( !name )	{
 		if ( !section )	{
-			////mprintf(( "Can't delete root key\n" ));
+			////mprintf( "Can't delete root key\n" );
 			goto Cleanup;
 		}
 		lResult = RegDeleteKey( HKEY_LOCAL_MACHINE, keyname );
 		if ( lResult != ERROR_SUCCESS )	{
-			////mprintf(( "Error removing registry key '%s'\n", name ));
+			////mprintf( "Error removing registry key '%s'\n", name );
 			goto Cleanup;
 		}
 	} else	{
@@ -108,13 +108,13 @@ void os_config_remove( char *section, char *name )
 												 &dwDisposition );					// Location to store status of key
 
 		if ( lResult != ERROR_SUCCESS )	{
-			//mprintf(( "Error opening registry key '%s'\n", keyname ));
+			//mprintf( "Error opening registry key '%s'\n", keyname );
 			goto Cleanup;
 		}
 
 		lResult = RegDeleteValue( hKey, name );
 		if ( lResult != ERROR_SUCCESS )	{
-			//mprintf(( "Error removing registry value '%s'\n", name ));
+			//mprintf( "Error removing registry value '%s'\n", name );
 			goto Cleanup;
 		}
 	}
@@ -153,12 +153,12 @@ void os_config_write_string( char *section, char *name, char *value )
 											 &dwDisposition );					// Location to store status of key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 		
@@ -170,7 +170,7 @@ void os_config_write_string( char *section, char *name, char *value )
 									 strlen(value) );								// How many bytes to set
 																			
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error writing registry key '%s'\n", name ));
+		//mprintf( "Error writing registry key '%s'\n", name );
 		goto Cleanup;
 	}
 
@@ -206,12 +206,12 @@ void os_config_write_string2( char *section, char *name, char *value )
 											 &dwDisposition );					// Location to store status of key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 		
@@ -223,7 +223,7 @@ void os_config_write_string2( char *section, char *name, char *value )
 									 strlen(value) );								// How many bytes to set
 																			
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error writing registry key '%s'\n", name ));
+		//mprintf( "Error writing registry key '%s'\n", name );
 		goto Cleanup;
 	}
 
@@ -259,12 +259,12 @@ void os_config_write_uint( char *section, char *name, uint32_t value )
 											 &dwDisposition );					// Location to store status of key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 		
@@ -276,7 +276,7 @@ void os_config_write_uint( char *section, char *name, uint32_t value )
 									 4 );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error writing registry key '%s'\n", name ));
+		//mprintf( "Error writing registry key '%s'\n", name );
 		goto Cleanup;
 	}
 
@@ -318,12 +318,12 @@ char * os_config_read_string( char *section, char *name, char *default_value )
 											 &hKey );								// Location to store key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 
@@ -336,7 +336,7 @@ char * os_config_read_string( char *section, char *name, char *default_value )
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error reading registry key '%s'\n", name ));
+		//mprintf( "Error reading registry key '%s'\n", name );
 		goto Cleanup;
 	}
 
@@ -365,12 +365,12 @@ char * os_config_read_string_ex( char *keyname, char *name, char *default_value 
 											 &hKey );								// Location to store key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 
@@ -383,7 +383,7 @@ char * os_config_read_string_ex( char *keyname, char *name, char *default_value 
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error reading registry key '%s'\n", name ));
+		//mprintf( "Error reading registry key '%s'\n", name );
 		goto Cleanup;
 	}
 
@@ -417,12 +417,12 @@ char * os_config_read_string2( char *section, char *name, char *default_value )
 											 &hKey );								// Location to store key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 
@@ -435,7 +435,7 @@ char * os_config_read_string2( char *section, char *name, char *default_value )
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error reading registry key '%s'\n", name ));
+		//mprintf( "Error reading registry key '%s'\n", name );
 		goto Cleanup;
 	}
 
@@ -473,12 +473,12 @@ uint32_t  os_config_read_uint( char *section, char *name, uint32_t default_value
 											 &hKey );								// Location to store key
 
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error opening registry key '%s'\n", keyname ));
+		//mprintf( "Error opening registry key '%s'\n", keyname );
 		goto Cleanup;
 	}
 
 	if ( !name )	 {
-		//mprintf(( "No variable name passed\n" ));
+		//mprintf( "No variable name passed\n" );
 		goto Cleanup;
 	}
 
@@ -491,7 +491,7 @@ uint32_t  os_config_read_uint( char *section, char *name, uint32_t default_value
 									 &dwLen );								// How many bytes to set
 																				
 	if ( lResult != ERROR_SUCCESS )	{
-		//mprintf(( "Error reading registry key '%s'\n", name ));
+		//mprintf( "Error reading registry key '%s'\n", name );
 		goto Cleanup;
 	}
 

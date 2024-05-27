@@ -63,7 +63,7 @@ int GetNumberPlayerObjs()
 		if (Objects[i].type==OBJ_PLAYER)
 			count++;
 	}
-	mprintf((0,"GetNumberPlayerObjs returns %d\n",count));
+	mprintf(0,"GetNumberPlayerObjs returns %d\n",count);
 	return count;
 }
 
@@ -72,19 +72,19 @@ int GetNumberPlayerObjs()
 //Returns true on success
 bool ObjectCut()
 {
-	mprintf((0,"ObjectCut()\n"));
+	mprintf(0,"ObjectCut()\n");
 	if(Cur_object_index!=-1)
 	{
 		int objnum=Cur_object_index;
 		int num_player_objects=GetNumberPlayerObjs();
 		if((num_player_objects==1) && Objects[objnum].type==OBJ_PLAYER)
 		{
-			mprintf((0,"Oops, Can't delete the only player...sorry\n"));
+			mprintf(0,"Oops, Can't delete the only player...sorry\n");
 			return false;
 		}
-		mprintf((0,"Attempting to cut object #%d into buffer...",objnum));
+		mprintf(0,"Attempting to cut object #%d into buffer...",objnum);
 		memcpy(&ClipBoardObject,&Objects[objnum],sizeof(object));
-		mprintf((0,"Done!\n"));
+		mprintf(0,"Done!\n");
 		ObjectInBuffer=true;
 		HObjectDelete();
 		return true;
@@ -97,13 +97,13 @@ bool ObjectCut()
 //Returns true on success
 bool ObjectCopy()
 {
-	mprintf((0,"ObjectCopy()\n"));
+	mprintf(0,"ObjectCopy()\n");
 	if(Cur_object_index!=-1)
 	{
 		int objnum=Cur_object_index;
-		mprintf((0,"Attempting to copy object #%d into buffer...",objnum));
+		mprintf(0,"Attempting to copy object #%d into buffer...",objnum);
 		memcpy(&ClipBoardObject,&Objects[objnum],sizeof(object));
-		mprintf((0,"Done!\n"));
+		mprintf(0,"Done!\n");
 		ObjectInBuffer=true;
 		return true;
 	}
@@ -116,14 +116,14 @@ bool ObjectCopy()
 //Returns true on success
 bool ObjectDelete()
 {
-	mprintf((0,"ObjectDelete()\n"));
+	mprintf(0,"ObjectDelete()\n");
 	if(Cur_object_index!=-1)
 	{
 		int objnum=Cur_object_index;
 		int num_player_objects=GetNumberPlayerObjs();
 		if((num_player_objects==1) && Objects[objnum].type==OBJ_PLAYER)
 		{
-			mprintf((0,"Oops, Can't delete the only player...sorry\n"));
+			mprintf(0,"Oops, Can't delete the only player...sorry\n");
 			return false;
 		}
 		HObjectDelete();
@@ -137,7 +137,7 @@ bool ObjectDelete()
 //Returns true on success
 bool ObjectPaste()
 {
-	mprintf((0,"ObjectPaste()\n"));
+	mprintf(0,"ObjectPaste()\n");
 
 	Int3();	//I'm not so sure about this routine -- by copying everything over, it may copy
 				//some data it shouldn't, such as script info.
@@ -156,7 +156,7 @@ bool ObjectPaste()
 	{
 		return false;
 	}
-	mprintf((0,"Saving data...\n"));
+	mprintf(0,"Saving data...\n");
 	handle=Objects[Cur_object_index].handle;
 	next=Objects[Cur_object_index].next;
 	prev=Objects[Cur_object_index].prev;
@@ -166,10 +166,10 @@ bool ObjectPaste()
 	last_pos=Objects[Cur_object_index].last_pos;
 	creation_time=Objects[Cur_object_index].creation_time;
 	
-	mprintf((0,"Overwriting with buffer data\n"));
+	mprintf(0,"Overwriting with buffer data\n");
 	memcpy(&Objects[Cur_object_index],&ClipBoardObject,sizeof(object));
 
-	mprintf((0,"Restoring data...\n"));
+	mprintf(0,"Restoring data...\n");
 	Objects[Cur_object_index].handle=handle;
 	Objects[Cur_object_index].next=next;
 	Objects[Cur_object_index].prev=prev;

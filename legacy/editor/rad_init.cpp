@@ -75,7 +75,7 @@ int DoRadiosityRun (int method,rad_surface *light_surfaces,int count)
 {
 	float start_time;
 
-	mprintf ((0,"Calculating radiosity on %d faces.\n",count));
+	mprintf(0,"Calculating radiosity on %d faces.\n",count);
 
 	rad_Surfaces=light_surfaces;
 	rad_NumSurfaces=count;
@@ -97,7 +97,7 @@ int DoRadiosityRun (int method,rad_surface *light_surfaces,int count)
 	CloseRadiosityRun();
 
 	// Print time taken
-	mprintf((0,"\nLighting took %.4f seconds.\n",timer_GetTime()-start_time));
+	mprintf(0,"\nLighting took %.4f seconds.\n",timer_GetTime()-start_time);
 
 	return 1;
 }
@@ -225,7 +225,7 @@ void CountElements ()
 
 		rad_NumElements+=(surf->xresolution*surf->yresolution);
 	}
-	mprintf ((0,"Number of elements=%d\n",rad_NumElements));
+	mprintf(0,"Number of elements=%d\n",rad_NumElements);
 
 }
 
@@ -319,11 +319,11 @@ void UpdateUnsentValues ()
 	else
 		rad_Convergence = 0.0;
 
-	mprintf_at ((2,3,0,"Left=%f  ",rad_Convergence));
+	mprintf_at(2,3,0,"Left=%f  ",rad_Convergence);
 
 	if (timer_GetTime()-last_report_time>10.0)
 	{
-		mprintf ((0,"Percentage left=%f\n",rad_Convergence));
+		mprintf(0,"Percentage left=%f\n",rad_Convergence);
 		last_report_time=timer_GetTime();
 	}
 
@@ -366,7 +366,7 @@ void CalculateRadiosity ()
 			rad_DoneCalculating=1;
 			break;
 		}
-		mprintf_at ((2,2,0,"Lightcount=%d   ",rad_StepCount));
+		mprintf_at(2,2,0,"Lightcount=%d   ",rad_StepCount);
 
 		DoRadiosityIteration();
 		

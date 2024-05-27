@@ -174,7 +174,7 @@ void RemoveActiveDoorway(int adway) {
 
   Num_active_doorways--;
 
-  mprintf((0, "ActiveDoorways = %d\n", Num_active_doorways));
+  mprintf(0, "ActiveDoorways = %d\n", Num_active_doorways);
 }
 
 void AddActiveDoorway(int roomnum) {
@@ -193,7 +193,7 @@ void AddActiveDoorway(int roomnum) {
     dp->activenum = Num_active_doorways++;
   }
 
-  mprintf((0, "ActiveDoorways = %d\n", Num_active_doorways));
+  mprintf(0, "ActiveDoorways = %d\n", Num_active_doorways);
 }
 
 // Given an object handle, returns the doorway number

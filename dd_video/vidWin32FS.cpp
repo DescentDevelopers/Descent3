@@ -80,11 +80,11 @@ bool ddvidfs_Init() {
 
   //	enumerate all display modes.
   if (DDVideo_info.lpDD->EnumDisplayModes(0, NULL, NULL, DDEnumModesCallback) != DD_OK) {
-    mprintf((0, "DDVID error: Error enumerating display modes.\n"));
+    mprintf(0, "DDVID error: Error enumerating display modes.\n");
     return false;
   }
 
-  mprintf((0, "Video fullscreen system initialized.\n"));
+  mprintf(0, "Video fullscreen system initialized.\n");
 
   return true;
 }
@@ -172,7 +172,7 @@ bool ddvidfs_SetVideoMode(int w, int h, int color_depth, bool paged) {
 
     hres = DDVideo_info.lpDDSFront->GetAttachedSurface(&ddscaps, &DDVideo_info.lpDDSBack);
     if (hres != DD_OK) {
-      mprintf((0, "Unable to capture DirectDraw display back surface (%d)", LOWORD(hres)));
+      mprintf(0, "Unable to capture DirectDraw display back surface (%d)", LOWORD(hres));
       return false;
     }
   } else {

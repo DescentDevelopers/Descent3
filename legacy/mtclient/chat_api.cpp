@@ -54,9 +54,9 @@ typedef int (*PollUI_fp) (void);
 extern PollUI_fp DLLPollUI;
 
 #ifndef RELEASE
-#define DLLmprintf(args)	DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 #else
-#define DLLmprintf(args)	
+#define DLLmprintf(...)
 #endif
 
 typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
@@ -216,8 +216,8 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 
 		if(rcode!=1)
 		{
-			DLLmprintf((0,"Unable to gethostbyname(\"%s\").\n",chat_server));
-			DLLmprintf((0,"WSAGetLastError() returned %d.\n",WSAGetLastError() ));
+			DLLmprintf(0,"Unable to gethostbyname(\"%s\").\n",chat_server);
+			DLLmprintf(0,"WSAGetLastError() returned %d.\n",WSAGetLastError() );
 			DLLnw_Asyncgethostbyname(NULL,NW_AGHBN_CANCEL,NULL);
 			return 0;
 		}
@@ -235,7 +235,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 			if(WSAEWOULDBLOCK == ret || 0 == ret)
 #endif
 			{
-				DLLmprintf((0,"Beginning socket connect\n"));
+				DLLmprintf(0,"Beginning socket connect\n");
 				Socket_connecting = 1;
 				return 0;
 			}
@@ -243,10 +243,10 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 		else
 		{
 			//This should never happen, connect should always return WSAEWOULDBLOCK
-			DLLmprintf((0,"connect returned too soon!\n"));
+			DLLmprintf(0,"connect returned too soon!\n");
 			Socket_connecting = 1;
 			Socket_connected = 1;
-			DLLmprintf((0,"Socket connected, sending user and nickname request\n"));
+			DLLmprintf(0,"Socket connected, sending user and nickname request\n");
 			sprintf(signon_str,"/USER %s %s %s :%s","user","user","user",Chat_tracker_id);
 			SendChatString(signon_str,1);
 			sprintf(signon_str,"/NICK %s",Nick_name);
@@ -281,7 +281,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 			if(select(Chatsock+1,NULL,&write_fds,NULL,&timeout))
 			{
 				Socket_connected = 1;
-				DLLmprintf((0,"Socket connected, sending user and nickname request\n"));
+				DLLmprintf(0,"Socket connected, sending user and nickname request\n");
 				sprintf(signon_str,"/USER %s %s %s :%s","user","user","user",Chat_tracker_id);
 				SendChatString(signon_str,1);
 				sprintf(signon_str,"/NICK %s",Nick_name);
@@ -294,7 +294,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 			//error -- that means it's not going to connect
 			if(select(Chatsock+1,NULL,NULL,&error_fds,&timeout))
 			{
-				DLLmprintf((0,"Select returned an error!\n"));
+				DLLmprintf(0,"Select returned an error!\n");
 				return -1;
 			}
 			return 0;
@@ -528,14 +528,14 @@ const char *ChatGetString(void)
 			if(WSAEWOULDBLOCK != lerror && 0 != lerror)
 #endif
 			{
-				DLLmprintf((0,"recv caused an error: %d\n",lerror));
+				DLLmprintf(0,"recv caused an error: %d\n",lerror);
 			}		
 			return NULL;
 		}
 		if(bytesread)
 		{
 			ch[1] = NULL;
-			//DLLmprintf((0,ch));
+			//DLLmprintf(0,ch);
 			if((ch[0] == 0x0a)||(ch[0]==0x0d))
 			{
 				if(Input_chat_buffer[0]=='\0')
@@ -545,7 +545,7 @@ const char *ChatGetString(void)
 				}
 				strcpy(return_string,Input_chat_buffer);
 				Input_chat_buffer[0] = NULL;
-				//DLLmprintf((0,"->|%s\n",return_string));
+				//DLLmprintf(0,"->|%s\n",return_string);
 				p = ParseIRCMessage(return_string,MSG_REMOTE);
 				
 				return p;
@@ -555,7 +555,7 @@ const char *ChatGetString(void)
 		else
 		{
 			//Select said we had read data, but 0 bytes read means disconnected
-			DLLmprintf((0,"Disconnected! Doh!"));
+			DLLmprintf(0,"Disconnected! Doh!");
 			AddChatCommandToQueue(CC_DISCONNECTED,NULL,0);
 			return NULL;
 		}
@@ -1088,7 +1088,7 @@ char * ParseIRCMessage(char *Line, int iMode)
 	{
 		if (!Chat_server_connected)
 		{
-			DLLmprintf((0,"Connected to chat server!\n"));
+			DLLmprintf(0,"Connected to chat server!\n");
 			Chat_server_connected=1;
 			//We want to make sure we know our nick. This is somewhat of a hack  
 			strcpy(Nick_name,GetWordNum(0,szRemLine+1));

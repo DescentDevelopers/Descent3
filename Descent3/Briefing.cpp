@@ -352,7 +352,7 @@ bool ParseForHotTags(const char *src, char **dest) {
 
         if (!strnicmp(curr_ptr, HotTags[i].name, HotTags[i].length)) {
           // this is a hot tag!!!!!
-          mprintf((0, "Found Embedded HotTag: %s\n", HotTags[i].name));
+          mprintf(0, "Found Embedded HotTag: %s\n", HotTags[i].name);
           is_hot_tag = i;
           ret = true;
           break;
@@ -481,7 +481,7 @@ void PBAddMovieEffect(LPTCMOVIEDESC desc, const char *description) {
 
 void PBAddBkgEffect(LPTCBKGDESC desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
-    mprintf((0, "PB: Add Bkg\n"));
+    mprintf(0, "PB: Add Bkg\n");
   }
 }
 

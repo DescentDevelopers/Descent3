@@ -216,7 +216,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   dPlayers = DMFCBase->GetPlayers();
 
   DLLCreateStringTable("Coop.str", &StringTable, &StringTableSize);
-  mprintf((0, "%d strings loaded from string table\n", StringTableSize));
+  mprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -525,7 +525,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
   DLLGetUltimateParentForObject(&parent, killer);
 
   if ((parent->type != OBJ_PLAYER) && (parent->type != OBJ_OBSERVER)) {
-    mprintf((0, "Robot killed wasn't by a OBJ_PLAYER or OBJ_OBSERVER (%d)\n", parent->type));
+    mprintf(0, "Robot killed wasn't by a OBJ_PLAYER or OBJ_OBSERVER (%d)\n", parent->type);
     return;
   }
 
@@ -533,7 +533,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
 
   player_record *pr = DMFCBase->GetPlayerRecordByPnum(killer_pnum);
   if (!pr) {
-    mprintf((0, "Invalid player record!\n"));
+    mprintf(0, "Invalid player record!\n");
     Int3();
     return;
   }
@@ -543,7 +543,7 @@ void OnClientObjectKilled(object *obj, object *killer) {
   stat->Score[DSTAT_LEVEL]++;
   stat->Score[DSTAT_OVERALL]++;
 
-  mprintf((0, "%s's score is now %d\n", dPlayers[killer_pnum].callsign, stat->Score[DSTAT_LEVEL]));
+  mprintf(0, "%s's score is now %d\n", dPlayers[killer_pnum].callsign, stat->Score[DSTAT_LEVEL]);
 
   DMFCBase->OnClientObjectKilled(obj, killer);
 }
@@ -636,7 +636,7 @@ void SaveStatsToFile(char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file,filename,"wt");
   if(!file){
-          mprintf((0,"Unable to open output file\n"));
+          mprintf(0,"Unable to open output file\n");
           return;
   }
 

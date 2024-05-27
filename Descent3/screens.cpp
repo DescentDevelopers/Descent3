@@ -600,7 +600,7 @@ void PaintPLRSinglePlayerText() {
 
   if (all_done_painting) {
     if (paint_in_sound_handle != -1) {
-      mprintf((0, "Stopping paint in sound\n"));
+      mprintf(0, "Stopping paint in sound\n");
       Sound_system.StopSoundImmediate(paint_in_sound_handle);
       paint_in_sound_handle = -1;
     }

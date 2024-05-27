@@ -173,7 +173,7 @@ void CWorldObjectsPowerupDialog::OnAddNewPowerup()
 	Powerups[powerup_handle].image_handle=img_handle;
 
 	// Finally, save a local copy of the model/anim and alloc a tracklock
-	mprintf ((0,"Making a copy of this model/animation locally...\n"));
+	mprintf(0,"Making a copy of this model/animation locally...\n");
 
 	if (model)
 	{
@@ -314,7 +314,7 @@ void CWorldObjectsPowerupDialog::OnDeletePowerup()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePowPage (Powerups[n].name,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -804,7 +804,7 @@ void CWorldObjectsPowerupDialog::OnSelendokPowerPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted texture list, but probably nothing."));
+		mprintf(0,"Possible corrupted texture list, but probably nothing.");
 		UpdateDialog();
 	}
 

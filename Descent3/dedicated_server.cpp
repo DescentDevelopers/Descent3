@@ -846,15 +846,15 @@ void InitDedicatedSocket(uint16_t port) {
   dedicated_listen_socket = socket(AF_INET, SOCK_STREAM, 0);
 
   if (INVALID_SOCKET == dedicated_listen_socket) {
-    mprintf((0, "Unable to create listen socket for dedicated server!\n"));
+    mprintf(0, "Unable to create listen socket for dedicated server!\n");
     return;
   }
   if (SOCKET_ERROR == bind(dedicated_listen_socket, (SOCKADDR *)&sock_addr, sizeof(sock_addr))) {
-    mprintf((0, "Unable to bind listen socket for dedicated server!\n"));
+    mprintf(0, "Unable to bind listen socket for dedicated server!\n");
     return;
   }
   if (listen(dedicated_listen_socket, 1)) {
-    mprintf((0, "Unable to listen on dedicated server socket!\n"));
+    mprintf(0, "Unable to listen on dedicated server socket!\n");
     return;
   }
   make_nonblocking(dedicated_listen_socket);
@@ -875,7 +875,7 @@ void ListenDedicatedSocket(void) {
       // Check to see if this came in from the local address
       uint32_t localhost = inet_addr("127.0.0.1");
       if (memcmp(&localhost, &conn_addr.sin_addr, sizeof(localhost)) != 0) {
-        mprintf((0, "Rejecting connection from remote host!\n"));
+        mprintf(0, "Rejecting connection from remote host!\n");
         PrintDedicatedMessage(TXT_DS_REJECTREMOTE, inet_ntoa(conn_addr.sin_addr));
         PrintDedicatedMessage("\n");
         shutdown(incoming_socket, 2);

@@ -298,7 +298,7 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   DMFCBase->GameInit(NUM_TEAMS);
   DLLCreateStringTable("entropy.str", &StringTable, &StringTableSize);
-  DLLmprintf((0, "%d strings loaded from string table\n", StringTableSize));
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
   if (!StringTableSize) {
     *all_ok = 0;
     return;
@@ -804,7 +804,7 @@ void OnServerCollide(object *me_obj, object *it_obj) {
     }
     if (virus_team == -1) {
       // hey! we hit a virus that doesn't belong to any team!!
-      DLLmprintf((0, "Virus (%d) doesn't belong to any team, removing...\n", virus_objnum));
+      DLLmprintf(0, "Virus (%d) doesn't belong to any team, removing...\n", virus_objnum);
       DMFCBase->OnServerCollide(me_obj, it_obj);
       DLLSetObjectDeadFlag(it_obj, true, false);
       return;
@@ -944,13 +944,13 @@ void TakeOverRoom(int newteam, int oldteam, int roomnum, int victor) {
   }
 
   if (!success) {
-    DLLmprintf((0, "Invalid Takeover!!!!!!!\n"));
+    DLLmprintf(0, "Invalid Takeover!!!!!!!\n");
     return;
   }
 
   // print out hud message (and sound?)
   char buffer[256];
-  DLLmprintf((0, "old=%d new=%d\n", oldteam, newteam));
+  DLLmprintf(0, "old=%d new=%d\n", oldteam, newteam);
   snprintf(buffer, sizeof(buffer), TXT_TAKEOVER, (victor != -1) ? dPlayers[victor].callsign : TXT_NONAME,
            DMFCBase->GetTeamString(oldteam), room_buf);
   DLLAddHUDMessage(buffer);
@@ -1398,7 +1398,7 @@ void SaveStatsToFile(char *filename) {
   CFILE *file;
   DLLOpenCFILE(&file, filename, "wt");
   if (!file) {
-    DLLmprintf((0, "Unable to open output file\n"));
+    DLLmprintf(0, "Unable to open output file\n");
     return;
   }
 

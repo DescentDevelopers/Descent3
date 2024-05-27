@@ -544,7 +544,7 @@ void CloseNetworking() {
     NetDebugFile = NULL;
   }
 
-  mprintf((0, "Shutting down networking...\n"));
+  mprintf(0, "Shutting down networking...\n");
 #ifdef WIN32
   WSACancelBlockingCall();
 
@@ -561,7 +561,7 @@ void CloseNetworking() {
   }
 #ifdef WIN32
   if (WSACleanup()) {
-    mprintf((0, "Error closing wsock!\n"));
+    mprintf(0, "Error closing wsock!\n");
   }
 #endif
 
@@ -624,7 +624,7 @@ void nw_InitNetworking(int iReadBufSizeOverride) {
   if (!dp_DidLobbyLaunchGame()) {
     // Tell direct play about this game
     char *p = GetCommandLine();
-    mprintf((0, "Command line: %s\n", p));
+    mprintf(0, "Command line: %s\n", p);
     parmlen = strlen(p);
 
     int a;
@@ -660,10 +660,10 @@ void nw_InitNetworking(int iReadBufSizeOverride) {
   int error = 0;
 #endif
   if (error != 0) {
-    mprintf((0, "There was an error initializing networking! Error=%d\n", error));
+    mprintf(0, "There was an error initializing networking! Error=%d\n", error);
     return;
   } else {
-    mprintf((0, "Network initted successfully!\n"));
+    mprintf(0, "Network initted successfully!\n");
     Network_initted = 1;
     atexit(CloseNetworking);
   }
@@ -683,7 +683,7 @@ void nw_SetSocketOptions(SOCKET sock) {
 
   int error = make_nonblocking(sock);
   if (error == SOCKET_ERROR) {
-    mprintf((0, "Unable to make socket non-blocking -- %d", WSAGetLastError()));
+    mprintf(0, "Unable to make socket non-blocking -- %d", WSAGetLastError());
   }
 
   // try and increase the size of my receive buffer
@@ -705,7 +705,7 @@ void nw_SetSocketOptions(SOCKET sock) {
       break;
   }
   getsockopt(sock, SOL_SOCKET, SO_RCVBUF, (LPSTR)&cursize, &cursizesize);
-  mprintf((0, "Receive buffer set to %d\n", cursize));
+  mprintf(0, "Receive buffer set to %d\n", cursize);
   /*
   // set the current size of the send buffer
   bufsize = MAX_RECEIVE_BUFSIZE/4;
@@ -726,7 +726,7 @@ void nw_SetSocketOptions(SOCKET sock) {
                   break;
   }
   getsockopt(sock, SOL_SOCKET, SO_SNDBUF, (LPSTR)&cursize, &cursizesize);
-  mprintf((0, "Send buffer set to %d\n", cursize));
+  mprintf(0, "Send buffer set to %d\n", cursize);
   */
 }
 
@@ -764,14 +764,14 @@ void nw_InitSockets(uint16_t port) {
 
     sock_addr.sin_port = htons(port);
     if (bind(TCP_socket, (SOCKADDR *)&sock_addr, sizeof(sock_addr)) == SOCKET_ERROR) {
-      mprintf((0, "Couldn't bind TCP socket (%d)! Invalidating TCP\n", WSAGetLastError()));
+      mprintf(0, "Couldn't bind TCP socket (%d)! Invalidating TCP\n", WSAGetLastError());
       goto tcp_done;
     }
 
     nw_SetSocketOptions(TCP_socket);
     TCP_active = 1;
   } else {
-    mprintf((0, "Cannot create TCP socket (%d)!\n", WSAGetLastError()));
+    mprintf(0, "Cannot create TCP socket (%d)!\n", WSAGetLastError());
   }
 
 tcp_done:
@@ -784,7 +784,7 @@ tcp_done:
     int wserr;
     wserr = WSAGetLastError();
     if ((wserr == WSAENOPROTOOPT) || (wserr == WSAEINVAL)) {
-      mprintf((0, "Unable to make socket broadcastable!"));
+      mprintf(0, "Unable to make socket broadcastable!");
 
       Int3(); // Get Kevin
     }
@@ -793,7 +793,7 @@ tcp_done:
   Sockets_initted = 1;
 
   if (TCP_active)
-    mprintf((0, "TCP Initialized\n"));
+    mprintf(0, "TCP Initialized\n");
 
   nw_psnet_buffer_init();
   nw_RegisterCallback((NetworkReceiveCallback)nw_HandleUnreliableData, NWT_UNRELIABLE);
@@ -814,7 +814,7 @@ void nw_GetMyAddress(network_address *addr) {
     // get the socket name for the TCP_socket, and put it into My_addr
     len = sizeof(SOCKADDR_IN);
     if (getsockname(*Unreliable_socket, (SOCKADDR *)&in_addr, &len) == SOCKET_ERROR) {
-      mprintf((0, "Unable to get sock name for TCP unreliable socket (%s)\n", WSAGetLastError()));
+      mprintf(0, "Unable to get sock name for TCP unreliable socket (%s)\n", WSAGetLastError());
       return;
     }
 
@@ -913,7 +913,7 @@ uint16_t nw_CalculateChecksum(void *vptr, int len) {
 // Sends data on an unreliable socket
 int nw_Send(network_address *who_to, void *data, int len, int flags) {
   if (len == 0) {
-    mprintf((0, "Attempting to send 0 byte network packet in nw_Send()\n"));
+    mprintf(0, "Attempting to send 0 byte network packet in nw_Send()\n");
     Int3();
   }
   if (NetDebugFile) {
@@ -987,12 +987,12 @@ int nw_ReceiveReliable(SOCKET socketid, uint8_t *buffer, int max_len) {
   // nw_WorkReliable();
   nw_DoReceiveCallbacks();
   if (socketid >= MAXRELIABLESOCKETS) {
-    mprintf((0, "Invalid socket id passed to nw_NewReceiveReliable() -- %d\n", socketid));
+    mprintf(0, "Invalid socket id passed to nw_NewReceiveReliable() -- %d\n", socketid);
     return -1;
   }
   rsocket = &reliable_sockets[socketid];
   if ((RNF_CONNECTED != rsocket->status) && (RNF_LIMBO != rsocket->status)) {
-    mprintf((0, "Can't receive packet because it isn't connected in nw_ReceiveReliable(). socket = %d\n", socketid));
+    mprintf(0, "Can't receive packet because it isn't connected in nw_ReceiveReliable(). socket = %d\n", socketid);
     return 0;
   }
   // If the buffer position is the position we are waiting for, fill in
@@ -1004,8 +1004,11 @@ int nw_ReceiveReliable(SOCKET socketid, uint8_t *buffer, int max_len) {
       mem_free(rsocket->rbuffers[i]);
       rsocket->rbuffers[i] = NULL;
       rsocket->rsequence[i] = 0;
-      // mprintf((0,"Found packet for upper layer in nw_ReceiveReliable() %d bytes.
-      // seq:%d.\n",rsocket->recv_len[i],rsocket->oursequence));
+/*
+      mprintf(0,"Found packet for upper layer in nw_ReceiveReliable() %d bytes. seq:%d.\n",
+               rsocket->recv_len[i],
+               rsocket->oursequence);
+*/
       rsocket->oursequence++;
       return rsocket->recv_len[i];
     }
@@ -1035,7 +1038,7 @@ int nw_CheckListenSocket(network_address *from_addr) {
         from_addr->connection_type = NP_DIRECTPLAY;
         id = Pending_dp_conn[i];
         Pending_dp_conn[i] = DPID_UNKNOWN;
-        mprintf((0, "New DirectPlay connection in nw_CheckListenSocket().\n"));
+        mprintf(0, "New DirectPlay connection in nw_CheckListenSocket().\n");
         return id;
       }
     }
@@ -1050,7 +1053,7 @@ int nw_CheckListenSocket(network_address *from_addr) {
     if (reliable_sockets[i].status == RNF_CONNECTING) {
       reliable_sockets[i].status = RNF_CONNECTED;
       // memcpy(from_addr,&reliable_sockets[i].addr,sizeof(SOCKADDR));
-      mprintf((0, "New reliable connection in nw_CheckListenSocket().\n"));
+      mprintf(0, "New reliable connection in nw_CheckListenSocket().\n");
 
       switch (reliable_sockets[i].connection_type) {
       case NP_TCP:
@@ -1071,7 +1074,7 @@ int nw_CheckListenSocket(network_address *from_addr) {
       }
       char dbg_output[50];
       nw_GetNumbersFromHostAddress(from_addr, dbg_output);
-      mprintf((0, "Got address from: %s\n", dbg_output));
+      mprintf(0, "Got address from: %s\n", dbg_output);
       return i;
     }
   }
@@ -1087,10 +1090,10 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
   int send_this_packet = 1;
 
   if (length == 0) {
-    mprintf((0, "Attempting to send 0 byte network packet in nw_SendReliable()\n"));
+    mprintf(0, "Attempting to send 0 byte network packet in nw_SendReliable()\n");
     Int3();
   }
-  // mprintf((0,"Socket id passed to nw_NewSendReliable() -- %d\n",socketid));
+  // mprintf(0,"Socket id passed to nw_NewSendReliable() -- %d\n",socketid);
 
   if (NetDebugFile) {
     cfprintf(NetDebugFile, "nw_SendReliable packet of type %d at %f seconds.\n", data[0], timer_GetTime());
@@ -1110,15 +1113,14 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
   nw_DoReceiveCallbacks();
 
   if (socketid >= MAXRELIABLESOCKETS) {
-    mprintf((0, "Invalid socket id passed to nw_NewSendReliable() -- %d\n", socketid));
+    mprintf(0, "Invalid socket id passed to nw_NewSendReliable() -- %d\n", socketid);
     return -1;
   }
 
   rsocket = &reliable_sockets[socketid];
   if (rsocket->status != RNF_CONNECTED) {
     // We can't send because this isn't a connected reliable socket.
-    mprintf(
-        (0, "Can't send packet because of status %d in nw_SendReliable(). socket = %d\n", rsocket->status, socketid));
+    mprintf(0, "Can't send packet because of status %d in nw_SendReliable(). socket = %d\n", rsocket->status, socketid);
     return -1;
   }
   if (urgent)
@@ -1130,7 +1132,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
     // See if there's room for this data
     if (sizeof(reliable_net_sendbuffer) < (rsocket->send_len[pnum] + length)) {
       // Send the previous packet, then use the normal code to generate a new packet
-      mprintf((0, "Pending reliable packet buffer full, sending packet now.\n"));
+      mprintf(0, "Pending reliable packet buffer full, sending packet now.\n");
       rsocket->waiting_packet_number = -1;
 
       use_buffer = pnum;
@@ -1151,7 +1153,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
         send_address.connection_type = NP_TCP;
       }
 
-      // mprintf((0,"Sending reliable packet! Sequence %d\n",send_header.seq));
+      // mprintf(0,"Sending reliable packet! Sequence %d\n",send_header.seq);
       bytesout = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&send_header,
                                RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[use_buffer], &send_address);
 
@@ -1163,7 +1165,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
       }
     } else {
       // tack this data on the end of the previous packet
-      // mprintf((0,"Appending to delayed packet...\n"));
+      // mprintf(0,"Appending to delayed packet...\n");
       ASSERT(rsocket->sbuffers[pnum]);
       memcpy(rsocket->sbuffers[pnum]->buffer + rsocket->send_len[pnum], data, length);
       // int msize = mem_size(rsocket->sbuffers[pnum]);
@@ -1176,7 +1178,7 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
   for (i = 0; i < MAXNETBUFFERS; i++) {
     use_buffer = -1;
     if (NULL == rsocket->sbuffers[i]) {
-      // mprintf((0,"Sending in nw_SendReliable() %d bytes seq=%d.\n",length,rsocket->theirsequence));
+      // mprintf(0,"Sending in nw_SendReliable() %d bytes seq=%d.\n",length,rsocket->theirsequence);
 
       rsocket->send_len[i] = length;
       rsocket->sbuffers[i] = (reliable_net_sendbuffer *)mem_malloc(sizeof(reliable_net_sendbuffer));
@@ -1193,14 +1195,19 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
       return length;
     }
   }
-  mprintf((0, "Can't send packet because a buffer overflow nw_SendReliable(). socket = %d\n", socketid));
+  mprintf(0, "Can't send packet because a buffer overflow nw_SendReliable(). socket = %d\n", socketid);
   rsocket->status = RNF_BROKEN;
 
   for (i = 0; i < MAXNETBUFFERS; i++) {
     if (rsocket->sbuffers[i]) {
-      mprintf((0, "Buffer %d: %d,%d,%d,%d,%d,%d\n", i, rsocket->sbuffers[i]->buffer[0], rsocket->sbuffers[i]->buffer[1],
-               rsocket->sbuffers[i]->buffer[2], rsocket->sbuffers[i]->buffer[3], rsocket->sbuffers[i]->buffer[4],
-               rsocket->sbuffers[i]->buffer[5]));
+      mprintf(0, "Buffer %d: %d,%d,%d,%d,%d,%d\n",
+              i,
+              rsocket->sbuffers[i]->buffer[0],
+              rsocket->sbuffers[i]->buffer[1],
+              rsocket->sbuffers[i]->buffer[2],
+              rsocket->sbuffers[i]->buffer[3],
+              rsocket->sbuffers[i]->buffer[4],
+              rsocket->sbuffers[i]->buffer[5]);
     }
   }
 
@@ -1220,7 +1227,7 @@ void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_typ
   int ret;
   reliable_header ack_header;
   ack_header.type = RNT_ACK;
-  // mprintf((0,"Sending ACK for sig %d.\n",sig));
+  // mprintf(0,"Sending ACK for sig %d.\n",sig);
   ack_header.data_len = INTEL_SHORT((int16_t)sizeof(uint32_t));
   ack_header.send_time = INTEL_FLOAT(time_sent);
   sig = INTEL_INT(sig);
@@ -1321,7 +1328,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
             // d3_rcv_addr
             {
               // We already have a reliable link to this user, so we will ignore it...
-              mprintf((0, "Received duplicate connection request. %d\n", i));
+              mprintf(0, "Received duplicate connection request. %d\n", i);
               // reliable_sockets[i].last_packet_received = timer_GetTime();
               nw_SendReliableAck(&reliable_sockets[i].addr, INTEL_SHORT(rcv_buff.seq), link_type,
                                  INTEL_FLOAT(rcv_buff.send_time));
@@ -1347,13 +1354,13 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
             rsocket = &reliable_sockets[i];
             rcvaddr = (SOCKADDR_IN *)&rcv_addr;
             // Int3();
-            mprintf((0, "Connect from %s:%d\n", inet_ntoa(rcvaddr->sin_addr), htons(rcvaddr->sin_port)));
+            mprintf(0, "Connect from %s:%d\n", inet_ntoa(rcvaddr->sin_addr), htons(rcvaddr->sin_port));
             break;
           }
         }
         if (i == MAXRELIABLESOCKETS) {
           // No more connections!
-          mprintf((0, "Out of incoming reliable connection sockets\n"));
+          mprintf(0, "Out of incoming reliable connection sockets\n");
           // Int3();//See Kevin
           continue;
         }
@@ -1372,10 +1379,10 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         }
       }
       if (NULL == rsocket) {
-        mprintf((0, "Received reliable data from unconnected client.\n"));
+        mprintf(0, "Received reliable data from unconnected client.\n");
         char addrstr[200];
         nw_GetNumbersFromHostAddress(&d3_rcv_addr, addrstr);
-        mprintf((0, "Received from %s\n", addrstr));
+        mprintf(0, "Received from %s\n", addrstr);
         continue;
       }
       rsocket->last_packet_received = timer_GetTime();
@@ -1390,21 +1397,21 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
               *acknum = INTEL_INT(*acknum);
               if (*acknum == (~CONNECTSEQ & 0xffff)) {
                 rsocket->status = RNF_CONNECTED;
-                mprintf((0, "Got ACK for IAMHERE!\n"));
+                mprintf(0, "Got ACK for IAMHERE!\n");
               }
               continue;
             }
           } else if (rcv_buff.type == RNT_I_AM_HERE) {
             rsocket->status = RNF_CONNECTING;
             nw_SendReliableAck(&rsocket->addr, INTEL_SHORT(rcv_buff.seq), link_type, INTEL_FLOAT(rcv_buff.send_time));
-            mprintf((0, "Got IAMHERE!\n"));
+            mprintf(0, "Got IAMHERE!\n");
             continue;
           }
         }
         if ((rcv_buff.type == RNT_DATA) && (serverconn != -1)) {
           rsocket->status = RNF_CONNECTED;
         } else {
-          // mprintf((0,"Packet from nonconnected socket -- seq: %d status: %d\n",rcv_buff.seq,rsocket->status));
+          // mprintf(0,"Packet from nonconnected socket -- seq: %d status: %d\n",rcv_buff.seq,rsocket->status);
           rsocket->last_packet_received = timer_GetTime();
           continue;
         }
@@ -1420,7 +1427,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         rsocket->num_ping_samples++;
 
         rsocket->pings[rsocket->ping_pos] = rsocket->last_packet_received - INTEL_FLOAT(rcv_buff.send_time);
-        // mprintf((0,"ping time: %f\n",rsocket->pings[rsocket->ping_pos]));
+        // mprintf(0,"ping time: %f\n",rsocket->pings[rsocket->ping_pos]);
         if (rsocket->num_ping_samples >= MAX_PING_HISTORY) {
           float sort_ping[MAX_PING_HISTORY];
           for (int a = 0; a < MAX_PING_HISTORY; a++)
@@ -1428,7 +1435,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
 
           qsort(sort_ping, MAX_PING_HISTORY, sizeof(float), nw_PingCompare);
           rsocket->mean_ping = ((sort_ping[MAX_PING_HISTORY / 2] + sort_ping[(MAX_PING_HISTORY / 2) + 1])) / 2;
-          // mprintf_at((2,i+1,0,"Ping: %f  ",rsocket->mean_ping));
+          // mprintf_at(2,i+1,0,"Ping: %f  ",rsocket->mean_ping);
         }
         rsocket->ping_pos++;
         if (rsocket->ping_pos >= MAX_PING_HISTORY) {
@@ -1440,7 +1447,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
           if (rsocket)
             if (rsocket->sbuffers[i])
               if (rsocket->ssequence[i] == *acksig) {
-                // mprintf((0,"Received ACK %d\n",*acksig));
+                // mprintf(0,"Received ACK %d\n",*acksig);
                 mem_free(rsocket->sbuffers[i]);
                 rsocket->sbuffers[i] = NULL;
                 rsocket->ssequence[i] = 0;
@@ -1464,7 +1471,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         if (seqdelta < 0)
           seqdelta = seqdelta * -1;
         if (seqdelta >= MAXNETBUFFERS - 1) {
-          mprintf((0, "Received reliable packet out of order!\n"));
+          mprintf(0, "Received reliable packet out of order!\n");
           // It's out of order, so we won't ack it, which will mean we will get it again soon.
           continue;
         }
@@ -1473,14 +1480,14 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
 
         if (rsocket->oursequence < (0xffff - (MAXNETBUFFERS - 1))) {
           if (rsocket->oursequence > INTEL_SHORT(rcv_buff.seq)) {
-            mprintf((0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq)));
+            mprintf(0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq));
             savepacket = 0;
           }
 
         } else {
           // Sequence is high, so prepare for wrap around
           if (((uint16_t)(INTEL_SHORT(rcv_buff.seq) + rsocket->oursequence)) > (MAXNETBUFFERS - 1)) {
-            mprintf((0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq)));
+            mprintf(0, "Received old packet with seq of %d\n", INTEL_SHORT(rcv_buff.seq));
             savepacket = 0;
           }
         }
@@ -1488,14 +1495,14 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
         for (i = 0; i < MAXNETBUFFERS; i++) {
           if ((NULL != rsocket->rbuffers[i]) && (rsocket->rsequence[i] == INTEL_SHORT(rcv_buff.seq))) {
             // Received duplicate packet!
-            mprintf((0, "Received duplicate packet!\n"));
+            mprintf(0, "Received duplicate packet!\n");
             savepacket = 0;
           }
         }
         if (savepacket) {
           for (i = 0; i < MAXNETBUFFERS; i++) {
             if (NULL == rsocket->rbuffers[i]) {
-              // mprintf((0,"Got good data seq: %d\n",rcv_buff.seq));
+              // mprintf(0,"Got good data seq: %d\n",rcv_buff.seq);
               if (INTEL_SHORT(rcv_buff.data_len) > max_len)
                 rsocket->recv_len[i] = max_len; // INTEL_SHORT(rcv_buff.data_len);
               else
@@ -1503,7 +1510,7 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
               rsocket->rbuffers[i] = (reliable_net_rcvbuffer *)mem_malloc(sizeof(reliable_net_rcvbuffer));
               memcpy(rsocket->rbuffers[i]->buffer, rcv_buff.data, rsocket->recv_len[i]);
               rsocket->rsequence[i] = INTEL_SHORT(rcv_buff.seq);
-              // mprintf((0,"Adding packet to receive buffer in nw_ReceiveReliable().\n"));
+              // mprintf(0,"Adding packet to receive buffer in nw_ReceiveReliable().\n");
               break;
             }
           }
@@ -1530,7 +1537,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
     inaddr->sin_port = htons(server_addr->port);
   }
 
-  mprintf((0, "Got a connect response!\n"));
+  mprintf(0, "Got a connect response!\n");
   if (ack_header.type == RNT_ACK) {
     int *acknum = (int *)&ack_header.data;
     if (INTEL_INT(*acknum) == CONNECTSEQ) {
@@ -1548,7 +1555,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
             Net_connect_socket_id = i;
             reliable_sockets[i].last_sent = timer_GetTime();
             reliable_sockets[i].waiting_packet_number = -1;
-            mprintf((0, "Succesfully connected to server in nw_ConnectToServer().\n"));
+            mprintf(0, "Succesfully connected to server in nw_ConnectToServer().\n");
             // Now send I_AM_HERE packet
             conn_header.type = RNT_I_AM_HERE;
             conn_header.seq = INTEL_SHORT((int16_t)(~CONNECTSEQ));
@@ -1565,7 +1572,7 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
               Net_connect_socket_id = INVALID_SOCKET;
               reliable_sockets[i].status = RNF_UNUSED;
               memset(&reliable_sockets[i], 0, sizeof(reliable_socket));
-              mprintf((0, "Unable to send packet in nw_ConnectToServer()\n"));
+              mprintf(0, "Unable to send packet in nw_ConnectToServer()\n");
 
               Net_connect_sequence = R_NET_SEQUENCE_FAILED;
               return;
@@ -1584,19 +1591,19 @@ void nw_HandleConnectResponse(uint8_t *data, int len, network_address *server_ad
             return;
           }
         }
-        mprintf((0, "Out of reliable socket space in nw_ConnectToServer().\n"));
+        mprintf(0, "Out of reliable socket space in nw_ConnectToServer().\n");
         Net_connect_sequence = R_NET_SEQUENCE_FAILED;
         return;
       }
       // else
       //{
-      //	mprintf((0,"Received a reliable packet from a server other than the current server\n"));
+      //	mprintf(0,"Received a reliable packet from a server other than the current server\n");
       //}
     } else {
-      mprintf((0, "Received out of sequence ACK in nw_ConnectToServer().\n"));
+      mprintf(0, "Received out of sequence ACK in nw_ConnectToServer().\n");
     }
   } else {
-    mprintf((0, "Received something that isn't an ACK in nw_ConnectToServer().\n"));
+    mprintf(0, "Received something that isn't an ACK in nw_ConnectToServer().\n");
   }
 }
 
@@ -1638,7 +1645,7 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
 
   int ret = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
   if (SOCKET_ERROR == ret) {
-    mprintf((0, "Unable to send packet in nw_ConnectToServer()! -- %d\n", WSAGetLastError()));
+    mprintf(0, "Unable to send packet in nw_ConnectToServer()! -- %d\n", WSAGetLastError());
     return;
   }
 
@@ -1655,12 +1662,12 @@ void nw_ConnectToServer(SOCKET *socket, network_address *server_addr) {
       return;
     }
     if ((timer_GetTime() - time_sent_req) > 2) {
-      mprintf((0, "Resending connect request.\n"));
+      mprintf(0, "Resending connect request.\n");
       int ret = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&conn_header, RELIABLE_PACKET_HEADER_ONLY_SIZE, server_addr);
       if (ret != SOCKET_ERROR) {
         time_sent_req = timer_GetTime();
       } else {
-        mprintf((0, "Error sending connection request! -- %d\n", WSAGetLastError()));
+        mprintf(0, "Error sending connection request! -- %d\n", WSAGetLastError());
       }
     }
 
@@ -1678,14 +1685,14 @@ void nw_CloseSocket(SOCKET *sockp) {
 #endif
 
   if (*sockp >= MAXRELIABLESOCKETS) {
-    mprintf((0, "Invalid socket id passed to nw_NewCloseSocket() -- %d\n", *sockp));
+    mprintf(0, "Invalid socket id passed to nw_NewCloseSocket() -- %d\n", *sockp);
     return;
   }
 
   if (reliable_sockets[*sockp].status == RNF_UNUSED) {
-    mprintf((0, "Trying to close an unused socket (%d) -- ignoring request.\n", *sockp));
+    mprintf(0, "Trying to close an unused socket (%d) -- ignoring request.\n", *sockp);
   }
-  mprintf((0, "Closing socket %d\n", *sockp));
+  mprintf(0, "Closing socket %d\n", *sockp);
   // Go through every buffer and "free it up(tm)"
   int i;
   for (i = 0; i < MAXNETBUFFERS; i++) {
@@ -1729,7 +1736,7 @@ int nw_CheckReliableSocket(int socknum) {
     return true;
   }
   if (socknum >= MAXRELIABLESOCKETS) {
-    mprintf((0, "Invalid socket id passed to nw_CheckReliableSocket() -- %d\n", socknum));
+    mprintf(0, "Invalid socket id passed to nw_CheckReliableSocket() -- %d\n", socknum);
     return 0;
   }
   switch (reliable_sockets[socknum].status) {
@@ -1861,7 +1868,7 @@ void nw_psnet_buffer_packet(uint8_t *data, int length, network_address *from) {
 
   // if we didn't find the buffer, report an overrun
   if (!found_buf) {
-    mprintf((0, "WARNING - Buffer overrun in psnet\n"));
+    mprintf(0, "WARNING - Buffer overrun in psnet\n");
   } else {
     // copy in the data
     memcpy(Psnet_buffers[idx].data, data, length);
@@ -2005,21 +2012,21 @@ uint32_t psnet_ras_status() {
   // JAS: My computer gets to this point, but I have no RAS connections,
   // so just exit
   if (num_connections < 1) {
-    mprintf((0, "Found no RAS connections\n"));
+    mprintf(0, "Found no RAS connections\n");
     FreeLibrary(ras_handle);
     return INADDR_ANY;
   }
 
-  mprintf((0, "Found %d connections\n", num_connections));
+  mprintf(0, "Found %d connections\n", num_connections);
 
   for (i = 0; i < num_connections; i++) {
     RASCONNSTATUS status;
     DWORD size;
 
-    mprintf((0, "Connection %d:\n", i));
-    mprintf((0, "Entry Name: %s\n", rasbuffer[i].szEntryName));
-    mprintf((0, "Device Type: %s\n", rasbuffer[i].szDeviceType));
-    mprintf((0, "Device Name: %s\n", rasbuffer[i].szDeviceName));
+    mprintf(0, "Connection %d:\n", i);
+    mprintf(0, "Entry Name: %s\n", rasbuffer[i].szEntryName);
+    mprintf(0, "Device Type: %s\n", rasbuffer[i].szDeviceType);
+    mprintf(0, "Device Name: %s\n", rasbuffer[i].szDeviceName);
 
     // get the connection status
     status.dwSize = sizeof(RASCONNSTATUS);
@@ -2029,7 +2036,7 @@ uint32_t psnet_ras_status() {
       return INADDR_ANY;
     }
 
-    mprintf((0, "\tStatus: %s\n", (status.rasconnstate == RASCS_Connected) ? "Connected" : "Not Connected"));
+    mprintf(0, "\tStatus: %s\n", (status.rasconnstate == RASCS_Connected) ? "Connected" : "Not Connected");
 
     // get the projection informatiom
     size = sizeof(projection);
@@ -2040,7 +2047,7 @@ uint32_t psnet_ras_status() {
       return INADDR_ANY;
     }
 
-    mprintf((0, "\tIP Address: %s\n", projection.szIpAddress));
+    mprintf(0, "\tIP Address: %s\n", projection.szIpAddress);
   }
 
   Ras_connected = 1;
@@ -2237,9 +2244,9 @@ void CDECLCALL gethostbynameworker(void *parm)
 
   async_dns_lookup *lookup = (async_dns_lookup *)parm;
 
-  mprintf((0, "IPLOOKUP: Starting threaded lookup ..."));
+  mprintf(0, "IPLOOKUP: Starting threaded lookup ...");
   HOSTENT *he = gethostbyname(lookup->host);
-  mprintf((0, "IPLOOKUP: Threaded lookup complete."));
+  mprintf(0, "IPLOOKUP: Threaded lookup complete.");
 
   if (he == NULL) {
     lookup->error = true;
@@ -2250,8 +2257,12 @@ void CDECLCALL gethostbynameworker(void *parm)
 #endif
   } else if (!lookup->abort) {
     memcpy(&lookup->ip, he->h_addr_list[0], sizeof(uint32_t));
-    mprintf((0, "IPLOOKUP: [%s] is %d.%d.%d.%d ...", lookup->host, (lookup->ip & 0x000000FF),
-             (lookup->ip & 0x0000FF00) >> 8, (lookup->ip & 0x00FF0000) >> 16, (lookup->ip & 0xFF000000) >> 24));
+    mprintf(0, "IPLOOKUP: [%s] is %d.%d.%d.%d ...",
+            lookup->host,
+            (lookup->ip & 0x000000FF),
+            (lookup->ip & 0x0000FF00) >> 8,
+            (lookup->ip & 0x00FF0000) >> 16,
+            (lookup->ip & 0xFF000000) >> 24);
     // memcpy(&aslu,lookup,sizeof(async_dns_lookup));
     lookup->done = true;
   }
@@ -2296,7 +2307,7 @@ int nw_RegisterCallback(NetworkReceiveCallback nfp, uint8_t id) {
   // rcg06212000 this happens all the time; let it slide.
   // if(Netcallbacks[id])
   //{
-  //	mprintf((0,"Trying to reregister a callback!\n"));
+  //	mprintf(0,"Trying to reregister a callback!\n");
   //	Int3(); // Get Kevin!
   //}
 
@@ -2337,13 +2348,13 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
   //		cfprintf (NetDebugFile,"nw_SendWithID packet of id=%d type %d at %f
   // seconds.\n",id,data[0],timer_GetTime());
 
-// mprintf((0,"Sending packet for id %d.\n",id));
+// mprintf(0,"Sending packet for id %d.\n",id);
 #ifdef WIN32
   if (Use_DirectPlay)
     return dp_DirectPlaySend(who_to, (uint8_t *)data, len, false);
 #endif
 
-  // mprintf((1, "network: type %d\n", who_to->connection_type));
+  // mprintf(1, "network: type %d\n", who_to->connection_type);
   // send_sock = *Unreliable_socket;
   switch (who_to->connection_type) {
   case NP_TCP:
@@ -2360,7 +2371,7 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
       return 0;
     break;
   default:
-    mprintf((2, "Unknown protocol type in nw_Send()\n"));
+    mprintf(2, "Unknown protocol type in nw_Send()\n");
     Int3();
     return 0;
   }
@@ -2381,10 +2392,10 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
 
   int my_comp_ratio = (float) ((float)Uncompressed_outgoing_data_len/(float)Compressed_outgoing_data_len);
 
-  mprintf_at((2,1,0,"Compression: %d%%  ",my_comp_ratio));
+  mprintf_at(2,1,0,"Compression: %d%%  ",my_comp_ratio);
   */
   if (!Sockets_initted) {
-    mprintf((0, "Network ==> Socket not inited in nw_Send\n"));
+    mprintf(0, "Network ==> Socket not inited in nw_Send\n");
     return 0;
   }
 
@@ -2394,7 +2405,7 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
   port = who_to->port;
 
   if (port == 0) {
-    mprintf((0, "Network ==> destination port %d invalid in psnet_send\n", port));
+    mprintf(0, "Network ==> destination port %d invalid in psnet_send\n", port);
     Int3();
     return 0;
   }
@@ -2407,7 +2418,7 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
 
   int sock_writable = select(send_sock + 1, NULL, &wfds, NULL, &timeout);
   if (sock_writable == SOCKET_ERROR) {
-    mprintf((0, "Error on blocking select for write %d\n", WSAGetLastError()));
+    mprintf(0, "Error on blocking select for write %d\n", WSAGetLastError());
     return 0;
   }
 
@@ -2441,7 +2452,7 @@ int nw_SendWithID(uint8_t id, uint8_t *data, int len, network_address *who_to) {
     return 0;
   }
 
-  mprintf((0, "Couldn't send data (%d)!\n", lasterr));
+  mprintf(0, "Couldn't send data (%d)!\n", lasterr);
   return 0;
 }
 
@@ -2468,7 +2479,7 @@ int nw_DoReceiveCallbacks(void) {
 		timeval	timeout;
 		if ( select( TCP_socket+1, &rfds, NULL, NULL, &timeout) == SOCKET_ERROR)
 		{
-			mprintf((0, "Error %d doing a socket select on IP read\n", WSAGetLastError()));
+			mprintf(0, "Error %d doing a socket select on IP read\n", WSAGetLastError());
 			break;
 		}
 
@@ -2483,7 +2494,7 @@ int nw_DoReceiveCallbacks(void) {
     if (read_len == SOCKET_ERROR) {
       int x = WSAGetLastError();
       if (x != WSAEWOULDBLOCK) {
-        mprintf((0, "Read error on IP socket.  Winsock error %d \n", x));
+        mprintf(0, "Read error on IP socket.  Winsock error %d \n", x);
       }
       break;
     }
@@ -2498,7 +2509,7 @@ int nw_DoReceiveCallbacks(void) {
 #endif
     uint8_t packet_id = (packet_data[0] & 0x0f);
     if (Netcallbacks[packet_id]) {
-      // mprintf((0,"Calling network callback for id %d.\n",packet_id));
+      // mprintf(0,"Calling network callback for id %d.\n",packet_id);
       int rlen = read_len - 1;
       if (packet_id == NWT_UNRELIABLE) {
         NetStatistics.udp_total_packets_rec++;
@@ -2533,14 +2544,14 @@ void nw_ReliableResend(void) {
     if (serverconn == -1) {
       if (rsocket->status == RNF_LIMBO)
         if ((timer_GetTime() - rsocket->last_packet_received) > NETTIMEOUT) {
-          mprintf((0, "Reliable (but in limbo) socket (%d) timed out in nw_WorkReliable().\n", j));
+          mprintf(0, "Reliable (but in limbo) socket (%d) timed out in nw_WorkReliable().\n", j);
           memset(rsocket, 0, sizeof(reliable_socket));
           rsocket->status = RNF_UNUSED; // Won't work if this is an outgoing connection.
         }
     } else {
       if ((rsocket->status == RNF_LIMBO) && ((timer_GetTime() - first_sent_iamhere) > NETTIMEOUT)) {
         rsocket->status = RNF_BROKEN;
-        mprintf((0, "Reliable socket (%d) timed out in nw_WorkReliable().\n", j));
+        mprintf(0, "Reliable socket (%d) timed out in nw_WorkReliable().\n", j);
       }
     }
 
@@ -2551,10 +2562,10 @@ void nw_ReliableResend(void) {
       } else {
         if (rsocket->mean_ping < MIN_NET_RETRYTIME) {
           retry_packet_time = (float)MIN_NET_RETRYTIME;
-          // mprintf((0,"Using retransmission time of %f\n",retry_packet_time));
+          // mprintf(0,"Using retransmission time of %f\n",retry_packet_time);
         } else {
           retry_packet_time = ((float)(float)rsocket->mean_ping * (float)1.25);
-          // mprintf((0,"Using retransmission time of %f\n",retry_packet_time));
+          // mprintf(0,"Using retransmission time of %f\n",retry_packet_time);
         }
       }
       // Iterate through send buffers.
@@ -2568,10 +2579,10 @@ void nw_ReliableResend(void) {
           if (i == rsocket->waiting_packet_number) {
             rsocket->waiting_packet_number = -1;
             rsocket->last_sent = timer_GetTime();
-            // mprintf((0,"Sending delayed packet...\n"));
+            // mprintf(0,"Sending delayed packet...\n");
           }
           reliable_header send_header;
-          // mprintf((0,"Resending reliable packet in nw_WorkReliable().\n"));
+          // mprintf(0,"Resending reliable packet in nw_WorkReliable().\n");
           send_header.send_time = INTEL_FLOAT(timer_GetTime());
           send_header.seq = INTEL_SHORT(rsocket->ssequence[i]);
           memcpy(send_header.data, rsocket->sbuffers[i]->buffer, rsocket->send_len[i]);
@@ -2597,7 +2608,7 @@ void nw_ReliableResend(void) {
             NetStatistics.tcp_total_bytes_resent += len;
           }
 
-          // mprintf((0,"Resending reliable packet! Sequence %d\n",send_header.seq));
+          // mprintf(0,"Resending reliable packet! Sequence %d\n",send_header.seq);
           rcode = nw_SendWithID(NWT_RELIABLE, (uint8_t *)&send_header,
                                 RELIABLE_PACKET_HEADER_ONLY_SIZE + rsocket->send_len[i], &send_address);
 
@@ -2614,7 +2625,7 @@ void nw_ReliableResend(void) {
       rsocket->send_urgent = 0;
       if ((rsocket->status == RNF_CONNECTED) && ((timer_GetTime() - rsocket->last_packet_sent) > NETHEARTBEATTIME)) {
         reliable_header send_header;
-        // mprintf((0,"Resending reliable packet in nw_WorkReliable().\n"));
+        // mprintf(0,"Resending reliable packet in nw_WorkReliable().\n");
         send_header.send_time = INTEL_FLOAT(timer_GetTime());
         send_header.seq = INTEL_SHORT((int16_t)0);
         send_header.data_len = INTEL_SHORT((int16_t)0);
@@ -2650,7 +2661,7 @@ void nw_ReliableResend(void) {
 
       if ((rsocket->status == RNF_CONNECTED) && ((timer_GetTime() - rsocket->last_packet_received) > NETTIMEOUT)) {
         // This socket is hosed.....inform someone?
-        mprintf((0, "Reliable Socket (%d) timed out in nw_WorkReliable().\n", j));
+        mprintf(0, "Reliable Socket (%d) timed out in nw_WorkReliable().\n", j);
         rsocket->status = RNF_BROKEN;
       }
     }

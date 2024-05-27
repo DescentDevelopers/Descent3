@@ -117,7 +117,7 @@ void AssignUVsToFace(room *rp, int facenum, roomUVL *uva, roomUVL *uvb, int va, 
 	// Assign u,v scale to a unit length right vector.
 	fmag = zhypot(uvhi.v - uvlo.v,uvhi.u - uvlo.u);
 	if (fmag < 0.001) {
-		//mprintf((0,"Warning: fmag = %7.3f, using approximate u,v values\n",f2fl(fmag)));
+		//mprintf(0,"Warning: fmag = %7.3f, using approximate u,v values\n",f2fl(fmag));
 		ruvmag.u = 256.0;
 		ruvmag.v = 256.0;
 		fuvmag.u = 256.0;

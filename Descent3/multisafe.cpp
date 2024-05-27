@@ -715,7 +715,7 @@ bool VALIDATE_ROOM_PORTAL(int roomnum, int portalnum) {
 object *VALIDATE_OBJECT(int handle) {
   object *objp = ObjGet(handle);
   if (!objp) {
-    mprintf((0, "Invalid object passed to multisafe.\n"));
+    mprintf(0, "Invalid object passed to multisafe.\n");
   }
   return objp;
 }
@@ -1314,7 +1314,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     break;
   case MSAFE_WEATHER_LIGHTNING_BOLT: {
     if (mstruct->texnum == -1) {
-      mprintf((0, "Failing bolt because texnum is -1\n"));
+      mprintf(0, "Failing bolt because texnum is -1\n");
       return;
     }
 
@@ -1603,7 +1603,7 @@ void msafe_CallFunction(uint8_t type, msafe_struct *mstruct) {
     if (mstruct->objhandle != OBJECT_HANDLE_NONE) {
       object *keyobj = ObjGet(mstruct->objhandle);
       if (keyobj) {
-        mprintf((0, "Adding key from multisafe to player %d\n", slot));
+        mprintf(0, "Adding key from multisafe to player %d\n", slot);
         Sound_system.Play3dSound(SOUND_POWERUP_PICKUP, SND_PRIORITY_HIGH, keyobj);
         Players[slot].inventory.Add(keyobj->type, keyobj->id, NULL, -1, -1, INVAF_NOTSPEWABLE, mstruct->message);
 

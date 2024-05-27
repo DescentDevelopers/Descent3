@@ -592,7 +592,7 @@ void CTerrainDialog::OnTerrpadImport()
 
 void CTerrainDialog::OnTerrpadRenormalize() 
 {
-	mprintf ((0,"Building terrain normals...this might take a couple of seconds.\n"));
+	mprintf(0,"Building terrain normals...this might take a couple of seconds.\n");
 
 	Terrain_checksum=-1;
 	BuildMinMaxTerrain();
@@ -1999,7 +1999,7 @@ void CTerrainDialog::OnTerrainOcclusion()
 	if ((MessageBox("Are you sure you wish to calculate terrain occlusion?","Question",MB_YESNO))==IDNO)
 		return;
 
-	mprintf ((0,"Now doing occlusion tests...\n"));
+	mprintf(0,"Now doing occlusion tests...\n");
 	
 	int count=0;
 	int occlude_count=0;
@@ -2052,7 +2052,7 @@ void CTerrainDialog::OnTerrainOcclusion()
 					int end_x=dest_x*OCCLUSION_SIZE;
 					int dest_occlusion_index=dest_z*OCCLUSION_SIZE+dest_x;
 
-					mprintf_at((2,5,0,"Count=%7d",count++));
+					mprintf_at(2,5,0,"Count=%7d",count++);
 
 					if (dest_occlusion_index==src_occlusion_index)
 					{
@@ -2225,7 +2225,7 @@ void CTerrainDialog::OnTerrainOcclusion()
 		
 	Terrain_occlusion_checksum=Terrain_checksum+1;
 
-	mprintf ((0,"%d cells were occluded.\n",occlude_count));
+	mprintf(0,"%d cells were occluded.\n",occlude_count);
 	OutrageMessageBox ("Occlusion checking complete. Remember to save!");
 }
 

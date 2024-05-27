@@ -265,7 +265,7 @@ void UIButton::OnMouseBtnDown(int btn) {
     if (m_State != UI_BTS_ACTIVATED && PT_IN_GADGET(m_Wnd, this, UI_input.mx, UI_input.my)) {
       m_State = UI_BTS_ACTIVATED;
       LOCK_FOCUS(this);
-      //	mprintf((0, "Mouse down, locking gadget.\n"));
+      //	mprintf(0, "Mouse down, locking gadget.\n");
     } else if (m_State == UI_BTS_ACTIVATED && !PT_IN_GADGET(m_Wnd, this, UI_input.mx, UI_input.my)) {
       m_State = UI_BTS_HILITE;
     }
@@ -281,7 +281,7 @@ void UIButton::OnMouseBtnUp(int btn) {
       }
       m_State = UI_BTS_HILITE;
     }
-    //	mprintf((0, "Mouse up, unlocking gadget.\n"));
+    //	mprintf(0, "Mouse up, unlocking gadget.\n");
     UNLOCK_FOCUS(this);
   }
 }

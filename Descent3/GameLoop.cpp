@@ -1136,12 +1136,12 @@ void ProcessButtons() {
     PollControls();
     if (Controller->get_joy_raw_values(&x, &y) || Controller->get_mouse_raw_values(&x, &y)) {
       // death.
-      mprintf((0, "here?"));
+      mprintf(0, "here?");
 
       if (Total_time_dead < DEATH_RESPAWN_TIME)
         return;
 
-      mprintf((0, "Respawning joystick death.  Death time=%f\n", Total_time_dead));
+      mprintf(0, "Respawning joystick death.  Death time=%f\n", Total_time_dead);
 
       if (Game_mode & GM_MULTI)
         MultiSendEndPlayerDeath(); // couldn't this be called from withing EndPlayerDeath()?
@@ -1178,7 +1178,7 @@ void ProcessGuidebotKeys(int key) {
   object *buddy = ObjGet(Buddy_handle[Player_num]);
   if (!buddy || buddy->type != OBJ_ROBOT) {
     // not out of the ship
-    mprintf((0, "Guidebot: mrmph mmrump..mrmph...LET ME OUT OF YOUR SHIP!\n"));
+    mprintf(0, "Guidebot: mrmph mmrump..mrmph...LET ME OUT OF YOUR SHIP!\n");
     return;
   }
   int command_id = -1;
@@ -1321,7 +1321,7 @@ void ProcessNormalKey(int key) {
     if (Game_mode & GM_MULTI) {
       char str[80];
 
-      mprintf((0, "Printing message %d!\n", index));
+      mprintf(0, "Printing message %d!\n", index);
 
       int save_do = Doing_input_message;
       int save_len = HudInputMessageLen;
@@ -1347,7 +1347,7 @@ void ProcessNormalKey(int key) {
 
   case KEY_PRINT_SCREEN:
   case KEY_SHIFTED + KEY_PRINT_SCREEN:
-    mprintf((0, "Doing screenshot!\n"));
+    mprintf(0, "Doing screenshot!\n");
     DoScreenshot();
     return;
 
@@ -1688,7 +1688,7 @@ void ProcessTestKeys(int key) {
     /*case KEY_G:
             {
                     char dmb_msg[100];
-                    mprintf((0,"Current Gametime is %f\n",Gametime));
+                    mprintf(0,"Current Gametime is %f\n",Gametime);
                     snprintf(dmb_msg,sizeof(dmb_msg),"Current Gametime is %f\n",Gametime);
                     AddHUDMessage(dmb_msg);
             }
@@ -1960,7 +1960,7 @@ void ProcessTestKeys(int key) {
     for (i = 0; i < MAX_OBJECTS; i++) {
       if (Objects[i].type == OBJ_DUMMY && Objects[i].dummy_type == OBJ_POWERUP && Objects[i].id == id) {
         // here's a betty
-        mprintf((0, "Killing a betty\n"));
+        mprintf(0, "Killing a betty\n");
         SetObjectDeadFlag(&Objects[i], true);
       }
     }
@@ -1976,64 +1976,64 @@ void ProcessTestKeys(int key) {
     Game_update_attach = 1 - Game_update_attach;
 
     if (Game_update_attach) {
-      mprintf((0, "Update attach on\n"));
+      mprintf(0, "Update attach on\n");
     } else {
-      mprintf((0, "Update attach off\n"));
+      mprintf(0, "Update attach off\n");
     }
   } break;
 
   case KEY_PAD1: {
     Game_do_flying_sim = 1 - Game_do_flying_sim;
     if (Game_do_flying_sim) {
-      mprintf((0, "Game_do_flying_sim on\n"));
+      mprintf(0, "Game_do_flying_sim on\n");
     } else {
-      mprintf((0, "Game_do_flying_sim off\n"));
+      mprintf(0, "Game_do_flying_sim off\n");
     }
   } break;
 
   case KEY_PAD2: {
     Game_do_walking_sim = 1 - Game_do_walking_sim;
     if (Game_do_walking_sim) {
-      mprintf((0, "Game_do_walking_sim on\n"));
+      mprintf(0, "Game_do_walking_sim on\n");
     } else {
-      mprintf((0, "Game_do_walking_sim off\n"));
+      mprintf(0, "Game_do_walking_sim off\n");
     }
   } break;
 
   case KEY_PAD3: {
     Game_do_vis_sim = 1 - Game_do_vis_sim;
     if (Game_do_vis_sim) {
-      mprintf((0, "Game_do_vis_sim on\n"));
+      mprintf(0, "Game_do_vis_sim on\n");
     } else {
-      mprintf((0, "Game_do_vis_sim off\n"));
+      mprintf(0, "Game_do_vis_sim off\n");
     }
   } break;
 
   case KEY_PAD4: {
     Game_do_ai_movement = 1 - Game_do_ai_movement;
     if (Game_do_ai_movement) {
-      mprintf((0, "Game_do_ai_movement on\n"));
+      mprintf(0, "Game_do_ai_movement on\n");
     } else {
-      mprintf((0, "Game_do_ai_movement off\n"));
+      mprintf(0, "Game_do_ai_movement off\n");
     }
   } break;
 
   case KEY_PAD5: {
     Game_do_ai_vis = 1 - Game_do_ai_vis;
     if (Game_do_ai_vis) {
-      mprintf((0, "Game_do_ai_vis on\n"));
+      mprintf(0, "Game_do_ai_vis on\n");
     } else {
-      mprintf((0, "Game_do_ai_vis off\n"));
+      mprintf(0, "Game_do_ai_vis off\n");
     }
   } break;
 
   case KEY_PAD6: {
     if (AI_debug_robot_do) {
       AI_debug_robot_do = false;
-      mprintf((0, "AI Debug Info Off\n"));
+      mprintf(0, "AI Debug Info Off\n");
     } else {
       AI_debug_robot_do = true;
-      mprintf((0, "AI Debug Info On\n"));
+      mprintf(0, "AI Debug Info On\n");
     }
   } break;
 
@@ -2066,7 +2066,7 @@ void ProcessTestKeys(int key) {
     if (!killed_something)
       AddHUDMessage("Nothing to kill!");
     else
-      mprintf((0, "Killed %d objects of type %s!\n", killed_count, Object_info[Objects[i].id].name));
+      mprintf(0, "Killed %d objects of type %s!\n", killed_count, Object_info[Objects[i].id].name);
   } break;
     /*
     **************************************************
@@ -2176,25 +2176,25 @@ void ProcessTestKeys(int key) {
 
     switch (fate) {
     case HIT_NONE:
-      mprintf((0, "Hit nothing\n"));
+      mprintf(0, "Hit nothing\n");
       break;
     case HIT_WALL:
-      mprintf((0, "Hit wall\n"));
+      mprintf(0, "Hit wall\n");
       break;
     case HIT_OBJECT:
-      mprintf((0, "Hit Object %d\n", hit_info.hit_object));
+      mprintf(0, "Hit Object %d\n", hit_info.hit_object);
       break;
     case HIT_TERRAIN:
-      mprintf((0, "Hit Terrain %d\n", CELLNUM(hit_info.hit_room)));
+      mprintf(0, "Hit Terrain %d\n", CELLNUM(hit_info.hit_room));
       break;
     case HIT_OUT_OF_TERRAIN_BOUNDS:
-      mprintf((0, "Hit nothing: Leaving Terrain\n"));
+      mprintf(0, "Hit nothing: Leaving Terrain\n");
       break;
     case HIT_SPHERE_2_POLY_OBJECT:
-      mprintf((0, "Hit Poly_object\n"));
+      mprintf(0, "Hit Poly_object\n");
       break;
     default:
-      mprintf((0, "Hit %d not printed, add to list\n", fate));
+      mprintf(0, "Hit %d not printed, add to list\n", fate);
       break;
     }
 
@@ -2227,9 +2227,9 @@ void ProcessTestKeys(int key) {
   case KEY_F9: {
     vector vec = Player_object->pos + (Player_object->orient.fvec * 20);
     if (BSPRayOccluded(&Player_object->pos, &vec, MineBSP.root))
-      mprintf((0, "Occluded!\n"));
+      mprintf(0, "Occluded!\n");
     else
-      mprintf((0, "NOT occluded!\n"));
+      mprintf(0, "NOT occluded!\n");
   } break;
 
   case KEY_F10:
@@ -2281,7 +2281,7 @@ void ProcessTestKeys(int key) {
         float t = 5.0f;
         int m = 5;
 
-        mprintf((0, "Matcen alive!\n"));
+        mprintf(0, "Matcen alive!\n");
 
         vector centerPt = Player_object->pos + (Player_object->orient.fvec * 2.0f);
         Matcen[m_id]->SetAttachType(MT_ROOM);
@@ -2301,7 +2301,7 @@ void ProcessTestKeys(int key) {
 
         Matcen[m_id]->SetStatus(MSTAT_ACTIVE | MSTAT_RANDOM_PROD_ORDER, true);
       } else {
-        mprintf((0, "Nope!\n"));
+        mprintf(0, "Nope!\n");
       }
     }
     break;
@@ -2356,17 +2356,17 @@ void ProcessTestKeys(int key) {
 
       Game_show_portal_vis_pnts = 1 - Game_show_portal_vis_pnts;
 
-      mprintf((0, "Vis info for room %d\n", Player_object->roomnum));
+      mprintf(0, "Vis info for room %d\n", Player_object->roomnum);
 
       for (i = 0; i <= Highest_room_index; i++) {
         if (BOA_IsVisible(i, Player_object->roomnum)) {
-          mprintf((0, "%d can see you in %d\n", i, Player_object->roomnum));
+          mprintf(0, "%d can see you in %d\n", i, Player_object->roomnum);
         }
       }
 
       for (i = Highest_room_index + 1; i <= Highest_room_index + 8; i++) {
         if (BOA_IsVisible(i, Player_object->roomnum)) {
-          mprintf((0, "Terrain %d can see you in %d\n", i - Highest_room_index - 1, Player_object->roomnum));
+          mprintf(0, "Terrain %d can see you in %d\n", i - Highest_room_index - 1, Player_object->roomnum);
         }
       }
     }
@@ -2767,10 +2767,10 @@ void CalcFrameTime(void) {
   last_timer = current_timer;
 
   if (Min_frametime > Frametime) {
-    mprintf((0, "This was the fastest frame yet!\n"));
+    mprintf(0, "This was the fastest frame yet!\n");
     Min_frametime = Frametime - Demo_frame_ofs;
   } else if (Max_frametime < Frametime) {
-    mprintf((0, "This was the slowest frame yet!\n"));
+    mprintf(0, "This was the slowest frame yet!\n");
     Max_frametime = Frametime - Demo_frame_ofs;
   }
   Frames_counted++;
@@ -2781,7 +2781,7 @@ void CalcFrameTime(void) {
 void InitFrameTime(void) {
 
   if (timer_paused) {
-    mprintf((1, "Timer paused in InitFrameTime()\n"));
+    mprintf(1, "Timer paused in InitFrameTime()\n");
   }
   last_timer = timer_GetMSTime();
   timer_paused = 0;
@@ -2789,7 +2789,7 @@ void InitFrameTime(void) {
 
 // Pauses game
 void PauseGame() {
-  mprintf((0, "Game paused.\n"));
+  mprintf(0, "Game paused.\n");
   Game_paused = true;
 
   D3MusicPause();
@@ -2803,7 +2803,7 @@ void ResumeGame() {
   Game_paused = false;
   Sound_system.ResumeSounds();
   D3MusicResume();
-  mprintf((0, "Game resumed.\n"));
+  mprintf(0, "Game resumed.\n");
 }
 
 // Data for terrain sound
@@ -2895,7 +2895,7 @@ void GameFrame(void) {
   bool is_game_idle = !Descent->active();
 
   if (Tracking_FVI) {
-    mprintf((0, "Beginning frame!\n"));
+    mprintf(0, "Beginning frame!\n");
   }
 
   // Begin Gameloop stuff
@@ -2916,12 +2916,12 @@ void GameFrame(void) {
   static float netstat_time = 0;
 
   nw_GetNetworkStats(&netstat);
-  mprintf_at((5, 0, 0, "TCP/IP Network Stats:"));
-  mprintf_at((5, 1, 0, "TCP: tx: %d/%d rtx: %d/%d rx: %d/%d", netstat.tcp_total_packets_sent,
-              netstat.tcp_total_bytes_sent, netstat.tcp_total_packets_resent, netstat.tcp_total_bytes_resent,
-              netstat.tcp_total_packets_rec, netstat.tcp_total_bytes_rec));
-  mprintf_at((5, 2, 0, "UDP: tx: %d/%d rx: %d/%d", netstat.udp_total_packets_sent, netstat.udp_total_bytes_sent,
-              netstat.udp_total_packets_rec, netstat.udp_total_bytes_rec));
+  mprintf_at(5, 0, 0, "TCP/IP Network Stats:");
+  mprintf_at(5, 1, 0, "TCP: tx: %d/%d rtx: %d/%d rx: %d/%d", netstat.tcp_total_packets_sent,
+             netstat.tcp_total_bytes_sent, netstat.tcp_total_packets_resent, netstat.tcp_total_bytes_resent,
+             netstat.tcp_total_packets_rec, netstat.tcp_total_bytes_rec);
+  mprintf_at(5, 2, 0, "UDP: tx: %d/%d rx: %d/%d", netstat.udp_total_packets_sent, netstat.udp_total_bytes_sent,
+              netstat.udp_total_packets_rec, netstat.udp_total_bytes_rec);
 
   if (!netstat_init) {
     netstat_time = timer_GetTime();
@@ -2943,8 +2943,8 @@ void GameFrame(void) {
       udp_rx = ((float)(netstat.udp_total_bytes_rec - old_netstat.udp_total_bytes_rec)) / time_diff;
       udp_tx = ((float)(netstat.udp_total_bytes_sent - old_netstat.udp_total_bytes_sent)) / time_diff;
 
-      mprintf_at((5, 3, 0, "TCP/s: TX: % 5.1f RTX: % 5.1f RX: % 5.1f", tcp_tx, tcp_rtx, tcp_rx));
-      mprintf_at((5, 4, 0, "UDP/s: TX: % 5.1f RX: % 5.1f", udp_tx, udp_rx));
+      mprintf_at(5, 3, 0, "TCP/s: TX: % 5.1f RTX: % 5.1f RX: % 5.1f", tcp_tx, tcp_rtx, tcp_rx);
+      mprintf_at(5, 4, 0, "UDP/s: TX: % 5.1f RX: % 5.1f", udp_tx, udp_rx);
 
       old_netstat = netstat;
       netstat_time = newt;
@@ -3113,7 +3113,7 @@ void GameFrame(void) {
     current_timer = timer_GetMSTime();
     if ((current_timer - last_timer) < Min_allowed_frametime) {
       sleeptime = (uint32_t)Min_allowed_frametime - (current_timer - last_timer);
-      // mprintf((0,"Sleeping for %d ms\n",sleeptime));
+      // mprintf(0,"Sleeping for %d ms\n",sleeptime);
       Sleep(sleeptime);
     }
 
@@ -3158,20 +3158,20 @@ void GameFrame(void) {
 
   /*
           if (frame_info.ai_time>.1)
-                  mprintf ((0,"NOTE: AI frame took longer than .1 seconds! %f\n",frame_info.ai_time));
+                  mprintf(0,"NOTE: AI frame took longer than .1 seconds! %f\n",frame_info.ai_time);
           if (frame_info.render_time>.1)
-                  mprintf ((0,"NOTE: Render frame took longer than .1 seconds! %f\n",frame_info.render_time));
+                  mprintf(0,"NOTE: Render frame took longer than .1 seconds! %f\n",frame_info.render_time);
           if (frame_info.multi_time>.1)
-                  mprintf ((0,"NOTE: Multi frame took longer than .1 seconds! %f\n",frame_info.multi_time));
+                  mprintf(0,"NOTE: Multi frame took longer than .1 seconds! %f\n",frame_info.multi_time);
           if (frame_info.obj_time>.1)
-                  mprintf ((0,"NOTE: Object frame took longer than .1 seconds! %f\n",frame_info.obj_time));
+                  mprintf(0,"NOTE: Object frame took longer than .1 seconds! %f\n",frame_info.obj_time);
   */
 #endif
 
-  mprintf_at((1, 0, 39, "Pn %05d, L %05d", Physics_normal_counter, Physics_normal_looping_counter));
-  mprintf_at((1, 1, 39, "Pw %05d, L %05d", Physics_walking_counter, Physics_walking_looping_counter));
-  mprintf_at((1, 2, 39, "Pv %05d", Physics_vis_counter));
-  mprintf_at((1, 3, 39, "Fc %05d, R %05d", FVI_counter, FVI_room_counter));
+  mprintf_at(1, 0, 39, "Pn %05d, L %05d", Physics_normal_counter, Physics_normal_looping_counter);
+  mprintf_at(1, 1, 39, "Pw %05d, L %05d", Physics_walking_counter, Physics_walking_looping_counter);
+  mprintf_at(1, 2, 39, "Pv %05d", Physics_vis_counter);
+  mprintf_at(1, 3, 39, "Fc %05d, R %05d", FVI_counter, FVI_room_counter);
 
 #ifdef D3_FAST
   if (FrameCount > 20)
@@ -3195,7 +3195,7 @@ void GameFrame(void) {
 #endif
 
   if (Tracking_FVI) {
-    mprintf((0, "Ending frame!\n"));
+    mprintf(0, "Ending frame!\n");
   }
 
   if (!is_game_idle) {

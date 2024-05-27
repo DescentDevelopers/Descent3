@@ -519,7 +519,7 @@ void InitVisEffects() {
 // Returns the next free viseffect
 int VisEffectAllocate() {
   if (Num_vis_effects == max_vis_effects) {
-    mprintf((0, "Couldn't allocate vis effect!\n"));
+    mprintf(0, "Couldn't allocate vis effect!\n");
     return -1;
   }
 
@@ -703,7 +703,7 @@ int VisEffectCreateControlled(uint8_t type, object *parent, uint8_t id, int room
   vis->velocity = *velocity;
 
   // float mag=vm_GetMagnitudeFast (&vis->velocity);
-  // mprintf ((0,"CREATION:Velocity mag is %f\n",mag));
+  // mprintf(0,"CREATION:Velocity mag is %f\n",mag);
 
   if (phys_flags)
     vis->phys_flags = phys_flags;
@@ -2161,7 +2161,7 @@ void VisEffectMoveOne(vis_effect *vis) {
         if (cellnum >= 0 && cellnum < TERRAIN_WIDTH * TERRAIN_DEPTH)
           ApplyLightingToTerrain(&vis->pos, cellnum, vis->size * scalar * 3, r, g, b);
         else
-          mprintf((0, "Vis effect not in world!\n"));
+          mprintf(0, "Vis effect not in world!\n");
       } else {
         if (vis->roomnum >= 0 && vis->roomnum <= Highest_room_index && Rooms[vis->roomnum].used)
           ApplyLightingToRooms(&vis->pos, vis->roomnum, vis->size * scalar * 3, r, g, b);

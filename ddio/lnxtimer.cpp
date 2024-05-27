@@ -145,7 +145,7 @@ uint64_t timer_GetTickCount(void)
         }else
         {
                 // timer roll over
-                mprintf((0,"TIMER: ROLL OVER\n"));
+                mprintf(0,"TIMER: ROLL OVER\n");
                 if(Timer_high_mark>0)
                         Timer_accum += (Timer_high_mark - Timer_sys_start_time);
                 Timer_high_mark = ret;

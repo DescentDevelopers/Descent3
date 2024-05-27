@@ -490,14 +490,14 @@ void CScriptSyncDialog::DoStuff(void)
 								char buffer[2048];
 								const char *next_line;
 
-								mprintf((0,"===========================================\n"));
+								mprintf(0,"===========================================\n");
 								next_line = textaux_CopyTextLine(string,buffer);
 								while(next_line)
 								{
-									mprintf((0,"%s\n",buffer));
+									mprintf(0,"%s\n",buffer);
 									next_line = textaux_CopyTextLine(next_line,buffer);
 								}
-								mprintf((0,"===========================================\n"));
+								mprintf(0,"===========================================\n");
 								mem_free(string);
 							}
 						}

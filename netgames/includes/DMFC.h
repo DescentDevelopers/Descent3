@@ -317,7 +317,7 @@
   do {                                                                                                                 \
     DLLassert(x, #x, __FILE__, __LINE__);                                                                              \
   } while (0)
-#define DLLmprintf(args) DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 #ifdef ASSERT
 #undef ASSERT
 #endif
@@ -331,7 +331,7 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
+    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
     if (DLLDebugBreak_callback_stop)                                                                                   \
       DLLDebugBreak_callback_stop();                                                                                   \
     debug_break();                                                                                                     \
@@ -340,7 +340,7 @@
   } while (0)
 #elif defined(__LINUX__)
 // For some reason Linux doesn't like the \ continuation character, so I have to uglify this
-#define DLLmprintf(args) DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 #ifdef DEBUG_BREAK
 #undef DEBUG_BREAK
 #endif
@@ -377,7 +377,7 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf((0, "Int3 at %s line %d.\n", __FILE__, __LINE__));                                                         \
+    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
     DEBUG_BREAK();                                                                                                     \
   } while (0)
 #define HEAPCHECK()
@@ -387,7 +387,7 @@
 #define DEBUG_BREAK()
 #endif
 #define DLLASSERT(x)
-#define DLLmprintf(args)
+#define DLLmprintf(...)
 #ifdef Int3
 #undef Int3
 #define Int3()
@@ -405,7 +405,7 @@
 #define DEBUG_BREAK()
 #endif
 #define DLLASSERT(x)
-#define DLLmprintf(args)
+#define DLLmprintf(...)
 #ifdef Int3
 #undef Int3
 #define Int3()

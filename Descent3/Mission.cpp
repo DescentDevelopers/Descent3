@@ -727,7 +727,7 @@ static inline char *MN3_TO_MSN_NAME(const char *mn3name, char *msnname) {
 //	High level mission stuff
 ///////////////////////////////////////////////////////////////////////////////
 void InitMission() {
-  mprintf((0, "In InitMission()\n"));
+  mprintf(0, "In InitMission()\n");
   Current_mission.num_levels = 0;
   Current_mission.cur_level = 0;
   memset(Current_mission.desc, 0, sizeof(Current_mission.desc));
@@ -751,7 +751,7 @@ void InitMission() {
 }
 //	reset all states for a mission
 void ResetMission() {
-  mprintf((0, "In ResetMission()\n"));
+  mprintf(0, "In ResetMission()\n");
   FreeMission();
   Current_mission.num_levels = 0;
   Current_mission.cur_level = 0;
@@ -880,7 +880,7 @@ bool DemoMission(int mode = 0) {
 
 bool LoadMission(const char *mssn) {
   Times_game_restored = 0;
-  mprintf((0, "In LoadMission()\n"));
+  mprintf(0, "In LoadMission()\n");
 //	ShowProgressScreen(TXT_LOADINGLEVEL);
 #if (defined(OEM) || defined(DEMO))
 #ifdef OEM
@@ -1015,7 +1015,7 @@ bool LoadMission(const char *mssn) {
             if (Net_msn_URLs.URL[a][0] == '\0') {
               strncpy(Net_msn_URLs.URL[a], operand, MAX_MISSION_URL_LEN - 1);
               Net_msn_URLs.URL[a][MAX_MISSION_URL_LEN - 1] = '\0';
-              mprintf((0, "Found a Mission URL: %s\n", operand));
+              mprintf(0, "Found a Mission URL: %s\n", operand);
               break;
             }
           }
@@ -1031,7 +1031,7 @@ bool LoadMission(const char *mssn) {
             // ok the ship exists, make this guy the new default ship
             PlayerResetShipPermissions(-1, false);
             PlayerSetShipPermission(-1, operand, true);
-            mprintf((0, "MAKING %s THE NEW DEFAULT SHIP!\n", operand));
+            mprintf(0, "MAKING %s THE NEW DEFAULT SHIP!\n", operand);
           } else {
             Int3();
           }
@@ -1385,7 +1385,7 @@ void LoadLevelProgress(int step, float percent, const char *chunk) {
     }
     lvl_percent_loaded = 1.0f;
     pag_percent_loaded = 1.0f;
-    mprintf((0, "Prepare for Descent goes here...\n"));
+    mprintf(0, "Prepare for Descent goes here...\n");
     // ShowProgressScreen(TXT_PREPARE_FOR_DESCENT,NULL,true);
     // return;
     break;
@@ -1402,7 +1402,7 @@ void LoadLevelProgress(int step, float percent, const char *chunk) {
     return;
   } break;
   default:
-    mprintf((0, "Unknown step in LoadLevelProgress()\n"));
+    mprintf(0, "Unknown step in LoadLevelProgress()\n");
     Int3();
   }
   if (Dedicated_server) {
@@ -1649,7 +1649,7 @@ bool Skip_next_movie = false;
 void DoMissionMovie(const char *movie) {
   char temppath[PSPATHNAME_LEN];
   if (PROGRAM(windowed)) {
-    mprintf((0, "Skipping movie...can't do in windowed mode!\n"));
+    mprintf(0, "Skipping movie...can't do in windowed mode!\n");
     return;
   }
   // Don't play this movie the first time through. This is a horrible hack.
@@ -1680,7 +1680,7 @@ bool InitMissionScript() {
   //@@	if (!fp) {
   //@@		DoMessageBox("Error", "Unable to find mission script.", MSGBOX_OK, UICOL_WINDOW_TITLE,
   // UICOL_TEXT_NORMAL);
-  //@@		mprintf((0, "Unable to open default script. Loading null script...\n"));
+  //@@		mprintf(0, "Unable to open default script. Loading null script...\n");
   //@@		return false;
   //@@	}
   //@@	else {
@@ -1688,7 +1688,7 @@ bool InitMissionScript() {
   //@@		if (!Current_mission.d3xmod) {
   //@@			DoMessageBox("Error", "Unable to find mission script.", MSGBOX_OK, UICOL_WINDOW_TITLE,
   // UICOL_TEXT_NORMAL);
-  //@@			mprintf((0, "Unable to open default script. Loading null script...\n"));
+  //@@			mprintf(0, "Unable to open default script. Loading null script...\n");
   //@@			return false;
   //@@		}
   //@@		cfclose(fp);
@@ -1737,7 +1737,7 @@ bool GetMissionInfo(const char *msnfile, tMissionInfo *msn) {
   }
   fp = cfopen(msnfile, "rt");
   if (!fp) {
-    mprintf((0, "Failed to open mission file %s in GetMissionInfo.\n", msnfile));
+    mprintf(0, "Failed to open mission file %s in GetMissionInfo.\n", msnfile);
     return false;
   }
   msn->multi = true;
@@ -1802,7 +1802,7 @@ const char *GetMissionName(const char *mission) {
   if (GetMissionInfo(mission, &msninfo)) {
     strcpy(msnname, msninfo.name);
   } else {
-    mprintf((0, "MISSION:GetMissionName failed from call to GetMissionInfo\n"));
+    mprintf(0, "MISSION:GetMissionName failed from call to GetMissionInfo\n");
   }
   return msnname;
 }
@@ -1886,7 +1886,7 @@ bool mn3_GetInfo(const char *mn3file, tMissionInfo *msn) {
   }
   handle = cf_OpenLibrary(pathname);
   if (handle == 0) {
-    mprintf((0, "MISSION: MN3 failed to open.\n"));
+    mprintf(0, "MISSION: MN3 failed to open.\n");
     return false;
   }
   MN3_TO_MSN_NAME(mn3file, filename);
@@ -1936,7 +1936,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
 
   memset(msn_keywords, 0, sizeof(msn_keywords));
   memset(mod_keywords, 0, sizeof(mod_keywords));
-  mprintf((0, "MissionGetKeywords(%s,%s)\n", mission, keywords));
+  mprintf(0, "MissionGetKeywords(%s,%s)\n", mission, keywords);
   if (!GetMissionInfo(mission, &msn_info)) {
     return -1;
   }
@@ -1998,7 +1998,7 @@ int MissionGetKeywords(const char *mission, char *keywords) {
       }
       // We never found one we needed, so return -1;
       if (!found_keyword) {
-        mprintf((0, "%s keyword needed in %s not found!\n", mod_keywords[i], mission));
+        mprintf(0, "%s keyword needed in %s not found!\n", mod_keywords[i], mission);
         return -1;
       }
     }
@@ -2007,11 +2007,11 @@ int MissionGetKeywords(const char *mission, char *keywords) {
     teams = goals;
   }
   if (teams < goalsneeded) {
-    mprintf((0, "Not enough goals in this level!\n"));
+    mprintf(0, "Not enough goals in this level!\n");
     teams = -1;
   }
   if (goals < goalsneeded) {
-    mprintf((0, "Not enough goals in this level!\n"));
+    mprintf(0, "Not enough goals in this level!\n");
     teams = -1;
   }
   return teams;

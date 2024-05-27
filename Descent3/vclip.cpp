@@ -178,7 +178,7 @@ int Num_vclips = 0;
 #define VCLIP_VERSION 1
 // Frees all the memory used by vclips
 void FreeAllVClips() {
-  mprintf((0, "Freeing all vclips!\n"));
+  mprintf(0, "Freeing all vclips!\n");
 
   for (int i = 0; i < MAX_VCLIPS; i++) {
     if (GameVClips[i].used > 0) {
@@ -250,7 +250,7 @@ int SaveVClip(const char *filename, int num) {
 
   outfile = (CFILE *)cfopen(filename, "wb");
   if (!outfile) {
-    mprintf((0, "Couldn't save vclip %s!\n", filename));
+    mprintf(0, "Couldn't save vclip %s!\n", filename);
     return 0;
   }
 
@@ -267,7 +267,7 @@ int SaveVClip(const char *filename, int num) {
   // Now save each frame of this vclip
   for (int i = 0; i < vc->num_frames; i++) {
     if (bm_SaveBitmap(outfile, vc->frames[i]) != 1) {
-      mprintf((0, "Couldn't save frame %d of vclip %s!\n", i, filename));
+      mprintf(0, "Couldn't save frame %d of vclip %s!\n", i, filename);
       Int3();
       cfclose(outfile);
       return 0;
@@ -301,7 +301,7 @@ void PageInVClip(int vcnum) {
     while ((end_ptr >= start_ptr) && (*end_ptr != '\\'))
       end_ptr--;
     if (end_ptr < start_ptr) {
-      mprintf((0, "Couldn't load vclip %s!\n", vc->name));
+      mprintf(0, "Couldn't load vclip %s!\n", vc->name);
       return;
     }
 
@@ -310,12 +310,12 @@ void PageInVClip(int vcnum) {
 
     infile = (CFILE *)cfopen(end_ptr, "rb");
     if (!infile) {
-      mprintf((0, "Couldn't load vclip %s!\n", vc->name));
+      mprintf(0, "Couldn't load vclip %s!\n", vc->name);
       return;
     }
   }
 
-  mprintf((0, "Paging in vclip %s!\n", vc->name));
+  mprintf(0, "Paging in vclip %s!\n", vc->name);
 
   uint8_t start_val = cf_ReadByte(infile);
   int version = 0;
@@ -428,7 +428,7 @@ int AllocLoadVClip(const char *filename, int texture_size, int mipped, int pagea
     return i;
   }
 
-  // mprintf ((0,"Loading OAF vclip %s\n",name));
+  // mprintf(0,"Loading OAF vclip %s\n",name);
 
   int vcnum = AllocVClip();
 
@@ -474,11 +474,11 @@ int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int fo
 
   infile = (CFILE *)cfopen(filename, "rt");
   if (!infile) {
-    mprintf((0, "Couldn't load IFL vclip %s!\n", filename));
+    mprintf(0, "Couldn't load IFL vclip %s!\n", filename);
     return -1;
   }
 
-  mprintf((0, "Loading IFL vclip %s\n", name));
+  mprintf(0, "Loading IFL vclip %s\n", name);
 
   int vcnum = AllocVClip();
 
@@ -595,7 +595,7 @@ int AllocLoadIFLVClip(const char *filename, int texture_size, int mipped, int fo
   cfclose(infile);
 
   if (vc->num_frames == 0) {
-    mprintf((0, "vclip had no valid bitmap names!\n"));
+    mprintf(0, "vclip had no valid bitmap names!\n");
     FreeVClip(vcnum);
     return -1;
   }

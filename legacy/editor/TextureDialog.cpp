@@ -620,7 +620,7 @@ int CGrTextureListBox::ListNextItem(int curtex)
 	while ((Show_used && !CurrentlyUsedTextures[next_texture]) || !(GameTextures[next_texture].flags & D3EditState.texture_display_flags) ) 
 	{
 		next_texture = GetNextTexture(next_texture);
-	//	mprintf((0, "next_tex = %d\n", next_texture));
+	//	mprintf(0, "next_tex = %d\n", next_texture);
 		if (next_texture == curtex) {
 			break;
 		}
@@ -642,7 +642,7 @@ int CGrTextureListBox::ListPrevItem(int curtex)
 	while ((Show_used && !CurrentlyUsedTextures[prev_texture]) || !(GameTextures[prev_texture].flags & D3EditState.texture_display_flags) ) 
 	{
 		prev_texture = GetPreviousTexture(prev_texture);
-	//	mprintf((0, "prev_tex = %d\n", prev_texture));
+	//	mprintf(0, "prev_tex = %d\n", prev_texture);
 		if (prev_texture == curtex) {
 			break;
 		}
@@ -962,7 +962,7 @@ void CTextureDialog::OnFindTexture()
 {
 	int i,t;
 
-	mprintf ((0,"Searching...please wait...\n"));
+	mprintf(0,"Searching...please wait...\n");
 	int found=0,found_room,found_face;
 
 	for (i=0;i<=Highest_room_index && !found;i++)
@@ -986,18 +986,18 @@ void CTextureDialog::OnFindTexture()
 		}
 	}
 
-	mprintf ((0,"Done searching!\n"));
+	mprintf(0,"Done searching!\n");
 
 	if (found==0)
 	{
-		mprintf ((0,"Couldn't find another face with that texture!\n"));
+		mprintf(0,"Couldn't find another face with that texture!\n");
 	}
 	else
 	{
 		Curroomp=&Rooms[found_room];
 		Curface=found_face;
-		mprintf ((0,"Found that texture in room %d face %d.\n",found_room,found_face));
-		mprintf ((0,"Press C to center on that face\n"));
+		mprintf(0,"Found that texture in room %d face %d.\n",found_room,found_face);
+		mprintf(0,"Press C to center on that face\n");
 	}
 
 }

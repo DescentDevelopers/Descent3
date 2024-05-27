@@ -93,7 +93,7 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 	uint8_t *kern_data;
 
 	if (c1 == 255 || c2 == 255) {
-		mprintf((0, "seting illegal kerning of 255!\n"));
+		mprintf(0, "seting illegal kerning of 255!\n");
 		return;
 	}
 
@@ -109,7 +109,7 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 		kern_data[4] = 255;
 		kern_data[5] = 0;
 		Font_template.kern_data = kern_data;
-		mprintf((0, "adding first kerning pair %d,%d\n", c1,c2));
+		mprintf(0, "adding first kerning pair %d,%d\n", c1,c2);
 		return;
 	}
 
@@ -132,12 +132,12 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 				while (kern_data[j] != 255);
 				if (i == 0) {
 				// last pair, deallocate kern_data and end.
-					mprintf((0, "removing last kerning pair\n"));
+					mprintf(0, "removing last kerning pair\n");
 					mem_free(kern_data);
 					kern_data = NULL;
 				}
 				else {
-					mprintf((0, "removing kerning pair %d,%d\n", c1,c2));
+					mprintf(0, "removing kerning pair %d,%d\n", c1,c2);
 				}
 			}
 			Font_template.kern_data = kern_data;
@@ -169,7 +169,7 @@ void fonttool_set_kerning( int c1, int c2, int dist )
 
 	Font_template.kern_data = new_kern_data;
 
-	mprintf((0, "adding first kerning pair %d,%d (total=%d)\n", c1,c2, n_pairs+1));
+	mprintf(0, "adding first kerning pair %d,%d (total=%d)\n", c1,c2, n_pairs+1);
 }
 
 
@@ -280,7 +280,7 @@ void FontKern(const char *fnt_file_name)
 				Error("Font failed reload test on save!");
 			}
 			grfont_LoadTemplate((char *)fnt_file_name, &Font_template);
-			mprintf((0, "font saved and reloaded correctly?\n"));
+			mprintf(0, "font saved and reloaded correctly?\n");
 			done = true;
 			break;
 

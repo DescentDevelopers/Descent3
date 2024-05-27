@@ -1157,7 +1157,7 @@ bool collide_weapon_and_wall(object *weapon, fix hitspeed, int hitseg, int hitwa
                              float hit_dot) {
   bool f_forcefield;
   bool f_volatile, f_lava, f_water;
-  // mprintf((0, "Weapon hit wall, how nice.\n"));
+  // mprintf(0, "Weapon hit wall, how nice.\n");
 
   // #ifndef RELEASE
   if ((stricmp(Weapons[weapon->id].name, "Yellow flare") == 0) && (weapon->parent_handle == Player_object->handle) &&
@@ -1548,7 +1548,7 @@ void scrape_object_on_wall(object *obj, int hitseg, int hitwall, vector *hitpt, 
                           if (obj->id==Player_num) {
                                   int type;
 
-                                  //mprintf((0, "Scraped segment #%3i, side #%i\n", hitseg, hitside));
+                                  //mprintf(0, "Scraped segment #%3i, side #%i\n", hitseg, hitside);
 
                                   if ((type=check_volatile_wall(obj,hitseg,hitside,hitpt))!=0) {
                                           vector	hit_dir, rand_vec;
@@ -1663,8 +1663,8 @@ destroy_primary_weapon(MAX_PRIMARY_WEAPONS);	//	This means to destroy quad laser
 // -- removed, 09/06/95, MK -- 				} else
 // -- removed, 09/06/95, MK -- 					destroy_primary_weapon(Primary_weapon);
 // -- removed, 09/06/95, MK -- 			} else
-// -- removed, 09/06/95, MK -- 				; // mprintf((0, "%8x > %8x, so don't lose weapon.\n",
-floatmul(Players[Player_num].shields, randnum), damage/4));
+// -- removed, 09/06/95, MK -- 				; // mprintf(0, "%8x > %8x, so don't lose weapon.\n",
+floatmul(Players[Player_num].shields, randnum), damage/4);
 // -- removed, 09/06/95, MK -- 		}
 
                 playerobj->shields = Players[Player_num].shields;		//mirror
@@ -1747,14 +1747,14 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
   //	vector f;
   CollideAnglesToMatrix(&rotmat, e_n.x, e_n.y, e_n.z);
 
-  //	mprintf((0, "F %f, %f, %f\n", XYZ(&rotmat.fvec)));
-  //	mprintf((0, "R %f, %f, %f\n", XYZ(&rotmat.rvec)));
-  //	mprintf((0, "U %f, %f, %f\n", XYZ(&rotmat.uvec)));
+  //	mprintf(0, "F %f, %f, %f\n", XYZ(&rotmat.fvec));
+  //	mprintf(0, "R %f, %f, %f\n", XYZ(&rotmat.rvec));
+  //	mprintf(0, "U %f, %f, %f\n", XYZ(&rotmat.uvec));
 
   //	CollideExtractAnglesFromMatrix(&f, &rotmat);
 
-  //	mprintf((0, "Before %f, %f, %f\n", XYZ(&e_n)));
-  //	mprintf((0, "After  %f, %f, %f\n", XYZ(&f)));
+  //	mprintf(0, "Before %f, %f, %f\n", XYZ(&e_n));
+  //	mprintf(0, "After  %f, %f, %f\n", XYZ(&f));
 
   // This is from Graphics Gems 1 p.467  I am converting from a angle vector
   // to the normal of that rotation (you can also get the angle about that normal, but
@@ -2413,7 +2413,7 @@ void collide_generic_and_player(object *robotobj, object *playerobj, vector *col
     }
   }
 
-  // mprintf((0, "We hit a robot\n"));
+  // mprintf(0, "We hit a robot\n");
   if (robotobj->control_type == CT_AI) {
     AINotify(robotobj, AIN_BUMPED_OBJ, (void *)playerobj);
   }
@@ -2997,7 +2997,7 @@ bool collide_object_with_wall(object *A, float hitspeed, int hitseg, int hitwall
     break;
 
   default:
-    mprintf((0, "Unhandled collision of object type %d and wall\n", A->type));
+    mprintf(0, "Unhandled collision of object type %d and wall\n", A->type);
     //		Error( "Unhandled object type hit wall in collide.c\n" );
   }
 

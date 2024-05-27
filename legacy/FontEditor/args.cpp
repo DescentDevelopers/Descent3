@@ -63,7 +63,7 @@ void GatherArgs (const char *str)
 			{
 				GameArgs[curarg][t]=0;
 				t=0;
-				mprintf ((0,"Arg %d is %s\n",curarg,GameArgs[curarg]));
+				mprintf(0,"Arg %d is %s\n",curarg,GameArgs[curarg]);
 				gotquote = false;
 				curarg++;
 			}
@@ -76,7 +76,7 @@ void GatherArgs (const char *str)
 			{
 				GameArgs[curarg][t]=0;
 				t=0;
-				mprintf ((0,"Arg %d is %s\n",curarg,GameArgs[curarg]));
+				mprintf(0,"Arg %d is %s\n",curarg,GameArgs[curarg]);
 				curarg++;
 			}
 		}

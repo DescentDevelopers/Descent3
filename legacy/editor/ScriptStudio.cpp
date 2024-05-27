@@ -496,7 +496,7 @@ void CScriptStudio::InitFindReplace(BOOL bFind)
    // Initialize the dialog
    if (!m_pdlgFindReplace->Create(bFind, 0, 0, FR_DOWN, this))
    {
-      mprintf((0,"Error allocating find/replace dialog!"));
+      mprintf(0,"Error allocating find/replace dialog!");
       m_pdlgFindReplace = NULL;
       return;
    }
@@ -688,7 +688,7 @@ void CScriptStudio::ExportScript(char *filename)
 
 	UpdateEditText();
 	file=cfopen(filename,"wt");
-	mprintf((0,"Exporting Script to file %s\n",filename));
+	mprintf(0,"Exporting Script to file %s\n",filename);
 	cf_WriteString(file, m_EditText.GetBuffer(1));
 	cfclose(file);
 }
@@ -711,7 +711,7 @@ void CScriptStudio::ImportScript(char *filename)
 	}
 
 	file=cfopen(filename,"rt");
-	mprintf((0,"Importing Script from file %s\n",filename));
+	mprintf(0,"Importing Script from file %s\n",filename);
 	do
 	{
 		size=cf_ReadString(buffer,MAX_SCRIPT_LINE_SIZE-2,file);

@@ -961,7 +961,7 @@ int ReloadModelTextures(int modelnum) {
           ret = FindTextureName(name_buf);
           if (ret == -1) {
             ret = 0;
-            // mprintf ((0,"Object texture %s is not in memory!\n",name_buf));
+            // mprintf(0,"Object texture %s is not in memory!\n",name_buf);
           }
         }
 
@@ -1295,12 +1295,12 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
   version = cf_ReadInt(infile);
   if (version < 18) {
-    mprintf((0, "Old POF Version of %d fixed up to %d\n", version, version * 100));
+    mprintf(0, "Old POF Version of %d fixed up to %d\n", version, version * 100);
     version *= 100;
   }
 
   if (version < PM_COMPATIBLE_VERSION || version > PM_OBJFILE_VERSION) {
-    mprintf((0, "Bad version (%d) in model file!\n", version));
+    mprintf(0, "Bad version (%d) in model file!\n", version);
     Int3();
     return 0;
   }
@@ -1334,7 +1334,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_OHDR: {
       // Object header
 
-      // mprintf ((0,"Object header...\n"));
+      // mprintf(0,"Object header...\n");
 
       pm->n_models = cf_ReadInt(infile);
       pm->rad = cf_ReadFloat(infile);
@@ -1372,7 +1372,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       char props[MAX_PROP_LEN];
       float d;
 
-      // mprintf((0,"Got chunk SOBJ, len=%d\n",len));
+      // mprintf(0,"Got chunk SOBJ, len=%d\n",len);
 
       n = cf_ReadInt(infile);
 
@@ -1670,7 +1670,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       if (pm->n_attach == (num_normals = cf_ReadInt(infile)))
         f_uvec = true;
       else {
-        mprintf((0, "WARNING: Ingoring ATTACH normals - total number doesn't match number of attach points\n"));
+        mprintf(0, "WARNING: Ingoring ATTACH normals - total number doesn't match number of attach points\n");
         // Int3();
         DataError("Model <%s> specifies %d attach points but only contains %d attach normals\n", pm->name, pm->n_attach,
                   num_normals);
@@ -1752,7 +1752,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       int i, n;
       char name_buf[128];
 
-      // mprintf((0,"Got chunk TXTR, len=%d\n",len));
+      // mprintf(0,"Got chunk TXTR, len=%d\n",len);
 
       n = cf_ReadInt(infile);
       pm->n_textures = n;
@@ -1774,7 +1774,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           ret = FindTextureName(name_buf);
           if (ret == -1) {
             ret = 0;
-            // mprintf ((0,"Object texture %s is not in memory!\n",name_buf));
+            // mprintf(0,"Object texture %s is not in memory!\n",name_buf);
           }
         }
 
@@ -1789,7 +1789,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_ROT_ANIM:
     case ID_ANIM: {
       int nframes;
-      // mprintf ((0,"ROT ANIM chunk!!!\n"));
+      // mprintf(0,"ROT ANIM chunk!!!\n");
 
       if (!timed) {
         nframes = cf_ReadInt(infile);
@@ -1851,7 +1851,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
           if (t == 0) {
             /*if (pm->submodel[i].keyframe_angles[0]>=32768)
             {
-                    mprintf ((0,"\nFlipping suboject %s!\n",pm->submodel[i].name));
+                    mprintf(0,"\nFlipping suboject %s!\n",pm->submodel[i].name);
                     pm->submodel[i].keyframe_angles[0]*=-1;
             }*/
           }
@@ -1872,7 +1872,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     case ID_POS_ANIM: {
       int nframes;
 
-      // mprintf ((0,"POS ANIM chunk!!!\n"));
+      // mprintf(0,"POS ANIM chunk!!!\n");
       if (!timed) {
         nframes = cf_ReadInt(infile);
         pm->num_key_pos = nframes;
@@ -1920,7 +1920,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
       break;
     }
     default:
-      // mprintf((0,"Unknown chunk <%c%c%c%c>, len = %d\n",id,id>>8,id>>16,id>>24,len));
+      // mprintf(0,"Unknown chunk <%c%c%c%c>, len = %d\n",id,id>>8,id>>16,id>>24,len);
       cfseek(infile, len, SEEK_CUR);
       break;
     }
@@ -1962,10 +1962,10 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
     }
 
     if (pm->submodel[i].num_key_angles == 0 && (pm->submodel[i].flags & SOF_ROTATE)) {
-      mprintf((0, "You have a rotator that has no keyframe on model %s.\n", pm->name));
+      mprintf(0, "You have a rotator that has no keyframe on model %s.\n", pm->name);
       pm->submodel[i].flags &= ~SOF_ROTATE;
     } else if (pm->submodel[i].num_key_angles == 0 && (pm->submodel[i].flags & SOF_TURRET)) {
-      mprintf((0, "You have a turret that has no keyframe on model %s.\n", pm->name));
+      mprintf(0, "You have a turret that has no keyframe on model %s.\n", pm->name);
       pm->submodel[i].flags &= ~SOF_TURRET;
     }
 
@@ -2012,7 +2012,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         }
 
         if (done == 0) {
-          mprintf((0, "Couldn't get a good keyframe!\n"));
+          mprintf(0, "Couldn't get a good keyframe!\n");
           Int3();
         }
       }
@@ -2032,7 +2032,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
         }
 
         if (done == 0) {
-          mprintf((0, "Couldn't get a good keyframe!\n"));
+          mprintf(0, "Couldn't get a good keyframe!\n");
           Int3();
         }
       }
@@ -2053,7 +2053,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
   pm->new_style = 1;
 
   if (pm->n_models > MAX_SUBOBJECTS) {
-    mprintf((0, "This model has more than the max number of subobjects! (%d)\n", MAX_SUBOBJECTS));
+    mprintf(0, "This model has more than the max number of subobjects! (%d)\n", MAX_SUBOBJECTS);
     Int3();
     FreePolyModel(pm - Poly_models);
     return 0;
@@ -2090,7 +2090,7 @@ int LoadPolyModel(const char *filename, int pageable) {
     if (Poly_models[i].flags & PMF_NOT_RESIDENT)
       not_res = 1;
 
-    mprintf((1, "Model '%s' usage count is now %d.\n", Poly_models[i].name, Poly_models[i].used + 1));
+    mprintf(1, "Model '%s' usage count is now %d.\n", Poly_models[i].name, Poly_models[i].used + 1);
 
     Poly_models[i].used = 1;
     FreePolyModel(i);
@@ -2142,7 +2142,7 @@ int LoadPolyModel(const char *filename, int pageable) {
   } else
     Poly_models[polynum].new_style = 0;
 
-  // mprintf ((0,"Loading model %s\n",name));
+  // mprintf(0,"Loading model %s\n",name);
   strcpy(Poly_models[polynum].name, name);
 
   int ret = 0;
@@ -2172,7 +2172,7 @@ void PageInPolymodel(int polynum, int type, float *size_ptr) {
     return;
   }
 
-  mprintf((0, "Paging in polymodel %s.\n", Poly_models[polynum].name));
+  mprintf(0, "Paging in polymodel %s.\n", Poly_models[polynum].name);
 
   CFILE *infile;
   infile = (CFILE *)cfopen(Poly_models[polynum].name, "rb");
@@ -2215,7 +2215,7 @@ void PageInPolymodel(int polynum, int type, float *size_ptr) {
 
   if (remap == 1) {
     // remap the damn textures
-    mprintf((0, "Remapping model textures for model %s.\n", Poly_models[polynum].name));
+    mprintf(0, "Remapping model textures for model %s.\n", Poly_models[polynum].name);
     ReloadModelTextures(polynum);
   }
 
@@ -3125,7 +3125,7 @@ void RemapPolyModels() {
 
     if (remap == 1) {
       // remap the damn textures
-      mprintf((0, "Remapping model textures for model %s.\n", Poly_models[i].name));
+      mprintf(0, "Remapping model textures for model %s.\n", Poly_models[i].name);
       ReloadModelTextures(i);
     }
   }

@@ -620,7 +620,7 @@ void InitControls() {
   Key_ramp.oz = Key_ramp.z = 0.0f;
 
   //	Initialize preemptive controller system for non-positonal data.
-  mprintf((0, "Initialized control system.\n"));
+  mprintf(0, "Initialized control system.\n");
 }
 
 void CloseControls() {
@@ -629,7 +629,7 @@ void CloseControls() {
   ResumeControls();
   DestroyController(Controller);
   Controller = NULL;
-  mprintf((0, "Closing control system.\n"));
+  mprintf(0, "Closing control system.\n");
   Control_system_init = false;
 }
 
@@ -806,10 +806,10 @@ void DoMovement(game_controls *controls) {
   if (controls->afterburn_thrust < -LIMIT_FORWARD)
     controls->afterburn_thrust = -LIMIT_FORWARD;
 
-  mprintf_at((1, 5, 30, "ch:%.2f ", controls->heading_thrust));
+  mprintf_at(1, 5, 30, "ch:%.2f ", controls->heading_thrust);
 
   //	if (controls->pitch_thrust || controls->heading_thrust)
-  //		mprintf((0, "p:%.2f h:%.2f\n", controls->pitch_thrust, controls->heading_thrust));
+  //		mprintf(0, "p:%.2f h:%.2f\n", controls->pitch_thrust, controls->heading_thrust);
 }
 
 void DoKeyboardMovement(game_controls *controls) {
@@ -911,10 +911,9 @@ void DoControllerMovement(game_controls *controls) {
   Controller->get_packet(ctfBANK_LEFTBUTTON, &ctl_blb);
   Controller->get_packet(ctfBANK_RIGHTBUTTON, &ctl_brb);
 
-  //	check for joystick movement
-  //	mprintf((0, "p:%f  h:%f  b:%f\n", ctl_p.value, ctl_h.value, ctl_b.value));
-  //	mprintf((0, "u:%d  d:%d  l:%d  r:%d\n", (int)ctl_povu.value, (int)ctl_povd.value, (int)ctl_povl.value,
-  //(int)ctl_povr.value));
+  // check for joystick movement
+  // mprintf(0, "p:%f  h:%f  b:%f\n", ctl_p.value, ctl_h.value, ctl_b.value);
+  // mprintf(0, "u:%d  d:%d  l:%d  r:%d\n", (int)ctl_povu.value, (int)ctl_povd.value, (int)ctl_povl.value, (int)ctl_povr.value);
 
   //	do x and y thrust
   controls->sideways_thrust += ctl_x.value;
@@ -948,7 +947,7 @@ void DoControllerMovement(game_controls *controls) {
 
   //	do afterburn button control
   if (!controls->afterburn_thrust) {
-    //		mprintf((0, "aft=%.4f\n", ctl_afterburn.value));
+    //		mprintf(0, "aft=%.4f\n", ctl_afterburn.value);
     controls->afterburn_thrust = ((ctl_afterburn.value) / Frametime);
   }
 

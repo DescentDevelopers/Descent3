@@ -161,7 +161,7 @@ void MultiSendMyInfo() {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending my info\n"));
+  mprintf(0, "Sending my info\n");
   char pshipmodel[PAGENAME_LEN];
   Current_pilot.get_ship(pshipmodel);
 
@@ -227,7 +227,7 @@ void MultiSendRequestForPlayers() {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending request for players\n"));
+  mprintf(0, "Sending request for players\n");
 
   size = START_DATA(MP_REQUEST_PLAYERS, data, &count);
   MultiAddByte(Player_num, data, &count);
@@ -242,7 +242,7 @@ void MultiSendRequestForBuildings() {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending request for buildings\n"));
+  mprintf(0, "Sending request for buildings\n");
 
   size = START_DATA(MP_REQUEST_BUILDINGS, data, &count);
   MultiAddByte(Player_num, data, &count);
@@ -257,7 +257,7 @@ void MultiSendRequestForWorldStates() {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending request for world states\n"));
+  mprintf(0, "Sending request for world states\n");
 
   size = START_DATA(MP_REQUEST_WORLD_STATES, data, &count);
   MultiAddByte(Player_num, data, &count);
@@ -278,7 +278,7 @@ void MultiSendRequestForObjects() {
   uint8_t data[MAX_GAME_DATA_SIZE];
   int count = 0;
 
-  mprintf((0, "Sending request for objects\n"));
+  mprintf(0, "Sending request for objects\n");
 
   size = START_DATA(MP_REQUEST_OBJECTS, data, &count);
   MultiAddByte(Player_num, data, &count);
@@ -296,7 +296,7 @@ int ServerTimedOut() {
     return 0;
 
   if (!nw_CheckReliableSocket(NetPlayers[Player_num].reliable_socket)) {
-    mprintf((0, "Reliable connection to the server was broken. Disconnecting.\n"));
+    mprintf(0, "Reliable connection to the server was broken. Disconnecting.\n");
     ShowProgressScreen(TXT_RELIABLE_OVERRUN);
     Sleep(1000);
     return 1;
@@ -343,7 +343,7 @@ void MultiDoClientFrame() {
       // Wait for server response
       if ((timer_GetTime() - First_gametime_req) > NET_CLIENT_GAMETIME_REQ_TIMEOUT) {
         // Giving up, we waited too long.
-        mprintf((0, "Server disconnected while waiting for gametime!\n"));
+        mprintf(0, "Server disconnected while waiting for gametime!\n");
         MultiLeaveGame();
         ShowProgressScreen(TXT_MLTDISCFRMSERV);
         Sleep(2000);
@@ -472,7 +472,7 @@ void MultiDoClientFrame() {
 
       // TODO: SEND RELIABLE WEAPON FIRE
       if (Player_fire_packet[Player_num].fired_on_this_frame == PFP_FIRED_RELIABLE) {
-        // mprintf((0,"I NEED TO SEND RELIABLE FIRE\n"));
+        // mprintf(0,"I NEED TO SEND RELIABLE FIRE\n");
         count = MultiStuffPlayerFire(Player_num, data);
         nw_SendReliable(NetPlayers[Player_num].reliable_socket, data, count, true);
       }
@@ -484,7 +484,7 @@ void MultiDoClientFrame() {
     }
 
     if (ServerTimedOut()) {
-      mprintf((0, "Server disconnected!\n"));
+      mprintf(0, "Server disconnected!\n");
       MultiLeaveGame();
       ShowProgressScreen(TXT_MLTDISCFRMSERV);
       Sleep(2000);

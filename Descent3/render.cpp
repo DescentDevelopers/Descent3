@@ -758,7 +758,7 @@ void CheckFogPortalExtents(int roomnum, int portalnum) {
   if (found_room == -1) {
     // Couldn't find this room in our list, so make a new one
     if (Num_fogged_rooms_this_frame >= MAX_FOGGED_ROOMS_PER_FRAME) {
-      mprintf((0, "Too many fogged rooms in view cone!\n"));
+      mprintf(0, "Too many fogged rooms in view cone!\n");
       return;
     }
 
@@ -1136,7 +1136,7 @@ void BuildRoomList(int start_room_num) {
   wnd.right = Render_width;
   wnd.bot = Render_height;
   BuildRoomListSub(start_room_num, &wnd, 0);
-// mprintf((0,"N_render_rooms = %d ",N_render_rooms));
+// mprintf(0,"N_render_rooms = %d ",N_render_rooms);
 #ifdef EDITOR
   // Add all external rooms to render list if that flag set
   if (Editor_view_mode == VM_MINE && In_editor_mode) {
@@ -3661,7 +3661,7 @@ void SortStates(state_limited_element *state_array, int cellcount) {
 // Builds a list of mirror faces for each room and allocs memory accordingly
 void ConsolidateMineMirrors() {
   int i, t;
-  mprintf((0, "Consolidating mine mirrors!\n"));
+  mprintf(0, "Consolidating mine mirrors!\n");
   for (i = 0; i < MAX_ROOMS; i++) {
     room *rp = &Rooms[i];
     if (!rp->used)

@@ -298,7 +298,7 @@ retry_key_init:
         WKD.nextframe = false;
         uintptr_t thrid = _beginthread(dikey_Thread, 0, nullptr);
         if (thrid == -1) {
-          mprintf((0, "DDIO: DI_Keyboard thread failed to initialize.\n"));
+          mprintf(0, "DDIO: DI_Keyboard thread failed to initialize.\n");
           WKD.thread_active = false;
           WKD.lpdikey = NULL;
           WKD.thread = 0xffffffff;
@@ -317,7 +317,7 @@ retry_key_init:
           if (SetThreadPriority((HANDLE)thrid, THREAD_PRIORITY_TIME_CRITICAL) == FALSE) {
             SetThreadPriority((HANDLE)thrid, THREAD_PRIORITY_HIGHEST);
           }
-          mprintf((0, "DDIO: DI_Keyboard initialized.\n"));
+          mprintf(0, "DDIO: DI_Keyboard initialized.\n");
         }
       } else {
         // failed to acquire device? can't do.
@@ -355,7 +355,7 @@ void ddio_InternalKeyClose() {
     WKD.thread = 0xffffffff;
     WKD.evtnotify = NULL;
     WKD.lpdikey = NULL;
-    mprintf((0, "DDIO: DI_Keyboard shutdown.\n"));
+    mprintf(0, "DDIO: DI_Keyboard shutdown.\n");
   }
   if (WKD.winhook) {
     ddio_Win_KeyClose();
@@ -383,7 +383,7 @@ float ddio_InternalKeyDownTime(uint8_t key) {
       DWORD curtickcount = GetTickCount();
       DWORD ticks = curtickcount - WKeys[key].down_ticks;
       if (ticks == 0) {
-        // mprintf((0, "ticks=%d\n", ticks));
+        // mprintf(0, "ticks=%d\n", ticks);
       }
       WKeys[key].down_ticks = curtickcount;
       down_time = (ticks / 1000.0f);
@@ -642,12 +642,12 @@ void __cdecl dikey_Thread(void *dp) {
               if (key == KEY_LCTRL) {
                 WKeys[key].mutex_flag = true;
               }
-              mprintf((0, "dkey=%x\n", key));
+              mprintf(0, "dkey=%x\n", key);
             } else {
               if (WKeys[key].status) {
                 WKeys[key].up_ticks = diobjdata[i].dwTimeStamp;
                 WKeys[key].status = false;
-                mprintf((0, "ukey=%x\n", key));
+                mprintf(0, "ukey=%x\n", key);
               }
             }
 
@@ -694,7 +694,7 @@ bool ddio_Win_KeyInit() {
     return false;
   }
 
-  mprintf((0, "Keyboard initialized.\n"));
+  mprintf(0, "Keyboard initialized.\n");
 
   return true;
 }
@@ -706,7 +706,7 @@ void ddio_Win_KeyClose() {
     WKD.winhook = NULL;
   }
 
-  mprintf((0, "Keyboard released.\n"));
+  mprintf(0, "Keyboard released.\n");
 }
 
 // ----------------------------------------------------------------------------

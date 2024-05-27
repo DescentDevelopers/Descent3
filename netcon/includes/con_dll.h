@@ -752,9 +752,9 @@ typedef struct vmt_descent3_struct {
 /////////////////////////////
 // Defines
 #ifndef RELEASE
-#define DLLmprintf(args) DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 #else
-#define DLLmprintf(args)
+#define DLLmprintf(...)
 #endif
 
 uint32_t MTClientVer = 100;
@@ -1040,7 +1040,7 @@ int StartMultiplayerGameMenu() {
   // DLLmprintf((0,search));
   if (DLLddio_FindFileStart(search, buffer)) {
     if (DLLIsMissionMultiPlayable(buffer)) {
-      DLLmprintf((0, "Found a mission: %s\n", buffer));
+      DLLmprintf(0, "Found a mission: %s\n", buffer);
       mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
       strcpy(mi->msn_name, DLLGetMissionName(buffer));
       strcpy(mi->msn_file, buffer);
@@ -1050,7 +1050,7 @@ int StartMultiplayerGameMenu() {
     }
     while (DLLddio_FindNextFile(buffer)) {
       if (DLLIsMissionMultiPlayable(buffer)) {
-        DLLmprintf((0, "Found a mission: %s\n", buffer));
+        DLLmprintf(0, "Found a mission: %s\n", buffer);
         mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
         strcpy(mi->msn_name, DLLGetMissionName(buffer));
         strcpy(mi->msn_file, buffer);
@@ -1064,12 +1064,12 @@ int StartMultiplayerGameMenu() {
 
   // char mn3_path[_MAX_PATH*2];
   DLLddio_MakePath(search, DLLLocalD3Dir, "missions", "*.mn3", NULL);
-  // DLLmprintf((0,search));
+  // DLLmprintf(0,search);
   if (DLLddio_FindFileStart(search, buffer)) {
     // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
 
     if (DLLIsMissionMultiPlayable(buffer) && (stricmp("d3_2.mn3", buffer) != 0)) {
-      DLLmprintf((0, "Found a mission: %s\n", buffer));
+      DLLmprintf(0, "Found a mission: %s\n", buffer);
       mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
       strcpy(mi->msn_name, DLLGetMissionName(buffer));
       strcpy(mi->msn_file, buffer);
@@ -1082,7 +1082,7 @@ int StartMultiplayerGameMenu() {
         continue;
       // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
       if (DLLIsMissionMultiPlayable(buffer)) {
-        DLLmprintf((0, "Found a mission: %s\n", buffer));
+        DLLmprintf(0, "Found a mission: %s\n", buffer);
         mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
         strcpy(mi->msn_name, DLLGetMissionName(buffer));
         strcpy(mi->msn_file, buffer);
@@ -1227,7 +1227,7 @@ int StartMultiplayerGameMenu() {
         {
           // Do warp dialog here if needed
           if (-1 != DLLMultiLevelSelection()) {
-            DLLmprintf((0, "Mission loaded successfully!\n"));
+            DLLmprintf(0, "Mission loaded successfully!\n");
             DLLMultiStartServer(1, DLLNetgame->scriptname, teams);
             exit_menu = 1;
             ret = 1;

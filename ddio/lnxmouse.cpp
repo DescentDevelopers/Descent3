@@ -211,7 +211,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.btn = 0;
     mevt.state = true;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 0: Down\n"));
+    //		mprintf(0, "MOUSE Button 0: Down\n");
   } else if (ev->button == 2) {
     DDIO_mouse_state.btn_mask |= MOUSE_RB;
     DIM_buttons.down_count[1]++;
@@ -220,7 +220,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.btn = 1;
     mevt.state = true;
     MB_queue.send(mevt);
-    //     	mprintf((0, "MOUSE Button 1: Down\n"));
+    //     	mprintf(0, "MOUSE Button 1: Down\n");
   }
   else if (ev->button == 3) {
     DDIO_mouse_state.btn_mask |= MOUSE_CB;
@@ -230,7 +230,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.btn = 2;
     mevt.state = true;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 2: Down\n"));
+    //		mprintf(0, "MOUSE Button 2: Down\n");
   }
 
   // buttons 4 and 5 are reserved for the mouse wheel...that's how the engine works...adjust in here.
@@ -243,7 +243,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.btn = 5;
     mevt.state = true;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 5: Down\n"));
+    //		mprintf(0, "MOUSE Button 5: Down\n");
   }
   else if (ev->button == 5) {
     DDIO_mouse_state.btn_mask |= MOUSE_B7;
@@ -253,7 +253,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.btn = 6;
     mevt.state = true;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 6: Down\n"));
+    //		mprintf(0, "MOUSE Button 6: Down\n");
   }
   else if (ev->button == 6) {
     DDIO_mouse_state.btn_mask |= MOUSE_B8;
@@ -263,7 +263,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.btn = 7;
     mevt.state = true;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 7: Down\n"));
+    //		mprintf(0, "MOUSE Button 7: Down\n");
   }
 
   return (0);
@@ -283,7 +283,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.btn = 0;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 0: Up\n"));
+    //		mprintf(0, "MOUSE Button 0: Up\n");
   }
   else if (ev->button == 2) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_RB);
@@ -293,7 +293,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.btn = 1;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 1: Up\n"));
+    //		mprintf(0, "MOUSE Button 1: Up\n");
   }
   else if (ev->button == 3) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_CB);
@@ -303,7 +303,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.btn = 2;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 2: Up\n"));
+    //		mprintf(0, "MOUSE Button 2: Up\n");
 
   }
 
@@ -317,7 +317,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.btn = 5;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 5: Up\n"));
+    //		mprintf(0, "MOUSE Button 5: Up\n");
   }
   else if (ev->button == 5) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_B7);
@@ -327,7 +327,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.btn = 6;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 6: Up\n"));
+    //		mprintf(0, "MOUSE Button 6: Up\n");
   }
   else if (ev->button == 6) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_B8);
@@ -337,7 +337,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.btn = 7;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Button 7: Up\n"));
+    //		mprintf(0, "MOUSE Button 7: Up\n");
   }
 
   return (0);
@@ -370,7 +370,7 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
     mevt.btn = 4;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Scrollwheel: Rolled Up\n"));
+    //		mprintf(0, "MOUSE Scrollwheel: Rolled Up\n");
   } else if (ev->y < 0) { /* Mouse scroll down */
     DDIO_mouse_state.btn_mask |= MOUSE_B6;
     DIM_buttons.down_count[5]++;
@@ -388,7 +388,7 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
     mevt.btn = 5;
     mevt.state = false;
     MB_queue.send(mevt);
-    //		mprintf((0, "MOUSE Scrollwheel: Rolled Down\n"));
+    //		mprintf(0, "MOUSE Scrollwheel: Rolled Down\n");
   }
 
   return 0;

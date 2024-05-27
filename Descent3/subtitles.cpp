@@ -176,13 +176,13 @@ void SubtParseSubtitles(CFILE *file) {
     // starting frame number
     p = parse_int(p, &first_frame);
     if (!p) {
-      mprintf((0, "Couldn't parse first_frame\n"));
+      mprintf(0, "Couldn't parse first_frame\n");
       goto subt_parse_error;
     }
 
     p = parse_int(p, &last_frame);
     if (!p) {
-      mprintf((0, "Couldn't parse last_frame\n"));
+      mprintf(0, "Couldn't parse last_frame\n");
       goto subt_parse_error;
     }
 
@@ -201,7 +201,7 @@ void SubtParseSubtitles(CFILE *file) {
   }
   return;
 subt_parse_error:
-  mprintf((0, "Error Parsing SubTitle File!\n"));
+  mprintf(0, "Error Parsing SubTitle File!\n");
   SubtResetSubTitles();
 }
 
@@ -250,11 +250,11 @@ void SubtInitSubtitles(const char *filename) {
 
   ddio_MakePath(subtitle_path, LocalD3Dir, "movies", subtitle_file, NULL);
 
-  mprintf((0, "Looking for the subtitle file %s\n", subtitle_path));
+  mprintf(0, "Looking for the subtitle file %s\n", subtitle_path);
 
   ifile = cfopen(subtitle_path, "rt");
   if (!ifile) {
-    mprintf((0, "Movie: Couldn't find subtitle file %s\n", subtitle_path));
+    mprintf(0, "Movie: Couldn't find subtitle file %s\n", subtitle_path);
     return;
   }
 

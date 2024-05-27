@@ -129,7 +129,7 @@ void Error(const char *fmt, ...) {
   va_end(arglist);
 
   snprintf(Exit_title_str, sizeof(Exit_title_str), "%s Error", App_title);
-  mprintf((0, "%s\n", Exit_message));
+  mprintf(0, "%s\n", Exit_message);
 
 #ifdef _DEBUG
   int answer;

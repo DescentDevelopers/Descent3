@@ -68,12 +68,12 @@ bool timer_Init(int preemptive, bool force_lores) {
 
   if (force_lores) {
     Timer_use_highres_timer = false;
-    mprintf((0, "Timer: Forcing to Lo-Res Timer\n"));
+    mprintf(0, "Timer: Forcing to Lo-Res Timer\n");
   } else {
     if (timerhi_Init())
-      mprintf((0, "Timer: Hi-Resolution Timer available\n"));
+      mprintf(0, "Timer: Hi-Resolution Timer available\n");
     else
-      mprintf((0, "Timer: Hi-Resolution Timer NOT available\n"));
+      mprintf(0, "Timer: Hi-Resolution Timer NOT available\n");
   }
 
   if (!Timer_firstinit) {
@@ -103,12 +103,12 @@ bool timer_Init(int preemptive, bool force_lores) {
     //@@	Timer_event_id = timeSetEvent(TIMER_CLOCK_RATE, Timer_resolution, timer_Proc, 0, TIME_PERIODIC);
     //@@	if (Timer_event_id == 0) Error("Unable to instantiate the timer procedure.\n");
     //@@
-    //@@	mprintf((0, "Preemptive timer system initialized.\n"));
-    mprintf((0, "No preemptive timer, default to non-preemptive!"));
+    //@@	mprintf(0, "Preemptive timer system initialized.\n");
+    mprintf(0, "No preemptive timer, default to non-preemptive!");
     Int3();
     Timer_preemptive = 0;
   } else {
-    mprintf((0, "Timer system initialized.\n"));
+    mprintf(0, "Timer system initialized.\n");
     Timer_preemptive = 0;
   }
 
@@ -132,7 +132,7 @@ bool timer_Init(int preemptive, bool force_lores) {
 void timer_Close() {
   ASSERT(Timer_initialized);
 
-  //	mprintf((0, "Timer system closed.\n"));
+  //	mprintf(0, "Timer system closed.\n");
 
   if (Timer_use_highres_timer) {
     timerhi_Close();

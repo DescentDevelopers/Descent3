@@ -491,7 +491,7 @@ void CWorldWeaponsDialog::OnAddWeapon()
 	
 	Weapons[weapon_handle].hud_image_handle=bm_handle;
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 
 	if (!anim)
 	{
@@ -549,7 +549,7 @@ void CWorldWeaponsDialog::OnAddWeapon()
 		
 	Weapons[weapon_handle].fire_image_handle=bm_handle;
 
-	mprintf ((0,"Making a copy of this bitmap/model locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/model locally...\n");
 
 	if (!model)
 	{
@@ -615,7 +615,7 @@ void CWorldWeaponsDialog::OnDeleteWeapon()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (Weapons[n].name,PAGETYPE_WEAPON,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -876,7 +876,7 @@ void CWorldWeaponsDialog::OnLoadWeaponAnim()
 		Weapons[n].flags &=~WF_HUD_ANIMATED;
 
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 	
 	if (anim)
 	{
@@ -908,7 +908,7 @@ void CWorldWeaponsDialog::OnSelendokWeaponPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted weapon list, but probably nothing."));
+		mprintf(0,"Possible corrupted weapon list, but probably nothing.");
 		UpdateDialog();
 		return;
 	}
@@ -1538,7 +1538,7 @@ void CWorldWeaponsDialog::OnLoadWeaponDischarge()
 	}
 
 
-	mprintf ((0,"Making a copy of this bitmap/model locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/model locally...\n");
 	
 	
 	if (!model)
@@ -1857,7 +1857,7 @@ void CWorldWeaponsDialog::OnElectricalCheck()
 
 	if (!((Weapons[n].flags & WF_IMAGE_BITMAP) || (Weapons[n].flags & WF_IMAGE_VCLIP)))
 	{
-		mprintf ((0,"The firing image must be a bitmap(not a model) for 'electrical' to work!\n"));
+		mprintf(0,"The firing image must be a bitmap(not a model) for 'electrical' to work!\n");
 		return;
 	}
 
@@ -1957,7 +1957,7 @@ void CWorldWeaponsDialog::OnSprayCheck()
 
 	if (!(Weapons[n].flags & WF_IMAGE_VCLIP))
 	{
-		mprintf ((0,"The firing image must be a bitmap(not a model) for spray to work!\n"));
+		mprintf(0,"The firing image must be a bitmap(not a model) for spray to work!\n");
 		return;
 	}
 

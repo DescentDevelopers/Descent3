@@ -296,7 +296,7 @@ int grfont_Load(const char *fname) {
   if (!ff) {
     return false;
   } else if (ff == (FONTFILE)0xffffffff) {
-    mprintf((0, "Illegal font file: %s.\n", fname));
+    mprintf(0, "Illegal font file: %s.\n", fname);
     return false;
   }
 
@@ -318,10 +318,10 @@ int grfont_Load(const char *fname) {
   }
 
   fnt.brightness = ((fnt.baseline >> 8) / 10.0f);
-
-  //	mprintf((0, "%s font.\n", fname));
-  //	mprintf((0, "  <ht %d>::<min %d>::<max %d>::<base %d>", fnt.height, fnt.min_ascii, fnt.max_ascii,
-  // fnt.baseline));
+/*
+  mprintf(0, "%s font.\n", fname);
+  mprintf(0, "  <ht %d>::<min %d>::<max %d>::<base %d>", fnt.height, fnt.min_ascii, fnt.max_ascii, fnt.baseline);
+*/
   num_char = fnt.max_ascii - fnt.min_ascii + 1;
 
   if (fnt.max_ascii < 'a') {
@@ -333,7 +333,7 @@ int grfont_Load(const char *fname) {
     fnt.char_widths = (uint8_t *)mem_malloc(sizeof(uint8_t) * num_char);
     for (i = 0; i < num_char; i++)
       fnt.char_widths[i] = (uint8_t)READ_FONT_SHORT(ff);
-    //		mprintf((0, "::proportional"));
+    //		mprintf(0, "::proportional");
   } else {
     fnt.char_widths = NULL;
   }
@@ -368,7 +368,7 @@ int grfont_Load(const char *fname) {
 
   if (fnt.flags & FT_COLOR) {
     int off = 0;
-    //		mprintf((0, "::color"));
+    //		mprintf(0, "::color");
     for (i = 0; i < num_char; i++) {
       fnt.char_data[i] = fnt.raw_data + off;
       if (fnt.flags & FT_PROPORTIONAL)
@@ -378,7 +378,7 @@ int grfont_Load(const char *fname) {
     }
   } else { // Monochrome
     uint8_t *ptr = fnt.raw_data;
-    //		mprintf((0, "::mono"));
+    //		mprintf(0, "::mono");
     for (i = 0; i < num_char; i++) {
       fnt.char_data[i] = ptr;
       if (fnt.flags & FT_PROPORTIONAL)
@@ -391,7 +391,7 @@ int grfont_Load(const char *fname) {
   //	Then read in
   CLOSE_FONT(ff);
 
-  //	mprintf((0, "\n"));
+  //	mprintf(0, "\n");
 
   strcpy(Fonts[handle].filename, fname);
   Fonts[handle].references = 1;
@@ -553,7 +553,7 @@ bool grfont_SetTemplate(const char *pathname, const tFontTemplate *ft) {
   if (!ffin) {
     return false;
   } else if (ffin == (FONTFILE)0xffffffff) {
-    mprintf((0, "Illegal font file %s\n", pathname));
+    mprintf(0, "Illegal font file %s\n", pathname);
     return false;
   }
 

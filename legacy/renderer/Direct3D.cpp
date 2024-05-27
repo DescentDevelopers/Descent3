@@ -194,20 +194,20 @@ void d3d_GetCaps() {
   // See if we have separate texture memories
   if (ddHwDesc.dwDevCaps & D3DDEVCAPS_SEPARATETEXTUREMEMORIES) {
     d3d_TextureMemories = true;
-    mprintf((0, "Device has texture memories!\n"));
+    mprintf(0, "Device has texture memories!\n");
   }
 
   // Check to see if this device supports bumpmapping
   if (ddHwDesc.dwTextureOpCaps & D3DTEXOPCAPS_BUMPENVMAP) {
     d3d_CanBumpmap = true;
-    mprintf((0, "Device support bumpmapping!\n"));
+    mprintf(0, "Device support bumpmapping!\n");
   } else {
-    mprintf((0, "Device DOES NOT support bumpmapping!\n"));
+    mprintf(0, "Device DOES NOT support bumpmapping!\n");
   }
 
   if (!FindArg("-bumped")) {
     d3d_CanBumpmap = false;
-    mprintf((0, "Turning off bumpmapping because switch not found.\n"));
+    mprintf(0, "Turning off bumpmapping because switch not found.\n");
   }
 
   // Check if the device supports single pass multiple texture.
@@ -228,9 +228,9 @@ void d3d_GetCaps() {
   }
 
   if (d3d_MultiTexture)
-    mprintf((0, "Device has multitexture caps!\n"));
+    mprintf(0, "Device has multitexture caps!\n");
   else
-    mprintf((0, "Device DOES NOT have multitexture caps!\n"));
+    mprintf(0, "Device DOES NOT have multitexture caps!\n");
 
   // Get triangle caps and check for caps
   LPD3DPRIMCAPS pdpc = &ddHwDesc.dpcTriCaps;
@@ -238,36 +238,36 @@ void d3d_GetCaps() {
   // Check for Z compare caps
   if (pdpc->dwZCmpCaps & D3DPCMPCAPS_LESSEQUAL) {
     d3d_CanZCompare = true;
-    mprintf((0, "Device HAS Z compare caps!\n"));
+    mprintf(0, "Device HAS Z compare caps!\n");
   } else
-    mprintf((0, "Device DOES NOT have Z compare caps!\n"));
+    mprintf(0, "Device DOES NOT have Z compare caps!\n");
 
   // Check if it supports Wbuffering
   if (pdpc->dwRasterCaps & D3DPRASTERCAPS_WBUFFER) {
-    mprintf((0, "Device has Wbuffer!\n"));
+    mprintf(0, "Device has Wbuffer!\n");
     d3d_WBuffer = true;
     UseWBuffer = true;
   } else {
-    mprintf((0, "Device DOES NOT have Wbuffer!\n"));
+    mprintf(0, "Device DOES NOT have Wbuffer!\n");
     d3d_WBuffer = false;
     UseWBuffer = false;
   }
 
   // Check for zbias
   if (pdpc->dwRasterCaps & D3DPRASTERCAPS_ZBIAS) {
-    mprintf((0, "Device has ZBias!\n"));
+    mprintf(0, "Device has ZBias!\n");
     d3d_ZBias = true;
   } else {
-    mprintf((0, "Device DOES NOT have ZBias!\n"));
+    mprintf(0, "Device DOES NOT have ZBias!\n");
     d3d_ZBias = false;
   }
 
   // Check for fog table
   if (pdpc->dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) {
-    mprintf((0, "Device has Fogtable!\n"));
+    mprintf(0, "Device has Fogtable!\n");
     d3d_CanFog = true;
   } else {
-    mprintf((0, "Device DOES NOT have Fogtable!\n"));
+    mprintf(0, "Device DOES NOT have Fogtable!\n");
     d3d_CanFog = false;
   }
 
@@ -277,18 +277,18 @@ void d3d_GetCaps() {
   // Check for mip mapping
   if (pdpc->dwTextureFilterCaps & (D3DPTFILTERCAPS_MIPLINEAR)) {
     d3d_CanMip = true;
-    mprintf((0, "Device has mip map capabilities!\n"));
+    mprintf(0, "Device has mip map capabilities!\n");
   } else {
     d3d_CanMip = false;
-    mprintf((0, "Device DOES NOT have mip map capabilities!\n"));
+    mprintf(0, "Device DOES NOT have mip map capabilities!\n");
   }
 
   // Get the interface to the gamma control
   int ddrval = lpFrontBuffer->QueryInterface(IID_IDirectDrawGammaControl, (LPVOID *)&lpGammaControl);
   if (ddrval != DD_OK)
-    mprintf((0, "D3D_INIT: QueryInterface for gamma failed.\n"));
+    mprintf(0, "D3D_INIT: QueryInterface for gamma failed.\n");
   else {
-    mprintf((0, "Gamma interface detection successful!\n"));
+    mprintf(0, "Gamma interface detection successful!\n");
     d3d_CanGamma = true;
   }
 
@@ -300,9 +300,9 @@ void d3d_GetCaps() {
 
   lpDD->GetCaps(&hcaps, &helcaps);
   if (hcaps.dwCaps2 & DDCAPS2_PRIMARYGAMMA) {
-    mprintf((0, "Device DOES NOT have gamma support.\n"));
+    mprintf(0, "Device DOES NOT have gamma support.\n");
   } else {
-    mprintf((0, "Secondary gamma detection successful!\n"));
+    mprintf(0, "Secondary gamma detection successful!\n");
   }
 
   // Now detect for riva128 (only if wbuffer is not detected for that card)
@@ -312,9 +312,9 @@ void d3d_GetCaps() {
     if (did.dwDeviceId == 0x18 || did.dwDeviceId == 0x19) {
       d3d_IsRiva128 = true;
       // NoLightmaps=true;
-      mprintf((0, "Device IS Riva128!\n"));
+      mprintf(0, "Device IS Riva128!\n");
     } else {
-      mprintf((0, "Device IS NOT Riva128!\n"));
+      mprintf(0, "Device IS NOT Riva128!\n");
     }
   }
 
@@ -330,7 +330,7 @@ void d3d_SetGammaString(float val) {
 
   sprintf(envvalue, "%f", val);
   SetEnvironmentVariable(envstring, envvalue);
-  mprintf((0, "Setting D3D gamma to %f\n", val));
+  mprintf(0, "Setting D3D gamma to %f\n", val);
 }
 
 // Places a device into our global list of 3d devices to choose from
@@ -342,7 +342,7 @@ HRESULT WINAPI d3d_Enumerate3DDevice(LPGUID lpGUID, LPSTR lpDeviceDescription, L
     use_it = 1;
 
   if (use_it) {
-    mprintf((0, "Found 3d device %s: %s\n", lpDeviceName, lpDeviceDescription));
+    mprintf(0, "Found 3d device %s: %s\n", lpDeviceName, lpDeviceDescription);
     d3d_device *d2d = (d3d_device *)lpContext;
     d3d_device *d3d = (d3d_device *)&D3D_devices[Num_d3d_devices++];
 
@@ -371,7 +371,7 @@ HRESULT WINAPI d3d_Enumerate3DDevice(LPGUID lpGUID, LPSTR lpDeviceDescription, L
 BOOL WINAPI d3d_Enumerate2DDevice(LPGUID lpGUID, LPSTR lpDeviceDescription, LPSTR lpDeviceName, LPVOID lpContext) {
   d3d_device *d2d = (d3d_device *)&D2D_devices[Num_d2d_devices++];
 
-  mprintf((0, "Found 2d device %s: %s\n", lpDeviceName, lpDeviceDescription));
+  mprintf(0, "Found 2d device %s: %s\n", lpDeviceName, lpDeviceDescription);
 
   if (lpGUID) {
     memmove(&d2d->guid_2d, lpGUID, sizeof(GUID));
@@ -418,13 +418,13 @@ d3d_device *d3d_PollDevices() {
 
   ddrval = DirectDrawEnumerate(d3d_Enumerate2DDevice, NULL);
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: DirectDrawEnumerate failed.\n"));
+    mprintf(0, "D3D_INIT: DirectDrawEnumerate failed.\n");
     goto D3DError;
   }
 
   // Go through all 2d devices then create their 3d devices to create the total
   // number of 3d devices to to choose from
-  mprintf((0, "Found %d 2d devices...checking for 3d devices.\n", Num_d2d_devices));
+  mprintf(0, "Found %d 2d devices...checking for 3d devices.\n", Num_d2d_devices);
 
   for (i = 0; i < Num_d2d_devices; i++) {
 
@@ -433,21 +433,21 @@ d3d_device *d3d_PollDevices() {
     // Create direct draw surface
     ddrval = DirectDrawCreate(d2d->pguid_2d, &lpDD1, NULL);
     if (ddrval != DD_OK) {
-      mprintf((0, "D3D_INIT: DirectDrawCreate failed.\n"));
+      mprintf(0, "D3D_INIT: DirectDrawCreate failed.\n");
       goto D3DError;
     }
 
     ddrval = lpDD1->QueryInterface(IID_IDirect3D3, (LPVOID *)&lpD3D);
     if (ddrval != DD_OK) {
       lpD3D = NULL;
-      mprintf((0, "D3D_INIT: QueryInterface failed.\n"));
+      mprintf(0, "D3D_INIT: QueryInterface failed.\n");
       goto D3DError;
     }
 
     // Enumerate this 3d device
     ddrval = lpD3D->EnumDevices(d3d_Enumerate3DDevice, d2d);
     if (ddrval != DD_OK) {
-      mprintf((0, "WIN_DD32: D3D enum devices failed. (0x%x)\n", ddrval));
+      mprintf(0, "WIN_DD32: D3D enum devices failed. (0x%x)\n", ddrval);
     }
 
     lpD3D->Release();
@@ -458,11 +458,11 @@ d3d_device *d3d_PollDevices() {
   }
 
   for (i = 0; i < Num_d3d_devices; i++) {
-    mprintf((0, "D3D Device %d: %s\n", i, D3D_devices[i].name));
+    mprintf(0, "D3D Device %d: %s\n", i, D3D_devices[i].name);
   }
 
   if (Num_d3d_devices <= 0) {
-    mprintf((0, "No D3D device found!\n"));
+    mprintf(0, "No D3D device found!\n");
     return NULL;
   }
 
@@ -472,7 +472,7 @@ d3d_device *d3d_PollDevices() {
     if (Num_d3d_devices > 1) {
       char tempbuffer[255];
       int templen = 255;
-      mprintf((0, "More than one D3D device found!\n"));
+      mprintf(0, "More than one D3D device found!\n");
 
       Database->read("RenderingDeviceName", tempbuffer, &templen);
 
@@ -493,7 +493,7 @@ d3d_device *d3d_PollDevices() {
     if (FindArg("-useseconddevice") && Num_d3d_devices > 1)
       use_device = Num_d3d_devices - 1;
 
-    mprintf((0, "Using %s\n", D3D_devices[use_device].name));
+    mprintf(0, "Using %s\n", D3D_devices[use_device].name);
 
     // Use the last device.
     return &D3D_devices[use_device];
@@ -502,7 +502,7 @@ d3d_device *d3d_PollDevices() {
   return NULL;
 
 D3DError:
-  mprintf((0, "Direct3D Polling failed.\n"));
+  mprintf(0, "Direct3D Polling failed.\n");
   return NULL;
 }
 
@@ -536,7 +536,7 @@ int d3d_GetTexClass(int handle, int map_type) {
   else if (w == 32)
     tex_class = 3;
   else {
-    mprintf((0, "Bad class for d3d!\n"));
+    mprintf(0, "Bad class for d3d!\n");
     Int3();
   }
 
@@ -553,8 +553,8 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
   int w, h;
   uint16_t *src_data;
 
-  // mprintf ((0,"Uploading bitmap %d type %d\n",handle,map_type));
-  // mprintf ((0,"Slot=%d handle=%d\n",slot,handle));
+  // mprintf(0,"Uploading bitmap %d type %d\n",handle,map_type);
+  // mprintf(0,"Slot=%d handle=%d\n",slot,handle);
 
   ASSERT(slot != -1);
   ASSERT(slot == handle);
@@ -602,7 +602,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
   if (map_type == MAP_TYPE_BUMPMAP) {
     ddrval = dest_sp->Lock(NULL, &surf_desc, DDLOCK_WAIT, NULL);
     if (ddrval != DD_OK) {
-      mprintf((0, "D3D:Normal upload lock error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+      mprintf(0, "D3D:Normal upload lock error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
       return;
     }
 
@@ -631,7 +631,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
     // ddrval=dest_sp->Lock(NULL,&surf_desc,DDLOCK_WAIT|DDLOCK_WRITEONLY,NULL);
 
     if (ddrval != DD_OK) {
-      mprintf((0, "D3D:Upload lock error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+      mprintf(0, "D3D:Upload lock error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
       return;
     }
 
@@ -681,7 +681,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
       for (int i = 0; i < NUM_MIP_LEVELS; i++) {
         ddrval = upload_sp->Lock(NULL, &surf_desc, DDLOCK_WAIT, NULL);
         if (ddrval != DD_OK) {
-          mprintf((0, "D3D:mip=%d Upload lock error %d! %s\n", i, ddrval, d3d_ErrorString(ddrval)));
+          mprintf(0, "D3D:mip=%d Upload lock error %d! %s\n", i, ddrval, d3d_ErrorString(ddrval));
           return;
         }
 
@@ -710,7 +710,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
 
           ddrval = dest_mipsurf->GetAttachedSurface(&ddsCaps, &dest_mipsurf);
           if (ddrval != DD_OK) {
-            mprintf((0, "Couldn't get attached dest mip surface %d!\n", i));
+            mprintf(0, "Couldn't get attached dest mip surface %d!\n", i);
             return;
           }
           dest_mipsurf->Release();
@@ -721,7 +721,7 @@ void d3d_UploadBitmapToSurface(int handle, int map_type, int slot, int new_uploa
       // Do a non-mipped bitmap
       ddrval = upload_sp->Lock(NULL, &surf_desc, DDLOCK_WAIT, NULL);
       if (ddrval != DD_OK) {
-        mprintf((0, "D3D:Normal upload lock error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+        mprintf(0, "D3D:Normal upload lock error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
         return;
       }
 
@@ -751,7 +751,7 @@ int d3d_CreateTextureFromBitmap(int bm_handle, int map_type) {
   int retval = -1;
   HRESULT ddrval;
 
-  // mprintf ((0,"Creating texture from handle %d type %d\n",bm_handle,map_type));
+  // mprintf(0,"Creating texture from handle %d type %d\n",bm_handle,map_type);
 
   if (map_type == MAP_TYPE_BUMPMAP) {
     ASSERT(GameBumpmaps[bm_handle].cache_slot == -1);
@@ -846,7 +846,7 @@ int d3d_CreateTextureFromBitmap(int bm_handle, int map_type) {
   }
 
   if (ddrval != DD_OK) {
-    mprintf((0, "Creating texture surface failed!\n"));
+    mprintf(0, "Creating texture surface failed!\n");
     return -1;
   }
 
@@ -898,7 +898,7 @@ void d3d_FreeTextureCache() {
     for (i = 0; i < MAX_BITMAPS; i++) {
       if (GameBitmaps[i].cache_slot != -1) {
         if (GameBitmaps[i].cache_slot != i) {
-          mprintf((0, "Error cache slot is %d when it should be %d!\n", GameBitmaps[i].cache_slot, i));
+          mprintf(0, "Error cache slot is %d when it should be %d!\n", GameBitmaps[i].cache_slot, i);
         }
 
         ASSERT(GameBitmaps[i].cache_slot == i);
@@ -957,7 +957,7 @@ int d3d_CreateUploadSurfaces() {
     ddrval = lpDD->CreateSurface(&ddsd, &UploadSurfaces[i], NULL);
 
     if (ddrval != DD_OK) {
-      mprintf((0, "Creating 1555 texture surface failed!\n"));
+      mprintf(0, "Creating 1555 texture surface failed!\n");
       return 0;
     }
   }
@@ -982,7 +982,7 @@ int d3d_CreateUploadSurfaces() {
     ddrval = lpDD->CreateSurface(&ddsd, &Upload4444Surfaces[i], NULL);
 
     if (ddrval != DD_OK) {
-      mprintf((0, "Creating 4444 texture surface failed!\n"));
+      mprintf(0, "Creating 4444 texture surface failed!\n");
       return 0;
     }
   }
@@ -1023,7 +1023,7 @@ int d3d_TextureCacheInit() {
   // Allocate room to hold all our surfaces
   UploadSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(NUM_TEXTURE_CLASSES * sizeof(LPDIRECTDRAWSURFACE4));
   if (UploadSurfaces == NULL) {
-    mprintf((0, "Couldn't allocate memory for UploadSurfaces!\n"));
+    mprintf(0, "Couldn't allocate memory for UploadSurfaces!\n");
 
     rend_SetErrorMessage("Couldn't alloc mem for UploadSurfaces!");
     return 0;
@@ -1032,7 +1032,7 @@ int d3d_TextureCacheInit() {
   // Allocate room to hold all our 4444 surfaces
   Upload4444Surfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(NUM_TEXTURE_CLASSES * sizeof(LPDIRECTDRAWSURFACE4));
   if (Upload4444Surfaces == NULL) {
-    mprintf((0, "Couldn't allocate memory for Upload4444Surfaces!\n"));
+    mprintf(0, "Couldn't allocate memory for Upload4444Surfaces!\n");
 
     rend_SetErrorMessage("Couldn't alloc mem for Upload4444Surfaces!");
     return 0;
@@ -1040,7 +1040,7 @@ int d3d_TextureCacheInit() {
 
   BitmapTextureSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(MAX_BITMAPS * sizeof(LPDIRECTDRAWSURFACE4));
   if (BitmapTextureSurfaces == NULL) {
-    mprintf((0, "Couldn't allocate memory for BitmapTextureSurfaces!\n"));
+    mprintf(0, "Couldn't allocate memory for BitmapTextureSurfaces!\n");
 
     rend_SetErrorMessage("Couldn't alloc mem for BitmapTextureSurfaces!");
     return 0;
@@ -1049,7 +1049,7 @@ int d3d_TextureCacheInit() {
   // Allocate room to hold all our surfaces
   LightmapTextureSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(MAX_LIGHTMAPS * sizeof(LPDIRECTDRAWSURFACE4));
   if (LightmapTextureSurfaces == NULL) {
-    mprintf((0, "Couldn't allocate memory for LightmapTextureSurfaces!\n"));
+    mprintf(0, "Couldn't allocate memory for LightmapTextureSurfaces!\n");
     rend_SetErrorMessage("Couldn't alloc mem for LightmapTextureSurfaces!");
     return 0;
   }
@@ -1057,13 +1057,13 @@ int d3d_TextureCacheInit() {
   if (d3d_CanBumpmap) {
     BumpmapTextureSurfaces = (LPDIRECTDRAWSURFACE4 *)mem_malloc(MAX_BUMPMAPS * sizeof(LPDIRECTDRAWSURFACE4));
     if (BumpmapTextureSurfaces == NULL) {
-      mprintf((0, "Couldn't allocate memory for BumpmapTextureSurfaces!\n"));
+      mprintf(0, "Couldn't allocate memory for BumpmapTextureSurfaces!\n");
       rend_SetErrorMessage("Couldn't alloc mem for BumpmapTextureSurfaces!");
       return 0;
     }
 
     if (!d3d_LoadEnvironmentMap()) {
-      mprintf((0, "couldn't load env map\n"));
+      mprintf(0, "couldn't load env map\n");
       return 0;
     }
   }
@@ -1071,7 +1071,7 @@ int d3d_TextureCacheInit() {
   // Enumerate those texture formats
   lpD3DDevice->EnumTextureFormats(d3d_EnumTexturePixelFormats, 0);
   if (Num_texture_formats < 1) {
-    mprintf((0, "No texture formats available!\n"));
+    mprintf(0, "No texture formats available!\n");
     rend_SetErrorMessage("No valid texture formats available!");
     return 0;
   }
@@ -1090,12 +1090,12 @@ int d3d_TextureCacheInit() {
 
     if (rcount == 5 && gcount == 5 && bcount == 5 && acount == 1) {
       found_format = i;
-      mprintf((1, "Alpha bit mask is %d!\n", pf->dwRGBAlphaBitMask));
+      mprintf(1, "Alpha bit mask is %d!\n", pf->dwRGBAlphaBitMask);
     }
   }
 
   if (found_format == -1) {
-    mprintf((0, "Couldn't find a valid 1555 pixel format!\n"));
+    mprintf(0, "Couldn't find a valid 1555 pixel format!\n");
     rend_SetErrorMessage("Couldn't find a valid 1555 pixel format!  Card doesn't support 1555 format!");
     return 0;
   }
@@ -1116,12 +1116,12 @@ int d3d_TextureCacheInit() {
 
     if (rcount == 4 && gcount == 4 && bcount == 4 && acount == 4) {
       found_format = i;
-      mprintf((1, "Alpha bit mask is %d!\n", pf->dwRGBAlphaBitMask));
+      mprintf(1, "Alpha bit mask is %d!\n", pf->dwRGBAlphaBitMask);
     }
   }
 
   if (found_format == -1) {
-    mprintf((0, "Couldn't find a valid 4444 pixel format!\n"));
+    mprintf(0, "Couldn't find a valid 4444 pixel format!\n");
     rend_SetErrorMessage("Couldn't find a valid 4444 pixel format!  Card doesn't support 1555 format!");
     return 0;
   }
@@ -1138,13 +1138,13 @@ int d3d_TextureCacheInit() {
         if (pf->dwBumpBitCount == 16 && pf->dwBumpDuBitMask == 0x000000ff && pf->dwBumpDvBitMask == 0x0000ff00 &&
             pf->dwBumpLuminanceBitMask == 0) {
           found_format = i;
-          mprintf((0, "Found a suitable bumpmapping format\n"));
+          mprintf(0, "Found a suitable bumpmapping format\n");
         }
       }
     }
 
     if (found_format == -1) {
-      mprintf((0, "Couldn't find a valid bumpmap pixel format!\n"));
+      mprintf(0, "Couldn't find a valid bumpmap pixel format!\n");
       d3d_CanBumpmap = false;
     } else
       Bumpmap_texture_format = TextureFormats[found_format];
@@ -1166,16 +1166,16 @@ int d3d_TextureCacheInit() {
 
     if (pf->dwFourCC == FOURCC_DXT1) {
       found_format = i;
-      mprintf((0, "Compress format: r=%d g=%d b=%d a=%d\n", rcount, gcount, bcount, acount));
-      mprintf((1, "Texture compression alpha bit mask is %d!\n", pf->dwRGBAlphaBitMask));
+      mprintf(0, "Compress format: r=%d g=%d b=%d a=%d\n", rcount, gcount, bcount, acount);
+      mprintf(1, "Texture compression alpha bit mask is %d!\n", pf->dwRGBAlphaBitMask);
     }
   }
 
   if (found_format == -1 || FindArg("-nocompress")) {
-    mprintf((0, "Device doesn't support texture compression!\n"));
+    mprintf(0, "Device doesn't support texture compression!\n");
     d3d_CanCompress = false;
   } else {
-    mprintf((0, "Device DOES support texture compression!\n"));
+    mprintf(0, "Device DOES support texture compression!\n");
     d3d_CanCompress = true;
     Compressed_texture_format = TextureFormats[found_format];
   }
@@ -1280,7 +1280,7 @@ void d3d_SetDefaultStates() {
   if (d3d_WBuffer)
     d3d_SetWBufferDepth(5000);
 
-  mprintf((0, "Direct3D initted to %d x %d\n", D3D_state.screen_width, D3D_state.screen_height));
+  mprintf(0, "Direct3D initted to %d x %d\n", D3D_state.screen_width, D3D_state.screen_height);
 
   Last_texture_bound[0] = -1;
   Last_texture_bound[1] = -1;
@@ -1354,7 +1354,7 @@ TryAgain:
   dd = d3d_PollDevices();
 
   if (!dd) {
-    mprintf((1, "ERROR: No Direct3D devices found!!!"));
+    mprintf(1, "ERROR: No Direct3D devices found!!!");
     rend_SetErrorMessage("No Direct3D devices found!!!");
     return 0;
   }
@@ -1365,7 +1365,7 @@ TryAgain:
   ddrval = DirectDrawCreate(dd->pguid_2d, &lpDD1, NULL);
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: DirectDrawCreate failed.\n"));
+    mprintf(0, "D3D_INIT: DirectDrawCreate failed.\n");
     rend_SetErrorMessage("DirectDrawCreate failed.");
 
     goto D3DError;
@@ -1375,14 +1375,14 @@ TryAgain:
   if (ddrval != DD_OK) {
     lpDD = NULL;
     rend_SetErrorMessage("DirectDrawCreate2 failed.");
-    mprintf((0, "D3D_INIT: DirectDrawCreate2 failed.\n"));
+    mprintf(0, "D3D_INIT: DirectDrawCreate2 failed.\n");
     goto D3DError;
   }
 
   ddrval = lpDD->SetCooperativeLevel(hwnd, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT);
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: SetCooperativeLevel EXCLUSIVE failed.\n D3D_Error=%s\n", d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D_INIT: SetCooperativeLevel EXCLUSIVE failed.\n D3D_Error=%s\n", d3d_ErrorString(ddrval));
     rend_SetErrorMessage("SetCoopLevel EXCULUSIVE failed.");
     goto D3DError;
   }
@@ -1391,13 +1391,13 @@ TryAgain:
   if (D3D_preferred_state.bit_depth != 16 && D3D_preferred_state.bit_depth != 32)
     D3D_preferred_state.bit_depth = 16;
 
-  mprintf((0, "Opening screen with bit-depth of %d.\n", D3D_preferred_state.bit_depth));
+  mprintf(0, "Opening screen with bit-depth of %d.\n", D3D_preferred_state.bit_depth);
 
   ddrval =
       lpDD->SetDisplayMode(D3D_preferred_state.width, D3D_preferred_state.height, D3D_preferred_state.bit_depth, 0, 0);
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: SetDisplayMode failed, trying default!\n"));
+    mprintf(0, "D3D_INIT: SetDisplayMode failed, trying default!\n");
 
     retval = -1;
     D3D_preferred_state.width = 640;
@@ -1407,7 +1407,7 @@ TryAgain:
     ddrval = lpDD->SetDisplayMode(D3D_preferred_state.width, D3D_preferred_state.height, 16, 0, 0);
 
     if (ddrval != DD_OK) {
-      mprintf((0, "D3D_INIT: SetDisplayMode failed.\n"));
+      mprintf(0, "D3D_INIT: SetDisplayMode failed.\n");
       rend_SetErrorMessage("SetDisplayMode failed.");
       goto D3DError;
     }
@@ -1422,7 +1422,7 @@ TryAgain:
 
   ddrval = lpDD->CreateSurface(&ddsd2, &lpFrontBuffer, NULL);
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: CreateSurface (Front) failed.\n"));
+    mprintf(0, "D3D_INIT: CreateSurface (Front) failed.\n");
     rend_SetErrorMessage("CreateSurface (front) failed.");
     goto D3DError;
   }
@@ -1432,7 +1432,7 @@ TryAgain:
 
   ddrval = lpFrontBuffer->GetAttachedSurface(&ddscaps, &lpBackBuffer);
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: GetAttachedSurface (Back) failed. Erorr=%s\n", d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D_INIT: GetAttachedSurface (Back) failed. Erorr=%s\n", d3d_ErrorString(ddrval));
     rend_SetErrorMessage("CreateSurface (back) failed.");
     goto D3DError;
   }
@@ -1441,7 +1441,7 @@ TryAgain:
   ddrval = lpDD->QueryInterface(IID_IDirect3D3, (LPVOID *)&lpD3D);
   if (ddrval != DD_OK) {
     lpD3D = NULL;
-    mprintf((0, "D3D_INIT: QueryInterface failed.\n"));
+    mprintf(0, "D3D_INIT: QueryInterface failed.\n");
     rend_SetErrorMessage("QueryInterface D3D failed.");
     goto D3DError;
   }
@@ -1451,7 +1451,7 @@ TryAgain:
   lpD3D->EnumZBufferFormats(dd->guid_3d, d3d_EnumZPixelFormats, 0);
 
   if (NumZDepths == 0) {
-    mprintf((0, "D3D_INIT: Couldn't find zbuffer format!\n"));
+    mprintf(0, "D3D_INIT: Couldn't find zbuffer format!\n");
     rend_SetErrorMessage("Couldn't find a zbuffer format!");
     goto D3DError;
   }
@@ -1476,7 +1476,7 @@ TryAgain:
     if (found_format == -1)
       found_format = 0;
     else
-      mprintf((0, "Found a 32bit zbuffer.\n"));
+      mprintf(0, "Found a 32bit zbuffer.\n");
   }
 
   ddsd2.ddpfPixelFormat = ZPixFormats[found_format];
@@ -1485,13 +1485,13 @@ TryAgain:
   ddsd2.ddsCaps.dwCaps = DDSCAPS_ZBUFFER | DDSCAPS_VIDEOMEMORY;
   ddrval = lpDD->CreateSurface(&ddsd2, &lpZBuffer, NULL);
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D_INIT: Create Zbuffer failed.\nError=%s\n", d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D_INIT: Create Zbuffer failed.\nError=%s\n", d3d_ErrorString(ddrval));
     rend_SetErrorMessage("Creating zbuffer failed.");
     goto D3DError;
   }
 
   if (lpBackBuffer->AddAttachedSurface(lpZBuffer) != DD_OK) {
-    mprintf((0, "D3D_INIT: Attach Zbuffer failed.\n"));
+    mprintf(0, "D3D_INIT: Attach Zbuffer failed.\n");
     rend_SetErrorMessage("Attach ZBuffer failed.");
     goto D3DError;
   }
@@ -1501,7 +1501,7 @@ TryAgain:
 
   if (ddrval != DD_OK) {
     rend_SetErrorMessage("Create D3D Device3 failed.");
-    mprintf((0, "D3D_INIT: Create D3D Device3 failed. %s\n", d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D_INIT: Create D3D Device3 failed. %s\n", d3d_ErrorString(ddrval));
 
     if (retried == false) {
       retried = true;
@@ -1521,14 +1521,14 @@ TryAgain:
   ddrval = lpD3D->CreateViewport(&lpViewport, NULL);
   if (ddrval != DD_OK) {
     rend_SetErrorMessage("CreateViewport failed.");
-    mprintf((0, "D3D_INIT: CreateViewport failed.\n"));
+    mprintf(0, "D3D_INIT: CreateViewport failed.\n");
     goto D3DError;
   }
 
   ddrval = lpD3DDevice->AddViewport(lpViewport);
   if (ddrval != DD_OK) {
     rend_SetErrorMessage("AddViewport failed.");
-    mprintf((0, "D3D_INIT: AddViewport failed.\n"));
+    mprintf(0, "D3D_INIT: AddViewport failed.\n");
     goto D3DError;
   }
 
@@ -1554,14 +1554,14 @@ TryAgain:
 
   if (ddrval != DD_OK) {
     rend_SetErrorMessage("SetViewport failed.");
-    mprintf((0, "D3D_INIT: SetViewport failed.\n"));
+    mprintf(0, "D3D_INIT: SetViewport failed.\n");
     goto D3DError;
   }
 
   ddrval = lpD3DDevice->SetCurrentViewport(lpViewport);
   if (ddrval != DD_OK) {
     rend_SetErrorMessage("SetCurrentViewport failed.");
-    mprintf((0, "D3D_INIT: SetCurrentViewport failed.\n"));
+    mprintf(0, "D3D_INIT: SetCurrentViewport failed.\n");
     goto D3DError;
   }
 
@@ -1571,7 +1571,7 @@ TryAgain:
     goto D3DError;
   }
 
-  mprintf((0, "Direct3D Initialized OK!\n"));
+  mprintf(0, "Direct3D Initialized OK!\n");
 
   d3d_SetDefaultStates();
 
@@ -1580,7 +1580,7 @@ TryAgain:
   return retval;
 
 D3DError:
-  mprintf((0, "Direct3D Initialization failed.\n"));
+  mprintf(0, "Direct3D Initialization failed.\n");
 
   d3d_Close();
   Int3();
@@ -1635,12 +1635,12 @@ void d3d_Close() {
 
     ddrval = lpDD->RestoreDisplayMode();
     if (ddrval != DD_OK) {
-      mprintf((0, "RestoreDisplayMode failed (0x%x)\n", ddrval));
+      mprintf(0, "RestoreDisplayMode failed (0x%x)\n", ddrval);
     }
 
     ddrval = lpDD->SetCooperativeLevel(hwnd, DDSCL_NORMAL);
     if (ddrval != DD_OK) {
-      mprintf((0, "WIN_DD32: SetCooperativeLevel W Failed (0x%x)\n", ddrval));
+      mprintf(0, "WIN_DD32: SetCooperativeLevel W Failed (0x%x)\n", ddrval);
     }
 
     lpDD1->Release();
@@ -1690,7 +1690,7 @@ int d3d_GetAlphaMultiplier() {
   case AT_SPECULAR:
     return 255;
   default:
-    mprintf((0, "Unrecognized alpha type=%d\n", D3D_state.cur_alpha_type));
+    mprintf(0, "Unrecognized alpha type=%d\n", D3D_state.cur_alpha_type);
     // Int3();		// no type defined,get jason
     return 255;
   }
@@ -1764,7 +1764,7 @@ int d3d_MakeBitmapCurrent(int handle, int map_type, int tn) {
   if (Last_texture_bound[tn] != texnum) {
     ddrval = sp->QueryInterface(IID_IDirect3DTexture2, (void **)&tex_interface);
     if (ddrval != S_OK) {
-      mprintf((0, "D3D:MakeBitmapCurrent error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+      mprintf(0, "D3D:MakeBitmapCurrent error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
       return 0;
     }
 
@@ -1953,7 +1953,7 @@ void d3d_DrawFlatPolygon(g3Point **p, int nv) {
                                  (LPVOID)TVerts, nv, D3DDP_DONOTCLIP | D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS);
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D:DrawFlatPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D:DrawFlatPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
   }
 }
 
@@ -2033,22 +2033,22 @@ int d3d_DrawBumpmappedPolygon(g3Point **p, int nv, int handle) {
   }
 
   if (!d3d_MakeBitmapCurrent(handle, MAP_TYPE_BITMAP, 0)) {
-    mprintf((0, "Couldn't make the map current!\n"));
+    mprintf(0, "Couldn't make the map current!\n");
     return 0;
   }
 
   if (!d3d_MakeBitmapCurrent(Bump_map, MAP_TYPE_BUMPMAP, 1)) {
-    mprintf((0, "could not set bump mapping blend modes\n"));
+    mprintf(0, "could not set bump mapping blend modes\n");
     return 0;
   }
 
   if (d3d_EnvironmentMap == -1) {
-    mprintf((0, "Couldn't make environment map!\n"));
+    mprintf(0, "Couldn't make environment map!\n");
     return 0;
   }
 
   if (!d3d_MakeBitmapCurrent(d3d_EnvironmentMap, MAP_TYPE_BITMAP, 2)) {
-    mprintf((0, "Couldn't set environment map!\n"));
+    mprintf(0, "Couldn't set environment map!\n");
     return 0;
   }
 
@@ -2062,7 +2062,7 @@ int d3d_DrawBumpmappedPolygon(g3Point **p, int nv, int handle) {
                                  (LPVOID)MTVerts, nv, D3DDP_DONOTCLIP | D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS);
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D:DrawBumpmappedPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D:DrawBumpmappedPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
   }
 
   return 1;
@@ -2146,12 +2146,12 @@ void d3d_DrawMultiTexturePolygon(g3Point **p, int nv, int handle, int map_type) 
   }
 
   if (!d3d_MakeBitmapCurrent(handle, map_type, 0)) {
-    mprintf((0, "Couldn't make the map current!\n"));
+    mprintf(0, "Couldn't make the map current!\n");
     return;
   }
 
   if (!d3d_MakeBitmapCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 1)) {
-    mprintf((0, "Couldn't make the map current!\n"));
+    mprintf(0, "Couldn't make the map current!\n");
     return;
   }
 
@@ -2164,7 +2164,7 @@ void d3d_DrawMultiTexturePolygon(g3Point **p, int nv, int handle, int map_type) 
                                  (LPVOID)MTVerts, nv, D3DDP_DONOTCLIP | D3DDP_DONOTLIGHT | D3DDP_DONOTUPDATEEXTENTS);
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D:DrawPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D:DrawPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
   }
 }
 
@@ -2179,7 +2179,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
     ASSERT(Overlay_type == OT_NONE);
 
     if (!d3d_DrawBumpmappedPolygon(p, nv, handle)) {
-      mprintf((0, "error in d3d_DrawBumpmappedPolygon\n"));
+      mprintf(0, "error in d3d_DrawBumpmappedPolygon\n");
     }
 
     rend_SetBumpmapReadyState(0, 0);
@@ -2284,7 +2284,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
   }
 
   if (!d3d_MakeBitmapCurrent(handle, map_type, 0)) {
-    mprintf((0, "Couldn't make the map current!\n"));
+    mprintf(0, "Couldn't make the map current!\n");
     return;
   }
 
@@ -2308,7 +2308,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
         d3d_SetAlphaType(AT_LIGHTMAP_BLEND_SATURATE);
 
       if (!d3d_MakeBitmapCurrent(Overlay_map, MAP_TYPE_LIGHTMAP, 0)) {
-        mprintf((0, "Couldn't make the map current!\n"));
+        mprintf(0, "Couldn't make the map current!\n");
         return;
       }
 
@@ -2333,7 +2333,7 @@ void d3d_DrawPolygon(int handle, g3Point **p, int nv, int map_type) {
   }
 
   if (ddrval != DD_OK) {
-    mprintf((0, "D3D:DrawPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D:DrawPolygon error %d! %s\n", ddrval, d3d_ErrorString(ddrval));
   }
 }
 
@@ -2355,7 +2355,7 @@ void d3d_BeginFrame(int x1, int y1, int x2, int y2, int clear_flags) {
 
   ddrval = lpD3DDevice->BeginScene();
   if (ddrval != D3D_OK) {
-    mprintf((0, "D3D:Failed to begin scene!\n%s\n", d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D:Failed to begin scene!\n%s\n", d3d_ErrorString(ddrval));
     return;
   }
 
@@ -2385,7 +2385,7 @@ void d3d_EndFrame() {
   HRESULT ddrval;
   ddrval = lpD3DDevice->EndScene();
   if (ddrval != D3D_OK) {
-    mprintf((0, "D3D:Failed to end scene!\n%s\n", d3d_ErrorString(ddrval)));
+    mprintf(0, "D3D:Failed to end scene!\n%s\n", d3d_ErrorString(ddrval));
     return;
   }
 
@@ -2414,13 +2414,13 @@ TryFlipAgain:
     ddrval = lpFrontBuffer->Flip(NULL, NULL);
 
   if (ddrval == DDERR_SURFACELOST) {
-    mprintf((0, "Front surface lost... attempting to restore...\n"));
+    mprintf(0, "Front surface lost... attempting to restore...\n");
     Sleep(500); // Wait 1/2 second
     goto TryFlipAgain;
   }
 /*else if (ddrval != DD_OK )
 {
-        mprintf((0,"D3D:Fullscreen flip failed! %s\n",d3d_ErrorString(ddrval) ));
+        mprintf(0,"D3D:Fullscreen flip failed! %s\n",d3d_ErrorString(ddrval) );
 }*/
 
 // Print stats from the current frame
@@ -2428,10 +2428,10 @@ TryFlipAgain:
   int i;
   RTP_INCRVALUE(texture_uploads, D3D_uploads);
   RTP_INCRVALUE(polys_drawn, D3D_polys_drawn);
-  mprintf_at((1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d    ", D3D_uploads, D3D_polys_drawn, D3D_verts_processed));
-  mprintf_at((1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", D3D_sets_this_frame[0], D3D_sets_this_frame[1],
-              D3D_sets_this_frame[2], D3D_sets_this_frame[3]));
-  mprintf_at((1, 3, 0, "Sets= 4:%d   5:%d  ", D3D_sets_this_frame[4], D3D_sets_this_frame[5]));
+  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d    ", D3D_uploads, D3D_polys_drawn, D3D_verts_processed);
+  mprintf_at(1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", D3D_sets_this_frame[0], D3D_sets_this_frame[1],
+              D3D_sets_this_frame[2], D3D_sets_this_frame[3]);
+  mprintf_at(1, 3, 0, "Sets= 4:%d   5:%d  ", D3D_sets_this_frame[4], D3D_sets_this_frame[5]);
   for (i = 0; i < 8; i++)
     D3D_sets_this_frame[i] = 0;
 #endif
@@ -2943,7 +2943,7 @@ void d3d_SetMipState(int8_t state) {
 int d3d_SetPreferredState(renderer_preferred_state *pref_state) {
   int retval = 1;
   renderer_preferred_state old_state = D3D_preferred_state;
-  mprintf((0, "In D3d_SetPreferredState\n"));
+  mprintf(0, "In D3d_SetPreferredState\n");
 
   D3D_preferred_state = *pref_state;
 
@@ -2993,7 +2993,7 @@ void d3d_SetGammaValue(float val) {
   if (!d3d_CanGamma)
     return;
 
-  mprintf((0, "Setting gamma to %f\n", val));
+  mprintf(0, "Setting gamma to %f\n", val);
 
   DDGAMMARAMP rampvals;
 
@@ -3013,7 +3013,7 @@ void d3d_SetGammaValue(float val) {
   }
 
   HRESULT rval = lpGammaControl->SetGammaRamp(0, &rampvals);
-  mprintf((0, "Gamma return val is %d (%x) (%s)\n", rval, rval, d3d_ErrorString(rval)));
+  mprintf(0, "Gamma return val is %d (%x) (%s)\n", rval, rval, d3d_ErrorString(rval));
 }
 
 // Gets the current state of the renderer
@@ -3076,7 +3076,7 @@ int d3d_lfb_locked = 0;
 // Locks the linear frame buffer for application access
 void d3d_GetLFBLock(renderer_lfb *lfb) {
   if (d3d_lfb_locked != 0) {
-    mprintf((0, "ERROR!!! You are trying to get an lfb lock and there already is one!\n"));
+    mprintf(0, "ERROR!!! You are trying to get an lfb lock and there already is one!\n");
     lfb->data = NULL;
     return;
   }
@@ -3103,7 +3103,7 @@ void d3d_GetLFBLock(renderer_lfb *lfb) {
 // Releases the previous LFB lock
 void d3d_ReleaseLFBLock(renderer_lfb *lfb) {
   if (d3d_lfb_locked != 1) {
-    mprintf((0, "ERROR!!! You are trying to release an LFB lock and there is none!\n"));
+    mprintf(0, "ERROR!!! You are trying to release an LFB lock and there is none!\n");
     return;
   }
 
@@ -3307,7 +3307,7 @@ void d3d_Screenshot(int bm_handle) {
     // Release the lock
     lpFrontBuffer->Unlock(NULL);
   } else {
-    mprintf((0, "Couldn't get a lock to d3d front buffer!\n"));
+    mprintf(0, "Couldn't get a lock to d3d front buffer!\n");
     Int3();
   }
 }

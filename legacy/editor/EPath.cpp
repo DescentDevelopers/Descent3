@@ -106,7 +106,7 @@ int AllocGamePath ()
 			GamePaths[i].flags=0;
 
 			GamePaths[i].pathnodes=(node *) mem_malloc (MAX_NODES_PER_PATH * sizeof(node));
-			mprintf((0, "Path %d got some\n", i));
+			mprintf(0, "Path %d got some\n", i);
 			
 			Num_game_paths++;
 			return i;
@@ -567,7 +567,7 @@ void DrawNumber (int num,vector pos,float size)
 	int num_numbers = log10(num) + 1;
 	if (num_numbers > 10)
 	{
-		mprintf((0, "Cannot represent a number with over 10 digits\n"));
+		mprintf(0, "Cannot represent a number with over 10 digits\n");
 		Int3();
 		return;
 	}

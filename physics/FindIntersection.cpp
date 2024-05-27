@@ -1220,8 +1220,12 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
   // Is the initial p0 position an intersection?  If so, warn us and collide immediately.
   if (point_to_center_vec * point_to_center_vec < sphere_rad * sphere_rad) {
     if (f_correcting) {
-      // chrishack		mprintf((0, "FVI WARNING: Start point is inside of a checked sphere %f %f\n",
-      // point_to_center_vec*point_to_center_vec, sphere_rad*sphere_rad));
+/*
+      // chrishack
+      mprintf(0, "FVI WARNING: Start point is inside of a checked sphere %f %f\n",
+              point_to_center_vec * point_to_center_vec,
+              sphere_rad * sphere_rad);
+*/
       // chrishack this movement intersection fix is a hack...  How do we do correct cylinder/vector interestion?
       vector n_ptc = point_to_center_vec;
       vm_NormalizeVector(&n_ptc);
@@ -1368,7 +1372,7 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
           cole_dist[i] = vector_len3d * t[i];
           inte[i] = *ep0 + ((ivertex[i] - *ep0) * edgevec) * edgevec;
           valid_hit = 1;
-          /// mprintf((0, "%f,%f,%f to %f,%f, %f\n", XYZ(p0), XYZ(p1)));
+          /// mprintf(0, "%f,%f,%f to %f,%f, %f\n", XYZ(p0), XYZ(p1));
         } else {
           valid_t[i] = 0;
         }
@@ -1381,7 +1385,7 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
       t[2] = cole_dist[2] / vector_len3d;
       valid_t[2] = 1;
       valid_hit = 1;
-      // mprintf((0, "Sphere %f,%f,%f to %f,%f, %f\n", XYZ(p0), XYZ(p1)));
+      // mprintf(0, "Sphere %f,%f,%f to %f,%f, %f\n", XYZ(p0), XYZ(p1));
       d_vec = *ep1 - ivertex[2];
       vm_NormalizeVector(&d_vec);
       inte[2] = ivertex[2] + rad * (d_vec);
@@ -1420,7 +1424,7 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
     *wall_norm = *intp - *colp;
     vm_NormalizeVector(wall_norm);
 
-    // mprintf((0, "We hit at %f,%f,%f \nwith %f,%f,%f on face\n", XYZ(intp), XYZ(colp)));
+    // mprintf(0, "We hit at %f,%f,%f \nwith %f,%f,%f on face\n", XYZ(intp), XYZ(colp));
 
     return 1;
   } else {
@@ -1612,7 +1616,7 @@ int check_sphere_to_face(vector *colp, vector *intp, float *col_dist, vector *wa
 
   // If we are inside edgemask is 0, we hit the face.
   if (edgemask == 0) {
-    //		mprintf((0, "CSTF Hit Face\n"));
+    //		mprintf(0, "CSTF Hit Face\n");
     *col_dist = vm_VectorDistance(p0, intp);
     *wall_norm = *face_normal;
     return IT_FACE;
@@ -1661,7 +1665,7 @@ int check_sphere_to_face(vector *colp, vector *intp, float *col_dist, vector *wa
            cur_dist = edgevec * checkvec;
            if(cur_dist >= 0 && cur_dist <= edgelen) {
 
-//			mprintf((0, "Hit edge\n"));
+//			mprintf(0, "Hit edge\n");
 
                    *wall_norm = *intp - closest_point;
                    vm_NormalizeVector(wall_norm);
@@ -1675,7 +1679,7 @@ int check_sphere_to_face(vector *colp, vector *intp, float *col_dist, vector *wa
            else closest_point = *v1;
            if(!check_vector_to_sphere_1(intp, col_dist, p0, p1, &closest_point, rad, 1)) return IT_NONE;
 
-//		mprintf((0, "Hit point\n"));
+//		mprintf(0, "Hit point\n");
 
            *wall_norm = *intp - closest_point;
            vm_NormalizeVector(wall_norm);
@@ -1718,7 +1722,7 @@ int check_line_to_face(vector *newp, vector *colp, float *col_dist, vector *wall
   //	if (rad != 0.0)
   //		*colp += *face_normal*(-rad);
 
-  //	mprintf((0, "Check line to face: segment %d, side %d\n", seg - Segments, side));
+  //	mprintf(0, "Check line to face: segment %d, side %d\n", seg - Segments, side);
 
   // We know that we hit the plane, but did we hit the face (in bounds)
   return check_sphere_to_face(colp, newp, col_dist, wall_norm, p0, p1, face_normal, nv, rad, vertex_ptr_list);
@@ -1787,7 +1791,7 @@ int check_vector_to_object(vector *intp, float *col_dist, vector *p0, vector *p1
 #ifdef _DEBUG
         if (Physics_player_verbose) {
           if (Player_object == &Objects[fvi_objnum]) {
-            mprintf((0, "FVI: Earily exit on %d\n", OBJNUM(still_obj)));
+            mprintf(0, "FVI: Earily exit on %d\n", OBJNUM(still_obj));
           }
         }
 #endif
@@ -1803,9 +1807,9 @@ int check_vector_to_object(vector *intp, float *col_dist, vector *p0, vector *p1
   if (total_size <= 0.0f) {
 #ifdef _DEBUG
     if (fvi_objnum >= 0)
-      mprintf((0, "Get Chris: type %d and type %d are zero radius\n", still_obj->type, Objects[fvi_objnum].type));
+      mprintf(0, "Get Chris: type %d and type %d are zero radius\n", still_obj->type, Objects[fvi_objnum].type);
     else
-      mprintf((0, "Get Chris: A non-object tried to hit a zero radii object of type %d\n", still_obj->type));
+      mprintf(0, "Get Chris: A non-object tried to hit a zero radii object of type %d\n", still_obj->type);
 #endif
     return 0;
   }
@@ -2345,7 +2349,7 @@ internal_try_again:
     new_pos.x -= 10000000.0f;
     min_xyz.x -= 10000000.0f;
   }
-  //	mprintf((0, "Checking room %d ", ROOMNUM(cur_room)));
+  //	mprintf(0, "Checking room %d ", ROOMNUM(cur_room));
 
   // sort shit
   uint8_t msector = 0;
@@ -2445,7 +2449,7 @@ internal_try_again:
 
   if (closest_hit_type != HIT_WALL) {
     f_in_room = false;
-    //		mprintf((0, " in room bool = %d, hit_type = %d\n", (int) f_in_room, closest_hit_type));
+    //		mprintf(0, " in room bool = %d, hit_type = %d\n", (int) f_in_room, closest_hit_type);
   }
 
   if (!f_in_room && !try_again) {
@@ -2553,9 +2557,12 @@ void make_trigger_face_list(int last_sim_faces) {
 
     for (count = 0; count < cur_room->faces[i].num_verts; count++)
       vertex_ptr_list[count] = &cur_room->verts[cur_room->faces[i].face_verts[count]];
-
-    //		mprintf((0, "FVI:In trigger %f to %f crossed %f\n", fvi_query_ptr->p0->z, fvi_hit_data_ptr->hit_pnt.z,
-    // vertex_ptr_list[0]->z));
+/*
+    mprintf(0, "FVI:In trigger %f to %f crossed %f\n",
+            fvi_query_ptr->p0->z,
+            fvi_hit_data_ptr->hit_pnt.z,
+            vertex_ptr_list[0]->z);
+*/
 
     face_normal = cur_room->faces[i].normal;
 
@@ -2564,7 +2571,7 @@ void make_trigger_face_list(int last_sim_faces) {
                            &face_normal, vertex_ptr_list, cur_room->faces[i].num_verts, 0.0f);
 
     if (face_hit_type) {
-      //			mprintf((0, "FVI:hit trigger\n"));
+      //			mprintf(0, "FVI:hit trigger\n");
       Fvi_recorded_faces[num_real_collisions].face_index = i;
       Fvi_recorded_faces[num_real_collisions++].room_index = Fvi_recorded_faces[x].room_index;
     }
@@ -2622,8 +2629,11 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
 #ifndef NED_PHYSICS
   if (Tracking_FVI) {
-    mprintf((0, "Track FVI - Ray %d, thisobjnum=%d, startroom=%d, rad=%f\n", FVI_counter, fq->thisobjnum, fq->startroom,
-             fq->rad));
+    mprintf(0, "Track FVI - Ray %d, thisobjnum=%d, startroom=%d, rad=%f\n",
+            FVI_counter,
+            fq->thisobjnum,
+            fq->startroom,
+            fq->rad);
   }
 #endif
 
@@ -2662,8 +2672,8 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
   fvi_movement_delta = *fq->p1 - *fq->p0;
 
-  // mprintf((0, "FVI:----New search----\n"));
-  // mprintf((0, "FVI: P0 is %f, %f, %f\n", XYZ(fq->p0)));
+  // mprintf(0, "FVI:----New search----\n");
+  // mprintf(0, "FVI: P0 is %f, %f, %f\n", XYZ(fq->p0));
   if (fq->flags & FQ_NEW_RECORD_LIST) {
     Fvi_num_recorded_faces = 0;
   }
@@ -2769,14 +2779,13 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
       for (i = 0; i < num_subdivisions; i++) {
         fvi_new_query.startroom = GetTerrainRoomFromPos(&new_p0);
 
-        //				mprintf((0, "S %d F %f,%f,%f to %f,%f,%f\n", i, XYZ(&new_p0), XYZ(&new_p1)));
+        //				mprintf(0, "S %d F %f,%f,%f to %f,%f,%f\n", i, XYZ(&new_p0), XYZ(&new_p1));
         s_hit_type = fvi_FindIntersection(&fvi_new_query, &fvi_new_hit_data, true);
 
         fvi_new_query.flags &= (~FQ_NEW_RECORD_LIST);
 
         if (s_hit_type != HIT_NONE) {
-          //					mprintf((0, "Hit %d at %f, %f, %f\n", s_hit_type,
-          // XYZ(&fvi_new_hit_data.hit_pnt)));
+          //mprintf(0, "Hit %d at %f, %f, %f\n", s_hit_type, XYZ(&fvi_new_hit_data.hit_pnt));
           break;
         }
 
@@ -2858,7 +2867,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
           hit_data->hit_type[0] = HIT_OUT_OF_TERRAIN_BOUNDS;
         }
       } else if (!f_found_room) {
-        //				mprintf((0, "Attempting to patch\n"));
+        //				mprintf(0, "Attempting to patch\n");
         for (i = 0; i < fvi_num_rooms_visited && !f_found_room; i++) {
           if (!(Rooms[fvi_rooms_visited[i]].flags & RF_EXTERNAL))
             if (fvi_QuickRoomCheck(&hit_data->hit_pnt, &Rooms[fvi_rooms_visited[i]]), true) {
@@ -3038,13 +3047,13 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
                                   (obj->orient.fvec * pm->maxs.z);
 
 
-//	mprintf((0, "START\n"));
+//	mprintf(0, "START\n");
         for(i = 0; i < 8; i++)
         {
                 verts[i] += *new_pos;
-//		mprintf((0, "%f %f %f\n", XYZ(&verts[i])));
+//		mprintf(0, "%f %f %f\n", XYZ(&verts[i]));
         }
-//	mprintf((0, "END\n"));
+//	mprintf(0, "END\n");
 
         norms[0] = obj->orient.rvec;
         norms[1] = obj->orient.fvec;
@@ -3096,7 +3105,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
                 if((found) && (!check_point_to_face(&plane_pnt, face_normal, nv, vertex_ptr_list)))
                 {
                         // we hit it
-//			mprintf((0, "BBOX Collided with a plane\n"));
+//			mprintf(0, "BBOX Collided with a plane\n");
                         if(fast_exit)
                                 return true;
 
@@ -3158,7 +3167,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
                                 if (!check_point_to_face(&plane_pnt, &norms[j], 4, bbox_vertex_ptr_list))
                                 {
                                         // we hit it
-        //				mprintf((0, "BBOX Collided with a plane\n"));
+        //				mprintf(0, "BBOX Collided with a plane\n");
                                         if(fast_exit)
                                                 return true;
                                         int_faces |= (0x01 << j);
@@ -3310,7 +3319,7 @@ bool BBoxPlaneIntersection(bool fast_exit, vector *collision_point, vector *coll
     *collision_point /= (float)(num_int_box);
     *collision_normal = xxx_normal;
 
-    //		mprintf((0, "BBox %d hits\n", num_int_box));
+    //		mprintf(0, "BBox %d hits\n", num_int_box);
 
     return true;
   }
@@ -3357,9 +3366,9 @@ void check_hit_obj(int objnum) {
 #ifdef _DEBUG
           if (Physics_player_verbose) {
             if (OBJNUM(Player_object) == objnum && m_obj_index != -1) {
-              mprintf((0, "FVI: %d AABB with player\n", m_obj_index));
+              mprintf(0, "FVI: %d AABB with player\n", m_obj_index);
             } else if (Player_object == m_obj) {
-              mprintf((0, "FVI: Player AABB with %d\n", objnum));
+              mprintf(0, "FVI: Player AABB with %d\n", objnum);
             }
           }
 #endif
@@ -3598,7 +3607,7 @@ void check_hit_obj(int objnum) {
               } break;
 
               default: {
-                mprintf((0, "Collision of type %d is not programmed yet", collision_type));
+                mprintf(0, "Collision of type %d is not programmed yet", collision_type);
               } break;
               }
             } else {
@@ -3606,7 +3615,7 @@ void check_hit_obj(int objnum) {
 #ifdef _DEBUG
               if (Physics_player_verbose) {
                 if (OBJNUM(Player_object) == objnum || Player_object == m_obj) {
-                  mprintf((0, "Related\n"));
+                  mprintf(0, "Related\n");
                 }
               }
 #endif
@@ -3617,7 +3626,7 @@ void check_hit_obj(int objnum) {
 #ifdef _DEBUG
             if (Physics_player_verbose) {
               if (OBJNUM(Player_object) == objnum || Player_object == m_obj) {
-                mprintf((0, "Ignore list\n"));
+                mprintf(0, "Ignore list\n");
               }
             }
 #endif
@@ -3631,7 +3640,7 @@ void check_hit_obj(int objnum) {
       if (Physics_player_verbose) {
         if (objnum != m_obj_index) {
           if (OBJNUM(Player_object) == objnum || Player_object == m_obj) {
-            mprintf((0, "Result nothing %d %d\n", objnum, m_obj_index));
+            mprintf(0, "Result nothing %d %d\n", objnum, m_obj_index);
           }
         }
       }
@@ -3643,7 +3652,7 @@ void check_hit_obj(int objnum) {
 #ifdef _DEBUG
     if (Physics_player_verbose) {
       if (OBJNUM(Player_object) == objnum || Player_object == m_obj) {
-        mprintf((0, "Dead %d %d\n", objnum, m_obj_index));
+        mprintf(0, "Dead %d %d\n", objnum, m_obj_index);
       }
     }
 #endif
@@ -3950,77 +3959,76 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
               check_line_to_face(&hit_point, &colp, &cur_dist, &wall_norm, fvi_query_ptr->p0,
                                  &fvi_hit_data_ptr->hit_pnt, &face_normal, vertex_ptr_list, 3, fvi_query_ptr->rad);
         }
+/*
+        if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) {
+          mprintf(0, "Y = %f\n", Objects[fvi_query_ptr->thisobjnum].pos.y);
+        }
+*/
 
-        //				if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) mprintf((0, "Y =
-        //%f\n", Objects[fvi_query_ptr->thisobjnum].pos.y));
-        //
 
         // chrisnote - closest hit should be tracked...  So, we can call BBPI once with
         // false and all other times with true for fast exit.
-        /*				if(this_obj && this_obj->type == OBJ_CLUTTER)
-                                        {
-                                                if(!BBoxPlaneIntersection(true, &fvi_hit_data_ptr->hit_face_pnt[0],
-        &fvi_hit_data_ptr->hit_wallnorm[0], &Objects[fvi_query_ptr->thisobjnum], fvi_query_ptr->p0, 3, vertex_ptr_list,
-        &face_normal, fvi_query_ptr->o_orient, fvi_query_ptr->o_rotvel, fvi_query_ptr->o_velocity)) ASSERT(1);
+#if 0
+        if (this_obj && this_obj->type == OBJ_CLUTTER) {
+          if (!BBoxPlaneIntersection(true, &fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0],
+                                     &Objects[fvi_query_ptr->thisobjnum], fvi_query_ptr->p0, 3, vertex_ptr_list,
+                                     &face_normal, fvi_query_ptr->o_orient, fvi_query_ptr->o_rotvel,
+                                     fvi_query_ptr->o_velocity))
+            ASSERT(1);
 
-                                                if(fvi_hit_data_ptr->hit_type[0] == HIT_NONE &&
-                                                        BBoxPlaneIntersection(false, &fvi_hit_data_ptr->hit_face_pnt[0],
-        &fvi_hit_data_ptr->hit_wallnorm[0], &Objects[fvi_query_ptr->thisobjnum], &fvi_hit_data_ptr->hit_pnt, 3,
-        vertex_ptr_list, &face_normal, &fvi_hit_data_ptr->hit_orient, &fvi_hit_data_ptr->hit_rotvel,
-        &fvi_hit_data_ptr->hit_velocity))
-                                                {
-                                                        float hit_dist = 0.0;
-                                                        float hit_interval;
-                                                        vector movement_dir;
+          if (fvi_hit_data_ptr->hit_type[0] == HIT_NONE &&
+              BBoxPlaneIntersection(false, &fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0],
+                                    &Objects[fvi_query_ptr->thisobjnum], &fvi_hit_data_ptr->hit_pnt, 3, vertex_ptr_list,
+                                    &face_normal, &fvi_hit_data_ptr->hit_orient, &fvi_hit_data_ptr->hit_rotvel,
+                                    &fvi_hit_data_ptr->hit_velocity)) {
+            float hit_dist = 0.0;
+            float hit_interval;
+            vector movement_dir;
 
-                                                        if(!BBoxPlaneIntersection(false,
-        &fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0], &Objects[fvi_query_ptr->thisobjnum],
-        fvi_query_ptr->p0, 3, vertex_ptr_list, &face_normal, fvi_query_ptr->o_orient, fvi_query_ptr->o_rotvel,
-        fvi_query_ptr->o_velocity))
-                                                        {
-                                                                movement_dir = fvi_hit_data_ptr->hit_pnt -
-        *fvi_query_ptr->p0; hit_interval = vm_NormalizeVector(&movement_dir);
+            if (!BBoxPlaneIntersection(false, &fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0],
+                                       &Objects[fvi_query_ptr->thisobjnum], fvi_query_ptr->p0, 3, vertex_ptr_list,
+                                       &face_normal, fvi_query_ptr->o_orient, fvi_query_ptr->o_rotvel,
+                                       fvi_query_ptr->o_velocity)) {
+              movement_dir = fvi_hit_data_ptr->hit_pnt - *fvi_query_ptr->p0;
+              hit_interval = vm_NormalizeVector(&movement_dir);
 
-                                                                DoLinearApprox(&fvi_hit_data_ptr->hit_face_pnt[0],
-        &fvi_hit_data_ptr->hit_wallnorm[0], &hit_dist, &hit_interval, &movement_dir, fvi_query_ptr->p0,
-        &Objects[fvi_query_ptr->thisobjnum], 3, vertex_ptr_list, &face_normal);
+              DoLinearApprox(&fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0], &hit_dist,
+                             &hit_interval, &movement_dir, fvi_query_ptr->p0, &Objects[fvi_query_ptr->thisobjnum], 3,
+                             vertex_ptr_list, &face_normal);
 
-                                                                fvi_collision_dist = hit_dist;
-                                                        }
-                                                        else
-                                                        {
-                                                                fvi_hit_data_ptr->hit_orient = *fvi_query_ptr->o_orient;
-                                                                fvi_hit_data_ptr->hit_rotvel = *fvi_query_ptr->o_rotvel;
-                                                                fvi_hit_data_ptr->hit_turnroll =
-        *fvi_query_ptr->o_turnroll; fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0;
+              fvi_collision_dist = hit_dist;
+            } else {
+              fvi_hit_data_ptr->hit_orient = *fvi_query_ptr->o_orient;
+              fvi_hit_data_ptr->hit_rotvel = *fvi_query_ptr->o_rotvel;
+              fvi_hit_data_ptr->hit_turnroll = *fvi_query_ptr->o_turnroll;
+              fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0;
 
-                                                                fvi_collision_dist = 0.0;
-                                                                movement_dir = Zero_vector;
-                                                                hit_dist = 0.0f;
-                                                        }
+              fvi_collision_dist = 0.0;
+              movement_dir = Zero_vector;
+              hit_dist = 0.0f;
+            }
 
-                                                        fvi_hit_data_ptr->hit_type[0] = HIT_TERRAIN;
-                                                        fvi_hit_data_ptr->hit_wallnorm[0].x = 0.0;
-                                                        fvi_hit_data_ptr->hit_wallnorm[0].y = 1.0;
-                                                        fvi_hit_data_ptr->hit_wallnorm[0].z = 0.0;
-                                                        // fvi_hit_data_ptr->hit_seg = -1; -- set in the
-        fvi_FindIntersection function
-        //						fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0 +
-        hit_dist*movement_dir; fvi_hit_data_ptr->hit_face[0] =  i; fvi_hit_data_ptr->hit_face_room[0] = cur_node;
-                //					fvi_hit_data_ptr->hit_side_pnt = fvi_hit_data_ptr->hit_pnt;
-                //					fvi_hit_data_ptr->hit_side_pnt.y = fvi_query_ptr->p0->y -
-        Objects[fvi_query_ptr->thisobjnum].size;
-
-        //						if(!BBoxPlaneIntersection(true,
-        &fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0], &Objects[fvi_query_ptr->thisobjnum],
-        &fvi_hit_data_ptr->hit_pnt, 3, vertex_ptr_list, &face_normal, &fvi_hit_data_ptr->hit_orient,
-        &fvi_hit_data_ptr->hit_rotvel, &fvi_hit_data_ptr->hit_rotvel))
-        //							ASSERT(1);
-
-                                                        goto ignore_hit;
-                                                }
-                                        }
-        */
+            fvi_hit_data_ptr->hit_type[0] = HIT_TERRAIN;
+            fvi_hit_data_ptr->hit_wallnorm[0].x = 0.0;
+            fvi_hit_data_ptr->hit_wallnorm[0].y = 1.0;
+            fvi_hit_data_ptr->hit_wallnorm[0].z = 0.0;
+            // fvi_hit_data_ptr->hit_seg = -1; -- set in the fvi_FindIntersection function
+            // fvi_hit_data_ptr->hit_pnt = *fvi_query_ptr->p0 + hit_dist *movement_dir;
+            fvi_hit_data_ptr->hit_face[0] = i;
+            fvi_hit_data_ptr->hit_face_room[0] = cur_node;
+            // fvi_hit_data_ptr->hit_side_pnt = fvi_hit_data_ptr->hit_pnt;
+            // fvi_hit_data_ptr->hit_side_pnt.y = fvi_query_ptr->p0->y - Objects[fvi_query_ptr->thisobjnum].size;
+/*
+            if(!BBoxPlaneIntersection(true,
+              &fvi_hit_data_ptr->hit_face_pnt[0], &fvi_hit_data_ptr->hit_wallnorm[0], &Objects[fvi_query_ptr->thisobjnum],
+              &fvi_hit_data_ptr->hit_pnt, 3, vertex_ptr_list, &face_normal, &fvi_hit_data_ptr->hit_orient,
+              &fvi_hit_data_ptr->hit_rotvel, &fvi_hit_data_ptr->hit_rotvel))
+              ASSERT(1);
+*/
+            goto ignore_hit;
+          }
+        }
+#endif
         // If we hit the face...
         if (face_hit_type) {
           if (cur_dist <= fvi_collision_dist) {
@@ -4368,14 +4376,14 @@ check_big_objs: // Check Big objects
     for (i = 0; i < Num_big_objects; i++) {
       ASSERT(BigObjectList[i] >= 0);
       check_hit_obj(BigObjectList[i]);
-      //		mprintf((0, "CHecking BIG %d\n", i));
+      //		mprintf(0, "CHecking BIG %d\n", i);
     }
   } else {
     if (!(fvi_query_ptr->flags & FQ_IGNORE_EXTERNAL_ROOMS))
       for (i = 0; i < Num_big_objects; i++) {
         if (Objects[BigObjectList[i]].type == OBJ_ROOM)
           check_hit_obj(BigObjectList[i]);
-        //		mprintf((0, "CHecking BIG %d\n", i));
+        //		mprintf(0, "CHecking BIG %d\n", i);
       }
   }
 
@@ -4779,7 +4787,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
 
                   if(len == 0.0f)
                   {
-                          mprintf((0, "PHYSICS WARNING: Normals cancal out\n"));
+                          mprintf(0, "PHYSICS WARNING: Normals cancal out\n");
                           new_normal = col_normal[0];
                   }
 
@@ -4819,8 +4827,13 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
 
       if (!(Rooms[connect_room].flags & RF_EXTERNAL)) {
         if ((fvi_visit_list[connect_room >> 3] & (0x01 << ((connect_room) % 8))) == 0) {
-          // mprintf((0, "A portal %d to room %d,from room %d,with %d cportal\n", portal_num,
-          // cur_room->portals[portal_num].croom, room_index, cur_room->portals[portal_num].cportal));
+          /*
+          mprintf(0, "A portal %d to room %d,from room %d,with %d cportal\n",
+                  portal_num,
+                  cur_room->portals[portal_num].croom,
+                  room_index,
+                  cur_room->portals[portal_num].cportal);
+          */
           fvi_room(connect_room, cur_room->portals[portal_num].cportal);
         }
       } else if (f_check_terrain) {
@@ -4834,7 +4847,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
 
         query_terrain.startroom = GetTerrainRoomFromPos(query_terrain.p0);
 
-        //			mprintf((0, "We might go outside\n"));
+        //			mprintf(0, "We might go outside\n");
 
         // This is quick, so do it here.
         hit_data_terrain.hit_room = GetTerrainRoomFromPos(&hit_data_terrain.hit_pnt);

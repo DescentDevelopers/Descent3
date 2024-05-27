@@ -163,7 +163,7 @@ typedef struct vmt_descent3_struct {
 
 #include "mtpilottrack.h"
 
-#define DLLmprintf(args)	DLLDebug_ConsolePrintf args
+#define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 
 typedef void( *Debug_ConsolePrintf_fp ) (int n, const char *format, ... );
 

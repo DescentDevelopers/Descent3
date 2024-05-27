@@ -261,7 +261,7 @@ void editorPictListBox::OnVScroll(UINT nSBCode, int nPos, CScrollBar* pScrollBar
 		//	tex_start accordingly.
 			SCROLLINFO si;
 
-		//	mprintf((0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, m_ListPos));
+		//	mprintf(0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, m_ListPos);
 			if (new_pos < m_ListPos) ListUp(m_ListPos-new_pos);
 			if (new_pos > m_ListPos) ListDown(new_pos-m_ListPos);
 
@@ -300,11 +300,11 @@ void editorPictListBox::ListUp(int rows)
 
 		olditem = m_ItemStart;
 		m_ItemStart = PrevListItem(m_ItemStart);
-		//mprintf((0, "m_ItemStart = %d\n", m_ItemStart));
+		//mprintf(0, "m_ItemStart = %d\n", m_ItemStart);
 		if (m_ItemStart > olditem) {
 			m_ItemStart = olditem;
 			done = 1;
-		//	mprintf((0, "m_ItemStart = %d\n", m_ItemStart));
+		//	mprintf(0, "m_ItemStart = %d\n", m_ItemStart);
 		}
 		else if (old<=m_ItemStart)	{
 			m_ItemStart=old;

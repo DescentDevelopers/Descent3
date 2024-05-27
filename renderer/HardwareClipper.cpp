@@ -44,7 +44,7 @@ g3Point *GetTempPoint(void) {
 
 void FreeTempPoint(g3Point *p) {
   if (free_point_num < 1) {
-    mprintf((1, "clipper: no temp points to free\n"));
+    mprintf(1, "clipper: no temp points to free\n");
     free_point_num = 1;
     Int3();
   }
@@ -349,7 +349,7 @@ g3Point **g3_ClipPolygon(g3Point **pointlist, int *nv, g3Codes *cc) {
 
   //&	ASSERT(free_point_num == 0);	//DAJ UTB CMO
   if (free_point_num != 0) {
-    mprintf((1, "clipper: leftover temp point\n"));
+    mprintf(1, "clipper: leftover temp point\n");
     free_point_num = 0;
     Int3();
   }

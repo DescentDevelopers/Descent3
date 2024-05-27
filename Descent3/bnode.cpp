@@ -185,12 +185,12 @@ static void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
 
   BNode_PathNumNodes = 0;
 
-  //	mprintf((0, "start crash loop\n"));
+  //	mprintf(0, "start crash loop\n");
   while (cur_node != -1) {
     BNode_Path[BNode_PathNumNodes++] = cur_node;
     cur_node = node_list[cur_node]->p_node;
   }
-  //	mprintf((0, "end crash loop\n"));
+  //	mprintf(0, "end crash loop\n");
 
   // Reverse the list (so it is what we want)
   for (i = 0; i < (BNode_PathNumNodes >> 1); i++) {
@@ -203,7 +203,7 @@ static void BNode_UpdatePathInfo(pq_item **node_list, int start, int end) {
 
   /*	for(i = 0; i < BNode_PathNumNodes; i++)
           {
-                  mprintf((0, "Node %d\n", BNode_Path[i]));
+                  mprintf(0, "Node %d\n", BNode_Path[i]);
           }
   */
 }
@@ -216,7 +216,7 @@ bool BNode_FindPath(int start_room, int i, int j, float rad) {
   pq_item *cur_node;
   bool f_found = false;
 
-  //	mprintf((0, "++++++++++\nFind path from %d to %d in room %d\n", i, j, start_room));
+  //	mprintf(0, "++++++++++\nFind path from %d to %d in room %d\n", i, j, start_room);
 
   start_room = BOA_INDEX(start_room);
 

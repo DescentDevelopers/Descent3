@@ -203,7 +203,7 @@ int Read3DSMaxFile(char *filename)
 	fp=(CFILE *)cfopen (filename,"rb");
 	if (!fp)
 	{
-		mprintf ((0,"Couldn't open 3dsmax file %s!\n",filename));
+		mprintf(0,"Couldn't open 3dsmax file %s!\n",filename);
 		return -1;
 	}
 	
@@ -225,7 +225,7 @@ int Read3DSMaxFile(char *filename)
 		Parse3DSMaxChunk (fp, len-6);
 	else
 	{
-		mprintf ((0,"This file is not a 3ds max file!\n"));
+		mprintf(0,"This file is not a 3ds max file!\n");
 		cfclose (fp);
 		return -1;
 	}
@@ -262,7 +262,7 @@ int Read3DSMaxFile(char *filename)
 		reading_face *mfp=&rp->faces[i];
 		//vm_GetNormal(&Reading_room.faces[i].normal,&rp->verts[mfp->face_verts[0]],&rp->verts[mfp->face_verts[1]],&rp->verts[mfp->face_verts[2]]);
 		if (! ComputeNormal(&Reading_room.faces[i].normal,Reading_room.faces[i].num_verts,mfp->face_verts,rp->verts)) {
-			mprintf((1,"Warning: Low precision normal for face %d\n",i));
+			mprintf(1,"Warning: Low precision normal for face %d\n",i);
 			bad_normals++;
 		}
 	}
@@ -277,7 +277,7 @@ int Read3DSMaxFile(char *filename)
 	int t;
 	reading_face destface;
 
-	mprintf ((0,"Combining faces, please wait...\n"));
+	mprintf(0,"Combining faces, please wait...\n");
 
 	TryAgain:
 
@@ -315,14 +315,14 @@ int Read3DSMaxFile(char *filename)
 
 skip_combine:;
 
-	mprintf ((0,"Total faces=%d\n",Reading_room.num_faces));
+	mprintf(0,"Total faces=%d\n",Reading_room.num_faces);
 
 	if (Reading_room.num_faces > MAX_FACES_PER_ROOM) {
 		OutrageMessageBox("The imported room has %d faces.  The limit is %d.  Aborting import.",Reading_room.num_faces,MAX_FACES_PER_ROOM);
 		return -1;
 	}
 
-	mprintf ((0,"Trying to allocate a room for %d verts, %d faces!\n",Reading_room.num_verts,Reading_room.num_faces));
+	mprintf(0,"Trying to allocate a room for %d verts, %d faces!\n",Reading_room.num_verts,Reading_room.num_faces);
 //	int n=AllocRoom (Reading_room.num_verts,Reading_room.num_faces);
 	room *rp = CreateNewRoom(Reading_room.num_verts,Reading_room.num_faces,1);
 
@@ -432,7 +432,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 		
 		if (size<0) 
 		{
-			mprintf((0,"%d:chunk error\n",level));
+			mprintf(0,"%d:chunk error\n",level);
 			exit (1);
 		}
 
@@ -488,7 +488,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 				int ret=FindTextureBitmapName(texture_name);
 				if (ret==-1)
 				{
-					mprintf ((0,"Couldn't find bitmap %s!\n",texture_name));
+					mprintf(0,"Couldn't find bitmap %s!\n",texture_name);
 					ret=GetNextTexture(0);
 				}
 
@@ -520,7 +520,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 
 				if (!done)
 				{
-					mprintf ((0,"Couldn't find material named %s!\n",material_name));
+					mprintf(0,"Couldn't find material named %s!\n",material_name);
 					texnum=GetNextTexture(0);
 				}
 				
@@ -553,7 +553,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 			}
 
 			case ID_TRI_MESH:
-  				mprintf ((0,"Found 3dsmax TRI_MESH chunk!\n"));
+  				mprintf(0,"Found 3dsmax TRI_MESH chunk!\n");
 			
 				Parse3DSMaxChunk(fp,len-6);
 				break;
@@ -567,7 +567,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 				if (num_verts > MAX_VERTS_PER_ROOM)
 					return;
 
-				mprintf ((0,"Reading in %d verts from room!\n",num_verts));
+				mprintf(0,"Reading in %d verts from room!\n",num_verts);
 			
 				// Make room for these verts	
 				Reading_room.num_verts=num_verts;
@@ -593,7 +593,7 @@ void Parse3DSMaxChunk (CFILE *fp, int size)
 				if (num_faces > MAX_READING_ROOM_FACES)
 					return;
 
-				mprintf ((0,"Reading in %d faces!\n",num_faces));
+				mprintf(0,"Reading in %d faces!\n",num_faces);
 
 				Reading_room.num_faces=num_faces;
 				ASSERT (Reading_room.faces!=NULL);
@@ -822,7 +822,7 @@ int CombineFaces( reading_face *dest,reading_face * a, reading_face * b )
 				}
 
 				if ( (va==b->face_verts[(startb+2)%b->num_verts])) 
-					mprintf((0, "WARNING!!! Faces were combined that caused the loss of a vertex!\n"));
+					mprintf(0, "WARNING!!! Faces were combined that caused the loss of a vertex!\n");
 
 				for (i=1; i<b->num_verts; i++ )	
 				{

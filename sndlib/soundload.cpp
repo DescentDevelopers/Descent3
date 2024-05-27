@@ -421,7 +421,7 @@ int LoadSoundFile(const char *filename, float import_volume, bool f_get_data) {
   // Make room for the new sound
   sound_file_index = AllocSoundFile();
   if (sound_file_index == -1) {
-    mprintf((0, "SOUND LOADER: No free sound file slots are available.\n", filename));
+    mprintf(0, "SOUND LOADER: No free sound file slots are available.\n", filename);
     Int3();
     return -1;
   }
@@ -430,7 +430,7 @@ int LoadSoundFile(const char *filename, float import_volume, bool f_get_data) {
 
   len = strlen(filename);
   if (len < 4) {
-    mprintf((0, "SOUND LOADER: %s does not have a 3 charactor extension.\n", filename));
+    mprintf(0, "SOUND LOADER: %s does not have a 3 charactor extension.\n", filename);
     Int3(); // Get chris
     goto error_state;
   }
@@ -441,11 +441,11 @@ int LoadSoundFile(const char *filename, float import_volume, bool f_get_data) {
   strncpy(extension, &filename[len - 3], 5);
   if (strnicmp("wav", extension, 3) == 0) {
     if (!SoundLoadWaveFile(filename, import_volume, sound_file_index, false, f_get_data)) {
-      mprintf((0, "SOUND LOADER: Error loading %s.\n", filename));
+      mprintf(0, "SOUND LOADER: Error loading %s.\n", filename);
       goto error_state;
     }
   } else {
-    mprintf((0, "SOUND LOADER: %s in not a supported file type.\n", extension));
+    mprintf(0, "SOUND LOADER: %s in not a supported file type.\n", extension);
     goto error_state;
   }
 

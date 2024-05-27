@@ -240,7 +240,7 @@ void OutrageMusicSeq::Start() {
     m_registers[i] = 0;
   }
 
-  mprintf((0, "Music system on.\n"));
+  mprintf(0, "Music system on.\n");
 }
 
 //	stops the sequencer, flushes events
@@ -250,7 +250,7 @@ void OutrageMusicSeq::Stop() {
 
   int i;
 
-  mprintf((0, "Music system off.\n"));
+  mprintf(0, "Music system off.\n");
   m_sequencer_run = false;
 
   for (i = 0; i < OMS_NUM_STRM; i++) {
@@ -321,7 +321,7 @@ void OutrageMusicSeq::Frame(float frame_time) {
   }
 
   if (start_pending_song) {
-    mprintf((0, "MUSIC:Starting pending song.\n"));
+    mprintf(0, "MUSIC:Starting pending song.\n");
     LOGFILE((_logfp, "MUSIC:Starting pending song.\n"));
     START_PENDING_SONG();
   }
@@ -360,7 +360,7 @@ next_ins:
   // goto next instruction.
   strm->ip++;
 
-  //	mprintf((0, "%d ", cmd));
+  //	mprintf(0, "%d ", cmd);
   AudioStream *stream = &strm->strm->m_stream;
 
   // execute opcodes.
@@ -384,14 +384,14 @@ next_ins:
         // we start playing the current stream immediately.
         stream->Close();
         m_dominant_strm = DOMINANT_STRM_ADJUST();
-        //	mprintf((0, "MUSIC: Starting stream with %s on channel %d.\n", name, m_dominant_strm));
+        //	mprintf(0, "MUSIC: Starting stream with %s on channel %d.\n", name, m_dominant_strm);
         LOGFILE((_logfp, "MUSIC: Starting stream with %s on channel %d.\n", name, m_dominant_strm));
         strm->strm = &m_strm[m_dominant_strm];
         stream = &strm->strm->m_stream;
         err = stream->Open(name);
       } else {
         m_dominant_strm = DOMINANT_STRM_ADJUST();
-        //	mprintf((0, "MUSIC: Preparing stream with %s on channel %d.\n", name, m_dominant_strm));
+        //	mprintf(0, "MUSIC: Preparing stream with %s on channel %d.\n", name, m_dominant_strm);
         LOGFILE((_logfp, "MUSIC: Preparing stream with %s on channel %d.\n", name, m_dominant_strm));
         strm->strm = &m_strm[m_dominant_strm];
         stream = &strm->strm->m_stream;
@@ -401,7 +401,7 @@ next_ins:
 
       // skip instructions until error is cleared.
       if (!err) {
-        //	mprintf((0, "MUSIC: Error opening stream %s on channel %d.\n", name, m_dominant_strm));
+        //	mprintf(0, "MUSIC: Error opening stream %s on channel %d.\n", name, m_dominant_strm);
         LOGFILE((_logfp, "MUSIC: Error opening stream %s on channel %d.\n", name, m_dominant_strm));
         strm->error = true;
       }
@@ -410,7 +410,7 @@ next_ins:
       stream->SetVolume(m_mastervol);
       strm->stream_idle = false;
     } else {
-      mprintf((0, "OMS: Stream was not found in track list.\n"));
+      mprintf(0, "OMS: Stream was not found in track list.\n");
     }
 
     strm->pending_loop_name = name;
@@ -436,11 +436,11 @@ next_ins:
     }
 
     if (!strm->error) {
-      //	mprintf((0, "MUSIC: playing %s.\n", strm->loop_name));
+      //	mprintf(0, "MUSIC: playing %s.\n", strm->loop_name);
       LOGFILE((_logfp, "MUSIC: playing %s.\n", strm->loop_name));
       LOGFILE((_logfp, "MUSIC: state of played stream is %d.\n", strm->loop_name, stream->State()));
     } else {
-      //	mprintf((0, "MUSIC: Error playing %s.\n", strm->loop_name));
+      //	mprintf(0, "MUSIC: Error playing %s.\n", strm->loop_name);
       LOGFILE((_logfp, "MUSIC: Error playing %s.\n", strm->loop_name));
     }
     break;
@@ -540,7 +540,7 @@ next_ins:
       if (strm->request_stop) {
         strm->stream_idle = true;
         strm->request_stop = false;
-        mprintf((0, "MUSIC: Processed stop request.\n"));
+        mprintf(0, "MUSIC: Processed stop request.\n");
         LOGFILE((_logfp, "MUSIC: Processed stop request.\n"));
       }
     }

@@ -1570,11 +1570,11 @@ void CMainFrame::OnActivateApp(BOOL bActive, HTASK hTask)
 	
 	if (bActive) {
 		theApp.resume();
-		mprintf_at((2,0,0, "App Active  "));
+		mprintf_at(2,0,0, "App Active  ");
 	}
 	else {
 		theApp.pause();
-		mprintf_at((2,0,0, "App Inactive"));
+		mprintf_at(2,0,0, "App Inactive");
 	}
 
   ((oeWin32Application *)Descent)->run_handler(this->m_hWnd, WM_ACTIVATEAPP, (unsigned)bActive, 0);
@@ -1632,7 +1632,7 @@ void SetErrorMessage(const char *fmt,...)
 	std::vsnprintf(Editor_error_message,sizeof(Editor_error_message),fmt,arglist);
 	va_end(arglist);
 
-	mprintf ((0,"Editor error: %s\n",Editor_error_message));
+	mprintf(0,"Editor error: %s\n",Editor_error_message);
 }
 
 //Get the error message from the last function that returned failure
@@ -2067,7 +2067,7 @@ void CMainFrame::OnImportBitmap()
 		return;
 	}
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 
 	if (!anim)
 	{
@@ -2116,7 +2116,7 @@ void CMainFrame::OnSubeditorsHogmaker()
 
 void CMainFrame::OnNumpad0() 
 {
-	mprintf((0, "NUMPAD0\n"));	
+	mprintf(0, "NUMPAD0\n");	
 	if (!D3EditState.keypad_visible) return;
 	if (m_FloatingKeypadDialog) m_FloatingKeypadDialog->RunKeypadFunction(VK_NUMPAD0);
 	else if (m_KeypadTabDialog) m_KeypadTabDialog->RunKeypadFunction(VK_NUMPAD0);
@@ -2555,7 +2555,7 @@ void ResetObjectsIntoMine()
 					if (roomnum == -1)
 						OutrageMessageBox("Can't find room for object %d (type = %s)",objnum,Object_type_names[objp->type]);
 					else {
-						mprintf((0,"Moving object %d to room %d\n",objnum,roomnum));
+						mprintf(0,"Moving object %d to room %d\n",objnum,roomnum);
 						ObjSetPos(&Objects[objnum],&objp->pos,roomnum,NULL,true);
 						count++;
 					}
@@ -2713,7 +2713,7 @@ void FindBadDestroyedTextures()
 
 	for (int i=0;i<MAX_TEXTURES;i++) {
 		if ((GameTextures[i].flags & TF_DESTROYABLE) && (GameTextures[i].destroy_handle == 0)) {
-			mprintf((0,"Texture %d, \"%s\" has a bad destroyed bitmap\n",i,GameTextures[i].name));
+			mprintf(0,"Texture %d, \"%s\" has a bad destroyed bitmap\n",i,GameTextures[i].name);
 			count++;
 		}
 	}
@@ -2731,17 +2731,17 @@ void ListLightmapObjects()
 			count++;
 			if (IS_GENERIC(Objects[i].type) && (Object_info[Objects[i].id].lighting_info.lighting_render_type == LRT_LIGHTMAPS)) {
 				lm_count++;
-				mprintf((0,"%d: %s  %s",i,Object_type_names[Objects[i].type],Object_info[Objects[i].id].name));
+				mprintf(0,"%d: %s  %s",i,Object_type_names[Objects[i].type],Object_info[Objects[i].id].name);
 				if (Objects[i].name)
-					mprintf((0,"  name=\"%s\"\n",Objects[i].name));
+					mprintf(0,"  name=\"%s\"\n",Objects[i].name);
 				else
-					mprintf((0,"\n"));
+					mprintf(0,"\n");
 			}
 			else
-				;	//mprintf((0,"%d ",i));
+				;	//mprintf(0,"%d ",i);
 		}
 	}
-	mprintf((0,"Num object = %d.  Num with lightmaps = %d\n",count,lm_count));
+	mprintf(0,"Num object = %d.  Num with lightmaps = %d\n",count,lm_count);
 }
 
 //Put test code here.  Feel free to delete any old code.

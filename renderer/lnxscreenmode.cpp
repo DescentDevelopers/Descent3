@@ -168,18 +168,18 @@ bool CLnxVideoModes::Init(void) // Display *dpy,int screen)
 
   if (m_ModeInfoList == (SDL_Rect **)-1) // anything is fine.
   {
-    mprintf((0, "Windowed surface is probably going to be used."));
+    mprintf(0, "Windowed surface is probably going to be used.");
     m_NumVideoModes = 0;
   } // if
   else {
-    mprintf((0, "-------------------------\n"));
-    mprintf((0, "Supported Mode Lines:\n"));
+    mprintf(0, "-------------------------\n");
+    mprintf(0, "Supported Mode Lines:\n");
     for (int i = 0; m_ModeInfoList[i] != NULL; i++) {
       //,m_ModeInfoList[i]->hdisplay,m_ModeInfoList[i]->vdisplay);
-      mprintf((0, "     Mode %d: %dX%d\n", i, m_ModeInfoList[i]->w, m_ModeInfoList[i]->h));
+      mprintf(0, "     Mode %d: %dX%d\n", i, m_ModeInfoList[i]->w, m_ModeInfoList[i]->h);
       m_NumVideoModes++;
     } // for
-    mprintf((0, "-------------------------\n"));
+    mprintf(0, "-------------------------\n");
   } // else
 #endif
 

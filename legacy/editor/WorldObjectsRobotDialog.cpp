@@ -172,7 +172,7 @@ void CWorldObjectsRobotDialog::OnAddNewRobot()
 	Robots[robot_handle].size=size/2;
 
 	// Finally, save a local copy of the model/anim and alloc a tracklock
-	mprintf ((0,"Making a copy of this model locally...\n"));
+	mprintf(0,"Making a copy of this model locally...\n");
 
 	char destname[100];
 	sprintf (destname,"%s\\%s",LocalModelsDir,Poly_models[Robots[robot_handle].render_handle].name);
@@ -298,7 +298,7 @@ void CWorldObjectsRobotDialog::OnDeleteRobot()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeleteRobotPage (Robots[n].name,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -550,7 +550,7 @@ void CWorldObjectsRobotDialog::OnSelendokRobotPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted robot list, but probably nothing."));
+		mprintf(0,"Possible corrupted robot list, but probably nothing.");
 		UpdateDialog();
 	}
 

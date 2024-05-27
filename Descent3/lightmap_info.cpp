@@ -116,7 +116,7 @@ int AllocLightmapInfo(int w, int h, int type, bool alloc_lightmap) {
   /*if (i==MAX_LIGHTMAP_INFOS)
   {
           Int3();
-          mprintf ((0,"ERROR! Couldn't find a free lightmap info to alloc!\n"));
+          mprintf(0,"ERROR! Couldn't find a free lightmap info to alloc!\n");
           return -1;
   }*/
 

@@ -318,7 +318,7 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   } else {
     fp = fopen(lib->name, "rb");
     if (!fp) {
-      mprintf((1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name, filename, errno));
+      mprintf(1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name, filename, errno);
       Int3();
       return nullptr;
     }
@@ -370,7 +370,7 @@ CFILE *open_file_in_lib(const char *filename) {
       } else {
         fp = fopen(lib->name, "rb");
         if (!fp) {
-          mprintf((1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name, filename, errno));
+          mprintf(1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name, filename, errno);
           Int3();
           return nullptr;
         }
@@ -398,7 +398,7 @@ CFILE *open_file_in_lib(const char *filename) {
 #include <glob.h>
 
 static int globerrfn(const char *path, int err) {
-  mprintf((0, "Error accessing %s: %s .... \n", path, strerror(err)));
+  mprintf(0, "Error accessing %s: %s .... \n", path, strerror(err));
   return 0;
 }
 
@@ -426,7 +426,7 @@ bool CFindFiles::Start(const char *wildcard, char *namebuf) {
   flags = GLOB_MARK;
   rc = glob(wildcard, flags, globerrfn, &ffres);
   if (rc == GLOB_NOSPACE) {
-    mprintf((0, "Out of space during glob\n"));
+    mprintf(0, "Out of space during glob\n");
     globindex = -1;
     return false;
   }
@@ -493,7 +493,7 @@ bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *fname,
       strcat(file_to_use, t_ext);
       real_file = (char *)file_to_use;
 
-      mprintf((1, "CFILE: Found directory \"%s\" in filename, new filename is \"%s\"\n", real_dir, real_file));
+      mprintf(1, "CFILE: Found directory \"%s\" in filename, new filename is \"%s\"\n", real_dir, real_file);
     } else {
       use_dir = false;
       real_dir = nullptr;
@@ -590,7 +590,7 @@ bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *fname,
 
     if (found_match) {
       strcpy(new_filename, namebuffer);
-      mprintf((1, "CFILE: Using \"%s\" instead of \"%s\"\n", new_filename, real_file));
+      mprintf(1, "CFILE: Using \"%s\" instead of \"%s\"\n", new_filename, real_file);
       break;
     }
   }
@@ -669,7 +669,7 @@ CFILE *open_file_in_directory(const char *filename, const char *mode, const char
       return nullptr;
     } else {
       // found a version of the file!
-      mprintf((0, "CFILE: Unable to find %s, but using %s instead\n", filename, using_filename));
+      mprintf(0, "CFILE: Unable to find %s, but using %s instead\n", filename, using_filename);
       cfile = (CFILE *)mem_malloc(sizeof(*cfile));
       if (!cfile)
         Error("Out of memory in open_file_in_directory()");
@@ -898,8 +898,7 @@ int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
     if (!feof(cfp->file))
       error_msg = strerror(errno);
   }
-  mprintf(
-      (1, "Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name, errno));
+  mprintf(1, "Error reading %d bytes from position %d of file <%s>; errno=%d.", count, cfp->position, cfp->name, errno);
   return 0;
 }
 // The following functions read numeric vales from a CFILE.  All values are

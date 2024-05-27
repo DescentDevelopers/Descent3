@@ -119,7 +119,7 @@ void FreeLighting() {
 void InitDynamicLighting() {
   int i, cl, size;
 
-  mprintf((0, "Initting dynamic lighting.\n"));
+  mprintf(0, "Initting dynamic lighting.\n");
 
   memset(Lmi_spoken_for, 0, MAX_LIGHTMAP_INFOS / 8);
 
@@ -154,7 +154,7 @@ void InitDynamicLighting() {
     Ubyte_to_float[i] = (float)i / 255.0;
 
   // Setup specular tables
-  mprintf((0, "Building specular tables.\n"));
+  mprintf(0, "Building specular tables.\n");
 
   for (i = 0; i < MAX_SPECULAR_INCREMENTS; i++) {
     float val = (float)i / (float)(MAX_SPECULAR_INCREMENTS - 1);
@@ -178,7 +178,7 @@ uint8_t Float_to_ubyte(float fnum) {
   int i;
 
   if (fnum < 0 || fnum > 1.0) {
-    mprintf((0, "ERROR: Trying to get value in Float_to_ubyte that is %f!\n", fnum));
+    mprintf(0, "ERROR: Trying to get value in Float_to_ubyte that is %f!\n", fnum);
     return 0;
   }
 
@@ -198,7 +198,7 @@ int GetFreeDynamicLightmap(int w, int h) {
     return -1;
 
   if (total + Cur_dynamic_mem_ptr > DYNAMIC_LIGHTMAP_MEMORY) {
-    mprintf((0, "Ran out of lightmap memory (%d)\n", DYNAMIC_LIGHTMAP_MEMORY));
+    mprintf(0, "Ran out of lightmap memory (%d)\n", DYNAMIC_LIGHTMAP_MEMORY);
     return -1;
   }
 
@@ -296,7 +296,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
       continue;
 
     if (Num_dynamic_faces >= MAX_DYNAMIC_FACES) {
-      mprintf((0, "Too many dynamic faces!\n"));
+      mprintf(0, "Too many dynamic faces!\n");
       return;
     }
 
@@ -416,7 +416,7 @@ void ApplyLightingToExternalRoom(vector *pos, int roomnum, float light_dist, flo
       int dynamic_handle = GetFreeDynamicLightmap(xres, yres);
 
       if (dynamic_handle < 0) {
-        mprintf((0, "No free dynamic maps!\n"));
+        mprintf(0, "No free dynamic maps!\n");
         return; // None free!
       }
 
@@ -643,7 +643,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
 
     // Ok, now we know that this light touches this face
     if (Num_dynamic_faces >= MAX_DYNAMIC_FACES) {
-      mprintf((0, "Too many dynamic faces!\n"));
+      mprintf(0, "Too many dynamic faces!\n");
       DoneLightingInstance();
       return;
     }
@@ -763,7 +763,7 @@ void ApplyLightingToSubmodel(object *obj, poly_model *pm, bsp_info *sm, float li
       int dynamic_handle = GetFreeDynamicLightmap(xres, yres);
 
       if (dynamic_handle < 0) {
-        mprintf((0, "No free dynamic maps!\n"));
+        mprintf(0, "No free dynamic maps!\n");
         DoneLightingInstance();
 
         return; // None free!
@@ -973,7 +973,7 @@ void ApplyVolumeLightToObject(vector *pos, object *obj, float light_dist, float 
   // See if this specular light source is greater than our current one
   if ((light_dist - mag) > obj->effect_info->spec_mag && Detail_settings.Specular_lighting &&
       !(Object_info[obj->id].lighting_info.flags & OLF_NO_SPECULARITY)) {
-    // mprintf ((0,"Setting specular!\n"));
+    // mprintf(0,"Setting specular!\n");
     obj->effect_info->type_flags |= EF_SPECULAR;
     obj->effect_info->spec_mag = light_dist - mag;
     obj->effect_info->spec_pos = *pos;
@@ -1072,7 +1072,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
 
 #ifdef _DEBUG
   if (num_faces == MAX_DYNAMIC_FACES) {
-    mprintf((0, "Dynamic light from 1 object is touching %d faces! dist=%f\n", MAX_DYNAMIC_FACES, light_dist));
+    mprintf(0, "Dynamic light from 1 object is touching %d faces! dist=%f\n", MAX_DYNAMIC_FACES, light_dist);
   }
 #endif
 
@@ -1095,7 +1095,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
       continue;
 
     if (Num_dynamic_faces >= MAX_DYNAMIC_FACES) {
-      mprintf((0, "Too many dynamic faces!\n"));
+      mprintf(0, "Too many dynamic faces!\n");
       return;
     }
 
@@ -1221,7 +1221,7 @@ void ApplyLightingToRooms(vector *pos, int roomnum, float light_dist, float red_
       int dynamic_handle = GetFreeDynamicLightmap(xres, yres);
 
       if (dynamic_handle < 0) {
-        mprintf((0, "No free dynamic maps!\n"));
+        mprintf(0, "No free dynamic maps!\n");
         return; // None free!
       }
 
@@ -1481,7 +1481,7 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
     return;
 
   if (num_cells == MAX_DYNAMIC_CELLS) {
-    mprintf((0, "One object has hit %d terrain cells in lighting!\n", MAX_DYNAMIC_CELLS));
+    mprintf(0, "One object has hit %d terrain cells in lighting!\n", MAX_DYNAMIC_CELLS);
   }
 
   int red_limit = 255;
@@ -1506,7 +1506,7 @@ void ApplyLightingToTerrain(vector *pos, int cellnum, float light_dist, float re
     //	continue;
 
     if (Num_dynamic_cells >= MAX_DYNAMIC_CELLS) {
-      mprintf((0, "Too many dynamic cells!\n"));
+      mprintf(0, "Too many dynamic cells!\n");
       return;
     }
 
@@ -1668,7 +1668,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
 
                 if (dynamic_handle<0)
                 {
-                        mprintf ((0,"No free specular maps for class %d!\n",cl));
+                        mprintf(0,"No free specular maps for class %d!\n",cl);
                         return-1;		// None free!
                 }
 
@@ -1831,7 +1831,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
 
                 if (dynamic_handle<0)
                 {
-                        mprintf ((0,"No free specular maps for class %d!\n",cl));
+                        mprintf(0,"No free specular maps for class %d!\n",cl);
                         return-1;		// None free!
                 }
 
@@ -1954,7 +1954,7 @@ int GetSpecularLightmapForFace (vector *pos,room *rp,face *fp)
                                 float dotp=subvec * incident_norm;
 
 //				if (rp-Rooms==0 && fp-rp->faces==5 && (x==width/2) && (y==height/2))
-//					mprintf ((0,"dotp=%f\n",dotp));
+//					mprintf(0,"dotp=%f\n",dotp);
 
 
                                 if (dotp<0)
@@ -2024,7 +2024,7 @@ void DestroyLight(int roomnum, int facenum) {
   // green_scale/=30;
   // blue_scale/=30;
 
-  mprintf((0, "r=%f g=%f b=%f\n", red_scale, green_scale, blue_scale));
+  mprintf(0, "r=%f g=%f b=%f\n", red_scale, green_scale, blue_scale);
 
   // Get center and area of light face
   for (i = 0; i < destroy_fp->num_verts; i++)
@@ -2225,11 +2225,11 @@ void DestroyLight(int roomnum, int facenum) {
 // Adds to our list of destroyable lights that got destroyed this frame
 void AddToDestroyableLightList(int roomnum, int facenum) {
   if (Num_destroyed_lights_this_frame >= MAX_DESTROYED_LIGHTS_PER_FRAME) {
-    mprintf((0, "Ran out of destroyable light slots!\n"));
+    mprintf(0, "Ran out of destroyable light slots!\n");
     return;
   }
 
-  mprintf((0, "Destroying light.  Room=%d face=%d\n", roomnum, facenum));
+  mprintf(0, "Destroying light.  Room=%d face=%d\n", roomnum, facenum);
 
   Destroyed_light_rooms_this_frame[Num_destroyed_lights_this_frame] = roomnum;
   Destroyed_light_faces_this_frame[Num_destroyed_lights_this_frame++] = facenum;

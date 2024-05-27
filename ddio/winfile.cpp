@@ -206,7 +206,7 @@ try_again:;
   srchandle = CreateFile(srcname, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (desthandle == INVALID_HANDLE_VALUE || srchandle == INVALID_HANDLE_VALUE) {
-    mprintf((0, "Couldn't copy file time for %s! Error=%d\n", destname, GetLastError()));
+    mprintf(0, "Couldn't copy file time for %s! Error=%d\n", destname, GetLastError());
 
     if (desthandle != INVALID_HANDLE_VALUE)
       CloseHandle(desthandle);
@@ -586,7 +586,7 @@ const char *ddio_GetCDDrive(const char *vol) {
       // Get the drive volume name
       volume[0] = 0;
       if (!GetVolumeInformation(drivepath, volume, _MAX_PATH, &serial, &component, &volflags, fsname, MAX_FSTYPE_LEN)) {
-        mprintf((0, "Call to GetVolumeInformation() failed. Last error = %d\n", GetLastError()));
+        mprintf(0, "Call to GetVolumeInformation() failed. Last error = %d\n", GetLastError());
       }
 
       if (stricmp(volume, vol) == 0) {

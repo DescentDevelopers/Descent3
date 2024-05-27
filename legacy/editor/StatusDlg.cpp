@@ -60,7 +60,7 @@ void CStatusDlg::Init(int min,int max,int delta)
 	progress->SetPos(min);
 	progress->SetStep(delta);
 
-	mprintf((0,"Progress Control Create: Min= %d Max= %d Step= %d\n",min,max,delta));
+	mprintf(0,"Progress Control Create: Min= %d Max= %d Step= %d\n",min,max,delta);
 }
 
 int CStatusDlg::Step()

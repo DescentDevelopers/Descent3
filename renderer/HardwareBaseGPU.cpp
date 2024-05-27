@@ -131,7 +131,7 @@ void rend_SetFiltering(int8_t state) {
 void rend_SetZValues(float nearz, float farz) {
   gpu_state.cur_near_z = nearz;
   gpu_state.cur_far_z = farz;
-  //	mprintf ((0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz));
+  //	mprintf(0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz);
 
   // JEFF: glDepthRange must take parameters [0,1]
   // It is set in init
@@ -376,7 +376,7 @@ int rend_SetPreferredState(renderer_preferred_state *pref_state) {
   gpu_preferred_state = *pref_state;
   if (gpu_state.initted) {
     int reinit = 0;
-    mprintf((0, "Inside pref state!\n"));
+    mprintf(0, "Inside pref state!\n");
 
     // Change gamma if needed
     if (pref_state->width != gpu_state.screen_width || pref_state->height != gpu_state.screen_height ||

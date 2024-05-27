@@ -117,7 +117,7 @@ void DoPhysLinkedFrame(object *obj) {
     mn = obj->mtype.obj_link_info.sobj_index;
 
     if (mn < 0 || mn >= pm->n_models) {
-      mprintf((0, "Caught physics link bug!\n"));
+      mprintf(0, "Caught physics link bug!\n");
       SetObjectDeadFlag(obj);
       return;
     }
@@ -166,7 +166,7 @@ bool PhysCalcGround(vector *ground_point, vector *ground_normal, object *obj, in
   bool f_good_gp = true;
 
   if (obj->render_type != RT_POLYOBJ && obj->type != OBJ_PLAYER) {
-    // mprintf ((0,"Object type %d is not a polyobj!\n",obj->type));
+    // mprintf(0,"Object type %d is not a polyobj!\n",obj->type);
 
     if (ground_point)
       *ground_point = obj->pos;
@@ -179,7 +179,7 @@ bool PhysCalcGround(vector *ground_point, vector *ground_normal, object *obj, in
   pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
   if (pm->n_ground == 0) {
-    mprintf((0, "WARNING: Object with no weapons is firing.\n", ground_num));
+    mprintf(0, "WARNING: Object with no weapons is firing.\n", ground_num);
 
     if (ground_point)
       *ground_point = obj->pos;
@@ -194,7 +194,7 @@ bool PhysCalcGround(vector *ground_point, vector *ground_normal, object *obj, in
   SetModelAnglesAndPos(pm, normalized_time);
 
   if (ground_num < 0 || ground_num >= pm->n_ground) {
-    mprintf((0, "WARNING: Bashing ground num %d to 0.\n", ground_num));
+    mprintf(0, "WARNING: Bashing ground num %d to 0.\n", ground_num);
     ground_num = 0;
     f_good_gp = false;
   }
@@ -467,7 +467,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
             scale = abs(49152 - (int)ang.p) / 16384.0f;
           }
 
-          //					mprintf((0, "scale %f, ", scale));
+          //					mprintf(0, "scale %f, ", scale);
 
           if (ang.b < 32768) {
             float al_rate = scale * MAX_LEVEL_ANGLES_PER_SEC * (1.0f - (abs(16834 - (int)ang.b) / 16384.0f));
@@ -481,7 +481,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
             if (al_rate > ang.b)
               al_rate = ang.b;
 
-            //						mprintf((0, "L al_rate %f\n", al_rate));
+            //						mprintf(0, "L al_rate %f\n", al_rate);
 
             ang.b -= al_rate;
 
@@ -497,7 +497,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
             if (al_rate > 65535 - ang.b)
               al_rate = 65535 - ang.b;
 
-            //						mprintf((0, "G al_rate %f\n", al_rate));
+            //						mprintf(0, "G al_rate %f\n", al_rate);
 
             ang.b += al_rate;
           }
@@ -556,22 +556,22 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
             //						float temp_scale = (1.04f - ((16834 - ang.p)/16834.0f));
             //						scale = temp_scale * temp_scale;
             rotthrust->x -= scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf((0, "1 scale %f\n", scale));
+            //						mprintf(0, "1 scale %f\n", scale);
           } else if (ang.p < 32768) {
             //						float temp_scale = (1.04f - ((ang.p - 16834)/16834.0f));
             //						scale = temp_scale * temp_scale;
             rotthrust->x += scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf((0, "2 scale %f\n", scale));
+            //						mprintf(0, "2 scale %f\n", scale);
           } else if (ang.p < 49152) {
             //						float temp_scale = (1.04f - ((49152 - ang.p)/16834.0f));
             //						scale = temp_scale * temp_scale;
             rotthrust->x -= scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf((0, "3 scale %f\n", scale));
+            //						mprintf(0, "3 scale %f\n", scale);
           } else {
             //						float temp_scale = (1.04f - ((ang.p - 49152)/16834.0f));
             //						scale = temp_scale * temp_scale;
             rotthrust->x += scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf((0, "4 scale %f\n", scale));
+            //						mprintf(0, "4 scale %f\n", scale);
           }
         }
       }
@@ -613,7 +613,7 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
               scale = (abs(49152 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
             }
 
-            //					mprintf((0, "scale %f, ", scale));
+            //					mprintf(0, "scale %f, ", scale);
 
             if (ang.b < 32768) {
               float temp_scale;
@@ -684,10 +684,12 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
     vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
     *orient = *orient * rotmat; // ObjSetOrient is below
   }
-
-  //	mprintf((0, " a %f, %f, %f,\n%f, %f, %f,\n%f %f %f\n\n", XYZ(&obj->orient.fvec), XYZ(&obj->orient.rvec),
-  // XYZ(&obj->orient.uvec)));
-
+/*
+  mprintf(0, " a %f, %f, %f,\n%f, %f, %f,\n%f %f %f\n\n",
+          XYZ(&obj->orient.fvec),
+          XYZ(&obj->orient.rvec),
+          XYZ(&obj->orient.uvec));
+*/
   // Make sure the new orientation is valid
   vm_Orthogonalize(orient);
 
@@ -721,7 +723,7 @@ void PhysicsDoSimLinear(const object &obj, const vector &pos, const vector &forc
 
 #ifdef _DEBUG
   if (Physics_player_verbose && obj.type == OBJ_PLAYER) {
-    mprintf((0, "Player Velocity = %f(%f)\n", vm_GetMagnitude(&velocity), vm_GetMagnitude(&movementVec) / simTime));
+    mprintf(0, "Player Velocity = %f(%f)\n", vm_GetMagnitude(&velocity), vm_GetMagnitude(&movementVec) / simTime);
   }
 #endif
 }
@@ -807,7 +809,7 @@ void do_physics_sim(object *obj) {
     Players[obj->id].last_thrust_time = Gametime;
   }
 
-  //	mprintf((0, "%d Over terrain = %d\n", obj - Objects, obj->flags & OF_OVER_TERRAIN));
+  //	mprintf(0, "%d Over terrain = %d\n", obj - Objects, obj->flags & OF_OVER_TERRAIN);
 
   // If the object wiggles
   if ((obj->mtype.phys_info.flags & PF_WIGGLE) && (Demo_flags != DF_PLAYBACK)) {
@@ -914,9 +916,9 @@ void do_physics_sim(object *obj) {
     }
   }
 
-  //	mprintf((0, "PHYSICS: Current obj: %d, %9.2fx %9.2fy %9.2fz\n", OBJNUM(obj), XYZ(&obj->pos)));
-  // mprintf((2,1,0,"x %9.2f\ny %9.2f\nz %9.2f", XYZ(&obj->mtype.phys_info.velocity)));
-  // mprintf((0, "PHYSICS: Current velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity)));
+  //	mprintf(0, "PHYSICS: Current obj: %d, %9.2fx %9.2fy %9.2fz\n", OBJNUM(obj), XYZ(&obj->pos));
+  // mprintf(2,1,0,"x %9.2f\ny %9.2f\nz %9.2f", XYZ(&obj->mtype.phys_info.velocity));
+  // mprintf(0, "PHYSICS: Current velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity));
 
   Physics_normal_counter++;
 
@@ -1051,11 +1053,11 @@ void do_physics_sim(object *obj) {
     //		if(vm_GetMagnitude(&start_rotvel) < .0001)
     //		if(vm_GetMagnitude(&end_rotvel) < .0001)
     //		{
-    //			mprintf((0, "At rest\n"));
+    //			mprintf(0, "At rest\n");
     //			goto end_of_sim;
     //		}
 
-    //		mprintf((0, "PHYSICS: Try to move to (%f, %f, %f)\n", movement_pos.x, movement_pos.y, movement_pos.z));
+    //		mprintf(0, "PHYSICS: Try to move to (%f, %f, %f)\n", movement_pos.x, movement_pos.y, movement_pos.z);
 
     Physics_normal_looping_counter++;
 
@@ -1129,17 +1131,16 @@ void do_physics_sim(object *obj) {
       }
       vm_NormalizeVector(&hit_info.hit_wallnorm[0]);
     }
-
-    /*		if(obj == Player_object && fate != HIT_NONE)
-                    {
-                            mprintf((0, "Hit type %d, obj %d\n", fate, hit_info.hit_object[0]));
-                            if(fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT)
-                            {
-                                    mprintf((0, "Hit object type %d, id %d\n", Objects[hit_info.hit_object[0]].type,
-       Objects[hit_info.hit_object[0]].id));
-                            }
-                    }
-    */
+/*
+    if (obj == Player_object && fate != HIT_NONE) {
+      mprintf(0, "Hit type %d, obj %d\n", fate, hit_info.hit_object[0]);
+      if (fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT) {
+        mprintf(0, "Hit object type %d, id %d\n",
+                Objects[hit_info.hit_object[0]].type,
+                Objects[hit_info.hit_object[0]].id);
+      }
+    }
+*/
     obj->mtype.phys_info.velocity = temp_vel;
 
     // Accounts for precomputed hit rays
@@ -1195,15 +1196,15 @@ void do_physics_sim(object *obj) {
           Objects[objnum].lifetime = 10.0f;
         }
         if (obj == Player_object) {
-          mprintf((0, "Fate = %d for player - ", fate));
+          mprintf(0, "Fate = %d for player - ", fate);
           if (fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT) {
             if (Objects[hit_info.hit_object[0]].flags & OF_BIG_OBJECT) {
-              mprintf((0, "Big object\n"));
+              mprintf(0, "Big object\n");
             } else {
-              mprintf((0, "Small object\n"));
+              mprintf(0, "Small object\n");
             }
           } else {
-            mprintf((0, "non-object\n"));
+            mprintf(0, "non-object\n");
           }
         }
       }
@@ -1265,11 +1266,12 @@ void do_physics_sim(object *obj) {
       // We where sitting in a wall -- invalid starting point
       // moved backwards
       if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
-
-        //				mprintf((0, "Obj %d Flew backwards!\n", OBJNUM(obj)));
-        //				mprintf((0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n", XYZ(&start_pos),
-        // XYZ(&obj->pos))); don't change position or sim_time_remaining
-
+/*
+        mprintf(0, "Obj %d Flew backwards!\n", OBJNUM(obj));
+        mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
+                XYZ(&start_pos),
+                XYZ(&obj->pos)); // don't change position or sim_time_remaining
+*/
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
         moved_time = 0.0;
@@ -1288,10 +1290,15 @@ void do_physics_sim(object *obj) {
 
         // chrishack -- negative simulation time pasted for this sim frame
         if (sim_time_remaining > old_sim_time_remaining) {
-          //					mprintf((0,"PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old =
-          //%15.13f\nAttempted d = %15.13f, actual = %15.13f\n",sim_time_remaining,old_sim_time_remaining,
-          // attempted_dist, actual_dist));
-          // Int3();
+/*
+          mprintf(0,"PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\n""
+                    "Attempted d = %15.13f, actual = %15.13f\n",
+                  sim_time_remaining,
+                  old_sim_time_remaining,
+                  attempted_dist,
+                  actual_dist);
+           Int3();
+*/
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
           f_continue_sim = false;
@@ -1306,7 +1313,7 @@ void do_physics_sim(object *obj) {
         if (moved_time > 0.0001f) {
           obj->mtype.phys_info.velocity = (hit_info.hit_pnt - start_pos) / moved_time;
         } else {
-          // mprintf((0, "Moved time is ZERO\n"));  -- Add this back -- chrishack
+          // mprintf(0, "Moved time is ZERO\n");  -- Add this back -- chrishack
           ASSERT(old_sim_time_remaining > 0.0f);
           obj->mtype.phys_info.velocity = start_vel;
         }
@@ -1447,7 +1454,7 @@ void do_physics_sim(object *obj) {
                   if (obj->type != OBJ_PLAYER)
                     SetObjectDeadFlag(obj);
                   else
-                    mprintf((0, "Got a ship that was set for bounce!!! BAD!!!\n"));
+                    mprintf(0, "Got a ship that was set for bounce!!! BAD!!!\n");
                 }
               }
               obj->mtype.phys_info.num_bounces--;
@@ -1496,14 +1503,14 @@ void do_physics_sim(object *obj) {
             //(vm_GetMagnitude(&obj->mtype.phys_info.velocity) < .001f
             //|| obj->mtype.phys_info.velocity * hit_info.hit_wallnorm[0] <= 0.0f))
             //						{
-            //							mprintf((0, "At Rest!\n"));
+            //							mprintf(0, "At Rest!\n");
             //							obj->movement_type = MT_NONE;
             //							obj->mtype.phys_info.velocity = Zero_vector;
             //							f_continue_sim = false;
             //						}
 
-            // mprintf((0, "(%f, %f, %f) after bounce\n", XYZ(&obj->mtype.phys_info.velocity)));
-            // mprintf((0, "p (%f, %f, %f) after bounce\n", XYZ(&obj->pos)));
+            // mprintf(0, "(%f, %f, %f) after bounce\n", XYZ(&obj->mtype.phys_info.velocity));
+            // mprintf(0, "p (%f, %f, %f) after bounce\n", XYZ(&obj->pos));
           } else {
           slide_sim:
 
@@ -1559,8 +1566,8 @@ void do_physics_sim(object *obj) {
 
         skip_sim:
 
-          // mprintf((0, "PHYSICS: Wall normal (%f, %f, %f)\n", XYZ(&hit_info.hit_wallnorm[0])));
-          // mprintf((0, "PHYSICS: Bounded velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity)));
+          // mprintf(0, "PHYSICS: Wall normal (%f, %f, %f)\n", XYZ(&hit_info.hit_wallnorm[0]));
+          // mprintf(0, "PHYSICS: Bounded velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity));
 
           // This only happens if the new velocity is set from hitting a forcefield.
           if (!(fabs(obj->mtype.phys_info.velocity.x) < MAX_OBJECT_VEL &&
@@ -1568,7 +1575,7 @@ void do_physics_sim(object *obj) {
                 fabs(obj->mtype.phys_info.velocity.z) < MAX_OBJECT_VEL)) {
             float mag = vm_NormalizeVector(&obj->mtype.phys_info.velocity);
 
-            mprintf((0, "PHYSICS:  Bashing vel for Obj %d of type %d with %f velocity", objnum, obj->type, mag));
+            mprintf(0, "PHYSICS:  Bashing vel for Obj %d of type %d with %f velocity", objnum, obj->type, mag);
             obj->mtype.phys_info.velocity *= MAX_OBJECT_VEL * 0.1f;
           }
 
@@ -1608,9 +1615,9 @@ void do_physics_sim(object *obj) {
                                       if(p1.y < 0.0)
                                       {
       //					if(p1.y == 0.0)
-      //						mprintf((0, "AT REST: p1 (%f, %f, %f)\n", XYZ(&p1)));
+      //						mprintf(0, "AT REST: p1 (%f, %f, %f)\n", XYZ(&p1));
       //					else
-      //						mprintf((0, "SHIT: p1 (%f, %f, %f)\n", XYZ(&p1)));
+      //						mprintf(0, "SHIT: p1 (%f, %f, %f)\n", XYZ(&p1));
       //
       //					p1.y = -.0001f;
       //					}
@@ -1740,7 +1747,7 @@ void do_physics_sim(object *obj) {
 
       //				hit_info.hit_wallnorm[0] *= -1.0f;
 
-      //				mprintf((0, "hit dist %f\n", hit_info.hit_dist));
+      //				mprintf(0, "hit dist %f\n", hit_info.hit_dist);
 
       collide_two_objects(obj, &Objects[hit_info.hit_object[0]], &hit_info.hit_face_pnt[0], &hit_info.hit_wallnorm[0],
                           &hit_info);
@@ -1761,7 +1768,7 @@ void do_physics_sim(object *obj) {
         obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0];
       }
 
-      // mprintf((0, "OBJ %d t %d hit %d\n", OBJNUM(obj), obj->type, hit_info.hit_object[0]));
+      // mprintf(0, "OBJ %d t %d hit %d\n", OBJNUM(obj), obj->type, hit_info.hit_object[0]);
 
       // Let object continue its movement if collide_two_objects does not mark it as dead
       //				if ( !(obj->flags&OF_DEAD)  )
@@ -1815,12 +1822,12 @@ void do_physics_sim(object *obj) {
     } break;
 
     case HIT_BAD_P0:
-      mprintf((0, "PHYSICS ERROR: Bad p0 in physics!!!\n"));
+      mprintf(0, "PHYSICS ERROR: Bad p0 in physics!!!\n");
       Int3(); // Unexpected collision type: start point not in specified segment.
       break;
 
     default:
-      mprintf((0, "PHYSICS ERROR: Unknown and unhandled hit type returned from FVI\n"));
+      mprintf(0, "PHYSICS ERROR: Unknown and unhandled hit type returned from FVI\n");
       Int3();
       break;
     }
@@ -1835,14 +1842,18 @@ void do_physics_sim(object *obj) {
   // NOTE: These numbers limit the max collisions an object can have in a single frame
   if (count >= sim_loop_limit) {
     if (obj->type == OBJ_PLAYER) {
-      mprintf((0, "PHYSICS NOTE: Too many collisions for player!\n"));
+      mprintf(0, "PHYSICS NOTE: Too many collisions for player!\n");
       obj->mtype.phys_info.velocity = Zero_vector;
     } else {
-      //			mprintf((0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-      // objnum, init_room, obj->roomnum)); 			obj->flags |= OF_DEAD;
-
-      //			obj->mtype.phys_info.velocity /= 2.0f;
-      //			obj->mtype.phys_info.rotvel /= 2.0f;
+/*
+      mprintf(0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
+              objnum,
+              init_room,
+              obj->roomnum);
+      obj->flags |= OF_DEAD;
+      obj->mtype.phys_info.velocity /= 2.0f;
+      obj->mtype.phys_info.rotvel /= 2.0f;
+*/
     }
 
     // ObjSetPos(obj,&init_pos, init_room);
@@ -2077,7 +2088,7 @@ bool PhysComputeWalkerPosOrient(object *obj, vector *pos, matrix *orient) {
     fate = PhysCastWalkRay(obj, &obj->pos, &foot_pnt, &hp);
 
     if (fate == HIT_NONE) {
-      mprintf((0, "Walking object %d should be falling\n", OBJNUM(obj)));
+      mprintf(0, "Walking object %d should be falling\n", OBJNUM(obj));
       //			SetObjectDeadFlag(obj);
       f_ok = false;
     } else {
@@ -2346,9 +2357,9 @@ void do_walking_sim(object *obj) {
     }
   }
 
-  //	mprintf((0, "PHYSICS: Current obj: %d, %9.2fx %9.2fy %9.2fz\n", OBJNUM(obj), XYZ(&obj->pos)));
-  // mprintf((2,1,0,"x %9.2f\ny %9.2f\nz %9.2f", XYZ(&obj->mtype.phys_info.velocity)));
-  // mprintf((0, "PHYSICS: Current velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity)));
+  //	mprintf(0, "PHYSICS: Current obj: %d, %9.2fx %9.2fy %9.2fz\n", OBJNUM(obj), XYZ(&obj->pos));
+  // mprintf(2,1,0,"x %9.2f\ny %9.2f\nz %9.2f", XYZ(&obj->mtype.phys_info.velocity));
+  // mprintf(0, "PHYSICS: Current velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity));
 
   Physics_normal_counter++;
 
@@ -2465,7 +2476,7 @@ void do_walking_sim(object *obj) {
 
       goto end_of_sim;
     } else if (fate == HIT_OUT_OF_TERRAIN_BOUNDS) {
-      mprintf((0, "PHYSICS NOTE: Walker exited terrain\n"));
+      mprintf(0, "PHYSICS NOTE: Walker exited terrain\n");
       SetObjectDeadFlag(obj);
       obj->last_pos = init_pos;
 
@@ -2495,9 +2506,12 @@ void do_walking_sim(object *obj) {
       // moved backwards
       if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
 
-        mprintf((0, "Obj %d Walked backwards!\n", OBJNUM(obj)));
-        //				mprintf((0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n", XYZ(&start_pos),
-        // XYZ(&obj->pos))); don't change position or sim_time_remaining
+        mprintf(0, "Obj %d Walked backwards!\n", OBJNUM(obj));
+/*
+        mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
+                XYZ(&start_pos),
+                XYZ(&obj->pos))); // don't change position or sim_time_remaining
+*/
 
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
@@ -2517,10 +2531,10 @@ void do_walking_sim(object *obj) {
 
         // chrishack -- negative simulation time pasted for this sim frame
         if (sim_time_remaining > old_sim_time_remaining) {
-          mprintf((0,
+          mprintf(0,
                    "PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\nAttempted d = %15.13f, actual "
                    "= %15.13f\n",
-                   sim_time_remaining, old_sim_time_remaining, attempted_dist, actual_dist));
+                   sim_time_remaining, old_sim_time_remaining, attempted_dist, actual_dist);
           // Int3();
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
@@ -2601,16 +2615,15 @@ void do_walking_sim(object *obj) {
             }
 
             bounced = 1; // this object bounced
-            //							mprintf((0, "(%f, %f, %f) before bounce\n",
-            // XYZ(&obj->mtype.phys_info.velocity)));
+            // mprintf(0, "(%f, %f, %f) before bounce\n", XYZ(&obj->mtype.phys_info.velocity));
             obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0] * (wall_part * -1.0f);
 
             if (obj->mtype.phys_info.coeff_restitution != 1.0f)
               obj->mtype.phys_info.velocity -=
                   (obj->mtype.phys_info.velocity * (1.0f - obj->mtype.phys_info.coeff_restitution));
 
-            // mprintf((0, "(%f, %f, %f) after bounce\n", XYZ(&obj->mtype.phys_info.velocity)));
-            // mprintf((0, "p (%f, %f, %f) after bounce\n", XYZ(&obj->pos)));
+            // mprintf(0, "(%f, %f, %f) after bounce\n", XYZ(&obj->mtype.phys_info.velocity));
+            // mprintf(0, "p (%f, %f, %f) after bounce\n", XYZ(&obj->pos));
           } else {
             float wall_force;
 
@@ -2637,8 +2650,8 @@ void do_walking_sim(object *obj) {
             }
           }
 
-          // mprintf((0, "PHYSICS: Wall normal (%f, %f, %f)\n", XYZ(&hit_info.hit_wallnorm[0])));
-          // mprintf((0, "PHYSICS: Bounded velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity)));
+          // mprintf(0, "PHYSICS: Wall normal (%f, %f, %f)\n", XYZ(&hit_info.hit_wallnorm[0]));
+          // mprintf(0, "PHYSICS: Bounded velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity));
 
           // This only happens if the new velocity is set from hitting a forcefield.
           if (!(fabs(obj->mtype.phys_info.velocity.x) < MAX_OBJECT_VEL &&
@@ -2646,7 +2659,7 @@ void do_walking_sim(object *obj) {
                 fabs(obj->mtype.phys_info.velocity.z) < MAX_OBJECT_VEL)) {
             float mag = vm_NormalizeVector(&obj->mtype.phys_info.velocity);
 
-            mprintf((0, "PHYSICS:  Bashing vel for Obj %d of type %d with %f velocity", objnum, obj->type, mag));
+            mprintf(0, "PHYSICS:  Bashing vel for Obj %d of type %d with %f velocity", objnum, obj->type, mag);
             obj->mtype.phys_info.velocity *= MAX_OBJECT_VEL * 0.1f;
           }
 
@@ -2686,9 +2699,9 @@ void do_walking_sim(object *obj) {
                                       if(p1.y < 0.0)
                                       {
       //					if(p1.y == 0.0)
-      //						mprintf((0, "AT REST: p1 (%f, %f, %f)\n", XYZ(&p1)));
+      //						mprintf(0, "AT REST: p1 (%f, %f, %f)\n", XYZ(&p1));
       //					else
-      //						mprintf((0, "SHIT: p1 (%f, %f, %f)\n", XYZ(&p1)));
+      //						mprintf(0, "SHIT: p1 (%f, %f, %f)\n", XYZ(&p1));
       //
       //					p1.y = -.0001f;
       //					}
@@ -2778,7 +2791,7 @@ void do_walking_sim(object *obj) {
         obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0];
       }
 
-      // mprintf((0, "OBJ %d t %d hit %d\n", OBJNUM(obj), obj->type, hit_info.hit_object[0]));
+      // mprintf(0, "OBJ %d t %d hit %d\n", OBJNUM(obj), obj->type, hit_info.hit_object[0]);
 
       // Let object continue its movement if collide_two_objects does not mark it as dead
       //				if ( !(obj->flags&OF_DEAD)  )
@@ -2814,12 +2827,12 @@ void do_walking_sim(object *obj) {
     } break;
 
     case HIT_BAD_P0:
-      mprintf((0, "PHYSICS ERROR: Bad p0 in physics!!!\n"));
+      mprintf(0, "PHYSICS ERROR: Bad p0 in physics!!!\n");
       Int3(); // Unexpected collision type: start point not in specified segment.
       break;
 
     default:
-      mprintf((0, "PHYSICS ERROR: Unknown and unhandled hit type returned from FVI\n"));
+      mprintf(0, "PHYSICS ERROR: Unknown and unhandled hit type returned from FVI\n");
       Int3();
       break;
     }
@@ -2834,13 +2847,17 @@ void do_walking_sim(object *obj) {
   // NOTE: These numbers limit the max collisions an object can have in a single frame
   if (count >= sim_loop_limit) {
     if (obj->type == OBJ_PLAYER) {
-      mprintf((0, "PHYSICS NOTE: Too many collisions for player!\n"));
+      mprintf(0, "PHYSICS NOTE: Too many collisions for player!\n");
     } else {
-      //			mprintf((0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-      // objnum, init_room, obj->roomnum)); 			obj->flags |= OF_DEAD;
-
-      //			obj->mtype.phys_info.velocity /= 2.0f;
-      //			obj->mtype.phys_info.rotvel /= 2.0f;
+      /*
+      mprintf(0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
+              objnum,
+              init_room,
+              obj->roomnum));
+      obj->flags |= OF_DEAD;
+      obj->mtype.phys_info.velocity /= 2.0f;
+      obj->mtype.phys_info.rotvel /= 2.0f;
+      */
     }
 
     // ObjSetPos(obj,&init_pos, init_room);
@@ -3026,10 +3043,10 @@ void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index) {
     }
 
     if (weapon_index != -1) {
-      mprintf((0, "Force from weapon\n"));
+      mprintf(0, "Force from weapon\n");
     }
 
-    // mprintf((0,"Force: Magnitude = %f   Scale = %1.3f\n",magnitude,scale));
+    // mprintf(0,"Force: Magnitude = %f   Scale = %1.3f\n",magnitude,scale);
 
     VIBE_DoForce(force_vec);
   }
@@ -3048,13 +3065,13 @@ void physics_set_rotvel_and_saturate(float *dest, float delta)
 {
         if ((delta ^ *dest) < 0) {
                 if (abs(delta) < F1_0/8) {
-                        // mprintf((0, "D"));
+                        // mprintf(0, "D");
                         *dest = delta/4;
                 } else
-                        // mprintf((0, "d"));
+                        // mprintf(0, "d");
                         *dest = delta;
         } else {
-                // mprintf((0, "!"));
+                // mprintf(0, "!");
                 *dest = delta;
         }
 }
@@ -3107,46 +3124,46 @@ void physics_turn_towards_vector(vector *goal_vector, object *obj, float rate)
 //	change in orientation.
 
 void phys_apply_rot(object *obj, vector *force_vec) {
-  /*
-  float	rate, vecmag;
+/*
+  float rate, vecmag;
 
   if (obj->movement_type != MT_PHYSICS)
-          return;
+    return;
 
   vecmag = vm_VectorMagnitude(force_vec);
 
-  if (vecmag < F1_0/256)
-          rate = 4*F1_0;
+  if (vecmag < F1_0 / 256)
+    rate = 4 * F1_0;
   else if (vecmag < obj->mtype.phys_info.mass >> 14)
-          rate = 4*F1_0;
+    rate = 4 * F1_0;
   else {
-          rate = fixdiv(obj->mtype.phys_info.mass, vecmag);
+    rate = fixdiv(obj->mtype.phys_info.mass, vecmag);
 
-          if (obj->type == OBJ_ROBOT) {
-                  if (rate < F1_0/4)
-                          rate = F1_0/4;
-                  //	Changed by mk, 10/24/95, claw guys should not slow down when attacking!
-                  if (!Robot_info[obj->id].thief && !Robot_info[obj->id].attack_type) {
-                          if (obj->ctype.ai_info.SKIP_AI_COUNT * Frametime < 3*F1_0/4) {
-                                  float	tval = fixdiv(F1_0, 8*Frametime);
-                                  int	addval;
-                                          addval = f2i(tval);
-                                          if ( (rand() * 2) < (tval & 0xffff))
-                                          addval++;
-                                  obj->ctype.ai_info.SKIP_AI_COUNT += addval;
-                                  // -- mk: too much stuff making hard to see my debug messages...mprintf((0, "Frametime
-  = %7.3f, addval = %i\n", f2fl(Frametime), addval));
-                          }
-                  }
-          } else {
-                  if (rate < F1_0/2)
-                          rate = F1_0/2;
-          }
+    if (obj->type == OBJ_ROBOT) {
+      if (rate < F1_0 / 4)
+        rate = F1_0 / 4;
+      //	Changed by mk, 10/24/95, claw guys should not slow down when attacking!
+      if (!Robot_info[obj->id].thief && !Robot_info[obj->id].attack_type) {
+        if (obj->ctype.ai_info.SKIP_AI_COUNT * Frametime < 3 * F1_0 / 4) {
+          float tval = fixdiv(F1_0, 8 * Frametime);
+          int addval;
+          addval = f2i(tval);
+          if ((rand() * 2) < (tval & 0xffff))
+            addval++;
+          obj->ctype.ai_info.SKIP_AI_COUNT += addval;
+          // -- mk: too much stuff making hard to see my debug messages...
+          mprintf(0, "Frametime = %7.3f, addval = %i\n", f2fl(Frametime), addval);
+        }
+      }
+    } else {
+      if (rate < F1_0 / 2)
+        rate = F1_0 / 2;
+    }
   }
 
-  //	Turn amount inversely proportional to mass.  Third parameter is seconds to do 360 turn.
+  // Turn amount inversely proportional to mass.  Third parameter is seconds to do 360 turn.
   physics_turn_towards_vector(force_vec, obj, rate);
-  */
+*/
 }
 /*
 //this routine will set the thrust for an object to a value that will

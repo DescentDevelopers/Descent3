@@ -90,7 +90,7 @@ oeLnxAppDatabase::~oeLnxAppDatabase() {
     return;
   }
 
-  mprintf((0, "Can't Export Database Since It's Not There!\n"));
+  mprintf(0, "Can't Export Database Since It's Not There!\n");
 }
 
 CRegistry *oeLnxAppDatabase::GetSystemRegistry() { return database; }
@@ -105,7 +105,7 @@ bool oeLnxAppDatabase::create_record(const char *pathname) {
     database->CreateKey((char *)pathname);
     return true;
   }
-  mprintf((0, "Can't CreateKey because database NULL\n"));
+  mprintf(0, "Can't CreateKey because database NULL\n");
   return false;
 }
 
@@ -115,7 +115,7 @@ bool oeLnxAppDatabase::lookup_record(const char *pathname) {
   if (database) {
     return database->LookupKey((char *)pathname);
   }
-  mprintf((0, "Can't lookup key because database NULL\n"));
+  mprintf(0, "Can't lookup key because database NULL\n");
   return false;
 }
 
@@ -125,7 +125,7 @@ bool oeLnxAppDatabase::read(const char *label, char *entry, int *entrylen) {
   ASSERT(entry);
   ASSERT(entrylen);
   if (!database) {
-    mprintf((0, "Can't read record because database NULL\n"));
+    mprintf(0, "Can't read record because database NULL\n");
     return false;
   }
 
@@ -146,7 +146,7 @@ bool oeLnxAppDatabase::read(const char *label, void *entry, int wordsize) {
   ASSERT(label);
   ASSERT(entry);
   if (!database) {
-    mprintf((0, "Can't read record because Database NULL\n"));
+    mprintf(0, "Can't read record because Database NULL\n");
     return false;
   }
 
@@ -169,7 +169,7 @@ bool oeLnxAppDatabase::read(const char *label, void *entry, int wordsize) {
     *((uint32_t *)entry) = (uint32_t)data;
     break;
   default:
-    mprintf((0, "Unable to read key %s, unsupported size", label));
+    mprintf(0, "Unable to read key %s, unsupported size", label);
     return false;
     break;
   }
@@ -190,7 +190,7 @@ bool oeLnxAppDatabase::write(const char *label, const char *entry, int entrylen)
   ASSERT(label);
   ASSERT(entry);
   if (!database) {
-    mprintf((0, "Can't write record because database NULL\n"));
+    mprintf(0, "Can't write record because database NULL\n");
     return false;
   }
 
@@ -200,7 +200,7 @@ bool oeLnxAppDatabase::write(const char *label, const char *entry, int entrylen)
 bool oeLnxAppDatabase::write(const char *label, int entry) {
   ASSERT(label);
   if (!database) {
-    mprintf((0, "Can't write record because database NULL\n"));
+    mprintf(0, "Can't write record because database NULL\n");
     return false;
   }
   return database->CreateRecord((char *)label, REGT_DWORD, &entry);

@@ -273,13 +273,12 @@ bool ui_MousePoll(bool buttons) {
   } else if (UI_cursor_show) {
     // if bX_count is 0, then repeat processing can occur, otherwise only real mouse events are processed.
     if (ddio_MouseGetEvent(&msebtn, &state)) {
-      //			mprintf((2, "mouse #%d state %d at %04d %04d\n", msebtn, UI_input.b1_status,
-      // UI_input.mx, UI_input.my));
+      // mprintf(2, "mouse #%d state %d at %04d %04d\n", msebtn, UI_input.b1_status, UI_input.mx, UI_input.my);
       if (msebtn == 0) {
         UI_input.b1_last_status = UI_input.b1_status;
         UI_input.b1_status = state ? UIMSEBTN_PRESSED : UIMSEBTN_RELEASED;
         UI_input.b1_count = 1;
-        //	mprintf((0, "M"));
+        //	mprintf(0, "M");
         return true;
       } else {
         UI_input.b1_status = 0;
@@ -293,7 +292,7 @@ bool ui_MousePoll(bool buttons) {
         if (CHECK_FLAG(btn_mask, MOUSE_LB)) {
           // process repeat key events.
           UI_input.b1_status = UIMSEBTN_PRESSED;
-          //	mprintf((0, "m"));
+          //	mprintf(0, "m");
           return true;
         }
         UI_input.b1_status = 0;
@@ -336,7 +335,7 @@ bool ui_KeyPoll() {
     UI_input.key_status = 0;
     UI_input.key_first_press = false;
   }
-  //	mprintf((0, "key=%d status=%d.\n", UI_input.key, UI_input.key_status));
+  //	mprintf(0, "key=%d status=%d.\n", UI_input.key, UI_input.key_status);
   return UI_input.key ? true : false;
 }
 //	ability to load/use mouse cursors
@@ -376,7 +375,7 @@ void ui_RemoveAllWindows() {
     ASSERT(count < 50);
   }
   if (count) {
-    mprintf((0, "%d UI windows left open.  Closed them!\n", count));
+    mprintf(0, "%d UI windows left open.  Closed them!\n", count);
   }
 }
 //	removes a window from ui list.
@@ -480,7 +479,7 @@ void ui_DoCursor() {
       u0 = (float)(UI_MOUSE_HOTX - UI_input.mx) / (float)cur_w;
     if (UI_input.my < UI_MOUSE_HOTY)
       v0 = (float)(UI_MOUSE_HOTY - UI_input.my) / (float)cur_h;
-    //	mprintf_at((1,5,30,"mx=%d my=%d   ", UI_input.mx,UI_input.my));
+    //	mprintf_at(1,5,30,"mx=%d my=%d   ", UI_input.mx,UI_input.my);
     rend_DrawScaledBitmap(UI_input.mx - UI_MOUSE_HOTX, UI_input.my - UI_MOUSE_HOTY,
                           UI_input.mx + (int)((float)cur_w * u1) - UI_MOUSE_HOTX,
                           UI_input.my + (int)((float)cur_h * v1) - UI_MOUSE_HOTY, UI_cursor_bm, u0, v0, u1, v1);

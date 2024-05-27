@@ -577,7 +577,7 @@ void RunGameFromEditor()
 	renderer_type old_rend=PreferredRenderer;
 
 //	Run the damn game
-	mprintf((0, "Entering the game...\n"));
+	mprintf(0, "Entering the game...\n");
 
 	Editor_active = false;	
 	PROGRAM(editor) = 0;
@@ -592,7 +592,7 @@ void RunGameFromEditor()
 	Editor_active = true;
 	SetFunctionMode(EDITOR_MODE);		// ASSERT WE ARE IN EDITOR MODE!
 
-	mprintf((0, "Returning to editor...\n"));
+	mprintf(0, "Returning to editor...\n");
 }
 
 //Vars for getting the viewer position back from the game to the editor
@@ -784,9 +784,9 @@ void EditorToGame()
 	FindPlayerStarts();
 
 	//Save the level to restore when go back to editor
-	mprintf((0,"Make temp copy of level..."));
+	mprintf(0,"Make temp copy of level...");
 	SaveLevel("GameSave.D3L");
-	mprintf((0,"done\n"));
+	mprintf(0,"done\n");
 	Temp_level_saved = 1;			//say that we have a level saved
 
 	//Save the viewer position for the game to use
@@ -954,7 +954,7 @@ void InitEditGameSystems()
 	//Load up the pilot selected by default
 	if(cfexist(Default_pilot))
 	{
-		mprintf((0,"Loading up Default Pilot: %s\n",Default_pilot));
+		mprintf(0,"Loading up Default Pilot: %s\n",Default_pilot);
 		Current_pilot.set_filename(Default_pilot);
 		PltReadFile(&Current_pilot,true,true);
 	}else{

@@ -436,10 +436,10 @@ bool Win32SystemCheck(HINSTANCE hInst) {
   }
 
   if ((!SupportsKatmai()) || FindArg("-nopentium3")) {
-    mprintf((0, "No Katmai detected.\n"));
+    mprintf(0, "No Katmai detected.\n");
     Katmai = false;
   } else {
-    mprintf((0, "Katmai detected!\n"));
+    mprintf(0, "Katmai detected!\n");
     Katmai = true;
   }
 

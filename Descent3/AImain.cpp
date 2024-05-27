@@ -2020,15 +2020,14 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
 
             awall_dir += (scale * fp->normal);
 
-            //						mprintf((0, "%d\n", facelist[i].face_index));
+            //						mprintf(0, "%d\n", facelist[i].face_index);
             if (GameTextures[fp->tmap].flags & (TF_VOLATILE | TF_FORCEFIELD | TF_LAVA)) {
               if (!(fp->portal_num >= 0 && !(rp->portals[fp->portal_num].flags & PF_RENDER_FACES))) {
                 f_danger = true;
               }
             }
 
-            //						mprintf((0, "Dist %f %f (%d, %d)\n", dist, scale,
-            // facelist[i].room_index, facelist[i].face_index));
+            // mprintf(0, "Dist %f %f (%d, %d)\n", dist, scale, facelist[i].room_index, facelist[i].face_index));
 
             if (dist < closest_dist) {
               closest_dist = dist;
@@ -2069,7 +2068,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
               (TF_VOLATILE | TF_FORCEFIELD | TF_LAVA)) {
 #ifdef _DEBUG
             if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-              mprintf((0, "AI Note: Danger - NEAR FORCEFIELD, VOLATILE, OR LAVA\n"));
+              mprintf(0, "AI Note: Danger - NEAR FORCEFIELD, VOLATILE, OR LAVA\n");
             }
 #endif
             f_danger = true;
@@ -2106,7 +2105,7 @@ bool goal_do_avoid_walls(object *obj, vector *mdir) {
 
 #ifdef _DEBUG
     if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf((0, "AI Note: Avoid wall %f\n", scale));
+      mprintf(0, "AI Note: Avoid wall %f\n", scale);
     }
 #endif
 
@@ -2408,7 +2407,7 @@ bool AiMelee(object *obj) {
       attack_num = 0;
     }
 
-    //	mprintf((0, "Melee attack now!!!!\n"));
+    //	mprintf(0, "Melee attack now!!!!\n");
 
     attack_info.melee_number = attack_num;
     if (GoalAddGoal(obj, AIG_DO_MELEE_ANIM, (void *)&attack_info, ACTIVATION_BLEND_LEVEL) == 0)
@@ -2520,7 +2519,7 @@ void AIUpdateAnim(object *obj) {
     p_info->anim_flags &= ~AIAF_NOTIFY;
 
     if (!(p_info->multi_anim_info.flags & FMA_VALID)) {
-      mprintf((0, "Update Anim: Earily bail\n"));
+      mprintf(0, "Update Anim: Earily bail\n");
       return;
     }
 
@@ -2558,7 +2557,7 @@ void AIUpdateAnim(object *obj) {
 
     ai_info->next_flinch_time = Gametime + delta_time;
   }
-  //	mprintf((0, "D %d to %d\n", ai_info->animation_type, ai_info->next_animation_type));
+  //	mprintf(0, "D %d to %d\n", ai_info->animation_type, ai_info->next_animation_type);
 
   // Update the physics and movement class info
   switch (ai_info->animation_type) {
@@ -3049,8 +3048,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     {
       if (!(Game_mode & GM_MULTI)) {
         for (i = 0; i < AI_NumRendered; i++) {
-          //						mprintf((0, "I know that I could dodge, if I was aware, says
-          // robot %d.\n", AI_RenderedList[i]));
+        // mprintf(0, "I know that I could dodge, if I was aware, says robot %d.\n", AI_RenderedList[i]);
 
           if (!BOA_IsVisible(Objects[AI_RenderedList[i]].roomnum, other_obj->roomnum))
             continue;
@@ -3065,8 +3063,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
 
                     if (ai_info->vec_to_target_actual * (*AIDetermineFovVec(&Objects[AI_RenderedList[i]], &fov_vec)) >=
                         Objects[AI_RenderedList[i]].ai_info->fov) {
-                      //												mprintf((0,
-                      //"I am fired upon says robot %d\n", AI_RenderedList[i]));
+                      // mprintf(0, "I am fired upon says robot %d\n", AI_RenderedList[i]));
                       if (ai_info->notify_flags & (0x00000001 << notify_type)) {
                         ai_info->memory[0].num_enemy_shots_dodged++;
                         GoalAddGoal(&Objects[AI_RenderedList[i]], AIG_DODGE_OBJ, (void *)&obj->handle,
@@ -3086,8 +3083,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
         }
       } else {
         for (i = 0; i <= Highest_object_index; i++) {
-          //				mprintf((0, "I know that I could dodge, if I was aware, says robot %d.\n",
-          // AI_RenderedList[i]));
+          // mprintf(0, "I know that I could dodge, if I was aware, says robot %d.\n", AI_RenderedList[i]);
           if (Objects[i].control_type != CT_AI || Objects[i].type == OBJ_NONE)
             continue;
 
@@ -3107,8 +3103,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
                   AIDetermineFovVec(&Objects[i], &fov_vec);
 
                   if (to_weapon * fov_vec >= Objects[i].ai_info->fov) {
-                    //						mprintf((0, "I am fired upon says robot %d\n",
-                    // AI_RenderedList[i]));
+                    // mprintf(0, "I am fired upon says robot %d\n", AI_RenderedList[i]);
                     if (ai_info->notify_flags & (0x00000001 << notify_type)) {
                       ai_info->memory[0].num_enemy_shots_dodged++;
                       GoalAddGoal(&Objects[i], AIG_DODGE_OBJ, (void *)&obj->handle, ACTIVATION_BLEND_LEVEL, 1.0f,
@@ -3269,7 +3264,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     ei.extra_info = info;
     break;
   default:
-    mprintf((0, "Warning, %d has been notified with an unhandled notification %d\n", OBJNUM(obj), notify_type));
+    mprintf(0, "Warning, %d has been notified with an unhandled notification %d\n", OBJNUM(obj), notify_type);
     return true;
   }
 
@@ -3423,7 +3418,7 @@ start_loop:
       spc /= scaler;
     }
   }
-  // mprintf((0, "AI ANIM %d %d\n", from, to));
+  // mprintf(0, "AI ANIM %d %d\n", from, to);
 
   f_looped = (obj->rtype.pobj_info.anim_flags & AIAF_LOOPING) != 0;
   f_notify = (obj->rtype.pobj_info.anim_flags & AIAF_NOTIFY) != 0;
@@ -3445,7 +3440,7 @@ start_loop:
   ASSERT(from <= to);
 
   if (*anim_frame < from || *anim_frame > to) {
-    mprintf((0, "AI/Animation: Correcting for an incorrect frame number\n"));
+    mprintf(0, "AI/Animation: Correcting for an incorrect frame number\n");
     *anim_frame = from;
   }
 
@@ -3467,7 +3462,7 @@ start_loop:
         *anim_frame = to;
 
       if (f_notify) {
-        //				mprintf((0, "Animation ended\n"));
+        //				mprintf(0, "Animation ended\n");
         AINotify(obj, AIN_ANIM_COMPLETE, NULL);
       }
 
@@ -3480,7 +3475,7 @@ start_loop:
   }
 
   if (obj->rtype.pobj_info.anim_frame + 0.001 < from || obj->rtype.pobj_info.anim_frame > to) {
-    mprintf((2, "AI ANIM from %0.6f (%0.6f) to %0.6f\n", from, obj->rtype.pobj_info.anim_frame, to));
+    mprintf(2, "AI ANIM from %0.6f (%0.6f) to %0.6f\n", from, obj->rtype.pobj_info.anim_frame, to);
   }
   if (obj->rtype.pobj_info.anim_frame < from) {
     obj->rtype.pobj_info.anim_frame = from;
@@ -3576,7 +3571,7 @@ int AIFindRandomRoom(object *obj, ai_frame *ai_info, goal *goal_ptr, int avoid_r
     }
 
     if (!valid) {
-      mprintf((0, "AI:  Wander is generating the same room  :(\n"));
+      mprintf(0, "AI:  Wander is generating the same room  :(\n");
       random_room = obj->roomnum;
     }
   }
@@ -3599,7 +3594,7 @@ void AIDestroyObj(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: In free path\n"));
+    mprintf(0, "AI Note: In free path\n");
   }
 #endif
   AIPathFreePath(&ai_info->path);
@@ -3832,7 +3827,7 @@ void AISetDefault(t_ai_info *ai_info_ptr) {}
 void AIInitAll() {
   int i;
 
-  mprintf((0, "Initializing AI systems\n"));
+  mprintf(0, "Initializing AI systems\n");
 
   // Initialize the terrain AI system
   ait_Init();
@@ -3888,7 +3883,7 @@ void AIInitAll() {
     }
   }
 
-  mprintf((0, "Done Initializing AI systems\n"));
+  mprintf(0, "Done Initializing AI systems\n");
 }
 
 void AICheckTargetVis(object *obj) {
@@ -3897,7 +3892,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 1\n"));
+    mprintf(0, "AI Note: Vis 1\n");
   }
 #endif
 
@@ -3917,7 +3912,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 2\n"));
+    mprintf(0, "AI Note: Vis 2\n");
   }
 #endif
 
@@ -3928,7 +3923,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 3\n"));
+    mprintf(0, "AI Note: Vis 3\n");
   }
 #endif
 
@@ -3950,7 +3945,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 4\n"));
+    mprintf(0, "AI Note: Vis 4\n");
   }
 #endif
 
@@ -3962,7 +3957,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 5\n"));
+    mprintf(0, "AI Note: Vis 5\n");
   }
 #endif
 
@@ -3974,7 +3969,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 6\n"));
+    mprintf(0, "AI Note: Vis 6\n");
   }
 #endif
 
@@ -3982,14 +3977,14 @@ void AICheckTargetVis(object *obj) {
        ai_info->awareness <= AWARE_BARELY && (target->roomnum != obj->roomnum)) ||
       (target->type == OBJ_PLAYER && (Players[target->id].flags & (PLAYER_FLAGS_DEAD | PLAYER_FLAGS_DYING))) ||
       target->type == OBJ_GHOST || !AIDetermineObjVisLevel(obj, target)) {
-    //.		mprintf((0, "No check vis\n"));
+    //.		mprintf(0, "No check vis\n");
     ai_info->status_reg &= ~AISR_SEES_GOAL;
     return;
   }
 
 #ifdef _DEBUG
   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-    mprintf((0, "AI Note: Vis 7\n"));
+    mprintf(0, "AI Note: Vis 7\n");
   }
 #endif
 
@@ -4040,7 +4035,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
       if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-        mprintf((0, "AI Note: Vis 8\n"));
+        mprintf(0, "AI Note: Vis 8\n");
       }
 #endif
 
@@ -4053,7 +4048,7 @@ void AICheckTargetVis(object *obj) {
 
 #ifdef _DEBUG
         if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-          mprintf((0, "AI Note: Vis SEE TARGET\n"));
+          mprintf(0, "AI Note: Vis SEE TARGET\n");
         }
 #endif
       }
@@ -4681,7 +4676,7 @@ void ai_move(object *obj) {
 
 #ifdef _DEBUG
                   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                    mprintf((0, "AI Note: Dodging\n"));
+                    mprintf(0, "AI Note: Dodging\n");
                   }
 #endif
                 }
@@ -4692,7 +4687,7 @@ void ai_move(object *obj) {
 
 #ifdef _DEBUG
                 if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                  mprintf((0, "AI Note: Melee\n"));
+                  mprintf(0, "AI Note: Melee\n");
                 }
 #endif
               } else if (ai_info->goals[i].type == AIG_GET_AROUND_OBJ) {
@@ -4721,7 +4716,7 @@ void ai_move(object *obj) {
                 if (AiGoalAvoid(&adir, obj, g_obj, dist)) {
 #ifdef _DEBUG
                   if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                    mprintf((0, "AI Note: Avoiding object\n"));
+                    mprintf(0, "AI Note: Avoiding object\n");
                   }
 #endif
 
@@ -4780,7 +4775,7 @@ void ai_move(object *obj) {
 
 #ifdef _DEBUG
               if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-                mprintf((0, "AI Note: Auto avoid friends.\n"));
+                mprintf(0, "AI Note: Auto avoid friends.\n");
               }
 #endif
             }
@@ -4794,7 +4789,7 @@ void ai_move(object *obj) {
 
 #ifdef _DEBUG
             if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-              mprintf((0, "AI Note: Avoiding walls\n"));
+              mprintf(0, "AI Note: Avoiding walls\n");
             }
 #endif
           }
@@ -4971,10 +4966,10 @@ void ai_move(object *obj) {
                 AIMoveTowardsPosition(obj, &g_obj->pos, 1.0f, false, &goal_mdir, &goal_f_moved);
                 goal_mset = true;
               } else {
-                mprintf((0, "AIG Warning: No obj for GetToObj.\n"));
+                mprintf(0, "AIG Warning: No obj for GetToObj.\n");
               }
             } else if (cur_goal->type == AIG_FOLLOW_PATH) {
-              mprintf((0, "AIG Warning: Follow path has no path\n"));
+              mprintf(0, "AIG Warning: Follow path has no path\n");
             }
           } break;
 
@@ -4988,8 +4983,7 @@ void ai_move(object *obj) {
               bool f_toward = (subtype & 0x00000001);
               vector *vec;
 
-              //								mprintf((0, "Moving relative a type
-              //%d\n", obj->type));
+              // mprintf(0, "Moving relative a type %d\n", obj->type);
 
               switch (vec_id) {
               case GST_FVEC:
@@ -5002,7 +4996,7 @@ void ai_move(object *obj) {
                 vec = &goal_obj->orient.uvec;
                 break;
               default:
-                mprintf((0, "Invalid vec in AIG_MOVE_RELATIVE_OBJ_VEC bashing to fvec\n"));
+                mprintf(0, "Invalid vec in AIG_MOVE_RELATIVE_OBJ_VEC bashing to fvec\n");
                 cur_goal->subtype = GST_FVEC | (int)f_toward;
                 vec_id = GST_FVEC;
               }
@@ -5145,7 +5139,7 @@ void ai_move(object *obj) {
           } break;
 
           default: {
-            mprintf((0, "AI ERROR: Object %d trying a non-implemented goal\n", OBJNUM(obj)));
+            mprintf(0, "AI ERROR: Object %d trying a non-implemented goal\n", OBJNUM(obj));
             AIMoveTowardsPosition(obj, &ai_info->last_see_target_pos, 1.0f, true, &goal_mdir, &goal_f_moved);
             goal_mset = true;
           }
@@ -5213,7 +5207,7 @@ void ai_fire(object *obj) {
   object_info *obj_info = &Object_info[obj->id];
   bool f_turret_next_move_still;
 
-  //.		mprintf((0, "Aiming\n"));
+  //.		mprintf(0, "Aiming\n");
   if (!(ai_info->flags & AIF_FIRE)) {
     if (ai_info->status_reg & AISR_RANGED_ATTACK) {
       for (i = 0; i < pm->num_wbs; i++) {
@@ -5346,8 +5340,7 @@ void ai_fire(object *obj) {
         WeaponCalcGun(&gun_point[WB_MOVE_LEFT], &gun_normal[WB_MOVE_LEFT], obj,
                       pm->poly_wb[i].gp_index[aiming_gp_index]);
 
-        //			mprintf((0, "Weapon %f, %f, %f and normal %f, %f, %f\n", XYZ(&gun_point),
-        // XYZ(&gun_normal)));
+        // mprintf(0, "Weapon %f, %f, %f and normal %f, %f, %f\n", XYZ(&gun_point), XYZ(&gun_normal));
 
         target_dir[WB_MOVE_STILL] = ai_info->last_see_target_pos - gun_point[WB_MOVE_STILL];
         target_dir[WB_MOVE_RIGHT] = ai_info->last_see_target_pos - gun_point[WB_MOVE_RIGHT];
@@ -5594,7 +5587,7 @@ static inline void ai_decrease_awareness(object *obj) {
   if (ai_info->awareness == AWARE_NONE && !(ai_info->flags & AIF_PERSISTANT)) {
 #ifdef _DEBUG
     if (AI_debug_robot_do && OBJNUM(obj) == AI_debug_robot_index) {
-      mprintf((0, "AI Note: In free path\n"));
+      mprintf(0, "AI Note: In free path\n");
     }
 #endif
     AIPathFreePath(&ai_info->path);
@@ -5611,7 +5604,7 @@ static inline void ai_decrease_awareness(object *obj) {
     ai_info->awareness = AWARE_NONE;
   }
 
-  //	mprintf((0, "Awareness %f", ai_info->awareness));
+  //	mprintf(0, "Awareness %f", ai_info->awareness);
 }
 
 static inline bool ai_do_script_stuff(object *obj) {
@@ -6019,7 +6012,7 @@ void AIDoFreud(object *obj) {
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
-      mprintf((0, "Fear!!!!\n"));
+      mprintf(0, "Fear!!!!\n");
       return;
     }
 
@@ -6033,7 +6026,7 @@ void AIDoFreud(object *obj) {
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
-      mprintf((0, "Fear!!!!\n"));
+      mprintf(0, "Fear!!!!\n");
       return;
     }
 
@@ -6045,7 +6038,7 @@ void AIDoFreud(object *obj) {
       GoalAddGoal(obj, AIG_WANDER_AROUND, NULL, 3, 2.0f, GF_SPEED_FLEE | GF_ORIENT_VELOCITY | GF_NONFLUSHABLE);
       GoalAddEnabler(obj, 3, AIE_CLEAR_TIME, (void *)&time, 1.0, 0.0);
 
-      mprintf((0, "Fear!!!!\n"));
+      mprintf(0, "Fear!!!!\n");
       return;
     }
   }
@@ -6136,7 +6129,7 @@ void AIDoFrame(object *obj) {
 
   DebugBlockPrint("A ");
 
-  //	mprintf((0, "Awareness = %d\n", ai_info->awareness));
+  //	mprintf(0, "Awareness = %d\n", ai_info->awareness);
 
   if ((ai_info->flags & AIF_DISABLED) || (obj->type == OBJ_DUMMY)) {
     DebugBlockPrint("DA");

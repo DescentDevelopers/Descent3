@@ -1243,14 +1243,14 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
 
   fate = fvi_FindIntersection(&fq, &hit_data);
   if (fate != HIT_NONE) {
-    mprintf((0, "Warning: Laser from parent=%d weapon point is in a wall or object, didn't fire!\n", OBJNUM(parent)));
+    mprintf(0, "Warning: Laser from parent=%d weapon point is in a wall or object, didn't fire!\n", OBJNUM(parent));
     return -1;
   }
 
   objnum = ObjCreate(OBJ_WEAPON, weapon_num, hit_data.hit_room, pos, NULL, parent->handle);
 
   if (objnum < 0) {
-    mprintf((1, "Can't create laser - Out of objects!\n"));
+    mprintf(1, "Can't create laser - Out of objects!\n");
     return -1;
   }
 
@@ -1358,11 +1358,11 @@ int CreateAndFireWeapon(vector *pos, vector *dir, object *parent, int weapon_num
           obj->ctype.laser_info.hit_face = hit_info.hit_face[0];
 
           obj->ctype.laser_info.hit_status = WPC_HIT_WALL;
-          //					mprintf((0, "WPC: Hit r%d rw%d w%d (%f,%f,%f)\n", hit_info.hit_room,
-          // hit_info.hit_face_room[0], hit_info.hit_face[0], XYZ(&hit_info.hit_wallnorm[0])));
+          // mprintf(0, "WPC: Hit r%d rw%d w%d (%f,%f,%f)\n", hit_info.hit_room,
+          // hit_info.hit_face_room[0], hit_info.hit_face[0], XYZ(&hit_info.hit_wallnorm[0]));
         } else {
           obj->ctype.laser_info.hit_status = WPC_NO_COLLISIONS;
-          //					mprintf((0, "WPC: No collisions\n"));
+          //					mprintf(0, "WPC: No collisions\n");
         }
       }
     }
@@ -1739,7 +1739,7 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
   bool f_good_gp = true;
 
   if (!(obj->flags & OF_POLYGON_OBJECT)) {
-    // mprintf ((0,"Object type %d is not a polyobj!\n",obj->type));
+    // mprintf(0,"Object type %d is not a polyobj!\n",obj->type);
 
     if (gun_point)
       *gun_point = obj->pos;
@@ -1752,7 +1752,7 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
   pm = &Poly_models[obj->rtype.pobj_info.model_num];
 
   if (pm->n_guns == 0) {
-    mprintf((0, "WARNING: Object with no weapons is firing.\n", gun_num));
+    mprintf(0, "WARNING: Object with no weapons is firing.\n", gun_num);
 
     if (gun_point)
       *gun_point = obj->pos;
@@ -1766,7 +1766,7 @@ bool WeaponCalcGun(vector *gun_point, vector *gun_normal, object *obj, int gun_n
   SetModelAnglesAndPos(pm, normalized_time);
 
   if (gun_num < 0 || gun_num >= pm->n_guns) {
-    mprintf((0, "WARNING: Bashing gun num %d to 0.\n", gun_num));
+    mprintf(0, "WARNING: Bashing gun num %d to 0.\n", gun_num);
     if (gun_point)
       *gun_point = obj->pos;
     if (gun_normal)
@@ -1842,7 +1842,7 @@ int FireWeaponFromObject(object *obj, int weapon_num, int gun_num, bool f_force_
 
     if (gun_num >= pm->n_guns) {
       // We don't have a gun point for this gun!
-      mprintf((0, "Trying to fire from gun %d...we don't have that gun!\n", gun_num));
+      mprintf(0, "Trying to fire from gun %d...we don't have that gun!\n", gun_num);
       laser_pos = obj->pos;
       laser_dir = obj->orient.fvec;
     } else {
@@ -2655,7 +2655,7 @@ void DrawWeaponObject(object *obj) {
 
 // Stops any on/off weapons that are firing
 void StopOnOffWeapon(object *obj) {
-  // mprintf ((0,"Stopping on/off weapon!\n"));
+  // mprintf(0,"Stopping on/off weapon!\n");
   obj->weapon_fire_flags &= ~WFF_ON_OFF;
 
   if (Demo_flags == DF_RECORDING) {
@@ -2665,7 +2665,7 @@ void StopOnOffWeapon(object *obj) {
 
 // Starts an on/off weapon firing
 void StartOnOffWeapon(object *obj, uint8_t wb_index) {
-  // mprintf ((0,"Starting on/off weapon!\n"));
+  // mprintf(0,"Starting on/off weapon!\n");
   obj->weapon_fire_flags |= WFF_ON_OFF;
 
   dynamic_wb_info *p_dwb = &obj->dynamic_wb[wb_index];
@@ -3224,7 +3224,7 @@ void CreateRobotSpawnFromWeapon(object *obj) {
     return; // clients do not create robots without the servers permission
 
   if (wp->robot_spawn_handle == -1) {
-    mprintf((0, "Trying to create an invalid robot spawn!\n"));
+    mprintf(0, "Trying to create an invalid robot spawn!\n");
     return;
   }
   object *parent_obj = ObjGetUltimateParent(obj);

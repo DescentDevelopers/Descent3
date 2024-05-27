@@ -367,7 +367,7 @@ void D3MusicSongSelector() {
     switch (MusicAI.cur_song) {
     case OMS_THEME_TYPE_NONE:
       if (MusicAI.pending_region > -1) {
-        mprintf((0, "D3MUSIC: new region request processed.\n"));
+        mprintf(0, "D3MUSIC: new region request processed.\n");
         MusicAI.cur_song = OMS_THEME_TYPE_IDLE;
         Music_seq.SetCurrentRegion(MusicAI.pending_region);
         Music_seq.StartSong(MusicAI.cur_song, true);
@@ -379,18 +379,18 @@ void D3MusicSongSelector() {
       if (evt.cmd == OMS_EVT_SONGENDED) {
         MusicAI.cur_song = OMS_THEME_TYPE_NONE;
         //	if (Music_seq.GetCurrentRegion() == 0) {
-        //		mprintf((0, "Ending Region 0.\n"));
+        //		mprintf(0, "Ending Region 0.\n");
         //		MusicAI.cur_song = OMS_THEME_TYPE_IDLE;
         //		Music_seq.SetCurrentRegion(1);
         //		Music_seq.StartSong(MusicAI.cur_song, true);
         //	}
         //	else {
-        //		mprintf((0, "D3MUSIC: Song ended normally?\n"));
+        //		mprintf(0, "D3MUSIC: Song ended normally?\n");
         //	}
       } else if (evt.cmd == OMS_EVT_LOOPENDING) {
         // shall we switch regions?
         if (MusicAI.pending_region > -1) {
-          mprintf((0, "D3MUSIC: new region request processed.\n"));
+          mprintf(0, "D3MUSIC: new region request processed.\n");
           MusicAI.cur_song = OMS_THEME_TYPE_IDLE;
           Music_seq.SetCurrentRegion(MusicAI.pending_region);
           Music_seq.StartSong(MusicAI.cur_song, true);

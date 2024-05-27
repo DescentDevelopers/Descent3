@@ -134,7 +134,7 @@ void sound_render_room_geometry(int iroom, int slot) {
 
         // do reflections
         if (iface == (reflect_face * 3)) {
-          //	mprintf((0, "reflect "));
+          //	mprintf(0, "reflect ");
           int flags = GameTextures[rfacep->tmap].flags;
 
           if (flags & TF_WATER) {

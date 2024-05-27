@@ -74,21 +74,21 @@ oeLnxApplication *Lnx_app_obj = NULL;
 // ----------------------------------------------------------------------------
 
 bool ddio_InternalInit(ddio_init_info *init_info) {
-  mprintf((0, "DDIO: ddio_InternalInit() called."));
+  mprintf(0, "DDIO: ddio_InternalInit() called.");
   Lnx_app_obj = (oeLnxApplication *)init_info->obj;
   DDIO_init = true;
   return true;
 }
 
 void ddio_InternalClose() {
-  mprintf((0, "DDIO: ddio_InternalClose() called."));
+  mprintf(0, "DDIO: ddio_InternalClose() called.");
 
   if (DDIO_init) {
     DDIO_init = false;
     Lnx_app_obj = NULL;
   } // if
 
-  mprintf((0, "DDIO: ddio_InternalClose() returning."));
+  mprintf(0, "DDIO: ddio_InternalClose() returning.");
 }
 
 void ddio_DebugMessage(unsigned err, char *fmt, ...) {
@@ -99,7 +99,7 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
   std::vsnprintf(buf, sizeof(buf), fmt, arglist);
   va_end(arglist);
 
-  mprintf((0, "%s\n", buf));
+  mprintf(0, "%s\n", buf);
 }
 
 bool ddio_GetBinaryPath(char *exec_path, size_t len) {

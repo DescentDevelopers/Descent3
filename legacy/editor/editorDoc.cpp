@@ -201,7 +201,7 @@ BOOL CEditorDoc::OnNewDocument()
 // (SDI documents will reuse this document)
 
 //	Reinitialize Editor State.
-	mprintf((0, "Creating new level...\n"));	
+	mprintf(0, "Creating new level...\n");	
 //	D3EditState.texdlg_texture = 0;
 
 //	Create new mine
@@ -238,7 +238,7 @@ BOOL CEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	
 // TODO: Add your specialized creation code here
 //	does the level always load correctly?
-	mprintf((0, "Opening level %s...\n", lpszPathName));
+	mprintf(0, "Opening level %s...\n", lpszPathName);
 
 	theApp.pause();
 	CKeypadDialog::Deactivate();
@@ -271,7 +271,7 @@ BOOL CEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 	if (strchr(filename,'.') == 0) 
 		strcat(filename, ".d3l");		// check for extension
 
-	mprintf((0, "Saving level %s...\n", lpszPathName));
+	mprintf(0, "Saving level %s...\n", lpszPathName);
 	retval = (BOOL)EditorSaveLevel((char *)lpszPathName);
 
 	if (retval)
@@ -339,7 +339,7 @@ void CEditorDoc::OnCloseDocument()
 {
 	// TODO: Add your specialized code here and/or call the base class
 	COleServerDoc::OnCloseDocument();
-	mprintf((0,"Closing current level...\n"));
+	mprintf(0,"Closing current level...\n");
 
 	theApp.main_doc = NULL;
 }

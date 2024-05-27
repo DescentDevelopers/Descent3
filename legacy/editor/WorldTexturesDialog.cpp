@@ -466,7 +466,7 @@ void CWorldTexturesDialog::OnWtexdlgAddnew()
 	
 	GameTextures[tex_handle].bm_handle=bm_handle;
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 
 	if (!anim)
 	{
@@ -1007,7 +1007,7 @@ void CWorldTexturesDialog::OnSelendokTexList()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted texture list, but probably nothing."));
+		mprintf(0,"Possible corrupted texture list, but probably nothing.");
 		UpdateDialog();
 	}
 
@@ -1323,7 +1323,7 @@ void CWorldTexturesDialog::OnDelete()
 		mng_FreeTrackLock (tl);
 		if (!mng_DeletePage (GameTextures[n].name,PAGETYPE_TEXTURE,1))
 		{
-			mprintf ((0,ErrorString));
+			mprintf(0,ErrorString);
 			Int3();
 		}
 	}
@@ -1347,7 +1347,7 @@ void CWorldTexturesDialog::OnDelete()
 	MessageBox ("Texture deleted.");
 	D3EditState.texdlg_texture=GetNextTexture (n);
 	if (D3EditState.texdlg_texture==n)
-		mprintf ((0,"Wrapped!\n"));
+		mprintf(0,"Wrapped!\n");
 	
 	UpdateDialog ();
 }
@@ -1440,7 +1440,7 @@ void CWorldTexturesDialog::OnLoadBitmap()
 		GameTextures[n].flags &=~TF_ANIMATED;
 
 
-	mprintf ((0,"Making a copy of this bitmap locally...\n"));
+	mprintf(0,"Making a copy of this bitmap locally...\n");
 
 	if (anim)
 	{
@@ -1692,7 +1692,7 @@ void CWorldTexturesDialog::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrol
 			//	ok, new_pos will be an index into the listbox, NOT the texture list.
 			//	so we will get the number of texture rows we went up or down and change 
 			//	tex_start accordingly.
-				mprintf((0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, m_TexListPos));
+				mprintf(0, "scroll new_pos = %d.  original_pos = %d\n", new_pos, m_TexListPos);
 				if (new_pos < m_TexListPos) TextureListUp(abs(m_TexListPos-new_pos));
 				if (new_pos > m_TexListPos) TextureListDown(abs(new_pos-m_TexListPos));
 
@@ -1730,11 +1730,11 @@ int CWorldTexturesDialog::LoadITLFile (char *filename,int type)
 	infile=(CFILE *)cfopen (filename,"rt");
 	if (!infile)
 	{
-		mprintf ((0,"Couldn't load ITL file %s!\n",filename));
+		mprintf(0,"Couldn't load ITL file %s!\n",filename);
 		return -1;
 	}
 
-	mprintf ((0,"Loading ITL file %s\n",name));
+	mprintf(0,"Loading ITL file %s\n",name);
 
 	while (!done)
 	{
@@ -1783,7 +1783,7 @@ int CWorldTexturesDialog::LoadITLFile (char *filename,int type)
 			int bm=LoadTextureImage (bmname,0,type,0);
 			if (bm<=0)
 			{
-				mprintf ((0,"Error loading frame %d of ITL file %s!\n",total,filename));
+				mprintf(0,"Error loading frame %d of ITL file %s!\n",total,filename);
 				goto Here;
 				
 			}
@@ -1830,7 +1830,7 @@ int CWorldTexturesDialog::LoadITLFile (char *filename,int type)
 
 	cfclose (infile);
 
-	mprintf ((0,"Making a copy of these textures locally...\n"));
+	mprintf(0,"Making a copy of these textures locally...\n");
 
 	for (i=0;i<total;i++)
 	{
@@ -2004,7 +2004,7 @@ void CWorldTexturesDialog::OnAddNewSmall()
 		
 	GameTextures[tex_handle].bm_handle=bm_handle;
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 
 	if (!anim)
 	{
@@ -2102,7 +2102,7 @@ void CWorldTexturesDialog::OnAddNewTiny()
 		
 	GameTextures[tex_handle].bm_handle=bm_handle;
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 
 	if (!anim)
 	{
@@ -2267,7 +2267,7 @@ void CWorldTexturesDialog::OnSelendokDestroyPulldown()
 		
 	if (i==-1)
 	{
-		mprintf ((0,"Possible corrupted texture list, but probably nothing."));
+		mprintf(0,"Possible corrupted texture list, but probably nothing.");
 		UpdateDialog();
 	}
 
@@ -2382,7 +2382,7 @@ void CWorldTexturesDialog::ChangeSize (int w,int h)
 	else if (w==32)
 		GameTextures[n].flags |=TF_TEXTURE_32;
 
-	mprintf ((0,"Texture changed to %d x %d!\n",w,h));
+	mprintf(0,"Texture changed to %d x %d!\n",w,h);
 
 	UpdateDialog ();
 	
@@ -2463,7 +2463,7 @@ void CWorldTexturesDialog::OnImportBump()
 
 	GameTextures[n].src_bumpmap=src_bump;
 
-	mprintf ((0,"Making a copy of this bumpmap locally...\n"));
+	mprintf(0,"Making a copy of this bumpmap locally...\n");
 
 	sprintf (filename,"%s\\%s",LocalManageGraphicsDir,GameBitmaps[bm_handle].name);
 	bm_SaveFileBitmap (filename,bm_handle);
@@ -2811,7 +2811,7 @@ void CWorldTexturesDialog::OnAddNewHuge()
 		
 	GameTextures[tex_handle].bm_handle=bm_handle;
 
-	mprintf ((0,"Making a copy of this bitmap/anim locally...\n"));
+	mprintf(0,"Making a copy of this bitmap/anim locally...\n");
 
 	if (!anim)
 	{

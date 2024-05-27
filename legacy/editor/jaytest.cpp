@@ -85,7 +85,7 @@ void RenderTexFrame (grViewport *my_viewport)
 	newtime=time(NULL);
 	if (newtime!=oldtime)
 	{
-		mprintf_at((1,2,0,"%d FPS    ",framecount));
+		mprintf_at(1,2,0,"%d FPS    ",framecount);
  		oldtime=newtime;
 		framecount=0;
 	}

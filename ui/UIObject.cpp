@@ -65,7 +65,7 @@ void UIObject::Move(int x, int y, int w, int h) {
   m_Y = y;
   m_W = w;
   m_H = h;
-  mprintf((0, "new [%d,%d]\n", m_X, m_Y));
+  mprintf(0, "new [%d,%d]\n", m_X, m_Y);
 }
 
 //@@

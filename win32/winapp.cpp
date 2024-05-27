@@ -234,7 +234,7 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
 #endif
 
   if (!RegisterClass(&wc)) {
-    mprintf((0, "Failure to register window class (err:%x).\n", GetLastError()));
+    mprintf(0, "Failure to register window class (err:%x).\n", GetLastError());
     return;
   }
 
@@ -353,7 +353,7 @@ void oeWin32Application::init() {
 
   if (m_hWnd == NULL) {
     DWORD err = GetLastError();
-    mprintf((0, "Failed to create game window (err: %x)\n", err));
+    mprintf(0, "Failed to create game window (err: %x)\n", err);
     return;
   }
 
@@ -401,7 +401,7 @@ int oeWin32Application::defer_block() {
       // QUIT APP.
       exit(1);
     } else if (msg.message == WM_MOVE) {
-      mprintf((0, "move msg\n"));
+      mprintf(0, "move msg\n");
     }
     TranslateMessage(&msg);
     DispatchMessage(&msg);
@@ -416,7 +416,7 @@ int oeWin32Application::defer_block() {
     if (this->active()) {
 #ifndef _DEBUG
       if (GetForegroundWindow() != (HWND)this->m_hWnd && !(m_Flags & OEAPP_CONSOLE)) {
-        mprintf((0, "forcing this window into the foreground.\n"));
+        mprintf(0, "forcing this window into the foreground.\n");
         SetForegroundWindow((HWND)this->m_hWnd);
       }
 #endif
@@ -466,11 +466,11 @@ void oeWin32Application::os_init() {
 
 #ifdef _DEBUG
     if (os == Win9x) {
-      mprintf((0, "Win9x system\n"));
+      mprintf(0, "Win9x system\n");
     } else if (os == WinNT) {
-      mprintf((0, "WinNT %d.%d.%d system\n", major, minor, build));
+      mprintf(0, "WinNT %d.%d.%d system\n", major, minor, build);
     } else {
-      mprintf((0, "Win32 non-standard operating system\n"));
+      mprintf(0, "Win32 non-standard operating system\n");
     }
 #endif
 
@@ -535,7 +535,7 @@ LResult oeWin32Application::WndProc(HWnd hwnd, unsigned msg, WParam wParam, LPar
   switch (msg) {
   case WM_ACTIVATEAPP:
     m_AppActive = wParam ? true : false;
-    //	mprintf((0, "WM_ACTIVATEAPP (%u,%l)\n", wParam, lParam));
+    //	mprintf(0, "WM_ACTIVATEAPP (%u,%l)\n", wParam, lParam);
     break;
   }
 
@@ -673,7 +673,7 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     break;
 
   case WM_POWERBROADCAST: // Won't allow OS to suspend operation for now.
-    mprintf((0, "WM_POWERBROADCAST=%u,%d\n", wParam, lParam));
+    mprintf(0, "WM_POWERBROADCAST=%u,%d\n", wParam, lParam);
     if (wParam == PBT_APMQUERYSUSPEND) {
       return BROADCAST_QUERY_DENY;
     }

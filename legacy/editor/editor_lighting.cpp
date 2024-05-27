@@ -354,7 +354,7 @@ void CheckCombinePortals (int terrain)
 	ClearCombinePortals (terrain);
 
 	int combine_count=0;
-	mprintf ((0,"Combining portals..."));
+	mprintf(0,"Combining portals...");
 
 	for (int i=0;i<=Highest_room_index;i++)
 	{
@@ -448,7 +448,7 @@ void CheckCombinePortals (int terrain)
 		}
 	}
 
-	mprintf ((0,"%d portals combined.\n",combine_count));
+	mprintf(0,"%d portals combined.\n",combine_count);
 }
 
 
@@ -456,7 +456,7 @@ void CheckCombinePortals (int terrain)
 void SqueezeLightmaps (int external,int target_roomnum)
 {
 	int i,t,k;
-	mprintf ((0,"Squeezing %s lightmaps, please wait...\n",external?"external":"internal"));
+	mprintf(0,"Squeezing %s lightmaps, please wait...\n",external?"external":"internal");
 
 	Lmi_spoken_for=(uint8_t *)mem_malloc (MAX_LIGHTMAP_INFOS);
 	Lightmap_mask=(uint8_t *)mem_malloc (128*128);
@@ -809,7 +809,7 @@ void SqueezeLightmaps (int external,int target_roomnum)
 
 	mem_free (Lightmap_mask);
 	mem_free (Lmi_spoken_for);
-	mprintf ((0,"Done squeezing lightmaps.\n"));
+	mprintf(0,"Done squeezing lightmaps.\n");
 
 }
 
@@ -981,7 +981,7 @@ void DoRadiosityForRooms ()
 		SaveLevel(filename);
 	}
 		
-	mprintf ((0,"Setting up...\n"));
+	mprintf(0,"Setting up...\n");
 
 	Lightmaps_for_rad=0;
 
@@ -1095,7 +1095,7 @@ void DoRadiosityForRooms ()
 				else
 				{
 					Light_surfaces[surface_index].verts=NULL;
-					mprintf ((0,"Room=%d Face %d has no verts!\n",i,t));
+					mprintf(0,"Room=%d Face %d has no verts!\n",i,t);
 				}
 
 				if (Light_surfaces[surface_index].xresolution*Light_surfaces[surface_index].yresolution)
@@ -1106,7 +1106,7 @@ void DoRadiosityForRooms ()
 				else
 				{
 					Light_surfaces[surface_index].elements=NULL;
-					mprintf ((0,"Room=%d Face %d is slivered!\n",i,t));
+					mprintf(0,"Room=%d Face %d is slivered!\n",i,t);
 				}
 
 				Light_surfaces[surface_index].flags=0;
@@ -1207,13 +1207,13 @@ void DoRadiosityForRooms ()
 	// Setup Objects
 	ComputeSurfacesForObjects (surface_index,0);
 		
-	mprintf ((0,"This radiosity run is using %d lightmaps.\n",Lightmaps_for_rad));
-	mprintf ((0,"Solving radiosity equation (press tilde key to stop)...\n"));
+	mprintf(0,"This radiosity run is using %d lightmaps.\n",Lightmaps_for_rad);
+	mprintf(0,"Solving radiosity equation (press tilde key to stop)...\n");
 	if (D3EditState.hemicube_radiosity)
 		DoRadiosityRun (SM_HEMICUBE,Light_surfaces,facecount);
 	else
 		DoRadiosityRun (SM_RAYCAST,Light_surfaces,facecount);
-	mprintf ((0,"Done solving radiosity - cleaning up...\n"));
+	mprintf(0,"Done solving radiosity - cleaning up...\n");
 
 	surface_index=0;
 
@@ -1297,7 +1297,7 @@ void DoRadiosityForCurrentRoom (room *rp)
 		return;
 	}
 
-	mprintf ((0,"Setting up...\n"));
+	mprintf(0,"Setting up...\n");
 
 	ASSERT (rp!=NULL);
 	ASSERT (rp->used);
@@ -1366,7 +1366,7 @@ void DoRadiosityForCurrentRoom (room *rp)
 		else
 		{
 			Light_surfaces[surface_index].verts=NULL;
-			mprintf ((0,"Room=%d Face %d has no verts!\n",rp-Rooms,t));
+			mprintf(0,"Room=%d Face %d has no verts!\n",rp-Rooms,t);
 		}
 
 		if (Light_surfaces[surface_index].xresolution*Light_surfaces[surface_index].yresolution)
@@ -1377,7 +1377,7 @@ void DoRadiosityForCurrentRoom (room *rp)
 		else
 		{
 			Light_surfaces[surface_index].elements=NULL;
-			mprintf ((0,"Room=%d Face %d is slivered!\n",rp-Rooms,t));
+			mprintf(0,"Room=%d Face %d is slivered!\n",rp-Rooms,t);
 		}
 
 		if (rp->faces[t].portal_num!=-1 && 
@@ -1416,12 +1416,12 @@ void DoRadiosityForCurrentRoom (room *rp)
 	// Setup Objects
 	ComputeSurfacesForObjectsForSingleRoom (surface_index,rp-Rooms);
 		
-	mprintf ((0,"Solving radiosity equation (press tilde key to stop)...\n"));
+	mprintf(0,"Solving radiosity equation (press tilde key to stop)...\n");
 	if (D3EditState.hemicube_radiosity)
 		DoRadiosityRun (SM_HEMICUBE,Light_surfaces,facecount);
 	else
 		DoRadiosityRun (SM_RAYCAST,Light_surfaces,facecount);
-	mprintf ((0,"Done solving radiosity - cleaning up...\n"));
+	mprintf(0,"Done solving radiosity - cleaning up...\n");
 
 	surface_index=0;
 
@@ -1805,13 +1805,13 @@ int ClipRadToPlane (int plane,rad_point *src,rad_point *dest,int nv)
 		else
 			ppoint=i-1;
 		
-		//mprintf ((0,"checking point %d ",i));
+		//mprintf(0,"checking point %d ",i);
 		if (src[i].code & plane)  // off this plane?
 		{
 			
 			if (!(src[ppoint].code & plane))  // prev point on?
 			{
-				//mprintf ((0,"pVertex %d off %d plane.\n",i,plane));
+				//mprintf(0,"pVertex %d off %d plane.\n",i,plane);
 				ClipRadEdge (plane,&src[ppoint],&src[i]);
 
 				memcpy (&dest[num],&GlobalTempRadPoint,sizeof(rad_point));
@@ -1823,7 +1823,7 @@ int ClipRadToPlane (int plane,rad_point *src,rad_point *dest,int nv)
 			if (!(src[npoint].code & plane))  // next point on?
 			{
 				
-				//mprintf ((0,"nVertex %d off %d plane.\n",i,plane));
+				//mprintf(0,"nVertex %d off %d plane.\n",i,plane);
 				ClipRadEdge (plane,&src[npoint],&src[i]);
 
 				memcpy (&dest[num],&GlobalTempRadPoint,sizeof(rad_point));
@@ -1836,7 +1836,7 @@ int ClipRadToPlane (int plane,rad_point *src,rad_point *dest,int nv)
 		else		// This point is on
 		{
 			
-			//mprintf ((0,"is on\n"));
+			//mprintf(0,"is on\n");
 			memcpy (&dest[num],&src[i],sizeof(rad_point));
 			num++;
 			
@@ -1941,8 +1941,8 @@ void DoTerrainDynamicTable ()
 
 	maxrays=AREA_X*AREA_Z*8*Terrain_sky.num_satellites;
 
-	mprintf ((0,"Calculating dynamic light table for %d points...\n",maxrays));
-	mprintf ((0,"Press tilde key to abort!\n"));
+	mprintf(0,"Calculating dynamic light table for %d points...\n",maxrays);
+	mprintf(0,"Press tilde key to abort!\n");
 
 	memset (Terrain_dynamic_table,0,(TERRAIN_DEPTH*TERRAIN_WIDTH));
 	
@@ -1988,7 +1988,7 @@ void DoTerrainDynamicTable ()
 				for (j=0;j<Terrain_sky.num_satellites;j++)
 				{
 					raynum++;
-					mprintf_at((2,4,0,"Ray=%d      ",raynum));
+					mprintf_at(2,4,0,"Ray=%d      ",raynum);
 					
 					if (gp.y>pos.y)
 						continue;
@@ -2010,7 +2010,7 @@ void ComputeTerrainSpeedTable ()
 {
 	int i,t,j,raynum=0;
 
-	mprintf ((0,"Precomputing terrain speed table...(%d rays)\n",AREA_X*AREA_Z));
+	mprintf(0,"Precomputing terrain speed table...(%d rays)\n",AREA_X*AREA_Z);
 	for (i=0;i<AREA_Z;i++)
 	{
 		for (t=0;t<AREA_X;t++)
@@ -2024,7 +2024,7 @@ void ComputeTerrainSpeedTable ()
 
 			raynum++;
 			if ((raynum%1000)==0)
-				mprintf_at((2,4,0,"Ray=%d      ",raynum));
+				mprintf_at(2,4,0,"Ray=%d      ",raynum);
 			
 			for (j=0;j<Terrain_sky.num_satellites;j++)
 				TerrainLightSpeedup[j][tseg]=ShootRayForTerrainLight (&pos,&Terrain_sky.satellite_vectors[j],tseg);
@@ -2318,7 +2318,7 @@ void DoRadiosityForTerrain ()
 	obj_surf_start=surf_index;
 	ComputeSurfacesForObjects (surf_index,1);
 	
-	mprintf ((0,"Solving radiosity equation (press tilde key to stop)...\n"));
+	mprintf(0,"Solving radiosity equation (press tilde key to stop)...\n");
 
 	if (D3EditState.hemicube_radiosity)
 		DoRadiosityRun (SM_SWITCH_AFTER_SATELLITES,Light_surfaces,total_surfaces);
@@ -2486,7 +2486,7 @@ void DoRadiosityForTerrain ()
 
 	maxrays=(TERRAIN_DEPTH-1)*(TERRAIN_WIDTH-1)*Terrain_sky.num_satellites;
 
-	mprintf ((0,"Calculating terrain radiosity for %d points! (be patient!)\n",maxrays));
+	mprintf(0,"Calculating terrain radiosity for %d points! (be patient!)\n",maxrays);
 
 	// Malloc some memory
 	exitance=(spectra *)mem_malloc (TERRAIN_DEPTH*TERRAIN_WIDTH*sizeof(spectra));
@@ -2521,7 +2521,7 @@ void DoRadiosityForTerrain ()
 			for (j=0;j<Terrain_sky.num_satellites;j++)
 			{
 				raynum++;
-				mprintf_at((2,4,0,"Ray=%d      ",raynum));
+				mprintf_at(2,4,0,"Ray=%d      ",raynum);
 					
 				int answer1,answer2;
 				answer1=ShootRayForTerrainLight (&pos1,&Terrain_sky.satellite_vectors[j],tseg);
@@ -2919,7 +2919,7 @@ int CombineLightFaces( vector *dest_verts,vector *averts, int nva, vector *norma
 				}
 
 				if ( (PointsAreSame(&va,&bverts[(startb+2)%nvb]))) 
-					mprintf((0, "WARNING!!! Faces were combined that caused the loss of a vertex!\n"));
+					mprintf(0, "WARNING!!! Faces were combined that caused the loss of a vertex!\n");
 
 				for (i=1; i<nvb; i++ )	
 				{
@@ -3263,7 +3263,7 @@ void ComputeAllRoomLightmapUVs (int external)
 		}
 	}
 
-	mprintf ((0,"%d faces couldn't be combined!\n",not_combined));
+	mprintf(0,"%d faces couldn't be combined!\n",not_combined);
 
 	// Free memory
 	for (i=0;i<MAX_ROOMS;i++)
@@ -3741,7 +3741,7 @@ void SetupSpecularLighting (int external)
 		}
 	}
 
-	mprintf ((0,"%d faces couldn't be combined!\n",not_combined));
+	mprintf(0,"%d faces couldn't be combined!\n",not_combined);
 
 	// Free memory
 	free (RoomsAlreadyCombined[roomnum]);

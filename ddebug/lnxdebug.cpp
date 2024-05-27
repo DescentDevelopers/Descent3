@@ -63,11 +63,11 @@ bool Debug_Init(bool debugger, bool mono_debug) {
     Debug_ConsoleOpen(1, 1, 1, 58, 6, "Warnings");
     Debug_ConsoleOpen(2, 1, 61, 18, 6, "Stats");
 
-    mprintf((0, "Linux system.\n"));
+    mprintf(0, "Linux system.\n");
   }
 
   if (Debug_break)
-    mprintf((0, "Debug Break enabled.\n"));
+    mprintf(0, "Debug Break enabled.\n");
 
 #endif // ifndef RELEASE
 

@@ -67,7 +67,7 @@ bool ddgr_dx_Init(oeApplication *app) {
   DX_DATA(vidrefs) = 0; // reset video reference count.
   DX_DATA(init) = true;
 
-  mprintf((0, "DX system initialized.\n"));
+  mprintf(0, "DX system initialized.\n");
 
   return true;
 }
@@ -84,7 +84,7 @@ void ddgr_dx_Close() {
   DX_DATA(hPrimaryWnd) = NULL;
   DX_DATA(init) = false;
 
-  mprintf((0, "DX system closed.\n"));
+  mprintf(0, "DX system closed.\n");
 }
 
 //	Initializes the display for use with the DX subsystem.

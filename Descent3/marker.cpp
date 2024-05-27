@@ -42,7 +42,7 @@ void DropMarker(char *message) {
 
   if (strcmp("ai debug", teststring) == 0) {
     sscanf(message, "ai debug %d", &AI_debug_robot_index);
-    mprintf((0, "Debug robot is object index %d\n", AI_debug_robot_index));
+    mprintf(0, "Debug robot is object index %d\n", AI_debug_robot_index);
   }
 #endif
 
@@ -81,10 +81,10 @@ void DropMarker(char *message) {
   int objnum = ObjCreate(OBJ_MARKER, cur_marker_num, Player_object->roomnum, &Player_object->pos,
                          &Player_object->orient, Player_object->handle);
   if (objnum >= 0) {
-    mprintf((0, "Marker %d created!\n", cur_marker_num));
+    mprintf(0, "Marker %d created!\n", cur_marker_num);
     strcpy(MarkerMessages[(Player_num * 2) + cur_marker_num], message);
   } else
-    mprintf((0, "Marker NOT created!\n"));
+    mprintf(0, "Marker NOT created!\n");
 }
 
 // Resets markers before a level stars

@@ -148,7 +148,7 @@ bool ddgr_gdi_Init(oeApplication *app, bool fullscreen, bool ddraw) {
   GDI_DATA(vidrefs) = 0; // reset video reference count.
   GDI_DATA(init) = true;
 
-  mprintf((0, "GDI system initialized.\n"));
+  mprintf(0, "GDI system initialized.\n");
 
   return true;
 }
@@ -183,7 +183,7 @@ void ddgr_gdi_Close() {
   GDI_DATA(hPrimaryWnd) = NULL;
   GDI_DATA(init) = false;
 
-  mprintf((0, "GDI system closed.\n"));
+  mprintf(0, "GDI system closed.\n");
 }
 
 //	---------------------------------------------------------------------------

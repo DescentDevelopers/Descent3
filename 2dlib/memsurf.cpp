@@ -173,7 +173,7 @@ bool gr_mem_surf_Create(ddgr_surface *sf) {
 
   bm->data = (char *)mem_malloc(bm->rowsize * sf->h);
   if (!bm->data) {
-    mprintf((0, "mem_Create malloc fail <%s>\n", sf->name));
+    mprintf(0, "mem_Create malloc fail <%s>\n", sf->name);
     delete bm;
     return false;
   }

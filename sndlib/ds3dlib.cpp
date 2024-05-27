@@ -403,7 +403,7 @@ int GamePanToDsPan(float pan) {
   if (ds_pan < -MAX_DS_PAN)
     ds_pan = -MAX_DS_PAN;
 
-  // mprintf((0, "P %f %d\n", pan, ds_pan));
+  // mprintf(0, "P %f %d\n", pan, ds_pan);
   return ds_pan;
 }
 
@@ -421,7 +421,7 @@ int GameVolumeToDsAttenuation(float volume) {
     fvol = DSBVOLUME_MIN;
   }
 
-  // mprintf((0, "V %f %f\n", volume, fvol));
+  // mprintf(0, "V %f %f\n", volume, fvol);
   return (int)fvol;
 }
 
@@ -497,7 +497,7 @@ inline void sb_adjust_properties_3d(sound_buffer_info *sb, float f_volume, pos_s
     //		EAX_SetBufferReverbMix(lpDSB3D, reverb);
     //	}
   } else {
-    mprintf((0, "m_mixer_type = %d\n", sb->m_mixer_type));
+    mprintf(0, "m_mixer_type = %d\n", sb->m_mixer_type);
     Int3();
   }
 }
@@ -518,7 +518,7 @@ inline void sb_adjust_properties_2d(sound_buffer_info *sb, float f_volume, float
     if (lpdsb == NULL)
       return;
 
-    //	mprintf((0, "Sound UID %d is now at %d volume,%d pan\n", sound_uid, volume, pan));
+    //	mprintf(0, "Sound UID %d is now at %d volume,%d pan\n", sound_uid, volume, pan);
 
     lpdsb->SetVolume(GameVolumeToDsAttenuation(f_volume));
     lpdsb->SetPan(GamePanToDsPan(f_pan)); // chrishack pan is off
@@ -717,7 +717,7 @@ void StreamMixer(char *ptr, int len) {
         loop_start = Sounds[sound_index].loop_start;
         loop_end = Sounds[sound_index].loop_end;
         if (!sample_16bit && !sample_8bit) {
-          mprintf((0, "sound file %s didn't have data for samples.\n", snd_file->name));
+          mprintf(0, "sound file %s didn't have data for samples.\n", snd_file->name);
         }
       }
 
@@ -796,7 +796,7 @@ void StreamMixer(char *ptr, int len) {
 
         if (num_write <= 0) {
           num_write = 0;
-          mprintf((0, "d"));
+          mprintf(0, "d");
           goto stream_done;
         }
       } else {
@@ -818,7 +818,7 @@ void StreamMixer(char *ptr, int len) {
       if (!(num_write > 0 && num_write <= num_samples)) // this was an assert
       {
         num_write = 0;
-        mprintf((0, "D"));
+        mprintf(0, "D");
         goto done;
       }
 
@@ -945,12 +945,14 @@ void StreamMixer(char *ptr, int len) {
           if (cur_buf->play_info->m_stream_cback && cur_buf->play_info->m_stream_data) {
             cur_buf->play_info->m_stream_data = (*cur_buf->play_info->m_stream_cback)(
                 cur_buf->play_info->user_data, cur_buf->play_info->m_stream_handle, &cur_buf->play_info->m_stream_size);
-            //						cur_buf->s->current_position = (char
-            //*)cur_buf->play_info->m_stream_data; 						mprintf((0, "%x %d\n",
-            // cur_buf->play_info->m_stream_data, cur_buf->play_info->m_stream_size));
+//            cur_buf->s->current_position = (char*)cur_buf->play_info->m_stream_data;
+//            mprintf(0, "%x %d\n", cur_buf->play_info->m_stream_data, cur_buf->play_info->m_stream_size));
             ASSERT(!(cur_buf->play_info->m_stream_data && cur_buf->play_info->m_stream_size <= 0));
-            //						mprintf((0, "Data %X, length %d\n",
-            // cur_buf->play_info->m_stream_data, cur_buf->play_info->m_stream_size));
+/*
+            mprintf(0, "Data %X, length %d\n",
+                    cur_buf->play_info->m_stream_data,
+                    cur_buf->play_info->m_stream_size);
+*/
 
             if (cur_buf->play_info->m_stream_data) {
               switch (cur_buf->play_info->m_stream_format) {
@@ -976,12 +978,12 @@ void StreamMixer(char *ptr, int len) {
               }
               loop_end -= 1;
             } else {
-              mprintf((0, "SE: Data is NULL\n"));
+              mprintf(0, "SE: Data is NULL\n");
               cur_buf->m_status &= ~SSF_PLAY_STREAMING;
               f_loop = false;
             }
           } else {
-            mprintf((0, "SE: Callback/data is NULL\n"));
+            mprintf(0, "SE: Callback/data is NULL\n");
             cur_buf->m_status &= ~SSF_PLAY_STREAMING;
             f_loop = false;
           }
@@ -1024,7 +1026,7 @@ void StreamMixer(char *ptr, int len) {
 
     a++;
   }
-  // mprintf((0," -%d- ",a));
+  // mprintf(0," -%d- ",a);
 }
 
 // Locks the primary buffer and fills in the new data
@@ -1098,7 +1100,7 @@ void __cdecl StreamTimer(void *user_ptr) {
 
     result = sb_info->m_lp_looping_buffer->GetCurrentPosition((DWORD *)&playp, (DWORD *)&writep);
 
-    // mprintf((0, "(%d,%d)\n", playp, writep));
+    // mprintf(0, "(%d,%d)\n", playp, writep);
 
     // If primary buffer was stopped from playing
     if (writep == playp) {
@@ -1196,7 +1198,7 @@ bool win_llsSystem::StartStreaming(void) {
   m_sb_info.thread_handle = _beginthread(StreamTimer, 16384, (void *)&m_sb_info);
   if (m_sb_info.thread_handle == -1) {
     m_sb_info.thread_alive = false;
-    mprintf((0, "Thread failed\n"));
+    mprintf(0, "Thread failed\n");
     Int3();
     return false;
   }
@@ -1289,8 +1291,7 @@ HRESULT win_llsSystem::CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_l
       ASSERT(0); // Invalid type of buffer
     }
   } else {
-    mprintf(
-        (0, "DS3DLIB: Unsupported function for mixer specfied in CreateDSBuffer (%d,%d)\n", m_mixer_type, buffer_type));
+    mprintf(0, "DS3DLIB: Unsupported function for mixer specfied in CreateDSBuffer (%d,%d)\n", m_mixer_type, buffer_type);
     Int3(); // Get Samir!!!
     return DSERR_UNSUPPORTED;
   }
@@ -1303,7 +1304,7 @@ HRESULT win_llsSystem::CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_l
     // Creative EAX Init
     if (m_mixer_type == SOUND_MIXER_CREATIVE_EAX) {
       if (!EAX_SetPrimaryBuffer()) {
-        mprintf((0, "CreateDSBuffer: EAX Init failed.\n"));
+        mprintf(0, "CreateDSBuffer: EAX Init failed.\n");
         result = DSERR_UNSUPPORTED;
         goto ds_error;
       }
@@ -1314,7 +1315,7 @@ HRESULT win_llsSystem::CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_l
   }
 
   if (result != DS_OK) {
-    mprintf((0, "DS3DLIB: Failed to init sound buffer of type %d for mixer %d.\n", buffer_type, m_mixer_type));
+    mprintf(0, "DS3DLIB: Failed to init sound buffer of type %d for mixer %d.\n", buffer_type, m_mixer_type);
     goto ds_error;
   }
 
@@ -1342,7 +1343,7 @@ HRESULT win_llsSystem::CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_l
 
 ds_error:
   if (result != DS_OK) {
-    mprintf((0, "DS3DLIB:result=%x\n", result));
+    mprintf(0, "DS3DLIB:result=%x\n", result);
     if (lp_lp_dsb_3d && (*lp_lp_dsb_3d)) {
       (*lp_lp_dsb_3d)->Release();
       *lp_lp_dsb_3d = NULL;
@@ -1363,7 +1364,7 @@ BOOL CALLBACK LLEnumCallback(LPGUID lp_guid, LPCSTR lpstr_description, LPCSTR lp
 
   if (m_sound_device_name[0]) {
     if (strcmp(lpstr_description, m_sound_device_name) == 0) {
-      mprintf((0, "Using sound card:%s-%s\n", lpstr_description, lpstr_module));
+      mprintf(0, "Using sound card:%s-%s\n", lpstr_description, lpstr_module);
       if (lp_guid) {
         memmove(lp_ret_guid, lp_guid, sizeof(GUID));
       }
@@ -1458,7 +1459,7 @@ int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t Max
   if (mixer_type != SOUND_MIXER_NONE) {
     if (mixer_type == SOUND_MIXER_CREATIVE_EAX) {
       if (!EAX_Create(pguid, &m_lp_ds)) {
-        mprintf((0, "Sound NT: Error EAX\n"));
+        mprintf(0, "Sound NT: Error EAX\n");
         retval = false;
         goto error_sub;
       }
@@ -1477,7 +1478,7 @@ int win_llsSystem::InitSoundLib(char mixer_type, oeApplication *sos, uint8_t Max
     m_lp_ds->GetCaps(&dscaps);
     if (dscaps.dwFlags & DSCAPS_EMULDRIVER) {
       mixer_type = SOUND_MIXER_DS_8;
-      mprintf((0, "SOUND INIT(1):  We are in NT or have a crappy sound card\n"));
+      mprintf(0, "SOUND INIT(1):  We are in NT or have a crappy sound card\n");
     }
 
     m_sound_mixer.m_loop_method = DSLOOP_STREAM_METHOD;
@@ -1494,7 +1495,7 @@ retry_mixer_init:
     // test different conditions to see if we really can play sound in software
     hresult = m_lp_ds->SetCooperativeLevel((HWND)m_hwnd_main, DSSCL_WRITEPRIMARY);
     if (hresult != DS_OK) {
-      mprintf((0, "SOUND INIT(2):  SCL: WritePrimary failed. Attempting DS 8 init.\n"));
+      mprintf(0, "SOUND INIT(2):  SCL: WritePrimary failed. Attempting DS 8 init.\n");
       mixer_type = SOUND_MIXER_DS_8;
       goto retry_mixer_init;
     }
@@ -1512,7 +1513,7 @@ retry_mixer_init:
         m_sb_info.m_lp_primary_buffer->Release();
         m_sb_info.m_lp_primary_buffer = NULL;
       }
-      mprintf((0, "SOUND INIT(3): Cannot create primary buffer.\n"));
+      mprintf(0, "SOUND INIT(3): Cannot create primary buffer.\n");
       mixer_type = SOUND_MIXER_DS_8;
       goto retry_mixer_init;
     } else {
@@ -1528,12 +1529,12 @@ retry_mixer_init:
       if (!Fast_mixer) {
         Fast_mixer = (int *)mem_malloc(dsbcaps.dwBufferBytes * sizeof(int));
         Fast_mixer_len = dsbcaps.dwBufferBytes;
-        mprintf((0, "Using %d ints for fast software mixer\n", dsbcaps.dwBufferBytes));
+        mprintf(0, "Using %d ints for fast software mixer\n", dsbcaps.dwBufferBytes);
       }
 
       // Is you want to see the caps, here is where -- mprintf all you want
       if (!(dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE)) {
-        mprintf((0, "SOUND INIT(4):  Primary is not in hardware\n"));
+        mprintf(0, "SOUND INIT(4):  Primary is not in hardware\n");
         m_sb_info.m_lp_primary_buffer->Release();
         m_sb_info.m_lp_primary_buffer = NULL;
         mixer_type = SOUND_MIXER_DS_8;
@@ -1547,7 +1548,7 @@ retry_mixer_init:
     // Start the primary and have it always play.
     m_f_sound_lib_init = StartStreaming();
     if (!m_f_sound_lib_init) {
-      mprintf((0, "SOUND INIT(5):  Something went wrong in StartStreaming\n"));
+      mprintf(0, "SOUND INIT(5):  Something went wrong in StartStreaming\n");
       m_sb_info.m_lp_primary_buffer->Release();
       m_sb_info.m_lp_primary_buffer = NULL;
       mixer_type = SOUND_MIXER_DS_8;
@@ -1562,7 +1563,7 @@ retry_mixer_init:
     m_mixer_type = mixer_type;
     hresult = m_lp_ds->SetCooperativeLevel((HWND)m_hwnd_main, DSSCL_PRIORITY);
     if (hresult != DS_OK) {
-      mprintf((0, "Sound NT: Error 1\n"));
+      mprintf(0, "Sound NT: Error 1\n");
       retval = false;
       goto error_sub;
     }
@@ -1575,7 +1576,7 @@ retry_mixer_init:
                              true,    // stereo
                              f16bit); // 8 or 16 bit
     if (hresult != DS_OK) {
-      mprintf((0, "Sound NT: Error 2\n"));
+      mprintf(0, "Sound NT: Error 2\n");
       if (m_sb_info.m_lp_primary_buffer) {
         m_sb_info.m_lp_primary_buffer->Release();
         m_sb_info.m_lp_primary_buffer = NULL;
@@ -1601,30 +1602,30 @@ retry_mixer_init:
     }
   }
 
-  mprintf((0, "Sound mixer: "));
+  mprintf(0, "Sound mixer: ");
   retval = true;
 
   switch (m_mixer_type) {
   case SOUND_MIXER_SOFTWARE_16:
-    mprintf((0, "Software 16\n"));
+    mprintf(0, "Software 16\n");
     break;
   case SOUND_MIXER_DS_8:
-    mprintf((0, "DS 8\n"));
+    mprintf(0, "DS 8\n");
     break;
   case SOUND_MIXER_DS_16:
-    mprintf((0, "DS 16\n"));
+    mprintf(0, "DS 16\n");
     break;
   case SOUND_MIXER_DS3D_16:
-    mprintf((0, "DS3D 16\n"));
+    mprintf(0, "DS3D 16\n");
     break;
   case SOUND_MIXER_CREATIVE_EAX:
-    mprintf((0, "Creative EAX\n"));
+    mprintf(0, "Creative EAX\n");
     break;
   case SOUND_MIXER_NONE:
-    mprintf((0, "None\n"));
+    mprintf(0, "None\n");
     break;
   default:
-    mprintf((0, "LLSound ERROR: Unsupported mixer"));
+    mprintf(0, "LLSound ERROR: Unsupported mixer");
     Int3();
     retval = false;
     break;
@@ -1667,7 +1668,7 @@ error_sub:
       m_lp_ds->Release();
     }
     m_lp_ds = NULL;
-    mprintf((0, "Sound Warning: Didn't initialize sound library.\n"));
+    mprintf(0, "Sound Warning: Didn't initialize sound library.\n");
     if (m_sound_mixer.m_sound_cache != NULL)
       delete[] m_sound_mixer.m_sound_cache;
     m_f_sound_lib_init = 0;
@@ -1686,7 +1687,7 @@ void win_llsSystem::DestroySoundLib(void) {
   if (!m_f_sound_lib_init)
     return;
 
-  mprintf((0, "Start of sound system close\n"));
+  mprintf(0, "Start of sound system close\n");
 
   //	kill sound geometry object if any.
   if (m_geometry) {
@@ -1697,7 +1698,7 @@ void win_llsSystem::DestroySoundLib(void) {
   StopAllSounds();
 
   // Wait till they are all done
-  mprintf((0, "Waiting for sounds to stop\n"));
+  mprintf(0, "Waiting for sounds to stop\n");
   if (m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     while (!f_all_done) {
       f_all_done = true;
@@ -1720,7 +1721,7 @@ void win_llsSystem::DestroySoundLib(void) {
       sb_loop_thread_kill();
     }
   }
-  mprintf((0, "All sounds stopped\n"));
+  mprintf(0, "All sounds stopped\n");
 
   if (m_mixer_type == SOUND_MIXER_SOFTWARE_16) {
     // Kill thread goes here
@@ -1746,7 +1747,7 @@ void win_llsSystem::DestroySoundLib(void) {
   m_lp_ds = NULL;
   m_sb_info.m_lp_looping_buffer = NULL;
 
-  mprintf((0, "End of sound system close\n"));
+  mprintf(0, "End of sound system close\n");
 
   if (m_sound_mixer.m_sound_cache != NULL)
     delete[] m_sound_mixer.m_sound_cache;
@@ -1880,7 +1881,7 @@ void win_llsSystem::StopSound(int sound_uid, uint8_t f_immediately) {
     m_sound_mixer.m_sound_cache[current_slot].m_sound_buffer = NULL;
   }
 
-  //	mprintf((0, "SL cleaning slot %d\n", current_slot));
+  //	mprintf(0, "SL cleaning slot %d\n", current_slot);
   m_sound_mixer.m_sound_cache[current_slot].m_status = SSF_UNUSED;
 }
 
@@ -1980,17 +1981,21 @@ int16_t win_llsSystem::FindFreeSoundSlot(float volume, int priority)
     if (throw_out_slot > -1) {
       sb = &m_sound_mixer.m_sound_cache[throw_out_slot];
       win_llsSystem::StopSound(sb->m_unique_id, SKT_HOLD_UNTIL_STOP);
-      //	mprintf((0, "DDSNDLIB: Replace sound (p:%d) with sound (p:%d) in slot %d\n", sb->play_info->priority,
-      // priority, throw_out_slot));
+/*
+      mprintf(0, "DDSNDLIB: Replace sound (p:%d) with sound (p:%d) in slot %d\n",
+              sb->play_info->priority,
+              priority,
+              throw_out_slot));
+*/
       return throw_out_slot;
     }
   }
 
 #ifdef _DEBUG
   if (sound_index > -1) {
-    mprintf((0, "DDSNDLIB: Sound %s with priority (%d) too low.\n", Sounds[sound_index].name, priority));
+    mprintf(0, "DDSNDLIB: Sound %s with priority (%d) too low.\n", Sounds[sound_index].name, priority);
   } else {
-    mprintf((0, "DDSNDLIB: Sound unknown with priority (%d) too low.\n", priority));
+    mprintf(0, "DDSNDLIB: Sound unknown with priority (%d) too low.\n", priority);
   }
 #endif
 
@@ -2019,7 +2024,7 @@ int win_llsSystem::PlaySound2d(play_information *play_info, int sound_index, flo
 
   // do common processing.
   if (SoundFiles[Sounds[sound_index].sample_index].used == 0) {
-    mprintf((0, "Tryed to play %d sound, it DNE.\n", sound_index));
+    mprintf(0, "Tryed to play %d sound, it DNE.\n", sound_index);
     return -1;
   }
 #ifdef _DEBUG
@@ -2144,7 +2149,7 @@ void win_llsSystem::LoopStartStreaming(sound_buffer_info *sb, int buffer_type, f
     sb->s->bytes_left = sound_length;
     buffer_size = sound_length;
     sb->m_status = SSF_PLAY_LOOPING | SSF_BUFFERED_LOOP;
-    //		mprintf((0, "DDSNDLIB: Starting buffered loop %d (step %d).\n", sb->m_unique_id, sb->s->loop_step));
+    //		mprintf(0, "DDSNDLIB: Starting buffered loop %d (step %d).\n", sb->m_unique_id, sb->s->loop_step);
     break;
   default:
     buffer_size = STREAM_BUFFER_SIZE;
@@ -2285,7 +2290,7 @@ int win_llsSystem::PlayStream(play_information *play_info) {
     return -1;
   }
 
-  //	mprintf((0, "TS(%d)Playing sound index %d at %d volume,%d pan\n", TotalSoundsPlayed, sound_index, volume, pan));
+  //	mprintf(0, "TS(%d)Playing sound index %d at %d volume,%d pan\n", TotalSoundsPlayed, sound_index, volume, pan);
 
   m_total_sounds_played++;
   m_sound_mixer.m_sound_cache[sound_slot].play_info = play_info;
@@ -2333,7 +2338,7 @@ bool win_llsSystem::IsSoundInstancePlaying(int sound_uid) {
   if ((current_slot = ValidateUniqueId(sound_uid)) == -1)
     return false;
 
-  //	mprintf((0, "Checking slot %d of UID %d\n", current_slot, sound_uid));
+  //	mprintf(0, "Checking slot %d of UID %d\n", current_slot, sound_uid);
 
   if (m_sound_mixer.m_sound_cache[current_slot].m_status != SSF_UNUSED) {
     return true;
@@ -2510,7 +2515,7 @@ void win_llsSystem::SoundStartFrame(void) {
   //	perform necessary functions if sound events are pending for frame, this doesn't have to do anything
   // if the mixer doesn't require such actions.  Aureal does though.
   if (m_pending_actions) {
-    mprintf((0, "pending actions\n"));
+    mprintf(0, "pending actions\n");
   }
 
   // start mixer dependant frame
@@ -2518,14 +2523,14 @@ void win_llsSystem::SoundStartFrame(void) {
   m_pending_actions = false;
 
   // cleanup sound cache.
-  //	mprintf((0, "StartCleanup\n"));
+  //	mprintf(0, "StartCleanup\n");
   if (m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
     for (i = 0; i < m_sound_mixer.m_max_sounds_played; i++) {
       sound_buffer_info *sb = &m_sound_mixer.m_sound_cache[i];
       update_directsound_sb(sb, true);
     }
   }
-  //	mprintf((0, "EndCleanup\n"));
+  //	mprintf(0, "EndCleanup\n");
 
   int counter = 0, loop_counter = 0, stream_counter = 0, buf_loop_counter = 0;
 
@@ -2570,17 +2575,17 @@ void win_llsSystem::SoundStartFrame(void) {
   }
 
 #ifdef _DEBUG
-  mprintf_at((3, 2, 0, "LNS: %02d/%02d", counter, m_sound_mixer.m_max_sounds_played));
-  mprintf_at((3, 3, 1, "Lp: %02d", loop_counter));
-  mprintf_at((3, 4, 1, "St: %02d", stream_counter));
-  mprintf_at((3, 5, 0, " Ot: %02d", counter - loop_counter - stream_counter));
+  mprintf_at(3, 2, 0, "LNS: %02d/%02d", counter, m_sound_mixer.m_max_sounds_played);
+  mprintf_at(3, 3, 1, "Lp: %02d", loop_counter);
+  mprintf_at(3, 4, 1, "St: %02d", stream_counter);
+  mprintf_at(3, 5, 0, " Ot: %02d", counter - loop_counter - stream_counter);
 
   if (m_sound_mixer.m_loop_method != DSLOOP_STREAM_METHOD && m_mixer_type != SOUND_MIXER_SOFTWARE_16) {
-    mprintf_at((3, 3, 10, "Bf: %02d", buf_loop_counter));
+    mprintf_at(3, 3, 10, "Bf: %02d", buf_loop_counter);
   }
 
-  mprintf_at((3, 2, 20, "P5:%02d P4:%02d P3:%02d", n_p5, n_p4, n_p3));
-  mprintf_at((3, 3, 20, "P2:%02d P1:%02d P0:%02d", n_p2, n_p1, n_p0));
+  mprintf_at(3, 2, 20, "P5:%02d P4:%02d P3:%02d", n_p5, n_p4, n_p3);
+  mprintf_at(3, 3, 20, "P2:%02d P1:%02d P0:%02d", n_p2, n_p1, n_p0);
 #endif
 }
 
@@ -2618,7 +2623,7 @@ bool win_llsSystem::CheckAndForceSoundDataAlloc(int sound_index) {
   if (!result)
     return false;
 
-  mprintf((0, "Sound %s loaded.\n", SoundFiles[sound_file_index].name));
+  mprintf(0, "Sound %s loaded.\n", SoundFiles[sound_file_index].name);
 
   return true;
 }
@@ -2903,9 +2908,12 @@ int win_llsSystem::PlaySound3d(play_information *play_info, int sound_index, pos
       sb_free_buffer(sb);
       return -1;
     }
-
-    //		mprintf((0, "SL Play sound on slot %d, TP = %d UI = %X\n", sound_slot, TotalSoundsPlayed,
-    // m_sound_mixer.m_sound_cache[sound_slot].m_unique_id));
+/*
+    mprintf(0, "SL Play sound on slot %d, TP = %d UI = %X\n",
+            sound_slot,
+            TotalSoundsPlayed,
+            m_sound_mixer.m_sound_cache[sound_slot].m_unique_id);
+*/
   }
 
   m_sound_mixer.m_cur_sounds_played++;
@@ -3111,55 +3119,52 @@ TryPlayAgainLabel:
 
 bool win_llsSystem::DuplicateSoundBuffer(sound_buffer_info *sb) {
   return false; // for now, let's not do this.
+/*
+  sound_buffer_info *source_sb = m_sound_mixer.FindSoundBuffer(sb->m_sound_index);
 
-  /*
-          sound_buffer_info *source_sb = m_sound_mixer.FindSoundBuffer(sb->m_sound_index);
+  ASSERT(m_mixer_type != SOUND_MIXER_SOFTWARE_16);
 
-          ASSERT(m_mixer_type != SOUND_MIXER_SOFTWARE_16);
-
-          if (!source_sb) {
-                  Int3();
-                  return false;
-          }
+  if (!source_sb) {
+    Int3();
+    return false;
+  }
 
   //	we have a source sound buffer.  let's use it.
-          if (m_mixer_type == SOUND_MIXER_AUREAL) {
-                  sb->m_snd_obj = A3D_DuplicateSource(source_sb->m_snd_obj);
-                  if (!sb->m_snd_obj) {
-                          return false;
-                  }
-          }
-          else {
-                  HRESULT hr;
-                  hr = m_lp_ds->DuplicateSoundBuffer(source_sb->m_sound_buffer, &sb->m_sound_buffer);
-                  if (FAILED(hr)) {
-                          mprintf((0, "DDSNDLIB: Failed to duplicate sound buffer (%x)\n", hr));
-                          return false;
-                  }
+  if (m_mixer_type == SOUND_MIXER_AUREAL) {
+    sb->m_snd_obj = A3D_DuplicateSource(source_sb->m_snd_obj);
+    if (!sb->m_snd_obj) {
+      return false;
+    }
+  } else {
+    HRESULT hr;
+    hr = m_lp_ds->DuplicateSoundBuffer(source_sb->m_sound_buffer, &sb->m_sound_buffer);
+    if (FAILED(hr)) {
+      mprintf(0, "DDSNDLIB: Failed to duplicate sound buffer (%x)\n", hr);
+      return false;
+    }
 
-                  if(IS_3D_MIXER(m_mixer_type)) {
-                  // a 3d buffer needs a 3d interface pointer
-                          if(sb->m_buffer_type == SBT_3D)
-                          {
-                                  hr = sb->m_sound_buffer->QueryInterface(IID_IDirectSound3DBuffer, (void
-  **)&sb->m_sound_buffer_3d); if (FAILED(hr)) { mprintf((0, "DDSNDLIB: Failed to acquire 3d interface from duplicate
-  buffer (%x)\n", hr)); return false;
-                                  }
-                          }
-                  }
+    if (IS_3D_MIXER(m_mixer_type)) {
+      // a 3d buffer needs a 3d interface pointer
+      if (sb->m_buffer_type == SBT_3D) {
+        hr = sb->m_sound_buffer->QueryInterface(IID_IDirectSound3DBuffer, (void **)&sb->m_sound_buffer_3d);
+        if (FAILED(hr)) {
+          mprintf(0, "DDSNDLIB: Failed to acquire 3d interface from duplicate buffer (%x)\n", hr);
+          return false;
+        }
+      }
+    }
+  }
 
-          }
+  sb->m_mixer_type = source_sb->m_mixer_type;
+  sb->bps = source_sb->bps;
+  sb->stereo = source_sb->stereo;
+  sb->sample_data = source_sb->sample_data;
+  sb->sample_length = source_sb->sample_length;
 
-          sb->m_mixer_type = source_sb->m_mixer_type;
-          sb->bps = source_sb->bps;
-          sb->stereo = source_sb->stereo;
-          sb->sample_data = source_sb->sample_data;
-          sb->sample_length = source_sb->sample_length;
+  // mprintf(0, "Duplicated!!\n");
+  SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count++;
 
-  //	mprintf((0, "Duplicated!!\n"));
-          SoundFiles[Sounds[sb->m_sound_index].sample_index].use_count++;
-
-          return true;
+  return true;
   */
 }
 

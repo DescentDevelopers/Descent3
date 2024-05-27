@@ -1112,7 +1112,7 @@ void CombineObjectLightmapUVs (object *obj,int lmi_type)
 		}
 	}
 
-	mprintf ((0,"%d %s faces couldn't be combined!\n",not_combined,pm->name));
+	mprintf(0,"%d %s faces couldn't be combined!\n",not_combined,pm->name);
 
 	// Free memory
 	for (i=0;i<pm->n_models;i++)

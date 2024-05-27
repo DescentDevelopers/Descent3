@@ -343,10 +343,10 @@ bool CRegistry::Import() {
   DLLOpenCFILE(&file, name, "rt");
 
   if (!file) {
-    mprintf((0, "Unable to import %s\n", name));
+    mprintf(0, "Unable to import %s\n", name);
     return false;
   }
-  mprintf((0, "Importing %s\n", name));
+  mprintf(0, "Importing %s\n", name);
   Destroy();
 
   bool oktocreate;
@@ -369,7 +369,7 @@ bool CRegistry::Import() {
       if (buffer[0] == '[') {
         // Create a key!
         PARSE_KEY(newbuff);
-        mprintf((0, "Found Key: |%s|\n", newbuff));
+        mprintf(0, "Found Key: |%s|\n", newbuff);
         CreateKey(newbuff);
       } else if (buffer[0] == '\"') {
         // Create a record
@@ -401,9 +401,9 @@ bool CRegistry::Import() {
           ptr++; // blow by =
           PARSE_STRING(data);
           if (!CreateRecord(newbuff, REGT_STRING, data)) {
-            mprintf((0, "Unable to create String record: %s\n", newbuff));
+            mprintf(0, "Unable to create String record: %s\n", newbuff);
           } else {
-            mprintf((0, "Created String record %s = %s\n", newbuff, data));
+            mprintf(0, "Created String record %s = %s\n", newbuff, data);
           }
           break;
         case REGT_DWORD:
@@ -413,14 +413,14 @@ bool CRegistry::Import() {
           idata = axtoi(data);
 
           if (!CreateRecord(newbuff, REGT_DWORD, &idata)) {
-            mprintf((0, "Unable to create dword record: %s\n", newbuff));
+            mprintf(0, "Unable to create dword record: %s\n", newbuff);
           } else {
-            mprintf((0, "Created dword record %s = %X\n", newbuff, idata));
+            mprintf(0, "Created dword record %s = %X\n", newbuff, idata);
           }
           break;
         }
       } else {
-        mprintf((0, "Expected [ or \"\n"));
+        mprintf(0, "Expected [ or \"\n");
       }
     }
   }
@@ -431,7 +431,7 @@ bool CRegistry::Import() {
 void CRegistry::CreateKey(const char *name) {
   tKey *curr;
   if (LookupKey(name)) {
-    mprintf((0, "Key: %s already exists\n", name));
+    mprintf(0, "Key: %s already exists\n", name);
     return;
   }
 
@@ -536,7 +536,7 @@ bool CRegistry::CreateRecord(const char *name, char type, void *data) {
       curr = LookupRecord(name, olddata);
       if (curr) {
         // ok we have an old value, replace it!
-        mprintf((0, "Replacing %s\n", name));
+        mprintf(0, "Replacing %s\n", name);
         if (curr->data)
           free(curr->data);
         free(olddata);

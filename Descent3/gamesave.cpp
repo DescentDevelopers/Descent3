@@ -537,7 +537,7 @@ void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
       bm_DestroyChunkedBitmap(&cb_data->chunk);
     }
 
-    mprintf((0, "savegame slot=%d\n", id - SAVE_HOTSPOT_ID));
+    mprintf(0, "savegame slot=%d\n", id - SAVE_HOTSPOT_ID);
 
     ddio_MakePath(savegame_dir, Base_directory, "savegame", NULL);
     snprintf(filename, sizeof(filename), "saveg00%d", (id - SAVE_HOTSPOT_ID));
@@ -1114,17 +1114,17 @@ void SGSObjects(CFILE *fp) {
     gs_WriteInt(fp, op->attach_ultimate_handle);
     gs_WriteInt(fp, op->attach_parent_handle);
     if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_ultimate_handle)) {
-      mprintf((0, "Object %d has an ultimate parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_ultimate_handle)),
-               op->attach_parent_handle));
+      mprintf(0, "Object %d has an ultimate parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_ultimate_handle)),
+               op->attach_parent_handle);
     }
     if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_parent_handle)) {
-      mprintf((0, "Object %d has a parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_parent_handle)),
-               op->attach_parent_handle));
+      mprintf(0, "Object %d has a parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_parent_handle)),
+               op->attach_parent_handle);
     }
 
     gs_WriteInt(fp, pm->n_attach);
     if (pm->n_attach) {
-      mprintf((0, "Object %d has %d attach points.\n", i, pm->n_attach));
+      mprintf(0, "Object %d has %d attach points.\n", i, pm->n_attach);
 
       if (op->attach_children) {
         gs_WriteInt(fp, 1);
@@ -1213,7 +1213,7 @@ void SGSObjects(CFILE *fp) {
     // special things local to object
     SGSObjSpecial(fp, op);
   }
-  mprintf((0, "highest obj index = %d, ", Highest_object_index));
+  mprintf(0, "highest obj index = %d, ", Highest_object_index);
   END_VERIFY_SAVEFILE(fp, "Objects save");
 }
 

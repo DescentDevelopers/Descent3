@@ -62,24 +62,20 @@ extern int WindowGL;
 // JEFF: I PUT THIS IN TO MAKE THINGS A LITTLE BRIGHTER SO I CAN SEE WHILE TESTING
 #define BRIGHTNESS_HACK 1.6f
 
-/*
-#ifndef NDEBUG
-        GLenum GL_error_code;
-        const uint8_t *GL_error_string;
-        #define CHECK_ERROR(x)	{	GL_error_code=dglGetError ();\
-                                                                        if (GL_error_code!=GL_NO_ERROR)\
-                                                                        {\
-                                                                                GL_error_string=gluErrorString
-(GL_error_code);\
-                                                                                mprintf ((0,"GL_ERROR: id=%d code=%d
-String=%s\n",x,GL_error_code,GL_error_string));\
-                                                                        }\
-                                                                        }
+#ifdef ENABLE_CHECK_ERROR
+GLenum GL_error_code;
+const uint8_t *GL_error_string;
+#define CHECK_ERROR(x)                                                                                                 \
+  {                                                                                                                    \
+    GL_error_code = dglGetError();                                                                                     \
+    if (GL_error_code != GL_NO_ERROR) {                                                                                \
+      GL_error_string = gluErrorString(GL_error_code);                                                                 \
+      mprintf(0, "GL_ERROR: id=%d code=%d String=%s\n", x, GL_error_code, GL_error_string);                            \
+    }                                                                                                                  \
+  }
 #else
-        #define CHECK_ERROR(x)
-#endif*/
-
-#define CHECK_ERROR(x)
+  #define CHECK_ERROR(x)
+#endif
 
 #if defined(WIN32)
 //	Moved from DDGR library
@@ -236,10 +232,10 @@ int opengl_CheckExtension(const char *extName) {
 
 // Gets some specific information about this particular flavor of opengl
 void opengl_GetInformation() {
-  mprintf((0, "OpenGL Vendor: %s\n", dglGetString(GL_VENDOR)));
-  mprintf((0, "OpenGL Renderer: %s\n", dglGetString(GL_RENDERER)));
-  mprintf((0, "OpenGL Version: %s\n", dglGetString(GL_VERSION)));
-  mprintf((0, "OpenGL Extensions: %s\n", dglGetString(GL_EXTENSIONS)));
+  mprintf(0, "OpenGL Vendor: %s\n", dglGetString(GL_VENDOR));
+  mprintf(0, "OpenGL Renderer: %s\n", dglGetString(GL_RENDERER));
+  mprintf(0, "OpenGL Version: %s\n", dglGetString(GL_VERSION));
+  mprintf(0, "OpenGL Extensions: %s\n", dglGetString(GL_EXTENSIONS));
 
   /*	#ifndef RELEASE
                   // If this is the microsoft driver, then make stuff go faster
@@ -322,7 +318,7 @@ int opengl_InitCache() {
 
 // Sets default states for our renderer
 void opengl_SetDefaults() {
-  mprintf((0, "Setting states\n"));
+  mprintf(0, "Setting states\n");
 
   OpenGL_state.cur_color = 0x00FFFFFF;
   OpenGL_state.cur_bilinear_state = -1;
@@ -455,7 +451,7 @@ int opengl_Setup(HDC glhdc) {
     return NULL;
   }
 
-  mprintf((0, "Choose pixel format successful!\n"));
+  mprintf(0, "Choose pixel format successful!\n");
 
   // Try and set the new PFD
   if (SetPixelFormat(glhdc, pf, &pfd) == FALSE) {
@@ -465,7 +461,7 @@ int opengl_Setup(HDC glhdc) {
     return NULL;
   }
 
-  mprintf((0, "SetPixelFormat successful!\n"));
+  mprintf(0, "SetPixelFormat successful!\n");
 
   // Get a copy of the newly set PFD
   if (DescribePixelFormat(glhdc, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd_copy) == 0) {
@@ -491,7 +487,7 @@ int opengl_Setup(HDC glhdc) {
   }
 
   ASSERT(ResourceContext != NULL);
-  mprintf((0, "Making context current\n"));
+  mprintf(0, "Making context current\n");
   dwglMakeCurrent((HDC)glhdc, ResourceContext);
 
   Already_loaded = 1;
@@ -688,7 +684,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   int retval = 1;
   int i;
 
-  mprintf((0, "Setting up opengl mode!\n"));
+  mprintf(0, "Setting up opengl mode!\n");
 
   if (pref_state) {
     OpenGL_preferred_state = *pref_state;
@@ -723,7 +719,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     int retval = ChangeDisplaySettings(&devmode, 0);
 
     if (retval != DISP_CHANGE_SUCCESSFUL) {
-      mprintf((0, "Display mode change failed (err=%d), trying default!\n", retval));
+      mprintf(0, "Display mode change failed (err=%d), trying default!\n", retval);
       retval = -1;
       devmode.dmBitsPerPel = 16;
       devmode.dmPelsWidth = 640;
@@ -732,7 +728,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 
       retval = ChangeDisplaySettings(&devmode, 0);
       if (retval != DISP_CHANGE_SUCCESSFUL) {
-        mprintf((0, "OpenGL_INIT:Change display setting failed failed!\n"));
+        mprintf(0, "OpenGL_INIT:Change display setting failed failed!\n");
         rend_SetErrorMessage("OGL: ChangeDisplaySettings failed.  Make sure your desktop is set to 16bit mode!");
         ChangeDisplaySettings(NULL, 0);
         goto D3DError;
@@ -742,8 +738,10 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         OpenGL_preferred_state.height = 480;
       }
     } else
-      mprintf((0, "Setdisplaymode to %d x %d (%d bits) is successful!\n", OpenGL_preferred_state.width,
-               OpenGL_preferred_state.height, OpenGL_preferred_state.bit_depth));
+      mprintf(0, "Setdisplaymode to %d x %d (%d bits) is successful!\n",
+              OpenGL_preferred_state.width,
+              OpenGL_preferred_state.height,
+              OpenGL_preferred_state.bit_depth);
   }
 
   memset(&OpenGL_state, 0, sizeof(rendering_state));
@@ -775,7 +773,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     height = OpenGL_preferred_state.height;
     RECT rect;
     GetWindowRect((HWND)hOpenGLWnd, &rect);
-    mprintf((0, "rect=%d %d %d %d\n", rect.top, rect.right, rect.bottom, rect.left));
+    mprintf(0, "rect=%d %d %d %d\n", rect.top, rect.right, rect.bottom, rect.left);
   }
 
   OpenGL_state.screen_width = width;
@@ -809,7 +807,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   // Get some info
   opengl_GetInformation();
 
-  mprintf((0, "Setting up projection matrix\n"));
+  mprintf(0, "Setting up projection matrix\n");
 
   dglMatrixMode(GL_PROJECTION);
   dglLoadIdentity();
@@ -841,7 +839,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     ASSERT(opengl_packed_Translate_table);
     ASSERT(opengl_packed_4444_translate_table);
 
-    mprintf((0, "Building packed OpenGL translate table...\n"));
+    mprintf(0, "Building packed OpenGL translate table...\n");
 
     for (i = 0; i < 65536; i++) {
       int r = (i >> 10) & 0x1f;
@@ -889,7 +887,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
     ASSERT(opengl_Translate_table);
     ASSERT(opengl_4444_translate_table);
 
-    mprintf((0, "Building OpenGL translate table...\n"));
+    mprintf(0, "Building OpenGL translate table...\n");
 
     for (i = 0; i < 65536; i++) {
       uint32_t pix;
@@ -956,7 +954,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 
   OpenGL_state.initted = 1;
 
-  mprintf((0, "OpenGL initialization at %d x %d was successful.\n", width, height));
+  mprintf(0, "OpenGL initialization at %d x %d was successful.\n", width, height);
 
   return retval;
 
@@ -1220,7 +1218,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
     }
   }
 
-  // mprintf ((1,"Doing slow upload to opengl!\n"));
+  // mprintf(1,"Doing slow upload to opengl!\n");
 
   if (map_type == MAP_TYPE_LIGHTMAP)
     GameLightmaps[bm_handle].flags &= ~LF_LIMITS;
@@ -1247,7 +1245,7 @@ int opengl_MakeBitmapCurrent(int handle, int map_type, int tn) {
   }
 
   if (w != h) {
-    mprintf((0, "Can't use non-square textures with OpenGL!\n"));
+    mprintf(0, "Can't use non-square textures with OpenGL!\n");
     return 0;
   }
 
@@ -1865,11 +1863,10 @@ void opengl_Flip() {
   RTP_INCRVALUE(texture_uploads, OpenGL_uploads);
   RTP_INCRVALUE(polys_drawn, OpenGL_polys_drawn);
 
-  mprintf_at(
-      (1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn, OpenGL_verts_processed));
-  mprintf_at((1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", OpenGL_sets_this_frame[0], OpenGL_sets_this_frame[1],
-              OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]));
-  mprintf_at((1, 3, 0, "Sets= 4:%d   5:%d  ", OpenGL_sets_this_frame[4], OpenGL_sets_this_frame[5]));
+  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn, OpenGL_verts_processed);
+  mprintf_at(1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", OpenGL_sets_this_frame[0], OpenGL_sets_this_frame[1],
+              OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
+  mprintf_at(1, 3, 0, "Sets= 4:%d   5:%d  ", OpenGL_sets_this_frame[4], OpenGL_sets_this_frame[5]);
   for (i = 0; i < 10; i++)
     OpenGL_sets_this_frame[i] = 0;
 #endif
@@ -1998,7 +1995,7 @@ void opengl_SetZBufferState(int8_t state) {
   OpenGL_sets_this_frame[5]++;
   OpenGL_state.cur_zbuffer_state = state;
 
-  // mprintf ((0,"OPENGL: Setting zbuffer state to %d.\n",state));
+  // mprintf(0,"OPENGL: Setting zbuffer state to %d.\n",state);
 
   if (state) {
     dglEnable(GL_DEPTH_TEST);
@@ -2013,7 +2010,7 @@ void opengl_SetZValues(float nearz, float farz) {
   OpenGL_state.cur_near_z = nearz;
   OpenGL_state.cur_far_z = farz;
 
-  // mprintf ((0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz));
+  // mprintf(0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz);
 
   // JEFF: glDepthRange must take parameters [0,1]
   // It is set in init
@@ -2359,7 +2356,7 @@ void opengl_SetGammaValue(float val) {
 
   OpenGL_preferred_state.gamma = val;
 
-  mprintf((0, "Setting gamma to %f\n", val));
+  mprintf(0, "Setting gamma to %f\n", val);
 
 #if defined(WIN32)
   WORD rampvals[3 * 256];
@@ -2392,7 +2389,7 @@ int opengl_SetPreferredState(renderer_preferred_state *pref_state) {
   if (OpenGL_state.initted) {
     int reinit = 0;
 
-    mprintf((0, "Inside pref state!\n"));
+    mprintf(0, "Inside pref state!\n");
 
     // Change gamma if needed
     if (pref_state->width != OpenGL_state.screen_width || pref_state->height != OpenGL_state.screen_height ||

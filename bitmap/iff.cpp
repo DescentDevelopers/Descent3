@@ -521,7 +521,7 @@ int bm_iff_alloc_file(CFILE *ifile) {
     cur_sig[i] = cf_ReadByte(ifile);
 
   if (strncmp("PBM ", cur_sig, 4)) {
-    mprintf((0, "IFF file isn't a PBM...aborting.\n"));
+    mprintf(0, "IFF file isn't a PBM...aborting.\n");
     return -1;
   }
   if (!strncmp("PBM ", cur_sig, 4))
@@ -532,7 +532,7 @@ int bm_iff_alloc_file(CFILE *ifile) {
   ret = bm_iff_parse_file(ifile, &bmheader, NULL);
 
   if (ret != IFF_NO_ERROR) {
-    mprintf((0, "Couldn't load IFF file.\n"));
+    mprintf(0, "Couldn't load IFF file.\n");
     return -1;
   }
 
@@ -571,7 +571,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
   form_len = cf_ReadInt(ifile);
 
   if (sig != IFF_SIG_FORM) {
-    mprintf((0, "Not a valid IFF file.\n"));
+    mprintf(0, "Not a valid IFF file.\n");
     cfclose(ifile);
     return -1;
   }

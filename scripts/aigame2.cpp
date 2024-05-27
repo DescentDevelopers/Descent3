@@ -982,9 +982,9 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
 
   case AIN_SEE_TARGET:
     memory->snipe_target_handles[0] = data->it_handle;
-    //	mprintf (0, "BStorm: See target!!\n");
+    //	mprintf(0, "BStorm: See target!!\n");
     if (memory->state == STATE_IDLE) {
-      //	mprintf (0, "BStorm: Found target!!\n");
+      //	mprintf(0, "BStorm: Found target!!\n");
       memory->target_handle = memory->snipe_target_handles[0];
       set_state(me_handle, STATE_HIDE);
 
@@ -995,7 +995,7 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
     //@@	case AIN_SEE_TARGET:
     //@@	// snipe!!
     //@@		if (memory->state == STATE_IDLE) {
-    //@@			mprintf (0, "Acquired!\n");
+    //@@			mprintf(0, "Acquired!\n");
     //@@			set_state(me_handle, STATE_HIDE);
     //@@		}
     //@@		else if (memory->state == STATE_BASE && memory->timer < Game_GetTime()) {
@@ -1009,7 +1009,7 @@ bool aiBlackStormTrooper::OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) {
 
   case AIN_NEAR_TARGET:
     if (memory->state == STATE_BASE) {
-      //	mprintf (0, "BStorm: Near target, must flee.\n");
+      //	mprintf(0, "BStorm: Near target, must flee.\n");
       set_state(me_handle, STATE_HIDE);
     }
     break;
@@ -1061,7 +1061,7 @@ retry_set_state:
     AI_GoalValue(me_handle, 0, VF_SET, AIGV_F_CIRCLE_DIST, &dist);
     //*/
 
-    //	mprintf (0, "BStorm: Idling around.\n");
+    //	mprintf(0, "BStorm: Idling around.\n");
     break;
 
   case STATE_BASE:
@@ -1073,7 +1073,7 @@ retry_set_state:
     FlushGoal(me_handle, 1);
     FlushGoal(me_handle, 2);
     if (memory->cur_snipe_point == -1) {
-      //	mprintf (0, "BStorm: Eek! We should be hiding, not basing!");
+      //	mprintf(0, "BStorm: Eek! We should be hiding, not basing!");
       state = STATE_HIDE;
       goto retry_set_state;
     }

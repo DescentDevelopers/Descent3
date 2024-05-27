@@ -426,7 +426,7 @@ int pilot::flush(bool new_file) {
 
   if (new_file && cfexist(real_filename)) {
     // the file already exists, we can't write out
-    mprintf((0, "PLTW: File (%s) exists, can't create\n", real_filename));
+    mprintf(0, "PLTW: File (%s) exists, can't create\n", real_filename);
     return PLTW_FILE_EXISTS;
   }
 
@@ -435,7 +435,7 @@ int pilot::flush(bool new_file) {
 
     file = cfopen(real_filename, "wb");
     if (!file) {
-      mprintf((0, "PLTW: File (%s) can't be opened\n", real_filename));
+      mprintf(0, "PLTW: File (%s) can't be opened\n", real_filename);
       return PLTW_FILE_CANTOPEN;
     }
 
@@ -461,22 +461,22 @@ int pilot::flush(bool new_file) {
 
   } catch (cfile_error) {
     // catch and handle CFILE errors
-    mprintf((0, "PLTW: CFILE Exception writing data\n"));
+    mprintf(0, "PLTW: CFILE Exception writing data\n");
     Int3();
     try {
       cfclose(file);
     } catch (...) {
-      mprintf((0, "PLTW: Unable to close file due to exception\n"));
+      mprintf(0, "PLTW: Unable to close file due to exception\n");
     }
     return PLTW_CFILE_FATAL;
   } catch (...) {
     // catch all errors
-    mprintf((0, "PLTW: Unknown exception writing data\n"));
+    mprintf(0, "PLTW: Unknown exception writing data\n");
     Int3();
     try {
       cfclose(file);
     } catch (...) {
-      mprintf((0, "PLTW: Unable to close file due to exception\n"));
+      mprintf(0, "PLTW: Unable to close file due to exception\n");
     }
     return PLTW_UNKNOWN_FATAL;
   }
@@ -520,14 +520,14 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
 
   if (!cfexist(real_filename)) {
     // the file already exists, we can't write out
-    mprintf((0, "PLTR: File (%s) does not exist\n", real_filename));
+    mprintf(0, "PLTR: File (%s) does not exist\n", real_filename);
     return PLTR_FILE_NOEXIST;
   }
 
   try {
     file = cfopen(real_filename, "rb");
     if (!file) {
-      mprintf((0, "PLTR: File (%s) can't be opened\n", real_filename));
+      mprintf(0, "PLTR: File (%s) can't be opened\n", real_filename);
       return PLTR_FILE_CANTOPEN;
     }
 
@@ -588,23 +588,23 @@ int pilot::read(bool skip_config, bool skip_mission_data) {
     cfclose(file);
   } catch (cfile_error) {
     // catch and handle CFILE errors
-    mprintf((0, "PLTR: CFILE Exception reading data\n"));
+    mprintf(0, "PLTR: CFILE Exception reading data\n");
     Int3();
     try {
       cfclose(file);
     } catch (...) {
-      mprintf((0, "PLTR: Unable to close file due to exception\n"));
+      mprintf(0, "PLTR: Unable to close file due to exception\n");
     }
     verify();
     return PLTR_CFILE_FATAL;
   } catch (...) {
     // catch all errors
-    mprintf((0, "PLTR: Unknown exception reading data\n"));
+    mprintf(0, "PLTR: Unknown exception reading data\n");
     Int3();
     try {
       cfclose(file);
     } catch (...) {
-      mprintf((0, "PLTR: Unable to close file due to exception\n"));
+      mprintf(0, "PLTR: Unable to close file due to exception\n");
     }
     verify();
     return PLTR_UNKNOWN_FATAL;
@@ -858,7 +858,7 @@ void pilot::set_hud_data(uint8_t *hmode, uint16_t *hstat, uint16_t *hgraphicalst
       write_pending = true;
       break;
     default:
-      mprintf((0, "PILOT: Trying to set hode mode to invalid mode (%d)\n", *hmode));
+      mprintf(0, "PILOT: Trying to set hode mode to invalid mode (%d)\n", *hmode);
     }
   }
 
@@ -912,15 +912,15 @@ void pilot::add_mission_data(tMissionData *mdata) {
 
   if (find_mission_data(mdata->mission_name) != -1) {
     Int3();
-    mprintf((0, "Mission already exists\n"));
+    mprintf(0, "Mission already exists\n");
     return;
   }
 
-  mprintf((0, "Adding new mission data for (%s)\n", mdata->mission_name));
+  mprintf(0, "Adding new mission data for (%s)\n", mdata->mission_name);
 
   tMissionData *new_data = (tMissionData *)mem_malloc((num_missions_flown + 1) * sizeof(tMissionData));
   if (!new_data) {
-    mprintf((0, "Out of memory\n"));
+    mprintf(0, "Out of memory\n");
     return;
   }
 
@@ -939,14 +939,14 @@ void pilot::add_mission_data(tMissionData *mdata) {
 }
 void pilot::edit_mission_data(int index, tMissionData *mdata) {
   if (index < 0 || index >= num_missions_flown) {
-    mprintf((0, "Invalid mission index\n"));
+    mprintf(0, "Invalid mission index\n");
     Int3();
     return;
   }
 
   if (!mission_data) {
     Int3();
-    mprintf((0, "No mission data\n"));
+    mprintf(0, "No mission data\n");
     return;
   }
 
@@ -960,14 +960,14 @@ void pilot::edit_mission_data(int index, tMissionData *mdata) {
 
 void pilot::get_mission_data(int index, tMissionData *mdata) {
   if (index < 0 || index >= num_missions_flown) {
-    mprintf((0, "Invalid mission index\n"));
+    mprintf(0, "Invalid mission index\n");
     Int3();
     return;
   }
 
   if (!mission_data) {
     Int3();
-    mprintf((0, "No mission data\n"));
+    mprintf(0, "No mission data\n");
     return;
   }
 
@@ -1384,7 +1384,7 @@ void pilot::write_controls(CFILE *file) {
   cf_WriteByte(file, N_MOUSE_AXIS);
   for (i = 0; i < N_MOUSE_AXIS; i++) {
     cf_WriteFloat(file, mouse_sensitivity[i]);
-    mprintf((0, "pilot mousesens[%d]=%f\n", i, mouse_sensitivity[i]));
+    mprintf(0, "pilot mousesens[%d]=%f\n", i, mouse_sensitivity[i]);
   }
 
   cf_WriteByte(file, N_JOY_AXIS);
@@ -1457,7 +1457,7 @@ void pilot::read_controls(CFILE *file, bool skip) {
   for (i = 0; i < temp_b; i++) {
     temp_f = cf_ReadFloat(file);
     mouse_sensitivity[i] = temp_f;
-    mprintf((0, "pilot mousesens[%d]=%f\n", i, mouse_sensitivity[i]));
+    mprintf(0, "pilot mousesens[%d]=%f\n", i, mouse_sensitivity[i]);
   }
   for (; i < N_MOUSE_AXIS; i++) {
     mouse_sensitivity[i] = 1.0f;

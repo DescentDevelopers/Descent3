@@ -109,7 +109,7 @@ void rtp_WriteBufferLog(void) {
   CFILE *file = cfopen(buffer, "wt");
 
   if (file) {
-    mprintf((0, "RTP: Recording Log\n"));
+    mprintf(0, "RTP: Recording Log\n");
 
     strcpy(buffer, "FrameNum,FrameTime,RenderFrameTime,MultiFrameTime,MusicFrameTime,AmbientSoundTime,WeatherFrameTime,"
                    "PlayerFrameTime,DoorwayFrameTime,LevelGoalFrameTime,MatCenFrameTime,ObjectFrameTime,AIFrameAllTime,"
@@ -204,7 +204,7 @@ void rtp_WriteBufferLog(void) {
     // Close the log file
     cfclose(file);
   } else
-    mprintf((0, "RTP: Unable to open log for writing\n"));
+    mprintf(0, "RTP: Unable to open log for writing\n");
 #endif
 }
 
@@ -259,7 +259,7 @@ void rtp_Init(void) {
   LARGE_INTEGER freq;
   if (!QueryPerformanceFrequency(&freq)) {
     // there is no hi-res clock available....ummmm
-    mprintf((0, "RTP: No Hi-Resolution clock available on this system!!!!!!\n"));
+    mprintf(0, "RTP: No Hi-Resolution clock available on this system!!!!!!\n");
     // well, this isn't good...what to do, what to do?
   }
 
@@ -310,7 +310,7 @@ void rtp_StartLog
 */
 void rtp_StartLog(void) {
 #ifdef USE_RTP
-  mprintf((0, "RTP: Starting Log\n"));
+  mprintf(0, "RTP: Starting Log\n");
   Runtime_performance_counter = 0;
   Runtime_performance_enabled = 1;
   memset(&RTP_SingleFrame, 0, sizeof(tRTFrameInfo));
@@ -325,8 +325,8 @@ void rtp_StopLog
 */
 void rtp_StopLog(void) {
 #ifdef USE_RTP
-  mprintf((0, "Recorded performance for %f seconds\n", timer_GetTime() - rtp_startlog_time));
-  mprintf((0, "RTP: Stopping Log\n"));
+  mprintf(0, "Recorded performance for %f seconds\n", timer_GetTime() - rtp_startlog_time);
+  mprintf(0, "RTP: Stopping Log\n");
 
   // Save out the log now
   rtp_WriteBufferLog();
@@ -341,7 +341,7 @@ void rtp_PauseLog
 */
 void rtp_PauseLog(void) {
 #ifdef USE_RTP
-  mprintf((0, "RTP: Pausing Log\n"));
+  mprintf(0, "RTP: Pausing Log\n");
   Runtime_performance_enabled = 0;
 #endif
 }
@@ -352,7 +352,7 @@ void rtp_ResumeLog
 */
 void rtp_ResumeLog(void) {
 #ifdef USE_RTP
-  mprintf((0, "RTP: Resuming Log\n"));
+  mprintf(0, "RTP: Resuming Log\n");
   Runtime_performance_enabled = 1;
 #endif
 }

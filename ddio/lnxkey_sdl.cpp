@@ -367,7 +367,7 @@ int sdlKeyFilter(const SDL_Event *event) {
         if (__glLog == false) {
           DGL_EnableLogging(1);
           __glLog = true;
-          mprintf((0, "OpenGL: Logging enabled."));
+          mprintf(0, "OpenGL: Logging enabled.");
         } // if
         return (0);
 
@@ -375,7 +375,7 @@ int sdlKeyFilter(const SDL_Event *event) {
         if (__glLog == true) {
           DGL_EnableLogging(0);
           __glLog = false;
-          mprintf((0, "OpenGL: Logging disabled."));
+          mprintf(0, "OpenGL: Logging disabled.");
         } // if
         return (0);
 #endif

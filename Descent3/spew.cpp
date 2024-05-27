@@ -153,14 +153,14 @@ bool SpewObjectNeedsEveryFrameUpdate(object *obj, int gunpoint);
 
 // Initializes the Spew system
 void SpewInit() {
-  mprintf((0, "Initializing Spew System\n"));
+  mprintf(0, "Initializing Spew System\n");
   int count;
   spew_count = 0;
 
   for (count = 0; count < MAX_SPEW_EFFECTS; count++) {
     SpewClearEvent(count, true);
   }
-  mprintf((0, "Done Initializing Spew System\n"));
+  mprintf(0, "Done Initializing Spew System\n");
 }
 
 // Creates a Spew effect
@@ -251,7 +251,7 @@ int SpewCreate(spewinfo *spew) {
 
       veffect->start_time = Gametime;
 
-      // mprintf((0,"Creating Spew Effect (%d)\n",veffect->handle));
+      // mprintf(0,"Creating Spew Effect (%d)\n",veffect->handle);
 
       return veffect->handle; // return the handle
     }
@@ -395,7 +395,7 @@ void SpewEmitAll(void) {
         } else {
           vector vel_vector;
 
-          // mprintf((0,"Emitting Point based Spew %d\n",count));
+          // mprintf(0,"Emitting Point based Spew %d\n",count);
 
           // calc velocity vector
           vel_vector = spew->pt.normal * speed;
@@ -411,8 +411,11 @@ void SpewEmitAll(void) {
       } // end while
 
       if (num_spewed == 0) {
-        mprintf((0, "Max spews per frame hit! Handle=%d Interval=%f Lifetime=%f Longevity=%f\n", spew->handle,
-                 spew->time_int, spew->lifetime, spew->longevity));
+        mprintf(0, "Max spews per frame hit! Handle=%d Interval=%f Lifetime=%f Longevity=%f\n",
+                spew->handle,
+                spew->time_int,
+                spew->lifetime,
+                spew->longevity);
         spew->time_until_next_blob = spew->time_int;
       }
 
@@ -435,14 +438,14 @@ void SpewClearEvent(int handle, bool force) {
   if ((slot < 0) || (slot > MAX_SPEW_EFFECTS))
     return;
 
-  // mprintf((0,"Clearing spew event %d - %d....",handle,slot));
+  // mprintf(0,"Clearing spew event %d - %d....",handle,slot);
 
   vis = &SpewEffects[slot];
 
   if ((!force) && (handle != vis->handle))
     return;
 
-  // mprintf((0,"handle OK\n"));
+  // mprintf(0,"handle OK\n");
 
   vis->inuse = vis->random = vis->use_gunpoint = vis->real_obj = false;
   vis->pt.origin.x = vis->pt.origin.y = vis->pt.origin.z = 0.0f;

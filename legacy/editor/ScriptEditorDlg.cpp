@@ -179,7 +179,7 @@ void CScriptEditorDlg::InitFindReplace(BOOL bFind)
    // Initialize the dialog
    if (!m_pdlgFindReplace->Create(bFind, 0, 0, FR_DOWN, this))
    {
-      mprintf((0,"Error allocating find/replace dialog!"));
+      mprintf(0,"Error allocating find/replace dialog!");
       m_pdlgFindReplace = NULL;
       return;
    }
@@ -461,13 +461,13 @@ void CScriptEditorDlg::OnUseExternal()
 		return;
 	}
 
-	mprintf((0, "External Editor started\n"));
+	mprintf(0, "External Editor started\n");
 	WaitForSingleObject(pi.hProcess,INFINITE);
 	TerminateProcess(pi.hProcess,0);
 	Sleep(100); 
 	CloseHandle(pi.hThread);
 	CloseHandle(pi.hProcess);
-	mprintf((0, "External Editor finished\n"));
+	mprintf(0, "External Editor finished\n");
 
 	ImportScript(DEFAULT_SCRIPT_LOCATION);
 	UpdateData(false);
@@ -535,7 +535,7 @@ void CScriptEditorDlg::ExportScript(char *filename)
 	CFILE *file;
 
 	file=cfopen(filename,"wt");
-	mprintf((0,"Exporting Script to file %s\n",filename));
+	mprintf(0,"Exporting Script to file %s\n",filename);
 	cf_WriteString(file, m_sScript.GetBuffer(1));
 	cfclose(file);
 }
@@ -558,7 +558,7 @@ void CScriptEditorDlg::ImportScript(char *filename)
 	}
 
 	file=cfopen(filename,"rt");
-	mprintf((0,"Importing Script from file %s\n",filename));
+	mprintf(0,"Importing Script from file %s\n",filename);
 	do
 	{
 		size=cf_ReadString(buffer,MAX_SCRIPT_LINE_SIZE-2,file);

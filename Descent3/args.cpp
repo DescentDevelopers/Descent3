@@ -71,7 +71,7 @@ void GatherArgs(const char *str) {
   TotalArgs = curarg;
 
   for (int q = 0; q < TotalArgs; q++)
-    mprintf((0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]));
+    mprintf(0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]);
 }
 
 void GatherArgs(char **argv) {
@@ -83,7 +83,7 @@ void GatherArgs(char **argv) {
   } // for
 
   for (int q = 0; q < TotalArgs; q++)
-    mprintf((0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]));
+    mprintf(0, "GatherArgs: Arg (%d) is [%s].", q, GameArgs[q]);
 } // GatherArgs
 
 // Strip '-', '--', and '+' flag prefix, so --foo, -foo, +foo => foo, but pass through - -- + ++
@@ -113,12 +113,12 @@ int FindArg(const char *which) {
 
   for (int i = 1; i <= TotalArgs; i++) {
     if (which_matches(GameArgs[i])) {
-      mprintf((0, "FindArg: Found [%s] at argument index (%d).", which, i));
+      mprintf(0, "FindArg: Found [%s] at argument index (%d).", which, i);
       return i;
     }
   }
 
-  mprintf((0, "FindArg: Did not find [%s] on command line.", which));
+  mprintf(0, "FindArg: Did not find [%s] on command line.", which);
   return 0;
 }
 
@@ -127,7 +127,7 @@ int FindArgChar(const char *which, char singleCharArg) {
   for (int i = 1; i <= TotalArgs; i++) {
     char *str = GameArgs[i];
     if (str[0] == '-' && str[1] == singleCharArg && str[2] == '\0') {
-      mprintf((0, "FindArg: Found [-%c] at argument index (%d).", singleCharArg, i));
+      mprintf(0, "FindArg: Found [-%c] at argument index (%d).", singleCharArg, i);
       return i;
     }
   }
