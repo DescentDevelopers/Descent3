@@ -519,10 +519,20 @@ typedef struct {
 
 static reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
 //*******************************
+#ifdef __LINUX__
+#include <fcntl.h>
+#endif
 
-static void CloseNetworking();
-static void nw_SetSocketOptions(SOCKET sock);
-static void nw_LoadThreadLibrary(void);
+int make_nonblocking(SOCKET sock)
+{
+  SOCKET rval;
+#ifdef WIN32
+  unsigned long arg = 1;
+  return ioctlsocket(sock, FIONBIO, &arg);
+#else // WIN32
+  return fcntl(sock, F_SETFL, fcntl(rval, F_GETFL, 0) | O_NONBLOCK);
+#endif
+}
 
 void CloseNetworking() {
   if (Sockets_initted != 1)
@@ -671,15 +681,7 @@ void nw_SetSocketOptions(SOCKET sock) {
   setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (LPSTR)&broadcast, sizeof(broadcast));
   setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (LPSTR)&broadcast, sizeof(broadcast));
 
-  int error;
-  unsigned long arg;
-
-  arg = TRUE;
-#ifdef WIN32
-  error = ioctlsocket(sock, FIONBIO, &arg);
-#elif defined(__LINUX__)
-  error = ioctl(sock, FIONBIO, &arg);
-#endif
+  int error = make_nonblocking(sock);
   if (error == SOCKET_ERROR) {
     mprintf((0, "Unable to make socket non-blocking -- %d", WSAGetLastError()));
   }

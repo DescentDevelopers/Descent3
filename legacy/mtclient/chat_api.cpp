@@ -30,9 +30,9 @@
 #include "game.h"
 #include "pilot.h"
 #include "ddio_common.h"
+#include "networking.h"
 
 #ifdef __LINUX__
-#include "networking.h"
 #include <sys/time.h>
 #include <unistd.h>
 #endif
@@ -133,8 +133,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 {
 	int16_t chat_port;
 	char chat_server[50];
-	char *p;
-	unsigned long argp = 1;
+  char *p;
 	char signon_str[100];
 
 	//if(Socket_connected && ) return -2;
@@ -186,12 +185,7 @@ int ConnectToChatServer(char *serveraddr,char *nickname,char *trackerid)
 			return -1;
 		}
 
-#ifdef WIN32
-	ioctlsocket( Chatsock, FIONBIO, &argp );
-#elif defined(__LINUX__)
-	ioctl(Chatsock,FIONBIO,&argp);
-#endif
-
+                make_nonblocking(Chatsock);
 		
 		/*
 		HOSTENT *he;
