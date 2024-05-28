@@ -315,6 +315,9 @@ void SGSSnapshot(CFILE *fp);
 #define GAMESAVE_SLOT_Y2 110
 #define GAMESAVE_SLOT_X 12
 
+// we need this directory to load the savegame from
+static char LGS_Path[_MAX_PATH];
+
 extern int Times_game_restored;
 // available for all.
 int Quicksave_game_slot = -1;

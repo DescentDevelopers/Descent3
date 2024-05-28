@@ -3585,6 +3585,19 @@ int SpecialFindDoorName(const char *name) {
   return -1;
 }
 
+static inline char* GetCurrentSumString() {
+  static char output_buf[100];
+  output_buf[0] = '\0';
+  auto digest = Level_md5->digest();
+  char bytestr[10] = "";
+  // Do level checksum
+  for (int i = 0; i < 16; i++) {
+    snprintf(bytestr, sizeof(bytestr), "%.2x", digest[i]);
+    strcat(output_buf, bytestr);
+  }
+  return output_buf;
+}
+
 extern bool Disable_editor_rendering;
 
 #define LEVEL_LOADED_PCT_CALC (filelen) ? (float)(chunk_size + chunk_start) / (float)filelen : 0.0f
