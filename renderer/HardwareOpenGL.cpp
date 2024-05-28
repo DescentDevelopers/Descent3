@@ -597,7 +597,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     return 0;
   }
 
-  if (!FindArg("-nomousecap")) {
+  if (!FindArg("-nomousegrab")) {
     ddio_mouseGrabbed = true;
   }
 
