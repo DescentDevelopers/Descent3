@@ -193,8 +193,9 @@
 #include <cstdio>
 #include <cstdint>
 
-#include "pstypes.h"
+#include "chrono_timer.h"
 #include "ddio_common.h"
+#include "pstypes.h"
 
 // ----------------------------------------------------------------------------
 //	Initialization and destruction functions
@@ -230,20 +231,9 @@ void ddio_InternalResetKey(uint8_t key);
 //	Device Dependent Timer Interface
 // ----------------------------------------------------------------------------
 
-bool timer_Init(int preemptive, bool force_lores);
-void timer_Close();
-
-//	returns time in seconds
-float timer_GetTime();
-
-// returns time in milliseconds
-int64_t timer_GetMSTime();
-
-//	hook in timer function at certain period.  returns a handle to this function
-//@@int timer_HookFunction(void (*fncptr)(), int period);
-
-//	clears function from hook list specified by a handle returned from HookFunction
-//@@void timer_ReleaseFunction(int func);
+#define timer_Init D3::ChronoTimer::Initialize
+#define timer_GetTime D3::ChronoTimer::GetTime
+#define timer_GetMSTime D3::ChronoTimer::GetTimeMS
 
 // ----------------------------------------------------------------------------
 //	Device Dependent Mouse Interface
