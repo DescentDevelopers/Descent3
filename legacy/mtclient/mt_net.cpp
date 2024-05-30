@@ -92,7 +92,7 @@
 #pragma pack(push,pxo)
 #endif
 #pragma pack(1)	//Single byte alignment!
-typedef struct vmt_descent3_struct {
+struct vmt_descent3_struct {
 	char tracker_id[TRACKER_ID_LEN];
 	char pilot_name[PILOT_NAME_LEN];
 	int rank;
@@ -109,7 +109,7 @@ typedef struct vmt_descent3_struct {
 	uint32_t sliding_pct;	//Percentage of the time you were sliding
 	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
 	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
-} vmt_descent3_struct;
+};
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct)-4)
 #ifdef WIN32
 #pragma pack(pop,pxo)

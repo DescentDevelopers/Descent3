@@ -79,10 +79,10 @@
 #include "ui.h"
 #include "ddio.h"
 
-typedef struct tUIOutput {
+struct tUIOutput {
   int id;           // return value
   UIGadget *gadget; // object that's linked to return value.
-} tUIOutput;
+};
 
 //	ids internal to UI system
 #define UID_UP 0

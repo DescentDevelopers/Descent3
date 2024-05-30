@@ -1637,9 +1637,9 @@ void RestoreGlobalActionCtrs(void *file_ptr) {
 #define G_NONE 1
 #define G_ANTI 2
 
-typedef struct t_animation_data {
+struct t_animation_data {
   int16_t first, last;
-} t_animation_data;
+};
 
 const t_animation_data Gravity_state_xlates[3][3] = {
     {{0, 0}, {10, 15}, {0, 5}}, {{21, 25}, {31, 35}, {26, 30}}, {{5, 10}, {16, 20}, {30, 30}}};
@@ -2035,11 +2035,11 @@ bool qBeamHittingPlayer2(int beam1_handle, int beam2_handle, float radius) {
 //	% = spew huge
 //	* = spark
 
-typedef struct t_exit_room_node {
+struct t_exit_room_node {
   int16_t room_number;
   const char *commands;
   char cmdstr[16];
-} t_exit_room_node;
+};
 
 #define N_END_ROOMS 19
 
@@ -2330,10 +2330,10 @@ void dsCustomRestore(void *fileptr) {
 #define WHITESPACE_CHARS " \t\r\n"
 
 // Structure for storing a script message
-typedef struct {
+struct tScriptMessage {
   char *name;    // the name of the message
   char *message; // the actual message text
-} tScriptMessage;
+};
 
 // Global storage for level script messages
 tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];

@@ -37,7 +37,7 @@
 #include "game2dll.h"
 #include "player.h"
 
-typedef struct {
+struct tWaveFile {
   int sample_length;
   int np_sample_length;
   int samples_per_second;
@@ -45,7 +45,7 @@ typedef struct {
   int16_t number_channels;
   uint8_t *sample_8bit;
   int16_t *sample_16bit;
-} tWaveFile;
+};
 
 // returns:
 //	0: no error

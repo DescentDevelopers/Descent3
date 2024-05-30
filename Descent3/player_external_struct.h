@@ -94,14 +94,14 @@
 
 // Info on player weapon firing.
 // There is one of these each for the primary & secondary weapons
-typedef struct {
+struct player_weapon {
   int32_t index;         // the index of the current primary or secondary weapon
   float firing_time; // how long the current weapon has been firing
   int32_t sound_handle;  // the handle for the sound the firing weapon is making
-} player_weapon;
+};
 
 // The structure for a player.  Most of this data will be for multiplayer
-typedef struct {
+struct player {
 
   // positional data for player starts
   int32_t start_index;
@@ -238,6 +238,6 @@ typedef struct {
   int16_t num_deaths_level; // Number of kills this level
   int16_t num_deaths_total; // Number of kills total
 
-} player;
+};
 
 #endif

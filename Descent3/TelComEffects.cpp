@@ -691,7 +691,7 @@ char *format(const char *fmt, ...) {
   return tempbuffer;
 }
 
-bool CreateTextEffect(LPTCTEXTDESC desc, const char *text, int monitor, int screen, int id) {
+bool CreateTextEffect(TCTEXTDESC* desc, const char *text, int monitor, int screen, int id) {
   ASSERT(desc);
   ASSERT(text);
 
@@ -760,7 +760,7 @@ bool CreateTextEffect(LPTCTEXTDESC desc, const char *text, int monitor, int scre
   return false;
 }
 
-bool CreateBitmapEffect(LPTCBMPDESC desc, int monitor, int screen, int id) {
+bool CreateBitmapEffect(TCBMPDESC* desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -822,7 +822,7 @@ bool CreateBitmapEffect(LPTCBMPDESC desc, int monitor, int screen, int id) {
   return false;
 }
 
-bool CreateMovieEffect(LPTCMOVIEDESC desc, int monitor, int screen, int id) {
+bool CreateMovieEffect(TCMOVIEDESC* desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -864,7 +864,7 @@ bool CreateMovieEffect(LPTCMOVIEDESC desc, int monitor, int screen, int id) {
 }
 
 extern tTelComInfo Telcom_system;
-bool CreateBackgroundEffect(LPTCBKGDESC desc, int monitor, int screen, int id) {
+bool CreateBackgroundEffect(TCBKGDESC* desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -903,7 +903,7 @@ bool CreateBackgroundEffect(LPTCBKGDESC desc, int monitor, int screen, int id) {
   return false;
 }
 
-bool CreatePolyModelEffect(LPTCPOLYDESC desc, int monitor, int screen, int id) {
+bool CreatePolyModelEffect(TCPOLYDESC* desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -917,7 +917,7 @@ bool CreatePolyModelEffect(LPTCPOLYDESC desc, int monitor, int screen, int id) {
   return false;
 }
 
-bool CreateSoundEffect(LPTCSNDDESC desc, int monitor, int screen, int id) {
+bool CreateSoundEffect(TCSNDDESC* desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -946,7 +946,7 @@ bool CreateSoundEffect(LPTCSNDDESC desc, int monitor, int screen, int id) {
   return false;
 }
 
-int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id) {
+int CreateButtonEffect(TCBUTTONDESC* desc, int monitor, int screen, int id) {
   ASSERT(desc);
   ASSERT(monitor == MONITOR_MAIN);
 

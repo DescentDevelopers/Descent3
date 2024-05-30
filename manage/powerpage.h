@@ -24,11 +24,11 @@
 #include "pstypes.h"
 #include "powerup.h"
 
-typedef struct {
+struct mngs_power_page {
   powerup powerup_struct;
   char image_name[PAGENAME_LEN];
   char sound_name[MAX_POWERUP_SOUNDS][PAGENAME_LEN];
-} mngs_power_page;
+};
 
 // Powerup page functions
 //---------------------------------------------------------------

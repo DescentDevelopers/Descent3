@@ -121,15 +121,15 @@
 #include "pstypes.h"
 #include "Macros.h"
 
-typedef enum ct_format {
+enum ct_format {
   ctNoFormat,
   ctAnalog,    // analog information (-1.0 to 1.0)
   ctDigital,   // digital information (0 or 1)
   ctDownCount, //	special information for key presses and button/mouse presses.
   ctTime       // time in seconds format
-} ct_format;
+};
 
-typedef enum ct_type {
+enum ct_type {
   ctNone,
   ctAxis,   // axis element of controller.
   ctPOV,    // function value (hiword = +axis, loword = -axis)
@@ -140,21 +140,21 @@ typedef enum ct_type {
   ctPOV2,
   ctPOV3,
   ctPOV4 // auxillary POV values.
-} ct_type;
+};
 
-typedef struct ct_function {
+struct ct_function {
   int id;           // identifier for the function (like forward thrust)
   ct_format format; // what format should the return value be for this function
   ct_type ctype[2]; // type of controller requested for this id. (1 for each value packed.)
   uint8_t value[2];   // corresponding value to ctype
   uint8_t flags[2];   // flags.
-} ct_function;
+};
 
-typedef struct ct_packet {
+struct ct_packet {
   ct_format format; // format of value.
   float value;      // time value for buttons, absolute value for axis values
   unsigned flags;   // additional information (see below)
-} ct_packet;
+};
 
 typedef unsigned ct_config_data; // passed by controller system to the outside, and back to controller system
 

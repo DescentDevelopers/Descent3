@@ -64,11 +64,11 @@ int Physics_vis_counter;
 
 #ifdef _DEBUG
 // This will allow us to debug physics in a better way.
-typedef struct sim_loop_info {
+struct sim_loop_info {
   vector start_pos;
   physics_info phys_info; // At beginnning of loop
   fvi_info hit_info;      // Hit information returned by FVI
-} sim_loop_info;
+};
 
 sim_loop_info sim_loop_record[MAX_PLAYER_SIM_LOOPS];
 #endif

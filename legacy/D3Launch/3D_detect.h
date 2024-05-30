@@ -59,7 +59,7 @@
 #define MAX_CARDS 16
 
 // The list of rendering device types
-typedef enum
+enum RendererType
 {
 	RENDERER_SOFTWARE_8BIT,
 	RENDERER_SOFTWARE_16BIT,
@@ -67,13 +67,13 @@ typedef enum
 	RENDERER_DIRECT3D,
 	RENDERER_GLIDE,
 	RENDERER_NONE
-} RendererType;
+};
 
 // The structure for a 3D device
-typedef struct card3d {
+struct card3d {
 	char name[1024];
 	RendererType renderer_type;
-} card3d;
+};
 
 extern card3d Cards[MAX_CARDS];
 extern int Num_cards;

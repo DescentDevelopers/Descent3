@@ -57,11 +57,11 @@
 #include <cstdint>
 
 //	Movie Cinematic
-typedef struct tCinematic {
+struct tCinematic {
   intptr_t mvehandle;
   int filehandle;
   chunked_bitmap frame_chunk; // used internally, don't access.
-} tCinematic;
+};
 
 bool InitCinematics();
 void SetMovieProperties(int x, int y, int w, int h, renderer_type type);

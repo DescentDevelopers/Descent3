@@ -121,7 +121,7 @@
 
 //	DOOR STRUCTURES
 
-typedef struct {
+struct door {
   char name[PAGENAME_LEN]; // name of the door
   uint8_t used;              // if this door is in use
   uint8_t flags;             // flags for this door
@@ -137,7 +137,7 @@ typedef struct {
   // OSIRIS information
   char module_name[MAX_MODULENAME_LEN];
 
-} door;
+};
 
 // The max number of predefined doors
 #define MAX_DOORS 60

@@ -177,11 +177,11 @@
 #define UI_FRAMETIME 0.05
 //////////////////////////////////////////////////////////////////////////////
 //	VARIABLES
-typedef struct tUIWindowNode {
+struct tUIWindowNode {
   UIWindow *wnd;
   struct tUIWindowNode *next;
   struct tUIWindowNode *prev;
-} tUIWindowNode;
+};
 //	user input structure
 tUIInput UI_input;
 //	user output structure

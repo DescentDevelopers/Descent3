@@ -41,15 +41,15 @@
 #define LNXSND_CAPS_CTRLDEFAULT 0x000E
 #define LNXSND_CAPS_LOCSOFTWARE 0x0010
 
-typedef struct {
+struct LnxSoundDevice {
   int sound_device;       // file device handle for sound
   uint32_t bps;       // (bytes per second) channels*freq*bit_depth/8
   uint32_t freq;      // frequency (22050, etc.)
   uint32_t bit_depth; // 8 or 16
   uint32_t channels;  // 1 or 2 (mono or stereo)
-} LnxSoundDevice;
+};
 
-typedef struct {
+struct WAVEFORMATEX {
   uint16_t wFormatTag;
   uint16_t nChannels;
   uint32_t nSamplesPerSec;
@@ -57,21 +57,21 @@ typedef struct {
   uint16_t nBlockAlign;
   uint16_t wBitsPerSample;
   uint16_t cbSize;
-} WAVEFORMATEX; // Taken from Windows for porting
+}; // Taken from Windows for porting
 #define WAVE_FORMAT_PCM 0x01
 
-typedef struct {
+struct LinuxSoundCaps {
   uint32_t dwFlags;
   uint32_t dwBufferBytes;
-} LinuxSoundCaps;
+};
 
-typedef struct {
+struct LnxBufferDesc {
   WAVEFORMATEX *lpwfxFormat;
   uint32_t dwBufferBytes;
   uint32_t dwFlags;
-} LnxBufferDesc;
+};
 
-typedef struct {
+struct LnxSoundBuffer
   int freq_adjustment;
   int bps;
   uint32_t buffer_len;
@@ -92,7 +92,7 @@ typedef struct {
   uint16_t freq;
   char playing;
   char __pad;
-} LnxSoundBuffer;
+};
 
 ///////////////////////////////
 // LnxSound_CreateSoundBuffer

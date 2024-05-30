@@ -69,9 +69,9 @@ static player *dPlayers;
 #define HCM_PLAYERCOLOR 0
 #define HCM_NORMAL 1
 
-typedef struct {
+struct tPlayerStat {
   int Score[2];
-} tPlayerStat;
+};
 
 static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
 static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);

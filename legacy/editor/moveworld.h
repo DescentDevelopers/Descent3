@@ -40,12 +40,12 @@ void ResetWireframeViewRad();
 void SetWireframeView(vector *pos);
 
 //Structure to describe the wireframe view
-typedef struct {
+struct wireframe_view {
 	matrix	orient;
 	vector	target;
 	float		dist;
 	float		rad;
-} wireframe_view;
+};
 
 //The current wireframe view
 extern wireframe_view *Wireframe_view;

@@ -1119,12 +1119,12 @@ void SetScreenMode(int sm, bool force_res_change) {
 }
 
 //	These functions are called to start and end a rendering frame
-typedef struct tFrameStackFrame {
+struct tFrameStackFrame {
   int x1, x2, y1, y2;
   bool clear;
   tFrameStackFrame *next;
   tFrameStackFrame *prev;
-} tFrameStackFrame;
+};
 tFrameStackFrame *FrameStackRoot = NULL;
 tFrameStackFrame *FrameStackPtr = NULL;
 tFrameStackFrame FrameStack[8];

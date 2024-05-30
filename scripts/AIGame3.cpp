@@ -363,7 +363,7 @@ int FindClosestPlayer(int objhandle) {
 #define CS_NO_PATH 4
 
 // Shot data structure
-typedef struct {
+struct tShotData {
   int object_handle;   // IN: the object taking the shot
   vector start_point;  // IN: the starting point of the shot
   int start_room;      //	IN: the room that the starting point is in
@@ -373,17 +373,17 @@ typedef struct {
   float danger_radius; // IN: the initial danger radius for the scans
   float radius_inc;    // IN: the danger radius increase multiplier
   float risk_factor;   // IN: the amount of risk a robot is willing to take
-} tShotData;
+};
 
 // Shot scan position data structure
-typedef struct {
+struct tShotPathPositionData {
   int num_friends;       // Number of friends found at this path position
   int num_enemies;       // Number of enemies found at this path position
   int num_neutrals;      // Number of neutrals found at this path position
   bool contains_shooter; // Whether or not this path position contains the shooter
   float path_dist;       // The shot path distance of this scan position from the start
   float scan_radius;     // The radius of the scan that was done at this shot position
-} tShotPathPositionData;
+};
 
 // Clear shot globals
 static tShotPathPositionData ShotPathPositions[MAX_SHOT_PATH_POSITIONS];
@@ -591,10 +591,10 @@ int HasClearShot(tShotData *shot_data) {
 #define ID_SECURITYCAMERA 5 // Security Camera
 #define ID_CROWDCONTROL 6   // Crowd Control for Merc6 Barges
 
-typedef struct {
+struct tScriptInfo {
   int id;
   const char *name;
-} tScriptInfo;
+};
 
 static tScriptInfo ScriptInfo[NUM_IDS] = {
     {ID_ALIENORGANISM, "AlienOrganism"}, {ID_HEAVYTROOPER, "HeavyTrooper"},     {ID_LIFTER, "Lifter"},
@@ -740,13 +740,13 @@ public:
 #define ALIEN_SQUADIE_INTERVAL 0.25f
 
 // Teammate data struct
-typedef struct {
+struct teammate_data {
   int handle;      // the object handle for this teammate
   bool is_visible; // whether this teammate can see me or not
-} teammate_data;
+};
 
 // Alien memory data structure
-typedef struct {
+struct alienorganism_data {
   // Mode Data
   int mode;          // indicates what mode alien is currently in
   int pending_mode;  // mode to switch to when current task(s) are completed
@@ -801,7 +801,7 @@ typedef struct {
   vector squad_goal_pos;
   int squad_goal_room;
 
-} alienorganism_data;
+};
 
 // Alien Organism class definition
 class AlienOrganism : public BaseObjScript {
@@ -959,7 +959,7 @@ public:
 #define HT_GRENADE_EFFECT_NAME "AlienEnergyEffect"
 
 // Heavy Trooper memory data structure
-typedef struct {
+struct heavytrooper_data {
   // Mode Data
   int mode;        // indicates what mode trooper is currently in
   float mode_time; // time spent in current mode
@@ -981,7 +981,7 @@ typedef struct {
   float next_blast_time;         // next time a shield collision blast can be created
   float next_particle_time;      // next time to create a casing particle spew
 
-} heavytrooper_data;
+};
 
 // Heavy Trooper class definition
 class HeavyTrooper : public BaseObjScript {
@@ -1053,7 +1053,7 @@ public:
 #define LIFTER_PULLING_SPEED_MOD 0.6f
 
 // Lifter memory data structure
-typedef struct {
+struct lifter_data {
   // Mode Data
   int mode;        // indicates what mode lifter is currently in
   float mode_time; // time spent in current mode
@@ -1076,7 +1076,7 @@ typedef struct {
 
   float next_lift_beam_time; // the next time to update the lift beam
 
-} lifter_data;
+};
 
 // Lifter class definition
 class Lifter : public BaseObjScript {
@@ -1223,7 +1223,7 @@ static const char *const AB_WanderRoomNames[AB_NUM_WANDER_ROOMS] = {
     "BossRoomD", "BossTunnelAE", "BossRoomE", "BossTunnelCE", "BossRoomD"};
 
 // Alien Boss memory data structure
-typedef struct {
+struct alienboss_data {
   // Mode Data
   int mode;  // indicates what mode alien boss is currently in
   int state; // indicates the boss's current state
@@ -1290,7 +1290,7 @@ typedef struct {
   float next_check_if_stuck_time;
   vector last_pos;
 
-} alienboss_data;
+};
 
 // Alien Boss class definition
 class AlienBoss : public BaseObjScript {
@@ -1368,7 +1368,7 @@ public:
 #define SC_TRACK_INTERVAL 0.25f
 
 // Security camera memory data structure
-typedef struct {
+struct securitycamera_data {
   // Mode Data
   int mode;        // indicates what mode security camera is currently in
   float mode_time; // time spent in current mode
@@ -1381,7 +1381,7 @@ typedef struct {
   float last_update_anim_time; // the last time tracking was done
   float curr_track_anim_frame; // the current tracking animation frame
 
-} securitycamera_data;
+};
 
 // Security Camera class definition
 class SecurityCamera : public BaseObjScript {
@@ -1415,7 +1415,7 @@ public:
 #define CC_MIN_STOPPING_SPEED 0.0000001f // we want to preserve the direction of velocity
 
 // Crowd Control memory data structure
-typedef struct {
+struct crowdcontrol_data {
   int follow_handle;     // handle of object to not crowd
   float stop_dist;       // dist at which to stop completely
   float slowdown_offset; // dist at which to start slowing down (added to stop dist)
@@ -1425,7 +1425,7 @@ typedef struct {
   float base_speed;      // the base speed of the object
   float next_check_time; // the next time to do closeness check
 
-} crowdcontrol_data;
+};
 
 // Security Camera class definition
 class CrowdControl : public BaseObjScript {

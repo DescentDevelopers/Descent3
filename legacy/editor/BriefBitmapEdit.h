@@ -35,7 +35,7 @@ class CBriefBitmapEdit : public CDialog
 {
 // Construction
 public:
-	CBriefBitmapEdit(int curr_screen = 0,LPTCBMPDESC d=NULL,CWnd* pParent = NULL);   // standard constructor
+	CBriefBitmapEdit(int curr_screen = 0,TCBMPDESC* d=NULL,CWnd* pParent = NULL);   // standard constructor
 	TCBMPDESC desc;
 	int m_Screen;
 

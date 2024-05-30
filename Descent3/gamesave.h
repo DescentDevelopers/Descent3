@@ -101,7 +101,7 @@
 #define GAMESAVE_SLOTS 8    // maximum number of savegames
 #define GAMESAVE_DESCLEN 31 // gamesave description maximum length.
 
-typedef struct gs_tables {
+struct gs_tables {
   int16_t model_handles[MAX_POLY_MODELS];
   int16_t obji_indices[MAX_OBJECT_IDS];
   int16_t bm_handles[MAX_BITMAPS];
@@ -109,7 +109,7 @@ typedef struct gs_tables {
   int16_t door_handles[MAX_DOORS];
   int16_t ship_handles[MAX_SHIPS];
   int16_t wpn_handles[MAX_WEAPONS];
-} gs_tables;
+};
 
 //	savegame version info.
 // this should be handled like level file version, as to prevent invalidating old savegames

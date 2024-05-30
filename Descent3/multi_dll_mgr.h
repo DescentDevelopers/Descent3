@@ -93,7 +93,7 @@
 #define MT_AUTO_LOGIN 6
 #define MT_AUTO_START 7 // A dedicated server is starting this DLL
 
-typedef struct {
+struct multi_api {
   int *objs;
   int *rooms;
   int *terrain;
@@ -103,7 +103,7 @@ typedef struct {
   int *ships;
   int *fp[200]; // function pointers
   int *vp[200]; // variable pointers
-} multi_api;
+};
 
 #define MAX_AUTO_LOGIN_STUFF_LEN 50
 extern char Auto_login_name[MAX_AUTO_LOGIN_STUFF_LEN];

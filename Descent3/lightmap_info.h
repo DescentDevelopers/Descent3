@@ -54,7 +54,7 @@
 #define LMI_EXTERNAL_ROOM 5
 #define LMI_EXTERNAL_ROOM_OBJECT 6
 
-typedef struct {
+struct lightmap_info {
   uint8_t xspacing, yspacing;
   uint16_t lm_handle;
   vector upper_left, normal;
@@ -65,7 +65,7 @@ typedef struct {
   int16_t spec_map;
 
   uint8_t type; // see LMI_types above
-} lightmap_info;
+};
 
 extern lightmap_info *LightmapInfo;
 extern int Num_of_lightmap_info;

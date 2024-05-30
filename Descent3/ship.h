@@ -142,7 +142,7 @@
 // Ship flags
 #define SF_DEFAULT_ALLOW 1 // Allowed by default
 
-typedef struct {
+struct ship {
   char name[PAGENAME_LEN];
   float size;
   physics_info phys_info; // the physics data for this obj type.
@@ -171,7 +171,7 @@ typedef struct {
 
   int flags;
   uint8_t used;
-} ship;
+};
 
 extern int Num_ships;
 extern ship Ships[MAX_SHIPS];

@@ -690,9 +690,9 @@ struct tCustomListInfo {
   }
 };
 
-typedef struct {
+struct tAudioTauntComboBoxes {
   newuiComboBox *taunt_a, *taunt_b, *taunt_c, *taunt_d;
-} tAudioTauntComboBoxes;
+};
 
 // Deletes the currently selected audio taunt #4
 void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboBox *lb,
@@ -1821,10 +1821,10 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
 
 //////////////////////////////////////////////////////////////
 // returns the filelist of pilots available
-typedef struct tPGetPilotStruct {
+struct tPGetPilotStruct {
   char *filename;
   tPGetPilotStruct *next;
-} tPGetPilotStruct;
+};
 static char **pltgetname_list = NULL;
 static int pltgetname_count = 0;
 

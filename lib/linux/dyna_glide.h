@@ -191,9 +191,9 @@ typedef double FxDouble;
 
 typedef uint32_t FxColor_t;
 
-typedef struct {
+struct FxColor4 {
   float r, g, b, a;
-} FxColor4;
+};
 
 /*
 
@@ -1114,7 +1114,7 @@ typedef FxI32 GrOriginLocation_t;
 
 #define GR_ORIGIN_ANY 0xFF
 
-typedef struct {
+struct GrLfbInfo_t {
 
   int size;
 
@@ -1126,7 +1126,7 @@ typedef struct {
 
   GrOriginLocation_t origin;
 
-} GrLfbInfo_t;
+};
 
 typedef FxI32 GrLOD_t;
 
@@ -1264,15 +1264,15 @@ typedef FxU32 GrTexBaseRange_t;
 
 #ifdef GLIDE_LIB
 
-typedef struct _GrState_s GrState;
+struct _GrState_s GrState;
 
 #else
 
-typedef struct _GrState_s {
+struct GrState {
 
   char pad[GLIDE_STATE_PAD_SIZE];
 
-} GrState;
+};
 
 #endif
 
@@ -1292,7 +1292,7 @@ typedef struct _GrState_s {
 
 */
 
-typedef struct
+struct Gu3dfHeader
 
 {
 
@@ -1304,9 +1304,9 @@ typedef struct
 
   GrTextureFormat_t format;
 
-} Gu3dfHeader;
+};
 
-typedef struct
+struct GuNccTable
 
 {
 
@@ -1318,23 +1318,23 @@ typedef struct
 
   FxU32 packed_data[12];
 
-} GuNccTable;
+};
 
-typedef struct {
+struct GuTexPalette {
 
   FxU32 data[256];
 
-} GuTexPalette;
+};
 
-typedef union {
+union GuTexTable{
 
   GuNccTable nccTable;
 
   GuTexPalette palette;
 
-} GuTexTable;
+};
 
-typedef struct
+struct Gu3dfInfo
 
 {
 
@@ -1346,9 +1346,9 @@ typedef struct
 
   FxU32 mem_required; /* memory required for mip map in bytes. */
 
-} Gu3dfInfo;
+};
 
-typedef struct {
+struct GrTexInfo {
 
   GrLOD_t smallLod;
 
@@ -1360,9 +1360,9 @@ typedef struct {
 
   void *data;
 
-} GrTexInfo;
+};
 
-typedef struct
+struct GrMipMapInfo
 
 {
 
@@ -1408,7 +1408,7 @@ typedef struct
 
   GuNccTable ncc_table; /* NCC compression table (optional) */
 
-} GrMipMapInfo;
+};
 
 typedef int GrSstType;
 
@@ -1418,15 +1418,15 @@ typedef int GrSstType;
 
 #define GR_SSTTYPE_AT3D 2
 
-typedef struct GrTMUConfig_St {
+struct GrTMUConfig_t {
 
   int tmuRev; /* Rev of Texelfx chip */
 
   int tmuRam; /* 1, 2, or 4 MB */
 
-} GrTMUConfig_t;
+};
 
-typedef struct GrVoodooConfig_St {
+struct GrVoodooConfig_t {
 
   int fbRam; /* 1, 2, or 4 MB */
 
@@ -1438,9 +1438,9 @@ typedef struct GrVoodooConfig_St {
 
   GrTMUConfig_t tmuConfig[GLIDE_NUM_TMU]; /* Configuration of the Texelfx chips */
 
-} GrVoodooConfig_t;
+};
 
-typedef struct GrSst96Config_St {
+struct GrSst96Config_t {
 
   int fbRam; /* How much? */
 
@@ -1448,15 +1448,15 @@ typedef struct GrSst96Config_St {
 
   GrTMUConfig_t tmuConfig;
 
-} GrSst96Config_t;
+};
 
-typedef struct GrAT3DConfig_St {
+struct GrAT3DConfig_t {
 
   int rev;
 
-} GrAT3DConfig_t;
+};
 
-typedef struct {
+struct GrHwConfiguration {
 
   int num_sst; /* # of HW units in the system */
 
@@ -1476,9 +1476,9 @@ typedef struct {
 
   } SSTs[MAX_NUM_SST]; /* configuration for each board */
 
-} GrHwConfiguration;
+};
 
-typedef struct GrSstPerfStats_s {
+struct GrSstPerfStats_t {
 
   FxU32 pixelsIn; /* # pixels processed (minus buffer clears) */
 
@@ -1490,9 +1490,9 @@ typedef struct GrSstPerfStats_s {
 
   FxU32 pixelsOut; /* # pixels drawn (including buffer clears) */
 
-} GrSstPerfStats_t;
+};
 
-typedef struct {
+struct GrTmuVertex {
 
   float sow; /* s texture ordinate (s over w) */
 
@@ -1500,7 +1500,7 @@ typedef struct {
 
   float oow; /* 1/w (used mipmapping - really 0xfff/w) */
 
-} GrTmuVertex;
+};
 
 /*
 
@@ -1512,7 +1512,7 @@ typedef struct {
 
 */
 
-typedef struct
+struct GrVertex
 
 {
 
@@ -1528,7 +1528,7 @@ typedef struct
 
   GrTmuVertex tmuvtx[GLIDE_NUM_TMU];
 
-} GrVertex;
+};
 
 /* For indexing GrVertex as a float *.
 

@@ -115,9 +115,9 @@ protected:
   virtual void OnFormat();
 };
 
-typedef struct tCfgDataParts {
+struct tCfgDataParts {
   uint8_t bind_0, bind_1, ctrl_0, ctrl_1;
-} tCfgDataParts;
+};
 
 static inline void parse_config_data(tCfgDataParts *parts, ct_type type0, ct_type type1, ct_config_data cfgdata) {
   switch (type0) {

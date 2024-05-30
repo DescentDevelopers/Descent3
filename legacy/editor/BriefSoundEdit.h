@@ -34,7 +34,7 @@ class CBriefSoundEdit : public CDialog
 {
 // Construction
 public:
-	CBriefSoundEdit(LPTCSNDDESC desc=NULL,CWnd* pParent = NULL);   // standard constructor
+	CBriefSoundEdit(TCSNDDESC* desc=NULL,CWnd* pParent = NULL);   // standard constructor
 	TCSNDDESC desc;
 
 // Dialog Data

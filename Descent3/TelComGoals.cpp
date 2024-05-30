@@ -115,20 +115,22 @@ int TGminx, TGmaxx, TGminy, TGmaxy;
 
 #define UI_RIGHT_ARROW_CHAR 26
 
-typedef struct {
+struct tGoalLineInfo {
   bool primary;
   bool is_objective;
   bool is_active;
   int goal_index;
   int lx, rx, ty, by; // bounding box
-} tGoalLineInfo;
+};
+
 static tGoalLineInfo *TG_Lines;
 static int TG_NumLines;
 static int *TG_SortedList;
 static int TG_CurrObjectiveArrow;
-typedef struct {
+
+struct tToolTipData {
   int w, h;
-} tToolTipData;
+};
 
 static tToolTipData TG_TT_dest;
 static tToolTipData TG_TT_curr;

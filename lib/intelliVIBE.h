@@ -21,27 +21,27 @@
 
 #include <windows.h> //needed for HWND and HINSTANCE
 
-typedef struct {
+struct fvector {
   float x, y, z;
-} fvector;
+};
 
-typedef struct {
+struct d3_init_info {
   HWND hwnd;       // handle to the Window associated with Descent 3
   HINSTANCE hinst; // instance of the Descent 3 application
-} d3_init_info;
+};
 
-typedef struct {
+struct d3_frame_info {
   float frametime; // time, in seconds, that the last frame of the game took
   float gametime;  // time, in seconds, that we have been actively playing the current level
   int game_paused; // 1 if the game is currently paused, 0 if it isn't.  Note: if the game is paused, Gametime and
                    // Frametime will be invalid
-} d3_frame_info;
+};
 
-typedef struct {
+struct d3_fire_info {
   int weapon_index; // what kind of weapon the player is firing, see weapon defines)
-} d3_fire_info;
+};
 
-typedef struct {
+struct d3_controls_info {
   // Values for thrust are from -1.0 to 1.0)
   float pitch_thrust;
   float heading_thrust;
@@ -55,24 +55,24 @@ typedef struct {
   float shake_magnitude;    // If the player's ship is shaking due to some external force, it will be in this value,
                             // 0<=magnitude<=120
 
-} d3_controls_info;
+};
 
-typedef struct {
+struct d3_force_info {
   fvector force_vector; // direction and magnitude of the instantaneous force
-} d3_force_info;
+};
 
-typedef struct {
+struct d3_damage_info {
   float damage_amount; // how much damage is being done
-} d3_damage_info;
+};
 
-typedef struct {
+struct d3_intellivibe {
   d3_frame_info frame_info;
   d3_fire_info fire_info;
   d3_controls_info controls_info;
   d3_force_info force_info;
   d3_damage_info damage_info;
   int flags;
-} d3_intellivibe;
+};
 
 ////////////////////////////////////////////////////////////
 // Flag Defines

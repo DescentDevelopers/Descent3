@@ -81,7 +81,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	typedef struct tObjNode
+	struct tObjNode
 	{
 		HTREEITEM hItem;
 		int handle;

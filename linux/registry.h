@@ -51,18 +51,18 @@
 
 #include <stdio.h>
 
-typedef struct tRecord {
+struct tRecord {
   char name[MAX_RECORD_NAME];
   char type;
   void *data;
   tRecord *next;
-} tRecord;
+};
 
-typedef struct tKey {
+struct tKey {
   char name[MAX_RECORD_NAME];
   tKey *next;
   tRecord *records;
-} tKey;
+};
 
 class CRegistry {
 public:

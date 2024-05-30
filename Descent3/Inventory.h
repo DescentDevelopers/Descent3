@@ -202,13 +202,13 @@ struct object;
 #define INVRESET_LEVELCHANGE 1
 #define INVRESET_DEATHSPEW 2
 
-typedef struct {
+struct tInvenList {
   bool selectable;
   char *hud_name;
   int amount;
-} tInvenList;
+};
 
-typedef struct tInvenInfo {
+struct tInvenInfo {
   int count;
   char *description;
   char *icon_name;
@@ -217,9 +217,9 @@ typedef struct tInvenInfo {
   uint16_t iflags; // Inventory item flags
   int type;
   int id;
-} tInvenInfo;
+};
 
-typedef struct inven_item {
+struct inven_item {
 
   int type;    // what type of object this is... robot, weapon, hostage, powerup, fireball
                // if INVF_OBJECT, this is the object handle
@@ -239,7 +239,7 @@ typedef struct inven_item {
   uint16_t iflags; // Inventory item flags
 
   inven_item *next, *prev; // pointer to next inventory item
-} inven_item;
+};
 
 class Inventory {
 public:

@@ -26,7 +26,7 @@
 #define MAX_RAIN_INTENSITY 50
 #define MAX_SNOW_INTENSITY 200
 
-typedef struct {
+struct weather {
   int flags; // see weather flags, above
 
   float snow_intensity_scalar; // how hard it is snowing
@@ -43,7 +43,7 @@ typedef struct {
 
   int snowflakes_to_create;
 
-} weather;
+};
 
 extern weather Weather;
 

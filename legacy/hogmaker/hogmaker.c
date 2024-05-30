@@ -13,19 +13,19 @@
 
 #define BUFFER_SIZE		(1024*1024*5)	//5 MB
 
-typedef struct {
+struct library_entry {
 	char	name[LIB_FILENAME_LEN];	//just the filename part
 	int	offset;						//offset into library file
 	int	length;						//length of this file
 	long	timestamp;					//time and date of file
 	int	flags;						//misc flags
-} library_entry;
+};
 
-typedef struct {
+struct library {
 	int nfiles;
 	library_entry *table;
 	FILE *fp;
-} library;
+};
 
 library *open_hogfile(char *hogname)
 {

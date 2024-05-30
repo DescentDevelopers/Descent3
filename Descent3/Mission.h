@@ -197,18 +197,18 @@ const int LVLOBJ_NUM = 4;
 const uint16_t LVLOBJF_SECONDARY1 = 1, LVLOBJF_SECONDARY2 = 2, LVLOBJF_SECONDARY3 = 4, LVLOBJF_SECONDARY4 = 8;
 
 // Struct for info about the current level
-typedef struct level_info {
+struct level_info {
   char name[100];
   char designer[100];
   char copyright[100];
   char notes[1000];
-} level_info;
+};
 
 // Info about the current level
 extern level_info Level_info;
 
 //	level information
-typedef struct tLevelNode {
+struct tLevelNode {
   //	level flags
   unsigned flags;           // level flags
   unsigned objective_flags; // level objective flags
@@ -228,12 +228,12 @@ typedef struct tLevelNode {
   uint8_t lvlbranch0, lvlbranch1; // FORK or BRANCH command
   uint8_t secretlvl;              // SECRET command
   uint8_t pad;
-} tLevelNode;
+};
 
 // predefine mission state flags
 #define MSN_STATE_SECRET_LEVEL 0x80000000
 
-typedef struct tMission {
+struct tMission {
   int mn3_handle; // if this mission was loaded from an MN3, this is the handle.
 
   unsigned game_state_flags;  // game state information stored here (manipulated by scripting)
@@ -252,10 +252,10 @@ typedef struct tMission {
   int num_levels;     // number of levels
   int cur_level;      // current level playing.
   tLevelNode *levels; // array of levels
-} tMission;
+};
 
 // structyre used to get information about a mission
-typedef struct tMissionInfo {
+struct tMissionInfo {
   char name[MSN_NAMELEN];
   char author[MSN_NAMELEN];
   char desc[MSN_NAMELEN * 4];
@@ -264,7 +264,7 @@ typedef struct tMissionInfo {
   bool training;
   int n_levels;
   char keywords[MAX_KEYWORDLEN]; // Keywords for mods, so you can see if this mission supports a given mod
-} tMissionInfo;
+};
 
 //	Scripting information
 

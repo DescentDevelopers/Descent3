@@ -30,7 +30,7 @@
 #define VCF_NOT_RESIDENT 1
 #define VCF_WANTS_MIPPED 2
 
-typedef struct {
+struct vclip {
   char name[PAGENAME_LEN];
   int16_t num_frames;
   int16_t *frames;    // bitmap indices
@@ -38,7 +38,7 @@ typedef struct {
   int flags;
   uint8_t target_size; // what size this vclip should use (texture wise)
   uint8_t used;        // Is this vclip in use?
-} vclip;
+};
 
 extern vclip GameVClips[MAX_VCLIPS];
 extern int Num_vclips;

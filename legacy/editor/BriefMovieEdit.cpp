@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 // CBriefMovieEdit dialog
 
 
-CBriefMovieEdit::CBriefMovieEdit(LPTCMOVIEDESC d,CWnd* pParent /*=NULL*/)
+CBriefMovieEdit::CBriefMovieEdit(TCMOVIEDESC* d,CWnd* pParent /*=NULL*/)
 	: CDialog(CBriefMovieEdit::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CBriefMovieEdit)

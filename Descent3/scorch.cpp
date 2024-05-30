@@ -109,14 +109,14 @@
 #include <algorithm>
 
 // Structure for storing scorch marks
-typedef struct {
+struct scorch {
   int roomface;       // room number & face number combined into an int
   vector pos;         // the position of the center of the scorch mark
   uint8_t handle_index; // which mark?
   int8_t rx, ry, rz;   // right vector
   int8_t ux, uy, uz;   // up vector
   uint8_t size;         // floating-point size times 16
-} scorch;
+};
 
 // How many scorch marks
 #define MAX_SCORCHES 500

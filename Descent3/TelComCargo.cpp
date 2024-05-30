@@ -119,11 +119,11 @@
 #define LID_COUNTERMEASURES 4
 #define LID_INVENTORY 5
 
-typedef struct {
+struct tLineInfo {
   uint8_t type;
   const char *name;
   int id;
-} tLineInfo;
+};
 
 tLineInfo StatusLines[] = {
     {LIT_TITLE, "Ship Status", LID_NONE},        {LIT_VALUE, "Shields", LID_SHIELDS},

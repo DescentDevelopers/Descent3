@@ -105,7 +105,7 @@ struct tD3XProgram;
 
 //	Data structure for a default script name.  
 // There exists a list of these names too.
-typedef struct tScriptName
+struct tScriptName
 {
 // script info.
 	char name[MAX_SCRNAME];

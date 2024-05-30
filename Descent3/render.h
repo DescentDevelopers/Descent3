@@ -217,11 +217,11 @@ extern vector Room_fog_plane, Room_fog_portal_vert;
 
 struct face;
 
-typedef struct {
+struct fog_portal_data {
   int16_t roomnum;
   float close_dist;
   face *close_face;
-} fog_portal_data;
+};
 
 extern fog_portal_data Fog_portal_data[];
 
@@ -234,10 +234,10 @@ void SetFogZoneEnd(float z);
 struct room;
 
 // For sorting our textures in state limited environments
-typedef struct {
+struct state_limited_element {
   int facenum;
   int sort_key;
-} state_limited_element;
+};
 
 #define MAX_STATE_ELEMENTS 8000
 extern state_limited_element State_elements[MAX_STATE_ELEMENTS];

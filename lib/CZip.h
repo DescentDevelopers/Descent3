@@ -75,7 +75,7 @@
 #define uint32_t uint32_t
 #define uint16_t uint16_t
 
-typedef struct {
+struct tVirtualFile {
   uint8_t type;
   int count;
   int size;      // only used for memory...size allocated for buffer
@@ -84,55 +84,55 @@ typedef struct {
     FILE *file;
     uint8_t *memory;
   };
-} tVirtualFile;
+};
 
 ////////////////////////////
 // BitIO			//////
 ////////////////////////
-typedef struct tBitFile {
+struct BITFILE {
   tVirtualFile *file;
   uint8_t mask;
   int rack;
-} BITFILE;
+};
 
 /////////////////////////////
 // HuffmanBasic		///////
 /////////////////////////
-typedef struct tHuffman0TreeNode {
+struct tH0Node { // tHuffman0TreeNode
   uint32_t count;
   uint32_t saved_count;
   int child0, child1;
-} tH0Node;
+};
 
-typedef struct {
+struct tH0Code {
   uint32_t code;
   int code_bits;
-} tH0Code;
+};
 
 ///////////////////////////
 // Huffman Adaptive	//////
 /////////////////////////
 #define SYMBOL_COUNT 258
 #define NODE_TABLE_COUNT ((SYMBOL_COUNT * 2) - 1)
-typedef struct tHANode {
+struct tHANode {
   uint32_t weight;
   int parent;
   bool child_is_leaf;
   int child;
-} tHANode;
+};
 
-typedef struct tHATree {
+struct tHATree {
   int leaf[SYMBOL_COUNT];
   int next_free_node;
   tHANode nodes[NODE_TABLE_COUNT];
-} tHATree;
+};
 
-typedef struct {
+struct tFileInfo {
   char filename[_MAX_PATH]; // filename
   int lo_time, hi_time;     // filetime
   int compressed_size;      //
   int expanded_size;        //
-} tFileInfo;
+};
 
 ////////////////////////////////////////////////
 //	CZip Class Header				//////////

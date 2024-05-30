@@ -198,7 +198,7 @@ void grtext_Render();
 //		x is the old x before call and the new potential adjusted x after the call.
 //		newline if it's a newline.
 //		line start x;
-typedef struct tGetCharInfo {
+struct tGetCharInfo {
   int sx; // this will not be modified. the initial x on the same line as the string
 
   ddgr_color col; // these values will be modified
@@ -206,7 +206,7 @@ typedef struct tGetCharInfo {
   bool newline;   // reached a newline?
   bool font_char; // character exists in font?
   char ch;
-} tGetCharInfo;
+};
 
 const char *grtext_GetChar(const char *str, tGetCharInfo *ci);
 
@@ -214,7 +214,7 @@ const char *grtext_GetChar(const char *str, tGetCharInfo *ci);
 //	font functions!
 
 // we can load a font template into this structure.  call grfont_FreeTemplate(tFontTemplate) to free memory here.
-typedef struct tFontTemplate {
+struct tFontTemplate {
   uint16_t min_ascii, max_ascii;
   uint8_t *ch_widths;
   uint8_t *kern_data;
@@ -228,7 +228,7 @@ typedef struct tFontTemplate {
 
   // ffi2 style (font file info 2)
   int8_t ch_tracking; // global tracking for font.
-} tFontTemplate;
+};
 
 //	clears out font buffer.
 void grfont_Reset();
@@ -288,14 +288,14 @@ void grtext_Init(void);
 void grfont_Spew(int font, int x, int y);
 #endif
 
-typedef struct tFontFileInfo2 // to maintain compatibility with older fonts (64 bytes long)
+struct tFontFileInfo2 // to maintain compatibility with older fonts (64 bytes long)
 {
   int16_t tracking;
   char reserved[62];
-} tFontFileInfo2;
+};
 
 //	font data structure internal to library but available for font editors
-typedef struct tFontFileInfo {
+struct tFontFileInfo {
   int16_t width, height; // width of widest character and height of longest char
   int16_t flags;         // flags used by the character renderer
   int16_t baseline;      // pixels given to lowercase below script line start at baseline
@@ -312,7 +312,7 @@ typedef struct tFontFileInfo {
 
   //	misc.
   float brightness; // this IS NOT in the file, but a part of the baseline element. (upper 8bits)
-} tFontFileInfo;
+};
 
 #define FT_COLOR 1
 #define FT_PROPORTIONAL 2

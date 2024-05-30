@@ -308,7 +308,7 @@ static inline bool FastVectorBBox(const float *min, const float *max, const floa
 }
 
 // this data structure gets filled in by find_vector_intersection()
-typedef struct fvi_info {
+struct fvi_info {
   vector hit_pnt; // centerpoint when we hit
   int hit_room;   // what room hit_pnt is in
   float hit_dist; // distance of the hit
@@ -338,10 +338,10 @@ typedef struct fvi_info {
   vector hit_subobj_fvec;
   vector hit_subobj_uvec;
   vector hit_subobj_pos;
-} fvi_info;
+};
 
 // this data contains the parms to fvi()
-typedef struct fvi_query {
+struct fvi_query {
   vector *p0, *p1;
   int startroom;
   float rad;
@@ -357,7 +357,7 @@ typedef struct fvi_query {
   angle *o_turnroll;
   vector *o_thrust;
   float frametime;
-} fvi_query;
+};
 
 // Find out if a vector intersects with anything.
 // Fills in hit_data, an fvi_info structure (see above).
@@ -372,10 +372,10 @@ typedef struct fvi_query {
 extern int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision = false);
 
 // Face/Room list for some fvi call(s)
-typedef struct fvi_face_room_list {
+struct fvi_face_room_list {
   uint16_t face_index;
   uint16_t room_index;
-} fvi_face_room_list;
+};
 
 #define MAX_RECORDED_FACES 200
 

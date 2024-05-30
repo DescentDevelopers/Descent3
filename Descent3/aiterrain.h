@@ -43,10 +43,10 @@
 #ifndef AITERRAIN_H_
 #define AITERRAIN_H_
 
-typedef struct ground_information {
+struct ground_information {
   float highest_y;
   float lowest_y;
-} ground_information;
+};
 
 bool ait_GetGroundInfo(ground_information *ground_info, vector *p0, vector *p1, float rad = 0.0f, angle fov = 0);
 void ait_Init(void);

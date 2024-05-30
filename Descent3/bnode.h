@@ -79,7 +79,7 @@
 // Not bigger than 127 - char bnode - in portal struct
 #define MAX_BNODES_PER_ROOM 127
 
-typedef struct bn_edge {
+struct bn_edge {
   int16_t end_room;
   char end_index;
 
@@ -87,18 +87,18 @@ typedef struct bn_edge {
   int16_t cost;
 
   float max_rad;
-} bn_edge;
+};
 
-typedef struct bn_node {
+struct bn_node {
   vector pos;
   int num_edges;
   bn_edge *edges;
-} bn_node;
+};
 
-typedef struct bn_list {
+struct bn_list {
   int num_nodes;
   bn_node *nodes;
-} bn_list;
+};
 
 struct room;
 

@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 // CBriefBitmapEdit dialog
 
 
-CBriefBitmapEdit::CBriefBitmapEdit(int curr_screen,LPTCBMPDESC d,CWnd* pParent /*=NULL*/)
+CBriefBitmapEdit::CBriefBitmapEdit(int curr_screen,TCBMPDESC* d,CWnd* pParent /*=NULL*/)
 	: CDialog(CBriefBitmapEdit::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CBriefBitmapEdit)

@@ -91,14 +91,14 @@ typedef intptr_t    LParam;
 typedef intptr_t    LResult;
 
 //	This structure is used to retrieve and set
-typedef struct tWin32AppInfo {
+struct tWin32AppInfo {
   unsigned flags;                 // Application Flags
   HWnd hwnd;                      // Window Handle
   HInstance hinst;                // Window Instance
   int wnd_x, wnd_y, wnd_w, wnd_h; // Window dimensions
-} tWin32AppInfo;
+};
 
-typedef enum tWin32OS { NoWin32, Win9x, WinNT, WinCE } tWin32OS;
+enum tWin32OS { NoWin32, Win9x, WinNT, WinCE };
 
 /*	Win32 Application Object
                 This object entails initialization and cleanup of all operating system

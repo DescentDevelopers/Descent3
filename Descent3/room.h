@@ -386,7 +386,7 @@
 
 // Room change stuff
 #define MAX_ROOM_CHANGES 100
-typedef struct {
+struct room_changes {
   int roomnum;
   bool fog;
   vector start_vector, end_vector;
@@ -394,7 +394,7 @@ typedef struct {
   float start_time;
   float total_time;
   uint8_t used;
-} room_changes;
+};
 
 //
 // Globals

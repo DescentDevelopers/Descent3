@@ -100,12 +100,12 @@ class oeApplication;
         Diagnostic DDGR system types and functions
 */
 
-typedef struct ddgr_init_info {
+struct ddgr_init_info {
   oeApplication *obj;  // the app object created by app calling
   char *subsystem;     // subsystem name (i.e. 'DirectDraw', 'GDI')
   uint16_t windowed : 1; // are we running in a fullscreen or windowed mode
   uint16_t debug : 1;    // are we running in debug mode?
-} ddgr_init_info;
+};
 
 /*	app = application object.
         subsystem = subsystem name ('DirectDraw', 'GDI')
@@ -163,14 +163,14 @@ const int SURFFLAG_BACKBUFFER = 1, SURFFLAG_COLORKEY = 2;
 */
 const int SURF_NAMELEN = 16;
 
-typedef struct ddgr_surface {
+struct ddgr_surface {
   void *obj;               // internal structure info to library
   char name[SURF_NAMELEN]; // name
   int w, h, bpp;           // width, height and bit depth
   uint16_t type;             // how driver handles this surface
   uint16_t flags;            // colorkeying, etc.
   int locks;               // lock count.
-} ddgr_surface;
+};
 
 #if defined(WIN32)
 /*
@@ -235,15 +235,15 @@ bool ddgr_surf_Blt(ddgr_surface *dsf, int dx, int dy, ddgr_surface *ssf, int sx,
 /*
         8-bit palette surface structures
 */
-typedef struct ddgr_rgb {
+struct ddgr_rgb {
   uint8_t r, g, b; // RGB triplet
   uint8_t x;       // reserved...
-} ddgr_rgb;
+};
 
-typedef struct ddgr_palette {
+struct ddgr_palette {
   void *obj;         // internal object
   ddgr_rgb rgb[256]; // rgb values for palette.
-} ddgr_palette;
+};
 
 //	attaches a palette to an 8-bit surface only.
 bool ddgr_surf_AttachPalette(ddgr_surface *surf, ddgr_palette *pal);

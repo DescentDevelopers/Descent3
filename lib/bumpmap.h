@@ -27,12 +27,12 @@
 #define BUMPF_USED 1
 #define BUMPF_CHANGED 2
 
-typedef struct {
+struct bms_bumpmap {
   uint16_t *data;     // 8bit data
   int16_t cache_slot; // for the renderers use
   uint8_t width, height;
   uint8_t flags, pad;
-} bms_bumpmap;
+};
 
 extern bms_bumpmap GameBumpmaps[MAX_BUMPMAPS];
 

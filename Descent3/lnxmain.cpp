@@ -52,11 +52,11 @@ char *__orig_pwd = NULL;
 
 bool linux_permit_gamma = false;
 
-typedef struct {
+struct cmdLineArg {
   const char *lng;
   char sht;
   const char *comment;
-} cmdLineArg;
+};
 
 static cmdLineArg d3ArgTable[] = {
 #ifdef __PERMIT_LINUX_GLIDE

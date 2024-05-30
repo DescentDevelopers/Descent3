@@ -128,14 +128,14 @@
 // NOTE:  If you add a flag here, please check the function CopyFaceFlags()
 
 // UVLs for room verts
-typedef struct roomUVL {
+struct roomUVL {
   float u, v; // texture coordinates
   float u2, v2;
   uint8_t alpha; // alpha for this vertex
-} roomUVL;
+};
 
 // an n-sided polygon used as part of a room or portal
-typedef struct face {
+struct face {
   uint16_t flags;     // flags for this face (see above)
   uint8_t num_verts;  // how many vertices in this face
   int8_t portal_num; // which portal this face is part of, or -1 if none
@@ -149,7 +149,7 @@ typedef struct face {
   uint8_t renderframe;       // what frame this face was last rendered (for lighting)
   uint8_t light_multiple;    // what multiple to times by
   vector min_xyz, max_xyz; // min & max extents of this face (for FVI)
-} face;
+};
 
 // Portal flags
 #define PF_RENDER_FACES 1        // render the face(s) in the portal
@@ -161,7 +161,7 @@ typedef struct face {
 #define PF_BLOCK_REMOVABLE 64
 
 // a connection between two rooms
-typedef struct portal {
+struct portal {
   int flags;         // flags for this portal
   int16_t portal_face; // the face for this portal
   int16_t croom;       // the room this portal connects to
@@ -169,7 +169,7 @@ typedef struct portal {
   int16_t bnode_index;
   int combine_master; // For rendering combined portals
   vector path_pnt;    // Point used by the path system
-} portal;
+};
 
 // Room flags
 #define RF_FUELCEN 1                // room is a refueling center
@@ -208,7 +208,7 @@ typedef struct portal {
 struct doorway;
 
 // the basic building-block of a Descent 3 level
-typedef struct room {
+struct room {
   int flags; // various room flags
 
   int num_faces;   // how many poygons in this room
@@ -263,6 +263,6 @@ typedef struct room {
   uint8_t damage_type;       // What type of damage this rooms does (for sound) if damage > 0
   uint8_t used;              // is this room holding data?
 
-} room;
+};
 
 #endif

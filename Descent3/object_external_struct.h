@@ -134,7 +134,7 @@
  */
 
 // lighting info
-typedef struct {
+struct light_info {
   int32_t flags; // see above
   float light_distance;
   float red_light1, green_light1, blue_light1;
@@ -145,9 +145,9 @@ typedef struct {
   int32_t timebits;
   uint8_t angle;
   uint8_t lighting_render_type;
-} light_info;
+};
 
-typedef struct {
+struct effect_info_s {
   int32_t type_flags; // see EF_FLAGS above
 
   float alpha;        // alpha value
@@ -201,10 +201,10 @@ typedef struct {
   float spark_timer;     // how long until next spark
   float spark_time_left; // how long until sparking stops
 
-} effect_info_s;
+};
 
 // Describes the next animation state for a robot
-typedef struct custom_anim {
+struct custom_anim {
   float server_time;
   uint16_t server_anim_frame;
 
@@ -216,19 +216,19 @@ typedef struct custom_anim {
   int16_t anim_sound_index;
   uint8_t flags;
   int8_t next_anim_type;
-} custom_anim;
+};
 
-typedef struct multi_turret {
+struct multi_turret {
   float time;
   float last_time;
   uint8_t num_turrets;
   float *last_keyframes;
   float *keyframes;
   uint8_t flags;
-} multi_turret;
+};
 
 // Information specific to objects that render as a polygon model
-typedef struct polyobj_info {
+struct polyobj_info {
   int16_t model_num;        // Which polygon model this object is
   int16_t dying_model_num;  // The dying model for this object
 
@@ -247,40 +247,40 @@ typedef struct polyobj_info {
 
   uint32_t subobj_flags; // Mask of which subobjects to draw
   int32_t tmap_override; // If this is not -1, map all faces to this
-} polyobj_info;
+};
 
 // A shard of, presumably, glass
-typedef struct shard_info_s {
+struct shard_info_s {
   vector points[3];
   float u[3], v[3];
   vector normal;
   int16_t tmap;
-} shard_info_s;
+};
 
-typedef struct line_info_s {
+struct line_info_s {
   vector end_pos; // start pos is the object's .pos field
-} line_info_s;
+};
 
-typedef struct blast_info_s {
+struct blast_info_s {
   float max_size;
   int32_t bm_handle;
-} blast_info_s;
+};
 
-typedef struct dying_info_s {
+struct dying_info_s {
   int32_t death_flags;      // Info about the death
   float delay_time;         // How long until object dies
   int32_t killer_playernum; // The player who wille this object, or -1 if not a player
   float last_spark_time;
   float last_fireball_time;
   float last_smoke_time;
-} dying_info_s;
+};
 
-typedef struct debris_info_s {
+struct debris_info_s {
   int32_t death_flags;      // a copy of the parent's death flags
   float last_smoke_time;
-} debris_info_s;
+};
 
-typedef struct laser_info_s {
+struct laser_info_s {
   int16_t parent_type;      // The type of the parent of this object
   int16_t src_gun_num;      // The src gunpoint that this object fired from
 
@@ -302,31 +302,31 @@ typedef struct laser_info_s {
   float last_drop_time;  // Last time a particle was dropped from this weapon
   vector last_smoke_pos; // Last place smoke was dropped from this weapon
   bool casts_light;      // Whether or not this weapon casts light
-} laser_info_s;
+};
 
-typedef struct powerup_info_s {
+struct powerup_info_s {
   int32_t count; // how many/much we pick up (vulcan cannon only?)
-} powerup_info_s;
+};
 
-typedef struct splinter_info_s {
+struct splinter_info_s {
   uint8_t subobj_num;
   int16_t facenum;
   vector verts[MAX_VERTS_PER_SPLINTER];
   vector center;
-} splinter_info_s;
+};
 
 // Data for sourcesource objects
-typedef struct {
+struct soundsource_info_s {
   int32_t sound_index;
   float volume;
-} soundsource_info_s;
+};
 
 // information for physics sim for an object
 // Some of this stuff is not object instance dependant -- so, it could be moved into
 // a different struct to save space.  (But, then we cannot change it -- i.e we might want a powerup
 // to change the mass of an object...)  Wait to move until we are optimizing -- see Chris if you move any fields
 // out of the physics_info struct.  Thanx!
-typedef struct physics_info {
+struct physics_info {
   vector velocity;    // Velocity vector of this object
   vector thrust;      // Constant force applied to this object
   union {
@@ -370,35 +370,35 @@ typedef struct physics_info {
   };
 
   uint32_t flags; // Misc physics flags
-} physics_info;
+};
 
-typedef struct shockwave_info {
+struct shockwave_info {
   uint32_t damaged_list[(MAX_OBJECTS / 32) + 1];
-} shockwave_info;
+};
 
-typedef struct object_link_info {
+struct object_link_info {
   int32_t parent_handle;
   int32_t sobj_index;
   vector fvec;
   vector uvec;
   vector pos;
-} object_link_info;
+};
 
-typedef struct {
+struct tOSIRISScriptNode {
   uint16_t DLLID;
   uint16_t script_id;
   void *script_instance;
-} tOSIRISScriptNode;
+};
 
-typedef struct {
+struct tOSIRISScript {
   tOSIRISScriptNode custom_script;
   tOSIRISScriptNode mission_script;
   tOSIRISScriptNode level_script;
   tOSIRISScriptNode default_script;
-} tOSIRISScript;
+};
 
 // The data for an object
-typedef struct object {
+struct object {
   uint8_t type;       // what type of object this is... robot, weapon, hostage, powerup, fireball
   uint8_t dummy_type; // stored type of an OBJ_DUMMY
   uint16_t id;        // which form of object...which powerup, robot, etc.
@@ -516,6 +516,6 @@ typedef struct object {
 
   char *custom_default_script_name;
   char *custom_default_module_name;
-} object;
+};
 
 #endif

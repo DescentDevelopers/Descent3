@@ -33,12 +33,12 @@
 #define SITE_FILE_COMMENT_CHAR	';'
 
 // Structure for the site entries
-typedef struct tagSITE_ENTRY {
+typedef struct SITE_ENTRY {
 	char name[PSPATHNAME_LEN+1];		// The name/description of the site
 	char url[PSPATHNAME_LEN+1];			// Just the base http/ftp address
 	char location[PSPATHNAME_LEN+1];	// Where the site is located
 	char path[PSPATHNAME_LEN+1];		// The remote directory and patch filename
-} SITE_ENTRY;
+};
 
 #define NO_SITE_CHOSEN	-1
 

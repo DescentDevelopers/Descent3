@@ -45,7 +45,7 @@
 
 #define ST_LEVEL	0
 #define ST_GAME		1
-typedef struct{
+struct{
 	char source_filename[_MAX_PATH];
 	uint8_t script_type;
 	void (*callback)(char *str);

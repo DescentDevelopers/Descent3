@@ -59,7 +59,7 @@ const int VID_GDIF_SUBSYSTEM = 0, // GDI fullscreen subsystem
 
 class oeWin32Application;
 
-typedef struct tDDVideoInfo {
+struct tDDVideoInfo {
   oeWin32Application *app;
   HWND hWnd;
   HWND hVidWnd;
@@ -83,7 +83,7 @@ typedef struct tDDVideoInfo {
     int olddevmode;
     int curdevmode;
   } gdi;
-} tDDVideoInfo;
+};
 
 //	driver info.
 extern tDDVideoInfo DDVideo_info;

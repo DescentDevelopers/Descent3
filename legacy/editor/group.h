@@ -74,7 +74,7 @@ struct object;
 struct trigger;
 
 //A group.  Used for cut, paste, copy, etc.
-typedef struct group {
+struct group {
 	int  		nrooms;			//number of rooms in this group
 	room 		*rooms;			//pointer to list of rooms
 	int  		attachroom;		//which room is attached when pasting
@@ -84,7 +84,7 @@ typedef struct group {
 	object	*objects;		//pointer to list of objects
 	int		ntriggers;		//how many triggers
 	trigger	*triggers;		//pointer to list of triggers
-} group;
+};
 
 
 //Free a group.

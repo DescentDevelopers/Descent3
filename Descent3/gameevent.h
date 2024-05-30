@@ -39,7 +39,7 @@
 
 #define D3X_TIMED_EVENT 256
 
-typedef struct game_event {
+struct game_event {
   int type;
   int id;
   int objhandle_detonator; // watch this object, if it dies/gets killed than cancel this game event
@@ -50,7 +50,7 @@ typedef struct game_event {
   void *data;
 
   void (*subfunction)(int, void *);
-} game_event;
+};
 
 // Adds and event to the list. The event will trigger at Gametime+length
 int CreateNewEvent(int type, int id, float length, void *data, int size, void (*subfunction)(int eventnum, void *data),

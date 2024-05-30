@@ -820,9 +820,9 @@ void ObjUnGhostObject(int objnum);
 /////////////////////////////////
 #define MAX_OBJECT_POS_HISTORY (MAX_OBJECTS / 2)
 #define MAX_POSITION_HISTORY 3
-typedef struct {
+struct tPosHistory {
   vector pos[MAX_POSITION_HISTORY];
-} tPosHistory;
+};
 extern tPosHistory Object_position_samples[MAX_OBJECT_POS_HISTORY];
 extern uint8_t Object_position_head;
 extern int16_t Object_map_position_history[MAX_OBJECTS];

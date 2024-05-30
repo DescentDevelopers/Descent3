@@ -803,12 +803,12 @@ const char *GetCDVolume(int cd_num) {
   }
 }
 
-typedef struct file_vols {
+struct file_vols {
   char file[_MAX_PATH];
   char localpath[_MAX_PATH * 2];
   int volume;
   bool localized;
-} file_vols;
+};
 
 extern int CD_inserted;
 

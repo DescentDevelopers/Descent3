@@ -103,7 +103,7 @@
 struct library;
 
 // The structure for a CFILE
-typedef struct CFILE {
+struct CFILE {
   char *name;          // pointer to filename
   FILE *file;          // the file itself (on disk) or the HOG
   int32_t lib_handle;  // the handle of the library, or -1
@@ -111,7 +111,7 @@ typedef struct CFILE {
   uint32_t lib_offset; // offset into HOG of start of file, or 0 if on disk
   uint32_t position;   // current position in file
   uint32_t flags;      // see values below
-} CFILE;
+};
 
 // Defines for cfile_error
 enum CFileError {
@@ -120,11 +120,11 @@ enum CFileError {
 };
 
 // The structure thrown by a cfile error
-typedef struct {
+struct cfile_error {
   int read_write;  // reading or writing?  See defines.
   const char *msg; // the error message
   CFILE *file;     // the file that got the error
-} cfile_error;
+};
 
 // Flags for CFILE struct
 enum CFileFlags {

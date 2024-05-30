@@ -97,7 +97,7 @@ private:
 		SONGPROP_ROOMLINK
 	};
 
-	typedef struct tSongItem
+	struct tSongItem
 	{
 		HTREEITEM hTreeItem;
 		CString strSongPath;

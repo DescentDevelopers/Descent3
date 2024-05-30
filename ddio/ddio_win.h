@@ -78,12 +78,12 @@
 
 class oeWin32Application;
 
-typedef struct dinput_data {
+struct dinput_data {
   oeWin32Application *app;
   HWND hwnd;
   LPDIRECTINPUT lpdi;
   bool preemptive;
-} dinput_data;
+};
 
 extern dinput_data DInputData;
 extern bool DDIO_init;

@@ -163,13 +163,13 @@ renderer_preferred_state OpenGL_preferred_state = {0, 1, 1.5};
 
 // These structs are for drawing with OpenGL vertex arrays
 // Useful for fast indexing
-typedef struct {
+struct color_array {
   float r, g, b, a;
-} color_array;
+};
 
-typedef struct {
+struct tex_array {
   float s, t, r, w;
-} tex_array;
+};
 
 vector GL_verts[100];
 color_array GL_colors[100];

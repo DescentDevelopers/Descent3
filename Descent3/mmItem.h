@@ -93,12 +93,12 @@
 #define OPTIONS_MUSIC_REGION 2
 #define MULTI_MUSIC_REGION 3
 //	mmItem FX list.
-typedef enum tmmItemFX {
+enum tmmItemFX {
   mmItemFXNull,
   mmItemFXNormal, // displays item with normal alpha, color, saturation.
   mmItemFXFadeInToBright,
   mmItemFXFadeOutToNormal // fade in and out to and from brighten
-} tmmItemFX;
+};
 
 void MenuScene(); // display menu scene
 /////////////////////////////////////////////////////////////////////

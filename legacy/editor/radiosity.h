@@ -80,33 +80,33 @@
 #define MAX_VOLUME_ELEMENTS		500
 
 
-typedef struct 
+struct spectra
 {
 	float r,g,b;
-} spectra;
+};
 
 
 // element flags
 #define EF_IGNORE		1
 #define EF_SMALL		2	// Don't blend this one into the lightmap - it will corrupt!
 
-typedef struct
+struct rad_element
 {
 	vector *verts;
 	spectra exitance;
 	float area;
 	uint8_t num_verts;
 	uint8_t flags;  // see above
-} rad_element;
+};
 
 #define VEF_REVERSE_SHOOT	1
 
-typedef struct
+struct volume_element
 {
 	spectra color;
 	vector pos;	
 	uint8_t flags;
-} volume_element;
+};
 
 #define ST_ROOM				0		// This is a room surface
 #define ST_TERRAIN			1		// This is a terrain surface
@@ -119,7 +119,7 @@ typedef struct
 #define SF_TOUCHES_TERRAIN	1
 #define SF_LIGHTSOURCE	2
 
-typedef struct
+struct rad_surface
 {
 	float area;
 	spectra emittance;		
@@ -141,14 +141,14 @@ typedef struct
 	float surface_area,element_area;
 
 	uint8_t x1,y1,x2,y2;		// Where in the lightmap our bounds are
-} rad_surface;
+};
 
-typedef struct
+struct rad_point
 {
 	vector pos;
 	uint8_t code;
 
-} rad_point;
+};
 
 extern float *Room_strongest_value[][4];
 

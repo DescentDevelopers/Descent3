@@ -123,7 +123,7 @@ extern int Num_active_doorways; // number of active doors in game
 extern int Active_doorways[MAX_ACTIVE_DOORWAYS];
 
 // A doorway (room) in the mine
-typedef struct doorway {
+struct doorway {
   int doornum;       // door type of this doorway
   uint8_t state;       // current state of doorway
   uint8_t flags;       // flags associated with a doorway
@@ -132,7 +132,7 @@ typedef struct doorway {
   float position;    // current position of door
   float dest_pos;    // destination position
   int sound_handle;  // handle of last sound played
-} doorway;
+};
 
 //	Macros
 

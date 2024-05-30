@@ -388,27 +388,27 @@ BOOL DP_active = FALSE; // Direct Play active
 // This structure contains the local computer info
 network_address My_addr;
 
-typedef struct network_checksum_packet {
+struct network_checksum_packet {
   int sequence_number;
   uint16_t flags;
   uint16_t checksum;
   uint8_t data[MAX_PACKET_SIZE];
-} network_checksum_packet;
+};
 
 // definition for a non-checksum packet
-typedef struct network_packet {
+struct network_naked_packet {
   int sequence_number;
   uint16_t flags;
   uint8_t data[MAX_PACKET_SIZE];
-} network_naked_packet;
+};
 
 // structure definition for our packet buffers
-typedef struct network_packet_buffer {
+struct network_packet_buffer {
   int sequence_number;
   int len;
   network_address from_addr;
   uint8_t data[MAX_PACKET_SIZE];
-} network_packet_buffer;
+};
 
 #define MAX_PACKET_BUFFERS 96
 
@@ -454,26 +454,26 @@ static int Psnet_highest_id = 0;
 #pragma pack(push, r_udp)
 #endif
 #pragma pack(1)
-typedef struct {
+struct reliable_header {
   uint8_t type;                // packet type
   uint8_t compressed;          //
   uint16_t seq;                // sequence packet 0-65535 used for ACKing also
   uint16_t data_len;           // length of data
   float send_time;           // Time the packet was sent, if an ACK the time the packet being ACK'd was sent.
   uint8_t data[NETBUFFERSIZE]; // Packet data
-} reliable_header;
+};
 
 #define RELIABLE_PACKET_HEADER_ONLY_SIZE (sizeof(reliable_header) - NETBUFFERSIZE)
 #define MAX_PING_HISTORY 10
 
-typedef struct {
+struct reliable_net_sendbuffer {
   uint8_t buffer[NETBUFFERSIZE];
 
-} reliable_net_sendbuffer;
+};
 
-typedef struct {
+struct reliable_net_rcvbuffer {
   uint8_t buffer[NETBUFFERSIZE];
-} reliable_net_rcvbuffer;
+};
 
 static SOCKET Reliable_UDP_socket = INVALID_SOCKET;
 
@@ -488,7 +488,7 @@ static uint32_t serverconn = 0xFFFFFFFF;
 #pragma pack()
 #endif
 
-typedef struct {
+struct reliable_socket {
 
   float timesent[MAXNETBUFFERS];
   int16_t send_len[MAXNETBUFFERS];
@@ -515,7 +515,7 @@ typedef struct {
   reliable_net_sendbuffer *sbuffers[MAXNETBUFFERS]; // This is an array of pointers for quick sorting
   uint16_t ssequence[MAXNETBUFFERS];          // This is the sequence number of the given packet
   uint8_t send_urgent;
-} reliable_socket;
+};
 
 static reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
 //*******************************

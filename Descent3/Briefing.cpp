@@ -219,11 +219,11 @@
 #include "TelComEffects.h"
 #include "Mission.h"
 
-typedef struct {
+struct tBriefingTag {
   const char *name;
   int id;
   int length;
-} tBriefingTag;
+};
 
 #define TAG_LEVELNUM 0
 #define TAG_PLEVELNUM 1
@@ -249,12 +249,12 @@ static bool IsMissionMaskOK(uint32_t set, uint32_t unset);
 static void ReplaceHotTag(char *string, int tag);
 static bool ParseForHotTags(char *src, char **dest);
 static bool PlayBriefing(tTelComInfo *tcs);
-static void PBAddTextEffect(LPTCTEXTDESC desc, char *text, char *description, int id);
-static void PBAddBmpEffect(LPTCBMPDESC desc, char *description);
-static void PBAddMovieEffect(LPTCMOVIEDESC desc, char *description);
-static void PBAddBkgEffect(LPTCBKGDESC desc, char *description);
-static void PBAddPolyEffect(LPTCPOLYDESC desc, char *description);
-static void PBAddButtonEffect(LPTCBUTTONDESC desc, char *description, int id);
+static void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id);
+static void PBAddBmpEffect(TCBMPDESC* desc, char *description);
+static void PBAddMovieEffect(TCMOVIEDESC* desc, char *description);
+static void PBAddBkgEffect(TCBKGDESC* desc, char *description);
+static void PBAddPolyEffect(TCPOLYDESC* desc, char *description);
+static void PBAddButtonEffect(TCBUTTONDESC* desc, char *description, int id);
 static void PBStartScreen(int screen_num, char *description, char *layout, uint32_t mask_set, uint32_t mask_unset);
 static void PBEndScreen();
 static bool PBLoopCallback();
@@ -456,7 +456,7 @@ bool PlayBriefing(tTelComInfo *tcs) {
   return true;
 }
 
-void PBAddTextEffect(LPTCTEXTDESC desc, const char *text, const char *description, int id) {
+void PBAddTextEffect(TCTEXTDESC* desc, const char *text, const char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     char *new_text = NULL;
     const bool new_stuff = ParseForHotTags(text, &new_text);
@@ -469,33 +469,33 @@ void PBAddTextEffect(LPTCTEXTDESC desc, const char *text, const char *descriptio
   }
 }
 
-void PBAddBmpEffect(LPTCBMPDESC desc, const char *description) {
+void PBAddBmpEffect(TCBMPDESC* desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateBitmapEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddMovieEffect(LPTCMOVIEDESC desc, const char *description) {
+void PBAddMovieEffect(TCMOVIEDESC* desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateMovieEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddBkgEffect(LPTCBKGDESC desc, const char *description) {
+void PBAddBkgEffect(TCBKGDESC* desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     mprintf(0, "PB: Add Bkg\n");
   }
 }
 
-void PBAddPolyEffect(LPTCPOLYDESC desc, const char *description) {
+void PBAddPolyEffect(TCPOLYDESC* desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreatePolyModelEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddSoundEffect(LPTCSNDDESC desc, const char *description) {
+void PBAddSoundEffect(TCSNDDESC* desc, const char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateSoundEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddButtonEffect(LPTCBUTTONDESC desc, const char *description, int id) {
+void PBAddButtonEffect(TCBUTTONDESC* desc, const char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     desc->x += osb_xoff;
     desc->y += osb_yoff;

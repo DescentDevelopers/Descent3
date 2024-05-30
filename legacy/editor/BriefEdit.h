@@ -39,7 +39,7 @@
 //	BriefGlobalValues
 //
 //	struct for global variables for a telcom briefing
-typedef struct{
+struct{
 	char title[128];
 	float static_val,glitch_val;
 }BriefGlobalValues;
@@ -55,7 +55,7 @@ typedef struct{
 //	tBriefEffect
 //
 //	struct for a briefing effect
-typedef struct{
+struct{
 	uint8_t type;							//type of effect (for union)
 	bool used;							//is the effect being used
 	int id;								//ID# used
@@ -74,7 +74,7 @@ typedef struct{
 	int next,prev;						//next/prev effect in list
 }tBriefEffect;
 
-typedef struct{
+struct{
 	bool used;										//is screen being used
 	int root_effect;								//root effect to start the list
 	char layout[_MAX_PATH];							//layout screen to use
@@ -125,7 +125,7 @@ uint8_t BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *e
 
 
 #define MAX_LAYOUT_PREDEFS	10
-typedef struct{
+struct{
 	char filename[_MAX_PATH];
 	int num_texts,num_bmps;
 	struct{

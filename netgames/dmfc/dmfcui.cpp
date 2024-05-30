@@ -125,12 +125,12 @@ extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
 const char *DMFCGetString(int d);
 
-typedef struct {
+struct tTeamPlacementDialogInfo {
   void *lb[DLLMAX_TEAMS];
   void *text[DLLMAX_PLAYERS];
   int trans[DLLMAX_TEAMS][DLLMAX_PLAYERS];
   void (*old_callback)();
-} tTeamPlacementDialogInfo;
+};
 tTeamPlacementDialogInfo tpdi;
 
 #define TS_NOTINGAME -2
@@ -710,13 +710,13 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
 //============================================================================
 //		Wait for Players Dialog
 //============================================================================
-typedef struct {
+struct tWaitForPlayers {
   float last_update;
   void (*old_callback)(void);
   void *listbox;
   void *text[DLLMAX_PLAYERS];
   int indexmap[DLLMAX_PLAYERS];
-} tWaitForPlayers;
+};
 tWaitForPlayers wfpi;
 
 void UpdateWaitForPlayersDialog(void) {

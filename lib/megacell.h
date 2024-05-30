@@ -31,7 +31,7 @@
 #define MAX_MEGACELL_WIDTH 8
 #define MAX_MEGACELL_HEIGHT 8
 
-typedef struct {
+struct megacell {
   char name[PAGENAME_LEN];
   int8_t width;
   int8_t height;
@@ -39,7 +39,7 @@ typedef struct {
   int16_t texture_handles[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT];
   int flags;
   uint8_t used;
-} megacell;
+};
 
 extern int Num_megacells;
 extern megacell Megacells[MAX_MEGACELLS];

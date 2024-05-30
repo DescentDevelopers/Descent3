@@ -57,10 +57,10 @@
 int DYNAMIC_LIGHTMAP_MEMORY = 1000000;
 #define MAX_DYNAMIC_LIGHTMAPS 2000
 
-typedef struct {
+struct volume_object {
   int objnum;
   int handle;
-} volume_object;
+};
 
 float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 

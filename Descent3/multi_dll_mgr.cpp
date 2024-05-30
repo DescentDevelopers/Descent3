@@ -999,16 +999,16 @@ void GetUIItemPosition(UIObject *item, int *x, int *y, int *w, int *h) {
 #define CDT_EVT_SET_SCORE_IP 9
 #define CDT_EVT_SET_GAMEID 10
 #define CALLSIGN_LEN 19
-typedef struct player_killed {
+struct player_killed {
   char killer_name[CALLSIGN_LEN + 1];
   char killed_name[CALLSIGN_LEN + 1];
-} player_killed;
-typedef struct player_score_matrix {
+};
+struct player_score_matrix {
   int num_players;
   char name[MAX_NET_PLAYERS][CALLSIGN_LEN + 1];
   int16_t deaths[MAX_NET_PLAYERS];
   int16_t kills[MAX_NET_PLAYERS];
-} player_score_matrix;
+};
 // The chokepoint function to call the dll function
 void CallMultiScoreDLL(int eventnum, void *data) {
   if (MultiDLLHandle.handle && DLLMultiCall)

@@ -43,7 +43,7 @@
 
 #include "pstypes.h"
 
-typedef enum tTaskPriority { TASKPRIORITY_HIGHEST, TASKPRIORITY_NORMAL, TASKPRIORITY_LOWEST } tTaskPriority;
+enum tTaskPriority { TASKPRIORITY_HIGHEST, TASKPRIORITY_NORMAL, TASKPRIORITY_LOWEST };
 
 //	Since this system handles concepts such as multitasking, and the such,
 //	we will define the event structures differently, since different systems

@@ -102,7 +102,7 @@
 
 #define MAX_TEXTURE_SHADES 32
 
-typedef struct {
+struct texs_texpoint {
   int screenx, screeny;
   float flscreenx, flscreeny;
 
@@ -111,7 +111,7 @@ typedef struct {
 
   fix monolight;
   fix redlight, greenlight, bluelight;
-} texs_texpoint;
+};
 
 // For the following enum table: LIN=Linear, PER=Perspective, NON=No Transparency, LIT = Shaded,
 //								 COLORED=Colored lighting, TRANS=Transparency

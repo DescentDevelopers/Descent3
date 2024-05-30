@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 // CBriefTextEdit dialog
 
 
-CBriefTextEdit::CBriefTextEdit(int curr_screen,LPTCTEXTDESC d,char *text_buffer,int id,CWnd* pParent /*=NULL*/)
+CBriefTextEdit::CBriefTextEdit(int curr_screen,TCTEXTDESC* d,char *text_buffer,int id,CWnd* pParent /*=NULL*/)
 	: CDialog(CBriefTextEdit::IDD, pParent)
 {
 	m_Screen = curr_screen;

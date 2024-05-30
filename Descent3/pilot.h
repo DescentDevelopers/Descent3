@@ -205,21 +205,21 @@ PltWriteFile #define PLT_FILE_NOERR			0	//no errors, success
 #define MAX_PILOT_TAUNTS	8
 #define PILOT_TAUNT_SIZE	60
 
-typedef struct
+struct cntrldata
 {
         int id;
         ct_type type[2];
         ct_config_data value;
         uint8_t flags[2];
-} cntrldata;
+};
 
-typedef struct
+struct
 {
         uint8_t highest_level;
         bool finished;									// was mission finished?
 (different than highest level,btw) char mission_name[MSN_NAMELEN]; } tMissionData;
 
-typedef struct
+struct
 {
         char filename[_MAX_FNAME];	//added because of some weird .plt renaming bugs that can happen
                                                                                 //not saved out

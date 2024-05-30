@@ -26,11 +26,11 @@ void MultiStartClient(char *scriptname);
 
 #define MAX_SAVED_MOVES 100
 
-typedef struct {
+struct saved_move {
   float timestamp;
   vector thrust, rotthrust;
 
-} saved_move;
+};
 
 extern saved_move SavedMoves[];
 extern int Current_saved_move;

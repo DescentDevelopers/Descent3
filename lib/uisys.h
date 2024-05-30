@@ -40,12 +40,12 @@
 #define UI_DBLCLICK_DELAY 0.60f
 #define UI_DBLCLICK_MSEDELTA 4
 
-typedef struct tUIInitInfo {
+struct tUIInitInfo {
   int window_font; // default font for windows
   int w, h;        // width and height of screen.
-} tUIInitInfo;
+};
 
-typedef struct tUIInput {
+struct tUIInput {
   int mx, my, last_mx, last_my;
   int b1_status, b1_last_status;
   int b1_count;
@@ -55,7 +55,7 @@ typedef struct tUIInput {
 
   bool key_first_press; // if the key was really pressed or just held down.
   bool printscreen;
-} tUIInput;
+};
 
 //	user interface frame time
 extern float UIFrameTime;

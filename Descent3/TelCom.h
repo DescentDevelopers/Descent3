@@ -167,16 +167,16 @@ extern windowmap_t windowmap;
 extern bool TelCom_running; // Used within TelComMain(), when POWER button is pressed become false
 
 // structure for a bounding box (used when getting a hotspot bounding box)
-typedef struct button_box {
+struct box {
   int top, bottom, left, right;
-} box;
+};
 
-typedef struct {
+struct tTCEvent {
   int id;
   int parms[2];
-} tTCEvent;
+};
 
-typedef struct tTelComInfo {
+struct tTelComInfo {
   box Monitor_coords[MAX_MONITOR];
   uint8_t Screen_state[MAX_TELCOM_SCREENS];
   tTCEvent Telcom_event_queue[MAX_TELCOM_EVENTS]; // Event queue for TelCom System
@@ -186,7 +186,7 @@ typedef struct tTelComInfo {
   float Telcom_mouse_downtime;
   uint8_t state;
   int TelComSysKeyEnable;
-} tTelComInfo;
+};
 extern tTelComInfo Telcom_system;
 
 // This is the function called by TelCom to choose a ship

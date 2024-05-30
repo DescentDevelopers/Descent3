@@ -156,10 +156,10 @@ int N_external_rooms;
 int16_t Specular_faces[MAX_SPECULAR_FACES];
 int Num_specular_faces_to_render = 0;
 int Num_real_specular_faces_to_render = 0; // Non-invisible specular faces
-typedef struct {
+struct smooth_spec_vert {
   float r, g, b;
   int used;
-} smooth_spec_vert;
+};
 smooth_spec_vert Smooth_verts[MAX_VERTS_PER_ROOM];
 // For scorch rendering
 uint16_t Scorches_to_render[MAX_FACES_PER_ROOM];
@@ -184,14 +184,14 @@ uint8_t External_room_project_net[MAX_EXTERNAL_ROOMS];
 #define LGF_USED 1
 #define LGF_INCREASING 2
 #define LGF_FAST 4
-typedef struct {
+struct light_glow {
   int16_t roomnum;
   int16_t facenum;
   float size;
   vector center;
   float scalar;
   uint8_t flags;
-} light_glow;
+};
 light_glow LightGlows[MAX_LIGHT_GLOWS];
 light_glow LightGlowsThisFrame[MAX_LIGHT_GLOWS];
 int FastCoronas = 0;
@@ -3008,11 +3008,11 @@ void RenderRoom(room *rp) {
 }
 
 #define MAX_OBJECTS_PER_ROOM 2000
-typedef struct {
+struct obj_sort_item {
   int vis_effect;
   int objnum;
   float dist;
-} obj_sort_item;
+};
 obj_sort_item obj_sort_list[MAX_OBJECTS_PER_ROOM];
 // Compare function for room face sort
 static int obj_sort_func(const obj_sort_item *a, const obj_sort_item *b) {

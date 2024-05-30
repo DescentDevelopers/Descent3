@@ -122,11 +122,11 @@
 
 #define DDIO_MOUSE_LITE 2 // some ddio systems support the 'lite' extension of mice.
 
-typedef struct ddio_init_info {
+struct ddio_init_info {
   oeApplication *obj; // App object used to initialize to IO system
   bool key_emulation; // keyboard emulation
   bool joy_emulation; // joystick emulation
-} ddio_init_info;
+};
 
 // ----------------------------------------------------------------------------
 //	Keyboard Initialization and destruction functions

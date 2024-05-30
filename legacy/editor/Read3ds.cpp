@@ -140,16 +140,16 @@ char Reading_properties[255];
 
 #define MAX_MATERIALS	100
 
-typedef struct
+struct material
 {
 	char name[PAGENAME_LEN];
 	int texhandle;
-} material;
+};
 
 int Num_materials=0;
 material Materials[MAX_MATERIALS];
 
-typedef struct reading_face 
+struct reading_face 
 {
 	uint8_t		flags;						// flags for this face (see above)
 	int16_t		portal_num;					// which portal this face is part of, or -1 if none
@@ -158,9 +158,9 @@ typedef struct reading_face
 	roomUVL	face_uvls[MAX_VERTS_PER_FACE];					// index into list of uvls for this face
 	vector	normal;						// the surface normal of this face
 	int16_t		tmap;							// texture numbers for this face
-} reading_face;
+};
 
-typedef struct reading_room {
+struct reading_room {
 	char		name[PAGENAME_LEN];
 	int		flags;					// various room flags
 	int		num_faces;				// how many poygons in this room
@@ -170,7 +170,7 @@ typedef struct reading_room {
 	vector	*verts;					// array of vertices for this room
 	int		objects;					// index of first object in this room
 	float		static_light;			// the amount of light in this room
-} reading_room;
+};
 
 
 

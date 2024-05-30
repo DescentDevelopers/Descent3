@@ -2016,7 +2016,7 @@ void DoPlayerFrame() {
 #define DEATH_EXPLODE_THRESHOLD 100.0f
 #define DEATH_BREAKUP_THRESHOLD 40.0f
 
-typedef struct tDeathSeq {
+struct tDeathSeq {
   object *camera;
   object *oldviewer;
 
@@ -2045,7 +2045,7 @@ typedef struct tDeathSeq {
 
   tDeathSeq() { camera = NULL; };
 
-} tDeathSeq;
+};
 
 static tDeathSeq Death[MAX_NET_PLAYERS];
 
@@ -3782,11 +3782,11 @@ void ResetWaypoint() {
     Players[i].current_auto_waypoint_room = -1;
 }
 
-typedef struct {
+struct waypoint {
   vector pos;
   int roomnum;
   matrix orient;
-} waypoint;
+};
 
 waypoint Waypoints[MAX_WAYPOINTS];
 int Num_waypoints;

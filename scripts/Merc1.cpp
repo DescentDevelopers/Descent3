@@ -1673,10 +1673,10 @@ void aEmitSparks(float num_sparks, int objhandle) {
 #define WHITESPACE_CHARS " \t\r\n"
 
 // Structure for storing a script message
-typedef struct {
+struct tScriptMessage {
   char *name;    // the name of the message
   char *message; // the actual message text
-} tScriptMessage;
+};
 
 // Global storage for level script messages
 tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];

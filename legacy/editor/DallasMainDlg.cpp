@@ -9817,10 +9817,10 @@ int CDallasMainDlg::CreateScriptFile(char *filename)
 	O(("#define WHITESPACE_CHARS	\" \\t\\r\\n\""));
 	O((" "));
 	O(("// Structure for storing a script message"));
-	O(("typedef struct {"));
+        O(("struct tScriptMessage {"));
 	O(("	char *name;			// the name of the message"));
 	O(("	char *message;		// the actual message text"));
-	O(("} tScriptMessage;"));
+        O(("};"));
 	O((" "));
 	O(("// Global storage for level script messages"));
 	O(("tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];"));

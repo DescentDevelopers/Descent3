@@ -988,9 +988,9 @@ void bump_this_object(object *objp, object *other_objp, vector *force, vector *c
 
 // float force_force = 50.0;
 
-typedef struct v {
+struct vec2d {
   float i, j;
-} vec2d;
+};
 
 #define cross(v0, v1) (((v0)->i * (v1)->j) - ((v0)->j * (v1)->i))
 

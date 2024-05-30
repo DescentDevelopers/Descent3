@@ -803,10 +803,10 @@ void AttachRoom()
 }
 
 //structure for keeping track of vertices inserted in edges (from clipping)
-typedef struct {
+struct edge_insert {
 	int	v0,v1;		//the edge that got the new vert
 	int	new_v;		//the new vertex
-} edge_insert;
+};
 
 //List of vertices inserted in edges.  Used only during clipping.
 edge_insert Edge_inserts[MAX_VERTS_PER_FACE];

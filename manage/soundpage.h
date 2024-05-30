@@ -24,10 +24,10 @@
 #include "cfile.h"
 #include "pstypes.h"
 
-typedef struct {
+struct mngs_sound_page {
   sound_info sound_struct;
   char raw_name[PAGENAME_LEN];
-} mngs_sound_page;
+};
 
 // Sound page functions
 //---------------------------------------------------------------

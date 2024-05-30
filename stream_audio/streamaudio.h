@@ -173,10 +173,10 @@ struct CFILE;
 #define SAF_16BIT_M (SAF_16BIT_MASK | SAF_MONO_MASK)   // 0x01
 #define SAF_16BIT_S (SAF_16BIT_MASK | SAF_STEREO_MASK) // 0x11
 //////////////////////////////////////////////////////////////////////////////
-typedef struct tOSFDigiHdr // this struct belongs to OSF_DIGITAL_STRM
+struct tOSFDigiHdr // this struct belongs to OSF_DIGITAL_STRM
 {
   uint32_t measure;
-} tOSFDigiHdr;
+};
 class OSFArchive {
   CFILE *m_fp;
   uint32_t m_length;    // file information stored such as length

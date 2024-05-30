@@ -24,12 +24,12 @@
 
 #include <SDL.h>
 
-typedef struct {
+struct LnxVideoDesc {
   //	Display *dDisplay;  // Which X-Windows Display to use
   int nScreen; // Which X-Windows screen to use
-} LnxVideoDesc;
+};
 
-typedef struct {
+struct LnxWindowDesc {
   uint32_t bpp;      // bits per pixel.
   uint32_t dwFlags;  // flags for window
   uint32_t dwWidth;  // width of the created window
@@ -40,10 +40,10 @@ typedef struct {
   char *lpszName; // Window name
   //	Window *pre_created_window; // Window already created
   //	XVisualInfo pre_created_visinfo;
-} LnxWindowDesc;
+};
 // #define LNXDRAWF_USEPRECREATEDWIN	0x01
 
-typedef struct {
+struct LnxWindow {
   //	XSizeHints      *lpSizeHints;
   //	XWMHints        *lpWmHints;
   //	XClassHint      *lpClassHints;
@@ -65,7 +65,7 @@ typedef struct {
 
   uint32_t lock_x, lock_y, lock_w, lock_h;
   uint8_t *lock_ptr;
-} LnxWindow;
+};
 
 //////////////////////
 // LnxDraw_InitVideo

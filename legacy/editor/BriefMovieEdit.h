@@ -35,7 +35,7 @@ class CBriefMovieEdit : public CDialog
 {
 // Construction
 public:
-	CBriefMovieEdit(LPTCMOVIEDESC desc=NULL,CWnd* pParent = NULL);   // standard constructor
+	CBriefMovieEdit(TCMOVIEDESC* desc=NULL,CWnd* pParent = NULL);   // standard constructor
 	TCMOVIEDESC desc;
 
 

@@ -68,15 +68,15 @@
 
 #define MAX_MENU_TYPES 5
 
-typedef enum {
+enum menu_type {
   MENU_TYPE_BUTTON,
   MENU_TYPE_TEXT,
   MENU_TYPE_RADIOBUTTON,
   MENU_TYPE_CHECKBOX,
   MENU_TYPE_TEXTBOX
-} menu_type;
+};
 
-typedef struct {
+struct menu_item {
   menu_type mtype;
   char name[MENU_STRING_LEN];
 
@@ -89,14 +89,14 @@ typedef struct {
 
   ddgr_color normal_color, selected_color;
 
-} menu_item;
+};
 
-typedef struct {
+struct menu {
   int num_items;
 
   menu_item items[MAX_MENU_ITEMS];
   uint8_t used;
-} menu;
+};
 
 //	returns whether we decided to quit the game or not
 //	this displays the main menu options and runs the menu system

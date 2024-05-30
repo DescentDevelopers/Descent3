@@ -64,10 +64,10 @@ int graph_bmp = -1;
 int graph_mask = 0;
 int graph_num_nodes = 0;
 
-typedef struct {
+struct tGraphColor {
   const char *color_name;
   ddgr_color color;
-} tGraphColor;
+};
 
 tGraphColor GraphColors[MAX_GRAPH_NODES] = {
     {"Green", GR_RGB(40, 255, 40)},     {"Red", GR_RGB(255, 40, 40)},     {"Blue", GR_RGB(40, 40, 255)},
@@ -77,7 +77,7 @@ tGraphColor GraphColors[MAX_GRAPH_NODES] = {
     {"Dk.Red", GR_RGB(100, 2, 2)},      {"Dk.Green", GR_RGB(2, 100, 9)},  {"Turquoise", GR_RGB(14, 229, 202)},
     {"Dk.Purple", GR_RGB(100, 4, 104)}};
 
-typedef struct {
+struct tAddDebugGraph {
   uint8_t data_input;
   int flags;
 
@@ -90,7 +90,7 @@ typedef struct {
     float f_max_value;
   };
 
-} tAddDebugGraph;
+};
 
 class tGraphNode {
 public:
@@ -118,10 +118,11 @@ private:
   };
 };
 
-typedef struct tDebugGraphNode {
+struct tDebugGraphNode {
   tGraphNode *node;
   tDebugGraphNode *next;
-} tDebugGraphNode;
+};
+
 tDebugGraphNode *DebugGraphNode_root = NULL;
 
 tGraphNode *DebugGraph_AddNode(void) {

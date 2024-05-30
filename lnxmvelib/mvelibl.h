@@ -229,7 +229,7 @@ void MVE_rmEndMovie(void);
 **  been provided. This system is intended for use by video sprites
 **  played off of the hard drive or out of memory.
 */
-typedef struct _MVE_frstream *MVE_frStream;
+struct _MVE_frstream *MVE_frStream;
 
 /* MVE_frOpen
 **  Before calling this function, be sure to call MVE_memCallbacks()

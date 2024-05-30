@@ -80,7 +80,7 @@
 // Terrain cells are on a fixed grid so they have no x and z positions.  If you want the x and z
 // positions you must calculate them yourself: gridx*TERRAIN_SIZE and gridz*TERRAIN_SIZE
 
-typedef struct {
+struct terrain_segment {
   float y;    // Y position of the lower left corner of the terrain cell
   float mody; // The modified y position of this cell - used for LOD
 
@@ -95,21 +95,21 @@ typedef struct {
                  // floats to ints when traversing the terrain
                  // it's the integer version of pos.y
   uint8_t pad;     // for alignment
-} terrain_segment;
+};
 
-typedef struct {
+struct terrain_tex_segment {
   uint8_t rotation;
   int16_t tex_index;
-} terrain_tex_segment;
+};
 
 // Data for LOD shutoff code
-typedef struct {
+struct lodoff {
   int cellnum;
   float save_delta[MAX_TERRAIN_LOD];
-} lodoff;
+};
 
 // Data for the sky spherical map
-typedef struct {
+struct terrain_sky {
   int textured; // 1=use textures, 0=use gouraud shaded polygon
 
   // The two subscripts correspond to the top, middle, and bottom of the horizon piece
@@ -148,35 +148,35 @@ typedef struct {
 
   int star_color[MAX_STARS];
   int flags;
-} terrain_sky;
+};
 
-typedef struct {
+struct link_tile {
   int mine_seg;
   int mine_side;
   int portal_num;
   int terrain_seg;
 
-} link_tile;
+};
 
-typedef struct {
+struct terrain_mine_list {
   int terrain_seg;
   uint8_t num_segs;
   int16_t mine_segs[50];
-} terrain_mine_list;
+};
 
-typedef struct {
+struct terrain_render_info {
   float z;
   uint16_t right_edge, left_edge, top_edge, bottom_edge; // for fixing tjoint problems
   uint8_t right_count, left_count, top_count, bottom_count;
   uint16_t segment; // what segment to render
   uint8_t lod;      // what level of detail: 0=16x16, 1=8x8, 2=4x4, 3=2x2, 4=just this segment (1x1)
   uint8_t pad;
-} terrain_render_info;
+};
 
-typedef struct {
+struct terrain_normals {
   vector normal1; // Upper left triangle
   vector normal2; // Lower right triangle
-} terrain_normals;
+};
 
 extern uint8_t Terrain_dynamic_table[];
 extern terrain_normals *TerrainNormals[MAX_TERRAIN_LOD];

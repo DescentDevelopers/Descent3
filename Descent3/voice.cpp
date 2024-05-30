@@ -68,12 +68,12 @@
 #define MOTHERLOAD_STRING "Cheater!"
 #define MOTHERLOAD_FLAGS VF_POWERUP | VF_PLAYTABLE
 
-typedef struct {
+struct tVoice {
   int handle;
   int flags;
   int chandle;
   bool inuse;
-} tVoice;
+};
 
 bool PlayPowerupVoice;
 bool PlayVoices;

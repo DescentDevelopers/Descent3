@@ -1112,12 +1112,12 @@ int TCMMButtonDesc[] = {TXI_TCMM_BRIEFINGS, TXI_TCMM_CARGO, TXI_TCMM_AUTOMAP, TX
 
 int mainmenu_system;
 
-typedef struct {
+struct tMenuButton {
   bool enabled;
   int efxid;
   int system;
   char text[128];
-} tMenuButton;
+};
 tMenuButton MMButtons[TCMAX_MMBUTTONS];
 
 void TCMainMenuCallback(int efxnum) { mainmenu_system = efxnum; }
@@ -3270,9 +3270,9 @@ get_num:
  *
  */
 
-typedef struct {
+struct TCSound {
   int hlhandle, handle;
-} TCSound;
+};
 
 TCSound TelcomSounds[TCSND_SOUNDCOUNT];
 
@@ -3427,7 +3427,7 @@ struct {
   float cam_dist;
 } TCShipSelect;
 
-typedef struct {
+struct tShipInfo {
   int max_speed;
   int maneuverability;
   int shield;
@@ -3436,7 +3436,7 @@ typedef struct {
   int length;
   int height;
   int weight;
-} tShipInfo;
+};
 
 #define MAX_NUM_SHIPS 3
 
@@ -3452,11 +3452,11 @@ $$TABLE_SHIP "Pyro-GL"
 $$TABLE_SHIP "Phoenix"
 $$TABLE_SHIP "Magnum-AHT"
 */
-typedef struct {
+struct tSSShipInfo {
   bool found;
   int ship_index;
   int efxnum;
-} tSSShipInfo;
+};
 tSSShipInfo SSShips[MAX_NUM_SHIPS];
 
 // two buttons
@@ -4022,12 +4022,12 @@ bool TelCom_PopSystemEvent(tTCEvent *evt) {
   return false;
 }
 
-typedef struct tCustomKeyEventID {
+struct tCustomKeyEventID {
   int downcount;
   int key_id;
   int event_id;
   tCustomKeyEventID *next;
-} tCustomKeyEventID;
+};
 tCustomKeyEventID *Telcom_custom_key_event_root = NULL;
 
 /*

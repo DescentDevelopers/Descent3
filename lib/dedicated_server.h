@@ -22,20 +22,20 @@
 #define CVAR_GAMEINIT 0x0001 // this variable can be set/changed during server init
 #define CVAR_GAMEPLAY 0x0002 // this variable can be set/changed during game play
 
-typedef enum {
+enum cvar_type {
   CVAR_TYPE_INT,
   CVAR_TYPE_FLOAT,
   CVAR_TYPE_STRING,
   CVAR_TYPE_NONE,
-} cvar_type;
+};
 
-typedef struct {
+struct cvar_entry {
   const char *varname;
   cvar_type type;
   void *dest_variable;
   int var_min, var_max;
   int16_t permissions;
-} cvar_entry;
+};
 
 extern bool Dedicated_server;
 

@@ -62,10 +62,10 @@ static const char *GetStringFromTable(int index) {
 #define ID_FALLINGROCK 5
 #define ID_LAVAROCK 6
 
-typedef struct {
+struct tScriptInfo {
   int id;
   const char *name;
-} tScriptInfo;
+};
 
 static tScriptInfo ScriptIDs[] = {{ID_FRAGCRATE, "fragcrate"},
                                   {ID_NAPALMBARREL, "napalmbarrel"},
@@ -97,10 +97,10 @@ public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-typedef struct {
+struct tTNTHighYield {
   vector last_vel;
   float lifetime;
-} tTNTHighYield;
+};
 class TNTHighYield : public ClutterScript {
 public:
   TNTHighYield() { memory = NULL; }
@@ -115,9 +115,9 @@ public:
   float *memory;
 };
 
-typedef struct {
+struct tFallingRock {
   float lifeleft;
-} tFallingRock;
+};
 class FallingRock : public ClutterScript {
 public:
   FallingRock() { memory = NULL; }

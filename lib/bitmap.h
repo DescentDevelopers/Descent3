@@ -55,7 +55,7 @@
 #define BITMAP_FORMAT_1555 0
 #define BITMAP_FORMAT_4444 1
 
-typedef struct {
+struct bms_bitmap {
   uint16_t *data16;       // 16bit data
   uint16_t width, height; // Width and height in pixels
   uint16_t used;          // Is this bitmap free to be allocated?
@@ -66,13 +66,13 @@ typedef struct {
 
   uint8_t format;               // See bitmap format types above
   char name[BITMAP_NAME_LEN]; // Whats the name of this bitmap? (ie SteelWall)
-} bms_bitmap;
+};
 
-typedef struct chunked_bitmap {
+struct chunked_bitmap {
   int pw, ph;    // pixel width and height
   int w, h;      // width and height in square bitmaps.
   int *bm_array; // array of bitmap handles.
-} chunked_bitmap;
+};
 extern bms_bitmap GameBitmaps[MAX_BITMAPS];
 extern uint32_t Bitmap_memory_used;
 

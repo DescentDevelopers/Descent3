@@ -25,7 +25,7 @@
 #include "objinfo.h"
 #include "robotfirestruct.h"
 
-typedef struct {
+struct mngs_generic_page {
   object_info objinfo_struct;
   anim_elem anim[NUM_MOVEMENT_CLASSES];
   otype_wb_info static_wb[MAX_WBS_PER_OBJ];
@@ -39,7 +39,7 @@ typedef struct {
   char fire_sound_name[MAX_WBS_PER_OBJ][MAX_WB_FIRING_MASKS][PAGENAME_LEN];
   char anim_sound_name[NUM_MOVEMENT_CLASSES][NUM_ANIMS_PER_CLASS][PAGENAME_LEN];
   char dspew_name[MAX_DSPEW_TYPES][PAGENAME_LEN];
-} mngs_generic_page;
+};
 
 // Generic page functions
 //---------------------------------------------------------------

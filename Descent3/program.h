@@ -165,7 +165,7 @@
 #define BETA_VERSION 0x1000 // beta modifier.
 #define DEMO_VERSION 0x2000 // same as release, but its the demo.
 
-typedef struct t_program_version {
+struct program_version {
   int version_type;
   uint8_t major, minor, build;
   bool debug : 1;    // are we in debug mode
@@ -174,7 +174,7 @@ typedef struct t_program_version {
   bool editor : 1;   // editor code?
   bool windowed : 1; // runs in a window?
   bool demo : 1;     // demo?
-} program_version;
+};
 
 //	Program state available to everyone
 extern program_version Program_version;

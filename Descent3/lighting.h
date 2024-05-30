@@ -39,19 +39,19 @@
 
 extern float Specular_tables[3][MAX_SPECULAR_INCREMENTS];
 
-typedef struct {
+struct dynamic_lightmap {
   uint16_t *mem_ptr;
   uint8_t used;
-} dynamic_lightmap;
+};
 
-typedef struct {
+struct dynamic_face {
   uint16_t lmi_handle;
-} dynamic_face;
+};
 
-typedef struct {
+struct dynamic_cell {
   uint16_t cellnum;
   uint8_t r, g, b;
-} dynamic_cell;
+};
 
 // Sets up our dynamic lighting maps
 void InitDynamicLighting();

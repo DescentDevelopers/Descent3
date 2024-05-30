@@ -460,17 +460,17 @@ extern float AI_last_time_room_noise_alert_time[MAX_ROOMS + 8];
 // Notification structures
 //-------------------------------------------------
 
-typedef struct ain_see {
+struct ain_see {
   bool f_use_fov;
   float max_dist;
-} ain_see;
+};
 
-typedef struct ain_hear {
+struct ain_hear {
   bool f_directly_player;
   float max_dist;
   float hostile_level; // 0 - 1
   float curiosity_level;
-} ain_hear;
+};
 
 //-------------------------------------------------
 // Path Structures
@@ -484,7 +484,7 @@ typedef struct ain_hear {
 #define AIP_DYNAMIC 1
 #define AIP_MOVE_LIST 2
 
-typedef struct ai_path_info {
+struct ai_path_info {
   uint16_t cur_path;
   uint16_t cur_node;
 
@@ -501,26 +501,26 @@ typedef struct ai_path_info {
   uint16_t path_start_node[MAX_JOINED_PATHS];
   uint16_t path_end_node[MAX_JOINED_PATHS];
   uint16_t path_flags[MAX_JOINED_PATHS];
-} ai_path_info;
+};
 
 // Used for predefined move lists (off of normal static paths)
-typedef struct ai_move_path {
+struct ai_move_path {
   vector pos;
   matrix orient;
 
   int16_t path_id;
-} ai_move_path;
+};
 
-typedef struct path_information {
+struct path_information {
   int path_id;
   int start_node;
   int next_node;
   int end_node;
-} path_information;
+};
 
 // Goal Ender Structure
 
-typedef struct goal_enabler {
+struct goal_enabler {
   char enabler_type;
 
   union {
@@ -538,7 +538,7 @@ typedef struct goal_enabler {
 
   char bool_next_enabler_op;
 
-} goal_enabler;
+};
 
 //-------------------------------------------------
 // Goal Structures
@@ -549,31 +549,31 @@ typedef struct goal_enabler {
 // I wonder if goals can be classified.  If so, we could reserve X goal for class a, and Y goal slots for class b
 // plus it would make sure the our slots do not fill up in bad or degenerate ways.
 
-typedef struct gi_fire {
+struct gi_fire {
   int16_t cur_wb;       // for ranged attack
   uint8_t cur_mask;     // for ranged attack
   uint8_t melee_number; // this could be union'ed but it makes this struct word aligned
-} gi_fire;
+};
 
-typedef struct g_steer {
+struct g_steer {
   float min_dist;
   float max_dist;
   float max_strength;
-} g_steer;
+};
 
-typedef struct g_floats {
+struct g_floats {
   float fp1;
   float fp2;
   float fp3;
-} g_floats;
+};
 
-typedef struct {
+struct g_wander_extra {
   int avoid_handle;
   char min_rooms;
   char max_rooms;
   char flags;
   char mine_index; // Used for if this object accidently goes on to the terrain
-} g_wander_extra;
+};
 
 #define GAF_ALIGNED 0x01
 #define GAF_SPHERE 0x02
@@ -581,20 +581,20 @@ typedef struct {
 #define GAF_TEMP_CLEAR_ROBOT_COLLISIONS 0x08
 #define GAF_TEMP_POINT_COLLIDE_WALLS 0x10
 
-typedef struct {
+struct g_attach {
   float rad;
   int16_t flags;
   char parent_ap;
   char child_ap;
-} g_attach;
+};
 
-typedef struct {
+struct g_static_path {
   int16_t start_node;
   int16_t end_node;
   int16_t cur_node;
-} g_static_path;
+};
 
-typedef struct goal_info {
+struct goal_info {
   union {
     int handle;
     int roomnum;
@@ -618,10 +618,10 @@ typedef struct goal_info {
     void *scripted_data_ptr;
   };
 
-} goal_info;
+};
 
 // Goal structure
-typedef struct goal {
+struct goal {
   uint32_t type;
   char subtype;
   uint8_t activation_level;
@@ -663,7 +663,7 @@ typedef struct goal {
   vector set_uvec;
 
   bool used;
-} goal;
+};
 
 #define OBJGOAL(x)                                                                                                     \
   (((goal *)x)->type & (AIG_GET_AWAY_FROM_OBJ | AIG_HIDE_FROM_OBJ | AIG_GET_TO_OBJ | AIG_ATTACH_TO_OBJ |               \
@@ -675,7 +675,7 @@ typedef struct goal {
 #define TARGETONLYGOAL(x) (((goal *)x)->type & (AIG_MELEE_TARGET))
 #define COMPLETEATPOS(x) (((goal *)x)->type & (AIG_WANDER_AROUND | AIG_GET_TO_POS))
 
-typedef struct notify {
+struct notify {
   union {
     int obj_handle;
     int goal_num;
@@ -690,16 +690,16 @@ typedef struct notify {
   };
 
   float time;
-} notify;
+};
 
-typedef struct ain_weapon_hit_info {
+struct ain_weapon_hit_info {
   int parent_handle;
   int weapon_handle;
   int hit_face;
   int hit_subobject;
   float hit_damage;
   vector hit_pnt;
-} weapon_hit_info;
+};
 
 //-------------------------------------------------
 // AI awareness scale
@@ -713,7 +713,7 @@ typedef struct ain_weapon_hit_info {
 
 #define AI_MEM_DEPTH 5
 
-typedef struct ai_mem {
+struct ai_mem {
   // Computed at end of memory frame
   float shields;
   int16_t num_enemies;
@@ -724,7 +724,7 @@ typedef struct ai_mem {
   int16_t num_enemy_shots_fired;
   int16_t num_hit_enemy;
   int16_t num_enemy_shots_dodged;
-} ai_mem;
+};
 
 //-------------------------------------------------
 // AI tracking information
@@ -734,7 +734,7 @@ typedef struct ai_mem {
 // AI framework per robot
 //-------------------------------------------------
 
-typedef struct ai_frame {
+struct ai_frame {
   char ai_class; // Static, DLL, Soar, Flock, and other will be here -- chrishack
   char ai_type;  // Used for some coded types
 
@@ -848,7 +848,7 @@ typedef struct ai_frame {
 
   matrix saved_orient;
 
-} ai_frame;
+};
 
 // Etern'ed functions that depend of aistruct stuff
 

@@ -188,44 +188,44 @@
 #define CLICKTYPE_CLICKUP 1
 #define CLICKTYPE_DOWN 2
 
-typedef struct {
+struct tTextInfo {
   float last_letter;       // Last letter printed
   int sound_index;         // handle to sound for action
   int font_index;          // Font index
   int line_index;          // index of first text line (scrolling purposes)
   bool scroll_u, scroll_d; // if the scrollup down buttons are appearing
   bool scroll;             // set to true if it should be allowed to scroll
-} tTextInfo;
+};
 
-typedef struct {
+struct tBitmapInfo {
   int temp_bmhandle;        // handle of temporary bitmap
   float stage;              // stage that bitmap effect is in
   int *bitmaps;             // array of bitmaps (for scale effect)
   int bm_count;             // how many bitmaps (for scale effect)
   int bm_handle;            // handle to the bitmap
   chunked_bitmap chunk_bmp; // the chunk bitmap
-} tBitmapInfo;
+};
 
-typedef struct {
+struct tPolyInfo {
   vector m_Rot;     // current rotation
   vector m_Pos;     // current position
   vector m_Ori;     // current orientation
   matrix m_mOrient; // orientation
   int handle;       // handle to polymodel
-} tPolyInfo;
+};
 
-typedef struct {
+struct tMovieInfo {
   tCinematic *handle; // handle to the movie
   char *filename;     // filename of the movie
   float fps;          // fps
-} tMovieInfo;
+};
 
-typedef struct {
+struct tSoundInfo {
   bool started; // has the sound started?
   int handle;   // handle of the sound
-} tSoundInfo;
+};
 
-typedef struct {
+struct tButtonInfo {
   bool flash_state; // Is the button glowing?
   uint8_t click_type; // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
   uint8_t button_type;
@@ -243,9 +243,9 @@ typedef struct {
   chunked_bitmap chunkfocus_bmp;
   chunked_bitmap flash_chunk;
   chunked_bitmap flashfocus_chunk;
-} tButtonInfo;
+};
 
-typedef struct {
+struct tceffect {
   uint8_t type;     // Type of effect
   uint8_t monitor;  // Which monitor it belongs to
   uint8_t screen;   // What screen the effect belongs to
@@ -279,7 +279,7 @@ typedef struct {
   tTCEvent event_queue[MAX_EFFECT_EVENTS]; // event queue for an effect
 
   int prev, next; // Links to previous and next effect
-} tceffect;
+};
 
 extern int glitch_dx, glitch_dy;
 
@@ -341,13 +341,13 @@ void RenderPolyModel(tceffect *tce, float frametime, int xoff, int yoff, bool ok
 void RenderSound(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render);
 void RenderButton(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render);
 
-bool CreateTextEffect(LPTCTEXTDESC desc, const char *text, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateBitmapEffect(LPTCBMPDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateMovieEffect(LPTCMOVIEDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateBackgroundEffect(LPTCBKGDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreatePolyModelEffect(LPTCPOLYDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateSoundEffect(LPTCSNDDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-int CreateButtonEffect(LPTCBUTTONDESC desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateTextEffect(TCTEXTDESC* desc, const char *text, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateBitmapEffect(TCBMPDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateMovieEffect(TCMOVIEDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateBackgroundEffect(TCBKGDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreatePolyModelEffect(TCPOLYDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateSoundEffect(TCSNDDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+int CreateButtonEffect(TCBUTTONDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreateTextStatic(tceffect *tce, const char *text);
 bool CreateTextFade(tceffect *tce, const char *text);
 bool CreateTextType(tceffect *tce, const char *text);

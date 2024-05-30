@@ -170,7 +170,7 @@ typedef int HANDLE;
 #define NPF_MT_HAS_PILOT_DATA 32 // We got data from the mastertracker
 #define NPF_WROTE_RANK 64        // We told the clients about this clients rank
 
-typedef struct {
+struct netplayer {
   network_address addr;
   int flags;
   SOCKET reliable_socket;
@@ -201,11 +201,11 @@ typedef struct {
   uint16_t pilot_pic_id;
   float percent_loss;
   uint8_t digest[16];
-} netplayer;
+};
 
 #define MISSION_NAME_LEN 50
 
-typedef struct {
+struct network_game {
   network_address addr;
   char name[NETGAME_NAME_LEN];
   char mission[MSN_NAMELEN];
@@ -220,7 +220,7 @@ typedef struct {
   bool dedicated_server;
   uint8_t difficulty; // Game difficulty level
   uint32_t handle;
-} network_game;
+};
 
 // netgame flags
 #define NF_TIMER 0x01               // This level will end when the timer runs out
@@ -243,7 +243,7 @@ typedef struct {
 #define NF_TRACK_RANK 0x20000       // Track rankings for PXO
 #define NF_COOP 0x40000             // This game is a cooperative game
 
-typedef struct {
+struct netgame_info {
   uint16_t server_version; // This is so client and server code matches
   char name[NETGAME_NAME_LEN];
   char mission[MSN_NAMELEN];
@@ -264,7 +264,7 @@ typedef struct {
   int max_players;
   uint8_t difficulty; // Game difficulty level
   u_char digest[16];
-} netgame_info;
+};
 
 // Inline functions for extracting/packing multiplayer data
 inline void MultiAddUbyte(uint8_t element, uint8_t *data, int *count) {

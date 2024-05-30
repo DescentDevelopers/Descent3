@@ -286,36 +286,36 @@ class DMFCBase;
 #define CM_PAUSETIME 0xFA        // tell the player to pause gametime
 #define CM_UNPAUSETIME 0xF9      // tell the player to unpause gametime
 
-typedef struct {
+struct tDeathMsg {
   char *message;     // pointer to the actual message
   bool inuse;        // whether the node is being used
   bool victim_first; // whether the victim is listed first or second in the message
-} tDeathMsg;
+};
 
-typedef struct tSPHandler {
+struct tSPHandler {
   void (*func)(uint8_t *); // Function handler to handle the packet
   void (DMFCBase::*DMFCfunc)(uint8_t *);
   tSPHandler *next; // Pointer to next handler
   int type;
   uint8_t ID; // ID of special packet
-} tSPHandler;
+};
 
 // Struct for Input Command nodes (commands that begin with $)
-typedef struct tInputCommandNode {
+struct tInputCommandNode {
   char *data;
   char *desc;
   tInputCommandNode *next;
   void (*handler)(const char *);
   bool allow_remote;
-} tInputCommandNode;
+};
 
-typedef struct tPKillerInfo {
+struct tPKillerInfo {
   uint8_t slot;
   int kills;
   tPKillerInfo *next;
-} tPKillerInfo;
+};
 
-typedef struct {
+struct tPExtraInfo {
   float last_kill_time;   // Game time of the last kill for this player (previous kill)
   float last_death_time;  // Game time of the last time this player was killed (previous death)
   float kill_time;        // time of latest kill
@@ -326,7 +326,7 @@ typedef struct {
   int8_t last_kill_num;    // Player record num of last person this player killed
   int8_t last_death_num;   // Player record num of the player that last killed this player
   char got_revenge;       // 1 if revenge has been made on last killer
-} tPExtraInfo;
+};
 
 class PInfo {
 public:
@@ -431,7 +431,7 @@ private:
   tCustomMenu m_cmInfo;
 };
 
-typedef struct {
+struct tDMFCTimerInfo {
   bool inuse;
   void (*handler)(void);
   void (*onkill)(void);
@@ -439,20 +439,20 @@ typedef struct {
   float longevity;
   float nexttime;
   float intval;
-} tDMFCTimerInfo;
+};
 
-typedef struct {
+struct tWeaponKillMsg {
   bool inuse;
   bool victim_first;
   char *message;
-} tWeaponKillMsg;
+};
 
-typedef struct tBanItem {
+struct tBanItem {
   network_address addr;
   char callsign[MAX_CALLSIGN_SIZE];
   char tracker_id[24];
   tBanItem *next;
-} tBanItem;
+};
 
 // This class handles displaying and processing a customizable and detailed stats screen (in-game)
 class CDmfcStats : public IDmfcStats {
@@ -568,11 +568,11 @@ protected:
   void DisplayPlayerView(int x, int y, int w, int h, object *viewer);
 };
 
-typedef struct tHostsNode {
+struct tHostsNode {
   uint32_t ip;
   uint32_t mask;
   tHostsNode *next;
-} tHostsNode; // Allow/Deny IP address nodes
+}; // Allow/Deny IP address nodes
 
 // DMFCBase class
 //     This is the base class that the DMFCApp class is based off of.  This just handles general
@@ -2867,18 +2867,18 @@ void Remote_Logout(int precnum);
 
 #define MAX_RECORD_NAME 256
 
-typedef struct tRecord {
+struct tRecord {
   char name[MAX_RECORD_NAME];
   char type;
   void *data;
   tRecord *next;
-} tRecord;
+};
 
-typedef struct tKey {
+struct tKey {
   char name[MAX_RECORD_NAME];
   tKey *next;
   tRecord *records;
-} tKey;
+};
 
 class CRegistry {
 public:

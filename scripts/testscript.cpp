@@ -46,10 +46,10 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #define ID_SHIELD_ORB 0x00 // shield id
 #define ID_ENERGY_ORB 0x01 // energy id
 #define MAX_IDS 0x02       // maximum number of IDs
-typedef struct {
+struct tScriptInfo {
   int id;
   const char *name;
-} tScriptInfo;
+};
 
 tScriptInfo ScriptInfo[MAX_IDS] = {{ID_SHIELD_ORB, "Shield"}, {ID_ENERGY_ORB, "Energy"}};
 
@@ -63,9 +63,9 @@ protected:
   bool called;
 };
 
-typedef struct {
+struct tShieldOrbInfo {
   int hitcount;
-} tShieldOrbInfo;
+};
 //------------------
 // Shield orb script
 //------------------

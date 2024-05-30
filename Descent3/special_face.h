@@ -29,15 +29,15 @@
 // What this special face is used for:
 #define SFT_SPECULAR 1
 
-typedef struct {
+struct specular_instance {
   vector bright_center;
   uint16_t bright_color;
-} specular_instance;
+};
 
 #define SFF_SPEC_OBJECT 1
 #define SFF_SPEC_SMOOTH 2
 
-typedef struct {
+struct special_face {
   uint8_t type; // See types (above)
   uint8_t num;  // Number of instances
   uint8_t used;
@@ -47,7 +47,7 @@ typedef struct {
 
   vector *vertnorms;
 
-} special_face;
+};
 
 extern special_face SpecialFaces[];
 extern int Num_of_special_faces;

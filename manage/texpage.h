@@ -24,7 +24,7 @@
 #include "pstypes.h"
 #include "procedurals.h"
 
-typedef struct {
+struct mngs_texture_page {
   char bitmap_name[PAGENAME_LEN];  // filename for the bitmap associated with this texture
   char destroy_name[PAGENAME_LEN]; // filename for the destroyed bitmap
   char sound_name[PAGENAME_LEN];   // filename for the destroyed bitmap
@@ -49,7 +49,7 @@ typedef struct {
   uint8_t proc_y2[MAX_PROC_ELEMENTS];
 
   uint16_t proc_palette[256];
-} mngs_texture_page;
+};
 
 // Texture page functions
 //---------------------------------------------------------------

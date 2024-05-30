@@ -20,13 +20,13 @@
 #define __LNX_DSOUND_H_
 
 #include "SystemInterfaces.h"
-typedef struct {
+struct LnxSoundDevice {
   int sound_device;       // file device handle for sound
   uint32_t bps;       // (bytes per second) channels*freq*bit_depth/8
   uint32_t freq;      // frequency (22050, etc.)
   uint32_t bit_depth; // 8 or 16
   uint32_t channels;  // 1 or 2 (mono or stereo)
-} LnxSoundDevice;
+};
 
 #define WAVEFORMATEX SoundWAVEFormatEx
 
@@ -36,7 +36,7 @@ typedef struct {
 
 #define LnxBufferDesc SysSoundBufferDesc
 
-typedef struct {
+struct LnxSoundBuffer {
   int freq_adjustment;
   int bps;
   uint32_t buffer_len;
@@ -57,7 +57,7 @@ typedef struct {
   uint16_t freq;
   char playing;
   char __pad;
-} LnxSoundBuffer;
+};
 
 ///////////////////////////////
 // LnxSound_CreateSoundBuffer

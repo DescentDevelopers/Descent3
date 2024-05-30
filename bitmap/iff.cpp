@@ -93,12 +93,12 @@
 #define mskHasTransparentColor 2
 
 // Palette entry structure
-typedef struct {
+struct pal_entry {
   uint8_t r, g, b;
-} pal_entry;
+};
 
 // structure of the header in the file
-typedef struct iff_bitmap_header {
+struct iff_bitmap_header {
   int16_t w, h;                  // width and height of this bitmap
   int16_t x, y;                  // generally unused
   int16_t type;                  // see types above
@@ -110,7 +110,7 @@ typedef struct iff_bitmap_header {
   pal_entry palette[256];      // the palette for this bitmap
   uint8_t *raw_data;             // ptr to array of data
   int16_t row_size;              // offset to next row
-} iff_bitmap_header;
+};
 
 int16_t iff_transparent_color;
 int16_t iff_has_transparency; // 0=no transparency, 1=iff_transparent_color is valid

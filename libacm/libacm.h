@@ -38,7 +38,7 @@ extern "C" {
 #define ACM_ERR_UNEXPECTED_EOF	-7
 #define ACM_ERR_NOT_SEEKABLE	-8
 
-typedef struct ACMInfo {
+struct ACMInfo {
 	unsigned channels;		/* number of sound channels (1: mono, 2: stereo */
 	unsigned rate;			/* samplerate */
 	unsigned acm_id;
@@ -47,9 +47,9 @@ typedef struct ACMInfo {
 	unsigned acm_level;
 	unsigned acm_cols;		/* 1 << acm_level */
 	unsigned acm_rows;
-} ACMInfo;
+};
 
-typedef struct {
+struct acm_io_callbacks {
 	/*
 	 * Read up to "n" items with "size" bytes each into the buf at "ptr",
 	 * kinda like fread().
@@ -66,15 +66,15 @@ typedef struct {
 	int (*close_func)(void *datasrc);
 	/* returns size in bytes*/
 	int (*get_length_func)(void *datasrc);
-} acm_io_callbacks;
+};
 
 struct ACMStream {
-	ACMInfo info;
+        struct ACMInfo info;
 	unsigned total_values;		/* number of sound samples in the ACM file */
 
 	/* acm data stream */
 	void *io_arg;
-	acm_io_callbacks io;
+        struct acm_io_callbacks io;
 	unsigned data_len;
 
 	/* acm stream buffer */
@@ -117,7 +117,7 @@ typedef struct ACMStream ACMStream;
  *
  * returns ACM_OK if opening was successful, otherwise an ACM_ERR_* code
  */
-int acm_open_decoder(ACMStream **res, void *io_arg, acm_io_callbacks io, int force_chans);
+int acm_open_decoder(ACMStream **res, void *io_arg, struct acm_io_callbacks io, int force_chans);
 
 /*
  * Read up to "nbytes" bytes of audio samples from ACMStream "acm" into buffer "buf".
@@ -152,7 +152,7 @@ void acm_close(ACMStream *acm);
  * returns ACM_OK if opening was successful, otherwise an ACM_ERR_* code
  */
 int acm_open_file(ACMStream **acm, const char *filename, int force_chans);
-const ACMInfo *acm_info(ACMStream *acm);
+const struct ACMInfo *acm_info(ACMStream *acm);
 int acm_seekable(ACMStream *acm);
 unsigned acm_bitrate(ACMStream *acm);
 unsigned acm_rate(ACMStream *acm);

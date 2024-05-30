@@ -82,18 +82,18 @@
 #define SF_UPDATEDFORFRAME 0x02 // thie spew has already updated it's position for this frame, no need to do it again
 #define SF_UPDATEEVERYFRAME 0x04
 
-typedef struct gunpoint_info {
+struct guninfo {
   int obj_handle; // handle to object (needed if it's gunpoint based)
   int gunpoint;   // gunpoint number		(needed if it's gunpoint based)
-} guninfo;
+};
 
-typedef struct point_info {
+struct pointinfo {
   vector origin; // origin of the viseffect (needed if it's NOT gunpoint based)
   vector normal; // normal of the point
   int room_num;  // room number of point of origin
-} pointinfo;
+};
 
-typedef struct spew_t {
+struct spewinfo {
   uint8_t flags;       // flags
   bool inuse;        // if this slot is in use
   bool use_gunpoint; // is this a gunpoint based object (yes=true)
@@ -120,7 +120,7 @@ typedef struct spew_t {
   float start_time;           // time viseffect started
 
   vector gp_normal, gun_point; // vectors saved to keep from recalculating
-} spewinfo;
+};
 
 #define SPEW_RAND_WIGGLE 1
 #define SPEW_RAND_SPEED 2

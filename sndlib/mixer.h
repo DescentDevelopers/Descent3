@@ -29,7 +29,7 @@ public:
 private:
 };
 
-typedef struct DSLOOPSTREAM {
+struct DSLOOPSTREAM {
   int playing;
   int please_close;
   char *current_position;
@@ -42,7 +42,7 @@ typedef struct DSLOOPSTREAM {
   bool f_sample_16bit;
   int num_written;
   bool kill_me;
-} DSLOOPSTREAM;
+};
 
 // Sound item info (cache list)
 // override if you need to keep more information
@@ -75,7 +75,7 @@ public:
   uint8_t pad;
 };
 
-typedef struct {
+struct tMixerInit {
   sound_buffer *primary_buffer;
   int primary_frequency;
   int primary_alignment;
@@ -87,7 +87,7 @@ typedef struct {
   int *p_error_code;
 
   llsSystem *ll_sound_ptr;
-} tMixerInit;
+};
 
 class software_mixer {
 public:

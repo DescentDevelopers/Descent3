@@ -24,7 +24,7 @@
 #include "cfile.h"
 #include "pstypes.h"
 
-typedef struct {
+struct mngs_ship_page {
   ship ship_struct;
   char image_name[PAGENAME_LEN];
   char dying_image_name[PAGENAME_LEN];
@@ -35,7 +35,7 @@ typedef struct {
   char firing_sound_name[MAX_PLAYER_WEAPONS][PAGENAME_LEN];
   char release_sound_name[MAX_PLAYER_WEAPONS][PAGENAME_LEN];
   char spew_powerup_name[MAX_PLAYER_WEAPONS][PAGENAME_LEN];
-} mngs_ship_page;
+};
 
 // Ship page functions
 //---------------------------------------------------------------

@@ -445,10 +445,10 @@ float Key_ramp_speed = 0.5f;
 #define LIMIT_VERT 1.0f
 #define LIMIT_FORWARD 1.0f
 
-typedef struct tSpace {
+struct tSensitivity {
   float p, b, h, x, y, z;
   float op, ob, oh, ox, oy, oz;
-} tSensitivity;
+};
 
 //	GLOBALS
 
@@ -463,7 +463,7 @@ static float Control_frametime;
 static float Key_pitch_ramp_time = 0.0f;
 static float Key_heading_ramp_time = 0.0f;
 
-static tSpace Key_ramp;
+static tSensitivity Key_ramp;
 
 //	PROTOTYPES
 

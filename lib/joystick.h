@@ -105,7 +105,7 @@ typedef int tJoystick;
 #define JOYSTICK_7 6
 #define JOYSTICK_8 7
 
-typedef struct tJoyInfo {
+struct tJoyInfo {
   char name[128];
   unsigned axes_mask;
   unsigned num_btns;
@@ -115,7 +115,7 @@ typedef struct tJoyInfo {
   int minr, maxr;
   int minu, maxu;
   int minv, maxv;
-} tJoyInfo;
+};
 
 //	shared between joystick remote server and local client.
 #define JOY_PORT 3192
@@ -125,12 +125,12 @@ typedef struct tJoyInfo {
 #define JOY_INFO "INFO"
 #define JOY_POLL "POLL"
 
-typedef struct tJoyPacket {
+struct tJoyPacket {
   char coda[4]; // used to identify packet
   char buf[128];
-} tJoyPacket;
+};
 
-typedef struct tJoyPos {
+struct tJoyPos {
   int x;
   int y;
   int z;
@@ -140,7 +140,7 @@ typedef struct tJoyPos {
   unsigned buttons;
   unsigned btn;
   unsigned pov[JOYPOV_NUM];
-} tJoyPos;
+};
 
 //	joystick system initialization
 bool joy_Init(bool emulation);

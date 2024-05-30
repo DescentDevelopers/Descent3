@@ -369,16 +369,16 @@ extern char *Anim_state_names[];
 #define NUM_ANIMS_PER_CLASS 24
 
 // Info for an animation state
-typedef struct {
+struct anim_entry {
   int16_t from, to;
   float spc;
   int anim_sound_index;
   uint8_t used;
-} anim_entry;
+};
 
-typedef struct {
+struct anim_elem {
   anim_entry elem[NUM_ANIMS_PER_CLASS];
-} anim_elem;
+};
 
 #define MAX_DSPEW_TYPES 2
 #define DSF_ONLY_IF_PLAYER_HAS_OBJ_1 1
@@ -388,15 +388,15 @@ typedef struct {
 #define MAX_DEATH_TYPES 4
 
 // Death info for an object type
-typedef struct {
+struct death_info {
   uint32_t flags;      // death flags
   float delay_min; // if delay, min amount
   float delay_max; // if delay, max amount
-} death_info;
+};
 
 // AI info for this object
 // This is the subset of ai_frame data that the user can edit for an object type
-typedef struct {
+struct t_ai_info {
   char ai_class;
   char ai_type;
 
@@ -445,12 +445,12 @@ typedef struct {
   float biased_flight_importance;
   float biased_flight_min;
   float biased_flight_max;
-} t_ai_info;
+};
 
 #ifndef NEWEDITOR
 
 // Info for robots, powerups, debris, etc.
-typedef struct {
+struct object_info {
   char name[PAGENAME_LEN]; // the name on the page
 
   int type;   // what type of object this is
@@ -513,7 +513,7 @@ typedef struct {
   anim_elem *anim; // which anim states are active
   //	anim_elem		anim[NUM_MOVEMENT_CLASSES];	// which anim states are active
 
-} object_info;
+};
 
 // The big array of object info
 extern object_info Object_info[];

@@ -328,10 +328,10 @@ uint8_t Bitmaps_initted = 0;
 typedef bms_bitmap *bm_T;      /* type of item to be stored */
 typedef int bm_hashTableIndex; /* index into hash table */
 #define compEQ(a, b) (stricmp((a)->name, (b)->name) == 0)
-typedef struct bm_Node_ {
-  struct bm_Node_ *next; /* next bm_Node */
+struct bm_Node {
+  struct bm_Node *next; /* next bm_Node */
   bm_T data;             /* data stored in bm_Node */
-} bm_Node;
+};
 static bm_Node *bm_findNode(bm_T data);
 static void bm_deleteNode(bm_T data);
 static bm_Node *bm_insertNode(bm_T data);

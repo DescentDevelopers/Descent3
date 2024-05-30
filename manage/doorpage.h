@@ -24,12 +24,12 @@
 #include "cfile.h"
 #include "pstypes.h"
 
-typedef struct {
+struct mngs_door_page {
   door door_struct;
   char image_name[PAGENAME_LEN];
   char open_sound_name[PAGENAME_LEN];
   char close_sound_name[PAGENAME_LEN];
-} mngs_door_page;
+};
 
 // Door page functions
 //---------------------------------------------------------------

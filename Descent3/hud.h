@@ -295,13 +295,13 @@ struct CFILE;
 #define STAT_GRAPHICAL 0x8000
 
 //	hud modes
-typedef enum tHUDMode {
+enum tHUDMode {
 
   HUD_FULLSCREEN,
   HUD_LETTERBOX,
   HUD_COCKPIT,
   HUD_OBSERVER
-} tHUDMode;
+};
 
 #define MAX_HUD_ITEMS 32
 #define HUD_COLOR GR_RGB(0, 255, 0)
@@ -452,7 +452,7 @@ const char *GetMessageDestination(const char *message, int *destination);
 
 #define HUD_INVALID_ID 255 // hud invalid id constant.
 
-typedef struct t_dirty_rect {
+struct t_dirty_rect {
   struct {
     int16_t l, t, r, b;
   } r[3]; // three rectangles for each frame buffer (3 max)
@@ -465,9 +465,9 @@ typedef struct t_dirty_rect {
   };
   void reset();
   void fill(ddgr_color col);
-} tDirtyRect; // dirty rectangle for hud item (small hud version)
+}; // dirty rectangle for hud item (small hud version)
 
-typedef struct tHUDItem {
+struct tHUDItem {
   int16_t x, y;
   int16_t xa, ya; // auxillary points
   int16_t xb, yb;
@@ -498,8 +498,8 @@ typedef struct tHUDItem {
     char *text;       // custom text.
   } data;
 
-  tDirtyRect dirty_rect; // used in small version of hud to clear only 'dirty' area
-} tHUDItem;
+  t_dirty_rect dirty_rect; // used in small version of hud to clear only 'dirty' area
+};
 
 //	hud resources
 struct sHUDResources {

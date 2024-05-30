@@ -96,10 +96,10 @@
 #include "mem.h"
 #include "ddio.h"
 
-typedef struct {
+struct tLangTag {
   const char *tag;
   int length;
-} tLangTag;
+};
 
 tLangTag Language_tags[] = {
     {"!=!", -1}, // English

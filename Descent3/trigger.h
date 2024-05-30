@@ -86,6 +86,7 @@
 
 #include "pstypes.h"
 #include "ObjScript.h"
+#include "object_external_struct.h"
 #include "vecmat.h"
 
 // Trigger flags
@@ -105,15 +106,15 @@
 // Declare this here so we don't have to include the header file
 //@$-struct tD3XThread;
 
-typedef struct {
+struct tOSIRISTriggerScript {
   int script_id;
   void *script_instance;
-} tOSIRISTriggerScript;
+};
 
 #define TRIG_NAME_LEN 19
 
 // The trigger structure
-typedef struct trigger {
+struct trigger {
   char name[TRIG_NAME_LEN + 1]; // the name of this trigger
   int roomnum;                  // the room this trigger is in
   int facenum;                  // the face to which this trigger is attched
@@ -121,7 +122,7 @@ typedef struct trigger {
   int16_t activator;              // flags for what can activate this trigger
   // This is allocated when the level is started
   tOSIRISTriggerScript osiris_script;
-} trigger;
+};
 
 // The number of triggers currently in the mine
 extern int Num_triggers;
@@ -131,9 +132,6 @@ extern trigger Triggers[];
 
 // Macro to get trigger number
 #define TRIGNUM(tp) (tp) ? ((tp)-Triggers) : -1
-
-// Define this here so we don't have to include object.h
-typedef struct object object;
 
 //	initializes trigger system
 void InitTriggers();

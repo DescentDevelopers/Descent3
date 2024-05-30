@@ -262,10 +262,10 @@
 #define DEFAULT_MESSAGE_NAME			"Message"
 #define DEFAULT_MESSAGE_TEXT			""
 
-typedef struct {
+struct tMessageListEntry {
 	char	name[MAX_MESSAGE_NAME_LEN+1];		// the named identifier of the message
 	char	message[MAX_MESSAGE_LEN+1];		// the message text
-} tMessageListEntry;
+};
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -363,13 +363,13 @@ typedef struct {
 #define MAX_EXPRESSION_OPERATORS		8
 
 // Struct for storing expression operator information
-typedef struct {
+struct ExpOpInfoItem {
 	int			type;				// expression operator (see above)
 	char			*name;			// the displayed name
 	char			*menu_name;		// the menu name
 	char			*code_name;		// DEFINE string to identify event in code
 	int			op_type;			// whether it is a binary or comparison op
-} ExpOpInfoItem;
+};
 
 
 // Script Owner Types
@@ -427,13 +427,13 @@ typedef struct {
 #define ALL_EVENT_TYPES						99		// Used for highlighting purposes only
 
 // Struct for storing event information
-typedef struct {
+struct EventInfoItem {
 	int			type;				// event type (see above)
 	char			*name;			// the displayed name
 	char			*code_name;		// DEFINE string to identify event in code
 	char			*data_line;		// The line for this event's data struct
 	int			flags;			// owner and various flags
-} EventInfoItem;
+};
 
 // Constants for masking what events go with what owner
 #define OBJECT_MASK			0x001
@@ -451,10 +451,10 @@ typedef struct {
 
 
 // Struct for easily creating literal menu
-typedef struct {
+struct ParamMenuItem {
 	int type;		// the type of literal (parameter type)
 	char *name;		// menu name of the literal
-} ParamMenuItem;
+};
 
 
 // Nested Types
@@ -506,7 +506,7 @@ typedef struct {
 
 #define MAX_STRING_DISPLAY_LEN	20
 
-typedef struct {
+struct tTreeNodeData {
 	int			type;											// the node type (see above list)
 	char			name[MAX_NDATA_NAME_LEN+1];			// multipurpose name string
 	int			ID;											// multipurpose identifier
@@ -517,7 +517,7 @@ typedef struct {
 	float			float_val3;									// stores a float value type (Vector Z)
 	char			str_val[MAX_MESSAGE_NAME_LEN+1];		// stores the named identifier of a message
 	int			flags;										// various flags
-} tTreeNodeData;
+};
 
 /**********************************************************
 * Tree Node Data Specifications
@@ -645,18 +645,18 @@ typedef struct {
 
 #define INVALID_ENUM			-1
 
-typedef struct {
+struct tEnumValueEntry {
 	char	*name;		// the name of this enum value
 	int	value;		// the value bound to this name
-} tEnumValueEntry;
+};
 
-typedef struct {
+struct tEnumDBEntry {
 	char					*name;							// the name for this enumeration type
 	tEnumValueEntry	values[MAX_ENUM_VALUES];	// the enumerated value storage
 	int					num_values;						// the number of values stored
 	bool					is_user_type;					// indicates if it's a user type
 	int					max_values;						// max allowed value for user types
-} tEnumDBEntry;
+};
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -670,16 +670,16 @@ typedef struct {
 
 #define INVALID_FLAG			-1
 
-typedef struct {
+struct tFlagValueEntry {
 	char	*name;		// the name of this flag value
 	int	value;		// the value bound to this name
-} tFlagValueEntry;
+};
 
-typedef struct {
+struct tFlagDBEntry {
 	char					*name;							// the name for this flag type
 	tFlagValueEntry	values[MAX_FLAG_VALUES];	// the flag value storage
 	int					num_values;						// the number of values stored
-} tFlagDBEntry;
+};
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -716,36 +716,36 @@ typedef struct {
 #define MAX_FLAG_VALUES_ERR		10		// the max number of flag values has been reached
 
 //Structure that defines an action
-typedef struct {
+struct tActionDBEntry {
 	int  category;	//Which group this action belongs to
 	char *desc;		//What the user sees
 	char *func;		//The glue function to call for this action
 	char *help;		//The help info for this function
-} tActionDBEntry;
+};
 
 //Structure that defines a query
-typedef struct {
+struct tQueryDBEntry {
 	int  category;	//Which group this query belongs to
 	char *desc;		//What the user sees
 	char *func;		//The glue function to call for this query
 	char *help;		//The help info for this function
-} tQueryDBEntry;
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // Script Sorting/Organization Structures and Constants
 /////////////////////////////////////////////////////////////////////////////
 
-typedef struct {
+struct tEventSection {
 	HTREEITEM	*script_node_list;		// The list of scripts of this event type
 	int			num_script_nodes;			// The number of scripts in the list
-} tEventSection;
+};
 
 
-typedef struct {
+struct tScriptOwnerGroup {
 	int				owner_type;								// The owner type for this script group
 	int				owner_handle;							// The specific handle/ID for this script group
 	tEventSection	event_sections[MAX_EVENT_TYPES];	// The event section script lists
-} tScriptOwnerGroup;
+};
 
 
 /////////////////////////////////////////////////////////////////////////////

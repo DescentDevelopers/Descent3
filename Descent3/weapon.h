@@ -265,7 +265,7 @@
 #define WSI_IMPACT_ROBOT 3
 #define WSI_BOUNCE 4
 
-typedef struct {
+struct weapon {
   char name[PAGENAME_LEN];
   float player_damage;             // how much damage a full impact causes a player
   float generic_damage;            // how much damage a full impact causes a robot
@@ -315,12 +315,12 @@ typedef struct {
   light_info lighting_info;
   physics_info phys_info;
 
-} weapon;
+};
 
-typedef struct {
+struct fusion_effect {
   float total_time;
 
-} fusion_effect;
+};
 
 extern float Primary_ramp_time, Secondary_ramp_time;
 

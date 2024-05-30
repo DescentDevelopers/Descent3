@@ -42,7 +42,7 @@
 #include <stdio.h>
 #include "pstypes.h"
 
-typedef struct {
+struct zipentry {
   uint32_t cent_file_header_sig;
   uint8_t version_made_by;
   uint8_t host_os;
@@ -63,7 +63,7 @@ typedef struct {
   uint32_t external_file_attrib;
   uint32_t offset_lcl_hdr_frm_frst_disk;
   char *name;
-} zipentry;
+};
 
 class ZIP {
 public:

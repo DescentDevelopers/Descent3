@@ -143,11 +143,11 @@ $$END
 */
 
 // Enter your custom script code here
-typedef struct {
+struct tTextureInfo {
   const char *room_name;
   int room_id;
   int face_num;
-} tTextureInfo;
+};
 
 #define NUM_MONITORS 11
 
@@ -159,10 +159,10 @@ tTextureInfo texture_info[NUM_MONITORS] = {
     {"Dock Console", 0, 50},      {"West Dock Console", 0, 50},  {"Room 69", 0, 125},
     {"Room 82", 0, 125},          {"Control DataTerm", 0, 50}};
 
-typedef struct {
+struct tMatcenInfo {
   const char *matcen_name;
   int matcen_id;
-} tMatcenInfo;
+};
 
 #define NUM_MATCENS 14
 
@@ -323,10 +323,10 @@ void aUpdateBypassConnDisplay(const char *text, int level) {
 #define WHITESPACE_CHARS " \t\r\n"
 
 // Structure for storing a script message
-typedef struct {
+struct tScriptMessage {
   char *name;    // the name of the message
   char *message; // the actual message text
-} tScriptMessage;
+};
 
 // Global storage for level script messages
 tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];

@@ -57,12 +57,12 @@
 #define BSP_EMPTY_LEAF 1
 #define BSP_SOLID_LEAF 2
 
-typedef struct {
+struct bspplane {
   float a, b, c, d;
   uint8_t used;
-} bspplane;
+};
 
-typedef struct {
+struct bsppolygon {
   vector *verts;
   int nv;
   bspplane plane;
@@ -73,9 +73,9 @@ typedef struct {
 
   int color;
 
-} bsppolygon;
+};
 
-typedef struct bspnode {
+struct bspnode {
   uint8_t type;
   bspplane plane;
   uint16_t node_facenum;
@@ -85,15 +85,15 @@ typedef struct bspnode {
   bspnode *front;
   bspnode *back;
 
-  list *polylist;
+  listnode *polylist;
   int num_polys;
-} bspnode;
+};
 
-typedef struct bsptree {
-  list *vertlist;
-  list *polylist;
+struct bsptree {
+  listnode *vertlist;
+  listnode *polylist;
   bspnode *root;
-} bsptree;
+};
 
 // Builds a bsp tree for the indoor rooms
 void BuildBSPTree();

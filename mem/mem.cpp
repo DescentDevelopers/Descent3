@@ -237,12 +237,12 @@ int Mem_high_water_mark = 0;
 #define MEM_GAURDIAN_SIG 0x2bad
 #define MEM_MALLOC_TO_SORT 10000
 
-typedef struct mem_alloc_info {
+struct mem_alloc_info {
   int len;
   void *ptr;
   uint16_t line;
   char file[17];
-} mem_alloc_info;
+};
 
 static void *Mem_failsafe_block = NULL;
 ;
@@ -320,10 +320,10 @@ class MemClass Mymem;
 typedef mem_alloc_info *T;  /* type of item to be stored */
 typedef int hashTableIndex; /* index into hash table */
 #define compEQ(a, b) ((a)->ptr == (b)->ptr)
-typedef struct Node_ {
-  struct Node_ *next; /* next node */
+struct Node {
+  struct Node *next; /* next node */
   T data;             /* data stored in node */
-} Node;
+};
 Node *findNode(T data);
 void deleteNode(T data);
 Node *insertNode(T data);
@@ -718,9 +718,9 @@ void mem_shutdown() {
 
 #ifdef MEM_DEBUG
 // accessory stuff for mem_dumpallocstofile()
-typedef struct allocdumpt {
+struct allocdumpt {
   mem_alloc_info *data;
-} allocdumpt;
+};
 
 static int *sorted_allocs = NULL;
 
