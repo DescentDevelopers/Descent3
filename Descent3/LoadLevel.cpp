@@ -3470,7 +3470,6 @@ void ReadTerrainChunks(CFILE *fp, int version) {
   UpdateTerrainLightmaps();
 
 #if (defined(EDITOR) || defined(NEWEDITOR))
-
   memset(TerrainSelected, 0, TERRAIN_WIDTH * TERRAIN_DEPTH);
   Num_terrain_selected = 0;
 #endif

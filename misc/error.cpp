@@ -239,6 +239,7 @@ void SetMessageBoxTitle(const char *title) { strncpy(Messagebox_title, title, si
 
 #define BUF_LEN 1024
 
+#ifndef RELEASE
 // Pops up a dialog box to display a message
 void OutrageMessageBox(const char *str, ...) {
   char buf[BUF_LEN];
@@ -283,3 +284,4 @@ int OutrageMessageBox(int type, const char *str, ...) {
 
   return Debug_MessageBox(os_flags, Messagebox_title, buf);
 }
+#endif // RELEASE

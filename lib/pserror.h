@@ -167,6 +167,9 @@ void Int3MessageBox(const char *file, int line);
 //	prints out a standard OS messagebox
 void OutrageMessageBox(const char *str, ...);
 int OutrageMessageBox(int type, const char *str, ...);
+#else
+void OutrageMessageBox(const char *str, ...) {};
+int OutrageMessageBox(int type, const char *str, ...) {};
 #endif
 // Sets the title for future OutrageMessageBox() dialogs
 void SetMessageBoxTitle(const char *title);

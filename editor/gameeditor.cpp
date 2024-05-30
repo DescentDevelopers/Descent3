@@ -685,7 +685,6 @@ void GameToEditor(bool set_viewer_from_player)
 	}
 
 //	this uses information defined above
-	io_info.use_lo_res_time = (bool)(FindArg("-lorestimer")!=0);
 	io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
 	io_info.joy_emulation = (bool)((FindArg("-alternatejoy")==0) && (FindArg("-directinput")==0));
 
@@ -898,7 +897,6 @@ void EditorToGame()
 
 //	Initialize IO System for child window
 	io_info.obj = Descent;
-	io_info.use_lo_res_time = (bool)(FindArg("-lorestimer")!=0);
 	io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
 	io_info.joy_emulation = (bool)((FindArg("-alternatejoy")==0) && (FindArg("-directinput")==0));
 	ddio_Init(&io_info);
