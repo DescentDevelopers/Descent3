@@ -1,4 +1,7 @@
-set(HEADERS)
+set(HEADERS
+  ../lib/vecmat.h
+)
+
 set(CPPS
   vector.cpp)
 

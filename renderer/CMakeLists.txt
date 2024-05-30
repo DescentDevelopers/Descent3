@@ -1,6 +1,11 @@
 set(HEADERS
   dyna_gl.h
   HardwareInternal.h
+  ../lib/3d.h
+  ../lib/renderer.h
+  ../lib/bitmap.h
+  ../lib/grdefs.h
+  ../lib/lightmap.h
 )
 set(CPPS
   HardwareClipper.cpp

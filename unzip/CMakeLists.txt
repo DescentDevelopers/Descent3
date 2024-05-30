@@ -1,4 +1,6 @@
-set(HEADERS)
+set(HEADERS
+  ../lib/unzip.h
+)
 set(CPPS unzip.cpp)
 
 add_library(unzip STATIC ${HEADERS} ${CPPS})

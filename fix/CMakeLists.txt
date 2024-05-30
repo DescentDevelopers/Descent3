@@ -1,4 +1,6 @@
-set(HEADERS)
+set(HEADERS
+  fix.h)
+
 set(CPPS
   fix.cpp)
 

@@ -1,4 +1,7 @@
-set(HEADERS)
+set(HEADERS
+  ../lib/Aencode.h
+  ../lib/audio_encode.h
+)
 set(CPPS
   encoder.cpp)
 

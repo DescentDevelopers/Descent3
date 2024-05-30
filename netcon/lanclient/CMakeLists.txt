@@ -1,6 +1,17 @@
+set(HEADERS
+  lanstrings.h
+  ../../lib/ui.h
+  ../../Descent3/newui.h
+  ../../lib/grdefs.h
+  ../../Descent3/player.h
+  ../../Descent3/game.h
+  ../../Descent3/pilot.h
+  ../includes/inetgetfile.h
+)
+
 set(CPPS lanclient.cpp)
 
-add_library(Direct_TCP_IP MODULE ${CPPS})
+add_library(Direct_TCP_IP MODULE ${HEADERS} ${CPPS})
 set_target_properties(Direct_TCP_IP PROPERTIES PREFIX "")
 set_target_properties(Direct_TCP_IP PROPERTIES CXX_VISIBILITY_PRESET "hidden")
 set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")

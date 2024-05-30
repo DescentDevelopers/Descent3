@@ -1,4 +1,8 @@
-set(HEADERS)
+set(HEADERS
+  ../includes/CFtp.h
+  ../includes/Chttpget.h
+  ../includes/inetgetfile.h
+)
 
 set(CPPS
   CFtp.cpp

@@ -1,4 +1,6 @@
-set(HEADERS)
+set(HEADERS
+  ../lib/CZip.h
+)
 set(CPPS
   BitIO.cpp
   CZip.cpp

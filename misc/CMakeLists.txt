@@ -1,4 +1,11 @@
-set(HEADERS)
+set(HEADERS
+  ../lib/log.h
+  ../lib/logfile.h
+  ../lib/psglob.h
+  ../lib/psrand.h
+  ../lib/pstring.h
+)
+
 set(CPPS
   error.cpp
   logfile.cpp

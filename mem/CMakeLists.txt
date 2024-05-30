@@ -1,4 +1,6 @@
-set(HEADERS)
+set(HEADERS
+  ../lib/mem.h)
+
 set(CPPS
   mem.cpp)
 

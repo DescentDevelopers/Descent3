@@ -1,4 +1,8 @@
-set(HEADERS)
+set(HEADERS
+  streamaudio.h
+  ../cfile/cfile.h
+  ../lib/pserror.h
+)
 set(CPPS
   osfarchive.cpp
   streamaudio.cpp)
