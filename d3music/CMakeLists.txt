@@ -1,4 +1,5 @@
-set(HEADERS)
+set(HEADERS
+  musicapi.h)
 set(CPPS
   musicapi.cpp)
 

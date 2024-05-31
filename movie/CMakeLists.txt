@@ -1,9 +1,28 @@
-set(HEADERS)
+set(HEADERS
+  movie.h)
 set(CPPS
-  d3movie.cpp)
+  movie.cpp)
 
 add_library(movie STATIC ${HEADERS} ${CPPS})
 target_link_libraries(movie PRIVATE
   ddio
   libmve
+)
+
+target_include_directories(movie PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/renderer
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/grtext
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/bitmap
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/model
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/manage
+  >
 )

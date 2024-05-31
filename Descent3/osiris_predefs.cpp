@@ -460,7 +460,7 @@
 #include "polymodel.h"
 #include "multi.h"
 #include "viseffect.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "levelgoal.h"
 #include "BOA.h"
 #include "marker.h"

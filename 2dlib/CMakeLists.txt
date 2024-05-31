@@ -13,3 +13,12 @@ add_library(2dlib STATIC ${HEADERS} ${CPPS})
 target_link_libraries(2dlib PRIVATE
   cfile
 )
+
+target_include_directories(2dlib PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/bitmap
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/renderer
+  >
+)

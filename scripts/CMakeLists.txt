@@ -73,6 +73,17 @@ foreach(SCRIPT ${SCRIPTS})
   target_link_libraries(${SCRIPT} fix)
   set_target_properties(${SCRIPT} PROPERTIES PREFIX "")
   set_target_properties(${SCRIPT} PROPERTIES CXX_VISIBILITY_PRESET "hidden")
+  target_include_directories(${SCRIPT} PUBLIC
+    $<BUILD_INTERFACE:
+      ${PROJECT_SOURCE_DIR}/module
+    >
+    $<BUILD_INTERFACE:
+      ${PROJECT_SOURCE_DIR}/physics
+    >
+    $<BUILD_INTERFACE:
+      ${PROJECT_SOURCE_DIR}/manage
+    >
+  )
   if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set_target_properties(${SCRIPT} PROPERTIES SUFFIX ".dylib")
   endif()

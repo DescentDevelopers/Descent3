@@ -1,4 +1,7 @@
-set(HEADERS)
+set(HEADERS
+  music.h
+  musiclib.h)
+
 set(CPPS
   omflex.cpp
   sequencer.cpp

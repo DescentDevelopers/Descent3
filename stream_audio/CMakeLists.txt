@@ -1,4 +1,5 @@
-set(HEADERS)
+set(HEADERS
+  streamaudio.h)
 set(CPPS
   osfarchive.cpp
   streamaudio.cpp)
@@ -11,6 +12,6 @@ target_link_libraries(stream_audio PRIVATE
 )
 target_include_directories(stream_audio PUBLIC
   $<BUILD_INTERFACE:
-  ${PROJECT_SOURCE_DIR}/stream_audio
+  ${PROJECT_SOURCE_DIR}/libacm
   >
 )

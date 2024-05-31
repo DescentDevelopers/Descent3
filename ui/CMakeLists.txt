@@ -1,4 +1,10 @@
-set(HEADERS UIlib.h)
+set(HEADERS 
+  uidraw.h
+  ui.h
+  UIlib.h
+  uires.h
+  uisys.h)
+
 set(CPPS
   UIButton.cpp
   UICombo.cpp
@@ -20,3 +26,16 @@ add_library(ui STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ui PRIVATE
   ddio
 )
+
+target_include_directories(ui PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/bitmap
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/grtext
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/renderer
+  >
+)
+

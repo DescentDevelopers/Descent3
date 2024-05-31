@@ -2,6 +2,8 @@ set(HEADERS
   doorpage.h
   gamefilepage.h
   genericpage.h
+  manage_external.h
+  manage.h
   megapage.h
   powerpage.h
   robotpage.h
@@ -9,6 +11,7 @@ set(HEADERS
   soundpage.h
   texpage.h
   weaponpage.h)
+
 set(CPPS
   doorpage.cpp
   gamefilepage.cpp
@@ -27,4 +30,13 @@ target_link_libraries(manage PRIVATE
   ddio
   sndlib
   stream_audio
+)
+
+target_include_directories(manage PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/networking
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/model
+  >
 )

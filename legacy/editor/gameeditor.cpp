@@ -521,7 +521,7 @@
 #include "pilot.h"
 #include "streamaudio.h"
 #include "D3ForceFeedback.h"
-#include "d3music.h"
+#include "musicapi.h"
 #include "osiris_dll.h"
 #include "d3edit.h"
 #include "editordoc.h"

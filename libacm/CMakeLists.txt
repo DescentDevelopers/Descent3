@@ -1,4 +1,7 @@
-set(HEADERS)
+set(HEADERS
+  Adecode.h
+  Aencode.h)
+
 set(CPPS
   aencode.cpp
   adecode.cpp)

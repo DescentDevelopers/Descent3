@@ -1,4 +1,5 @@
-set(HEADERS)
+set(HEADERS
+  module.h)
 set(CPPS
   module.cpp)
 

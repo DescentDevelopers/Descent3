@@ -28,3 +28,30 @@ set(CPPS
 add_definitions(-DOUTRAGE_VERSION -DDMFC_DLL)
 
 add_library(dmfc STATIC ${HEADERS} ${CPPS})
+
+target_include_directories(dmfc PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/grtext
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/module
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/renderer
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/bitmap
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/networking
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/physics
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/model
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/manage
+  >
+)

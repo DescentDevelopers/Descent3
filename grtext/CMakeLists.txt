@@ -1,4 +1,7 @@
-set(HEADERS grtextlib.h)
+set(HEADERS 
+  grtext.h
+  grtextlib.h)
+
 set(CPPS
   grfont.cpp
   grtext.cpp
@@ -7,4 +10,13 @@ set(CPPS
 add_library(grtext STATIC ${HEADERS} ${CPPS})
 target_link_libraries(grtext PRIVATE
   ddio
+)
+
+target_include_directories(grtext PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/bitmap
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/renderer
+  >
 )
