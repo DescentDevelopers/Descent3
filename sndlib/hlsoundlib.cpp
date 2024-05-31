@@ -651,7 +651,6 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
   const int num_samples_this_frame = (int)(Frametime * 22050);
   if (!m_f_hls_system_init)
     return;
-  DebugBlockPrint("S ");
   //	determine if we're using hardware for sound support.
   m_ll_sound_ptr->SoundStartFrame();
   // non game sound frame, this, just updates currently playing sounds.
@@ -825,18 +824,15 @@ void hlsSystem::BeginSoundFrame(bool f_in_game) {
   // mprintf(0, "BeginSoundFrame: used sound_objects %d\n", counter);
 end_beginsoundframe:
   AudioStream::Frame();
-  DebugBlockPrint("DS");
   mprintf_at(3, 1, 0, "HNS: %04d", counter);
 }
 
 // Plays the deffered 3d stuff
 void hlsSystem::EndSoundFrame() {
-  DebugBlockPrint("X ");
   if (!m_f_hls_system_init)
     return;
   sound_render_end_frame();
   m_ll_sound_ptr->SoundEndFrame();
-  DebugBlockPrint("DX");
 }
 // Allows for changes in a currently playing sound
 int hlsSystem::Update2dSound(int hlsound_uid, float volume, float pan) {

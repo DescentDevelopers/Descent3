@@ -597,15 +597,11 @@ int DoUI() {
   ui_ShowCursor();
   ui_Flush();
 
-  DebugBlockPrint("UJ");
-
   while (UI_frame_result == -1) {
     Descent->defer();
     DoUIFrame();
     rend_Flip();
   }
-
-  DebugBlockPrint("UO");
 
   ui_HideCursor();
   ui_Flush();
@@ -618,10 +614,8 @@ void DoUIFrame() {
   if (Multi_bail_ui_menu) {
     UI_frame_result = NEWUIRES_FORCEQUIT;
   } else {
-    DebugBlockPrint("UK");
     if (UI_callback)
       (*UI_callback)();
-    DebugBlockPrint("UL");
 
     if (GetFunctionMode() == MENU_MODE) {
       tMusicSeqInfo music_info;
@@ -636,9 +630,7 @@ void DoUIFrame() {
       Sound_system.EndSoundFrame();
     }
 
-    DebugBlockPrint("UM");
     UI_frame_result = ui_DoFrame();
-    DebugBlockPrint("UN");
   }
 
   if (UI_input.printscreen) {
@@ -4151,7 +4143,6 @@ int newuiTiledWindow::DoUI() {
 
   //	this should poll UI_frame_result.
   while (UI_frame_result == -1) {
-    DebugBlockPrint("UA");
 
     Descent->defer();
     DoUIFrame();
@@ -4164,7 +4155,6 @@ int newuiTiledWindow::DoUI() {
       ui_EndDraw();
       ui_DoCursor();
     }
-    DebugBlockPrint("UZ");
     rend_Flip();
   }
 

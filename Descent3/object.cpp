@@ -2828,7 +2828,6 @@ void ObjDoFrame(object *obj) {
     RTP_STARTINCTIME(mt_physicsframe_time);
 
     do_physics_sim(obj);
-    DebugBlockPrint("DP");
     ObjCheckTriggers(obj);
 
     RTP_ENDINCTIME(mt_physicsframe_time);
@@ -2837,7 +2836,6 @@ void ObjDoFrame(object *obj) {
   case MT_WALKING: {
     RTP_STARTINCTIME(mt_walkingframe_time);
     do_walking_sim(obj);
-    DebugBlockPrint("DW");
     ObjCheckTriggers(obj);
     RTP_ENDINCTIME(mt_walkingframe_time);
   } break;

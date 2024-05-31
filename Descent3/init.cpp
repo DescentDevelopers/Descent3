@@ -1058,15 +1058,12 @@ int merc_hid = -1;
 */
 void PreInitD3Systems() {
   // initialize error system
-  bool debugging = false, console_output = false;
+  bool debugging = false;
 
 #ifndef RELEASE
 
   debugging = (FindArg("-debug") != 0);
 
-#ifdef LOGGER
-  console_output = true;
-#endif
   if (FindArg("-logfile"))
     Debug_Logfile("d3.log");
 
@@ -1076,7 +1073,7 @@ void PreInitD3Systems() {
   debugging = true;
 #endif
 
-  error_Init(debugging, console_output, PRODUCT_NAME);
+  error_Init(debugging, false, PRODUCT_NAME);
 
   if (FindArg("-lowmem"))
     Mem_low_memory_mode = true;
@@ -1907,24 +1904,6 @@ void InitD3Systems1(bool editor) {
   if (!FindArg("-nonetwork")) {
     nw_InitNetworking();
     nw_InitSockets(Gameport);
-
-    int tcplogarg;
-    tcplogarg = FindArg("-tcplog");
-    if (tcplogarg) {
-      char ipparse[50];
-      char *pport;
-      int port = 9999;
-      strcpy(ipparse, GameArgs[tcplogarg + 1]);
-      pport = strchr(ipparse, ':');
-      if (pport) {
-        *pport = '\0';
-        pport++;
-        port = atoi(pport);
-      }
-#if !defined(RELEASE)
-      nw_InitTCPLogging(ipparse, port);
-#endif
-    }
   }
 
   int timeoutarg = FindArg("-timeout");

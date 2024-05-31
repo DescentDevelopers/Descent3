@@ -156,18 +156,14 @@ bool Debug_Init(bool debugger, bool mono_debug);
 // Messagebox shows topstring, then stack dump, then bottomstring
 // Return types are the same as the Windows return values
 int Debug_ErrorBox(int type, const char *topstring, const char *title, const char *bottomstring);
-// displays an message box
+// displays a message box
 // Returns the same values as the Win32 MessageBox() function
 int Debug_MessageBox(int type, const char *title, const char *str);
 //	these functions deal with debug spew support
 bool Debug_Logfile(const char *filename);
 void Debug_LogWrite(const char *str);
-bool Debug_ConsoleInit();
-void Debug_ConsoleOpen(int n, int row, int col, int width, int height, const char *title);
-void Debug_ConsoleClose(int n);
 void Debug_ConsolePrintf(int n, const char *format, ...);
 void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...);
-void Debug_ConsoleRedirectMessages(int virtual_window, int physical_window);
 //	DEBUGGING MACROS
 // Break into the debugger, if this feature was enabled in Debug_init()
 #if !defined(RELEASE)

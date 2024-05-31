@@ -64,21 +64,14 @@
 #ifndef _MONO_H
 #define _MONO_H
 #include "debug.h"
-bool nw_InitTCPLogging(char *ip, uint16_t port);
-void nw_TCPPrintf(int n, char *format, ...);
 #if (!defined(RELEASE)) && defined(LOGGER)
-extern bool Debug_print_block;
 // Prints a formatted string to the debug window
 #define mprintf(...) Debug_ConsolePrintf(__VA_ARGS__)
 // Prints a formatted string on window n at row, col.
 #define mprintf_at(...) Debug_ConsolePrintfAt(__VA_ARGS__)
-#define DebugBlockPrint(...)                                                                                          \
-  do {                                                                                                                 \
-    if (Debug_print_block)                                                                                             \
-      mprintf_at(1, 5, 51, __VA_ARGS__);                                                                                    \
-  } while (0)
+#define DebugBlockPrint(...)
 #else // ifdef _DEBUG
- // DAJ defined in target headers
+// DAJ defined in target headers
 #define mprintf(...)
 #define mprintf_at(...)
 #define DebugBlockPrint(...)
