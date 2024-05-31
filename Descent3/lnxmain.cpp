@@ -591,10 +591,6 @@ int main(int argc, char *argv[]) {
       // service flag overrides others here in the group
       if (FindArg("-service")) {
         flags |= APPFLAG_USESERVICE;
-      } else {
-        if (FindArg("-svgalib")) {
-          flags |= APPFLAG_USESVGA;
-        }
       }
     }
 

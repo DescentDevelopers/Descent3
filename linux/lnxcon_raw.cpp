@@ -45,15 +45,10 @@
 #include <cstdio>
 #include <cctype>
 
-#include <algorithm>
 
-#include "application.h"
 #include "AppConsole.h"
 #include "TaskSystem.h"
-#include "mono.h"
-// #include "local_malloc.h"
-#include "pstring.h"
-#include <unistd.h>
+#include "ddio_common.h"
 
 static char *Con_raw_read_buf = NULL;                     // The next buffer of text from user input
 static char *Con_raw_inp_buf = NULL, Con_raw_inp_pos = 0; // Currently updating input buffer of text (and it's position)
@@ -90,23 +85,19 @@ bool con_raw_Input(char *buf, int buflen) {
   return false;
 }
 
-int ddio_KeyInKey();
-int ddio_KeyToAscii(int code);
-
-void con_raw_Defer(void) {
+void con_raw_Defer() {
   int keypressed = ddio_KeyInKey();
 
   while (keypressed != 0) {
     // we got a key...handle it
     switch (keypressed) {
-    case 0xCB: // KEY_LEFT:       // Left arrow
-    case 0xCD: // KEY_RIGHT:      // Right arrow
-    case 0xC8: // KEY_UP:			// Up arrow
-    case 0xD3: // KEY_DELETE:     // Delete
-    case 0x01: // KEY_ESC:        // Escape
+    case KEY_LEFT:
+    case KEY_RIGHT:
+    case KEY_UP:
+    case KEY_DELETE:
+    case KEY_ESC:
       break;
-    case 0x0E: // KEY_BACKSP:
-    {
+    case KEY_BACKSP: {
       // Move the caret back one space, and then
       // process this like the DEL key.
       if (Con_raw_inp_pos > 0) {
@@ -118,8 +109,7 @@ void con_raw_Defer(void) {
         con_raw_Puts(-1, "\b \b");
       }
     } break;
-    case 0x1C: // KEY_ENTER:
-    {
+    case KEY_ENTER: {
       // Go to the beginning of the next line.
       // The bottom line wraps around to the top.
       strcpy(Con_raw_read_buf, Con_raw_inp_buf);
@@ -160,7 +150,7 @@ void con_raw_Defer(void) {
   }
 }
 
-bool con_raw_Create(void) {
+bool con_raw_Create() {
   Con_raw_cols = 80;
   Con_raw_rows = 24; // one less, since the bottom window takes up one row
 
@@ -180,16 +170,16 @@ bool con_raw_Create(void) {
   return true;
 }
 
-void con_raw_Destroy(void) {
+void con_raw_Destroy() {
   // free any allocated memory
   if (Con_raw_inp_buf) {
     free(Con_raw_inp_buf);
-    Con_raw_inp_buf = NULL;
+    Con_raw_inp_buf = nullptr;
   }
 
   if (Con_raw_read_buf) {
     free(Con_raw_read_buf);
-    Con_raw_read_buf = NULL;
+    Con_raw_read_buf = nullptr;
   }
   Con_raw_cols = Con_raw_rows = 0;
 }

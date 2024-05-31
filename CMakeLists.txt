@@ -88,7 +88,6 @@ if(UNIX)
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
 
   find_package(SDL2 REQUIRED)
-  find_package(Curses REQUIRED)
   # Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
   message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
 endif()
