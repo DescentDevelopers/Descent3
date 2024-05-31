@@ -46,60 +46,20 @@
 
 #include <cstdarg>
 #include <cstdio>
-#include <cstdlib>
-
-#include "debug.h"
-
-#include <fcntl.h>
-#include <sys/stat.h>
 #include <memory.h>
 
-#include <unistd.h>
+#include "debug.h"
+#include "mono.h"
 
-static int Debug_logfile = 0;
-
-void Debug_LogClose();
-
-bool Debug_Logfile(const char *filename) {
-  if (Debug_logfile == -1) {
-    Debug_logfile = open(filename, O_CREAT | O_WRONLY, S_IREAD | S_IWRITE);
-    if (Debug_logfile == -1) {
-      Debug_MessageBox(OSMBOX_OK, "Debug", "FYI Logfile couldn't be created.");
-      return false;
-    }
-    atexit(Debug_LogClose);
-  }
-  Debug_LogWrite("BEGINNING LOG\n\n");
-
-  return true;
-}
-
-void Debug_LogWrite(const char *str) {
-  if (Debug_logfile > -1)
-    write(Debug_logfile, str, strlen(str));
-}
-
-void Debug_LogClose() {
-  if (Debug_logfile > -1) {
-    Debug_LogWrite("\nEND LOG");
-    close(Debug_logfile);
-    Debug_logfile = -1;
-  }
-}
-
-#ifdef _DEBUG
-#define MAX_MONO_BUFFER 2048
-#else
-#define MAX_MONO_BUFFER 32
-#endif
-
-static char Mono_buffer[MAX_MONO_BUFFER];
+static char Mono_buffer[MAX_MONO_LENGTH];
 
 void Debug_ConsolePrintf(int n, const char *format, ...) {
   va_list marker;
   va_start(marker, format);
-  std::vsnprintf(Mono_buffer, MAX_MONO_BUFFER, format, marker);
+  std::vsnprintf(Mono_buffer, MAX_MONO_LENGTH, format, marker);
   va_end(marker);
+
+  Debug_LogWrite(Mono_buffer);
 
   if (n == 0) {
     printf("%s", Mono_buffer);
@@ -107,6 +67,7 @@ void Debug_ConsolePrintf(int n, const char *format, ...) {
     int end = strlen(Mono_buffer) - 1;
     if ((end > 1) && (Mono_buffer[end] != 0x0a) && (Mono_buffer[end] != 0x0d)) {
       printf("\n");
+      Debug_LogWrite("\n");
     }
   }
 }

@@ -20,56 +20,17 @@
 
 #include <cstdarg>
 #include <cstdio>
-#include <cstdlib>
-
-#include "Debug.h"
 
 #include <windows.h>
-#include <io.h>
 #include <fcntl.h>
-#include <sys/stat.h>
+
+#include "debug.h"
+#include "mono.h"
 
 // ---------------------------------------------------------------------------
 // console debugging functions
 
-#ifndef RELEASE
-#define MAX_MONO_LENGTH 2048
-#else
-#define MAX_MONO_LENGTH 256
-#endif
-
 static char Mono_buffer[MAX_MONO_LENGTH];
-
-static int Debug_logfile = -1;
-
-void Debug_LogClose();
-
-bool Debug_Logfile(const char *filename) {
-  if (Debug_logfile == -1) {
-    Debug_logfile = _open(filename, _O_CREAT | _O_WRONLY | _O_TEXT, _S_IREAD | _S_IWRITE);
-    if (Debug_logfile == -1) {
-      Debug_MessageBox(OSMBOX_OK, "Debug", "FYI Logfile couldn't be created.");
-      return false;
-    }
-    atexit(Debug_LogClose);
-  }
-  Debug_LogWrite("BEGINNING LOG\n\n");
-
-  return true;
-}
-
-void Debug_LogWrite(const char *str) {
-  if (Debug_logfile > -1)
-    _write(Debug_logfile, str, strlen(str));
-}
-
-void Debug_LogClose() {
-  if (Debug_logfile > -1) {
-    Debug_LogWrite("\nEND LOG");
-    _close(Debug_logfile);
-    Debug_logfile = -1;
-  }
-}
 
 void Debug_ConsolePrintf(int n, const char *format, ...) {
   char *ptr = Mono_buffer;

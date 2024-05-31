@@ -104,7 +104,7 @@
  */
 #ifndef DEBUG_H
 #define DEBUG_H
-#include "pstypes.h"
+
 //	---------------------------------------------------------------------------
 //	Debug system is a member of the 'platform' library.
 //	---------------------------------------------------------------------------
@@ -150,7 +150,8 @@ constexpr const int OSMBOX_OKCANCEL = 5;
 //	Functions
 //	---------------------------------------------------------------------------
 extern bool Debug_break;
-//	if we are running under a debugger, then pass true
+
+// if we are running under a debugger, then pass true
 bool Debug_Init(bool debugger, bool mono_debug);
 // Does a messagebox with a stack dump
 // Messagebox shows topstring, then stack dump, then bottomstring
@@ -159,12 +160,14 @@ int Debug_ErrorBox(int type, const char *topstring, const char *title, const cha
 // displays a message box
 // Returns the same values as the Win32 MessageBox() function
 int Debug_MessageBox(int type, const char *title, const char *str);
-//	these functions deal with debug spew support
+
+// these functions deal with debug spew support
 bool Debug_Logfile(const char *filename);
 void Debug_LogWrite(const char *str);
 void Debug_ConsolePrintf(int n, const char *format, ...);
 void Debug_ConsolePrintfAt(int n, int row, int col, const char *format, ...);
-//	DEBUGGING MACROS
+
+// DEBUGGING MACROS
 // Break into the debugger, if this feature was enabled in Debug_init()
 #if !defined(RELEASE)
 #include "debugbreak.h"

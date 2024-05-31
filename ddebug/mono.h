@@ -64,6 +64,13 @@
 #ifndef _MONO_H
 #define _MONO_H
 #include "debug.h"
+
+#ifdef _DEBUG
+#define MAX_MONO_LENGTH 2048
+#else
+#define MAX_MONO_LENGTH 256
+#endif
+
 #if (!defined(RELEASE)) && defined(LOGGER)
 // Prints a formatted string to the debug window
 #define mprintf(...) Debug_ConsolePrintf(__VA_ARGS__)
