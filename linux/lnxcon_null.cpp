@@ -45,7 +45,6 @@
  * $NoKeywords: $
  */
 
-#include <cstdarg>
 #include <cstdio>
 
 #include "mono.h"
@@ -54,16 +53,10 @@
 // put some data up on the screen
 void con_null_Puts(int window, const char *str);
 
-void con_null_Printf(const char *fmt, ...) {
-  char buffer[1024];
-  va_list args;
-  va_start(args, fmt);
-  std::vsnprintf(buffer, sizeof(buffer), fmt, args);
-  va_end(args);
-  con_null_Puts(0, buffer);
+bool con_null_Input(char *buf, int buflen) {
+  *buf = '\0';
+  return false;
 }
-
-bool con_null_Input(char *buf, int buflen) { return false; }
 
 void con_null_Defer() {}
 

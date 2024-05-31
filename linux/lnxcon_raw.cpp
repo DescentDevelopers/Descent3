@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -40,33 +40,22 @@
  */
 
 #include <cstdlib>
-#include <cstdarg>
 #include <cstring>
 #include <cstdio>
 #include <cctype>
-
 
 #include "AppConsole.h"
 #include "TaskSystem.h"
 #include "ddio_common.h"
 
-static char *Con_raw_read_buf = NULL;                     // The next buffer of text from user input
-static char *Con_raw_inp_buf = NULL, Con_raw_inp_pos = 0; // Currently updating input buffer of text (and it's position)
-static char Con_raw_last_command[CON_MAX_STRINGLEN];      // The last command entered by the user
-static int Con_raw_cols = 0, Con_raw_rows = 0; // The size of the main window (input window is (1 row, Con_cols))
-static bool Con_raw_newline = false;
+static char *Con_raw_read_buf = nullptr; // The next buffer of text from user input
+static char *Con_raw_inp_buf = nullptr,
+            Con_raw_inp_pos = 0;                     // Currently updating input buffer of text (and it's position)
+static char Con_raw_last_command[CON_MAX_STRINGLEN]; // The last command entered by the user
+static int Con_raw_cols = 0, Con_raw_rows = 0;       // The size of the main window (input window is (1 row, Con_cols))
 
 // put some data up on the screen
 void con_raw_Puts(int window, const char *str);
-
-void con_raw_Printf(const char *fmt, ...) {
-  char buffer[1024];
-  va_list args;
-  va_start(args, fmt);
-  std::vsnprintf(buffer, sizeof(buffer), fmt, args);
-  va_end(args);
-  con_raw_Puts(0, buffer);
-}
 
 bool con_raw_Input(char *buf, int buflen) {
   if (!Con_raw_read_buf) { // there is no read buffer...yipes

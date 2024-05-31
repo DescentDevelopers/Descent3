@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -57,22 +57,34 @@
  */
 
 #include <cstdarg>
-#include <cstring>
 #include <cstdio>
 #include <cctype>
 
 #include "application.h"
 #include "AppConsole.h"
 
-//////////////////////////////////////////////////
-// Defines
-#define CON_MAX_STRINGLEN 768
+enum {
+  Console_null,
+  Console_raw,
+  Console_total,
+} Console_mode;
 
-enum { Console_null, Console_raw } Console_mode;
+typedef bool (*Input_fp)(char *buf, int buflen);
+typedef void (*Defer_fp)();
+typedef bool (*Create_fp)();
+typedef void (*Destroy_fp)();
+typedef void (*Puts_fp)(int window, const char *str);
+
+struct Console_Commands {
+  Create_fp con_Create;
+  Destroy_fp con_Destroy;
+  Defer_fp con_Defer;
+  Input_fp con_Input;
+  Puts_fp con_Puts;
+};
 
 ////////////////////////////////////////////////
 // NULL driver functions
-void con_null_Printf(const char *fmt, ...);
 bool con_null_Input(char *buf, int buflen);
 void con_null_Defer();
 bool con_null_Create();
@@ -81,17 +93,32 @@ void con_null_Puts(int window, const char *str);
 
 ////////////////////////////////////////////////
 // raw driver functions
-void con_raw_Printf(const char *fmt, ...);
 bool con_raw_Input(char *buf, int buflen);
 void con_raw_Defer();
 bool con_raw_Create();
 void con_raw_Destroy();
 void con_raw_Puts(int window, const char *str);
 
+Console_Commands commands[Console_total] = {
+    {
+        .con_Create = con_null_Create,
+        .con_Destroy = con_null_Destroy,
+        .con_Defer = con_null_Defer,
+        .con_Input = con_null_Input,
+        .con_Puts = con_null_Puts,
+    },
+    {
+        .con_Create = con_raw_Create,
+        .con_Destroy = con_raw_Destroy,
+        .con_Defer = con_raw_Defer,
+        .con_Input = con_raw_Input,
+        .con_Puts = con_raw_Puts,
+    },
+};
+
 //////////////////////////////////////////////////
 // Global Variables
-char *Con_read_buf = nullptr;                 // The next buffer of text from user input
-bool Con_init = false;                        // Console has been initialized
+bool Con_init = false; // Console has been initialized
 
 #ifdef mem_malloc
 #undef mem_malloc
@@ -102,9 +129,6 @@ bool Con_init = false;                        // Console has been initialized
 #define mem_malloc(x) malloc(x)
 #define mem_free(x) free(x)
 
-//////////////////////////////////////////////////
-// Prototypes
-void con_Defer();         // Performs the actions for the frame
 //////////////////////////////////////////////////
 // Functions
 
@@ -139,16 +163,7 @@ void con_Printf(const char *fmt, ...) {
   }
   *fp = '\0';
 
-  switch (Console_mode) {
-  case Console_null:
-    con_null_Puts(0, filter_buf);
-    break;
-  case Console_raw:
-    con_raw_Puts(0, filter_buf);
-    break;
-  default:
-    break;
-  }
+  commands[Console_mode].con_Puts(0, filter_buf);
 }
 
 bool con_Input(char *buf, int buflen) {
@@ -156,30 +171,7 @@ bool con_Input(char *buf, int buflen) {
     *buf = '\0';
     return false;
   }
-
-  if (Console_mode == Console_null) {
-    *buf = '\0';
-    return false;
-  }
-
-  if (Console_mode == Console_raw) {
-    return con_raw_Input(buf, buflen);
-  }
-
-  if (!Con_read_buf) { // there is no read buffer...yipes
-    *buf = '\0';
-    return false;
-  }
-
-  if (Con_read_buf[0]) {
-    // we have a new buffer of input...send it away
-    strncpy(buf, Con_read_buf, buflen - 1);
-    buf[buflen - 1] = 0;
-    Con_read_buf[0] = 0;
-    return true;
-  }
-
-  return false;
+  return commands[Console_mode].con_Input(buf, buflen);
 }
 
 void con_Defer() {
@@ -187,16 +179,7 @@ void con_Defer() {
     // the console hasn't been initialized yet
     return;
   }
-
-  if (Console_mode == Console_null) {
-    con_null_Defer();
-    return;
-  }
-
-  if (Console_mode == Console_raw) {
-    con_raw_Defer();
-    return;
-  }
+  commands[Console_mode].con_Defer();
 }
 
 bool con_Create(int flags) {
@@ -204,23 +187,12 @@ bool con_Create(int flags) {
   if (flags & APPFLAG_USESERVICE) {
     // use the NULL driver!
     Console_mode = Console_null;
-    Con_init = con_null_Create();
-    return Con_init;
   } else {
     // use stdout driver
     Console_mode = Console_raw;
-    Con_init = con_raw_Create();
-    return Con_init;
   }
+  Con_init = commands[Console_mode].con_Create();
+  return Con_init;
 }
 
-void con_Destroy() {
-  if (Console_mode == Console_null) {
-    con_null_Destroy();
-    return;
-  }
-  if (Console_mode == Console_raw) {
-    con_raw_Destroy();
-    return;
-  }
-}
+void con_Destroy() { commands[Console_mode].con_Destroy(); }
