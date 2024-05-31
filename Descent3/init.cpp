@@ -1531,15 +1531,7 @@ void InitIOSystems(bool editor) {
 
   // last library opened is the first to be searched for dynamic libs, so put
   // this one at the end to find our newly build script libraries first
-#ifdef __LINUX__
-#ifndef MACOSX
-  ddio_MakePath(fullname, LocalD3Dir, "d3-linux.hog", NULL);
-#else
-  ddio_MakePath(fullname, LocalD3Dir, "d3-osx.hog", NULL);
-#endif
-#elif _WIN32
-  ddio_MakePath(fullname, LocalD3Dir, "d3-win.hog", NULL);
-#endif
+  ddio_MakePath(fullname, LocalD3Dir, PRIMARY_HOG, NULL);
   sys_hid = cf_OpenLibrary(fullname);
 
   // Check to see if there is a -mission command line option

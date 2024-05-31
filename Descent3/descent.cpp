@@ -781,15 +781,12 @@ const char *GetCDVolume(int cd_num) {
       char message_txt[50];
       snprintf(message_txt, sizeof(message_txt), TXT_CDPROMPT, cd_num);
       // We need a background drawn!
-#if defined(LINUX)
+
       void (*ui_cb)() = GetUICallback();
-#else
-      void *ui_cb = GetUICallback();
-#endif
       if (ui_cb == NULL)
         SetUICallback(RenderBlankScreen);
       int res = DoMessageBox(PRODUCT_NAME, message_txt, MSGBOX_OKCANCEL, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
-      SetUICallback((void (*)(void))ui_cb);
+      SetUICallback(ui_cb);
       //
       if (res == 0) {
         return NULL;

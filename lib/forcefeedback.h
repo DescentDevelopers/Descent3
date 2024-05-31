@@ -86,8 +86,7 @@
 #define FF_DEGREES DI_DEGREES
 #define FF_NOMINALMAX DI_FFNOMINALMAX
 #define FF_SECONDS DI_SECONDS
-#elif defined(__LINUX__)
-// LINUX
+#else
 #define FF_DEGREES 360      // fake value
 #define FF_NOMINALMAX 10000 // fake value
 #define FF_SECONDS 1000     // fake value

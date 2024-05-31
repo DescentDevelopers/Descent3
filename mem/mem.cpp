@@ -188,7 +188,7 @@
  *
  * $NoKeywords: $
  */
-#ifndef LINUX
+#ifndef __LINUX__
 #include <new.h>
 #endif
 #if defined(MACOSX)
