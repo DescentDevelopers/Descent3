@@ -121,10 +121,7 @@
 #include "osiris_dll.h"
 #include "levelgoal.h"
 
-#ifdef LINUX
 #include <stdlib.h>
-#endif
-
 #include <string.h>
 
 // The maximum number of triggers that can be in the mine

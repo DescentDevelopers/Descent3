@@ -881,7 +881,7 @@ void ListenDedicatedSocket(void) {
         shutdown(incoming_socket, 2);
 #if defined(WIN32)
         closesocket(incoming_socket);
-#elif defined(__LINUX__)
+#else
         close(incoming_socket);
 #endif
         return;
@@ -942,7 +942,7 @@ dedicated_socket *DedicatedLogoutTelnet(dedicated_socket *conn) {
   shutdown(conn->sock, 2);
 #if defined(WIN32)
   closesocket(conn->sock);
-#elif defined(__LINUX__)
+#else
   close(conn->sock);
 #endif
 
@@ -1030,7 +1030,7 @@ void DedicatedReadTelnet(void) {
               shutdown(conn->sock, 2);
 #if defined(WIN32)
               closesocket(conn->sock);
-#elif defined(__LINUX__)
+#else
               close(conn->sock);
 #endif
             }

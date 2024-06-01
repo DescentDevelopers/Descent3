@@ -510,7 +510,7 @@ struct tLoadGameDialogData {
   chunked_bitmap chunk;
 };
 
-#if defined(LINUX)
+#if defined(__LINUX__)
 void LoadGameDialogCB(newuiTiledWindow *wnd, void *data)
 #else
 void __cdecl LoadGameDialogCB(newuiTiledWindow *wnd, void *data)

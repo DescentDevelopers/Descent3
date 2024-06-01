@@ -1904,7 +1904,7 @@ void InitMatcens() {
   atexit(DestroyAllMatcens);
 }
 
-#if defined(LINUX)
+#if defined(__LINUX__)
 void DestroyAllMatcens()
 #else
 void __cdecl DestroyAllMatcens()

@@ -22,6 +22,10 @@
 #include <cstdlib>
 #include <cstdint>
 
+#ifdef __LINUX__
+#include "linux_fix.h"
+#endif
+
 // define unsigned types;
 typedef uint8_t uint8_t;
 typedef int8_t int8_t;

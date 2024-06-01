@@ -49,9 +49,7 @@
  *
  */
 
-#ifdef LINUX
 #include <cstring>
-#endif
 
 #include "hlsoundlib.h"
 #include "ddsndgeometry.h"
