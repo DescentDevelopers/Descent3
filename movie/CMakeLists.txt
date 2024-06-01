@@ -31,4 +31,7 @@ target_include_directories(movie PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/dd_video
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

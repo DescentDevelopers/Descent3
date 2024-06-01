@@ -33,6 +33,9 @@ target_include_directories(win32 PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/bitmap
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
   PRIVATE ${PROJECT_BINARY_DIR}/lib
 )
 

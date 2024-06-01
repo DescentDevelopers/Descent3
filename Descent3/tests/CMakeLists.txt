@@ -36,6 +36,9 @@ target_include_directories(porting-tests PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/linux
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )
 
 gtest_discover_tests(porting-tests)

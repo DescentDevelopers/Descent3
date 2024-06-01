@@ -46,4 +46,7 @@ target_include_directories(renderer PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/linux
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

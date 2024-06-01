@@ -29,4 +29,7 @@ target_include_directories(model PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/ddio
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

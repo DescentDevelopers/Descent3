@@ -330,6 +330,9 @@ target_include_directories(Descent3
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/ddio
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 
   PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir)

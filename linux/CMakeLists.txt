@@ -35,6 +35,9 @@ target_include_directories(linux PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/Descent3
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )
 target_link_libraries(linux PRIVATE
   ddio

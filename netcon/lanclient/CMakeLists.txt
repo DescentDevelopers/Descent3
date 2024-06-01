@@ -40,6 +40,9 @@ target_include_directories(Direct_TCP_IP PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/ddio
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )
 
 add_custom_target(Direct_TCP_IP_Hog

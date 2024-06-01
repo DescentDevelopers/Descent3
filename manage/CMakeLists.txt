@@ -39,4 +39,7 @@ target_include_directories(manage PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/model
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

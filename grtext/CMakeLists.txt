@@ -25,4 +25,7 @@ target_include_directories(grtext PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/dd_video
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

@@ -63,4 +63,10 @@ target_include_directories(dmfc PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/win32
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/linux
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

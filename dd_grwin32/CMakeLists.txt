@@ -17,4 +17,7 @@ target_include_directories(dd_grwin32 PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/win32
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

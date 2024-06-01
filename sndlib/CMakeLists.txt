@@ -58,4 +58,7 @@ target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/physics
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

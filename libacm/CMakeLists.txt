@@ -1,6 +1,6 @@
 set(HEADERS
-  Adecode.h
-  Aencode.h)
+  adecode.h
+  aencode.h)
 
 set(CPPS
   aencode.cpp
