@@ -133,8 +133,10 @@ bool lnxsound::GetDeviceSettings(SDL_AudioDeviceID *device, uint32_t *freq, uint
 
 // Cleans up after the Sound Library
 void lnxsound::DestroySoundLib() {
-  SDL_CloseAudioDevice(sound_device);
-  sound_device = 0;
+  if (sound_device) {
+    SDL_CloseAudioDevice(sound_device);
+    sound_device = 0;
+  }
 }
 
 // Locks and unlocks sounds (used when changing play_info data)
