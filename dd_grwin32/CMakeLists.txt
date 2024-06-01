@@ -9,3 +9,12 @@ set(CPPS
   ddgrWin32Init.cpp)
 
 add_library(dd_grwin32 STATIC ${HEADERS} ${CPPS})
+
+target_include_directories(dd_grwin32 PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/win32
+  >
+)

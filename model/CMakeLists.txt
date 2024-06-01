@@ -26,4 +26,7 @@ target_include_directories(model PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/manage
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
 )

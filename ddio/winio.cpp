@@ -112,7 +112,7 @@
 #include <windows.h>
 
 #include "pserror.h"
-#include "Application.h"
+#include "application.h"
 #include "ddio_win.h"
 #include "ddio.h"
 #include "dinput.h"

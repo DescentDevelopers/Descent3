@@ -496,7 +496,7 @@
 #include "init.h"
 #include "game.h"
 #include "descent.h"
-#include "Application.h"
+#include "application.h"
 #include "AppDatabase.h"
 #include "program.h"
 #include "ddio.h"

@@ -27,4 +27,7 @@ target_include_directories(bitmap PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/renderer
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
 )

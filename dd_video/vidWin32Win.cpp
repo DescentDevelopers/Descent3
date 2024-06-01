@@ -47,7 +47,7 @@
 
 #include "ddvidlib.h"
 #include "pserror.h"
-#include "Application.h"
+#include "application.h"
 
 //////////////////////////////////////////////////////////////////////////////
 //	Variables

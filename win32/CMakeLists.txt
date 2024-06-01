@@ -1,7 +1,13 @@
+set(HEADERS
+  win32app.h
+  win32database.h
+  wincontroller.h
+)
+
 set(CPPS
   winapp.cpp
   wincon.cpp
-  WinController.cpp
+  wincontroller.cpp
   windata.cpp
   wintask.cpp
 )

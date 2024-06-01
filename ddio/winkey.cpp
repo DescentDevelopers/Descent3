@@ -180,7 +180,7 @@
 #include "mono.h"
 #include "ddio.h"
 #include "ddio_win.h"
-#include "Application.h"
+#include "application.h"
 #include "TaskSystem.h"
 
 #include <stdlib.h>

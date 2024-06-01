@@ -25,4 +25,10 @@ target_include_directories(movie PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/manage
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/dd_video
+  >
 )

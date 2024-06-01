@@ -51,7 +51,7 @@ target_include_directories(sndlib PUBLIC
   >
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/manage
-  >  
+  >
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/model
   >

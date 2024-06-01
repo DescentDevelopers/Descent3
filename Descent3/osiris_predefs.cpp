@@ -451,7 +451,7 @@
 #include "matcen.h"
 #include "findintersection.h"
 #include "controls.h"
-#include "Controller.h"
+#include "controller.h"
 #include "ship.h"
 #include "Mission.h"
 #include "osiris_share.h"

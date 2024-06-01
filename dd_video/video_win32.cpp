@@ -50,7 +50,7 @@
 
 #include "ddvidlib.h"
 #include "pserror.h"
-#include "Application.h"
+#include "application.h"
 
 #include <string.h>
 

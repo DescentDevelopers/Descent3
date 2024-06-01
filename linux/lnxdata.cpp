@@ -48,7 +48,7 @@
 #include <sys/types.h>
 
 #include "appdatabase.h"
-#include "linux/lnxdatabase.h"
+#include "lnxdatabase.h"
 #include "pserror.h"
 #include "mono.h"
 #include "pserror.h"

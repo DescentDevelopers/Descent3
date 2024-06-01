@@ -14,4 +14,7 @@ target_include_directories(stream_audio PUBLIC
   $<BUILD_INTERFACE:
   ${PROJECT_SOURCE_DIR}/libacm
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
 )

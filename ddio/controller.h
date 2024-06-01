@@ -265,7 +265,7 @@ gameController *CreateController(int num_funcs, ct_function *funcs, char *remote
 void DestroyController(gameController *ctl);
 
 #if defined(WIN32)
-#include "win\WinController.h"
+#include "wincontroller.h"
 #elif defined(__LINUX__)
 #include "lnxcontroller.h"
 #endif

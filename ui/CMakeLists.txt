@@ -1,4 +1,4 @@
-set(HEADERS 
+set(HEADERS
   uidraw.h
   ui.h
   UIlib.h
@@ -36,6 +36,12 @@ target_include_directories(ui PUBLIC
   >
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/renderer
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/dd_video
   >
 )
 

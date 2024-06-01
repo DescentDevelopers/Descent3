@@ -101,9 +101,9 @@ public:
 */
 
 #if defined(WIN32)
-#include "win\Win32Database.h"
+#include "win32database.h"
 #elif defined(__LINUX__)
-#include "linux/lnxdatabase.h"
+#include "lnxdatabase.h"
 #endif
 
 #endif

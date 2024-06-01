@@ -27,6 +27,15 @@ target_include_directories(porting-tests PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/networking
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/win32
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/linux
+  >
 )
 
 gtest_discover_tests(porting-tests)

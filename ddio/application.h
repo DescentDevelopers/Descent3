@@ -110,7 +110,7 @@ public:
                 Win32				Samir		Win32App.h			06/97
 */
 #if defined(WIN32)
-#include "win\win32app.h"
+#include "win32app.h"
 #elif defined(__LINUX__)
 #include "lnxapp.h"
 #endif

@@ -40,4 +40,10 @@ target_include_directories(renderer PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/module
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/win32
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/linux
+  >
 )

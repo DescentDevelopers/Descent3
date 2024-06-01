@@ -54,4 +54,13 @@ target_include_directories(dmfc PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/manage
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/dd_video
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/win32
+  >
 )

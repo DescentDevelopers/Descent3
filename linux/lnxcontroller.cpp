@@ -42,7 +42,7 @@
  */
 
 #include <cstring>
-#include "Controller.h"
+#include "controller.h"
 #include "ddio.h"
 #include "pserror.h"
 #include "joystick.h"

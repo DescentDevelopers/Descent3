@@ -48,7 +48,7 @@
 #include <algorithm>
 
 #include "application.h"
-#include "AppConsole.h"
+#include "appconsole.h"
 #include "TaskSystem.h"
 #include "mono.h"
 // #include "local_malloc.h"

@@ -944,7 +944,7 @@
 #include "Mission.h"
 #include "findintersection.h"
 #include "appdatabase.h"
-#include "AppConsole.h"
+#include "appconsole.h"
 #include "room.h"
 #include "game.h"
 #include "render.h"

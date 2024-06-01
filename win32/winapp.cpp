@@ -147,8 +147,8 @@
 
 #define OEAPP_INTERNAL_MODULE
 
-#include "Application.h"
-#include "AppConsole.h"
+#include "application.h"
+#include "appconsole.h"
 #include "mono.h"
 #include "networking.h"
 

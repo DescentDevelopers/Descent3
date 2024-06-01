@@ -12,8 +12,11 @@ target_link_libraries(rtperformance PRIVATE
 target_include_directories(rtperformance PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/bitmap
-  >  
+  >
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/manage
+  >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
   >
 )

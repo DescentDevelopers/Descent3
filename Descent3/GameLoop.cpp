@@ -834,7 +834,7 @@
 #include "newui.h"
 #include "Inventory.h"
 #include "physics.h"
-#include "Controller.h"
+#include "controller.h"
 #include "controls.h"
 #include "gamesequence.h"
 #include "cockpit.h"

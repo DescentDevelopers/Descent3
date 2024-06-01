@@ -29,4 +29,7 @@ target_include_directories(networking PUBLIC
   $<BUILD_INTERFACE:
     ${PROJECT_SOURCE_DIR}/model
   >
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ddio
+  >
 )
