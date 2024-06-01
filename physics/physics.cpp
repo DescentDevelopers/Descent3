@@ -83,7 +83,7 @@ int Physics_player_verbose = 0;
 int Physics_cheat_flag = 0;
 extern char BounceCheat;
 
-int PhysicsLinkList[MAX_OBJECTS];
+std::array<int, MAX_OBJECTS> PhysicsLinkList;
 int Physics_NumLinked = 0;
 
 // Current strength of gravity

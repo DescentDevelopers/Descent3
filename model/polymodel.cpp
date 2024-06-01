@@ -2056,7 +2056,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
   if (pm->n_models > MAX_SUBOBJECTS) {
     mprintf(0, "This model has more than the max number of subobjects! (%d)\n", MAX_SUBOBJECTS);
     Int3();
-    FreePolyModel(pm - Poly_models.data());
+    FreePolyModel(pm - std::data(Poly_models));
     return 0;
   }
 

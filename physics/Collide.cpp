@@ -1067,7 +1067,7 @@ void DoWallEffects(object *weapon, int surface_tmap) {
   } else if (texp->flags & TF_RUBBLE) {
     if ((ps_rand() % 4) == 0) {
       int num_rubble = (ps_rand() % 3) + 1;
-      int bm_handle = GetTextureBitmap(texp - GameTextures.data(), 0);
+      int bm_handle = GetTextureBitmap(texp - std::data(GameTextures), 0);
       uint16_t *data = bm_data(bm_handle, 0);
 
       uint16_t color = data[(bm_w(bm_handle, 0) * (bm_h(bm_handle, 0) / 2)) + (bm_w(bm_handle, 0) / 2)];

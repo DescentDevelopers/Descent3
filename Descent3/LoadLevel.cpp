@@ -3492,8 +3492,8 @@ void ReadPlayerStarts(CFILE *infile, int fileversion) {
 void VerifyObjectList() {
   int i;
 
-  uint8_t already_listed[MAX_OBJECTS];
-  memset(already_listed, 0, MAX_OBJECTS);
+  std::array<uint8_t, MAX_OBJECTS> already_listed;
+  already_listed.fill(0);
 
   for (i = 0; i <= Highest_room_index; i++) {
     room *rp = &Rooms[i];
@@ -3790,8 +3790,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       } else if (ISCHUNK(CHUNK_OBJECT_HANDLES)) { // Read in any non-zero handles for deleted objects
         int handle, objnum;
 
-        uint8_t already_loaded[MAX_OBJECTS];
-        memset(already_loaded, 0, MAX_OBJECTS);
+        std::array<uint8_t, MAX_OBJECTS> already_loaded;
+        already_loaded.fill(0);
 
         // Get the number of handles in the file
         n = cf_ReadInt(ifile);

@@ -1857,14 +1857,12 @@ void MultiSendToAllExcept(int except, uint8_t *data, int size, int seq_threshold
 
 // Flushes all receive sockets so that there is no data coming from them
 void MultiFlushAllIncomingBuffers() {
-  uint8_t *data;
   network_address from_addr;
   int size;
 
-  data = &(Multi_receive_buffer[0]);
 
   // get all incoming data and throw it away
-  while ((size = nw_Receive(data, &from_addr)) > 0)
+  while ((size = nw_Receive(std::data(Multi_receive_buffer), &from_addr)) > 0)
     ;
 
   if (Netgame.local_role == LR_SERVER) {
@@ -1875,7 +1873,7 @@ void MultiFlushAllIncomingBuffers() {
 
       if ((NetPlayers[i].flags & NPF_CONNECTED) && (NetPlayers[i].reliable_socket != INVALID_SOCKET) &&
           (NetPlayers[i].reliable_socket != 0)) {
-        while ((size = nw_ReceiveReliable(NetPlayers[i].reliable_socket, data, MAX_RECEIVE_SIZE)) > 0)
+        while ((size = nw_ReceiveReliable(NetPlayers[i].reliable_socket, std::data(Multi_receive_buffer), std::size(Multi_receive_buffer))) > 0)
           ;
       }
     }

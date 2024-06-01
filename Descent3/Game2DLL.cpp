@@ -139,7 +139,7 @@ void GetGameAPI(game_api *api) {
   api->objs = (int *)Objects;
   api->rooms = (int *)std::data(Rooms);
   api->terrain = (int *)Terrain_seg;
-  api->players = (int *)Players;
+  api->players = (int *)std::data(Players);
   api->netgame = (int *)&Netgame;
   api->netplayers = (int *)&NetPlayers;
   api->ships = (int *)&Ships;
@@ -534,8 +534,8 @@ void GetGameAPI(game_api *api) {
   api->vp[8] = (int *)&Game_interface_mode;
   api->vp[9] = (int *)LocalD3Dir;
   api->vp[10] = (int *)&Game_is_master_tracker_game;
-  api->vp[11] = (int *)Local_object_list;
-  api->vp[12] = (int *)Server_object_list;
+  api->vp[11] = (int *)std::data(Local_object_list);
+  api->vp[12] = (int *)std::data(Server_object_list);
   api->vp[13] = (int *)&Dedicated_server;
   api->vp[14] = (int *)Player_colors;
   api->vp[15] = (int *)&Hud_aspect_x;

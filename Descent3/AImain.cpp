@@ -1625,7 +1625,7 @@ const char *const Ai_movement_subtype_walking_strings[MAX_AI_INIT_MOVEMENT_SUBTY
 #define AI_MAX_MELEE_RANGE 5.0f
 
 int AI_NumRendered;
-int AI_RenderedList[MAX_OBJECTS];
+std::array<int, MAX_OBJECTS> AI_RenderedList;
 
 int AI_NumHostileAlert = 0;
 
