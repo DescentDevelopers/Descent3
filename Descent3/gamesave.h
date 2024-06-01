@@ -186,9 +186,6 @@ int LoadGameState(const char *pathname);
 #define gs_ReadInt(_f, _i) ((_i) = cf_ReadInt(_f))
 #define gs_ReadFloat(_f, _fl) ((_fl) = cf_ReadFloat(_f))
 
-//	we need this directory to load the savegame from
-static char LGS_Path[PSPATHNAME_LEN];
-
 //	writes out translation tables.
 void SGSXlateTables(CFILE *fp);
 

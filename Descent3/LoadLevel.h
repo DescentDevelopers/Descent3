@@ -733,16 +733,4 @@ inline void GetLevelMD5Sum(uint8_t digest[16]) {
   }
   Level_md5->digest(digest);
 }
-#include <string.h>
-inline char *GetCurrentSumString() {
-  static char output_buf[100];
-  output_buf[0] = '\0';
-  auto digest = Level_md5->digest();
-  char bytestr[10] = "";
-  // Do level checksum
-  for (int i = 0; i < 16; i++) {
-    snprintf(bytestr, sizeof(bytestr), "%.2x", digest[i]);
-    strcat(output_buf, bytestr);
-  }
-  return output_buf;
-}
+
