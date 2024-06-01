@@ -3800,7 +3800,7 @@ void MakeAtuoWaypointList() {
   Num_waypoints = 0;
 
   // Clear room waypoint flags
-  for (i = 0, rp = Rooms; i <= Highest_room_index; i++, rp++)
+  for (i = 0, rp = std::data(Rooms); i <= Highest_room_index; i++, rp++)
     rp->flags &= ~RF_WAYPOINT;
 
   // Look through objects for waypoints

@@ -1743,7 +1743,7 @@ void StartTextureSounds() {
   room *rp;
   face *fp;
 
-  for (r = 0, rp = Rooms; r <= Highest_room_index; r++, rp++) {
+  for (r = 0, rp = std::data(Rooms); r <= Highest_room_index; r++, rp++) {
     if (rp->used) {
       for (f = 0, fp = rp->faces; f < rp->num_faces; f++, fp++) {
         int sound = GameTextures[fp->tmap].sound;

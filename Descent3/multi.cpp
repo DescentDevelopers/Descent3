@@ -9132,7 +9132,7 @@ void MultiSendBreakGlass(room *rp, int facenum) {
   int size_offset;
   size_offset = START_DATA(MP_BREAK_GLASS, data, &count);
 
-  MultiAddUshort(rp - Rooms, data, &count);
+  MultiAddUshort(rp - std::data(Rooms), data, &count);
   MultiAddUshort(facenum, data, &count);
 
   END_DATA(count, data, size_offset);

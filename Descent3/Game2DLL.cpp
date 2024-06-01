@@ -137,7 +137,7 @@ static void DUMMYrend_DrawScaledBitmap(int x1, int y1, int x2, int y2, int bm, f
 
 void GetGameAPI(game_api *api) {
   api->objs = (int *)Objects;
-  api->rooms = (int *)Rooms;
+  api->rooms = (int *)std::data(Rooms);
   api->terrain = (int *)Terrain_seg;
   api->players = (int *)Players;
   api->netgame = (int *)&Netgame;
@@ -145,7 +145,7 @@ void GetGameAPI(game_api *api) {
   api->ships = (int *)&Ships;
   api->weapons = (int *)&Weapons;
   api->Current_mission = (int *)&Current_mission;
-  api->GameTextures = (int *)GameTextures;
+  api->GameTextures = (int *)std::data(GameTextures);
   api->GameVClips = (int *)GameVClips;
   // Fill in function pointers here.  The order here must match the order on the
   // DLL side

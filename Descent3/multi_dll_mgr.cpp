@@ -388,12 +388,12 @@ void GetMultiAPI(multi_api *api) {
   // make the compiler happy
   bool (*fp_PlayerIsShipAllowed)(int, int) = PlayerIsShipAllowed;
   api->objs = (int *)Objects;
-  api->rooms = (int *)Rooms;
+  api->rooms = (int *)std::data(Rooms);
   api->terrain = (int *)Terrain_seg;
   api->players = (int *)Players;
   api->netgame = (int *)&Netgame;
   api->netplayers = (int *)&NetPlayers;
-  api->ships = (int *)Ships;
+  api->ships = (int *)Ships.data();
   // Fill in function pointers here.  The order here must match the order on the
   // DLL side
 

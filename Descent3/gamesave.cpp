@@ -826,16 +826,17 @@ bool SaveGameState(const char *pathname, const char *description) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-#define SAVE_DATA_TABLE(_nitems, _array)                                                                               \
-  do {                                                                                                                 \
-    highest_index = -1;                                                                                                \
-    for (i = 0; i < (_nitems); i++)                                                                                    \
-      if (_array[i].used)                                                                                              \
-        highest_index = i;                                                                                             \
-    gs_WriteShort(fp, highest_index + 1);                                                                              \
-    for (i = 0; i <= highest_index; i++)                                                                               \
-      cf_WriteString(fp, _array[i].used ? _array[i].name : "");                                                        \
-  } while (0)
+template <typename T, size_t sz>
+void save_data_table(CFILE *fp, const std::array<T, sz>& data) {
+  int16_t highest_index = -1;
+  for (int16_t i = 0; i < sz; i++)
+    if (data[i].used)
+      highest_index = i;
+
+  gs_WriteShort(fp, highest_index + 1);
+  for (int16_t i = 0; i <= highest_index; i++)
+    cf_WriteString(fp, data[i].used ? data[i].name : "");
+}
 
 //	writes out translation tables.
 void SGSXlateTables(CFILE *fp) {
@@ -853,19 +854,19 @@ void SGSXlateTables(CFILE *fp) {
     cf_WriteString(fp, (Object_info[i].type != OBJ_NONE) ? Object_info[i].name : "");
 
   //	write out polymodel list.
-  SAVE_DATA_TABLE(MAX_POLY_MODELS, Poly_models);
+  save_data_table(fp, Poly_models);
 
   // save out door list
-  SAVE_DATA_TABLE(MAX_DOORS, Doors);
+  save_data_table(fp, Doors);
 
   // save out ship list
-  SAVE_DATA_TABLE(MAX_SHIPS, Ships);
+  save_data_table(fp, Ships);
 
   // save out weapons list
-  SAVE_DATA_TABLE(MAX_WEAPONS, Weapons);
+  save_data_table(fp, Weapons);
 
   // save out textures list
-  SAVE_DATA_TABLE(MAX_TEXTURES, GameTextures);
+  save_data_table(fp, GameTextures);
 
   //	write out bitmap handle list.   look at all Objects that are fireballs and
   //	 save their handles-names.

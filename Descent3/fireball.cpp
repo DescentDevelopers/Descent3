@@ -1091,7 +1091,7 @@ void CreateSplintersFromBody(object *obj, float explosion_mag, float lifetime) {
     dest = center + obj->pos;
 
     // Now create splinter with that faces center position
-    int s_objnum = ObjCreate(OBJ_SPLINTER, pm - Poly_models, obj->roomnum, &dest, NULL);
+    int s_objnum = ObjCreate(OBJ_SPLINTER, pm - Poly_models.data(), obj->roomnum, &dest, NULL);
     if (s_objnum < 0) {
       mprintf(0, "Couldn't create splinter object!\n");
       return;
