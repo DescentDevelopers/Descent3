@@ -25,7 +25,7 @@
 #define PRT_VISEFFECT 1
 #define PRT_WALL 2
 
-typedef struct {
+struct postrender_struct {
   uint8_t type; // See types above
   union {
     int16_t objnum;
@@ -35,7 +35,7 @@ typedef struct {
 
   int16_t roomnum;
   float z;
-} postrender_struct;
+};
 
 extern int Num_postrenders;
 extern postrender_struct Postrender_list[];

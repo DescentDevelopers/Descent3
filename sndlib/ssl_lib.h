@@ -268,12 +268,12 @@ class oeApplication; // reference to oeApplication class.
 #define STREAM_BUFFER_SIZE 4096 //(4 * 1024)
 
 // object information needed by the sound code.  Calling code should copy data into here & pass to sound
-typedef struct {
+struct pos_state {
   vector *position; // Where in the world is this object
   matrix *orient;
   vector *velocity;
   int roomnum;
-} pos_state;
+};
 
 // #define MAX_EFFECT_OFFSETS 5
 
@@ -285,7 +285,7 @@ typedef struct {
 #define SND_PRIORITY_LOW 1
 #define SND_PRIORITY_LOWEST 0
 
-typedef struct {
+struct play_information {
 
   void *(*m_stream_cback)(void *user_data, int handle, int *size); // Streaming callback
   void *m_stream_data;                                             // passed in
@@ -306,9 +306,9 @@ typedef struct {
   float right_volume;
 
   float m_ticks;
-} play_information;
+};
 
-typedef struct sound_file_info {
+struct sound_file_info {
   char name[PAGENAME_LEN];
   char used;
   int use_count; // how many buffers does this sound take up.
@@ -319,9 +319,9 @@ typedef struct sound_file_info {
   int sample_length;    // Length of sound in samples
   int np_sample_length; // non-padded
 
-} sound_file_info;
+};
 
-typedef struct sound_info {
+struct sound_info {
   char name[PAGENAME_LEN];
   char used;
 
@@ -336,7 +336,7 @@ typedef struct sound_info {
   int outer_cone_angle;    // Angle in which sound is at its lowest base volume
   float outer_cone_volume; // A sounds lowest base volume level
   float import_volume;     // Volume multiplier
-} sound_info;
+};
 
 // Supported sound mixers
 #define SOUND_MIXER_SOFTWARE_16 0
@@ -446,19 +446,19 @@ typedef struct sound_info {
 #define ENV3DVALF_DOPPLER 1
 #define ENV3DVALF_GEOMETRY 2
 
-typedef struct t3dEnvironmentValues {
+struct t3dEnvironmentValues {
   int flags; // use flags above
 
   float doppler_scalar; // values from 0.0f to ???? (1.0f = normal)
-} t3dEnvironmentValues;
+};
 
-typedef struct t3dEnvironmentToggles {
+struct t3dEnvironmentToggles {
   int flags;     // use flags above
   int supported; // returns flag values to inform caller of supported features (doppler, ie.)
 
   bool doppler;  // state of doppler effects
   bool geometry; // support hardware geometry
-} t3dEnvironmentToggles;
+};
 
 /////////////////////////////////////////////////////////////////////////////////
 // Looping constants

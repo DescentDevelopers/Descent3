@@ -77,10 +77,10 @@ void AddHudMessage(int player_objhandle, int color, const char *format, ...);
 //	Generic Door Script
 #define GENERIC_DOOR_SCRIPTID NUM_IDS + 1
 
-typedef struct {
+struct tScriptIDInfo {
   int id;
   const char *name;
-} tScriptIDInfo;
+};
 
 tScriptIDInfo ScriptIDInfo[NUM_IDS] = {
     {ID_RAPIDFIRE, "RapidFire"}, {ID_FORCEWALL, "Forcewall"}, {ID_WINGNUT, "GoWingNut"}};
@@ -99,9 +99,9 @@ public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-typedef struct {
+struct forcewallmemory {
   int object_handle;
-} forcewallmemory;
+};
 
 class ForceWallScript : public GenericScript {
 public:
@@ -116,15 +116,15 @@ public:
   int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-typedef struct {
+struct tPlayerTimerInfo {
   int timer_handle;
-} tPlayerTimerInfo;
+};
 tPlayerTimerInfo RapidFirePlayerTimers[MAX_PLAYERS];
 
-typedef struct {
+struct rapidfirememory {
   int collided_object;
   uint8_t collided_pnum;
-} rapidfirememory;
+};
 
 class RapidFireScript : public GenericScript {
 public:

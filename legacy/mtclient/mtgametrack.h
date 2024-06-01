@@ -150,7 +150,7 @@
 #define GT_D3TNG                        42
 #define GAME_HEADER_ONLY_SIZE		(sizeof(game_packet_header)-MAX_GT_GAME_DATA_SIZE)
 
-typedef struct {
+struct game_packet_header {
 	uint32_t len;				//Length of entire packet;
 	uint8_t game_type;	//1==freespace (GT_FREESPACE), 2==D3, 3==tuberacer, etc.
 	SOCKADDR_IN	addr;
@@ -158,9 +158,9 @@ typedef struct {
 	uint32_t	sig;	//Unique identifier for client ACKs (The server always fills this in, the client responds)
 
 	char data[MAX_GT_GAME_DATA_SIZE];
-}game_packet_header;
+};
 
-typedef struct {
+struct d3_net_game_data {
 	char	game_name[MAX_GENERIC_GAME_NAME_LEN];
 	int	difficulty;
 	int	type;			//game type;
@@ -172,9 +172,9 @@ typedef struct {
 	char	mission_url[MAX_D3_MISSION_URL_LEN];
 	char	players[MAX_D3_PLAYERS][MAX_D3_PLAYER_NAME_LEN];
 	int	player_rank[MAX_D3_PLAYERS];
-}d3_net_game_data;
+};
 
-typedef struct {
+struct d3_net_game_data_short {
 	char	game_name[MAX_GENERIC_GAME_NAME_LEN];
 	int	type;			//game type;
 	int	state;
@@ -182,43 +182,43 @@ typedef struct {
 	int	current_num_players;
 	char	mission_name[MAX_D3_MISSION_NAME_LEN];
 	char lobby[MAX_GENERIC_GAME_NAME_LEN*2];
-}d3_net_game_data_short;
+};
 
-typedef struct {
+struct d3_net_game_data_tiny {
   int options;//1==force port to arg1
   int arg1;
   char lobby[MAX_GENERIC_GAME_NAME_LEN*2];
-}d3_net_game_data_tiny;
+};
 
 /*
-typedef struct {
+struct filter_game_list_struct {
 	int	rank;
 	char	preferred_players[][];
 	
-}filter_game_list_struct;
+};
 */
 
-typedef struct _active_games{
+struct active_games {
 	int game_type; //ie. GT_FREESPACE GT_DESCENT3, etc.
 	SOCKADDR	addr;
 	uint32_t last_update;	//Time we last got an update from this game
 	char	data[MAX_GT_GAME_DATA_SIZE]; //memory to hold the game specific data
-	_active_games *next;
-}active_games;
+        active_games *next;
+};
 /*
-typedef struct {
+struct game_list {
 	uint8_t game_type;
 	char game_name[MAX_GAME_LISTS_PER_PACKET][MAX_GENERIC_GAME_NAME_LEN];
 	uint32_t	game_server[MAX_GAME_LISTS_PER_PACKET];
 	uint16_t game_port[MAX_GAME_LISTS_PER_PACKET];
-}game_list;
+};
 */
 
-typedef struct {
+struct game_list {
   uint8_t game_type;
   uint32_t game_server[MAX_GAME_LISTS_PER_PACKET*4];
   uint16_t game_port[MAX_GAME_LISTS_PER_PACKET*4];
-}game_list;
+};
 
 //Function prototypes
 

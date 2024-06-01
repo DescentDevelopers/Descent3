@@ -65,11 +65,11 @@
 #define JOYSTICK_NONE_ID	99999
 #define MAX_NUM_JOYSTICKS	16
 
-typedef struct tagJoystickData {
+struct JoystickData {
 	int ID;
 	char name[1024];
 	bool FF_capable;
-} JoystickData;
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // CJoystickTab dialog

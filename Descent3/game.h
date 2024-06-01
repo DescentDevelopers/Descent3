@@ -293,7 +293,7 @@ struct tD3XThread;
 struct tD3XProgram;
 */
 
-typedef struct gamemode {
+struct gamemode {
   char scriptname[64];
   int requested_num_teams;
   /*
@@ -304,14 +304,14 @@ typedef struct gamemode {
           trigger *trigme;
           trigger *trigit;
   */
-} gamemode;
+};
 
 // Structure for a terrain sound "band"
-typedef struct {
+struct terrain_sound_band {
   int sound_index;               // the sound to play
   uint8_t low_alt, high_alt;       // top & bottom of range of sound
   float low_volume, high_volume; // volume at top & bottom of range
-} terrain_sound_band;
+};
 
 // How many terrain sound bands we have
 #define NUM_TERRAIN_SOUND_BANDS 5

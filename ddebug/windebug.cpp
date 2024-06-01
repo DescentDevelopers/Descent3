@@ -501,12 +501,12 @@ void unmangle(char *dst, const char *src) {
 
 #ifdef DUMPRAM
 
-typedef struct MemSymbol {
+struct MemSymbol {
   int section;
   int offset;
   int size;
   char name[132];
-} MemSymbol;
+};
 
 int Num_symbols = 0;
 int Max_symbols = 0;

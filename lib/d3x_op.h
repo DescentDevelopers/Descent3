@@ -231,7 +231,7 @@
 
 #define MAX_D3X_REGS 32
 
-typedef struct tD3XInstruction {
+struct tD3XInstruction {
   uint8_t opc; /* Opcode */
   union {
     struct /* Register and or immediate */
@@ -257,7 +257,7 @@ typedef struct tD3XInstruction {
       uint8_t d, s;
     } rr;
   } opr; /* Operand depends on Opcode */
-} tD3XInstruction;
+};
 
 /*	Values used for defer opcode */
 #define DEFER_END 0
@@ -289,13 +289,13 @@ typedef struct tD3XInstruction {
 /*	Program map entry */
 #define MAX_D3XID_NAME 32
 
-typedef struct tD3XPMap {
+struct tD3XPMap {
   char name[MAX_D3XID_NAME];
   uint16_t ip;
   uint16_t mem;
   uint16_t type;
   uint16_t parms;
-} tD3XPMap;
+};
 
 #define D3X_TAG "D3X5"
 

@@ -40,7 +40,7 @@
 #define STATE_ERROOS	5
 #define STATE_NOCOMPILER	6
 
-typedef struct
+struct
 {
 	char filename[PAGENAME_LEN];
 	int state;

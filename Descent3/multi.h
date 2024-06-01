@@ -659,14 +659,14 @@ extern bool Multi_bail_ui_menu;
 #define PFP_NO_FIRED 0       // the player didn't fire at all this frame
 #define PFP_FIRED 1          // the player fired this frame and the info should be packed in a player pos flag
 #define PFP_FIRED_RELIABLE 2 // used for secondaries of a non-peer to peer game
-typedef struct {
+struct player_fire_packet {
   uint8_t fired_on_this_frame;
   uint8_t wb_index;
   uint8_t fire_mask;
   uint8_t damage_scalar;
   uint8_t reliable;
   int dest_roomnum;
-} player_fire_packet;
+};
 
 extern netgame_info Netgame;
 
@@ -697,9 +697,9 @@ extern uint16_t Server_spew_list[];
 #define NETFILE_ID_LAST_FILE NETFILE_ID_VOICE_TAUNT4
 
 // A semi-compressed orientation matrix for multiplayer games
-typedef struct {
+struct multi_orientation {
   int16_t multi_matrix[9];
-} multi_orientation;
+};
 
 static inline void MultiMatrixMakeEndianFriendly(multi_orientation *mmat) {
   for (int i = 0; i < 9; i++) {
@@ -720,18 +720,18 @@ extern player_fire_packet Player_fire_packet[MAX_NET_PLAYERS];
 #define MULTI_SEND_MESSAGE_GREEN_TEAM -4
 #define MULTI_SEND_MESSAGE_YELLOW_TEAM -5
 
-typedef struct {
+struct powerup_respawn {
   vector pos;
   int objnum;
   int roomnum;
   uint8_t used;
   int16_t original_id;
-} powerup_respawn;
+};
 
-typedef struct {
+struct powerup_timer {
   int id;
   float respawn_time;
-} powerup_timer;
+};
 
 extern powerup_timer Powerup_timer[];
 extern powerup_respawn Powerup_respawn[];
@@ -799,7 +799,7 @@ extern uint16_t Turrett_position_counter[MAX_OBJECTS];
 #pragma pack(push, pxo)
 #endif
 #pragma pack(1) // Single byte alignment!
-typedef struct vmt_descent3_struct {
+struct vmt_descent3_struct {
   char tracker_id[TRACKER_ID_LEN];
   char pilot_name[PILOT_NAME_LEN];
   int rank;
@@ -816,7 +816,7 @@ typedef struct vmt_descent3_struct {
   uint32_t sliding_pct; // Percentage of the time you were sliding
   uint32_t checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
   uint32_t pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
-} vmt_descent3_struct;
+};
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #if defined(WIN32)
 #pragma pack(pop, pxo)

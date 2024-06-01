@@ -818,14 +818,14 @@ void PrintDedicatedMessage(const char *fmt, ...) {
 
 #endif
 
-typedef struct dedicated_socket {
+struct dedicated_socket {
   SOCKET sock;
   SOCKADDR_IN addr;
   char input[255];
   bool validated;
   dedicated_socket *prev;
   dedicated_socket *next;
-} dedicated_socket;
+};
 
 dedicated_socket *Head_sock = NULL;
 

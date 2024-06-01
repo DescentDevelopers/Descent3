@@ -30,23 +30,23 @@ extern "C" {
 DEFINE_GUID(DSPROPSETID_EAX_ReverbProperties, 0x4a4e6fc1, 0xc341, 0x11d1, 0xb7, 0x3a, 0x44, 0x45, 0x53, 0x54, 0x00,
             0x00);
 
-typedef enum {
+enum DSPROPERTY_EAX_REVERBPROPERTY {
   DSPROPERTY_EAX_ALL,         // all reverb properties
   DSPROPERTY_EAX_ENVIRONMENT, // standard environment no.
   DSPROPERTY_EAX_VOLUME,      // loudness of the reverb
   DSPROPERTY_EAX_DECAYTIME,   // how long the reverb lasts
   DSPROPERTY_EAX_DAMPING      // the high frequencies decay faster
-} DSPROPERTY_EAX_REVERBPROPERTY;
+};
 
 #define EAX_NUM_STANDARD_PROPERTIES (DSPROPERTY_EAX_DAMPING + 1)
 
 // use this structure for get/set all properties...
-typedef struct {
+struct EAX_REVERBPROPERTIES {
   uint32_t environment; // 0 to EAX_ENVIRONMENT_COUNT-1
   float fVolume;             // 0 to 1
   float fDecayTime_sec;      // seconds, 0.1 to 100
   float fDamping;            // 0 to 1
-} EAX_REVERBPROPERTIES;
+};
 
 // #define EAX_MAX_ENVIRONMENT (EAX_ENVIRONMENT_COUNT - 1)
 
@@ -82,15 +82,15 @@ typedef struct {
 DEFINE_GUID(DSPROPSETID_EAXBUFFER_ReverbProperties, 0x4a4e6fc0, 0xc341, 0x11d1, 0xb7, 0x3a, 0x44, 0x45, 0x53, 0x54,
             0x00, 0x00);
 
-typedef enum {
+enum DSPROPERTY_EAXBUFFER_REVERBPROPERTY {
   DSPROPERTY_EAXBUFFER_ALL,      // all reverb buffer properties
   DSPROPERTY_EAXBUFFER_REVERBMIX // the wet source amount
-} DSPROPERTY_EAXBUFFER_REVERBPROPERTY;
+};
 
 // use this structure for get/set all properties...
-typedef struct {
+struct EAXBUFFER_REVERBPROPERTIES {
   float fMix; // linear factor, 0.0F to 1.0F
-} EAXBUFFER_REVERBPROPERTIES;
+};
 
 #define EAX_REVERBMIX_USEDISTANCE                                                                                      \
   -1.0F // out of normal range

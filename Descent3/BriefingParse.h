@@ -61,14 +61,14 @@
 #define PBERR_FILENOTEXIST -1
 #define PBERR_NOERR 0
 
-typedef struct {
-  void (*AddTextEffect)(LPTCTEXTDESC desc, const char *text, const char *description, int id);
-  void (*AddBmpEffect)(LPTCBMPDESC desc, const char *description);
-  void (*AddMovieEffect)(LPTCMOVIEDESC desc, const char *description);
-  void (*AddBkgEffect)(LPTCBKGDESC desc, const char *description);
-  void (*AddPolyEffect)(LPTCPOLYDESC desc, const char *description);
-  void (*AddSoundEffect)(LPTCSNDDESC desc, const char *description);
-  void (*AddButtonEffect)(LPTCBUTTONDESC desc, const char *description, int id);
+struct tBriefParseCallbacks {
+  void (*AddTextEffect)(TCTEXTDESC* desc, const char *text, const char *description, int id);
+  void (*AddBmpEffect)(TCBMPDESC* desc, const char *description);
+  void (*AddMovieEffect)(TCMOVIEDESC* desc, const char *description);
+  void (*AddBkgEffect)(TCBKGDESC* desc, const char *description);
+  void (*AddPolyEffect)(TCPOLYDESC* desc, const char *description);
+  void (*AddSoundEffect)(TCSNDDESC* desc, const char *description);
+  void (*AddButtonEffect)(TCBUTTONDESC* desc, const char *description, int id);
   void (*StartScreen)(int screen_num, const char *description, const char *layout, uint32_t mask_set, uint32_t mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();
@@ -76,14 +76,14 @@ typedef struct {
   void (*SetStatic)(float amount);
   void (*SetGlitch)(float amount);
   void (*AddVoice)(const char *filename, int flags, const char *description);
-} tBriefParseCallbacks;
+};
 
-typedef struct {
+struct tTextBufferDesc {
   TCTEXTDESC textdesc;
   int text_id;
   int teffect;
   char description[128];
-} tTextBufferDesc;
+};
 
 class CBriefParse {
 public:
@@ -93,13 +93,13 @@ public:
   int ParseBriefing(const char *filename);
 
 private:
-  void (*AddTextEffect)(LPTCTEXTDESC desc, const char *text, const char *description, int id);
-  void (*AddBmpEffect)(LPTCBMPDESC desc, const char *description);
-  void (*AddMovieEffect)(LPTCMOVIEDESC desc, const char *description);
-  void (*AddBkgEffect)(LPTCBKGDESC desc, const char *description);
-  void (*AddPolyEffect)(LPTCPOLYDESC desc, const char *description);
-  void (*AddSoundEffect)(LPTCSNDDESC desc, const char *description);
-  void (*AddButtonEffect)(LPTCBUTTONDESC desc, const char *description, int id);
+  void (*AddTextEffect)(TCTEXTDESC* desc, const char *text, const char *description, int id);
+  void (*AddBmpEffect)(TCBMPDESC* desc, const char *description);
+  void (*AddMovieEffect)(TCMOVIEDESC* desc, const char *description);
+  void (*AddBkgEffect)(TCBKGDESC* desc, const char *description);
+  void (*AddPolyEffect)(TCPOLYDESC* desc, const char *description);
+  void (*AddSoundEffect)(TCSNDDESC* desc, const char *description);
+  void (*AddButtonEffect)(TCBUTTONDESC* desc, const char *description, int id);
   void (*StartScreen)(int screen_num, const char *desc, const char *layout, uint32_t mask_set, uint32_t mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();

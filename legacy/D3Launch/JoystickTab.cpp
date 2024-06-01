@@ -487,11 +487,11 @@ void di_dll_free()
 	}
 }
 
-typedef struct {
+struct stuff {
 	CComboBox *box;
 	int cur_joy;
 	int count;
-} stuff;
+};
 
 // Create storage for any temporary debug messages
 char msg_buffer[1024];

@@ -90,7 +90,7 @@
 extern const char *const Music_type_names[]; // contains type names.
 
 // structure passed to music frame
-typedef struct tMusicSeqInfo {
+struct tMusicSeqInfo {
   // INPUT
   bool started_level;             // player started level
   bool player_dead;               // did player die?
@@ -110,7 +110,7 @@ typedef struct tMusicSeqInfo {
 
   const char *cur_loop_name; // current loop playing (NULL if none.)
   int cur_loop_count;
-} tMusicSeqInfo;
+};
 
 // this is located in gameloop.cpp.   kept here so files that need this data structure don't have to include
 // gameloop (and to stop gameloop.h from including d3music.h)

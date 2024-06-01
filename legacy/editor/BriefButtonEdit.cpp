@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 // CBriefButtonEdit dialog
 
 
-CBriefButtonEdit::CBriefButtonEdit(LPTCBUTTONDESC d,int id,CWnd* pParent /*=NULL*/)
+CBriefButtonEdit::CBriefButtonEdit(TCBUTTONDESC* d,int id,CWnd* pParent /*=NULL*/)
 	: CDialog(CBriefButtonEdit::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CBriefButtonEdit)

@@ -505,10 +505,10 @@ void SaveGameDialog() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tLoadGameDialogData {
+struct tLoadGameDialogData {
   int cur_slot;
   chunked_bitmap chunk;
-} tLoadGameDialogData;
+};
 
 #if defined(LINUX)
 void LoadGameDialogCB(newuiTiledWindow *wnd, void *data)

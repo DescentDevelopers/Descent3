@@ -40,7 +40,7 @@ listnode *NewListNode(void) {
 
 // Adds an item to a list
 // Returns 1 if everything is ok, else 0
-int AddListItem(list **listp, void *item) {
+int AddListItem(listnode **listp, void *item) {
   listnode *newnode, *curr;
 
   newnode = NewListNode();
@@ -75,7 +75,7 @@ int AddListItem(list **listp, void *item) {
 }
 
 // Removes an item from a list
-int RemoveListItem(list **listp, void *item) {
+int RemoveListItem(listnode **listp, void *item) {
   listnode *curr, *node;
   int inlist = 0;
 
@@ -111,7 +111,7 @@ int RemoveListItem(list **listp, void *item) {
 
 // Destroys all the nodes in a list
 // The items must be freed in another routine
-void DestroyList(list **listp) {
+void DestroyList(listnode **listp) {
   listnode *node, *next;
 
   for (node = *listp; node != NULL; node = next) {
@@ -121,7 +121,7 @@ void DestroyList(list **listp) {
 }
 
 // Returns the number of items in a list
-int CountListItems(list **listp) {
+int CountListItems(listnode **listp) {
   listnode *node;
   int count = 0;
 
@@ -133,7 +133,7 @@ int CountListItems(list **listp) {
 
 // returns a pointer the given item index in a list
 // Returns NULL if point not found
-void *GetListItem(list **listp, int index) {
+void *GetListItem(listnode **listp, int index) {
   listnode *node;
 
   for (node = *listp; node != NULL; node = node->next) {
@@ -146,7 +146,7 @@ void *GetListItem(list **listp, int index) {
 
 // Returns how far from the head of the list a given item is
 // Returns -1 if not found
-int GetListItemIndex(list **listp, void *item) {
+int GetListItemIndex(listnode **listp, void *item) {
   listnode *node;
   int index = 0;
 

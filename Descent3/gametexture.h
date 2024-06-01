@@ -247,7 +247,7 @@
 #define PROC_MEMORY_TYPE_FIRE 1
 #define PROC_MEMORY_TYPE_WATER 2
 
-typedef struct {
+struct static_proc_element {
   uint8_t type;
 
   uint8_t frequency;
@@ -257,9 +257,9 @@ typedef struct {
 
   uint8_t x1, y1, x2, y2;
 
-} static_proc_element;
+};
 
-typedef struct {
+struct proc_struct {
   int16_t dynamic_proc_elements; // list of dynamic procedural texture elements
   void *proc1;                 // pointer for procedural page
   void *proc2;                 // back page of procedural
@@ -281,9 +281,9 @@ typedef struct {
   uint8_t osc_value;
 
   int last_procedural_frame; // last frame a procedural was calculated for this texture
-} proc_struct;
+};
 
-typedef struct {
+struct texture {
   char name[PAGENAME_LEN]; // this textures name
   int flags;               // values defined above
   int bm_handle;           // handle which shows what this texture looks like
@@ -306,7 +306,7 @@ typedef struct {
   uint8_t corona_type; // what type of corona this thing uses
   uint8_t used;        // is this texture free to be allocated?
 
-} texture;
+};
 
 extern texture GameTextures[MAX_TEXTURES];
 extern int Num_textures;

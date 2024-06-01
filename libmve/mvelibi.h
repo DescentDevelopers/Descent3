@@ -60,7 +60,7 @@ inline uint32_t IntelSwapper(uint32_t a) { return INTEL_INT(a); }
 
 inline int IntelSwapper(int a) { return INTEL_INT(a); }
 
-typedef struct _mve_hdr {
+struct mve_hdr {
   char FileType[20];      // MVE_FILE_TYPE
   uint16_t HdrSize; // sizeof(mve_hdr)
   uint16_t version; // MVE_FILE_VERSION
@@ -70,13 +70,13 @@ typedef struct _mve_hdr {
     version = IntelSwapper(version);
     id = IntelSwapper(id);
   }
-} mve_hdr;
+};
 
 //------------------------------
 // Movie File Records
 //------------------------------
 
-typedef struct _io_hdr {
+struct ioHdrRec {
   uint16_t len;  // Length of record data (pad to even)
   uint16_t kind; // See IO_REC_xxx
                        //	uint8_t data[0];	// Record data
@@ -84,7 +84,7 @@ typedef struct _io_hdr {
     len = IntelSwapper(len);
     kind = IntelSwapper(kind);
   }
-} ioHdrRec;
+};
 
 // This record classifications simplify utilities which must operate on
 // records.  They are not used by this library when running a movie.
@@ -103,30 +103,30 @@ typedef struct _io_hdr {
 
 #define MCMD_DATA(arg) ((uint8_t *)((arg) + 1))
 
-typedef struct _mcmd_hdr {
+struct mcmd_hdr {
   uint16_t len;  // Length of data (pad to even)
   uint8_t major; // Major opcode
   uint8_t minor; // Minor opcode
                        //	uint8_t data[0];	// Opcode data
   void SwapBytes() { len = IntelSwapper(len); }
-} mcmd_hdr;
+};
 
 #define mcmd_end 0 // End processing of movie
 
 #define mcmd_next 1 // Advance to next movie record
 
 #define mcmd_syncInit 2
-typedef struct _syncInit {
+struct marg_syncInit {
   uint32_t period;       // period of quanta
   uint16_t wait_quanta; // # of quanta per frame
   void SwapBytes() {
     period = IntelSwapper(period);
     wait_quanta = IntelSwapper(wait_quanta);
   }
-} marg_syncInit;
+};
 
 #define mcmd_sndConfigure 3
-typedef struct _sndConfigure {
+struct marg_sndConfigure {
   uint16_t rate; // 65536-(256E6/(frequency*(stereo+1)))
                        // comp16 is a minor opcode 1 field
                        //  It indicates that 16-bit data has been compressed to 8-bits.
@@ -151,12 +151,12 @@ typedef struct _sndConfigure {
     frequency = IntelSwapper(frequency);
     buflen = IntelSwapper(buflen);
   }
-} marg_sndConfigure;
+};
 
 #define mcmd_sndSync 4
 
 #define mcmd_nfConfig 5
-typedef struct _nfConfig {
+struct marg_nfConfig {
   uint16_t wqty;
   uint16_t hqty;
   // Minor opcode 1 fields:
@@ -169,12 +169,12 @@ typedef struct _nfConfig {
     fqty = IntelSwapper(fqty);
     hicolor = IntelSwapper(hicolor);
   }
-} marg_nfConfig;
+};
 
 #define mcmd_nfDecomp 6
 #define mcmd_nfDecompChg 16
 #define mcmd_nfPkDecomp 17
-typedef struct _nfDecomp {
+struct marg_nfDecomp {
   uint16_t prev;   // info:Prev frames+1 needed for full picture
   uint16_t iframe; // info:Current internal frame #
   uint16_t x;
@@ -198,13 +198,13 @@ typedef struct _nfDecomp {
     w = IntelSwapper(w);
     h = IntelSwapper(h);
   }
-} marg_nfDecomp;
+};
 
 #define mcmd_sfShowFrame 7
 #if 0 // Not supported
 #define mcmd_sfPkShowFrameChg 18
 #endif
-typedef struct _sfShowFrame {
+struct marg_sfShowFrame {
   uint16_t pal_start;
   uint16_t pal_count;
   // Minor opcode 1 fields:
@@ -214,11 +214,11 @@ typedef struct _sfShowFrame {
     pal_count = IntelSwapper(pal_count);
     field = IntelSwapper(field);
   }
-} marg_sfShowFrame;
+};
 
 #define mcmd_sndAdd 8
 #define mcmd_sndSilence 9
-typedef struct _sndAdd {
+struct marg_sndAdd {
   uint16_t iframe; // info: iframe # of sound
   uint16_t TrackMask;
   uint16_t qty; // Uncompressed audio size in bytes
@@ -228,10 +228,10 @@ typedef struct _sndAdd {
     TrackMask = IntelSwapper(TrackMask);
     qty = IntelSwapper(qty);
   }
-} marg_sndAdd;
+};
 
 #define mcmd_gfxMode 10
-typedef struct _gfxMode {
+struct marg_gfxMode {
   uint16_t minw;
   uint16_t minh;
   uint16_t mode;
@@ -240,10 +240,10 @@ typedef struct _gfxMode {
     minh = IntelSwapper(minh);
     mode = IntelSwapper(mode);
   }
-} marg_gfxMode;
+};
 
 #define mcmd_palMakeSynthPalette 11
-typedef struct _palMakeSynthPalette {
+struct marg_palMakeSynthPalette {
   uint8_t base_r;
   uint8_t range_r;
   uint8_t range_rb;
@@ -251,10 +251,10 @@ typedef struct _palMakeSynthPalette {
   uint8_t range_g;
   uint8_t range_gb;
   void SwapBytes() {}
-} marg_palMakeSynthPalette;
+};
 
 #define mcmd_palLoadPalette 12
-typedef struct _palLoadPalette {
+struct marg_palLoadPalette {
   uint16_t start;
   uint16_t count;
   //	uint8_t data[0];
@@ -262,7 +262,7 @@ typedef struct _palLoadPalette {
     start = IntelSwapper(start);
     count = IntelSwapper(count);
   }
-} marg_palLoadPalette;
+};
 
 #define mcmd_palLoadCompPalette 13
 
@@ -274,15 +274,15 @@ typedef struct _palLoadPalette {
 
 #define mcmd_nfPkInfo 19
 #define mcmd_nfHPkInfo 20
-typedef struct _nfPkInfo {
+struct marg_nfPkInfo {
   uint32_t error; // scaled by 10000
   uint16_t usage[64];
-} marg_nfPkInfo;
+};
 
 #define mcmd_idcode 21
-typedef struct _idcode {
+struct marg_idcode {
   uint32_t idcode; // Code identifying version mcomp used to create
-} marg_idcode;
+};
 
 #if __SC__
 #pragma SC align

@@ -306,8 +306,8 @@
 #endif
 
 //Define group & room structs so we don't have to include group.h & room.h
-typedef struct group group;
-typedef struct room room;
+struct group group;
+struct room room;
 
 const int	TEXSCREEN_WIDTH		= 512,	// Texture screen base width and height
 			TEXSCREEN_HEIGHT	= 384,
@@ -343,7 +343,7 @@ class grSurface;
 class grViewport;
 
 //Structure to store various editor state & preference values
-typedef struct d3edit_state {
+struct d3edit_state {
 
 	// Values for current item in the various dialogs
 	int	texdlg_texture;						// current texture in texdialog
@@ -399,7 +399,7 @@ typedef struct d3edit_state {
 	bool	joy_slewing;							// shall we allow joystick slewing?
 	bool	objects_in_wireframe;				// should we draw objects in the wireframe view?
 
-} d3edit_state;
+};
 
 //	Editor.cpp:: Current state of the editor UI.
 extern d3edit_state D3EditState;

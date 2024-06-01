@@ -34,25 +34,25 @@
 /*									     				*/
 /******************************************************************************/
 
-typedef enum {
+enum DSPROPERTY_VMANAGER {
   DSPROPERTY_VMANAGER_MODE = 0,
   DSPROPERTY_VMANAGER_PRIORITY,
   DSPROPERTY_VMANAGER_STATE
-} DSPROPERTY_VMANAGER;
+};
 
-typedef enum {
+enum VmMode {
   DSPROPERTY_VMANAGER_MODE_DEFAULT = 0,
   DSPROPERTY_VMANAGER_MODE_AUTO,
   DSPROPERTY_VMANAGER_MODE_REPORT,
   DSPROPERTY_VMANAGER_MODE_USER
-} VmMode;
+};
 
-typedef enum {
+enum VmState {
   DSPROPERTY_VMANAGER_STATE_PLAYING3DHW = 0,
   DSPROPERTY_VMANAGER_STATE_SILENT,
   DSPROPERTY_VMANAGER_STATE_BUMPED,
   DSPROPERTY_VMANAGER_STATE_PLAYFAILED
-} VmState;
+};
 
 #ifdef __cplusplus
 extern "C" {

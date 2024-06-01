@@ -112,14 +112,14 @@ $$TABLE_GAMEFILE "credits.omf"
 #define CLTYPE_END 2
 #define CLTYPE_BLANK 3
 
-typedef struct creditline {
+struct creditline {
   ddgr_color color;
   uint8_t type;
   char *text;
   creditline *next;
   uint16_t startx, starty, endx, endy;
   float displaytime;
-} creditline;
+};
 
 static void Credits_Render(creditline *, float);
 static creditline Creditlines;

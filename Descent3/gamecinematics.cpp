@@ -272,7 +272,7 @@ struct {
 #define CDI_NOT_CANNED 0
 #define CDI_CANNED 1
 
-typedef struct {
+struct tCinematicDemoInfo {
   uint8_t cinematic_type; // canned/not canned
   int camera_objhandle; // object handle for camera to use
 
@@ -283,7 +283,7 @@ typedef struct {
     tGameCinematic *cinematic_data;    // data to start a regular cinematic
   };
 
-} tCinematicDemoInfo;
+};
 
 static void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info);
 static bool Cinematic_StartCine(tGameCinematic *info, const char *text_string, int camera_objhandle);

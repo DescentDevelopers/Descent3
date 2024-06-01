@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 // CBriefSoundEdit dialog
 
 
-CBriefSoundEdit::CBriefSoundEdit(LPTCSNDDESC d,CWnd* pParent /*=NULL*/)
+CBriefSoundEdit::CBriefSoundEdit(TCSNDDESC* d,CWnd* pParent /*=NULL*/)
 	: CDialog(CBriefSoundEdit::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CBriefSoundEdit)

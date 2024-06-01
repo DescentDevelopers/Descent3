@@ -85,10 +85,10 @@ static player *dPlayers = NULL;
 #define HCM_PLAYERCOLOR 0
 #define HCM_NORMAL 1
 
-typedef struct {
+struct tPlayerStat {
   int Score[2];
   int HighestScore[2];
-} tPlayerStat;
+};
 static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
 static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
 int pack_pstat(tPlayerStat *user_info, uint8_t *data) {

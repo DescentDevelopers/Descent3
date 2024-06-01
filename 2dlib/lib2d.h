@@ -28,13 +28,13 @@
 
 //	structures
 
-typedef struct mem_bitmap {
+struct mem_bitmap {
   char *data;
   int16_t bpp;
   int rowsize;
   uint16_t alloced : 2;
   uint16_t flag : 14;
-} mem_bitmap;
+};
 
 #define MEMFLAG_TRANSBLT 1
 

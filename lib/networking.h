@@ -336,12 +336,12 @@ enum network_protocol : uint32_t
   NP_DIRECTPLAY
 };
 
-typedef struct {
+struct network_address {
   uint8_t address[6];
   uint16_t port;
   uint8_t net_id[4];
   network_protocol connection_type; // IPX, IP, modem, etc.
-} network_address;
+};
 
 extern BOOL DP_active;
 extern BOOL TCP_active;
@@ -482,7 +482,7 @@ int nw_Uncompress(void *compdata, void *uncompdata, int count);
 #define NW_AGHBN_LOOKUP 2
 #define NW_AGHBN_READ 3
 
-typedef struct _async_dns_lookup {
+struct async_dns_lookup {
   uint32_t ip; // resolved host. Write only to worker thread.
   char *host;      // host name to resolve. read only to worker thread
   bool done;       // write only to the worker thread. Signals that the operation is complete
@@ -493,7 +493,7 @@ typedef struct _async_dns_lookup {
 #ifdef __LINUX__
   SDL_Thread *threadId;
 #endif
-} async_dns_lookup;
+};
 
 #ifdef WIN32
 #define CDECLCALL __cdecl
@@ -522,7 +522,7 @@ void nw_HandleUnreliableData(uint8_t *data, int len, network_address *from_addr)
 void nw_ReliableResend(void);
 int nw_CheckReliableSocket(int socknum);
 
-typedef struct {
+struct tNetworkStatus {
   // TCP/IP Status lines
   int udp_total_packets_sent; // total number of packets sent out on the network (unreliable)
   int udp_total_packets_rec;  // total number of packets recieved on the network (unrealiable)
@@ -548,7 +548,7 @@ typedef struct {
   int spx_total_bytes_rec;      // total number of bytes recieved (reliable)
   int spx_total_packets_resent; // total number of packets resent (reliable)
   int spx_total_bytes_resent;   // total number of bytes resent (reliable)
-} tNetworkStatus;               // network status information
+};               // network status information
 
 // fills in the buffer with network stats
 // pass NULL to reset the stats

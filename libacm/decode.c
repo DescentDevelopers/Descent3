@@ -756,7 +756,7 @@ static int read_header(ACMStream *acm)
  * Public functions
  ***********************************************/
 
-int acm_open_decoder(ACMStream **res, void *arg, acm_io_callbacks io_cb, int force_chans)
+int acm_open_decoder(ACMStream **res, void *arg, struct acm_io_callbacks io_cb, int force_chans)
 {
 	int err = ACM_ERR_OTHER;
 	ACMStream *acm;

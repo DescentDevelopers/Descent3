@@ -134,14 +134,14 @@ room *dRooms;
 #define TAKEOVER_TIME 3.0f    // How long a player must stand still to take over a room
 
 ////////////////////////////////////////////////////
-typedef struct {
+struct tPlayerPos {
   float total_time;
   vector last_pos;
-} tPlayerPos;
+};
 
-typedef struct {
+struct tPlayerStat { // Overall scores (throughout the game)
   int Score[2];
-} tPlayerStat; // Overall scores (throughout the game)
+};
 static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
 static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
 int pack_pstat(tPlayerStat *user_info, uint8_t *data) {

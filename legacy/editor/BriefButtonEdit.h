@@ -36,7 +36,7 @@ class CBriefButtonEdit : public CDialog
 // Construction
 public:
 	TCBUTTONDESC desc;
-	CBriefButtonEdit(LPTCBUTTONDESC desc=NULL,int id=0,CWnd* pParent = NULL);   // standard constructor
+	CBriefButtonEdit(TCBUTTONDESC* desc=NULL,int id=0,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CBriefButtonEdit)

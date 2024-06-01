@@ -283,10 +283,10 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
 #define ID_FLAMERAS 42
 #define ID_OLDSCRATCH 43
 
-typedef struct {
+struct tScriptInfo {
   int id;
   const char *name;
-} tScriptInfo;
+};
 
 static tScriptInfo ScriptInfo[NUM_IDS] = {{ID_PEST, "Pest"},
                                           {ID_STINGER, "Stinger"},
@@ -347,18 +347,18 @@ public:
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-typedef struct {
+struct tShieldOrbInfo {
   int hitcount;
-} tShieldOrbInfo;
+};
 
 //------------------
 // Pest class
 //------------------
-typedef struct {
+struct pest_data {
   int tail_handle;
   float last_anim_frame;
   int foot_sounds[3];
-} pest_data;
+};
 
 class Pest : public BaseObjScript {
 private:
@@ -376,12 +376,12 @@ public:
 #define STINGER_RANGED 0
 #define STINGER_MELEE 1
 
-typedef struct stinger_data {
+struct stinger_data {
   float next_mode_time;
   float force_melee_shields;
   char mode;
   char f_very_hurt;
-} stinger_data;
+};
 
 class Stinger : public BaseObjScript {
 private:
@@ -401,11 +401,11 @@ public:
 
 #define MAX_STOLEN_WEAPONS 25
 
-typedef struct {
+struct weapon_item {
   char index;
   int owner;
   char amount;
-} weapon_item;
+};
 
 #define SUPERTHIEF_RANGED 0
 #define SUPERTHIEF_MELEE 1
@@ -413,7 +413,7 @@ typedef struct {
 #define SUPERTHIEF_WAIT 3
 #define SUPERTHIEF_INTRO 4
 
-typedef struct superthief_data {
+struct superthief_data {
   float mode_time;
 
   float next_mode_time;
@@ -440,7 +440,7 @@ typedef struct superthief_data {
   int laser_obj;
 
   bool laser_on;
-} superthief_data;
+};
 
 class SuperThief : public BaseObjScript {
 private:
@@ -467,7 +467,7 @@ public:
 // Humonculous class
 //------------------
 
-typedef struct humonculous_data {
+struct humonculous_data {
   float next_wall_hit_check_time;
   float mode_time;
 
@@ -496,7 +496,7 @@ typedef struct humonculous_data {
   int rocks[5];
 
   int16_t flags;
-} humonculous_data;
+};
 
 class Humonculous : public BaseObjScript {
 private:
@@ -519,14 +519,14 @@ public:
 #define DRAGON_ARMOR 0
 #define DRAGON_SKELETON 1
 
-typedef struct {
+struct dragon_data {
   int mode;
   int head_object;
   int tail_object;
   int green_turret;
   int t[6];
   int tentacle[6];
-} dragon_data;
+};
 
 class Dragon : public BaseObjScript {
 private:
@@ -543,10 +543,10 @@ public:
 // Tracker
 //----------------
 
-typedef struct {
+struct tracker_data {
   int turret_object;
   int hatch_object;
-} tracker_data;
+};
 
 class Tracker : public BaseObjScript {
 private:
@@ -566,9 +566,9 @@ public:
 #define LANCE_PAUSED 0
 #define LANCE_MOVING 1
 
-typedef struct {
+struct lance_data {
   int mode;
-} lance_data;
+};
 
 class Lance : public BaseObjScript {
 private:
@@ -584,11 +584,11 @@ public:
 //------------------
 // Flak class
 //------------------
-typedef struct {
+struct flak_data {
   int canopy_handle;
   bool f_dead;
   float death_time;
-} flak_data;
+};
 
 class Flak : public BaseObjScript {
 private:
@@ -618,9 +618,9 @@ public:
 // SuperTrooper class
 //------------------
 
-typedef struct {
+struct supertrooper_data {
   int body_handle;
-} supertrooper_data;
+};
 
 class SuperTrooper : public BaseObjScript {
 private:
@@ -649,7 +649,7 @@ public:
 #define SPARKY_NORMAL 0
 #define SPARKY_DYING 1
 
-typedef struct {
+struct sparky_data {
   char mode;
   float mode_time;
   bool f_rotation_death_enabled;
@@ -663,7 +663,7 @@ typedef struct {
 
   char spin_dir;
   float spin_time;
-} sparky_data;
+};
 
 class Sparky : public BaseObjScript {
 private:
@@ -692,7 +692,7 @@ public:
 #define HELLION_DEATH 7
 #define HELLION_BETWEEN_MODE 8
 
-typedef struct {
+struct hellion_data {
   int flags;
   char mode;
   char next_mode;
@@ -723,7 +723,7 @@ typedef struct {
   float laser_time_left;
   int emitter[2];
   int camera[2];
-} hellion_data;
+};
 
 class Hellion : public BaseObjScript {
 private:
@@ -772,7 +772,7 @@ public:
 // Squad catchup offset
 #define MRO_CATCHUP_DIST 5.0f
 
-typedef struct {
+struct mantaray_data {
   char mode;
   float mode_time;
   float next_mode_time;
@@ -792,7 +792,7 @@ typedef struct {
   vector goal_pos;
   int goal_room;
 
-} mantaray_data;
+};
 
 class MantaRay : public BaseObjScript {
 private:
@@ -819,7 +819,7 @@ public:
 // Skiff class
 //------------------
 
-typedef struct {
+struct skiff_data {
   char mode;
   float mode_time;
   float next_mode_time;
@@ -839,7 +839,7 @@ typedef struct {
   vector goal_pos;
   int goal_room;
 
-} skiff_data;
+};
 
 class Skiff : public BaseObjScript {
 private:
@@ -878,7 +878,7 @@ public:
 #define SH_MAX_TICK_INTERVAL 0.5f
 #define SH_MIN_TICK_INTERVAL .06f
 
-typedef struct {
+struct spyhunter_data {
   char mode;
   float next_mode_time;
   float next_summon_time;
@@ -889,7 +889,7 @@ typedef struct {
   int tick_sound;
   float last_tick_time;
 
-} spyhunter_data;
+};
 
 class SpyHunter : public BaseObjScript {
 private:
@@ -912,14 +912,14 @@ public:
 #define SNIPER_BASE 0
 #define SNIPER_SNIPE 1
 
-typedef struct {
+struct sniper_data {
   char mode;
   float mode_time;
   float time_till_next_mode;
 
   float base_speed;
   float base_acc;
-} sniper_data;
+};
 
 class Sniper : public BaseObjScript {
   sniper_data *memory;
@@ -940,14 +940,14 @@ public:
 #define SNIPER_BASE 0
 #define SNIPER_SNIPE 1
 
-typedef struct {
+struct snipernorun_data {
   char mode;
   float mode_time;
   float time_till_next_mode;
 
   float base_speed;
   float base_acc;
-} snipernorun_data;
+};
 
 class SniperNoRun : public BaseObjScript {
   snipernorun_data *memory;
@@ -965,14 +965,14 @@ public:
 // EvaderModA class
 //------------------
 
-typedef struct {
+struct evadermoda_data {
   char mode;
   float mode_time;
   float time_till_next_mode;
 
   float base_speed;
   float base_acc;
-} evadermoda_data;
+};
 
 class EvaderModA : public BaseObjScript {
   evadermoda_data *memory;
@@ -990,7 +990,7 @@ public:
 // FlameRAS class
 //------------------
 
-typedef struct {
+struct flameras_data {
   char mode;
   float mode_time;
   float time_till_next_mode;
@@ -1000,7 +1000,7 @@ typedef struct {
 
   float time_till_fire_toggle;
   bool f_firing_ok;
-} flameras_data;
+};
 
 class FlameRAS : public BaseObjScript {
   flameras_data *memory;
@@ -1025,7 +1025,7 @@ public:
 #define JUGG_F_HEAD_DEAD 0x02
 #define JUGG_F_BODY_DEAD 0x04
 
-typedef struct {
+struct jugg_data {
   float last_frame;
   int foot_sound;
 
@@ -1038,7 +1038,7 @@ typedef struct {
   float mode_time;
   char mode;
   char flags;
-} jugg_data;
+};
 
 class Jugg : public BaseObjScript {
 private:
@@ -1056,7 +1056,7 @@ public:
 // Death Tower
 //-----------------
 
-typedef struct {
+struct dtower_data {
   int gun_handle;
   int ball_handle;
 
@@ -1064,7 +1064,7 @@ typedef struct {
 
   bool f_died;
   float last_frame;
-} dtower_data;
+};
 
 class DTower : public BaseObjScript {
 private:
@@ -1081,13 +1081,13 @@ public:
 // Death Collector
 //-----------------
 
-typedef struct {
+struct dcollector_data {
   int ball_handle;
   int rod_handle;
   int target_handle;
 
   bool f_dead;
-} dcollector_data;
+};
 
 class DCollector : public BaseObjScript {
 private:
@@ -1104,10 +1104,10 @@ public:
 // Chemical Ball
 //-----------------
 
-typedef struct {
+struct cball_data {
   bool f_picked_up;
   float mode_time;
-} cball_data;
+};
 
 class CBall : public BaseObjScript {
 private:
@@ -1124,11 +1124,11 @@ public:
 // SixGun
 //-----------------
 
-typedef struct {
+struct sixgun_data {
   int mode;
   float max_speed;
   float circle_dist;
-} sixgun_data;
+};
 
 class SixGun : public BaseObjScript {
 private:
@@ -1145,9 +1145,9 @@ public:
 // Explode Time Out
 //-----------------
 
-typedef struct {
+struct explodetimeout_data {
   float life_left;
-} explodetimeout_data;
+};
 
 class ExplodeTimeOut : public BaseObjScript {
 private:
@@ -1167,7 +1167,7 @@ public:
 #define SICKLE_LANDED 12          // Stopped on the ceiling
 #define SICKLE_MELEE 15           // Melee
 
-typedef struct {
+struct sickle_data {
   int mode;
   float mode_time;
 
@@ -1184,7 +1184,7 @@ typedef struct {
   int home_room;
   vector home_fvec;
 
-} sickle_data;
+};
 
 class Sickle : public BaseObjScript {
 private:
@@ -1203,9 +1203,9 @@ public:
 // Bouncing Betty
 //-----------------
 
-typedef struct {
+struct tBettyBombInfo {
   bool explode;
-} tBettyBombInfo;
+};
 
 class BettyBomb : public BaseObjScript {
 public:
@@ -1216,10 +1216,10 @@ private:
   tBettyBombInfo *memory;
 };
 
-typedef struct {
+struct tBettyInfo {
   bool explode;
   float lasttime;
-} tBettyInfo;
+};
 
 class BettyScript : public BaseObjScript {
 public:
@@ -1237,9 +1237,9 @@ private:
 // Chaff
 //-----------------
 
-typedef struct {
+struct tChaffInfo {
   bool killme;
-} tChaffInfo;
+};
 
 class ChaffScript : public BaseObjScript {
 public:
@@ -1254,10 +1254,10 @@ private:
   tChaffInfo *memory;
 };
 
-typedef struct {
+struct tChaffChunkInfo {
   bool killme;
   float lifeleft;
-} tChaffChunkInfo;
+};
 
 class ChaffChunkScript : public BaseObjScript {
 public:
@@ -1301,11 +1301,11 @@ public:
 // GBPowerup
 //-----------------
 
-typedef struct {
+struct gbpowerup_data {
   char type; // 0 - 5 matching up with the gb powerups!
   float next_check_time;
   float time_till_next_hud_message;
-} gbpowerup_data;
+};
 
 class GBPowerup : public BaseObjScript {
 private:
@@ -1322,12 +1322,12 @@ public:
 // Josh Bell
 //-----------------
 
-typedef struct {
+struct joshbell_data {
   int me;
   int attach_cage;
   float last_play_time;
   int bell_sound;
-} joshbell_data;
+};
 
 class JoshBell : public BaseObjScript {
 private:
@@ -1507,7 +1507,7 @@ static int gb_pow_pickup_text[NUM_GB_POWERUPS] = {TXT_GBPP_EXTIN, TXT_GBPP_WINGN
 #define COM_POWERUP_NOTIFY 4
 #define COM_POWERUP_PICKUP 5
 
-typedef struct {
+struct guidebot_data {
   char name[8];
   char powerups[NUM_GB_USABLE_POWERUPS];
 
@@ -1567,7 +1567,7 @@ typedef struct {
 
   float next_powerup_check_time;
   uint16_t powerup_ids[6];
-} guidebot_data;
+};
 
 class GuideBot : public BaseObjScript {
 private:
@@ -1628,11 +1628,11 @@ public:
 #define THIEFABLEITEM_PRIMARY 0
 #define THIEFABLEITEM_SECONDARY 1
 #define THIEFABLEITEM_ACCESSORY 2
-typedef struct {
+struct tThiefItems {
   int index, type;
   float attempt_one, attempt_two, attempt_two_no_one;
   int name_idx;
-} tThiefItems;
+};
 
 static tThiefItems ThiefableItems[] = {
     {0, THIEFABLEITEM_PRIMARY, 0.70f, 0.50f, 0.70f, TXT_WEAP_LASERS},    // Laser
@@ -1667,12 +1667,12 @@ static tThiefItems ThiefableItems[] = {
 };
 static int numThiefableItems = sizeof(ThiefableItems) / sizeof(tThiefItems);
 
-typedef struct {
+struct inv_item {
   uint16_t id;
   int owner;
-} inv_item; // not really inventory items, but items such as quads, automap, headlight, etc (non-weapons)
+}; // not really inventory items, but items such as quads, automap, headlight, etc (non-weapons)
 
-typedef struct {
+struct thief_data {
   char mode;
   char sub_mode;
   char last_special_sub_mode;
@@ -1703,7 +1703,7 @@ typedef struct {
   float fear;
   float agression;
 
-} thief_data;
+};
 
 class Thief : public BaseObjScript {
 private:
@@ -1734,13 +1734,13 @@ public:
 // SuperThief
 //-----------------
 
-typedef struct {
+struct tSuperThiefItems {
   int index, autoselect, type;
   float fire_delay;
   int name_idx;
   const char *weapon_name;
   const char *fire_sound;
-} tSuperThiefItems;
+};
 
 static tSuperThiefItems SuperThiefableItems[] = {
     {0, -1, THIEFABLEITEM_PRIMARY, .25, TXT_WEAP_LASERS, "", ""},                                        // Laser
@@ -2292,12 +2292,12 @@ int16_t SuperThief::CallEvent(int event, tOSIRISEventInfo *data) {
 // FireAtDist
 //-----------------
 
-typedef struct {
+struct fireatdist_data {
   int me;
   float fire_dist;
   float last_test_time;
   bool last_f_fire;
-} fireatdist_data;
+};
 
 class FireAtDist : public BaseObjScript {
 private:
@@ -2314,10 +2314,10 @@ public:
 // HatePTMC
 //-----------------
 
-typedef struct {
+struct hateptmc_data {
   int me;
   float time_till_pulse;
-} hateptmc_data;
+};
 
 class HatePTMC : public BaseObjScript {
 private:
@@ -2334,13 +2334,13 @@ public:
 // Tubbs
 //-----------------
 
-typedef struct {
+struct tubbs_data {
   float base_speed;
   float base_acc;
   float max_speed;
   float max_acc;
   float full_anger_time;
-} tubbs_data;
+};
 
 class Tubbs : public BaseObjScript {
 private:
@@ -2358,13 +2358,13 @@ public:
 // Old Scratch
 //-----------------
 
-typedef struct {
+struct oldscratch_data {
   float base_speed;
   float base_acc;
   float max_speed;
   float max_acc;
   float full_anger_time;
-} oldscratch_data;
+};
 
 class OldScratch : public BaseObjScript {
 private:
@@ -2403,7 +2403,7 @@ public:
 
 #define BS_MAX_FRIENDS 20
 
-typedef struct {
+struct barnswallow_data {
   int home_room;
   vector nest_center;
   float nest_rad;
@@ -2425,7 +2425,7 @@ typedef struct {
   int powerup_id;
 
   int flags;
-} barnswallow_data;
+};
 
 class BarnSwallow : public BaseObjScript {
 private:

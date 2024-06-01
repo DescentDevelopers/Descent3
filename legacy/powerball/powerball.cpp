@@ -41,10 +41,9 @@ $$TABLE_SOUND "Extra life"
 
 //////////////////////////////////
 // Structs
-typedef struct{
+struct tPlayerStat {
 	int Score[2];
-}tPlayerStat;
-
+};
 
 //////////////////////////////////
 // Globals

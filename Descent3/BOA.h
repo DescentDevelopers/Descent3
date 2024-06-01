@@ -233,10 +233,10 @@ public:
 #define BOAF_TOO_SMALL_FOR_ROBOT 0x8000
 #define BOA_TOO_SMALL_FOR_ROBOT(a, b) ((BOA_Array[a][b] & BOAF_TOO_SMALL_FOR_ROBOT) != 0)
 
-typedef struct connect_data {
+struct connect_data {
   int roomnum;
   int portal;
-} connect_data;
+};
 
 extern int BOA_num_mines;
 extern int BOA_num_terrain_regions;

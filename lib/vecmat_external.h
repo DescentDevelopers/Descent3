@@ -48,34 +48,34 @@
 // Angles are unsigned shorts
 typedef uint16_t angle; // make sure this matches up with fix.h
 
-typedef struct {
+struct angvec {
   angle p, h, b;
-} angvec;
+};
 
 #define IDENTITY_MATRIX                                                                                                \
   {                                                                                                                    \
     {1.0, 0, 0}, {0, 1.0, 0}, { 0, 0, 1.0 }                                                                            \
   }
 
-typedef struct {
+struct vector {
   float x, y, z;
-} vector;
+};
 
-typedef struct vector4 {
+struct vector4 {
   float x, y, z, kat_pad;
-} vector4;
+};
 
-typedef struct {
+struct vector_array {
   float xyz[3];
-} vector_array;
+};
 
-typedef struct {
+struct matrix {
   vector rvec, uvec, fvec;
-} matrix;
+};
 
-typedef struct {
+struct matrix4 {
   vector4 rvec, uvec, fvec;
-} matrix4;
+};
 
 // Zero's out a vector
 static inline void vm_MakeZero(vector *v) { v->x = v->y = v->z = 0; }

@@ -51,11 +51,11 @@
 
 extern int Got_url;
 
-typedef struct {
+struct msn_urls {
   char msnname[_MAX_PATH];
   char URL[MAX_MISSION_URL_COUNT][MAX_MISSION_URL_LEN];
   // Possibly some quality of service flags
-} msn_urls;
+};
 
 // Function prototypes
 void msn_DoAskForURL(uint8_t *indata, network_address *net_addr);

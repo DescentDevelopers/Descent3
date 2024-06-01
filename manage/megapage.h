@@ -24,10 +24,10 @@
 #include "cfile.h"
 #include "pstypes.h"
 
-typedef struct {
+struct mngs_megacell_page {
   megacell megacell_struct;
   char cellname[MAX_MEGACELL_WIDTH * MAX_MEGACELL_HEIGHT][PAGENAME_LEN];
-} mngs_megacell_page;
+};
 
 // Megacell page functions
 //---------------------------------------------------------------

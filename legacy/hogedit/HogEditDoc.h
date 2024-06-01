@@ -80,7 +80,7 @@
 #define ADDFILE_STAT_ERROR			3
 
 //	the following structures are slightly modified versions of the CFILE hog structs
-typedef struct hog_library_entry 
+struct hog_library_entry
 {
 	char		path[PSPATHNAME_LEN];		// location of data file (filename not included)
 	char		name[PSFILENAME_LEN+1];		// just the filename
@@ -88,17 +88,16 @@ typedef struct hog_library_entry
   int32_t		timestamp;					// time and date of file
 	int			flags;						// misc flags
 	int			offset;						// file offset in hog (or -1 if in .rib file)
-} hog_library_entry;
+};
 
 // the hog library structure
-typedef struct hog_library 
+struct hog_library
 {
 	char filename[PSPATHNAME_LEN];			// full hog file path (including filename)
 	int flags;								// misc flags for the hog file
 	int num_entries;						// number of entries in the hog file
 	CList <hog_library_entry, hog_library_entry&> filelist;
-} 
-hog_library;
+};
 
 // Comparison function for sorting filenames
 int compare( const void *arg1, const void *arg2 );

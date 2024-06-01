@@ -126,11 +126,11 @@
 void ConfigForceFeedback(void);
 
 // General option toggles
-typedef struct tGameToggles {
+struct tGameToggles {
   bool show_reticle;
   bool guided_mainview;
   bool ship_noises;
-} tGameToggles;
+};
 
 extern tGameToggles Game_toggles;
 
@@ -145,10 +145,10 @@ extern tGameToggles Game_toggles;
 #define RES_1280X960 5
 #define RES_1600X1200 6
 // stored resolution list and desired game resolution
-typedef struct tVideoResolution {
+struct tVideoResolution {
   uint16_t width;
   uint16_t height;
-} tVideoResolution;
+};
 
 extern tVideoResolution Video_res_list[];
 extern int Game_video_resolution;
@@ -157,7 +157,7 @@ extern int Game_video_resolution;
 // KEEP THESE MEMBERS IN THE SAME ORDER, IF YOU ADD,REMOVE, OR CHANGE ANYTHING IN THIS STRUCT, MAKE SURE YOU
 // UPDATE DetailPresetLow,DetailPresetMed,DetailPresetHigh AND DetailPresetVHi IN CONFIG.CPP
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-typedef struct tDetailSettings {
+struct tDetailSettings {
   float Terrain_render_distance; // VisibleTerrainDistance
   float Pixel_error;             // PixelErrorTolerance
   bool Specular_lighting;        // DoSpecularPass
@@ -173,7 +173,7 @@ typedef struct tDetailSettings {
   bool Bumpmapping_enabled;
   uint8_t Specular_mapping_type;
   uint8_t Object_complexity; // 0 = low, 1 = medium, 2=high
-} tDetailSettings;
+};
 
 // Call this with one of the above defines to set the detail level to a predefined set (custom level is ignored)
 void ConfigSetDetailLevel(int level);

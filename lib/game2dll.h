@@ -25,18 +25,18 @@
 #include "d3events.h"
 #include "vecmat.h"
 
-typedef struct {
+struct tPreJoinData {
   bool is_banned;
   int team;
-} tPreJoinData;
+};
 
-typedef struct {
+struct game_collide_info {
   vector point, normal;
   float hitspeed, hit_dot;
   int hitseg, hitwall;
-} game_collide_info;
+};
 
-typedef struct {
+struct dllinfo {
   int me_handle;
   int it_handle;
   uint8_t *special_data;
@@ -50,14 +50,14 @@ typedef struct {
   ptrdiff_t iParam;
   game_collide_info collide_info;
   int newseg, oldseg;
-} dllinfo;
+};
 
 #define MAX_GAMENAME_LEN 32
 #define MAX_REQUIREMENT_LEN 384
 #define DOF_MAXTEAMS 0x0001 // max_teams member is valid
 #define DOF_MINTEAMS 0x0002
 // this struct is used to return game specific information to Descent 3
-typedef struct {
+struct tDLLOptions {
   // general flags, also specifies what members of the structure are valid
   int flags;
 
@@ -75,7 +75,7 @@ typedef struct {
   // this parameter must be set (even it is just a '\0' for the first character..aka no requirements)
   char requirements[MAX_REQUIREMENT_LEN];
 
-} tDLLOptions;
+};
 
 extern dllinfo DLLInfo;
 

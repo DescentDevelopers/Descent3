@@ -144,7 +144,7 @@ static bool DDIO_key_init = 0;
 volatile uint8_t DDIO_key_state[DDIO_MAX_KEYS];
 volatile int16_t DDIO_key_down_count[DDIO_MAX_KEYS];
 
-static struct t_key_queue {
+static struct DDIO_key_queue {
   uint16_t buffer[KEY_QUEUE_SIZE]; // Keyboard buffer queue
   int tail;
   int head;

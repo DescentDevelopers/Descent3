@@ -400,21 +400,21 @@
 #define PSPF_GREEN 4
 #define PSPF_YELLOW 8
 
-typedef struct {
+struct player_pos_suppress {
   int room;
   float expire_time;
   int ignored_pos;
   bool active;
-} player_pos_suppress;
+};
 
 #define PLAYER_POS_HACK_TIME 10
 
 extern player_pos_suppress Player_pos_fix[MAX_PLAYERS];
 
-typedef struct {
+struct team {
   char name[CALLSIGN_LEN + 1];
   int score;
-} team;
+};
 
 extern int Player_num;
 extern int Default_ship_permission;

@@ -470,10 +470,10 @@ int PPic_GetBitmapHandle(uint16_t pilot_id) {
 // ===============================================================================
 
 // this maps a pilot_id to an index file offset
-typedef struct {
+struct tPilotPicIdOffset {
   int offset;
   uint16_t id;
-} tPilotPicIdOffset;
+};
 tPilotPicIdOffset *Pilot_id_to_offset = NULL;
 uint16_t *Sorted_Pilot_id_to_offset = NULL;
 int PilotPic_count = 0;

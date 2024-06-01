@@ -1082,9 +1082,9 @@ inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plan
   return 1;
 }
 
-typedef struct vec2d {
+struct vec2d {
   float i, j;
-} vec2d;
+};
 
 // given largest componant of normal, return i & j
 // if largest componant is negative, swap i & j

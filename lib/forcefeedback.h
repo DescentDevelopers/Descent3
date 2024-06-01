@@ -93,7 +93,7 @@
 #define FF_SECONDS 1000     // fake value
 #endif
 #define FORCEPROJECT void *
-typedef enum {
+enum tDevice {
   kJoy1 = 0,
   kJoy2,
   kJoy3,
@@ -114,8 +114,8 @@ typedef enum {
   kMouse,
   kKeyBoard,
   kAllDevices
-} tDevice;
-typedef enum {
+};
+enum tJoyButtons {
   kNoButton = -1,
   kButton0 = 0,
   kButton1,
@@ -130,24 +130,24 @@ typedef enum {
   kButton10,
   kButton31 = 31,
   kButtonMax
-} tJoyButtons;
-typedef enum {
+};
+enum tDeviceMask {
   kStick = 1 << 0,
   kWheel = 1 << 1,
   kGamePad = 1 << 2,
-} tDeviceMask;
-typedef struct {
+};
+struct tFFJoyInfo {
   int ButtonMask;
   int AxisMask;
   tDeviceMask DevType;
   char Name[kMAX_Str];
-} tFFJoyInfo;
-typedef enum {
+};
+enum tLoadEffect {
   kDontPlayNow = 0,
   kPlayNow,
   kPlayNowIfModified,
-} tLoadEffect;
-typedef enum {
+};
+enum tEffType {
   kConstant = 0,
   kRamp,
   kCustom,
@@ -161,49 +161,49 @@ typedef enum {
   kCondition_Inertia,
   kCondition_Friction,
   kMaxEffectSubTypes
-} tEffType;
-typedef struct tEffectConstant {
+};
+struct tEffConstant {
   int32_t Mag; // +- 10,000
-} tEffConstant;
-typedef struct tEffectRamp {
+};
+struct tEffRamp {
   int32_t Start; // +- 10,000
   int32_t End;   // +- 10,000
-} tEffRamp;
-typedef struct tEffectWave {
+};
+struct tEffWave {
   uint32_t Mag;   // 0 to 10,000
   int32_t Offset;         // +- 10,000
   uint32_t Phase; // 0 to 35,999
   uint32_t Period;
-} tEffWave;
-typedef struct tEffectCondition {
+};
+struct tEffCondition {
   int32_t Offset;                      // +- 10,000
   int32_t PositiveCoefficient;         // +- 10,000
   int32_t NegativeCoefficient;         // +- 10,000
   uint32_t PositiveSaturation; // 0 to 10,000
   uint32_t NegativeSaturation; // 0 to 10,000
   int32_t DeadBand;                    // 0 to 10,000
-} tEffCondition;
-typedef struct tEffectCustom {
+};
+struct tEffCustom {
   int Channels;
   int Period;
   int Samples;
   int32_t *ForceData;
-} tEffCustom;
-typedef union tEffectInfo {
+};
+union tEffInfo {
   tEffConstant Constant;
   tEffRamp Ramp;
   tEffWave Wave;
   tEffCondition Condition;
   tEffCustom Custom;
-} tEffInfo;
-typedef struct tEffectEnvelope {
+};
+struct tEffEnvelope {
   uint32_t AttackLevel;
   uint32_t AttackTime;
   uint32_t FadeLevel;
   uint32_t FadeTime;
-} tEffEnvelope;
-typedef enum { kXAxisOnly, kYAxisOnly, kBothAxes } tEffAxis;
-typedef struct tFFB_Effect {
+};
+enum tEffAxis { kXAxisOnly, kYAxisOnly, kBothAxes };
+struct tFFB_Effect {
   int Flags;
   tEffType Type;
   // tEffInfo			TypeInfo[2];
@@ -216,7 +216,7 @@ typedef struct tFFB_Effect {
   uint32_t TriggerRepeatTime;
   int32_t Direction; // 0 to 360 deg.
   tEffEnvelope Envelope;
-} tFFB_Effect;
+};
 extern bool ddForce_found;   // a Force Feedback device was found
 extern bool ddForce_enabled; // Force Feedback is ready and can be used
 // ===================================================================

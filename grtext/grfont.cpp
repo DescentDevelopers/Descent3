@@ -133,7 +133,7 @@ const int MAX_FONTS = 16, MAX_FONT_BITMAPS = 32;
 //////////////////////////////////////////////////////////////////////////////
 //	Variables
 
-typedef struct tFontInfo {
+struct tFontInfo {
   char filename[32];          // filename of font
   int references;             // number of references of that font
   int bmps[MAX_FONT_BITMAPS]; // font bitmap handles
@@ -141,7 +141,7 @@ typedef struct tFontInfo {
   int *ch_bmp;
   float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
   tFontFileInfo font;
-} tFontInfo;
+};
 
 //	Font information stored here.
 static tFontInfo Fonts[MAX_FONTS];

@@ -513,10 +513,10 @@ FILETIME TableTimeThreshold;
 // Searches through all our netdirectories for old files
 void BuildOldFileList(FILETIME threshold);
 #endif
-typedef struct {
+struct old_file {
   uint8_t type;
   char name[PAGENAME_LEN];
-} old_file;
+};
 #define MAX_OLDFILE_ELEMENTS 10000
 int Num_old_files = 0;
 old_file *OldFiles;

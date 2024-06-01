@@ -29,16 +29,16 @@
 #include "application.h"
 #include "lnxapp.h"
 
-typedef struct {
+struct tinfo {
   int width, height, bytesperpixel, linewidth;
-} tinfo;
+};
 
-typedef struct tDDVideoInfo {
+struct tDDVideoInfo {
   oeLnxApplication *app;
   // vga_modeinfo *info;
   tinfo *info;
   bool paged;
-} tDDVideoInfo;
+};
 
 //////////////////////////////////////////////////////////////////////////////
 //	Variables

@@ -25,7 +25,7 @@
 #include "cfile.h"
 #include "pstypes.h"
 
-typedef struct {
+struct mngs_weapon_page {
   weapon weapon_struct;
   char hud_image_name[PAGENAME_LEN];
   char fire_image_name[PAGENAME_LEN];
@@ -38,7 +38,7 @@ typedef struct {
   char particle_name[PAGENAME_LEN];
   char robot_spawn_name[PAGENAME_LEN];
   char sound_name[MAX_WEAPON_SOUNDS][PAGENAME_LEN];
-} mngs_weapon_page;
+};
 
 // Weapon page functions
 //---------------------------------------------------------------

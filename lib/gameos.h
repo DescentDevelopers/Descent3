@@ -82,10 +82,11 @@
 #ifndef GAMEOS_H
 #define GAMEOS_H
 #include "pstypes.h"
-typedef struct gameos_packet {
+struct gameos_packet {
   int code;
   unsigned time_stamp;
-} gameos_packet;
+};
+
 const int GAMEOS_QUIT = 1, //	This gameos object is shutting down
     GAMEOS_IDLE = 2,       //	currently idle.
     GAMEOS_UNKNOWN = 255;  //	Unknown message
@@ -141,7 +142,7 @@ public:
   virtual void get_user_name(char *buffer, size_t *size) = 0;
 };
 //  Data structures
-typedef struct os_date {
+struct os_date {
   uint16_t year; // 1-65535 A.D. (or C.E.)
   uint8_t month;
   uint8_t day;
@@ -149,7 +150,7 @@ typedef struct os_date {
   uint8_t min;
   uint8_t sec;
   uint8_t pad; // to keep dword aligned
-} os_date;
+};
 //	---------------------------------------------------------------------------
 //	Debug system functions
 //	---------------------------------------------------------------------------

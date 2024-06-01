@@ -4534,10 +4534,10 @@ $$END
 // just nice to kill all objects in the level, except what is needed, for framerate
 // It will only kill robots in the level, except those designated to spare.
 
-typedef struct tKillRobotListNode {
+struct tKillRobotListNode {
   tKillObjectItem item;
   tKillRobotListNode *next;
-} tKillRobotListNode;
+};
 
 class CKillRobotList {
 public:

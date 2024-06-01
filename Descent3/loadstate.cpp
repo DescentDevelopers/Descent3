@@ -660,15 +660,15 @@ int LGSTriggers(CFILE *fp) {
   return LGS_OK;
 }
 
-typedef struct {
+struct old_vis_attach_info {
   int obj_handle, dest_objhandle;
   uint8_t subnum, subnum2;
 
   uint16_t modelnum;
   uint16_t vertnum, end_vertnum;
-} old_vis_attach_info;
+};
 
-typedef struct {
+struct old_vis_effect {
   uint8_t type;
   uint8_t id;
 
@@ -696,7 +696,7 @@ typedef struct {
 
   int16_t next;
   int16_t prev;
-} old_vis_effect;
+};
 
 void CopyVisStruct(vis_effect *vis, old_vis_effect *old_vis) {
   // Copy fields over

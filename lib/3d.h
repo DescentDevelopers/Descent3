@@ -193,7 +193,7 @@ extern vector Matrix_scale; // how the matrix is currently scaled
 
 // Structure for storing u,v,light values.  This structure doesn't have a
 // prefix because it was defined somewhere else before it was moved here
-typedef struct g3UVL {
+struct g3UVL {
   // texture coordinates
   float u, v;
   float u2, v2;
@@ -203,12 +203,12 @@ typedef struct g3UVL {
     float r;
   };
   float g, b, a; // rgba lighting
-} g3UVL;
+};
 
 // Structure to store clipping codes in a word
-typedef struct g3Codes {
+struct g3Codes {
   uint8_t cc_or, cc_and;
-} g3Codes;
+};
 
 // flags for point structure
 #define PF_PROJECTED 1  // has been projected, so sx,sy valid
@@ -231,7 +231,7 @@ typedef struct g3Codes {
 
 // Used to store rotated points for mines.  Has frame count to indicate
 // if rotated, and flag to indicate if projected.
-typedef struct g3Point {
+struct g3Point {
   float p3_sx, p3_sy;  // screen x&y
   uint8_t p3_codes;      // clipping codes
   uint8_t p3_flags;      // projected?
@@ -239,7 +239,7 @@ typedef struct g3Point {
   vector p3_vec;       // x,y,z of rotated point
   vector p3_vecPreRot; // original XYZ of the point
   g3UVL p3_uvl;        // uv & lighting values
-} g3Point;
+};
 
 // macros to reference x,y,z elements of a 3d point
 #define p3_x p3_vec.x

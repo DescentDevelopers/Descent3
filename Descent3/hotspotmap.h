@@ -62,25 +62,25 @@
 #define TELCOM_MAX_ALPHA 130
 
 // structure for a hotspot scanline
-typedef struct scanline {
+struct scanline {
   int start, end;
-} scanline;
+};
 
 // structure for 1 hotspot
-typedef struct hotspot {
+struct hotspot {
   int starting_y;
   int scanlines;
   scanline *x;
-} hotspot;
+};
 
 // structure for all hotspots
-typedef struct hotspotmap_t {
+struct hotspotmap_t {
   char num_of_hotspots;
   hotspot *hs;
-} hotspotmap_t;
+};
 
 // structure for 1 window
-typedef struct window_box {
+struct window_box {
   int x, y; // leftmost x, topmost y
   int width, height;
 
@@ -88,13 +88,13 @@ typedef struct window_box {
   bool on_left, on_top;    // used for creating window
   char *lt, *rt, *lb, *rb; // used for holding the transparent information of the corners
   int lt_bmp, rt_bmp, lb_bmp, rb_bmp;
-} window_box;
+};
 
 // structure for all the windows
-typedef struct windowmap_t {
+struct windowmap_t {
   int num_of_windows;
   window_box *wm;
-} windowmap_t;
+};
 
 // Loads a tga or ogf file into a bitmap...returns handle to bm or -1 on error, and fills in the alphamap
 int menutga_alloc_file(const char *name, char *hsmap[], int *w, int *h);

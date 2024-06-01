@@ -31,18 +31,18 @@
 #include "psclass.h"
 #include "Macros.h"
 
-typedef struct t_mse_button_info {
+struct t_mse_button_info {
   bool is_down[N_MSEBTNS];
   uint8_t down_count[N_MSEBTNS];
   uint8_t up_count[N_MSEBTNS];
   DWORD time_down[N_MSEBTNS]; // in milliseconds windows ticks
   DWORD time_up[N_MSEBTNS];
-} t_mse_button_info;
+};
 
-typedef struct t_mse_event {
+struct t_mse_event {
   int16_t btn;
   int16_t state;
-} t_mse_event;
+};
 
 #define MOUSE_ZMIN 0 // mouse wheel z min and max (increments of 120 = 10 units)
 #define MOUSE_ZMAX 1200

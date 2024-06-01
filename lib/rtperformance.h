@@ -47,7 +47,7 @@
 
 //		struct of information to be saved per frame (note: use INT64 for timer info)
 // -----------------------------------------------------------------------------------
-typedef struct {
+struct tRTFrameInfo {
   INT64 frame_num; // the frame number, used internally
   INT64 renderframe_time;
   INT64 multiframe_time;
@@ -85,7 +85,7 @@ typedef struct {
   int polys_drawn;
   int fvi_calls;
   float frame_time; // how long the frame took.  A float because it's already calc'd so we might as well save it
-} tRTFrameInfo;
+};
 
 //		Flags for Runtime Performance Counters (these are 64 bit)
 // --------------------------------------------------------------------

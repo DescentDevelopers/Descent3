@@ -45,7 +45,7 @@
 #define PROC_WATER_RAINDROPS 3
 #define PROC_WATER_BLOBDROPS 4
 
-typedef struct {
+struct dynamic_proc_element {
   uint8_t type;
   fix dx, dy;
   uint8_t frames_left;
@@ -57,7 +57,7 @@ typedef struct {
   fix x1, y1;
 
   int16_t prev, next;
-} dynamic_proc_element;
+};
 
 extern dynamic_proc_element DynamicProcElements[];
 extern const char *ProcNames[], *WaterProcNames[];

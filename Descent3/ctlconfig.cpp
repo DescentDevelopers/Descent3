@@ -1294,12 +1294,13 @@ void key_settings_dialog() {
 }
 //////////////////////////////////////////////////////////////////////////////
 // configure controller new way
-typedef struct t_ctlcfgswitchcb_data {
+struct t_ctlcfgswitchcb_data {
   joy_cfg_screen *joycfg;
   key_cfg_screen *keycfg;
   wpnsel_cfg_screen *wpncfg;
   cfg_screen *curcfg;
-} t_ctlcfgswitchcb_data;
+};
+
 // called when we switch menus
 void CtlConfigSwitchCB(newuiMenu *menu, int16_t old_option_id, int16_t new_option_id, void *data) {
   t_ctlcfgswitchcb_data *cfgdata = (t_ctlcfgswitchcb_data *)data;

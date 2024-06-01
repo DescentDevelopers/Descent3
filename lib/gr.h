@@ -115,26 +115,26 @@ class grSurface;
 class grPen;
 
 //	a 'pen' structure used by the 2d system to draw things.
-typedef struct gr_pen {
+struct gr_pen {
   char *data;
   int rowsize;
   ddgr_color rgbcolor;
   ddgr_color color;
   ddgr_surface *sf;
-} gr_pen;
+};
 
-typedef enum grTextAlign { // used to align text along viewport
+enum grTextAlign { // used to align text along viewport
   grTextUnjustified,
   grTextLeft,
   grTextCentered,
   grTextRight,
   grTextWordWrap
-} grTextAlign;
+};
 
-typedef struct tCharProperties {
+struct tCharProperties {
   uint8_t alpha;
   ddgr_color col[4];
-} tCharProperties;
+};
 
 #define GR_VPCP_ALPHA 1 // alpha value is valid in CharProperties
 #define GR_VPCP_COLOR 2 // color values are valid in CharProperties.
@@ -150,7 +150,7 @@ const int MAX_FONTS = 16, MAX_FONT_BITMAPS = 12;
 
 #define DEFAULT_FONT 0
 
-typedef struct gr_font_file_record {
+struct gr_font_file_record {
   int16_t width, height;      // width of widest character and height of longest char
   int16_t flags;              // flags used by the character renderer
   int16_t baseline;           // pixels given to lowercase below script line start at baseline
@@ -161,9 +161,9 @@ typedef struct gr_font_file_record {
   uint8_t **char_data;        // pointers to each character
   int16_t *char_widths;       // individual pixel widths of each character
   uint8_t *kern_data; // kerning information for specific letter combos
-} gr_font_file_record;
+};
 
-typedef struct gr_font_record {
+struct gr_font_record {
   char name[32];
   char filename[32];          // filename of font
   int references;             // number of references of that font
@@ -173,7 +173,7 @@ typedef struct gr_font_record {
   float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
   gr_font_file_record font;
 
-} gr_font_record;
+};
 
 class grFont {
   static gr_font_record m_FontList[MAX_FONTS];
@@ -240,10 +240,10 @@ public: // Accessor functions
 //		contains a ddgr_bitmap object and allows for blting
 //	----------------------------------------------------------------------------
 
-typedef struct ddgr_surface_node {
+struct ddgr_surface_node {
   ddgr_surface *sf;
   ddgr_surface_node *prev;
-} ddgr_surface_node;
+};
 
 const int SURFTYPE_MEMORY = 256;
 
@@ -408,12 +408,12 @@ public:
 //	----------------------------------------------------------------------------
 
 //	contains state information for a viewport.
-typedef struct tVPState {
+struct tVPState {
   grFont font;
   int text_spacing;
   int text_line_spacing;
   tCharProperties chprops;
-} tVPState;
+};
 
 class grViewport {
   static int vp_Locked;             // tells us if any viewport is locked

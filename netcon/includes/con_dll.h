@@ -301,7 +301,7 @@ const char *GetString(int d) {
 #define DLL_BRIEFING_FONT 1
 #define DLL_BIG_BRIEFING_FONT 2
 
-typedef struct {
+struct dllinfo {
   int me_handle;
   int it_handle;
   uint8_t *special_data;
@@ -313,9 +313,9 @@ typedef struct {
   };
   float fParam;
   ptrdiff_t iParam;
-} dllinfo;
+};
 
-typedef struct {
+struct multi_api {
   int *objs;
   int *rooms;
   int *terrain;
@@ -325,7 +325,7 @@ typedef struct {
   int *ships;
   int *fp[200]; // function pointers
   int *vp[200]; // variable pointers
-} multi_api;
+};
 
 typedef void (*GetMultiAPI_fp)(multi_api *api);
 GetMultiAPI_fp DLLGetMultiAPI;
@@ -724,7 +724,7 @@ extern int MTAVersionCheck(uint32_t oldver, char *URL);
 #pragma pack(push, pxo)
 #endif
 #pragma pack(1)
-typedef struct vmt_descent3_struct {
+struct vmt_descent3_struct {
   char tracker_id[TRACKER_ID_LEN];
   char pilot_name[PILOT_NAME_LEN];
   int rank;
@@ -741,7 +741,7 @@ typedef struct vmt_descent3_struct {
   uint32_t sliding_pct; // Percentage of the time you were sliding
   uint32_t checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
   uint32_t pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
-} vmt_descent3_struct;
+};
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #ifdef WIN32
 #pragma pack(pop, pxo)
@@ -839,14 +839,14 @@ DLLAVClose_fp *DLLAVClose = NULL;
 DLLAVGetVersion_fp *DLLAVGetVersion = NULL;
 DLLRunCheck_fp *DLLRunCheck = NULL;
 
-typedef struct _msn_list {
+struct msn_list {
   char msn_name[_MAX_PATH];
   char msn_file[_MAX_PATH];
   void *ti;
-  struct _msn_list *next;
-} msn_list;
+  struct msn_list *next;
+};
 
-_msn_list *FirstMsn, *CurrMsn, *TmpMsn;
+msn_list *FirstMsn, *CurrMsn, *TmpMsn;
 
 #ifdef WIN32
 #include "directplay.h"
@@ -860,7 +860,7 @@ LPDPSESSIONDESC2 DLLDirectplay_sessions;
 BOOL DLLTCP_active;
 BOOL DLLIPX_active;
 
-void AddMsnItem(_msn_list *new_msn) {
+void AddMsnItem(msn_list *new_msn) {
   CurrMsn = FirstMsn;
   if (CurrMsn) {
     while (CurrMsn->next) {
@@ -889,7 +889,7 @@ void RemoveAllMsnItems(void) {
   FirstMsn = NULL;
 }
 
-_msn_list *FindMsnItem(const char *name) {
+msn_list *FindMsnItem(const char *name) {
   CurrMsn = FirstMsn;
   if (CurrMsn) {
     while (CurrMsn->next) {
@@ -1034,14 +1034,14 @@ int StartMultiplayerGameMenu() {
     DLLListAddItem(script_list, dll_txt_items[index]);
   }
 #if (!(defined(OEM) || defined(DEMO)))
-  _msn_list *mi;
+  msn_list *mi;
 
   DLLddio_MakePath(search, DLLLocalD3Dir, "data", "levels", "*.msn", NULL);
   // DLLmprintf((0,search));
   if (DLLddio_FindFileStart(search, buffer)) {
     if (DLLIsMissionMultiPlayable(buffer)) {
       DLLmprintf(0, "Found a mission: %s\n", buffer);
-      mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
+      mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
       strcpy(mi->msn_name, DLLGetMissionName(buffer));
       strcpy(mi->msn_file, buffer);
       mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
@@ -1051,7 +1051,7 @@ int StartMultiplayerGameMenu() {
     while (DLLddio_FindNextFile(buffer)) {
       if (DLLIsMissionMultiPlayable(buffer)) {
         DLLmprintf(0, "Found a mission: %s\n", buffer);
-        mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
+        mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
         strcpy(mi->msn_name, DLLGetMissionName(buffer));
         strcpy(mi->msn_file, buffer);
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
@@ -1070,7 +1070,7 @@ int StartMultiplayerGameMenu() {
 
     if (DLLIsMissionMultiPlayable(buffer) && (stricmp("d3_2.mn3", buffer) != 0)) {
       DLLmprintf(0, "Found a mission: %s\n", buffer);
-      mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
+      mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
       strcpy(mi->msn_name, DLLGetMissionName(buffer));
       strcpy(mi->msn_file, buffer);
       mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
@@ -1083,7 +1083,7 @@ int StartMultiplayerGameMenu() {
       // DLLddio_MakePath(mn3_path,DLLLocalD3Dir,"missions",buffer,NULL);
       if (DLLIsMissionMultiPlayable(buffer)) {
         DLLmprintf(0, "Found a mission: %s\n", buffer);
-        mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
+        mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
         strcpy(mi->msn_name, DLLGetMissionName(buffer));
         strcpy(mi->msn_file, buffer);
         mi->ti = DLLCreateNewUITextItem(mi->msn_name, UICOL_LISTBOX_LO, -1);
@@ -1096,7 +1096,7 @@ int StartMultiplayerGameMenu() {
 #ifdef RELEASE
   // TODO: Make sure the main mission is always listed -- even on a minimal install
   if (!FindMsnItem("Descent 3: Retribution")) {
-    mi = (_msn_list *)DLLmem_malloc(sizeof(msn_list));
+    mi = (msn_list *)DLLmem_malloc(sizeof(msn_list));
 
     strcpy(mi->msn_name, "Descent 3: Retribution");
     strcpy(mi->msn_file, "d3.mn3");

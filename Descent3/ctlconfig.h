@@ -59,12 +59,12 @@
 #define CTLCONFIG_CONTROLLER 1
 #define CTLCONFIG_WPNSEL 2
 
-typedef struct t_cfg_element {
+struct t_cfg_element {
   int16_t fn_id; // -1 = group start
   int16_t text;  // text string id.
   int16_t x;
   int16_t y; // location (for groups only)
-} t_cfg_element;
+};
 
 extern t_cfg_element Cfg_key_elements[];
 extern t_cfg_element Cfg_joy_elements[];

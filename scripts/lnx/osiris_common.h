@@ -954,13 +954,13 @@ inline ddgr_color GR_RGB(int r, int g, int b) { return ((r << 16) + (g << 8) + b
 #define COM_DO_ACTION 1
 #define COM_REINIT 2
 
-typedef struct {
+struct gb_com {
   char action;
   char index;
   void *ptr;
-} gb_com;
+};
 
-typedef struct {
+struct gb_menu {
   char title[256];
   int num_commands;
   char command_text[MAX_GB_COMMANDS][256];
@@ -968,13 +968,13 @@ typedef struct {
   char command_type[MAX_GB_COMMANDS];
 
   char dialog_text[MAX_GB_COMMANDS][256];
-} gb_menu;
+};
 
 // =======================================================================
 //  Osiris structures
 // =======================================================================
 
-typedef struct {
+struct tOSIRISModuleInit {
   int *fp[MAX_MODULEFUNCS];
   char **string_table;
   int string_count;
@@ -994,54 +994,54 @@ typedef struct {
                       // the checksum at compile time, it is very likely that
                       // bad things can happen, and this module shouldn't initialize.
 
-} tOSIRISModuleInit; // contains the necessary data to initialize
+}; // contains the necessary data to initialize
 
 // an OSIRIS module
-typedef struct {
+struct tOSIRISEVTINTERVAL {
   float frame_time;
   float game_time;
-} tOSIRISEVTINTERVAL; // struct for EVT_INTERVAL data
+}; // struct for EVT_INTERVAL data
 
-typedef struct {
-} tOSIRISIEVTAIFRAME; // struct for EVT_AI_FRAME data
+struct tOSIRISIEVTAIFRAME {
+}; // struct for EVT_AI_FRAME data
 
-typedef struct {
+struct tOSIRISEVTDAMAGED {
   float damage;
   int it_handle;
   int weapon_handle;
   int damage_type;
-} tOSIRISEVTDAMAGED; // struct for EVT_DAMAGED data
+}; // struct for EVT_DAMAGED data
 
-typedef struct {
+struct tOSIRISEVTCOLLIDE {
   int it_handle;
-} tOSIRISEVTCOLLIDE; // struct for EVT_COLLIDE data
+}; // struct for EVT_COLLIDE data
 
-typedef struct {
-} tOSIRISEVTCREATED; // struct for EVT_CREATED data
+struct tOSIRISEVTCREATED {
+}; // struct for EVT_CREATED data
 
-typedef struct {
+struct tOSIRISEVTDESTROY {
   uint8_t is_dying;    // if this is !=0 than the event is coming because it is
                      // really being destroyed.  Else it is due to the level ending.
-} tOSIRISEVTDESTROY; // struct for EVT_DESTROY data
+}; // struct for EVT_DESTROY data
 
-typedef struct {
+struct tOSIRISEVTTIMER {
   int id;
   float game_time;
-} tOSIRISEVTTIMER; // struct for EVT_TIMER data
+}; // struct for EVT_TIMER data
 
-typedef struct {
+struct tOSIRISEVTUSE {
   int it_handle;
-} tOSIRISEVTUSE; // struct for EVT_USE data
+}; // struct for EVT_USE data
 
-typedef struct {
+struct tOSIRISEVTSAVESTATE {
   void *fileptr;
-} tOSIRISEVTSAVESTATE; // struct for EVT_SAVESTATE data
+}; // struct for EVT_SAVESTATE data
 
-typedef struct {
+struct tOSIRISEVTRESTORESTATE {
   void *fileptr;
-} tOSIRISEVTRESTORESTATE; // struct for EVT_RESTORESTATE data
+}; // struct for EVT_RESTORESTATE data
 
-typedef struct {
+struct tOSIRISEVTAINOTIFY {
   int notify_type;
   int it_handle;
   int goal_num;
@@ -1050,72 +1050,72 @@ typedef struct {
     int enabler_num;
     int attack_num;
   };
-} tOSIRISEVTAINOTIFY; // struct for EVT_AI_NOTIFY data
+}; // struct for EVT_AI_NOTIFY data
 
-typedef struct {
-} tOSIRISEVTAIINIT; // struct for EVT_AI_INIT data
+struct tOSIRISEVTAIINIT {
+}; // struct for EVT_AI_INIT data
 
-typedef struct {
-} tOSIRISEVTLEVELSTART; // struct for EVT_LEVELSTART data
+struct tOSIRISEVTLEVELSTART {
+}; // struct for EVT_LEVELSTART data
 
-typedef struct {
-} tOSIRISEVTLEVELEND; // struct for EVT_LEVELEND data
+struct tOSIRISEVTLEVELEND {
+}; // struct for EVT_LEVELEND data
 
-typedef struct {
+struct tOSIRISEVTCHANGESEG {
   int room_num;
-} tOSIRISEVTCHANGESEG; // struct for EVT_CHANGESEG data
+}; // struct for EVT_CHANGESEG data
 
-typedef struct {
+struct tOSIRISEVTMEMRESTORE {
   int id;
   void *memory_ptr;
-} tOSIRISEVTMEMRESTORE; // struct for EVT_MEMRESTORE data
+}; // struct for EVT_MEMRESTORE data
 
-typedef struct {
+struct tOSIRISEVTTIMERCANCEL {
   int handle;
   uint8_t detonated;
-} tOSIRISEVTTIMERCANCEL; // struct for EVT_TIMERCANCEL data
+}; // struct for EVT_TIMERCANCEL data
 
-typedef struct {
+struct tOSIRISEVTCHILDDIED {
   int it_handle;
-} tOSIRISEVTCHILDDIED;
+};
 
-typedef struct {
+struct tOSIRISEVTMATCENCREATE {
   int it_handle;
   int id;
-} tOSIRISEVTMATCENCREATE; // struct for EVT_MATCEN_CREATE data
+}; // struct for EVT_MATCEN_CREATE data
 
-typedef struct {
-} tOSIRISEVTDOORACTIVATE; // struct for EVT_DOOR_ACTIVATE data
+struct tOSIRISEVTDOORACTIVATE {
+}; // struct for EVT_DOOR_ACTIVATE data
 
-typedef struct {
-} tOSIRISEVTDOORCLOSE; // struct for EVT_DOOR_CLOSE data
+struct tOSIRISEVTDOORCLOSE {
+}; // struct for EVT_DOOR_CLOSE data
 
-typedef struct {
+struct tOSIRISEVTLEVELGOALCOMPLETE {
   int level_goal_index;
-} tOSIRISEVTLEVELGOALCOMPLETE;
+};
 
-typedef struct {
+struct tOSIRISEVTLEVELGOALITEMCOMPLETE {
   int level_goal_index;
-} tOSIRISEVTLEVELGOALITEMCOMPLETE;
+};
 
-typedef struct {
-} tOSIRISEVTALLLEVELGOALSCOMPLETE;
+struct tOSIRISEVTALLLEVELGOALSCOMPLETE {
+};
 
-typedef struct {
-} tOSIRISEVTPLAYERMOVIESTART;
+struct tOSIRISEVTPLAYERMOVIESTART {
+};
 
-typedef struct {
-} tOSIRISEVTPLAYERMOVIEEND;
+struct tOSIRISEVTPLAYERMOVIEEND {
+};
 
-typedef struct {
+struct tOSIRISEVTPLAYERRESPAWN {
   int it_handle; // player respawning
-} tOSIRISEVTPLAYERRESPAWN;
+};
 
-typedef struct {
+struct tOSIRISEVTPLAYERDIES {
   int it_handle; // player dead
-} tOSIRISEVTPLAYERDIES;
+};
 
-typedef struct {
+struct tOSIRISEventInfo {
   union {
     tOSIRISEVTINTERVAL evt_interval;
     tOSIRISIEVTAIFRAME evt_ai_frame;
@@ -1161,7 +1161,7 @@ typedef struct {
 
   int me_handle;
   void *extra_info;
-} tOSIRISEventInfo; // contains the necessary data for all events
+}; // contains the necessary data for all events
                     // to pass what they need to their event handlers.
 
 #define OTF_REPEATER 0x0001 // this timer is to repeat repeat_count times
@@ -1170,7 +1170,7 @@ typedef struct {
 #define OTF_CANCELONDEAD                                                                                               \
   0x008 // this timer should be auto-cancelled if object_handle_detonator dies, than the
         // timer auto-cancels
-typedef struct {
+struct tOSIRISTIMER {
   uint16_t flags;
   int id;           // an optional id you can use to store, will be passed back on EVT_TIMER signal
   int repeat_count; // if OTF_REPEATER is set, this is how many times to repeat the signal (every
@@ -1185,23 +1185,23 @@ typedef struct {
 
   float timer_interval; // the timeframe in between EVT_TIMER signals (for non-repeaters, this is how
                         // long until the single EVT_TIMER gets signaled).
-} tOSIRISTIMER;
+};
 
-typedef enum { OBJECT_SCRIPT = 0, TRIGGER_SCRIPT, LEVEL_SCRIPT } script_type;
+enum script_type { OBJECT_SCRIPT = 0, TRIGGER_SCRIPT, LEVEL_SCRIPT };
 
-typedef struct {
+struct tOSIRISSCRIPTID {
   script_type type;
   union {
     int objhandle;
     int triggernum;
   };
-} tOSIRISSCRIPTID;
+};
 
-typedef struct {
+struct tOSIRISMEMCHUNK {
   tOSIRISSCRIPTID my_id;
   uint16_t id;
   int size;
-} tOSIRISMEMCHUNK;
+};
 
 // =======================================================================
 // Multiplayer safe function structs
@@ -1209,15 +1209,15 @@ typedef struct {
 
 #define KOI_ID 0     // this item is specifying a type/id of object NOT to kill
 #define KOI_HANDLE 1 // this item is specifying an object handle of an object NOT to kill
-typedef struct {
+struct tKillObjectItem {
   uint8_t info_type;
   int id;
   int objhandle;
-} tKillObjectItem;
+};
 
 #define MSAFE_MESSAGE_LENGTH 255
 #define MSAFE_NAME_LENGTH 32
-typedef struct {
+struct msafe_struct {
   // Rooms
   int roomnum;
   int16_t facenum;
@@ -1313,9 +1313,9 @@ typedef struct {
   // Second message
   char message2[MSAFE_MESSAGE_LENGTH];
 
-} msafe_struct;
+};
 
-typedef struct {
+struct ray_info {
   int fate;
   int hit_room;
   vector hit_point;
@@ -1327,7 +1327,7 @@ typedef struct {
   vector hit_face_pnt;
   int hit_face_room;
   vector hit_wallnorm;
-} ray_info;
+};
 
 #define PV_POS 0x00000001        // set/get pos member (pass in an osiris_path_node_info ptr)
 #define PV_ROOMNUM 0x00000002    // set/get roomnum member (pass in an osiris_path_node_info ptr)
@@ -1339,12 +1339,12 @@ typedef struct {
 #define PV_CS_NAME 0x00020000    // get name of path
 #define PV_I_NUMPATHS 0x00040000 // get number of paths (path_id & node_id are ignored in this case)
 
-typedef struct {
+struct osiris_path_node_info {
   vector pos;  // where this node is in the world
   int roomnum; // what room?
   int flags;   // if this point lives over the terrain, etc
   vector fvec;
   vector uvec;
-} osiris_path_node_info;
+};
 
 #endif

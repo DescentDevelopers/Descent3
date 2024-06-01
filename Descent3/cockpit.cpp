@@ -213,15 +213,16 @@
 #define MAX_BUFFET_STRENGTH 0.75f
 #define BUFFET_PERIOD 0.25f
 #define COCKPIT_SHIFT_DELTA 0.02f
-typedef struct tCockpitCfgInfo {
+struct tCockpitCfgInfo {
   char modelname[PSFILENAME_LEN + 1];
   char shieldrings[NUM_SHIELD_GAUGE_FRAMES][PSFILENAME_LEN + 1];
   char shipimg[PSFILENAME_LEN + 1];
   char burnimg[PSFILENAME_LEN + 1];
   char energyimg[PSFILENAME_LEN + 1];
   char invpulseimg[PSFILENAME_LEN + 1];
-} tCockpitCfgInfo;
-typedef struct tCockpitInfo {
+};
+
+struct tCockpitInfo {
   int state;                          // current state of cockpit on screen.
   int ship_index;                     // index into ships page.
   int model_num;                      // this should be retreived from the ship info.
@@ -239,7 +240,8 @@ typedef struct tCockpitInfo {
   float buffet_time;                  // current position in buffet wave along time axis.
 
   matrix orient; // orientation of cockpit
-} tCockpitInfo;
+};
+
 static tCockpitInfo Cockpit_info;
 static float KeyframeAnimateCockpit();
 //	loads cockpit. model_name = NULL, then will not load in model name.

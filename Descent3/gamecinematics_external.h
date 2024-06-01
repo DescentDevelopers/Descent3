@@ -96,7 +96,7 @@
 #define CANNED_MOVE_PLAYER_FADE 4     // fade the screen out and move the player to a new position
 #define CANNED_LEVEL_END_FADE_WHITE 5 // fade the screen to white and end level
 
-typedef struct {
+struct tCannedCinematicInfo {
   int32_t type;
   /*
   CANNED_LEVEL_INTRO:
@@ -147,7 +147,7 @@ typedef struct {
   vector pos;
   matrix orient;
 
-} tCannedCinematicInfo;
+};
 
 //========================================================
 
@@ -191,11 +191,11 @@ typedef struct {
 #define GCTT_FADEINOUT 3
 #define GCTT_FADEWHITE 4
 
-typedef struct {
+struct PercentageRange {
   float min, max; // 0.0f->1.0f
-} PercentageRange;
+};
 
-typedef struct {
+struct tGameCinematic {
   uint32_t flags;
 
   int32_t target_objhandle;
@@ -222,6 +222,6 @@ typedef struct {
   PercentageRange in_camera_view;  // range that the view is from the camera
   PercentageRange quick_exit;      // range where a key-press will quick exit cinematic
 
-} tGameCinematic;
+};
 
 #endif

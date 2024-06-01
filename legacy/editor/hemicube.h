@@ -23,7 +23,7 @@
 #include "radiosity.h"
 #include "gr.h"
 
-typedef struct
+struct rad_hemicube
 {
 	matrix view_matrix;
 	matrix head_matrix;
@@ -42,13 +42,13 @@ typedef struct
 	int ff_res;				// Form factor resolution
 	int grid_dim;			// Hemicube top/side array dimension
 
-} rad_hemicube;
+};
 
-typedef struct
+struct hemicube_point
 {
 	float sx,sy;
 	float z;
-} hemicube_point;
+};
 
 
 extern rad_hemicube rad_Hemicube;

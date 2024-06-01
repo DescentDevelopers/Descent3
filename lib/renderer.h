@@ -316,12 +316,12 @@ class oeApplication;
 extern int Triangles_drawn;
 
 // Is this hardware or software rendered?
-typedef enum {
+enum renderer_type {
   RENDERER_OPENGL = 2,
   RENDERER_DIRECT3D = 3,
   RENDERER_GLIDE = 4,
   RENDERER_NONE = 5,
-} renderer_type;
+};
 
 extern renderer_type Renderer_type;
 
@@ -365,30 +365,30 @@ void rend_SetRendererType(renderer_type state);
 #define MAP_TYPE_UNKNOWN 3
 
 // lighting state
-typedef enum {
+enum light_state {
   LS_NONE,        // no lighting, fully lit rendering
   LS_GOURAUD,     // Gouraud shading
   LS_PHONG,       // Phong shading
   LS_FLAT_GOURAUD // Take color from flat color
-} light_state;
+};
 
 void rend_SetLighting(light_state);
 
-typedef enum {
+enum color_model {
   CM_MONO, // monochromatic (intensity) model - default
   CM_RGB,  // RGB model
-} color_model;
+};
 
 // color model
 void rend_SetColorModel(color_model);
 
-typedef enum {
+enum texture_type {
   TT_FLAT,                // solid color
   TT_LINEAR,              // textured linearly
   TT_PERSPECTIVE,         // texture perspectively
   TT_LINEAR_SPECIAL,      // A textured polygon drawn as a flat color
   TT_PERSPECTIVE_SPECIAL, // A textured polygon drawn as a flat color
-} texture_type;
+};
 
 // Alpha type flags - used to decide what type of alpha blending to use
 #define ATF_CONSTANT 1 // Take constant alpha into account
@@ -419,13 +419,13 @@ typedef enum {
 #define LFB_LOCK_READ 0
 #define LFB_LOCK_WRITE 1
 
-typedef enum {
+enum wrap_type {
   WT_WRAP,  // Texture repeats
   WT_CLAMP, // Texture clamps
   WT_WRAP_V // Texture wraps in v
-} wrap_type;
+};
 
-typedef struct {
+struct rendering_state {
   int8_t initted;
 
   int8_t cur_bilinear_state;
@@ -453,28 +453,28 @@ typedef struct {
   int clip_x1, clip_x2, clip_y1, clip_y2;
   int screen_width, screen_height;
 
-} rendering_state;
+};
 
-typedef struct {
+struct renderer_preferred_state {
   uint8_t mipping;
   uint8_t filtering;
   float gamma;
   uint8_t bit_depth;
   int width, height;
   uint8_t vsync_on;
-} renderer_preferred_state;
+};
 
-typedef struct {
+struct renderer_lfb {
   int type;
   uint16_t *data;
   int bytes_per_row;
-} renderer_lfb;
+};
 
-typedef struct {
+struct tRendererStats {
   int poly_count;
   int vert_count;
   int texture_uploads;
-} tRendererStats;
+};
 
 // returns rendering statistics for the frame
 void rend_GetStatistics(tRendererStats *stats);

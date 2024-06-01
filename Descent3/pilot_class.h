@@ -149,21 +149,21 @@ IIIIIIIII N       N P      OOOO  R   R    T    A    A NN   NN    T
 #define PLTR_UNKNOWN_FATAL 5 // an uknown exception occurred
 #define PLTR_TOO_NEW 6       // pilot file too new
 
-typedef struct {
+struct tMissionData {
   uint8_t highest_level;            // highlest level completed in the mission
   int ship_permissions;           // Ship permissions at highest level achieved
   bool finished;                  // was mission finished? (different than highest level,btw)
   char mission_name[MSN_NAMELEN]; // name of the mission (from the mission file)
   int num_restores;               // number of game loads for this mission
   int num_saves;                  // number of game saves for this mission
-} tMissionData;
+};
 
-typedef struct {
+struct cntrldata {
   int id;
   ct_type type[2];
   ct_config_data value;
   uint8_t flags[2];
-} cntrldata;
+};
 
 class pilot {
 

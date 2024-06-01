@@ -155,7 +155,7 @@ class grViewport;
 //	---------------------------------------------------------------------------
 //	Constants and Types
 
-typedef enum function_mode {
+enum function_mode {
   INIT_MODE,
   GAME_MODE,
   RESTORE_GAME_MODE,
@@ -166,7 +166,7 @@ typedef enum function_mode {
   LOADDEMO_MODE,
   GAMEGAUGE_MODE, // Unused
   CREDITS_MODE
-} function_mode;
+};
 
 extern bool Descent_overrided_intro;
 

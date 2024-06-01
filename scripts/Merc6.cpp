@@ -964,10 +964,10 @@ void aSetTargeting(int objhandle, int target, int alternate1, int alternate2) {
 #define WHITESPACE_CHARS " \t\r\n"
 
 // Structure for storing a script message
-typedef struct {
+struct tScriptMessage {
   char *name;    // the name of the message
   char *message; // the actual message text
-} tScriptMessage;
+};
 
 // Global storage for level script messages
 tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];

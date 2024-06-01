@@ -112,7 +112,7 @@
 //	gamesequencer states:
 //		game states
 
-typedef enum tGameState {
+enum tGameState {
   GAMESTATE_IDLE,         // no state
   GAMESTATE_NEW,          // starts a new game (with current mission.)
   GAMESTATE_LVLNEXT,      // go to the next level
@@ -123,7 +123,7 @@ typedef enum tGameState {
   GAMESTATE_LVLFAILED,    // a level was unsuccessfully ended
   GAMESTATE_LVLWARP,      // warp to a new level
   GAMESTATE_LOADDEMO,     // Load whatever demo was chosen in the UI
-} tGameState;
+};
 
 //	top level interfaces for game.
 #define GAME_INTERFACE 0

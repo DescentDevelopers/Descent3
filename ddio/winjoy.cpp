@@ -115,7 +115,7 @@
 #define loword(_v) ((_v) & 0x0000ffff)
 
 //////////////////////////////////////////////////////////////////////////////
-typedef struct tJoystickRecord {
+struct tJoystickRecord {
   uint8_t valid; // is this a valid device.
   uint8_t flags; // defined in ddio_win.h
   int16_t spad;
@@ -127,7 +127,7 @@ typedef struct tJoystickRecord {
 
   tJoyInfo caps; // controller capabilities
   tJoyPos pos;   // current position
-} tJoystickRecord;
+};
 
 //////////////////////////////////////////////////////////////////////////////
 static struct tJoystickLibraryData {

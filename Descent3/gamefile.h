@@ -24,11 +24,11 @@
 
 #define MAX_GAMEFILES 1500
 
-typedef struct {
+struct gamefile {
   char name[PAGENAME_LEN];
   char dir_name[PAGENAME_LEN];
   uint8_t used;
-} gamefile;
+};
 
 extern int Num_gamefiles;
 extern gamefile Gamefiles[MAX_GAMEFILES];

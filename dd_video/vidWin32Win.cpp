@@ -52,13 +52,13 @@
 //////////////////////////////////////////////////////////////////////////////
 //	Variables
 
-typedef struct tDIBHeader // used to create and manipulate DIBs (a 16/32BPP surface only)
+struct tDIBHeader // used to create and manipulate DIBs (a 16/32BPP surface only)
 {
   BITMAPINFOHEADER bmi;
   DWORD red_mask;
   DWORD green_mask;
   DWORD blue_mask;
-} tDIBHeader;
+};
 
 //////////////////////////////////////////////////////////////////////////////
 //	Functions

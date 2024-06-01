@@ -31,7 +31,7 @@
 #define MAX_WBS_PER_OBJ 21
 
 // Attach to the polymodel
-typedef struct poly_wb_info {
+struct poly_wb_info {
   // Static Data  (Add to robot generic page)
   uint16_t num_gps;
   uint8_t gp_index[MAX_WB_GUNPOINTS];
@@ -40,12 +40,12 @@ typedef struct poly_wb_info {
   uint8_t num_turrets;
   uint16_t turret_index[MAX_WB_TURRETS];
 
-} poly_wb_info;
+};
 
 // Next free WBF is 32
 
 // Attach to a object type
-typedef struct otype_wb_info {
+struct otype_wb_info {
   uint16_t gp_weapon_index[MAX_WB_GUNPOINTS];
   uint16_t fm_fire_sound_index[MAX_WB_FIRING_MASKS];
   uint16_t aiming_gp_index;
@@ -73,14 +73,14 @@ typedef struct otype_wb_info {
   uint16_t flags;
 
   float energy_usage, ammo_usage;
-} otype_wb_info;
+};
 
 #define WB_MOVE_STILL 0
 #define WB_MOVE_RIGHT 1
 #define WB_MOVE_LEFT 2
 
 // Goes with an individual robot's instance
-typedef struct dynamic_wb_info {
+struct dynamic_wb_info {
   // Dynamic Data
   float last_fire_time;
   uint8_t cur_firing_mask;
@@ -97,7 +97,6 @@ typedef struct dynamic_wb_info {
   char upgrade_level; // For multi-level weapons ( 0 to MAX_WB_UPGRADES-1)
 
   int flags;
-
-} dynamic_wb_info;
+};
 
 #endif

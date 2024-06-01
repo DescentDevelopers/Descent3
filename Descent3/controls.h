@@ -210,7 +210,7 @@ const int ctfFORWARD_THRUSTAXIS = 0, ctfFORWARD_THRUSTKEY = 1, ctfREVERSE_THRUST
           ctfAUDIOTAUNT1_BTN = 66, ctfAUDIOTAUNT2_KEY = 67, ctfAUDIOTAUNT2_BTN = 68, ctfAUDIOTAUNT3_KEY = 69,
           ctfAUDIOTAUNT3_BTN = 70, ctfAUDIOTAUNT4_KEY = 71, ctfAUDIOTAUNT4_BTN = 72;
 
-typedef struct game_controls {
+struct game_controls {
   //	movement values
   //	these values are from -1.0 to 1.0.-
   float pitch_thrust;
@@ -237,7 +237,7 @@ typedef struct game_controls {
   int fire_flare_down_count;
   int rearview_down_count;
   bool rearview_down_state;
-} game_controls;
+};
 
 //	This value should be set at initialization time.  Use for remote controlling.
 extern char *Controller_ip;

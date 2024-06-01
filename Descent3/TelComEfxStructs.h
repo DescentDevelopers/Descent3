@@ -98,9 +98,9 @@
 // tc_text
 //  - Contains information on the text coordinates of an effect
 //===================
-typedef struct {
+struct tc_text {
   int left, right, top, bottom;
-} tc_text;
+};
 
 // TCTEXTDESC caps flags
 #define TCTD_FONT 0x0001
@@ -166,7 +166,7 @@ typedef struct {
 //	The following structure should be filled in, and passed to the Monitor::Text() function
 // caps must be set with the above flags.  If a member isn't set to be defined by the caps, then
 // if it's needed default values will be used (defaults listed after each member in structure)
-typedef struct {
+struct TCTEXTDESC {
   // what values are set/defined
   int caps; //(MUST BE DEFINED!)
   // the text box of the effect
@@ -187,8 +187,9 @@ typedef struct {
   int type;
   // mission flag mask
   uint32_t mission_mask_set, mission_mask_unset;
-} TCTEXTDESC, *LPTCTEXTDESC;
-typedef struct {
+};
+
+struct TCBMPDESC {
   // type
   int type;
   // flags
@@ -207,8 +208,9 @@ typedef struct {
   char filename[MAX_FILELEN]; // MUST BE FILLED IN
   // mission flag mask
   uint32_t mission_mask_set, mission_mask_unset;
-} TCBMPDESC, *LPTCBMPDESC;
-typedef struct {
+};
+
+struct TCMOVIEDESC {
   // fill in with whats valid
   int caps; // MUST BE FILLED IN
   // type
@@ -225,8 +227,9 @@ typedef struct {
   float waittime; //(Default: 0.0f)
   // mission flag mask
   uint32_t mission_mask_set, mission_mask_unset;
-} TCMOVIEDESC, *LPTCMOVIEDESC;
-typedef struct {
+};
+
+struct TCBKGDESC {
   // whats defined for the struct
   int caps; // MUST BE SET!
   // what type of background effect
@@ -239,8 +242,8 @@ typedef struct {
   float waittime; //(Default: 0.0f)
   // mission flag mask
   uint32_t mission_mask_set, mission_mask_unset;
-} TCBKGDESC, *LPTCBKGDESC;
-typedef struct {
+};
+struct TCPOLYDESC {
   // whats defined for the struct
   int caps; // MUST BE SET!
   // what type of poly effect
@@ -259,8 +262,9 @@ typedef struct {
   char polyname[MAX_FILELEN];
   // mission flag mask
   uint32_t mission_mask_set, mission_mask_unset;
-} TCPOLYDESC, *LPTCPOLYDESC;
-typedef struct {
+};
+
+struct TCSNDDESC {
   // whats defined for the struct
   int caps; // MUST BE SET
   // type of sound effect
@@ -273,8 +277,9 @@ typedef struct {
   char filename[MAX_FILELEN];
   // mission flag mask
   uint32_t mission_mask_set, mission_mask_unset;
-} TCSNDDESC, *LPTCSNDDESC;
-typedef struct {
+};
+
+struct TCBUTTONDESC {
   char filename[MAX_FILELEN];
   char filename_focus[MAX_FILELEN];
   char flash_filename[MAX_FILELEN];
@@ -291,7 +296,7 @@ typedef struct {
   bool flasher;
   bool tab_stop;
   uint32_t mission_mask_set, mission_mask_unset; // mission flag mask
-} TCBUTTONDESC, *LPTCBUTTONDESC;
+};
 
 //==================
 // tc_button

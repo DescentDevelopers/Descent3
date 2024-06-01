@@ -83,7 +83,7 @@
 
 #define PSI_PICKUP 0
 
-typedef struct {
+struct powerup {
   char name[PAGENAME_LEN];
   float size;
   int score;
@@ -97,7 +97,7 @@ typedef struct {
   // Default physics information for this powerup type
   physics_info phys_info; // the physics data for this obj type.
 
-} powerup;
+};
 
 extern int Num_powerups;
 extern powerup Powerups[MAX_POWERUPS];

@@ -25,10 +25,10 @@
 #include "pstypes.h"
 #include "objinfo.h"
 
-typedef struct {
+struct mngs_robot_page {
   object_info robot_struct;
   char image_name[PAGENAME_LEN];
-} mngs_robot_page;
+};
 
 // Robot page functions
 //---------------------------------------------------------------

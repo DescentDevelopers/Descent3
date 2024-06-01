@@ -112,9 +112,9 @@ IDMFC *DMFCBase = NULL;
 static IDmfcStats *dstat = NULL;
 static player *dPlayers;
 
-typedef struct {
+struct tPlayerStat {
   int Score[2];
-} tPlayerStat;
+};
 
 static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
 static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);

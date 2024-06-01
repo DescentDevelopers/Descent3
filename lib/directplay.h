@@ -47,9 +47,9 @@
 #include "dplay.h"
 #include "dplobby.h"
 
-typedef struct _modem_list {
+struct modem_list {
   char name[200];
-} modem_list;
+};
 
 #define MAX_MODEMS 15
 #define MAX_DP_GAMES 32

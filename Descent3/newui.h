@@ -292,11 +292,11 @@ void GetCenteredTextPos(int width, int gap, int left_item_width, int middle_item
 #define NEWUIBMP_BTN_HILITE_R 35
 
 //	Large Bitmap system
-typedef struct tLargeBitmap {
+struct tLargeBitmap {
   int bmps_w;
   int bmps_h;
   int *bm_array;
-} tLargeBitmap;
+};
 
 //	alpha for all NewUIWindows.
 extern uint8_t NewUIWindow_alpha;

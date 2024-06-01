@@ -75,7 +75,7 @@ extern int Camera_view_mode[NUM_CAMERA_VIEWS];
 extern void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi);
 module GameDLLHandle = {NULL};
 extern ddgr_color Player_colors[];
-typedef struct {
+struct game_api {
   int *objs;
   int *rooms;
   int *terrain;
@@ -90,7 +90,7 @@ typedef struct {
   int *fp[450]; // function pointers
   int *vp[50];  // variable pointers
   tOSIRISModuleInit *osiris_functions;
-} game_api;
+};
 // The exported DLL function call prototypes
 #if defined(__LINUX__)
 typedef void DLLFUNCCALL (*DLLGameCall_fp)(int eventnum, dllinfo *data);

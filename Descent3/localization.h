@@ -69,10 +69,10 @@ void DestroyStringTable(char **table, int size);
 
 // GrowString class
 // handles a string of increasing size (using +,=,+=)
-typedef struct tbufferinfo {
+struct tbufferinfo {
   char *string_data;
   tbufferinfo *next;
-} tbufferinfo;
+};
 
 class GrowString {
 public:

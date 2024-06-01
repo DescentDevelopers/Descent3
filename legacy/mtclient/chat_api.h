@@ -30,13 +30,13 @@
 #define MSG_REMOTE 0
 #define MSG_LOCAL  1
 
-typedef struct _Chat_user
+struct _Chat_user
 {
 	char nick_name[33];
 	 _Chat_user *next;
 }Chat_user;
 
-typedef struct _Chat_channel
+struct _Chat_channel
 {
 	char channel_name[33];
 	uint16_t users;
@@ -45,7 +45,7 @@ typedef struct _Chat_channel
 }Chat_channel;
 
 
-typedef struct _Chat_command
+struct _Chat_command
 {
 	int16_t command;
 	char	data[100];

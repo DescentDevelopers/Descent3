@@ -111,10 +111,10 @@ static const GUID DPD3_GUID = {0x915ce160, 0x3125, 0x11d2, {0xbb, 0x3d, 0x0, 0x1
 
 uint32_t Pending_dp_conn[MAX_PENDING_NEW_CONNECTIONS];
 
-typedef struct _dpconnections {
+struct dpconnections {
   char name[100];
   void *conn;
-} dpconnections;
+};
 
 dpconnections dpconns[MAX_DIRECTPLAY_CONNECTIONS];
 

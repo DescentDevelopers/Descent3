@@ -460,14 +460,14 @@ typedef int(DLLFUNCCALL *GetCOScriptList_fp)(int **list, int **id_list);
 typedef int(DLLFUNCCALL *SaveRestoreState_fp)(void *file_ptr, uint8_t saving_state);
 #endif
 
-typedef struct tRefObj {
+struct tRefObj {
   int objnum;
   int type, id;
   bool dummy;
   tRefObj *next;
-} tRefObj;
+};
 
-typedef struct {
+struct tOSIRISModule {
   uint8_t flags;
   uint8_t extracted_id;
   uint16_t reference_count;
@@ -488,10 +488,11 @@ typedef struct {
 #ifdef OSIRISDEBUG
   tRefObj *RefRoot;
 #endif
-} tOSIRISModule;
+};
 
 static tOSIRISModule OSIRIS_loaded_modules[MAX_LOADED_MODULES];
 tOSIRISModuleInit Osiris_module_init;
+
 struct {
   bool level_loaded;
   uint16_t num_customs;
@@ -500,6 +501,7 @@ struct {
   int *custom_handles;
   void *instance;
 } tOSIRISCurrentLevel;
+
 struct {
   bool mission_loaded;
   uint16_t dll_id;
@@ -507,11 +509,11 @@ struct {
 
 #define OESF_USED 0x0001
 #define OESF_MISSION 0x0002 // mission dlls
-typedef struct {
+struct tExtractedScriptInfo {
   uint8_t flags;
   char *temp_filename;
   char *real_filename;
-} tExtractedScriptInfo;
+};
 static tExtractedScriptInfo OSIRIS_Extracted_scripts[MAX_LOADED_MODULES];
 static char *OSIRIS_Extracted_script_dir = NULL;
 
@@ -2266,7 +2268,7 @@ bool Osiris_CallEvent(object *obj, int event, tOSIRISEventInfo *data) {
 #define OITF_TRIGGERTIMER 0x0004
 #define OITF_LEVELTIMER 0x0008
 #define OITF_CANCELONDEAD 0x0010
-typedef struct {
+struct tOSIRISINTERNALTIMER {
   uint16_t flags;
   union {
     int objhandle;
@@ -2279,7 +2281,7 @@ typedef struct {
   float timer_interval;
   float timer_next_signal;
   float timer_end;
-} tOSIRISINTERNALTIMER;
+};
 tOSIRISINTERNALTIMER OsirisTimers[MAX_OSIRIS_TIMERS];
 
 static inline int FORM_HANDLE(int counter, int slot) { return (((counter & 0xFFFFFF) << 8) | (slot & 0xFF)); }
@@ -2820,11 +2822,11 @@ bool Osiris_RestoreSystemState(CFILE *file) {
   return false;
 }
 
-typedef struct tOSIRISMEMNODE {
+struct tOSIRISMEMNODE {
   tOSIRISMEMCHUNK chunk_id;
   void *memory;
   tOSIRISMEMNODE *next;
-} tOSIRISMEMNODE;
+};
 
 tOSIRISMEMNODE *Osiris_mem_root;
 
@@ -3333,7 +3335,7 @@ char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *r
 ******************************************************************************
 */
 
-typedef struct tOMMSNode {
+struct tOMMSNode {
   uint16_t id;
   uint32_t size_of_memory;
   uint32_t unique_id;
@@ -3341,14 +3343,14 @@ typedef struct tOMMSNode {
   uint8_t free_called;
   void *memory_ptr;
   tOMMSNode *next;
-} tOMMSNode;
+};
 
-typedef struct tOMMSHashNode {
+struct tOMMSHashNode {
   char *script_name;
   uint16_t base_id;
   tOMMSNode *root;
   tOMMSHashNode *next;
-} tOMMSHashNode;
+};
 
 tOMMSHashNode *OMMS_Hash_node_root = NULL;
 uint16_t OMMS_Current_base_id = 0;

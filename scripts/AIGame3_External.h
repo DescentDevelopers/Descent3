@@ -24,10 +24,10 @@
 // This file provides a link between Dallas scripts and AIGame3.cpp
 
 // Bot Communication packet
-typedef struct {
+struct bot_com {
   char action;
   void *ptr;
-} bot_com;
+};
 
 // Alien Organism Communication Constants
 #define ALIEN_COM_HUNT_TO_OBJ 20
@@ -50,18 +50,18 @@ typedef struct {
 #define CC_COM_DISABLE_CHECK 1
 
 // Alien Boss Scenario ID Packet
-typedef struct {
+struct ab_scenario_ids {
   int nest_handle;
   int left_hide_room;
   int right_hide_room;
-} ab_scenario_ids;
+};
 
 // Crowd Control Packet
-typedef struct {
+struct cc_packet {
   int follow_handle;
   float stop_dist;
   float slowdown_offset;
-} cc_packet;
+};
 
 // Sends a command out to a robot
 bool SendCommand(int me, int it, char command, void *ptr) {

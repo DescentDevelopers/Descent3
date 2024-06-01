@@ -530,26 +530,26 @@
 #define MAX_DBNAME_SIZE 32
 #define MAX_DBLABEL_SIZE 128
 
-typedef struct {
+struct tCustomMenu {
   int (*GetListCount)(void);   // this function should return the number of items in the list
   char *(*GetItem)(int index); // this function should return a string of the item at the given index, NULL on error
-} tCustomMenu;
+};
 
-typedef struct {
+struct tPInfoStat {
   int slot;   // player record slot
   int kills;  // number of times you killed this player
   int deaths; // number of times this player killed you
-} tPInfoStat;
+};
 
-typedef enum { STATE_EMPTY, STATE_INGAME, STATE_DISCONNECTED } slot_state;
+enum slot_state { STATE_EMPTY, STATE_INGAME, STATE_DISCONNECTED };
 
-typedef struct {
+struct t_dstat {
   int kills[2], deaths[2], suicides[2];
-} t_dstat;
+};
 
 struct PInfo;
 
-typedef struct {
+struct player_record {
   slot_state state;                 // state of this slot
   char callsign[MAX_CALLSIGN_SIZE]; // Player's callsign
   char *tracker_id;                 // Player's master tracker ID, NULL if there isn't one
@@ -566,7 +566,7 @@ typedef struct {
 
   int8_t team;   // The player's team (for when they reconnect)
   PInfo *pinfo; // Pointer to player info (who killed whom)
-} player_record;
+};
 
 #define MIF_INCLUDENONE                                                                                                \
   0x01 // for MIT_PSTATE, this will place a <None> at the top, it will send a -1 to the function, if selected
@@ -575,7 +575,7 @@ typedef struct {
 
 #define MAX_COLUMN_TITLE_SIZE 15
 
-typedef enum {
+enum tColumnType{
   DSCOL_KILLS_LEVEL,
   DSCOL_KILLS_OVERALL,
   DSCOL_KILLS_BOTH,
@@ -591,11 +591,11 @@ typedef enum {
   DSCOL_CUSTOM,
   DSCOL_BLANK,
   DSCOL_BMP
-} tColumnType;
+};
 
-typedef enum { DSCOLOR_NORMAL, DSCOLOR_TEAM, DSCOLOR_SHIPCOLOR, DSCOLOR_CUSTOM } tColorType;
+enum tColorType { DSCOLOR_NORMAL, DSCOLOR_TEAM, DSCOLOR_SHIPCOLOR, DSCOLOR_CUSTOM };
 
-typedef struct {
+struct tDmfcStatsColumnInfo {
   // what type of information should be displayed in this column, use custom if you want
   // the callback to fill in your own data
   tColumnType type;
@@ -608,7 +608,7 @@ typedef struct {
   int width;
   // color of the text for this column (if color type is custom)
   ddgr_color color;
-} tDmfcStatsColumnInfo;
+};
 
 //=====================================================================
 // tDmfcStatsInit flags
@@ -634,7 +634,7 @@ typedef struct {
   0x00000080 // display the current view of the selected player (only available if DSIF_NODETAILEDINFO is also set)
 
 //=====================================================================
-typedef struct {
+struct tDmfcStatsInit {
   // see the DSIF_* for the list of available flags and descriptions
   int flags;
   // points to an array of player record numbers, sorted to however you want them sorted.  Each
@@ -682,6 +682,6 @@ typedef struct {
   // if the DSIF_ONLY_X_PLAYERS_SHOWN flag is set, than the stat manager checks this value (dereferenced) every frame
   // and will only show this many players
   int *MaxNumberDisplayed;
-} tDmfcStatsInit;
+};
 
 #endif

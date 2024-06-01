@@ -200,7 +200,7 @@
 
 //type == UNT_NEW_ID_REQUEST
 //Respond with ACK
-typedef struct {
+struct new_id_request {
 	char first_name[REAL_NAME_LEN];	//Real Name
 	char last_name[REAL_NAME_LEN];	//Real Name
 	char login[LOGIN_LEN];				//Login id
@@ -208,18 +208,18 @@ typedef struct {
 	char email[EMAIL_LEN];				//Email Address
 	uint8_t showemail;			//0==don't show 1 == show
 	uint8_t showname	;			//0==don't show 1 == show
-} new_id_request;
+};
 
 
 //type == UNT_VALIDAT_ID_REQUEST or UNT_LOOKUP_ID_REQUEST
-typedef struct {
+struct validate_id_request {
 	char login[LOGIN_LEN];				//Login id
 	char password[PASSWORD_LEN];		//password
 	char tracker_id[TRACKER_ID_LEN]; //Tracker ID
-} validate_id_request;
+};
 
 //type == UNT_UPDATE_ID_REQUEST
-typedef struct {
+struct update_id_request {
 	char old_login[LOGIN_LEN];			//Login before it's changed.
 	char old_password[PASSWORD_LEN]; //Password before it's changed
 	char tracker_id[TRACKER_ID_LEN]; //Tracker ID (not sure if we need it for updating, but maybe)
@@ -230,15 +230,15 @@ typedef struct {
 	char email[EMAIL_LEN];				//Email Address (new)
 	uint8_t showemail;			//0==don't show 1 == show
 	uint8_t showname	;			//0==don't show 1 == show
-} update_id_request;
+};
 
-typedef struct {
+struct pilot_request {
 	char pilot_name[PILOT_NAME_LEN];		//Login id
 	char tracker_id[TRACKER_ID_LEN];		//Tracker ID
-} pilot_request;
+};
 
 
-typedef struct {
+struct udp_packet_header {
 	uint8_t type; //Type of request
 	uint16_t len; //Length of total packet, including this header
 	uint32_t code;	//For control messages
@@ -247,22 +247,22 @@ typedef struct {
 	uint32_t security; // Just a random value, we store the last value used in the user record
 									// So we don't process the same request twice.
 	uint8_t data[MAX_UDP_DATA_LENGH];
-} udp_packet_header;
+};
 
 #ifdef WIN32
 //Queue -- We need a queue to put responses in, so after a certain amount of time
 //If we don't get an ACK back from the client, we resend the packet, until eventually
 //We give up.
 
-typedef struct _net_reg_queue {
+struct net_reg_queue {
 	char login[LOGIN_LEN];			//Login id
 	uint32_t time_last_sent;	//Time in milliseconds since we last sent this packet
 	int retries;						//Number of times this has been sent
 	udp_packet_header packet;		//Packet containing the actual data to resend, etc.
-	struct _net_reg_queue *next;	//Pointer to next item in the list
+        struct net_reg_queue *next;	//Pointer to next item in the list
 	SOCKADDR netaddr;
 	uint32_t sig;				//Signature to be used by the client to ACK our response.
-} net_reg_queue;
+};
 #endif
 
 
@@ -271,7 +271,7 @@ typedef struct _net_reg_queue {
 
 /*
 #pragma pack(1)
-typedef struct vmt_descent3_struct {
+struct vmt_descent3_struct {
 	char tracker_id[TRACKER_ID_LEN];
 	char pilot_name[PILOT_NAME_LEN];
 	int rank;
@@ -288,7 +288,7 @@ typedef struct vmt_descent3_struct {
 	uint32_t sliding_pct;	//Percentage of the time you were sliding
 	uint32_t checksum;			//This value needs to be equal to whatever the checksum is once the packet is decoded
 	uint32_t pad;			//just to provide room for out 4 byte encryption boundry only needed on the client side for now
-} vmt_descent3_struct;
+};
 */
 
 

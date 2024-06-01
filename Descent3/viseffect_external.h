@@ -75,7 +75,7 @@ extern uint16_t max_vis_effects;
 
 struct object;
 
-typedef struct {
+struct vis_attach_info {
   int obj_handle;
   int dest_objhandle;
 
@@ -84,15 +84,15 @@ typedef struct {
   uint16_t end_vertnum;
 
   uint8_t subnum, subnum2;
-} vis_attach_info;
+};
 
-typedef struct {
+struct axis_billboard_info {
   uint8_t width;
   uint8_t height;
   uint8_t texture;
-} axis_billboard_info;
+};
 
-typedef struct {
+struct vis_effect {
   vector pos;
   vector end_pos;
   vector velocity;
@@ -120,6 +120,6 @@ typedef struct {
 
   uint8_t movement_type;
   uint8_t type, id;
-} vis_effect;
+};
 
 #endif

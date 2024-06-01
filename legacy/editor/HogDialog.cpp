@@ -42,10 +42,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 //	data structures
 /*
-typedef struct hog_library {
+struct hog_library {
 	CList <hog_library_entry, hog_library_entry&> table;
 	FILE *fp;
-} hog_library;
+};
 */
 
 

@@ -81,7 +81,7 @@ int d3d_EnvironmentMap = -1;
 #define MAX_D2D_DEVICES 6
 #define MAX_D3D_DEVICES 6
 
-typedef struct d3d_device {
+struct d3d_device {
   GUID guid_2d;
   LPGUID pguid_2d;
 
@@ -89,7 +89,7 @@ typedef struct d3d_device {
   LPGUID pguid_3d;
 
   char name[1024];
-} d3d_device;
+};
 
 d3d_device D2D_devices[MAX_D2D_DEVICES];
 d3d_device D3D_devices[MAX_D3D_DEVICES];
@@ -1854,29 +1854,29 @@ void d3d_SetMultiTextureBlendMode(bool state) {
   }
 }
 
-typedef struct {
+struct FlatVertex {
   float x, y, z;
   float w;
   DWORD color;
   DWORD specular;
-} FlatVertex;
+};
 
-typedef struct {
+struct TextureVertex {
   float x, y, z;
   float w;
   DWORD color;
   DWORD specular;
   float u1, v1;
-} TextureVertex;
+};
 
-typedef struct {
+struct MultiTextureVertex {
   float x, y, z;
   float w;
   DWORD color;
   DWORD specular;
   float u1, v1;
   float u2, v2;
-} MultiTextureVertex;
+};
 
 static TextureVertex TVerts[100];
 static MultiTextureVertex MTVerts[100];

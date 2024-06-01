@@ -62,10 +62,10 @@ extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
 const char *DMFCGetString(int d);
 
-typedef struct {
+struct tRemotePlayerData {
   bool authorized;   // whether the player is authorized
   uint8_t curr_key[8]; // current encryption key
-} tRemotePlayerData;
+};
 
 static tRemotePlayerData Authorized_players[MAX_PLAYER_RECORDS];
 static char Remote_Admin_pass[64];

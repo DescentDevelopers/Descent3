@@ -117,11 +117,11 @@ unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned 
   return (eax & 0xFFFF) | ((edx & 0xFFFF) << 16);
 }
 
-typedef struct {
+struct tNextFrame {
   uint8_t *tbuf;
   int new_row, DiffBufPtrs;
   unsigned x, y, w, h;
-} tNextFrame;
+};
 
 // NOTE: On exit ebx is nf_fqty
 void NF_DECOMP_INIT(bool HI_COLOR_FLAG, tNextFrame *nf) {
@@ -530,19 +530,19 @@ void nfPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w,
 void PkDecompWorker(const bool hiColor, const uint8_t *ops, const uint8_t *comp, const unsigned x,
                     const unsigned y, unsigned w, unsigned h) {
 #ifdef OUTRAGE_BIG_ENDIAN
-  typedef struct {
+  struct reg_word {
     uint16_t hax, ax;
-  } reg_word;
-  typedef struct {
+  };
+  struct reg_byte {
     int8_t hah, hal, ah, al;
-  } reg_byte;
+  };
 #else
-  typedef struct {
+  struct reg_word {
     uint16_t ax, hax;
-  } reg_word;
-  typedef struct {
+  };
+  struct reg_byte {
     int8_t al, ah, hal, hah;
-  } reg_byte;
+  };
 #endif
 
   tNextFrame nf;

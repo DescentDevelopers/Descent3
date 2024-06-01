@@ -99,18 +99,18 @@ static struct mses_state {
   int btn_mask;
 } DDIO_mouse_state;
 
-typedef struct t_mse_button_info {
+struct t_mse_button_info {
   bool is_down[N_MSEBTNS];
   uint8_t down_count[N_MSEBTNS];
   uint8_t up_count[N_MSEBTNS];
   float time_down[N_MSEBTNS];
   float time_up[N_MSEBTNS];
-} t_mse_button_info;
+};
 
-typedef struct t_mse_event {
+struct t_mse_event {
   int16_t btn;
   int16_t state;
-} t_mse_event;
+};
 
 static t_mse_button_info DIM_buttons;
 static tQueue<t_mse_event, 16> MB_queue;

@@ -56,10 +56,10 @@ const int DDGR_GDI_SUBSYSTEM = 1, // GDI subsystem
 /*	Internal Library Data
 
 */
-typedef struct tDDGRInternalData {
+struct tDDGRInternalData {
   bool init;     // Is library currently initialized
   int subsystem; // Current active subsystem
-} tDDGRInternalData;
+};
 
 /*	Global externs
  */

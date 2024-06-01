@@ -66,10 +66,10 @@
 #include <ctype.h>
 
 // Subtitle data
-typedef struct {
+struct subtitle {
   int first_frame, last_frame;
   char *msg;
-} subtitle;
+};
 
 #define MAX_SUBTITLES 500
 #define MOVIE_SUBTITLE_EXTENSION ".msb"

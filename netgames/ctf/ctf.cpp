@@ -150,9 +150,9 @@ static int snd_lose_otherteam = -1;
 static int snd_hattrick_first = -1;
 static int snd_hattrick_reg = -1;
 
-typedef struct {
+struct tPlayerStat { // Overall scores (throughout the game)
   int Score[2];
-} tPlayerStat; // Overall scores (throughout the game)
+};
 static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
 static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
 int pack_pstat(tPlayerStat *user_info, uint8_t *data) {

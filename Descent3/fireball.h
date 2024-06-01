@@ -177,7 +177,7 @@
 
 #define NUM_FIREBALLS 52
 
-typedef struct {
+struct fireball {
   char name[PAGENAME_LEN]; // The filename of this animation
 
   uint8_t type;       // type of fireball, see above
@@ -185,7 +185,7 @@ typedef struct {
   float total_life; // How long this animation should last (in seconds)
   float size;       // How big this explosion is
   int16_t bm_handle;  // The handle to the vlip
-} fireball;
+};
 
 extern fireball Fireballs[];
 

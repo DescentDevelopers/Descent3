@@ -202,10 +202,10 @@ $$TABLE_SOUND "Drop unknown "
 //////////////////////////////////
 // Structs
 
-typedef struct {
+struct tPlayerStat {
   int Score[2];
   int BadScore[2];
-} tPlayerStat;
+};
 
 static int pack_pstat(tPlayerStat *user_info, uint8_t *data);
 static int unpack_pstat(tPlayerStat *user_info, uint8_t *data);
@@ -228,14 +228,14 @@ int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
   return count;
 }
 
-typedef struct {
+struct weapon_collide_info {
   vector rotvel;
   vector velocity;
   vector pos;
   matrix orient;
   float mass;
   float size;
-} weapon_collide_info;
+};
 
 struct {
   int id, room;

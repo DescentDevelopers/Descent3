@@ -49,7 +49,7 @@ class oeApplication;
 /* Data structures
  */
 #define GDI_MAX_DEVMODES 30
-typedef struct tDDGRGDIInternalData // Internal data for GDI subsystem
+struct tDDGRGDIInternalData // Internal data for GDI subsystem
 {
   bool init;                          // is library initialized
   bool ddraw;                         // do we use DirectDraw for display mode changing.
@@ -60,29 +60,29 @@ typedef struct tDDGRGDIInternalData // Internal data for GDI subsystem
   int vidrefs;                        // Number of surface references to hPrimaryWnd.
   int olddispmode;                    // old display mode for GDI subsystem only (not GDIX)
   DEVMODE devmodes[GDI_MAX_DEVMODES]; // Device modes for GDI subsystem (not GDIX)
-} tDDGRGDIInternalData;
+};
 
-typedef struct tGDISurface {
+struct tGDISurface {
   HBITMAP hbm;     // windows DIB section bitmap handle
   void *data;      // pointer to bitmap bits
   bool backbuffer; // is this a dual-page surface? (hbm is offscreen)
   int rowsize;     // rowsize of bitmap bits array
   HWND hwnd;       // window attached to surface
-} tGDISurface;
+};
 
-typedef struct tDIBHeader // used to create and manipulate DIBs (a 16/32BPP surface only)
+struct tDIBHeader // used to create and manipulate DIBs (a 16/32BPP surface only)
 {
   BITMAPINFOHEADER bmi;
   DWORD red_mask;
   DWORD green_mask;
   DWORD blue_mask;
-} gdibmp_header;
+};
 
-typedef struct tDIBHeader8 // used to create and manipulate DIBs (a 16/32BPP surface only)
+struct tDIBHeader8 // used to create and manipulate DIBs (a 16/32BPP surface only)
 {
   BITMAPINFOHEADER bmi;
   RGBQUAD rgb[256];
-} tDIBHeader8;
+};
 
 /*	Externs */
 extern tDDGRGDIInternalData DDGR_GDI_lib_data;

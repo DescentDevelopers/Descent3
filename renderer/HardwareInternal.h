@@ -25,13 +25,13 @@
 
 // These structs are for drawing with vertex arrays
 // Useful for fast indexing
-typedef struct {
+struct color_array {
   float r, g, b, a;
-} color_array;
+};
 
-typedef struct {
+struct tex_array {
   float s, t, r, w;
-} tex_array;
+};
 
 struct PosColorUVVertex {
   vector pos;

@@ -24,9 +24,9 @@
 #include "pstypes.h"
 #include "gamefile.h"
 
-typedef struct {
+struct mngs_gamefile_page {
   gamefile gamefile_struct;
-} mngs_gamefile_page;
+};
 
 // Gamefile page functions
 //---------------------------------------------------------------

@@ -304,10 +304,10 @@ int RoomAddVertices(room *rp,int num_new_verts);
 int RoomAddFaces(room *rp,int num_new_faces);
 
 //Structure to hold vector and uvl data for clipping
-typedef struct {
+struct vertex {
 	vector vec;
 	roomUVL	uvl;
-} vertex;
+};
 
 //Clips on edge of a polygon against another edge
 //Parameters:	normal - defines the plane in which these edgs lie

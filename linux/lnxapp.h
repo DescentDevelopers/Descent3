@@ -32,10 +32,10 @@
 /*	Basic Application Linux data types */
 
 //	This structure is used to retrieve and set
-typedef struct tLnxAppInfo {
+struct tLnxAppInfo {
   unsigned flags;                 // Application Flags
   int wnd_x, wnd_y, wnd_w, wnd_h; // Window dimensions
-} tLnxAppInfo;
+};
 
 /*	Linux Application Object
                 This object entails initialization and cleanup of all operating system

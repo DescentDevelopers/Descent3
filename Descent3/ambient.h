@@ -46,20 +46,20 @@
 #include "manage.h"
 
 // An Ambient Sound Element, one part of an Ambient Sound Pattern (ASP)
-typedef struct {
+struct ase {
   int handle;                   // the sample's handle
   float min_volume, max_volume; // minimum and maximum volume
   int probability;              // between 0 and 100
-} ase;
+};
 
 // An Ambient Sound Element, one part of an Ambient Sound Pattern (ASP)
-typedef struct {
+struct asp {
   char name[PAGENAME_LEN];    // the name of this pattern
   float min_delay, max_delay; // delay time between sounds
   int num_sounds;             // how many sounds in this pattern
   ase *sounds;                // array of sounds
   float delay;                // how long until the next sound
-} asp;
+};
 
 extern int Num_ambient_sound_patterns;
 extern asp Ambient_sound_patterns[];

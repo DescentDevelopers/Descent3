@@ -366,14 +366,14 @@
 char HudInputMessage[MAX_HUD_INPUT_LEN];
 int Doing_input_message = HUD_MESSAGE_NONE;
 int HudInputMessageLen = 0;
-static tDirtyRect HUD_inmsg_dirty_rect;
+static t_dirty_rect HUD_inmsg_dirty_rect;
 
 static char HUD_messages[MAX_HUD_MESSAGES][HUD_MESSAGE_LENGTH];
 static int HUD_message_type[MAX_HUD_MESSAGES];
 static ddgr_color HUD_message_color[MAX_HUD_MESSAGES];
 int Num_hud_messages = 0;
 static int Hud_scroll_offset = 0;
-static tDirtyRect HUD_msg_dirty_rect;
+static t_dirty_rect HUD_msg_dirty_rect;
 
 static float Hud_timer = 0.0f;
 
@@ -384,7 +384,7 @@ static int Hud_persistent_msg_current_len;
 static float Hud_persistent_msg_char_timer;
 static float Hud_persistent_msg_id2 = HUD_INVALID_ID;
 static int Hud_persistent_msg_sound_handle = SOUND_NONE_INDEX;
-static tDirtyRect HUD_persist_dirty_rect[2];
+static t_dirty_rect HUD_persist_dirty_rect[2];
 
 tHUDItem *GetHUDItem(int id);
 
@@ -1291,14 +1291,14 @@ void ResetHUDMessages() {
   ResetHUDLevelItems();
 }
 
-typedef struct {
+struct phud_message {
   char message[HUD_MESSAGE_LENGTH * 2];
   ddgr_color color;
   int x, y;
   float time;
   int flags;
   int sound_index;
-} phud_message;
+};
 
 #define PHUD_QUEUE_SIZE 3
 

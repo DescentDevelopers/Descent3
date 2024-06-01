@@ -308,13 +308,13 @@ void DrawTerrainPoints (vector *view_pos,matrix *view_orient)
 #define ET_NOTFACING	1		//this edge on a non-facing face
 #define N_EDGE_TYPES	2		//how many edge types there are
 
-typedef struct seg_edge {
+struct seg_edge {
 	union {
 		struct {int16_t v0,v1;};
     int32_t vv;
 	};
 	uint16_t	type;
-} seg_edge;
+};
 
 #define MAX_EDGES (MAX_VERTS_PER_ROOM*2)
 

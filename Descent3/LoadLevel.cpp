@@ -1410,11 +1410,11 @@ void WriteAllDoorways(CFILE *ofile);
 */
 #define CONV_MULTI 0x01
 #define CONV_SINGLE 0x02
-typedef struct {
+struct tConvertObject {
   int type, id;
   const char *name;
   uint8_t flag;
-} tConvertObject;
+};
 
 tConvertObject object_convert[] = {
 #ifdef DEMO

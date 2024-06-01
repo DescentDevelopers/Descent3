@@ -204,7 +204,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-typedef struct tGauge {
+struct tGauge {
   poly_model *cockpit; // cockpit model of gauge
   bsp_info *monitor;   // monitor in cockpit.
   int first_vert;
@@ -217,7 +217,7 @@ typedef struct tGauge {
     float f;
   } data;
   g3Point pts[4]; // points of monitor in view coordinates. (may be cached from last frame)
-} tGauge;
+};
 
 //	which monitors correspond to what faces on the cockpit model.
 #define PRIMARY_MONITOR SOF_MONITOR1

@@ -41,14 +41,14 @@
 #include "grtext.h"
 #include "pstypes.h"
 
-typedef struct tCharBlt {
+struct tCharBlt {
   uint16_t ch;
   uint16_t clipped; // if =1, use sx,sy,sw,sh
   int x, y;
   float dsw, dsh; // scale vertical and horiz.
   int sx, sy;     // source rectangle within character in pixels.
   int sw, sh;
-} tCharBlt;
+};
 
 //	render a character
 int grfont_BltChar(int font, tCharBlt *cbi);

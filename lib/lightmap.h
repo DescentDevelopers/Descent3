@@ -30,7 +30,7 @@
 #define LF_WRAP 4      // This lightmap should be drawn with wrapping (not clamping)
 #define LF_BRAND_NEW 8 // This lightmap is brand new and hasn't been to the video card yet
 
-typedef struct {
+struct bms_lightmap {
   uint8_t width, height; // Width and height in pixels
   uint16_t *data;        // 16bit data
 
@@ -39,7 +39,7 @@ typedef struct {
   int16_t cache_slot;         // for the renderers use
   uint8_t square_res;         // for renderers use
   uint8_t cx1, cy1, cx2, cy2; // Change x and y coords
-} bms_lightmap;
+};
 
 extern bms_lightmap GameLightmaps[MAX_LIGHTMAPS];
 

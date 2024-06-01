@@ -90,9 +90,9 @@
 #include "grdefs.h"
 #include "bitmap.h"
 
-typedef enum tUIResClass { uiItem, uiTextItem, uiBitmapItem } tUIResClass;
+enum tUIResClass { uiItem, uiTextItem, uiBitmapItem };
 
-typedef enum tUIDrawClass { uiDrawNormal, uiDrawAlphaSaturate, uiDrawFaded } tUIDrawClass;
+enum tUIDrawClass { uiDrawNormal, uiDrawAlphaSaturate, uiDrawFaded };
 
 //	UIItem
 //		the root class for all resource items

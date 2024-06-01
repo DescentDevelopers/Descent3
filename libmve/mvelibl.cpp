@@ -65,22 +65,22 @@ unsigned sndDecompS16(uint16_t *dst, const uint8_t *src, unsigned len, unsigned 
 static void *(*mem_alloc)(unsigned size);
 static void (*mem_free)(void *p);
 
-typedef struct _mem {
+struct MemRec {
   void *ptr;
   unsigned size;
   bool dynamic;
-} MemRec, *MemPtr;
+};
 
-static void MemInit(MemPtr m, unsigned size, void *p);
-static void *MemAlloc(MemPtr m, unsigned size);
-static void MemFree(MemPtr m);
+static void MemInit(MemRec* m, unsigned size, void *p);
+static void *MemAlloc(MemRec* m, unsigned size);
+static void MemFree(MemRec* m);
 
 void MVE_memCallbacks(void *(*fn_alloc)(unsigned size), void (*fn_free)(void *p)) {
   mem_alloc = fn_alloc;
   mem_free = fn_free;
 }
 
-static void MemFree(MemPtr m) {
+static void MemFree(MemRec* m) {
   if (m->dynamic && mem_free) {
     (*mem_free)(m->ptr);
     m->dynamic = false; // prevent from being freed again!
@@ -88,7 +88,7 @@ static void MemFree(MemPtr m) {
   m->size = 0;
 }
 
-static void MemInit(MemPtr m, unsigned size, void *p) {
+static void MemInit(MemRec* m, unsigned size, void *p) {
   if (!p)
     return;
 
@@ -98,7 +98,7 @@ static void MemInit(MemPtr m, unsigned size, void *p) {
   m->dynamic = false;
 }
 
-static void *MemAlloc(MemPtr m, unsigned size) {
+static void *MemAlloc(MemRec* m, unsigned size) {
   if (size <= m->size)
     return m->ptr;
 
@@ -1502,7 +1502,7 @@ const char *MVE_strerror(int code) {
 // Frame Reader
 //--------------
 
-typedef struct _MVE_frstream {
+struct MVE_frStreamRec {
   int (*callback)(unsigned op, unsigned subop, void *buf);
 
   // I/O Stream state
@@ -1535,7 +1535,7 @@ typedef struct _MVE_frstream {
   uint8_t pal_tbl[3 * 256];
   unsigned pal_start, pal_count;
 
-} MVE_frStreamRec;
+};
 
 static void frLoad(MVE_frStream frs) {
   io_read = frs->io_read;
@@ -1590,7 +1590,7 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
   if (!mem_alloc)
     return (MVE_frStream)NULL;
 
-  frs = (struct _MVE_frstream *)(*mem_alloc)(sizeof(*frs));
+  frs = (struct MVE_frStreamRec *)(*mem_alloc)(sizeof(*frs));
   if (!frs)
     return frs;
   memset(frs, 0, sizeof(*frs));

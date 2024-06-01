@@ -41,34 +41,34 @@
 #include "mem.h"
 
 // Library structures
-typedef struct {
+struct library_entry {
   char name[PSFILENAME_LEN + 1]; // just the filename part
   uint32_t offset;               // offset into library file
   uint32_t length;               // length of this file
   uint32_t timestamp;            // time and date of file
   uint32_t flags;                // misc flags
-} library_entry;
+};
 
-typedef struct library {
+struct library {
   char name[_MAX_PATH]; // includes path + filename
   uint32_t nfiles = 0;
   std::vector<std::unique_ptr<library_entry>> entries;
   std::shared_ptr<library> next;
   int handle = 0;       // identifier for this lib
   FILE *file = nullptr; // pointer to file for this lib, if no one using it
-} library;
+};
 
 // entry in extension->path table
-typedef struct {
+struct ext_entry {
   char ext[_MAX_EXT];
   uint8_t pathnum;
-} ext_entry;
+};
 
 // entry in list of paths
-typedef struct {
+struct path_entry {
   char path[_MAX_PATH];
   uint8_t specific; // if non-zero, only for specific extensions
-} path_entry;
+};
 
 #define MAX_PATHS 100
 

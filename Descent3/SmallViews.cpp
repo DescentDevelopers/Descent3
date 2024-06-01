@@ -168,14 +168,14 @@
 #define LABEL_LEN 19
 
 // Struct to keep data for small views
-typedef struct {
+struct small_view {
   int objhandle;             // the object we're viewing from, or OBJECT_HANDLE_NONE if view not active
   int flags;                 // various flags
   float timer;               // how much longer time window stays alive, if SVF_TIMED flag is set
   float zoom;                // the zoom for this window
   int gun_num;               // which gun to view from, or -1 if none
   char label[LABEL_LEN + 1]; // the label for the window
-} small_view;
+};
 
 // The array of small views
 static small_view Small_views[NUM_SMALL_VIEWS];

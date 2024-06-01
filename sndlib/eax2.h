@@ -54,7 +54,7 @@ DEFINE_GUID(DSPROPSETID_EAX20_ListenerProperties, 0x306a6a8, 0xb224, 0x11d2, 0x9
 // For compatibility with future EAX versions:
 #define DSPROPSETID_EAX_ListenerProperties DSPROPSETID_EAX20_ListenerProperties
 
-typedef enum {
+enum DSPROPERTY_EAX_LISTENERPROPERTY {
   DSPROPERTY_EAXLISTENER_NONE,
   DSPROPERTY_EAXLISTENER_ALLPARAMETERS,
   DSPROPERTY_EAXLISTENER_ROOM,
@@ -71,7 +71,7 @@ typedef enum {
   DSPROPERTY_EAXLISTENER_ENVIRONMENTDIFFUSION,
   DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF,
   DSPROPERTY_EAXLISTENER_FLAGS
-} DSPROPERTY_EAX_LISTENERPROPERTY;
+};
 
 // OR these flags with property id
 #define DSPROPERTY_EAXLISTENER_IMMEDIATE 0x00000000 // changes take effect immediately
@@ -94,7 +94,7 @@ typedef enum {
 //       If you want to save and load presets in binary form, you
 //       should define your own structure to insure future compatibility.
 //
-typedef struct _EAXLISTENERPROPERTIES {
+struct EAXLISTENERPROPERTIES {
   LONG lRoom;                   // room effect level at low frequencies
   LONG lRoomHF;                 // room effect high-frequency level re. low frequency level
   FLOAT flRoomRolloffFactor;    // like DS3D flRolloffFactor but for room effect
@@ -109,7 +109,7 @@ typedef struct _EAXLISTENERPROPERTIES {
   FLOAT flEnvironmentDiffusion; // environment diffusion
   FLOAT flAirAbsorptionHF;      // change in level per meter at 5 kHz
   DWORD dwFlags;                // modifies the behavior of properties
-} EAXLISTENERPROPERTIES, *LPEAXLISTENERPROPERTIES;
+};
 
 // used by DSPROPERTY_EAXLISTENER_ENVIRONMENT
 enum {
@@ -230,7 +230,7 @@ DEFINE_GUID(DSPROPSETID_EAX20_BufferProperties, 0x306a6a7, 0xb224, 0x11d2, 0x99,
 // For compatibility with future EAX versions:
 #define DSPROPSETID_EAX_BufferProperties DSPROPSETID_EAX20_BufferProperties
 
-typedef enum {
+enum DSPROPERTY_EAX_BUFFERPROPERTY {
   DSPROPERTY_EAXBUFFER_NONE,
   DSPROPERTY_EAXBUFFER_ALLPARAMETERS,
   DSPROPERTY_EAXBUFFER_DIRECT,
@@ -246,7 +246,7 @@ typedef enum {
   DSPROPERTY_EAXBUFFER_OUTSIDEVOLUMEHF,
   DSPROPERTY_EAXBUFFER_AIRABSORPTIONFACTOR,
   DSPROPERTY_EAXBUFFER_FLAGS
-} DSPROPERTY_EAX_BUFFERPROPERTY;
+};
 
 // OR these flags with property id
 #define DSPROPERTY_EAXBUFFER_IMMEDIATE 0x00000000 // changes take effect immediately
@@ -265,7 +265,7 @@ typedef enum {
 //       instead of:
 //              myBuffer = { 0, -200, ... , 0x00000003 };
 //
-typedef struct _EAXBUFFERPROPERTIES {
+struct EAXBUFFERPROPERTIES {
   LONG lDirect;                // direct path level
   LONG lDirectHF;              // direct path level at high frequencies
   LONG lRoom;                  // room effect level
@@ -279,7 +279,7 @@ typedef struct _EAXBUFFERPROPERTIES {
   LONG lOutsideVolumeHF;       // outside sound cone level at high frequencies
   FLOAT flAirAbsorptionFactor; // multiplies DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF
   DWORD dwFlags;               // modifies the behavior of properties
-} EAXBUFFERPROPERTIES, *LPEAXBUFFERPROPERTIES;
+};
 
 // Used by DSPROPERTY_EAXBUFFER_FLAGS
 //    TRUE:    value is computed automatically - property is an offset

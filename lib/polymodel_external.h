@@ -98,38 +98,38 @@
 #define SOF_HEADLIGHT 0x02000000 // This suboject is a headlight
 
 // gun bank
-typedef struct w_bank {
+struct w_bank {
   int parent;
   vector pnt;
   vector norm;
-} w_bank;
+};
 
 // attach bank
-typedef struct a_bank {
+struct a_bank {
   int parent;
   vector pnt;
   vector norm;
   vector uvec;
   bool f_uvec;
-} a_bank;
+};
 
-typedef struct {
+struct lightmap_object_face {
   uint8_t num_verts;
   uint16_t lmi_handle;
   vector rvec, uvec;
   float *u2, *v2;
-} lightmap_object_face;
+};
 
-typedef struct {
+struct lightmap_object {
   uint8_t num_models;
 
   int16_t num_faces[MAX_SUBOBJECTS];
   lightmap_object_face *lightmap_faces[MAX_SUBOBJECTS];
   uint8_t used;
 
-} lightmap_object;
+};
 
-typedef struct polyface {
+struct polyface {
   int8_t nverts;
   int16_t *vertnums;
   float *u;
@@ -141,16 +141,16 @@ typedef struct polyface {
   int16_t texnum;
 
   vector normal;
-} polyface;
+};
 
 // glow info
-typedef struct {
+struct glowinfo {
   float glow_r, glow_g, glow_b, glow_size, glow_length;
   vector center, normal;
-} glowinfo;
+};
 
 // bsp information
-typedef struct bsp_info {
+struct bsp_info {
   char name[PAGENAME_LEN]; // name of the subsystem.  Probably displayed on HUD
   int movement_type;       //-1 if no movement, otherwise rotational or positional movement -- subobjects only
   int movement_axis;       // which axis this subobject moves or rotates on.
@@ -214,7 +214,7 @@ typedef struct bsp_info {
   float normalized_angle;
 
   glowinfo *glow_info;
-} bsp_info;
+};
 
 #define PMF_LIGHTMAP_RES 1
 #define PMF_TIMED 2          // Uses new timed animation
@@ -224,7 +224,7 @@ typedef struct bsp_info {
 #define PMF_SIZE_COMPUTED 32 // This polymodel's size is computed
 
 // used to describe a polygon model
-typedef struct poly_model {
+struct poly_model {
   uint16_t used;
 
   int flags;       // PMF_flags, see above
@@ -271,14 +271,14 @@ typedef struct poly_model {
 
   int *render_order; // internal use
 
-} poly_model;
+};
 
 // Which kind of lighting model for this polymodel
-typedef enum {
+enum polymodel_light_type {
   POLYMODEL_LIGHTING_STATIC,
   POLYMODEL_LIGHTING_GOURAUD,
   POLYMODEL_LIGHTING_LIGHTMAP,
-} polymodel_light_type;
+};
 
 // polymodel effects stuff
 // Effect flags:
@@ -300,7 +300,7 @@ typedef enum {
 #define PEF_CUSTOM_GLOW (8192 << 2)
 #define PEF_BUMPMAPPED (8192 << 3)
 
-typedef struct {
+struct polymodel_effect {
   int type;
   float alpha;
   float deform_range;
@@ -327,6 +327,6 @@ typedef struct {
 
   float glow_r, glow_g, glow_b;
 
-} polymodel_effect;
+};
 
 #endif

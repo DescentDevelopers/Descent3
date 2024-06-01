@@ -837,10 +837,10 @@ const char *GetMessage(const char *name);
 #define MatCenStateD (*((int *)(&User_vars[3])))
 #define MatCenStateE (*((int *)(&User_vars[4])))
 
-typedef struct {
+struct tMyHandle {
   const char *name;
   int handle;
-} tMyHandle;
+};
 
 tMyHandle MyObjects[] = {
     {"MatCen1Peg", -1},        {"MatCen2Peg", -1},    {"MatCen3Peg", -1},    {"MatCen4Peg", -1},
@@ -854,10 +854,10 @@ tMyHandle MyMatcens[] = {{"MatCen5", -1}, {"MatCen4", -1}, {"MatCen2", -1}, {"Ma
 
 tMyHandle MyRooms[] = {{"MagicMatCenArmory", -1}};
 
-typedef struct {
+struct tMyMessage {
   const char *name;
   const char *mem;
-} tMyMessage;
+};
 
 tMyMessage MyMessages[] = {{"MagicMatCenSwitches", NULL}, {"MatCenSwitchDOn", NULL},  {"MatCenSwitchDOff", NULL},
                            {"MatCenSwitchGOn", NULL},     {"MatCenSwitchGOff", NULL}, {"MatCenSwitchCOn", NULL},
@@ -1452,10 +1452,10 @@ void aMatCenPuzzleSwitchG(int Player) {
 #define WHITESPACE_CHARS " \t\r\n"
 
 // Structure for storing a script message
-typedef struct {
+struct tScriptMessage {
   char *name;    // the name of the message
   char *message; // the actual message text
-} tScriptMessage;
+};
 
 // Global storage for level script messages
 tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];

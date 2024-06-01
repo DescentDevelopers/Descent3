@@ -110,10 +110,10 @@ int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char par
 #define ID_COMBWALLHIT 4 // Wall hit for purple big ass gun
 #define ID_DROPTARGET 5
 
-typedef struct {
+struct tScriptInfo {
   int id;
   const char *name;
-} tScriptInfo;
+};
 
 tScriptInfo ScriptInfo[NUM_IDS] = {{ID_MERCENDBOSS, "MercEndBoss"}, {ID_GUN, "Gun"},
                                    {ID_CASING, "Casing"},           {ID_HANGLIGHT, "HangLight"},
@@ -130,17 +130,17 @@ public:
   virtual int16_t CallEvent(int event, tOSIRISEventInfo *data);
 };
 
-typedef struct {
+struct tShieldOrbInfo {
   int hitcount;
-} tShieldOrbInfo;
+};
 
 //------------------
 // CombWallHit class
 //------------------
 
-typedef struct {
+struct combwallhit_data {
   float time_left;
-} combwallhit_data;
+};
 
 class CombWallHit : public BaseObjScript {
 private:
@@ -155,10 +155,10 @@ public:
 // DropTarget class
 //------------------
 
-typedef struct {
+struct droptarget_data {
   float time_left;
   float last_set_time;
-} droptarget_data;
+};
 
 class DropTarget : public BaseObjScript {
 private:
@@ -173,10 +173,10 @@ public:
 // Gun class
 //------------------
 
-typedef struct {
+struct gun_data {
   int shell_id;
   bool f_fire;
-} gun_data;
+};
 
 class Gun : public BaseObjScript {
   gun_data *memory;
@@ -190,9 +190,9 @@ public:
 // Casing class
 //------------------
 
-typedef struct {
+struct casing_data {
   float time_left;
-} casing_data;
+};
 
 class Casing : public BaseObjScript {
 private:
@@ -217,7 +217,7 @@ public:
 // Mercenary End Boss Unique Goal IDs
 #define MEB_TURN_TOWARDS_CAMERA 0x00010001
 
-typedef struct {
+struct mercendboss_data {
   int flags;
   char mode;
   char next_mode;
@@ -246,7 +246,7 @@ typedef struct {
   int emitter[2];
   int camera;
   int combine_object;
-} mercendboss_data;
+};
 
 class MercEndBoss : public BaseObjScript {
 private:

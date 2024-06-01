@@ -192,13 +192,13 @@ static char THIS_FILE[] = __FILE__;
 #define AUREAL_MIXER		0x10	// Unused
 #define EAX_MIXER			0x20
 
-typedef struct {
+struct SoundCard {
 	GUID	guid;
 	LPGUID	pguid;
 
 	char name[1024];	// Name of the device
 	UINT mixers;		// Mixers supported by device
-} SoundCard;
+};
 
 static SoundCard Cards[MAX_CARDS];
 static int Num_cards;

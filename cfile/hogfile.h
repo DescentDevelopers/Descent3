@@ -68,18 +68,18 @@
 #define HOG_TAG_LEN (4)
 #define HOG_FILENAME_LEN (36)
 
-typedef struct tHogHeader {
+struct tHogHeader {
   char magic[HOG_TAG_LEN];   // magic "HOG2"
   uint32_t nfiles;           // number of files in header
   uint32_t file_data_offset; // offset in file to filedata.
-} tHogHeader;
+};
 
-typedef struct tHogFileEntry {
+struct tHogFileEntry {
   char name[HOG_FILENAME_LEN]; // file name
   uint32_t flags;              // extra info
   uint32_t len;                // length of file
   uint32_t timestamp;          // time of file.
-} tHogFileEntry;
+};
 
 bool ReadHogHeader(FILE *fp, tHogHeader *header);
 bool ReadHogEntry(FILE *fp, tHogFileEntry *entry);

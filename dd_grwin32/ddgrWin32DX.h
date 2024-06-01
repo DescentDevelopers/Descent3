@@ -48,14 +48,14 @@ class oeApplication;
 
 /* Data structures
  */
-typedef struct tDXSurface {
+struct tDXSurface {
   LPDIRECTDRAWSURFACE lpdds;
   LPDIRECTDRAWSURFACE lpddsback;
   bool backbuffer;
-} tDXSurface;
+};
 
 #define DX_MAX_DEVMODES 32
-typedef struct tDDGRDXInternalData // Internal data for DX subsystem
+struct tDDGRDXInternalData // Internal data for DX subsystem
 {
   bool init;         // is library initialized
   LPDIRECTDRAW lpDD; // DirectDraw Object for video manipulation
@@ -63,7 +63,7 @@ typedef struct tDDGRDXInternalData // Internal data for DX subsystem
   int vidrefs;       // Number of surface references to hPrimaryWnd.
   tDXSurface vidsurf;
   DDSURFACEDESC vidmodes[DX_MAX_DEVMODES]; // Device modes for GDI subsystem (not GDIX)
-} tDDGRDXInternalData;
+};
 
 /*	Externs */
 extern tDDGRDXInternalData DDGR_DX_lib_data;

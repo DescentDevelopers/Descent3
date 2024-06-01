@@ -69,12 +69,12 @@ extern bool Debug_print_block = false;
 #define MAX_NUM_WINDOWS 4
 #define MAX_NUM_VWINDOWS 8
 
-typedef struct mono_element {
+struct mono_element {
   uint8_t character;
   uint8_t attribute;
-} mono_element;
+};
 
-typedef struct {
+struct WINDOW {
   int16_t first_row;
   int16_t height;
   int16_t first_col;
@@ -84,7 +84,7 @@ typedef struct {
   int16_t open;
   struct mono_element save_buf[25][80];
   struct mono_element text[25][80];
-} WINDOW;
+};
 
 static bool Mono_initialized = 0;
 static mono_element (*Mono_screen)[25][80];

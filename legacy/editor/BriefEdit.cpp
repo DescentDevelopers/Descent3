@@ -316,7 +316,7 @@ uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalV
 			switch(effects[curr_effect].type){
 			case BE_TEXT:
 				{
-					LPTCTEXTDESC desc= &effects[curr_effect].text_desc;
+					TCTEXTDESC* desc= &effects[curr_effect].text_desc;
 				
 					switch(desc->type){
 					case TC_TEXT_STATIC:
@@ -401,7 +401,7 @@ uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalV
 				}break;
 			case BE_BMP:
 				{
-					LPTCBMPDESC desc = &effects[curr_effect].bmp_desc;
+					TCBMPDESC* desc = &effects[curr_effect].bmp_desc;
 					switch(desc->type){
 					case TC_BMP_STATIC:
 						strcpy(tempbuffer,"None");
@@ -456,7 +456,7 @@ uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalV
 				}break;
 			case BE_MOVIE:
 				{
-					LPTCMOVIEDESC desc = &effects[curr_effect].movie_desc;
+					TCMOVIEDESC* desc = &effects[curr_effect].movie_desc;
 					if(desc->looping)
 						strcpy(tempbuffer,"looping");
 					else
@@ -485,7 +485,7 @@ uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalV
 				}break;
 			case BE_SND:
 				{
-					LPTCSNDDESC desc = &effects[curr_effect].snd_desc;
+					TCSNDDESC* desc = &effects[curr_effect].snd_desc;
 					if(desc->once)
 						strcpy(tempbuffer,"once");
 					else
@@ -505,7 +505,7 @@ uint8_t BriefEditSaveScreens(char *filename,CComboBox *screen_combo,BriefGlobalV
 				}break;
 			case BE_BUTTON:
 				{
-					LPTCBUTTONDESC desc = &effects[curr_effect].button_desc;
+					TCBUTTONDESC* desc = &effects[curr_effect].button_desc;
 					char ctype[20];
 									
 					switch(desc->click_type){
@@ -714,7 +714,7 @@ bool BEAllocEffect(int *ret_screen,int *ret_effect)
 	return false;	//unknown error
 }
 
-void BEAddTextEffect(LPTCTEXTDESC desc,char *text,char *description,int id)
+void BEAddTextEffect(TCTEXTDESC* desc,char *text,char *description,int id)
 {	
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -722,7 +722,7 @@ void BEAddTextEffect(LPTCTEXTDESC desc,char *text,char *description,int id)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCTEXTDESC dest = &befx->text_desc;
+	TCTEXTDESC* dest = &befx->text_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"Text");
@@ -780,7 +780,7 @@ void BEAddTextEffect(LPTCTEXTDESC desc,char *text,char *description,int id)
 
 }
 
-void BEAddBmpEffect(LPTCBMPDESC desc,char *description)
+void BEAddBmpEffect(TCBMPDESC* desc,char *description)
 {
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -788,7 +788,7 @@ void BEAddBmpEffect(LPTCBMPDESC desc,char *description)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCBMPDESC dest = &befx->bmp_desc;
+	TCBMPDESC* dest = &befx->bmp_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"Bitmap");
@@ -826,7 +826,7 @@ void BEAddBmpEffect(LPTCBMPDESC desc,char *description)
 	}
 }
 
-void BEAddMovieEffect(LPTCMOVIEDESC desc,char *description)
+void BEAddMovieEffect(TCMOVIEDESC* desc,char *description)
 {
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -834,7 +834,7 @@ void BEAddMovieEffect(LPTCMOVIEDESC desc,char *description)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCMOVIEDESC dest = &befx->movie_desc;
+	TCMOVIEDESC* dest = &befx->movie_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"Movie");
@@ -871,7 +871,7 @@ void BEAddMovieEffect(LPTCMOVIEDESC desc,char *description)
 	}
 }
 
-void BEAddBkgEffect(LPTCBKGDESC desc,char *description)
+void BEAddBkgEffect(TCBKGDESC* desc,char *description)
 {
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -879,7 +879,7 @@ void BEAddBkgEffect(LPTCBKGDESC desc,char *description)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCBKGDESC dest = &befx->bkg_desc;
+	TCBKGDESC* dest = &befx->bkg_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"Background");
@@ -909,7 +909,7 @@ void BEAddBkgEffect(LPTCBKGDESC desc,char *description)
 	}
 }
 
-void BEAddPolyEffect(LPTCPOLYDESC desc,char *description)
+void BEAddPolyEffect(TCPOLYDESC* desc,char *description)
 {
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -917,7 +917,7 @@ void BEAddPolyEffect(LPTCPOLYDESC desc,char *description)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCPOLYDESC dest = &befx->poly_desc;
+	TCPOLYDESC* dest = &befx->poly_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"PolyModel");
@@ -948,7 +948,7 @@ void BEAddPolyEffect(LPTCPOLYDESC desc,char *description)
 	}
 }
 
-void BEAddSoundEffect(LPTCSNDDESC desc,char *description)
+void BEAddSoundEffect(TCSNDDESC* desc,char *description)
 {
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -956,7 +956,7 @@ void BEAddSoundEffect(LPTCSNDDESC desc,char *description)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCSNDDESC dest = &befx->snd_desc;
+	TCSNDDESC* dest = &befx->snd_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"Sound");
@@ -982,7 +982,7 @@ void BEAddSoundEffect(LPTCSNDDESC desc,char *description)
 	}
 }
 
-void BEAddButtonEffect(LPTCBUTTONDESC desc,char *description,int id)
+void BEAddButtonEffect(TCBUTTONDESC* desc,char *description,int id)
 {
 	int curr_screen,curr_effect;
 	if(!BEAllocEffect(&curr_screen,&curr_effect))
@@ -990,7 +990,7 @@ void BEAddButtonEffect(LPTCBUTTONDESC desc,char *description,int id)
 
 	tBriefScreen *bscr = &Briefing_screens[curr_screen];
 	tBriefEffect *befx = &bscr->effects[curr_effect];
-	LPTCBUTTONDESC dest = &befx->button_desc;
+	TCBUTTONDESC* dest = &befx->button_desc;
 
 	if(strlen(description)==0)
 		strcpy(description,"Button");
@@ -1297,8 +1297,8 @@ void CBriefEdit::OnBriefEffectBitmap()
 		Briefing_screens[c_scr].effects[c_eff].description[127]='\0';
 
 		//retrieve info
-		LPTCBMPDESC dest = &Briefing_screens[c_scr].effects[c_eff].bmp_desc;
-		LPTCBMPDESC src  = &dlg.desc;
+		TCBMPDESC* dest = &Briefing_screens[c_scr].effects[c_eff].bmp_desc;
+		TCBMPDESC* src  = &dlg.desc;
 
 		dest->type = src->type;
 		dest->flags = src->flags;
@@ -1332,8 +1332,8 @@ void CBriefEdit::OnBriefEffectButton()
 		Briefing_screens[c_scr].effects[c_eff].description[127]='\0';
 
 		//retrieve info
-		LPTCBUTTONDESC dest = &Briefing_screens[c_scr].effects[c_eff].button_desc;
-		LPTCBUTTONDESC src  = &dlg.desc;
+		TCBUTTONDESC* dest = &Briefing_screens[c_scr].effects[c_eff].button_desc;
+		TCBUTTONDESC* src  = &dlg.desc;
 
 		strcpy(dest->filename,src->filename);
 		strcpy(dest->filename_focus,src->filename_focus);
@@ -1425,8 +1425,8 @@ void CBriefEdit::OnBriefEffectEdit()
 				Briefing_screens[scr_index].effects[efx_index].description[127]='\0';
 
 				//retrieve info
-				LPTCTEXTDESC dest = &Briefing_screens[scr_index].effects[efx_index].text_desc;
-				LPTCTEXTDESC src = &dlg.desc;
+				TCTEXTDESC* dest = &Briefing_screens[scr_index].effects[efx_index].text_desc;
+				TCTEXTDESC* src = &dlg.desc;
 
 				dest->caps = src->caps;
 				memcpy(&dest->textbox,&src->textbox,sizeof(tc_text));
@@ -1468,8 +1468,8 @@ void CBriefEdit::OnBriefEffectEdit()
 				Briefing_screens[scr_index].effects[efx_index].description[127]='\0';
 
 				//retrieve info
-				LPTCBMPDESC dest = &Briefing_screens[scr_index].effects[efx_index].bmp_desc;
-				LPTCBMPDESC src  = &dlg.desc;
+				TCBMPDESC* dest = &Briefing_screens[scr_index].effects[efx_index].bmp_desc;
+				TCBMPDESC* src  = &dlg.desc;
 
 				dest->type = src->type;
 				dest->flags = src->flags;
@@ -1500,8 +1500,8 @@ void CBriefEdit::OnBriefEffectEdit()
 				Briefing_screens[scr_index].effects[efx_index].description[127]='\0';
 
 				//retrieve info
-				LPTCMOVIEDESC dest = &Briefing_screens[scr_index].effects[efx_index].movie_desc;
-				LPTCMOVIEDESC src = &dlg.desc;
+				TCMOVIEDESC* dest = &Briefing_screens[scr_index].effects[efx_index].movie_desc;
+				TCMOVIEDESC* src = &dlg.desc;
 
 				dest->caps = src->caps;
 				dest->type = src->type;
@@ -1534,8 +1534,8 @@ void CBriefEdit::OnBriefEffectEdit()
 				Briefing_screens[scr_index].effects[efx_index].description[127]='\0';
 
 				//retrieve info
-				LPTCSNDDESC dest = &Briefing_screens[scr_index].effects[efx_index].snd_desc;
-				LPTCSNDDESC src = &dlg.desc;
+				TCSNDDESC* dest = &Briefing_screens[scr_index].effects[efx_index].snd_desc;
+				TCSNDDESC* src = &dlg.desc;
 
 				dest->caps = src->caps;
 				dest->type = src->type;
@@ -1560,8 +1560,8 @@ void CBriefEdit::OnBriefEffectEdit()
 				Briefing_screens[scr_index].effects[efx_index].description[127]='\0';
 
 				//retrieve info
-				LPTCBUTTONDESC dest = &Briefing_screens[scr_index].effects[efx_index].button_desc;
-				LPTCBUTTONDESC src  = &dlg.desc;
+				TCBUTTONDESC* dest = &Briefing_screens[scr_index].effects[efx_index].button_desc;
+				TCBUTTONDESC* src  = &dlg.desc;
 
 				strcpy(dest->filename,src->filename);
 				strcpy(dest->filename_focus,src->filename_focus);
@@ -1611,8 +1611,8 @@ void CBriefEdit::OnBriefEffectMovie()
 		Briefing_screens[c_scr].effects[c_eff].description[127]='\0';
 
 		//retrieve info
-		LPTCMOVIEDESC dest = &Briefing_screens[c_scr].effects[c_eff].movie_desc;
-		LPTCMOVIEDESC src = &dlg.desc;
+		TCMOVIEDESC* dest = &Briefing_screens[c_scr].effects[c_eff].movie_desc;
+		TCMOVIEDESC* src = &dlg.desc;
 
 		dest->caps = src->caps;
 		dest->type = src->type;
@@ -1646,8 +1646,8 @@ void CBriefEdit::OnBriefEffectSound()
 		Briefing_screens[c_scr].effects[c_eff].description[127]='\0';
 
 		//retrieve info
-		LPTCSNDDESC dest = &Briefing_screens[c_scr].effects[c_eff].snd_desc;
-		LPTCSNDDESC src = &dlg.desc;
+		TCSNDDESC* dest = &Briefing_screens[c_scr].effects[c_eff].snd_desc;
+		TCSNDDESC* src = &dlg.desc;
 
 		dest->caps = src->caps;
 		dest->type = src->type;
@@ -1681,8 +1681,8 @@ void CBriefEdit::OnBriefEffectText()
 		Briefing_screens[c_scr].effects[c_eff].description[127]='\0';
 
 		//retrieve info
-		LPTCTEXTDESC dest = &Briefing_screens[c_scr].effects[c_eff].text_desc;
-		LPTCTEXTDESC src = &dlg.desc;
+		TCTEXTDESC* dest = &Briefing_screens[c_scr].effects[c_eff].text_desc;
+		TCTEXTDESC* src = &dlg.desc;
 
 		dest->caps = src->caps;
 		memcpy(&dest->textbox,&src->textbox,sizeof(tc_text));

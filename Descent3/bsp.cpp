@@ -453,7 +453,7 @@ uint8_t Plane_twirl = 0;
 uint8_t Node_twirl = 0;
 
 // Selects the best plane to partition with, returning the pointer to polygon to split with
-bsppolygon *SelectPlane(list **polylist) {
+bsppolygon *SelectPlane(listnode **polylist) {
   listnode *outer, *inner;
   bsppolygon *outerpoly, *innerpoly, *bestpoly;
   int splits, front, back, planar, result, balance;
@@ -528,12 +528,12 @@ bsppolygon *SelectPlane(list **polylist) {
 }
 
 // This is the routine that recursively builds the bsptree
-int BuildBSPNode(bspnode *tree, list **polylist, int numpolys) {
+int BuildBSPNode(bspnode *tree, listnode **polylist, int numpolys) {
   bsppolygon *partition_poly;
   listnode *lnode = *polylist;
   listnode *next;
   bspnode *frontnode, *backnode;
-  list *frontlist = NULL, *backlist = NULL;
+  listnode *frontlist = NULL, *backlist = NULL;
   bspplane partition_plane;
   int numfront = 0, numback = 0, numsplits = 0;
 

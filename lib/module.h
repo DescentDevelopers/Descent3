@@ -101,9 +101,9 @@
 #define DLLFUNCEXPORT __declspec(dllexport)
 #define DLLFUNCIMPORT __declspec(dllimport)
 #define DLLEXPORT CPPEXTERN DLLFUNCEXPORT
-typedef struct {
+struct module {
   HINSTANCE handle; // handle to the DLL
-} module;
+};
 //=======================================================================
 #elif defined(__LINUX__)
 //==========================Linux Definitions============================
@@ -113,9 +113,9 @@ typedef struct {
 #define DLLFUNCIMPORT
 #define DLLEXPORT CPPEXTERN DLLFUNCEXPORT
 
-typedef struct {
+struct module {
   void *handle; // handle to the DLL
-} module;
+};
 //=======================================================================
 #endif
 

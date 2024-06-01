@@ -139,15 +139,15 @@ const GUID *effectGUID[kMaxEffectSubTypes] =	{
 	&GUID_Friction
 };
 
-typedef union {
+union tEffectClasses {
 	DICONSTANTFORCE   constant;
 	DIRAMPFORCE       ramp;
 	DIPERIODIC        period;
 	DICONDITION       condition;
 	DICUSTOMFORCE     custom;
-}tEffectClasses;
+};
 
-typedef struct tEffect{
+struct tEffect {
 	DIEFFECT       general;
 	tEffectClasses specific;
 	DIENVELOPE     envelope;

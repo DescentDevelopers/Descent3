@@ -53,10 +53,10 @@
 #include "boa.h"
 #include "mem.h"
 
-typedef struct 
+struct spec_vertex
 {
 	float x,y;
-} spec_vertex;
+};
 
 int AllowCombining=1;
 float GlobalMultiplier=1.0;

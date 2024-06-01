@@ -70,7 +70,7 @@
 
 class win_llsSystem;
 
-typedef struct DSLOOPSTREAM {
+struct DSLOOPSTREAM {
   uint8_t method; // method 0 for streamed method, 1 for emulated method
   uint8_t playing;
   uint8_t please_close;
@@ -96,9 +96,9 @@ typedef struct DSLOOPSTREAM {
   bool kill_me;
   bool f_sample_16bit;
   char silence_byte;
-} DSLOOPSTREAM;
+};
 
-typedef struct DSSTREAMTAG {
+struct DSSTREAM {
   // These 2 pointers are the same on good sound cards
   LPDIRECTSOUNDBUFFER m_lp_primary_buffer; // pointer to the primary sound buffer
   LPDIRECTSOUNDBUFFER m_lp_looping_buffer; // pointer to the looping sound buffer
@@ -118,9 +118,9 @@ typedef struct DSSTREAMTAG {
   int NextWritePos; // Last bit position we wrote sound data to
   int LastPlayPos;  // Last bit position that the play pointer was recorded at
 
-} DSSTREAM;
+};
 
-typedef struct tPSBInfo {
+struct tPSBInfo {
   float volume;
   union {
     float pan;
@@ -130,7 +130,7 @@ typedef struct tPSBInfo {
   uint16_t freq;
   uint16_t priority;
   bool looping;
-} tPSBInfo;
+};
 
 // Sound item info (cache list)
 class sound_buffer_info {
