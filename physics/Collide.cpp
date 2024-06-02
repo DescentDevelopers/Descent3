@@ -2695,8 +2695,8 @@ void check_lg_inform(object *A, object *B) {
 
 void collide_two_objects(object *A, object *B, vector *collision_point, vector *collision_normal, fvi_info *hit_info) {
   int collision_type;
-  int a_num = A - Objects;
-  int b_num = B - Objects;
+  int a_num = OBJNUM(A);
+  int b_num = OBJNUM(B);
   uint8_t a_good = 0, b_good = 0;
   uint8_t a_hittime_good = 1, b_hittime_good = 1;
 

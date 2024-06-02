@@ -809,7 +809,7 @@ void do_physics_sim(object *obj) {
     Players[obj->id].last_thrust_time = Gametime;
   }
 
-  //	mprintf(0, "%d Over terrain = %d\n", obj - Objects, obj->flags & OF_OVER_TERRAIN);
+  //	mprintf(0, "%d Over terrain = %d\n", OBJNUM(obj), obj->flags & OF_OVER_TERRAIN);
 
   // If the object wiggles
   if ((obj->mtype.phys_info.flags & PF_WIGGLE) && (Demo_flags != DF_PLAYBACK)) {

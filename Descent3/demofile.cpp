@@ -319,6 +319,8 @@ bool Demo_auto_play = false;
 static bool Demo_first_frame = true;
 bool Demo_make_movie = false;
 
+#define NUM_CAMERA_VIEWS 3
+
 #define DEMO_PINFO_UPDATE .1
 #define MAX_COOP_TURRETS 400
 extern std::array<float, MAX_COOP_TURRETS> turret_holder;
@@ -837,7 +839,7 @@ int DemoReadHeader() {
 
     // Reset rearview cameras since Player_object may have changed
     extern void RestoreCameraRearviews();
-    extern int Camera_view_mode[];
+    extern std::array<int, NUM_CAMERA_VIEWS> Camera_view_mode;
     Camera_view_mode[0] = Camera_view_mode[2] = 0; //(0==CV_NONE)  Force reinitialization
     RestoreCameraRearviews();
   } catch (...) {

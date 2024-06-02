@@ -1441,7 +1441,7 @@ void ClearViewerObjects() {
   int i;
   object *objp;
 
-  for (i = 0, objp = Objects; i <= Highest_object_index; i++, objp++)
+  for (i = 0, objp = std::data(Objects); i <= Highest_object_index; i++, objp++)
     if (objp->type == OBJ_VIEWER) {
       mprintf(0, "Deleting viewer object %d\n", i);
       ObjDelete(i);
@@ -1456,7 +1456,7 @@ void DeleteAmbientObjects() {
   if (!(Game_mode & GM_MULTI) && Detail_settings.Object_complexity == 2) // high
     return;
 
-  for (i = 0, objp = Objects, count = 0; i <= Highest_object_index; i++, objp++) {
+  for (i = 0, objp = std::data(Objects), count = 0; i <= Highest_object_index; i++, objp++) {
     if (IS_GENERIC(objp->type) && (Object_info[objp->id].flags & OIF_AMBIENT_OBJECT)) {
       if ((Detail_settings.Object_complexity == 0) || (count & 1) || (Game_mode & GM_MULTI))
         ObjDelete(i);

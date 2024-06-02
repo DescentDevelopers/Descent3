@@ -1292,14 +1292,14 @@ int StuffObjectIntoPacket(object *obj, uint8_t *data) {
   int count = 0;
   bool obj_is_dummy = false;
 
-  MultiAddUshort(obj - Objects, data, &count);
+  MultiAddUshort(OBJNUM(obj), data, &count);
   MultiAddByte(obj->type, data, &count);
 
   //	Send old object type if it's a dummy
   if (obj->type == OBJ_DUMMY) {
     obj_is_dummy = true;
     MultiAddByte(obj->dummy_type, data, &count);
-    ObjUnGhostObject(obj - Objects);
+    ObjUnGhostObject(OBJNUM(obj));
   }
 
   if (obj->type != OBJ_CAMERA && obj->type != OBJ_DOOR) {
@@ -1349,7 +1349,7 @@ int StuffObjectIntoPacket(object *obj, uint8_t *data) {
 
   // we need to reghost the object if what originally a ghost
   if (obj_is_dummy) {
-    ObjGhostObject(obj - Objects);
+    ObjGhostObject(OBJNUM(obj));
   }
 
   return count;
@@ -2051,7 +2051,7 @@ void MultiSendPositionalUpdates(int to_slot) {
 
     // Check for guideds
     if (Players[to_slot].guided_obj != NULL)
-      srcs[num_src_to_check++] = Players[to_slot].guided_obj - Objects;
+      srcs[num_src_to_check++] = OBJNUM(Players[to_slot].guided_obj);
 
     if (Players[to_slot].small_dll_obj != -1) {
       int objnum = Players[to_slot].small_dll_obj;
@@ -2325,7 +2325,7 @@ bool MultiIsGenericVisibleToPlayer(int test_objnum, int to_slot) {
   srcs[0] = Players[to_slot].objnum;
 
   if (Players[to_slot].guided_obj != NULL)
-    srcs[num_src_to_check++] = Players[to_slot].guided_obj - Objects;
+    srcs[num_src_to_check++] = OBJNUM(Players[to_slot].guided_obj);
 
   if (Players[to_slot].small_dll_obj != -1) {
     int objnum = Players[to_slot].small_dll_obj;

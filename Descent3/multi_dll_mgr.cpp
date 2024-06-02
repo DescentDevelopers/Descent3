@@ -387,7 +387,7 @@ extern uint16_t PXOPort;
 void GetMultiAPI(multi_api *api) {
   // make the compiler happy
   bool (*fp_PlayerIsShipAllowed)(int, int) = PlayerIsShipAllowed;
-  api->objs = (int *)Objects;
+  api->objs = (int *)std::data(Objects);
   api->rooms = (int *)std::data(Rooms);
   api->terrain = (int *)Terrain_seg;
   api->players = (int *)std::data(Players);

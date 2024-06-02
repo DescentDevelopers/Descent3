@@ -5366,7 +5366,7 @@ void MultiSendObject(object *obj, uint8_t announce, uint8_t demo_record) {
 
   // Send server object number
   MultiAddByte(announce, data, &count);
-  MultiAddUshort(obj - Objects, data, &count);
+  MultiAddUshort(OBJNUM(obj), data, &count);
 
   // Add parent
   if (obj->parent_handle == OBJECT_HANDLE_NONE)
@@ -5768,7 +5768,7 @@ void MultiSendRemoveObject(object *obj, uint8_t playsound) {
 
   ASSERT(obj->flags & OF_CLIENT_KNOWS);
 
-  MultiAddUshort(obj - Objects, data, &count);
+  MultiAddUshort(OBJNUM(obj), data, &count);
   MultiAddByte(obj->type, data, &count);
   MultiAddByte(playsound, data, &count);
 
@@ -6335,10 +6335,10 @@ void MultiSendRequestPeerDamage(object *killer, int weapon_id, int damage_type, 
   MultiAddByte(Player_num, data, &count);
 
   // Add killer info
-  if (killer == NULL || Local_object_list[killer - Objects] == 65535 || killer == &Objects[Players[Player_num].objnum])
+  if (killer == NULL || Local_object_list[OBJNUM(killer)] == 65535 || killer == &Objects[Players[Player_num].objnum])
     MultiAddUshort(65535, data, &count);
   else
-    MultiAddUshort(Local_object_list[killer - Objects], data, &count);
+    MultiAddUshort(Local_object_list[OBJNUM(killer)], data, &count);
 
   MultiAddUbyte(weapon_id, data, &count);
   MultiAddUbyte(damage_type, data, &count);
@@ -8144,7 +8144,7 @@ void MultiSendGhostObject(object *obj, bool ghost) {
 
   size_offset = START_DATA(MP_GHOST_OBJECT, data, &count, 1);
 
-  objnum = obj - Objects;
+  objnum = OBJNUM(obj);
 
   MultiAddUshort(objnum, data, &count);
   MultiAddByte((ghost) ? 1 : 0, data, &count);
@@ -8490,7 +8490,7 @@ void MultiDoAttach(uint8_t *data) {
     return;
   }
 
-  ASSERT(child >= Objects && parent >= Objects);
+  ASSERT(child >= std::data(Objects) && parent >= std::data(Objects));
   ASSERT(child->type != OBJ_NONE && parent->type != OBJ_NONE);
 
   AttachObject(parent, parent_ap, child, child_ap, f_aligned);
@@ -8537,7 +8537,7 @@ void MultiDoAttachRad(uint8_t *data) {
     return;
   }
 
-  ASSERT(child >= Objects && parent >= Objects);
+  ASSERT(child >= std::data(Objects) && parent >= std::data(Objects));
   ASSERT(child->type != OBJ_NONE && parent->type != OBJ_NONE);
 
   AttachObject(parent, parent_ap, child, rad);
