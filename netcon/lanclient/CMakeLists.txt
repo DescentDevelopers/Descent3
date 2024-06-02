@@ -10,40 +10,20 @@ set_target_properties(Direct_TCP_IP PROPERTIES OUTPUT_NAME "Direct TCP~IP")
 target_link_libraries(Direct_TCP_IP PRIVATE
   ddio
   inetfile
+  networking
+  ui
+  bitmap
+  model
+  module
+  manage
+  renderer
+  2dlib
   $<$<PLATFORM_ID:Windows>:
     ws2_32
   >
 )
 
-target_include_directories(Direct_TCP_IP PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/networking
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ui
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/module
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/manage
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/renderer
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
-  >
-)
+target_include_directories(Direct_TCP_IP PUBLIC .)
 
 add_custom_target(Direct_TCP_IP_Hog
   COMMAND $<TARGET_FILE:HogMaker>

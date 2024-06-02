@@ -10,14 +10,16 @@ set(CPPS
 
 add_library(dd_grwin32 STATIC ${HEADERS} ${CPPS})
 
-target_include_directories(dd_grwin32 PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
+target_link_libraries(dd_grwin32
+  ddio
+  2dlib
+  $<$<PLATFORM_ID:Linux,Darwin>:
+    linux
   >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/win32
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+  $<$<PLATFORM_ID:Windows>:
+    win32
   >
 )
+
+
+target_include_directories(dd_grwin32 PUBLIC .)

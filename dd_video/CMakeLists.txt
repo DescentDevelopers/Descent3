@@ -19,19 +19,15 @@ target_link_libraries(dd_video PRIVATE
   $<$<PLATFORM_ID:Linux,Darwin>:
     linux
   >
+  $<$<PLATFORM_ID:Windows>:
+    win32
+  >
+  ddio
+  2dlib
 )
 
 target_include_directories(dd_video PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/win32
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/linux
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/dd_video
   >
 )

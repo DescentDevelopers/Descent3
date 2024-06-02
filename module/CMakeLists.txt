@@ -10,6 +10,6 @@ target_link_libraries(module PRIVATE
 
 target_include_directories(module PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
+    ${PROJECT_SOURCE_DIR}/module
   >
 )

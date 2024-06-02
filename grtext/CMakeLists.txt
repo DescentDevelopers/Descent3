@@ -10,22 +10,14 @@ set(CPPS
 add_library(grtext STATIC ${HEADERS} ${CPPS})
 target_link_libraries(grtext PRIVATE
   ddio
+  bitmap
+  renderer
+  dd_video
+  2dlib
 )
 
 target_include_directories(grtext PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/renderer
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/dd_video
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/grtext
   >
 )

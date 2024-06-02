@@ -30,16 +30,16 @@ target_link_libraries(manage PRIVATE
   ddio
   sndlib
   stream_audio
+  2dlib
+  model
+  networking
+  bitmap
+  renderer
 )
 
 target_include_directories(manage PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/networking
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/manage
   >
 )
+

@@ -39,13 +39,16 @@ set(CPPS
 add_library(ddio STATIC ${CPPS})
 target_link_libraries(ddio
   ddebug
+  $<$<PLATFORM_ID:Linux,Darwin>:
+    linux
+  >
+  $<$<PLATFORM_ID:Windows>:
+    win32
+  >
 )
 
 target_include_directories(ddio PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/win32
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/linux
+    ${PROJECT_SOURCE_DIR}/ddio
   >
 )

@@ -29,44 +29,25 @@ add_definitions(-DOUTRAGE_VERSION -DDMFC_DLL)
 
 add_library(dmfc STATIC ${HEADERS} ${CPPS})
 
-target_include_directories(dmfc PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/grtext
+
+target_link_libraries(dmfc PRIVATE
+  grtext
+  module
+  renderer
+  bitmap
+  networking
+  physics
+  model
+  manage
+  ddio
+  dd_video
+  2dlib
+  $<$<PLATFORM_ID:Linux,Darwin>:
+    linux
   >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/module
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/renderer
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/networking
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/physics
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/manage
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/dd_video
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/win32
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/linux
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+  $<$<PLATFORM_ID:Windows>:
+    win32
   >
 )
+
+target_include_directories(dmfc PUBLIC .)

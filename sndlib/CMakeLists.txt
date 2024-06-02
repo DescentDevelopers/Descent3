@@ -37,28 +37,19 @@ add_library(sndlib STATIC ${HEADERS} ${CPPS})
 target_link_libraries(sndlib PRIVATE
   cfile
   ddio
+  networking
+  bitmap
+  renderer
+  manage
+  model
+  physics
+  2dlib
   stream_audio
+  libacm
 )
+
 target_include_directories(sndlib PUBLIC
   $<BUILD_INTERFACE:
-  ${PROJECT_SOURCE_DIR}/networking
-  >
-  $<BUILD_INTERFACE:
-  ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-  ${PROJECT_SOURCE_DIR}/renderer
-  >
-  $<BUILD_INTERFACE:
-  ${PROJECT_SOURCE_DIR}/manage
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/physics
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/sndlib
   >
 )

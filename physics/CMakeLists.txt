@@ -13,22 +13,19 @@ add_library(physics STATIC ${HEADERS} ${CPPS})
 target_link_libraries(physics PRIVATE
   ddio
   sndlib
+  rtperformance
+  module
+  model
+  ddio
+  2dlib
+  manage
+  bitmap
+  renderer
+  networking
 )
 
 target_include_directories(physics PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/rtperformance
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/module
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/physics
   >
 )

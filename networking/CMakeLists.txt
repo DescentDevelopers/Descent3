@@ -11,28 +11,17 @@ endif()
 add_library(networking STATIC ${HEADERS} ${CPPS})
 target_link_libraries(networking PRIVATE
   ddio
+  renderer
+  bitmap
+  manage
+  module
+  ddio
+  2dlib
+  model
 )
 
 target_include_directories(networking PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/renderer
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/manage
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/module
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/networking
   >
 )

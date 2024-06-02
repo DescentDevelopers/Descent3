@@ -301,39 +301,7 @@ target_link_libraries(Descent3
   fix grtext manage mem misc model module movie stream_audio
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
-target_include_directories(Descent3
-  PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/czip
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/d3music
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/grtext
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/manage
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/networking
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/unzip
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
-  >
-
+target_include_directories(Descent3 PUBLIC .
   PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir)
 install(TARGETS Descent3 RUNTIME)

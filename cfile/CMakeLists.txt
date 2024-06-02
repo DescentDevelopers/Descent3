@@ -13,13 +13,11 @@ set(CPPS
 add_library(cfile STATIC ${HEADERS} ${CPPS})
 target_link_libraries(cfile PRIVATE
   ddio
+  bitmap
 )
 
 target_include_directories(cfile PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
+    ${PROJECT_SOURCE_DIR}/cfile
   >
 )

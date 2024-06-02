@@ -21,16 +21,12 @@ target_link_libraries(bitmap PRIVATE
   ddebug
   ddio
   stb
+  renderer
+  2dlib
 )
 
 target_include_directories(bitmap PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/renderer
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/bitmap
   >
 )

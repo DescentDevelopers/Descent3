@@ -31,22 +31,19 @@ add_library(renderer STATIC ${HEADERS} ${CPPS})
 target_link_libraries(renderer PRIVATE
   bitmap
   ddio
+  rtperformance
+  module
+  2dlib
+  $<$<PLATFORM_ID:Linux,Darwin>:
+    linux
+  >
+  $<$<PLATFORM_ID:Windows>:
+    win32
+  >
 )
 
 target_include_directories(renderer PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/rtperformance
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/module
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/win32
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/linux
-  >
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/2dlib
+    ${PROJECT_SOURCE_DIR}/renderer
   >
 )

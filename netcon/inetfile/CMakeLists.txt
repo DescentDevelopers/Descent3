@@ -10,8 +10,8 @@ set(CPPS
 
 add_library(inetfile STATIC ${HEADERS} ${CPPS})
 
-target_include_directories(inetfile PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/networking
-  >
+target_link_libraries(inetfile PRIVATE
+  networking
 )
+
+target_include_directories(inetfile PUBLIC .)

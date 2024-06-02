@@ -8,6 +8,6 @@ target_link_libraries(AudioEncode libacm)
 
 target_include_directories(AudioEncode PUBLIC
   $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/libacm
+    ${PROJECT_SOURCE_DIR}/AudioEncode
   >
 )
