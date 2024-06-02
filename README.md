@@ -121,7 +121,7 @@ cmake --build --preset mac --config [Debug|Release]
 #### Building - Linux (Ubuntu)
 ```sh
 sudo apt update
-sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl2-dev libncurses-dev zlib1g-dev
+sudo apt install -y --no-install-recommends ninja-build cmake g++ libsdl2-dev zlib1g-dev
 cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```
@@ -129,7 +129,7 @@ cmake --build --preset linux --config [Debug|Release]
 #### Building - Linux (Fedora)
 ```sh
 sudo dnf update --refresh
-sudo dnf install -y ninja-build cmake gcc-c++ SDL2-devel ncurses-devel zlib-devel
+sudo dnf install -y ninja-build cmake gcc-c++ SDL2-devel zlib-devel
 cmake --preset linux -D ENABLE_LOGGER=[ON|OFF]
 cmake --build --preset linux --config [Debug|Release]
 ```

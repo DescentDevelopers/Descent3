@@ -45,40 +45,29 @@
  * $NoKeywords: $
  */
 
-#include <cstdarg>
-#include <cstring>
 #include <cstdio>
 
-#include "application.h"
-#include "AppConsole.h"
-#include "TaskSystem.h"
 #include "mono.h"
 
 
 // put some data up on the screen
 void con_null_Puts(int window, const char *str);
 
-void con_null_Printf(const char *fmt, ...) {
-  char buffer[1024];
-  va_list args;
-  va_start(args, fmt);
-  std::vsnprintf(buffer, sizeof(buffer), fmt, args);
-  va_end(args);
-  con_null_Puts(0, buffer);
+bool con_null_Input(char *buf, int buflen) {
+  *buf = '\0';
+  return false;
 }
 
-bool con_null_Input(char *buf, int buflen) { return false; }
+void con_null_Defer() {}
 
-void con_null_Defer(void) {}
-
-bool con_null_Create(void) {
+bool con_null_Create() {
   printf("Descent 3 Dedicated Server\n");
   printf("Running in quiet mode.\n");
   printf("To Administer, you must telnet in to the dedicated server.\n");
   return true;
 }
 
-void con_null_Destroy(void) {}
+void con_null_Destroy() {}
 
 // put some data up on the screen
 void con_null_Puts(int window, const char *str) { mprintf(0, str); }
