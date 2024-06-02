@@ -1084,6 +1084,8 @@
  * $NoKeywords: $
  */
 
+#include <cmath>
+
 #include "pserror.h"
 #include "player.h"
 #include "game.h"
@@ -3295,9 +3297,9 @@ float MoveDeathCam(int slot, vector *vec, float distance) {
     fq.ignore_obj_list = NULL;
     fq.flags = 0;
 
-    ASSERT(_finite(next_vec.x) != 0);
-    ASSERT(_finite(next_vec.y) != 0);
-    ASSERT(_finite(next_vec.z) != 0);
+    ASSERT(std::isfinite(next_vec.x));
+    ASSERT(std::isfinite(next_vec.y));
+    ASSERT(std::isfinite(next_vec.z));
 
     fvi_FindIntersection(&fq, &hit_data);
 

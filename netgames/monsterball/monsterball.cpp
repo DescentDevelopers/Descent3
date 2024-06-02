@@ -162,6 +162,8 @@
  * $NoKeywords: $
  */
 
+#include <cmath>
+
 #include "gamedll_header.h"
 #include "idmfc.h"
 #include "monsterball.h"
@@ -1926,18 +1928,18 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   object *t = NULL;
   object *other = NULL;
 
-  ASSERT(_finite(rotvel->x) != 0);
-  ASSERT(_finite(rotvel->y) != 0);
-  ASSERT(_finite(rotvel->z) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.rotvel.x) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.rotvel.y) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.rotvel.z) != 0);
-  ASSERT(_finite(velocity->x) != 0);
-  ASSERT(_finite(velocity->y) != 0);
-  ASSERT(_finite(velocity->z) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.velocity.x) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.velocity.y) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.velocity.z) != 0);
+  ASSERT(std::isfinite(rotvel->x));
+  ASSERT(std::isfinite(rotvel->y));
+  ASSERT(std::isfinite(rotvel->z));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
+  ASSERT(std::isfinite(velocity->x));
+  ASSERT(std::isfinite(velocity->y));
+  ASSERT(std::isfinite(velocity->z));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
 
   vector r1 = *collision_point - object0->pos;
   vector r2 = *collision_point - (*pos);
@@ -2057,12 +2059,12 @@ void bump_object(object *object0, vector *rotvel, vector *velocity, vector *pos,
   // change the player's rotational velocity
   object0->mtype.phys_info.rotvel += (txx1 * object0->orient) * rotscale1;
 
-  ASSERT(_finite(object0->mtype.phys_info.rotvel.x) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.rotvel.y) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.rotvel.z) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.velocity.x) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.velocity.y) != 0);
-  ASSERT(_finite(object0->mtype.phys_info.velocity.z) != 0);
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.x));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.y));
+  ASSERT(std::isfinite(object0->mtype.phys_info.rotvel.z));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.x));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.y));
+  ASSERT(std::isfinite(object0->mtype.phys_info.velocity.z));
 }
 
 bool ValidateOwner(int *pnum, object **obj) {

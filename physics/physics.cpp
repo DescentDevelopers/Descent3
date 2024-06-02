@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cmath>
+
 #include <stdlib.h>
 #include <memory.h>
 
@@ -780,9 +782,9 @@ void do_physics_sim(object *obj) {
 
   DebugBlockPrint("P ");
 
-  ASSERT(_finite(obj->mtype.phys_info.velocity.x) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.y) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.z) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z)); // Caller wants to go to infinity!  -- Not FVI's fault.
 
 #ifdef _DEBUG
   if (!Game_do_flying_sim) {
@@ -1869,9 +1871,9 @@ end_of_sim:
 
   AttachUpdateSubObjects(obj);
 
-  ASSERT(_finite(obj->mtype.phys_info.velocity.x) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.y) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.z) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z)); // Caller wants to go to infinity!  -- Not FVI's fault.
 
   obj->last_pos = init_pos;
   return;
@@ -2293,9 +2295,9 @@ void do_walking_sim(object *obj) {
   ASSERT(obj->type != OBJ_NONE);
   ASSERT(obj->movement_type == MT_WALKING);
   ASSERT(!(obj->mtype.phys_info.flags & PF_USES_THRUST) || obj->mtype.phys_info.drag != 0.0);
-  ASSERT(_finite(obj->mtype.phys_info.velocity.x) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.y) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.z) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z)); // Caller wants to go to infinity!  -- Not FVI's fault.
 
   DebugBlockPrint("PW");
 
@@ -2867,9 +2869,9 @@ void do_walking_sim(object *obj) {
 end_of_sim:
   AttachUpdateSubObjects(obj);
 
-  ASSERT(_finite(obj->mtype.phys_info.velocity.x) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.y) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(obj->mtype.phys_info.velocity.z) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z)); // Caller wants to go to infinity!  -- Not FVI's fault.
 
   obj->last_pos = init_pos;
   return;

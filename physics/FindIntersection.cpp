@@ -854,6 +854,8 @@
  * $NoKeywords: $
  */
 
+#include <cmath>
+
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -2666,9 +2668,9 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
   ASSERT(fq != NULL && hit_data != NULL);
 
-  ASSERT(_finite(fq->p1->x) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(fq->p1->y) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
-  ASSERT(_finite(fq->p1->z) != 0); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->x)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->y)); // Caller wants to go to infinity!  -- Not FVI's fault.
+  ASSERT(std::isfinite(fq->p1->z)); // Caller wants to go to infinity!  -- Not FVI's fault.
 
   fvi_movement_delta = *fq->p1 - *fq->p0;
 

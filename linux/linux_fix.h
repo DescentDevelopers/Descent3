@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -48,10 +48,4 @@ char *strupr(char *string);
 #define stricmp(a, b) strcasecmp(a, b)
 #define strnicmp(a, b, c) strncasecmp(a, b, c)
 #define _chmod(a, b) chmod(a, b)
-#if defined(__aarch64__)
-#define _finite(a) isfinite(a)
-#else
-#define _finite(a) finite(a)
-#endif
-
 #endif
