@@ -101,7 +101,7 @@
 #include "mono.h"
 #include "ddio.h"
 #include "ddio_win.h"
-#include "application.h"
+#include "winapp.h"
 #include "forcefeedback.h"
 #include "mem.h"
 #include "dinput.h"

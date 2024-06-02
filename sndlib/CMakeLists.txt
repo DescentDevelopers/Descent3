@@ -1,17 +1,21 @@
 set(HEADERS
-  auddev.h
   ddsndgeometry.h
-  ds3dlib.h
-  ds3dlib_internal.h
-  eax2.h
-  eax.h
   hlsoundlib.h
-  mixer.h
-  sdlsound.h
   sndrender.h
   soundload.h
   ssl_lib.h
-  vmanpset.h
+  $<$<PLATFORM_ID:Windows>:
+    auddev.h
+    ds3dlib.h
+    ds3dlib_internal.h
+    eax2.h
+    eax.h
+    vmanpset.h
+  >
+  $<$<PLATFORM_ID:Darwin,Linux>:
+    mixer.h
+    sdlsound.h
+  >
 )
 
 set(CPPS

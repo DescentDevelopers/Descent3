@@ -47,7 +47,8 @@
 
 #include "ddvidlib.h"
 #include "pserror.h"
-#include "application.h"
+#include "winapp.h"
+#include "grdefs.h"
 
 //////////////////////////////////////////////////////////////////////////////
 //	Variables

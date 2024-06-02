@@ -309,9 +309,9 @@
  * $NoKeywords: $
  */
 
-#include "controller.h"
+#include "wincontroller.h"
 
-#include <math.h>
+#include <cmath>
 
 #include "pserror.h"
 #include "ddio.h"

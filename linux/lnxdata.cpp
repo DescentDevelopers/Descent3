@@ -47,7 +47,6 @@
 #include <pwd.h>
 #include <sys/types.h>
 
-#include "appdatabase.h"
 #include "lnxdatabase.h"
 #include "pserror.h"
 #include "mono.h"

@@ -987,6 +987,8 @@
 #include "debuggraph.h"
 #include "vibeinterface.h"
 
+#include "ddvid.h"
+
 // Uncomment this to allow all languages
 #define ALLOW_ALL_LANG 1
 

@@ -1,6 +1,6 @@
 set(HEADERS
-  win32app.h
-  win32database.h
+  winapp.h
+  windatabase.h
   wincontroller.h
 )
 

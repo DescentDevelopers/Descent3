@@ -64,18 +64,17 @@
  * $NoKeywords: $
  */
 
-#include <cstdarg>
-#include <cstdio>
-
-#include "application.h"
 #include "appconsole.h"
-#include "TaskSystem.h"
-
-#include <windows.h>
-#include <string.h>
-#include <process.h>
 
 #include <algorithm>
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
+
+#include <windows.h>
+#include <process.h>
+
+#include "winapp.h"
 
 #define CON_SCROLL_ROWS 25
 #define CON_SCROLL_COLS 80
