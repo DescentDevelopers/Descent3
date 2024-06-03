@@ -1857,11 +1857,15 @@ bool mn3_Open(const char *mn3file) {
     // Open audio hog file
     // ddio_MakePath(voice_hog, D3MissionsDir, "d3voice1.hog", NULL);//Audio for levels 1-4
     const char *v = GetMultiCDPath("d3voice1.hog");
+    if (!v)
+      return false;
     Mission_voice_hog_handle = cf_OpenLibrary(v);
   } else if (stricmp(filename, "d3_2") == 0) {
     // Open audio hog file
     // ddio_MakePath(voice_hog, D3MissionsDir, "d3voice2.hog", NULL);//Audio for levels 5-17
     const char *v = GetMultiCDPath("d3voice2.hog");
+    if (!v)
+      return false;
     Mission_voice_hog_handle = cf_OpenLibrary(v);
   }
   strcat(filename, ".gam");

@@ -909,12 +909,11 @@
 
 // Initialization routines for Descent3/Editor
 
+#include <cstring>
+#include <ctime>
 #include <filesystem>
-#include <string.h>
-#include <time.h>
 
 #include "mono.h"
-#include "application.h"
 #include "gametexture.h"
 #include "object.h"
 #include "vecmat.h"
@@ -925,7 +924,6 @@
 #include "manage.h"
 #include "bitmap.h"
 #include "ddio.h"
-#include "joystick.h"
 #include "render.h"
 #include "descent.h"
 #include "renderer.h"
@@ -933,25 +931,20 @@
 #include "grdefs.h"
 #include "pserror.h"
 #include "lighting.h"
-#include "program.h"
 #include "polymodel.h"
 #include "door.h"
 #include "terrain.h"
 #include "soundload.h"
 #include "ship.h"
 #include "controls.h"
-#include "texture.h"
 #include "Mission.h"
 #include "findintersection.h"
 #include "appdatabase.h"
-#include "AppConsole.h"
 #include "room.h"
 #include "game.h"
-#include "render.h"
 #include "gamefile.h"
 #include "TelCom.h"
 #include "objinfo.h"
-#include "ObjScript.h"
 #include "cinematics.h"
 #include "lightmap_info.h"
 #include "fireball.h"
@@ -962,11 +955,9 @@
 #include "trigger.h"
 #include "PHYSICS.H"
 #include "special_face.h"
-#include "streamaudio.h"
 #include "voice.h"
 #include "localization.h"
 #include "stringtable.h"
-#include "hlsoundlib.h"
 #include "player.h"
 #include "psrand.h"
 #include "ambient.h"
@@ -1038,15 +1029,11 @@ char Base_directory[_MAX_PATH];
 
 extern int Min_allowed_frametime;
 
-extern bool Mem_low_memory_mode;
 extern bool Render_powerup_sparkles;
 extern int Use_file_xfer;
 
-extern bool Mem_superlow_memory_mode;
-
 static const float kDefaultMouselookSensitivity = 9.102f;
 static const float kAnglesPerDegree = 65536.0f / 360.0f;
-int CD_inserted = 0;
 float Mouselook_sensitivity = kAnglesPerDegree * kDefaultMouselookSensitivity;
 float Mouse_sensitivity = 1.0f;
 

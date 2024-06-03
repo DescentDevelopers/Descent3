@@ -380,7 +380,10 @@
  *
  * $NoKeywords: $
  */
-#include <stdlib.h>
+
+#include <algorithm>
+#include <cstdlib>
+#include <vector>
 
 #include "pserror.h"
 #include "grdefs.h"
@@ -392,24 +395,20 @@
 #include "program.h"
 #include "descent.h"
 #include "menu.h"
-#include "Mission.h"
 #include "ddio.h"
-#include "controls.h"
-#include "Controller.h"
 #include "gamesequence.h"
 #include "stringtable.h"
 #include "dedicated_server.h"
 #include "networking.h"
 #include "hlsoundlib.h"
 #include "player.h"
-#include "pilot.h"
 #include "newui.h"
 #include "credits.h"
 #include "cinematics.h"
 #include "args.h"
 #include "multi_dll_mgr.h"
 #include "localization.h"
-#include "mem.h"
+
 //	---------------------------------------------------------------------------
 //	Variables
 //	---------------------------------------------------------------------------
@@ -438,8 +437,6 @@ char Descent3_temp_directory[_MAX_PATH]; // temp directory to put temp files
 #if (defined(OEM) || defined(DEMO))
 void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
 #endif
-
-extern int CD_inserted;
 
 char Proxy_server[200] = "";
 int16_t Proxy_port = 80;
@@ -487,55 +484,19 @@ void Descent3() {
       // Show the intro movie
       if (!FindArg("-nointro")) {
         char intropath[_MAX_PATH * 2];
-        bool remote_path = (CD_inserted == 1) ? true : false;
+        // Intros to be played
+        const std::vector<const char *> intros = {
+            "dolby1.mv8",
+            "intro.mve",
+        };
 
-#ifdef _DEBUG
-        if (FindArg("-moviedir")) {
-          remote_path = true;
-        }
-#endif
-
-        ddio_MakePath(intropath, Base_directory, "movies", "dolby1.mv8", NULL);
-
-        if (remote_path || (cfexist(intropath))) {
-          const char *t = GetMultiCDPath("dolby1.mv8");
-          if (t)
-            PlayMovie(t);
-        }
-
-        int intro_movie_arg;
-        char base_intro_movie_name[256];
-        char *intro_movie_name;
-
-        intro_movie_arg = FindArg("-intro");
-        if (intro_movie_arg > 0) {
-          // we have an override for the intro movie
-          // we have to split path because the stupid args system of D3
-          // capitalizes everything and the PlayMovie function expects
-          // a lowercase extension
-          char extension[16], *p;
-          p = extension;
-          ddio_SplitPath(GameArgs[intro_movie_arg + 1], NULL, base_intro_movie_name, extension);
-          while (*p) {
-            *p = tolower(*p);
-            p++;
+        for (auto const &intro : intros) {
+          ddio_MakePath(intropath, Base_directory, "movies", intro, nullptr);
+          if (cfexist(intropath)) {
+            const char *t = GetMultiCDPath(intro);
+            if (t)
+              PlayMovie(t);
           }
-          strcat(base_intro_movie_name, extension);
-
-          Descent_overrided_intro = true;
-
-          intro_movie_name = base_intro_movie_name;
-        } else {
-          strcpy(base_intro_movie_name, "intro.mve");
-          intro_movie_name = base_intro_movie_name;
-        }
-
-        ddio_MakePath(intropath, Base_directory, "movies", intro_movie_name, NULL);
-
-        if (remote_path || (cfexist(intropath))) {
-          const char *t = GetMultiCDPath(intro_movie_name);
-          if (t)
-            PlayMovie(t);
         }
       }
 
@@ -751,10 +712,10 @@ void D3DebugResumeHandler() {
 
 #endif
 
-void RenderBlankScreen(void);
+void RenderBlankScreen();
 
 const char *GetCDVolume(int cd_num) {
-  const char *p = NULL;
+  const char *p = nullptr;
 
 #if   !defined(OEM)
   const char volume_labels[3][_MAX_PATH] = {"", "D3_1", "D3_2"};
@@ -771,11 +732,6 @@ const char *GetCDVolume(int cd_num) {
     // We've got the disk already in the drive!
     return p;
   } else {
-// Don't prompt for CD if not a release build
-#ifndef RELEASE
-// return NULL;
-#endif
-
     // prompt them to enter the disk...
     do {
       char message_txt[50];
@@ -783,20 +739,20 @@ const char *GetCDVolume(int cd_num) {
       // We need a background drawn!
 
       void (*ui_cb)() = GetUICallback();
-      if (ui_cb == NULL)
+      if (ui_cb == nullptr)
         SetUICallback(RenderBlankScreen);
       int res = DoMessageBox(PRODUCT_NAME, message_txt, MSGBOX_OKCANCEL, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
       SetUICallback(ui_cb);
       //
       if (res == 0) {
-        return NULL;
+        return nullptr;
       }
       p = ddio_GetCDDrive(volume_labels[cd_num]);
       if (p && *p)
         return p;
     } while (!(p && *p));
 
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -807,103 +763,53 @@ struct file_vols {
   bool localized;
 };
 
-extern int CD_inserted;
-
-// Localization_GetLanguage();
-
-char Oem_language_dirs[5][10] = {"English", "German", "Spanish", "Italian", "French"};
-
-file_vols file_volumes[] = {
-    // Filename, directory it might be installed on the hard drive, CD number to look for it
-    {"d3.mn3", "missions", 1, false},      {"d3_2.mn3", "missions", 2, false},    {"level1.mve", "movies", 1, true},
-    {"level5.mve", "movies", 2, true},     {"end.mve", "movies", 2, true},        {"intro.mve", "movies", 1, true},
-    {"dolby1.mv8", "movies", 1, true},
-    {"d3voice1.hog", "missions", 1, true}, {"d3voice2.hog", "missions", 2, true}};
-
-int num_cd_files = sizeof(file_volumes) / sizeof(file_vols);
-
 // This function figures out whether or not a file needs to be loaded off of
 // CD or off of the local drive. If it needs to come from a CD, it figures out
 // which CD and prompts the user to enter that CD. If they hit cancel, it
 // returns NULL.
 const char *GetMultiCDPath(const char *file) {
-  static char filepath[_MAX_PATH * 2];
+  // Filename, directory it might be installed on the hard drive, CD number to look for it
+  const std::vector<file_vols> file_volumes = {
+      // file, localpath, volume, localized
+      {"d3.mn3", "missions", 1, false},
+      {"d3_2.mn3", "missions", 2, false},
+      {"level1.mve", "movies", 1, true},
+      {"level5.mve", "movies", 2, true},
+      {"end.mve", "movies", 2, true},
+      {"intro.mve", "movies", 1, true},
+      {"dolby1.mv8", "movies", 1, true},
+      {"d3voice1.hog", "missions", 1, true},
+      {"d3voice2.hog", "missions", 2, true},
+  };
+
   static char fullpath[_MAX_PATH * 2];
-  int volume = 0;
-  int i;
 
-  if (file == NULL)
-    return NULL;
-  if (*file == '\0')
-    return NULL;
+  if ((file == nullptr) || (*file == '\0'))
+    return nullptr;
 
-  // see if there is a command line override for the name of the intro movie
-  int intro_movie_arg = FindArg("-intro");
-  char temp_filename[256];
-
-  // Clear out any old path
-  // memset(filepath,0,_MAX_PATH*2);
-  filepath[0] = '\0';
-
-  for (i = 0; i < num_cd_files; i++) {
-    char *vol_filename;
-    vol_filename = file_volumes[i].file;
-
-    // check to see if we need to override this string (for intro movie)
-    if (intro_movie_arg > 0 && !stricmp(vol_filename, "intro.mve")) {
-      // we have to override this intro movie
-      char extension[16], *p;
-      p = extension;
-      ddio_SplitPath(GameArgs[intro_movie_arg + 1], NULL, temp_filename, extension);
-      while (*p) {
-        *p = tolower(*p);
-        p++;
+  auto it = std::find_if(
+      file_volumes.begin(), file_volumes.end(),
+      [&file](const file_vols& file_volume) {
+        return (stricmp(file_volume.file, file) == 0);
       }
-      strcat(temp_filename, extension);
-      vol_filename = temp_filename;
-    }
+  );
 
-    if (stricmp(vol_filename, file) == 0) {
-      volume = file_volumes[i].volume;
-      ddio_MakePath(fullpath, LocalD3Dir, file_volumes[i].localpath, file, NULL);
-      // See if the file is in the local dir already.
-      if (cfexist(fullpath)) {
-        return fullpath;
-      }
-#ifdef _DEBUG
-      else if (stricmp(file_volumes[i].localpath, "movies") == 0) {
-        // if one specified a directory where the movies are located.
-        int arg = FindArg("-moviedir");
-        if (arg) {
-          ddio_MakePath(fullpath, GameArgs[arg + 1], file, NULL);
-          return fullpath;
-        }
-      }
-#endif
-      break;
-    }
-  }
   // This is a file we don't know about
-  if (i == num_cd_files)
+  if (it == file_volumes.end()) {
     return file;
-
-  if (volume) {
-    const char *p = GetCDVolume(volume);
-    if (p) {
-      // If it's DVD, we need to get the proper files for the language
-      if ((CD_inserted == 3) && (file_volumes[i].localized)) {
-        ddio_MakePath(filepath, p, file_volumes[i].localpath, Oem_language_dirs[Localization_GetLanguage()], file,
-                      NULL);
-      } else {
-        ddio_MakePath(filepath, p, file_volumes[i].localpath, file, NULL);
-      }
-      // strcpy(filepath,p);
-      // strcat(filepath,file);
-      return filepath;
-    } else {
-      return NULL;
-    }
   }
 
-  return NULL;
+  ddio_MakePath(fullpath, LocalD3Dir, it->localpath, file, nullptr);
+  // See if the file is in the local dir already.
+  if (cfexist(fullpath)) {
+    return fullpath;
+  }
+
+  const char *p = GetCDVolume(it->volume);
+  if (p) {
+    ddio_MakePath(fullpath, p, it->localpath, file, nullptr);
+    return fullpath;
+  }
+
+  return nullptr;
 }
