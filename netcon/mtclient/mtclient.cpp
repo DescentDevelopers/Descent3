@@ -907,7 +907,8 @@ int LoginMasterTracker() {
       break;
     case 4:
 #ifdef WIN32
-      ShellExecute(NULL, "open", MTADDNEWURL, NULL, NULL, SW_SHOW);
+      // TODO: reacivate for site opening
+      // ShellExecute(NULL, "open", MTADDNEWURL, NULL, NULL, SW_SHOW);
 #endif
       break;
     case UID_OK: {
@@ -2334,7 +2335,7 @@ int MTVersionCheck() {
 
   // Specify the correct path
   DLLddio_MakePath(fulldllpath, DLLLocalD3Dir, "mtav.dll", NULL);
-  if (!DLLmod_LoadModule(&MTAVDLLHandle, fulldllpath)) {
+  if (!DLLmod_LoadModule(&MTAVDLLHandle, fulldllpath, MODF_LAZY)) {
     DLLmprintf(0, "Unable to load Mastertracker Auto version update DLL (mtav.dll)\n");
     // Try restoring a backup of the DLL
     DLLddio_MakePath(szolddll, DLLLocalD3Dir, "mtav.dll", NULL);

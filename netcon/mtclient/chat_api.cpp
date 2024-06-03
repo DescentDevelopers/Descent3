@@ -161,7 +161,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
 
 #ifdef WIN32
     unsigned long arg = 1;
-    ioctlsocket(sock, FIONBIO, &arg);
+    ioctlsocket(Chatsock, FIONBIO, &arg);
 #else // WIN32
     fcntl(Chatsock, F_SETFL, fcntl(Chatsock, F_GETFL, 0) | O_NONBLOCK);
 #endif
