@@ -170,7 +170,9 @@ extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 typedef float (*timer_GetTime_fp)(void);
 extern timer_GetTime_fp DLLtimer_GetTime;
 
-typedef int (*nw_RegisterCallback_fp)(void *nfp, uint8_t id);
+typedef void (*HandlePilotData_fp)(uint8_t *data, int len, network_address *from);
+
+typedef int (*nw_RegisterCallback_fp)(HandlePilotData_fp, uint8_t id);
 extern nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
 typedef int (*nw_DoReceiveCallbacks_fp)(void);
@@ -265,7 +267,7 @@ int InitPilotTrackerClient() {
 //-2	Error -- Already sending data (hasn't timed out yet)
 //-1	Timeout trying to send pilot data
 //  0	Sending
-//  1	Data succesfully sent
+//  1	Data successfully sent
 
 // Call with NULL to poll
 // Call with valid pointer to a vmt_descent3_struct to initiate send
@@ -297,17 +299,6 @@ int SendD3PilotData(vmt_descent3_struct *d3_pilot) {
 
       return 3;
     }
-
-  } else if ((int)d3_pilot == -1) {
-    if (D3WriteState == STATE_IDLE) {
-      return -3;
-    } else {
-      // Cancel this baby
-      D3WriteState = STATE_IDLE;
-
-      return 2;
-    }
-
   } else if (D3WriteState == STATE_IDLE) {
     // New request, send out the req, and go for it.
 
@@ -385,16 +376,6 @@ int GetD3PilotData(vmt_descent3_struct *d3_pilot, char *pilot_name, char *tracke
       return 3;
     }
 
-  } else if ((int)d3_pilot == -1) {
-    if (D3ReadState == STATE_IDLE) {
-      return -3;
-    } else {
-      // Cancel this baby
-      D3ReadState = STATE_IDLE;
-      ReadD3Pilot = NULL;
-      return 2;
-    }
-
   } else if (D3ReadState == STATE_IDLE) {
     // New request, send out the req, and go for it.
 
@@ -412,6 +393,20 @@ int GetD3PilotData(vmt_descent3_struct *d3_pilot, char *pilot_name, char *tracke
     return 0;
   }
   return -2;
+}
+
+int GetD3PilotDataCancel() {
+  // First check the network
+  PollPTrackNet();
+
+  if (D3ReadState == STATE_IDLE) {
+    return -3;
+  } else {
+    // Cancel this baby
+    D3ReadState = STATE_IDLE;
+    ReadD3Pilot = nullptr;
+    return 2;
+  }
 }
 
 // Send an ACK to the server
@@ -723,17 +718,6 @@ int MTAVersionCheck(uint32_t oldver, char *URL) {
   }
 }
 
-// Returns:
-//-3	Error -- Called with NULL, but no request is waiting
-//-2	Error -- Already waiting on message of the day (hasn't timed out yet)
-//-1	Timeout waiting for message of the day
-//  0	Waiting for data
-//  1	Data received
-//  2	Get Cancelled
-
-// Call with NULL to poll
-// Call with -1 to cancel wait
-// Call with valid pointer and maxlen to get the message of the day
 int GetD3MOTD(char *szmotd, int maxlen) {
   // First check the network
   PollPTrackNet();
@@ -751,16 +735,6 @@ int GetD3MOTD(char *szmotd, int maxlen) {
       return 1;
     }
     return -3;
-  } else if ((int)szmotd == -1) {
-    if (MOTDState == STATE_IDLE) {
-      return -3;
-    } else {
-      // Cancel this baby
-      MOTDState = STATE_IDLE;
-      Motdptr = NULL;
-      ReadD3Pilot = NULL;
-      return 2;
-    }
   } else if (MOTDState == STATE_IDLE) {
     // New request, send out the req, and go for it.
 
@@ -776,4 +750,19 @@ int GetD3MOTD(char *szmotd, int maxlen) {
     return 0;
   }
   return -2;
+}
+
+int GetD3MOTDCancel() {
+  // First check the network
+  PollPTrackNet();
+
+  if (MOTDState == STATE_IDLE) {
+    return -3;
+  } else {
+    // Cancel this baby
+    MOTDState = STATE_IDLE;
+    Motdptr = nullptr;
+    ReadD3Pilot = nullptr;
+    return 2;
+  }
 }

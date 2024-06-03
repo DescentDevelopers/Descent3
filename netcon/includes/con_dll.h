@@ -462,7 +462,7 @@ static inline void DLLMultiStartServer(int playing, char *scriptname, int dedica
   DLLMultiStartServerFP(playing, scriptname, dedicated_num_teams);
 }
 
-typedef void (*ShowProgressScreen_fp)(char *, char *);
+typedef void (*ShowProgressScreen_fp)(const char *, const char *);
 ShowProgressScreen_fp DLLShowProgressScreen;
 
 typedef int (*SearchForLocalGamesTCP_fp)(uint32_t, uint16_t);

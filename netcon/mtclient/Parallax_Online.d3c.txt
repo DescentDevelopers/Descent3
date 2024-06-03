@@ -1,0 +1,6 @@
+mtclient.str
+Parallax Online.so
+Parallax Online.dll
+Parallax Online.dylib
+pxomain.ogf
+pxogame.ogf

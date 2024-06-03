@@ -665,7 +665,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
   InitOTSockets();
 #endif
 #include "mdllinit.h"
-  DLLPXOPort = (uint16_t)API.vp[32];
+  DLLPXOPort = (uint16_t)((size_t)API.vp[32] & 0xffff);
   DLLmprintf(0, "Inside DLLMultiInit...\n");
   *DLLUse_DirectPlay = false;
   Auto_start = false;
@@ -1084,7 +1084,7 @@ int MainMultiplayerMenu() {
   int exit_menu = 0;
   int ret = 0;
   int res;
-  char *p;
+  const char *p;
   int i;
   float lastlisttime = 0;
   float lastchanlisttime = 0;
@@ -1288,7 +1288,7 @@ int MainMultiplayerMenu() {
         }
         char seps[] = " ";
         char *tokp;
-        tokp = strtok(p, seps);
+        tokp = strtok((char *) p, seps);
         if (tokp) {
           for (i = 0; i < CHAT_MAX_USERLIST; i++) {
             user_ti[i] = DLLCreateNewUITextItem(tokp, GR_WHITE);
@@ -1877,9 +1877,8 @@ int SearchMasterTrackerGameMenu() {
 
   // Menu loop
   while (!exit_menu) {
-    char *p;
     if (ChatStarted)
-      p = GetChatText();
+      const char *p = GetChatText();
 
     DLLDescentDefer();
     IdleGameTracker();
@@ -2290,7 +2289,7 @@ void DoMTFrame(void) {
 void DoMTGameOver(void) {
   int i;
 
-  DLLShowProgressScreen(TXT_PXO_WRITINGGAMESTATS, NULL);
+  DLLShowProgressScreen(TXT_PXO_WRITINGGAMESTATS, nullptr);
 
   if (DLLNetgame->local_role != LR_SERVER) {
     return;
@@ -2444,7 +2443,7 @@ int MTVersionCheck(void) {
 
 int JoinNewLobby(char *lobby) {
   int rcode;
-  char *p;
+  const char *p;
   DLLmprintf(0, "Entering new lobby");
   void *title_text = DLLCreateNewUITextItem(TXT_PXO_ENTERINGLOBBY, UICOL_WINDOW_TITLE);
 
@@ -2669,7 +2668,7 @@ int JoinPrivateLobby(void) {
 int FindPilot(void) {
 
   int exit_menu = 0;
-  char *p;
+  const char *p;
   char message[MAX_CHAT_SEND_LEN];
   char pilot_name[MAX_CHAT_SEND_LEN];
   static char fmt_msg[MAX_CHAT_SEND_LEN * 2];
@@ -2770,7 +2769,7 @@ int FindPilot(void) {
   return 1;
 }
 
-char *GetRankString(float ranking) {
+const char *GetRankString(float ranking) {
   int val = 0;
 
   if (ranking >= 0 && ranking < 600)
@@ -2824,7 +2823,7 @@ int GetNextRank(float ranking) {
 
 int GetPilotStats(char *pilot) {
   int res;
-  char *p;
+  const char *p;
   char *tokp;
   char tid[MAX_CHAT_SEND_LEN];
   char real_pilot[MAX_CHAT_SEND_LEN];
@@ -2854,7 +2853,8 @@ int GetPilotStats(char *pilot) {
 
   DLLCreateSplashScreen(TXT_PXO_GETTINGPILOTSTAT, 1);
   // Cancel previously active lookups
-  GetD3PilotData((vmt_descent3_struct *)-1, NULL, NULL);
+  // GetD3PilotData((vmt_descent3_struct *)-1, NULL, NULL);
+  GetD3PilotDataCancel();
   GetTrackerIdByUser((char *)-1);
   p = GetTrackerIdByUser(pilot);
   while (p == NULL) {
@@ -2879,7 +2879,7 @@ int GetPilotStats(char *pilot) {
     DLLCloseSplashScreen();
     return 0;
   }
-  tokp = strchr(p, ' ');
+  tokp = strchr((char *)p, ' ');
   if (tokp) {
     *tokp = NULL;
     tokp++;
@@ -2894,7 +2894,8 @@ int GetPilotStats(char *pilot) {
       res = DLLPollUI();
       if (res == 99) {
         // cancel was hit
-        GetD3PilotData((vmt_descent3_struct *)-1, NULL, NULL);
+        // GetD3PilotData((vmt_descent3_struct *)-1, NULL, NULL);
+        GetD3PilotDataCancel();
         iresult = -1;
       }
       DLLDescentDefer();
@@ -3150,7 +3151,6 @@ failed_login:
 #define NUM_MOTD_LINES 6
 #define MOTD_WIDTH 384
 #define MOTD_HEIGHT 256
-extern int GetD3MOTD(char *szmotd, int maxlen);
 
 int ShowMessageOfTheDay(void) {
   static char szlastmotd[MAX_MOTD_LEN];
@@ -3194,7 +3194,7 @@ int ShowMessageOfTheDay(void) {
     mcode = GetD3MOTD(NULL, 0);
     res = DLLPollUI();
     if (res == 99) {
-      GetD3MOTD((char *)-1, 0);
+      GetD3MOTDCancel();
       DLLCloseSplashScreen();
       goto close_motd;
     }

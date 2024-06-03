@@ -282,13 +282,41 @@ the client side for now
 //
 // -------------------------------------------------------------------------------------------------------------
 
+/**
+ * Get MOTD from remote. Call with NULL to poll. Call with valid pointer and maxlen to get the message of the day.
+ * @param szmotd
+ * @param maxlen
+ * @return
+ * -3 - Error, called with NULL, but no request is waiting;
+ * -2 - Error, already waiting on message of the day (hasn't timed out yet);
+ * -1 - Timeout waiting for message of the day;
+ * 0 - Waiting for data;
+ * 1 - Data received.
+ */
 int GetD3MOTD(char *szmotd, int maxlen);
+
+/**
+ * Cancel previous MOTD request
+ * @return
+ * -3 Error, called with NULL, but no request is waiting
+ * 2 Request successfully cancelled
+ */
+int GetD3MOTDCancel();
+
 // Function prototypes
 int InitPilotTrackerClient();
 void AckServer(uint32_t sig);
 
 int SendD3PilotData(vmt_descent3_struct *d3_pilot);
 int GetD3PilotData(vmt_descent3_struct *d3_pilot, char *pilot_name, char *tracker_id);
+
+/**
+ * Cancel previous GetD3PilotData() wait
+ * @return
+ * -3: Error - Called GetD3PilotData with NULL, but no request is waiting;
+ * 2: Request successfully canceled;
+ */
+int GetD3PilotDataCancel();
 void PollPTrackNet();
 void ValidIdle();
 // int ValidateUser(validate_id_request *valid_id);

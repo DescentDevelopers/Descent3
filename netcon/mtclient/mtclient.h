@@ -103,7 +103,7 @@
 #define MAX_SCRIPT_LEN 40
 #define MAX_FORMAT_STRING 300
 
-struct s_pxo_game_list {
+typedef struct s_pxo_game_list {
   /*
   char name[MAX_GAME_NAME_LEN];
   network_address address;

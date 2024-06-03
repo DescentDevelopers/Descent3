@@ -177,7 +177,12 @@ int ConnectToChatServer(char *serveraddr, char *nickname, char *trackerid) {
       return -1;
     }
 
-    make_nonblocking(Chatsock);
+#ifdef WIN32
+    unsigned long arg = 1;
+    ioctlsocket(sock, FIONBIO, &arg);
+#else // WIN32
+    fcntl(Chatsock, F_SETFL, fcntl(Chatsock, F_GETFL, 0) | O_NONBLOCK);
+#endif
 
     /*
     HOSTENT *he;
@@ -317,7 +322,7 @@ void DisconnectFromChatServer() {
 
 // returns NULL if no line is there to print, otherwise returns a string to
 // print (all preformatted of course)
-char *GetChatText() {
+const char *GetChatText() {
 
   if (!Socket_connected)
     return NULL;

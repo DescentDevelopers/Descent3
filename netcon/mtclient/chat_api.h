@@ -28,19 +28,19 @@
 #define MSG_REMOTE 0
 #define MSG_LOCAL 1
 
-struct _Chat_user {
+typedef struct _Chat_user {
   char nick_name[33];
   _Chat_user *next;
 } Chat_user;
 
-struct _Chat_channel {
+typedef struct _Chat_channel {
   char channel_name[33];
   uint16_t users;
   char topic[100];
   _Chat_channel *next;
 } Chat_channel;
 
-struct _Chat_command {
+typedef struct _Chat_command {
   int16_t command;
   char data[100];
   _Chat_command *next;
@@ -49,7 +49,7 @@ struct _Chat_command {
 // Prototypes
 int ConnectToChatServer(char *serveraddr, char *nickname, char *trackerid);
 void DisconnectFromChatServer();
-char *GetChatText();
+const char *GetChatText();
 char *SendChatString(char *line, int raw = 0);
 Chat_command *GetChatCommand();
 char *GetChatUserList();
