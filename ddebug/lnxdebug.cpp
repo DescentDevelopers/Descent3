@@ -38,17 +38,14 @@
  * $NoKeywords: $
  */
 
+#include <cstdio>
+
 #include "debug.h"
 #include "mono.h"
-#include <assert.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool Debug_break = false;
-bool Debug_mono = false;
 
 static char *Debug_DumpInfo();
 
@@ -56,15 +53,6 @@ static char *Debug_DumpInfo();
 bool Debug_Init(bool debugger, bool mono_debug) {
 #ifndef RELEASE
   Debug_break = debugger;
-
-  if (mono_debug) {
-    Debug_ConsoleInit();
-    Debug_ConsoleOpen(0, 9, 1, 78, 15, "Debug Spew");
-    Debug_ConsoleOpen(1, 1, 1, 58, 6, "Warnings");
-    Debug_ConsoleOpen(2, 1, 61, 18, 6, "Stats");
-
-    mprintf(0, "Linux system.\n");
-  }
 
   if (Debug_break)
     mprintf(0, "Debug Break enabled.\n");
@@ -96,7 +84,7 @@ int Debug_MessageBox(int type, const char *title, const char *str) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char *Debug_DumpInfo(void) {
+char *Debug_DumpInfo() {
   static char e[] = "System Error";
   return e;
 }

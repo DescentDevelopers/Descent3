@@ -2506,8 +2506,6 @@ void GameDrawMainView() {
   bool rear_view = 0;
   object *save_view;
 
-  DebugBlockPrint("SR");
-
   // Start rendering
   StartFrame(false);
 
@@ -2540,8 +2538,6 @@ void GameDrawMainView() {
 
   // We're done with this window
   EndFrame();
-
-  DebugBlockPrint("DR");
 }
 
 // Added by Samir

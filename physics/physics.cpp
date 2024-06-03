@@ -780,8 +780,6 @@ void do_physics_sim(object *obj) {
   ASSERT(obj->movement_type == MT_PHYSICS);
   ASSERT(!(obj->mtype.phys_info.flags & PF_USES_THRUST) || obj->mtype.phys_info.drag != 0.0);
 
-  DebugBlockPrint("P ");
-
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x)); // Caller wants to go to infinity!  -- Not FVI's fault.
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y)); // Caller wants to go to infinity!  -- Not FVI's fault.
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z)); // Caller wants to go to infinity!  -- Not FVI's fault.
@@ -2299,8 +2297,6 @@ void do_walking_sim(object *obj) {
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y)); // Caller wants to go to infinity!  -- Not FVI's fault.
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z)); // Caller wants to go to infinity!  -- Not FVI's fault.
 
-  DebugBlockPrint("PW");
-
 #ifdef _DEBUG
   if (!Game_do_walking_sim) {
     return;
@@ -2892,16 +2888,12 @@ void do_vis_physics_sim(vis_effect *vis) {
   }
 #endif
 
-  DebugBlockPrint("V ");
-
   if (vis->flags & VF_DEAD) {
-    DebugBlockPrint("DV");
     return;
   }
 
   if (fabsf(vis->velocity.x) < 0.000001f && fabsf(vis->velocity.y) < 0.000001f && fabsf(vis->velocity.z) < 0.000001f &&
       !(vis->phys_flags & PF_GRAVITY)) {
-    DebugBlockPrint("DV");
     return;
   }
 
@@ -2962,7 +2954,6 @@ void do_vis_physics_sim(vis_effect *vis) {
   }
 
   if (vis->phys_flags & PF_NO_COLLIDE) {
-    DebugBlockPrint("DV");
     return;
   }
 
@@ -3005,7 +2996,6 @@ void do_vis_physics_sim(vis_effect *vis) {
     VisEffectDelete(vis - VisEffects);
   }
 
-  DebugBlockPrint("DV");
 }
 
 void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index) {

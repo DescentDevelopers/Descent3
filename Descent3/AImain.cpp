@@ -6127,12 +6127,7 @@ void AIDoFrame(object *obj) {
   ai_frame *ai_info = obj->ai_info;
   ASSERT((obj->control_type == CT_AI) || (obj->control_type == CT_DYING_AND_AI));
 
-  DebugBlockPrint("A ");
-
-  //	mprintf(0, "Awareness = %d\n", ai_info->awareness);
-
   if ((ai_info->flags & AIF_DISABLED) || (obj->type == OBJ_DUMMY)) {
-    DebugBlockPrint("DA");
     return;
   }
 
@@ -6165,7 +6160,6 @@ void AIDoFrame(object *obj) {
   }
 
   if ((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT)) {
-    DebugBlockPrint("DA");
     if (!f_attach_done) {
       AttachUpdateSubObjects(obj);
       f_attach_done = true;
@@ -6183,7 +6177,6 @@ void AIDoFrame(object *obj) {
 
   // If the object is dead, it does not think
   if (obj->flags & OF_DEAD) {
-    DebugBlockPrint("DA");
     if (!f_attach_done) {
       AttachUpdateSubObjects(obj);
       f_attach_done = true;
@@ -6297,7 +6290,6 @@ void AIDoFrame(object *obj) {
     }
   }
 
-  DebugBlockPrint("DA");
 }
 
 void AIFrameAll(void) {

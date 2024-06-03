@@ -97,18 +97,7 @@ void InvReset(int playernum, bool reset_all) {
 }
 
 // mprintf
-void MonoPrintf(int n, char *format, ...) {
-#ifndef RELEASE
-  char tempbuffer[300];
-
-  std::va_list ap;
-  va_start(ap, format);
-  std::vsnprintf(tempbuffer, 300, format, ap);
-  va_end(ap);
-
-  Debug_ConsolePrintf(n, tempbuffer);
-#endif
-}
+void MonoPrintf(int n, char *format, ...) {}
 
 // wrapper for cfopen
 void OpenCFILE(CFILE **handle, const char *filename, const char *mode) { *handle = cfopen(filename, mode); }

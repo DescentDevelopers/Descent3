@@ -200,48 +200,17 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 bool Debug_break = false;
-bool Debug_NT = false;
 
 char *Debug_DumpInfo();
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Debug_Init(bool debugger, bool con_debug) {
-  //	initialization of debugging consoles.
-
-  DWORD version = GetVersion();
-
-  if (version & 0x80000000) {
-    // Are we 95 or Win32s!
-    if ((version & 0xff) < 4) {
-      MessageBox(NULL, "This application will only run on Windows 95 or Windows NT.", "Error", MB_OK);
-      exit(1);
-    }
-    Debug_NT = false;
-  } else {
-    if ((version & 0xff) < 4) {
-      MessageBox(NULL, "This application needs Windows NT 4.0 or higher.", "Error", MB_OK);
-      exit(1);
-    }
-    Debug_NT = true;
-  }
+bool Debug_Init(bool debugger, bool mono_debug) {
+  // initialization of debugging consoles.
 
 #ifndef RELEASE
 
   Debug_break = debugger;
-
-  if (con_debug) {
-    Debug_ConsoleInit();
-    Debug_ConsoleOpen(0, 9, 1, 78, 15, "Debug Spew");
-    Debug_ConsoleOpen(1, 1, 1, 58, 6, "Warnings");
-
-    if (!Debug_NT) {
-      Debug_ConsoleOpen(2, 1, 61, 18, 6, "Stats");
-      mprintf(0, "Win95 system.\n");
-    } else {
-      mprintf(0, "WinNT system.\n");
-    }
-  }
 
   if (Debug_break) {
     mprintf(0, "Debug Break enabled.\n");
@@ -260,9 +229,9 @@ bool Debug_Init(bool debugger, bool con_debug) {
 int Debug_ErrorBox(int type, const char *title, const char *topstring, const char *bottomstring) {
   int answer;
   char *dumptext = Debug_DumpInfo();
-  HWND wnd = GetActiveWindow();
+  // HWND wnd = GetActiveWindow();
 
-  //	ShowWindow(wnd, SW_SHOWMINNOACTIVE);
+  // ShowWindow(wnd, SW_SHOWMINNOACTIVE);
 
   DWORD flags;
   if (type == OSMBOX_OK)
@@ -325,7 +294,7 @@ int Debug_MessageBox(int type, const char *title, const char *str) {
 
   ShowCursor(TRUE);
   //	ShowWindow(wnd, SW_SHOWMINNOACTIVE);
-  answer = MessageBox(NULL, str, title, flags | MB_TASKMODAL | MB_SETFOREGROUND);
+  answer = MessageBox(nullptr, str, title, flags | MB_TASKMODAL | MB_SETFOREGROUND);
   ShowCursor(FALSE);
   //	ShowWindow(wnd, SW_SHOWMAXIMIZED);
 
@@ -1206,7 +1175,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message) {
   char bottommsg[1000] = "";
   char callstack[1000] = "";
 
-  wsprintf(topmsg, "Excecution in %s was stopped by %s", Message, desc);
+  wsprintf(topmsg, "Execution in %s was stopped by %s", Message, desc);
 
   wsprintf(bottommsg, FORMAT_REG, Context->Eax, Context->SegCs, Context->Eip, Context->EFlags, Context->Ebx,
            Context->SegSs, Context->Esp, Context->Ebp, Context->Ecx, Context->SegDs, Context->Esi, Context->SegFs,
