@@ -420,7 +420,7 @@ extern int Highest_room_index; // index of highest-numbered room
 // Zeroes out the rooms array
 void InitRooms();
 
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(EDITOR))
 // Allows a spew'er to find out if he is in a room or external to the mine
 // NOTE:  THIS FUNCTION IS NOT FOR IN GAME STUFF.  It is REALLY SLOW and accurate.
 // Talk to Chris if you need something like this function.
@@ -560,7 +560,7 @@ static inline int GetFacePhysicsFlags(const room *rp, const face *fp) {
 
 // Computes a bounding sphere for the current room
 // Parameters: center - filled in with the center point of the sphere
-//		rp - the room we’re bounding
+//		rp - the room weï¿½re bounding
 // Returns: the radius of the bounding sphere
 float ComputeRoomBoundingSphere(vector *center, room *rp);
 

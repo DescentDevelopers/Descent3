@@ -168,7 +168,7 @@
 #include "3d.h"
 
 // Variables for debug/test
-#if (defined(_DEBUG) || defined(NEWEDITOR))
+#if (defined(_DEBUG) || defined(NEWEDITOR) || defined(EDITOR))
 
 #define SRF_NO_SHELL 1     // don't render the shell
 #define SRF_NO_NON_SHELL 2 // don't render the non-shell

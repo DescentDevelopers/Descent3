@@ -192,7 +192,7 @@
  * $NoKeywords: $
  */
 
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(EDITOR))
 
 #ifdef EDITOR
 #include "editor\mainfrm.h"
@@ -226,10 +226,8 @@ int Joystick_active = -1;
 void SlewControlInit() {
   Joystick_active = -1;
 
-#ifdef EDITOR
   if (!D3EditState.joy_slewing)
     return;
-#endif
 
   if (joy_IsValid(JOYSTICK_1)) {
     tJoyPos joystate;
@@ -244,7 +242,7 @@ void SlewControlInit() {
 }
 #endif
 
-int SlewStop(object *obj) {
+int   SlewStop(object *obj) {
   if (!obj)
     return 0;
 

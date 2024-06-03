@@ -24,7 +24,7 @@
 #ifndef _SLEW_H
 #define _SLEW_H
 
-#ifndef RELEASE
+#if (defined(_DEBUG) || defined(EDITOR))
 
 #include "object.h"
 

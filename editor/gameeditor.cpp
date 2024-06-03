@@ -927,8 +927,12 @@ void EditorToGame()
 void InitEditGameSystems()
 {
 	tUIInitInfo uiinit;
+#if defined(RELEASE)
+  SetDebugBreakHandlers(NULL, NULL);
+#else
+  SetDebugBreakHandlers(D3DebugStopHandler, D3DebugResumeHandler);
+#endif
 
-	SetDebugBreakHandlers(D3DebugStopHandler, D3DebugResumeHandler);
 	Descent->set_defer_handler(D3DeferHandler);
 
 	LoadAllFonts();

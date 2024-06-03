@@ -245,7 +245,7 @@ extern uint8_t Show_invisible_terrain;
 
 extern int Camera_direction, Sort_direction;
 
-#if (defined(_DEBUG) || defined(NEWEDITOR))
+#if (defined(_DEBUG) || defined(EDITOR) || defined(NEWEDITOR))
 extern uint8_t TerrainSelected[];
 extern int Num_terrain_selected;
 #endif
