@@ -74,7 +74,6 @@
 #endif
 
 #include <memory.h>
-#include <string.h>
 #include "pstypes.h"
 #include "networking.h"
 #include "mtgametrack.h"
@@ -142,12 +141,12 @@ typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 
 extern Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 
-typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, char *hostname);
+typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, const char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*nw_SendWithID_fp)(uint8_t id, uint8_t *data, int len, network_address *who_to);
 extern nw_SendWithID_fp DLLnw_SendWithID;
-typedef int (*PollUI_fp)(void);
+typedef int (*PollUI_fp)();
 extern PollUI_fp DLLPollUI;
 extern bool *DLLDedicated_server;
 
@@ -164,7 +163,7 @@ int SendGameTrackerPacker(void *packet) {
   return DLLnw_SendWithID(PXO_NETID_GAME_TRACKER, (uint8_t *)g_pack, INTEL_INT(g_pack->len), &send_address);
 }
 
-void InitMTSockets(void) {
+void InitMTSockets() {
 #ifdef WIN32
   WSADATA ws_data;
   WORD ver = MAKEWORD(1, 1);
@@ -208,7 +207,7 @@ void InitMTSockets(void) {
     if (rcode != 1) {
       DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", GAMETRACKERNAME);
       DLLmprintf(0, "WSAGetLastError() returned %d.\n", WSAGetLastError());
-      DLLnw_Asyncgethostbyname(NULL, NW_AGHBN_CANCEL, NULL);
+      DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, nullptr);
       return;
     }
 
@@ -236,7 +235,7 @@ void InitMTSockets(void) {
     if (rcode != 1) {
       DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", PILOTTRACKERNAME);
       DLLmprintf(0, "WSAGetLastError() returned %d.\n", WSAGetLastError());
-      DLLnw_Asyncgethostbyname(NULL, NW_AGHBN_CANCEL, NULL);
+      DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, nullptr);
       return;
     }
     ptrackaddr.sin_family = AF_INET;
@@ -247,7 +246,7 @@ void InitMTSockets(void) {
   MT_Initialized = 1;
 }
 
-void CloseMTSockets(void) {
+void CloseMTSockets() {
 #ifdef WIN32
   if (WSACleanup()) {
     DLLmprintf(0, "Error closing wsock!\n");

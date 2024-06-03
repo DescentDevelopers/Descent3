@@ -80,12 +80,11 @@
 
 #include "ui.h"
 
-// #define uint8_t uint8_t
 
 #define TRACKER_MENU_W 256
 #define TRACKER_MENU_H 256
-#define TRACKER_MENU_X 320 - (TRACKER_MENU_W / 2)
-#define TRACKER_MENU_Y 240 - (TRACKER_MENU_H / 2)
+#define TRACKER_MENU_X (320 - (TRACKER_MENU_W / 2))
+#define TRACKER_MENU_Y (240 - (TRACKER_MENU_H / 2))
 
 #define MAXTEXTITEMS 100
 #define MAXNEWWINDOWS 5
@@ -125,19 +124,19 @@ typedef struct s_pxo_game_list {
   int lb_no;
 } pxo_game_list;
 
-int LoginMasterTracker(void);
+int LoginMasterTracker();
 int MainMultiplayerMenu();
 int SearchMasterTrackerGameMenu();
 int StartMultiplayerGameMenu();
 void MultiplayerOptionsMenu();
-void DoMTFrame(void);
-void DoMTGameOver(void);
-int MTVersionCheck(void);
+void DoMTFrame();
+void DoMTGameOver();
+int MTVersionCheck();
 int JoinNewLobby(char *lobby);
 char *SendWhisper(char *name);
-int JoinPrivateLobby(void);
-int FindPilot(void);
+int JoinPrivateLobby();
+int FindPilot();
 int GetPilotStats(char *pilot);
-void AutoLoginAndJoinGame(void);
-int ShowMessageOfTheDay(void);
+void AutoLoginAndJoinGame();
+int ShowMessageOfTheDay();
 #endif

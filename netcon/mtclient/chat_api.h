@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstdint>
+
 // Commands
 #define CC_USER_JOINING 1 // A user had joined this channel (add him/her from the user listbox if any)
 #define CC_USER_LEAVING 2 // A user has left the channel (remove him/her from the user listbox if any)
@@ -28,22 +30,22 @@
 #define MSG_REMOTE 0
 #define MSG_LOCAL 1
 
-typedef struct _Chat_user {
+typedef struct Chat_user {
   char nick_name[33];
-  _Chat_user *next;
+  Chat_user *next;
 } Chat_user;
 
-typedef struct _Chat_channel {
+typedef struct Chat_channel {
   char channel_name[33];
   uint16_t users;
   char topic[100];
-  _Chat_channel *next;
+  Chat_channel *next;
 } Chat_channel;
 
-typedef struct _Chat_command {
+typedef struct Chat_command {
   int16_t command;
   char data[100];
-  _Chat_command *next;
+  Chat_command *next;
 } Chat_command;
 
 // Prototypes
@@ -54,18 +56,18 @@ char *SendChatString(char *line, int raw = 0);
 Chat_command *GetChatCommand();
 char *GetChatUserList();
 int SetNewChatChannel(char *channel);
-char *GetChannelList(void);
+char *GetChannelList();
 char *GetTrackerIdByUser(char *nickname);
 char *GetChannelByUser(char *nickname);
 
-const char *ChatGetString(void);
+const char *ChatGetString();
 char *GetWordNum(int num, char *l_String);
 char *ParseIRCMessage(char *Line, int iMode);
 int AddChatUser(char *nickname);
 int RemoveChatUser(char *nickname);
-void RemoveAllChatUsers(void);
+void RemoveAllChatUsers();
 void AddChatCommandToQueue(int command, void *data, int len);
-Chat_command *GetChatCommandFromQueue(void);
-void FlushChatCommandQueue(void);
+Chat_command *GetChatCommandFromQueue();
+void FlushChatCommandQueue();
 void AddChannel(char *channel, uint16_t numusers, char *topic);
-void FlushChannelList(void);
+void FlushChannelList();

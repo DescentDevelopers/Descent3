@@ -45,7 +45,7 @@ int ReceiveGameTracker(void *packet);
 
 void InitMTSockets();
 
-void CloseMTSockets(void);
+void CloseMTSockets();
 int ReceivePilotTracker(void *packet);
 int SendPilotTrackerPacket(void *packet);
 

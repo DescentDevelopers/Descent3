@@ -418,7 +418,6 @@
 #include "game.h"
 #include "pilot.h"
 #include "ddio_common.h"
-#include "gamefont.h"
 #include "mt_net.h"
 #include "mtgametrack.h"
 #include "module.h"
@@ -483,8 +482,7 @@ int GetGameByHandle(uint32_t handle) {
 }
 
 int GetPXOItemByHandle(uint32_t handle) {
-  int i;
-  for (i = 0; i < MAX_GAMELIST_ITEMS; i++) {
+  for (int i = 0; i < MAX_GAMELIST_ITEMS; i++) {
     if (PXOGamelist[i].used) {
       if (PXOGamelist[i].handle == handle) {
         return i;
@@ -495,8 +493,7 @@ int GetPXOItemByHandle(uint32_t handle) {
 }
 
 int GetGameByLBNo(int selno) {
-  int i;
-  for (i = 0; i < MAX_GAMELIST_ITEMS; i++) {
+  for (int i = 0; i < MAX_GAMELIST_ITEMS; i++) {
     if (PXOGamelist[i].used) {
       if (PXOGamelist[i].lb_no == selno) {
         return GetGameByHandle(PXOGamelist[i].handle);
@@ -841,7 +838,7 @@ void DLLFUNCCALL DLLMultiCall(int eventnum) {
 #pragma export off
 #endif
 
-int LoginMasterTracker(void) {
+int LoginMasterTracker() {
 
   void *title_text = DLLCreateNewUITextItem(TXT_PXO_LOGINMASTERTRKR, UICOL_WINDOW_TITLE);
   void *cancel_on_text = DLLCreateNewUITextItem(TXT_PXO_CANCEL, UICOL_HOTSPOT_HI);
@@ -926,7 +923,7 @@ int LoginMasterTracker(void) {
       }
 
       // Fill out the validate struct and send off the packet
-      validate_id_request val_user;
+      validate_id_request val_user{};
       strcpy(val_user.tracker_id, sztrackerid);
       strcpy(val_user.login, szloginid);
       strcpy(val_user.password, szpassword);
@@ -936,7 +933,7 @@ int LoginMasterTracker(void) {
       int valret = ValidateUser(&val_user, sztrackerid);
 
       while (valret == 0) {
-        valret = ValidateUser(NULL, NULL);
+        valret = ValidateUser(nullptr, nullptr);
         res = DLLPollUI();
         if (res == 99) {
           valret = -2;
@@ -1093,9 +1090,9 @@ int MainMultiplayerMenu() {
   char selpilot[MAX_CHAT_SEND_LEN];
   char oldselchan[200];
   for (i = 0; i < MAX_CHAT_CHANNELS; i++)
-    chan_ti[i] = NULL;
+    chan_ti[i] = nullptr;
   for (i = 0; i < CHAT_MAX_USERLIST; i++)
-    user_ti[i] = NULL;
+    user_ti[i] = nullptr;
 
   uint8_t oldalpha = *DLLNewUIWindow_alpha;
 
@@ -1105,7 +1102,7 @@ int MainMultiplayerMenu() {
   *DLLNewUIWindow_alpha = 255;
 
   for (i = 0; i < MAX_CHAT_CHANNELS; i++) {
-    chan_info[i].origname[0] = NULL;
+    chan_info[i].origname[0] = '\0';
   }
 
   // Create our buttons
@@ -1276,15 +1273,15 @@ int MainMultiplayerMenu() {
         oldseluser[0] = 0;
         if (oldsel)
           strcpy(oldseluser, oldsel);
-        void *old_ti = NULL; // = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME,GR_WHITE);
+        void *old_ti = nullptr; // = DLLCreateNewUITextItem(TXT_PXO_JOINSTARTGAME,GR_WHITE);
         // int oldsel = DLLOldListGetSelectedIndex(user_list);
         // void * old_ti =
 
         DLLOldListRemoveAll(user_list);
         for (i = 0; i < CHAT_MAX_USERLIST; i++) {
-          if (user_ti[i] != NULL)
+          if (user_ti[i] != nullptr)
             DLLRemoveUITextItem(user_ti[i]);
-          user_ti[i] = NULL;
+          user_ti[i] = nullptr;
         }
         char seps[] = " ";
         char *tokp;
@@ -1295,7 +1292,7 @@ int MainMultiplayerMenu() {
             DLLOldListAddItem(user_list, user_ti[i]);
             if (strcmp(tokp, oldseluser) == 0)
               old_ti = user_ti[i];
-            tokp = strtok(NULL, seps);
+            tokp = strtok(nullptr, seps);
             if (!tokp)
               break;
           }
@@ -1316,18 +1313,18 @@ int MainMultiplayerMenu() {
       memset(pchanlist, 0, strlen(p));
       strcpy(pchanlist, p);
       char seps[] = "$";
-      char *tokp = NULL;
+      char *tokp = nullptr;
       char *nexttok;
       // tokp = strtok(pchanlist,seps);
       nexttok = strchr(pchanlist, '$');
       if (nexttok) {
-        *nexttok = NULL;
+        *nexttok = '\0';
         nexttok++;
         tokp = nexttok;
         if (nexttok) {
           nexttok = strchr(nexttok, '$');
           if (nexttok) {
-            *nexttok = NULL;
+            *nexttok = '\0';
             nexttok++;
           }
         }
@@ -1340,7 +1337,7 @@ int MainMultiplayerMenu() {
         // char * oldsel = DLLOldListGetItem(chan_list,DLLOldListGetSelectedIndex(chan_list));
         //
         int selitem = DLLOldListGetSelectedIndex(chan_list);
-        char *oldsel = NULL;
+        char *oldsel = nullptr;
         oldselchan[0] = 0;
 
         if ((selitem > 0) && (selitem < MAX_CHAT_CHANNELS)) {
@@ -1350,9 +1347,9 @@ int MainMultiplayerMenu() {
 
         DLLOldListRemoveAll(chan_list);
         for (i = 0; i < MAX_CHAT_CHANNELS; i++) {
-          if (chan_ti[i] != NULL)
+          if (chan_ti[i] != nullptr)
             DLLRemoveUITextItem(chan_ti[i]);
-          chan_ti[i] = NULL;
+          chan_ti[i] = nullptr;
         }
         for (i = 0; i < MAX_CHAT_CHANNELS; i++) {
           char fmtchan[500];
@@ -1362,7 +1359,7 @@ int MainMultiplayerMenu() {
             if (!pcount)
               pcount = "";
             // pcount++;
-            *pcount = NULL;
+            *pcount = '\0';
 
             // 17 is the magic number we want all channel names to align with
             memset(chan_info[i].name, 0, 19);
@@ -1379,7 +1376,7 @@ int MainMultiplayerMenu() {
             while (isdigit(*ptopic)) {
               ptopic++;
             }
-            *ptopic = NULL;
+            *ptopic = '\0';
             ptopic++;
             // count
             strcpy(chan_info[i].count, pcount);
@@ -1437,7 +1434,7 @@ int MainMultiplayerMenu() {
           if (nexttok) {
             nexttok = strchr(nexttok, '$');
             if (nexttok) {
-              *nexttok = NULL;
+              *nexttok = '\0';
               nexttok++;
             }
           }
@@ -1591,14 +1588,14 @@ shutdownpxo:
   DLLOldListRemoveAll(chan_list);
   DLLOldListRemoveAll(user_list);
   for (i = 0; i < MAX_CHAT_CHANNELS; i++) {
-    if (chan_ti[i] != NULL)
+    if (chan_ti[i] != nullptr)
       DLLRemoveUITextItem(chan_ti[i]);
-    chan_ti[i] = NULL;
+    chan_ti[i] = nullptr;
   }
   for (i = 0; i < CHAT_MAX_USERLIST; i++) {
-    if (user_ti[i] != NULL)
+    if (user_ti[i] != nullptr)
       DLLRemoveUITextItem(user_ti[i]);
-    user_ti[i] = NULL;
+    user_ti[i] = nullptr;
   }
   *DLLNewUIWindow_alpha = oldalpha;
   DLLmprintf(0, "Disconnecting from PXO.\n");
@@ -1757,11 +1754,11 @@ int SearchMasterTrackerGameMenu() {
   int ret = 0;
   int res;
 
-  game_list *games = NULL;
+  game_list *games = nullptr;
   int i = 0;
   float last_req_time;
   char selgame[200];
-  void *selti = NULL;
+  void *selti = nullptr;
   void *return_text_on = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_HI);
   void *return_text_off = DLLCreateNewUITextItem(TXT_PXO_RETURNTOCHAT, UICOL_HOTSPOT_LO);
   void *game_head_text = DLLCreateNewUITextItem(TXT_PXO_GAMELISTHDR, UICOL_TEXT_NORMAL);
@@ -1806,7 +1803,7 @@ int SearchMasterTrackerGameMenu() {
   int a;
   bool hardexit = false;
   for (a = 0; a < MAX_NET_GAMES; a++)
-    net_game_txt_items[a] = NULL;
+    net_game_txt_items[a] = nullptr;
   uint8_t oldalpha = *DLLNewUIWindow_alpha;
 
   DLLSetScreenMode(SM_MENU);
@@ -1897,7 +1894,7 @@ int SearchMasterTrackerGameMenu() {
           }
         }
       }
-      games = NULL;
+      games = nullptr;
     }
     if ((DLLtimer_GetTime() - last_req_time) > REQ_GAME_LIST_INTERVAL) {
       last_req_time = DLLtimer_GetTime();
@@ -1907,7 +1904,7 @@ int SearchMasterTrackerGameMenu() {
       if (selno >= 0) {
         strcpy(selgame, DLLNetwork_games[selno].name);
       } else {
-        selgame[0] = NULL;
+        selgame[0] = '\0';
       }
     }
     DLLUpdateAndPackGameList();
@@ -1948,7 +1945,7 @@ int SearchMasterTrackerGameMenu() {
         memcpy(&s_address.address, &DLLNetwork_games[gameno].addr, sizeof(network_address));
         s_address.port = DLLNetwork_games[gameno].addr.port;
         *DLLGame_is_master_tracker_game = 1;
-        DLLMultiStartClient(NULL);
+        DLLMultiStartClient(nullptr);
 
         if (DLLDoPlayerMouselookCheck(DLLNetwork_games[gameno].flags)) {
           char script_file[500];
@@ -2143,7 +2140,7 @@ int SearchMasterTrackerGameMenu() {
 }
 
 // This is just a function that does some debugging
-void CheckPXOForAnomalies(void) {
+void CheckPXOForAnomalies() {
   int i, j;
   for (i = 0; i < MAX_NET_PLAYERS; i++) {
     if (!(DLLMNetPlayers[i].flags & NPF_CONNECTED))
@@ -2171,7 +2168,7 @@ void CheckPXOForAnomalies(void) {
 }
 
 #define MT_DATA_UPDATE_INTERVAL 10 // 30 seconds
-void DoMTFrame(void) {
+void DoMTFrame() {
   int i;
   int rcode;
   IdleGameTracker();
@@ -2186,7 +2183,7 @@ void DoMTFrame(void) {
     // Loop through all DLLMNetPlayers looking to see if we need to send or receive
     if (MTWritingPilot != -1) {
       // We are already sending a pilot
-      rcode = SendD3PilotData(NULL);
+      rcode = SendD3PilotData(nullptr);
       if (rcode != 0) {
         if (rcode == 1) {
           // Copy data from the DLLMTPilotinfo[MTReadingPilot] struct here
@@ -2243,7 +2240,7 @@ void DoMTFrame(void) {
     if (MTWritingPilot == -1) {
       if (MTReadingPilot != -1) {
         // We are already waiting on a pilot
-        rcode = GetD3PilotData(NULL, NULL, NULL);
+        rcode = GetD3PilotData(nullptr, nullptr, nullptr);
         if (rcode != 0) {
           if (rcode == 1) {
             DLLMNetPlayers[MTReadingPilot].flags &= ~NPF_MT_READING_PILOT;
@@ -2314,19 +2311,19 @@ void DoMTGameOver(void) {
                      DLLMTPilotinfo[i].pilot_name, DLLMTPilotinfo[i].tracker_id);
           DLLmprintf(0, "Sending pilot %d rank of %f\n", i, DLLMTPilotinfo[i].rank / 65536.0);
           SendD3PilotData(&DLLMTPilotinfo[i]);
-          while (SendD3PilotData(NULL) == 0) {
+          while (SendD3PilotData(nullptr) == 0) {
             DLLDescentDefer();
           }
         }
       }
     }
   }
-  DLLShowProgressScreen(TXT_PXO_SENDINGGAMEOVER, NULL);
+  DLLShowProgressScreen(TXT_PXO_SENDINGGAMEOVER, nullptr);
   while (!SendGameOver())
     DLLDescentDefer();
 }
 
-int MTVersionCheck(void) {
+int MTVersionCheck() {
 #ifdef WIN32
   int rcode;
   InetGetFile *inetfile;
@@ -2578,7 +2575,7 @@ char *SendWhisper(char *name) {
   return "";
 }
 
-int JoinPrivateLobby(void) {
+int JoinPrivateLobby() {
   int exit_menu = 0;
   int ret;
   char message[MAX_CHAT_SEND_LEN];
@@ -2665,7 +2662,7 @@ int JoinPrivateLobby(void) {
   return ret;
 }
 
-int FindPilot(void) {
+int FindPilot() {
 
   int exit_menu = 0;
   const char *p;
@@ -2708,11 +2705,11 @@ int FindPilot(void) {
       DLLEditGetText(pilot_edit, pilot_name, MAX_CHAT_SEND_LEN);
       DLLCreateSplashScreen(TXT_PXO_SEARCHINGPILOT, 1);
       p = GetChannelByUser(pilot_name);
-      while (p == NULL) {
+      while (p == nullptr) {
         int sres = DLLPollUI();
         // Detect if cancel is hit
         if (sres == 99) {
-          p = NULL;
+          p = nullptr;
           // Cancel the lookup
           GetChannelByUser((char *)-1);
           break;
@@ -2725,7 +2722,7 @@ int FindPilot(void) {
         }
         p = GetChannelByUser(pilot_name);
       }
-      if ((p == (char *)-1) || (p == NULL)) {
+      if ((p == nullptr) || (p == (char *)-1)) {
         exit_menu = 1;
         DLLCloseSplashScreen();
         break;
@@ -2881,7 +2878,7 @@ int GetPilotStats(char *pilot) {
   }
   tokp = strchr((char *)p, ' ');
   if (tokp) {
-    *tokp = NULL;
+    *tokp = '\0';
     tokp++;
     strcpy(tid, p);
     strcpy(real_pilot, tokp);
@@ -2890,7 +2887,7 @@ int GetPilotStats(char *pilot) {
     GetD3PilotData(&d3_pilot_info, real_pilot, tid);
     int iresult = 0;
     while (iresult == 0) {
-      iresult = GetD3PilotData(NULL, NULL, NULL);
+      iresult = GetD3PilotData(nullptr, nullptr, nullptr);
       res = DLLPollUI();
       if (res == 99) {
         // cancel was hit
@@ -3006,7 +3003,7 @@ int GetPilotStats(char *pilot) {
   return 1;
 }
 
-void AutoLoginAndJoinGame(void) {
+void AutoLoginAndJoinGame() {
 
   int loginlen = LOGIN_LEN;
   int passlen = PASSWORD_LEN;
@@ -3044,7 +3041,7 @@ void AutoLoginAndJoinGame(void) {
 
   valret = ValidateUser(&val_user, sztrackerid);
   while (valret == 0) {
-    valret = ValidateUser(NULL, NULL);
+    valret = ValidateUser(nullptr, nullptr);
     DLLDescentDefer();
   }
   if (valret == 1) {
@@ -3073,7 +3070,7 @@ void AutoLoginAndJoinGame(void) {
   s_address.port = port;
   s_address.connection_type = NP_TCP;
   *DLLGame_is_master_tracker_game = 1;
-  DLLMultiStartClient(NULL);
+  DLLMultiStartClient(nullptr);
 
   if ((DLLTryToJoinServer(&s_address))) {
     DLLmprintf(0, "Menu: Game joined!\n");
@@ -3087,7 +3084,7 @@ failed_login:
   DLLCloseSplashScreen();
 }
 
-void AutoLoginAndStartGame(void) {
+void AutoLoginAndStartGame() {
   int loginlen = LOGIN_LEN;
   int passlen = PASSWORD_LEN;
   int valret;
@@ -3113,7 +3110,7 @@ void AutoLoginAndStartGame(void) {
 
   valret = ValidateUser(&val_user, sztrackerid);
   while (valret == 0) {
-    valret = ValidateUser(NULL, NULL);
+    valret = ValidateUser(nullptr, nullptr);
     DLLDescentDefer();
   }
   if (valret == 1) {
@@ -3191,7 +3188,7 @@ int ShowMessageOfTheDay(void) {
   DLLCreateSplashScreen(TXT_PXO_CONNECTING, 1);
   int mcode = GetD3MOTD(sznewmotd, MAX_MOTD_LEN);
   do {
-    mcode = GetD3MOTD(NULL, 0);
+    mcode = GetD3MOTD(nullptr, 0);
     res = DLLPollUI();
     if (res == 99) {
       GetD3MOTDCancel();
