@@ -40,11 +40,11 @@
 #define STATE_ERROOS	5
 #define STATE_NOCOMPILER	6
 
-struct
+struct tFileInfo
 {
 	char filename[PAGENAME_LEN];
 	int state;
-}tFileInfo;
+};
 
 
 class CMyListCtrl : public CListCtrl

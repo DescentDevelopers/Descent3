@@ -39,10 +39,10 @@
 //	BriefGlobalValues
 //
 //	struct for global variables for a telcom briefing
-struct{
+struct BriefGlobalValues{
 	char title[128];
 	float static_val,glitch_val;
-}BriefGlobalValues;
+};
 
 #define BE_NONE			-1
 #define BE_TEXT			0
@@ -55,7 +55,7 @@ struct{
 //	tBriefEffect
 //
 //	struct for a briefing effect
-struct{
+struct tBriefEffect{
 	uint8_t type;							//type of effect (for union)
 	bool used;							//is the effect being used
 	int id;								//ID# used
@@ -72,16 +72,16 @@ struct{
 		TCBUTTONDESC	button_desc;
 	};
 	int next,prev;						//next/prev effect in list
-}tBriefEffect;
+};
 
-struct{
+struct tBriefScreen{
 	bool used;										//is screen being used
 	int root_effect;								//root effect to start the list
 	char layout[_MAX_PATH];							//layout screen to use
 	tBriefEffect effects[MAX_EFFECTS_PER_SCREEN];	//the effects for the screen
 	uint32_t mission_mask_set,mission_mask_unset;
 	int next,prev;									//next/prev screen in list
-}tBriefScreen;
+};
 
 extern int Briefing_root_screen;
 extern tBriefScreen Briefing_screens[MAX_TELCOM_SCREENS];
@@ -125,7 +125,7 @@ uint8_t BriefEditLoadScreens(char *filename,CComboBox *screen_combo,CComboBox *e
 
 
 #define MAX_LAYOUT_PREDEFS	10
-struct{
+struct tLayoutScreen{
 	char filename[_MAX_PATH];
 	int num_texts,num_bmps;
 	struct{
@@ -134,7 +134,7 @@ struct{
 	struct{
 		int x,y;
 	}bmps[MAX_LAYOUT_PREDEFS];
-}tLayoutScreen;
+};
 
 extern tLayoutScreen *PBlayouts;
 extern int *PBnum_layouts;

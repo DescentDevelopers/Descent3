@@ -306,8 +306,8 @@
 #endif
 
 //Define group & room structs so we don't have to include group.h & room.h
-struct group group;
-struct room room;
+struct group;
+struct room;
 
 const int	TEXSCREEN_WIDTH		= 512,	// Texture screen base width and height
 			TEXSCREEN_HEIGHT	= 384,

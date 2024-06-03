@@ -85,8 +85,7 @@ private:
 	{
 		HTREEITEM hItem;
 		int handle;
-	}
-	tObjNode;
+	};
 
 	tObjNode *m_Leafs[MAX_OBJ_LEAFS];
 

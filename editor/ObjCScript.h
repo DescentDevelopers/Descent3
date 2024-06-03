@@ -140,8 +140,7 @@ struct tScriptName
 
 	void add_parameter(const char *type, const char *parm);
 	void free_parameters();
-}
-tScriptName;
+};
 
 //	per level script.
 extern char Level_script_name[];
