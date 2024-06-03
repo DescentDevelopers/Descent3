@@ -80,6 +80,9 @@
 
 #include "ui.h"
 
+// Chat tracker
+#define CHATTRACKERNAME "tracker.pxo.nottheeye.com"
+#define CHATPORT 7170
 
 #define TRACKER_MENU_W 256
 #define TRACKER_MENU_H 256

@@ -49,7 +49,7 @@ typedef struct Chat_command {
 } Chat_command;
 
 // Prototypes
-int ConnectToChatServer(char *serveraddr, char *nickname, char *trackerid);
+int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nickname, char *trackerid);
 void DisconnectFromChatServer();
 const char *GetChatText();
 char *SendChatString(char *line, int raw = 0);

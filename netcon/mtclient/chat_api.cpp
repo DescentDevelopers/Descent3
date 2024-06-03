@@ -41,7 +41,7 @@ extern mem_malloc_fp DLLmem_malloc;
 typedef void (*mem_free_fp)(void *memblock);
 extern mem_free_fp DLLmem_free;
 
-typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, char *hostname);
+typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, const char *hostname);
 extern nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*PollUI_fp)();
@@ -120,10 +120,7 @@ void ChatInit() {
 // with 0. Keep calling it until it returns something other than 0
 // note: the nickname may be changed if someone with that name already
 // exists (Scourge1 for instance)
-int ConnectToChatServer(char *serveraddr, char *nickname, char *trackerid) {
-  int16_t chat_port;
-  char chat_server[50];
-  char *p;
+int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nickname, char *trackerid) {
   char signon_str[100];
 
   // if(Socket_connected && ) return -2;
@@ -141,16 +138,7 @@ int ConnectToChatServer(char *serveraddr, char *nickname, char *trackerid) {
     Chat_server_connected = 0;
     FlushChatCommandQueue();
 
-    p = strchr(serveraddr, ':');
-
-    if (nullptr == p) {
-      // AfxMessageBox("Invalid chat server, must be host.com:port (ie. irc.dal.net:6667)");
-      return -1;
-    }
-    strncpy(chat_server, serveraddr, (p - serveraddr));
-    chat_server[p - serveraddr] = '\0';
-    chat_port = atoi(p + 1);
-    if (0 == chat_port) {
+    if (chat_port == 0) {
       // AfxMessageBox("Invalid chat port, must be host.com:port (ie. irc.dal.net:6667)");
       return -1;
     }
@@ -194,18 +182,18 @@ int ConnectToChatServer(char *serveraddr, char *nickname, char *trackerid) {
     int rcode;
     uint32_t ip;
 
-    DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_LOOKUP, chat_server);
+    DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_LOOKUP, serveraddr);
     do {
-      rcode = DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_READ, chat_server);
+      rcode = DLLnw_Asyncgethostbyname(&ip, NW_AGHBN_READ, serveraddr);
       if (99 == DLLPollUI()) {
         return 0;
       }
     } while (rcode == 0);
 
     if (rcode != 1) {
-      DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", chat_server);
+      DLLmprintf(0, "Unable to gethostbyname(\"%s\").\n", serveraddr);
       DLLmprintf(0, "WSAGetLastError() returned %d.\n", WSAGetLastError());
-      DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, NULL);
+      DLLnw_Asyncgethostbyname(nullptr, NW_AGHBN_CANCEL, nullptr);
       return 0;
     }
     memcpy(&Chataddr.sin_addr.s_addr, &ip, 4);

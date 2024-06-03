@@ -1162,14 +1162,8 @@ int MainMultiplayerMenu() {
   // DLLNewUIWindowSetFocusOnEditGadget(send_edit,main_wnd);
   DLLmprintf(0, "About to connect...\n");
   do {
-#ifdef DEMO
-    chat_connected = ConnectToChatServer("chat.parallaxonline.com:7170", pilot_name, chat_whois_info);
-#elif defined(OEM)
-    chat_connected = ConnectToChatServer("chat.parallaxonline.com:7170", pilot_name, chat_whois_info);
-#else
-    chat_connected = ConnectToChatServer("chat.parallaxonline.com:7170", pilot_name, chat_whois_info);
+    chat_connected = ConnectToChatServer(CHATTRACKERNAME, CHATPORT, pilot_name, chat_whois_info);
     // chat_connected = ConnectToChatServer("plasma.outrage.com:7000",pilot_name,chat_whois_info);
-#endif
     p = GetChatText();
     if (p) {
       DLLUIConsoleGadgetputs(console_item, p);

@@ -96,8 +96,7 @@
 #pragma pack(1)
 
 // Definitions
-#define GAMETRACKER "209.223.64.251" // The scanner machine at Outrage
-#define GAMETRACKERNAME "gt.parallaxonline.com"
+#define GAMETRACKERNAME "tracker.pxo.nottheeye.com"
 #define GAMEPORT 3445
 
 #define MAX_GAME_BUFFERS 20 // Thats a lot considering 20 games per game_list struct

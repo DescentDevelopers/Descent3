@@ -119,9 +119,8 @@
 #define STATE_PILOT_NOT_FOUND 6
 #define STATE_WRITE_PILOT_FAILED 7
 
-#define REGTRACKER "209.223.64.250" // The scanner machine at Outrage
 #define REGPORT 2092                // The UDP port
-#define PILOTTRACKERNAME "ut.parallaxonline.com"
+#define PILOTTRACKERNAME "tracker.pxo.nottheeye.com"
 
 #define PILOT_REQ_TIMEOUT 30.000
 #define PILOT_REQ_RESEND_TIME 2.0
