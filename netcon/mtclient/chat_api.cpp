@@ -313,7 +313,7 @@ const char *GetChatText() {
 
 // Send a string to be sent as chat, or scanned for messages (/msg <user>
 // string)
-char *SendChatString(char *line, int raw) {
+char *SendChatString(const char *line, int raw) {
   char szCmd[200];
   char szTarget[50];
   if (!Socket_connected)
@@ -416,7 +416,7 @@ char *GetChatUserList() {
 //-1 Failed to join
 // 0 joining
 // 1 successfully joined
-int SetNewChatChannel(char *channel) {
+int SetNewChatChannel(const char *channel) {
   char partstr[100];
   if (!Socket_connected)
     return -1;
@@ -492,7 +492,7 @@ const char *ChatGetString() {
   return nullptr;
 }
 
-char *GetWordNum(int num, char *l_String) {
+const char *GetWordNum(int num, const char *l_String) {
   static char strreturn[600];
   static char ptokstr[600];
   char seps[10] = " \n\r\t";
@@ -522,7 +522,7 @@ char *GetWordNum(int num, char *l_String) {
   return strreturn;
 }
 
-int AddChatUser(char *nickname) {
+int AddChatUser(const char *nickname) {
   Curruser = Firstuser;
   while (Curruser) {
     if (stricmp(nickname, Curruser->nick_name) == 0)
@@ -588,7 +588,7 @@ void RemoveAllChatUsers() {
 
 char *ParseIRCMessage(char *Line, int iMode) {
   char szRemLine[MAXLOCALSTRING];
-  char *pszTempStr;
+  const char *pszTempStr;
   char szPrefix[MAXLOCALSTRING];
   char szHackPrefix[MAXLOCALSTRING];
   char szTarget[MAXLOCALSTRING];
@@ -1014,7 +1014,7 @@ char *ParseIRCMessage(char *Line, int iMode) {
   return nullptr;
 }
 
-void AddChatCommandToQueue(int command, void *data, int len) {
+void AddChatCommandToQueue(int command, const void *data, int len) {
   Currcommand = Firstcommand;
   if (Firstcommand == nullptr) {
     Firstcommand = (Chat_command *)DLLmem_malloc(sizeof(Chat_command));
@@ -1133,7 +1133,7 @@ void AddChannel(char *channel, uint16_t numusers, char *topic) {
   Currchannel->next = nullptr;
 }
 
-char *GetTrackerIdByUser(char *nickname) {
+char *GetTrackerIdByUser(const char *nickname) {
   char szWhoisCmd[100];
 
   if (nickname == (char *)-1) {
@@ -1161,7 +1161,7 @@ char *GetTrackerIdByUser(char *nickname) {
   return nullptr;
 }
 
-char *GetChannelByUser(char *nickname) {
+char *GetChannelByUser(const char *nickname) {
   char szWhoisCmd[100];
 
   if (nickname == (char *)-1) {

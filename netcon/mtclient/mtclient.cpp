@@ -2433,7 +2433,7 @@ int MTVersionCheck() {
   return 1;
 }
 
-int JoinNewLobby(char *lobby) {
+int JoinNewLobby(const char *lobby) {
   int rcode;
   const char *p;
   DLLmprintf(0, "Entering new lobby");
@@ -2486,7 +2486,7 @@ int JoinNewLobby(char *lobby) {
   DLLRemoveUITextItem(cancel_off_text);
 }
 
-char *SendWhisper(char *name) {
+char *SendWhisper(const char *name) {
 
   int exit_menu = 0;
   char *p;
@@ -2813,7 +2813,7 @@ int GetNextRank(float ranking) {
   return val;
 }
 
-int GetPilotStats(char *pilot) {
+int GetPilotStats(const char *pilot) {
   int res;
   const char *p;
   char *tokp;
