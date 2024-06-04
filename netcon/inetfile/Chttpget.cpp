@@ -211,7 +211,12 @@ void ChttpGet::PrepSocket(char *URL) {
     return;
   }
 
-  make_nonblocking(m_DataSock);
+#ifdef WIN32
+  unsigned long arg = 1;
+  ioctlsocket(m_DataSock, FIONBIO, &arg);
+#else // WIN32
+  fcntl(m_DataSock, F_SETFL, fcntl(m_DataSock, F_GETFL, 0) | O_NONBLOCK);
+#endif
 
   char *pURL = URL;
   if (strnicmp(URL, "http:", 5) == 0) {

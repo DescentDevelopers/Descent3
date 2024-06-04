@@ -462,7 +462,7 @@ static inline void DLLMultiStartServer(int playing, char *scriptname, int dedica
   DLLMultiStartServerFP(playing, scriptname, dedicated_num_teams);
 }
 
-typedef void (*ShowProgressScreen_fp)(char *, char *);
+typedef void (*ShowProgressScreen_fp)(const char *, const char *);
 ShowProgressScreen_fp DLLShowProgressScreen;
 
 typedef int (*SearchForLocalGamesTCP_fp)(uint32_t, uint16_t);
@@ -620,7 +620,7 @@ typedef void (*dp_EndGame_fp)();
 dp_EndGame_fp DLLdp_EndGame;
 #endif
 
-typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, char *hostname);
+typedef int (*nw_Asyncgethostbyname_fp)(uint32_t *ip, int command, const char *hostname);
 nw_Asyncgethostbyname_fp DLLnw_Asyncgethostbyname;
 
 typedef int (*nw_ReccomendPPS_fp)();
@@ -640,7 +640,9 @@ MultiLoadSettings_fp DLLMultiLoadSettings;
 
 typedef void *(*NetworkReceiveCallback)(uint8_t *data, int len, network_address *from);
 
-typedef int (*nw_RegisterCallback_fp)(void *nfp, uint8_t id);
+typedef void (*HandleGamePacket_fp)(uint8_t *data, int len, network_address *from);
+
+typedef int (*nw_RegisterCallback_fp)(HandleGamePacket_fp, uint8_t id);
 nw_RegisterCallback_fp DLLnw_RegisterCallback;
 
 typedef NetworkReceiveCallback (*nw_UnRegisterCallback_fp)(uint8_t id);
