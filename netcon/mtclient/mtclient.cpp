@@ -521,7 +521,7 @@ void FormatServerLine(char *fmt, int servernum, int pxonum) {
     strcat(server_mode, "-ML");
   }
 
-  sprintf(server_type, "%s %s", server_mode, DLLNetwork_games[k].scriptname);
+  snprintf(server_type, sizeof(server_type), "%s %s", server_mode, DLLNetwork_games[k].scriptname);
 
   int game_type_pos = strlen(server_type);
 
@@ -1074,7 +1074,7 @@ int MainMultiplayerMenu() {
   void *send_off_text = DLLCreateNewUITextItem(TXT_PXO_SEND, UICOL_HOTSPOT_LO);
 
   char fmtlobbytext[200];
-  sprintf(fmtlobbytext, TXT_PXO_YOUAREINLOBBY, Ourlobby);
+  snprintf(fmtlobbytext, sizeof(fmtlobbytext), TXT_PXO_YOUAREINLOBBY, Ourlobby);
   void *lobby_text = DLLCreateNewUITextItem(fmtlobbytext, UICOL_TEXT_AUX);
 
   void *blank_text = DLLCreateNewUITextItem(TXT_PXO_BLANK, UICOL_TEXT_AUX);
@@ -1158,7 +1158,7 @@ int MainMultiplayerMenu() {
   char pilot_name[PILOT_STRING_SIZE];
   CurrentPilotName(pilot_name);
 
-  sprintf(chat_whois_info, "%s %s", sztrackerid, pilot_name);
+  snprintf(chat_whois_info, sizeof(chat_whois_info), "%s %s", sztrackerid, pilot_name);
   chat_conn_time = DLLtimer_GetTime();
   // DLLNewUIWindowSetFocusOnEditGadget(send_edit,main_wnd);
   DLLmprintf(0, "About to connect...\n");
@@ -1230,7 +1230,7 @@ int MainMultiplayerMenu() {
             cleanlobby[l] = ' ';
           // if(cleanlobby[l]==NULL) cleanlobby[l]= ' ';
         }
-        sprintf(fmtlobbytext, TXT_PXO_YOUAREINLOBBY, cleanlobby);
+        snprintf(fmtlobbytext, sizeof(fmtlobbytext), TXT_PXO_YOUAREINLOBBY, cleanlobby);
 
         DLLRemoveUITextItem(lobby_text);
         DLLGadgetDestroy(lobby_txt_gadget);
@@ -1280,7 +1280,7 @@ int MainMultiplayerMenu() {
         }
         char seps[] = " ";
         char *tokp;
-        tokp = strtok((char *) p, seps);
+        tokp = strtok((char *)p, seps);
         if (tokp) {
           for (i = 0; i < CHAT_MAX_USERLIST; i++) {
             user_ti[i] = DLLCreateNewUITextItem(tokp, GR_WHITE);
@@ -1555,7 +1555,7 @@ int MainMultiplayerMenu() {
             if (cleanlobby[l] == '_')
               cleanlobby[l] = ' ';
           }
-          sprintf(txtmessage, TXT_PXO_INNEWLOBBY, cleanlobby);
+          snprintf(txtmessage, sizeof(txtmessage), TXT_PXO_INNEWLOBBY, cleanlobby);
           DLLDoMessageBox(TXT_PXO_MASTERTRACKER, txtmessage, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
         }
       }
@@ -1778,9 +1778,9 @@ int SearchMasterTrackerGameMenu() {
   void *ping_off_text = DLLCreateNewUITextItem(TXT_PXO_PING, UICOL_HOTSPOT_LO);
 
   char fmt_textstr[200];
-  sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 28);
+  snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
   void *default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
-  sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 28);
+  snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
 
   void *default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
   void *game_hdr_text = DLLCreateNewUITextItem(TXT_PXO_GAME_HDR, UICOL_WINDOW_TITLE);
@@ -1818,17 +1818,17 @@ int SearchMasterTrackerGameMenu() {
 
   if (Bypass_chat) {
 
-    sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 29);
+    snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 29);
     default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
-    sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 29);
+    snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 29);
     default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
     setdfty = cury;
     set_dft_hs = DLLHotSpotCreate(main_wnd, 9, 0, default_off_text, default_on_text, 490, cury, 300, 15, UIF_CENTER);
     cury += 20;
   } else {
-    sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 28);
+    snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
     default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
-    sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 28);
+    snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
     default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
     setdfty = cury;
     set_dft_hs = DLLHotSpotCreate(main_wnd, 9, 0, default_off_text, default_on_text, 490, cury, 300, 15, UIF_CENTER);
@@ -1944,7 +1944,7 @@ int SearchMasterTrackerGameMenu() {
 
         if (DLLDoPlayerMouselookCheck(DLLNetwork_games[gameno].flags)) {
           char script_file[500];
-          sprintf(script_file, "%s.d3m", DLLNetwork_games[gameno].scriptname);
+          snprintf(script_file, sizeof(script_file), "%s.d3m", DLLNetwork_games[gameno].scriptname);
           if (DLLCheckGetD3M(script_file)) {
             // Check to see if this mission exists!
             if (DLLmsn_CheckGetMission(&s_address, DLLNetwork_games[gameno].mission)) {
@@ -1997,18 +1997,18 @@ int SearchMasterTrackerGameMenu() {
         if (bypass_chat_curr_val) {
           bypass_chat_curr_val = 0;
           DLLDatabaseWriteInt("BypassChat", bypass_chat_curr_val);
-          sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 28);
+          snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
           default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
-          sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 28);
+          snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 28);
           default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
           set_dft_hs =
               DLLHotSpotCreate(main_wnd, 9, 0, default_off_text, default_on_text, 490, setdfty, 300, 15, UIF_CENTER);
         } else {
           bypass_chat_curr_val = 1;
           DLLDatabaseWriteInt("BypassChat", bypass_chat_curr_val);
-          sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 29);
+          snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 29);
           default_on_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_HI);
-          sprintf(fmt_textstr, TXT_PXO_MAKEGAMEDEFAULT, 29);
+          snprintf(fmt_textstr, sizeof(fmt_textstr), TXT_PXO_MAKEGAMEDEFAULT, 29);
           default_off_text = DLLCreateNewUITextItem(fmt_textstr, UICOL_HOTSPOT_LO);
           set_dft_hs =
               DLLHotSpotCreate(main_wnd, 9, 0, default_off_text, default_on_text, 490, setdfty, 300, 15, UIF_CENTER);
@@ -2472,7 +2472,7 @@ int JoinNewLobby(char *lobby) {
       if (cleanlobby[l] == '_')
         cleanlobby[l] = ' ';
     }
-    sprintf(txtmessage, TXT_PXO_CANTJOINLOBBY, cleanlobby);
+    snprintf(txtmessage, sizeof(txtmessage), TXT_PXO_CANTJOINLOBBY, cleanlobby);
     DLLDoMessageBox(TXT_PXO_MASTERTRACKER, txtmessage, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     return 0;
   }
@@ -2532,7 +2532,7 @@ char *SendWhisper(char *name) {
     case UID_OK:
       DLLEditGetText(user_edit, pilot_name, MAX_CHAT_SEND_LEN);
       DLLEditGetText(msg_edit, message, MAX_CHAT_SEND_LEN);
-      sprintf(fmt_msg, "/msg %s %s", pilot_name, message);
+      snprintf(fmt_msg, sizeof(fmt_msg), "/msg %s %s", pilot_name, message);
       p = SendChatString(fmt_msg);
       if (p && pconsole) {
         DLLUIConsoleGadgetputs(pconsole, p);
@@ -2615,7 +2615,7 @@ int JoinPrivateLobby() {
           priv_channel[i] = '_';
         }
       }
-      sprintf(message, "+%s", priv_channel);
+      snprintf(message, sizeof(message), "+%s", priv_channel);
       ret = JoinNewLobby(message);
       exit_menu = 1;
       if (ret) {
@@ -2627,7 +2627,7 @@ int JoinPrivateLobby() {
           if (cleanlobby[l] == '_')
             cleanlobby[l] = ' ';
         }
-        sprintf(txtmessage, TXT_PXO_INNEWLOBBY, cleanlobby);
+        snprintf(txtmessage, sizeof(txtmessage), TXT_PXO_INNEWLOBBY, cleanlobby);
         DLLDoMessageBox(TXT_PXO_MASTERTRACKER, txtmessage, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
         *DLLNum_network_games_known = 0;
       }
@@ -2726,7 +2726,7 @@ int FindPilot() {
       for (uint32_t i = 0; i < strlen(message); i++)
         if (message[i] == '_')
           message[i] = ' ';
-      sprintf(fmt_msg, TXT_PXO_CANBEFOUNDIN, pilot_name, message);
+      snprintf(fmt_msg, sizeof(fmt_msg), TXT_PXO_CANBEFOUNDIN, pilot_name, message);
       if (pconsole) {
         DLLUIConsoleGadgetputs(pconsole, fmt_msg);
         DLLUIConsoleGadgetputs(pconsole, "\x0a\x0d");
@@ -2901,8 +2901,9 @@ int GetPilotStats(char *pilot) {
       DLLmprintf(0, "Got pilot info for %s %s\n", tid, real_pilot);
 
       // Do rank thingy here.
-      sprintf(tmp_text, "Rank: %s (%d) Next Advance at %d", GetRankString(d3_pilot_info.rank / 65536),
-              d3_pilot_info.rank / 65536, GetNextRank(d3_pilot_info.rank / 65536));
+      snprintf(tmp_text, sizeof(tmp_text), "Rank: %s (%d) Next Advance at %d",
+               GetRankString(d3_pilot_info.rank / 65536), d3_pilot_info.rank / 65536,
+               GetNextRank(d3_pilot_info.rank / 65536));
       rank_text = DLLCreateNewUITextItem(tmp_text, UICOL_TEXT_NORMAL);
 
       title_text = DLLCreateNewUITextItem(TXT_PXO_PILOTSTATS, UICOL_WINDOW_TITLE);
@@ -2912,13 +2913,13 @@ int GetPilotStats(char *pilot) {
       close_on_text = DLLCreateNewUITextItem(TXT_PXO_CLOSE, UICOL_HOTSPOT_HI);
       close_off_text = DLLCreateNewUITextItem(TXT_PXO_CLOSE, UICOL_HOTSPOT_LO);
 
-      sprintf(tmp_text, TXT_PXO_TOTALKILLS, d3_pilot_info.kills);
+      snprintf(tmp_text, sizeof(tmp_text), TXT_PXO_TOTALKILLS, d3_pilot_info.kills);
       kills_text = DLLCreateNewUITextItem(tmp_text, UICOL_TEXT_NORMAL);
 
-      sprintf(tmp_text, TXT_PXO_TOTALDEATHS, d3_pilot_info.deaths);
+      snprintf(tmp_text, sizeof(tmp_text), TXT_PXO_TOTALDEATHS, d3_pilot_info.deaths);
       deaths_text = DLLCreateNewUITextItem(tmp_text, UICOL_TEXT_NORMAL);
 
-      sprintf(tmp_text, TXT_PXO_SUICIDES, d3_pilot_info.suicides);
+      snprintf(tmp_text, sizeof(tmp_text), TXT_PXO_SUICIDES, d3_pilot_info.suicides);
       suicide_text = DLLCreateNewUITextItem(tmp_text, UICOL_TEXT_NORMAL);
 
       int leff = 0;
@@ -2930,9 +2931,9 @@ int GetPilotStats(char *pilot) {
                      100.0);
       }
 
-      sprintf(tmp_text, TXT_PXO_EFFECIENCY, leff);
+      snprintf(tmp_text, sizeof(tmp_text), TXT_PXO_EFFECIENCY, leff);
       eff_text = DLLCreateNewUITextItem(tmp_text, UICOL_TEXT_NORMAL);
-      sprintf(tmp_text, TXT_PXO_TIMEINGAME, d3_pilot_info.online_time / 60);
+      snprintf(tmp_text, sizeof(tmp_text), TXT_PXO_TIMEINGAME, d3_pilot_info.online_time / 60);
       time_text = DLLCreateNewUITextItem(tmp_text, UICOL_TEXT_NORMAL);
 
       main_wnd = DLLNewUIGameWindowCreate(0, 0, 384, 256, UIF_PROCESS_ALL | UIF_CENTER | NUWF_TITLEMED);
