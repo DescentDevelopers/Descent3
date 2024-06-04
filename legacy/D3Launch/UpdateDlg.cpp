@@ -289,14 +289,14 @@ BOOL CUpdateDlg::GetVersionNfo()
 	}
 
 	// grab the last line in file which isn't empty and isn't a comment
-	char buffer[PSPATHNAME_LEN+1], verbuffer[PSPATHNAME_LEN+1];
+	char buffer[_MAX_PATH+1], verbuffer[_MAX_PATH+1];
 
 	strcpy(verbuffer,"");
 	strcpy(buffer,"");
 	while (!feof(f)) {
 
 		// Read the line into a temporary buffer
-		fgets(buffer, PSPATHNAME_LEN, f);
+		fgets(buffer, _MAX_PATH, f);
 
 		// take the \n off the end of it
 		if(strlen(buffer)>0 && buffer[strlen(buffer) - 1] == '\n')
@@ -484,8 +484,8 @@ void CUpdateDlg::OnYes()
 	}
 
 	// TODO: Add your control notification handler code here
-	char buffer[PSPATHNAME_LEN+1];
-	char verbuffer[PSPATHNAME_LEN+1], filebuffer[PSPATHNAME_LEN+1];
+	char buffer[_MAX_PATH+1];
+	char verbuffer[_MAX_PATH+1], filebuffer[_MAX_PATH+1];
 	uint32_t major, minor, build;
 	int get_file_ret;
 	CString str_msg;
@@ -527,7 +527,7 @@ void CUpdateDlg::OnYes()
 	while (!feof(f)) {
 
 		// Read the line into a temporary buffer
-		fgets(buffer, PSPATHNAME_LEN, f);
+		fgets(buffer, _MAX_PATH, f);
 
 		// take the \n off the end of it
 		if(strlen(buffer)>0 && buffer[strlen(buffer) - 1] == '\n')
@@ -1064,7 +1064,7 @@ int CUpdateDlg::GetHTTPFile(char *remote, char *local)
 	uint32_t LastPrintbytes = time(NULL);
 	InetGetFile *inetfile;
 	WORD ver=MAKEWORD(1,1);
-	char URL[PSPATHNAME_LEN+1];
+	char URL[_MAX_PATH+1];
 
 	//sprintf(URL,"%s://%s%s",SITE_TYPE,WEB_SITE,remote);
 	strcpy(URL,remote);

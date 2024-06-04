@@ -114,7 +114,7 @@ struct d3_intellivibe {
 ////////////////////////////////////////////////////////////
 // Functions
 
-#define STDCALLFUNC _stdcall
+#define STDCALLFUNC __stdcall
 
 #ifdef __cplusplus
 #define CEXTERN extern "C"

@@ -2092,7 +2092,7 @@ void CMainFrame::OnSubeditorsHogmaker()
 //	Open common file open dialog box.
 	CString filter = "Descent III hogfiles (*.hog)|*.hog||";
 	CFileDialog dlg_open(TRUE, 0,0, OFN_FILEMUSTEXIST, (LPCTSTR)filter, this);
-	char filename[MAX_PATH];
+	char filename[_MAX_PATH];
 
 	if (dlg_open.DoModal() == IDCANCEL) {
 		return;

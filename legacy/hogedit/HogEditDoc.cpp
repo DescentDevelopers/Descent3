@@ -262,7 +262,7 @@ int CHogEditDoc::LoadRib(const char *pathname)
 	}
 
 	// Read in the hog filename
-	if(!fread(Library.filename,sizeof(char),PSPATHNAME_LEN,rib_fp)) {
+	if(!fread(Library.filename,sizeof(char),_MAX_PATH,rib_fp)) {
 		fclose(rib_fp);
 		return false;
 	}
@@ -410,7 +410,7 @@ int CHogEditDoc::SaveRib(const char *pathname)
 	}
 
 	// write out the hog filename
-	if(!fwrite(Library.filename,sizeof(char),PSPATHNAME_LEN,rib_fp)) {
+	if(!fwrite(Library.filename,sizeof(char),_MAX_PATH,rib_fp)) {
 		fclose(rib_fp);
 		return false;
 	}
@@ -452,16 +452,16 @@ int CHogEditDoc::SaveRib(const char *pathname)
 int CHogEditDoc::AddFile(const char *pathname, hog_library_entry *entry)
 {	
 	struct _stat filestat;
-	char temp_filename[PSPATHNAME_LEN];
-	char test_filename[PSPATHNAME_LEN];
+	char temp_filename[_MAX_PATH];
+	char test_filename[_MAX_PATH];
 	char filename[PSFILENAME_LEN+1];
 	char ext[_MAX_EXT];
 	unsigned length;
   int32_t timestamp;
 	POSITION pos;
-	char path[PSPATHNAME_LEN];
-	char drive[PSPATHNAME_LEN];
-	char newpath[PSPATHNAME_LEN];
+	char path[_MAX_PATH];
+	char drive[_MAX_PATH];
+	char newpath[_MAX_PATH];
 	hog_library_entry temp_entry;
 
 	// Get file info
@@ -514,7 +514,7 @@ int CHogEditDoc::AddFile(const char *pathname, hog_library_entry *entry)
 int CHogEditDoc::UpdatedFileCheck(hog_library_entry *entry)
 {
 	struct _stat filestat;
-	char full_name[PSPATHNAME_LEN];
+	char full_name[_MAX_PATH];
 
 	sprintf(full_name,"%s%s",entry->path,entry->name);
 
@@ -538,7 +538,7 @@ int CHogEditDoc::UpdatedFileCheck(hog_library_entry *entry)
 bool CHogEditDoc::ReadHogLibEntry(FILE *fp, hog_library_entry *entry)
 {
 	int res=0;
-	res = fread(entry->path, sizeof(char), PSPATHNAME_LEN, fp);
+	res = fread(entry->path, sizeof(char), _MAX_PATH, fp);
 	res = fread(entry->name, sizeof(char), PSFILENAME_LEN+1, fp);
 	res = fread(&entry->flags, sizeof(entry->flags), 1, fp);
 	res = fread(&entry->length, sizeof(entry->length), 1, fp);
@@ -557,7 +557,7 @@ bool CHogEditDoc::ReadHogLibEntry(FILE *fp, hog_library_entry *entry)
 bool CHogEditDoc::WriteHogLibEntry(FILE *fp, hog_library_entry *entry)
 {
 	int res=0;
-	res = fwrite(entry->path, sizeof(char), PSPATHNAME_LEN, fp);
+	res = fwrite(entry->path, sizeof(char), _MAX_PATH, fp);
 	res = fwrite(entry->name, sizeof(char), PSFILENAME_LEN+1, fp);
 	res = fwrite(&entry->flags, sizeof(entry->flags), 1, fp);
 	res = fwrite(&entry->length, sizeof(entry->length), 1, fp);
@@ -572,7 +572,7 @@ bool CHogEditDoc::WriteHogLibEntry(FILE *fp, hog_library_entry *entry)
 // Allocates and fills the hog library filenames list
 bool CHogEditDoc::CreateFilenameList(char ***filenames)
 {
-	char full_name[PSPATHNAME_LEN];
+	char full_name[_MAX_PATH];
 	POSITION pos;
 	hog_library_entry temp_entry;
 	int j;
@@ -614,8 +614,8 @@ bool CHogEditDoc::CreateFilenameList(char ***filenames)
 // Comparison function for qsort
 int compare( const void *arg1, const void *arg2 )
 {	
-	char filename1[PSPATHNAME_LEN];
-	char filename2[PSPATHNAME_LEN];
+	char filename1[_MAX_PATH];
+	char filename2[_MAX_PATH];
 	char ext1[_MAX_EXT];
 	char ext2[_MAX_EXT];
 
@@ -787,7 +787,7 @@ int CHogEditDoc::CreateNewHogFromCurrentHog(char *src_hog_fname, char *target_ho
 	tHogHeader header;
 	tHogFileEntry *table;
 	char ext[_MAX_EXT];
-	char dest_hog_fname[PSPATHNAME_LEN+1];
+	char dest_hog_fname[_MAX_PATH+1];
 
 	// If the source and target hog filenames are the same,
 	// then make the destination a temporary file

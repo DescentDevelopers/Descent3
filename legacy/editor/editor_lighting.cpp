@@ -974,7 +974,7 @@ void DoRadiosityForRooms ()
 
 	if (save_after_bsp)
 	{
-		char filename[PSPATHNAME_LEN];
+		char filename[_MAX_PATH];
 		ddio_MakePath(filename,Base_directory,"BSPSave.D3L", NULL);
 
 		//Save the level to 
@@ -1273,7 +1273,7 @@ void DoRadiosityForRooms ()
 	// Finally, squeeze the lightmaps
 	SqueezeLightmaps(0,-1);
 
-	char filename[PSPATHNAME_LEN+1];
+	char filename[_MAX_PATH+1];
 	ddio_MakePath(filename,Base_directory,"LightSave.D3L", NULL);
 
 	//Save the level to disk

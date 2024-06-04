@@ -90,12 +90,12 @@ END_MESSAGE_MAP()
 void CD3XStringEditor::OnLoadscript() 
 {
 //	open either a level or a .d3x file
-	char openpath[PSPATHNAME_LEN+1];
+	char openpath[_MAX_PATH+1];
 
 	if (!PromptSave()) 
 		return;
 
-	if (OpenFileDialog(this, "Descent 3 scripts (*.d3x)|*.d3x||", openpath, LocalLevelsDir, PSPATHNAME_LEN+1)) {
+	if (OpenFileDialog(this, "Descent 3 scripts (*.d3x)|*.d3x||", openpath, LocalLevelsDir, _MAX_PATH+1)) {
 	//	load program including string table and fill list box will strings.
 		tD3XProgram *prog;
 		CListBox *list = (CListBox *)GetDlgItem(IDC_STRINGLIST);

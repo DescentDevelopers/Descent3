@@ -1035,8 +1035,8 @@ void CWorldObjectsPlayerDialog::OnPshipEditPhysics()
 
 void CWorldObjectsPlayerDialog::OnPshipDyingModel() 
 {
-	char filename[PSPATHNAME_LEN];
-	char curname[PSPATHNAME_LEN];
+	char filename[_MAX_PATH];
+	char curname[_MAX_PATH];
 	int img_handle;
 	int ship_handle;
 	int c=1,finding_name=1;
@@ -1091,8 +1091,8 @@ void CWorldObjectsPlayerDialog::OnEditWeapons()
 
 void CWorldObjectsPlayerDialog::OnPshipCockpit() 
 {
-	char filename[PSPATHNAME_LEN];
-	char curname[PSPATHNAME_LEN];
+	char filename[_MAX_PATH];
+	char curname[_MAX_PATH];
 	char ext[32];
 
 	// Get the filename of the representing image

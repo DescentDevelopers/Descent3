@@ -577,7 +577,7 @@ bool PageDataList::LoadList(char *list_filename)
 	
 	// Read in each level filename
 	for(i=0; i<m_NumLevelFilenames; i++) {
-		cf_ReadString(m_LevelFilenames[i],PSPATHNAME_LEN,infile);
+		cf_ReadString(m_LevelFilenames[i],_MAX_PATH,infile);
 
 		// Add the filename to the list box
 		m_LevelListBox->InsertString(-1,m_LevelFilenames[i]);
@@ -1762,7 +1762,7 @@ bool PageDataList::RemoveSelFromListCtrl(void)
 	LV_ITEM item_info;
 
 	char name[PAGENAME_LEN+1];
-	char type[PSPATHNAME_LEN+1];
+	char type[_MAX_PATH+1];
 
 	CWaitCursor wc;
 
@@ -1789,7 +1789,7 @@ bool PageDataList::RemoveSelFromListCtrl(void)
 			// Get Directory name for item #j
 			item_info.iSubItem=PAGE_TYPE_COLUMN;
 			item_info.pszText=type;
-			item_info.cchTextMax=PSPATHNAME_LEN;
+			item_info.cchTextMax=_MAX_PATH;
 			m_PageDataListCtrl->GetItem(&item_info);
 
 			int page_type;

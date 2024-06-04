@@ -39,7 +39,7 @@
 //			Tracklocks are for keeping track of what pages the local user is working on or has locked
 
 #define PAGELOCK_NAME_LEN 30
-#define TABLE_NAME_LEN PSPATHNAME_LEN
+#define TABLE_NAME_LEN _MAX_PATH
 #define INFO_STRING_LEN 100
 #define MAX_PAGELOCKS 1000
 #define MAX_TRACKLOCKS 5000

@@ -449,7 +449,7 @@ void CHogEditView::UpdateTitle(CString &path, bool mod_flag)
 {
 	CFrameWnd *main_window;
 	char filename[PSFILENAME_LEN+1], ext[12];
-	char title[PSPATHNAME_LEN+1];
+	char title[_MAX_PATH+1];
 
 	_splitpath(path.GetBuffer(0), NULL, NULL, filename, ext);
 	sprintf(title, "%s (%s%s%s)", HOG_EDIT_TITLE, filename, ext,
@@ -606,7 +606,7 @@ void CHogEditView::OnActionDelete()
 	hog_library_entry entry;
 
 	char name[PSFILENAME_LEN+1];
-	char path[PSPATHNAME_LEN+1];
+	char path[_MAX_PATH+1];
 
 	// Display Wait Cursor
 	CWaitCursor wc;
@@ -632,7 +632,7 @@ void CHogEditView::OnActionDelete()
 			// Get Directory name for item #j
 			item_info.iSubItem=FILE_DIR_COLUMN;
 			item_info.pszText=path;
-			item_info.cchTextMax=PSPATHNAME_LEN;
+			item_info.cchTextMax=_MAX_PATH;
 			list.GetItem(&item_info);
 
 			// Search for and remove corresponding entry from Document Library
@@ -744,7 +744,7 @@ void CHogEditView::OnActionCreate()
 	/*
 	// Display the list of names (to check sorting)
 	for(int j=0; j<doc->Library.num_entries; j++) {
-		char full_name[PSPATHNAME_LEN];
+		char full_name[_MAX_PATH];
 		sprintf(full_name,"%d <-> %s\n",j,hog_filenames[j]);
 		OutputDebugString(full_name);
 	}
@@ -874,7 +874,7 @@ void CHogEditView::OnActionUpdate()
 	hog_library_entry temp_entry;
 	int res;
 	char msg[256];
-	char full_name[PSPATHNAME_LEN];
+	char full_name[_MAX_PATH];
 	int missing;
 	int modified;
 	bool show_mod_msgs, show_gone_msgs;
@@ -929,7 +929,7 @@ void CHogEditView::OnActionUpdate()
 	}
 
 	// Display update status message
-	char str[PSPATHNAME_LEN];
+	char str[_MAX_PATH];
 	sprintf(str,"%s\n\n%s%d\n\n%s%d",
 		"Here are the results for the update:",
 		"Missing file(s):\t\t", missing,

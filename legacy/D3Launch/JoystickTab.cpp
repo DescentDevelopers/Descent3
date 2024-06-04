@@ -356,9 +356,9 @@ int GetJoystickName(int joy_num,char *szRegKey,char *szReturnName)
    Returns :		0 for success 1 for failure
 /*-----------------------------------------------------------------------*/ 
 {
-   BYTE KeyStr[MAX_PATH] = REGSTR_PATH_JOYCONFIG;       	// found in regstr.h
-   BYTE KeyJoySetStr[MAX_PATH] = REGSTR_KEY_JOYSETTINGS; 	// found in Regstr.h
-   BYTE szOEMName[MAX_PATH];                             	// OEM name from Current Settings
+   BYTE KeyStr[_MAX_PATH] = REGSTR_PATH_JOYCONFIG;       	// found in regstr.h
+   BYTE KeyJoySetStr[_MAX_PATH] = REGSTR_KEY_JOYSETTINGS; 	// found in Regstr.h
+   BYTE szOEMName[_MAX_PATH];                             	// OEM name from Current Settings
    HKEY ConfigKey;
    HKEY JoyConfigKey;                                    	// Joystick Configuration
    HKEY DriverKey;                                       	// Joystick Driver Key
@@ -400,7 +400,7 @@ int GetJoystickName(int joy_num,char *szRegKey,char *szReturnName)
       {
       return( 1 );                  	// It should never get here if device is selected
       }
-   Length=MAX_PATH;                        	// Get Name as listed in Control Panel
+   Length=_MAX_PATH;                        	// Get Name as listed in Control Panel
    
    if( ERROR_SUCCESS != RegQueryValueEx( OEMPropKey,REGSTR_VAL_JOYOEMNAME,NULL,NULL,(uint8_t *)szReturnName,&Length))
       {

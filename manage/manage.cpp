@@ -1941,7 +1941,7 @@ int GetPrimType(char *name) {
 void BuildOldFilesForDirectory(char *path, FILETIME threshold) {
   HANDLE filehandle;
   WIN32_FIND_DATA filedata;
-  char newpath[MAX_PATH];
+  char newpath[_MAX_PATH];
   ddio_MakePath(newpath, path, "*.*", NULL);
   filehandle = FindFirstFile(newpath, &filedata);
   bool go_ahead = true;
@@ -1979,7 +1979,7 @@ void BuildOldFilesForDirectory(char *path, FILETIME threshold) {
 // Builds a list of old files so we know which ones to update
 // Searches through all our netdirectories for old files
 void BuildOldFileList(FILETIME threshold) {
-  char str[MAX_PATH];
+  char str[_MAX_PATH];
   mprintf(0, "Building old files list!\n");
   BuildOldFilesForDirectory(NetModelsDir, threshold);
   BuildOldFilesForDirectory(NetSoundsDir, threshold);

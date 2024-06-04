@@ -265,7 +265,7 @@ int LoadGameState(const char *pathname) {
   CFILE *fp;
   int retval = LGS_OK;
   char desc[GAMESAVE_DESCLEN + 1];
-  char path[PSPATHNAME_LEN];
+  char path[_MAX_PATH];
   uint16_t version;
   uint16_t curlevel;
   int16_t pending_music_region;

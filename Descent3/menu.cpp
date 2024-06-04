@@ -1067,7 +1067,7 @@ bool ProcessCommandLine() {
 static inline int count_missions(const char *pathname, const char *wildcard) {
   int c = 0;
   char fullpath[_MAX_PATH];
-  char filename[PSPATHNAME_LEN];
+  char filename[_MAX_PATH];
   tMissionInfo msninfo;
   filename[0] = 0;
   ddio_MakePath(fullpath, pathname, wildcard, NULL);
@@ -1100,7 +1100,7 @@ static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, cha
                                            const char *wildcard) {
   int c = 0;
   char fullpath[_MAX_PATH];
-  char filename[PSPATHNAME_LEN];
+  char filename[_MAX_PATH];
   ddio_MakePath(fullpath, pathname, wildcard, NULL);
 
   if (ddio_FindFileStart(fullpath, filename)) {
@@ -1155,7 +1155,7 @@ bool MenuNewGame() {
 
     FirstGame = true;
 
-    char temppath[PSPATHNAME_LEN];
+    char temppath[_MAX_PATH];
     const char *moviepath;
     moviepath = GetMultiCDPath("level1.mve");
     if (moviepath) {

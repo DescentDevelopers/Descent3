@@ -132,7 +132,7 @@ void CListViewEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	BOOL bFocus = (GetFocus() == this);
 	COLORREF clrTextSave, clrBkSave;
 	COLORREF clrImage = m_clrBkgnd;
-	static _TCHAR szBuff[MAX_PATH];
+	static _TCHAR szBuff[_MAX_PATH];
 	LPCTSTR pszText;
 
 // get item data
@@ -298,7 +298,7 @@ LPCTSTR CListViewEx::MakeShortString(CDC* pDC, LPCTSTR lpszLong, int nColumnLen,
 		return(lpszLong);
 	}
 
-	static _TCHAR szShort[MAX_PATH];
+	static _TCHAR szShort[_MAX_PATH];
 
 	lstrcpy(szShort,lpszLong);
 	int nAddLen = pDC->GetTextExtent(szThreeDots,sizeof(szThreeDots)).cx;

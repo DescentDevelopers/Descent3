@@ -1342,7 +1342,7 @@ void CDallasMainDlg::SetTitleBar(void)
 	CString title;
 
 	// Get the current level name
-	char filename[PSPATHNAME_LEN+1];
+	char filename[_MAX_PATH+1];
 
 	if(m_ScriptFilename.IsEmpty())
 		strcpy(filename,"Untitled");
@@ -1752,7 +1752,7 @@ void CDallasMainDlg::SetAllFilenames(void)
 	m_DallasFunctionsFilename=DALLASFUNCS_FILENAME;
 
 	// Get the current level name
-	char filename[PSPATHNAME_LEN+1];
+	char filename[_MAX_PATH+1];
 
 	CString level_fname;
 #ifdef NEWEDITOR
@@ -1786,7 +1786,7 @@ void CDallasMainDlg::SetAllFilenamesToThis(char *level_path)
 	m_DallasFunctionsFilename=DALLASFUNCS_FILENAME;
 
 	// Get the current level name
-	char filename[PSPATHNAME_LEN+1];
+	char filename[_MAX_PATH+1];
 
 	CString level_fname;
 	level_fname = level_path;
@@ -2433,7 +2433,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
 {
 	object *objp;
 	char *temp_str;
-	char temp_name[MAX_PATH+1];
+	char temp_name[_MAX_PATH+1];
 
 	// Make sure given data is valid
 	if(data==NULL) {
@@ -2641,7 +2641,7 @@ void CDallasMainDlg::FormatParameterValueText(CString &text, tTreeNodeData *data
 				text.Format("%s",NOT_SPECIFIED_STRING);
 				break;
 			}
-			if(Level_goals.GoalGetName(data->int_val,temp_name,MAX_PATH)<0)
+			if(Level_goals.GoalGetName(data->int_val,temp_name,_MAX_PATH)<0)
 				text.Format("*INVALID_LEVEL_GOAL*");
 			else {
 				text.Format("%s",temp_name);
@@ -11378,7 +11378,7 @@ void CDallasMainDlg::WriteScriptNodeDump_v0(HTREEITEM node)
 	tTreeNodeData *data;
 	CString tmp_name;
 	int index;
-	char goal_name[MAX_PATH+1];
+	char goal_name[_MAX_PATH+1];
 
 	if(CurrentOutputFile==NULL || node==NULL) return;
 
@@ -11601,7 +11601,7 @@ void CDallasMainDlg::WriteScriptNodeDump_v0(HTREEITEM node)
 					break;
 				case LEVEL_GOAL_PARAMETER_TYPE:
 					if(data->subID==USE_LEVEL_GOAL_VALUE) {
-						if(data->int_val==NOT_SPECIFIED_TYPE || Level_goals.GoalGetName(data->int_val,goal_name,MAX_PATH)<0)
+						if(data->int_val==NOT_SPECIFIED_TYPE || Level_goals.GoalGetName(data->int_val,goal_name,_MAX_PATH)<0)
 							index=-1;
 						else {
 							index=FindGoalInList(goal_name);
@@ -12277,8 +12277,8 @@ int CDallasMainDlg::FillLevelGoalMenu(CMenu *level_goal_menu, int command_offset
 
 	num_goals=Level_goals.GetNumGoals();
 	for (p=0;p<num_goals;p++) {
-		char goal_name[MAX_PATH+1];
-		if(Level_goals.GoalGetName(p,goal_name,MAX_PATH)>=0) {
+		char goal_name[_MAX_PATH+1];
+		if(Level_goals.GoalGetName(p,goal_name,_MAX_PATH)>=0) {
 			level_goal_menu->AppendMenu(MF_ENABLED | MF_UNCHECKED | MF_STRING, command_offset+p, goal_name);
 			goals_added++;
 		}
@@ -13589,10 +13589,10 @@ void CDallasMainDlg::AssignNamedValue(int type, int handle)
 						strcpy(data->str_val,"");
 					}
 					else {
-						char goal_name[MAX_PATH+1];
+						char goal_name[_MAX_PATH+1];
 						data->subID=USE_LEVEL_GOAL_VALUE;
 						data->int_val=handle;
-						if(Level_goals.GoalGetName(data->int_val,goal_name,MAX_PATH)<0)
+						if(Level_goals.GoalGetName(data->int_val,goal_name,_MAX_PATH)<0)
 							strcpy(data->str_val,"");
 						else {
 							strncpy(data->str_val,goal_name,MAX_MESSAGE_NAME_LEN);

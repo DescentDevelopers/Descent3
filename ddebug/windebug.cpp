@@ -1025,7 +1025,7 @@ static void PrintFileTime(char *sztime, FILETIME ftime) {
 static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle) {
   char FmtString[2000];
   DWORD bytesout;
-  char ModName[MAX_PATH];
+  char ModName[_MAX_PATH];
   __try {
     if (GetModuleFileName(ModuleHandle, ModName, sizeof(ModName)) > 0) {
       // If GetModuleFileName returns greater than zero then this must
@@ -1115,7 +1115,7 @@ static void RecordSystemInformation(HANDLE LogFile) {
 
   wsprintf(FmtString, "Error occurred at %s.\r\n", TimeBuffer);
   WriteFile(LogFile, FmtString, lstrlen(FmtString), &bytesout, 0);
-  char ModuleName[MAX_PATH];
+  char ModuleName[_MAX_PATH];
   if (GetModuleFileName(0, ModuleName, sizeof(ModuleName)) <= 0)
     lstrcpy(ModuleName, "Unknown");
 

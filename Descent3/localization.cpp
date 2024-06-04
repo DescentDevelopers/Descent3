@@ -234,7 +234,7 @@ const char *GetStringFromTable(int index) {
 }
 
 void FixFilenameCase(const char *filename, char *newfile) {
-  char path[_MAX_PATH], file[_MAX_FNAME], ext[256];
+  char path[_MAX_PATH], file[_MAX_FNAME], ext[_MAX_EXT];
   ddio_SplitPath(filename, path, file, ext);
 
   char *p;

@@ -3915,7 +3915,7 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       else if (ISCHUNK(CHUNK_SCRIPT)) {
 #if (defined(EDITOR) || defined(NEWEDITOR))
         if (FindArg("-savescript")) {
-          char path[MAX_PATH], name[MAX_PATH];
+          char path[_MAX_PATH], name[_MAX_PATH];
           ddio_SplitPath(filename, path, name, NULL);
           strcat(path, name);
           strcat(path, ".scr");
