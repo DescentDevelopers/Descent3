@@ -105,10 +105,10 @@ setx VCPKG_ROOT="C:\path\to\vcpkg"
 setx PATH=%VCPKG_ROOT%;%PATH%
 ```
 
-Build Descent 3:
+Build Descent 3 using the "x86 native tools command prompt"
 ```sh
-cmake --preset win -D ENABLE_LOGGER=[ON|OFF]
-cmake --build --preset win --config [Debug|Release]
+cmake --preset win32 -D ENABLE_LOGGER=[ON|OFF]
+cmake --build --preset win32 --config [Debug|Release]
 ```
 
 #### Building - MacOS

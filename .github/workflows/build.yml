@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os.runner }}, ${{ matrix.os.cxx }}, ${{ matrix.build_type }}
+    name: ${{ matrix.os.name }}, ${{ matrix.build_type }}
     strategy:
       fail-fast: false
       matrix:
@@ -72,6 +72,15 @@ jobs:
           sudo apt update
           sudo apt install -y --no-install-recommends \
             ninja-build cmake g++ libgtest-dev libsdl2-dev zlib1g-dev libspdlog-dev
+
+      - name: Install Windows dependencies
+        if: ${{ matrix.os.runner == 'windows-latest' }}
+        run: choco install ninja
+      
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ matrix.os.runner == 'windows-latest' }}
+        with:
+           arch: ${{ matrix.os.preset }}
 
       - name: Configure CMake
         env:
