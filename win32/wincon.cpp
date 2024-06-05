@@ -67,8 +67,8 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include "Application.h"
-#include "AppConsole.h"
+#include "application.h"
+#include "appconsole.h"
 #include "TaskSystem.h"
 
 #include <windows.h>

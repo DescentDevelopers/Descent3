@@ -75,7 +75,7 @@
 
 #include "ddgrWin32.h"
 #include "ddgrWin32GDI.h"
-#include "Application.h"
+#include "application.h"
 #include "mono.h"
 #include "pserror.h"
 #include "gr.h"

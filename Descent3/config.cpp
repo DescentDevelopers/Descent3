@@ -299,7 +299,7 @@
 #include "cfile.h"
 #include "mem.h"
 #include "lighting.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "pilot.h"
 #include "hud.h"
 #include "voice.h"
@@ -315,7 +315,7 @@
 #include "soundload.h"
 #include "sounds.h"
 #include "ctlconfig.h"
-#include "d3music.h"
+#include "musicapi.h"
 
 #include <string.h>
 #include <stdlib.h>

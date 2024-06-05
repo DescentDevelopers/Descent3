@@ -61,7 +61,7 @@
 #include <cctype>
 
 #include "application.h"
-#include "AppConsole.h"
+#include "appconsole.h"
 
 enum {
   Console_null,

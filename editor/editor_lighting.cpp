@@ -46,7 +46,7 @@
 #include "d3edit.h"
 #include "ddio.h"
 #include "bsp.h"
-#include "Application.h"
+#include "application.h"
 #include "AppDatabase.h"
 #include "program.h"
 #include "loadlevel.h"
