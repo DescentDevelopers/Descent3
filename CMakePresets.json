@@ -54,11 +54,13 @@
 	"buildPresets": [
 		{
 			"name": "win32",
-			"configurePreset": "win32"
+			"configurePreset": "win32",
+			"jobs": 0
 		},
 		{
 			"name": "win64",
-			"configurePreset": "win64"
+			"configurePreset": "win64",
+			"jobs": 0
 		},
 		{
 			"name": "mac",
