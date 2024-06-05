@@ -52,21 +52,21 @@ typedef struct Chat_command {
 int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nickname, char *trackerid);
 void DisconnectFromChatServer();
 const char *GetChatText();
-char *SendChatString(char *line, int raw = 0);
+char *SendChatString(const char *line, int raw = 0);
 Chat_command *GetChatCommand();
 char *GetChatUserList();
-int SetNewChatChannel(char *channel);
+int SetNewChatChannel(const char *channel);
 char *GetChannelList();
-char *GetTrackerIdByUser(char *nickname);
-char *GetChannelByUser(char *nickname);
+char *GetTrackerIdByUser(const char *nickname);
+char *GetChannelByUser(const char *nickname);
 
 const char *ChatGetString();
-char *GetWordNum(int num, char *l_String);
+const char *GetWordNum(int num, const char *l_String);
 char *ParseIRCMessage(char *Line, int iMode);
-int AddChatUser(char *nickname);
+int AddChatUser(const char *nickname);
 int RemoveChatUser(char *nickname);
 void RemoveAllChatUsers();
-void AddChatCommandToQueue(int command, void *data, int len);
+void AddChatCommandToQueue(int command, const void *data, int len);
 Chat_command *GetChatCommandFromQueue();
 void FlushChatCommandQueue();
 void AddChannel(char *channel, uint16_t numusers, char *topic);
