@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os.runner }}, ${{ matrix.os.cxx }}, ${{ matrix.build_type }}
+    name: ${{ matrix.os.name }}, ${{ matrix.build_type }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +31,11 @@ jobs:
             cc: cl
             cxx: cl
             name: Windows-x64
+          - runner: windows-latest
+            preset: win
+            cc: cl
+            cxx: cl
+            name: Windows-Ninja
           - runner: macos-12 # This is supposed to be Intel for now, and what macos-latest is defaulting to for some reason (as of 04/2024)
             preset: mac
             cc: cc
@@ -72,6 +77,13 @@ jobs:
           sudo apt update
           sudo apt install -y --no-install-recommends \
             ninja-build cmake g++ libgtest-dev libsdl2-dev zlib1g-dev libspdlog-dev
+
+      - name: Install Windows dependencies
+        if: ${{ matrix.os.preset == 'win' }}
+        run: choco install ninja
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ matrix.os.preset == 'win' }}
 
       - name: Configure CMake
         env:
