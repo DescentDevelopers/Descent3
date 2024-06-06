@@ -1351,8 +1351,10 @@ int MainMultiplayerMenu() {
           char *pcount = strchr(tokp, ' ');
           // if(pcount)
           {
-            if (!pcount)
-              pcount = "";
+            if (!pcount) {
+              static char quietWarning[5] = "";
+              pcount = quietwarning;
+            }
             // pcount++;
             *pcount = '\0';
 
@@ -2486,10 +2488,10 @@ int JoinNewLobby(const char *lobby) {
   DLLRemoveUITextItem(cancel_off_text);
 }
 
-char *SendWhisper(const char *name) {
+const char *SendWhisper(const char *name) {
 
   int exit_menu = 0;
-  char *p;
+  const char *p;
   char message[MAX_CHAT_SEND_LEN];
   char pilot_name[MAX_CHAT_SEND_LEN];
   static char fmt_msg[MAX_CHAT_SEND_LEN * 2];
