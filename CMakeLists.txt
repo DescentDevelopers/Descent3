@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.20)  # For using CMAKE_<LANG>_BYTE_ORDER
 
+if(NOT CMAKE_CONFIGURATION_TYPES AND NOT DEFINED ENV{CMAKE_CONFIGURATION_TYPES})
+  set(CMAKE_CONFIGURATION_TYPES "Asan;Debug;Release;RelWithDebInfo;MinSizeRel" CACHE STRING "build types")
+endif()
+
 # set default cmake build type to Debug (None Debug Release RelWithDebInfo MinSizeRel)
 if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
@@ -107,7 +111,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   )
 
   list(APPEND CMAKE_LIBRARY_PATH "lib/win" "lib/win/DirectX/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}")
-  add_compile_options("$<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
+  add_compile_options("$<$<AND:$<OR:$<CONFIG:Debug>,$<CONFIG:Asan>>,$<COMPILE_LANGUAGE:CXX>>:/EHsc;/RTC1;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
   add_compile_options("$<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:/GL;/FD;/EHsc;/W3;/nologo;/c;/Zi;/TP;/errorReport:prompt>")
 
   string(APPEND CMAKE_EXE_LINKER_FLAGS " /SAFESEH:NO /NODEFAULTLIB:LIBC")
@@ -142,7 +146,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 add_compile_definitions($<$<CONFIG:Release>:RELEASE>)
-add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
+add_compile_definitions($<$<OR:$<CONFIG:Debug>,$<CONFIG:Asan>>:_DEBUG>)
 
 find_package(ZLIB REQUIRED)
 
