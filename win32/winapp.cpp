@@ -693,17 +693,15 @@ LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     break;
   }
 
-  oeWin32Application *winapp = Win32_AppObjects[i].app;
-
   //	if this window not on list, then run default window proc.
-  if (i == -1 || winapp == NULL || force_default)
+  if (i < 0 || Win32_AppObjects[i].app == NULL || force_default)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 
-  if (!winapp->run_handler((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam))
+  if (!Win32_AppObjects[i].app->run_handler((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam))
     return 0;
 
   // run user defined window procedure.
-  return (LRESULT)winapp->WndProc((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam);
+  return (LRESULT)Win32_AppObjects[i].app->WndProc((HWnd)hWnd, (unsigned)msg, (WParam)wParam, (LParam)lParam);
 }
 
 // detect if application can handle what we want of it.
