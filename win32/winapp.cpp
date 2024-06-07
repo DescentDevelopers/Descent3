@@ -214,7 +214,7 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
     oeWin32Application::first_time = false;
   }
 
-  HICON dicon = ExtractIcon(NULL, "descent 3.exe", 0);
+  HICON dicon = ExtractIcon(nullptr, "descent 3.exe", 0);
   wc.hCursor = NULL;
   wc.hIcon = dicon;
   wc.lpszMenuName = NULL;
@@ -487,6 +487,11 @@ tWin32OS oeWin32Application::version(int *major, int *minor, int *build, char *s
 
   osinfo.dwOSVersionInfoSize = sizeof(osinfo);
 
+  // GetVersionEx is deprecated and triggers a couple warnings. However, it appears to still be
+  // fully-functional, and the recommended alternatives (IsWindows* macros) don't provide the
+  // info we want (major/minor/build) nor do they provide tests for EOL products like Win95. On
+  // modern Windows, this will just return a version describing Win8 (even if OS is 10/11/etc).
+  // TODO: re-evaluate whether or not we actually even care about this information
 #pragma warning(suppress: 28159 4996)
   if (!GetVersionEx(&osinfo)) {
     return NoWin32;
