@@ -19,7 +19,7 @@
 // BriefEdit.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "BriefEdit.h"
 #include "mono.h"
@@ -112,6 +112,7 @@ BEGIN_MESSAGE_MAP(CBriefEdit, CDialog)
 	ON_CBN_SELCHANGE(IDC_BRIEF_SCREEN_LIST, OnSelchangeBriefScreenList)
 	ON_BN_CLICKED(IDC_BRIEF_SAVE, OnBriefSave)
 	ON_BN_CLICKED(IDC_LOAD, OnLoad)
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_MANAGE, OnManage)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()

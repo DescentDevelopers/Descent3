@@ -40,7 +40,7 @@ float Hemicube_view_zoom=1.0;
 
 int rad_Drawing=0;
 
-g3Point Element_points[100]; 
+g3Point Element_points[100];
 rad_element *rad_MaxElement;
 
 rad_hemicube rad_Hemicube;

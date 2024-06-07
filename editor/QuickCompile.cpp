@@ -163,7 +163,7 @@ void CQuickCompile::OnDestroy()
 	quick_compile_string = "";	
 }
 
-int CQuickCompile::DoModal() 
+INT_PTR CQuickCompile::DoModal() 
 {
 
 	return CDialog::DoModal();

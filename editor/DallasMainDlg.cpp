@@ -1197,7 +1197,7 @@ void CDallasMainDlg::OnKeydownEventTree(NMHDR* pNMHDR, LRESULT* pResult)
 /////////////////////////////////////////////////////////////////////////////
 
 
-LONG CDallasMainDlg::OnHighlightScripts(UINT, LONG)
+LRESULT CDallasMainDlg::OnHighlightScripts(WPARAM, LPARAM)
 {
 	HighlightAllScripts();
 
@@ -1208,7 +1208,7 @@ LONG CDallasMainDlg::OnHighlightScripts(UINT, LONG)
 }
 
 
-LONG CDallasMainDlg::OnAddScript(UINT, LONG)
+LRESULT CDallasMainDlg::OnAddScript(WPARAM, LPARAM)
 {
 	HTREEITEM new_node;
 
@@ -1258,7 +1258,7 @@ LONG CDallasMainDlg::OnAddScript(UINT, LONG)
 }
 
 
-LONG CDallasMainDlg::OnAddScriptAndHighlight(UINT, LONG)
+LRESULT CDallasMainDlg::OnAddScriptAndHighlight(WPARAM, LPARAM)
 {
 	HTREEITEM new_node;
 

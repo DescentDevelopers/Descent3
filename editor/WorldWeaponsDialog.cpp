@@ -292,7 +292,7 @@
  * $NoKeywords: $
  */
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "WorldWeaponsDialog.h"
 #include "manage.h"

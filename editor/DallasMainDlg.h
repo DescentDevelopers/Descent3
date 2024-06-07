@@ -1555,9 +1555,9 @@ protected:
 	afx_msg void OnSelchangeEventCombo();
 	//}}AFX_MSG
 	afx_msg void OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
-	afx_msg LONG OnHighlightScripts(UINT, LONG);
-	afx_msg LONG OnAddScript(UINT, LONG);
-	afx_msg LONG OnAddScriptAndHighlight(UINT, LONG);
+	afx_msg LRESULT OnHighlightScripts(WPARAM, LPARAM);
+	afx_msg LRESULT OnAddScript(WPARAM, LPARAM);
+	afx_msg LRESULT OnAddScriptAndHighlight(WPARAM, LPARAM);
 	afx_msg void OnMenuSelectionOfTypeAssign(UINT nID);
 	afx_msg void OnMenuSelectionOfTypeAdd(UINT nID);
 	afx_msg void OnMenuSelectionOfTypeReplace(UINT nID);

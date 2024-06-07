@@ -75,7 +75,7 @@ void COsirisStatusDlg::SetScript(char *script, tD3XProgram *d3x)
 	m_Script=script;
 }
 
-int COsirisStatusDlg::DoModal() 
+INT_PTR COsirisStatusDlg::DoModal() 
 {
 	// TODO: Add your specialized code here and/or call the base class
 	

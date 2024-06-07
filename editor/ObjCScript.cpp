@@ -219,7 +219,7 @@ char *LoadScript(const char *filename)
 	memset(buffer,0,MAX_SCRIPT_LINE_SIZE);
 
 	ddio_MakePath(file_path,LocalLevelsDir,filename,NULL);
-//	mprintf((0,"Loading script from %s\n",file_path));
+//	mprintf(0,"Loading script from %s\n",file_path);
 	if(!cfexist(file_path)) 
 	{
 		return false;
@@ -266,7 +266,7 @@ void SaveScript(const char *filename, char *script)
 
 	file=cfopen(file_path,"wt");
 	cf_WriteString(file,script);
-//		mprintf((0,"Saving script to %s\n",file_path));
+//		mprintf(0,"Saving script to %s\n",file_path);
 	cfclose(file);
 }
 
@@ -287,17 +287,17 @@ bool CompileScript(tD3XProgram *program, char *script)
 	tD3XPMap *map;								// temporary holder for map
 
 	if (!script) {
-		mprintf((1, "Unable to compile null script!\n"));
+		mprintf(1, "Unable to compile null script!\n");
 		return false;
 	}
 
 	if (program == NULL) {
-		mprintf((1, "You can't compile an uninitialized script!\n"));
+		mprintf(1, "You can't compile an uninitialized script!\n");
 		return false;
 	}
 
 	if(!osi_Compile(script, &d3xlen, &ins, &nscr, &map, &nstr, &strbuf)) {
-		mprintf((1, "Script failed to compile.\n"));
+		mprintf(1, "Script failed to compile.\n");
 		return false;
 	}
 

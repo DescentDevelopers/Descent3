@@ -239,7 +239,7 @@
 
 #include <algorithm>
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "WorldTexturesDialog.h"
 #include "bitmap.h"

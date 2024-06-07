@@ -47,7 +47,7 @@
  * $NoKeywords: $
  */
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "WorldObjectsRobotDialog.h"
 #include "AnimStatesDialog.h"

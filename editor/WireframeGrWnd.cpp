@@ -795,19 +795,10 @@ void CWireframeGrWnd::DrawTerrainWorld(grViewport *vp,vector *view_target,matrix
 			int bm_handle=GameTextures[Terrain_seg[y*TERRAIN_WIDTH+x].tex_index].bm_handle;
 			lightval=(Terrain_seg[y*TERRAIN_WIDTH+x].light)*(MAX_TEXTURE_SHADES-1);
 					
-			if (Renderer_type==RENDERER_SOFTWARE_8BIT)
-			{	
-				uint8_t pixval;
-				pixval=*bm_data8(bm_handle,0);
-				fadepixel=BitmapFadePalettes[bm_pal_index(bm_handle)][lightval*256+pixval];
-			}
-			else
-			{
-				uint16_t pix;
-				
-				pix=*bm_data(bm_handle,0);
-				fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
-			}
+			uint16_t pix;
+			
+			pix=*bm_data(bm_handle,0);
+			fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
 
 			
 			if (TerrainSelected[y*TERRAIN_WIDTH+x])

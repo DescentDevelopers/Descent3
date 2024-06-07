@@ -42,7 +42,7 @@
  * $NoKeywords: $
  */
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "WorldObjectsPowerupDialog.h"
 #include "powerup.h"

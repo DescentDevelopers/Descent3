@@ -1267,7 +1267,7 @@ void CEditorView::OnReinitOpengl()
 	{
 		EditorStatus("Reinitting OpenGL");
 		rend_Close();
-		rend_Init (RENDERER_SOFTWARE_16BIT,Descent,&Render_preferred_state);
+		rend_Init (RENDERER_OPENGL,Descent,&Render_preferred_state);
 	}
 	else
 	{

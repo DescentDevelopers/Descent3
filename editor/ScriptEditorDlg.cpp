@@ -49,6 +49,7 @@
 // ScriptEditorDlg.cpp : implementation file
 //
 
+#include "mfc_compatibility.h"
 #include "stdafx.h"
 #include "editor.h"
 #include "ddio.h"

@@ -112,7 +112,7 @@
  * $NoKeywords: $
  */
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "WorldObjectsDoorDialog.h"
 #include "manage.h"

@@ -83,7 +83,7 @@
  * $NoKeywords: $
  */
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "AnimStatesDialog.h"
 #include "polymodel.h"

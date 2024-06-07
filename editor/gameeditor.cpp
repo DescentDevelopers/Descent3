@@ -582,7 +582,7 @@ void RunGameFromEditor()
 	Editor_active = false;	
 	PROGRAM(editor) = 0;
 	if (PROGRAM(windowed))
-		PreferredRenderer=RENDERER_SOFTWARE_16BIT;
+		PreferredRenderer=RENDERER_OPENGL;
 
 	EditorToGame();
 	MainLoop();
@@ -616,7 +616,7 @@ void GameToEditor(bool set_viewer_from_player)
 	Sleep (2000);
 
 // Close down whatever renderer we were using and restore the software renderer
-	rend_Init (RENDERER_SOFTWARE_16BIT, Saved_editor_app,NULL);
+	rend_Init (RENDERER_OPENGL, Saved_editor_app,NULL);
 
 	if (Game_screen) delete Game_screen;
 

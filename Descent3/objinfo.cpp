@@ -60,8 +60,8 @@ const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("Chaff
 #define NUM_STATIC_OBJECTS (sizeof(Static_object_names) / sizeof(*Static_object_names))
 
 #ifdef EDITOR
-extern char *Movement_class_names[] = {"Standing", "Flying", "Rolling", "Walking", "Jumping"};
-extern char *Anim_state_names[] = {"Alert",
+const char * const Movement_class_names[] = {"Standing", "Flying", "Rolling", "Walking", "Jumping"};
+const char * const Anim_state_names[] = {"Alert",
                             "Death",
                             "Fire Missile 1",
                             "Missile Recoil 1",

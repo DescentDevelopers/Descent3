@@ -242,7 +242,7 @@ void SlewControlInit() {
 }
 #endif
 
-int   SlewStop(object *obj) {
+int SlewStop(object *obj) {
   if (!obj)
     return 0;
 

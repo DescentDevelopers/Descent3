@@ -121,7 +121,7 @@
  * $NoKeywords: $
  */
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "WorldObjectsPlayerDialog.h"
 #include "shippage.h"

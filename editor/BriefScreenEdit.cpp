@@ -19,7 +19,7 @@
 // BriefScreenEdit.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "mfc_compatibility.h"
 #include "editor.h"
 #include "BriefScreenEdit.h"
 #include "BriefEdit.h"

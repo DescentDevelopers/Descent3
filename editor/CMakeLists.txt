@@ -211,6 +211,7 @@ set(HEADERS
     matcenkeypad.h
     MegacellDialog.h
     MegacellKeypad.h
+    mfc_compatibility.h
     moveworld.h
     ObjCScript.h
     ObjectClipboard.h
