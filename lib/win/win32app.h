@@ -141,19 +141,19 @@ public:
 #else
 private:
 #endif
-  bool m_WasCreated; // Tells us if this app created the window handle or not.
+  bool m_WasCreated{}; // Tells us if this app created the window handle or not.
 
   struct MessageFunction { // assign functions to messages.
     unsigned msg;
     tOEWin32MsgCallback fn;
   };
-  std::array<MessageFunction, 64> m_MsgFn;
+  std::array<MessageFunction, 64> m_MsgFn{};
 
-  bool m_NTFlag; // Are we in NT?
+  bool m_NTFlag{}; // Are we in NT?
 
-  void (*m_DeferFunc)(bool); // function to call when deffering to OS (OnIdle for instance)
+  void (*m_DeferFunc)(bool){}; // function to call when deffering to OS (OnIdle for instance)
 
-  char m_WndName[64]; // name of window.
+  char m_WndName[64]{}; // name of window.
 
   static bool os_initialized; // is the OS check initialized?
   static bool first_time;     // first time init?
@@ -216,10 +216,10 @@ public:
   static bool GetSystemSpecs(const char *fname);
 
 public:
-  HWnd m_hWnd; // handles created by the system
-  HInstance m_hInstance;
-  unsigned m_Flags;
-  int m_X, m_Y, m_W, m_H; // window dimensions.
+  HWnd m_hWnd{}; // handles created by the system
+  HInstance m_hInstance{};
+  unsigned m_Flags{};
+  int m_X{}, m_Y{}, m_W{}, m_H{}; // window dimensions.
 
 private:
   void os_init(); // initializes OS components.

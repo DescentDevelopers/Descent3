@@ -201,7 +201,7 @@ bool oeWin32Application::first_time = true;
 LRESULT WINAPI MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 //	Creates the window handle and instance
-oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstance hinst) : oeApplication(), m_MsgFn{} {
+oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstance hinst) : oeApplication{}, m_MsgFn{} {
   WNDCLASS wc;
   RECT rect;
 
@@ -214,7 +214,7 @@ oeWin32Application::oeWin32Application(const char *name, unsigned flags, HInstan
     oeWin32Application::first_time = false;
   }
 
-  HICON dicon = ExtractIcon((HINSTANCE)hinst, "descent 3.exe", 0);
+  HICON dicon = ExtractIcon(nullptr, "descent 3.exe", 0);
   wc.hCursor = NULL;
   wc.hIcon = dicon;
   wc.lpszMenuName = NULL;
@@ -487,6 +487,12 @@ tWin32OS oeWin32Application::version(int *major, int *minor, int *build, char *s
 
   osinfo.dwOSVersionInfoSize = sizeof(osinfo);
 
+  // GetVersionEx is deprecated and triggers a couple warnings. However, it appears to still be
+  // fully-functional, and the recommended alternatives (IsWindows* macros) don't provide the
+  // info we want (major/minor/build) nor do they provide tests for EOL products like Win95. On
+  // modern Windows, this will just return a version describing Win8 (even if OS is 10/11/etc).
+  // TODO: re-evaluate whether or not we actually even care about this information
+#pragma warning(suppress: 28159 4996)
   if (!GetVersionEx(&osinfo)) {
     return NoWin32;
   }
@@ -709,14 +715,14 @@ bool oeWin32Application::GetSystemSpecs(const char *fname) {
   FILE *fp = fopen(fname, "wt");
   tWin32OS os;
   int maj, min, build;
-  char desc[256];
+  char desc[256]{};
 
   if (!fp)
     return false;
 
   os = oeWin32Application::version(&maj, &min, &build, desc);
 
-  fprintf(0, "OS: %s %d.%d.%d %s\n",
+  fprintf(fp, "OS: %s %d.%d.%d %s\n",
           (os == Win9x)   ? "Win9x"
           : (os == WinNT) ? "WinNT"
           : (os == WinCE) ? "WinCE"
@@ -724,17 +730,17 @@ bool oeWin32Application::GetSystemSpecs(const char *fname) {
           maj, min, build, desc);
 
   // get system memory info
-  MEMORYSTATUS mem_stat;
+  MEMORYSTATUSEX mem_stat{};
 
-  mem_stat.dwLength = sizeof(MEMORYSTATUS);
-  GlobalMemoryStatus(&mem_stat);
+  mem_stat.dwLength = sizeof(MEMORYSTATUSEX);
+  GlobalMemoryStatusEx(&mem_stat);
 
   fprintf(fp, "Memory:\n");
-  fprintf(fp, "\tLoad:\t\t\t%u\n\tTotalPhys:\t\t%u\n\tAvailPhys:\t\t%u\nPageFile:\t\t%u\n",
-          (unsigned)mem_stat.dwMemoryLoad, (unsigned)mem_stat.dwTotalPhys, (unsigned)mem_stat.dwAvailPhys,
-          (unsigned)mem_stat.dwTotalPageFile);
-  fprintf(fp, "\tPageFileFree:\t%u\n\tVirtual:\t\t%u\n\tVirtualFree:\t%u\n", (unsigned)mem_stat.dwAvailPageFile,
-          (unsigned)mem_stat.dwTotalVirtual, (unsigned)mem_stat.dwAvailVirtual);
+  fprintf(fp, "\tLoad:\t\t\t%u\n\tTotalPhys:\t\t%llu\n\tAvailPhys:\t\t%llu\nPageFile:\t\t%llu\n",
+          mem_stat.dwMemoryLoad, mem_stat.ullTotalPhys, mem_stat.ullAvailPhys,
+          mem_stat.ullTotalPageFile);
+  fprintf(fp, "\tPageFileFree:\t%llu\n\tVirtual:\t\t%llu\n\tVirtualFree:\t%llu\n", mem_stat.ullAvailPageFile,
+          mem_stat.ullTotalVirtual, mem_stat.ullAvailVirtual);
 
   fclose(fp);
 
