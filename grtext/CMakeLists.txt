@@ -17,8 +17,4 @@ target_link_libraries(grtext PRIVATE
   2dlib
 )
 
-target_include_directories(grtext PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/grtext
-  >
-)
+target_include_directories(grtext PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

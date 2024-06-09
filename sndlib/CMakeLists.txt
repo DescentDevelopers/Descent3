@@ -47,10 +47,8 @@ target_link_libraries(sndlib PRIVATE
   2dlib
   stream_audio
   libacm
+  $<$<PLATFORM_ID:Windows>: win32 >
+  $<$<PLATFORM_ID:Darwin,Linux>: linux >
 )
 
-target_include_directories(sndlib PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/sndlib
-  >
-)
+target_include_directories(sndlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

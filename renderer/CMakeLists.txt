@@ -1,6 +1,8 @@
 set(HEADERS
+  3d.h
   dyna_gl.h
   HardwareInternal.h
+  lnxscreenmode.h
   rend_d3d.h
   renderer.h
   rend_opengl.h
@@ -18,8 +20,8 @@ set(CPPS
 )
 
 if(UNIX)
-  set(HEADERS ${HEADERS} lnxscreenmode.h)
-  set(CPPS ${CPPS} lnxscreenmode.cpp)
+  list(APPEND HEADERS lnxscreenmode.h)
+  list(APPEND CPPS lnxscreenmode.cpp)
 endif()
 
 # These are excluded.
@@ -43,8 +45,4 @@ target_link_libraries(renderer PRIVATE
   >
 )
 
-target_include_directories(renderer PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/renderer
-  >
-)
+target_include_directories(renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

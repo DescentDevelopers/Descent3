@@ -25,8 +25,4 @@ target_link_libraries(physics PRIVATE
   networking
 )
 
-target_include_directories(physics PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/physics
-  >
-)
+target_include_directories(physics PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

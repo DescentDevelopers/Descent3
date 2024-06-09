@@ -6,8 +6,8 @@ set(HEADERS
   controller.h
   ddio_common.h
   ddio.h
-  ddio_lnx.h
-  ddio_win.h
+  $<$<PLATFORM_ID:Darwin,Linux>: ddio_lnx.h>
+  $<$<PLATFORM_ID:Windows>: ddio_win.h>
   forcefeedback.h
   joystick.h
 )
@@ -36,7 +36,7 @@ set(CPPS
     winmouse.cpp
   >
 )
-add_library(ddio STATIC ${CPPS})
+add_library(ddio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ddio PRIVATE
   ddebug
   mem
@@ -47,8 +47,5 @@ target_link_libraries(ddio PRIVATE
     win32
   >
 )
-target_include_directories(ddio PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/ddio
-  >
-)
+
+target_include_directories(ddio PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

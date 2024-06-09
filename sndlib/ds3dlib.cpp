@@ -213,7 +213,7 @@
 #include "mono.h"
 #include "soundload.h"
 #include "mem.h"
-#include "application.h"
+#include "winapp.h"
 #include "auddev.h"
 #include "Macros.h"
 #include "ddio.h"

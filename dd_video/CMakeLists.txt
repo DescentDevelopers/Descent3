@@ -26,8 +26,5 @@ target_link_libraries(dd_video PRIVATE
   2dlib
 )
 
-target_include_directories(dd_video PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/dd_video
-  >
+target_include_directories(dd_video PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )

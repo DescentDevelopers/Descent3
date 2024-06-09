@@ -38,9 +38,5 @@ target_link_libraries(manage PRIVATE
   renderer
 )
 
-target_include_directories(manage PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/manage
-  >
-)
+target_include_directories(manage PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

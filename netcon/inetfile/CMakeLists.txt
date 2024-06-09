@@ -15,4 +15,4 @@ target_link_libraries(inetfile PRIVATE
   mem
 )
 
-target_include_directories(inetfile PUBLIC .)
+target_include_directories(inetfile PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

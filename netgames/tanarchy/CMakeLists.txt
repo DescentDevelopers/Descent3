@@ -8,7 +8,7 @@ set_target_properties(${NETGAME_MODULE} PROPERTIES CXX_VISIBILITY_PRESET "hidden
 set_target_properties(${NETGAME_MODULE} PROPERTIES PREFIX "")
 set_target_properties(${NETGAME_MODULE} PROPERTIES SUFFIX ".d3m")
 
-target_link_libraries(${NETGAME_MODULE}
+target_link_libraries(${NETGAME_MODULE} PRIVATE
   dmfc
   grtext
   dd_video

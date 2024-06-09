@@ -60,7 +60,7 @@
 #include <cstdio>
 #include <cctype>
 
-#include "application.h"
+#include "lnxapp.h"
 #include "appconsole.h"
 
 enum {

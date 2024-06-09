@@ -2,6 +2,9 @@ set(HEADERS
   linux_fix.h
   lnxapp.h
   lnxcontroller.h
+  lnxdatabase.h
+  lnxdraw.h
+  oelnx_os.h
   registry.h
 )
 
@@ -11,7 +14,7 @@ set(CPPS
   lnxcontroller.cpp
   lnxapp.cpp
   lnxcon_null.cpp
-  lnxdata.cpp
+  lnxdatabase.cpp
   registry.cpp
 )
 
@@ -26,9 +29,5 @@ target_link_libraries(linux PRIVATE
   2dlib
   bitmap
 )
-target_include_directories(linux PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/linux
-  >
-)
+target_include_directories(linux PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

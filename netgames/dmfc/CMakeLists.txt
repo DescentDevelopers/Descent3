@@ -50,4 +50,4 @@ target_link_libraries(dmfc PRIVATE
   >
 )
 
-target_include_directories(dmfc PUBLIC .)
+target_include_directories(dmfc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

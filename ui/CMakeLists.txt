@@ -33,4 +33,4 @@ target_link_libraries(ui PRIVATE
   2dlib
 )
 
-target_include_directories(ui PUBLIC .)
+target_include_directories(ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

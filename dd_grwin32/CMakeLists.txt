@@ -10,7 +10,7 @@ set(CPPS
 
 add_library(dd_grwin32 STATIC ${HEADERS} ${CPPS})
 
-target_link_libraries(dd_grwin32
+target_link_libraries(dd_grwin32 PRIVATE
   ddio
   2dlib
   $<$<PLATFORM_ID:Linux,Darwin>:
@@ -21,5 +21,4 @@ target_link_libraries(dd_grwin32
   >
 )
 
-
-target_include_directories(dd_grwin32 PUBLIC .)
+target_include_directories(dd_grwin32 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

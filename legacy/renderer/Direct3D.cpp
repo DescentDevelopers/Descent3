@@ -20,7 +20,7 @@
 #include "DDAccess.h" // This module has access to machine-dependent variables.
 #include "pstypes.h"
 #include "pserror.h"
-#include "application.h"
+#include "winapp.h"
 #include "renderer.h"
 #include "3d.h"
 #include "bitmap.h"
@@ -34,7 +34,7 @@
 #include "bumpmap.h"
 #include "mem.h"
 #include "rtperformance.h"
-#include "appdatabase.h"
+#include "windatabase.h"
 
 #include <algorithm>
 

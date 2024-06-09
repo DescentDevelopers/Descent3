@@ -19,7 +19,9 @@
 #include "byteswap.h"
 #if defined(WIN32)
 #include <windows.h>
+#include "winapp.h"
 #elif defined(__LINUX__)
+#include "lnxapp.h"
 #include "lnxscreenmode.h"
 #else
 #endif
@@ -28,7 +30,6 @@
 #include "mono.h"
 #include "3d.h"
 #include "renderer.h"
-#include "application.h"
 #include "bitmap.h"
 #include "lightmap.h"
 #include "rend_opengl.h"

@@ -13,8 +13,4 @@ target_link_libraries(d3music PRIVATE
   bitmap
 )
 
-target_include_directories(d3music PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/d3music
-  >
-)
+target_include_directories(d3music PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -24,8 +24,4 @@ target_link_libraries(networking PRIVATE
   model
 )
 
-target_include_directories(networking PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/networking
-  >
-)
+target_include_directories(networking PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

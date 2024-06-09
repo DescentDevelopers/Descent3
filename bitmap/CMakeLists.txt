@@ -26,8 +26,4 @@ target_link_libraries(bitmap PRIVATE
   2dlib
 )
 
-target_include_directories(bitmap PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/bitmap
-  >
-)
+target_include_directories(bitmap PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

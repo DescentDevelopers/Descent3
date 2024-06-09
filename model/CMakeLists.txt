@@ -18,8 +18,4 @@ target_link_libraries(model PRIVATE
   2dlib
 )
 
-target_include_directories(model PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/model
-  >
-)
+target_include_directories(model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

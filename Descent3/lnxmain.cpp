@@ -32,8 +32,8 @@
 
 #include "program.h"
 #include "descent.h"
-#include "application.h"
-#include "appdatabase.h"
+#include "lnxapp.h"
+#include "lnxdatabase.h"
 #include "args.h"
 #include "init.h"
 

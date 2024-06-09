@@ -15,11 +15,9 @@ target_link_libraries(movie PRIVATE
   manage
   dd_video
   2dlib
+  $<$<PLATFORM_ID:Linux,Darwin>: linux >
+  $<$<PLATFORM_ID:Windows>: win32 >
 )
 
-target_include_directories(movie PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/movie
-  >
-)
+target_include_directories(movie PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

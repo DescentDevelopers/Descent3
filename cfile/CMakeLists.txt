@@ -17,8 +17,4 @@ target_link_libraries(cfile PRIVATE
   bitmap
 )
 
-target_include_directories(cfile PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/cfile
-  >
-)
+target_include_directories(cfile PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

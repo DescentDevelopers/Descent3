@@ -63,20 +63,21 @@
 #include "pserror.h"
 #include "descent.h"
 
-#include "appdatabase.h"
+
+#if defined(WIN32) // I'm sorry.  Samir
+#include "windatabase.h"
+oeWin32AppDatabase dbase((oeWin32AppDatabase *)Database);
+#elif defined(__LINUX__)
+#include "lnxdatabase.h"
+oeLnxAppDatabase dbase((oeLnxAppDatabase *)Database);
+#else
+oeAppDatabase dbase(Database); // this will fail without an operating system equiv
+#endif
 
 program_version Program_version;
 
-//	Initializes the current program state
-
+// Initializes the current program state
 void ProgramVersion(int version_type, uint8_t major, uint8_t minor, uint8_t build) {
-#if defined(WIN32) // I'm sorry.  Samir
-  oeWin32AppDatabase dbase((oeWin32AppDatabase *)Database);
-#elif defined(__LINUX__)
-  oeLnxAppDatabase dbase((oeLnxAppDatabase *)Database);
-#else
-  oeAppDatabase dbase(Database); // this will fail without an operating system equiv
-#endif
 
   Program_version.version_type = version_type;
   Program_version.major = major;

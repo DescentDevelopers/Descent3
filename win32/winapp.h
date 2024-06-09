@@ -82,6 +82,7 @@
 
 #include <array>
 #include <cstdint>
+#include "application.h"
 
 /*	Basic Application Win32 data types, to prevent include of windows.h */
 typedef uintptr_t   HWnd;

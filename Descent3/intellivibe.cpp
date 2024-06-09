@@ -59,6 +59,7 @@ void VIBE_DoLevelEnd(void) {}
 #else
 
 #include "intellivibe.h"
+#include "winapp.h"
 #include "module.h"
 #include "mono.h"
 #include "object_external_struct.h"

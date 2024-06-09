@@ -35,11 +35,7 @@ target_link_libraries(Parallax_Online PRIVATE
   >
 )
 
-target_include_directories(Parallax_Online PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/netcon/mtclient
-  >
-)
+target_include_directories(Parallax_Online PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(Parallax_Online_Hog
   COMMAND $<TARGET_FILE:HogMaker>

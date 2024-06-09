@@ -13,8 +13,4 @@ set(LIB_SRC
 
 add_library(libacm STATIC ${HEADERS} ${CPPS} ${LIB_SRC})
 
-target_include_directories(libacm PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/libacm
-  >
-)
+target_include_directories(libacm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

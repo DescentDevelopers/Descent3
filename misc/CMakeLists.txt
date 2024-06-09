@@ -20,11 +20,7 @@ target_link_libraries(misc PRIVATE
   >
 )
 
-target_include_directories(misc PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/misc
-  >
-)
+target_include_directories(misc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if(BUILD_TESTING)

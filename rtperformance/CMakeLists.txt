@@ -11,9 +11,5 @@ target_link_libraries(rtperformance PRIVATE
 )
 
 
-target_include_directories(rtperformance PUBLIC
-  $<BUILD_INTERFACE:
-    ${PROJECT_SOURCE_DIR}/rtperformance
-  >
-)
+target_include_directories(rtperformance PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

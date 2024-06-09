@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "appdatabase.h"
 
 class CRegistry;
 

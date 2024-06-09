@@ -41,7 +41,6 @@
 #include "mvelibw.h"
 #include "pserror.h"
 #include "renderer.h"
-#include "application.h"
 #include "ddio.h"
 #include "ddvid.h"
 #include "grtext.h"
@@ -49,6 +48,12 @@
 #include "bitmap.h"
 #include "gamefont.h"
 #include "game.h"
+
+#ifdef WIN32
+#include "winapp.h"
+#elif defined(__LINUX__)
+#include "lnxapp.h"
+#endif
 
 namespace {
 MovieFrameCallback_fp Movie_callback = NULL;

@@ -147,7 +147,7 @@
 
 #define OEAPP_INTERNAL_MODULE
 
-#include "application.h"
+#include "winapp.h"
 #include "appconsole.h"
 #include "mono.h"
 #include "networking.h"

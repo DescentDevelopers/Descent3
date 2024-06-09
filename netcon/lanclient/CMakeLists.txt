@@ -23,7 +23,7 @@ target_link_libraries(Direct_TCP_IP PRIVATE
   >
 )
 
-target_include_directories(Direct_TCP_IP PUBLIC .)
+target_include_directories(Direct_TCP_IP PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(Direct_TCP_IP_Hog
   COMMAND $<TARGET_FILE:HogMaker>
