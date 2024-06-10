@@ -109,6 +109,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define MAX_SCREVTS 15 
 
 /////////////////////////////////////////////////////////////////////////////
 // CScriptWizard dialog
@@ -616,9 +617,8 @@ void CScriptWizard::UpdateEventListbox()
 		scrlistbox->GetText(m_CurScriptSel, scrname);
 		id = FindScriptIDFromName(scrname);
 
-		// LGT- MAX_SCREVTS undefined
-		// for (i = 0; i < MAX_SCREVTS; i++)
-		// 	listbox->AddString(Script_evt_names[i]);
+		for (i = 0; i < MAX_SCREVTS; i++)
+			listbox->AddString(Script_evt_names[i]);
 
 		listbox->SetCurSel(m_CurEventSel);
 	}

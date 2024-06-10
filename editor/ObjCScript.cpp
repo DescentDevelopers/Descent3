@@ -143,7 +143,7 @@ char *Level_script_source = NULL;
 //Table of scripts within script file
 tScriptName Script_names[MAX_SCRIPTS];
 
-#if 0 // LGT: MAX_SCREVTS undefined
+#define MAX_SCREVTS 15 
 //	INCREMENT MAX_SCREVTS in ObjCScript when you add a new event!
 char *Script_evt_names[MAX_SCREVTS] = {
 	"EVT_AI_FRAME",
@@ -163,6 +163,7 @@ char *Script_evt_names[MAX_SCREVTS] = {
 	"EVT_CLIENT_DESTROY",
 };
 
+#if 0 // LGT - EVT_X undefined
 uint16_t Script_evt_ids[MAX_SCREVTS] = {
 	EVT_AI_FRAME,
 	EVT_AI_NOTIFY,

@@ -247,7 +247,7 @@ static int skipped_screens;
 
 static bool IsMissionMaskOK(uint32_t set, uint32_t unset);
 static void ReplaceHotTag(char *string, int tag);
-static bool ParseForHotTags(char *src, char **dest);
+static bool ParseForHotTags(const char *src, char **dest);
 static bool PlayBriefing(tTelComInfo *tcs);
 static void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id);
 static void PBAddBmpEffect(TCBMPDESC* desc, char *description);
@@ -297,7 +297,7 @@ void ReplaceHotTag(char *string, int tag) {
 
 // returns true if there were hot tags and it had to allocate memory for dest (so it needs to be freed)
 #define MEMORY_BLOCK 50
-bool ParseForHotTags(char *src, char **dest) {
+bool ParseForHotTags(const char *src, char **dest) {
   bool ret = false;
   const char *curr_ptr = src;
   char *dest_ptr;

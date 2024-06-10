@@ -560,7 +560,7 @@ static inline int GetFacePhysicsFlags(const room *rp, const face *fp) {
 
 // Computes a bounding sphere for the current room
 // Parameters: center - filled in with the center point of the sphere
-//		rp - the room were bounding
+//		rp - the room we're bounding
 // Returns: the radius of the bounding sphere
 float ComputeRoomBoundingSphere(vector *center, room *rp);
 

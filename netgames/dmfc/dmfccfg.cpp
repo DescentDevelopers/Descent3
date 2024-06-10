@@ -48,8 +48,6 @@
  * $NoKeywords: $
  */
 
-#include <string.h>
-
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
