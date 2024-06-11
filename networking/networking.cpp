@@ -1235,7 +1235,7 @@ void nw_SendReliableAck(SOCKADDR *raddr, uint32_t sig, network_protocol link_typ
   network_address send_address;
   memset(&send_address, 0, sizeof(network_address));
 
-  send_address.connection_type = reliable_sockets[serverconn].connection_type;
+  send_address.connection_type = link_type;
 
   if (NP_TCP == link_type) {
     SOCKADDR_IN *inaddr = (SOCKADDR_IN *)raddr;
@@ -1281,8 +1281,8 @@ void nw_WorkReliable(uint8_t *data, int len, network_address *naddr) {
 
   reliable_socket *rsocket = NULL;
   // Check to see if we need to send a packet out.
-  if ((reliable_sockets[serverconn].status == RNF_LIMBO) &&
-      ((serverconn != -1) && (timer_GetTime() - last_sent_iamhere) > NETRETRYTIME)) {
+  if ((serverconn != -1) && (reliable_sockets[serverconn].status == RNF_LIMBO) &&
+      ((timer_GetTime() - last_sent_iamhere) > NETRETRYTIME)) {
     reliable_header conn_header;
     // Now send I_AM_HERE packet
     conn_header.type = RNT_I_AM_HERE;
