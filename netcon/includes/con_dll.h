@@ -404,7 +404,7 @@ DoUI_fp DLLDoUI;
 typedef void (*Debug_ConsolePrintf_fp)(int n, const char *format, ...);
 Debug_ConsolePrintf_fp DLLDebug_ConsolePrintf;
 
-typedef void (*DedicatedServerPrintf_fp)(char *format, ...);
+typedef void (*DedicatedServerPrintf_fp)(const char *format, ...);
 DedicatedServerPrintf_fp DLLPrintDedicatedMessage;
 /*
 typedef int( *ValidateUser_fp) (validate_id_request *valid_id, char *trackerid);
