@@ -13,6 +13,7 @@ project(Descent3
 option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
+option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 
 set(CMAKE_CXX_STANDARD 17)
