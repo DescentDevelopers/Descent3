@@ -205,7 +205,7 @@ int ConnectToChatServer(const char *serveraddr, int16_t chat_port, char *nicknam
 #ifndef __LINUX__
       if (WSAEWOULDBLOCK == WSAGetLastError())
 #else
-      if (WSAEWOULDBLOCK == ret || 0 == ret)
+      if (EINPROGRESS == ret || 0 == ret)
 #endif
       {
         DLLmprintf(0, "Beginning socket connect\n");
