@@ -1353,7 +1353,7 @@ int MainMultiplayerMenu() {
           {
             if (!pcount) {
               static char quietWarning[5] = "";
-              pcount = quietwarning;
+              pcount = quietWarning;
             }
             // pcount++;
             *pcount = '\0';
