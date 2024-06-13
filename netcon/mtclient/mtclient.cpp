@@ -505,7 +505,6 @@ int GetGameByLBNo(int selno) {
 
 void FormatServerLine(char *fmt, int servernum, int pxonum) {
   int k = servernum;
-  int j = pxonum;
   char server_mode[20];
   char server_type[200];
 
@@ -860,7 +859,6 @@ int LoginMasterTracker() {
   int ret = 0;
 
   int loginlen = LOGIN_LEN;
-  int trackerlen = TRACKER_ID_LEN;
   int passlen = PASSWORD_LEN;
 
   void *main_wnd = DLLNewUIGameWindowCreate(TRACKER_MENU_X, TRACKER_MENU_Y, TRACKER_MENU_W, TRACKER_MENU_H,
@@ -1307,7 +1305,6 @@ int MainMultiplayerMenu() {
       pchanlist = (char *)DLLmem_malloc(strlen(p) + 1);
       memset(pchanlist, 0, strlen(p));
       strcpy(pchanlist, p);
-      char seps[] = "$";
       char *tokp = nullptr;
       char *nexttok;
       // tokp = strtok(pchanlist,seps);
@@ -2574,10 +2571,9 @@ const char *SendWhisper(const char *name) {
 
 int JoinPrivateLobby() {
   int exit_menu = 0;
-  int ret;
+  int ret = 0;
   char message[MAX_CHAT_SEND_LEN];
   char priv_channel[MAX_CHAT_SEND_LEN];
-  static char fmt_msg[MAX_CHAT_SEND_LEN * 2];
 
   void *title_text = DLLCreateNewUITextItem(TXT_PXO_JOINPRIV, UICOL_WINDOW_TITLE);
 
