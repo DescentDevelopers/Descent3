@@ -9,25 +9,37 @@
 		{
 			"name": "win32",
 			"inherits": "defaults",
-			"generator": "Visual Studio 17 2022",
+			"generator": "Ninja Multi-Config",
 			"condition": {
 				"type": "equals",
 				"lhs": "${hostSystemName}",
 				"rhs": "Windows"
 			},
-			"architecture": "Win32",
+			"architecture": {
+				"strategy": "external",
+				"value": "x86"
+			},
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": "x86-windows"
+			},
 			"toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
 		},
 		{
 			"name": "win64",
 			"inherits": "defaults",
-			"generator": "Visual Studio 17 2022",
+			"generator": "Ninja Multi-Config",
 			"condition": {
 				"type": "equals",
 				"lhs": "${hostSystemName}",
 				"rhs": "Windows"
 			},
-			"architecture": "x64",
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": "x64-windows"
+			},
+			"architecture": {
+				"strategy": "external",
+				"value": "x64"
+			},
 			"toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
 		},
 		{
