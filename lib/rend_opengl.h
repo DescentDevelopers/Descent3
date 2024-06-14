@@ -28,7 +28,7 @@ class oeApplication;
 int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state);
 
 // Closes down opengl
-void opengl_Close();
+void opengl_Close(const bool just_resizing=false);
 void opengl_Shutdown();
 
 // The main drawing function...draws a flat/textured/gouraud polygon
