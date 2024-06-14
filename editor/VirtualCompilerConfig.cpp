@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "editor.h"
-#include "AppDatabase.h"
+#include "windatabase.h"
 #include "VirtualCompilerConfig.h"
 #include "Descent.h"
 

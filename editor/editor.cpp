@@ -385,7 +385,7 @@
 #include "HTexture.h"
 #include "HRoom.h"
 #include "erooms.h"
-#include "AppDatabase.h"
+#include "windatabase.h"
 
 #include "TextureGrWnd.h"
 #include "WireframeGrWnd.h"

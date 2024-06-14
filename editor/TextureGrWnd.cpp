@@ -498,7 +498,7 @@
 
 #include "TextureGrWnd.h"
 
-#include "application.h"
+#include "winapp.h"
 #include "editor.h"
 #include "render.h"
 #include "manage.h"

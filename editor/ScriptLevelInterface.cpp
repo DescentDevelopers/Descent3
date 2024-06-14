@@ -130,7 +130,7 @@
 #include "manage.h"
 #include "mem.h"
 #include "ScriptCompilerAPI.h"
-#include "AppDatabase.h"
+#include "windatabase.h"
 #include "Descent.h"
 #include "ScriptSyncDialog.h"
 

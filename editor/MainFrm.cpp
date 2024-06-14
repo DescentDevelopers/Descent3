@@ -806,8 +806,8 @@
 
 // D3 EDITOR HEADERS
 #include "pserror.h"
-#include "application.h"
-#include "AppDatabase.h"
+#include "winapp.h"
+#include "windatabase.h"
 #include "program.h"
 #include "gr.h"
 #include "init.h"

@@ -66,7 +66,7 @@
 #include "cfile.h"
 #include "gamefile.h"
 #include "gamefilepage.h"
-#include "AppDatabase.h"
+#include "windatabase.h"
 #include "Descent.h"
 #include "mono.h"
 #include "ddio.h"
