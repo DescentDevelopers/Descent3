@@ -247,7 +247,7 @@ static int skipped_screens;
 
 static bool IsMissionMaskOK(uint32_t set, uint32_t unset);
 static void ReplaceHotTag(char *string, int tag);
-static bool ParseForHotTags(char *src, char **dest);
+static bool ParseForHotTags(const char *src, char **dest);
 static bool PlayBriefing(tTelComInfo *tcs);
 static void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id);
 static void PBAddBmpEffect(TCBMPDESC* desc, char *description);
@@ -456,7 +456,7 @@ bool PlayBriefing(tTelComInfo *tcs) {
   return true;
 }
 
-void PBAddTextEffect(TCTEXTDESC* desc, const char *text, const char *description, int id) {
+void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     char *new_text = NULL;
     const bool new_stuff = ParseForHotTags(text, &new_text);
@@ -469,33 +469,33 @@ void PBAddTextEffect(TCTEXTDESC* desc, const char *text, const char *description
   }
 }
 
-void PBAddBmpEffect(TCBMPDESC* desc, const char *description) {
+void PBAddBmpEffect(TCBMPDESC* desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateBitmapEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddMovieEffect(TCMOVIEDESC* desc, const char *description) {
+void PBAddMovieEffect(TCMOVIEDESC* desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateMovieEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddBkgEffect(TCBKGDESC* desc, const char *description) {
+void PBAddBkgEffect(TCBKGDESC* desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     mprintf(0, "PB: Add Bkg\n");
   }
 }
 
-void PBAddPolyEffect(TCPOLYDESC* desc, const char *description) {
+void PBAddPolyEffect(TCPOLYDESC* desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreatePolyModelEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddSoundEffect(TCSNDDESC* desc, const char *description) {
+void PBAddSoundEffect(TCSNDDESC* desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateSoundEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddButtonEffect(TCBUTTONDESC* desc, const char *description, int id) {
+void PBAddButtonEffect(TCBUTTONDESC* desc, char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     desc->x += osb_xoff;
     desc->y += osb_yoff;
@@ -504,7 +504,7 @@ void PBAddButtonEffect(TCBUTTONDESC* desc, const char *description, int id) {
   }
 }
 
-void PBStartScreen(int screen_num, const char *description, const char *layout, uint32_t mask_set, uint32_t mask_unset) {
+void PBStartScreen(int screen_num, char *description, char *layout, uint32_t mask_set, uint32_t mask_unset) {
   if (!IsMissionMaskOK(mask_set, mask_unset)) {
     ok_to_parse_screen = false;
     skipped_screens++;
@@ -579,7 +579,7 @@ bool PBLoopCallback() {
   return ret;
 }
 
-void PBSetTitle(const char *title) {
+void PBSetTitle(char *title) {
   gottitle = true;
   strcpy(pbtitle, title);
 }
@@ -594,7 +594,7 @@ void PBSetGlitch(float amount) {
     TelcomEnableGlitch(amount);
 }
 
-void PBAddVoice(const char *filename, int flags, const char *description) {}
+void PBAddVoice(char *filename, int flags,char *description) {}
 
 bool ParseBriefing(const char *filename, tTelComInfo *tcs) {
   if (!cfexist(filename)) {

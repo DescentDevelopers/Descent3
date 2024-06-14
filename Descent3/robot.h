@@ -28,8 +28,8 @@
 
 extern int Num_robots;
 extern object_info Robots[MAX_ROBOTS];
-extern char *Movement_class_names[];
-extern char *Anim_state_names[];
+extern const char * const Movement_class_names[];
+extern const char * const Anim_state_names[];
 
 // Sets all robots to unused
 void InitRobots();

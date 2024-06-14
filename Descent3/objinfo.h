@@ -352,8 +352,8 @@
 // The number of ids of each type in the list
 extern int Num_object_ids[];
 
-extern char *Movement_class_names[];
-extern char *Anim_state_names[];
+extern const char * const Movement_class_names[];
+extern const char * const Anim_state_names[];
 
 // These defines must correspond to the Static_object_names array
 #define GENOBJ_GUIDEBOT 0 // NOTE: This must match ROBOT_GUIDEBOT

@@ -216,7 +216,7 @@
 
 #include <algorithm>
 
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(EDITOR))
 bool Cinematics_enabled = true;
 extern int DoAI;
 #ifdef EDITOR

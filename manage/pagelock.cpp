@@ -197,7 +197,7 @@ extern const char *PageNames[];
 void mng_InitPagelocks() {
   // If there is not a pagelock file, create one with a dummy header.
 
-  CFILE *infile, *outfile;
+  CFILE *infile = nullptr, *outfile = nullptr;
   mngs_Pagelock testlock;
 
   if (!Network_up)
@@ -268,7 +268,7 @@ int TableVersionCurrent() {
 // Call this before any chokepoint functions are executed.
 // Locks the whole table system for our exclusive use
 int mng_MakeLocker() {
-  CFILE *outfile;
+  CFILE *outfile = nullptr;
   int len;
   char *locker;
 

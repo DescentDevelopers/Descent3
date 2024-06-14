@@ -100,18 +100,7 @@ int Global_buffer_index;
 int No_render_windows_hack = -1;
 #define WALL_PULSE_INCREMENT .01
 // Variables for various debugging features
-#ifndef _DEBUG
-#define In_editor_mode 0
-#define Outline_lightmaps 0
-#define Outline_alpha 0
-#define Render_floating_triggers 0
-#define Use_software_zbuffer 0
-#define Render_all_external_rooms 0
-#define Render_portals 0
-#define Render_one_room_only 0
-#define Render_inside_only 0
-#define Shell_render_flag 0
-#else  // ifdef _DEBUG
+#if (defined(_DEBUG) || defined(NEWEDITOR) || defined(EDITOR))
 // If true, draw white outline for each polygon
 int Render_portals = 0;
 uint8_t Outline_mode = 0;
@@ -125,7 +114,19 @@ bool Render_all_external_rooms = 0;
 bool In_editor_mode = 0;
 bool Render_one_room_only = 0;
 bool Render_inside_only = 0;
-#endif // ifdef _DEBUG
+#else
+#define In_editor_mode 0
+#define Outline_lightmaps 0
+#define Outline_alpha 0
+#define Render_floating_triggers 0
+#define Use_software_zbuffer 0
+#define Render_all_external_rooms 0
+#define Render_portals 0
+#define Render_one_room_only 0
+#define Render_inside_only 0
+#define Shell_render_flag 0
+#endif
+
 #ifndef RELEASE
 int Mine_depth;
 #endif

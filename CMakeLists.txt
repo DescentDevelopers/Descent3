@@ -15,6 +15,10 @@ option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  option(BUILD_EDITOR "Build internal editor" OFF)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -102,7 +106,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
-  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE NOHELP PRIMARY_HOG=\"d3-win.hog\"
+  add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX NODRAWTEXT NOBITMAP NOMCX NOSERVICE PRIMARY_HOG=\"d3-win.hog\"
           #[[NOGDI]] # We need GDI for now, enable when GDI is actually not needed (or when all windows.h mentions are gone)
   )
 
@@ -201,6 +205,12 @@ add_subdirectory(vecmat)
 add_subdirectory(libmve)
 add_subdirectory(md5)
 add_subdirectory(libacm)
+
+
+if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  add_subdirectory(editor)
+endif()
+
 add_subdirectory(Descent3)
 
 add_subdirectory(tools)

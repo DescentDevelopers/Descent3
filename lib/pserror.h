@@ -145,6 +145,7 @@
  *
  * $NoKeywords: $
  */
+
 #ifndef PSERROR_H
 #define PSERROR_H
 #include <assert.h>
@@ -163,7 +164,7 @@ void Int3MessageBox(const char *file, int line);
 #define MBOX_YESNO 2
 #define MBOX_YESNOCANCEL 3
 #define MBOX_ABORTRETRYIGNORE 4
-#ifndef RELEASE
+#if (defined(EDITOR) || defined(NEWEDITOR) || defined(_DEBUG))
 //	prints out a standard OS messagebox
 void OutrageMessageBox(const char *str, ...);
 int OutrageMessageBox(int type, const char *str, ...);
