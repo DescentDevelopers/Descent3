@@ -386,10 +386,11 @@ int sdlKeyFilter(const SDL_Event *event) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
         extern SDL_Window *GSDLWindow;
         Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
+        // (In SDL2, SDL_WINDOW_FULLSCREEN_DESKTOP is SDL_WINDOW_FULLSCREEN plus an extra bit set, so just check for _any_ fullscreen in this bitwise AND.)
         if (flags & SDL_WINDOW_FULLSCREEN) {
           flags &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
         } else {
-          flags |= SDL_WINDOW_FULLSCREEN;  // !!! FIXME: FULLSCREEN_DESKTOP
+          flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         }
         SDL_SetWindowFullscreen(GSDLWindow, flags);
         return(0);

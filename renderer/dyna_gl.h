@@ -127,6 +127,18 @@ typedef void(GLFUNCCALL *glRasterPos2i_fp)(GLint x, GLint y);
 typedef void(GLFUNCCALL *glBitmap_fp)(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove,
                                       GLfloat ymove, const GLubyte *bitmap);
 
+// FBO entry points for render-to-texture ...
+typedef void (GLFUNCCALL *glGenFramebuffersEXT_fp) (GLsizei n, GLuint *framebuffers);
+typedef void (GLFUNCCALL *glGenRenderbuffersEXT_fp) (GLsizei n, GLuint *renderbuffers);
+typedef void (GLFUNCCALL *glBindFramebufferEXT_fp) (GLenum target, GLuint framebuffer);
+typedef void (GLFUNCCALL *glBindRenderbufferEXT_fp)(GLenum target, GLuint renderbuffer);
+typedef void (GLFUNCCALL *glRenderbufferStorageEXT_fp) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void (GLFUNCCALL *glFramebufferRenderbufferEXT_fp) (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
+typedef GLenum (GLFUNCCALL *glCheckFramebufferStatusEXT_fp) (GLenum target);
+typedef void (GLFUNCCALL *glDeleteRenderbuffersEXT_fp) (GLsizei n, const GLuint *renderbuffers);
+typedef void (GLFUNCCALL *glDeleteFramebuffersEXT_fp) (GLsizei n, const GLuint *framebuffers);
+typedef void (GLFUNCCALL *glBlitFramebufferEXT_fp) (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+
 #if defined(WIN32)
 typedef HGLRC(GLFUNCCALL *wglCreateContext_fp)(HDC);
 typedef BOOL(GLFUNCCALL *wglDeleteContext_fp)(HGLRC);
@@ -192,6 +204,17 @@ DYNAEXTERN(glViewport_fp, dglViewport);
 DYNAEXTERN(glColor4fv_fp, dglColor4fv);
 DYNAEXTERN(glVertex3fv_fp, dglVertex3fv);
 DYNAEXTERN(glTexCoord4fv_fp, dglTexCoord4fv);
+
+DYNAEXTERN(glGenFramebuffersEXT_fp, dglGenFramebuffersEXT);
+DYNAEXTERN(glGenRenderbuffersEXT_fp, dglGenRenderbuffersEXT);
+DYNAEXTERN(glBindFramebufferEXT_fp, dglBindFramebufferEXT);
+DYNAEXTERN(glBindRenderbufferEXT_fp, dglBindRenderbufferEXT);
+DYNAEXTERN(glRenderbufferStorageEXT_fp, dglRenderbufferStorageEXT);
+DYNAEXTERN(glFramebufferRenderbufferEXT_fp, dglFramebufferRenderbufferEXT);
+DYNAEXTERN(glCheckFramebufferStatusEXT_fp, dglCheckFramebufferStatusEXT);
+DYNAEXTERN(glDeleteFramebuffersEXT_fp, dglDeleteFramebuffersEXT);
+DYNAEXTERN(glDeleteRenderbuffersEXT_fp, dglDeleteRenderbuffersEXT);
+DYNAEXTERN(glBlitFramebufferEXT_fp, dglBlitFramebufferEXT);
 
 #ifdef DECLARE_OPENGL
 static module OpenGLDLLInst;
