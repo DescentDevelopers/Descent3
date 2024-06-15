@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@
  * Font editor
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 3     5/08/98 5:23p Samir
  * added font brightness and grayscale caps.
- * 
+ *
  * 2     1/12/98 5:22p Samir
  * Fixed up font reading.
- * 
+ *
  * 5     6/03/97 5:37p Mark
- * 
+ *
  * 4     2/06/97 3:08p Samir
  * Improved font saving for monochrome fonts
  *
@@ -44,79 +44,76 @@
 //
 #include "gr.h"
 
-#define MAX_FONT_CHARS	256
+#define MAX_FONT_CHARS 256
 
 /////////////////////////////////////////////////////////////////////////////
 // CGrFontDialog dialog
 
-class CGrFontDialog : public CDialog
-{
-// Construction
+class CGrFontDialog : public CDialog {
+  // Construction
 public:
-	CGrFontDialog(CWnd* pParent = NULL);   // standard constructor
+  CGrFontDialog(CWnd *pParent = NULL); // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CGrFontDialog)
-	enum { IDD = IDD_FONT_DIALOG };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CGrFontDialog)
+  enum { IDD = IDD_FONT_DIALOG };
+  // NOTE: the ClassWizard will add data members here
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CGrFontDialog)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CGrFontDialog)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CGrFontDialog)
-	afx_msg void OnNew();
-	afx_msg void OnPaint();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSaveAs();
-	afx_msg void OnSave();
-	afx_msg void OnDestroy();
-	afx_msg void OnKillfocusEditMinascii();
-	afx_msg void OnKillfocusEditFontname();
-	afx_msg void OnLock();
-	afx_msg void OnCheckin();
-	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-	afx_msg void OnKillfocusBrightness();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-
-private:
-	void UpdateDialog();
-
-private:
-	gr_font_file_record m_FontRecord;
-	int m_FontMinAscii, m_FontMaxAscii;	
-	int m_FontType;							// taken from Radio buttons
-	char m_FontName[32];
-	char m_FontFileName[256];
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CGrFontDialog)
+  afx_msg void OnNew();
+  afx_msg void OnPaint();
+  afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+  virtual BOOL OnInitDialog();
+  afx_msg void OnSaveAs();
+  afx_msg void OnSave();
+  afx_msg void OnDestroy();
+  afx_msg void OnKillfocusEditMinascii();
+  afx_msg void OnKillfocusEditFontname();
+  afx_msg void OnLock();
+  afx_msg void OnCheckin();
+  afx_msg BOOL OnHelpInfo(HELPINFO *pHelpInfo);
+  afx_msg void OnKillfocusBrightness();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 
 private:
-//	these are used when extracting fonts
-	BOOL extract_font(gr_font_file_record *ft);
-	int read_font_line(int cur_char, int& bmx, int& bmy);
-	int read_font_char(int cur_char, int& bmx, int& bmy);
-	BOOL save_font_file(gr_font_file_record *ft);
+  void UpdateDialog();
 
 private:
-	int m_FontPicBm;						// Font picture bitmap handle
-	int m_FontBmW, m_FontBmH;
-	int m_CharHeight;						// current character height.
-	int16_t m_CharWidths[MAX_FONT_CHARS];
-	int16_t m_CharMaxWidth;
-	uint16_t *m_FontBmData;
-	uint16_t *m_DataBuffer, *m_DataPtr;
-	uint16_t m_BgColor, m_BoxColor;
-	uint16_t m_FgColor;
-	BOOL m_FontProp;						// Proportional font.
-	uint8_t m_Brightness;					// brightness * 10
+  gr_font_file_record m_FontRecord;
+  int m_FontMinAscii, m_FontMaxAscii;
+  int m_FontType; // taken from Radio buttons
+  char m_FontName[32];
+  char m_FontFileName[256];
+
+private:
+  //	these are used when extracting fonts
+  BOOL extract_font(gr_font_file_record *ft);
+  int read_font_line(int cur_char, int &bmx, int &bmy);
+  int read_font_char(int cur_char, int &bmx, int &bmy);
+  BOOL save_font_file(gr_font_file_record *ft);
+
+private:
+  int m_FontPicBm; // Font picture bitmap handle
+  int m_FontBmW, m_FontBmH;
+  int m_CharHeight; // current character height.
+  int16_t m_CharWidths[MAX_FONT_CHARS];
+  int16_t m_CharMaxWidth;
+  uint16_t *m_FontBmData;
+  uint16_t *m_DataBuffer, *m_DataPtr;
+  uint16_t m_BgColor, m_BoxColor;
+  uint16_t m_FgColor;
+  BOOL m_FontProp;      // Proportional font.
+  uint8_t m_Brightness; // brightness * 10
 };

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #if !defined(AFX_FILEPAGEADDDLG_H__F3555122_C5AB_11D2_AB2B_006008BF0B09__INCLUDED_)
 #define AFX_FILEPAGEADDDLG_H__F3555122_C5AB_11D2_AB2B_006008BF0B09__INCLUDED_
@@ -37,109 +37,102 @@ extern int NumDirectoryNames;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFileList window
-class CFileList : public CListBox
-{
-// Construction
+class CFileList : public CListBox {
+  // Construction
 public:
-	BOOL RefreshMask(CString mask);
-	BOOL RefreshBox(CString path);
-	//*.* is default filemask
-	BOOL RefreshBox(CString path, CString mask);
-	void setFileMask(CString mask);
-	CString getFileMask();
-	void setPath(CString path);
-	CString getPath();
-	BOOL InitBox(UINT res, CWnd *parent, LPSTR lpszPath, LPSTR lpszFileMask, UINT flags, UINT msg,void (*cb)(char *path)=NULL);
-	CFileList();
+  BOOL RefreshMask(CString mask);
+  BOOL RefreshBox(CString path);
+  //*.* is default filemask
+  BOOL RefreshBox(CString path, CString mask);
+  void setFileMask(CString mask);
+  CString getFileMask();
+  void setPath(CString path);
+  CString getPath();
+  BOOL InitBox(UINT res, CWnd *parent, LPSTR lpszPath, LPSTR lpszFileMask, UINT flags, UINT msg,
+               void (*cb)(char *path) = NULL);
+  CFileList();
 
-// Attributes
+  // Attributes
 public:
-
-// Operations
+  // Operations
 protected:
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CFileList)
+  //}}AFX_VIRTUAL
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CFileList)
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Implementation
 public:
-	virtual ~CFileList();
+  virtual ~CFileList();
 
-	// Generated message map functions
+  // Generated message map functions
 protected:
-	//{{AFX_MSG(CFileList)
-	afx_msg void OnDblclk();
-	//}}AFX_MSG
+  //{{AFX_MSG(CFileList)
+  afx_msg void OnDblclk();
+  //}}AFX_MSG
 
-	DECLARE_MESSAGE_MAP()
+  DECLARE_MESSAGE_MAP()
 private:
-	CWnd *m_cwndParent;
-	UINT m_nMsg;
-	UINT m_nFlag;
-	CString m_csPath;
-	CString m_csFileMask;
-	void CheckEntry(LPSTR name, DWORD flag, BOOL dir); //dir==TRUE for directories
-	BOOL FillBox();
-	void (*callback)(char *path);
+  CWnd *m_cwndParent;
+  UINT m_nMsg;
+  UINT m_nFlag;
+  CString m_csPath;
+  CString m_csFileMask;
+  void CheckEntry(LPSTR name, DWORD flag, BOOL dir); // dir==TRUE for directories
+  BOOL FillBox();
+  void (*callback)(char *path);
 };
 
-
-class CFilePageAddDlg : public CDialog
-{
-// Construction
+class CFilePageAddDlg : public CDialog {
+  // Construction
 public:
-	CFilePageAddDlg(CWnd* pParent = NULL);   // standard constructor
-	~CFilePageAddDlg(void);
-	
-	void SetInitialPath(char *path);
+  CFilePageAddDlg(CWnd *pParent = NULL); // standard constructor
+  ~CFilePageAddDlg(void);
 
-	int m_NumberOfSelectedFiles;
-	char **m_SelectedFiles;
-	char *m_SelectedDestDir;
+  void SetInitialPath(char *path);
+
+  int m_NumberOfSelectedFiles;
+  char **m_SelectedFiles;
+  char *m_SelectedDestDir;
+
 private:
-	bool Quit(void);
-	CString initial_path;
+  bool Quit(void);
+  CString initial_path;
 
-// Dialog Data
-	//{{AFX_DATA(CFilePageAddDlg)
-	enum { IDD = IDD_FILEPAGEADD };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CFilePageAddDlg)
+  enum { IDD = IDD_FILEPAGEADD };
+  // NOTE: the ClassWizard will add data members here
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CFilePageAddDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CFilePageAddDlg)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+  virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+  //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CFilePageAddDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSelchangeListDrives();
-	afx_msg void OnSelchangeListFolders();
-	virtual void OnOK();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CFilePageAddDlg)
+  virtual BOOL OnInitDialog();
+  afx_msg void OnSelchangeListDrives();
+  afx_msg void OnSelchangeListFolders();
+  virtual void OnOK();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 
 private:
-	//the three boxes in this example    
-	CFileList m_cflDrive;
-	CFileList m_cflDir;
-	CFileList m_cflFile;
-    //user-defined message for communication between the boxes
-    //and dialog (msg is trapped in WindowProc)    
-	UINT m_nBoxMsg;	
+  // the three boxes in this example
+  CFileList m_cflDrive;
+  CFileList m_cflDir;
+  CFileList m_cflFile;
+  // user-defined message for communication between the boxes
+  // and dialog (msg is trapped in WindowProc)
+  UINT m_nBoxMsg;
 };
-
-
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

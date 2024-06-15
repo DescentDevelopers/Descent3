@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 * Does a quick compile of a script
 *
 * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     12/30/98 4:38p Jeff
  * initial creation
 *
@@ -46,40 +46,38 @@
 /////////////////////////////////////////////////////////////////////////////
 // CQuickCompile dialog
 
-class CQuickCompile : public CDialog
-{
-// Construction
+class CQuickCompile : public CDialog {
+  // Construction
 public:
-	CQuickCompile(char *scriptname,CWnd* pParent = NULL);   // standard constructor
+  CQuickCompile(char *scriptname, CWnd *pParent = NULL); // standard constructor
 
-	char m_scriptname[_MAX_PATH];
-	int8_t ret_value;
+  char m_scriptname[_MAX_PATH];
+  int8_t ret_value;
 
-// Dialog Data
-	//{{AFX_DATA(CQuickCompile)
-	enum { IDD = IDD_QUICKCOMPILE };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CQuickCompile)
+  enum { IDD = IDD_QUICKCOMPILE };
+  // NOTE: the ClassWizard will add data members here
+  //}}AFX_DATA
 
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CQuickCompile)
+public:
+  virtual INT_PTR DoModal();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CQuickCompile)
-	public:
-	virtual INT_PTR DoModal();
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CQuickCompile)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnDestroy();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CQuickCompile)
+  virtual BOOL OnInitDialog();
+  afx_msg void OnDestroy();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

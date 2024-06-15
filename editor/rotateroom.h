@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,12 +22,11 @@
  * $Date: 2003-08-26 03:57:38 $
  * $Author: kevinb $
  *
- 
+
  * $NoKeywords: $
  */
 
 #include "fix.h"
 #include "room.h"
 
-void RotateRooms(angle p,angle h,angle b);
-
+void RotateRooms(angle p, angle h, angle b);

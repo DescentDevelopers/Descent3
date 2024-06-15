@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
 * Orphan file delete
 *
 * $Log: not supported by cvs2svn $
- * 
+ *
  * 3     3/19/99 10:35a Jeff
  * enable/disable controls when thinking
- * 
+ *
  * 2     3/18/99 8:41p Jeff
  * created orphan hunter dialog
 *
@@ -47,39 +47,36 @@
 /////////////////////////////////////////////////////////////////////////////
 // COrphanRemoveDlg dialog
 
-class COrphanRemoveDlg : public CDialog
-{
-// Construction
+class COrphanRemoveDlg : public CDialog {
+  // Construction
 public:
-	COrphanRemoveDlg(CWnd* pParent = NULL);   // standard constructor
-	void SetStatus(char *status);
-	void Enable(bool enable);
+  COrphanRemoveDlg(CWnd *pParent = NULL); // standard constructor
+  void SetStatus(char *status);
+  void Enable(bool enable);
 
-// Dialog Data
-	//{{AFX_DATA(COrphanRemoveDlg)
-	enum { IDD = IDD_ORPHAN };
-	CCheckListBox	m_List;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(COrphanRemoveDlg)
+  enum { IDD = IDD_ORPHAN };
+  CCheckListBox m_List;
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(COrphanRemoveDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(COrphanRemoveDlg)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(COrphanRemoveDlg)
-	virtual void OnOK();
-	afx_msg void OnSelchangeDirectory();
-	virtual BOOL OnInitDialog();
-	virtual void OnCancel();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(COrphanRemoveDlg)
+  virtual void OnOK();
+  afx_msg void OnSelchangeDirectory();
+  virtual BOOL OnInitDialog();
+  virtual void OnCancel();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -26,31 +26,31 @@
 
 #include "vecmat.h"
 
-//Read the mouse and move the wireframe view
+// Read the mouse and move the wireframe view
 void MoveWorld();
 
-//Reset the orienation, position, & distance of the wireframe view
+// Reset the orienation, position, & distance of the wireframe view
 void ResetWireframeView();
 
-//Reset the view radius of the wireframe view
+// Reset the view radius of the wireframe view
 void ResetWireframeViewRad();
 
-//Set the wireframe view target to a specific location
-//Does not reset the distance or orientation
+// Set the wireframe view target to a specific location
+// Does not reset the distance or orientation
 void SetWireframeView(vector *pos);
 
-//Structure to describe the wireframe view
+// Structure to describe the wireframe view
 struct wireframe_view {
-	matrix	orient;
-	vector	target;
-	float		dist;
-	float		rad;
+  matrix orient;
+  vector target;
+  float dist;
+  float rad;
 };
 
-//The current wireframe view
+// The current wireframe view
 extern wireframe_view *Wireframe_view;
 
-//Wireframe views for the mine & room views
-extern wireframe_view Wireframe_view_mine,Wireframe_view_room;
+// Wireframe views for the mine & room views
+extern wireframe_view Wireframe_view_mine, Wireframe_view_room;
 
-#endif	//ifndef _MOVEWORLD_H
+#endif // ifndef _MOVEWORLD_H

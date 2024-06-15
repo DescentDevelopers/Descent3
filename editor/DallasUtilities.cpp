@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,20 +25,20 @@
 * Code for DALLAS related utility functions
 *
 * $Log: not supported by cvs2svn $
- * 
+ *
  * 6     6/09/99 7:06p Jeff
  * stub functions added.  #ifdef NEWEDITORs added, files changed, to get
  * Dallas integrated into new editor
- * 
+ *
  * 5     2/19/99 5:35p Nate
  * Added new types and events
- * 
+ *
  * 4     12/16/98 8:45p Nate
  * Added loading of Actions
- * 
+ *
  * 3     12/15/98 7:48p Nate
  * Fixed minor buffering problem
- * 
+ *
  * 2     12/14/98 12:45p Nate
  * Initial Version
 *
@@ -60,118 +60,102 @@
 
 #include "DallasUtilities.h"
 
-
 // Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s)
-{
-	int last_char_pos;
+void RemoveTrailingWhitespace(char *s) {
+  int last_char_pos;
 
-	last_char_pos=strlen(s)-1;
-	while(last_char_pos>=0 && isspace(s[last_char_pos])) {
-		s[last_char_pos]='\0';
-		last_char_pos--;
-	}
+  last_char_pos = strlen(s) - 1;
+  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
+    s[last_char_pos] = '\0';
+    last_char_pos--;
+  }
 }
 
 // Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s)
-{
-	while((*s)!='\0' && isspace(*s)) 
-		s++;
+char *SkipInitialWhitespace(char *s) {
+  while ((*s) != '\0' && isspace(*s))
+    s++;
 
-	return(s);
+  return (s);
 }
 
-
-class tFindInManage
-{
+class tFindInManage {
 public:
-	tFindInManage() {searching = false;}
+  tFindInManage() { searching = false; }
 
-	bool searching;
-	bool in_Gamefiles;
-	int curr_index;
-	char glob_string[PAGENAME_LEN];
+  bool searching;
+  bool in_Gamefiles;
+  int curr_index;
+  char glob_string[PAGENAME_LEN];
 };
 tFindInManage FindInManageData;
 
-
-
-bool FindManageFirst(char *buffer,char *wildcard)
-{
+bool FindManageFirst(char *buffer, char *wildcard) {
 #ifndef NEWEDITOR
-	if(FindInManageData.searching)
-		FindManageClose();
+  if (FindInManageData.searching)
+    FindManageClose();
 
-	FindInManageData.searching = true;
-	strcpy(FindInManageData.glob_string,wildcard);
-	FindInManageData.curr_index = 0;
-	FindInManageData.in_Gamefiles = true;
+  FindInManageData.searching = true;
+  strcpy(FindInManageData.glob_string, wildcard);
+  FindInManageData.curr_index = 0;
+  FindInManageData.in_Gamefiles = true;
 
-	return FindManageNext(buffer);
+  return FindManageNext(buffer);
 #else
-	return false;
+  return false;
 #endif
 }
 
-bool FindManageNext(char *buffer)
-{
+bool FindManageNext(char *buffer) {
 #ifndef NEWEDITOR
-	if(!FindInManageData.searching)
-		return false;
+  if (!FindInManageData.searching)
+    return false;
 
-	if(FindInManageData.in_Gamefiles)
-	{
+  if (FindInManageData.in_Gamefiles) {
 
-		for(;FindInManageData.curr_index<MAX_GAMEFILES;FindInManageData.curr_index++)
-		{
-			if(Gamefiles[FindInManageData.curr_index].used && 
-				PSGlobMatch(FindInManageData.glob_string,Gamefiles[FindInManageData.curr_index].name,false,false))
-			{
-				//match
-				strcpy(buffer,Gamefiles[FindInManageData.curr_index].name);
-				FindInManageData.curr_index++;
-				return true;
-			}
-		}
+    for (; FindInManageData.curr_index < MAX_GAMEFILES; FindInManageData.curr_index++) {
+      if (Gamefiles[FindInManageData.curr_index].used &&
+          PSGlobMatch(FindInManageData.glob_string, Gamefiles[FindInManageData.curr_index].name, false, false)) {
+        // match
+        strcpy(buffer, Gamefiles[FindInManageData.curr_index].name);
+        FindInManageData.curr_index++;
+        return true;
+      }
+    }
 
-		FindInManageData.curr_index = 0;
-		FindInManageData.in_Gamefiles = false;
-	}
+    FindInManageData.curr_index = 0;
+    FindInManageData.in_Gamefiles = false;
+  }
 
-	for(;FindInManageData.curr_index<MAX_TRACKLOCKS;FindInManageData.curr_index++)
-	{
-		if(GlobalTrackLocks[FindInManageData.curr_index].used && GlobalTrackLocks[FindInManageData.curr_index].pagetype==PAGETYPE_GAMEFILE && 
-			PSGlobMatch(FindInManageData.glob_string,GlobalTrackLocks[FindInManageData.curr_index].name,false,false))
-		{
-			//match
-			strcpy(buffer,GlobalTrackLocks[FindInManageData.curr_index].name);
-			FindInManageData.curr_index++;
-			return true;
-		}
-	}
+  for (; FindInManageData.curr_index < MAX_TRACKLOCKS; FindInManageData.curr_index++) {
+    if (GlobalTrackLocks[FindInManageData.curr_index].used &&
+        GlobalTrackLocks[FindInManageData.curr_index].pagetype == PAGETYPE_GAMEFILE &&
+        PSGlobMatch(FindInManageData.glob_string, GlobalTrackLocks[FindInManageData.curr_index].name, false, false)) {
+      // match
+      strcpy(buffer, GlobalTrackLocks[FindInManageData.curr_index].name);
+      FindInManageData.curr_index++;
+      return true;
+    }
+  }
 
-	return false;
+  return false;
 #else
-	return false;
+  return false;
 #endif
 }
 
-void FindManageClose(void)
-{
+void FindManageClose(void) {
 #ifndef NEWEDITOR
-	FindInManageData.searching = false;
+  FindInManageData.searching = false;
 #endif
 }
 
-bool GamefileExists(char *name)
-{
-	bool found;
-	char buffer[PAGENAME_LEN+1];
+bool GamefileExists(char *name) {
+  bool found;
+  char buffer[PAGENAME_LEN + 1];
 
-	found=FindManageFirst(buffer,name);
-	FindManageClose();
+  found = FindManageFirst(buffer, name);
+  FindManageClose();
 
-	return(found);
+  return (found);
 }
-

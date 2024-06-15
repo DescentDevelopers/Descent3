@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // BriefManage.cpp : implementation file
 //
@@ -30,7 +30,6 @@
 #include "soundpage.h"
 #include "editlinedialog.h"
 
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -40,370 +39,341 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CBriefManage dialog
 
-
-CBriefManage::CBriefManage(CWnd* pParent /*=NULL*/)
-	: CDialog(CBriefManage::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CBriefManage)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
+CBriefManage::CBriefManage(CWnd *pParent /*=NULL*/) : CDialog(CBriefManage::IDD, pParent) {
+  //{{AFX_DATA_INIT(CBriefManage)
+  // NOTE: the ClassWizard will add member initialization here
+  //}}AFX_DATA_INIT
 }
 
-
-void CBriefManage::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CBriefManage)
-	DDX_Control(pDX, IDC_LIST, m_List);
-	//}}AFX_DATA_MAP
+void CBriefManage::DoDataExchange(CDataExchange *pDX) {
+  CDialog::DoDataExchange(pDX);
+  //{{AFX_DATA_MAP(CBriefManage)
+  DDX_Control(pDX, IDC_LIST, m_List);
+  //}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CBriefManage, CDialog)
-	//{{AFX_MSG_MAP(CBriefManage)
-	ON_BN_CLICKED(IDC_ADD, OnAdd)
-	//}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CBriefManage)
+ON_BN_CLICKED(IDC_ADD, OnAdd)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CBriefManage message handlers
-bool AddNewGameFile(char *fullpath,char *directory);
-bool CheckInGamefile(char *tempbuffer,bool show_ok_confirmation);
-void CBriefManage::OnAdd() 
-{
-	if(!Network_up){
-		MessageBox("You need to say YES on the data update when starting the editor");
-		return;
-	}
+bool AddNewGameFile(char *fullpath, char *directory);
+bool CheckInGamefile(char *tempbuffer, bool show_ok_confirmation);
+void CBriefManage::OnAdd() {
+  if (!Network_up) {
+    MessageBox("You need to say YES on the data update when starting the editor");
+    return;
+  }
 
-	int sel = m_List.GetCurSel();
-	if(sel==LB_ERR){
-		MessageBox("Please select the file you want to add");
-		return;
-	}
+  int sel = m_List.GetCurSel();
+  if (sel == LB_ERR) {
+    MessageBox("Please select the file you want to add");
+    return;
+  }
 
-	char full_buffer[_MAX_PATH+100];
-	m_List.GetText(sel,full_buffer);
+  char full_buffer[_MAX_PATH + 100];
+  m_List.GetText(sel, full_buffer);
 
-	int page_type = -1;
-	char *ptr;
+  int page_type = -1;
+  char *ptr;
 
-	//break it down
-	ptr = full_buffer + strlen(full_buffer);
+  // break it down
+  ptr = full_buffer + strlen(full_buffer);
 
-	while( ptr>full_buffer && (*ptr)!='|') ptr--;
+  while (ptr > full_buffer && (*ptr) != '|')
+    ptr--;
 
-	if(*ptr!='|'){
-		MessageBox("Internal Error");
-		Int3();//get jeff;
-		return;
-	}
+  if (*ptr != '|') {
+    MessageBox("Internal Error");
+    Int3(); // get jeff;
+    return;
+  }
 
-	*ptr = '\0';
-	ptr++;
+  *ptr = '\0';
+  ptr++;
 
-	if(page_type==-1 && strstr(ptr,"[sound]"))
-		page_type=PAGETYPE_SOUND;
-	if(page_type==-1 && strstr(ptr,"[file]"))
-		page_type=PAGETYPE_GAMEFILE;
+  if (page_type == -1 && strstr(ptr, "[sound]"))
+    page_type = PAGETYPE_SOUND;
+  if (page_type == -1 && strstr(ptr, "[file]"))
+    page_type = PAGETYPE_GAMEFILE;
 
-	if(page_type==-1){
-		MessageBox("Internal Error");
-		Int3();	//get Jeff
-		return;
-	}
+  if (page_type == -1) {
+    MessageBox("Internal Error");
+    Int3(); // get Jeff
+    return;
+  }
 
-	if(page_type==PAGETYPE_SOUND){
-		MessageBox("You must add sounds in the sound dialog");
-		return;
-	}
+  if (page_type == PAGETYPE_SOUND) {
+    MessageBox("You must add sounds in the sound dialog");
+    return;
+  }
 
-	switch(page_type)
-	{
-	case PAGETYPE_GAMEFILE:
-		{
-			char filename[255];
-			char real_filename[_MAX_PATH];
+  switch (page_type) {
+  case PAGETYPE_GAMEFILE: {
+    char filename[255];
+    char real_filename[_MAX_PATH];
 
-			strcpy(filename,full_buffer);
+    strcpy(filename, full_buffer);
 
-			// Get the filename of the representing image
-			CString filter = "";
+    // Get the filename of the representing image
+    CString filter = "";
 
-			if (!OpenFileDialog(this, (LPCTSTR)filter, filename, Current_files_dir, sizeof(Current_files_dir))) 
-				return;
+    if (!OpenFileDialog(this, (LPCTSTR)filter, filename, Current_files_dir, sizeof(Current_files_dir)))
+      return;
 
-			char directory[32],ext[32];
-			bool know_dir = false;
+    char directory[32], ext[32];
+    bool know_dir = false;
 
-			ddio_SplitPath(filename,NULL,real_filename,ext);
-			strcat(real_filename,ext);
+    ddio_SplitPath(filename, NULL, real_filename, ext);
+    strcat(real_filename, ext);
 
-			if(!know_dir && !stricmp(ext,".ogf")){
-				know_dir = true;
-				strcpy(directory,"graphics");
-			}
+    if (!know_dir && !stricmp(ext, ".ogf")) {
+      know_dir = true;
+      strcpy(directory, "graphics");
+    }
 
-			if(!know_dir && !stricmp(ext,".tga")){
-				know_dir = true;
-				strcpy(directory,"graphics");
-			}
+    if (!know_dir && !stricmp(ext, ".tga")) {
+      know_dir = true;
+      strcpy(directory, "graphics");
+    }
 
-			if(!know_dir && !stricmp(ext,".pcx")){
-				know_dir = true;
-				strcpy(directory,"graphics");
-			}
-			
-			if(!know_dir && !stricmp(ext,".oof")){
-				know_dir = true;
-				strcpy(directory,"models");
-			}
+    if (!know_dir && !stricmp(ext, ".pcx")) {
+      know_dir = true;
+      strcpy(directory, "graphics");
+    }
 
-			if(!know_dir){
-				CEditLineDialog dlg("What directory does this belong in?","Directory", "graphics", false, this);
-				if(dlg.DoModal()!=IDOK)
-					return;
+    if (!know_dir && !stricmp(ext, ".oof")) {
+      know_dir = true;
+      strcpy(directory, "models");
+    }
 
-				strcpy(directory,dlg.GetText());
+    if (!know_dir) {
+      CEditLineDialog dlg("What directory does this belong in?", "Directory", "graphics", false, this);
+      if (dlg.DoModal() != IDOK)
+        return;
 
-				bool is_ok = false;
+      strcpy(directory, dlg.GetText());
 
-				if(!is_ok && !stricmp(directory,"briefings") )
-					is_ok = true;
+      bool is_ok = false;
 
-				if(!is_ok && !stricmp(directory,"graphics") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "briefings"))
+        is_ok = true;
 
-				if(!is_ok && !stricmp(directory,"levels") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "graphics"))
+        is_ok = true;
 
-				if(!is_ok && !stricmp(directory,"misc") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "levels"))
+        is_ok = true;
 
-				if(!is_ok && !stricmp(directory,"models") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "misc"))
+        is_ok = true;
 
-				if(!is_ok && !stricmp(directory,"music") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "models"))
+        is_ok = true;
 
-				if(!is_ok && !stricmp(directory,"scripts") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "music"))
+        is_ok = true;
 
-				if(!is_ok && !stricmp(directory,"sounds") )
-					is_ok = true;
+      if (!is_ok && !stricmp(directory, "scripts"))
+        is_ok = true;
 
-				if(!is_ok){
-					MessageBox("Invalid directory");
-					return;
-				}
-			}
+      if (!is_ok && !stricmp(directory, "sounds"))
+        is_ok = true;
 
-			if(!AddNewGameFile(filename,directory)){
-				char buffer[_MAX_PATH*2];
-				sprintf(buffer,"Unable to add:\r\n%s\r\nto %s",filename,directory);
-				MessageBox(buffer);
-				return;
-			}
+      if (!is_ok) {
+        MessageBox("Invalid directory");
+        return;
+      }
+    }
 
-			//auto checkin 
-			if (!mng_MakeLocker()){
-				return;
-			}
+    if (!AddNewGameFile(filename, directory)) {
+      char buffer[_MAX_PATH * 2];
+      sprintf(buffer, "Unable to add:\r\n%s\r\nto %s", filename, directory);
+      MessageBox(buffer);
+      return;
+    }
 
-			if(!CheckInGamefile(real_filename,true)){
-				MessageBox("Unable to auto-checkin");
-			}
+    // auto checkin
+    if (!mng_MakeLocker()) {
+      return;
+    }
 
-			mng_EraseLocker();
-		}break;
-	}
+    if (!CheckInGamefile(real_filename, true)) {
+      MessageBox("Unable to auto-checkin");
+    }
 
-	UpdateDialog();	
+    mng_EraseLocker();
+  } break;
+  }
+
+  UpdateDialog();
 }
 
-BOOL CBriefManage::OnInitDialog() 
-{
-	CDialog::OnInitDialog();
+BOOL CBriefManage::OnInitDialog() {
+  CDialog::OnInitDialog();
 
-	UpdateDialog();
+  UpdateDialog();
 
-	return TRUE;
+  return TRUE;
 }
 
-void CBriefManage::AddString(char *filename,int pagetype)
-{
-	char buffer[_MAX_PATH+100];
-	char real_filename[_MAX_PATH];
-	char page_type[100];
-	char *pagename = filename;
+void CBriefManage::AddString(char *filename, int pagetype) {
+  char buffer[_MAX_PATH + 100];
+  char real_filename[_MAX_PATH];
+  char page_type[100];
+  char *pagename = filename;
 
-	switch(pagetype)
-	{
-	case PAGETYPE_SOUND:
-		{
-			//look for the page in the manage system
-			bool found;
+  switch (pagetype) {
+  case PAGETYPE_SOUND: {
+    // look for the page in the manage system
+    bool found;
 
-			found = false;		
+    found = false;
 
-			mngs_sound_page page;
+    mngs_sound_page page;
 
-			if(mng_FindSpecificSoundPage(filename,&page )>0)
-			{
-				found = true;
-			}
+    if (mng_FindSpecificSoundPage(filename, &page) > 0) {
+      found = true;
+    }
 
-			if(!found){
-				//ok there wasn't one in the gamefiles make sure there isn't a tracklocked
-				if(mng_FindTrackLock(filename,PAGETYPE_SOUND)!=-1){
-					//there isn't one in the track lock...this is our first compile!
-					found = true;
-				}
-			}
+    if (!found) {
+      // ok there wasn't one in the gamefiles make sure there isn't a tracklocked
+      if (mng_FindTrackLock(filename, PAGETYPE_SOUND) != -1) {
+        // there isn't one in the track lock...this is our first compile!
+        found = true;
+      }
+    }
 
-			if(found){
-				//we already have this in the manage system
-				return;
-			}
+    if (found) {
+      // we already have this in the manage system
+      return;
+    }
 
+    strcpy(page_type, "[sound]");
+  } break;
+  case PAGETYPE_GAMEFILE: {
+    // look for the page in the manage system
+    bool found;
+    int i;
 
-			strcpy(page_type,"[sound]");
-		}break;
-	case PAGETYPE_GAMEFILE:
-		{
-			//look for the page in the manage system
-			bool found;
-			int i;
+    char ext[32];
+    ddio_SplitPath(filename, NULL, real_filename, ext);
+    strcat(real_filename, ext);
+    pagename = real_filename;
 
-			char ext[32];
-			ddio_SplitPath(filename,NULL,real_filename,ext);
-			strcat(real_filename,ext);
-			pagename = real_filename;
+    found = false;
+    for (i = 0; i < MAX_GAMEFILES; i++) {
+      if (Gamefiles[i].used && (!stricmp(real_filename, Gamefiles[i].name))) {
+        found = true;
+        break;
+      }
+    }
 
-			found = false;		
-			for (i=0;i<MAX_GAMEFILES;i++){
-				if (Gamefiles[i].used && (!stricmp(real_filename,Gamefiles[i].name)) ){
-					found = true;
-					break;
-				}
-			}
+    if (!found) {
+      // ok there wasn't one in the gamefiles make sure there isn't a tracklocked
+      if (mng_FindTrackLock(real_filename, PAGETYPE_GAMEFILE) != -1) {
+        // there isn't one in the track lock...this is our first compile!
+        found = true;
+      }
+    }
 
-			if(!found){
-				//ok there wasn't one in the gamefiles make sure there isn't a tracklocked
-				if(mng_FindTrackLock(real_filename,PAGETYPE_GAMEFILE)!=-1){
-					//there isn't one in the track lock...this is our first compile!
-					found = true;
-				}
-			}
+    if (found) {
+      // we already have this in the manage system
+      return;
+    }
 
-			if(found){
-				//we already have this in the manage system
-				return;
-			}
+    strcpy(page_type, "[file]");
+  } break;
+  default:
+    Int3();
+    return;
+  }
 
+  sprintf(buffer, "%s|%s", pagename, page_type);
 
-			strcpy(page_type,"[file]");
-		}		
-		break;
-	default:
-		Int3();
-		return;
-	}
-
-	sprintf(buffer,"%s|%s",pagename,page_type);
-
-	//see if it's already in the list
-	if(m_List.FindStringExact(-1,buffer)==LB_ERR)
-	{
-		m_List.AddString(buffer);
-	}
+  // see if it's already in the list
+  if (m_List.FindStringExact(-1, buffer) == LB_ERR) {
+    m_List.AddString(buffer);
+  }
 }
 
-void CBriefManage::UpdateDialog(void)
-{
-	m_List.ResetContent();
+void CBriefManage::UpdateDialog(void) {
+  m_List.ResetContent();
 
-	int curr_screen = Briefing_root_screen;
-	int curr_effect;
-	tBriefScreen *screen;
-	tBriefEffect *effect;
-	
-	//go through and see what we have
-	while(curr_screen!=-1)
-	{
-		screen = &Briefing_screens[curr_screen];
+  int curr_screen = Briefing_root_screen;
+  int curr_effect;
+  tBriefScreen *screen;
+  tBriefEffect *effect;
 
-		ASSERT(screen->used);
+  // go through and see what we have
+  while (curr_screen != -1) {
+    screen = &Briefing_screens[curr_screen];
 
-		if(screen->layout[0]!='\0'){
-			//add the layout screen
-			AddString(screen->layout);
-		}
+    ASSERT(screen->used);
 
-		//go through all the effects for this screen
-		curr_effect = screen->root_effect;
-		while(curr_effect!=-1)
-		{
-			effect = &screen->effects[curr_effect];
-			ASSERT(effect->used);
+    if (screen->layout[0] != '\0') {
+      // add the layout screen
+      AddString(screen->layout);
+    }
 
-			switch(effect->type){
-			case BE_MOVIE:
-			case BE_TEXT:
-			case BE_BKG:
-				break;	//no files in here
+    // go through all the effects for this screen
+    curr_effect = screen->root_effect;
+    while (curr_effect != -1) {
+      effect = &screen->effects[curr_effect];
+      ASSERT(effect->used);
 
-			case BE_BMP:
-				if(*effect->bmp_desc.filename)
-				{
-					AddString(effect->bmp_desc.filename);
-				}
-				break;
-		
-			case BE_POLY:
-				if(*effect->poly_desc.polyname)
-				{
-					AddString(effect->poly_desc.polyname);
-				}
-				break;
-			case BE_SND:
-				if(*effect->snd_desc.filename)
-				{
-					AddString(effect->snd_desc.filename,PAGETYPE_SOUND);
-				}
-				break;
-			case BE_BUTTON:
-				if(*effect->button_desc.filename)
-				{
-					AddString(effect->button_desc.filename);
-				}
+      switch (effect->type) {
+      case BE_MOVIE:
+      case BE_TEXT:
+      case BE_BKG:
+        break; // no files in here
 
-				if(*effect->button_desc.filename_focus)
-				{
-					AddString(effect->button_desc.filename_focus);
-				}
+      case BE_BMP:
+        if (*effect->bmp_desc.filename) {
+          AddString(effect->bmp_desc.filename);
+        }
+        break;
 
-				if(*effect->button_desc.flash_filename)
-				{
-					AddString(effect->button_desc.flash_filename);
-				}
+      case BE_POLY:
+        if (*effect->poly_desc.polyname) {
+          AddString(effect->poly_desc.polyname);
+        }
+        break;
+      case BE_SND:
+        if (*effect->snd_desc.filename) {
+          AddString(effect->snd_desc.filename, PAGETYPE_SOUND);
+        }
+        break;
+      case BE_BUTTON:
+        if (*effect->button_desc.filename) {
+          AddString(effect->button_desc.filename);
+        }
 
-				if(*effect->button_desc.flash_filename_focus)
-				{
-					AddString(effect->button_desc.flash_filename_focus);
-				}
+        if (*effect->button_desc.filename_focus) {
+          AddString(effect->button_desc.filename_focus);
+        }
 
-				break;
-			default:
-				break;
-			}
+        if (*effect->button_desc.flash_filename) {
+          AddString(effect->button_desc.flash_filename);
+        }
 
+        if (*effect->button_desc.flash_filename_focus) {
+          AddString(effect->button_desc.flash_filename_focus);
+        }
 
-			curr_effect = effect->next;			
-		}	
+        break;
+      default:
+        break;
+      }
 
-		curr_screen = screen->next;
-	}
+      curr_effect = effect->next;
+    }
 
-	m_List.SetCurSel(0);
+    curr_screen = screen->next;
+  }
+
+  m_List.SetCurSel(0);
 }

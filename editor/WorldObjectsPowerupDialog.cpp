@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@
  * WorldObjectsPowerupDialog.cpp : implementation file
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 6     8/08/97 2:25p Matt
  * Took out error messages which are now handled by mng_MakeLocker()
- * 
+ *
  * 5     8/06/97 12:48p Jason
  * fixed dumb function naming error
- * 
+ *
  * 4     8/06/97 12:40p Jason
  * fixed some potentially serious memory problems
- * 
+ *
  * 3     7/24/97 6:11p Matt
  * Created symbolic constant for default zoom, and used it every place
  * that specifies zoom
@@ -65,59 +65,52 @@ powerup Powerups[MAX_POWERUPS];
 /////////////////////////////////////////////////////////////////////////////
 // CWorldObjectsPowerupDialog dialog
 
-
-CWorldObjectsPowerupDialog::CWorldObjectsPowerupDialog(CWnd* pParent /*=NULL*/)
-	: CDialog(CWorldObjectsPowerupDialog::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CWorldObjectsPowerupDialog)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
+CWorldObjectsPowerupDialog::CWorldObjectsPowerupDialog(CWnd *pParent /*=NULL*/)
+    : CDialog(CWorldObjectsPowerupDialog::IDD, pParent) {
+  //{{AFX_DATA_INIT(CWorldObjectsPowerupDialog)
+  // NOTE: the ClassWizard will add member initialization here
+  //}}AFX_DATA_INIT
 }
 
-
-void CWorldObjectsPowerupDialog::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CWorldObjectsPowerupDialog)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
-	//}}AFX_DATA_MAP
+void CWorldObjectsPowerupDialog::DoDataExchange(CDataExchange *pDX) {
+  CDialog::DoDataExchange(pDX);
+  //{{AFX_DATA_MAP(CWorldObjectsPowerupDialog)
+  // NOTE: the ClassWizard will add DDX and DDV calls here
+  //}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CWorldObjectsPowerupDialog, CDialog)
-	//{{AFX_MSG_MAP(CWorldObjectsPowerupDialog)
-	ON_BN_CLICKED(IDC_ADD_NEW_POWERUP, OnAddNewPowerup)
-	ON_BN_CLICKED(IDC_CHECKIN, OnCheckin)
-	ON_BN_CLICKED(IDC_DELETE_POWERUP, OnDeletePowerup)
-	ON_BN_CLICKED(IDC_LOCK_POWERUP, OnLockPowerup)
-	ON_BN_CLICKED(IDC_NEXT_POWERUP, OnNextPowerup)
-	ON_BN_CLICKED(IDC_PREV, OnPrev)
-	ON_BN_CLICKED(IDC_POWERUPS_OUT, OnPowerupsOut)
-	ON_WM_PAINT()
-	ON_WM_TIMER()
-	ON_EN_KILLFOCUS(IDC_POWER_NAME_EDIT, OnKillfocusPowerNameEdit)
-	ON_EN_KILLFOCUS(IDC_POWERUP_SIZE_EDIT, OnKillfocusPowerupSizeEdit)
-	ON_CBN_SELENDOK(IDC_POWER_PULLDOWN, OnSelendokPowerPulldown)
-	ON_BN_CLICKED(IDC_LOAD_IMAGE, OnLoadImage)
-	ON_BN_CLICKED(IDC_GRAVITY_CHECK, OnGravityCheck)
-	ON_BN_CLICKED(IDC_MAGNETISM_CHECK, OnMagnetismCheck)
-	ON_BN_CLICKED(IDC_WIND_CHECK, OnWindCheck)
-	ON_EN_KILLFOCUS(IDC_POW_MASS_EDIT, OnKillfocusPowMassEdit)
-	ON_EN_KILLFOCUS(IDC_POW_DRAG_EDIT, OnKillfocusPowDragEdit)
-	ON_CBN_SELENDOK(IDC_POWERUP_AMBIENT_SOUND_LIST, OnSelendokPowerupAmbientSoundList)
-	ON_CBN_SELENDOK(IDC_POWERUP_PICKUP_SOUND_LIST, OnSelendokPowerupPickupSoundList)
-	ON_WM_HELPINFO()
-	//}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CWorldObjectsPowerupDialog)
+ON_BN_CLICKED(IDC_ADD_NEW_POWERUP, OnAddNewPowerup)
+ON_BN_CLICKED(IDC_CHECKIN, OnCheckin)
+ON_BN_CLICKED(IDC_DELETE_POWERUP, OnDeletePowerup)
+ON_BN_CLICKED(IDC_LOCK_POWERUP, OnLockPowerup)
+ON_BN_CLICKED(IDC_NEXT_POWERUP, OnNextPowerup)
+ON_BN_CLICKED(IDC_PREV, OnPrev)
+ON_BN_CLICKED(IDC_POWERUPS_OUT, OnPowerupsOut)
+ON_WM_PAINT()
+ON_WM_TIMER()
+ON_EN_KILLFOCUS(IDC_POWER_NAME_EDIT, OnKillfocusPowerNameEdit)
+ON_EN_KILLFOCUS(IDC_POWERUP_SIZE_EDIT, OnKillfocusPowerupSizeEdit)
+ON_CBN_SELENDOK(IDC_POWER_PULLDOWN, OnSelendokPowerPulldown)
+ON_BN_CLICKED(IDC_LOAD_IMAGE, OnLoadImage)
+ON_BN_CLICKED(IDC_GRAVITY_CHECK, OnGravityCheck)
+ON_BN_CLICKED(IDC_MAGNETISM_CHECK, OnMagnetismCheck)
+ON_BN_CLICKED(IDC_WIND_CHECK, OnWindCheck)
+ON_EN_KILLFOCUS(IDC_POW_MASS_EDIT, OnKillfocusPowMassEdit)
+ON_EN_KILLFOCUS(IDC_POW_DRAG_EDIT, OnKillfocusPowDragEdit)
+ON_CBN_SELENDOK(IDC_POWERUP_AMBIENT_SOUND_LIST, OnSelendokPowerupAmbientSoundList)
+ON_CBN_SELENDOK(IDC_POWERUP_PICKUP_SOUND_LIST, OnSelendokPowerupPickupSoundList)
+ON_WM_HELPINFO()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CWorldObjectsPowerupDialog message handlers
 
-
 // This function allocates a newpower, has the user pick the image to display the
 // powerup, and allocs a tracklock to keep track of it
-void CWorldObjectsPowerupDialog::OnAddNewPowerup() 
-{
+void CWorldObjectsPowerupDialog::OnAddNewPowerup() {
 #if 0
 	char filename[255];
 	char cur_name[100];
@@ -204,8 +197,7 @@ void CWorldObjectsPowerupDialog::OnAddNewPowerup()
 }
 
 // This functions saves the current powerup to the net
-void CWorldObjectsPowerupDialog::OnCheckin() 
-{
+void CWorldObjectsPowerupDialog::OnCheckin() {
 #if 0
 	int n=D3EditState.current_powerup;
 	mngs_Pagelock temp_pl;
@@ -284,11 +276,10 @@ void CWorldObjectsPowerupDialog::OnCheckin()
 #endif
 }
 
-// Deletes the current powerup 
+// Deletes the current powerup
 // If the user has it checked out, will delete it from the net pagefile
 // If its local only, it will get deleted from the local pagefile
-void CWorldObjectsPowerupDialog::OnDeletePowerup() 
-{
+void CWorldObjectsPowerupDialog::OnDeletePowerup() {
 #if 0
 	int answer,tl;
 	mngs_Pagelock pl;
@@ -350,9 +341,8 @@ void CWorldObjectsPowerupDialog::OnDeletePowerup()
 #endif
 }
 
-// This functions locks a powerup from the net.  
-void CWorldObjectsPowerupDialog::OnLockPowerup() 
-{
+// This functions locks a powerup from the net.
+void CWorldObjectsPowerupDialog::OnLockPowerup() {
 #if 0
 	int n=D3EditState.current_powerup;
 	mngs_Pagelock temp_pl;
@@ -429,12 +419,11 @@ void CWorldObjectsPowerupDialog::OnLockPowerup()
 	}
 	mng_EraseLocker();
 
-#endif	
+#endif
 }
 
 // Gets the next powerup and sets it as the current one
-void CWorldObjectsPowerupDialog::OnNextPowerup() 
-{
+void CWorldObjectsPowerupDialog::OnNextPowerup() {
 #if 0
 	D3EditState.current_powerup=GetNextPowerup(D3EditState.current_powerup);
 	UpdateDialog();
@@ -442,8 +431,7 @@ void CWorldObjectsPowerupDialog::OnNextPowerup()
 }
 
 // Gets the previous powerup and sets it as the current one
-void CWorldObjectsPowerupDialog::OnPrev() 
-{
+void CWorldObjectsPowerupDialog::OnPrev() {
 #if 0
 	D3EditState.current_powerup=GetPrevPowerup(D3EditState.current_powerup);
 	UpdateDialog();
@@ -451,8 +439,7 @@ void CWorldObjectsPowerupDialog::OnPrev()
 }
 
 // This simply gets a list of all the pages we have checked out
-void CWorldObjectsPowerupDialog::OnPowerupsOut() 
-{
+void CWorldObjectsPowerupDialog::OnPowerupsOut() {
 #if 0
 	char str[10000];
 	int total=0;
@@ -482,11 +469,9 @@ void CWorldObjectsPowerupDialog::OnPowerupsOut()
 #endif
 }
 
-									
-// When closing, save all our checked out powerups locally so we know 
+// When closing, save all our checked out powerups locally so we know
 // what stuff to flag as "checked out" the next time we start up
-void CWorldObjectsPowerupDialog::SavePowerupsOnClose()
-{
+void CWorldObjectsPowerupDialog::SavePowerupsOnClose() {
 #if 0
 	int i,t;
 
@@ -507,20 +492,17 @@ void CWorldObjectsPowerupDialog::SavePowerupsOnClose()
 #endif
 }
 
-
-void CWorldObjectsPowerupDialog::OnPaint() 
-{
+void CWorldObjectsPowerupDialog::OnPaint() {
 #if 0
 	CPaintDC dc(this); // device context for painting
 	
 	UpdateDialog();
-	
+
 #endif
 }
 
 // Redraw the dialog based on our current powerup
-void CWorldObjectsPowerupDialog::UpdateDialog(void)
-{
+void CWorldObjectsPowerupDialog::UpdateDialog(void) {
 #if 0
 	CEdit *ebox;
 	CButton *bbox;
@@ -626,8 +608,7 @@ void CWorldObjectsPowerupDialog::UpdateDialog(void)
 #endif
 }
 
-void CWorldObjectsPowerupDialog::UpdatePowerupView(void)
-{
+void CWorldObjectsPowerupDialog::UpdatePowerupView(void) {
 #if 0
 	int n=D3EditState.current_powerup;
 	CWnd *powwnd;
@@ -697,37 +678,30 @@ void CWorldObjectsPowerupDialog::UpdatePowerupView(void)
 #endif
 }
 
+BOOL CWorldObjectsPowerupDialog::OnInitDialog() {
 
+  CDialog::OnInitDialog();
 
-BOOL CWorldObjectsPowerupDialog::OnInitDialog() 
-{
+  CWnd::SetTimer(1, 100, NULL);
 
-	CDialog::OnInitDialog();
-	
-	CWnd::SetTimer(1,100,NULL);
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+  return TRUE; // return TRUE unless you set the focus to a control
+               // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CWorldObjectsPowerupDialog::OnTimer(UINT nIDEvent) 
-{
-	UpdatePowerupView ();
-	
-	CDialog::OnTimer(nIDEvent);
+void CWorldObjectsPowerupDialog::OnTimer(UINT nIDEvent) {
+  UpdatePowerupView();
+
+  CDialog::OnTimer(nIDEvent);
 }
 
-BOOL CWorldObjectsPowerupDialog::DestroyWindow() 
-{
-	
+BOOL CWorldObjectsPowerupDialog::DestroyWindow() {
 
-	SavePowerupsOnClose();
-	
-	return CDialog::DestroyWindow();
+  SavePowerupsOnClose();
+
+  return CDialog::DestroyWindow();
 }
 
-void CWorldObjectsPowerupDialog::OnKillfocusPowerNameEdit() 
-{
+void CWorldObjectsPowerupDialog::OnKillfocusPowerNameEdit() {
 #if 0
 	CEdit *ebox;
 	int n=D3EditState.current_powerup;
@@ -800,8 +774,7 @@ void CWorldObjectsPowerupDialog::OnKillfocusPowerNameEdit()
 #endif
 }
 
-void CWorldObjectsPowerupDialog::OnKillfocusPowerupSizeEdit() 
-{
+void CWorldObjectsPowerupDialog::OnKillfocusPowerupSizeEdit() {
 #if 0
 	CEdit *ebox;
 	char str[20];
@@ -814,8 +787,7 @@ void CWorldObjectsPowerupDialog::OnKillfocusPowerupSizeEdit()
 #endif
 }
 
-void CWorldObjectsPowerupDialog::OnSelendokPowerPulldown() 
-{
+void CWorldObjectsPowerupDialog::OnSelendokPowerPulldown() {
 #if 0
 	int i,cur;
 	char name[200];
@@ -836,8 +808,7 @@ void CWorldObjectsPowerupDialog::OnSelendokPowerPulldown()
 #endif
 }
 
-void CWorldObjectsPowerupDialog::OnLoadImage() 
-{
+void CWorldObjectsPowerupDialog::OnLoadImage() {
 #if 0
 	char filename[255];
 	char curname[255];
@@ -895,8 +866,7 @@ void CWorldObjectsPowerupDialog::OnLoadImage()
 #endif
 }
 
-void CWorldObjectsPowerupDialog::OnGravityCheck() 
-{
+void CWorldObjectsPowerupDialog::OnGravityCheck() {
 #if 0
 	// TODO: Add your control notification handler code here
 	int n=D3EditState.current_powerup;
@@ -909,11 +879,9 @@ void CWorldObjectsPowerupDialog::OnGravityCheck()
 	else
 		Powerups[n].phys_info.flags &= ~PF_GRAVITY;
 #endif
-
 }
 
-void CWorldObjectsPowerupDialog::OnMagnetismCheck() 
-{
+void CWorldObjectsPowerupDialog::OnMagnetismCheck() {
 #if 0
 	// TODO: Add your control notification handler code here
 	int n=D3EditState.current_powerup;
@@ -929,72 +897,63 @@ void CWorldObjectsPowerupDialog::OnMagnetismCheck()
 #endif
 }
 
-void CWorldObjectsPowerupDialog::OnWindCheck() 
-{
-	// TODO: Add your control notification handler code here
-	int n=D3EditState.current_powerup;
-	CButton *btn;
-	
-	btn = (CButton *)GetDlgItem(IDC_WIND_CHECK);
+void CWorldObjectsPowerupDialog::OnWindCheck() {
+  // TODO: Add your control notification handler code here
+  int n = D3EditState.current_powerup;
+  CButton *btn;
 
-	if (btn->GetCheck())
-		Powerups[n].phys_info.flags |= PF_WIND;
-	else
-		Powerups[n].phys_info.flags &= ~PF_WIND;
+  btn = (CButton *)GetDlgItem(IDC_WIND_CHECK);
 
-	
+  if (btn->GetCheck())
+    Powerups[n].phys_info.flags |= PF_WIND;
+  else
+    Powerups[n].phys_info.flags &= ~PF_WIND;
 }
 
-void CWorldObjectsPowerupDialog::OnKillfocusPowMassEdit() 
-{
-	// TODO: Add your control notification handler code here
-	CEdit *ebox;
-	char str[20];
-	int n=D3EditState.current_powerup;
-	
-	ebox=(CEdit *) GetDlgItem (IDC_POW_MASS_EDIT);
-	ebox->GetWindowText (str,20);
+void CWorldObjectsPowerupDialog::OnKillfocusPowMassEdit() {
+  // TODO: Add your control notification handler code here
+  CEdit *ebox;
+  char str[20];
+  int n = D3EditState.current_powerup;
 
-	Powerups[n].phys_info.mass = atof (str);
+  ebox = (CEdit *)GetDlgItem(IDC_POW_MASS_EDIT);
+  ebox->GetWindowText(str, 20);
+
+  Powerups[n].phys_info.mass = atof(str);
 }
 
-void CWorldObjectsPowerupDialog::OnKillfocusPowDragEdit() 
-{
-	// TODO: Add your control notification handler code here
-	CEdit *ebox;
-	char str[20];
-	int n=D3EditState.current_powerup;
-	
-	ebox=(CEdit *) GetDlgItem (IDC_POW_DRAG_EDIT);
-	ebox->GetWindowText (str,20);
+void CWorldObjectsPowerupDialog::OnKillfocusPowDragEdit() {
+  // TODO: Add your control notification handler code here
+  CEdit *ebox;
+  char str[20];
+  int n = D3EditState.current_powerup;
 
-	Powerups[n].phys_info.drag = atof (str);
+  ebox = (CEdit *)GetDlgItem(IDC_POW_DRAG_EDIT);
+  ebox->GetWindowText(str, 20);
+
+  Powerups[n].phys_info.drag = atof(str);
 }
 
-void CWorldObjectsPowerupDialog::OnSelendokPowerupAmbientSoundList() 
-{
-	// TODO: Add your control notification handler code here
-	
+void CWorldObjectsPowerupDialog::OnSelendokPowerupAmbientSoundList() {
+  // TODO: Add your control notification handler code here
 }
 
-void CWorldObjectsPowerupDialog::OnSelendokPowerupPickupSoundList() 
-{
-	// TODO: Add your control notification handler code here
-	int cur;
-	char name[200];
-	int n=D3EditState.current_powerup;
+void CWorldObjectsPowerupDialog::OnSelendokPowerupPickupSoundList() {
+  // TODO: Add your control notification handler code here
+  int cur;
+  char name[200];
+  int n = D3EditState.current_powerup;
 
-	cur=SendDlgItemMessage( IDC_POWERUP_PICKUP_SOUND_LIST, CB_GETCURSEL,0,0);
-	SendDlgItemMessage( IDC_POWERUP_PICKUP_SOUND_LIST, CB_GETLBTEXT,cur,(LPARAM) (LPCTSTR)name);
+  cur = SendDlgItemMessage(IDC_POWERUP_PICKUP_SOUND_LIST, CB_GETCURSEL, 0, 0);
+  SendDlgItemMessage(IDC_POWERUP_PICKUP_SOUND_LIST, CB_GETLBTEXT, cur, (LPARAM)(LPCTSTR)name);
 
-	Powerups[n].sounds[PSI_PICKUP] = FindSoundName (name);
-	//ASSERT(Powerups[n].sounds[PSI_PICKUP] != -1);
+  Powerups[n].sounds[PSI_PICKUP] = FindSoundName(name);
+  // ASSERT(Powerups[n].sounds[PSI_PICKUP] != -1);
 }
 
-BOOL CWorldObjectsPowerupDialog::OnHelpInfo(HELPINFO* pHelpInfo) 
-{
-	// TODO: Add your message handler code here and/or call default
-	WinHelp(HID_POWERUPSDLG,HELP_CONTEXT);
-	return TRUE;
-	//return CDialog::OnHelpInfo(pHelpInfo);
+BOOL CWorldObjectsPowerupDialog::OnHelpInfo(HELPINFO *pHelpInfo) {
+  // TODO: Add your message handler code here and/or call default
+  WinHelp(HID_POWERUPSDLG, HELP_CONTEXT);
+  return TRUE;
+  // return CDialog::OnHelpInfo(pHelpInfo);
 }

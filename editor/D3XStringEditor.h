@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
  * D3XString Editor
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     9/09/98 12:48p Samir
  * added script localizer.
- * 
+ *
  * 1     9/09/98 10:37a Samir
  * Initial revision.
  *
@@ -47,46 +47,43 @@
 /////////////////////////////////////////////////////////////////////////////
 // CD3XStringEditor dialog
 
-class CD3XStringEditor : public CDialog
-{
-// Construction
+class CD3XStringEditor : public CDialog {
+  // Construction
 public:
-	CD3XStringEditor(CWnd* pParent = NULL);   // standard constructor
+  CD3XStringEditor(CWnd *pParent = NULL); // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CD3XStringEditor)
-	enum { IDD = IDD_LOCALIZESCRIPT };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CD3XStringEditor)
+  enum { IDD = IDD_LOCALIZESCRIPT };
+  // NOTE: the ClassWizard will add data members here
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CD3XStringEditor)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CD3XStringEditor)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CD3XStringEditor)
-	afx_msg void OnLoadscript();
-	afx_msg void OnSelchangeStringlist();
-	afx_msg void OnDblclkStringlist();
-	afx_msg void OnKillfocusStringedit();
-	afx_msg void OnSave();
-	virtual void OnOK();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CD3XStringEditor)
+  afx_msg void OnLoadscript();
+  afx_msg void OnSelchangeStringlist();
+  afx_msg void OnDblclkStringlist();
+  afx_msg void OnKillfocusStringedit();
+  afx_msg void OnSave();
+  virtual void OnOK();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 
 private:
-	int m_cursel;													// current selection
-	bool m_modified;
-	CString m_pathname;
+  int m_cursel; // current selection
+  bool m_modified;
+  CString m_pathname;
 
-	bool PromptSave();											// returns false if cancelled
+  bool PromptSave(); // returns false if cancelled
 };
 
 //{{AFX_INSERT_LOCATION}}
