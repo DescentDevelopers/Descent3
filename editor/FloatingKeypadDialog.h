@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,48 +25,47 @@
  * Floating Keypad dialog
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 4     8/27/98 6:42p Chris
  * Added the goal keypad and the start of the matcen keypad
- * 
+ *
  * 3     9/17/97 12:58p Samir
  * Got rid of Curve Keypad.
- * 
+ *
  * 2     8/29/97 2:49p Samir
  * Nuked SegmentKeypad.
- * 
+ *
  * 10    6/27/97 12:19p Samir
  * Added room keypad dialog
- * 
+ *
  * 9     6/05/97 3:37p Samir
  * Added megacell keypad.
- * 
+ *
  * 8     4/08/97 10:42a Jason
  * implemented path following interface
- * 
+ *
  * 7     4/04/97 3:15p Samir
  * Added paths keypad, removed player keypad since it's joined with object
  * keypad.
- * 
+ *
  * 6     3/20/97 11:55a Jason
  * changes for terrain editing/drawing
- * 
+ *
  * 5     3/05/97 11:49a Samir
  * Added doorway and terrain keypad tabs.
- * 
+ *
  * 4     2/20/97 6:05p Samir
  * Allow for clean activation and deactivation of surfaces in editor when
  * going into fullscreen mode.
- * 
+ *
  * 3     2/19/97 2:14p Samir
  * Added a RunKeypadFunction function.
- * 
+ *
  * 2     1/23/97 4:16p Samir
  * Saves width and height, position of floating keypad.
  *
  * $NoKeywords: $
  */
-
 
 // FloatingKeypadDialog.h : header file
 //
@@ -87,68 +86,65 @@ class CMegacellKeypad;
 class levelkeypad;
 class matcenkeypad;
 
-class CFloatingKeypadDialog : public CDialog
-{
-// Construction
+class CFloatingKeypadDialog : public CDialog {
+  // Construction
 public:
-	CFloatingKeypadDialog(CWnd* pParent = NULL);   // standard constructor
+  CFloatingKeypadDialog(CWnd *pParent = NULL); // standard constructor
 
-	BOOL Create();
+  BOOL Create();
 
-// Dialog Data
-	//{{AFX_DATA(CFloatingKeypadDialog)
-	enum { IDD = IDD_FLOATING_KEYPAD };
-		// NOTE: the ClassWizard will add data members here
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CFloatingKeypadDialog)
+  enum { IDD = IDD_FLOATING_KEYPAD };
+  // NOTE: the ClassWizard will add data members here
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CFloatingKeypadDialog)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual void PostNcDestroy();
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
-	//}}AFX_VIRTUAL
-
-public:
-	void RunKeypadFunction(int code);
-	void Deactivate();								// deactivates current tab
-	void Activate();								// activates current tab.
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CFloatingKeypadDialog)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+  virtual void PostNcDestroy();
+  virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT *pResult);
+  //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CFloatingKeypadDialog)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnMove(int x, int y);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+public:
+  void RunKeypadFunction(int code);
+  void Deactivate(); // deactivates current tab
+  void Activate();   // activates current tab.
 
-	virtual void OnCancel();
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CFloatingKeypadDialog)
+  virtual BOOL OnInitDialog();
+  afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+  afx_msg void OnSize(UINT nType, int cx, int cy);
+  afx_msg void OnMove(int x, int y);
+  afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
+
+  virtual void OnCancel();
 
 private:
-	void DoKeypadTabNotify(NMHDR *);		// take care of tab control notifications
+  void DoKeypadTabNotify(NMHDR *); // take care of tab control notifications
 
 private:
-	CWnd *m_Parent;							// parent window to this dialog
+  CWnd *m_Parent; // parent window to this dialog
 
-	CTabCtrl *m_KeypadTabCtrl;				// this is the tab control in this dialog
+  CTabCtrl *m_KeypadTabCtrl; // this is the tab control in this dialog
 
-	CKeypadDialog *m_KeypadTabDialog;		// modeless dialog in tab control 
-	CTextureDialog *m_TextureDialog;
-	CObjectDialog *m_ObjectDialog;
-	CLightingDialog *m_LightingDialog;
-	CPathPadDialog *m_PathPadDialog;
-	CTriggerDialog *m_TriggerDialog;
-	CDoorwayDialog *m_DoorwayDialog;
-	CTerrainDialog *m_TerrainDialog;
-	CMegacellKeypad *m_MegacellKeypad;
-	CRoomKeypadDialog *m_RoomDialog;
+  CKeypadDialog *m_KeypadTabDialog; // modeless dialog in tab control
+  CTextureDialog *m_TextureDialog;
+  CObjectDialog *m_ObjectDialog;
+  CLightingDialog *m_LightingDialog;
+  CPathPadDialog *m_PathPadDialog;
+  CTriggerDialog *m_TriggerDialog;
+  CDoorwayDialog *m_DoorwayDialog;
+  CTerrainDialog *m_TerrainDialog;
+  CMegacellKeypad *m_MegacellKeypad;
+  CRoomKeypadDialog *m_RoomDialog;
 
-	BOOL m_Initializing;					// Are we done initializing?
+  BOOL m_Initializing; // Are we done initializing?
 };

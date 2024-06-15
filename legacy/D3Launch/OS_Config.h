@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@
  * $Date: 2003-08-26 03:56:51 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 4     9/09/98 12:24p Nate
  * Added os_config_read_string_ex() prototype
- * 
+ *
  * 3     8/10/98 10:44a Nate
  * Added Language selection support
- * 
+ *
  * 2     8/05/98 4:52p Nate
  * Added registry reading and writing.
- * 
+ *
  * 1     8/05/98 3:31p Nate
  * Initial Version
  *
@@ -48,11 +48,11 @@
 
 #include "PsTypes.h"
 
-void os_config_write_string( char *section, char *name, char *value );
-char *os_config_read_string( char *section, char *name, char *default_value );
-uint32_t  os_config_read_uint( char *section, char *name, uint32_t default_value );
-void os_config_write_uint( char *section, char *name, uint32_t value );
-char *os_config_read_string_ex( char *keyname, char *name, char *default_value );
+void os_config_write_string(char *section, char *name, char *value);
+char *os_config_read_string(char *section, char *name, char *default_value);
+uint32_t os_config_read_uint(char *section, char *name, uint32_t default_value);
+void os_config_write_uint(char *section, char *name, uint32_t value);
+char *os_config_read_string_ex(char *keyname, char *name, char *default_value);
 
 extern char *szSectionName;
 

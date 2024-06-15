@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
 * Viewer Properties Dialog Header
 *
 * $Log: not supported by cvs2svn $
- * 
+ *
  * 3     4/17/99 2:46p Matt
  * Implemented viewer properties dialog functions.
- * 
+ *
  * 2     4/16/99 3:53p Nate
  * Initial version
 *
@@ -47,60 +47,57 @@
 /////////////////////////////////////////////////////////////////////////////
 // CViewerPropDlg dialog
 
-class CViewerPropDlg : public CDialog
-{
-// Construction
+class CViewerPropDlg : public CDialog {
+  // Construction
 public:
-	CViewerPropDlg(CWnd* pParent = NULL);   // standard constructor
+  CViewerPropDlg(CWnd *pParent = NULL); // standard constructor
 
-	void UpdateOrientation();
-	void UpdatePosition();
+  void UpdateOrientation();
+  void UpdatePosition();
 
-// Dialog Data
-	//{{AFX_DATA(CViewerPropDlg)
-	enum { IDD = IDD_VIEWER_DIALOG };
-	CEdit	m_ZPosEdit;
-	CEdit	m_YPosEdit;
-	CEdit	m_XPosEdit;
-	CButton	m_ZMoveCheck;
-	CButton	m_YMoveCheck;
-	CButton	m_XMoveCheck;
-	CEdit	m_PitchEdit;
-	CEdit	m_HeadingEdit;
-	CEdit	m_BankEdit;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CViewerPropDlg)
+  enum { IDD = IDD_VIEWER_DIALOG };
+  CEdit m_ZPosEdit;
+  CEdit m_YPosEdit;
+  CEdit m_XPosEdit;
+  CButton m_ZMoveCheck;
+  CButton m_YMoveCheck;
+  CButton m_XMoveCheck;
+  CEdit m_PitchEdit;
+  CEdit m_HeadingEdit;
+  CEdit m_BankEdit;
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CViewerPropDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual void PostNcDestroy();
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CViewerPropDlg)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+  virtual void PostNcDestroy();
+  //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CViewerPropDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnDestroy();
-	afx_msg void OnAlignUpWithYposButton();
-	afx_msg void OnAlignXnegButton();
-	afx_msg void OnAlignXposButton();
-	afx_msg void OnAlignYnegButton();
-	afx_msg void OnAlignYposButton();
-	afx_msg void OnAlignZnegButton();
-	afx_msg void OnAlignZposButton();
-	afx_msg void OnOrientCommitButton();
-	afx_msg void OnPosCommitButton();
-	afx_msg void OnClose();
-	afx_msg void OnXMoveCheck();
-	afx_msg void OnYMoveCheck();
-	afx_msg void OnZMoveCheck();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CViewerPropDlg)
+  virtual BOOL OnInitDialog();
+  afx_msg void OnDestroy();
+  afx_msg void OnAlignUpWithYposButton();
+  afx_msg void OnAlignXnegButton();
+  afx_msg void OnAlignXposButton();
+  afx_msg void OnAlignYnegButton();
+  afx_msg void OnAlignYposButton();
+  afx_msg void OnAlignZnegButton();
+  afx_msg void OnAlignZposButton();
+  afx_msg void OnOrientCommitButton();
+  afx_msg void OnPosCommitButton();
+  afx_msg void OnClose();
+  afx_msg void OnXMoveCheck();
+  afx_msg void OnYMoveCheck();
+  afx_msg void OnZMoveCheck();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

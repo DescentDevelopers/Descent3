@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,14 +25,12 @@
 * Does a quick compile of a script
 *
 * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     12/30/98 4:38p Jeff
  * initial creation
 *
 * $NoKeywords: $
 */
-
-
 
 // QuickCompile.cpp : implementation file
 //
@@ -55,32 +53,26 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CQuickCompile dialog
 
+CQuickCompile::CQuickCompile(char *scriptname, CWnd *pParent /*=NULL*/) : CDialog(CQuickCompile::IDD, pParent) {
+  //{{AFX_DATA_INIT(CQuickCompile)
+  // NOTE: the ClassWizard will add member initialization here
+  //}}AFX_DATA_INIT
 
-CQuickCompile::CQuickCompile(char *scriptname,CWnd* pParent /*=NULL*/)
-	: CDialog(CQuickCompile::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CQuickCompile)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
-
-	strcpy(m_scriptname,scriptname);
-	ret_value = 0;
+  strcpy(m_scriptname, scriptname);
+  ret_value = 0;
 }
 
-
-void CQuickCompile::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CQuickCompile)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
-	//}}AFX_DATA_MAP
+void CQuickCompile::DoDataExchange(CDataExchange *pDX) {
+  CDialog::DoDataExchange(pDX);
+  //{{AFX_DATA_MAP(CQuickCompile)
+  // NOTE: the ClassWizard will add DDX and DDV calls here
+  //}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CQuickCompile, CDialog)
-	//{{AFX_MSG_MAP(CQuickCompile)
-	ON_WM_DESTROY()
-	//}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CQuickCompile)
+ON_WM_DESTROY()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -89,82 +81,75 @@ END_MESSAGE_MAP()
 CEdit *quick_compile_edit;
 CString quick_compile_string;
 
-void quickcompilercallback(char *str)
-{
-	quick_compile_string += str;
-	quick_compile_edit->SetWindowText(quick_compile_string);
+void quickcompilercallback(char *str) {
+  quick_compile_string += str;
+  quick_compile_edit->SetWindowText(quick_compile_string);
 }
 
-BOOL CQuickCompile::OnInitDialog() 
-{
-	CDialog::OnInitDialog();
+BOOL CQuickCompile::OnInitDialog() {
+  CDialog::OnInitDialog();
 
-	quick_compile_string = "";
-	quick_compile_edit = (CEdit *)GetDlgItem(IDC_TEXT);
-	ret_value = 0;
+  quick_compile_string = "";
+  quick_compile_edit = (CEdit *)GetDlgItem(IDC_TEXT);
+  ret_value = 0;
 
-	char filename[_MAX_PATH];
-	char compiled_filename[_MAX_PATH];
-	bool isours = false;
+  char filename[_MAX_PATH];
+  char compiled_filename[_MAX_PATH];
+  bool isours = false;
 
-	ddio_SplitPath(m_scriptname,NULL,filename,NULL);
-	strcpy(compiled_filename,filename);
-	strcat(filename,".cpp");
-	strcat(compiled_filename,".dll");
+  ddio_SplitPath(m_scriptname, NULL, filename, NULL);
+  strcpy(compiled_filename, filename);
+  strcat(filename, ".cpp");
+  strcat(compiled_filename, ".dll");
 
-	if(mng_FindTrackLock(filename,PAGETYPE_GAMEFILE)!=-1)
-		isours = true;
+  if (mng_FindTrackLock(filename, PAGETYPE_GAMEFILE) != -1)
+    isours = true;
 
-	//grey out the OK button
-	CWnd *wnd = (CWnd *)GetDlgItem(IDOK);
-	wnd->EnableWindow(false);
+  // grey out the OK button
+  CWnd *wnd = (CWnd *)GetDlgItem(IDOK);
+  wnd->EnableWindow(false);
 
-	if(cfexist(filename)){
-		char full_path[_MAX_PATH];
-		ddio_MakePath(full_path,LocalScriptDir,compiled_filename,NULL);
-		if(cfexist(full_path)){
-			ddio_DeleteFile (full_path);
-		}
+  if (cfexist(filename)) {
+    char full_path[_MAX_PATH];
+    ddio_MakePath(full_path, LocalScriptDir, compiled_filename, NULL);
+    if (cfexist(full_path)) {
+      ddio_DeleteFile(full_path);
+    }
 
-		if(!isours){
-			quick_compile_string += "====================================================\r\n";
-			quick_compile_string += "===     SCRIPT IS NOT CHECKED OUT BY YOU!!!!!\r\n";
-			quick_compile_string += "====================================================\r\n";
-			quick_compile_edit->SetWindowText(quick_compile_string);
-		}
+    if (!isours) {
+      quick_compile_string += "====================================================\r\n";
+      quick_compile_string += "===     SCRIPT IS NOT CHECKED OUT BY YOU!!!!!\r\n";
+      quick_compile_string += "====================================================\r\n";
+      quick_compile_edit->SetWindowText(quick_compile_string);
+    }
 
-		tCompilerInfo ci;
-		ci.callback = quickcompilercallback;
-		ci.script_type = DetermineScriptType(filename);
-		strcpy(ci.source_filename,filename);
-		ScriptCompile(&ci);
+    tCompilerInfo ci;
+    ci.callback = quickcompilercallback;
+    ci.script_type = DetermineScriptType(filename);
+    strcpy(ci.source_filename, filename);
+    ScriptCompile(&ci);
 
-		if(cfexist(compiled_filename)){
-			ret_value = 1;
-		}
+    if (cfexist(compiled_filename)) {
+      ret_value = 1;
+    }
 
-	}else{
-		ret_value = -1;
-		char buffer[256];
-		sprintf(buffer,"'%s' does not exist",filename);
-		quick_compile_edit->SetWindowText(buffer);
-	}
+  } else {
+    ret_value = -1;
+    char buffer[256];
+    sprintf(buffer, "'%s' does not exist", filename);
+    quick_compile_edit->SetWindowText(buffer);
+  }
 
-	wnd->EnableWindow(true);
-	
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
+  wnd->EnableWindow(true);
+
+  return TRUE; // return TRUE unless you set the focus to a control
+               // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CQuickCompile::OnDestroy() 
-{
-	CDialog::OnDestroy();
-	
-	quick_compile_string = "";	
+void CQuickCompile::OnDestroy() {
+  CDialog::OnDestroy();
+
+  quick_compile_string = "";
 }
 
-INT_PTR CQuickCompile::DoModal() 
-{
-
-	return CDialog::DoModal();
-}
+INT_PTR CQuickCompile::DoModal() { return CDialog::DoModal(); }

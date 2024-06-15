@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,50 +25,50 @@
  * Editor object handling functions
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 7     5/18/98 2:56p Matt
  * Added code to readjust all ground object (for after the terrain has
  * moved).
- * 
+ *
  * 6     2/06/98 3:08p Samir
  * Simplified object movement code.
- * 
+ *
  * 5     9/17/97 11:55a Samir
  * MORE SEGMENT RIPOUT
- * 
+ *
  * 4     9/17/97 11:35a Samir
  * BIG SEGMENT RIPOUT
- * 
+ *
  * 3     9/03/97 8:00p Samir
  * Implemented most of the fixes for the object moving system.
- * 
+ *
  * 2     8/21/97 7:48p Matt
  * Added code to move player object (like old move player to curseg)
- * 
+ *
  * 9     6/27/97 7:20p Matt
  * Added function to move player 0 to current segment
- * 
+ *
  * 8     4/07/97 3:14p Samir
  * Added Flip and SetDefault Object functions.
- * 
+ *
  * 7     4/04/97 2:45p Matt
  * Removed prototypes for deleted functions
- * 
+ *
  * 6     3/27/97 11:54a Samir
  * UpdateMineObjects returns number of objects deleted of a type.
- * 
+ *
  * 5     3/27/97 11:48a Samir
  * Added update objects in mine functions.
- * 
+ *
  * 4     3/25/97 6:31p Samir
  * Added robot placement.
- * 
+ *
  * 3     2/19/97 3:37p Samir
  * Added delete and rotation of objects.
- * 
+ *
  * 2     2/17/97 6:18p Samir
  * Add powerup, move it around WITHIN the segment.
- * 
+ *
  * 1     2/17/97 3:23p Samir
  * Handler for Object functions
  *
@@ -82,15 +82,11 @@
 #include "fix.h"
 #include "object.h"
 
-const float HOBJECT_SCALE_UNIT		= (float)0.5;
-const angle HOBJECT_ROTATION_UNIT	= 1024;
+const float HOBJECT_SCALE_UNIT = (float)0.5;
+const angle HOBJECT_ROTATION_UNIT = 1024;
 
-const int	HOBJECT_MOVE_LEFT		= 1,
-			HOBJECT_MOVE_RIGHT		= 2,
-			HOBJECT_MOVE_FORWARD	= 3,
-			HOBJECT_MOVE_BACK		= 4,
-			HOBJECT_MOVE_UP			= 5,
-			HOBJECT_MOVE_DOWN		= 6;
+const int HOBJECT_MOVE_LEFT = 1, HOBJECT_MOVE_RIGHT = 2, HOBJECT_MOVE_FORWARD = 3, HOBJECT_MOVE_BACK = 4,
+          HOBJECT_MOVE_UP = 5, HOBJECT_MOVE_DOWN = 6;
 
 //	var determining length of movement.
 extern float Object_move_scale;
@@ -103,7 +99,7 @@ void HObjectMove(int objnum, float dx, float dy, float dz);
 //	returns 0 if fail.
 bool HObjectPlace(int obj_type, int obj_id);
 
-//Adjusts an object so it's at the ground level (for when the ground has moved)
+// Adjusts an object so it's at the ground level (for when the ground has moved)
 void ResetGroundObject(object *objp);
 
 //	deletes the currently selected object from the mine.
@@ -131,4 +127,3 @@ void HObjectDecreaseheading();
 void HObjectFlip();
 
 #endif
-

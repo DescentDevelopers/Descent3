@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #if !defined(AFX_RAWCVTDLG_H__D94CC63D_1CA3_11D2_AF2D_0060089A8025__INCLUDED_)
 #define AFX_RAWCVTDLG_H__D94CC63D_1CA3_11D2_AF2D_0060089A8025__INCLUDED_
@@ -28,41 +28,39 @@
 /////////////////////////////////////////////////////////////////////////////
 // CRawCvtDlg dialog
 
-class CRawCvtDlg : public CDialog
-{
-// Construction
+class CRawCvtDlg : public CDialog {
+  // Construction
 public:
-	int m_Xforms;
-	CRawCvtDlg(CWnd* pParent = NULL);   // standard constructor
+  int m_Xforms;
+  CRawCvtDlg(CWnd *pParent = NULL); // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CRawCvtDlg)
-	enum { IDD = IDD_RAWCVTDLG };
-	int		m_Frequency;
-	int		m_Resolution;
-	int		m_Channels;
-	CString	m_VolScale;
-	CString	m_StreamName;
-	int		m_MeasureSize;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CRawCvtDlg)
+  enum { IDD = IDD_RAWCVTDLG };
+  int m_Frequency;
+  int m_Resolution;
+  int m_Channels;
+  CString m_VolScale;
+  CString m_StreamName;
+  int m_MeasureSize;
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CRawCvtDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CRawCvtDlg)
 protected:
-	virtual void OnOK();
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CRawCvtDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  virtual void OnOK();
+
+  // Generated message map functions
+  //{{AFX_MSG(CRawCvtDlg)
+  virtual BOOL OnInitDialog();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

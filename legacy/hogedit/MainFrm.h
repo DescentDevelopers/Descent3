@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,22 +22,22 @@
  * $Date: 2003-08-26 03:57:56 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 6     8/14/98 6:04p Nate
  * Added number of files field to status bar.
- * 
+ *
  * 5     8/14/98 4:38p Nate
  * Fixed a few minor bugs and added better error reporting
- * 
+ *
  * 4     8/14/98 1:01p Nate
  * Added better error reporting for the HogEditor
- * 
+ *
  * 3     7/22/98 2:38p Nate
  * Added Modified File prompt when exiting
- * 
+ *
  * 2     7/15/98 12:31p Nate
  * Initial version
  *
@@ -56,47 +56,43 @@
 #endif // _MSC_VER >= 1000
 
 // Starting Window Dimensions
-#define MAIN_WINDOW_WIDTH	800
-#define MAIN_WINDOW_HEIGHT  600
+#define MAIN_WINDOW_WIDTH 800
+#define MAIN_WINDOW_HEIGHT 600
 
-
-class CMainFrame : public CFrameWnd
-{
+class CMainFrame : public CFrameWnd {
 protected: // create from serialization only
-	CMainFrame();
-	DECLARE_DYNCREATE(CMainFrame)
+  CMainFrame();
+  DECLARE_DYNCREATE(CMainFrame)
 
-// Attributes
+  // Attributes
 public:
-
-// Operations
+  // Operations
 public:
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CMainFrame)
+  virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
+  //}}AFX_VIRTUAL
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CMainFrame)
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Implementation
 public:
-	virtual ~CMainFrame();
+  virtual ~CMainFrame();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void AssertValid() const;
+  virtual void Dump(CDumpContext &dc) const;
 #endif
 
-protected:  // control bar embedded members
-	CStatusBar  m_wndStatusBar;
-	CToolBar    m_wndToolBar;
+protected: // control bar embedded members
+  CStatusBar m_wndStatusBar;
+  CToolBar m_wndToolBar;
 
-// Generated message map functions
+  // Generated message map functions
 protected:
-	//{{AFX_MSG(CMainFrame)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnClose();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CMainFrame)
+  afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+  afx_msg void OnClose();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

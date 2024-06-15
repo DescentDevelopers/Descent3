@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@
  * D3XString Editor
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     9/09/98 12:48p Samir
  * added script localizer.
- * 
+ *
  * 1     9/09/98 10:29a Samir
  * Initial revision.
  *
@@ -52,43 +52,36 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CD3XStringEditor dialog
 
+CD3XStringEditor::CD3XStringEditor(CWnd *pParent /*=NULL*/) : CDialog(CD3XStringEditor::IDD, pParent) {
+  //{{AFX_DATA_INIT(CD3XStringEditor)
+  // NOTE: the ClassWizard will add member initialization here
+  //}}AFX_DATA_INIT
 
-CD3XStringEditor::CD3XStringEditor(CWnd* pParent /*=NULL*/)
-	: CDialog(CD3XStringEditor::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CD3XStringEditor)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
-
-	m_modified = false;
-	m_cursel = LB_ERR;
+  m_modified = false;
+  m_cursel = LB_ERR;
 }
 
-
-void CD3XStringEditor::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CD3XStringEditor)
-		// NOTE: the ClassWizard will add DDX and DDV calls here
-	//}}AFX_DATA_MAP
+void CD3XStringEditor::DoDataExchange(CDataExchange *pDX) {
+  CDialog::DoDataExchange(pDX);
+  //{{AFX_DATA_MAP(CD3XStringEditor)
+  // NOTE: the ClassWizard will add DDX and DDV calls here
+  //}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CD3XStringEditor, CDialog)
-	//{{AFX_MSG_MAP(CD3XStringEditor)
-	ON_BN_CLICKED(IDC_LOADSCRIPT, OnLoadscript)
-	ON_LBN_SELCHANGE(IDC_STRINGLIST, OnSelchangeStringlist)
-	ON_LBN_DBLCLK(IDC_STRINGLIST, OnDblclkStringlist)
-	ON_EN_KILLFOCUS(IDC_STRINGEDIT, OnKillfocusStringedit)
-	ON_BN_CLICKED(IDC_SAVE, OnSave)
-	//}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CD3XStringEditor)
+ON_BN_CLICKED(IDC_LOADSCRIPT, OnLoadscript)
+ON_LBN_SELCHANGE(IDC_STRINGLIST, OnSelchangeStringlist)
+ON_LBN_DBLCLK(IDC_STRINGLIST, OnDblclkStringlist)
+ON_EN_KILLFOCUS(IDC_STRINGEDIT, OnKillfocusStringedit)
+ON_BN_CLICKED(IDC_SAVE, OnSave)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CD3XStringEditor message handlers
 
-void CD3XStringEditor::OnLoadscript() 
-{
+void CD3XStringEditor::OnLoadscript() {
 #if 0
 //	open either a level or a .d3x file
 	char openpath[_MAX_PATH+1];
@@ -129,44 +122,39 @@ void CD3XStringEditor::OnLoadscript()
 #endif
 }
 
-void CD3XStringEditor::OnSelchangeStringlist() 
-{
-	CListBox *list = (CListBox *)GetDlgItem(IDC_STRINGLIST);
-	CEdit *edit = (CEdit *)GetDlgItem(IDC_STRINGEDIT);
-	CString str;
-	int cursel = list->GetCurSel();
+void CD3XStringEditor::OnSelchangeStringlist() {
+  CListBox *list = (CListBox *)GetDlgItem(IDC_STRINGLIST);
+  CEdit *edit = (CEdit *)GetDlgItem(IDC_STRINGEDIT);
+  CString str;
+  int cursel = list->GetCurSel();
 
-// replace current string in edit box into this listbox
-	if (m_cursel != LB_ERR) {
-		edit->GetWindowText(str);
-		list->DeleteString(m_cursel);
-		list->InsertString(m_cursel, str);
-		m_modified = true;
-		GetDlgItem(IDC_SAVE)->EnableWindow();
-	}
+  // replace current string in edit box into this listbox
+  if (m_cursel != LB_ERR) {
+    edit->GetWindowText(str);
+    list->DeleteString(m_cursel);
+    list->InsertString(m_cursel, str);
+    m_modified = true;
+    GetDlgItem(IDC_SAVE)->EnableWindow();
+  }
 
-// put new string into edit box.
-	if (cursel != LB_ERR) {
-		list->GetText(cursel, str);
-		edit->SetWindowText((LPCSTR)str);
-		edit->EnableWindow();
-	}
-	m_cursel = cursel;
+  // put new string into edit box.
+  if (cursel != LB_ERR) {
+    list->GetText(cursel, str);
+    edit->SetWindowText((LPCSTR)str);
+    edit->EnableWindow();
+  }
+  m_cursel = cursel;
 }
 
-void CD3XStringEditor::OnDblclkStringlist() 
-{
+void CD3XStringEditor::OnDblclkStringlist() {}
+
+void CD3XStringEditor::OnKillfocusStringedit() {
+  m_modified = true;
+  GetDlgItem(IDC_SAVE)->EnableWindow();
 }
 
-void CD3XStringEditor::OnKillfocusStringedit() 
-{
-	m_modified = true;
-	GetDlgItem(IDC_SAVE)->EnableWindow();
-}
-
-void CD3XStringEditor::OnSave() 
-{
-	ASSERT(m_modified);
+void CD3XStringEditor::OnSave() {
+  ASSERT(m_modified);
 #if 0
 // save program by loading it in first and reconstructin a new program obhect
 	CFILE *fp = cfopen(m_pathname, "rb");
@@ -226,17 +214,12 @@ void CD3XStringEditor::OnSave()
 #endif
 }
 
-void CD3XStringEditor::OnOK() 
-{
-	// TODO: Add extra validation here
-	if (!PromptSave()) 
-		return;
-	
-	CDialog::OnOK();
+void CD3XStringEditor::OnOK() {
+  // TODO: Add extra validation here
+  if (!PromptSave())
+    return;
+
+  CDialog::OnOK();
 }
 
-
-bool CD3XStringEditor::PromptSave()
-{
-	return true;
-}
+bool CD3XStringEditor::PromptSave() { return true; }

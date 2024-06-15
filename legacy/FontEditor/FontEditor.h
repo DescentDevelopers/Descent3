@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@
  * Font Editor
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     5/19/99 8:48p Samir
  * added kerning dump utilitiy.
- * 
+ *
  * 1     4/17/99 4:04p Samir
  * standard header.
- * 
+ *
  */
 
 extern void FontDoIO();
@@ -41,4 +41,3 @@ extern void FontView(const char *fnt_file_name);
 extern void FontCreate(const char *fnt_file_source, const char *fnt_file_dest, int min_ascii);
 
 extern int System_font_handle;
-

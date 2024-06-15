@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
  * $Date: 2003-08-26 03:57:39 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 3     10/08/98 10:30a Nate
  * Initial version
  *
@@ -44,40 +44,37 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTableFileFilterAddDlg dialog
 
-class CTableFileFilterAddDlg : public CDialog
-{
-// Construction
+class CTableFileFilterAddDlg : public CDialog {
+  // Construction
 public:
-	CTableFileFilterAddDlg(CWnd* pParent = NULL);   // standard constructor
+  CTableFileFilterAddDlg(CWnd *pParent = NULL); // standard constructor
 
-	CString page_name;
-	int		page_type;
+  CString page_name;
+  int page_type;
 
-// Dialog Data
-	//{{AFX_DATA(CTableFileFilterAddDlg)
-	enum { IDD = IDD_TABLEFILEFILTER_ADDPAGE_DLG };
-	CComboBox	m_TypeCombo;
-	CEdit	m_NameEdit;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CTableFileFilterAddDlg)
+  enum { IDD = IDD_TABLEFILEFILTER_ADDPAGE_DLG };
+  CComboBox m_TypeCombo;
+  CEdit m_NameEdit;
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTableFileFilterAddDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CTableFileFilterAddDlg)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CTableFileFilterAddDlg)
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	virtual void OnCancel();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CTableFileFilterAddDlg)
+  virtual BOOL OnInitDialog();
+  virtual void OnOK();
+  virtual void OnCancel();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

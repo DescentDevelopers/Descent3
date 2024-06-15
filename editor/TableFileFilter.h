@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@
  * $Date: 2003-08-26 03:57:39 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 5     2/09/99 4:19p Nate
  * Added to the TableFileFilter interface
- * 
+ *
  * 4     10/08/98 10:30a Nate
  * Initial version
  *
@@ -49,52 +49,49 @@
 /////////////////////////////////////////////////////////////////////////////
 // TableFileFilter dialog
 
-class TableFileFilter : public CDialog
-{
-// Construction
+class TableFileFilter : public CDialog {
+  // Construction
 public:
-	TableFileFilter(CWnd* pParent = NULL);   // standard constructor
-	void SetColumnWidths(void);
-	
-	PageDataList m_PageList;	// the page data list
+  TableFileFilter(CWnd *pParent = NULL); // standard constructor
+  void SetColumnWidths(void);
 
-// Dialog Data
-	//{{AFX_DATA(TableFileFilter)
-	enum { IDD = IDD_TABLE_FILE_FILTER };
-	CEdit	m_OutputFileEdit;
-	CListBox	m_LevelList;
-	CListCtrl	m_DataList;
-	CString	m_NumPagesText;
-	CString	m_StatusText;
-	//}}AFX_DATA
+  PageDataList m_PageList; // the page data list
 
+  // Dialog Data
+  //{{AFX_DATA(TableFileFilter)
+  enum { IDD = IDD_TABLE_FILE_FILTER };
+  CEdit m_OutputFileEdit;
+  CListBox m_LevelList;
+  CListCtrl m_DataList;
+  CString m_NumPagesText;
+  CString m_StatusText;
+  //}}AFX_DATA
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(TableFileFilter)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(TableFileFilter)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(TableFileFilter)
-	afx_msg void OnFileExit();
-	afx_msg void OnFileSave();
-	afx_msg void OnFileSaveAs();
-	afx_msg void OnFileLoad();
-	afx_msg void OnClose();
-	virtual BOOL OnInitDialog();
-	afx_msg void OnBtnAddLevel();
-	afx_msg void OnBtnAddPage();
-	afx_msg void OnBtnCreateNewTableFile();
-	afx_msg void OnBtnRemoveLevel();
-	afx_msg void OnBtnRemovePage();
-	afx_msg void OnFileNew();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(TableFileFilter)
+  afx_msg void OnFileExit();
+  afx_msg void OnFileSave();
+  afx_msg void OnFileSaveAs();
+  afx_msg void OnFileLoad();
+  afx_msg void OnClose();
+  virtual BOOL OnInitDialog();
+  afx_msg void OnBtnAddLevel();
+  afx_msg void OnBtnAddPage();
+  afx_msg void OnBtnCreateNewTableFile();
+  afx_msg void OnBtnRemoveLevel();
+  afx_msg void OnBtnRemovePage();
+  afx_msg void OnFileNew();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

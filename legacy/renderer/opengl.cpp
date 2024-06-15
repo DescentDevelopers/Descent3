@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #if defined(WIN32)
 #include <windows.h>
@@ -74,7 +74,7 @@ const uint8_t *GL_error_string;
     }                                                                                                                  \
   }
 #else
-  #define CHECK_ERROR(x)
+#define CHECK_ERROR(x)
 #endif
 
 #if defined(WIN32)
@@ -738,10 +738,8 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
         OpenGL_preferred_state.height = 480;
       }
     } else
-      mprintf(0, "Setdisplaymode to %d x %d (%d bits) is successful!\n",
-              OpenGL_preferred_state.width,
-              OpenGL_preferred_state.height,
-              OpenGL_preferred_state.bit_depth);
+      mprintf(0, "Setdisplaymode to %d x %d (%d bits) is successful!\n", OpenGL_preferred_state.width,
+              OpenGL_preferred_state.height, OpenGL_preferred_state.bit_depth);
   }
 
   memset(&OpenGL_state, 0, sizeof(rendering_state));
@@ -1863,9 +1861,10 @@ void opengl_Flip() {
   RTP_INCRVALUE(texture_uploads, OpenGL_uploads);
   RTP_INCRVALUE(polys_drawn, OpenGL_polys_drawn);
 
-  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn, OpenGL_verts_processed);
+  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn,
+             OpenGL_verts_processed);
   mprintf_at(1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", OpenGL_sets_this_frame[0], OpenGL_sets_this_frame[1],
-              OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
+             OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
   mprintf_at(1, 3, 0, "Sets= 4:%d   5:%d  ", OpenGL_sets_this_frame[4], OpenGL_sets_this_frame[5]);
   for (i = 0; i < 10; i++)
     OpenGL_sets_this_frame[i] = 0;
@@ -2583,8 +2582,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
     uint32_t bytes_after;
     int32_t *mwmInfo;
 
-    XGetWindowProperty(dpy, rootwin, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
-                       (uint8_t **)&mwmInfo);
+    XGetWindowProperty(dpy, rootwin, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after, (uint8_t **)&mwmInfo);
 
     if (mwmInfo) {
       // get the mwm window from the properties
@@ -2622,8 +2620,7 @@ void CreateFullScreenWindow(Display *dpy, Window rootwin, Window window, int Dis
       uint32_t nitems;
       uint32_t bytes_after;
 
-      XGetWindowProperty(dpy, window, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after,
-                         (uint8_t **)&xhints);
+      XGetWindowProperty(dpy, window, a, 0, 4, False, a, &type, &format, &nitems, &bytes_after, (uint8_t **)&xhints);
 
       if (xhints) {
         hints[0] = xhints[0];
