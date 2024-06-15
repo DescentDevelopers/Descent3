@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@
  * variables accessed by libraries into main execute file.
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     4/17/99 4:05p Samir
  * complete font editor.
- * 
+ *
  */
 
 #include "appdatabase.h"
 
-int paged_in_num=0;
-int paged_in_count=0;
-class oeAppDatabase *Database=NULL;
+int paged_in_num = 0;
+int paged_in_count = 0;
+class oeAppDatabase *Database = NULL;
 bool Force_one_texture = false;

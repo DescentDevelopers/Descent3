@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,23 +25,23 @@
  * Args header transferred from D3.
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     5/10/99 12:24p Samir
  * added comment header
- * 
+ *
  */
 
 #ifndef ARGS_H
 #define ARGS_H
 
-#define MAX_ARGS			15
-#define MAX_CHARS_PER_ARG	100
+#define MAX_ARGS 15
+#define MAX_CHARS_PER_ARG 100
 
 extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
 // Gathers all arguments
-void GatherArgs (const char *str);
+void GatherArgs(const char *str);
 
 // Returns index of argument sought, or 0 if not found
-int FindArg (const char *which);
+int FindArg(const char *which);
 #endif

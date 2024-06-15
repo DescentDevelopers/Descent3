@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // ListVwEx.cpp : implementation of the CListViewEx class
 //
@@ -43,316 +43,278 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CListViewEx, CListView)
 
 BEGIN_MESSAGE_MAP(CListViewEx, CListView)
-	//{{AFX_MSG_MAP(CListViewEx)
-	ON_WM_SIZE()
-	ON_WM_PAINT()
-	ON_WM_SETFOCUS()
-	ON_WM_KILLFOCUS()
-	//}}AFX_MSG_MAP
-	ON_MESSAGE(LVM_SETIMAGELIST, OnSetImageList)
-	ON_MESSAGE(LVM_SETTEXTCOLOR, OnSetTextColor)
-	ON_MESSAGE(LVM_SETTEXTBKCOLOR, OnSetTextBkColor)
-	ON_MESSAGE(LVM_SETBKCOLOR, OnSetBkColor)
+//{{AFX_MSG_MAP(CListViewEx)
+ON_WM_SIZE()
+ON_WM_PAINT()
+ON_WM_SETFOCUS()
+ON_WM_KILLFOCUS()
+//}}AFX_MSG_MAP
+ON_MESSAGE(LVM_SETIMAGELIST, OnSetImageList)
+ON_MESSAGE(LVM_SETTEXTCOLOR, OnSetTextColor)
+ON_MESSAGE(LVM_SETTEXTBKCOLOR, OnSetTextBkColor)
+ON_MESSAGE(LVM_SETBKCOLOR, OnSetBkColor)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CListViewEx construction/destruction
 
-CListViewEx::CListViewEx()
-{
-	m_bFullRowSel = TRUE;
-	m_bClientWidthSel = TRUE;
+CListViewEx::CListViewEx() {
+  m_bFullRowSel = TRUE;
+  m_bClientWidthSel = TRUE;
 
-	m_cxClient = 0;
-	m_cxStateImageOffset = 0;
+  m_cxClient = 0;
+  m_cxStateImageOffset = 0;
 
-	m_clrText = ::GetSysColor(COLOR_WINDOWTEXT);
-	m_clrTextBk = ::GetSysColor(COLOR_WINDOW);
-	m_clrBkgnd = ::GetSysColor(COLOR_WINDOW);
+  m_clrText = ::GetSysColor(COLOR_WINDOWTEXT);
+  m_clrTextBk = ::GetSysColor(COLOR_WINDOW);
+  m_clrBkgnd = ::GetSysColor(COLOR_WINDOW);
 }
 
-CListViewEx::~CListViewEx()
-{
+CListViewEx::~CListViewEx() {}
+
+BOOL CListViewEx::PreCreateWindow(CREATESTRUCT &cs) {
+  // default is report view and full row selection
+  cs.style &= ~LVS_TYPEMASK;
+  cs.style |= LVS_REPORT | LVS_OWNERDRAWFIXED;
+  m_bFullRowSel = TRUE;
+
+  return (CListView::PreCreateWindow(cs));
 }
 
-BOOL CListViewEx::PreCreateWindow(CREATESTRUCT& cs)
-{
-	// default is report view and full row selection
-	cs.style &= ~LVS_TYPEMASK;
-	cs.style |= LVS_REPORT | LVS_OWNERDRAWFIXED;
-	m_bFullRowSel = TRUE;
+BOOL CListViewEx::SetFullRowSel(BOOL bFullRowSel) {
+  // no painting during change
+  LockWindowUpdate();
 
-	return(CListView::PreCreateWindow(cs));
+  m_bFullRowSel = bFullRowSel;
+
+  BOOL bRet;
+
+  if (m_bFullRowSel)
+    bRet = ModifyStyle(0L, LVS_OWNERDRAWFIXED);
+  else
+    bRet = ModifyStyle(LVS_OWNERDRAWFIXED, 0L);
+
+  // repaint window if we are not changing view type
+  if (bRet && (GetStyle() & LVS_TYPEMASK) == LVS_REPORT)
+    Invalidate();
+
+  // repaint changes
+  UnlockWindowUpdate();
+
+  return (bRet);
 }
 
-BOOL CListViewEx::SetFullRowSel(BOOL bFullRowSel)
-{
-	// no painting during change
-	LockWindowUpdate();
-
-	m_bFullRowSel = bFullRowSel;
-
-	BOOL bRet;
-
-	if (m_bFullRowSel)
-		bRet = ModifyStyle(0L, LVS_OWNERDRAWFIXED);
-	else
-		bRet = ModifyStyle(LVS_OWNERDRAWFIXED, 0L);
-
-	// repaint window if we are not changing view type
-	if (bRet && (GetStyle() & LVS_TYPEMASK) == LVS_REPORT)
-		Invalidate();
-
-	// repaint changes
-	UnlockWindowUpdate();
-
-	return(bRet);
-}
-
-BOOL CListViewEx::GetFullRowSel()
-{
-	return(m_bFullRowSel);
-}
+BOOL CListViewEx::GetFullRowSel() { return (m_bFullRowSel); }
 
 /////////////////////////////////////////////////////////////////////////////
 // CListViewEx drawing
 
 // offsets for first and other columns
-#define OFFSET_FIRST	2
-#define OFFSET_OTHER	6
+#define OFFSET_FIRST 2
+#define OFFSET_OTHER 6
 
-void CListViewEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
-{
-	CListCtrl& ListCtrl=GetListCtrl();
-	CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
-	CRect rcItem(lpDrawItemStruct->rcItem);
-	UINT uiFlags = ILD_TRANSPARENT;
-	CImageList* pImageList;
-	int nItem = lpDrawItemStruct->itemID;
-	BOOL bFocus = (GetFocus() == this);
-	COLORREF clrTextSave, clrBkSave;
-	COLORREF clrImage = m_clrBkgnd;
-	static _TCHAR szBuff[_MAX_PATH];
-	LPCTSTR pszText;
+void CListViewEx::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) {
+  CListCtrl &ListCtrl = GetListCtrl();
+  CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
+  CRect rcItem(lpDrawItemStruct->rcItem);
+  UINT uiFlags = ILD_TRANSPARENT;
+  CImageList *pImageList;
+  int nItem = lpDrawItemStruct->itemID;
+  BOOL bFocus = (GetFocus() == this);
+  COLORREF clrTextSave, clrBkSave;
+  COLORREF clrImage = m_clrBkgnd;
+  static _TCHAR szBuff[_MAX_PATH];
+  LPCTSTR pszText;
 
-// get item data
+  // get item data
 
-	LV_ITEM lvi;
-	lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;
-	lvi.iItem = nItem;
-	lvi.iSubItem = 0;
-	lvi.pszText = szBuff;
-	lvi.cchTextMax = sizeof(szBuff);
-	lvi.stateMask = 0xFFFF;		// get all state flags
-	ListCtrl.GetItem(&lvi);
+  LV_ITEM lvi;
+  lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;
+  lvi.iItem = nItem;
+  lvi.iSubItem = 0;
+  lvi.pszText = szBuff;
+  lvi.cchTextMax = sizeof(szBuff);
+  lvi.stateMask = 0xFFFF; // get all state flags
+  ListCtrl.GetItem(&lvi);
 
-	BOOL bSelected = (bFocus || (GetStyle() & LVS_SHOWSELALWAYS)) && lvi.state & LVIS_SELECTED;
-	bSelected = bSelected || (lvi.state & LVIS_DROPHILITED);
+  BOOL bSelected = (bFocus || (GetStyle() & LVS_SHOWSELALWAYS)) && lvi.state & LVIS_SELECTED;
+  bSelected = bSelected || (lvi.state & LVIS_DROPHILITED);
 
-// set colors if item is selected
+  // set colors if item is selected
 
-	CRect rcAllLabels;
-	ListCtrl.GetItemRect(nItem, rcAllLabels, LVIR_BOUNDS);
+  CRect rcAllLabels;
+  ListCtrl.GetItemRect(nItem, rcAllLabels, LVIR_BOUNDS);
 
-	CRect rcLabel;
-	ListCtrl.GetItemRect(nItem, rcLabel, LVIR_LABEL);
+  CRect rcLabel;
+  ListCtrl.GetItemRect(nItem, rcLabel, LVIR_LABEL);
 
-	rcAllLabels.left = rcLabel.left;
-	if (m_bClientWidthSel && rcAllLabels.right<m_cxClient)
-		rcAllLabels.right = m_cxClient;
+  rcAllLabels.left = rcLabel.left;
+  if (m_bClientWidthSel && rcAllLabels.right < m_cxClient)
+    rcAllLabels.right = m_cxClient;
 
-	if (bSelected)
-	{
-		clrTextSave = pDC->SetTextColor(::GetSysColor(COLOR_HIGHLIGHTTEXT));
-		clrBkSave = pDC->SetBkColor(::GetSysColor(COLOR_HIGHLIGHT));
+  if (bSelected) {
+    clrTextSave = pDC->SetTextColor(::GetSysColor(COLOR_HIGHLIGHTTEXT));
+    clrBkSave = pDC->SetBkColor(::GetSysColor(COLOR_HIGHLIGHT));
 
-		pDC->FillRect(rcAllLabels, &CBrush(::GetSysColor(COLOR_HIGHLIGHT)));
-	}
-	else
-		pDC->FillRect(rcAllLabels, &CBrush(m_clrTextBk));
+    pDC->FillRect(rcAllLabels, &CBrush(::GetSysColor(COLOR_HIGHLIGHT)));
+  } else
+    pDC->FillRect(rcAllLabels, &CBrush(m_clrTextBk));
 
-// set color and mask for the icon
+  // set color and mask for the icon
 
-	if (lvi.state & LVIS_CUT)
-	{
-		clrImage = m_clrBkgnd;
-		uiFlags |= ILD_BLEND50;
-	}
-	else if (bSelected)
-	{
-		clrImage = ::GetSysColor(COLOR_HIGHLIGHT);
-		uiFlags |= ILD_BLEND50;
-	}
+  if (lvi.state & LVIS_CUT) {
+    clrImage = m_clrBkgnd;
+    uiFlags |= ILD_BLEND50;
+  } else if (bSelected) {
+    clrImage = ::GetSysColor(COLOR_HIGHLIGHT);
+    uiFlags |= ILD_BLEND50;
+  }
 
-// draw state icon
+  // draw state icon
 
-	UINT nStateImageMask = lvi.state & LVIS_STATEIMAGEMASK;
-	if (nStateImageMask)
-	{
-		int nImage = (nStateImageMask>>12) - 1;
-		pImageList = ListCtrl.GetImageList(LVSIL_STATE);
-		if (pImageList)
-		{
-			pImageList->Draw(pDC, nImage,
-				CPoint(rcItem.left, rcItem.top), ILD_TRANSPARENT);
-		}
-	}
+  UINT nStateImageMask = lvi.state & LVIS_STATEIMAGEMASK;
+  if (nStateImageMask) {
+    int nImage = (nStateImageMask >> 12) - 1;
+    pImageList = ListCtrl.GetImageList(LVSIL_STATE);
+    if (pImageList) {
+      pImageList->Draw(pDC, nImage, CPoint(rcItem.left, rcItem.top), ILD_TRANSPARENT);
+    }
+  }
 
-// draw normal and overlay icon
+  // draw normal and overlay icon
 
-	CRect rcIcon;
-	ListCtrl.GetItemRect(nItem, rcIcon, LVIR_ICON);
+  CRect rcIcon;
+  ListCtrl.GetItemRect(nItem, rcIcon, LVIR_ICON);
 
-	pImageList = ListCtrl.GetImageList(LVSIL_SMALL);
-	if (pImageList)
-	{
-		UINT nOvlImageMask=lvi.state & LVIS_OVERLAYMASK;
-		if (rcItem.left<rcItem.right-1)
-		{
-			ImageList_DrawEx(pImageList->m_hImageList, lvi.iImage,
-					pDC->m_hDC,rcIcon.left,rcIcon.top, 16, 16,
-					m_clrBkgnd, clrImage, uiFlags | nOvlImageMask);
-		}
-	}
+  pImageList = ListCtrl.GetImageList(LVSIL_SMALL);
+  if (pImageList) {
+    UINT nOvlImageMask = lvi.state & LVIS_OVERLAYMASK;
+    if (rcItem.left < rcItem.right - 1) {
+      ImageList_DrawEx(pImageList->m_hImageList, lvi.iImage, pDC->m_hDC, rcIcon.left, rcIcon.top, 16, 16, m_clrBkgnd,
+                       clrImage, uiFlags | nOvlImageMask);
+    }
+  }
 
-// draw item label
+  // draw item label
 
-	ListCtrl.GetItemRect(nItem, rcItem, LVIR_LABEL);
-	rcItem.right -= m_cxStateImageOffset;
+  ListCtrl.GetItemRect(nItem, rcItem, LVIR_LABEL);
+  rcItem.right -= m_cxStateImageOffset;
 
-	pszText = MakeShortString(pDC, szBuff,
-				rcItem.right-rcItem.left, 2*OFFSET_FIRST);
+  pszText = MakeShortString(pDC, szBuff, rcItem.right - rcItem.left, 2 * OFFSET_FIRST);
 
-	rcLabel = rcItem;
-	rcLabel.left += OFFSET_FIRST;
-	rcLabel.right -= OFFSET_FIRST;
+  rcLabel = rcItem;
+  rcLabel.left += OFFSET_FIRST;
+  rcLabel.right -= OFFSET_FIRST;
 
-	pDC->DrawText(pszText,-1,rcLabel,DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_NOCLIP | DT_VCENTER);
+  pDC->DrawText(pszText, -1, rcLabel, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_NOCLIP | DT_VCENTER);
 
-// draw labels for extra columns
+  // draw labels for extra columns
 
-	LV_COLUMN lvc;
-	lvc.mask = LVCF_FMT | LVCF_WIDTH;
-				   
-	for(int nColumn = 1; ListCtrl.GetColumn(nColumn, &lvc); nColumn++)
-	{
-		rcItem.left = rcItem.right;
-		rcItem.right += lvc.cx;
+  LV_COLUMN lvc;
+  lvc.mask = LVCF_FMT | LVCF_WIDTH;
 
-		int nRetLen = ListCtrl.GetItemText(nItem, nColumn,
-						szBuff, sizeof(szBuff));
-		if (nRetLen == 0)
-			continue;
+  for (int nColumn = 1; ListCtrl.GetColumn(nColumn, &lvc); nColumn++) {
+    rcItem.left = rcItem.right;
+    rcItem.right += lvc.cx;
 
-		pszText = MakeShortString(pDC, szBuff,
-			rcItem.right - rcItem.left, 2*OFFSET_OTHER);
+    int nRetLen = ListCtrl.GetItemText(nItem, nColumn, szBuff, sizeof(szBuff));
+    if (nRetLen == 0)
+      continue;
 
-		UINT nJustify = DT_LEFT;
+    pszText = MakeShortString(pDC, szBuff, rcItem.right - rcItem.left, 2 * OFFSET_OTHER);
 
-		if(pszText == szBuff)
-		{
-			switch(lvc.fmt & LVCFMT_JUSTIFYMASK)
-			{
-			case LVCFMT_RIGHT:
-				nJustify = DT_RIGHT;
-				break;
-			case LVCFMT_CENTER:
-				nJustify = DT_CENTER;
-				break;
-			default:
-				break;
-			}
-		}
+    UINT nJustify = DT_LEFT;
 
-		rcLabel = rcItem;
-		rcLabel.left += OFFSET_OTHER;
-		rcLabel.right -= OFFSET_OTHER;
+    if (pszText == szBuff) {
+      switch (lvc.fmt & LVCFMT_JUSTIFYMASK) {
+      case LVCFMT_RIGHT:
+        nJustify = DT_RIGHT;
+        break;
+      case LVCFMT_CENTER:
+        nJustify = DT_CENTER;
+        break;
+      default:
+        break;
+      }
+    }
 
-		pDC->DrawText(pszText, -1, rcLabel,
-			nJustify | DT_SINGLELINE | DT_NOPREFIX | DT_NOCLIP | DT_VCENTER);
-	}
+    rcLabel = rcItem;
+    rcLabel.left += OFFSET_OTHER;
+    rcLabel.right -= OFFSET_OTHER;
 
-// draw focus rectangle if item has focus
+    pDC->DrawText(pszText, -1, rcLabel, nJustify | DT_SINGLELINE | DT_NOPREFIX | DT_NOCLIP | DT_VCENTER);
+  }
 
-	if (lvi.state & LVIS_FOCUSED && bFocus)
-		pDC->DrawFocusRect(rcAllLabels);
+  // draw focus rectangle if item has focus
 
-// set original colors if item was selected
+  if (lvi.state & LVIS_FOCUSED && bFocus)
+    pDC->DrawFocusRect(rcAllLabels);
 
-	if (bSelected)
-	{
-        pDC->SetTextColor(clrTextSave);
-		pDC->SetBkColor(clrBkSave);
-	}
+  // set original colors if item was selected
+
+  if (bSelected) {
+    pDC->SetTextColor(clrTextSave);
+    pDC->SetBkColor(clrBkSave);
+  }
 }
 
-LPCTSTR CListViewEx::MakeShortString(CDC* pDC, LPCTSTR lpszLong, int nColumnLen, int nOffset)
-{
-	static const _TCHAR szThreeDots[] = _T("...");
+LPCTSTR CListViewEx::MakeShortString(CDC *pDC, LPCTSTR lpszLong, int nColumnLen, int nOffset) {
+  static const _TCHAR szThreeDots[] = _T("...");
 
-	int nStringLen = lstrlen(lpszLong);
+  int nStringLen = lstrlen(lpszLong);
 
-	if(nStringLen == 0 ||
-		(pDC->GetTextExtent(lpszLong, nStringLen).cx + nOffset) <= nColumnLen)
-	{
-		return(lpszLong);
-	}
+  if (nStringLen == 0 || (pDC->GetTextExtent(lpszLong, nStringLen).cx + nOffset) <= nColumnLen) {
+    return (lpszLong);
+  }
 
-	static _TCHAR szShort[_MAX_PATH];
+  static _TCHAR szShort[_MAX_PATH];
 
-	lstrcpy(szShort,lpszLong);
-	int nAddLen = pDC->GetTextExtent(szThreeDots,sizeof(szThreeDots)).cx;
+  lstrcpy(szShort, lpszLong);
+  int nAddLen = pDC->GetTextExtent(szThreeDots, sizeof(szThreeDots)).cx;
 
-	for(int i = nStringLen-1; i > 0; i--)
-	{
-		szShort[i] = 0;
-		if((pDC->GetTextExtent(szShort, i).cx + nOffset + nAddLen)
-			<= nColumnLen)
-		{
-			break;
-		}
-	}
+  for (int i = nStringLen - 1; i > 0; i--) {
+    szShort[i] = 0;
+    if ((pDC->GetTextExtent(szShort, i).cx + nOffset + nAddLen) <= nColumnLen) {
+      break;
+    }
+  }
 
-	lstrcat(szShort, szThreeDots);
-	return(szShort);
+  lstrcat(szShort, szThreeDots);
+  return (szShort);
 }
 
-void CListViewEx::RepaintSelectedItems()
-{
-	CListCtrl& ListCtrl = GetListCtrl();
-	CRect rcItem, rcLabel;
+void CListViewEx::RepaintSelectedItems() {
+  CListCtrl &ListCtrl = GetListCtrl();
+  CRect rcItem, rcLabel;
 
-// invalidate focused item so it can repaint properly
+  // invalidate focused item so it can repaint properly
 
-	int nItem = ListCtrl.GetNextItem(-1, LVNI_FOCUSED);
+  int nItem = ListCtrl.GetNextItem(-1, LVNI_FOCUSED);
 
-	if(nItem != -1)
-	{
-		ListCtrl.GetItemRect(nItem, rcItem, LVIR_BOUNDS);
-		ListCtrl.GetItemRect(nItem, rcLabel, LVIR_LABEL);
-		rcItem.left = rcLabel.left;
+  if (nItem != -1) {
+    ListCtrl.GetItemRect(nItem, rcItem, LVIR_BOUNDS);
+    ListCtrl.GetItemRect(nItem, rcLabel, LVIR_LABEL);
+    rcItem.left = rcLabel.left;
 
-		InvalidateRect(rcItem, FALSE);
-	}
+    InvalidateRect(rcItem, FALSE);
+  }
 
-// if selected items should not be preserved, invalidate them
+  // if selected items should not be preserved, invalidate them
 
-	if(!(GetStyle() & LVS_SHOWSELALWAYS))
-	{
-		for(nItem = ListCtrl.GetNextItem(-1, LVNI_SELECTED);
-			nItem != -1; nItem = ListCtrl.GetNextItem(nItem, LVNI_SELECTED))
-		{
-			ListCtrl.GetItemRect(nItem, rcItem, LVIR_BOUNDS);
-			ListCtrl.GetItemRect(nItem, rcLabel, LVIR_LABEL);
-			rcItem.left = rcLabel.left;
+  if (!(GetStyle() & LVS_SHOWSELALWAYS)) {
+    for (nItem = ListCtrl.GetNextItem(-1, LVNI_SELECTED); nItem != -1;
+         nItem = ListCtrl.GetNextItem(nItem, LVNI_SELECTED)) {
+      ListCtrl.GetItemRect(nItem, rcItem, LVIR_BOUNDS);
+      ListCtrl.GetItemRect(nItem, rcLabel, LVIR_LABEL);
+      rcItem.left = rcLabel.left;
 
-			InvalidateRect(rcItem, FALSE);
-		}
-	}
+      InvalidateRect(rcItem, FALSE);
+    }
+  }
 
-// update changes 
+  // update changes
 
-	UpdateWindow();
+  UpdateWindow();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -360,14 +322,13 @@ void CListViewEx::RepaintSelectedItems()
 
 #ifdef _DEBUG
 
-void CListViewEx::Dump(CDumpContext& dc) const
-{
-	CListView::Dump(dc);
+void CListViewEx::Dump(CDumpContext &dc) const {
+  CListView::Dump(dc);
 
-	dc << "m_bFullRowSel = " << (UINT)m_bFullRowSel;
-	dc << "\n";
-	dc << "m_cxStateImageOffset = " << m_cxStateImageOffset;
-	dc << "\n";
+  dc << "m_bFullRowSel = " << (UINT)m_bFullRowSel;
+  dc << "\n";
+  dc << "m_cxStateImageOffset = " << m_cxStateImageOffset;
+  dc << "\n";
 }
 
 #endif //_DEBUG
@@ -375,98 +336,85 @@ void CListViewEx::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CListViewEx message handlers
 
-LRESULT CListViewEx::OnSetImageList(WPARAM wParam, LPARAM lParam)
-{
-	if( (int) wParam == LVSIL_STATE)
-	{
-		int cx, cy;
+LRESULT CListViewEx::OnSetImageList(WPARAM wParam, LPARAM lParam) {
+  if ((int)wParam == LVSIL_STATE) {
+    int cx, cy;
 
-		if(::ImageList_GetIconSize((HIMAGELIST)lParam, &cx, &cy))
-			m_cxStateImageOffset = cx;
-		else
-			m_cxStateImageOffset = 0;
-	}
+    if (::ImageList_GetIconSize((HIMAGELIST)lParam, &cx, &cy))
+      m_cxStateImageOffset = cx;
+    else
+      m_cxStateImageOffset = 0;
+  }
 
-	return(Default());
+  return (Default());
 }
 
-LRESULT CListViewEx::OnSetTextColor(WPARAM wParam, LPARAM lParam)
-{
-	m_clrText = (COLORREF)lParam;
-	return(Default());
+LRESULT CListViewEx::OnSetTextColor(WPARAM wParam, LPARAM lParam) {
+  m_clrText = (COLORREF)lParam;
+  return (Default());
 }
 
-LRESULT CListViewEx::OnSetTextBkColor(WPARAM wParam, LPARAM lParam)
-{
-	m_clrTextBk = (COLORREF)lParam;
-	return(Default());
+LRESULT CListViewEx::OnSetTextBkColor(WPARAM wParam, LPARAM lParam) {
+  m_clrTextBk = (COLORREF)lParam;
+  return (Default());
 }
 
-LRESULT CListViewEx::OnSetBkColor(WPARAM wParam, LPARAM lParam)
-{
-	m_clrBkgnd = (COLORREF)lParam;
-	return(Default());
+LRESULT CListViewEx::OnSetBkColor(WPARAM wParam, LPARAM lParam) {
+  m_clrBkgnd = (COLORREF)lParam;
+  return (Default());
 }
 
-void CListViewEx::OnSize(UINT nType, int cx, int cy) 
-{
-	m_cxClient = cx;
-	CListView::OnSize(nType, cx, cy);
+void CListViewEx::OnSize(UINT nType, int cx, int cy) {
+  m_cxClient = cx;
+  CListView::OnSize(nType, cx, cy);
 }
 
-void CListViewEx::OnPaint() 
-{
-	// in full row select mode, we need to extend the clipping region
-	// so we can paint a selection all the way to the right
-	if (m_bClientWidthSel &&
-		(GetStyle() & LVS_TYPEMASK) == LVS_REPORT &&
-		GetFullRowSel())
-	{
-		CRect rcAllLabels;
-		GetListCtrl().GetItemRect(0, rcAllLabels, LVIR_BOUNDS);
+void CListViewEx::OnPaint() {
+  // in full row select mode, we need to extend the clipping region
+  // so we can paint a selection all the way to the right
+  if (m_bClientWidthSel && (GetStyle() & LVS_TYPEMASK) == LVS_REPORT && GetFullRowSel()) {
+    CRect rcAllLabels;
+    GetListCtrl().GetItemRect(0, rcAllLabels, LVIR_BOUNDS);
 
-		if(rcAllLabels.right < m_cxClient)
-		{
-			// need to call BeginPaint (in CPaintDC c-tor)
-			// to get correct clipping rect
-			CPaintDC dc(this);
+    if (rcAllLabels.right < m_cxClient) {
+      // need to call BeginPaint (in CPaintDC c-tor)
+      // to get correct clipping rect
+      CPaintDC dc(this);
 
-			CRect rcClip;
-			dc.GetClipBox(rcClip);
+      CRect rcClip;
+      dc.GetClipBox(rcClip);
 
-			rcClip.left = min(rcAllLabels.right-1, rcClip.left);
-			rcClip.right = m_cxClient;
+      rcClip.left = min(rcAllLabels.right - 1, rcClip.left);
+      rcClip.right = m_cxClient;
 
-			InvalidateRect(rcClip, FALSE);
-			// EndPaint will be called in CPaintDC d-tor
-		}
-	}
+      InvalidateRect(rcClip, FALSE);
+      // EndPaint will be called in CPaintDC d-tor
+    }
+  }
 
-	CListView::OnPaint();
+  CListView::OnPaint();
 }
 
-void CListViewEx::OnSetFocus(CWnd* pOldWnd) 
-{
-	CListView::OnSetFocus(pOldWnd);
+void CListViewEx::OnSetFocus(CWnd *pOldWnd) {
+  CListView::OnSetFocus(pOldWnd);
 
-	// check if we are getting focus from label edit box
-	if(pOldWnd!=NULL && pOldWnd->GetParent()==this)
-		return;
+  // check if we are getting focus from label edit box
+  if (pOldWnd != NULL && pOldWnd->GetParent() == this)
+    return;
 
-	// repaint items that should change appearance
-	if(m_bFullRowSel && (GetStyle() & LVS_TYPEMASK)==LVS_REPORT)
-		RepaintSelectedItems();
+  // repaint items that should change appearance
+  if (m_bFullRowSel && (GetStyle() & LVS_TYPEMASK) == LVS_REPORT)
+    RepaintSelectedItems();
 }
 
-void CListViewEx::OnKillFocus(CWnd* pNewWnd) 
-{
-	CListView::OnKillFocus(pNewWnd);
+void CListViewEx::OnKillFocus(CWnd *pNewWnd) {
+  CListView::OnKillFocus(pNewWnd);
 
-	// check if we are losing focus to label edit box
-	if(pNewWnd != NULL && pNewWnd->GetParent() == this)
-		return;
+  // check if we are losing focus to label edit box
+  if (pNewWnd != NULL && pNewWnd->GetParent() == this)
+    return;
 
-	// repaint items that should change appearance
-	if(m_bFullRowSel && (GetStyle() & LVS_TYPEMASK) == LVS_REPORT)
-		RepaintSelectedItems();
+  // repaint items that should change appearance
+  if (m_bFullRowSel && (GetStyle() & LVS_TYPEMASK) == LVS_REPORT)
+    RepaintSelectedItems();
 }

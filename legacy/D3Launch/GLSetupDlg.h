@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 * <insert description of file here>
 *
 * $Log: not supported by cvs2svn $
- * 
+ *
  * 2     5/20/99 12:53p Nate
  * Added GLSetup window, EAX mixer support, and CHFlight+Mouseman Mode
  * options
@@ -45,40 +45,37 @@
 /////////////////////////////////////////////////////////////////////////////
 // CGLSetupDlg dialog
 
-class CGLSetupDlg : public CDialog
-{
-// Construction
+class CGLSetupDlg : public CDialog {
+  // Construction
 public:
-	CGLSetupDlg(CWnd* pParent = NULL);   // standard constructor
+  CGLSetupDlg(CWnd *pParent = NULL); // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CGLSetupDlg)
-	enum { IDD = IDD_GLSETUP_DIALOG };
-	CButton	m_InstallButton;
-	CStatic	m_Info3Text;
-	CStatic	m_Info2Text;
-	CStatic	m_Info1Text;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CGLSetupDlg)
+  enum { IDD = IDD_GLSETUP_DIALOG };
+  CButton m_InstallButton;
+  CStatic m_Info3Text;
+  CStatic m_Info2Text;
+  CStatic m_Info1Text;
+  //}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CGLSetupDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CGLSetupDlg)
 protected:
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
-	// Generated message map functions
-	//{{AFX_MSG(CGLSetupDlg)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnInstallButton();
-	afx_msg void OnVisitButton();
-	virtual void OnCancel();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CGLSetupDlg)
+  virtual BOOL OnInitDialog();
+  afx_msg void OnInstallButton();
+  afx_msg void OnVisitButton();
+  virtual void OnCancel();
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

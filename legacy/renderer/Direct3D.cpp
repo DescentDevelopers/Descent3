@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <windows.h>
 #include "DDAccess.h" // This module has access to machine-dependent variables.
@@ -2430,7 +2430,7 @@ TryFlipAgain:
   RTP_INCRVALUE(polys_drawn, D3D_polys_drawn);
   mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d    ", D3D_uploads, D3D_polys_drawn, D3D_verts_processed);
   mprintf_at(1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", D3D_sets_this_frame[0], D3D_sets_this_frame[1],
-              D3D_sets_this_frame[2], D3D_sets_this_frame[3]);
+             D3D_sets_this_frame[2], D3D_sets_this_frame[3]);
   mprintf_at(1, 3, 0, "Sets= 4:%d   5:%d  ", D3D_sets_this_frame[4], D3D_sets_this_frame[5]);
   for (i = 0; i < 8; i++)
     D3D_sets_this_frame[i] = 0;

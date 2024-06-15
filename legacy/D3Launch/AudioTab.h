@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,31 +22,31 @@
  * $Date: 2003-08-26 03:56:51 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 9     10/21/98 4:51p Nate
  * More fixes.
- * 
+ *
  * 8     10/15/98 11:31a Nate
  * Added Launcher Sound toggling
- * 
+ *
  * 7     10/14/98 5:52p Nate
  * More fixes
- * 
+ *
  * 6     10/10/98 4:05p Nate
  * Added detection/scanning window messages
- * 
+ *
  * 5     9/21/98 5:40p Nate
  * Incorporated the new HTML help system
- * 
+ *
  * 4     9/01/98 7:15p Nate
  * Major Revision #2
- * 
+ *
  * 3     8/31/98 6:44p Nate
  * Major Revision
- * 
+ *
  * 2     8/05/98 11:54a Nate
  * Initial Version
  *
@@ -67,53 +67,50 @@
 /////////////////////////////////////////////////////////////////////////////
 // CAudioTab dialog
 
-class CAudioTab : public CPropertyPage
-{
-	DECLARE_DYNCREATE(CAudioTab)
+class CAudioTab : public CPropertyPage {
+  DECLARE_DYNCREATE(CAudioTab)
 
-// Construction
+  // Construction
 public:
-	CAudioTab();
-	~CAudioTab();
-	void EnableMixerSettings(UINT mixers);
-	int GetMixerButton(void);
-	void SetMixerButton(int mixer_id, UINT mixer_flags);
-	UINT DetermineDefaultMixer(int card_index);
-	int DetermineBestCard(void);
+  CAudioTab();
+  ~CAudioTab();
+  void EnableMixerSettings(UINT mixers);
+  int GetMixerButton(void);
+  void SetMixerButton(int mixer_id, UINT mixer_flags);
+  UINT DetermineDefaultMixer(int card_index);
+  int DetermineBestCard(void);
 
-	CMsgDlg m_MsgDlg;
+  CMsgDlg m_MsgDlg;
 
-// Dialog Data
-	//{{AFX_DATA(CAudioTab)
-	enum { IDD = IDD_PROPPAGE_AUDIO };
-	CButton	m_LauncherSndCheck;
-	CComboBox	m_audio_list;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CAudioTab)
+  enum { IDD = IDD_PROPPAGE_AUDIO };
+  CButton m_LauncherSndCheck;
+  CComboBox m_audio_list;
+  //}}AFX_DATA
 
+  // Overrides
+  // ClassWizard generate virtual function overrides
+  //{{AFX_VIRTUAL(CAudioTab)
+public:
+  virtual void OnOK();
 
-// Overrides
-	// ClassWizard generate virtual function overrides
-	//{{AFX_VIRTUAL(CAudioTab)
-	public:
-	virtual void OnOK();
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
 protected:
-	// Generated message map functions
-	//{{AFX_MSG(CAudioTab)
-	afx_msg void OnBtnAudioDetect();
-	virtual BOOL OnInitDialog();
-	afx_msg void OnSelchangeAudioList();
-	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-	afx_msg LRESULT OnCommandHelp(WPARAM wParam, LPARAM lParam);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CAudioTab)
+  afx_msg void OnBtnAudioDetect();
+  virtual BOOL OnInitDialog();
+  afx_msg void OnSelchangeAudioList();
+  afx_msg BOOL OnHelpInfo(HELPINFO *pHelpInfo);
+  afx_msg LRESULT OnCommandHelp(WPARAM wParam, LPARAM lParam);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
-
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

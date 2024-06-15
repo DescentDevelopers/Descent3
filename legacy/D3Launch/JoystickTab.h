@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,29 +22,29 @@
  * $Date: 2003-08-26 03:56:51 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 8     5/20/99 12:53p Nate
  * Added GLSetup window, EAX mixer support, and CHFlight+Mouseman Mode
  * options
- * 
+ *
  * 7     10/10/98 4:05p Nate
  * Added detection/scanning window messages
- * 
+ *
  * 6     10/08/98 6:23p Nate
  * Fixed a few bugs.
- * 
+ *
  * 5     9/21/98 5:40p Nate
  * Incorporated the new HTML help system
- * 
+ *
  * 4     9/15/98 6:02p Nate
  * Added Force Feedback detection.
- * 
+ *
  * 3     9/02/98 6:43p Nate
  * Added JoystickData structure
- * 
+ *
  * 2     8/05/98 11:54a Nate
  * Initial Version
  *
@@ -62,62 +62,61 @@
 
 #include "MsgDlg.h"
 
-#define JOYSTICK_NONE_ID	99999
-#define MAX_NUM_JOYSTICKS	16
+#define JOYSTICK_NONE_ID 99999
+#define MAX_NUM_JOYSTICKS 16
 
 struct JoystickData {
-	int ID;
-	char name[1024];
-	bool FF_capable;
+  int ID;
+  char name[1024];
+  bool FF_capable;
 };
 
 /////////////////////////////////////////////////////////////////////////////
 // CJoystickTab dialog
 
-class CJoystickTab : public CPropertyPage
-{
-	DECLARE_DYNCREATE(CJoystickTab)
+class CJoystickTab : public CPropertyPage {
+  DECLARE_DYNCREATE(CJoystickTab)
 
-// Construction
+  // Construction
 public:
-	CJoystickTab();
-	~CJoystickTab();
+  CJoystickTab();
+  ~CJoystickTab();
 
-	CMsgDlg m_MsgDlg;
+  CMsgDlg m_MsgDlg;
 
-// Dialog Data
-	//{{AFX_DATA(CJoystickTab)
-	enum { IDD = IDD_PROPPAGE_JOYSTICK };
-	CButton	m_CHFlightEnabled;
-	CButton	m_MousemanEnabled;
-	CComboBox	m_joystick_list;
-	CButton	m_ff_enabled;
-	//}}AFX_DATA
+  // Dialog Data
+  //{{AFX_DATA(CJoystickTab)
+  enum { IDD = IDD_PROPPAGE_JOYSTICK };
+  CButton m_CHFlightEnabled;
+  CButton m_MousemanEnabled;
+  CComboBox m_joystick_list;
+  CButton m_ff_enabled;
+  //}}AFX_DATA
 
-	void DetectSticks();
+  void DetectSticks();
 
-// Overrides
-	// ClassWizard generate virtual function overrides
-	//{{AFX_VIRTUAL(CJoystickTab)
-	public:
-	virtual void OnOK();
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+  // Overrides
+  // ClassWizard generate virtual function overrides
+  //{{AFX_VIRTUAL(CJoystickTab)
+public:
+  virtual void OnOK();
 
-// Implementation
 protected:
-	// Generated message map functions
-	//{{AFX_MSG(CJoystickTab)
-	virtual BOOL OnInitDialog();
-	afx_msg void OnBtnCalibrate();
-	afx_msg void OnBtnDetect();
-	afx_msg void OnSelchangeJoystickList();
-	afx_msg LRESULT OnCommandHelp(WPARAM wParam, LPARAM lParam);
-	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  virtual void DoDataExchange(CDataExchange *pDX); // DDX/DDV support
+                                                   //}}AFX_VIRTUAL
 
+  // Implementation
+protected:
+  // Generated message map functions
+  //{{AFX_MSG(CJoystickTab)
+  virtual BOOL OnInitDialog();
+  afx_msg void OnBtnCalibrate();
+  afx_msg void OnBtnDetect();
+  afx_msg void OnSelchangeJoystickList();
+  afx_msg LRESULT OnCommandHelp(WPARAM wParam, LPARAM lParam);
+  afx_msg BOOL OnHelpInfo(HELPINFO *pHelpInfo);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

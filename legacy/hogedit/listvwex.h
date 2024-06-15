@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // ListVwEx.h : interface of the CListViewEx class
 //
@@ -31,70 +31,70 @@
 // See these sources for detailed information regarding the
 // Microsoft Foundation Classes product.
 
-class CListViewEx : public CListView
-{
-	DECLARE_DYNCREATE(CListViewEx)
+class CListViewEx : public CListView {
+  DECLARE_DYNCREATE(CListViewEx)
 
-// Construction
+  // Construction
 public:
-	CListViewEx();
+  CListViewEx();
 
-// Attributes
+  // Attributes
 protected:
-	BOOL m_bFullRowSel;
+  BOOL m_bFullRowSel;
 
 public:
-	BOOL SetFullRowSel(BOOL bFillRowSel);
-	BOOL GetFullRowSel();
+  BOOL SetFullRowSel(BOOL bFillRowSel);
+  BOOL GetFullRowSel();
 
-	BOOL m_bClientWidthSel;
+  BOOL m_bClientWidthSel;
 
-// Overrides
+  // Overrides
 protected:
-	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+  virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
 
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CListViewEx)
-	public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	protected:
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CListViewEx)
 public:
-	virtual ~CListViewEx();
+  virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
+
+protected:
+  //}}AFX_VIRTUAL
+
+  // Implementation
+public:
+  virtual ~CListViewEx();
 #ifdef _DEBUG
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void Dump(CDumpContext &dc) const;
 #endif
 
 protected:
-	static LPCTSTR MakeShortString(CDC* pDC, LPCTSTR lpszLong, int nColumnLen, int nOffset);
-	void RepaintSelectedItems();
+  static LPCTSTR MakeShortString(CDC *pDC, LPCTSTR lpszLong, int nColumnLen, int nOffset);
+  void RepaintSelectedItems();
 
-// Implementation - client area width
-	int m_cxClient;
+  // Implementation - client area width
+  int m_cxClient;
 
-// Implementation - state icon width
-	int m_cxStateImageOffset;
-	afx_msg LRESULT OnSetImageList(WPARAM wParam, LPARAM lParam);
+  // Implementation - state icon width
+  int m_cxStateImageOffset;
+  afx_msg LRESULT OnSetImageList(WPARAM wParam, LPARAM lParam);
 
-// Implementation - list view colors
-	COLORREF m_clrText;
-	COLORREF m_clrTextBk;
-	COLORREF m_clrBkgnd;
-	afx_msg LRESULT OnSetTextColor(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnSetTextBkColor(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnSetBkColor(WPARAM wParam, LPARAM lParam);
+  // Implementation - list view colors
+  COLORREF m_clrText;
+  COLORREF m_clrTextBk;
+  COLORREF m_clrBkgnd;
+  afx_msg LRESULT OnSetTextColor(WPARAM wParam, LPARAM lParam);
+  afx_msg LRESULT OnSetTextBkColor(WPARAM wParam, LPARAM lParam);
+  afx_msg LRESULT OnSetBkColor(WPARAM wParam, LPARAM lParam);
 
-// Generated message map functions
+  // Generated message map functions
 protected:
-	//{{AFX_MSG(CListViewEx)
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnPaint();
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg void OnKillFocus(CWnd* pNewWnd);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CListViewEx)
+  afx_msg void OnSize(UINT nType, int cx, int cy);
+  afx_msg void OnPaint();
+  afx_msg void OnSetFocus(CWnd *pOldWnd);
+  afx_msg void OnKillFocus(CWnd *pNewWnd);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

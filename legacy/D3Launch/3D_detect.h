@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -25,31 +25,30 @@
  * Code to detect what 3d cards you have
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 6     10/15/98 7:30p Nate
- * 
+ *
  * 5     10/12/98 7:13p Nate
  * Fixed several bugs.
- * 
+ *
  * 4     9/01/98 7:15p Nate
  * Major Revision #2
- * 
+ *
  * 3     8/05/98 11:54a Nate
  * Initial Version
- * 
+ *
  * 2     7/27/98 11:46a Nate
  * Added D3Launch
- * 
+ *
  * 1     7/27/98 11:45a Nate
- * 
+ *
  * 2     3/07/98 2:55p John
  * Added tabs for different devices in setup
- * 
+ *
  * 1     2/18/98 4:07p John
  *
  * $NoKeywords: $
  */
-
 
 #ifndef _3D_DETECT_H
 #define _3D_DETECT_H
@@ -59,20 +58,19 @@
 #define MAX_CARDS 16
 
 // The list of rendering device types
-enum RendererType
-{
-	RENDERER_SOFTWARE_8BIT,
-	RENDERER_SOFTWARE_16BIT,
-	RENDERER_OPENGL,
-	RENDERER_DIRECT3D,
-	RENDERER_GLIDE,
-	RENDERER_NONE
+enum RendererType {
+  RENDERER_SOFTWARE_8BIT,
+  RENDERER_SOFTWARE_16BIT,
+  RENDERER_OPENGL,
+  RENDERER_DIRECT3D,
+  RENDERER_GLIDE,
+  RENDERER_NONE
 };
 
 // The structure for a 3D device
 struct card3d {
-	char name[1024];
-	RendererType renderer_type;
+  char name[1024];
+  RendererType renderer_type;
 };
 
 extern card3d Cards[MAX_CARDS];

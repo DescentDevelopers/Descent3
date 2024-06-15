@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -22,34 +22,34 @@
  * $Date: 2003-08-26 03:57:56 $
  * $Author: kevinb $
  *
- * 
+ *
  *
  * $Log: not supported by cvs2svn $
- * 
+ *
  * 10    10/30/98 11:15a Nate
  * Added support for modification of hog files.
- * 
+ *
  * 9     10/28/98 11:24a Nate
  * Added command line auto-processing (create hog from a rib)
- * 
+ *
  * 8     9/17/98 4:29p Nate
  * Added Import Directory option.
- * 
+ *
  * 7     8/16/98 4:22p Nate
  * Added message deferal and new hog info dialog
- * 
+ *
  * 6     8/14/98 6:04p Nate
  * Added number of files field to status bar.
- * 
+ *
  * 5     8/14/98 4:38p Nate
  * Fixed a few minor bugs and added better error reporting
- * 
+ *
  * 4     8/14/98 1:01p Nate
  * Added better error reporting for the HogEditor
- * 
+ *
  * 3     7/22/98 2:38p Nate
  * Added Modified File prompt when exiting
- * 
+ *
  * 2     7/15/98 12:31p Nate
  * Initial version
  *
@@ -67,10 +67,10 @@
 #endif // _MSC_VER >= 1000
 
 #ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
+#error include 'stdafx.h' before including this file for PCH
 #endif
 
-#include "resource.h"       // main symbols
+#include "resource.h" // main symbols
 
 #define HOG_EDIT_TITLE "The Hog Farmer v1.0"
 
@@ -79,43 +79,41 @@ void ProcessMessages(void);
 void UpdateTotalFiles(int num_files);
 void UpdateStatusBar(char *msg);
 
-extern	bool DocModified;			// is document modified.
-extern	CStatusBar *MainStatusBar;	// pointer to the main status bar
-extern	CWaitCursor *WaitCursor;	// pointer to a remote wait cursor
+extern bool DocModified;          // is document modified.
+extern CStatusBar *MainStatusBar; // pointer to the main status bar
+extern CWaitCursor *WaitCursor;   // pointer to a remote wait cursor
 
 // Globals for automated hog file creation (from a given rib file)
 extern CString AutoRibFilename;
 extern CString AutoHogFilename;
 extern bool DoAutoProcess;
-extern bool	UseCurrentHogFilename;
+extern bool UseCurrentHogFilename;
 
 /////////////////////////////////////////////////////////////////////////////
 // CHogEditApp:
 // See HogEdit.cpp for the implementation of this class
 //
 
-class CHogEditApp : public CWinApp
-{
+class CHogEditApp : public CWinApp {
 public:
-	CHogEditApp();
+  CHogEditApp();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CHogEditApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CHogEditApp)
+public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 
-// Implementation
+  // Implementation
 
-	//{{AFX_MSG(CHogEditApp)
-	afx_msg void OnAppAbout();
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CHogEditApp)
+  afx_msg void OnAppAbout();
+  // NOTE - the ClassWizard will add and remove member functions here.
+  //    DO NOT EDIT what you see in these blocks of generated code !
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
-
 
 /////////////////////////////////////////////////////////////////////////////
 
