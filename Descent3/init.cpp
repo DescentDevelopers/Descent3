@@ -2050,7 +2050,7 @@ void SetupTempDirectory(void) {
   mprintf(0, "Temp Directory Set To: \"%s\"\n", Descent3_temp_directory);
 
   // Lock the directory
-  int lock_res = ddio_CreateLockFile(Descent3_temp_directory);
+  int lock_res = ddio_CreateLockFile(std::filesystem::path(Descent3_temp_directory));
   switch (lock_res) {
   case 1:
     mprintf(0, "Lock file created in temp dir\n");
