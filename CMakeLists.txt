@@ -80,7 +80,10 @@ add_custom_command(
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
-install(FILES README.md LICENSE DESTINATION ${CMAKE_INSTALL_DOCDIR})
+install(
+  FILES LICENSE README.md THIRD_PARTY.md
+  DESTINATION ${CMAKE_INSTALL_DOCDIR}
+)
 
 # rebuild version.hpp every time
 add_custom_target(get_git_hash ALL
