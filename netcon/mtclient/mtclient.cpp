@@ -1349,11 +1349,11 @@ int MainMultiplayerMenu() {
           // if(pcount)
           {
             if (!pcount) {
-              static char quietWarning[5] = "";
-              pcount = quietWarning;
+              pcount = (char *)"";
+            } else {
+              // pcount++;
+              *pcount = '\0';
             }
-            // pcount++;
-            *pcount = '\0';
 
             // 17 is the magic number we want all channel names to align with
             memset(chan_info[i].name, 0, 19);
