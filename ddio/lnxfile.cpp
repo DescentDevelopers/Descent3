@@ -691,16 +691,6 @@ bool ddio_GetFullPath(char *full_path, const char *rel_path) {
   return 1;
 }
 
-// Renames file
-// Returns true on success or false on an error
-bool ddio_RenameFile(char *oldfile, char *newfile) {
-  int rcode = rename(oldfile, newfile);
-  if (!rcode)
-    return true;
-  else
-    return false;
-}
-
 // Generates a temporary filename based on the prefix, and basedir
 // Parameters:
 //		basedir - directory to put the files

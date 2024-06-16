@@ -556,16 +556,6 @@ bool ddio_GetFullPath(char *full_path, const char *rel_path) {
   return 1;
 }
 
-// Renames file
-// Returns true on success or false on an error
-bool ddio_RenameFile(char *oldfile, char *newfile) {
-  int rcode = rename(oldfile, newfile);
-  if (!rcode)
-    return true;
-  else
-    return false;
-}
-
 // Give a volume label to look for, and if it's found returns a path
 // If it isn't found, return NULL (used to return "")
 const char *ddio_GetCDDrive(const char *vol) {
