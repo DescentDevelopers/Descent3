@@ -606,7 +606,6 @@ bool ddio_CheckProcess(int pid) {
     CloseHandle(proc);
     if (obj_ret == WAIT_TIMEOUT) {
       // this process exists still
-      ddio_SetWorkingDir(old_directory);
       return true;
     }
   }

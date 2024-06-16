@@ -16,160 +16,126 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <array>
 #include <filesystem>
+#include <fstream>
+#include <iterator>
 
+#include "IOOps.h"
 #include "ddio.h"
-#include "mono.h"
+#include "pserror.h"
 
-int ddio_CheckLockFile(const std::filesystem::path& dir, int pid) {
-  bool found_lock_file_in_dir;
-  FILE *file;
+const std::array<char, 4> LOCK_TAG = {'L', 'O', 'C', 'K'};
 
-  std::filesystem::path lockfile = dir / ".lock";
-  mprintf(0, "LockFile: Checking [%s]...", lockfile.c_str());
-  file = fopen(lockfile.c_str(), "rb");
+struct LockFileContent {
+  std::array<char, 4> tag = LOCK_TAG;
+  int32_t pid = -1;
+};
 
-  if (!file) {
-    // File exists, but couldn't open it
-    if (errno == EACCES) {
-      return -2;
+std::ostream &operator<<(std::ostream &output, const LockFileContent &header) {
+  std::copy(header.tag.begin(), header.tag.end(), std::ostream_iterator<char>(output));
+  D3::bin_write(output, header.pid);
+  return output;
+}
+
+std::istream &operator>>(std::istream &input, LockFileContent &header) {
+  input.read(reinterpret_cast<char*>(header.tag.data()), 4);
+  D3::bin_read(input, header.pid);
+  return input;
+}
+
+bool ddio_CreateLockFile(const std::filesystem::path& dir) {
+  std::filesystem::path lock_filename = dir / ".lock";
+
+  if(!std::filesystem::is_directory(lock_filename.parent_path())) {
+    return false;
+  }
+
+  LockFileContent lock_content;
+  int32_t curr_pid = ddio_GetPID();
+
+  if (std::filesystem::exists(lock_filename)) {
+    try {
+      std::ifstream lockfile(lock_filename, std::ios::binary);
+      lockfile >> lock_content;
+      lockfile.close();
+    } catch (std::exception &e) {
+      return false;
     }
 
-    found_lock_file_in_dir = false;
-  } else {
-    found_lock_file_in_dir = true;
-
-    // check the file, see if it is a lock file
-    char c;
-    c = fgetc(file);
-    if (c != 'L') {
-      fclose(file);
-      return -2;
-    }
-    c = fgetc(file);
-    if (c != 'O') {
-      fclose(file);
-      return -2;
-    }
-    c = fgetc(file);
-    if (c != 'C') {
-      fclose(file);
-      return -2;
-    }
-    c = fgetc(file);
-    if (c != 'K') {
-      fclose(file);
-      return -2;
+    if (lock_content.tag != LOCK_TAG) {
+      return false;
     }
 
     // it appears to be a lock file, check the pid
-    pid_t f_pid;
-    fread(&f_pid, sizeof(pid_t), 1, file);
-    fclose(file);
+    ASSERT(lock_content.pid != -1);
 
     // check the file id in the file, compared to our pid
-    if (f_pid == pid) {
+    if (lock_content.pid == curr_pid) {
       // lock file already exists for the current process
-      return 3;
+      return true;
     }
 
-    if (ddio_CheckProcess(f_pid)) {
+    if (ddio_CheckProcess(lock_content.pid)) {
       // Process exists, lock still valid
-      return 0;
+      return false;
     }
 
     // the process no longer exists, we can create a lock file if needed
     // we'll delete the useless one now
-    ddio_DeleteFile(".lock");
+    // the lock file in the directory belongs to us!
+    std::filesystem::remove(lock_filename);
   }
 
-  return (found_lock_file_in_dir) ? 2 : 1;
-}
+  lock_content.pid = curr_pid;
 
-int ddio_CreateLockFile(const std::filesystem::path& dir) {
-  pid_t curr_pid = ddio_GetPID();
-
-  int result = ddio_CheckLockFile(dir, curr_pid);
-  switch (result) {
-  case 0:
-  case -1:
-  case -2:
-  case 3:
-    return result;
-  };
-
-  std::filesystem::path lockfile = dir / ".lock";
-
-  FILE *file;
-  file = fopen(lockfile.c_str(), "wb");
-  if (!file) {
-    return -3;
+  try {
+    std::ofstream lockfile(lock_filename, std::ios::binary);
+    lockfile << lock_content;
+    lockfile.close();
+  } catch (std::exception &e) {
+    return false;
   }
-
-  fputc('L', file);
-  fputc('O', file);
-  fputc('C', file);
-  fputc('K', file);
-  fwrite(&curr_pid, sizeof(pid_t), 1, file);
-
-  fclose(file);
 
   // at this point result will either be 1 or 2 from checking the lock file
   // either way, a lock file has been created
-  return result;
+  return true;
 }
 
-int ddio_DeleteLockFile(const std::filesystem::path& dir) {
-  pid_t curr_pid = ddio_GetPID();
+bool ddio_DeleteLockFile(const std::filesystem::path& dir) {
+  int32_t curr_pid = ddio_GetPID();
 
-  FILE *file;
-
-  std::filesystem::path lockfile = dir / ".lock";
-
-  file = fopen(lockfile.c_str(), "rb");
-
-  if (!file)
-    return 1;
-
-  // check the file, see if it is a lock file
-  char c;
-  c = fgetc(file);
-  if (c != 'L') {
-    fclose(file);
-    return -2;
-  }
-  c = fgetc(file);
-  if (c != 'O') {
-    fclose(file);
-    return -2;
-  }
-  c = fgetc(file);
-  if (c != 'C') {
-    fclose(file);
-    return -2;
-  }
-  c = fgetc(file);
-  if (c != 'K') {
-    fclose(file);
-    return -2;
+  std::filesystem::path lock_filename = dir / ".lock";
+  if (!std::filesystem::exists(lock_filename)) {
+    return true;
   }
 
-  // it appears to be a lock file, check the pid
-  pid_t f_pid;
-  fread(&f_pid, sizeof(pid_t), 1, file);
-  fclose(file);
+  LockFileContent lock_content;
+  try {
+    std::ifstream lockfile(lock_filename, std::ios::binary);
+    lockfile >> lock_content;
+    lockfile.close();
+  } catch (std::exception &e) {
+    return false;
+  }
+
+  if (lock_content.tag != LOCK_TAG) {
+    return false;
+  }
+
+  ASSERT(lock_content.pid != -1);
 
   // check the file id in the file, compared to our pid
-  if (f_pid != curr_pid) {
+  if (lock_content.pid != curr_pid) {
     // it doesn't belong to
-    return 0;
+    return false;
   }
 
   std::error_code ec;
   // the lock file in the directory belongs to us!
-  if (!std::filesystem::remove(lockfile, ec)) {
-    return -3;
+  if (!std::filesystem::remove(lock_filename, ec)) {
+    return false;
   }
 
-  return 1;
+  return true;
 }

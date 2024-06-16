@@ -424,44 +424,19 @@ bool ddio_CheckProcess(int pid);
 int ddio_GetPID();
 
 /**
- * Checks to see if a lock file is located in the specified directory.
- * @param dir Directory for which the lock file should be checked
- * @param pid PID of current process
- * @return
- * 1: Lock file doesn't exist.
- * 2: Lock file was in a directory, but it belonged to a process that no longer exists, so a lock file _can_ be made
- * in the directory.
- * 3: Lock file for this process already exists.
- * 0: Lock file currently exists in directory.
- * -1: Illegal directory.
- * -2: There is a lock file in the directory, but it is in an illegal format.
- */
-int ddio_CheckLockFile(const std::filesystem::path& dir, int pid);
-
-/**
- * Creates a lock file in the specified directory
+ * Creates a lock file in the specified directory. Before creation function
+ * checks if lockfile already created by another process.
  * @param dir Directory for which the lock file should be created in
- * @return
- * 1: Lock file created.
- * 2: Lock file created (there was a lock file in that directory, but it belonged to a process that no longer exists)
- * 3: Lock file for this process already exists
- * 0: Lock file not created, a lock file currently exists in the directory
- * -1: Illegal directory
- * -2: There is a lock file in the directory, but it is in an illegal format
- * -3: Unable to create lock file
+ * @return true if lock file successfully created, false otherwise (unable to
+ * create, lock file already created by another process etc).
  */
-int ddio_CreateLockFile(const std::filesystem::path& dir);
+bool ddio_CreateLockFile(const std::filesystem::path& dir);
 
 /**
  * Deletes a lock file (for the current process) in the specified directory
  * @param dir Directory for which the lock file should be deleted from
- * @return
- * 1: Lock file deleted.
- * 0: Lock file not deleted, the lock file in the directory does not belong to our process.
- * -1: Illegal directory.
- * -2: A lock file exists in the directory, but wasn't deleted...illegal format.
- * -3: Unable to delete file.
+ * @return true if lock file successfully deleted, false otherwise
  */
-int ddio_DeleteLockFile(const std::filesystem::path& dir);
+bool ddio_DeleteLockFile(const std::filesystem::path& dir);
 
 #endif
