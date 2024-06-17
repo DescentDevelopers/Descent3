@@ -97,6 +97,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <filesystem>
 
 #include "pstypes.h"
 
@@ -147,7 +148,7 @@ bool cf_IsFileInHog(const char *filename, const char *hogname);
 // NOTE:	libname must be valid for the entire execution of the program.  Therefore, it should either
 //			be a fully-specified path name, or the current directory must not change.
 // Returns: 0 if error, else library handle that can be used to close the library
-int cf_OpenLibrary(const char *libname);
+int cf_OpenLibrary(const std::filesystem::path& libname);
 
 // Closes a library file.
 // Parameters:  handle: the handle returned by cf_OpenLibrary()
@@ -178,7 +179,7 @@ void cf_ClearAllSearchPaths();
 // Parameters:	filename - the name if the file, with or without a path
 //					mode - the standard C mode string
 // Returns:		the CFile handle, or NULL if file not opened
-CFILE *cfopen(const char *filename, const char *mode);
+CFILE *cfopen(const std::filesystem::path& filename, const char *mode);
 
 // Opens a file for reading in a library, given the library id.
 // Works just like cfopen, except it assumes "rb" mode and forces the file to be
@@ -210,7 +211,7 @@ int cfeof(CFILE *cfp);
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
-int cfexist(const char *filename);
+int cfexist(const std::filesystem::path& filename);
 
 // Reads the specified number of bytes from a file into the buffer
 // DO NOT USE THIS TO READ STRUCTURES.  This function is for byte
