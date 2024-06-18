@@ -139,6 +139,9 @@ extern nw_RegisterCallback_fp DLLnw_RegisterCallback;
 typedef int (*nw_DoReceiveCallbacks_fp)();
 extern nw_DoReceiveCallbacks_fp DLLnw_DoReceiveCallbacks;
 
+typedef int (*nw_SendWithID_fp)(uint8_t id, uint8_t *data, int len, network_address *who_to);
+extern nw_SendWithID_fp DLLnw_SendWithID;
+
 #if (defined(LOGGER) && (!defined(RELEASE)))
 #define DLLmprintf(...) DLLDebug_ConsolePrintf(__VA_ARGS__)
 #else
@@ -266,6 +269,23 @@ void IdleGameTracker() {
   }
 }
 
+static void SendClientHolePunch(SOCKADDR_IN *addr) {
+  game_packet_header HolePunchAck;
+  network_address send_address;
+
+  memset(&send_address, 0, sizeof(network_address));
+  memcpy(send_address.address, &addr->sin_addr, 4);
+  send_address.port = htons(addr->sin_port);
+  send_address.connection_type = NP_TCP;
+
+  HolePunchAck.game_type = GameType;
+  HolePunchAck.type = INTEL_INT(GNT_NAT_HOLE_PUNCH_ACK);
+  HolePunchAck.len = INTEL_INT(GAME_HEADER_ONLY_SIZE);
+  HolePunchAck.sig = 0; // to make sure tracker ignores this packet when it's ACK'd there
+
+  DLLnw_SendWithID(PXO_NETID_GAME_TRACKER, (uint8_t *)&HolePunchAck, INTEL_INT(HolePunchAck.len), &send_address);
+}
+
 void HandleGamePacket(uint8_t *data, int len, network_address *from) {
 
   memcpy(&inpacket, data, sizeof(inpacket));
@@ -292,6 +312,20 @@ void HandleGamePacket(uint8_t *data, int len, network_address *from) {
           memcpy(&GameBuffer[i], inpacket.data, len - GAME_HEADER_ONLY_SIZE);
           i = MAX_GAME_BUFFERS + 1;
         }
+      }
+      break;
+    case GNT_NAT_HOLE_PUNCH_REQ:
+      if (len == (GAME_HEADER_ONLY_SIZE+sizeof(hole_punch_addr_ip6))) {
+        // we don't support IPv6 yet so skip this one
+      } else {
+        SOCKADDR_IN nataddr;
+
+        auto ipv4 = reinterpret_cast<hole_punch_addr *>(&inpacket.data);
+        nataddr.sin_addr.s_addr = ipv4->addr;
+        nataddr.sin_port = ipv4->port;
+        nataddr.sin_family = AF_INET;
+
+        SendClientHolePunch(&nataddr);
       }
       break;
     }

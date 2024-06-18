@@ -133,6 +133,9 @@
 #define GNT_GAMEUPDATE_TINY 9
 #define GNT_GAMELIST_LITE_DATA 10
 #define GNT_GAMELIST_LITE_FILTER_REQ 11
+// NOTE: IDs 12-16 are special for Descent3 and shouldn't be used here!!
+#define GNT_NAT_HOLE_PUNCH_REQ 17
+#define GNT_NAT_HOLE_PUNCH_ACK 18
 
 #define GT_FREESPACE 1
 #define GT_DESCENT3 2
@@ -209,6 +212,17 @@ struct game_list {
   uint8_t game_type;
   uint32_t game_server[MAX_GAME_LISTS_PER_PACKET * 4];
   uint16_t game_port[MAX_GAME_LISTS_PER_PACKET * 4];
+};
+
+struct hole_punch_addr {
+  uint32_t addr;
+  uint16_t port;
+};
+
+struct hole_punch_addr_ip6 {
+  // in6_addr addr;
+  uint8_t addr[16]; // NOTE: replace with above line that uses in6_addr once IPv6 is supported
+  uint16_t port;
 };
 
 // Function prototypes
