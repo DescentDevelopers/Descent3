@@ -701,7 +701,7 @@ int mng_InitLocalTables() {
   cf_SetSearchPath(LocalSoundsDir);
   cf_SetSearchPath(LocalRoomsDir);
   cf_SetSearchPath(LocalBriefingDir);
-  cf_SetSearchPath(LocalScriptDir, { "cpp", "dll", "def", "msg", "so", "msl", "dylib" });
+  cf_SetSearchPath(LocalScriptDir, { ".cpp", ".dll", ".def", ".msg", ".so", ".msl", ".dylib" });
   cf_SetSearchPath(LocalMiscDir);
   cf_SetSearchPath(LocalArtDir);
   cf_SetSearchPath(LocalMusicDir);
