@@ -235,7 +235,7 @@ void cf_ClearAllSearchPaths() {
  * @param libhandle
  * @return
  */
-CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
+CFILE *cf_OpenFileInLibrary(const std::filesystem::path& filename, int libhandle) {
   if (libhandle <= 0)
     return nullptr;
 
@@ -259,7 +259,7 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
 
   do {
     i = (first + last) / 2;
-    c = stricmp(filename, lib->entries[i]->name); // compare to current
+    c = stricmp(filename.u8string().c_str(), lib->entries[i]->name); // compare to current
     if (c == 0) {                                 // found it
       found = 1;
       break;
@@ -285,8 +285,8 @@ CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle) {
   } else {
     fp = fopen(lib->name.u8string().c_str(), "rb");
     if (!fp) {
-      mprintf(1, "Error opening library <%s> when opening file <%s>; errno=%d.", lib->name.u8string().c_str(), filename,
-              errno);
+      mprintf(1, "Error opening library <%s> when opening file <%s>; errno=%d.",
+              lib->name.u8string().c_str(), filename.u8string().c_str(), errno);
       Int3();
       return nullptr;
     }
@@ -1146,10 +1146,8 @@ uint32_t cf_CalculateFileCRC(CFILE *infile) {
   return crc ^ 0xffffffffl;
 }
 
-uint32_t cf_GetfileCRC(char *src) {
-  CFILE *infile;
-
-  infile = (CFILE *)cfopen(src, "rb");
+uint32_t cf_GetfileCRC(const std::filesystem::path& src) {
+  CFILE *infile = cfopen(src, "rb");
   if (!infile)
     return 0xFFFFFFFF;
 
@@ -1234,11 +1232,11 @@ void cf_LibraryFindClose() {
   cfile_search_ispattern = false;
 }
 
-bool cf_IsFileInHog(const char *filename, const char *hogname) {
+bool cf_IsFileInHog(const std::filesystem::path& filename, const std::filesystem::path& hogname) {
   std::shared_ptr<library> lib = Libraries;
 
   while (lib) {
-    if (stricmp(lib->name.u8string().c_str(), hogname) == 0) {
+    if (stricmp(lib->name.u8string().c_str(), hogname.u8string().c_str()) == 0) {
       // Now look for filename
       CFILE *cf;
       cf = cf_OpenFileInLibrary(filename, lib->handle);

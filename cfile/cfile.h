@@ -142,7 +142,7 @@ enum CFileExitStatus {
 };
 
 // See if a file is in a hog
-bool cf_IsFileInHog(const char *filename, const char *hogname);
+bool cf_IsFileInHog(const std::filesystem::path& filename, const std::filesystem::path& hogname);
 
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
 // Parameters:  libname - the path & filename of the HOG file
@@ -191,7 +191,7 @@ CFILE *cfopen(const std::filesystem::path& filename, const char *mode);
 // Works just like cfopen, except it assumes "rb" mode and forces the file to be
 // opened from the given library.  Returns the CFILE handle or NULL if file
 // couldn't be found or open.
-CFILE *cf_OpenFileInLibrary(const char *filename, int libhandle);
+CFILE *cf_OpenFileInLibrary(const std::filesystem::path& filename, int libhandle);
 
 // Returns the length of the specified file
 // Parameters: cfp - the file pointer returned by cfopen()
@@ -325,7 +325,7 @@ void cf_ChangeFileAttributes(const char *name, int attr);
 void cf_Rewind(CFILE *fp);
 
 // Calculates a 32 bit CRC
-uint32_t cf_GetfileCRC(char *src);
+uint32_t cf_GetfileCRC(const std::filesystem::path& src);
 uint32_t cf_CalculateFileCRC(CFILE *fp); // same as cf_GetfileCRC, except works with CFILE pointers
 
 // the following cf_LibraryFind function are similar to the ddio_Find functions as they look
