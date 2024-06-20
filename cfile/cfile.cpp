@@ -68,8 +68,8 @@ struct ext_entry {
 
 // entry in list of paths
 struct path_entry {
-  char path[_MAX_PATH];
-  uint8_t specific; // if non-zero, only for specific extensions
+  std::filesystem::path path;
+  bool specific = false; // if non-zero, only for specific extensions
 };
 
 #define MAX_PATHS 100
@@ -227,15 +227,15 @@ int cf_SetSearchPath(const char *path, ...) {
   if (N_paths >= MAX_PATHS)
     return 0;
   // Get & store full path
-  ddio_GetFullPath(paths[N_paths].path, path);
+  paths[N_paths].path = absolute(std::filesystem::path(path));
   // Set extenstions for this path
   va_list exts;
   va_start(exts, path);
   const char *ext = va_arg(exts, const char *);
   if (ext == nullptr)
-    paths[N_paths].specific = 0;
+    paths[N_paths].specific = false;
   else {
-    paths[N_paths].specific = 1;
+    paths[N_paths].specific = true;
     while (ext != nullptr) {
       if (N_extensions >= MAX_EXTENSIONS) {
         va_end(exts);
