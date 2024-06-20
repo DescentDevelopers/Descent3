@@ -474,7 +474,7 @@ d3d_device *d3d_PollDevices() {
       int templen = 255;
       mprintf(0, "More than one D3D device found!\n");
 
-      Database->read("RenderingDeviceName", tempbuffer, &templen);
+      Database()->read("RenderingDeviceName", tempbuffer, &templen);
 
       int done = 0;
       for (i = 0; i < Num_d3d_devices && !done; i++) {

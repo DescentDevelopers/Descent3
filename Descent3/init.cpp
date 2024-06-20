@@ -1126,81 +1126,81 @@ void SaveGameSettings() {
   int tempint;
 
   snprintf(tempbuffer, sizeof(tempbuffer), "%f", Render_preferred_state.gamma);
-  Database->write("RS_gamma", tempbuffer, strlen(tempbuffer) + 1);
+  Database()->write("RS_gamma", tempbuffer, strlen(tempbuffer) + 1);
 
   snprintf(tempbuffer, sizeof(tempbuffer), "%f", Sound_system.GetMasterVolume());
-  Database->write("SND_mastervol", tempbuffer, strlen(tempbuffer) + 1);
+  Database()->write("SND_mastervol", tempbuffer, strlen(tempbuffer) + 1);
 
   snprintf(tempbuffer, sizeof(tempbuffer), "%f", D3MusicGetVolume());
-  Database->write("MUS_mastervol", tempbuffer, strlen(tempbuffer) + 1);
+  Database()->write("MUS_mastervol", tempbuffer, strlen(tempbuffer) + 1);
 
   snprintf(tempbuffer, sizeof(tempbuffer), "%f", Detail_settings.Pixel_error);
-  Database->write("RS_pixelerror", tempbuffer, strlen(tempbuffer) + 1);
+  Database()->write("RS_pixelerror", tempbuffer, strlen(tempbuffer) + 1);
 
   snprintf(tempbuffer, sizeof(tempbuffer), "%f", Detail_settings.Terrain_render_distance / ((float)TERRAIN_SIZE));
-  Database->write("RS_terraindist", tempbuffer, strlen(tempbuffer) + 1);
+  Database()->write("RS_terraindist", tempbuffer, strlen(tempbuffer) + 1);
 
-  Database->write("Dynamic_Lighting", Detail_settings.Dynamic_lighting);
+  Database()->write("Dynamic_Lighting", Detail_settings.Dynamic_lighting);
 
 #ifdef _DEBUG
-  Database->write("Outline_mode", Outline_mode);
-  Database->write("Lighting_on", Lighting_on);
-  Database->write("Render_floating_triggers", Render_floating_triggers);
+  Database()->write("Outline_mode", Outline_mode);
+  Database()->write("Lighting_on", Lighting_on);
+  Database()->write("Render_floating_triggers", Render_floating_triggers);
 #endif
 
-  Database->write("TerrLeveling", Default_player_terrain_leveling);
-  Database->write("RoomLeveling", Default_player_room_leveling);
-  // Database->write("Terrain_casting",Detail_settings.Terrain_casting);
-  Database->write("Specmapping", Detail_settings.Specular_lighting);
-  Database->write("FastHeadlight", Detail_settings.Fast_headlight_on);
-  Database->write("MirrorSurfaces", Detail_settings.Mirrored_surfaces);
-  Database->write("MissileView", Missile_camera_window);
-  Database->write("RS_vsync", Render_preferred_state.vsync_on);
-  Database->write("DetailScorchMarks", Detail_settings.Scorches_enabled);
-  Database->write("DetailWeaponCoronas", Detail_settings.Weapon_coronas_enabled);
-  Database->write("DetailFog", Detail_settings.Fog_enabled);
-  Database->write("DetailCoronas", Detail_settings.Coronas_enabled);
-  Database->write("DetailProcedurals", Detail_settings.Procedurals_enabled);
-  Database->write("DetailObjectComp", Detail_settings.Object_complexity);
-  Database->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
+  Database()->write("TerrLeveling", Default_player_terrain_leveling);
+  Database()->write("RoomLeveling", Default_player_room_leveling);
+  // Database()->write("Terrain_casting",Detail_settings.Terrain_casting);
+  Database()->write("Specmapping", Detail_settings.Specular_lighting);
+  Database()->write("FastHeadlight", Detail_settings.Fast_headlight_on);
+  Database()->write("MirrorSurfaces", Detail_settings.Mirrored_surfaces);
+  Database()->write("MissileView", Missile_camera_window);
+  Database()->write("RS_vsync", Render_preferred_state.vsync_on);
+  Database()->write("DetailScorchMarks", Detail_settings.Scorches_enabled);
+  Database()->write("DetailWeaponCoronas", Detail_settings.Weapon_coronas_enabled);
+  Database()->write("DetailFog", Detail_settings.Fog_enabled);
+  Database()->write("DetailCoronas", Detail_settings.Coronas_enabled);
+  Database()->write("DetailProcedurals", Detail_settings.Procedurals_enabled);
+  Database()->write("DetailObjectComp", Detail_settings.Object_complexity);
+  Database()->write("DetailPowerupHalos", Detail_settings.Powerup_halos);
 
-  Database->write("RS_resolution", Game_video_resolution);
+  Database()->write("RS_resolution", Game_video_resolution);
 
-  Database->write("RS_bitdepth", Render_preferred_bitdepth);
-  Database->write("RS_bilear", Render_preferred_state.filtering);
-  Database->write("RS_mipping", Render_preferred_state.mipping);
-  Database->write("RS_color_model", Render_state.cur_color_model);
-  Database->write("RS_light", Render_state.cur_light_state);
-  Database->write("RS_texture_quality", Render_state.cur_texture_quality);
+  Database()->write("RS_bitdepth", Render_preferred_bitdepth);
+  Database()->write("RS_bilear", Render_preferred_state.filtering);
+  Database()->write("RS_mipping", Render_preferred_state.mipping);
+  Database()->write("RS_color_model", Render_state.cur_color_model);
+  Database()->write("RS_light", Render_state.cur_light_state);
+  Database()->write("RS_texture_quality", Render_state.cur_texture_quality);
 
-  Database->write("VoicePowerup", PlayPowerupVoice);
-  Database->write("VoiceAll", PlayVoices);
+  Database()->write("VoicePowerup", PlayPowerupVoice);
+  Database()->write("VoiceAll", PlayVoices);
 
   // Write out force feedback
-  Database->write("EnableJoystickFF", D3Use_force_feedback);
-  Database->write("ForceFeedbackAutoCenter", D3Force_auto_center);
+  Database()->write("EnableJoystickFF", D3Use_force_feedback);
+  Database()->write("ForceFeedbackAutoCenter", D3Force_auto_center);
   uint8_t force_gain;
   if (D3Force_gain < 0.0f)
     D3Force_gain = 0.0f;
   if (D3Force_gain > 1.0f)
     D3Force_gain = 1.0f;
   force_gain = (uint8_t)((100.0f * D3Force_gain) + 0.5f);
-  Database->write("ForceFeedbackGain", force_gain);
+  Database()->write("ForceFeedbackGain", force_gain);
 
 #ifndef RELEASE // never save this value out in release.
-  Database->write("SoundMixer", Sound_mixer);
-  Database->write("PreferredRenderer", PreferredRenderer);
+  Database()->write("SoundMixer", Sound_mixer);
+  Database()->write("PreferredRenderer", PreferredRenderer);
 #endif
 
   tempint = Sound_quality;
-  Database->write("SoundQuality", tempint);
+  Database()->write("SoundQuality", tempint);
 
-  Database->write("SoundQuantity", Sound_system.GetLLSoundQuantity());
+  Database()->write("SoundQuantity", Sound_system.GetLLSoundQuantity());
 
   if (Default_pilot[0] != '\0')
-    Database->write("Default_pilot", Default_pilot, strlen(Default_pilot) + 1);
+    Database()->write("Default_pilot", Default_pilot, strlen(Default_pilot) + 1);
   else
-    Database->write("Default_pilot", " ", 2);
+    Database()->write("Default_pilot", " ", 2);
 }
 
 /*
@@ -1255,7 +1255,7 @@ void LoadGameSettings() {
 
   ddio_SetKeyboardLanguage(KBLANG_AMERICAN);
 
-  if (Database->read("KeyboardType", tempbuffer, &templen)) {
+  if (Database()->read("KeyboardType", tempbuffer, &templen)) {
     if (stricmp(tempbuffer, "French") == 0) {
       ddio_SetKeyboardLanguage(KBLANG_FRENCH);
     } else if (stricmp(tempbuffer, "German") == 0) {
@@ -1264,57 +1264,57 @@ void LoadGameSettings() {
   }
 
   templen = TEMPBUFFERSIZE;
-  if (Database->read("RS_gamma", tempbuffer, &templen)) {
+  if (Database()->read("RS_gamma", tempbuffer, &templen)) {
     Render_preferred_state.gamma = strtod(tempbuffer, &stoptemp);
   }
   templen = TEMPBUFFERSIZE;
-  if (Database->read("SND_mastervol", tempbuffer, &templen)) {
+  if (Database()->read("SND_mastervol", tempbuffer, &templen)) {
     Sound_system.SetMasterVolume(strtod(tempbuffer, &stoptemp));
   }
   templen = TEMPBUFFERSIZE;
-  if (Database->read("MUS_mastervol", tempbuffer, &templen)) {
+  if (Database()->read("MUS_mastervol", tempbuffer, &templen)) {
     D3MusicSetVolume(strtod(tempbuffer, &stoptemp));
   }
   templen = TEMPBUFFERSIZE;
-  if (Database->read("RS_pixelerror", tempbuffer, &templen)) {
+  if (Database()->read("RS_pixelerror", tempbuffer, &templen)) {
     Detail_settings.Pixel_error = strtod(tempbuffer, &stoptemp);
   }
   templen = TEMPBUFFERSIZE;
-  if (Database->read("RS_terraindist", tempbuffer, &templen)) {
+  if (Database()->read("RS_terraindist", tempbuffer, &templen)) {
     Detail_settings.Terrain_render_distance = strtod(tempbuffer, &stoptemp) * TERRAIN_SIZE;
   }
   templen = TEMPBUFFERSIZE;
-  Database->read_int("Dynamic_Lighting", &Detail_settings.Dynamic_lighting);
+  Database()->read_int("Dynamic_Lighting", &Detail_settings.Dynamic_lighting);
 
 #ifdef _DEBUG
-  Database->read_int("Outline_mode", &Outline_mode);
-  Database->read("Lighting_on", &Lighting_on);
-  Database->read("Render_floating_triggers", &Render_floating_triggers);
+  Database()->read_int("Outline_mode", &Outline_mode);
+  Database()->read("Lighting_on", &Lighting_on);
+  Database()->read("Render_floating_triggers", &Render_floating_triggers);
 #endif
 
-  Database->read_int("TerrLeveling", &Default_player_terrain_leveling);
-  Database->read_int("RoomLeveling", &Default_player_room_leveling);
-  Database->read("Specmapping", &Detail_settings.Specular_lighting);
-  Database->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
-  Database->read_int("RS_resolution", &Game_video_resolution);
-  Database->read_int("RS_bilear", &Render_preferred_state.filtering);
-  Database->read_int("RS_mipping", &Render_preferred_state.mipping);
-  Database->read_int("RS_color_model", &Render_state.cur_color_model);
-  Database->read_int("RS_light", &Render_state.cur_light_state);
-  Database->read_int("RS_texture_quality", &Render_state.cur_texture_quality);
+  Database()->read_int("TerrLeveling", &Default_player_terrain_leveling);
+  Database()->read_int("RoomLeveling", &Default_player_room_leveling);
+  Database()->read("Specmapping", &Detail_settings.Specular_lighting);
+  Database()->read("RS_bitdepth", &Render_preferred_bitdepth, sizeof(Render_preferred_bitdepth));
+  Database()->read_int("RS_resolution", &Game_video_resolution);
+  Database()->read_int("RS_bilear", &Render_preferred_state.filtering);
+  Database()->read_int("RS_mipping", &Render_preferred_state.mipping);
+  Database()->read_int("RS_color_model", &Render_state.cur_color_model);
+  Database()->read_int("RS_light", &Render_state.cur_light_state);
+  Database()->read_int("RS_texture_quality", &Render_state.cur_texture_quality);
   // force feedback stuff
-  Database->read("EnableJoystickFF", &D3Use_force_feedback);
-  Database->read("ForceFeedbackAutoCenter", &D3Force_auto_center);
+  Database()->read("EnableJoystickFF", &D3Use_force_feedback);
+  Database()->read("ForceFeedbackAutoCenter", &D3Force_auto_center);
   uint8_t force_gain;
-  Database->read("ForceFeedbackGain", &force_gain, sizeof(force_gain));
+  Database()->read("ForceFeedbackGain", &force_gain, sizeof(force_gain));
   if (force_gain > 100)
     force_gain = 100;
   D3Force_gain = ((float)force_gain) / 100.0f;
-  Database->read_int("PreferredRenderer", &PreferredRenderer);
-  Database->read_int("MissileView", &Missile_camera_window);
-  Database->read("FastHeadlight", &Detail_settings.Fast_headlight_on);
-  Database->read("MirrorSurfaces", &Detail_settings.Mirrored_surfaces);
-  Database->read_int("RS_vsync", &Render_preferred_state.vsync_on);
+  Database()->read_int("PreferredRenderer", &PreferredRenderer);
+  Database()->read_int("MissileView", &Missile_camera_window);
+  Database()->read("FastHeadlight", &Detail_settings.Fast_headlight_on);
+  Database()->read("MirrorSurfaces", &Detail_settings.Mirrored_surfaces);
+  Database()->read_int("RS_vsync", &Render_preferred_state.vsync_on);
 
   if (FindArg("-vsync"))
     Render_preferred_state.vsync_on = true;
@@ -1323,39 +1323,39 @@ void LoadGameSettings() {
   //@@	if (Missile_camera_window==SVW_CENTER)
   //@@		Missile_camera_window=SVW_LEFT;
 
-  Database->read("VoicePowerup", &PlayPowerupVoice);
-  Database->read("VoiceAll", &PlayVoices);
+  Database()->read("VoicePowerup", &PlayPowerupVoice);
+  Database()->read("VoiceAll", &PlayVoices);
 
-  Database->read("DetailScorchMarks", &Detail_settings.Scorches_enabled);
-  Database->read("DetailWeaponCoronas", &Detail_settings.Weapon_coronas_enabled);
-  Database->read("DetailFog", &Detail_settings.Fog_enabled);
-  Database->read("DetailCoronas", &Detail_settings.Coronas_enabled);
-  Database->read("DetailProcedurals", &Detail_settings.Procedurals_enabled);
-  Database->read_int("DetailObjectComp", &tempint);
+  Database()->read("DetailScorchMarks", &Detail_settings.Scorches_enabled);
+  Database()->read("DetailWeaponCoronas", &Detail_settings.Weapon_coronas_enabled);
+  Database()->read("DetailFog", &Detail_settings.Fog_enabled);
+  Database()->read("DetailCoronas", &Detail_settings.Coronas_enabled);
+  Database()->read("DetailProcedurals", &Detail_settings.Procedurals_enabled);
+  Database()->read_int("DetailObjectComp", &tempint);
   Detail_settings.Object_complexity = tempint;
   if (Detail_settings.Object_complexity < 0 || Detail_settings.Object_complexity > 2)
     Detail_settings.Object_complexity = 1;
 
-  Database->read("DetailPowerupHalos", &Detail_settings.Powerup_halos);
+  Database()->read("DetailPowerupHalos", &Detail_settings.Powerup_halos);
 
-  if (Database->read_int("SoundMixer", &tempint))
+  if (Database()->read_int("SoundMixer", &tempint))
     Sound_mixer = tempint;
 
-  if (Database->read_int("SoundQuality", &tempint))
+  if (Database()->read_int("SoundQuality", &tempint))
     Sound_quality = tempint;
 
-  if (Database->read_int("SoundQuantity", &tempint)) {
+  if (Database()->read_int("SoundQuantity", &tempint)) {
     Sound_system.SetLLSoundQuantity(tempint);
   }
 
   Sound_card_name[0] = 0;
   templen = TEMPBUFFERSIZE;
-  if (Database->read("SoundcardName", tempbuffer, &templen)) {
+  if (Database()->read("SoundcardName", tempbuffer, &templen)) {
     strcpy(Sound_card_name, tempbuffer);
   }
 
   int len = _MAX_PATH;
-  Database->read("Default_pilot", Default_pilot, &len);
+  Database()->read("Default_pilot", Default_pilot, &len);
 
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)
@@ -1363,7 +1363,7 @@ void LoadGameSettings() {
   int level;
   level = DETAIL_LEVEL_MED;
 
-  Database->read_int("PredefDetailSetting", &level);
+  Database()->read_int("PredefDetailSetting", &level);
   ConfigSetDetailLevel(level);
   int widtharg = FindArg("-Width");
   int heightarg = FindArg("-Height");
@@ -1566,7 +1566,7 @@ extern int Num_languages;
 void InitStringTable() {
 
   int language = LANGUAGE_ENGLISH;
-  Database->read("LanguageType", &language, sizeof(language));
+  Database()->read("LanguageType", &language, sizeof(language));
 
   if (language < 0 || language >= Num_languages) {
     Int3();

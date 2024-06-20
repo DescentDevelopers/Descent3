@@ -59,6 +59,14 @@
 
 // Construction and destruction.
 
+oeAppDatabase* Database()
+{
+  static oeLnxAppDatabase* instance = nullptr;
+  if(instance == nullptr)
+    instance = new oeLnxAppDatabase();
+  return instance;
+}
+
 oeLnxAppDatabase::oeLnxAppDatabase() {
   // Open up the database file, for reading, read in all data and keep it in memory
   // then close the database
@@ -71,16 +79,6 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   database = new CRegistry(fileName);
   database->Import();
   create_record("Version");
-}
-
-oeLnxAppDatabase::oeLnxAppDatabase(oeLnxAppDatabase *parent) {
-  char name[256];
-  CRegistry *db = parent->GetSystemRegistry();
-  db->Export();
-  database = new CRegistry("");
-  db->GetSystemName(name);
-  database->SetSystemName(name);
-  database->Import();
 }
 
 oeLnxAppDatabase::~oeLnxAppDatabase() {

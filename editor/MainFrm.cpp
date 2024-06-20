@@ -1441,9 +1441,8 @@ void CMainFrame::OnDestroy() {
     delete Desktop_surf;
     Desktop_surf = NULL;
   }
-  if (Database) {
-    delete Database;
-    Database = NULL;
+  if (auto ptr = Database(); ptr != nullptr) {
+    delete ptr;
   }
   if (Descent) {
     delete Descent;

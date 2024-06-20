@@ -178,15 +178,7 @@ public:
   }
 };
 
-class oeD3Win32Database : public oeWin32AppDatabase {
-public:
-  oeD3Win32Database();
-};
-
-//	---------------------------------------------------------------------------
-//	D3WinDatabase operating system specific initialization
-
-oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
+void init_database(void) {
   char path[_MAX_PATH];
   bool res;
 
@@ -206,9 +198,9 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
   lstrcat(m_Basepath, "\\Descent3");
 #endif
 
-  res = lookup_record(m_Basepath);
+  res = Database()->lookup_record(m_Basepath);
   if (!res) {
-    res = create_record(m_Basepath);
+    res = Database()->create_record(m_Basepath);
     if (!res) {
       Error("Failed to create registry key for %s", PRODUCT_NAME);
     }
@@ -217,9 +209,9 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
   // create version key.
   lstrcpy(path, m_Basepath);
   lstrcat(path, "\\Version");
-  res = lookup_record(path);
+  res = Database()->lookup_record(path);
   if (!res) {
-    res = create_record(path);
+    res = Database()->create_record(path);
     if (!res) {
       Error("Failed to create registry key for %s", PRODUCT_NAME);
     }
@@ -228,16 +220,16 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
 #ifdef EDITOR // Maybe this code should be in the editor startup
   lstrcpy(path, m_Basepath);
   lstrcat(path, "\\editor");
-  res = lookup_record(path);
+  res = Database()->lookup_record(path);
   if (!res) {
-    res = create_record(path);
+    res = Database()->create_record(path);
     if (!res) {
       Error("Failed to create registry key for %s.", PRODUCT_NAME);
     }
   }
 #endif
 
-  res = lookup_record(m_Basepath);
+  res = Database()->lookup_record(m_Basepath);
 
   // Get net directory for manage system
   char netpath[_MAX_PATH];
@@ -251,9 +243,7 @@ oeD3Win32Database::oeD3Win32Database() : oeWin32AppDatabase() {
     if (netdir)
       lstrcpy(netpath, netdir);
   }
-  write("net directory", netpath, lstrlen(netpath) + 1);
-
-  Database = this;
+  Database()->write("net directory", netpath, lstrlen(netpath) + 1);
 }
 
 bool Win32JoystickCalibrate() {
@@ -314,7 +304,7 @@ void WinMainInitEditor(unsigned hwnd, unsigned hinst) {
   appinfo.flags = OEAPP_WINDOWED;
 
   Descent = new oeWin32Application(&appinfo);
-  Database = new oeD3Win32Database;
+  init_database();
 }
 
 #else
@@ -470,8 +460,8 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
   strupr(szCmdLine);
   GatherArgs(szCmdLine);
 
-  // This must come AFTER the GatherArgs() call, because its constructer used FindArg()
-  oeD3Win32Database dbase;
+  // This must come AFTER the GatherArgs() call, because it calls FindArg()
+  init_database();
 
   no_debug_dialog = FindArg("-nocrashbox");
 
@@ -513,7 +503,7 @@ int PASCAL HandledWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR szCmdLine,
 
   // determine preinit language for resource strings
   int language = 0;
-  dbase.read_int("LanguageType", &language);
+  Database()->read_int("LanguageType", &language);
   m_resource_language = language;
 
   if (!Win32SystemCheck(hInst))

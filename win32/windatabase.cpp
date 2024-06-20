@@ -78,6 +78,14 @@
 
 //	Construction and destruction.
 
+oeAppDatabase* Database()
+{
+  static oeWin32AppDatabase* instance = nullptr;
+  if(instance == nullptr)
+    instance = new oeWin32AppDatabase();
+  return instance;
+}
+
 oeWin32AppDatabase::oeWin32AppDatabase() {
   bool res;
 
@@ -94,11 +102,6 @@ oeWin32AppDatabase::oeWin32AppDatabase() {
       mprintf(1, "Unable to create registry directory.\n");
     }
   }
-}
-
-oeWin32AppDatabase::oeWin32AppDatabase(oeWin32AppDatabase *parent) {
-  hCurKey = 0;
-  hBaseKey = parent->hCurKey;
 }
 
 oeWin32AppDatabase::~oeWin32AppDatabase() {

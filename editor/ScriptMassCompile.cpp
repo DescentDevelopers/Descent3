@@ -199,7 +199,7 @@ void CScriptMassCompile::OnBuild() {
 
 void CScriptMassCompile::OnOK() {
   UpdateData(true);
-  Database->write("EditorScriptAutoCheckin", m_AutoCheckIn);
+  Database()->write("EditorScriptAutoCheckin", m_AutoCheckIn);
   CDialog::OnOK();
 }
 
@@ -299,7 +299,7 @@ BOOL CScriptMassCompile::OnInitDialog() {
   CDialog::OnInitDialog();
 
   bool bval;
-  if (Database->read("EditorScriptAutoCheckin", &bval))
+  if (Database()->read("EditorScriptAutoCheckin", &bval))
     m_AutoCheckIn = bval;
   else
     m_AutoCheckIn = true;

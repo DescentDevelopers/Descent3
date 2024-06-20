@@ -770,32 +770,32 @@ BOOL CScriptLevelInterface::OnInitDialog() {
   bool bvalue;
 
   // restore settings
-  if (Database->read_int("EditorScriptViewType", &value)) {
+  if (Database()->read_int("EditorScriptViewType", &value)) {
     m_ViewType = value;
   } else {
     m_ViewType = 0;
   }
 
-  if (Database->read_int("EditorScriptType", &value)) {
+  if (Database()->read_int("EditorScriptType", &value)) {
     m_ScriptType = value;
   } else {
     m_ScriptType = 0;
   }
 
-  if (Database->read("EditorScriptShowNonCheckedOut", &bvalue)) {
+  if (Database()->read("EditorScriptShowNonCheckedOut", &bvalue)) {
     m_ShowNonCheckedOut = bvalue;
   } else {
     m_ShowNonCheckedOut = 0;
   }
 
-  if (Database->read("EditorAutoCheckScriptsWithLevels", &bvalue)) {
+  if (Database()->read("EditorAutoCheckScriptsWithLevels", &bvalue)) {
     m_AutoCheckScripts = bvalue;
   } else {
     m_AutoCheckScripts = 0;
   }
 
   value = 256;
-  if (!Database->read("EditorLastScript", LastScriptSelected, &value)) {
+  if (!Database()->read("EditorLastScript", LastScriptSelected, &value)) {
     LastScriptSelected[0] = '\0';
   }
 
@@ -963,11 +963,11 @@ void CScriptLevelInterface::OnOK() {
   UpdateData(true);
 
   // write out settings
-  Database->write("EditorScriptViewType", m_ViewType);
-  Database->write("EditorScriptType", m_ScriptType);
-  Database->write("EditorScriptShowNonCheckedOut", m_ShowNonCheckedOut);
-  Database->write("EditorLastScript", LastScriptSelected, strlen(LastScriptSelected) + 1);
-  Database->write("EditorAutoCheckScriptsWithLevels", m_AutoCheckScripts);
+  Database()->write("EditorScriptViewType", m_ViewType);
+  Database()->write("EditorScriptType", m_ScriptType);
+  Database()->write("EditorScriptShowNonCheckedOut", m_ShowNonCheckedOut);
+  Database()->write("EditorLastScript", LastScriptSelected, strlen(LastScriptSelected) + 1);
+  Database()->write("EditorAutoCheckScriptsWithLevels", m_AutoCheckScripts);
 
   CDialog::OnOK();
 }

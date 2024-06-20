@@ -58,15 +58,14 @@
 */
 
 class oeWin32AppDatabase : public oeAppDatabase {
+protected:
   unsigned hBaseKey; // look up from this key.
   unsigned hCurKey;  // current key for lookup
 
-protected:
   char m_Basepath[256];
-
-public:
   oeWin32AppDatabase();
-  oeWin32AppDatabase(oeWin32AppDatabase *parent);
+  friend oeAppDatabase* Database();
+public:
   virtual ~oeWin32AppDatabase();
 
   //	creates an empty classification or structure where you can store information

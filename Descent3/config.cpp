@@ -1196,7 +1196,7 @@ struct details_menu {
     parent_menu = menu;
 
     // detail level radio
-    Database->read_int("PredefDetailSetting", &Default_detail_level);
+    Database()->read_int("PredefDetailSetting", &Default_detail_level);
     iTemp = Default_detail_level;
     sheet->NewGroup(TXT_CFG_PRESETDETAILS, 0, 0);
     detail_level = sheet->AddFirstRadioButton(TXT_LOW);
@@ -1265,7 +1265,7 @@ struct details_menu {
     Detail_settings.Weapon_coronas_enabled = *weapon_coronas;
 
     Default_detail_level = *detail_level;
-    Database->write("PredefDetailSetting", Default_detail_level);
+    Database()->write("PredefDetailSetting", Default_detail_level);
 
     sheet = NULL;
   };
