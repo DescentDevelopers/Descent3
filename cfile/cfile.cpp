@@ -23,6 +23,7 @@
 #include <cerrno>
 #include <cctype>
 #include <filesystem>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -60,25 +61,12 @@ struct library {
   FILE *file = nullptr; // pointer to file for this lib, if no one using it
 };
 
-// entry in extension->path table
-struct ext_entry {
-  char ext[_MAX_EXT];
-  uint8_t pathnum;
-};
+// Map of paths. If value of entry is true, path is only for specific extensions
+std::map<std::filesystem::path, bool> paths;
 
-// entry in list of paths
-struct path_entry {
-  std::filesystem::path path;
-  bool specific = false; // if non-zero, only for specific extensions
-};
+// Map of extensions <=> relevant paths
+std::map<std::filesystem::path, std::filesystem::path> extensions;
 
-#define MAX_PATHS 100
-
-path_entry paths[MAX_PATHS];
-int N_paths = 0;
-#define MAX_EXTENSIONS 100
-ext_entry extensions[MAX_EXTENSIONS];
-int N_extensions;
 std::shared_ptr<library> Libraries;
 int lib_handle = 0;
 
@@ -215,50 +203,30 @@ void cf_Close() {
     Libraries = next;
   }
 }
-// Specify a directory to look in for files
-// Parameters:	path - the directory path.  Can be relative to the current cur (the full path will be stored)
-//					ext - if NULL, look in this dir for all files.  If non-null, it is a
-// NULL-terminated
-// list of 								file extensions, & the dir will only be searched
-// for files with a matching extension Returns:		true if directory added, else false
-int cf_SetSearchPath(const char *path, ...) {
-  if (strlen(path) >= _MAX_PATH)
-    return 0;
-  if (N_paths >= MAX_PATHS)
-    return 0;
+
+bool cf_SetSearchPath(const std::filesystem::path& path, const std::vector<std::filesystem::path>& ext_list) {
+  // Don't add non-existing path into search paths
+  if (!std::filesystem::is_directory(path))
+    return false;
   // Get & store full path
-  paths[N_paths].path = absolute(std::filesystem::path(path));
-  // Set extenstions for this path
-  va_list exts;
-  va_start(exts, path);
-  const char *ext = va_arg(exts, const char *);
-  if (ext == nullptr)
-    paths[N_paths].specific = false;
-  else {
-    paths[N_paths].specific = true;
-    while (ext != nullptr) {
-      if (N_extensions >= MAX_EXTENSIONS) {
-        va_end(exts);
-        return 0;
+  paths.insert_or_assign(std::filesystem::absolute(path), !ext_list.empty());
+  // Set extensions for this path
+  if (!ext_list.empty()) {
+    for (auto const &ext : ext_list) {
+      if (!ext.empty()) {
+        extensions.insert_or_assign(ext, path);
       }
-      strncpy(extensions[N_extensions].ext, ext, _MAX_EXT);
-      extensions[N_extensions].pathnum = N_paths;
-      N_extensions++;
-      ext = va_arg(exts, const char *);
     }
   }
-  // This path successfully set
-  N_paths++;
-  va_end(exts);
-  return 1;
+  return true;
 }
 
 /**
  * Removes all search paths that have been added by cf_SetSearchPath
  */
 void cf_ClearAllSearchPaths() {
-  N_paths = 0;
-  N_extensions = 0;
+  paths.clear();
+  extensions.clear();
 }
 
 /**
@@ -631,7 +599,7 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   CFILE *cfile;
   std::filesystem::path path;
   char tmode[3] = "rb";
-  if (!directory.empty()) {
+  if (std::filesystem::is_directory(directory)) {
     // Make a full path
     path = directory / filename;
   } else // no directory specified, so just use filename passed
@@ -735,19 +703,20 @@ CFILE *cfopen(const std::filesystem::path &filename, const char *mode) {
   }
 
   // First look in the directories for this file's extension
-  for (int i = 0; i < N_extensions; i++) {
-    if (!strnicmp(extensions[i].ext, ext.u8string().c_str(), _MAX_EXT)) {
+  for (auto const &entry : extensions) {
+    if (!strnicmp(entry.first.u8string().c_str(), ext.u8string().c_str(), _MAX_EXT)) {
       // found ext
-      cfile = open_file_in_directory(filename.u8string().c_str(), mode, paths[extensions[i].pathnum].path);
-      if (cfile)
+      cfile = open_file_in_directory(filename, mode, entry.second);
+      if (cfile) {
         goto got_file;
+      }
     }
   }
 
   // Next look in the general directories
-  for (int i = 0; i < N_paths; i++) {
-    if (!paths[i].specific) {
-      cfile = open_file_in_directory(filename.u8string().c_str(), mode, paths[i].path);
+  for (auto const &entry : paths) {
+    if (!entry.second) {
+      cfile = open_file_in_directory(filename, mode, entry.first);
       if (cfile)
         goto got_file;
     }

@@ -691,21 +691,21 @@ int mng_InitLocalTables() {
   ddio_MakePath(LocalMusicDir, LocalD3Dir, "data", "music", NULL);
   ddio_MakePath(LocalVoiceDir, LocalD3Dir, "data", "voice", NULL);
   ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", NULL);
-  cf_SetSearchPath(LocalD3Dir, NULL);
+  cf_SetSearchPath(LocalD3Dir);
 #ifndef RELEASE
-  cf_SetSearchPath(LocalLevelsDir, NULL);
-  cf_SetSearchPath(LocalTableDir, NULL); // Local table directory
+  cf_SetSearchPath(LocalLevelsDir);
+  cf_SetSearchPath(LocalTableDir); // Local table directory
 
-  cf_SetSearchPath(LocalManageGraphicsDir, NULL);
-  cf_SetSearchPath(LocalModelsDir, NULL);
-  cf_SetSearchPath(LocalSoundsDir, NULL);
-  cf_SetSearchPath(LocalRoomsDir, NULL);
-  cf_SetSearchPath(LocalBriefingDir, NULL);
-  cf_SetSearchPath(LocalScriptDir, "cpp", "dll", "def", "msg", "so", "msl", "dylib", NULL);
-  cf_SetSearchPath(LocalMiscDir, NULL);
-  cf_SetSearchPath(LocalArtDir, NULL);
-  cf_SetSearchPath(LocalMusicDir, NULL);
-  cf_SetSearchPath(LocalVoiceDir, NULL);
+  cf_SetSearchPath(LocalManageGraphicsDir);
+  cf_SetSearchPath(LocalModelsDir);
+  cf_SetSearchPath(LocalSoundsDir);
+  cf_SetSearchPath(LocalRoomsDir);
+  cf_SetSearchPath(LocalBriefingDir);
+  cf_SetSearchPath(LocalScriptDir, { "cpp", "dll", "def", "msg", "so", "msl", "dylib" });
+  cf_SetSearchPath(LocalMiscDir);
+  cf_SetSearchPath(LocalArtDir);
+  cf_SetSearchPath(LocalMusicDir);
+  cf_SetSearchPath(LocalVoiceDir);
 #endif
 
   if (Network_up) {
@@ -747,13 +747,13 @@ int mng_InitNetTables() {
   ddio_MakePath(LockerFile, NetTableDir, "locker", NULL);
   ddio_MakePath(VersionFile, NetTableDir, "TableVersion", NULL);
 
-  cf_SetSearchPath(ManageGraphicsDir, NULL);
-  cf_SetSearchPath(NetModelsDir, NULL);
-  cf_SetSearchPath(NetSoundsDir, NULL);
-  cf_SetSearchPath(NetRoomsDir, NULL);
-  cf_SetSearchPath(NetMiscDir, NULL);
-  cf_SetSearchPath(NetMusicDir, NULL);
-  cf_SetSearchPath(NetVoiceDir, NULL);
+  cf_SetSearchPath(ManageGraphicsDir);
+  cf_SetSearchPath(NetModelsDir);
+  cf_SetSearchPath(NetSoundsDir);
+  cf_SetSearchPath(NetRoomsDir);
+  cf_SetSearchPath(NetMiscDir);
+  cf_SetSearchPath(NetMusicDir);
+  cf_SetSearchPath(NetVoiceDir);
   return 1;
 }
 void mng_CheckToCreateNetTables() {
@@ -804,84 +804,55 @@ void mng_CheckToCreateLocalTables() {
 }
 // Creates directories if needed
 void mng_InitLocalDirectories() {
-  char dir[255];
-  ddio_MakePath(dir, LocalD3Dir, "custom", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, LocalD3Dir, "custom", "graphics", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, LocalD3Dir, "custom", "sounds", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, LocalD3Dir, "custom", "cache", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, LocalD3Dir, "custom", "settings", NULL);
-  ddio_CreateDir(dir);
-  cf_SetSearchPath(LocalCustomGraphicsDir, NULL);
-  cf_SetSearchPath(LocalCustomSoundsDir, NULL);
+  std::filesystem::path dir = LocalD3Dir;
+  std::error_code ec;
+  std::filesystem::create_directories(dir / "custom", ec);
+  std::filesystem::create_directories(dir / "custom" / "graphics", ec);
+  std::filesystem::create_directories(dir / "custom" / "sounds", ec);
+  std::filesystem::create_directories(dir / "custom" / "cache", ec);
+  std::filesystem::create_directories(dir / "custom" / "settings", ec);
+
+  cf_SetSearchPath(LocalCustomGraphicsDir);
+  cf_SetSearchPath(LocalCustomSoundsDir);
 
   if (Network_up) {
-    ddio_MakePath(dir, LocalD3Dir, "data", NULL);
-    ddio_CreateDir(dir);
-
-    ddio_MakePath(dir, LocalD3Dir, "data", "tables", NULL);
-    ddio_CreateDir(dir);
-
-    ddio_MakePath(dir, LocalD3Dir, "data", "graphics", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "sounds", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "rooms", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "levels", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "models", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "briefings", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "scripts", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "misc", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "art", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "music", NULL);
-    ddio_CreateDir(dir);
-    ddio_MakePath(dir, LocalD3Dir, "data", "voice", NULL);
-    ddio_CreateDir(dir);
+    std::filesystem::create_directories(dir / "data", ec);
+    std::filesystem::create_directories(dir / "data" / "tables", ec);
+    std::filesystem::create_directories(dir / "data" / "graphics", ec);
+    std::filesystem::create_directories(dir / "data" / "sounds", ec);
+    std::filesystem::create_directories(dir / "data" / "rooms", ec);
+    std::filesystem::create_directories(dir / "data" / "levels", ec);
+    std::filesystem::create_directories(dir / "data" / "models", ec);
+    std::filesystem::create_directories(dir / "data" / "briefings", ec);
+    std::filesystem::create_directories(dir / "data" / "scripts", ec);
+    std::filesystem::create_directories(dir / "data" / "misc", ec);
+    std::filesystem::create_directories(dir / "data" / "art", ec);
+    std::filesystem::create_directories(dir / "data" / "music", ec);
+    std::filesystem::create_directories(dir / "data" / "voice", ec);
   }
 }
+
 void mng_InitNetDirectories() {
-  char dir[255];
+  std::filesystem::path dir = NetD3Dir;
+  std::error_code ec;
 
   if (Stand_alone)
     return;
-  ddio_MakePath(dir, NetD3Dir, "data", NULL);
-  ddio_CreateDir(dir);
-
-  ddio_MakePath(dir, NetD3Dir, "data", "tables", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "graphics", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "sounds", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "rooms", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "levels", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "models", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "briefings", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "scripts", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "misc", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "art", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "music", NULL);
-  ddio_CreateDir(dir);
-  ddio_MakePath(dir, NetD3Dir, "data", "voice", NULL);
-  ddio_CreateDir(dir);
+  std::filesystem::create_directories(dir / "data", ec);
+  std::filesystem::create_directories(dir / "data" / "tables", ec);
+  std::filesystem::create_directories(dir / "data" / "graphics", ec);
+  std::filesystem::create_directories(dir / "data" / "sounds", ec);
+  std::filesystem::create_directories(dir / "data" / "rooms", ec);
+  std::filesystem::create_directories(dir / "data" / "levels", ec);
+  std::filesystem::create_directories(dir / "data" / "models", ec);
+  std::filesystem::create_directories(dir / "data" / "briefings", ec);
+  std::filesystem::create_directories(dir / "data" / "scripts", ec);
+  std::filesystem::create_directories(dir / "data" / "misc", ec);
+  std::filesystem::create_directories(dir / "data" / "art", ec);
+  std::filesystem::create_directories(dir / "data" / "music", ec);
+  std::filesystem::create_directories(dir / "data" / "voice", ec);
 }
+
 extern int TableVersionCurrent();
 #if !defined(WIN32)
 void mng_BackupTableFile() {}

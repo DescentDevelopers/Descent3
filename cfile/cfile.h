@@ -98,6 +98,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
+#include <vector>
 
 #include "pstypes.h"
 
@@ -163,12 +164,17 @@ void cf_CloseLibrary(int handle);
 bool cf_FindRealFileNameCaseInsenstive(const char *directory, const char *filename, char *new_filename);
 #endif
 
-// Specify a directory to look in for files
-// Variable arguments is a NULL-terminated list of extensions
-// If no extensions are specified, look in this directory for all files.
-// Otherwise, the directory will only be searched for files that match
-// one of the listed extensions.
-int cf_SetSearchPath(const char *path, ...);
+/**
+ * Add directory path into paths to look in for files. If ext_list is empty,
+ * look in this directory for all files. Otherwise, the directory will only
+ * be searched for files that match one of the listed extensions.
+ * @param path directory to add; should be existing and resolvable directory.
+ * @param ext_list list of extensions, which only searched on that directory.
+ * @return
+ * false: path is not a real directory;
+ * true: path was successfully added.
+ */
+bool cf_SetSearchPath(const std::filesystem::path& path, const std::vector<std::filesystem::path>& ext_list = {});
 
 // Removes all search paths that have been added by cf_SetSearchPath
 void cf_ClearAllSearchPaths();
