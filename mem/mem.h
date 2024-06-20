@@ -74,12 +74,28 @@
 #ifndef MEM_H
 #define MEM_H
 
+#ifdef MACOSX
+#include <malloc/malloc.h>
+#else
+#include <malloc.h>
+#endif
+
+#ifdef __LINUX__
+#ifdef MACOSX
+#define native_mem_size(d) malloc_size(d)
+#else
+#define native_mem_size(d) malloc_usable_size(d)
+#endif
+#else
+#define native_mem_size(d) _msize(d)
+#endif
+
 // Memory management debugging
 #ifdef MEM_USE_RTL
 #define mem_malloc(d) malloc(d) // Use this if your going to run BoundsChecker
 #define mem_free(d) free(d)
 #define mem_strdup(d) strdup(d)
-#define mem_size(d) mem_size_sub(d)
+#define mem_size(d) native_mem_size(d)
 #define mem_realloc(d, e) realloc(d, e)
 #else
 // Use this if your going to NOT run BoundsChecker

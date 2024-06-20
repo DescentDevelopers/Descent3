@@ -297,11 +297,7 @@ char *mem_strdup_sub(const char *string, const char *file, int line) {
 void *mem_realloc_sub(void *mem, int size) { return realloc(mem, size); }
 
 int mem_size_sub(void *memblock) {
-#ifdef MACOSX
-  return malloc_size(memblock);
-#else
-  return malloc_usable_size(memblock);
-#endif
+  return native_mem_size(memblock);
 }
 
 bool mem_dumpmallocstofile(char *filename) { return false; }
