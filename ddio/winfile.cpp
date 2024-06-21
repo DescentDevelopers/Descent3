@@ -156,12 +156,6 @@
 //	---------------------------------------------------------------------------
 //	File operations
 
-//	creates a directory or folder on disk
-bool ddio_CreateDir(const char *path) { return (CreateDirectory(path, NULL)) ? true : false; }
-
-//	destroys a directory
-bool ddio_RemoveDir(const char *path) { return (RemoveDirectory(path)) ? true : false; }
-
 //	retrieve the current working folder where file operation will occur.
 void ddio_GetWorkingDir(char *path, int len) { GetCurrentDirectory(len, path); }
 
@@ -235,26 +229,6 @@ try_again:;
 
 // deletes a file.  Returns 1 if successful, 0 on failure
 int ddio_DeleteFile(const char *name) { return (DeleteFile(name)); }
-
-// Save/Restore the current working directory
-
-static char SavedWorkingDir[_MAX_DIR];
-
-void ddio_SaveWorkingDir(void) { GetCurrentDirectory(_MAX_DIR, SavedWorkingDir); }
-
-void ddio_RestoreWorkingDir(void) { SetCurrentDirectory(SavedWorkingDir); }
-
-// 	Checks if a directory exists (returns 1 if it does, 0 if not)
-//	This pathname is *RELATIVE* not fully qualified
-bool ddio_DirExists(const char *path) {
-  BOOL res;
-
-  ddio_SaveWorkingDir();
-  res = SetCurrentDirectory(path);
-  ddio_RestoreWorkingDir();
-
-  return (res) ? true : false;
-}
 
 // Constructs a path in the local file system's syntax
 // 	newPath: stores the constructed path

@@ -83,12 +83,6 @@
 //	---------------------------------------------------------------------------
 //	File operations
 
-//	creates a directory or folder on disk
-bool ddio_CreateDir(const char *path) { return (mkdir(path, S_IRWXU)) ? false : true; }
-
-//	destroys a directory
-bool ddio_RemoveDir(const char *path) { return (rmdir(path)) ? false : true; }
-
 //	retrieve the current working folder where file operation will occur.
 void ddio_GetWorkingDir(char *path, int len) { getcwd(path, len); }
 
@@ -216,26 +210,6 @@ void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem:
 
 // deletes a file.  Returns 1 if successful, 0 on failure
 int ddio_DeleteFile(const char *name) { return (!unlink(name)); }
-
-// Save/Restore the current working directory
-
-static char SavedWorkingDir[_MAX_DIR];
-
-void ddio_SaveWorkingDir(void) { ddio_GetWorkingDir(SavedWorkingDir, _MAX_DIR); }
-
-void ddio_RestoreWorkingDir(void) { ddio_SetWorkingDir(SavedWorkingDir); }
-
-// Checks if a directory exists (returns 1 if it does, 0 if not)
-// This pathname is *RELATIVE* not fully qualified
-bool ddio_DirExists(const char *path) {
-  bool res;
-
-  ddio_SaveWorkingDir();
-  res = ddio_SetWorkingDir(path);
-  ddio_RestoreWorkingDir();
-
-  return (res) ? true : false;
-}
 
 // rcg06192000 extern "C" is my add, so nettest would link.
 // extern "C"

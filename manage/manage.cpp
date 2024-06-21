@@ -532,10 +532,10 @@ int Network_up = 0;
 int Stand_alone = 1;
 #endif
 void mng_BackupTableFile();
+
 // returns 1 if network is up, 0 if down
 int mng_IsNetworkUp() {
   char dir[100];
-  int ret;
   if (Stand_alone)
     return 0;
 
@@ -546,8 +546,9 @@ int mng_IsNetworkUp() {
     return 0;
   ddio_MakePath(dir, net_dir, "data", NULL);
 
-  ret = ddio_CreateDir(dir);
-  if (!ret) {
+  std::error_code ec;
+  std::filesystem::create_directories(dir, ec);
+  if (!ec) {
     char old_dir[100];
     ddio_GetWorkingDir(old_dir, 100);
     if (!ddio_SetWorkingDir(dir))
