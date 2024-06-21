@@ -11,7 +11,6 @@ set(CPPS
     lnxkey.cpp
     lnxkey_null.cpp
     lnxmouse.cpp
-    lnxcdrom.cpp
     lnxkey_sdl.cpp
   >
   $<$<PLATFORM_ID:Windows>:
