@@ -19,7 +19,7 @@ set(CPPS
   lnxmouse.cpp
   lnxkey_sdl.cpp
   sdlcontroller.cpp
-  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD>:
+  $<$<PLATFORM_ID:Darwin,Linux,OpenBSD,Android>:
     lnxfile.cpp
   >
   $<$<PLATFORM_ID:Windows>:
