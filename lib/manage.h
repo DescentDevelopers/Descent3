@@ -1,26 +1,26 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef MANAGE_H
 #define MANAGE_H
 
-#include <stdio.h>
+#include <cstdio>
+
 #include "cfile.h"
 #include "bitmap.h"
 #include "manage_external.h"
@@ -250,7 +250,8 @@ bool IsPrimitiveOld(char *name);
 // Updates a primitive if needed
 // Localname = local version of the primname (with path)
 // Netname = Network version of the primname (with path)
-void UpdatePrimitive(char *localname, char *netname, char *primname, int pagetype, char *pagename);
+void UpdatePrimitive(const std::filesystem::path &localname, const std::filesystem::path &netname, char *primname,
+                     int pagetype, char *pagename);
 
 // Writes a chunk header.  Writes chunk id & placeholder length.  Returns chunk start pos
 int StartManagePage(CFILE *ofile, uint8_t pagetype);

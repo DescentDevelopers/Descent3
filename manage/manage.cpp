@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -434,12 +434,12 @@
  * $NoKeywords: $
  */
 
+#include <cerrno>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
 #if defined(__LINUX__)
 #include "linux_fix.h"
 #endif
@@ -521,7 +521,7 @@ struct old_file {
 int Num_old_files = 0;
 old_file *OldFiles;
 const char *PageNames[] = {"Unknown",     "Texture", "Weapon",   "Robot", "Powerup",        "Door",
-                     "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
+                           "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
 #ifndef RELEASE
 int Network_up = 1;
 int Stand_alone = 0;
@@ -1890,23 +1890,22 @@ bool InLockList(mngs_Pagelock *pl) {
   return false;
 }
 // Given a filename, returns the type of primitive it is
-int GetPrimType(char *name) {
-  char ext[10];
-  char tname[_MAX_PATH];
+int GetPrimType(const std::filesystem::path &name) {
   int primtype;
-  ddio_SplitPath(name, tname, tname, ext);
-  if (!stricmp("oof", ext))
+  std::filesystem::path ext = name.extension();
+  if (!stricmp(".oof", ext.u8string().c_str()))
     primtype = PRIMTYPE_OOF;
-  else if (!stricmp("ogf", ext))
+  else if (!stricmp(".ogf", ext.u8string().c_str()))
     primtype = PRIMTYPE_OGF;
-  else if (!stricmp("oaf", ext))
+  else if (!stricmp(".oaf", ext.u8string().c_str()))
     primtype = PRIMTYPE_OAF;
-  else if (!stricmp("wav", ext))
+  else if (!stricmp(".wav", ext.u8string().c_str()))
     primtype = PRIMTYPE_WAV;
   else
     primtype = PRIMTYPE_FILE;
   return primtype;
 }
+
 #if defined(WIN32)
 // Builds a list of old files in a path
 void BuildOldFilesForDirectory(char *path, FILETIME threshold) {
@@ -1968,6 +1967,7 @@ void BuildOldFileList(FILETIME threshold) {
   mprintf(0, "Found %d old files.\n", Num_old_files);
 }
 #endif
+
 // Returns true if the passed in primitive is old (ie needs to be updated from the network)
 bool IsPrimitiveOld(char *name) {
   int primtype = GetPrimType(name);
@@ -1978,10 +1978,12 @@ bool IsPrimitiveOld(char *name) {
 
   return false;
 }
+
 // Updates a primitive if needed
 // Localname = local version of the primname (with path)
 // Netname = Network version of the primname (with path)
-void UpdatePrimitive(char *localname, char *netname, char *primname, int pagetype, char *pagename) {
+void UpdatePrimitive(const std::filesystem::path &localname, const std::filesystem::path &netname, char *primname,
+                     int pagetype, char *pagename) {
   bool update = false;
   if (Starting_editor && !Use_old_update_method) {
     if (IsPrimitiveOld(primname))
@@ -2894,8 +2896,7 @@ void mng_CompileAddonPages(void) {
             continue;
 
           // this is it!
-          mprintf(0, "***Compiling: %s[%s] to %d\n",
-                  AddOnDataTables[tf].Addon_tracklocks[i].name,
+          mprintf(0, "***Compiling: %s[%s] to %d\n", AddOnDataTables[tf].Addon_tracklocks[i].name,
                   (curr_tablefile == 1) ? TableFilename : AddOnDataTables[curr_tablefile - 2].AddOnTableFilename,
                   page_pos);
           ASSERT(AddOnDataTables[tf].Addon_tracklocks[i].stack_filepos == 0);
