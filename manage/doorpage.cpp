@@ -143,6 +143,10 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstring>
+#include <filesystem>
+
 #include "cfile.h"
 #include "manage.h"
 #include "door.h"
@@ -150,8 +154,6 @@
 #include "mono.h"
 #include "pserror.h"
 #include "polymodel.h"
-#include <string.h>
-#include "vclip.h"
 #include "ddio.h"
 #include "soundload.h"
 #include "soundpage.h"
@@ -367,7 +369,7 @@ int mng_FindSpecificDoorPage(char *name, mngs_door_page *doorpage, int offset) {
   uint8_t pagetype;
   int done = 0, found = 0;
 
-  char tablename[TABLE_NAME_LEN];
+  std::filesystem::path tablename;
 
   if (Loading_locals) {
     infile = cfopen(LocalTableFilename, "rb");
@@ -378,9 +380,9 @@ int mng_FindSpecificDoorPage(char *name, mngs_door_page *doorpage, int offset) {
       int farg = FindArg("-filter");
 
       if (farg)
-        strcpy(tablename, GameArgs[farg + 1]);
+        tablename = GameArgs[farg + 1];
       else
-        ddio_MakePath(tablename, LocalTableDir, NET_TABLE, NULL);
+        tablename = LocalTableDir / NET_TABLE;
 
       infile = cfopen(tablename, "rb");
     } else {
@@ -463,11 +465,8 @@ int mng_AssignDoorPageToDoor(mngs_door_page *doorpage, int n) {
 
 #ifndef RELEASE
   if (Network_up) {
-    std::filesystem::path str = std::filesystem::path(LocalModelsDir);
-    std::filesystem::path netstr = std::filesystem::path(NetModelsDir);
-
-    UpdatePrimitive(str / doorpage->image_name, netstr / doorpage->image_name, doorpage->image_name, PAGETYPE_DOOR,
-                    doorpointer->name);
+    UpdatePrimitive(LocalModelsDir / doorpage->image_name, NetModelsDir / doorpage->image_name, doorpage->image_name,
+                    PAGETYPE_DOOR, doorpointer->name);
   }
 #endif
 

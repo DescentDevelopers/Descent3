@@ -20,6 +20,7 @@
 #define MANAGE_H
 
 #include <cstdio>
+#include <filesystem>
 
 #include "cfile.h"
 #include "bitmap.h"
@@ -109,27 +110,27 @@ extern int Starting_editor, Loading_locals, Loading_addon_table;
 extern char LocalD3Dir[];
 extern char NetD3Dir[];
 extern char TableFilename[];
-extern char TableLockFilename[];
+extern std::filesystem::path TableLockFilename;
 extern char LocalTableFilename[];
 extern char LocalTempTableFilename[];
 extern char LocalLevelsDir[];
-extern char ManageGraphicsDir[];
-extern char LocalManageGraphicsDir[];
-extern char LocalModelsDir[];
-extern char NetModelsDir[];
-extern char LocalSoundsDir[];
-extern char NetSoundsDir[];
-extern char LocalRoomsDir[];
-extern char NetRoomsDir[];
-extern char LocalTableDir[];
-extern char NetMiscDir[];
-extern char LocalMiscDir[];
-extern char NetMusicDir[];
-extern char LocalMusicDir[];
+extern std::filesystem::path ManageGraphicsDir;
+extern std::filesystem::path LocalManageGraphicsDir;
+extern std::filesystem::path LocalModelsDir;
+extern std::filesystem::path NetModelsDir;
+extern std::filesystem::path LocalSoundsDir;
+extern std::filesystem::path NetSoundsDir;
+extern std::filesystem::path LocalRoomsDir;
+extern std::filesystem::path NetRoomsDir;
+extern std::filesystem::path LocalTableDir;
+extern std::filesystem::path NetMiscDir;
+extern std::filesystem::path LocalMiscDir;
+extern std::filesystem::path NetMusicDir;
+extern std::filesystem::path LocalMusicDir;
 extern char NetScriptDir[];
 extern char LocalScriptDir[];
-extern char NetArtDir[];
-extern char LocalArtDir[];
+extern std::filesystem::path NetArtDir;
+extern std::filesystem::path LocalArtDir;
 
 extern char LocalCustomGraphicsDir[];
 extern char LocalCustomSoundsDir[];
@@ -139,8 +140,8 @@ extern char TempTableLockFilename[];
 extern char ErrorString[INFO_STRING_LEN];
 extern char InfoString[INFO_STRING_LEN];
 extern char TableUser[];
-extern char LockerFile[];
-extern char VersionFile[];
+extern std::filesystem::path LockerFile;
+extern std::filesystem::path VersionFile;
 extern mngs_Pagelock GlobalPagelocks[];
 extern mngs_track_lock GlobalTrackLocks[];
 
@@ -236,7 +237,7 @@ int mng_RenamePage(char *oldname, char *newname, int pagetype);
 
 // Removes a file, then renames another file to be the removed file. Get it?
 // Returns 1 on success, else 0 on fail
-int SwitcherooFiles(char *name, char *tempname);
+int SwitcherooFiles(const char *name, char *tempname);
 
 // Returns true if the passed in pagelock is in the LockList, else false
 bool InLockList(mngs_Pagelock *pl);

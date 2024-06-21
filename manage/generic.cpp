@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -351,6 +351,10 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstring>
+#include <filesystem>
+
 #include "cfile.h"
 #include "manage.h"
 #include "genericpage.h"
@@ -360,7 +364,6 @@
 #include "pserror.h"
 #include "polymodel.h"
 #include "ddio.h"
-#include <string.h>
 #include "robotfire.h"
 #include "weapon.h"
 #include "sounds.h"
@@ -1755,7 +1758,7 @@ int mng_FindSpecificGenericPage(char *name, mngs_generic_page *genericpage, int 
   uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
-  char tablename[TABLE_NAME_LEN];
+  std::filesystem::path tablename;
 
   if (Loading_locals) {
     infile = cfopen(LocalTableFilename, "rb");
@@ -1766,9 +1769,9 @@ int mng_FindSpecificGenericPage(char *name, mngs_generic_page *genericpage, int 
       int farg = FindArg("-filter");
 
       if (farg)
-        strcpy(tablename, GameArgs[farg + 1]);
+        tablename = GameArgs[farg + 1];
       else
-        ddio_MakePath(tablename, LocalTableDir, NET_TABLE, NULL);
+        tablename = LocalTableDir / NET_TABLE;
 
       infile = cfopen(tablename, "rb");
     } else {
@@ -1936,17 +1939,17 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
 #ifndef RELEASE
   if (Network_up) {
-    std::filesystem::path str = std::filesystem::path(LocalModelsDir);
-    std::filesystem::path netstr = std::filesystem::path(NetModelsDir);
-
-    UpdatePrimitive(str / genericpage->image_name, netstr / genericpage->image_name, genericpage->image_name, PAGETYPE_GENERIC, objinfopointer->name);
+    UpdatePrimitive(LocalModelsDir / genericpage->image_name, NetModelsDir / genericpage->image_name,
+                    genericpage->image_name, PAGETYPE_GENERIC, objinfopointer->name);
 
     if (stricmp(genericpage->med_image_name, "INVALID NAME") != 0 && genericpage->med_image_name[0] != 0) {
-      UpdatePrimitive(str / genericpage->med_image_name, netstr / genericpage->med_image_name, genericpage->med_image_name, PAGETYPE_GENERIC, objinfopointer->name);
+      UpdatePrimitive(LocalModelsDir / genericpage->med_image_name, NetModelsDir / genericpage->med_image_name,
+                      genericpage->med_image_name, PAGETYPE_GENERIC, objinfopointer->name);
     }
 
     if (stricmp(genericpage->lo_image_name, "INVALID NAME") != 0 && genericpage->lo_image_name[0] != 0) {
-      UpdatePrimitive(str / genericpage->lo_image_name, netstr / genericpage->lo_image_name, genericpage->lo_image_name, PAGETYPE_GENERIC, objinfopointer->name);
+      UpdatePrimitive(LocalModelsDir / genericpage->lo_image_name, NetModelsDir / genericpage->lo_image_name,
+                      genericpage->lo_image_name, PAGETYPE_GENERIC, objinfopointer->name);
     }
   }
 #endif
@@ -1992,8 +1995,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
       int sound_handle = mng_GetGuaranteedSoundPage(genericpage->sound_name[i]);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load sound file '%s' in AssignPowPage %s...\n",
-                genericpage->sound_name[i],
+        mprintf(0, "Couldn't load sound file '%s' in AssignPowPage %s...\n", genericpage->sound_name[i],
                 genericpage->objinfo_struct.name);
         objinfopointer->sounds[i] = SOUND_NONE_INDEX;
       } else
@@ -2027,8 +2029,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
         int sound_handle = mng_GetGuaranteedSoundPage(genericpage->ai_sound_name[i]);
 
         if (sound_handle < 0) {
-          mprintf(0, "Couldn't load ai sound file '%s' in AssignPowPage %s...\n",
-                  genericpage->ai_sound_name[i],
+          mprintf(0, "Couldn't load ai sound file '%s' in AssignPowPage %s...\n", genericpage->ai_sound_name[i],
                   genericpage->objinfo_struct.name);
           objinfopointer->ai_info->sound[i] = SOUND_NONE_INDEX;
         } else
@@ -2046,8 +2047,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
           int weapon_handle = mng_GetGuaranteedWeaponPage(genericpage->weapon_name[i][j]);
 
           if (weapon_handle < 0) {
-            mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n",
-                    genericpage->weapon_name[i][j],
+            mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n", genericpage->weapon_name[i][j],
                     genericpage->objinfo_struct.name);
             objinfopointer->static_wb[i].gp_weapon_index[j] = LASER_INDEX;
           } else
@@ -2065,8 +2065,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
           if (fire_sound_handle < 0) {
             mprintf(0, "Couldn't load fire sound file '%s' in AssignPowPage %s...\n",
-                    genericpage->fire_sound_name[i][j],
-                    genericpage->objinfo_struct.name);
+                    genericpage->fire_sound_name[i][j], genericpage->objinfo_struct.name);
             objinfopointer->static_wb[i].fm_fire_sound_index[j] = SOUND_NONE_INDEX;
           } else
             objinfopointer->static_wb[i].fm_fire_sound_index[j] = fire_sound_handle;
@@ -2085,8 +2084,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
           if (anim_sound_handle < 0) {
             mprintf(0, "Couldn't load anim sound file '%s' in AssignPowPage %s...\n",
-                    genericpage->anim_sound_name[i][j],
-                    genericpage->objinfo_struct.name);
+                    genericpage->anim_sound_name[i][j], genericpage->objinfo_struct.name);
             objinfopointer->anim[i].elem[j].anim_sound_index = SOUND_NONE_INDEX;
           } else
             objinfopointer->anim[i].elem[j].anim_sound_index = anim_sound_handle;

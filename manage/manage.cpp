@@ -439,6 +439,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 
 #if defined(__LINUX__)
 #include "linux_fix.h"
@@ -473,26 +474,27 @@ void mng_WriteNewUnknownPage(CFILE *outfile);
 //	This is for levels
 char LocalLevelsDir[TABLE_NAME_LEN];
 //	This is for pages
-char TableLockFilename[TABLE_NAME_LEN], TableFilename[TABLE_NAME_LEN];
+std::filesystem::path TableLockFilename;
+char TableFilename[TABLE_NAME_LEN];
 char TempTableLockFilename[TABLE_NAME_LEN], TempTableFilename[TABLE_NAME_LEN];
 char LocalTableFilename[TABLE_NAME_LEN], LocalTempTableFilename[TABLE_NAME_LEN];
 char BackupTableFilename[TABLE_NAME_LEN], BackupLockFilename[TABLE_NAME_LEN];
-char ManageGraphicsDir[TABLE_NAME_LEN], LocalManageGraphicsDir[TABLE_NAME_LEN];
-char LocalModelsDir[TABLE_NAME_LEN], NetModelsDir[TABLE_NAME_LEN];
-char LocalSoundsDir[TABLE_NAME_LEN], NetSoundsDir[TABLE_NAME_LEN];
-char LocalRoomsDir[TABLE_NAME_LEN], NetRoomsDir[TABLE_NAME_LEN];
-char LocalBriefingDir[TABLE_NAME_LEN], NetBriefingDir[TABLE_NAME_LEN];
+std::filesystem::path ManageGraphicsDir, LocalManageGraphicsDir;
+std::filesystem::path LocalModelsDir, NetModelsDir;
+std::filesystem::path LocalSoundsDir, NetSoundsDir;
+std::filesystem::path LocalRoomsDir, NetRoomsDir;
+std::filesystem::path LocalBriefingDir, NetBriefingDir;
 char LocalScriptDir[TABLE_NAME_LEN], NetScriptDir[TABLE_NAME_LEN];
-char LocalMiscDir[TABLE_NAME_LEN], NetMiscDir[TABLE_NAME_LEN];
-char LocalArtDir[TABLE_NAME_LEN], NetArtDir[TABLE_NAME_LEN];
-char LocalMusicDir[TABLE_NAME_LEN], NetMusicDir[TABLE_NAME_LEN];
-char LocalVoiceDir[TABLE_NAME_LEN], NetVoiceDir[TABLE_NAME_LEN];
-char NetTableDir[TABLE_NAME_LEN], LocalTableDir[TABLE_NAME_LEN];
+std::filesystem::path LocalMiscDir, NetMiscDir;
+std::filesystem::path LocalArtDir, NetArtDir;
+std::filesystem::path LocalMusicDir, NetMusicDir;
+std::filesystem::path LocalVoiceDir, NetVoiceDir;
+std::filesystem::path NetTableDir, LocalTableDir;
 char LocalD3Dir[TABLE_NAME_LEN], NetD3Dir[TABLE_NAME_LEN];
 char LocalCustomGraphicsDir[TABLE_NAME_LEN];
 char LocalCustomSoundsDir[TABLE_NAME_LEN];
-char LockerFile[TABLE_NAME_LEN];
-char VersionFile[TABLE_NAME_LEN];
+std::filesystem::path LockerFile;
+std::filesystem::path VersionFile;
 char TableUser[TABLE_NAME_LEN];
 char ErrorString[INFO_STRING_LEN], InfoString[INFO_STRING_LEN];
 mngs_track_lock GlobalTrackLocks[MAX_TRACKLOCKS];
@@ -677,19 +679,21 @@ int mng_InitLocalTables() {
 
   // Make the CFILE system first look at our local directories.  If the goods aren't
   // found there, try out on the network
-  ddio_MakePath(LocalTableDir, LocalD3Dir, "data", "tables", NULL);
-  ddio_MakePath(LocalManageGraphicsDir, LocalD3Dir, "data", "graphics", NULL);
-  ddio_MakePath(LocalModelsDir, LocalD3Dir, "data", "models", NULL);
-  ddio_MakePath(LocalSoundsDir, LocalD3Dir, "data", "sounds", NULL);
+  // TODO: temp variable until LocalD3Dir will be std::fs::path
+  std::filesystem::path localdir = std::filesystem::path(LocalD3Dir);
+  LocalTableDir = localdir / "data" / "tables";
+  LocalManageGraphicsDir = localdir / "data" / "graphics";
+  LocalModelsDir = localdir / "data" / "models";
+  LocalSoundsDir = localdir / "data" / "sounds";
   ddio_MakePath(LocalCustomSoundsDir, LocalD3Dir, "custom", "sounds", NULL);
   ddio_MakePath(LocalCustomGraphicsDir, LocalD3Dir, "custom", "graphics", NULL);
-  ddio_MakePath(LocalRoomsDir, LocalD3Dir, "data", "rooms", NULL);
-  ddio_MakePath(LocalBriefingDir, LocalD3Dir, "data", "briefings", NULL);
+  LocalRoomsDir = localdir / "data" / "rooms";
+  LocalBriefingDir = localdir / "data" / "briefings";
   ddio_MakePath(LocalScriptDir, LocalD3Dir, "data", "scripts", NULL);
-  ddio_MakePath(LocalMiscDir, LocalD3Dir, "data", "misc", NULL);
-  ddio_MakePath(LocalArtDir, LocalD3Dir, "data", "art", NULL);
-  ddio_MakePath(LocalMusicDir, LocalD3Dir, "data", "music", NULL);
-  ddio_MakePath(LocalVoiceDir, LocalD3Dir, "data", "voice", NULL);
+  LocalMiscDir = localdir / "data" / "misc";
+  LocalArtDir = localdir / "data" / "art";
+  LocalMusicDir = localdir / "data" / "music";
+  LocalVoiceDir = localdir / "data" / "voice";
   ddio_MakePath(LocalLevelsDir, LocalD3Dir, "data", "levels", NULL);
   cf_SetSearchPath(LocalD3Dir);
 #ifndef RELEASE
@@ -701,7 +705,7 @@ int mng_InitLocalTables() {
   cf_SetSearchPath(LocalSoundsDir);
   cf_SetSearchPath(LocalRoomsDir);
   cf_SetSearchPath(LocalBriefingDir);
-  cf_SetSearchPath(LocalScriptDir, { ".cpp", ".dll", ".def", ".msg", ".so", ".msl", ".dylib" });
+  cf_SetSearchPath(LocalScriptDir, {".cpp", ".dll", ".def", ".msg", ".so", ".msl", ".dylib"});
   cf_SetSearchPath(LocalMiscDir);
   cf_SetSearchPath(LocalArtDir);
   cf_SetSearchPath(LocalMusicDir);
@@ -709,8 +713,8 @@ int mng_InitLocalTables() {
 #endif
 
   if (Network_up) {
-    ddio_MakePath(LocalTableFilename, LocalTableDir, LOCAL_TABLE, NULL);
-    ddio_MakePath(LocalTempTableFilename, LocalTableDir, TEMP_LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTableFilename, LocalTableDir.u8string().c_str(), LOCAL_TABLE, NULL);
+    ddio_MakePath(LocalTempTableFilename, LocalTableDir.u8string().c_str(), TEMP_LOCAL_TABLE, NULL);
   } else {
     strcpy(LocalTableFilename, LOCAL_TABLE);
     strcpy(LocalTempTableFilename, TEMP_LOCAL_TABLE);
@@ -727,25 +731,28 @@ int mng_InitNetTables() {
 
   strcpy(NetD3Dir, dir);
   mprintf(1, "Net dir:%s\n", NetD3Dir);
-  ddio_MakePath(NetModelsDir, NetD3Dir, "data", "models", NULL);
-  ddio_MakePath(NetSoundsDir, NetD3Dir, "data", "sounds", NULL);
-  ddio_MakePath(NetRoomsDir, NetD3Dir, "data", "rooms", NULL);
-  ddio_MakePath(NetBriefingDir, NetD3Dir, "data", "briefings", NULL);
+  // TODO: temp variable until NetD3Dir will be std::fs::path
+  std::filesystem::path netdir = std::filesystem::path(NetD3Dir);
+
+  NetModelsDir = netdir / "data" / "models";
+  NetSoundsDir = netdir / "data" / "sounds";
+  NetRoomsDir = netdir / "data" / "rooms";
+  NetBriefingDir = netdir / "data" / "briefings";
   ddio_MakePath(NetScriptDir, NetD3Dir, "data", "scripts", NULL);
-  ddio_MakePath(NetMiscDir, NetD3Dir, "data", "misc", NULL);
-  ddio_MakePath(ManageGraphicsDir, NetD3Dir, "data", "graphics", NULL);
-  ddio_MakePath(NetTableDir, NetD3Dir, "data", "tables", NULL);
-  ddio_MakePath(NetArtDir, NetD3Dir, "data", "art", NULL);
-  ddio_MakePath(NetMusicDir, NetD3Dir, "data", "music", NULL);
-  ddio_MakePath(NetVoiceDir, NetD3Dir, "data", "voice", NULL);
-  ddio_MakePath(TableLockFilename, NetTableDir, "table.lok", NULL);
-  ddio_MakePath(BackupLockFilename, NetTableDir, "tablelok.bak", NULL);
-  ddio_MakePath(BackupTableFilename, NetTableDir, "table.bak", NULL);
-  ddio_MakePath(TableFilename, NetTableDir, NET_TABLE, NULL);
-  ddio_MakePath(TempTableLockFilename, NetTableDir, "lock.tmp", NULL);
-  ddio_MakePath(TempTableFilename, NetTableDir, TEMP_NET_TABLE, NULL);
-  ddio_MakePath(LockerFile, NetTableDir, "locker", NULL);
-  ddio_MakePath(VersionFile, NetTableDir, "TableVersion", NULL);
+  NetMiscDir = netdir / "data" / "misc";
+  ManageGraphicsDir = netdir / "data" / "graphics";
+  NetTableDir = netdir / "data" / "tables";
+  NetArtDir = netdir / "data" / "art";
+  NetMusicDir = netdir / "data" / "music";
+  NetVoiceDir = netdir / "data" / "voice";
+  TableLockFilename = NetTableDir / "table.lok";
+  ddio_MakePath(BackupLockFilename, NetTableDir.u8string().c_str(), "tablelok.bak", NULL);
+  ddio_MakePath(BackupTableFilename, NetTableDir.u8string().c_str(), "table.bak", NULL);
+  ddio_MakePath(TableFilename, NetTableDir.u8string().c_str(), NET_TABLE, NULL);
+  ddio_MakePath(TempTableLockFilename, NetTableDir.u8string().c_str(), "lock.tmp", NULL);
+  ddio_MakePath(TempTableFilename, NetTableDir.u8string().c_str(), TEMP_NET_TABLE, NULL);
+  LockerFile = NetTableDir / "locker";
+  VersionFile = NetTableDir / "TableVersion";
 
   cf_SetSearchPath(ManageGraphicsDir);
   cf_SetSearchPath(NetModelsDir);
@@ -858,20 +865,19 @@ extern int TableVersionCurrent();
 void mng_BackupTableFile() {}
 #else
 void mng_BackupTableFile() {
-  char str[200];
   Fast_load_trick = 0;
   if (!TableVersionCurrent()) {
     Error("You must do a source update and recompile.  The data on the network is newer that your sourcecode.");
     return;
   }
 
-  ddio_MakePath(str, LocalTableDir, NET_TABLE, NULL);
+  std::filesystem::path str = LocalTableDir / NET_TABLE;
   if (!cfexist(str)) {
     TableTimeThreshold.dwHighDateTime = 0;
     TableTimeThreshold.dwLowDateTime = 0;
   } else {
     WIN32_FIND_DATA filedata;
-    HANDLE filehandle = FindFirstFile(str, &filedata);
+    HANDLE filehandle = FindFirstFile(str.u8string().c_str(), &filedata);
     if (filehandle == INVALID_HANDLE_VALUE) {
       Error("Couldn't open net table file for some reason!");
       return;
@@ -885,7 +891,7 @@ void mng_BackupTableFile() {
 
     if (!cf_CopyFile(str, TableFilename, 1))
       Error("There was an error making a backup copy of the table file.\n");
-    ddio_MakePath(str, LocalTableDir, "tablelok.loc", NULL);
+    str = LocalTableDir / "tablelok.loc";
     if (!cf_CopyFile(str, TableLockFilename, 1))
       Error("There was an error making a backup copy of the locker table file.\n");
   } else {
@@ -1205,7 +1211,7 @@ int mng_RenamePage(char *oldname, char *newname, int pagetype) {
 int mng_LoadNetPages(int show_progress) {
   CFILE *infile;
   uint8_t pagetype;
-  char tablename[TABLE_NAME_LEN];
+  std::filesystem::path tablename;
   float start_time;
   int n_pages = 0;
   int total_bytes;
@@ -1222,9 +1228,9 @@ int mng_LoadNetPages(int show_progress) {
   if (Network_up) {
     int farg = FindArg("-filter");
     if (farg)
-      strcpy(tablename, GameArgs[farg + 1]);
+      tablename = GameArgs[farg + 1];
     else {
-      ddio_MakePath(tablename, LocalTableDir, NET_TABLE, NULL);
+      tablename = LocalTableDir / NET_TABLE;
     }
     infile = cfopen(tablename, "rb");
   } else
@@ -1455,7 +1461,7 @@ int mng_LoadLocalPages() {
 #define MAX_TRIES 10000
 // Removes a file, then renames another file to be the removed file. Get it?
 // Returns 1 on success, else 0 on fail
-int SwitcherooFiles(char *name, char *tempname) {
+int SwitcherooFiles(const char *name, char *tempname) {
   /*// If we're changing the net table file, make a backup first!
   if ((!stricmp (name,TableFilename)))
   {
@@ -1606,7 +1612,7 @@ void mng_TransferPages() {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem deleting the temp file - errno %d", errno);
     goto done;
   }
-  if (rename(TempTableLockFilename, TableLockFilename)) {
+  if (rename(TempTableLockFilename, TableLockFilename.u8string().c_str())) {
     snprintf(ErrorString, sizeof(ErrorString), "There was a problem renaming the temp file - errno %d", errno);
 
     goto done;
@@ -1908,12 +1914,11 @@ int GetPrimType(const std::filesystem::path &name) {
 
 #if defined(WIN32)
 // Builds a list of old files in a path
-void BuildOldFilesForDirectory(char *path, FILETIME threshold) {
+void BuildOldFilesForDirectory(const std::filesystem::path& path, FILETIME threshold) {
   HANDLE filehandle;
   WIN32_FIND_DATA filedata;
-  char newpath[_MAX_PATH];
-  ddio_MakePath(newpath, path, "*.*", NULL);
-  filehandle = FindFirstFile(newpath, &filedata);
+  std::filesystem::path newpath = path / "*.*";
+  filehandle = FindFirstFile(newpath.u8string().c_str(), &filedata);
   bool go_ahead = true;
   if (filehandle == INVALID_HANDLE_VALUE)
     go_ahead = false;
@@ -1946,6 +1951,7 @@ void BuildOldFilesForDirectory(char *path, FILETIME threshold) {
   if (filehandle != INVALID_HANDLE_VALUE)
     FindClose(filehandle);
 }
+
 // Builds a list of old files so we know which ones to update
 // Searches through all our netdirectories for old files
 void BuildOldFileList(FILETIME threshold) {

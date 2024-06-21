@@ -197,6 +197,10 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstring>
+#include <filesystem>
+
 #include "cfile.h"
 #include "manage.h"
 #include "ship.h"
@@ -207,7 +211,6 @@
 #include "ddio.h"
 #include "robotfire.h"
 #include "weaponpage.h"
-#include <string.h>
 #include "soundload.h"
 #include "sounds.h"
 #include "soundpage.h"
@@ -837,7 +840,7 @@ int mng_FindSpecificShipPage(char *name, mngs_ship_page *shippage, int offset) {
   uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
-  char tablename[TABLE_NAME_LEN];
+  std::filesystem::path tablename;
 
   if (Loading_locals) {
     infile = cfopen(LocalTableFilename, "rb");
@@ -848,9 +851,9 @@ int mng_FindSpecificShipPage(char *name, mngs_ship_page *shippage, int offset) {
       int farg = FindArg("-filter");
 
       if (farg)
-        strcpy(tablename, GameArgs[farg + 1]);
+        tablename = GameArgs[farg + 1];
       else
-        ddio_MakePath(tablename, LocalTableDir, NET_TABLE, NULL);
+        tablename = LocalTableDir / NET_TABLE;
 
       infile = cfopen(tablename, "rb");
     } else {
@@ -943,25 +946,22 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
 
 #ifndef RELEASE
   if (Network_up) {
-    std::filesystem::path str = std::filesystem::path(LocalModelsDir);
-    std::filesystem::path netstr = std::filesystem::path(NetModelsDir);
-
-    UpdatePrimitive(str / shippage->image_name, netstr / shippage->image_name, shippage->image_name, PAGETYPE_SHIP,
-                    shippointer->name);
+    UpdatePrimitive(LocalModelsDir / shippage->image_name, NetModelsDir / shippage->image_name, shippage->image_name,
+                    PAGETYPE_SHIP, shippointer->name);
 
     if (stricmp("INVALID IMAGE NAME", shippage->dying_image_name) != 0 && shippage->dying_image_name[0] != 0) {
-      UpdatePrimitive(str / shippage->dying_image_name, netstr / shippage->dying_image_name, shippage->dying_image_name,
-                      PAGETYPE_SHIP, shippointer->name);
+      UpdatePrimitive(LocalModelsDir / shippage->dying_image_name, NetModelsDir / shippage->dying_image_name,
+                      shippage->dying_image_name, PAGETYPE_SHIP, shippointer->name);
     }
 
     if (shippage->med_image_name[0] != 0) {
-      UpdatePrimitive(str / shippage->med_image_name, netstr / shippage->med_image_name, shippage->med_image_name,
-                      PAGETYPE_SHIP, shippointer->name);
+      UpdatePrimitive(LocalModelsDir / shippage->med_image_name, NetModelsDir / shippage->med_image_name,
+                      shippage->med_image_name, PAGETYPE_SHIP, shippointer->name);
     }
 
     if (shippage->lo_image_name[0] != 0) {
-      UpdatePrimitive(str / shippage->lo_image_name, netstr / shippage->lo_image_name, shippage->lo_image_name,
-                      PAGETYPE_SHIP, shippointer->name);
+      UpdatePrimitive(LocalModelsDir / shippage->lo_image_name, NetModelsDir / shippage->lo_image_name,
+                      shippage->lo_image_name, PAGETYPE_SHIP, shippointer->name);
     }
   }
 #endif

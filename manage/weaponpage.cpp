@@ -286,6 +286,10 @@
  *
  * $NoKeywords: $
  */
+
+#include <cstring>
+#include <filesystem>
+
 #include "cfile.h"
 #include "manage.h"
 #include "weapon.h"
@@ -299,7 +303,6 @@
 #include "ddio.h"
 #include "gametexture.h"
 #include "texpage.h"
-#include <string.h>
 #include "sounds.h"
 #include "genericpage.h"
 #include "args.h"
@@ -1162,7 +1165,7 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage) {
   uint8_t pagetype;
   int done = 0, found = 0;
   int first_try = 1;
-  char tablename[TABLE_NAME_LEN];
+  std::filesystem::path tablename;
 
   if (Loading_locals) {
     infile = cfopen(LocalTableFilename, "rb");
@@ -1173,9 +1176,9 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage) {
       int farg = FindArg("-filter");
 
       if (farg)
-        strcpy(tablename, GameArgs[farg + 1]);
+        tablename = GameArgs[farg + 1];
       else
-        ddio_MakePath(tablename, LocalTableDir, NET_TABLE, NULL);
+        tablename = LocalTableDir / NET_TABLE;
 
       infile = cfopen(tablename, "rb");
     } else {
@@ -1246,13 +1249,13 @@ int mng_FindSpecificWeaponPage(char *name, mngs_weapon_page *weaponpage, int off
     infile = cfopen(AddOnDataTables[Loading_addon_table].AddOnTableFilename, "rb");
   } else {
     if (Network_up && Starting_editor) {
-      char tablename[TABLE_NAME_LEN];
+      std::filesystem::path tablename;
 
       int farg = FindArg("-filter");
       if (farg)
-        strcpy(tablename, GameArgs[farg + 1]);
+        tablename = GameArgs[farg + 1];
       else
-        ddio_MakePath(tablename, LocalTableDir, NET_TABLE, NULL);
+        tablename = LocalTableDir / NET_TABLE;
 
       infile = cfopen(tablename, "rb");
     } else {
@@ -1377,16 +1380,16 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
 
 #ifndef RELEASE
   if (Network_up) {
-    std::filesystem::path str = std::filesystem::path(LocalManageGraphicsDir);
-    std::filesystem::path netstr = std::filesystem::path(ManageGraphicsDir);
+    std::filesystem::path str = LocalManageGraphicsDir;
+    std::filesystem::path netstr = ManageGraphicsDir;
 
     UpdatePrimitive(str / weaponpage->hud_image_name, netstr / weaponpage->hud_image_name, weaponpage->hud_image_name,
                     PAGETYPE_WEAPON, weaponpointer->name);
 
     // Now copy the discharge image, depending on whether or not its a model
     if (!((weaponpage->weapon_struct.flags & WF_IMAGE_BITMAP) || (weaponpage->weapon_struct.flags & WF_IMAGE_VCLIP))) {
-      str = std::filesystem::path(LocalModelsDir);
-      netstr = std::filesystem::path(NetModelsDir);
+      str = LocalModelsDir;
+      netstr = NetModelsDir;
     }
 
     UpdatePrimitive(str / weaponpage->fire_image_name, netstr / weaponpage->fire_image_name,
