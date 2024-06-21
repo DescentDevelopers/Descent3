@@ -341,7 +341,7 @@ int ddio_GetFileLength(FILE *filePtr);
 
 //	check if two files are different
 //	This pathname is *RELATIVE* not fully qualified
-bool ddio_FileDiff(const char *fileNameA, const char *fileNameB);
+bool ddio_FileDiff(const std::filesystem::path &path1, const std::filesystem::path &path2);
 
 //	copies one files timestamp to another
 void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src);

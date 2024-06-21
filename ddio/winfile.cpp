@@ -167,13 +167,13 @@ void ddio_GetWorkingDir(char *path, int len) { GetCurrentDirectory(len, path); }
 
 bool ddio_SetWorkingDir(const char *path) { return (SetCurrentDirectory(path)) ? true : false; }
 
-bool ddio_FileDiff(const char *path1, const char *path2) {
+bool ddio_FileDiff(const std::filesystem::path &path1, const std::filesystem::path &path2) {
   struct _stat abuf, bbuf;
 
-  if (_stat(path1, &abuf))
+  if (_stat(path1.u8string().c_str(), &abuf))
     Int3(); // error getting stat info
 
-  if (_stat(path2, &bbuf))
+  if (_stat(path2.u8string().c_str(), &bbuf))
     Int3(); // error getting stat info
 
   if ((abuf.st_size != bbuf.st_size) || (abuf.st_mtime != bbuf.st_mtime))

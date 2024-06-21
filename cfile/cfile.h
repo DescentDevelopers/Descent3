@@ -313,7 +313,7 @@ bool cf_CopyFile(const std::filesystem::path &dest, const std::filesystem::path 
 
 // Checks to see if two files are different.
 // Returns TRUE if the files are different, or FALSE if they are the same.
-bool cf_Diff(const char *a, const char *b);
+bool cf_Diff(const std::filesystem::path &a, const std::filesystem::path &b);
 
 // Copies the file time from one file to another
 void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src);
