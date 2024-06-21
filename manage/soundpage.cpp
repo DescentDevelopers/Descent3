@@ -404,12 +404,9 @@ int mng_AssignSoundPageToSound(mngs_sound_page *soundpage, int n) {
 // If its a release version, don't do any of this
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
-
-    ddio_MakePath(str, LocalSoundsDir, soundpage->raw_name, NULL);
-    ddio_MakePath(netstr, NetSoundsDir, soundpage->raw_name, NULL);
-    UpdatePrimitive(str, netstr, soundpage->raw_name, PAGETYPE_SOUND, soundpointer->name);
+    std::filesystem::path str = std::filesystem::path(LocalSoundsDir);
+    std::filesystem::path netstr = std::filesystem::path(NetSoundsDir);
+    UpdatePrimitive(str / soundpage->raw_name, netstr / soundpage->raw_name, soundpage->raw_name, PAGETYPE_SOUND, soundpointer->name);
   }
 #endif
   // Try and load our sound raw from the disk

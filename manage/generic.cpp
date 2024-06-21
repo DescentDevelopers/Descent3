@@ -1936,26 +1936,17 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
+    std::filesystem::path str = std::filesystem::path(LocalModelsDir);
+    std::filesystem::path netstr = std::filesystem::path(NetModelsDir);
 
-    ddio_MakePath(str, LocalModelsDir, genericpage->image_name, NULL);
-    ddio_MakePath(netstr, NetModelsDir, genericpage->image_name, NULL);
+    UpdatePrimitive(str / genericpage->image_name, netstr / genericpage->image_name, genericpage->image_name, PAGETYPE_GENERIC, objinfopointer->name);
 
-    UpdatePrimitive(str, netstr, genericpage->image_name, PAGETYPE_GENERIC, objinfopointer->name);
-
-    if (stricmp(genericpage->med_image_name, "INVALID NAME") && genericpage->med_image_name[0] != 0) {
-      ddio_MakePath(str, LocalModelsDir, genericpage->med_image_name, NULL);
-      ddio_MakePath(netstr, NetModelsDir, genericpage->med_image_name, NULL);
-
-      UpdatePrimitive(str, netstr, genericpage->med_image_name, PAGETYPE_GENERIC, objinfopointer->name);
+    if (stricmp(genericpage->med_image_name, "INVALID NAME") != 0 && genericpage->med_image_name[0] != 0) {
+      UpdatePrimitive(str / genericpage->med_image_name, netstr / genericpage->med_image_name, genericpage->med_image_name, PAGETYPE_GENERIC, objinfopointer->name);
     }
 
-    if (stricmp(genericpage->lo_image_name, "INVALID NAME") && genericpage->lo_image_name[0] != 0) {
-      ddio_MakePath(str, LocalModelsDir, genericpage->lo_image_name, NULL);
-      ddio_MakePath(netstr, NetModelsDir, genericpage->lo_image_name, NULL);
-
-      UpdatePrimitive(str, netstr, genericpage->lo_image_name, PAGETYPE_GENERIC, objinfopointer->name);
+    if (stricmp(genericpage->lo_image_name, "INVALID NAME") != 0 && genericpage->lo_image_name[0] != 0) {
+      UpdatePrimitive(str / genericpage->lo_image_name, netstr / genericpage->lo_image_name, genericpage->lo_image_name, PAGETYPE_GENERIC, objinfopointer->name);
     }
   }
 #endif

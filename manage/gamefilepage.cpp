@@ -226,11 +226,10 @@ int mng_AssignGamefilePageToGamefile(mngs_gamefile_page *gamefilepage, int n) {
 
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
-
-    ddio_MakePath(str, LocalD3Dir, "data", gamefilepointer->dir_name, gamefilepointer->name, NULL);
-    ddio_MakePath(netstr, NetD3Dir, "data", gamefilepointer->dir_name, gamefilepointer->name, NULL);
+    std::filesystem::path str =
+        std::filesystem::path(LocalD3Dir) / "data" / gamefilepointer->dir_name / gamefilepointer->name;
+    std::filesystem::path netstr =
+        std::filesystem::path(NetD3Dir) / "data" / gamefilepointer->dir_name / gamefilepointer->name;
 
     UpdatePrimitive(str, netstr, gamefilepointer->name, PAGETYPE_GAMEFILE, gamefilepointer->name);
 

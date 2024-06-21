@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -943,33 +943,25 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
 
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
+    std::filesystem::path str = std::filesystem::path(LocalModelsDir);
+    std::filesystem::path netstr = std::filesystem::path(NetModelsDir);
 
-    ddio_MakePath(str, LocalModelsDir, shippage->image_name, NULL);
-    ddio_MakePath(netstr, NetModelsDir, shippage->image_name, NULL);
+    UpdatePrimitive(str / shippage->image_name, netstr / shippage->image_name, shippage->image_name, PAGETYPE_SHIP,
+                    shippointer->name);
 
-    UpdatePrimitive(str, netstr, shippage->image_name, PAGETYPE_SHIP, shippointer->name);
-
-    if (stricmp("INVALID IMAGE NAME", shippage->dying_image_name) && shippage->dying_image_name[0] != 0) {
-      ddio_MakePath(str, LocalModelsDir, shippage->dying_image_name, NULL);
-      ddio_MakePath(netstr, NetModelsDir, shippage->dying_image_name, NULL);
-
-      UpdatePrimitive(str, netstr, shippage->dying_image_name, PAGETYPE_SHIP, shippointer->name);
+    if (stricmp("INVALID IMAGE NAME", shippage->dying_image_name) != 0 && shippage->dying_image_name[0] != 0) {
+      UpdatePrimitive(str / shippage->dying_image_name, netstr / shippage->dying_image_name, shippage->dying_image_name,
+                      PAGETYPE_SHIP, shippointer->name);
     }
 
     if (shippage->med_image_name[0] != 0) {
-      ddio_MakePath(str, LocalModelsDir, shippage->med_image_name, NULL);
-      ddio_MakePath(netstr, NetModelsDir, shippage->med_image_name, NULL);
-
-      UpdatePrimitive(str, netstr, shippage->med_image_name, PAGETYPE_SHIP, shippointer->name);
+      UpdatePrimitive(str / shippage->med_image_name, netstr / shippage->med_image_name, shippage->med_image_name,
+                      PAGETYPE_SHIP, shippointer->name);
     }
 
     if (shippage->lo_image_name[0] != 0) {
-      ddio_MakePath(str, LocalModelsDir, shippage->lo_image_name, NULL);
-      ddio_MakePath(netstr, NetModelsDir, shippage->lo_image_name, NULL);
-
-      UpdatePrimitive(str, netstr, shippage->lo_image_name, PAGETYPE_SHIP, shippointer->name);
+      UpdatePrimitive(str / shippage->lo_image_name, netstr / shippage->lo_image_name, shippage->lo_image_name,
+                      PAGETYPE_SHIP, shippointer->name);
     }
   }
 #endif
@@ -1029,8 +1021,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
         int weapon_handle = mng_GetGuaranteedWeaponPage(shippage->weapon_name[i][j], infile);
 
         if (weapon_handle < 0) {
-          mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n",
-                  shippage->weapon_name[i][j],
+          mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n", shippage->weapon_name[i][j],
                   shippage->ship_struct.name);
           shippointer->static_wb[i].gp_weapon_index[j] = LASER_INDEX;
         } else
@@ -1047,8 +1038,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
         int fire_sound_handle = mng_GetGuaranteedSoundPage(shippage->fire_sound_name[i][j], infile);
 
         if (fire_sound_handle < 0) {
-          mprintf(0, "Couldn't load fire_sound file '%s' in AssignPowPage %s...\n",
-                  shippage->fire_sound_name[i][j],
+          mprintf(0, "Couldn't load fire_sound file '%s' in AssignPowPage %s...\n", shippage->fire_sound_name[i][j],
                   shippage->ship_struct.name);
           shippointer->static_wb[i].fm_fire_sound_index[j] = SOUND_NONE_INDEX;
         } else
@@ -1063,8 +1053,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       int sound_handle = mng_GetGuaranteedSoundPage(shippage->firing_sound_name[i], infile);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n",
-                shippage->firing_sound_name[i],
+        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n", shippage->firing_sound_name[i],
                 shippage->ship_struct.name);
         shippointer->firing_sound[i] = SOUND_NONE_INDEX;
       } else
@@ -1076,8 +1065,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       int sound_handle = mng_GetGuaranteedSoundPage(shippage->release_sound_name[i], infile);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n",
-                shippage->release_sound_name[i],
+        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n", shippage->release_sound_name[i],
                 shippage->ship_struct.name);
         shippointer->firing_release_sound[i] = SOUND_NONE_INDEX;
       } else

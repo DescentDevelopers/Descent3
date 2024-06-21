@@ -944,13 +944,10 @@ int mng_AssignTexPageToTexture(mngs_texture_page *texpage, int n, CFILE *infile)
 // If this is a release, don't do any of this stuff
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
+    std::filesystem::path str = std::filesystem::path(LocalManageGraphicsDir);
+    std::filesystem::path netstr = std::filesystem::path(ManageGraphicsDir);
 
-    ddio_MakePath(str, LocalManageGraphicsDir, texpage->bitmap_name, NULL);
-    ddio_MakePath(netstr, ManageGraphicsDir, texpage->bitmap_name, NULL);
-
-    UpdatePrimitive(str, netstr, texpage->bitmap_name, PAGETYPE_TEXTURE, tex->name);
+    UpdatePrimitive(str / texpage->bitmap_name, netstr / texpage->bitmap_name, texpage->bitmap_name, PAGETYPE_TEXTURE, tex->name);
   }
 #endif
 

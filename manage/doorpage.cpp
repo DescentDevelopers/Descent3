@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -463,13 +463,11 @@ int mng_AssignDoorPageToDoor(mngs_door_page *doorpage, int n) {
 
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
+    std::filesystem::path str = std::filesystem::path(LocalModelsDir);
+    std::filesystem::path netstr = std::filesystem::path(NetModelsDir);
 
-    ddio_MakePath(str, LocalModelsDir, doorpage->image_name, NULL);
-    ddio_MakePath(netstr, NetModelsDir, doorpage->image_name, NULL);
-
-    UpdatePrimitive(str, netstr, doorpage->image_name, PAGETYPE_DOOR, doorpointer->name);
+    UpdatePrimitive(str / doorpage->image_name, netstr / doorpage->image_name, doorpage->image_name, PAGETYPE_DOOR,
+                    doorpointer->name);
   }
 #endif
 

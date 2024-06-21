@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1377,24 +1377,20 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
 
 #ifndef RELEASE
   if (Network_up) {
-    char str[200];
-    char netstr[200];
+    std::filesystem::path str = std::filesystem::path(LocalManageGraphicsDir);
+    std::filesystem::path netstr = std::filesystem::path(ManageGraphicsDir);
 
-    ddio_MakePath(str, LocalManageGraphicsDir, weaponpage->hud_image_name, NULL);
-    ddio_MakePath(netstr, ManageGraphicsDir, weaponpage->hud_image_name, NULL);
-
-    UpdatePrimitive(str, netstr, weaponpage->hud_image_name, PAGETYPE_WEAPON, weaponpointer->name);
+    UpdatePrimitive(str / weaponpage->hud_image_name, netstr / weaponpage->hud_image_name, weaponpage->hud_image_name,
+                    PAGETYPE_WEAPON, weaponpointer->name);
 
     // Now copy the discharge image, depending on whether or not its a model
-    if ((weaponpage->weapon_struct.flags & WF_IMAGE_BITMAP) || (weaponpage->weapon_struct.flags & WF_IMAGE_VCLIP)) {
-      ddio_MakePath(str, LocalManageGraphicsDir, weaponpage->fire_image_name, NULL);
-      ddio_MakePath(netstr, ManageGraphicsDir, weaponpage->fire_image_name, NULL);
-    } else {
-      ddio_MakePath(str, LocalModelsDir, weaponpage->fire_image_name, NULL);
-      ddio_MakePath(netstr, NetModelsDir, weaponpage->fire_image_name, NULL);
+    if (!((weaponpage->weapon_struct.flags & WF_IMAGE_BITMAP) || (weaponpage->weapon_struct.flags & WF_IMAGE_VCLIP))) {
+      str = std::filesystem::path(LocalModelsDir);
+      netstr = std::filesystem::path(NetModelsDir);
     }
 
-    UpdatePrimitive(str, netstr, weaponpage->fire_image_name, PAGETYPE_WEAPON, weaponpointer->name);
+    UpdatePrimitive(str / weaponpage->fire_image_name, netstr / weaponpage->fire_image_name,
+                    weaponpage->fire_image_name, PAGETYPE_WEAPON, weaponpointer->name);
   }
 #endif
 
@@ -1479,7 +1475,8 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedWeaponPage(weaponpage->alternate_spawn_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load alternate spawn weapon '%s' in AssignWeaponPage...\n", weaponpage->alternate_spawn_name);
+      mprintf(0, "Couldn't load alternate spawn weapon '%s' in AssignWeaponPage...\n",
+              weaponpage->alternate_spawn_name);
       weaponpointer->alternate_spawn_handle = -1;
     } else
       weaponpointer->alternate_spawn_handle = img_handle;
@@ -1548,8 +1545,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
       sound_handle = mng_GetGuaranteedSoundPage(weaponpage->sound_name[i]);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load sound file '%s' in AssignWeaponPage.  Weapon=%s\n",
-                weaponpage->sound_name[i],
+        mprintf(0, "Couldn't load sound file '%s' in AssignWeaponPage.  Weapon=%s\n", weaponpage->sound_name[i],
                 weaponpage->weapon_struct.name);
         weaponpointer->sounds[i] = SOUND_NONE_INDEX;
       } else
