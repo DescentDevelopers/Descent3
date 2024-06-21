@@ -200,17 +200,17 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
   }
 }
 
-void ddio_CopyFileTime(char *destname, const char *srcname) {
-  struct stat abuf;
+void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src) {
+  struct stat abuf{};
 
-  if (stat(srcname, &abuf))
+  if (stat(src.u8string().c_str(), &abuf))
     Int3();
 
-  struct utimbuf bbuf;
+  struct utimbuf bbuf{};
   bbuf.actime = abuf.st_atime;
   bbuf.modtime = abuf.st_mtime;
 
-  if (utime(destname, &bbuf))
+  if (utime(dest.u8string().c_str(), &bbuf))
     Int3();
 }
 

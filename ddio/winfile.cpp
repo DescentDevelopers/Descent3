@@ -195,18 +195,18 @@ void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext) 
     sprintf(path, "%s%s", drivename, dirname);
 }
 
-void ddio_CopyFileTime(char *destname, const char *srcname) {
+void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src) {
   HANDLE desthandle, srchandle;
   FILETIME a, b, c;
   bool first_time = 1;
 
 try_again:;
 
-  desthandle = CreateFile(destname, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-  srchandle = CreateFile(srcname, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  desthandle = CreateFile(dest.u8string().c_str(), GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  srchandle = CreateFile(src.u8string().c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
   if (desthandle == INVALID_HANDLE_VALUE || srchandle == INVALID_HANDLE_VALUE) {
-    mprintf(0, "Couldn't copy file time for %s! Error=%d\n", destname, GetLastError());
+    mprintf(0, "Couldn't copy file time for %s! Error=%d\n", dest.u8string().c_str(), GetLastError());
 
     if (desthandle != INVALID_HANDLE_VALUE)
       CloseHandle(desthandle);

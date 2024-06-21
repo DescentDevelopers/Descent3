@@ -344,7 +344,7 @@ int ddio_GetFileLength(FILE *filePtr);
 bool ddio_FileDiff(const char *fileNameA, const char *fileNameB);
 
 //	copies one files timestamp to another
-void ddio_CopyFileTime(char *dest, const char *src);
+void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src);
 
 // Split a pathname into its component parts
 //	The path in splitpath is in the *LOCAL* file system's syntax

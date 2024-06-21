@@ -309,14 +309,14 @@ void cf_WriteDouble(CFILE *cfp, double d);
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write
 // If copytime is nonzero, copies the filetime info as well
-bool cf_CopyFile(char *dest, const char *src, int copytime = 0);
+bool cf_CopyFile(const std::filesystem::path &dest, const std::filesystem::path &src, int copytime = 0);
 
 // Checks to see if two files are different.
 // Returns TRUE if the files are different, or FALSE if they are the same.
 bool cf_Diff(const char *a, const char *b);
 
 // Copies the file time from one file to another
-void cf_CopyFileTime(char *dest, const char *src);
+void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src);
 
 // Changes a files attributes (ie read/write only)
 void cf_ChangeFileAttributes(const char *name, int attr);

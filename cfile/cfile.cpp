@@ -204,7 +204,7 @@ void cf_Close() {
   }
 }
 
-bool cf_SetSearchPath(const std::filesystem::path& path, const std::vector<std::filesystem::path>& ext_list) {
+bool cf_SetSearchPath(const std::filesystem::path &path, const std::vector<std::filesystem::path> &ext_list) {
   // Don't add non-existing path into search paths
   if (!std::filesystem::is_directory(path))
     return false;
@@ -235,7 +235,7 @@ void cf_ClearAllSearchPaths() {
  * @param libhandle
  * @return
  */
-CFILE *cf_OpenFileInLibrary(const std::filesystem::path& filename, int libhandle) {
+CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle) {
   if (libhandle <= 0)
     return nullptr;
 
@@ -260,7 +260,8 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path& filename, int libhandle
   do {
     i = (first + last) / 2;
     c = stricmp(filename.u8string().c_str(), lib->entries[i]->name); // compare to current
-    if (c == 0) {                                 // found it
+    if (c == 0) {
+      // found it
       found = 1;
       break;
     }
@@ -1032,9 +1033,9 @@ void cf_WriteDouble(CFILE *cfp, double d) {
 
 // Copies a file.  Returns TRUE if copied ok.  Returns FALSE if error opening either file.
 // Throws an exception of type (cfile_error *) if the OS returns an error on read or write
-bool cf_CopyFile(char *dest, const char *src, int copytime) {
+bool cf_CopyFile(const std::filesystem::path &dest, const std::filesystem::path &src, int copytime) {
   CFILE *infile, *outfile;
-  if (!stricmp(dest, src))
+  if (!stricmp(dest.u8string().c_str(), src.u8string().c_str()))
     return true; // don't copy files if they are the same
   infile = (CFILE *)cfopen(src, "rb");
   if (!infile)
@@ -1062,10 +1063,9 @@ bool cf_CopyFile(char *dest, const char *src, int copytime) {
     // c=cf_ReadByte (infile);
     // cf_WriteByte (outfile,c);
   }
-  int infile_lib_offset = infile->lib_offset;
   cfclose(infile);
   cfclose(outfile);
-  if (!infile_lib_offset && copytime) {
+  if (!infile->lib_offset && copytime) {
     cf_CopyFileTime(dest, src);
   }
   return true;
@@ -1076,7 +1076,9 @@ bool cf_CopyFile(char *dest, const char *src, int copytime) {
 bool cf_Diff(const char *a, const char *b) { return (ddio_FileDiff(a, b)); }
 
 // Copies the file time from one file to another
-void cf_CopyFileTime(char *dest, const char *src) { ddio_CopyFileTime(dest, src); }
+void cf_CopyFileTime(const std::filesystem::path &dest, const std::filesystem::path &src) {
+  ddio_CopyFileTime(dest, src);
+}
 
 // Changes a files attributes (ie read/write only)
 void cf_ChangeFileAttributes(const char *name, int attr) {
@@ -1146,7 +1148,7 @@ uint32_t cf_CalculateFileCRC(CFILE *infile) {
   return crc ^ 0xffffffffl;
 }
 
-uint32_t cf_GetfileCRC(const std::filesystem::path& src) {
+uint32_t cf_GetfileCRC(const std::filesystem::path &src) {
   CFILE *infile = cfopen(src, "rb");
   if (!infile)
     return 0xFFFFFFFF;
@@ -1232,7 +1234,7 @@ void cf_LibraryFindClose() {
   cfile_search_ispattern = false;
 }
 
-bool cf_IsFileInHog(const std::filesystem::path& filename, const std::filesystem::path& hogname) {
+bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname) {
   std::shared_ptr<library> lib = Libraries;
 
   while (lib) {
