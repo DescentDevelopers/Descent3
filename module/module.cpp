@@ -281,7 +281,7 @@ void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
   if (*extension == '\0')
 #if defined(WIN32)
     strcat(filename, ".dll");
-#elif defined(__LINUX__)
+#elif defined(__LINUX__) || defined(ANDROID)
     strcat(filename, ".so");
 #elif defined(MACOSX)
     strcat(filename, ".dylib");
@@ -294,7 +294,7 @@ void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
       strcat(filename, ".dll");
     else
       strcat(filename, extension);
-#elif defined(__LINUX__)
+#elif defined(__LINUX__) || defined(ANDROID)
     if (!stricmp(extension, ".dll") || !stricmp(extension, "msl") || !stricmp(extension, "dylib"))
       strcat(filename, ".so");
     else

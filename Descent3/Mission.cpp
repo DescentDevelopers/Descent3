@@ -1691,7 +1691,7 @@ void InitLevelScript() {
     strcat(filename, ".dll");
 #elif defined(MACOSX)
     strcat(filename, ".dylib");
-#elif defined(__LINUX__)
+#elif defined(__LINUX__) || defined(ANDROID)
     strcat(filename, ".so");
 #else
     #error Unsupported platform!
