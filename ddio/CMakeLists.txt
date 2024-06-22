@@ -17,7 +17,6 @@ set(CPPS
   ddio.cpp
   key.cpp
   $<$<PLATFORM_ID:Darwin,Linux>:
-    lnxcdrom.cpp
     lnxfile.cpp
     lnxforcefeedback.cpp
     lnxio.cpp
