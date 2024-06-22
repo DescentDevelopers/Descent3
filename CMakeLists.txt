@@ -128,6 +128,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(HOG_NAME "osx")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(HOG_NAME "win")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
+  set(HOG_NAME "android")
 endif()
 
 # rebuild d3_version.h every time
