@@ -171,20 +171,20 @@ void CScriptMassCompile::OnBuild() {
     list->GetText(index, tempbuffer);
     wnd->SetWindowText(tempbuffer);
     writeline("------------------------------- %s --------------------------", tempbuffer);
-    Descent->defer();
+    App()->defer();
 
     ret1 = Step1(tempbuffer);
-    Descent->defer();
+    App()->defer();
 
     ret2 = Step2(tempbuffer);
-    Descent->defer();
+    App()->defer();
 
     ret3 = Step3(tempbuffer, ret2);
-    Descent->defer();
+    App()->defer();
 
     if (ret1) {
       ret4 = Step4(tempbuffer);
-      Descent->defer();
+      App()->defer();
     } else {
       SetStepText(4, "Skipping due to results of Step 1");
       writeline("Step 4: Skipped due to result of Step 1 (maybe already checked out)");
@@ -214,7 +214,7 @@ void writeline(char *format, ...) {
   MassScriptEditContent += "\r\n";
 
   MassScriptEdit->SetWindowText(MassScriptEditContent.GetBuffer(0));
-  Descent->defer();
+  App()->defer();
 
   int total_lines = MassScriptEdit->GetLineCount();
   int curr_index = MassScriptEdit->GetFirstVisibleLine();
@@ -354,7 +354,7 @@ void CScriptMassCompile::SetStepText(int step, char *format, ...) {
   };
   wnd->SetWindowText(buffer);
   SendDlgItemMessage(msg_to, WM_PAINT, 0, 0);
-  Descent->defer();
+  App()->defer();
 }
 
 // return true if the file was checked out for this step
@@ -487,7 +487,7 @@ void masscompilercallback(char *str) {
     MassScriptEdit->LineScroll((total_lines - curr_index) - 16);
   }
 
-  Descent->defer();
+  App()->defer();
 }
 
 bool CScriptMassCompile::Step3(char *filename, bool islevel) {

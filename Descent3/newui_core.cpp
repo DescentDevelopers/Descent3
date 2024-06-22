@@ -598,7 +598,7 @@ int DoUI() {
   ui_Flush();
 
   while (UI_frame_result == -1) {
-    Descent->defer();
+    App()->defer();
     DoUIFrame();
     rend_Flip();
   }
@@ -4144,7 +4144,7 @@ int newuiTiledWindow::DoUI() {
   //	this should poll UI_frame_result.
   while (UI_frame_result == -1) {
 
-    Descent->defer();
+    App()->defer();
     DoUIFrame();
     if (m_onframe_cb) {
       (*m_onframe_cb)(this, m_data);

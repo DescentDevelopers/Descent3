@@ -1429,7 +1429,7 @@ void InitIOSystems(bool editor) {
 
   ddio_SetWorkingDir(Base_directory);
 
-  Descent->set_defer_handler(D3DeferHandler);
+  App()->set_defer_handler(D3DeferHandler);
 
 #ifndef RELEASE
   if (!editor && !FindArg("-windowed")) {
@@ -1444,7 +1444,7 @@ void InitIOSystems(bool editor) {
 #endif
 
   //	do io init stuff
-  io_info.obj = Descent;
+  //io_info.obj = App();
   io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0); WIN95: DirectInput is flaky for some keys.
   INIT_MESSAGE(("Initializing DDIO systems."));
@@ -1604,7 +1604,7 @@ void InitGraphics(bool editor) {
   strcpy(App_ddvid_subsystem, "GDIX");
 
   if (!Dedicated_server) {
-    if (!ddvid_Init(Descent, App_ddvid_subsystem))
+    if (!ddvid_Init(App_ddvid_subsystem))
       Error("Graphics initialization failed.\n");
   }
 
@@ -1642,7 +1642,7 @@ void InitGameSystems(bool editor) {
     uiinit.window_font = SMALL_FONT;
     uiinit.w = 640;
     uiinit.h = 480;
-    ui_Init(Descent, &uiinit);
+    ui_Init(&uiinit);
     ui_UseCursor("StdCursor.ogf");
 
     NewUIInit();
@@ -1900,13 +1900,13 @@ void InitD3Systems1(bool editor) {
   }
 
   // Sound initialization
-  int soundres = Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
+  int soundres = Sound_system.InitSoundLib(Sound_mixer, Sound_quality, false);
 
   //	Initialize Cinematics system
   InitCinematics();
 
   // Initialize IntelliVIBE (if available)
-  VIBE_Init(Descent);
+  VIBE_Init();
 }
 
 // Initialize rest of stuff
@@ -2155,7 +2155,6 @@ void RestartD3() {
   }
 
   // startup io
-  io_info.obj = Descent;
   io_info.key_emulation = true; //(bool)(FindArg("-slowkey")!=0);
   io_info.joy_emulation = (bool)((FindArg("-alternatejoy") == 0) && (FindArg("-directinput") == 0));
   if (!ddio_Init(&io_info)) {
@@ -2163,7 +2162,7 @@ void RestartD3() {
   }
 
   //	startup screen.
-  ddvid_Init(Descent, App_ddvid_subsystem);
+  ddvid_Init(App_ddvid_subsystem);
   ddio_KeyFlush();
   SetScreenMode(Init_old_screen_mode);
   SetUICallback(Init_old_ui_callback);

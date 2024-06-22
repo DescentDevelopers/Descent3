@@ -208,27 +208,6 @@ void install_signal_handlers(void) {
   if (sigaction(SIGTRAP, &fact, NULL))
     fprintf(stderr, "SIG: Unable to install SIGTRAP\n");
 }
-//	---------------------------------------------------------------------------
-//	Define our operating system specific extensions to the gameos system
-//	---------------------------------------------------------------------------
-
-class oeD3LnxApp : public oeLnxApplication {
-  bool shutdown, final_shutdown;
-  int old_screen_mode;
-
-public:
-  oeD3LnxApp(unsigned flags);
-  virtual ~oeD3LnxApp() { final_shutdown = true; };
-
-  void run() { Descent3(); };
-};
-
-oeD3LnxApp::oeD3LnxApp(unsigned flags) : oeLnxApplication(flags) {
-  Descent = this;
-  shutdown = false;
-  final_shutdown = false;
-}
-
 
 //	---------------------------------------------------------------------------
 //	D3LnxDatabase operating system specific initialization
@@ -596,13 +575,12 @@ int main(int argc, char *argv[]) {
     }
 
     if (run_d3) {
-      oeD3LnxApp d3(flags);
       init_database();
       StartDedicatedServer();
       PreInitD3Systems();
 
-      d3.init();
-      d3.run();
+      App()->init();
+      Descent3();
     }
   }
 

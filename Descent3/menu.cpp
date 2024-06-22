@@ -806,7 +806,7 @@ int MainMenu() {
                     {
                             //MenuScene();
                             //ui_ShowCursor();
-                            //Descent->defer();
+                            //App()->defer();
                             //DoUIFrame();
                             //rend_Flip();
                             //GetUIFrameResult();

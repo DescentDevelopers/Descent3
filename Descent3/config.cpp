@@ -889,7 +889,7 @@ struct sound_menu {
     }
 
     if (Sound_system.GetSoundMixer() == SOUND_MIXER_NONE) {
-      Sound_system.InitSoundLib(Descent, mixer_type, Sound_quality, false);
+      Sound_system.InitSoundLib(mixer_type, Sound_quality, false);
     } else {
       Sound_system.SetSoundMixer(mixer_type);
     }

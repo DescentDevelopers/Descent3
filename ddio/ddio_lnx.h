@@ -26,6 +26,4 @@
 
 #include "lnxapp.h"
 
-extern oeLnxApplication *Lnx_app_obj;
-
 #endif

@@ -42,8 +42,8 @@
 tDDGRDXInternalData DDGR_DX_lib_data;
 
 //	Initializes DX subsystem
-bool ddgr_dx_Init(oeApplication *app) {
-  DX_DATA(hPrimaryWnd) = (HWND)((oeWin32Application *)app)->m_hWnd;
+bool ddgr_dx_Init() {
+  DX_DATA(hPrimaryWnd) = Win32App()->windowHandle();
 
   DX_DATA(lpDD) = NULL;
 

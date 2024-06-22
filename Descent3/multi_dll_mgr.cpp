@@ -767,7 +767,7 @@ void DatabaseWriteInt(const char *label, int val) {
   mprintf(0, "Writing int: %s:%d\n", label, val);
   Database()->write(label, val);
 }
-void DescentDefer(void) { Descent->defer(); }
+void DescentDefer(void) { App()->defer(); }
 void *NewUIGameWindowCreate(int x, int y, int w, int h, int flags) {
   NewUIGameWindow *newgamewin;
   newgamewin = new NewUIGameWindow;
@@ -811,7 +811,7 @@ int PollUI(void) {
 
   UI_LastPoll = timer_GetTime();
 
-  Descent->defer();
+  App()->defer();
   DoUIFrame();
   rend_Flip();
   result = GetUIFrameResult();

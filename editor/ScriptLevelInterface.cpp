@@ -203,7 +203,7 @@ END_MESSAGE_MAP()
 void CScriptLevelInterface::SetStatus(char *str) {
   CWnd *wnd = (CWnd *)GetDlgItem(IDC_STATUS);
   wnd->SetWindowText(str);
-  Descent->defer();
+  App()->defer();
 }
 
 void CScriptLevelInterface::OnCheckout() {

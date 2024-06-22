@@ -688,7 +688,7 @@ void ddio_InternalKeyResume() {
 
 bool ddio_Win_KeyInit() {
   /*	Initialize hook handlers */
-  WKD.winhook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, (HINSTANCE)DInputData.app->m_hInstance,
+  WKD.winhook = SetWindowsHookEx(WH_KEYBOARD, (HOOKPROC)KeyboardProc, Win32App()->instance(),
                                  GetCurrentThreadId());
   if (!WKD.winhook) {
     return false;

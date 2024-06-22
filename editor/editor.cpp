@@ -433,6 +433,15 @@ ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
 END_MESSAGE_MAP()
 
+
+CEditorApp* Editor()
+{
+  static CEditorApp* instance = nullptr;
+  if(instance == nullptr)
+    instance = new CEditorApp();
+  return instance;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CEditorApp construction
 
@@ -609,9 +618,9 @@ END_MESSAGE_MAP()
 void CEditorApp::OnAppAbout() {
   CAboutDlg aboutDlg;
 
-  theApp.pause();
+  Editor()->pause();
   aboutDlg.DoModal();
-  theApp.resume();
+  Editor()->resume();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -688,10 +697,10 @@ BOOL CEditorApp::OnIdle(LONG lCount) {
     viewer_rotated = 1;
 
   // Update the viewer properties dialog
-  if (Viewer_moved && theApp.m_ViewerPropDlgPtr)
-    theApp.m_ViewerPropDlgPtr->UpdatePosition();
-  if ((Viewer_moved || viewer_rotated) && theApp.m_ViewerPropDlgPtr)
-    theApp.m_ViewerPropDlgPtr->UpdateOrientation();
+  if (Viewer_moved && Editor()->m_ViewerPropDlgPtr)
+    Editor()->m_ViewerPropDlgPtr->UpdatePosition();
+  if ((Viewer_moved || viewer_rotated) && Editor()->m_ViewerPropDlgPtr)
+    Editor()->m_ViewerPropDlgPtr->UpdateOrientation();
 
   if (slew_flags & SLEW_KEY) {
     //	note that if a slew key was pressed, the main view is out of keyboard focus, set
@@ -1085,7 +1094,7 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
   char saved_path[_MAX_PATH];
   char search_path[_MAX_PATH];
 
-  theApp.pause();
+  Editor()->pause();
 
   if (open)
     dlg = new CFileDialog(TRUE, 0, 0, OFN_FILEMUSTEXIST, filter, wnd);
@@ -1105,7 +1114,7 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
   if (dlg->DoModal() == IDCANCEL) {
     if (initialdir)
       ddio_SetWorkingDir(saved_path);
-    theApp.resume();
+    Editor()->resume();
     delete dlg;
     return false;
   }
@@ -1119,7 +1128,7 @@ bool FileDialog(CWnd *wnd, BOOL open, LPCTSTR filter, char *pathname, char *init
     ddio_SetWorkingDir(saved_path);
   }
 
-  theApp.resume();
+  Editor()->resume();
 
   delete dlg;
   return true;

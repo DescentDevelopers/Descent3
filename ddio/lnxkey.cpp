@@ -97,17 +97,9 @@ enum {
 // ----------------------------------------------------------------------------
 
 bool ddio_InternalKeyInit(ddio_init_info *init_info) {
-  oeLnxApplication *app = (oeLnxApplication *)init_info->obj;
-  tLnxAppInfo app_info;
-
-  if (!app) {
-    return false;
-  }
-
-  app->get_info(&app_info);
 
   // determine if we are to use SDL or null mode
-  Keyboard_mode = (app_info.flags & APPFLAG_USESERVICE) ? Input_null : Input_sdl;
+  Keyboard_mode = (App()->flags() & APPFLAG_USESERVICE) ? Input_null : Input_sdl;
 
   switch (Keyboard_mode) {
   case Input_null:

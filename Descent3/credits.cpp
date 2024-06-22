@@ -395,7 +395,7 @@ void Credits_Display(void) {
       Sound_system.EndSoundFrame();
 
       // Check for keys
-      Descent->defer();
+      App()->defer();
       if (Credits_IsKeyPressed()) {
         cur_line = count;
       }

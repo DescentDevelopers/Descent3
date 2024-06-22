@@ -979,7 +979,7 @@ void SetScreenMode(int sm, bool force_res_change) {
       Render_preferred_state.height = scr_height;
       Render_preferred_state.bit_depth = scr_bitdepth;
 
-      rend_initted = rend_Init(PreferredRenderer, Descent, &Render_preferred_state);
+      rend_initted = rend_Init(PreferredRenderer, &Render_preferred_state);
       rend_width = rend_height = 0;
     } else {
 
@@ -1116,8 +1116,6 @@ void SetScreenMode(int sm, bool force_res_change) {
   //	HACK!!! In editor, to get things working fine, reassert window handle attached to game screen
   //	is the topmost window, since in the editor, if we're fullscreen the parent window is still
   //	the editor window, the screen would belong to the editor window.
-  tWin32AppInfo appinfo;
-  Descent->get_info(&appinfo);
   ddvid_SetVideoHandle(hGameWnd);
 #endif
 }

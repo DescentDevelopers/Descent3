@@ -365,7 +365,7 @@ int mmInterface::DoUI() {
   SetUICallback(MenuScene);
 
   while (UI_frame_result == -1) {
-    Descent->defer();
+    App()->defer();
     DoUIFrame();
     rend_Flip();
   }
@@ -501,7 +501,7 @@ void PlayMenuSound(int sound_index, bool wait_till_done) {
     float timer = timer_GetTime();
     while (Sound_system.IsSoundPlaying(sound_uid) && ((timer + 5.0f) > timer_GetTime())) {
       Sound_system.BeginSoundFrame(false);
-      Descent->defer();
+      App()->defer();
       Sound_system.EndSoundFrame();
     }
   }
