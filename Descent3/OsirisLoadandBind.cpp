@@ -3146,7 +3146,7 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   const char *script_extension;
 #if defined(MACOSX)
   script_extension = "*.dylib";
-#elif defined(__LINUX__)
+#elif defined(__LINUX__) || defined(ANDROID)
   script_extension = "*.so";
 #elif defined(WIN32)
   script_extension = "*.dll";
