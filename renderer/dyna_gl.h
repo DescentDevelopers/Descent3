@@ -217,7 +217,6 @@ DYNAEXTERN(glBlitFramebufferEXT_fp, dglBlitFramebufferEXT);
 #ifdef DECLARE_OPENGL
 static module OpenGLDLLInst;
 
-#ifdef __LINUX__
 static void *__SDL_mod_GetSymbol(const char *funcStr) {
   void *retVal = NULL;
 
@@ -238,7 +237,6 @@ static void *__SDL_mod_GetSymbol(const char *funcStr) {
 #define mod_GetSymbol(x, funcStr, y) __SDL_mod_GetSymbol(funcStr)
 /****************** WARNING: NASTY HACK! ***********************/
 
-#endif
 
 #ifdef __LINUX__
 extern char *__orig_pwd;
