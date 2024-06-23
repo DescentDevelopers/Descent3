@@ -6,9 +6,15 @@ set(CPPS
   >
 )
 
-add_library(networking STATIC ${HEADERS} ${CPPS})
+if(WIN32)
+  set(PLATFORMCPPS "directplay.cpp")
+  set(PLATFORM_LIBS ${DXGUID_LIBRARY})
+endif()
+
+add_library(networking STATIC ${HEADERS} ${CPPS} ${PLATFORMCPPS})
 target_link_libraries(networking PRIVATE
   ddio
   mem
   misc
+  ${PLATFORM_LIBS}
 )
