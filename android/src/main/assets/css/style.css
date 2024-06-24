@@ -1,0 +1,10 @@
+.title {
+  font-size: 24pt;
+  text-align: center;
+}
+.dir_select {
+  margin: 12pt;
+  border: 2pt solid black;
+  padding: 12pt;
+  text-align: center;
+}
