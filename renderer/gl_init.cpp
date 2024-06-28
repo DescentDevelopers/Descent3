@@ -18,6 +18,7 @@
 */
 #include "gl_local.h"
 #include "args.h"
+#include "config.h"
 #ifdef WIN32
 #define NOMINMAX
 #include <Windows.h>
