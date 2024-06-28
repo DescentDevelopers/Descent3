@@ -36,6 +36,7 @@
 #include "mono.h"
 #include "pserror.h"
 #include "gl_shader.h"
+#include "module.h"
 
 #define CHECK_ERROR(n) //need to decide what it does. 
 
@@ -103,6 +104,7 @@ extern bool OpenGL_blending_on;
 extern bool OpenGL_multitexture_state;
 extern int OpenGL_polys_drawn;
 extern int OpenGL_verts_processed;
+extern module *OpenGLDLLHandle;
 
 void opengl_SetDrawDefaults(void);
 void rend_SetLightingState(light_state state);

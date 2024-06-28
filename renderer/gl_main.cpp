@@ -33,6 +33,7 @@ renderer_type Renderer_type = RENDERER_OPENGL;
 bool OpenGL_multitexture_state;
 bool OpenGL_packed_pixels;
 bool Fast_test_render = false;
+module *OpenGLDLLHandle = nullptr;
 
 constexpr int NUM_FBOS = 2;
 Framebuffer framebuffers[NUM_FBOS];
