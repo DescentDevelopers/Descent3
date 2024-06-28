@@ -887,13 +887,13 @@ void rend_FreePreUploadedTexture(int handle, int map_type)
 
 char Renderer_error_message[256];
 // Retrieves an error message
-char* rend_GetErrorMessage()
+const char* rend_GetErrorMessage()
 {
-	return (char*)Renderer_error_message;
+	return Renderer_error_message;
 }
 
 // Sets an error message
-void rend_SetErrorMessage(char* str)
+void rend_SetErrorMessage(const char* str)
 {
 	ASSERT(strlen(str) < 256);
 	strcpy(Renderer_error_message, str);
