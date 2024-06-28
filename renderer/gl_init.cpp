@@ -401,6 +401,173 @@ int opengl_Setup(HDC glhdc)
 	return 1;
 
 }
+#else
+int opengl_Setup(oeApplication *app,int *width,int *height)
+{
+	if (!Already_loaded)
+	{
+		#define MAX_ARGS			30
+		#define MAX_CHARS_PER_ARG	100
+		extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
+		
+		char gl_library[256];
+		int arg;
+		arg = FindArg("-gllibrary");
+		if(arg!=0)
+		{
+			strcpy(gl_library,GameArgs[arg+1]);
+			fprintf(stdout,"OpenGL: Loading %s library\n",gl_library);
+		}else
+		{
+			strcpy(gl_library,"libGL.so");
+		}
+		if (!(OpenGLDLLHandle=LoadOpenGLDLL(gl_library)))
+		{
+			char buffer[512];
+			sprintf(buffer,"Failed to load %s!\n",gl_library);
+			fprintf(stderr,buffer);
+			rend_SetErrorMessage(buffer);			
+			Int3();
+			return 0;
+		}
+	}
+
+	int dummy;
+
+	OpenGL_TextureHack = (FindArg("-gltexturehack"))?true:false;
+
+	if(app)
+	{
+		tLnxAppInfo app_info;
+		OpenGL_LinuxApp = (oeLnxApplication *)app;
+
+		app->get_info((void *)&app_info);
+
+		OpenGL_Display = app_info.m_Display;
+		OpenGL_Window = app_info.m_window;
+		memcpy(&OpenGL_VisualInfo,&app_info.m_VisualInfo,sizeof(XVisualInfo));
+	}else
+	{
+		// since the application object wasn't passed in, make sure
+		// this isn't the first init
+		if(!OpenGL_Display)
+		{
+			// ACK!
+			fprintf(stdout,"OGL: Error in opengl_Setup().  Application object not specified\n");
+			return 0;
+		}
+	}
+
+	// we need to destroy the OpenGL window
+	XUnmapWindow(OpenGL_Display,OpenGL_Window);
+	XDestroyWindow(OpenGL_Display,OpenGL_Window);
+
+	// Make sure OpenGL's GLX extension is supported.  The glXQueryExtension also returns
+	// the GLX extension's error base and event base.  For almost all OpenGL programs,
+	// this information is irrelevant.
+	if(!glXQueryExtension(OpenGL_Display,&dummy,&dummy))
+	{
+		fprintf(stderr,"GLX extension not supported by Display\n");
+		Int3();
+		return 0;
+	}
+
+	// Choose our visual
+	int screen_num = DefaultScreen(OpenGL_Display);
+	int vis_attrib[] = {GLX_RGBA, 
+					GLX_RED_SIZE, 1, 
+					GLX_GREEN_SIZE, 1, 
+					GLX_BLUE_SIZE, 1 , 
+					GLX_DEPTH_SIZE, 16,
+					GLX_DOUBLEBUFFER,
+					None};
+	XVisualInfo *new_vis = dglXChooseVisual(OpenGL_Display,screen_num,vis_attrib);
+	if(!new_vis)
+	{
+		fprintf(stdout,"OpenGL: glXChooseVisual returned NULL\n");
+		Int3();
+		return 0;
+	}
+
+	// Create an OpenGL rendering context
+	OpenGL_Context = glXCreateContext(OpenGL_Display,new_vis,None,True);
+	if(OpenGL_Context==NULL)
+	{
+		fprintf(stderr,"OpenGL: Unable to create GLX Context\n");
+		Int3();
+		return 0;
+	}
+	
+	// Create a new window
+	XSetWindowAttributes swa;
+	swa.override_redirect = true;
+	swa.border_pixel = 0;
+	swa.event_mask = ExposureMask|StructureNotifyMask|KeyPressMask|KeyReleaseMask|PointerMotionMask|ButtonPressMask|ButtonReleaseMask;
+
+	OpenGL_Window = XCreateWindow(OpenGL_Display,RootWindow(OpenGL_Display,OpenGL_VisualInfo.screen),0,0,*width,*height,0,OpenGL_VisualInfo.depth,
+					InputOutput,OpenGL_VisualInfo.visual,CWBorderPixel|CWEventMask,&swa);
+
+	XSizeHints sizeHints = {0};
+	sizeHints.flags |= USSize|USPosition|PAspect;
+	sizeHints.width = *width;
+	sizeHints.height = *height;
+	sizeHints.x = 0;
+	sizeHints.y = 0;
+	sizeHints.min_aspect.x = sizeHints.max_aspect.x = *width;
+	sizeHints.min_aspect.y = sizeHints.max_aspect.y = *height;
+
+	char *argv[1];
+	XWMHints *wmHints;
+	Atom wmDeleteWindow;
+
+	argv[0] = strdup("opengl");
+			
+	XSetStandardProperties(OpenGL_Display,OpenGL_Window,"","",None,(char **)argv,0,&sizeHints);
+	free(argv[0]);
+
+	wmHints = XAllocWMHints();
+	wmHints->initial_state = NormalState;
+	wmHints->flags = StateHint;
+			
+	XSetWMHints(OpenGL_Display,OpenGL_Window,wmHints);
+	wmDeleteWindow = XInternAtom(OpenGL_Display,"WM_DELETE_WINDOW",False);
+	XSetWMProtocols(OpenGL_Display,OpenGL_Window,&wmDeleteWindow,1);
+	
+	// move and resize the application window
+	XMoveResizeWindow(OpenGL_Display,OpenGL_Window,0,0,*width,*height);
+
+	OpenGL_LinuxApp->set_sizepos(0,0,*width,*height);
+	OpenGL_LinuxApp->set_windowinfo(OpenGL_Display,OpenGL_Window);
+	OpenGL_LinuxApp->hide_mouse();
+	OpenGL_LinuxApp->clear_window();
+
+	//	warp the mouse to 0,0 to start so our screen is in full view
+	XWarpPointer(OpenGL_Display,None,OpenGL_Window,0,0,0,0,*width/2,*height/2);
+
+	XStoreName(OpenGL_Display, OpenGL_Window, OpenGL_LinuxApp->get_window_name());
+	XSetIconName(OpenGL_Display, OpenGL_Window, OpenGL_LinuxApp->get_window_name());
+
+	XMapWindow(OpenGL_Display,OpenGL_Window);	
+
+	bool wait_for_draw = false;
+	XEvent event;
+	while (!wait_for_draw)
+	{
+		XNextEvent(OpenGL_Display, &event);
+		if (event.type == Expose && !event.xexpose.count)
+			wait_for_draw = true;
+	}
+
+	XRaiseWindow(OpenGL_Display,OpenGL_Window);
+
+	// Bind the rendering context
+	glXMakeCurrent(OpenGL_Display,OpenGL_Window,OpenGL_Context);
+
+	XSync(OpenGL_Display,False);
+
+	Already_loaded = 1;
+	return 1;
+}
 #endif
 
 // Gets some specific information about this particular flavor of opengl
@@ -483,8 +650,8 @@ int opengl_Init(oeApplication* app, renderer_preferred_state* pref_state)
 	***********************************************************
 	*/
 	// Setup OpenGL_state.screen_width & OpenGL_state.screen_height & width & height
-	width = OpenGL_preferred_state.width;
-	height = OpenGL_preferred_state.height;
+	auto width = OpenGL_preferred_state.width;
+	auto height = OpenGL_preferred_state.height;
 
 	if (!opengl_Setup(app, &width, &height))
 	{

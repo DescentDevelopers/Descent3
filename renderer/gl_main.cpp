@@ -131,32 +131,22 @@ void opengl_UpdateWindow()
 	int width, height;
 	if (!OpenGL_preferred_state.fullscreen)
 	{
-		OpenGL_state.view_width = OpenGL_preferred_state.window_width;
-		OpenGL_state.view_height = OpenGL_preferred_state.window_height;
-		width = OpenGL_preferred_state.width;
-		height = OpenGL_preferred_state.height;
-
-		//[ISB] center window
-		int mWidth = GetSystemMetrics(SM_CXSCREEN);
-		int mHeight = GetSystemMetrics(SM_CYSCREEN);
-
-		int orgX = (mWidth / 2 - OpenGL_state.view_width / 2);
-		int orgY = (mHeight / 2 - OpenGL_state.view_height / 2);
-		RECT rect = { orgX, orgY, orgX + OpenGL_state.view_width, orgY + OpenGL_state.view_height };
-		AdjustWindowRectEx(&rect, WS_CAPTION, FALSE, 0);
-		ParentApplication->set_sizepos(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+		SDL_SetWindowPosition(SDL_GL_GetCurrentWindow(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		int x, y;
+		SDL_GetWindowPosition(SDL_GL_GetCurrentWindow(), &x, &y);
+		SDL_GetWindowSize(SDL_GL_GetCurrentWindow(), &width, &height);
+		ParentApplication->set_sizepos(x, y, width, height);
 		ParentApplication->set_flags(OEAPP_WINDOWED);
 	}
 	else
 	{
 		ParentApplication->set_flags(OEAPP_FULLSCREEN);
 
-		RECT rect;
-		GetWindowRect((HWND)hOpenGLWnd, &rect);
-		mprintf((0, "rect=%d %d %d %d\n", rect.top, rect.right, rect.bottom, rect.left));
+		SDL_DisplayMode dm{};
+		SDL_GetCurrentDisplayMode(0, &dm);
 
-		OpenGL_state.view_width = rect.right - rect.left;
-		OpenGL_state.view_height = rect.bottom - rect.top;
+		OpenGL_state.view_width = dm.w;
+		OpenGL_state.view_height = dm.h;
 
 		width = OpenGL_preferred_state.width;
 		height = OpenGL_preferred_state.height;
