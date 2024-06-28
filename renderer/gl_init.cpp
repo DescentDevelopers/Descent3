@@ -19,6 +19,10 @@
 #include "gl_local.h"
 #include "args.h"
 #include "config.h"
+
+#define DECLARE_OPENGL
+#include "dyna_gl.h"
+
 #ifdef WIN32
 #define NOMINMAX
 #include <Windows.h>

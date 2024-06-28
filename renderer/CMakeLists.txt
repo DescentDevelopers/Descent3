@@ -1,6 +1,7 @@
 set(HEADERS
   HardwareInternal.h
   RendererConfig.h
+  dyna_gl.h
   gl_local.h
   gl_mesh.h
   gl_shader.h
