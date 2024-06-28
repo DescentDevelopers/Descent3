@@ -491,10 +491,10 @@ struct DLLrendering_state {
 struct renderer_preferred_state {
   uint8_t mipping;
   uint8_t filtering;
+  float gamma;
   bool antialised;
   uint8_t bit_depth;
 
-  float gamma;
   int width, height;
   int window_width, window_height; // Size of the game window, may != width/height.
 
