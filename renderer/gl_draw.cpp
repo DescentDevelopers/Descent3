@@ -52,7 +52,7 @@ int OpenGL_verts_processed;
 int Overlay_map = -1;
 int Bump_map = 0;
 int Bumpmap_ready = 0;
-ubyte Overlay_type = OT_NONE;
+uint8_t Overlay_type = OT_NONE;
 float Z_bias = 0.0f;
 
 bool OpenGL_blending_on = true;
@@ -543,7 +543,7 @@ void rend_DrawFontCharacter(int bm_handle, int x1, int y1, int x2, int y2, float
 // Draws a line
 void rend_DrawLine(int x1, int y1, int x2, int y2)
 {
-	sbyte atype;
+	int8_t atype;
 	light_state ltype;
 	texture_type ttype;
 	int color = OpenGL_state.cur_color;
@@ -715,12 +715,12 @@ void rend_ReleaseLFBLock(renderer_lfb* lfb)
 }
 
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, ushort* data, int rowsize)
+void rend_DrawLFBBitmap(int sx, int sy, int w, int h, int dx, int dy, uint16_t* data, int rowsize)
 {
 }
 
 //	given a chunked bitmap, renders it.
-void rend_DrawChunkedBitmap(chunked_bitmap* chunk, int x, int y, ubyte alpha)
+void rend_DrawChunkedBitmap(chunked_bitmap* chunk, int x, int y, uint8_t alpha)
 {
 	int* bm_array = chunk->bm_array;
 	int w = chunk->w;
@@ -756,7 +756,7 @@ void rend_DrawChunkedBitmap(chunked_bitmap* chunk, int x, int y, ubyte alpha)
 }
 
 //	given a chunked bitmap, renders it.scaled
-void rend_DrawScaledChunkedBitmap(chunked_bitmap* chunk, int x, int y, int neww, int newh, ubyte alpha)
+void rend_DrawScaledChunkedBitmap(chunked_bitmap* chunk, int x, int y, int neww, int newh, uint8_t alpha)
 {
 	int* bm_array = chunk->bm_array;
 	int w = chunk->w;

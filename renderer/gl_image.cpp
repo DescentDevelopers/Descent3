@@ -27,19 +27,19 @@
 #define GL_UNSIGNED_SHORT_4_4_4_4 0x8033
 #endif
 
-ushort* OpenGL_bitmap_remap = NULL;
-ushort* OpenGL_lightmap_remap = NULL;
-ubyte* OpenGL_bitmap_states = NULL;
-ubyte* OpenGL_lightmap_states = NULL;
+uint16_t* OpenGL_bitmap_remap = NULL;
+uint16_t* OpenGL_lightmap_remap = NULL;
+uint8_t* OpenGL_bitmap_states = NULL;
+uint8_t* OpenGL_lightmap_states = NULL;
 
 unsigned int opengl_last_upload_res = 0;
 uint* opengl_Upload_data = NULL;
 uint* opengl_Translate_table = NULL;
 uint* opengl_4444_translate_table = NULL;
 
-ushort* opengl_packed_Upload_data = NULL;
-ushort* opengl_packed_Translate_table = NULL;
-ushort* opengl_packed_4444_translate_table = NULL;
+uint16_t* opengl_packed_Upload_data = NULL;
+uint16_t* opengl_packed_Translate_table = NULL;
+uint16_t* opengl_packed_4444_translate_table = NULL;
 
 //Texture list
 GLuint texture_name_list[10000];
@@ -246,7 +246,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn)
 void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn)
 {
 	int magf, mmip;
-	sbyte dest_filter, dest_mip;
+	int8_t dest_filter, dest_mip;
 
 	if (map_type == MAP_TYPE_LIGHTMAP)
 	{
@@ -309,14 +309,14 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn)
 
 int opengl_InitCache(void)
 {
-	OpenGL_bitmap_remap = (ushort*)mem_malloc(MAX_BITMAPS * 2);
+	OpenGL_bitmap_remap = (uint16_t*)mem_malloc(MAX_BITMAPS * 2);
 	ASSERT(OpenGL_bitmap_remap);
-	OpenGL_lightmap_remap = (ushort*)mem_malloc(MAX_LIGHTMAPS * 2);
+	OpenGL_lightmap_remap = (uint16_t*)mem_malloc(MAX_LIGHTMAPS * 2);
 	ASSERT(OpenGL_lightmap_remap);
 
-	OpenGL_bitmap_states = (ubyte*)mem_malloc(MAX_BITMAPS);
+	OpenGL_bitmap_states = (uint8_t*)mem_malloc(MAX_BITMAPS);
 	ASSERT(OpenGL_bitmap_states);
-	OpenGL_lightmap_states = (ubyte*)mem_malloc(MAX_LIGHTMAPS);
+	OpenGL_lightmap_states = (uint8_t*)mem_malloc(MAX_LIGHTMAPS);
 	ASSERT(OpenGL_lightmap_states);
 
 	Cur_texture_object_num = 1;
@@ -423,9 +423,9 @@ void opengl_SetUploadBufferSize(int width, int height)
 
 	if (OpenGL_packed_pixels)
 	{
-		opengl_packed_Upload_data = (ushort*)mem_malloc(width * height * 2);
-		opengl_packed_Translate_table = (ushort*)mem_malloc(65536 * 2);
-		opengl_packed_4444_translate_table = (ushort*)mem_malloc(65536 * 2);
+		opengl_packed_Upload_data = (uint16_t*)mem_malloc(width * height * 2);
+		opengl_packed_Translate_table = (uint16_t*)mem_malloc(65536 * 2);
+		opengl_packed_4444_translate_table = (uint16_t*)mem_malloc(65536 * 2);
 
 		ASSERT(opengl_packed_Upload_data);
 		ASSERT(opengl_packed_Translate_table);
@@ -448,7 +448,7 @@ void opengl_SetUploadBufferSize(int width, int height)
 			if (b > 0x1F) b = 0x1F;
 #endif
 
-			ushort pix;
+			uint16_t pix;
 
 			if (!(i & OPAQUE_FLAG))
 			{
@@ -546,7 +546,7 @@ void opengl_SetUploadBufferSize(int width, int height)
 // Takes our 16bit format and converts it into the memory scheme that OpenGL wants
 void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int replace, int tn)
 {
-	ushort* bm_ptr;
+	uint16_t* bm_ptr;
 
 	int w, h;
 	int size;
@@ -596,12 +596,12 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 	{
 		if (map_type == MAP_TYPE_LIGHTMAP)
 		{
-			ushort* left_data = (ushort*)opengl_packed_Upload_data;
+			uint16_t* left_data = (uint16_t*)opengl_packed_Upload_data;
 			int bm_left = 0;
 
 			for (int i = 0; i < h; i++, left_data += size, bm_left += w)
 			{
-				ushort* dest_data = left_data;
+				uint16_t* dest_data = left_data;
 				for (int t = 0; t < w; t++)
 				{
 					*dest_data++ = opengl_packed_Translate_table[bm_ptr[bm_left + t]];
@@ -774,7 +774,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 		OpenGL_uploads++;
 }
 
-ubyte opengl_Framebuffer_ready = 0;
+uint8_t opengl_Framebuffer_ready = 0;
 chunked_bitmap opengl_Chunked_bitmap;
 
 void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap* chunk)
@@ -814,9 +814,9 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap* chunk)
 	ASSERT(how_many_down > 0);
 
 	// Now go through our big bitmap and partition it into pieces
-	ushort* src_data = bm_data(bm_handle, 0);
-	ushort* sdata;
-	ushort* ddata;
+	uint16_t* src_data = bm_data(bm_handle, 0);
+	uint16_t* sdata;
+	uint16_t* ddata;
 
 	int shift;
 	switch (iopt)

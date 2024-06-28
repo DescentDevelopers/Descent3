@@ -476,13 +476,13 @@ bool UseMultitexture=0;
 bool UseWBuffer=0;
 int Overlay_map=-1;
 int Bump_map=0,Bumpmap_ready=0;
-ubyte Overlay_type=OT_NONE;
+uint8_t Overlay_type=OT_NONE;
 float Z_bias=0.0;
-ubyte Renderer_close_flag=0,Renderer_initted=0;
+uint8_t Renderer_close_flag=0,Renderer_initted=0;
 // Is this hardware or software rendered?
 renderer_type Renderer_type=RENDERER_SOFTWARE_16BIT;
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState (sbyte mipstate)
+void rend_SetMipState (int8_t mipstate)
 {
 	switch (Renderer_type)
 	{
@@ -736,7 +736,7 @@ void rend_SetFlatColor (ddgr_color color)
 	}
 }
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState (sbyte on)
+void rend_SetFogState (int8_t on)
 {
 	switch (Renderer_type)
 	{
@@ -1053,7 +1053,7 @@ void rend_DrawScaledBitmap (int x1,int y1,int x2,int y2,
 	}
 }
 // Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect,int width,int height,int pitch,ubyte *framebuffer)
+void rend_SetSoftwareParameters(float aspect,int width,int height,int pitch,uint8_t *framebuffer)
 {
 	switch (Renderer_type)
 	{
@@ -1072,7 +1072,7 @@ void rend_SetSoftwareParameters(float aspect,int width,int height,int pitch,ubyt
 	}
 }
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering (sbyte state)
+void rend_SetFiltering (int8_t state)
 {
 	switch (Renderer_type)
 	{
@@ -1100,7 +1100,7 @@ void rend_SetFiltering (sbyte state)
 	}
 }
 // Sets the state of zbuffering to on or off
-void rend_SetZBufferState  (sbyte state)
+void rend_SetZBufferState  (int8_t state)
 {
 	switch (Renderer_type)
 	{
@@ -1161,7 +1161,7 @@ void rend_SetOverlayMap (int handle)
 {
 	Overlay_map=handle;
 }
-void rend_SetOverlayType(ubyte type)
+void rend_SetOverlayType(uint8_t type)
 {
 	Overlay_type=type;
 }
@@ -1479,7 +1479,7 @@ void rend_SetFogColor (ddgr_color fogcolor)
 			break;
 	}
 }
-void rend_SetAlphaType (sbyte atype)
+void rend_SetAlphaType (int8_t atype)
 {
 	switch (Renderer_type)
 	{
@@ -1510,7 +1510,7 @@ void rend_SetAlphaType (sbyte atype)
 	}
 }
 // Sets the alpha value for constant alpha
-void rend_SetAlphaValue (ubyte val)
+void rend_SetAlphaValue (uint8_t val)
 {
 	switch (Renderer_type)
 	{
@@ -1873,7 +1873,7 @@ float rend_GetAspectRatio ()
 	}
 }
 // Given a source x,y and width,height, draws any sized bitmap into the renderer lfb
-void rend_DrawLFBBitmap (int sx,int sy,int w,int h,int dx,int dy,ushort *data,int rowsize)
+void rend_DrawLFBBitmap (int sx,int sy,int w,int h,int dx,int dy,uint16_t *data,int rowsize)
 {
 	renderer_lfb lfb;
 	int i,t;
@@ -1888,7 +1888,7 @@ void rend_DrawLFBBitmap (int sx,int sy,int w,int h,int dx,int dy,ushort *data,in
 	{
 		for (t=0;t<w;t++)
 		{
-			ushort pix=data[((sy+i)*(rowsize/2))+sx+t];
+			uint16_t pix=data[((sy+i)*(rowsize/2))+sx+t];
 			if (pix & OPAQUE_FLAG)
 				lfb.data[((dy+i)*(lfb.bytes_per_row/2))+dx+t]=pix;
 		}
@@ -1896,7 +1896,7 @@ void rend_DrawLFBBitmap (int sx,int sy,int w,int h,int dx,int dy,ushort *data,in
 	rend_ReleaseLFBLock (&lfb);
 }
 //	given a chunked bitmap, renders it.
-void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha)
+void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, uint8_t alpha)
 {
 	int *bm_array = chunk->bm_array;
 	int w = chunk->w;
@@ -1931,7 +1931,7 @@ void rend_DrawChunkedBitmap(chunked_bitmap *chunk, int x, int y, ubyte alpha)
 	rend_SetZBufferState (1);
 }
 //	given a chunked bitmap, renders it.scaled
-void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, ubyte alpha)
+void rend_DrawScaledChunkedBitmap(chunked_bitmap *chunk, int x, int y, int neww, int newh, uint8_t alpha)
 {
 	int *bm_array = chunk->bm_array;
 	int w = chunk->w;

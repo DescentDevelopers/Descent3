@@ -106,7 +106,7 @@ extern int OpenGL_verts_processed;
 
 void opengl_SetDrawDefaults(void);
 void rend_SetLightingState(light_state state);
-void rend_SetMipState(sbyte mipstate);
+void rend_SetMipState(int8_t mipstate);
 void opengl_DrawMultitexturePolygon3D(int handle, g3Point** p, int nv, int map_type);
 void opengl_SetMultitextureBlendMode(bool state);
 void opengl_DrawFlatPolygon3D(g3Point** p, int nv);

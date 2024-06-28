@@ -214,7 +214,7 @@ void MeshBuilder::Draw() const
 		//Eventually third overlay type for bump mapping?
 
 		if (m_indexhandle)
-			glDrawElements(GL_TRIANGLES, batch.indexcount, GL_UNSIGNED_SHORT, (const void*)(batch.indexoffset * sizeof(ushort)));
+			glDrawElements(GL_TRIANGLES, batch.indexcount, GL_UNSIGNED_SHORT, (const void*)(batch.indexoffset * sizeof(uint16_t)));
 		else
 			glDrawArrays(GL_TRIANGLES, batch.vertexoffset, batch.vertexcount);
 

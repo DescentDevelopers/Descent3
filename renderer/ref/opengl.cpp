@@ -67,7 +67,7 @@ extern int WindowGL;
 /*
 #ifndef NDEBUG
 	GLenum GL_error_code;
-	const ubyte *GL_error_string;
+	const uint8_t *GL_error_string;
 	#define CHECK_ERROR(x)	{	GL_error_code=dglGetError ();\
 									if (GL_error_code!=GL_NO_ERROR)\
 									{\
@@ -135,21 +135,21 @@ static float OpenGL_Alpha_factor=1.0f;
 // This is for the Microsoft OpenGL reference driver
 // Setting this will turn off bilinear filtering and zbuffer so we can get decent 
 // framerates to discern driver problems
-static ubyte Fast_test_render=0;
+static uint8_t Fast_test_render=0;
 #endif
 
-ushort *OpenGL_bitmap_remap;
-ushort *OpenGL_lightmap_remap;
-ubyte *OpenGL_bitmap_states;
-ubyte *OpenGL_lightmap_states;
+uint16_t *OpenGL_bitmap_remap;
+uint16_t *OpenGL_lightmap_remap;
+uint8_t *OpenGL_bitmap_states;
+uint8_t *OpenGL_lightmap_states;
 
 uint *opengl_Upload_data=NULL;
 uint *opengl_Translate_table=NULL;
 uint *opengl_4444_translate_table=NULL;
 
-ushort *opengl_packed_Upload_data=NULL;
-ushort *opengl_packed_Translate_table=NULL;
-ushort *opengl_packed_4444_translate_table=NULL;
+uint16_t *opengl_packed_Upload_data=NULL;
+uint16_t *opengl_packed_Translate_table=NULL;
+uint16_t *opengl_packed_4444_translate_table=NULL;
 
 rendering_state OpenGL_state;
 static float Alpha_multiplier=1.0;
@@ -245,7 +245,7 @@ void opengl_GetInformation ()
 
 /*	#ifndef RELEASE
 		// If this is the microsoft driver, then make stuff go faster
-		const ubyte *renderer=dglGetString(GL_RENDERER);
+		const uint8_t *renderer=dglGetString(GL_RENDERER);
 		if (!(strnicmp ((const char *)renderer,"GDI",3)))
 			Fast_test_render=1;
 		else
@@ -286,14 +286,14 @@ int opengl_MakeTextureObject (int tn)
 
 int opengl_InitCache ()
 {
-	OpenGL_bitmap_remap=(ushort *)mem_malloc (MAX_BITMAPS*2);
+	OpenGL_bitmap_remap=(uint16_t *)mem_malloc (MAX_BITMAPS*2);
 	ASSERT (OpenGL_bitmap_remap);
-	OpenGL_lightmap_remap=(ushort *)mem_malloc (MAX_LIGHTMAPS*2);
+	OpenGL_lightmap_remap=(uint16_t *)mem_malloc (MAX_LIGHTMAPS*2);
 	ASSERT (OpenGL_lightmap_remap);
 
-	OpenGL_bitmap_states=(ubyte *)mem_malloc (MAX_BITMAPS);
+	OpenGL_bitmap_states=(uint8_t *)mem_malloc (MAX_BITMAPS);
 	ASSERT (OpenGL_bitmap_states);
-	OpenGL_lightmap_states=(ubyte *)mem_malloc (MAX_LIGHTMAPS);
+	OpenGL_lightmap_states=(uint8_t *)mem_malloc (MAX_LIGHTMAPS);
 	ASSERT (OpenGL_lightmap_states);
 
 	Cur_texture_object_num=1;
@@ -884,9 +884,9 @@ int opengl_Init (oeApplication *app,renderer_preferred_state *pref_state)
 	
 	if (OpenGL_packed_pixels)
 	{
-		opengl_packed_Upload_data=(ushort *)mem_malloc (256*256*2);
-		opengl_packed_Translate_table=(ushort *)mem_malloc (65536*2);
-		opengl_packed_4444_translate_table=(ushort *)mem_malloc (65536*2);
+		opengl_packed_Upload_data=(uint16_t *)mem_malloc (256*256*2);
+		opengl_packed_Translate_table=(uint16_t *)mem_malloc (65536*2);
+		opengl_packed_4444_translate_table=(uint16_t *)mem_malloc (65536*2);
 
 		ASSERT (opengl_packed_Upload_data);
 		ASSERT (opengl_packed_Translate_table);
@@ -909,7 +909,7 @@ int opengl_Init (oeApplication *app,renderer_preferred_state *pref_state)
 			if( b > 0x1F ) b = 0x1F;
 			#endif
 			
-			ushort pix;
+			uint16_t pix;
 		
 			if (!(i & OPAQUE_FLAG))
 			{
@@ -1113,7 +1113,7 @@ void opengl_Close ()
 // Takes our 16bit format and converts it into the memory scheme that OpenGL wants
 void opengl_TranslateBitmapToOpenGL (int texnum,int bm_handle,int map_type,int replace,int tn)
 {
-	ushort *bm_ptr;
+	uint16_t *bm_ptr;
 
 	int w,h;
 	int size;
@@ -1163,12 +1163,12 @@ void opengl_TranslateBitmapToOpenGL (int texnum,int bm_handle,int map_type,int r
 	{
 		if (map_type==MAP_TYPE_LIGHTMAP)
 		{	
-			ushort *left_data=(ushort *)opengl_packed_Upload_data;
+			uint16_t *left_data=(uint16_t *)opengl_packed_Upload_data;
 			int bm_left=0;
 						
 			for (int i=0;i<h;i++,left_data+=size,bm_left+=w)
 			{
-				ushort *dest_data=left_data;
+				uint16_t *dest_data=left_data;
 				for (int t=0;t<w;t++)
 				{
 					*dest_data++=opengl_packed_Translate_table[bm_ptr[bm_left+t]];
@@ -1479,7 +1479,7 @@ void opengl_MakeWrapTypeCurrent (int handle,int map_type,int tn)
 void opengl_MakeFilterTypeCurrent (int handle,int map_type,int tn)
 {
 	int magf;
-	sbyte dest_state;
+	int8_t dest_state;
 
 	if (map_type==MAP_TYPE_LIGHTMAP)
 	{
@@ -2032,7 +2032,7 @@ void opengl_EndFrame()
 // Takes a screenshot of the frontbuffer and puts it into the passed bitmap handle
 void opengl_Screenshot (int bm_handle)
 {
-	ushort *dest_data;
+	uint16_t *dest_data;
 	uint *temp_data;
 	int i,t;
 	int total=OpenGL_state.screen_width*OpenGL_state.screen_height;
@@ -2199,7 +2199,7 @@ void opengl_SetColorModel (color_model state)
 }
 
 // Sets the state of bilinear filtering for our textures
-void opengl_SetFiltering (sbyte state)
+void opengl_SetFiltering (int8_t state)
 {
 	#ifndef RELEASE
 		if (Fast_test_render)
@@ -2210,7 +2210,7 @@ void opengl_SetFiltering (sbyte state)
 }
 
 // Sets the state of zbuffering to on or off
-void opengl_SetZBufferState  (sbyte state)
+void opengl_SetZBufferState  (int8_t state)
 {
 	#ifndef RELEASE
 		if (Fast_test_render)
@@ -2356,7 +2356,7 @@ void opengl_SetFogBorders (float nearz,float farz)
 }
 
 // Sets the fog state to on or off
-void opengl_SetFogState (sbyte state)
+void opengl_SetFogState (int8_t state)
 {
 	if (state==OpenGL_state.cur_fog_state)
 		return;	// No redundant state setting
@@ -2396,7 +2396,7 @@ float opengl_GetAspectRatio ()
 }
 
 // Sets the type of alpha blending you want
-void opengl_SetAlphaType (sbyte atype)
+void opengl_SetAlphaType (int8_t atype)
 {
 	if (atype==OpenGL_state.cur_alpha_type)
 		return;		// don't set it redundantly
@@ -2509,7 +2509,7 @@ void opengl_SetFlatColor (ddgr_color color)
 }
 
 // Sets the constant alpha value
-void opengl_SetAlphaValue (ubyte val)
+void opengl_SetAlphaValue (uint8_t val)
 {
 	OpenGL_state.cur_alpha=val;
 	opengl_SetAlphaMultiplier();
@@ -2538,7 +2538,7 @@ void opengl_GetRenderState (rendering_state *rstate)
 // draws a line
 void opengl_DrawLine (int x1,int y1,int x2,int y2)
 {
-	sbyte atype;
+	int8_t atype;
 	light_state ltype;
 	texture_type ttype;
 	int color=OpenGL_state.cur_color;
@@ -2740,7 +2740,7 @@ void opengl_ResetCache ()
 	opengl_InitCache();
 }
 
-ubyte opengl_Framebuffer_ready=0;
+uint8_t opengl_Framebuffer_ready=0;
 chunked_bitmap opengl_Chunked_bitmap;
 
 void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk)
@@ -2780,9 +2780,9 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk)
 	ASSERT (how_many_down>0);
 	
 	// Now go through our big bitmap and partition it into pieces
-	ushort *src_data=bm_data(bm_handle,0);
-	ushort *sdata;
-	ushort *ddata;
+	uint16_t *src_data=bm_data(bm_handle,0);
+	uint16_t *sdata;
+	uint16_t *ddata;
 
 	int shift;
 	switch(iopt)

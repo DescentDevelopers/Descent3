@@ -24,7 +24,7 @@
 
 void FreeTempPoint(g3Point *p);
 void InitFreePoints(void);
-void ClipLine(g3Point **p0,g3Point **p1,ubyte codes_or);
+void ClipLine(g3Point **p0,g3Point **p1,uint8_t codes_or);
 
 //Verify that all the temp points are free, and free them it they are not.
 #ifdef _DEBUG
@@ -42,7 +42,7 @@ extern matrix View_matrix,Unscaled_matrix;
 extern float Far_clip_z;
 
 // For custom clipping plane
-extern ubyte Clip_custom;
+extern uint8_t Clip_custom;
 extern float Clip_plane_distance;
 extern vector Clip_plane;
 

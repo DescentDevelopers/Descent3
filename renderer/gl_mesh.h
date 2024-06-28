@@ -41,7 +41,7 @@ struct SortableElement
 struct RendVertex
 {
 	vector position;
-	ubyte r, g, b, a;
+	uint8_t r, g, b, a;
 	vector normal;
 	int lmpage;
 	float u1, v1;
@@ -66,7 +66,7 @@ class MeshBuilder
 
 	std::vector<MeshBatch> m_interactions;
 	std::vector<RendVertex> m_vertices;
-	std::vector<ushort> m_indicies;
+	std::vector<uint16_t> m_indicies;
 
 	//Updates the counts of the last batch if relevant. 
 	void UpdateLastBatch();

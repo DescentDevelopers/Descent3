@@ -405,7 +405,7 @@ void rend_SetFlatColor(ddgr_color color)
 }
 
 // Sets the fog state to TRUE or FALSE
-void rend_SetFogState(sbyte state)
+void rend_SetFogState(int8_t state)
 {
 	if (state == OpenGL_state.cur_fog_state)
 		return;
@@ -526,18 +526,18 @@ void rend_SetTextureType(texture_type state)
 }
 
 // Sets where the software renderer should write to
-void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, ubyte* framebuffer)
+void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, uint8_t* framebuffer)
 {
 }
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(sbyte state)
+void rend_SetFiltering(int8_t state)
 {
 	OpenGL_state.cur_bilinear_state = state;
 }
 
 // Sets the state of z-buffering to on or off
-void rend_SetZBufferState(sbyte state)
+void rend_SetZBufferState(int8_t state)
 {
 	if (state == OpenGL_state.cur_zbuffer_state)
 		return;	// No redundant state setting
@@ -575,7 +575,7 @@ void rend_SetOverlayMap(int handle)
 	Overlay_map = handle;
 }
 
-void rend_SetOverlayType(ubyte type)
+void rend_SetOverlayType(uint8_t type)
 {
 	Overlay_type = type;
 }
@@ -717,7 +717,7 @@ void opengl_SetAlwaysAlpha(bool state)
 	}
 }
 
-void rend_SetAlphaType(sbyte atype)
+void rend_SetAlphaType(int8_t atype)
 {
 	if (atype == OpenGL_state.cur_alpha_type)
 		return;		// don't set it redundantly
@@ -799,7 +799,7 @@ void rend_SetAlphaType(sbyte atype)
 }
 
 // Sets the alpha value for constant alpha
-void rend_SetAlphaValue(ubyte val)
+void rend_SetAlphaValue(uint8_t val)
 {
 	OpenGL_state.cur_alpha = val;
 	Alpha_multiplier = opengl_GetAlphaMultiplier();
@@ -950,7 +950,7 @@ void rend_GetStatistics(tRendererStats* stats)
 }
 
 // Tells the software renderer whether or not to use mipping
-void rend_SetMipState(sbyte mipstate)
+void rend_SetMipState(int8_t mipstate)
 {
 	OpenGL_state.cur_mip_state = mipstate;
 }
@@ -1011,7 +1011,7 @@ void rend_DLLGetRenderState(DLLrendering_state* rstate)
 // Takes a screenshot of the current frame and puts it into the handle passed
 void rend_Screenshot(int bm_handle)
 {
-	ushort* dest_data;
+	uint16_t* dest_data;
 	uint* temp_data;
 	int i, t;
 	int total = OpenGL_state.screen_width * OpenGL_state.screen_height;
