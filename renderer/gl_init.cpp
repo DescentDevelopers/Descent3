@@ -33,6 +33,22 @@ rendering_state OpenGL_state;
 
 bool OpenGL_debugging_enabled;
 
+/* framebuffer object for backbuffer, scale to window size without changing resolution.  --ryan, 2019. */
+#define GL_DEPTH_COMPONENT16_EXT              0x81A5
+#define GL_READ_FRAMEBUFFER_EXT               0x8CA8
+#define GL_DRAW_FRAMEBUFFER_EXT               0x8CA9
+#define GL_FRAMEBUFFER_COMPLETE_EXT           0x8CD5
+#define GL_COLOR_ATTACHMENT0_EXT              0x8CE0
+#define GL_DEPTH_ATTACHMENT_EXT               0x8D00
+#define GL_STENCIL_ATTACHMENT_EXT             0x8D20
+#define GL_FRAMEBUFFER_EXT                    0x8D40
+#define GL_RENDERBUFFER_EXT                   0x8D41
+static GLuint GOpenGLFBO = 0;
+static GLuint GOpenGLRBOColor = 0;
+static GLuint GOpenGLRBODepth = 0;
+static GLuint GOpenGLFBOWidth = 0;
+static GLuint GOpenGLFBOHeight = 0;
+
 #if defined(WIN32)
 PFNWGLSWAPINTERVALEXTPROC dwglSwapIntervalEXT;
 PFNWGLCREATECONTEXTATTRIBSARBPROC dwglCreateContextAttribsARB;
