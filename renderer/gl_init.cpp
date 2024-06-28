@@ -37,6 +37,10 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC dwglCreateContextAttribsARB;
 HWND hOpenGLWnd = NULL;
 HDC hOpenGLDC = NULL;
 HGLRC ResourceContext;
+#elif defined(__LINUX__)
+SDL_Window *GSDLWindow = NULL;
+SDL_GLContext GSDLGLContext = NULL;
+char loadedLibrary[_MAX_PATH];
 #endif
 
 bool Already_loaded = false;
