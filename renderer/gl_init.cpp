@@ -401,172 +401,247 @@ int opengl_Setup(HDC glhdc)
 	return 1;
 
 }
-#else
-int opengl_Setup(oeApplication *app,int *width,int *height)
-{
-	if (!Already_loaded)
-	{
-		#define MAX_ARGS			30
-		#define MAX_CHARS_PER_ARG	100
-		extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
-		
-		char gl_library[256];
-		int arg;
-		arg = FindArg("-gllibrary");
-		if(arg!=0)
-		{
-			strcpy(gl_library,GameArgs[arg+1]);
-			fprintf(stdout,"OpenGL: Loading %s library\n",gl_library);
-		}else
-		{
-			strcpy(gl_library,"libGL.so");
-		}
-		if (!(OpenGLDLLHandle=LoadOpenGLDLL(gl_library)))
-		{
-			char buffer[512];
-			sprintf(buffer,"Failed to load %s!\n",gl_library);
-			fprintf(stderr,buffer);
-			rend_SetErrorMessage(buffer);			
-			Int3();
-			return 0;
-		}
-	}
+#elif defined(__LINUX__)
 
-	int dummy;
+extern bool linux_permit_gamma;
+extern renderer_preferred_state Render_preferred_state;
+extern bool ddio_mouseGrabbed;
+int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event);
 
-	OpenGL_TextureHack = (FindArg("-gltexturehack"))?true:false;
+int opengl_Setup(oeApplication *app, int *width, int *height) {
+  int winw = Video_res_list[Game_video_resolution].width;
+  int winh = Video_res_list[Game_video_resolution].height;
 
-	if(app)
-	{
-		tLnxAppInfo app_info;
-		OpenGL_LinuxApp = (oeLnxApplication *)app;
+  // rcg09182000 don't need to quitsubsystem anymore...
+  //    SDL_QuitSubSystem(SDL_INIT_VIDEO);  // here goes nothing...
+  //    Already_loaded = false;
+  SDL_ClearError();
+  if (!SDL_WasInit(SDL_INIT_VIDEO)) {
+    const int rc = SDL_Init(SDL_INIT_VIDEO);
+    if (rc != 0) {
+      char buffer[512];
+      snprintf(buffer, sizeof(buffer), "SDL_GetError() reports \"%s\".\n", SDL_GetError());
+      fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
+      fprintf(stderr, "%s", buffer);
+      rend_SetErrorMessage(buffer);
+      return (0);
+    }
+  }
 
-		app->get_info((void *)&app_info);
+  SDL_SetEventFilter(d3SDLEventFilter, NULL);
 
-		OpenGL_Display = app_info.m_Display;
-		OpenGL_Window = app_info.m_window;
-		memcpy(&OpenGL_VisualInfo,&app_info.m_VisualInfo,sizeof(XVisualInfo));
-	}else
-	{
-		// since the application object wasn't passed in, make sure
-		// this isn't the first init
-		if(!OpenGL_Display)
-		{
-			// ACK!
-			fprintf(stdout,"OGL: Error in opengl_Setup().  Application object not specified\n");
-			return 0;
-		}
-	}
+  bool fullscreen = true;
 
-	// we need to destroy the OpenGL window
-	XUnmapWindow(OpenGL_Display,OpenGL_Window);
-	XDestroyWindow(OpenGL_Display,OpenGL_Window);
+  if (FindArgChar("-fullscreen", 'f')) {
+    fullscreen = true;
+  } else if (FindArgChar("-windowed", 'w')) {
+    fullscreen = false;
+  }
 
-	// Make sure OpenGL's GLX extension is supported.  The glXQueryExtension also returns
-	// the GLX extension's error base and event base.  For almost all OpenGL programs,
-	// this information is irrelevant.
-	if(!glXQueryExtension(OpenGL_Display,&dummy,&dummy))
-	{
-		fprintf(stderr,"GLX extension not supported by Display\n");
-		Int3();
-		return 0;
-	}
+  if (!Already_loaded) {
+#define MAX_ARGS 30
+#define MAX_CHARS_PER_ARG 100
+    extern char GameArgs[MAX_ARGS][MAX_CHARS_PER_ARG];
 
-	// Choose our visual
-	int screen_num = DefaultScreen(OpenGL_Display);
-	int vis_attrib[] = {GLX_RGBA, 
-					GLX_RED_SIZE, 1, 
-					GLX_GREEN_SIZE, 1, 
-					GLX_BLUE_SIZE, 1 , 
-					GLX_DEPTH_SIZE, 16,
-					GLX_DOUBLEBUFFER,
-					None};
-	XVisualInfo *new_vis = dglXChooseVisual(OpenGL_Display,screen_num,vis_attrib);
-	if(!new_vis)
-	{
-		fprintf(stdout,"OpenGL: glXChooseVisual returned NULL\n");
-		Int3();
-		return 0;
-	}
+    char gl_library[256];
+    int arg;
+    arg = FindArgChar("-gllibrary", 'g');
+    if (arg != 0) {
+      strcpy(gl_library, GameArgs[arg + 1]);
+    } else {
+        gl_library[0] = 0;
+    }
 
-	// Create an OpenGL rendering context
-	OpenGL_Context = glXCreateContext(OpenGL_Display,new_vis,None,True);
-	if(OpenGL_Context==NULL)
-	{
-		fprintf(stderr,"OpenGL: Unable to create GLX Context\n");
-		Int3();
-		return 0;
-	}
-	
-	// Create a new window
-	XSetWindowAttributes swa;
-	swa.override_redirect = true;
-	swa.border_pixel = 0;
-	swa.event_mask = ExposureMask|StructureNotifyMask|KeyPressMask|KeyReleaseMask|PointerMotionMask|ButtonPressMask|ButtonReleaseMask;
+    mprintf(0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library[0] ? gl_library : "[system default library]");
 
-	OpenGL_Window = XCreateWindow(OpenGL_Display,RootWindow(OpenGL_Display,OpenGL_VisualInfo.screen),0,0,*width,*height,0,OpenGL_VisualInfo.depth,
-					InputOutput,OpenGL_VisualInfo.visual,CWBorderPixel|CWEventMask,&swa);
+    // ryan's adds. 04/18/2000...SDL stuff on 04/25/2000
+    bool success = true;
 
-	XSizeHints sizeHints = {0};
-	sizeHints.flags |= USSize|USPosition|PAspect;
-	sizeHints.width = *width;
-	sizeHints.height = *height;
-	sizeHints.x = 0;
-	sizeHints.y = 0;
-	sizeHints.min_aspect.x = sizeHints.max_aspect.x = *width;
-	sizeHints.min_aspect.y = sizeHints.max_aspect.y = *height;
+    OpenGLDLLHandle = LoadOpenGLDLL(gl_library);
+    if (!(OpenGLDLLHandle)) {
+      // rcg07072000 last ditch effort...
+      OpenGLDLLHandle = LoadOpenGLDLL("libGL.so.1");
+      if (!(OpenGLDLLHandle)) {
+        success = false;
+      }
+    } // if
 
-	char *argv[1];
-	XWMHints *wmHints;
-	Atom wmDeleteWindow;
+    if (success == false) {
+      char buffer[512];
+      snprintf(buffer, sizeof(buffer), "Failed to load library [%s].\n", gl_library);
+      fprintf(stderr, "%s", buffer);
+      rend_SetErrorMessage(buffer);
+      return 0;
+    } // if
+  }
 
-	argv[0] = strdup("opengl");
-			
-	XSetStandardProperties(OpenGL_Display,OpenGL_Window,"","",None,(char **)argv,0,&sizeHints);
-	free(argv[0]);
+#ifdef __PERMIT_GL_LOGGING
+  if (FindArg("-gllogging")) {
+    printf("\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "********   GL LOGGING ENABLED.   ***************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "************************************************************\n"
+           "\n");
+    DGL_EnableLogging(1);
+    __glLog = true;
+  } // if
+#endif
 
-	wmHints = XAllocWMHints();
-	wmHints->initial_state = NormalState;
-	wmHints->flags = StateHint;
-			
-	XSetWMHints(OpenGL_Display,OpenGL_Window,wmHints);
-	wmDeleteWindow = XInternAtom(OpenGL_Display,"WM_DELETE_WINDOW",False);
-	XSetWMProtocols(OpenGL_Display,OpenGL_Window,&wmDeleteWindow,1);
-	
-	// move and resize the application window
-	XMoveResizeWindow(OpenGL_Display,OpenGL_Window,0,0,*width,*height);
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  Uint32 flags = SDL_WINDOW_OPENGL;
 
-	OpenGL_LinuxApp->set_sizepos(0,0,*width,*height);
-	OpenGL_LinuxApp->set_windowinfo(OpenGL_Display,OpenGL_Window);
-	OpenGL_LinuxApp->hide_mouse();
-	OpenGL_LinuxApp->clear_window();
+  if (fullscreen) {
+    flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+  }
 
-	//	warp the mouse to 0,0 to start so our screen is in full view
-	XWarpPointer(OpenGL_Display,None,OpenGL_Window,0,0,0,0,*width/2,*height/2);
+  if (!GSDLWindow) {
+    GSDLWindow = SDL_CreateWindow("Descent 3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winw, winh, flags);
+    if (!GSDLWindow) {
+      mprintf(0, "OpenGL: SDL window creation failed: %s", SDL_GetError());
+      return 0;
+    }
+  } else {
+    SDL_SetWindowSize(GSDLWindow, winw, winh);
+    SDL_SetWindowFullscreen(GSDLWindow, flags);
+  }
 
-	XStoreName(OpenGL_Display, OpenGL_Window, OpenGL_LinuxApp->get_window_name());
-	XSetIconName(OpenGL_Display, OpenGL_Window, OpenGL_LinuxApp->get_window_name());
+  if (!GSDLGLContext) {
+    GSDLGLContext = SDL_GL_CreateContext(GSDLWindow);
+    if (!GSDLGLContext) {
+      mprintf(0, "OpenGL: OpenGL context creation failed: %s", SDL_GetError());
+      SDL_DestroyWindow(GSDLWindow);
+      GSDLWindow = NULL;
+      return 0;
+    }
+  }
 
-	XMapWindow(OpenGL_Display,OpenGL_Window);	
+  // clear the window framebuffer to start.
+  dglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  dglClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  SDL_GL_SwapWindow(GSDLWindow);
 
-	bool wait_for_draw = false;
-	XEvent event;
-	while (!wait_for_draw)
-	{
-		XNextEvent(OpenGL_Display, &event);
-		if (event.type == Expose && !event.xexpose.count)
-			wait_for_draw = true;
-	}
+  bool fbo_available = true;
+  if (!SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object")) {
+    mprintf(0, "OpenGL: GL_EXT_framebuffer_object extension is not available");
+    fbo_available = false;
+  }
 
-	XRaiseWindow(OpenGL_Display,OpenGL_Window);
+  if (!SDL_GL_ExtensionSupported("GL_EXT_framebuffer_blit")) {
+      mprintf(0, "OpenGL: GL_EXT_framebuffer_blit extension is not available");
+      fbo_available = false;
+  }
 
-	// Bind the rendering context
-	glXMakeCurrent(OpenGL_Display,OpenGL_Window,OpenGL_Context);
+  if (fbo_available) {
+    #define LOOKUP_GL_SYM(x) \
+      dgl##x = (gl##x##_fp) SDL_GL_GetProcAddress("gl" #x); \
+      if (dgl##x == NULL) { \
+        mprintf(0, "OpenGL: gl%s function not found!", #x); \
+        fbo_available = false; \
+      }
+    LOOKUP_GL_SYM(GenFramebuffersEXT);
+    LOOKUP_GL_SYM(GenRenderbuffersEXT);
+    LOOKUP_GL_SYM(BindFramebufferEXT);
+    LOOKUP_GL_SYM(BindRenderbufferEXT);
+    LOOKUP_GL_SYM(RenderbufferStorageEXT);
+    LOOKUP_GL_SYM(FramebufferRenderbufferEXT);
+    LOOKUP_GL_SYM(CheckFramebufferStatusEXT);
+    LOOKUP_GL_SYM(DeleteFramebuffersEXT);
+    LOOKUP_GL_SYM(DeleteRenderbuffersEXT);
+    LOOKUP_GL_SYM(BlitFramebufferEXT);
+  }
 
-	XSync(OpenGL_Display,False);
+  if (!fbo_available) {
+    mprintf(0, "OpenGL: We need missing Framebuffer Object support, giving up");
+    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_DestroyWindow(GSDLWindow);
+    GSDLGLContext = NULL;
+    GSDLWindow = NULL;
+    return 0;
+  }
 
-	Already_loaded = 1;
-	return 1;
+  /* Tear down the backbuffer and rebuild at new dimensions... */
+  if (GOpenGLFBO) {
+    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, GOpenGLFBO);
+    dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, 0);
+    dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+    dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    dglDeleteFramebuffersEXT(1, &GOpenGLFBO);
+    dglDeleteRenderbuffersEXT(1, &GOpenGLRBOColor);
+    dglDeleteRenderbuffersEXT(1, &GOpenGLRBODepth);
+    GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
+  }
+
+  const GLsizei w = (GLsizei) *width;
+  const GLsizei h = (GLsizei) *height;
+
+  GOpenGLFBOWidth = w;
+  GOpenGLFBOHeight = h;
+
+  dglGenFramebuffersEXT(1, &GOpenGLFBO);
+  dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, GOpenGLFBO);
+
+  dglGenRenderbuffersEXT(1, &GOpenGLRBOColor);
+  dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, GOpenGLRBOColor);
+  dglRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGB, w, h);
+  dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, GOpenGLRBOColor);
+
+  dglGenRenderbuffersEXT(1, &GOpenGLRBODepth);
+  dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, GOpenGLRBODepth);
+  dglRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT16_EXT, w, h);
+  dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, GOpenGLRBODepth);
+
+  if (dglCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT) {
+      mprintf(0, "OpenGL: our framebuffer object is incomplete, giving up");
+      dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, 0);
+      dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+      dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+      dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+      dglDeleteFramebuffersEXT(1, &GOpenGLFBO);
+      dglDeleteRenderbuffersEXT(1, &GOpenGLRBOColor);
+      dglDeleteRenderbuffersEXT(1, &GOpenGLRBODepth);
+      GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
+      SDL_GL_DeleteContext(GSDLGLContext);
+      SDL_DestroyWindow(GSDLWindow);
+      GSDLGLContext = NULL;
+      GSDLWindow = NULL;
+      return 0;
+  }
+
+  if (!FindArg("-nomousegrab")) {
+    ddio_mouseGrabbed = true;
+  }
+
+  SDL_SetRelativeMouseMode(ddio_mouseGrabbed ? SDL_TRUE : SDL_FALSE);
+
+  // rcg09182000 gamma fun.
+  // rcg01112000 --nogamma fun.
+  if (FindArgChar("-nogamma", 'M')) {
+    linux_permit_gamma = false;
+  } else {
+    Uint16 ramp[256];
+    SDL_CalculateGammaRamp(Render_preferred_state.gamma, ramp);
+    linux_permit_gamma = (SDL_SetWindowGammaRamp(GSDLWindow, ramp, ramp, ramp) == 0);
+  } // else
+
+  if (ParentApplication) {
+    reinterpret_cast<oeLnxApplication *>(ParentApplication)->set_sizepos(0, 0, *width, *height);
+  }
+
+  Already_loaded = 1;
+  return 1;
 }
 #endif
 
