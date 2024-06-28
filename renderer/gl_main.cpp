@@ -338,7 +338,7 @@ void rend_Flip(void)
 #if defined(WIN32)	
 	SwapBuffers((HDC)hOpenGLDC);
 #elif defined(__LINUX__)
-	SDL_GL_SwapBuffers();
+	SDL_GL_SwapWindow(SDL_GL_GetCurrentWindow());
 #endif
 
 	framebuffer_current_draw = (framebuffer_current_draw + 1) % NUM_FBOS;
