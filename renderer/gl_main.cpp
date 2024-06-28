@@ -20,6 +20,8 @@
 #include "rtperformance.h"
 #include "gl_shader.h"
 
+#include <NewBitmap.h>
+
 oeApplication* ParentApplication = nullptr;
 
 bool Renderer_initted;
@@ -1000,41 +1002,47 @@ void rend_DLLGetRenderState(DLLrendering_state* rstate)
 }
 
 // Takes a screenshot of the current frame and puts it into the handle passed
-void rend_Screenshot(int bm_handle)
-{
-	uint16_t* dest_data;
-	uint* temp_data;
-	int i, t;
-	int total = OpenGL_state.screen_width * OpenGL_state.screen_height;
+std::unique_ptr<NewBitmap> rend_Screenshot() {
+  uint16_t *dest_data;
+  uint32_t *temp_data;
 
-	ASSERT((bm_w(bm_handle, 0)) == OpenGL_state.screen_width);
-	ASSERT((bm_h(bm_handle, 0)) == OpenGL_state.screen_height);
+  int total = OpenGL_state.screen_width * OpenGL_state.screen_height;
+  auto result = std::make_unique<NewBitmap>(OpenGL_state.screen_width, OpenGL_state.screen_height, PixelDataFormat::RGBA32, true);
 
-	int w = bm_w(bm_handle, 0);
-	int h = bm_h(bm_handle, 0);
+  if (!result || result->getData() == nullptr) {
+    return nullptr;
+  }
 
-	temp_data = (uint*)mem_malloc(total * 4);
-	ASSERT(temp_data);	// Ran out of memory?
+  glad_glReadPixels(0, 0, OpenGL_state.screen_width, OpenGL_state.screen_height, GL_RGBA, GL_UNSIGNED_BYTE,
+                (GLvoid *)result->getData());
 
-	dest_data = bm_data(bm_handle, 0);
+  return result;
+}
 
-	glReadPixels(0, 0, OpenGL_state.screen_width, OpenGL_state.screen_height, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)temp_data);
+// Takes a screenshot of the current frame and puts it into the handle passed
+void rend_Screenshot(int bm_handle) {
+  auto screenshot = rend_Screenshot();
+  auto *temp_data = reinterpret_cast<uint32_t*>(screenshot->getData());
 
-	for (i = 0; i < h; i++)
-	{
-		for (t = 0; t < w; t++)
-		{
-			uint spix = temp_data[i * w + t];
+  uint32_t w, h;
+  screenshot->getSize(w, h);
 
-			int r = spix & 0xff;
-			int g = (spix >> 8) & 0xff;
-			int b = (spix >> 16) & 0xff;
+  ASSERT((bm_w(bm_handle, 0)) == OpenGL_state.screen_width);
+  ASSERT((bm_h(bm_handle, 0)) == OpenGL_state.screen_height);
 
-			dest_data[(((h - 1) - i) * w) + t] = GR_RGB16(r, g, b);
-		}
-	}
+  uint16_t* dest_data = bm_data(bm_handle, 0);
 
-	mem_free(temp_data);
+  for (int i = 0; i < h; i++) {
+    for (int t = 0; t < w; t++) {
+      uint32_t spix = temp_data[i * w + t];
+
+      int r = spix & 0xff;
+      int g = (spix >> 8) & 0xff;
+      int b = (spix >> 16) & 0xff;
+
+      dest_data[(((h - 1) - i) * w) + t] = GR_RGB16(r, g, b);
+    }
+  }
 }
 
 void opengl_UpdateFramebuffer(void)
