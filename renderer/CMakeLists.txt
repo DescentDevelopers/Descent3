@@ -22,7 +22,9 @@ set(CPPS
   points.cpp
   setup.cpp
   transforms.cpp
-  wgl.c
+  $<$<PLATFORM_ID:Windows>:
+    wgl.c
+  >
 )
 
 add_library(renderer STATIC ${HEADERS} ${CPPS})

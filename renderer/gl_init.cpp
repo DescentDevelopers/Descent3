@@ -26,12 +26,12 @@
 renderer_preferred_state OpenGL_preferred_state = { 0,1,1.0 };
 rendering_state OpenGL_state;
 
-PFNWGLSWAPINTERVALEXTPROC dwglSwapIntervalEXT;
-PFNWGLCREATECONTEXTATTRIBSARBPROC dwglCreateContextAttribsARB;
-
 bool OpenGL_debugging_enabled;
 
 #if defined(WIN32)
+PFNWGLSWAPINTERVALEXTPROC dwglSwapIntervalEXT;
+PFNWGLCREATECONTEXTATTRIBSARBPROC dwglCreateContextAttribsARB;
+
 //	Moved from DDGR library
 HWND hOpenGLWnd = NULL;
 HDC hOpenGLDC = NULL;
@@ -411,7 +411,7 @@ void opengl_GetInformation()
 	mprintf((0, "OpenGL Version: %s\n", glGetString(GL_VERSION)));
 }
 
-void APIENTRY GL_LogDebugMsg(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* user)
+void GLAD_API_PTR GL_LogDebugMsg(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* user)
 {
 	mprintf((0, "OpenGL debug msg %d: %s\n", id, msg));
 }
@@ -580,4 +580,3 @@ void opengl_Close()
 	//mod_FreeModule (OpenGLDLLHandle);
 	OpenGL_state.initted = 0;
 }
-

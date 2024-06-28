@@ -21,10 +21,10 @@
 #ifdef WIN32
 #define NOMINMAX
 #include <Windows.h>
+#include "wglext.h"
 #endif
 #include <algorithm>
 #include <glad/gl.h>
-#include "wglext.h"
 #define DD_ACCESS_RING //need direct access to some stuff
 #include "application.h"
 #include "3d.h"
