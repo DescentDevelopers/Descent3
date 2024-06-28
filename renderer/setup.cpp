@@ -43,6 +43,9 @@ void g3_SetAspectRatio(float aspect)
 	sAspect = aspect;
 }
 
+// returns the user-specified aspect ratio used to override the renderer's
+float g3_GetAspectRatio() { return sAspect; }
+
 void g3_GetViewPortMatrix( float *viewMat )
 {
 	// extract the viewport data from the renderer
