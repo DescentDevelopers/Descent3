@@ -40,7 +40,6 @@
 #include "args.h"
 #include "init.h"
 
-#include "ddio.h"
 #include "osiris_dll.h"
 #include "loki_utils.h"
 
@@ -48,7 +47,6 @@
 #include "log.h"
 
 extern bool ddio_mouseGrabbed;
-int no_debug_dialog = 0;
 const char *DMFCGetString(int d);
 // void *x = (void *) DMFCGetString;   // just force a reference to dmfc.so ...
 
