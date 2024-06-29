@@ -648,7 +648,8 @@ void GetUVLForRoomPoint(int roomnum, int facenum, int vertnum, roomUVL *uvl) {
 
   // find the center point of this face
   vm_MakeZero(&avg_vert);
-  for (int i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++)
+  int i;
+  for (i = 0; i < Rooms[roomnum].faces[facenum].num_verts; i++)
     avg_vert += Rooms[roomnum].verts[Rooms[roomnum].faces[facenum].face_verts[i]];
 
   avg_vert /= i;
@@ -766,11 +767,9 @@ void AssignDefaultUVsToRoomFace(room *rp, int facenum) {
 // Searches thru all rooms for a specific name, returns -1 if not found
 // or index of room with name
 int FindRoomName(char *name) {
-  int i;
-
   ASSERT(name != NULL);
 
-  for (i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
+  for (int i = FIRST_PALETTE_ROOM; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
     if (Rooms[i].used && Rooms[i].name && !stricmp(name, Rooms[i].name))
       return i;
 
@@ -835,7 +834,7 @@ void SaveRoom(int n, char *filename) {
   cfseek(outfile, savepos, SEEK_SET);
 
   // figure out correct texture ordering
-  for (i = 0; i < Rooms[n].num_faces; i++) {
+  for (int i = 0; i < Rooms[n].num_faces; i++) {
     int16_t index = Rooms[n].faces[i].tmap;
 
     for (found_it = 0, t = 0; t < highest_index; t++) {
@@ -861,7 +860,7 @@ void SaveRoom(int n, char *filename) {
   // Write out how many different textures there are and then write their names
   cf_WriteInt(outfile, highest_index);
 
-  for (i = 0; i < highest_index; i++) {
+  for (int i = 0; i < highest_index; i++) {
     int index = Room_to_texture[i];
     cf_WriteString(outfile, GameTextures[index].used ? GameTextures[index].name : "");
   }
@@ -876,7 +875,7 @@ void SaveRoom(int n, char *filename) {
   facesize = cftell(outfile);
   cf_WriteInt(outfile, -1);
 
-  for (i = 0; i < Rooms[n].num_faces; i++) {
+  for (int i = 0; i < Rooms[n].num_faces; i++) {
     cf_WriteByte(outfile, Rooms[n].faces[i].light_multiple);
     cf_WriteInt(outfile, Rooms[n].faces[i].num_verts);
 
@@ -1073,18 +1072,16 @@ int AllocLoadRoom(char *filename, bool bCenter, bool palette_room) {
 
 // Gets next palette room (from n) that has actually been alloced
 int GetNextRoom(int n) {
-  int i;
-
   ASSERT((n == -1) || ((n >= FIRST_PALETTE_ROOM) && n < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS));
 
   if (n == -1) // start at beginning
     n = FIRST_PALETTE_ROOM - 1;
 
-  for (i = n + 1; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
+  for (int i = n + 1; i < FIRST_PALETTE_ROOM + MAX_PALETTE_ROOMS; i++)
     if (Rooms[i].used)
       return i;
 
-  for (i = FIRST_PALETTE_ROOM; i <= n; i++)
+  for (int i = FIRST_PALETTE_ROOM; i <= n; i++)
     if (Rooms[i].used)
       return i;
 
@@ -1206,7 +1203,7 @@ bool FaceIsPlanar(int nv, int16_t *face_verts, vector *normal, vector *verts) {
 
   // Look for points too far from the average
   float d;
-  for (v = 0; v < nv; v++) {
+  for (int v = 0; v < nv; v++) {
     d = verts[face_verts[v]] * *normal;
     if (fabs(d - average_d) > POINT_TO_PLANE_EPSILON)
       return 0;
@@ -1421,8 +1418,6 @@ int RoomAddVertices(room *rp, int num_new_verts) {
 //					num_new_faces - how many faces are being added to the room
 // Returns:		the number of the first new face
 int RoomAddFaces(room *rp, int num_new_faces) {
-  int i;
-
   if (num_new_faces == 0)
     return 0;
 
@@ -1430,7 +1425,7 @@ int RoomAddFaces(room *rp, int num_new_faces) {
 
   ASSERT(newfaces != NULL);
 
-  for (i = 0; i < rp->num_faces; i++)
+  for (int i = 0; i < rp->num_faces; i++)
     newfaces[i] = rp->faces[i];
 
   mem_free(rp->faces);
@@ -1439,7 +1434,7 @@ int RoomAddFaces(room *rp, int num_new_faces) {
   rp->num_faces += num_new_faces;
 
   if (rp->num_bbf_regions) {
-    for (i = 0; i < rp->num_bbf_regions; i++) {
+    for (int i = 0; i < rp->num_bbf_regions; i++) {
       mem_free(rp->bbf_list[i]);
     }
     mem_free(rp->bbf_list);
@@ -1819,6 +1814,7 @@ void DeleteRoomPortal(room *rp, int portalnum) {
   }
 
   // Copy portals over
+  int p;
   for (p = 0; p < portalnum; p++)
     newportals[p] = rp->portals[p];
   for (p++; p < rp->num_portals; p++)
@@ -1954,7 +1950,7 @@ void CopyRoom(room *destp, room *srcp) {
   }
 
   // Copy over the verts
-  for (i = 0; i < destp->num_verts; i++)
+  for (int i = 0; i < destp->num_verts; i++)
     destp->verts[i] = srcp->verts[i];
 
   // Copy doorway info
@@ -1977,14 +1973,13 @@ void CopyRoom(room *destp, room *srcp) {
 // Initializes the flags
 int AddPortal(room *rp) {
   portal *newlist;
-  int i;
 
   newlist = (portal *)mem_malloc(sizeof(*newlist) * (rp->num_portals + 1));
 
   // Copy from old list to new list, and free old list
   if (rp->num_portals) {
 
-    for (i = 0; i < rp->num_portals; i++)
+    for (int i = 0; i < rp->num_portals; i++)
       newlist[i] = rp->portals[i];
 
     mem_free(rp->portals);
@@ -2266,7 +2261,8 @@ int CheckForDuplicateFace(room *rp, int facenum) {
     if (fp0->num_verts == fp1->num_verts)
       for (int v = 0; v < fp1->num_verts; v++) // look for a shared vert
         if (fp1->face_verts[v] == fp0->face_verts[0]) {
-          for (int t = 0; t < fp0->num_verts; t++)
+          int t;
+          for (t = 0; t < fp0->num_verts; t++)
             if (fp0->face_verts[t] != fp1->face_verts[(v + t) % fp1->num_verts])
               break;
           if (t == fp0->num_verts) {
@@ -2552,7 +2548,7 @@ void CountUniqueTextures() {
 
   // Now count totals
   int total = 0, total_with_lights = 0;
-  for (i = 0; i < MAX_TEXTURES; i++) {
+  for (int i = 0; i < MAX_TEXTURES; i++) {
     if (texture_tracking[i]) {
       if (!(GameTextures[i].flags & TF_LIGHT)) {
         total++;
@@ -2568,7 +2564,7 @@ void CountUniqueTextures() {
   if (total > 60)
     CheckError("ERROR: YOU HAVE MORE THAT 60 128x128 TEXTURES...YOU *MUST* FIX THIS!\n");
 
-  for (i = 0; i < MAX_TEXTURES; i++) {
+  for (int i = 0; i < MAX_TEXTURES; i++) {
     if (texture_tracking[i] && !(GameTextures[i].flags & TF_LIGHT)) {
       CheckError("%d : %s %s bmp=%s\n", texture_tracking[i], GameTextures[i].name,
                  (GameTextures[i].flags & TF_ANIMATED) ? "(Animated)" : "",
@@ -2576,7 +2572,7 @@ void CountUniqueTextures() {
     }
   }
 
-  for (i = 0; i < MAX_TEXTURES; i++) {
+  for (int i = 0; i < MAX_TEXTURES; i++) {
     if (texture_tracking[i] && (GameTextures[i].flags & TF_LIGHT)) {
       CheckError("%d : %s %s %s bmp=%s\n", texture_tracking[i], GameTextures[i].name,
                  (GameTextures[i].flags & TF_ANIMATED) ? "(Animated)" : "",
@@ -2916,7 +2912,9 @@ int RemoveDuplicateFacePoints(room *rp) {
         int new_verts[MAX_VERTS_PER_FACE];
         roomUVL new_uvls[MAX_VERTS_PER_FACE];
 
-        for (int t = 0; t < v; t++) {
+        int t;
+
+        for (t = 0; t < v; t++) {
           new_verts[t] = fp->face_verts[t];
           new_uvls[t] = fp->face_uvls[t];
         }
@@ -2991,7 +2989,7 @@ void FixDegenerateFaces() {
                 tverts[i] = fp->face_verts[(v + 2 + i) % fp->num_verts];
                 tuvls[i] = fp->face_uvls[(v + 2 + i) % fp->num_verts];
               }
-              for (i = 0; i < fp->num_verts - 2; i++) {
+              for (int i = 0; i < fp->num_verts - 2; i++) {
                 fp->face_verts[i] = tverts[i];
                 fp->face_uvls[i] = tuvls[i];
               }
