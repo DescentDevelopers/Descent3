@@ -16,11 +16,17 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "byteswap.h"
+#include <algorithm>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <SDL.h>
+
 #if defined(WIN32)
 #include <windows.h>
 #endif
 
+#include "byteswap.h"
 #include "pserror.h"
 #include "mono.h"
 #include "3d.h"
@@ -33,15 +39,9 @@
 #include "mem.h"
 #include "config.h"
 #include "rtperformance.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "HardwareInternal.h"
 #include "../Descent3/args.h"
-#include "lnxscreenmode.h"
-#include <SDL.h>
-
-#include <NewBitmap.h>
+#include "NewBitmap.h"
 
 #define DECLARE_OPENGL
 #include "dyna_gl.h"
@@ -49,8 +49,6 @@
 #if defined(WIN32)
 #include "win/arb_extensions.h"
 #endif
-
-#include <algorithm>
 
 int FindArg(const char *);
 void rend_SetLightingState(light_state state);
@@ -65,9 +63,6 @@ uint8_t Renderer_close_flag = 0;
 extern uint8_t Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
-
-extern matrix Unscaled_matrix;
-extern vector View_position;
 
 #ifndef GL_UNSIGNED_SHORT_5_5_5_1
 #define GL_UNSIGNED_SHORT_5_5_5_1 0x8034
@@ -452,16 +447,17 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     if (!(OpenGLDLLHandle)) {
       // rcg07072000 last ditch effort...
 #ifdef __LINUX__
-      OpenGLDLLHandle = LoadOpenGLDLL("libGL.so.1");
+      strcpy(gl_library, "libGL.so.1");
 #else
-      OpenGLDLLHandle = LoadOpenGLDLL("opengl32.dll");
+      strcpy(gl_library, "opengl32.dll");
 #endif
+      OpenGLDLLHandle = LoadOpenGLDLL(gl_library);
       if (!(OpenGLDLLHandle)) {
         success = false;
       }
     } // if
 
-    if (success == false) {
+    if (!success) {
       char buffer[512];
       snprintf(buffer, sizeof(buffer), "Failed to load library [%s].\n", gl_library);
       fprintf(stderr, "%s", buffer);
