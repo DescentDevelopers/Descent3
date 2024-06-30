@@ -517,6 +517,29 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   gpu_RenderPolygon(&vArray[0], nv);
 }
 
+static color_array DeterminePointColor(g3Point const* pnt) {
+  auto alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
+  if (gpu_state.cur_alpha_type & ATF_VERTEX) {
+    alpha *= pnt->p3_a;
+  }
+
+  // If we have a lighting model, apply the correct lighting!
+  if (gpu_state.cur_light_state != LS_NONE) {
+    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
+      return {GR_COLOR_RED(gpu_state.cur_color) / 255.0f, GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
+              GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f, alpha};
+    } else {
+      // Do lighting based on intesity (MONO) or colored (RGB)
+      if (gpu_state.cur_color_model == CM_MONO) {
+        return {pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha};
+      } else {
+        return {pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha};
+      }
+    }
+  } else {
+    return {1, 1, 1, alpha};
+  }
+}
 
 // Takes nv vertices and draws the 3D polygon defined by those vertices.
 // Uses bitmap "handle" as a texture
@@ -540,19 +563,11 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     return;
   }
 
-  if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
-    fr = GR_COLOR_RED(gpu_state.cur_color) / 255.0;
-    fg = GR_COLOR_GREEN(gpu_state.cur_color) / 255.0;
-    fb = GR_COLOR_BLUE(gpu_state.cur_color) / 255.0;
-  }
-
   if (UseMultitexture) {
     gpu_SetMultitextureBlendMode(false);
   }
 
   gpu_BindTexture(handle, map_type, 0);
-
-  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   PosColorUVVertex *vData = &vArray[0];
 
@@ -563,38 +578,8 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     // all points should be original
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
-    if (gpu_state.cur_alpha_type & ATF_VERTEX) {
-      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
-    }
-
-    // If we have a lighting model, apply the correct lighting!
-    if (gpu_state.cur_light_state != LS_NONE) {
-      if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
-        vData->color.r = fr;
-        vData->color.g = fg;
-        vData->color.b = fb;
-        vData->color.a = alpha;
-      } else {
-        // Do lighting based on intesity (MONO) or colored (RGB)
-        if (gpu_state.cur_color_model == CM_MONO) {
-          vData->color.r = pnt->p3_l;
-          vData->color.g = pnt->p3_l;
-          vData->color.b = pnt->p3_l;
-          vData->color.a = alpha;
-        } else {
-          vData->color.r = pnt->p3_r;
-          vData->color.g = pnt->p3_g;
-          vData->color.b = pnt->p3_b;
-          vData->color.a = alpha;
-        }
-      }
-    } else {
-      vData->color.r = 1;
-      vData->color.g = 1;
-      vData->color.b = 1;
-      vData->color.a = alpha;
-    }
-
+    vData->color = DeterminePointColor(pnt);
+    
     vData->uv.s = pnt->p3_u;
     vData->uv.t = pnt->p3_v;
     vData->uv.r = 0.0f;
