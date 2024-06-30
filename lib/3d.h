@@ -430,7 +430,6 @@ void g3_DrawSpecialLine(g3Point *p0, g3Point *p1);
 // Draws a bitmap on a specific plane.  Also does rotation.  Angle of rotation is passed as 'rot_angle'
 void g3_DrawPlanarRotatedBitmap(vector *pos, vector *norm, angle rot_angle, float width, float height, int bm);
 
-void g3_TransformVert(float res[4], float pt[4], float a[4][4]);
 void g3_TransformMult(float res[4][4], float a[4][4], float b[4][4]);
 void g3_TransformTrans(float res[4][4], float t[4][4]);
 void g3_GetModelViewMatrix(const vector *viewPos, const matrix *viewMatrix, float *mvMat);
