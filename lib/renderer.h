@@ -307,13 +307,6 @@ class oeApplication;
 
 #define TEXTURE_WIDTH 128
 #define TEXTURE_HEIGHT 128
-#define TEXTURE_BPP 2
-
-#define FLAT_SHADE_COLOR 0x7C01
-// If an incoming texture has the above color in it, change that color to this color
-#define REPLACEMENT_COLOR 0x07C0
-
-extern int Triangles_drawn;
 
 // Is this hardware or software rendered?
 enum renderer_type {
@@ -327,29 +320,16 @@ extern renderer_type Renderer_type;
 
 // renderer clear flags
 #define RF_CLEAR_ZBUFFER 1
-#define RF_CLEAR_COLOR 2
 
 // Overlay texture settings
 #define OT_NONE 0           // No overlay
 #define OT_BLEND 1          // Draw a lightmap texture afterwards
-#define OT_REPLACE 2        // Draw a tmap2 style texture afterwards
-#define OT_FLAT_BLEND 3     // Draw a gouraud shaded polygon afterwards
-#define OT_BLEND_VERTEX 4   // Like OT_BLEND, but take constant alpha into account
-#define OT_BUMPMAP 5        // Draw a saturated bumpmap afterwards
-#define OT_BLEND_SATURATE 6 // Add a lightmap in
 
-extern uint8_t Overlay_type;
-extern int Overlay_map;
-extern int Bumpmap_ready, Bump_map;
 extern float Z_bias;
 extern bool UseHardware;
 extern bool StateLimited;
 extern bool NoLightmaps;
 extern bool UseMultitexture;
-extern bool UseWBuffer;
-extern bool UseMipmap;  // DAJ
-extern bool ATIRagePro; // DAJ
-extern bool Formac;     // DAJ
 
 class NewBitmap;
 
@@ -361,8 +341,6 @@ void rend_SetRendererType(renderer_type state);
 
 #define MAP_TYPE_BITMAP 0
 #define MAP_TYPE_LIGHTMAP 1
-#define MAP_TYPE_BUMPMAP 2
-#define MAP_TYPE_UNKNOWN 3
 
 // lighting state
 enum light_state {
@@ -406,18 +384,11 @@ enum texture_type {
 #define AT_CONSTANT_TEXTURE_VERTEX 7   // Use all three (texture constant vertex)
 #define AT_LIGHTMAP_BLEND 8            // dest*src colors
 #define AT_SATURATE_TEXTURE 9          // Saturate up to white when blending
-#define AT_FLAT_BLEND 10               // Like lightmap blend, but uses gouraud shaded flat polygon
-#define AT_ANTIALIAS 11                // Draws an antialiased polygon
 #define AT_SATURATE_VERTEX 12          // Saturation with vertices
 #define AT_SATURATE_CONSTANT_VERTEX 13 // Constant*vertex saturation
 #define AT_SATURATE_TEXTURE_VERTEX 14  // Texture * vertex saturation
-#define AT_LIGHTMAP_BLEND_VERTEX 15    //	Like AT_LIGHTMAP_BLEND, but take vertex alpha into account
-#define AT_LIGHTMAP_BLEND_CONSTANT 16  // Like AT_LIGHTMAP_BLEND, but take constant alpha into account
 #define AT_SPECULAR 32
 #define AT_LIGHTMAP_BLEND_SATURATE 33 // Light lightmap blend, but add instead of multiply
-
-#define LFB_LOCK_READ 0
-#define LFB_LOCK_WRITE 1
 
 enum wrap_type {
   WT_WRAP,  // Texture repeats
@@ -431,7 +402,6 @@ struct rendering_state {
   int8_t cur_bilinear_state;
   int8_t cur_zbuffer_state;
   int8_t cur_fog_state;
-  int8_t cur_mip_state;
 
   texture_type cur_texture_type;
   color_model cur_color_model;
@@ -442,7 +412,6 @@ struct rendering_state {
 
   float cur_fog_start, cur_fog_end;
   float cur_near_z, cur_far_z;
-  float gamma_value;
 
   int cur_alpha;
   ddgr_color cur_color;
@@ -467,7 +436,6 @@ struct renderer_preferred_state {
 struct renderer_lfb {
   int type;
   uint16_t *data;
-  int bytes_per_row;
 };
 
 struct tRendererStats {
@@ -640,9 +608,6 @@ int rend_InitOpenGLWindow(oeApplication *app, renderer_preferred_state *pref_sta
 
 // Shuts down OpenGL in a window
 void rend_CloseOpenGLWindow();
-
-// Sets the state of the OpenGLWindow to on or off
-void rend_SetOpenGLWindowState(int state, oeApplication *app, renderer_preferred_state *pref_state);
 
 // Sets the hardware bias level for coplanar polygons
 // This helps reduce z buffer artifaces
