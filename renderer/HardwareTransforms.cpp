@@ -47,13 +47,6 @@ void g3_GetModelViewMatrix(const vector *viewPos, const matrix *viewMatrix, floa
   mvMat[15] = 1.0f;
 }
 
-void g3_TransformVert(float res[4], float pt[4], float a[4][4]) {
-  int y;
-  for (y = 0; y < 4; ++y) {
-    res[y] = (pt[0] * a[0][y]) + (pt[1] * a[1][y]) + (pt[2] * a[2][y]) + (pt[3] * a[3][y]);
-  }
-}
-
 void g3_TransformMult(float res[4][4], float a[4][4], float b[4][4]) {
   float temp[4][4];
 

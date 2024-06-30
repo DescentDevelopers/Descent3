@@ -574,39 +574,6 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     // all points should be original
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
-    ////////////////////////////////////////////
-    if (pnt->p3_flags & PF_ORIGPOINT) {
-      if (!(pnt->p3_flags & PF_PROJECTED)) {
-        g3_ProjectPoint(pnt);
-      }
-
-      // get the original point
-      float origPoint[4];
-      origPoint[0] = pnt->p3_vecPreRot.x;
-      origPoint[1] = pnt->p3_vecPreRot.y;
-      origPoint[2] = pnt->p3_vecPreRot.z;
-      origPoint[3] = 1.0f;
-
-      // transform by the full transform
-      float view[4];
-      g3_TransformVert(view, origPoint, gTransformFull);
-
-      vector tempv = pnt->p3_vecPreRot - View_position;
-      vector testPt = tempv * Unscaled_matrix;
-
-      float screenX = pnt->p3_sx + gpu_state.clip_x1;
-      float screenY = pnt->p3_sy + gpu_state.clip_y1;
-
-      // normalize
-      float oOW = 1.0f / view[3];
-      view[0] *= oOW;
-      view[1] *= oOW;
-      view[2] *= oOW;
-
-      oOW *= 1.0f;
-    }
-    ////////////////////////////////////////////
-
     if (gpu_state.cur_alpha_type & ATF_VERTEX) {
       alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
     }
