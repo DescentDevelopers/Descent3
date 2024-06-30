@@ -17,6 +17,7 @@
 */
 
 #include <algorithm>
+#include <array>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -1138,56 +1139,24 @@ void gpu_SetMultitextureBlendMode(bool state) {
 }
 
 void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
-  float fr, fg, fb;
-  int i;
-
   if (UseMultitexture) {
     gpu_SetMultitextureBlendMode(false);
   }
 
-  float alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
+  std::array<PosColorUVVertex, 100> vertices{};
+  std::transform(p, p + nv, std::begin(vertices), [](auto pnt) {
+    return PosColorUVVertex{
+        pnt->p3_vecPreRot,
+        DeterminePointColor(pnt, true, false, true),
+        tex_array{
+            // tex coord can be default-constructed, because it will ultimately be ignored
+            // because this function is only called when cur_texture_quality == 0, and anytime
+            // that is true, GL_TEXTURE_2D is also disabled
+        }
+    };
+  });
 
-  fr = GR_COLOR_RED(gpu_state.cur_color);
-  fg = GR_COLOR_GREEN(gpu_state.cur_color);
-  fb = GR_COLOR_BLUE(gpu_state.cur_color);
-  fr /= 255.0;
-  fg /= 255.0;
-  fb /= 255.0;
-
-  // And draw!
-  dglBegin(GL_POLYGON);
-  for (i = 0; i < nv; i++) {
-    g3Point *pnt = p[i];
-    ASSERT(pnt->p3_flags & PF_ORIGPOINT);
-
-    if (gpu_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
-
-    // If we have a lighting model, apply the correct lighting!
-    if (gpu_state.cur_light_state != LS_NONE) {
-      // Do lighting based on intesity (MONO) or colored (RGB)
-      if (gpu_state.cur_color_model == CM_MONO)
-        dglColor4f(pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha);
-      else {
-        dglColor4f(pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha);
-      }
-
-    } else {
-      dglColor4f(fr, fg, fb, alpha);
-    }
-
-    /*
-    // Finally, specify a vertex
-    float z = std::max(0,std::min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
-    dglVertex3f (pnt->p3_sx+x_add,pnt->p3_sy+y_add,-z);
-    */
-    dglVertex3f(pnt->p3_vecPreRot.x, pnt->p3_vecPreRot.y, pnt->p3_vecPreRot.z);
-  }
-
-  dglEnd();
-  CHECK_ERROR(11)
-  OpenGL_polys_drawn++;
-  OpenGL_verts_processed += nv;
+  gpu_RenderPolygon(vertices.data(), nv);
 }
 
 // Sets the gamma correction value
