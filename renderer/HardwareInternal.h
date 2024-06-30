@@ -91,4 +91,14 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv);
 void gpu_DrawFlatPolygon3D(g3Point **p, int nv);
 void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type);
 
+/*
+* Returns the color to use for a given point, based on lighting and alpha modes
+*
+* pnt - Point to determine color for (includes an innate color value)
+* disableGouraud - if set, ignore 'cur_light_state == LS_FLAT_GOURAUD' and use pnt-supplied color
+* checkTextureQuality - if set and cur_texture_quality == 0, ignore pnt-supplied color
+* flatColorForNoLight - if set and cur_light_state == LS_NONE, ignore pnt-supplied color
+*/
+color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud = false, bool checkTextureQuality = false, bool flatColorForNoLight = false);
+
 #endif
