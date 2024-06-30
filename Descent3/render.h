@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -174,7 +174,7 @@
 #define SRF_NO_NON_SHELL 2 // don't render the non-shell
 
 extern int Render_portals;
-extern bool Lighting_on;   // If true, draw w/ normal lighting, else draw full brightness
+extern bool Lighting_on;     // If true, draw w/ normal lighting, else draw full brightness
 extern uint8_t Outline_mode; // Controls outline drawing.  See constants below
 extern uint8_t Shell_render_flag;
 extern bool Render_floating_triggers; // If true, render the floating triggers

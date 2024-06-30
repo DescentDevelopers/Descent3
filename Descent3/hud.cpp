@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -842,7 +842,7 @@ void InitHUDItem(int new_item, tHUDItem *item) {
     stat = STAT_CUSTOM;
     break;
 
-  case HUD_ITEM_CUSTOMTEXT2:  // malloc buffer to be updated later
+  case HUD_ITEM_CUSTOMTEXT2: // malloc buffer to be updated later
     HUD_array[new_item].data.text = (char *)mem_malloc(item->buffer_size);
     HUD_array[new_item].data.text[0] = 0;
     HUD_array[new_item].buffer_size = item->buffer_size;
@@ -1952,7 +1952,8 @@ static inline uint16_t reticle_mask(object *pobj, otype_wb_info *static_wb, int 
   return mask;
 }
 
-static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, uint16_t on_mask, uint16_t gp_mask, const int *wb_elem_array) {
+static inline void draw_reticle_sub(int cx, int cy, int rw, int rh, uint16_t on_mask, uint16_t gp_mask,
+                                    const int *wb_elem_array) {
   int i, x, y;
   int bmp_handle;
   char align;

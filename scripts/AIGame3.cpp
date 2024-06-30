@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // AIGame3.cpp
 // 0.1
@@ -62,8 +62,9 @@ const char *GetStringFromTable(int index) {
 // Function prototypes
 //-------------------
 
-static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
-                      float lifetime, float interval, float longevity, float size, float speed, uint8_t random);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type,
+                      uint8_t isreal, float lifetime, float interval, float longevity, float size, float speed,
+                      uint8_t random);
 // Returns the new child's handle
 static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, char parent_ap, char child_ap,
                            bool f_aligned = true, bool f_set_parent = false);
@@ -800,7 +801,6 @@ struct alienorganism_data {
   teammate_data teammate[ALIEN_MAX_TEAMMATES];
   vector squad_goal_pos;
   int squad_goal_room;
-
 };
 
 // Alien Organism class definition
@@ -980,7 +980,6 @@ struct heavytrooper_data {
   float next_charge_time;        // next time to re-charge or deplete charge
   float next_blast_time;         // next time a shield collision blast can be created
   float next_particle_time;      // next time to create a casing particle spew
-
 };
 
 // Heavy Trooper class definition
@@ -1075,7 +1074,6 @@ struct lifter_data {
   float last_target_pull_time; // the last time the target was pulled
 
   float next_lift_beam_time; // the next time to update the lift beam
-
 };
 
 // Lifter class definition
@@ -1289,7 +1287,6 @@ struct alienboss_data {
   float squared_dist_moved;
   float next_check_if_stuck_time;
   vector last_pos;
-
 };
 
 // Alien Boss class definition
@@ -1380,7 +1377,6 @@ struct securitycamera_data {
   float next_activity_time;    // the next time to do tracking
   float last_update_anim_time; // the last time tracking was done
   float curr_track_anim_frame; // the current tracking animation frame
-
 };
 
 // Security Camera class definition
@@ -1424,7 +1420,6 @@ struct crowdcontrol_data {
 
   float base_speed;      // the base speed of the object
   float next_check_time; // the next time to do closeness check
-
 };
 
 // Security Camera class definition
@@ -2565,7 +2560,8 @@ void AlienOrganism::UpdateEnergyEffect(int me) {
     // See if it's time to create the next energy effect
     if (memory->next_update_energy_time <= Game_GetTime()) {
       float slow_down = 0.5f * (ALIEN_MAX_ENERGY_CHARGES - memory->energy_charges) / ALIEN_MAX_ENERGY_CHARGES;
-      memory->next_update_energy_time = Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 0.1f + 0.05f + slow_down;
+      memory->next_update_energy_time =
+          Game_GetTime() + ((float)rand() / (float)D3_RAND_MAX) * 0.1f + 0.05f + slow_down;
 
       Obj_Value(me, VF_GET, OBJV_V_POS, &pos);
       Obj_Value(me, VF_GET, OBJV_I_ROOMNUM, &room);
@@ -6608,8 +6604,8 @@ void AlienBoss::DoFrame(int me) {
         if (OkToStartSpecialAttack(me)) {
           aSoundPlayObject(boss_see_id, me, 1.0f);
 
-          memory->next_special_attack_time =
-              Game_GetTime() + AB_SPECIAL_ATTACK_DELAY + ((float)rand() / (float)D3_RAND_MAX) * AB_SPECIAL_ATTACK_VARIANCE;
+          memory->next_special_attack_time = Game_GetTime() + AB_SPECIAL_ATTACK_DELAY +
+                                             ((float)rand() / (float)D3_RAND_MAX) * AB_SPECIAL_ATTACK_VARIANCE;
 
           SetMode(me, AB_PREPARE_SPECIAL_ATTACK);
           break;

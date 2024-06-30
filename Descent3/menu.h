@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -68,13 +68,7 @@
 
 #define MAX_MENU_TYPES 5
 
-enum menu_type {
-  MENU_TYPE_BUTTON,
-  MENU_TYPE_TEXT,
-  MENU_TYPE_RADIOBUTTON,
-  MENU_TYPE_CHECKBOX,
-  MENU_TYPE_TEXTBOX
-};
+enum menu_type { MENU_TYPE_BUTTON, MENU_TYPE_TEXT, MENU_TYPE_RADIOBUTTON, MENU_TYPE_CHECKBOX, MENU_TYPE_TEXTBOX };
 
 struct menu_item {
   menu_type mtype;
@@ -88,7 +82,6 @@ struct menu_item {
   int x, y;
 
   ddgr_color normal_color, selected_color;
-
 };
 
 struct menu {

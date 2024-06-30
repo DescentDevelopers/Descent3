@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -109,7 +109,6 @@
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
-
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;

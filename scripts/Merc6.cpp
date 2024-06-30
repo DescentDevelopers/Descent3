@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1142,63 +1142,63 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 58
 const char *Object_names[NUM_OBJECT_NAMES] = {"Ambusher1A",
-                                        "Ambusher1B",
-                                        "Ambusher2A",
-                                        "Ambusher2B",
-                                        "Ambusher2C",
-                                        "Ambusher4A",
-                                        "Ambusher4B",
-                                        "Ambusher4C",
-                                        "HoodAmbusher",
-                                        "MiniBoss1",
-                                        "MiniBoss2",
-                                        "MiniBoss3",
-                                        "Data 01",
-                                        "Data 02",
-                                        "Data 03",
-                                        "Data 04",
-                                        "Backup1",
-                                        "Backup2",
-                                        "Ambusher5",
-                                        "Boss Crate 01",
-                                        "Boss Crate 02",
-                                        "Boss Crate 03",
-                                        "Welder 01",
-                                        "Welder 02",
-                                        "Welder 03",
-                                        "Welder 04",
-                                        "CED Reactor",
-                                        "EndBlastCam",
-                                        "Gadget 01",
-                                        "Gadget 02",
-                                        "Gadget03",
-                                        "Dravis Door",
-                                        "PTMChangarcontrol",
-                                        "HangarMatcenContro",
-                                        "Barge 01",
-                                        "Barge 02",
-                                        "Barge 03",
-                                        "HangarFFControl",
-                                        "Ambush1Trigger",
-                                        "Ambush2Trigger",
-                                        "Ambush4Trigger",
-                                        "Ambush5Trigger",
-                                        "FailsafeTerminal",
-                                        "GreenOrb",
-                                        "CEDfoyer",
-                                        "TTLoadSwitch",
-                                        "Big Wheel",
-                                        "TTTurnSwitch",
-                                        "TTUnloadSwitch",
-                                        "ReactorDoorSwitch",
-                                        "TopCam",
-                                        "BottomCam",
-                                        "SideCam1",
-                                        "SideCam2",
-                                        "SideCam3",
-                                        "ReactorDeathCamA",
-                                        "ReactorDeathCamB",
-                                        "MonitorSpew"};
+                                              "Ambusher1B",
+                                              "Ambusher2A",
+                                              "Ambusher2B",
+                                              "Ambusher2C",
+                                              "Ambusher4A",
+                                              "Ambusher4B",
+                                              "Ambusher4C",
+                                              "HoodAmbusher",
+                                              "MiniBoss1",
+                                              "MiniBoss2",
+                                              "MiniBoss3",
+                                              "Data 01",
+                                              "Data 02",
+                                              "Data 03",
+                                              "Data 04",
+                                              "Backup1",
+                                              "Backup2",
+                                              "Ambusher5",
+                                              "Boss Crate 01",
+                                              "Boss Crate 02",
+                                              "Boss Crate 03",
+                                              "Welder 01",
+                                              "Welder 02",
+                                              "Welder 03",
+                                              "Welder 04",
+                                              "CED Reactor",
+                                              "EndBlastCam",
+                                              "Gadget 01",
+                                              "Gadget 02",
+                                              "Gadget03",
+                                              "Dravis Door",
+                                              "PTMChangarcontrol",
+                                              "HangarMatcenContro",
+                                              "Barge 01",
+                                              "Barge 02",
+                                              "Barge 03",
+                                              "HangarFFControl",
+                                              "Ambush1Trigger",
+                                              "Ambush2Trigger",
+                                              "Ambush4Trigger",
+                                              "Ambush5Trigger",
+                                              "FailsafeTerminal",
+                                              "GreenOrb",
+                                              "CEDfoyer",
+                                              "TTLoadSwitch",
+                                              "Big Wheel",
+                                              "TTTurnSwitch",
+                                              "TTUnloadSwitch",
+                                              "ReactorDoorSwitch",
+                                              "TopCam",
+                                              "BottomCam",
+                                              "SideCam1",
+                                              "SideCam2",
+                                              "SideCam3",
+                                              "ReactorDeathCamA",
+                                              "ReactorDeathCamB",
+                                              "MonitorSpew"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 13
@@ -1220,13 +1220,14 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 7
-const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor",  "Powerup pickup",  "AmbMonitorProcessing", "AmbSwitch31",
-                                      "AmbInVolcanoLava", "AmbDroneHallway", "Merc4Rumble"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor", "Powerup pickup",   "AmbMonitorProcessing",
+                                            "AmbSwitch31",     "AmbInVolcanoLava", "AmbDroneHallway",
+                                            "Merc4Rumble"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 5
 const char *Texture_names[NUM_TEXTURE_NAMES] = {"PTMClogoON", "M06_ForcefieldDisabled", "PTMClogooff", "FunkyEffect7",
-                                          "FunkyEffect4"};
+                                                "FunkyEffect4"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 27
@@ -1246,62 +1247,62 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 14
 const char *Goal_names[NUM_GOAL_NAMES] = {"Destroy Welder Bots",
-                                    "Obtain Maintenance Access Cards",
-                                    "Enter PTMC Loading Area",
-                                    "Load Cargo onto Barges",
-                                    "Disable Cargo Hold Forcefield",
-                                    "Load Cargo onto Turn Table",
-                                    "Protect Cargo Enroute to Base",
-                                    "Destroy Tower Operators",
-                                    "Unload Cargo from Turn Table",
-                                    "Align Turn Table with Base",
-                                    "Force Open Outer Reactor Door",
-                                    "Engage Reactor Diagnostics",
-                                    "Destroy Reactor",
-                                    "Escape"};
+                                          "Obtain Maintenance Access Cards",
+                                          "Enter PTMC Loading Area",
+                                          "Load Cargo onto Barges",
+                                          "Disable Cargo Hold Forcefield",
+                                          "Load Cargo onto Turn Table",
+                                          "Protect Cargo Enroute to Base",
+                                          "Destroy Tower Operators",
+                                          "Unload Cargo from Turn Table",
+                                          "Align Turn Table with Base",
+                                          "Force Open Outer Reactor Door",
+                                          "Engage Reactor Diagnostics",
+                                          "Destroy Reactor",
+                                          "Escape"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 40
 const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
-                                          "Killwelders",
-                                          "DravisDoor",
-                                          "PTMCminedoor",
-                                          "Maintenance",
-                                          "HangarMatcen",
-                                          "CargoLoaded",
-                                          "PTMCforcefiledDown",
-                                          "CargoNotLoaded",
-                                          "ProtectCargo",
-                                          "CargoAtTT",
-                                          "CargoOnTT",
-                                          "CargoAtBase",
-                                          "ProtectCargo2",
-                                          "ProtectCargo3",
-                                          "CargoDestroyed",
-                                          "CargoDestroyed2",
-                                          "CargoDestroyed3",
-                                          "Ambush2",
-                                          "Ambush1",
-                                          "CEDBaseFFDown",
-                                          "ControlFFDown",
-                                          "Ambush3",
-                                          "TTLoading",
-                                          "NoTTCargo",
-                                          "SwitchHitFromOutside",
-                                          "NoCargoOnTT",
-                                          "OutOfAlign",
-                                          "TTUnloading",
-                                          "WrongWheelPos",
-                                          "LetsRock",
-                                          "BackupDeployed",
-                                          "Backup1",
-                                          "Backup2",
-                                          "Backup3",
-                                          "Backup4",
-                                          "ReactorSwitchHit",
-                                          "ReactorDoorOpening",
-                                          "ReactorBlownMessage",
-                                          "Empty"};
+                                                "Killwelders",
+                                                "DravisDoor",
+                                                "PTMCminedoor",
+                                                "Maintenance",
+                                                "HangarMatcen",
+                                                "CargoLoaded",
+                                                "PTMCforcefiledDown",
+                                                "CargoNotLoaded",
+                                                "ProtectCargo",
+                                                "CargoAtTT",
+                                                "CargoOnTT",
+                                                "CargoAtBase",
+                                                "ProtectCargo2",
+                                                "ProtectCargo3",
+                                                "CargoDestroyed",
+                                                "CargoDestroyed2",
+                                                "CargoDestroyed3",
+                                                "Ambush2",
+                                                "Ambush1",
+                                                "CEDBaseFFDown",
+                                                "ControlFFDown",
+                                                "Ambush3",
+                                                "TTLoading",
+                                                "NoTTCargo",
+                                                "SwitchHitFromOutside",
+                                                "NoCargoOnTT",
+                                                "OutOfAlign",
+                                                "TTUnloading",
+                                                "WrongWheelPos",
+                                                "LetsRock",
+                                                "BackupDeployed",
+                                                "Backup1",
+                                                "Backup2",
+                                                "Backup3",
+                                                "Backup4",
+                                                "ReactorSwitchHit",
+                                                "ReactorDoorOpening",
+                                                "ReactorBlownMessage",
+                                                "Empty"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

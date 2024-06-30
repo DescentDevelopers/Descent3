@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <cmath>
 
@@ -666,7 +666,8 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   }
 
   // Apply rotation to the "un-rollbanked" object
-  tangles.p = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU instruction which strips the negative sign
+  tangles.p = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU
+                                                 // instruction which strips the negative sign
   tangles.h = (int16_t)(rotvel->y * frame_time);
   tangles.b = (int16_t)(rotvel->z * frame_time);
 
@@ -685,12 +686,12 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
     vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
     *orient = *orient * rotmat; // ObjSetOrient is below
   }
-/*
-  mprintf(0, " a %f, %f, %f,\n%f, %f, %f,\n%f %f %f\n\n",
-          XYZ(&obj->orient.fvec),
-          XYZ(&obj->orient.rvec),
-          XYZ(&obj->orient.uvec));
-*/
+  /*
+    mprintf(0, " a %f, %f, %f,\n%f, %f, %f,\n%f %f %f\n\n",
+            XYZ(&obj->orient.fvec),
+            XYZ(&obj->orient.rvec),
+            XYZ(&obj->orient.uvec));
+  */
   // Make sure the new orientation is valid
   vm_Orthogonalize(orient);
 
@@ -1130,16 +1131,16 @@ void do_physics_sim(object *obj) {
       }
       vm_NormalizeVector(&hit_info.hit_wallnorm[0]);
     }
-/*
-    if (obj == Player_object && fate != HIT_NONE) {
-      mprintf(0, "Hit type %d, obj %d\n", fate, hit_info.hit_object[0]);
-      if (fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT) {
-        mprintf(0, "Hit object type %d, id %d\n",
-                Objects[hit_info.hit_object[0]].type,
-                Objects[hit_info.hit_object[0]].id);
-      }
-    }
-*/
+    /*
+        if (obj == Player_object && fate != HIT_NONE) {
+          mprintf(0, "Hit type %d, obj %d\n", fate, hit_info.hit_object[0]);
+          if (fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT) {
+            mprintf(0, "Hit object type %d, id %d\n",
+                    Objects[hit_info.hit_object[0]].type,
+                    Objects[hit_info.hit_object[0]].id);
+          }
+        }
+    */
     obj->mtype.phys_info.velocity = temp_vel;
 
     // Accounts for precomputed hit rays
@@ -1265,12 +1266,12 @@ void do_physics_sim(object *obj) {
       // We where sitting in a wall -- invalid starting point
       // moved backwards
       if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
-/*
-        mprintf(0, "Obj %d Flew backwards!\n", OBJNUM(obj));
-        mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
-                XYZ(&start_pos),
-                XYZ(&obj->pos)); // don't change position or sim_time_remaining
-*/
+        /*
+                mprintf(0, "Obj %d Flew backwards!\n", OBJNUM(obj));
+                mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
+                        XYZ(&start_pos),
+                        XYZ(&obj->pos)); // don't change position or sim_time_remaining
+        */
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
         moved_time = 0.0;
@@ -1289,15 +1290,15 @@ void do_physics_sim(object *obj) {
 
         // chrishack -- negative simulation time pasted for this sim frame
         if (sim_time_remaining > old_sim_time_remaining) {
-/*
-          mprintf(0,"PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\n""
-                    "Attempted d = %15.13f, actual = %15.13f\n",
-                  sim_time_remaining,
-                  old_sim_time_remaining,
-                  attempted_dist,
-                  actual_dist);
-           Int3();
-*/
+          /*
+                    mprintf(0,"PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\n""
+                              "Attempted d = %15.13f, actual = %15.13f\n",
+                            sim_time_remaining,
+                            old_sim_time_remaining,
+                            attempted_dist,
+                            actual_dist);
+                     Int3();
+          */
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
           f_continue_sim = false;
@@ -1844,15 +1845,15 @@ void do_physics_sim(object *obj) {
       mprintf(0, "PHYSICS NOTE: Too many collisions for player!\n");
       obj->mtype.phys_info.velocity = Zero_vector;
     } else {
-/*
-      mprintf(0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-              objnum,
-              init_room,
-              obj->roomnum);
-      obj->flags |= OF_DEAD;
-      obj->mtype.phys_info.velocity /= 2.0f;
-      obj->mtype.phys_info.rotvel /= 2.0f;
-*/
+      /*
+            mprintf(0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
+                    objnum,
+                    init_room,
+                    obj->roomnum);
+            obj->flags |= OF_DEAD;
+            obj->mtype.phys_info.velocity /= 2.0f;
+            obj->mtype.phys_info.rotvel /= 2.0f;
+      */
     }
 
     // ObjSetPos(obj,&init_pos, init_room);
@@ -2504,11 +2505,11 @@ void do_walking_sim(object *obj) {
       if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
 
         mprintf(0, "Obj %d Walked backwards!\n", OBJNUM(obj));
-/*
-        mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
-                XYZ(&start_pos),
-                XYZ(&obj->pos))); // don't change position or sim_time_remaining
-*/
+        /*
+                mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
+                        XYZ(&start_pos),
+                        XYZ(&obj->pos))); // don't change position or sim_time_remaining
+        */
 
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
@@ -2529,9 +2530,9 @@ void do_walking_sim(object *obj) {
         // chrishack -- negative simulation time pasted for this sim frame
         if (sim_time_remaining > old_sim_time_remaining) {
           mprintf(0,
-                   "PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\nAttempted d = %15.13f, actual "
-                   "= %15.13f\n",
-                   sim_time_remaining, old_sim_time_remaining, attempted_dist, actual_dist);
+                  "PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\nAttempted d = %15.13f, actual "
+                  "= %15.13f\n",
+                  sim_time_remaining, old_sim_time_remaining, attempted_dist, actual_dist);
           // Int3();
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
@@ -2994,7 +2995,6 @@ void do_vis_physics_sim(vis_effect *vis) {
   } else {
     VisEffectDelete(vis - VisEffects);
   }
-
 }
 
 void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index) {
@@ -3113,46 +3113,46 @@ void physics_turn_towards_vector(vector *goal_vector, object *obj, float rate)
 //	change in orientation.
 
 void phys_apply_rot(object *obj, vector *force_vec) {
-/*
-  float rate, vecmag;
+  /*
+    float rate, vecmag;
 
-  if (obj->movement_type != MT_PHYSICS)
-    return;
+    if (obj->movement_type != MT_PHYSICS)
+      return;
 
-  vecmag = vm_VectorMagnitude(force_vec);
+    vecmag = vm_VectorMagnitude(force_vec);
 
-  if (vecmag < F1_0 / 256)
-    rate = 4 * F1_0;
-  else if (vecmag < obj->mtype.phys_info.mass >> 14)
-    rate = 4 * F1_0;
-  else {
-    rate = fixdiv(obj->mtype.phys_info.mass, vecmag);
+    if (vecmag < F1_0 / 256)
+      rate = 4 * F1_0;
+    else if (vecmag < obj->mtype.phys_info.mass >> 14)
+      rate = 4 * F1_0;
+    else {
+      rate = fixdiv(obj->mtype.phys_info.mass, vecmag);
 
-    if (obj->type == OBJ_ROBOT) {
-      if (rate < F1_0 / 4)
-        rate = F1_0 / 4;
-      //	Changed by mk, 10/24/95, claw guys should not slow down when attacking!
-      if (!Robot_info[obj->id].thief && !Robot_info[obj->id].attack_type) {
-        if (obj->ctype.ai_info.SKIP_AI_COUNT * Frametime < 3 * F1_0 / 4) {
-          float tval = fixdiv(F1_0, 8 * Frametime);
-          int addval;
-          addval = f2i(tval);
-          if ((rand() * 2) < (tval & 0xffff))
-            addval++;
-          obj->ctype.ai_info.SKIP_AI_COUNT += addval;
-          // -- mk: too much stuff making hard to see my debug messages...
-          mprintf(0, "Frametime = %7.3f, addval = %i\n", f2fl(Frametime), addval);
+      if (obj->type == OBJ_ROBOT) {
+        if (rate < F1_0 / 4)
+          rate = F1_0 / 4;
+        //	Changed by mk, 10/24/95, claw guys should not slow down when attacking!
+        if (!Robot_info[obj->id].thief && !Robot_info[obj->id].attack_type) {
+          if (obj->ctype.ai_info.SKIP_AI_COUNT * Frametime < 3 * F1_0 / 4) {
+            float tval = fixdiv(F1_0, 8 * Frametime);
+            int addval;
+            addval = f2i(tval);
+            if ((rand() * 2) < (tval & 0xffff))
+              addval++;
+            obj->ctype.ai_info.SKIP_AI_COUNT += addval;
+            // -- mk: too much stuff making hard to see my debug messages...
+            mprintf(0, "Frametime = %7.3f, addval = %i\n", f2fl(Frametime), addval);
+          }
         }
+      } else {
+        if (rate < F1_0 / 2)
+          rate = F1_0 / 2;
       }
-    } else {
-      if (rate < F1_0 / 2)
-        rate = F1_0 / 2;
     }
-  }
 
-  // Turn amount inversely proportional to mass.  Third parameter is seconds to do 360 turn.
-  physics_turn_towards_vector(force_vec, obj, rate);
-*/
+    // Turn amount inversely proportional to mass.  Third parameter is seconds to do 360 turn.
+    physics_turn_towards_vector(force_vec, obj, rate);
+  */
 }
 /*
 //this routine will set the thrust for an object to a value that will

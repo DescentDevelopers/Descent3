@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -565,26 +565,26 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 45
 const char *Object_names[NUM_OBJECT_NAMES] = {"FirstForcefieldSwi", "BackupPowerup",      "Player",
-                                        "StartSpewerA",       "StartSpewerB",       "FirstDoubleSpewerA",
-                                        "FirstDoubleSpewerB", "2ndDoubleSpewerA",   "2ndDoubleSpewerB",
-                                        "SphereRoomSpewerA",  "SphereRoomSpewerB",  "SphereRoomSpewerC",
-                                        "SphereRoomSpewerD",  "SRADDoorKey",        "LeftConsoleSwitch",
-                                        "LeftSecondaryDataC", "RightConsoleSwitch", "RightSecondaryData",
-                                        "PrimaryLoginSwitch", "PrimaryDataClaw",    "FinalBlastableDoor",
-                                        "SRADDoor",           "RightFireSwitch",    "LeftFireSwitch",
-                                        "FirstFoggyCorridor", "HangarDoorSound",    "FirstBlackSmokeHal",
-                                        "SecondBlackSmokeHa", "FirstUpperTowerSou", "SecondUpperTowerSo",
-                                        "FlameChamberSound",  "EnergyCenterSound",  "MechanicalRoomSoun",
-                                        "MainTowerInsideSou", "LeftComputerPipesS", "RightComputerPipes",
-                                        "CenterComputerPipe", "CenterUpperPipesSo", "CenterClawSound",
-                                        "LeftClawSound",      "RightClawSound",     "CenterPlasmaCoreSo",
-                                        "LeftPlasmaCoreSoun", "RightPlasmaCoreSou", "RearPlasmaCoreSoun"};
+                                              "StartSpewerA",       "StartSpewerB",       "FirstDoubleSpewerA",
+                                              "FirstDoubleSpewerB", "2ndDoubleSpewerA",   "2ndDoubleSpewerB",
+                                              "SphereRoomSpewerA",  "SphereRoomSpewerB",  "SphereRoomSpewerC",
+                                              "SphereRoomSpewerD",  "SRADDoorKey",        "LeftConsoleSwitch",
+                                              "LeftSecondaryDataC", "RightConsoleSwitch", "RightSecondaryData",
+                                              "PrimaryLoginSwitch", "PrimaryDataClaw",    "FinalBlastableDoor",
+                                              "SRADDoor",           "RightFireSwitch",    "LeftFireSwitch",
+                                              "FirstFoggyCorridor", "HangarDoorSound",    "FirstBlackSmokeHal",
+                                              "SecondBlackSmokeHa", "FirstUpperTowerSou", "SecondUpperTowerSo",
+                                              "FlameChamberSound",  "EnergyCenterSound",  "MechanicalRoomSoun",
+                                              "MainTowerInsideSou", "LeftComputerPipesS", "RightComputerPipes",
+                                              "CenterComputerPipe", "CenterUpperPipesSo", "CenterClawSound",
+                                              "LeftClawSound",      "RightClawSound",     "CenterPlasmaCoreSo",
+                                              "LeftPlasmaCoreSoun", "RightPlasmaCoreSou", "RearPlasmaCoreSoun"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 9
 const char *Room_names[NUM_ROOM_NAMES] = {"TerrainAccessRoom",  "LeftConsoleRoom",    "RightConsoleRoom",
-                                    "PrimaryObjectiveRo", "RingEntranceRight",  "RingEntranceLeft",
-                                    "EscapeTubeExit",     "FireSphereRoomUppe", "FireSphereRoomLowe"};
+                                          "PrimaryObjectiveRo", "RingEntranceRight",  "RingEntranceLeft",
+                                          "EscapeTubeExit",     "FireSphereRoomUppe", "FireSphereRoomLowe"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 13
@@ -598,14 +598,14 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 11
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneG", "AmbDroneF", "AmbDroneO", "AmbDroneX",
-                                      "AmbDroneU", "AmbDroneL", "AmbDroneS", "Indoor Ambient 5",
-                                      "AmbDroneN", "AmbDroneE", "AmbDroneM"};
+                                            "AmbDroneU", "AmbDroneL", "AmbDroneS", "Indoor Ambient 5",
+                                            "AmbDroneN", "AmbDroneE", "AmbDroneM"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 11
 const char *Texture_names[NUM_TEXTURE_NAMES] = {"DataScroll",  "DataCED",     "DataBoss",  "DataPlogo",
-                                          "DataDrav",    "DataLab",     "DataCrash", "DataSwit",
-                                          "DataSecAlrt", "DataClasLog", "DataMatDef"};
+                                                "DataDrav",    "DataLab",     "DataCrash", "DataSwit",
+                                                "DataSecAlrt", "DataClasLog", "DataMatDef"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 4
@@ -618,25 +618,25 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 6
 const char *Goal_names[NUM_GOAL_NAMES] = {"Deactivate the Containment Forcefield",
-                                    "Get the Restricted Access Passkey",
-                                    "Access the Mainframe",
-                                    "Find Data on Sweitzer's Location",
-                                    "Escape the Facility",
-                                    "Find the Main Data Retention Complex"};
+                                          "Get the Restricted Access Passkey",
+                                          "Access the Mainframe",
+                                          "Find Data on Sweitzer's Location",
+                                          "Escape the Facility",
+                                          "Find the Main Data Retention Complex"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 21
 const char *Message_names[NUM_MESSAGE_NAMES] = {"FirstForcefield",    "ClassifiedAccessPass",
-                                          "LeftConsoleSwitch",  "RightConsoleSwitch",
-                                          "PrimaryLoginSwitch", "EndLevel",
-                                          "AccessDenied",       "CEDData",
-                                          "ShipMessageLog",     "BossData",
-                                          "PTMCdisconnected",   "DravisData",
-                                          "SRADLabData",        "ConsoleCrash",
-                                          "SweitzerData",       "SecurityAlert",
-                                          "LockDown",           "MDData",
-                                          "SingleFireSwitch",   "BothFireSwitches",
-                                          "IntroMessage"};
+                                                "LeftConsoleSwitch",  "RightConsoleSwitch",
+                                                "PrimaryLoginSwitch", "EndLevel",
+                                                "AccessDenied",       "CEDData",
+                                                "ShipMessageLog",     "BossData",
+                                                "PTMCdisconnected",   "DravisData",
+                                                "SRADLabData",        "ConsoleCrash",
+                                                "SweitzerData",       "SecurityAlert",
+                                                "LockDown",           "MDData",
+                                                "SingleFireSwitch",   "BothFireSwitches",
+                                                "IntroMessage"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1632,25 +1632,25 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 40
 const char *Object_names[NUM_OBJECT_NAMES] = {"InnerStrongholdPas", "Inner Door View Ca",
-                                        "LeftGeoPitLava",     "RightGeoPitLava",
-                                        "CenterGeoPitLava",   "LeftLavaCrank",
-                                        "CenterLavaCrank",    "RightLavaCrank",
-                                        "BackupReactorPower", "BackupReactorFuse",
-                                        "MatCenSwitchA",      "MatCenSwitchB",
-                                        "MatCenSwitchC",      "MatCenSwitchD",
-                                        "MatCenSwitchE",      "MatCenSwitchF",
-                                        "MatCenSwitchG",      "MatCenPuzzleRESET",
-                                        "RightGeoTubeSwitch", "RightGeoTubeLava",
-                                        "CenterGeoTubeSwitc", "CenterGeoTubeLava",
-                                        "LeftGeoTubeSwitch",  "LeftGeoTubeLava",
-                                        "Inner Door E",       "Inner Door D",
-                                        "Inner Door C",       "CenterTNTDispenser",
-                                        "RightTNTDispenserS", "LeftTNTDispenserSw",
-                                        "LeftTNTDispenserBr", "TNTRockWall",
-                                        "HellionFinalBoss",   "EndLevelCamera",
-                                        "MediumVolcanoPlane", "SmallestVolcanoPla",
-                                        "LargeVolcanoPlane",  "TheFan",
-                                        "RotatingLightA",     "RotatingLightB"};
+                                              "LeftGeoPitLava",     "RightGeoPitLava",
+                                              "CenterGeoPitLava",   "LeftLavaCrank",
+                                              "CenterLavaCrank",    "RightLavaCrank",
+                                              "BackupReactorPower", "BackupReactorFuse",
+                                              "MatCenSwitchA",      "MatCenSwitchB",
+                                              "MatCenSwitchC",      "MatCenSwitchD",
+                                              "MatCenSwitchE",      "MatCenSwitchF",
+                                              "MatCenSwitchG",      "MatCenPuzzleRESET",
+                                              "RightGeoTubeSwitch", "RightGeoTubeLava",
+                                              "CenterGeoTubeSwitc", "CenterGeoTubeLava",
+                                              "LeftGeoTubeSwitch",  "LeftGeoTubeLava",
+                                              "Inner Door E",       "Inner Door D",
+                                              "Inner Door C",       "CenterTNTDispenser",
+                                              "RightTNTDispenserS", "LeftTNTDispenserSw",
+                                              "LeftTNTDispenserBr", "TNTRockWall",
+                                              "HellionFinalBoss",   "EndLevelCamera",
+                                              "MediumVolcanoPlane", "SmallestVolcanoPla",
+                                              "LargeVolcanoPlane",  "TheFan",
+                                              "RotatingLightA",     "RotatingLightB"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 13
@@ -1662,41 +1662,42 @@ int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 30
 const char *Trigger_names[NUM_TRIGGER_NAMES] = {"CshapedEnergyCenter",
-                                          "SecretEnergyCenterB",
-                                          "BackupEnergyCenterB",
-                                          "RightGeoNookExit",
-                                          "CenterGeoNookExit",
-                                          "LeftGeoNookExit",
-                                          "RightUpperGeoPitDoo",
-                                          "CenterUpperGeoPitDo",
-                                          "LeftUpperGeoPitDoor",
-                                          "BossEnergyForcefiel",
-                                          "EndLevelTrigger",
-                                          "MOutside-4",
-                                          "MOutside-3",
-                                          "MOutside-2",
-                                          "MOutside-1",
-                                          "MBoss-1",
-                                          "MCentral-6",
-                                          "MCentral-5",
-                                          "MCentral-4",
-                                          "MCentral-3",
-                                          "MCentral-2",
-                                          "MCentral-1",
-                                          "MEast-5",
-                                          "MEast-4",
-                                          "MEast-3",
-                                          "MEast-2",
-                                          "MEast-1",
-                                          "MWest-2",
-                                          "MWest-1",
-                                          "PreBossTrigger"};
+                                                "SecretEnergyCenterB",
+                                                "BackupEnergyCenterB",
+                                                "RightGeoNookExit",
+                                                "CenterGeoNookExit",
+                                                "LeftGeoNookExit",
+                                                "RightUpperGeoPitDoo",
+                                                "CenterUpperGeoPitDo",
+                                                "LeftUpperGeoPitDoor",
+                                                "BossEnergyForcefiel",
+                                                "EndLevelTrigger",
+                                                "MOutside-4",
+                                                "MOutside-3",
+                                                "MOutside-2",
+                                                "MOutside-1",
+                                                "MBoss-1",
+                                                "MCentral-6",
+                                                "MCentral-5",
+                                                "MCentral-4",
+                                                "MCentral-3",
+                                                "MCentral-2",
+                                                "MCentral-1",
+                                                "MEast-5",
+                                                "MEast-4",
+                                                "MEast-3",
+                                                "MEast-2",
+                                                "MEast-1",
+                                                "MWest-2",
+                                                "MWest-1",
+                                                "PreBossTrigger"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 4
-const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor", "DebrisExplosion", "AmbExplosionFarB", "AmbExplosionFarG"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor", "DebrisExplosion", "AmbExplosionFarB",
+                                            "AmbExplosionFarG"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
@@ -1705,9 +1706,9 @@ int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 12
 const char *Path_names[NUM_PATH_NAMES] = {"LeftGeoPitLavaPath",     "RightGeoPitLavaPath",    "CenterGeoPitLavaPath",
-                                    "RightGeoTubeLavaPath",   "CenterGeoTubeLavaPath",  "LeftGeoTubeLavaPath",
-                                    "EndLevelPath",           "IntroCamPath",           "PlayerIntroPath",
-                                    "CameraBossEntrancePath", "PlayerBossEntrancePath", "BossIntroCameraPath"};
+                                          "RightGeoTubeLavaPath",   "CenterGeoTubeLavaPath",  "LeftGeoTubeLavaPath",
+                                          "EndLevelPath",           "IntroCamPath",           "PlayerIntroPath",
+                                          "CameraBossEntrancePath", "PlayerBossEntrancePath", "BossIntroCameraPath"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 2
@@ -1716,33 +1717,33 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 5
 const char *Goal_names[NUM_GOAL_NAMES] = {"Locate the Inner Stronghold Passkey", "Repair the Reactor",
-                                    "Locate the Back-up Reactor", "Find the reactor's replacement fuse",
-                                    "Locate Dravis' secret stronghold"};
+                                          "Locate the Back-up Reactor", "Find the reactor's replacement fuse",
+                                          "Locate Dravis' secret stronghold"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 22
 const char *Message_names[NUM_MESSAGE_NAMES] = {"InnerDoorsUnlock",
-                                          "InnerStrongholdKey",
-                                          "LeftLavaCrank",
-                                          "CenterLavaCrank",
-                                          "RightLavaCrank",
-                                          "EnergyCentersOnline",
-                                          "PowerRestored",
-                                          "FuseFound",
-                                          "ReactorBroken",
-                                          "EnergyCenterBroken",
-                                          "InnerDoorsDenied",
-                                          "TNTDispenserCenter",
-                                          "TNTDispenserRight",
-                                          "TNTDispenserLeft",
-                                          "TNTDispenserLeftBroken",
-                                          "TNTRockwalldestroyed",
-                                          "TNTRockWall",
-                                          "DravisDoor",
-                                          "End",
-                                          "IntroCameraText",
-                                          "BLANK",
-                                          "HellionIntroduction"};
+                                                "InnerStrongholdKey",
+                                                "LeftLavaCrank",
+                                                "CenterLavaCrank",
+                                                "RightLavaCrank",
+                                                "EnergyCentersOnline",
+                                                "PowerRestored",
+                                                "FuseFound",
+                                                "ReactorBroken",
+                                                "EnergyCenterBroken",
+                                                "InnerDoorsDenied",
+                                                "TNTDispenserCenter",
+                                                "TNTDispenserRight",
+                                                "TNTDispenserLeft",
+                                                "TNTDispenserLeftBroken",
+                                                "TNTRockwalldestroyed",
+                                                "TNTRockWall",
+                                                "DravisDoor",
+                                                "End",
+                                                "IntroCameraText",
+                                                "BLANK",
+                                                "HellionIntroduction"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

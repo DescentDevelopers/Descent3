@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -146,11 +146,11 @@ BOOL FAR PASCAL EnumSessionsCallback(LPCDPSESSIONDESC2 lpSessionDesc, LPDWORD lp
     memcpy(&Directplay_sessions[Num_directplay_games], lpSessionDesc, sizeof(DPSESSIONDESC2));
     strcpy(Directplay_session_desc[Num_directplay_games], lpSessionDesc->lpszSessionNameA);
     Directplay_sessions[Num_directplay_games].lpszSessionNameA = Directplay_session_desc[Num_directplay_games];
-/*
-    mprintf(0,"Found Directplay game[%d]: %s\n",
-             Num_directplay_games,
-             Directplay_sessions[Num_directplay_games].lpszSessionNameA);
-*/
+    /*
+        mprintf(0,"Found Directplay game[%d]: %s\n",
+                 Num_directplay_games,
+                 Directplay_sessions[Num_directplay_games].lpszSessionNameA);
+    */
     Num_directplay_games++;
   } else
     return FALSE;
@@ -258,7 +258,9 @@ int dp_InitDirectPlay(char *conn_name, void *parms, int num_elements) {
           mprintf(0, "lpDirectPlayLobby3A->CreateCompoundAddress() succeeded!\n");
         }
       } else {
-        mprintf(0, "lpDirectPlayLobby3A->CreateCompoundAddress() buffer size request failed. DirectPlay *NOT* initialized!\n");
+        mprintf(
+            0,
+            "lpDirectPlayLobby3A->CreateCompoundAddress() buffer size request failed. DirectPlay *NOT* initialized!\n");
       }
     }
   }
@@ -499,7 +501,7 @@ int dp_ListDirectPlayGames() {
 // This function will look for incoming messages, and dispatch them accordingly
 void dp_DirectPlayDispatch() {
   HRESULT hr;
-  uint8_t packet_data[32000];              // MAX_PACKET_SIZE+1];
+  uint8_t packet_data[32000];    // MAX_PACKET_SIZE+1];
   DWORD dwMsgBufferSize = 32000; // MAX_PACKET_SIZE;
   DPID idFrom = 0;
   DPID idTo = 0;

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -71,13 +71,13 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
 
   char *prefPath = (char *)loki_getprefpath();
   const size_t fileLen = strlen(prefPath) + strlen(REGISTRY_FILENAME) + 2;
-  char* fileName = new char[fileLen];
+  char *fileName = new char[fileLen];
   snprintf(fileName, fileLen, "%s/%s", prefPath, REGISTRY_FILENAME);
 
   database = new CRegistry(fileName);
   database->Import();
   create_record("Version");
-  delete [] fileName;
+  delete[] fileName;
 }
 
 oeLnxAppDatabase::oeLnxAppDatabase(oeLnxAppDatabase *parent) {
@@ -228,8 +228,8 @@ void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
     *size = strlen(buffer);
   }
 #else
-DWORD unamelen = 0;
-GetUserName(buffer, &unamelen);
-*size = static_cast<size_t>(unamelen);
+  DWORD unamelen = 0;
+  GetUserName(buffer, &unamelen);
+  *size = static_cast<size_t>(unamelen);
 #endif
 }

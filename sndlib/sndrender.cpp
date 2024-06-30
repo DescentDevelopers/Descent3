@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,6 @@
 #include "application.h"
 #include "soundload.h"
 #include "gametexture.h"
-
 
 static llsGeometry *Geometry = NULL;
 static int16_t Sound_room_list[SOUND_RENDER_ROOM_LIMIT + 1];

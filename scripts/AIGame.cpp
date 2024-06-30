@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // AIGame.cpp
 //
@@ -791,7 +791,6 @@ struct mantaray_data {
 
   vector goal_pos;
   int goal_room;
-
 };
 
 class MantaRay : public BaseObjScript {
@@ -838,7 +837,6 @@ struct skiff_data {
 
   vector goal_pos;
   int goal_room;
-
 };
 
 class Skiff : public BaseObjScript {
@@ -888,7 +886,6 @@ struct spyhunter_data {
   uint16_t emd_id;
   int tick_sound;
   float last_tick_time;
-
 };
 
 class SpyHunter : public BaseObjScript {
@@ -1183,7 +1180,6 @@ struct sickle_data {
   vector home_pos;
   int home_room;
   vector home_fvec;
-
 };
 
 class Sickle : public BaseObjScript {
@@ -1516,7 +1512,7 @@ struct guidebot_data {
   float mode_time;
 
   uint16_t mp_slot; // Owner's slot number
-  int my_player;          // Owner's object reference
+  int my_player;    // Owner's object reference
 
   bool f_parented; // Buddy will not collide with parent until it isn't parented
   bool f_pickup;   // Marked for pickup by the owner
@@ -1702,7 +1698,6 @@ struct thief_data {
 
   float fear;
   float agression;
-
 };
 
 class Thief : public BaseObjScript {

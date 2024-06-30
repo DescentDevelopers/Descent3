@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -905,9 +905,8 @@ float Ceiling_height = MAX_TERRAIN_HEIGHT;
 // Bit fields for quick 'already-checked' checking
 static uint8_t
     fvi_visit_list[MAX_ROOMS / 8 + 1]; // This bit-field provides a fast check if a mine segment has been visited
-static uint8_t
-    fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
-                           1]; // This bit-field provides a fast check if a terrain segment has been visited
+static uint8_t fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
+                                      1]; // This bit-field provides a fast check if a terrain segment has been visited
 static uint8_t
     fvi_terrain_obj_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
                                1]; // This bit-field provides a fast check if a terrain segment has been visited
@@ -1109,7 +1108,7 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge
-  uint32_t edgemask;            // Bit-field for which side we are outside of
+  uint32_t edgemask;        // Bit-field for which side we are outside of
   float check_i, check_j;   // (i,j) checkpoint for 2d in/out test
   vector_array *v0, *v1;    // Vertices of the current line segment in the 2d in/out check loop
 
@@ -1222,12 +1221,12 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
   // Is the initial p0 position an intersection?  If so, warn us and collide immediately.
   if (point_to_center_vec * point_to_center_vec < sphere_rad * sphere_rad) {
     if (f_correcting) {
-/*
-      // chrishack
-      mprintf(0, "FVI WARNING: Start point is inside of a checked sphere %f %f\n",
-              point_to_center_vec * point_to_center_vec,
-              sphere_rad * sphere_rad);
-*/
+      /*
+            // chrishack
+            mprintf(0, "FVI WARNING: Start point is inside of a checked sphere %f %f\n",
+                    point_to_center_vec * point_to_center_vec,
+                    sphere_rad * sphere_rad);
+      */
       // chrishack this movement intersection fix is a hack...  How do we do correct cylinder/vector interestion?
       vector n_ptc = point_to_center_vec;
       vm_NormalizeVector(&n_ptc);
@@ -2559,12 +2558,12 @@ void make_trigger_face_list(int last_sim_faces) {
 
     for (count = 0; count < cur_room->faces[i].num_verts; count++)
       vertex_ptr_list[count] = &cur_room->verts[cur_room->faces[i].face_verts[count]];
-/*
-    mprintf(0, "FVI:In trigger %f to %f crossed %f\n",
-            fvi_query_ptr->p0->z,
-            fvi_hit_data_ptr->hit_pnt.z,
-            vertex_ptr_list[0]->z);
-*/
+    /*
+        mprintf(0, "FVI:In trigger %f to %f crossed %f\n",
+                fvi_query_ptr->p0->z,
+                fvi_hit_data_ptr->hit_pnt.z,
+                vertex_ptr_list[0]->z);
+    */
 
     face_normal = cur_room->faces[i].normal;
 
@@ -2631,10 +2630,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
 #ifndef NED_PHYSICS
   if (Tracking_FVI) {
-    mprintf(0, "Track FVI - Ray %d, thisobjnum=%d, startroom=%d, rad=%f\n",
-            FVI_counter,
-            fq->thisobjnum,
-            fq->startroom,
+    mprintf(0, "Track FVI - Ray %d, thisobjnum=%d, startroom=%d, rad=%f\n", FVI_counter, fq->thisobjnum, fq->startroom,
             fq->rad);
   }
 #endif
@@ -2787,7 +2783,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
         fvi_new_query.flags &= (~FQ_NEW_RECORD_LIST);
 
         if (s_hit_type != HIT_NONE) {
-          //mprintf(0, "Hit %d at %f, %f, %f\n", s_hit_type, XYZ(&fvi_new_hit_data.hit_pnt));
+          // mprintf(0, "Hit %d at %f, %f, %f\n", s_hit_type, XYZ(&fvi_new_hit_data.hit_pnt));
           break;
         }
 
@@ -3961,12 +3957,11 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
               check_line_to_face(&hit_point, &colp, &cur_dist, &wall_norm, fvi_query_ptr->p0,
                                  &fvi_hit_data_ptr->hit_pnt, &face_normal, vertex_ptr_list, 3, fvi_query_ptr->rad);
         }
-/*
-        if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) {
-          mprintf(0, "Y = %f\n", Objects[fvi_query_ptr->thisobjnum].pos.y);
-        }
-*/
-
+        /*
+                if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) {
+                  mprintf(0, "Y = %f\n", Objects[fvi_query_ptr->thisobjnum].pos.y);
+                }
+        */
 
         // chrisnote - closest hit should be tracked...  So, we can call BBPI once with
         // false and all other times with true for fast exit.

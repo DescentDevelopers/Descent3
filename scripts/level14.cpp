@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1022,68 +1022,68 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 63
 const char *Object_names[NUM_OBJECT_NAMES] = {"Power Conduit1",
-                                        "Power Conduit2",
-                                        "Power Conduit3",
-                                        "AntiVirus Program",
-                                        "Power SW1",
-                                        "Power SW2",
-                                        "Power SW3",
-                                        "Bypass Conn1",
-                                        "Bypass Conn2",
-                                        "Bypass Conn3",
-                                        "Equip Door Key",
-                                        "Emitter Rm Link",
-                                        "West Dock Link",
-                                        "Control Rm Link",
-                                        "Emitter Output Dia",
-                                        "Override Switch",
-                                        "Shield Tog1",
-                                        "Shield Tog2",
-                                        "Shield Tog3",
-                                        "Shield Tog4",
-                                        "Shielding Bump SW",
-                                        "Node1",
-                                        "Node2",
-                                        "Node3",
-                                        "Node4",
-                                        "Node5",
-                                        "Node6",
-                                        "Escape Shuttle",
-                                        "ShuttleSwitch",
-                                        "ShuttleReleaseClaw",
-                                        "Emitter Igniter",
-                                        "Destroyable Lens",
-                                        "Spare Emitter Lens",
-                                        "Lens Position",
-                                        "EmitterBeamDest",
-                                        "Beam Journal",
-                                        "Shield Journal",
-                                        "Virus Journal",
-                                        "Power Journal",
-                                        "Robot Journal",
-                                        "Dial Journal",
-                                        "Spew1",
-                                        "Spewer2",
-                                        "Spewer3",
-                                        "Spewer4",
-                                        "Spewer6",
-                                        "Spewer7",
-                                        "Spewer8",
-                                        "Spew9",
-                                        "Spew11",
-                                        "Spew12",
-                                        "Spew13",
-                                        "Spew14",
-                                        "Spew15",
-                                        "Spew16",
-                                        "Spew19",
-                                        "Spew20",
-                                        "Spew22",
-                                        "Spew23",
-                                        "Spew24",
-                                        "Spew25",
-                                        "Spew26",
-                                        "Spew27"};
+                                              "Power Conduit2",
+                                              "Power Conduit3",
+                                              "AntiVirus Program",
+                                              "Power SW1",
+                                              "Power SW2",
+                                              "Power SW3",
+                                              "Bypass Conn1",
+                                              "Bypass Conn2",
+                                              "Bypass Conn3",
+                                              "Equip Door Key",
+                                              "Emitter Rm Link",
+                                              "West Dock Link",
+                                              "Control Rm Link",
+                                              "Emitter Output Dia",
+                                              "Override Switch",
+                                              "Shield Tog1",
+                                              "Shield Tog2",
+                                              "Shield Tog3",
+                                              "Shield Tog4",
+                                              "Shielding Bump SW",
+                                              "Node1",
+                                              "Node2",
+                                              "Node3",
+                                              "Node4",
+                                              "Node5",
+                                              "Node6",
+                                              "Escape Shuttle",
+                                              "ShuttleSwitch",
+                                              "ShuttleReleaseClaw",
+                                              "Emitter Igniter",
+                                              "Destroyable Lens",
+                                              "Spare Emitter Lens",
+                                              "Lens Position",
+                                              "EmitterBeamDest",
+                                              "Beam Journal",
+                                              "Shield Journal",
+                                              "Virus Journal",
+                                              "Power Journal",
+                                              "Robot Journal",
+                                              "Dial Journal",
+                                              "Spew1",
+                                              "Spewer2",
+                                              "Spewer3",
+                                              "Spewer4",
+                                              "Spewer6",
+                                              "Spewer7",
+                                              "Spewer8",
+                                              "Spew9",
+                                              "Spew11",
+                                              "Spew12",
+                                              "Spew13",
+                                              "Spew14",
+                                              "Spew15",
+                                              "Spew16",
+                                              "Spew19",
+                                              "Spew20",
+                                              "Spew22",
+                                              "Spew23",
+                                              "Spew24",
+                                              "Spew25",
+                                              "Spew26",
+                                              "Spew27"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 3
@@ -1092,38 +1092,39 @@ int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 9
 const char *Trigger_names[NUM_TRIGGER_NAMES] = {"AudioStream3", "MWing-1",   "MTop-1",    "MBottom-2", "MBottom-1",
-                                          "MMiddle-4",    "MMiddle-3", "MMiddle-2", "MMiddle-1"};
+                                                "MMiddle-4",    "MMiddle-3", "MMiddle-2", "MMiddle-1"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 5
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31", "Powerup pickup", "AmbSwitch11", "AmbSwitch21",
-                                      "AmbExplosionFarC"};
+                                            "AmbExplosionFarC"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 16
 const char *Texture_names[NUM_TEXTURE_NAMES] = {"DataLogon",
-                                          "DataScroll",
-                                          "CEDSignSilverLogo",
-                                          "CEDUploadAnti",
-                                          "NanoStat",
-                                          "Nano1",
-                                          "Nano2",
-                                          "Nano3",
-                                          "Nano4",
-                                          "CEDUpSucOn",
-                                          "C-SS Omnicron",
-                                          "Ed",
-                                          "Korea_Matcen_Shield",
-                                          "CED-Forcefield",
-                                          "Lightning3",
-                                          "ThickLineLightning"};
+                                                "DataScroll",
+                                                "CEDSignSilverLogo",
+                                                "CEDUploadAnti",
+                                                "NanoStat",
+                                                "Nano1",
+                                                "Nano2",
+                                                "Nano3",
+                                                "Nano4",
+                                                "CEDUpSucOn",
+                                                "C-SS Omnicron",
+                                                "Ed",
+                                                "Korea_Matcen_Shield",
+                                                "CED-Forcefield",
+                                                "Lightning3",
+                                                "ThickLineLightning"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 7
-const char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",  "IntroPlayerPath", "EscapeShuttlePathA", "EscapeShuttlePathB",
-                                    "LensRobotPath", "EndCamPath",      "EndPlayerPath"};
+const char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",       "IntroPlayerPath", "EscapeShuttlePathA",
+                                          "EscapeShuttlePathB", "LensRobotPath",   "EndCamPath",
+                                          "EndPlayerPath"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 1
@@ -1132,77 +1133,77 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 14
 const char *Goal_names[NUM_GOAL_NAMES] = {"Find Three Bypass Connectors",
-                                    "Find Equipment Room Key",
-                                    "Start Transmitter Control System",
-                                    "Upload Anti-Virus Program",
-                                    "Enable Defense Network Output",
-                                    "Deactivate Beam Emitter Shield",
-                                    "Align Mirror Nodes",
-                                    "Free Escape Shuttle",
-                                    "Ignite Beam Emitter",
-                                    "Supply Power to Beam Igniter",
-                                    "Find Spare Emitter Lens",
-                                    "Replace Emitter Lens",
-                                    "Ensure Success of Transmission",
-                                    "Broadcast the Anti-Virus Program"};
+                                          "Find Equipment Room Key",
+                                          "Start Transmitter Control System",
+                                          "Upload Anti-Virus Program",
+                                          "Enable Defense Network Output",
+                                          "Deactivate Beam Emitter Shield",
+                                          "Align Mirror Nodes",
+                                          "Free Escape Shuttle",
+                                          "Ignite Beam Emitter",
+                                          "Supply Power to Beam Igniter",
+                                          "Find Spare Emitter Lens",
+                                          "Replace Emitter Lens",
+                                          "Ensure Success of Transmission",
+                                          "Broadcast the Anti-Virus Program"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 55
 const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
-                                          "Empty",
-                                          "BypassConnDisplay",
-                                          "PowerOffline",
-                                          "PowerOnline",
-                                          "FoundAllBypassConns",
-                                          "FoundBypassConn",
-                                          "FoundEquipRmKey",
-                                          "DataLinkAlreadyActive",
-                                          "DataLinkFixed",
-                                          "SystemStarting",
-                                          "DataLinkError",
-                                          "GotCoreMaterial",
-                                          "UploadStarted",
-                                          "UploadError",
-                                          "UseCoreMaterialFailed",
-                                          "SystemStarted",
-                                          "OmnicronDisplayed",
-                                          "BumpDialError",
-                                          "DialCodeEntered",
-                                          "DialCodeIncorrect",
-                                          "DialSwitchError",
-                                          "ShieldCodeSeqStart",
-                                          "ShieldCodeSeqReset",
-                                          "ShieldDeactivated",
-                                          "ShieldCodeIncorrect",
-                                          "ShuttleFreed",
-                                          "BeamIgnited",
-                                          "BeamIgniteError6",
-                                          "BeamIgniteError5",
-                                          "BeamIgniteError4",
-                                          "BeamIgniteError3",
-                                          "BeamIgniteError2",
-                                          "BeamIgniteError1",
-                                          "LensRobotWarning",
-                                          "LensDestroyed",
-                                          "GotSpareLens",
-                                          "UseLensCompleted",
-                                          "UseLensFailed2",
-                                          "UseLensFailed1",
-                                          "MirrorNodesUnaligned",
-                                          "PowerInsufficient",
-                                          "TransmissionComplete",
-                                          "JournalBeamGame",
-                                          "JournalBeamHUD",
-                                          "JournalShieldGame",
-                                          "JournalShieldHUD",
-                                          "JournalVirusGame",
-                                          "JournalVirusHUD",
-                                          "JournalPowerGame",
-                                          "JournalPowerHUD",
-                                          "JournalRobotGame",
-                                          "JournalRobotHUD",
-                                          "JournalDialGame",
-                                          "JournalDialHUD"};
+                                                "Empty",
+                                                "BypassConnDisplay",
+                                                "PowerOffline",
+                                                "PowerOnline",
+                                                "FoundAllBypassConns",
+                                                "FoundBypassConn",
+                                                "FoundEquipRmKey",
+                                                "DataLinkAlreadyActive",
+                                                "DataLinkFixed",
+                                                "SystemStarting",
+                                                "DataLinkError",
+                                                "GotCoreMaterial",
+                                                "UploadStarted",
+                                                "UploadError",
+                                                "UseCoreMaterialFailed",
+                                                "SystemStarted",
+                                                "OmnicronDisplayed",
+                                                "BumpDialError",
+                                                "DialCodeEntered",
+                                                "DialCodeIncorrect",
+                                                "DialSwitchError",
+                                                "ShieldCodeSeqStart",
+                                                "ShieldCodeSeqReset",
+                                                "ShieldDeactivated",
+                                                "ShieldCodeIncorrect",
+                                                "ShuttleFreed",
+                                                "BeamIgnited",
+                                                "BeamIgniteError6",
+                                                "BeamIgniteError5",
+                                                "BeamIgniteError4",
+                                                "BeamIgniteError3",
+                                                "BeamIgniteError2",
+                                                "BeamIgniteError1",
+                                                "LensRobotWarning",
+                                                "LensDestroyed",
+                                                "GotSpareLens",
+                                                "UseLensCompleted",
+                                                "UseLensFailed2",
+                                                "UseLensFailed1",
+                                                "MirrorNodesUnaligned",
+                                                "PowerInsufficient",
+                                                "TransmissionComplete",
+                                                "JournalBeamGame",
+                                                "JournalBeamHUD",
+                                                "JournalShieldGame",
+                                                "JournalShieldHUD",
+                                                "JournalVirusGame",
+                                                "JournalVirusHUD",
+                                                "JournalPowerGame",
+                                                "JournalPowerHUD",
+                                                "JournalRobotGame",
+                                                "JournalRobotHUD",
+                                                "JournalDialGame",
+                                                "JournalDialHUD"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

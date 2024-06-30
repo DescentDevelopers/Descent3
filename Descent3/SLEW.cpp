@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -317,7 +317,8 @@ int SlewFrame(object *obj, int movement_limitations) {
   obj->mtype.phys_info.velocity.y += VEL_SPEED * (key_timey1 - key_timey0) * Slew_key_speed;
   obj->mtype.phys_info.velocity.z += VEL_SPEED * (key_timez1 - key_timez0) * Slew_key_speed;
 
-  // mprintf(0,"<%x %x %x>",obj->mtype.phys_info.velocity.x,obj->mtype.phys_info.velocity.y,obj->mtype.phys_info.velocity.z));
+  // mprintf(0,"<%x %x
+  // %x>",obj->mtype.phys_info.velocity.x,obj->mtype.phys_info.velocity.y,obj->mtype.phys_info.velocity.z));
 
   rottime.x = key_timep1 - key_timep0;
   rottime.y = key_timeh1 - key_timeh0;

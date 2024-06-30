@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1319,8 +1319,8 @@ bool TelComMainMenu(tTelComInfo *tcs) {
             // we found our system
             tcs->current_status = MMButtons[i].system;
           } // endif
-        }   // endfor
-      }     // endif
+        } // endfor
+      } // endif
     }
 
     // Process all waiting events for the TelCom	(we may only want to handle this once a frame!)
@@ -1836,7 +1836,7 @@ void TelcomDisplayCorners(void) {
 
 const char *hilites[] = {"hilite0", "hilite1", "hilite2", "hilite3", "hilite4", "hilite5", NULL};
 const char *smhilites[] = {"smhilite01", "smhilite11", "smhilite21", "smhilite31", "smhilite41",
-                     "smhilite51", "smhilite61", "smhilite71", NULL};
+                           "smhilite51", "smhilite61", "smhilite71", NULL};
 
 /*
 $$TABLE_TEXTURE "hilite0"
@@ -3277,7 +3277,7 @@ struct TCSound {
 TCSound TelcomSounds[TCSND_SOUNDCOUNT];
 
 const char *TCSoundFiles[] = {"Briefstartup1", "BriefStatic",  "Briefmonitoroff1", "Briefingrunning",
-                        "Briefbulb1",    "Briefingtype", "Menu Slider Click"};
+                              "Briefbulb1",    "Briefingtype", "Menu Slider Click"};
 
 /*
 $$TABLE_SOUND "Briefstartup1"

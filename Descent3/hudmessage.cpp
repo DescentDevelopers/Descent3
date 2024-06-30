@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -793,7 +793,7 @@ const char *GetMessageDestination(const char *message, int *destination) {
             }
           }
         } // end if
-      }   // end for
+      } // end for
 
       if (to_who < 0 && possible_match != -1) {
         to_who = possible_match;
@@ -1361,7 +1361,8 @@ void StartPersistentHUDMessage(ddgr_color color, int x, int y, float time, int f
   if (flags & HPF_FREESPACE_DRAW) {
 
     // Create additional hud item for leading character
-    static char single_char[2] = { 'a', '\0' }; ; // single-character string
+    static char single_char[2] = {'a', '\0'};
+    ; // single-character string
     huditem.alpha = 255;
     huditem.data.text = single_char;
     huditem.saturation_count = 2;

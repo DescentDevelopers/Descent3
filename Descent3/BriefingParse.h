@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -62,20 +62,20 @@
 #define PBERR_NOERR 0
 
 struct tBriefParseCallbacks {
-  void (*AddTextEffect)(TCTEXTDESC* desc, char *text, char *description, int id);
-  void (*AddBmpEffect)(TCBMPDESC* desc, char *description);
-  void (*AddMovieEffect)(TCMOVIEDESC* desc, char *description);
-  void (*AddBkgEffect)(TCBKGDESC* desc, char *description);
-  void (*AddPolyEffect)(TCPOLYDESC* desc, char *description);
-  void (*AddSoundEffect)(TCSNDDESC* desc, char *description);
-  void (*AddButtonEffect)(TCBUTTONDESC* desc, char *description, int id);
+  void (*AddTextEffect)(TCTEXTDESC *desc, char *text, char *description, int id);
+  void (*AddBmpEffect)(TCBMPDESC *desc, char *description);
+  void (*AddMovieEffect)(TCMOVIEDESC *desc, char *description);
+  void (*AddBkgEffect)(TCBKGDESC *desc, char *description);
+  void (*AddPolyEffect)(TCPOLYDESC *desc, char *description);
+  void (*AddSoundEffect)(TCSNDDESC *desc, char *description);
+  void (*AddButtonEffect)(TCBUTTONDESC *desc, char *description, int id);
   void (*StartScreen)(int screen_num, char *description, char *layout, uint32_t mask_set, uint32_t mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();
   void (*SetTitle)(char *title);
   void (*SetStatic)(float amount);
   void (*SetGlitch)(float amount);
-  void (*AddVoice)(char *filename, int flags,char *description);
+  void (*AddVoice)(char *filename, int flags, char *description);
 };
 
 struct tTextBufferDesc {
@@ -93,13 +93,13 @@ public:
   int ParseBriefing(const char *filename);
 
 private:
-  void (*AddTextEffect)(TCTEXTDESC* desc, char *text, char *description, int id);
-  void (*AddBmpEffect)(TCBMPDESC* desc, char *description);
-  void (*AddMovieEffect)(TCMOVIEDESC* desc, char *description);
-  void (*AddBkgEffect)(TCBKGDESC* desc, char *description);
-  void (*AddPolyEffect)(TCPOLYDESC* desc, char *description);
-  void (*AddSoundEffect)(TCSNDDESC* desc, char *description);
-  void (*AddButtonEffect)(TCBUTTONDESC* desc, char *description, int id);
+  void (*AddTextEffect)(TCTEXTDESC *desc, char *text, char *description, int id);
+  void (*AddBmpEffect)(TCBMPDESC *desc, char *description);
+  void (*AddMovieEffect)(TCMOVIEDESC *desc, char *description);
+  void (*AddBkgEffect)(TCBKGDESC *desc, char *description);
+  void (*AddPolyEffect)(TCPOLYDESC *desc, char *description);
+  void (*AddSoundEffect)(TCSNDDESC *desc, char *description);
+  void (*AddButtonEffect)(TCBUTTONDESC *desc, char *description, int id);
   void (*StartScreen)(int screen_num, char *desc, char *layout, uint32_t mask_set, uint32_t mask_unset);
   void (*EndScreen)();
   bool (*LoopCallback)();

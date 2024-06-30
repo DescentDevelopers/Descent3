@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -615,8 +615,8 @@ int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 9
 const char *Room_names[NUM_ROOM_NAMES] = {"TerrainAccessRoom",  "LeftConsoleRoom",    "RightConsoleRoom",
-                                    "RingEntranceRight",  "RingEntranceLeft",   "EscapeTubeExit",
-                                    "PrimaryObjectiveRo", "FireSphereRoomUppe", "FireSphereRoomLowe"};
+                                          "RingEntranceRight",  "RingEntranceLeft",   "EscapeTubeExit",
+                                          "PrimaryObjectiveRo", "FireSphereRoomUppe", "FireSphereRoomLowe"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 14
@@ -630,14 +630,14 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 12
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSirenBRedAcrop", "AmbDroneHollow", "AmbDroneHallway", "AmbDroneO",
-                                      "AmbDroneX",         "AmbDroneU",      "AmbDroneL",       "AmbDroneS",
-                                      "Indoor Ambient 5",  "AmbDroneN",      "AmbDroneE",       "AmbDroneM"};
+                                            "AmbDroneX",         "AmbDroneU",      "AmbDroneL",       "AmbDroneS",
+                                            "Indoor Ambient 5",  "AmbDroneN",      "AmbDroneE",       "AmbDroneM"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 11
 const char *Texture_names[NUM_TEXTURE_NAMES] = {"DataScroll",  "DataCED",     "DataBoss",  "DataPlogo",
-                                          "DataDrav",    "DataLab",     "DataCrash", "DataSwit",
-                                          "DataSecAlrt", "DataClasLog", "DataMatDef"};
+                                                "DataDrav",    "DataLab",     "DataCrash", "DataSwit",
+                                                "DataSecAlrt", "DataClasLog", "DataMatDef"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 4
@@ -650,37 +650,37 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 6
 const char *Goal_names[NUM_GOAL_NAMES] = {"Deactivate the Containment Forcefield",
-                                    "Get the Restricted Access Passkey",
-                                    "Access the Mainframe",
-                                    "Find Data on Sweitzer's Location",
-                                    "Escape the Facility",
-                                    "Find the Main Data Retention Complex"};
+                                          "Get the Restricted Access Passkey",
+                                          "Access the Mainframe",
+                                          "Find Data on Sweitzer's Location",
+                                          "Escape the Facility",
+                                          "Find the Main Data Retention Complex"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 23
 const char *Message_names[NUM_MESSAGE_NAMES] = {"FirstForcefield",
-                                          "ClassifiedAccessPass",
-                                          "LeftConsoleSwitch",
-                                          "RightConsoleSwitch",
-                                          "PrimaryLoginSwitch",
-                                          "EndLevel",
-                                          "AccessDenied",
-                                          "CEDData",
-                                          "ShipMessageLog",
-                                          "BossData",
-                                          "PTMCdisconnected",
-                                          "DravisData",
-                                          "SRADLabData",
-                                          "ConsoleCrash",
-                                          "SweitzerData",
-                                          "SecurityAlert",
-                                          "LockDown",
-                                          "MDData",
-                                          "EmergencySwitchOpen",
-                                          "EmergencySwitch",
-                                          "SingleFireSwitch",
-                                          "BothFireSwitches",
-                                          "IntroMessage"};
+                                                "ClassifiedAccessPass",
+                                                "LeftConsoleSwitch",
+                                                "RightConsoleSwitch",
+                                                "PrimaryLoginSwitch",
+                                                "EndLevel",
+                                                "AccessDenied",
+                                                "CEDData",
+                                                "ShipMessageLog",
+                                                "BossData",
+                                                "PTMCdisconnected",
+                                                "DravisData",
+                                                "SRADLabData",
+                                                "ConsoleCrash",
+                                                "SweitzerData",
+                                                "SecurityAlert",
+                                                "LockDown",
+                                                "MDData",
+                                                "EmergencySwitchOpen",
+                                                "EmergencySwitch",
+                                                "SingleFireSwitch",
+                                                "BothFireSwitches",
+                                                "IntroMessage"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef DLLWRAPPERS_H_
 #define DLLWRAPPERS_H_
@@ -43,7 +43,8 @@ bool InvCheckItem(int playernum, int type, int id);
 // adds an object to a player inventory
 bool InvAdd(int playernum, object *obj, bool remove = true);
 // adds a type/id to a player inventory
-bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0, const char *description = NULL);
+bool InvAddTypeID(int playernum, int type, int id, int aux_type = -1, int aux_id = -1, int flags = 0,
+                  const char *description = NULL);
 // removes a type/id from a players inventory
 bool InvRemove(int playernum, int type, int id);
 // returns how many of a type/id a player has in his inventory

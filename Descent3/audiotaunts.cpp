@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <string.h>
 #include <stdlib.h>
@@ -499,8 +499,8 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
   wave->sample_length = 0;
 
   cfptr = NULL;
-  char format_type[80];       // ASCII name of format type
-  uint16_t fmttag = 0;  // Numerical format type
+  char format_type[80];  // ASCII name of format type
+  uint16_t fmttag = 0;   // Numerical format type
   uint32_t ckid;         // Current chunk's ID
   uint32_t cksize;       // Current chunk's size in bytes
   uint32_t filesize;     // Size of the sound file
@@ -646,8 +646,8 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
       // Currently, we only support PCM wave files
       if (fmttag != 0x0001) {
         error_code = 6;
-        mprintf(0, "TAUNT Wav Load: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.\n",
-                filename,format_type);
+        mprintf(0, "TAUNT Wav Load: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.\n", filename,
+                format_type);
         goto error_state;
       }
 
@@ -655,8 +655,8 @@ char taunt_LoadWaveFile(char *filename, tWaveFile *wave) {
       number_channels = cf_ReadShort(cfptr);
       if (number_channels != 1) {
         error_code = 7;
-        mprintf(0, "TAUNT Wav Load: Invalid number of channels(%d)in %s, we want mono samples only.\n",
-                number_channels, filename);
+        mprintf(0, "TAUNT Wav Load: Invalid number of channels(%d)in %s, we want mono samples only.\n", number_channels,
+                filename);
         goto error_state;
       }
 

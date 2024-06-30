@@ -991,8 +991,8 @@ struct tOSIRISModuleInit {
                            // DO NOT ALTER THE STRING IT POINTS TO.
 
   uint32_t game_checksum; // Checksum of game structures, if this doesn't match
-                      // the checksum at compile time, it is very likely that
-                      // bad things can happen, and this module shouldn't initialize.
+                          // the checksum at compile time, it is very likely that
+                          // bad things can happen, and this module shouldn't initialize.
 
 }; // contains the necessary data to initialize
 
@@ -1002,8 +1002,7 @@ struct tOSIRISEVTINTERVAL {
   float game_time;
 }; // struct for EVT_INTERVAL data
 
-struct tOSIRISIEVTAIFRAME {
-}; // struct for EVT_AI_FRAME data
+struct tOSIRISIEVTAIFRAME {}; // struct for EVT_AI_FRAME data
 
 struct tOSIRISEVTDAMAGED {
   float damage;
@@ -1016,12 +1015,11 @@ struct tOSIRISEVTCOLLIDE {
   int it_handle;
 }; // struct for EVT_COLLIDE data
 
-struct tOSIRISEVTCREATED {
-}; // struct for EVT_CREATED data
+struct tOSIRISEVTCREATED {}; // struct for EVT_CREATED data
 
 struct tOSIRISEVTDESTROY {
-  uint8_t is_dying;    // if this is !=0 than the event is coming because it is
-                     // really being destroyed.  Else it is due to the level ending.
+  uint8_t is_dying; // if this is !=0 than the event is coming because it is
+                    // really being destroyed.  Else it is due to the level ending.
 }; // struct for EVT_DESTROY data
 
 struct tOSIRISEVTTIMER {
@@ -1052,14 +1050,11 @@ struct tOSIRISEVTAINOTIFY {
   };
 }; // struct for EVT_AI_NOTIFY data
 
-struct tOSIRISEVTAIINIT {
-}; // struct for EVT_AI_INIT data
+struct tOSIRISEVTAIINIT {}; // struct for EVT_AI_INIT data
 
-struct tOSIRISEVTLEVELSTART {
-}; // struct for EVT_LEVELSTART data
+struct tOSIRISEVTLEVELSTART {}; // struct for EVT_LEVELSTART data
 
-struct tOSIRISEVTLEVELEND {
-}; // struct for EVT_LEVELEND data
+struct tOSIRISEVTLEVELEND {}; // struct for EVT_LEVELEND data
 
 struct tOSIRISEVTCHANGESEG {
   int room_num;
@@ -1084,11 +1079,9 @@ struct tOSIRISEVTMATCENCREATE {
   int id;
 }; // struct for EVT_MATCEN_CREATE data
 
-struct tOSIRISEVTDOORACTIVATE {
-}; // struct for EVT_DOOR_ACTIVATE data
+struct tOSIRISEVTDOORACTIVATE {}; // struct for EVT_DOOR_ACTIVATE data
 
-struct tOSIRISEVTDOORCLOSE {
-}; // struct for EVT_DOOR_CLOSE data
+struct tOSIRISEVTDOORCLOSE {}; // struct for EVT_DOOR_CLOSE data
 
 struct tOSIRISEVTLEVELGOALCOMPLETE {
   int level_goal_index;
@@ -1098,14 +1091,11 @@ struct tOSIRISEVTLEVELGOALITEMCOMPLETE {
   int level_goal_index;
 };
 
-struct tOSIRISEVTALLLEVELGOALSCOMPLETE {
-};
+struct tOSIRISEVTALLLEVELGOALSCOMPLETE {};
 
-struct tOSIRISEVTPLAYERMOVIESTART {
-};
+struct tOSIRISEVTPLAYERMOVIESTART {};
 
-struct tOSIRISEVTPLAYERMOVIEEND {
-};
+struct tOSIRISEVTPLAYERMOVIEEND {};
 
 struct tOSIRISEVTPLAYERRESPAWN {
   int it_handle; // player respawning
@@ -1162,7 +1152,7 @@ struct tOSIRISEventInfo {
   int me_handle;
   void *extra_info;
 }; // contains the necessary data for all events
-                    // to pass what they need to their event handlers.
+   // to pass what they need to their event handlers.
 
 #define OTF_REPEATER 0x0001 // this timer is to repeat repeat_count times
 #define OTF_TRIGGER 0x0002  // this timer is for a trigger, use trigger_number
@@ -1312,7 +1302,6 @@ struct msafe_struct {
 
   // Second message
   char message2[MSAFE_MESSAGE_LENGTH];
-
 };
 
 struct ray_info {

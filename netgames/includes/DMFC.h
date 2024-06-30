@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -331,7 +331,7 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
+    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                           \
     if (DLLDebugBreak_callback_stop)                                                                                   \
       DLLDebugBreak_callback_stop();                                                                                   \
     debug_break();                                                                                                     \
@@ -377,7 +377,7 @@
 #endif
 #define Int3()                                                                                                         \
   do {                                                                                                                 \
-    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                         \
+    mprintf(0, "Int3 at %s line %d.\n", __FILE__, __LINE__);                                                           \
     DEBUG_BREAK();                                                                                                     \
   } while (0)
 #define HEAPCHECK()
@@ -564,7 +564,7 @@ struct player_record {
   void *user_info;          // Multiplayer Mod user defined struct pointer
   int user_info_size;       // Size of user_info;
 
-  int8_t team;   // The player's team (for when they reconnect)
+  int8_t team;  // The player's team (for when they reconnect)
   PInfo *pinfo; // Pointer to player info (who killed whom)
 };
 
@@ -575,7 +575,7 @@ struct player_record {
 
 #define MAX_COLUMN_TITLE_SIZE 15
 
-enum tColumnType{
+enum tColumnType {
   DSCOL_KILLS_LEVEL,
   DSCOL_KILLS_OVERALL,
   DSCOL_KILLS_BOTH,

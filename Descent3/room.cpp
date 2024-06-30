@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -468,7 +468,7 @@ int CountRoomFaceVerts(room *rp) {
 // Vars for the room memory system
 uint8_t *Room_mem_buf = NULL; // pointer to the rooms block of memory
 uint8_t *Room_mem_ptr = NULL; // pointer to free memory in the rooms block
-int Room_mem_size;          // How big our chunk is
+int Room_mem_size;            // How big our chunk is
 
 // Closes down the room memory system.
 void RoomMemClose() {
@@ -835,10 +835,7 @@ bool ComputeNormal(vector *normal, int num_verts, short *vertnum_list, vector *v
   }
 
   if (largest_mag < MIN_NORMAL_MAG) {
-    mprintf(1, "Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f\n",
-            largest_mag,
-            normal->x,
-            normal->y,
+    mprintf(1, "Warning: Normal has low precision. mag = %f, norm =  %f,%f,%f\n", largest_mag, normal->x, normal->y,
             normal->z);
     return 0;
   } else
@@ -1244,9 +1241,10 @@ bool ChangeRoomFaceTexture(int room_num, int face_num, int texture) {
   room *rp = &Rooms[room_num];
 
   if (face_num < 0 || face_num >= rp->num_faces) {
-    mprintf(0, "Invalid face number passed to ChangeRoomFaceTexture."
-               "  Room=%d, you gave face #%d, there are only %d in the room\n",
-             room_num, face_num, rp->num_faces);
+    mprintf(0,
+            "Invalid face number passed to ChangeRoomFaceTexture."
+            "  Room=%d, you gave face #%d, there are only %d in the room\n",
+            room_num, face_num, rp->num_faces);
     Int3();
     return false;
   }

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ IIIIIIIII N       N P      OOOO  R   R    T    A    A NN   NN    T
 #define PLTR_TOO_NEW 6       // pilot file too new
 
 struct tMissionData {
-  uint8_t highest_level;            // highlest level completed in the mission
+  uint8_t highest_level;          // highlest level completed in the mission
   int ship_permissions;           // Ship permissions at highest level achieved
   bool finished;                  // was mission finished? (different than highest level,btw)
   char mission_name[MSN_NAMELEN]; // name of the mission (from the mission file)
@@ -208,8 +208,8 @@ public:
   void set_ship(const char *ship);
   void get_ship(char *ship);
 
-  void set_multiplayer_data(const char *logo = NULL, const char *audio1 = NULL, const char *audio2 = NULL, const uint16_t *ppic = NULL,
-                            const char *audio3 = NULL, const char *audio4 = NULL);
+  void set_multiplayer_data(const char *logo = NULL, const char *audio1 = NULL, const char *audio2 = NULL,
+                            const uint16_t *ppic = NULL, const char *audio3 = NULL, const char *audio4 = NULL);
   void get_multiplayer_data(char *logo = NULL, char *audio1 = NULL, char *audio2 = NULL, uint16_t *ppic = NULL,
                             char *audio3 = NULL, char *audio4 = NULL);
 

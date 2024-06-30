@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1152,84 +1152,84 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 79
 const char *Object_names[NUM_OBJECT_NAMES] = {"TeleporterA1",
-                                        "TeleporterA2",
-                                        "TeleporterB1",
-                                        "TeleporterC1",
-                                        "TeleporterC2",
-                                        "EscapeTrigger",
-                                        "Maw1",
-                                        "Maw2",
-                                        "Maw3",
-                                        "Maw4",
-                                        "Maw5",
-                                        "WallShuttle",
-                                        "DataArm1",
-                                        "DataArm2",
-                                        "BossMinion1",
-                                        "BossMinion2",
-                                        "Greenbot1",
-                                        "Greenbot2",
-                                        "SharkAmbush1",
-                                        "Greenbot3",
-                                        "Greenbot4",
-                                        "Greenbot5",
-                                        "Greenbot6",
-                                        "Greenbot7",
-                                        "Greenbot8",
-                                        "Greenbot9",
-                                        "Greenbot10",
-                                        "Greenbot11",
-                                        "Greenbot12",
-                                        "Greenbot13",
-                                        "Greenbot14",
-                                        "Greenbot15",
-                                        "Greenbot16",
-                                        "Greenbot17",
-                                        "Greenbot18",
-                                        "Greenbot19",
-                                        "BossDeathCamTarget",
-                                        "AlienBoss",
-                                        "AlienBossNest",
-                                        "AirlockDoorSwitch",
-                                        "AirlockOuterDoor",
-                                        "AirlockOuterCam1",
-                                        "AirlockOuterCam2",
-                                        "AirlockInnerDoor",
-                                        "AirlockInnerCam1",
-                                        "AirlockInnerCam2",
-                                        "AirlockSound",
-                                        "TeleporterA1Dest",
-                                        "TeleporterA1Cam2",
-                                        "TeleporterA2Cam2",
-                                        "TeleporterA2Dest",
-                                        "TeleporterC1Dest",
-                                        "TeleporterC2Dest",
-                                        "TeleporterA1Cam",
-                                        "TeleporterA2Cam",
-                                        "DoorWon'tOpenFar",
-                                        "BadDoorCam1",
-                                        "BadDoorCam2",
-                                        "CruiserFuse",
-                                        "FusePosition",
-                                        "FuseBeamB",
-                                        "FuseBeamA",
-                                        "ThrusterSwitch",
-                                        "ThrusterCam",
-                                        "Cocoon1Ambusher1",
-                                        "Ambush1HuntDest",
-                                        "Cocoon1Ambusher2",
-                                        "Cocoon1Ambusher3",
-                                        "Cocoon2Ambusher1",
-                                        "AlienAmbush1",
-                                        "AlienAmbush2A",
-                                        "AlienAmbush2B",
-                                        "AlienBossPosition",
-                                        "RoomASteamer1",
-                                        "RoomASteamer2",
-                                        "RoomBSteamer",
-                                        "RoomCSteamer",
-                                        "RoomDSteamer",
-                                        "RoomESteamer"};
+                                              "TeleporterA2",
+                                              "TeleporterB1",
+                                              "TeleporterC1",
+                                              "TeleporterC2",
+                                              "EscapeTrigger",
+                                              "Maw1",
+                                              "Maw2",
+                                              "Maw3",
+                                              "Maw4",
+                                              "Maw5",
+                                              "WallShuttle",
+                                              "DataArm1",
+                                              "DataArm2",
+                                              "BossMinion1",
+                                              "BossMinion2",
+                                              "Greenbot1",
+                                              "Greenbot2",
+                                              "SharkAmbush1",
+                                              "Greenbot3",
+                                              "Greenbot4",
+                                              "Greenbot5",
+                                              "Greenbot6",
+                                              "Greenbot7",
+                                              "Greenbot8",
+                                              "Greenbot9",
+                                              "Greenbot10",
+                                              "Greenbot11",
+                                              "Greenbot12",
+                                              "Greenbot13",
+                                              "Greenbot14",
+                                              "Greenbot15",
+                                              "Greenbot16",
+                                              "Greenbot17",
+                                              "Greenbot18",
+                                              "Greenbot19",
+                                              "BossDeathCamTarget",
+                                              "AlienBoss",
+                                              "AlienBossNest",
+                                              "AirlockDoorSwitch",
+                                              "AirlockOuterDoor",
+                                              "AirlockOuterCam1",
+                                              "AirlockOuterCam2",
+                                              "AirlockInnerDoor",
+                                              "AirlockInnerCam1",
+                                              "AirlockInnerCam2",
+                                              "AirlockSound",
+                                              "TeleporterA1Dest",
+                                              "TeleporterA1Cam2",
+                                              "TeleporterA2Cam2",
+                                              "TeleporterA2Dest",
+                                              "TeleporterC1Dest",
+                                              "TeleporterC2Dest",
+                                              "TeleporterA1Cam",
+                                              "TeleporterA2Cam",
+                                              "DoorWon'tOpenFar",
+                                              "BadDoorCam1",
+                                              "BadDoorCam2",
+                                              "CruiserFuse",
+                                              "FusePosition",
+                                              "FuseBeamB",
+                                              "FuseBeamA",
+                                              "ThrusterSwitch",
+                                              "ThrusterCam",
+                                              "Cocoon1Ambusher1",
+                                              "Ambush1HuntDest",
+                                              "Cocoon1Ambusher2",
+                                              "Cocoon1Ambusher3",
+                                              "Cocoon2Ambusher1",
+                                              "AlienAmbush1",
+                                              "AlienAmbush2A",
+                                              "AlienAmbush2B",
+                                              "AlienBossPosition",
+                                              "RoomASteamer1",
+                                              "RoomASteamer2",
+                                              "RoomBSteamer",
+                                              "RoomCSteamer",
+                                              "RoomDSteamer",
+                                              "RoomESteamer"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 31
@@ -1256,18 +1256,19 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 16
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch41",   "EnvSteamEmitG",  "DoorIsLocked",  "EnvSlowCreakD",
-                                      "EnvSlowCreakE", "Merc4Vortex",    "Wall fade ???", "AmbMatCenProduce",
-                                      "EnvElectricE",  "Powerup pickup", "EnvElectricA",  "AmbSwitch31",
-                                      "Merc4Thruster", "Merc4BossDeath", "Merc4Rumble",   "AmbSwitch11"};
+                                            "EnvSlowCreakE", "Merc4Vortex",    "Wall fade ???", "AmbMatCenProduce",
+                                            "EnvElectricE",  "Powerup pickup", "EnvElectricA",  "AmbSwitch31",
+                                            "Merc4Thruster", "Merc4BossDeath", "Merc4Rumble",   "AmbSwitch11"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 4
-const char *Texture_names[NUM_TEXTURE_NAMES] = {"CC_JetEngine", "Alien_Forcefield02", "FunkyEffect3", "CC_JetEngineLit"};
+const char *Texture_names[NUM_TEXTURE_NAMES] = {"CC_JetEngine", "Alien_Forcefield02", "FunkyEffect3",
+                                                "CC_JetEngineLit"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 7
 const char *Path_names[NUM_PATH_NAMES] = {"IntroCamPath",   "IntroPlayerPath", "BossDeathCam", "BossDeathPath",
-                                    "Escape2CamPath", "EscapePath2",     "BossIntroCam2"};
+                                          "Escape2CamPath", "EscapePath2",     "BossIntroCam2"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 0
@@ -1276,51 +1277,51 @@ int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 13
 const char *Goal_names[NUM_GOAL_NAMES] = {"Engage Airlock Power",
-                                    "Enter Outer Shell through Airlock",
-                                    "Teleport into Planetoid's Core",
-                                    "Disable Alien Forcefield Generators",
-                                    "Enter Sealed Quadrant of Alien Hive",
-                                    "Activate Main Thruster",
-                                    "Acquire Spare Fuse",
-                                    "Restore Power to Derelict Ship",
-                                    "Force Alien Queen to Nest",
-                                    "Manually Ignite Thruster Burn",
-                                    "Destroy Alien Planetoid",
-                                    "Escape",
-                                    "Investigate and Destroy Alien Planetoid"};
+                                          "Enter Outer Shell through Airlock",
+                                          "Teleport into Planetoid's Core",
+                                          "Disable Alien Forcefield Generators",
+                                          "Enter Sealed Quadrant of Alien Hive",
+                                          "Activate Main Thruster",
+                                          "Acquire Spare Fuse",
+                                          "Restore Power to Derelict Ship",
+                                          "Force Alien Queen to Nest",
+                                          "Manually Ignite Thruster Burn",
+                                          "Destroy Alien Planetoid",
+                                          "Escape",
+                                          "Investigate and Destroy Alien Planetoid"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 30
 const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
-                                          "AirlockPowerOn",
-                                          "AirlockDecompStarted",
-                                          "AirlockActive",
-                                          "AirlockPowerNotOn",
-                                          "AirlockCompStarted",
-                                          "AirlockMalfunction",
-                                          "BadDoorBumped",
-                                          "FFMessage",
-                                          "UseThruster",
-                                          "CruiserFuseAcquired",
-                                          "CruiserFusePlaced",
-                                          "CruiserFuseNoUse",
-                                          "QueenLeft",
-                                          "NoBurnIgnited",
-                                          "NoPowerAvail",
-                                          "IgniterFailed1",
-                                          "IgniterFailed2",
-                                          "BurnIgnited",
-                                          "ThrusterBurnFailed",
-                                          "RechargeThruster1",
-                                          "RechargeThruster2",
-                                          "Empty",
-                                          "GetOuttaHere",
-                                          "FuseRoom",
-                                          "BossIntro",
-                                          "DA1Game",
-                                          "DA1Hud",
-                                          "DA2Game",
-                                          "DA2Hud"};
+                                                "AirlockPowerOn",
+                                                "AirlockDecompStarted",
+                                                "AirlockActive",
+                                                "AirlockPowerNotOn",
+                                                "AirlockCompStarted",
+                                                "AirlockMalfunction",
+                                                "BadDoorBumped",
+                                                "FFMessage",
+                                                "UseThruster",
+                                                "CruiserFuseAcquired",
+                                                "CruiserFusePlaced",
+                                                "CruiserFuseNoUse",
+                                                "QueenLeft",
+                                                "NoBurnIgnited",
+                                                "NoPowerAvail",
+                                                "IgniterFailed1",
+                                                "IgniterFailed2",
+                                                "BurnIgnited",
+                                                "ThrusterBurnFailed",
+                                                "RechargeThruster1",
+                                                "RechargeThruster2",
+                                                "Empty",
+                                                "GetOuttaHere",
+                                                "FuseRoom",
+                                                "BossIntro",
+                                                "DA1Game",
+                                                "DA1Hud",
+                                                "DA2Game",
+                                                "DA2Hud"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

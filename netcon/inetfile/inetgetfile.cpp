@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -73,7 +73,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 // include inetgetfile.h before CFtp.h and Chttpget.h because it has some winsock defines
 // to make Linux happy

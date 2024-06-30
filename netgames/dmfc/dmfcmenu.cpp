@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -133,7 +133,6 @@
 #include "DMFC.h"
 #include "gamedll_header.h"
 #include "dmfcinternal.h"
-
 
 #include <algorithm>
 
@@ -1038,9 +1037,7 @@ void BalanceTeams(int i) {
     ShouldHave[i]++;
 
   for (i = 0; i < MAX_TEAMS; i++) {
-    mprintf(0, "%s team should have %d players and has %d now\n",
-            basethis->GetTeamString(i),
-            ShouldHave[i],
+    mprintf(0, "%s team should have %d players and has %d now\n", basethis->GetTeamString(i), ShouldHave[i],
             TeamCount[i]);
   }
 
@@ -1070,21 +1067,21 @@ void BalanceTeams(int i) {
                 lowseniority = basethis->Players[pn].time_in_game;
               }
             } // end if
-          }   // end for
+          } // end for
           if (lowpn != -1) {
             TeamCount[j]--;
             break;
           }
 
         } // end if
-      }   // end for
+      } // end for
       if (lowpn != -1) {
         // Change this player to the new team
         TeamCount[i]++;
         basethis->RequestTeamChange(i, lowpn, true);
       }
     } // end while
-  }   // end for
+  } // end for
 }
 // Server Only.  Switches AutoTeamSelect On/Off
 void SwitchAutoTeamSelect(int i) {

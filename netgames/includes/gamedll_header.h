@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef GAMEDLL_HEADER_H
 #define GAMEDLL_HEADER_H
@@ -120,7 +120,6 @@ struct tDLLOptions {
   // the mission needs to support in order for it to be playable with the game.
   // this parameter must be set (even it is just a '\0' for the first character..aka no requirements)
   char requirements[MAX_REQUIREMENT_LEN];
-
 };
 
 struct game_api {
@@ -173,9 +172,10 @@ typedef int (*GetGoalRoomForTeam_fp)(int teamnum);
 DMFCDLLOUT(GetGoalRoomForTeam_fp DLLGetGoalRoomForTeam;)
 
 // ObjCreate without writing data to demo
-// typedef int( *ObjCreate_fp ) (uint8_t type,uint16_t id,int roomnum,vector *pos,const matrix *orient,int parent_handle =
-// OBJECT_HANDLE_NONE);
-typedef int (*ObjCreate_fp)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
+// typedef int( *ObjCreate_fp ) (uint8_t type,uint16_t id,int roomnum,vector *pos,const matrix *orient,int parent_handle
+// = OBJECT_HANDLE_NONE);
+typedef int (*ObjCreate_fp)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient,
+                            int parent_handle);
 DMFCDLLOUT(ObjCreate_fp DLLObjCreate;)
 
 typedef int (*FindObjectIDName_fp)(const char *name);
@@ -198,8 +198,10 @@ DMFCDLLOUT(IncTeamScore_fp DLLIncTeamScore;)
 typedef bool (*InvCheckItem_fp)(int pnum, int type, int id);
 DMFCDLLOUT(InvCheckItem_fp DLLInvCheckItem;)
 
-// typedef bool( *InvAddTypeID_fp ) (int pnum, int type,int id,int aux_type=-1,int aux_id=-1,int flags=0,const char *description=NULL);
-typedef bool (*InvAddTypeID_fp)(int pnum, int type, int id, int aux_type, int aux_id, int flags, const char *description);
+// typedef bool( *InvAddTypeID_fp ) (int pnum, int type,int id,int aux_type=-1,int aux_id=-1,int flags=0,const char
+// *description=NULL);
+typedef bool (*InvAddTypeID_fp)(int pnum, int type, int id, int aux_type, int aux_id, int flags,
+                                const char *description);
 DMFCDLLOUT(InvAddTypeID_fp DLLInvAddTypeID;)
 
 typedef bool (*InvRemove_fp)(int pnum, int type, int id);
@@ -529,7 +531,8 @@ typedef void (*DestroyStringTable_fp)(char **table, int size);
 DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
 
 //	renders text, scaled, alphaed, saturated,
-typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
+typedef void (*RenderHUDTextFlags_fp)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y,
+                                      const char *fmt, ...);
 DMFCDLLOUT(RenderHUDTextFlags_fp DLLRenderHUDTextFlags;)
 
 // Sets the FOV range at which the hud names will come on

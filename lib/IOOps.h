@@ -35,7 +35,8 @@ static inline std::ostream &bin_write(std::ostream &output, T value, bool is_lit
 }
 
 template <class T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-static inline std::istream &bin_read(std::istream &input, T &value, bool is_little_endian = true, size_t n = sizeof(T)) {
+static inline std::istream &bin_read(std::istream &input, T &value, bool is_little_endian = true,
+                                     size_t n = sizeof(T)) {
   input.read(reinterpret_cast<char *>(&value), n);
   value = is_little_endian ? convert_le(value) : convert_be(value);
 

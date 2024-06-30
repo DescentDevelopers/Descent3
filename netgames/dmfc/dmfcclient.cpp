@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -447,7 +447,7 @@ void DMFCBase::OnClientPlayerEntersGame(int player_num) {
       // we have a reconnecting player
       if (!PRec_ReconnectPlayerToSlot(player_num, slot, Players, NetPlayers))
         mprintf(0, "Unable to reassign reconnecting player (%s) to Player Record slot #%d\n",
-                 Players[player_num].callsign, slot);
+                Players[player_num].callsign, slot);
       else
         mprintf(0, "Reconnected player (%s) to Player Record slot #%d\n", Players[player_num].callsign, slot);
       CallOnPlayerReconnect(player_num);

@@ -270,7 +270,7 @@ bool CombineRooms(room *base_rp, room *att_rp);
 // Creates a an external room and links the specified faces to it
 // Parameters:	rp - the room to connect to the new room
 //					nfaces - how many faces connect to the new room (this becomes the number of
-//portals) 					facenums - the list of faces to connect
+// portals) 					facenums - the list of faces to connect
 void LinkToExternalRoom(room *rp, int nfaces, int *facenums);
 
 // Deletes a point from a face

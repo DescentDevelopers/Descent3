@@ -23,7 +23,7 @@
 #include "pstring.h"
 
 TEST(D3, CleanupStr) {
-  std::vector<std::pair<const char*, const char*>> test_data = {
+  std::vector<std::pair<const char *, const char *>> test_data = {
       {"String with tails \t \n   ", "String with tails"},
       {" \t \n   String with heads", "String with heads"},
       {" \t \n String with heads and tails \t  \n ", "String with heads and tails"},

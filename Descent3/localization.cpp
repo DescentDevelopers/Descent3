@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -406,7 +406,7 @@ try_english:
       }
     } break;
     } // end switch
-  }   // end while
+  } // end while
 
   if (reading_string) {
     // we're at the end of the file and we're reading, so but it in the string table
@@ -539,7 +539,7 @@ int LoadStringFile(const char *filename, int starting_offset) {
       }
     } break;
     } // end switch
-  }   // end while
+  } // end while
 
   if (reading_string) {
     // we're at the end of the file and we're reading, so but it in the string table

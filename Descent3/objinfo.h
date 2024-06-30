@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -352,8 +352,8 @@
 // The number of ids of each type in the list
 extern int Num_object_ids[];
 
-extern const char * const Movement_class_names[];
-extern const char * const Anim_state_names[];
+extern const char *const Movement_class_names[];
+extern const char *const Anim_state_names[];
 
 // These defines must correspond to the Static_object_names array
 #define GENOBJ_GUIDEBOT 0 // NOTE: This must match ROBOT_GUIDEBOT
@@ -389,7 +389,7 @@ struct anim_elem {
 
 // Death info for an object type
 struct death_info {
-  uint32_t flags;      // death flags
+  uint32_t flags;  // death flags
   float delay_min; // if delay, min amount
   float delay_max; // if delay, max amount
 };
@@ -499,7 +499,7 @@ struct object_info {
   char script_name_override[PAGENAME_LEN];
 
   // Death information
-  death_info death_types[MAX_DEATH_TYPES];    // the ways this object can die
+  death_info death_types[MAX_DEATH_TYPES];      // the ways this object can die
   uint8_t death_probabilities[MAX_DEATH_TYPES]; // how likely each death is, from 0-100 (percent)
 
   // Valid for AI objects only
@@ -512,7 +512,6 @@ struct object_info {
   // Valid for polygon model objects only
   anim_elem *anim; // which anim states are active
   //	anim_elem		anim[NUM_MOVEMENT_CLASSES];	// which anim states are active
-
 };
 
 // The big array of object info

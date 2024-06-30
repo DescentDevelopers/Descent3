@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -249,9 +249,8 @@ int Debug_ErrorBox(int type, const char *title, const char *topstring, const cha
   else
     debug_break();
 
-  char *tmpbuf = (char *)mem_malloc(
-      strlen(dumptext) + strlen(topstring) + strlen(bottomstring) +
-                      10); // malloc(strlen(dumptext) + strlen(topstring) + strlen(bottomstring) + 10);
+  char *tmpbuf = (char *)mem_malloc(strlen(dumptext) + strlen(topstring) + strlen(bottomstring) +
+                                    10); // malloc(strlen(dumptext) + strlen(topstring) + strlen(bottomstring) + 10);
 
   strcpy(tmpbuf, topstring);
   if (dumptext[0]) {

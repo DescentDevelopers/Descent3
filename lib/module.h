@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -79,19 +79,19 @@
 #endif
 
 #ifdef _MSC_VER // MSVC Build
-# define STDCALL __stdcall
-# define STDCALLPTR *STDCALL
+#define STDCALL __stdcall
+#define STDCALLPTR *STDCALL
 #else // Non-MS compilers
-# if defined(__i386__) || defined(_X86_) || defined(__THW_INTEL__)
-#  define STDCALL __attribute__((stdcall))
-# else
-#  define STDCALL
-# endif
-# define STDCALLPTR STDCALL *
+#if defined(__i386__) || defined(_X86_) || defined(__THW_INTEL__)
+#define STDCALL __attribute__((stdcall))
+#else
+#define STDCALL
+#endif
+#define STDCALLPTR STDCALL *
 #endif
 
-# define DLLFUNCCALL STDCALL
-# define DLLFUNCCALLPTR STDCALLPTR
+#define DLLFUNCCALL STDCALL
+#define DLLFUNCCALLPTR STDCALLPTR
 
 #ifdef WIN32
 //=========================Windows Definition============================

@@ -49,8 +49,7 @@ public:
 
 int AcmReadFunc(void *ptr, int size, int n, void *datasrc) {
   InternalAudioDecoder *iad = reinterpret_cast<InternalAudioDecoder *>(datasrc);
-  int ret =
-      iad->m_readerFunction(iad->m_pReaderData, ptr, (uint32_t)size * n);
+  int ret = iad->m_readerFunction(iad->m_pReaderData, ptr, (uint32_t)size * n);
   // ret < 0: error, ret == 0: EOF, ret > 0: read ret bytes of data
   // apparently acm_io_callbacks::read() expects pretty much the same behavior,
   // except that for > 0 it's not number of bytes but number of items (like in
@@ -61,15 +60,14 @@ int AcmReadFunc(void *ptr, int size, int n, void *datasrc) {
   return ret;
 }
 
-InternalAudioDecoder::InternalAudioDecoder(ReadDataFunction readerFunction,
-                                           void *pReaderData)
+InternalAudioDecoder::InternalAudioDecoder(ReadDataFunction readerFunction, void *pReaderData)
     : m_readerFunction(readerFunction), m_pReaderData(pReaderData) {}
 
 // Initialize the decoder
 bool InternalAudioDecoder::Initialize() {
 
   // set the read function, the others are optional
-  acm_io_callbacks io = { AcmReadFunc };
+  acm_io_callbacks io = {AcmReadFunc};
 
   // force_channels 0 means libacm will use number of chans from ACM file header
   const int force_channels = 0;
@@ -127,14 +125,10 @@ uint32_t InternalAudioDecoder::Read(void *pBuffer, uint32_t amount) {
 // and also returns the number of channels (1 or 2), the sample rate
 // (e.g. 22050), and the number of samples contained in the compressed file
 // (in case you want to pre-allocate a buffer to load them all into memory).
-IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction,
-                                           void *pReaderData,
-                                           uint32_t &numChannels,
-                                           uint32_t &sampleRate,
-                                           uint32_t &sampleCount) {
+IAudioDecoder *AudioDecoder::CreateDecoder(ReadDataFunction readerFunction, void *pReaderData, uint32_t &numChannels,
+                                           uint32_t &sampleRate, uint32_t &sampleCount) {
   // allocate our decoder
-  InternalAudioDecoder *pDecoder =
-      new InternalAudioDecoder(readerFunction, pReaderData);
+  InternalAudioDecoder *pDecoder = new InternalAudioDecoder(readerFunction, pReaderData);
   if (pDecoder == nullptr)
     return nullptr;
 

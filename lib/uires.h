@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -108,9 +108,9 @@ public:
   virtual int width() { return 0; };
   virtual int height() { return 0; };
   virtual tUIResClass class_type() { return uiItem; };
-  virtual void set_alpha(uint8_t alpha){};
+  virtual void set_alpha(uint8_t alpha) {};
   virtual uint8_t get_alpha() const { return 0; };
-  virtual void set_color(ddgr_color col){};
+  virtual void set_color(ddgr_color col) {};
   virtual ddgr_color get_color() const { return GR_BLACK; };
   virtual UIItem *CopyUIItem() { return NULL; };
 };
@@ -122,7 +122,7 @@ public:
 class UITextItem : public UIItem {
   friend void SetUITextItemText(UITextItem *uit, char *newtext, uint32_t color);
 
-  uint8_t m_Alpha;      // alpha value of text.
+  uint8_t m_Alpha;    // alpha value of text.
   ddgr_color m_Color; // color of text.
   int m_Font;
 

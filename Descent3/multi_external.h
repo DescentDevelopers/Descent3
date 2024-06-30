@@ -179,13 +179,13 @@ struct netplayer {
   uint32_t total_bytes_sent;
   uint32_t total_bytes_rcvd;
   uint32_t secret_net_id;       //	We use this to determine who we are getting packets from
-  int file_xfer_flags;              // Are we sending,receiving, or neither
+  int file_xfer_flags;          // Are we sending,receiving, or neither
   uint32_t file_xfer_total_len; // Total length of the file we are receiving
   uint32_t file_xfer_pos;       // Position for sending and/or receiving
   uint32_t file_xfer_id;        // File id that we are sending
   uint32_t file_xfer_who;       // Who the file is for
-  CFILE *file_xfer_cfile;           // File handle for src/target file
-  uint16_t position_counter;          // for making sure we don't get position packets out of order
+  CFILE *file_xfer_cfile;       // File handle for src/target file
+  uint16_t position_counter;    // for making sure we don't get position packets out of order
   char ship_logo[_MAX_PATH];
   char voice_taunt1[_MAX_PATH];
   char voice_taunt2[_MAX_PATH];
@@ -194,8 +194,8 @@ struct netplayer {
   uint8_t custom_file_seq;
   uint8_t sequence; // where we are in the sequence chain
   uint8_t pps;
-  HANDLE hPlayerEvent;      // player event to use for directplay
-  DWORD dpidPlayer; // directplay ID of player created
+  HANDLE hPlayerEvent; // player event to use for directplay
+  DWORD dpidPlayer;    // directplay ID of player created
   float ping_time;
   float last_ping_time;
   uint16_t pilot_pic_id;
@@ -255,7 +255,7 @@ struct netgame_info {
 
   uint8_t local_role;
   uint8_t server_sequence;
-  float last_server_time;   // last time we got a packet from the server
+  float last_server_time;     // last time we got a packet from the server
   uint8_t packets_per_second; // how many packets per second we'll send out
   int flags;
   int timelimit; // how many minutes to play this level

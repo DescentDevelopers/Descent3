@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -166,8 +166,8 @@ void DemoWriteHudMessage(uint32_t color, bool blink, char *msg);
 
 void DemoWriteChangedObjects();
 
-void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
-                         uint16_t weapobjnum, int16_t gunnum);
+void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum, uint16_t weapobjnum,
+                         int16_t gunnum);
 
 void DemoWriteObjCreate(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                         object *obj);

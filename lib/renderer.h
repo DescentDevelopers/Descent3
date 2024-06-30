@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -452,7 +452,6 @@ struct rendering_state {
 
   int clip_x1, clip_x2, clip_y1, clip_y2;
   int screen_width, screen_height;
-
 };
 
 struct renderer_preferred_state {

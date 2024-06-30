@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -105,7 +105,8 @@ void menutga_LoadHotSpotMap(int back_bmp, const char *filename, hotspotmap_t *hs
 // This function (given a filename) loads a TGA file, extracts a hotspot map, and saves the hotspot map
 bool menutga_ConvertTGAtoHSM(const char *filename);
 
-void ExportHotSpot(const char *filename, hotspotmap_t *hsmap); // Exports a hotspotmap to an ASCII file, nice and readable
+void ExportHotSpot(const char *filename,
+                   hotspotmap_t *hsmap); // Exports a hotspotmap to an ASCII file, nice and readable
 void DisplayHotSpots(hotspotmap_t *hsmap,
                      windowmap_t *wndmap); // Displays the hotspots of the given hotspot map to the screen (in blue)
 void FreeHotSpotMapInternals(hotspotmap_t *hsmap); // Deletes allocated memory within a hotspotmap struct

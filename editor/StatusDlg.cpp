@@ -91,7 +91,8 @@ END_MESSAGE_MAP()
 // min/max: these are the range of the progress indicator
 // iterations: If you plan on using CProgress:IncreaseProgress() then this is how many times you plan on
 //				calling CProgress::IncreaseProgress().  If you are going to use
-//CProgress::SetProgressPercentage() 				then you should call the version of InitProgress(CWnd *parent) below.
+// CProgress::SetProgressPercentage() 				then you should call the version of InitProgress(CWnd
+// *parent) below.
 //  Returns true if the progress dialog was created
 bool CProgress::InitProgress(fix min, fix max, int32_t iterations, CWnd *parent) {
   int nmin, nmax, Step;

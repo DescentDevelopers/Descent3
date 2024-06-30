@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -241,37 +241,37 @@ OUTLINEM = Cycle outline modes
 // SOME FUN.
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const char *WeaponsCheat = "BH;URJH,"
-                     "8DS#";
+                           "8DS#";
 const char *CloakCheat = "L_QM[=^)"
-                   "@-:!(";
+                         "@-:!(";
 const char *KillRobotsCheat = "KMGKKG4D"
-                        "~";
+                              "~";
 const char *InvulnCheat = "BBG\\Q90L"
-                    "}FQC.>$";
+                          "}FQC.>$";
 const char *FrametimeCheat = ";;24E1)]"
-                       "==";
+                             "==";
 const char *CameraCheat = "X2OHN*2("
-                    "K<?@!";
+                          "K<?@!";
 const char *CoolTextures = "/Q/NGQ\\,"
-                     "%*HD@";
+                           "%*HD@";
 const char *SuicideCheat = "\\S3YGK=N"
-                     "&D+#";
+                           "&D+#";
 const char *LevelWarpCheat = "*JYO]9<G"
-                       "()()";
+                             "()()";
 const char *TeletubbiesCheat = "I@\\LQOKM"
-                         ":):/;)>:(";
+                               ":):/;)>:(";
 const char *FullmapCheat = "4V\\9EI:'"
-                     "\"#$NNW@";
+                           "\"#$NNW@";
 const char *OutlineModeCheat = "*HAFW1ZI"
-                         " (-'\"#";
+                               " (-'\"#";
 const char *PolygonCountCheat = "MMQ6TXHU"
-                          "hj@(x`";
+                                "hj@(x`";
 
 #ifdef USE_RTP
 const char *StartLogCheat = ";IT.*+E3"
-                      "%^VXKS;JKS"; // startrtlog
+                            "%^VXKS;JKS"; // startrtlog
 const char *StopLogCheat = "GE8FHH6*"
-                     "_=JJDK"; // stoprtlog
+                           "_=JJDK"; // stoprtlog
 #endif
 
 // these are cheat codes from the demo/oem carried over as they aren't cheats
@@ -639,7 +639,7 @@ void DemoCheats(int key) {
   if (!(memcmp(cryptstring, SuicideCheat, 8))) {
     //"ZOD Strikes Revenge"
     static uint8_t buffer[20] = {0x80, 0x95, 0x9E, 0xFA, 0x89, 0xAE, 0xA8, 0xB3, 0xB1, 0xBF,
-                               0xA9, 0xFA, 0x88, 0xBF, 0xAC, 0xBF, 0xB4, 0xBD, 0xBF, 0xDA};
+                                 0xA9, 0xFA, 0x88, 0xBF, 0xAC, 0xBF, 0xB4, 0xBD, 0xBF, 0xDA};
     char tb[20];
 
     for (int i = 0; i < 20; i++) {

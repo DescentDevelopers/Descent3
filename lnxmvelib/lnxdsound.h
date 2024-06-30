@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef __LNX_DSOUND_H_
 #define __LNX_DSOUND_H_
@@ -42,7 +42,7 @@
 #define LNXSND_CAPS_LOCSOFTWARE 0x0010
 
 struct LnxSoundDevice {
-  int sound_device;       // file device handle for sound
+  int sound_device;   // file device handle for sound
   uint32_t bps;       // (bytes per second) channels*freq*bit_depth/8
   uint32_t freq;      // frequency (22050, etc.)
   uint32_t bit_depth; // 8 or 16
@@ -71,28 +71,28 @@ struct LnxBufferDesc {
   uint32_t dwFlags;
 };
 
-struct LnxSoundBuffer
-  int freq_adjustment;
-  int bps;
-  uint32_t buffer_len;
-  uint32_t play_cursor;
-  uint32_t write_cursor;
-  uint32_t flags;
-  uint32_t left_vol, right_vol;
+struct LnxSoundBuffer int freq_adjustment;
+int bps;
+uint32_t buffer_len;
+uint32_t play_cursor;
+uint32_t write_cursor;
+uint32_t flags;
+uint32_t left_vol, right_vol;
 
-  uint8_t *buffer;
+uint8_t *buffer;
 
-  int32_t volume;
-  int32_t pan;
+int32_t volume;
+int32_t pan;
 
-  WAVEFORMATEX wfx;
+WAVEFORMATEX wfx;
 
-  LnxBufferDesc lbdesc;
+LnxBufferDesc lbdesc;
 
-  uint16_t freq;
-  char playing;
-  char __pad;
-};
+uint16_t freq;
+char playing;
+char __pad;
+}
+;
 
 ///////////////////////////////
 // LnxSound_CreateSoundBuffer
@@ -209,8 +209,8 @@ int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff, uint32_t pos);
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, uint32_t pos, uint32_t numbytes, void **ptr1,
-                        uint32_t *numbytes1, void **ptr2, uint32_t *numbytes2, uint32_t flags);
+int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1,
+                        void **ptr2, uint32_t *numbytes2, uint32_t flags);
 
 ///////////////////////////
 // LnxSoundBuffer_Unlock

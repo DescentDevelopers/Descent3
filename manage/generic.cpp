@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -2001,8 +2001,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
       int sound_handle = mng_GetGuaranteedSoundPage(genericpage->sound_name[i]);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load sound file '%s' in AssignPowPage %s...\n",
-                genericpage->sound_name[i],
+        mprintf(0, "Couldn't load sound file '%s' in AssignPowPage %s...\n", genericpage->sound_name[i],
                 genericpage->objinfo_struct.name);
         objinfopointer->sounds[i] = SOUND_NONE_INDEX;
       } else
@@ -2036,8 +2035,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
         int sound_handle = mng_GetGuaranteedSoundPage(genericpage->ai_sound_name[i]);
 
         if (sound_handle < 0) {
-          mprintf(0, "Couldn't load ai sound file '%s' in AssignPowPage %s...\n",
-                  genericpage->ai_sound_name[i],
+          mprintf(0, "Couldn't load ai sound file '%s' in AssignPowPage %s...\n", genericpage->ai_sound_name[i],
                   genericpage->objinfo_struct.name);
           objinfopointer->ai_info->sound[i] = SOUND_NONE_INDEX;
         } else
@@ -2055,8 +2053,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
           int weapon_handle = mng_GetGuaranteedWeaponPage(genericpage->weapon_name[i][j]);
 
           if (weapon_handle < 0) {
-            mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n",
-                    genericpage->weapon_name[i][j],
+            mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n", genericpage->weapon_name[i][j],
                     genericpage->objinfo_struct.name);
             objinfopointer->static_wb[i].gp_weapon_index[j] = LASER_INDEX;
           } else
@@ -2074,8 +2071,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
           if (fire_sound_handle < 0) {
             mprintf(0, "Couldn't load fire sound file '%s' in AssignPowPage %s...\n",
-                    genericpage->fire_sound_name[i][j],
-                    genericpage->objinfo_struct.name);
+                    genericpage->fire_sound_name[i][j], genericpage->objinfo_struct.name);
             objinfopointer->static_wb[i].fm_fire_sound_index[j] = SOUND_NONE_INDEX;
           } else
             objinfopointer->static_wb[i].fm_fire_sound_index[j] = fire_sound_handle;
@@ -2094,8 +2090,7 @@ int mng_AssignGenericPageToObjInfo(mngs_generic_page *genericpage, int n, CFILE 
 
           if (anim_sound_handle < 0) {
             mprintf(0, "Couldn't load anim sound file '%s' in AssignPowPage %s...\n",
-                    genericpage->anim_sound_name[i][j],
-                    genericpage->objinfo_struct.name);
+                    genericpage->anim_sound_name[i][j], genericpage->objinfo_struct.name);
             objinfopointer->anim[i].elem[j].anim_sound_index = SOUND_NONE_INDEX;
           } else
             objinfopointer->anim[i].elem[j].anim_sound_index = anim_sound_handle;

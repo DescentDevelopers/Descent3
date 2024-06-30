@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -3048,7 +3048,7 @@ bool AINotify(object *obj, uint8_t notify_type, void *info) {
     {
       if (!(Game_mode & GM_MULTI)) {
         for (i = 0; i < AI_NumRendered; i++) {
-        // mprintf(0, "I know that I could dodge, if I was aware, says robot %d.\n", AI_RenderedList[i]);
+          // mprintf(0, "I know that I could dodge, if I was aware, says robot %d.\n", AI_RenderedList[i]);
 
           if (!BOA_IsVisible(Objects[AI_RenderedList[i]].roomnum, other_obj->roomnum))
             continue;
@@ -4055,8 +4055,8 @@ void AICheckTargetVis(object *obj) {
 
       if ((ai_info->status_reg & AISR_SEES_GOAL) ||
           Gametime - ai_info->last_see_target_time < CHECK_VIS_INFREQUENTLY_TIME)
-        ai_info->next_check_see_target_time =
-            Gametime + .9 * MIN_VIS_CHECK_INTERVAL + .2 * MIN_VIS_CHECK_INTERVAL * ((float)ps_rand() / (float)D3_RAND_MAX);
+        ai_info->next_check_see_target_time = Gametime + .9 * MIN_VIS_CHECK_INTERVAL +
+                                              .2 * MIN_VIS_CHECK_INTERVAL * ((float)ps_rand() / (float)D3_RAND_MAX);
       else
         ai_info->next_check_see_target_time =
             Gametime + .9 * CHECK_VIS_INFREQUENTLY_INTERVAL +
@@ -6289,7 +6289,6 @@ void AIDoFrame(object *obj) {
       MultiSendAiWeaponFlags(obj, obj->weapon_fire_flags, obj->ai_info->last_special_wb_firing);
     }
   }
-
 }
 
 void AIFrameAll(void) {

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -3185,10 +3185,10 @@ void osipf_AIGoalValue(int obj_handle, char g_index, char op, char vtype, void *
       g_ptr->dist_to_goal = *(float *)ptr;
   } break;
   case AIGV_I_SCRIPTED_DATA_PTR: {
-	if(op == VF_GET)
-	    *(void **)ptr = g_ptr->g_info.scripted_data_ptr;
-	else if(op == VF_SET)
-	    g_ptr->g_info.scripted_data_ptr = *((void **)ptr);
+    if (op == VF_GET)
+      *(void **)ptr = g_ptr->g_info.scripted_data_ptr;
+    else if (op == VF_SET)
+      g_ptr->g_info.scripted_data_ptr = *((void **)ptr);
   } break;
   case AIGV_V_VEC_TO_TARGET: {
     if (op == VF_GET)

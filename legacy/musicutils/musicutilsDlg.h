@@ -126,8 +126,8 @@ private:
 };
 
 #define LEAFTYPE_PROPERTY ((LPARAM)0)
-#define LEAFTYPE_CATEGORY ((LPARAM)-1)
-#define LEAFTYPE_INVALID ((LPARAM)-2)
+#define LEAFTYPE_CATEGORY ((LPARAM) - 1)
+#define LEAFTYPE_INVALID ((LPARAM) - 2)
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

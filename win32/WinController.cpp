@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -693,7 +693,8 @@ void gameWinController::get_controller_function(int id, ct_type *type, ct_config
 }
 
 //	sets the configuration of a function
-void gameWinController::set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) {
+void gameWinController::set_controller_function(int id, const ct_type *type, ct_config_data value,
+                                                const uint8_t *flags) {
   ct_element elem;
 
   if (id >= CT_MAX_ELEMENTS)

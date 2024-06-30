@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -309,7 +309,7 @@ struct gamemode {
 // Structure for a terrain sound "band"
 struct terrain_sound_band {
   int sound_index;               // the sound to play
-  uint8_t low_alt, high_alt;       // top & bottom of range of sound
+  uint8_t low_alt, high_alt;     // top & bottom of range of sound
   float low_volume, high_volume; // volume at top & bottom of range
 };
 

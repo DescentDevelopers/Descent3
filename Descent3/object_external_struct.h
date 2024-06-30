@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -162,9 +162,9 @@ struct effect_info_s {
   float fade_max_time;
 
   float damage_time;
-  float damage_per_second;  // how much damage this object takes per second
-  float last_damage_time;   // last time this object took damage
-  int32_t damage_handle;    // the object handle of the owner of the damage
+  float damage_per_second; // how much damage this object takes per second
+  float last_damage_time;  // last time this object took damage
+  int32_t damage_handle;   // the object handle of the owner of the damage
 
   float volume_change_time;
   vector volume_old_pos;
@@ -200,7 +200,6 @@ struct effect_info_s {
   float spark_delay;     // delay between sparks
   float spark_timer;     // how long until next spark
   float spark_time_left; // how long until sparking stops
-
 };
 
 // Describes the next animation state for a robot
@@ -229,14 +228,14 @@ struct multi_turret {
 
 // Information specific to objects that render as a polygon model
 struct polyobj_info {
-  int16_t model_num;        // Which polygon model this object is
-  int16_t dying_model_num;  // The dying model for this object
+  int16_t model_num;       // Which polygon model this object is
+  int16_t dying_model_num; // The dying model for this object
 
   float anim_start_frame;
-  float anim_frame;         // The model's current animation frame
+  float anim_frame; // The model's current animation frame
   float anim_end_frame;
   float anim_time;
-  uint32_t anim_flags;      // Looping/notify at finish/pending
+  uint32_t anim_flags; // Looping/notify at finish/pending
   float max_speed;
 
   union {
@@ -276,19 +275,19 @@ struct dying_info_s {
 };
 
 struct debris_info_s {
-  int32_t death_flags;      // a copy of the parent's death flags
+  int32_t death_flags; // a copy of the parent's death flags
   float last_smoke_time;
 };
 
 struct laser_info_s {
-  int16_t parent_type;      // The type of the parent of this object
-  int16_t src_gun_num;      // The src gunpoint that this object fired from
+  int16_t parent_type; // The type of the parent of this object
+  int16_t src_gun_num; // The src gunpoint that this object fired from
 
-  int32_t last_hit_handle;  // For persistent weapons (survive object collision), object it most recently hit.
-  int32_t track_handle;     // Object this object is tracking.
-  float last_track_time;    // Last track time (see if an object is visible)
+  int32_t last_hit_handle; // For persistent weapons (survive object collision), object it most recently hit.
+  int32_t track_handle;    // Object this object is tracking.
+  float last_track_time;   // Last track time (see if an object is visible)
 
-  int32_t hit_status;       // Zero not used
+  int32_t hit_status; // Zero not used
   vector hit_pnt;
   vector hit_wall_pnt;
   vector hit_wall_normal;
@@ -327,35 +326,35 @@ struct soundsource_info_s {
 // to change the mass of an object...)  Wait to move until we are optimizing -- see Chris if you move any fields
 // out of the physics_info struct.  Thanx!
 struct physics_info {
-  vector velocity;    // Velocity vector of this object
-  vector thrust;      // Constant force applied to this object
+  vector velocity; // Velocity vector of this object
+  vector thrust;   // Constant force applied to this object
   union {
-    vector rotvel;    // Rotational velecity (angles)
+    vector rotvel; // Rotational velecity (angles)
     float turn_rate;
   };
   union {
     vector rotthrust; // Rotational acceleration
   };
-  angle turnroll;           // Rotation caused by turn banking
-  float last_still_time;    // The current delta position a wiggle has caused.
-  int32_t num_bounces;      // Number of bounces before exploding (PHYSICS_UNLIMITED_BOUNCE is for unlimited bouncing)
+  angle turnroll;        // Rotation caused by turn banking
+  float last_still_time; // The current delta position a wiggle has caused.
+  int32_t num_bounces;   // Number of bounces before exploding (PHYSICS_UNLIMITED_BOUNCE is for unlimited bouncing)
 
-  float coeff_restitution;  // What percent of velocity is kept after a bounce
-  float mass;               // The mass of this object                 -- what about moving into type info
-  float drag;               // How fast this slows down                -- what about moving into type info
-  float rotdrag;            // How much resistance to a change in spin rate -- what about moving into type info
+  float coeff_restitution; // What percent of velocity is kept after a bounce
+  float mass;              // The mass of this object                 -- what about moving into type info
+  float drag;              // How fast this slows down                -- what about moving into type info
+  float rotdrag;           // How much resistance to a change in spin rate -- what about moving into type info
   union {
-    float full_thrust;      // Maximum thrust magnitude                -- what about moving into type info
+    float full_thrust; // Maximum thrust magnitude                -- what about moving into type info
     float max_velocity;
   };
   union {
-    float full_rotthrust;   // Maximum rotation thrust magnitude       -- what about moving into type info
+    float full_rotthrust; // Maximum rotation thrust magnitude       -- what about moving into type info
     float max_turn_rate;
   };
-  float max_turnroll_rate;  // How fast is the maximum turnroll rate   -- what about moving into type info
-  float turnroll_ratio;     // How much roll for a given turning rate  -- what about moving into type info
-  float wiggle_amplitude;   // The amplitude of an object's wiggle     -- what about moving into type info
-  float wiggles_per_sec;    // How fast something wiggles              -- what about moving into type info
+  float max_turnroll_rate; // How fast is the maximum turnroll rate   -- what about moving into type info
+  float turnroll_ratio;    // How much roll for a given turning rate  -- what about moving into type info
+  float wiggle_amplitude;  // The amplitude of an object's wiggle     -- what about moving into type info
+  float wiggles_per_sec;   // How fast something wiggles              -- what about moving into type info
 
   vector dest_pos; // destination position for interpolating velocity (for multiplayer only)
 
@@ -406,8 +405,8 @@ struct object {
 
   char *name; // the name of this object, or NULL
 
-  int32_t handle;       //  unique handle for this object.  See defines above
-  int16_t next, prev;   // id of next and previous connected object in Objects, -1 = no connection
+  int32_t handle;     //  unique handle for this object.  See defines above
+  int16_t next, prev; // id of next and previous connected object in Objects, -1 = no connection
 
   uint8_t control_type;         // how this object is controlled
   uint8_t movement_type;        // how this object moves
@@ -428,22 +427,22 @@ struct object {
   float size;    // 3d size of object - for collision detection
   float shields; // Starts at maximum, when <0, object dies..
 
-  int8_t contains_type;   // Type of object this object contains (eg, spider contains powerup)
-  int8_t contains_id;     // ID of object this object contains (eg, id = blue type = key)
-  int8_t contains_count;  // number of objects of type:id this object contains
-  int8_t pad3;            // keep alignment
+  int8_t contains_type;  // Type of object this object contains (eg, spider contains powerup)
+  int8_t contains_id;    // ID of object this object contains (eg, id = blue type = key)
+  int8_t contains_count; // number of objects of type:id this object contains
+  int8_t pad3;           // keep alignment
 
-  float creation_time;    // absolute time when this object was created
-  float lifeleft;         // how long until goes away, if OF_USES_LIFELEFT flag is set
-  float lifetime;         // How long this object stays alive (in seconds)
+  float creation_time; // absolute time when this object was created
+  float lifeleft;      // how long until goes away, if OF_USES_LIFELEFT flag is set
+  float lifetime;      // How long this object stays alive (in seconds)
 
-  int32_t parent_handle;  // The handle of this object's parent
+  int32_t parent_handle; // The handle of this object's parent
 
   int32_t attach_ultimate_handle;
   int32_t attach_parent_handle;
-  int32_t *attach_children;   // List of object handles for connected children
+  int32_t *attach_children; // List of object handles for connected children
 
-  uint8_t weapon_fire_flags;  // Used to indicate special weapon effects.  See flags above.
+  uint8_t weapon_fire_flags; // Used to indicate special weapon effects.  See flags above.
 
   int8_t attach_type;
   int16_t lowest_attached_vis;
@@ -496,16 +495,16 @@ struct object {
 
   // Render info, determined by RENDER_TYPE
   union {
-    polyobj_info pobj_info;   // polygon model
-    shard_info_s shard_info;  // shard
+    polyobj_info pobj_info;  // polygon model
+    shard_info_s shard_info; // shard
 #ifdef _DEBUG
-    line_info_s line_info;    // line info
+    line_info_s line_info; // line info
 #endif
-    ddgr_color sphere_color;  // for RT_EDITOR_SPHERE
+    ddgr_color sphere_color; // for RT_EDITOR_SPHERE
   } rtype;
 
   effect_info_s *effect_info;
-  light_info *lighting_info;  // Pointer to lighting info, or NULL if inherits from type
+  light_info *lighting_info; // Pointer to lighting info, or NULL if inherits from type
 
   // Something to do with multiplayer, possibly, but it's hard to know for sure
   // because some people are incapable of commented their code.

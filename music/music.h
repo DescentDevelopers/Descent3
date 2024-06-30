@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -220,9 +220,9 @@ public:
 };
 
 class oms_tracklist {
-  char **m_fnamelist; // filename list
-  char **m_symlist;   // symbolic list
-  int16_t m_numtracks;  // number of tracks
+  char **m_fnamelist;  // filename list
+  char **m_symlist;    // symbolic list
+  int16_t m_numtracks; // number of tracks
   int16_t m_maxtracks;
   bool m_init; // determines if initialized
 
@@ -231,8 +231,8 @@ public:
   ~oms_tracklist();
 
   void init(int16_t maxtracks); // initializes track list system
-  void free();                // frees track list system
-  void reset();               // resets track list to 0
+  void free();                  // frees track list system
+  void reset();                 // resets track list to 0
 
   bool add(const char *fname, const char *sym);
   const char *get(const char *sym); // returns a track filename.
@@ -279,10 +279,10 @@ class OutrageMusicSeq {
     oms_stream *old_strm; // previous stream.
     const char *loop_name;
     const char *pending_loop_name; // loop name preparing to play.
-    int16_t region;                  // region id.
+    int16_t region;                // region id.
     int16_t type;
-    music_ins *ins; // intro, combat, etc. section
-    int16_t last_ip;  // last ip value
+    music_ins *ins;  // intro, combat, etc. section
+    int16_t last_ip; // last ip value
     int16_t ip;
     tMusicVal b_reg;       // branch register
     tMusicVal c_reg;       // compare regs

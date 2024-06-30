@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -117,7 +117,6 @@ struct DSSTREAM {
   // Updating state variables
   int NextWritePos; // Last bit position we wrote sound data to
   int LastPlayPos;  // Last bit position that the play pointer was recorded at
-
 };
 
 struct tPSBInfo {

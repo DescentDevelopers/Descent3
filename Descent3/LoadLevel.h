@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -733,4 +733,3 @@ inline void GetLevelMD5Sum(uint8_t digest[16]) {
   }
   Level_md5->digest(digest);
 }
-

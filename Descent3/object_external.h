@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -351,7 +351,7 @@
 #define GSI_EXPLODE 1
 
 // Static Robot ids
-#define ROBOT_GUIDEBOT 0 // NOTE: this must match GENOBJ_GUIDEBOT
+#define ROBOT_GUIDEBOT 0    // NOTE: this must match GENOBJ_GUIDEBOT
 #define ROBOT_GUIDEBOTRED 2 // NOTE: this must match GENOBJ_GUIDEBOTRED
 
 #endif

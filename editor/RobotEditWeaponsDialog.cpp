@@ -783,7 +783,7 @@ void RobotEditWeaponsDialog::UpdateDialog(void) {
   ((CButton *)GetDlgItem(IDC_BARREL_7_RADIO))->EnableWindow(m_obj_pm->poly_wb[m_current_wb_index].num_gps > 7);
 
   //	((CButton *)GetDlgItem(IDC_GP_MASK_7_7))->EnableWindow(m_num_masks > 7 &&
-  //m_obj_pm->poly_wb[m_current_wb_index].num_gps > 7);
+  // m_obj_pm->poly_wb[m_current_wb_index].num_gps > 7);
 }
 
 void RobotEditWeaponsDialog::UpdateTurretInfo() {

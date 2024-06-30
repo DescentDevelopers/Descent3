@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1038,104 +1038,104 @@ const char *GetMessage(const char *name) {
 
 #define NUM_DOOR_NAMES 12
 const char *Door_names[NUM_DOOR_NAMES] = {"CenterUpperSteamDo", "CenterLowerSteamDo", "RightUpperSteamDoo",
-                                    "RightLowerSteamDoo", "LeftUpperSteamDoor", "LeftLowerSteamDoor",
-                                    "FarHeatSinkDoor",    "CoolingDuctEntranc", "InnerHeatSinkDoor",
-                                    "MiddleHeatSinkDoor", "BetweenDoor",        "SecurityTowerDoor"};
+                                          "RightLowerSteamDoo", "LeftUpperSteamDoor", "LeftLowerSteamDoor",
+                                          "FarHeatSinkDoor",    "CoolingDuctEntranc", "InnerHeatSinkDoor",
+                                          "MiddleHeatSinkDoor", "BetweenDoor",        "SecurityTowerDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 92
 const char *Object_names[NUM_OBJECT_NAMES] = {"WeaponsPlantData",
-                                        "CenterSteamSpewer",
-                                        "RightSteamSpewer",
-                                        "LeftSteamSpewer",
-                                        "CoolingSystemSwitc",
-                                        "InnerHeatSinkDevic",
-                                        "MiddleHeatSinkDevi",
-                                        "OuterHeatSinkDevic",
-                                        "DuctForcefieldSwit",
-                                        "InnerForcefieldSwi",
-                                        "MiddleForcefieldSw",
-                                        "OuterForcefieldSwi",
-                                        "DeadlyCoolingShaft",
-                                        "FanReverseSwitch",
-                                        "CoolingFanMechanis",
-                                        "SecurityTowerDoorS",
-                                        "SecurityTowerTurre",
-                                        "CenterClampRelease",
-                                        "LeftClampRelease",
-                                        "RightClampRelease",
-                                        "RightClampSwitch",
-                                        "CenterClampSwitch",
-                                        "LeftClampSwitch",
-                                        "MedicalFrigate",
-                                        "ElevatorSwitch",
-                                        "HangarElevator",
-                                        "LeftPurgeButton",
-                                        "FlamePurgeRotator",
-                                        "CenterPurgeButton",
-                                        "RightPurgeButton",
-                                        "CoolingControlLink",
-                                        "CoolingBase",
-                                        "OuterFanA",
-                                        "OuterFanB",
-                                        "OuterFanD",
-                                        "MiddleFanD",
-                                        "MiddleFanC",
-                                        "MiddleFanB",
-                                        "MiddleFanA",
-                                        "InnerFanC",
-                                        "InnerFanB",
-                                        "InnerFanA",
-                                        "CoreFanA",
-                                        "WarningLightA",
-                                        "WarningLightB",
-                                        "WarningLightC",
-                                        "WarningLightD",
-                                        "WarningLightE",
-                                        "WarningLightF",
-                                        "WarningLightG",
-                                        "WarningLightH",
-                                        "WarningLightI",
-                                        "WarningLightJ",
-                                        "WarningLightK",
-                                        "WarningLightL",
-                                        "WarningLightM",
-                                        "WarningLightN",
-                                        "WarningLightO",
-                                        "WarningLightP",
-                                        "WarningLightQ",
-                                        "WarningLightR",
-                                        "WarningLightS",
-                                        "FlameA",
-                                        "FlameD",
-                                        "FlameH",
-                                        "FlameL",
-                                        "FlameN",
-                                        "FlameQ",
-                                        "FlameT",
-                                        "FlameV",
-                                        "FlameX",
-                                        "FlameZ",
-                                        "OverheatingSpewerA",
-                                        "OverheatingSpewerB",
-                                        "OverheatingSpewerC",
-                                        "OverheatingSpewerE",
-                                        "OverheatingSpewerF",
-                                        "OverheatingSpewerG",
-                                        "OverheatingSpewerI",
-                                        "OverheatingSpewerJ",
-                                        "OverheatingSpewerK",
-                                        "OverheatingSpewerL",
-                                        "OverheatingSpewerN",
-                                        "OverheatingSpewerP",
-                                        "OverheatingSpewerQ",
-                                        "OverheatingSpewerR",
-                                        "OverheatingSpewerS",
-                                        "OverheatingSpewerU",
-                                        "OverheatingSpewerV",
-                                        "OverheatingSpewerW",
-                                        "OverheatingSpewerY",
-                                        "OverheatingSpewerZ"};
+                                              "CenterSteamSpewer",
+                                              "RightSteamSpewer",
+                                              "LeftSteamSpewer",
+                                              "CoolingSystemSwitc",
+                                              "InnerHeatSinkDevic",
+                                              "MiddleHeatSinkDevi",
+                                              "OuterHeatSinkDevic",
+                                              "DuctForcefieldSwit",
+                                              "InnerForcefieldSwi",
+                                              "MiddleForcefieldSw",
+                                              "OuterForcefieldSwi",
+                                              "DeadlyCoolingShaft",
+                                              "FanReverseSwitch",
+                                              "CoolingFanMechanis",
+                                              "SecurityTowerDoorS",
+                                              "SecurityTowerTurre",
+                                              "CenterClampRelease",
+                                              "LeftClampRelease",
+                                              "RightClampRelease",
+                                              "RightClampSwitch",
+                                              "CenterClampSwitch",
+                                              "LeftClampSwitch",
+                                              "MedicalFrigate",
+                                              "ElevatorSwitch",
+                                              "HangarElevator",
+                                              "LeftPurgeButton",
+                                              "FlamePurgeRotator",
+                                              "CenterPurgeButton",
+                                              "RightPurgeButton",
+                                              "CoolingControlLink",
+                                              "CoolingBase",
+                                              "OuterFanA",
+                                              "OuterFanB",
+                                              "OuterFanD",
+                                              "MiddleFanD",
+                                              "MiddleFanC",
+                                              "MiddleFanB",
+                                              "MiddleFanA",
+                                              "InnerFanC",
+                                              "InnerFanB",
+                                              "InnerFanA",
+                                              "CoreFanA",
+                                              "WarningLightA",
+                                              "WarningLightB",
+                                              "WarningLightC",
+                                              "WarningLightD",
+                                              "WarningLightE",
+                                              "WarningLightF",
+                                              "WarningLightG",
+                                              "WarningLightH",
+                                              "WarningLightI",
+                                              "WarningLightJ",
+                                              "WarningLightK",
+                                              "WarningLightL",
+                                              "WarningLightM",
+                                              "WarningLightN",
+                                              "WarningLightO",
+                                              "WarningLightP",
+                                              "WarningLightQ",
+                                              "WarningLightR",
+                                              "WarningLightS",
+                                              "FlameA",
+                                              "FlameD",
+                                              "FlameH",
+                                              "FlameL",
+                                              "FlameN",
+                                              "FlameQ",
+                                              "FlameT",
+                                              "FlameV",
+                                              "FlameX",
+                                              "FlameZ",
+                                              "OverheatingSpewerA",
+                                              "OverheatingSpewerB",
+                                              "OverheatingSpewerC",
+                                              "OverheatingSpewerE",
+                                              "OverheatingSpewerF",
+                                              "OverheatingSpewerG",
+                                              "OverheatingSpewerI",
+                                              "OverheatingSpewerJ",
+                                              "OverheatingSpewerK",
+                                              "OverheatingSpewerL",
+                                              "OverheatingSpewerN",
+                                              "OverheatingSpewerP",
+                                              "OverheatingSpewerQ",
+                                              "OverheatingSpewerR",
+                                              "OverheatingSpewerS",
+                                              "OverheatingSpewerU",
+                                              "OverheatingSpewerV",
+                                              "OverheatingSpewerW",
+                                              "OverheatingSpewerY",
+                                              "OverheatingSpewerZ"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 23
@@ -1159,19 +1159,19 @@ int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 5
-const char *Sound_names[NUM_SOUND_NAMES] = {"AmbExplosionFarI", "AmbExplosionFarD", "AmbExplosionFarG", "Powerup pickup",
-                                      "AmbSirenIntense"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbExplosionFarI", "AmbExplosionFarD", "AmbExplosionFarG",
+                                            "Powerup pickup", "AmbSirenIntense"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 5
 const char *Texture_names[NUM_TEXTURE_NAMES] = {"P-MonTempBelo", "Bluedatascrollup", "P-MonCoolingEng", "P-MonTempAbov",
-                                          "P-MonTempCrit"};
+                                                "P-MonTempCrit"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 7
 const char *Path_names[NUM_PATH_NAMES] = {"IntroCameraPath",    "IntroPlayerPath",        "EndLevelCameraPath",
-                                    "EndLevelPlayerPath", "FrigateEscapePart2Path", "ElevatorPath",
-                                    "FrigateEscapePath"};
+                                          "EndLevelPlayerPath", "FrigateEscapePart2Path", "ElevatorPath",
+                                          "FrigateEscapePath"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 1
@@ -1187,26 +1187,26 @@ int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 21
 const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroCamera",
-                                          "EndLevel",
-                                          "CoolingSystemEngaged",
-                                          "CoolingSystemClock",
-                                          "ALLHeatSinksDestroyed",
-                                          "ForcefieldDisabled",
-                                          "CoreTempAboveNormal",
-                                          "FanReverseSwitch",
-                                          "CoolFanInvulnerable",
-                                          "CoolFanDestroyed",
-                                          "Mayday",
-                                          "MessageFromFrigate",
-                                          "ElevatorNeedsDown",
-                                          "ClampNotInUse",
-                                          "CenterClampDisengaged",
-                                          "EngagingCenterClamp",
-                                          "ElevatorDOWN",
-                                          "ElevatorAlreadyDown",
-                                          "WeaponsPlantData",
-                                          "FoundSecretData",
-                                          "FrigateSaved"};
+                                                "EndLevel",
+                                                "CoolingSystemEngaged",
+                                                "CoolingSystemClock",
+                                                "ALLHeatSinksDestroyed",
+                                                "ForcefieldDisabled",
+                                                "CoreTempAboveNormal",
+                                                "FanReverseSwitch",
+                                                "CoolFanInvulnerable",
+                                                "CoolFanDestroyed",
+                                                "Mayday",
+                                                "MessageFromFrigate",
+                                                "ElevatorNeedsDown",
+                                                "ClampNotInUse",
+                                                "CenterClampDisengaged",
+                                                "EngagingCenterClamp",
+                                                "ElevatorDOWN",
+                                                "ElevatorAlreadyDown",
+                                                "WeaponsPlantData",
+                                                "FoundSecretData",
+                                                "FrigateSaved"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

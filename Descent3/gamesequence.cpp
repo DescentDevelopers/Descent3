@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1629,7 +1629,6 @@ void StartLevel() {
   InitFrameTime();
 
   LoadLevelProgress(LOAD_PROGRESS_DONE, 0);
-
 }
 
 // Loads a level and starts everything up
@@ -1862,8 +1861,7 @@ void FlushDataCache() {
   }
 
   for (i = 0; i < MAX_SOUNDS; i++) {
-    if (Sounds_to_free[i] != 0)
-    {
+    if (Sounds_to_free[i] != 0) {
       soundsfreed++;
       int index = Sounds[i].sample_index;
       if (SoundFiles[index].sample_16bit) {

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -89,7 +89,6 @@ DLLEXPORT int DLLFUNCCALL SaveRestoreState(void *file_ptr, uint8_t saving_state)
 }
 #endif
 
-
 // The main entry point where the game calls the dll
 void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {
   if ((eventnum < EVT_CLIENT_INTERVAL) && (DMFCBase->GetLocalRole() != LR_SERVER)) {
@@ -154,6 +153,5 @@ int16_t DLLFUNCCALL CallInstanceEvent(int id, void *ptr, int event, tOSIRISEvent
 //	TO THE FILE.  When restoring the data, the return value is ignored.  saving_state is 1 when you should
 //	write data to the file_ptr, 0 when you should read in the data.
 int DLLFUNCCALL SaveRestoreState(void *file_ptr, uint8_t saving_state) { return 0; }
-
 
 #endif

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -107,7 +107,7 @@ struct iff_bitmap_header {
   uint8_t nplanes;               // number of planes (8 for 256 color image)
   uint8_t masking, compression;  // see constants above
   uint8_t xaspect, yaspect;      // aspect ratio (usually 5/6)
-  pal_entry palette[256];      // the palette for this bitmap
+  pal_entry palette[256];        // the palette for this bitmap
   uint8_t *raw_data;             // ptr to array of data
   int16_t row_size;              // offset to next row
 };

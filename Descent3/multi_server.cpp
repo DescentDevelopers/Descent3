@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1058,19 +1058,15 @@ void MultiDisconnectDeadPlayers() {
         MultiDisconnectPlayer(i);
       } else if (NetPlayers[i].sequence > NETSEQ_LEVEL_START && NetPlayers[i].sequence != NETSEQ_LEVEL_END) {
         if (cur_time - NetPlayers[i].last_packet_time > DISCONNECT_TIME) {
-          mprintf(0, "8sec disconnecting player %d.  Last packet time=%f Sequence=%d\n",
-                  i,
-                  cur_time - NetPlayers[i].last_packet_time,
-                  NetPlayers[i].sequence);
+          mprintf(0, "8sec disconnecting player %d.  Last packet time=%f Sequence=%d\n", i,
+                  cur_time - NetPlayers[i].last_packet_time, NetPlayers[i].sequence);
           MultiDisconnectPlayer(i);
         }
       } else // If not playing (ie joining, give them longer)
       {
         if (cur_time - NetPlayers[i].last_packet_time > (DISCONNECT_TIME * 15)) {
-          mprintf(0, "Too long...disconnecting player %d.  Last packet time=%f Sequence=%d\n",
-                  i,
-                  cur_time - NetPlayers[i].last_packet_time,
-                  NetPlayers[i].sequence);
+          mprintf(0, "Too long...disconnecting player %d.  Last packet time=%f Sequence=%d\n", i,
+                  cur_time - NetPlayers[i].last_packet_time, NetPlayers[i].sequence);
           MultiDisconnectPlayer(i);
         }
       }

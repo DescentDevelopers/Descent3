@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -439,7 +439,8 @@ ct_config_data lnxgameController::get_controller_value(ct_type type_req) {
 }
 
 //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
-void lnxgameController::set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) {
+void lnxgameController::set_controller_function(int id, const ct_type *type, ct_config_data value,
+                                                const uint8_t *flags) {
   ct_element elem;
 
   if (id >= CT_MAX_ELEMENTS)

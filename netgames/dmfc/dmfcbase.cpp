@@ -480,7 +480,7 @@ char **DMFCStringTable;
 int DMFCStringTableSize = 0;
 const char *_DMFCErrorString = "DMFC Missing String";
 uint8_t seeds1[31] = {49, 73, 0,  44, 87, 253, 35, 74, 62, 250, 4,  247, 251, 72,  244, 30,
-                    59, 61, 60, 52, 50, 237, 23, 48, 56, 55,  65, 232, 231, 230, 0};
+                      59, 61, 60, 52, 50, 237, 23, 48, 56, 55,  65, 232, 231, 230, 0};
 uint8_t seeds2[6] = {70, 95, 103, 102, 112, 0};
 
 const char *DMFCGetString(int d) {
@@ -3305,7 +3305,8 @@ void strlowcpy(char *dest, const char *src) {
 //	command string to the given function handler. Returns 1 on success, -1 if out of memory, 0 if it already
 //	exists. These commands are not case sensitive.
 //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
-int8_t DMFCBase::AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely) {
+int8_t DMFCBase::AddInputCommand(const char *command, const char *description, void (*handler)(const char *),
+                                 bool allow_remotely) {
   ASSERT(command != NULL);
   ASSERT(handler != NULL);
 
@@ -4920,8 +4921,7 @@ int DMFCBase::GetConnectingPlayerTeam(int slot) {
 
     // we need to reconnect the player to the player records before we get the team
     if (!PRec_ReconnectPlayerToSlot(slot, prec_num, Players, NetPlayers)) {
-      mprintf(0, "Unable to reassign reconnecting player (%s) to Player Record slot #%d\n",
-              Players[slot].callsign,
+      mprintf(0, "Unable to reassign reconnecting player (%s) to Player Record slot #%d\n", Players[slot].callsign,
               prec_num);
       Int3();
     } else {

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -174,15 +174,13 @@ static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, uint16_t *s_w1, uint1
   *s_w1 = st->S_un.S_un_w.s_w1;
   *s_w2 = st->S_un.S_un_w.s_w2;
 }
-static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3,
-                                uint8_t s_b4) {
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3, uint8_t s_b4) {
   st->S_un.S_un_b.s_b1 = s_b1;
   st->S_un.S_un_b.s_b2 = s_b2;
   st->S_un.S_un_b.s_b3 = s_b3;
   st->S_un.S_un_b.s_b4 = s_b4;
 }
-static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3,
-                                uint8_t *s_b4) {
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3, uint8_t *s_b4) {
   *s_b1 = st->S_un.S_un_b.s_b1;
   *s_b2 = st->S_un.S_un_b.s_b2;
   *s_b3 = st->S_un.S_un_b.s_b3;
@@ -276,8 +274,7 @@ static inline void INADDR_GET_SUN_SUNW(struct in_addr *st, uint16_t *s_w1, uint1
   *s_w1 = S_un.S_un_w.s_w1;
   *s_w2 = S_un.S_un_w.s_w2;
 }
-static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3,
-                                uint8_t s_b4) {
+static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t s_b2, uint8_t s_b3, uint8_t s_b4) {
   union {
     struct {
       uint8_t s_b1, s_b2, s_b3, s_b4;
@@ -294,8 +291,7 @@ static inline void INADDR_SET_SUN_SUNB(struct in_addr *st, uint8_t s_b1, uint8_t
   S_un.S_un_b.s_b4 = s_b4;
   st->s_addr = S_un.S_addr;
 }
-static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3,
-                                uint8_t *s_b4) {
+static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_t *s_b2, uint8_t *s_b3, uint8_t *s_b4) {
   union {
     struct {
       uint8_t s_b1, s_b2, s_b3, s_b4;
@@ -328,13 +324,7 @@ static inline void INADDR_GET_SUN_SUNB(struct in_addr *st, uint8_t *s_b1, uint8_
 #define NF_CHECKSUM 1
 #define NF_NOSEQINC 2
 
-enum network_protocol : uint32_t
-{
-  NP_NONE,
-  NP_TCP,
-  NP_IPX,
-  NP_DIRECTPLAY
-};
+enum network_protocol : uint32_t { NP_NONE, NP_TCP, NP_IPX, NP_DIRECTPLAY };
 
 struct network_address {
   uint8_t address[6];
@@ -484,10 +474,10 @@ int nw_Uncompress(void *compdata, void *uncompdata, int count);
 
 struct async_dns_lookup {
   uint32_t ip; // resolved host. Write only to worker thread.
-  char *host;      // host name to resolve. read only to worker thread
-  bool done;       // write only to the worker thread. Signals that the operation is complete
-  bool error;      // write only to worker thread. Thread sets this if the name doesn't resolve
-  bool abort;      // read only to worker thread. If this is set, don't fill in the struct.
+  char *host;  // host name to resolve. read only to worker thread
+  bool done;   // write only to the worker thread. Signals that the operation is complete
+  bool error;  // write only to worker thread. Thread sets this if the name doesn't resolve
+  bool abort;  // read only to worker thread. If this is set, don't fill in the struct.
 
   // rcg06212000 added to let us join the thread at completion...
 #ifdef __LINUX__
@@ -548,7 +538,7 @@ struct tNetworkStatus {
   int spx_total_bytes_rec;      // total number of bytes recieved (reliable)
   int spx_total_packets_resent; // total number of packets resent (reliable)
   int spx_total_bytes_resent;   // total number of bytes resent (reliable)
-};               // network status information
+}; // network status information
 
 // fills in the buffer with network stats
 // pass NULL to reset the stats

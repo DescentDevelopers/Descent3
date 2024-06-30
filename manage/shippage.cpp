@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1029,8 +1029,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
         int weapon_handle = mng_GetGuaranteedWeaponPage(shippage->weapon_name[i][j], infile);
 
         if (weapon_handle < 0) {
-          mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n",
-                  shippage->weapon_name[i][j],
+          mprintf(0, "Couldn't load weapon file '%s' in AssignPowPage %s...\n", shippage->weapon_name[i][j],
                   shippage->ship_struct.name);
           shippointer->static_wb[i].gp_weapon_index[j] = LASER_INDEX;
         } else
@@ -1047,8 +1046,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
         int fire_sound_handle = mng_GetGuaranteedSoundPage(shippage->fire_sound_name[i][j], infile);
 
         if (fire_sound_handle < 0) {
-          mprintf(0, "Couldn't load fire_sound file '%s' in AssignPowPage %s...\n",
-                  shippage->fire_sound_name[i][j],
+          mprintf(0, "Couldn't load fire_sound file '%s' in AssignPowPage %s...\n", shippage->fire_sound_name[i][j],
                   shippage->ship_struct.name);
           shippointer->static_wb[i].fm_fire_sound_index[j] = SOUND_NONE_INDEX;
         } else
@@ -1063,8 +1061,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       int sound_handle = mng_GetGuaranteedSoundPage(shippage->firing_sound_name[i], infile);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n",
-                shippage->firing_sound_name[i],
+        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n", shippage->firing_sound_name[i],
                 shippage->ship_struct.name);
         shippointer->firing_sound[i] = SOUND_NONE_INDEX;
       } else
@@ -1076,8 +1073,7 @@ int mng_AssignShipPageToShip(mngs_ship_page *shippage, int n, CFILE *infile) {
       int sound_handle = mng_GetGuaranteedSoundPage(shippage->release_sound_name[i], infile);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n",
-                shippage->release_sound_name[i],
+        mprintf(0, "Couldn't load firing_sound file '%s' in AssignPowPage %s...\n", shippage->release_sound_name[i],
                 shippage->ship_struct.name);
         shippointer->firing_release_sound[i] = SOUND_NONE_INDEX;
       } else

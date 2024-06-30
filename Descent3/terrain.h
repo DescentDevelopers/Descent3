@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef TERRAIN_H
 #define TERRAIN_H
@@ -48,8 +48,8 @@
 #define DEFAULT_VISIBLE_TERRAIN_DISTANCE 80.0 * TERRAIN_SIZE
 
 // Sky defines
-#define MAX_STARS 600    // how many stars in our sky
-#define MAX_SATELLITES 5 // max satellites in our sky
+#define MAX_STARS 600         // how many stars in our sky
+#define MAX_SATELLITES 5      // max satellites in our sky
 #define MAX_HORIZON_PIECES 16 // how many segments of the horizon there are around our sphere
 
 // Sky flags
@@ -92,8 +92,8 @@ struct terrain_segment {
   uint8_t flags;   // various flags
   uint8_t lm_quad; // which lightmap quad this index belongs to
   uint8_t ypos;    // this is so we don't have to constantly convert
-                 // floats to ints when traversing the terrain
-                 // it's the integer version of pos.y
+                   // floats to ints when traversing the terrain
+                   // it's the integer version of pos.y
   uint8_t pad;     // for alignment
 };
 
@@ -155,7 +155,6 @@ struct link_tile {
   int mine_side;
   int portal_num;
   int terrain_seg;
-
 };
 
 struct terrain_mine_list {
@@ -215,12 +214,12 @@ extern int16_t Terrain_seg_render_objs[];
 #define TERRAIN_REGION(x) ((Terrain_seg[0x7FFFFFFF & x].flags & TFM_REGION_MASK) >> 5)
 #else // debug(-ish) builds - check if x is valid
 static inline int TERRAIN_REGION(int x) {
-	ASSERT(x != -1 && "invalid/unset room number (-1)!");
-	// Note: due to the 0x7FFFFFFF mask, terrSegIdx will be >= 0
-	int terrSegIdx = 0x7FFFFFFF & x;
-	// catch other invalid cell/segment numbers than -1 as well
-	ASSERT((terrSegIdx < TERRAIN_WIDTH * TERRAIN_DEPTH) && "invalid cellnum!");
-	return (Terrain_seg[terrSegIdx].flags & TFM_REGION_MASK) >> 5;
+  ASSERT(x != -1 && "invalid/unset room number (-1)!");
+  // Note: due to the 0x7FFFFFFF mask, terrSegIdx will be >= 0
+  int terrSegIdx = 0x7FFFFFFF & x;
+  // catch other invalid cell/segment numbers than -1 as well
+  ASSERT((terrSegIdx < TERRAIN_WIDTH * TERRAIN_DEPTH) && "invalid cellnum!");
+  return (Terrain_seg[terrSegIdx].flags & TFM_REGION_MASK) >> 5;
 }
 #endif
 
@@ -251,7 +250,7 @@ extern int Num_terrain_selected;
 #endif
 
 extern uint16_t *Terrain_rotate_list; // which points have been sub/rotated this frame
-extern g3Point *World_point_buffer; // Rotated points
+extern g3Point *World_point_buffer;   // Rotated points
 
 #define TSEARCH_FOUND_TERRAIN 0
 #define TSEARCH_FOUND_MINE 1

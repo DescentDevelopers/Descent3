@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -353,7 +353,8 @@ int sdlKeyFilter(const SDL_Event *event) {
 
   switch (event->key.state) {
   case SDL_PRESSED:
-    if (event->key.repeat) break;  // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
+    if (event->key.repeat)
+      break; // ignore these, we only want to know if it's a first time pressed, not a key-repeat.
     kc = sdlkeycode_to_keycode(event->key.keysym.sym);
     if (event->key.keysym.mod & KMOD_CTRL) {
       switch (kc) {
@@ -380,22 +381,23 @@ int sdlKeyFilter(const SDL_Event *event) {
         return (0);
 #endif
       } // switch
-    }   // if
+    } // if
 
     else if (event->key.keysym.mod & KMOD_ALT) {
       if ((kc == KEY_ENTER) || (kc == KEY_PADENTER)) {
         extern SDL_Window *GSDLWindow;
         Uint32 flags = SDL_GetWindowFlags(GSDLWindow);
-        // (In SDL2, SDL_WINDOW_FULLSCREEN_DESKTOP is SDL_WINDOW_FULLSCREEN plus an extra bit set, so just check for _any_ fullscreen in this bitwise AND.)
+        // (In SDL2, SDL_WINDOW_FULLSCREEN_DESKTOP is SDL_WINDOW_FULLSCREEN plus an extra bit set, so just check for
+        // _any_ fullscreen in this bitwise AND.)
         if (flags & SDL_WINDOW_FULLSCREEN) {
           flags &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
         } else {
           flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         }
         SDL_SetWindowFullscreen(GSDLWindow, flags);
-        return(0);
+        return (0);
       } // if
-    }   // else if
+    } // else if
 
     LKeys[kc].down_time = timer_GetTime();
     LKeys[kc].status = true;

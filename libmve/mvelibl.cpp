@@ -71,16 +71,16 @@ struct MemRec {
   bool dynamic;
 };
 
-static void MemInit(MemRec* m, unsigned size, void *p);
-static void *MemAlloc(MemRec* m, unsigned size);
-static void MemFree(MemRec* m);
+static void MemInit(MemRec *m, unsigned size, void *p);
+static void *MemAlloc(MemRec *m, unsigned size);
+static void MemFree(MemRec *m);
 
 void MVE_memCallbacks(void *(*fn_alloc)(unsigned size), void (*fn_free)(void *p)) {
   mem_alloc = fn_alloc;
   mem_free = fn_free;
 }
 
-static void MemFree(MemRec* m) {
+static void MemFree(MemRec *m) {
   if (m->dynamic && mem_free) {
     (*mem_free)(m->ptr);
     m->dynamic = false; // prevent from being freed again!
@@ -88,7 +88,7 @@ static void MemFree(MemRec* m) {
   m->size = 0;
 }
 
-static void MemInit(MemRec* m, unsigned size, void *p) {
+static void MemInit(MemRec *m, unsigned size, void *p) {
   if (!p)
     return;
 
@@ -98,7 +98,7 @@ static void MemInit(MemRec* m, unsigned size, void *p) {
   m->dynamic = false;
 }
 
-static void *MemAlloc(MemRec* m, unsigned size) {
+static void *MemAlloc(MemRec *m, unsigned size) {
   if (size <= m->size)
     return m->ptr;
 
@@ -596,10 +596,10 @@ static MemRec nf_mem_buf1;
 static MemRec nf_mem_buf2;
 
 // NextFrame parameters
-uint8_t nf_wqty = 0; // (width/SWIDTH)
-uint8_t nf_hqty = 0; // (height/SHEIGHT)
-uint8_t nf_fqty = 0; // Number of fields
-unsigned nf_hicolor = 0;   // HiColor (0:none,1:normal,2:swapped)
+uint8_t nf_wqty = 0;     // (width/SWIDTH)
+uint8_t nf_hqty = 0;     // (height/SHEIGHT)
+uint8_t nf_fqty = 0;     // Number of fields
+unsigned nf_hicolor = 0; // HiColor (0:none,1:normal,2:swapped)
 //  <derived quantities>
 unsigned nf_width = 0;      // wqty * SWIDTH
 unsigned nf_height = 0;     // hqty * SHEIGHT;
@@ -747,8 +747,8 @@ void nfHiColorDecomp(const uint8_t *comp, unsigned x, unsigned y, unsigned w, un
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfHiColorDecompChg(const uint16_t *chgs, const uint16_t *parms, const uint8_t *comp, unsigned x,
-                        unsigned y, unsigned w, unsigned h);
+void nfHiColorDecompChg(const uint16_t *chgs, const uint16_t *parms, const uint8_t *comp, unsigned x, unsigned y,
+                        unsigned w, unsigned h);
 
 // Non-HiColor versions
 
@@ -767,8 +767,8 @@ void nfHPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfDecompChg(const uint16_t *chgs, const uint16_t *parms, const uint8_t *comp, unsigned x,
-                 unsigned y, unsigned w, unsigned h);
+void nfDecompChg(const uint16_t *chgs, const uint16_t *parms, const uint8_t *comp, unsigned x, unsigned y, unsigned w,
+                 unsigned h);
 
 //---------------------------------------------------------------------
 // ShowFrame
@@ -845,13 +845,13 @@ static int sf_auto_mode = 0; // Current sf_auto mode.
 static void sfVGA(unsigned w, unsigned h, unsigned resw, unsigned resh);
 static void sfShowFrame(int dx, int dy, unsigned field);
 
-void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
-                        unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
-                        unsigned h, unsigned dstx, unsigned dsty, unsigned field);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w, unsigned h,
+                        unsigned dstx, unsigned dsty, unsigned field);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w, unsigned h,
+                        unsigned dstx, unsigned dsty, unsigned field);
 
-void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
-                          unsigned h, unsigned dstx, unsigned dsty, unsigned field);
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w, unsigned h,
+                          unsigned dstx, unsigned dsty, unsigned field);
 
 // Restrictions/Assumptions:
 //    64K >= WinSize >= WinGran
@@ -862,8 +862,8 @@ void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned s
 //	bl:  Window number (0 or 1)
 //	dx:  Window position in video memory in units of WinGran.
 //     on return, registers AX and DX are destroyed.
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
-                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr, uint32_t WinSize,
+                unsigned WinGran, void *SetBank, unsigned hicolor) {
   sf_ScreenWidth = w;
   sf_ScreenHeight = h;
   sf_ResolutionWidth = w;
@@ -966,8 +966,8 @@ void MVE_sfCallbacks(mve_cb_ShowFrame fn_ShowFrame) { sf_ShowFrame = fn_ShowFram
 void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty);
 
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
-                        unsigned dstx, unsigned dsty);
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs, unsigned dstx,
+                        unsigned dsty);
 
 static void sfShowFrameChg(int dx, int dy, uint16_t *chgs) { logLabel("StartShowChg"); }
 
@@ -1049,8 +1049,8 @@ void palLoadCompPalette(uint8_t *buf);
 
 void gfxVres(uint8_t misc, uint8_t *crtc);
 
-static void ForceVres2(uint8_t misc, unsigned vt, unsigned height, unsigned vrs /*vpos*/, unsigned _2t4,
-                       unsigned msl, unsigned bdr_b, unsigned bdr_t) {}
+static void ForceVres2(uint8_t misc, unsigned vt, unsigned height, unsigned vrs /*vpos*/, unsigned _2t4, unsigned msl,
+                       unsigned bdr_b, unsigned bdr_t) {}
 
 void MVE_ForceVres350(void) {}
 
@@ -1472,24 +1472,22 @@ void MVE_ReleaseMem(void) {
 //----------------------------------------------------------------------
 
 const char *MVE_strerror(int code) {
-  const char *errors[] = {
-                    "Movie aborted with special code",
-                    "Movie aborted",
-                    "Movie completed normally", // 0
-                    "Movie completed normally", //-1
-                    "File I/O error or Unable to allocate I/O buffers",
-                    "Unable to create timer",
-                    "Unable to allocate sound buffers",
-                    "Unable to allocate video buffers",
-                    "Insufficient screen resolution for movie",
-                    "Unable to setup graphics mode used by movie",
-                    "Invalid movie file",
-                    "Incorrect screen color mode",
-                    "StepMovie() without PrepMovie()",
-                    "Unable to initialize Linux Draw System",
-                    "Unable to lock window surface",
-                    "Unknown movie error code"
-  };
+  const char *errors[] = {"Movie aborted with special code",
+                          "Movie aborted",
+                          "Movie completed normally", // 0
+                          "Movie completed normally", //-1
+                          "File I/O error or Unable to allocate I/O buffers",
+                          "Unable to create timer",
+                          "Unable to allocate sound buffers",
+                          "Unable to allocate video buffers",
+                          "Insufficient screen resolution for movie",
+                          "Unable to setup graphics mode used by movie",
+                          "Invalid movie file",
+                          "Incorrect screen color mode",
+                          "StepMovie() without PrepMovie()",
+                          "Unable to initialize Linux Draw System",
+                          "Unable to lock window surface",
+                          "Unknown movie error code"};
 
   if (code >= MVE_CTL_EXIT + 1)
     code = MVE_CTL_EXIT + 1;
@@ -1521,10 +1519,10 @@ struct MVE_frStreamRec {
   uint8_t *nf_buf_cur;
   uint8_t *nf_buf_prv;
   // NextFrame parameters
-  uint8_t nf_wqty; // (width/SWIDTH)
-  uint8_t nf_hqty; // (height/SHEIGHT)
-  uint8_t nf_fqty; // Number of fields
-  unsigned nf_hicolor;   // HiColor (0:none,1:normal,2:swapped)
+  uint8_t nf_wqty;     // (width/SWIDTH)
+  uint8_t nf_hqty;     // (height/SHEIGHT)
+  uint8_t nf_fqty;     // Number of fields
+  unsigned nf_hicolor; // HiColor (0:none,1:normal,2:swapped)
   // NextFrame derived quantities
   unsigned nf_width;      // wqty * SWIDTH
   unsigned nf_height;     // hqty * SHEIGHT;
@@ -1534,7 +1532,6 @@ struct MVE_frStreamRec {
   // Palette
   uint8_t pal_tbl[3 * 256];
   unsigned pal_start, pal_count;
-
 };
 
 static void frLoad(MVE_frStream frs) {
@@ -1618,8 +1615,7 @@ MVE_frStream MVE_frOpen(unsigned (*fn_read)(int handle, void *buf, unsigned coun
   return frs;
 }
 
-int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, uint32_t *width, uint32_t *height,
-              uint32_t *hicolor) {
+int MVE_frGet(MVE_frStream frs, uint8_t **pBuf, uint32_t *width, uint32_t *height, uint32_t *hicolor) {
   MVE_frStreamRec save;
   uint8_t *p;
   unsigned len;

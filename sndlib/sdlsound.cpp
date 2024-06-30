@@ -255,7 +255,7 @@ int16_t lnxsound::FindFreeSoundSlot(float volume, int priority)
       sb = &sound_cache[throw_out_slot];
       StopSound(sb->m_unique_id, SKT_HOLD_UNTIL_STOP);
       mprintf(0, "DDSNDLIB: Replace sound (p:%d) with sound (p:%d) in slot %d\n", sb->play_info->priority, priority,
-               throw_out_slot);
+              throw_out_slot);
       return throw_out_slot;
     }
   }

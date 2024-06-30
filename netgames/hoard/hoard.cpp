@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1238,8 +1238,8 @@ void ReceiveHoardInv(uint8_t *data) {
       for (i = 0; i < size; i++) {
         DLLInvAddTypeID(x, OBJ_POWERUP, HoardID, -1, -1, 0, NULL);
       } // end for
-    }   // end if
-  }     // end for
+    } // end if
+  } // end for
 }
 
 // sends a hoard inventory packet to a player

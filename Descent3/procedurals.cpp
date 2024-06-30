@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -58,7 +58,6 @@
 #include <memory.h>
 #include "psrand.h"
 
-
 #define BRIGHT_COLOR 254
 #define PROC_SIZE 128
 #define TABSIZE 256
@@ -78,9 +77,10 @@ uint16_t ProcFadeTable[32768];
 #define NUM_WATER_SHADES 64
 uint16_t WaterProcTableHi[NUM_WATER_SHADES][256];
 uint8_t WaterProcTableLo[NUM_WATER_SHADES][256];
-const char *ProcNames[] = {"None",     "Line Lightning", "Sphere lightning", "Straight", "Rising Embers", "Random Embers",
-                     "Spinners", "Roamers",        "Fountain",         "Cone",     "Fall Right",    "Fall Left",
-                     "END"};
+const char *ProcNames[] = {
+    "None",     "Line Lightning", "Sphere lightning", "Straight", "Rising Embers", "Random Embers",
+    "Spinners", "Roamers",        "Fountain",         "Cone",     "Fall Right",    "Fall Left",
+    "END"};
 const char *WaterProcNames[] = {"None", "Height blob", "Sine Blob", "Random Raindrops", "Random Blobdrops", "END"};
 static uint8_t *ProcDestData;
 int pholdrand = 1;

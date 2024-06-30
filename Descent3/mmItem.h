@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ public:
 class mmInterface;
 // class mmItem
 class mmItem : public UIGadget {
-  char *m_text;  // text for item
+  char *m_text;    // text for item
   int16_t m_alpha; // alpha for text item
   int16_t m_satcount;
   tmmItemFX m_curfx; // current effect

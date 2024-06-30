@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1479,7 +1479,8 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
     img_handle = mng_GetGuaranteedWeaponPage(weaponpage->alternate_spawn_name, infile);
 
     if (img_handle < 0) {
-      mprintf(0, "Couldn't load alternate spawn weapon '%s' in AssignWeaponPage...\n", weaponpage->alternate_spawn_name);
+      mprintf(0, "Couldn't load alternate spawn weapon '%s' in AssignWeaponPage...\n",
+              weaponpage->alternate_spawn_name);
       weaponpointer->alternate_spawn_handle = -1;
     } else
       weaponpointer->alternate_spawn_handle = img_handle;
@@ -1548,8 +1549,7 @@ int mng_AssignWeaponPageToWeapon(mngs_weapon_page *weaponpage, int n, CFILE *inf
       sound_handle = mng_GetGuaranteedSoundPage(weaponpage->sound_name[i]);
 
       if (sound_handle < 0) {
-        mprintf(0, "Couldn't load sound file '%s' in AssignWeaponPage.  Weapon=%s\n",
-                weaponpage->sound_name[i],
+        mprintf(0, "Couldn't load sound file '%s' in AssignWeaponPage.  Weapon=%s\n", weaponpage->sound_name[i],
                 weaponpage->weapon_struct.name);
         weaponpointer->sounds[i] = SOUND_NONE_INDEX;
       } else

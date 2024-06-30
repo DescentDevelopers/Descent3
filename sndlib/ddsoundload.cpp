@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -112,8 +112,8 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
   // File pointer to sound file
   CFILE *cfptr;
 
-  char format_type[80];       // ASCII name of format type
-  uint16_t fmttag = 0;  // Numerical format type
+  char format_type[80];  // ASCII name of format type
+  uint16_t fmttag = 0;   // Numerical format type
   uint32_t ckid;         // Current chunk's ID
   uint32_t cksize;       // Current chunk's size in bytes
   uint32_t filesize;     // Size of the sound file
@@ -273,7 +273,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       // Currently, we only support PCM wave files
       if (fmttag != 0x0001) {
         mprintf(0, "SOUND LOADER: %s is a type %s wavefile, we only support WAVE_FORMAT_PCM waves.\n", filename,
-                 format_type);
+                format_type);
         goto error_state;
       }
 
@@ -281,7 +281,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       number_channels = cf_ReadShort(cfptr);
       if (number_channels != 1) {
         mprintf(0, "SOUND LOADER: Invalid number of channels(%d)in %s, we want mono samples only.\n", number_channels,
-                 filename);
+                filename);
         goto error_state;
       }
 
@@ -289,7 +289,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       samples_per_second = cf_ReadInt(cfptr);
       if (samples_per_second != 22050) {
         mprintf(0, "SOUND LOADER: Invalid sample per second(%d)in %s, we want 22k samples only.\n", samples_per_second,
-                 filename);
+                filename);
         goto error_state;
       }
 
@@ -303,7 +303,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
       bits_per_sample = cf_ReadShort(cfptr);
       if (bits_per_sample != 8 && bits_per_sample != 16) {
         mprintf(0, "SOUND LOADER: Invalid bits per sample(%d)in %s, we want 8 or 16 bit samples only.\n",
-                 bits_per_sample, filename);
+                bits_per_sample, filename);
         goto error_state;
       }
 
@@ -436,8 +436,7 @@ char SoundLoadWaveFile(const char *filename, float percent_volume, int sound_fil
     }
   } else if (SoundFiles[sound_file_index].sample_8bit == NULL && !f_high_quality) {
 
-    SoundFiles[sound_file_index].sample_8bit =
-        (uint8_t *)mem_malloc(SoundFiles[sound_file_index].sample_length);
+    SoundFiles[sound_file_index].sample_8bit = (uint8_t *)mem_malloc(SoundFiles[sound_file_index].sample_length);
 
     // Do the volume clipping with the high quality sound
     for (count = 0; count < (int)SoundFiles[sound_file_index].sample_length; count++) {

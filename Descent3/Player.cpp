@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -2039,7 +2039,6 @@ struct tDeathSeq {
   bool in_cockpit;
 
   tDeathSeq() { camera = NULL; };
-
 };
 
 static tDeathSeq Death[MAX_NET_PLAYERS];
@@ -2777,9 +2776,12 @@ void PlayerSpewGuidebot(object *parent, int type, int id) {
   obj->mtype.phys_info.flags = (PF_GRAVITY | PF_BOUNCE | PF_FIXED_ROT_VELOCITY);
   obj->mtype.phys_info.coeff_restitution = .25f;
 
-  obj->mtype.phys_info.rotvel.x = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.y = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-  obj->mtype.phys_info.rotvel.z = (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.x =
+      (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.y =
+      (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+  obj->mtype.phys_info.rotvel.z =
+      (float)((120000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
 
   obj->mtype.phys_info.num_bounces = 5;
 
@@ -2875,7 +2877,7 @@ int PlayerSpewObject(object *parent, int type, int id, int timed, void *sinfo) {
 // This is a terrible hack -- it maps powerup to multi-pack versions
 // This mapping should really be on the powerup page
 const char *powerup_multipacks[] = {"Concussion", "4packConc",   "Frag",   "4packFrag",
-                              "Guided",     "4packGuided", "Homing", "4packHoming"};
+                                    "Guided",     "4packGuided", "Homing", "4packHoming"};
 #define N_POWERUP_MULTIPACKS (sizeof(powerup_multipacks) / sizeof(*powerup_multipacks) / 2)
 
 // Returns the index of the multipack version of the specified powerup, or -1 if none
@@ -3728,7 +3730,8 @@ void DoEnergyToShields(int pnum) {
     return;
   }
 
-  amount = std::min({Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY, (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE});
+  amount = std::min({Frametime * CONVERTER_RATE, Players[pnum].energy - INITIAL_ENERGY,
+                     (MAX_SHIELDS - Objects[Players[pnum].objnum].shields) * CONVERTER_SCALE});
 
   Players[pnum].energy -= amount;
 

@@ -147,14 +147,12 @@ std::array<uint8_t, 16> MD5::digest() const noexcept {
   place_length(&buf[56]);
   round(sums, buf.data());
 
-  return {static_cast<uint8_t>(sums[0]),       static_cast<uint8_t>(sums[0] >> 8),
-          static_cast<uint8_t>(sums[0] >> 16), static_cast<uint8_t>(sums[0] >> 24),
-          static_cast<uint8_t>(sums[1]),       static_cast<uint8_t>(sums[1] >> 8),
-          static_cast<uint8_t>(sums[1] >> 16), static_cast<uint8_t>(sums[1] >> 24),
-          static_cast<uint8_t>(sums[2]),       static_cast<uint8_t>(sums[2] >> 8),
-          static_cast<uint8_t>(sums[2] >> 16), static_cast<uint8_t>(sums[2] >> 24),
-          static_cast<uint8_t>(sums[3]),       static_cast<uint8_t>(sums[3] >> 8),
-          static_cast<uint8_t>(sums[3] >> 16), static_cast<uint8_t>(sums[3] >> 24)};
+  return {static_cast<uint8_t>(sums[0]),       static_cast<uint8_t>(sums[0] >> 8),  static_cast<uint8_t>(sums[0] >> 16),
+          static_cast<uint8_t>(sums[0] >> 24), static_cast<uint8_t>(sums[1]),       static_cast<uint8_t>(sums[1] >> 8),
+          static_cast<uint8_t>(sums[1] >> 16), static_cast<uint8_t>(sums[1] >> 24), static_cast<uint8_t>(sums[2]),
+          static_cast<uint8_t>(sums[2] >> 8),  static_cast<uint8_t>(sums[2] >> 16), static_cast<uint8_t>(sums[2] >> 24),
+          static_cast<uint8_t>(sums[3]),       static_cast<uint8_t>(sums[3] >> 8),  static_cast<uint8_t>(sums[3] >> 16),
+          static_cast<uint8_t>(sums[3] >> 24)};
 }
 
 void MD5::update(float valin) noexcept {

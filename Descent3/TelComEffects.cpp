@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -459,7 +459,7 @@ void EfxInit(tceffect *tce, bool tab_stop, bool gets_focus) {
         TCEffects[effect_num].next = next;
       }
     } // end else
-  }   // end else
+  } // end else
 
   tce->pos_x = tce->pos_y = 0;
   tce->text_buffer = NULL;
@@ -691,7 +691,7 @@ char *format(const char *fmt, ...) {
   return tempbuffer;
 }
 
-bool CreateTextEffect(TCTEXTDESC* desc, const char *text, int monitor, int screen, int id) {
+bool CreateTextEffect(TCTEXTDESC *desc, const char *text, int monitor, int screen, int id) {
   ASSERT(desc);
   ASSERT(text);
 
@@ -760,7 +760,7 @@ bool CreateTextEffect(TCTEXTDESC* desc, const char *text, int monitor, int scree
   return false;
 }
 
-bool CreateBitmapEffect(TCBMPDESC* desc, int monitor, int screen, int id) {
+bool CreateBitmapEffect(TCBMPDESC *desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -822,7 +822,7 @@ bool CreateBitmapEffect(TCBMPDESC* desc, int monitor, int screen, int id) {
   return false;
 }
 
-bool CreateMovieEffect(TCMOVIEDESC* desc, int monitor, int screen, int id) {
+bool CreateMovieEffect(TCMOVIEDESC *desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -864,7 +864,7 @@ bool CreateMovieEffect(TCMOVIEDESC* desc, int monitor, int screen, int id) {
 }
 
 extern tTelComInfo Telcom_system;
-bool CreateBackgroundEffect(TCBKGDESC* desc, int monitor, int screen, int id) {
+bool CreateBackgroundEffect(TCBKGDESC *desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -903,7 +903,7 @@ bool CreateBackgroundEffect(TCBKGDESC* desc, int monitor, int screen, int id) {
   return false;
 }
 
-bool CreatePolyModelEffect(TCPOLYDESC* desc, int monitor, int screen, int id) {
+bool CreatePolyModelEffect(TCPOLYDESC *desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -917,7 +917,7 @@ bool CreatePolyModelEffect(TCPOLYDESC* desc, int monitor, int screen, int id) {
   return false;
 }
 
-bool CreateSoundEffect(TCSNDDESC* desc, int monitor, int screen, int id) {
+bool CreateSoundEffect(TCSNDDESC *desc, int monitor, int screen, int id) {
   ASSERT(desc);
   int efxtype = -1;
   switch (desc->type) {
@@ -946,7 +946,7 @@ bool CreateSoundEffect(TCSNDDESC* desc, int monitor, int screen, int id) {
   return false;
 }
 
-int CreateButtonEffect(TCBUTTONDESC* desc, int monitor, int screen, int id) {
+int CreateButtonEffect(TCBUTTONDESC *desc, int monitor, int screen, int id) {
   ASSERT(desc);
   ASSERT(monitor == MONITOR_MAIN);
 

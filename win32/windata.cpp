@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -257,7 +257,9 @@ bool oeWin32AppDatabase::write(const char *label, int entry) {
 }
 
 // get the current user's name from the os
-void oeWin32AppDatabase::get_user_name(char *buffer, size_t *size) { GetUserName(buffer, reinterpret_cast<LPDWORD>(size)); }
+void oeWin32AppDatabase::get_user_name(char *buffer, size_t *size) {
+  GetUserName(buffer, reinterpret_cast<LPDWORD>(size));
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 // pass name of dll which contains desired language

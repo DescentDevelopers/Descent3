@@ -80,8 +80,8 @@ void MVE_dsbSetPan(int32_t lPan);
 // Under windows, the information provided by this function
 // is just used for window centering and for determining
 // how and when to do palette callbacks.
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
-                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr, uint32_t WinSize,
+                unsigned WinGran, void *SetBank, unsigned hicolor);
 
 // This function alters the display from 640x480 or 640x400 to 640x350 resolution.
 void MVE_ForceVres350(void);
@@ -98,9 +98,8 @@ void MVE_ForceVresHalf(void);
 //	 or modify which portions of the screen are updated.
 // This function replaces calls to the default MVE_ShowFrame function
 //  with calls to your function, which can itself call MVE_ShowFrame.
-typedef void (*mve_cb_ShowFrame)(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
-                                 uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
-                                 uint32_t hicolor);
+typedef void (*mve_cb_ShowFrame)(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy, uint32_t w,
+                                 uint32_t h, uint32_t dstx, uint32_t dsty, uint32_t hicolor);
 void MVE_sfCallbacks(mve_cb_ShowFrame fn_ShowFrame);
 
 typedef void mve_cb_SetPalette(uint8_t *p, unsigned start, unsigned count);
@@ -195,7 +194,7 @@ void MVE_rmEndMovie(void);
 //  applications, an interface to obtain palette information has
 //  been provided. This system is intended for use by video sprites
 //  played off of the hard drive or out of memory.
-typedef struct MVE_frStreamRec* MVE_frStream;
+typedef struct MVE_frStreamRec *MVE_frStream;
 
 // MVE_frOpen
 //  Before calling this function, be sure to call MVE_memCallbacks()

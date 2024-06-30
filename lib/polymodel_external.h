@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -126,7 +126,6 @@ struct lightmap_object {
   int16_t num_faces[MAX_SUBOBJECTS];
   lightmap_object_face *lightmap_faces[MAX_SUBOBJECTS];
   uint8_t used;
-
 };
 
 struct polyface {
@@ -179,7 +178,7 @@ struct bsp_info {
   int num_faces; // amount of faces (NEWSTYLE);
 
   int8_t children[MAX_SUBOBJECTS]; // children of this submodel
-  int parent;                     // what is parent for each submodel
+  int parent;                      // what is parent for each submodel
   uint8_t num_children;
 
   vector min;
@@ -193,9 +192,9 @@ struct bsp_info {
   vector *keyframe_axis; // the axis of rotation for each keyframe
   int *keyframe_angles;  // The destination angles for each key frame
   vector *keyframe_pos;
-  matrix *keyframe_matrix; // the combined rotation matrices up to frame n
-  uint16_t *tick_pos_remap;  // For looking up keyframes fast
-  uint16_t *tick_ang_remap;  // For looking up keyframes fast
+  matrix *keyframe_matrix;  // the combined rotation matrices up to frame n
+  uint16_t *tick_pos_remap; // For looking up keyframes fast
+  uint16_t *tick_ang_remap; // For looking up keyframes fast
   int *rot_start_time;
   int *pos_start_time;
 
@@ -227,9 +226,9 @@ struct bsp_info {
 struct poly_model {
   uint16_t used;
 
-  int flags;       // PMF_flags, see above
+  int flags;         // PMF_flags, see above
   uint8_t new_style; // if 1, then this polymodel is in the new outrage format (oof)
-  int id;          // what the polygon model number is.  (Index in Poly_models)
+  int id;            // what the polygon model number is.  (Index in Poly_models)
   int version;
   char name[PAGENAME_LEN];
 
@@ -270,7 +269,6 @@ struct poly_model {
   poly_wb_info *poly_wb; // array of weapon batteries
 
   int *render_order; // internal use
-
 };
 
 // Which kind of lighting model for this polymodel
@@ -326,7 +324,6 @@ struct polymodel_effect {
   float glow_size_scalar;
 
   float glow_r, glow_g, glow_b;
-
 };
 
 #endif

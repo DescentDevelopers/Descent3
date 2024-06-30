@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -471,7 +471,7 @@ struct tHUDItem {
   int16_t x, y;
   int16_t xa, ya; // auxillary points
   int16_t xb, yb;
-  int16_t tx, ty;             // text version x and y.
+  int16_t tx, ty;           // text version x and y.
   float grscalex, grscaley; // used to scale graphics.
 
   uint8_t id;    // id number.

@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1482,93 +1482,93 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 88
 const char *Object_names[NUM_OBJECT_NAMES] = {"Bay 62 FusableLink",
-                                        "Bay 62 Lance1",
-                                        "Bay 62 Lance2",
-                                        "Engine Spew 1",
-                                        "Engine Spew 2",
-                                        "Intake1",
-                                        "Intake2",
-                                        "Engine1",
-                                        "Engine2",
-                                        "Engine3",
-                                        "Engine Spew 3",
-                                        "Core Switch3",
-                                        "Core Switch2",
-                                        "Core Switch1",
-                                        "Q Door Eng",
-                                        "Lvl E Q Door",
-                                        "Leader Trooper",
-                                        "Eng Cam2",
-                                        "Eng Viewer",
-                                        "Primer Spew 1",
-                                        "Primer Spew 2",
-                                        "Primer Spew 3",
-                                        "Primer Fuse",
-                                        "Exhaust Cooler",
-                                        "Exhaust Patrol1",
-                                        "Exhaust Patrol2",
-                                        "Acc FloorSpew",
-                                        "Aft Well Turret1",
-                                        "Aft Well Commander",
-                                        "Aft Well Turret2",
-                                        "Aft Matcen Switch",
-                                        "Q Door",
-                                        "Q Door D deck",
-                                        "Q Door Exp Well",
-                                        "Q Door B Deck",
-                                        "Q Door C Acc",
-                                        "Q Door Acc1",
-                                        "Q Door Acc2",
-                                        "Q Door Core Acc",
-                                        "Q Door E Deck",
-                                        "Q Door 4way Acc",
-                                        "Q Door Acc0",
-                                        "Q Door A Deck",
-                                        "Q Door D Deck2",
-                                        "Bay62 Landing Door",
-                                        "62Banging",
-                                        "Core Link",
-                                        "Bay 36 Link",
-                                        "Main Deck Link",
-                                        "Bay 62 Data Link",
-                                        "AftMatcen Head Lin",
-                                        "Stern Data Arm",
-                                        "Bad White",
-                                        "Bad White Cage",
-                                        "Bad Tailbot",
-                                        "Bad Tailbot Cage",
-                                        "Air Spewer1",
-                                        "Air Spewer2",
-                                        "Floor Grid Spewer",
-                                        "Floor Spewer",
-                                        "Jeffrey1 Spew",
-                                        "Jeffry 2 Spew",
-                                        "Engine Core Aux Do",
-                                        "Jugg Storage",
-                                        "Recon Interface",
-                                        "ST Hall Monitor",
-                                        "Bay 36 Cam",
-                                        "Aft Well Cam",
-                                        "Saw U Cam",
-                                        "DeathStar Hall Cam",
-                                        "Main Hall Josh",
-                                        "A Deck Cam",
-                                        "Informant Scrubber",
-                                        "Aft Matcen Cam",
-                                        "Main Deck Cam",
-                                        "Core Cam",
-                                        "Bay 62 Matcen Fuse",
-                                        "Missile Exhaust",
-                                        "Spyhunter1",
-                                        "Sub Squid",
-                                        "Josh Act",
-                                        "FlameRas1",
-                                        "FlameRas2",
-                                        "ST Hall Monitor2",
-                                        "ST Hallmonitor3",
-                                        "ST HallMonitor4",
-                                        "DatShip1",
-                                        "Aft Matcen Hole"};
+                                              "Bay 62 Lance1",
+                                              "Bay 62 Lance2",
+                                              "Engine Spew 1",
+                                              "Engine Spew 2",
+                                              "Intake1",
+                                              "Intake2",
+                                              "Engine1",
+                                              "Engine2",
+                                              "Engine3",
+                                              "Engine Spew 3",
+                                              "Core Switch3",
+                                              "Core Switch2",
+                                              "Core Switch1",
+                                              "Q Door Eng",
+                                              "Lvl E Q Door",
+                                              "Leader Trooper",
+                                              "Eng Cam2",
+                                              "Eng Viewer",
+                                              "Primer Spew 1",
+                                              "Primer Spew 2",
+                                              "Primer Spew 3",
+                                              "Primer Fuse",
+                                              "Exhaust Cooler",
+                                              "Exhaust Patrol1",
+                                              "Exhaust Patrol2",
+                                              "Acc FloorSpew",
+                                              "Aft Well Turret1",
+                                              "Aft Well Commander",
+                                              "Aft Well Turret2",
+                                              "Aft Matcen Switch",
+                                              "Q Door",
+                                              "Q Door D deck",
+                                              "Q Door Exp Well",
+                                              "Q Door B Deck",
+                                              "Q Door C Acc",
+                                              "Q Door Acc1",
+                                              "Q Door Acc2",
+                                              "Q Door Core Acc",
+                                              "Q Door E Deck",
+                                              "Q Door 4way Acc",
+                                              "Q Door Acc0",
+                                              "Q Door A Deck",
+                                              "Q Door D Deck2",
+                                              "Bay62 Landing Door",
+                                              "62Banging",
+                                              "Core Link",
+                                              "Bay 36 Link",
+                                              "Main Deck Link",
+                                              "Bay 62 Data Link",
+                                              "AftMatcen Head Lin",
+                                              "Stern Data Arm",
+                                              "Bad White",
+                                              "Bad White Cage",
+                                              "Bad Tailbot",
+                                              "Bad Tailbot Cage",
+                                              "Air Spewer1",
+                                              "Air Spewer2",
+                                              "Floor Grid Spewer",
+                                              "Floor Spewer",
+                                              "Jeffrey1 Spew",
+                                              "Jeffry 2 Spew",
+                                              "Engine Core Aux Do",
+                                              "Jugg Storage",
+                                              "Recon Interface",
+                                              "ST Hall Monitor",
+                                              "Bay 36 Cam",
+                                              "Aft Well Cam",
+                                              "Saw U Cam",
+                                              "DeathStar Hall Cam",
+                                              "Main Hall Josh",
+                                              "A Deck Cam",
+                                              "Informant Scrubber",
+                                              "Aft Matcen Cam",
+                                              "Main Deck Cam",
+                                              "Core Cam",
+                                              "Bay 62 Matcen Fuse",
+                                              "Missile Exhaust",
+                                              "Spyhunter1",
+                                              "Sub Squid",
+                                              "Josh Act",
+                                              "FlameRas1",
+                                              "FlameRas2",
+                                              "ST Hall Monitor2",
+                                              "ST Hallmonitor3",
+                                              "ST HallMonitor4",
+                                              "DatShip1",
+                                              "Aft Matcen Hole"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 3
@@ -1577,45 +1577,45 @@ int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 40
 const char *Trigger_names[NUM_TRIGGER_NAMES] = {"Bay 62 PersonDr",
-                                          "Main Deck Ppl Door",
-                                          "Person Door2",
-                                          "Ppl Door Sub",
-                                          "Primer Damaged",
-                                          "CoreEffect",
-                                          "E Acc Matcen Trigge",
-                                          "Core Forcefield Acc",
-                                          "Missile1a",
-                                          "MHull-C",
-                                          "MHull-B",
-                                          "MHull-A",
-                                          "MHull-9",
-                                          "MHull-8",
-                                          "MHull-7",
-                                          "MHull-6",
-                                          "MHull-5",
-                                          "MHull-4",
-                                          "MHull-3",
-                                          "MHull-2",
-                                          "MHull-1",
-                                          "MCargo-4",
-                                          "MCargo-3",
-                                          "MCargo-2",
-                                          "MCargo-1",
-                                          "MStern-5",
-                                          "MStern-4",
-                                          "MStern-3",
-                                          "MStern-2",
-                                          "MStern-1",
-                                          "MAft-7",
-                                          "MAft-6",
-                                          "MAft-5",
-                                          "MAft-4",
-                                          "MAft-3",
-                                          "MAft-2",
-                                          "MAft-1",
-                                          "FlameRasTrigger",
-                                          "StreamAudio1",
-                                          "StreamAudio2"};
+                                                "Main Deck Ppl Door",
+                                                "Person Door2",
+                                                "Ppl Door Sub",
+                                                "Primer Damaged",
+                                                "CoreEffect",
+                                                "E Acc Matcen Trigge",
+                                                "Core Forcefield Acc",
+                                                "Missile1a",
+                                                "MHull-C",
+                                                "MHull-B",
+                                                "MHull-A",
+                                                "MHull-9",
+                                                "MHull-8",
+                                                "MHull-7",
+                                                "MHull-6",
+                                                "MHull-5",
+                                                "MHull-4",
+                                                "MHull-3",
+                                                "MHull-2",
+                                                "MHull-1",
+                                                "MCargo-4",
+                                                "MCargo-3",
+                                                "MCargo-2",
+                                                "MCargo-1",
+                                                "MStern-5",
+                                                "MStern-4",
+                                                "MStern-3",
+                                                "MStern-2",
+                                                "MStern-1",
+                                                "MAft-7",
+                                                "MAft-6",
+                                                "MAft-5",
+                                                "MAft-4",
+                                                "MAft-3",
+                                                "MAft-2",
+                                                "MAft-1",
+                                                "FlameRasTrigger",
+                                                "StreamAudio1",
+                                                "StreamAudio2"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
@@ -1630,20 +1630,20 @@ int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 13
 const char *Path_names[NUM_PATH_NAMES] = {"AFTMatcen Cine", "EndLevelCamPath",  "PlayerEndPath", "Aft Matcen1",
-                                    "AftMatcenArt2",  "AftMatcenArt3",    "AftMatcenArt1", "AftMatcenSwCam",
-                                    "LeaderCamPath",  "StormtrooperCine", "CamIntroPath",  "PlayerIntroPath",
-                                    "Dat Ship1"};
+                                          "AftMatcenArt2",  "AftMatcenArt3",    "AftMatcenArt1", "AftMatcenSwCam",
+                                          "LeaderCamPath",  "StormtrooperCine", "CamIntroPath",  "PlayerIntroPath",
+                                          "Dat Ship1"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 9
 const char *Matcen_names[NUM_MATCEN_NAMES] = {"Aft Matcen1",    "Aft Matcen2",      "Aft Matcen3",
-                                        "Bay 62 Matcen1", "Bay 62 Matcen2",   "Bay 62 Matcen3",
-                                        "Bay 62 Matcen4", "Cargo Acc Matcen", "Aft Matcen4"};
+                                              "Bay 62 Matcen1", "Bay 62 Matcen2",   "Bay 62 Matcen3",
+                                              "Bay 62 Matcen4", "Cargo Acc Matcen", "Aft Matcen4"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 5
 const char *Goal_names[NUM_GOAL_NAMES] = {"ShutdownEngineCore", "Disable Aft Matcen", "Destroy StormTrooper Leader",
-                                    "Eliminate Remaining StormTroopers", "Reduce Infected Robot Threat"};
+                                          "Eliminate Remaining StormTroopers", "Reduce Infected Robot Threat"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 39

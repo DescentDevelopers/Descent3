@@ -215,11 +215,9 @@ void IceKey::encrypt(const uint8_t *ptext, uint8_t *ctext) const {
   int i;
   uint32_t l, r;
 
-  l = (((uint32_t)ptext[0]) << 24) | (((uint32_t)ptext[1]) << 16) | (((uint32_t)ptext[2]) << 8) |
-      ptext[3];
+  l = (((uint32_t)ptext[0]) << 24) | (((uint32_t)ptext[1]) << 16) | (((uint32_t)ptext[2]) << 8) | ptext[3];
 
-  r = (((uint32_t)ptext[4]) << 24) | (((uint32_t)ptext[5]) << 16) | (((uint32_t)ptext[6]) << 8) |
-      ptext[7];
+  r = (((uint32_t)ptext[4]) << 24) | (((uint32_t)ptext[5]) << 16) | (((uint32_t)ptext[6]) << 8) | ptext[7];
 
   for (i = 0; i < _rounds; i += 2) {
     l ^= ice_f(r, &_keysched[i]);
@@ -242,10 +240,8 @@ void IceKey::decrypt(const uint8_t *ctext, uint8_t *ptext) const {
   int i;
   uint32_t l, r;
 
-  l = (((uint32_t)ctext[0]) << 24) | (((uint32_t)ctext[1]) << 16) | (((uint32_t)ctext[2]) << 8) |
-      ctext[3];
-  r = (((uint32_t)ctext[4]) << 24) | (((uint32_t)ctext[5]) << 16) | (((uint32_t)ctext[6]) << 8) |
-      ctext[7];
+  l = (((uint32_t)ctext[0]) << 24) | (((uint32_t)ctext[1]) << 16) | (((uint32_t)ctext[2]) << 8) | ctext[3];
+  r = (((uint32_t)ctext[4]) << 24) | (((uint32_t)ctext[5]) << 16) | (((uint32_t)ctext[6]) << 8) | ctext[7];
 
   for (i = _rounds - 1; i > 0; i -= 2) {
     l ^= ice_f(r, &_keysched[i]);

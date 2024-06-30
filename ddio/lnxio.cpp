@@ -109,30 +109,30 @@ void ddio_DebugMessage(unsigned err, char *fmt, ...) {
 bool ddio_GetBinaryPath(char *exec_path, size_t len) {
 #ifdef MACOSX
   if (exec_path == NULL || len == 0) {
-   fprintf(stderr, "Invalid arguments\n");
-   return false;
+    fprintf(stderr, "Invalid arguments\n");
+    return false;
   }
 
   uint32_t size = (uint32_t)len;
   if (_NSGetExecutablePath(exec_path, &size) != 0) {
-   fprintf(stderr, "Buffer too small; need size %u\n", size);
-   return false;
+    fprintf(stderr, "Buffer too small; need size %u\n", size);
+    return false;
   }
 #elif defined(__LINUX__)
   if (realpath("/proc/self/exe", exec_path) == NULL) {
-   perror("realpath");
-   return false;
+    perror("realpath");
+    return false;
   }
 #else
   if (GetModuleFileName(NULL, exec_path, len) == 0) {
-  DWORD error = GetLastError();
-  Error("GetModuleFileName failed!");
-  return false;
+    DWORD error = GetLastError();
+    Error("GetModuleFileName failed!");
+    return false;
   }
   exec_path[len - 1] = '\0';
   return true;
 
 #endif
- exec_path[len - 1] = '\0';
- return true;
+  exec_path[len - 1] = '\0';
+  return true;
 }

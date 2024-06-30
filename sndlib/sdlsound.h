@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef __LINUX_DD_SOUND_H_
 #define __LINUX_DD_SOUND_H_
@@ -82,8 +82,8 @@ public:
   int PlayStream(play_information *play_info) override;
 
   void SetListener(pos_state *cur_pos) override;
-  int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume,
-                          bool f_looped, float reverb = 0.5f) override;
+  int PlaySound3d(play_information *play_info, int sound_index, pos_state *cur_pos, float master_volume, bool f_looped,
+                  float reverb = 0.5f) override;
   void AdjustSound(int sound_uid, float f_volume, float f_pan, uint16_t frequency) override;
   void AdjustSound(int sound_uid, pos_state *cur_pos, float adjusted_volume, float reverb = 0.5f) override;
 
@@ -118,7 +118,7 @@ public:
   bool SetGlobalReverbProperties(float volume, float damping, float decay) override;
 
   bool GetDeviceSettings(SDL_AudioDeviceID *sound_device, uint32_t *freq, uint32_t *bit_depth,
-                                 uint32_t *channels) const;
+                         uint32_t *channels) const;
 
   friend void lnxsound_SetError(int code);
   friend void lnxsound_ErrorText(const char *fmt, ...);

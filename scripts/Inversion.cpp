@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -580,24 +580,27 @@ const char **Door_names = NULL;
 int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 10
-const char *Object_names[NUM_OBJECT_NAMES] = {"BlueVirusSpark", "RedVirusSpark", "RSwitch-12", "RSwitch-11", "RSwitch-22",
-                                        "RSwitch-21",     "BSwitch-22",    "BSwitch-21", "BSwitch-12", "BSwitch-11"};
+const char *Object_names[NUM_OBJECT_NAMES] = {"BlueVirusSpark", "RedVirusSpark", "RSwitch-12", "RSwitch-11",
+                                              "RSwitch-22",     "RSwitch-21",    "BSwitch-22", "BSwitch-21",
+                                              "BSwitch-12",     "BSwitch-11"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 10
 const char *Room_names[NUM_ROOM_NAMES] = {"BlueSpark", "BlueAccess-1", "RedSpark",  "RedAccess-1", "Wind-2",
-                                    "Wind-1",    "RZapper-1",    "RZapper-2", "BZapper-2",   "BZapper-1"};
+                                          "Wind-1",    "RZapper-1",    "RZapper-2", "BZapper-2",   "BZapper-1"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 12
-const char *Trigger_names[NUM_TRIGGER_NAMES] = {"BStatic-4", "BStatic-3", "BStatic-2", "BStatic-1", "Static-4", "Static-3",
-                                          "Static-2",  "Static-1",  "BZapper-2", "BZapper-1", "Zapper-2", "Zapper-1"};
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"BStatic-4", "BStatic-3", "BStatic-2", "BStatic-1",
+                                                "Static-4",  "Static-3",  "Static-2",  "Static-1",
+                                                "BZapper-2", "BZapper-1", "Zapper-2",  "Zapper-1"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 5
-const char *Sound_names[NUM_SOUND_NAMES] = {"AmbPlasma21", "Lightning", "expMissilePlasmic1", "AmbSwitch31", "AmbSwitch11"};
+const char *Sound_names[NUM_SOUND_NAMES] = {"AmbPlasma21", "Lightning", "expMissilePlasmic1", "AmbSwitch31",
+                                            "AmbSwitch11"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ public:
   node *pathnodes;
   int num_nodes;           // how many nodes in this path?
   char name[PAGENAME_LEN]; // the name of this path
-  uint8_t flags;             // special properties of this path
+  uint8_t flags;           // special properties of this path
   bool used;               // if this path is in use
 };
 

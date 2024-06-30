@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -101,8 +101,8 @@ class oeApplication;
 */
 
 struct ddgr_init_info {
-  oeApplication *obj;  // the app object created by app calling
-  char *subsystem;     // subsystem name (i.e. 'DirectDraw', 'GDI')
+  oeApplication *obj;    // the app object created by app calling
+  char *subsystem;       // subsystem name (i.e. 'DirectDraw', 'GDI')
   uint16_t windowed : 1; // are we running in a fullscreen or windowed mode
   uint16_t debug : 1;    // are we running in debug mode?
 };
@@ -167,8 +167,8 @@ struct ddgr_surface {
   void *obj;               // internal structure info to library
   char name[SURF_NAMELEN]; // name
   int w, h, bpp;           // width, height and bit depth
-  uint16_t type;             // how driver handles this surface
-  uint16_t flags;            // colorkeying, etc.
+  uint16_t type;           // how driver handles this surface
+  uint16_t flags;          // colorkeying, etc.
   int locks;               // lock count.
 };
 

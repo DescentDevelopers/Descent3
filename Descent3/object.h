@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -705,7 +705,8 @@ extern int16_t BigObjectList[MAX_BIG_OBJECTS]; // DAJ_MR utb int
  */
 
 // Set the dead flag for an object
-static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove = false, bool play_sound_on_clients = false);
+static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove = false,
+                                     bool play_sound_on_clients = false);
 static inline void SetObjectDeadFlag(object *obj, bool tell_clients_to_remove, bool play_sound_on_clients) {
   int objnum = OBJNUM(obj);
   ASSERT(objnum != -1);

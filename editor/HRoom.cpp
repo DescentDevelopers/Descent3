@@ -820,7 +820,8 @@ void AddEdgeInsert(int v0, int v1, int new_v) {
 //					inbuf - the clipped polygon is written to this buffer
 //					inv - the number of verts in inbuf is written here
 //					outbuf - the new polygon created by the part of the input polygon that was
-//clipped away 					onv - the number of verys in outbuf 					num_vertices - pointer to the number of verts in the vertices array
+// clipped away 					onv - the number of verys in outbuf
+// num_vertices - pointer to the number of verts in the vertices array
 void ClipAgainstEdge(int nv, int16_t *vertnums, vertex *vertices, int *num_vertices, vector *v0, vector *v1,
                      vector *normal, int16_t *inbuf, int *inv, int16_t *outbuf, int *onv) {
   int i, prev, next, check;
@@ -2835,7 +2836,7 @@ bool CombineRooms(room *base_rp, room *att_rp) {
 // Creates a an external room and links the specified faces to it
 // Parameters:	rp - the room to connect to the new room
 //					nfaces - how many faces connect to the new room (this becomes the number of
-//portals) 					facenums - the list of faces to connect
+// portals) 					facenums - the list of faces to connect
 void LinkToExternalRoom(room *rp, int nfaces, int *facenums) {
   int vert_xlate[MAX_VERTS_PER_ROOM];
   int v, i, nverts = 0;

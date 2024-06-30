@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -94,7 +94,6 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 #include <string.h>
-
 
 PInfo::PInfo(int slot) {
   m_slot = slot;
@@ -280,16 +279,16 @@ void PInfo::ResetAll(void) {
 int PInfo::GetExtraInfoSize(void) {
   int size = 0;
 
-  size += sizeof(float);  // extrainfo.last_kill_time
-  size += sizeof(float);  // extrainfo.last_death_time
-  size += sizeof(float);  // extra_info.observer_time
-  size += sizeof(float);  // extrainfo.kill_time
-  size += sizeof(float);  // extrainfo.death_time
+  size += sizeof(float);    // extrainfo.last_kill_time
+  size += sizeof(float);    // extrainfo.last_death_time
+  size += sizeof(float);    // extra_info.observer_time
+  size += sizeof(float);    // extrainfo.kill_time
+  size += sizeof(float);    // extrainfo.death_time
   size += sizeof(uint16_t); // extrainfo.kills_in_a_row
   size += sizeof(uint16_t); // extrainfo.deaths_in_a_row
-  size += sizeof(int8_t);  // extrainfo.last_kill_num
-  size += sizeof(int8_t);  // extrainfo.last_death_num
-  size += sizeof(char);   // extrainfo.got_revenge
+  size += sizeof(int8_t);   // extrainfo.last_kill_num
+  size += sizeof(int8_t);   // extrainfo.last_death_num
+  size += sizeof(char);     // extrainfo.got_revenge
 
   return size;
 }

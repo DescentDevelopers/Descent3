@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -54,37 +54,37 @@ int Num_object_ids[MAX_OBJECT_TYPES];
 // #ifdef _WIN32
 // char *Static_object_names[]={TBL_GENERIC("GuideBot"),TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
 // #else
-const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk"),TBL_GENERIC("GuideBotRed")};
+const char *Static_object_names[] = {TBL_GENERIC("GuideBot"), TBL_GENERIC("ChaffChunk"), TBL_GENERIC("GuideBotRed")};
 // #endif
 
 #define NUM_STATIC_OBJECTS (sizeof(Static_object_names) / sizeof(*Static_object_names))
 
 #ifdef EDITOR
-const char * const Movement_class_names[] = {"Standing", "Flying", "Rolling", "Walking", "Jumping"};
-const char * const Anim_state_names[] = {"Alert",
-                            "Death",
-                            "Fire Missile 1",
-                            "Missile Recoil 1",
-                            "Fire Missile 2",
-                            "Missile Recoil 2",
-                            "Melee 1",
-                            "Melee Recoil 1",
-                            "Melee 2",
-                            "Melee Recoil 2",
-                            "Idle",
-                            "Quirk",
-                            "Flinch",
-                            "Taunt",
-                            "To Standing Idle",
-                            "To Flying Idle",
-                            "To Rolling Idle",
-                            ";To Walking Idle",
-                            "To Jumping Idle",
-                            "Goto standing",
-                            "Goto flying",
-                            "Goto rolling",
-                            "Goto walking",
-                            "Goto jumping"};
+const char *const Movement_class_names[] = {"Standing", "Flying", "Rolling", "Walking", "Jumping"};
+const char *const Anim_state_names[] = {"Alert",
+                                        "Death",
+                                        "Fire Missile 1",
+                                        "Missile Recoil 1",
+                                        "Fire Missile 2",
+                                        "Missile Recoil 2",
+                                        "Melee 1",
+                                        "Melee Recoil 1",
+                                        "Melee 2",
+                                        "Melee Recoil 2",
+                                        "Idle",
+                                        "Quirk",
+                                        "Flinch",
+                                        "Taunt",
+                                        "To Standing Idle",
+                                        "To Flying Idle",
+                                        "To Rolling Idle",
+                                        ";To Walking Idle",
+                                        "To Jumping Idle",
+                                        "Goto standing",
+                                        "Goto flying",
+                                        "Goto rolling",
+                                        "Goto walking",
+                                        "Goto jumping"};
 #endif
 
 // Sets all objects to unused

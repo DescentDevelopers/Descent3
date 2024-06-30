@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -301,7 +301,6 @@
 #define CFG_AXIS_SENS_RANGE 20
 const int16_t UID_JOYCFG = 0x1000;
 
-
 //	Setup of config screens.
 #define CCITEM_WPN_X 0
 #define CCITEM_WPN_Y 20
@@ -403,7 +402,8 @@ t_cfg_element Cfg_joy_elements[] = {{-1, CtlText_WeaponGroup, CCITEM_WPN_X2, CCI
                                     {ctfBANK_RIGHTBUTTON, CtlText_BankRight, 0, 0}};
 #define N_JOY_CFG_FN (sizeof(Cfg_joy_elements) / sizeof(t_cfg_element))
 #define N_KEY_CFG_FN (sizeof(Cfg_key_elements) / sizeof(t_cfg_element))
-static void ctl_cfg_set_and_verify_changes(int16_t fnid, ct_type elem_type, uint8_t controller, uint8_t elem, int8_t slot);
+static void ctl_cfg_set_and_verify_changes(int16_t fnid, ct_type elem_type, uint8_t controller, uint8_t elem,
+                                           int8_t slot);
 static void ctl_cfg_element_options_dialog(int16_t fnid);
 // used for adjusting settings.
 static int weapon_select_dialog(int wpn, bool is_secondary);
@@ -430,7 +430,7 @@ public:
   virtual void finish() = 0;
   virtual void realize() = 0;
   virtual void unrealize() = 0;
-  virtual void process(int res){};
+  virtual void process(int res) {};
 };
 //////////////////////////////////////////////////////////////////////////////
 // KEY CONFIG
@@ -1125,8 +1125,7 @@ int weapon_select_dialog(int wpn, bool is_secondary) {
 
   return retval;
 }
-void joystick_calibration() {
-}
+void joystick_calibration() {}
 void joystick_settings_dialog() {
   newuiTiledWindow wnd;
   newuiSheet *sheet;

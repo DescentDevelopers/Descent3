@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -210,7 +210,7 @@ void CRegistry::ExportKey(tKey *key, FILE *file) {
   tRecord *curr, *next;
   curr = next = key->records;
   // write out name
-  char buffer[256+16];
+  char buffer[256 + 16];
   snprintf(buffer, sizeof(buffer), "[%s]\n", key->name);
   fputs(buffer, file);
   while (curr) {

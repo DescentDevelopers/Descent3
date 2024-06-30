@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -594,7 +594,7 @@ int LoadTextureImage(const char *filename, int *type, int texture_size, int mipp
       int dest_bm;
 
       mprintf(0, "WARNING: Resizing bitmap %s from %d x %d to %d x %d!\n", GameBitmaps[bm_handle].name,
-               bm_w(bm_handle, 0), bm_h(bm_handle, 0), w, h);
+              bm_w(bm_handle, 0), bm_h(bm_handle, 0), w, h);
 
       dest_bm = bm_AllocBitmap(w, h, mipped * ((w * h * 2) / 3));
       ASSERT(dest_bm >= 0);
@@ -657,8 +657,7 @@ void PageInTexture(int n, bool resize) {
   bm_data(texp->bm_handle, 0);
 
 #ifndef EDITOR
-  if (resize == true && (Mem_low_memory_mode || Low_vidmem))
-  {
+  if (resize == true && (Mem_low_memory_mode || Low_vidmem)) {
     if (!(texp->flags & (TF_TEXTURE_32 | TF_TEXTURE_256)) && !(texp->flags & TF_PROCEDURAL)) {
       int bm_handle = texp->bm_handle;
       int w = TEXTURE_WIDTH, h = TEXTURE_HEIGHT;
@@ -671,8 +670,7 @@ void PageInTexture(int n, bool resize) {
       w /= 2;
       h /= 2;
 
-      if (super_low_mem)
-      {
+      if (super_low_mem) {
         if (w != 32 || h != 32) {
           w = 32;
           h = 32;

@@ -1,21 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*
  * $Logfile: /DescentIII/Main/lib/con_dll.h $
@@ -394,7 +393,7 @@ typedef void (*DoMessageBox_fp)(const char *title, const char *msg, int type, dd
                                 ddgr_color text_color);
 DoMessageBox_fp DLLDoMessageBoxFP;
 static inline void DLLDoMessageBox(const char *title, const char *msg, int type, ddgr_color title_color = GR_WHITE,
-                            ddgr_color text_color = GR_WHITE) {
+                                   ddgr_color text_color = GR_WHITE) {
   DLLDoMessageBoxFP(title, msg, type, title_color, text_color);
 }
 
@@ -741,8 +740,8 @@ struct vmt_descent3_struct {
   uint32_t lateral_thrust;
   uint32_t rotational_thrust;
   uint32_t sliding_pct; // Percentage of the time you were sliding
-  uint32_t checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
-  uint32_t pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
+  uint32_t checksum;    // This value needs to be equal to whatever the checksum is once the packet is decoded
+  uint32_t pad;         // just to provide room for out 4 byte encryption boundry only needed on the client side for now
 };
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #ifdef WIN32

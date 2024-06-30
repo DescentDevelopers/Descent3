@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -318,10 +318,10 @@ int grfont_Load(const char *fname) {
   }
 
   fnt.brightness = ((fnt.baseline >> 8) / 10.0f);
-/*
-  mprintf(0, "%s font.\n", fname);
-  mprintf(0, "  <ht %d>::<min %d>::<max %d>::<base %d>", fnt.height, fnt.min_ascii, fnt.max_ascii, fnt.baseline);
-*/
+  /*
+    mprintf(0, "%s font.\n", fname);
+    mprintf(0, "  <ht %d>::<min %d>::<max %d>::<base %d>", fnt.height, fnt.min_ascii, fnt.max_ascii, fnt.baseline);
+  */
   num_char = fnt.max_ascii - fnt.min_ascii + 1;
 
   if (fnt.max_ascii < 'a') {

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -2233,8 +2233,7 @@ void TerrainDrawCurrentVert(int tcell) {
 }
 #endif
 #if (!defined(RELEASE) || defined(NEWEDITOR))
-__inline void DrawTerrainOutline(int tcell, int nverts, g3Point **pointlist)
-{
+__inline void DrawTerrainOutline(int tcell, int nverts, g3Point **pointlist) {
   int i;
   g3Point tpnt[256];
   g3Point *tpnt_list[256];

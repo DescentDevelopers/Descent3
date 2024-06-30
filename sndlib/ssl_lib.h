@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -313,12 +313,11 @@ struct sound_file_info {
   char used;
   int use_count; // how many buffers does this sound take up.
 
-  uint8_t *sample_8bit; // 8bit sound data
-  int16_t *sample_16bit;        // 16bit sound data
+  uint8_t *sample_8bit;  // 8bit sound data
+  int16_t *sample_16bit; // 16bit sound data
 
   int sample_length;    // Length of sound in samples
   int np_sample_length; // non-padded
-
 };
 
 struct sound_info {
@@ -329,7 +328,7 @@ struct sound_info {
 
   int loop_start;          // Start byte of repeated loop for looping samples
   int loop_end;            // End byte of repeating loop for looping samples
-  uint32_t flags;      // 2d/3d, variable frequency
+  uint32_t flags;          // 2d/3d, variable frequency
   float max_distance;      // Maximum distance in which a sound is heard
   float min_distance;      // Sound gets no louder at min_distance
   int inner_cone_angle;    // Angle in which sound is played at full base volume
@@ -441,7 +440,6 @@ struct sound_info {
 #define DSPB_TICK_INTERVAL .01 // Primary buffer update rate (in seconds)
 #define DSPB_TICK_MILLISECONDS (DSPB_TICK_INTERVAL * 1000)
 
-
 // structure to get and set environment values
 #define ENV3DVALF_DOPPLER 1
 #define ENV3DVALF_GEOMETRY 2
@@ -474,7 +472,7 @@ protected:
 protected:
   void SetError(int code) { m_lib_error_code = code; };
   void ErrorText(const char *fmt, ...); // error text function called inside library.  a stack is kept of errors
-  virtual void CheckForErrors();  // called by sound library every frame to reset error count.
+  virtual void CheckForErrors();        // called by sound library every frame to reset error count.
 
   // Public functions
 public:
@@ -568,7 +566,7 @@ public:
   virtual bool SoundPropertySupport() const { return false; };
 
   // sound obstruction from 0 to 1.0 (1.0  = fully obstructed)
-  virtual void SetSoundProperties(int sound_uid, float obstruction){};
+  virtual void SetSoundProperties(int sound_uid, float obstruction) {};
 };
 
 //	TAKEN FROM SNDLIB SOUNDLOAD.CPP TO SEPARATE CODE REQUIRED BY THE LOWLEVEL SYSTEM AND THE

@@ -1002,7 +1002,7 @@ bool SupportsCPUID() {
     _asm {
 			pushad
 			__emit 0x0f // CPUID
-			__emit 0xa2        // CPUID
+			__emit 0xa2 // CPUID
 			popad
     }
   } __except (1) {
@@ -1022,7 +1022,7 @@ bool SupportsKatmai() {
 			pushad
 			xor	eax,eax;
 			inc eax;
-			__emit 0x0f     // CPUID
+			__emit 0x0f // CPUID
 			__emit 0xa2 // CPUID
 					
 			and edx,0x02000000;

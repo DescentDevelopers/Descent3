@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -633,8 +633,9 @@ const char **Room_names = NULL;
 int *Room_indexes = NULL;
 
 #define NUM_TRIGGER_NAMES 10
-const char *Trigger_names[NUM_TRIGGER_NAMES] = {"EnterUpload",   "ExitUpload",    "MTrain",   "MCityFirst-2", "MCityFirst",
-                                          "MCitySecond-2", "MCitySecond-1", "MSewer-2", "MSewer-1",     "MSuzukiTower"};
+const char *Trigger_names[NUM_TRIGGER_NAMES] = {"EnterUpload", "ExitUpload",    "MTrain",        "MCityFirst-2",
+                                                "MCityFirst",  "MCitySecond-2", "MCitySecond-1", "MSewer-2",
+                                                "MSewer-1",    "MSuzukiTower"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
@@ -649,8 +650,8 @@ int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 13
 const char *Path_names[NUM_PATH_NAMES] = {"IntroCam",   "IntroShip",   "Train1",     "Train2",     "Train3",
-                                    "Train4",     "UploadWatch", "Merc1Intro", "Merc2Intro", "MercWatch",
-                                    "CloakMerc1", "EndCam",      "EndShip"};
+                                          "Train4",     "UploadWatch", "Merc1Intro", "Merc2Intro", "MercWatch",
+                                          "CloakMerc1", "EndCam",      "EndShip"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 6
@@ -659,13 +660,13 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 3
 const char *Goal_names[NUM_GOAL_NAMES] = {"Upload the data to Suzuki", "Defeat the PTMC Mercenaries",
-                                    "Give the Data to Suzuki and Return Safely"};
+                                          "Give the Data to Suzuki and Return Safely"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 8
 const char *Message_names[NUM_MESSAGE_NAMES] = {"CinematicIntroCam", "PutTheCartridge", "CinematicDataCart",
-                                          "CartridgeError",    "GetOut",          "CinematicAmbush",
-                                          "BPDefeated",        "CinematicEndCam"};
+                                                "CartridgeError",    "GetOut",          "CinematicAmbush",
+                                                "BPDefeated",        "CinematicEndCam"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

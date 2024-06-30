@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -267,9 +267,9 @@
 
 struct weapon {
   char name[PAGENAME_LEN];
-  float player_damage;             // how much damage a full impact causes a player
-  float generic_damage;            // how much damage a full impact causes a robot
-  float alpha;                     // What alpha to draw this weapon with
+  float player_damage;               // how much damage a full impact causes a player
+  float generic_damage;              // how much damage a full impact causes a robot
+  float alpha;                       // What alpha to draw this weapon with
   int16_t sounds[MAX_WEAPON_SOUNDS]; // sounds for various things
   int16_t hud_image_handle;          //  a handle to a bitmap or vclip for the hud display
   int16_t fire_image_handle;         //  model or bitmap.  Shown when you fire this weapon
@@ -314,12 +314,10 @@ struct weapon {
 
   light_info lighting_info;
   physics_info phys_info;
-
 };
 
 struct fusion_effect {
   float total_time;
-
 };
 
 extern float Primary_ramp_time, Secondary_ramp_time;

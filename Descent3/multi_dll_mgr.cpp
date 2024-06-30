@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -468,7 +468,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[68] = (int *)SetOldEditBufferLen;
   api->fp[69] = (int *)NewUIWindowLoadBackgroundImage;
   api->fp[70] = (int *)DeleteUIItem;
-  api->fp[71] = (int *)NULL;  // was SearchForLocalGamesIPX
+  api->fp[71] = (int *)NULL; // was SearchForLocalGamesIPX
   api->fp[72] = (int *)HotSpotSetStates;
   api->fp[73] = (int *)PlayerSetShipPermission;
   api->fp[74] = (int *)fp_PlayerIsShipAllowed;
@@ -962,7 +962,9 @@ void SetOldEditBufferLen(UIEdit *item, int len) { item->SetBufferLen(len); }
 void NewUIWindowLoadBackgroundImage(NewUIWindow *item, const char *image_name) {
   item->LoadBackgroundImage(image_name);
 }
-void DeleteUIItem(void *delitem) { delete delitem; }   // !!! FIXME: this needs to change, but this deletes a lot of different things...
+void DeleteUIItem(void *delitem) {
+  delete delitem;
+} // !!! FIXME: this needs to change, but this deletes a lot of different things...
 void GadgetDestroy(UIGadget *item) { item->Destroy(); }
 void *SliderCreate(UIWindow *parent, int id, int x, int y, int flags) {
   NewUISlider *slid;

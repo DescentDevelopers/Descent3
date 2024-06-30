@@ -39,15 +39,15 @@ std::ostream &operator<<(std::ostream &output, const LockFileContent &header) {
 }
 
 std::istream &operator>>(std::istream &input, LockFileContent &header) {
-  input.read(reinterpret_cast<char*>(header.tag.data()), 4);
+  input.read(reinterpret_cast<char *>(header.tag.data()), 4);
   D3::bin_read(input, header.pid);
   return input;
 }
 
-bool ddio_CreateLockFile(const std::filesystem::path& dir) {
+bool ddio_CreateLockFile(const std::filesystem::path &dir) {
   std::filesystem::path lock_filename = dir / ".lock";
 
-  if(!std::filesystem::is_directory(lock_filename.parent_path())) {
+  if (!std::filesystem::is_directory(lock_filename.parent_path())) {
     return false;
   }
 
@@ -102,7 +102,7 @@ bool ddio_CreateLockFile(const std::filesystem::path& dir) {
   return true;
 }
 
-bool ddio_DeleteLockFile(const std::filesystem::path& dir) {
+bool ddio_DeleteLockFile(const std::filesystem::path &dir) {
   int32_t curr_pid = ddio_GetPID();
 
   std::filesystem::path lock_filename = dir / ".lock";

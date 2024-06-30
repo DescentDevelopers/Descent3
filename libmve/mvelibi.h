@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef MVELIBI_H__
 #define MVELIBI_H__
@@ -61,10 +61,10 @@ inline uint32_t IntelSwapper(uint32_t a) { return INTEL_INT(a); }
 inline int IntelSwapper(int a) { return INTEL_INT(a); }
 
 struct mve_hdr {
-  char FileType[20];      // MVE_FILE_TYPE
-  uint16_t HdrSize; // sizeof(mve_hdr)
-  uint16_t version; // MVE_FILE_VERSION
-  uint16_t id;      // ~MVE_FILE_VERSION+0x1234
+  char FileType[20]; // MVE_FILE_TYPE
+  uint16_t HdrSize;  // sizeof(mve_hdr)
+  uint16_t version;  // MVE_FILE_VERSION
+  uint16_t id;       // ~MVE_FILE_VERSION+0x1234
   void SwapBytes() {
     HdrSize = IntelSwapper(HdrSize);
     version = IntelSwapper(version);
@@ -79,7 +79,7 @@ struct mve_hdr {
 struct ioHdrRec {
   uint16_t len;  // Length of record data (pad to even)
   uint16_t kind; // See IO_REC_xxx
-                       //	uint8_t data[0];	// Record data
+                 //	uint8_t data[0];	// Record data
   void SwapBytes() {
     len = IntelSwapper(len);
     kind = IntelSwapper(kind);
@@ -107,7 +107,7 @@ struct mcmd_hdr {
   uint16_t len;  // Length of data (pad to even)
   uint8_t major; // Major opcode
   uint8_t minor; // Minor opcode
-                       //	uint8_t data[0];	// Opcode data
+                 //	uint8_t data[0];	// Opcode data
   void SwapBytes() { len = IntelSwapper(len); }
 };
 
@@ -117,7 +117,7 @@ struct mcmd_hdr {
 
 #define mcmd_syncInit 2
 struct marg_syncInit {
-  uint32_t period;       // period of quanta
+  uint32_t period;      // period of quanta
   uint16_t wait_quanta; // # of quanta per frame
   void SwapBytes() {
     period = IntelSwapper(period);
@@ -128,13 +128,13 @@ struct marg_syncInit {
 #define mcmd_sndConfigure 3
 struct marg_sndConfigure {
   uint16_t rate; // 65536-(256E6/(frequency*(stereo+1)))
-                       // comp16 is a minor opcode 1 field
-                       //  It indicates that 16-bit data has been compressed to 8-bits.
-                       //  When it is set, bits16 will also be set.
-                       //  Each record will contain initial 16-bit sample followed
-                       //   by remaining compressed 8-bit samples.
-                       //  For stereo, there will be two initial 16-bit samples.
-                       //   and compressed streams will be interleaved.
+                 // comp16 is a minor opcode 1 field
+                 //  It indicates that 16-bit data has been compressed to 8-bits.
+                 //  When it is set, bits16 will also be set.
+                 //  Each record will contain initial 16-bit sample followed
+                 //   by remaining compressed 8-bit samples.
+                 //  For stereo, there will be two initial 16-bit samples.
+                 //   and compressed streams will be interleaved.
 #ifdef OUTRAGE_BIG_ENDIAN
   uint8_t pad : 5;
   uint8_t stereo : 1, bits16 : 1, comp16 : 1;

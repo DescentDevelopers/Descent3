@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -256,13 +256,12 @@ struct static_proc_element {
   uint8_t size;
 
   uint8_t x1, y1, x2, y2;
-
 };
 
 struct proc_struct {
   int16_t dynamic_proc_elements; // list of dynamic procedural texture elements
-  void *proc1;                 // pointer for procedural page
-  void *proc2;                 // back page of procedural
+  void *proc1;                   // pointer for procedural page
+  void *proc2;                   // back page of procedural
   int16_t procedural_bitmap;     // handle to the bitmap holding the finished procedural
 
   uint16_t *palette;
@@ -305,7 +304,6 @@ struct texture {
   int16_t bumpmap;     // The bumpmap for this texture, or -1 if there is none
   uint8_t corona_type; // what type of corona this thing uses
   uint8_t used;        // is this texture free to be allocated?
-
 };
 
 extern texture GameTextures[MAX_TEXTURES];

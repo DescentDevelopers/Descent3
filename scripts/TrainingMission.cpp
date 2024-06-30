@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -843,7 +843,7 @@ int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 7
 const char *Room_names[NUM_ROOM_NAMES] = {"PortalRoom1", "PortalRoom2", "PortalRoom3", "PortalRoom4",
-                                    "PortalRoom5", "PortalRoom6", "PortalRoom7"};
+                                          "PortalRoom5", "PortalRoom6", "PortalRoom7"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 3
@@ -874,41 +874,41 @@ int *Goal_indexes = NULL;
 
 #define NUM_MESSAGE_NAMES 36
 const char *Message_names[NUM_MESSAGE_NAMES] = {"GoodJob",
-                                          "GoBackwards",
-                                          "Welcome",
-                                          "GoForward",
-                                          "GoLeft",
-                                          "GoRight",
-                                          "GoUp",
-                                          "GoDown",
-                                          "Repeat",
-                                          "ContinueToCourse",
-                                          "CourseInstructions",
-                                          "DodgeIntro",
-                                          "Dodge30",
-                                          "LeaveDodge",
-                                          "FollowIntro",
-                                          "FollowInstructions",
-                                          "KeepDodging",
-                                          "KeepMovingOutofDodging",
-                                          "BankIntro",
-                                          "AlmostDoneDodge",
-                                          "ManuverIntro",
-                                          "HeadingIntro",
-                                          "PitchIntro",
-                                          "WeaponsEnabled",
-                                          "DestroyFollowbot",
-                                          "Movingbotintro",
-                                          "ExitManuveur",
-                                          "GBIntro",
-                                          "UseCameraMonitor",
-                                          "KillBotIntro",
-                                          "KillBot2",
-                                          "ProceedtoLastRoom",
-                                          "FinalSessionIntro",
-                                          "AllDone",
-                                          "GBExtra",
-                                          "GetCameraMonitor"};
+                                                "GoBackwards",
+                                                "Welcome",
+                                                "GoForward",
+                                                "GoLeft",
+                                                "GoRight",
+                                                "GoUp",
+                                                "GoDown",
+                                                "Repeat",
+                                                "ContinueToCourse",
+                                                "CourseInstructions",
+                                                "DodgeIntro",
+                                                "Dodge30",
+                                                "LeaveDodge",
+                                                "FollowIntro",
+                                                "FollowInstructions",
+                                                "KeepDodging",
+                                                "KeepMovingOutofDodging",
+                                                "BankIntro",
+                                                "AlmostDoneDodge",
+                                                "ManuverIntro",
+                                                "HeadingIntro",
+                                                "PitchIntro",
+                                                "WeaponsEnabled",
+                                                "DestroyFollowbot",
+                                                "Movingbotintro",
+                                                "ExitManuveur",
+                                                "GBIntro",
+                                                "UseCameraMonitor",
+                                                "KillBotIntro",
+                                                "KillBot2",
+                                                "ProceedtoLastRoom",
+                                                "FinalSessionIntro",
+                                                "AllDone",
+                                                "GBExtra",
+                                                "GetCameraMonitor"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

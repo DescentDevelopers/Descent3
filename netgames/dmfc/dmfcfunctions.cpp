@@ -131,13 +131,10 @@ void (*DLLMultiPaintGoalRooms)(int *texcolors);
 void (*DLLMultiSendSpecialPacket)(int slot, uint8_t *outdata, int size);
 void (*DLLComputeRoomCenter)(vector *vp, room *rp);
 int (*DLLGetGoalRoomForTeam)(int teamnum);
-int (*DLLObjCreate)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient,
-                                 int parent_handle);
+int (*DLLObjCreate)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle);
 int (*DLLFindObjectIDName)(const char *name);
-void (*DLLObjSetPosNoMark)(object *objp, vector *newpos, int roomnum, matrix *orient,
-                                        bool f_update_attached_children);
-void (*DLLObjSetPos)(object *objp, vector *newpos, int roomnum, matrix *orient,
-                                  bool f_update_attached_children);
+void (*DLLObjSetPosNoMark)(object *objp, vector *newpos, int roomnum, matrix *orient, bool f_update_attached_children);
+void (*DLLObjSetPos)(object *objp, vector *newpos, int roomnum, matrix *orient, bool f_update_attached_children);
 void (*DLLSetMaxTeams)(int num);
 int (*DLLIncTeamScore)(int team, int amount);
 bool (*DLLInvCheckItem)(int pnum, int type, int id);
@@ -154,8 +151,8 @@ int (*DLLSpewCreate)(spewinfo *spew);
 void (*DLLSpewClearEvent)(int handle, bool force);
 int (*DLLbm_AllocLoadFileBitmap)(const char *filename, int mipped, int format);
 void (*DLLbm_FreeBitmap)(int handle);
-void (*DLLrend_DrawScaledBitmap)(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1,
-                                              float v1, float zval, int color, float *alphas);
+void (*DLLrend_DrawScaledBitmap)(int x1, int y1, int x2, int y2, int bm, float u0, float v0, float u1, float v1,
+                                 float zval, int color, float *alphas);
 void (*DLLgrtext_Printf)(int x, int y, const char *fmt, ...);
 void (*DLLgrtext_Flush)(void);
 void (*DLLgrtext_SetColor)(ddgr_color col);
@@ -175,8 +172,8 @@ void (*DLLMultiClientSendSpecialPacket)(uint8_t *outdate, int size);
 bool (*DLLAddBlinkingHUDMessage)(char *format, ...);
 void (*DLLInvReset)(int playernum, bool reset_all);
 void (*DLLAddHUDItem)(tHUDItem *item);
-void (*DLLRenderHUDQuad)(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm,
-                                      uint8_t alpha, int sat_count);
+void (*DLLRenderHUDQuad)(int x, int y, int w, int h, float u0, float v0, float u1, float v1, int bm, uint8_t alpha,
+                         int sat_count);
 void (*DLLRenderHUDText)(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 void (*DLLMultiEndLevel)(void);
 uint16_t *(*DLLbm_data)(int handle, int miplevel);
@@ -185,8 +182,7 @@ void (*DLLrend_FillRect)(ddgr_color color, int x1, int y1, int x2, int y2);
 bool (*DLLbm_CreateChunkedBitmap)(int bm_handle, chunked_bitmap *chunk);
 void (*DLLbm_DestroyChunkedBitmap)(chunked_bitmap *chunk);
 void (*DLLrend_DrawChunkedBitmap)(chunked_bitmap *chunk, int x, int y, uint8_t alpha);
-void (*DLLrend_DrawScaledChunkedBitmap)(chunked_bitmap *chunk, int x, int y, int neww, int newh,
-                                                     uint8_t alpha);
+void (*DLLrend_DrawScaledChunkedBitmap)(chunked_bitmap *chunk, int x, int y, int neww, int newh, uint8_t alpha);
 void (*DLLOpenCFILE)(CFILE **handle, const char *filename, const char *mode);
 void (*DLLcfclose)(CFILE *cfp);
 int (*DLLcfeof)(CFILE *cfp);
@@ -212,7 +208,8 @@ void (*DLLnw_GetNumbersFromHostAddress)(network_address *address, char *str);
 int (*DLLnw_GetThisIP)(void);
 bool (*DLLCreateStringTable)(const char *filename, char ***table, int *size);
 void (*DLLDestroyStringTable)(char **table, int size);
-void (*DLLRenderHUDTextFlags)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
+void (*DLLRenderHUDTextFlags)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt,
+                              ...);
 void (*DLLPlayerSetHUDNameFOV)(int fov);
 void (*DLLGetUltimateParentForObject)(object **parent, object *child);
 void (*DLLSetObjectDeadFlagRaw)(object *obj, bool tell_clients_to_remove, bool tell_clients_to_play_sound);
@@ -225,8 +222,8 @@ int (*DLLcf_OpenLibrary)(const char *libname);
 void (*DLLcf_CloseLibrary)(int handle);
 void (*DLLMultiSendRequestToObserve)(int mode, int on, int objnum);
 int (*DLLFindTextureName)(const char *name);
-bool (*DLLApplyDamageToPlayer)(object *playerobj, object *killer, int damage_type, float damage_amount,
-                                            int server_says, int weapon_id, bool playsound);
+bool (*DLLApplyDamageToPlayer)(object *playerobj, object *killer, int damage_type, float damage_amount, int server_says,
+                               int weapon_id, bool playsound);
 int (*DLLMultiMatchGeneric)(uint32_t unique_id);
 void (*DLLSetUITextItemText)(void *uit, char *newtext, uint32_t color);
 void *(*DLLNewUIWindowCreate)(int x, int y, int w, int h, int flags);
@@ -247,22 +244,20 @@ void (*DLLListSetSelectedIndex)(void *item, int index);
 void (*DLLEditSetText)(void *item, const char *buff);
 void (*DLLEditGetText)(void *item, char *buff, int len);
 int (*DLLDoUI)(void);
-int (*DLLDoMessageBox)(const char *title, const char *msg, int type, ddgr_color title_color,
-                                    ddgr_color text_color);
+int (*DLLDoMessageBox)(const char *title, const char *msg, int type, ddgr_color title_color, ddgr_color text_color);
 void (*DLLDescentDefer)(void);
 void *(*DLLNewUIGameWindowCreate)(int x, int y, int w, int h, int flags);
 void (*DLLNewUIGameWindowDestroy)(void *item);
 void (*DLLNewUIGameWindowOpen)(void *item);
 void (*DLLNewUIGameWindowClose)(void *item);
-void *(*DLLHotSpotCreate)(void *parentwin, int id, int key, void *txtitemoff, void *txtitemon, int x,
-                                       int y, int w, int h, int flags);
+void *(*DLLHotSpotCreate)(void *parentwin, int id, int key, void *txtitemoff, void *txtitemon, int x, int y, int w,
+                          int h, int flags);
 int (*DLLPollUI)(void);
 void (*DLLRemoveUITextItem)(void *item);
 void *(*DLLCreateNewUITextItem)(const char *newtext, uint32_t color, int font);
 void (*DLLRemoveUIBmpItem)(void *item);
 void *(*DLLCreateNewUIBmpItem)(int handle, uint8_t alpha);
-void *(*DLLUIConsoleGadgetCreate)(void *parentid, int id, int x, int y, int font, int cols, int rows,
-                                               int flags);
+void *(*DLLUIConsoleGadgetCreate)(void *parentid, int id, int x, int y, int font, int cols, int rows, int flags);
 void (*DLLUIConsoleGadgetputs)(void *item, const char *str);
 void (*DLLNewUIWindowSetFocusOnEditGadget)(void *item, void *parent);
 void *(*DLLOldListCreate)(void *parentitem, int id, int x, int y, int w, int h, int flags);
@@ -375,8 +370,7 @@ angle (*DLLvm_DeltaAngVecNorm)(vector *v0, vector *v1, vector *fvec);
 float (*DLLvm_DistToPlane)(vector *checkp, vector *norm, vector *planep);
 float (*DLLvm_CalcDetValue)(matrix *det);
 void (*DLLvm_MakeInverseMatrix)(matrix *dest);
-void (*DLLvm_SinCosToMatrix)(matrix *m, float sinp, float cosp, float sinb, float cosb, float sinh,
-                                          float cosh);
+void (*DLLvm_SinCosToMatrix)(matrix *m, float sinp, float cosp, float sinb, float cosb, float sinh, float cosh);
 float (*DLLvm_GetCentroid)(vector *centroid, vector *src, int nv);
 void (*DLLvm_MakeRandomVector)(vector *vec);
 float (*DLLvm_ComputeBoundingSphere)(vector *center, vector *vecs, int num_verts);
@@ -386,8 +380,8 @@ int (*DLLRenderHUDGetTextHeight)(const char *string);
 void (*DLLStartFrame)(int x, int y, int x2, int y2, bool clear);
 void (*DLLEndFrame)(void);
 void (*DLLResetFacings)(void);
-void (*DLLGameRenderWorld)(object *viewer, vector *viewer_eye, int viewer_roomnum, matrix *viewer_orient,
-                                        float zoom, bool rear_view);
+void (*DLLGameRenderWorld)(object *viewer, vector *viewer_eye, int viewer_roomnum, matrix *viewer_orient, float zoom,
+                           bool rear_view);
 bool (*DLLGetFrameParameters)(int *x1, int *y1, int *x2, int *y2);
 void (*DLLrend_SetZBufferState)(int8_t state);
 void (*DLLrend_SetLighting)(light_state);
@@ -414,13 +408,12 @@ void (*DLLrend_ReleaseLFBLock)(renderer_lfb *lfb);
 void (*DLLrend_DrawLFBBitmap)(int sx, int sy, int w, int h, int dx, int dy, uint16_t *data, int rowsize);
 void (*DLLrend_DrawSpecialLine)(g3Point *p0, g3Point *p1);
 int (*DLLfvi_FindIntersection)(fvi_query *fq, fvi_info *hit_data, bool no_subdivision);
-int (*DLLfvi_QuickDistFaceList)(int init_room_index, vector *pos, float rad,
-                                             fvi_face_room_list *quick_fr_list, int max_elements);
-int (*DLLfvi_QuickDistCellList)(int init_cell_index, vector *pos, float rad, int *quick_cell_list,
-                                             int max_elements);
+int (*DLLfvi_QuickDistFaceList)(int init_room_index, vector *pos, float rad, fvi_face_room_list *quick_fr_list,
+                                int max_elements);
+int (*DLLfvi_QuickDistCellList)(int init_cell_index, vector *pos, float rad, int *quick_cell_list, int max_elements);
 int (*DLLfvi_QuickDistObjectList)(vector *pos, int init_roomnum, float rad, int16_t *object_index_list,
-                                               int max_elements, bool f_lightmap_only, bool f_only_players_and_ais,
-                                               bool f_include_non_collide_objects, bool f_stop_at_closed_doors);
+                                  int max_elements, bool f_lightmap_only, bool f_only_players_and_ais,
+                                  bool f_include_non_collide_objects, bool f_stop_at_closed_doors);
 bool (*DLLfvi_QuickRoomCheck)(vector *pos, room *cur_room, bool try_again);
 bool (*DLLtaunt_AreEnabled)(void);
 void (*DLLtaunt_Enable)(bool enable);
@@ -433,15 +426,11 @@ void (*DLLVisEffectLink)(int visnum, int roomnum);
 void (*DLLVisEffectUnlink)(int visnum);
 void (*DLLVisEffectRelink)(int visnum, int newroomnum);
 void (*DLLVisEffectDelete)(int visnum);
-void (*DLLCreateRandomSparks)(int num_sparks, vector *pos, int roomnum, int which_index,
-                                           float force_scalar);
-void (*DLLCreateRandomLineSparks)(int num_sparks, vector *pos, int roomnum, uint16_t color,
-                                               float force_scalar);
-int (*DLLVisEffectCreateControlled)(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos,
-                                                 float lifetime, vector *velocity, int phys_flags, float size,
-                                                 float mass, float drag, bool isreal);
-void (*DLLCreateRandomParticles)(int num_sparks, vector *pos, int roomnum, int bm_handle, float size,
-                                              float life);
+void (*DLLCreateRandomSparks)(int num_sparks, vector *pos, int roomnum, int which_index, float force_scalar);
+void (*DLLCreateRandomLineSparks)(int num_sparks, vector *pos, int roomnum, uint16_t color, float force_scalar);
+int (*DLLVisEffectCreateControlled)(uint8_t type, object *parent, uint8_t id, int roomnum, vector *pos, float lifetime,
+                                    vector *velocity, int phys_flags, float size, float mass, float drag, bool isreal);
+void (*DLLCreateRandomParticles)(int num_sparks, vector *pos, int roomnum, int bm_handle, float size, float life);
 void (*DLLAttachRandomNapalmEffectsToObject)(object *obj);
 void (*DLLInitObjectScripts)(object *objp, bool do_evt_created);
 void (*DLLg3_StartFrame)(vector *view_pos, matrix *view_matrix, float zoom);
@@ -468,8 +457,7 @@ void (*DLLg3_DrawSphere)(ddgr_color color, g3Point *pnt, float rad);
 void (*DLLg3_CheckAndDrawPoly)(int nv, g3Point **pointlist, int bm, vector *norm, vector *pnt);
 void (*DLLg3_DrawLine)(ddgr_color color, g3Point *p0, g3Point *p1);
 void (*DLLg3_DrawBitmap)(vector *pos, float width, float height, int bm, int color);
-void (*DLLg3_DrawRotatedBitmap)(vector *pos, angle rot_angle, float width, float height, int bm,
-                                             int color);
+void (*DLLg3_DrawRotatedBitmap)(vector *pos, angle rot_angle, float width, float height, int bm, int color);
 void (*DLLg3_DrawBox)(ddgr_color color, g3Point *pnt, float rad);
 void (*DLLg3_SetCustomClipPlane)(uint8_t state, vector *pnt, vector *normal);
 void (*DLLg3_SetFarClipZ)(float z);
@@ -478,19 +466,16 @@ void (*DLLg3_FreeTempPoints)(g3Point **pointlist, int nv);
 void (*DLLg3_GetMatrixScale)(vector *matrix_scale);
 void (*DLLg3_SetTriangulationTest)(int state);
 void (*DLLg3_DrawSpecialLine)(g3Point *p0, g3Point *p1);
-void (*DLLg3_DrawPlanarRotatedBitmap)(vector *pos, vector *norm, angle rot_angle, float width,
-                                                   float height, int bm);
+void (*DLLg3_DrawPlanarRotatedBitmap)(vector *pos, vector *norm, angle rot_angle, float width, float height, int bm);
 void (*DLLPlayerStopSounds)(int slot);
 int (*DLLFindArg)(const char *which);
-int (*DLLFireWeaponFromObject)(object *obj, int weapon_num, int gun_num, bool f_force_forward,
-                                            bool f_force_target);
+int (*DLLFireWeaponFromObject)(object *obj, int weapon_num, int gun_num, bool f_force_forward, bool f_force_target);
 int (*DLLCreateAndFireWeapon)(vector *pos, vector *dir, object *parent, int weapon_num);
 void (*DLLSelectNextCameraView)(int window);
 bool (*Inven_Add)(Inventory *inven, int type, int id, object *parent, int aux_type, int aux_id, int flags,
-                               char *description);
+                  char *description);
 bool (*Inven_AddObject)(Inventory *inven, int object_handle, int flags, char *description);
-bool (*Inven_AddCounterMeasure)(Inventory *inven, int id, int aux_type, int aux_id, int flags,
-                                             char *description);
+bool (*Inven_AddCounterMeasure)(Inventory *inven, int id, int aux_type, int aux_id, int flags, char *description);
 bool (*Inven_Remove)(Inventory *inven, int type, int id);
 bool (*Inven_Use)(Inventory *inven, int type, int id, object *parent);
 bool (*Inven_UseObjHandle)(Inventory *inven, int objhandle, object *parent);

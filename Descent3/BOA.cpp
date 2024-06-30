@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -142,32 +142,32 @@
 #define BOA_VERSION 25
 
 static const uint8_t bbf_lookup[27] = {(0),
-                                     (0x01),
-                                     (0x02),
-                                     (0x04),
-                                     (0x08),
-                                     (0x10),
-                                     (0x20),
-                                     (0x01 | 0x02),
-                                     (0x01 | 0x04),
-                                     (0x01 | 0x10),
-                                     (0x01 | 0x20),
-                                     (0x02 | 0x04),
-                                     (0x02 | 0x08),
-                                     (0x02 | 0x20),
-                                     (0x04 | 0x08),
-                                     (0x04 | 0x10),
-                                     (0x08 | 0x10),
-                                     (0x08 | 0x20),
-                                     (0x10 | 0x20),
-                                     (0x01 | 0x02 | 0x04),
-                                     (0x01 | 0x02 | 0x20),
-                                     (0x01 | 0x04 | 0x10),
-                                     (0x01 | 0x10 | 0x20),
-                                     (0x08 | 0x02 | 0x04),
-                                     (0x08 | 0x02 | 0x20),
-                                     (0x08 | 0x04 | 0x10),
-                                     (0x08 | 0x10 | 0x20)};
+                                       (0x01),
+                                       (0x02),
+                                       (0x04),
+                                       (0x08),
+                                       (0x10),
+                                       (0x20),
+                                       (0x01 | 0x02),
+                                       (0x01 | 0x04),
+                                       (0x01 | 0x10),
+                                       (0x01 | 0x20),
+                                       (0x02 | 0x04),
+                                       (0x02 | 0x08),
+                                       (0x02 | 0x20),
+                                       (0x04 | 0x08),
+                                       (0x04 | 0x10),
+                                       (0x08 | 0x10),
+                                       (0x08 | 0x20),
+                                       (0x10 | 0x20),
+                                       (0x01 | 0x02 | 0x04),
+                                       (0x01 | 0x02 | 0x20),
+                                       (0x01 | 0x04 | 0x10),
+                                       (0x01 | 0x10 | 0x20),
+                                       (0x08 | 0x02 | 0x04),
+                                       (0x08 | 0x02 | 0x20),
+                                       (0x08 | 0x04 | 0x10),
+                                       (0x08 | 0x10 | 0x20)};
 
 uint16_t BOA_Array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS];
 float BOA_cost_array[MAX_ROOMS + MAX_BOA_TERRAIN_REGIONS][MAX_PATH_PORTALS];
@@ -2968,8 +2968,7 @@ void ComputeAABB(bool f_full) {
         rp->num_bbf = (int16_t *)mem_realloc(rp->num_bbf, rp->num_bbf_regions * sizeof(int16_t));
         rp->bbf_list_min_xyz = (vector *)mem_realloc(rp->bbf_list_min_xyz, rp->num_bbf_regions * sizeof(vector));
         rp->bbf_list_max_xyz = (vector *)mem_realloc(rp->bbf_list_max_xyz, rp->num_bbf_regions * sizeof(vector));
-        rp->bbf_list_sector =
-            (uint8_t *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(uint8_t));
+        rp->bbf_list_sector = (uint8_t *)mem_realloc(rp->bbf_list_sector, rp->num_bbf_regions * sizeof(uint8_t));
       }
     }
 

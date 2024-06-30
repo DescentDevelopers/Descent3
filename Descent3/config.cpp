@@ -482,7 +482,6 @@ void ConfigSetDetailLevel(int level) {
 #define IDV_GAMMAAPPLY 5
 #define IDV_AUTOGAMMA 6
 
-
 static void gamma_callback(newuiTiledWindow *wnd, void *data) {
   int bm_handle = *((int *)data);
 
@@ -648,7 +647,6 @@ static void config_gamma() {
   }
 }
 
-
 //////////////////////////////////////////////////////////////////
 // VIDEO MENU
 //
@@ -763,7 +761,6 @@ struct video_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // SOUND MENU
 //
@@ -774,7 +771,7 @@ struct sound_menu {
 
   int16_t *fxvolume, *musicvolume; // volume sliders
   int16_t *fxquantity;             // sound fx quantity limit
-  int *fxquality;                // sfx quality low/high
+  int *fxquality;                  // sfx quality low/high
 
   int16_t old_fxquantity;
 
@@ -939,7 +936,6 @@ struct sound_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // GENERAL SETTINGS (TOGGLES) MENU
 //
@@ -1046,7 +1042,6 @@ struct toggles_menu {
     }
   };
 };
-
 
 //////////////////////////////////////////////////////////////////
 //  HUD CONFIG MENU
@@ -1172,7 +1167,6 @@ struct hud_menu {
   };
 };
 
-
 //////////////////////////////////////////////////////////////////
 // DETAILS MENU
 //
@@ -1185,7 +1179,7 @@ struct details_menu {
   bool *specmap, *headlight, *mirror, // check boxes
       *dynamic, *fog, *coronas, *procedurals, *powerup_halo, *scorches, *weapon_coronas;
   int16_t *pixel_err, // 0-27 (1-28)
-      *rend_dist;   // 0-120 (80-200)
+      *rend_dist;     // 0-120 (80-200)
 
   int *texture_quality;
 

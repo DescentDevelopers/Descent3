@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -411,11 +411,8 @@ void SpewEmitAll(void) {
       } // end while
 
       if (num_spewed == 0) {
-        mprintf(0, "Max spews per frame hit! Handle=%d Interval=%f Lifetime=%f Longevity=%f\n",
-                spew->handle,
-                spew->time_int,
-                spew->lifetime,
-                spew->longevity);
+        mprintf(0, "Max spews per frame hit! Handle=%d Interval=%f Lifetime=%f Longevity=%f\n", spew->handle,
+                spew->time_int, spew->lifetime, spew->longevity);
         spew->time_until_next_blob = spew->time_int;
       }
 
@@ -426,7 +423,7 @@ void SpewEmitAll(void) {
         }
 
     } // end if
-  }   // end for
+  } // end for
 }
 
 // Clears a Spew Event given a handle to it

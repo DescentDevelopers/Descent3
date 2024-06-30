@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -419,13 +419,14 @@ const char **Door_names = NULL;
 int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 8
-const char *Object_names[NUM_OBJECT_NAMES] = {"EntranceDoor",    "LightningNode01", "LightningNode02", "LightningNode03",
-                                        "LightningNode04", "LightningNode05", "PlayerLightning", "OrbCenter"};
+const char *Object_names[NUM_OBJECT_NAMES] = {"EntranceDoor",    "LightningNode01", "LightningNode02",
+                                              "LightningNode03", "LightningNode04", "LightningNode05",
+                                              "PlayerLightning", "OrbCenter"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 8
 const char *Room_names[NUM_ROOM_NAMES] = {"EyeballMatcen", "Tube302",     "Tube202", "Tube102",
-                                    "Tube310",       "ControlRoom", "OrbRoom", "OrbCollar"};
+                                          "Tube310",       "ControlRoom", "OrbRoom", "OrbCollar"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 6

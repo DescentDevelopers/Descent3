@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1399,7 +1399,8 @@ int LGSObjects(CFILE *fp, int version) {
       ObjLink(OBJNUM(op), newroom);
       ObjSetOrient(op, &objmat[i]);
       if (op->type == OBJ_ROOM) {
-        mprintf(0, "Object %d is a room and Is%s a big object. Size=%f\n", i, (op->flags & OF_BIG_OBJECT) ? "" : "n't", op->size);
+        mprintf(0, "Object %d is a room and Is%s a big object. Size=%f\n", i, (op->flags & OF_BIG_OBJECT) ? "" : "n't",
+                op->size);
         if ((op->size >= ((TERRAIN_SIZE * (float)1))) && !(op->flags & OF_BIG_OBJECT)) {
           BigObjAdd(i);
         }
@@ -1407,22 +1408,22 @@ int LGSObjects(CFILE *fp, int version) {
         ObjSetAABB(op);
       }
     }
-/*
-    if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_ultimate_handle)) {
-      mprintf(0, "Object %d has an ultimate parent of %d (%d)\n",
-              i,
-              OBJNUM(ObjGet(op->attach_ultimate_handle)),
-              op->attach_parent_handle);
-      ASSERT(op->flags & OF_ATTACHED);
-    }
-    if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_parent_handle)) {
-      mprintf(0, "Object %d has a parent of %d (%d)\n",
-              i,
-              OBJNUM(ObjGet(op->attach_parent_handle)),
-              op->attach_parent_handle);
-      ASSERT(op->flags & OF_ATTACHED);
-    }
-    */
+    /*
+        if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_ultimate_handle)) {
+          mprintf(0, "Object %d has an ultimate parent of %d (%d)\n",
+                  i,
+                  OBJNUM(ObjGet(op->attach_ultimate_handle)),
+                  op->attach_parent_handle);
+          ASSERT(op->flags & OF_ATTACHED);
+        }
+        if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_parent_handle)) {
+          mprintf(0, "Object %d has a parent of %d (%d)\n",
+                  i,
+                  OBJNUM(ObjGet(op->attach_parent_handle)),
+                  op->attach_parent_handle);
+          ASSERT(op->flags & OF_ATTACHED);
+        }
+        */
   }
   mprintf(0, "Objects[121].prev=%d\n", Objects[121].prev);
   ResetFreeObjects();

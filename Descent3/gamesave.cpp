@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1118,11 +1118,11 @@ void SGSObjects(CFILE *fp) {
     gs_WriteInt(fp, op->attach_parent_handle);
     if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_ultimate_handle)) {
       mprintf(0, "Object %d has an ultimate parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_ultimate_handle)),
-               op->attach_parent_handle);
+              op->attach_parent_handle);
     }
     if ((op->attach_ultimate_handle) && (OBJECT_HANDLE_NONE != op->attach_parent_handle)) {
       mprintf(0, "Object %d has a parent of %d (%d)\n", i, OBJNUM(ObjGet(op->attach_parent_handle)),
-               op->attach_parent_handle);
+              op->attach_parent_handle);
     }
 
     gs_WriteInt(fp, pm->n_attach);

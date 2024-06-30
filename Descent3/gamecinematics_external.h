@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -146,7 +146,6 @@ struct tCannedCinematicInfo {
 
   vector pos;
   matrix orient;
-
 };
 
 //========================================================
@@ -221,7 +220,6 @@ struct tGameCinematic {
   PercentageRange player_disabled; // range that the player can't move/fire/etc.
   PercentageRange in_camera_view;  // range that the view is from the camera
   PercentageRange quick_exit;      // range where a key-press will quick exit cinematic
-
 };
 
 #endif

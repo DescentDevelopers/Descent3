@@ -285,7 +285,8 @@ static inline int get_weapon_icon(int player, int type) {
   return HUD_resources.wpn_bmp;
 }
 
-static void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *str);
+static void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y,
+                                       const char *str);
 
 //////////////////////////////////////////////////////////////////////////////
 //	Hud item display routines.
@@ -898,7 +899,8 @@ void RenderHUDText(ddgr_color col, uint8_t alpha, int sat_count, int x, int y, c
 }
 
 //	renders text, scaled, alphaed, saturated,
-void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *str) {
+void RenderHUDTextFlagsNoFormat(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y,
+                                const char *str) {
   int i;
 
   grtext_SetAlpha(alpha);

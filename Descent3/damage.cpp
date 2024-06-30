@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1103,9 +1103,12 @@ void SetFallingPhysics(object *objp) {
 
     // If not spinning much, give the object a good spin
     if (vm_GetMagnitude(&objp->mtype.phys_info.rotvel) < 4000.0f) {
-      objp->mtype.phys_info.rotvel.x = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-      objp->mtype.phys_info.rotvel.z = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.x =
+          (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.y =
+          (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+      objp->mtype.phys_info.rotvel.z =
+          (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
     }
   }
 }
@@ -1123,9 +1126,12 @@ void SetFlyingPhysics(object *objp, bool tumbles) {
 
   if (tumbles) {
     // Make y spin a little bit more that x or z
-    objp->mtype.phys_info.rotvel.x = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.y = (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
-    objp->mtype.phys_info.rotvel.z = (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.x =
+        (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.y =
+        (float)((60000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
+    objp->mtype.phys_info.rotvel.z =
+        (float)((40000.0f * (float)(D3_RAND_MAX / 2 - ps_rand())) / (float)(D3_RAND_MAX / 2));
   }
 
   if (objp->orient.uvec.y == 1.0f) {

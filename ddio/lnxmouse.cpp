@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -221,8 +221,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.state = true;
     MB_queue.send(mevt);
     //     	mprintf(0, "MOUSE Button 1: Down\n");
-  }
-  else if (ev->button == 3) {
+  } else if (ev->button == 3) {
     DDIO_mouse_state.btn_mask |= MOUSE_CB;
     DIM_buttons.down_count[2]++;
     DIM_buttons.time_down[2] = timer_GetTime();
@@ -244,8 +243,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.state = true;
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 5: Down\n");
-  }
-  else if (ev->button == 5) {
+  } else if (ev->button == 5) {
     DDIO_mouse_state.btn_mask |= MOUSE_B7;
     DIM_buttons.down_count[6]++;
     DIM_buttons.time_down[6] = timer_GetTime();
@@ -254,8 +252,7 @@ int sdlMouseButtonDownFilter(SDL_Event const *event) {
     mevt.state = true;
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 6: Down\n");
-  }
-  else if (ev->button == 6) {
+  } else if (ev->button == 6) {
     DDIO_mouse_state.btn_mask |= MOUSE_B8;
     DIM_buttons.down_count[7]++;
     DIM_buttons.time_down[7] = timer_GetTime();
@@ -284,8 +281,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.state = false;
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 0: Up\n");
-  }
-  else if (ev->button == 2) {
+  } else if (ev->button == 2) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_RB);
     DIM_buttons.up_count[1]++;
     DIM_buttons.is_down[1] = false;
@@ -294,8 +290,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.state = false;
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 1: Up\n");
-  }
-  else if (ev->button == 3) {
+  } else if (ev->button == 3) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_CB);
     DIM_buttons.up_count[2]++;
     DIM_buttons.is_down[2] = false;
@@ -318,8 +313,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.state = false;
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 5: Up\n");
-  }
-  else if (ev->button == 5) {
+  } else if (ev->button == 5) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_B7);
     DIM_buttons.up_count[6]++;
     DIM_buttons.is_down[6] = false;
@@ -328,8 +322,7 @@ int sdlMouseButtonUpFilter(SDL_Event const *event) {
     mevt.state = false;
     MB_queue.send(mevt);
     //		mprintf(0, "MOUSE Button 6: Up\n");
-  }
-  else if (ev->button == 6) {
+  } else if (ev->button == 6) {
     DDIO_mouse_state.btn_mask &= (~MOUSE_B8);
     DIM_buttons.up_count[7]++;
     DIM_buttons.is_down[7] = false;
@@ -362,8 +355,8 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
     mevt.state = true;
     MB_queue.send(mevt);
 
-    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the engine.
-    // don't remove from btn_mask
+    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the
+    // engine. don't remove from btn_mask
     DIM_buttons.up_count[4]++;
     DIM_buttons.is_down[4] = false;
     DIM_buttons.time_up[4] = timer_GetTime();
@@ -380,8 +373,8 @@ int sdlMouseWheelFilter(SDL_Event const *event) {
     mevt.state = true;
     MB_queue.send(mevt);
 
-    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the engine.
-    // don't remove from btn_mask
+    // send an immediate release event, as if the "button" was clicked. !!! FIXME: this also needs improvements in the
+    // engine. don't remove from btn_mask
     DIM_buttons.up_count[5]++;
     DIM_buttons.is_down[5] = false;
     DIM_buttons.time_up[5] = timer_GetTime();
@@ -476,7 +469,7 @@ int sdlMouseMotionFilter(SDL_Event const *event) {
       DDIO_mouse_state.x = event->motion.x;
       DDIO_mouse_state.y = event->motion.y;
     } // else
-  }   // else
+  } // else
 
   if (DDIO_mouse_state.x < DDIO_mouse_state.l)
     DDIO_mouse_state.x = DDIO_mouse_state.l;
@@ -523,7 +516,7 @@ int ddio_MouseGetState(int *x, int *y, int *dx, int *dy, int *z, int *dz) {
   DDIO_mouse_state.dy = 0;
 
   // unset the mouse wheel "button" once it's been retrieved.
-  DDIO_mouse_state.btn_mask &= ~(MOUSE_B5|MOUSE_B6);
+  DDIO_mouse_state.btn_mask &= ~(MOUSE_B5 | MOUSE_B6);
 
   return btn_mask;
 }

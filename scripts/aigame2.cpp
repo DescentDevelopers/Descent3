@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 // aigame2.cpp
 // 0.1
@@ -86,13 +86,13 @@ public:
 
 protected:
   // Handles all possible OSIRIS events.
-  virtual void OnInit(int me_handle){};                                            //	EVT_AI_INIT
-  virtual void OnDestroy(int me_handle, tOSIRISEVTDESTROY *evt){};                 // EVT_DESTROY
-  virtual void OnInterval(tOSIRISEventInfo *data){};                               // EVT_AI_FRAME
-  virtual void OnCollide(int me_handle, int it_handle){};                          // EVT_COLLIDE
+  virtual void OnInit(int me_handle) {};                                           //	EVT_AI_INIT
+  virtual void OnDestroy(int me_handle, tOSIRISEVTDESTROY *evt) {};                // EVT_DESTROY
+  virtual void OnInterval(tOSIRISEventInfo *data) {};                              // EVT_AI_FRAME
+  virtual void OnCollide(int me_handle, int it_handle) {};                         // EVT_COLLIDE
   virtual bool OnNotify(int me_handle, tOSIRISEVTAINOTIFY *data) { return true; }; //	EVT_AI_NOTIFY
-  virtual void OnDamaged(int me_handle, tOSIRISEVTDAMAGED *evt){};                 // EVT_DAMAGED
-  virtual void OnMemRestore(void *ptr){};                                          // EVT_MEMRESTORE
+  virtual void OnDamaged(int me_handle, tOSIRISEVTDAMAGED *evt) {};                // EVT_DAMAGED
+  virtual void OnMemRestore(void *ptr) {};                                         // EVT_MEMRESTORE
 };
 
 //	ai base class
@@ -381,8 +381,9 @@ static int CreateAndAttach(int me, const char *child_name, uint8_t child_type, c
 static void FlushGoal(int me_handle, int goal_priority);
 static void SafeGoalClearAll(int obj_handle);
 static void AI_SafeSetType(int obj_handle, int ai_type);
-static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type, uint8_t isreal,
-                      float lifetime, float interval, float longevity, float size, float speed, uint8_t random);
+static int TurnOnSpew(int objref, int gunpoint, int effect_type, float mass, float drag, int gravity_type,
+                      uint8_t isreal, float lifetime, float interval, float longevity, float size, float speed,
+                      uint8_t random);
 
 //////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -789,7 +789,7 @@ struct pilot_select_menu {
   void finish() { sheet = NULL; };
 
   // process
-  void process(int res){};
+  void process(int res) {};
 };
 
 struct pilot_edit_menu {
@@ -843,7 +843,7 @@ struct pilot_edit_menu {
   void finish() { sheet = NULL; };
 
   // process
-  void process(int res){};
+  void process(int res) {};
 };
 
 struct pilot_add_menu {
@@ -1781,7 +1781,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   if (pfilename[0] == 0)
     return;
 
-    // open and process file
+  // open and process file
   ddio_MakePath(filename, Base_directory, pfilename, NULL);
   try {
     file = cfopen(filename, "rb");
@@ -1870,7 +1870,6 @@ char **PltGetPilots(int *count, char *ignore_filename, int display_default_confi
       Int3();
       break;
     }
-
 
     if (ddio_FindFileStart(search, buffer)) {
 
@@ -2908,16 +2907,15 @@ bool PltSelectShip(pilot *Pilot) {
 #ifdef DEMO
       if (stricmp(Ships[i].name, DEFAULT_SHIP) == 0) {
 #endif
-	  // make sure they have mercenary in order to play with Black Pyro
-	  if (!stricmp(Ships[i].name, "Black Pyro")) {
-		shipoktoadd = false;
-		extern bool MercInstalled();
-		if (MercInstalled()) {
-		  shipoktoadd = true;
-		}
-	  }
-	  else
-		  shipoktoadd = true;
+        // make sure they have mercenary in order to play with Black Pyro
+        if (!stricmp(Ships[i].name, "Black Pyro")) {
+          shipoktoadd = false;
+          extern bool MercInstalled();
+          if (MercInstalled()) {
+            shipoktoadd = true;
+          }
+        } else
+          shipoktoadd = true;
         if (shipoktoadd)
           ship_list->AddItem(Ships[i].name);
 #ifdef DEMO
@@ -2950,8 +2948,8 @@ bool PltSelectShip(pilot *Pilot) {
             ship_list->SetCurrentIndex(i);
 
           } // endif
-        }   // endfor
-      }     // end else
+        } // endfor
+      } // end else
     } else {
       // NO SHIPS IN THE TABLE!!!
       mprintf(0, "WARNING: NO SHIPS IN THE TABLE!?\n");

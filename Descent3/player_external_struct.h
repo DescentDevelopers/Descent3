@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -95,9 +95,9 @@
 // Info on player weapon firing.
 // There is one of these each for the primary & secondary weapons
 struct player_weapon {
-  int32_t index;         // the index of the current primary or secondary weapon
-  float firing_time; // how long the current weapon has been firing
-  int32_t sound_handle;  // the handle for the sound the firing weapon is making
+  int32_t index;        // the index of the current primary or secondary weapon
+  float firing_time;    // how long the current weapon has been firing
+  int32_t sound_handle; // the handle for the sound the firing weapon is making
 };
 
 // The structure for a player.  Most of this data will be for multiplayer
@@ -117,24 +117,24 @@ struct player {
   char callsign[CALLSIGN_LEN + 1]; // The callsign of this player, for net purposes.
 
   // Game data
-  uint32_t flags;                           // Powerup flags, see above...
-  int32_t score;                            // The player's current score
+  uint32_t flags;                       // Powerup flags, see above...
+  int32_t score;                        // The player's current score
   float damage_magnitude;               // for shield effects
   float edrain_magnitude;               // for energy drain effects
   float invul_magnitude;                // for invulnerability effects
   float energy;                         // Amount of energy remaining.
-  uint8_t lives;                          // Lives remaining, 0 = game over.
-  int8_t level;                          // Current level player is playing. (must be signed for secret levels)
-  int8_t starting_level;                 // What level the player started on.
-  uint8_t keys;                           // Which keys the player has
-  int16_t killer_objnum;                  // Who killed me.... (-1 if no one)
+  uint8_t lives;                        // Lives remaining, 0 = game over.
+  int8_t level;                         // Current level player is playing. (must be signed for secret levels)
+  int8_t starting_level;                // What level the player started on.
+  uint8_t keys;                         // Which keys the player has
+  int16_t killer_objnum;                // Who killed me.... (-1 if no one)
   float invulnerable_time;              // Time left invulnerable
   float last_hit_wall_sound_time;       // Last time we played a hit wall sound
   float last_homing_warning_sound_time; // Obvious  :)
   float last_thrust_time;               // Last time the player thrusted
   float last_afterburner_time;          // Last time the player used the afterburner
-  int16_t objnum;                         // The object number of this player
-  int8_t team;                           // The team number this guy is on
+  int16_t objnum;                       // The object number of this player
+  int8_t team;                          // The team number this guy is on
 
   // The current auto-waypoint for this player
   int32_t current_auto_waypoint_room; // the most recent auto-waypoint, or -1
@@ -152,12 +152,12 @@ struct player {
   int16_t num_kills_total;      // Number of kills total
 
   // Player weapon info
-  uint32_t weapon_flags;                      // Mask of currently owned weapons
+  uint32_t weapon_flags;                    // Mask of currently owned weapons
   uint16_t weapon_ammo[MAX_PLAYER_WEAPONS]; // Ammo for each weapon
 
   // Weapons
   player_weapon weapon[2]; // Info on the player weapons
-  uint8_t laser_level;       // Current level of the laser.
+  uint8_t laser_level;     // Current level of the laser.
 
   // lighting
   float light_dist;
@@ -201,9 +201,9 @@ struct player {
   int32_t deaths;
   int32_t suicides;
   float rank;
-  float lateral_thrust;      // total lateral movement over the whole game
-  float rotational_thrust;   // total rotational movement over the whole game
-  uint32_t time_in_game; // seconds in game
+  float lateral_thrust;    // total lateral movement over the whole game
+  float rotational_thrust; // total rotational movement over the whole game
+  uint32_t time_in_game;   // seconds in game
   object *guided_obj, *user_timeout_obj;
 
   float zoom_distance;
@@ -237,7 +237,6 @@ struct player {
 
   int16_t num_deaths_level; // Number of kills this level
   int16_t num_deaths_total; // Number of kills total
-
 };
 
 #endif

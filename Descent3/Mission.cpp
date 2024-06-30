@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1837,7 +1837,7 @@ bool mn3_Open(const char *mn3file) {
   // do table file stuff.
   ddio_SplitPath(mn3file, NULL, filename, ext);
 
-  char voice_hog[_MAX_PATH*2];
+  char voice_hog[_MAX_PATH * 2];
   if ((stricmp(filename, "d3") == 0) || (stricmp(filename, "training") == 0)) {
     // Open audio hog file
     ddio_MakePath(voice_hog, D3MissionsDir, "d3voice1.hog", nullptr); // Audio for levels 1-4

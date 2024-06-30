@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -113,16 +113,16 @@
 //		game states
 
 enum tGameState {
-  GAMESTATE_IDLE,         // no state
-  GAMESTATE_NEW,          // starts a new game (with current mission.)
-  GAMESTATE_LVLNEXT,      // go to the next level
-  GAMESTATE_LVLSTART,     // happens when a level starts, game time starts here.
-  GAMESTATE_LVLPLAYING,   // calls gameloop, polls for input.
-  GAMESTATE_LOADGAME,     // a load game request has been issued.
-  GAMESTATE_LVLEND,       // calls endlevel and any other endlevel stuff.
-  GAMESTATE_LVLFAILED,    // a level was unsuccessfully ended
-  GAMESTATE_LVLWARP,      // warp to a new level
-  GAMESTATE_LOADDEMO,     // Load whatever demo was chosen in the UI
+  GAMESTATE_IDLE,       // no state
+  GAMESTATE_NEW,        // starts a new game (with current mission.)
+  GAMESTATE_LVLNEXT,    // go to the next level
+  GAMESTATE_LVLSTART,   // happens when a level starts, game time starts here.
+  GAMESTATE_LVLPLAYING, // calls gameloop, polls for input.
+  GAMESTATE_LOADGAME,   // a load game request has been issued.
+  GAMESTATE_LVLEND,     // calls endlevel and any other endlevel stuff.
+  GAMESTATE_LVLFAILED,  // a level was unsuccessfully ended
+  GAMESTATE_LVLWARP,    // warp to a new level
+  GAMESTATE_LOADDEMO,   // Load whatever demo was chosen in the UI
 };
 
 //	top level interfaces for game.

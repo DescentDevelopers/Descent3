@@ -100,8 +100,8 @@ protected:
   static BOOL m_Active; // is keypad active?
 
 public:
-  virtual void RunKeypadFunction(int code){};
-  virtual void UpdateKeypad(int mask){};
+  virtual void RunKeypadFunction(int code) {};
+  virtual void UpdateKeypad(int mask) {};
 
   static void Deactivate() { CKeypadDialog::m_Active = FALSE; }; // called when shutting down keypad.
   static void Activate() { CKeypadDialog::m_Active = TRUE; };

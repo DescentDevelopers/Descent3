@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -384,7 +384,7 @@ class UIGadget : public UIObject {
 
   //	information for gadgets
 private:
-  int m_ID;      // id value of gadget.
+  int m_ID;        // id value of gadget.
   int16_t m_Datum; // used to pass info around.
   uint16_t m_Hotkey;
   int m_SavedW, m_SavedH; // saved values of width and height.
@@ -430,28 +430,28 @@ protected:
   virtual void OnFormat(); // override: called when resized or before drawing.
 
 protected:
-  virtual void OnLostFocus(){};        // override: behavior when gadget loses input focus.
-  virtual void OnGainFocus(){};        // override: behavior when gadget gains input focus.
-  virtual void OnAttachToWindow(){};   // override: when gadget is attached to window, this is called.
-  virtual void OnDetachFromWindow(){}; // override: when gadget is detached from window, this is called.
-  virtual void OnDraw() = 0;           // MUST override: behavior when gadget is being drawn.
+  virtual void OnLostFocus() {};        // override: behavior when gadget loses input focus.
+  virtual void OnGainFocus() {};        // override: behavior when gadget gains input focus.
+  virtual void OnAttachToWindow() {};   // override: when gadget is attached to window, this is called.
+  virtual void OnDetachFromWindow() {}; // override: when gadget is detached from window, this is called.
+  virtual void OnDraw() = 0;            // MUST override: behavior when gadget is being drawn.
 
   //	called by Process.
 protected:
-  virtual void OnKeyDown(int key){};               // override: behavior when key is pressed.
-  virtual void OnKeyUp(int key){};                 // override: behavior when key is released.
-  virtual void OnMouseBtnDown(int btn){};          // override: behavior when mouse button is pressed.
-  virtual void OnMouseBtnUp(int btn){};            // override: behavior when mouse button is released.
-  virtual void OnDestroy(){};                      // override: behavior when gadget is destroyed.
-  virtual void OnUserProcess(){};                  // override: behavior when gadget is processed
-  virtual void OnNotifySelect(UIGadget *sender){}; // override: send gadget select message to another gadget.
+  virtual void OnKeyDown(int key) {};               // override: behavior when key is pressed.
+  virtual void OnKeyUp(int key) {};                 // override: behavior when key is released.
+  virtual void OnMouseBtnDown(int btn) {};          // override: behavior when mouse button is pressed.
+  virtual void OnMouseBtnUp(int btn) {};            // override: behavior when mouse button is released.
+  virtual void OnDestroy() {};                      // override: behavior when gadget is destroyed.
+  virtual void OnUserProcess() {};                  // override: behavior when gadget is processed
+  virtual void OnNotifySelect(UIGadget *sender) {}; // override: send gadget select message to another gadget.
 
   //	typically this function is called by a child class when we want
   //	to tell the caller that this gadget was selected for something.
   virtual void OnSelect(); // override: behavior when gadget is selected.
 
 public:
-  virtual void OnNotify(UIGadget *){}; // usually called by a child gadget of a gadget.
+  virtual void OnNotify(UIGadget *) {}; // usually called by a child gadget of a gadget.
 
 public:
   UIGadget();
@@ -507,7 +507,7 @@ class UIHotspot : public UIGadget {
 
 protected:
   virtual void OnKeyDown(int key);      // override: behavior when key is pressed.
-  virtual void OnKeyUp(int key){};      // override: behavior when key is released.
+  virtual void OnKeyUp(int key) {};     // override: behavior when key is released.
   virtual void OnMouseBtnDown(int btn); // override: behavior when mouse button is pressed.
   virtual void OnMouseBtnUp(int btn);   // override: behavior when mouse button is released.
   virtual void OnFormat();              // override: called when resized or before drawing.
@@ -794,7 +794,7 @@ public:
 
   //	settings
   void SetBufferLen(int length);       // sets the length of the input buffer.
-  void SetText(const char *text);            // sets the text buffer.
+  void SetText(const char *text);      // sets the text buffer.
   void GetText(char *buffer, int len); // retrieve text in edit control.
   void SetFont(int font);              // sets font of control (default is window's font.)
   void SetColor(ddgr_color col);       // sets color of text.
@@ -859,8 +859,8 @@ public:
   //	called from outside gadget hierarchy.
 protected:
   virtual void OnFormat();              // override: called when resized or before drawing.
-  virtual void OnLostFocus(){};         // override: behavior when gadget loses input focus.
-  virtual void OnGainFocus(){};         // override: behavior when gadget gains input focus.
+  virtual void OnLostFocus() {};        // override: behavior when gadget loses input focus.
+  virtual void OnGainFocus() {};        // override: behavior when gadget gains input focus.
   virtual void OnDraw();                // behavior when gadget is being drawn.
   virtual void OnDestroy();             // behavior when gadget is being destroyed.
   virtual void OnKeyDown(int key);      //	behavior when key is pressed.
@@ -884,7 +884,7 @@ class UIListBox : public UIGadget {
   ddgr_color m_SelectColor;                // selected text color
   ddgr_color m_HiliteColor;                // color of hilite bar
   int m_LastMseX, m_LastMseY;              // used for double clicking.
-  uint8_t m_Alpha;                           // alpha value of listbox.
+  uint8_t m_Alpha;                         // alpha value of listbox.
 
   bool MseCheckSelect(int x, int y);        // check if x and y selection hits a selected item.
   void SetInternalSelectedIndex(int index); //  call by listbox system.
@@ -1091,7 +1091,7 @@ protected:
 protected:
   virtual void OnDraw();           // overridable draws the window background before gadgets
   virtual void OnUserProcess();    // overridable: runs after window is processed, to supplement it.
-  virtual void OnDestroy(){};      // overridable: called in Destroy
+  virtual void OnDestroy() {};     // overridable: called in Destroy
   virtual void OnKeyDown(int key); //	behavior when key is pressed.
   virtual void OnKeyUp(int key);   // behavior when key is released.
 
@@ -1135,7 +1135,7 @@ public:
     m_BackItem = NULL;
     if (item)
       m_BackItem = item->CopyUIItem();
-  };                                  //
+  }; //
   void SetBackColor(ddgr_color col) { // sets the background color.  this is ALWAYS first, then the backitem
     m_BackColor = col;
   };

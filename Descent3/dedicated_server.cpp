@@ -142,7 +142,6 @@ typedef int socklen_t;
 #include "hud.h"
 #include "networking.h"
 
-
 bool Dedicated_server = false;
 
 static int Dedicated_start_level = 1;

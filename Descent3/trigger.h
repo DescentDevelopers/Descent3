@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -118,8 +118,8 @@ struct trigger {
   char name[TRIG_NAME_LEN + 1]; // the name of this trigger
   int roomnum;                  // the room this trigger is in
   int facenum;                  // the face to which this trigger is attched
-  int16_t flags;                  // flags for this trigger
-  int16_t activator;              // flags for what can activate this trigger
+  int16_t flags;                // flags for this trigger
+  int16_t activator;            // flags for what can activate this trigger
   // This is allocated when the level is started
   tOSIRISTriggerScript osiris_script;
 };
@@ -131,7 +131,7 @@ extern int Num_triggers;
 extern trigger Triggers[];
 
 // Macro to get trigger number
-#define TRIGNUM(tp) (tp) ? ((tp)-Triggers) : -1
+#define TRIGNUM(tp) (tp) ? ((tp) - Triggers) : -1
 
 //	initializes trigger system
 void InitTriggers();

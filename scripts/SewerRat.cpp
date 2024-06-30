@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -302,10 +302,10 @@ const char **Door_names = NULL;
 int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 27
-const char *Object_names[NUM_OBJECT_NAMES] = {"FallC10",  "DamB10",  "3FallsA3", "3FallsB3", "3FallsC3", "MainC3", "MainE3",
-                                        "BowlFat3", "DamFat4", "RingA2",   "RingB2",   "RingE2",   "RingF3", "MainB5",
-                                        "MainA5",   "MainD5",  "RingC5",   "RingD5",   "RingG5",   "RingH5", "BowlA5",
-                                        "bowlB7",   "BowlE4",  "BowlD1",   "BowlC1",   "BowlF2",   "BowlG2"};
+const char *Object_names[NUM_OBJECT_NAMES] = {
+    "FallC10", "DamB10", "3FallsA3", "3FallsB3", "3FallsC3", "MainC3", "MainE3", "BowlFat3", "DamFat4",
+    "RingA2",  "RingB2", "RingE2",   "RingF3",   "MainB5",   "MainA5", "MainD5", "RingC5",   "RingD5",
+    "RingG5",  "RingH5", "BowlA5",   "bowlB7",   "BowlE4",   "BowlD1", "BowlC1", "BowlF2",   "BowlG2"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 0

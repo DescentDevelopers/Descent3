@@ -170,17 +170,17 @@ struct tEffRamp {
 };
 struct tEffWave {
   uint32_t Mag;   // 0 to 10,000
-  int32_t Offset;         // +- 10,000
+  int32_t Offset; // +- 10,000
   uint32_t Phase; // 0 to 35,999
   uint32_t Period;
 };
 struct tEffCondition {
-  int32_t Offset;                      // +- 10,000
-  int32_t PositiveCoefficient;         // +- 10,000
-  int32_t NegativeCoefficient;         // +- 10,000
+  int32_t Offset;              // +- 10,000
+  int32_t PositiveCoefficient; // +- 10,000
+  int32_t NegativeCoefficient; // +- 10,000
   uint32_t PositiveSaturation; // 0 to 10,000
   uint32_t NegativeSaturation; // 0 to 10,000
-  int32_t DeadBand;                    // 0 to 10,000
+  int32_t DeadBand;            // 0 to 10,000
 };
 struct tEffCustom {
   int Channels;

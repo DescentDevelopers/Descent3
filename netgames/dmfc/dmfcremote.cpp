@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ extern DMFCBase *basethis;
 const char *DMFCGetString(int d);
 
 struct tRemotePlayerData {
-  bool authorized;   // whether the player is authorized
+  bool authorized;     // whether the player is authorized
   uint8_t curr_key[8]; // current encryption key
 };
 

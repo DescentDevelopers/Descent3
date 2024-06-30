@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@
 #include <cstdio>
 
 #include "mono.h"
-
 
 // put some data up on the screen
 void con_null_Puts(int window, const char *str);

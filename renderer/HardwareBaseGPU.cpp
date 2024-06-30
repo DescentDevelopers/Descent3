@@ -1,19 +1,19 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Descent Developers
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Descent 3
+ * Copyright (C) 2024 Descent Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 // TODO: This is missing a good way of overriding base behavior (like, you know, method overrides...)
@@ -123,9 +123,7 @@ void rend_SetCharacterParameters(ddgr_color color1, ddgr_color color2, ddgr_colo
 void rend_SetSoftwareParameters(float aspect, int width, int height, int pitch, uint8_t *framebuffer) {}
 
 // Sets the state of bilinear filtering for our textures
-void rend_SetFiltering(int8_t state) {
-  gpu_state.cur_bilinear_state = state;
-}
+void rend_SetFiltering(int8_t state) { gpu_state.cur_bilinear_state = state; }
 
 // Sets the near and far planes for z buffer
 void rend_SetZValues(float nearz, float farz) {
@@ -143,7 +141,6 @@ void rend_SetZValues(float nearz, float farz) {
 void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
 
 void rend_SetOverlayType(uint8_t type) { gpu_Overlay_type = type; }
-
 
 void rend_FillCircle(ddgr_color col, int x, int y, int rad) {}
 
@@ -527,7 +524,6 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
 
   gpu_RenderPolygon(&vArray[0], nv);
 }
-
 
 // Takes nv vertices and draws the 3D polygon defined by those vertices.
 // Uses bitmap "handle" as a texture

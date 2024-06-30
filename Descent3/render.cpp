@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -79,7 +79,6 @@
 // Katmai version -- Rotates all the points in a room
 void RotateRoomPoints(room *rp, vector4 *world_vecs);
 #endif
-
 
 static int Faces_rendered = 0;
 extern float GetFPS();
@@ -2400,7 +2399,6 @@ void ComputeRoomPulseLight(room *rp) {
     }
   }
 }
-
 
 #define CORONA_DIST_CUTOFF 5.0f
 // Draws a glow around a light

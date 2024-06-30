@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ struct pointinfo {
 };
 
 struct spewinfo {
-  uint8_t flags;       // flags
+  uint8_t flags;     // flags
   bool inuse;        // if this slot is in use
   bool use_gunpoint; // is this a gunpoint based object (yes=true)
   bool real_obj;     // if this object should be treated as a real object (can hurt you) (yes=true)

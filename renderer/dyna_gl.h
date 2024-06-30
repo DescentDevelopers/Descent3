@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #pragma once
 
@@ -129,16 +129,20 @@ typedef void(GLFUNCCALL *glBitmap_fp)(GLsizei width, GLsizei height, GLfloat xor
                                       GLfloat ymove, const GLubyte *bitmap);
 
 // FBO entry points for render-to-texture ...
-typedef void (GLFUNCCALL *glGenFramebuffersEXT_fp) (GLsizei n, GLuint *framebuffers);
-typedef void (GLFUNCCALL *glGenRenderbuffersEXT_fp) (GLsizei n, GLuint *renderbuffers);
-typedef void (GLFUNCCALL *glBindFramebufferEXT_fp) (GLenum target, GLuint framebuffer);
-typedef void (GLFUNCCALL *glBindRenderbufferEXT_fp)(GLenum target, GLuint renderbuffer);
-typedef void (GLFUNCCALL *glRenderbufferStorageEXT_fp) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
-typedef void (GLFUNCCALL *glFramebufferRenderbufferEXT_fp) (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
-typedef GLenum (GLFUNCCALL *glCheckFramebufferStatusEXT_fp) (GLenum target);
-typedef void (GLFUNCCALL *glDeleteRenderbuffersEXT_fp) (GLsizei n, const GLuint *renderbuffers);
-typedef void (GLFUNCCALL *glDeleteFramebuffersEXT_fp) (GLsizei n, const GLuint *framebuffers);
-typedef void (GLFUNCCALL *glBlitFramebufferEXT_fp) (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+typedef void(GLFUNCCALL *glGenFramebuffersEXT_fp)(GLsizei n, GLuint *framebuffers);
+typedef void(GLFUNCCALL *glGenRenderbuffersEXT_fp)(GLsizei n, GLuint *renderbuffers);
+typedef void(GLFUNCCALL *glBindFramebufferEXT_fp)(GLenum target, GLuint framebuffer);
+typedef void(GLFUNCCALL *glBindRenderbufferEXT_fp)(GLenum target, GLuint renderbuffer);
+typedef void(GLFUNCCALL *glRenderbufferStorageEXT_fp)(GLenum target, GLenum internalformat, GLsizei width,
+                                                      GLsizei height);
+typedef void(GLFUNCCALL *glFramebufferRenderbufferEXT_fp)(GLenum target, GLenum attachment, GLenum renderbuffertarget,
+                                                          GLuint renderbuffer);
+typedef GLenum(GLFUNCCALL *glCheckFramebufferStatusEXT_fp)(GLenum target);
+typedef void(GLFUNCCALL *glDeleteRenderbuffersEXT_fp)(GLsizei n, const GLuint *renderbuffers);
+typedef void(GLFUNCCALL *glDeleteFramebuffersEXT_fp)(GLsizei n, const GLuint *framebuffers);
+typedef void(GLFUNCCALL *glBlitFramebufferEXT_fp)(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0,
+                                                  GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask,
+                                                  GLenum filter);
 
 #if defined(WIN32)
 typedef HGLRC(GLFUNCCALL *wglCreateContext_fp)(HDC);
@@ -258,7 +262,6 @@ module *LoadOpenGLDLL(const char *dllname) {
   }
 
   strcpy(loadedLibrary, dllname);
-
 
   dglAlphaFunc = (glAlphaFunc_fp)mod_GetSymbol(&OpenGLDLLInst, "glAlphaFunc", 255);
   if (!dglAlphaFunc)

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -187,7 +187,7 @@ struct tSliderSettings {
 //	CLASS contains gadgets
 
 class newuiSheet {
-  int m_sx, m_sy;           // origin of sheet gadgets relative to parent.
+  int m_sx, m_sy;             // origin of sheet gadgets relative to parent.
   int16_t m_initial_focus_id; // gadget that will have focus upon realization.
 
 public:
@@ -259,7 +259,7 @@ public:
 
   // adds a slider, set the range for it too., returns two values, int16_t[0] = position, int16_t[1] = range
   int16_t *AddSlider(const char *title, int16_t range, int16_t init_pos = 0, tSliderSettings *settings = NULL,
-                   int16_t id = DEFAULT_NEWUID);
+                     int16_t id = DEFAULT_NEWUID);
 
   //	adds a static text item
   void AddText(const char *text, ...);
@@ -296,9 +296,9 @@ public:
 
 private:
   struct t_gadget_desc {
-    int8_t type;   // enumerated ui gadget type
+    int8_t type;  // enumerated ui gadget type
     bool changed; // parameters are different than defaults?
-    int16_t id;     // id value
+    int16_t id;   // id value
     char *title;  // title of gadget
     union {
       int i;
@@ -535,7 +535,8 @@ private:
 public:
   newuiHotspot();
 
-  void Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags = 0);
+  void Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h,
+              int16_t flags = 0);
   const char *GetTitle() const { return m_title; };
 
 protected:
@@ -610,7 +611,7 @@ private:
   int m_optionsx, m_optionsy; // option button placements
   int m_titlex, m_titley;     // title location.
   tAlignment m_align;         // alignment of text
-  int16_t m_newoptionid;        // tells that a new option has been selected.
+  int16_t m_newoptionid;      // tells that a new option has been selected.
   int16_t m_cursheetidx;
   bool m_refreshgadgets; // refreshes gadgets on current sheet.
 

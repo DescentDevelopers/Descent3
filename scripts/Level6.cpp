@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1517,106 +1517,106 @@ const char *GetMessage(const char *name) {
 
 #define NUM_DOOR_NAMES 5
 const char *Door_names[NUM_DOOR_NAMES] = {"BossDoor", "CollectorsDoor", "BuildersDoor", "PriestHallDoor",
-                                    "PriestGalleryDoor"};
+                                          "PriestGalleryDoor"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 39
 const char *Object_names[NUM_OBJECT_NAMES] = {"DummyFlag",
-                                        "BossMovieCollider",
-                                        "BossRock01",
-                                        "BossRock02",
-                                        "BossRock03",
-                                        "BossRock04",
-                                        "BossRock05",
-                                        "BuildersKey",
-                                        "ObjectMoveCamera",
-                                        "PriestKey",
-                                        "CollectorsKey",
-                                        "Camera4CollectorsK",
-                                        "Camera4BuildersKey",
-                                        "BuilderSign",
-                                        "CollectorSign",
-                                        "PriestSign",
-                                        "PriestHallDoor",
-                                        "PriestGalleryDoor",
-                                        "FallingPlatform",
-                                        "BuildersDoor",
-                                        "CollectorsDoor",
-                                        "PlatformClutch2",
-                                        "PlatformClutch1",
-                                        "PriestPedestalCame",
-                                        "Boss",
-                                        "BPuzzRespawn",
-                                        "SlagHeap",
-                                        "TugShip",
-                                        "CrashedShip",
-                                        "BuilderPuzzUFO1",
-                                        "BuilderPuzzUFO2",
-                                        "BuilderPuzzUFO3",
-                                        "CollectorNomad2",
-                                        "CollectorsNomad1",
-                                        "VolcanoSpew",
-                                        "VolcanoSpew2",
-                                        "VolcanoSpew3",
-                                        "VolcanoSpew4",
-                                        "BossDoor"};
+                                              "BossMovieCollider",
+                                              "BossRock01",
+                                              "BossRock02",
+                                              "BossRock03",
+                                              "BossRock04",
+                                              "BossRock05",
+                                              "BuildersKey",
+                                              "ObjectMoveCamera",
+                                              "PriestKey",
+                                              "CollectorsKey",
+                                              "Camera4CollectorsK",
+                                              "Camera4BuildersKey",
+                                              "BuilderSign",
+                                              "CollectorSign",
+                                              "PriestSign",
+                                              "PriestHallDoor",
+                                              "PriestGalleryDoor",
+                                              "FallingPlatform",
+                                              "BuildersDoor",
+                                              "CollectorsDoor",
+                                              "PlatformClutch2",
+                                              "PlatformClutch1",
+                                              "PriestPedestalCame",
+                                              "Boss",
+                                              "BPuzzRespawn",
+                                              "SlagHeap",
+                                              "TugShip",
+                                              "CrashedShip",
+                                              "BuilderPuzzUFO1",
+                                              "BuilderPuzzUFO2",
+                                              "BuilderPuzzUFO3",
+                                              "CollectorNomad2",
+                                              "CollectorsNomad1",
+                                              "VolcanoSpew",
+                                              "VolcanoSpew2",
+                                              "VolcanoSpew3",
+                                              "VolcanoSpew4",
+                                              "BossDoor"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 20
 const char *Room_names[NUM_ROOM_NAMES] = {"EndWindyRoom",     "PriestPedestal",  "CollectorsPedestal",
-                                    "BuildersPedestal", "PlatformHitRoom", "WindTunnel1",
-                                    "WindTunnel2",      "WindTunnel3",     "BPuzz1",
-                                    "BPuzz2",           "BPuzz3",          "BPuzz4",
-                                    "BPuzz5",           "BPuzz6",          "BPuzz7",
-                                    "BPuzzEnd",         "CrashedShipRoom", "EscapeTunnelStart",
-                                    "NomadCollector2",  "CavernEntrance"};
+                                          "BuildersPedestal", "PlatformHitRoom", "WindTunnel1",
+                                          "WindTunnel2",      "WindTunnel3",     "BPuzz1",
+                                          "BPuzz2",           "BPuzz3",          "BPuzz4",
+                                          "BPuzz5",           "BPuzz6",          "BPuzz7",
+                                          "BPuzzEnd",         "CrashedShipRoom", "EscapeTunnelStart",
+                                          "NomadCollector2",  "CavernEntrance"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 36
 const char *Trigger_names[NUM_TRIGGER_NAMES] = {"MusicCommon2Coll",
-                                          "MusicCommon2Build",
-                                          "WaypointInBuilders",
-                                          "BuildersHalfWay",
-                                          "MusicUseKeys2Priest",
-                                          "MusicOut2Common",
-                                          "BPuzz1in",
-                                          "BPuzz1out",
-                                          "BPuzz2in",
-                                          "BPuzz2out",
-                                          "BPuzz3in",
-                                          "BPuzz3out",
-                                          "BPuzz4in",
-                                          "BPuzz4out",
-                                          "BPuzz5in",
-                                          "BPuzz5out",
-                                          "BPuzz6in",
-                                          "BPuzz6out",
-                                          "BPuzz7in",
-                                          "BPuzz7out",
-                                          "BuildersPuzzleMessa",
-                                          "ExitPriestPuzzle",
-                                          "EnterPriestPuzzle",
-                                          "MusicPriest2Boss",
-                                          "MusicUseKeys2Build",
-                                          "MusicUseKeys2Coll",
-                                          "MusicPriest2UseKeys",
-                                          "MusicBuild2UseKeys",
-                                          "MusicColl2UseKeys",
-                                          "MusicColl2Common",
-                                          "MusicBuild2Common",
-                                          "MusicCommon2Out",
-                                          "TurnPriestNomadsOn",
-                                          "TurnOffPriestNomads",
-                                          "BuildersPuzzHint",
-                                          "BuildersPuzzHint2"};
+                                                "MusicCommon2Build",
+                                                "WaypointInBuilders",
+                                                "BuildersHalfWay",
+                                                "MusicUseKeys2Priest",
+                                                "MusicOut2Common",
+                                                "BPuzz1in",
+                                                "BPuzz1out",
+                                                "BPuzz2in",
+                                                "BPuzz2out",
+                                                "BPuzz3in",
+                                                "BPuzz3out",
+                                                "BPuzz4in",
+                                                "BPuzz4out",
+                                                "BPuzz5in",
+                                                "BPuzz5out",
+                                                "BPuzz6in",
+                                                "BPuzz6out",
+                                                "BPuzz7in",
+                                                "BPuzz7out",
+                                                "BuildersPuzzleMessa",
+                                                "ExitPriestPuzzle",
+                                                "EnterPriestPuzzle",
+                                                "MusicPriest2Boss",
+                                                "MusicUseKeys2Build",
+                                                "MusicUseKeys2Coll",
+                                                "MusicPriest2UseKeys",
+                                                "MusicBuild2UseKeys",
+                                                "MusicColl2UseKeys",
+                                                "MusicColl2Common",
+                                                "MusicBuild2Common",
+                                                "MusicCommon2Out",
+                                                "TurnPriestNomadsOn",
+                                                "TurnOffPriestNomads",
+                                                "BuildersPuzzHint",
+                                                "BuildersPuzzHint2"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 8
 const char *Sound_names[NUM_SOUND_NAMES] = {"Powerup pickup", "DoorIsLocked",           "expMissileTearing1",
-                                      "AmbBigUnlock",   "You don't have it BEEP", "Lev5Goal",
-                                      "Lev5GoalFail",   "DefaultBuildingExplode"};
+                                            "AmbBigUnlock",   "You don't have it BEEP", "Lev5Goal",
+                                            "Lev5GoalFail",   "DefaultBuildingExplode"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 1
@@ -1632,55 +1632,55 @@ const char *Path_names[NUM_PATH_NAMES] = {
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 5
-const char *Matcen_names[NUM_MATCEN_NAMES] = {"Boss Room Matcen 1", "Boss Room Matcen 2", "NomadMainRoom1", "NomadPriestHall",
-                                        "NomadPriestGallery"};
+const char *Matcen_names[NUM_MATCEN_NAMES] = {"Boss Room Matcen 1", "Boss Room Matcen 2", "NomadMainRoom1",
+                                              "NomadPriestHall", "NomadPriestGallery"};
 int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 7
-const char *Goal_names[NUM_GOAL_NAMES] = {"Find the Builders' Icon", "Find the Priest's Icon", "Find the Collectors' Icon",
-                                    "Use the icons",           "Use the Priest's Icon",  "Find the crashed CED ship",
-                                    "Enter the Nomad Caverns"};
+const char *Goal_names[NUM_GOAL_NAMES] = {
+    "Find the Builders' Icon", "Find the Priest's Icon",    "Find the Collectors' Icon", "Use the icons",
+    "Use the Priest's Icon",   "Find the crashed CED ship", "Enter the Nomad Caverns"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 38
 const char *Message_names[NUM_MESSAGE_NAMES] = {"FirstPickupBuilder",
-                                          "FirstPickupPriest",
-                                          "FirstPickupCollector",
-                                          "InvGame",
-                                          "InvHUD",
-                                          "PlaceCollectorsKey",
-                                          "KeyAlreadyThere",
-                                          "YoucantUseKeyHere",
-                                          "PlaceBuildersKey",
-                                          "BuilderCollectorsCorrectlyPlaced",
-                                          "PriestHallDoorLocked",
-                                          "PriestGalleryDoorLocked",
-                                          "BuildersDoorMessage",
-                                          "ThisDoorDoesNotAnswer",
-                                          "CollectorsDoorMessage",
-                                          "PriestKeyCorrectlyPlaced",
-                                          "PlacePriestKey",
-                                          "BossIntroductionText",
-                                          "IntroLevelMessage",
-                                          "XsecsOntheClock",
-                                          "BuildersPuzzMessage",
-                                          "BuildersPuzzMessage2",
-                                          "Builders3secondsleft",
-                                          "BuildersTimerExpired",
-                                          "PriestPuzzleEnter",
-                                          "PriestPuzzleSolved",
-                                          "PriestPuzzleGoofed",
-                                          "TugMessage1",
-                                          "TugMessage2",
-                                          "TugMessageStart",
-                                          "TugStartMessage2",
-                                          "TugMessageShipPickUp",
-                                          "TugMessage5",
-                                          "TugMessage4",
-                                          "TugMessage6",
-                                          "BLANK",
-                                          "Test",
-                                          "BuildersPuzzhint"};
+                                                "FirstPickupPriest",
+                                                "FirstPickupCollector",
+                                                "InvGame",
+                                                "InvHUD",
+                                                "PlaceCollectorsKey",
+                                                "KeyAlreadyThere",
+                                                "YoucantUseKeyHere",
+                                                "PlaceBuildersKey",
+                                                "BuilderCollectorsCorrectlyPlaced",
+                                                "PriestHallDoorLocked",
+                                                "PriestGalleryDoorLocked",
+                                                "BuildersDoorMessage",
+                                                "ThisDoorDoesNotAnswer",
+                                                "CollectorsDoorMessage",
+                                                "PriestKeyCorrectlyPlaced",
+                                                "PlacePriestKey",
+                                                "BossIntroductionText",
+                                                "IntroLevelMessage",
+                                                "XsecsOntheClock",
+                                                "BuildersPuzzMessage",
+                                                "BuildersPuzzMessage2",
+                                                "Builders3secondsleft",
+                                                "BuildersTimerExpired",
+                                                "PriestPuzzleEnter",
+                                                "PriestPuzzleSolved",
+                                                "PriestPuzzleGoofed",
+                                                "TugMessage1",
+                                                "TugMessage2",
+                                                "TugMessageStart",
+                                                "TugStartMessage2",
+                                                "TugMessageShipPickUp",
+                                                "TugMessage5",
+                                                "TugMessage4",
+                                                "TugMessage6",
+                                                "BLANK",
+                                                "Test",
+                                                "BuildersPuzzhint"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

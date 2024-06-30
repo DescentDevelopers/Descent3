@@ -697,7 +697,7 @@ void GameToEditor(bool set_viewer_from_player) {
   //	theApp.main_frame->SetWindowPos(&CWnd::wndNoTopMost, Editor_wndrect.left, Editor_wndrect.top,
   //										Editor_wndrect.right-Editor_wndrect.left,
   //										Editor_wndrect.bottom -
-  //Editor_wndrect.top, 										SWP_SHOWWINDOW);
+  // Editor_wndrect.top, 										SWP_SHOWWINDOW);
 
   // Restore sky if possible
   if (Save_sky_data) {

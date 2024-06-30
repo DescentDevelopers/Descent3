@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1935,9 +1935,9 @@ void DoConcussiveForce(object *explode_obj_ptr, int parent_handle, float player_
             }
           } else {
             // mprintf(0, "No badass: robot=%2i, dist=%7.3f, maxdistance=%7.3f .\n", i, f2fl(dist), f2fl(maxdistance));
-          }   // end if (object_to_object_visibility...
-        }     // end if (dist < maxdistance)
-      }       // end for
+          } // end if (object_to_object_visibility...
+        } // end if (dist < maxdistance)
+      } // end for
     }
   } // end if (maxdamage...
   //	return obj;

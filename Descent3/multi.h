@@ -814,8 +814,8 @@ struct vmt_descent3_struct {
   uint32_t lateral_thrust;
   uint32_t rotational_thrust;
   uint32_t sliding_pct; // Percentage of the time you were sliding
-  uint32_t checksum;   // This value needs to be equal to whatever the checksum is once the packet is decoded
-  uint32_t pad; // just to provide room for out 4 byte encryption boundry only needed on the client side for now
+  uint32_t checksum;    // This value needs to be equal to whatever the checksum is once the packet is decoded
+  uint32_t pad;         // just to provide room for out 4 byte encryption boundry only needed on the client side for now
 };
 #define DESCENT3_BLOCK_SIZE (sizeof(vmt_descent3_struct) - 4)
 #if defined(WIN32)
@@ -902,7 +902,8 @@ void MultiMakePlayerGhost(int slot);
 void MultiMakePlayerReal(int slot);
 
 // Sends a fire packet from a player
-void MultiSendFirePlayerWB(int playernum, uint8_t wb_index, uint8_t fire_mask, uint8_t reliable = 0, float scalar = 1.0);
+void MultiSendFirePlayerWB(int playernum, uint8_t wb_index, uint8_t fire_mask, uint8_t reliable = 0,
+                           float scalar = 1.0);
 
 void MultiMakeMatrix(multi_orientation *dest, matrix *src);
 

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -521,7 +521,7 @@ struct old_file {
 int Num_old_files = 0;
 old_file *OldFiles;
 const char *PageNames[] = {"Unknown",     "Texture", "Weapon",   "Robot", "Powerup",        "Door",
-                     "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
+                           "Player ship", "Sound",   "Megacell", "Files", "Generic objects"};
 #ifndef RELEASE
 int Network_up = 1;
 int Stand_alone = 0;
@@ -2923,8 +2923,7 @@ void mng_CompileAddonPages(void) {
             continue;
 
           // this is it!
-          mprintf(0, "***Compiling: %s[%s] to %d\n",
-                  AddOnDataTables[tf].Addon_tracklocks[i].name,
+          mprintf(0, "***Compiling: %s[%s] to %d\n", AddOnDataTables[tf].Addon_tracklocks[i].name,
                   (curr_tablefile == 1) ? TableFilename : AddOnDataTables[curr_tablefile - 2].AddOnTableFilename,
                   page_pos);
           ASSERT(AddOnDataTables[tf].Addon_tracklocks[i].stack_filepos == 0);

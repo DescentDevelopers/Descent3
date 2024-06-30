@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -180,11 +180,11 @@
 struct fireball {
   char name[PAGENAME_LEN]; // The filename of this animation
 
-  uint8_t type;       // type of fireball, see above
-  uint8_t tex_size;   // What size texture to use for this animation
-  float total_life; // How long this animation should last (in seconds)
-  float size;       // How big this explosion is
-  int16_t bm_handle;  // The handle to the vlip
+  uint8_t type;      // type of fireball, see above
+  uint8_t tex_size;  // What size texture to use for this animation
+  float total_life;  // How long this animation should last (in seconds)
+  float size;        // How big this explosion is
+  int16_t bm_handle; // The handle to the vlip
 };
 
 extern fireball Fireballs[];

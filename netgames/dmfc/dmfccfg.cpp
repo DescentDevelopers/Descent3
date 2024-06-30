@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
-
 
 extern char **DMFCStringTable;
 extern int DMFCStringTableSize;
@@ -153,8 +152,7 @@ int DMFCBase::CFGCreateRecord(char *name, char type, void *data) {
 }
 
 // Convert a string that represents a hex value into an int
-    int
-    axtoi(char *p) {
+int axtoi(char *p) {
   int value = 0;
   while ((p) && (*p)) {
     *p = toupper(*p);

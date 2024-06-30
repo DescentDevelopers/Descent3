@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -226,7 +226,7 @@ struct tSoundInfo {
 };
 
 struct tButtonInfo {
-  bool flash_state; // Is the button glowing?
+  bool flash_state;   // Is the button glowing?
   uint8_t click_type; // CLICKTYPE_DOWN or CLICKTYPE_CLICK (what the button responds to)
   uint8_t button_type;
   int sibling; // Sibling effect (for down/up arrows), -1 if none
@@ -246,11 +246,11 @@ struct tButtonInfo {
 };
 
 struct tceffect {
-  uint8_t type;     // Type of effect
-  uint8_t monitor;  // Which monitor it belongs to
-  uint8_t screen;   // What screen the effect belongs to
-  bool tab_stop;  // This effect can have focus
-  bool has_focus; // The effect currently has focus
+  uint8_t type;    // Type of effect
+  uint8_t monitor; // Which monitor it belongs to
+  uint8_t screen;  // What screen the effect belongs to
+  bool tab_stop;   // This effect can have focus
+  bool has_focus;  // The effect currently has focus
 
   int id; // user given ID of effect (should be unique)
 
@@ -341,13 +341,13 @@ void RenderPolyModel(tceffect *tce, float frametime, int xoff, int yoff, bool ok
 void RenderSound(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render);
 void RenderButton(tceffect *tce, float frametime, int xoff, int yoff, bool ok_to_render);
 
-bool CreateTextEffect(TCTEXTDESC* desc, const char *text, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateBitmapEffect(TCBMPDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateMovieEffect(TCMOVIEDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateBackgroundEffect(TCBKGDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreatePolyModelEffect(TCPOLYDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-bool CreateSoundEffect(TCSNDDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
-int CreateButtonEffect(TCBUTTONDESC* desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateTextEffect(TCTEXTDESC *desc, const char *text, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateBitmapEffect(TCBMPDESC *desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateMovieEffect(TCMOVIEDESC *desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateBackgroundEffect(TCBKGDESC *desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreatePolyModelEffect(TCPOLYDESC *desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+bool CreateSoundEffect(TCSNDDESC *desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
+int CreateButtonEffect(TCBUTTONDESC *desc, int monitor, int screen, int id = INVALID_EFFECT_ID);
 bool CreateTextStatic(tceffect *tce, const char *text);
 bool CreateTextFade(tceffect *tce, const char *text);
 bool CreateTextType(tceffect *tce, const char *text);

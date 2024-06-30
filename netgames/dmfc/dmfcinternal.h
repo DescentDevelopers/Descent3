@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -316,16 +316,16 @@ struct tPKillerInfo {
 };
 
 struct tPExtraInfo {
-  float last_kill_time;   // Game time of the last kill for this player (previous kill)
-  float last_death_time;  // Game time of the last time this player was killed (previous death)
-  float kill_time;        // time of latest kill
-  float death_time;       // time of latest death
-  float observer_time;    // time the player entered observer mode (or 0 if not)
+  float last_kill_time;     // Game time of the last kill for this player (previous kill)
+  float last_death_time;    // Game time of the last time this player was killed (previous death)
+  float kill_time;          // time of latest kill
+  float death_time;         // time of latest death
+  float observer_time;      // time the player entered observer mode (or 0 if not)
   uint16_t kills_in_a_row;  // Number of kills in a row for this player
   uint16_t deaths_in_a_row; // Number of deaths in a row for this player
-  int8_t last_kill_num;    // Player record num of last person this player killed
-  int8_t last_death_num;   // Player record num of the player that last killed this player
-  char got_revenge;       // 1 if revenge has been made on last killer
+  int8_t last_kill_num;     // Player record num of last person this player killed
+  int8_t last_death_num;    // Player record num of the player that last killed this player
+  char got_revenge;         // 1 if revenge has been made on last killer
 };
 
 class PInfo {
@@ -361,11 +361,12 @@ private:
 class MenuItem : public IMenuItem {
 public:
   MenuItem();
-  MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int), ...); // the last parameters are the state items, which
-                                                                       // is an int (the number of states), followed by
-                                                                       // an int (the initial state), followed by a
-                                                                       // a list of char * to the names of the items
-                                                                       // this is required for MIT_STATE type only
+  MenuItem(const char *title, char type, uint8_t flags, void (*fp)(int),
+           ...); // the last parameters are the state items, which
+                 // is an int (the number of states), followed by
+                 // an int (the initial state), followed by a
+                 // a list of char * to the names of the items
+                 // this is required for MIT_STATE type only
   ~MenuItem();
 
   bool AddSubMenu(IMenuItem *p);
@@ -1597,7 +1598,8 @@ public:
   //	exists. These commands are not case sensitive.
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
-  int8_t AddInputCommand(const char *command, const char *description, void (*handler)(const char *), bool allow_remotely = false);
+  int8_t AddInputCommand(const char *command, const char *description, void (*handler)(const char *),
+                         bool allow_remotely = false);
 
   // DMFCBase::CanInputCommandBeUsedRemotely
   //

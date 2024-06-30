@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -123,10 +123,10 @@
 
 struct door {
   char name[PAGENAME_LEN]; // name of the door
-  uint8_t used;              // if this door is in use
-  uint8_t flags;             // flags for this door
-  uint8_t pad;               // keep alignment (pagename is 35 chars long)
-  int16_t hit_points;        // for blastable doors
+  uint8_t used;            // if this door is in use
+  uint8_t flags;           // flags for this door
+  uint8_t pad;             // keep alignment (pagename is 35 chars long)
+  int16_t hit_points;      // for blastable doors
   float total_open_time;   // time of animation to open door
   float total_close_time;  // time of animation to close door
   float total_time_open;   // how much time to stay open
@@ -136,7 +136,6 @@ struct door {
 
   // OSIRIS information
   char module_name[MAX_MODULENAME_LEN];
-
 };
 
 // The max number of predefined doors

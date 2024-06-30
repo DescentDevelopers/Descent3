@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -5119,7 +5119,7 @@ Parameters:
 $$END
 */
 void aGoalSetCompletionMessage(int goal_index, const char *message) {
-  LGoal_Value(VF_SET, LGSV_PC_COMPLETION_MESSAGE, (void *) message, goal_index);
+  LGoal_Value(VF_SET, LGSV_PC_COMPLETION_MESSAGE, (void *)message, goal_index);
 }
 
 /*
@@ -6142,7 +6142,9 @@ Parameters:
   UpperLimit: the returned value will be lower than or equal to this value
 $$END
 */
-float qRandomValue(float low, float high) { return low + (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * (high - low); }
+float qRandomValue(float low, float high) {
+  return low + (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * (high - low);
+}
 
 /*
 $$QUERY

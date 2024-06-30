@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -88,7 +88,6 @@ DLLEXPORT int DLLFUNCCALL SaveRestoreState(void *file_ptr, uint8_t saving_state)
 #ifdef __cplusplus
 }
 #endif
-
 
 // The main entry point where the game calls the dll
 void DLLFUNCCALL DLLGameCall(int eventnum, dllinfo *data) {

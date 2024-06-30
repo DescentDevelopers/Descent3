@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ enum tTaskPriority { TASKPRIORITY_HIGHEST, TASKPRIORITY_NORMAL, TASKPRIORITY_LOW
 class osEvent {
 public:
 #if defined(WIN32)
-  void *event_os_handle;    // this is the Win32 Event Handle
-#endif                      // WIN32
+  void *event_os_handle; // this is the Win32 Event Handle
+#endif                   // WIN32
 
 public:
   osEvent(char *name);
@@ -69,8 +69,8 @@ public:
 class osTask {
 public:
 #if defined(WIN32)
-  void *task_os_handle;     // This is the Win32 Thread Handle
-#endif                      // WIN32
+  void *task_os_handle; // This is the Win32 Thread Handle
+#endif                  // WIN32
 
 public:
   osTask(unsigned (*func)(void *), tTaskPriority priority, void *parm = NULL);

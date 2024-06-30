@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -354,10 +354,10 @@ uint32_t CFtpGet::GetFile() {
 uint32_t CFtpGet::IssuePort() {
 
   char szCommandString[200];
-  SOCKADDR_IN listenaddr;  // Socket address structure
-  socklen_t iLength;       // Length of the address structure
-  uint32_t nLocalPort; // Local port for listening
-  uint32_t nReplyCode; // FTP server reply code
+  SOCKADDR_IN listenaddr; // Socket address structure
+  socklen_t iLength;      // Length of the address structure
+  uint32_t nLocalPort;    // Local port for listening
+  uint32_t nReplyCode;    // FTP server reply code
 
   // Get the address for the hListenSocket
   iLength = sizeof(listenaddr);

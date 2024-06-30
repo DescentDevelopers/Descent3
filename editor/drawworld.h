@@ -72,7 +72,7 @@ void DrawTerrainWorld(grViewport *vp, vector *view_target, matrix *view_orient, 
 //					x,y - the screen coordinates clicked on
 //					roomnum,facenum - pointers to variables to be filled in
 //					ingore_previous - if this is true, ignore the previous face & find the next
-//farther face Returns:		true if found a room/face
+// farther face Returns:		true if found a room/face
 bool WireframeFindRoomFace(grViewport *vp, int x, int y, int *roomnum, int *facenum, int find_mode);
 
 // Adds all the rooms that have a vertex inside of a given screen box to the selected list

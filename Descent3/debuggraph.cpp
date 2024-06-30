@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -89,7 +89,6 @@ struct tAddDebugGraph {
     int i_max_value;
     float f_max_value;
   };
-
 };
 
 class tGraphNode {

@@ -89,8 +89,8 @@ void MVE_dsbSetPan(int32_t lPan);
 ** is just used for window centering and for determining
 ** how and when to do palette callbacks.
 */
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
-                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor);
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr, uint32_t WinSize,
+                unsigned WinGran, void *SetBank, unsigned hicolor);
 
 /* This function alters the display from 640x480 or 640x400 to 640x350 resolution.
  */

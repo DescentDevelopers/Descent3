@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -708,19 +708,19 @@ void GoalDoFrame(object *obj) {
       if (!(cur_goal->flags & GF_HAS_PATH) || ai_info->path.num_paths == 0) {
         GoalInitWanderAround(obj, cur_goal);
       }
-/*
-      else if ((cur_goal->flags & GF_HAS_PATH) && ai_info->path.num_paths != 0) {
-        vector *posp = &cur_goal->g_info.pos;
-        float dist = vm_VectorDistance(
-            &AIDynamicPath[ai_info->path.num_paths - 1].pos[ai_info->path.path_end_node[ai_info->path.num_paths - 1]],
-            posp);
+      /*
+            else if ((cur_goal->flags & GF_HAS_PATH) && ai_info->path.num_paths != 0) {
+              vector *posp = &cur_goal->g_info.pos;
+              float dist = vm_VectorDistance(
+                  &AIDynamicPath[ai_info->path.num_paths - 1].pos[ai_info->path.path_end_node[ai_info->path.num_paths -
+         1]], posp);
 
-        if (dist > 5.0f) {
-          mprintf(0, "In wander path case for obj %d - %s....\n", OBJNUM(obj), Object_info[obj->id].name);
-          cur_goal->next_path_time = Gametime - 1.0f;
-        }
-      }
-*/
+              if (dist > 5.0f) {
+                mprintf(0, "In wander path case for obj %d - %s....\n", OBJNUM(obj), Object_info[obj->id].name);
+                cur_goal->next_path_time = Gametime - 1.0f;
+              }
+            }
+      */
     }
 
     if (OBJGOAL(cur_goal)) {

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -331,7 +331,7 @@ typedef int hashTableIndex; /* index into hash table */
 #define compEQ(a, b) ((a)->ptr == (b)->ptr)
 struct Node {
   struct Node *next; /* next node */
-  T data;             /* data stored in node */
+  T data;            /* data stored in node */
 };
 Node *findNode(T data);
 void deleteNode(T data);

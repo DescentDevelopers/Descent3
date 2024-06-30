@@ -413,7 +413,7 @@ struct network_packet_buffer {
 #define MAX_PACKET_BUFFERS 96
 
 static network_packet_buffer Packet_buffers[MAX_PACKET_BUFFERS]; // buffer to hold packets sent to us
-static int16_t Packet_free_list[MAX_PACKET_BUFFERS];               // contains id's of free packet buffers
+static int16_t Packet_free_list[MAX_PACKET_BUFFERS];             // contains id's of free packet buffers
 static int Num_packet_buffers;
 static int Largest_packet_index = 0;
 
@@ -459,7 +459,7 @@ struct reliable_header {
   uint8_t compressed;          //
   uint16_t seq;                // sequence packet 0-65535 used for ACKing also
   uint16_t data_len;           // length of data
-  float send_time;           // Time the packet was sent, if an ACK the time the packet being ACK'd was sent.
+  float send_time;             // Time the packet was sent, if an ACK the time the packet being ACK'd was sent.
   uint8_t data[NETBUFFERSIZE]; // Packet data
 };
 
@@ -468,7 +468,6 @@ struct reliable_header {
 
 struct reliable_net_sendbuffer {
   uint8_t buffer[NETBUFFERSIZE];
-
 };
 
 struct reliable_net_rcvbuffer {
@@ -501,7 +500,7 @@ struct reliable_socket {
   float last_sent;           // The last time we sent a packet (used for NAGLE emulation)
   int waiting_packet_number; // Which packet has data in it that is waiting for the interval to send
 
-  uint16_t status;                           // Status of this connection
+  uint16_t status;                   // Status of this connection
   uint16_t oursequence;              // This is the next sequence number the application is expecting
   uint16_t theirsequence;            // This is the next sequence number the peer is expecting
   uint16_t rsequence[MAXNETBUFFERS]; // This is the sequence number of the given packet
@@ -513,7 +512,7 @@ struct reliable_socket {
   reliable_net_rcvbuffer *rbuffers[MAXNETBUFFERS];
   SOCKADDR addr;                                    // SOCKADDR of our peer
   reliable_net_sendbuffer *sbuffers[MAXNETBUFFERS]; // This is an array of pointers for quick sorting
-  uint16_t ssequence[MAXNETBUFFERS];          // This is the sequence number of the given packet
+  uint16_t ssequence[MAXNETBUFFERS];                // This is the sequence number of the given packet
   uint8_t send_urgent;
 };
 
@@ -523,8 +522,7 @@ static reliable_socket reliable_sockets[MAXRELIABLESOCKETS];
 #include <fcntl.h>
 #endif
 
-int make_nonblocking(SOCKET sock)
-{
+int make_nonblocking(SOCKET sock) {
 #ifdef WIN32
   unsigned long arg = 1;
   return ioctlsocket(sock, FIONBIO, &arg);
@@ -1003,11 +1001,11 @@ int nw_ReceiveReliable(SOCKET socketid, uint8_t *buffer, int max_len) {
       mem_free(rsocket->rbuffers[i]);
       rsocket->rbuffers[i] = NULL;
       rsocket->rsequence[i] = 0;
-/*
-      mprintf(0,"Found packet for upper layer in nw_ReceiveReliable() %d bytes. seq:%d.\n",
-               rsocket->recv_len[i],
-               rsocket->oursequence);
-*/
+      /*
+            mprintf(0,"Found packet for upper layer in nw_ReceiveReliable() %d bytes. seq:%d.\n",
+                     rsocket->recv_len[i],
+                     rsocket->oursequence);
+      */
       rsocket->oursequence++;
       return rsocket->recv_len[i];
     }
@@ -1199,13 +1197,8 @@ int nw_SendReliable(uint32_t socketid, uint8_t *data, int length, bool urgent) {
 
   for (i = 0; i < MAXNETBUFFERS; i++) {
     if (rsocket->sbuffers[i]) {
-      mprintf(0, "Buffer %d: %d,%d,%d,%d,%d,%d\n",
-              i,
-              rsocket->sbuffers[i]->buffer[0],
-              rsocket->sbuffers[i]->buffer[1],
-              rsocket->sbuffers[i]->buffer[2],
-              rsocket->sbuffers[i]->buffer[3],
-              rsocket->sbuffers[i]->buffer[4],
+      mprintf(0, "Buffer %d: %d,%d,%d,%d,%d,%d\n", i, rsocket->sbuffers[i]->buffer[0], rsocket->sbuffers[i]->buffer[1],
+              rsocket->sbuffers[i]->buffer[2], rsocket->sbuffers[i]->buffer[3], rsocket->sbuffers[i]->buffer[4],
               rsocket->sbuffers[i]->buffer[5]);
     }
   }
@@ -2256,12 +2249,8 @@ void CDECLCALL gethostbynameworker(void *parm)
 #endif
   } else if (!lookup->abort) {
     memcpy(&lookup->ip, he->h_addr_list[0], sizeof(uint32_t));
-    mprintf(0, "IPLOOKUP: [%s] is %d.%d.%d.%d ...",
-            lookup->host,
-            (lookup->ip & 0x000000FF),
-            (lookup->ip & 0x0000FF00) >> 8,
-            (lookup->ip & 0x00FF0000) >> 16,
-            (lookup->ip & 0xFF000000) >> 24);
+    mprintf(0, "IPLOOKUP: [%s] is %d.%d.%d.%d ...", lookup->host, (lookup->ip & 0x000000FF),
+            (lookup->ip & 0x0000FF00) >> 8, (lookup->ip & 0x00FF0000) >> 16, (lookup->ip & 0xFF000000) >> 24);
     // memcpy(&aslu,lookup,sizeof(async_dns_lookup));
     lookup->done = true;
   }

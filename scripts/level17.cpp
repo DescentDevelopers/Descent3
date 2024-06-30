@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1666,98 +1666,98 @@ int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 93
 const char *Object_names[NUM_OBJECT_NAMES] = {"RedFlame-2",
-                                        "RedFlame-1",
-                                        "BlueFlame-2",
-                                        "BlueFlame-1",
-                                        "RedSwitch-2",
-                                        "RedSwitch-1",
-                                        "BlueSwitch-2",
-                                        "BlueSwitch-1",
-                                        "MiniReactorBlue-2",
-                                        "MiniReactorBlue-1",
-                                        "WarningLightBlue",
-                                        "ACB-12",
-                                        "ACB-11",
-                                        "ACB-10",
-                                        "ACB-9",
-                                        "ACB-8",
-                                        "ACB-7",
-                                        "ACB-6",
-                                        "ACB-5",
-                                        "ACB-4",
-                                        "ACB-3",
-                                        "ACB-2",
-                                        "ACB-1",
-                                        "MiniReactorWhite-2",
-                                        "MiniReactorWhite-1",
-                                        "WarningLightWhite",
-                                        "ACW-12",
-                                        "ACW-11",
-                                        "ACW-10",
-                                        "ACW-9",
-                                        "ACW-8",
-                                        "ACW-7",
-                                        "ACW-6",
-                                        "ACW-5",
-                                        "ACW-4",
-                                        "ACW-3",
-                                        "ACW-2",
-                                        "ACW-1",
-                                        "RedKey",
-                                        "BlueKey",
-                                        "MiniReactorRed-2",
-                                        "MiniReactorRed-1",
-                                        "Reactor",
-                                        "MiniLightRed-2",
-                                        "MiniLightRed-1",
-                                        "ACS-12",
-                                        "ACS-11",
-                                        "ACS-10",
-                                        "ACS-9",
-                                        "ACS-8",
-                                        "ACS-7",
-                                        "ACS-6",
-                                        "ACS-5",
-                                        "ACS-4",
-                                        "ACS-3",
-                                        "ACS-2",
-                                        "ACS-1",
-                                        "ACR-12",
-                                        "ACR-11",
-                                        "ACR-10",
-                                        "ACR-9",
-                                        "ACR-8",
-                                        "ACR-7",
-                                        "ACR-6",
-                                        "ACR-5",
-                                        "ACR-4",
-                                        "ACR-3",
-                                        "ACR-2",
-                                        "ACR-1",
-                                        "ReactorSmoke",
-                                        "Flames-11",
-                                        "Flames-15",
-                                        "Flames-45",
-                                        "Flames-35",
-                                        "Flames-25",
-                                        "Flames-14",
-                                        "Flames-44",
-                                        "Flames-34",
-                                        "Flames-24",
-                                        "Flames-13",
-                                        "Flames-23",
-                                        "Flames-33",
-                                        "Flames-43",
-                                        "Flames-12",
-                                        "Flames-42",
-                                        "Flames-32",
-                                        "Flames-22",
-                                        "Flames-41",
-                                        "Flames-31",
-                                        "Flames-21",
-                                        "RedDoor-2",
-                                        "RedDoor-1",
-                                        "BlueDoor"};
+                                              "RedFlame-1",
+                                              "BlueFlame-2",
+                                              "BlueFlame-1",
+                                              "RedSwitch-2",
+                                              "RedSwitch-1",
+                                              "BlueSwitch-2",
+                                              "BlueSwitch-1",
+                                              "MiniReactorBlue-2",
+                                              "MiniReactorBlue-1",
+                                              "WarningLightBlue",
+                                              "ACB-12",
+                                              "ACB-11",
+                                              "ACB-10",
+                                              "ACB-9",
+                                              "ACB-8",
+                                              "ACB-7",
+                                              "ACB-6",
+                                              "ACB-5",
+                                              "ACB-4",
+                                              "ACB-3",
+                                              "ACB-2",
+                                              "ACB-1",
+                                              "MiniReactorWhite-2",
+                                              "MiniReactorWhite-1",
+                                              "WarningLightWhite",
+                                              "ACW-12",
+                                              "ACW-11",
+                                              "ACW-10",
+                                              "ACW-9",
+                                              "ACW-8",
+                                              "ACW-7",
+                                              "ACW-6",
+                                              "ACW-5",
+                                              "ACW-4",
+                                              "ACW-3",
+                                              "ACW-2",
+                                              "ACW-1",
+                                              "RedKey",
+                                              "BlueKey",
+                                              "MiniReactorRed-2",
+                                              "MiniReactorRed-1",
+                                              "Reactor",
+                                              "MiniLightRed-2",
+                                              "MiniLightRed-1",
+                                              "ACS-12",
+                                              "ACS-11",
+                                              "ACS-10",
+                                              "ACS-9",
+                                              "ACS-8",
+                                              "ACS-7",
+                                              "ACS-6",
+                                              "ACS-5",
+                                              "ACS-4",
+                                              "ACS-3",
+                                              "ACS-2",
+                                              "ACS-1",
+                                              "ACR-12",
+                                              "ACR-11",
+                                              "ACR-10",
+                                              "ACR-9",
+                                              "ACR-8",
+                                              "ACR-7",
+                                              "ACR-6",
+                                              "ACR-5",
+                                              "ACR-4",
+                                              "ACR-3",
+                                              "ACR-2",
+                                              "ACR-1",
+                                              "ReactorSmoke",
+                                              "Flames-11",
+                                              "Flames-15",
+                                              "Flames-45",
+                                              "Flames-35",
+                                              "Flames-25",
+                                              "Flames-14",
+                                              "Flames-44",
+                                              "Flames-34",
+                                              "Flames-24",
+                                              "Flames-13",
+                                              "Flames-23",
+                                              "Flames-33",
+                                              "Flames-43",
+                                              "Flames-12",
+                                              "Flames-42",
+                                              "Flames-32",
+                                              "Flames-22",
+                                              "Flames-41",
+                                              "Flames-31",
+                                              "Flames-21",
+                                              "RedDoor-2",
+                                              "RedDoor-1",
+                                              "BlueDoor"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 82
@@ -1794,7 +1794,7 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 6
 const char *Sound_names[NUM_SOUND_NAMES] = {"LevSecAccelStart",  "LevSecAccelRelease", "AmbSwitch11", "PupC1",
-                                      "AmbSirenBRedAcrop", "wallofire1"};
+                                            "AmbSirenBRedAcrop", "wallofire1"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
@@ -1811,19 +1811,19 @@ int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 8
 const char *Goal_names[NUM_GOAL_NAMES] = {"Destroy Red Key Forcefield Generators",
-                                    "Destroy Blue Key Forcefield Generators",
-                                    "Acquire the Red Key",
-                                    "Acquire the Blue Key",
-                                    "Destroy Reactor Forcefield Generators",
-                                    "Destroy the Reactor",
-                                    "Escape the Research Center",
-                                    "Destroy the Research Center"};
+                                          "Destroy Blue Key Forcefield Generators",
+                                          "Acquire the Red Key",
+                                          "Acquire the Blue Key",
+                                          "Destroy Reactor Forcefield Generators",
+                                          "Destroy the Reactor",
+                                          "Escape the Research Center",
+                                          "Destroy the Research Center"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 10
 const char *Message_names[NUM_MESSAGE_NAMES] = {"FlameDeactivated", "RedKeyFF",  "BlueKeyFF",        "NameRedKey",
-                                          "NameBlueKey",      "ReactorFF", "ReactorDestroyed", "RedDoor",
-                                          "BlueDoor",         "IntroCam"};
+                                                "NameBlueKey",      "ReactorFF", "ReactorDestroyed", "RedDoor",
+                                                "BlueDoor",         "IntroCam"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

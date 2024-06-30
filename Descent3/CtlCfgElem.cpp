@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -513,7 +513,7 @@ const char *cfg_binding_text(ct_type ctype, uint8_t ctrl, uint8_t binding) {
 class cfg_element_ui : public newuiMessageBox {
   uint8_t m_element;    // element passed and returned.
   uint8_t m_controller; // controller.
-  int8_t m_alpha;      // used for fx.
+  int8_t m_alpha;       // used for fx.
   ct_type m_type;
 
 public:

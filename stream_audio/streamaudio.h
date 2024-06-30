@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -179,12 +179,12 @@ struct tOSFDigiHdr // this struct belongs to OSF_DIGITAL_STRM
 };
 class OSFArchive {
   CFILE *m_fp;
-  uint32_t m_length;    // file information stored such as length
-  uint8_t m_type;     // stream type
-  uint8_t m_comp;     // compression type
-  uint8_t m_flags;    // format
-  uint32_t m_rate;      // frequency
-  bool m_writemode; // are we in write mode?
+  uint32_t m_length; // file information stored such as length
+  uint8_t m_type;    // stream type
+  uint8_t m_comp;    // compression type
+  uint8_t m_flags;   // format
+  uint32_t m_rate;   // frequency
+  bool m_writemode;  // are we in write mode?
   union {
     tOSFDigiHdr digi;
   } m_hdr;
@@ -198,7 +198,8 @@ public:
   bool Opened() const { return m_fp ? true : false; };
   void Rewind();
   //	write out operations.
-  bool SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr, const char *name);
+  bool SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr,
+                  const char *name);
   bool WriteBlock(uint8_t *blk, int size);
   //	read in operations.
   int Read(uint8_t *blk, int size);
@@ -235,7 +236,7 @@ public:
 class AudioStream {
   OSFArchive m_archive;                   // audio stream archive object.
   AudioDecoder::IAudioDecoder *m_decoder; // audio codec object
-  struct { // mixing buffers
+  struct {                                // mixing buffers
     uint8_t *data;
     int nbytes; // number of bytes of valid data.
     int flags;
@@ -251,14 +252,14 @@ class AudioStream {
   uint8_t m_playcount;
   bool m_readahead;               // if stream is currently reading from disk
   bool m_readahead_finished_loop; // if a loop's readahead has finished
-  int16_t m_nbufs;                  // number of buffers streamed so far.
+  int16_t m_nbufs;                // number of buffers streamed so far.
   play_information m_playinfo;    // used by llsSystem
   float m_volume;                 // volume of stream.
-  int16_t m_state, m_laststate;     // current state of stream playing
+  int16_t m_state, m_laststate;   // current state of stream playing
   int m_llshandle;                // internal sound handle.
   int m_flags;                    // stream playing options.
-  int16_t m_streamindex;            // index into active stream table.
-  int16_t m_loopcount;              // loop counter.
+  int16_t m_streamindex;          // index into active stream table.
+  int16_t m_loopcount;            // loop counter.
   int m_bytesleft;                // number of bytes left in file
   int m_curmeasure;               // current measure.
   int m_playbytesleft, m_playbytestotal;
@@ -300,6 +301,7 @@ public:
   // called to pause all streams.
   static void PauseAll();
   static void ResumeAll();
+
 public:
   AudioStream();
   ~AudioStream();

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -274,7 +274,7 @@ struct {
 
 struct tCinematicDemoInfo {
   uint8_t cinematic_type; // canned/not canned
-  int camera_objhandle; // object handle for camera to use
+  int camera_objhandle;   // object handle for camera to use
 
   char *text_string; // not canned text string
 
@@ -282,7 +282,6 @@ struct tCinematicDemoInfo {
     tCannedCinematicInfo *canned_data; // data to start a canned cinematic
     tGameCinematic *cinematic_data;    // data to start a regular cinematic
   };
-
 };
 
 static void Cinematic_WriteDemoFileData(tCinematicDemoInfo *info);

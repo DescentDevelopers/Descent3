@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -146,8 +146,8 @@ struct ct_function {
   int id;           // identifier for the function (like forward thrust)
   ct_format format; // what format should the return value be for this function
   ct_type ctype[2]; // type of controller requested for this id. (1 for each value packed.)
-  uint8_t value[2];   // corresponding value to ctype
-  uint8_t flags[2];   // flags.
+  uint8_t value[2]; // corresponding value to ctype
+  uint8_t flags[2]; // flags.
 };
 
 struct ct_packet {
@@ -165,7 +165,7 @@ typedef unsigned ct_config_data; // passed by controller system to the outside, 
 //	element values
 const uint8_t CT_X_AXIS = 1, // AXIS constants for ctAxis
     CT_Y_AXIS = 2, CT_Z_AXIS = 3, CT_R_AXIS = 4, CT_U_AXIS = 5, CT_V_AXIS = 6,
-            CT_NUM_AXES = 6; // number of axes
+              CT_NUM_AXES = 6; // number of axes
 
 #define makeword(_h, _l) (((_h) << 16) + ((_l) & 0xffff))
 #define hiword(_v) ((_v) >> 16)
@@ -207,12 +207,12 @@ public:
   //	these functions suspend or resume any controller reading.  this is really only useful for
   //	preemptive controller polling, but they should be used to activate and deactivate controller
   //	reading.
-  virtual void suspend(){};
-  virtual void resume(){};
+  virtual void suspend() {};
+  virtual void resume() {};
 
   //	this functions polls the controllers if needed.  some systems may not need to implement
   //	this function.
-  virtual void poll(){};
+  virtual void poll() {};
 
   //	flushes all controller information
   virtual void flush() = 0;
@@ -253,12 +253,12 @@ public:
 
   //	toggles use of deadzone for controllers. ctl can be 0 to ???
   // dead zone is from 0.0 to 0.5
-  virtual void set_controller_deadzone(int ctl, float deadzone){};
+  virtual void set_controller_deadzone(int ctl, float deadzone) {};
   virtual float get_controller_deadzone(int ctl) { return 0; };
 
   // toggles use of axis on controllers. ctl can be 0 to ???
   //	axis is a CT_?_AXIS value
-  void toggle_controller_axis(int ctl, int axis, bool toggle){};
+  void toggle_controller_axis(int ctl, int axis, bool toggle) {};
 };
 
 gameController *CreateController(int num_funcs, ct_function *funcs, char *remote_ip);

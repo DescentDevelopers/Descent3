@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -124,14 +124,14 @@ extern int Active_doorways[MAX_ACTIVE_DOORWAYS];
 
 // A doorway (room) in the mine
 struct doorway {
-  int doornum;       // door type of this doorway
+  int doornum;         // door type of this doorway
   uint8_t state;       // current state of doorway
   uint8_t flags;       // flags associated with a doorway
   uint8_t keys_needed; // used by trigger system.  these bits need to be set to activate door
-  int8_t activenum;   // index into active doorways array, or -1 if not active
-  float position;    // current position of door
-  float dest_pos;    // destination position
-  int sound_handle;  // handle of last sound played
+  int8_t activenum;    // index into active doorways array, or -1 if not active
+  float position;      // current position of door
+  float dest_pos;      // destination position
+  int sound_handle;    // handle of last sound played
 };
 
 //	Macros

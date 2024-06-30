@@ -228,7 +228,7 @@ int read_font_char(int cur_char, int &bmx, int &bmy) {
 
       //			if (c != 0)
       //				*m_DataPtr++ = c;							// OLD
-      //COMMENT-here 555 pure green will turn into 565 pure green transparent. 			else
+      // COMMENT-here 555 pure green will turn into 565 pure green transparent. 			else
       *m_DataPtr++ = c;
 
       ASSERT(m_DataPtr < m_DataBuffer + (1024 * 256));

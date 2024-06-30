@@ -314,7 +314,7 @@ game_list gl;
 
 game_list *GetGameList() {
   memset(&gl, 0, sizeof(gl));
-  for (auto & i : GameBuffer) {
+  for (auto &i : GameBuffer) {
     if (i.game_type != GT_UNUSED) {
       memcpy(&gl, &i, sizeof(gl));
       i.game_type = GT_UNUSED;
@@ -326,7 +326,7 @@ game_list *GetGameList() {
 
 void RequestGameList() {
   // Zero out all games
-  for (auto & i : GameBuffer) {
+  for (auto &i : GameBuffer) {
     memset(&i, 0, sizeof(game_list));
   }
 

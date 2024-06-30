@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -234,13 +234,13 @@ int CreateHotSpotMap(const char *map, int width, int height, hotspotmap_t *hsmap
           sl_x[y].end = 0;
           y++;
         } // end for (curr_sl)
-      }   // end if (sl_count)
+      } // end if (sl_count)
     } else {
       hsmap->hs[count].scanlines = 0;
       hsmap->hs[count].starting_y = 0;
       hsmap->hs[count].x = NULL;
     } // end ifelse (hotspot_there)
-  }   // end for (count)
+  } // end for (count)
 
   mprintf(0, "Hunting down empty hotspots....\n");
   for (count = 0; count < num_hs; count++) {
@@ -391,8 +391,8 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
           }
         }
       } // end if
-    }   // end for x
-  }     // end for y
+    } // end for x
+  } // end for y
 
   for (count = 0; count < wndmap->num_of_windows; count++) {
     int h, w;
@@ -494,15 +494,15 @@ void CreateWindowMap(const char *map, int width, int height, windowmap_t *wndmap
 
   for (count = 0; count < wndmap->num_of_windows; count++) {
     mprintf(0, "Window #%d: Left/Top=(%d,%d) Width=%d Height=%d\n", count, wndmap->wm[count].x, wndmap->wm[count].y,
-             wndmap->wm[count].width, wndmap->wm[count].height);
+            wndmap->wm[count].width, wndmap->wm[count].height);
     mprintf(0, "---L.T. (%d,%d)->(%d,%d)\n", wndmap->wm[count].l_start_x, wndmap->wm[count].t_top_y,
-             wndmap->wm[count].l_end_x, wndmap->wm[count].t_bottom_y);
+            wndmap->wm[count].l_end_x, wndmap->wm[count].t_bottom_y);
     mprintf(0, "---R.T. (%d,%d)->(%d,%d)\n", wndmap->wm[count].r_start_x, wndmap->wm[count].t_top_y,
-             wndmap->wm[count].r_end_x, wndmap->wm[count].t_bottom_y);
+            wndmap->wm[count].r_end_x, wndmap->wm[count].t_bottom_y);
     mprintf(0, "---L.B. (%d,%d)->(%d,%d)\n", wndmap->wm[count].l_start_x, wndmap->wm[count].b_top_y,
-             wndmap->wm[count].l_end_x, wndmap->wm[count].b_bottom_y);
+            wndmap->wm[count].l_end_x, wndmap->wm[count].b_bottom_y);
     mprintf(0, "---R.B. (%d,%d)->(%d,%d)\n", wndmap->wm[count].r_start_x, wndmap->wm[count].b_top_y,
-             wndmap->wm[count].r_end_x, wndmap->wm[count].b_bottom_y);
+            wndmap->wm[count].r_end_x, wndmap->wm[count].b_bottom_y);
   }
 }
 

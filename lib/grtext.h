@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -219,12 +219,12 @@ struct tFontTemplate {
   uint8_t *ch_widths;
   uint8_t *kern_data;
   uint8_t ch_height;
-  uint8_t ch_maxwidth;  // max width of character in font.
-  bool proportional;  // is this font proportional? if so use array of widths, else use maxwidth
-  bool uppercase;     // uppercase font?
-  bool monochromatic; // font is monochromatic?
-  bool newstyle;      // new style 4444 font.
-  bool ffi2;          // new font info added.
+  uint8_t ch_maxwidth; // max width of character in font.
+  bool proportional;   // is this font proportional? if so use array of widths, else use maxwidth
+  bool uppercase;      // uppercase font?
+  bool monochromatic;  // font is monochromatic?
+  bool newstyle;       // new style 4444 font.
+  bool ffi2;           // new font info added.
 
   // ffi2 style (font file info 2)
   int8_t ch_tracking; // global tracking for font.

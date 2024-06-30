@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1139,8 +1139,8 @@ void SetSecondaryWeapon(int index, int slot) {
 const uint16_t SELLIST_START = 0x7ffe, SELLIST_END = 0x7fff;
 
 static uint16_t PrimaryWpnSelectList[] = {SELLIST_START, LASER_INDEX,  VAUSS_INDEX,       MICROWAVE_INDEX,
-                                        PLASMA_INDEX,  FUSION_INDEX, SUPER_LASER_INDEX, MASSDRIVER_INDEX,
-                                        NAPALM_INDEX,  EMD_INDEX,    OMEGA_INDEX,       SELLIST_END};
+                                          PLASMA_INDEX,  FUSION_INDEX, SUPER_LASER_INDEX, MASSDRIVER_INDEX,
+                                          NAPALM_INDEX,  EMD_INDEX,    OMEGA_INDEX,       SELLIST_END};
 
 static uint16_t SecondaryWpnSelectList[] = {
     SELLIST_START, CONCUSSION_INDEX,           HOMING_INDEX,       IMPACTMORTAR_INDEX, SMART_INDEX,      MEGA_INDEX,
@@ -1184,7 +1184,7 @@ void SetAutoSelectSecondaryWpnIdx(int slot, uint16_t idx) {
   SecondaryWpnSelectList[slot + 1] = idx;
 }
 
-const uint16_t IWPNSEL_SKIP = (uint16_t) ((~WPNSEL_SKIP) & 0xFFFF);
+const uint16_t IWPNSEL_SKIP = (uint16_t)((~WPNSEL_SKIP) & 0xFFFF);
 
 #define WPNINDEX(_index) (sel_list[(_index)] & IWPNSEL_SKIP)
 
@@ -1267,9 +1267,9 @@ bool AutoSelectWeapon(int weapon_type, int new_wpn) {
   player *plr;
   ship *ship;
   uint16_t *sel_list; // a weapon selection list
-  int weapon_index; // the current weapon index
-  int list_index;   // index into a selection list
-  int list_initial; // initial index in list.
+  int weapon_index;   // the current weapon index
+  int list_index;     // index into a selection list
+  int list_initial;   // initial index in list.
   int slot;
   bool sel_new_wpn = false;
 

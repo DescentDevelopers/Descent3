@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -244,7 +244,7 @@ int osipf_AISetGoalFlags(int objhandle, int goal_handle, int flags, uint8_t f_en
 
 uint8_t osipf_AITurnTowardsVectors(int objhandle, vector *fvec, vector *uvec);
 uint8_t osipf_AIMoveTowardsPosition(int objhandle, vector *pos, int *roomnum, float scalar, bool f_bline,
-                                  bool f_bline_if_vis);
+                                    bool f_bline_if_vis);
 uint8_t osipf_AIMoveTowardsDir(int objhandle, vector *dir, float scalar);
 
 void osipf_AIValue(int objhandle, char op, char vtype, void *ptr);

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -474,8 +474,7 @@ struct tEnvAudioPresets {
   float volume;
   float decay;
   float damping;
-}
-EnvAudio_Presets[N_ENVAUDIO_PRESETS] = {
+} EnvAudio_Presets[N_ENVAUDIO_PRESETS] = {
     {0.0F, 0.0F, 0.0F}, // Use for reverb off.
     {0.25F, 0.1F, 0.0F},      {0.417F, 0.4F, 0.666F},  {0.653F, 1.499F, 0.166F}, {0.208F, 0.478F, 0.0F},
     {0.5F, 2.309F, 0.888F},   {0.403F, 4.279F, 0.5F},  {0.5F, 3.961F, 0.5F},     {0.5F, 2.886F, 1.304F},
@@ -636,7 +635,7 @@ void hlsSystem::StopAllSounds() {
 #include "findintersection.h"
 
 void hlsSystem::BeginSoundFrame(bool f_in_game) {
-  bool hwsound_support;   // if this is true, sound_render_system is being used
+  bool hwsound_support;     // if this is true, sound_render_system is being used
   int16_t *sound_room_list; // these values are only meant for sound render system
   int i, n, counter = 0;
   pos_state listener_pos;
@@ -970,8 +969,7 @@ bool hlsSystem::ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector
       dir_to_sound = Rooms[last_room].path_pnt - Viewer_object->pos;
       vm_NormalizeVector(&dir_to_sound);
     }
-  } else
-  {
+  } else {
     dir_to_sound = sound_pos - Viewer_object->pos;
     dist = vm_NormalizeVector(&dir_to_sound);
   }
@@ -1102,7 +1100,7 @@ int hlsSystem::Play3dSound(int sound_index, pos_state *cur_pos, object *cur_obj,
   // no free slots? hmmm....
   if (i >= MAX_SOUND_OBJECTS) {
     mprintf(2, "HLSOUNDLIB HOLY COW: Over %d sounds trying to play(beyond max) - %s\n", MAX_SOUND_OBJECTS,
-             Sounds[sound_index].name);
+            Sounds[sound_index].name);
     //		Int3();
     return -1;
   }

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -221,13 +221,13 @@ struct tInvenInfo {
 
 struct inven_item {
 
-  int type;    // what type of object this is... robot, weapon, hostage, powerup, fireball
-               // if INVF_OBJECT, this is the object handle
-  int otype;   // countermeasure powerup type
-  int id;      // which form of object...which powerup, robot, etc.
-               // if INVF_OBJECT, this is -1
-  int oid;     // countermeasure powerup id
-  int flags;   // misc flags
+  int type;      // what type of object this is... robot, weapon, hostage, powerup, fireball
+                 // if INVF_OBJECT, this is the object handle
+  int otype;     // countermeasure powerup type
+  int id;        // which form of object...which powerup, robot, etc.
+                 // if INVF_OBJECT, this is -1
+  int oid;       // countermeasure powerup id
+  int flags;     // misc flags
   uint16_t pad2; // keep alignment
 
   int count; // how many of this type/id (not INVF_OBJECT)

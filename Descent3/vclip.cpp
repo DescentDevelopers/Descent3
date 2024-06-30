@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -346,8 +346,7 @@ void PageInVClip(int vcnum) {
       h = TEXTURE_HEIGHT;
 
 #ifndef EDITOR
-      if (Mem_low_memory_mode || Low_vidmem)
-      {
+      if (Mem_low_memory_mode || Low_vidmem) {
         w = TEXTURE_WIDTH / 2;
         h = TEXTURE_HEIGHT / 2;
       }
@@ -358,8 +357,7 @@ void PageInVClip(int vcnum) {
       h = TEXTURE_HEIGHT / 2;
 
 #ifndef EDITOR
-      if (Mem_low_memory_mode || Low_vidmem)
-      {
+      if (Mem_low_memory_mode || Low_vidmem) {
         w = TEXTURE_WIDTH / 4;
         h = TEXTURE_HEIGHT / 4;
       }

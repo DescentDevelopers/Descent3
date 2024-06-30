@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -119,8 +119,8 @@ private:
 
 private:
   bool m_open;
-  char *m_zip;   // zip name
-  FILE *m_fp;    // zip handler
+  char *m_zip;      // zip name
+  FILE *m_fp;       // zip handler
   int32_t m_length; // length of zip file
 
   char *m_ecd;           // end_of_cent_dir data

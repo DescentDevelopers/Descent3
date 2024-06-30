@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@
 
 #include "osiris_dll.h"
 #include "loki_utils.h"
-
 
 #include "log.h"
 
@@ -103,8 +102,7 @@ static cmdLineArg d3ArgTable[] = {
     {"nopackedpixels", 'x', "Disable packed pixels."},
     {"glfog", 'o', "Enable OpenGL fog."},
     {"nogamma", 'M', "Disable gamma support."},
-    {"glinfo", 'I', "Display info about OpenGL library."}
-};
+    {"glinfo", 'I', "Display info about OpenGL library."}};
 
 static volatile char already_tried_signal_cleanup = 0;
 
@@ -127,7 +125,7 @@ char *game_version = game_version_buffer;
 }
 } // namespace
 
-void ddio_InternalClose();        // needed for emergency cleanup.
+void ddio_InternalClose(); // needed for emergency cleanup.
 
 #ifdef __PERMIT_LINUX_GLIDE
 void glide_Close(void);
@@ -308,7 +306,8 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
     SDL_Quit();
     _exit(0);
     break;
-  default: break;
+  default:
+    break;
   } // switch
 
   return (1);
@@ -438,7 +437,6 @@ int main(int argc, char *argv[]) {
   // if (getenv("SDL_VIDEO_YUV_HWACCEL") == NULL)
   //    putenv("SDL_VIDEO_YUV_HWACCEL=0");
 
-
   snprintf(game_version_buffer, sizeof(game_version_buffer), "%d.%d.%d%s %s", D3_MAJORVER, D3_MINORVER, D3_BUILD,
            D3_GIT_HASH, GAME_VERS_EXT);
 
@@ -454,7 +452,7 @@ int main(int argc, char *argv[]) {
 #elif defined(WIN32)
            "Windows",
 #else
-           "Linux",
+         "Linux",
 #endif
 
 #ifdef DEDICATED
@@ -462,7 +460,7 @@ int main(int argc, char *argv[]) {
 #elif DEMO
            "Demo",
 #else
-           "Client",
+         "Client",
 #endif
            D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
 
@@ -483,9 +481,9 @@ int main(int argc, char *argv[]) {
       } // if
   */
 
-  #ifdef DEDICATED
+#ifdef DEDICATED
   setenv("SDL_VIDEODRIVER", "dummy", 1);
-  #endif
+#endif
 
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {

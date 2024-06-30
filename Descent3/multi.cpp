@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1710,7 +1710,6 @@
 #include "../md5/md5.h"
 void MultiProcessShipChecksum(MD5 *md5, int ship_index);
 
-
 #include <algorithm>
 
 player_pos_suppress Player_pos_fix[MAX_PLAYERS];
@@ -2352,7 +2351,8 @@ void MultiDoMyInfo(uint8_t *data) {
 
     if (mt_sig != MASTER_TRACKER_SIG) {
       NetPlayers[slot].flags &= ~NPF_CONNECTED;
-      mprintf(0, "Invalid master tracker signature! Someone tried to join a master tracker game through the local net screen!\n");
+      mprintf(0, "Invalid master tracker signature! Someone tried to join a master tracker game through the local net "
+                 "screen!\n");
     }
     NetPlayers[slot].flags |= NPF_MT_READING_PILOT;
     len = MultiGetByte(data, &count);
@@ -4215,10 +4215,7 @@ void MultiDoWorldStates(uint8_t *data) {
       Rooms[roomnum].wind.y = MultiGetFloat(data, &count);
       Rooms[roomnum].wind.z = MultiGetFloat(data, &count);
 
-      mprintf(0, "Got room wind packet! Room=%d wind=%f %f %f\n",
-              roomnum,
-              Rooms[roomnum].wind.x,
-              Rooms[roomnum].wind.y,
+      mprintf(0, "Got room wind packet! Room=%d wind=%f %f %f\n", roomnum, Rooms[roomnum].wind.x, Rooms[roomnum].wind.y,
               Rooms[roomnum].wind.z);
       break;
     }
@@ -4750,8 +4747,7 @@ void MultiSendPlayerDead(int slot, uint8_t fate) {
   MultiDoPlayerDead(data);
   if (Game_is_master_tracker_game) {
     mprintf(0, "Adding kill and death to player stats. Killer = %d Killee = %d\n",
-            Objects[Players[slot].killer_objnum].id,
-            slot);
+            Objects[Players[slot].killer_objnum].id, slot);
     if (Objects[Players[slot].killer_objnum].id == slot) {
       Players[slot].suicides++;
     } else {
@@ -5173,11 +5169,11 @@ void MultiDoObject(uint8_t *data) {
 
   if (parent_objnum == server_objnum)
     self_parent = true;
-/*
-  mprintf(0,"MultiDoObject() got a new object. Server's objnum = %d Parent objnum = %d\n",
-          server_objnum,
-          parent_objnum);
-  */
+  /*
+    mprintf(0,"MultiDoObject() got a new object. Server's objnum = %d Parent objnum = %d\n",
+            server_objnum,
+            parent_objnum);
+    */
   if (self_parent || parent_objnum == 65535)
     parent_handle = OBJECT_HANDLE_NONE;
   else {
@@ -5721,13 +5717,13 @@ void MultiDoRemoveObject(uint8_t *data) {
     ASSERT(1);
     Objects[local_objnum].flags |= OF_SERVER_OBJECT;
   }
-/*
-  if (Objects[local_objnum].type != type) {
-    mprintf(0, "Client/Server object types don't match. Something is wrong!\n");
-    // mprintf (0,"Object to be removed was type %d, I thought it was %d name:
-    // %s\n",type,Objects[local_objnum].type,name)); Error ("Bad object 2"); ASSERT (1); return;
-  }
-*/
+  /*
+    if (Objects[local_objnum].type != type) {
+      mprintf(0, "Client/Server object types don't match. Something is wrong!\n");
+      // mprintf (0,"Object to be removed was type %d, I thought it was %d name:
+      // %s\n",type,Objects[local_objnum].type,name)); Error ("Bad object 2"); ASSERT (1); return;
+    }
+  */
   if (sound)
     Sound_system.Play3dSound(SOUND_POWERUP_PICKUP, &Objects[local_objnum]);
 
@@ -7190,9 +7186,7 @@ void MultiSendClientInventoryUseItem(int type, int id) {
       int server_objnum = Local_object_list[OBJNUM(local_obj)];
       ASSERT(server_objnum != 65535);
 
-      mprintf(0, "Inven Use: Requesting to use server objnum %d.  T=%d i=%d\n",
-              server_objnum,
-              local_obj->type,
+      mprintf(0, "Inven Use: Requesting to use server objnum %d.  T=%d i=%d\n", server_objnum, local_obj->type,
               local_obj->id);
 
       size = START_DATA(MP_CLIENT_USE_INVENTORY_ITEM, data, &count, 1);
@@ -7769,9 +7763,9 @@ void MultiDoFileData(uint8_t *data) {
   // File data. We asked for it, now the server is sending it to us.
   uint32_t total_len; // Length of the entire file
   uint32_t curr_len;  // Length of file sent so far
-  uint16_t file_id;         // Defines which file this is
-  uint16_t playernum;       // Who is sending us the file
-  uint16_t data_len;        // between 1-450 bytes
+  uint16_t file_id;   // Defines which file this is
+  uint16_t playernum; // Who is sending us the file
+  uint16_t data_len;  // between 1-450 bytes
   // uint16_t	file_who;
   int count = 0;
   uint8_t outdata[MAX_GAME_DATA_SIZE];
@@ -7845,8 +7839,8 @@ void MultiDoFileData(uint8_t *data) {
 
 void MultiDoFileAck(uint8_t *data) {
   // If we are transferring a file, and someone ACK's us, simply send them the next bit of data they are waiting for
-  uint8_t playernum; // Who is acking us
-  uint32_t len_recvd;  // Total number of bytes received so far
+  uint8_t playernum;  // Who is acking us
+  uint32_t len_recvd; // Total number of bytes received so far
   int count = 0;
 
   SKIP_HEADER(data, &count);
@@ -7873,8 +7867,7 @@ void SendDataChunk(int playernum) {
   int done = 0;
   // mprintf(0,"Sending a data chunk to %d.\n",playernum);
   // Read the next chunk of the file and send it!
-  if ((DATA_CHUNK_SIZE + NetPlayers[playernum].file_xfer_pos) >
-      (uint32_t)NetPlayers[playernum].file_xfer_cfile->size) {
+  if ((DATA_CHUNK_SIZE + NetPlayers[playernum].file_xfer_pos) > (uint32_t)NetPlayers[playernum].file_xfer_cfile->size) {
     dataread = NetPlayers[playernum].file_xfer_cfile->size - NetPlayers[playernum].file_xfer_pos;
     // This is the end of the file
     mprintf(0, "End of file detected!\n");
@@ -9994,7 +9987,8 @@ void MultiProcessBigData(uint8_t *buf, int len, network_address *from_addr) {
     }
 
     if ((bytes_processed + sub_len) > len) {
-      mprintf(1, "multi_process_bigdata: packet type %d too int16_t (%d>%d)!\n", type, (bytes_processed + sub_len), len);
+      mprintf(1, "multi_process_bigdata: packet type %d too int16_t (%d>%d)!\n", type, (bytes_processed + sub_len),
+              len);
       Int3();
       return;
     }

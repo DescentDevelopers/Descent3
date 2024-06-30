@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -379,9 +379,10 @@ const char *Door_names[NUM_DOOR_NAMES] = {"DoorH", "DoorG", "DoorF", "DoorE", "D
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 15
-const char *Object_names[NUM_OBJECT_NAMES] = {"SwitchH",     "SwitchG",      "SwitchF",      "SwitchE",      "SwitchD",
-                                        "SwitchC",     "SwitchB",      "SwitchA",      "SewerSoundA",  "SewerSoundB",
-                                        "SewerSoundC", "EnergySoundA", "EnergySoundB", "RedGoalSound", "BlueGoalSound"};
+const char *Object_names[NUM_OBJECT_NAMES] = {"SwitchH",      "SwitchG",      "SwitchF",      "SwitchE",
+                                              "SwitchD",      "SwitchC",      "SwitchB",      "SwitchA",
+                                              "SewerSoundA",  "SewerSoundB",  "SewerSoundC",  "EnergySoundA",
+                                              "EnergySoundB", "RedGoalSound", "BlueGoalSound"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 0

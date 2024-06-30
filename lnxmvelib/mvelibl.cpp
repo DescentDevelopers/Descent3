@@ -74,18 +74,18 @@ struct _mem {
   void *ptr;
   unsigned size;
   bool dynamic;
-} MemRec, *MemRec*;
+} MemRec, *MemRec *;
 
-static void MemInit(MemRec* m, unsigned size, void *p);
-static void *MemAlloc(MemRec* m, unsigned size);
-static void MemFree(MemRec* m);
+static void MemInit(MemRec *m, unsigned size, void *p);
+static void *MemAlloc(MemRec *m, unsigned size);
+static void MemFree(MemRec *m);
 
 void MVE_memCallbacks(void *(*fn_alloc)(unsigned size), void (*fn_free)(void *p)) {
   mem_alloc = fn_alloc;
   mem_free = fn_free;
 }
 
-static void MemFree(MemRec* m) {
+static void MemFree(MemRec *m) {
   if (m->dynamic && mem_free) {
     (*mem_free)(m->ptr);
     m->dynamic = FALSE; // prevent from being freed again!
@@ -93,7 +93,7 @@ static void MemFree(MemRec* m) {
   m->size = 0;
 }
 
-static void MemInit(MemRec* m, unsigned size, void *p) {
+static void MemInit(MemRec *m, unsigned size, void *p) {
   if (!p)
     return;
   MemFree(m);
@@ -102,7 +102,7 @@ static void MemInit(MemRec* m, unsigned size, void *p) {
   m->dynamic = FALSE;
 }
 
-static void *MemAlloc(MemRec* m, unsigned size) {
+static void *MemAlloc(MemRec *m, unsigned size) {
   if (size <= m->size)
     return m->ptr;
   if (mem_alloc) {
@@ -600,10 +600,10 @@ uint8_t *nf_buf_cur;
 uint8_t *nf_buf_prv;
 
 // NextFrame parameters
-uint8_t nf_wqty; // (width/SWIDTH)
-uint8_t nf_hqty; // (height/SHEIGHT)
-uint8_t nf_fqty; // Number of fields
-unsigned nf_hicolor;   // HiColor (0:none,1:normal,2:swapped)
+uint8_t nf_wqty;     // (width/SWIDTH)
+uint8_t nf_hqty;     // (height/SHEIGHT)
+uint8_t nf_fqty;     // Number of fields
+unsigned nf_hicolor; // HiColor (0:none,1:normal,2:swapped)
 //  <derived quantities>
 unsigned nf_width;      // wqty * SWIDTH
 unsigned nf_height;     // hqty * SHEIGHT;
@@ -792,8 +792,7 @@ void nfHiColorDecomp(uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y,
-                        unsigned w, unsigned h);
+void nfHiColorDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 
 // Non-HiColor versions
 
@@ -812,8 +811,7 @@ void nfHPkDecomp(uint8_t *ops, uint8_t *comp, unsigned x, unsigned y, unsigned w
 // Chgs specifies which squares to update.
 // Parms are motion parms for squares to update.
 //
-void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w,
-                 unsigned h);
+void nfDecompChg(uint16_t *chgs, uint16_t *parms, uint8_t *comp, unsigned x, unsigned y, unsigned w, unsigned h);
 
 //---------------------------------------------------------------------
 // ShowFrame
@@ -891,13 +889,13 @@ static int sf_auto_mode = 0; // Current sf_auto mode.
 static void sfVGA(unsigned w, unsigned h, unsigned resw, unsigned resh);
 static void sfShowFrame(int dx, int dy, unsigned field);
 
-void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
-                        unsigned h, unsigned dstx, unsigned dsty, unsigned field);
-void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
-                        unsigned h, unsigned dstx, unsigned dsty, unsigned field);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w, unsigned h,
+                        unsigned dstx, unsigned dsty, unsigned field);
+void mve_ShowFrameField(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w, unsigned h,
+                        unsigned dstx, unsigned dsty, unsigned field);
 
-void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w,
-                          unsigned h, unsigned dstx, unsigned dsty, unsigned field);
+void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned sx, unsigned sy, unsigned w, unsigned h,
+                          unsigned dstx, unsigned dsty, unsigned field);
 
 // Restrictions/Assumptions:
 //    64K >= WinSize >= WinGran
@@ -908,8 +906,8 @@ void mve_ShowFrameFieldHi(uint8_t *buf, unsigned bufw, unsigned bufh, unsigned s
 //	bl:  Window number (0 or 1)
 //	dx:  Window position in video memory in units of WinGran.
 //     on return, registers AX and DX are destroyed.
-void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr,
-                uint32_t WinSize, unsigned WinGran, void *SetBank, unsigned hicolor) {
+void MVE_sfSVGA(unsigned w, unsigned h, unsigned LineWidth, unsigned WriteWin, uint8_t *WriteWinPtr, uint32_t WinSize,
+                unsigned WinGran, void *SetBank, unsigned hicolor) {
   sf_ScreenWidth = w;
   sf_ScreenHeight = h;
   sf_ResolutionWidth = w;
@@ -1003,8 +1001,8 @@ void MVE_sfCallbacks(void (*fn_ShowFrame)(uint8_t *buf, unsigned bufw, unsigned 
 void mve_sfHiColorShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
                                unsigned dstx, unsigned dsty);
 
-void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs,
-                        unsigned dstx, unsigned dsty);
+void mve_sfShowFrameChg(bool prvbuf, unsigned x, unsigned y, unsigned w, unsigned h, uint16_t *chgs, unsigned dstx,
+                        unsigned dsty);
 
 static void sfShowFrameChg(int dx, int dy, uint16_t *chgs) { logLabel("StartShowChg"); }
 
@@ -1085,8 +1083,8 @@ void palLoadCompPalette(uint8_t *buf);
 
 void gfxVres(uint8_t misc, uint8_t *crtc);
 
-static void ForceVres2(uint8_t misc, unsigned vt, unsigned height, unsigned vrs /*vpos*/, unsigned _2t4,
-                       unsigned msl, unsigned bdr_b, unsigned bdr_t) {}
+static void ForceVres2(uint8_t misc, unsigned vt, unsigned height, unsigned vrs /*vpos*/, unsigned _2t4, unsigned msl,
+                       unsigned bdr_b, unsigned bdr_t) {}
 
 void MVE_ForceVres350(void) {}
 
@@ -1596,10 +1594,10 @@ struct MVE_frStreamRec {
   uint8_t *nf_buf_cur;
   uint8_t *nf_buf_prv;
   // NextFrame parameters
-  uint8_t nf_wqty; // (width/SWIDTH)
-  uint8_t nf_hqty; // (height/SHEIGHT)
-  uint8_t nf_fqty; // Number of fields
-  unsigned nf_hicolor;   // HiColor (0:none,1:normal,2:swapped)
+  uint8_t nf_wqty;     // (width/SWIDTH)
+  uint8_t nf_hqty;     // (height/SHEIGHT)
+  uint8_t nf_fqty;     // Number of fields
+  unsigned nf_hicolor; // HiColor (0:none,1:normal,2:swapped)
   // NextFrame derived quantities
   unsigned nf_width;      // wqty * SWIDTH
   unsigned nf_height;     // hqty * SHEIGHT;
@@ -1609,7 +1607,6 @@ struct MVE_frStreamRec {
   // Palette
   uint8_t pal_tbl[3 * 256];
   unsigned pal_start, pal_count;
-
 };
 
 static void frLoad(MVE_frStream frs) {

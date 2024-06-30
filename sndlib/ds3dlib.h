@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -242,8 +242,8 @@ struct tPSBInfo;
 class sound_buffer_cache {
 public:
   class sound_buffer_info *m_sound_cache; // List of all sounds current sounds
-  uint16_t m_max_sounds_played;     // Maximum sounds played at any given moment
-  uint16_t m_cur_sounds_played;     // Current number of sounds playing
+  uint16_t m_max_sounds_played;           // Maximum sounds played at any given moment
+  uint16_t m_cur_sounds_played;           // Current number of sounds playing
   unsigned m_loop_method;                 // what method do we do looping sounds (direct sound only)
 
 public:
@@ -284,7 +284,7 @@ private:
 
   // Creates a sound buffer
   HRESULT CreateDSBuffer(int buffer_type, LPDIRECTSOUNDBUFFER *lp_lp_dsb, LPDIRECTSOUND3DBUFFER *lp_lp_dsb_3d,
-                      DWORD sound_bytes, DWORD frequency, bool f_is_stereo, bool f_is_16_bit);
+                         DWORD sound_bytes, DWORD frequency, bool f_is_stereo, bool f_is_16_bit);
 
   // Finds a free slot for a new sound, slot_uid is an SBID_xxx value.
 #ifdef _DEBUG
@@ -320,7 +320,7 @@ private:
   // Sound library status
   uint8_t m_f_sound_lib_init;   // Flag is set if sound library is initialized	-- cmphack
   uint8_t m_f_sound_lib_status; // Paused or running							--
-                                      // cmphack
+                                // cmphack
 
   // May not need some of these
   int m_primary_frequency; // Set to the primary buffers frequency -- cmphack

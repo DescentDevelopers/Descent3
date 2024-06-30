@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1551,7 +1551,8 @@ void ConvertObject(int *type, int *id) {
           ASSERT(object_convert[convert_to].id >= 0);
 
           if (object_convert[convert_to].id >= 0) {
-            mprintf(0, "LEVELLOAD: Converting: '%s' -> '%s'\n", object_convert[i].name, object_convert[convert_to].name);
+            mprintf(0, "LEVELLOAD: Converting: '%s' -> '%s'\n", object_convert[i].name,
+                    object_convert[convert_to].name);
 
             new_id = object_convert[convert_to].id;
             new_type = object_convert[convert_to].type;
@@ -3518,50 +3519,50 @@ void VerifyObjectList() {
 
 // Data to deal with a bunch of renamed doors
 const char *Old_door_names[] = {"markroomdoor.OOF1",
-                          "cellblockdoor.OOF1",
-                          "towerringdoor.OOF1",
-                          "hangdoorinverse.oof1",
-                          "Big Lock Door",
-                          "Oval Door",
-                          "Layered Door",
-                          "steamdoor1",
-                          "heatsinkdoornew1",
-                          "Vault Door Large",
-                          "Ceddoor1",
-                          "trapdoor1",
-                          "Lukesecretdoor1",
-                          "ptmc11",
-                          "ptmc31",
-                          "ptmc021",
-                          "Bulkhead1",
-                          "Placeholderdoor1",
-                          "ptmcbd1",
-                          "energysecretdoor1",
-                          "PTMC Industrial 1",
-                          "PTMC Covert 1"};
+                                "cellblockdoor.OOF1",
+                                "towerringdoor.OOF1",
+                                "hangdoorinverse.oof1",
+                                "Big Lock Door",
+                                "Oval Door",
+                                "Layered Door",
+                                "steamdoor1",
+                                "heatsinkdoornew1",
+                                "Vault Door Large",
+                                "Ceddoor1",
+                                "trapdoor1",
+                                "Lukesecretdoor1",
+                                "ptmc11",
+                                "ptmc31",
+                                "ptmc021",
+                                "Bulkhead1",
+                                "Placeholderdoor1",
+                                "ptmcbd1",
+                                "energysecretdoor1",
+                                "PTMC Industrial 1",
+                                "PTMC Covert 1"};
 
 const char *New_door_names[] = {"MARK'S OLD DOOR",
-                          "SEAN'S NOVAK DOOR 1",
-                          "SEAN'S NOVAK DOOR 2",
-                          "SEAN'S NOVAK DOOR 3",
-                          "PTMC Industrial 2",
-                          "SEAN'S DUCTWORK DOOR",
-                          "PTMC Industrial 4",
-                          "SEAN'S STEAMVENT DOOR",
-                          "SEAN'S HEATSINK DOOR",
-                          "DAN'S VAULT DOOR",
-                          "CED 1",
-                          "SEAN'S TRAPDOOR",
-                          "LUKE'S SECRET DOOR",
-                          "PTMC Industrial 5",
-                          "PTMC Industrial 6",
-                          "PTMC Industrial 7",
-                          "!!!CED BROKEN!!!",
-                          "PLACEHOLDER DOOR",
-                          "PTMC Industrial 3",
-                          "SEAN'S ENERGY SECRET DOOR",
-                          "PTMC Industrial 1",
-                          "PTMC Covert 1"};
+                                "SEAN'S NOVAK DOOR 1",
+                                "SEAN'S NOVAK DOOR 2",
+                                "SEAN'S NOVAK DOOR 3",
+                                "PTMC Industrial 2",
+                                "SEAN'S DUCTWORK DOOR",
+                                "PTMC Industrial 4",
+                                "SEAN'S STEAMVENT DOOR",
+                                "SEAN'S HEATSINK DOOR",
+                                "DAN'S VAULT DOOR",
+                                "CED 1",
+                                "SEAN'S TRAPDOOR",
+                                "LUKE'S SECRET DOOR",
+                                "PTMC Industrial 5",
+                                "PTMC Industrial 6",
+                                "PTMC Industrial 7",
+                                "!!!CED BROKEN!!!",
+                                "PLACEHOLDER DOOR",
+                                "PTMC Industrial 3",
+                                "SEAN'S ENERGY SECRET DOOR",
+                                "PTMC Industrial 1",
+                                "PTMC Covert 1"};
 
 #define NUM_RENAMED_DOORS (sizeof(Old_door_names) / sizeof(*Old_door_names))
 
@@ -3584,7 +3585,7 @@ int SpecialFindDoorName(const char *name) {
   return -1;
 }
 
-static inline char* GetCurrentSumString() {
+static inline char *GetCurrentSumString() {
   static char output_buf[100];
   output_buf[0] = '\0';
   auto digest = Level_md5->digest();
@@ -3835,7 +3836,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
             Objects[objnum].type = OBJ_NONE;                                 // kill the object
           } else {
             if (!ROOMNUM_OUTSIDE(roomnum) && Rooms[roomnum].flags & RF_EXTERNAL) {
-              mprintf(0, "Internal object %d linked to external room %d (type = %d)!!!\n", objnum, roomnum, Objects[objnum].type);
+              mprintf(0, "Internal object %d linked to external room %d (type = %d)!!!\n", objnum, roomnum,
+                      Objects[objnum].type);
               if (Objects[objnum].type == OBJ_VIEWER)
                 Objects[objnum].type = OBJ_NONE; // kill the object
               else {
@@ -4036,7 +4038,8 @@ int LoadLevel(char *filename, void (*cb_fn)(const char *, int, int)) {
       }
 #endif       // ifdef EDITOR
       else { // unknown chunk
-        mprintf(0, "  Unknown chunk: %c%c%c%c, size=%d\n", chunk_name[0], chunk_name[1], chunk_name[2], chunk_name[3], chunk_size);
+        mprintf(0, "  Unknown chunk: %c%c%c%c, size=%d\n", chunk_name[0], chunk_name[1], chunk_name[2], chunk_name[3],
+                chunk_size);
       }
 
       // Go to end of chunk

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -249,12 +249,12 @@ static bool IsMissionMaskOK(uint32_t set, uint32_t unset);
 static void ReplaceHotTag(char *string, int tag);
 static bool ParseForHotTags(const char *src, char **dest);
 static bool PlayBriefing(tTelComInfo *tcs);
-static void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id);
-static void PBAddBmpEffect(TCBMPDESC* desc, char *description);
-static void PBAddMovieEffect(TCMOVIEDESC* desc, char *description);
-static void PBAddBkgEffect(TCBKGDESC* desc, char *description);
-static void PBAddPolyEffect(TCPOLYDESC* desc, char *description);
-static void PBAddButtonEffect(TCBUTTONDESC* desc, char *description, int id);
+static void PBAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id);
+static void PBAddBmpEffect(TCBMPDESC *desc, char *description);
+static void PBAddMovieEffect(TCMOVIEDESC *desc, char *description);
+static void PBAddBkgEffect(TCBKGDESC *desc, char *description);
+static void PBAddPolyEffect(TCPOLYDESC *desc, char *description);
+static void PBAddButtonEffect(TCBUTTONDESC *desc, char *description, int id);
 static void PBStartScreen(int screen_num, char *description, char *layout, uint32_t mask_set, uint32_t mask_unset);
 static void PBEndScreen();
 static bool PBLoopCallback();
@@ -456,7 +456,7 @@ bool PlayBriefing(tTelComInfo *tcs) {
   return true;
 }
 
-void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id) {
+void PBAddTextEffect(TCTEXTDESC *desc, char *text, char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     char *new_text = NULL;
     const bool new_stuff = ParseForHotTags(text, &new_text);
@@ -469,33 +469,33 @@ void PBAddTextEffect(TCTEXTDESC* desc, char *text, char *description, int id) {
   }
 }
 
-void PBAddBmpEffect(TCBMPDESC* desc, char *description) {
+void PBAddBmpEffect(TCBMPDESC *desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateBitmapEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddMovieEffect(TCMOVIEDESC* desc, char *description) {
+void PBAddMovieEffect(TCMOVIEDESC *desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateMovieEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddBkgEffect(TCBKGDESC* desc, char *description) {
+void PBAddBkgEffect(TCBKGDESC *desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     mprintf(0, "PB: Add Bkg\n");
   }
 }
 
-void PBAddPolyEffect(TCPOLYDESC* desc, char *description) {
+void PBAddPolyEffect(TCPOLYDESC *desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreatePolyModelEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddSoundEffect(TCSNDDESC* desc, char *description) {
+void PBAddSoundEffect(TCSNDDESC *desc, char *description) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen)
     CreateSoundEffect(desc, MONITOR_MAIN, current_screen);
 }
 
-void PBAddButtonEffect(TCBUTTONDESC* desc, char *description, int id) {
+void PBAddButtonEffect(TCBUTTONDESC *desc, char *description, int id) {
   if (IsMissionMaskOK(desc->mission_mask_set, desc->mission_mask_unset) && ok_to_parse_screen) {
     desc->x += osb_xoff;
     desc->y += osb_yoff;
@@ -594,7 +594,7 @@ void PBSetGlitch(float amount) {
     TelcomEnableGlitch(amount);
 }
 
-void PBAddVoice(char *filename, int flags,char *description) {}
+void PBAddVoice(char *filename, int flags, char *description) {}
 
 bool ParseBriefing(const char *filename, tTelComInfo *tcs) {
   if (!cfexist(filename)) {

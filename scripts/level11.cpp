@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1851,155 +1851,156 @@ const char *GetMessage(const char *name) {
 
 #define NUM_DOOR_NAMES 19
 const char *Door_names[NUM_DOOR_NAMES] = {"ExitDoor-1",    "VertShaft",     "LockedDoor-3",    "LockedDoor-4",
-                                    "LockedDoor-1",  "LockedDoor-2",  "SecondaryDoor-1", "SecondaryDoor-2",
-                                    "EX-Right-2",    "EX-Left-1",     "EX-Right-3",      "EX-Left-2",
-                                    "EX-Right-4",    "EX-Left-3",     "EX-Right-1",      "EX-Left-4",
-                                    "AnotherDoor-2", "AnotherDoor-1", "EscapeDoor-1"};
+                                          "LockedDoor-1",  "LockedDoor-2",  "SecondaryDoor-1", "SecondaryDoor-2",
+                                          "EX-Right-2",    "EX-Left-1",     "EX-Right-3",      "EX-Left-2",
+                                          "EX-Right-4",    "EX-Left-3",     "EX-Right-1",      "EX-Left-4",
+                                          "AnotherDoor-2", "AnotherDoor-1", "EscapeDoor-1"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 137
 const char *Object_names[NUM_OBJECT_NAMES] = {"EndLevelCam",
-                                        "KeyCard",
-                                        "BackSmallPipe-2",
-                                        "BackSmallPipe-1",
-                                        "FirstFFPipe",
-                                        "MainFFPipe-1",
-                                        "MainFFPipe-3",
-                                        "MainFFPipe-2",
-                                        "HWFFPipe-1",
-                                        "HWFFPipe-2",
-                                        "FFPipeExtra-2",
-                                        "FFPipeExtra-1",
-                                        "SmallPipePrison-2",
-                                        "PrisonSmallPipe-3",
-                                        "SmallPipePrison-1",
-                                        "SlaveGun-41",
-                                        "SlaveGun-44",
-                                        "SlaveGun-42",
-                                        "SlaveGun-43",
-                                        "SlaveGun-34",
-                                        "SlaveGun-33",
-                                        "SlaveGun-31",
-                                        "SlaveGun-32",
-                                        "SlaveGun-21",
-                                        "SlaveGun-23",
-                                        "SlaveGun-22",
-                                        "SlaveGun-51",
-                                        "SlaveGun-52",
-                                        "SlaveGun-72",
-                                        "SlaveGun-71",
-                                        "SlaveGun-B4",
-                                        "SlaveGun-B1",
-                                        "SlaveGun-B2",
-                                        "SlaveGun-B3",
-                                        "SlaveGun-62",
-                                        "SlaveGun-64",
-                                        "SlaveGun-63",
-                                        "SlaveGun-61",
-                                        "SlaveGun-81",
-                                        "SlaveGun-83",
-                                        "SlaveGun-82",
-                                        "SlaveGun-92",
-                                        "SlaveGun-93",
-                                        "SlaveGun-91",
-                                        "SlaveGun-A1",
-                                        "SlaveGun-C1",
-                                        "SlaveGun-C2",
-                                        "SlaveGun-D2",
-                                        "SlaveGun-D1",
-                                        "SlaveGun-F2",
-                                        "SlaveGun-F1",
-                                        "SlaveGun-E2",
-                                        "SlaveGun-E1",
-                                        "SlaveGun-12",
-                                        "SlaveGun-11",
-                                        "Camera-1",
-                                        "FFControlHW-1",
-                                        "HW-1",
-                                        "FFControlHW-2",
-                                        "HW-2",
-                                        "FFControlFirst",
-                                        "FirstPopUp",
-                                        "FFControlMain-1",
-                                        "Main-1",
-                                        "FFControlMain-2",
-                                        "Main-2",
-                                        "FFControlMain-3",
-                                        "Main-3",
-                                        "FFControlExtra-2",
-                                        "Extra-2",
-                                        "FFControlExtra-1",
-                                        "Extra-1",
-                                        "PrisonShip",
-                                        "MineSwitch-1",
-                                        "MineCart-1",
-                                        "MineSwitch-2",
-                                        "MineCart-2",
-                                        "RockWallTop-1",
-                                        "RockWallBottom-1",
-                                        "RockWallBottom-2",
-                                        "RockWallBottom-3",
-                                        "RockWallBottom-4",
-                                        "RockWallTop-6",
-                                        "RockWallTop-2",
-                                        "WindowPump-1",
-                                        "WindowPump-2",
-                                        "GenericSpew-18",
-                                        "GSpew17",
-                                        "GSpew16",
-                                        "GSpew15",
-                                        "GSpew14",
-                                        "GSpew13",
-                                        "GSpew12",
-                                        "GSpew11",
-                                        "GSpew10",
-                                        "GSpew9",
-                                        "GSpew8",
-                                        "GSpew7",
-                                        "GSpew6",
-                                        "GSpew5",
-                                        "GSpew4",
-                                        "GSpew3",
-                                        "GSpew2",
-                                        "GSpew1",
-                                        "AnotherSwitch-2",
-                                        "AnotherSwitch-1",
-                                        "Camera-F",
-                                        "Camera-E",
-                                        "Camera-D",
-                                        "Camera-C",
-                                        "Camera-B",
-                                        "Camera-A",
-                                        "Camera-9",
-                                        "Camera-8",
-                                        "Camera-7",
-                                        "Camera-6",
-                                        "Camera-5",
-                                        "Camera-4",
-                                        "Camera-3",
-                                        "Camera-2",
-                                        "Sparker-1",
-                                        "Sparker-2",
-                                        "Sparker-3",
-                                        "Sparker-4",
-                                        "PrisonFreeSwitch",
-                                        "PSpark-1",
-                                        "PSpark-2",
-                                        "PSpark-3",
-                                        "ExitDoor-1",
-                                        "PSwitch6",
-                                        "PSwitch5",
-                                        "PSwitch4",
-                                        "PSwitch3",
-                                        "PFSwitch2",
-                                        "PFSwitch1",
-                                        "SEFFSwitch-2",
-                                        "SEFFSwitch-1"};
+                                              "KeyCard",
+                                              "BackSmallPipe-2",
+                                              "BackSmallPipe-1",
+                                              "FirstFFPipe",
+                                              "MainFFPipe-1",
+                                              "MainFFPipe-3",
+                                              "MainFFPipe-2",
+                                              "HWFFPipe-1",
+                                              "HWFFPipe-2",
+                                              "FFPipeExtra-2",
+                                              "FFPipeExtra-1",
+                                              "SmallPipePrison-2",
+                                              "PrisonSmallPipe-3",
+                                              "SmallPipePrison-1",
+                                              "SlaveGun-41",
+                                              "SlaveGun-44",
+                                              "SlaveGun-42",
+                                              "SlaveGun-43",
+                                              "SlaveGun-34",
+                                              "SlaveGun-33",
+                                              "SlaveGun-31",
+                                              "SlaveGun-32",
+                                              "SlaveGun-21",
+                                              "SlaveGun-23",
+                                              "SlaveGun-22",
+                                              "SlaveGun-51",
+                                              "SlaveGun-52",
+                                              "SlaveGun-72",
+                                              "SlaveGun-71",
+                                              "SlaveGun-B4",
+                                              "SlaveGun-B1",
+                                              "SlaveGun-B2",
+                                              "SlaveGun-B3",
+                                              "SlaveGun-62",
+                                              "SlaveGun-64",
+                                              "SlaveGun-63",
+                                              "SlaveGun-61",
+                                              "SlaveGun-81",
+                                              "SlaveGun-83",
+                                              "SlaveGun-82",
+                                              "SlaveGun-92",
+                                              "SlaveGun-93",
+                                              "SlaveGun-91",
+                                              "SlaveGun-A1",
+                                              "SlaveGun-C1",
+                                              "SlaveGun-C2",
+                                              "SlaveGun-D2",
+                                              "SlaveGun-D1",
+                                              "SlaveGun-F2",
+                                              "SlaveGun-F1",
+                                              "SlaveGun-E2",
+                                              "SlaveGun-E1",
+                                              "SlaveGun-12",
+                                              "SlaveGun-11",
+                                              "Camera-1",
+                                              "FFControlHW-1",
+                                              "HW-1",
+                                              "FFControlHW-2",
+                                              "HW-2",
+                                              "FFControlFirst",
+                                              "FirstPopUp",
+                                              "FFControlMain-1",
+                                              "Main-1",
+                                              "FFControlMain-2",
+                                              "Main-2",
+                                              "FFControlMain-3",
+                                              "Main-3",
+                                              "FFControlExtra-2",
+                                              "Extra-2",
+                                              "FFControlExtra-1",
+                                              "Extra-1",
+                                              "PrisonShip",
+                                              "MineSwitch-1",
+                                              "MineCart-1",
+                                              "MineSwitch-2",
+                                              "MineCart-2",
+                                              "RockWallTop-1",
+                                              "RockWallBottom-1",
+                                              "RockWallBottom-2",
+                                              "RockWallBottom-3",
+                                              "RockWallBottom-4",
+                                              "RockWallTop-6",
+                                              "RockWallTop-2",
+                                              "WindowPump-1",
+                                              "WindowPump-2",
+                                              "GenericSpew-18",
+                                              "GSpew17",
+                                              "GSpew16",
+                                              "GSpew15",
+                                              "GSpew14",
+                                              "GSpew13",
+                                              "GSpew12",
+                                              "GSpew11",
+                                              "GSpew10",
+                                              "GSpew9",
+                                              "GSpew8",
+                                              "GSpew7",
+                                              "GSpew6",
+                                              "GSpew5",
+                                              "GSpew4",
+                                              "GSpew3",
+                                              "GSpew2",
+                                              "GSpew1",
+                                              "AnotherSwitch-2",
+                                              "AnotherSwitch-1",
+                                              "Camera-F",
+                                              "Camera-E",
+                                              "Camera-D",
+                                              "Camera-C",
+                                              "Camera-B",
+                                              "Camera-A",
+                                              "Camera-9",
+                                              "Camera-8",
+                                              "Camera-7",
+                                              "Camera-6",
+                                              "Camera-5",
+                                              "Camera-4",
+                                              "Camera-3",
+                                              "Camera-2",
+                                              "Sparker-1",
+                                              "Sparker-2",
+                                              "Sparker-3",
+                                              "Sparker-4",
+                                              "PrisonFreeSwitch",
+                                              "PSpark-1",
+                                              "PSpark-2",
+                                              "PSpark-3",
+                                              "ExitDoor-1",
+                                              "PSwitch6",
+                                              "PSwitch5",
+                                              "PSwitch4",
+                                              "PSwitch3",
+                                              "PFSwitch2",
+                                              "PFSwitch1",
+                                              "SEFFSwitch-2",
+                                              "SEFFSwitch-1"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 10
-const char *Room_names[NUM_ROOM_NAMES] = {"HugeWHouse-2", "HugeWHouse-1", "FirstFFRoom", "MainFFRoom", "Extra-1",
-                                    "Extra-2",      "Prisoner-3",   "Prisoner-2",  "Prisoner-1", "SecretElevator"};
+const char *Room_names[NUM_ROOM_NAMES] = {"HugeWHouse-2", "HugeWHouse-1",  "FirstFFRoom", "MainFFRoom",
+                                          "Extra-1",      "Extra-2",       "Prisoner-3",  "Prisoner-2",
+                                          "Prisoner-1",   "SecretElevator"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 36
@@ -2016,7 +2017,7 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 7
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbEnergyPumpB", "AmbSwitch41", "Powerup pickup", "AmbSwitch31",
-                                      "AmbMineCar",     "AmbFurn21",   "Siren"};
+                                            "AmbMineCar",     "AmbFurn21",   "Siren"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
@@ -2025,7 +2026,7 @@ int *Texture_indexes = NULL;
 
 #define NUM_PATH_NAMES 10
 const char *Path_names[NUM_PATH_NAMES] = {"IntroCam",   "IntroShip",   "CameraShow", "EscapeRoute-1", "MineCart-1",
-                                    "MineCart-2", "CapturedCam", "Captured",   "PipeDemo",      "PrisonCinema"};
+                                          "MineCart-2", "CapturedCam", "Captured",   "PipeDemo",      "PrisonCinema"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 0
@@ -2034,32 +2035,32 @@ int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 8
 const char *Goal_names[NUM_GOAL_NAMES] = {"Destroy secondary forcefield generator",
-                                    "Shoot switches to avoid forcefield",
-                                    "Destroy primary forcefield generators",
-                                    "Disable secondary forcefield controls",
-                                    "Disable primary forcefield controls",
-                                    "Get past the blocked entrance",
-                                    "Rescue the Prisoner",
-                                    "Release the prisoner"};
+                                          "Shoot switches to avoid forcefield",
+                                          "Destroy primary forcefield generators",
+                                          "Disable secondary forcefield controls",
+                                          "Disable primary forcefield controls",
+                                          "Get past the blocked entrance",
+                                          "Rescue the Prisoner",
+                                          "Release the prisoner"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 16
 const char *Message_names[NUM_MESSAGE_NAMES] = {"Work",
-                                          "FirstCamera",
-                                          "ForcefieldDisabled",
-                                          "MainDestroyed",
-                                          "ForcefieldsDisabled",
-                                          "ForcefieldFirst",
-                                          "PickupKey",
-                                          "DoorUnlocked",
-                                          "Spotted",
-                                          "GotHim",
-                                          "FreeAtLast",
-                                          "GoUpLeft",
-                                          "PipeDemo",
-                                          "Reroute",
-                                          "All6Deactive",
-                                          "DestroyThese"};
+                                                "FirstCamera",
+                                                "ForcefieldDisabled",
+                                                "MainDestroyed",
+                                                "ForcefieldsDisabled",
+                                                "ForcefieldFirst",
+                                                "PickupKey",
+                                                "DoorUnlocked",
+                                                "Spotted",
+                                                "GotHim",
+                                                "FreeAtLast",
+                                                "GoUpLeft",
+                                                "PipeDemo",
+                                                "Reroute",
+                                                "All6Deactive",
+                                                "DestroyThese"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

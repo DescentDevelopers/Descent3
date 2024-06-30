@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -255,7 +255,7 @@ class hlsSystem {
 
   bool m_pause_new;
   uint8_t m_cur_environment; // current environment being played.
-  int n_lls_sounds;        // number of sounds that we want the low level mixer to mix.
+  int n_lls_sounds;          // number of sounds that we want the low level mixer to mix.
 
   bool Emulate3dSound(int sound_obj_index);
   bool ComputePlayInfo(int sound_obj_index, vector *virtual_pos, vector *virtual_vel, float *adjusted_volume);
@@ -321,8 +321,7 @@ public:
                  void *stream_callback(void *user_data, int handle, int *size) = NULL);
 
   // 2d functions
-  int Play2dSound(int sound_index, float volume = MAX_GAME_VOLUME / 2, float pan = 0.0,
-                  uint16_t frequency = 22050);
+  int Play2dSound(int sound_index, float volume = MAX_GAME_VOLUME / 2, float pan = 0.0, uint16_t frequency = 22050);
 
   int Play2dSound(int sound_index, int priority, float volume = MAX_GAME_VOLUME / 2, float pan = 0.0,
                   uint16_t frequency = 22050);

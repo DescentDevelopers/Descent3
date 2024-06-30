@@ -1215,7 +1215,7 @@ void EBNode_DrawRoom(int room, grViewport *vp, vector *viewer_eye, matrix *viewe
     }
 
     //		ddgr_color path_color = (current_path_index==D3EditState.current_path) ? GR_RGB(255,255,255) :
-    //GR_RGB(36,99,238);
+    // GR_RGB(36,99,238);
     ddgr_color path_color;
 
     if (f_current_room)

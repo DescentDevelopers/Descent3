@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -310,7 +310,8 @@ void DMFCBase::DoDMFCUITeamPlacement(bool clients_wait, bool called_by_level_sta
   int id_list[DLLMAX_TEAMS * (DLLMAX_TEAMS - 1)];
 
   int team_icons[DLLMAX_TEAMS];
-  const char *team_icon_names[DLLMAX_TEAMS] = {"toredteamicon.ogf", "toblueteamicon.ogf", "togreenteamicon.ogf", "toyellowteamicon.ogf"};
+  const char *team_icon_names[DLLMAX_TEAMS] = {"toredteamicon.ogf", "toblueteamicon.ogf", "togreenteamicon.ogf",
+                                               "toyellowteamicon.ogf"};
   /*
   $$TABLE_GAMEFILE "toredteamicon.ogf"
   $$TABLE_GAMEFILE "toblueteamicon.ogf"

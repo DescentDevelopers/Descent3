@@ -1,19 +1,19 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Descent Developers
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Descent 3
+ * Copyright (C) 2024 Descent Developers
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef DESCENT3_NEWBITMAP_H
@@ -22,10 +22,7 @@
 #include <cstdint>
 #include <memory>
 
-enum class PixelDataFormat {
-  Unknown,
-  RGBA32
-};
+enum class PixelDataFormat { Unknown, RGBA32 };
 
 class NewBitmap {
 private:
@@ -54,7 +51,7 @@ public:
   [[nodiscard]] uint32_t getNumComponents() const;
 
   /// @returns true on success, false otherwise
-  bool saveAsPNG(const char* filePath);
+  bool saveAsPNG(const char *filePath);
 };
 
 #endif // DESCENT3_NEWBITMAP_H

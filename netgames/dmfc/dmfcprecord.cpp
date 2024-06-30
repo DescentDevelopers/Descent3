@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -568,9 +568,7 @@ void PRec_SendPRecToPlayer(int pnum) {
     }
   }
 
-  mprintf(0, "*Player Record: Send out %d packets of total %d bytes to %s\n",
-          totalcount,
-          totalsize,
+  mprintf(0, "*Player Record: Send out %d packets of total %d bytes to %s\n", totalcount, totalsize,
           basethis->Players[pnum].callsign);
 }
 

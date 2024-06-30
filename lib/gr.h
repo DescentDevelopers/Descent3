@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -151,16 +151,16 @@ const int MAX_FONTS = 16, MAX_FONT_BITMAPS = 12;
 #define DEFAULT_FONT 0
 
 struct gr_font_file_record {
-  int16_t width, height;      // width of widest character and height of longest char
-  int16_t flags;              // flags used by the character renderer
-  int16_t baseline;           // pixels given to lowercase below script line start at baseline
-  uint8_t min_ascii;          // minimum ascii value used by font
-  uint8_t max_ascii;          // max ascii value used by the font
-  int16_t byte_width;         // width of a character in the font in bytes
-  uint8_t *raw_data;          // pixel, map data.
-  uint8_t **char_data;        // pointers to each character
-  int16_t *char_widths;       // individual pixel widths of each character
-  uint8_t *kern_data; // kerning information for specific letter combos
+  int16_t width, height; // width of widest character and height of longest char
+  int16_t flags;         // flags used by the character renderer
+  int16_t baseline;      // pixels given to lowercase below script line start at baseline
+  uint8_t min_ascii;     // minimum ascii value used by font
+  uint8_t max_ascii;     // max ascii value used by the font
+  int16_t byte_width;    // width of a character in the font in bytes
+  uint8_t *raw_data;     // pixel, map data.
+  uint8_t **char_data;   // pointers to each character
+  int16_t *char_widths;  // individual pixel widths of each character
+  uint8_t *kern_data;    // kerning information for specific letter combos
 };
 
 struct gr_font_record {
@@ -172,7 +172,6 @@ struct gr_font_record {
   uint8_t *ch_u, *ch_v, *ch_w, *ch_h, *ch_surf;
   float *ch_uf, *ch_vf, *ch_wf, *ch_hf;
   gr_font_file_record font;
-
 };
 
 class grFont {

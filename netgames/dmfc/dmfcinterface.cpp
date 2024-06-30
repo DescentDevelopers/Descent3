@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -769,7 +769,8 @@ void DLLFUNCCALL IDMFC_WriteDMFCStatsToFile(IDMFC *instance, CFILE *file) {
   instance->WriteDMFCStatsToFile(file);
 }
 
-bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const char *weapon_name, const char *message, bool victim_first) {
+bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const char *weapon_name, const char *message,
+                                             bool victim_first) {
   assert(instance != NULL);
   return instance->SetWeaponDeathMessage(weapon_name, message, victim_first);
 }
@@ -897,7 +898,7 @@ void DLLFUNCCALL IDMFC_DisconnectMe(IDMFC *instance) {
 }
 
 int8_t DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
-                                              void (*handler)(const char *)) {
+                                         void (*handler)(const char *)) {
   assert(instance != NULL);
   return instance->AddInputCommand(command, description, handler);
 }

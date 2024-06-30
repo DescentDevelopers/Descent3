@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -313,7 +313,7 @@ void VoiceQueue::Clear(bool onlypowerups) {
           pos = realp;
         realp++;
       } // endif
-    }   // end for
+    } // end for
     if (realp == QUEUE_SIZE) {
       // we're still full :(
       full = true;

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -666,7 +666,8 @@ void pilot::get_ship(char *ship) {
   }
 }
 
-void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const uint16_t *ppic, const char *audio3, const char *audio4) {
+void pilot::set_multiplayer_data(const char *logo, const char *audio1, const char *audio2, const uint16_t *ppic,
+                                 const char *audio3, const char *audio4) {
   if (logo) {
     if (ship_logo) {
       mem_free(ship_logo);

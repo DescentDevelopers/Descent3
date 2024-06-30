@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -903,50 +903,50 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 15
 const char *Object_names[NUM_OBJECT_NAMES] = {"Reactor1",  "Reactor2", "Reactor3", "Reactor4", "Reactor5",
-                                        "StartDoor", "Flame01",  "Flame03",  "Flame04",  "Flame05",
-                                        "Flame06",   "Flame07",  "Flame08",  "Flame09",  "ExitDoor"};
+                                              "StartDoor", "Flame01",  "Flame03",  "Flame04",  "Flame05",
+                                              "Flame06",   "Flame07",  "Flame08",  "Flame09",  "ExitDoor"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 10
 const char *Room_names[NUM_ROOM_NAMES] = {"Reactor5Screen", "Reactor4Screen", "Reactor3Screen", "Reactor2Screen",
-                                    "Reactor1Screen", "Reactor5Room",   "Reactor4Room",   "Reactor3Room",
-                                    "Reactor2Room",   "Reactor1Room"};
+                                          "Reactor1Screen", "Reactor5Room",   "Reactor4Room",   "Reactor3Room",
+                                          "Reactor2Room",   "Reactor1Room"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 25
 const char *Trigger_names[NUM_TRIGGER_NAMES] = {"ExitSequenceTrigger",
-                                          "IntoTunnel1",
-                                          "MainHub1",
-                                          "MainHub2",
-                                          "MainHub3",
-                                          "MainHub4",
-                                          "MainHub5",
-                                          "IntoTunnel2",
-                                          "IntoTunnel3",
-                                          "IntoTunnel4",
-                                          "IntoTunnel5",
-                                          "OutReactor1",
-                                          "OutReactor2",
-                                          "OutReactor3",
-                                          "OutReactor4",
-                                          "OutReactor5",
-                                          "IntoReactor1",
-                                          "IntoReactor2",
-                                          "IntoReactor3",
-                                          "IntoReactor4",
-                                          "IntoReactor5",
-                                          "IntoReactor4Mainten",
-                                          "IntoReactor3Mainten",
-                                          "OutReactor3Maintena",
-                                          "OutReactor4Maintena"};
+                                                "IntoTunnel1",
+                                                "MainHub1",
+                                                "MainHub2",
+                                                "MainHub3",
+                                                "MainHub4",
+                                                "MainHub5",
+                                                "IntoTunnel2",
+                                                "IntoTunnel3",
+                                                "IntoTunnel4",
+                                                "IntoTunnel5",
+                                                "OutReactor1",
+                                                "OutReactor2",
+                                                "OutReactor3",
+                                                "OutReactor4",
+                                                "OutReactor5",
+                                                "IntoReactor1",
+                                                "IntoReactor2",
+                                                "IntoReactor3",
+                                                "IntoReactor4",
+                                                "IntoReactor5",
+                                                "IntoReactor4Mainten",
+                                                "IntoReactor3Mainten",
+                                                "OutReactor3Maintena",
+                                                "OutReactor4Maintena"};
 int Trigger_indexes[NUM_TRIGGER_NAMES];
 int Trigger_faces[NUM_TRIGGER_NAMES];
 int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 10
-const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneReactor",  "DoorIsLocked",     "ExpMissileLarge1", "ExpMissileMed1",
-                                      "Lightning",        "AmbExplosionFarA", "AmbExplosionFarG", "AmbExplosionFarI",
-                                      "AmbExplosionFarD", "AmbExplosionFarE"};
+const char *Sound_names[NUM_SOUND_NAMES] = {
+    "AmbDroneReactor",  "DoorIsLocked",     "ExpMissileLarge1", "ExpMissileMed1",   "Lightning",
+    "AmbExplosionFarA", "AmbExplosionFarG", "AmbExplosionFarI", "AmbExplosionFarD", "AmbExplosionFarE"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 4
@@ -955,9 +955,9 @@ int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 14
 const char *Path_names[NUM_PATH_NAMES] = {"Matcen12To1",      "Matcen12To2",     "Matcen12To3", "Matcen34To3",
-                                    "Matcen34To4",      "Mat5To5",         "Matcen5To4",  "Matcen5To2",
-                                    "IntroCamera",      "IntroPlayerPath", "ExitCamera2", "PlayerExit3",
-                                    "ExitCameraTunnel", "PlayerExit1Alt"};
+                                          "Matcen34To4",      "Mat5To5",         "Matcen5To4",  "Matcen5To2",
+                                          "IntroCamera",      "IntroPlayerPath", "ExitCamera2", "PlayerExit3",
+                                          "ExitCameraTunnel", "PlayerExit1Alt"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 3
@@ -966,23 +966,23 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 8
 const char *Goal_names[NUM_GOAL_NAMES] = {"Keep Reactor 5 Alive",      "Keep Reactor 4 Alive",
-                                    "Keep Reactor 3 Alive",      "Keep Reactor 2 Alive",
-                                    "Keep Reactor 1 Alive",      "Defend Red Acropolis and Escape",
-                                    "Escape from Red Acropolis", "Keep 3 of the 5 reactors alive"};
+                                          "Keep Reactor 3 Alive",      "Keep Reactor 2 Alive",
+                                          "Keep Reactor 1 Alive",      "Defend Red Acropolis and Escape",
+                                          "Escape from Red Acropolis", "Keep 3 of the 5 reactors alive"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 21
 const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "DefendThoseReactors2",
-                                          "IncomingMessage", "DefendReactorsShort",
-                                          "Reactor5Status",  "Health75",
-                                          "Reactor4Status",  "Reactor3Status",
-                                          "Reactor2Status",  "Reactor1Status",
-                                          "Health50",        "Health25",
-                                          "Destroyed",       "HITPOINTS",
-                                          "BLANK",           "OOPS",
-                                          "WereGettinOut",   "SelfDestruct",
-                                          "ExitOnly",        "EntranceDoorMessage",
-                                          "30SecondsLeft"};
+                                                "IncomingMessage", "DefendReactorsShort",
+                                                "Reactor5Status",  "Health75",
+                                                "Reactor4Status",  "Reactor3Status",
+                                                "Reactor2Status",  "Reactor1Status",
+                                                "Health50",        "Health25",
+                                                "Destroyed",       "HITPOINTS",
+                                                "BLANK",           "OOPS",
+                                                "WereGettinOut",   "SelfDestruct",
+                                                "ExitOnly",        "EntranceDoorMessage",
+                                                "30SecondsLeft"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

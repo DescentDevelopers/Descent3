@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <algorithm>
 #include <cstdlib>
@@ -141,21 +141,20 @@ bool opengl_Blending_on = 0;
 static oeApplication *ParentApplication = NULL;
 
 /* framebuffer object for backbuffer, scale to window size without changing resolution.  --ryan, 2019. */
-#define GL_DEPTH_COMPONENT16_EXT              0x81A5
-#define GL_READ_FRAMEBUFFER_EXT               0x8CA8
-#define GL_DRAW_FRAMEBUFFER_EXT               0x8CA9
-#define GL_FRAMEBUFFER_COMPLETE_EXT           0x8CD5
-#define GL_COLOR_ATTACHMENT0_EXT              0x8CE0
-#define GL_DEPTH_ATTACHMENT_EXT               0x8D00
-#define GL_STENCIL_ATTACHMENT_EXT             0x8D20
-#define GL_FRAMEBUFFER_EXT                    0x8D40
-#define GL_RENDERBUFFER_EXT                   0x8D41
+#define GL_DEPTH_COMPONENT16_EXT 0x81A5
+#define GL_READ_FRAMEBUFFER_EXT 0x8CA8
+#define GL_DRAW_FRAMEBUFFER_EXT 0x8CA9
+#define GL_FRAMEBUFFER_COMPLETE_EXT 0x8CD5
+#define GL_COLOR_ATTACHMENT0_EXT 0x8CE0
+#define GL_DEPTH_ATTACHMENT_EXT 0x8D00
+#define GL_STENCIL_ATTACHMENT_EXT 0x8D20
+#define GL_FRAMEBUFFER_EXT 0x8D40
+#define GL_RENDERBUFFER_EXT 0x8D41
 static GLuint GOpenGLFBO = 0;
 static GLuint GOpenGLRBOColor = 0;
 static GLuint GOpenGLRBODepth = 0;
 static GLuint GOpenGLFBOWidth = 0;
 static GLuint GOpenGLFBOHeight = 0;
-
 
 #if 0
 int checkForGLErrors( const char *file, int line )
@@ -435,10 +434,11 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     if (arg != 0) {
       strcpy(gl_library, GameArgs[arg + 1]);
     } else {
-        gl_library[0] = 0;
+      gl_library[0] = 0;
     }
 
-    mprintf(0, "OpenGL: Attempting to use \"%s\" for OpenGL\n", gl_library[0] ? gl_library : "[system default library]");
+    mprintf(0, "OpenGL: Attempting to use \"%s\" for OpenGL\n",
+            gl_library[0] ? gl_library : "[system default library]");
 
     // ryan's adds. 04/18/2000...SDL stuff on 04/25/2000
     bool success = true;
@@ -486,7 +486,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   } // if
 #endif
 
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -520,7 +520,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   // clear the window framebuffer to start.
   dglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  dglClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  dglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   SDL_GL_SwapWindow(GSDLWindow);
 
   bool fbo_available = true;
@@ -530,17 +530,17 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   }
 
   if (!SDL_GL_ExtensionSupported("GL_EXT_framebuffer_blit")) {
-      mprintf(0, "OpenGL: GL_EXT_framebuffer_blit extension is not available");
-      fbo_available = false;
+    mprintf(0, "OpenGL: GL_EXT_framebuffer_blit extension is not available");
+    fbo_available = false;
   }
 
   if (fbo_available) {
-    #define LOOKUP_GL_SYM(x) \
-      dgl##x = (gl##x##_fp) SDL_GL_GetProcAddress("gl" #x); \
-      if (dgl##x == NULL) { \
-        mprintf(0, "OpenGL: gl%s function not found!", #x); \
-        fbo_available = false; \
-      }
+#define LOOKUP_GL_SYM(x)                                                                                               \
+  dgl##x = (gl##x##_fp)SDL_GL_GetProcAddress("gl" #x);                                                                 \
+  if (dgl##x == NULL) {                                                                                                \
+    mprintf(0, "OpenGL: gl%s function not found!", #x);                                                                \
+    fbo_available = false;                                                                                             \
+  }
     LOOKUP_GL_SYM(GenFramebuffersEXT);
     LOOKUP_GL_SYM(GenRenderbuffersEXT);
     LOOKUP_GL_SYM(BindFramebufferEXT);
@@ -575,8 +575,8 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
 
-  const GLsizei w = (GLsizei) *width;
-  const GLsizei h = (GLsizei) *height;
+  const GLsizei w = (GLsizei)*width;
+  const GLsizei h = (GLsizei)*height;
 
   GOpenGLFBOWidth = w;
   GOpenGLFBOHeight = h;
@@ -595,20 +595,20 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, GOpenGLRBODepth);
 
   if (dglCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT) {
-      mprintf(0, "OpenGL: our framebuffer object is incomplete, giving up");
-      dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, 0);
-      dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
-      dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-      dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-      dglDeleteFramebuffersEXT(1, &GOpenGLFBO);
-      dglDeleteRenderbuffersEXT(1, &GOpenGLRBOColor);
-      dglDeleteRenderbuffersEXT(1, &GOpenGLRBODepth);
-      GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
-      SDL_GL_DeleteContext(GSDLGLContext);
-      SDL_DestroyWindow(GSDLWindow);
-      GSDLGLContext = NULL;
-      GSDLWindow = NULL;
-      return 0;
+    mprintf(0, "OpenGL: our framebuffer object is incomplete, giving up");
+    dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, 0);
+    dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
+    dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    dglDeleteFramebuffersEXT(1, &GOpenGLFBO);
+    dglDeleteRenderbuffersEXT(1, &GOpenGLRBOColor);
+    dglDeleteRenderbuffersEXT(1, &GOpenGLRBODepth);
+    GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
+    SDL_GL_DeleteContext(GSDLGLContext);
+    SDL_DestroyWindow(GSDLWindow);
+    GSDLGLContext = NULL;
+    GSDLWindow = NULL;
+    return 0;
   }
 
   if (!FindArg("-nomousegrab")) {
@@ -847,17 +847,16 @@ void opengl_Close(const bool just_resizing) {
   mem_free(delete_list);
 
   if (GSDLGLContext) {
-      SDL_GL_MakeCurrent(NULL, NULL);
-      SDL_GL_DeleteContext(GSDLGLContext);
-      GSDLGLContext = NULL;
-      GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
+    SDL_GL_MakeCurrent(NULL, NULL);
+    SDL_GL_DeleteContext(GSDLGLContext);
+    GSDLGLContext = NULL;
+    GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
 
   if (!just_resizing && GSDLWindow) {
-      SDL_DestroyWindow(GSDLWindow);
-      GSDLWindow = NULL;
+    SDL_DestroyWindow(GSDLWindow);
+    GSDLWindow = NULL;
   }
-
 
   if (OpenGL_packed_pixels) {
     if (opengl_packed_Upload_data) {
@@ -1449,7 +1448,7 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
       } // end for d_y
 
     } // end for windex
-  }   // end for hindex
+  } // end for hindex
 }
 
 // Tells the software renderer whether or not to use mipping
@@ -1683,7 +1682,6 @@ void rend_StartFrame(int x1, int y1, int x2, int y2, int clear_flags) {
   gpu_state.clip_y2 = y2;
 }
 
-
 // Flips the screen
 void rend_Flip(void) {
 #ifndef RELEASE
@@ -1692,9 +1690,10 @@ void rend_Flip(void) {
   RTP_INCRVALUE(texture_uploads, OpenGL_uploads);
   RTP_INCRVALUE(polys_drawn, OpenGL_polys_drawn);
 
-  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn, OpenGL_verts_processed);
+  mprintf_at(1, 1, 0, "Uploads=%d    Polys=%d   Verts=%d   ", OpenGL_uploads, OpenGL_polys_drawn,
+             OpenGL_verts_processed);
   mprintf_at(1, 2, 0, "Sets= 0:%d   1:%d   2:%d   3:%d   ", OpenGL_sets_this_frame[0], OpenGL_sets_this_frame[1],
-              OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
+             OpenGL_sets_this_frame[2], OpenGL_sets_this_frame[3]);
   mprintf_at(1, 3, 0, "Sets= 4:%d   5:%d  ", OpenGL_sets_this_frame[4], OpenGL_sets_this_frame[5]);
   for (i = 0; i < 10; i++) {
     OpenGL_sets_this_frame[i] = 0;
@@ -1717,21 +1716,20 @@ void rend_Flip(void) {
     int scaledHeight, scaledWidth;
     if (w < h) {
       scaledWidth = w;
-      scaledHeight = (int) (((((double)GOpenGLFBOHeight) / ((double)GOpenGLFBOWidth))) * ((double)w));
+      scaledHeight = (int)(((((double)GOpenGLFBOHeight) / ((double)GOpenGLFBOWidth))) * ((double)w));
     } else {
       scaledHeight = h;
-      scaledWidth = (int) (((((double)GOpenGLFBOWidth) / ((double)GOpenGLFBOHeight))) * ((double)h));
+      scaledWidth = (int)(((((double)GOpenGLFBOWidth) / ((double)GOpenGLFBOHeight))) * ((double)h));
     }
 
     const int centeredX = (w - scaledWidth) / 2;
     const int centeredY = (h - scaledHeight) / 2;
 
     dglBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0);
-    dglClearColor (0.0f, 0.0f, 0.0f, 1.0f);
-    dglClear(GL_COLOR_BUFFER_BIT);  // in case the Steam Overlay wrote to places we don't blit over.
-    dglBlitFramebufferEXT(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight,
-                          centeredX, centeredY, centeredX + scaledWidth, centeredY + scaledHeight,
-                          GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    dglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    dglClear(GL_COLOR_BUFFER_BIT); // in case the Steam Overlay wrote to places we don't blit over.
+    dglBlitFramebufferEXT(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight, centeredX, centeredY, centeredX + scaledWidth,
+                          centeredY + scaledHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
     dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
   }
 
@@ -2045,7 +2043,8 @@ std::unique_ptr<NewBitmap> rend_Screenshot() {
   uint32_t *temp_data;
 
   int total = gpu_state.screen_width * gpu_state.screen_height;
-  auto result = std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
+  auto result =
+      std::make_unique<NewBitmap>(gpu_state.screen_width, gpu_state.screen_height, PixelDataFormat::RGBA32, true);
 
   if (!result || result->getData() == nullptr) {
     return nullptr;
@@ -2060,7 +2059,7 @@ std::unique_ptr<NewBitmap> rend_Screenshot() {
 // Takes a screenshot of the current frame and puts it into the handle passed
 void rend_Screenshot(int bm_handle) {
   auto screenshot = rend_Screenshot();
-  auto *temp_data = reinterpret_cast<uint32_t*>(screenshot->getData());
+  auto *temp_data = reinterpret_cast<uint32_t *>(screenshot->getData());
 
   uint32_t w, h;
   screenshot->getSize(w, h);
@@ -2068,7 +2067,7 @@ void rend_Screenshot(int bm_handle) {
   ASSERT((bm_w(bm_handle, 0)) == gpu_state.screen_width);
   ASSERT((bm_h(bm_handle, 0)) == gpu_state.screen_height);
 
-  uint16_t* dest_data = bm_data(bm_handle, 0);
+  uint16_t *dest_data = bm_data(bm_handle, 0);
 
   for (int i = 0; i < h; i++) {
     for (int t = 0; t < w; t++) {

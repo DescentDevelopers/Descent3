@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1024,72 +1024,72 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 60
 const char *Object_names[NUM_OBJECT_NAMES] = {"TurretControlSwitch",
-                                        "Repeater-6",
-                                        "Repeater-2",
-                                        "Repeater-5",
-                                        "Repeater-3",
-                                        "Repeater-4",
-                                        "Repeater-1",
-                                        "MiniTurret-1",
-                                        "MiniTurret-2",
-                                        "MiniTurret-3",
-                                        "MiniTurret-4",
-                                        "CoolSpewer-2",
-                                        "CoolSpewer-1",
-                                        "MagnetSpewer-2",
-                                        "MagnetSpewer-1",
-                                        "VirusSpewer",
-                                        "CoolerMain",
-                                        "CoolingView",
-                                        "VirusView",
-                                        "CoolControl-1",
-                                        "CoolControl-2",
-                                        "CoolControl-3",
-                                        "CoolControl-4",
-                                        "MagnetSwitch-2",
-                                        "MagnetSwitch-1",
-                                        "MagnetController",
-                                        "MTubeSpewer-1",
-                                        "MTubeSpewer-2",
-                                        "MTubeView",
-                                        "FFKey",
-                                        "FFSwitch-1",
-                                        "FFSwitch-2",
-                                        "LowerSwitch-1",
-                                        "FireSpewer-1",
-                                        "FireSpewer-2",
-                                        "LowerSwitch-2",
-                                        "LowerSwitch-3",
-                                        "Virus-2",
-                                        "Virus-1",
-                                        "MidSpewer-4",
-                                        "MidSpewer-1",
-                                        "MidSpewer-2",
-                                        "MidSpewer-3",
-                                        "SteamSwitch",
-                                        "SteamSpewer",
-                                        "BlastPipe-1",
-                                        "BlastPipe-2",
-                                        "SwitchCamera-Cooler",
-                                        "CameraCooler",
-                                        "SwitchCamera-Magnet",
-                                        "Camera-Magnet",
-                                        "CSwitch-Virus",
-                                        "Camera-Virus",
-                                        "EndCam",
-                                        "Controller-4",
-                                        "Controller-3",
-                                        "Controller-2",
-                                        "Controller-1",
-                                        "BoxBottom1",
-                                        "BoxPhysics"};
+                                              "Repeater-6",
+                                              "Repeater-2",
+                                              "Repeater-5",
+                                              "Repeater-3",
+                                              "Repeater-4",
+                                              "Repeater-1",
+                                              "MiniTurret-1",
+                                              "MiniTurret-2",
+                                              "MiniTurret-3",
+                                              "MiniTurret-4",
+                                              "CoolSpewer-2",
+                                              "CoolSpewer-1",
+                                              "MagnetSpewer-2",
+                                              "MagnetSpewer-1",
+                                              "VirusSpewer",
+                                              "CoolerMain",
+                                              "CoolingView",
+                                              "VirusView",
+                                              "CoolControl-1",
+                                              "CoolControl-2",
+                                              "CoolControl-3",
+                                              "CoolControl-4",
+                                              "MagnetSwitch-2",
+                                              "MagnetSwitch-1",
+                                              "MagnetController",
+                                              "MTubeSpewer-1",
+                                              "MTubeSpewer-2",
+                                              "MTubeView",
+                                              "FFKey",
+                                              "FFSwitch-1",
+                                              "FFSwitch-2",
+                                              "LowerSwitch-1",
+                                              "FireSpewer-1",
+                                              "FireSpewer-2",
+                                              "LowerSwitch-2",
+                                              "LowerSwitch-3",
+                                              "Virus-2",
+                                              "Virus-1",
+                                              "MidSpewer-4",
+                                              "MidSpewer-1",
+                                              "MidSpewer-2",
+                                              "MidSpewer-3",
+                                              "SteamSwitch",
+                                              "SteamSpewer",
+                                              "BlastPipe-1",
+                                              "BlastPipe-2",
+                                              "SwitchCamera-Cooler",
+                                              "CameraCooler",
+                                              "SwitchCamera-Magnet",
+                                              "Camera-Magnet",
+                                              "CSwitch-Virus",
+                                              "Camera-Virus",
+                                              "EndCam",
+                                              "Controller-4",
+                                              "Controller-3",
+                                              "Controller-2",
+                                              "Controller-1",
+                                              "BoxBottom1",
+                                              "BoxPhysics"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 20
 const char *Room_names[NUM_ROOM_NAMES] = {"Entrance-4", "Entrance-1", "Entrance-2", "Entrance-3",   "CoolerRoom",
-                                    "MagnetRoom", "FireRoom-1", "FireRoom-2", "SteamingRoom", "UpTube-1",
-                                    "UpTube-2",   "UpTube-3",   "UpTube-4",   "UpTube-5",     "UpTube-6",
-                                    "UpTube-7",   "UpTube-8",   "DownTube-4", "DownTube-3",   "DownTube-2"};
+                                          "MagnetRoom", "FireRoom-1", "FireRoom-2", "SteamingRoom", "UpTube-1",
+                                          "UpTube-2",   "UpTube-3",   "UpTube-4",   "UpTube-5",     "UpTube-6",
+                                          "UpTube-7",   "UpTube-8",   "DownTube-4", "DownTube-3",   "DownTube-2"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 23
@@ -1104,7 +1104,7 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 8
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch41", "AmbSwitch31", "AmbSwitch21",        "Powerup pickup",
-                                      "AmbSwitch11", "PupC1",       "LevSecAccelRelease", "LevSecAccelStart"};
+                                            "AmbSwitch11", "PupC1",       "LevSecAccelRelease", "LevSecAccelStart"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 0
@@ -1121,8 +1121,8 @@ int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 5
 const char *Goal_names[NUM_GOAL_NAMES] = {"Enable descending accelerator", "Disable containment forcefields",
-                                    "Activate the Ascending Elevator", "Steal the Virus Samples",
-                                    "Get both virus samples"};
+                                          "Activate the Ascending Elevator", "Steal the Virus Samples",
+                                          "Get both virus samples"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 22

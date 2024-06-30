@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -206,7 +206,7 @@ static void SortTeamScores(int *sortedindex, int *scores); // sorts an array of 
                                                            // numbers
 static void DisplayHUDScores(struct tHUDItem *hitem);      // callback when the HUD info is to be drawn
 static void ReceiveGameState(uint8_t *data); // callback when a gamestate packet is received from the server
-static void SendGameState(int playernum);  // called when the server is to send gamestate packet to a client
+static void SendGameState(int playernum);    // called when the server is to send gamestate packet to a client
 static void SetColoredBalls(
     int playernum,
     bool reset = false); // sets the colored balls around a player (determined by what is in their inventory)
@@ -911,7 +911,7 @@ void OnClientCollide(uint8_t *data) {
               int objnum = DLLObjCreate(OBJ_POWERUP, FlagIDs[i], groom, &fpos, NULL, OBJECT_HANDLE_NONE);
               DLLMultiSendObject(&dObjects[objnum], 1, true);
             } // end server create
-          }   // end room ok
+          } // end room ok
 
           // set it's at home flag
           FlagAtHome[i] = true;
@@ -2297,9 +2297,13 @@ int UnPackBytes(uint8_t *bytes, int count, uint8_t *buffer, int pos) {
   return pos;
 }
 
-int PackWord(uint16_t word, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&word, sizeof(uint16_t), buffer, pos); }
+int PackWord(uint16_t word, uint8_t *buffer, int pos) {
+  return PackBytes((uint8_t *)&word, sizeof(uint16_t), buffer, pos);
+}
 
-int UnPackWord(uint16_t *word, uint8_t *buffer, int pos) { return UnPackBytes((uint8_t *)word, sizeof(uint16_t), buffer, pos); }
+int UnPackWord(uint16_t *word, uint8_t *buffer, int pos) {
+  return UnPackBytes((uint8_t *)word, sizeof(uint16_t), buffer, pos);
+}
 
 int PackInt(int data, uint8_t *buffer, int pos) { return PackBytes((uint8_t *)&data, sizeof(int), buffer, pos); }
 

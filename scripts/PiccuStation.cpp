@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1164,95 +1164,95 @@ int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 80
 const char *Object_names[NUM_OBJECT_NAMES] = {"AlienVirusStand",
-                                        "BigPipeKey2",
-                                        "DatlinkCenter",
-                                        "ComputerPole2",
-                                        "ComputerPole1",
-                                        "GiantPipeRoom",
-                                        "LavaPlane",
-                                        "YellowBlueTurbine",
-                                        "FirstBigMachine",
-                                        "PlayerShip",
-                                        "Virus",
-                                        "Virushouse",
-                                        "RescueShip1",
-                                        "RescueShip2",
-                                        "RescueShip3",
-                                        "GoodieRoomSwitch",
-                                        "FirstOutsideDoorSw",
-                                        "OutdoorKillTank",
-                                        "KeyCard2",
-                                        "SecurityDoor",
-                                        "KeyCard1",
-                                        "RadioDoorSwitch2",
-                                        "RadioCam",
-                                        "RadioDoorSwitch1",
-                                        "RadioToggle4",
-                                        "RadioToggle3",
-                                        "RadioToggle2",
-                                        "RadioToggle1",
-                                        "MatcenSwitch2",
-                                        "MatcenCam",
-                                        "MatcenSwitch1",
-                                        "BunkBed1",
-                                        "Exp1",
-                                        "Exp2",
-                                        "Exp3",
-                                        "Exp4",
-                                        "Exp5",
-                                        "Exp6",
-                                        "Exp7",
-                                        "Exp8",
-                                        "UFODestroy4",
-                                        "UFOSmoke4",
-                                        "UFODestroy3",
-                                        "UFOSmoke3",
-                                        "UFODestroy2",
-                                        "UFOSmoke2",
-                                        "UFODestroy1",
-                                        "UFOSmoke1",
-                                        "VirusTerminal",
-                                        "VirusCamTarget",
-                                        "DontAttackTail",
-                                        "BunkBed5",
-                                        "Lava7",
-                                        "Lava5",
-                                        "Lava3",
-                                        "Lava1",
-                                        "SBlackSmall",
-                                        "BottomSpewer",
-                                        "SWhite2",
-                                        "SWhite1",
-                                        "SBlackGravity4",
-                                        "SBlackGravity3",
-                                        "SBlackGravity2",
-                                        "SBlackGravity1",
-                                        "SWhiteGravity2",
-                                        "SWhiteGravity1",
-                                        "BunkBed12",
-                                        "BunkBed11",
-                                        "BunkBed10",
-                                        "BunkBed9",
-                                        "BunkBed8",
-                                        "BunkBed7",
-                                        "BunkBed6",
-                                        "BunkBed4",
-                                        "BunkBed3",
-                                        "BunkBed2",
-                                        "DStringer1",
-                                        "DTubbs3",
-                                        "DTubbs2",
-                                        "DTubbs1"};
+                                              "BigPipeKey2",
+                                              "DatlinkCenter",
+                                              "ComputerPole2",
+                                              "ComputerPole1",
+                                              "GiantPipeRoom",
+                                              "LavaPlane",
+                                              "YellowBlueTurbine",
+                                              "FirstBigMachine",
+                                              "PlayerShip",
+                                              "Virus",
+                                              "Virushouse",
+                                              "RescueShip1",
+                                              "RescueShip2",
+                                              "RescueShip3",
+                                              "GoodieRoomSwitch",
+                                              "FirstOutsideDoorSw",
+                                              "OutdoorKillTank",
+                                              "KeyCard2",
+                                              "SecurityDoor",
+                                              "KeyCard1",
+                                              "RadioDoorSwitch2",
+                                              "RadioCam",
+                                              "RadioDoorSwitch1",
+                                              "RadioToggle4",
+                                              "RadioToggle3",
+                                              "RadioToggle2",
+                                              "RadioToggle1",
+                                              "MatcenSwitch2",
+                                              "MatcenCam",
+                                              "MatcenSwitch1",
+                                              "BunkBed1",
+                                              "Exp1",
+                                              "Exp2",
+                                              "Exp3",
+                                              "Exp4",
+                                              "Exp5",
+                                              "Exp6",
+                                              "Exp7",
+                                              "Exp8",
+                                              "UFODestroy4",
+                                              "UFOSmoke4",
+                                              "UFODestroy3",
+                                              "UFOSmoke3",
+                                              "UFODestroy2",
+                                              "UFOSmoke2",
+                                              "UFODestroy1",
+                                              "UFOSmoke1",
+                                              "VirusTerminal",
+                                              "VirusCamTarget",
+                                              "DontAttackTail",
+                                              "BunkBed5",
+                                              "Lava7",
+                                              "Lava5",
+                                              "Lava3",
+                                              "Lava1",
+                                              "SBlackSmall",
+                                              "BottomSpewer",
+                                              "SWhite2",
+                                              "SWhite1",
+                                              "SBlackGravity4",
+                                              "SBlackGravity3",
+                                              "SBlackGravity2",
+                                              "SBlackGravity1",
+                                              "SWhiteGravity2",
+                                              "SWhiteGravity1",
+                                              "BunkBed12",
+                                              "BunkBed11",
+                                              "BunkBed10",
+                                              "BunkBed9",
+                                              "BunkBed8",
+                                              "BunkBed7",
+                                              "BunkBed6",
+                                              "BunkBed4",
+                                              "BunkBed3",
+                                              "BunkBed2",
+                                              "DStringer1",
+                                              "DTubbs3",
+                                              "DTubbs2",
+                                              "DTubbs1"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 13
 const char *Room_names[NUM_ROOM_NAMES] = {"GoodiePortalRoom", "FirstOutdoorPortal",
-                                    "ReturnInsideRoom", "RadioRoom",
-                                    "RadioArmory",      "Alien1",
-                                    "Alien2",           "Alien3",
-                                    "Alien4",           "Alien5",
-                                    "Alien6",           "Alien7",
-                                    "VirusRoom"};
+                                          "ReturnInsideRoom", "RadioRoom",
+                                          "RadioArmory",      "Alien1",
+                                          "Alien2",           "Alien3",
+                                          "Alien4",           "Alien5",
+                                          "Alien6",           "Alien7",
+                                          "VirusRoom"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 39
@@ -1269,7 +1269,7 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 10
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbDroneP", "AmbDroneE", "AmbDroneD",   "AmbDroneX", "AmbLavaLoop1",
-                                      "AmbDroneN", "AmbDroneK", "AmbSwitch31", "PupC1",     "AmbVirusSwitch"};
+                                            "AmbDroneN", "AmbDroneK", "AmbSwitch31", "PupC1",     "AmbVirusSwitch"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 5
@@ -1278,7 +1278,7 @@ int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 9
 const char *Path_names[NUM_PATH_NAMES] = {"IntroCam", "IntroShip", "VirusCam", "CupLinkCam", "Rescuer3",
-                                    "Rescuer2", "Rescuer1",  "EndCam",   "EndLevelCam"};
+                                          "Rescuer2", "Rescuer1",  "EndCam",   "EndLevelCam"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 2
@@ -1290,10 +1290,11 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Activate Datlink", "Acquire the alien
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 16
-const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "ForceFieldDeactivated", "2KeyCards",     "1KeyCard",
-                                          "RadioRoomUnlock", "RadioRoomFirst",        "All4Radio",     "All4Radio2",
-                                          "TwoSwitchUnlock", "TwoSwitchFirst",        "AlienCuplinks", "HeresVirus",
-                                          "Virus",           "DestroyThese",          "EndLevel",      "PowerCupLink"};
+const char *Message_names[NUM_MESSAGE_NAMES] = {
+    "IntroMessage",    "ForceFieldDeactivated", "2KeyCards",     "1KeyCard",
+    "RadioRoomUnlock", "RadioRoomFirst",        "All4Radio",     "All4Radio2",
+    "TwoSwitchUnlock", "TwoSwitchFirst",        "AlienCuplinks", "HeresVirus",
+    "Virus",           "DestroyThese",          "EndLevel",      "PowerCupLink"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

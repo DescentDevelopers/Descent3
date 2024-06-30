@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <assert.h>
 #include <errno.h>
@@ -35,7 +35,6 @@
 
 #include "SDL.h"
 #include "SDL_audio.h"
-
 
 #define FRAGMENT_LENGTH (LnxBuffers[0]->bps >> 4)
 #define FREQUENCY_SHIFT (14)
@@ -431,8 +430,8 @@ int LnxSoundBuffer_SetCurrentPosition(LnxSoundBuffer *buff, uint32_t pos) {
 // Returns:
 //        0 : no error
 //       -1 : invalid parameters
-int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, uint32_t pos, uint32_t numbytes, void **ptr1,
-                        uint32_t *numbytes1, void **ptr2, uint32_t *numbytes2, uint32_t flags) {
+int LnxSoundBuffer_Lock(LnxSoundBuffer *buff, uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1,
+                        void **ptr2, uint32_t *numbytes2, uint32_t flags) {
   if (!buff)
     return -1;
 

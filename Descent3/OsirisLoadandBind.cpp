@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -424,7 +424,6 @@
 #define OSIRISDEBUG
 #endif
 
-
 bool Show_osiris_debug = false;
 
 #define MAX_LOADED_MODULES 96 // maximum number of dlls that can be loaded at a time
@@ -797,7 +796,8 @@ void Osiris_UnloadModule(int module_id) {
   if (OSIRIS_loaded_modules[module_id].flags & OSIMF_INUSE) {
     // the module is in use
     if (Show_osiris_debug) {
-      mprintf(0, "OSIRIS: Decrementing reference count for module (%s)\n", OSIRIS_loaded_modules[module_id].module_name);
+      mprintf(0, "OSIRIS: Decrementing reference count for module (%s)\n",
+              OSIRIS_loaded_modules[module_id].module_name);
     }
     OSIRIS_loaded_modules[module_id].reference_count--;
 
@@ -812,12 +812,12 @@ void Osiris_UnloadModule(int module_id) {
 
         // do not unload this module, due to the forced stay in memory
         mprintf(0, "OSIRIS: Module (%s) staying in memory due to static flag\n",
-                 OSIRIS_loaded_modules[module_id].module_name);
+                OSIRIS_loaded_modules[module_id].module_name);
       } else {
         // time to unload this module
         if (Show_osiris_debug) {
           mprintf(0, "OSIRIS: Module (%s) reference count is at 0, unloading\n",
-                   OSIRIS_loaded_modules[module_id].module_name);
+                  OSIRIS_loaded_modules[module_id].module_name);
         }
         Osiris_FreeModule(module_id);
       }
@@ -969,7 +969,7 @@ int Osiris_LoadLevelModule(char *module_name) {
     OSIRIS_loaded_modules[loaded_id].reference_count++;
     if (Show_osiris_debug) {
       mprintf(0, "OSIRIS: Level Module (%s) reference count increased to %d\n", module_name,
-               OSIRIS_loaded_modules[loaded_id].reference_count);
+              OSIRIS_loaded_modules[loaded_id].reference_count);
     }
     return loaded_id;
   }
@@ -1139,7 +1139,7 @@ int Osiris_LoadLevelModule(char *module_name) {
       OSIRIS_loaded_modules[loaded_id].CreateInstance(0); // level scripts always have id of 0 in a level dll
 
   mprintf(0, "OSIRIS: Level Module (%s) loaded successfully (%d custom handles)\n", basename,
-           tOSIRISCurrentLevel.num_customs);
+          tOSIRISCurrentLevel.num_customs);
   Osiris_level_script_loaded = true;
   return loaded_id;
 }
@@ -1163,7 +1163,7 @@ int Osiris_LoadGameModule(char *module_name) {
     OSIRIS_loaded_modules[loaded_id].reference_count++;
     if (Show_osiris_debug) {
       mprintf(0, "OSIRIS: Game Module (%s) reference count increased to %d\n", module_name,
-               OSIRIS_loaded_modules[loaded_id].reference_count);
+              OSIRIS_loaded_modules[loaded_id].reference_count);
     }
     return loaded_id;
   }
@@ -1661,7 +1661,7 @@ bool Osiris_BindScriptsToObject(object *obj) {
             if (!gos_instance) {
               // we had an error obtaining the instance of the COS...doh!
               mprintf(0, "OSIRIS: Unable to create COS instance from level dll for (%s)\n",
-                       (page_name) ? (page_name) : "<No Name>");
+                      (page_name) ? (page_name) : "<No Name>");
               Int3();
             } else {
               // ok, everything is valid
@@ -2749,9 +2749,9 @@ bool Osiris_RestoreSystemState(CFILE *file) {
     // sure.  We'll skip over those that are not loaded.  We're int3 here because I want to know
     // when this happens.
     mprintf(0,
-             "OSIRIS: Restoring global state, the number of loaded modules is not the same as the restored count (%d "
-             "vs. %d)\n",
-             loaded_module_count, read_module_count);
+            "OSIRIS: Restoring global state, the number of loaded modules is not the same as the restored count (%d "
+            "vs. %d)\n",
+            loaded_module_count, read_module_count);
     if (Demo_flags != DF_PLAYBACK) {
       Int3();
     }
@@ -3329,7 +3329,8 @@ OMMSHANDLE OMMS_Find(uint32_t unique_identifier,char *script_identifier);
 //	Returns information about the OMMS memory given it's handle returned from the OMMS_Find() or
 //	OMMS_Malloc(). Returns 0 if the handle was invalid, 1 if the information has been filled in;
 //	Pass NULL in for those parameters you don't need information about.
-char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t *has_free_been_called);
+char OMMS_GetInfo(OMMSHANDLE handle,uint32_t *mem_size,uint32_t *uid,uint16_t *reference_count,uint8_t
+*has_free_been_called);
 
 
 ******************************************************************************
@@ -3553,7 +3554,7 @@ void Osiris_RestoreOMMS(CFILE *file) {
         cf_ReadBytes((uint8_t *)node->memory_ptr, node->size_of_memory, file);
       }
     } // end reading nodes
-  }   // end reading hash nodes
+  } // end reading hash nodes
 }
 
 //	Searches through the hash nodes and looks for the one associated with
@@ -4037,4 +4038,3 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
     mi->fp[i] = NULL;
   }
 }
-

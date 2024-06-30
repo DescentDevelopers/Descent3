@@ -1542,7 +1542,8 @@ void ClipEdge(vector *normal, vertex *v0, vertex *v1, vector *v2, vector *v3, ve
 // Parameters:	fp0,fp1 - pointers to the two faces
 //					vn0,vn1 - filled in with the vertex numbers of the edge.  These vert numbers are
 //									relative to their own faces.  The shared edge is
-//verts <vn0,vn0+1> on 									face 0, and <vn1+1,vn1> on face 1 Returns:		true if a shared edge was found, else
+// verts <vn0,vn0+1> on 									face 0, and <vn1+1,vn1>
+// on face 1 Returns:		true if a shared edge was found, else
 // false
 bool FindSharedEdge(face *fp0, face *fp1, int *vn0, int *vn1) {
   int i, j, a0, b0, a1, b1;
@@ -1563,7 +1564,7 @@ bool FindSharedEdge(face *fp0, face *fp1, int *vn0, int *vn1) {
 
       //@@if ((a0==a1) && (b0==b1))
       //@@	Int3();							//If you hit this, you probably have a duplicate
-      //or overlapping face
+      // or overlapping face
 
       if ((a0 == b1) && (b0 == a1)) { // found match!
         *vn0 = i;
@@ -1582,7 +1583,8 @@ bool FindSharedEdge(face *fp0, face *fp1, int *vn0, int *vn1) {
 //					face0,face1 - the face numbers in rp0 & rp1, respectively
 //					vn0,vn1 - filled in with the vertex numbers of the edge.  These vert numbers are
 //									relative to their own faces.  The shared edge is
-//verts <vn0,vn0+1> on 									face 0, and <vn1+1,vn1> on face 1 Returns:		true if a shared edge was found, else
+// verts <vn0,vn0+1> on 									face 0, and <vn1+1,vn1>
+// on face 1 Returns:		true if a shared edge was found, else
 // false
 bool FindSharedEdgeAcrossRooms(room *rp0, int face0, room *rp1, int face1, int *vn0, int *vn1) {
   int i, j;
@@ -2069,7 +2071,7 @@ void ComputeRoomMinMax(vector *min, vector *max, room *rp) {
 // Builds a list of all the vertices in a room that are part of a portal
 // Parameters:	rp - the room to check
 //					list - filled in with the list of vert numbers.  List should be
-//MAX_VERTS_PER_ROOM big Returns:		the number of verts in the list
+// MAX_VERTS_PER_ROOM big Returns:		the number of verts in the list
 int BuildListOfPortalVerts(room *rp, int *list) {
   int i, t, j;
   int count = 0;
@@ -3038,7 +3040,7 @@ int FindConnectedFace(room *rp, int facenum, int edgenum, int startface) {
 
       //@@if ((a0==a1) && (b0==b1))
       //@@	Int3();							//If you hit this, you probably have a duplicate
-      //or overlapping face
+      // or overlapping face
 
       if ((a0 == b1) && (b0 == a1)) { // found match!
         return f;

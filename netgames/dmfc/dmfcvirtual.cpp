@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -942,7 +942,7 @@ void DMFCBase::TranslateEvent(int eventnum, dllinfo *data) {
 
   case EVT_GAMECHECKBAN: {
     network_address *addr = (network_address *)data->special_data;
-    const char *tracker_id = (const char *) data->iParam;
+    const char *tracker_id = (const char *)data->iParam;
 
     data->iRet = (CallOnServerIsAddressBanned(addr, tracker_id)) ? 1 : 0;
   } break;

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1713,7 +1713,7 @@ void newuiSheet::UpdateChanges() {
     case GADGET_EDITBOXPASS:
       desc->obj.edit->GetText(sbuftest, EDIT_BUFLEN_MAX);
       if (strcmp(sbuftest, (char *)desc->internal) != 0) {
-        desc->obj.edit->SetText((const char *) desc->internal);
+        desc->obj.edit->SetText((const char *)desc->internal);
       }
       break;
 
@@ -2011,7 +2011,8 @@ void newuiSheet::AddLongRadioButton(const char *title, int16_t id) {
 }
 
 // adds a slider, set the range for it too.
-int16_t *newuiSheet::AddSlider(const char *title, int16_t range, int16_t init_pos, tSliderSettings *settings, int16_t id) {
+int16_t *newuiSheet::AddSlider(const char *title, int16_t range, int16_t init_pos, tSliderSettings *settings,
+                               int16_t id) {
   newuiSheet::t_gadget_desc *gadget = AddGadget(id, GADGET_SLIDER, title);
   gadget->parm.s[0] = init_pos;
   gadget->parm.s[1] = range;
@@ -2084,7 +2085,8 @@ newuiComboBox *newuiSheet::AddComboBox(int16_t id, uint16_t flags) {
 }
 
 // adds an edit box
-char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16_t id, int16_t flags, bool on_escape_quit) {
+char *newuiSheet::AddEditBox(const char *title, int16_t maxlen, int16_t w, int16_t id, int16_t flags,
+                             bool on_escape_quit) {
   int8_t type = GADGET_EDITBOX;
   if (flags & UIED_PASSWORD) {
     type = GADGET_EDITBOXPASS;
@@ -2222,8 +2224,8 @@ void newuiButton::OnGainFocus() {
 //////////////////////////////////////////////////////////////////////////////
 //	CLASS a large option button used in menus.
 
-void newuiMenuOptionButton::Create(newuiMenu *menu, newuiMenuOptionButton *last, int16_t id, const char *name, int16_t x,
-                                   int16_t y, bool mono_press) {
+void newuiMenuOptionButton::Create(newuiMenu *menu, newuiMenuOptionButton *last, int16_t id, const char *name,
+                                   int16_t x, int16_t y, bool mono_press) {
   m_bkg = Newui_resources.Load(NEWUI_LRGBTN_FILE);
   m_litbkg = Newui_resources.Load(NEWUI_LRGBTNLIT_FILE);
   m_text = GadgetLargeText(name);
@@ -3959,7 +3961,8 @@ void newuiEditBox::OnKeyDown(int key) {
 
 newuiHotspot::newuiHotspot() { m_title = NULL; }
 
-void newuiHotspot::Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h, int16_t flags) {
+void newuiHotspot::Create(UIWindow *wnd, int16_t id, const char *title, int16_t x, int16_t y, int16_t w, int16_t h,
+                          int16_t flags) {
   if (title) {
     m_title = mem_strdup(title);
   } else {

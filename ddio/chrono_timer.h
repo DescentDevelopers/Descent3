@@ -29,7 +29,6 @@ static std::chrono::time_point<std::chrono::steady_clock> m_start_tstamp;
  */
 class ChronoTimer {
 public:
-
   /// Initialize internal timestamp
   static void Initialize();
 
@@ -38,7 +37,6 @@ public:
 
   /// Get time in milliseconds after class initialization (i.e. application start)
   static int64_t GetTimeMS();
-
 };
 
-}
+} // namespace D3

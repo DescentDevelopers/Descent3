@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -935,33 +935,33 @@ int *Door_handles = NULL;
 
 #define NUM_OBJECT_NAMES 28
 const char *Object_names[NUM_OBJECT_NAMES] = {"Recovery-2",
-                                        "Recovery-1",
-                                        "DisruptorPowerup1",
-                                        "Covert",
-                                        "Stabilizer-Store",
-                                        "Stabilizer-Assembl",
-                                        "Stabilizer-Factory",
-                                        "Stabilizer-Control",
-                                        "Component-1",
-                                        "Component-2",
-                                        "Component-3",
-                                        "FF-13",
-                                        "FF-14",
-                                        "FF-23",
-                                        "FF-24",
-                                        "DisruptorPowerup4",
-                                        "DisruptorPowerup3",
-                                        "DisruptorPowerup2",
-                                        "PowerStab-Control",
-                                        "PowerStab-Store",
-                                        "PowerStab-Assembly",
-                                        "PowerStab-Factory",
-                                        "Radar-2",
-                                        "Radar-1",
-                                        "Ant-3",
-                                        "Ant-2",
-                                        "Ant-1",
-                                        "Transmitter"};
+                                              "Recovery-1",
+                                              "DisruptorPowerup1",
+                                              "Covert",
+                                              "Stabilizer-Store",
+                                              "Stabilizer-Assembl",
+                                              "Stabilizer-Factory",
+                                              "Stabilizer-Control",
+                                              "Component-1",
+                                              "Component-2",
+                                              "Component-3",
+                                              "FF-13",
+                                              "FF-14",
+                                              "FF-23",
+                                              "FF-24",
+                                              "DisruptorPowerup4",
+                                              "DisruptorPowerup3",
+                                              "DisruptorPowerup2",
+                                              "PowerStab-Control",
+                                              "PowerStab-Store",
+                                              "PowerStab-Assembly",
+                                              "PowerStab-Factory",
+                                              "Radar-2",
+                                              "Radar-1",
+                                              "Ant-3",
+                                              "Ant-2",
+                                              "Ant-1",
+                                              "Transmitter"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 2
@@ -1000,9 +1000,9 @@ int *Matcen_indexes = NULL;
 
 #define NUM_GOAL_NAMES 7
 const char *Goal_names[NUM_GOAL_NAMES] = {"Escort the Covert Cargo Ship",       "Disrupt Control Seismic Stabilizer",
-                                    "Disrupt Storage Seismic Stabilizer", "Disrupt Assembly Seismic Stabilizer",
-                                    "Disrupt Factory Seismic Stabilizer", "Disrupt All Four Seismic Stabilizers",
-                                    "Collect Seismic Disruptors"};
+                                          "Disrupt Storage Seismic Stabilizer", "Disrupt Assembly Seismic Stabilizer",
+                                          "Disrupt Factory Seismic Stabilizer", "Disrupt All Four Seismic Stabilizers",
+                                          "Collect Seismic Disruptors"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 32

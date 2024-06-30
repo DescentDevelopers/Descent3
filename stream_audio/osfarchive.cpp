@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -174,7 +174,8 @@ void OSFArchive::Rewind() {
 }
 
 //	write out operations.
-bool OSFArchive::SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr, const char *name) {
+bool OSFArchive::SaveHeader(uint8_t type, uint8_t comp, uint8_t flags, uint32_t rate, uint32_t length, void *hdr,
+                            const char *name) {
   char chbuf[OSF_HDR_SIZE];
   int hdrstart, hdrcur;
 

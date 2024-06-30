@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -467,8 +467,8 @@ void DemoWriteChangedObj(object *op) {
   }
 }
 
-void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
-                         uint16_t weapobjnum, int16_t gunnum) {
+void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum, uint16_t weapobjnum,
+                         int16_t gunnum) {
   uint32_t uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   if (weapobjnum == -1)
     return;
@@ -1003,8 +1003,8 @@ void DemoReadWeaponFire() {
   }
   Objects[new_weap_objnum].ctype.laser_info.src_gun_num = gunnum;
 
-  mprintf(0, "Player %d Firing weapon (%d) -- using objnum %d (old num = %d)\n",
-          obj->id, weaponnum, new_weap_objnum, weapobjnum);
+  mprintf(0, "Player %d Firing weapon (%d) -- using objnum %d (old num = %d)\n", obj->id, weaponnum, new_weap_objnum,
+          weapobjnum);
 
   Demo_obj_map[weapobjnum] = new_weap_objnum;
   int16_t weapon_num = weaponnum;

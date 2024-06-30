@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -233,9 +233,9 @@ struct g3Codes {
 // if rotated, and flag to indicate if projected.
 struct g3Point {
   float p3_sx, p3_sy;  // screen x&y
-  uint8_t p3_codes;      // clipping codes
-  uint8_t p3_flags;      // projected?
-  int16_t p3_pad;        // keep structure longword aligned
+  uint8_t p3_codes;    // clipping codes
+  uint8_t p3_flags;    // projected?
+  int16_t p3_pad;      // keep structure longword aligned
   vector p3_vec;       // x,y,z of rotated point
   vector p3_vecPreRot; // original XYZ of the point
   g3UVL p3_uvl;        // uv & lighting values

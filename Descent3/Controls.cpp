@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -913,7 +913,8 @@ void DoControllerMovement(game_controls *controls) {
 
   // check for joystick movement
   // mprintf(0, "p:%f  h:%f  b:%f\n", ctl_p.value, ctl_h.value, ctl_b.value);
-  // mprintf(0, "u:%d  d:%d  l:%d  r:%d\n", (int)ctl_povu.value, (int)ctl_povd.value, (int)ctl_povl.value, (int)ctl_povr.value);
+  // mprintf(0, "u:%d  d:%d  l:%d  r:%d\n", (int)ctl_povu.value, (int)ctl_povd.value, (int)ctl_povl.value,
+  // (int)ctl_povr.value);
 
   //	do x and y thrust
   controls->sideways_thrust += ctl_x.value;

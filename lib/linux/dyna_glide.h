@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /*******************************************************************
 
@@ -752,7 +752,7 @@ typedef FxU8 GrFog_t;
 
 #define GR_FOG_TABLE_SIZE 64
 
-#define GR_NULL_MIPMAP_HANDLE ((GrMipMapId_t)-1)
+#define GR_NULL_MIPMAP_HANDLE ((GrMipMapId_t) - 1)
 
 #define GR_ZDEPTHVALUE_NEAREST 0xFFFF
 
@@ -1127,7 +1127,6 @@ struct GrLfbInfo_t {
   GrLfbWriteMode_t writeMode;
 
   GrOriginLocation_t origin;
-
 };
 
 typedef FxI32 GrLOD_t;
@@ -1273,7 +1272,6 @@ struct _GrState_s GrState;
 struct GrState {
 
   char pad[GLIDE_STATE_PAD_SIZE];
-
 };
 
 #endif
@@ -1305,7 +1303,6 @@ struct Gu3dfHeader
   GrAspectRatio_t aspect_ratio;
 
   GrTextureFormat_t format;
-
 };
 
 struct GuNccTable
@@ -1319,21 +1316,18 @@ struct GuNccTable
   FxI16 qRGB[4][3];
 
   FxU32 packed_data[12];
-
 };
 
 struct GuTexPalette {
 
   FxU32 data[256];
-
 };
 
-union GuTexTable{
+union GuTexTable {
 
   GuNccTable nccTable;
 
   GuTexPalette palette;
-
 };
 
 struct Gu3dfInfo
@@ -1347,7 +1341,6 @@ struct Gu3dfInfo
   void *data;
 
   FxU32 mem_required; /* memory required for mip map in bytes. */
-
 };
 
 struct GrTexInfo {
@@ -1361,7 +1354,6 @@ struct GrTexInfo {
   GrTextureFormat_t format;
 
   void *data;
-
 };
 
 struct GrMipMapInfo
@@ -1409,7 +1401,6 @@ struct GrMipMapInfo
   FxBool trilinear; /* should we blend by lod? */
 
   GuNccTable ncc_table; /* NCC compression table (optional) */
-
 };
 
 typedef int GrSstType;
@@ -1425,7 +1416,6 @@ struct GrTMUConfig_t {
   int tmuRev; /* Rev of Texelfx chip */
 
   int tmuRam; /* 1, 2, or 4 MB */
-
 };
 
 struct GrVoodooConfig_t {
@@ -1439,7 +1429,6 @@ struct GrVoodooConfig_t {
   FxBool sliDetect; /* Is it a scan-line interleaved board? */
 
   GrTMUConfig_t tmuConfig[GLIDE_NUM_TMU]; /* Configuration of the Texelfx chips */
-
 };
 
 struct GrSst96Config_t {
@@ -1449,13 +1438,11 @@ struct GrSst96Config_t {
   int nTexelfx;
 
   GrTMUConfig_t tmuConfig;
-
 };
 
 struct GrAT3DConfig_t {
 
   int rev;
-
 };
 
 struct GrHwConfiguration {
@@ -1477,7 +1464,6 @@ struct GrHwConfiguration {
     } sstBoard;
 
   } SSTs[MAX_NUM_SST]; /* configuration for each board */
-
 };
 
 struct GrSstPerfStats_t {
@@ -1491,7 +1477,6 @@ struct GrSstPerfStats_t {
   FxU32 aFuncFail; /* # pixels not drawn due to alpha comparison */
 
   FxU32 pixelsOut; /* # pixels drawn (including buffer clears) */
-
 };
 
 struct GrTmuVertex {
@@ -1501,7 +1486,6 @@ struct GrTmuVertex {
   float tow; /* t texture ordinate (t over w) */
 
   float oow; /* 1/w (used mipmapping - really 0xfff/w) */
-
 };
 
 /*
@@ -1529,7 +1513,6 @@ struct GrVertex
   float oow; /* 1/W (used for W-buffering, texturing) */
 
   GrTmuVertex tmuvtx[GLIDE_NUM_TMU];
-
 };
 
 /* For indexing GrVertex as a float *.

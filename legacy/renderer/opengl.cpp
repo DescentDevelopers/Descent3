@@ -2520,7 +2520,7 @@ void opengl_ChangeChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
       } // end for d_y
 
     } // end for windex
-  }   // end for hindex
+  } // end for hindex
 }
 
 // Takes a bitmap and blits it to the screen using linear frame buffer stuff

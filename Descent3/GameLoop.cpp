@@ -2916,7 +2916,7 @@ void GameFrame(void) {
              netstat.tcp_total_bytes_sent, netstat.tcp_total_packets_resent, netstat.tcp_total_bytes_resent,
              netstat.tcp_total_packets_rec, netstat.tcp_total_bytes_rec);
   mprintf_at(5, 2, 0, "UDP: tx: %d/%d rx: %d/%d", netstat.udp_total_packets_sent, netstat.udp_total_bytes_sent,
-              netstat.udp_total_packets_rec, netstat.udp_total_bytes_rec);
+             netstat.udp_total_packets_rec, netstat.udp_total_bytes_rec);
 
   if (!netstat_init) {
     netstat_time = timer_GetTime();

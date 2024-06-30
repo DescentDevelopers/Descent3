@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -330,7 +330,7 @@ typedef int bm_hashTableIndex; /* index into hash table */
 #define compEQ(a, b) (stricmp((a)->name, (b)->name) == 0)
 struct bm_Node {
   struct bm_Node *next; /* next bm_Node */
-  bm_T data;             /* data stored in bm_Node */
+  bm_T data;            /* data stored in bm_Node */
 };
 static bm_Node *bm_findNode(bm_T data);
 static void bm_deleteNode(bm_T data);
@@ -655,7 +655,7 @@ void bm_ChangeEndName(const char *src, char *dest) {
   uint32_t i, limit;
   int last = -1;
   int curnum = -1;
-  char namedest[256+16];
+  char namedest[256 + 16];
   char path[256], ext[256], filename[256];
 
   ddio_SplitPath(src, path, filename, ext);
@@ -1504,8 +1504,8 @@ bool bm_CreateChunkedBitmap(int bm_handle, chunked_bitmap *chunk) {
         sdata += bw;
         ddata += iopt;
       } // end for d_y
-    }   // end for windex
-  }     // end for hindex
+    } // end for windex
+  } // end for hindex
   // Sirrah, we're done!
   // Tell the calling function how many pieces we have in x and y
   chunk->pw = bw;

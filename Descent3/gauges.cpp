@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -210,7 +210,7 @@ struct tGauge {
   int first_vert;
   bool functional; // is this gauge working?
   bool just_init;  // gauge just initialized?
-  uint16_t mask;     // mask of stat for gauge
+  uint16_t mask;   // mask of stat for gauge
   int state;       // gauge dependent state data.
   union {          // data for gauge.
     int i;

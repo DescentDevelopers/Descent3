@@ -1,89 +1,89 @@
 {
-	"version": 3,
-	"configurePresets": [
-		{
-			"name": "defaults",
-			"hidden": true,
-			"binaryDir": "${sourceDir}/builds/${presetName}"
-		},
-		{
-			"name": "win",
-			"inherits": "defaults",
-			"generator": "Ninja Multi-Config",
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Windows"
-			},
-			"cacheVariables": {
-				"VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
-			},
-			"architecture": {
-				"strategy": "external",
-				"value": "x64"
-			},
-			"toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-		},
-		{
-			"name": "mac",
-			"inherits": "defaults",
-			"generator": "Ninja Multi-Config",
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Darwin"
-			}
-		},
-		{
-			"name": "linux",
-			"inherits": "defaults",
-			"generator": "Ninja Multi-Config",
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Linux"
-			}
-		}
-	],
-	"buildPresets": [
-		{
-			"name": "win",
-			"configurePreset": "win"
-		},
-		{
-			"name": "mac",
-			"configurePreset": "mac"
-		},
-		{
-			"name": "linux",
-			"configurePreset": "linux"
-		}
-	],
-	"testPresets": [
-		{
-			"name": "defaults",
-			"hidden": true,
-			"output": {
-				"outputOnFailure": true
-			}
-		},
-		{
-			"name": "win",
-			"inherits": "defaults",
-			"description": "Testing under Windows x64",
-			"configurePreset": "win"
-		},
-		{
-			"name": "mac",
-			"inherits": "defaults",
-			"description": "Testing under macOS",
-			"configurePreset": "mac"
-		},
-		{
-			"name": "linux",
-			"inherits": "defaults",
-			"description": "Testing under Linux",
-			"configurePreset": "linux"
-		}
-	]
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "defaults",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/builds/${presetName}"
+    },
+    {
+      "name": "win",
+      "inherits": "defaults",
+      "generator": "Ninja Multi-Config",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+      },
+      "architecture": {
+        "strategy": "external",
+        "value": "x64"
+      },
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    },
+    {
+      "name": "mac",
+      "inherits": "defaults",
+      "generator": "Ninja Multi-Config",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "linux",
+      "inherits": "defaults",
+      "generator": "Ninja Multi-Config",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "win",
+      "configurePreset": "win"
+    },
+    {
+      "name": "mac",
+      "configurePreset": "mac"
+    },
+    {
+      "name": "linux",
+      "configurePreset": "linux"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "defaults",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "win",
+      "inherits": "defaults",
+      "description": "Testing under Windows x64",
+      "configurePreset": "win"
+    },
+    {
+      "name": "mac",
+      "inherits": "defaults",
+      "description": "Testing under macOS",
+      "configurePreset": "mac"
+    },
+    {
+      "name": "linux",
+      "inherits": "defaults",
+      "description": "Testing under Linux",
+      "configurePreset": "linux"
+    }
+  ]
 }

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -537,7 +537,6 @@ struct goal_enabler {
   float last_check_time;
 
   char bool_next_enabler_op;
-
 };
 
 //-------------------------------------------------
@@ -617,7 +616,6 @@ struct goal_info {
     g_static_path static_path_info;
     void *scripted_data_ptr;
   };
-
 };
 
 // Goal structure
@@ -847,7 +845,6 @@ struct ai_frame {
   float awareness;
 
   matrix saved_orient;
-
 };
 
 // Etern'ed functions that depend of aistruct stuff

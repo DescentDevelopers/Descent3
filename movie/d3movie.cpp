@@ -1,20 +1,20 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <stdlib.h>
 
@@ -25,7 +25,6 @@
 
 #define O_BINARY 0
 #endif
-
 
 #ifdef WIN32
 #include <windows.h>
@@ -183,8 +182,8 @@ public:
   // Returns:
   //        0 : no error
   //       -1 : invalid parameters
-  int Lock(uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1, void **ptr2,
-           uint32_t *numbytes2, uint32_t flags) {
+  int Lock(uint32_t pos, uint32_t numbytes, void **ptr1, uint32_t *numbytes1, void **ptr2, uint32_t *numbytes2,
+           uint32_t flags) {
     return LnxSoundBuffer_Lock(m_pBuffer, pos, numbytes, ptr1, numbytes1, ptr2, numbytes2, flags);
   }
 
@@ -233,7 +232,6 @@ public:
   }
 };
 
-
 #endif
 } // namespace
 
@@ -242,9 +240,8 @@ static void CallbackFree(void *p);
 static uint32_t CallbackFileRead(int hFile, void *pBuffer, uint32_t bufferCount);
 static void InitializePalette();
 static void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count);
-static void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
-                              uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
-                              uint32_t hicolor);
+static void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy, uint32_t w,
+                              uint32_t h, uint32_t dstx, uint32_t dsty, uint32_t hicolor);
 
 #ifndef NO_MOVIES
 static bool mve_InitSound(oeApplication *app, MovieSoundDevice &device);
@@ -437,8 +434,8 @@ int NextPow2(int n) {
 }
 
 #ifndef NO_MOVIES
-void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hicolor,
-                       bool usePow2Texture, int &texW, int &texH) {
+void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hicolor, bool usePow2Texture, int &texW,
+                       int &texH) {
   // get some sizes
   int drawWidth = hicolor ? (bufw >> 1) : bufw;
   int drawHeight = bufh;
@@ -486,8 +483,8 @@ void BlitToMovieBitmap(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t hico
   }
 }
 
-void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy,
-                       uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty, uint32_t hicolor) {
+void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, uint32_t sy, uint32_t w, uint32_t h,
+                       uint32_t dstx, uint32_t dsty, uint32_t hicolor) {
   // prepare our bitmap
   int texW, texH;
   BlitToMovieBitmap(buf, bufw, bufh, hicolor, true, texW, texH);

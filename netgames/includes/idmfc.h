@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -1164,7 +1164,7 @@ public:
   //	Ex. AddInputCommand("team");	//this handles all the '$team' passed in
   //  allow_remotely : if set true, this input command can be called remotely via remote administration
   virtual int8_t AddInputCommand(const char *command, const char *description, void (*handler)(const char *),
-                                      bool allow_remotely = false) = 0;
+                                 bool allow_remotely = false) = 0;
 
   //	Does a check on on the pinfo info making sure it is valid
   virtual void CheckPInfo() = 0;
@@ -1726,7 +1726,7 @@ Class creation interface functions
 DLLEXPORT IDMFC DLLFUNCCALLPTR CreateDMFC(void);
 DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItem(void);
 DLLEXPORT IMenuItem DLLFUNCCALLPTR CreateMenuItemWArgs(const char *title, char type, uint8_t flags, void (*fp)(int),
-                                                              tCustomMenu *custom_menu = NULL);
+                                                       tCustomMenu *custom_menu = NULL);
 DLLEXPORT IDmfcStats DLLFUNCCALLPTR CreateDmfcStats(void);
 
 /***************************
@@ -1743,11 +1743,9 @@ DLLEXPORT void DLLFUNCCALL IDMFC_OnServerPlayerKilled(IDMFC *instance, object *k
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerPlayerExploded(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerCollideA(IDMFC *instance, object *me_obj, object *it_obj);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerCollideB(IDMFC *instance, object *me_obj, object *it_obj, vector *point,
-                                                         vector *normal);
-DLLEXPORT void DLLFUNCCALL IDMFC_OnServerPlayerChangeSegment(IDMFC *instance, int player_num, int newseg,
-                                                                    int oldseg);
-DLLEXPORT void DLLFUNCCALL IDMFC_OnServerObjectChangeSegment(IDMFC *instance, object *obj, int newseg,
-                                                                    int oldseg);
+                                                  vector *normal);
+DLLEXPORT void DLLFUNCCALL IDMFC_OnServerPlayerChangeSegment(IDMFC *instance, int player_num, int newseg, int oldseg);
+DLLEXPORT void DLLFUNCCALL IDMFC_OnServerObjectChangeSegment(IDMFC *instance, object *obj, int newseg, int oldseg);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerPlayerEntersGame(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerPlayerDisconnect(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerGameCreated(IDMFC *instance);
@@ -1755,22 +1753,18 @@ DLLEXPORT void DLLFUNCCALL IDMFC_OnServerLevelChange(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerLevelStart(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerLevelEnd(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerObjectShieldsChanged(IDMFC *instance, object *obj, float amount);
-DLLEXPORT bool DLLFUNCCALL IDMFC_OnServerIsAddressBanned(IDMFC *instance, network_address *addr,
-                                                                char *tracker_id);
+DLLEXPORT bool DLLFUNCCALL IDMFC_OnServerIsAddressBanned(IDMFC *instance, network_address *addr, char *tracker_id);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerWallCollide(IDMFC *instance, object *obj, float hitspeed, int hitseg,
-                                                            int hitwall, vector *hitpt, vector *wall_normal,
-                                                            float hit_dot);
+                                                     int hitwall, vector *hitpt, vector *wall_normal, float hit_dot);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerObjectKilled(IDMFC *instance, object *obj, object *killer);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnServerObjectDestroyed(IDMFC *instance, object *obj);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientPlayerKilled(IDMFC *instance, object *killer_obj, int victim_pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientPlayerExploded(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientCollideA(IDMFC *instance, object *me_obj, object *it_obj);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientCollideB(IDMFC *instance, object *me_obj, object *it_obj, vector *point,
-                                                         vector *normal);
-DLLEXPORT void DLLFUNCCALL IDMFC_OnClientPlayerChangeSegment(IDMFC *instance, int player_num, int newseg,
-                                                                    int oldseg);
-DLLEXPORT void DLLFUNCCALL IDMFC_OnClientObjectChangeSegment(IDMFC *instance, object *obj, int newseg,
-                                                                    int oldseg);
+                                                  vector *normal);
+DLLEXPORT void DLLFUNCCALL IDMFC_OnClientPlayerChangeSegment(IDMFC *instance, int player_num, int newseg, int oldseg);
+DLLEXPORT void DLLFUNCCALL IDMFC_OnClientObjectChangeSegment(IDMFC *instance, object *obj, int newseg, int oldseg);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientPlayerEntersGame(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientPlayerDisconnect(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnMeDisconnectFromServer(IDMFC *instance);
@@ -1781,8 +1775,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_OnClientLevelChange(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientLevelStart(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientLevelEnd(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientWallCollide(IDMFC *instance, object *obj, float hitspeed, int hitseg,
-                                                            int hitwall, vector *hitpt, vector *wall_normal,
-                                                            float hit_dot);
+                                                     int hitwall, vector *hitpt, vector *wall_normal, float hit_dot);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientObjectKilled(IDMFC *instance, object *obj, object *killer);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnClientObjectDestroyed(IDMFC *instance, object *obj);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPlayerEntersObserver(IDMFC *instance, int pnum, object *piggy);
@@ -1796,7 +1789,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_OnPLRInit(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnKeypress(IDMFC *instance, int key);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnInputString(IDMFC *instance, char *input_string);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPlayerChangeTeam(IDMFC *instance, int player_num, int newteam, bool announce,
-                                                           bool spew_everything);
+                                                    bool spew_everything);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnGameStateRequest(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnSaveStatsToFile(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPlayerReconnect(IDMFC *instance, int player_num);
@@ -1814,7 +1807,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_OnDoControls(IDMFC *instance, game_controls *co
 DLLEXPORT void DLLFUNCCALL IDMFC_OnPlayAudioTaunt(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_DrawMenu(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_DisplayPlayerInfo(IDMFC *instance, int background_bmp = -1,
-                                                          bool dedicated_server = false);
+                                                   bool dedicated_server = false);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchPlayerInfoDisplay(IDMFC *instance, int pnum);
 DLLEXPORT int DLLFUNCCALL IDMFC_DisplayingPlayerInfo(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetTeamFromString(IDMFC *instance, char *str);
@@ -1823,7 +1816,7 @@ DLLEXPORT int DLLFUNCCALL IDMFC_GetLocalRole(IDMFC *instance);
 DLLEXPORT bool DLLFUNCCALL IDMFC_CheckPlayerNum(IDMFC *instance, int player_num);
 DLLEXPORT bool DLLFUNCCALL IDMFC_PacketCheckPlayerNum(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallClientEvent(IDMFC *instance, int event, int me_objnum, int it_objnum,
-                                                        int destination, bool parms = false);
+                                                 int destination, bool parms = false);
 DLLEXPORT bool DLLFUNCCALL IDMFC_GetTimeLeft(IDMFC *instance, float *time);
 DLLEXPORT void DLLFUNCCALL IDMFC_EndLevel(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_WarpToLevel(IDMFC *instance, int lev);
@@ -1833,7 +1826,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_AutoDeathMessage(IDMFC *instance, bool turnon);
 DLLEXPORT void DLLFUNCCALL IDMFC_AddDeathMessage(IDMFC *instance, const char *string, bool victim_first = true);
 DLLEXPORT void DLLFUNCCALL IDMFC_AddSuicideMessage(IDMFC *instance, const char *string);
 DLLEXPORT void DLLFUNCCALL IDMFC_DoRandomDeathMessage(IDMFC *instance, int killernum, int victimnum,
-                                                             uint32_t hash = -1);
+                                                      uint32_t hash = -1);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetItObjNum(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_GetMeObjNum(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_RegisterPacketReceiver(IDMFC *instance, uint8_t id, void (*func)(uint8_t *));
@@ -1842,8 +1835,7 @@ DLLEXPORT void DLLFUNCCALL IDMFC_SendPacket(IDMFC *instance, uint8_t *data, int 
 DLLEXPORT int DLLFUNCCALL IDMFC_GetTeamForNewPlayer(IDMFC *instance, int player_num, int num_teams);
 DLLEXPORT void DLLFUNCCALL IDMFC_SetNumberOfTeams(IDMFC *instance, int teams);
 DLLEXPORT void DLLFUNCCALL IDMFC_AutoTeamSelect(IDMFC *instance, bool turnon);
-DLLEXPORT void DLLFUNCCALL IDMFC_SendTeamAssignment(IDMFC *instance, int playernum, int team,
-                                                           bool spew_on_respawn);
+DLLEXPORT void DLLFUNCCALL IDMFC_SendTeamAssignment(IDMFC *instance, int playernum, int team, bool spew_on_respawn);
 DLLEXPORT void DLLFUNCCALL IDMFC_GetTeamAssignmentPacket(IDMFC *instance, uint8_t *data);
 DLLEXPORT void DLLFUNCCALL IDMFC_GetChangeTeamPacket(IDMFC *instance, uint8_t *data);
 DLLEXPORT void DLLFUNCCALL IDMFC_GetGameStateRequest(IDMFC *instance, uint8_t *data);
@@ -1860,16 +1852,15 @@ DLLEXPORT int DLLFUNCCALL IDMFC_GetNumTeams(IDMFC *instance);
 DLLEXPORT bool DLLFUNCCALL IDMFC_AllowTeamChange(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchAllowTeamChange(IDMFC *instance, bool turnon);
 DLLEXPORT void DLLFUNCCALL IDMFC_GetSortedPlayerSlots(IDMFC *instance, int *sortedindex, int maxsize);
-DLLEXPORT void DLLFUNCCALL IDMFC_GetSortedPlayerSlotsByEfficiency(IDMFC *instance, int *sortedindex,
-                                                                         int maxsize);
+DLLEXPORT void DLLFUNCCALL IDMFC_GetSortedPlayerSlotsByEfficiency(IDMFC *instance, int *sortedindex, int maxsize);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsMenuUp(IDMFC *instance);
 DLLEXPORT float DLLFUNCCALL IDMFC_ConvertHUDAlphaFloat(IDMFC *instance, float normal);
 DLLEXPORT uint8_t DLLFUNCCALL IDMFC_ConvertHUDAlphaByte(IDMFC *instance, uint8_t normal);
 DLLEXPORT void DLLFUNCCALL IDMFC_ClipString(IDMFC *instance, int width, char *string, bool arrow);
 DLLEXPORT void DLLFUNCCALL IDMFC_DisplayOutrageLogo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_KillAllTimers(IDMFC *instance);
-DLLEXPORT int DLLFUNCCALL IDMFC_SetTimerInterval(IDMFC *instance, void (*func)(void), float intval,
-                                                        float longevity, void (*onkill)(void) = NULL);
+DLLEXPORT int DLLFUNCCALL IDMFC_SetTimerInterval(IDMFC *instance, void (*func)(void), float intval, float longevity,
+                                                 void (*onkill)(void) = NULL);
 DLLEXPORT void DLLFUNCCALL IDMFC_KillTimer(IDMFC *instance, int handle);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchShowHudCallsignLevel(IDMFC *instance, uint8_t level, bool announce = true);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchServerHudCallsignLevel(IDMFC *instance, uint8_t level);
@@ -1887,12 +1878,13 @@ DLLEXPORT void DLLFUNCCALL IDMFC_VersionCheck(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_UpdatePInfo(IDMFC *instance, int victim, int killer, int amount);
 DLLEXPORT void DLLFUNCCALL IDMFC_ResetPInfo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_WriteDMFCStatsToFile(IDMFC *instance, CFILE *file);
-DLLEXPORT bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const char *weapon_name, const char *message, bool victim_first);
+DLLEXPORT bool DLLFUNCCALL IDMFC_SetWeaponDeathMessage(IDMFC *instance, const char *weapon_name, const char *message,
+                                                       bool victim_first);
 DLLEXPORT char DLLFUNCCALLPTR IDMFC_GetWeaponDeathMessage(IDMFC *instance, int index, bool *victim_first);
 DLLEXPORT void DLLFUNCCALL IDMFC_AddWeaponHash(IDMFC *instance, const char *parent, int count, char **array);
 DLLEXPORT int DLLFUNCCALL IDMFC_SetupPlayerRecord(IDMFC *instance, int sizeof_individual_data,
-                                                         int (*pack_callback)(void *user_info, uint8_t *data),
-                                                         int (*unpack_callback)(void *user_info, uint8_t *data));
+                                                  int (*pack_callback)(void *user_info, uint8_t *data),
+                                                  int (*unpack_callback)(void *user_info, uint8_t *data));
 DLLEXPORT void DLLFUNCCALLPTR IDMFC_GetPlayerRecordData(IDMFC *instance, int pnum);
 DLLEXPORT player_record DLLFUNCCALLPTR IDMFC_GetPlayerRecord(IDMFC *instance, int slot);
 DLLEXPORT player_record DLLFUNCCALLPTR IDMFC_GetPlayerRecordByPnum(IDMFC *instance, int pnum);
@@ -1912,36 +1904,35 @@ DLLEXPORT bool DLLFUNCCALL IDMFC_FindPInfoStatFirst(IDMFC *instance, int slot, t
 DLLEXPORT bool DLLFUNCCALL IDMFC_FindPInfoStatNext(IDMFC *instance, tPInfoStat *stat);
 DLLEXPORT void DLLFUNCCALL IDMFC_FindPInfoStatClose(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_DoDamageToPlayer(IDMFC *instance, int pnum, int type, float amount,
-                                                         bool playsound = true);
+                                                  bool playsound = true);
 DLLEXPORT void DLLFUNCCALL IDMFC_StartUIWindow(IDMFC *instance, int id, void *user_data);
 DLLEXPORT void DLLFUNCCALL IDMFC_DisconnectMe(IDMFC *instance);
 DLLEXPORT int8_t DLLFUNCCALL IDMFC_AddInputCommand(IDMFC *instance, const char *command, const char *description,
-                                                               void (*handler)(const char *));
+                                                   void (*handler)(const char *));
 DLLEXPORT void DLLFUNCCALL IDMFC_CheckPInfo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableStatisticalMessages(IDMFC *instance, bool on);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenu(IDMFC *instance, bool turn_on);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveLevelEnd(IDMFC *instance, bool enable);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAutoSaveDisconnect(IDMFC *instance, bool enable);
 DLLEXPORT void DLLFUNCCALL IDMFC_GenerateStatFilename(IDMFC *instance, char *filename, const char *root,
-                                                             bool end_of_level);
+                                                      bool end_of_level);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsPlayerObserver(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableOnScreenMenuBackground(IDMFC *instance, bool enable);
 DLLEXPORT float DLLFUNCCALL IDMFC_GetTimeInGame(IDMFC *instance, int slot);
 DLLEXPORT char DLLFUNCCALLPTR IDMFC_GetTimeString(IDMFC *instance, float sec);
 DLLEXPORT void DLLFUNCCALL IDMFC_DisplayNetGameInfo(IDMFC *instance, int background_bmp = -1,
-                                                           bool dedicated_server = false);
+                                                    bool dedicated_server = false);
 DLLEXPORT void DLLFUNCCALL IDMFC_SwitchNetGameInfoDisplay(IDMFC *instance, int on);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsDisplayingNetGameInfo(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_DatabaseRegister(IDMFC *instance, char *name);
 DLLEXPORT bool DLLFUNCCALL IDMFC_DatabaseReadA(IDMFC *instance, const char *label, char *entry, int *entrylen);
 DLLEXPORT bool DLLFUNCCALL IDMFC_DatabaseReadB(IDMFC *instance, const char *label, void *entry, int wordsize);
 DLLEXPORT bool DLLFUNCCALL IDMFC_DatabaseReadC(IDMFC *instance, const char *label, bool *entry);
-DLLEXPORT bool DLLFUNCCALL IDMFC_DatabaseWriteA(IDMFC *instance, const char *label, const char *entry,
-                                                       int entrylen);
+DLLEXPORT bool DLLFUNCCALL IDMFC_DatabaseWriteA(IDMFC *instance, const char *label, const char *entry, int entrylen);
 DLLEXPORT bool DLLFUNCCALL IDMFC_DatabaseWriteB(IDMFC *instance, const char *label, int entry);
 DLLEXPORT void DLLFUNCCALL IDMFC_SendNetGameInfoSync(IDMFC *instance, int to_who = SP_ALL);
-DLLEXPORT bool DLLFUNCCALL IDMFC_CompareNetworkAddress(IDMFC *instance, network_address *one,
-                                                              network_address *two, bool use_port = true);
+DLLEXPORT bool DLLFUNCCALL IDMFC_CompareNetworkAddress(IDMFC *instance, network_address *one, network_address *two,
+                                                       bool use_port = true);
 DLLEXPORT bool DLLFUNCCALL IDMFC_IsMasterTrackerGame(IDMFC *instance);
 DLLEXPORT int DLLFUNCCALL IDMFC_ConvertLocalToServerObjnum(IDMFC *instance, int objnum);
 DLLEXPORT int DLLFUNCCALL IDMFC_ConvertServerToLocalObjnum(IDMFC *instance, int objnum);
@@ -1960,7 +1951,7 @@ DLLEXPORT bool DLLFUNCCALL IDMFC_AreLogosEnabled(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_EnableAudioTaunts(IDMFC *instance, bool enable);
 DLLEXPORT bool DLLFUNCCALL IDMFC_AreTauntsEnabled(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_RespawnPlayer(IDMFC *instance, int pnum, bool spew_energy_and_shield,
-                                                      bool spew_everything);
+                                               bool spew_everything);
 DLLEXPORT void DLLFUNCCALL IDMFC_ReadInHostsAllowDeny(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_FreeHostsLists(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_RehashAllowDeny(IDMFC *instance);
@@ -1968,19 +1959,17 @@ DLLEXPORT void DLLFUNCCALL IDMFC_AnnounceTeamChangeDeny(IDMFC *instance, int pnu
 DLLEXPORT void DLLFUNCCALL IDMFC_SetMaxPlayerHardLimit(IDMFC *instance, int max);
 DLLEXPORT int DLLFUNCCALL IDMFC_WasPlayerInGameAtLevelEnd(IDMFC *instance, int prec);
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerPlayerKilled(IDMFC *instance,
-                                                                 void (*callback)(object *killer_obj, int victim_pnum));
+                                                          void (*callback)(object *killer_obj, int victim_pnum));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerPlayerExploded(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerCollideA(IDMFC *instance,
-                                                             void (*callback)(object *me_obj, object *it_obj));
-DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerCollideB(IDMFC *instance,
-                                                             void (*callback)(object *me_obj, object *it_obj,
-                                                                              vector *point, vector *normal));
+                                                      void (*callback)(object *me_obj, object *it_obj));
+DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerCollideB(IDMFC *instance, void (*callback)(object *me_obj, object *it_obj,
+                                                                                        vector *point, vector *normal));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerPlayerChangeSegment(IDMFC *instance,
-                                                                        void (*callback)(int player_num, int newseg,
-                                                                                         int oldseg));
+                                                                 void (*callback)(int player_num, int newseg,
+                                                                                  int oldseg));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerObjectChangeSegment(IDMFC *instance,
-                                                                        void (*callback)(object *obj, int newseg,
-                                                                                         int oldseg));
+                                                                 void (*callback)(object *obj, int newseg, int oldseg));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerPlayerEntersGame(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerPlayerDisconnect(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerGameCreated(IDMFC *instance, void (*callback)(void));
@@ -1988,51 +1977,47 @@ DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerLevelChange(IDMFC *instance, void (
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerLevelStart(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerLevelEnd(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerObjectShieldsChanged(IDMFC *instance,
-                                                                         void (*callback)(object *obj, float amount));
+                                                                  void (*callback)(object *obj, float amount));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerIsAddressBanned(IDMFC *instance,
-                                                                    bool (*callback)(network_address *addr,
-                                                                                     char *tracker_id));
+                                                             bool (*callback)(network_address *addr, char *tracker_id));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerWallCollide(IDMFC *instance,
-                                                                void (*callback)(object *obj, float hitspeed,
-                                                                                 int hitseg, int hitwall, vector *hitpt,
-                                                                                 vector *wall_normal, float hit_dot));
+                                                         void (*callback)(object *obj, float hitspeed, int hitseg,
+                                                                          int hitwall, vector *hitpt,
+                                                                          vector *wall_normal, float hit_dot));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerObjectKilled(IDMFC *instance,
-                                                                 void (*callback)(object *obj, object *killer));
+                                                          void (*callback)(object *obj, object *killer));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnServerObjectDestroyed(IDMFC *instance, void (*callback)(object *obj));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientPlayerKilled(IDMFC *instance,
-                                                                 void (*callback)(object *killer_obj, int victim_pnum));
+                                                          void (*callback)(object *killer_obj, int victim_pnum));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientPlayerExploded(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientCollideA(IDMFC *instance,
-                                                             void (*callback)(object *me_obj, object *it_obj));
-DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientCollideB(IDMFC *instance,
-                                                             void (*callback)(object *me_obj, object *it_obj,
-                                                                              vector *point, vector *normal));
+                                                      void (*callback)(object *me_obj, object *it_obj));
+DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientCollideB(IDMFC *instance, void (*callback)(object *me_obj, object *it_obj,
+                                                                                        vector *point, vector *normal));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientPlayerChangeSegment(IDMFC *instance,
-                                                                        void (*callback)(int player_num, int newseg,
-                                                                                         int oldseg));
+                                                                 void (*callback)(int player_num, int newseg,
+                                                                                  int oldseg));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientObjectChangeSegment(IDMFC *instance,
-                                                                        void (*callback)(object *obj, int newseg,
-                                                                                         int oldseg));
+                                                                 void (*callback)(object *obj, int newseg, int oldseg));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientPlayerEntersGame(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientPlayerDisconnect(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnMeDisconnectFromServer(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientGameCreated(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientObjectShieldsChanged(IDMFC *instance,
-                                                                         void (*callback)(object *obj, float amount));
+                                                                  void (*callback)(object *obj, float amount));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnWeaponFired(IDMFC *instance,
-                                                          void (*callback)(object *weapon_obj, object *shooter));
+                                                   void (*callback)(object *weapon_obj, object *shooter));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientLevelChange(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientLevelStart(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientLevelEnd(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientWallCollide(IDMFC *instance,
-                                                                void (*callback)(object *obj, float hitspeed,
-                                                                                 int hitseg, int hitwall, vector *hitpt,
-                                                                                 vector *wall_normal, float hit_dot));
+                                                         void (*callback)(object *obj, float hitspeed, int hitseg,
+                                                                          int hitwall, vector *hitpt,
+                                                                          vector *wall_normal, float hit_dot));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientObjectKilled(IDMFC *instance,
-                                                                 void (*callback)(object *obj, object *killer));
+                                                          void (*callback)(object *obj, object *killer));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientObjectDestroyed(IDMFC *instance, void (*callback)(object *obj));
-DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerEntersObserver(IDMFC *instance,
-                                                                   void (*callback)(int pnum, object *piggy));
+DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerEntersObserver(IDMFC *instance, void (*callback)(int pnum, object *piggy));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerExitsObserver(IDMFC *instance, void (*callback)(int pnum));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnCanChangeTeam(IDMFC *instance, bool (*callback)(int pnum, int newteam));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnSpecialPacket(IDMFC *instance, void (*callback)(void));
@@ -2043,35 +2028,31 @@ DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPLRInit(IDMFC *instance, void (*callback)
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnKeypress(IDMFC *instance, void (*callback)(int key));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnInputString(IDMFC *instance, void (*callback)(char *input_string));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerChangeTeam(IDMFC *instance,
-                                                               void (*callback)(int player_num, int newteam,
-                                                                                bool announce, bool spew_everything));
+                                                        void (*callback)(int player_num, int newteam, bool announce,
+                                                                         bool spew_everything));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnGameStateRequest(IDMFC *instance, void (*callback)(int pnum));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnSaveStatsToFile(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerReconnect(IDMFC *instance, void (*callback)(int player_num));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayerConnect(IDMFC *instance, void (*callback)(int player_num));
-DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnControlMessage(IDMFC *instance,
-                                                             void (*callback)(uint8_t msg, int from_pnum));
-DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnAllowObserverChange(IDMFC *instance,
-                                                                  bool (*callback)(bool turnonobserver));
+DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnControlMessage(IDMFC *instance, void (*callback)(uint8_t msg, int from_pnum));
+DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnAllowObserverChange(IDMFC *instance, bool (*callback)(bool turnonobserver));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnClientShowUI(IDMFC *instance, void (*callback)(int id, void *user_data));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPrintScores(IDMFC *instance, void (*callback)(int level));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnDisconnectSaveStatsToFile(IDMFC *instance, void (*callback)(void));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnLevelEndSaveStatsToFile(IDMFC *instance, void (*callback)(void));
-DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnGetHudCallSignColor(IDMFC *instance,
-                                                                  ddgr_color (*callback)(int playernum));
+DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnGetHudCallSignColor(IDMFC *instance, ddgr_color (*callback)(int playernum));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnTeamChangeName(IDMFC *instance,
-                                                             void (*callback)(int team, char *oldname, char *newname));
+                                                      void (*callback)(int team, char *oldname, char *newname));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnDoControls(IDMFC *instance, void (*callback)(game_controls *controls));
 DLLEXPORT void DLLFUNCCALL IDMFC_Set_OnPlayAudioTaunt(IDMFC *instance, void (*callback)(int pnum));
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerPlayerKilled(IDMFC *instance, object *killer_obj, int victim_pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerPlayerExploded(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerCollideA(IDMFC *instance, object *me_obj, object *it_obj);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerCollideB(IDMFC *instance, object *me_obj, object *it_obj,
-                                                             vector *point, vector *normal);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerCollideB(IDMFC *instance, object *me_obj, object *it_obj, vector *point,
+                                                      vector *normal);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerPlayerChangeSegment(IDMFC *instance, int player_num, int newseg,
-                                                                        int oldseg);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerObjectChangeSegment(IDMFC *instance, object *obj, int newseg,
-                                                                        int oldseg);
+                                                                 int oldseg);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerObjectChangeSegment(IDMFC *instance, object *obj, int newseg, int oldseg);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerPlayerEntersGame(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerPlayerDisconnect(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerGameCreated(IDMFC *instance);
@@ -2079,22 +2060,20 @@ DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerLevelChange(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerLevelStart(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerLevelEnd(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerObjectShieldsChanged(IDMFC *instance, object *obj, float amount);
-DLLEXPORT bool DLLFUNCCALL IDMFC_CallOnServerIsAddressBanned(IDMFC *instance, network_address *addr,
-                                                                    char *tracker_id);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerWallCollide(IDMFC *instance, object *obj, float hitspeed,
-                                                                int hitseg, int hitwall, vector *hitpt,
-                                                                vector *wall_normal, float hit_dot);
+DLLEXPORT bool DLLFUNCCALL IDMFC_CallOnServerIsAddressBanned(IDMFC *instance, network_address *addr, char *tracker_id);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerWallCollide(IDMFC *instance, object *obj, float hitspeed, int hitseg,
+                                                         int hitwall, vector *hitpt, vector *wall_normal,
+                                                         float hit_dot);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerObjectKilled(IDMFC *instance, object *obj, object *killer);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnServerObjectDestroyed(IDMFC *instance, object *obj);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientPlayerKilled(IDMFC *instance, object *killer_obj, int victim_pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientPlayerExploded(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientCollideA(IDMFC *instance, object *me_obj, object *it_obj);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientCollideB(IDMFC *instance, object *me_obj, object *it_obj,
-                                                             vector *point, vector *normal);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientCollideB(IDMFC *instance, object *me_obj, object *it_obj, vector *point,
+                                                      vector *normal);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientPlayerChangeSegment(IDMFC *instance, int player_num, int newseg,
-                                                                        int oldseg);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientObjectChangeSegment(IDMFC *instance, object *obj, int newseg,
-                                                                        int oldseg);
+                                                                 int oldseg);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientObjectChangeSegment(IDMFC *instance, object *obj, int newseg, int oldseg);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientPlayerEntersGame(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientPlayerDisconnect(IDMFC *instance, int player_num);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnMeDisconnectFromServer(IDMFC *instance);
@@ -2104,9 +2083,9 @@ DLLEXPORT void DLLFUNCCALL IDMFC_CallOnWeaponFired(IDMFC *instance, object *weap
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientLevelChange(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientLevelStart(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientLevelEnd(IDMFC *instance);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientWallCollide(IDMFC *instance, object *obj, float hitspeed,
-                                                                int hitseg, int hitwall, vector *hitpt,
-                                                                vector *wall_normal, float hit_dot);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientWallCollide(IDMFC *instance, object *obj, float hitspeed, int hitseg,
+                                                         int hitwall, vector *hitpt, vector *wall_normal,
+                                                         float hit_dot);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientObjectKilled(IDMFC *instance, object *obj, object *killer);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnClientObjectDestroyed(IDMFC *instance, object *obj);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPlayerEntersObserver(IDMFC *instance, int pnum, object *piggy);
@@ -2119,8 +2098,8 @@ DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPLRInterval(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPLRInit(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnKeypress(IDMFC *instance, int key);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnInputString(IDMFC *instance, char *input_string);
-DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPlayerChangeTeam(IDMFC *instance, int player_num, int newteam,
-                                                               bool announce, bool spew_everything);
+DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPlayerChangeTeam(IDMFC *instance, int player_num, int newteam, bool announce,
+                                                        bool spew_everything);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnGameStateRequest(IDMFC *instance, int pnum);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnSaveStatsToFile(IDMFC *instance);
 DLLEXPORT void DLLFUNCCALL IDMFC_CallOnPlayerReconnect(IDMFC *instance, int player_num);
@@ -2191,7 +2170,7 @@ DLLEXPORT bool DLLFUNCCALL IMenuItem_Up(IMenuItem *instance);
 DLLEXPORT bool DLLFUNCCALL IMenuItem_Down(IMenuItem *instance);
 DLLEXPORT void DLLFUNCCALL IMenuItem_Execute(IMenuItem *instance);
 DLLEXPORT void DLLFUNCCALL IMenuItem_Draw(IMenuItem *instance, int x, int y, int height, int backgroundbmp,
-                                                 float *ratio = NULL);
+                                          float *ratio = NULL);
 DLLEXPORT void DLLFUNCCALL IMenuItem_SetInputFocus(IMenuItem *instance);
 DLLEXPORT void DLLFUNCCALL IMenuItem_LoseInputFocus(IMenuItem *instance);
 DLLEXPORT bool DLLFUNCCALL IMenuItem_GetFocus(IMenuItem *instance);

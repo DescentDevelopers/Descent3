@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -96,7 +96,6 @@
  *
  * $NoKeywords: $
  */
-
 
 #include "memory.h"
 #include "bnode.h"
@@ -504,8 +503,8 @@ void BNode_ClearBNodeInfo(void) {
 }
 
 // Unused?
-bool BNode_MakeSubPath(int16_t sroom, int16_t spnt, int16_t eroom, int16_t epnt, int flags, float size, int16_t *roomlist,
-                       int16_t *pnts, int max_elements) {
+bool BNode_MakeSubPath(int16_t sroom, int16_t spnt, int16_t eroom, int16_t epnt, int flags, float size,
+                       int16_t *roomlist, int16_t *pnts, int max_elements) {
   return false;
 }
 

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -422,13 +422,13 @@ int ddio_GetPID();
  * @return true if lock file successfully created, false otherwise (unable to
  * create, lock file already created by another process etc).
  */
-bool ddio_CreateLockFile(const std::filesystem::path& dir);
+bool ddio_CreateLockFile(const std::filesystem::path &dir);
 
 /**
  * Deletes a lock file (for the current process) in the specified directory
  * @param dir Directory for which the lock file should be deleted from
  * @return true if lock file successfully deleted, false otherwise
  */
-bool ddio_DeleteLockFile(const std::filesystem::path& dir);
+bool ddio_DeleteLockFile(const std::filesystem::path &dir);
 
 #endif

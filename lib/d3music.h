@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -92,11 +92,11 @@ extern const char *const Music_type_names[]; // contains type names.
 // structure passed to music frame
 struct tMusicSeqInfo {
   // INPUT
-  bool started_level;             // player started level
-  bool player_dead;               // did player die?
-  bool player_damaged;            // was player hit by enemy fire?
-  bool player_invulnerable;       // is player invulnerable?
-  bool player_terrain;            // is player in terrain (if not, in mine)
+  bool started_level;               // player started level
+  bool player_dead;                 // did player die?
+  bool player_damaged;              // was player hit by enemy fire?
+  bool player_invulnerable;         // is player invulnerable?
+  bool player_terrain;              // is player in terrain (if not, in mine)
   uint8_t player_shield_level;      // what shield level the player is at? (0-10)
   uint8_t n_hostiles;               // number of hostiles
   uint8_t n_hostiles_player_killed; // number hostiles killed by player this frame.
@@ -105,7 +105,7 @@ struct tMusicSeqInfo {
   float frametime; // frame time.
 
   // OUTPUT
-  int16_t cur_song;    // current song.
+  int16_t cur_song;  // current song.
   float peace_timer; // current peace timer
 
   const char *cur_loop_name; // current loop playing (NULL if none.)

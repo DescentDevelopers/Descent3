@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
   std::fstream ofs(hog_filename, std::ios_base::out | std::ios_base::binary);
 
   ofs << hog_table;
-  for (const auto& i : hog_table.GetEntries()) {
+  for (const auto &i : hog_table.GetEntries()) {
     std::cout << "Adding " << i.GetName() << "... ";
     try {
       std::fstream ifs(i.GetRealPath(), std::ios_base::in | std::ios_base::binary);

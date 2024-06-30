@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ void con_Destroy();
 void con_Defer();
 
 void Sleep(int millis) {
-  struct timeval tv{};
+  struct timeval tv {};
   tv.tv_sec = 0;
   tv.tv_usec = millis * 1000;
   select(0, nullptr, nullptr, nullptr, &tv);
@@ -228,8 +228,7 @@ void oeLnxApplication::set_sizepos(int x, int y, int w, int h) {
 
 const char *oeLnxApplication::get_window_name(void) { return "Descent 3"; }
 
-void oeLnxApplication::clear_window(void) {
-}
+void oeLnxApplication::clear_window(void) {}
 
 // initializes OS components.
 void oeLnxApplication::os_init() {

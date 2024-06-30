@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -174,7 +174,6 @@
 #endif
 #include "psrand.h"
 #include "demofile.h"
-
 
 #include <algorithm>
 

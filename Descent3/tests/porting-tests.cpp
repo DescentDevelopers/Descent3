@@ -48,7 +48,4 @@ uint32_t Osiris_CreateGameChecksumTest() {
   return value;
 }
 
-
-TEST(D3, OsirisTests) {
-  EXPECT_EQ(Osiris_CreateGameChecksumTest(), CHECKSUM);
-}
+TEST(D3, OsirisTests) { EXPECT_EQ(Osiris_CreateGameChecksumTest(), CHECKSUM); }

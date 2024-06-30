@@ -1,20 +1,20 @@
 /*
-* Descent 3 
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /////////////////////////////////////////////////////////////////////
 // D.A.L.L.A.S. Generated Level Script - DLL Source File
@@ -1134,71 +1134,71 @@ const char *GetMessage(const char *name) {
 
 #define NUM_DOOR_NAMES 9
 const char *Door_names[NUM_DOOR_NAMES] = {"RadioDoor",        "OctaDoorMainWest", "OctaDoorMainNorth",
-                                    "OctaDoorControl",  "OctaDoorTrans",    "OctaDoorMainSouth",
-                                    "OctaDoorMainEast", "OctaDoorStore",    "OctaDoorLab"};
+                                          "OctaDoorControl",  "OctaDoorTrans",    "OctaDoorMainSouth",
+                                          "OctaDoorMainEast", "OctaDoorStore",    "OctaDoorLab"};
 int Door_handles[NUM_DOOR_NAMES];
 
 #define NUM_OBJECT_NAMES 55
 const char *Object_names[NUM_OBJECT_NAMES] = {"ThiefCarrier",
-                                        "DataHolder",
-                                        "SuperThief",
-                                        "Final Cartridge",
-                                        "Original Cartridge",
-                                        "RescueShip1",
-                                        "RescueShip2",
-                                        "RescueShip3",
-                                        "MainKey",
-                                        "GoodieRoomSwitch",
-                                        "LT",
-                                        "LTdeadspew",
-                                        "FirstOutsideDoorSw",
-                                        "RadioDoorSwitch2",
-                                        "RadioCam",
-                                        "RadioDoorSwitch1",
-                                        "RadioToggle4",
-                                        "RadioToggle3",
-                                        "RadioToggle2",
-                                        "RadioToggle1",
-                                        "SBlackSmall",
-                                        "BottomSpewer",
-                                        "SWhite2",
-                                        "SWhite1",
-                                        "SWhiteGravity2",
-                                        "SWhiteGravity1",
-                                        "DTubbs1",
-                                        "OctaSwitchTrans",
-                                        "OctaSwitchLab-1",
-                                        "OctaSwitchLab-2",
-                                        "OctaSwitchStore-2",
-                                        "OctaSwitchStore-1",
-                                        "OctaSwitchControl",
-                                        "OctaSwitchMN",
-                                        "OctaSwitchME-2",
-                                        "OctaSwitchME-1",
-                                        "OctaSwitchMW",
-                                        "OctaSwitchMS-1",
-                                        "OctaSwitchMS-2",
-                                        "OctaDoorStore",
-                                        "DataTransfer-1",
-                                        "DataTransfer-2",
-                                        "DataTransferSwitch",
-                                        "UploadCamera",
-                                        "LTCbase1",
-                                        "LTCbase2",
-                                        "LTCbase3",
-                                        "LTCbase4",
-                                        "LTSkyCamera",
-                                        "LTCdiscaharge1",
-                                        "LTCdischarge2",
-                                        "LTCdischarge3",
-                                        "LTCdischarge4",
-                                        "KeyDoor",
-                                        "SecretRocks"};
+                                              "DataHolder",
+                                              "SuperThief",
+                                              "Final Cartridge",
+                                              "Original Cartridge",
+                                              "RescueShip1",
+                                              "RescueShip2",
+                                              "RescueShip3",
+                                              "MainKey",
+                                              "GoodieRoomSwitch",
+                                              "LT",
+                                              "LTdeadspew",
+                                              "FirstOutsideDoorSw",
+                                              "RadioDoorSwitch2",
+                                              "RadioCam",
+                                              "RadioDoorSwitch1",
+                                              "RadioToggle4",
+                                              "RadioToggle3",
+                                              "RadioToggle2",
+                                              "RadioToggle1",
+                                              "SBlackSmall",
+                                              "BottomSpewer",
+                                              "SWhite2",
+                                              "SWhite1",
+                                              "SWhiteGravity2",
+                                              "SWhiteGravity1",
+                                              "DTubbs1",
+                                              "OctaSwitchTrans",
+                                              "OctaSwitchLab-1",
+                                              "OctaSwitchLab-2",
+                                              "OctaSwitchStore-2",
+                                              "OctaSwitchStore-1",
+                                              "OctaSwitchControl",
+                                              "OctaSwitchMN",
+                                              "OctaSwitchME-2",
+                                              "OctaSwitchME-1",
+                                              "OctaSwitchMW",
+                                              "OctaSwitchMS-1",
+                                              "OctaSwitchMS-2",
+                                              "OctaDoorStore",
+                                              "DataTransfer-1",
+                                              "DataTransfer-2",
+                                              "DataTransferSwitch",
+                                              "UploadCamera",
+                                              "LTCbase1",
+                                              "LTCbase2",
+                                              "LTCbase3",
+                                              "LTCbase4",
+                                              "LTSkyCamera",
+                                              "LTCdiscaharge1",
+                                              "LTCdischarge2",
+                                              "LTCdischarge3",
+                                              "LTCdischarge4",
+                                              "KeyDoor",
+                                              "SecretRocks"};
 int Object_handles[NUM_OBJECT_NAMES];
 
 #define NUM_ROOM_NAMES 7
 const char *Room_names[NUM_ROOM_NAMES] = {"GoodiePortalRoom", "ReturnInsideRoom", "FirstOutdoorPortal", "RadioRoom",
-                                    "RadioArmory",      "GlassDome",        "RockBlock"};
+                                          "RadioArmory",      "GlassDome",        "RockBlock"};
 int Room_indexes[NUM_ROOM_NAMES];
 
 #define NUM_TRIGGER_NAMES 29
@@ -1214,17 +1214,17 @@ int Trigger_rooms[NUM_TRIGGER_NAMES];
 
 #define NUM_SOUND_NAMES 7
 const char *Sound_names[NUM_SOUND_NAMES] = {"AmbSwitch31", "PupC1",     "Cloak on", "Cloak off",
-                                      "AmbSwitch11", "Lightning", "HitEnergy"};
+                                            "AmbSwitch11", "Lightning", "HitEnergy"};
 int Sound_indexes[NUM_SOUND_NAMES];
 
 #define NUM_TEXTURE_NAMES 6
 const char *Texture_names[NUM_TEXTURE_NAMES] = {"Reddataup",       "Ready1", "Notready",
-                                          "Staticscrolling", "Online", "FunkyEffect5"};
+                                                "Staticscrolling", "Online", "FunkyEffect5"};
 int Texture_indexes[NUM_TEXTURE_NAMES];
 
 #define NUM_PATH_NAMES 8
 const char *Path_names[NUM_PATH_NAMES] = {"IntroCam", "IntroShip", "SuperIntro",  "Rescuer1",
-                                    "Rescuer2", "Rescuer3",  "EndLevelCam", "EndLevelShip"};
+                                          "Rescuer2", "Rescuer3",  "EndLevelCam", "EndLevelShip"};
 int Path_indexes[NUM_PATH_NAMES];
 
 #define NUM_MATCEN_NAMES 2
@@ -1233,31 +1233,31 @@ int Matcen_indexes[NUM_MATCEN_NAMES];
 
 #define NUM_GOAL_NAMES 11
 const char *Goal_names[NUM_GOAL_NAMES] = {"Disable Access Forcefield",
-                                    "Get Security Key",
-                                    "Activate Datlink",
-                                    "Activate Data Upload",
-                                    "Reacquire the Data Cartridge",
-                                    "Place the Cartridge between Upload Nodes",
-                                    "Acquire the Data Cartridge",
-                                    "Find Sweitzer's Lab",
-                                    "Return to Surface",
-                                    "Retrieve the Data Cartridge",
-                                    "Destroy Lightning Control Tower"};
+                                          "Get Security Key",
+                                          "Activate Datlink",
+                                          "Activate Data Upload",
+                                          "Reacquire the Data Cartridge",
+                                          "Place the Cartridge between Upload Nodes",
+                                          "Acquire the Data Cartridge",
+                                          "Find Sweitzer's Lab",
+                                          "Return to Surface",
+                                          "Retrieve the Data Cartridge",
+                                          "Destroy Lightning Control Tower"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
 #define NUM_MESSAGE_NAMES 23
 const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",   "ForceFieldDeactivated",
-                                          "MainKeyCard",    "RadioRoomUnlock",
-                                          "RadioRoomFirst", "All4Radio",
-                                          "All4Radio2",     "ThiefGotIt",
-                                          "SuperIntro",     "KillSuper",
-                                          "DestroyedSuper", "FalseTransfer",
-                                          "Uploading",      "DestroyedThief",
-                                          "DataFinal",      "DataOriginal",
-                                          "PlaceCartridge", "DataNodes",
-                                          "TempGetData",    "EndLevel",
-                                          "LTSelfDestruct", "UploadNode",
-                                          "SecurityDoor"};
+                                                "MainKeyCard",    "RadioRoomUnlock",
+                                                "RadioRoomFirst", "All4Radio",
+                                                "All4Radio2",     "ThiefGotIt",
+                                                "SuperIntro",     "KillSuper",
+                                                "DestroyedSuper", "FalseTransfer",
+                                                "Uploading",      "DestroyedThief",
+                                                "DataFinal",      "DataOriginal",
+                                                "PlaceCartridge", "DataNodes",
+                                                "TempGetData",    "EndLevel",
+                                                "LTSelfDestruct", "UploadNode",
+                                                "SecurityDoor"};
 const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============

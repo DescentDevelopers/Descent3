@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -492,7 +492,7 @@ tWin32OS oeWin32Application::version(int *major, int *minor, int *build, char *s
   // info we want (major/minor/build) nor do they provide tests for EOL products like Win95. On
   // modern Windows, this will just return a version describing Win8 (even if OS is 10/11/etc).
   // TODO: re-evaluate whether or not we actually even care about this information
-#pragma warning(suppress: 28159 4996)
+#pragma warning(suppress : 28159 4996)
   if (!GetVersionEx(&osinfo)) {
     return NoWin32;
   }
@@ -736,9 +736,8 @@ bool oeWin32Application::GetSystemSpecs(const char *fname) {
   GlobalMemoryStatusEx(&mem_stat);
 
   fprintf(fp, "Memory:\n");
-  fprintf(fp, "\tLoad:\t\t\t%u\n\tTotalPhys:\t\t%llu\n\tAvailPhys:\t\t%llu\nPageFile:\t\t%llu\n",
-          mem_stat.dwMemoryLoad, mem_stat.ullTotalPhys, mem_stat.ullAvailPhys,
-          mem_stat.ullTotalPageFile);
+  fprintf(fp, "\tLoad:\t\t\t%u\n\tTotalPhys:\t\t%llu\n\tAvailPhys:\t\t%llu\nPageFile:\t\t%llu\n", mem_stat.dwMemoryLoad,
+          mem_stat.ullTotalPhys, mem_stat.ullAvailPhys, mem_stat.ullTotalPageFile);
   fprintf(fp, "\tPageFileFree:\t%llu\n\tVirtual:\t\t%llu\n\tVirtualFree:\t%llu\n", mem_stat.ullAvailPageFile,
           mem_stat.ullTotalVirtual, mem_stat.ullAvailVirtual);
 

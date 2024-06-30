@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -84,11 +84,11 @@
 #include <cstdint>
 
 /*	Basic Application Win32 data types, to prevent include of windows.h */
-typedef uintptr_t   HWnd;
-typedef uintptr_t   HInstance;
-typedef uintptr_t   WParam;
-typedef intptr_t    LParam;
-typedef intptr_t    LResult;
+typedef uintptr_t HWnd;
+typedef uintptr_t HInstance;
+typedef uintptr_t WParam;
+typedef intptr_t LParam;
+typedef intptr_t LResult;
 
 //	This structure is used to retrieve and set
 struct tWin32AppInfo {
