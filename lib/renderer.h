@@ -330,7 +330,6 @@ extern bool UseHardware;
 extern bool StateLimited;
 extern bool NoLightmaps;
 extern bool UseMultitexture;
-extern bool UseMipmap;  // DAJ
 
 class NewBitmap;
 
