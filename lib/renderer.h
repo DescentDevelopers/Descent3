@@ -411,9 +411,6 @@ struct rendering_state {
 
   wrap_type cur_wrap_type;
 
-  float cur_fog_start, cur_fog_end;
-  float cur_near_z, cur_far_z;
-
   int cur_alpha;
   ddgr_color cur_color;
   ddgr_color cur_fog_color;
