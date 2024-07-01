@@ -127,15 +127,6 @@ void rend_SetFiltering(int8_t state) {
   gpu_state.cur_bilinear_state = state;
 }
 
-// Sets the near and far planes for z buffer
-void rend_SetZValues(float nearz, float farz) {
-  //	mprintf(0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz);
-
-  // JEFF: glDepthRange must take parameters [0,1]
-  // It is set in init
-  //@@dglDepthRange (0,farz);
-}
-
 // Sets a bitmap as a overlay map to rendered on top of the next texture map
 // a -1 value indicates no overlay map
 void rend_SetOverlayMap(int handle) { gpu_Overlay_map = handle; }
