@@ -129,8 +129,6 @@ void rend_SetFiltering(int8_t state) {
 
 // Sets the near and far planes for z buffer
 void rend_SetZValues(float nearz, float farz) {
-  gpu_state.cur_near_z = nearz;
-  gpu_state.cur_far_z = farz;
   //	mprintf(0,"OPENGL:Setting depth range to %f - %f\n",nearz,farz);
 
   // JEFF: glDepthRange must take parameters [0,1]
