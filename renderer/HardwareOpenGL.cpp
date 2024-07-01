@@ -1443,9 +1443,6 @@ void rend_SetFogBorders(float nearz, float farz) {
   float fogStart = nearz;
   float fogEnd = farz;
 
-  gpu_state.cur_fog_start = fogStart;
-  gpu_state.cur_fog_end = fogEnd;
-
   dglFogi(GL_FOG_MODE, GL_LINEAR);
   dglFogf(GL_FOG_START, fogStart);
   dglFogf(GL_FOG_END, fogEnd);
