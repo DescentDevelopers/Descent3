@@ -30,11 +30,7 @@
 #include "mve_audio.h"
 
 #ifdef AUDIO
-#ifdef _WIN32
-
-#else
 #include "lnx_sound.h"
-#endif
 #endif
 
 #define MVE_OPCODE_ENDOFSTREAM 0x00           // mcmd_end
@@ -140,6 +136,13 @@ static void timer_start() {
   timer_started = 1;
 }
 
+#ifdef AUDIO
+static std::unique_ptr<D3::MovieSoundDevice> snd_ds;
+static int mve_audio_enabled = 1;
+#else
+static int mve_audio_enabled = 0;
+#endif
+
 static void do_timer_wait() {
   uint64_t ts;
   uint64_t tv;
@@ -153,6 +156,7 @@ static void do_timer_wait() {
 
   ts = timer_expire - tv;
 
+  //mprintf(0,"SLEEP for %llu us, buffer size is %d\n", ts, snd_ds->GetBuffer()->size());
   timer_sleepmicroseconds(ts);
 
 end:
@@ -162,13 +166,6 @@ end:
 /*************************
  * audio handlers
  *************************/
-
-#ifdef AUDIO
-static std::unique_ptr<D3::MovieSoundDevice> snd_ds;
-static int mve_audio_enabled = 1;
-#else
-static int mve_audio_enabled = 0;
-#endif
 
 static int create_audiobuf_handler(unsigned char major, unsigned char minor, unsigned char *data, int len,
                                    void *context) {
@@ -188,7 +185,7 @@ static int create_audiobuf_handler(unsigned char major, unsigned char minor, uns
     is_compressed = true;
   }
 
-  snd_ds = std::make_unique<D3::MovieSoundDevice>(sample_rate, sample_size, channels, 4096, is_compressed);
+  snd_ds = std::make_unique<D3::MovieSoundDevice>(sample_rate, sample_size, channels, desired_buffer, is_compressed);
 #endif
 
   return 1;

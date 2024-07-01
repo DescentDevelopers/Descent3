@@ -2,12 +2,12 @@ set(CPPS
 #  mveasm.cpp
 #  mvelibl.cpp
 #  platform.cpp
-  lnxdsound.cpp
-  lnx_sound.cpp
+#  lnxdsound.cpp
 
   # d2x implementation
   decoder8.cpp
   decoder16.cpp
+  lnx_sound.cpp
   mve_audio.cpp
   mvelib.cpp
   mveplay.cpp

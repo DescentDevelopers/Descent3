@@ -33,7 +33,7 @@ public:
   MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, uint32_t buf_size, bool is_compressed);
   ~MovieSoundDevice();
 
-  [[nodiscard]] bool IsInitialized() const { return m_device_id > 0 ? true : false; }
+  [[nodiscard]] bool IsInitialized() const { return m_device_id > 0; }
 
   void static SDLAudioCallback(void *userdata, unsigned char *stream, int len);
 
