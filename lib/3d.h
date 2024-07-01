@@ -259,14 +259,6 @@ struct g3Point {
 
 // Functions in library
 
-// 3d system startup and shutdown:
-
-// initialize the 3d system
-void g3_Init(void);
-
-// close down the 3d system
-void g3_Close(void);
-
 // Frame setup functions:
 
 // start the frame, specifying view position, matrix, & zoom
