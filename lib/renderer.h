@@ -489,9 +489,6 @@ void rend_SetFiltering(int8_t state);
 // Sets the state of zbuffering to on or off
 void rend_SetZBufferState(int8_t state);
 
-// Sets the near and far planes for z buffer
-void rend_SetZValues(float nearz, float farz);
-
 // Sets a bitmap as an overlay to rendered on top of the next texture map
 void rend_SetOverlayMap(int handle);
 
