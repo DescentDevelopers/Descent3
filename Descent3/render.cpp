@@ -3462,12 +3462,10 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain) {
     g3_SetFarClipZ(VisibleTerrainZ);
 
     if ((Terrain_sky.flags & TF_FOG) && (UseHardware || (!UseHardware && Lighting_on))) {
-      rend_SetZValues(0, VisibleTerrainZ);
       rend_SetFogState(1);
       rend_SetFogBorders(VisibleTerrainZ * .85, VisibleTerrainZ);
       rend_SetFogColor(Terrain_sky.fog_color);
-    } else
-      rend_SetZValues(0, 5000);
+    }
   }
 
   // First render mirrored rooms
