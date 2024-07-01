@@ -26,12 +26,6 @@
 // User-specified aspect ratio, stored as w/h
 static float sAspect = 0.0f;
 
-// initialize the 3d system
-void g3_Init(void) { atexit(g3_Close); }
-
-// close down the 3d system
-void g3_Close(void) {}
-
 // allows the user to specify an aspect ratio that overrides the renderer's
 // The parameter is the w/h of the screen pixels
 void g3_SetAspectRatio(float aspect) { sAspect = aspect; }
