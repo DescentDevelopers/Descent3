@@ -275,7 +275,6 @@ void opengl_SetDefaults() {
   rend_SetTextureType(TT_FLAT);
   rend_SetColorModel(CM_RGB);
   rend_SetZBufferState(1);
-  rend_SetZValues(0, 3000);
   rend_SetGammaValue(gpu_preferred_state.gamma);
   OpenGL_last_bound[0] = 9999999;
   OpenGL_last_bound[1] = 9999999;
