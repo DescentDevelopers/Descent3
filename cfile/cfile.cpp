@@ -363,9 +363,12 @@ CFILE *open_file_in_lib(const char *filename) {
   return nullptr;
 }
 
-#ifdef __LINUX__
 std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
                                                              const std::filesystem::path &directory) {
+  // Dumb check, maybe there already all ok?
+  if (exists((directory / fname))) {
+    return fname.filename();
+  }
 
   std::filesystem::path result, search_path, search_file;
 
@@ -396,7 +399,6 @@ std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::
 
   return result.filename();
 }
-#endif
 
 // look for the file in the specified directory
 static CFILE *open_file_in_directory(const std::filesystem::path &filename, const char *mode,

@@ -70,8 +70,6 @@ TEST(D3, CFileLibrary) {
   EXPECT_EQ(file_handle, nullptr);
 }
 
-#ifdef __LINUX__
-
 TEST(D3, CFileCaseSensitiveSearchNew) {
   const std::vector<std::filesystem::path> test_paths = {
       std::filesystem::path("TestDir") / "CamelCase.txt",
@@ -90,28 +88,37 @@ TEST(D3, CFileCaseSensitiveSearchNew) {
   for (auto const &item : test_paths) {
     auto directory = cwd / item.parent_path();
     std::filesystem::path file = item.filename();
-    std::string file_lc = item.filename();
+    std::string file_lc = item.filename().u8string();
     std::transform(file_lc.begin(), file_lc.end(), file_lc.begin(), ::tolower);
-    std::string file_uc = item.filename();
+    std::string file_uc = item.filename().u8string();
     std::transform(file_uc.begin(), file_uc.end(), file_uc.begin(), ::toupper);
 
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(file_lc, directory), file);
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(file_uc, directory), file);
+    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_lc, directory).empty());
+    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_uc, directory).empty());
 
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(directory / file_lc), file);
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(directory / file_uc), file);
+    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(directory / file_lc).empty());
+    EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(directory / file_uc).empty());
 
-    // Now try case-insensitive path with non-existing directory in search. Expected not found.
-    file_lc = item;
+    // Now try case-insensitive path with non-existing directory in search.
+    // Expected not found on case-sensitive fs.
+    file_lc = item.u8string();
     std::transform(file_lc.begin(), file_lc.end(), file_lc.begin(), ::tolower);
-    file_uc = item;
+    file_uc = item.u8string();
     std::transform(file_uc.begin(), file_uc.end(), file_uc.begin(), ::toupper);
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(file_lc, cwd), std::filesystem::path());
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(file_uc, cwd), std::filesystem::path());
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(file_lc), std::filesystem::path());
-    EXPECT_EQ(cf_FindRealFileNameCaseInsensitive(file_uc), std::filesystem::path());
 
+    if (std::filesystem::is_regular_file(file_lc)) {
+      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_lc, cwd).empty());
+      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_lc).empty());
+    } else {
+      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_lc, cwd).empty());
+      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_lc).empty());
+    }
+    if (std::filesystem::is_regular_file(file_uc)) {
+      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_uc, cwd).empty());
+      EXPECT_FALSE(cf_FindRealFileNameCaseInsensitive(file_uc).empty());
+    } else {
+      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_uc, cwd).empty());
+      EXPECT_TRUE(cf_FindRealFileNameCaseInsensitive(file_uc).empty());
+    }
   }
 }
-
-#endif // __LINUX__
