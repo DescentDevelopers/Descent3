@@ -166,6 +166,18 @@ void cf_CloseLibrary(int handle);
  */
 bool cf_FindRealFileNameCaseInsenstive(const std::filesystem::path &fname, char *new_filename,
                                        const std::filesystem::path &directory = {});
+
+/**
+ * Returns fixed case file name to actual case on disk
+ * @param fname the fixed case name to map to reality
+ * @param directory optional directory to search within (default - current path)
+ * @return filename with actual case name or empty path if there no mapping in filesystem
+ * @note This function returns only filename without directory part, i.e.
+ * cf_FindRealFileNameCaseInsensitive_new("test/test.txt") will return only "test.txt" on success.
+ */
+std::filesystem::path cf_FindRealFileNameCaseInsensitive_new(const std::filesystem::path &fname,
+                                                             const std::filesystem::path &directory = ".");
+
 #endif
 
 /**

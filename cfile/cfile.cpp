@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -435,6 +436,39 @@ static FILE *open_file_in_directory_case_sensitive(const std::filesystem::path &
                                                    const std::filesystem::path &filename, const char *mode,
                                                    char *new_filename);
 
+std::filesystem::path cf_FindRealFileNameCaseInsensitive_new(const std::filesystem::path &fname,
+                                                             const std::filesystem::path &directory) {
+
+  std::filesystem::path result, search_path, search_file;
+
+  search_path = directory / fname.parent_path();
+  search_file = fname.filename();
+
+  // If directory does not exist, nothing to search.
+  if (!is_directory(search_path) || search_file.empty()) {
+    return {};
+  }
+
+
+  // Search component in search_path
+  auto const &it = std::filesystem::directory_iterator(search_path);
+
+  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
+  });
+
+  if (found != end(it)) {
+    // Match, append to result
+    result = found->path();
+    search_path = result;
+  } else {
+    // Component not found, mission failed
+    return {};
+  }
+
+  return result.filename();
+}
+
 bool cf_FindRealFileNameCaseInsenstive(const std::filesystem::path &fname, char *new_filename,
                                        const std::filesystem::path &directory) {
   bool use_dir = false;
@@ -457,7 +491,7 @@ bool cf_FindRealFileNameCaseInsenstive(const std::filesystem::path &fname, char 
       file_to_use = fname.filename();
       strncpy(real_file, file_to_use.u8string().c_str(), strlen(file_to_use.u8string().c_str()));
 
-      mprintf(1, "CFILE: Found directory \"%s\" in filename, new filename is \"%s\"\n",
+      mprintf(0, "CFILE: Found directory \"%s\" in filename, new filename is \"%s\"\n",
               real_dir.u8string().c_str(), real_file);
     } else {
       use_dir = false;
