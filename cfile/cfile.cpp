@@ -113,8 +113,8 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
     resolve_name = libname.filename();
   }
 
-  char t_out[_MAX_PATH];
-  if (!cf_FindRealFileNameCaseInsenstive(resolve_name, t_out, resolve_dir)) {
+  std::filesystem::path t_out = cf_FindRealFileNameCaseInsensitive(resolve_name, resolve_dir);
+  if (t_out.empty()) {
     return 0; // CF_NO_FILE
   }
   // re-assemble
@@ -254,14 +254,14 @@ CFILE *cf_OpenFileInLibrary(const std::filesystem::path &filename, int libhandle
   }
 
   // now do a binary search for the file entry
-  int i, first = 0, last = lib->nfiles - 1, c, found = 0;
+  int i, first = 0, last = lib->nfiles - 1, c;
+  bool found = false;
 
   do {
     i = (first + last) / 2;
     c = stricmp(filename.u8string().c_str(), lib->entries[i]->name); // compare to current
     if (c == 0) {
-      // found it
-      found = 1;
+      found = true;
       break;
     }
     if (first >= last) // exhausted search
@@ -364,79 +364,7 @@ CFILE *open_file_in_lib(const char *filename) {
 }
 
 #ifdef __LINUX__
-#include <glob.h>
-
-static int globerrfn(const char *path, int err) {
-  mprintf(0, "Error accessing %s: %s .... \n", path, strerror(err));
-  return 0;
-}
-
-class CFindFiles {
-public:
-  CFindFiles() { globindex = -1; }
-
-  bool Start(const char *wildcard, char *namebuf);
-  bool Next(char *namebuf);
-  void Close();
-
-private:
-  int globindex;
-  glob_t ffres;
-};
-
-bool CFindFiles::Start(const char *wildcard, char *namebuf) {
-  ASSERT(wildcard);
-  ASSERT(namebuf);
-
-  if (globindex != -1)
-    Close();
-
-  int rc, flags;
-  flags = GLOB_MARK;
-  rc = glob(wildcard, flags, globerrfn, &ffres);
-  if (rc == GLOB_NOSPACE) {
-    mprintf(0, "Out of space during glob\n");
-    globindex = -1;
-    return false;
-  }
-  if (!ffres.gl_pathc) {
-    globindex = -1;
-    return false;
-  }
-
-  globindex = 0;
-  char ext[256];
-  ddio_SplitPath(ffres.gl_pathv[0], nullptr, namebuf, ext);
-  strcat(namebuf, ext);
-  return true;
-}
-
-bool CFindFiles::Next(char *namebuf) {
-  ASSERT(namebuf);
-  if (globindex == -1)
-    return false;
-  globindex++;
-  if (globindex >= ffres.gl_pathc)
-    return false;
-
-  char ext[256];
-  ddio_SplitPath(ffres.gl_pathv[globindex], nullptr, namebuf, ext);
-  strcat(namebuf, ext);
-  return true;
-}
-
-void CFindFiles::Close() {
-  if (globindex == -1)
-    return;
-  globindex = -1;
-  globfree(&ffres);
-}
-
-static FILE *open_file_in_directory_case_sensitive(const std::filesystem::path &directory,
-                                                   const std::filesystem::path &filename, const char *mode,
-                                                   char *new_filename);
-
-std::filesystem::path cf_FindRealFileNameCaseInsensitive_new(const std::filesystem::path &fname,
+std::filesystem::path cf_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
                                                              const std::filesystem::path &directory) {
 
   std::filesystem::path result, search_path, search_file;
@@ -445,7 +373,7 @@ std::filesystem::path cf_FindRealFileNameCaseInsensitive_new(const std::filesyst
   search_file = fname.filename();
 
   // If directory does not exist, nothing to search.
-  if (!is_directory(search_path) || search_file.empty()) {
+  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
     return {};
   }
 
@@ -468,153 +396,6 @@ std::filesystem::path cf_FindRealFileNameCaseInsensitive_new(const std::filesyst
 
   return result.filename();
 }
-
-bool cf_FindRealFileNameCaseInsenstive(const std::filesystem::path &fname, char *new_filename,
-                                       const std::filesystem::path &directory) {
-  bool use_dir = false;
-  std::filesystem::path dir_to_use, file_to_use;
-  std::filesystem::path real_dir;
-  char real_file[_MAX_PATH];
-
-  if (!directory.empty()) {
-    // there is a directory for this path
-    use_dir = true;
-    real_dir = directory;
-    strcpy(real_file, fname.u8string().c_str());
-  } else {
-    // there may be a directory in the path (*sigh*)
-    std::filesystem::path t_dir = fname.parent_path();
-    if (!t_dir.empty()) {
-      use_dir = true;
-      dir_to_use = t_dir;
-      real_dir = dir_to_use;
-      file_to_use = fname.filename();
-      strncpy(real_file, file_to_use.u8string().c_str(), strlen(file_to_use.u8string().c_str()));
-
-      mprintf(0, "CFILE: Found directory \"%s\" in filename, new filename is \"%s\"\n",
-              real_dir.u8string().c_str(), real_file);
-    } else {
-      use_dir = false;
-      // real_dir = nullptr;
-      strncpy(real_file, fname.u8string().c_str(), strlen(fname.u8string().c_str()));
-    }
-  }
-
-  // build up a list of filenames in the current directory that begin with the lowercase and
-  // upper case first letter of the filename
-
-  // do the case of the first letter to start
-  int case_val;
-  char wildcard_pattern[_MAX_PATH];
-  int iterations = 1;
-  bool found_match = false;
-
-  if (isalpha(real_file[0])) {
-    // alpha first letter...we need to do 2 iterations
-    iterations = 2;
-  }
-
-  for (case_val = 0; case_val < iterations; case_val++) {
-    if (case_val) {
-      // do the opposite case of the first letter
-      char first_letter;
-      first_letter = real_file[0];
-      if (first_letter >= 'a' && first_letter <= 'z') {
-        // we need to uppercase the letter
-        first_letter = toupper(first_letter);
-      } else {
-        // we need to lowercase the letter
-        first_letter = tolower(first_letter);
-      }
-
-      // create a wildcard patter full of ? replacing letters (except the first one)
-      char *wptr = wildcard_pattern;
-      char *fptr = &real_file[1];
-      *wptr = first_letter;
-      wptr++;
-      while (*fptr) {
-        if (isalpha(*fptr)) {
-          *wptr = '?';
-        } else {
-          *wptr = *fptr;
-        }
-
-        fptr++;
-        wptr++;
-      }
-      *wptr = '\0';
-    } else {
-      // use the case of the first letter
-      // create a wildcard patter full of ? replacing letters (except the first one)
-      char *wptr = wildcard_pattern;
-      char *fptr = &real_file[1];
-      *wptr = real_file[0];
-      wptr++;
-      while (*fptr) {
-        if (isalpha(*fptr)) {
-          *wptr = '?';
-        } else {
-          *wptr = *fptr;
-        }
-
-        fptr++;
-        wptr++;
-      }
-      *wptr = '\0';
-    }
-
-    // now tack on a directory if we are to use a directory
-    char *wpattern;
-    char fullpath[_MAX_PATH];
-    if (use_dir) {
-      ddio_MakePath(fullpath, real_dir.u8string().c_str(), wildcard_pattern, NULL);
-      wpattern = fullpath;
-    } else {
-      wpattern = wildcard_pattern;
-    }
-
-    // ok, we have our wildcard pattern, get all the files that match it
-    // and search them looking for a match (case insensitive)
-    char namebuffer[_MAX_PATH];
-    bool gotfile;
-    CFindFiles ff;
-    for (gotfile = ff.Start(wpattern, namebuffer); gotfile; gotfile = ff.Next(namebuffer)) {
-      if (!stricmp(namebuffer, real_file)) {
-        // we found a match!
-        found_match = true;
-        break;
-      }
-    }
-    ff.Close();
-
-    if (found_match) {
-      strcpy(new_filename, namebuffer);
-      mprintf(1, "CFILE: Using \"%s\" instead of \"%s\"\n", new_filename, real_file);
-      break;
-    }
-  }
-
-  return found_match;
-}
-
-FILE *open_file_in_directory_case_sensitive(const std::filesystem::path &directory,
-                                            const std::filesystem::path &filename, const char *mode,
-                                            char *new_filename) {
-  std::filesystem::path t_dir = filename.parent_path();
-  if (cf_FindRealFileNameCaseInsenstive(filename, new_filename, directory)) {
-    // we have a file, open it open and use it
-    std::filesystem::path full_path;
-    // if we had a directory as part of the file name, put it back in
-    if (!t_dir.empty()) {
-      full_path = t_dir / new_filename;
-    } else {
-      full_path = new_filename;
-    }
-
-    return fopen(full_path.u8string().c_str(), mode);
-  }
-  return nullptr;
-}
 #endif
 
 // look for the file in the specified directory
@@ -626,30 +407,46 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
                               const std::filesystem::path &directory) {
   FILE *fp;
   CFILE *cfile;
-  std::filesystem::path path;
-  char using_filename[_MAX_PATH];
+  std::filesystem::path using_filename;
   char tmode[3] = "rb";
   if (std::filesystem::is_directory(directory)) {
     // Make a full path
-    path = directory / filename;
-  } else // no directory specified, so just use filename passed
-    path = filename;
+    using_filename = directory / filename;
+  } else {
+    // no directory specified, so just use filename passed
+    using_filename = filename;
+  }
+
   // set read or write mode
   tmode[0] = mode[0];
-  // if mode is "w", then open in text or binary as requested.  If "r", alsway open in "rb"
+  // if mode is "w", then open in text or binary as requested.  If "r", always open in "rb"
   tmode[1] = (mode[0] == 'w') ? mode[1] : 'b';
   // try to open file
-  fp = fopen(path.u8string().c_str(), tmode);
+  fp = fopen(using_filename.u8string().c_str(), tmode);
 
   if (!fp) {
 #ifdef __LINUX__
-    // For filesystems with case-sensitive files we'll check for different versions of the filename
-    // with different cases.
+    // If we tried to open file for reading, assume there maybe case-sensitive files
+    if (tmode[0] == 'r') {
+      // Try different cases of the filename
+      using_filename = cf_FindRealFileNameCaseInsensitive(filename, directory);
+      if (using_filename.empty()) {
+        // just give up
+        return nullptr;
+      }
 
-    // try different cases of the filename
-    fp = open_file_in_directory_case_sensitive(directory, filename, tmode, using_filename);
-    if (!fp) {
-      // no dice
+      if (std::filesystem::is_directory(directory)) {
+        // Make a full path
+        using_filename = directory / using_filename;
+      }
+
+      fp = fopen(using_filename.u8string().c_str(), tmode);
+      if (!fp) {
+        // no dice
+        return nullptr;
+      }
+    } else {
+      // Error on writing file
       return nullptr;
     }
 #else
@@ -657,17 +454,17 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
     return nullptr;
 #endif
   } else {
-    strcpy(using_filename, filename.u8string().c_str());
+    using_filename = filename;
   }
 
   // found the file, open it
   cfile = (CFILE *)mem_malloc(sizeof(*cfile));
   if (!cfile)
     Error("Out of memory in open_file_in_directory()");
-  cfile->name = (char *)mem_malloc(sizeof(char) * (strlen(using_filename) + 1));
+  cfile->name = (char *)mem_malloc(sizeof(char) * (strlen(using_filename.u8string().c_str()) + 1));
   if (!cfile->name)
     Error("Out of memory in open_file_in_directory()");
-  strcpy(cfile->name, using_filename);
+  strcpy(cfile->name, using_filename.u8string().c_str());
   cfile->file = fp;
   cfile->lib_handle = -1;
   cfile->size = ddio_GetFileLength(fp);
