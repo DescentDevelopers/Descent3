@@ -1,4 +1,4 @@
-set(CMAKE_FOLDER "Scripts")
+set(CMAKE_FOLDER "scripts")
 
 set(CPPS
   $<$<PLATFORM_ID:Darwin,Linux>:

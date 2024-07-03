@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "tests")
+
 add_executable(
   porting-tests
   porting-tests.cpp
