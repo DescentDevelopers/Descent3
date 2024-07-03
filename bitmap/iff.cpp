@@ -176,27 +176,22 @@ int bm_iff_get_sig(CFILE *f) {
 int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
   len = len;
 
-  bmheader->w = cf_ReadShort(ifile);
-  bmheader->w = MOTOROLA_SHORT(bmheader->w);
-  bmheader->h = cf_ReadShort(ifile);
-  bmheader->h = MOTOROLA_SHORT(bmheader->h);
-  bmheader->x = cf_ReadShort(ifile);
-  bmheader->x = MOTOROLA_SHORT(bmheader->x);
-  bmheader->y = cf_ReadShort(ifile);
-  bmheader->y = MOTOROLA_SHORT(bmheader->y);
+  bmheader->w = cf_ReadShort(ifile, false);
+  bmheader->h = cf_ReadShort(ifile, false);
+  bmheader->x = cf_ReadShort(ifile, false);
+  bmheader->y = cf_ReadShort(ifile, false);
 
   bmheader->nplanes = cf_ReadByte(ifile);
   bmheader->masking = cf_ReadByte(ifile);
   bmheader->compression = cf_ReadByte(ifile);
   cf_ReadByte(ifile); /* skip pad */
 
-  bmheader->transparentcolor = cf_ReadShort(ifile);
-  bmheader->transparentcolor = MOTOROLA_SHORT(bmheader->transparentcolor);
+  bmheader->transparentcolor = cf_ReadShort(ifile, false);
   bmheader->xaspect = cf_ReadByte(ifile);
   bmheader->yaspect = cf_ReadByte(ifile);
 
-  bmheader->pagewidth = cf_ReadShort(ifile);
-  bmheader->pageheight = cf_ReadShort(ifile);
+  bmheader->pagewidth = cf_ReadShort(ifile, false);
+  bmheader->pageheight = cf_ReadShort(ifile, false);
 
   iff_transparent_color = bmheader->transparentcolor;
 
@@ -383,8 +378,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
 
     sig = bm_iff_get_sig(ifile);
 
-    len = cf_ReadInt(ifile);
-    len = MOTOROLA_INT(len);
+    len = cf_ReadInt(ifile, false);
 
     switch (sig) {
     case IFF_SIG_FORM: {
@@ -568,7 +562,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
     return -1;
 
   sig = bm_iff_get_sig(ifile);
-  form_len = cf_ReadInt(ifile);
+  form_len = cf_ReadInt(ifile, false);
 
   if (sig != IFF_SIG_FORM) {
     mprintf(0, "Not a valid IFF file.\n");
