@@ -909,17 +909,17 @@ int cf_ReadBytes(uint8_t *buf, int count, CFILE *cfp) {
 // to be present.
 // Read and return an integer (32 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int32_t cf_ReadInt(CFILE *cfp) {
+int32_t cf_ReadInt(CFILE *cfp, bool little_endian) {
   int32_t i;
   cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
-  return INTEL_INT(i);
+  return little_endian ? D3::convert_le(i) : D3::convert_be(i);
 }
 // Read and return a int16_t (16 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read
-int16_t cf_ReadShort(CFILE *cfp) {
+int16_t cf_ReadShort(CFILE *cfp, bool little_endian) {
   int16_t i;
   cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
-  return INTEL_SHORT(i);
+  return little_endian ? D3::convert_le(i) : D3::convert_be(i);
 }
 // Read and return a byte (8 bits)
 // Throws an exception of type (cfile_error *) if the OS returns an error on read

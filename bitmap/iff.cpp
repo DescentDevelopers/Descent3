@@ -145,24 +145,6 @@ static int bm_iff_parse_delta(CFILE *ifile, int len, iff_bitmap_header *bmheader
 static int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_header *prev_bm);
 static void bm_iff_convert_8_to_16(int dest_bm, iff_bitmap_header *iffbm);
 
-/// Read and return a raw integer (32 bits).
-///
-/// Throws an exception of type (cfile_error *) if the OS returns an error on read
-static int32_t cf_ReadIntRaw(CFILE *cfp) {
-  int32_t i;
-  cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
-  return i;
-}
-
-/// Read and return a raw \c int16_t (16 bits)
-///
-/// Throws an exception of type (cfile_error *) if the OS returns an error on read
-static int16_t cf_ReadShortRaw(CFILE *cfp) {
-  int16_t i;
-  cf_ReadBytes((uint8_t *)&i, sizeof(i), cfp);
-  return i;
-}
-
 int bm_iff_get_sig(CFILE *f) {
   char s[4];
   int i;
@@ -194,22 +176,22 @@ int bm_iff_get_sig(CFILE *f) {
 int bm_iff_parse_bmhd(CFILE *ifile, uint32_t len, iff_bitmap_header *bmheader) {
   len = len;
 
-  bmheader->w = D3::convert_be(cf_ReadShortRaw(ifile));
-  bmheader->h = D3::convert_be(cf_ReadShortRaw(ifile));
-  bmheader->x = D3::convert_be(cf_ReadShortRaw(ifile));
-  bmheader->y = D3::convert_be(cf_ReadShortRaw(ifile));
+  bmheader->w = cf_ReadShort(ifile, false);
+  bmheader->h = cf_ReadShort(ifile, false);
+  bmheader->x = cf_ReadShort(ifile, false);
+  bmheader->y = cf_ReadShort(ifile, false);
 
   bmheader->nplanes = cf_ReadByte(ifile);
   bmheader->masking = cf_ReadByte(ifile);
   bmheader->compression = cf_ReadByte(ifile);
   cf_ReadByte(ifile); /* skip pad */
 
-  bmheader->transparentcolor = D3::convert_be(cf_ReadShortRaw(ifile));
+  bmheader->transparentcolor = cf_ReadShort(ifile, false);
   bmheader->xaspect = cf_ReadByte(ifile);
   bmheader->yaspect = cf_ReadByte(ifile);
 
-  bmheader->pagewidth = D3::convert_be(cf_ReadShortRaw(ifile));
-  bmheader->pageheight = D3::convert_be(cf_ReadShortRaw(ifile));
+  bmheader->pagewidth = cf_ReadShort(ifile, false);
+  bmheader->pageheight = cf_ReadShort(ifile, false);
 
   iff_transparent_color = bmheader->transparentcolor;
 
@@ -396,7 +378,7 @@ int bm_iff_parse_file(CFILE *ifile, iff_bitmap_header *bmheader, iff_bitmap_head
 
     sig = bm_iff_get_sig(ifile);
 
-    len = D3::convert_be(cf_ReadIntRaw(ifile));
+    len = cf_ReadInt(ifile, false);
 
     switch (sig) {
     case IFF_SIG_FORM: {
@@ -580,7 +562,7 @@ int bm_iff_read_animbrush(const char *ifilename, int *bm_list) {
     return -1;
 
   sig = bm_iff_get_sig(ifile);
-  form_len = D3::convert_be(cf_ReadIntRaw(ifile));
+  form_len = cf_ReadInt(ifile, false);
 
   if (sig != IFF_SIG_FORM) {
     mprintf(0, "Not a valid IFF file.\n");
