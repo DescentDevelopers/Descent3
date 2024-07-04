@@ -104,7 +104,7 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
 
   // allocation library structure
   std::shared_ptr<library> lib = std::make_shared<library>();
-#ifdef __LINUX__
+
   // resolve library name
   std::filesystem::path resolve_dir = libname.parent_path();
   std::filesystem::path resolve_name = libname;
@@ -122,9 +122,7 @@ int cf_OpenLibrary(const std::filesystem::path &libname) {
     lib->name = resolve_dir / t_out;
   else
     lib->name = t_out;
-#else
-  lib->name = libname;
-#endif
+
   fp = fopen(lib->name.u8string().c_str(), "rb");
   if (fp == nullptr) {
     return 0; // CF_NO_FILE;
