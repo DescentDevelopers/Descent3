@@ -90,9 +90,8 @@ install(
   DESTINATION ${CMAKE_INSTALL_DOCDIR}
 )
 
-if(UNIX)
-  add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-multichar;${BITS};${EXTRA_CXX_FLAGS}>")
-  add_compile_options("$<$<COMPILE_LANGUAGE:C>:${BITS}>")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  add_compile_options("-Wno-multichar;-Wall")
 endif()
 
 find_package(SDL2 REQUIRED)
