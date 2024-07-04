@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "tests")
+
 add_executable(
   misc_tests
   misc_tests.cpp

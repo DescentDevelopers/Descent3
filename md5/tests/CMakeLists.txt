@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "tests")
+
 add_executable(
   md5_tests
   ../md5.cpp

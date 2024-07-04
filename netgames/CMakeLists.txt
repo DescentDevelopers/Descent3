@@ -1,3 +1,5 @@
+set(CMAKE_FOLDER "netgames")
+
 include_directories("includes")
 add_subdirectory(dmfc)
 add_subdirectory(anarchy)
