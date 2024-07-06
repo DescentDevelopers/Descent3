@@ -274,30 +274,28 @@ void mve_SetRenderProperties(int16_t x, int16_t y, int16_t w, int16_t h, rendere
 
 #ifdef __LINUX__
 // locates the case-sensitive movie file name
-bool mve_FindMovieFileRealName(const char *movie, char *real_name) {
+std::filesystem::path mve_FindMovieFileRealName(const std::filesystem::path &movie) {
   // split into directory and file...
-  char t_dir[_MAX_PATH];
-  char t_file[_MAX_PATH];
-  char t_ext[256];
-  char t_out[_MAX_PATH];
-  ddio_SplitPath(movie, t_dir, t_file, t_ext);
-  // pop the extension back on..
-  strcat(t_file, t_ext);
+  std::filesystem::path t_file = movie.filename();
+  std::filesystem::path t_dir = movie.parent_path();
+  std::filesystem::path t_out;
+
   // found a directory?
-  if (strlen(t_dir) > 0) {
+  if (!t_dir.empty()) {
     // map the bits (or fail)
-    if (!cf_FindRealFileNameCaseInsenstive(t_dir, t_file, t_out))
-      return false;
+    t_out = cf_FindRealFileNameCaseInsensitive(t_file, t_dir);
+    if (t_out.empty())
+      return t_out;
     // re-assemble
-    ddio_MakePath(real_name, t_dir, t_out, NULL);
+    return (t_dir / t_out);
   } else {
     // just a file, map that
-    if (!cf_FindRealFileNameCaseInsenstive(NULL, t_file, t_out))
-      return false;
+    t_out = cf_FindRealFileNameCaseInsensitive(t_file);
+    if (t_out.empty())
+      return t_out;
     // re-assemble
-    strcpy(real_name, t_out);
+    return t_out;
   }
-  return true;
 }
 #endif
 
@@ -305,19 +303,20 @@ bool mve_FindMovieFileRealName(const char *movie, char *real_name) {
 int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
 #ifndef NO_MOVIES
   // first, find that movie..
-  char real_name[_MAX_PATH];
+  std::filesystem::path real_name;
 #ifdef __LINUX__
-  if (!mve_FindMovieFileRealName(pMovieName, real_name)) {
+  real_name = mve_FindMovieFileRealName(pMovieName);
+  if (real_name.empty()) {
     mprintf(0, "MOVIE: No such file %s\n", pMovieName);
     return MVELIB_FILE_ERROR;
   }
 #else
-  strcpy(real_name, pMovieName);
+  real_name = pMovieName;
 #endif
   // open movie file.
-  int hFile = open(real_name, O_RDONLY | O_BINARY);
+  int hFile = open(real_name.u8string().c_str(), O_RDONLY | O_BINARY);
   if (hFile == -1) {
-    mprintf(0, "MOVIE: Unable to open %s\n", real_name);
+    mprintf(0, "MOVIE: Unable to open %s\n", real_name.u8string().c_str());
     return MVELIB_FILE_ERROR;
   }
 
@@ -527,22 +526,22 @@ void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx, 
 
 intptr_t mve_SequenceStart(const char *mvename, int *fhandle, oeApplication *app, bool looping) {
 #ifndef NO_MOVIES
-
   // first, find that movie..
-  char real_name[_MAX_PATH];
+  std::filesystem::path real_name;
 #ifdef __LINUX__
-  if (!mve_FindMovieFileRealName(mvename, real_name)) {
+  real_name = mve_FindMovieFileRealName(mvename);
+  if (real_name.empty()) {
     mprintf(0, "MOVIE: No such file %s\n", mvename);
     *fhandle = -1;
     return 0;
   }
 #else
-  strcpy(real_name, mvename);
+  real_name = mvename;
 #endif
-  int hfile = open(real_name, O_RDONLY | O_BINARY);
+  int hfile = open(real_name.u8string().c_str(), O_RDONLY | O_BINARY);
 
   if (hfile == -1) {
-    mprintf(1, "MOVIE: Unable to open %s\n", real_name);
+    mprintf(1, "MOVIE: Unable to open %s\n", real_name.u8string().c_str());
     *fhandle = -1;
     return 0;
   }
