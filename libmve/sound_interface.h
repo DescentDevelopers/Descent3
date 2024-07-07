@@ -25,19 +25,26 @@
 
 namespace D3 {
 
+/// Abstract class for sound device.
 class ISoundDevice {
 protected:
   std::unique_ptr<std::deque<int16_t>> m_sound_buffer;
   bool m_is_compressed = false;
 
 public:
-  ISoundDevice() { m_sound_buffer = std::make_unique<std::deque<int16_t>>(); };
+  ISoundDevice() { this->m_sound_buffer = std::make_unique<std::deque<int16_t>>(); };
+  /// Play stream
   virtual void Play() {};
+  /// Stop stream
   virtual void Stop() {};
+  /// Lock buffer for various atomic operations
   virtual void Lock() {};
+  /// Unlock buffer
   virtual void Unlock() {};
 
+  /// Get access to sound buffer
   std::unique_ptr<std::deque<int16_t>> &GetBuffer() { return m_sound_buffer; }
+  /// Check if encoded sound is compressed
   [[nodiscard]] bool IsCompressed() const { return m_is_compressed; };
 
 };

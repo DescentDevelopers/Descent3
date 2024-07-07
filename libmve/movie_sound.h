@@ -25,16 +25,35 @@
 
 namespace D3 {
 
+/// Implementation class for sound device used on movie playback.
 class MovieSoundDevice : ISoundDevice {
 private:
   SDL_AudioDeviceID m_device_id = 0;
 
 public:
+  /**
+   * Initialize sound device
+   * @param sample_rate sample rate in Hz (22050, 44100...)
+   * @param sample_size sample size (8, 16)
+   * @param channels count of channels (1 for mono, 2 for stereo)
+   * @param buf_size buffer size for SDL audio device
+   * @param is_compressed mark stream as compressed (on streaming will be used decompression functions)
+   */
   MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_t channels, uint32_t buf_size, bool is_compressed);
   ~MovieSoundDevice();
 
+  /**
+   * Check if sound device is properly initialized
+   * @return true on success
+   */
   [[nodiscard]] bool IsInitialized() const { return m_device_id > 0; }
 
+  /**
+   * Callback for filling SDL audio buffer
+   * @param userdata pointer to instance of this class
+   * @param stream stream that will be filled on callback
+   * @param len length of stream
+   */
   void static SDLAudioCallback(void *userdata, unsigned char *stream, int len);
 
   void Play() override;
