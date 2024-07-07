@@ -17,7 +17,7 @@
  */
 
 #include <functional>
-#include "lnx_sound.h"
+#include "movie_sound.h"
 
 namespace D3 {
 

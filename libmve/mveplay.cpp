@@ -30,7 +30,7 @@
 #include "mve_audio.h"
 
 #ifdef AUDIO
-#include "lnx_sound.h"
+#include "movie_sound.h"
 #endif
 
 #define MVE_OPCODE_ENDOFSTREAM 0x00           // mcmd_end
@@ -156,7 +156,6 @@ static void do_timer_wait() {
 
   ts = timer_expire - tv;
 
-  //mprintf(0,"SLEEP for %llu us, buffer size is %d\n", ts, snd_ds->GetBuffer()->size());
   timer_sleepmicroseconds(ts);
 
 end:
@@ -278,10 +277,6 @@ static int create_videobuf_handler(unsigned char major, unsigned char minor, uns
   }
 
   memset(g_vBackBuf1, 0, g_width * g_height * 4);
-
-#ifdef DEBUG
-  fprintf(stderr, "DEBUG: w,h=%d,%d count=%d, tc=%d\n", w, h, count, truecolor);
-#endif
 
   g_truecolor = truecolor;
 

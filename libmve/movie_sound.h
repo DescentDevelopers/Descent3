@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LIBMVE_LNX_SOUND_H_
-#define LIBMVE_LNX_SOUND_H_
+#ifndef LIBMVE_MOVIE_SOUND_H_
+#define LIBMVE_MOVIE_SOUND_H_
 
 #include <SDL_audio.h>
 
@@ -49,4 +49,4 @@ public:
 
 }
 
-#endif // LIBMVE_LNX_SOUND_H_
+#endif // LIBMVE_MOVIE_SOUND_H_
