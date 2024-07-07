@@ -646,25 +646,6 @@ bool ddio_GetParentPath(char *dest, const char *srcPath) {
   return true;
 }
 
-// Finds a full path from a relative path
-// Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
-//					rel_path - a path specification, either relative or absolute
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path) {
-  char old_path[_MAX_PATH];
-
-  ddio_GetWorkingDir(old_path, sizeof(old_path)); // save old directory
-
-  if (!ddio_SetWorkingDir(rel_path)) // try switching to new directory
-    return 0;                        // couldn't switch, so return error
-
-  ddio_GetWorkingDir(full_path, _MAX_PATH); // get path from the OS
-
-  ddio_SetWorkingDir(old_path); // now restore old path
-
-  return 1;
-}
-
 // Generates a temporary filename based on the prefix, and basedir
 // Parameters:
 //		basedir - directory to put the files

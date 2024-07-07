@@ -374,12 +374,6 @@ bool ddio_GetParentPath(char *dest, const char *srcPath);
 //		dest should be at least _MAX_PATH in size
 void ddio_CleanPath(char *dest, const char *srcPath);
 
-// Finds a full path from a relative path
-// Parameters:	full_path - filled in with the fully-specified path.  Buffer must be at least _MAX_PATH bytes long
-//					rel_path - a path specification, either relative or absolute
-// Returns TRUE if successful, FALSE if an error
-bool ddio_GetFullPath(char *full_path, const char *rel_path);
-
 // Generates a temporary filename based on the prefix, and basedir
 // Parameters:
 //		basedir - directory to put the files
