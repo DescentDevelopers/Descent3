@@ -28,6 +28,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+if(MSVC)
+  add_compile_options(/source-charset:UTF-8)
+else()
+  add_compile_options(-finput-charset=UTF-8)
+endif()
+
 if(FORCE_COLORED_OUTPUT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
     set(CMAKE_COLOR_DIAGNOSTICS ON)
