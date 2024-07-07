@@ -33,8 +33,6 @@
 
 namespace {
 MovieFrameCallback_fp Movie_callback = nullptr;
-char MovieDir[512];
-char SoundCardName[512];
 uint16_t CurrentPalette[256];
 int Movie_bm_handle = -1;
 uint32_t Movie_current_framenum = 0;
@@ -45,7 +43,7 @@ static void *CallbackAlloc(uint32_t size);
 static void CallbackFree(void *p);
 static uint32_t CallbackFileRead(void *stream, void *pBuffer, uint32_t bufferCount);
 static void InitializePalette();
-static void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count);
+static void CallbackSetPalette(const uint8_t *pBuffer, uint32_t start, uint32_t count);
 static void CallbackShowFrame(uint8_t *buf, uint32_t bufw, uint32_t bufh, uint32_t sx,
                               uint32_t sy, uint32_t w, uint32_t h, uint32_t dstx, uint32_t dsty,
                               uint32_t hicolor);
@@ -58,8 +56,6 @@ static void mve_CloseSound();
 // sets the directory where movies are stored
 int mve_Init(const char *dir, const char *sndcard) {
 #ifndef NO_MOVIES
-  strcpy(MovieDir, dir);
-  strcpy(SoundCardName, sndcard);
   return MVELIB_NOERROR;
 #else
   return MVELIB_INIT_ERROR;
@@ -124,16 +120,10 @@ int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
     return MVELIB_FILE_ERROR;
   }
 
-  // determine the movie type
-  const char *pExtension = strrchr(pMovieName, '.');
-  bool highColor = (pExtension != NULL && stricmp(pExtension, ".mv8") != 0);
-
   // setup
-  // MVE_rmFastMode(MVE_RM_NORMAL);
   MVE_sfCallbacks(CallbackShowFrame);
   MVE_memCallbacks(CallbackAlloc, CallbackFree);
   MVE_ioCallbacks(CallbackFileRead);
-  // MVE_sfSVGA(640, 480, 480, 0, NULL, 0, 0, NULL, highColor ? 1 : 0);
   MVE_palCallbacks(CallbackSetPalette);
   InitializePalette();
   Movie_bm_handle = -1;
@@ -207,12 +197,12 @@ uint32_t CallbackFileRead(void *stream, void *pBuffer, uint32_t bufferCount) {
 }
 
 void InitializePalette() {
-  for (int i = 0; i < 256; ++i) {
-    CurrentPalette[i] = OPAQUE_FLAG | GR_RGB16(0, 0, 0);
+  for (unsigned short & i : CurrentPalette) {
+    i = OPAQUE_FLAG | GR_RGB16(0, 0, 0);
   }
 }
 
-void CallbackSetPalette(uint8_t *pBuffer, uint32_t start, uint32_t count) {
+void CallbackSetPalette(const uint8_t *pBuffer, uint32_t start, uint32_t count) {
 #ifndef NO_MOVIES
   pBuffer += start * 3;
 
@@ -384,7 +374,6 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
   }
 
   // setup
-  //MVE_rmFastMode(MVE_RM_NORMAL);
   MVE_memCallbacks(CallbackAlloc, CallbackFree);
   MVE_ioCallbacks(CallbackFileRead);
   MVE_sfCallbacks(CallbackShowFrameNoFlip);

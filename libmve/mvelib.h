@@ -32,7 +32,7 @@ typedef void (*mve_cb_ShowFrame)(unsigned char *buffer, unsigned int bufw, unsig
                                  unsigned int sy, unsigned int w, unsigned int h, unsigned int dstx, unsigned int dsty,
                                  unsigned int hicolor);
 /* callback for setting palette */
-typedef void (*mve_cb_SetPalette)(unsigned char *p, unsigned int start, unsigned int count);
+typedef void (*mve_cb_SetPalette)(const unsigned char *p, unsigned int start, unsigned int count);
 /* callback for segment type */
 typedef int (*MVESEGMENTHANDLER)(unsigned char major, unsigned char minor, unsigned char *data, int len, void *context);
 
