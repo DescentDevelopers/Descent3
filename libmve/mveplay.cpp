@@ -476,12 +476,6 @@ void MVE_rmEndMovie(MVESTREAM *mve) {
 
 void MVE_rmHoldMovie() { timer_started = 0; }
 
-void MVE_sndInit(ISoundDevice *lpDS) {
-#ifdef AUDIO
-  // snd_ds = lpDS;
-#endif
-}
-
 void MVE_sndInit(int x) {
 #ifdef AUDIO
   if (x == -1)

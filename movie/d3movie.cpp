@@ -16,23 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef __LINUX__
-#include <unistd.h>
-#include "lnxdsound.h"
-#endif
-
-
-#ifdef WIN32
-#include <windows.h>
-#include <mmsystem.h>
-#include <io.h>
-#include "dsound.h"
-#endif
-
 #include <cstring>
 
 #include "movie.h"
-//#include "mvelibw.h"
 #include "mvelib.h"
 #include "pserror.h"
 #include "renderer.h"

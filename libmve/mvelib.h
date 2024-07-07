@@ -21,8 +21,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "SystemInterfaces.h"
-
 /* callback for reading stream */
 typedef unsigned int (*mve_cb_Read)(void *stream, void *buffer, unsigned int count);
 /* callback for memore allocating */
@@ -76,8 +74,6 @@ void MVE_rmHoldMovie();
 void MVE_rmEndMovie(MVESTREAM *mve);
 
 void MVE_getVideoSpec(MVE_videoSpec *vSpec);
-
-void MVE_sndInit(ISoundDevice *lpDS);
 
 void MVE_sndInit(int x);
 
