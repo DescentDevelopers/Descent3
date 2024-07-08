@@ -912,6 +912,7 @@
 #include <cstring>
 #include <ctime>
 #include <filesystem>
+#include <regex>
 
 #include "mono.h"
 #include "gametexture.h"
@@ -1003,8 +1004,8 @@ static bool Init_in_editor = false;
 static void SetInitMessageLength(const char *c, float amount); // portion of total bar to fill (0 to 1)
 extern void UpdateInitMessage(float amount);                   // amount is 0 to 1
 static void SetupTempDirectory(void);
-static void DeleteTempFiles(void);
-static void PreGameCdCheck();
+// Delete all temp files with regex "d3[smocti].+\\.tmp"
+static void DeleteTempFiles();
 static void InitIOSystems(bool editor);
 static void InitStringTable();
 static void InitGraphics(bool editor);
@@ -1386,13 +1387,6 @@ void LoadGameSettings() {
   }
 }
 
-struct tTempFileInfo {
-  const char *wildcard;
-};
-static const tTempFileInfo temp_file_wildcards[] = {{"d3s*.tmp"}, {"d3m*.tmp"}, {"d3o*.tmp"},
-                                                    {"d3c*.tmp"}, {"d3t*.tmp"}, {"d3i*.tmp"}};
-static const int num_temp_file_wildcards = sizeof(temp_file_wildcards) / sizeof(tTempFileInfo);
-
 /*
         I/O systems initialization
 */
@@ -1663,13 +1657,6 @@ void UpdateInitMessage(float amount) {
   if (Init_in_editor)
     return;
   InitMessage(Init_messagebar_text, (amount * Init_messagebar_portion) + Init_messagebar_offset);
-  /*
-    mprintf(0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n",
-            amount,
-            Init_messagebar_portion,
-            Init_messagebar_offset,
-            (amount*Init_messagebar_portion)+Init_messagebar_offset);
-  */
 }
 
 void InitMessage(const char *c, float progress) {
@@ -2063,24 +2050,14 @@ void SetupTempDirectory(void) {
   ddio_SetWorkingDir(Base_directory);
 }
 
-void DeleteTempFiles(void) {
-  char filename[_MAX_PATH];
-
-  // delete the d3 temp files in the temp directory
-  if (ddio_SetWorkingDir(Descent3_temp_directory)) {
-    int i;
-    for (i = 0; i < num_temp_file_wildcards; i++) {
-      if (ddio_FindFileStart(temp_file_wildcards[i].wildcard, filename)) {
-        do {
-          ddio_DeleteFile(filename);
-        } while (ddio_FindNextFile(filename));
-      }
-      ddio_FindFileClose();
+void DeleteTempFiles() {
+  ddio_DoForeachFile(Descent3_temp_directory, std::regex("d3[smocti].+\\.tmp"), [](const std::filesystem::path &path) {
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    if (ec) {
+      mprintf(0, "Unable to remove temporary file %s: %s\n", path.u8string().c_str(), ec.message().c_str());
     }
-  }
-
-  // restore directory
-  ddio_SetWorkingDir(Base_directory);
+  });
 }
 
 /*
