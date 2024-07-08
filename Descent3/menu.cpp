@@ -713,7 +713,6 @@ bool IsRestoredGame = false;
 //////////////////////////////////////////////////////////////////////////////
 extern bool Demo_looping;
 bool FirstGame = false;
-char msnname[128];
 
 int MainMenu() {
   extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
@@ -1356,10 +1355,6 @@ redo_newgame_menu:
     char *nameptr = NULL;
     if (index >= 0 && index < n_missions) {
       nameptr = filelist[index];
-      tMissionInfo msninfo;
-      if (GetMissionInfo(nameptr, &msninfo)) {
-        strcpy(msnname, msninfo.name);
-      }
     }
 #ifndef OEM
     if (!nameptr || !LoadMission(nameptr)) {
@@ -1385,7 +1380,7 @@ redo_newgame_menu:
 #endif
       if (highest > 1) {
         int start_level;
-        start_level = DisplayLevelSelectDlg(highest);
+        start_level = DisplayLevelSelectDlg(highest, Current_mission.name);
         if (start_level == -1) {
           goto redo_newgame_menu;
         } else {
@@ -1458,7 +1453,7 @@ redo_level_choose:
 
 // DisplayLevelSelectDlg
 // displays a list of levels associated with the selected mission
-int DisplayLevelSelectDlg(int max_level) {
+int DisplayLevelSelectDlg(int max_level, const char* msnname) {
   newuiTiledWindow lvlsel;
   newuiSheet *select_sheet;
   newuiListBox *level_lb;

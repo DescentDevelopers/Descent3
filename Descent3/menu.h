@@ -58,6 +58,8 @@
 #include "pstypes.h"
 #include "grdefs.h"
 
+#include <array>
+
 #define MAX_MENUS 5
 
 #define MAX_MENU_ITEMS 50
@@ -112,16 +114,13 @@ int DisplayLevelWarpDlg(int max_level);
 
 // DisplayLevelSelectDlg
 // displays a list of levels associated with the selected mission
-int DisplayLevelSelectDlg(int max_level);
+int DisplayLevelSelectDlg(int max_level, const char* msnname);
 
 // Array of special missions
-inline const char* SpecialMissions[] = {
-  "d3.mn3",
-  "merc.mn3"
-};
+inline std::array<const char*, 2> SpecialMissions = { "d3.mn3", "merc.mn3" };
 
 // Array of level names for Descent 3: Retribution
-inline const char* RetributionNames[] = {
+inline std::array<const char*, 17> RetributionNames = {
   "Deimos - PTMC Data Retention Center",              // Level 1
   "Phobos - Novak Corporate Prison",                  // Level 2
   "Tiris - PTMC Piccu Station Facility",              // Level 3
@@ -142,7 +141,7 @@ inline const char* RetributionNames[] = {
 };
 
 // Array of level names for Descent 3: Mercenary
-inline const char* MercenaryNames[] = {
+inline std::array<const char*, 7> MercenaryNames = {
   "PTMC Mars Colony",                         // Level 1
   "CED Special Operations - Central Europe",  // Level 2
   "CED Deep Space Tracking Station",          // Level 3
