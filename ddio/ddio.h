@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -193,6 +193,8 @@
 #include <cstdio>
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <regex>
 
 #include "chrono_timer.h"
 #include "ddio_common.h"
@@ -352,6 +354,16 @@ int ddio_GetFileSysRoots(char **roots, int max_roots);
 //		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
 void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
 
+/**
+ * Execute function for each file that matches to regex
+ * @param search_path base directory
+ * @param regex regular expression for matching
+ * @param func function callback
+ * @return number of processed files
+ */
+int ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
+                       const std::function<void(std::filesystem::path)> &func);
+
 //	These functions allow one to find a file
 //		You use FindFileStart by giving it a wildcard (like *.*, *.txt, u??.*, whatever).  It returns
 //		a filename in namebuf.
@@ -403,13 +415,13 @@ int ddio_GetPID();
  * @return true if lock file successfully created, false otherwise (unable to
  * create, lock file already created by another process etc).
  */
-bool ddio_CreateLockFile(const std::filesystem::path& dir);
+bool ddio_CreateLockFile(const std::filesystem::path &dir);
 
 /**
  * Deletes a lock file (for the current process) in the specified directory
  * @param dir Directory for which the lock file should be deleted from
  * @return true if lock file successfully deleted, false otherwise
  */
-bool ddio_DeleteLockFile(const std::filesystem::path& dir);
+bool ddio_DeleteLockFile(const std::filesystem::path &dir);
 
 #endif
