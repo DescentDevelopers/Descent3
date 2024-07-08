@@ -110,4 +110,46 @@ void MenuOptions(bool ingame);
 //	pass in the max level allowed to be chosen, if -1, than all levels are allowed (a.k.a level warp cheat)
 int DisplayLevelWarpDlg(int max_level);
 
+// DisplayLevelSelectDlg
+// displays a list of levels associated with the selected mission
+int DisplayLevelSelectDlg(int max_level);
+
+// Array of special missions
+inline const char* SpecialMissions[] = {
+  "d3.mn3",
+  "merc.mn3"
+};
+
+// Array of level names for Descent 3: Retribution
+inline const char* RetributionNames[] = {
+  "Deimos - PTMC Data Retention Center",              // Level 1
+  "Phobos - Novak Corporate Prison",                  // Level 2
+  "Tiris - PTMC Piccu Station Facility",              // Level 3
+  "Earth - PTMC Corporate Headquarters",              // Level 4
+  "Mars - Red Acropolis Research Facility",           // Level 5
+  "Mars - Noctis Labyrinthus Canyons",                // Level 6
+  "Ceres - PTMC Secret Research Bunker C4",           // Level 7
+  "Europa - PTMC Fuel Refinery Dol Ammad",            // Level 8
+  "Mercury - PTMC Spacecraft Factory",                // Level 9
+  "The Moon - CED Lunar Command Center",              // Level 10
+  "Titan - PTMC Storage Facility",                    // Level 11
+  "Charon - PTMC Proving Grounds",                    // Level 12 
+  "Mars Orbit - CED Expediator Flagship Carrier",     // Level 13
+  "Earth Orbit - CED Strategic Operations Platform",  // Level 14
+  "Venus - Dravis' Stronghold",                       // Level 15
+  "Origin Zero",                                      // Secret 1
+  "H.V.W.R.C."                                        // Secret 2
+};
+
+// Array of level names for Descent 3: Mercenary
+inline const char* MercenaryNames[] = {
+  "PTMC Mars Colony",                         // Level 1
+  "CED Special Operations - Central Europe",  // Level 2
+  "CED Deep Space Tracking Station",          // Level 3
+  "Alien Planetoid-Zeta Aquilae System",      // Level 4
+  "Tiris - PTMC Secret Laboratory",           // Level 5
+  "PTMC Cesium Mine - Io, Moon of Jupiter",   // Level 6
+  "Earth - PTMC Corporate Headquarters"       // Level 7
+};
+
 #endif

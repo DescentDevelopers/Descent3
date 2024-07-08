@@ -713,6 +713,7 @@ bool IsRestoredGame = false;
 //////////////////////////////////////////////////////////////////////////////
 extern bool Demo_looping;
 bool FirstGame = false;
+char msnname[128];
 
 int MainMenu() {
   extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
@@ -1062,6 +1063,7 @@ bool ProcessCommandLine() {
 #define MSNBTN_X2 ((3 * MSNDLG_WIDTH / 4) - (MSNBTN_W / 2))
 #define MSNBTN_Y (MSNDLG_HEIGHT - 64)
 #define UID_MSNLB 100
+#define UID_LVLB 100
 #define UID_MSNINFO 0x1000
 #define TRAINING_MISSION_NAME "Pilot Training"
 static inline int count_missions(const char *pathname, const char *wildcard) {
@@ -1096,6 +1098,42 @@ static inline int count_missions(const char *pathname, const char *wildcard) {
   }
   return c;
 }
+static inline int generate_special_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist, const char *pathname,
+                                                   const char *wildcard) {
+  int c = 0;
+  char fullpath[_MAX_PATH];
+  char filename[_MAX_PATH];
+  ddio_MakePath(fullpath, pathname, wildcard, NULL);
+
+  if (ddio_FindFileStart(fullpath, filename)) {
+    do {
+      tMissionInfo msninfo;
+      if (n_maxfiles > c) {
+        ddio_MakePath(fullpath, pathname, filename, NULL);
+        bool is_special = false;
+        for (const auto& special : SpecialMissions) {
+          if (stricmp(special, filename) == 0) {
+            is_special = true;
+            break;
+          }
+        }
+        if (!is_special) {
+          continue;
+        }
+        if (GetMissionInfo(filename, &msninfo) && msninfo.name[0] && msninfo.single) {
+          filelist[c] = mem_strdup(filename);
+          lb->AddItem(msninfo.name);
+          filename[0] = 0;
+          c++;
+          if (!(c % 2))
+            DoWaitMessage(true);
+        }
+      }
+    } while (ddio_FindNextFile(filename));
+        ddio_FindFileClose();
+  }
+  return c;
+}
 static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist, const char *pathname,
                                            const char *wildcard) {
   int c = 0;
@@ -1110,6 +1148,16 @@ static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, cha
         ddio_MakePath(fullpath, pathname, filename, NULL);
         if (stricmp("d3_2.mn3", filename) == 0)
           continue;
+        bool is_special = false;
+        for (const auto& special : SpecialMissions) {
+          if (stricmp(special, filename) == 0) {
+            is_special = true;
+            break;
+          }
+        }
+        if (is_special) {
+          continue;
+        }
         if (GetMissionInfo(filename, &msninfo) && msninfo.name[0] && msninfo.single) {
           // if (!msninfo.training || (msninfo.training && Current_pilot.find_mission_data(TRAINING_MISSION_NAME)!= -1))
           // {
@@ -1196,7 +1244,7 @@ bool MenuNewGame() {
 
   select_sheet = menu.GetSheet();
   select_sheet->NewGroup(NULL, 10, 0);
-  msn_lb = select_sheet->AddListBox(352, 256, UID_MSNLB);
+  msn_lb = select_sheet->AddListBox(352, 256, UID_MSNLB, UILB_NOSORT);
   select_sheet->NewGroup(NULL, 160, 280, NEWUI_ALIGN_HORIZ);
   select_sheet->AddButton(TXT_OK, UID_OK);
   select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
@@ -1228,6 +1276,7 @@ bool MenuNewGame() {
 #ifndef RELEASE
   i = generate_mission_listbox(msn_lb, n_missions, filelist, LocalLevelsDir, "*.msn");
 #endif
+  i += generate_special_mission_listbox(msn_lb, n_missions - i, filelist + i, D3MissionsDir, "*.mn3");
   i += generate_mission_listbox(msn_lb, n_missions - i, filelist + i, D3MissionsDir, "*.mn3");
   // #ifdef RELEASE
   int k;
@@ -1307,6 +1356,10 @@ redo_newgame_menu:
     char *nameptr = NULL;
     if (index >= 0 && index < n_missions) {
       nameptr = filelist[index];
+      tMissionInfo msninfo;
+      if (GetMissionInfo(nameptr, &msninfo)) {
+        strcpy(msnname, msninfo.name);
+      }
     }
 #ifndef OEM
     if (!nameptr || !LoadMission(nameptr)) {
@@ -1319,16 +1372,20 @@ redo_newgame_menu:
       //	if we didn't escape out of any part of new game start, then go to game.
       int highest;
       CurrentPilotUpdateMissionStatus(true);
-      // gets highest level flown for mission
+      // gets highest level flown for mission, if completed just show everything
 #if defined(_DEBUG) || defined(DAJ_DEBUG)
       highest = Current_mission.num_levels;
 #else
-      highest = PilotGetHighestLevelAchieved(&Current_pilot, Current_mission.name);
-      highest = std::min(highest + 1, Current_mission.num_levels);
+      if (HasPilotFinishedMission(&Current_pilot, Current_mission.name)) {
+        highest = Current_mission.num_levels;
+      } else {
+        highest = PilotGetHighestLevelAchieved(&Current_pilot, Current_mission.name);
+        highest = std::min(highest + 1, Current_mission.num_levels);
+      }
 #endif
       if (highest > 1) {
         int start_level;
-        start_level = DisplayLevelWarpDlg(highest);
+        start_level = DisplayLevelSelectDlg(highest);
         if (start_level == -1) {
           goto redo_newgame_menu;
         } else {
@@ -1396,6 +1453,89 @@ redo_level_choose:
     chosen_level = -1;
   }
   hwnd.Destroy();
+  return chosen_level;
+}
+#ifdef _DEBUG
+// Loads a level and starts the game
+bool MenuLoadLevel(void) {
+  char buffer[_MAX_PATH];
+  buffer[0] = '\0';
+  if (DoPathFileDialog(false, buffer, "Load Level", "*.d3l", PFDF_FILEMUSTEXIST)) {
+    SimpleStartLevel(buffer);
+    SetFunctionMode(GAME_MODE);
+    return true;
+  }
+  return false;
+}
+#endif
+
+// DisplayLevelSelectDlg
+// displays a list of levels associated with the selected mission
+int DisplayLevelSelectDlg(int max_level) {
+  newuiTiledWindow lvlsel;
+  newuiSheet *select_sheet;
+  newuiListBox *level_lb;
+  level_info lvinfo;
+  char level_name[100];
+  int chosen_level = 1, res;
+  char buffer[128];
+  int highest_allowed;
+
+  // Create the menu
+  lvlsel.Create(msnname, 0, 0, 448, 384);
+  select_sheet = lvlsel.GetSheet();
+  select_sheet->NewGroup(NULL, 10, 0);
+  level_lb = select_sheet->AddListBox(352, 256, UID_LVLB, UILB_NOSORT);
+  select_sheet->NewGroup(NULL, 160, 280, NEWUI_ALIGN_HORIZ);
+  select_sheet->AddButton(TXT_OK, UID_OK);
+  select_sheet->AddButton(TXT_CANCEL, UID_CANCEL);
+
+  // Loop through the levels
+  for (int level = 1; level <= max_level; ++level) {
+    // Check if msnname matches core mission names, if so use the arrays for level names
+    // Otherwise, try to get the level name from the level info
+    if (strcmp(msnname, "Descent 3: Retribution") == 0) {
+      if (level >= 1 && level <= sizeof(RetributionNames) / sizeof(RetributionNames[0])) {
+        if (level > 15) { // If they're the secret levels we use a different format
+          snprintf(level_name, sizeof(level_name), "Secret Lv - %s", RetributionNames[level - 1]);
+        } else {
+          snprintf(level_name, sizeof(level_name), "Lv %02d - %s", level, RetributionNames[level - 1]);
+        }
+      }
+    } else if (strcmp(msnname, "Descent 3: Mercenary") == 0) {
+        if (level >= 1 && level <= sizeof(MercenaryNames) / sizeof(MercenaryNames[0])) {
+          snprintf(level_name, sizeof(level_name), "Lv %02d - %s", level, MercenaryNames[level - 1]);
+        }
+    } else if (lvinfo.name[0] != '\0') {
+        snprintf(level_name, sizeof(level_name), "Lv %02d - %s", level, lvinfo.name);
+    } else {
+        snprintf(level_name, sizeof(level_name), "Lv %02d - No Name Given", level);
+    }
+
+    level_lb->AddItem(level_name);
+  }
+
+  // Open the menu and handle user interactions
+  lvlsel.Open();
+  do {
+    res = lvlsel.DoUI();
+    if (res == UID_OK || res == UID_LVLB) {
+      int index = level_lb->GetCurrentIndex();
+      chosen_level = index + 1; // Levels are 1-based
+      if (chosen_level < 1 || chosen_level > max_level) {
+        DoMessageBox(TXT_ERROR, TXT_CHOOSELEVEL, MSGBOX_OK);
+        continue; // Allow another selection
+      }
+      if (res == UID_LVLB) {
+        res = UID_OK;
+      }
+    } else if (res == UID_CANCEL) {
+        chosen_level = -1;
+      }
+  } while (res != UID_OK && res != UID_CANCEL);
+
+  lvlsel.Close();
+  lvlsel.Destroy();
   return chosen_level;
 }
 #ifdef _DEBUG
