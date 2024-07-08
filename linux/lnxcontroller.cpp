@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -439,7 +439,8 @@ ct_config_data lnxgameController::get_controller_value(ct_type type_req) {
 }
 
 //	sets the configuration of a function (type must be of an array == CTLBINDS_PER_FUNC)
-void lnxgameController::set_controller_function(int id, const ct_type *type, ct_config_data value, const uint8_t *flags) {
+void lnxgameController::set_controller_function(int id, const ct_type *type, ct_config_data value,
+                                                const uint8_t *flags) {
   ct_element elem;
 
   if (id >= CT_MAX_ELEMENTS)
@@ -1399,96 +1400,91 @@ int CTLLex(const char *command) {
 
 // okay, now search for a '****.ctl' file in the current directory.
 void lnxgameController::parse_ctl_file(int devnum, const char *ctlname) {
-  //	parse each file until we find a name match, no name match, just return
-  char filename[_MAX_FNAME];
-  int i;
+  // parse each file until we find a name match, no name match, just return
+  ddio_DoForeachFile(
+      Base_directory, std::regex(".*\\.ctl"), [this, &devnum, &ctlname](const std::filesystem::path &path) {
+        InfFile file;
+        bool found_name = false;
 
-  if (ddio_FindFileStart("*.ctl", filename)) {
-    do {
-      InfFile file;
-      bool found_name = false;
+        if (file.Open(path.filename(), "[controller settings]", CTLLex)) {
+          // parse each line, setting the appropriate values, etc.
+          while (file.ReadLine()) {
+            int cmd;
+            char operand[128];
 
-      if (file.Open(filename, "[controller settings]", CTLLex)) {
-        // parse each line, setting the appropriate values, etc.
-        while (file.ReadLine()) {
-          int cmd;
-          char operand[128];
+            while ((cmd = file.ParseLine(operand, INFFILE_LINELEN)) > INFFILE_ERROR) {
+              // we want to assert that the name command comes before any other to verify
+              // this is the file we really want to change.
+              switch (cmd) {
+              case CTLCMD_NAME:
+                if (strcmp(ctlname, operand) != 0)
+                  goto cancel_file_parse;
+                found_name = true;
+                break;
 
-          while ((cmd = file.ParseLine(operand, INFFILE_LINELEN)) > INFFILE_ERROR) {
-            // we want to assert that the name command comes before any other to verify
-            // this is the file we really want to change.
-            switch (cmd) {
-            case CTLCMD_NAME:
-              if (strcmp(ctlname, operand) != 0)
-                goto cancel_file_parse;
-              found_name = true;
-              break;
+              case CTLCMD_DEAD: // deadzone
+                if (!found_name)
+                  goto cancel_file_parse;
+                else {
+                  m_ControlList[devnum].deadzone = atof(operand);
+                }
+                break;
 
-            case CTLCMD_DEAD: // deadzone
-              if (!found_name)
-                goto cancel_file_parse;
-              else {
-                m_ControlList[devnum].deadzone = atof(operand);
-              }
-              break;
-
-            case CTLCMD_AXIS: // allowable axis.
-                              // format of command is "+Z-R"
-                              //	this would add a Z axis to the controller.  -R would remove the Rudder.
-                              // you can do this for X,Y,Z,R,U,V.
-              if (!found_name)
-                goto cancel_file_parse;
-              else {
-                int slen = strlen(operand);
-                for (i = 0; i <= slen; i += 2) {
-                  int axis_flag;
-                  if ((i + 1) <= slen) {
-                    char axis_cmd = tolower(operand[i + 1]);
-                    if (axis_cmd == 'x')
-                      axis_flag = CTF_X_AXIS;
-                    else if (axis_cmd == 'y')
-                      axis_flag = CTF_Y_AXIS;
-                    else if (axis_cmd == 'z')
-                      axis_flag = CTF_Z_AXIS;
-                    else if (axis_cmd == 'r')
-                      axis_flag = CTF_R_AXIS;
-                    else if (axis_cmd == 'u')
-                      axis_flag = CTF_U_AXIS;
-                    else if (axis_cmd == 'v')
-                      axis_flag = CTF_V_AXIS;
-                    else
-                      axis_flag = 0;
-                    if (operand[i] == '+') {
-                      m_ControlList[devnum].flags |= axis_flag;
-                    } else if (operand[i] == '-') {
-                      m_ControlList[devnum].flags &= (~axis_flag);
+              case CTLCMD_AXIS: // allowable axis.
+                                // format of command is "+Z-R"
+                                //	this would add a Z axis to the controller.  -R would remove the Rudder.
+                                // you can do this for X,Y,Z,R,U,V.
+                if (!found_name)
+                  goto cancel_file_parse;
+                else {
+                  int slen = strlen(operand);
+                  for (int i = 0; i <= slen; i += 2) {
+                    int axis_flag;
+                    if ((i + 1) <= slen) {
+                      char axis_cmd = tolower(operand[i + 1]);
+                      if (axis_cmd == 'x')
+                        axis_flag = CTF_X_AXIS;
+                      else if (axis_cmd == 'y')
+                        axis_flag = CTF_Y_AXIS;
+                      else if (axis_cmd == 'z')
+                        axis_flag = CTF_Z_AXIS;
+                      else if (axis_cmd == 'r')
+                        axis_flag = CTF_R_AXIS;
+                      else if (axis_cmd == 'u')
+                        axis_flag = CTF_U_AXIS;
+                      else if (axis_cmd == 'v')
+                        axis_flag = CTF_V_AXIS;
+                      else
+                        axis_flag = 0;
+                      if (operand[i] == '+') {
+                        m_ControlList[devnum].flags |= axis_flag;
+                      } else if (operand[i] == '-') {
+                        m_ControlList[devnum].flags &= (~axis_flag);
+                      } else {
+                        goto cancel_file_parse;
+                      }
                     } else {
-                      goto cancel_file_parse;
+                      break; // this should break out of the axis search but continue with the file
                     }
-                  } else {
-                    break; // this should break out of the axis search but continue with the file
                   }
                 }
-              }
-              break;
+                break;
 
-            case CTLCMD_SX: // allow modification of global sensitivity modifiers
-            case CTLCMD_SY:
-            case CTLCMD_SZ:
-            case CTLCMD_SR:
-            case CTLCMD_SU:
-            case CTLCMD_SV: {
-              int idx = (cmd - CTLCMD_SX);
-              m_ControlList[devnum].sensmod[idx] = atof(operand);
-              break;
-            }
+              case CTLCMD_SX: // allow modification of global sensitivity modifiers
+              case CTLCMD_SY:
+              case CTLCMD_SZ:
+              case CTLCMD_SR:
+              case CTLCMD_SU:
+              case CTLCMD_SV: {
+                int idx = (cmd - CTLCMD_SX);
+                m_ControlList[devnum].sensmod[idx] = atof(operand);
+                break;
+              }
+              }
             }
           }
+        cancel_file_parse:
+          file.Close();
         }
-      cancel_file_parse:
-        file.Close();
-      }
-    } while (ddio_FindNextFile(filename));
-    ddio_FindFileClose();
-  }
+      });
 }
