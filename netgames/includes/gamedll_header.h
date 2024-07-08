@@ -19,6 +19,8 @@
 #ifndef GAMEDLL_HEADER_H
 #define GAMEDLL_HEADER_H
 
+#include <filesystem>
+
 #include "spew.h"
 #include "gamefont.h"
 #include "hud.h"
@@ -384,7 +386,7 @@ DMFCDLLOUT(rend_DrawScaledChunkedBitmap_fp DLLrend_DrawScaledChunkedBitmap;)
 // Parameters:	filename - the name if the file, with or without a path
 //					mode - the standard C mode string
 // Returns:		the CFile handle, or NULL if file not opened
-typedef void (*OpenCFILE_fp)(CFILE **handle, const char *filename, const char *mode);
+typedef void (*OpenCFILE_fp)(CFILE **handle, const std::filesystem::path &filename, const char *mode);
 DMFCDLLOUT(OpenCFILE_fp DLLOpenCFILE;)
 
 // Closes an open CFILE.
@@ -399,7 +401,7 @@ DMFCDLLOUT(cfeof_fp DLLcfeof;)
 // Tells if the file exists
 // Returns non-zero if file exists.  Also tells if the file is on disk
 //	or in a hog -  See return values in cfile.h
-typedef int (*cfexist_fp)(const char *filename);
+typedef int (*cfexist_fp)(const std::filesystem::path &filename);
 DMFCDLLOUT(cfexist_fp DLLcfexist;)
 
 // Reads the specified number of bytes from a file into the buffer
@@ -577,7 +579,7 @@ DMFCDLLOUT(FindWeaponName_fp DLLFindWeaponName;)
 // Opens a HOG file.  Future calls to cfopen(), etc. will look in this HOG.
 // Parameters:  libname - the path & filename of the HOG file
 // Returns: 0 if error, else library handle that can be used to close the library
-typedef int (*cf_OpenLibrary_fp)(const char *libname);
+typedef int (*cf_OpenLibrary_fp)(const std::filesystem::path &libname);
 DMFCDLLOUT(cf_OpenLibrary_fp DLLcf_OpenLibrary;)
 
 // Closes a library file.

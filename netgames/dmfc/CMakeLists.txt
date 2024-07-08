@@ -1,5 +1,4 @@
 set(HEADERS
-  dmfcdllinit.h
   dmfcinputcommands.h
   dmfcinternal.h
   encryption.h)
