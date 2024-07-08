@@ -590,15 +590,21 @@ int LoadMultiDLL(const char *name) {
   char lib_name[_MAX_PATH * 2];
   char dll_name[_MAX_PATH * 2];
   char tmp_dll_name[_MAX_PATH * 2];
-  char dll_path_name[_MAX_PATH * 2];
   MultiFlushAllIncomingBuffers();
 
   // Delete old dlls
   if (MultiDLLHandle.handle)
     FreeMultiDLL();
 
-  ddio_MakePath(dll_path_name, Base_directory, "online", "*.tmp", NULL);
-  ddio_DeleteFile(dll_path_name);
+  std::filesystem::path dll_path_name = std::filesystem::path(Base_directory) / "online";
+  ddio_DoForeachFile(dll_path_name, std::regex(".+\\.tmp"), [](const std::filesystem::path& path, ...) {
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    if (ec) {
+      mprintf(0, "Unable to remove temporary file %s: %s\n", path.u8string().c_str(), ec.message().c_str());
+    }
+  });
+
   // Make the hog filename
   ddio_MakePath(lib_name, Base_directory, "online", name, NULL);
   strcat(lib_name, ".d3c");
