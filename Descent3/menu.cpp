@@ -1455,19 +1455,6 @@ redo_level_choose:
   hwnd.Destroy();
   return chosen_level;
 }
-#ifdef _DEBUG
-// Loads a level and starts the game
-bool MenuLoadLevel(void) {
-  char buffer[_MAX_PATH];
-  buffer[0] = '\0';
-  if (DoPathFileDialog(false, buffer, "Load Level", "*.d3l", PFDF_FILEMUSTEXIST)) {
-    SimpleStartLevel(buffer);
-    SetFunctionMode(GAME_MODE);
-    return true;
-  }
-  return false;
-}
-#endif
 
 // DisplayLevelSelectDlg
 // displays a list of levels associated with the selected mission
