@@ -395,7 +395,7 @@ void GetMultiAPI(multi_api *api) {
   api->netplayers = (int *)&NetPlayers;
   api->ships = (int *)Ships;
   // Fill in function pointers here.  The order here must match the order on the
-  // DLL side
+  // DLL side (netcon/includes/mdllinit.h)
 
   api->fp[0] = (int *)SetUITextItemText;
   api->fp[1] = (int *)NewUIWindowCreate;
