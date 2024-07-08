@@ -41,7 +41,9 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <cstring>
+
 #include "Controller.h"
 #include "ddio.h"
 #include "pserror.h"
@@ -112,7 +114,7 @@ void lnxgameController::poll() {
     return;
   }
 
-  m_frame_time = (float)((cur_frame_timer_ms - m_frame_timer_ms) / 1000.0);
+  m_frame_time = ((float)(cur_frame_timer_ms - m_frame_timer_ms) / 1000.0f);
   m_frame_timer_ms = cur_frame_timer_ms;
   g_accum_frame_time += m_frame_time;
 
@@ -165,7 +167,7 @@ const char *lnxgameController::get_binding_text(ct_type type, uint8_t ctrl, uint
   const char *str;
 
   if (ctrl == NULL_CONTROLLER) {
-    return NULL;
+    return nullptr;
   }
 
   switch (type) {
@@ -360,7 +362,7 @@ ct_config_data lnxgameController::get_controller_value(ct_type type_req) {
 
   case ctMouseAxis: {
     float pos = 0.0f;
-    unsigned ctl = CONTROLLER_CTL_INFO(1, NULL_CONTROLLER), i = 1;
+    int ctl = CONTROLLER_CTL_INFO(1, NULL_CONTROLLER), i = 1;
 
     ASSERT(m_ControlList[i].id == CTID_MOUSE);
 
@@ -490,7 +492,7 @@ void lnxgameController::enable_function(int id, bool enable) { m_ElementList[id]
 
 //	all systems need to implement this function.  this returns information about the controller
 bool lnxgameController::get_packet(int id, ct_packet *packet, ct_format alt_format) {
-  float val = (float)0.0;
+  float val = 0.0f;
   int i;
 
   ASSERT(id < CT_MAX_ELEMENTS);
@@ -529,7 +531,7 @@ bool lnxgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = get_axis_value(controller, value, alt_format, (m_ElementList[id].flags[i] & CTFNF_INVERT) ? true : false);
       if (m_ElementList[id].flags[i] & CTFNF_INVERT) {
         if (alt_format == ctDigital) {
-          val = (val == 0.0f) ? 1.0f : 0.0f;
+          val = (std::abs(val) < FLT_EPSILON) ? 1.0f : 0.0f;
         } else if (alt_format == ctAnalog) {
           val = -val;
         }
@@ -556,12 +558,12 @@ bool lnxgameController::get_packet(int id, ct_packet *packet, ct_format alt_form
       val = 0.0f;
     }
 
-    if (val)
+    if (std::abs(val) < FLT_EPSILON)
       break;
   }
 
 skip_packet_read:
-  if (val)
+  if (std::abs(val) > FLT_EPSILON)
     packet->flags |= CTPK_ELEMENTACTIVE;
 
   packet->value = val;
@@ -709,8 +711,7 @@ gameController *CreateController(int num_funcs, ct_function *funcs, char *remote
 }
 
 void DestroyController(gameController *ctl) {
-  if (ctl)
-    delete ctl;
+  delete ctl;
 }
 
 // activates or deactivates mouse and or controller
@@ -745,8 +746,8 @@ void lnxgameController::mask_controllers(bool joystick, bool mouse) {
           m_ExtCtlStates[dev].last_pov[j] = JOYPOV_CENTER;
 
           for (i = 0; i < JOYPOV_DIR; i++) {
-            m_ExtCtlStates[dev].povstarts[j][i] = (float)0.0;
-            m_ExtCtlStates[dev].povtimes[j][i] = (float)0.0;
+            m_ExtCtlStates[dev].povstarts[j][i] = 0.0f;
+            m_ExtCtlStates[dev].povtimes[j][i] = 0.0f;
             m_ExtCtlStates[dev].povpresses[j][i] = 0;
           }
         }
@@ -754,8 +755,8 @@ void lnxgameController::mask_controllers(bool joystick, bool mouse) {
         m_ExtCtlStates[dev].buttons = 0;
         for (i = 0; i < CT_MAX_BUTTONS; i++) {
           m_ExtCtlStates[dev].btnpresses[i] = 0;
-          m_ExtCtlStates[dev].btntimes[i] = (float)0.0;
-          m_ExtCtlStates[dev].btnstarts[i] = (float)0.0;
+          m_ExtCtlStates[dev].btntimes[i] = 0.0f;
+          m_ExtCtlStates[dev].btnstarts[i] = 0.0f;
         }
       }
     }
@@ -811,7 +812,7 @@ void lnxgameController::extctl_getpos(int id) {
   //	handle buttons
   for (int i = 0; i < CT_MAX_BUTTONS; i++) {
     //	case if we read time before doing this again.
-    if ((ji.buttons & (1 << i)) && (m_ExtCtlStates[id].btnstarts[i] == (float)0.0))
+    if ((ji.buttons & (1 << i)) && (std::abs(m_ExtCtlStates[id].btnstarts[i]) < FLT_EPSILON))
       m_ExtCtlStates[id].btnstarts[i] = timer_val;
     if ((ji.buttons & (1 << i)) && !(m_ExtCtlStates[id].buttons & (1 << i))) {
       m_ExtCtlStates[id].btnpresses[i]++;
@@ -836,7 +837,7 @@ void lnxgameController::mouse_geteval() {
     return;
   }
 
-  if (g_accum_frame_time != 0.0f)
+  if (std::abs(g_accum_frame_time) > FLT_EPSILON)
     return;
 
   btnmask = (unsigned)ddio_MouseGetState(&x, &y, &dx, &dy);
@@ -936,7 +937,7 @@ bool lnxgameController::enum_controllers() {
 
   lnxgameController::flush();
 
-  return 1;
+  return true;
 }
 
 //	returns the controller with a pov hat
@@ -1037,7 +1038,7 @@ void lnxgameController::assign_element(int id, ct_element *elem) {
 }
 
 float lnxgameController::get_button_value(int8_t controller, ct_format format, uint8_t button) {
-  float val = (float)0.0;
+  float val = 0.0f;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
     return 0.0f;
@@ -1082,12 +1083,12 @@ float lnxgameController::get_button_value(int8_t controller, ct_format format, u
     } else {
       if (!(m_ExtCtlStates[m_ControlList[controller].id].buttons & (1 << button))) {
         val = m_ExtCtlStates[m_ControlList[controller].id].btntimes[button];
-        m_ExtCtlStates[m_ControlList[controller].id].btnstarts[button] = (float)0.0;
-        m_ExtCtlStates[m_ControlList[controller].id].btntimes[button] = (float)0.0;
+        m_ExtCtlStates[m_ControlList[controller].id].btnstarts[button] = 0.0f;
+        m_ExtCtlStates[m_ControlList[controller].id].btntimes[button] = 0.0f;
       } else {
         val = WinControllerTimer - m_ExtCtlStates[m_ControlList[controller].id].btnstarts[button];
         m_ExtCtlStates[m_ControlList[controller].id].btnstarts[button] = WinControllerTimer;
-        m_ExtCtlStates[m_ControlList[controller].id].btntimes[button] = (float)0.0;
+        m_ExtCtlStates[m_ControlList[controller].id].btntimes[button] = 0.0f;
       }
     }
     break;
@@ -1111,7 +1112,7 @@ float lnxgameController::get_button_value(int8_t controller, ct_format format, u
 //	note controller is index into ControlList.
 float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_format format, bool invert) {
   struct lnxgameController::t_controller *ctldev;
-  float val = (float)0.0;
+  float val = 0.0f;
   float normalizer, axisval = 0, nullzone; //, senszone;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
@@ -1190,21 +1191,18 @@ float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
   val = ctldev->sensmod[axis] * ctldev->sens[axis] * val;
   val = val + 1.0f;
 
-  if (val < 0.0f)
-    val = 0.0f;
-  if (val > 2.0f)
-    val = 2.0f;
+  val = std::clamp(val, 0.0f, 2.0f);
 
   // determine value based off requested format.
   if (format == ctDigital) {
-    if (val < 0.5)
-      val = (float)0.0;
+    if (val < 0.5f)
+      val = 0.0f;
     else
-      val = (float)1.0;
+      val = 1.0f;
   } else if (format == ctAnalog) {
-    val = val - (float)1.0;
+    val = val - 1.0f;
   } else {
-    val = (float)0.0;
+    val = 0.0f;
     mprintf(1, "gameController::axis unsupported format for function.\n");
   }
 
@@ -1227,7 +1225,7 @@ float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       return val;
     axis++;
 
-    if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (val != 0.0f)) {
+    if ((axis == CT_X_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
       matrix orient;
 
       if (!(Players[Player_num].controller_bitflags & PCBF_HEADINGLEFT)) {
@@ -1250,7 +1248,7 @@ float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
       ObjSetOrient(&Objects[Players[Player_num].objnum], &Objects[Players[Player_num].objnum].orient);
       return 0;
     }
-    if ((axis == CT_Y_AXIS) && (ctldev->id == CTID_MOUSE) && (val != 0.0f)) {
+    if ((axis == CT_Y_AXIS) && (ctldev->id == CTID_MOUSE) && (std::abs(val) > FLT_EPSILON)) {
       matrix orient;
 
       if (!(Players[Player_num].controller_bitflags & PCBF_PITCHUP)) {
@@ -1280,7 +1278,7 @@ float lnxgameController::get_axis_value(int8_t controller, uint8_t axis, ct_form
 
 //	do some pov stuff
 float lnxgameController::get_pov_value(int8_t controller, ct_format format, uint8_t pov_number, uint8_t pov) {
-  float val = (float)0.0;
+  float val = 0.0f;
 
   if (controller <= NULL_LNXCONTROLLER || controller >= CT_MAX_CONTROLLERS) {
     return val;
@@ -1347,7 +1345,7 @@ float lnxgameController::get_pov_value(int8_t controller, ct_format format, uint
 
 //	get keyboard info
 float lnxgameController::get_key_value(int key, ct_format format) {
-  float val = (float)0.0;
+  float val = 0.0f;
 
   ASSERT(key < DDIO_MAX_KEYS);
 
@@ -1363,7 +1361,7 @@ float lnxgameController::get_key_value(int key, ct_format format) {
     break;
 
   case ctTime:
-    val = (float)ddio_KeyDownTime(key);
+    val = ddio_KeyDownTime(key);
     break;
 
   default:
