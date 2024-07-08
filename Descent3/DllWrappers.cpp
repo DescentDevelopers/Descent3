@@ -100,7 +100,9 @@ void InvReset(int playernum, bool reset_all) {
 void MonoPrintf(int n, char *format, ...) {}
 
 // wrapper for cfopen
-void OpenCFILE(CFILE **handle, const char *filename, const char *mode) { *handle = cfopen(filename, mode); }
+void OpenCFILE(CFILE **handle, const std::filesystem::path &filename, const char *mode) {
+  *handle = cfopen(filename, mode);
+}
 
 // wrapper for ObjGetUltimateParent
 void GetUltimateParentForObject(object **parent, object *child) { *parent = ObjGetUltimateParent(child); }
