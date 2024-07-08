@@ -127,7 +127,7 @@ inline const char* RetributionNames[] = {
   "Tiris - PTMC Piccu Station Facility",              // Level 3
   "Earth - PTMC Corporate Headquarters",              // Level 4
   "Mars - Red Acropolis Research Facility",           // Level 5
-  "Mars - Noctis Labyrinthus Canyons",                // Level 6
+  "Mars - Martian Nomad Caverns",                     // Level 6
   "Ceres - PTMC Secret Research Bunker C4",           // Level 7
   "Europa - PTMC Fuel Refinery Dol Ammad",            // Level 8
   "Mercury - PTMC Spacecraft Factory",                // Level 9
