@@ -117,6 +117,8 @@
  * $NoKeywords: $
  */
 
+#include <filesystem>
+
 #include "DMFC.h"
 #include "dmfcinternal.h"
 #include "dmfcinputcommands.h"
@@ -187,10 +189,10 @@ void (*DLLbm_DestroyChunkedBitmap)(chunked_bitmap *chunk);
 void (*DLLrend_DrawChunkedBitmap)(chunked_bitmap *chunk, int x, int y, uint8_t alpha);
 void (*DLLrend_DrawScaledChunkedBitmap)(chunked_bitmap *chunk, int x, int y, int neww, int newh,
                                                      uint8_t alpha);
-void (*DLLOpenCFILE)(CFILE **handle, const char *filename, const char *mode);
+void (*DLLOpenCFILE)(CFILE **handle, const std::filesystem::path &filename, const char *mode);
 void (*DLLcfclose)(CFILE *cfp);
 int (*DLLcfeof)(CFILE *cfp);
-int (*DLLcfexist)(const char *filename);
+int (*DLLcfexist)(const std::filesystem::path &filename);
 int (*DLLcf_ReadBytes)(uint8_t *buf, int count, CFILE *cfp);
 int (*DLLcf_ReadInt)(CFILE *cfp);
 int16_t (*DLLcf_ReadShort)(CFILE *cfp);
@@ -221,7 +223,7 @@ void (*FatalError)(const char *reason);
 int (*DLLMultiMatchWeapon)(uint32_t unique_id);
 uint32_t (*DLLMultiGetMatchChecksum)(int type, int id);
 int (*DLLFindWeaponName)(const char *name);
-int (*DLLcf_OpenLibrary)(const char *libname);
+int (*DLLcf_OpenLibrary)(const std::filesystem::path &libname);
 void (*DLLcf_CloseLibrary)(int handle);
 void (*DLLMultiSendRequestToObserve)(int mode, int on, int objnum);
 int (*DLLFindTextureName)(const char *name);
