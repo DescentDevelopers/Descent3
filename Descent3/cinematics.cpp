@@ -28,16 +28,7 @@
 #include "appdatabase.h"
 #include "bitmap.h"
 
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef DEBUG
-static struct {
-  float last_frame_time;
-  float frame_interval_time;
-  float fps;
-} MovieCallbackData;
-#endif
+#include <cstring>
 
 static bool Cinematic_lib_init = false;
 static int Cinematic_x = 0, Cinematic_y = 0, Cinematic_w = 0, Cinematic_h = 0;
@@ -88,25 +79,12 @@ bool PlayMovie(const std::filesystem::path &moviename) {
     filename.replace_extension(extension.u8string() + ".mve");
   }
 
-  // shutdown sound.
-  bool sound_sys_active = Sound_system.IsActive();
-  if (sound_sys_active) {
-    Sound_system.KillSoundLib(false);
-  }
-
-  //	start movie.
-#ifdef DEBUG
-  MovieCallbackData.last_frame_time = timer_GetTime();
-  MovieCallbackData.frame_interval_time = 1.0f;
-  MovieCallbackData.fps = 0.0f;
-#endif
-
   // Initializes the subtitles for a given movie file
   SubtInitSubtitles(moviename);
 
   SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
-  int mveerr = mve_PlayMovie(filename.u8string().c_str(), Descent);
+  int mveerr = mve_PlayMovie(filename, Descent);
 
   // Shutdown the subtitle system
   SubtCloseSubtitles();
@@ -115,11 +93,6 @@ bool PlayMovie(const std::filesystem::path &moviename) {
   if (mveerr != MVELIB_NOERROR) {
     mprintf(1, "Movie error %d.\n", mveerr);
     retval = false;
-  }
-
-  //	startup D3 sound.
-  if (sound_sys_active) {
-    Sound_system.InitSoundLib(Descent, Sound_mixer, Sound_quality, false);
   }
 
   return retval;
@@ -144,7 +117,7 @@ tCinematic *StartMovie(const char *moviename, bool looping) {
 
   SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
-  int filehandle;
+  FILE *filehandle;
   intptr_t hMovie = mve_SequenceStart(filename, &filehandle, Descent, looping);
   if (hMovie == 0)
     return NULL;
