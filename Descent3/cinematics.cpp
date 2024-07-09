@@ -84,7 +84,7 @@ bool PlayMovie(const std::filesystem::path &moviename) {
 
   SetMovieProperties(0, 0, Max_window_w, Max_window_h, Renderer_type);
 
-  int mveerr = mve_PlayMovie(filename.u8string().c_str(), Descent);
+  int mveerr = mve_PlayMovie(filename, Descent);
 
   // Shutdown the subtitle system
   SubtCloseSubtitles();

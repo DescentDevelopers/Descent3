@@ -22,6 +22,7 @@
 #include "renderer.h"
 
 #include <cstdint>
+#include <filesystem>
 
 #define MVELIB_NOERROR 0
 #define MVELIB_FILE_ERROR (-1)
@@ -36,7 +37,7 @@ class oeApplication;
 int mve_Init(const char *dir, const char *sndcard);
 
 // simply plays a movie.
-int mve_PlayMovie(const char *mvename, oeApplication *app);
+int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp);
 
 // used to copy movie data to a pointer, looping will loop, fhandle will be a pointer to a file handle to be returned
 // handle to movie sequence is returned by function.

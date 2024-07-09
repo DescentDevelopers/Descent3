@@ -491,10 +491,7 @@ void Descent3() {
         };
 
         for (auto const &intro : intros) {
-          std::filesystem::path intropath = std::filesystem::path(Base_directory) / "movies" / intro;
-          if (cfexist(intropath)) {
-            PlayMovie(intropath);
-          }
+          PlayMovie(std::filesystem::path(Base_directory) / "movies" / intro);
         }
       }
 

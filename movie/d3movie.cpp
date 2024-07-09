@@ -100,14 +100,14 @@ std::filesystem::path mve_FindMovieFileRealName(const std::filesystem::path &mov
 #endif
 
 // plays a movie using the current screen.
-int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
+int mve_PlayMovie(const std::filesystem::path &pMovieName, oeApplication *pApp) {
 #ifndef NO_MOVIES
   // first, find that movie..
   std::filesystem::path real_name;
 #ifdef __LINUX__
   real_name = mve_FindMovieFileRealName(pMovieName);
   if (real_name.empty()) {
-    mprintf(0, "MOVIE: No such file %s\n", pMovieName);
+    mprintf(0, "MOVIE: No such file %s\n", pMovieName.u8string().c_str());
     return MVELIB_FILE_ERROR;
   }
 #else
@@ -136,7 +136,7 @@ int mve_PlayMovie(const char *pMovieName, oeApplication *pApp) {
 
   MVESTREAM *mve = MVE_rmPrepMovie(hFile, -1, -1, 0);
   if (mve == nullptr) {
-    mprintf(0, "Failed to prepMovie %s\n", pMovieName);
+    mprintf(0, "Failed to prepMovie %s\n", pMovieName.u8string().c_str());
     fclose(hFile);
     mve_CloseSound();
     return MVELIB_INIT_ERROR;
