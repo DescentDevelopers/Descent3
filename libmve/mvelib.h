@@ -75,7 +75,8 @@ void MVE_rmEndMovie(MVESTREAM *mve);
 
 void MVE_getVideoSpec(MVE_videoSpec *vSpec);
 
-void MVE_sndInit(int x);
+// Initialize MVE sound. Set `enable` to false if sound should not be enabled.
+void MVE_sndInit(const bool enable);
 
 void MVE_ioCallbacks(mve_cb_Read io_read);
 void MVE_memCallbacks(mve_cb_Alloc mem_alloc, mve_cb_Free mem_free);

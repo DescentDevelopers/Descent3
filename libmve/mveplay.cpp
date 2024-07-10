@@ -202,7 +202,7 @@ static int play_audio_handler(unsigned char major, unsigned char minor, unsigned
 static int audio_data_handler(unsigned char major, unsigned char minor, unsigned char *data, int len, void *context) {
 #ifdef AUDIO
   static const int selected_chan = 1;
-  if (snd_ds->IsInitialized()) {
+  if (snd_ds && snd_ds->IsInitialized()) {
     int chan = get_ushort(data + 2);
     if (chan & selected_chan) {
       if (major == MVE_OPCODE_AUDIOFRAMEDATA) {
@@ -471,11 +471,12 @@ void MVE_rmEndMovie(MVESTREAM *mve) {
 
 void MVE_rmHoldMovie() { timer_started = 0; }
 
-void MVE_sndInit(int x) {
+void MVE_sndInit(const bool enable) {
 #ifdef AUDIO
-  if (x == -1)
-    mve_audio_enabled = 0;
-  else
+  if (enable) {
     mve_audio_enabled = 1;
+  } else {
+    mve_audio_enabled = 0;
+  }
 #endif
 }
