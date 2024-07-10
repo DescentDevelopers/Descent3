@@ -269,7 +269,6 @@ set(CPPS
   weapon.cpp
   WeaponFire.cpp
   weather.cpp
-  loki_utils.c
   sdlmain.cpp)
 
 if(WIN32)
