@@ -377,6 +377,7 @@ intptr_t mve_SequenceStart(const char *mvename, void *fhandle, oeApplication *ap
   MVE_memCallbacks(CallbackAlloc, CallbackFree);
   MVE_ioCallbacks(CallbackFileRead);
   MVE_sfCallbacks(CallbackShowFrameNoFlip);
+  MVE_palCallbacks(CallbackSetPalette);
   InitializePalette();
   Movie_bm_handle = -1;
   Movie_looping = looping;
