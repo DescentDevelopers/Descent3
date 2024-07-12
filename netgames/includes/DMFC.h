@@ -294,7 +294,7 @@
 #include "gamedll_header.h"
 #include "DMFCKeyCodes.h"
 
-#if ((defined __LINUX__) && (!defined __i386__))
+#if ((defined POSIX) && (!defined __i386__))
 #include <signal.h>
 #endif
 
