@@ -34,6 +34,7 @@ MovieSoundDevice::MovieSoundDevice(int sample_rate, uint16_t sample_size, uint8_
 
   m_device_id = SDL_OpenAudioDevice(nullptr, 0, &spec, nullptr, 0);
   m_is_compressed = is_compressed;
+  m_sample_size = sample_size;
 };
 
 MovieSoundDevice::~MovieSoundDevice() {

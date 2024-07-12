@@ -29,6 +29,7 @@ namespace D3 {
 class MovieSoundDevice : ISoundDevice {
 private:
   SDL_AudioDeviceID m_device_id = 0;
+  uint16_t m_sample_size = 0;
 
 public:
   /**
@@ -54,6 +55,12 @@ public:
    * @param len length of source buffer
    */
   void FillBuffer(char *stream, int len) const;
+
+  /**
+   * Get sample size
+   * @return 2 (for 16 bit), 1 (for 8 bit)
+   */
+  [[nodiscard]] uint16_t GetSampleSize() const { return m_sample_size; };
 
   void Play() override;
   void Stop() override;

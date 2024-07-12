@@ -61,23 +61,23 @@ static int16_t getWord(unsigned char **fin) {
   return value;
 }
 
-void mveaudio_process(char *buffer, unsigned char *data, bool is_compressed) {
+void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool is_compressed) {
   if (is_compressed) {
     int nCurOffsets[2];
 
     data += 4;
-    int samples = getWord(&data) / 2;
+    int samples = getWord(&data) / sample_size;
     // Fill predictors
     nCurOffsets[0] = getWord(&data);
     nCurOffsets[1] = getWord(&data);
 
     for (int i = 0; i < samples; i++) {
       nCurOffsets[i & 1] = std::clamp(nCurOffsets[i & 1] + audio_exp_table[data[i]], -32768, 32767);
-      memcpy(buffer + i * 2, &nCurOffsets[i & 1], 2);
+      memcpy(buffer + i * sample_size, &nCurOffsets[i & 1], sample_size);
     }
   } else {
     data += 2;
-    int samples = getWord(&data);
-    memcpy(buffer, &data, samples * 2);
+    int size = getWord(&data);
+    memcpy(buffer, &data, size);
   }
 }
