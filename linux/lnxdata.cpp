@@ -45,7 +45,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include <unistd.h>
 #include <pwd.h>
 #else
@@ -215,7 +215,7 @@ bool oeLnxAppDatabase::write(const char *label, int entry) {
 
 // get the current user's name from the os
 void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
-#ifdef __LINUX__
+#if defined(POSIX)
   struct passwd *pwuid = getpwuid(geteuid());
 
   if ((pwuid != NULL) && (pwuid->pw_name != NULL)) {

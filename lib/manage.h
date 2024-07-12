@@ -26,7 +26,7 @@
 #include "bitmap.h"
 #include "manage_external.h"
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 #include "linux_fix.h" //for strnicmp,etc.
 #endif
 

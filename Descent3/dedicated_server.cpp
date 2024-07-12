@@ -108,7 +108,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifndef __LINUX__
+#if !defined(POSIX)
 typedef int socklen_t;
 #endif
 
@@ -788,7 +788,7 @@ void PrintDedicatedMessage(const char *fmt, ...) {
   DedicatedSocketputs(buf);
 }
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>

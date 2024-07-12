@@ -23,7 +23,7 @@
 
 #include "cfile.h"
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include "linux_fix.h" //needed for stricmp's throughout bitmap lib
 #endif
 

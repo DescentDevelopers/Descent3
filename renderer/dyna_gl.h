@@ -31,7 +31,7 @@
 
 #if defined(WIN32)
 #define GLFUNCCALL __stdcall
-#elif defined(__LINUX__)
+#elif defined(POSIX)
 #include <unistd.h>
 #define GLFUNCCALL
 #endif
@@ -488,7 +488,7 @@ module *LoadOpenGLDLL(const char *dllname) {
   dwglGetProcAddress = (wglGetProcAddress_fp)mod_GetSymbol(&OpenGLDLLInst, "wglGetProcAddress", 255);
   if (!dwglGetProcAddress)
     goto dll_error;
-#elif defined(__LINUX__)
+#elif defined(POSIX)
 
   // bk000614 - have to fix globals
   extern glAlphaFunc_fp dglAlphaFunc;
