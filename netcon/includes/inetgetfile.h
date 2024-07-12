@@ -100,7 +100,7 @@
 #include "linux_fix.h"
 
 // Linux includes/defines
-#if !MACOSX
+#if defined(__LINUX__)
 #include <linux/types.h>
 // #include <linux/if.h>
 #endif

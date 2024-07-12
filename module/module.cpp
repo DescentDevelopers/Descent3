@@ -281,12 +281,12 @@ void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
   if (*extension == '\0')
 #if defined(WIN32)
     strcat(filename, ".dll");
-#elif defined(POSIX)
-#if defined(MACOSX)
+#elif defined(__LINUX__)
+    strcat(filename, ".so");
+#elif defined(MACOSX)
     strcat(filename, ".dylib");
 #else
-    strcat(filename, ".so");
-#endif
+    #error Unsupported platform!
 #endif
   else {
 #if defined(WIN32)
@@ -294,17 +294,18 @@ void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
       strcat(filename, ".dll");
     else
       strcat(filename, extension);
-#elif defined(POSIX) && !defined(MACOSX)
+#elif defined(__LINUX__)
     if (!stricmp(extension, ".dll") || !stricmp(extension, "msl") || !stricmp(extension, "dylib"))
       strcat(filename, ".so");
     else
       strcat(filename, extension);
-#elif defined(POSIX) && defined(MACOSX)
+#elif defined(MACOSX)
       if (!stricmp(extension, ".dll") || !stricmp(extension, "msl") || !stricmp(extension, "so"))
         strcat(filename, ".dylib");
       else
         strcat(filename, extension);
-
+#else
+  #error Unsupported platform!
 #endif
   }
   if (*pathname != '\0')

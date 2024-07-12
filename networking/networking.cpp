@@ -295,7 +295,7 @@ typedef int socklen_t;
 #include <stdlib.h>
 #include <string.h>
 #if defined(POSIX)
-#if !MACOSX
+#if defined(__LINUX__)
 #include <netinet/in.h>
 #endif
 #include <arpa/inet.h>

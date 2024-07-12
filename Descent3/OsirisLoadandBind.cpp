@@ -3144,14 +3144,14 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   int count = 0;
 
   const char *script_extension;
-#if defined(POSIX)
 #if defined(MACOSX)
   script_extension = "*.dylib";
-#else
+#elif defined(__LINUX__)
   script_extension = "*.so";
-#endif
-#else
+#elif defined(WIN32)
   script_extension = "*.dll";
+#else
+  #error Unsupported platform!
 #endif
 
   int index;
@@ -4037,4 +4037,3 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
     mi->fp[i] = NULL;
   }
 }
-
