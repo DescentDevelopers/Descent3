@@ -184,7 +184,7 @@ static int create_audiobuf_handler(unsigned char major, unsigned char minor, uns
     is_compressed = true;
   }
 
-  snd_ds = std::make_unique<D3::MovieSoundDevice>(sample_rate, sample_size, channels, desired_buffer, is_compressed);
+  snd_ds = std::make_unique<D3::MovieSoundDevice>(sample_rate, sample_size, channels, 4096, is_compressed);
 #endif
 
   return 1;
@@ -204,18 +204,17 @@ static int audio_data_handler(unsigned char major, unsigned char minor, unsigned
   static const int selected_chan = 1;
   if (snd_ds->IsInitialized()) {
     int chan = get_ushort(data + 2);
+    int size = get_ushort(data + 4);
     if (chan & selected_chan) {
+      void *buf = malloc(size);
       if (major == MVE_OPCODE_AUDIOFRAMEDATA) {
-        snd_ds->Lock();
-        mveaudio_process(snd_ds->GetBuffer(), data, snd_ds->IsCompressed());
-        snd_ds->Unlock();
+        mveaudio_process((char *)buf, data, snd_ds->IsCompressed());
       } else {
         // SILENCE, MORTALS!
-        int nsamp = get_ushort(data + 4);
-        snd_ds->Lock();
-        snd_ds->GetBuffer()->insert(snd_ds->GetBuffer()->end(), nsamp, 0);
-        snd_ds->Unlock();
+        memset(data, 0, size);
       }
+      snd_ds->FillBuffer((char *)buf, size);
+      free(buf);
     }
   }
 #endif

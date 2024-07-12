@@ -24,6 +24,6 @@
  * @param data input data
  * @param is_compress true if input data is compressed
  */
-void mveaudio_process(std::unique_ptr<std::deque<int16_t>> &buffer, unsigned char *data, bool is_compressed = true);
+void mveaudio_process(char *buffer, unsigned char *data, bool is_compressed = true);
 
 #endif /* INCLUDED_MVE_AUDIO_H */

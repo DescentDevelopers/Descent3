@@ -16,8 +16,7 @@
  */
 
 #include <algorithm>
-#include <deque>
-#include <memory>
+#include <cstring>
 
 #include "byteswap.h"
 
@@ -62,26 +61,23 @@ static int16_t getWord(unsigned char **fin) {
   return value;
 }
 
-void mveaudio_process(std::unique_ptr<std::deque<int16_t>> &buffer, unsigned char *data, bool is_compressed) {
+void mveaudio_process(char *buffer, unsigned char *data, bool is_compressed) {
   if (is_compressed) {
     int nCurOffsets[2];
 
     data += 4;
-    int swath = getWord(&data) / 2;
+    int samples = getWord(&data) / 2;
+    // Fill predictors
     nCurOffsets[0] = getWord(&data);
     nCurOffsets[1] = getWord(&data);
-    buffer->push_back((int16_t)std::clamp(nCurOffsets[0], -32768, 32767));
-    buffer->push_back((int16_t)std::clamp(nCurOffsets[1], -32768, 32767));
 
-    for (int i = 0; i < swath; i++) {
-      nCurOffsets[i & 1] += audio_exp_table[data[i]];
-      buffer->push_back((int16_t)std::clamp(nCurOffsets[i & 1], -32768, 32767));
+    for (int i = 0; i < samples; i++) {
+      nCurOffsets[i & 1] = std::clamp(nCurOffsets[i & 1] + audio_exp_table[data[i]], -32768, 32767);
+      memcpy(buffer + i * 2, &nCurOffsets[i & 1], 2);
     }
   } else {
     data += 2;
     int samples = getWord(&data);
-    for (int i = 0; i < samples; i++) {
-      buffer->push_back(getWord(&data));
-    }
+    memcpy(buffer, &data, samples * 2);
   }
 }
