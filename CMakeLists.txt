@@ -103,11 +103,11 @@ message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   message("Building for Linux")
-  add_compile_definitions(__LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
+  add_compile_definitions(POSIX __LINUX__ _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-linux.hog\")
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   message("Building for MAC OSX")
-  add_compile_definitions(__LINUX__ MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
+  add_compile_definitions(POSIX MACOSX=1 _USE_OGL_ACTIVE_TEXTURES PRIMARY_HOG=\"d3-osx.hog\")
   set(PLATFORM_INCLUDES "lib/linux" ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS})
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   # Windows.h defines to avoid as many issues as possible.
