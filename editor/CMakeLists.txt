@@ -559,7 +559,6 @@ set(SOURCE
     WorldTexturesDialog.cpp
     WorldWeaponsDialog.cpp
     editor.rc
-    ../Descent3/loki_utils.c
     ../Descent3/sdlmain.cpp
 )
 
