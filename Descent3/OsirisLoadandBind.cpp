@@ -438,7 +438,7 @@ bool Show_osiris_debug = false;
        // 0, only when the level ends
 
 // The exported DLL function call prototypes
-#if defined(__LINUX__)
+#if defined(POSIX)
 typedef char DLLFUNCCALL (*InitializeDLL_fp)(tOSIRISModuleInit *function_list);
 typedef void DLLFUNCCALL (*ShutdownDLL_fp)(void);
 typedef int DLLFUNCCALL (*GetGOScriptID_fp)(const char *name, uint8_t isdoor);
@@ -3144,14 +3144,14 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
   int count = 0;
 
   const char *script_extension;
-#if defined(__LINUX__)
 #if defined(MACOSX)
   script_extension = "*.dylib";
-#else
+#elif defined(__LINUX__)
   script_extension = "*.so";
-#endif
-#else
+#elif defined(WIN32)
   script_extension = "*.dll";
+#else
+  #error Unsupported platform!
 #endif
 
   int index;
@@ -4037,4 +4037,3 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
     mi->fp[i] = NULL;
   }
 }
-

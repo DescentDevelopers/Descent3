@@ -70,7 +70,7 @@
 
 #include <cstdlib>
 #include <cctype>
-#ifdef __LINUX__
+#if defined(POSIX)
 #include <sys/time.h>
 #include <term.h>
 #include <termios.h>
@@ -85,7 +85,7 @@
 #undef buttons
 #endif
 
-#ifdef __LINUX__
+#if defined(POSIX)
 static struct termios Linux_initial_terminal_settings;
 #endif
 
@@ -122,7 +122,7 @@ void LnxAppShutdown() {
   LinuxAppDontCallShutdown = true;
   if (LinuxAppFlags & OEAPP_CONSOLE) {
     con_Destroy();
-#ifdef __LINUX__
+#if defined(POSIX)
     tcsetattr(0, TCSANOW, &Linux_initial_terminal_settings);
 #endif
   }
@@ -134,7 +134,7 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
   m_AppActive = true;
 
   if (flags & OEAPP_CONSOLE) {
-#ifdef __LINUX__
+#if defined(POSIX)
     tcgetattr(0, &Linux_initial_terminal_settings);
 #endif
     con_Create(m_Flags);
@@ -150,7 +150,7 @@ oeLnxApplication::oeLnxApplication(unsigned flags) {
 
 //	Create object with a premade info
 oeLnxApplication::oeLnxApplication(tLnxAppInfo *appinfo) {
-#ifdef __LINUX__
+#if defined(POSIX)
   tcgetattr(0, &Linux_initial_terminal_settings);
 #endif
   m_Flags = appinfo->flags;

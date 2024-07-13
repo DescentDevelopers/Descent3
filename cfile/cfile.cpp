@@ -28,7 +28,7 @@
 #include <memory>
 #include <vector>
 
-#ifndef __LINUX__
+#if !defined(POSIX)
 // Non-Linux Build Includes
 #include <io.h>
 #else
@@ -425,7 +425,7 @@ CFILE *open_file_in_directory(const std::filesystem::path &filename, const char 
   fp = fopen(using_filename.u8string().c_str(), tmode);
 
   if (!fp) {
-#ifdef __LINUX__
+#if defined(POSIX)
     // If we tried to open file for reading, assume there maybe case-sensitive files
     if (tmode[0] == 'r') {
       // Try different cases of the filename

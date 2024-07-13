@@ -45,7 +45,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include <unistd.h>
 #include <pwd.h>
 #else
@@ -53,13 +53,14 @@
 #include <Lmcons.h>
 #endif
 
+#include <SDL.h>
+
 #include "appdatabase.h"
 #include "linux/lnxdatabase.h"
 #include "pserror.h"
 #include "mono.h"
 #include "pserror.h"
 #include "registry.h"
-#include "loki_utils.h"
 
 #define REGISTRY_FILENAME ".Descent3Registry"
 
@@ -69,7 +70,12 @@ oeLnxAppDatabase::oeLnxAppDatabase() {
   // Open up the database file, for reading, read in all data and keep it in memory
   // then close the database
 
-  char *prefPath = (char *)loki_getprefpath();
+  char const* prefPath = SDL_GetPrefPath("Outrage Entertainment", "Descent 3");
+  if (prefPath == NULL) {
+    fprintf(stderr, "ERROR: Couldn't find preference directory!\n");
+    exit(43);
+  }
+
   const size_t fileLen = strlen(prefPath) + strlen(REGISTRY_FILENAME) + 2;
   char* fileName = new char[fileLen];
   snprintf(fileName, fileLen, "%s/%s", prefPath, REGISTRY_FILENAME);
@@ -215,7 +221,7 @@ bool oeLnxAppDatabase::write(const char *label, int entry) {
 
 // get the current user's name from the os
 void oeLnxAppDatabase::get_user_name(char *buffer, size_t *size) {
-#ifdef __LINUX__
+#if defined(POSIX)
   struct passwd *pwuid = getpwuid(geteuid());
 
   if ((pwuid != NULL) && (pwuid->pw_name != NULL)) {

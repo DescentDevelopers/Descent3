@@ -42,8 +42,6 @@
 #include "init.h"
 
 #include "osiris_dll.h"
-#include "loki_utils.h"
-
 
 #include "log.h"
 
@@ -119,14 +117,6 @@ static volatile char already_tried_signal_cleanup = 0;
 #define GAME_VERS_EXT ""
 #endif
 
-// #define DEDICATED
-namespace {
-extern "C" {
-char game_version_buffer[150];
-char *game_version = game_version_buffer;
-}
-} // namespace
-
 void ddio_InternalClose();        // needed for emergency cleanup.
 
 #ifdef __PERMIT_LINUX_GLIDE
@@ -142,13 +132,13 @@ void just_exit(void) {
 #endif
 
   SDL_Quit();
-#ifdef __LINUX__
+#if defined(POSIX)
   sync(); // just in case.
 #endif
   _exit(0);
 }
 
-#ifdef __LINUX__
+#if defined(POSIX)
 void fatal_signal_handler(int signum) {
   switch (signum) {
   case SIGHUP:
@@ -262,7 +252,7 @@ oeD3LnxDatabase::oeD3LnxDatabase() : oeLnxAppDatabase() {
   char *netdir = getenv("D3_DIR");
 
   if (!dir)
-    strcpy(path, loki_getdatapath());
+    strcpy(path, Base_directory);
   else
     strcpy(path, dir);
 
@@ -275,14 +265,6 @@ oeD3LnxDatabase::oeD3LnxDatabase() : oeLnxAppDatabase() {
   write("net directory", netpath, strlen(netpath) + 1);
   Database = this;
 }
-
-static void register_d3_args() {
-  loki_register_stdoptions();
-
-  for (int i = 0; i < sizeof(d3ArgTable) / sizeof(d3ArgTable[0]); i++) {
-    loki_registeroption(d3ArgTable[i].lng, d3ArgTable[i].sht, d3ArgTable[i].comment);
-  } // for
-} // register_d3_args
 
 int sdlKeyFilter(const SDL_Event *event);
 int sdlMouseButtonUpFilter(const SDL_Event *event);
@@ -438,39 +420,6 @@ int main(int argc, char *argv[]) {
   // if (getenv("SDL_VIDEO_YUV_HWACCEL") == NULL)
   //    putenv("SDL_VIDEO_YUV_HWACCEL=0");
 
-
-  snprintf(game_version_buffer, sizeof(game_version_buffer), "%d.%d.%d%s %s", D3_MAJORVER, D3_MINORVER, D3_BUILD,
-           D3_GIT_HASH, GAME_VERS_EXT);
-
-  loki_setgamename("descent3" GAME_NAME_EXT, game_version_buffer, "Descent 3");
-
-  snprintf(game_version_buffer, sizeof(game_version_buffer),
-           "\n\n"
-           "Descent 3 %s %s v%d.%d.%d %s\n"
-           "Copyright (C) 1999 Outrage Entertainment, Inc.\n",
-
-#if defined(__APPLE__) && defined(__MACH__)
-           "macOS",
-#elif defined(WIN32)
-           "Windows",
-#else
-           "Linux",
-#endif
-
-#ifdef DEDICATED
-           "Dedicated Server",
-#elif DEMO
-           "Demo",
-#else
-           "Client",
-#endif
-           D3_MAJORVER, D3_MINORVER, D3_BUILD, D3_GIT_HASH);
-
-  game_version += 2; // skip those first newlines for loki_initialize.
-
-  register_d3_args();
-  loki_initialize();
-
   int x;
 
   /*
@@ -612,7 +561,7 @@ int main(int argc, char *argv[]) {
     }
 
     bool run_d3 = true;
-#ifdef __LINUX__
+#if defined(POSIX)
     if (flags & APPFLAG_USESERVICE) {
       run_d3 = false;
       pid_t np = fork();

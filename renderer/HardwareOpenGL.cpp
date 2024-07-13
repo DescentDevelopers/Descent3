@@ -446,7 +446,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     OpenGLDLLHandle = LoadOpenGLDLL(gl_library);
     if (!(OpenGLDLLHandle)) {
       // rcg07072000 last ditch effort...
-#ifdef __LINUX__
+#if defined(POSIX)
       strcpy(gl_library, "libGL.so.1");
 #else
       strcpy(gl_library, "opengl32.dll");

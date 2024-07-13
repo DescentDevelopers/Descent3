@@ -21,7 +21,7 @@
 
 #include <cstdio>
 #include <cstdint>
-#ifdef __LINUX__
+#if defined(POSIX)
 #include "linux_fix.h"
 #endif
 

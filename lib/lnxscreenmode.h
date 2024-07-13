@@ -52,7 +52,7 @@
 #ifndef __LNXVIDEOMODE_H__
 #define __LNXVIDEOMODE_H__
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include "linux_fix.h"
 #endif
 #include <SDL.h>

@@ -441,7 +441,7 @@
 #include <cstring>
 #include <filesystem>
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 #include "linux_fix.h"
 #endif
 #include "descent.h"

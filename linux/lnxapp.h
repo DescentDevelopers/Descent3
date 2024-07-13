@@ -19,7 +19,7 @@
 #ifndef LNXAPP_H
 #define LNXAPP_H
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include "linux_fix.h"
 #endif
 

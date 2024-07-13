@@ -498,7 +498,7 @@
 #include "object_external.h"
 #include "player_external.h"
 
-#if defined(__LINUX__)
+#if defined(POSIX)
 #include "linux_fix.h"
 #endif
 
