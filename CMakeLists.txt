@@ -1,6 +1,23 @@
 cmake_minimum_required(VERSION 3.20)  # For using CMAKE_<LANG>_BYTE_ORDER
 
-if(NOT DEFINED USE_VCPKG OR USE_VCPKG)
+# set default cmake build type to Debug (None Debug Release RelWithDebInfo MinSizeRel)
+if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
+  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
+endif()
+
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
+option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
+option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
+option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
+option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
+set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  option(BUILD_EDITOR "Build internal editor" OFF)
+endif()
+
+if(USE_VCPKG)
   if(DEFINED ENV{VCPKG_ROOT})
     if (CMAKE_TOOLCHAIN_FILE)
       cmake_path(ABSOLUTE_PATH CMAKE_TOOLCHAIN_FILE NORMALIZE OUTPUT_VARIABLE VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
@@ -13,30 +30,15 @@ if(NOT DEFINED USE_VCPKG OR USE_VCPKG)
       # prevent endless recursion
       unset(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
     endif()
-  elseif(USE_VCPKG)
+  elseif(NOT USE_VCPKG STREQUAL "DEFAULT")
     message(WARNING "USE_VCPKG=${USE_VCPKG} but ENV{VCPKG_ROOT} not set; will use system-provided libraries. Did you forget to set VCPKG_ROOT in your environment?")
   endif()
-endif()
-
-# set default cmake build type to Debug (None Debug Release RelWithDebInfo MinSizeRel)
-if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
 project(Descent3
   LANGUAGES C CXX
   VERSION 1.5.0
 )
-
-option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
-option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
-option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
-option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
-option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  option(BUILD_EDITOR "Build internal editor" OFF)
-endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
