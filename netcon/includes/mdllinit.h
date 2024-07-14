@@ -154,6 +154,9 @@
  * $NoKeywords: $
  */
 
+// Do functions, variables
+// Note, these must match the ordering on the D3 side (multi_dll_mgr.cpp)
+
 DLLGetMultiAPI = (GetMultiAPI_fp)api_func;
 DLLGetMultiAPI(&API);
 DLLSetUITextItemText = (SetUITextItemText_fp)API.fp[0];

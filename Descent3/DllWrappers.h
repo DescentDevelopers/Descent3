@@ -51,7 +51,7 @@ int InvGetTypeIDCount(int playernum, int type, int id);
 // Inventory Reset wrapper
 void InvReset(int playernum, bool reset_all = true);
 // wraps cfopen
-void OpenCFILE(CFILE **handle, const char *filename, const char *mode);
+void OpenCFILE(CFILE **handle, const std::filesystem::path &filename, const char *mode);
 // wrapper for ObjGetUltimateParent
 void GetUltimateParentForObject(object **parent, object *child);
 // sets an object's flag dead
