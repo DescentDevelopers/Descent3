@@ -304,7 +304,6 @@
 #include "3d.h"
 #include "gamefont.h"
 #include "bitmap.h"
-#include "ddio.h"
 #include "stringtable.h"
 #include "textaux.h"
 #include "newui_core.h"
@@ -769,39 +768,6 @@ bool DoEditDialog(const char *title, char *buffer, int buflen, bool showcancel) 
   return ((res != UID_CANCEL && res != NEWUIRES_FORCEQUIT) ? true : false);
 }
 
-// puts up a file selector box
-// Parameters:	max_filename_len - the max length for the filename. filebuf have a length of at least max_filename_len+1
-bool DoFileDialog(const char *title, const char *search_path, const char *ext, char *filebuf,
-                  unsigned max_filename_len) {
-  NewUIFileDialog dlg;
-  int w = 256, h = 256;
-  int x = Game_window_w / 2 - w / 2;
-  int y = Game_window_h / 2 - h / 2;
-
-  dlg.Create(title, x, y, w, h, search_path, ext);
-
-  if (dlg.DoModal()) {
-    if (strlen(dlg.GetFilename()) > max_filename_len)
-      Error("Runtime error. NewUI system DoFileDialog: (%d,%d)", strlen(dlg.GetFilename()), max_filename_len);
-    strcpy(filebuf, dlg.GetFilename());
-    return true;
-  }
-
-  filebuf[0] = 0;
-  return false;
-}
-
-//	shows or hides windows
-void OpenUIWindow(UIWindow *wnd) {
-  ASSERT(wnd);
-  wnd->Open();
-}
-
-void CloseUIWindow(UIWindow *wnd) {
-  ASSERT(wnd);
-  wnd->Close();
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 //	large bitmap library
 
@@ -1236,130 +1202,3 @@ void NewUIButton::OnFormat() {
 
   UIGadget::OnFormat();
 }
-
-///////////////////////////////////////////////////////////////////////////////
-//	NewUIFileDialog
-//		this draws a file lister.
-
-#define UID_FILELIST 0x100
-
-void NewUIFileDialog::Create(const char *title, int x, int y, int w, int h, const char *path, const char *filecard) {
-  int list_y, list_w, list_h;
-
-  NewUIGameWindow::Create(x, y, w, h);
-
-  strcpy(m_SearchExt, filecard);
-  SetSearchPath(path);
-
-  list_w = w - 48;
-  list_h = h - 64;
-  list_y = 24;
-
-  UITextItem itemTitle{(char *)title};
-  m_TitleStr.Create(this, &itemTitle, 0, 5, UIF_CENTER);
-  m_ListBox.Create(this, UID_FILELIST, 0, list_y, list_w, list_h, UIF_CENTER);
-  UITextItem itemList{TXT_OK};
-  m_Ok.Create(this, UID_OK, &itemList, 32, m_H - 32, 0, 0, UIF_FIT);
-  UITextItem itemCancel{TXT_CANCEL};
-  m_Cancel.Create(this, UID_CANCEL, &itemCancel, m_W - m_Ok.W() - 32, m_H - 32, 0, 0, UIF_FIT);
-
-  m_FileItems = NULL;
-
-  UpdateList();
-}
-
-void NewUIFileDialog::SetSearchPath(const char *path) { strcpy(m_SearchPath, path); }
-
-const char *NewUIFileDialog::GetFilename() { return m_NewPath; }
-
-void NewUIFileDialog::UpdateList() {
-  char search_str[_MAX_PATH];
-  char filename[_MAX_PATH];
-
-  // remove items from listbox, free them.
-  while (m_ListBox.GetNumItems()) {
-    UIItem *item = m_ListBox.GetItem(0);
-    m_ListBox.RemoveItem(item);
-    delete item;
-  }
-
-  //	read in all files that have all search parameters met
-  ddio_MakePath(search_str, m_SearchPath, m_SearchExt, NULL);
-
-  if (ddio_FindFileStart(search_str, filename)) {
-    UIItem *item = new UITextItem(filename);
-    m_ListBox.AddItem(item);
-
-    while (ddio_FindNextFile(filename)) {
-      item = new UITextItem(filename);
-      m_ListBox.AddItem(item);
-    }
-
-    ddio_FindFileClose();
-  }
-}
-
-bool NewUIFileDialog::DoModal() {
-  bool exit_menu = false, return_value = false;
-
-  this->Open();
-
-  //	update file list in listbox.
-  UpdateList();
-
-  while (!exit_menu) {
-    const char *filename;
-    int index;
-    int result;
-
-    result = DoUI();
-
-    switch (result) {
-    case NEWUIRES_FORCEQUIT:
-    case UID_CANCEL:
-      exit_menu = true;
-      return_value = false;
-      break;
-
-    case UID_OK:
-    case UID_FILELIST:
-      index = m_ListBox.GetSelectedIndex();
-      filename = ((UITextItem *)m_ListBox.GetItem(index))->GetBuffer();
-      ASSERT(strlen(filename) < (_MAX_PATH));
-      strcpy(m_NewPath, filename);
-      return_value = true;
-      exit_menu = true;
-      break;
-    }
-  }
-
-  this->Close();
-  this->Destroy();
-
-  return return_value;
-}
-
-void NewUIFileDialog::OnDestroy() {
-  // remove items from listbox, free them.
-  while (m_ListBox.GetNumItems()) {
-    UIItem *item = m_ListBox.GetItem(0);
-    m_ListBox.RemoveItem(item);
-    delete item;
-  }
-
-  UIWindow::OnDestroy();
-}
-
-//@@class NewUIFileDialog: public NewUIGameWindow
-//@@{
-//@@	NewUIListBox m_ListBox;
-//@@	NewUIButton m_Ok;
-//@@
-//@@	char m_SearchPath[_MAX_PATH];
-//@@	char m_SearchExt[PSFILENAME_LEN];
-//@@	char m_NewPath[_MAX_PATH];
-//@@
-//@@public:
-//@@	void Create(int x, int y, int w, int h, const char *path, const char *ext);
-//@@
-//@@};
