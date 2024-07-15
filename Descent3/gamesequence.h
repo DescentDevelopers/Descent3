@@ -112,6 +112,7 @@
 //	gamesequencer states:
 //		game states
 
+#include <filesystem>
 enum tGameState {
   GAMESTATE_IDLE,         // no state
   GAMESTATE_NEW,          // starts a new game (with current mission.)
@@ -163,7 +164,7 @@ void SetCurrentLevel(int level);
 bool LoadAndStartCurrentLevel();
 
 //	creates a simple mission to play one level.
-bool SimpleStartLevel(char *level_name);
+bool SimpleStartLevel(const std::filesystem::path& level_name);
 
 //	sets and retrieves the current gamestate
 inline void SetGameState(tGameState state) { Game_state = state; }
