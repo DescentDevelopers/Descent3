@@ -265,7 +265,9 @@
  * $NoKeywords: $
  */
 
-#include <stdio.h>
+#include <cstdio>
+#include <filesystem>
+
 #include "cfile.h"
 #include "objinfo.h"
 #include "ship.h"
@@ -300,9 +302,9 @@
 #include "demofile.h"
 
 extern bool is_multi_demo;
-static CFILE *Demo_cfp = NULL;
-char Demo_fname[_MAX_PATH * 2];
-static char Old_demo_fname[_MAX_PATH * 2];
+static CFILE *Demo_cfp = nullptr;
+std::filesystem::path Demo_fname;
+static std::filesystem::path Old_demo_fname;
 static float Demo_next_frame = 0;
 static float Demo_frame_time = 0;
 static float Demo_last_pinfo;
@@ -333,7 +335,7 @@ extern bool Game_paused;
 
 static bool Demo_play_fast = false;
 
-extern void PageInAllData(void);
+extern void PageInAllData();
 
 // Prompts user for filename and starts recording if successfull
 void DemoToggleRecording() {
@@ -345,7 +347,7 @@ void DemoToggleRecording() {
     Demo_flags = DF_NONE;
     AddBlinkingHUDMessage(TXT_DEMOSAVED);
 
-    Demo_fname[0] = '\0';
+    Demo_fname.clear();
     return;
   } else if (Demo_flags == DF_PLAYBACK) {
     // We can't record a demo while we are playing back a demo
@@ -358,8 +360,8 @@ void DemoToggleRecording() {
     if (stricmp(szfile + (strlen(szfile) - 4), ".dem") != 0) {
       strcat(szfile, ".dem");
     }
-    ddio_MakePath(Demo_fname, Base_directory, "demo", szfile, NULL);
-    mprintf(0, "Saving demo to file: %s\n", Demo_fname);
+    Demo_fname = std::filesystem::path(Base_directory) / "demo" / szfile;
+    mprintf(0, "Saving demo to file: %s\n", Demo_fname.u8string().c_str());
     // Try to create the file
     Demo_cfp = cfopen(Demo_fname, "wb");
     if (Demo_cfp) {
@@ -376,7 +378,7 @@ void DemoToggleRecording() {
     } else {
       // cfopen failed
       AddBlinkingHUDMessage(TXT_DEMOCANTCREATE);
-      Demo_fname[0] = '\0';
+      Demo_fname.clear();
       return;
     }
   }
@@ -697,7 +699,7 @@ void DemoWriteScriptEvent() {}
 int FrameDemoDelta = 0;
 int DemoFrameCount = 0;
 
-int DemoPlaybackFile(char *filename) {
+int DemoPlaybackFile(const std::filesystem::path& filename) {
   is_multi_demo = false;
   mprintf(0, "Playing back demo file!\n");
   MultiBuildMatchTables();
@@ -1194,12 +1196,12 @@ void DemoFrame() {
     } catch (...) {
       // End of file, so we're done playing the demo
       mprintf(0, "End of demo file!");
-      strcpy(Old_demo_fname, Demo_fname);
+      Old_demo_fname = Demo_fname;
       DemoAbort();
       // Do some cool stuff here, like end of demo stats or exit to the main menu
       if (Demo_looping) {
         Game_interface_mode = GAME_DEMO_LOOP;
-        strcpy(Demo_fname, Old_demo_fname);
+        Demo_fname = Old_demo_fname;
       } else {
         Game_interface_mode = GAME_POST_DEMO;
       }
@@ -1291,7 +1293,7 @@ void DemoFrame() {
       DemoAbort();
       if (Demo_looping) {
         Game_interface_mode = GAME_DEMO_LOOP;
-        strcpy(Demo_fname, Old_demo_fname);
+        Demo_fname = Old_demo_fname;
       } else {
         Game_interface_mode = GAME_POST_DEMO;
       }
@@ -1426,7 +1428,7 @@ bool LoadDemoDialog() {
   ddio_MakePath(file, Base_directory, "demo", NULL);
 
   if (DoPathFileDialog(false, file, TXT_VIEWDEMO, "*.dem", PFDF_FILEMUSTEXIST)) {
-    strcpy(Demo_fname, file);
+    Demo_fname = file;
     return true;
   }
   return false;
@@ -1443,9 +1445,12 @@ void DemoAbort(bool deletefile) {
 
     cfclose(Demo_cfp);
     Demo_flags = DF_NONE;
-    if (deletefile)
-      ddio_DeleteFile(Demo_fname);
-    Demo_fname[0] = '\0';
+    if (deletefile) {
+      std::error_code ec;
+      std::filesystem::remove(Demo_fname, ec);
+    }
+    Old_demo_fname = Demo_fname;
+    Demo_fname.clear();
     return;
   }
 }
@@ -1570,7 +1575,7 @@ void DemoPostPlaybackMenu(void) {
     switch (res) {
     case UID_LOOPING:
       Game_interface_mode = GAME_DEMO_LOOP;
-      strcpy(Demo_fname, Old_demo_fname);
+      Demo_fname = Old_demo_fname;
       Demo_looping = true;
       exit_menu = true;
       ret = true;

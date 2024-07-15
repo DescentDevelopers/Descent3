@@ -1430,12 +1430,11 @@ void ProcessNormalKey(int key) {
       Demo_do_one_frame = true;
       break;
     case KEY_CTRLED + KEY_LEFT: {
-      char sztmp[_MAX_PATH * 2];
-      strcpy(sztmp, Demo_fname);
+      std::filesystem::path sztmp = Demo_fname;
       DemoAbort();
       Game_interface_mode = GAME_DEMO_LOOP;
       Demo_restart = true;
-      strcpy(Demo_fname, sztmp);
+      Demo_fname = sztmp;
     } break;
     case KEY_UP:
       Game_paused = false;

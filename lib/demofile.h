@@ -107,8 +107,9 @@
 #define _DEMO_FILE_HEADER_
 
 #include <cstdint>
+#include <filesystem>
 
-extern char Demo_fname[_MAX_PATH * 2];
+extern std::filesystem::path Demo_fname;
 
 extern uint32_t Demo_flags;
 extern bool Demo_paused;
@@ -176,7 +177,7 @@ void DemoWriteTurretChanged(uint16_t objnum);
 
 int DemoReadHeader();
 
-int DemoPlaybackFile(char *filename);
+int DemoPlaybackFile(const std::filesystem::path& filename);
 
 bool LoadDemoDialog();
 
