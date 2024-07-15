@@ -264,11 +264,13 @@
  */
 ///////////////////////////////////////////////
 
+#include <filesystem>
+
 #include "ship.h"
 #include "pstypes.h"
 
 #if defined(POSIX)
-#include <string.h>
+#include <cstring>
 #include "linux_fix.h"
 #endif
 
@@ -635,7 +637,7 @@ MultiDoConfigSave_fp DLLMultiDoConfigSave;
 typedef void (*MultiDoConfigLoad_fp)(void);
 MultiDoConfigLoad_fp DLLMultiDoConfigLoad;
 
-typedef int (*MultiLoadSettings_fp)(const char *filename);
+typedef int (*MultiLoadSettings_fp)(const std::filesystem::path &filename);
 MultiLoadSettings_fp DLLMultiLoadSettings;
 
 typedef void *(*NetworkReceiveCallback)(uint8_t *data, int len, network_address *from);
