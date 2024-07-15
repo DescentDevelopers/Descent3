@@ -1694,12 +1694,12 @@ void InitLevelScript() {
     ddio_SplitPath(Current_level->filename, NULL, filename, ext);
 #if defined(WIN32)
     strcat(filename, ".dll");
-#else
-#if defined(MACOSX)
+#elif defined(MACOSX)
     strcat(filename, ".dylib");
-#else
+#elif defined(__LINUX__)
     strcat(filename, ".so");
-#endif
+#else
+    #error Unsupported platform!
 #endif
     Osiris_LoadLevelModule(filename);
   }

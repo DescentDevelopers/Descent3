@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#ifdef __LINUX__
+#if defined(POSIX)
 #include <ctype.h>
 #endif
 
