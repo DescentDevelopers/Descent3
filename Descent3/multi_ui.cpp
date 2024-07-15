@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -309,6 +309,12 @@
  *
  */
 
+#include <algorithm>
+#include <cstdlib>
+#include <filesystem>
+#include <regex>
+#include <string>
+
 #include "args.h"
 #include "ui.h"
 #include "newui.h"
@@ -316,18 +322,20 @@
 #include "gamefont.h"
 #include "descent.h"
 #include "multi.h"
+#include "multi_dll_mgr.h"
+#include "multi_save_settings.h"
 #include "multi_ui.h"
-#include "multi_server.h"
-#include "multi_client.h"
 #include "networking.h"
 #include "player.h"
 #include "manage.h"
+#include "menu.h"
 #include "pilot.h"
-#include <stdlib.h>
 #include "ddio.h"
 #include "objinfo.h"
+#include "ship.h"
 #include "stringtable.h"
 #include "ConfigItem.h"
+#include "Mission.h"
 #include "appdatabase.h"
 
 // #define USE_DIRECTPLAY
@@ -336,25 +344,15 @@
 #include "directplay.h"
 #endif
 
-#include "ship.h"
-
-#include "multi_dll_mgr.h"
-#include "Mission.h"
-#include "menu.h"
-
-#include "multi_save_settings.h"
-
-#include <algorithm>
-
 #define MAIN_MULTI_MENU_W 384
 #define MAIN_MULTI_MENU_H 256
-#define MAIN_MULTI_MENU_X 320 - (MAIN_MULTI_MENU_W / 2)
-#define MAIN_MULTI_MENU_Y 240 - (MAIN_MULTI_MENU_H / 2)
+#define MAIN_MULTI_MENU_X (320 - (MAIN_MULTI_MENU_W / 2))
+#define MAIN_MULTI_MENU_Y (240 - (MAIN_MULTI_MENU_H / 2))
 
 #define HELP_MULTI_MENU_W 512
 #define HELP_MULTI_MENU_H 192
-#define HELP_MULTI_MENU_X 320 - (MAIN_MULTI_MENU_W / 2)
-#define HELP_MULTI_MENU_Y 240 - (MAIN_MULTI_MENU_H / 2)
+#define HELP_MULTI_MENU_X (320 - (MAIN_MULTI_MENU_W / 2))
+#define HELP_MULTI_MENU_Y (240 - (MAIN_MULTI_MENU_H / 2))
 
 #define MAX_HELP_TEXT_LEN 1000
 char HelpText1[MAX_HELP_TEXT_LEN];
@@ -374,7 +372,6 @@ void DisplayNetDLLHelp(const char *topic);
 
 #define UID_MULTILB 0x1000
 
-#define HEAT_NAME "HEAT.NET"
 #define PXO_NAME "Parallax Online"
 
 int MainMultiplayerMenu() {
@@ -416,7 +413,7 @@ int MainMultiplayerMenu() {
 
   Database->read("DefaultNetConn", sznetgame, &netgamelen);
   if (*sznetgame == '\0') {
-    strcpy(sznetgame, "HEAT.NET");
+    strcpy(sznetgame, PXO_NAME);
     Database->write("DefaultNetConn", sznetgame, strlen(sznetgame) + 1);
   }
 
@@ -439,106 +436,33 @@ int MainMultiplayerMenu() {
   sheet->AddButton(TXT_REALHELP, 0x20);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
-  int dllcount = 1;
-  char buffer[_MAX_PATH], fname[_MAX_PATH], fext[_MAX_PATH], fdir[_MAX_PATH];
-  char search[256];
-
-  ddio_MakePath(search, Base_directory, "online", "*.d3c", NULL);
-
   int dftidx = -1;
-  dllcount = 0;
+  int dllcount = 0;
 
-  // Put the HEAT on top.
-  if (ddio_FindFileStart(search, buffer)) {
+  std::vector<std::string> dllnames;
 
-    ddio_SplitPath(buffer, fdir, fname, fext);
+  ddio_DoForeachFile(std::filesystem::path(Base_directory) / "online", std::regex(".*\\.d3c"),
+                     [&dllnames](const std::filesystem::path &path) {
+                       std::string filename = path.stem().string();
 
-    if (!stricmp(HEAT_NAME, fname)) {
-      lists->AddItem(fname);
-      dllcount++;
-    }
-    if (!stricmp(sznetgame, fname)) {
-      dftidx = 0;
-    }
+                       std::replace(filename.begin(), filename.end(), '~', '/');
 
-    while ((ddio_FindNextFile(buffer)) && (dllcount < MAX_DLLS)) {
-      ddio_SplitPath(buffer, fdir, fname, fext);
-      if (!stricmp(HEAT_NAME, fname)) {
-        lists->AddItem(fname);
-        dllcount++;
-      }
-      if (!stricmp(sznetgame, fname)) {
-        dftidx = 0;
-      }
-    }
-  }
+                       // Place PXO_NAME first in list
+                       if (stricmp(filename.c_str(), PXO_NAME) == 0) {
+                         dllnames.insert(dllnames.begin(), filename);
+                       } else {
+                         dllnames.push_back(filename);
+                       }
+                     });
 
-  // Put the PXO next.
-  if (ddio_FindFileStart(search, buffer)) {
+  for (auto const &name : dllnames) {
+    lists->AddItem(name.c_str());
+    dllcount++;
 
-    ddio_SplitPath(buffer, fdir, fname, fext);
-
-    if (!stricmp(PXO_NAME, fname)) {
-      lists->AddItem(fname);
-      dllcount++;
-    }
-    if (!stricmp(sznetgame, fname)) {
-      dftidx = 1;
-    }
-
-    while ((ddio_FindNextFile(buffer)) && (dllcount < MAX_DLLS)) {
-      ddio_SplitPath(buffer, fdir, fname, fext);
-      if (!stricmp(PXO_NAME, fname)) {
-        lists->AddItem(fname);
-        dllcount++;
-      }
-      if (!stricmp(sznetgame, fname)) {
-        dftidx = 1;
-      }
+    if (stricmp(name.c_str(), sznetgame) != 0) {
+      dftidx = dllcount;
     }
   }
-
-  if (ddio_FindFileStart(search, buffer)) {
-
-    ddio_SplitPath(buffer, fdir, fname, fext);
-
-    for (j = 0; j < strlen(fname); j++) {
-      if (fname[j] == '~') {
-        fname[j] = '/';
-      }
-    }
-
-    if ((stricmp(HEAT_NAME, fname) != 0) && (stricmp(PXO_NAME, fname) != 0)) {
-      lists->AddItem(fname);
-      if (!stricmp(sznetgame, fname)) {
-        dftidx = dllcount;
-      }
-      dllcount++;
-    }
-
-    uint32_t len;
-    while ((ddio_FindNextFile(buffer)) && (dllcount < MAX_DLLS)) {
-      ddio_SplitPath(buffer, fdir, fname, fext);
-      len = strlen(fname);
-
-      for (j = 0; j < len; j++) {
-        if (fname[j] == '~') {
-          fname[j] = '/';
-        }
-      }
-
-      if ((stricmp(HEAT_NAME, fname) != 0) && (stricmp(PXO_NAME, fname) != 0)) {
-        lists->AddItem(fname);
-        if (!stricmp(sznetgame, fname)) {
-          dftidx = dllcount;
-        }
-        dllcount++;
-      }
-    }
-  } else {
-    dllcount = 0;
-  }
-  ddio_FindFileClose();
 
   if (dllcount == 0) {
     DoMessageBox(TXT_MULTIPLAYER, TXT_MULTINOFILES, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
