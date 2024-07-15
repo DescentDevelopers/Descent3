@@ -67,14 +67,16 @@
  * $NoKeywords: $
  */
 
-#include <stdio.h>
+#include <cstdio>
+#include <filesystem>
+
 #include "cfile.h"
 #include "multi.h"
 #include "objinfo.h"
 #include "ship.h"
 #include "multi_save_settings.h"
 
-int MultiSaveSettings(const char *filename) {
+int MultiSaveSettings(const std::filesystem::path &filename) {
   CFILE *cf;
   char szoutput[MAX_MPS_LINE_LEN];
   int i;
@@ -137,7 +139,7 @@ int MultiSaveSettings(const char *filename) {
   return 1;
 }
 
-int MultiLoadSettings(const char *filename) {
+int MultiLoadSettings(const std::filesystem::path &filename) {
   CFILE *cf;
   char szinput[MAX_MPS_LINE_LEN];
   char *toklabel, *tokval;
