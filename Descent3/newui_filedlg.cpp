@@ -135,8 +135,13 @@ char NewuiFileDlg_lastpath[_MAX_PATH] = {'\0'};
 // it fills in buffer (up to maxcount) with the files found
 int GetFilesInPath(char **buffer, int maxcount, const char *p, const char *wildcard);
 
-// returns the number of directories in path p
-// it fills in buffer (up to maxcount) with the directories found
+/**
+ * Fills in buffer (up to maxcount) with the directories found
+ * @param buffer
+ * @param maxcount
+ * @param p
+ * @return the number directories in path (regardless to maxcount!)
+ */
 int GetDirectoriesInPath(char **buffer, int maxcount, const char *p);
 
 // Updates the given listbox with the directories and files that match wildcards (each wildcard seperates by a ;)
@@ -536,52 +541,23 @@ int GetDirectoriesInPath(char **buffer, int maxcount, const char *p) {
 
   int i;
   for (i = 0; i < maxcount; i++) {
-    buffer[i] = NULL;
+    buffer[i] = nullptr;
   }
 
-  char old_path[_MAX_PATH], path[_MAX_PATH];
-
-  ddio_GetWorkingDir(old_path, _MAX_PATH);
-  if (!ddio_SetWorkingDir(p)) {
-    // directory doesn't exist
-    ddio_SetWorkingDir(old_path);
+  std::filesystem::path search_dir = std::filesystem::path(p);
+  if (!std::filesystem::is_directory(search_dir)) {
     return -1;
   }
 
-  ddio_GetWorkingDir(path, _MAX_PATH);
-  if (stricmp(path, p)) {
-    // the working dir is not the same as the passed in path, so try to create a correct path and set it
-    ddio_MakePath(path, p, "", NULL);
-    if (!ddio_SetWorkingDir(path)) {
-      ddio_SetWorkingDir(old_path);
-      return -1;
-    }
-  }
-
   int count = 0;
-  char tempbuffer[_MAX_PATH];
-
-  if (ddio_FindFileStart("*", tempbuffer)) {
-    if (std::filesystem::is_directory(tempbuffer)) {
-      buffer[count] = mem_strdup(tempbuffer);
+  for (auto const& dir_entry : std::filesystem::directory_iterator{search_dir}) {
+    if (std::filesystem::is_directory(dir_entry)) {
+      if (count < maxcount) {
+        buffer[count] = mem_strdup(dir_entry.path().filename().u8string().c_str());
+      }
       count++;
     }
-
-    bool done = false;
-
-    while (!done) {
-      if (ddio_FindNextFile(tempbuffer)) {
-        if (std::filesystem::is_directory(tempbuffer)) {
-          if (count < maxcount)
-            buffer[count] = mem_strdup(tempbuffer);
-          count++;
-        }
-      } else
-        done = true;
-    }
   }
-  ddio_FindFileClose();
-  ddio_SetWorkingDir(old_path);
   return count;
 }
 
