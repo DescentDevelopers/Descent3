@@ -991,7 +991,7 @@ void MultiDoConfigSave(void) {
   char file[_MAX_PATH * 2];
 
   ddio_MakePath(file, Base_directory, "custom", "settings", NULL);
-  if (DoPathFileDialog(true, file, TXT_MULTISAVESET, "*.mps", 0)) {
+  if (DoPathFileDialog(true, file, TXT_MULTISAVESET, {"*.mps"}, 0)) {
     if (stricmp(file + (strlen(file) - 4), ".mps") != 0)
       strcat(file, ".mps");
     MultiSaveSettings(file);
@@ -1002,7 +1002,7 @@ void MultiDoConfigLoad(void) {
   char file[_MAX_PATH * 2];
 
   ddio_MakePath(file, Base_directory, "custom", "settings", NULL);
-  if (DoPathFileDialog(false, file, TXT_MULTILOADSET, "*.mps", PFDF_FILEMUSTEXIST))
+  if (DoPathFileDialog(false, file, TXT_MULTILOADSET, {"*.mps"}, PFDF_FILEMUSTEXIST))
     MultiLoadSettings(file);
 }
 

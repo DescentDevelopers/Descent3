@@ -3060,10 +3060,8 @@ bool PltSelectShip(pilot *Pilot) {
     case ID_IMPORT: {
       char path[_MAX_PATH];
       char newf[_MAX_FNAME];
-      char wildcards[100];
       path[0] = '\0';
-      strcpy(wildcards, "*.ogf;*.tga;*.pcx;*.iff");
-      if (DoPathFileDialog(false, path, TXT_CHOOSE, wildcards, PFDF_FILEMUSTEXIST)) {
+      if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ogf", "*.tga", "*.pcx", "*.iff"}, PFDF_FILEMUSTEXIST)) {
         if (ImportGraphic(path, newf)) {
           // update the listbox
           if (!UpdateGraphicsListbox(&cust_bmps, custom_list, newf))
@@ -3077,11 +3075,9 @@ bool PltSelectShip(pilot *Pilot) {
     case ID_GETANIM: {
       char path[_MAX_PATH];
       char opath[_MAX_PATH];
-      char wildcards[100];
       path[0] = '\0';
       strcpy(opath, path);
-      strcpy(wildcards, "*.ifl");
-      if (DoPathFileDialog(false, path, TXT_CHOOSE, wildcards, PFDF_FILEMUSTEXIST)) {
+      if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ifl"}, PFDF_FILEMUSTEXIST)) {
         int handle = AllocLoadIFLVClip(IGNORE_TABLE(path), SMALL_TEXTURE, 1);
 
         if (handle != -1) {
@@ -3198,10 +3194,8 @@ bool PltSelectShip(pilot *Pilot) {
       // Import the sound, set it's sample to xx.xKhz and xbit depth, attach the CRC to the filename
       // and place in custom/sounds.  Then update the audio taunt combo boxes
       char path[_MAX_PATH];
-      char wildcards[100];
       path[0] = '\0';
-      strcpy(wildcards, "*.wav");
-      if (DoPathFileDialog(false, path, TXT_CHOOSE, wildcards, PFDF_FILEMUSTEXIST)) {
+      if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.wav"}, PFDF_FILEMUSTEXIST)) {
         char dpath[_MAX_PATH * 2];
         char filename[_MAX_PATH];
         char tempfile[_MAX_PATH];
