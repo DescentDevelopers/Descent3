@@ -1375,7 +1375,7 @@ redo_level_choose:
 bool MenuLoadLevel(void) {
   char buffer[_MAX_PATH];
   buffer[0] = '\0';
-  if (DoPathFileDialog(false, buffer, "Load Level", "*.d3l", PFDF_FILEMUSTEXIST)) {
+  if (DoPathFileDialog(false, buffer, "Load Level", {"*.d3l"}, PFDF_FILEMUSTEXIST)) {
     SimpleStartLevel(buffer);
     SetFunctionMode(GAME_MODE);
     return true;

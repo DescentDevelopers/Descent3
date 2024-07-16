@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -105,47 +105,30 @@
 #include <cstring>
 #include <filesystem>
 
-#include "mono.h"
-#include "renderer.h"
-#include "render.h"
-#include "ddio.h"
-#include "descent.h"
-#include "game.h"
-#include "cfile.h"
 #include "application.h"
-#include "newui.h"
-#include "grtext.h"
-#include "gamefont.h"
-#include "stringtable.h"
-#include "ConfigItem.h" //for colors
+#include "cfile.h"
+#include "ddio.h"
+#include "game.h"
 #include "mem.h"
+#include "mono.h"
+#include "newui.h"
+#include "pstring.h"
+#include "renderer.h"
+#include "stringtable.h"
 
-newuiListBox *path_list = NULL;
-char *path_edit = NULL;
-char *working_filename = NULL;
-char *working_listpath = NULL;
-newuiSheet *fdlg_working_sheet = NULL;
+newuiListBox *path_list = nullptr;
+char *path_edit = nullptr;
+char *working_filename = nullptr;
+char *working_listpath = nullptr;
+newuiSheet *fdlg_working_sheet = nullptr;
 
 char NewuiFileDlg_lastpath[_MAX_PATH] = {'\0'};
 
 // border size of the UI window
 #define UI_BORDERSIZE 20
 
-// returns the number of files in path p, that matches wildcard
-// it fills in buffer (up to maxcount) with the files found
-int GetFilesInPath(char **buffer, int maxcount, const char *p, const char *wildcard);
-
-/**
- * Fills in buffer (up to maxcount) with the directories found
- * @param buffer
- * @param maxcount
- * @param p
- * @return the number directories in path (regardless to maxcount!)
- */
-int GetDirectoriesInPath(char **buffer, int maxcount, const char *p);
-
 // Updates the given listbox with the directories and files that match wildcards (each wildcard seperates by a ;)
-void UpdateFileList(newuiListBox *lb, const char *path, char *wildcards);
+void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const std::vector<std::string> &wildcards);
 
 // Callback function for listbox
 void FileSelectCallback(int index);
@@ -154,7 +137,7 @@ void FDlg_EnableWaitMessage(bool enable) {
 #define FDWM_HEIGHT 128
 #define FDWM_WIDTH 256
 
-  static NewUIGameWindow *msgbox = NULL;
+  static NewUIGameWindow *msgbox = nullptr;
   static bool opened = false;
   newuiSheet *sheet;
 
@@ -171,7 +154,7 @@ void FDlg_EnableWaitMessage(bool enable) {
       msgbox->Create(0, 0, FDWM_WIDTH, FDWM_HEIGHT, UIF_PROCESS_ALL | UIF_CENTER);
 
       sheet = msgbox->GetSheet();
-      sheet->NewGroup(NULL, 45, 25);
+      sheet->NewGroup(nullptr, 45, 25);
       sheet->AddText(TXT_GETTINGFILES);
 
       msgbox->Open();
@@ -188,7 +171,7 @@ void FDlg_EnableWaitMessage(bool enable) {
       msgbox->Destroy();
       delete msgbox;
     }
-    msgbox = NULL;
+    msgbox = nullptr;
   }
 }
 
@@ -222,11 +205,8 @@ void FileSelectCallback(int index) {
   fdlg_working_sheet->UpdateChanges();
 }
 
-//	Displays a file/directory dialog box
-//		path	- Initial path, will contain the chosen file/path on exit with true, must be at least _MAX_PATH
-// in size 		title	- Title of the dialog 		wildc	- semicolon (;) seperated list of wildcards to
-// be shown 		flags	- see header PFDF_ for flags
-bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const char *wildc, int flags) {
+bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std::vector<std::string> &wildc,
+                      int flags) {
 #define HS_CANCEL 0
 #define HS_OK 1
 #define HS_UPDIR 0
@@ -243,7 +223,6 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
   newuiListBox *listbox;
   char *edits[2];
 
-  char wildcards[256];
   char working_path[_MAX_PATH];
   char working_file[_MAX_FNAME];
 
@@ -251,38 +230,35 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
     return false;
   if (!title)
     return false;
-  if (!wildc)
+  if (wildc.empty())
     return false;
 
-  strcpy(wildcards, wildc);
+  std::vector<std::string> wildcards = wildc;
   strcpy(working_file, "");
 
   // figure out the correct path
-  char oldpath[_MAX_PATH];
-  ddio_GetWorkingDir(oldpath, _MAX_PATH);
-  if (!ddio_SetWorkingDir(path)) {
+  if (!std::filesystem::is_directory(path)) {
     // try to use last good path
-    if (!ddio_SetWorkingDir(NewuiFileDlg_lastpath)) {
+    if (!std::filesystem::is_directory(NewuiFileDlg_lastpath)) {
       strcpy(path, LocalD3Dir);
     } else {
       strcpy(path, NewuiFileDlg_lastpath);
     }
   }
-  ddio_SetWorkingDir(oldpath);
 
   // Create all the UI Items
   window.Create(title, 0, 0, 384, 288);
   fdlg_working_sheet = sheet = window.GetSheet();
 
-  sheet->NewGroup(NULL, 10, 0);
+  sheet->NewGroup(nullptr, 10, 0);
   listbox = sheet->AddListBox(268, 100, ID_LISTBOX);
 
-  sheet->NewGroup(NULL, 0, 145);
-  edits[ED_FILENAME] = sheet->AddEditBox(NULL, _MAX_PATH, 300, ID_FILENAME);
-  edits[ED_WILDCARD] = sheet->AddEditBox(NULL, 256, 150, ID_WILDCARD);
+  sheet->NewGroup(nullptr, 0, 145);
+  edits[ED_FILENAME] = sheet->AddEditBox(nullptr, _MAX_PATH, 300, ID_FILENAME);
+  edits[ED_WILDCARD] = sheet->AddEditBox(nullptr, 256, 150, ID_WILDCARD);
   sheet->AddLongButton(TXT_UPTOPARENTDIR, ID_UPDIR);
 
-  sheet->NewGroup(NULL, 200, 160);
+  sheet->NewGroup(nullptr, 200, 160);
   sheet->AddButton((save_dialog) ? TXT_SAVE : TXT_OPEN, ID_OK);
   sheet->AddButton(TXT_CANCEL, ID_CANCEL);
 
@@ -299,7 +275,8 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
   strncpy(edits[ED_FILENAME], working_path, _MAX_PATH - 1);
   edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
 
-  strncpy(edits[ED_WILDCARD], wildcards, 255);
+  std::string wildc1 = StringJoin(wildcards, ";");
+  strncpy(edits[ED_WILDCARD], wildc1.c_str(), 255);
   edits[ED_WILDCARD][255] = '\0';
 
   bool ret = false;
@@ -348,11 +325,11 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
             if (!cfexist(path)) {
               DoMessageBox(TXT_ERROR, TXT_ERRFILENOTEXIST, MSGBOX_OK);
             } else {
-              ddio_SplitPath(path, NewuiFileDlg_lastpath, NULL, NULL);
+              ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
               ret = exit_menu = true;
             }
           } else {
-            ddio_SplitPath(path, NewuiFileDlg_lastpath, NULL, NULL);
+            ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
             ret = exit_menu = true;
           }
         }
@@ -398,7 +375,7 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
                 exit_menu = true;
                 ret = true;
                 strcpy(path, file);
-                ddio_SplitPath(path, NewuiFileDlg_lastpath, NULL, NULL);
+                ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
               } else {
                 // invalid file
                 DoMessageBox(TXT_ERROR, TXT_ERRCHOOSEFILE, MSGBOX_OK);
@@ -407,24 +384,23 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
               strcpy(path, file);
               exit_menu = true;
               ret = true;
-              ddio_SplitPath(path, NewuiFileDlg_lastpath, NULL, NULL);
+              ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
             }
           }
         }
       }
     } break;
     case ID_UPDIR: {
-      char newpath[_MAX_PATH];
       strcpy(working_file, "");
-      ddio_GetParentPath(newpath, working_path);
-      strcpy(working_path, newpath);
+      std::filesystem::path newpath = std::filesystem::path(working_path).parent_path();
+      strcpy(working_path, newpath.u8string().c_str());
 
       UpdateFileList(listbox, working_path, wildcards);
       strncpy(edits[ED_FILENAME], working_path, _MAX_PATH - 1);
       edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
     } break;
     case ID_WILDCARD: {
-      strcpy(wildcards, edits[ED_WILDCARD]);
+      wildcards = StringSplit(edits[ED_WILDCARD], ";");
       UpdateFileList(listbox, working_path, wildcards);
     } break;
     case ID_FILENAME: {
@@ -439,14 +415,14 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
               strcpy(path, c);
               exit_menu = true;
               ret = true;
-              ddio_SplitPath(path, NewuiFileDlg_lastpath, NULL, NULL);
+              ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
             } else {
               // invalid file
               DoMessageBox(TXT_ERROR, TXT_ERRFILENOTEXIST, MSGBOX_OK);
             }
           } else {
             strcpy(path, c);
-            ddio_SplitPath(path, NewuiFileDlg_lastpath, NULL, NULL);
+            ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
             exit_menu = true;
             ret = true;
           }
@@ -469,105 +445,22 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const cha
   window.Close();
   window.Destroy();
 
-  working_filename = NULL;
-  working_listpath = NULL;
-  path_edit = NULL;
-  path_list = NULL;
+  working_filename = nullptr;
+  working_listpath = nullptr;
+  path_edit = nullptr;
+  path_list = nullptr;
 
   return ret;
 }
 
-// returns the number of files in path p, that matches wildcard
-// it fills in buffer (up to maxcount) with the files found
-int GetFilesInPath(char **buffer, int maxcount, const char *p, const char *wildcard) {
-  ASSERT(buffer);
-  ASSERT(p);
-  ASSERT(wildcard);
-  if (maxcount <= 0)
-    return 0;
-
-  char old_path[_MAX_PATH], path[_MAX_PATH];
-  ddio_GetWorkingDir(old_path, _MAX_PATH);
-  if (!ddio_SetWorkingDir(p)) {
-    // directory doesn't exist
-    ddio_SetWorkingDir(old_path);
-    return -1;
-  }
-
-  ddio_GetWorkingDir(path, _MAX_PATH);
-  if (stricmp(path, p)) {
-    // the working dir is not the same as the passed in path, so try to create a correct path and set it
-    ddio_MakePath(path, p, "", NULL);
-    if (!ddio_SetWorkingDir(path)) {
-      ddio_SetWorkingDir(old_path);
-      return -1;
-    }
-  }
-
-  int count = 0;
-  char tempbuffer[_MAX_PATH];
-
-  if (ddio_FindFileStart(wildcard, tempbuffer)) {
-    if (!std::filesystem::is_directory(tempbuffer)) {
-      buffer[count] = mem_strdup(tempbuffer);
-      count++;
-    }
-
-    bool done = false;
-
-    while (!done) {
-      if (ddio_FindNextFile(tempbuffer)) {
-        if (!std::filesystem::is_directory(tempbuffer)) {
-          if (count < maxcount)
-            buffer[count] = mem_strdup(tempbuffer);
-          count++;
-        }
-      } else
-        done = true;
-    }
-  }
-  ddio_FindFileClose();
-  ddio_SetWorkingDir(old_path);
-  return count;
-}
-
-// returns the number of directories in path p
-// it fills in buffer (up to maxcount) with the directories found
-int GetDirectoriesInPath(char **buffer, int maxcount, const char *p) {
-  ASSERT(buffer);
-  ASSERT(p);
-  if (maxcount <= 0)
-    return 0;
-
-  int i;
-  for (i = 0; i < maxcount; i++) {
-    buffer[i] = nullptr;
-  }
-
-  std::filesystem::path search_dir = std::filesystem::path(p);
-  if (!std::filesystem::is_directory(search_dir)) {
-    return -1;
-  }
-
-  int count = 0;
-  for (auto const& dir_entry : std::filesystem::directory_iterator{search_dir}) {
-    if (std::filesystem::is_directory(dir_entry)) {
-      if (count < maxcount) {
-        buffer[count] = mem_strdup(dir_entry.path().filename().u8string().c_str());
-      }
-      count++;
-    }
-  }
-  return count;
-}
-
 // Updates the given listbox with the directories and files that match wildcards (each wildcard seperates by a ;)
-void UpdateFileList(newuiListBox *lb, const char *path, char *wildcards) {
+void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const std::vector<std::string> &wildcards) {
   FDlg_EnableWaitMessage(true);
   lb->RemoveAll();
 
   // if path is NULL or 0 length string then just list the directories
-  if ((!path) || (*path == '\0')) {
+  // TODO: check root paths in Windows
+  if (path.empty()) {
     char *roots[30];
     int rootcount = ddio_GetFileSysRoots((char **)&roots, 30);
     if (!rootcount) {
@@ -586,214 +479,45 @@ void UpdateFileList(newuiListBox *lb, const char *path, char *wildcards) {
     return;
   }
 
-  char **dirs = NULL;
-  char *tempdir[1];
-  char fullpath[_MAX_PATH];
-  ddio_GetRootFromPath(path, fullpath);
-  if (!stricmp(path, fullpath)) {
-    // we are are the root of the drive, make a dummy path
-    ddio_MakePath(fullpath, path, "", NULL);
-  } else {
-    // just use this
-    strcpy(fullpath, path);
-  }
-
-  int dircount = GetDirectoriesInPath((char **)&tempdir, 1, fullpath);
-  if (dircount == -1) {
+  if (!std::filesystem::is_directory(path)) {
     // invalid directory/path
     DoMessageBox(TXT_ERROR, TXT_ERRPATHNOTVALID, MSGBOX_OK);
     FDlg_EnableWaitMessage(false);
     return;
   }
 
-  if (tempdir[0])
-    mem_free(tempdir[0]);
-  if (dircount > 0) {
-    dirs = (char **)mem_malloc(sizeof(char *) * dircount);
-    if (!dirs) {
-      // out of memory!
-      dircount = 0;
-    } else {
-      GetDirectoriesInPath(dirs, dircount, fullpath);
+  std::vector<std::filesystem::path> dirs;
+  std::vector<std::filesystem::path> files;
+
+  for (auto const &dir_entry : std::filesystem::directory_iterator{path}) {
+    if (std::filesystem::is_directory(dir_entry)) {
+      dirs.push_back(dir_entry.path().filename());
     }
-  } else {
-    dircount = 0;
-    dirs = NULL;
-  }
-
-  // figure out how many wildcards we have, and allocate accordingly
-  int wildcard_count = 0;
-  char *wc = NULL;
-  char **wc_strings = NULL;
-  int *wc_count = NULL;
-  char ***filelist = NULL;
-  int total_files = 0;
-  int wildcard_len = 0;
-  char *strptr = NULL;
-
-  // save the wildcards
-  wc = (char *)mem_malloc(strlen(wildcards) + 2);
-  if (!wc) {
-    FDlg_EnableWaitMessage(false);
-    return;
-  }
-
-  // make sure there is a tailing ;
-  strcpy(wc, wildcards);
-  wildcard_len = strlen(wildcards);
-  if (wc[wildcard_len - 1] != ';') {
-    wc[wildcard_len] = ';';
-    wc[wildcard_len + 1] = '\0';
-  }
-
-  // break up wildcard string, counting the number of wildcards as we go
-  strptr = wc;
-  while (*strptr != '\0') {
-    if (*strptr == ';') {
-      *strptr = '\0';
-      wildcard_count++;
-    }
-    strptr++;
-  }
-
-  if (wildcard_count > 0) {
-    wc_strings = (char **)mem_malloc(sizeof(char *) * wildcard_count);
-    wc_count = (int *)mem_malloc(sizeof(int) * wildcard_count);
-
-    if ((wc_strings) && (wc_count)) {
-      int e;
-
-      // get each individual string of the wildcard strings
-      strptr = wc;
-      for (e = 0; e < wildcard_count; e++) {
-        wc_strings[e] = mem_strdup(strptr);
-        strptr += strlen(strptr) + 1;
-      }
-
-      // malloc memory...an array of (array of char *) for each wildcard
-      filelist = (char ***)mem_malloc(sizeof(char **) * wildcard_count);
-      if (!filelist) {
-        // there was an error allocating the memory
-        if (wc) {
-          mem_free(wc);
-          wc = NULL;
+    if (std::filesystem::is_regular_file(dir_entry)) {
+      for (const auto &wildcard : wildcards) {
+        if (stricmp(dir_entry.path().extension().u8string().c_str(),
+                    std::filesystem::path(wildcard).extension().u8string().c_str()) == 0) {
+          files.push_back(dir_entry.path().filename());
         }
-        for (e = 0; e < wildcard_count; e++) {
-          if (wc_strings[e])
-            mem_free(wc_strings[e]);
-          wc_count[e] = 0;
-          filelist[e] = NULL;
-        }
-
-        mem_free(wc_strings);
-        wc_strings = NULL;
-        goto wildcard_err;
-      }
-
-      char *templist[1];
-      int count;
-
-      total_files = 0;
-
-      for (e = 0; e < wildcard_count; e++) {
-        // we just need to get how many of each wildcard there is in the directory
-        templist[0] = NULL;
-        count = GetFilesInPath((char **)&templist, 1, path, wc_strings[e]);
-        if (count == -1) {
-          // invalid path
-          wc_count[e] = 0;
-          filelist[e] = NULL;
-        } else {
-          total_files += count;
-          if (templist[0]) {
-            mem_free(templist[0]);
-            templist[0] = NULL;
-          }
-
-          if (count > 0) {
-            // now we need to get all the files for the wildcard
-            filelist[e] = (char **)mem_malloc(sizeof(char *) * count);
-            if (filelist[e]) {
-              GetFilesInPath(filelist[e], count, path, wc_strings[e]);
-              wc_count[e] = count;
-            } else {
-              wc_count[e] = 0;
-            }
-          } else {
-            filelist[e] = NULL;
-            wc_count[e] = 0;
-          }
-        } // end if(count==-1)
-
-        // we don't need the wildcard anymore, we can free it up
-        if (wc_strings[e])
-          mem_free(wc_strings[e]);
-      } // end for(e=0;e<wildcard_count;e++)
-
-      // free up allocated memory that we don't need anymore
-      mem_free(wc_strings);
-      if (wc)
-        mem_free(wc);
-
-      wc_strings = NULL;
-      wc = NULL;
-    } else {
-      // we couldn't allocate memory for wildcard strings
-      total_files = 0;
-      filelist = NULL;
-      if (wc_count) {
-        for (int e = 0; e < wildcard_count; e++)
-          wc_count[e] = 0;
       }
     }
   }
 
-wildcard_err:
-  if ((dircount + total_files) == 0) {
+  if (dirs.size() + files.size() == 0) {
     FDlg_EnableWaitMessage(false);
     return;
   }
 
   // lbfilelist = new UITextItem[dircount+total_files];
   char tempbuffer[_MAX_PATH + 1];
-  int i;
 
-  for (i = 0; i < dircount; i++) {
-    if (dirs[i]) {
-      snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", dirs[i]);
-      lb->AddItem(tempbuffer);
-      mem_free(dirs[i]);
-    }
+  for (auto const &dir : dirs) {
+    snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", dir.u8string().c_str());
+    lb->AddItem(tempbuffer);
   }
-  i = dircount;
-  if (total_files > 0) {
-    for (int j = 0; j < wildcard_count; j++) {
-      int num_files;
-      char **wc_filelist;
-      num_files = wc_count[j];
-      if (num_files > 0) {
-        wc_filelist = filelist[j];
-        for (int k = 0; k < num_files; k++) {
-          if (wc_filelist[k]) {
-            lb->AddItem(wc_filelist[k]);
-            i++;
-            mem_free(wc_filelist[k]);
-            wc_filelist[k] = NULL;
-          }
-        }
-        if (wc_filelist) {
-          mem_free(wc_filelist);
-          wc_filelist = NULL;
-        }
-      }
-    }
+  for (auto const &file : files) {
+    lb->AddItem(file.u8string().c_str());
   }
 
-  if (dirs)
-    mem_free(dirs);
-  if (filelist)
-    mem_free(filelist);
-  if (wc_count)
-    mem_free(wc_count);
   FDlg_EnableWaitMessage(false);
 }

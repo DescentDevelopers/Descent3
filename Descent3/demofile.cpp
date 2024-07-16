@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -699,7 +699,7 @@ void DemoWriteScriptEvent() {}
 int FrameDemoDelta = 0;
 int DemoFrameCount = 0;
 
-int DemoPlaybackFile(const std::filesystem::path& filename) {
+int DemoPlaybackFile(const std::filesystem::path &filename) {
   is_multi_demo = false;
   mprintf(0, "Playing back demo file!\n");
   MultiBuildMatchTables();
@@ -1427,7 +1427,7 @@ bool LoadDemoDialog() {
 
   ddio_MakePath(file, Base_directory, "demo", NULL);
 
-  if (DoPathFileDialog(false, file, TXT_VIEWDEMO, "*.dem", PFDF_FILEMUSTEXIST)) {
+  if (DoPathFileDialog(false, file, TXT_VIEWDEMO, {"*.dem"}, PFDF_FILEMUSTEXIST)) {
     Demo_fname = file;
     return true;
   }

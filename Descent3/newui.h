@@ -340,13 +340,19 @@ int DoMessageBoxAdvanced(const char *title, const char *msg, const char *btn0_ti
 bool DoEditDialog(const char *title, char *buffer, int buflen, bool showcancel = true);
 
 #define PFDF_FILEMUSTEXIST 0x0001
-//	Displays a file dialog that is very much like a Windows file dialog (you can move around directories)
-//	save_dialog = is this dialog being used to save file, or load a file.  If save, than pass true
-//	path =	on entry is the initial path to start in (must be set...set to 0 length string to go to root directory)
-//			on exit it is the absolute path to selected file on return (if return is true) must be at least
-//_MAX_PATH in size 	title = Title of the dialog 	wildc = semicolon seperated list of wildcards
-//("*.txt;*.doc;*.exe")
-bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const char *wildc, int flags);
+
+/**
+ * Displays a file dialog that is very much like a Windows file dialog (you can move around directories)
+ * @param save_dialog is this dialog being used to save file, or load a file. If save, than pass true
+ * @param path on entry is the initial path to start in (must be set...set to 0 length string to go to root directory)
+ * on exit it is the absolute path to selected file on return (if return is true) must be at least _MAX_PATH in size
+ * @param title Title of the dialog
+ * @param wildc vector of strings of wildcards ({"*.txt", "*.doc", "*.exe"}).
+ * Please note, DoPathFileDialog matches files by extension (i.e. ".txt") not by globbing (*.txt").
+ * @param flags
+ * @return
+ */
+bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std::vector<std::string> &wildc, int flags);
 
 //////////////////////////////////////////////////////////////////////////////
 //	quick and dirty functions
