@@ -41,3 +41,17 @@ TEST(D3, CleanupStr) {
     ASSERT_STREQ(result, i.second);
   }
 }
+
+TEST(D3, StringJoinSplit) {
+  std::string test = "Joined text;Another text;And more;";
+  std::vector<std::string> parts = {"Joined text", "Another text", "And more", ""};
+
+  std::string empty = "";
+  std::vector<std::string> empty_parts = {""};
+
+  ASSERT_EQ(test, StringJoin(parts, ";"));
+  ASSERT_EQ(StringSplit(test, ";"), parts);
+
+  ASSERT_EQ(empty, StringJoin(empty_parts, ";"));
+  ASSERT_EQ(StringSplit(empty, ";"), empty_parts);
+}
