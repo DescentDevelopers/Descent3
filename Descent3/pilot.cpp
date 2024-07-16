@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -571,12 +571,15 @@
  */
 
 #include <cstdio>
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdlib>
+#include <cstring>
+#include <filesystem>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "pilot.h"
+#include "pstring.h"
 #include "mono.h"
 #include "renderer.h"
 #include "render.h"
@@ -584,21 +587,14 @@
 #include "descent.h"
 #include "game.h"
 #include "cfile.h"
-#include "application.h"
 #include "manage.h"
 #include "newui.h"
-#include "grtext.h"
-#include "gamefont.h"
-#include "ConfigItem.h"
 #include "ctlconfig.h"
 #include "hud.h"
 #include "stringtable.h"
 #include "gametexture.h"
 #include "vclip.h"
-#include "hlsoundlib.h"
 #include "weapon.h"
-#include "config.h"
-#include "difficulty.h"
 #include "PilotPicsAPI.h"
 #include "Mission.h"
 #include "mem.h"
@@ -1717,15 +1713,13 @@ int GetPilotShipPermissions(pilot *Pilot, const char *mission_name) {
 /////////////////////////////////////////////
 // deletes a pilot
 bool PltDelete(pilot *Pilot) {
-  char filename[_MAX_PATH];
   char pfilename[_MAX_FNAME];
   char pname[PILOT_STRING_SIZE];
 
   Pilot->get_filename(pfilename);
-
+  std::error_code ec;
   if (pfilename[0] != 0) {
-    ddio_MakePath(filename, Base_directory, pfilename, NULL);
-    return (ddio_DeleteFile(pfilename) == 1);
+    return std::filesystem::remove(std::filesystem::path(Base_directory) / pfilename, ec);
   } else {
     Int3(); // this is odd
 
@@ -1740,8 +1734,7 @@ bool PltDelete(pilot *Pilot) {
 
     strcpy(pfilename, pname);
     strcat(pfilename, PLTEXTENSION);
-    ddio_MakePath(filename, Base_directory, pfilename, NULL);
-    return (ddio_DeleteFile(filename) == 1);
+    return std::filesystem::remove(std::filesystem::path(Base_directory) / pfilename, ec);
   }
 }
 
@@ -1837,8 +1830,6 @@ void PltGetPilotsFree(void) {
 }
 
 char **PltGetPilots(int *count, char *ignore_filename, int display_default_configs) {
-  static char **pname_list = NULL;
-
   char buffer[PLTFILELEN];
   char search[256];
   tPGetPilotStruct *root = NULL, *curr = NULL;
@@ -2140,45 +2131,26 @@ int axtoi(char *p) {
 //
 //	Given a filename that has the _<CRC> in it at the end of the name, it will fill
 //	in dest with just the filename part (without the trailing _<CRC>).
-void StripCRCFileName(const char *src, char *dest) {
-  ASSERT(src);
-  ASSERT(dest);
+std::filesystem::path StripCRCFileName(const std::filesystem::path &src) {
+  ASSERT(!src.empty());
 
-  int full_strlen = strlen(src);
-  char ext[256];
-  ddio_SplitPath(src, NULL, NULL, ext);
-  int extstrlen = strlen(ext);
-  int eon = full_strlen - 9 - extstrlen;
-
-  if (eon < 1) {
+  std::vector<std::string> parts = StringSplit(src.u8string(), "_");
+  if (parts.size() < 2 || parts.back().size() != 8) {
     // this filename doesn't have a trailing CRC
-    strcpy(dest, src);
-    return;
+    return src;
   }
 
-  // check to make sure the [eon] is '_'
-  if (src[eon] != '_') {
-    // it wasn't so it must not have a CRC at the end
-    strcpy(dest, src);
-    return;
-  }
-
-  char hexstring[9];
-  strncpy(hexstring, &src[eon + 1], 8);
-  hexstring[8] = '\0';
+  std::stringstream ss(parts.back());
   uint32_t crc;
-  crc = axtoi(hexstring);
+  ss >> std::hex >> crc;
 
   if (crc == 0) {
-    // crc can't be 0?
-    strcpy(dest, src);
-    return;
+    return src;
   }
 
-  // strip the filename
-  strncpy(dest, src, eon);
-  dest[eon] = '\0';
-  strcat(dest, ext); // put back the extension
+  std::filesystem::path result = std::filesystem::path(StringJoin(std::vector(parts.begin(), parts.end() - 1), "_"));
+  result.replace_extension(src.extension());
+  return result;
 }
 
 //	CreateCRCFileName
@@ -2188,29 +2160,23 @@ void StripCRCFileName(const char *src, char *dest) {
 //	original filename and <CRC> is the converted string of the CRC in hex.
 //	returns true on success.
 //	dest should be size of src + 9 (for the _ & CRC)
-bool CreateCRCFileName(const char *src, char *dest) {
-  ASSERT(src);
-  ASSERT(dest);
+bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &dest) {
+  ASSERT(!src.empty());
 
   if (cfexist(src) != CFES_ON_DISK)
     return false;
 
-  uint32_t crc_value = cf_GetfileCRC((char *)src);
+  uint32_t crc_value = cf_GetfileCRC(src);
   if (crc_value == 0) {
     mprintf(0, "CRC WARNING: A CRC of 0 HAS BEEN GENERATED!\n");
   }
   char hex_string[10];
   snprintf(hex_string, sizeof(hex_string), "_%08X", crc_value);
 
-  char ext[256];
-  ddio_SplitPath(src, NULL, NULL, ext);
-
   // now create the full filename
-  // first strip any possible CRC on the file
-  StripCRCFileName(src, dest);
-  dest[strlen(dest) - strlen(ext)] = '\0'; // lose the extension
-  strcat(dest, hex_string);
-  strcat(dest, ext); // put extension back
+
+  dest = src.parent_path() / (StripCRCFileName(src).stem().u8string() + hex_string);
+  dest.replace_extension(src.extension());
 
   return true;
 }
@@ -2218,30 +2184,23 @@ bool CreateCRCFileName(const char *src, char *dest) {
 //	CreateCRCFileName
 //
 //	Given a file, a new filename, it will take the src file, create a new filename, with base as the base
-bool CreateCRCFileName(const char *src, char *base, char *newfilename) {
-  ASSERT(src);
-  ASSERT(base);
-  ASSERT(newfilename);
+bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &base, std::filesystem::path &newfilename) {
+  ASSERT(!src.empty());
+  ASSERT(!base.empty());
 
   if (cfexist(src) != CFES_ON_DISK)
     return false;
 
-  uint32_t crc_value = cf_GetfileCRC((char *)src);
+  uint32_t crc_value = cf_GetfileCRC(src);
   if (crc_value == 0) {
     mprintf(0, "CRC WARNING: A CRC of 0 HAS BEEN GENERATED!\n");
   }
   char hex_string[10];
   snprintf(hex_string, sizeof(hex_string), "_%08X", crc_value);
 
-  char ext[256];
-  ddio_SplitPath(base, NULL, NULL, ext);
-
   // now create the full filename
   // first strip any possible CRC on the file
-  strcpy(newfilename, base);
-  newfilename[strlen(newfilename) - strlen(ext)] = '\0'; // lose the extension
-  strcat(newfilename, hex_string);
-  strcat(newfilename, ext); // put extension back
+  newfilename = std::filesystem::path(base.stem().string() + hex_string).replace_extension(base.extension());
 
   return true;
 }
@@ -2337,8 +2296,6 @@ bool ImportGraphic(char *pathname, char *newfile) {
 
   bm_ChangeSize(bm_handle, 64, 64);
 
-  char p[_MAX_PATH];
-  char filename[_MAX_FNAME], ext[_MAX_EXT];
   char tempfilename[_MAX_PATH];
 
   // Create a temporary filename, so that we can temporarily save the graphic to this file
@@ -2359,40 +2316,43 @@ bool ImportGraphic(char *pathname, char *newfile) {
   bm_FreeBitmap(bm_handle);
 
   // when we get here we have an .ogf file saved out as tempfilename, we need to load it back up
-  char blah[_MAX_PATH];
-  StripCRCFileName(pathname, blah); // make sure all CRC are out of the filename
-  ddio_SplitPath(blah, NULL, filename, ext);
+  std::filesystem::path filename = StripCRCFileName(pathname).stem();
+  std::filesystem::path p;
+
   if (!CreateCRCFileName(tempfilename, filename, p)) {
     mprintf(0, "Error creating CRC File\n");
-    ddio_DeleteFile(tempfilename);
+    std::error_code ec;
+    std::filesystem::remove(tempfilename, ec);
     return false;
   }
 
-  strcpy(filename, p);
-  strcat(filename, ".ogf");
+  filename = p;
+  filename.replace_extension(".ogf");
 
-  ddio_MakePath(p, LocalCustomGraphicsDir, filename, NULL);
+  p = LocalCustomGraphicsDir / filename;
+
+  std::error_code ec;
 
   // p contains the real filename
   // tempfilename contains old filename
   bm_handle = bm_AllocLoadFileBitmap(IGNORE_TABLE(tempfilename), 0);
   if (bm_handle <= BAD_BITMAP_HANDLE) {
     mprintf(0, "Error reloading bitmap for rename\n");
-    ddio_DeleteFile(tempfilename);
+    std::filesystem::remove(tempfilename, ec);
     return false;
   }
 
   if (bm_SaveFileBitmap(p, bm_handle) == -1) {
     mprintf(0, "Error importing\n");
     bm_FreeBitmap(bm_handle);
-    ddio_DeleteFile(tempfilename);
+    std::filesystem::remove(tempfilename, ec);
     return false;
   }
 
   bm_FreeBitmap(bm_handle);
-  ddio_DeleteFile(tempfilename);
+  std::filesystem::remove(tempfilename, ec);
 
-  strcpy(newfile, p);
+  strcpy(newfile, p.u8string().c_str());
   return true;
 }
 
@@ -2401,7 +2361,7 @@ bool ImportGraphic(char *pathname, char *newfile) {
 //	Updates the listbox that contains the custom textures. Make sure all double-pointer arguments passes in
 //	are set to NULL is they don't have memory allocated for them yet, because if they're not null this function
 //	will try to free up their memory
-bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, char *selected_name) {
+bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, const char *selected_name) {
   ASSERT(lb);
   lb->RemoveAll();
 
@@ -2470,9 +2430,8 @@ bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, char *s
   int memory_used;
   memory_used = 0;
   for (int i = 1; i < count; i++) {
-    char tempf[_MAX_PATH];
-    StripCRCFileName(&cust_bmps->files[memory_used], tempf);
-    lb->AddItem(tempf);
+    std::filesystem::path tempf = StripCRCFileName(&cust_bmps->files[memory_used]);
+    lb->AddItem(tempf.u8string().c_str());
     if (!stricmp(&cust_bmps->files[memory_used], chosen_name)) {
       lb->SetCurrentIndex(i);
       CustomCallBack(i);
@@ -2613,14 +2572,13 @@ void UpdateAudioTauntBoxes(tCustomListInfo *cust_snds, newuiComboBox *audio1_lis
   Pilot->get_multiplayer_data(NULL, paudio1, paudio2, NULL, paudio3, paudio4);
 
   for (int i = 0; i < audio_count; i++) {
-    char tfn[_MAX_PATH];
     len = strlen(&cust_snds->files[count]);
-    StripCRCFileName(&cust_snds->files[count], tfn);
+    std::filesystem::path tfn = StripCRCFileName(&cust_snds->files[count]);
 
-    audio1_list->AddItem((char *)(tfn));
-    audio2_list->AddItem((char *)(tfn));
-    audio3_list->AddItem((char *)(tfn));
-    audio4_list->AddItem((char *)(tfn));
+    audio1_list->AddItem(tfn.u8string().c_str());
+    audio2_list->AddItem(tfn.u8string().c_str());
+    audio3_list->AddItem(tfn.u8string().c_str());
+    audio4_list->AddItem(tfn.u8string().c_str());
 
     if (!stricmp(paudio1, &cust_snds->files[count])) {
       // set this as selected index for audio #1
@@ -3082,15 +3040,13 @@ bool PltSelectShip(pilot *Pilot) {
 
         if (handle != -1) {
           // change the file extension
-          char f[_MAX_FNAME], newf[_MAX_FNAME + _MAX_EXT], tempf[_MAX_PATH];
+          std::filesystem::path tempf;
           if (!CreateCRCFileName(path, tempf)) {
             FreeVClip(handle);
             break;
           }
-          ddio_SplitPath(tempf, NULL, f, NULL);
-          strcpy(newf, f);
-          strcat(newf, ".oaf");
-          ddio_MakePath(path, LocalCustomGraphicsDir, newf, NULL);
+          std::filesystem::path newf = tempf.filename().replace_extension(".oaf");
+          ddio_MakePath(path, LocalCustomGraphicsDir, newf.u8string().c_str(), NULL);
 
           if (SaveVClip(path, handle) == 0) {
             // error saving
@@ -3114,7 +3070,7 @@ bool PltSelectShip(pilot *Pilot) {
           }
 
           // update the listbox
-          if (!UpdateGraphicsListbox(&cust_bmps, custom_list, newf))
+          if (!UpdateGraphicsListbox(&cust_bmps, custom_list, newf.u8string().c_str()))
             goto ship_id_err;
         }
       }
@@ -3196,7 +3152,7 @@ bool PltSelectShip(pilot *Pilot) {
       char path[_MAX_PATH];
       path[0] = '\0';
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.wav"}, PFDF_FILEMUSTEXIST)) {
-        char dpath[_MAX_PATH * 2];
+        std::filesystem::path dpath;
         char filename[_MAX_PATH];
         char tempfile[_MAX_PATH];
 
@@ -3222,6 +3178,7 @@ bool PltSelectShip(pilot *Pilot) {
             }
 
             cfclose(file);
+            std::error_code ec;
 
             if (CreateCRCFileName(tempfile, dpath)) {
               // dpath is destination file
@@ -3230,20 +3187,20 @@ bool PltSelectShip(pilot *Pilot) {
                 // file copied...
                 DoMessageBox(TXT_SUCCESS, TXT_AUDIOIMPORTSUC, MSGBOX_OK);
                 // delete temp file
-                ddio_DeleteFile(tempfile);
+                std::filesystem::remove(tempfile, ec);
                 // Put path in the custom\sounds as dpath (convert if needed)
                 UpdateAudioTauntBoxes(&cust_snds, taunts_lists.taunt_a, taunts_lists.taunt_b, taunts_lists.taunt_c,
                                       taunts_lists.taunt_d, Pilot);
               } else {
                 DoMessageBox(TXT_ERROR, TXT_COPYTEMPERR, MSGBOX_OK);
                 // delete temp file
-                ddio_DeleteFile(tempfile);
+                std::filesystem::remove(tempfile, ec);
               }
             } else {
               // couldn't generate a crc filename
               DoMessageBox(TXT_ERROR, TXT_CANTCREATECRC, MSGBOX_OK);
               // delete temp file
-              ddio_DeleteFile(tempfile);
+              std::filesystem::remove(tempfile, ec);
             }
           } // end else (file size)
         } else {
@@ -3544,7 +3501,6 @@ void UI3DWindow::OnDraw() {
   vector light_vec;
   matrix view_orient = IDENTITY_MATRIX;
   matrix rot_mat = IDENTITY_MATRIX;
-  matrix final_mat = IDENTITY_MATRIX;
 
   //	draw model.
   SetNormalizedTimeAnim(0, normalized_time, pm);
