@@ -645,6 +645,9 @@ pilot Current_pilot;
 std::string Default_pilot;
 uint8_t ingame_difficulty = 1;
 
+// Audio taunts for pilot
+std::vector<std::filesystem::path> Audio_taunts;
+
 ///////////////////////////////////////////////
 // Internals (Globals for the file)
 
@@ -652,7 +655,7 @@ bool DisplayFileDialog(char *path, char *title, char *wildcards, int flags);
 
 // internal function prototypes
 bool PltDelete(pilot *Pilot);
-void NewPltUpdate(newuiListBox *list, int selected, const std::string& filename = {});
+void NewPltUpdate(newuiListBox *list, int selected, const std::string &filename = {});
 bool PilotChoose(pilot *Pilot, bool presets = false);
 bool PltCopyKeyConfig(pilot *src, pilot *dest);
 bool PltSelectShip(pilot *Pilot);
@@ -664,13 +667,11 @@ int Pilot_NewRead(pilot *Pilot, bool read_keyconfig, bool read_missiondata);
 int Pilot_NewWrite(pilot *Pilot, bool newpilot);
 
 struct tCustomListInfo {
-  newuiListBox *custom_bitmap_list;
   int needed_size; // size of allocated memory for files
   char *files;     // string list of file names
   // Initializes the struct
   void Init() {
     files = NULL;
-    custom_bitmap_list = NULL;
     needed_size = 0;
   }
   // Frees and resets the struct
@@ -679,7 +680,6 @@ struct tCustomListInfo {
       mem_free(files);
       files = NULL;
     }
-    custom_bitmap_list = NULL;
     needed_size = 0;
   }
 };
@@ -688,9 +688,8 @@ struct tAudioTauntComboBoxes {
   newuiComboBox *taunt_a, *taunt_b, *taunt_c, *taunt_d;
 };
 
-// Deletes the currently selected audio taunt #4
-void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboBox *lb,
-                           tAudioTauntComboBoxes *taunt_boxes);
+// Deletes the currently selected audio taunt
+void ShipSelectDeleteTaunt(pilot *Pilot, newuiComboBox *lb, tAudioTauntComboBoxes *taunt_boxes);
 
 // Deletes the currently selected ship logo
 void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb);
@@ -703,11 +702,11 @@ void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb);
 // -------------------------------------------------------
 void ShowPilotPicDialog(pilot *Pilot);
 
-UITextItem *pilot_items = NULL;      // array of UITextItems for use in Pilot listbox
-pilot temp;                          // pilot in use by the listbox
-NewUIGameWindow *PilotDisplayWindow; // pointer to display_window (needed for listbox callback)
-static std::vector<std::string> filelist;   // list of pilot filenames
-static int filecount;                       // number of pilot filenames found
+UITextItem *pilot_items = NULL;           // array of UITextItems for use in Pilot listbox
+pilot temp;                               // pilot in use by the listbox
+NewUIGameWindow *PilotDisplayWindow;      // pointer to display_window (needed for listbox callback)
+static std::vector<std::string> filelist; // list of pilot filenames
+static int filecount;                     // number of pilot filenames found
 void PilotListSelectChangeCallback(int index);
 
 ////////////////////////////////////////////////////////////////////////////
@@ -783,7 +782,7 @@ struct pilot_select_menu {
   void finish() { sheet = NULL; };
 
   // process
-  void process(int res){};
+  void process(int res) {};
 };
 
 struct pilot_edit_menu {
@@ -837,7 +836,7 @@ struct pilot_edit_menu {
   void finish() { sheet = NULL; };
 
   // process
-  void process(int res){};
+  void process(int res) {};
 };
 
 struct pilot_add_menu {
@@ -1467,7 +1466,7 @@ bool PilotCopy(pilot *Src,pilot *Dest)
 ***************************************************/
 /////////////////////////////////////////////////////
 // Updates the pilot listbox
-void NewPltUpdate(newuiListBox *list, int selected, const std::string& filename) {
+void NewPltUpdate(newuiListBox *list, int selected, const std::string &filename) {
   int index;
   pilot tPilot;
 
@@ -1754,7 +1753,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   if (pfilename[0] == 0)
     return;
 
-    // open and process file
+  // open and process file
   std::filesystem::path filename = std::filesystem::path(Base_directory) / pfilename;
   try {
     file = cfopen(filename, "rb");
@@ -1823,7 +1822,7 @@ std::vector<std::string> PltGetPilots(std::string ignore_filename, int display_d
       break;
     }
 
-    ddio_DoForeachFile(search, wildcard, [&ignore_filename, &result](const std::filesystem::path& path){
+    ddio_DoForeachFile(search, wildcard, [&ignore_filename, &result](const std::filesystem::path &path) {
       std::string pilot = path.filename().u8string();
       if (!ignore_filename.empty() && stricmp(ignore_filename.c_str(), pilot.c_str()) == 0) {
         mprintf(0, "Getting Pilots... found %s, but ignoring\n", pilot.c_str());
@@ -2047,7 +2046,8 @@ bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &
 //	CreateCRCFileName
 //
 //	Given a file, a new filename, it will take the src file, create a new filename, with base as the base
-bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &base, std::filesystem::path &newfilename) {
+bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &base,
+                       std::filesystem::path &newfilename) {
   ASSERT(!src.empty());
   ASSERT(!base.empty());
 
@@ -2229,7 +2229,6 @@ bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, const c
   lb->RemoveAll();
 
   cust_bmps->Reset();
-  cust_bmps->custom_bitmap_list = lb;
 
   // get a list of custom textures
   int count = 0;
@@ -2313,57 +2312,6 @@ bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, const c
   return true;
 }
 
-//	GetCustomSoundFiles
-//
-//	Looks in the custom/sound directory and retrieves all the wav files in there.  Returns the size of the buffer
-//	needed to get all the needed files.  The filenames are stored in the buffer, seperated by \0, use count to
-//	determine how many were placed in the buffer
-//
-//	buffer	=	Your buffer passed in, if this is NULL then it just returns a buffer size that is needed
-//	size	=	Size of your buffer passed in
-//	*count	=	filled in with the number of files that were placed into your buffer
-int GetCustomSoundFiles(char *buffer = NULL, int size = 0, int *count = NULL);
-int GetCustomSoundFiles(char *buffer, int size, int *count) {
-  int c = 0;
-  int isize = 0;
-  int len, overallsize = 0;
-  char tempname[_MAX_PATH];
-  char oldpath[_MAX_PATH];
-  ddio_GetWorkingDir(oldpath, _MAX_PATH);
-  ddio_SetWorkingDir(LocalCustomSoundsDir);
-
-  if (!buffer)
-    size = 0;
-
-  if (count)
-    *count = 0;
-
-  if (ddio_FindFileStart("*.osf", tempname)) {
-    len = strlen(tempname);
-    overallsize += len + 1;
-    if (isize + len < size) {
-      strcpy(buffer, tempname);
-      isize += len + 1;
-      c++;
-    }
-
-    while (ddio_FindNextFile(tempname)) {
-      len = strlen(tempname);
-      overallsize += len + 1;
-      if (isize + len < size) {
-        strcpy(&buffer[isize], tempname);
-        isize += len + 1;
-        c++;
-      }
-    }
-  }
-  ddio_FindFileClose();
-  ddio_SetWorkingDir(oldpath);
-  if (count)
-    *count = c;
-  return overallsize;
-}
-
 //	GetStringInList
 //
 //	Returns a pointer to the string in a string list (<string1>\0<string2>\0...).  Be VERY careful that
@@ -2396,8 +2344,8 @@ char *GetStringInList(int index, char *list, int maxsize) {
 //	UpdateAudioTauntBoxes
 //
 //	Resets and updates the list of audio taunt combo boxes
-void UpdateAudioTauntBoxes(tCustomListInfo *cust_snds, newuiComboBox *audio1_list, newuiComboBox *audio2_list,
-                           newuiComboBox *audio3_list, newuiComboBox *audio4_list, pilot *Pilot) {
+void UpdateAudioTauntBoxes(newuiComboBox *audio1_list, newuiComboBox *audio2_list, newuiComboBox *audio3_list,
+                           newuiComboBox *audio4_list, pilot *Pilot) {
   ASSERT(audio1_list);
   ASSERT(audio2_list);
 
@@ -2407,20 +2355,10 @@ void UpdateAudioTauntBoxes(tCustomListInfo *cust_snds, newuiComboBox *audio1_lis
   audio4_list->RemoveAll();
 
   // free up allocated memory
-  cust_snds->Reset();
+  Audio_taunts.clear();
 
-  // Get all the audio files and put them into the lists
-  cust_snds->needed_size = GetCustomSoundFiles();
-  if (cust_snds->needed_size)
-    cust_snds->files = (char *)mem_malloc(cust_snds->needed_size);
-  else
-    cust_snds->files = NULL;
-
-  int audio_count;
-
-  GetCustomSoundFiles(cust_snds->files, cust_snds->needed_size, &audio_count);
-
-  int len;
+  ddio_DoForeachFile(LocalCustomSoundsDir, std::regex(".+\\.osf"),
+                     [](const std::filesystem::path &path) { Audio_taunts.push_back(path.filename()); });
 
   // Add <None> to both boxes
   audio1_list->AddItem(TXT_LBNONE);
@@ -2428,91 +2366,85 @@ void UpdateAudioTauntBoxes(tCustomListInfo *cust_snds, newuiComboBox *audio1_lis
   audio3_list->AddItem(TXT_LBNONE);
   audio4_list->AddItem(TXT_LBNONE);
 
-  int count = 0;
-
   char paudio1[PAGENAME_LEN], paudio2[PAGENAME_LEN];
   char paudio3[PAGENAME_LEN], paudio4[PAGENAME_LEN];
-  Pilot->get_multiplayer_data(NULL, paudio1, paudio2, NULL, paudio3, paudio4);
+  Pilot->get_multiplayer_data(nullptr, paudio1, paudio2, nullptr, paudio3, paudio4);
 
-  for (int i = 0; i < audio_count; i++) {
-    len = strlen(&cust_snds->files[count]);
-    std::filesystem::path tfn = StripCRCFileName(&cust_snds->files[count]);
-
+  int i = 0;
+  for (const auto &taunt : Audio_taunts) {
+    std::filesystem::path tfn = StripCRCFileName(taunt);
     audio1_list->AddItem(tfn.u8string().c_str());
     audio2_list->AddItem(tfn.u8string().c_str());
     audio3_list->AddItem(tfn.u8string().c_str());
     audio4_list->AddItem(tfn.u8string().c_str());
 
-    if (!stricmp(paudio1, &cust_snds->files[count])) {
+    if (!stricmp(paudio1, taunt.u8string().c_str())) {
       // set this as selected index for audio #1
       audio1_list->SetCurrentIndex(i + 1);
     }
-    if (!stricmp(paudio2, &cust_snds->files[count])) {
+    if (!stricmp(paudio2, taunt.u8string().c_str())) {
       // set this as selected index for audio #2
       audio2_list->SetCurrentIndex(i + 1);
     }
-    if (!stricmp(paudio3, &cust_snds->files[count])) {
+    if (!stricmp(paudio3, taunt.u8string().c_str())) {
       // set this as selected index for audio #1
       audio3_list->SetCurrentIndex(i + 1);
     }
-    if (!stricmp(paudio4, &cust_snds->files[count])) {
+    if (!stricmp(paudio4, taunt.u8string().c_str())) {
       // set this as selected index for audio #2
       audio4_list->SetCurrentIndex(i + 1);
     }
-    count += len + 1;
+    i++;
   }
 }
 
 pilot *AudioTauntPilot;
-tCustomListInfo *AudioTauntPilotSndInfo;
+
 void audio1changecallback(int index) {
   if (index == 0) {
-    AudioTauntPilot->set_multiplayer_data(NULL, "");
+    AudioTauntPilot->set_multiplayer_data(nullptr, "");
     return;
   } else {
     index--;
-    char *p = GetStringInList(index, AudioTauntPilotSndInfo->files, AudioTauntPilotSndInfo->needed_size);
-    if (p) {
-      AudioTauntPilot->set_multiplayer_data(NULL, p);
+    if (index < (int)Audio_taunts.size()) {
+      AudioTauntPilot->set_multiplayer_data(nullptr, Audio_taunts[index].u8string().c_str());
     }
   }
 }
 
 void audio2changecallback(int index) {
   if (index == 0) {
-    AudioTauntPilot->set_multiplayer_data(NULL, NULL, "");
+    AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, "");
     return;
   } else {
     index--;
-    char *p = GetStringInList(index, AudioTauntPilotSndInfo->files, AudioTauntPilotSndInfo->needed_size);
-    if (p) {
-      AudioTauntPilot->set_multiplayer_data(NULL, NULL, p);
+    if (index < (int)Audio_taunts.size()) {
+      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, Audio_taunts[index].u8string().c_str());
     }
   }
 }
 
 void audio3changecallback(int index) {
   if (index == 0) {
-    AudioTauntPilot->set_multiplayer_data(NULL, NULL, NULL, NULL, "");
+    AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, "");
     return;
   } else {
     index--;
-    char *p = GetStringInList(index, AudioTauntPilotSndInfo->files, AudioTauntPilotSndInfo->needed_size);
-    if (p) {
-      AudioTauntPilot->set_multiplayer_data(NULL, NULL, NULL, NULL, p);
+    if (index < (int)Audio_taunts.size()) {
+      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, Audio_taunts[index].u8string().c_str());
     }
   }
 }
 
 void audio4changecallback(int index) {
   if (index == 0) {
-    AudioTauntPilot->set_multiplayer_data(NULL, NULL, NULL, NULL, NULL, "");
+    AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, nullptr, "");
     return;
   } else {
     index--;
-    char *p = GetStringInList(index, AudioTauntPilotSndInfo->files, AudioTauntPilotSndInfo->needed_size);
-    if (p) {
-      AudioTauntPilot->set_multiplayer_data(NULL, NULL, NULL, NULL, NULL, p);
+    if (index < (int)Audio_taunts.size()) {
+      AudioTauntPilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, nullptr,
+                                            Audio_taunts[index].u8string().c_str());
     }
   }
 }
@@ -2610,10 +2542,8 @@ bool PltSelectShip(pilot *Pilot) {
 
   Pilot->get_multiplayer_data(NULL, oldt1, oldt2, NULL, oldt3, oldt4);
 
-  tCustomListInfo cust_snds;
   tAudioTauntComboBoxes taunts_lists;
   AudioTauntPilot = Pilot;
-  AudioTauntPilotSndInfo = &cust_snds;
 
   UI3DWindow ship_win;
   UIBmpWindow bmp_win;
@@ -2627,7 +2557,7 @@ bool PltSelectShip(pilot *Pilot) {
 
   //	pre-initialize all variables
   cust_bmps.Init();
-  cust_snds.Init();
+  Audio_taunts.clear();
 
   lp_cust_bmps = &cust_bmps;
   lp_ship_info = &ship_info;
@@ -2647,7 +2577,7 @@ bool PltSelectShip(pilot *Pilot) {
   ship_list = sheet->AddComboBox(IDP_SHPLIST, 0);
 
   sheet->NewGroup(TXT_CUSTOMTEXTURES, 0, 36);
-  cust_bmps.custom_bitmap_list = custom_list = sheet->AddListBox(200, 96, IDP_SHPLIST, 0);
+  custom_list = sheet->AddListBox(200, 96, IDP_SHPLIST, 0);
 
   sheet->NewGroup(NULL, 230, 130);
   sheet->AddButton(TXT_DELETE, ID_DEL_LOGO);
@@ -2674,8 +2604,7 @@ bool PltSelectShip(pilot *Pilot) {
   bmp_win.Create(&window, &itemLogo, UI_BORDERSIZE + 200, 53, 42, 42, 0);
 
   // Get all the audio files and put them into the lists
-  UpdateAudioTauntBoxes(&cust_snds, taunts_lists.taunt_a, taunts_lists.taunt_b, taunts_lists.taunt_c,
-                        taunts_lists.taunt_d, Pilot);
+  UpdateAudioTauntBoxes(taunts_lists.taunt_a, taunts_lists.taunt_b, taunts_lists.taunt_c, taunts_lists.taunt_d, Pilot);
 
   DoWaitMessage(true);
 
@@ -2729,16 +2658,15 @@ bool PltSelectShip(pilot *Pilot) {
 #ifdef DEMO
       if (stricmp(Ships[i].name, DEFAULT_SHIP) == 0) {
 #endif
-	  // make sure they have mercenary in order to play with Black Pyro
-	  if (!stricmp(Ships[i].name, "Black Pyro")) {
-		shipoktoadd = false;
-		extern bool MercInstalled();
-		if (MercInstalled()) {
-		  shipoktoadd = true;
-		}
-	  }
-	  else
-		  shipoktoadd = true;
+        // make sure they have mercenary in order to play with Black Pyro
+        if (!stricmp(Ships[i].name, "Black Pyro")) {
+          shipoktoadd = false;
+          extern bool MercInstalled();
+          if (MercInstalled()) {
+            shipoktoadd = true;
+          }
+        } else
+          shipoktoadd = true;
         if (shipoktoadd)
           ship_list->AddItem(Ships[i].name);
 #ifdef DEMO
@@ -2771,8 +2699,8 @@ bool PltSelectShip(pilot *Pilot) {
             ship_list->SetCurrentIndex(i);
 
           } // endif
-        }   // endfor
-      }     // end else
+        } // endfor
+      } // end else
     } else {
       // NO SHIPS IN THE TABLE!!!
       mprintf(0, "WARNING: NO SHIPS IN THE TABLE!?\n");
@@ -2824,34 +2752,22 @@ bool PltSelectShip(pilot *Pilot) {
 
       int index;
       index = taunts_lists.taunt_a->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          Pilot->set_multiplayer_data(NULL, p);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        Pilot->set_multiplayer_data(NULL, Audio_taunts[index - 1].u8string().c_str());
       }
       index = taunts_lists.taunt_b->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          Pilot->set_multiplayer_data(NULL, NULL, p);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        Pilot->set_multiplayer_data(NULL, NULL, Audio_taunts[index - 1].u8string().c_str());
       }
 
       index = taunts_lists.taunt_c->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          Pilot->set_multiplayer_data(NULL, NULL, NULL, NULL, p);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        Pilot->set_multiplayer_data(NULL, NULL, NULL, NULL, Audio_taunts[index - 1].u8string().c_str());
       }
 
       index = taunts_lists.taunt_d->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          Pilot->set_multiplayer_data(NULL, NULL, NULL, NULL, NULL, p);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        Pilot->set_multiplayer_data(NULL, NULL, NULL, NULL, NULL, Audio_taunts[index - 1].u8string().c_str());
       }
 
       char tempn[PAGENAME_LEN];
@@ -2941,67 +2857,51 @@ bool PltSelectShip(pilot *Pilot) {
     } break;
     case ID_PLAY1: {
       //	Play audio taunt #1 if <None> isn't selected
-      char path[_MAX_PATH];
       int index = taunts_lists.taunt_a->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          ddio_MakePath(path, LocalCustomSoundsDir, p, NULL);
-          mprintf(0, "Playing: %s\n", path);
-          bool cenable = taunt_AreEnabled();
-          taunt_Enable(true);
-          taunt_PlayTauntFile(path);
-          taunt_Enable(cenable);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        std::filesystem::path path = LocalCustomSoundsDir / Audio_taunts[index - 1];
+        mprintf(0, "Playing: %s\n", path.u8string().c_str());
+        bool cenable = taunt_AreEnabled();
+        taunt_Enable(true);
+        taunt_PlayTauntFile(path.u8string().c_str());
+        taunt_Enable(cenable);
       }
     } break;
     case ID_PLAY2: {
       //	Play audio taunt #2 if <None> isn't selected
-      char path[_MAX_PATH];
       int index = taunts_lists.taunt_b->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          ddio_MakePath(path, LocalCustomSoundsDir, p, NULL);
-          mprintf(0, "Playing: %s\n", path);
-          bool cenable = taunt_AreEnabled();
-          taunt_Enable(true);
-          taunt_PlayTauntFile(path);
-          taunt_Enable(cenable);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        std::filesystem::path path = LocalCustomSoundsDir / Audio_taunts[index - 1];
+        mprintf(0, "Playing: %s\n", path.u8string().c_str());
+        bool cenable = taunt_AreEnabled();
+        taunt_Enable(true);
+        taunt_PlayTauntFile(path.u8string().c_str());
+        taunt_Enable(cenable);
       }
     } break;
     case ID_PLAY3: {
       //	Play audio taunt #3 if <None> isn't selected
-      char path[_MAX_PATH];
       int index = taunts_lists.taunt_c->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          ddio_MakePath(path, LocalCustomSoundsDir, p, NULL);
-          mprintf(0, "Playing: %s\n", path);
-          bool cenable = taunt_AreEnabled();
-          taunt_Enable(true);
-          taunt_PlayTauntFile(path);
-          taunt_Enable(cenable);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        std::filesystem::path path = LocalCustomSoundsDir / Audio_taunts[index - 1];
+        mprintf(0, "Playing: %s\n", path.u8string().c_str());
+        bool cenable = taunt_AreEnabled();
+        taunt_Enable(true);
+        taunt_PlayTauntFile(path.u8string().c_str());
+        taunt_Enable(cenable);
       }
     } break;
 
     case ID_PLAY4: {
       //	Play audio taunt #4 if <None> isn't selected
-      char path[_MAX_PATH];
       int index = taunts_lists.taunt_d->GetCurrentIndex();
-      if (index > 0 && cust_snds.files) {
-        char *p = GetStringInList(index - 1, cust_snds.files, cust_snds.needed_size);
-        if (p) {
-          ddio_MakePath(path, LocalCustomSoundsDir, p, NULL);
-          mprintf(0, "Playing: %s\n", path);
-          bool cenable = taunt_AreEnabled();
-          taunt_Enable(true);
-          taunt_PlayTauntFile(path);
-          taunt_Enable(cenable);
-        }
+      if (index > 0 && !Audio_taunts.empty()) {
+        std::filesystem::path path = LocalCustomSoundsDir / Audio_taunts[index - 1];
+        mprintf(0, "Playing: %s\n", path.u8string().c_str());
+        bool cenable = taunt_AreEnabled();
+        taunt_Enable(true);
+        taunt_PlayTauntFile(path.u8string().c_str());
+        taunt_Enable(cenable);
       }
     } break;
 
@@ -3052,7 +2952,7 @@ bool PltSelectShip(pilot *Pilot) {
                 // delete temp file
                 std::filesystem::remove(tempfile, ec);
                 // Put path in the custom\sounds as dpath (convert if needed)
-                UpdateAudioTauntBoxes(&cust_snds, taunts_lists.taunt_a, taunts_lists.taunt_b, taunts_lists.taunt_c,
+                UpdateAudioTauntBoxes(taunts_lists.taunt_a, taunts_lists.taunt_b, taunts_lists.taunt_c,
                                       taunts_lists.taunt_d, Pilot);
               } else {
                 DoMessageBox(TXT_ERROR, TXT_COPYTEMPERR, MSGBOX_OK);
@@ -3081,19 +2981,19 @@ bool PltSelectShip(pilot *Pilot) {
     } break;
 
     case ID_DEL_TAUNTA: {
-      ShipSelectDeleteTaunt(Pilot, &cust_snds, taunts_lists.taunt_a, &taunts_lists);
+      ShipSelectDeleteTaunt(Pilot, taunts_lists.taunt_a, &taunts_lists);
     } break;
 
     case ID_DEL_TAUNTB: {
-      ShipSelectDeleteTaunt(Pilot, &cust_snds, taunts_lists.taunt_b, &taunts_lists);
+      ShipSelectDeleteTaunt(Pilot, taunts_lists.taunt_b, &taunts_lists);
     } break;
 
     case ID_DEL_TAUNTC: {
-      ShipSelectDeleteTaunt(Pilot, &cust_snds, taunts_lists.taunt_c, &taunts_lists);
+      ShipSelectDeleteTaunt(Pilot, taunts_lists.taunt_c, &taunts_lists);
     } break;
 
     case ID_DEL_TAUNTD: {
-      ShipSelectDeleteTaunt(Pilot, &cust_snds, taunts_lists.taunt_d, &taunts_lists);
+      ShipSelectDeleteTaunt(Pilot, taunts_lists.taunt_d, &taunts_lists);
     } break;
     }
   }
@@ -3108,8 +3008,7 @@ ship_id_err:
   taunts_lists.taunt_c = NULL;
   taunts_lists.taunt_d = NULL;
 
-  cust_snds.Reset();
-
+  Audio_taunts.clear();
   cust_bmps.Reset();
   ship_info.Reset();
 
@@ -3284,10 +3183,8 @@ void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb) {
 }
 
 // Deletes the currently selected audio taunt
-void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboBox *lb,
-                           tAudioTauntComboBoxes *taunt_boxes) {
+void ShipSelectDeleteTaunt(pilot *Pilot, newuiComboBox *lb, tAudioTauntComboBoxes *taunt_boxes) {
   ASSERT(Pilot);
-  ASSERT(cust_snds);
   ASSERT(taunt_boxes);
 
   int selected_index = lb->GetCurrentIndex();
@@ -3302,16 +3199,14 @@ void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboB
 
   lb->GetItem(selected_index, custom_logoname, 384);
 
-  // Get the filename
-  char *p = GetStringInList(selected_index - 1, cust_snds->files, cust_snds->needed_size);
-  if (p) {
-    strncpy(custom_filename, p, 383);
-    custom_filename[383] = '\0';
-  } else {
+  if ((selected_index - 1) >= (int)Audio_taunts.size()) {
     mprintf(0, "Listbox selected item not found\n");
     Int3();
     return;
   }
+
+  // Get the filename
+  std::filesystem::path p = Audio_taunts[selected_index - 1];
 
   // delete custom_filename, we don't want it....
   char buffer[512];
@@ -3319,18 +3214,15 @@ void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboB
   if (DoMessageBox(TXT_PLTDELCONF, buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     mprintf(0, "Deleting audio taunt %s (%s)\n", custom_logoname, custom_filename);
 
-    char olddir[_MAX_PATH];
-    ddio_GetWorkingDir(olddir, _MAX_PATH);
-    ddio_SetWorkingDir(LocalCustomSoundsDir);
-    if (ddio_DeleteFile(custom_filename)) {
+    std::error_code ec;
+    if (std::filesystem::remove(LocalCustomSoundsDir / p, ec)) {
       // Update the list boxes, select none
-      UpdateAudioTauntBoxes(cust_snds, taunt_boxes->taunt_a, taunt_boxes->taunt_b, taunt_boxes->taunt_c,
-                            taunt_boxes->taunt_d, Pilot);
+      UpdateAudioTauntBoxes(taunt_boxes->taunt_a, taunt_boxes->taunt_b, taunt_boxes->taunt_c, taunt_boxes->taunt_d,
+                            Pilot);
     } else {
       mprintf(0, "Unable to delete file %s\n", custom_filename);
       Int3();
     }
-    ddio_SetWorkingDir(olddir);
   }
 }
 
