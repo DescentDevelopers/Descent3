@@ -91,6 +91,6 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv);
 void gpu_DrawFlatPolygon3D(g3Point **p, int nv);
 void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type);
 
-color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud = false);
+color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud = false, bool checkTextureQuality = false);
 
 #endif

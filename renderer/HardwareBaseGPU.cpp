@@ -450,18 +450,8 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   int xAdd = gpu_state.clip_x1;
   int yAdd = gpu_state.clip_y1;
 
-  float fr, fg, fb;
-  if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
-    float scale = 1.0f / 255.0f;
-    fr = GR_COLOR_RED(gpu_state.cur_color) * scale;
-    fg = GR_COLOR_GREEN(gpu_state.cur_color) * scale;
-    fb = GR_COLOR_BLUE(gpu_state.cur_color) * scale;
-  }
-
   // make sure our bitmap is ready to be drawn
   gpu_BindTexture(handle, MAP_TYPE_BITMAP, 0);
-
-  float alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   PosColorUVVertex *vData = &vArray[0];
 
@@ -470,38 +460,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   for (i = 0; i < nv; ++i, ++vData) {
     g3Point *pnt = p[i];
 
-    if (gpu_state.cur_alpha_type & ATF_VERTEX) {
-      // the alpha should come from the vertex
-      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
-    }
-
-    // If we have a lighting model, apply the correct lighting!
-    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD || gpu_state.cur_texture_quality == 0) {
-      // pull the color from the constant color data
-      vData->color.r = fr;
-      vData->color.g = fg;
-      vData->color.b = fb;
-      vData->color.a = alpha;
-    } else if (gpu_state.cur_light_state != LS_NONE) {
-      // Do lighting based on intensity (MONO) or colored (RGB)
-      if (gpu_state.cur_color_model == CM_MONO) {
-        vData->color.r = pnt->p3_l;
-        vData->color.g = pnt->p3_l;
-        vData->color.b = pnt->p3_l;
-        vData->color.a = alpha;
-      } else {
-        vData->color.r = pnt->p3_r;
-        vData->color.g = pnt->p3_g;
-        vData->color.b = pnt->p3_b;
-        vData->color.a = alpha;
-      }
-    } else {
-      // force white
-      vData->color.r = 1.0f;
-      vData->color.g = 1.0f;
-      vData->color.b = 1.0f;
-      vData->color.a = alpha;
-    }
+    vData->color = DeterminePointColor(pnt, false, true);
 
     vData->uv.s = pnt->p3_u;
     vData->uv.t = pnt->p3_v;
@@ -517,24 +476,23 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   gpu_RenderPolygon(&vArray[0], nv);
 }
 
-color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud) {
+color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud, bool checkTextureQuality) {
   auto alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
   if (gpu_state.cur_alpha_type & ATF_VERTEX) {
     alpha *= pnt->p3_a;
   }
 
   // If we have a lighting model, apply the correct lighting!
-  if (gpu_state.cur_light_state != LS_NONE) {
-    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD && !disableGouraud) {
-      return {GR_COLOR_RED(gpu_state.cur_color) / 255.0f, GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
-              GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f, alpha};
-    } else if (gpu_state.cur_color_model == CM_MONO) {
-      return {pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha};
-    } else {
-      return {pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha};
-    }
-  } else {
+  if ((gpu_state.cur_light_state == LS_FLAT_GOURAUD && !disableGouraud) ||
+      (gpu_state.cur_texture_quality == 0 && checkTextureQuality)) {
+    return {GR_COLOR_RED(gpu_state.cur_color) / 255.0f, GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
+            GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f, alpha};
+  } else if (gpu_state.cur_light_state == LS_NONE) {
     return {1, 1, 1, alpha};
+  } else if (gpu_state.cur_color_model == CM_MONO) {
+    return {pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha};
+  } else {
+    return {pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha};
   }
 }
 
