@@ -517,7 +517,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   gpu_RenderPolygon(&vArray[0], nv);
 }
 
-static color_array DeterminePointColor(g3Point const* pnt) {
+color_array DeterminePointColor(g3Point const* pnt) {
   auto alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
   if (gpu_state.cur_alpha_type & ATF_VERTEX) {
     alpha *= pnt->p3_a;
@@ -528,13 +528,10 @@ static color_array DeterminePointColor(g3Point const* pnt) {
     if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
       return {GR_COLOR_RED(gpu_state.cur_color) / 255.0f, GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
               GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f, alpha};
+    } else if (gpu_state.cur_color_model == CM_MONO) {
+      return {pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha};
     } else {
-      // Do lighting based on intesity (MONO) or colored (RGB)
-      if (gpu_state.cur_color_model == CM_MONO) {
-        return {pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha};
-      } else {
-        return {pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha};
-      }
+      return {pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha};
     }
   } else {
     return {1, 1, 1, alpha};
