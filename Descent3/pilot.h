@@ -306,9 +306,8 @@ void PltMakeFNValid(char *name);
 
 void PilotInit(void);
 
-void PltClearList(void);
-char **PltGetPilots(int *count, char *ignore_filename = NULL, int display_default_configs = 0);
-void PltGetPilotsFree(void);
+void PltClearList();
+std::vector<std::string> PltGetPilots(std::string ignore_filename = {}, int display_default_configs = 0);
 
 // VerifyPilotData
 //
@@ -330,7 +329,7 @@ bool HasPilotFinishedMission(pilot *Pilot, const char *mission_name);
 bool HasPilotFlownMission(pilot *Pilot, const char *mission_name);
 
 extern pilot Current_pilot;
-extern char Default_pilot[_MAX_PATH];
+extern std::string Default_pilot;
 
 // "Current Pilot" access functions
 void dCurrentPilotName(char *buffer);

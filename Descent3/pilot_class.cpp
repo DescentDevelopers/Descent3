@@ -192,7 +192,7 @@ pilot::pilot(char *fname) {
 void pilot::initialize(void) {
   int i;
 
-  filename = NULL;
+  filename.clear();
   name = NULL;
   ship_model = mem_strdup("Pyro-GL");
   ship_logo = NULL;
@@ -270,10 +270,7 @@ void pilot::initialize(void) {
 // This function guts the data so it's virgin (fresh for reading)
 // frees any memory that needs to be freed, etc.
 void pilot::clean(bool reset) {
-  if (filename) {
-    mem_free(filename);
-    filename = NULL;
-  }
+  filename.clear();
 
   if (name) {
     mem_free(name);
@@ -413,20 +410,17 @@ int pilot::flush(bool new_file) {
   if (!write_pending)
     return PLTW_NO_ERROR; // no need to write, data hasn't changed
 
-  if (!filename) {
+  if (filename.empty()) {
     Int3();
     return PLTW_NO_FILENAME; // no filename was given
   }
 
   CFILE *file;
-  char real_filename[_MAX_PATH];
-
-  // open and process file
-  ddio_MakePath(real_filename, Base_directory, filename, NULL);
+  std::filesystem::path real_filename = std::filesystem::path(Base_directory) / filename;
 
   if (new_file && cfexist(real_filename)) {
     // the file already exists, we can't write out
-    mprintf(0, "PLTW: File (%s) exists, can't create\n", real_filename);
+    mprintf(0, "PLTW: File (%s) exists, can't create\n", real_filename.u8string().c_str());
     return PLTW_FILE_EXISTS;
   }
 
@@ -435,7 +429,7 @@ int pilot::flush(bool new_file) {
 
     file = cfopen(real_filename, "wb");
     if (!file) {
-      mprintf(0, "PLTW: File (%s) can't be opened\n", real_filename);
+      mprintf(0, "PLTW: File (%s) can't be opened\n", real_filename.u8string().c_str());
       return PLTW_FILE_CANTOPEN;
     }
 
@@ -487,47 +481,35 @@ int pilot::flush(bool new_file) {
 }
 
 // This function sets the filename that is associated with this pilot
-void pilot::set_filename(char *fname) {
-  if (filename) {
-    mem_free(filename);
-    filename = NULL;
-  }
-
-  filename = mem_strdup(fname);
+void pilot::set_filename(const std::string &fname) {
+  filename = fname;
 }
 
-void pilot::get_filename(char *fname) {
-  if (filename) {
-    strcpy(fname, filename);
-  } else {
-    *fname = '\0';
-  }
+std::string pilot::get_filename() {
+  return filename;
 }
 
 // This function reads in the data from file (from the filename associated)
 // into the pilot data.
 int pilot::read(bool skip_config, bool skip_mission_data) {
-  if (!filename) {
+  if (filename.empty()) {
     Int3();
     return PLTR_NO_FILENAME; // no filename was given
   }
 
   CFILE *file;
-  char real_filename[_MAX_PATH];
-
-  // open and process file
-  ddio_MakePath(real_filename, Base_directory, filename, NULL);
+  std::filesystem::path real_filename = std::filesystem::path(Base_directory) / filename;
 
   if (!cfexist(real_filename)) {
     // the file already exists, we can't write out
-    mprintf(0, "PLTR: File (%s) does not exist\n", real_filename);
+    mprintf(0, "PLTR: File (%s) does not exist\n", real_filename.u8string().c_str());
     return PLTR_FILE_NOEXIST;
   }
 
   try {
     file = cfopen(real_filename, "rb");
     if (!file) {
-      mprintf(0, "PLTR: File (%s) can't be opened\n", real_filename);
+      mprintf(0, "PLTR: File (%s) can't be opened\n", real_filename.u8string().c_str());
       return PLTR_FILE_CANTOPEN;
     }
 
