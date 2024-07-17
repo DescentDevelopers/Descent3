@@ -517,7 +517,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   gpu_RenderPolygon(&vArray[0], nv);
 }
 
-color_array DeterminePointColor(g3Point const* pnt) {
+color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud) {
   auto alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
   if (gpu_state.cur_alpha_type & ATF_VERTEX) {
     alpha *= pnt->p3_a;
@@ -525,7 +525,7 @@ color_array DeterminePointColor(g3Point const* pnt) {
 
   // If we have a lighting model, apply the correct lighting!
   if (gpu_state.cur_light_state != LS_NONE) {
-    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
+    if (gpu_state.cur_light_state == LS_FLAT_GOURAUD && !disableGouraud) {
       return {GR_COLOR_RED(gpu_state.cur_color) / 255.0f, GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
               GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f, alpha};
     } else if (gpu_state.cur_color_model == CM_MONO) {
@@ -603,15 +603,12 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type) {
   g3Point *pnt;
   int i;
-  float alpha;
 
   float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
   float xscalar = (float)GameLightmaps[gpu_Overlay_map].width * one_over_square_res;
   float yscalar = (float)GameLightmaps[gpu_Overlay_map].height * one_over_square_res;
 
   ASSERT(nv < 100);
-
-  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
   PosColorUV2Vertex *vData = &vArray2[0];
 
@@ -620,29 +617,7 @@ void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_typ
     pnt = p[i];
     ASSERT(pnt->p3_flags & PF_ORIGPOINT);
 
-    if (gpu_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
-
-    // If we have a lighting model, apply the correct lighting!
-    if (gpu_state.cur_light_state != LS_NONE) {
-      // Do lighting based on intesity (MONO) or colored (RGB)
-      if (gpu_state.cur_color_model == CM_MONO) {
-        vData->color.r = pnt->p3_l;
-        vData->color.g = pnt->p3_l;
-        vData->color.b = pnt->p3_l;
-        vData->color.a = alpha;
-      } else {
-        vData->color.r = pnt->p3_r;
-        vData->color.g = pnt->p3_g;
-        vData->color.b = pnt->p3_b;
-        vData->color.a = alpha;
-      }
-    } else {
-      vData->color.r = 1;
-      vData->color.g = 1;
-      vData->color.b = 1;
-      vData->color.a = alpha;
-    }
+    vData->color = DeterminePointColor(pnt, true);
 
     vData->uv0.s = pnt->p3_u;
     vData->uv0.t = pnt->p3_v;
