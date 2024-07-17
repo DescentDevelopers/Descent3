@@ -662,19 +662,6 @@ void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_typ
       vData->color.a = alpha;
     }
 
-    /*
-    // Texture this polygon!
-    float texw=1.0/(pnt->p3_z+Z_bias);
-    vData->uv0.s=pnt->p3_u*texw;
-    vData->uv0.t=pnt->p3_v*texw;
-    vData->uv0.r=0;
-    vData->uv0.w=texw;
-
-    vData->uv1.s=pnt->p3_u2*xscalar*texw;
-    vData->uv1.t=pnt->p3_v2*yscalar*texw;
-    vData->uv1.r=0;
-    vData->uv1.w=texw;
-    */
     vData->uv0.s = pnt->p3_u;
     vData->uv0.t = pnt->p3_v;
     vData->uv0.r = 0.0f;
@@ -686,11 +673,6 @@ void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_typ
     vData->uv1.w = 1.0f;
 
     // Finally, specify a vertex
-    /*
-    vData->pos.x=pnt->p3_sx+x_add;
-    vData->pos.y=pnt->p3_sy+y_add;
-    vData->pos.z = -std::max(0,std::min(1.0,1.0-(1.0/(pnt->p3_z+Z_bias))));
-    */
     vData->pos = pnt->p3_vecPreRot;
   }
 
