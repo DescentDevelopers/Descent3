@@ -1650,6 +1650,7 @@
 #include "multi_client.h"
 #include "multi_server.h"
 #include "ddio.h"
+#include "init.h"
 #include "hud.h"
 #include "robotfire.h"
 #include "ship.h"
@@ -9444,7 +9445,6 @@ void MultiDoBashPlayerShip(uint8_t *data) {
 
   // If told to switch to the Black Pyro, make sure it's allowed
   if (!stricmp(Ships[ship_index].name, "Black Pyro")) {
-    extern bool MercInstalled();
     if (!MercInstalled()) {
       BailOnMultiplayer("Exiting: Game requires Black Pyro");
     }

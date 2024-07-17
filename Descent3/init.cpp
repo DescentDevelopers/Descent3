@@ -1550,7 +1550,6 @@ void InitIOSystems(bool editor) {
   Osiris_ExtractScriptsFromHog(d3_hid, false);
 }
 
-// Returns true if Mercenary is installed (inits the Black Pyro and Red GB)
 bool MercInstalled() { return merc_hid > 0; }
 
 extern int Num_languages;
