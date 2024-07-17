@@ -586,6 +586,7 @@
 #include "ddio.h"
 #include "descent.h"
 #include "game.h"
+#include "init.h"
 #include "cfile.h"
 #include "manage.h"
 #include "newui.h"
@@ -2658,15 +2659,11 @@ bool PltSelectShip(pilot *Pilot) {
 #ifdef DEMO
       if (stricmp(Ships[i].name, DEFAULT_SHIP) == 0) {
 #endif
+        shipoktoadd = true;
         // make sure they have mercenary in order to play with Black Pyro
-        if (!stricmp(Ships[i].name, "Black Pyro")) {
+        if ((stricmp(Ships[i].name, "Black Pyro") == 0) && !MercInstalled()) {
           shipoktoadd = false;
-          extern bool MercInstalled();
-          if (MercInstalled()) {
-            shipoktoadd = true;
-          }
-        } else
-          shipoktoadd = true;
+        }
         if (shipoktoadd)
           ship_list->AddItem(Ships[i].name);
 #ifdef DEMO
