@@ -1194,8 +1194,8 @@ void SaveGameSettings() {
 
   Database->write("SoundQuantity", Sound_system.GetLLSoundQuantity());
 
-  if (Default_pilot[0] != '\0')
-    Database->write("Default_pilot", Default_pilot, strlen(Default_pilot) + 1);
+  if (!Default_pilot.empty())
+    Database->write("Default_pilot", Default_pilot.c_str(), strlen(Default_pilot.c_str()) + 1);
   else
     Database->write("Default_pilot", " ", 2);
 }
@@ -1352,7 +1352,9 @@ void LoadGameSettings() {
   }
 
   int len = _MAX_PATH;
-  Database->read("Default_pilot", Default_pilot, &len);
+  char temp_str[_MAX_PATH];
+  Database->read("Default_pilot", temp_str, &len);
+  Default_pilot = temp_str;
 
   // Now that we have read in all the data, set the detail level if it is a predef setting (custom is ignored in
   // function)

@@ -610,9 +610,7 @@
 #define IDP_APPLY 12
 
 // used for the Pilot file functions
-#define PLTWILDCARD "*.plt"
 #define PLTEXTENSION ".plt"
-#define DPLTWILDCARD "*.pld"
 #define PLTFILELEN 260
 
 #define MAX_AUDIOTAUNTSIZE (32 * 1024)
@@ -644,7 +642,7 @@
 
 // Game global for current pilot
 pilot Current_pilot;
-char Default_pilot[_MAX_PATH] = {" "};
+std::string Default_pilot;
 uint8_t ingame_difficulty = 1;
 
 ///////////////////////////////////////////////
@@ -654,7 +652,7 @@ bool DisplayFileDialog(char *path, char *title, char *wildcards, int flags);
 
 // internal function prototypes
 bool PltDelete(pilot *Pilot);
-void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected, char *filename = NULL);
+void NewPltUpdate(newuiListBox *list, int selected, const std::string& filename = {});
 bool PilotChoose(pilot *Pilot, bool presets = false);
 bool PltCopyKeyConfig(pilot *src, pilot *dest);
 bool PltSelectShip(pilot *Pilot);
@@ -692,7 +690,7 @@ struct tAudioTauntComboBoxes {
 
 // Deletes the currently selected audio taunt #4
 void ShipSelectDeleteTaunt(pilot *Pilot, tCustomListInfo *cust_snds, newuiComboBox *lb,
-                           tAudioTauntComboBoxes *taunt_boxex);
+                           tAudioTauntComboBoxes *taunt_boxes);
 
 // Deletes the currently selected ship logo
 void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb);
@@ -708,8 +706,8 @@ void ShowPilotPicDialog(pilot *Pilot);
 UITextItem *pilot_items = NULL;      // array of UITextItems for use in Pilot listbox
 pilot temp;                          // pilot in use by the listbox
 NewUIGameWindow *PilotDisplayWindow; // pointer to display_window (needed for listbox callback)
-char **filelist;                     // list of pilot filenames
-int filecount;                       // number of pilot filenames found
+static std::vector<std::string> filelist;   // list of pilot filenames
+static int filecount;                       // number of pilot filenames found
 void PilotListSelectChangeCallback(int index);
 
 ////////////////////////////////////////////////////////////////////////////
@@ -874,8 +872,7 @@ void PilotListSelectChangeCallback(int index) {
   // Pilot has changed...reset all data to new pilot selected
   if (!PilotChooseDialogInfo.initial_call) {
     // save out old Pilot file so we can load up the new one
-    char filename[PAGENAME_LEN];
-    working_pilot.get_filename(filename);
+    std::string filename = working_pilot.get_filename();
 
     if (cfexist(filename)) {
       if (in_edit)
@@ -942,7 +939,8 @@ void PilotSelect(void) {
   PilotChooseDialogInfo.edit = &edit;
   PilotChooseDialogInfo.initial_call = true;
   PilotChooseDialogInfo.all_setup = false;
-  filelist = NULL;
+
+  filelist.clear();
   filecount = 0;
 
   int res = -1;
@@ -954,7 +952,7 @@ void PilotSelect(void) {
     PltReadFile(&Current_pilot);
   }
 
-  char pfilename[_MAX_FNAME];
+  std::string pfilename;
 
   // open menu
   menu.Create();
@@ -970,16 +968,15 @@ void PilotSelect(void) {
   menu.SetOnOptionFocusCB(selectcb, &select);
 
   PilotChooseDialogInfo.all_setup = true;
-  filelist = PltGetPilots(&filecount);
+  filelist = PltGetPilots();
 
   if (!filecount) {
     pilot temp_pilot;
     // if there are currently no pilots force player to create a new pilot
     if (PilotCreate(&temp_pilot, true)) {
       PltClearList();
-      PltGetPilotsFree();
-      filelist = PltGetPilots(&filecount);
-      NewPltUpdate(select.pilot_list, filelist, filecount, filecount - 1);
+      filelist = PltGetPilots();
+      NewPltUpdate(select.pilot_list, filecount - 1);
 
       int index = select.pilot_list->GetCurrentIndex();
 
@@ -991,16 +988,16 @@ void PilotSelect(void) {
     }
   }
 
-  Current_pilot.get_filename(pfilename);
-  NewPltUpdate(select.pilot_list, filelist, filecount, 0, pfilename);
+  pfilename = Current_pilot.get_filename();
+  NewPltUpdate(select.pilot_list, 0, pfilename);
 
   // if we get here than there is at least one pilot already
   char old_file[_MAX_FNAME];
 
   // use this in case they cancel out
-  Current_pilot.get_filename(pfilename);
+  pfilename = Current_pilot.get_filename();
   if (cfexist(pfilename) != CFES_NOT_FOUND) {
-    strcpy(old_file, pfilename);
+    strcpy(old_file, pfilename.c_str());
   } else {
     old_file[0] = '\0';
   }
@@ -1028,8 +1025,7 @@ void PilotSelect(void) {
 
         PilotListSelectChangeCallback(index);
 
-        char filename[PAGENAME_LEN];
-        working_pilot.get_filename(filename);
+        std::string filename = working_pilot.get_filename();
         Current_pilot.set_filename(filename);
         PltReadFile(&Current_pilot, true, true);
 
@@ -1043,7 +1039,7 @@ void PilotSelect(void) {
           PltWriteFile(&Current_pilot);
         }
 
-        Current_pilot.get_filename(Default_pilot);
+        Default_pilot = Current_pilot.get_filename();
 
         done = true;
 
@@ -1115,12 +1111,11 @@ void PilotSelect(void) {
         }
 
         PltClearList();
-        PltGetPilotsFree();
-        filelist = PltGetPilots(&filecount);
+        filelist = PltGetPilots();
         if (tindex >= filecount) {
           tindex = filecount - 1;
         }
-        NewPltUpdate(select.pilot_list, filelist, filecount, tindex);
+        NewPltUpdate(select.pilot_list, tindex);
       }
       break;
 
@@ -1131,16 +1126,14 @@ void PilotSelect(void) {
       pilot temp_pilot;
       if (PilotCreate(&temp_pilot, !filecount)) {
         PltClearList();
-        PltGetPilotsFree();
-        filelist = PltGetPilots(&filecount);
+        filelist = PltGetPilots();
 
-        char pfilename[_MAX_FNAME];
-        temp_pilot.get_filename(pfilename);
-        NewPltUpdate(select.pilot_list, filelist, filecount, filecount - 1, pfilename);
+        pfilename = temp_pilot.get_filename();
+        NewPltUpdate(select.pilot_list, filecount - 1);
         go_into_edit = true;
       } else {
         if (filecount)
-          NewPltUpdate(select.pilot_list, filelist, filecount, cpilotindex);
+          NewPltUpdate(select.pilot_list, cpilotindex);
       }
 
       int index = select.pilot_list->GetCurrentIndex();
@@ -1188,8 +1181,7 @@ void PilotSelect(void) {
       PilotListSelectChangeCallback(index);
 
       // read the working pilot into the Current_pilot position
-      char pfilename[_MAX_FNAME];
-      working_pilot.get_filename(pfilename);
+      pfilename = working_pilot.get_filename();
 
       Current_pilot.set_filename(pfilename);
       PltReadFile(&Current_pilot, true, true);
@@ -1206,21 +1198,18 @@ void PilotSelect(void) {
 
     case IDP_COPYCONTROLS: {
       pilot s_pil;
-      char pfilename[_MAX_FNAME];
-      working_pilot.get_filename(pfilename);
+      pfilename = working_pilot.get_filename();
 
       // destroy the current list of pilots and recreate, but
       // ignoring our current pilot
       PltClearList();
-      PltGetPilotsFree();
-      filelist = PltGetPilots(&filecount, pfilename, 1);
+      filelist = PltGetPilots(pfilename, 1);
 
       if (filecount >= 1) {
         if (PilotChoose(&s_pil)) {
-          char spfilename[_MAX_FNAME];
-          s_pil.get_filename(spfilename);
+          std::string spfilename = s_pil.get_filename();
 
-          if (strcmp(spfilename, pfilename) == 0) {
+          if (spfilename == pfilename) {
             // user choose the same file as what he is configuring
             DoMessageBox(TXT_COPYCONFERR, TXT_COPYCONFERR1, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
           } else {
@@ -1233,15 +1222,13 @@ void PilotSelect(void) {
 
       // Restore the pilot list, ignoring none
       PltClearList();
-      PltGetPilotsFree();
-      filelist = PltGetPilots(&filecount);
+      filelist = PltGetPilots();
     } break;
     }
 
   } while (!done);
 
   PltClearList();
-  PltGetPilotsFree();
   Current_pilot.get_difficulty(&ingame_difficulty);
 
   // get settings
@@ -1365,21 +1352,19 @@ bool PilotCreate(pilot *Pilot, bool forceselection) {
 ///////////////////////////////////////////////////////////////////////////////////
 void PilotCopyDefaultControls(pilot *Pilot) {
   PltClearList();
-  PltGetPilotsFree();
-  filelist = PltGetPilots(&filecount, NULL, 2);
+  filelist = PltGetPilots(nullptr, 2);
 
   // if(filecount>0 && DoMessageBox(TXT_PRESETCONTROLS,TXT_USEPRESETS,MSGBOX_YESNO))
   if (filecount > 0) {
     pilot s_pil;
 
     if (PilotChoose(&s_pil, true)) {
-      char spfilename[_MAX_FNAME];
-      s_pil.get_filename(spfilename);
+      std::string spfilename = s_pil.get_filename();
 
       if (cfexist(spfilename)) {
         PltCopyKeyConfig(&s_pil, Pilot);
       } else {
-        mprintf(0, "%s does not exist...not copying\n", spfilename);
+        mprintf(0, "%s does not exist...not copying\n", spfilename.c_str());
         Int3();
       }
     }
@@ -1387,8 +1372,7 @@ void PilotCopyDefaultControls(pilot *Pilot) {
 
   // Restore the pilot list, ignoring none
   PltClearList();
-  PltGetPilotsFree();
-  filelist = PltGetPilots(&filecount);
+  filelist = PltGetPilots();
 }
 
 ///////////////////////////////////////////////////////////
@@ -1422,7 +1406,7 @@ bool PilotChoose(pilot *Pilot, bool presets) {
   sheet->NewGroup(NULL, 7, 40);
   pilot_list = sheet->AddListBox(284, 100, IDP_PCLIST);
   pilot_list->SetCurrentIndex(0);
-  NewPltUpdate(pilot_list, filelist, filecount, 0);
+  NewPltUpdate(pilot_list, 0);
 
   sheet->NewGroup(NULL, 80, 180, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
@@ -1483,7 +1467,7 @@ bool PilotCopy(pilot *Src,pilot *Dest)
 ***************************************************/
 /////////////////////////////////////////////////////
 // Updates the pilot listbox
-void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected, char *filename) {
+void NewPltUpdate(newuiListBox *list, int selected, const std::string& filename) {
   int index;
   pilot tPilot;
 
@@ -1491,7 +1475,7 @@ void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected,
 
   if (pilot_items) {
     delete[] pilot_items;
-    pilot_items = NULL;
+    pilot_items = nullptr;
   }
 
   if (filecount) {
@@ -1499,7 +1483,7 @@ void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected,
     char pname[PILOT_STRING_SIZE];
 
     for (index = 0; index < filecount; index++) {
-      tPilot.set_filename(flist[index]);
+      tPilot.set_filename(filelist[index]);
       PltReadFile(&tPilot);
 
       tPilot.get_name(pname);
@@ -1509,11 +1493,11 @@ void NewPltUpdate(newuiListBox *list, char **flist, int filecount, int selected,
 
     list->SetCurrentIndex(selected);
 
-    if (filename && (cfexist(filename) != CFES_NOT_FOUND)) {
+    if (!filename.empty() && (cfexist(filename) != CFES_NOT_FOUND)) {
       // get the selected pilot from the filename
-      mprintf(0, "Looking for Pilot: %s\n", filename);
+      mprintf(0, "Looking for Pilot: %s\n", filename.c_str());
       for (int d = 0; d < filecount; d++) {
-        if (!stricmp(flist[d], filename)) {
+        if (stricmp(filelist[d].c_str(), filename.c_str()) == 0) {
           // ok we found the filename that they want as the pilot
           list->SetCurrentIndex(d);
           break;
@@ -1713,12 +1697,11 @@ int GetPilotShipPermissions(pilot *Pilot, const char *mission_name) {
 /////////////////////////////////////////////
 // deletes a pilot
 bool PltDelete(pilot *Pilot) {
-  char pfilename[_MAX_FNAME];
   char pname[PILOT_STRING_SIZE];
 
-  Pilot->get_filename(pfilename);
+  std::string pfilename = Pilot->get_filename();
   std::error_code ec;
-  if (pfilename[0] != 0) {
+  if (!pfilename.empty()) {
     return std::filesystem::remove(std::filesystem::path(Base_directory) / pfilename, ec);
   } else {
     Int3(); // this is odd
@@ -1732,8 +1715,7 @@ bool PltDelete(pilot *Pilot) {
 
     PltMakeFNValid(pname);
 
-    strcpy(pfilename, pname);
-    strcat(pfilename, PLTEXTENSION);
+    pfilename = std::string(pname) + PLTEXTENSION;
     return std::filesystem::remove(std::filesystem::path(Base_directory) / pfilename, ec);
   }
 }
@@ -1765,17 +1747,15 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
     return;
   }
 
-  char filename[_MAX_PATH];
-  char pfilename[_MAX_FNAME];
   CFILE *file;
   int filever;
 
-  Pilot->get_filename(pfilename);
+  std::string pfilename = Pilot->get_filename();
   if (pfilename[0] == 0)
     return;
 
     // open and process file
-  ddio_MakePath(filename, Base_directory, pfilename, NULL);
+  std::filesystem::path filename = std::filesystem::path(Base_directory) / pfilename;
   try {
     file = cfopen(filename, "rb");
     if (!file)
@@ -1795,7 +1775,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
     int ret = Pilot->read(!keyconfig, !missiondata);
     switch (ret) {
     case PLTR_TOO_NEW:
-      Error(TXT_PLTFILETOONEW, pfilename);
+      Error(TXT_PLTFILETOONEW, pfilename.c_str());
       break;
     }
 
@@ -1812,27 +1792,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   }
 }
 
-//////////////////////////////////////////////////////////////
-// returns the filelist of pilots available
-struct tPGetPilotStruct {
-  char *filename;
-  tPGetPilotStruct *next;
-};
-static char **pltgetname_list = NULL;
-static int pltgetname_count = 0;
-
-void PltGetPilotsFree(void) {
-  if (pltgetname_list) {
-    mem_free(pltgetname_list);
-    pltgetname_list = NULL;
-  }
-  pltgetname_count = 0;
-}
-
-char **PltGetPilots(int *count, char *ignore_filename, int display_default_configs) {
-  char buffer[PLTFILELEN];
-  char search[256];
-  tPGetPilotStruct *root = NULL, *curr = NULL;
+std::vector<std::string> PltGetPilots(std::string ignore_filename, int display_default_configs) {
   int loop = 1;
 
   if (display_default_configs == 1)
@@ -1840,128 +1800,50 @@ char **PltGetPilots(int *count, char *ignore_filename, int display_default_confi
 
   // clear list
   PltClearList();
-  PltGetPilotsFree();
-  (*count) = 0;
-  root = NULL;
+
+  std::filesystem::path search = std::filesystem::path(Base_directory);
+  std::regex wildcard;
+  std::vector<std::string> result;
 
   for (int loop_count = 0; loop_count < loop; loop_count++) {
     switch (display_default_configs) {
     case 0:
       ASSERT(loop_count == 0);
-      ddio_MakePath(search, Base_directory, PLTWILDCARD, NULL);
+      wildcard = std::regex(".+\\.plt");
       break;
     case 1:
-      ddio_MakePath(search, Base_directory, (loop_count == 0) ? PLTWILDCARD : DPLTWILDCARD, NULL);
+      wildcard = (loop_count == 0) ? std::regex(".+\\.plt") : std::regex(".+\\.pld");
       break;
     case 2:
       ASSERT(loop_count == 0);
-      ddio_MakePath(search, Base_directory, DPLTWILDCARD, NULL);
+      wildcard = std::regex(".+\\.pld");
       break;
     default:
       Int3();
       break;
     }
 
-
-    if (ddio_FindFileStart(search, buffer)) {
-
-      if (ignore_filename && !stricmp(ignore_filename, buffer)) {
-        mprintf(0, "Getting Pilots...found %s, but ignoring\n", buffer);
+    ddio_DoForeachFile(search, wildcard, [&ignore_filename, &result](const std::filesystem::path& path){
+      std::string pilot = path.filename().u8string();
+      if (!ignore_filename.empty() && stricmp(ignore_filename.c_str(), pilot.c_str()) == 0) {
+        mprintf(0, "Getting Pilots... found %s, but ignoring\n", pilot.c_str());
       } else {
-        if (root == NULL) {
-          root = curr = (tPGetPilotStruct *)mem_malloc(sizeof(tPGetPilotStruct));
-          curr->next = NULL;
-        } else {
-          curr->next = (tPGetPilotStruct *)mem_malloc(sizeof(tPGetPilotStruct));
-          curr = curr->next;
-          curr->next = NULL;
-        }
-
-        if (curr) {
-          curr->filename = mem_strdup(buffer);
-
-          if (curr->filename) {
-            (*count)++;
-            mprintf(0, "Getting Pilots..found %s\n", buffer);
-          } else {
-            Error(TXT_OUTOFMEMORY);
-          }
-        }
+        mprintf(0, "Getting Pilots... found %s\n", pilot.c_str());
+        result.push_back(pilot);
+        filecount++;
       }
-
-      while (ddio_FindNextFile(buffer)) {
-        if (ignore_filename && !stricmp(ignore_filename, buffer)) {
-          mprintf(0, "Getting Pilots...found %s, but ignoring\n", buffer);
-        } else {
-          if (root == NULL) {
-            root = curr = (tPGetPilotStruct *)mem_malloc(sizeof(tPGetPilotStruct));
-            curr->next = NULL;
-          } else {
-            curr->next = (tPGetPilotStruct *)mem_malloc(sizeof(tPGetPilotStruct));
-            curr = curr->next;
-            curr->next = NULL;
-          }
-
-          if (curr) {
-            curr->filename = mem_strdup(buffer);
-
-            if (curr->filename) {
-              (*count)++;
-              mprintf(0, "Getting Pilots..found %s\n", buffer);
-            } else {
-              Error(TXT_OUTOFMEMORY);
-            }
-          }
-        }
-      }
-    }
-
-    ddio_FindFileClose();
+    });
   }
 
-  // now allocate for the real list of char * and move the linked list to that array
-  if ((*count) > 0) {
-    pltgetname_list = (char **)mem_malloc((*count) * sizeof(char *));
-    if (pltgetname_list) {
-      int end = (*count);
-      curr = root;
-      tPGetPilotStruct *next;
-
-      for (int i = 0; i < end; i++) {
-        // move all the allocated buffers to this list, than we can free the node
-        next = curr->next;
-
-        if (curr) {
-          pltgetname_list[i] = curr->filename;
-        } else {
-          pltgetname_list[i] = NULL;
-        }
-
-        mem_free(curr);
-        curr = next;
-      }
-    }
-  }
-  pltgetname_count = (*count);
-
-  mprintf(0, "Found %d pilots\n", (*count));
-  return pltgetname_list;
+  mprintf(0, "Found %d pilots\n", filecount);
+  return result;
 }
 
 ///////////////////////////////////////////////////////////
-// clears the file list (MUST CALL TO FREE MEMORY!!!!!!!!!)
-void PltClearList(void) {
-  if (!pltgetname_list)
-    return;
-
-  int index;
-
-  for (index = 0; index < pltgetname_count; index++) {
-    if (pltgetname_list[index]) {
-      mem_free(pltgetname_list[index]);
-      pltgetname_list[index] = NULL;
-    }
-  }
+// clears the file list
+void PltClearList() {
+  filelist.clear();
+  filecount = 0;
 }
 
 ////////////////////////////////////////////////////////////
@@ -2107,25 +1989,6 @@ struct tShipListInfo {
 
 tCustomListInfo *lp_cust_bmps = NULL;
 tShipListInfo *lp_ship_info = NULL;
-
-//	axtoi
-//
-// Convert a string that represents a hex value into an int (like atoi)
-int axtoi(char *p) {
-  int value = 0;
-
-  while ((p) && (*p)) {
-    *p = toupper(*p);
-    if ((*p >= '0') && (*p <= '9'))
-      value = (value * 16) + ((*p) - '0');
-    else if ((*p >= 'A') && (*p <= 'F'))
-      value = (value * 16) + (((*p) - 'A') + 10);
-    else
-      return 0;
-    p++;
-  }
-  return value;
-}
 
 //	StripCRCFileName
 //
@@ -3372,9 +3235,6 @@ void ShipSelectCallBack(int c) {
   DoWaitMessage(false);
 }
 
-extern char LocalCustomGraphicsDir[TABLE_NAME_LEN];
-extern char LocalCustomSoundsDir[TABLE_NAME_LEN];
-
 // Deletes the currently selected ship logo
 void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb) {
   ASSERT(lb);
@@ -3869,18 +3729,16 @@ uint8_t dCurrentPilotDifficulty(void) {
 
 /////////////////////////////////////////////////////////////////////
 void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
-  char filename[_MAX_PATH];
-  char pfilename[_MAX_FNAME];
   char buffer[256];
   uint8_t temp_b;
   uint16_t temp_s;
   int temp_i;
   int filever, i, nctlfuncs;
 
-  Pilot->get_filename(pfilename);
+  std::string pfilename = Pilot->get_filename();
 
   // open and process file
-  ddio_MakePath(filename, Base_directory, pfilename, NULL);
+  std::filesystem::path filename = std::filesystem::path(Base_directory) / pfilename;
   CFILE *file = cfopen(filename, "rb");
   if (!file)
     return;
@@ -3896,7 +3754,7 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   if (filever > PLTFILEVERSION) {
     // we're reading in a version that's newer than we have
     cfclose(file);
-    Error(TXT_PLTTOONEW, pfilename);
+    Error(TXT_PLTTOONEW, pfilename.c_str());
     return;
   }
 

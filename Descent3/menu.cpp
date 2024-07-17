@@ -756,18 +756,15 @@ int MainMenu() {
       pilotarg = FindArg("-pilot");
     }
     if (pilotarg) {
-      char pfilename[_MAX_FNAME];
-      strcpy(pfilename, GameArgs[pilotarg + 1]);
-      strcat(pfilename, ".plt");
+      std::string pfilename = std::string(GameArgs[pilotarg + 1]) + ".plt";
       Current_pilot.set_filename(pfilename);
       PltReadFile(&Current_pilot, true);
     }
     first_time = false;
   }
-  char pfilename[_MAX_FNAME];
-  Current_pilot.get_filename(pfilename);
+  std::string pfilename = Current_pilot.get_filename();
 
-  if ((pfilename[0] == '\0') || (strlen(pfilename) == 0) || (!strcmp(pfilename, " ")))
+  if (pfilename.empty())
     PilotSelect();
 
   //	always enforce that in main menu we are in normal game mode.
