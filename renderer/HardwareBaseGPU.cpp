@@ -620,7 +620,7 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
 // as a texture
 void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_type) {
   g3Point *pnt;
-  int i, fr, fg, fb;
+  int i;
   float alpha;
 
   float one_over_square_res = 1.0 / GameLightmaps[gpu_Overlay_map].square_res;
@@ -628,12 +628,6 @@ void rend_DrawMultitexturePolygon3D(int handle, g3Point **p, int nv, int map_typ
   float yscalar = (float)GameLightmaps[gpu_Overlay_map].height * one_over_square_res;
 
   ASSERT(nv < 100);
-
-  if (gpu_state.cur_light_state == LS_NONE) {
-    fr = GR_COLOR_RED(gpu_state.cur_color);
-    fg = GR_COLOR_GREEN(gpu_state.cur_color);
-    fb = GR_COLOR_BLUE(gpu_state.cur_color);
-  }
 
   alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
 
