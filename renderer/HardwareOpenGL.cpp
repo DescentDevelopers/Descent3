@@ -1632,17 +1632,14 @@ void rend_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
 
 // Sets a pixel on the display
 void rend_SetPixel(ddgr_color color, int x, int y) {
-  int r = (color >> 16 & 0xFF);
-  int g = (color >> 8 & 0xFF);
-  int b = (color & 0xFF);
-
   g3_RefreshTransforms(true);
 
-  dglColor3ub(r, g, b);
+  std::array pos{x, y};
+  color_array unpacked_color{GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f, GR_COLOR_BLUE(color) / 255.0f, 1};
 
-  dglBegin(GL_POINTS);
-  dglVertex2i(x, y);
-  dglEnd();
+  dglVertexPointer(2, GL_INT, sizeof(pos), &pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(unpacked_color), &unpacked_color);
+  dglDrawArrays(GL_POINTS, 0, 1);
 }
 
 // Sets a pixel on the display
@@ -1657,13 +1654,8 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   int8_t atype;
   light_state ltype;
   texture_type ttype;
-  int color = gpu_state.cur_color;
 
   g3_RefreshTransforms(true);
-
-  int r = GR_COLOR_RED(color);
-  int g = GR_COLOR_GREEN(color);
-  int b = GR_COLOR_BLUE(color);
 
   atype = gpu_state.cur_alpha_type;
   ltype = gpu_state.cur_light_state;
@@ -1673,13 +1665,27 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   rend_SetLighting(LS_NONE);
   rend_SetTextureType(TT_FLAT);
 
-  // TODO: Generalize
-  dglBegin(GL_LINES);
-  dglColor4ub(r, g, b, 255);
-  dglVertex2i(x1 + gpu_state.clip_x1, y1 + gpu_state.clip_y1);
-  dglColor4ub(r, g, b, 255);
-  dglVertex2i(x2 + gpu_state.clip_x1, y2 + gpu_state.clip_y1);
-  dglEnd();
+  color_array color{
+      GR_COLOR_RED(gpu_state.cur_color) / 255.0f,
+      GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
+      GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f,
+  };
+  std::array<PosColorUVVertex, 2> vertices{
+      PosColorUVVertex{
+          vector{static_cast<float>(x1 + gpu_state.clip_x1), static_cast<float>(y1 + gpu_state.clip_y1), 0},
+          color,
+          tex_array{ /* unused */ }
+      },
+      PosColorUVVertex{
+          vector{static_cast<float>(x2 + gpu_state.clip_x1), static_cast<float>(y2 + gpu_state.clip_y1), 0},
+          color,
+          tex_array{ /* unused */ }
+      }
+  };
+
+  dglVertexPointer(3, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].color);
+  dglDrawArrays(GL_LINES, 0, vertices.size());
 
   rend_SetAlphaType(atype);
   rend_SetLighting(ltype);
@@ -1766,54 +1772,19 @@ void rend_SetAlphaType(int8_t atype) {
 void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
   g3_RefreshTransforms(true);
 
-  int x_add = gpu_state.clip_x1;
-  int y_add = gpu_state.clip_y1;
-  float fr, fg, fb, alpha;
-  int i;
+  std::array<g3Point const*, 2> pts{p0, p1};
+  std::array<PosColorUVVertex, 2> vertices{};
+  std::transform(pts.begin(), pts.end(), vertices.begin(), [](auto pnt) {
+    return PosColorUVVertex{
+      {pnt->p3_sx + gpu_state.clip_x1, pnt->p3_sy + gpu_state.clip_y1, -std::clamp(1.0f - (1.0f / (pnt->p3_z + Z_bias)), 0.0f, 1.0f)},
+        DeterminePointColor(pnt, false, false, true), // extras??
+        tex_array{ /* unused */ }
+    };
+  });
 
-  fr = GR_COLOR_RED(gpu_state.cur_color);
-  fg = GR_COLOR_GREEN(gpu_state.cur_color);
-  fb = GR_COLOR_BLUE(gpu_state.cur_color);
-
-  fr /= 255.0f;
-  fg /= 255.0f;
-  fb /= 255.0f;
-
-  alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
-
-  // And draw!
-  dglBegin(GL_LINES);
-  for (i = 0; i < 2; i++) {
-    g3Point *pnt = p0;
-
-    if (i == 1)
-      pnt = p1;
-
-    if (gpu_state.cur_alpha_type & ATF_VERTEX)
-      alpha = pnt->p3_a * gpu_Alpha_multiplier * gpu_Alpha_factor;
-
-    // If we have a lighting model, apply the correct lighting!
-    if (gpu_state.cur_light_state != LS_NONE) {
-      if (gpu_state.cur_light_state == LS_FLAT_GOURAUD) {
-        dglColor4f(fr, fg, fb, alpha);
-      } else {
-        // Do lighting based on intesity (MONO) or colored (RGB)
-        if (gpu_state.cur_color_model == CM_MONO)
-          dglColor4f(pnt->p3_l, pnt->p3_l, pnt->p3_l, alpha);
-        else {
-          dglColor4f(pnt->p3_r, pnt->p3_g, pnt->p3_b, alpha);
-        }
-      }
-    } else {
-      dglColor4f(fr, fg, fb, alpha);
-    }
-
-    // Finally, specify a vertex
-    float z = std::clamp(1.0 - (1.0 / (pnt->p3_z + Z_bias)), 0.0, 1.0);
-    dglVertex3f(pnt->p3_sx + x_add, pnt->p3_sy + y_add, -z);
-  }
-
-  dglEnd();
+  dglVertexPointer(3, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].color);
+  dglDrawArrays(GL_LINES, 0, vertices.size());
 }
 
 // Takes a screenshot of the current frame and puts it into the handle passed
