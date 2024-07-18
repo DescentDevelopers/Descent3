@@ -1809,13 +1809,8 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   int8_t atype;
   light_state ltype;
   texture_type ttype;
-  int color = gpu_state.cur_color;
 
   g3_RefreshTransforms(true);
-
-  int r = GR_COLOR_RED(color);
-  int g = GR_COLOR_GREEN(color);
-  int b = GR_COLOR_BLUE(color);
 
   atype = gpu_state.cur_alpha_type;
   ltype = gpu_state.cur_light_state;
@@ -1825,13 +1820,27 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
   rend_SetLighting(LS_NONE);
   rend_SetTextureType(TT_FLAT);
 
-  // TODO: Generalize
-  dglBegin(GL_LINES);
-  dglColor4ub(r, g, b, 255);
-  dglVertex2i(x1 + gpu_state.clip_x1, y1 + gpu_state.clip_y1);
-  dglColor4ub(r, g, b, 255);
-  dglVertex2i(x2 + gpu_state.clip_x1, y2 + gpu_state.clip_y1);
-  dglEnd();
+  color_array color{
+      GR_COLOR_RED(gpu_state.cur_color) / 255.0f,
+      GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
+      GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f,
+  };
+  std::array<PosColorUVVertex, 2> vertices{
+      PosColorUVVertex{
+          vector{static_cast<float>(x1 + gpu_state.clip_x1), static_cast<float>(y1 + gpu_state.clip_y1), 0},
+          color,
+          tex_array{ /* unused */ }
+      },
+      PosColorUVVertex{
+          vector{static_cast<float>(x2 + gpu_state.clip_x1), static_cast<float>(y2 + gpu_state.clip_y1), 0},
+          color,
+          tex_array{ /* unused */ }
+      }
+  };
+
+  dglVertexPointer(3, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].color);
+  dglDrawArrays(GL_LINES, 0, vertices.size());
 
   rend_SetAlphaType(atype);
   rend_SetLighting(ltype);
