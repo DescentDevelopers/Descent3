@@ -279,48 +279,6 @@ bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filenam
     return true;
 }
 
-//	These functions allow one to find a file
-//		You use FindFileStart by giving it a wildcard (like *.*, *.txt, u??.*, whatever).  It returns
-//		a filename in namebuf.
-//		Use FindNextFile to get the next file found with the wildcard given in FindFileStart.
-//		Use FindFileClose to end your search.
-static HANDLE hFindFile = INVALID_HANDLE_VALUE;
-static WIN32_FIND_DATA FindFileData;
-
-bool ddio_FindFileStart(const char *wildcard, char *namebuf) {
-  if (hFindFile != INVALID_HANDLE_VALUE)
-    ddio_FindFileClose();
-
-  hFindFile = FindFirstFile(wildcard, &FindFileData);
-  if (hFindFile != INVALID_HANDLE_VALUE) {
-    strcpy(namebuf, FindFileData.cFileName);
-    return true;
-  } else {
-    namebuf[0] = 0;
-    return false;
-  }
-}
-
-bool ddio_FindNextFile(char *namebuf) {
-
-  if (!hFindFile)
-    return false;
-
-  if (FindNextFile(hFindFile, &FindFileData)) {
-    strcpy(namebuf, FindFileData.cFileName);
-    return true;
-  } else {
-    namebuf[0] = 0;
-    return false;
-  }
-}
-
-void ddio_FindFileClose() {
-  if (hFindFile != INVALID_HANDLE_VALUE)
-    FindClose(hFindFile);
-  hFindFile = INVALID_HANDLE_VALUE;
-}
-
 //	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
 void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
   assert(root_path);
