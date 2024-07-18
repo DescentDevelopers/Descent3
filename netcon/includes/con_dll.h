@@ -452,15 +452,6 @@ LoadMission_fp DLLLoadMission;
 typedef void (*ddio_MakePath_fp)(char *newPath, const char *absolutePathHeader, const char *subDir, ...);
 ddio_MakePath_fp DLLddio_MakePath;
 
-typedef bool (*ddio_FindFileStart_fp)(const char *wildcard, char *namebuf);
-ddio_FindFileStart_fp DLLddio_FindFileStart;
-
-typedef void (*ddio_FindFileClose_fp)();
-ddio_FindFileClose_fp DLLddio_FindFileClose;
-
-typedef bool (*ddio_FindNextFile_fp)(char *namebuf);
-ddio_FindNextFile_fp DLLddio_FindNextFile;
-
 // typedef void( *MultiStartServer_fp) (int playing,char *scriptname,int dedicated_num_teams=-1);
 typedef void (*MultiStartServer_fp)(int playing, char *scriptname, int dedicated_num_teams);
 MultiStartServer_fp DLLMultiStartServerFP;

@@ -364,15 +364,6 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
 int ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func);
 
-//	These functions allow one to find a file
-//		You use FindFileStart by giving it a wildcard (like *.*, *.txt, u??.*, whatever).  It returns
-//		a filename in namebuf.
-//		Use FindNextFile to get the next file found with the wildcard given in FindFileStart.
-//		Use FindFileClose to end your search.
-bool ddio_FindFileStart(const char *wildcard, char *namebuf);
-bool ddio_FindNextFile(char *namebuf);
-void ddio_FindFileClose();
-
 //	given a path (with no filename), it will return the parent path
 //	srcPath is the source given path
 //	dest is where the parent path will be placed
