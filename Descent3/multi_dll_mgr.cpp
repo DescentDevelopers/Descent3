@@ -519,6 +519,7 @@ void GetMultiAPI(multi_api *api) {
   api->fp[108] = (int *)ShowNetgameInfo;
   api->fp[109] = (int *)GetRankIndex;
   api->fp[110] = (int *)CheckGetD3M;
+  api->fp[111] = (int *)ddio_DoForeachFile;
 
   // Variable pointers
   api->vp[0] = (int *)&Player_num;
