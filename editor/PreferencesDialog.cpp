@@ -96,6 +96,9 @@
 // PreferencesDialog.cpp : implementation file
 //
 
+#include <string>
+#include <vector>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "PreferencesDialog.h"
@@ -183,9 +186,11 @@ void CPreferencesDialog::OnOK() {
 
   CComboBox *combo = (CComboBox *)GetDlgItem(IDC_DEFAULT_PILOT);
   if (combo->GetCount()) {
-    combo->GetLBText(combo->GetCurSel(), Default_pilot);
+    char temp[_MAX_PATH];
+    combo->GetLBText(combo->GetCurSel(), temp);
+    Default_pilot = temp;
   } else {
-    strcpy(Default_pilot, " ");
+    Default_pilot = " ";
   }
 
   Slew_key_speed = (slew_slider->GetPos() * 0.5) + 0.5;
@@ -195,8 +200,7 @@ void CPreferencesDialog::OnOK() {
 
 BOOL CPreferencesDialog::OnInitDialog() {
   CDialog::OnInitDialog();
-  char **pilotlist;
-  int pilot_count;
+  std::vector<std::string> pilotlist;
 
   // TODO: Add extra initialization here
   CSliderCtrl *slew_slider = (CSliderCtrl *)GetDlgItem(IDC_SLEWSLIDER);
@@ -218,12 +222,12 @@ BOOL CPreferencesDialog::OnInitDialog() {
 
   CComboBox *combo = (CComboBox *)GetDlgItem(IDC_DEFAULT_PILOT);
   combo->ResetContent();
-  pilotlist = PltGetPilots(&pilot_count);
-  for (int i = 0; i < pilot_count; i++) {
-    combo->AddString(pilotlist[i]);
+  pilotlist = PltGetPilots();
+  for (auto const &pilot : pilotlist) {
+    combo->AddString(pilot.c_str());
   }
-  if (pilot_count) {
-    combo->SelectString(-1, Default_pilot);
+  if (!pilotlist.empty()) {
+    combo->SelectString(-1, Default_pilot.c_str());
   }
   PltClearList();
 
@@ -231,8 +235,6 @@ BOOL CPreferencesDialog::OnInitDialog() {
     EnableHardwareOptions();
   else
     DisableHardwareOptions();
-
-  PltGetPilotsFree();
 
   return TRUE; // return TRUE unless you set the focus to a control
                // EXCEPTION: OCX Property Pages should return FALSE
