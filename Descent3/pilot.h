@@ -181,110 +181,21 @@
 #ifndef __PILOT_H_
 #define __PILOT_H_
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 #include "pilot_class.h"
-
-/*
-#include "controls.h"
-#include "Controller.h"
-#include "ship.h"
-
-#define PILOT_STRING_SIZE	20
-#define PPIC_INVALID_ID		65535
-
-//errors reported by PltWriteFile()
-#define PLT_FILE_FATAL			-3	//can't open file, possibly out of hd space
-#define PLT_FILE_CANT_CREATE	-2	//bad filename, most likely 0 length string for filename
-#define PLT_FILE_EXISTS			-1	//file already exists (will only return this if newpilot=true on
-PltWriteFile #define PLT_FILE_NOERR			0	//no errors, success
-
-// should be put somewhere else, but here for the demo.
-#define N_MOUSE_AXIS				2
-#define N_JOY_AXIS				6
-
-#define MAX_PILOT_TAUNTS	8
-#define PILOT_TAUNT_SIZE	60
-
-struct cntrldata
-{
-        int id;
-        ct_type type[2];
-        ct_config_data value;
-        uint8_t flags[2];
-};
-
-struct
-{
-        uint8_t highest_level;
-        bool finished;									// was mission finished?
-(different than highest level,btw) char mission_name[MSN_NAMELEN]; } tMissionData;
-
-struct
-{
-        char filename[_MAX_FNAME];	//added because of some weird .plt renaming bugs that can happen
-                                                                                //not saved out
-        //Name of the Pilot
-        char name[PILOT_STRING_SIZE];
-        //number of kills and number of times killed
-        int kills,deaths;
-        //name of ship model
-        char ship_model[PAGENAME_LEN];
-        //filename of custom texture
-        char ship_logo[PAGENAME_LEN];
-        //filename of audio taunt 1 (including CRC)
-        char audio1_file[PAGENAME_LEN];
-        //filename of audio taunt 2 (including CRC)
-        char audio2_file[PAGENAME_LEN];
-        //difficulty setting (DIFFICULTY_*)
-        char difficulty;
-        //controller settings
-        cntrldata controls[NUM_CONTROLLER_FUNCTIONS];
-        // hud layout using the STAT mask
-        uint16_t hud_stat;
-        uint16_t hud_graphical_stat;
-        // hud display mode
-        uint8_t hud_mode;
-        // do we read the controller port also (beyond keyboard/mouse)
-        char read_controller;
-        // axis sensitivities
-        float mouse_sensitivity[N_MOUSE_AXIS], joy_sensitivity[N_JOY_AXIS];
-
-        int game_window_w, game_window_h;
-
-        //pilot picture image id
-        uint16_t picture_id;
-
-        //number of mission's flown
-        int num_missions_flown;
-        tMissionData *mission_data;
-
-        // taunt macros
-        char taunts[MAX_PILOT_TAUNTS][PILOT_TAUNT_SIZE];
-
-}pilot;
-*/
 
 //	PilotSelect
 //
 //	Brings up a window where you can select a pilot to use
-void PilotSelect(void);
-
-// Display the pilot display/selection screen
-// void PilotDisplay(bool forceselection = false);
-
-// brings up the configuration screen for a pilot
-// Returns: true on success
-// Pilot: pointer to pilot to configure
-// newpilot: true if this is a new pilot, false if an existing pilot
-bool PilotConfig(pilot *Pilot, bool newpilot, bool forceok = false);
+void PilotSelect();
 
 // creates a new pilot (and pilot file) (if you call this you should call PilotConfig() after it)
 // Returns: true on success
 // Pilot: pointer to pilot structure to be filled in with name and filename (should then configure the rest)
 bool PilotCreate(pilot *Pilot, bool dontallowcancel);
-
-// copies a pilot to another
-bool PilotCopy(pilot *Src, pilot *Dest);
 
 // Write a Pilot out to file
 // Pilot - Pilot to write (filename field is root of filename extension .plt)
@@ -304,7 +215,7 @@ void PltReadFile(pilot *Pilot, bool keyconfig = false, bool missiondata = false)
 // Given a string it will make a valid filename out of it
 void PltMakeFNValid(char *name);
 
-void PilotInit(void);
+void PilotInit();
 
 void PltClearList();
 std::vector<std::string> PltGetPilots(std::string ignore_filename = {}, int display_default_configs = 0);
@@ -325,19 +236,12 @@ void CurrentPilotUpdateMissionStatus(bool just_add_data = false);
 int PilotGetHighestLevelAchieved(pilot *Pilot, char *mission_name);
 int GetPilotShipPermissions(pilot *Pilot, const char *mission_name);
 
-bool HasPilotFinishedMission(pilot *Pilot, const char *mission_name);
-bool HasPilotFlownMission(pilot *Pilot, const char *mission_name);
-
 extern pilot Current_pilot;
 extern std::string Default_pilot;
 
 // "Current Pilot" access functions
 void dCurrentPilotName(char *buffer);
-uint8_t dCurrentPilotDifficulty(void);
 
 void IncrementPilotRestoredGamesForMission(pilot *Pilot, const char *mission_name);
-void IncrementPilotSavedGamesForMission(pilot *Pilot, const char *mission_name);
-int GetPilotNumRestoredGamesForMission(pilot *Pilot, const char *mission_name);
-int GetPilotNumSavedGamesForMission(pilot *Pilot, const char *mission_name);
 
 #endif

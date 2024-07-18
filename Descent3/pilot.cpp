@@ -578,37 +578,36 @@
 #include <string>
 #include <vector>
 
-#include "pilot.h"
-#include "pstring.h"
-#include "mono.h"
-#include "renderer.h"
-#include "render.h"
+#include "Mission.h"
+#include "PilotPicsAPI.h"
+
+#include "audiotaunts.h"
+#include "cfile.h"
+#include "ctlconfig.h"
 #include "ddio.h"
+#include "dedicated_server.h"
 #include "descent.h"
 #include "game.h"
-#include "init.h"
-#include "cfile.h"
-#include "manage.h"
-#include "newui.h"
-#include "ctlconfig.h"
-#include "hud.h"
-#include "stringtable.h"
 #include "gametexture.h"
+#include "hud.h"
+#include "init.h"
+#include "manage.h"
+#include "mem.h"
+#include "mono.h"
+#include "newui.h"
+#include "pilot.h"
+#include "polymodel.h"
+#include "pstring.h"
+#include "renderer.h"
+#include "render.h"
+#include "ship.h"
+#include "streamaudio.h"
+#include "stringtable.h"
 #include "vclip.h"
 #include "weapon.h"
-#include "PilotPicsAPI.h"
-#include "Mission.h"
-#include "mem.h"
-#include "polymodel.h"
-#include "audiotaunts.h"
-#include "streamaudio.h"
-#include "ship.h"
-#include "dedicated_server.h"
 
 // some general defines
 #define IDP_SAVE 10
-#define IDP_CANCEL 11
-#define IDP_APPLY 12
 
 // used for the Pilot file functions
 #define PLTEXTENSION ".plt"
@@ -653,8 +652,6 @@ std::vector<std::filesystem::path> Custom_images;
 ///////////////////////////////////////////////
 // Internals (Globals for the file)
 
-bool DisplayFileDialog(char *path, char *title, char *wildcards, int flags);
-
 // internal function prototypes
 bool PltDelete(pilot *Pilot);
 void NewPltUpdate(newuiListBox *list, int selected, const std::string &filename = {});
@@ -664,27 +661,6 @@ bool PltSelectShip(pilot *Pilot);
 void ShipSelectCallBack(int c);
 void CustomCallBack(int c);
 void PilotCopyDefaultControls(pilot *Pilot);
-
-int Pilot_NewRead(pilot *Pilot, bool read_keyconfig, bool read_missiondata);
-int Pilot_NewWrite(pilot *Pilot, bool newpilot);
-
-struct tCustomListInfo {
-  int needed_size; // size of allocated memory for files
-  char *files;     // string list of file names
-  // Initializes the struct
-  void Init() {
-    files = NULL;
-    needed_size = 0;
-  }
-  // Frees and resets the struct
-  void Reset() {
-    if (files) {
-      mem_free(files);
-      files = NULL;
-    }
-    needed_size = 0;
-  }
-};
 
 struct tAudioTauntComboBoxes {
   newuiComboBox *taunt_a, *taunt_b, *taunt_c, *taunt_d;
@@ -704,9 +680,8 @@ void ShipSelectDeleteLogo(newuiListBox *lb);
 // -------------------------------------------------------
 void ShowPilotPicDialog(pilot *Pilot);
 
-UITextItem *pilot_items = NULL;           // array of UITextItems for use in Pilot listbox
+UITextItem *pilot_items = nullptr;        // array of UITextItems for use in Pilot listbox
 pilot temp;                               // pilot in use by the listbox
-NewUIGameWindow *PilotDisplayWindow;      // pointer to display_window (needed for listbox callback)
 static std::vector<std::string> filelist; // list of pilot filenames
 static int filecount;                     // number of pilot filenames found
 void PilotListSelectChangeCallback(int index);
@@ -716,12 +691,12 @@ void PilotListSelectChangeCallback(int index);
 ////////////////////////////////////////////////////////////////////////////
 void PilotInitData(pilot *plt);
 
-void PilotShutdown(void) {
+void PilotShutdown() {
   Current_pilot.flush(false);
   Current_pilot.clean(false);
 }
 
-void PilotInit(void) {
+void PilotInit() {
   PilotInitData(&Current_pilot);
   atexit(PilotShutdown);
 }
@@ -773,15 +748,15 @@ struct pilot_select_menu {
     sheet = menu->AddOption(IDP_SELECT, TXT_PILOTS, NEWUIMENU_MEDIUM);
 
     // Pilot selection list
-    sheet->NewGroup(NULL, 6, 18);
+    sheet->NewGroup(nullptr, 6, 18);
     pilot_list = sheet->AddListBox(232, 168, IDP_SEL_PILOTLIST);
     pilot_list->SetSelectChangeCallback(PilotListSelectChangeCallback);
 
     return sheet;
   };
 
-  // retreive values from property sheet here.
-  void finish() { sheet = NULL; };
+  // retrieve values from property sheet here.
+  void finish() { sheet = nullptr; };
 
   // process
   void process(int res) {};
@@ -799,7 +774,7 @@ struct pilot_edit_menu {
     sheet = menu->AddOption(IDP_EDIT, TXT_CONFIGURE, NEWUIMENU_MEDIUM);
 
     // pilot name
-    sheet->NewGroup(NULL, 5, 0);
+    sheet->NewGroup(nullptr, 5, 0);
     pilot_name = sheet->AddChangeableText(64);
 
     // difficulty
@@ -834,15 +809,11 @@ struct pilot_edit_menu {
     return sheet;
   };
 
-  // retreive values from property sheet here.
-  void finish() { sheet = NULL; };
+  // retrieve values from property sheet here.
+  void finish() { sheet = nullptr; };
 
   // process
   void process(int res) {};
-};
-
-struct pilot_add_menu {
-  newuiSheet *sheet;
 };
 
 struct {
@@ -930,10 +901,10 @@ void selectcb(newuiMenu *menu, int16_t id, void *data) {
   }
 }
 
-void PilotSelect(void) {
+void PilotSelect() {
   newuiMenu menu;
-  pilot_select_menu select;
-  pilot_edit_menu edit;
+  pilot_select_menu select{};
+  pilot_edit_menu edit{};
 
   PilotChooseDialogInfo.menu = &menu;
   PilotChooseDialogInfo.select = &select;
@@ -1163,7 +1134,7 @@ void PilotSelect(void) {
       } else {
         uint16_t pid;
         pid = PPIC_INVALID_ID;
-        working_pilot.set_multiplayer_data(NULL, NULL, NULL, &pid);
+        working_pilot.set_multiplayer_data(nullptr, nullptr, nullptr, &pid);
 
         DoMessageBox(TXT_PLTERROR, TXT_NOPICSAVAIL, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
       }
@@ -1353,7 +1324,7 @@ bool PilotCreate(pilot *Pilot, bool forceselection) {
 ///////////////////////////////////////////////////////////////////////////////////
 void PilotCopyDefaultControls(pilot *Pilot) {
   PltClearList();
-  filelist = PltGetPilots(nullptr, 2);
+  filelist = PltGetPilots("", 2);
 
   // if(filecount>0 && DoMessageBox(TXT_PRESETCONTROLS,TXT_USEPRESETS,MSGBOX_YESNO))
   if (filecount > 0) {
@@ -1399,17 +1370,17 @@ bool PilotChoose(pilot *Pilot, bool presets) {
   }
   sheet = window.GetSheet();
 
-  sheet->NewGroup(NULL, 57, 0);
+  sheet->NewGroup(nullptr, 57, 0);
   sheet->AddText(TXT_PILOTPICTITLE);
   sheet->AddText(TXT_COPYCONTB);
   sheet->AddText(TXT_COPYCONTOLSC);
 
-  sheet->NewGroup(NULL, 7, 40);
+  sheet->NewGroup(nullptr, 7, 40);
   pilot_list = sheet->AddListBox(284, 100, IDP_PCLIST);
   pilot_list->SetCurrentIndex(0);
   NewPltUpdate(pilot_list, 0);
 
-  sheet->NewGroup(NULL, 80, 180, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 80, 180, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
@@ -1446,26 +1417,6 @@ bool PilotChoose(pilot *Pilot, bool presets) {
   return ret;
 }
 
-///////////////////////////////////////////////////////////
-// copies a pilot to another
-/***************************************************
-bool PilotCopy(pilot *Src,pilot *Dest)
-{
-        char sname[PILOT_STRING_SIZE];
-        char sship[PAGENAME_LEN];
-        uint8_t sdiff;
-
-        Src->get_name(sname);
-        Src->get_ship(sship);
-        Src->get_difficulty(&sdiff);
-
-        Dest->set_name(sname);
-        Dest->set_ship(sship);
-        Dest->set_difficulty(sdiff);
-
-        return PltCopyKeyConfig(Src,Dest);
-}
-***************************************************/
 /////////////////////////////////////////////////////
 // Updates the pilot listbox
 void NewPltUpdate(newuiListBox *list, int selected, const std::string &filename) {
@@ -1516,7 +1467,7 @@ void CurrentPilotUpdateMissionStatus(bool just_add_data) {
     return;
   // look for the current mission in the player's data
   int index;
-  tMissionData mission_to_use;
+  tMissionData mission_to_use{};
 
   index = Current_pilot.find_mission_data(Current_mission.name);
 
@@ -1582,81 +1533,10 @@ int PilotGetHighestLevelAchieved(pilot *Pilot, char *mission_name) {
   if (index == -1)
     return 0;
 
-  tMissionData data;
+  tMissionData data{};
   Pilot->get_mission_data(index, &data);
 
   return data.highest_level;
-}
-
-// just like it says
-bool HasPilotFinishedMission(pilot *Pilot, const char *mission_name) {
-  ASSERT(Pilot);
-  if (!Pilot)
-    return false;
-
-  int index = Pilot->find_mission_data((char *)mission_name);
-  if (index == -1)
-    return false;
-
-  tMissionData data;
-  Pilot->get_mission_data(index, &data);
-  return data.finished;
-}
-
-bool HasPilotFlownMission(pilot *Pilot, const char *mission_name) {
-  ASSERT(Pilot);
-  if (!Pilot)
-    return false;
-
-  int index = Pilot->find_mission_data((char *)mission_name);
-  if (index == -1)
-    return false;
-  return true;
-}
-
-int GetPilotNumSavedGamesForMission(pilot *Pilot, const char *mission_name) {
-  ASSERT(Pilot);
-  if (!Pilot)
-    return 0;
-
-  int index = Pilot->find_mission_data((char *)mission_name);
-  if (index == -1)
-    return 0;
-
-  tMissionData data;
-  Pilot->get_mission_data(index, &data);
-  return data.num_saves;
-}
-
-int GetPilotNumRestoredGamesForMission(pilot *Pilot, const char *mission_name) {
-  ASSERT(Pilot);
-  if (!Pilot)
-    return 0;
-
-  int index = Pilot->find_mission_data((char *)mission_name);
-  if (index == -1)
-    return 0;
-
-  tMissionData data;
-  Pilot->get_mission_data(index, &data);
-  return data.num_restores;
-}
-
-void IncrementPilotSavedGamesForMission(pilot *Pilot, const char *mission_name) {
-  ASSERT(Pilot);
-  if (!Pilot)
-    return;
-
-  int index = Pilot->find_mission_data((char *)mission_name);
-  if (index == -1)
-    return;
-
-  tMissionData data;
-  Pilot->get_mission_data(index, &data);
-  data.num_saves++;
-  Pilot->edit_mission_data(index, &data);
-
-  PltWriteFile(Pilot, false);
 }
 
 void IncrementPilotRestoredGamesForMission(pilot *Pilot, const char *mission_name) {
@@ -1668,7 +1548,7 @@ void IncrementPilotRestoredGamesForMission(pilot *Pilot, const char *mission_nam
   if (index == -1)
     return;
 
-  tMissionData data;
+  tMissionData data{};
   Pilot->get_mission_data(index, &data);
   data.num_restores++;
   Pilot->edit_mission_data(index, &data);
@@ -1686,7 +1566,7 @@ int GetPilotShipPermissions(pilot *Pilot, const char *mission_name) {
   if (index == -1)
     return 0;
 
-  tMissionData data;
+  tMissionData data{};
   Pilot->get_mission_data(index, &data);
 
   return data.ship_permissions;
@@ -1773,11 +1653,8 @@ void PltReadFile(pilot *Pilot, bool keyconfig, bool missiondata) {
 
   if (filever >= 0x20) {
     // new pilot files!
-    int ret = Pilot->read(!keyconfig, !missiondata);
-    switch (ret) {
-    case PLTR_TOO_NEW:
+    if (Pilot->read(!keyconfig, !missiondata) == PLTR_TOO_NEW) {
       Error(TXT_PLTFILETOONEW, pfilename.c_str());
-      break;
     }
 
     return;
@@ -1877,9 +1754,9 @@ void PltMakeFNValid(char *name) {
   while (name[whiteindex] == ' ')
     whiteindex++;
 
-  char temp[PLTFILELEN];
-  strcpy(temp, &name[whiteindex]);
-  strcpy(name, temp);
+  char temp_name[PLTFILELEN];
+  strcpy(temp_name, &name[whiteindex]);
+  strcpy(name, temp_name);
 }
 
 ////////////////////////////////////////////////////////
@@ -1931,7 +1808,7 @@ bool PltCopyKeyConfig(pilot *src, pilot *dest) {
 //	UI class for displaying a polymodel on the UIWindow, rotating 30 deg/sec
 class UI3DWindow : public UIStatic {
 public:
-  void OnDraw(void);
+  void OnDraw();
 };
 
 //	UIBmpWindow class
@@ -1942,10 +1819,10 @@ public:
   UIBmpWindow();
   ~UIBmpWindow();
   void SetInfo(bool animated, int handle);
-  void OnDraw(void);
+  void OnDraw();
 
 private:
-  void DrawBorder(void);
+  void DrawBorder();
   bool animated;
   int bm_handle;
   float start_time;
@@ -1979,16 +1856,16 @@ UIBmpWindow *bmpwindow;
 
 struct tShipListInfo {
   int *idlist; // array of remapping indicies (list index->ship index)
-  void Init() { idlist = NULL; }
+  void Init() { idlist = nullptr; }
   void Reset() {
     if (idlist) {
       mem_free(idlist);
-      idlist = NULL;
+      idlist = nullptr;
     }
   }
 };
 
-tShipListInfo *lp_ship_info = NULL;
+tShipListInfo *lp_ship_info = nullptr;
 
 //	StripCRCFileName
 //
@@ -2067,78 +1944,6 @@ bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &
   newfilename = std::filesystem::path(base.stem().string() + hex_string).replace_extension(base.extension());
 
   return true;
-}
-
-//	FindAllFiles
-//
-//	Retrieves the files in the current directory that match the pattern given.	Call FindAllFilesSize() to
-// determine 	how much memory will be needed for the buffer. 	pattern	=	wildcard pattern to use to match
-// list =	buffer of memory that will be filled in with the filenames (each seperated by a \0)
-//	size	=	size of memory allocated for list parm
-//	filecount = filled in with the number of files it found
-int FindAllFiles(const char *pattern, char *list, int size, int *filecount) {
-  int count = 0;
-  char filename[_MAX_PATH];
-  *filecount = 0;
-  int memory = 0;
-
-  if (size <= 0)
-    return 0;
-  if (!list)
-    return 0;
-  if (!pattern)
-    return 0;
-
-  if (ddio_FindFileStart(pattern, filename)) {
-    count++;
-    strcpy(&list[memory], filename);
-    memory += strlen(&list[memory]) + 1;
-    while ((count < size) && (ddio_FindNextFile(filename))) {
-      strcpy(&list[memory], filename);
-      memory += strlen(&list[memory]) + 1;
-      count++;
-    }
-  }
-  ddio_FindFileClose();
-  *filecount = count;
-  return memory;
-}
-
-//	FindAllFilesSize
-//
-//	Looks in the current directory and returns the number of bytes of memory that will be needed
-//	for a buffer of filenames (see FindAllFiles()).
-//	pattern	=	wildcard pattern to match
-//	filecount =	will be filled in with the number of files it finds
-int FindAllFilesSize(const char *pattern, int *filecount) {
-  if (!pattern) {
-    *filecount = 0;
-    return 0;
-  }
-
-  char filename[_MAX_PATH];
-  int size = 0;
-  int count = 0;
-
-  if (ddio_FindFileStart(pattern, filename)) {
-    count++;
-    size += strlen(filename) + 1;
-    while (ddio_FindNextFile(filename)) {
-      count++;
-      size += strlen(filename) + 1;
-    }
-    ddio_FindFileClose();
-  }
-  *filecount = count;
-  return size;
-}
-
-// returns the optimal distance to place the camera
-float getdist(angle ang, float height) {
-  float s, c, t;
-  vm_SinCos(ang, &s, &c);
-  t = s / c;
-  return (height / t);
 }
 
 //	ImportGraphic
@@ -2257,35 +2062,6 @@ bool UpdateGraphicsListbox(newuiListBox *lb, const std::filesystem::path &select
   return true;
 }
 
-//	GetStringInList
-//
-//	Returns a pointer to the string in a string list (<string1>\0<string2>\0...).  Be VERY careful that
-//	the index you pass in is a valid string index
-//	index	=	Index of string you want
-//	list	=	string list (a bunch of strings, seperated by \0)
-//	maxsize =	size of string list buffer
-//	returns NULL on error (if an error can be detected)
-char *GetStringInList(int index, char *list, int maxsize) {
-  int count = 0;
-  int p = 0;
-  char *pp;
-  pp = list;
-
-  while (1) {
-    if (count == index)
-      return pp;
-
-    if (p < maxsize) {
-      if (*pp == '\0')
-        count++;
-    } else
-      return NULL;
-    p++;
-    pp++;
-  }
-  return NULL;
-}
-
 //	UpdateAudioTauntBoxes
 //
 //	Resets and updates the list of audio taunt combo boxes
@@ -2397,7 +2173,6 @@ void audio4changecallback(int index) {
 #define TAUNT_MENU_W 512
 #define TAUNT_MENU_H 384
 
-#define MAX_MULTIPLAYER_TAUNTS 8
 #define TAUNT_EDIT_WIDTH 400
 
 void DoPilotTauntScreen(pilot *plt) {
@@ -2424,7 +2199,7 @@ void DoPilotTauntScreen(pilot *plt) {
     cury += 32;
   }
 
-  sheet->NewGroup(NULL, TAUNT_MENU_W - 210, TAUNT_MENU_H - 100, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, TAUNT_MENU_W - 210, TAUNT_MENU_H - 100, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
@@ -2485,14 +2260,14 @@ bool PltSelectShip(pilot *Pilot) {
 
   DoWaitMessage(true);
 
-  Pilot->get_multiplayer_data(NULL, oldt1, oldt2, NULL, oldt3, oldt4);
+  Pilot->get_multiplayer_data(nullptr, oldt1, oldt2, nullptr, oldt3, oldt4);
 
-  tAudioTauntComboBoxes taunts_lists;
+  tAudioTauntComboBoxes taunts_lists{};
   AudioTauntPilot = Pilot;
 
   UI3DWindow ship_win;
   UIBmpWindow bmp_win;
-  tShipListInfo ship_info;
+  tShipListInfo ship_info{};
 
   int old_bmhandle;
   int old_flags;
@@ -2523,7 +2298,7 @@ bool PltSelectShip(pilot *Pilot) {
   sheet->NewGroup(TXT_CUSTOMTEXTURES, 0, 36);
   custom_list = sheet->AddListBox(200, 96, IDP_SHPLIST, 0);
 
-  sheet->NewGroup(NULL, 230, 130);
+  sheet->NewGroup(nullptr, 230, 130);
   sheet->AddButton(TXT_DELETE, ID_DEL_LOGO);
 
   sheet->NewGroup(TXT_AUDIOTAUNTA, 0, 155);
@@ -2553,19 +2328,19 @@ bool PltSelectShip(pilot *Pilot) {
   DoWaitMessage(true);
 
   // Setup hotspots for audio taunt commands
-  sheet->NewGroup(NULL, 170, 163);
+  sheet->NewGroup(nullptr, 170, 163);
   sheet->AddButton(TXT_PLAYSOUND, ID_PLAY1);
   sheet->AddButton(TXT_DELETE, ID_DEL_TAUNTA);
 
-  sheet->NewGroup(NULL, 170, 200);
+  sheet->NewGroup(nullptr, 170, 200);
   sheet->AddButton(TXT_PLAYSOUND, ID_PLAY2);
   sheet->AddButton(TXT_DELETE, ID_DEL_TAUNTB);
 
-  sheet->NewGroup(NULL, 170, 237);
+  sheet->NewGroup(nullptr, 170, 237);
   sheet->AddButton(TXT_PLAYSOUND, ID_PLAY3);
   sheet->AddButton(TXT_DELETE, ID_DEL_TAUNTC);
 
-  sheet->NewGroup(NULL, 170, 274);
+  sheet->NewGroup(nullptr, 170, 274);
   sheet->AddButton(TXT_PLAYSOUND, ID_PLAY4);
   sheet->AddButton(TXT_DELETE, ID_DEL_TAUNTD);
 
@@ -2633,7 +2408,7 @@ bool PltSelectShip(pilot *Pilot) {
       } else {
         // go through all the id's of the ships we found and find the ship (if FindShipName found it,
         // then we'll have it here somewhere.
-        for (int i = 0; i < count; i++) {
+        for (i = 0; i < count; i++) {
           if (ship_info.idlist[i] == index) {
             // set this as the default ship
             ship_list->SetCurrentIndex(i);
@@ -2660,12 +2435,12 @@ bool PltSelectShip(pilot *Pilot) {
   ShipSelectCallBack(i);
 
   //	setup hotspots
-  sheet->NewGroup(NULL, 250, 170);
+  sheet->NewGroup(nullptr, 250, 170);
   sheet->AddLongButton(TXT_IMPORTGRAPHIC, ID_IMPORT);
   sheet->AddLongButton(TXT_IMPORTIFL, ID_GETANIM);
   sheet->AddLongButton(TXT_MULTIPLAYER_TAUNTS, ID_TAUNTS);
   sheet->AddLongButton(TXT_IMPORTSOUND, ID_IMPORTSOUND);
-  sheet->NewGroup(NULL, 260, 281, NEWUI_ALIGN_HORIZ);
+  sheet->NewGroup(nullptr, 260, 281, NEWUI_ALIGN_HORIZ);
   sheet->AddButton(TXT_OK, UID_OK);
   sheet->AddButton(TXT_CANCEL, UID_CANCEL);
 
@@ -2688,41 +2463,35 @@ bool PltSelectShip(pilot *Pilot) {
       Pilot->set_multiplayer_data(custom_texture);
 
       // Retrieve Audio taunts
-      Pilot->set_multiplayer_data(NULL, "", "", NULL, "", "");
+      Pilot->set_multiplayer_data(nullptr, "", "", nullptr, "", "");
 
       int index;
       index = taunts_lists.taunt_a->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(NULL, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, Audio_taunts[index - 1].u8string().c_str());
       }
       index = taunts_lists.taunt_b->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(NULL, NULL, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, nullptr, Audio_taunts[index - 1].u8string().c_str());
       }
 
       index = taunts_lists.taunt_c->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(NULL, NULL, NULL, NULL, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, Audio_taunts[index - 1].u8string().c_str());
       }
 
       index = taunts_lists.taunt_d->GetCurrentIndex();
       if (index > 0 && !Audio_taunts.empty()) {
-        Pilot->set_multiplayer_data(NULL, NULL, NULL, NULL, NULL, Audio_taunts[index - 1].u8string().c_str());
+        Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, nullptr, nullptr, Audio_taunts[index - 1].u8string().c_str());
       }
 
-      char tempn[PAGENAME_LEN];
+      char audio1[PAGENAME_LEN], audio2[PAGENAME_LEN], audio3[PAGENAME_LEN], audio4[PAGENAME_LEN];
 
-      Pilot->get_multiplayer_data(NULL, tempn);
-      mprintf(0, "Audio #1: '%s'\n", tempn);
-
-      Pilot->get_multiplayer_data(NULL, NULL, tempn);
-      mprintf(0, "Audio #2: '%s'\n", tempn);
-
-      Pilot->get_multiplayer_data(NULL, NULL, NULL, NULL, tempn);
-      mprintf(0, "Audio #3: '%s'\n", tempn);
-
-      Pilot->get_multiplayer_data(NULL, NULL, NULL, NULL, NULL, tempn);
-      mprintf(0, "Audio #4: '%s'\n", tempn);
+      Pilot->get_multiplayer_data(nullptr, audio1, audio2, nullptr, audio3, audio4);
+      mprintf(0, "Audio #1: '%s'\n", audio1);
+      mprintf(0, "Audio #2: '%s'\n", audio2);
+      mprintf(0, "Audio #3: '%s'\n", audio3);
+      mprintf(0, "Audio #4: '%s'\n", audio4);
 
       ret = true;
       exit_menu = true;
@@ -2732,7 +2501,7 @@ bool PltSelectShip(pilot *Pilot) {
       exit_menu = true;
       GameTextures[ship_pos.texture_id].bm_handle = old_bmhandle;
       GameTextures[ship_pos.texture_id].flags = old_flags;
-      Pilot->set_multiplayer_data(NULL, oldt1, oldt2, NULL, oldt3, oldt4);
+      Pilot->set_multiplayer_data(nullptr, oldt1, oldt2, nullptr, oldt3, oldt4);
       break;
     case ID_IMPORT: {
       char path[_MAX_PATH];
@@ -2854,7 +2623,7 @@ bool PltSelectShip(pilot *Pilot) {
         char filename[_MAX_PATH];
         char tempfile[_MAX_PATH];
 
-        ddio_SplitPath(path, NULL, filename, NULL);
+        ddio_SplitPath(path, nullptr, filename, nullptr);
         strcat(filename, ".osf");
         ddio_MakePath(tempfile, LocalCustomSoundsDir, filename, NULL);
 
@@ -2937,10 +2706,10 @@ ship_id_err:
   // no use for this since stream files will stop
   // Sound_system.StopAllSounds();
 
-  taunts_lists.taunt_a = NULL;
-  taunts_lists.taunt_b = NULL;
-  taunts_lists.taunt_c = NULL;
-  taunts_lists.taunt_d = NULL;
+  taunts_lists.taunt_a = nullptr;
+  taunts_lists.taunt_b = nullptr;
+  taunts_lists.taunt_c = nullptr;
+  taunts_lists.taunt_d = nullptr;
 
   Audio_taunts.clear();
   Custom_images.clear();
@@ -3176,8 +2945,8 @@ void UI3DWindow::OnDraw() {
   float light_scalar, size;
   PageInPolymodel(ship_model, OBJ_PLAYER, &size);
   poly_model *pm = GetPolymodelPointer(ship_model);
-  vector view_pos;
-  vector light_vec;
+  vector view_pos{};
+  vector light_vec{};
   matrix view_orient = IDENTITY_MATRIX;
   matrix rot_mat = IDENTITY_MATRIX;
 
@@ -3247,7 +3016,7 @@ void UIBmpWindow::SetInfo(bool anim, int handle) {
   start_time = timer_GetTime();
 }
 
-void UIBmpWindow::DrawBorder(void) {
+void UIBmpWindow::DrawBorder() {
   int minx, maxx, miny, maxy;
 
   minx = 0;
@@ -3266,7 +3035,7 @@ void UIBmpWindow::DrawBorder(void) {
   rend_SetZBufferState(1);
 }
 
-void UIBmpWindow::OnDraw(void) {
+void UIBmpWindow::OnDraw() {
   int bmh = -1;
 
   //@@@@@StartFrame(m_Wnd->X(),m_Wnd->Y(),m_Wnd->X()+m_Wnd->W(),m_Wnd->Y()+m_Wnd->H());
@@ -3388,7 +3157,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
     mprintf(0, "No Pilot Pics available for %s\n", pname);
     uint16_t pid;
     pid = PPIC_INVALID_ID;
-    Pilot->set_multiplayer_data(NULL, NULL, NULL, &pid);
+    Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, &pid);
 
     DoMessageBox(TXT_ERROR, TXT_NOPICSAVAIL, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
     return;
@@ -3398,7 +3167,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
   if (blank_bmp_handle <= BAD_BITMAP_HANDLE) {
     uint16_t pid;
     pid = PPIC_INVALID_ID;
-    Pilot->set_multiplayer_data(NULL, NULL, NULL, &pid);
+    Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, &pid);
 
     mprintf(0, "Couldn't alloc bitmap\n");
     DoMessageBox(TXT_ERROR, TXT_ERRCREATINGDIALOG, MSGBOX_OK, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL);
@@ -3424,14 +3193,14 @@ void ShowPilotPicDialog(pilot *Pilot) {
   hwnd.Create(TXT_PILOTPICTURE, 0, 0, DLG_PPIC_W, DLG_PPIC_H);
   sheet = hwnd.GetSheet();
 
-  sheet->NewGroup(NULL, 0, 0);
+  sheet->NewGroup(nullptr, 0, 0);
   list = sheet->AddListBox(150, 150, IDP_SAVE, UILB_NOSORT);
   list->SetSelectChangeCallback(ShowPilotPicDialogListCallback);
 
   sheet->NewGroup(TXT_DISPLAY, 175, 0);
   bmp_disp.Create(&hwnd, &bmp_item, 215, 65, bmp_item.width(), bmp_item.height(), UIF_FIT);
 
-  sheet->NewGroup(NULL, 170, 145);
+  sheet->NewGroup(nullptr, 170, 145);
   sheet->AddButton(TXT_OK, UID_OK);
 
   // Initialize PPicDlgInfo data
@@ -3476,7 +3245,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
 
   char temp_buffer[PILOT_STRING_SIZE + 6];
   uint16_t ppic_id;
-  Pilot->get_multiplayer_data(NULL, NULL, NULL, &ppic_id);
+  Pilot->get_multiplayer_data(nullptr, nullptr, nullptr, &ppic_id);
 
   Pilot->get_name(pname);
 
@@ -3503,11 +3272,8 @@ void ShowPilotPicDialog(pilot *Pilot) {
   // --------------
   hwnd.Open();
   while (!exit_menu) {
-    int res = hwnd.DoUI();
-
     // handle all UI results.
-    switch (res) {
-    case UID_OK:
+    if (hwnd.DoUI() == UID_OK) {
       exit_menu = true;
       break;
     };
@@ -3520,7 +3286,7 @@ void ShowPilotPicDialog(pilot *Pilot) {
   } else {
     pid = id_list[selected_index - 1];
   }
-  Pilot->set_multiplayer_data(NULL, NULL, NULL, &pid);
+  Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, &pid);
 
   hwnd.Close();
   hwnd.Destroy();
@@ -3540,11 +3306,6 @@ clean_up:
 
 // "Current Pilot" access functions
 void dCurrentPilotName(char *buffer) { Current_pilot.get_name(buffer); }
-uint8_t dCurrentPilotDifficulty(void) {
-  uint8_t d;
-  Current_pilot.get_difficulty(&d);
-  return d;
-}
 
 /////////////////////////////////////////////////////////////////////
 void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
@@ -3600,36 +3361,36 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
   Pilot->set_hud_data(&temp_b);
 
   temp_s = cf_ReadShort(file);
-  Pilot->set_hud_data(NULL, &temp_s);
+  Pilot->set_hud_data(nullptr, &temp_s);
 
   temp_s = cf_ReadShort(file);
-  Pilot->set_hud_data(NULL, NULL, &temp_s);
+  Pilot->set_hud_data(nullptr, nullptr, &temp_s);
 
   // read in audio taunts
   cf_ReadString(buffer, PAGENAME_LEN + 1, file);
-  Pilot->set_multiplayer_data(NULL, buffer);
+  Pilot->set_multiplayer_data(nullptr, buffer);
 
   cf_ReadString(buffer, PAGENAME_LEN + 1, file);
-  Pilot->set_multiplayer_data(NULL, NULL, buffer);
+  Pilot->set_multiplayer_data(nullptr, nullptr, buffer);
 
   // added in version 0x9
-  int n;
+  int8_t n;
   uint16_t widx;
-  n = (int)cf_ReadByte(file);
+  n = cf_ReadByte(file);
   for (i = 0; i < n; i++) {
     widx = (uint16_t)cf_ReadShort(file);
     SetAutoSelectPrimaryWpnIdx(i, widx);
   }
-  n = (int)cf_ReadByte(file);
+  n = cf_ReadByte(file);
   for (i = 0; i < n; i++) {
     widx = (uint16_t)cf_ReadShort(file);
     SetAutoSelectSecondaryWpnIdx(i, widx);
   }
 
   temp_i = cf_ReadInt(file);
-  Pilot->set_hud_data(NULL, NULL, NULL, &temp_i);
+  Pilot->set_hud_data(nullptr, nullptr, nullptr, &temp_i);
   temp_i = cf_ReadInt(file);
-  Pilot->set_hud_data(NULL, NULL, NULL, NULL, &temp_i);
+  Pilot->set_hud_data(nullptr, nullptr, nullptr, nullptr, &temp_i);
 
   for (i = 0; i < N_MOUSE_AXIS; i++)
     Pilot->mouse_sensitivity[i] = cf_ReadFloat(file);
@@ -3637,14 +3398,14 @@ void _ReadOldPilotFile(pilot *Pilot, bool keyconfig, bool missiondata) {
     Pilot->joy_sensitivity[i] = cf_ReadFloat(file);
 
   temp_s = cf_ReadShort(file);
-  Pilot->set_multiplayer_data(NULL, NULL, NULL, &temp_s);
+  Pilot->set_multiplayer_data(nullptr, nullptr, nullptr, &temp_s);
 
   // skip over mission data
   int count = cf_ReadInt(file);
   if (count > 0) {
     for (i = 0; i < count; i++) {
       char dummy[256];
-      int length;
+      int8_t length;
       cf_ReadByte(file);
       if (filever >= 0x11) {
         cf_ReadByte(file);
