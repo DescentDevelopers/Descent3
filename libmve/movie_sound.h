@@ -29,6 +29,7 @@ namespace D3 {
 class MovieSoundDevice : ISoundDevice {
 private:
   SDL_AudioDeviceID m_device_id = 0;
+  uint16_t m_sample_size = 0;
 
 public:
   /**
@@ -49,19 +50,23 @@ public:
   [[nodiscard]] bool IsInitialized() const { return m_device_id > 0; }
 
   /**
-   * Callback for filling SDL audio buffer
-   * @param userdata pointer to instance of this class
-   * @param stream stream that will be filled on callback
-   * @param len length of stream
+   * Fill internal audio stream to be played
+   * @param stream source buffer
+   * @param len length of source buffer
    */
-  void static SDLAudioCallback(void *userdata, unsigned char *stream, int len);
+  void FillBuffer(char *stream, int len) const;
+
+  /**
+   * Get sample size
+   * @return 2 (for 16 bit), 1 (for 8 bit)
+   */
+  [[nodiscard]] uint16_t GetSampleSize() const { return m_sample_size; };
 
   void Play() override;
   void Stop() override;
   void Lock() override;
   void Unlock() override;
 
-  using ISoundDevice::GetBuffer;
   using ISoundDevice::IsCompressed;
 
 };

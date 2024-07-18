@@ -22,8 +22,9 @@
  * Process input data and send parsed data into queue buffer
  * @param buffer output queue buffer
  * @param data input data
+ * @param sample_size size of sample (1 for 8 bit, 2 for 16 bit)
  * @param is_compress true if input data is compressed
  */
-void mveaudio_process(std::unique_ptr<std::deque<int16_t>> &buffer, unsigned char *data, bool is_compressed = true);
+void mveaudio_process(char *buffer, unsigned char *data, int sample_size, bool is_compressed = true);
 
 #endif /* INCLUDED_MVE_AUDIO_H */
