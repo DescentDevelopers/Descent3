@@ -146,7 +146,6 @@ static module *LoadOpenGLDLL(const char *dllname) {
 #define DYNAEXTERN(Name) extern FnPtr<decltype(Name)> const d##Name
 #endif
 
-DYNAEXTERN(glBegin);
 DYNAEXTERN(glBindTexture);
 DYNAEXTERN(glBlendFunc);
 DYNAEXTERN(glClear);
@@ -164,7 +163,6 @@ DYNAEXTERN(glDisableClientState);
 DYNAEXTERN(glDrawArrays);
 DYNAEXTERN(glEnable);
 DYNAEXTERN(glEnableClientState);
-DYNAEXTERN(glEnd);
 DYNAEXTERN(glFlush);
 DYNAEXTERN(glFogf);
 DYNAEXTERN(glFogfv);
