@@ -1784,17 +1784,17 @@ void rend_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
 
 // Sets a pixel on the display
 void rend_SetPixel(ddgr_color color, int x, int y) {
-  int r = (color >> 16 & 0xFF);
-  int g = (color >> 8 & 0xFF);
-  int b = (color & 0xFF);
-
   g3_RefreshTransforms(true);
 
-  dglColor3ub(r, g, b);
+  PosColorUVVertex vertex{
+      vector{static_cast<float>(x), static_cast<float>(y), 0},
+      color_array{GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f, GR_COLOR_BLUE(color) / 255.0f, 1},
+      tex_array{}
+  };
 
-  dglBegin(GL_POINTS);
-  dglVertex2i(x, y);
-  dglEnd();
+  dglVertexPointer(3, GL_FLOAT, sizeof(PosColorUVVertex), &vertex.pos);
+  dglColorPointer(4, GL_FLOAT, sizeof(PosColorUVVertex), &vertex.color);
+  dglDrawArrays(GL_POINTS, 0, 1);
 }
 
 // Sets a pixel on the display
