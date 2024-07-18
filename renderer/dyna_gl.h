@@ -147,7 +147,6 @@ static module *LoadOpenGLDLL(const char *dllname) {
 #endif
 
 DYNAEXTERN(glAlphaFunc);
-DYNAEXTERN(glBegin);
 DYNAEXTERN(glBindTexture);
 DYNAEXTERN(glBlendFunc);
 DYNAEXTERN(glClear);
@@ -166,7 +165,6 @@ DYNAEXTERN(glDrawArrays);
 DYNAEXTERN(glDrawPixels);
 DYNAEXTERN(glEnable);
 DYNAEXTERN(glEnableClientState);
-DYNAEXTERN(glEnd);
 DYNAEXTERN(glFlush);
 DYNAEXTERN(glFogf);
 DYNAEXTERN(glFogfv);
