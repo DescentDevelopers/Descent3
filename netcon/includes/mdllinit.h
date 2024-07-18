@@ -274,6 +274,7 @@ DLLCheckMissionForScript = (CheckMissionForScript_fp)API.fp[107];
 DLLShowNetgameInfo = (ShowNetgameInfo_fp)API.fp[108];
 // API.fp[109]; // Not used
 DLLCheckGetD3M = (CheckGetD3M_fp)API.fp[110];
+DLLddio_DoForeachFile = (ddio_DoForeachFile_fp)API.fp[111];
 
 DLLMPlayers = (player *)API.players;
 DLLNetgame = (netgame_info *)API.netgame;
