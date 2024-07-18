@@ -476,7 +476,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
   gpu_RenderPolygon(&vArray[0], nv);
 }
 
-color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud, bool checkTextureQuality) {
+color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud, bool checkTextureQuality, bool flatColorForNoLight) {
   auto alpha = gpu_Alpha_multiplier * gpu_Alpha_factor;
   if (gpu_state.cur_alpha_type & ATF_VERTEX) {
     alpha *= pnt->p3_a;
@@ -484,7 +484,8 @@ color_array DeterminePointColor(g3Point const* pnt, bool disableGouraud, bool ch
 
   // If we have a lighting model, apply the correct lighting!
   if ((gpu_state.cur_light_state == LS_FLAT_GOURAUD && !disableGouraud) ||
-      (gpu_state.cur_texture_quality == 0 && checkTextureQuality)) {
+      (gpu_state.cur_texture_quality == 0 && checkTextureQuality) ||
+      (gpu_state.cur_light_state == LS_NONE && flatColorForNoLight)) {
     return {GR_COLOR_RED(gpu_state.cur_color) / 255.0f, GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
             GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f, alpha};
   } else if (gpu_state.cur_light_state == LS_NONE) {
