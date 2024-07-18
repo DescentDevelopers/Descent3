@@ -648,7 +648,8 @@ uint8_t ingame_difficulty = 1;
 
 // Audio taunts for pilot
 std::vector<std::filesystem::path> Audio_taunts;
-
+// Bitmaps for pilot badges
+std::vector<std::filesystem::path> Custom_images;
 ///////////////////////////////////////////////
 // Internals (Globals for the file)
 
@@ -693,7 +694,7 @@ struct tAudioTauntComboBoxes {
 void ShipSelectDeleteTaunt(pilot *Pilot, newuiComboBox *lb, tAudioTauntComboBoxes *taunt_boxes);
 
 // Deletes the currently selected ship logo
-void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb);
+void ShipSelectDeleteLogo(newuiListBox *lb);
 
 // -------------------------------------------------------
 // ShowPilotPicDialog
@@ -1987,7 +1988,6 @@ struct tShipListInfo {
   }
 };
 
-tCustomListInfo *lp_cust_bmps = NULL;
 tShipListInfo *lp_ship_info = NULL;
 
 //	StripCRCFileName
@@ -2225,91 +2225,35 @@ bool ImportGraphic(char *pathname, char *newfile) {
 //	Updates the listbox that contains the custom textures. Make sure all double-pointer arguments passes in
 //	are set to NULL is they don't have memory allocated for them yet, because if they're not null this function
 //	will try to free up their memory
-bool UpdateGraphicsListbox(tCustomListInfo *cust_bmps, newuiListBox *lb, const char *selected_name) {
+bool UpdateGraphicsListbox(newuiListBox *lb, const std::filesystem::path &selected_name = {}) {
   ASSERT(lb);
+
   lb->RemoveAll();
+  Custom_images.clear();
 
-  cust_bmps->Reset();
-
-  // get a list of custom textures
-  int count = 0;
-  bool ok_to_get_files;
-  int total_files = 0;
-
-  // build list
-  char oldpath[_MAX_PATH];
-
-  ddio_GetWorkingDir(oldpath, _MAX_PATH);
-
-  if (ddio_SetWorkingDir(LocalCustomGraphicsDir))
-    ok_to_get_files = true;
-  else
-    ok_to_get_files = false;
-
-  if (ok_to_get_files) {
-    // Get all the filenames
-    int totalsize, size;
-    int count, totalcount;
-
-    //.oaf
-    //.ogf
-    count = totalcount = totalsize = total_files = 0;
-
-    totalsize += FindAllFilesSize("*.oaf", &count);
-    totalcount += count;
-    totalsize += FindAllFilesSize("*.ogf", &count);
-    totalcount += count;
-
-    if (totalsize) {
-      cust_bmps->needed_size = totalsize;
-      total_files = totalcount;
-      cust_bmps->files = (char *)mem_malloc(totalsize);
-      if (cust_bmps->files) {
-        size = 0;
-        count = 0;
-
-        size += FindAllFiles("*.oaf", &cust_bmps->files[size], totalcount, &count);
-        totalcount -= count;
-        size += FindAllFiles("*.ogf", &cust_bmps->files[size], totalcount, &count);
-        totalcount -= count;
-      } else
-        mprintf(0, "Unable to allocate memory for %d bytes\n", totalsize);
-    }
-  }
-
-  count = total_files + 1; // make room for "None"
-
-  char chosen_name[256], ext[256];
-  if (selected_name) {
-    ddio_SplitPath(selected_name, NULL, chosen_name, ext);
-    strcat(chosen_name, ext);
-  } else {
-    *chosen_name = '\0';
-  }
+  ddio_DoForeachFile(LocalCustomGraphicsDir, std::regex(".+\\.o[ag]f"), [](const std::filesystem::path& path){
+    Custom_images.push_back(path.filename());
+  });
 
   // default "None"
   lb->AddItem(TXT_LBNONE);
 
-  int memory_used;
-  memory_used = 0;
-  for (int i = 1; i < count; i++) {
-    std::filesystem::path tempf = StripCRCFileName(&cust_bmps->files[memory_used]);
-    lb->AddItem(tempf.u8string().c_str());
-    if (!stricmp(&cust_bmps->files[memory_used], chosen_name)) {
+  int i = 1; // With "None"
+  for (auto const &image : Custom_images) {
+    lb->AddItem(StripCRCFileName(image).u8string().c_str());
+    if (stricmp(image.u8string().c_str(), selected_name.filename().u8string().c_str()) == 0) {
       lb->SetCurrentIndex(i);
       CustomCallBack(i);
     }
-
-    memory_used += strlen(&cust_bmps->files[memory_used]) + 1;
+    i++;
   }
 
   // If we are not forcing a selection, choose none
-  if (*chosen_name == '\0') {
+  if (selected_name.empty()) {
     lb->SetCurrentIndex(0);
     CustomCallBack(0);
   }
 
-  ddio_SetWorkingDir(oldpath);
   return true;
 }
 
@@ -2548,7 +2492,6 @@ bool PltSelectShip(pilot *Pilot) {
 
   UI3DWindow ship_win;
   UIBmpWindow bmp_win;
-  tCustomListInfo cust_bmps;
   tShipListInfo ship_info;
 
   int old_bmhandle;
@@ -2557,10 +2500,10 @@ bool PltSelectShip(pilot *Pilot) {
   bool ret;
 
   //	pre-initialize all variables
-  cust_bmps.Init();
-  Audio_taunts.clear();
 
-  lp_cust_bmps = &cust_bmps;
+  Audio_taunts.clear();
+  Custom_images.clear();
+
   lp_ship_info = &ship_info;
 
   ship_pos.Init();
@@ -2710,7 +2653,7 @@ bool PltSelectShip(pilot *Pilot) {
 
   DoWaitMessage(true);
 
-  if (!UpdateGraphicsListbox(&cust_bmps, custom_list, pshiplogo))
+  if (!UpdateGraphicsListbox(custom_list, pshiplogo))
     goto ship_id_err;
 
   i = ship_list->GetCurrentIndex();
@@ -2798,19 +2741,16 @@ bool PltSelectShip(pilot *Pilot) {
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ogf", "*.tga", "*.pcx", "*.iff"}, PFDF_FILEMUSTEXIST)) {
         if (ImportGraphic(path, newf)) {
           // update the listbox
-          if (!UpdateGraphicsListbox(&cust_bmps, custom_list, newf))
+          if (!UpdateGraphicsListbox(custom_list, newf))
             goto ship_id_err;
         } else {
           DoMessageBox(TXT_ERROR, TXT_ERRORIMPORT, MSGBOX_OK);
         }
       }
-      ddio_SetWorkingDir(path);
     } break;
     case ID_GETANIM: {
       char path[_MAX_PATH];
-      char opath[_MAX_PATH];
       path[0] = '\0';
-      strcpy(opath, path);
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ifl"}, PFDF_FILEMUSTEXIST)) {
         int handle = AllocLoadIFLVClip(IGNORE_TABLE(path), SMALL_TEXTURE, 1);
 
@@ -2821,10 +2761,9 @@ bool PltSelectShip(pilot *Pilot) {
             FreeVClip(handle);
             break;
           }
-          std::filesystem::path newf = tempf.filename().replace_extension(".oaf");
-          ddio_MakePath(path, LocalCustomGraphicsDir, newf.u8string().c_str(), NULL);
+          std::filesystem::path newf = std::filesystem::path(LocalCustomGraphicsDir) / tempf.filename().replace_extension(".oaf");
 
-          if (SaveVClip(path, handle) == 0) {
+          if (SaveVClip(newf, handle) == 0) {
             // error saving
             DoMessageBox(TXT_ERROR, TXT_ERRORIMPORT, MSGBOX_OK);
           } else {
@@ -2834,7 +2773,7 @@ bool PltSelectShip(pilot *Pilot) {
           FreeVClip(handle);
 
           // check file size...make sure it isn't too big
-          CFILE *file = cfopen(path, "rb");
+          CFILE *file = cfopen(newf, "rb");
           if (file) {
             if (cfilelength(file) > MAX_AUDIOTAUNTSIZE) {
               // file too big!!!!!!
@@ -2846,11 +2785,10 @@ bool PltSelectShip(pilot *Pilot) {
           }
 
           // update the listbox
-          if (!UpdateGraphicsListbox(&cust_bmps, custom_list, newf.u8string().c_str()))
+          if (!UpdateGraphicsListbox(custom_list, newf.filename()))
             goto ship_id_err;
         }
       }
-      ddio_SetWorkingDir(opath);
     } break;
     case ID_PLAY1: {
       //	Play audio taunt #1 if <None> isn't selected
@@ -2970,11 +2908,10 @@ bool PltSelectShip(pilot *Pilot) {
           DoMessageBox(TXT_ERROR, err, MSGBOX_OK);
         }
       }
-      ddio_SetWorkingDir(path);
     } break;
 
     case ID_DEL_LOGO: {
-      ShipSelectDeleteLogo(&cust_bmps, custom_list);
+      ShipSelectDeleteLogo(custom_list);
     } break;
 
     case ID_DEL_TAUNTA: {
@@ -3006,7 +2943,7 @@ ship_id_err:
   taunts_lists.taunt_d = NULL;
 
   Audio_taunts.clear();
-  cust_bmps.Reset();
+  Custom_images.clear();
   ship_info.Reset();
 
   if ((ret) && (ship_pos.bm_handle <= BAD_BITMAP_HANDLE)) {
@@ -3042,14 +2979,12 @@ ship_id_err:
 }
 
 void CustomCallBack(int c) {
-  char select_bitmap[_MAX_PATH];
-  char *sbmp = GetStringInList(c - 1, lp_cust_bmps->files, lp_cust_bmps->needed_size);
-  if (sbmp)
-    strcpy(select_bitmap, sbmp);
-  else
-    select_bitmap[0] = '\0';
+  std::filesystem::path select_bitmap;
+  if ((c - 1) >= 0 && (c - 1) < (int)Custom_images.size()) {
+    select_bitmap = Custom_images[c - 1];
+  }
 
-  if (!strcmp(custom_texture, select_bitmap))
+  if (!strcmp(custom_texture, select_bitmap.u8string().c_str()))
     return;
 
   if (ship_pos.bm_handle > BAD_BITMAP_HANDLE) {
@@ -3071,12 +3006,13 @@ void CustomCallBack(int c) {
     GameTextures[ship_pos.texture_id].flags |= TF_TEXTURE_64;
     GameTextures[ship_pos.texture_id].bm_handle = BAD_BITMAP_HANDLE;
   } else {
-    // Get the filename
-    char *p = GetStringInList(c - 1, lp_cust_bmps->files, lp_cust_bmps->needed_size);
-    if (p)
-      strcpy(custom_texture, p);
-    else
+    if ((c - 1) < (int)Custom_images.size()) {
+      select_bitmap = Custom_images[c - 1];
+      strcpy(custom_texture, select_bitmap.u8string().c_str());
+    } else {
       custom_texture[0] = '\0';
+    }
+
     ship_pos.bm_handle = LoadTextureImage(IGNORE_TABLE(custom_texture), &ship_pos.texture_type, SMALL_TEXTURE, 1);
     if (ship_pos.bm_handle > BAD_BITMAP_HANDLE) {
       if (ship_pos.texture_type)
@@ -3132,9 +3068,8 @@ void ShipSelectCallBack(int c) {
 }
 
 // Deletes the currently selected ship logo
-void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb) {
+void ShipSelectDeleteLogo(newuiListBox *lb) {
   ASSERT(lb);
-  ASSERT(cust_bmps);
 
   int selected_index = lb->GetCurrentIndex();
   char custom_filename[384];
@@ -3148,16 +3083,14 @@ void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb) {
 
   lb->GetItem(selected_index, custom_logoname, 384);
 
-  // Get the filename
-  char *p = GetStringInList(selected_index - 1, cust_bmps->files, cust_bmps->needed_size);
-  if (p) {
-    strncpy(custom_filename, p, 383);
-    custom_filename[383] = '\0';
-  } else {
+  if ((selected_index - 1) >= (int)Custom_images.size()) {
     mprintf(0, "Listbox selected item not found\n");
     Int3();
     return;
   }
+
+  // Get the filename
+  std::filesystem::path p = Custom_images[selected_index - 1];
 
   // delete custom_filename, we don't want it....
   char buffer[512];
@@ -3165,17 +3098,14 @@ void ShipSelectDeleteLogo(tCustomListInfo *cust_bmps, newuiListBox *lb) {
   if (DoMessageBox(TXT_PLTDELCONF, buffer, MSGBOX_YESNO, UICOL_WINDOW_TITLE, UICOL_TEXT_NORMAL)) {
     mprintf(0, "Deleting pilot logo %s (%s)\n", custom_logoname, custom_filename);
 
-    char olddir[_MAX_PATH];
-    ddio_GetWorkingDir(olddir, _MAX_PATH);
-    ddio_SetWorkingDir(LocalCustomGraphicsDir);
-    if (ddio_DeleteFile(custom_filename)) {
+    std::error_code ec;
+    if (std::filesystem::remove(LocalCustomGraphicsDir / p, ec)) {
       // Update the list box, select none
-      UpdateGraphicsListbox(cust_bmps, lb, NULL);
+      UpdateGraphicsListbox(lb);
     } else {
       mprintf(0, "Unable to delete file %s\n", custom_filename);
       Int3();
     }
-    ddio_SetWorkingDir(olddir);
   }
 }
 
