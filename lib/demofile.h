@@ -227,8 +227,6 @@ void DemoWritePlayerInfo(void);
 
 void DemoReadPlayerInfo(void);
 
-void DemoPlayAutoDemo(void);
-
 void DemoWriteMSafe(uint8_t *data, uint16_t len);
 
 void DemoReadMSafe();
