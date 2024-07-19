@@ -58,7 +58,6 @@
 #endif
 
 typedef void(GLFUNCCALL *glAlphaFunc_fp)(GLenum func, GLclampf ref);
-typedef void(GLFUNCCALL *glBegin_fp)(GLenum mode);
 typedef void(GLFUNCCALL *glBindTexture_fp)(GLenum target, GLuint texture);
 typedef void(GLFUNCCALL *glBlendFunc_fp)(GLenum sfactor, GLenum dfactor);
 typedef void(GLFUNCCALL *glClear_fp)(GLbitfield mask);
@@ -81,7 +80,6 @@ typedef void(GLFUNCCALL *glDrawPixels_fp)(GLsizei width, GLsizei height, GLenum 
                                           const GLvoid *pixels);
 typedef void(GLFUNCCALL *glEnable_fp)(GLenum cap);
 typedef void(GLFUNCCALL *glEnableClientState_fp)(GLenum array);
-typedef void(GLFUNCCALL *glEnd_fp)(void);
 typedef void(GLFUNCCALL *glFlush_fp)(void);
 typedef void(GLFUNCCALL *glFogf_fp)(GLenum pname, GLfloat param);
 typedef void(GLFUNCCALL *glFogfv_fp)(GLenum pname, const GLfloat *params);
@@ -153,7 +151,6 @@ DYNAEXTERN(wglGetProcAddress_fp, dwglGetProcAddress);
 #endif
 
 DYNAEXTERN(glAlphaFunc_fp, dglAlphaFunc);
-DYNAEXTERN(glBegin_fp, dglBegin);
 DYNAEXTERN(glBindTexture_fp, dglBindTexture);
 DYNAEXTERN(glBlendFunc_fp, dglBlendFunc);
 DYNAEXTERN(glClear_fp, dglClear);
@@ -175,7 +172,6 @@ DYNAEXTERN(glDrawElements_fp, dglDrawElements);
 DYNAEXTERN(glDrawPixels_fp, dglDrawPixels);
 DYNAEXTERN(glEnable_fp, dglEnable);
 DYNAEXTERN(glEnableClientState_fp, dglEnableClientState);
-DYNAEXTERN(glEnd_fp, dglEnd);
 DYNAEXTERN(glFlush_fp, dglFlush);
 DYNAEXTERN(glFogf_fp, dglFogf);
 DYNAEXTERN(glFogfv_fp, dglFogfv);
@@ -264,10 +260,6 @@ module *LoadOpenGLDLL(const char *dllname) {
   if (!dglAlphaFunc)
     goto dll_error;
 
-  dglBegin = (glBegin_fp)mod_GetSymbol(&OpenGLDLLInst, "glBegin", 255);
-  if (!dglBegin)
-    goto dll_error;
-
   dglBindTexture = (glBindTexture_fp)mod_GetSymbol(&OpenGLDLLInst, "glBindTexture", 255);
   if (!dglBindTexture)
     goto dll_error;
@@ -350,10 +342,6 @@ module *LoadOpenGLDLL(const char *dllname) {
 
   dglEnableClientState = (glEnableClientState_fp)mod_GetSymbol(&OpenGLDLLInst, "glEnableClientState", 255);
   if (!dglEnableClientState)
-    goto dll_error;
-
-  dglEnd = (glEnd_fp)mod_GetSymbol(&OpenGLDLLInst, "glEnd", 255);
-  if (!dglEnd)
     goto dll_error;
 
   dglFlush = (glFlush_fp)mod_GetSymbol(&OpenGLDLLInst, "glFlush", 255);
@@ -492,7 +480,6 @@ module *LoadOpenGLDLL(const char *dllname) {
 
   // bk000614 - have to fix globals
   extern glAlphaFunc_fp dglAlphaFunc;
-  extern glBegin_fp dglBegin;
   extern glBindTexture_fp dglBindTexture;
   extern glBlendFunc_fp dglBlendFunc;
   extern glClear_fp dglClear;
@@ -513,7 +500,6 @@ module *LoadOpenGLDLL(const char *dllname) {
   extern glDrawPixels_fp dglDrawPixels;
   extern glEnable_fp dglEnable;
   extern glEnableClientState_fp dglEnableClientState;
-  extern glEnd_fp dglEnd;
   extern glFlush_fp dglFlush;
   extern glFogf_fp dglFogf;
   extern glFogfv_fp dglFogfv;
