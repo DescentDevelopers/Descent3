@@ -18,6 +18,7 @@
 
 #include <cstring>
 
+#include "args.h"
 #include "movie.h"
 #include "mvelib.h"
 #include "pserror.h"
@@ -479,7 +480,7 @@ void mve_ClearRect(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
 
 #ifndef NO_MOVIES
 bool mve_InitSound() {
-  MVE_sndInit(1);
+  MVE_sndInit(FindArg("-nosound") == 0);
 
   return true;
 }
