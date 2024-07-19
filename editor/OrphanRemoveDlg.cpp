@@ -41,6 +41,9 @@
 // OrphanRemoveDlg.cpp : implementation file
 //
 
+#include <filesystem>
+#include <regex>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "OrphanRemoveDlg.h"
@@ -96,7 +99,7 @@ bool HasFilesCheckedOut(void) {
   return false;
 }
 
-bool IsFileInGameFile(char *filename) {
+bool IsFileInGameFile(const char *filename) {
   int i;
 
   for (i = 0; i < MAX_GAMEFILES; i++) {
@@ -109,7 +112,7 @@ bool IsFileInGameFile(char *filename) {
   return false;
 }
 
-bool IsFileInDoorPage(char *filename) {
+bool IsFileInDoorPage(const char *filename) {
   mngs_door_page doorpage;
   int i;
 
@@ -127,7 +130,7 @@ bool IsFileInDoorPage(char *filename) {
   return false;
 }
 
-bool IsFileInGenericPage(char *filename) {
+bool IsFileInGenericPage(const char *filename) {
   mngs_generic_page genericpage;
   int i;
   int j, x;
@@ -179,7 +182,7 @@ bool IsFileInGenericPage(char *filename) {
   return false;
 }
 
-bool IsFileInShipPage(char *filename) {
+bool IsFileInShipPage(const char *filename) {
   mngs_ship_page shippage;
   int i;
   int j;
@@ -219,7 +222,7 @@ bool IsFileInShipPage(char *filename) {
   return false;
 }
 
-bool IsFileInSoundPage(char *filename) {
+bool IsFileInSoundPage(const char *filename) {
   mngs_sound_page soundpage;
   int i;
 
@@ -234,7 +237,7 @@ bool IsFileInSoundPage(char *filename) {
   return false;
 }
 
-bool IsFileInTexturePage(char *filename) {
+bool IsFileInTexturePage(const char *filename) {
   mngs_texture_page texpage;
   int i;
 
@@ -255,7 +258,7 @@ bool IsFileInTexturePage(char *filename) {
   return false;
 }
 
-bool IsFileInWeaponPage(char *filename) {
+bool IsFileInWeaponPage(const char *filename) {
   mngs_weapon_page weappage;
   int i, j;
 
@@ -306,7 +309,7 @@ void COrphanRemoveDlg::Enable(bool enable) {
   wnd->EnableWindow(enable);
 }
 
-void COrphanRemoveDlg::SetStatus(char *status) {
+void COrphanRemoveDlg::SetStatus(const char *status) {
   CWnd *stat = (CWnd *)GetDlgItem(IDC_STATUS);
   stat->SetWindowText(status);
   Descent->defer();
@@ -348,14 +351,14 @@ void COrphanRemoveDlg::OnOK() {
   OnSelchangeDirectory();
 }
 
-char *orphan_ignore[] = {
+const char *orphan_ignore[] = {
     ".",           "..",           "dallasfuncs.cpp", "osiris_common.h", "osiris_import.h", "osiris_vector.h",
     "anarchy.str", "coop.str",     "ctf.str",         "entropy.str",     "dmfc.str",        "d3.str",
     "hoard.str",   "dp_modem.str", "dp_serial.str",   "hyper.str",       "ipxclient.str",   "lanclient.str",
     "monster.str", "mtclient.str", "tanarchy.str"};
 int num_orphan_ignore = sizeof(orphan_ignore) / sizeof(char *);
 
-bool IsFileUsed(char *filename) {
+bool IsFileUsed(const char *filename) {
   bool found = false;
 
   for (int i = 0; i < num_orphan_ignore; i++) {
@@ -386,29 +389,14 @@ done:
   return found;
 }
 
-int filelen(char *filename, char *dir) {
-  char path[_MAX_PATH];
-  ddio_MakePath(path, dir, filename, NULL);
-  CFILE *cf = cfopen(filename, "rb");
+int filelen(const std::filesystem::path &filename, const std::filesystem::path &dir) {
+  CFILE *cf = cfopen(dir / filename, "rb");
   if (!cf)
     return 0;
 
   int len = cfilelength(cf);
   cfclose(cf);
   return len;
-}
-
-bool isdirectory(char *filename, char *basepath) {
-  char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, basepath, filename, NULL);
-  char olddir[_MAX_PATH];
-
-  ddio_GetWorkingDir(olddir, _MAX_PATH);
-  if (ddio_SetWorkingDir(fullpath)) {
-    ddio_SetWorkingDir(olddir);
-    return true;
-  }
-  return false;
 }
 
 void COrphanRemoveDlg::OnSelchangeDirectory() {
@@ -425,13 +413,6 @@ void COrphanRemoveDlg::OnSelchangeDirectory() {
   combo->GetLBText(sel, dir);
   m_List.ResetContent();
 
-  char fullpath[_MAX_PATH];
-  ddio_MakePath(fullpath, LocalD3Dir, "data", dir.GetBuffer(0), NULL);
-  char oldpath[_MAX_PATH];
-  ddio_GetWorkingDir(oldpath, _MAX_PATH);
-  ddio_SetWorkingDir(fullpath);
-
-  char filename[_MAX_PATH];
   int num_files = 0;
   int total_filesize = 0;
   CWnd *stats = (CWnd *)GetDlgItem(IDC_STATS);
@@ -440,28 +421,18 @@ void COrphanRemoveDlg::OnSelchangeDirectory() {
   sprintf(data, "Num Files: %d\r\nSize: %dK", 0, 0);
   stats->SetWindowText(data);
 
-  if (ddio_FindFileStart("*.*", filename)) {
-    if (!isdirectory(filename, fullpath) && !IsFileUsed(filename)) {
-      m_List.AddString(filename);
-      num_files++;
-      total_filesize += filelen(filename, fullpath);
-      sprintf(data, "Num Files: %d\r\nSize: %dK", num_files, total_filesize / 1024);
-      stats->SetWindowText(data);
-    }
+  std::filesystem::path fullpath = std::filesystem::path(LocalD3Dir) / "data" / dir.GetBuffer(0);
 
-    while (ddio_FindNextFile(filename)) {
-      if (!isdirectory(filename, fullpath) && !IsFileUsed(filename)) {
-        m_List.AddString(filename);
-        num_files++;
-        total_filesize += filelen(filename, fullpath);
-        sprintf(data, "Num Files: %d\r\nSize: %dK", num_files, total_filesize / 1024);
-        stats->SetWindowText(data);
-      }
-    }
-  }
-  ddio_FindFileClose();
-
-  ddio_SetWorkingDir(oldpath);
+  ddio_DoForeachFile(fullpath, std::regex(".+"),
+                     [this, &num_files, &total_filesize, &data, &stats](const std::filesystem::path &path) {
+                       if (!IsFileUsed(path.filename().u8string().c_str())) {
+                         m_List.AddString(path.filename().u8string().c_str());
+                         num_files++;
+                         total_filesize += filelen(path.filename(), path.parent_path());
+                         sprintf(data, "Num Files: %d\r\nSize: %dK", num_files, total_filesize / 1024);
+                         stats->SetWindowText(data);
+                       }
+                     });
 
   // select all
   for (int i = 0; i < num_files; i++) {

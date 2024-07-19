@@ -88,6 +88,9 @@
 // ScriptWizard.cpp : implementation file
 //
 
+#include <filesystem>
+#include <regex>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "ScriptWizard.h"
@@ -159,16 +162,11 @@ BOOL CScriptWizard::OnInitDialog() {
   ResetScriptList();
 
   //	place all filenames of scripts into combo box
-  char scrfilename[64];
-  char *filename;
-  scrfilename[0] = 0;
-  filename = StartScriptFileList();
-  while (filename) {
-    strcpy(scrfilename, filename);
-    modcbox->AddString(filename);
-    filename = GetNextScriptFile();
-  }
-  EndScriptFileList();
+  std::filesystem::path dir = std::filesystem::path(LocalLevelsDir);
+  ddio_DoForeachFile(dir, std::regex(".+\\.scr"), [&modcbox](const std::filesystem::path& path){
+    std::filesystem::path file = path.filename();
+    modcbox->AddString(file.u8string().c_str());
+  });
 
   modcbox->SelectString(-1, LEVEL_SCRIPT_NAME);
 

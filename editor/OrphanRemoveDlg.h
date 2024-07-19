@@ -51,7 +51,7 @@ class COrphanRemoveDlg : public CDialog {
   // Construction
 public:
   COrphanRemoveDlg(CWnd *pParent = NULL); // standard constructor
-  void SetStatus(char *status);
+  void SetStatus(const char *status);
   void Enable(bool enable);
 
   // Dialog Data

@@ -1567,7 +1567,7 @@ void CLightingDialog::OnCombineFaces() {
 }
 
 // Takes a bitmap name and resaves it
-void ResaveBitmap(char *name) {
+void ResaveBitmap(const char *name) {
   int bm_handle = bm_FindBitmapName(name);
   if (bm_handle >= 0) {
     char search[256];
@@ -1598,7 +1598,7 @@ void ResaveBitmap(char *name) {
 }
 
 // Takes a vclip name and resaves it
-void ResaveVClip(char *name) {
+void ResaveVClip(const char *name) {
   int bm_handle = FindVClipName(name);
   if (bm_handle >= 0) {
     char search[256];
@@ -1623,32 +1623,10 @@ void ResaveVClip(char *name) {
 }
 
 void ResaveAllBitmaps() {
-  char buffer[_MAX_PATH];
-  char search[256];
-
-  ddio_MakePath(search, LocalD3Dir, "data", "graphics", "*.ogf", NULL);
-
-  if (ddio_FindFileStart(search, buffer)) {
-    ResaveBitmap(buffer);
-
-    while ((ddio_FindNextFile(buffer))) {
-      ResaveBitmap(buffer);
-    }
-  }
-
-  ddio_FindFileClose();
-
-  ddio_MakePath(search, LocalD3Dir, "data", "graphics", "*.oaf", NULL);
-
-  if (ddio_FindFileStart(search, buffer)) {
-    ResaveVClip(buffer);
-
-    while ((ddio_FindNextFile(buffer))) {
-      ResaveVClip(buffer);
-    }
-  }
-
-  ddio_FindFileClose();
+  ddio_DoForeachFile(std::filesystem::path(LocalD3Dir) / "data" / "graphics", std::regex(".+\\.ogf"),
+                     [](const std::filesystem::path &path) { ResaveBitmap(path.filename().u8string().c_str()); });
+  ddio_DoForeachFile(std::filesystem::path(LocalD3Dir) / "data" / "graphics", std::regex(".+\\.oaf"),
+                     [](const std::filesystem::path &path) { ResaveVClip(path.filename().u8string().c_str()); });
 }
 
 void CLightingDialog::OnVolumeLights() {
