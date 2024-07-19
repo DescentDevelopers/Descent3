@@ -115,6 +115,9 @@
 // ScriptLevelInterface.cpp : implementation file
 //
 
+#include <filesystem>
+#include <regex>
+
 #include "stdafx.h"
 #include "editor.h"
 #include "ScriptLevelInterface.h"
@@ -131,7 +134,6 @@
 #include "mem.h"
 #include "ScriptCompilerAPI.h"
 #include "AppDatabase.h"
-#include "Descent.h"
 #include "ScriptSyncDialog.h"
 
 #ifdef _DEBUG
@@ -200,7 +202,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CScriptLevelInterface message handlers
 
-void CScriptLevelInterface::SetStatus(char *str) {
+void CScriptLevelInterface::SetStatus(const char *str) {
   CWnd *wnd = (CWnd *)GetDlgItem(IDC_STATUS);
   wnd->SetWindowText(str);
   Descent->defer();
@@ -606,40 +608,19 @@ void CScriptLevelInterface::UpdateScriptListWithLevels() {
   int length, i;
 
   if (m_ShowNonCheckedOut) {
-    char olddir[_MAX_PATH];
-    ddio_GetWorkingDir(olddir, _MAX_PATH);
-    ddio_SetWorkingDir(LocalScriptDir);
-
     for (i = 0; i < MAX_GAMEFILES; i++) {
       if (Gamefiles[i].used) {
         // look for d3l's
-        length = strlen(Gamefiles[i].name);
-
-        if (length > 4 && !stricmp(&Gamefiles[i].name[length - 4], ".d3l")) {
-          strcpy(buffer, Gamefiles[i].name);
-          buffer[length - 4] = '\0';
-          strcat(buffer, ".cpp");
-
+        std::filesystem::path gamefile = std::filesystem::path(Gamefiles[i].name);
+        if (gamefile.extension() == ".d3l") {
           // ok we have a d3l, look to see if there is a script available for it
-          char temp[_MAX_PATH];
-          if (ddio_FindFileStart(buffer, temp)) {
-            combo->AddString(buffer);
+          gamefile.replace_extension(".cpp");
+          if (std::filesystem::is_regular_file(std::filesystem::path(LocalScriptDir) / gamefile)) {
+            combo->AddString(gamefile.u8string().c_str());
           }
-          ddio_FindFileClose();
-          /*
-          for ( int j=0; j<MAX_GAMEFILES;j++){
-                  if(!stricmp(Gamefiles[j].name,buffer)){
-                          //we found a corresponding script
-                          combo->AddString(buffer);
-                          break;
-                  }
-          }
-          */
         }
       }
     }
-
-    ddio_SetWorkingDir(olddir);
   } else {
 
     for (i = 0; i < MAX_TRACKLOCKS; i++) {
@@ -687,34 +668,9 @@ void CScriptLevelInterface::UpdateScriptListWithScripts() {
   int length, i;
 
   if (m_ShowNonCheckedOut) {
-    char olddir[_MAX_PATH];
-    ddio_GetWorkingDir(olddir, _MAX_PATH);
-    ddio_SetWorkingDir(LocalScriptDir);
-
-    if (ddio_FindFileStart("*.cpp", buffer)) {
-      combo->AddString(buffer);
-      while (ddio_FindNextFile(buffer)) {
-        combo->AddString(buffer);
-      }
-    }
-    ddio_FindFileClose();
-
-    ddio_SetWorkingDir(olddir);
-
-    /*
-    for (i=0;i<MAX_GAMEFILES;i++){
-            if(Gamefiles[i].used){
-
-                    //look for cpp's
-                    length = strlen(Gamefiles[i].name);
-
-                    if(length>4 && !stricmp(&Gamefiles[i].name[length-4],".cpp")){
-                            strcpy(buffer,Gamefiles[i].name);
-                            combo->AddString(buffer);
-                    }
-            }
-    }
-    */
+    ddio_DoForeachFile(std::filesystem::path(LocalScriptDir), std::regex(".+\\.cpp"), [&combo](const std::filesystem::path& path){
+      combo->AddString(path.filename().u8string().c_str());
+    });
 
   } else {
 
