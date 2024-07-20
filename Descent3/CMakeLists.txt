@@ -292,11 +292,16 @@ endif()
 if(APPLE)
   set(PLATFORM_LIBS)
   set(CMAKE_EXE_LINKER_FLAGS "-framework IOKit -framework Cocoa -framework OpenGL -framework Carbon")
+
+  # Set app icon
+  set(MACOSX_BUNDLE_ICON_FILE Descent3.icns)
+  set(D3Icon ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.icns)
+  set_source_files_properties(${D3Icon} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
 file(GLOB_RECURSE INCS "../lib/*.h")
 
-add_executable(Descent3 WIN32 ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
+add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
 target_link_libraries(Descent3 PRIVATE
   2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio libmve libacm
   fix grtext manage mem misc model module movie stream_audio linux SDL2::SDL2
@@ -304,7 +309,7 @@ target_link_libraries(Descent3 PRIVATE
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
 add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir Parallax_Online_Hog)
-install(TARGETS Descent3 RUNTIME)
+install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)
