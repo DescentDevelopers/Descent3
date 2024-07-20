@@ -21,11 +21,15 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <optional>
 #include <SDL.h>
 
 #if defined(WIN32)
 #include <windows.h>
 #endif
+
+#define DECLARE_OPENGL
+#include "dyna_gl.h"
 
 #include "byteswap.h"
 #include "pserror.h"
@@ -43,9 +47,8 @@
 #include "HardwareInternal.h"
 #include "../Descent3/args.h"
 #include "NewBitmap.h"
-
-#define DECLARE_OPENGL
-#include "dyna_gl.h"
+#include "shaders.h"
+#include "ShaderProgram.h"
 
 #if defined(WIN32)
 #include "win/arb_extensions.h"
@@ -63,6 +66,21 @@ uint8_t Renderer_close_flag = 0;
 extern uint8_t Renderer_initted;
 renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
+
+struct Renderer {
+  Renderer() : shader_{shaders::vertex, shaders::fragment, {
+      vertexAttrib(3, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::pos, "in_pos"),
+      vertexAttrib(4, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::color, "in_color"),
+      vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv0, "in_uv0"),
+      vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv1, "in_uv1")
+  }} {
+    shader_.Use();
+  }
+
+private:
+  ShaderProgram<PosColorUV2Vertex> shader_;
+};
+std::optional<Renderer> gRenderer;
 
 #ifndef GL_UNSIGNED_SHORT_5_5_5_1
 #define GL_UNSIGNED_SHORT_5_5_5_1 0x8034
@@ -503,6 +521,8 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     reinterpret_cast<oeLnxApplication *>(ParentApplication)->set_sizepos(0, 0, *width, *height);
   }
 
+  gRenderer.emplace();
+
   Already_loaded = 1;
   return 1;
 }
@@ -700,6 +720,8 @@ void opengl_Close(const bool just_resizing) {
     dglDeleteTextures(Cur_texture_object_num, (const uint32_t *)delete_list);
 
   mem_free(delete_list);
+
+  gRenderer.reset();
 
   if (GSDLGLContext) {
       SDL_GL_MakeCurrent(NULL, NULL);
