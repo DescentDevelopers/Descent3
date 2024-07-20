@@ -274,6 +274,13 @@ set(CPPS
 if(WIN32)
   set(PLATFORM_LIBS wsock32.lib winmm.lib)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO /NODEFAULTLIB:LIBC")
+  set(MANIFEST ${CMAKE_CURRENT_BINARY_DIR}/Descent3.exe.manifest)
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.exe.manifest.in
+    ${MANIFEST}
+    @ONLY
+    NEWLINE_STYLE WIN32
+  )
 endif()
 
 if(UNIX AND NOT APPLE)
@@ -287,7 +294,7 @@ endif()
 
 file(GLOB_RECURSE INCS "../lib/*.h")
 
-add_executable(Descent3 WIN32 ${HEADERS} ${CPPS} ${INCS})
+add_executable(Descent3 WIN32 ${HEADERS} ${CPPS} ${INCS} ${MANIFEST})
 target_link_libraries(Descent3 PRIVATE
   2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio libmve libacm
   fix grtext manage mem misc model module movie stream_audio linux SDL2::SDL2

@@ -28,6 +28,21 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+if(MSVC)
+  add_compile_options(/source-charset:UTF-8 /execution-charset:UTF-8)
+else()
+  add_compile_options(-finput-charset=UTF-8)
+  # Unfortunately, Clang doesn’t support -fexec-charset yet so this next part
+  # is GCC only. Luckily, Clang defaults to using UTF-8 for the execution
+  # character set [1], so we’re fine. Once Clang gets support for
+  # -fexec-charset, we should probably start using it.
+  #
+  # [1]: <https://discourse.llvm.org/t/rfc-enabling-fexec-charset-support-to-llvm-and-clang-reposting/71512>
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options(-fexec-charset=UTF-8)
+  endif()
+endif()
+
 if(FORCE_COLORED_OUTPUT)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
     set(CMAKE_COLOR_DIAGNOSTICS ON)
