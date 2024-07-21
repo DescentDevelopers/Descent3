@@ -46,8 +46,6 @@ jobs:
             name: Linux-x64-clang
           - runner: ubuntu-latest
             preset: linux-cross-arm64
-            cc: gcc
-            cxx: g++++
             name: Linux-cross-arm64
         build_type:
           - Debug
@@ -102,19 +100,11 @@ jobs:
         with:
           vcpkgJsonGlob: vcpkg.json
 
-      - name: Configure cross-compiled build
-        if: ${{ matrix.os.preset == 'linux-cross-arm64' }}
-        run: |
-          cmake --preset linux
-          ninja -f build-${{ matrix.build_type }}.ninja -C builds/linux/ HogMaker
-          cmake --preset linux-cross-arm64 -DHogMaker_DIR=$PWD/builds/linux/ -DBUILD_TESTING=OFF -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=OFF -DUSE_EXTERNAL_PLOG=ON
-
       - name: Configure CMake
-        if: ${{ matrix.os.preset != 'linux-cross-arm64' }}
         env:
           CC: ${{ matrix.os.cc }}
           CXX: ${{ matrix.os.cxx }}
-        run: cmake --preset ${{ matrix.os.preset }} -DBUILD_TESTING=ON -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DBUILD_EDITOR=ON -DUSE_EXTERNAL_PLOG=ON
+        run: cmake --preset ${{ matrix.os.preset }} -DENABLE_LOGGER=ON -DFORCE_PORTABLE_INSTALL=ON -DUSE_EXTERNAL_PLOG=ON -DBUILD_EDITOR=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }} -DBUILD_TESTING=${{ matrix.os.preset == 'linux-cross-arm64' && 'OFF' || 'ON' }}
 
       - name: Build ${{ matrix.build_type }}
         run: cmake --build --preset ${{ matrix.os.preset }} --config ${{ matrix.build_type }} --verbose
