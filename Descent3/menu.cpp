@@ -1370,8 +1370,7 @@ redo_level_choose:
 #ifdef _DEBUG
 // Loads a level and starts the game
 bool MenuLoadLevel(void) {
-  char buffer[_MAX_PATH];
-  buffer[0] = '\0';
+  std::filesystem::path buffer;
   if (DoPathFileDialog(false, buffer, "Load Level", {"*.d3l"}, PFDF_FILEMUSTEXIST)) {
     SimpleStartLevel(buffer);
     SetFunctionMode(GAME_MODE);

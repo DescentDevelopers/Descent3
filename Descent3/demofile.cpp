@@ -304,7 +304,7 @@
 extern bool is_multi_demo;
 static CFILE *Demo_cfp = nullptr;
 std::filesystem::path Demo_fname;
-static std::filesystem::path Old_demo_fname;
+std::filesystem::path Old_demo_fname;
 static float Demo_next_frame = 0;
 static float Demo_frame_time = 0;
 static float Demo_last_pinfo;
@@ -469,8 +469,8 @@ void DemoWriteChangedObj(object *op) {
   }
 }
 
-void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum,
-                         uint16_t weapobjnum, int16_t gunnum) {
+void DemoWriteWeaponFire(uint16_t objectnum, vector *pos, vector *dir, uint16_t weaponnum, uint16_t weapobjnum,
+                         int16_t gunnum) {
   uint32_t uniqueid = MultiGetMatchChecksum(OBJ_WEAPON, weaponnum);
   if (weapobjnum == -1)
     return;
@@ -1005,8 +1005,8 @@ void DemoReadWeaponFire() {
   }
   Objects[new_weap_objnum].ctype.laser_info.src_gun_num = gunnum;
 
-  mprintf(0, "Player %d Firing weapon (%d) -- using objnum %d (old num = %d)\n",
-          obj->id, weaponnum, new_weap_objnum, weapobjnum);
+  mprintf(0, "Player %d Firing weapon (%d) -- using objnum %d (old num = %d)\n", obj->id, weaponnum, new_weap_objnum,
+          weapobjnum);
 
   Demo_obj_map[weapobjnum] = new_weap_objnum;
   int16_t weapon_num = weaponnum;
@@ -1423,9 +1423,7 @@ bool LoadDemoDialog() {
   //	return false;
   // #else
 
-  char file[_MAX_PATH * 2];
-
-  ddio_MakePath(file, Base_directory, "demo", NULL);
+  std::filesystem::path file = std::filesystem::path(Base_directory) / "demo";
 
   if (DoPathFileDialog(false, file, TXT_VIEWDEMO, {"*.dem"}, PFDF_FILEMUSTEXIST)) {
     Demo_fname = file;

@@ -105,7 +105,6 @@
 #include <cstring>
 #include <filesystem>
 
-#include "application.h"
 #include "cfile.h"
 #include "ddio.h"
 #include "game.h"
@@ -118,11 +117,11 @@
 
 newuiListBox *path_list = nullptr;
 char *path_edit = nullptr;
-char *working_filename = nullptr;
-char *working_listpath = nullptr;
+std::filesystem::path working_filename;
+std::filesystem::path working_listpath;
 newuiSheet *fdlg_working_sheet = nullptr;
 
-char NewuiFileDlg_lastpath[_MAX_PATH] = {'\0'};
+std::filesystem::path NewuiFileDlg_lastpath;
 
 // border size of the UI window
 #define UI_BORDERSIZE 20
@@ -186,7 +185,7 @@ bool IsDirectoryItem(char *item) {
 }
 // Callback function for listbox
 void FileSelectCallback(int index) {
-  if ((!path_edit) || (!working_filename) || (!path_list) || (!working_listpath))
+  if ((!path_edit) || (!path_list))
     return;
 
   char file[_MAX_PATH];
@@ -194,19 +193,16 @@ void FileSelectCallback(int index) {
   if (IsDirectoryItem(file))
     return; // we don't care about directories
 
-  strncpy(working_filename, file, _MAX_FNAME - 1);
-  working_filename[_MAX_FNAME - 1] = '\0';
+  working_filename = file;
 
-  ddio_MakePath(file, working_listpath, working_filename, NULL);
-
-  strncpy(path_edit, file, _MAX_PATH - 1);
+  strncpy(path_edit, (working_listpath / working_filename).u8string().c_str(), _MAX_PATH - 1);
   path_edit[_MAX_PATH - 1] = '\0';
   mprintf(0, "New Path: %s\n", path_edit);
   fdlg_working_sheet->UpdateChanges();
 }
 
-bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std::vector<std::string> &wildc,
-                      int flags) {
+bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char *title,
+                      const std::vector<std::string> &wildc, int flags) {
 #define HS_CANCEL 0
 #define HS_OK 1
 #define HS_UPDIR 0
@@ -223,26 +219,23 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
   newuiListBox *listbox;
   char *edits[2];
 
-  char working_path[_MAX_PATH];
-  char working_file[_MAX_FNAME];
+  std::filesystem::path working_path;
+  std::filesystem::path working_file;
 
-  if (!path)
-    return false;
   if (!title)
     return false;
   if (wildc.empty())
     return false;
 
   std::vector<std::string> wildcards = wildc;
-  strcpy(working_file, "");
 
   // figure out the correct path
   if (!std::filesystem::is_directory(path)) {
     // try to use last good path
     if (!std::filesystem::is_directory(NewuiFileDlg_lastpath)) {
-      strcpy(path, LocalD3Dir);
+      path = LocalD3Dir;
     } else {
-      strcpy(path, NewuiFileDlg_lastpath);
+      path = NewuiFileDlg_lastpath;
     }
   }
 
@@ -262,17 +255,18 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
   sheet->AddButton((save_dialog) ? TXT_SAVE : TXT_OPEN, ID_OK);
   sheet->AddButton(TXT_CANCEL, ID_CANCEL);
 
-  working_filename = working_file;
-  working_listpath = working_path;
   path_edit = edits[ED_FILENAME];
   path_list = listbox;
 
   listbox->SetSelectChangeCallback(FileSelectCallback);
 
-  ddio_CleanPath(working_path, path);
+  working_path = std::filesystem::canonical(path);
   UpdateFileList(listbox, working_path, wildcards);
 
-  strncpy(edits[ED_FILENAME], working_path, _MAX_PATH - 1);
+  working_listpath = working_path;
+  working_filename = working_file;
+
+  strncpy(edits[ED_FILENAME], working_path.u8string().c_str(), _MAX_PATH - 1);
   edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
 
   std::string wildc1 = StringJoin(wildcards, ";");
@@ -291,45 +285,44 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
     // handle all UI results.
     switch (res) {
     case ID_OK: {
-      strcpy(path, edits[ED_FILENAME]);
+      path = edits[ED_FILENAME];
 
-      if (path[0] == '\0') {
+      if (path.empty()) {
         DoMessageBox(TXT_ERROR, TXT_ERRCHOOSEFILE, MSGBOX_OK);
       } else {
         if (std::filesystem::is_directory(path)) {
-          char newpath[_MAX_PATH];
+          std::filesystem::path newpath;
           char file[_MAX_PATH];
           int selection = listbox->GetCurrentIndex();
           if ((selection >= 0) && (listbox->GetCurrentItem(file, _MAX_PATH))) {
             if (*file) {
-              strcpy(working_file, "");
+              working_file.clear();
 
               // ok the user double clicked on a directory
               // convert file without the brackets
               file[strlen(file) - 1] = '\0';
-              if (strlen(working_path) != 0)
-                ddio_MakePath(newpath, working_path, file + 2, NULL);
+              if (!working_path.empty())
+                newpath = working_path / (file + 2);
               else
-                strcpy(newpath, file + 2);
+                newpath = (file + 2);
 
               UpdateFileList(listbox, newpath, wildcards);
-              ddio_CleanPath(working_path, newpath);
+              working_path = std::filesystem::canonical(newpath);
 
-              strncpy(edits[ED_FILENAME], working_path, _MAX_PATH - 1);
+              strncpy(edits[ED_FILENAME], working_path.u8string().c_str(), _MAX_PATH - 1);
               edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
             }
           }
-          //						DoMessageBox(TXT_ERROR,TXT_ERRCHOOSEFILE,MSGBOX_OK);
         } else {
           if (flags & PFDF_FILEMUSTEXIST) {
             if (!cfexist(path)) {
               DoMessageBox(TXT_ERROR, TXT_ERRFILENOTEXIST, MSGBOX_OK);
             } else {
-              ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
+              NewuiFileDlg_lastpath = path.parent_path();
               ret = exit_menu = true;
             }
           } else {
-            ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
+            NewuiFileDlg_lastpath = path.parent_path();
             ret = exit_menu = true;
           }
         }
@@ -340,7 +333,7 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
       exit_menu = true;
       break;
     case ID_LISTBOX: {
-      char newpath[_MAX_PATH];
+      std::filesystem::path newpath;
       char file[_MAX_PATH];
       // check to see if the double clicked on a dir
       int selection = listbox->GetCurrentIndex();
@@ -348,24 +341,24 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
       if ((selection >= 0) && (listbox->GetCurrentItem(file, _MAX_PATH))) {
         if (*file) {
           if (IsDirectoryItem(file)) {
-            strcpy(working_file, "");
+            working_file.clear();
 
             // ok the user double clicked on a directory
             // convert file without the brackets
             file[strlen(file) - 1] = '\0';
-            if (strlen(working_path) != 0)
-              ddio_MakePath(newpath, working_path, file + 2, NULL);
+            if (!working_path.empty())
+              newpath = working_path / (file + 2);
             else
-              strcpy(newpath, file + 2);
+              newpath = (file + 2);
 
             UpdateFileList(listbox, newpath, wildcards);
-            ddio_CleanPath(working_path, newpath);
+            working_path = std::filesystem::canonical(newpath);
 
-            strncpy(edits[ED_FILENAME], working_path, _MAX_PATH - 1);
+            strncpy(edits[ED_FILENAME], working_path.u8string().c_str(), _MAX_PATH - 1);
             edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
           } else {
             // double click on a file
-            strcpy(working_file, file);
+            working_file = file;
             FileSelectCallback(selection);
             strcpy(file, edits[ED_FILENAME]);
 
@@ -374,29 +367,28 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
               if (cfexist(file)) {
                 exit_menu = true;
                 ret = true;
-                strcpy(path, file);
-                ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
+                path = file;
+                NewuiFileDlg_lastpath = path.parent_path();
               } else {
                 // invalid file
                 DoMessageBox(TXT_ERROR, TXT_ERRCHOOSEFILE, MSGBOX_OK);
               }
             } else {
-              strcpy(path, file);
+              path = file;
               exit_menu = true;
               ret = true;
-              ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
+              NewuiFileDlg_lastpath = path.parent_path();
             }
           }
         }
       }
     } break;
     case ID_UPDIR: {
-      strcpy(working_file, "");
-      std::filesystem::path newpath = std::filesystem::path(working_path).parent_path();
-      strcpy(working_path, newpath.u8string().c_str());
+      working_file.clear();
+      working_path = working_path.parent_path();
 
       UpdateFileList(listbox, working_path, wildcards);
-      strncpy(edits[ED_FILENAME], working_path, _MAX_PATH - 1);
+      strncpy(edits[ED_FILENAME], working_path.u8string().c_str(), _MAX_PATH - 1);
       edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
     } break;
     case ID_WILDCARD: {
@@ -404,31 +396,30 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
       UpdateFileList(listbox, working_path, wildcards);
     } break;
     case ID_FILENAME: {
-      char c[_MAX_PATH];
-      strcpy(c, edits[ED_FILENAME]);
+      std::filesystem::path c = edits[ED_FILENAME];
 
-      if (strlen(c) > 0) {
+      if (!c.empty()) {
         if (!std::filesystem::is_directory(c)) {
           // the user wants a file
           if (flags & PFDF_FILEMUSTEXIST) {
             if (cfexist(c)) {
-              strcpy(path, c);
+              path = c;
               exit_menu = true;
               ret = true;
-              ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
+              NewuiFileDlg_lastpath = path.parent_path();
             } else {
               // invalid file
               DoMessageBox(TXT_ERROR, TXT_ERRFILENOTEXIST, MSGBOX_OK);
             }
           } else {
-            strcpy(path, c);
-            ddio_SplitPath(path, NewuiFileDlg_lastpath, nullptr, nullptr);
+            path = c;
+            NewuiFileDlg_lastpath = path.parent_path();
             exit_menu = true;
             ret = true;
           }
         } else {
           // just change directories
-          strcpy(working_path, c);
+          working_path = c;
           UpdateFileList(listbox, working_path, wildcards);
         }
       }
@@ -437,7 +428,7 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
   }
 
   if (ret) {
-    mprintf(0, "Selected Filename: %s\n", path);
+    mprintf(0, "Selected Filename: %s\n", path.u8string().c_str());
   } else {
     mprintf(0, "Cancel!\n");
   }
@@ -445,8 +436,8 @@ bool DoPathFileDialog(bool save_dialog, char *path, const char *title, const std
   window.Close();
   window.Destroy();
 
-  working_filename = nullptr;
-  working_listpath = nullptr;
+  working_filename.clear();
+  working_listpath.clear();
   path_edit = nullptr;
   path_list = nullptr;
 
