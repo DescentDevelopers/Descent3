@@ -249,6 +249,19 @@ endif()
 
 add_subdirectory(Descent3)
 
+# Always build HogMaker natively. Build it as external project,
+include(ExternalProject)
+ExternalProject_Add(HogMaker
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools
+    BINARY_DIR ${CMAKE_BINARY_DIR}/tools
+    INSTALL_COMMAND ""
+)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(HogMakerBin ${CMAKE_BINARY_DIR}/tools/HogMaker.exe)
+else()
+  set(HogMakerBin ${CMAKE_BINARY_DIR}/tools/HogMaker)
+endif()
+
 add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
