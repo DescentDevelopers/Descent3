@@ -282,7 +282,13 @@ if(WIN32)
     @ONLY
     NEWLINE_STYLE WIN32
   )
-  set(RC_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.rc)
+  set(RC_FILE ${CMAKE_CURRENT_BINARY_DIR}/Descent3.rc)
+  configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Descent3.rc.in
+    ${RC_FILE}
+    @ONLY
+    NEWLINE_STYLE WIN32
+  )
 endif()
 
 if(UNIX AND NOT APPLE)
