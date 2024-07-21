@@ -77,7 +77,7 @@ const char *taunt_GetErrorString(int error);
 //	Given a fully qualified wave_filename (location of a .wav) and a fully
 //	qualified outputfilename (where the .osf is to go), it will convert and
 //	compress the wav file.
-bool taunt_ImportWave(char *wave_filename, char *outputfilename);
+bool taunt_ImportWave(const char *wave_filename, const char *outputfilename);
 
 //	taunt_PlayTauntFile
 //

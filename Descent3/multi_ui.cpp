@@ -987,21 +987,16 @@ void DoMultiAllowed(void) {
   menu_wnd.Destroy();
 }
 
-void MultiDoConfigSave(void) {
-  char file[_MAX_PATH * 2];
-
-  ddio_MakePath(file, Base_directory, "custom", "settings", NULL);
+void MultiDoConfigSave() {
+  std::filesystem::path file = std::filesystem::path(Base_directory) / "custom" / "settings";
   if (DoPathFileDialog(true, file, TXT_MULTISAVESET, {"*.mps"}, 0)) {
-    if (stricmp(file + (strlen(file) - 4), ".mps") != 0)
-      strcat(file, ".mps");
+    file.replace_extension(".mps");
     MultiSaveSettings(file);
   }
 }
 
-void MultiDoConfigLoad(void) {
-  char file[_MAX_PATH * 2];
-
-  ddio_MakePath(file, Base_directory, "custom", "settings", NULL);
+void MultiDoConfigLoad() {
+  std::filesystem::path file = std::filesystem::path(Base_directory) / "custom" / "settings";
   if (DoPathFileDialog(false, file, TXT_MULTILOADSET, {"*.mps"}, PFDF_FILEMUSTEXIST))
     MultiLoadSettings(file);
 }

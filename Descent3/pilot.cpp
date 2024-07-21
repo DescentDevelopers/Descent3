@@ -1951,7 +1951,7 @@ bool CreateCRCFileName(const std::filesystem::path &src, std::filesystem::path &
 //	Takes the graphics file at the given location and imports it into the custom\graphics dir as an scaled ogf
 //	pathname	=	full path to source bitmap
 //	newfile		=	on return true is the filename of the new bitmap
-bool ImportGraphic(char *pathname, char *newfile) {
+bool ImportGraphic(const char *pathname, char *newfile) {
   ASSERT(pathname);
   if (cfexist(pathname) != CFES_ON_DISK) {
     mprintf(0, "'%s' not found\n", pathname);
@@ -2504,11 +2504,10 @@ bool PltSelectShip(pilot *Pilot) {
       Pilot->set_multiplayer_data(nullptr, oldt1, oldt2, nullptr, oldt3, oldt4);
       break;
     case ID_IMPORT: {
-      char path[_MAX_PATH];
+      std::filesystem::path path;
       char newf[_MAX_FNAME];
-      path[0] = '\0';
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ogf", "*.tga", "*.pcx", "*.iff"}, PFDF_FILEMUSTEXIST)) {
-        if (ImportGraphic(path, newf)) {
+        if (ImportGraphic(path.u8string().c_str(), newf)) {
           // update the listbox
           if (!UpdateGraphicsListbox(custom_list, newf))
             goto ship_id_err;
@@ -2518,10 +2517,9 @@ bool PltSelectShip(pilot *Pilot) {
       }
     } break;
     case ID_GETANIM: {
-      char path[_MAX_PATH];
-      path[0] = '\0';
+      std::filesystem::path path;
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.ifl"}, PFDF_FILEMUSTEXIST)) {
-        int handle = AllocLoadIFLVClip(IGNORE_TABLE(path), SMALL_TEXTURE, 1);
+        int handle = AllocLoadIFLVClip(IGNORE_TABLE(path.u8string().c_str()), SMALL_TEXTURE, 1);
 
         if (handle != -1) {
           // change the file extension
@@ -2616,20 +2614,15 @@ bool PltSelectShip(pilot *Pilot) {
     case ID_IMPORTSOUND: {
       // Import the sound, set it's sample to xx.xKhz and xbit depth, attach the CRC to the filename
       // and place in custom/sounds.  Then update the audio taunt combo boxes
-      char path[_MAX_PATH];
-      path[0] = '\0';
+      std::filesystem::path path;
       if (DoPathFileDialog(false, path, TXT_CHOOSE, {"*.wav"}, PFDF_FILEMUSTEXIST)) {
         std::filesystem::path dpath;
-        char filename[_MAX_PATH];
-        char tempfile[_MAX_PATH];
-
-        ddio_SplitPath(path, nullptr, filename, nullptr);
-        strcat(filename, ".osf");
-        ddio_MakePath(tempfile, LocalCustomSoundsDir, filename, NULL);
+        std::filesystem::path filename = path.filename().replace_extension(".osf");
+        std::filesystem::path tempfile = std::filesystem::path(LocalCustomSoundsDir) / filename;
 
         // import the sound
-        mprintf(0, "Importing: '%s'->'%s'\n", path, tempfile);
-        if (taunt_ImportWave(path, tempfile)) {
+        mprintf(0, "Importing: '%s'->'%s'\n", path.u8string().c_str(), tempfile.u8string().c_str());
+        if (taunt_ImportWave(path.u8string().c_str(), tempfile.u8string().c_str())) {
           // success
 
           // check file size...make sure it isn't too big
