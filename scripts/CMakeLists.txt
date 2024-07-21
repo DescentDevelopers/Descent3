@@ -90,13 +90,13 @@ foreach(SCRIPT ${SCRIPTS})
   endif()
 endforeach()
 
-include(HogMaker)
-MakeHog(
-  TARGET HogFull
-  OUTPUT "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/d3-${HOG_NAME}.hog"
-  INPUT_FILE "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/d3-${HOG_NAME}-fullhog.txt"
-  SEARCH_PATH "$<TARGET_FILE_DIR:AIGame>"
-  DEPENDS ${SCRIPTS}
+add_custom_target(HogFull
+  COMMAND ${HogMakerBin}
+    "${D3_GENERATED_FILES_OUTPUT_DIRECTORY}/d3-${HOG_NAME}.hog"
+    "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/d3-${HOG_NAME}-fullhog.txt"
+    "$<TARGET_FILE_DIR:AIGame>"
+  DEPENDS ${SCRIPTS} HogMaker data/fullhog/d3-${HOG_NAME}-fullhog.txt
+  COMMENT "Generate fullhog/d3-${HOG_NAME}.hog"
 )
 
 install(
@@ -106,7 +106,7 @@ install(
 
 # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
 #	add_custom_target(HogLinuxDemo
-#		COMMAND $<TARGET_FILE:HogMaker>
+#		COMMAND ${HogMakerBin}
 #     "${CMAKE_BINARY_DIR}/scripts/data/demohog/d3-${HOG_NAME}.hog"
 #     "${CMAKE_BINARY_DIR}/scripts/data/demohog/d3-${HOG_NAME}-demohog.txt"
 #     "${CMAKE_BINARY_DIR}/scripts/"
