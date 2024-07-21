@@ -19,12 +19,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 add_custom_target(Direct_TCP_IP_Hog
-  COMMAND $<TARGET_FILE:HogMaker>
+  COMMAND ${HogMakerBin}
   "$<TARGET_FILE_DIR:Descent3>/online/Direct TCP~IP.d3c"
   "${CMAKE_SOURCE_DIR}/netcon/lanclient/TCP_IP.d3c.txt"
   "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/"
   "$<TARGET_FILE_DIR:Direct_TCP_IP>"
-
   DEPENDS Direct_TCP_IP HogMaker
   COMMENT "Generate 'Direct TCP~IP.d3c'"
 )

@@ -96,7 +96,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 add_custom_target(HogFull
-  COMMAND $<TARGET_FILE:HogMaker>
+  COMMAND ${HogMakerBin}
     "$<TARGET_FILE_DIR:Descent3>/d3-${HOG_NAME}.hog"
     "${CMAKE_SOURCE_DIR}/scripts/data/fullhog/d3-${HOG_NAME}-fullhog.txt"
     "$<TARGET_FILE_DIR:AIGame>"
@@ -109,7 +109,7 @@ install(FILES "$<TARGET_FILE_DIR:Descent3>/d3-${HOG_NAME}.hog" DESTINATION ${CMA
 
 # FIXME: there may be only one d3-linux.hog, need deal with demo somehow.
 #	add_custom_target(HogLinuxDemo
-#		COMMAND $<TARGET_FILE:HogMaker>
+#		COMMAND ${HogMakerBin}
 #     "${CMAKE_BINARY_DIR}/scripts/data/demohog/d3-${HOG_NAME}.hog"
 #     "${CMAKE_BINARY_DIR}/scripts/data/demohog/d3-${HOG_NAME}-demohog.txt"
 #     "${CMAKE_BINARY_DIR}/scripts/"
