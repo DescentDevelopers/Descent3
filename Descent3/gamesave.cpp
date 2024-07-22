@@ -399,7 +399,7 @@ void SaveGameDialog() {
   // create savegame directory if it didn't exist before.
   std::error_code ec;
   if (!std::filesystem::create_directories(savegame_dir, ec)) {
-    if (!ec) {
+    if (ec) {
       DoMessageBox(TXT_ERROR, TXT_ERRCREATEDIR, MSGBOX_OK);
       return;
     }
