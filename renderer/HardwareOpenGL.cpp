@@ -290,7 +290,6 @@ void opengl_SetDefaults() {
   dglEnable(GL_SCISSOR_TEST);
   dglScissor(0, 0, gpu_state.screen_width, gpu_state.screen_height);
   dglDisable(GL_SCISSOR_TEST);
-  dglDepthRange(0.0f, 1.0f);
 
   if (UseMultitexture) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
