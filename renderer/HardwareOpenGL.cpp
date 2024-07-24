@@ -152,19 +152,14 @@ static GLuint GOpenGLFBOHeight = 0;
 
 
 // returns true if the passed in extension name is supported
-bool opengl_CheckExtension(const char *extName) {
-  const char *p = (const char *)dglGetString(GL_EXTENSIONS);
-  int extNameLen = strlen(extName);
-  const char *end = p + strlen(p);
-
-  while (p < end) {
-    int n = strcspn(p, " ");
-    if ((extNameLen == n) && (strncmp(extName, p, n) == 0))
+bool opengl_CheckExtension(std::string_view extName) {
+  GLint numExtensions;
+  dglGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+  for (GLint i = 0; i < numExtensions; i++) {
+    if (extName == reinterpret_cast<char const*>(dglGetStringi(GL_EXTENSIONS, i))) {
       return true;
-
-    p += (n + 1);
+    }
   }
-
   return false;
 }
 
@@ -390,6 +385,9 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
   Uint32 flags = SDL_WINDOW_OPENGL;
 
   if (fullscreen) {
