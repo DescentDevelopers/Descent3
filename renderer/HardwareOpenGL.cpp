@@ -111,12 +111,6 @@ extern int gpu_last_uploaded;
 extern float gpu_Alpha_factor;
 extern float gpu_Alpha_multiplier;
 
-#if defined(_USE_OGL_ACTIVE_TEXTURES)
-PFNGLACTIVETEXTUREARBPROC dglActiveTextureARB = NULL;
-PFNGLCLIENTACTIVETEXTUREARBPROC dglClientActiveTextureARB = NULL;
-PFNGLMULTITEXCOORD4FARBPROC dglMultiTexCoord4f = NULL;
-#endif
-
 uint16_t *OpenGL_bitmap_remap = NULL;
 uint16_t *OpenGL_lightmap_remap = NULL;
 uint8_t *OpenGL_bitmap_states = NULL;
@@ -156,75 +150,6 @@ static GLuint GOpenGLRBODepth = 0;
 static GLuint GOpenGLFBOWidth = 0;
 static GLuint GOpenGLFBOHeight = 0;
 
-
-#if 0
-int checkForGLErrors( const char *file, int line )
-{
-  /*
-  int errors = 0 ;
-  int counter = 0 ;
-  static int errcnt = 0;
-  if(!dglGetError)
-    return 0;
-  while ( counter < 1000 )
-    {
-      GLenum x = dglGetError() ;
-
-      if ( x == GL_NO_ERROR )
-        return errors ;
-
-      printf( "%s:%d OpenGL error: %s [%08x]\n", file,line, gluErrorString ( x ), errcnt++ ) ;
-      errors++ ;
-      counter++ ;
-    }
-  */
-  const char *sdlp = SDL_GetError();
-  if(sdlp && *sdlp)
-    mprintf(0,"SDL: %s",sdlp);
-	return 1;
-}
-#endif
-
-// Sets up multi-texturing using ARB extensions
-void opengl_GetDLLFunctions(void) {
-#if defined(WIN32)
-  dglActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)dwglGetProcAddress("glActiveTextureARB");
-  if (!dglActiveTextureARB)
-    goto dll_error;
-
-  dglClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)dwglGetProcAddress("glClientActiveTextureARB");
-  if (!dglClientActiveTextureARB)
-    goto dll_error;
-
-  dglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)dwglGetProcAddress("glMultiTexCoord4f");
-  if (!dglMultiTexCoord4f)
-    goto dll_error;
-#else
-#define mod_GetSymbol(x, funcStr, y) __SDL_mod_GetSymbol(funcStr)
-
-  dglActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glActiveTextureARB", 255);
-  dglClientActiveTextureARB =
-      (PFNGLCLIENTACTIVETEXTUREARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glClientActiveTextureARB", 255);
-  dglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glMultiTexCoord4f", 255);
-  if (!dglMultiTexCoord4f) {
-    dglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glMultiTexCoord4fARB", 255);
-  }
-  if (dglActiveTextureARB == NULL || dglClientActiveTextureARB == NULL || dglMultiTexCoord4f == NULL) {
-    goto dll_error;
-  }
-
-#undef mod_GetSymbol
-#endif
-
-  UseMultitexture = true;
-  return;
-
-dll_error:
-  dglActiveTextureARB = NULL;
-  dglClientActiveTextureARB = NULL;
-  dglMultiTexCoord4f = NULL;
-  UseMultitexture = false;
-}
 
 // returns true if the passed in extension name is supported
 bool opengl_CheckExtension(const char *extName) {
@@ -498,49 +423,24 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     }
   }
 
+  try {
+    LoadGLFnPtrs();
+  } catch (std::exception const& ex) {
+    // TODO: more raii-esque construction and cleanup here
+    SDL_GL_DeleteContext(GSDLGLContext);
+    GSDLGLContext = nullptr;
+    SDL_DestroyWindow(GSDLWindow);
+    GSDLWindow = nullptr;
+    mprintf(0, "Error loading opengl dll: %s\n", ex.what());
+    mod_FreeModule(&OpenGLDLLInst);
+    OpenGLDLLHandle = nullptr;
+    return 0;
+  }
+
   // clear the window framebuffer to start.
   dglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   dglClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   SDL_GL_SwapWindow(GSDLWindow);
-
-  bool fbo_available = true;
-  if (!SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object")) {
-    mprintf(0, "OpenGL: GL_EXT_framebuffer_object extension is not available");
-    fbo_available = false;
-  }
-
-  if (!SDL_GL_ExtensionSupported("GL_EXT_framebuffer_blit")) {
-      mprintf(0, "OpenGL: GL_EXT_framebuffer_blit extension is not available");
-      fbo_available = false;
-  }
-
-  if (fbo_available) {
-    #define LOOKUP_GL_SYM(x) \
-      dgl##x = (gl##x##_fp) SDL_GL_GetProcAddress("gl" #x); \
-      if (dgl##x == NULL) { \
-        mprintf(0, "OpenGL: gl%s function not found!", #x); \
-        fbo_available = false; \
-      }
-    LOOKUP_GL_SYM(GenFramebuffersEXT);
-    LOOKUP_GL_SYM(GenRenderbuffersEXT);
-    LOOKUP_GL_SYM(BindFramebufferEXT);
-    LOOKUP_GL_SYM(BindRenderbufferEXT);
-    LOOKUP_GL_SYM(RenderbufferStorageEXT);
-    LOOKUP_GL_SYM(FramebufferRenderbufferEXT);
-    LOOKUP_GL_SYM(CheckFramebufferStatusEXT);
-    LOOKUP_GL_SYM(DeleteFramebuffersEXT);
-    LOOKUP_GL_SYM(DeleteRenderbuffersEXT);
-    LOOKUP_GL_SYM(BlitFramebufferEXT);
-  }
-
-  if (!fbo_available) {
-    mprintf(0, "OpenGL: We need missing Framebuffer Object support, giving up");
-    SDL_GL_DeleteContext(GSDLGLContext);
-    SDL_DestroyWindow(GSDLWindow);
-    GSDLGLContext = NULL;
-    GSDLWindow = NULL;
-    return 0;
-  }
 
   /* Tear down the backbuffer and rebuild at new dimensions... */
   if (GOpenGLFBO) {
@@ -654,25 +554,8 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   // Get some info
   opengl_GetInformation();
 
-  mprintf(0, "Setting up multitexture...\n");
-
   // Determine if Multitexture is supported
-  bool supportsMultiTexture = opengl_CheckExtension("GL_ARB_multitexture");
-  if (!supportsMultiTexture) {
-    supportsMultiTexture = opengl_CheckExtension("GL_SGIS_multitexture");
-  }
-
-  if (FindArg("-NoMultitexture")) {
-    supportsMultiTexture = false;
-  }
-
-  if (supportsMultiTexture) {
-    // attempt to grab Multitexture functions
-    opengl_GetDLLFunctions();
-  } else {
-    // No multitexture at all
-    UseMultitexture = false;
-  }
+  UseMultitexture = !FindArg("-NoMultitexture") && dglActiveTextureARB && dglClientActiveTextureARB && dglMultiTexCoord4f;
 
   // Do we have packed pixel formats?
   OpenGL_packed_pixels = opengl_CheckExtension("GL_EXT_packed_pixels");
