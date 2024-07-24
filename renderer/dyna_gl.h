@@ -172,6 +172,7 @@ DYNAEXTERN(glFogi);
 DYNAEXTERN(glGetError);
 DYNAEXTERN(glGetIntegerv);
 DYNAEXTERN(glGetString);
+DYNAEXTERN(glGetStringi);
 DYNAEXTERN(glHint);
 DYNAEXTERN(glLoadIdentity);
 DYNAEXTERN(glLoadMatrixf);
