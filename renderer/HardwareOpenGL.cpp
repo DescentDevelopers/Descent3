@@ -112,9 +112,9 @@ extern float gpu_Alpha_factor;
 extern float gpu_Alpha_multiplier;
 
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
-PFNGLACTIVETEXTUREARBPROC oglActiveTextureARB = NULL;
-PFNGLCLIENTACTIVETEXTUREARBPROC oglClientActiveTextureARB = NULL;
-PFNGLMULTITEXCOORD4FARBPROC oglMultiTexCoord4f = NULL;
+PFNGLACTIVETEXTUREARBPROC dglActiveTextureARB = NULL;
+PFNGLCLIENTACTIVETEXTUREARBPROC dglClientActiveTextureARB = NULL;
+PFNGLMULTITEXCOORD4FARBPROC dglMultiTexCoord4f = NULL;
 #endif
 
 uint16_t *OpenGL_bitmap_remap = NULL;
@@ -188,28 +188,28 @@ int checkForGLErrors( const char *file, int line )
 // Sets up multi-texturing using ARB extensions
 void opengl_GetDLLFunctions(void) {
 #if defined(WIN32)
-  oglActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)dwglGetProcAddress("glActiveTextureARB");
-  if (!oglActiveTextureARB)
+  dglActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)dwglGetProcAddress("glActiveTextureARB");
+  if (!dglActiveTextureARB)
     goto dll_error;
 
-  oglClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)dwglGetProcAddress("glClientActiveTextureARB");
-  if (!oglClientActiveTextureARB)
+  dglClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC)dwglGetProcAddress("glClientActiveTextureARB");
+  if (!dglClientActiveTextureARB)
     goto dll_error;
 
-  oglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)dwglGetProcAddress("glMultiTexCoord4f");
-  if (!oglMultiTexCoord4f)
+  dglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)dwglGetProcAddress("glMultiTexCoord4f");
+  if (!dglMultiTexCoord4f)
     goto dll_error;
 #else
 #define mod_GetSymbol(x, funcStr, y) __SDL_mod_GetSymbol(funcStr)
 
-  oglActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glActiveTextureARB", 255);
-  oglClientActiveTextureARB =
+  dglActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glActiveTextureARB", 255);
+  dglClientActiveTextureARB =
       (PFNGLCLIENTACTIVETEXTUREARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glClientActiveTextureARB", 255);
-  oglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glMultiTexCoord4f", 255);
-  if (!oglMultiTexCoord4f) {
-    oglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glMultiTexCoord4fARB", 255);
+  dglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glMultiTexCoord4f", 255);
+  if (!dglMultiTexCoord4f) {
+    dglMultiTexCoord4f = (PFNGLMULTITEXCOORD4FARBPROC)mod_GetSymbol(OpenGLDLLHandle, "glMultiTexCoord4fARB", 255);
   }
-  if (oglActiveTextureARB == NULL || oglClientActiveTextureARB == NULL || oglMultiTexCoord4f == NULL) {
+  if (dglActiveTextureARB == NULL || dglClientActiveTextureARB == NULL || dglMultiTexCoord4f == NULL) {
     goto dll_error;
   }
 
@@ -220,9 +220,9 @@ void opengl_GetDLLFunctions(void) {
   return;
 
 dll_error:
-  oglActiveTextureARB = NULL;
-  oglClientActiveTextureARB = NULL;
-  oglMultiTexCoord4f = NULL;
+  dglActiveTextureARB = NULL;
+  dglClientActiveTextureARB = NULL;
+  dglMultiTexCoord4f = NULL;
   UseMultitexture = false;
 }
 
@@ -258,7 +258,7 @@ int opengl_MakeTextureObject(int tn) {
 
   if (UseMultitexture && Last_texel_unit_set != tn) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    oglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
     Last_texel_unit_set = tn;
 #endif
   }
@@ -311,9 +311,9 @@ int opengl_InitCache(void) {
 
   if (UseMultitexture) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 1);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
     dglTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
 #endif
   }
 
@@ -370,13 +370,13 @@ void opengl_SetDefaults() {
 
   if (UseMultitexture) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
+    dglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
     dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     dglHint(GL_FOG_HINT, GL_NICEST);
 
-    oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
 
     dglDisable(GL_TEXTURE_2D);
     dglAlphaFunc(GL_GREATER, 0);
@@ -384,7 +384,7 @@ void opengl_SetDefaults() {
     dglEnable(GL_BLEND);
     dglEnable(GL_DITHER);
     dglBlendFunc(GL_DST_COLOR, GL_ZERO);
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
 #endif
   }
 }
@@ -885,7 +885,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
 
   if (UseMultitexture && Last_texel_unit_set != tn) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    oglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
     Last_texel_unit_set = tn;
 #endif
   }
@@ -1123,7 +1123,7 @@ int opengl_MakeBitmapCurrent(int handle, int map_type, int tn) {
   if (OpenGL_last_bound[tn] != texnum) {
     if (UseMultitexture && Last_texel_unit_set != tn) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-      oglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+      dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
       Last_texel_unit_set = tn;
 #endif
     }
@@ -1157,7 +1157,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
 
   if (UseMultitexture && Last_texel_unit_set != tn) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    oglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
     Last_texel_unit_set = tn;
 #endif
   }
@@ -1204,7 +1204,7 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
     return;
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != tn) {
-    oglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
     Last_texel_unit_set = tn;
   }
 #endif
@@ -1246,8 +1246,8 @@ void gpu_SetMultitextureBlendMode(bool state) {
   OpenGL_multitexture_state = state;
 
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  oglActiveTextureARB(GL_TEXTURE1_ARB);
-  oglClientActiveTextureARB(GL_TEXTURE1_ARB);
+  dglActiveTextureARB(GL_TEXTURE1_ARB);
+  dglClientActiveTextureARB(GL_TEXTURE1_ARB);
   if (state) {
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
     dglEnable(GL_TEXTURE_2D);
@@ -1255,8 +1255,8 @@ void gpu_SetMultitextureBlendMode(bool state) {
     dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
     dglDisable(GL_TEXTURE_2D);
   }
-  oglActiveTextureARB(GL_TEXTURE0_ARB);
-  oglClientActiveTextureARB(GL_TEXTURE0_ARB);
+  dglActiveTextureARB(GL_TEXTURE0_ARB);
+  dglClientActiveTextureARB(GL_TEXTURE0_ARB);
   Last_texel_unit_set = 0;
 #endif
 }
@@ -1499,7 +1499,7 @@ void gpu_BindTexture(int handle, int map_type, int slot) {
 void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
   dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
   dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
-  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv);
 
   if (gpu_state.cur_texture_quality == 0) {
@@ -1507,7 +1507,7 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
     dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
   }
 
-  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
   dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
   // draw the data in the arrays
@@ -1515,7 +1515,7 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
 
   if (gpu_state.cur_texture_quality == 0) {
     // re-enable textures
-    oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
     dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
   }
 
@@ -1526,9 +1526,9 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
 void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
   dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
   dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
-  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv0);
-  oglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
   dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv1);
 
@@ -1578,7 +1578,7 @@ void rend_SetLighting(light_state state) {
     return; // No redundant state setting
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != 0) {
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
     Last_texel_unit_set = 0;
   }
 #endif
@@ -1626,7 +1626,7 @@ void rend_SetTextureType(texture_type state) {
     return; // No redundant state setting
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != 0) {
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
     Last_texel_unit_set = 0;
   }
 #endif
@@ -1872,7 +1872,7 @@ void rend_SetLightingState(light_state state) {
 
   if (UseMultitexture && Last_texel_unit_set != 0) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
     Last_texel_unit_set = 0;
 #endif
   }
@@ -1906,7 +1906,7 @@ void rend_SetAlphaType(int8_t atype) {
     return; // don't set it redundantly
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
   if (UseMultitexture && Last_texel_unit_set != 0) {
-    oglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
     Last_texel_unit_set = 0;
   }
 #endif
