@@ -97,6 +97,7 @@
 #include "weapon.h"
 #include "ddio.h"
 #include "psrand.h"
+#include "descent.h"
 
 extern float Gametime;
 
@@ -647,7 +648,7 @@ void ForceEffectsInit(void) {
   char path[_MAX_PATH];
 
   if (cfexist("D3Force.ifr")) {
-    ddio_MakePath(path, LocalD3Dir, "custom", "cache", "D3Force.ifr", NULL);
+    ddio_MakePath(path, Descent3_temp_directory, "D3Force.ifr", NULL);
     cf_CopyFile(path, "D3Force.ifr", 0);
     prj = ddio_ForceLoadProject(IGNORE_TABLE(path), kJoy1);
   } else {
