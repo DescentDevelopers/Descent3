@@ -3427,7 +3427,7 @@ bool DMFCBase::InputCommandHandle(char *command_string) {
           tInputCommandNode *node = m_InputCommandRootNode;
 
           CFILE *file;
-          DLLOpenCFILE(&file,"C:\\DMFCHelp.txt","wt");
+          DLLOpenCFILE(&file,std::filesystem::path("C:\\DMFCHelp.txt"),"wt");
 
           if(!file)
                   return false;
@@ -4685,7 +4685,7 @@ MenuItem *DMFCBase::CreateMenuItem(const char *title, char type, uint8_t flags, 
 
 void ParseHostsFile(char *filename, tHostsNode **root) {
   CFILE *file;
-  DLLOpenCFILE(&file, filename, "rt");
+  DLLOpenCFILE(&file, std::filesystem::path(filename), "rb");
 
   tHostsNode *curr = *root;
 
@@ -4925,7 +4925,7 @@ void DMFCBase::ParseStartupScript(void) {
     DLLddio_MakePath(path, LocalD3Dir, "netgames", "autoexec.dmfc", NULL);
   }
 
-  DLLOpenCFILE(&file, path, "rt");
+  DLLOpenCFILE(&file, std::filesystem::path(path), "rt");
   if (!file)
     return;
 

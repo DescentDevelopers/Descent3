@@ -634,7 +634,7 @@ void DisplayHUDScores(struct tHUDItem *hitem) {
 void SaveStatsToFile(char *filename) {
   /*
   CFILE *file;
-  DLLOpenCFILE(&file,filename,"wt");
+  DLLOpenCFILE(&file,std::filesystem::path(filename),"wt");
   if(!file){
           mprintf(0,"Unable to open output file\n");
           return;

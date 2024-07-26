@@ -289,7 +289,7 @@ void CRegistry::Export() {
   tKey *curr, *next;
   curr = next = root;
   CFILE *file;
-  DLLOpenCFILE(&file, name, "wt");
+  DLLOpenCFILE(&file, std::filesystem::path(name), "wt");
 
   if (!file)
     return;
@@ -340,7 +340,7 @@ bool CRegistry::Import() {
   CFILE *file;
   char *ptr;
 
-  DLLOpenCFILE(&file, name, "rt");
+  DLLOpenCFILE(&file, std::filesystem::path(name), "rt");
 
   if (!file) {
     mprintf(0, "Unable to import %s\n", name);

@@ -620,7 +620,7 @@ quick_exit:;
 
 void SaveStatsToFile(char *filename) {
   CFILE *file;
-  DLLOpenCFILE(&file, filename, "wt");
+  DLLOpenCFILE(&file, std::filesystem::path(filename), "wt");
   if (!file) {
     DLLmprintf(0, "Unable to open output file\n");
     return;
