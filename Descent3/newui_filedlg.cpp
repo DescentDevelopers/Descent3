@@ -101,14 +101,12 @@
  * $NoKeywords: $
  */
 
-#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 
 #include "cfile.h"
 #include "ddio.h"
 #include "game.h"
-#include "mem.h"
 #include "mono.h"
 #include "newui.h"
 #include "pstring.h"
@@ -201,26 +199,27 @@ void FileSelectCallback(int index) {
   fdlg_working_sheet->UpdateChanges();
 }
 
-bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char *title,
-                      const std::vector<std::string> &wildc, int flags) {
-#define HS_CANCEL 0
-#define HS_OK 1
-#define HS_UPDIR 0
 #define ED_WILDCARD 0
 #define ED_FILENAME 1
+
+#define ID_ROOTPATH 24
 #define ID_LISTBOX 25
 #define ID_UPDIR 26
 #define ID_WILDCARD 27
 #define ID_FILENAME 28
 #define ID_CANCEL UID_CANCEL
 #define ID_OK UID_OK
+
+bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char *title,
+                      const std::vector<std::string> &wildc, int flags) {
   newuiTiledWindow window;
   newuiSheet *sheet;
-  newuiListBox *listbox;
+  newuiListBox *listbox, *rootpathlistbox;
   char *edits[2];
 
   std::filesystem::path working_path;
   std::filesystem::path working_file;
+  std::filesystem::path working_root;
 
   if (!title)
     return false;
@@ -229,6 +228,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
 
   std::vector<std::string> wildcards = wildc;
 
+  working_root = path.root_path();
   // figure out the correct path
   if (!std::filesystem::is_directory(path)) {
     // try to use last good path
@@ -240,11 +240,17 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
   }
 
   // Create all the UI Items
-  window.Create(title, 0, 0, 384, 288);
+  window.Create(title, 0, 0, 380, 280);
   fdlg_working_sheet = sheet = window.GetSheet();
 
-  sheet->NewGroup(nullptr, 10, 0);
-  listbox = sheet->AddListBox(268, 100, ID_LISTBOX);
+  sheet->NewGroup(nullptr, 0, 0);
+  rootpathlistbox = sheet->AddListBox(60, 124, ID_ROOTPATH);
+  for (auto const &root : ddio_GetSysRoots()) {
+    rootpathlistbox->AddItem(root.u8string().c_str());
+  }
+
+  sheet->NewGroup(nullptr, 80, 0);
+  listbox = sheet->AddListBox(224, 124, ID_LISTBOX);
 
   sheet->NewGroup(nullptr, 0, 145);
   edits[ED_FILENAME] = sheet->AddEditBox(nullptr, _MAX_PATH, 300, ID_FILENAME);
@@ -298,7 +304,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
             if (*file) {
               working_file.clear();
 
-              // ok the user double clicked on a directory
+              // ok the user double-clicked on a directory
               // convert file without the brackets
               file[strlen(file) - 1] = '\0';
               if (!working_path.empty())
@@ -332,10 +338,24 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
       ret = false;
       exit_menu = true;
       break;
+    case ID_ROOTPATH: {
+      char root[_MAX_PATH];
+      int selection = rootpathlistbox->GetCurrentIndex();
+      if ((selection >= 0) && (rootpathlistbox->GetCurrentItem(root, _MAX_PATH))) {
+        if (*root) {
+          if (std::filesystem::path(root) != working_root) {
+            // root has been changed, update file list
+            working_root = root;
+            UpdateFileList(listbox, working_root, wildcards);
+          }
+        }
+      }
+      break;
+    }
     case ID_LISTBOX: {
       std::filesystem::path newpath;
       char file[_MAX_PATH];
-      // check to see if the double clicked on a dir
+      // check to see if the double-clicked on a dir
       int selection = listbox->GetCurrentIndex();
 
       if ((selection >= 0) && (listbox->GetCurrentItem(file, _MAX_PATH))) {
@@ -343,21 +363,21 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
           if (IsDirectoryItem(file)) {
             working_file.clear();
 
-            // ok the user double clicked on a directory
+            // ok the user double-clicked on a directory
             // convert file without the brackets
             file[strlen(file) - 1] = '\0';
             if (!working_path.empty())
-              newpath = working_path / (file + 2);
+              newpath = std::filesystem::canonical(working_path / (file + 2));
             else
-              newpath = (file + 2);
+              newpath = std::filesystem::canonical(file + 2);
 
             UpdateFileList(listbox, newpath, wildcards);
-            working_path = std::filesystem::canonical(newpath);
+            working_path = newpath;
 
             strncpy(edits[ED_FILENAME], working_path.u8string().c_str(), _MAX_PATH - 1);
             edits[ED_FILENAME][_MAX_PATH - 1] = '\0';
           } else {
-            // double click on a file
+            // double-click on a file
             working_file = file;
             FileSelectCallback(selection);
             strcpy(file, edits[ED_FILENAME]);
@@ -424,6 +444,8 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
         }
       }
     } break;
+    default:
+      mprintf(0, "No operation in DoPathFileDialog()!\n");
     }
   }
 
@@ -449,27 +471,6 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
   FDlg_EnableWaitMessage(true);
   lb->RemoveAll();
 
-  // if path is NULL or 0 length string then just list the directories
-  // TODO: check root paths in Windows
-  if (path.empty()) {
-    char *roots[30];
-    int rootcount = ddio_GetFileSysRoots((char **)&roots, 30);
-    if (!rootcount) {
-      FDlg_EnableWaitMessage(false);
-      return;
-    }
-    char tempbuffer[5];
-    for (int i = 0; i < rootcount; i++) {
-      if (roots[i]) {
-        snprintf(tempbuffer, sizeof(tempbuffer), " [%s]", roots[i]);
-        lb->AddItem(tempbuffer);
-        mem_free(roots[i]);
-      }
-    }
-    FDlg_EnableWaitMessage(false);
-    return;
-  }
-
   if (!std::filesystem::is_directory(path)) {
     // invalid directory/path
     DoMessageBox(TXT_ERROR, TXT_ERRPATHNOTVALID, MSGBOX_OK);
@@ -477,21 +478,26 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
     return;
   }
 
-  std::vector<std::filesystem::path> dirs;
+  std::vector<std::filesystem::path> dirs = {".."};
   std::vector<std::filesystem::path> files;
 
-  for (auto const &dir_entry : std::filesystem::directory_iterator{path}) {
-    if (std::filesystem::is_directory(dir_entry)) {
-      dirs.push_back(dir_entry.path().filename());
-    }
-    if (std::filesystem::is_regular_file(dir_entry)) {
-      for (const auto &wildcard : wildcards) {
-        if (stricmp(dir_entry.path().extension().u8string().c_str(),
-                    std::filesystem::path(wildcard).extension().u8string().c_str()) == 0) {
-          files.push_back(dir_entry.path().filename());
+  try {
+    for (auto const &dir_entry : std::filesystem::directory_iterator{path}) {
+      if (std::filesystem::is_directory(dir_entry)) {
+        dirs.push_back(dir_entry.path().filename());
+      }
+      if (std::filesystem::is_regular_file(dir_entry)) {
+        for (const auto &wildcard : wildcards) {
+          if (stricmp(dir_entry.path().extension().u8string().c_str(),
+                      std::filesystem::path(wildcard).extension().u8string().c_str()) == 0) {
+            files.push_back(dir_entry.path().filename());
+          }
         }
       }
     }
+  } catch (std::exception &e) {
+    DoMessageBox(TXT_ERROR, TXT_ERRPATHNOTVALID, MSGBOX_OK);
+    mprintf(0, "Error iterating directory %s: %s\n", path.u8string().c_str(), e.what());
   }
 
   if (dirs.size() + files.size() == 0) {
@@ -499,7 +505,6 @@ void UpdateFileList(newuiListBox *lb, const std::filesystem::path &path, const s
     return;
   }
 
-  // lbfilelist = new UITextItem[dircount+total_files];
   char tempbuffer[_MAX_PATH + 1];
 
   for (auto const &dir : dirs) {
