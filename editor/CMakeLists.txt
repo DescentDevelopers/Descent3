@@ -312,6 +312,8 @@ set(SOURCE
     ../descent3/CtlCfgElem.cpp
     ../descent3/ctlconfig.cpp
     ../descent3/D3ForceFeedback.cpp
+    ../Descent3/d3movie.cpp
+    ../Descent3/d3music.cpp
     ../descent3/d3serial.cpp
     ../descent3/damage.cpp
     ../descent3/debuggraph.cpp
@@ -366,7 +368,6 @@ set(SOURCE
     ../descent3/multi_save_setting.cpp
     ../descent3/multi_server.cpp
     ../descent3/multi_ui.cpp
-    ../Descent3/d3music.cpp
     ../descent3/NewPyroGauges.cpp
     ../descent3/newui.cpp
     ../descent3/newui_core.cpp
@@ -575,7 +576,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} /Zc:forScope-")
 
 target_link_libraries(Descent3Editor PRIVATE
   2dlib AudioEncode bitmap cfile dd_video ddebug ddio libmve libacm
-  fix grtext manage mem misc model module movie stream_audio
+  fix grtext manage mem misc model module stream_audio
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
 
