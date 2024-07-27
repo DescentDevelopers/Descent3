@@ -55,5 +55,5 @@ grHardwareSurface::~grHardwareSurface() {}
 
 bool grHardwareSurface::create(int w, int h, int bpp, unsigned flags, const char *name) {
   grSurface::create(w, h, bpp, SURFTYPE_GENERIC, flags, name);
-  return 1;
+  return true;
 }

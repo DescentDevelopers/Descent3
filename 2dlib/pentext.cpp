@@ -83,9 +83,8 @@
 
 #include <cstdio>
 #include <cstdarg>
+#include <cstring>
 
-#include <string.h>
-#include <assert.h>
 #include "gr.h"
 #include "mono.h"
 #include "renderer.h"

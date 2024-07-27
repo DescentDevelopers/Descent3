@@ -86,15 +86,14 @@
  */
 
 #include <algorithm>
+#include <cstdlib>
+#include <cstring>
 
-#include <string.h>
-#include <stdlib.h>
-
+#include "bitmap.h"
 #include "lib2d.h"
 #include "pserror.h"
-#include "bitmap.h"
-#include "texture.h"
 #include "renderer.h"
+#include "texture.h"
 
 static inline unsigned XLAT_RGB_TO_16(ddgr_color c) {
   uint8_t r, g, b;
@@ -105,9 +104,9 @@ static inline unsigned XLAT_RGB_TO_16(ddgr_color c) {
   return (((r >> 3) << 10) + ((g >> 3) << 5) + (b >> 3));
 }
 
-ddgr_surface_node *grSurface::surf_list = NULL;     // the surface list
-ddgr_surface_node *grSurface::surf_list_cur = NULL; // current node on list.
-ddgr_surface *grSurface::scratch_mem_surf = NULL;
+ddgr_surface_node *grSurface::surf_list = nullptr;     // the surface list
+ddgr_surface_node *grSurface::surf_list_cur = nullptr; // current node on list.
+ddgr_surface *grSurface::scratch_mem_surf = nullptr;
 
 void grSurface::init_system() {
   //	allocate our scratch memory surface used in uniblt
@@ -122,11 +121,11 @@ void grSurface::init_system() {
 void grSurface::close_system() {
   //	cleanup our scratch memory surface for blt
   if (grSurface::scratch_mem_surf) {
-    if (grSurface::scratch_mem_surf->obj != NULL)
+    if (grSurface::scratch_mem_surf->obj != nullptr)
       gr_mem_surf_Destroy(grSurface::scratch_mem_surf);
 
     delete grSurface::scratch_mem_surf;
-    grSurface::scratch_mem_surf = NULL;
+    grSurface::scratch_mem_surf = nullptr;
   }
 }
 
@@ -458,7 +457,7 @@ char *grSurface::lock(int *rowsize) {
   *rowsize = m_DataRowsize;
 
   if (!grerr)
-    return NULL;
+    return nullptr;
 
   surf_Locked++; // increment lock counter for this surface
 
@@ -487,7 +486,7 @@ char *grSurface::lock(int x, int y, int *rowsize) {
 
   *rowsize = m_DataRowsize;
   if (!grerr)
-    return NULL;
+    return nullptr;
 
   /*	calculate the adjusted data pointer based off of x,y,bpp */
   char *data = m_OrigDataPtr;
@@ -732,13 +731,13 @@ void grSurface::xlat32_16(char *data, int w, int h) {
 void grSurface::add_to_list(ddgr_surface *sf) {
   ddgr_surface_node *node;
 
-  ASSERT(sf != NULL);
+  ASSERT(sf != nullptr);
 
   if (!grSurface::surf_list_cur) {
     //	first surface on list
     node = new ddgr_surface_node;
     node->sf = sf;
-    node->prev = NULL;
+    node->prev = nullptr;
     grSurface::surf_list = grSurface::surf_list_cur = node;
   } else {
     //	next surface on list.
@@ -755,12 +754,12 @@ void grSurface::remove_from_list(ddgr_surface *sf) {
   ddgr_surface_node *node, *next_node;
 
   ASSERT(grSurface::surf_list_cur);
-  ASSERT(sf != NULL);
+  ASSERT(sf != nullptr);
 
   //	node is current node.  next node is node after it on the list.  since we are
   //	going from end to beginning, this may confuse you.
   node = grSurface::surf_list_cur;
-  next_node = NULL; // grSurface::surf_list_cur should be at end of list, so no next node
+  next_node = nullptr; // grSurface::surf_list_cur should be at end of list, so no next node
 
   while (node) {
     if (node->sf == sf) {
@@ -771,7 +770,7 @@ void grSurface::remove_from_list(ddgr_surface *sf) {
       }
       delete node;
 
-      node = NULL; // break out of loop
+      node = nullptr; // break out of loop
     } else {
       //	go down one node.
       next_node = node;
