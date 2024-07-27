@@ -228,7 +228,7 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
 
   std::vector<std::string> wildcards = wildc;
 
-  working_root = path.root_path();
+  working_root = path.root_name();
   // figure out the correct path
   if (!std::filesystem::is_directory(path)) {
     // try to use last good path
@@ -345,8 +345,9 @@ bool DoPathFileDialog(bool save_dialog, std::filesystem::path &path, const char 
         if (*root) {
           if (std::filesystem::path(root) != working_root) {
             // root has been changed, update file list
-            working_root = root;
-            UpdateFileList(listbox, working_root, wildcards);
+            working_root = std::filesystem::path(root);
+            working_path = working_root / "/";
+            UpdateFileList(listbox, working_path, wildcards);
           }
         }
       }
