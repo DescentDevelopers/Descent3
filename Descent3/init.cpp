@@ -1026,9 +1026,6 @@ static bool Graphics_init = false;
 static bool Title_bitmap_init = false;
 uint8_t Use_motion_blur = 0;
 
-// The "root" directory of the D3 file tree
-std::filesystem::path Base_directory;
-
 extern int Min_allowed_frametime;
 
 extern bool Render_powerup_sparkles;
@@ -1396,8 +1393,9 @@ void InitIOSystems(bool editor) {
   // Set the base directory
   int dirarg = FindArg("-setdir");
   int exedirarg = FindArg("-useexedir");
+  std::filesystem::path initial_base_directory;
   if (dirarg) {
-    Base_directory = GameArgs[dirarg + 1];
+    initial_base_directory = GameArgs[dirarg + 1];
   } else if (exedirarg) {
     char exec_path[_MAX_PATH];
     memset(exec_path, 0, sizeof(exec_path));
@@ -1406,13 +1404,14 @@ void InitIOSystems(bool editor) {
       Error("Failed to get executable path\n");
     } else {
       std::filesystem::path executablePath(exec_path);
-      Base_directory = executablePath.parent_path();
+      initial_base_directory = executablePath.parent_path();
       LOG_INFO << "Using working directory of " << Base_directory;
     }
   } else {
-    Base_directory = std::filesystem::current_path();
+    initial_base_directory = std::filesystem::current_path();
   }
 
+  cf_SetBaseDirectory(initial_base_directory);
   ddio_SetWorkingDir(Base_directory.u8string().c_str());
 
   Descent->set_defer_handler(D3DeferHandler);

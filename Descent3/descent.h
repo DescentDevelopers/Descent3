@@ -181,9 +181,6 @@ extern bool Descent_overrided_intro;
 // How long the a mission name can be
 #define MSN_NAMELEN 32
 
-// The "root" directory of the D3 file tree
-extern std::filesystem::path Base_directory;
-
 // Variable to preserve current path. TODO: redundant?
 extern std::filesystem::path orig_pwd;
 

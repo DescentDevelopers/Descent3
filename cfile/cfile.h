@@ -140,6 +140,14 @@ enum CFileExitStatus {
   CFES_IN_LIBRARY,
 };
 
+// The "root" directory of the D3 file tree
+extern std::filesystem::path Base_directory;
+
+/* This function should be called at least once before you use anything else
+ * from this module.
+ */
+void cf_SetBaseDirectory(const std::filesystem::path &base_directory);
+
 // See if a file is in a hog
 bool cf_IsFileInHog(const std::filesystem::path &filename, const std::filesystem::path &hogname);
 
