@@ -220,6 +220,7 @@ set(CPPS
   multi_save_setting.cpp
   multi_server.cpp
   multi_ui.cpp
+  d3music.cpp
   NewPyroGauges.cpp
   newui.cpp
   newui_core.cpp
@@ -296,7 +297,7 @@ file(GLOB_RECURSE INCS "../lib/*.h")
 
 add_executable(Descent3 WIN32 ${HEADERS} ${CPPS} ${INCS} ${MANIFEST})
 target_link_libraries(Descent3 PRIVATE
-  2dlib AudioEncode bitmap cfile d3music dd_video ddebug ddio libmve libacm
+  2dlib AudioEncode bitmap cfile dd_video ddebug ddio libmve libacm
   fix grtext manage mem misc model module movie stream_audio linux SDL2::SDL2
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})

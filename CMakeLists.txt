@@ -191,7 +191,6 @@ add_subdirectory(2dlib)
 add_subdirectory(AudioEncode)
 add_subdirectory(bitmap)
 add_subdirectory(cfile)
-add_subdirectory(d3music)
 add_subdirectory(ddebug)
 
 if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
