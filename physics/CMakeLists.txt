@@ -10,5 +10,6 @@ target_link_libraries(physics PRIVATE
   ddio
   mem
   misc
+  model
   sndlib
 )

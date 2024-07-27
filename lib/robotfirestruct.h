@@ -19,9 +19,10 @@
 #ifndef ROBOTFIRESTRUCT_H_
 #define ROBOTFIRESTRUCT_H_
 
-#include "pstypes.h"
-#include "vecmat.h"
+#include <cstdint>
+
 #include "robotfirestruct_external.h"
+#include "vecmat.h"
 
 // NOTE: CHANGE gunbattery.h (IN POFGEN PROJECT) if constants are changed
 // NOTE: Robots are limited to the number of wb configurations of the player.  This seem like an

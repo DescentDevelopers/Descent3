@@ -85,7 +85,6 @@ set(HEADERS
     ../descent3/newui_core.h
     ../descent3/object.h
     ../descent3/object_external.h
-    ../descent3/object_external_struct.h
     ../descent3/object_lighting.h
     ../descent3/objinfo.h
     ../descent3/objinit.h
@@ -108,8 +107,6 @@ set(HEADERS
     ../descent3/resource.h
     ../descent3/robot.h
     ../descent3/robotfire.h
-    ../descent3/robotfirestruct.h
-    ../descent3/robotfirestruct_external.h
     ../descent3/room.h
     ../descent3/room_external.h
     ../descent3/scorch.h

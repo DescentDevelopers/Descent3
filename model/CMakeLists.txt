@@ -1,11 +1,16 @@
-set(HEADERS)
 set(CPPS
   newstyle.cpp
-  polymodel.cpp)
+  polymodel.cpp
+)
 
-add_library(model STATIC ${HEADERS} ${CPPS})
+add_library(model STATIC ${CPPS})
 target_link_libraries(model PRIVATE
   ddio
   mem
   misc
+)
+target_include_directories(model PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/model
+  >
 )

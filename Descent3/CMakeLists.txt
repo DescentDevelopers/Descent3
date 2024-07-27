@@ -85,7 +85,6 @@ set(HEADERS
   newui_core.h
   object.h
   object_external.h
-  object_external_struct.h
   object_lighting.h
   objinfo.h
   objinit.h
@@ -108,8 +107,6 @@ set(HEADERS
   resource.h
   robot.h
   robotfire.h
-  robotfirestruct.h
-  robotfirestruct_external.h
   room.h
   room_external.h
   scorch.h

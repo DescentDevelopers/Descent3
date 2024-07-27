@@ -53,13 +53,15 @@
  * $NoKeywords: $
  */
 
-#ifndef __POLYMODEL_EXTERNAL_H_
-#define __POLYMODEL_EXTERNAL_H_
+#ifndef POLYMODEL_EXTERNAL_H_
+#define POLYMODEL_EXTERNAL_H_
 
-#include "vecmat_external.h"
-#include "pstypes.h"
+#include <cstdint>
+
 #include "grdefs.h"
 #include "manage_external.h"
+#include "robotfirestruct.h"
+#include "vecmat_external.h"
 
 #define MAX_POLY_MODELS 1200
 

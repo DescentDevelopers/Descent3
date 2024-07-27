@@ -438,28 +438,28 @@
  *
  */
 
-#include "viseffect.h"
-#include "fireball.h"
-#include "terrain.h"
-#include "game.h"
-#include "room.h"
-#include "vclip.h"
-#include "gametexture.h"
-#include "object.h"
+#include <algorithm>
+#include <cstdlib>
 #include <memory.h>
-#include <stdlib.h>
-#include "PHYSICS.H"
-#include "weapon.h"
-#include "lighting.h"
-#include "dedicated_server.h"
-#include "player.h"
+
 #include "config.h"
-#include "weather.h"
+#include "dedicated_server.h"
+#include "fireball.h"
+#include "game.h"
+#include "gametexture.h"
+#include "lighting.h"
+#include "mem.h"
+#include "object.h"
+#include "PHYSICS.H"
+#include "player.h"
 #include "polymodel.h"
 #include "psrand.h"
-#include "mem.h"
-
-#include <algorithm>
+#include "room.h"
+#include "terrain.h"
+#include "vclip.h"
+#include "viseffect.h"
+#include "weapon.h"
+#include "weather.h"
 
 // DAJ vis_effect VisEffects[max_vis_effects];
 // DAJ uint16_t VisDeadList[max_vis_effects];
