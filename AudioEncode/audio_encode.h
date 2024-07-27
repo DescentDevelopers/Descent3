@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@
  * $NoKeywords: $
  */
 
-#ifndef __AUDIO_ENCODE_H_
-#define __AUDIO_ENCODE_H_
+#ifndef AUDIO_ENCODE_H_
+#define AUDIO_ENCODE_H_
 
 // input_levels (default 7 or for 2k total)
 // input_samples (default 16 or for 2k total)
@@ -40,8 +40,9 @@
 // input_channels (default 1)
 // input_factor (compression factor) (default 4 for 22K, 8 for 44K)
 // input_volscale (Volume scaling) (slightly <= 1.0, default ,97)
-bool aenc_Compress(char *input_filename, char *output_filename, int *input_levels = nullptr, int *input_samples = nullptr,
-                  int *input_rate = nullptr, int *input_channels = nullptr, float *input_factor = nullptr,
-                  float *input_volscale = nullptr);
+bool aenc_Compress(char *input_filename, char *output_filename, const int *input_levels = nullptr,
+                   const int *input_samples = nullptr, const int *input_rate = nullptr,
+                   const int *input_channels = nullptr, const float *input_factor = nullptr,
+                   const float *input_volscale = nullptr);
 
 #endif
