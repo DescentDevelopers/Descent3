@@ -2132,7 +2132,7 @@ void CheckPXOForAnomalies() {
       if (stricmp(DLLMPlayers[i].tracker_id, DLLMPlayers[j].tracker_id) == 0) {
         // Ok, what we have here is multiple users with the same tracker ID.
         // This is bad. It could be user error, but it could be something worse.
-        std::filesystem::path errfilepath = std::filesystem::path(DLLLocalD3Dir) / "pxo.err";
+        std::filesystem::path errfilepath = *DLLLocalD3Dir / "pxo.err";
         FILE *errfile = fopen(errfilepath.u8string().c_str(), "at");
         if (errfile) {
           fprintf(errfile, "Dup TID: %s & %s / %s\n", DLLMPlayers[j].callsign, DLLMPlayers[i].callsign,

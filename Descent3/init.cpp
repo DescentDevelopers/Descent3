@@ -1027,7 +1027,7 @@ static bool Title_bitmap_init = false;
 uint8_t Use_motion_blur = 0;
 
 // The "root" directory of the D3 file tree
-char Base_directory[_MAX_PATH];
+std::filesystem::path Base_directory;
 
 extern int Min_allowed_frametime;
 
@@ -1397,8 +1397,7 @@ void InitIOSystems(bool editor) {
   int dirarg = FindArg("-setdir");
   int exedirarg = FindArg("-useexedir");
   if (dirarg) {
-    strncpy(Base_directory, GameArgs[dirarg + 1], sizeof(Base_directory) - 1);
-    Base_directory[sizeof(Base_directory) - 1] = '\0';
+    Base_directory = GameArgs[dirarg + 1];
   } else if (exedirarg) {
     char exec_path[_MAX_PATH];
     memset(exec_path, 0, sizeof(exec_path));
@@ -1407,16 +1406,14 @@ void InitIOSystems(bool editor) {
       Error("Failed to get executable path\n");
     } else {
       std::filesystem::path executablePath(exec_path);
-      std::string baseDirectoryString = executablePath.parent_path().string();
-      strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
-      Base_directory[sizeof(Base_directory) - 1] = '\0';
+      Base_directory = executablePath.parent_path();
       LOG_INFO << "Using working directory of " << Base_directory;
     }
   } else {
-    ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
+    Base_directory = std::filesystem::current_path();
   }
 
-  ddio_SetWorkingDir(Base_directory);
+  ddio_SetWorkingDir(Base_directory.u8string().c_str());
 
   Descent->set_defer_handler(D3DeferHandler);
 
@@ -2025,7 +2022,7 @@ void SetupTempDirectory(void) {
     exit(1);
   }
   // restore working dir
-  ddio_SetWorkingDir(Base_directory);
+  ddio_SetWorkingDir(Base_directory.u8string().c_str());
 }
 
 void DeleteTempFiles() {

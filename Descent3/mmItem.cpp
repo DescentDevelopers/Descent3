@@ -331,7 +331,7 @@ void mmInterface::Create() {
     static_menu_background = true;
   } else {
     char filename[_MAX_PATH];
-    ddio_MakePath(filename, Base_directory, "movies", "mainmenu", NULL);
+    ddio_MakePath(filename, Base_directory.u8string().c_str(), "movies", "mainmenu", NULL);
     m_movie = StartMovie(filename, true);
 
     if (!m_movie) //[ISB] Didn't find the menu movie?

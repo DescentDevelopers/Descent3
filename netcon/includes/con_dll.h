@@ -768,7 +768,7 @@ int DLLGame_mode;
 char *DLLTracker_id;
 int *DLLNum_directplay_games;
 netgame_info *DLLNetgame;
-char *DLLLocalD3Dir;
+std::filesystem::path *DLLLocalD3Dir;
 int *DLLMultiGameStarting;
 netplayer *DLLMNetPlayers;
 int MTWritingPilot, MTReadingPilot;
@@ -998,7 +998,7 @@ int StartMultiplayerGameMenu() {
 
   DLLListRemoveAll(script_list);
 #if (!(defined(OEM) || defined(DEMO)))
-  DLLddio_DoForeachFile(std::filesystem::path(DLLLocalD3Dir) / "netgames", std::regex(".+\\.d3m"),
+  DLLddio_DoForeachFile(*DLLLocalD3Dir / "netgames", std::regex(".+\\.d3m"),
                         [&dll_ui_items](const std::filesystem::path& path){
                           dll_ui_items.insert_or_assign(
                               path.stem().u8string(),
@@ -1018,8 +1018,8 @@ int StartMultiplayerGameMenu() {
   msn_list *mi;
 
   const std::vector<std::pair<std::filesystem::path, std::regex>> search_paths = {
-    {std::filesystem::path(DLLLocalD3Dir) / "data" / "levels", std::regex(".+\\.msn")},
-    {std::filesystem::path(DLLLocalD3Dir) / "missions", std::regex(".+\\.mn3")}
+    {*DLLLocalD3Dir / "data" / "levels", std::regex(".+\\.msn")},
+    {*DLLLocalD3Dir / "missions", std::regex(".+\\.mn3")}
   };
 
   for (auto const &i : search_paths) {
@@ -1074,7 +1074,7 @@ int StartMultiplayerGameMenu() {
   DLLNetgame->flags = NF_RANDOMIZE_RESPAWN;
   DLLNewUIWindowLoadBackgroundImage(main_wnd, "multimain.ogf");
   DLLNewUIWindowOpen(main_wnd);
-  if (DLLMultiLoadSettings(std::filesystem::path(DLLLocalD3Dir) / "custom" / "settings" / "default.mps")) {
+  if (DLLMultiLoadSettings(*DLLLocalD3Dir / "custom" / "settings" / "default.mps")) {
     DLLEditSetText(mission_name_edit, DLLNetgame->name);
 #if (!(defined(OEM) || defined(DEMO)))
     p = DLLGetMissionName(DLLNetgame->mission);

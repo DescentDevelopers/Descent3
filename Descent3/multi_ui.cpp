@@ -442,7 +442,7 @@ int MainMultiplayerMenu() {
 
   std::vector<std::string> dllnames;
 
-  ddio_DoForeachFile(std::filesystem::path(Base_directory) / "online", std::regex(".*\\.d3c"),
+  ddio_DoForeachFile(Base_directory / "online", std::regex(".*\\.d3c"),
                      [&dllnames](const std::filesystem::path &path) {
                        std::string filename = path.stem().string();
 
@@ -989,7 +989,7 @@ void DoMultiAllowed(void) {
 }
 
 void MultiDoConfigSave() {
-  std::filesystem::path file = std::filesystem::path(Base_directory) / "custom" / "settings";
+  std::filesystem::path file = Base_directory / "custom" / "settings";
   if (DoPathFileDialog(true, file, TXT_MULTISAVESET, {"*.mps"}, 0)) {
     file.replace_extension(".mps");
     MultiSaveSettings(file);
@@ -997,7 +997,7 @@ void MultiDoConfigSave() {
 }
 
 void MultiDoConfigLoad() {
-  std::filesystem::path file = std::filesystem::path(Base_directory) / "custom" / "settings";
+  std::filesystem::path file = Base_directory / "custom" / "settings";
   if (DoPathFileDialog(false, file, TXT_MULTILOADSET, {"*.mps"}, PFDF_FILEMUSTEXIST))
     MultiLoadSettings(file);
 }
