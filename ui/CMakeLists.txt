@@ -1,4 +1,3 @@
-set(HEADERS UIlib.h)
 set(CPPS
   UIButton.cpp
   UICombo.cpp
@@ -14,11 +13,17 @@ set(CPPS
   UISlider.cpp
   UIStatic.cpp
   UISystem.cpp
-  UIWindow.cpp)
+  UIWindow.cpp
+)
 
-add_library(ui STATIC ${HEADERS} ${CPPS})
+add_library(ui STATIC ${CPPS})
 target_link_libraries(ui PRIVATE
   ddio
   mem
   misc
+)
+target_include_directories(ui PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/ui
+  >
 )

@@ -14,6 +14,7 @@ target_link_libraries(Parallax_Online PRIVATE
   ddio
   inetfile
   misc
+  ui
   $<$<PLATFORM_ID:Windows>:ws2_32>
 )
 

@@ -121,9 +121,9 @@
  * $NoKeywords: $
  */
 
-#include "UIlib.h"
+#include <cstring>
 
-#include <string.h>
+#include "UIlib.h"
 
 #if defined(POSIX)
 int UIButton::m_ButtonFont;

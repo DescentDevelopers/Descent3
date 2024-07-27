@@ -44,9 +44,10 @@
  * $NoKeywords: $
  */
 
-#include "UIlib.h"
-#include <string.h>
 #include <cstdlib>
+#include <cstring>
+
+#include "UIlib.h"
 #include "mem.h"
 
 //	----------------------------------------------------------------------------
