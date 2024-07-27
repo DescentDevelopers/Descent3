@@ -108,7 +108,8 @@
 #ifndef GRTEXT_H
 #define GRTEXT_H
 
-#include "pstypes.h"
+#include <cstdint>
+
 #include "ddvid.h"
 
 #define GRTEXT_BUFLEN 16384
@@ -282,7 +283,7 @@ int grfont_GetTracking(int font);
 /////////////////////////////////////////////////////////////////////
 
 // Init functions -- call before anything is rendered!
-void grtext_Init(void);
+void grtext_Init();
 
 #ifndef RELEASE
 void grfont_Spew(int font, int x, int y);

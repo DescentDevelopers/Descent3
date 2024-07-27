@@ -148,16 +148,12 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <cstring>
+#include <cctype>
 
 #include "grtextlib.h"
-
-#include "renderer.h"
 #include "pserror.h"
-#include "mem.h"
-
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include "renderer.h"
 
 #define CLIP_LEFT Grtext_left
 #define CLIP_TOP Grtext_top
@@ -222,12 +218,12 @@ static bool grtext_FilterProfanity = false;
 
 void grtext_SetProfanityFilter(bool enabled) { grtext_FilterProfanity = enabled; }
 // Right now this just decrypts the bad words
-void grtext_Init(void) {
-  for (int i = 0; i < NUM_BAD_WORDS; i++) {
+void grtext_Init() {
+  for (auto & bad_word : bad_words) {
     int pos = 0;
 
-    while (bad_words[i][pos]) {
-      bad_words[i][pos] = bad_words[i][pos] ^ XORVAL;
+    while (bad_word[pos]) {
+      bad_word[pos] = bad_word[pos] ^ XORVAL;
       pos++;
     }
   }
@@ -340,7 +336,6 @@ void grtext_SetFontScale(float scale) {
 void grtext_SetFancyColor(ddgr_color col1, ddgr_color col2, ddgr_color col3, ddgr_color col4) {
   struct {
     char op;
-    //	ddgr_color col[4];
     ddgr_color col;
   } cmd;
 
@@ -478,10 +473,10 @@ void grtext_Puts(int x, int y, const char *str) {
 
     lowerstr[slen] = '\0';
 
-    for (int i = 0; i < NUM_BAD_WORDS; i++) {
-      char *p = strstr(lowerstr, (char *)bad_words[i]);
+    for (auto & bad_word : bad_words) {
+      char *p = strstr(lowerstr, (char *)bad_word);
       while (p) {
-        int len = strlen((char *)bad_words[i]);
+        int len = strlen((char *)bad_word);
         char *realp = (char *)((int)(p - lowerstr) + &Grtext_buffer[Grtext_ptr]);
         for (int a = 0; a < len; a++) {
           ASSERT(p);
@@ -489,7 +484,7 @@ void grtext_Puts(int x, int y, const char *str) {
           *p = *realp;
           realp++;
         }
-        p = strstr(lowerstr, (char *)bad_words[i]);
+        p = strstr(lowerstr, (char *)bad_word);
       };
     }
     // DAJ		mem_free(lowerstr);

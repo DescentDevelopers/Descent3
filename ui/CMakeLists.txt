@@ -19,6 +19,7 @@ set(CPPS
 add_library(ui STATIC ${CPPS})
 target_link_libraries(ui PRIVATE
   ddio
+  grtext
   mem
   misc
 )
