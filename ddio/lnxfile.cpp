@@ -258,6 +258,11 @@ void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
   strcpy(root_path, "/");
 }
 
+std::vector<std::filesystem::path> ddio_GetSysRoots() {
+  // In Linux assume that all other mount points are accessible via root mount point
+  return std::vector<std::filesystem::path> { "/" };
+};
+
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots) {
   if (max_roots < 1)

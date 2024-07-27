@@ -334,6 +334,42 @@ int ddio_GetFileSysRoots(char **roots, int max_roots) {
   return count;
 }
 
+std::vector<std::filesystem::path> ddio_GetSysRoots() {
+  std::vector<std::filesystem::path> result = {};
+  char buffer[100];
+
+  int ret = GetLogicalDriveStrings(100, buffer);
+  if (ret == 0 || ret > 100) {
+    // there was an error
+    return result;
+  }
+
+  bool done = false;
+  char *strptr = buffer;
+  char *string;
+  int strsize;
+
+  while (!done) {
+    if (*strptr != 0) {
+      strsize = strlen(strptr);
+      string = (char *)mem_malloc(strsize);
+      if (!string)
+        break;
+      // remove the trailing \ from windows
+      strncpy(string, strptr, strsize - 1);
+      string[strsize - 1] = '\0';
+
+      strptr += (strsize + 1);
+      result.push_back(string);
+      mem_free(string);
+    } else {
+      done = true;
+    }
+  }
+
+  return result;
+};
+
 //	given a path, it cleans it up (if the path is c:\windows\..\dos it would make it c:\dos)
 //	srcPath is the original path
 //	dest is the finished cleaned path.

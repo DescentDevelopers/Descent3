@@ -345,6 +345,12 @@ void ddio_GetRootFromPath(const char *srcPath, char *root_path);
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots);
 
+/**
+ * Retrieve root names (i.e. drive letters in Windows)
+ * @return list of discovered names
+ */
+std::vector<std::filesystem::path> ddio_GetSysRoots();
+
 // Constructs a path in the local file system's syntax
 // 	builtPath: stores the constructed path
 //  absolutePathHeader: absolute path on which the sub directories will be appended
