@@ -573,7 +573,7 @@ target_compile_definitions(Descent3Editor PUBLIC _AFXDLL EDITOR)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} /Zc:forScope-")
 
 target_link_libraries(Descent3Editor PRIVATE
-  2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio libmve libacm
+  2dlib AudioEncode bitmap cfile d3music dd_video ddebug ddio libmve libacm
   fix grtext manage mem misc model module movie stream_audio
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})

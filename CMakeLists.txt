@@ -191,7 +191,6 @@ add_subdirectory(2dlib)
 add_subdirectory(AudioEncode)
 add_subdirectory(bitmap)
 add_subdirectory(cfile)
-add_subdirectory(czip)
 add_subdirectory(d3music)
 add_subdirectory(ddebug)
 
