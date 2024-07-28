@@ -295,6 +295,7 @@
 #define POLYMODEL_H
 
 #include <cstdint>
+#include <filesystem>
 
 #include "3d.h"
 #include "object_external_struct.h"
@@ -330,14 +331,14 @@ extern bool Polymodel_outline_mode;
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
-int LoadPolyModel(const char *filename, int pageable);
+int LoadPolyModel(const std::filesystem::path &filename, int pageable);
 
 // gets the filename from a path, plus appends our .pof extension
-void ChangePolyModelName(const char *src, char *dest);
+std::filesystem::path ChangePolyModelName(const std::filesystem::path &src);
 
 // Searches through all polymodels for a specific name, returns -1 if not found
 // or index of polymodel with name
-int FindPolyModelName(const char *name);
+int FindPolyModelName(const std::filesystem::path &name);
 
 // Draws a polygon model to the viewport
 // Normalized_time is an array of floats from 0 to 1 that represent how far into

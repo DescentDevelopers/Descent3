@@ -5,7 +5,7 @@ set(CPPS
 
 add_library(model STATIC ${CPPS})
 target_link_libraries(model PRIVATE
-  ddio
+  cfile
   mem
   misc
 )

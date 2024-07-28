@@ -652,7 +652,8 @@ void CWorldObjectsGenericDialog::OnGenericAddNew() {
 
   ddio_SplitPath(filename, dir, fname, ext);
 
-  ChangePolyModelName(filename, cur_name);
+  std::filesystem::path tmp = ChangePolyModelName(filename);
+  strcpy(cur_name, tmp.u8string().c_str());
 
   if ((FindPolyModelName(fname)) != -1) {
     OutrageMessageBox("You must rename your model to something else because there is already a model with that name!");
@@ -1004,7 +1005,8 @@ void CWorldObjectsGenericDialog::OnGenericChangeModel() {
   if (!OpenFileDialog(this, (LPCTSTR)filter, filename, Current_model_dir, sizeof(Current_model_dir)))
     return;
 
-  ChangePolyModelName(filename, curname);
+  std::filesystem::path tmp = ChangePolyModelName(filename);
+  strcpy(curname, tmp.u8string().c_str());
 
   ddio_SplitPath(filename, dir, fname, ext);
 

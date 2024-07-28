@@ -601,19 +601,17 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 
 #include "3d.h"
-#include "bitmap.h"
-#include "ddio.h"
+#include "cfile.h"
 #include "game.h"
 #include "gamesequence.h"
-#include "gametexture.h"
 #include "mem.h"
 #include "mono.h"
 #include "objinfo.h"
 #include "polymodel.h"
 #include "pserror.h"
-#include "renderer.h"
 
 int Num_poly_models = 0;
 poly_model Poly_models[MAX_POLY_MODELS];
@@ -2055,9 +2053,7 @@ int ReadNewModelFile(int polynum, CFILE *infile) {
 
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
-int LoadPolyModel(const char *filename, int pageable) {
-  char name[256];
-  char fname[256], pname[256], extname[256];
+int LoadPolyModel(const std::filesystem::path &filename, int pageable) {
   int i, polynum = -1;
   CFILE *infile = nullptr;
   int overlay = 0;
@@ -2065,7 +2061,7 @@ int LoadPolyModel(const char *filename, int pageable) {
   ASSERT(Num_poly_models >= 0);
   ASSERT(Num_poly_models < MAX_POLY_MODELS);
 
-  ChangePolyModelName(filename, name);
+  std::filesystem::path name = ChangePolyModelName(filename);
 
   // If this polymodel is already in memory, just use that index
   i = FindPolyModelName(name);
@@ -2098,8 +2094,6 @@ int LoadPolyModel(const char *filename, int pageable) {
 
   // Not in memory, so we must load it
 
-  ddio_SplitPath(filename, pname, fname, extname);
-
   if (!pageable) {
     infile = cfopen(filename, "rb");
     if (!infile)
@@ -2128,13 +2122,12 @@ int LoadPolyModel(const char *filename, int pageable) {
   }
 
   // if this is an oof instead of a pof, flag it as such
-  if (!stricmp(".OOF", extname)) {
+  if (!stricmp(".oof", filename.extension().u8string().c_str())) {
     Poly_models[polynum].new_style = 1;
   } else
     Poly_models[polynum].new_style = 0;
 
-  // mprintf(0,"Loading model %s\n",name);
-  strcpy(Poly_models[polynum].name, name);
+  strcpy(Poly_models[polynum].name, name.u8string().c_str());
 
   int ret = 0;
   if (!pageable)
@@ -2223,29 +2216,22 @@ poly_model *GetPolymodelPointer(int polynum) {
   return (&Poly_models[polynum]);
 }
 
-// MTS: only used in this file.
 // gets the filename from a path
-void ChangePolyModelName(const char *src, char *dest) {
-  int limit;
-  char path[256], ext[256], filename[256];
-
-  limit = PAGENAME_LEN - 5;
-
-  ddio_SplitPath(src, path, filename, ext);
-
+std::filesystem::path ChangePolyModelName(const std::filesystem::path &src) {
   // Make sure we don't go over our name length limit
-  strncpy(dest, filename, limit);
-
-  strcat(dest, ext);
+  std::string dest = src.stem().string().substr(0, PAGENAME_LEN - 5);
+  std::filesystem::path filename = std::filesystem::path(dest).replace_extension(src.extension());
+  return filename;
 }
+
 // Searches thru all polymodels for a specific name, returns -1 if not found
 // or index of polymodel with name
-int FindPolyModelName(const char *name) {
-  int i;
-
-  for (i = 0; i < MAX_POLY_MODELS; i++)
-    if (Poly_models[i].used && !stricmp(Poly_models[i].name, name))
+int FindPolyModelName(const std::filesystem::path &name) {
+  for (int i = 0; i < MAX_POLY_MODELS; i++) {
+    if (Poly_models[i].used && !stricmp(Poly_models[i].name, name.u8string().c_str())) {
       return i;
+    }
+  }
 
   return -1;
 }

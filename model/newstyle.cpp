@@ -83,8 +83,6 @@
 #include "findintersection.h"
 #include "fireball.h"
 #include "game.h"
-#include "gametexture.h"
-#include "grdefs.h"
 #include "lighting.h"
 #include "lightmap.h"
 #include "lightmap_info.h"
@@ -92,7 +90,6 @@
 #include "pserror.h"
 #include "psrand.h"
 #include "render.h"
-#include "renderer.h"
 #include "vecmat.h"
 
 static float face_depth[MAX_POLYGON_VECS];
