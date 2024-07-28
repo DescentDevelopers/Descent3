@@ -22,10 +22,10 @@ BEGIN
         BLOCK "040004b0"
         BEGIN
             VALUE "CompanyName", "Descent Developpers"
-            VALUE "FileDescription", "Descent 3 Open Source game"
+            VALUE "FileDescription", "Descent 3 Open Source game. See https://github.com/DescentDevelopers/Descent3 for more detail."
             VALUE "FileVersion", "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@.0"
             VALUE "InternalName", "Descent3.exe"
-            VALUE "LegalCopyright", "Copyright (C) 2024"
+            VALUE "LegalCopyright", "Copyright (C) 2024 Descent Developers"
             VALUE "OriginalFilename", "Descent3.exe"
             VALUE "ProductName", "Descent 3"
             VALUE "ProductVersion", "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@.0"
