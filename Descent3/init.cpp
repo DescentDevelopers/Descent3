@@ -1994,11 +1994,13 @@ void SetupTempDirectory(void) {
     }
     ddio_MakePath(Descent3_temp_directory, tempPath.u8string().c_str(), "Descent3",
                   "cache", NULL);
-    std::filesystem::create_directories(Descent3_temp_directory, ec);
-    if (ec) {
-      Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory);
-      exit(1);
-    }
+  }
+
+  std::error_code ec;
+  std::filesystem::create_directories(Descent3_temp_directory, ec);
+  if (ec) {
+    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory);
+    exit(1);
   }
 
   // verify that temp directory exists
