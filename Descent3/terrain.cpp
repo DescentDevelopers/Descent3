@@ -26,7 +26,6 @@
 #include "mono.h"
 #include "terrain.h"
 #include "pserror.h"
-#include "texture.h"
 #include "bitmap.h"
 #include "gametexture.h"
 #include "lighting.h"
@@ -34,7 +33,6 @@
 #include "weather.h"
 #include <string.h>
 #include "mem.h"
-#include "Macros.h"
 #include "dedicated_server.h"
 #include "psrand.h"
 #ifdef EDITOR

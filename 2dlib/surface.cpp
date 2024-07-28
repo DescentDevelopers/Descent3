@@ -93,7 +93,6 @@
 #include "lib2d.h"
 #include "pserror.h"
 #include "renderer.h"
-#include "texture.h"
 
 static inline unsigned XLAT_RGB_TO_16(ddgr_color c) {
   uint8_t r, g, b;

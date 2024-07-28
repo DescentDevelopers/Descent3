@@ -25,7 +25,6 @@
  */
 
 #include "3d.h"
-#include "texture.h"
 #include "gametexture.h"
 #include "lighting.h"
 #include "lightmap.h"

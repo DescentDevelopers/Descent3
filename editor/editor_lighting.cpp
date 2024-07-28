@@ -27,7 +27,6 @@
 #include <algorithm>
 #include <windows.h>
 #include "3d.h"
-#include "texture.h"
 #include "gametexture.h"
 #include "erooms.h"
 #include "editor_lighting.h"
