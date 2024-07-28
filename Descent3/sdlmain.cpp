@@ -51,53 +51,6 @@ std::filesystem::path orig_pwd;
 
 bool linux_permit_gamma = false;
 
-struct cmdLineArg {
-  const char *lng;
-  char sht;
-  const char *comment;
-};
-
-static cmdLineArg d3ArgTable[] = {
-#ifdef __PERMIT_LINUX_GLIDE
-    {"rend_opengl", 'G', "Use OpenGL for 3D rendering."},
-    {"rend_glide", 'L', "Use Glide for 3D rendering."},
-#endif
-
-#ifdef __PERMIT_PLAYMVE
-    {"playmve", 'p', "Play a specified movie."},
-#endif
-
-    {"glidelibrary", 'l', "Select Glide rendering library."},
-    {"gllibrary", 'g', "Select OpenGL rendering library."},
-    {"cobra", 'R', "Enable Cobra chair support."},
-
-#if (!defined(DEMO))
-    {"dedicated", 'd', "Run as a dedicated netgame server."},
-    {"nointro", 'n', "Skip intro movie."},
-#endif
-
-    {"joystick", 'j', "Specify a joystick (number)."},
-    {"nomousegrab", 'm', "Don't grab the mouse."},
-
-    {"deadzone0", 'D', "Specify a joystick deadzone (0.0 to 1.0)"},
-
-    {"gspyfile", 'S', "Specify a GameSpy config file."},
-    {"fastdemo", 'Q', "Run demos as fast as possible."},
-    {"framecap", 'F', "Specify a framecap (for dedicated server)."},
-
-    {"tempdir", 'P', "Specify directory for temporary files."},
-
-#if (defined(_USE_OGL_LISTS_OPTIONAL))
-    {"gllists", '\0', "Use OpenGL lists."},
-#endif
-
-    {"nomultitexture", 't', "Disable multitexturing."},
-    {"nopackedpixels", 'x', "Disable packed pixels."},
-    {"glfog", 'o', "Enable OpenGL fog."},
-    {"nogamma", 'M', "Disable gamma support."},
-    {"glinfo", 'I', "Display info about OpenGL library."}
-};
-
 static volatile char already_tried_signal_cleanup = 0;
 
 #if (defined DEMO)
