@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@
 #include <SDL.h>
 
 #include "program.h"
+#include "dedicated_server.h"
 #include "descent.h"
 #include "application.h"
 #include "appdatabase.h"
@@ -53,18 +54,7 @@ bool linux_permit_gamma = false;
 
 static volatile char already_tried_signal_cleanup = 0;
 
-#if (defined DEMO)
-#define GAME_NAME_EXT "_demo"
-#define GAME_VERS_EXT " Demo"
-#elif (defined OEM)
-#define GAME_NAME_EXT "_limited"
-#define GAME_VERS_EXT " Limited Edition"
-#else
-#define GAME_NAME_EXT ""
-#define GAME_VERS_EXT ""
-#endif
-
-void ddio_InternalClose();        // needed for emergency cleanup.
+void ddio_InternalClose(); // needed for emergency cleanup.
 
 void just_exit(void) {
   ddio_InternalClose(); // try to reset serial port.
@@ -146,63 +136,57 @@ void install_signal_handlers() {
 #else
 void install_signal_handlers() {}
 #endif
+
 //	---------------------------------------------------------------------------
 //	Define our operating system specific extensions to the gameos system
 //	---------------------------------------------------------------------------
-
 class oeD3LnxApp : public oeLnxApplication {
   bool shutdown, final_shutdown;
   int old_screen_mode;
 
 public:
-  oeD3LnxApp(unsigned flags);
+  oeD3LnxApp(unsigned flags) : oeLnxApplication(flags) {
+    Descent = this;
+    shutdown = false;
+    final_shutdown = false;
+  }
   virtual ~oeD3LnxApp() { final_shutdown = true; };
 
   void run() { Descent3(); };
 };
 
-oeD3LnxApp::oeD3LnxApp(unsigned flags) : oeLnxApplication(flags) {
-  Descent = this;
-  shutdown = false;
-  final_shutdown = false;
-}
-
 class oeD3LnxDatabase : public oeLnxAppDatabase {
 public:
-  oeD3LnxDatabase();
-};
+  oeD3LnxDatabase() {
+    char path[_MAX_PATH];
+    char netpath[_MAX_PATH];
 
-//	---------------------------------------------------------------------------
-//	D3LnxDatabase operating system specific initialization
-oeD3LnxDatabase::oeD3LnxDatabase() : oeLnxAppDatabase() {
-  char path[_MAX_PATH];
-  char netpath[_MAX_PATH];
-
-  // put directories into database
+    // put directories into database
 
 #ifdef EDITOR
-  create_record("D3Edit");
+    create_record("D3Edit");
 #else
-  create_record("Descent3");
+    create_record("Descent3");
 #endif
 
-  char *dir = getenv("D3_LOCAL");
-  char *netdir = getenv("D3_DIR");
+    char *dir = getenv("D3_LOCAL");
+    char *netdir = getenv("D3_DIR");
 
-  if (!dir)
-    strcpy(path, Base_directory);
-  else
-    strcpy(path, dir);
+    if (!dir)
+      strcpy(path, Base_directory);
+    else
+      strcpy(path, dir);
 
-  if (!netdir)
-    strcpy(netpath, "");
-  else
-    strcpy(netpath, netdir);
+    if (!netdir)
+      strcpy(netpath, "");
+    else
+      strcpy(netpath, netdir);
 
-  write("local directory", path, strlen(path) + 1);
-  write("net directory", netpath, strlen(netpath) + 1);
-  Database = this;
-}
+    write("local directory", path, strlen(path) + 1);
+    write("net directory", netpath, strlen(netpath) + 1);
+    Database = this;
+  }
+};
 
 int sdlKeyFilter(const SDL_Event *event);
 int sdlMouseButtonUpFilter(const SDL_Event *event);
@@ -228,48 +212,12 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
     SDL_Quit();
     _exit(0);
     break;
-  default: break;
+  default:
+    break;
   } // switch
 
   return (1);
 }
-
-void StartDedicatedServer();
-
-#ifdef BETAEXPIRE
-static void check_beta() {
-  fprintf(stderr, "\n\n\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-
-  if (time(NULL) > (BETAEXPIRE + 30 * 24 * 60 * 60)) {
-    fprintf(stderr, "Thanks for participating in the Descent 3 beta test!\n"
-                    "This beta copy has now expired.\n"
-                    "Please visit http://www.lokigames.com/ for a non-beta release.\n");
-    _exit(0);
-  } // if
-  else {
-    fprintf(stderr, "Warning: This is a beta version of DESCENT 3.\n"
-                    "Please report any bugs in fenris: http://fenris.lokigames.com/\n");
-  } // else
-
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "\n\n\n");
-} // check_beta
-#endif
 
 //	---------------------------------------------------------------------------
 //	Main
@@ -293,111 +241,21 @@ int main(int argc, char *argv[]) {
   setbuf(stdout, NULL);
   setbuf(stderr, NULL);
 
-#ifdef BETAEXPIRE
-  // IMPORTANT - TAKE ME OUT - FIXME -------------------------------
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "****   Please remove -DBETAEXPIRE from the Makefile! ******"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-  check_beta();
-#endif
-
-#ifdef __DUMP_MVE_TO_DISK
-  // IMPORTANT - TAKE ME OUT - FIXME -------------------------------
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "** Please remove -D__DUMP_MVE_TO_DISK from the Makefile! **"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-
-  fprintf(stderr, "\n\n\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "    Warning, this binary dumps movies to disk. This is BAD.\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "\n\n\n");
-#endif
-
-  /*
-      if ( (argv[1] != NULL) && (strcasecmp(argv[1], "--nettest")) )
-          _exit(nettest_Main(argc, argv));
-  */
-
-  // rcg01152000 need this for mpeg playback currently.
-  // rcg02232004 probably don't need this anymore.
-  // if (getenv("SDL_VIDEO_YUV_HWACCEL") == NULL)
-  //    putenv("SDL_VIDEO_YUV_HWACCEL=0");
-
-  int x;
-
-  /*
-      x = FindArg("-nettest");
-      if (x)
-      {
-          if (x != 1)
-              printf("  --nettest must be first command if you use it.\n");
-          _exit(0);
-      } // if
-  */
-
-  #ifdef DEDICATED
+#ifdef DEDICATED
   setenv("SDL_VIDEODRIVER", "dummy", 1);
-  #endif
+#endif
 
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {
     fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
     fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());
     return (0);
-  } // if
-
-  //    atexit(SDL_Quit);
+  }
 
   // !!! FIXME: Don't use an event filter!
   SDL_SetEventFilter(d3SDLEventFilter, NULL);
   install_signal_handlers();
 
-  // build the command line as one long string, seperated by spaces...
-  /*
-          char commandline[256];
-          strcpy(commandline,"");
-          for(int i=0;i<argc;i++){
-          strcat(commandline,argv[i]);
-          strcat(commandline," ");
-          }
-
-          GatherArgs (commandline);
-  */
   int winArg = FindArgChar("-windowed", 'w');
   int fsArg = FindArgChar("-fullscreen", 'f');
 
