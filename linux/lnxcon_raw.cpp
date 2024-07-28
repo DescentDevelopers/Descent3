@@ -45,7 +45,6 @@
 #include <cctype>
 
 #include "AppConsole.h"
-#include "TaskSystem.h"
 #include "ddio_common.h"
 
 static char *Con_raw_read_buf = nullptr; // The next buffer of text from user input
