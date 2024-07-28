@@ -19,9 +19,9 @@
 #include <cstdint>
 #include <cstdio>
 
+#include "aencode.h"
 #include "audio_encode.h"
 #include "mono.h"
-#include "Aencode.h"
 
 int32_t aenc_ReadSamp(void *data) {
   FILE *f = (FILE *)data;

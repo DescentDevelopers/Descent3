@@ -9,6 +9,7 @@ add_library(music STATIC ${HEADERS} ${CPPS})
 target_link_libraries(music
   cfile
   ddio
+  libacm
   mem
   misc
   sndlib

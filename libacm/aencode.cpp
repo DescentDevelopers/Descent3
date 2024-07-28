@@ -1,30 +1,31 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <assert.h>
-#include "Aencode.h"
+#include <cassert>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
+#include "aencode.h"
 
 struct BitsEncoder {
-  FILE *m_outFile;   // var50 | offset 0x10
+  FILE *m_outFile;     // var50 | offset 0x10
   uint32_t m_bitData;  // var4C | offset 0x14
   uint32_t m_bitCount; // var48 | offset 0x18
 
@@ -61,26 +62,26 @@ struct BitsEncoder {
 };
 
 struct Encoder {
-  ReadSampleFunction *m_reader;           // var60         | offset 0x00
-  void *m_pReaderData;                    // var5C         | offset 0x04
-  uint32_t m_sampleCount;                   // var58         | offset 0x08
-  float m_volume;                         // var54         | offset 0x0C
-  BitsEncoder m_bits;                     // var50 - var48 | offset 0x10 - 0x18
+  ReadSampleFunction *m_reader;            // var60         | offset 0x00
+  void *m_pReaderData;                     // var5C         | offset 0x04
+  uint32_t m_sampleCount;                  // var58         | offset 0x08
+  float m_volume;                          // var54         | offset 0x0C
+  BitsEncoder m_bits;                      // var50 - var48 | offset 0x10 - 0x18
   int8_t m_levels;                         // var44*        | offset 0x1C
   int8_t m_pad[3];                         //   43, 42, 41
   int32_t m_numColumns;                    // var40         | offset 0x20
   int32_t m_samples_per_subband;           // var3C         | offset 0x24
   int32_t m_samplesPerBlock;               // var38         | offset 0x28
   int32_t m_adjustedSamplesTimeNumColumns; // var34         | offset 0x2C
-  float **m_levelSlots;                   // var30         | offset 0x30
-  float *m_pCurrBlockData;                // var2C         | offset 0x34
+  float **m_levelSlots;                    // var30         | offset 0x30
+  float *m_pCurrBlockData;                 // var2C         | offset 0x34
   int32_t m_blockSamplesRemaining;         // var28         | offset 0x38
   int32_t m_bandWriteEnabled;              // var24         | offset 0x3C
   int32_t m_finishedReading;               // var20         | offset 0x40
   int32_t m_someVal;                       // var1C         | offset 0x44
-  float *m_lo_filter;                     // var18         | offset 0x48
-  float *m_hi_filter;                     // var14         | offset 0x4C
-  uint32_t *m_pFormatIdPerColumn;           // var10         | offset 0x50
+  float *m_lo_filter;                      // var18         | offset 0x48
+  float *m_hi_filter;                      // var14         | offset 0x4C
+  uint32_t *m_pFormatIdPerColumn;          // var10         | offset 0x50
   int32_t m_currBlockBitPower;             // var0C         | offset 0x54
   int32_t m_currBlockBitValue;             // var08         | offset 0x58
   int32_t m_threshold;                     // var04         | offset 0x5C
@@ -922,7 +923,7 @@ void WriteBands(Encoder &enc) {
   for (int i = 0; i < enc.m_numColumns; ++i) {
     const uint32_t formatId = enc.m_pFormatIdPerColumn[i];
     enc.m_bits.WriteBits(formatId, 5);
-//    int32_t currPos = ftell(enc.m_bits.m_outFile);
+    //    int32_t currPos = ftell(enc.m_bits.m_outFile);
     WriteBand_tbl[formatId](enc, i, formatId);
   }
 }
@@ -987,7 +988,7 @@ void EncodeFlush(Encoder &enc) {
 }
 
 int32_t AudioEncode(ReadSampleFunction *read, void *data, unsigned channels, unsigned sample_rate, float volume,
-                          FILE *out, int levels, int samples_per_subband, float comp_ratio) {
+                    FILE *out, int levels, int samples_per_subband, float comp_ratio) {
   Encoder enc;
   memset(&enc, 0, sizeof(enc));
 
