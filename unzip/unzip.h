@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -35,12 +35,11 @@
  * $NoKeywords: $
  */
 
-#ifndef __UNZIP_H
-#define __UNZIP_H
+#ifndef UNZIP_H
+#define UNZIP_H
 
 #include <cstdint>
-#include <stdio.h>
-#include "pstypes.h"
+#include <cstdio>
 
 struct zipentry {
   uint32_t cent_file_header_sig;
@@ -77,14 +76,14 @@ public:
   bool OpenZip(const char *path);
 
   // closes an open zip file
-  void CloseZip(void);
+  void CloseZip();
 
   // Reads the current zip entry from the zip file (and moves
   // to the next entry).  Returns NULL if there are no more entries
-  zipentry *ReadNextZipEntry(void);
+  zipentry *ReadNextZipEntry();
 
   // Resets a ZIP file to the first entry
-  void Rewind(void);
+  void Rewind();
 
   // Reads a file from the given zip entry into a buffer in memory
   //	-1 : no ZIP file open
@@ -110,7 +109,7 @@ public:
 
 private:
   bool FindECDSignature(char *buffer, int buflen, int *offset);
-  int ReadECD(void);
+  int ReadECD();
   int ReadZipData(zipentry *ent, char *data);
   int ReadZipDataToFile(zipentry *ent, FILE *file);
   int SeekToCompressedData(zipentry *ent);
@@ -119,8 +118,8 @@ private:
 
 private:
   bool m_open;
-  char *m_zip;   // zip name
-  FILE *m_fp;    // zip handler
+  char *m_zip;      // zip name
+  FILE *m_fp;       // zip handler
   int32_t m_length; // length of zip file
 
   char *m_ecd;           // end_of_cent_dir data
