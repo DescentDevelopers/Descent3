@@ -1,49 +1,41 @@
 /*
-* Descent 3
-* Copyright (C) 2024 Parallax Software
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Descent 3
+ * Copyright (C) 2024 Parallax Software
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <cmath>
-
-#include <stdlib.h>
-#include <memory.h>
-
+#include <cstdlib>
 #include <limits>
 
-#include "object.h"
-#include "PHYSICS.H"
-#include "collide.h"
-#include "findintersection.h"
-#include "vecmat.h"
-#include "game.h"
-#include "terrain.h"
-#include "descent.h"
-#include "weapon.h"
-#include "polymodel.h"
-#include "fireball.h"
-#include "damage.h"
-#include "gameevent.h"
-#include "hlsoundlib.h"
-#include "soundload.h"
-#include "viseffect.h"
-#include "multi.h"
 #include "attach.h"
+#include "collide.h"
 #include "D3ForceFeedback.h"
-#include "player.h"
 #include "demofile.h"
+#include "findintersection.h"
+#include "fireball.h"
+#include "game.h"
+#include "multi.h"
+#include "object.h"
+#include "physics.h"
+#include "player.h"
+#include "polymodel.h"
+#include "terrain.h"
+#include "vecmat.h"
+#include "viseffect.h"
+#include "weapon.h"
 
 // Global variables for physics system
 uint8_t Default_player_terrain_leveling = 0;
@@ -414,16 +406,6 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
     return true;
   }
 
-  //	if(!(f_leveling) && fabs(rotthrust->x) < .000001 && fabs(rotthrust->y) < .000001 && fabs(rotthrust->z) <
-  //.000001)
-  //	{
-  //		if(!(fabs(rotvel->x) > .000001 || fabs(rotvel->y) > .000001 || fabs(rotvel->z) > .000001 || *turnroll !=
-  // 0))
-  //		{
-  //			return false;
-  //		}
-  //	}
-
   // now rotate object
   // unrotate object for bank caused by turn
   if (*turnroll != 0) {
@@ -554,103 +536,77 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
             scale = 1.0;
 
           if (ang.p < 16834) {
-            //						float temp_scale = (1.04f - ((16834 - ang.p)/16834.0f));
-            //						scale = temp_scale * temp_scale;
             rotthrust->x -= scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf(0, "1 scale %f\n", scale);
           } else if (ang.p < 32768) {
-            //						float temp_scale = (1.04f - ((ang.p - 16834)/16834.0f));
-            //						scale = temp_scale * temp_scale;
             rotthrust->x += scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf(0, "2 scale %f\n", scale);
           } else if (ang.p < 49152) {
-            //						float temp_scale = (1.04f - ((49152 - ang.p)/16834.0f));
-            //						scale = temp_scale * temp_scale;
             rotthrust->x -= scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf(0, "3 scale %f\n", scale);
           } else {
-            //						float temp_scale = (1.04f - ((ang.p - 49152)/16834.0f));
-            //						scale = temp_scale * temp_scale;
             rotthrust->x += scale * obj->mtype.phys_info.full_rotthrust;
-            //						mprintf(0, "4 scale %f\n", scale);
           }
         }
       }
     }
 
     if (!f_pitch_leveled && fabs(rotthrust->z) < 100.0f) {
-      if (1) ///*&& (pi->turnroll <= 10 || pi->turnroll >= 65535 - 10)*/)
-      {
-        angvec ang;
-        int bound;
+      angvec ang;
+      int bound;
 
-        // f_leveling = true;
-        // pi->turnroll = 0;
+      // extract angles from a matrix
+      vm_ExtractAnglesFromMatrix(&ang, orient);
+      if ((ang.p < 32768 && (abs((int)ang.p - (int)16834) > max_tilt_angle)) ||
+          (ang.p >= 32768 && (abs((int)ang.p - (int)49152) > max_tilt_angle))) {
 
-        // extract angles from a matrix
-        vm_ExtractAnglesFromMatrix(&ang, orient);
+        if ((pi->flags & PF_TURNROLL) && *turnroll) {
+          bound = *turnroll;
+          if (bound > 32768) {
+            bound = 65535 - bound;
+          }
+        } else {
+          bound = 10;
+        }
 
-        if ((ang.p < 32768 && (abs((int)ang.p - (int)16834) > max_tilt_angle)) ||
-            (ang.p >= 32768 && (abs((int)ang.p - (int)49152) > max_tilt_angle))) {
+        if (ang.b > bound && ang.b < 65535 - bound) // About 1 degree
+        {
+          float scale;
 
-          if ((pi->flags & PF_TURNROLL) && *turnroll) {
-            bound = *turnroll;
-            if (bound > 32768) {
-              bound = 65535 - bound;
-            }
+          // Scale on pitch
+          if (ang.p < 32768) {
+            scale = (abs(16834 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
           } else {
-            bound = 10;
+            scale = (abs(49152 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
           }
 
-          if (ang.b > bound && ang.b < 65535 - bound) // About 1 degree
-          {
-            float scale;
-            //						vector level_rotthrust = Zero_vector;
+          if (ang.b < 32768) {
+            float temp_scale;
 
-            // Scale on pitch
-            if (ang.p < 32768) {
-              scale = (abs(16834 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
+            if (ang.b > 28672) {
+              temp_scale = (1.04f - ((28672 - 16834) / 16384.0f));
             } else {
-              scale = (abs(49152 - (int)ang.p) - max_tilt_angle) / (16384.0f - max_tilt_angle);
+              temp_scale = (1.04f - (abs(16834 - (int)ang.b) / 16384.0f));
             }
 
-            //					mprintf(0, "scale %f, ", scale);
+            temp_scale *= temp_scale;
+            scale *= temp_scale;
+            if (f_player_fired_recently)
+              scale *= .25f;
 
-            if (ang.b < 32768) {
-              float temp_scale;
-              //							if(temp_scale * temp_scale > .05)
+            rotthrust->z -= scale * BANK_AUTOLEVEL_SPEED_SCALAR * obj->mtype.phys_info.full_rotthrust;
+          } else {
+            float temp_scale;
 
-              if (ang.b > 28672) {
-                temp_scale = (1.04f - ((28672 - 16834) / 16384.0f));
-              } else {
-                temp_scale = (1.04f - (abs(16834 - (int)ang.b) / 16384.0f));
-              }
-
-              temp_scale *= temp_scale;
-              scale *= temp_scale;
-              if (f_player_fired_recently)
-                scale *= .25f;
-
-              rotthrust->z -= scale * BANK_AUTOLEVEL_SPEED_SCALAR * obj->mtype.phys_info.full_rotthrust;
+            if (ang.b < 36864) {
+              temp_scale = (1.04f - ((49152 - 36864) / 16384.0f));
             } else {
-              float temp_scale;
-
-              if (ang.b < 36864) {
-                temp_scale = (1.04f - ((49152 - 36864) / 16384.0f));
-              } else {
-                temp_scale = (1.04f - (abs(49152 - (int)ang.b) / 16384.0f));
-              }
-
-              temp_scale *= temp_scale;
-              scale *= temp_scale;
-              if (f_player_fired_recently)
-                scale *= .25f;
-
-              rotthrust->z += scale * BANK_AUTOLEVEL_SPEED_SCALAR * obj->mtype.phys_info.full_rotthrust;
+              temp_scale = (1.04f - (abs(49152 - (int)ang.b) / 16384.0f));
             }
 
-            //						PhysicsApplyConstRotForce(*obj, level_rotthrust, *rotvel,
-            // frame_time);
+            temp_scale *= temp_scale;
+            scale *= temp_scale;
+            if (f_player_fired_recently)
+              scale *= .25f;
+
+            rotthrust->z += scale * BANK_AUTOLEVEL_SPEED_SCALAR * obj->mtype.phys_info.full_rotthrust;
           }
         }
       }
@@ -666,7 +622,8 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
   }
 
   // Apply rotation to the "un-rollbanked" object
-  tangles.p = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU instruction which strips the negative sign
+  tangles.p = (int16_t)(rotvel->x * frame_time); // Casting to int16_t is required for aarch64 to avoid FCVTZU
+                                                 // instruction which strips the negative sign
   tangles.h = (int16_t)(rotvel->y * frame_time);
   tangles.b = (int16_t)(rotvel->z * frame_time);
 
@@ -685,12 +642,6 @@ bool PhysicsDoSimRot(object *obj, float frame_time, matrix *orient, vector *rott
     vm_AnglesToMatrix(&rotmat, tangles.p, tangles.h, tangles.b);
     *orient = *orient * rotmat; // ObjSetOrient is below
   }
-/*
-  mprintf(0, " a %f, %f, %f,\n%f, %f, %f,\n%f %f %f\n\n",
-          XYZ(&obj->orient.fvec),
-          XYZ(&obj->orient.rvec),
-          XYZ(&obj->orient.uvec));
-*/
   // Make sure the new orientation is valid
   vm_Orthogonalize(orient);
 
@@ -705,10 +656,6 @@ void PhysicsDoSimLinear(const object &obj, const vector &pos, const vector &forc
     movementPos = pos + movementVec;
     return;
   }
-
-  // Help so that we do not loss velocity when sliding (still framerate dependent -- fix with force stuff)
-  //	if (!(count == 0 || (count > 0 && (~obj->mtype.phys_info.flags & (PF_BOUNCE | PF_GRAVITY)))))
-  //		return;
 
   vector forceToUse = force;
   if (!ROOMNUM_OUTSIDE(obj.roomnum) && !(obj.mtype.phys_info.flags & PF_LOCK_MASK) &&
@@ -970,30 +917,7 @@ void do_physics_sim(object *obj) {
       PhysicsDoSimRot(obj, sim_time_remaining, &end_orient, &obj->mtype.phys_info.rotthrust, &end_rotvel,
                       &end_turnroll);
 
-      /*			vector init_pos = obj->pos + obj->wall_sphere_offset;*/
       ObjSetOrient(obj, &end_orient);
-      /*			vector new_pos =  obj->pos + obj->wall_sphere_offset;
-
-                              if(obj->wall_sphere_offset != Zero_vector && obj->type == OBJ_ROBOT &&
-         !(obj->mtype.phys_info.flags & PF_POINT_COLLIDE_WALLS))
-                              {
-                                      fq.p0						= &init_pos;
-                                      fq.startroom  			= obj->roomnum;
-                                      fq.p1						= &new_pos;
-                                      fq.rad		  			=
-         Poly_models[obj->rtype.pobj_info.model_num].wall_size; fq.thisobjnum 			= objnum;
-                                      fq.ignore_obj_list	= NULL;
-                                      fq.flags					= 0;
-
-                                      fate = fvi_FindIntersection(&fq,&hit_info);
-
-                                      // Only wiggle on a non-hit case
-                                      if(fate != HIT_NONE)
-                                      {
-                                              end_orient = start_orient;
-                                              ObjSetOrient(obj, &start_orient);
-                                      }
-                              }*/
     } else {
       f_set_orient = false;
     }
@@ -1042,21 +966,6 @@ void do_physics_sim(object *obj) {
 
       goto end_of_sim;
     }
-
-    // If we are stationary, we are done :)  -- breaks on high framerates (Gravity)
-    //		if(vm_GetMagnitude(&movement_vec) < 0.00001)
-    //		if(vm_GetMagnitude(&start_vel) < 0.00001)
-    //		if(vm_GetMagnitude(&end_vel) < 0.00001)
-    //		if(vm_GetMagnitude(&obj->mtype.phys_info.thrust) < 0.00001)
-    //		if(vm_GetMagnitude(&obj->mtype.phys_info.rotthrust) < .0001)
-    //		if(vm_GetMagnitude(&start_rotvel) < .0001)
-    //		if(vm_GetMagnitude(&end_rotvel) < .0001)
-    //		{
-    //			mprintf(0, "At rest\n");
-    //			goto end_of_sim;
-    //		}
-
-    //		mprintf(0, "PHYSICS: Try to move to (%f, %f, %f)\n", movement_pos.x, movement_pos.y, movement_pos.z);
 
     Physics_normal_looping_counter++;
 
@@ -1130,16 +1039,7 @@ void do_physics_sim(object *obj) {
       }
       vm_NormalizeVector(&hit_info.hit_wallnorm[0]);
     }
-/*
-    if (obj == Player_object && fate != HIT_NONE) {
-      mprintf(0, "Hit type %d, obj %d\n", fate, hit_info.hit_object[0]);
-      if (fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT) {
-        mprintf(0, "Hit object type %d, id %d\n",
-                Objects[hit_info.hit_object[0]].type,
-                Objects[hit_info.hit_object[0]].id);
-      }
-    }
-*/
+
     obj->mtype.phys_info.velocity = temp_vel;
 
     // Accounts for precomputed hit rays
@@ -1213,7 +1113,6 @@ void do_physics_sim(object *obj) {
     if (f_set_orient) {
       obj->mtype.phys_info.turnroll = hit_info.hit_turnroll;
       obj->mtype.phys_info.rotvel = hit_info.hit_rotvel;
-      //			ObjSetOrient(obj, &hit_info.hit_orient);
 
       f_set_orient = false;
     }
@@ -1265,12 +1164,6 @@ void do_physics_sim(object *obj) {
       // We where sitting in a wall -- invalid starting point
       // moved backwards
       if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
-/*
-        mprintf(0, "Obj %d Flew backwards!\n", OBJNUM(obj));
-        mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
-                XYZ(&start_pos),
-                XYZ(&obj->pos)); // don't change position or sim_time_remaining
-*/
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
         moved_time = 0.0;
@@ -1289,24 +1182,12 @@ void do_physics_sim(object *obj) {
 
         // chrishack -- negative simulation time pasted for this sim frame
         if (sim_time_remaining > old_sim_time_remaining) {
-/*
-          mprintf(0,"PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\n""
-                    "Attempted d = %15.13f, actual = %15.13f\n",
-                  sim_time_remaining,
-                  old_sim_time_remaining,
-                  attempted_dist,
-                  actual_dist);
-           Int3();
-*/
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
           f_continue_sim = false;
         }
       }
 
-      //		// Get the collision speed as a linear interp.
-      //		if(old_sim_time_remaining > 0.0f)
-      //		{
       // Get the collision speed as a linear interp.
       if (fate == HIT_OBJECT || fate == HIT_SPHERE_2_POLY_OBJECT || fate == HIT_TERRAIN || fate == HIT_WALL) {
         if (moved_time > 0.0001f) {
@@ -1363,7 +1244,6 @@ void do_physics_sim(object *obj) {
         }
       }
 
-      //				if(obj->type != OBJ_CLUTTER)
       {
         vector moved_v;
         float hit_speed, wall_part;
@@ -1486,30 +1366,6 @@ void do_physics_sim(object *obj) {
                 obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0] * (wall_part * -1.0f);
             }
 
-            //						if(!f_forcefield && !(f_volatile && obj->type == OBJ_PLAYER))
-            //						{
-            //							if(obj->mtype.phys_info.coeff_restitution != 1.0f)
-            //								obj->mtype.phys_info.velocity -=
-            //(obj->mtype.phys_info.velocity * (1.0f
-            //- obj->mtype.phys_info.coeff_restitution));
-            //						}
-
-            //						if(!f_forcefield && !(f_volatile && obj->type == OBJ_PLAYER))
-            //							bump_obj_against_fixed(obj, &hit_info.hit_face_pnt[0],
-            //&hit_info.hit_wallnorm[0]);
-            //
-            //						if(hit_info.hit_wallnorm[0].y > .4 &&
-            //(vm_GetMagnitude(&obj->mtype.phys_info.velocity) < .001f
-            //|| obj->mtype.phys_info.velocity * hit_info.hit_wallnorm[0] <= 0.0f))
-            //						{
-            //							mprintf(0, "At Rest!\n");
-            //							obj->movement_type = MT_NONE;
-            //							obj->mtype.phys_info.velocity = Zero_vector;
-            //							f_continue_sim = false;
-            //						}
-
-            // mprintf(0, "(%f, %f, %f) after bounce\n", XYZ(&obj->mtype.phys_info.velocity));
-            // mprintf(0, "p (%f, %f, %f) after bounce\n", XYZ(&obj->pos));
           } else {
           slide_sim:
 
@@ -1519,18 +1375,18 @@ void do_physics_sim(object *obj) {
 
             if (obj->type != OBJ_CLUTTER)
               total_force +=
-                  hit_info.hit_wallnorm[0] * (wall_force * -1.001); // 1.001 so that we are not quite tangential
+                  hit_info.hit_wallnorm[0] * (wall_force * -1.001f); // 1.001 so that we are not quite tangential
             else
               total_force +=
-                  hit_info.hit_wallnorm[0] * (wall_force * -1.0001); // 1.001 so that we are not quite tangential
+                  hit_info.hit_wallnorm[0] * (wall_force * -1.0001f); // 1.001 so that we are not quite tangential
 
             // Update velocity from wall hit.
             if (obj->type != OBJ_CLUTTER)
               obj->mtype.phys_info.velocity +=
-                  hit_info.hit_wallnorm[0] * (wall_part * -1.001); // 1.001 so that we are not quite tangential
+                  hit_info.hit_wallnorm[0] * (wall_part * -1.001f); // 1.001 so that we are not quite tangential
             else
               obj->mtype.phys_info.velocity +=
-                  hit_info.hit_wallnorm[0] * (wall_part * -1.0001); // 1.001 so that we are not quite tangential
+                  hit_info.hit_wallnorm[0] * (wall_part * -1.0001f); // 1.001 so that we are not quite tangential
 
             if ((obj->type == OBJ_ROBOT || obj->type == OBJ_PLAYER || (obj->type == OBJ_BUILDING && obj->ai_info)) &&
                 sim_time_remaining == old_sim_time_remaining) {
@@ -1584,93 +1440,6 @@ void do_physics_sim(object *obj) {
               vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
         }
       }
-      // else
-      //{
-      /*				vector r1 = hit_info.hit_face_pnt[0] - obj->pos;
-                                      vector w1;
-                                      vector n1;
-                                      float temp1;
-
-                                      float j;
-
-                                      matrix o_t1 = obj->orient;
-                                      vm_TransposeMatrix(&o_t1);
-                                      vector cmp1 = obj->mtype.phys_info.rotvel * o_t1;
-                                      ConvertEulerToAxisAmount(&cmp1, &n1, &temp1);
-
-                                      n1 *= temp1;
-
-                                      if(temp1 != 0.0f)
-                                      {
-                                              vm_CrossProduct(&w1, &n1, &r1);
-                                      }
-                                      else
-                                      {
-                                              w1 = Zero_vector;
-                                      }
-
-                                      vector p1 = obj->mtype.phys_info.velocity + w1; // *((2.0f*(float)PI)/65535.0f);
-
-                                      if(p1.y < 0.0)
-                                      {
-      //					if(p1.y == 0.0)
-      //						mprintf(0, "AT REST: p1 (%f, %f, %f)\n", XYZ(&p1));
-      //					else
-      //						mprintf(0, "SHIT: p1 (%f, %f, %f)\n", XYZ(&p1));
-      //
-      //					p1.y = -.0001f;
-      //					}
-
-
-                                              float v_rel;
-
-                                              float m1 = obj->mtype.phys_info.mass;
-
-                                              v_rel = hit_info.hit_wallnorm[0] * (p1);
-
-                                              float e = .1f;
-
-                                              vector c1;
-                                              vector cc1;
-                                              float cv1;
-
-                                              float i1 = (m1/12.0)*(2.0f * pow(obj->size*2.0, 2));
-
-                                              vm_CrossProduct(&c1, &r1, &hit_info.hit_wallnorm[0]);
-
-                                              c1 = c1/i1;
-
-                                              vm_CrossProduct(&cc1, &c1, &r1);
-
-                                              cv1 = (hit_info.hit_wallnorm[0])*c1;
-
-                                              j = (-(1.0f + e))*v_rel;
-                                              j /= (1/m1 + cv1);
-
-                                              obj->mtype.phys_info.velocity += ((j*(hit_info.hit_wallnorm[0]))/m1);
-
-                                              vector jcn = j * (hit_info.hit_wallnorm[0]);
-
-                                              vm_CrossProduct(&c1, &r1, &jcn);
-
-                                              n1 = (c1)/i1;
-
-                                              temp1 = vm_NormalizeVector(&n1);
-
-                                              vector txx1;
-
-                                              ConvertAxisAmountToEuler(&n1, &temp1, &txx1);
-
-                                              obj->mtype.phys_info.rotvel += (txx1*obj->orient);
-                                      }
-                                      else
-                                      {
-                                              obj->mtype.phys_info.velocity.y = .001f;
-                                              obj->mtype.phys_info.rotvel = Zero_vector;
-                                      }*/
-
-      //				}
-
       f_continue_sim = true;
 
     } break;
@@ -1739,14 +1508,9 @@ void do_physics_sim(object *obj) {
 
       // chrishack -- we should have this point from FVI!!!!!!!!!!!
       //	Calculcate the hit point between the two objects.
-      // old_vel = obj->mtype.phys_info.velocity;
       old_force = obj->mtype.phys_info.thrust;
 
       obj->mtype.phys_info.thrust = total_force;
-
-      //				hit_info.hit_wallnorm[0] *= -1.0f;
-
-      //				mprintf(0, "hit dist %f\n", hit_info.hit_dist);
 
       collide_two_objects(obj, &Objects[hit_info.hit_object[0]], &hit_info.hit_face_pnt[0], &hit_info.hit_wallnorm[0],
                           &hit_info);
@@ -1766,20 +1530,6 @@ void do_physics_sim(object *obj) {
             (Objects[hit_info.hit_object[0]].mtype.phys_info.flags & PF_LOCK_MASK)))) {
         obj->mtype.phys_info.velocity += hit_info.hit_wallnorm[0];
       }
-
-      // mprintf(0, "OBJ %d t %d hit %d\n", OBJNUM(obj), obj->type, hit_info.hit_object[0]);
-
-      // Let object continue its movement if collide_two_objects does not mark it as dead
-      //				if ( !(obj->flags&OF_DEAD)  )
-      //				{
-      //
-      //					// chrishack -- check this later -- what is the old_vel stuff?
-      //					if ((obj->mtype.phys_info.flags & PF_PERSISTENT) ||
-      //						 (old_vel == obj->mtype.phys_info.velocity))
-      //					{
-      //						ignore_obj_list[n_ignore_objs++] = hit_info.hit_object[0];
-      //					}
-      //				}
 
       // Let object continue its movement if collide_two_objects does not mark it as dead
       if (!(obj->flags & OF_DEAD)) {
@@ -1810,11 +1560,6 @@ void do_physics_sim(object *obj) {
 
         f_continue_sim = true;
 
-        //					if((obj->type == OBJ_CLUTTER)&&(Objects[hit_info.hit_object[0]].type ==
-        // OBJ_CLUTTER))
-        //					{
-        //						f_continue_sim = false;
-        //					}
       } else {
         f_continue_sim = false;
       }
@@ -1843,20 +1588,7 @@ void do_physics_sim(object *obj) {
     if (obj->type == OBJ_PLAYER) {
       mprintf(0, "PHYSICS NOTE: Too many collisions for player!\n");
       obj->mtype.phys_info.velocity = Zero_vector;
-    } else {
-/*
-      mprintf(0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-              objnum,
-              init_room,
-              obj->roomnum);
-      obj->flags |= OF_DEAD;
-      obj->mtype.phys_info.velocity /= 2.0f;
-      obj->mtype.phys_info.rotvel /= 2.0f;
-*/
     }
-
-    // ObjSetPos(obj,&init_pos, init_room);
-    // obj->last_pos = init_pos;
   }
 
 end_of_sim:
@@ -1916,75 +1648,6 @@ int PhysCastWalkRay(object *obj, vector *p0, vector *p1, vector *hitpnt, int *st
   *hitpnt = hit_info.hit_pnt;
   return fate;
 }
-
-// void PhysComputeGroundPosOrient(object *obj, vector *pos, matrix *orient)
-//{
-//	vector pnt[3];
-//	vector tpnt = obj->pos;
-//	matrix tmatrix = obj->orient;
-//	poly_model *pm=&Poly_models[obj->rtype.pobj_info.model_num];
-//	int num_gps = (pm->n_ground == 5)?3:1;
-//	int i;
-//
-//	obj->pos = *pos;
-//	obj->orient = *orient;
-//
-//	for(i = 0; i < num_gps; i++)
-//	{
-//		PhysCalcGround(&pnt[i], NULL, obj, i);
-//	}
-//
-//	obj->pos = tpnt;
-//	obj->orient = tmatrix;
-//
-//	if(num_gps == 3 && ROOMNUM_OUTSIDE(obj->roomnum))
-//	{
-//		float diff[3];
-//		vector gp[3];
-//
-//		for(i = 0; i < 3; i++)
-//		{
-//			gp[i] = pnt[i];
-//			gp[i].y = GetTerrainGroundPoint(&gp[i]);
-//		}
-//
-//		for(i = 0; i < 3; i++)
-//		{
-//			diff[i] = gp[i].y - pnt[i].y;
-//		}
-//
-//		float biggest_diff = diff[0];
-//		for(i = 1; i < 3; i++)
-//		{
-//			if(fabs(diff[i]) > fabs(biggest_diff))
-//			{
-//				biggest_diff = diff[i];
-//			}
-//		}
-//
-//		vector uvec;
-//		vm_GetPerp(&uvec, &gp[0], &gp[1], &gp[2]);
-//		vm_NormalizeVector(&uvec);
-//
-//		float dot = orient->fvec * uvec;
-//		vector fvec = orient->fvec;
-//		fvec -= (uvec * dot);
-//		vm_NormalizeVector(&fvec);
-//
-//		vm_VectorToMatrix(orient, &fvec, &uvec, NULL);
-//		pos->y += biggest_diff;
-//	}
-//	else
-//	{  // Alignd to Y-axis
-//		float diff = GetTerrainGroundPoint(&pnt[0]) - pnt[0].y;
-//
-//		pos->y += diff;
-//
-//		angvec a;
-//		vm_ExtractAnglesFromMatrix(&a, orient);
-//		vm_AnglesToMatrix(orient, 0.0f, a.h, 0.0f);
-//	}
-//}
 
 void PhysCalPntOnCPntPlane(object *obj, vector *s_pnt, vector *d_pnt, float *dist) {
   vector tpnt = *s_pnt - obj->pos;
@@ -2354,7 +2017,7 @@ void do_walking_sim(object *obj) {
     }
   }
 
-  //	mprintf(0, "PHYSICS: Current obj: %d, %9.2fx %9.2fy %9.2fz\n", OBJNUM(obj), XYZ(&obj->pos));
+  // mprintf(0, "PHYSICS: Current obj: %d, %9.2fx %9.2fy %9.2fz\n", OBJNUM(obj), XYZ(&obj->pos));
   // mprintf(2,1,0,"x %9.2f\ny %9.2f\nz %9.2f", XYZ(&obj->mtype.phys_info.velocity));
   // mprintf(0, "PHYSICS: Current velocity (%f, %f, %f)\n", XYZ(&obj->mtype.phys_info.velocity));
 
@@ -2504,11 +2167,11 @@ void do_walking_sim(object *obj) {
       if (fate == HIT_WALL && moved_vec_n * movement_vec < -0.000001 && actual_dist != 0.0) {
 
         mprintf(0, "Obj %d Walked backwards!\n", OBJNUM(obj));
-/*
-        mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
-                XYZ(&start_pos),
-                XYZ(&obj->pos))); // don't change position or sim_time_remaining
-*/
+        /*
+                mprintf(0, "PHYSICS NOTE: (%f, %f, %f) to (%f, %f, %f)\n",
+                        XYZ(&start_pos),
+                        XYZ(&obj->pos))); // don't change position or sim_time_remaining
+        */
 
         ObjSetPos(obj, &start_pos, start_room, NULL, false);
 
@@ -2529,9 +2192,9 @@ void do_walking_sim(object *obj) {
         // chrishack -- negative simulation time pasted for this sim frame
         if (sim_time_remaining > old_sim_time_remaining) {
           mprintf(0,
-                   "PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\nAttempted d = %15.13f, actual "
-                   "= %15.13f\n",
-                   sim_time_remaining, old_sim_time_remaining, attempted_dist, actual_dist);
+                  "PHYSICS WARNING: Bogus sim_time_remaining = %15.13f, old = %15.13f\nAttempted d = %15.13f, actual "
+                  "= %15.13f\n",
+                  sim_time_remaining, old_sim_time_remaining, attempted_dist, actual_dist);
           // Int3();
           sim_time_remaining = old_sim_time_remaining;
           moved_time = 0.0;
@@ -2584,8 +2247,6 @@ void do_walking_sim(object *obj) {
         else // We hit a wall and are moving parallel to it
           collide_object_with_wall(obj, hit_speed, hit_info.hit_face_room[0], hit_info.hit_face[0],
                                    &hit_info.hit_face_pnt[0], &hit_info.hit_wallnorm[0], hit_dot);
-        //					scrape_object_on_wall(obj, hit_info.hit_face_room, hit_info.hit_face,
-        //&hit_info.hit_face_pnt[0], &hit_info.hit_wallnorm[0] );
 
         if (!(obj->flags & OF_DEAD)) {
           bool f_forcefield = false; // bounce off a forcefield
@@ -2626,11 +2287,11 @@ void do_walking_sim(object *obj) {
 
             wall_force = total_force * hit_info.hit_wallnorm[0];
             total_force +=
-                hit_info.hit_wallnorm[0] * (wall_force * -1.001); // 1.001 so that we are not quite tangential
+                hit_info.hit_wallnorm[0] * (wall_force * -1.001f); // 1.001 so that we are not quite tangential
 
             // Update velocity from wall hit.
             obj->mtype.phys_info.velocity +=
-                hit_info.hit_wallnorm[0] * (wall_part * -1.001); // 1.001 so that we are not quite tangential
+                hit_info.hit_wallnorm[0] * (wall_part * -1.001f); // 1.001 so that we are not quite tangential
 
             if ((obj->type == OBJ_ROBOT || obj->type == OBJ_PLAYER || OBJ_CLUTTER ||
                  (obj->type == OBJ_BUILDING && obj->ai_info)) &&
@@ -2643,7 +2304,6 @@ void do_walking_sim(object *obj) {
 
               real_vel = vm_NormalizeVector(&obj->mtype.phys_info.velocity);
               obj->mtype.phys_info.velocity *= ((real_vel + luke_test) / 2);
-              // obj->mtype.phys_info.velocity *= (luke_test);
             }
           }
 
@@ -2666,93 +2326,6 @@ void do_walking_sim(object *obj) {
               vm_VectorToMatrix(&obj->orient, &obj->mtype.phys_info.velocity, &obj->orient.uvec, NULL);
         }
       }
-      // else
-      //{
-      /*				vector r1 = hit_info.hit_face_pnt[0] - obj->pos;
-                                      vector w1;
-                                      vector n1;
-                                      float temp1;
-
-                                      float j;
-
-                                      matrix o_t1 = obj->orient;
-                                      vm_TransposeMatrix(&o_t1);
-                                      vector cmp1 = obj->mtype.phys_info.rotvel * o_t1;
-                                      ConvertEulerToAxisAmount(&cmp1, &n1, &temp1);
-
-                                      n1 *= temp1;
-
-                                      if(temp1 != 0.0f)
-                                      {
-                                              vm_CrossProduct(&w1, &n1, &r1);
-                                      }
-                                      else
-                                      {
-                                              w1 = Zero_vector;
-                                      }
-
-                                      vector p1 = obj->mtype.phys_info.velocity + w1; // *((2.0f*(float)PI)/65535.0f);
-
-                                      if(p1.y < 0.0)
-                                      {
-      //					if(p1.y == 0.0)
-      //						mprintf(0, "AT REST: p1 (%f, %f, %f)\n", XYZ(&p1));
-      //					else
-      //						mprintf(0, "SHIT: p1 (%f, %f, %f)\n", XYZ(&p1));
-      //
-      //					p1.y = -.0001f;
-      //					}
-
-
-                                              float v_rel;
-
-                                              float m1 = obj->mtype.phys_info.mass;
-
-                                              v_rel = hit_info.hit_wallnorm[0] * (p1);
-
-                                              float e = .1f;
-
-                                              vector c1;
-                                              vector cc1;
-                                              float cv1;
-
-                                              float i1 = (m1/12.0)*(2.0f * pow(obj->size*2.0, 2));
-
-                                              vm_CrossProduct(&c1, &r1, &hit_info.hit_wallnorm[0]);
-
-                                              c1 = c1/i1;
-
-                                              vm_CrossProduct(&cc1, &c1, &r1);
-
-                                              cv1 = (hit_info.hit_wallnorm[0])*c1;
-
-                                              j = (-(1.0f + e))*v_rel;
-                                              j /= (1/m1 + cv1);
-
-                                              obj->mtype.phys_info.velocity += ((j*(hit_info.hit_wallnorm[0]))/m1);
-
-                                              vector jcn = j * (hit_info.hit_wallnorm[0]);
-
-                                              vm_CrossProduct(&c1, &r1, &jcn);
-
-                                              n1 = (c1)/i1;
-
-                                              temp1 = vm_NormalizeVector(&n1);
-
-                                              vector txx1;
-
-                                              ConvertAxisAmountToEuler(&n1, &temp1, &txx1);
-
-                                              obj->mtype.phys_info.rotvel += (txx1*obj->orient);
-                                      }
-                                      else
-                                      {
-                                              obj->mtype.phys_info.velocity.y = .001f;
-                                              obj->mtype.phys_info.rotvel = Zero_vector;
-                                      }*/
-
-      //				}
-
       f_continue_sim = true;
 
     } break;
@@ -2766,7 +2339,6 @@ void do_walking_sim(object *obj) {
 
       // chrishack -- we should have this point from FVI!!!!!!!!!!!
       //	Calculcate the hit point between the two objects.
-      // old_vel = obj->mtype.phys_info.velocity;
       old_force = obj->mtype.phys_info.thrust;
 
       obj->mtype.phys_info.thrust = total_force;
@@ -2790,17 +2362,6 @@ void do_walking_sim(object *obj) {
 
       // mprintf(0, "OBJ %d t %d hit %d\n", OBJNUM(obj), obj->type, hit_info.hit_object[0]);
 
-      // Let object continue its movement if collide_two_objects does not mark it as dead
-      //				if ( !(obj->flags&OF_DEAD)  )
-      //				{
-      //
-      //					// chrishack -- check this later -- what is the old_vel stuff?
-      //					if ((obj->mtype.phys_info.flags & PF_PERSISTENT) ||
-      //						 (old_vel == obj->mtype.phys_info.velocity))
-      //					{
-      //						ignore_obj_list[n_ignore_objs++] = hit_info.hit_object[0];
-      //					}
-      //				}
       // Let object continue its movement if collide_two_objects does not mark it as dead
       if (!(obj->flags & OF_DEAD)) {
         if ((obj->mtype.phys_info.flags & PF_PERSISTENT) ||
@@ -2845,20 +2406,7 @@ void do_walking_sim(object *obj) {
   if (count >= sim_loop_limit) {
     if (obj->type == OBJ_PLAYER) {
       mprintf(0, "PHYSICS NOTE: Too many collisions for player!\n");
-    } else {
-      /*
-      mprintf(0, "PHYSICS NOTE: Too many collisions for non-player object %d (%d to %d)!\n",
-              objnum,
-              init_room,
-              obj->roomnum));
-      obj->flags |= OF_DEAD;
-      obj->mtype.phys_info.velocity /= 2.0f;
-      obj->mtype.phys_info.rotvel /= 2.0f;
-      */
     }
-
-    // ObjSetPos(obj,&init_pos, init_room);
-    // obj->last_pos = init_pos;
   }
 
 end_of_sim:
@@ -2994,7 +2542,6 @@ void do_vis_physics_sim(vis_effect *vis) {
   } else {
     VisEffectDelete(vis - VisEffects);
   }
-
 }
 
 void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index) {
@@ -3044,155 +2591,5 @@ void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index) {
   // Add in acceleration due to force
   obj->mtype.phys_info.velocity += (*force_vec / obj->mtype.phys_info.mass);
 }
-/*
-//	----------------------------------------------------------------
-//	Do *dest = *delta unless:
-//				*delta is pretty small
-//		and	they are of different signs.
 
-void physics_set_rotvel_and_saturate(float *dest, float delta)
-{
-        if ((delta ^ *dest) < 0) {
-                if (abs(delta) < F1_0/8) {
-                        // mprintf(0, "D");
-                        *dest = delta/4;
-                } else
-                        // mprintf(0, "d");
-                        *dest = delta;
-        } else {
-                // mprintf(0, "!");
-                *dest = delta;
-        }
-}
-
-//	------------------------------------------------------------------------------------------------------
-//	Note: This is the old ai_turn_towards_vector code.
-//	phys_apply_rot used to call ai_turn_towards_vector until I fixed it, which broke phys_apply_rot.
-
-void physics_turn_towards_vector(vector *goal_vector, object *obj, float rate)
-{
-        vms_angvec	dest_angles, cur_angles;
-        float			delta_p, delta_h;
-        vector	*rotvel_ptr = &obj->mtype.phys_info.rotvel;
-
-        // Make this object turn towards the goal_vector.  Changes orientation, doesn't change direction of movement.
-        // If no one moves, will be facing goal_vector in 1 second.
-
-        //	Detect null vector.
-        if ((goal_vector->x == 0) && (goal_vector->y == 0) && (goal_vector->z == 0))
-                return;
-
-        //	Make morph objects turn more slowly.
-        if (obj->control_type == CT_MORPH)
-                rate *= 2;
-
-        vm_extract_angles_vector(&dest_angles, goal_vector);
-        vm_extract_angles_vector(&cur_angles, &obj->orient.fvec);
-
-        delta_p = (dest_angles.p - cur_angles.p);
-        delta_h = (dest_angles.h - cur_angles.h);
-
-        if (delta_p > F1_0/2) delta_p = dest_angles.p - cur_angles.p - F1_0;
-        if (delta_p < -F1_0/2) delta_p = dest_angles.p - cur_angles.p + F1_0;
-        if (delta_h > F1_0/2) delta_h = dest_angles.h - cur_angles.h - F1_0;
-        if (delta_h < -F1_0/2) delta_h = dest_angles.h - cur_angles.h + F1_0;
-
-        delta_p = fixdiv(delta_p, rate);
-        delta_h = fixdiv(delta_h, rate);
-
-        if (abs(delta_p) < F1_0/16) delta_p *= 4;
-        if (abs(delta_h) < F1_0/16) delta_h *= 4;
-
-        physics_set_rotvel_and_saturate(&rotvel_ptr->x, delta_p);
-        physics_set_rotvel_and_saturate(&rotvel_ptr->y, delta_h);
-        rotvel_ptr->z = 0;
-}
-*/
-//	-----------------------------------------------------------------------------
-//	Applies an instantaneous whack on an object, resulting in an instantaneous
-//	change in orientation.
-
-void phys_apply_rot(object *obj, vector *force_vec) {
-/*
-  float rate, vecmag;
-
-  if (obj->movement_type != MT_PHYSICS)
-    return;
-
-  vecmag = vm_VectorMagnitude(force_vec);
-
-  if (vecmag < F1_0 / 256)
-    rate = 4 * F1_0;
-  else if (vecmag < obj->mtype.phys_info.mass >> 14)
-    rate = 4 * F1_0;
-  else {
-    rate = fixdiv(obj->mtype.phys_info.mass, vecmag);
-
-    if (obj->type == OBJ_ROBOT) {
-      if (rate < F1_0 / 4)
-        rate = F1_0 / 4;
-      //	Changed by mk, 10/24/95, claw guys should not slow down when attacking!
-      if (!Robot_info[obj->id].thief && !Robot_info[obj->id].attack_type) {
-        if (obj->ctype.ai_info.SKIP_AI_COUNT * Frametime < 3 * F1_0 / 4) {
-          float tval = fixdiv(F1_0, 8 * Frametime);
-          int addval;
-          addval = f2i(tval);
-          if ((rand() * 2) < (tval & 0xffff))
-            addval++;
-          obj->ctype.ai_info.SKIP_AI_COUNT += addval;
-          // -- mk: too much stuff making hard to see my debug messages...
-          mprintf(0, "Frametime = %7.3f, addval = %i\n", f2fl(Frametime), addval);
-        }
-      }
-    } else {
-      if (rate < F1_0 / 2)
-        rate = F1_0 / 2;
-    }
-  }
-
-  // Turn amount inversely proportional to mass.  Third parameter is seconds to do 360 turn.
-  physics_turn_towards_vector(force_vec, obj, rate);
-*/
-}
-/*
-//this routine will set the thrust for an object to a value that will
-//(hopefully) maintain the object's current velocity
-
-void set_thrust_from_velocity(object *obj)
-{
-        Int3();
-//	float k;
-//
-//	ASSERT(obj->movement_type == MT_PHYSICS);
-//
-//	k = fixmuldiv(obj->mtype.phys_info.mass,obj->mtype.phys_info.drag,(f1_0-obj->mtype.phys_info.drag));
-//
-//	vm_vec_copy_scale(&obj->mtype.phys_info.thrust,&obj->mtype.phys_info.velocity,k);
-//
-}
-*/
-
-// Checks if an object is on the ground (we might do more in this function at a latter date) --chrishack
-int check_obj_on_ground(object *obj, fvi_info *hit_info_ptr) {
-  vector ground;
-  fvi_query fq;
-
-  ASSERT(obj->size - 2 * PHYSICS_GROUND_TOLERANCE > 0.0f);
-
-  ground = obj->pos;
-  // This should account for an object that touches more than one face.  (To find the real ground).
-  ground.y -= (obj->size + 3 * PHYSICS_GROUND_TOLERANCE);
-
-  fq.p0 = &obj->pos;
-  fq.startroom = obj->roomnum;
-  fq.p1 = &ground;
-  fq.rad = obj->size - 2 * PHYSICS_GROUND_TOLERANCE;
-  fq.thisobjnum = OBJNUM(obj);
-  fq.ignore_obj_list = NULL;
-  fq.flags = FQ_CHECK_OBJS;
-
-  if (obj->flags & OF_NO_OBJECT_COLLISIONS)
-    fq.flags &= ~FQ_CHECK_OBJS;
-
-  return fvi_FindIntersection(&fq, hit_info_ptr);
-}
+void phys_apply_rot(object *obj, vector *force_vec) {}

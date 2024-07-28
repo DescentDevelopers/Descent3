@@ -833,7 +833,7 @@
 #include "SmallViews.h"
 #include "newui.h"
 #include "Inventory.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "Controller.h"
 #include "controls.h"
 #include "gamesequence.h"

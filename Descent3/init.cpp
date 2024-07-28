@@ -953,7 +953,7 @@
 #include "pilot.h"
 #include "gameloop.h"
 #include "trigger.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "special_face.h"
 #include "voice.h"
 #include "localization.h"

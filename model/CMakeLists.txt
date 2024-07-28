@@ -8,6 +8,7 @@ target_link_libraries(model PRIVATE
   cfile
   mem
   misc
+  physics
 )
 target_include_directories(model PUBLIC
   $<BUILD_INTERFACE:

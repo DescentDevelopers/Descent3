@@ -16,6 +16,7 @@ target_link_libraries(sndlib PRIVATE
   mem
   misc
   stream_audio
+  physics
   SDL2::SDL2
 )
 target_include_directories(sndlib PUBLIC

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -215,13 +215,12 @@
  * $NoKeywords: $
  */
 
-#ifndef _FVI_H
-#define _FVI_H
+#ifndef FVI_H
+#define FVI_H
 
 #include "object.h"
 #include "vecmat.h"
 #include "terrain.h"
-// #include "room.h"
 #include "findintersection_external.h"
 
 extern float Ceiling_height;
@@ -426,7 +425,7 @@ extern int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector 
 extern int check_line_to_face(vector *newp, vector *colp, float *col_dist, vector *wall_norm, const vector *p0,
                               const vector *p1, vector *face_normal, vector **vertex_ptr_list, const int nv,
                               const float rad);
-extern void InitFVI(void);
+extern void InitFVI();
 
 // Types of supported collisions
 #ifdef NED_PHYSICS

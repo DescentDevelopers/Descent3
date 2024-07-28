@@ -450,7 +450,7 @@
 #include "lighting.h"
 #include "mem.h"
 #include "object.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "player.h"
 #include "polymodel.h"
 #include "psrand.h"

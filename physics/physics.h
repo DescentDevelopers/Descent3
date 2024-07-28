@@ -61,12 +61,12 @@
  * $NoKeywords: $
  */
 
-#ifndef _PHYSICS_H
-#define _PHYSICS_H
+#ifndef PHYSICS_H
+#define PHYSICS_H
 
-#include "vecmat.h"
 #include "findintersection.h"
 #include "object.h"
+#include "vecmat.h"
 #include "viseffect.h"
 
 extern int Physics_normal_counter;
@@ -78,7 +78,7 @@ extern int Physics_vis_counter;
 // The current strength of the world's gravity
 extern float Gravity_strength;
 
-#define PHYSICS_UNLIMITED_BOUNCE -1
+#define PHYSICS_UNLIMITED_BOUNCE (-1)
 
 #ifdef _DEBUG
 extern int Physics_player_verbose;
@@ -106,11 +106,10 @@ void do_walking_sim(object *obj);
 // Applies an instantaneous force on an object, resulting in an instantaneous
 // change in velocity.
 void phys_apply_force(object *obj, vector *force_vec, int16_t weapon_index = -1);
-void phys_apply_rot(object *obj, vector *force_vec);
 
-// this routine will set the thrust for an object to a value that will
-//(hopefully) maintain the object's current velocity
-void set_thrust_from_velocity(object *obj);
+// Applies an instantaneous whack on an object, resulting in an instantaneous change in orientation.
+// TODO: does nothing
+void phys_apply_rot(object *obj, vector *force_vec);
 
 // Determines the point and normal of the ground point
 bool PhysCalcGround(vector *ground_point, vector *ground_normal, object *obj, int ground_num);

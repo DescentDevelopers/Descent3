@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -827,41 +827,38 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
 #include <cmath>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdio>
 
-#include "collide.h"
-#include "PHYSICS.H"
-#include "pserror.h"
-#include "mono.h"
-#include "object.h"
-#include "player.h"
-#include "hlsoundlib.h"
-#include "weapon.h"
-#include "damage.h"
-#include "fireball.h"
-#include "sounds.h"
 #include "AIMain.h"
-#include "multi.h"
-#include "game.h"
-#include "soundload.h"
-#include "game2dll.h"
-#include "scorch.h"
-#include "ddio.h"
-#include "vecmat.h"
-#include "trigger.h"
-#include "lighting.h"
-#include "hud.h"
+#include "collide.h"
 #include "D3ForceFeedback.h"
+#include "ddio_common.h"
+#include "damage.h"
 #include "demofile.h"
-#include "osiris_dll.h"
-#include "marker.h"
+#include "fireball.h"
+#include "game.h"
+#include "game2dll.h"
+#include "hlsoundlib.h"
 #include "hud.h"
 #include "levelgoal.h"
+#include "lighting.h"
+#include "marker.h"
+#include "mono.h"
+#include "multi.h"
+#include "object.h"
+#include "osiris_dll.h"
+#include "physics.h"
+#include "player.h"
+#include "polymodel.h"
+#include "pserror.h"
 #include "psrand.h"
-
-#include <algorithm>
+#include "scorch.h"
+#include "sounds.h"
+#include "trigger.h"
+#include "vecmat.h"
+#include "weapon.h"
 
 #define PLAYER_ROTATION_BY_FORCE_SCALAR 0.12f
 #define NONPLAYER_ROTATION_BY_FORCE_SCALAR 1.0f
@@ -870,7 +867,6 @@ uint8_t CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
 uint8_t CollisionRayResult[MAX_OBJECT_TYPES];
 
 static bool IsOKToApplyForce(object *objp);
-static void bump_this_object(object *objp, object *other_objp, vector *force, vector *collision_pnt, int damage_flag);
 //! Creates some effects where a weapon has collided with a wall.
 static void DoWallEffects(object *weapon, int surface_tmap);
 //! Check for lava, volatile, or water surface.  If contact, make special sound & kill the weapon.
@@ -922,72 +918,6 @@ bool IsOKToApplyForce(object *objp) {
 
   return true;
 }
-
-//	-----------------------------------------------------------------------------
-void bump_this_object(object *objp, object *other_objp, vector *force, vector *collision_pnt, int damage_flag) {
-  //	float force_mag;
-
-  if (objp->type == OBJ_PLAYER) {
-    if ((Game_mode & GM_MULTI) && (objp != Player_object))
-      return;
-
-    phys_apply_force(objp, force);
-  } else {
-    if ((Game_mode & GM_MULTI) && (objp->type != OBJ_PLAYER && objp->type != OBJ_POWERUP) &&
-        (Netgame.local_role != LR_SERVER))
-      return;
-
-    phys_apply_force(objp, force);
-    phys_apply_rot(objp, force);
-  }
-
-  //	if (! (objp->mtype.phys_info.flags & PF_PERSISTENT))
-  //		if (objp->type == OBJ_PLAYER) {
-  //			vector force2;
-  //			force2 = forcex/4;
-
-  //			phys_apply_force(objp,&force2);
-
-  //			if (damage_flag && ((other_objp->type != OBJ_ROBOT) || !Robot_info[other_objp->id].companion)) {
-  //				force_mag = vm_vec_mag_quick(&force2);
-  //				apply_force_damage(objp, force_mag, other_objp);
-  //			}
-  //		} else if ((objp->type == OBJ_ROBOT) || (objp->type == OBJ_CLUTTER) || (objp->type == OBJ_CNTRLCEN)) {
-  //			if (!Robot_info[objp->id].boss_flag) {
-  //				vector force2;
-  //				force2.x = force->x/(4 + Difficulty_level);
-  //				force2.y = force->y/(4 + Difficulty_level);
-  //				force2.z = force->z/(4 + Difficulty_level);
-
-  //				phys_apply_force(objp, force);
-  //				phys_apply_rot(objp, &force2);
-  //				if (damage_flag) {
-  //					force_mag = vm_vec_mag_quick(force);
-  //					apply_force_damage(objp, force_mag, other_objp);
-  //				}
-  //			}
-  //		}
-}
-
-/*
-
-         void bump_one_object(object *obj0, vector *hit_dir, float damage)
-{
-        vector	hit_vec;
-
-        hit_vec = *hit_dir;
-        vm_vec_scale(&hit_vec, damage);
-
-        phys_apply_force(obj0,&hit_vec);
-
-}
-*/
-
-// #define DAMAGE_SCALE 		128	//	Was 32 before 8:55 am on Thursday, September 15, changed by MK,
-// walls
-//  were hurting me more than robots! #define DAMAGE_THRESHOLD 	(F1_0/3) #define WALL_LOUDNESS_SCALE (20)
-
-// float force_force = 50.0;
 
 struct vec2d {
   float i, j;
@@ -1375,7 +1305,7 @@ void collide_player_and_wall(object *playerobj, float hitspeed, int hitseg, int 
     if (!((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT))) {
       int id = FindWeaponName("NapalmBlob");
       if (id >= 0)
-        SetNapalmDamageEffect(playerobj, NULL, id);
+        SetNapalmDamageEffect(playerobj, nullptr, id);
       else
         Int3();
     }
@@ -1495,7 +1425,7 @@ void collide_generic_and_wall(object *genericobj, float hitspeed, int hitseg, in
     if (!((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT))) {
       int id = FindWeaponName("NapalmBlob");
       if (id >= 0)
-        SetNapalmDamageEffect(genericobj, NULL, id);
+        SetNapalmDamageEffect(genericobj, nullptr, id);
       else
         Int3();
     }
@@ -1534,145 +1464,7 @@ void collide_generic_and_wall(object *genericobj, float hitspeed, int hitseg, in
         DemoWrite3DSound(SOUND_PLAYER_HIT_WALL, OBJNUM(genericobj), 1, volume);
     }
   }
-
-  return;
 }
-
-static float Last_volatile_scrape_sound_time = 0;
-
-// this gets called when an object is scraping along the wall
-void scrape_object_on_wall(object *obj, int hitseg, int hitwall, vector *hitpt, vector *wall_normal) {
-  /*	switch (obj->type) {
-
-                  case OBJ_PLAYER:
-
-                          if (obj->id==Player_num) {
-                                  int type;
-
-                                  //mprintf(0, "Scraped segment #%3i, side #%i\n", hitseg, hitside);
-
-                                  if ((type=check_volatile_wall(obj,hitseg,hitside,hitpt))!=0) {
-                                          vector	hit_dir, rand_vec;
-
-                                          if ((GameTime > Last_volatile_scrape_sound_time + F1_0/4) || (GameTime <
-     Last_volatile_scrape_sound_time)) { int sound = (type==1)?SOUND_VOLATILE_WALL_HISS:SOUND_SHIP_IN_WATER;
-
-                                                  Last_volatile_scrape_sound_time = GameTime;
-
-                                                  digi_link_sound_to_pos( sound, hitseg, 0, hitpt, 0, F1_0 );
-                                                  if (Game_mode & GM_MULTI)
-                                                          multi_send_play_sound(sound, F1_0);
-                                          }
-
-                                          #ifdef COMPACT_SEGS
-                                                  get_side_normal(&Segments[hitseg], higside, 0, &hit_dir );
-                                          #else
-                                                  hit_dir = Segments[hitseg].sides[hitside].normals[0];
-                                          #endif
-
-                                          make_random_vector(&rand_vec);
-                                          vm_vec_scale_add2(&hit_dir, &rand_vec, F1_0/8);
-                                          vm_vec_normalize_quick(&hit_dir);
-                                          bump_one_object(obj, &hit_dir, F1_0*8);
-                                  }
-
-                                  //@@} else {
-                                  //@@	//what scrape sound
-                                  //@@	//PLAY_SOUND( SOUND_PLAYER_SCRAPE_WALL );
-                                  //@@}
-
-                          }
-
-                          break;
-
-                  //these two kinds of objects below shouldn't really slide, so
-                  //if this scrape routine gets called (which it might if the
-                  //object (such as a fusion blob) was created already poking
-                  //through the wall) call the collide routine.
-
-                  case OBJ_WEAPON:
-                          collide_weapon_and_wall(obj,0,hitseg,hitside,hitpt);
-                          break;
-
-                  case OBJ_DEBRIS:
-                          collide_debris_and_wall(obj,0,hitseg,hitside,hitpt);
-                          break;
-          }
-  */
-}
-/*
-void apply_damage_to_player(object *playerobj, object *killer, float damage)
-{
-        if (Player_is_dead)
-                return;
-
-        if (Players[Player_num].flags & PLAYER_FLAGS_INVULNERABLE)
-                return;
-
-        if (Endlevel_sequence)
-                return;
-
-        //for the player, the 'real' shields are maintained in the Players[]
-        //array.  The shields value in the player's object are, I think, not
-        //used anywhere.  This routine, however, sets the objects shields to
-        //be a mirror of the value in the Player structure.
-
-        if (playerobj->id == Player_num) {		//is this the local player?
-
-                //	MK: 08/14/95: This code can never be reached.  See the return about 12 lines up.
-// -- 		if (Players[Player_num].flags & PLAYER_FLAGS_INVULNERABLE) {
-// --
-// -- 			//invincible, so just do blue flash
-// --
-// -- 			PALETTE_FLASH_ADD(0,0,f2i(damage)*4);	//flash blue
-// --
-// -- 		}
-// -- 		else {		//take damage, do red flash
-
-                        Players[Player_num].shields -= damage;
-
-                        PALETTE_FLASH_ADD(f2i(damage)*4,-f2i(damage/2),-f2i(damage/2));	//flash red
-
-// -- 		}
-
-                if (Players[Player_num].shields < 0)	{
-
-                        Players[Player_num].killer_objnum = killer-Objects;
-
-//			if ( killer && (killer->type == OBJ_PLAYER))
-//				Players[Player_num].killer_objnum = killer-Objects;
-
-                        playerobj->flags |= OF_DEAD;
-
-                        if (Buddy_objnum != -1)
-                                if ((killer->type == OBJ_ROBOT) && (Robot_info[killer->id].companion))
-                                        Buddy_sorry_time = GameTime;
-                }
-// -- removed, 09/06/95, MK --  else if (Players[Player_num].shields < LOSE_WEAPON_THRESHOLD) {
-// -- removed, 09/06/95, MK -- 			int	randnum = ps_rand();
-// -- removed, 09/06/95, MK --
-// -- removed, 09/06/95, MK -- 			if (floatmul(Players[Player_num].shields, randnum) < damage/4) {
-// -- removed, 09/06/95, MK -- 				if (ps_rand() > 20000) {
-// -- removed, 09/06/95, MK -- 					destroy_secondary_weapon(Secondary_weapon);
-// -- removed, 09/06/95, MK -- 				} else if (Primary_weapon == 0) {
-// -- removed, 09/06/95, MK -- 					if (Players[Player_num].flags &
-PLAYER_FLAGS_QUAD_LASERS)
-// -- removed, 09/06/95, MK --
-destroy_primary_weapon(MAX_PRIMARY_WEAPONS);	//	This means to destroy quad laser.
-// -- removed, 09/06/95, MK -- 					else if (Players[Player_num].laser_level > 0)
-// -- removed, 09/06/95, MK -- 						destroy_primary_weapon(Primary_weapon);
-// -- removed, 09/06/95, MK -- 				} else
-// -- removed, 09/06/95, MK -- 					destroy_primary_weapon(Primary_weapon);
-// -- removed, 09/06/95, MK -- 			} else
-// -- removed, 09/06/95, MK -- 				; // mprintf(0, "%8x > %8x, so don't lose weapon.\n",
-floatmul(Players[Player_num].shields, randnum), damage/4);
-// -- removed, 09/06/95, MK -- 		}
-
-                playerobj->shields = Players[Player_num].shields;		//mirror
-
-        }
-}
-*/
 
 void CollideAnglesToMatrix(matrix *m, float p, float h, float b) {
   float sinp, cosp, sinb, cosb, sinh, cosh;
@@ -1745,17 +1537,7 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
 
   e_n = *e / scale;
 
-  //	vector f;
   CollideAnglesToMatrix(&rotmat, e_n.x, e_n.y, e_n.z);
-
-  //	mprintf(0, "F %f, %f, %f\n", XYZ(&rotmat.fvec));
-  //	mprintf(0, "R %f, %f, %f\n", XYZ(&rotmat.rvec));
-  //	mprintf(0, "U %f, %f, %f\n", XYZ(&rotmat.uvec));
-
-  //	CollideExtractAnglesFromMatrix(&f, &rotmat);
-
-  //	mprintf(0, "Before %f, %f, %f\n", XYZ(&e_n));
-  //	mprintf(0, "After  %f, %f, %f\n", XYZ(&f));
 
   // This is from Graphics Gems 1 p.467  I am converting from a angle vector
   // to the normal of that rotation (you can also get the angle about that normal, but
@@ -1776,9 +1558,6 @@ void ConvertEulerToAxisAmount(vector *e, vector *n, float *w) {
     float v = acos(ct);
     float z = sin(v);
 
-    //		if(v < 0.0)
-    //			*w = -rotspeed;
-    //		else
     *w = rotspeed * ((2.0f * PI) / (65535.0f));
 
     if (z >= 0.0f)
@@ -1802,8 +1581,8 @@ void ConvertAxisAmountToEuler(vector *n, float *w, vector *e) {
     return;
   }
 
-  s = sin(.0001);
-  c = cos(.0001);
+  s = sin(.0001f);
+  c = cos(.0001f);
   t = 1.0f - c;
 
   matrix rotmat;
@@ -1924,47 +1703,12 @@ void bump_obj_against_fixed(object *obj, vector *collision_point, vector *collis
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.x));
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.y));
   ASSERT(std::isfinite(obj->mtype.phys_info.velocity.z));
-
-  // hack rotvel
-  /*	vector v = obj->mtype.phys_info.velocity;
-          vector c = *collision_normal;
-
-          if(v != Zero_vector)
-          {
-                  vm_NormalizeVector(&v);
-
-                  if(v != c)
-                  {
-                          float rad = vm_VectorDistance(&obj->pos, collision_point);
-                          float rotvel = vm_GetMagnitude(&obj->mtype.phys_info.velocity)*((2*PI*rad));
-                          vector r;
-                          vector e;
-
-                          vm_CrossProduct(&r, &v, &c);
-                          vm_NormalizeVector(&r);
-
-                          ConvertAxisAmountToEuler(&r, &rotvel, &e);
-
-                          matrix rrr = obj->orient;
-  //			vm_TransposeMatrix(&rrr);
-                          obj->mtype.phys_info.rotvel = rrr * r;
-                  }
-                  else
-                  {
-                          obj->mtype.phys_info.rotvel = Zero_vector;
-                  }
-          }
-          else
-          {
-                  obj->mtype.phys_info.rotvel = Zero_vector;
-          }*/
 }
 
 void bump_two_objects(object *object0, object *object1, vector *collision_point, vector *collision_normal,
                       int damage_flag) {
-  //	vector force;	//dv,
-  object *t = NULL;
-  object *other = NULL;
+  object *t = nullptr;
+  object *other = nullptr;
 
   // Determine if a moving object hits a non-moving object
   if ((object0->movement_type != MT_PHYSICS && object0->movement_type != MT_WALKING) ||
@@ -2002,9 +1746,6 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
     }
 
     if (!(t->flags & OF_DEAD)) {
-      //			bump_obj_against_fixed(t, collision_point, collision_normal);
-      //		}
-      ///*
       // Find hit speed
       moved_v = t->pos - t->last_pos;
       wall_part = *collision_normal * t->mtype.phys_info.velocity;
@@ -2050,7 +1791,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
 
       // Weapons should face their new heading.  This is so missiles are pointing in the correct direct.
       if (t->type == OBJ_WEAPON && (t->mtype.phys_info.flags & (PF_BOUNCE | PF_GRAVITY | PF_WIND)))
-        vm_VectorToMatrix(&t->orient, &t->mtype.phys_info.velocity, &t->orient.uvec, NULL);
+        vm_VectorToMatrix(&t->orient, &t->mtype.phys_info.velocity, &t->orient.uvec, nullptr);
     }
 
     // Return it to the original direction
@@ -2065,24 +1806,8 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
       if (object0->type == OBJ_PLAYER && object0->id == Player_num) {
       }
     }
-    //*/
     return;
   }
-
-  //	force = object0->mtype.phys_info.velocity - object1->mtype.phys_info.velocity;
-  //	force *= 2*(object0->mtype.phys_info.mass * object1->mtype.phys_info.mass)/(object0->mtype.phys_info.mass +
-  // object1->mtype.phys_info.mass);
-
-  //	if(!(object1->mtype.phys_info.flags & PF_PERSISTENT))
-  //		bump_this_object(object1, object0, &force, collision_point, damage_flag);
-  //
-  //	force = -force;
-  //
-  //	if(!(object0->mtype.phys_info.flags & PF_PERSISTENT))
-  //		bump_this_object(object0, object1, &force, collision_point, damage_flag);
-
-  //	vector r_vel = object0->mtype.phys_info.velocity - object1->mtype.phys_info.velocity;
-  // Add this back
 
   ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.x));
   ASSERT(std::isfinite(object1->mtype.phys_info.rotvel.y));
@@ -2259,7 +1984,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
     if (object0->type == OBJ_PLAYER && object0->id == Player_num) {
       // v is the force vector
       vector v;
-      v = -1.0 * v_rel * (*collision_normal);
+      v = -1.0f * v_rel * (*collision_normal);
 
       // Was it weapon->player collide
       switch (object1->type) {
@@ -2290,7 +2015,7 @@ void bump_two_objects(object *object0, object *object1, vector *collision_point,
 
         dest_obj->effect_info->type_flags |= EF_NAPALMED;
 
-        dest_obj->effect_info->damage_time = std::max(1.0, src_obj->effect_info->damage_time / 3.0);
+        dest_obj->effect_info->damage_time = std::max(1.0f, src_obj->effect_info->damage_time / 3.0f);
         dest_obj->effect_info->damage_per_second = src_obj->effect_info->damage_per_second;
 
         // We need this cap (as the gb burns forever
@@ -2339,8 +2064,6 @@ void collide_player_and_player(object *p1, object *p2, vector *collision_point, 
   bump_two_objects(p1, p2, collision_point, collision_normal, 1);
 }
 
-#include "polymodel.h"
-
 void collide_generic_and_player(object *robotobj, object *playerobj, vector *collision_point, vector *collision_normal,
                                 bool f_reverse_normal, fvi_info *hit_info) {
   if (f_reverse_normal)
@@ -2373,7 +2096,7 @@ void collide_generic_and_player(object *robotobj, object *playerobj, vector *col
       if (!((Game_mode & GM_MULTI) && (Netgame.local_role == LR_CLIENT))) {
         int id = FindWeaponName("NapalmBlob");
         if (id >= 0)
-          SetNapalmDamageEffect(playerobj, NULL, id);
+          SetNapalmDamageEffect(playerobj, nullptr, id);
         else
           Int3();
       }
@@ -2414,35 +2137,10 @@ void collide_generic_and_player(object *robotobj, object *playerobj, vector *col
     }
   }
 
-  // mprintf(0, "We hit a robot\n");
   if (robotobj->control_type == CT_AI) {
     AINotify(robotobj, AIN_BUMPED_OBJ, (void *)playerobj);
   }
 
-  /*	if((GameTextures[Rooms[hitseg].faces[hitwall].tmap].flags & TF_VOLATILE) && !((Game_mode & GM_MULTI) &&
-     (Netgame.local_role==LR_CLIENT)))
-          {
-                  int id = FindWeaponName("NapalmBlob");
-                  if(id >= 0)
-                  {
-                          int objnum = ObjCreate(OBJ_WEAPON, id, playerobj->roomnum, &playerobj->pos, NULL,
-     playerobj->handle);
-
-                          if(objnum >= 0)
-                          {
-                                  object *weapon = &Objects[objnum];
-                                  float damage_to_apply = Weapons[weapon->id].damage;
-
-                                  // Factor in multiplier
-                                  damage_to_apply *= weapon->ctype.laser_info.multiplier;
-
-                                  ApplyDamageToPlayer(playerobj, weapon, 0);
-
-                                  SetObjectDeadFlag(objnum);
-                          }
-                  }
-          }
-  */
   bump_two_objects(robotobj, playerobj, collision_point, collision_normal, 1);
 }
 
@@ -2572,7 +2270,7 @@ void collide_generic_and_weapon(object *robotobj, object *weapon, vector *collis
 
     bump_two_objects(robotobj, weapon, collision_point, collision_normal, 0);
 
-    if (!f_stick || (hit_info == NULL)) {
+    if (!f_stick || (hit_info == nullptr)) {
       if ((robotobj->lighting_render_type == LRT_LIGHTMAPS) || !(weapon->mtype.phys_info.flags & PF_PERSISTENT))
         SetObjectDeadFlag(weapon);
     } else {
@@ -2638,7 +2336,7 @@ void collide_player_and_weapon(object *playerobj, object *weapon, vector *collis
   if (!electrical) {
     bump_two_objects(playerobj, weapon, collision_point, collision_normal, 0);
 
-    if (!f_stick || (hit_info == NULL)) {
+    if (!f_stick || (hit_info == nullptr)) {
       if (!(weapon->mtype.phys_info.flags & PF_PERSISTENT))
         SetObjectDeadFlag(weapon);
     } else {
