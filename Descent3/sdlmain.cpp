@@ -91,10 +91,6 @@ static cmdLineArg d3ArgTable[] = {
     {"gllists", '\0', "Use OpenGL lists."},
 #endif
 
-#ifdef __PERMIT_GL_LOGGING
-    {"gllogging", '\0', "to be removed."},
-#endif
-
     {"nomultitexture", 't', "Disable multitexturing."},
     {"nopackedpixels", 'x', "Disable packed pixels."},
     {"glfog", 'o', "Enable OpenGL fog."},
