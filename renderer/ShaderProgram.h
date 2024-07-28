@@ -22,6 +22,9 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "dyna_gl.h"
 #include "holder.h"
 
@@ -167,7 +170,25 @@ struct ShaderProgram {
     dglUseProgram(0);
   }
 
+  void setUniformMat4f(std::string const& name, glm::mat4x4 const& matrix) {
+    dglUniformMatrix4fv(getUniformId(name), 1, GL_FALSE, glm::value_ptr(matrix));
+  }
+
 private:
+  GLint getUniformId(std::string const& name) {
+    auto it = uniform_cache_.find(name);
+    if (it != uniform_cache_.end()) {
+      return it->second;
+    }
+
+    it = uniform_cache_.emplace(name, dglGetUniformLocation(id_, name.c_str())).first;
+    if (it->second != -1) {
+      return it->second;
+    }
+
+    throw std::runtime_error("uniform " + name + " nonexistent or inactive");
+  }
+
   static void DeleteProgram(GLuint id) {
     dglDeleteProgram(id);
   }
@@ -176,4 +197,5 @@ private:
   Shader<GL_VERTEX_SHADER> vertex_;
   Shader<GL_FRAGMENT_SHADER> fragment_;
   VertexBuffer<V> vbo_;
+  std::unordered_map<std::string, GLint> uniform_cache_;
 };

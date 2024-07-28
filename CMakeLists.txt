@@ -131,6 +131,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
   add_compile_options("-Wno-multichar;-Wall")
 endif()
 
+find_package(glm REQUIRED)
 find_package(SDL2 REQUIRED)
 # Some versions of the SDL2 find_package set SDL2_INCLUDE_DIR and some set a plural SDL2_INCLUDE_DIRS. Check both.
 message("SDL2 Include Dir is ${SDL2_INCLUDE_DIR} ${SDL2_INCLUDE_DIRS}")
