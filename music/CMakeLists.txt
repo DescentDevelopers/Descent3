@@ -7,9 +7,9 @@ set(CPPS
 
 add_library(music STATIC ${HEADERS} ${CPPS})
 target_link_libraries(music
+  AudioEncode
   cfile
   ddio
-  libacm
   mem
   misc
   sndlib

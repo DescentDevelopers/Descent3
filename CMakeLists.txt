@@ -221,8 +221,6 @@ add_subdirectory(unzip)
 add_subdirectory(vecmat)
 add_subdirectory(libmve)
 add_subdirectory(md5)
-add_subdirectory(libacm)
-
 
 if(BUILD_EDITOR AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
   add_subdirectory(editor)

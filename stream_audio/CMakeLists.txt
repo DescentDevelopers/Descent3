@@ -1,7 +1,8 @@
 set(HEADERS)
 set(CPPS
   osfarchive.cpp
-  streamaudio.cpp)
+  streamaudio.cpp
+)
 
 add_library(stream_audio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(stream_audio PRIVATE
@@ -11,7 +12,7 @@ target_link_libraries(stream_audio PRIVATE
   sndlib
 )
 target_link_libraries(stream_audio PUBLIC
-  libacm
+  AudioEncode
 )
 target_include_directories(stream_audio PUBLIC
   $<BUILD_INTERFACE:

@@ -1,4 +1,6 @@
 set(CPPS
+  adecode.cpp
+  aencode.cpp
   encoder.cpp
 )
 
