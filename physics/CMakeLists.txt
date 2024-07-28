@@ -11,6 +11,7 @@ target_link_libraries(physics PRIVATE
   mem
   misc
   model
+  rtperformance
   sndlib
 )
 target_include_directories(physics PUBLIC

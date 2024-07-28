@@ -54,23 +54,20 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #if defined(WIN32)
 #include <windows.h>
 #endif
 
-#include "rtperformance.h"
-#include "pstypes.h"
-#include "mono.h"
-#include "descent.h"
-#include "manage.h"
-#include "ddio.h"
 #include "cfile.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <algorithm>
+#include "ddio.h"
+#include "manage.h"
+#include "mono.h"
+#include "rtperformance.h"
 
 float rtp_startlog_time;
 
@@ -90,11 +87,13 @@ tRTFrameInfo RTP_SingleFrame;
 tRTFrameInfo RTP_FrameBuffer[MAX_RTP_SAMPLES];
 #endif
 
+void rtp_Close();
+
 /*
 void rtp_WriteBufferLog
         Writes the buffer of frames to file...
 */
-void rtp_WriteBufferLog(void) {
+void rtp_WriteBufferLog() {
 #ifdef USE_RTP
   Runtime_performance_enabled = 1; // make sure it's enabled for the macros
   // determine how many frames to write out
@@ -105,8 +104,7 @@ void rtp_WriteBufferLog(void) {
   Num_frames = std::min<unsigned>(Runtime_performance_counter, MAX_RTP_SAMPLES);
 
   // Open the log file for writing
-  ddio_MakePath(buffer, LocalD3Dir, "D3Performance.txt", NULL);
-  CFILE *file = cfopen(buffer, "wt");
+  CFILE *file = cfopen(std::filesystem::path(LocalD3Dir) / "D3Performance.txt", "wt");
 
   if (file) {
     mprintf(0, "RTP: Recording Log\n");
@@ -213,7 +211,7 @@ void rtp_RecordFrame
         Calling this will record the data of the frame into the internal log, and prepare for
         the next frame
 */
-void rtp_RecordFrame(void) {
+void rtp_RecordFrame() {
 #ifdef USE_RTP
   if (Runtime_performance_enabled) {
     //	do our saving of information
@@ -247,8 +245,7 @@ void rtp_RecordFrame(void) {
 void rtp_Init
         This function initilizes the runtime performance system so it's ready to be used
 */
-void rtp_Close(void);
-void rtp_Init(void) {
+void rtp_Init() {
 #ifdef USE_RTP
   Runtime_performance_flags = 0;
   Runtime_performance_clockfreq = 0;
@@ -275,7 +272,7 @@ void rtp_Init(void) {
 void rtp_Close
         This function shuts down the runtime performance system when the game is done
 */
-void rtp_Close(void) {
+void rtp_Close() {
 #ifdef USE_RTP
   if (Runtime_performance_enabled) {
     // Save the log out, since it was currently logging
@@ -308,7 +305,7 @@ void rtp_DisableFlags(INT64 flags) {
 void rtp_StartLog
         Calling this function will reset the log and start a new log, recording immediatly
 */
-void rtp_StartLog(void) {
+void rtp_StartLog() {
 #ifdef USE_RTP
   mprintf(0, "RTP: Starting Log\n");
   Runtime_performance_counter = 0;
@@ -323,7 +320,7 @@ void rtp_StopLog
         Calling this function will stop the currently processing log and write it out to
         file.
 */
-void rtp_StopLog(void) {
+void rtp_StopLog() {
 #ifdef USE_RTP
   mprintf(0, "Recorded performance for %f seconds\n", timer_GetTime() - rtp_startlog_time);
   mprintf(0, "RTP: Stopping Log\n");
@@ -339,7 +336,7 @@ void rtp_StopLog(void) {
 void rtp_PauseLog
         Calling this function will pause the log recording until rtp_ResumeLog is called
 */
-void rtp_PauseLog(void) {
+void rtp_PauseLog() {
 #ifdef USE_RTP
   mprintf(0, "RTP: Pausing Log\n");
   Runtime_performance_enabled = 0;
@@ -350,7 +347,7 @@ void rtp_PauseLog(void) {
 void rtp_ResumeLog
         Calling this will resume a paused log, starting at where it left off
 */
-void rtp_ResumeLog(void) {
+void rtp_ResumeLog() {
 #ifdef USE_RTP
   mprintf(0, "RTP: Resuming Log\n");
   Runtime_performance_enabled = 1;
@@ -363,7 +360,7 @@ void rtp_ResumeLog(void) {
 INT64 rtp_GetClock
         Returns the current hi-resolution clock value...no checking for overflow
 */
-INT64 rtp_GetClock(void) {
+INT64 rtp_GetClock() {
 #ifdef USE_RTP
   LARGE_INTEGER t;
   QueryPerformanceCounter(&t);
