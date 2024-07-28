@@ -119,11 +119,7 @@
 #include "DMFC.h"
 #include "dmfcinternal.h"
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
 
 struct tTeamPlacementDialogInfo {
   void *lb[DLLMAX_TEAMS];

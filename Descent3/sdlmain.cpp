@@ -46,8 +46,6 @@
 #include "log.h"
 
 extern bool ddio_mouseGrabbed;
-const char *DMFCGetString(int d);
-// void *x = (void *) DMFCGetString;   // just force a reference to dmfc.so ...
 
 std::filesystem::path orig_pwd;
 

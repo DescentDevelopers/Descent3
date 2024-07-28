@@ -53,12 +53,6 @@
 #include "dmfcinternal.h"
 
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
-extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
-
 CRegistry *reg = NULL;
 
 // DMFCBase::CFGOpen

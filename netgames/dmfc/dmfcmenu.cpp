@@ -137,11 +137,7 @@
 
 #include <algorithm>
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
 
 MenuItem::MenuItem() {
   m_cPtrs = 0;

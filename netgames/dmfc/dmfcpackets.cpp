@@ -111,12 +111,6 @@
 #include "dmfcinternal.h"
 
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
-extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
-
 // DMFCBase::RegisterPacketReceiver
 //
 // Sets up a handler for a Special Packet ID.  When a special packet is recieved it's ID is compared

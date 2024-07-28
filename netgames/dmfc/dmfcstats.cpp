@@ -149,11 +149,7 @@
 
 #include <algorithm>
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
 extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
 extern player_record Player_records[MAX_PLAYER_RECORDS];
 
 #define ROW_PIXEL_GAP 2
