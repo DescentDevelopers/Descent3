@@ -352,7 +352,7 @@ tGameToggles Game_toggles = { // toggles specified in general settings.
 
 // video defines
 #define VID_D3D 0
-#define VID_GLIDE 1
+#define VID_GLIDE 1 // Unused
 #define VID_OPENGL 2
 
 // small view settings

@@ -66,17 +66,8 @@ static volatile char already_tried_signal_cleanup = 0;
 
 void ddio_InternalClose();        // needed for emergency cleanup.
 
-#ifdef __PERMIT_LINUX_GLIDE
-void glide_Close(void);
-#endif
-
 void just_exit(void) {
   ddio_InternalClose(); // try to reset serial port.
-
-#ifdef __PERMIT_LINUX_GLIDE
-  if (Renderer_type == RENDERER_GLIDE)
-    glide_Close();
-#endif
 
   SDL_Quit();
 #if defined(POSIX)
@@ -440,37 +431,6 @@ int main(int argc, char *argv[]) {
         return 0;
       }
 
-#ifdef __PERMIT_LINUX_GLIDE
-      int opengl_rend = (FindArgChar("+rend_opengl", 'G')) ? 1 : 0;
-      int glide_rend = (FindArgChar("+rend_glide", 'L')) ? 1 : 0;
-
-      if (!glide_rend && !opengl_rend) {
-        // fprintf(stderr,"Error: --dedicated or renderer flag required\n");
-        // return 0;
-
-        // ryan sez: Glide by default, beeyatch.
-        glide_rend = 1;
-      }
-
-      // check for multiple renderers defined
-      if (glide_rend + opengl_rend > 1) {
-        fprintf(stderr, "Error: Too many renderer's defined, use only one\n");
-        return 0;
-      }
-
-      /*
-              //print out renderer
-              if(glide_rend)
-              {
-                      fprintf(stderr,"Renderer: GLiDE\n");
-              }
-              if(opengl_rend)
-              {
-                      fprintf(stderr,"Renderer: OpenGL\n");
-              }
-      */
-#endif
-
       if (FindArgChar("-nomousegrab", 'm')) {
         flags |= APPFLAG_NOMOUSECAPTURE;
       }
@@ -480,14 +440,7 @@ int main(int argc, char *argv[]) {
       if (!FindArg("-sharedmemory")) {
         flags |= APPFLAG_NOSHAREDMEMORY;
       }
-
-#ifdef __PERMIT_LINUX_GLIDE
-      if (FindArgChar("+rend_opengl", 'G')) {
-        flags |= APPFLAG_WINDOWEDMODE;
-      }
-#else
       flags |= APPFLAG_WINDOWEDMODE;
-#endif
 
       if (!FindArg("-nodgamouse")) {
         flags |= APPFLAG_DGAMOUSE;
