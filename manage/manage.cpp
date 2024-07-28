@@ -817,7 +817,6 @@ void mng_InitLocalDirectories() {
   std::filesystem::create_directories(dir / "custom", ec);
   std::filesystem::create_directories(dir / "custom" / "graphics", ec);
   std::filesystem::create_directories(dir / "custom" / "sounds", ec);
-  std::filesystem::create_directories(dir / "custom" / "cache", ec);
   std::filesystem::create_directories(dir / "custom" / "settings", ec);
 
   cf_SetSearchPath(LocalCustomGraphicsDir);

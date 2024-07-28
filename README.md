@@ -78,9 +78,7 @@ The milestone needs testing on all platforms. Please report issues when found.
     - _(Optional)_ All `.pld` files
     - _(Optional)_ The `demo` folder
     - _(Optional)_ The `movies` folder
-6. Create the following folders in `D3-open-source`:
-    - `custom/`
-    - `custom/cache/`
+6. Create the `custom/` folder in `D3-open-source`
 7. Obtain new Descent 3 engine files:
     - If you want to use pre-built binaries, then download one of the artifacts from our latest CI run. You can find a list of CI runs [here](https://github.com/DescentDevelopers/Descent3/actions/workflows/build.yml?query=branch%3Amain).
     - If you want to build the engine files yourself, the follow [these instructions](#building). Once you build the engine files, they’ll be put in `builds/<platform>/Descent3/<build-type>/`. For example, if you’re using Linux and you create a “Release” build, then the files will be located at `builds/linux/Descent3/Release`.

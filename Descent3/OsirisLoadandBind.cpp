@@ -3133,7 +3133,6 @@ int Osiris_ExtractScriptsFromHog(int library_handle, bool is_mission_hog) {
 
   if (!OSIRIS_Extracted_script_dir) {
     strcpy(tempdir, Descent3_temp_directory);
-    // ddio_MakePath(tempdir,LocalD3Dir,"custom","cache",NULL);	//TODO: make real path here
     OSIRIS_Extracted_script_dir = mem_strdup(tempdir);
     if (!OSIRIS_Extracted_script_dir)
       Error("Out of memory");

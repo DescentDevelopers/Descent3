@@ -7684,7 +7684,6 @@ void MultiDoFileReq(uint8_t *data) {
     // char filename[_MAX_PATH];
     char filewithpath[_MAX_PATH * 2];
     strcpy(filewithpath, GetFileNameFromPlayerAndID(filewho, filenum));
-    // ddio_MakePath(filewithpath,LocalD3Dir,"custom","cache",filename,NULL);
     if (filewithpath[0] == 0) {
       mprintf(0, "Got a file request for a file that doesn't exist (%s).\n", filewithpath);
       DenyFile(playernum, filenum, NetPlayers[playernum].file_xfer_who);
@@ -7795,7 +7794,6 @@ void MultiDoFileData(uint8_t *data) {
       // char filename[_MAX_PATH];
       char filewithpath[_MAX_PATH * 2];
       strcpy(filewithpath, GetFileNameFromPlayerAndID(playernum, file_id));
-      // ddio_MakePath(filewithpath,LocalD3Dir,"custom","cache",filename,NULL);
 
       cfp = cfopen(filewithpath, "wb");
       if (!cfp) {

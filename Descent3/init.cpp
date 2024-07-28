@@ -1387,7 +1387,6 @@ void LoadGameSettings() {
   if (Katmai && !FindArg("-nosparkles")) {
     Render_powerup_sparkles = true;
   }
-
 }
 
 struct tTempFileInfo {
@@ -1414,17 +1413,17 @@ void InitIOSystems(bool editor) {
     memset(exec_path, 0, sizeof(exec_path));
     // Populate exec_path with the executable path
     if (!ddio_GetBinaryPath(exec_path, sizeof(exec_path))) {
-    Error("Failed to get executable path\n");
+      Error("Failed to get executable path\n");
     } else {
-       std::filesystem::path executablePath(exec_path);
-       std::string baseDirectoryString = executablePath.parent_path().string();
-       strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
-       Base_directory[sizeof(Base_directory) - 1] = '\0';
-       mprintf(0, "Using working directory of %s\n", Base_directory);
-      }
-    } else {
-       ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
-      }
+      std::filesystem::path executablePath(exec_path);
+      std::string baseDirectoryString = executablePath.parent_path().string();
+      strncpy(Base_directory, baseDirectoryString.c_str(), sizeof(Base_directory) - 1);
+      Base_directory[sizeof(Base_directory) - 1] = '\0';
+      mprintf(0, "Using working directory of %s\n", Base_directory);
+    }
+  } else {
+    ddio_GetWorkingDir(Base_directory, sizeof(Base_directory));
+  }
 
   ddio_SetWorkingDir(Base_directory);
 
@@ -1667,13 +1666,13 @@ void UpdateInitMessage(float amount) {
   if (Init_in_editor)
     return;
   InitMessage(Init_messagebar_text, (amount * Init_messagebar_portion) + Init_messagebar_offset);
-/*
-  mprintf(0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n",
-          amount,
-          Init_messagebar_portion,
-          Init_messagebar_offset,
-          (amount*Init_messagebar_portion)+Init_messagebar_offset);
-*/
+  /*
+    mprintf(0, "amt=%.2f, portion=%.2f offs=%.2f, prog=%.2f\n",
+            amount,
+            Init_messagebar_portion,
+            Init_messagebar_offset,
+            (amount*Init_messagebar_portion)+Init_messagebar_offset);
+  */
 }
 
 void InitMessage(const char *c, float progress) {
@@ -1902,7 +1901,6 @@ void InitD3Systems1(bool editor) {
 
   //	Initialize Cinematics system
   InitCinematics();
-
 }
 
 // Initialize rest of stuff
@@ -1988,8 +1986,21 @@ void SetupTempDirectory(void) {
   if (t_arg) {
     strcpy(Descent3_temp_directory, GameArgs[t_arg + 1]);
   } else {
-    // initialize it to custom/cache
-    ddio_MakePath(Descent3_temp_directory, Base_directory, "custom", "cache", NULL);
+    std::error_code ec;
+    std::filesystem::path tempPath = std::filesystem::temp_directory_path(ec);
+    if (ec) {
+      Error("Could not find temporary directory: \"%s\"", ec.message().c_str() );
+      exit(1);
+    }
+    ddio_MakePath(Descent3_temp_directory, tempPath.u8string().c_str(), "Descent3",
+                  "cache", NULL);
+  }
+
+  std::error_code ec;
+  std::filesystem::create_directories(Descent3_temp_directory, ec);
+  if (ec) {
+    Error("Could not create temporary directory: \"%s\"", Descent3_temp_directory);
+    exit(1);
   }
 
   // verify that temp directory exists
