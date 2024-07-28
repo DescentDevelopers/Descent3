@@ -214,11 +214,11 @@ Once CMake finishes, the built files will be put in `builds/mac/Descent3/Debug` 
     * If you would like to manage the code dependencies yourself:
         * APT users
             ```sh
-            sudo apt install -y --no-install-recommends libsdl2-dev zlib1g-dev libgtest-dev
+            sudo apt install -y --no-install-recommends libsdl2-dev zlib1g-dev libglm-dev libgtest-dev
             ```
         * DNF users
             ```sh
-            sudo dnf install -y SDL2-devel zlib-devel gtest
+            sudo dnf install -y SDL2-devel zlib-devel glm-devel gtest
             ```
 
 3. **Clone the Descent3 source code.**

@@ -30,9 +30,12 @@ set(CPPS
   lnxscreenmode.cpp
 )
 
+find_package(glm REQUIRED)
+
 add_library(renderer STATIC ${HEADERS} ${CPPS})
 target_include_directories(renderer PRIVATE ${GENERATED_HEADERS})
 target_link_libraries(renderer PRIVATE
+  glm::glm
   SDL2::SDL2
   bitmap
   ddio

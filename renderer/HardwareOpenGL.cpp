@@ -77,7 +77,29 @@ struct Renderer {
     shader_.Use();
   }
 
+  /**
+   * Sets the vertex transformation matrices. Takes all three of the MVP matrices at once, in order to avoid
+   * multiple SetUniform operations. Pass std::nullopt for any matrices that should not be altered.
+   */
+  void setTransform(std::optional<glm::mat4x4> const &model, std::optional<glm::mat4x4> const &view,
+                    std::optional<glm::mat4x4> const &projection) {
+    if (model) {
+      model_ = *model;
+    }
+    if (view) {
+      view_ = *view;
+    }
+    if (projection) {
+      projection_ = *projection;
+    }
+
+    shader_.setUniformMat4f("u_transform", projection_ * view_ * model_);
+  }
+
 private:
+  glm::mat4x4 model_;
+  glm::mat4x4 view_;
+  glm::mat4x4 projection_;
   ShaderProgram<PosColorUV2Vertex> shader_;
 };
 std::optional<Renderer> gRenderer;
@@ -1934,18 +1956,11 @@ void rend_TransformSetToPassthru(void) {
   int height = gpu_state.screen_height;
 
   // TODO: Generalize
-  // Projection
-  dglMatrixMode(GL_PROJECTION);
-  dglLoadIdentity();
-  dglOrtho((GLfloat)0.0f, (GLfloat)(width), (GLfloat)(height), (GLfloat)0.0f, 0.0f, 1.0f);
+  gRenderer->setTransform(glm::mat4x4{1}, glm::mat4x4{1}, glm::ortho<float>(0, width, height, 0, 0, 1));
 
   // Viewport
   dglViewport(0, 0, width, height);
   dglScissor(0, 0, width, height);
-
-  // ModelView
-  dglMatrixMode(GL_MODELVIEW);
-  dglLoadIdentity();
 }
 
 void rend_TransformSetViewport(int lx, int ty, int width, int height) {
@@ -1953,11 +1968,9 @@ void rend_TransformSetViewport(int lx, int ty, int width, int height) {
 }
 
 void rend_TransformSetProjection(float trans[4][4]) {
-  dglMatrixMode(GL_PROJECTION);
-  dglLoadMatrixf(&trans[0][0]);
+  gRenderer->setTransform(std::nullopt, std::nullopt, glm::make_mat4x4(&trans[0][0]));
 }
 
 void rend_TransformSetModelView(float trans[4][4]) {
-  dglMatrixMode(GL_MODELVIEW);
-  dglLoadMatrixf(&trans[0][0]);
+  gRenderer->setTransform(glm::make_mat4x4(&trans[0][0]), glm::mat4x4{1}, std::nullopt);
 }
