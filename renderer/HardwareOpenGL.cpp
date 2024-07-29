@@ -75,6 +75,10 @@ struct Renderer {
       vertexAttrib(2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv1, "in_uv1")
   }} {
     shader_.Use();
+
+    // these are effectively just constants, for now
+    shader_.setUniform1i("u_texture0", 0);
+    shader_.setUniform1i("u_texture1", 1);
   }
 
   /**
@@ -267,16 +271,6 @@ int opengl_InitCache(void) {
     GameLightmaps[i].flags |= LF_CHANGED | LF_BRAND_NEW;
   }
 
-  dglTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-  if (UseMultitexture) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    dglTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-#endif
-  }
-
   CHECK_ERROR(3)
 
   OpenGL_cache_initted = 1;
@@ -323,6 +317,9 @@ void opengl_SetDefaults() {
   dglEnable(GL_SCISSOR_TEST);
   dglScissor(0, 0, gpu_state.screen_width, gpu_state.screen_height);
   dglDisable(GL_SCISSOR_TEST);
+
+  gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 0);
+  gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 1);
 
   if (UseMultitexture) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
