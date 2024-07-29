@@ -71,6 +71,10 @@ int WindowGL = 0;
 struct Renderer {
   Renderer() : shader_{shaders::vertex, shaders::fragment}, vbo_{MAX_POINTS_IN_POLY, GL_DYNAMIC_DRAW} {
     shader_.Use();
+
+    // TODO (tophyr): is there a better way to do this? ideally these should be constant within the shader, i think.
+    shader_.setUniform1i("u_texture0", 0);
+    shader_.setUniform1i("u_texture1", 1);
   }
 
   /**
@@ -267,16 +271,6 @@ int opengl_InitCache(void) {
     OpenGL_lightmap_remap[i] = 65535;
     OpenGL_lightmap_states[i] = 255;
     GameLightmaps[i].flags |= LF_CHANGED | LF_BRAND_NEW;
-  }
-
-  dglTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-  if (UseMultitexture) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    dglTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-#endif
   }
 
   CHECK_ERROR(3)
