@@ -69,12 +69,18 @@ renderer_type Renderer_type = RENDERER_OPENGL;
 int WindowGL = 0;
 
 struct Renderer {
-  Renderer() : shader_{shaders::vertex, shaders::fragment} {
+  Renderer() : shader_{shaders::vertex, shaders::fragment}, vbo_{MAX_POINTS_IN_POLY, GL_DYNAMIC_DRAW} {
     shader_.Use();
   }
 
 private:
   ShaderProgram shader_;
+  VertexBuffer<
+      PosColorUV2Vertex,
+      VertexAttrib<3, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::pos>,
+      VertexAttrib<4, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::color>,
+      VertexAttrib<2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv0>,
+      VertexAttrib<2, GL_FLOAT, GL_FALSE, &PosColorUV2Vertex::uv1>> vbo_;
 };
 std::optional<Renderer> gRenderer;
 

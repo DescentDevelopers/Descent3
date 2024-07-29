@@ -18,10 +18,65 @@
 
 #pragma once
 
+#include <cstddef>
+#include <functional>
 #include <stdexcept>
 #include <string>
 #include "dyna_gl.h"
 #include "holder.h"
+
+template <GLint Size, GLenum Type, GLboolean Normalized, auto Member>
+struct VertexAttrib;
+template <GLint Size, GLenum Type, GLboolean Normalized, typename EnclosingType, typename MemberType, MemberType EnclosingType::*Member>
+struct VertexAttrib<Size, Type, Normalized, Member> {
+  using VertexType = EnclosingType;
+  static constexpr GLint kSize = Size;
+  static constexpr GLenum kType = Type;
+  static constexpr GLboolean kNormalized = Normalized;
+  static void const* offset() {
+    EnclosingType e;
+    return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(&(e.*Member)) - reinterpret_cast<uintptr_t>(&e));
+  }
+};
+
+template <typename V, typename... Traits>
+struct VertexBuffer {
+  static_assert((std::is_same_v<V, typename Traits::VertexType> && ...), "Vertex attributes must all be for the same vertex type");
+
+  VertexBuffer(size_t vertex_count, GLenum bufferType, V const* initialData = nullptr) : vao_{outval(dglGenVertexArrays)}, vbo_{outval(dglGenBuffers)} {
+    dglBindVertexArray(vao_);
+    dglBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    dglBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(PosColorUV2Vertex), initialData, bufferType);
+
+    GLint location{};
+    ((dglEnableVertexAttribArray(location),
+      dglVertexAttribPointer(location, Traits::kSize, Traits::kType, Traits::kNormalized, sizeof(V), Traits::offset()),
+      location++),
+     ...);
+  }
+
+  void UpdateData(size_t vtx_offset, size_t vtx_count, V const* vertices) const {
+    dglBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    dglBufferSubData(GL_ARRAY_BUFFER, vtx_offset * sizeof(V), vtx_count * sizeof(V), vertices);
+  }
+
+private:
+  static void DeleteBuffer(GLuint id) {
+    dglDeleteBuffers(1, &id);
+  }
+  static void DeleteVertexArray(GLuint id) {
+    dglDeleteVertexArrays(1, &id);
+  }
+  template <typename Generator>
+  GLuint outval(Generator&& gen) {
+    GLuint id;
+    gen(1, &id);
+    return id;
+  }
+
+  MoveOnlyHolder<GLuint, DeleteVertexArray> vao_;
+  MoveOnlyHolder<GLuint, DeleteBuffer> vbo_;
+};
 
 template <GLenum kType>
 struct Shader {
