@@ -304,8 +304,6 @@ void opengl_SetDefaults() {
   gpu_state.cur_alpha_type = AT_TEXTURE;
 
   // Enable some states
-  dglAlphaFunc(GL_GREATER, 0);
-  dglEnable(GL_ALPHA_TEST);
   dglEnable(GL_BLEND);
   dglEnable(GL_DITHER);
   opengl_Blending_on = true;
@@ -336,8 +334,6 @@ void opengl_SetDefaults() {
     dglHint(GL_FOG_HINT, GL_NICEST);
 
     gRenderer->setTextureEnabled(1, false);
-    dglAlphaFunc(GL_GREATER, 0);
-    dglEnable(GL_ALPHA_TEST);
     dglEnable(GL_BLEND);
     dglEnable(GL_DITHER);
     dglBlendFunc(GL_DST_COLOR, GL_ZERO);
