@@ -146,7 +146,6 @@ static module *LoadOpenGLDLL(const char *dllname) {
 #define DYNAEXTERN(Name) extern FnPtr<decltype(Name)> const d##Name
 #endif
 
-DYNAEXTERN(glAlphaFunc);
 DYNAEXTERN(glBegin);
 DYNAEXTERN(glBindTexture);
 DYNAEXTERN(glBlendFunc);
