@@ -466,26 +466,6 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
     } // if
   }
 
-#ifdef __PERMIT_GL_LOGGING
-  if (FindArg("-gllogging")) {
-    printf("\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "********   GL LOGGING ENABLED.   ***************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "************************************************************\n"
-           "\n");
-    DGL_EnableLogging(1);
-    __glLog = true;
-  } // if
-#endif
-
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -1743,12 +1723,6 @@ void rend_Flip(void) {
     dglViewport(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight);
     dglScissor(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight);
   }
-
-#ifdef __PERMIT_GL_LOGGING
-  if (__glLog == true) {
-    DGL_LogNewFrame();
-  }
-#endif
 }
 
 void rend_EndFrame(void) {}

@@ -948,14 +948,6 @@ void SetScreenMode(int sm, bool force_res_change) {
       rend_initted = 0;
     }
   }
-  // #ifdef RELEASE
-  //	else if (sm == SM_CINEMATIC && (Renderer_type == RENDERER_GLIDE) ) {
-  //		if (rend_initted) {
-  //			rend_Close();
-  //			rend_initted = 0;
-  //		}
-  //	}
-  // #endif
   else {
     int scr_width, scr_height, scr_bitdepth;
 

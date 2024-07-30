@@ -95,6 +95,7 @@
 #include "dmfcinternal.h"
 #include <string.h>
 
+extern DMFCBase *basethis;
 
 PInfo::PInfo(int slot) {
   m_slot = slot;

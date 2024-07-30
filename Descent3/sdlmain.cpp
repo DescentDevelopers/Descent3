@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@
 #include <SDL.h>
 
 #include "program.h"
+#include "dedicated_server.h"
 #include "descent.h"
 #include "application.h"
 #include "appdatabase.h"
@@ -46,90 +47,17 @@
 #include "log.h"
 
 extern bool ddio_mouseGrabbed;
-const char *DMFCGetString(int d);
-// void *x = (void *) DMFCGetString;   // just force a reference to dmfc.so ...
 
 std::filesystem::path orig_pwd;
 
 bool linux_permit_gamma = false;
 
-struct cmdLineArg {
-  const char *lng;
-  char sht;
-  const char *comment;
-};
-
-static cmdLineArg d3ArgTable[] = {
-#ifdef __PERMIT_LINUX_GLIDE
-    {"rend_opengl", 'G', "Use OpenGL for 3D rendering."},
-    {"rend_glide", 'L', "Use Glide for 3D rendering."},
-#endif
-
-#ifdef __PERMIT_PLAYMVE
-    {"playmve", 'p', "Play a specified movie."},
-#endif
-
-    {"glidelibrary", 'l', "Select Glide rendering library."},
-    {"gllibrary", 'g', "Select OpenGL rendering library."},
-    {"cobra", 'R', "Enable Cobra chair support."},
-
-#if (!defined(DEMO))
-    {"dedicated", 'd', "Run as a dedicated netgame server."},
-    {"nointro", 'n', "Skip intro movie."},
-#endif
-
-    {"joystick", 'j', "Specify a joystick (number)."},
-    {"nomousegrab", 'm', "Don't grab the mouse."},
-
-    {"deadzone0", 'D', "Specify a joystick deadzone (0.0 to 1.0)"},
-
-    {"gspyfile", 'S', "Specify a GameSpy config file."},
-    {"fastdemo", 'Q', "Run demos as fast as possible."},
-    {"framecap", 'F', "Specify a framecap (for dedicated server)."},
-
-    {"tempdir", 'P', "Specify directory for temporary files."},
-
-#if (defined(_USE_OGL_LISTS_OPTIONAL))
-    {"gllists", '\0', "Use OpenGL lists."},
-#endif
-
-#ifdef __PERMIT_GL_LOGGING
-    {"gllogging", '\0', "to be removed."},
-#endif
-
-    {"nomultitexture", 't', "Disable multitexturing."},
-    {"nopackedpixels", 'x', "Disable packed pixels."},
-    {"glfog", 'o', "Enable OpenGL fog."},
-    {"nogamma", 'M', "Disable gamma support."},
-    {"glinfo", 'I', "Display info about OpenGL library."}
-};
-
 static volatile char already_tried_signal_cleanup = 0;
 
-#if (defined DEMO)
-#define GAME_NAME_EXT "_demo"
-#define GAME_VERS_EXT " Demo"
-#elif (defined OEM)
-#define GAME_NAME_EXT "_limited"
-#define GAME_VERS_EXT " Limited Edition"
-#else
-#define GAME_NAME_EXT ""
-#define GAME_VERS_EXT ""
-#endif
-
-void ddio_InternalClose();        // needed for emergency cleanup.
-
-#ifdef __PERMIT_LINUX_GLIDE
-void glide_Close(void);
-#endif
+void ddio_InternalClose(); // needed for emergency cleanup.
 
 void just_exit(void) {
   ddio_InternalClose(); // try to reset serial port.
-
-#ifdef __PERMIT_LINUX_GLIDE
-  if (Renderer_type == RENDERER_GLIDE)
-    glide_Close();
-#endif
 
   SDL_Quit();
 #if defined(POSIX)
@@ -208,63 +136,57 @@ void install_signal_handlers() {
 #else
 void install_signal_handlers() {}
 #endif
+
 //	---------------------------------------------------------------------------
 //	Define our operating system specific extensions to the gameos system
 //	---------------------------------------------------------------------------
-
 class oeD3LnxApp : public oeLnxApplication {
   bool shutdown, final_shutdown;
   int old_screen_mode;
 
 public:
-  oeD3LnxApp(unsigned flags);
+  oeD3LnxApp(unsigned flags) : oeLnxApplication(flags) {
+    Descent = this;
+    shutdown = false;
+    final_shutdown = false;
+  }
   virtual ~oeD3LnxApp() { final_shutdown = true; };
 
   void run() { Descent3(); };
 };
 
-oeD3LnxApp::oeD3LnxApp(unsigned flags) : oeLnxApplication(flags) {
-  Descent = this;
-  shutdown = false;
-  final_shutdown = false;
-}
-
 class oeD3LnxDatabase : public oeLnxAppDatabase {
 public:
-  oeD3LnxDatabase();
-};
+  oeD3LnxDatabase() {
+    char path[_MAX_PATH];
+    char netpath[_MAX_PATH];
 
-//	---------------------------------------------------------------------------
-//	D3LnxDatabase operating system specific initialization
-oeD3LnxDatabase::oeD3LnxDatabase() : oeLnxAppDatabase() {
-  char path[_MAX_PATH];
-  char netpath[_MAX_PATH];
-
-  // put directories into database
+    // put directories into database
 
 #ifdef EDITOR
-  create_record("D3Edit");
+    create_record("D3Edit");
 #else
-  create_record("Descent3");
+    create_record("Descent3");
 #endif
 
-  char *dir = getenv("D3_LOCAL");
-  char *netdir = getenv("D3_DIR");
+    char *dir = getenv("D3_LOCAL");
+    char *netdir = getenv("D3_DIR");
 
-  if (!dir)
-    strcpy(path, Base_directory);
-  else
-    strcpy(path, dir);
+    if (!dir)
+      strcpy(path, Base_directory);
+    else
+      strcpy(path, dir);
 
-  if (!netdir)
-    strcpy(netpath, "");
-  else
-    strcpy(netpath, netdir);
+    if (!netdir)
+      strcpy(netpath, "");
+    else
+      strcpy(netpath, netdir);
 
-  write("local directory", path, strlen(path) + 1);
-  write("net directory", netpath, strlen(netpath) + 1);
-  Database = this;
-}
+    write("local directory", path, strlen(path) + 1);
+    write("net directory", netpath, strlen(netpath) + 1);
+    Database = this;
+  }
+};
 
 int sdlKeyFilter(const SDL_Event *event);
 int sdlMouseButtonUpFilter(const SDL_Event *event);
@@ -290,48 +212,12 @@ int SDLCALL d3SDLEventFilter(void *userdata, SDL_Event *event) {
     SDL_Quit();
     _exit(0);
     break;
-  default: break;
+  default:
+    break;
   } // switch
 
   return (1);
 }
-
-void StartDedicatedServer();
-
-#ifdef BETAEXPIRE
-static void check_beta() {
-  fprintf(stderr, "\n\n\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-
-  if (time(NULL) > (BETAEXPIRE + 30 * 24 * 60 * 60)) {
-    fprintf(stderr, "Thanks for participating in the Descent 3 beta test!\n"
-                    "This beta copy has now expired.\n"
-                    "Please visit http://www.lokigames.com/ for a non-beta release.\n");
-    _exit(0);
-  } // if
-  else {
-    fprintf(stderr, "Warning: This is a beta version of DESCENT 3.\n"
-                    "Please report any bugs in fenris: http://fenris.lokigames.com/\n");
-  } // else
-
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "\n\n\n");
-} // check_beta
-#endif
 
 //	---------------------------------------------------------------------------
 //	Main
@@ -355,111 +241,21 @@ int main(int argc, char *argv[]) {
   setbuf(stdout, NULL);
   setbuf(stderr, NULL);
 
-#ifdef BETAEXPIRE
-  // IMPORTANT - TAKE ME OUT - FIXME -------------------------------
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "****   Please remove -DBETAEXPIRE from the Makefile! ******"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-  check_beta();
-#endif
-
-#ifdef __DUMP_MVE_TO_DISK
-  // IMPORTANT - TAKE ME OUT - FIXME -------------------------------
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "** Please remove -D__DUMP_MVE_TO_DISK from the Makefile! **"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-#warning "***********************************************************"
-
-  fprintf(stderr, "\n\n\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "    Warning, this binary dumps movies to disk. This is BAD.\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "***************************************************************************\n");
-  fprintf(stderr, "\n\n\n");
-#endif
-
-  /*
-      if ( (argv[1] != NULL) && (strcasecmp(argv[1], "--nettest")) )
-          _exit(nettest_Main(argc, argv));
-  */
-
-  // rcg01152000 need this for mpeg playback currently.
-  // rcg02232004 probably don't need this anymore.
-  // if (getenv("SDL_VIDEO_YUV_HWACCEL") == NULL)
-  //    putenv("SDL_VIDEO_YUV_HWACCEL=0");
-
-  int x;
-
-  /*
-      x = FindArg("-nettest");
-      if (x)
-      {
-          if (x != 1)
-              printf("  --nettest must be first command if you use it.\n");
-          _exit(0);
-      } // if
-  */
-
-  #ifdef DEDICATED
+#ifdef DEDICATED
   setenv("SDL_VIDEODRIVER", "dummy", 1);
-  #endif
+#endif
 
   int rc = SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO);
   if (rc != 0) {
     fprintf(stderr, "SDL: SDL_Init() failed! rc == (%d).\n", rc);
     fprintf(stderr, "SDL_GetError() reports \"%s\".\n", SDL_GetError());
     return (0);
-  } // if
-
-  //    atexit(SDL_Quit);
+  }
 
   // !!! FIXME: Don't use an event filter!
   SDL_SetEventFilter(d3SDLEventFilter, NULL);
   install_signal_handlers();
 
-  // build the command line as one long string, seperated by spaces...
-  /*
-          char commandline[256];
-          strcpy(commandline,"");
-          for(int i=0;i<argc;i++){
-          strcat(commandline,argv[i]);
-          strcat(commandline," ");
-          }
-
-          GatherArgs (commandline);
-  */
   int winArg = FindArgChar("-windowed", 'w');
   int fsArg = FindArgChar("-fullscreen", 'f');
 
@@ -493,37 +289,6 @@ int main(int argc, char *argv[]) {
         return 0;
       }
 
-#ifdef __PERMIT_LINUX_GLIDE
-      int opengl_rend = (FindArgChar("+rend_opengl", 'G')) ? 1 : 0;
-      int glide_rend = (FindArgChar("+rend_glide", 'L')) ? 1 : 0;
-
-      if (!glide_rend && !opengl_rend) {
-        // fprintf(stderr,"Error: --dedicated or renderer flag required\n");
-        // return 0;
-
-        // ryan sez: Glide by default, beeyatch.
-        glide_rend = 1;
-      }
-
-      // check for multiple renderers defined
-      if (glide_rend + opengl_rend > 1) {
-        fprintf(stderr, "Error: Too many renderer's defined, use only one\n");
-        return 0;
-      }
-
-      /*
-              //print out renderer
-              if(glide_rend)
-              {
-                      fprintf(stderr,"Renderer: GLiDE\n");
-              }
-              if(opengl_rend)
-              {
-                      fprintf(stderr,"Renderer: OpenGL\n");
-              }
-      */
-#endif
-
       if (FindArgChar("-nomousegrab", 'm')) {
         flags |= APPFLAG_NOMOUSECAPTURE;
       }
@@ -533,14 +298,7 @@ int main(int argc, char *argv[]) {
       if (!FindArg("-sharedmemory")) {
         flags |= APPFLAG_NOSHAREDMEMORY;
       }
-
-#ifdef __PERMIT_LINUX_GLIDE
-      if (FindArgChar("+rend_opengl", 'G')) {
-        flags |= APPFLAG_WINDOWEDMODE;
-      }
-#else
       flags |= APPFLAG_WINDOWEDMODE;
-#endif
 
       if (!FindArg("-nodgamouse")) {
         flags |= APPFLAG_DGAMOUSE;

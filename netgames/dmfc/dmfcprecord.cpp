@@ -88,6 +88,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern DMFCBase *basethis;
 player_record Player_records[MAX_PLAYER_RECORDS];
 int Pnum_to_PRec[DLLMAX_PLAYERS];
 

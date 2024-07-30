@@ -103,12 +103,6 @@
 #include "dmfcinternal.h"
 #include "d3events.h"
 
-extern char **DMFCStringTable;
-extern int DMFCStringTableSize;
-extern const char *_DMFCErrorString;
-extern DMFCBase *basethis;
-const char *DMFCGetString(int d);
-
 // ###################Server Only functions################################
 
 // DMFCBase::OnServerPlayerKilled
