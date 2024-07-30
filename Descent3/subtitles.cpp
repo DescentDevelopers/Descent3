@@ -49,21 +49,16 @@
  * $NoKeywords: $
  */
 
-#include "subtitles.h"
-// #include "gamefont.h"
-// #include "grtext.h"
-// #include "renderer.h"
-#include "pserror.h"
-#include "ddio.h"
-// #include "ddvid.h"
-#include "manage.h"
-#include "application.h"
-#include "mem.h"
-#include "movie.h"
+#include <cctype>
+#include <cstdlib>
+#include <cstring>
+
 #include "args.h"
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "d3movie.h"
+#include "manage.h"
+#include "mem.h"
+#include "pserror.h"
+#include "subtitles.h"
 
 // Subtitle data
 struct subtitle {

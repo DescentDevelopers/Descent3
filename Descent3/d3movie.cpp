@@ -18,19 +18,19 @@
 
 #include <cstring>
 
+#include "application.h"
 #include "args.h"
-#include "movie.h"
+#include "bitmap.h"
+#include "d3movie.h"
+#include "ddio.h"
+#include "ddvid.h"
+#include "game.h"
+#include "gamefont.h"
+#include "grtext.h"
+#include "mem.h"
 #include "mvelib.h"
 #include "pserror.h"
 #include "renderer.h"
-#include "application.h"
-#include "ddio.h"
-#include "ddvid.h"
-#include "grtext.h"
-#include "mem.h"
-#include "bitmap.h"
-#include "gamefont.h"
-#include "game.h"
 
 namespace {
 MovieFrameCallback_fp Movie_callback = nullptr;

@@ -190,14 +190,11 @@
 #include "moveworld.h"
 #include "selectedroom.h"
 #include "terrain.h"
-#include "texture.h"
 #include "bitmap.h"
 #include "erooms.h"
 
-#include <assert.h>
 #include "gr.h"
 #include "mono.h"
-#include "macros.h"
 #include "ddio.h"
 #include "SelManager.h"
 #include "room.h"
@@ -623,7 +620,6 @@ void CWireframeGrWnd::SetMagCoords(int x1, int y1, int x2, int y2) {
 void CWireframeGrWnd::DrawTerrainCell(int seg) {
   grSurface *cur_surf;
   uint16_t *destptr;
-  int lightval;
   int i, t, x, y;
   int segx = seg % TERRAIN_WIDTH;
   int segz = seg / TERRAIN_WIDTH;
@@ -652,12 +648,8 @@ void CWireframeGrWnd::DrawTerrainCell(int seg) {
   uint16_t fadepixel = 0;
 
   int bm_handle = GameTextures[Terrain_tex_seg[Terrain_seg[(y * TERRAIN_WIDTH + x)].texseg_index].tex_index].bm_handle;
-  lightval = Ubyte_to_float[Terrain_seg[y * TERRAIN_WIDTH + x].l] * (MAX_TEXTURE_SHADES - 1);
 
-  uint16_t pix;
-
-  pix = *bm_data(bm_handle, 0);
-  // fadepixel=(TexShadeTable16[lightval][pix>>8])+TexShadeTable8[lightval][pix & 0xFF];
+  uint16_t pix = *bm_data(bm_handle, 0);
 
   if (TerrainSelected[y * TERRAIN_WIDTH + x]) {
     int red = ((fadepixel >> 10) & 0x1f) << 3;

@@ -26,7 +26,7 @@
 #include "grdefs.h"
 #include "descent.h"
 #include "ddio.h"
-#include "movie.h"
+#include "d3movie.h"
 #include "program.h"
 #include "object.h"
 #include "objinit.h"

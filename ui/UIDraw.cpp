@@ -78,11 +78,11 @@
  */
 
 #include "UIlib.h"
+#include "3d.h"
 #include "bitmap.h"
+#include "grtext.h"
 #include "ddvid.h"
 #include "renderer.h"
-#include "grtext.h"
-#include "3d.h"
 
 //////////////////////////////////////////////////////////////////////////////
 //	VARIABLES

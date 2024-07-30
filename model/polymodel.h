@@ -294,13 +294,13 @@
 #ifndef POLYMODEL_H
 #define POLYMODEL_H
 
-#include "manage.h"
-#include "pstypes.h"
-#include "vecmat.h"
+#include <cstdint>
+#include <filesystem>
+
 #include "3d.h"
-#include "robotfirestruct.h"
-#include "polymodel_external.h"
 #include "object_external_struct.h"
+#include "polymodel_external.h"
+#include "vecmat.h"
 
 #define PM_COMPATIBLE_VERSION 1807
 #define PM_OBJFILE_VERSION 2300
@@ -319,34 +319,26 @@ extern polymodel_light_type Polymodel_light_type;
 extern float Polylighting_static_red;
 extern float Polylighting_static_green;
 extern float Polylighting_static_blue;
-extern uint8_t *Polylighting_gouraud;
 extern vector *Polymodel_light_direction, Polymodel_fog_portal_vert, Polymodel_fog_plane, Polymodel_specular_pos,
     Polymodel_bump_pos;
 extern lightmap_object *Polylighting_lightmap_object;
 
-extern vector Model_eye_position;
 extern vector Interp_pos_instance_vec;
 extern g3Point Robot_points[];
 
 // Flag to draw an outline around the faces
 extern bool Polymodel_outline_mode;
 
-static inline float POLY_WIDTH(int model_num) { return Poly_models[model_num].maxs.x - Poly_models[model_num].mins.x; }
-
-static inline float POLY_HEIGHT(int model_num) { return Poly_models[model_num].maxs.y - Poly_models[model_num].mins.y; }
-
-static inline float POLY_DEPTH(int model_num) { return Poly_models[model_num].maxs.z - Poly_models[model_num].mins.z; }
-
 // given a filename, reads in a POF and returns an index into the Poly_models array
 // returns -1 if something is wrong
-int LoadPolyModel(const char *filename, int pageable);
+int LoadPolyModel(const std::filesystem::path &filename, int pageable);
 
 // gets the filename from a path, plus appends our .pof extension
-void ChangePolyModelName(const char *src, char *dest);
+std::filesystem::path ChangePolyModelName(const std::filesystem::path &src);
 
-// Searches thru all polymodels for a specific name, returns -1 if not found
+// Searches through all polymodels for a specific name, returns -1 if not found
 // or index of polymodel with name
-int FindPolyModelName(const char *name);
+int FindPolyModelName(const std::filesystem::path &name);
 
 // Draws a polygon model to the viewport
 // Normalized_time is an array of floats from 0 to 1 that represent how far into
@@ -366,13 +358,6 @@ void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normali
 void DrawPolygonModel(vector *pos, matrix *orient, int model_num, float *normalized_time, int flags,
                       lightmap_object *lm_object, uint32_t f_render_sub, uint8_t use_effect = 0, uint8_t overlay = 0);
 
-// gives the interpreter an array of points to use
-void g3_SetInterpPoints(g3Point *pointlist);
-
-// calls the object interpreter to render an object.  The object renderer
-// is really a seperate pipeline. returns true if drew
-int InterpPolygonModel(poly_model *pm);
-
 // Inits our models array
 int InitModels();
 
@@ -386,17 +371,14 @@ float GetNormalizedKeyframe(int handle, float num);
 // Goes through all poly models and gets all missing textures
 void RemapPolyModels();
 
-// For macintosh, we must swap the interpreted model code
-void SwapPolymodelData(uint8_t *data);
-
 // Sets a positional instance
 void StartPolyModelPosInstance(vector *posvec);
 
 // Pops a positional instance
 void DonePolyModelPosInstance();
 
-void SetModelAngles(poly_model *po, float *normalized_angles);
-void SetModelInterpPos(poly_model *po, float *normalized_pos);
+void SetModelAngles(poly_model *po, const float *normalized_angles);
+void SetModelInterpPos(poly_model *po, const float *normalized_pos);
 
 void SetNormalizedTimeObj(object *obj, float *normalized_time);
 void SetNormalizedTimeAnim(float norm_anim_frame, float *normalized_time, poly_model *pm);
@@ -415,9 +397,9 @@ void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub);
 
 //	returns point within polymodel/submodel in world coordinates.
 void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix *orient, int subnum, vector *pos,
-                              vector *norm = NULL);
+                              vector *norm = nullptr);
 void GetPolyModelPointInWorld(vector *dest, poly_model *pm, vector *wpos, matrix *orient, int subnum,
-                              float *normalized_time, vector *pos, vector *norm = NULL);
+                              float *normalized_time, vector *pos, vector *norm = nullptr);
 
 // Returns 1 if this submodel shouldn't be rendered
 int IsNonRenderableSubmodel(poly_model *pm, int submodelnum);
@@ -426,7 +408,7 @@ int IsNonRenderableSubmodel(poly_model *pm, int submodelnum);
 void SetPolymodelEffect(polymodel_effect *);
 
 // Pages in a polymodel if its not already in memory
-void PageInPolymodel(int polynum, int type = -1, float *size_ptr = NULL);
+void PageInPolymodel(int polynum, int type = -1, float *size_ptr = nullptr);
 
 // Gets a pointer to a polymodel.  Pages it in if neccessary
 poly_model *GetPolymodelPointer(int polynum);

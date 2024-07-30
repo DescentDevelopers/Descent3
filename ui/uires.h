@@ -87,8 +87,8 @@
 #ifndef UIRES_H
 #define UIRES_H
 
-#include "grdefs.h"
 #include "bitmap.h"
+#include "grdefs.h"
 
 enum tUIResClass { uiItem, uiTextItem, uiBitmapItem };
 

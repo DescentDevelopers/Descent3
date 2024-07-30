@@ -18,16 +18,6 @@
 
 #include "d3music.h"
 #include "music.h"
-#include "Macros.h"
-#include <limits>
-
-#ifdef min
-#undef min
-#endif
-
-#ifdef max
-#undef max
-#endif
 
 // generic constants
 #define MUSIC_IDLE_TIME 240.0f // how many seconds before background music silences.
@@ -150,7 +140,7 @@ void D3MusicDoFrame(tMusicSeqInfo *music_info) {
 
 // toggle music system.
 void D3MusicToggle() {
-  Music_on = (!Music_on && Allow_music && Music_volume > 0.0f) ? true : false;
+  Music_on = (!Music_on && Allow_music && Music_volume > 0.0f);
   if (Music_on) {
     Music_seq.Start();
     MusicAI.was_toggled_on = true;

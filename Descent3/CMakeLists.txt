@@ -85,7 +85,6 @@ set(HEADERS
   newui_core.h
   object.h
   object_external.h
-  object_external_struct.h
   object_lighting.h
   objinfo.h
   objinit.h
@@ -108,8 +107,6 @@ set(HEADERS
   resource.h
   robot.h
   robotfire.h
-  robotfirestruct.h
-  robotfirestruct_external.h
   room.h
   room_external.h
   scorch.h
@@ -166,6 +163,8 @@ set(CPPS
   CtlCfgElem.cpp
   ctlconfig.cpp
   D3ForceFeedback.cpp
+  d3movie.cpp
+  d3music.cpp
   d3serial.cpp
   damage.cpp
   debuggraph.cpp
@@ -309,8 +308,8 @@ file(GLOB_RECURSE INCS "../lib/*.h")
 
 add_executable(Descent3 WIN32 MACOSX_BUNDLE ${D3Icon} ${HEADERS} ${CPPS} ${INCS} ${MANIFEST} ${RC_FILE})
 target_link_libraries(Descent3 PRIVATE
-  2dlib AudioEncode bitmap cfile czip d3music dd_video ddebug ddio libmve libacm
-  fix grtext manage mem misc model module movie stream_audio linux SDL2::SDL2
+  2dlib AudioEncode bitmap cfile dd_video ddebug ddio libmve libacm
+  fix grtext manage mem misc model module stream_audio linux SDL2::SDL2
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)

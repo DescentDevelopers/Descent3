@@ -74,7 +74,7 @@
 #ifndef D3MUSIC_H
 #define D3MUSIC_H
 
-#include "pstypes.h"
+#include <cstdint>
 
 //	register constants for the sequencer
 #define MUSICREG_TRIGGER_VALUE 1 // trigger value set by calling app to sequencer

@@ -807,7 +807,7 @@
 
 // D3 EDITOR HEADERS
 #include "pserror.h"
-#include "Application.h"
+#include "application.h"
 #include "AppDatabase.h"
 #include "program.h"
 #include "gr.h"
@@ -831,7 +831,6 @@
 #include "objinfo.h"
 #include "HFile.h"
 #include "hroom.h"
-#include "texture.h"
 #include "read3ds.h"
 #include "terrain.h"
 #include "HObject.h"
@@ -843,6 +842,7 @@
 #include "ViewerPropDlg.h"
 #include "mem.h"
 #include "findintersection.h"
+#include "renderer.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

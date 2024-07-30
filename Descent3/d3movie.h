@@ -16,13 +16,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MOVIE_H__
-#define MOVIE_H__
-
-#include "renderer.h"
+#ifndef MOVIE_H_
+#define MOVIE_H_
 
 #include <cstdint>
 #include <filesystem>
+
+#include "application.h"
+#include "renderer.h"
 
 #define MVELIB_NOERROR 0
 #define MVELIB_FILE_ERROR (-1)
@@ -31,8 +32,6 @@
 #define MVELIB_INIT_ERROR (-4)
 #define MVELIB_PLAYBACK_ERROR (-5)
 #define MVELIB_PLAYBACK_ABORTED (-6)
-
-class oeApplication;
 
 int mve_Init(const char *dir, const char *sndcard);
 

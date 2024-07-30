@@ -1,4 +1,3 @@
-set(HEADERS lib2d.h)
 set(CPPS
   font.cpp
   hardsurf.cpp
@@ -7,11 +6,17 @@ set(CPPS
   pentext.cpp
   screen.cpp
   surface.cpp
-  viewport.cpp)
+  viewport.cpp
+)
 
-add_library(2dlib STATIC ${HEADERS} ${CPPS})
+add_library(2dlib STATIC ${CPPS})
 target_link_libraries(2dlib PRIVATE
   cfile
   mem
   misc
+)
+target_include_directories(2dlib PUBLIC
+  $<BUILD_INTERFACE:
+    ${PROJECT_SOURCE_DIR}/2dlib
+  >
 )

@@ -17,7 +17,7 @@
 */
 
 #include "cinematics.h"
-#include "movie.h"
+#include "d3movie.h"
 #include "game.h"
 #include "ddio.h"
 #include "descent.h"

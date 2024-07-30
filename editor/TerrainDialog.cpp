@@ -219,7 +219,6 @@
 #include "terrain.h"
 #include "gametexture.h"
 #include "bitmap.h"
-#include "texture.h"
 #include "group.h"
 #include "editor/d3edit.h"
 #include "room.h"

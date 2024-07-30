@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -80,44 +80,26 @@
  * $NoKeywords: $
  */
 
-#ifndef _COLLIDE_H
-#define _COLLIDE_H
+#ifndef COLLIDE_H
+#define COLLIDE_H
 
+#include <cstdint>
+
+#include "findintersection.h"
 #include "object.h"
 #include "vecmat.h"
-#include "findintersection.h"
 
 extern uint8_t CollisionResult[MAX_OBJECT_TYPES][MAX_OBJECT_TYPES];
 extern uint8_t CollisionRayResult[MAX_OBJECT_TYPES];
 
 void CollideInit();
 void collide_two_objects(object *A, object *B, vector *collision_point, vector *collision_normal,
-                         fvi_info *hit_info = NULL);
-extern void apply_damage_to_player(object *player, object *killer, float damage);
+                         fvi_info *hit_info = nullptr);
 
 // Process a collision between an object and a wall
 // Returns true if the object hits the wall, and false if should keep going though the wall (for breakable glass)
 bool collide_object_with_wall(object *A, float hitspeed, int hitseg, int hitwall, vector *hitpt, vector *wall_normal,
                               float hit_dot);
-
-extern int apply_damage_to_robot(object *robot, float damage, int killer_objnum);
-
-extern int Immaterial;
-
-extern void collide_player_and_weapon(object *player, object *weapon, vector *collision_point);
-extern void collide_player_and_materialization_center(object *objp);
-extern void collide_robot_and_materialization_center(object *objp);
-
-extern void scrape_object_on_wall(object *obj, int hitseg, int hitwall, vector *hitpt, vector *wall_normal);
-extern int maybe_detonate_weapon(object *obj0p, object *obj, vector *pos);
-
-extern void collide_player_and_nasty_robot(object *player, object *robot, vector *collision_point);
-
-extern void net_destroy_controlcen(object *controlcen);
-extern void collide_player_and_powerup(object *player, object *powerup, vector *collision_point);
-// extern int check_effect_blowup(segment *seg,int side,vector *pnt, object *blower, int force_blowup_flag);
-extern void apply_damage_to_controlcen(object *controlcen, float damage, int16_t who);
-extern void bump_one_object(object *obj0, vector *hit_dir, float damage);
 
 extern void FindHitpointUV(float *u, float *v, vector *point, room *rp, int facenum);
 

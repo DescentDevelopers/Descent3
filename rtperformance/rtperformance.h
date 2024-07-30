@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _RUN_TIME_PROFILING_
-#define _RUN_TIME_PROFILING_
+#ifndef RUN_TIME_PROFILING_
+#define RUN_TIME_PROFILING_
 
 #include <cstdint>
 
@@ -277,7 +277,7 @@ extern uint8_t Runtime_performance_enabled;
 void rtp_Init
         This function initilizes the runtime performance system so it's ready to be used
 */
-void rtp_Init(void);
+void rtp_Init();
 
 /*
 void rtp_EnableFlags
@@ -295,44 +295,44 @@ void rtp_DisableFlags(INT64 flags);
 void rtp_StartLog
         Calling this function will reset the log and start a new log, recording immediatly
 */
-void rtp_StartLog(void);
+void rtp_StartLog();
 
 /*
 void rtp_StopLog
         Calling this function will stop the currently processing log and write it out to
         file.
 */
-void rtp_StopLog(void);
+void rtp_StopLog();
 
 /*
 void rtp_PauseLog
         Calling this function will pause the log recording until rtp_ResumeLog is called
 */
-void rtp_PauseLog(void);
+void rtp_PauseLog();
 
 /*
 void rtp_ResumeLog
         Calling this will resume a paused log, starting at where it left off
 */
-void rtp_ResumeLog(void);
+void rtp_ResumeLog();
 
 /*
 void rtp_RecordFrame
         Calling this will record the data of the frame into the internal log, and prepare for
         the next frame
 */
-void rtp_RecordFrame(void);
+void rtp_RecordFrame();
 
 /*
 INT64 rtp_GetClock
         Returns the current hi-resolution clock value...no checking for overflow
 */
-INT64 rtp_GetClock(void);
+INT64 rtp_GetClock();
 
 /*
 void rtp_WriteBufferLog
         Writes the buffer of frames to file...
 */
-void rtp_WriteBufferLog(void);
+void rtp_WriteBufferLog();
 
 #endif

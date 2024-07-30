@@ -7,8 +7,8 @@ for building Descent 3.
 
 libacm - library for InterPlay ACM Audio format. https://github.com/markokr/libacm
 
-* libacm/decode.c
-* libacm/libacm.h
+* third_party/libacm/decode.c
+* third_party/libacm/libacm.h
 
 The libacm core code is licensed under minimal BSD/ISC license.
 

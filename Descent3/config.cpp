@@ -299,7 +299,7 @@
 #include "cfile.h"
 #include "mem.h"
 #include "lighting.h"
-#include "PHYSICS.H"
+#include "physics.h"
 #include "pilot.h"
 #include "hud.h"
 #include "voice.h"

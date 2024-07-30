@@ -272,7 +272,6 @@
 #include "bitmap.h"
 #include "pserror.h"
 #include "vclip.h"
-#include "texture.h"
 #include "game.h"
 #include "bumpmap.h"
 #include <stdlib.h>

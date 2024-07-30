@@ -305,9 +305,7 @@
 #include <filesystem>
 
 #include "cfile.h"
-#include "texture.h"
 #include "bitmap.h"
-#include "pstypes.h"
 #include "pserror.h"
 #include "mono.h"
 #include "iff.h"
@@ -316,6 +314,7 @@
 #include "bumpmap.h"
 #include "mem.h"
 #include "psrand.h"
+#include "grdefs.h"
 
 #define BM_FILETYPE_TGA 1
 #define BM_FILETYPE_PCX 2

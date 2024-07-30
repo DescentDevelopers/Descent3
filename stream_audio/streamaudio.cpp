@@ -164,15 +164,18 @@
  *
  * $NoKeywords: $
  */
-#include "streamaudio.h"
-#include "pserror.h"
+
+#include <cstdlib>
+#include <cstring>
+
+#include "adecode.h"
 #include "cfile.h"
-#include "mem.h"
-#include "Macros.h"
 #include "ddio.h"
-#include <stdlib.h>
-#include <string.h>
-// #include "samirlog.h"
+#include "Macros.h"
+#include "mem.h"
+#include "pserror.h"
+#include "streamaudio.h"
+
 #define LOGFILE(_s)
 //	this stream is for everyone (used by the StreamPlay interface)
 static AudioStream User_audio_stream;

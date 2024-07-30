@@ -68,12 +68,11 @@
  * $NoKeywords: $
  */
 
-#include "lib2d.h"
+#include <cstring>
+#include <cstdlib>
 
 #include "bitmap.h"
-
-#include <string.h>
-#include <stdlib.h>
+#include "lib2d.h"
 #include "mem.h"
 
 //	----------------------------------------------------------------------------
@@ -81,19 +80,19 @@
 //	----------------------------------------------------------------------------
 
 grMemorySurface::grMemorySurface() : grSurface() {
-  m_FirstTimeInit = 1;
-  m_AllowInit = 1;
+  m_FirstTimeInit = true;
+  m_AllowInit = true;
 }
 
 grMemorySurface::grMemorySurface(int w, int h, int bpp, unsigned flags, const char *name)
     : grSurface(w, h, bpp, SURFTYPE_MEMORY, flags, name) {
-  m_FirstTimeInit = 0;
-  m_AllowInit = 0;
+  m_FirstTimeInit = false;
+  m_AllowInit = false;
 }
 
 grMemorySurface::grMemorySurface(int bm) {
-  m_FirstTimeInit = 1;
-  m_AllowInit = 1;
+  m_FirstTimeInit = true;
+  m_AllowInit = true;
 
   grMemorySurface::init(bm_w(bm, 0), bm_h(bm, 0), bm_bpp(bm), (char *)bm_data(bm, 0), bm_rowsize(bm, 0),
                         SURFFLAG_COLORKEY);
@@ -115,7 +114,7 @@ bool grMemorySurface::init(int w, int h, int bpp, char *data, int rowsize, unsig
   if (m_FirstTimeInit) {
     //	add to list ONLY ONCE!
     add_to_list(&ddsfObj);
-    m_FirstTimeInit = 0;
+    m_FirstTimeInit = false;
   }
 
   ddsfObj.w = w;
@@ -127,7 +126,7 @@ bool grMemorySurface::init(int w, int h, int bpp, char *data, int rowsize, unsig
     strncpy(ddsfObj.name, name, 15);
 
   if (!gr_mem_surf_Init(&ddsfObj, data, rowsize))
-    return 0;
+    return false;
 
   surf_init(1);
 

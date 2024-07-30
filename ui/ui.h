@@ -267,13 +267,14 @@
 #ifndef UI_H
 #define UI_H
 
+#include <cstdint>
+
 #if defined(POSIX)
 #include "linux_fix.h" //for stricmp's through code
 #endif
 
 #include "uires.h"
 
-#include "pstypes.h"
 #include "pserror.h"
 #include "grdefs.h"
 

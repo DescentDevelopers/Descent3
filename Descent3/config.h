@@ -114,16 +114,12 @@
  * $NoKeywords: $
  */
 
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef CONFIG_H_
+#define CONFIG_H_
+
+#include <cstdint>
 
 // Main menu configuration functions
-// ------------------------------------------------------
-// ConfigForceFeedback
-//	Purpose:
-//	Configures your Force Feedback device on your computer
-// ------------------------------------------------------
-void ConfigForceFeedback(void);
 
 // General option toggles
 struct tGameToggles {

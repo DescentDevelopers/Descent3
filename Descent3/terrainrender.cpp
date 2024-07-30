@@ -801,7 +801,6 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain, b
 #include "descent.h"
 #include "render.h"
 #include "game.h"
-#include "texture.h"
 #include "ddio.h"
 #include "polymodel.h"
 #include "lighting.h"
@@ -815,12 +814,10 @@ void RenderMine(int viewer_roomnum, int flag_automap, int called_from_terrain, b
 #include "editor\d3edit.h"
 #endif
 #include "fireball.h"
-#include <string.h>
 #include <stdlib.h>
 #include "config.h"
 #include "gameloop.h"
 #include "postrender.h"
-#include "Macros.h"
 #include "psrand.h"
 #include "player.h"
 

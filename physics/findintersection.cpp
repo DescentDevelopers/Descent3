@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -855,37 +855,25 @@
  */
 
 #include <cmath>
+#include <cstring>
 
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+#include "3d.h"
+#include "collide.h"
+#include "doorway.h"
 #include "mono.h"
 #include "findintersection.h"
+#include "physics.h"
+#include "player.h"
+#include "polymodel.h"
 #include "pserror.h"
-#include "collide.h"
-#include "terrain.h"
-// #include "bspfi.h"
-#include "3d.h"
+#include "renderer.h"
 #include "room.h"
-#include "descent.h"
+#include "terrain.h"
 #include "weapon.h"
 
 #ifndef NED_PHYSICS
 #include "gametexture.h"
-#else
-#include "..\neweditor\ned_GameTexture.h"
-#endif
-
-#include "BOA.h"
-#include "polymodel.h"
-#include "PHYSICS.H"
-#include "player.h"
-#include "doorway.h"
-#include "renderer.h"
-
-// Debug performance includes (do nothing in final release)
-#ifndef NED_PHYSICS
-#include "rtperformance.h"
+#include "rtperformance.h" // Debug performance includes (do nothing in final release)
 #endif
 
 int FVI_counter;
@@ -905,9 +893,8 @@ float Ceiling_height = MAX_TERRAIN_HEIGHT;
 // Bit fields for quick 'already-checked' checking
 static uint8_t
     fvi_visit_list[MAX_ROOMS / 8 + 1]; // This bit-field provides a fast check if a mine segment has been visited
-static uint8_t
-    fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
-                           1]; // This bit-field provides a fast check if a terrain segment has been visited
+static uint8_t fvi_terrain_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
+                                      1]; // This bit-field provides a fast check if a terrain segment has been visited
 static uint8_t
     fvi_terrain_obj_visit_list[(TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 +
                                1]; // This bit-field provides a fast check if a terrain segment has been visited
@@ -1000,7 +987,7 @@ static bool PhysPastPortal(const room *rp, portal *pp);
 // FVI FUNCTIONS
 //------------------------------------------------------------------------------------------
 
-void InitFVI(void) {
+void InitFVI() {
   memset(fvi_terrain_visit_list, 0, (TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 + 1);
   memset(fvi_terrain_obj_visit_list, 0, (TERRAIN_DEPTH * TERRAIN_WIDTH) / 8 + 1);
   memset(fvi_visit_list, 0, MAX_ROOMS / 8 + 1);
@@ -1019,8 +1006,8 @@ inline int find_plane_line_intersection(vector *intp, vector *colp, vector *plan
   float proj_dist_line;        // Distance projection of line onto the plane normal
   float proj_dist_point_plane; // Distance of the object from the plane
 
-  ASSERT(intp != NULL && plane_pnt != NULL && colp != NULL && plane_norm != NULL && p0 != NULL && p1 != NULL &&
-         rad >= 0.0);
+  ASSERT(intp != nullptr && plane_pnt != nullptr && colp != nullptr && plane_norm != nullptr && p0 != nullptr &&
+         p1 != nullptr && rad >= 0.0);
 
   // Line direction
   line_vec = *p1 - *p0;
@@ -1109,7 +1096,7 @@ uint32_t check_point_to_face(vector *colp, vector *face_normal, int nv, vector *
   vector t;                 // Temporary vector that holds the magnatude of the normal's x,y,z components (ABS)
   int biggest;              // Index of the largest of the three components (0-x, 1-y, 2-z)  Axis to ignore :)
   int i, j, edge;           // Index for i-axis, Index for j-axis, and the current edge
-  uint32_t edgemask;            // Bit-field for which side we are outside of
+  uint32_t edgemask;        // Bit-field for which side we are outside of
   float check_i, check_j;   // (i,j) checkpoint for 2d in/out test
   vector_array *v0, *v1;    // Vertices of the current line segment in the 2d in/out check loop
 
@@ -1222,12 +1209,12 @@ int check_vector_to_sphere_1(vector *intp, float *col_dist, const vector *p0, co
   // Is the initial p0 position an intersection?  If so, warn us and collide immediately.
   if (point_to_center_vec * point_to_center_vec < sphere_rad * sphere_rad) {
     if (f_correcting) {
-/*
-      // chrishack
-      mprintf(0, "FVI WARNING: Start point is inside of a checked sphere %f %f\n",
-              point_to_center_vec * point_to_center_vec,
-              sphere_rad * sphere_rad);
-*/
+      /*
+            // chrishack
+            mprintf(0, "FVI WARNING: Start point is inside of a checked sphere %f %f\n",
+                    point_to_center_vec * point_to_center_vec,
+                    sphere_rad * sphere_rad);
+      */
       // chrishack this movement intersection fix is a hack...  How do we do correct cylinder/vector interestion?
       vector n_ptc = point_to_center_vec;
       vm_NormalizeVector(&n_ptc);
@@ -1329,7 +1316,7 @@ int check_vector_to_cylinder(vector *colp, vector *intp, float *col_dist, vector
   bool f_init_collide;
 
   if (!IsPointInCylinder(&init_normal, ep0, &edgevec, edge_len, rad, p0, &mvec3d, &f_init_collide)) {
-    vm_VectorToMatrix(&edge_orient, &edgevec, NULL, NULL);
+    vm_VectorToMatrix(&edge_orient, &edgevec, nullptr, nullptr);
 
     po0 = (*p0 - *ep0) * edge_orient;
     po1 = (*p1 - *ep0) * edge_orient;
@@ -1702,7 +1689,7 @@ int check_line_to_face(vector *newp, vector *colp, float *col_dist, vector *wall
   vector *test = vertex_ptr_list[0];
   int i;
 
-  ASSERT(newp != NULL && p0 != 0 && p1 != NULL && rad >= 0.0);
+  ASSERT(newp != nullptr && p0 != 0 && p1 != nullptr && rad >= 0.0);
 
   // This is so we always use the same vertex
   for (i = 1; i < nv; i++) {
@@ -1938,7 +1925,7 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
   int i;
 
   // ASSERT(quick_fr_list != NULL);
-  ASSERT(pos != NULL);
+  ASSERT(pos != nullptr);
   ASSERT(init_room_index >= 0 && init_room_index <= Highest_room_index && Rooms[init_room_index].used != 0);
   ASSERT(rad >= 0.0f);
 
@@ -2013,7 +2000,7 @@ int fvi_QuickDistFaceList(int init_room_index, vector *pos, float rad, fvi_face_
           if (!room_manual_AABB(&cur_room->faces[i], &min_xyz, &max_xyz))
             continue;
 
-          if (quick_fr_list != NULL) {
+          if (quick_fr_list != nullptr) {
             if (num_faces < max_elements) {
               quick_fr_list[num_faces].face_index = i;
               quick_fr_list[num_faces].room_index = ROOMNUM(cur_room);
@@ -2071,8 +2058,8 @@ int fvi_QuickDistCellList(int init_cell_index, vector *pos, float rad, int *quic
   int xcounter, ycounter;
   int cur_node;
 
-  ASSERT(quick_cell_list != NULL);
-  ASSERT(pos != NULL);
+  ASSERT(quick_cell_list != nullptr);
+  ASSERT(pos != nullptr);
   ASSERT(init_cell_index >= 0 && init_cell_index < TERRAIN_WIDTH * TERRAIN_DEPTH);
   ASSERT(rad >= 0.0f);
 
@@ -2225,7 +2212,7 @@ int fvi_QuickDistObjectList(vector *pos, int init_room_index, float rad, int16_t
     int cur_next_room_index;
     int i;
 
-    ASSERT(pos != NULL);
+    ASSERT(pos != nullptr);
     ASSERT(init_room_index >= 0 && init_room_index <= Highest_room_index && Rooms[init_room_index].used != 0);
     ASSERT(rad >= 0.0f);
 
@@ -2559,12 +2546,12 @@ void make_trigger_face_list(int last_sim_faces) {
 
     for (count = 0; count < cur_room->faces[i].num_verts; count++)
       vertex_ptr_list[count] = &cur_room->verts[cur_room->faces[i].face_verts[count]];
-/*
-    mprintf(0, "FVI:In trigger %f to %f crossed %f\n",
-            fvi_query_ptr->p0->z,
-            fvi_hit_data_ptr->hit_pnt.z,
-            vertex_ptr_list[0]->z);
-*/
+    /*
+        mprintf(0, "FVI:In trigger %f to %f crossed %f\n",
+                fvi_query_ptr->p0->z,
+                fvi_hit_data_ptr->hit_pnt.z,
+                vertex_ptr_list[0]->z);
+    */
 
     face_normal = cur_room->faces[i].normal;
 
@@ -2631,10 +2618,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
 
 #ifndef NED_PHYSICS
   if (Tracking_FVI) {
-    mprintf(0, "Track FVI - Ray %d, thisobjnum=%d, startroom=%d, rad=%f\n",
-            FVI_counter,
-            fq->thisobjnum,
-            fq->startroom,
+    mprintf(0, "Track FVI - Ray %d, thisobjnum=%d, startroom=%d, rad=%f\n", FVI_counter, fq->thisobjnum, fq->startroom,
             fq->rad);
   }
 #endif
@@ -2659,14 +2643,14 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
   if (fq->thisobjnum >= 0)
     this_obj = &Objects[fq->thisobjnum];
   else
-    this_obj = NULL;
+    this_obj = nullptr;
 
   if (fq->rad == 0.0f)
     fvi_zero_rad = true;
   else
     fvi_zero_rad = false;
 
-  ASSERT(fq != NULL && hit_data != NULL);
+  ASSERT(fq != nullptr && hit_data != nullptr);
 
   ASSERT(std::isfinite(fq->p1->x)); // Caller wants to go to infinity!  -- Not FVI's fault.
   ASSERT(std::isfinite(fq->p1->y)); // Caller wants to go to infinity!  -- Not FVI's fault.
@@ -2787,7 +2771,7 @@ int fvi_FindIntersection(fvi_query *fq, fvi_info *hit_data, bool no_subdivision)
         fvi_new_query.flags &= (~FQ_NEW_RECORD_LIST);
 
         if (s_hit_type != HIT_NONE) {
-          //mprintf(0, "Hit %d at %f, %f, %f\n", s_hit_type, XYZ(&fvi_new_hit_data.hit_pnt));
+          // mprintf(0, "Hit %d at %f, %f, %f\n", s_hit_type, XYZ(&fvi_new_hit_data.hit_pnt));
           break;
         }
 
@@ -3356,11 +3340,11 @@ void check_hit_obj(int objnum) {
     return;
 
   if (!(obj->flags & OF_DEAD)) {
-    if (!(m_obj_index == objnum)) {
+    if (m_obj_index != objnum) {
       if (!((m_obj_index > -1) && ((collision_type = CollisionResult[m_obj->type][obj->type]) == RESULT_NOTHING) &&
             (CollisionResult[obj->type][m_obj->type] == RESULT_NOTHING))) {
         // Account for ray casting
-        if (!(m_obj_index > -1) && (CollisionRayResult[obj->type] == RESULT_NOTHING))
+        if (m_obj_index <= -1 && (CollisionRayResult[obj->type] == RESULT_NOTHING))
           return;
 
         if (object_movement_AABB(&Objects[objnum])) {
@@ -3376,7 +3360,7 @@ void check_hit_obj(int objnum) {
 #endif
 #endif
 
-          if (fvi_query_ptr->ignore_obj_list == NULL || !obj_in_list(objnum, fvi_query_ptr->ignore_obj_list)) {
+          if (fvi_query_ptr->ignore_obj_list == nullptr || !obj_in_list(objnum, fvi_query_ptr->ignore_obj_list)) {
             if (!ObjectsAreRelated(objnum, m_obj_index)) {
 
               if (m_obj_index < 0) {
@@ -3829,7 +3813,7 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
   if (fvi_query_ptr->thisobjnum >= 0)
     this_obj = &Objects[fvi_query_ptr->thisobjnum];
   else
-    this_obj = NULL;
+    this_obj = nullptr;
 
   // Object checks
   if ((fvi_terrain_obj_visit_list[cur_node >> 3] & (0x01 << (cur_node % 8))) == 0) {
@@ -3961,12 +3945,11 @@ inline void check_terrain_node(int cur_node, bool f_check_local_nodes, bool f_ch
               check_line_to_face(&hit_point, &colp, &cur_dist, &wall_norm, fvi_query_ptr->p0,
                                  &fvi_hit_data_ptr->hit_pnt, &face_normal, vertex_ptr_list, 3, fvi_query_ptr->rad);
         }
-/*
-        if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) {
-          mprintf(0, "Y = %f\n", Objects[fvi_query_ptr->thisobjnum].pos.y);
-        }
-*/
-
+        /*
+                if(Objects[fvi_query_ptr->thisobjnum].type == OBJ_CLUTTER) {
+                  mprintf(0, "Y = %f\n", Objects[fvi_query_ptr->thisobjnum].pos.y);
+                }
+        */
 
         // chrisnote - closest hit should be tracked...  So, we can call BBPI once with
         // false and all other times with true for fast exit.
@@ -4504,7 +4487,7 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
   if (fvi_query_ptr->thisobjnum >= 0)
     this_obj = &Objects[fvi_query_ptr->thisobjnum];
   else
-    this_obj = NULL;
+    this_obj = nullptr;
 
   ASSERT(room_index >= 0 && room_index <= Highest_room_index);
   ASSERT(Rooms[room_index].used);
@@ -4621,8 +4604,8 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
               cf_max->x < fvi_wall_min_xyz.x || cf_max->y < fvi_wall_min_xyz.y || cf_max->z < fvi_wall_min_xyz.z)
             continue;
 
-          if (fvi_zero_rad && FastVectorBBox((float *)cf_min, (float *)cf_max, (float *)fvi_query_ptr->p0,
-                                             (float *)&fvi_movement_delta) == false)
+          if (fvi_zero_rad && !FastVectorBBox((float *)cf_min, (float *)cf_max, (float *)fvi_query_ptr->p0,
+                                              (float *)&fvi_movement_delta))
             continue;
 
           portal_num = cur_face->portal_num;
@@ -4804,8 +4787,6 @@ int fvi_room(int room_index, int from_portal, int room_obj) {
 
       if ((c_room > 0) && (Rooms[c_room].flags & RF_DOOR)) {
         bool f_add_next_portal = true;
-        int next_portal_index;
-
         for (next_portal_index = 0; next_portal_index < num_next_portals; next_portal_index++) {
           if (next_portals[next_portal_index] == i) {
             f_add_next_portal = false;
