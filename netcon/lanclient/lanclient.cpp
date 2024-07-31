@@ -263,6 +263,9 @@
  * $NoKeywords: $
  */
 
+#include <string>
+#include <vector>
+
 #include "ui.h"
 #include "newui.h"
 #include "grdefs.h"
@@ -332,9 +335,9 @@ static bool All_ok = true;
 void DLLFUNCCALL DLLMultiInit(int *api_func) {
   Use_netgame_flags = true;
   CommonDLLInit(api_func);
-  DLLCreateStringTable("lanclient.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("lanclient.str", StringTable);
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTable.size());
+  if (StringTable.empty()) {
     All_ok = false;
     return;
   }
@@ -342,7 +345,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 }
 
 // Called when the DLL is shutdown
-void DLLFUNCCALL DLLMultiClose() { DLLDestroyStringTable(StringTable, StringTableSize); }
+void DLLFUNCCALL DLLMultiClose() { DLLDestroyStringTable(StringTable); }
 
 // The main entry point where the game calls the dll
 void DLLFUNCCALL DLLMultiCall(int eventnum) {

@@ -17,6 +17,8 @@
 */
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 #include "pstypes.h"
 #include "pserror.h"
@@ -61,6 +63,7 @@
 #include "viseffect.h"
 #include "ObjScript.h"
 #include "args.h"
+
 
 void SelectNextCameraView(int window);
 #define NUM_CAMERA_VIEWS 3
@@ -539,7 +542,7 @@ void GetGameAPI(game_api *api) {
 
   api->osiris_functions = &Multi_d3m_osiris_funcs;
   Osiris_CreateModuleInitStruct(&Multi_d3m_osiris_funcs);
-  Multi_d3m_osiris_funcs.string_table = NULL;
+  Multi_d3m_osiris_funcs.string_table.clear();
   Multi_d3m_osiris_funcs.string_count = 0;
   Multi_d3m_osiris_funcs.module_identifier = 0xEDF7;
   Multi_d3m_osiris_funcs.module_is_static = false;

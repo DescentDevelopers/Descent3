@@ -47,9 +47,11 @@
  * $NoKeywords: $
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <vector>
+
 #include "idmfc.h"
 #include "roboAnarchy.h"
 #include "roboanarchystr.h"
@@ -81,14 +83,13 @@ static void SwitchAnarchyScores(int i);
 
 ///////////////////////////////////////////////
 // localization info
-static char **StringTable;
-static int StringTableSize = 0;
+static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
 const char *GetString(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+  if ((d < 0) || (d >= StringTable.size()))
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[d].c_str();
 }
 ///////////////////////////////////////////////
 
@@ -154,9 +155,9 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   DMFCBase->Set_OnDisconnectSaveStatsToFile(OnDisconnectSaveStatsToFile);
   DMFCBase->Set_OnPrintScores(OnPrintScores);
 
-  DLLCreateStringTable("Anarchy.str", &StringTable, &StringTableSize);
-  mprintf(0, "%d strings loaded from string table\n", StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("Anarchy.str", StringTable);
+  mprintf(0, "%d strings loaded from string table\n", StringTable.size());
+  if (StringTable.empty()) {
     *all_ok = 0;
     return;
   }
@@ -209,7 +210,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
 
   if (dstat) {
     dstat->DestroyPointer();
