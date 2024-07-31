@@ -1241,10 +1241,11 @@
 #include "..\neweditor\stdafx.h"
 #endif
 
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <algorithm>
+#include <cstring>
+#include <cstdlib>
+#include <string>
+#include <vector>
 
 #include "LoadLevel.h"
 
@@ -5719,18 +5720,12 @@ int CountDataToPageIn() {
 
 #endif
 
-void Localization_SetLanguage(int type);
-
-int Localization_GetLanguage(void);
-
 char *LocalizeLevelName(char *level) {
   static char local_name[101];
 
-  char **english_names;
-  int num_english_names;
+  std::vector<std::string> english_names;
 
-  char **local_names;
-  int num_local_names;
+  std::vector<std::string> local_names;
 
   local_name[0] = 0;
 
@@ -5743,7 +5738,7 @@ char *LocalizeLevelName(char *level) {
 
   Localization_SetLanguage(LANGUAGE_ENGLISH);
   // Save the current language, then bash it to english
-  if (!CreateStringTable("level_names.str", &english_names, &num_english_names)) {
+  if (!CreateStringTable("level_names.str", english_names)) {
     mprintf(0, "Couldn't open level_names stringtable!\n");
     Localization_SetLanguage(save_lang);
     strcpy(local_name, level);
@@ -5753,22 +5748,22 @@ char *LocalizeLevelName(char *level) {
   // Restore the correct language
   Localization_SetLanguage(save_lang);
 
-  if (!CreateStringTable("level_names.str", &local_names, &num_local_names)) {
+  if (!CreateStringTable("level_names.str", local_names)) {
     mprintf(0, "Couldn't open level_names stringtable!\n");
     // destroy the english stringtable...
-    DestroyStringTable(english_names, num_english_names);
+    DestroyStringTable(english_names);
 
     strcpy(local_name, level);
     return local_name;
   }
 
   // Now search for the correct level
-  for (int i = 0; i < num_english_names; i++) {
-    if (0 == stricmp(level, english_names[i])) {
+  for (int i = 0; i < english_names.size(); i++) {
+    if (0 == stricmp(level, english_names[i].c_str())) {
       // Ok, we found a match. So return the local text.
-      strcpy(local_name, local_names[i]);
-      DestroyStringTable(english_names, num_english_names);
-      DestroyStringTable(local_names, num_local_names);
+      strcpy(local_name, local_names[i].c_str());
+      DestroyStringTable(english_names);
+      DestroyStringTable(local_names);
       return local_name;
     }
   }

@@ -23,7 +23,6 @@ target_link_libraries(
   GTest::gtest_main
   cfile
   ddio
-  mem
   misc
 )
 

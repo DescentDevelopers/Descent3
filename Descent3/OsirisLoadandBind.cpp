@@ -398,6 +398,10 @@
  *
  * $NoKeywords: $
  */
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 
 #include "osiris_dll.h"
 #include "pserror.h"
@@ -405,7 +409,6 @@
 #include "cfile.h"
 #include "ddio.h"
 #include "manage.h"
-#include <stdlib.h>
 #include "mem.h"
 #include "DllWrappers.h"
 #include "objinfo.h"
@@ -482,7 +485,7 @@ struct tOSIRISModule {
   SaveRestoreState_fp SaveRestoreState;
   module mod;
   char *module_name;
-  char **string_table;
+  std::vector<std::string> string_table;
   int strings_loaded;
 
 #ifdef OSIRISDEBUG
@@ -592,7 +595,7 @@ void Osiris_InitModuleLoader(void) {
     OSIRIS_loaded_modules[i].GetTriggerScriptID = NULL;
     OSIRIS_loaded_modules[i].InitializeDLL = NULL;
     OSIRIS_loaded_modules[i].SaveRestoreState = NULL;
-    OSIRIS_loaded_modules[i].string_table = NULL;
+    OSIRIS_loaded_modules[i].string_table = std::vector<std::string>(0);
     OSIRIS_loaded_modules[i].strings_loaded = 0;
 
 #ifdef OSIRISDEBUG
@@ -687,8 +690,8 @@ void Osiris_FreeModule(int id) {
         OSIRIS_loaded_modules[id].ShutdownDLL();
       }
 
-      if (OSIRIS_loaded_modules[id].string_table != NULL) {
-        DestroyStringTable(OSIRIS_loaded_modules[id].string_table, OSIRIS_loaded_modules[id].strings_loaded);
+      if (!OSIRIS_loaded_modules[id].string_table.empty()) {
+        DestroyStringTable(OSIRIS_loaded_modules[id].string_table);
       }
       mod_FreeModule(&OSIRIS_loaded_modules[id].mod);
     }
@@ -707,7 +710,7 @@ void Osiris_FreeModule(int id) {
     OSIRIS_loaded_modules[id].GetTriggerScriptID = NULL;
     OSIRIS_loaded_modules[id].InitializeDLL = NULL;
     OSIRIS_loaded_modules[id].SaveRestoreState = NULL;
-    OSIRIS_loaded_modules[id].string_table = NULL;
+    OSIRIS_loaded_modules[id].string_table.clear();
     OSIRIS_loaded_modules[id].strings_loaded = 0;
     OSIRIS_loaded_modules[id].flags = 0;
     OSIRIS_loaded_modules[id].reference_count = 0;
@@ -1074,15 +1077,16 @@ int Osiris_LoadLevelModule(char *module_name) {
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
-    bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
+    bool ret = CreateStringTable(stringtablename, osm->string_table);
+    osm->strings_loaded = osm->string_table.size();
     if (!ret) {
       mprintf(0, "OSIRIS: Unable to load string table (%s) for (%s)\n", stringtablename, basename);
       Int3();
-      osm->string_table = NULL;
+      osm->string_table.clear();
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
   }
 
@@ -1096,14 +1100,14 @@ int Osiris_LoadLevelModule(char *module_name) {
   if (!osm->InitializeDLL(&Osiris_module_init)) {
     // there was an error initializing the module
     mprintf(0, "OSIRIS: Osiris_LoadLevelModule(%s) error initializing module.\n", basename);
-    if (osm->string_table) {
-      DestroyStringTable(osm->string_table, osm->strings_loaded);
+    if (!osm->string_table.empty()) {
+      DestroyStringTable(osm->string_table);
     }
     osm->flags = 0;
     if (osm->module_name)
       mem_free(osm->module_name);
     osm->module_name = NULL;
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
     mod_FreeModule(mod);
     return -2;
@@ -1265,15 +1269,16 @@ int Osiris_LoadGameModule(char *module_name) {
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
-    bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
+    bool ret = CreateStringTable(stringtablename, osm->string_table);
+    osm->strings_loaded = osm->string_table.size();
     if (!ret) {
       mprintf(0, "OSIRIS: Unable to load string table (%s) for (%s)\n", stringtablename, basename);
       Int3();
-      osm->string_table = NULL;
+      osm->string_table.clear();
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
   }
   Osiris_module_init.string_count = osm->strings_loaded;
@@ -1286,10 +1291,10 @@ int Osiris_LoadGameModule(char *module_name) {
   if (!osm->InitializeDLL(&Osiris_module_init)) {
     // there was an error initializing the module
     mprintf(0, "OSIRIS: Osiris_LoadGameModule(%s) error initializing module.\n", basename);
-    if (osm->string_table) {
-      DestroyStringTable(osm->string_table, osm->strings_loaded);
+    if (!osm->string_table.empty()) {
+      DestroyStringTable(osm->string_table);
     }
-    osm->string_table = NULL;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
     osm->flags = 0;
     if (osm->module_name)
