@@ -181,7 +181,6 @@ DYNAEXTERN(glPixelStorei);
 DYNAEXTERN(glPolygonOffset);
 DYNAEXTERN(glReadPixels);
 DYNAEXTERN(glScissor);
-DYNAEXTERN(glShadeModel);
 DYNAEXTERN(glTexCoord2f);
 DYNAEXTERN(glTexCoord4fv);
 DYNAEXTERN(glTexCoordPointer);

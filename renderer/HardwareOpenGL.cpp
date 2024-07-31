@@ -51,7 +51,6 @@
 #endif
 
 int FindArg(const char *);
-void rend_SetLightingState(light_state state);
 
 // General renderer states
 extern int gpu_Overlay_map;
@@ -269,7 +268,7 @@ void opengl_SetDefaults() {
   rend_SetAlphaType(AT_ALWAYS);
   rend_SetAlphaValue(255);
   rend_SetFiltering(1);
-  rend_SetLightingState(LS_NONE);
+  rend_SetLighting(LS_NONE);
   rend_SetTextureType(TT_FLAT);
   rend_SetColorModel(CM_RGB);
   rend_SetZBufferState(1);
@@ -1461,16 +1460,13 @@ void rend_SetLighting(light_state state) {
 
   switch (state) {
   case LS_NONE:
-    dglShadeModel(GL_SMOOTH);
     gpu_state.cur_light_state = LS_NONE;
     break;
   case LS_FLAT_GOURAUD:
-    dglShadeModel(GL_SMOOTH);
     gpu_state.cur_light_state = LS_FLAT_GOURAUD;
     break;
   case LS_GOURAUD:
   case LS_PHONG:
-    dglShadeModel(GL_SMOOTH);
     gpu_state.cur_light_state = LS_GOURAUD;
     break;
   default:
@@ -1737,42 +1733,6 @@ void rend_SetFogColor(ddgr_color color) {
   fc[2] /= 255.0f;
 
   dglFogfv(GL_FOG_COLOR, fc);
-}
-
-// Sets the lighting state of opengl
-void rend_SetLightingState(light_state state) {
-  if (state == gpu_state.cur_light_state)
-    return; // No redundant state setting
-
-  if (UseMultitexture && Last_texel_unit_set != 0) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-    Last_texel_unit_set = 0;
-#endif
-  }
-
-  OpenGL_sets_this_frame[4]++;
-
-  switch (state) {
-  case LS_NONE:
-    dglShadeModel(GL_SMOOTH);
-    gpu_state.cur_light_state = LS_NONE;
-    break;
-  case LS_FLAT_GOURAUD:
-    dglShadeModel(GL_SMOOTH);
-    gpu_state.cur_light_state = LS_FLAT_GOURAUD;
-    break;
-  case LS_GOURAUD:
-  case LS_PHONG:
-    dglShadeModel(GL_SMOOTH);
-    gpu_state.cur_light_state = LS_GOURAUD;
-    break;
-  default:
-    Int3();
-    break;
-  }
-
-  CHECK_ERROR(13)
 }
 
 void rend_SetAlphaType(int8_t atype) {
