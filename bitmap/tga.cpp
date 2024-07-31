@@ -327,7 +327,7 @@ int bm_tga_alloc_file(CFILE *infile, char *name, int format) {
   uint8_t upside_down = 0;
   uint16_t width, height;
   uint32_t pixel;
-  int i, t, n, data8bit = 0, savepos;
+  int i, t, n, data8bit = 0, savepos = 0;
   int mipped = 0;
   int num_mips = 1;
   int read_ok = 1;
@@ -539,7 +539,7 @@ int bm_page_in_file(int n) {
   uint8_t image_id_len, color_map_type, image_type, pixsize, descriptor;
   uint8_t upside_down = 0;
   uint16_t width, height;
-  int i, data8bit = 0, savepos;
+  int i, data8bit = 0, savepos = 0;
   int mipped = 0, file_mipped = 0;
   int num_mips = 1;
   char name[BITMAP_NAME_LEN];

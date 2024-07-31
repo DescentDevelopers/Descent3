@@ -554,7 +554,7 @@ void grFont::translate_to_surfaces(int slot) {
 void grFont::translate_mono_char(grSurface *sf, int x, int y, int index, gr_font_file_record *ft, int width) {
   int row, col; // byte width of char
   int rowsize;
-  uint8_t bit_mask = 0, byte;
+  uint8_t bit_mask = 0, byte = 0;
   uint8_t *fp;
 
   fp = ft->char_data[index];

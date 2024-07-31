@@ -132,7 +132,7 @@ void Error(const char *fmt, ...) {
   mprintf(0, "%s\n", Exit_message);
 
 #ifdef _DEBUG
-  int answer;
+  int answer = IDOK;
 
   if (DebugBreak_callback_stop)
     (*DebugBreak_callback_stop)();
