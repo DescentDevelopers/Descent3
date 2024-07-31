@@ -153,17 +153,7 @@ char *parse_escape_chars(char *buffer);
 // Call this to load up the string tables into memory
 // Returns the number of strings loaded, if this is 0, then the program MUST not continue
 int LoadStringTables() {
-  static bool called = false;
-  int old_language;
-
-  if (called) {
-    // Only call this guy once
-    Int3();
-    return 0;
-  }
-  called = true;
-
-  old_language = Localization_language;
+  int old_language = Localization_language;
 
   int string_count = GetTotalStringCount();
   if (string_count == 0) {
