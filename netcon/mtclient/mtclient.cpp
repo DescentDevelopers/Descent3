@@ -411,6 +411,9 @@
 * $NoKeywords: $
 */
 
+#include <string>
+#include <vector>
+
 #include "ui.h"
 #include "newui.h"
 #include "grdefs.h"
@@ -666,9 +669,9 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
   *DLLUse_DirectPlay = false;
   Auto_start = false;
   DLLmprintf(0, "About to create string table...\n");
-  DLLCreateStringTable("mtclient.str", &StringTable, &StringTableSize);
-  DLLmprintf(0, "%d strings loaded from string table\n", StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("mtclient.str", StringTable);
+  DLLmprintf(0, "%d strings loaded from string table\n", StringTable.size());
+  if (StringTable.empty()) {
     All_ok = false;
     return;
   }
@@ -679,7 +682,7 @@ void DLLFUNCCALL DLLMultiInit(int *api_func) {
 // Called when the DLL is shutdown
 void DLLFUNCCALL DLLMultiClose() {
   DLLmprintf(0, "Closing down PXO DLL\n");
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
   DLLnw_UnRegisterCallback(PXO_NETID_USER_TRACKER);
   DLLnw_UnRegisterCallback(PXO_NETID_GAME_TRACKER);
   if (MT_Sock_inited) {

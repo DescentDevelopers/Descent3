@@ -41,6 +41,9 @@
 #ifndef LOCALIZATION_H
 #define LOCALIZATION_H
 
+#include <string>
+#include <vector>
+
 #define LANGUAGE_ENGLISH 0
 #define LANGUAGE_GERMAN 1
 #define LANGUAGE_SPANISH 2
@@ -60,37 +63,18 @@ void FreeStringTables();
 // if it is a bad index given, then the pointer to the error string "ERROR MISSING STRING" is given
 const char *GetStringFromTable(int index);
 
-// Given a filename, pointer to a char * array and a pointer to an int,
-// it will load the string table and fill in the information
-// returns true on success
-bool CreateStringTable(const char *filename, char ***table, int *size);
-// Given a string table and its count of strings, it will free up its memory
-void DestroyStringTable(char **table, int size);
+/**
+ * Creates table of strings from given filename
+ * @param filename
+ * @param table
+ * @return true on success
+ */
+bool CreateStringTable(const char *filename, std::vector<std::string> &table);
 
-// GrowString class
-// handles a string of increasing size (using +,=,+=)
-struct tbufferinfo {
-  char *string_data;
-  tbufferinfo *next;
-};
-
-class GrowString {
-public:
-  GrowString();
-  ~GrowString();
-  void Destroy();
-  void operator+=(char *str);
-  GrowString operator+(char *str);
-  GrowString operator+(GrowString &gs);
-  void operator+=(GrowString &gs);
-  void operator=(char *str);
-  void operator=(GrowString &gs);
-  void GetString(char **str);
-  int Length();
-
-private:
-  tbufferinfo root;
-  tbufferinfo *curr;
-};
+/**
+ * Clears table from loaded strings
+ * @param table
+ */
+void DestroyStringTable(std::vector<std::string> &table);
 
 #endif

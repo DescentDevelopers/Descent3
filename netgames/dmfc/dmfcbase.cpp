@@ -467,27 +467,28 @@
  * $NoKeywords: $
  */
 
+#include <algorithm>
+#include <cstdlib>
+#include <cstdarg>
+#include <string>
+#include <vector>
+
 #include "gamedll_header.h"
 #include "DMFC.h"
 #include "dmfcinternal.h"
 #include "dmfcinputcommands.h"
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <algorithm>
-
-char **DMFCStringTable;
-int DMFCStringTableSize = 0;
+std::vector<std::string> DMFCStringTable;
 const char *_DMFCErrorString = "DMFC Missing String";
 uint8_t seeds1[31] = {49, 73, 0,  44, 87, 253, 35, 74, 62, 250, 4,  247, 251, 72,  244, 30,
                     59, 61, 60, 52, 50, 237, 23, 48, 56, 55,  65, 232, 231, 230, 0};
 uint8_t seeds2[6] = {70, 95, 103, 102, 112, 0};
 
 const char *DMFCGetString(int d) {
-  if ((d < 0) || (d >= DMFCStringTableSize))
+  if ((d < 0) || (d >= DMFCStringTable.size()))
     return _DMFCErrorString;
   else
-    return DMFCStringTable[d];
+    return DMFCStringTable[d].c_str();
 }
 
 DMFCBase::DMFCBase(void) {
@@ -1197,8 +1198,8 @@ void DMFCBase::GameInit(int teams) {
 
   LoadSettings();
 
-  DLLCreateStringTable("dmfc.str", &DMFCStringTable, &DMFCStringTableSize);
-  mprintf(0, "DMFC Note: %d strings loaded from string table\n", DMFCStringTableSize);
+  DLLCreateStringTable("dmfc.str", DMFCStringTable);
+  mprintf(0, "DMFC Note: %d strings loaded from string table\n", DMFCStringTable.size());
 
   // initialize player records
   PRec_Init();
@@ -1530,7 +1531,7 @@ void DMFCBase::GameClose(void) {
   if (MenuBackgroundBMP > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(MenuBackgroundBMP);
 
-  DLLDestroyStringTable(DMFCStringTable, DMFCStringTableSize);
+  DLLDestroyStringTable(DMFCStringTable);
 }
 
 void DMFCBase::DrawMenu(void) {

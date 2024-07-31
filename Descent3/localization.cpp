@@ -87,7 +87,8 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
+#include <string>
+#include <vector>
 
 #include "cfile.h"
 #include "ddio.h"
@@ -95,7 +96,6 @@
 #include "game.h"
 #include "localization.h"
 #include "log.h"
-#include "mem.h"
 #include "pserror.h"
 
 struct tLangTag {
@@ -117,7 +117,7 @@ namespace {
 int Localization_language = -1;
 
 int String_table_size = 0;
-char **String_table = nullptr;
+std::vector<std::string> String_table;
 
 // list of the string table files, they will be loaded in the order they are listed
 const char *String_table_list[] = {"D3.STR", nullptr};
@@ -170,16 +170,7 @@ int LoadStringTables() {
 
   String_table_size = 0;
 
-  // malloc our array of char *
-  String_table = mem_rmalloc<char *>(string_count);
-  if (!String_table) {
-    Localization_language = old_language;
-    return 0;
-  }
-
-  for (int tcount = 0; tcount < string_count; tcount++) {
-    String_table[tcount] = nullptr;
-  }
+  String_table = std::vector<std::string>(string_count);
 
   int runcount = 0;
   int temp;
@@ -212,18 +203,17 @@ int LoadStringTables() {
 
 // Deallocates all the memory used for the string tables
 void FreeStringTables() {
-  DestroyStringTable(String_table, String_table_size);
-  String_table = nullptr;
+  String_table.clear();
 }
 
 const char *GetStringFromTable(int index) {
   if ((index < 0) || (index >= String_table_size))
     return Error_string;
 
-  if (!String_table[index])
+  if (String_table[index].empty())
     return Empty_string;
 
-  return String_table[index];
+  return String_table[index].c_str();
 }
 
 void FixFilenameCase(const char *filename, char *newfile) {
@@ -251,29 +241,15 @@ void FixFilenameCase(const char *filename, char *newfile) {
     strcpy(newfile, file);
 }
 
-// Given a filename, pointer to a char * array and a pointer to an int,
-// it will load the string table and fill in the information
-// returns true on success
-bool CreateStringTable(const char *filename, char ***table, int *size) {
+bool CreateStringTable(const char *filename, std::vector<std::string> &table) {
   ASSERT(filename);
   ASSERT(Localization_language != -1);
-  if (!filename) {
-    if (table)
-      *table = nullptr;
-    if (size)
-      *size = 0;
-    return false;
-  }
-  CFILE *file;
 
+  CFILE *file;
   char fname[_MAX_PATH];
   FixFilenameCase(filename, fname);
   file = cfopen(fname, "rt");
   if (!file) {
-    if (table)
-      *table = nullptr;
-    if (size)
-      *size = 0;
     return false;
   }
 
@@ -307,36 +283,14 @@ try_english:
     // no strings found
     Localization_language = old_language;
     LOG_WARNING << "Localization: Warning, 0 strings found in " << filename;
-    *table = nullptr;
-    *size = 0;
     return true;
   }
 
-  *size = scount;
-  char **strtable;
-
-  // malloc our array of char *
-  *table = mem_rmalloc<char *>(scount);
-  if (!*table) {
-    if (table)
-      *table = nullptr;
-    if (size)
-      *size = 0;
-    Localization_language = old_language;
-    return false;
-  }
-
-  strtable = *table;
-  for (int tcount = 0; tcount < scount; tcount++)
-    strtable[tcount] = nullptr;
+  table = std::vector<std::string>(scount);
 
   // now load the strings
   file = cfopen(fname, "rt");
   if (!file) {
-    if (table)
-      *table = nullptr;
-    if (size)
-      *size = 0;
     Localization_language = old_language;
     return false;
   }
@@ -344,7 +298,7 @@ try_english:
   bool reading_string = false;
   scount = 0;
 
-  GrowString string;
+  std::string string;
 
   int line_info;
 
@@ -369,9 +323,9 @@ try_english:
       // ignore this line
       if (reading_string) {
         // ok we're done with the string, finish it and put it in the string table
-        string.GetString(&strtable[scount]);
+        table[scount] = string;
         scount++;
-        string.Destroy();
+        string.clear();
       }
       reading_string = false;
       break;
@@ -379,9 +333,9 @@ try_english:
       if (line_info >= 0 && line_info < Num_languages) {
         if (reading_string) {
           // ok we're done with the string, finish it and put it in the string table
-          string.GetString(&strtable[scount]);
+          table[scount] = string;
           scount++;
-          string.Destroy();
+          string.clear();
           reading_string = false;
         }
 
@@ -389,7 +343,7 @@ try_english:
         if (line_info == Localization_language) {
           reading_string = true;
           // start filling in the buffer
-          string.Destroy();
+          string.clear();
           string = parse_escape_chars(parse_string_tag(tempbuffer));
         }
 
@@ -403,32 +357,23 @@ try_english:
 
   if (reading_string) {
     // we're at the end of the file and we're reading, so but it in the string table
-    string.GetString(&strtable[scount]);
+    table[scount] = string;
     scount++;
-    string.Destroy();
+    string.clear();
     reading_string = false;
   }
 
   cfclose(file);
 
-  LOG_INFO.printf("String Table (%s) loaded with %d strings", filename, *size);
+  LOG_INFO.printf("String Table (%s) loaded with %d strings", filename, scount);
   Localization_language = old_language;
 
-  return (scount == (*size));
+  return true;
 }
 
-// Given a string table and its count of strings, it will free up its memory
-void DestroyStringTable(char **table, int size) {
-  if ((size > 0) && (table)) {
-    for (int i = 0; i < size; i++) {
-      if (table[i])
-        mem_free(table[i]);
-    }
-  }
-
-  if (table)
-    mem_free(table);
-}
+void DestroyStringTable(std::vector<std::string> &table) {
+  table.clear();
+};
 
 // returns the total number of strings in all the string table files
 // returns 0 on error
@@ -478,7 +423,7 @@ int LoadStringFile(const char *filename, int starting_offset) {
 
   bool reading_string = false;
 
-  GrowString string;
+  std::string string;
   int line_info;
 
   while (!cfeof(file)) {
@@ -502,9 +447,9 @@ int LoadStringFile(const char *filename, int starting_offset) {
       // ignore this line
       if (reading_string) {
         // ok we're done with the string, finish it and put it in the string table
-        string.GetString(&String_table[scount + starting_offset]);
+        String_table[scount + starting_offset] = string;
         scount++;
-        string.Destroy();
+        string.clear();
       }
       reading_string = false;
       break;
@@ -512,9 +457,9 @@ int LoadStringFile(const char *filename, int starting_offset) {
       if (line_info >= 0 && line_info < Num_languages) {
         if (reading_string) {
           // ok we're done with the string, finish it and put it in the string table
-          string.GetString(&String_table[scount + starting_offset]);
+          String_table[scount + starting_offset] = string;
           scount++;
-          string.Destroy();
+          string.clear();
           reading_string = false;
         }
 
@@ -522,7 +467,7 @@ int LoadStringFile(const char *filename, int starting_offset) {
         if (line_info == Localization_language) {
           reading_string = true;
           // start filling in the buffer
-          string.Destroy();
+          string.clear();
           string = parse_escape_chars(parse_string_tag(buffer));
         }
 
@@ -536,9 +481,9 @@ int LoadStringFile(const char *filename, int starting_offset) {
 
   if (reading_string) {
     // we're at the end of the file and we're reading, so but it in the string table
-    string.GetString(&String_table[scount + starting_offset]);
+    String_table[scount + starting_offset] = string;
     scount++;
-    string.Destroy();
+    string.clear();
     reading_string = false;
   }
 
@@ -642,127 +587,4 @@ char *parse_escape_chars(char *buffer) {
   tempbuffer[t_index] = '\0';
   strcpy(buffer, tempbuffer);
   return buffer;
-}
-
-GrowString::GrowString() {
-  root.string_data = nullptr;
-  root.next = nullptr;
-  curr = &root;
-}
-GrowString::~GrowString() { Destroy(); }
-
-void GrowString::operator+=(char *str) {
-  if (!str)
-    return;
-  if (root.string_data) {
-    tbufferinfo *node;
-    node = mem_rmalloc<tbufferinfo>();
-    if (!node)
-      return;
-    node->string_data = mem_rmalloc<char>(strlen(str) + 2);
-    if (!node->string_data) {
-      mem_free(node);
-      return;
-    }
-    sprintf(node->string_data, "\n%s", str);
-    curr->next = node;
-    node->next = nullptr;
-    curr = node;
-  } else {
-    root.string_data = mem_rmalloc<char>(strlen(str) + 1);
-    if (!root.string_data)
-      return;
-    strcpy(root.string_data, str);
-    root.next = nullptr;
-  }
-}
-
-void GrowString::Destroy() {
-  if (root.string_data)
-    mem_free(root.string_data);
-  root.string_data = nullptr;
-
-  tbufferinfo *c, *next;
-  c = next = root.next;
-  while (c) {
-    next = c->next;
-    if (c->string_data)
-      mem_free(c->string_data);
-    mem_free(c);
-    c = next;
-  }
-  root.next = nullptr;
-  root.string_data = nullptr;
-  curr = &root;
-}
-
-GrowString GrowString::operator+(char *str) {
-  *this += str;
-  return *this;
-}
-
-GrowString GrowString::operator+(GrowString &gs) {
-  char *str = nullptr;
-  gs.GetString(&str);
-  *this += str;
-  if (str)
-    mem_free(str);
-  return *this;
-}
-
-void GrowString::operator+=(GrowString &gs) {
-  char *str = nullptr;
-  gs.GetString(&str);
-  *this += str;
-  if (str)
-    mem_free(str);
-}
-
-void GrowString::operator=(char *str) {
-  Destroy();
-  *this += str;
-}
-
-void GrowString::operator=(GrowString &gs) {
-  char *str = nullptr;
-  gs.GetString(&str);
-  *this = str;
-  if (str)
-    mem_free(str);
-}
-
-void GrowString::GetString(char **str) {
-  *str = nullptr;
-  int size = Length();
-  if (size == -1)
-    return;
-
-  tbufferinfo *next;
-  next = root.next;
-
-  *str = (char *)mem_malloc(size + 1);
-
-  strcpy(*str, root.string_data);
-  next = root.next;
-  while (next) {
-    if (next->string_data) {
-      strcat(*str, next->string_data);
-    }
-    next = next->next;
-  }
-}
-
-int GrowString::Length() {
-  if (!root.string_data)
-    return -1;
-
-  tbufferinfo *next;
-  next = root.next;
-  int size = strlen(root.string_data);
-  while (next) {
-    if (next->string_data)
-      size += strlen(next->string_data);
-    next = next->next;
-  }
-  return size;
 }

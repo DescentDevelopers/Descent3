@@ -18,9 +18,12 @@
 
 // aigame2.cpp
 // 0.1
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "osiris_vector.h"
@@ -43,15 +46,15 @@ DLLEXPORT int STDCALL SaveRestoreState(void *file_ptr, uint8_t saving_state);
 #endif
 
 static int String_table_size = 0;
-static char **String_table = NULL;
+static std::vector<std::string> String_table;
 static const char *_Error_string = "!!ERROR MISSING STRING!!";
 static const char *_Empty_string = "";
 const char *GetStringFromTable(int index) {
-  if ((index < 0) || (index >= String_table_size))
+  if ((index < 0) || (index >= String_table.size()))
     return _Error_string;
-  if (!String_table[index])
+  if (String_table[index].empty())
     return _Empty_string;
-  return String_table[index];
+  return String_table[index].c_str();
 }
 #define TXT(x) GetStringFromTable(x)
 

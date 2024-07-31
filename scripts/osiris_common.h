@@ -335,6 +335,8 @@
 #define __OSIRIS_COMMON_H_
 
 #include <cstdint>
+#include <string>
+#include <vector>
 
 #include "vecmat_external.h"
 #include "aistruct_external.h"
@@ -977,7 +979,7 @@ struct gb_menu {
 
 struct tOSIRISModuleInit {
   int32_t *fp[MAX_MODULEFUNCS];
-  char **string_table;
+  std::vector<std::string> string_table;
   int32_t string_count;
   int32_t module_identifier;
 

@@ -20,6 +20,8 @@
 #define GAMEDLL_HEADER_H
 
 #include <filesystem>
+#include <string>
+#include <vector>
 
 #include "spew.h"
 #include "gamefont.h"
@@ -520,14 +522,10 @@ DMFCDLLOUT(nw_GetNumbersFromHostAddress_fp DLLnw_GetNumbersFromHostAddress;)
 typedef int (*nw_GetThisIP_fp)(void);
 DMFCDLLOUT(nw_GetThisIP_fp DLLnw_GetThisIP;)
 
-// Given a filename, pointer to a char * array and a pointer to an int,
-// it will load the string table and fill in the information
-// returns true on success
-typedef bool (*CreateStringTable_fp)(const char *filename, char ***table, int *size);
+typedef bool (*CreateStringTable_fp)(const char *filename, std::vector<std::string> &table);
 DMFCDLLOUT(CreateStringTable_fp DLLCreateStringTable;)
 
-// Given a string table and its count of strings, it will free up its memory
-typedef void (*DestroyStringTable_fp)(char **table, int size);
+typedef void (*DestroyStringTable_fp)(std::vector<std::string> &table);
 DMFCDLLOUT(DestroyStringTable_fp DLLDestroyStringTable;)
 
 //	renders text, scaled, alphaed, saturated,

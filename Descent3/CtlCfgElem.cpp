@@ -113,18 +113,20 @@
  * $NoKeywords: $
  */
 
+#include <cstring>
+#include <string>
+#include <vector>
+
 #include "CtlCfgElem.h"
 #include "descent.h"
 
 #include "Macros.h"
 #include "ddio.h"
-#include "application.h"
 #include "renderer.h"
 #include "stringtable.h"
 #include "gamefont.h"
 #include "localization.h"
 
-#include <string.h>
 #include "joystick.h"
 
 // all controller binding texts
@@ -417,58 +419,58 @@ extern char Ctltext_MseBtnBindings[][32];
 extern char Ctltext_MseAxisBindings[][32];
 
 void Localize_ctl_bindings() {
-  char **strtable;
-  int n_strings, i;
+  std::vector<std::string> strtable;
+  int i;
 
   // keyboard translations.
   // no need to do for english!
   if (Localization_GetLanguage() == LANGUAGE_ENGLISH)
     return;
 
-  if (CreateStringTable("bindkey.str", &strtable, &n_strings)) {
+  if (CreateStringTable("bindkey.str", strtable)) {
     i = 0;
     while (key_binding_indices[i] != 0xff) {
-      if (i >= n_strings) {
+      if (i >= strtable.size()) {
         break;
       }
-      strcpy(Ctltext_KeyBindings[key_binding_indices[i]], strtable[i]);
+      strcpy(Ctltext_KeyBindings[key_binding_indices[i]], strtable[i].c_str());
       i++;
     }
-    DestroyStringTable(strtable, n_strings);
+    DestroyStringTable(strtable);
   }
 
   // mouse translations.
-  if (CreateStringTable("bindmse.str", &strtable, &n_strings)) {
+  if (CreateStringTable("bindmse.str", strtable)) {
     for (i = 0; i < 6; i++) {
-      if (i >= n_strings) {
+      if (i >= strtable.size()) {
         break;
       }
-      strcpy(Ctltext_MseBtnBindings[i], strtable[i]);
+      strcpy(Ctltext_MseBtnBindings[i], strtable[i].c_str());
     }
     for (i = 0; i < 3; i++) {
-      if ((i + 6) >= n_strings) {
+      if ((i + 6) >= strtable.size()) {
         break;
       }
-      strcpy(Ctltext_MseAxisBindings[i], strtable[i + 6]);
+      strcpy(Ctltext_MseAxisBindings[i], strtable[i + 6].c_str());
     }
-    DestroyStringTable(strtable, n_strings);
+    DestroyStringTable(strtable);
   }
 
   // joystick translations.
-  if (CreateStringTable("bindjoy.str", &strtable, &n_strings)) {
+  if (CreateStringTable("bindjoy.str", strtable)) {
     for (i = 0; i < 6; i++) {
-      if (i >= n_strings) {
+      if (i >= strtable.size()) {
         break;
       }
-      strcpy(Ctltext_AxisBindings[i + 1], strtable[i]);
+      strcpy(Ctltext_AxisBindings[i + 1], strtable[i].c_str());
     }
     for (i = 0; i < 4; i++) {
-      if ((i + 6) >= n_strings) {
+      if ((i + 6) >= strtable.size()) {
         break;
       }
-      strcpy(Ctltext_PovBindings[i + 1], strtable[i + 6]);
+      strcpy(Ctltext_PovBindings[i + 1], strtable[i + 6].c_str());
     }
-    DestroyStringTable(strtable, n_strings);
+    DestroyStringTable(strtable);
   }
 }
 
