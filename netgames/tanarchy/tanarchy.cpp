@@ -78,6 +78,8 @@
 
 #include <cstring>
 #include <filesystem>
+#include <string>
+#include <vector>
 
 #include "gamedll_header.h"
 #include "idmfc.h"
@@ -117,14 +119,13 @@ static int Highlight_bmp = -1;
 
 ///////////////////////////////////////////////
 // localization info
-static char **StringTable;
-static int StringTableSize = 0;
+static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+  if ((d < 0) || (d >= StringTable.size()))
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[d].c_str();
 }
 ///////////////////////////////////////////////
 
@@ -188,8 +189,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
   dPlayers = DMFCBase->GetPlayers();
 
   DMFCBase->GameInit(NUM_TEAMS);
-  DLLCreateStringTable("tanarchy.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("tanarchy.str", StringTable);
+  if (StringTable.empty()) {
     *all_ok = 0;
     return;
   }
@@ -297,7 +298,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
 
   if (dstat) {
     dstat->DestroyPointer();

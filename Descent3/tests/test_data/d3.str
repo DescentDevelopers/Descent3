@@ -6,3 +6,15 @@
 !S!Mensaje en español
 !I!Messaggio italiano
 !F!Message en français
+
+!/!1:Multiline message
+!=!English
+Multiline message
+!G!Deutsche
+Multiline message
+!S!Español
+Multiline message
+!I!Italiano
+Multiline message
+!F!Français
+Multiline message

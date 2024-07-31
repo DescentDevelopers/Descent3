@@ -100,9 +100,11 @@
  */
 
 #include <algorithm>
-#include <cstring>
 #include <cstdio>
+#include <cstring>
+#include <string>
 #include <filesystem>
+#include <vector>
 
 #include "idmfc.h"
 #include "coop.h"
@@ -135,14 +137,13 @@ int unpack_pstat(tPlayerStat *user_info, uint8_t *data) {
 
 ///////////////////////////////////////////////
 // localization info
-static char **StringTable;
-static int StringTableSize = 0;
+static std::vector<std::string> StringTable;
 static const char *_ErrorString = "Missing String";
 const char *GetStringFromTable(int d) {
-  if ((d < 0) || (d >= StringTableSize))
+  if ((d < 0) || (d >= StringTable.size()))
     return _ErrorString;
   else
-    return StringTable[d];
+    return StringTable[d].c_str();
 }
 ///////////////////////////////////////////////
 static int SortedPlayers[MAX_PLAYER_RECORDS];
@@ -215,8 +216,8 @@ void DLLFUNCCALL DLLGameInit(int *api_func, uint8_t *all_ok, int num_teams_to_us
 
   dPlayers = DMFCBase->GetPlayers();
 
-  DLLCreateStringTable("Coop.str", &StringTable, &StringTableSize);
-  if (!StringTableSize) {
+  DLLCreateStringTable("Coop.str", StringTable);
+  if (StringTable.empty()) {
     *all_ok = 0;
     return;
   }
@@ -299,7 +300,7 @@ void DLLFUNCCALL DLLGameClose() {
   if (Highlight_bmp > BAD_BITMAP_HANDLE)
     DLLbm_FreeBitmap(Highlight_bmp);
 
-  DLLDestroyStringTable(StringTable, StringTableSize);
+  DLLDestroyStringTable(StringTable);
 
   if (dstat) {
     dstat->DestroyPointer();
