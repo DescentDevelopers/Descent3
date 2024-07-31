@@ -23,3 +23,22 @@ target_link_libraries(
   GTest::gtest_main
 )
 gtest_discover_tests(gamespyutils_tests)
+
+add_executable(
+  localization_tests
+  localization_tests.cpp
+  ../localization.cpp
+)
+
+target_link_libraries(
+  localization_tests
+  GTest::gtest_main
+  cfile
+  ddio
+  logger
+  misc
+)
+
+gtest_discover_tests(localization_tests
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Descent3/tests
+)
