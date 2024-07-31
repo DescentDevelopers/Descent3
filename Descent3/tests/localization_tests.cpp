@@ -23,15 +23,24 @@
 #include "cfile.h"
 #include "localization.h"
 
-std::vector<std::string> messages = {
+static std::vector<std::vector<std::string> > messages = {
+  {
     "English message",
     "Deutsche Botschaft",
     "Mensaje en español",
     "Messaggio italiano",
     "Message en français",
+  },
+  {
+    "English\nMultiline message",
+    "Deutsche\nMultiline message",
+    "Español\nMultiline message",
+    "Italiano\nMultiline message",
+    "Français\nMultiline message",
+  },
 };
 
-std::string error_string = "!!ERROR MISSING STRING!!";
+static std::string error_string = "!!ERROR MISSING STRING!!";
 
 TEST(D3, LocalizationTests) {
   cf_SetSearchPath("test_data");
@@ -40,12 +49,14 @@ TEST(D3, LocalizationTests) {
     Localization_SetLanguage(i);
 
     int count = LoadStringTables();
-    EXPECT_EQ(count, 1);
+    EXPECT_EQ(count, 2);
 
     const char *message;
     message = GetStringFromTable(0);
-    EXPECT_STREQ(message, messages[i].c_str());
+    EXPECT_STREQ(message, messages[0][i].c_str());
     message = GetStringFromTable(1);
+    EXPECT_STREQ(message, messages[1][i].c_str());
+    message = GetStringFromTable(2);
     EXPECT_STREQ(message, error_string.c_str());
     FreeStringTables();
   }
@@ -53,8 +64,8 @@ TEST(D3, LocalizationTests) {
   for (int i = 0; i < 5; i++) {
     Localization_SetLanguage(i);
     std::vector<std::string> loc_msgs;
-    int count = CreateStringTable("d3.str", loc_msgs);
-    EXPECT_EQ(count, 1);
-    EXPECT_STREQ(loc_msgs[0].c_str(), messages[i].c_str());
+    bool success = CreateStringTable("d3.str", loc_msgs);
+    EXPECT_TRUE(success);
+    EXPECT_STREQ(loc_msgs[0].c_str(), messages[0][i].c_str());
   }
 }
