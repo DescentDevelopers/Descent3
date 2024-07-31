@@ -2313,7 +2313,7 @@ bool IsScriptOutofSync(char *name) {
   ddio_SplitPath(name, nullptr, filename, ext);
 
   Osiris_module_init.string_count = 0;
-  Osiris_module_init.string_table = nullptr;
+  Osiris_module_init.string_table.clear();
   Osiris_module_init.module_is_static = false;
   Osiris_module_init.module_identifier = 0;
   Osiris_module_init.script_identifier = filename;

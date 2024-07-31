@@ -398,6 +398,10 @@
  *
  * $NoKeywords: $
  */
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 
 #include <cstdlib>
 #include <filesystem>
@@ -483,7 +487,7 @@ struct tOSIRISModule {
   SaveRestoreState_fp SaveRestoreState;
   module mod;
   char *module_name;
-  char **string_table;
+  std::vector<std::string> string_table;
   int strings_loaded;
 
 #ifdef OSIRISDEBUG
@@ -594,7 +598,7 @@ void Osiris_InitModuleLoader(void) {
     OSIRIS_loaded_modules[i].GetTriggerScriptID = nullptr;
     OSIRIS_loaded_modules[i].InitializeDLL = nullptr;
     OSIRIS_loaded_modules[i].SaveRestoreState = nullptr;
-    OSIRIS_loaded_modules[i].string_table = nullptr;
+    OSIRIS_loaded_modules[i].string_table = std::vector<std::string>(0);
     OSIRIS_loaded_modules[i].strings_loaded = 0;
 
 #ifdef OSIRISDEBUG
@@ -689,8 +693,8 @@ void Osiris_FreeModule(int id) {
         OSIRIS_loaded_modules[id].ShutdownDLL();
       }
 
-      if (OSIRIS_loaded_modules[id].string_table != nullptr) {
-        DestroyStringTable(OSIRIS_loaded_modules[id].string_table, OSIRIS_loaded_modules[id].strings_loaded);
+      if (!OSIRIS_loaded_modules[id].string_table.empty()) {
+        DestroyStringTable(OSIRIS_loaded_modules[id].string_table);
       }
       mod_FreeModule(&OSIRIS_loaded_modules[id].mod);
     }
@@ -709,7 +713,7 @@ void Osiris_FreeModule(int id) {
     OSIRIS_loaded_modules[id].GetTriggerScriptID = nullptr;
     OSIRIS_loaded_modules[id].InitializeDLL = nullptr;
     OSIRIS_loaded_modules[id].SaveRestoreState = nullptr;
-    OSIRIS_loaded_modules[id].string_table = nullptr;
+    OSIRIS_loaded_modules[id].string_table.clear();
     OSIRIS_loaded_modules[id].strings_loaded = 0;
     OSIRIS_loaded_modules[id].flags = 0;
     OSIRIS_loaded_modules[id].reference_count = 0;
@@ -923,7 +927,7 @@ int get_full_path_to_module(const std::filesystem::path &module_name, std::files
     }
 
     // Script was not found in extracted scripts,
-    // we are possibly looking for a script in a 3rd-party level, which we do not want to load 
+    // we are possibly looking for a script in a 3rd-party level, which we do not want to load
     return -2;
   } break;
   default:
@@ -1064,16 +1068,17 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
-    bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
+    bool ret = CreateStringTable(stringtablename, osm->string_table);
+    osm->strings_loaded = osm->string_table.size();
     if (!ret) {
       LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
                        PATH_TO_CSTR(basename));
       Int3();
-      osm->string_table = nullptr;
+      osm->string_table.clear();
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = nullptr;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
   }
 
@@ -1087,14 +1092,14 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   if (!osm->InitializeDLL(&Osiris_module_init)) {
     // there was an error initializing the module
     LOG_ERROR.printf("OSIRIS: Osiris_LoadLevelModule(%s) error initializing module.", PATH_TO_CSTR(basename));
-    if (osm->string_table) {
-      DestroyStringTable(osm->string_table, osm->strings_loaded);
+    if (!osm->string_table.empty()) {
+      DestroyStringTable(osm->string_table);
     }
     osm->flags = 0;
     if (osm->module_name)
       mem_free(osm->module_name);
     osm->module_name = nullptr;
-    osm->string_table = nullptr;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
     mod_FreeModule(mod);
     return -2;
@@ -1256,16 +1261,17 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
-    bool ret = CreateStringTable(stringtablename, &osm->string_table, &osm->strings_loaded);
+    bool ret = CreateStringTable(stringtablename, osm->string_table);
+    osm->strings_loaded = osm->string_table.size();
     if (!ret) {
       LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
                        PATH_TO_CSTR(basename));
       Int3();
-      osm->string_table = nullptr;
+      osm->string_table.clear();
       osm->strings_loaded = 0;
     }
   } else {
-    osm->string_table = nullptr;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
   }
   Osiris_module_init.string_count = osm->strings_loaded;
@@ -1278,10 +1284,10 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   if (!osm->InitializeDLL(&Osiris_module_init)) {
     // there was an error initializing the module
     LOG_ERROR.printf("OSIRIS: Osiris_LoadGameModule(%s) error initializing module.", PATH_TO_CSTR(basename));
-    if (osm->string_table) {
-      DestroyStringTable(osm->string_table, osm->strings_loaded);
+    if (!osm->string_table.empty()) {
+      DestroyStringTable(osm->string_table);
     }
-    osm->string_table = nullptr;
+    osm->string_table.clear();
     osm->strings_loaded = 0;
     osm->flags = 0;
     if (osm->module_name)
