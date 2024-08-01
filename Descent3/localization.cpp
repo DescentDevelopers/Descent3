@@ -94,6 +94,7 @@
 
 #include "cfile.h"
 #include "localization.h"
+#include "localization_external.h"
 #include "pserror.h"
 
 struct tLangTag {
@@ -107,12 +108,13 @@ tLangTag Language_tags[] = {
     {"!S!", -1}, // Spanish
     {"!I!", -1}, // Italian
     {"!F!", -1}, // French
+    {"!P!", -1}, // Polish
 };
-int Num_languages = sizeof(Language_tags) / sizeof(tLangTag);
 
 // The following data, in the anonymous namespace, are static to this file
 namespace {
-int Localization_language = -1;
+// Assume that we on English locale
+int Localization_language = LANGUAGE_ENGLISH;
 
 int String_table_size = 0;
 std::vector<std::string> String_table;
@@ -125,7 +127,7 @@ const char *Empty_string = "\0";
 } // namespace
 
 void Localization_SetLanguage(int type) {
-  ASSERT(type >= 0 && type < Num_languages);
+  ASSERT(type >= 0 && type < LANGUAGE_TOTAL);
   Localization_language = type;
 }
 
@@ -311,7 +313,7 @@ try_english:
       reading_string = false;
       break;
     default: {
-      if (line_info >= 0 && line_info < Num_languages) {
+      if (line_info >= 0 && line_info < LANGUAGE_TOTAL) {
         if (reading_string) {
           // ok we're done with the string, finish it and put it in the string table
           table[scount] = string;
@@ -426,7 +428,7 @@ int LoadStringFile(const std::filesystem::path &filename, int starting_offset) {
       reading_string = false;
       break;
     default: {
-      if (line_info >= 0 && line_info < Num_languages) {
+      if (line_info >= 0 && line_info < LANGUAGE_TOTAL) {
         if (reading_string) {
           // ok we're done with the string, finish it and put it in the string table
           String_table[scount + starting_offset] = string;
@@ -465,7 +467,7 @@ int LoadStringFile(const std::filesystem::path &filename, int starting_offset) {
 
 // returns STAG_* information about the line
 int parse_line_information(char *line) {
-  for (int i = 0; i < Num_languages; i++) {
+  for (int i = 0; i < LANGUAGE_TOTAL; i++) {
     if (Language_tags[i].length == -1)
       Language_tags[i].length = strlen(Language_tags[i].tag);
 
@@ -493,7 +495,7 @@ char *parse_string_tag(char *buffer) {
     return buffer + (strlen(COMMENT_TAG));
     break;
   default:
-    if (i >= 0 && i < Num_languages) {
+    if (i >= 0 && i < LANGUAGE_TOTAL) {
       // we have a specific language...
       return buffer + (Language_tags[i].length);
     }

@@ -341,6 +341,7 @@
 #include "vecmat_external.h"
 #include "aistruct_external.h"
 #include "object_external.h"
+#include "localization_external.h"
 #include "matcen_external.h"
 #include "robotfirestruct_external.h"
 #include "findintersection_external.h"
@@ -407,16 +408,6 @@
 #define MAX_MODULEFUNCS 256 // maximum number of functions imported to OSIRIS
 
 typedef int OMMSHANDLE;
-
-// =======================================================================
-// Language defines
-// =======================================================================
-#define LANGUAGE_ENGLISH 0
-#define LANGUAGE_GERMAN 1
-#define LANGUAGE_SPANISH 2
-#define LANGUAGE_ITALIAN 3
-#define LANGUAGE_FRENCH 4
-#define LANGUAGE_POLISH 5
 
 // Player Accessories indices (for Player_Value function)
 #define ACCESSORY_CLOAK 0
