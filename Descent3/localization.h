@@ -44,14 +44,7 @@
 #include <string>
 #include <vector>
 
-#define LANGUAGE_ENGLISH 0
-#define LANGUAGE_GERMAN 1
-#define LANGUAGE_SPANISH 2
-#define LANGUAGE_ITALIAN 3
-#define LANGUAGE_FRENCH 4
-
-// Number of available languages
-extern int Num_languages;
+#include "localization_external.h"
 
 void Localization_SetLanguage(int type);
 int Localization_GetLanguage();
