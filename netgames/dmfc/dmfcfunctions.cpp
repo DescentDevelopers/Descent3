@@ -211,7 +211,7 @@ bool (*DLLcf_Diff)(const char *a, const char *b);
 void (*DLLMultiDisconnectPlayer)(int slot);
 void (*DLLnw_GetNumbersFromHostAddress)(network_address *address, char *str);
 int (*DLLnw_GetThisIP)(void);
-bool (*DLLCreateStringTable)(const char *filename, std::vector<std::string> &table);
+bool (*DLLCreateStringTable)(const std::filesystem::path &filename, std::vector<std::string> &table);
 void (*DLLDestroyStringTable)(std::vector<std::string> &table);
 void (*DLLRenderHUDTextFlags)(int flags, ddgr_color col, uint8_t alpha, int sat_count, int x, int y, const char *fmt, ...);
 void (*DLLPlayerSetHUDNameFOV)(int fov);
