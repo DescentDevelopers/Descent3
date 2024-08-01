@@ -1566,7 +1566,7 @@ void InitStringTable() {
   int language = LANGUAGE_ENGLISH;
   Database->read("LanguageType", &language, sizeof(language));
 
-  if (language < 0 || language >= Num_languages) {
+  if (language < 0 || language >= LANGUAGE_TOTAL) {
     Int3();
     language = LANGUAGE_ENGLISH;
   }
