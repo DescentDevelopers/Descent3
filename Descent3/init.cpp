@@ -1561,7 +1561,6 @@ void InitIOSystems(bool editor) {
 
 bool MercInstalled() { return merc_hid > 0; }
 
-extern int Num_languages;
 void InitStringTable() {
 
   int language = LANGUAGE_ENGLISH;

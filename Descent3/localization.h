@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -49,6 +49,10 @@
 #define LANGUAGE_SPANISH 2
 #define LANGUAGE_ITALIAN 3
 #define LANGUAGE_FRENCH 4
+
+// Number of available languages
+extern int Num_languages;
+
 void Localization_SetLanguage(int type);
 int Localization_GetLanguage();
 
@@ -69,7 +73,7 @@ const char *GetStringFromTable(int index);
  * @param table
  * @return true on success
  */
-bool CreateStringTable(const char *filename, std::vector<std::string> &table);
+bool CreateStringTable(const std::filesystem::path &filename, std::vector<std::string> &table);
 
 /**
  * Clears table from loaded strings

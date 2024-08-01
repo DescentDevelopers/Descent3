@@ -653,6 +653,8 @@
 #include "cfile.h"
 #include "gamefont.h"
 #include "grdefs.h"
+#include "levelgoal.h"
+#include "localization.h"
 #include "descent.h"
 #include "d3movie.h"
 #include "program.h"
@@ -677,8 +679,6 @@
 #include "multi.h"
 #include "module.h"
 #include "hud.h"
-#include "localization.h"
-#include "levelgoal.h"
 
 //	---------------------------------------------------------------------------
 //	Data
@@ -1255,8 +1255,6 @@ void FreeMission() {
   Current_mission.filename = nullptr;
   Current_level = nullptr;
 }
-
-// Load the text (goal strings) for a level
 void LoadLevelText(const std::filesystem::path &level_filename) {
   std::filesystem::path pathname = level_filename;
   pathname.replace_extension(".str");
