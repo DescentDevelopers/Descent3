@@ -165,6 +165,7 @@ DYNAEXTERN(glFogf);
 DYNAEXTERN(glFogfv);
 DYNAEXTERN(glFogi);
 DYNAEXTERN(glGenBuffers);
+DYNAEXTERN(glGenTextures);
 DYNAEXTERN(glGenVertexArrays);
 DYNAEXTERN(glGetError);
 DYNAEXTERN(glGetIntegerv);
