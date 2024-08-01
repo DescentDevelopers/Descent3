@@ -154,7 +154,7 @@ static int OpenGL_verts_processed = 0;
 static int OpenGL_uploads = 0;
 static int OpenGL_sets_this_frame[10];
 static int OpenGL_packed_pixels = 0;
-static int Cur_texture_object_num = 1;
+static std::vector<GLuint> textures_;
 static int OpenGL_cache_initted = 0;
 static int OpenGL_last_bound[2];
 
@@ -226,9 +226,9 @@ void opengl_GetInformation() {
 }
 
 int opengl_MakeTextureObject(int tn) {
-  int num = Cur_texture_object_num;
-
-  Cur_texture_object_num++;
+  GLuint num;
+  dglGenTextures(1, &num);
+  textures_.push_back(num);
 
   dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
 
@@ -259,8 +259,6 @@ int opengl_InitCache(void) {
   ASSERT(OpenGL_bitmap_states);
   OpenGL_lightmap_states = (uint8_t *)mem_malloc(MAX_LIGHTMAPS);
   ASSERT(OpenGL_lightmap_states);
-
-  Cur_texture_object_num = 1;
 
   // Setup textures and cacheing
   int i;
@@ -712,15 +710,8 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
 void opengl_Close(const bool just_resizing) {
   CHECK_ERROR(5)
 
-  uint32_t *delete_list = (uint32_t *)mem_malloc(Cur_texture_object_num * sizeof(int));
-  ASSERT(delete_list);
-  for (int i = 1; i < Cur_texture_object_num; i++)
-    delete_list[i] = i;
-
-  if (Cur_texture_object_num > 1)
-    dglDeleteTextures(Cur_texture_object_num, (const uint32_t *)delete_list);
-
-  mem_free(delete_list);
+  dglDeleteTextures(textures_.size(), textures_.data());
+  textures_.clear();
 
   gRenderer.reset();
 
