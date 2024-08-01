@@ -320,8 +320,6 @@ void opengl_SetDefaults() {
   Last_texel_unit_set = -1;
   OpenGL_multitexture_state = false;
 
-  dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  dglHint(GL_FOG_HINT, GL_NICEST);
   dglEnable(GL_SCISSOR_TEST);
   dglScissor(0, 0, gpu_state.screen_width, gpu_state.screen_height);
   dglDisable(GL_SCISSOR_TEST);
@@ -329,8 +327,6 @@ void opengl_SetDefaults() {
   if (UseMultitexture) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
     dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    dglHint(GL_FOG_HINT, GL_NICEST);
 
     gRenderer->setTextureEnabled(1, false);
     dglEnable(GL_BLEND);

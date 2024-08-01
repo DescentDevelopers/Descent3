@@ -190,7 +190,6 @@ DYNAEXTERN(glGetShaderiv);
 DYNAEXTERN(glGetString);
 DYNAEXTERN(glGetStringi);
 DYNAEXTERN(glGetUniformLocation);
-DYNAEXTERN(glHint);
 DYNAEXTERN(glLinkProgram);
 DYNAEXTERN(glPixelStorei);
 DYNAEXTERN(glPixelTransferi);
