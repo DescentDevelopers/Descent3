@@ -650,6 +650,8 @@
 #include "cfile.h"
 #include "gamefont.h"
 #include "grdefs.h"
+#include "levelgoal.h"
+#include "localization.h"
 #include "descent.h"
 #include "ddio.h"
 #include "d3movie.h"
@@ -674,6 +676,7 @@
 #include "terrain.h"
 #include "multi.h"
 #include "hud.h"
+
 //	---------------------------------------------------------------------------
 //	Data
 //	---------------------------------------------------------------------------
@@ -1247,14 +1250,10 @@ void FreeMission() {
   Current_mission.hog = NULL;
   Current_level = NULL;
 }
-#include "localization.h"
-#include "levelgoal.h"
-// Load the text (goal strings) for a level
-void LoadLevelText(const char *level_filename) {
-  char pathname[_MAX_FNAME], filename[_MAX_FNAME];
-  ddio_SplitPath(level_filename, pathname, filename, NULL);
-  strcat(pathname, filename);
-  strcat(pathname, ".str");
+
+void LoadLevelText(const std::filesystem::path &level_filename) {
+  std::filesystem::path pathname = level_filename;
+  pathname.replace_extension(".str");
   std::vector<std::string> goal_strings;
   if (CreateStringTable(pathname, goal_strings)) {
     int n_goals = Level_goals.GetNumGoals();

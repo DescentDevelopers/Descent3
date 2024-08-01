@@ -1025,66 +1025,64 @@
 #include <profiler.h>
 #endif
 
-#include "gamesequence.h"
-
-#include "game.h"
-#include "gameloop.h"
-#include "descent.h"
-#include "player.h"
-#include "Mission.h"
-#include "BOA.h"
-#include "gameevent.h"
-#include "AIMain.h"
-#include "soar_helpers.h"
-#include "terrain.h"
-#include "hlsoundlib.h"
-#include "SmallViews.h"
-#include "polymodel.h"
-#include "gametexture.h"
-#include "hud.h"
-#include "menu.h"
-#include "newui.h"
-#include "cockpit.h"
-#include "help.h"
-#include "buddymenu.h"
-#include "mem.h"
-#include "soundload.h"
-#include "robot.h"
-#include "screens.h"
-#include "game2dll.h"
-#include "ship.h"
-#include "TelCom.h"
-#include "scorch.h"
-#include "render.h"
-#include "stringtable.h"
-#include "ddio_common.h"
-#include "gamesave.h"
-#include "sounds.h"
-#include "ambient.h"
-#include "vclip.h"
-#include "pilot.h"
-#include "doorway.h"
-#include "matcen.h"
-#include "dedicated_server.h"
-#include "levelgoal.h"
-#include "log.h"
-#include "demofile.h"
-#include "lightmap_info.h"
-#include "lightmap.h"
-#include "fireball.h"
-#include "d3music.h"
-#include "TelComAutoMap.h"
 #include "aiambient.h"
-#include "ObjScript.h"
-#include "marker.h"
-#include "gamecinematics.h"
-#include "osiris_dll.h"
+#include "AIMain.h"
+#include "ambient.h"
+#include "args.h"
+#include "BOA.h"
+#include "bsp.h"
+#include "buddymenu.h"
+#include "cockpit.h"
+#include "d3music.h"
 #include "debuggraph.h"
+#include "dedicated_server.h"
+#include "demofile.h"
+#include "descent.h"
+#include "doorway.h"
+#include "fireball.h"
+#include "game.h"
+#include "game2dll.h"
+#include "gamecinematics.h"
+#include "gameevent.h"
+#include "gameloop.h"
+#include "gamepath.h"
+#include "gamesave.h"
+#include "gamesequence.h"
+#include "gametexture.h"
+#include "help.h"
+#include "hlsoundlib.h"
+#include "hud.h"
+#include "levelgoal.h"
+#include "lightmap.h"
+#include "lightmap_info.h"
+#include "localization.h"
+#include "marker.h"
+#include "matcen.h"
+#include "mem.h"
+#include "menu.h"
+#include "Mission.h"
 #include "multi_dll_mgr.h"
 #include "multi_ui.h"
-#include "gamepath.h"
-#include "bsp.h"
-#include "args.h"
+#include "newui.h"
+#include "ObjScript.h"
+#include "osiris_dll.h"
+#include "pilot.h"
+#include "player.h"
+#include "polymodel.h"
+#include "render.h"
+#include "robot.h"
+#include "scorch.h"
+#include "screens.h"
+#include "ship.h"
+#include "SmallViews.h"
+#include "soar_helpers.h"
+#include "soundload.h"
+#include "sounds.h"
+#include "stringtable.h"
+#include "TelCom.h"
+#include "TelComAutoMap.h"
+#include "terrain.h"
+#include "vclip.h"
 
 //	Variables
 tGameState Game_state = GAMESTATE_IDLE;      // current game state.
@@ -1456,10 +1454,6 @@ void DeleteAmbientObjects() {
   }
 }
 
-void Localization_SetLanguage(int type);
-int Localization_GetLanguage(void);
-void LoadLevelText(const char *level_filename);
-
 // Starts the level, which has already been loaded
 void StartLevel() {
   extern void RestoreCameraRearviews(); // gameloop.cpp
@@ -1568,7 +1562,7 @@ void StartLevel() {
   ResetGameMessages();
   ResetReticle();
   ResetSmallViews();  // ResetSmallViews() must come before InitCameraViews()
-  InitCameraViews(0); // ResetSmallViews() must come before InitCameraViews()
+  InitCameraViews(false); // ResetSmallViews() must come before InitCameraViews()
   RestoreCameraRearviews();
   SetHUDMode(GetHUDMode()); // what does this do?
 

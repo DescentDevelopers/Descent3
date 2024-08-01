@@ -522,7 +522,7 @@ DMFCDLLOUT(nw_GetNumbersFromHostAddress_fp DLLnw_GetNumbersFromHostAddress;)
 typedef int (*nw_GetThisIP_fp)(void);
 DMFCDLLOUT(nw_GetThisIP_fp DLLnw_GetThisIP;)
 
-typedef bool (*CreateStringTable_fp)(const char *filename, std::vector<std::string> &table);
+typedef bool (*CreateStringTable_fp)(const std::filesystem::path &filename, std::vector<std::string> &table);
 DMFCDLLOUT(CreateStringTable_fp DLLCreateStringTable;)
 
 typedef void (*DestroyStringTable_fp)(std::vector<std::string> &table);

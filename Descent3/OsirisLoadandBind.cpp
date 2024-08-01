@@ -1060,16 +1060,15 @@ int Osiris_LoadLevelModule(const std::filesystem::path &module_name) {
   }
 
   // check to see if there is a corresponding string table to load
-  char stringtablename[_MAX_PATH];
-  strcpy(stringtablename, basename.u8string().c_str());
-  strcat(stringtablename, ".str");
+  std::filesystem::path stringtablename = basename;
+  stringtablename.replace_extension(".str");
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
     bool ret = CreateStringTable(stringtablename, osm->string_table);
     osm->strings_loaded = osm->string_table.size();
     if (!ret) {
-      LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
+      LOG_ERROR.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename.u8string().c_str(),
                        basename.u8string().c_str());
       Int3();
       osm->string_table.clear();
@@ -1253,16 +1252,15 @@ int Osiris_LoadGameModule(const std::filesystem::path &module_name) {
   }
 
   // check to see if there is a corresponding string table to load
-  char stringtablename[_MAX_PATH];
-  strcpy(stringtablename, basename.u8string().c_str());
-  strcat(stringtablename, ".str");
+  std::filesystem::path stringtablename = basename;
+  stringtablename.replace_extension(".str");
 
   if (cfexist(stringtablename)) {
     // there is a string table, load it up
     bool ret = CreateStringTable(stringtablename, osm->string_table);
     osm->strings_loaded = osm->string_table.size();
     if (!ret) {
-      LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename,
+      LOG_FATAL.printf("OSIRIS: Unable to load string table (%s) for (%s)", stringtablename.u8string().c_str(),
                        basename.u8string().c_str());
       Int3();
       osm->string_table.clear();
