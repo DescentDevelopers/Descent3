@@ -43,7 +43,7 @@ uint32_t Osiris_CreateGameChecksumTest() {
   value = value << 2;
 
   /* Adds count of Osiris_module_init.fp */
-  value += 123;
+  value += 126;
 
   return value;
 }
