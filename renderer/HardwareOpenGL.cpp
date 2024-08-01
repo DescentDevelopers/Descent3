@@ -337,8 +337,6 @@ void opengl_SetDefaults() {
   OpenGL_last_bound[1] = 9999999;
   OpenGL_multitexture_state = false;
 
-  dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  dglHint(GL_FOG_HINT, GL_NICEST);
   dglEnable(GL_SCISSOR_TEST);
   dglScissor(0, 0, gpu_state.screen_width, gpu_state.screen_height);
   dglDisable(GL_SCISSOR_TEST);
@@ -347,8 +345,6 @@ void opengl_SetDefaults() {
   gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 1);
 
   dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-  dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  dglHint(GL_FOG_HINT, GL_NICEST);
   gRenderer->setTextureEnabled(1, false);
   dglEnable(GL_BLEND);
   dglEnable(GL_DITHER);
