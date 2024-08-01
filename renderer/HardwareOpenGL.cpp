@@ -1343,7 +1343,7 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
   gRenderer->setTextureEnabled(1, false);
 
   // draw the data in the arrays
-  dglDrawArrays(GL_POLYGON, 0, nv);
+  dglDrawArrays(GL_TRIANGLE_FAN, 0, nv);
 
   if (gpu_state.cur_texture_quality == 0) {
     // re-enable textures
@@ -1358,7 +1358,7 @@ void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
   gRenderer->setTextureEnabled(1, true);
   gRenderer->setVertexData(0, nv, vData);
 
-  dglDrawArrays(GL_POLYGON, 0, nv);
+  dglDrawArrays(GL_TRIANGLE_FAN, 0, nv);
   OpenGL_polys_drawn++;
   OpenGL_verts_processed += nv;
 
