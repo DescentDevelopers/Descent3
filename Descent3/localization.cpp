@@ -97,6 +97,7 @@
 #include "localization_external.h"
 #include "log.h"
 #include "pserror.h"
+#include "pstring.h"
 
 struct tLangTag {
   const char *tag;
@@ -125,6 +126,9 @@ const std::vector<std::string> String_table_list = {"D3.STR"};
 
 const char *Error_string = "!!ERROR MISSING STRING!!";
 const char *Empty_string = "\0";
+
+const char *NO_MESSAGE_STRING = "*Message Not Found*";
+const char *INV_MSGNAME_STRING = "*Message Name Invalid*";
 } // namespace
 
 void Localization_SetLanguage(int type) {
@@ -144,6 +148,8 @@ int Localization_GetLanguage() { return Localization_language; }
 #define MAX_LINE_LENGTH 1024
 #define MAX_STRING_LENGTH (8 * MAX_LINE_LENGTH)
 #define MAX_TAG_LENGTH 3
+
+#define WHITESPACE_CHARS " \t\r\n"
 
 int GetTotalStringCount();
 int LoadStringFile(const std::filesystem::path &filename, int starting_offset);
@@ -562,4 +568,69 @@ char *parse_escape_chars(char *buffer) {
   tempbuffer[t_index] = '\0';
   strcpy(buffer, tempbuffer);
   return buffer;
+}
+
+// Message handling
+
+bool CreateMessageMap(const std::filesystem::path &filename, std::map<std::string, std::string> &map) {
+  char filebuffer[MAX_LINE_LENGTH + 1];
+  char line[MAX_LINE_LENGTH + 1];
+  char *msg_start;
+
+  // Try to open the file for loading
+  CFILE *infile = cfopen(filename, "rt");
+  if (!infile)
+    return false;
+
+  // Clear the message list
+  map.clear();
+
+  // Read in and parse each line of the file
+  while (!cfeof(infile)) {
+
+    // Clear the buffer
+    strcpy(filebuffer, "");
+
+    // Read in a line from the file
+    cf_ReadString(filebuffer, MAX_LINE_LENGTH, infile);
+
+    // Remove whitespace padding at start and end of line
+    CleanupStr(line, filebuffer, MAX_LINE_LENGTH);
+
+    // If line is a comment, or empty, discard it
+    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
+      continue;
+
+    // Find the start of message, and mark it
+    msg_start = strchr(line, '=');
+    if (msg_start == nullptr)
+      continue;
+    msg_start[0] = '\0';
+    msg_start++;
+
+    // Add the message to the list
+    map.insert_or_assign(line, msg_start);
+  }
+  cfclose(infile);
+
+  return true;
+}
+
+void DestroyMessageMap(std::map<std::string, std::string> &map) {
+  map.clear();
+}
+
+const char *GetMessage(const std::string &name, std::map<std::string, std::string> &map) {
+  // Make sure given name is valid
+  if (name.empty()) {
+    return INV_MSGNAME_STRING;
+  }
+
+  // We have key in map
+  if (map.count(name) > 0) {
+    return map[name].c_str();
+  }
+
+  // Couldn't find it
+  return NO_MESSAGE_STRING;
 }

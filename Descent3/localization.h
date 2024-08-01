@@ -41,6 +41,7 @@
 #ifndef LOCALIZATION_H
 #define LOCALIZATION_H
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -73,5 +74,29 @@ bool CreateStringTable(const std::filesystem::path &filename, std::vector<std::s
  * @param table
  */
 void DestroyStringTable(std::vector<std::string> &table);
+
+// Message file handling (used in scripts)
+
+/**
+ * Creates map of strings from given filename
+ * @param filename
+ * @param map
+ * @return true on success
+ */
+bool CreateMessageMap(const std::filesystem::path &filename, std::map<std::string, std::string> &map);
+
+/**
+ * Clears map from loaded strings
+ * @param map
+ */
+void DestroyMessageMap(std::map<std::string, std::string> &map);
+
+/**
+ * Gets message by name from corresponding map
+ * @param name
+ * @param map
+ * @return return message by name, NO_MESSAGE_STRING if there no such name
+ */
+const char *GetMessage(const std::string &name, std::map<std::string, std::string> &map);
 
 #endif

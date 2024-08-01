@@ -3975,4 +3975,7 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
   mi->fp[120] = (int *)osipf_GameGetDiffLevel;
   mi->fp[121] = (int *)osipf_GetLanguageSetting;
   mi->fp[122] = (int *)osipf_PathValue;
+  mi->fp[123] = (int *)CreateMessageMap;
+  mi->fp[124] = (int *)DestroyMessageMap;
+  mi->fp[125] = (int *)GetMessage;
 }

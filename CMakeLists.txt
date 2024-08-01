@@ -97,9 +97,9 @@ endif()
 
 # 64 bit machines have a different game checksum than 32 bit machines
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-  add_definitions(-DCHECKSUM=2273890027UL)
+  add_definitions(-DCHECKSUM=2273890030UL)
 else()
-  add_definitions(-DCHECKSUM=2273873403UL)
+  add_definitions(-DCHECKSUM=2273873406UL)
 endif()
 
 if(BUILD_TESTING)
