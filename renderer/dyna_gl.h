@@ -171,11 +171,9 @@ DYNAEXTERN(glDepthFunc);
 DYNAEXTERN(glDepthMask);
 DYNAEXTERN(glDepthRange);
 DYNAEXTERN(glDisable);
-DYNAEXTERN(glDisableClientState);
 DYNAEXTERN(glDrawArrays);
 DYNAEXTERN(glDrawPixels);
 DYNAEXTERN(glEnable);
-DYNAEXTERN(glEnableClientState);
 DYNAEXTERN(glEnableVertexAttribArray);
 DYNAEXTERN(glFlush);
 DYNAEXTERN(glFogf);
@@ -228,7 +226,6 @@ DYNAEXTERN(glRenderbufferStorageEXT);
 
 #if defined(_USE_OGL_ACTIVE_TEXTURES)
 DYNAEXTERN_OPT(glActiveTextureARB, true);
-DYNAEXTERN_OPT(glClientActiveTextureARB, true);
 DYNAEXTERN_OPT(glMultiTexCoord4f, true);
 #endif
 
