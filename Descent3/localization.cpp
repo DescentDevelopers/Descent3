@@ -85,13 +85,12 @@
  */
 
 #include <algorithm>
-#include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <string>
-#include <vector>
+#include <cctype>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 #include "cfile.h"
 #include "game.h"
@@ -121,7 +120,7 @@ int String_table_size = 0;
 std::vector<std::string> String_table;
 
 // list of the string table files, they will be loaded in the order they are listed
-constexpr const char *String_table_list[] = {"D3.STR", nullptr};
+constexpr const std::vector<std::string> String_table_list = {"D3.STR"};
 
 const char *Error_string = "!!ERROR MISSING STRING!!";
 const char *Empty_string = "\0";
@@ -146,7 +145,7 @@ int Localization_GetLanguage() { return Localization_language; }
 #define MAX_TAG_LENGTH 3
 
 int GetTotalStringCount();
-int LoadStringFile(const char *filename, int starting_offset);
+int LoadStringFile(const std::filesystem::path &filename, int starting_offset);
 int parse_line_information(char *line);
 char *parse_string_tag(char *buffer);
 char *parse_escape_chars(char *buffer);
@@ -175,9 +174,8 @@ int LoadStringTables() {
 
   int runcount = 0;
   int temp;
-  int index = 0;
-  while (String_table_list[index]) {
-    temp = LoadStringFile(String_table_list[index], runcount);
+  for (auto const &item : String_table_list) {
+    temp = LoadStringFile(item, runcount);
     if (temp == 0) {
       Localization_language = old_language;
       return 0;
@@ -187,7 +185,6 @@ int LoadStringTables() {
       return 0;
     }
     runcount += temp;
-    index++;
   }
 
   if (runcount == 0) {
@@ -217,6 +214,11 @@ const char *GetStringFromTable(int index) {
   return String_table[index].c_str();
 }
 
+/**
+ * Lowercase filename part in path
+ * @param filename
+ * @return path with lowercased filename
+ */
 std::filesystem::path FixFilenameCase(const std::filesystem::path &filename) {
   auto local_file = filename.filename().u8string();
 
@@ -225,8 +227,8 @@ std::filesystem::path FixFilenameCase(const std::filesystem::path &filename) {
   return filename.parent_path() / local_file;
 }
 
-bool CreateStringTable(const char *filename, std::vector<std::string> &table) {
-  ASSERT(filename);
+bool CreateStringTable(const std::filesystem::path &filename, std::vector<std::string> &table) {
+  ASSERT(!filename.empty());
   ASSERT(Localization_language != -1);
 
 
@@ -345,7 +347,7 @@ try_english:
 
   cfclose(file);
 
-  LOG_INFO.printf("String Table (%s) loaded with %d strings", filename, scount);
+  LOG_INFO.printf("String Table (%s) loaded with %d strings", filename.u8string().c_str(), scount);
   Localization_language = old_language;
 
   return true;
@@ -359,15 +361,12 @@ void DestroyStringTable(std::vector<std::string> &table) {
 // returns 0 on error
 int GetTotalStringCount() {
   int scount = 0;
-  int findex = 0;
-  CFILE *file;
   char tempbuffer[MAX_LINE_LENGTH + 1];
   ASSERT(Localization_language != -1);
 
-  while (String_table_list[findex]) {
+  for (auto const &item : String_table_list) {
     // open the file up
-    std::filesystem::path fname = FixFilenameCase(String_table_list[findex]);
-    file = cfopen(fname, "rt");
+    CFILE *file = cfopen(FixFilenameCase(item), "rt");
     if (!file)
       return 0;
 
@@ -378,20 +377,17 @@ int GetTotalStringCount() {
     }
 
     cfclose(file);
-    findex++;
   }
   return scount;
 }
 
 // Loads a string table file, returns number of strings read if everything went ok,else 0
-int LoadStringFile(const char *filename, int starting_offset) {
-  ASSERT(filename);
+int LoadStringFile(const std::filesystem::path &filename, int starting_offset) {
   ASSERT(Localization_language != -1);
-  if (!filename)
+  if (filename.empty())
     return 0;
 
-  std::filesystem::path fname = FixFilenameCase(filename);
-  CFILE *file = cfopen(fname, "rt");
+  CFILE *file = cfopen(FixFilenameCase(filename), "rt");
   if (!file)
     return 0;
 

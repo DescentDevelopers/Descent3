@@ -576,7 +576,7 @@ typedef int (*dp_GetModemChoices_fp)(char *buffer, uint32_t *size);
 dp_GetModemChoices_fp DLLdp_GetModemChoices;
 #endif
 
-typedef bool (*CreateStringTable_fp)(const char *filename, std::vector<std::string> &table);
+typedef bool (*CreateStringTable_fp)(const std::filesystem::path &filename, std::vector<std::string> &table);
 CreateStringTable_fp DLLCreateStringTable;
 
 typedef void (*DestroyStringTable_fp)(std::vector<std::string> &table);
