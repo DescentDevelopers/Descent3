@@ -110,6 +110,18 @@ struct Renderer {
     shader_.setUniform1i("u_texture_enable", texture_enable_);
   }
 
+  void setVertexData(size_t offset, size_t count, PosColorUV2Vertex const* vertices) {
+    shader_.setVertexData(offset, count, vertices);
+  }
+
+  void setVertexData(size_t offset, size_t count, PosColorUVVertex const* vertices) {
+    std::array<PosColorUV2Vertex, MAX_POINTS_IN_POLY> converted;
+    std::transform(vertices, vertices + count, converted.begin(), [](auto const& vtx) {
+      return PosColorUV2Vertex{vtx.pos, vtx.color, vtx.uv, {}};
+    });
+    setVertexData(offset, count, converted.data());
+  }
+
 private:
   glm::mat4x4 model_;
   glm::mat4x4 view_;
@@ -1320,9 +1332,7 @@ void gpu_BindTexture(int handle, int map_type, int slot) {
 }
 
 void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
-  dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
-  dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
-  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv);
+  gRenderer->setVertexData(0, nv, vData);
 
   if (gpu_state.cur_texture_quality == 0) {
     // force disable textures
@@ -1344,12 +1354,8 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
 }
 
 void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
-  dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
-  dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
-  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv0);
-
   gRenderer->setTextureEnabled(1, true);
-  dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv1);
+  gRenderer->setVertexData(0, nv, vData);
 
   dglDrawArrays(GL_POLYGON, 0, nv);
   OpenGL_polys_drawn++;
@@ -1600,11 +1606,13 @@ void rend_FillRect(ddgr_color color, int x1, int y1, int x2, int y2) {
 void rend_SetPixel(ddgr_color color, int x, int y) {
   g3_RefreshTransforms(true);
 
-  std::array pos{x, y};
-  color_array unpacked_color{GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f, GR_COLOR_BLUE(color) / 255.0f, 1};
-
-  dglVertexPointer(2, GL_INT, sizeof(pos), &pos);
-  dglColorPointer(4, GL_FLOAT, sizeof(unpacked_color), &unpacked_color);
+  PosColorUV2Vertex vtx{
+      {static_cast<float>(x), static_cast<float>(y), 0},
+      {GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f, GR_COLOR_BLUE(color) / 255.0f, 1},
+      {},
+      {}
+  };
+  gRenderer->setVertexData(0, 1, &vtx);
   dglDrawArrays(GL_POINTS, 0, 1);
 }
 
@@ -1636,21 +1644,22 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
       GR_COLOR_GREEN(gpu_state.cur_color) / 255.0f,
       GR_COLOR_BLUE(gpu_state.cur_color) / 255.0f,
   };
-  std::array<PosColorUVVertex, 2> vertices{
-      PosColorUVVertex{
-          vector{static_cast<float>(x1 + gpu_state.clip_x1), static_cast<float>(y1 + gpu_state.clip_y1), 0},
+  std::array<PosColorUV2Vertex, 2> vertices{
+      PosColorUV2Vertex{
+          {static_cast<float>(x1 + gpu_state.clip_x1), static_cast<float>(y1 + gpu_state.clip_y1), 0},
           color,
-          tex_array{ /* unused */ }
+          {},
+          {}
       },
-      PosColorUVVertex{
-          vector{static_cast<float>(x2 + gpu_state.clip_x1), static_cast<float>(y2 + gpu_state.clip_y1), 0},
+      PosColorUV2Vertex{
+          {static_cast<float>(x2 + gpu_state.clip_x1), static_cast<float>(y2 + gpu_state.clip_y1), 0},
           color,
-          tex_array{ /* unused */ }
+          {},
+          {}
       }
   };
 
-  dglVertexPointer(3, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].pos);
-  dglColorPointer(4, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].color);
+  gRenderer->setVertexData(0, vertices.size(), vertices.data());
   dglDrawArrays(GL_LINES, 0, vertices.size());
 
   rend_SetAlphaType(atype);
@@ -1734,18 +1743,17 @@ void rend_SetAlphaType(int8_t atype) {
 void rend_DrawSpecialLine(g3Point *p0, g3Point *p1) {
   g3_RefreshTransforms(true);
 
-  std::array<g3Point const*, 2> pts{p0, p1};
-  std::array<PosColorUVVertex, 2> vertices{};
+  std::array<g3Point const *, 2> pts{p0, p1};
+  std::array<PosColorUV2Vertex, 2> vertices{};
   std::transform(pts.begin(), pts.end(), vertices.begin(), [](auto pnt) {
-    return PosColorUVVertex{
-      {pnt->p3_sx + gpu_state.clip_x1, pnt->p3_sy + gpu_state.clip_y1, -std::clamp(1.0f - (1.0f / (pnt->p3_z + Z_bias)), 0.0f, 1.0f)},
-        DeterminePointColor(pnt, false, false, true), // extras??
-        tex_array{ /* unused */ }
-    };
+    return PosColorUV2Vertex{{pnt->p3_sx + gpu_state.clip_x1, pnt->p3_sy + gpu_state.clip_y1,
+                              -std::clamp(1.0f - (1.0f / (pnt->p3_z + Z_bias)), 0.0f, 1.0f)},
+                             DeterminePointColor(pnt, false, false, true), // extras??
+                             {},
+                             {}};
   });
 
-  dglVertexPointer(3, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].pos);
-  dglColorPointer(4, GL_FLOAT, sizeof(PosColorUVVertex), &vertices[0].color);
+  gRenderer->setVertexData(0, vertices.size(), vertices.data());
   dglDrawArrays(GL_LINES, 0, vertices.size());
 }
 

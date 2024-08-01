@@ -170,6 +170,10 @@ struct ShaderProgram {
     dglUseProgram(0);
   }
 
+  void setVertexData(size_t offset, size_t count, PosColorUV2Vertex const* vertices) {
+    vbo_.UpdateData(offset, count, vertices);
+  }
+
   void setUniformMat4f(std::string const& name, glm::mat4x4 const& matrix) {
     dglUniformMatrix4fv(getUniformId(name), 1, GL_FALSE, glm::value_ptr(matrix));
   }
