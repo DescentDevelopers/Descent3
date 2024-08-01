@@ -100,10 +100,21 @@ struct Renderer {
     shader_.setUniformMat4f("u_transform", projection_ * view_ * model_);
   }
 
+  void setTextureEnabled(GLuint index, bool enabled) {
+    GLint bit = 1 << index;
+    if (enabled) {
+      texture_enable_ |= bit;
+    } else {
+      texture_enable_ &= ~bit;
+    }
+    shader_.setUniform1i("u_texture_enable", texture_enable_);
+  }
+
 private:
   glm::mat4x4 model_;
   glm::mat4x4 view_;
   glm::mat4x4 projection_;
+  GLint texture_enable_{};
   ShaderProgram<PosColorUV2Vertex> shader_;
 };
 std::optional<Renderer> gRenderer;
@@ -307,10 +318,6 @@ void opengl_SetDefaults() {
   Last_texel_unit_set = -1;
   OpenGL_multitexture_state = false;
 
-  dglEnableClientState(GL_VERTEX_ARRAY);
-  dglEnableClientState(GL_COLOR_ARRAY);
-  dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
   dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   dglHint(GL_FOG_HINT, GL_NICEST);
   dglEnable(GL_SCISSOR_TEST);
@@ -323,14 +330,10 @@ void opengl_SetDefaults() {
   if (UseMultitexture) {
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
     dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    dglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
     dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     dglHint(GL_FOG_HINT, GL_NICEST);
 
-    dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
-
-    dglDisable(GL_TEXTURE_2D);
+    gRenderer->setTextureEnabled(1, false);
     dglEnable(GL_BLEND);
     dglEnable(GL_DITHER);
     dglBlendFunc(GL_DST_COLOR, GL_ZERO);
@@ -585,7 +588,7 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   opengl_GetInformation();
 
   // Determine if Multitexture is supported
-  UseMultitexture = !FindArg("-NoMultitexture") && dglActiveTextureARB && dglClientActiveTextureARB && dglMultiTexCoord4f;
+  UseMultitexture = !FindArg("-NoMultitexture") && dglActiveTextureARB && dglMultiTexCoord4f;
 
   // Do we have packed pixel formats?
   OpenGL_packed_pixels = opengl_CheckExtension("GL_EXT_packed_pixels");
@@ -1161,17 +1164,7 @@ void gpu_SetMultitextureBlendMode(bool state) {
   OpenGL_multitexture_state = state;
 
 #if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  dglActiveTextureARB(GL_TEXTURE1_ARB);
-  dglClientActiveTextureARB(GL_TEXTURE1_ARB);
-  if (state) {
-    dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    dglEnable(GL_TEXTURE_2D);
-  } else {
-    dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    dglDisable(GL_TEXTURE_2D);
-  }
-  dglActiveTextureARB(GL_TEXTURE0_ARB);
-  dglClientActiveTextureARB(GL_TEXTURE0_ARB);
+  gRenderer->setTextureEnabled(1, state);
   Last_texel_unit_set = 0;
 #endif
 }
@@ -1382,24 +1375,21 @@ void gpu_BindTexture(int handle, int map_type, int slot) {
 void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
   dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
   dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
-  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv);
 
   if (gpu_state.cur_texture_quality == 0) {
     // force disable textures
-    dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    gRenderer->setTextureEnabled(0, false);
   }
 
-  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
-  dglDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  gRenderer->setTextureEnabled(1, false);
 
   // draw the data in the arrays
   dglDrawArrays(GL_POLYGON, 0, nv);
 
   if (gpu_state.cur_texture_quality == 0) {
     // re-enable textures
-    dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
-    dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    gRenderer->setTextureEnabled(0, true);
   }
 
   OpenGL_polys_drawn++;
@@ -1409,10 +1399,9 @@ void gpu_RenderPolygon(PosColorUVVertex *vData, uint32_t nv) {
 void gpu_RenderPolygonUV2(PosColorUV2Vertex *vData, uint32_t nv) {
   dglVertexPointer(3, GL_FLOAT, sizeof(*vData), &vData->pos);
   dglColorPointer(4, GL_FLOAT, sizeof(*vData), &vData->color);
-  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 0);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv0);
-  dglClientActiveTextureARB(GL_TEXTURE0_ARB + 1);
-  dglEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  gRenderer->setTextureEnabled(1, true);
   dglTexCoordPointer(4, GL_FLOAT, sizeof(*vData), &vData->uv1);
 
   dglDrawArrays(GL_POLYGON, 0, nv);
@@ -1511,14 +1500,14 @@ void rend_SetTextureType(texture_type state) {
 
   switch (state) {
   case TT_FLAT:
-    dglDisable(GL_TEXTURE_2D);
+    gRenderer->setTextureEnabled(0, false);
     gpu_state.cur_texture_quality = 0;
     break;
   case TT_LINEAR:
   case TT_LINEAR_SPECIAL:
   case TT_PERSPECTIVE:
   case TT_PERSPECTIVE_SPECIAL:
-    dglEnable(GL_TEXTURE_2D);
+    gRenderer->setTextureEnabled(0, true);
     gpu_state.cur_texture_quality = 2;
     break;
   default:
