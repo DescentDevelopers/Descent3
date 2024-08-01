@@ -19,6 +19,10 @@
 
 #define OSIRISEXTERN extern
 
+#include <filesystem>
+#include <map>
+#include <string>
+
 #include "osiris_common.h"
 
 #if defined(POSIX)
@@ -390,11 +394,11 @@ static inline int Obj_Create(uint8_t type, uint16_t id, int roomnum, vector *pos
   return Obj_CreateFP(type, id, roomnum, pos, orient, parent_handle, initial_velocity);
 }
 // float Game_GetTime() (void)
-typedef float (*Game_GetTime_fp)(void);
+typedef float (*Game_GetTime_fp)();
 OSIRISEXTERN Game_GetTime_fp Game_GetTime;
 
 // float Game_GetFrameTime() (void)
-typedef float (*Game_GetFrameTime_fp)(void);
+typedef float (*Game_GetFrameTime_fp)();
 OSIRISEXTERN Game_GetFrameTime_fp Game_GetFrameTime;
 
 // void Obj_WBValue() (int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index)
@@ -573,7 +577,7 @@ typedef bool (*Cine_Start_fp)(tGameCinematic *info, const char *text_string);
 OSIRISEXTERN Cine_Start_fp Cine_Start;
 
 //	Stops and clears up a in-game cinematic.
-typedef void (*Cine_Stop_fp)(void);
+typedef void (*Cine_Stop_fp)();
 OSIRISEXTERN Cine_Stop_fp Cine_Stop;
 
 // Looks up the id's of the sound, room, trigger, object, ect. based on the name
@@ -667,17 +671,10 @@ OSIRISEXTERN AI_IsDestReachable_fp AI_IsDestReachable;
 typedef bool (*AI_IsObjReachable_fp)(int handle, int target);
 OSIRISEXTERN AI_IsObjReachable_fp AI_IsObjReachable;
 
-typedef char (*Game_GetDiffLevel_fp)(void);
+typedef char (*Game_GetDiffLevel_fp)();
 OSIRISEXTERN Game_GetDiffLevel_fp Game_GetDiffLevel;
 
-/*
-0:LANGUAGE_ENGLISH
-1:LANGUAGE_GERMAN
-2:LANGUAGE_SPANISH
-3:LANGUAGE_ITALIAN
-4:LANGUAGE_FRENCH
-*/
-typedef int (*Game_GetLanguage_fp)(void);
+typedef int (*Game_GetLanguage_fp)();
 OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 
 // Sets/Gets information about a path.
@@ -690,6 +687,15 @@ OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 //	for PV_ALL components, path_id and node_id MUST be valid.
 typedef void (*Path_Value_fp)(int path_id, int node_id, char op, int changes, void *ptr);
 OSIRISEXTERN Path_Value_fp Path_Value;
+
+typedef bool (*CreateMessageMap_fp)(const std::filesystem::path &filename, std::map<std::string, std::string> &map);
+OSIRISEXTERN CreateMessageMap_fp CreateMessageMap;
+
+typedef void (*DestroyMessageMap_fp)(std::map<std::string, std::string> &map);
+OSIRISEXTERN DestroyMessageMap_fp DestroyMessageMap;
+
+typedef const char *(*GetMessage_fp)(const std::string &name, std::map<std::string, std::string> &map);
+OSIRISEXTERN GetMessage_fp GetMessageNew;
 
 // ===========================================================
 
