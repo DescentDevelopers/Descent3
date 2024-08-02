@@ -18,14 +18,14 @@
 
 // AIGame.cpp
 //
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "osiris_vector.h"
 #include "DallasFuncs.h"
-
+#include "crossplat.h"
 #include "module.h"
 
 #ifdef __cplusplus
