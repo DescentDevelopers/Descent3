@@ -22,10 +22,10 @@
 // Filename:	level9.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -750,180 +750,12 @@ $$END
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1014,7 +846,6 @@ const char *Message_names[NUM_MESSAGE_NAMES] = {
     "CovLeaveMeAlone", "Testing2",        "Testing",           "CovRepaired",      "CovGettingPummeled",
     "CovShutDown",     "CovInClear",      "CovDamaged",        "CovDanger",        "DestroyedRadar",
     "DestroyedAnt",    "Transmitter"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1029,7 +860,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -1085,10 +915,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1631,7 +1457,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 005: Intro Cam 2
     if ((ScriptActionCtr_005 < 1) && (qUserFlag(2) == false)) {
       aSoundPlaySteaming("VoxL09StartLevel.osf", 1.000000f);
-      aCinematicIntro(Path_indexes[0], Message_strings[0], Object_handles[2], Path_indexes[1], 15.000000f);
+      aCinematicIntro(Path_indexes[0], TXT("IntroCam"), Object_handles[2], Path_indexes[1], 15.000000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_005 < MAX_ACTION_CTR_VALUE)
@@ -1687,7 +1513,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         aUserVarAdd(40.000000f, 2);
         aGoalCompleted(Goal_indexes[5], 1);
         aUserFlagSet(3, 1);
-        aShowHUDMessage(Message_strings[19]);
+        aShowHUDMessage(TXT("AllStabsDone"));
       }
       aUserVarAdd(135.000000f, 2);
 
@@ -1719,7 +1545,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 048: Are you done?
     if (event_data->id == 13) {
-      aCinematicSimple(Path_indexes[21], Message_strings[8], Object_handles[3], 10.000000f, 1);
+      aCinematicSimple(Path_indexes[21], TXT("EndLevel"), Object_handles[3], 10.000000f, 1);
       aEnableShip("Magnum-AHT");
 
       // Increment the script action counter
@@ -1745,7 +1571,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 034: Message for Transmitter
     if (1) {
-      aShowHUDMessage(Message_strings[1]);
+      aShowHUDMessage(TXT("TransmitterHave"));
 
       // Increment the script action counter
       if (ScriptActionCtr_034 < MAX_ACTION_CTR_VALUE)
@@ -1766,7 +1592,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
       if (qRandomChance(0.100000f) == true) {
         aSoundPlaySteaming("VoxL09CargoH.osf", 1.000000f);
       }
-      aShowHUDMessage(Message_strings[20]);
+      aShowHUDMessage(TXT("CovLeaveMeAlone"));
 
       // Increment the script action counter
       if (ScriptActionCtr_079 < MAX_ACTION_CTR_VALUE)
@@ -1803,7 +1629,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     if (event_data->id == 16) {
       aSetObjectTimer(data->me_handle, 60.000000f, 16);
       aSoundPlaySteaming("VoxL09CargoM.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[6]);
+      aShowHUDMessage(TXT("CovStillStuckFF"));
 
       // Increment the script action counter
       if (ScriptActionCtr_082 < MAX_ACTION_CTR_VALUE)
@@ -1813,8 +1639,8 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 078: MEGA State Timer Recycle
     if (event_data->id == 15) {
       if (1 == false) {
-        aShowHUDMessageF(Message_strings[21], qObjShields(Object_handles[3]));
-        aShowHUDMessageF(Message_strings[22], qUserVarValue(2));
+        aShowHUDMessageF(TXT("Testing2"), qObjShields(Object_handles[3]));
+        aShowHUDMessageF(TXT("Testing"), qUserVarValue(2));
       }
       if (qUserVarValue(3) > qObjShields(data->me_handle)) {
         aUserVarSet(1, 0.000000f);
@@ -1831,7 +1657,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((15 == event_data->id) && (qUserVarValue(4) == 4.000000f)) {
       if ((qUserVarValue(2) > 320.000000f) || (qUserVarValue(1) > 30.000000f)) {
         aSoundPlaySteaming("VoxL09CargoK.osf", 1.000000f);
-        aShowHUDMessage(Message_strings[23]);
+        aShowHUDMessage(TXT("CovRepaired"));
         aObjSetShields(data->me_handle, qUserVarValue(5));
         aUserVarSet(1, 0.000000f);
         aUserVarAdd(45.000000f, 2);
@@ -1841,7 +1667,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
         if (qObjShields(data->me_handle) < 10.000000f) {
           aObjSetShields(data->me_handle, qUserVarValue(7));
           aSoundPlaySteaming("VoxL09CargoF.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[24]);
+          aShowHUDMessage(TXT("CovGettingPummeled"));
         }
         aUserVarInc(1);
       }
@@ -1857,7 +1683,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((15 == event_data->id) && (qUserVarValue(4) == 3.000000f)) {
       if ((qUserVarValue(2) > 290.000000f) || (qUserVarValue(1) > 45.000000f)) {
         aSoundPlaySteaming("VoxL09CargoK.osf", 1.000000f);
-        aShowHUDMessage(Message_strings[23]);
+        aShowHUDMessage(TXT("CovRepaired"));
         aObjSetShields(data->me_handle, qUserVarValue(5));
         aUserVarSet(1, 0.000000f);
         aUserVarAdd(40.000000f, 2);
@@ -1866,7 +1692,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if (qObjShields(data->me_handle) < qUserVarValue(7)) {
           aSoundPlaySteaming("VoxL09CargoL.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[25]);
+          aShowHUDMessage(TXT("CovShutDown"));
           aUserVarSet(1, 0.000000f);
           aAISetTeam(65536, data->me_handle);
           aUserVarSet(4, 4.000000f);
@@ -1886,7 +1712,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((15 == event_data->id) && (qUserVarValue(4) == 2.000000f)) {
       if ((qUserVarValue(2) > 200.000000f) || (qUserVarValue(1) > 60.000000f)) {
         aSoundPlaySteaming("VoxL09CargoG.osf", 1.000000f);
-        aShowHUDMessage(Message_strings[26]);
+        aShowHUDMessage(TXT("CovInClear"));
         aObjSetShields(data->me_handle, qUserVarValue(5));
         aUserVarSet(1, 0.000000f);
         aUserVarAdd(35.000000f, 2);
@@ -1895,7 +1721,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         if (qObjShields(data->me_handle) < qUserVarValue(6)) {
           aSoundPlaySteaming("VoxL09CargoA.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[27]);
+          aShowHUDMessage(TXT("CovDamaged"));
           aUserVarSet(1, 0.000000f);
           aAISetTeam(65536, data->me_handle);
           aUserVarSet(4, 3.000000f);
@@ -1914,7 +1740,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((15 == event_data->id) && (qUserVarValue(4) == 1.000000f)) {
       if (qUserVarValue(2) < 0.000000f) {
         aSoundPlaySteaming("VoxL09CargoB.osf", 1.000000f);
-        aShowHUDMessage(Message_strings[28]);
+        aShowHUDMessage(TXT("CovDanger"));
         aUserVarSet(1, 0.000000f);
         aUserVarSet(2, 0.000000f);
         aAISetTeam(65536, data->me_handle);
@@ -1925,7 +1751,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
             aUserVarSet(2, 200.000000f);
           }
           aSoundPlaySteaming("VoxL09CargoA.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[27]);
+          aShowHUDMessage(TXT("CovDamaged"));
           aUserVarSet(1, 0.000000f);
           aAISetTeam(65536, data->me_handle);
           aUserVarSet(4, 3.000000f);
@@ -1954,7 +1780,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     if (event_data->goal_uid == 0) {
       aObjMakeVulnerable(data->me_handle);
       aSoundPlaySteaming("VoxL09CargoD.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[2]);
+      aShowHUDMessage(TXT("CovEntering"));
       aAIGoalFollowPathSimple(data->me_handle, Path_indexes[3], 1048832, 1, 3);
 
       // Increment the script action counter
@@ -1965,7 +1791,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 008: Covert Path-2 Pickup
     if (event_data->goal_uid == 1) {
       aSoundPlaySteaming("VoxL09CargoJ.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("CovPickup"));
       aUserVarSub(3.000000f, 2);
       aAIGoalPickUpObject(data->me_handle, 0, Object_handles[8], 0, 1, 3, 256, 4);
 
@@ -1986,7 +1812,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 061: Covert Path-3
     if (event_data->goal_uid == 3) {
       aSoundPlaySteaming("VoxL09CargoC.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("CovDropOff"));
       aUnCloakObject(Object_handles[0]);
       aAIGoalPickUpObject(Object_handles[0], 0, Object_handles[8], 0, 1, 3, 256, -1);
       aDropObjects(data->me_handle);
@@ -2005,7 +1831,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
         aSetObjectTimer(data->me_handle, 60.000000f, 16);
         aSoundPlaySteaming("VoxL09CargoE.osf", 1.000000f);
         aUserFlagSet(0, 1);
-        aShowHUDMessage(Message_strings[5]);
+        aShowHUDMessage(TXT("CovFFHelp"));
       }
 
       // Increment the script action counter
@@ -2021,7 +1847,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
         aSetObjectTimer(data->me_handle, 60.000000f, 16);
         aUserFlagSet(1, 1);
         aSoundPlaySteaming("VoxL09CargoE.osf", 1.000000f);
-        aShowHUDMessage(Message_strings[5]);
+        aShowHUDMessage(TXT("CovFFHelp"));
       }
 
       // Increment the script action counter
@@ -2032,7 +1858,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 068: Covert Path-3 Pickup
     if (event_data->goal_uid == 6) {
       aSoundPlaySteaming("VoxL09CargoJ.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("CovPickup"));
       aUserVarSub(3.000000f, 2);
       aAIGoalPickUpObject(data->me_handle, 0, Object_handles[9], 0, 1, 3, 256, 7);
 
@@ -2053,7 +1879,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 038: Covert Path-4
     if (event_data->goal_uid == 8) {
       aSoundPlaySteaming("VoxL09CargoC.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("CovDropOff"));
       aUnCloakObject(Object_handles[1]);
       aAIGoalPickUpObject(Object_handles[1], 0, Object_handles[9], 0, 1, 3, 256, -1);
       aDropObjects(data->me_handle);
@@ -2067,7 +1893,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 072: Covert Path-4 Pickup
     if (event_data->goal_uid == 9) {
       aSoundPlaySteaming("VoxL09CargoJ.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("CovPickup"));
       aUserVarSub(3.000000f, 2);
       aAIGoalPickUpObject(data->me_handle, 0, Object_handles[10], 0, 1, 3, 256, 10);
 
@@ -2088,7 +1914,7 @@ int16_t CustomObjectScript_081B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 074: Covert Path-4 Done
     if (event_data->goal_uid == 11) {
       aSoundPlaySteaming("VoxL09CargoI.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("CovLeaving"));
       aGoalCompleted(Goal_indexes[0], 1);
       aUserFlagSet(2, 1);
       aAIGoalFollowPathSimple(data->me_handle, Path_indexes[11], 1048832, -1, 3);
@@ -2170,7 +1996,7 @@ int16_t CustomObjectScript_1030::CallEvent(int event, tOSIRISEventInfo *data) {
           aAIGoalFollowPathSimple(Object_handles[3], Path_indexes[6], 1048832, 5, 3);
           aCancelTimer(16);
           aSoundPlaySteaming("VoxL09CargoN.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[9]);
+          aShowHUDMessage(TXT("CovThanksFF"));
         }
         aPortalRenderSet(0, 0, Room_indexes[0], 1);
       }
@@ -2199,7 +2025,7 @@ int16_t CustomObjectScript_1038::CallEvent(int event, tOSIRISEventInfo *data) {
           aAIGoalFollowPathSimple(Object_handles[3], Path_indexes[6], 1048832, 5, 3);
           aCancelTimer(16);
           aSoundPlaySteaming("VoxL09CargoN.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[9]);
+          aShowHUDMessage(TXT("CovThanksFF"));
         }
         aPortalRenderSet(0, 0, Room_indexes[0], 1);
       }
@@ -2228,7 +2054,7 @@ int16_t CustomObjectScript_0869::CallEvent(int event, tOSIRISEventInfo *data) {
           aAIGoalFollowPathSimple(Object_handles[3], Path_indexes[7], 1048832, 6, 3);
           aSoundPlaySteaming("VoxL09CargoN.osf", 1.000000f);
           aCancelTimer(16);
-          aShowHUDMessage(Message_strings[9]);
+          aShowHUDMessage(TXT("CovThanksFF"));
         }
         aPortalRenderSet(0, 0, Room_indexes[1], 1);
       }
@@ -2257,7 +2083,7 @@ int16_t CustomObjectScript_086A::CallEvent(int event, tOSIRISEventInfo *data) {
           aAIGoalFollowPathSimple(Object_handles[3], Path_indexes[7], 1048832, 6, 3);
           aCancelTimer(16);
           aSoundPlaySteaming("VoxL09CargoN.osf", 1.000000f);
-          aShowHUDMessage(Message_strings[9]);
+          aShowHUDMessage(TXT("CovThanksFF"));
         }
         aPortalRenderSet(0, 0, Room_indexes[1], 1);
       }
@@ -2279,7 +2105,7 @@ int16_t CustomObjectScript_106E::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 044: Disruptor Powerup 4
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aSetLevelTimer(0.000000f, 14);
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("Disruptor"));
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSoundPlayObject(Sound_indexes[1], data->me_handle, 1.000000f);
 
@@ -2336,7 +2162,7 @@ int16_t CustomObjectScript_106F::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 043: Disruptor Powerup 3
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("Disruptor"));
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSoundPlayObject(Sound_indexes[1], data->me_handle, 1.000000f);
       aSetLevelTimer(0.000000f, 14);
@@ -2394,7 +2220,7 @@ int16_t CustomObjectScript_106D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 042: Disruptor Powerup 2
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("Disruptor"));
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSoundPlayObject(Sound_indexes[1], data->me_handle, 1.000000f);
       aSetLevelTimer(0.000000f, 14);
@@ -2452,7 +2278,7 @@ int16_t CustomObjectScript_106C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 040: Disruptor Powerup 1
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("Disruptor"));
       aSoundPlayObject(Sound_indexes[1], data->me_handle, 1.000000f);
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aSetLevelTimer(0.000000f, 14);
@@ -2515,7 +2341,7 @@ int16_t CustomObjectScript_100F::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
       aAttachObject("seismicdisruptor", 0, Object_handles[7], 1);
       aObjSpark(data->me_handle, 40.000000f, 999999.000000f);
-      aCinematicSimple(Path_indexes[17], Message_strings[11], Object_handles[7], 6.000000f, 0);
+      aCinematicSimple(Path_indexes[17], TXT("StabControlDone"), Object_handles[7], 6.000000f, 0);
 
       // Increment the script action counter
       if (ScriptActionCtr_045 < MAX_ACTION_CTR_VALUE)
@@ -2552,7 +2378,7 @@ int16_t CustomObjectScript_0871::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[3], data->me_handle, 1.000000f);
       aObjPlayAnim(data->me_handle, 0, 4, 2.000000f, 0);
       aObjPlayAnim(Object_handles[7], 2, 5, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[12]);
+      aShowHUDMessage(TXT("StabControlPower"));
 
       // Increment the script action counter
       if (ScriptActionCtr_049 < MAX_ACTION_CTR_VALUE)
@@ -2574,7 +2400,7 @@ int16_t CustomObjectScript_0811::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
       aAttachObject("seismicdisruptor", 0, data->me_handle, 1);
       aObjSpark(data->me_handle, 40.000000f, 999999.000000f);
-      aCinematicSimple(Path_indexes[18], Message_strings[13], data->me_handle, 6.000000f, 0);
+      aCinematicSimple(Path_indexes[18], TXT("StabStoreDone"), data->me_handle, 6.000000f, 0);
       aSetLevelTimer(0.000000f, 11);
 
       // Increment the script action counter
@@ -2611,7 +2437,7 @@ int16_t CustomObjectScript_0810::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
       aAttachObject("seismicdisruptor", 0, data->me_handle, 1);
       aObjSpark(data->me_handle, 40.000000f, 999999.000000f);
-      aCinematicSimple(Path_indexes[19], Message_strings[14], data->me_handle, 6.000000f, 0);
+      aCinematicSimple(Path_indexes[19], TXT("StabAssemblyDone"), data->me_handle, 6.000000f, 0);
       aSetLevelTimer(0.000000f, 11);
 
       // Increment the script action counter
@@ -2648,7 +2474,7 @@ int16_t CustomObjectScript_080E::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
       aAttachObject("seismicdisruptor", 0, data->me_handle, 1);
       aObjSpark(data->me_handle, 40.000000f, 999999.000000f);
-      aCinematicSimple(Path_indexes[20], Message_strings[15], data->me_handle, 6.000000f, 0);
+      aCinematicSimple(Path_indexes[20], TXT("StabFactoryDone"), data->me_handle, 6.000000f, 0);
       aSetLevelTimer(0.000000f, 11);
 
       // Increment the script action counter
@@ -2686,7 +2512,7 @@ int16_t CustomObjectScript_0873::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[3], data->me_handle, 1.000000f);
       aObjPlayAnim(data->me_handle, 0, 4, 2.000000f, 0);
       aObjPlayAnim(Object_handles[4], 2, 5, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[16]);
+      aShowHUDMessage(TXT("StabStorePower"));
 
       // Increment the script action counter
       if (ScriptActionCtr_067 < MAX_ACTION_CTR_VALUE)
@@ -2709,7 +2535,7 @@ int16_t CustomObjectScript_0872::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[3], data->me_handle, 1.000000f);
       aObjPlayAnim(data->me_handle, 0, 4, 2.000000f, 0);
       aObjPlayAnim(Object_handles[5], 2, 5, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[17]);
+      aShowHUDMessage(TXT("StabAssemblyPower"));
 
       // Increment the script action counter
       if (ScriptActionCtr_066 < MAX_ACTION_CTR_VALUE)
@@ -2732,7 +2558,7 @@ int16_t CustomObjectScript_2070::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlayObject(Sound_indexes[3], data->me_handle, 1.000000f);
       aObjPlayAnim(data->me_handle, 0, 4, 2.000000f, 0);
       aObjPlayAnim(Object_handles[6], 2, 5, 2.000000f, 0);
-      aShowHUDMessage(Message_strings[18]);
+      aShowHUDMessage(TXT("StabFactoryPower"));
 
       // Increment the script action counter
       if (ScriptActionCtr_065 < MAX_ACTION_CTR_VALUE)
@@ -2754,7 +2580,7 @@ int16_t CustomObjectScript_18AA::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 081: Radar-2 Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[29]);
+      aShowHUDMessage(TXT("DestroyedRadar"));
       aUserVarAdd(25.000000f, 2);
 
       // Increment the script action counter
@@ -2777,7 +2603,7 @@ int16_t CustomObjectScript_18C1::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 004: Radar-1 Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[29]);
+      aShowHUDMessage(TXT("DestroyedRadar"));
       aUserVarAdd(25.000000f, 2);
 
       // Increment the script action counter
@@ -2800,7 +2626,7 @@ int16_t CustomObjectScript_0948::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 003: Ant-3 Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[30]);
+      aShowHUDMessage(TXT("DestroyedAnt"));
       aUserVarAdd(20.000000f, 2);
 
       // Increment the script action counter
@@ -2823,7 +2649,7 @@ int16_t CustomObjectScript_0949::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 002: Ant-2 Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[30]);
+      aShowHUDMessage(TXT("DestroyedAnt"));
       aUserVarAdd(20.000000f, 2);
 
       // Increment the script action counter
@@ -2846,7 +2672,7 @@ int16_t CustomObjectScript_18AC::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 001: Ant-1 Destroyed
     if (1) {
-      aShowHUDMessage(Message_strings[30]);
+      aShowHUDMessage(TXT("DestroyedAnt"));
       aUserVarAdd(20.000000f, 2);
 
       // Increment the script action counter
@@ -2890,7 +2716,7 @@ int16_t CustomObjectScript_094E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 086: Transmitter USE
     if (1) {
-      aShowHUDMessageObj(Message_strings[31], event_data->it_handle);
+      aShowHUDMessageObj(TXT("Transmitter"), event_data->it_handle);
       aSoundPlay2D(Sound_indexes[5], 1.000000f);
       aCreatePopupView(0, Object_handles[3], 10.000000f, 1.000000f);
       aObjGhostSet(0, data->me_handle);
@@ -2912,7 +2738,7 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 010: EndLevel-Factory
     if ((ScriptActionCtr_010 < 1) && (qUserFlag(4) == true)) {
-      aStartEndlevelSequencePath(Path_indexes[13], Path_indexes[14], 12.000000f, Message_strings[8]);
+      aStartEndlevelSequencePath(Path_indexes[13], Path_indexes[14], 12.000000f, TXT("EndLevel"));
 
       // Increment the script action counter
       if (ScriptActionCtr_010 < MAX_ACTION_CTR_VALUE)
@@ -2921,7 +2747,7 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 053: EndLevel-Storage
     if ((ScriptActionCtr_053 < 1) && (qUserFlag(4) == true)) {
-      aStartEndlevelSequencePath(Path_indexes[15], Path_indexes[16], 12.000000f, Message_strings[8]);
+      aStartEndlevelSequencePath(Path_indexes[15], Path_indexes[16], 12.000000f, TXT("EndLevel"));
 
       // Increment the script action counter
       if (ScriptActionCtr_053 < MAX_ACTION_CTR_VALUE)
