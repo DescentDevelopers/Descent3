@@ -72,7 +72,7 @@ struct Renderer {
   Renderer() : shader_{shaders::vertex, shaders::fragment}, vbo_{MAX_POINTS_IN_POLY, GL_DYNAMIC_DRAW} {
     shader_.Use();
 
-    // TODO (tophyr): is there a better way to do this? ideally these should be constant within the shader, i think.
+    // these are effectively just constants, for now
     shader_.setUniform1i("u_texture0", 0);
     shader_.setUniform1i("u_texture1", 1);
   }
