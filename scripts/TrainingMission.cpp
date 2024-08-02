@@ -22,10 +22,10 @@
 // Filename:	TrainingMission.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -644,185 +644,6 @@ void aToggleAllPlayerControls(int enable, int playernum) {
 // End of Custom Script Block - DO NOT EDIT ANYTHING AFTER THIS
 // ============================================================
 
-// =================
-// Message File Data
-// =================
-
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
-// Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
-
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
-
 //======================
 // Name List Arrays
 //======================
@@ -872,44 +693,12 @@ int *Matcen_indexes = NULL;
 const char **Goal_names = NULL;
 int *Goal_indexes = NULL;
 
-#define NUM_MESSAGE_NAMES 36
-const char *Message_names[NUM_MESSAGE_NAMES] = {"GoodJob",
-                                          "GoBackwards",
-                                          "Welcome",
-                                          "GoForward",
-                                          "GoLeft",
-                                          "GoRight",
-                                          "GoUp",
-                                          "GoDown",
-                                          "Repeat",
-                                          "ContinueToCourse",
-                                          "CourseInstructions",
-                                          "DodgeIntro",
-                                          "Dodge30",
-                                          "LeaveDodge",
-                                          "FollowIntro",
-                                          "FollowInstructions",
-                                          "KeepDodging",
-                                          "KeepMovingOutofDodging",
-                                          "BankIntro",
-                                          "AlmostDoneDodge",
-                                          "ManuverIntro",
-                                          "HeadingIntro",
-                                          "PitchIntro",
-                                          "WeaponsEnabled",
-                                          "DestroyFollowbot",
-                                          "Movingbotintro",
-                                          "ExitManuveur",
-                                          "GBIntro",
-                                          "UseCameraMonitor",
-                                          "KillBotIntro",
-                                          "KillBot2",
-                                          "ProceedtoLastRoom",
-                                          "FinalSessionIntro",
-                                          "AllDone",
-                                          "GBExtra",
-                                          "GetCameraMonitor"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
+// Global storage for level script messages
+std::map<std::string, std::string> Messages;
+
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 // ===============
 // InitializeDLL()
@@ -924,7 +713,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -980,10 +768,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1350,7 +1134,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aCancelTimer(2);
       aSetObjectTimer(Object_handles[12], 14.000000f, 3);
       aSetObjectTimer(Object_handles[5], 20.000000f, 2);
-      aShowHUDMessage(Message_strings[16]);
+      aShowHUDMessage(TXT("KeepDodging"));
       aObjSetShields(qGetPlayerObj(0), 100.000000f);
 
       // Increment the script action counter
@@ -1431,7 +1215,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         ((qObjIsType(qGetBuddyObj(0), 2) == true) && ((ScriptActionCtr_032 > 0) == true))) {
       aSoundPlaySteamingText("GuideBotB.osf", 1.000000f);
       aToggleAllPlayerControls(1, 0);
-      aShowHUDMessage(Message_strings[35]);
+      aShowHUDMessage(TXT("GetCameraMonitor"));
 
       // Increment the script action counter
       if (ScriptActionCtr_060 < MAX_ACTION_CTR_VALUE)
@@ -1445,7 +1229,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aPortalRenderSet(0, 0, Room_indexes[4], 1);
       aPortalRenderSet(0, 1, Room_indexes[4], 1);
       aSoundPlaySteamingText("proceed6.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
 
       // Increment the script action counter
       if (ScriptActionCtr_058 < MAX_ACTION_CTR_VALUE)
@@ -1503,9 +1287,9 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 002: First Hud Mesage Timer
     if ((ScriptActionCtr_002 < 1) && ((ScriptActionCtr_002 > 0) == false)) {
-      aShowHUDMessage(Message_strings[2]);
+      aShowHUDMessage(TXT("Welcome"));
       aSoundPlaySteamingText("welcome.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("GoForward"));
 
       // Increment the script action counter
       if (ScriptActionCtr_002 < MAX_ACTION_CTR_VALUE)
@@ -1515,8 +1299,8 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 023: Done Bank -- Start Follow
     if ((ScriptActionCtr_023 < 1) && (((ScriptActionCtr_024 > 0) == true) && (4 == event_data->id))) {
       aTogglePlayerControl(1, 0, 4032);
-      aShowHUDMessage(Message_strings[14]);
-      aShowHUDMessage(Message_strings[15]);
+      aShowHUDMessage(TXT("FollowIntro"));
+      aShowHUDMessage(TXT("FollowInstructions"));
       aAISetState(1, Object_handles[13]);
       aAISetTeam(65536, Object_handles[13]);
       aSetObjectTimer(Object_handles[13], 20.000000f, 7);
@@ -1532,7 +1316,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_024 < 1) && ((ScriptActionCtr_022 > 0) == true)) {
       aToggleAllPlayerControls(0, 0);
       aTogglePlayerControl(1, 0, 3072);
-      aShowHUDMessage(Message_strings[18]);
+      aShowHUDMessage(TXT("BankIntro"));
       aSoundPlaySteamingText("bank.osf", 1.000000f);
       aSetLevelTimer(15.000000f, 4);
 
@@ -1543,10 +1327,10 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 022: Done Heading -- Start Pitch Time
     if ((ScriptActionCtr_022 < 1) && ((ScriptActionCtr_021 > 0) == true)) {
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aToggleAllPlayerControls(0, 0);
       aTogglePlayerControl(1, 0, 192);
-      aShowHUDMessage(Message_strings[22]);
+      aShowHUDMessage(TXT("PitchIntro"));
       aSoundPlaySteamingText("pitch.osf", 1.000000f);
       aSetLevelTimer(12.000000f, 4);
 
@@ -1557,11 +1341,11 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 027: Follow Bot Destroyed
     if ((ScriptActionCtr_027 < 1) && (event_data->id == 11)) {
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aAISetTeam(65536, Object_handles[15]);
       aAISetTeam(65536, Object_handles[16]);
       aObjGhostSet(0, Object_handles[16]);
-      aShowHUDMessage(Message_strings[25]);
+      aShowHUDMessage(TXT("Movingbotintro"));
       aSoundPlaySteamingText("kill1.osf", 1.000000f);
       aAIGoalFollowPathSimple(Object_handles[16], Path_indexes[0], 8392960, -1, 3);
 
@@ -1572,8 +1356,8 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 029: DestroyBot2 Destroyed
     if (event_data->id == 12) {
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[26]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("ExitManuveur"));
       aToggleShowPlayerControl(0, 0);
       aSoundPlaySteamingText("proceed5.osf", 1.000000f);
 
@@ -1593,7 +1377,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 039: Killbot Message 2
     if (event_data->id == 14) {
       aSoundPlaySteamingText("GuidebotF.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[30]);
+      aShowHUDMessage(TXT("KillBotIntroKillBot2"));
 
       // Increment the script action counter
       if (ScriptActionCtr_039 < MAX_ACTION_CTR_VALUE)
@@ -1602,8 +1386,8 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 049: Ready for last room
     if ((ScriptActionCtr_049 < 1) && (event_data->id == 9)) {
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[31]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("ProceedtoLastRoom"));
       aSoundPlaySteamingText("proceed5.osf", 1.000000f);
 
       // Increment the script action counter
@@ -1613,7 +1397,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 056: All Bots killed
     if ((ScriptActionCtr_056 < 1) && (event_data->id == 10)) {
-      aShowHUDMessage(Message_strings[33]);
+      aShowHUDMessage(TXT("AllDone"));
       aSoundPlaySteamingText("done.osf", 1.000000f);
 
       // Increment the script action counter
@@ -1632,9 +1416,9 @@ int16_t CustomObjectScript_300D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 001: FirstGoal
     if ((ScriptActionCtr_001 < 1) && (1)) {
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aSoundPlaySteamingText("return1.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[1]);
+      aShowHUDMessage(TXT("GoBackwards"));
       aTogglePlayerControl(0, 0, 1);
       aTogglePlayerControl(1, 0, 2);
 
@@ -1648,7 +1432,7 @@ int16_t CustomObjectScript_300D::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlay2D(Sound_indexes[0], 1.000000f);
       aTogglePlayerControl(0, 0, 1);
       aTogglePlayerControl(1, 0, 2);
-      aShowHUDMessage(Message_strings[1]);
+      aShowHUDMessage(TXT("GoBackwards"));
 
       // Increment the script action counter
       if (ScriptActionCtr_008 < MAX_ACTION_CTR_VALUE)
@@ -1666,7 +1450,7 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 003: Return to Start from Forward Goal
     if ((ScriptActionCtr_003 < 1) && ((ScriptActionCtr_001 > 0) == true)) {
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("GoLeft"));
       aTogglePlayerControl(0, 0, 2);
       aSoundPlaySteamingText("left1.osf", 1.000000f);
       aTogglePlayerControl(1, 0, 4);
@@ -1680,9 +1464,9 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_005 < 1) && ((ScriptActionCtr_004 > 0) == true)) {
       aTogglePlayerControl(0, 0, 8);
       aTogglePlayerControl(1, 0, 16);
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aSoundPlaySteamingText("up1.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[6]);
+      aShowHUDMessage(TXT("GoUp"));
 
       // Increment the script action counter
       if (ScriptActionCtr_005 < MAX_ACTION_CTR_VALUE)
@@ -1691,9 +1475,9 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 007: Return to Start from Up Goal
     if ((ScriptActionCtr_007 < 1) && ((ScriptActionCtr_006 > 0) == true)) {
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[8]);
-      aShowHUDMessage(Message_strings[3]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("Repeat"));
+      aShowHUDMessage(TXT("GoForward"));
       aSoundPlaySteamingText("repeat.osf", 1.000000f);
       aTogglePlayerControl(0, 0, 32);
       aTogglePlayerControl(1, 0, 1);
@@ -1708,7 +1492,7 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
       aTogglePlayerControl(0, 0, 2);
       aSoundPlaySteamingText("lright.osf", 1.000000f);
       aTogglePlayerControl(1, 0, 4);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("GoLeft"));
 
       // Increment the script action counter
       if (ScriptActionCtr_009 < MAX_ACTION_CTR_VALUE)
@@ -1720,7 +1504,7 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
       aTogglePlayerControl(0, 0, 8);
       aTogglePlayerControl(1, 0, 16);
       aSoundPlaySteamingText("udown.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[6]);
+      aShowHUDMessage(TXT("GoUp"));
 
       // Increment the script action counter
       if (ScriptActionCtr_011 < MAX_ACTION_CTR_VALUE)
@@ -1732,7 +1516,7 @@ int16_t CustomObjectScript_300C::CallEvent(int event, tOSIRISEventInfo *data) {
       aPortalRenderSet(0, 0, Room_indexes[0], 1);
       aPortalRenderSet(0, 1, Room_indexes[0], 1);
       aSoundPlaySteamingText("proceed1.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("ContinueToCourse"));
 
       // Increment the script action counter
       if (ScriptActionCtr_013 < MAX_ACTION_CTR_VALUE)
@@ -1752,9 +1536,9 @@ int16_t CustomObjectScript_300B::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_004 < 1) && (1)) {
       aTogglePlayerControl(0, 0, 4);
       aTogglePlayerControl(1, 0, 8);
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aSoundPlaySteamingText("return2.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("GoRight"));
 
       // Increment the script action counter
       if (ScriptActionCtr_004 < MAX_ACTION_CTR_VALUE)
@@ -1766,7 +1550,7 @@ int16_t CustomObjectScript_300B::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlay2D(Sound_indexes[0], 1.000000f);
       aTogglePlayerControl(0, 0, 4);
       aTogglePlayerControl(1, 0, 8);
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("GoRight"));
 
       // Increment the script action counter
       if (ScriptActionCtr_010 < MAX_ACTION_CTR_VALUE)
@@ -1784,8 +1568,8 @@ int16_t CustomObjectScript_4809::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 006: Up Goal
     if ((ScriptActionCtr_006 < 1) && (1)) {
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("GoDown"));
       aTogglePlayerControl(0, 0, 16);
       aSoundPlaySteamingText("return3.osf", 1.000000f);
       aTogglePlayerControl(1, 0, 32);
@@ -1800,7 +1584,7 @@ int16_t CustomObjectScript_4809::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlay2D(Sound_indexes[0], 1.000000f);
       aTogglePlayerControl(0, 0, 16);
       aTogglePlayerControl(1, 0, 32);
-      aShowHUDMessage(Message_strings[7]);
+      aShowHUDMessage(TXT("GoDown"));
 
       // Increment the script action counter
       if (ScriptActionCtr_012 < MAX_ACTION_CTR_VALUE)
@@ -1819,7 +1603,7 @@ int16_t CustomObjectScript_1803::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 014: Start Course
     if ((ScriptActionCtr_014 < 1) && (1)) {
       aPortalRenderSet(1, 1, Room_indexes[0], 1);
-      aShowHUDMessage(Message_strings[10]);
+      aShowHUDMessage(TXT("CourseInstructions"));
       aSoundPlaySteamingText("Intro1.osf", 1.000000f);
       aTogglePlayerControl(1, 0, 63);
 
@@ -1843,9 +1627,9 @@ int16_t CustomObjectScript_1806::CallEvent(int event, tOSIRISEventInfo *data) {
       aTogglePlayerControl(1, 0, 32);
       aPortalRenderSet(0, 0, Room_indexes[1], 1);
       aPortalRenderSet(0, 1, Room_indexes[1], 1);
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aSoundPlaySteamingText("proceed2.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("ContinueToCourse"));
 
       // Increment the script action counter
       if (ScriptActionCtr_015 < MAX_ACTION_CTR_VALUE)
@@ -1868,7 +1652,7 @@ int16_t CustomObjectScript_100A::CallEvent(int event, tOSIRISEventInfo *data) {
       aPortalRenderSet(1, 0, Room_indexes[1], 1);
       aPortalRenderSet(1, 1, Room_indexes[1], 1);
       aSoundPlaySteamingText("intro2.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[11]);
+      aShowHUDMessage(TXT("DodgeIntro"));
       aSetObjectTimer(data->me_handle, 10.000000f, 8);
 
       // Increment the script action counter
@@ -1882,7 +1666,7 @@ int16_t CustomObjectScript_100A::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 016: Start Dodge
     if ((ScriptActionCtr_016 < 1) && (event_data->id == 8)) {
       aObjSetShields(qGetPlayerObj(0), 100.000000f);
-      aShowHUDMessage(Message_strings[12]);
+      aShowHUDMessage(TXT("Dodge30"));
       aSetObjectTimer(Object_handles[5], 20.000000f, 2);
       aSetObjectTimer(Object_handles[12], 14.000000f, 3);
       aAISetState(1, Object_handles[12]);
@@ -1908,7 +1692,7 @@ int16_t CustomObjectScript_300E::CallEvent(int event, tOSIRISEventInfo *data) {
       aPortalRenderSet(0, 1, Room_indexes[2], 1);
       aTogglePlayerControl(0, 0, 62);
       aSoundPlaySteamingText("proceed4.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[17]);
+      aShowHUDMessage(TXT("KeepMovingOutofDodging"));
 
       // Increment the script action counter
       if (ScriptActionCtr_019 < MAX_ACTION_CTR_VALUE)
@@ -1926,8 +1710,8 @@ int16_t CustomObjectScript_300E::CallEvent(int event, tOSIRISEventInfo *data) {
       aAISetState(0, Object_handles[12]);
       aTogglePlayerControl(1, 0, 3);
       aSoundPlaySteamingText("proceed3.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[13]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("LeaveDodge"));
 
       // Increment the script action counter
       if (ScriptActionCtr_017 < MAX_ACTION_CTR_VALUE)
@@ -1946,7 +1730,7 @@ int16_t CustomObjectScript_2007::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 020: Almost Done dodging
     if (event_data->id == 3) {
       aSoundPlaySteamingText("almost.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[19]);
+      aShowHUDMessage(TXT("AlmostDoneDodge"));
 
       // Increment the script action counter
       if (ScriptActionCtr_020 < MAX_ACTION_CTR_VALUE)
@@ -1969,11 +1753,11 @@ int16_t CustomObjectScript_080F::CallEvent(int event, tOSIRISEventInfo *data) {
       aToggleAllPlayerControls(0, 0);
       aPortalRenderSet(1, 1, Room_indexes[2], 1);
       aPortalRenderSet(1, 0, Room_indexes[2], 1);
-      aShowHUDMessage(Message_strings[20]);
+      aShowHUDMessage(TXT("ManuverIntro"));
       aTogglePlayerControl(1, 0, 768);
       aSetLevelTimer(20.000000f, 4);
       aSoundPlaySteamingText("intro3.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[21]);
+      aShowHUDMessage(TXT("HeadingIntro"));
 
       // Increment the script action counter
       if (ScriptActionCtr_021 < MAX_ACTION_CTR_VALUE)
@@ -2009,10 +1793,10 @@ int16_t CustomObjectScript_2008::CallEvent(int event, tOSIRISEventInfo *data) {
     if (((ScriptActionCtr_025 > 0) == true) && (event_data->id == 7)) {
       aTogglePlayerControl(1, 0, 12288);
       aAIGoalFollowPathSimple(Object_handles[13], Path_indexes[1], 4352, 0, 3);
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[23]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("WeaponsEnabled"));
       aSoundPlaySteamingText("intro4.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[24]);
+      aShowHUDMessage(TXT("DestroyFollowbot"));
 
       // Increment the script action counter
       if (ScriptActionCtr_026 < MAX_ACTION_CTR_VALUE)
@@ -2082,7 +1866,7 @@ int16_t CustomObjectScript_1817::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlaySteamingText("GuideBotC.osf", 1.000000f);
       aSoundPlayObject(Sound_indexes[1], data->me_handle, 1.000000f);
       aAddObjectToInventory(Object_handles[22], event_data->it_handle, 0);
-      aShowHUDMessage(Message_strings[28]);
+      aShowHUDMessage(TXT("UseCameraMonitor"));
 
       // Increment the script action counter
       if (ScriptActionCtr_040 < MAX_ACTION_CTR_VALUE)
@@ -2095,7 +1879,7 @@ int16_t CustomObjectScript_1817::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 059: Player used camera monitor
     if (1) {
       aSoundPlaySteamingText("GuideBotD.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[34]);
+      aShowHUDMessage(TXT("GBExtra"));
       aCreatePopupView(0, Object_handles[34], 10.000000f, 1.000000f);
 
       // Increment the script action counter
@@ -2359,8 +2143,8 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjSetLightingDist(Object_handles[1], 0.000000f);
       aPortalRenderSet(1, 1, Room_indexes[3], 1);
       aPortalRenderSet(1, 0, Room_indexes[3], 1);
-      aShowHUDMessage(Message_strings[0]);
-      aShowHUDMessage(Message_strings[27]);
+      aShowHUDMessage(TXT("GoodJob"));
+      aShowHUDMessage(TXT("GBIntro"));
       aToggleAllPlayerControls(0, 0);
 
       // Increment the script action counter
@@ -2381,7 +2165,7 @@ int16_t TriggerScript_0001::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_042 < 1) && (1)) {
       aSetLevelTimer(13.000000f, 14);
       aObjSetLightingDist(Object_handles[2], 0.000000f);
-      aShowHUDMessage(Message_strings[29]);
+      aShowHUDMessage(TXT("KillBotIntro"));
       aSoundPlaySteamingText("intro6.osf", 1.000000f);
       aPortalRenderSet(1, 1, Room_indexes[4], 1);
       aPortalRenderSet(1, 0, Room_indexes[4], 1);
@@ -2403,11 +2187,11 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 050: Entered Last Room
     if ((ScriptActionCtr_050 < 1) && (1)) {
       aObjSetLightingDist(Object_handles[3], 0.000000f);
-      aShowHUDMessage(Message_strings[0]);
+      aShowHUDMessage(TXT("GoodJob"));
       aPortalRenderSet(1, 1, Room_indexes[5], 1);
       aPortalRenderSet(1, 0, Room_indexes[5], 1);
       aSoundPlaySteamingText("intro7.osf", 1.000000f);
-      aShowHUDMessage(Message_strings[32]);
+      aShowHUDMessage(TXT("FinalSessionIntro"));
 
       // Increment the script action counter
       if (ScriptActionCtr_050 < MAX_ACTION_CTR_VALUE)
