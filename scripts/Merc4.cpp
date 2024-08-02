@@ -22,10 +22,10 @@
 // Filename:	Merc4.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -967,180 +967,12 @@ void aClearTeleporterArea(int desthandle, int objhandle) {
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1290,39 +1122,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Engage Airlock Power",
                                     "Investigate and Destroy Alien Planetoid"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 30
-const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroText",
-                                          "AirlockPowerOn",
-                                          "AirlockDecompStarted",
-                                          "AirlockActive",
-                                          "AirlockPowerNotOn",
-                                          "AirlockCompStarted",
-                                          "AirlockMalfunction",
-                                          "BadDoorBumped",
-                                          "FFMessage",
-                                          "UseThruster",
-                                          "CruiserFuseAcquired",
-                                          "CruiserFusePlaced",
-                                          "CruiserFuseNoUse",
-                                          "QueenLeft",
-                                          "NoBurnIgnited",
-                                          "NoPowerAvail",
-                                          "IgniterFailed1",
-                                          "IgniterFailed2",
-                                          "BurnIgnited",
-                                          "ThrusterBurnFailed",
-                                          "RechargeThruster1",
-                                          "RechargeThruster2",
-                                          "Empty",
-                                          "GetOuttaHere",
-                                          "FuseRoom",
-                                          "BossIntro",
-                                          "DA1Game",
-                                          "DA1Hud",
-                                          "DA2Game",
-                                          "DA2Hud"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -1336,7 +1135,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -1392,10 +1190,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -2019,7 +1813,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 002: Level Start - Into Movie
     if (1) {
       aMusicSetRegionAll(0);
-      aCinematicIntro(Path_indexes[0], Message_strings[0], Object_handles[36], Path_indexes[1], 12.000000f);
+      aCinematicIntro(Path_indexes[0], TXT("IntroText"), Object_handles[36], Path_indexes[1], 12.000000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_002 < MAX_ACTION_CTR_VALUE)
@@ -2051,7 +1845,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         aSoundPlayObject(Sound_indexes[1], Object_handles[45], 1.000000f);
         aDoorActivate(Door_handles[0]);
         if (qUserVarValue(0) == 12.000000f) {
-          aShowHUDMessage(Message_strings[6]);
+          aShowHUDMessage(TXT("AirlockMalfunction"));
         }
         aSetLevelTimer(2.000000f, 1);
       } else {
@@ -2079,7 +1873,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         aSoundPlayObject(Sound_indexes[1], Object_handles[42], 1.000000f);
         aDoorActivate(Door_handles[1]);
         if (qUserVarValue(0) == 12.000000f) {
-          aShowHUDMessage(Message_strings[6]);
+          aShowHUDMessage(TXT("AirlockMalfunction"));
         }
         aSetLevelTimer(2.000000f, 5);
       } else {
@@ -2167,7 +1961,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         aEmitSparks(40.000000f, Object_handles[56]);
         aDoorSetPos(Door_handles[2], 0.650000f);
         aSoundPlayObject(Sound_indexes[8], Object_handles[55], 1.000000f);
-        aShowHUDMessage(Message_strings[7]);
+        aShowHUDMessage(TXT("BadDoorBumped"));
       }
 
       // Increment the script action counter
@@ -2256,7 +2050,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 049: Do Nest Trigger
     if ((ScriptActionCtr_049 < 1) && (event_data->id == 26)) {
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("UseThruster"));
       aGoalEnableDisable(1, Goal_indexes[5]);
 
       // Increment the script action counter
@@ -2286,7 +2080,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         } else {
           if (qGoalCompleted(Goal_indexes[8]) == true) {
             aGoalCompleted(Goal_indexes[8], 0);
-            aShowHUDMessage(Message_strings[13]);
+            aShowHUDMessage(TXT("QueenLeft"));
           }
         }
       }
@@ -2302,12 +2096,12 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       if (ScriptActionCtr_033 == 0) {
         aTurnOnSpew(Object_handles[63], -1, 8, 0.000000f, 0.000000f, 65536, 0, 1.000000f, 0.300000f, -1.000000f,
                     12.000000f, 60.000000f, 0, 0);
-        aShowHUDMessage(Message_strings[16]);
+        aShowHUDMessage(TXT("IgniterFailed1"));
         aRoomChangeFog(Room_indexes[3], 0.500000f, 0.500000f, 0.500000f, 5000.000000f, 20.000000f);
         aSetLevelTimer(6.000000f, 19);
       }
       if (ScriptActionCtr_033 == 1) {
-        aShowHUDMessage(Message_strings[17]);
+        aShowHUDMessage(TXT("IgniterFailed2"));
         aGoalEnableDisable(1, Goal_indexes[9]);
         aSetLevelTimer(2.000000f, 18);
       }
@@ -2320,17 +2114,17 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 034: Recharge Thruster Sequence
     if (event_data->id == 17) {
       if (qUserVarValue(3) == 0.000000f) {
-        aShowHUDMessage(Message_strings[19]);
+        aShowHUDMessage(TXT("ThrusterBurnFailed"));
         aSetLevelTimer(6.000000f, 17);
         aGoalEnableDisable(1, Goal_indexes[8]);
         aUserFlagSet(19, 1);
       }
       if (qUserVarValue(3) == 1.000000f) {
-        aShowHUDMessage(Message_strings[20]);
+        aShowHUDMessage(TXT("RechargeThruster1"));
         aSetLevelTimer(10.000000f, 17);
       }
       if (qUserVarValue(3) == 2.000000f) {
-        aShowHUDMessage(Message_strings[21]);
+        aShowHUDMessage(TXT("RechargeThruster2"));
         aSetLevelTimer(1.000000f, 18);
       }
       aUserVarInc(3);
@@ -2385,7 +2179,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 038: Boss Death Sequence
     if (event_data->id == 22) {
       if (ScriptActionCtr_038 == 0) {
-        aCinematicSimple(Path_indexes[2], Message_strings[22], Object_handles[36], 15.000000f, 1);
+        aCinematicSimple(Path_indexes[2], TXT("Empty"), Object_handles[36], 15.000000f, 1);
         aStoreObjectInPositionClipboard(Object_handles[72]);
         aMoveObjectToPositionClipboard(Object_handles[37]);
         aObjPlayImmAnim(Object_handles[37], 1, 10, 2.000000f, 0);
@@ -2463,7 +2257,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalEnableDisable(1, Goal_indexes[11]);
       }
       if (ScriptActionCtr_039 == 1) {
-        aShowHUDMessage(Message_strings[23]);
+        aShowHUDMessage(TXT("GetOuttaHere"));
         aRoomSetDamage(Room_indexes[8], 1.000000f, 1);
       }
 
@@ -2486,7 +2280,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 040: End Level Escape Movie
     if ((ScriptActionCtr_040 < 1) && (event_data->id == 24)) {
       aGoalCompleted(Goal_indexes[12], 1);
-      aStartEndlevelSequencePath(Path_indexes[4], Path_indexes[5], 3.500000f, Message_strings[22]);
+      aStartEndlevelSequencePath(Path_indexes[4], Path_indexes[5], 3.500000f, TXT("Empty"));
 
       // Increment the script action counter
       if (ScriptActionCtr_040 < MAX_ACTION_CTR_VALUE)
@@ -2495,7 +2289,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 053: Boss Intro Cinematic
     if ((ScriptActionCtr_053 < 1) && (event_data->id == 28)) {
-      aCinematicSimple(Path_indexes[6], Message_strings[25], Object_handles[37], 13.000000f, 1);
+      aCinematicSimple(Path_indexes[6], TXT("BossIntro"), Object_handles[37], 13.000000f, 1);
       aSetLevelTimer(9.000000f, 29);
 
       // Increment the script action counter
@@ -2526,7 +2320,7 @@ int16_t CustomObjectScript_0811::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjPlayAnim(data->me_handle, 0, 3, 4.000000f, 0);
       aSoundPlayObject(Sound_indexes[0], data->me_handle, 1.000000f);
       aUserFlagSet(0, 1);
-      aShowHUDMessage(Message_strings[1]);
+      aShowHUDMessage(TXT("AirlockPowerOn"));
       aGoalCompleted(Goal_indexes[0], 1);
 
       // Increment the script action counter
@@ -2557,18 +2351,18 @@ int16_t CustomObjectScript_0804::CallEvent(int event, tOSIRISEventInfo *data) {
             aSoundPlayObject(Sound_indexes[1], Object_handles[41], 1.000000f);
             aSoundPlayObject(Sound_indexes[1], Object_handles[42], 1.000000f);
             if (qDoorGetPos(Door_handles[0]) == 0.000000f) {
-              aShowHUDMessage(Message_strings[2]);
+              aShowHUDMessage(TXT("AirlockDecompStarted"));
               aUserVarSet(0, 0.000000f);
               aSetLevelTimer(2.000000f, 0);
             } else {
               aSetLevelTimer(2.000000f, 5);
             }
           } else {
-            aShowHUDMessage(Message_strings[3]);
+            aShowHUDMessage(TXT("AirlockActive"));
             aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
           }
         } else {
-          aShowHUDMessage(Message_strings[4]);
+          aShowHUDMessage(TXT("AirlockPowerNotOn"));
           aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
           aGoalEnableDisable(1, Goal_indexes[0]);
         }
@@ -2604,18 +2398,18 @@ int16_t CustomObjectScript_0803::CallEvent(int event, tOSIRISEventInfo *data) {
             aSoundPlayObject(Sound_indexes[1], Object_handles[44], 1.000000f);
             aSoundPlayObject(Sound_indexes[1], Object_handles[45], 1.000000f);
             if (qDoorGetPos(Door_handles[1]) == 0.000000f) {
-              aShowHUDMessage(Message_strings[5]);
+              aShowHUDMessage(TXT("AirlockCompStarted"));
               aUserVarSet(0, 0.000000f);
               aSetLevelTimer(2.000000f, 4);
             } else {
               aSetLevelTimer(2.000000f, 1);
             }
           } else {
-            aShowHUDMessage(Message_strings[3]);
+            aShowHUDMessage(TXT("AirlockActive"));
             aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
           }
         } else {
-          aShowHUDMessage(Message_strings[4]);
+          aShowHUDMessage(TXT("AirlockPowerNotOn"));
           aSoundPlayObject(Sound_indexes[2], data->me_handle, 1.000000f);
         }
       }
@@ -2813,7 +2607,7 @@ int16_t CustomObjectScript_09AC::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 024: Player Picks Up Cruiser Fuse
     if ((qObjIsPlayer(event_data->it_handle) == true) && (qUserFlag(8) == false)) {
       aSoundPlayObject(Sound_indexes[9], event_data->it_handle, 1.000000f);
-      aShowHUDMessageObj(Message_strings[10], event_data->it_handle);
+      aShowHUDMessageObj(TXT("CruiserFuseAcquired"), event_data->it_handle);
       aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
       aGoalCompleted(Goal_indexes[6], 1);
 
@@ -2832,7 +2626,7 @@ int16_t CustomObjectScript_09AC::CallEvent(int event, tOSIRISEventInfo *data) {
         aMoveObjectToPositionClipboard(data->me_handle);
         aObjGhostSet(1, data->me_handle);
         aSoundPlayObject(Sound_indexes[10], Object_handles[59], 1.000000f);
-        aShowHUDMessage(Message_strings[11]);
+        aShowHUDMessage(TXT("CruiserFusePlaced"));
         aUserFlagSet(8, 1);
         aLightningCreate(Object_handles[60], Object_handles[61], 10000.000000f, 2.000000f, 3, Texture_indexes[2],
                          0.600000f, 1, 255, 255, 255, 0);
@@ -2840,7 +2634,7 @@ int16_t CustomObjectScript_09AC::CallEvent(int event, tOSIRISEventInfo *data) {
       } else {
         aObjGhostSet(0, data->me_handle);
         aAddObjectToInventory(data->me_handle, event_data->it_handle, 0);
-        aShowHUDMessageObj(Message_strings[12], event_data->it_handle);
+        aShowHUDMessageObj(TXT("CruiserFuseNoUse"), event_data->it_handle);
       }
 
       // Increment the script action counter
@@ -2885,7 +2679,7 @@ int16_t CustomObjectScript_1138::CallEvent(int event, tOSIRISEventInfo *data) {
                 aSetLevelTimer(5.000000f, 17);
               }
             } else {
-              aShowHUDMessage(Message_strings[14]);
+              aShowHUDMessage(TXT("NoBurnIgnited"));
             }
           } else {
             aMiscShakeArea(Object_handles[63], 20.000000f, 5000.000000f);
@@ -2901,7 +2695,7 @@ int16_t CustomObjectScript_1138::CallEvent(int event, tOSIRISEventInfo *data) {
           }
         }
       } else {
-        aShowHUDMessage(Message_strings[15]);
+        aShowHUDMessage(TXT("NoPowerAvail"));
         aGoalEnableDisable(1, Goal_indexes[6]);
         aGoalEnableDisable(1, Goal_indexes[7]);
       }
@@ -2986,7 +2780,7 @@ int16_t CustomObjectScript_11D1::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_061 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
       aSoundPlayObject(Sound_indexes[15], data->me_handle, 1.000000f);
-      aAddGameMessage(Message_strings[26], Message_strings[27]);
+      aAddGameMessage(TXT("DA1Game"), TXT("DA1Hud"));
 
       // Increment the script action counter
       if (ScriptActionCtr_061 < MAX_ACTION_CTR_VALUE)
@@ -3006,7 +2800,7 @@ int16_t CustomObjectScript_09D2::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_062 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
       aObjPlayAnim(data->me_handle, 0, 10, 3.000000f, 0);
       aSoundPlayObject(Sound_indexes[15], data->me_handle, 1.000000f);
-      aAddGameMessage(Message_strings[28], Message_strings[29]);
+      aAddGameMessage(TXT("DA2Game"), TXT("DA2Hud"));
 
       // Increment the script action counter
       if (ScriptActionCtr_062 < MAX_ACTION_CTR_VALUE)
@@ -3171,7 +2965,7 @@ int16_t TriggerScript_0004::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayer(event_data->it_handle) == true) {
       if ((qGoalCompleted(Goal_indexes[3]) == false) && (qGoalEnabled(Goal_indexes[3]) == false)) {
         aGoalEnableDisable(1, Goal_indexes[3]);
-        aShowHUDMessage(Message_strings[8]);
+        aShowHUDMessage(TXT("FFMessage"));
       }
 
       // Increment the script action counter
@@ -3250,7 +3044,7 @@ int16_t TriggerScript_0002::CallEvent(int event, tOSIRISEventInfo *data) {
       aTurnOnSpew(Object_handles[63], -1, 1, 0.000000f, 0.000000f, 65536, 0, 1.000000f, 0.150000f, 1.000000f,
                   16.000000f, 70.000000f, 0, -1);
       aTurnOffSpew(0);
-      aShowHUDMessage(Message_strings[18]);
+      aShowHUDMessage(TXT("BurnIgnited"));
       aGoalCompleted(Goal_indexes[9], 1);
       aABThrusterIgnited(Object_handles[37]);
       aRoomSetFaceTexture(Room_indexes[3], 472, Texture_indexes[3]);
@@ -3346,7 +3140,7 @@ int16_t TriggerScript_0008::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 056: Boss Intro Trigger #1 Hit
     if ((ScriptActionCtr_056 < 1) && (qObjIsPlayer(event_data->it_handle) == true)) {
-      aShowHUDMessage(Message_strings[24]);
+      aShowHUDMessage(TXT("FuseRoom"));
       aABStartWaitEffect(Object_handles[37]);
       aMusicSetRegion(3, event_data->it_handle);
 
