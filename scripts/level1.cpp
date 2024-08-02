@@ -22,10 +22,10 @@
 // Filename:	Level1.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -413,180 +413,12 @@ $$END
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -657,32 +489,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Deactivate the Containment Forcefield
                                     "Find the Main Data Retention Complex"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 23
-const char *Message_names[NUM_MESSAGE_NAMES] = {"FirstForcefield",
-                                          "ClassifiedAccessPass",
-                                          "LeftConsoleSwitch",
-                                          "RightConsoleSwitch",
-                                          "PrimaryLoginSwitch",
-                                          "EndLevel",
-                                          "AccessDenied",
-                                          "CEDData",
-                                          "ShipMessageLog",
-                                          "BossData",
-                                          "PTMCdisconnected",
-                                          "DravisData",
-                                          "SRADLabData",
-                                          "ConsoleCrash",
-                                          "SweitzerData",
-                                          "SecurityAlert",
-                                          "LockDown",
-                                          "MDData",
-                                          "EmergencySwitchOpen",
-                                          "EmergencySwitch",
-                                          "SingleFireSwitch",
-                                          "BothFireSwitches",
-                                          "IntroMessage"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -696,7 +502,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -754,10 +559,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1149,7 +950,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 029: IntroCam
     if (1) {
-      aCinematicIntro(Path_indexes[2], Message_strings[22], Object_handles[1], Path_indexes[3], 12.000000f);
+      aCinematicIntro(Path_indexes[2], TXT("IntroMessage"), Object_handles[1], Path_indexes[3], 12.000000f);
       aSetLevelTimer(15.000000f, 11);
 
       // Increment the script action counter
@@ -1235,19 +1036,19 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 015: Left Console Level Timers
     if (1) {
       if (event_data->id == 4) {
-        aAddGameMessage(Message_strings[7], Message_strings[8]);
+        aAddGameMessage(TXT("CEDData"), TXT("ShipMessageLog"));
         aRoomSetFaceTexture(Room_indexes[1], 148, Texture_indexes[1]);
         aObjPlayAnim(Object_handles[14], 7, 15, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 8);
       }
       if (event_data->id == 8) {
-        aAddGameMessage(Message_strings[9], Message_strings[8]);
+        aAddGameMessage(TXT("BossData"), TXT("ShipMessageLog"));
         aRoomSetFaceTexture(Room_indexes[1], 148, Texture_indexes[2]);
         aObjPlayAnim(Object_handles[14], 15, 22, 4.000000f, 0);
         aSetLevelTimer(4.000000f, 9);
       }
       if (event_data->id == 9) {
-        aShowHUDMessage(Message_strings[10]);
+        aShowHUDMessage(TXT("PTMCdisconnected"));
         aRoomSetFaceTexture(Room_indexes[1], 148, Texture_indexes[3]);
       }
 
@@ -1259,19 +1060,19 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 014: Right Console Level Timers
     if (1) {
       if (event_data->id == 3) {
-        aAddGameMessage(Message_strings[11], Message_strings[8]);
+        aAddGameMessage(TXT("DravisData"), TXT("ShipMessageLog"));
         aRoomSetFaceTexture(Room_indexes[2], 148, Texture_indexes[4]);
         aObjPlayAnim(Object_handles[16], 7, 15, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 5);
       }
       if (event_data->id == 5) {
-        aAddGameMessage(Message_strings[12], Message_strings[8]);
+        aAddGameMessage(TXT("SRADLabData"), TXT("ShipMessageLog"));
         aRoomSetFaceTexture(Room_indexes[2], 148, Texture_indexes[5]);
         aObjPlayAnim(Object_handles[16], 15, 22, 4.000000f, 0);
         aSetLevelTimer(4.000000f, 6);
       }
       if (event_data->id == 6) {
-        aShowHUDMessage(Message_strings[13]);
+        aShowHUDMessage(TXT("ConsoleCrash"));
         aRoomSetFaceTexture(Room_indexes[2], 148, Texture_indexes[6]);
       }
 
@@ -1283,19 +1084,19 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 007: Primary Console Timers
     if (1) {
       if (event_data->id == 0) {
-        aAddGameMessage(Message_strings[14], Message_strings[8]);
+        aAddGameMessage(TXT("SweitzerData"), TXT("ShipMessageLog"));
         aRoomSetFaceTexture(Room_indexes[6], 148, Texture_indexes[7]);
         aObjPlayAnim(Object_handles[18], 7, 15, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 1);
       }
       if (event_data->id == 7) {
-        aShowHUDMessage(Message_strings[15]);
+        aShowHUDMessage(TXT("SecurityAlert"));
         aRoomSetFaceTexture(Room_indexes[6], 148, Texture_indexes[8]);
         aObjPlayAnim(Object_handles[18], 15, 22, 4.000000f, 0);
         aSetLevelTimer(4.000000f, 2);
       }
       if (event_data->id == 2) {
-        aShowHUDMessage(Message_strings[16]);
+        aShowHUDMessage(TXT("LockDown"));
         aRoomSetFaceTexture(Room_indexes[6], 148, Texture_indexes[9]);
         aMatcenSetEnableState(1, Matcen_indexes[0]);
         aMatcenSetState(1, Matcen_indexes[0]);
@@ -1304,7 +1105,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
         aObjPlayAnim(Object_handles[18], 0, 7, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 7);
         aRoomSetFaceTexture(Room_indexes[6], 148, Texture_indexes[10]);
-        aAddGameMessage(Message_strings[17], Message_strings[8]);
+        aAddGameMessage(TXT("MDData"), TXT("ShipMessageLog"));
       }
 
       // Increment the script action counter
@@ -1336,7 +1137,7 @@ int16_t CustomObjectScript_3855::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[0], 1);
         aObjPlayAnim(Object_handles[0], 0, 4, 2.000000f, 0);
         aPortalRenderSet(0, 1, Room_indexes[0], 1);
-        aShowHUDMessage(Message_strings[0]);
+        aShowHUDMessage(TXT("FirstForcefield"));
         aUserFlagSet(0, 0);
       } else {
       }
@@ -1358,7 +1159,7 @@ int16_t CustomObjectScript_10DC::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 003: Restricted Access Passkey
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aGoalCompleted(Goal_indexes[1], 1);
-      aObjectPlayerGiveKey(event_data->it_handle, Object_handles[12], 1, Message_strings[1], 1);
+      aObjectPlayerGiveKey(event_data->it_handle, Object_handles[12], 1, TXT("ClassifiedAccessPass"), 1);
 
       // Increment the script action counter
       if (ScriptActionCtr_003 < MAX_ACTION_CTR_VALUE)
@@ -1380,7 +1181,7 @@ int16_t CustomObjectScript_10E0::CallEvent(int event, tOSIRISEventInfo *data) {
         aUserFlagSet(5, 1);
         aObjPlayAnim(Object_handles[13], 0, 7, 4.000000f, 0);
         aRoomSetFaceTexture(Room_indexes[1], 148, Texture_indexes[0]);
-        aShowHUDMessage(Message_strings[2]);
+        aShowHUDMessage(TXT("LeftConsoleSwitch"));
         aObjPlayAnim(Object_handles[14], 0, 7, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 4);
       } else {
@@ -1406,7 +1207,7 @@ int16_t CustomObjectScript_10DF::CallEvent(int event, tOSIRISEventInfo *data) {
         aUserFlagSet(4, 1);
         aObjPlayAnim(Object_handles[15], 0, 7, 4.000000f, 0);
         aRoomSetFaceTexture(Room_indexes[2], 148, Texture_indexes[0]);
-        aShowHUDMessage(Message_strings[3]);
+        aShowHUDMessage(TXT("RightConsoleSwitch"));
         aObjPlayAnim(Object_handles[16], 0, 7, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 3);
       } else {
@@ -1439,7 +1240,7 @@ int16_t CustomObjectScript_08E8::CallEvent(int event, tOSIRISEventInfo *data) {
         aUserFlagSet(1, 1);
         aObjPlayAnim(Object_handles[17], 0, 7, 4.000000f, 0);
         aRoomSetFaceTexture(Room_indexes[6], 148, Texture_indexes[0]);
-        aShowHUDMessage(Message_strings[4]);
+        aShowHUDMessage(TXT("PrimaryLoginSwitch"));
         aObjPlayAnim(Object_handles[18], 0, 7, 3.000000f, 0);
         aSetLevelTimer(6.000000f, 0);
         aObjSetLightingDist(Object_handles[19], 70.000000f);
@@ -1511,7 +1312,7 @@ int16_t CustomObjectScript_584D::CallEvent(int event, tOSIRISEventInfo *data) {
         ((qObjIsPlayer(event_data->it_handle) == true) && ((ScriptActionCtr_005 > 0) == false))) {
       aGoalCompleted(Goal_indexes[4], 1);
       aObjDestroy(Object_handles[37]);
-      aStartEndlevelSequencePath(Path_indexes[0], Path_indexes[1], 10.000000f, Message_strings[5]);
+      aStartEndlevelSequencePath(Path_indexes[0], Path_indexes[1], 10.000000f, TXT("EndLevel"));
 
       // Increment the script action counter
       if (ScriptActionCtr_031 < MAX_ACTION_CTR_VALUE)
@@ -1530,7 +1331,7 @@ int16_t CustomObjectScript_0816::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 006: Restricted Access Door Locked
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
       if ((ScriptActionCtr_003 > 0) == false) {
-        aShowHUDMessageI(Message_strings[6], 0);
+        aShowHUDMessageI(TXT("AccessDenied"), 0);
       }
 
       // Increment the script action counter
@@ -1562,9 +1363,9 @@ int16_t CustomObjectScript_100D::CallEvent(int event, tOSIRISEventInfo *data) {
         aUserFlagSet(6, 0);
         aDoorLockUnlock(0, Door_handles[2]);
         aDoorActivate(Door_handles[2]);
-        aShowHUDMessage(Message_strings[18]);
+        aShowHUDMessage(TXT("EmergencySwitchOpen"));
       } else {
-        aShowHUDMessage(Message_strings[19]);
+        aShowHUDMessage(TXT("EmergencySwitch"));
       }
 
       // Increment the script action counter
@@ -1586,7 +1387,7 @@ int16_t CustomObjectScript_301B::CallEvent(int event, tOSIRISEventInfo *data) {
       if (qUserFlag(3) == false) {
         aObjPlayAnim(Object_handles[40], 0, 4, 2.000000f, 0);
         aUserFlagSet(3, 1);
-        aShowHUDMessage(Message_strings[20]);
+        aShowHUDMessage(TXT("SingleFireSwitch"));
       }
       if ((qUserFlag(2) == true) && (qUserFlag(3) == true)) {
         aTurnOffSpew(6);
@@ -1599,7 +1400,7 @@ int16_t CustomObjectScript_301B::CallEvent(int event, tOSIRISEventInfo *data) {
         aTurnOffSpew(13);
         aRoomChangeFog(Room_indexes[7], 1.000000f, 0.700000f, 0.400000f, 6000.000000f, 20.000000f);
         aRoomChangeFog(Room_indexes[8], 1.000000f, 0.700000f, 0.400000f, 6000.000000f, 20.000000f);
-        aShowHUDMessage(Message_strings[21]);
+        aShowHUDMessage(TXT("BothFireSwitches"));
         aDoorLockUnlock(0, Door_handles[2]);
         aDoorActivate(Door_handles[2]);
         aUserFlagSet(6, 0);
@@ -1625,7 +1426,7 @@ int16_t CustomObjectScript_18DB::CallEvent(int event, tOSIRISEventInfo *data) {
       if (qUserFlag(2) == false) {
         aObjPlayAnim(Object_handles[41], 0, 4, 2.000000f, 0);
         aUserFlagSet(2, 1);
-        aShowHUDMessage(Message_strings[20]);
+        aShowHUDMessage(TXT("SingleFireSwitch"));
       }
       if ((qUserFlag(2) == true) && (qUserFlag(3) == true)) {
         aTurnOffSpew(6);
@@ -1638,7 +1439,7 @@ int16_t CustomObjectScript_18DB::CallEvent(int event, tOSIRISEventInfo *data) {
         aTurnOffSpew(13);
         aRoomChangeFog(Room_indexes[7], 1.000000f, 0.700000f, 0.400000f, 6000.000000f, 20.000000f);
         aRoomChangeFog(Room_indexes[8], 1.000000f, 0.700000f, 0.400000f, 6000.000000f, 20.000000f);
-        aShowHUDMessage(Message_strings[21]);
+        aShowHUDMessage(TXT("BothFireSwitches"));
         aDoorLockUnlock(0, Door_handles[2]);
         aDoorActivate(Door_handles[2]);
         aUserFlagSet(6, 0);
@@ -1664,7 +1465,7 @@ int16_t TriggerScript_000C::CallEvent(int event, tOSIRISEventInfo *data) {
         ((qObjIsPlayer(event_data->it_handle) == true) && ((ScriptActionCtr_031 > 0) == false))) {
       aGoalCompleted(Goal_indexes[4], 1);
       aObjDestroy(Object_handles[37]);
-      aStartEndlevelSequencePath(Path_indexes[0], Path_indexes[1], 10.000000f, Message_strings[5]);
+      aStartEndlevelSequencePath(Path_indexes[0], Path_indexes[1], 10.000000f, TXT("EndLevel"));
 
       // Increment the script action counter
       if (ScriptActionCtr_005 < MAX_ACTION_CTR_VALUE)
