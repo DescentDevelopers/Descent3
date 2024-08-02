@@ -27,7 +27,7 @@
 #include "DallasFuncs.h"
 
 #include "AIGame3_External.h"
-
+#include "crossplat.h"
 #include "module.h"
 
 #ifdef __cplusplus
