@@ -22,10 +22,10 @@
 // Filename:	level8.cpp
 // Version:	3
 /////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
+
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -857,180 +857,12 @@ $$END
 // Message File Data
 // =================
 
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
 // Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
+std::map<std::string, std::string> Messages;
 
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
 
 //======================
 // Name List Arrays
@@ -1207,7 +1039,6 @@ const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroCamera",
                                           "WeaponsPlantData",
                                           "FoundSecretData",
                                           "FrigateSaved"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
 
 // ===============
 // InitializeDLL()
@@ -1222,7 +1053,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -1278,10 +1108,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1945,7 +1771,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 029: Medical Frigate Mayday!
     if ((qRoomHasPlayer(Room_indexes[21]) == true) && (qUserFlag(10) == false)) {
-      aAddGameMessage(Message_strings[10], Message_strings[11]);
+      aAddGameMessage(TXT("Mayday"), TXT("MessageFromFrigate"));
       aUserFlagSet(10, 1);
       aGoalEnableDisable(1, Goal_indexes[6]);
       aSoundPlaySteaming("VoxL08SpecificA.osf", 1.000000f);
@@ -1981,7 +1807,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 001: Intro Camera Sequence
     if (1) {
-      aCinematicIntro(Path_indexes[0], Message_strings[0], Object_handles[0], Path_indexes[1], 10.000000f);
+      aCinematicIntro(Path_indexes[0], TXT("IntroCamera"), Object_handles[0], Path_indexes[1], 10.000000f);
       aSoundPlaySteaming("VoxL08StartLevel.osf", 1.000000f);
 
       // Increment the script action counter
@@ -2295,7 +2121,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 020: Core Temperature Above Normal!
     if (3 == event_data->id) {
       aMiscViewerShake(75.000000f);
-      aShowHUDMessage(Message_strings[6]);
+      aShowHUDMessage(TXT("CoreTempAboveNormal"));
       aSetLevelTimer(60.000000f, 4);
       aSoundPlay2D(Sound_indexes[0], 1.000000f);
 
@@ -2329,7 +2155,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 077: Frigate Waits For Elevator Timer
     if (6 == event_data->id) {
-      aAddGameMessage(Message_strings[20], Message_strings[11]);
+      aAddGameMessage(TXT("FrigateSaved"), TXT("MessageFromFrigate"));
       aPortalRenderSet(0, 0, Room_indexes[22], 1);
       aAIGoalFollowPathSimple(Object_handles[23], Path_indexes[6], 131328, 0, 3);
       aGoalCompleted(Goal_indexes[6], 1);
@@ -2536,7 +2362,7 @@ int16_t CustomObjectScript_10FD::CallEvent(int event, tOSIRISEventInfo *data) {
       if (qUserFlag(4) == false) {
         aObjPlayAnim(Object_handles[4], 0, 2, 2.000000f, 0);
         aUserFlagSet(4, 1);
-        aShowHUDMessage(Message_strings[2]);
+        aShowHUDMessage(TXT("CoolingSystemEngaged"));
         aRoomSetFaceTexture(Room_indexes[13], 78, Texture_indexes[0]);
         aRoomSetFaceTexture(Room_indexes[13], 101, Texture_indexes[0]);
         aRoomSetFaceTexture(Room_indexes[14], 148, Texture_indexes[0]);
@@ -2569,7 +2395,7 @@ int16_t CustomObjectScript_10FD::CallEvent(int event, tOSIRISEventInfo *data) {
         aGoalCompleted(Goal_indexes[0], 1);
         aGoalEnableDisable(1, Goal_indexes[1]);
       } else {
-        aShowHUDMessage(Message_strings[3]);
+        aShowHUDMessage(TXT("CoolingSystemClock"));
       }
 
       // Increment the script action counter
@@ -2598,7 +2424,7 @@ int16_t CustomObjectScript_0839::CallEvent(int event, tOSIRISEventInfo *data) {
       aRoomSetFaceTexture(Room_indexes[14], 148, Texture_indexes[3]);
       aSetLevelTimer(20.000000f, 3);
       aRoomChangeFog(Room_indexes[13], 0.250000f, 0.500000f, 1.000000f, 2000.000000f, 120.000000f);
-      aShowHUDMessage(Message_strings[4]);
+      aShowHUDMessage(TXT("ALLHeatSinksDestroyed"));
       aGoalEnableDisable(1, Goal_indexes[2]);
       aGoalCompleted(Goal_indexes[3], 1);
 
@@ -2664,7 +2490,7 @@ int16_t CustomObjectScript_0901::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 022: Cooling Duct Forcefield Disabled
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(8) == false)) {
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("ForcefieldDisabled"));
       aPortalRenderSet(0, 3, Room_indexes[15], 1);
       aUserFlagSet(8, 1);
       aObjPlayAnim(Object_handles[8], 0, 2, 2.000000f, 0);
@@ -2685,7 +2511,7 @@ int16_t CustomObjectScript_0900::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 019: Inner Heat Sink Forcefield Disabled
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(7) == false)) {
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("ForcefieldDisabled"));
       aPortalRenderSet(0, 1, Room_indexes[16], 1);
       aUserFlagSet(7, 1);
       aObjPlayAnim(Object_handles[9], 0, 2, 2.000000f, 0);
@@ -2706,7 +2532,7 @@ int16_t CustomObjectScript_08FF::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 018: Middle Heat Sink Forcefield Disabled
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(6) == false)) {
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("ForcefieldDisabled"));
       aPortalRenderSet(0, 1, Room_indexes[17], 1);
       aUserFlagSet(6, 1);
       aObjPlayAnim(Object_handles[10], 0, 2, 2.000000f, 0);
@@ -2729,7 +2555,7 @@ int16_t CustomObjectScript_20FE::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 017: Outer Heat Sink Forcefield Disabled
     if ((qObjIsPlayerWeapon(event_data->it_handle) == true) && (qUserFlag(5) == false)) {
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("ForcefieldDisabled"));
       aPortalRenderSet(0, 1, Room_indexes[18], 1);
       aUserFlagSet(5, 1);
       aObjPlayAnim(Object_handles[11], 0, 2, 2.000000f, 0);
@@ -2762,7 +2588,7 @@ int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 076: Deadly Fan Gets Shot By Player
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       aObjSetShields(Object_handles[12], 1000000000.000000f);
-      aShowHUDMessage(Message_strings[8]);
+      aShowHUDMessage(TXT("CoolFanInvulnerable"));
 
       // Increment the script action counter
       if (ScriptActionCtr_076 < MAX_ACTION_CTR_VALUE)
@@ -2782,7 +2608,7 @@ int16_t CustomObjectScript_083D::CallEvent(int event, tOSIRISEventInfo *data) {
       aDoorLockUnlock(1, Door_handles[7]);
       aDoorLockUnlock(0, Door_handles[10]);
       aUserFlagSet(17, 1);
-      aShowHUDMessage(Message_strings[9]);
+      aShowHUDMessage(TXT("CoolFanDestroyed"));
 
       // Increment the script action counter
       if (ScriptActionCtr_025 < MAX_ACTION_CTR_VALUE)
@@ -2804,7 +2630,7 @@ int16_t CustomObjectScript_09E3::CallEvent(int event, tOSIRISEventInfo *data) {
         aRoomChangeWind(Room_indexes[19], 0.000000f, 1.000000f, 0.000000f, 15.000000f, 10.000000f);
         aUserFlagSet(14, 1);
         aObjPlayAnim(Object_handles[13], 0, 1, 2.000000f, 0);
-        aShowHUDMessage(Message_strings[7]);
+        aShowHUDMessage(TXT("FanReverseSwitch"));
       } else {
         aRoomChangeWind(Room_indexes[19], 0.000000f, -1.000000f, 0.000000f, 15.000000f, 10.000000f);
         aUserFlagSet(14, 0);
@@ -2870,7 +2696,7 @@ int16_t CustomObjectScript_08C1::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 027: Security Tower Forcefield
     if (1) {
-      aShowHUDMessage(Message_strings[5]);
+      aShowHUDMessage(TXT("ForcefieldDisabled"));
       aPortalRenderSet(0, 6, Room_indexes[20], 1);
       aMatcenSetState(1, Matcen_indexes[0]);
 
@@ -2895,7 +2721,7 @@ int16_t CustomObjectScript_090F::CallEvent(int event, tOSIRISEventInfo *data) {
         aSetLevelTimer(10.000000f, 6);
         aSoundPlaySteaming("VoxL08SpecificC.osf", 1.000000f);
       } else {
-        aAddGameMessage(Message_strings[12], Message_strings[11]);
+        aAddGameMessage(TXT("ElevatorNeedsDown"), TXT("MessageFromFrigate"));
         aUserFlagSet(18, 1);
       }
       aUserFlagSet(19, 1);
@@ -2916,7 +2742,7 @@ int16_t CustomObjectScript_090E::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 035: Left Clamp Release Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[13]);
+      aShowHUDMessage(TXT("ClampNotInUse"));
 
       // Increment the script action counter
       if (ScriptActionCtr_035 < MAX_ACTION_CTR_VALUE)
@@ -2934,7 +2760,7 @@ int16_t CustomObjectScript_0910::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 034: Right Clamp Release Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[13]);
+      aShowHUDMessage(TXT("ClampNotInUse"));
 
       // Increment the script action counter
       if (ScriptActionCtr_034 < MAX_ACTION_CTR_VALUE)
@@ -2952,7 +2778,7 @@ int16_t CustomObjectScript_090C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 033: Right Docking Clamp Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[13]);
+      aShowHUDMessage(TXT("ClampNotInUse"));
 
       // Increment the script action counter
       if (ScriptActionCtr_033 < MAX_ACTION_CTR_VALUE)
@@ -2972,13 +2798,13 @@ int16_t CustomObjectScript_090B::CallEvent(int event, tOSIRISEventInfo *data) {
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
       if (qUserFlag(12) == true) {
         aObjPlayAnim(Object_handles[21], 10, 20, 1.000000f, 0);
-        aShowHUDMessage(Message_strings[14]);
+        aShowHUDMessage(TXT("CenterClampDisengaged"));
         aUserFlagSet(12, 0);
         aSoundPlaySteaming("VoxL08SpecificB.osf", 1.000000f);
       } else {
         aObjPlayAnim(Object_handles[21], 0, 10, 1.000000f, 0);
         aUserFlagSet(12, 1);
-        aShowHUDMessage(Message_strings[15]);
+        aShowHUDMessage(TXT("EngagingCenterClamp"));
       }
 
       // Increment the script action counter
@@ -2997,7 +2823,7 @@ int16_t CustomObjectScript_090A::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 032: Left Docking Clamp Switch
     if (qObjIsPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[13]);
+      aShowHUDMessage(TXT("ClampNotInUse"));
 
       // Increment the script action counter
       if (ScriptActionCtr_032 < MAX_ACTION_CTR_VALUE)
@@ -3037,14 +2863,14 @@ int16_t CustomObjectScript_090D::CallEvent(int event, tOSIRISEventInfo *data) {
         aObjPlayAnim(Object_handles[24], 0, 1, 2.000000f, 0);
         aUserFlagSet(11, 1);
         aAIGoalFollowPathSimple(Object_handles[25], Path_indexes[5], 131328, -1, 3);
-        aShowHUDMessage(Message_strings[16]);
+        aShowHUDMessage(TXT("ElevatorDOWN"));
         if (qUserFlag(18) == true) {
           aSetLevelTimer(10.000000f, 6);
           aSoundPlaySteaming("VoxL08SpecificC.osf", 1.000000f);
         } else {
         }
       } else {
-        aShowHUDMessage(Message_strings[17]);
+        aShowHUDMessage(TXT("ElevatorAlreadyDown"));
       }
 
       // Increment the script action counter
@@ -3064,7 +2890,7 @@ int16_t CustomObjectScript_19E2::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 043: Weapons Plant Secret Level Data
     if (qObjIsPlayer(event_data->it_handle) == true) {
       aAddObjectToInventory(Object_handles[0], event_data->it_handle, 0);
-      aAddGameMessage(Message_strings[18], Message_strings[19]);
+      aAddGameMessage(TXT("WeaponsPlantData"), TXT("FoundSecretData"));
       aSoundPlay2DObj(Sound_indexes[3], event_data->it_handle, 1.000000f);
       aMissionSetSecretFlag(1);
       aUserFlagSet(20, 1);
@@ -3373,7 +3199,7 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 002: End Level Camera Sequence
     if (qObjIsPlayer(event_data->it_handle) == true) {
-      aStartEndlevelSequencePath(Path_indexes[2], Path_indexes[3], 13.000000f, Message_strings[1]);
+      aStartEndlevelSequencePath(Path_indexes[2], Path_indexes[3], 13.000000f, TXT("EndLevel"));
       if ((qUserFlag(11) == true) && (qUserFlag(19) == true)) {
         aSoundPlaySteaming("VoxL08EndAll.osf", 1.000000f);
         if (qUserFlag(20) == true) {
