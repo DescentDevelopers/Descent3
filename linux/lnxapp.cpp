@@ -72,7 +72,6 @@
 #include <cctype>
 #if defined(POSIX)
 #include <sys/time.h>
-#include <term.h>
 #include <termios.h>
 #else
 #include "winsock.h"

@@ -809,9 +809,6 @@ void TCAMCallback(void) {
   rend_SetOverlayType(OT_NONE);
   rend_SetZBufferState(1);
 
-  if (AM_terrain)
-    rend_SetZValues(0, VisibleTerrainZ);
-
   TCAMBuildRoomList(Viewer_object->roomnum);
   // Render all rooms in view
   for (int i = 0; i < Num_AM_rooms; i++) {
