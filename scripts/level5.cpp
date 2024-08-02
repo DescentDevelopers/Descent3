@@ -23,10 +23,9 @@
 // Version:	3
 /////////////////////////////////////////////////////////////////////
 #include <cmath>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstring>
+#include <map>
+#include <string>
 #include "osiris_import.h"
 #include "osiris_common.h"
 #include "DallasFuncs.h"
@@ -597,6 +596,17 @@ void RestoreGlobalActionCtrs(void *file_ptr) {
   ScriptActionCtr_030 = File_ReadInt(file_ptr);
 }
 
+// =================
+// Message File Data
+// =================
+
+// Global storage for level script messages
+std::map<std::string, std::string> Messages;
+
+#define TXT(MSG) GetMessageNew(MSG, Messages)
+#define ReadMessageFile(filename) CreateMessageMap(filename, Messages)
+#define ClearMessageList() DestroyMessageMap(Messages)
+
 // ===============================================================
 // Start of Custom Script Block - DO NOT EDIT ANYTHING BEFORE THIS
 // ===============================================================
@@ -619,8 +629,6 @@ int Reactor_handles[NUM_REACTORS];
 float Reactor_initial_shields[NUM_REACTORS];
 int Reactor_shields_percent[NUM_REACTORS];
 const char *Reactor_text;
-
-const char *GetMessage(const char *name);
 
 /*
 $$ACTION
@@ -646,7 +654,7 @@ void aCustomReactorDisplayInit() {
     Reactor_shields_percent[i] = -1; // Force update first time
   }
 
-  Reactor_text = GetMessage("ReactorHUDLabel");
+  Reactor_text = TXT("ReactorHUDLabel");
 }
 
 /*
@@ -707,192 +715,13 @@ void dsCustomRestore(void *fileptr) {
     Reactor_shields_percent[i] = File_ReadInt(fileptr);
   }
 
-  Reactor_text = GetMessage("ReactorHUDLabel");
+  Reactor_text = TXT("ReactorHUDLabel");
 }
 
 /**{CUSTOM_SCRIPT_BLOCK_END}**** DO NOT EDIT! **/
 // ============================================================
 // End of Custom Script Block - DO NOT EDIT ANYTHING AFTER THIS
 // ============================================================
-
-// =================
-// Message File Data
-// =================
-
-#define MAX_SCRIPT_MESSAGES 256
-#define MAX_MSG_FILEBUF_LEN 1024
-#define NO_MESSAGE_STRING "*Message Not Found*"
-#define INV_MSGNAME_STRING "*Message Name Invalid*"
-#define WHITESPACE_CHARS " \t\r\n"
-
-// Structure for storing a script message
-struct tScriptMessage {
-  char *name;    // the name of the message
-  char *message; // the actual message text
-};
-
-// Global storage for level script messages
-tScriptMessage *message_list[MAX_SCRIPT_MESSAGES];
-int num_messages;
-
-// ======================
-// Message File Functions
-// ======================
-
-// Initializes the Message List
-void InitMessageList(void) {
-  for (int j = 0; j < MAX_SCRIPT_MESSAGES; j++)
-    message_list[j] = NULL;
-  num_messages = 0;
-}
-
-// Clear the Message List
-void ClearMessageList(void) {
-  for (int j = 0; j < num_messages; j++) {
-    free(message_list[j]->name);
-    free(message_list[j]->message);
-    free(message_list[j]);
-    message_list[j] = NULL;
-  }
-  num_messages = 0;
-}
-
-// Adds a message to the list
-int AddMessageToList(char *name, char *msg) {
-  int pos;
-
-  // Make sure there is room in the list
-  if (num_messages >= MAX_SCRIPT_MESSAGES)
-    return false;
-
-  // Allocate memory for this message entry
-  pos = num_messages;
-  message_list[pos] = (tScriptMessage *)malloc(sizeof(tScriptMessage));
-  if (message_list[pos] == NULL)
-    return false;
-
-  // Allocate memory for the message name
-  message_list[pos]->name = (char *)malloc(strlen(name) + 1);
-  if (message_list[pos]->name == NULL) {
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->name, name);
-
-  // Allocate memory for the message name
-  message_list[pos]->message = (char *)malloc(strlen(msg) + 1);
-  if (message_list[pos]->message == NULL) {
-    free(message_list[pos]->name);
-    free(message_list[pos]);
-    return false;
-  }
-  strcpy(message_list[pos]->message, msg);
-  num_messages++;
-
-  return true;
-}
-
-// Removes any whitespace padding from the end of a string
-void RemoveTrailingWhitespace(char *s) {
-  int last_char_pos;
-
-  last_char_pos = strlen(s) - 1;
-  while (last_char_pos >= 0 && isspace(s[last_char_pos])) {
-    s[last_char_pos] = '\0';
-    last_char_pos--;
-  }
-}
-
-// Returns a pointer to the first non-whitespace char in given string
-char *SkipInitialWhitespace(char *s) {
-  while ((*s) != '\0' && isspace(*s))
-    s++;
-
-  return (s);
-}
-
-// Read in the Messages
-int ReadMessageFile(const char *filename) {
-  void *infile;
-  char filebuffer[MAX_MSG_FILEBUF_LEN + 1];
-  char *line, *msg_start;
-  int line_num;
-  bool next_msgid_found;
-
-  // Try to open the file for loading
-  infile = File_Open(filename, "rt");
-  if (!infile)
-    return false;
-
-  line_num = 0;
-  next_msgid_found = true;
-
-  // Clear the message list
-  ClearMessageList();
-
-  // Read in and parse each line of the file
-  while (!File_eof(infile)) {
-
-    // Clear the buffer
-    strcpy(filebuffer, "");
-
-    // Read in a line from the file
-    File_ReadString(filebuffer, MAX_MSG_FILEBUF_LEN, infile);
-    line_num++;
-
-    // Remove whitespace padding at start and end of line
-    RemoveTrailingWhitespace(filebuffer);
-    line = SkipInitialWhitespace(filebuffer);
-
-    // If line is a comment, or empty, discard it
-    if (strlen(line) == 0 || strncmp(line, "//", 2) == 0)
-      continue;
-
-    if (!next_msgid_found) { // Parse out the last message ID number
-
-      // Grab the first keyword, make sure it's valid
-      line = strtok(line, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      // Grab the second keyword, and assign it as the next message ID
-      line = strtok(NULL, WHITESPACE_CHARS);
-      if (line == NULL)
-        continue;
-
-      next_msgid_found = true;
-    } else { // Parse line as a message line
-
-      // Find the start of message, and mark it
-      msg_start = strchr(line, '=');
-      if (msg_start == NULL)
-        continue;
-      msg_start[0] = '\0';
-      msg_start++;
-
-      // Add the message to the list
-      AddMessageToList(line, msg_start);
-    }
-  }
-  File_Close(infile);
-
-  return true;
-}
-
-// Find a message
-const char *GetMessage(const char *name) {
-  // Make sure given name is valid
-  if (name == NULL)
-    return INV_MSGNAME_STRING;
-
-  // Search message list for name
-  for (int j = 0; j < num_messages; j++)
-    if (strcmp(message_list[j]->name, name) == 0)
-      return (message_list[j]->message);
-
-  // Couldn't find it
-  return NO_MESSAGE_STRING;
-}
 
 //======================
 // Name List Arrays
@@ -972,20 +801,6 @@ const char *Goal_names[NUM_GOAL_NAMES] = {"Keep Reactor 5 Alive",      "Keep Rea
                                     "Escape from Red Acropolis", "Keep 3 of the 5 reactors alive"};
 int Goal_indexes[NUM_GOAL_NAMES];
 
-#define NUM_MESSAGE_NAMES 21
-const char *Message_names[NUM_MESSAGE_NAMES] = {"IntroMessage",    "DefendThoseReactors2",
-                                          "IncomingMessage", "DefendReactorsShort",
-                                          "Reactor5Status",  "Health75",
-                                          "Reactor4Status",  "Reactor3Status",
-                                          "Reactor2Status",  "Reactor1Status",
-                                          "Health50",        "Health25",
-                                          "Destroyed",       "HITPOINTS",
-                                          "BLANK",           "OOPS",
-                                          "WereGettinOut",   "SelfDestruct",
-                                          "ExitOnly",        "EntranceDoorMessage",
-                                          "30SecondsLeft"};
-const char *Message_strings[NUM_MESSAGE_NAMES];
-
 // ===============
 // InitializeDLL()
 // ===============
@@ -999,7 +814,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
 
   ClearGlobalActionCtrs();
   dfInit();
-  InitMessageList();
 
   // Build the filename of the message file
   char filename[_MAX_PATH + 32];
@@ -1055,10 +869,6 @@ char STDCALL InitializeDLL(tOSIRISModuleInit *func_list) {
   // Do Goal Index lookups
   for (j = 0; j < NUM_GOAL_NAMES; j++)
     Goal_indexes[j] = Scrpt_FindLevelGoalName(Goal_names[j]);
-
-  // Do Message Name lookups
-  for (j = 0; j < NUM_MESSAGE_NAMES; j++)
-    Message_strings[j] = GetMessage(Message_names[j]);
 
   return 1;
 }
@@ -1499,7 +1309,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 036: 3 Reactors Dead
     if ((ScriptActionCtr_036 < 1) && ((qUserVarValueInt(1) >= 3) && ((ScriptActionCtr_069 > 0) == false))) {
-      aAddGameMessage(Message_strings[15], Message_strings[2]);
+      aAddGameMessage(TXT("OOPS"), TXT("IncomingMessage"));
       aGoalFailed(Goal_indexes[7], 1);
       aSetLevelTimer(3.000000f, 5);
 
@@ -1533,7 +1343,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 001: StartIntroMovie
     if (1) {
-      aCinematicIntro(Path_indexes[8], Message_strings[0], Object_handles[5], Path_indexes[9], 10.000000f);
+      aCinematicIntro(Path_indexes[8], TXT("IntroMessage"), Object_handles[5], Path_indexes[9], 10.000000f);
       aSetLevelTimer(2.000000f, 1);
 
       // Increment the script action counter
@@ -1595,10 +1405,10 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aGoalEnableDisable(0, Goal_indexes[2]);
       aGoalEnableDisable(0, Goal_indexes[3]);
       aGoalEnableDisable(0, Goal_indexes[4]);
-      aAddGameMessage(Message_strings[16], Message_strings[2]);
+      aAddGameMessage(TXT("WereGettinOut"), TXT("IncomingMessage"));
       aDoorLockUnlock(0, Door_handles[0]);
       aDoorSetPos(Door_handles[0], 1.000000f);
-      aShowHUDMessage(Message_strings[17]);
+      aShowHUDMessage(TXT("SelfDestruct"));
       aSetLevelTimer(60.000000f, 13);
 
       // Increment the script action counter
@@ -1653,7 +1463,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 029: 30Seconds Left
     if ((event_data->id == 13) && (qUserVarValue(8) == 0.000000f)) {
-      aShowHUDMessage(Message_strings[20]);
+      aShowHUDMessage(TXT("30SecondsLeft"));
       aSetLevelTimer(30.000000f, 3);
       aTimerShow(3);
 
@@ -1667,7 +1477,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aSoundPlay2D(Sound_indexes[2], 1.000000f);
       aSoundPlay2D(Sound_indexes[3], 1.000000f);
       aSoundPlay2D(Sound_indexes[4], 1.000000f);
-      aFadeWhiteAndEndlevel(3.000000f, Message_strings[14]);
+      aFadeWhiteAndEndlevel(3.000000f, TXT("BLANK"));
 
       // Increment the script action counter
       if (ScriptActionCtr_039 < MAX_ACTION_CTR_VALUE)
@@ -1840,8 +1650,8 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
       aObjPlayAnim(Object_handles[2], 0, 32, 4.000000f, 1);
       aObjPlayAnim(Object_handles[1], 0, 32, 4.000000f, 1);
       aObjPlayAnim(Object_handles[0], 0, 32, 4.000000f, 1);
-      aAddGameMessage(Message_strings[1], Message_strings[2]);
-      aShowHUDMessage(Message_strings[3]);
+      aAddGameMessage(TXT("DefendThoseReactors2"), TXT("IncomingMessage"));
+      aShowHUDMessage(TXT("DefendReactorsShort"));
 
       // Increment the script action counter
       if (ScriptActionCtr_009 < MAX_ACTION_CTR_VALUE)
@@ -1850,7 +1660,7 @@ int16_t LevelScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 031: Exit Sequence Part 2
     if ((ScriptActionCtr_011 > 0) == true) {
-      aStartEndlevelSequencePath(Path_indexes[10], Path_indexes[11], 9.000000f, Message_strings[14]);
+      aStartEndlevelSequencePath(Path_indexes[10], Path_indexes[11], 9.000000f, TXT("BLANK"));
 
       // Increment the script action counter
       if (ScriptActionCtr_031 < MAX_ACTION_CTR_VALUE)
@@ -1868,8 +1678,8 @@ int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 027: Reactor5Status75percent
     if ((ScriptActionCtr_027 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[4]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[5]);
+      aShowHUDMessage(TXT("Reactor5Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health75"));
       aRoomSetFaceTexture(Room_indexes[0], 3, Texture_indexes[0]);
 
       // Increment the script action counter
@@ -1879,8 +1689,8 @@ int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 023: Reactor5Status50percent
     if ((ScriptActionCtr_023 < 1) && ((qObjShields(data->me_handle) < 15000.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[4]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[10]);
+      aShowHUDMessage(TXT("Reactor5Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health50"));
       aRoomSetFaceTexture(Room_indexes[0], 3, Texture_indexes[1]);
 
       // Increment the script action counter
@@ -1890,8 +1700,8 @@ int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 019: Reactor5Status25percent
     if ((ScriptActionCtr_019 < 1) && ((qObjShields(data->me_handle) < 7500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[4]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[11]);
+      aShowHUDMessage(TXT("Reactor5Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Health25"));
       aRoomSetFaceTexture(Room_indexes[0], 3, Texture_indexes[2]);
 
       // Increment the script action counter
@@ -1902,8 +1712,8 @@ int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 014: Reactor5StatusDestroyed
     if ((ScriptActionCtr_014 < 1) && ((qObjShields(data->me_handle) <= 0.000000f) && (1))) {
       aAISetTeam(196608, data->me_handle);
-      aShowHUDMessage(Message_strings[4]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[12]);
+      aShowHUDMessage(TXT("Reactor5Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Destroyed"));
       aUserVarInc(1);
       aObjPlayAnim(data->me_handle, 0, 0, 1.000000f, 0);
       aObjSpark(data->me_handle, 40.000000f, 99999.000000f);
@@ -1919,7 +1729,7 @@ int16_t CustomObjectScript_200D::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 002: Debug Script for Reactor 1
     if (0 == true) {
-      aShowHUDMessageF(Message_strings[13], qObjShields(Object_handles[4]));
+      aShowHUDMessageF(TXT("HITPOINTS"), qObjShields(Object_handles[4]));
 
       // Increment the script action counter
       if (ScriptActionCtr_002 < MAX_ACTION_CTR_VALUE)
@@ -1937,8 +1747,8 @@ int16_t CustomObjectScript_281B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 026: Reactor4Status75percent
     if ((ScriptActionCtr_026 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[6]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[5]);
+      aShowHUDMessage(TXT("Reactor4Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health75"));
       aRoomSetFaceTexture(Room_indexes[1], 3, Texture_indexes[0]);
 
       // Increment the script action counter
@@ -1948,8 +1758,8 @@ int16_t CustomObjectScript_281B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 022: Reactor4Status50percent
     if ((ScriptActionCtr_022 < 1) && ((qObjShields(data->me_handle) < 15000.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[6]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[10]);
+      aShowHUDMessage(TXT("Reactor4Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health50"));
       aRoomSetFaceTexture(Room_indexes[1], 3, Texture_indexes[1]);
 
       // Increment the script action counter
@@ -1959,8 +1769,8 @@ int16_t CustomObjectScript_281B::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 018: Reactor4Status25percent
     if ((ScriptActionCtr_018 < 1) && ((qObjShields(data->me_handle) < 7500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[6]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[11]);
+      aShowHUDMessage(TXT("Reactor4Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Health25"));
       aRoomSetFaceTexture(Room_indexes[1], 3, Texture_indexes[2]);
 
       // Increment the script action counter
@@ -1971,8 +1781,8 @@ int16_t CustomObjectScript_281B::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 013: Reactor4StatusDestroyed
     if ((ScriptActionCtr_013 < 1) && ((qObjShields(data->me_handle) <= 0.000000f) && (1))) {
       aAISetTeam(196608, data->me_handle);
-      aShowHUDMessage(Message_strings[6]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[12]);
+      aShowHUDMessage(TXT("Reactor4Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Destroyed"));
       aUserVarInc(1);
       aObjPlayAnim(data->me_handle, 0, 0, 1.000000f, 0);
       aObjSpark(data->me_handle, 40.000000f, 99999.000000f);
@@ -1997,8 +1807,8 @@ int16_t CustomObjectScript_3816::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 025: Reactor3Status75percent
     if ((ScriptActionCtr_025 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[7]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[5]);
+      aShowHUDMessage(TXT("Reactor3Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health75"));
       aRoomSetFaceTexture(Room_indexes[2], 3, Texture_indexes[0]);
 
       // Increment the script action counter
@@ -2008,8 +1818,8 @@ int16_t CustomObjectScript_3816::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 021: Reactor3Status50percent
     if ((ScriptActionCtr_021 < 1) && ((qObjShields(data->me_handle) < 15000.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[7]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[10]);
+      aShowHUDMessage(TXT("Reactor3Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health50"));
       aRoomSetFaceTexture(Room_indexes[2], 3, Texture_indexes[1]);
 
       // Increment the script action counter
@@ -2019,8 +1829,8 @@ int16_t CustomObjectScript_3816::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 016: Reactor3Status25percent
     if ((ScriptActionCtr_016 < 1) && ((qObjShields(data->me_handle) < 7500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[7]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[11]);
+      aShowHUDMessage(TXT("Reactor3Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Health25"));
       aRoomSetFaceTexture(Room_indexes[2], 3, Texture_indexes[2]);
 
       // Increment the script action counter
@@ -2031,8 +1841,8 @@ int16_t CustomObjectScript_3816::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 012: Reactor3StatusDestroyed
     if ((ScriptActionCtr_012 < 1) && ((qObjShields(data->me_handle) <= 0.000000f) && (1))) {
       aAISetTeam(196608, data->me_handle);
-      aShowHUDMessage(Message_strings[7]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[12]);
+      aShowHUDMessage(TXT("Reactor3Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Destroyed"));
       aUserVarInc(1);
       aObjPlayAnim(data->me_handle, 0, 0, 1.000000f, 0);
       aObjSpark(data->me_handle, 40.000000f, 99999.000000f);
@@ -2057,8 +1867,8 @@ int16_t CustomObjectScript_1012::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 024: Reactor2Status75percent
     if ((ScriptActionCtr_024 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[8]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[5]);
+      aShowHUDMessage(TXT("Reactor2Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health75"));
       aRoomSetFaceTexture(Room_indexes[3], 3, Texture_indexes[0]);
 
       // Increment the script action counter
@@ -2068,8 +1878,8 @@ int16_t CustomObjectScript_1012::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 020: Reactor2Status50percent
     if ((ScriptActionCtr_020 < 1) && ((qObjShields(data->me_handle) < 15000.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[8]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[10]);
+      aShowHUDMessage(TXT("Reactor2Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health50"));
       aRoomSetFaceTexture(Room_indexes[3], 3, Texture_indexes[1]);
 
       // Increment the script action counter
@@ -2079,8 +1889,8 @@ int16_t CustomObjectScript_1012::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 015: Reactor2Status25percent
     if ((ScriptActionCtr_015 < 1) && ((qObjShields(data->me_handle) < 7500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[8]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[11]);
+      aShowHUDMessage(TXT("Reactor2Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Health25"));
       aRoomSetFaceTexture(Room_indexes[3], 3, Texture_indexes[2]);
 
       // Increment the script action counter
@@ -2091,8 +1901,8 @@ int16_t CustomObjectScript_1012::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 008: Reactor2StatusDestroyed
     if ((ScriptActionCtr_008 < 1) && ((qObjShields(data->me_handle) <= 0.000000f) && (1))) {
       aAISetTeam(196608, data->me_handle);
-      aShowHUDMessage(Message_strings[8]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[12]);
+      aShowHUDMessage(TXT("Reactor2Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Destroyed"));
       aUserVarInc(1);
       aObjPlayAnim(data->me_handle, 0, 0, 1.000000f, 0);
       aObjSpark(data->me_handle, 40.000000f, 99999.000000f);
@@ -2117,8 +1927,8 @@ int16_t CustomObjectScript_181C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 005: Reactor1Status75percent
     if ((ScriptActionCtr_005 < 1) && ((qObjShields(data->me_handle) < 22500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[9]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[5]);
+      aShowHUDMessage(TXT("Reactor1Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health75"));
       aRoomSetFaceTexture(Room_indexes[4], 3, Texture_indexes[0]);
 
       // Increment the script action counter
@@ -2128,8 +1938,8 @@ int16_t CustomObjectScript_181C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 006: Reactor1Status50percent
     if ((ScriptActionCtr_006 < 1) && ((qObjShields(data->me_handle) < 15000.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[9]);
-      aShowColoredHUDMessage(255, 255, 0, Message_strings[10]);
+      aShowHUDMessage(TXT("Reactor1Status"));
+      aShowColoredHUDMessage(255, 255, 0, TXT("Health50"));
       aRoomSetFaceTexture(Room_indexes[4], 3, Texture_indexes[1]);
 
       // Increment the script action counter
@@ -2139,8 +1949,8 @@ int16_t CustomObjectScript_181C::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 007: Reactor1Status25percent
     if ((ScriptActionCtr_007 < 1) && ((qObjShields(data->me_handle) < 7500.000000f) && (1))) {
-      aShowHUDMessage(Message_strings[9]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[11]);
+      aShowHUDMessage(TXT("Reactor1Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Health25"));
       aRoomSetFaceTexture(Room_indexes[4], 3, Texture_indexes[2]);
 
       // Increment the script action counter
@@ -2151,8 +1961,8 @@ int16_t CustomObjectScript_181C::CallEvent(int event, tOSIRISEventInfo *data) {
     // Script 010: Reactor1StatusDestroyed
     if ((ScriptActionCtr_010 < 1) && ((qObjShields(data->me_handle) <= 0.000000f) && (1))) {
       aAISetTeam(196608, data->me_handle);
-      aShowHUDMessage(Message_strings[9]);
-      aShowColoredHUDMessage(255, 0, 0, Message_strings[12]);
+      aShowHUDMessage(TXT("Reactor1Status"));
+      aShowColoredHUDMessage(255, 0, 0, TXT("Destroyed"));
       aUserVarInc(1);
       aObjPlayAnim(data->me_handle, 0, 0, 1.000000f, 0);
       aObjSpark(data->me_handle, 40.000000f, 99999.000000f);
@@ -2177,7 +1987,7 @@ int16_t CustomObjectScript_0820::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 038: ExitDoorMessage
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[18]);
+      aShowHUDMessage(TXT("ExitOnly"));
       aSoundPlay2DObj(Sound_indexes[1], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -2198,7 +2008,7 @@ int16_t CustomObjectScript_1044::CallEvent(int event, tOSIRISEventInfo *data) {
 
     // Script 067: EntranceDoorMessage
     if (qObjIsPlayerOrPlayerWeapon(event_data->it_handle) == true) {
-      aShowHUDMessage(Message_strings[19]);
+      aShowHUDMessage(TXT("EntranceDoorMessage"));
       aSoundPlay2DObj(Sound_indexes[1], event_data->it_handle, 1.000000f);
 
       // Increment the script action counter
@@ -2221,7 +2031,7 @@ int16_t TriggerScript_0000::CallEvent(int event, tOSIRISEventInfo *data) {
     if ((ScriptActionCtr_011 < 1) && (qObjIsPlayer(event_data->it_handle) == 1)) {
       aGoalCompleted(Goal_indexes[5], 1);
       aGoalCompleted(Goal_indexes[6], 1);
-      aCinematicIntro(Path_indexes[12], Message_strings[14], Object_handles[6], Path_indexes[13], 6.500000f);
+      aCinematicIntro(Path_indexes[12], TXT("BLANK"), Object_handles[6], Path_indexes[13], 6.500000f);
 
       // Increment the script action counter
       if (ScriptActionCtr_011 < MAX_ACTION_CTR_VALUE)
