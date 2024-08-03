@@ -619,7 +619,7 @@ void DestroyMessageMap(std::map<std::string, std::string> &map) {
   map.clear();
 }
 
-const char *GetMessage(const std::string &name, std::map<std::string, std::string> &map) {
+const char *GetStringFromMap(const std::string &name, std::map<std::string, std::string> &map) {
   // Make sure given name is valid
   if (name.empty()) {
     return INV_MSGNAME_STRING;
