@@ -42,9 +42,9 @@ bool aenc_Compress(char *input_filename, char *output_filename, const int *input
   FILE *in, *out;
   int32_t result;
 
-  int levels, samples_per_subband;
-  unsigned sample_rate, channels;
-  float factor, volume_scale;
+  int levels = 0, samples_per_subband = 0;
+  unsigned sample_rate = 0, channels = 0;
+  float factor = 0, volume_scale = 0;
   int levels_set = 0, samples_per_subband_set = 0, sample_rate_set = 0, channels_set = 0, factor_set = 0,
       volume_scale_set = 0;
 
@@ -105,7 +105,8 @@ bool aenc_Compress(char *input_filename, char *output_filename, const int *input
   }
 
   if (!levels_set && !samples_per_subband_set) {
-    levels = 7, samples_per_subband = 16;
+    levels = 7;
+    samples_per_subband = 16;
   } else if (!samples_per_subband_set) {
     samples_per_subband = 2048 / (1 << levels);
 

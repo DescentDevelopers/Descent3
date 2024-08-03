@@ -362,7 +362,7 @@ int mng_CheckIfPageLocked(mngs_Pagelock *pl) {
 
   CFILE *infile;
   mngs_Pagelock testlock;
-  int r, done = 0;
+  int r = -1, done = 0;
 
   if (!Network_up)
     return 1;
@@ -408,7 +408,7 @@ int mng_CheckIfPageOwned(mngs_Pagelock *pl, char *owner) {
 
   CFILE *infile;
   mngs_Pagelock testlock;
-  int r, done = 0;
+  int r = -1, done = 0;
 
   infile = (CFILE *)cfopen(TableLockFilename, "rb");
   if (infile == NULL) {

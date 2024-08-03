@@ -913,7 +913,7 @@ void grfont_TranslateToBitmaps(int handle) {
 //	Font translation routines
 void grfont_XlateMonoChar(int bmp_handle, int x, int y, int index, tFontFileInfo *ft, int width) {
   int row, col; // byte width of char
-  uint8_t bit_mask = 0, byte;
+  uint8_t bit_mask = 0, byte = 0;
   uint8_t *fp;
 
   fp = ft->char_data[index];

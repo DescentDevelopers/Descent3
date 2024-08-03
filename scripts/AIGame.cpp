@@ -1516,7 +1516,7 @@ struct guidebot_data {
   float mode_time;
 
   uint16_t mp_slot; // Owner's slot number
-  int my_player;          // Owner's object reference
+  int my_player;    // Owner's object reference
 
   bool f_parented; // Buddy will not collide with parent until it isn't parented
   bool f_pickup;   // Marked for pickup by the owner
@@ -8072,8 +8072,8 @@ void BarnSwallow::DoFrame(int me) {
   case BSM_NEST: {
     if (Game_GetTime() > memory->next_mode_time) {
       int target;
-      int room;
-      int me_room;
+      int room = 0;
+      int me_room = 0;
 
       AI_Value(me, VF_GET, AIV_I_TARGET_HANDLE, &target);
 
