@@ -6,7 +6,7 @@
     {
       "name": "sdl2",
       "version>=": "2.30.3",
-      "features": ["x11","wayland", "alsa"],
+      "features": ["x11", "alsa"],
       "platform": "linux"
     },
     {
