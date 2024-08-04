@@ -16,6 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <algorithm>
+#include <string>
+#include <vector>
+
 #include "pstypes.h"
 #include "pserror.h"
 #include "game.h"
@@ -36,7 +40,6 @@
 #include "module.h"
 #include "localization.h"
 #include "weapon.h"
-#include "voice.h"
 #include "gametexture.h"
 #include "Mission.h"
 #include "damage.h"
@@ -47,7 +50,6 @@
 #include "gameloop.h"
 #include "gamesequence.h"
 #include "dedicated_server.h"
-#include "attach.h"
 #include "PilotPicsAPI.h"
 #include "vclip.h"
 #include "osiris_dll.h"
@@ -62,7 +64,6 @@
 #include "ObjScript.h"
 #include "args.h"
 
-#include <algorithm>
 
 void SelectNextCameraView(int window);
 #define NUM_CAMERA_VIEWS 3
@@ -541,7 +542,7 @@ void GetGameAPI(game_api *api) {
 
   api->osiris_functions = &Multi_d3m_osiris_funcs;
   Osiris_CreateModuleInitStruct(&Multi_d3m_osiris_funcs);
-  Multi_d3m_osiris_funcs.string_table = NULL;
+  Multi_d3m_osiris_funcs.string_table.clear();
   Multi_d3m_osiris_funcs.string_count = 0;
   Multi_d3m_osiris_funcs.module_identifier = 0xEDF7;
   Multi_d3m_osiris_funcs.module_is_static = false;

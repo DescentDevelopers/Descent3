@@ -167,7 +167,6 @@
 #ifndef MISSION_H
 #define MISSION_H
 
-#include "pstypes.h"
 #include "descent.h"
 
 //	*** CONSTANTS ***
@@ -177,11 +176,14 @@
 #define LOAD_PROGRESS_PREPARE 4
 #define LOAD_PROGRESS_DONE 200
 
+// Load the text (goal strings) for a level
+void LoadLevelText(const std::filesystem::path &level_filename);
+
 // Load level progress worker
 void LoadLevelProgress(int step, float percent, const char *chunk = NULL);
 
 //	array constants
-const int MSN_FILENAMELEN = _MAX_PATH, MSN_URLLEN = 256;
+const int MSN_URLLEN = 256;
 
 #define MAX_KEYWORDLEN 300
 

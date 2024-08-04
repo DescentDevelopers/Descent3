@@ -1560,13 +1560,12 @@ void InitIOSystems(bool editor) {
 // Returns true if Mercenary is installed (inits the Black Pyro and Red GB)
 bool MercInstalled() { return merc_hid > 0; }
 
-extern int Num_languages;
 void InitStringTable() {
 
   int language = LANGUAGE_ENGLISH;
   Database->read("LanguageType", &language, sizeof(language));
 
-  if (language < 0 || language >= Num_languages) {
+  if (language < 0 || language >= LANGUAGE_TOTAL) {
     Int3();
     language = LANGUAGE_ENGLISH;
   }

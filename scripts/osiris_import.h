@@ -22,6 +22,10 @@
 #define OSIRISEXTERN
 #endif
 
+#include <filesystem>
+#include <map>
+#include <string>
+
 #include "osiris_common.h"
 
 #if defined(POSIX)
@@ -85,7 +89,7 @@ OSIRISEXTERN Obj_GetTimeLived_fp Obj_GetTimeLived;
 typedef void (*Obj_GetGunPos_fp)(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal);
 OSIRISEXTERN Obj_GetGunPos_fp Obj_GetGunPosFP;
 
-static inline void Obj_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal = NULL) {
+static inline void Obj_GetGunPos(int objhandle, int gun_number, vector *gun_pnt, vector *gun_normal = nullptr) {
   Obj_GetGunPosFP(objhandle, gun_number, gun_pnt, gun_normal);
 }
 
@@ -94,7 +98,7 @@ static inline void Obj_GetGunPos(int objhandle, int gun_number, vector *gun_pnt,
 typedef void (*Obj_GetGroundPos_fp)(int objhandle, int ground_number, vector *ground_pnt, vector *ground_normal);
 OSIRISEXTERN Obj_GetGroundPos_fp Obj_GetGroundPosFP;
 static inline void Obj_GetGroundPos(int objhandle, int ground_number, vector *ground_pnt,
-                                    vector *ground_normal = NULL) {
+                                    vector *ground_normal = nullptr) {
   Obj_GetGroundPosFP(objhandle, ground_number, ground_pnt, ground_normal);
 }
 
@@ -388,16 +392,16 @@ OSIRISEXTERN MSafe_DoPowerup_fp MSafe_DoPowerup;
 typedef int (*Obj_Create_fp)(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient, int parent_handle,
                              vector *initial_velocity);
 OSIRISEXTERN Obj_Create_fp Obj_CreateFP;
-static inline int Obj_Create(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = NULL,
-                             int parent_handle = 0, vector *initial_velocity = NULL) {
+static inline int Obj_Create(uint8_t type, uint16_t id, int roomnum, vector *pos, const matrix *orient = nullptr,
+                             int parent_handle = 0, vector *initial_velocity = nullptr) {
   return Obj_CreateFP(type, id, roomnum, pos, orient, parent_handle, initial_velocity);
 }
 // float Game_GetTime() (void)
-typedef float (*Game_GetTime_fp)(void);
+typedef float (*Game_GetTime_fp)();
 OSIRISEXTERN Game_GetTime_fp Game_GetTime;
 
 // float Game_GetFrameTime() (void)
-typedef float (*Game_GetFrameTime_fp)(void);
+typedef float (*Game_GetFrameTime_fp)();
 OSIRISEXTERN Game_GetFrameTime_fp Game_GetFrameTime;
 
 // void Obj_WBValue() (int obj_handle, char wb_index, char op, char vtype, void *ptr, char g_index)
@@ -576,7 +580,7 @@ typedef bool (*Cine_Start_fp)(tGameCinematic *info, const char *text_string);
 OSIRISEXTERN Cine_Start_fp Cine_Start;
 
 //	Stops and clears up a in-game cinematic.
-typedef void (*Cine_Stop_fp)(void);
+typedef void (*Cine_Stop_fp)();
 OSIRISEXTERN Cine_Stop_fp Cine_Stop;
 
 // Looks up the id's of the sound, room, trigger, object, ect. based on the name
@@ -631,8 +635,8 @@ OSIRISEXTERN Game_IsShipEnabled_fp Game_IsShipEnabled;
 // returns true if operation was successful
 typedef bool (*Path_GetInformation_fp)(int pathid, int point, vector *pos, int *room, matrix *orient);
 OSIRISEXTERN Path_GetInformation_fp Path_GetInformationFP;
-static inline bool Path_GetInformation(int pathid, int point, vector *pos = NULL, int *room = NULL,
-                                       matrix *orient = NULL) {
+static inline bool Path_GetInformation(int pathid, int point, vector *pos = nullptr, int *room = nullptr,
+                                       matrix *orient = nullptr) {
   return Path_GetInformationFP(pathid, point, pos, room, orient);
 }
 // starts a canned cinematic sequence
@@ -670,17 +674,10 @@ OSIRISEXTERN AI_IsDestReachable_fp AI_IsDestReachable;
 typedef bool (*AI_IsObjReachable_fp)(int handle, int target);
 OSIRISEXTERN AI_IsObjReachable_fp AI_IsObjReachable;
 
-typedef char (*Game_GetDiffLevel_fp)(void);
+typedef char (*Game_GetDiffLevel_fp)();
 OSIRISEXTERN Game_GetDiffLevel_fp Game_GetDiffLevel;
 
-/*
-0:LANGUAGE_ENGLISH
-1:LANGUAGE_GERMAN
-2:LANGUAGE_SPANISH
-3:LANGUAGE_ITALIAN
-4:LANGUAGE_FRENCH
-*/
-typedef int (*Game_GetLanguage_fp)(void);
+typedef int (*Game_GetLanguage_fp)();
 OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 
 // Sets/Gets information about a path.
@@ -694,6 +691,15 @@ OSIRISEXTERN Game_GetLanguage_fp Game_GetLanguage;
 typedef void (*Path_Value_fp)(int path_id, int node_id, char op, int changes, void *ptr);
 OSIRISEXTERN Path_Value_fp Path_Value;
 
+typedef bool (*CreateMessageMap_fp)(const std::filesystem::path &filename, std::map<std::string, std::string> &map);
+OSIRISEXTERN CreateMessageMap_fp CreateMessageMap;
+
+typedef void (*DestroyMessageMap_fp)(std::map<std::string, std::string> &map);
+OSIRISEXTERN DestroyMessageMap_fp DestroyMessageMap;
+
+typedef const char *(*GetMessage_fp)(const std::string &name, std::map<std::string, std::string> &map);
+OSIRISEXTERN GetMessage_fp GetMessageNew;
+
 // ===========================================================
 
 //	osicommon_Initialize
@@ -701,131 +707,133 @@ OSIRISEXTERN Path_Value_fp Path_Value;
 void osicommon_Initialize(tOSIRISModuleInit *mi);
 #ifndef __OSIRIS_IMPORT_H_
 void osicommon_Initialize(tOSIRISModuleInit *mi) {
-  int i = 0;
-  mprintf = (mprintf_fp)mi->fp[i++];
-  MSafe_CallFunction = (MSafe_CallFunction_fp)mi->fp[i++];
-  MSafe_GetValue = (MSafe_GetValue_fp)mi->fp[i++];
-  Obj_CallEvent = (Obj_CallEvent_fp)mi->fp[i++];
-  Trgr_CallEvent = (Trgr_CallEvent_fp)mi->fp[i++];
-  Sound_TouchFile = (Sound_TouchFile_fp)mi->fp[i++];
-  Obj_FindID = (Obj_FindID_fp)mi->fp[i++];
-  Wpn_FindID = (Wpn_FindID_fp)mi->fp[i++];
-  Obj_GetTimeLived = (Obj_GetTimeLived_fp)mi->fp[i++];
-  Obj_GetGunPosFP = (Obj_GetGunPos_fp)mi->fp[i++];
-  Room_ValueFP = (Room_Value_fp)mi->fp[i++];
-  Room_IsValid = (Room_IsValid_fp)mi->fp[i++];
-  Obj_GetAttachParent = (Obj_GetAttachParent_fp)mi->fp[i++];
-  Obj_GetNumAttachSlots = (Obj_GetNumAttachSlots_fp)mi->fp[i++];
-  Obj_GetAttachChildHandle = (Obj_GetAttachChildHandle_fp)mi->fp[i++];
-  Obj_AttachObjectAP = (Obj_AttachObjectAP_fp)mi->fp[i++];
-  Obj_AttachObjectRad = (Obj_AttachObjectRad_fp)mi->fp[i++];
-  Obj_UnattachFromParent = (Obj_UnattachFromParent_fp)mi->fp[i++];
-  Obj_UnattachChild = (Obj_UnattachChild_fp)mi->fp[i++];
-  Obj_UnattachChildren = (Obj_UnattachChildren_fp)mi->fp[i++];
-  FVI_RayCast = (FVI_RayCast_fp)mi->fp[i++];
-  AI_GetPathID = (AI_GetPathID_fp)mi->fp[i++];
-  AI_GoalFollowPathSimpleFP = (AI_GoalFollowPathSimple_fp)mi->fp[i++];
-  AI_PowerSwitch = (AI_PowerSwitch_fp)mi->fp[i++];
-  AI_TurnTowardsVectors = (AI_TurnTowardsVectors_fp)mi->fp[i++];
-  AI_SetType = (AI_SetType_fp)mi->fp[i++];
-  AI_FindHidePos = (AI_FindHidePos_fp)mi->fp[i++];
-  AI_GoalAddEnabler = (AI_GoalAddEnabler_fp)mi->fp[i++];
-  AI_AddGoal = (AI_AddGoal_fp)mi->fp[i++];
-  AI_ClearGoal = (AI_ClearGoal_fp)mi->fp[i++];
-  AI_Value = (AI_Value_fp)mi->fp[i++];
-  AI_FindObjOfTypeFP = (AI_FindObjOfType_fp)mi->fp[i++];
-  AI_GetRoomPathPoint = (AI_GetRoomPathPoint_fp)mi->fp[i++];
-  AI_FindEnergyCenter = (AI_FindEnergyCenter_fp)mi->fp[i++];
-  AI_GetDistToObj = (AI_GetDistToObj_fp)mi->fp[i++];
-  AI_SetGoalFlags = (AI_SetGoalFlags_fp)mi->fp[i++];
-  AI_SetGoalCircleDist = (AI_SetGoalCircleDist_fp)mi->fp[i++];
-  File_ReadBytes = (File_ReadBytes_fp)mi->fp[i++];
-  File_ReadInt = (File_ReadInt_fp)mi->fp[i++];
-  File_ReadShort = (File_ReadShort_fp)mi->fp[i++];
-  File_ReadByte = (File_ReadByte_fp)mi->fp[i++];
-  File_ReadFloat = (File_ReadFloat_fp)mi->fp[i++];
-  File_ReadDouble = (File_ReadDouble_fp)mi->fp[i++];
-  File_ReadString = (File_ReadString_fp)mi->fp[i++];
-  File_WriteBytes = (File_WriteBytes_fp)mi->fp[i++];
-  File_WriteString = (File_WriteString_fp)mi->fp[i++];
-  File_WriteInt = (File_WriteInt_fp)mi->fp[i++];
-  File_WriteShort = (File_WriteShort_fp)mi->fp[i++];
-  File_WriteByte = (File_WriteByte_fp)mi->fp[i++];
-  File_WriteFloat = (File_WriteFloat_fp)mi->fp[i++];
-  File_WriteDouble = (File_WriteDouble_fp)mi->fp[i++];
-  Scrpt_MemAlloc = (Scrpt_MemAlloc_fp)mi->fp[i++];
-  Scrpt_MemFree = (Scrpt_MemFree_fp)mi->fp[i++];
-  Scrpt_CancelTimer = (Scrpt_CancelTimer_fp)mi->fp[i++];
-  Scrpt_CreateTimer = (Scrpt_CreateTimer_fp)mi->fp[i++];
-  MSafe_DoPowerup = (MSafe_DoPowerup_fp)mi->fp[i++];
-  Obj_CreateFP = (Obj_Create_fp)mi->fp[i++];
-  Game_GetTime = (Game_GetTime_fp)mi->fp[i++];
-  Game_GetFrameTime = (Game_GetFrameTime_fp)mi->fp[i++];
-  Obj_WBValueFP = (Obj_WBValue_fp)mi->fp[i++];
-  Scrpt_TimerExists = (Scrpt_TimerExists_fp)mi->fp[i++];
-  Obj_ValueFP = (Obj_Value_fp)mi->fp[i++];
-  Matcen_ValueFP = (Matcen_Value_fp)mi->fp[i++];
-  Matcen_Reset = (Matcen_Reset_fp)mi->fp[i++];
-  Matcen_Copy = (Matcen_Copy_fp)mi->fp[i++];
-  Matcen_Create = (Matcen_Create_fp)mi->fp[i++];
-  Matcen_FindID = (Matcen_FindID_fp)mi->fp[i++];
-  Msn_FlagSet = (Msn_FlagSet_fp)mi->fp[i++];
-  Msn_FlagGet = (Msn_FlagGet_fp)mi->fp[i++];
-  Player_ValueFP = (Player_Value_fp)mi->fp[i++];
-  Obj_SetCustomAnimFP = (Obj_SetCustomAnim_fp)mi->fp[i++];
-  Player_AddHudMessage = (Player_AddHudMessage_fp)mi->fp[i++];
-  Obj_Ghost = (Obj_Ghost_fp)mi->fp[i++];
-  Obj_BurningFP = (Obj_Burning_fp)mi->fp[i++];
-  Obj_IsEffect = (Obj_IsEffect_fp)mi->fp[i++];
-  File_Open = (File_Open_fp)mi->fp[i++];
-  File_Close = (File_Close_fp)mi->fp[i++];
-  File_Tell = (File_Tell_fp)mi->fp[i++];
-  File_eof = (File_eof_fp)mi->fp[i++];
-  Sound_StopFP = (Sound_Stop_fp)mi->fp[i++];
-  Sound_Play2dFP = (Sound_Play2d_fp)mi->fp[i++];
-  Sound_Play3dFP = (Sound_Play3d_fp)mi->fp[i++];
-  Sound_FindId = (Sound_FindId_fp)mi->fp[i++];
-  AI_IsObjFriend = (AI_IsObjFriend_fp)mi->fp[i++];
-  AI_IsObjEnemy = (AI_IsObjEnemy_fp)mi->fp[i++];
-  AI_GoalValueFP = (AI_GoalValue_fp)mi->fp[i++];
-  AI_GetNearbyObjsFP = (AI_GetNearbyObjs_fp)mi->fp[i++];
-  AI_GetCurGoalIndex = (AI_GetCurGoalIndex_fp)mi->fp[i++];
-  OMMS_Malloc = (OMMS_Malloc_fp)mi->fp[i++];
-  OMMS_Attach = (OMMS_Attach_fp)mi->fp[i++];
-  OMMS_Detach = (OMMS_Detach_fp)mi->fp[i++];
-  OMMS_Free = (OMMS_Free_fp)mi->fp[i++];
-  OMMS_Find = (OMMS_Find_fp)mi->fp[i++];
-  OMMS_GetInfo = (OMMS_GetInfo_fp)mi->fp[i++];
-  Cine_Start = (Cine_Start_fp)mi->fp[i++];
-  Cine_Stop = (Cine_Stop_fp)mi->fp[i++];
-  Scrpt_FindSoundName = (Scrpt_FindSoundName_fp)mi->fp[i++];
-  Scrpt_FindRoomName = (Scrpt_FindRoomName_fp)mi->fp[i++];
-  Scrpt_FindTriggerName = (Scrpt_FindTriggerName_fp)mi->fp[i++];
-  Scrpt_FindObjectName = (Scrpt_FindObjectName_fp)mi->fp[i++];
-  Scrpt_GetTriggerRoom = (Scrpt_GetTriggerRoom_fp)mi->fp[i++];
-  Scrpt_GetTriggerFace = (Scrpt_GetTriggerFace_fp)mi->fp[i++];
-  Scrpt_FindDoorName = (Scrpt_FindDoorName_fp)mi->fp[i++];
-  Scrpt_FindTextureName = (Scrpt_FindTextureName_fp)mi->fp[i++];
-  Game_CreateRandomSparksFP = (Game_CreateRandomSparks_fp)mi->fp[i++];
-  Scrpt_CancelTimerID = (Scrpt_CancelTimerID_fp)mi->fp[i++];
-  Obj_GetGroundPosFP = (Obj_GetGroundPos_fp)mi->fp[i++];
-  Game_EnableShip = (Game_EnableShip_fp)mi->fp[i++];
-  Game_IsShipEnabled = (Game_IsShipEnabled_fp)mi->fp[i++];
-  Path_GetInformationFP = (Path_GetInformation_fp)mi->fp[i++];
-  Cine_StartCanned = (Cine_StartCanned_fp)mi->fp[i++];
-  Scrpt_FindMatcenName = (Scrpt_FindMatcenName_fp)mi->fp[i++];
-  Scrpt_FindPathName = (Scrpt_FindPathName_fp)mi->fp[i++];
-  Scrpt_FindLevelGoalName = (Scrpt_FindLevelGoalName_fp)mi->fp[i++];
-  Obj_FindType = (Obj_FindType_fp)mi->fp[i++];
-  LGoal_ValueFP = (LGoal_Value_fp)mi->fp[i++];
-  Obj_MakeListOfType = (Obj_MakeListOfType_fp)mi->fp[i++];
-  Obj_Kill = (Obj_Kill_fp)mi->fp[i++];
-  //	AI_AreRoomsReachable = (AI_AreRoomsReachable_fp)mi->fp[i++];
-  AI_IsDestReachable = (AI_IsDestReachable_fp)mi->fp[i++];
-  AI_IsObjReachable = (AI_IsObjReachable_fp)mi->fp[i++];
-  Game_GetDiffLevel = (Game_GetDiffLevel_fp)mi->fp[i++];
-  Game_GetLanguage = (Game_GetLanguage_fp)mi->fp[i++];
-  Path_Value = (Path_Value_fp)mi->fp[i++];
+  // Keep it in sync with OsirisLoadandBind.cpp
+  mprintf = (mprintf_fp)mi->fp[0];
+  MSafe_CallFunction = (MSafe_CallFunction_fp)mi->fp[1];
+  MSafe_GetValue = (MSafe_GetValue_fp)mi->fp[2];
+  Obj_CallEvent = (Obj_CallEvent_fp)mi->fp[3];
+  Trgr_CallEvent = (Trgr_CallEvent_fp)mi->fp[4];
+  Sound_TouchFile = (Sound_TouchFile_fp)mi->fp[5];
+  Obj_FindID = (Obj_FindID_fp)mi->fp[6];
+  Wpn_FindID = (Wpn_FindID_fp)mi->fp[7];
+  Obj_GetTimeLived = (Obj_GetTimeLived_fp)mi->fp[8];
+  Obj_GetGunPosFP = (Obj_GetGunPos_fp)mi->fp[9];
+  Room_ValueFP = (Room_Value_fp)mi->fp[10];
+  Room_IsValid = (Room_IsValid_fp)mi->fp[11];
+  Obj_GetAttachParent = (Obj_GetAttachParent_fp)mi->fp[12];
+  Obj_GetNumAttachSlots = (Obj_GetNumAttachSlots_fp)mi->fp[13];
+  Obj_GetAttachChildHandle = (Obj_GetAttachChildHandle_fp)mi->fp[14];
+  Obj_AttachObjectAP = (Obj_AttachObjectAP_fp)mi->fp[15];
+  Obj_AttachObjectRad = (Obj_AttachObjectRad_fp)mi->fp[16];
+  Obj_UnattachFromParent = (Obj_UnattachFromParent_fp)mi->fp[17];
+  Obj_UnattachChild = (Obj_UnattachChild_fp)mi->fp[18];
+  Obj_UnattachChildren = (Obj_UnattachChildren_fp)mi->fp[19];
+  FVI_RayCast = (FVI_RayCast_fp)mi->fp[20];
+  AI_GetPathID = (AI_GetPathID_fp)mi->fp[21];
+  AI_GoalFollowPathSimpleFP = (AI_GoalFollowPathSimple_fp)mi->fp[22];
+  AI_PowerSwitch = (AI_PowerSwitch_fp)mi->fp[23];
+  AI_TurnTowardsVectors = (AI_TurnTowardsVectors_fp)mi->fp[24];
+  AI_SetType = (AI_SetType_fp)mi->fp[25];
+  AI_FindHidePos = (AI_FindHidePos_fp)mi->fp[26];
+  AI_GoalAddEnabler = (AI_GoalAddEnabler_fp)mi->fp[27];
+  AI_AddGoal = (AI_AddGoal_fp)mi->fp[28];
+  AI_ClearGoal = (AI_ClearGoal_fp)mi->fp[29];
+  AI_Value = (AI_Value_fp)mi->fp[30];
+  AI_FindObjOfTypeFP = (AI_FindObjOfType_fp)mi->fp[31];
+  AI_GetRoomPathPoint = (AI_GetRoomPathPoint_fp)mi->fp[32];
+  AI_FindEnergyCenter = (AI_FindEnergyCenter_fp)mi->fp[33];
+  AI_GetDistToObj = (AI_GetDistToObj_fp)mi->fp[34];
+  AI_SetGoalFlags = (AI_SetGoalFlags_fp)mi->fp[35];
+  AI_SetGoalCircleDist = (AI_SetGoalCircleDist_fp)mi->fp[36];
+  File_ReadBytes = (File_ReadBytes_fp)mi->fp[37];
+  File_ReadInt = (File_ReadInt_fp)mi->fp[38];
+  File_ReadShort = (File_ReadShort_fp)mi->fp[39];
+  File_ReadByte = (File_ReadByte_fp)mi->fp[40];
+  File_ReadFloat = (File_ReadFloat_fp)mi->fp[41];
+  File_ReadDouble = (File_ReadDouble_fp)mi->fp[42];
+  File_ReadString = (File_ReadString_fp)mi->fp[43];
+  File_WriteBytes = (File_WriteBytes_fp)mi->fp[44];
+  File_WriteString = (File_WriteString_fp)mi->fp[45];
+  File_WriteInt = (File_WriteInt_fp)mi->fp[46];
+  File_WriteShort = (File_WriteShort_fp)mi->fp[47];
+  File_WriteByte = (File_WriteByte_fp)mi->fp[48];
+  File_WriteFloat = (File_WriteFloat_fp)mi->fp[49];
+  File_WriteDouble = (File_WriteDouble_fp)mi->fp[50];
+  Scrpt_MemAlloc = (Scrpt_MemAlloc_fp)mi->fp[51];
+  Scrpt_MemFree = (Scrpt_MemFree_fp)mi->fp[52];
+  Scrpt_CancelTimer = (Scrpt_CancelTimer_fp)mi->fp[53];
+  Scrpt_CreateTimer = (Scrpt_CreateTimer_fp)mi->fp[54];
+  MSafe_DoPowerup = (MSafe_DoPowerup_fp)mi->fp[55];
+  Obj_CreateFP = (Obj_Create_fp)mi->fp[56];
+  Game_GetTime = (Game_GetTime_fp)mi->fp[57];
+  Game_GetFrameTime = (Game_GetFrameTime_fp)mi->fp[58];
+  Obj_WBValueFP = (Obj_WBValue_fp)mi->fp[59];
+  Scrpt_TimerExists = (Scrpt_TimerExists_fp)mi->fp[60];
+  Obj_ValueFP = (Obj_Value_fp)mi->fp[61];
+  Matcen_ValueFP = (Matcen_Value_fp)mi->fp[62];
+  Matcen_Reset = (Matcen_Reset_fp)mi->fp[63];
+  Matcen_Copy = (Matcen_Copy_fp)mi->fp[64];
+  Matcen_Create = (Matcen_Create_fp)mi->fp[65];
+  Matcen_FindID = (Matcen_FindID_fp)mi->fp[66];
+  Msn_FlagSet = (Msn_FlagSet_fp)mi->fp[67];
+  Msn_FlagGet = (Msn_FlagGet_fp)mi->fp[68];
+  Player_ValueFP = (Player_Value_fp)mi->fp[69];
+  Obj_SetCustomAnimFP = (Obj_SetCustomAnim_fp)mi->fp[70];
+  Player_AddHudMessage = (Player_AddHudMessage_fp)mi->fp[71];
+  Obj_Ghost = (Obj_Ghost_fp)mi->fp[72];
+  Obj_BurningFP = (Obj_Burning_fp)mi->fp[73];
+  Obj_IsEffect = (Obj_IsEffect_fp)mi->fp[74];
+  File_Open = (File_Open_fp)mi->fp[75];
+  File_Close = (File_Close_fp)mi->fp[76];
+  File_Tell = (File_Tell_fp)mi->fp[77];
+  File_eof = (File_eof_fp)mi->fp[78];
+  Sound_StopFP = (Sound_Stop_fp)mi->fp[79];
+  Sound_Play2dFP = (Sound_Play2d_fp)mi->fp[80];
+  Sound_Play3dFP = (Sound_Play3d_fp)mi->fp[81];
+  Sound_FindId = (Sound_FindId_fp)mi->fp[82];
+  AI_IsObjFriend = (AI_IsObjFriend_fp)mi->fp[83];
+  AI_IsObjEnemy = (AI_IsObjEnemy_fp)mi->fp[84];
+  AI_GoalValueFP = (AI_GoalValue_fp)mi->fp[85];
+  AI_GetNearbyObjsFP = (AI_GetNearbyObjs_fp)mi->fp[86];
+  AI_GetCurGoalIndex = (AI_GetCurGoalIndex_fp)mi->fp[87];
+  OMMS_Malloc = (OMMS_Malloc_fp)mi->fp[88];
+  OMMS_Attach = (OMMS_Attach_fp)mi->fp[89];
+  OMMS_Detach = (OMMS_Detach_fp)mi->fp[90];
+  OMMS_Free = (OMMS_Free_fp)mi->fp[91];
+  OMMS_Find = (OMMS_Find_fp)mi->fp[92];
+  OMMS_GetInfo = (OMMS_GetInfo_fp)mi->fp[93];
+  Cine_Start = (Cine_Start_fp)mi->fp[94];
+  Cine_Stop = (Cine_Stop_fp)mi->fp[95];
+  Scrpt_FindSoundName = (Scrpt_FindSoundName_fp)mi->fp[96];
+  Scrpt_FindRoomName = (Scrpt_FindRoomName_fp)mi->fp[97];
+  Scrpt_FindTriggerName = (Scrpt_FindTriggerName_fp)mi->fp[98];
+  Scrpt_FindObjectName = (Scrpt_FindObjectName_fp)mi->fp[99];
+  Scrpt_GetTriggerRoom = (Scrpt_GetTriggerRoom_fp)mi->fp[100];
+  Scrpt_GetTriggerFace = (Scrpt_GetTriggerFace_fp)mi->fp[101];
+  Scrpt_FindDoorName = (Scrpt_FindDoorName_fp)mi->fp[102];
+  Scrpt_FindTextureName = (Scrpt_FindTextureName_fp)mi->fp[103];
+  Game_CreateRandomSparksFP = (Game_CreateRandomSparks_fp)mi->fp[104];
+  Scrpt_CancelTimerID = (Scrpt_CancelTimerID_fp)mi->fp[105];
+  Obj_GetGroundPosFP = (Obj_GetGroundPos_fp)mi->fp[106];
+  Game_EnableShip = (Game_EnableShip_fp)mi->fp[107];
+  Game_IsShipEnabled = (Game_IsShipEnabled_fp)mi->fp[108];
+  Path_GetInformationFP = (Path_GetInformation_fp)mi->fp[109];
+  Cine_StartCanned = (Cine_StartCanned_fp)mi->fp[110];
+  Scrpt_FindMatcenName = (Scrpt_FindMatcenName_fp)mi->fp[111];
+  Scrpt_FindPathName = (Scrpt_FindPathName_fp)mi->fp[112];
+  Scrpt_FindLevelGoalName = (Scrpt_FindLevelGoalName_fp)mi->fp[113];
+  Obj_FindType = (Obj_FindType_fp)mi->fp[114];
+  LGoal_ValueFP = (LGoal_Value_fp)mi->fp[115];
+  Obj_MakeListOfType = (Obj_MakeListOfType_fp)mi->fp[116];
+  Obj_Kill = (Obj_Kill_fp)mi->fp[117];
+  AI_IsDestReachable = (AI_IsDestReachable_fp)mi->fp[118];
+  AI_IsObjReachable = (AI_IsObjReachable_fp)mi->fp[119];
+  Game_GetDiffLevel = (Game_GetDiffLevel_fp)mi->fp[120];
+  Game_GetLanguage = (Game_GetLanguage_fp)mi->fp[121];
+  Path_Value = (Path_Value_fp)mi->fp[122];
+  CreateMessageMap = (CreateMessageMap_fp)mi->fp[123];
+  DestroyMessageMap = (DestroyMessageMap_fp)mi->fp[124];
+  GetMessageNew = (GetMessage_fp)mi->fp[125];
 }
 #endif
 
