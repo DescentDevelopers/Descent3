@@ -263,7 +263,10 @@ ExternalProject_Add(HogMaker
     BINARY_DIR ${CMAKE_BINARY_DIR}/tools
     INSTALL_COMMAND ""
 )
-set(HogMakerBin ${CMAKE_BINARY_DIR}/tools/HogMaker)
+if (DEFINED CMAKE_CONFIGURATION_TYPES)
+  set(HogMakerBin_ConfigDir "$<CONFIG>/")
+endif()
+set(HogMakerBin ${CMAKE_BINARY_DIR}/tools/${HogMakerBin_ConfigDir}HogMaker)
 
 add_subdirectory(netcon)
 add_subdirectory(netgames)
