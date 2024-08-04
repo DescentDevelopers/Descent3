@@ -262,7 +262,6 @@ else()
   set(HogMakerBin ${CMAKE_BINARY_DIR}/tools/HogMaker)
 endif()
 
-add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)
