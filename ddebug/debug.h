@@ -184,6 +184,6 @@ void ddio_InternalKeyClose();
 // We forward declare PEXCEPTION_POINTERS so that the function
 // prototype doesn't needlessly require windows.h.
 typedef struct _EXCEPTION_POINTERS EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
-int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message);
+long __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data);
 #endif
 #endif

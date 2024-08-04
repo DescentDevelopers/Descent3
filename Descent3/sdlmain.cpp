@@ -41,6 +41,7 @@
 #include "appdatabase.h"
 #include "args.h"
 #include "init.h"
+#include "debug.h"
 
 #include "osiris_dll.h"
 
@@ -134,7 +135,9 @@ void install_signal_handlers() {
     fprintf(stderr, "SIG: Unable to install SIGTRAP\n");
 }
 #else
-void install_signal_handlers() {}
+void install_signal_handlers() {
+  SetUnhandledExceptionFilter(RecordExceptionInfo);
+}
 #endif
 
 //	---------------------------------------------------------------------------
