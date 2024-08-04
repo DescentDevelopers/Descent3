@@ -9,3 +9,5 @@ brew "ninja"
 
 # zlib
 brew "zlib"
+
+brew "glm"
