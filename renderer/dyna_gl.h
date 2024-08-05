@@ -38,21 +38,6 @@
 #define GLFUNCCALL
 #endif
 
-// ryan's adds. 04/18/2000.
-//  There was a bunch of stuff that was, I guess, not supported by
-//  Mesa when Outrage did the original port. So buttloads of code
-//  involving glActiveTextureARB() were #ifdef'd to only WIN32.
-//  To make use of the extension more generic, platforms that can handle
-//  it (Linux and Win32, as far as I care), define
-//  _USE_OGL_ACTIVE_TEXTURES, and check that define instead of WIN32 when
-//  using the extension.
-#if (!defined(_USE_OGL_ACTIVE_TEXTURES))
-#if (defined(WIN32))
-#define _USE_OGL_ACTIVE_TEXTURES
-#endif
-#endif
-// end ryan's adds.
-
 inline void CheckError() {
 #if defined(_DEBUG)
   static auto _dglGetError = reinterpret_cast<GLenum (*)()>(SDL_GL_GetProcAddress("glGetError"));
@@ -222,10 +207,8 @@ DYNAEXTERN(glGenFramebuffersEXT);
 DYNAEXTERN(glGenRenderbuffersEXT);
 DYNAEXTERN(glRenderbufferStorageEXT);
 
-#if defined(_USE_OGL_ACTIVE_TEXTURES)
-DYNAEXTERN_OPT(glActiveTextureARB, true);
-DYNAEXTERN_OPT(glMultiTexCoord4f, true);
-#endif
+DYNAEXTERN(glActiveTextureARB);
+DYNAEXTERN(glMultiTexCoord4f);
 
 #if defined(WIN32)
 DYNAEXTERN(wglCreateContext);

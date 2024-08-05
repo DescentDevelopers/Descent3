@@ -157,7 +157,6 @@ static int OpenGL_packed_pixels = 0;
 static int Cur_texture_object_num = 1;
 static int OpenGL_cache_initted = 0;
 static int OpenGL_last_bound[2];
-static int Last_texel_unit_set = -1;
 
 extern int gpu_last_frame_polys_drawn;
 extern int gpu_last_frame_verts_processed;
@@ -231,12 +230,7 @@ int opengl_MakeTextureObject(int tn) {
 
   Cur_texture_object_num++;
 
-  if (UseMultitexture && Last_texel_unit_set != tn) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
-    Last_texel_unit_set = tn;
-#endif
-  }
+  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
 
   dglBindTexture(GL_TEXTURE_2D, num);
   dglPixelStorei(GL_UNPACK_ALIGNMENT, 2);
@@ -316,7 +310,6 @@ void opengl_SetDefaults() {
   rend_SetGammaValue(gpu_preferred_state.gamma);
   OpenGL_last_bound[0] = 9999999;
   OpenGL_last_bound[1] = 9999999;
-  Last_texel_unit_set = -1;
   OpenGL_multitexture_state = false;
 
   dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -328,19 +321,14 @@ void opengl_SetDefaults() {
   gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 0);
   gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 1);
 
-  if (UseMultitexture) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
-    dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    dglHint(GL_FOG_HINT, GL_NICEST);
-
-    gRenderer->setTextureEnabled(1, false);
-    dglEnable(GL_BLEND);
-    dglEnable(GL_DITHER);
-    dglBlendFunc(GL_DST_COLOR, GL_ZERO);
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-#endif
-  }
+  dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  dglHint(GL_FOG_HINT, GL_NICEST);
+  gRenderer->setTextureEnabled(1, false);
+  dglEnable(GL_BLEND);
+  dglEnable(GL_DITHER);
+  dglBlendFunc(GL_DST_COLOR, GL_ZERO);
+  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
 }
 
 extern bool linux_permit_gamma;
@@ -588,19 +576,10 @@ int opengl_Init(oeApplication *app, renderer_preferred_state *pref_state) {
   // Get some info
   opengl_GetInformation();
 
-  // Determine if Multitexture is supported
-  UseMultitexture = !FindArg("-NoMultitexture") && dglActiveTextureARB && dglMultiTexCoord4f;
-
   // Do we have packed pixel formats?
   OpenGL_packed_pixels = opengl_CheckExtension("GL_EXT_packed_pixels");
 
   opengl_InitCache();
-
-  if (UseMultitexture) {
-    mprintf(0, "Using multitexture.");
-  } else {
-    mprintf(0, "Not using multitexture.");
-  }
 
   if (OpenGL_packed_pixels) {
     opengl_packed_Upload_data = (uint16_t *)mem_malloc(2048 * 2048 * 2);
@@ -802,12 +781,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
   int w, h;
   int size;
 
-  if (UseMultitexture && Last_texel_unit_set != tn) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
-    Last_texel_unit_set = tn;
-#endif
-  }
+  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
 
   if (map_type == MAP_TYPE_LIGHTMAP) {
     if (GameLightmaps[bm_handle].flags & LF_BRAND_NEW)
@@ -1040,12 +1014,7 @@ int opengl_MakeBitmapCurrent(int handle, int map_type, int tn) {
   }
 
   if (OpenGL_last_bound[tn] != texnum) {
-    if (UseMultitexture && Last_texel_unit_set != tn) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-      dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
-      Last_texel_unit_set = tn;
-#endif
-    }
+    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
 
     dglBindTexture(GL_TEXTURE_2D, texnum);
     OpenGL_last_bound[tn] = texnum;
@@ -1074,12 +1043,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
   if (uwrap == dest_wrap)
     return;
 
-  if (UseMultitexture && Last_texel_unit_set != tn) {
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
-    Last_texel_unit_set = tn;
-#endif
-  }
+  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
 
   OpenGL_sets_this_frame[1]++;
 
@@ -1121,12 +1085,8 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
 
   if (magf == dest_state)
     return;
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  if (UseMultitexture && Last_texel_unit_set != tn) {
-    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
-    Last_texel_unit_set = tn;
-  }
-#endif
+
+  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
 
   OpenGL_sets_this_frame[2]++;
 
@@ -1164,16 +1124,11 @@ void gpu_SetMultitextureBlendMode(bool state) {
     return;
   OpenGL_multitexture_state = state;
 
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
   gRenderer->setTextureEnabled(1, state);
-  Last_texel_unit_set = 0;
-#endif
 }
 
 void gpu_DrawFlatPolygon3D(g3Point **p, int nv) {
-  if (UseMultitexture) {
-    gpu_SetMultitextureBlendMode(false);
-  }
+  gpu_SetMultitextureBlendMode(false);
 
   std::array<PosColorUVVertex, 100> vertices{};
   std::transform(p, p + nv, std::begin(vertices), [](auto pnt) {
@@ -1446,12 +1401,8 @@ void rend_SetRendererType(renderer_type state) {
 void rend_SetLighting(light_state state) {
   if (state == gpu_state.cur_light_state)
     return; // No redundant state setting
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  if (UseMultitexture && Last_texel_unit_set != 0) {
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-    Last_texel_unit_set = 0;
-  }
-#endif
+
+  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
 
   OpenGL_sets_this_frame[4]++;
 
@@ -1491,12 +1442,8 @@ void rend_SetColorModel(color_model state) {
 void rend_SetTextureType(texture_type state) {
   if (state == gpu_state.cur_texture_type)
     return; // No redundant state setting
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  if (UseMultitexture && Last_texel_unit_set != 0) {
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-    Last_texel_unit_set = 0;
-  }
-#endif
+
+  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
   OpenGL_sets_this_frame[3]++;
 
   switch (state) {
@@ -1741,12 +1688,8 @@ void rend_SetFogColor(ddgr_color color) {
 void rend_SetAlphaType(int8_t atype) {
   if (atype == gpu_state.cur_alpha_type)
     return; // don't set it redundantly
-#if (defined(_USE_OGL_ACTIVE_TEXTURES))
-  if (UseMultitexture && Last_texel_unit_set != 0) {
-    dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
-    Last_texel_unit_set = 0;
-  }
-#endif
+
+  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
   OpenGL_sets_this_frame[6]++;
 
   if (atype == AT_ALWAYS) {

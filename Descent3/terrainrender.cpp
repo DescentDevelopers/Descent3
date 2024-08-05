@@ -2582,8 +2582,7 @@ void DisplayTerrainList(int cellcount, bool from_automap) {
     rend_SetTextureType(TT_LINEAR);
     rend_SetAlphaType(ATF_CONSTANT + ATF_TEXTURE);
     rend_SetLighting(LS_NONE);
-    if (!StateLimited || UseMultitexture)
-      draw_lightmap = true;
+    draw_lightmap = true;
   }
   RotateTerrainList(cellcount, from_automap);
   if (!UseHardware) {

@@ -791,26 +791,6 @@ void RenderSubmodelFacesUnsorted(poly_model *pm, bsp_info *sm) {
       int facenum = State_elements[i].facenum;
       RenderSubmodelFace(pm, sm, facenum);
     }
-
-    if (!NoLightmaps) {
-      if (!UseMultitexture && Polymodel_light_type == POLYMODEL_LIGHTING_LIGHTMAP) {
-        rend_SetAlphaType(AT_LIGHTMAP_BLEND);
-        rend_SetLighting(LS_GOURAUD);
-        rend_SetColorModel(CM_MONO);
-        rend_SetOverlayType(OT_NONE);
-        rend_SetTextureType(TT_PERSPECTIVE);
-        rend_SetWrapType(WT_CLAMP);
-        rend_SetMipState(0);
-
-        for (i = rcount - 1; i >= 0; i--) {
-          int facenum = State_elements[i].facenum;
-          RenderSubmodelLightmapFace(pm, sm, facenum);
-        }
-
-        rend_SetWrapType(WT_WRAP);
-        rend_SetMipState(1);
-      }
-    }
   }
 
   // Now render all alpha faces
@@ -1027,8 +1007,7 @@ void RenderSubmodel(poly_model *pm, bsp_info *sm, uint32_t f_render_sub) {
     // Turn off bumpmapping if not needed
     rend_SetBumpmapReadyState(0, 0);
   } else {
-    if (!StateLimited || UseMultitexture)
-      rend_SetOverlayType(OT_BLEND);
+    rend_SetOverlayType(OT_BLEND);
   }
 
   if (Multicolor_texture == -1 && Polymodel_use_effect && (Polymodel_effect.type & PEF_CUSTOM_COLOR))

@@ -329,7 +329,6 @@ extern float Z_bias;
 extern bool UseHardware;
 extern bool StateLimited;
 extern bool NoLightmaps;
-extern bool UseMultitexture;
 
 class NewBitmap;
 
