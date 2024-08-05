@@ -41,7 +41,6 @@ char Renderer_error_message[256] = "Generic renderer error";
 bool UseHardware = true;
 bool NoLightmaps = false;
 bool StateLimited = false;
-bool UseMultitexture = false;
 bool UseWBuffer = false;
 
 // General renderer states
@@ -443,9 +442,7 @@ void rend_DrawPolygon2D(int handle, g3Point **p, int nv) {
 
   g3_RefreshTransforms(true);
 
-  if (UseMultitexture) {
-    gpu_SetMultitextureBlendMode(false);
-  }
+  gpu_SetMultitextureBlendMode(false);
 
   int xAdd = gpu_state.clip_x1;
   int yAdd = gpu_state.clip_y1;
@@ -514,14 +511,12 @@ void rend_DrawPolygon3D(int handle, g3Point **p, int nv, int map_type) {
     return;
   }
 
-  if (gpu_Overlay_type != OT_NONE && UseMultitexture) {
+  if (gpu_Overlay_type != OT_NONE) {
     rend_DrawMultitexturePolygon3D(handle, p, nv, map_type);
     return;
   }
 
-  if (UseMultitexture) {
-    gpu_SetMultitextureBlendMode(false);
-  }
+  gpu_SetMultitextureBlendMode(false);
 
   gpu_BindTexture(handle, map_type, 0);
 

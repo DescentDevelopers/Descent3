@@ -1905,7 +1905,7 @@ void RenderFace(room *rp, int facenum) {
   else
     rend_SetColorModel(CM_RGB);
   // Set lighting map
-  if ((fp->flags & FF_LIGHTMAP) && (!StateLimited || UseMultitexture)) {
+  if ((fp->flags & FF_LIGHTMAP) != 0) {
     if (GameTextures[fp->tmap].flags & TF_SATURATE)
       rend_SetOverlayType(OT_NONE);
     else
@@ -2344,23 +2344,6 @@ void RenderRoomUnsorted(room *rp) {
     int i;
     for (i = rcount - 1; i >= 0; i--) {
       RenderFace(rp, State_elements[i].facenum);
-    }
-
-    if (!UseMultitexture) {
-      // Since we're state limited, we have to render lightmap faces completely separate
-      // Now render lightmap faces
-      rend_SetAlphaType(AT_LIGHTMAP_BLEND);
-      rend_SetLighting(LS_GOURAUD);
-      rend_SetColorModel(CM_MONO);
-      rend_SetOverlayType(OT_NONE);
-      rend_SetTextureType(TT_PERSPECTIVE);
-      rend_SetWrapType(WT_CLAMP);
-      rend_SetMipState(0);
-      for (i = rcount - 1; i >= 0; i--) {
-        RenderLightmapFace(rp, State_elements[i].facenum);
-      }
-      rend_SetWrapType(WT_WRAP);
-      rend_SetMipState(1);
     }
   }
 }
