@@ -400,7 +400,6 @@ struct rendering_state {
 
   int8_t cur_bilinear_state;
   int8_t cur_zbuffer_state;
-  int8_t cur_fog_state;
 
   texture_type cur_texture_type;
   color_model cur_color_model;
@@ -411,7 +410,6 @@ struct rendering_state {
 
   int cur_alpha;
   ddgr_color cur_color;
-  ddgr_color cur_fog_color;
 
   int8_t cur_texture_quality; // 0-none, 1-linear, 2-perspective
 

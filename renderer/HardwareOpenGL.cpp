@@ -97,7 +97,8 @@ struct Renderer {
       projection_ = *projection;
     }
 
-    shader_.setUniformMat4f("u_transform", projection_ * view_ * model_);
+    shader_.setUniformMat4f("u_modelview", view_ * model_);
+    shader_.setUniformMat4f("u_projection", projection_);
   }
 
   void setTextureEnabled(GLuint index, bool enabled) {
@@ -120,6 +121,20 @@ struct Renderer {
       return PosColorUV2Vertex{vtx.pos, vtx.color, vtx.uv, {}};
     });
     setVertexData(offset, count, converted.data());
+  }
+
+  void setFogEnabled(bool enabled) {
+    shader_.setUniform1i("u_fog_enable", enabled);
+  }
+
+  void setFogBorders(float nearz, float farz) {
+    shader_.setUniform1f("u_fog_start", nearz);
+    shader_.setUniform1f("u_fog_end", farz);
+  }
+
+  void setFogColor(ddgr_color color) {
+    shader_.setUniform4fv("u_fog_color", GR_COLOR_RED(color) / 255.0f, GR_COLOR_GREEN(color) / 255.0f,
+                          GR_COLOR_BLUE(color) / 255.0f, 1);
   }
 
 private:
@@ -1367,26 +1382,12 @@ void rend_SetFlatColor(ddgr_color color) { gpu_state.cur_color = color; }
 
 // Sets the fog state to TRUE or FALSE
 void rend_SetFogState(int8_t state) {
-  if (state == gpu_state.cur_fog_state)
-    return;
-
-  gpu_state.cur_fog_state = state;
-  if (state == 1) {
-    dglEnable(GL_FOG);
-  } else {
-    dglDisable(GL_FOG);
-  }
+  gRenderer->setFogEnabled(state);
 }
 
 // Sets the near and far plane of fog
 void rend_SetFogBorders(float nearz, float farz) {
-  // Sets the near and far plane of fog
-  float fogStart = nearz;
-  float fogEnd = farz;
-
-  dglFogi(GL_FOG_MODE, GL_LINEAR);
-  dglFogf(GL_FOG_START, fogStart);
-  dglFogf(GL_FOG_END, fogEnd);
+  gRenderer->setFogBorders(nearz, farz);
 }
 
 void rend_SetRendererType(renderer_type state) {
@@ -1668,20 +1669,7 @@ void rend_DrawLine(int x1, int y1, int x2, int y2) {
 
 // Sets the color of fog
 void rend_SetFogColor(ddgr_color color) {
-  if (color == gpu_state.cur_fog_color)
-    return;
-
-  float fc[4];
-  fc[0] = GR_COLOR_RED(color);
-  fc[1] = GR_COLOR_GREEN(color);
-  fc[2] = GR_COLOR_BLUE(color);
-  fc[3] = 1;
-
-  fc[0] /= 255.0f;
-  fc[1] /= 255.0f;
-  fc[2] /= 255.0f;
-
-  dglFogfv(GL_FOG_COLOR, fc);
+  gRenderer->setFogColor(color);
 }
 
 void rend_SetAlphaType(int8_t atype) {
