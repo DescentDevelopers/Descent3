@@ -182,6 +182,14 @@ struct ShaderProgram {
     dglUniform1i(getUniformId(name), val);
   }
 
+  void setUniform1f(std::string const& name, GLfloat val) {
+    dglUniform1f(getUniformId(name), val);
+  }
+
+  void setUniform4fv(std::string const& name, GLfloat f0, GLfloat f1, GLfloat f2, GLfloat f3) {
+    dglUniform4f(getUniformId(name), f0, f1, f2, f3);
+  }
+
 private:
   GLint getUniformId(std::string const& name) {
     auto it = uniform_cache_.find(name);
