@@ -20,13 +20,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "inffile.h"
+#include <cstring>
 
 #include "cfile.h"
+#include "inffile.h"
 #include "pstring.h"
 #include "pserror.h"
 
-#include <string.h>
 
 #define INFFILE_NULL (-1024)
 
@@ -80,7 +80,7 @@ const char *InfFile::GetSymbolText(const char *name) {
 //	opens an inf file, pass in a lexical analyzer that will return a command index.
 //	tag_check is a string that must appear at the very beginning of the file.
 //	lexfn is a function to match a command to a number.   num <= 0 are taken.
-bool InfFile::Open(const char *filename, const char *tag_check, int (*lexfn)(const char *command)) {
+bool InfFile::Open(const std::filesystem::path &filename, const char *tag_check, int (*lexfn)(const char *command)) {
   if (m_fp)
     return false;
 

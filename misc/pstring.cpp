@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -39,9 +39,11 @@
  */
 
 #include <cctype>
+#include <cstdint>
+#include <string>
+#include <vector>
 
 #include "pstring.h"
-#include <cstdint>
 
 // CleanupStr
 //    This function strips all leading and trailing spaces, keeping internal spaces. This goes for tabs too.
@@ -76,4 +78,33 @@ std::size_t CleanupStr(char *dest, const char *src, std::size_t destlen) {
   dest[out_size] = '\0';
 
   return out_size;
+}
+
+std::string StringJoin(const std::vector<std::string> &strs, const std::string &delim) {
+  if (strs.empty())
+    return "";
+  std::vector<char> res;
+  for (int i = 0; i < strs.size() - 1; ++i) {
+    for (auto const &c : strs[i]) {
+      res.push_back(c);
+    }
+    for (auto const &c : delim) {
+      res.push_back(c);
+    }
+  }
+  for (auto const &c : strs[strs.size() - 1]) {
+    res.push_back(c);
+  }
+  return std::string{res.begin(), res.end()};
+}
+
+std::vector<std::string> StringSplit(std::string str, const std::string &delim) {
+  std::vector<std::string> res;
+  size_t pos;
+  while ((pos = str.find(delim)) != std::string::npos) {
+    res.push_back(str.substr(0, pos));
+    str.erase(0, pos + delim.length());
+  }
+  res.push_back(str);
+  return res;
 }

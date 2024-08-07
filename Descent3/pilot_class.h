@@ -193,8 +193,8 @@ public:
   int flush(bool new_file);
 
   // This function sets the filename that is associated with this pilot
-  void set_filename(char *fname);
-  void get_filename(char *fname);
+  void set_filename(const std::string &fname);
+  std::string get_filename();
 
   // This function reads in the data from file (from the filename associated)
   // into the pilot data.
@@ -274,7 +274,7 @@ private:
 private:
   //--- Pilot data				---//
   //--- Try to preserve alignment	---//
-  char *filename;      // filename location of this pilot
+  std::string filename;// filename location of this pilot
   char *name;          // name of the pilot (used in the game)
   char *ship_logo;     // ship logo for multiplayer play (filename)
   char *ship_model;    // what ship does this pilot fly

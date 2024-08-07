@@ -101,7 +101,7 @@ protected:
 
   // Implementation
 protected:
-  void SetStatus(char *str);
+  void SetStatus(const char *str);
   void UpdateAvailableWithLevels();
   void UpdateAvailableWithScripts();
   void UpdateCheckedOutWithLevels();

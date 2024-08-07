@@ -33,7 +33,7 @@ const unsigned CTF_X_AXIS = (1 << (CT_X_AXIS - 1)), // AXIS constants for ctAxis
     CTF_Y_AXIS = (1 << (CT_Y_AXIS - 1)), CTF_Z_AXIS = (1 << (CT_Z_AXIS - 1)), CTF_R_AXIS = (1 << (CT_R_AXIS - 1)),
                CTF_U_AXIS = (1 << (CT_U_AXIS - 1)), CTF_V_AXIS = (1 << (CT_V_AXIS - 1));
 
-const unsigned CT_MAX_CONTROLLERS = 32, CT_MAX_ELEMENTS = 255, CT_MAX_EXTCTLS = 16, CT_MAX_BUTTONS = 32;
+const int CT_MAX_CONTROLLERS = 32, CT_MAX_ELEMENTS = 255, CT_MAX_EXTCTLS = 16, CT_MAX_BUTTONS = 32;
 
 //	rules for adding controllers
 //		any nonstandard special controllers should be added to the below list starting at

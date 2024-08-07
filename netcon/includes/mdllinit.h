@@ -195,9 +195,9 @@ DLLMultiStartClient = (MultiStartClient_fp)API.fp[32];
 DLLrend_GetRenderState = (rend_GetRenderState_fp)API.fp[33];
 DLLLoadMission = (LoadMission_fp)API.fp[34];
 DLLddio_MakePath = (ddio_MakePath_fp)API.fp[35];
-DLLddio_FindFileStart = (ddio_FindFileStart_fp)API.fp[36];
-DLLddio_FindFileClose = (ddio_FindFileClose_fp)API.fp[37];
-DLLddio_FindNextFile = (ddio_FindNextFile_fp)API.fp[38];
+// DLLddio_FindFileStart = (ddio_FindFileStart_fp)API.fp[36]; // unused
+// DLLddio_FindFileClose = (ddio_FindFileClose_fp)API.fp[37]; // unused
+// DLLddio_FindNextFile = (ddio_FindNextFile_fp)API.fp[38];   // unused
 DLLMultiStartServerFP = (MultiStartServer_fp)API.fp[39];
 DLLShowProgressScreen = (ShowProgressScreen_fp)API.fp[40];
 DLLSearchForLocalGamesTCP = (SearchForLocalGamesTCP_fp)API.fp[41];
@@ -274,6 +274,7 @@ DLLCheckMissionForScript = (CheckMissionForScript_fp)API.fp[107];
 DLLShowNetgameInfo = (ShowNetgameInfo_fp)API.fp[108];
 // API.fp[109]; // Not used
 DLLCheckGetD3M = (CheckGetD3M_fp)API.fp[110];
+DLLddio_DoForeachFile = (ddio_DoForeachFile_fp)API.fp[111];
 
 DLLMPlayers = (player *)API.players;
 DLLNetgame = (netgame_info *)API.netgame;
