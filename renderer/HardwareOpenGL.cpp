@@ -496,7 +496,7 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   dglGenRenderbuffers(1, &GOpenGLRBOColor);
   dglBindRenderbuffer(GL_RENDERBUFFER, GOpenGLRBOColor);
-  dglRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, w, h);
+  dglRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, w, h);
   dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GOpenGLRBOColor);
 
   dglGenRenderbuffers(1, &GOpenGLRBODepth);
