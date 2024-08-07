@@ -186,18 +186,18 @@ DYNAEXTERN(glVertexAttribPointer);
 DYNAEXTERN(glViewport);
 
 // FBO entry points for render-to-texture ...
-DYNAEXTERN(glBindFramebufferEXT);
-DYNAEXTERN(glBindRenderbufferEXT);
-DYNAEXTERN(glBlitFramebufferEXT);
-DYNAEXTERN(glCheckFramebufferStatusEXT);
-DYNAEXTERN(glDeleteFramebuffersEXT);
-DYNAEXTERN(glDeleteRenderbuffersEXT);
-DYNAEXTERN(glFramebufferRenderbufferEXT);
-DYNAEXTERN(glGenFramebuffersEXT);
-DYNAEXTERN(glGenRenderbuffersEXT);
-DYNAEXTERN(glRenderbufferStorageEXT);
+DYNAEXTERN(glBindFramebuffer);
+DYNAEXTERN(glBindRenderbuffer);
+DYNAEXTERN(glBlitFramebuffer);
+DYNAEXTERN(glCheckFramebufferStatus);
+DYNAEXTERN(glDeleteFramebuffers);
+DYNAEXTERN(glDeleteRenderbuffers);
+DYNAEXTERN(glFramebufferRenderbuffer);
+DYNAEXTERN(glGenFramebuffers);
+DYNAEXTERN(glGenRenderbuffers);
+DYNAEXTERN(glRenderbufferStorage);
 
-DYNAEXTERN(glActiveTextureARB);
+DYNAEXTERN(glActiveTexture);
 DYNAEXTERN(glMultiTexCoord4f);
 
 #if defined(WIN32)
