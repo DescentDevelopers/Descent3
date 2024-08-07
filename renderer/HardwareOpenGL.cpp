@@ -215,16 +215,6 @@ bool opengl_Blending_on = 0;
 
 static oeApplication *ParentApplication = NULL;
 
-/* framebuffer object for backbuffer, scale to window size without changing resolution.  --ryan, 2019. */
-#define GL_DEPTH_COMPONENT16_EXT              0x81A5
-#define GL_READ_FRAMEBUFFER_EXT               0x8CA8
-#define GL_DRAW_FRAMEBUFFER_EXT               0x8CA9
-#define GL_FRAMEBUFFER_COMPLETE_EXT           0x8CD5
-#define GL_COLOR_ATTACHMENT0_EXT              0x8CE0
-#define GL_DEPTH_ATTACHMENT_EXT               0x8D00
-#define GL_STENCIL_ATTACHMENT_EXT             0x8D20
-#define GL_FRAMEBUFFER_EXT                    0x8D40
-#define GL_RENDERBUFFER_EXT                   0x8D41
 static GLuint GOpenGLFBO = 0;
 static GLuint GOpenGLRBOColor = 0;
 static GLuint GOpenGLRBODepth = 0;
@@ -257,7 +247,7 @@ int opengl_MakeTextureObject(int tn) {
   dglGenTextures(1, &num);
   textures_.push_back(num);
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+  dglActiveTexture(GL_TEXTURE0_ARB + tn);
 
   dglBindTexture(GL_TEXTURE_2D, num);
   dglPixelStorei(GL_UNPACK_ALIGNMENT, 2);
@@ -344,12 +334,12 @@ void opengl_SetDefaults() {
   gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 0);
   gpu_BindTexture(BAD_BITMAP_HANDLE, MAP_TYPE_BITMAP, 1);
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + 1);
+  dglActiveTexture(GL_TEXTURE0_ARB + 1);
   gRenderer->setTextureEnabled(1, false);
   dglEnable(GL_BLEND);
   dglEnable(GL_DITHER);
   dglBlendFunc(GL_DST_COLOR, GL_ZERO);
-  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglActiveTexture(GL_TEXTURE0_ARB + 0);
 }
 
 extern bool linux_permit_gamma;
@@ -485,14 +475,14 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
 
   /* Tear down the backbuffer and rebuild at new dimensions... */
   if (GOpenGLFBO) {
-    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, GOpenGLFBO);
-    dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, 0);
-    dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
-    dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    dglDeleteFramebuffersEXT(1, &GOpenGLFBO);
-    dglDeleteRenderbuffersEXT(1, &GOpenGLRBOColor);
-    dglDeleteRenderbuffersEXT(1, &GOpenGLRBODepth);
+    dglBindFramebuffer(GL_FRAMEBUFFER, GOpenGLFBO);
+    dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, 0);
+    dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+    dglBindRenderbuffer(GL_RENDERBUFFER, 0);
+    dglBindFramebuffer(GL_FRAMEBUFFER, 0);
+    dglDeleteFramebuffers(1, &GOpenGLFBO);
+    dglDeleteRenderbuffers(1, &GOpenGLRBOColor);
+    dglDeleteRenderbuffers(1, &GOpenGLRBODepth);
     GOpenGLFBOWidth = GOpenGLFBOHeight = GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
   }
 
@@ -502,28 +492,28 @@ int opengl_Setup(oeApplication *app, int *width, int *height) {
   GOpenGLFBOWidth = w;
   GOpenGLFBOHeight = h;
 
-  dglGenFramebuffersEXT(1, &GOpenGLFBO);
-  dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, GOpenGLFBO);
+  dglGenFramebuffers(1, &GOpenGLFBO);
+  dglBindFramebuffer(GL_FRAMEBUFFER, GOpenGLFBO);
 
-  dglGenRenderbuffersEXT(1, &GOpenGLRBOColor);
-  dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, GOpenGLRBOColor);
-  dglRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGB, w, h);
-  dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, GOpenGLRBOColor);
+  dglGenRenderbuffers(1, &GOpenGLRBOColor);
+  dglBindRenderbuffer(GL_RENDERBUFFER, GOpenGLRBOColor);
+  dglRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, w, h);
+  dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, GOpenGLRBOColor);
 
-  dglGenRenderbuffersEXT(1, &GOpenGLRBODepth);
-  dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, GOpenGLRBODepth);
-  dglRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT16_EXT, w, h);
-  dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, GOpenGLRBODepth);
+  dglGenRenderbuffers(1, &GOpenGLRBODepth);
+  dglBindRenderbuffer(GL_RENDERBUFFER, GOpenGLRBODepth);
+  dglRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
+  dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, GOpenGLRBODepth);
 
-  if (dglCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT) {
+  if (dglCheckFramebufferStatus(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT) {
       mprintf(0, "OpenGL: our framebuffer object is incomplete, giving up");
-      dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, 0);
-      dglFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, 0);
-      dglBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-      dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-      dglDeleteFramebuffersEXT(1, &GOpenGLFBO);
-      dglDeleteRenderbuffersEXT(1, &GOpenGLRBOColor);
-      dglDeleteRenderbuffersEXT(1, &GOpenGLRBODepth);
+      dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, 0);
+      dglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+      dglBindRenderbuffer(GL_RENDERBUFFER, 0);
+      dglBindFramebuffer(GL_FRAMEBUFFER, 0);
+      dglDeleteFramebuffers(1, &GOpenGLFBO);
+      dglDeleteRenderbuffers(1, &GOpenGLRBOColor);
+      dglDeleteRenderbuffers(1, &GOpenGLRBODepth);
       GOpenGLFBO = GOpenGLRBOColor = GOpenGLRBODepth = 0;
       SDL_GL_DeleteContext(GSDLGLContext);
       SDL_DestroyWindow(GSDLWindow);
@@ -795,7 +785,7 @@ void opengl_TranslateBitmapToOpenGL(int texnum, int bm_handle, int map_type, int
   int w, h;
   int size;
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+  dglActiveTexture(GL_TEXTURE0_ARB + tn);
 
   if (map_type == MAP_TYPE_LIGHTMAP) {
     if (GameLightmaps[bm_handle].flags & LF_BRAND_NEW)
@@ -1028,7 +1018,7 @@ int opengl_MakeBitmapCurrent(int handle, int map_type, int tn) {
   }
 
   if (OpenGL_last_bound[tn] != texnum) {
-    dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+    dglActiveTexture(GL_TEXTURE0_ARB + tn);
 
     dglBindTexture(GL_TEXTURE_2D, texnum);
     OpenGL_last_bound[tn] = texnum;
@@ -1057,7 +1047,7 @@ void opengl_MakeWrapTypeCurrent(int handle, int map_type, int tn) {
   if (uwrap == dest_wrap)
     return;
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+  dglActiveTexture(GL_TEXTURE0_ARB + tn);
 
   OpenGL_sets_this_frame[1]++;
 
@@ -1100,7 +1090,7 @@ void opengl_MakeFilterTypeCurrent(int handle, int map_type, int tn) {
   if (magf == dest_state)
     return;
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + tn);
+  dglActiveTexture(GL_TEXTURE0_ARB + tn);
 
   OpenGL_sets_this_frame[2]++;
 
@@ -1396,7 +1386,7 @@ void rend_SetLighting(light_state state) {
   if (state == gpu_state.cur_light_state)
     return; // No redundant state setting
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglActiveTexture(GL_TEXTURE0_ARB + 0);
 
   OpenGL_sets_this_frame[4]++;
 
@@ -1437,7 +1427,7 @@ void rend_SetTextureType(texture_type state) {
   if (state == gpu_state.cur_texture_type)
     return; // No redundant state setting
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglActiveTexture(GL_TEXTURE0_ARB + 0);
   OpenGL_sets_this_frame[3]++;
 
   switch (state) {
@@ -1514,20 +1504,20 @@ void rend_Flip(void) {
     const int centeredX = (w - scaledWidth) / 2;
     const int centeredY = (h - scaledHeight) / 2;
 
-    dglBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0);
+    dglBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     dglClearColor (0.0f, 0.0f, 0.0f, 1.0f);
     dglClear(GL_COLOR_BUFFER_BIT);  // in case the Steam Overlay wrote to places we don't blit over.
-    dglBlitFramebufferEXT(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight,
+    dglBlitFramebuffer(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight,
                           centeredX, centeredY, centeredX + scaledWidth, centeredY + scaledHeight,
                           GL_COLOR_BUFFER_BIT, GL_LINEAR);
-    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    dglBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
   SDL_GL_SwapWindow(GSDLWindow);
 
   // go back to drawing on the FBO until we want to blit to the window framebuffer again.
   if (GOpenGLFBO != 0) {
-    dglBindFramebufferEXT(GL_FRAMEBUFFER_EXT, GOpenGLFBO);
+    dglBindFramebuffer(GL_FRAMEBUFFER, GOpenGLFBO);
     dglViewport(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight);
     dglScissor(0, 0, GOpenGLFBOWidth, GOpenGLFBOHeight);
   }
@@ -1673,7 +1663,7 @@ void rend_SetAlphaType(int8_t atype) {
   if (atype == gpu_state.cur_alpha_type)
     return; // don't set it redundantly
 
-  dglActiveTextureARB(GL_TEXTURE0_ARB + 0);
+  dglActiveTexture(GL_TEXTURE0_ARB + 0);
   OpenGL_sets_this_frame[6]++;
 
   if (atype == AT_ALWAYS) {
