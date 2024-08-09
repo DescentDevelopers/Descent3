@@ -1,3 +1,9 @@
+set(HEADERS
+  decoders.h
+  movie_sound.h
+  mve_audio.h
+  mvelib.h
+  sound_interface.h)
 set(CPPS
   decoder8.cpp
   decoder16.cpp
@@ -7,7 +13,7 @@ set(CPPS
   mveplay.cpp
 )
 
-add_library(libmve STATIC ${CPPS})
+add_library(libmve STATIC ${HEADERS} ${CPPS})
 target_link_libraries(libmve PRIVATE
   ddio
   SDL2::SDL2
