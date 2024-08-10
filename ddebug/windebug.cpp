@@ -203,7 +203,7 @@ bool Debug_break = false;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Debug_Init(bool debugger, bool mono_debug) {
+bool Debug_Init(bool debugger) {
   // initialization of debugging consoles.
 
 #ifndef RELEASE
