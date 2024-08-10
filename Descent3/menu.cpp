@@ -1059,10 +1059,15 @@ bool ProcessCommandLine() {
 #define UID_MSNINFO 0x1000
 #define TRAINING_MISSION_NAME "Pilot Training"
 
-static inline int count_missions(const std::filesystem::path &base_directory, const char *regex) {
+/**
+ * Count singleplayer missions in directory. Mission should have .mn3 extension.
+ * @param base_directory where to search missions. Should be a valid directory.
+ * @return count of found missions
+ */
+static inline int count_missions(const std::filesystem::path &base_directory) {
   int c = 0;
 
-  ddio_DoForeachFile(base_directory, std::regex(regex), [&c](const std::filesystem::path &path) {
+  ddio_DoForeachFile(base_directory, std::regex(".*\\.mn3"), [&c](const std::filesystem::path &path) {
     if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
       return;
     mprintf(0, "Mission path: %s\n", path.u8string().c_str());
@@ -1083,10 +1088,10 @@ static inline int count_missions(const std::filesystem::path &base_directory, co
 }
 
 static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, char **filelist,
-                                           const std::filesystem::path &base_directory, const char *regex) {
+                                           const std::filesystem::path &base_directory) {
   int c = 0;
   ddio_DoForeachFile(
-      base_directory, std::regex(regex), [&c, &lb, &n_maxfiles, &filelist](const std::filesystem::path &path) {
+      base_directory, std::regex(".*\\.mn3"), [&c, &lb, &n_maxfiles, &filelist](const std::filesystem::path &path) {
         tMissionInfo msninfo{};
         if (c < n_maxfiles) {
           if (stricmp(path.filename().u8string().c_str(), "d3_2.mn3") == 0)
@@ -1177,10 +1182,7 @@ bool MenuNewGame() {
   // count valid mission files.
   // add a please wait dialog here.
   n_missions = 0;
-#ifndef RELEASE
-  n_missions = count_missions(LocalLevelsDir, ".*\\.msn");
-#endif
-  n_missions += count_missions(D3MissionsDir, ".*\\.mn3");
+  n_missions += count_missions(D3MissionsDir);
   if (n_missions) {
     // allocate extra mission slot because of check below which adds a name to the filelist.
     filelist = (char **)mem_malloc(sizeof(char *) * (n_missions + 1));
@@ -1193,11 +1195,7 @@ bool MenuNewGame() {
     goto missions_fail;
   }
   // generate real listbox now.
-  i = 0;
-#ifndef RELEASE
-  i = generate_mission_listbox(msn_lb, n_missions, filelist, LocalLevelsDir, ".*\\.msn");
-#endif
-  i = generate_mission_listbox(msn_lb, n_missions - i, filelist + i, D3MissionsDir, ".*\\.mn3");
+  generate_mission_listbox(msn_lb, n_missions, filelist, D3MissionsDir);
   // #ifdef RELEASE
   int k;
   for (k = 0; k < n_missions; k++) {
