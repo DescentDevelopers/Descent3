@@ -578,4 +578,6 @@ target_link_libraries(Descent3Editor PRIVATE
   ${PLATFORM_LIBS})
 
 add_dependencies(Descent3Editor get_git_hash)
-install(TARGETS Descent3Editor RUNTIME)
+
+# FIXME: enable installation again when the editor is stable/usable
+# install(TARGETS Descent3Editor RUNTIME)
