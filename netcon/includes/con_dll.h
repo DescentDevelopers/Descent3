@@ -761,8 +761,6 @@ struct vmt_descent3_struct {
 
 uint32_t MTClientVer = 100;
 
-char MTUpdateURL[300] = "";
-
 multi_api API;
 
 player *DLLMPlayers;

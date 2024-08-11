@@ -134,7 +134,6 @@ int StartMultiplayerGameMenu();
 void MultiplayerOptionsMenu();
 void DoMTFrame();
 void DoMTGameOver();
-int MTVersionCheck();
 int JoinNewLobby(const char *lobby);
 const char *SendWhisper(const char *name);
 int JoinPrivateLobby();
