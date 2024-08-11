@@ -250,14 +250,6 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
   va_end(args);
 }
 
-//	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
-  assert(root_path);
-  assert(srcPath);
-
-  strcpy(root_path, "/");
-}
-
 std::vector<std::filesystem::path> ddio_GetSysRoots() {
   // In Linux assume that all other mount points are accessible via root mount point
   return std::vector<std::filesystem::path> { "/" };

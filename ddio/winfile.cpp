@@ -279,22 +279,6 @@ bool ddio_GetTempFileName(const char *basedir, const char *prefix, char *filenam
     return true;
 }
 
-//	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path) {
-  assert(root_path);
-  assert(srcPath);
-
-  // the first char should be drive letter, second char should be a :
-  if ((isalpha(srcPath[0])) && (srcPath[1] == ':')) {
-    // everything is ok
-    strncpy(root_path, srcPath, 2);
-    root_path[2] = '\0';
-  } else {
-    // invalid path (no root)
-    root_path[0] = '\0';
-  }
-}
-
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots) {
   char buffer[100];

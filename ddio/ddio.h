@@ -339,9 +339,6 @@ void ddio_CopyFileTime(const std::filesystem::path &dest, const std::filesystem:
 //	The path in splitpath is in the *LOCAL* file system's syntax
 void ddio_SplitPath(const char *srcPath, char *path, char *filename, char *ext);
 
-//	 pass in a pathname (could be from ddio_SplitPath), root_path will have the drive name.
-void ddio_GetRootFromPath(const char *srcPath, char *root_path);
-
 //	retrieve root names, free up roots array (allocated with malloc) after use
 int ddio_GetFileSysRoots(char **roots, int max_roots);
 
