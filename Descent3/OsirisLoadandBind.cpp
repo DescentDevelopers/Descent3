@@ -883,7 +883,6 @@ void Osiris_UnloadLevelModule(void) {
 //				-1 if it is in data\scripts
 //				0-x which extracted script id it is
 int _get_full_path_to_module(char *module_name, char *fullpath, char *basename) {
-  char modfilename[_MAX_PATH];
   char ppath[_MAX_PATH], pext[256];
   char adjusted_name[_MAX_PATH], adjusted_fname[_MAX_PATH];
   char *p;
@@ -911,12 +910,12 @@ int _get_full_path_to_module(char *module_name, char *fullpath, char *basename) 
   }
 
   // determine real name of script
-  mod_GetRealModuleName(adjusted_name, modfilename);
+  std::filesystem::path modfilename = mod_GetRealModuleName(adjusted_name);
 
   int exist = cfexist(modfilename);
   switch (exist) {
   case CFES_ON_DISK:
-    ddio_MakePath(fullpath, LocalScriptDir, modfilename, NULL);
+    ddio_MakePath(fullpath, LocalScriptDir, modfilename.u8string().c_str(), NULL);
     return -1;
     break;
   case CFES_IN_LIBRARY: {

@@ -1,5 +1,5 @@
 /*
-* Descent 3 
+* Descent 3
 * Copyright (C) 2024 Parallax Software
 *
 * This program is free software: you can redistribute it and/or modify
@@ -94,13 +94,14 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <string>
+#include <vector>
 
 #if defined(POSIX)
 #include <dlfcn.h>
 #include "linux_fix.h"
 #endif
 
-#include "ddio.h"
 #include "module.h"
 #include "pserror.h"
 
@@ -116,7 +117,7 @@
 std::filesystem::path mod_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
                                                           const std::filesystem::path &directory = ".") {
   // Dumb check, maybe there already all ok?
-  if (exists((directory / fname))) {
+  if (std::filesystem::exists((directory / fname))) {
     return fname.filename();
   }
 
@@ -133,7 +134,7 @@ std::filesystem::path mod_FindRealFileNameCaseInsensitive(const std::filesystem:
   // Search component in search_path
   auto const &it = std::filesystem::directory_iterator(search_path);
 
-  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto &dir_entry) {
     return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
   });
 
@@ -150,47 +151,36 @@ std::filesystem::path mod_FindRealFileNameCaseInsensitive(const std::filesystem:
 }
 
 int ModLastError = MODERR_NOERROR;
-//	Returns the real name of the module.  If a given file has an extension, it will
-//	just return that filename.  If the given file has no given extension, the
-//	system specific extension is concatted and returned.
-void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
-  char pathname[_MAX_PATH], filename[_MAX_FNAME], extension[_MAX_EXT];
-  ddio_SplitPath(modfilename, pathname, filename, extension);
-  if (*extension == '\0')
-#if defined(WIN32)
-    strcat(filename, ".dll");
-#elif defined(__LINUX__)
-    strcat(filename, ".so");
-#elif defined(MACOSX)
-    strcat(filename, ".dylib");
-#else
-    #error Unsupported platform!
-#endif
-  else {
-#if defined(WIN32)
-    if (!stricmp(extension, ".so") || !stricmp(extension, "msl") || !stricmp(extension, "dylib"))
-      strcat(filename, ".dll");
-    else
-      strcat(filename, extension);
-#elif defined(__LINUX__)
-    if (!stricmp(extension, ".dll") || !stricmp(extension, "msl") || !stricmp(extension, "dylib"))
-      strcat(filename, ".so");
-    else
-      strcat(filename, extension);
-#elif defined(MACOSX)
-      if (!stricmp(extension, ".dll") || !stricmp(extension, "msl") || !stricmp(extension, "so"))
-        strcat(filename, ".dylib");
-      else
-        strcat(filename, extension);
-#else
-  #error Unsupported platform!
-#endif
+
+std::filesystem::path mod_GetRealModuleName(const std::filesystem::path &mod_filename) {
+  std::filesystem::path filename = mod_filename;
+  std::string ext = mod_filename.extension().u8string();
+
+  if (ext.empty()) {
+    filename.replace_extension(MODULE_EXT);
+    return filename;
   }
-  if (*pathname != '\0')
-    ddio_MakePath(realmodfilename, pathname, filename, NULL);
-  else
-    strcpy(realmodfilename, filename);
+  std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  if (ext == MODULE_EXT) {
+    return filename;
+  }
+
+  const std::vector<std::string> replace_exts = {
+      ".dll",
+      ".dylib",
+      ".msl",
+      ".so",
+  };
+
+  for (const auto &replace_ext : replace_exts) {
+    if (ext == replace_ext) {
+      filename.replace_extension(MODULE_EXT);
+      return filename;
+    }
+  }
+  return filename;
 }
+
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
 // modfilename is the name of the module (without an extension such as DLL, or so)
@@ -203,11 +193,10 @@ bool mod_LoadModule(module *handle, const char *imodfilename, int flags) {
     ModLastError = MODERR_INVALIDHANDLE;
     return false;
   }
-  handle->handle = NULL;
-  char modfilename[_MAX_PATH];
-  mod_GetRealModuleName(imodfilename, modfilename);
+  handle->handle = nullptr;
+  std::filesystem::path modfilename = mod_GetRealModuleName(imodfilename);
 #if defined(WIN32)
-  handle->handle = LoadLibrary(modfilename);
+  handle->handle = LoadLibrary(modfilename.u8string().c_str());
   if (!handle->handle) {
     // There was an error loading the module
     DWORD err = GetLastError();
@@ -235,14 +224,11 @@ bool mod_LoadModule(module *handle, const char *imodfilename, int flags) {
     f |= RTLD_NOW;
   if (flags & MODF_GLOBAL)
     f |= RTLD_GLOBAL;
-  handle->handle = dlopen(modfilename, f);
+  handle->handle = dlopen(modfilename.u8string().c_str(), f);
   if (!handle->handle) {
     // ok we couldn't find the given name...try other ways
-    char dir[_MAX_PATH], fname[_MAX_PATH], nname[_MAX_PATH], ext[64];
-    ddio_SplitPath(modfilename, dir, fname, ext);
-    strcat(fname, ext);
-
-    std::filesystem::path new_filename = mod_FindRealFileNameCaseInsensitive(dir, fname);
+    std::filesystem::path parent_path = modfilename.parent_path();
+    std::filesystem::path new_filename = mod_FindRealFileNameCaseInsensitive(parent_path, modfilename.filename());
 
     if (new_filename.empty()) {
       mprintf(0, "Module Load Err: %s\n", dlerror());
@@ -251,9 +237,10 @@ bool mod_LoadModule(module *handle, const char *imodfilename, int flags) {
     }
 
     // ok we have a different filename
-    ddio_MakePath(modfilename, dir, nname, NULL);
-    mprintf(0, "MOD: Attempting to open %s instead of %s\n", modfilename, fname);
-    handle->handle = dlopen(modfilename, f);
+    mprintf(0, "MOD: Attempting to open %s instead of %s\n", new_filename.u8string().c_str(),
+            modfilename.u8string().c_str());
+    modfilename = parent_path / new_filename;
+    handle->handle = dlopen(modfilename.u8string().c_str(), f);
     if (!handle->handle) {
       mprintf(0, "Module Load Err: %s\n", dlerror());
       ModLastError = MODERR_MODNOTFOUND;
@@ -282,9 +269,10 @@ bool mod_FreeModule(module *handle) {
 #elif defined(POSIX)
   dlclose(handle->handle); // dlclose() returns an int, but no docs say what values!!!
 #endif
-  handle->handle = NULL;
+  handle->handle = nullptr;
   return ret;
 }
+
 // Returns a pointer to a function within a loaded module.  If it returns NULL there was an error.  Check
 // mod_GetLastError to see if there was an error symstr is the name of the function you want to get the symbol for (Do
 // NOT give any pre/suffix to this name) parmbytes is the size (in bytes) of the parameter list the function should have
@@ -293,15 +281,15 @@ MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbyt
   MODPROCADDRESS sym;
   if (!handle) {
     ModLastError = MODERR_INVALIDHANDLE;
-    return NULL;
+    return nullptr;
   }
   if (!symstr) {
     ModLastError = MODERR_OTHER;
-    return NULL;
+    return nullptr;
   }
   if (!handle->handle) {
     ModLastError = MODERR_NOMOD;
-    return NULL;
+    return nullptr;
   }
 #if defined(WIN32)
   // We need to first form the correct symbol name (for Windows)
@@ -345,15 +333,16 @@ MODPROCADDRESS mod_GetSymbol(module *handle, const char *symstr, uint8_t parmbyt
   sym = dlsym(handle->handle, symstr);
   if (!sym) {
     ModLastError = MODERR_OTHER;
-    return NULL;
+    return nullptr;
   }
 #endif
   return sym;
 }
+
 // Returns an error code to what the last error was.  When this function is called the last error is cleared, so by
 // calling this function it not only returns the last error, but it removes it, so if you were to call this function
 // again, it would return no error
-int mod_GetLastError(void) {
+int mod_GetLastError() {
   // Clear out the errors
 #if defined(WIN32)
   SetLastError(0);
