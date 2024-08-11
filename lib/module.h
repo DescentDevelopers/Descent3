@@ -157,7 +157,7 @@ std::filesystem::path mod_GetRealModuleName(const std::filesystem::path &mod_fil
 // Loads a dynamic module into memory for use.  If no extension is given, the default
 //	system specific extension is used.
 // Returns true on success, false otherwise
-bool mod_LoadModule(module *handle, const char *modfilename, int flags = MODF_LAZY);
+bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, int flags = MODF_LAZY);
 
 // Frees a previously loaded module from memory, it can no longer be used
 // Returns true on success, false otherwise

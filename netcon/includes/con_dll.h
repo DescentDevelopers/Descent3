@@ -659,8 +659,7 @@ MultiGameOptionsMenu_fp DLLMultiGameOptionsMenu;
 
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
-// typedef bool (*mod_LoadModule_fp)(module *handle,const char *modfilename,int flags=MODF_NOW);
-typedef bool (*mod_LoadModule_fp)(module *handle, const char *modfilename, int flags);
+typedef bool (*mod_LoadModule_fp)(module *handle, const std::filesystem::path &modfilename, int flags);
 mod_LoadModule_fp DLLmod_LoadModule;
 
 // Frees a previously loaded module from memory, it can no longer be used

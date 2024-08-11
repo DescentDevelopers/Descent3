@@ -184,8 +184,8 @@ std::filesystem::path mod_GetRealModuleName(const std::filesystem::path &mod_fil
 // Loads a dynamic module into memory for use.
 // Returns true on success, false otherwise
 // modfilename is the name of the module (without an extension such as DLL, or so)
-bool mod_LoadModule(module *handle, const char *imodfilename, int flags) {
-  if (!imodfilename) {
+bool mod_LoadModule(module *handle, const std::filesystem::path &imodfilename, int flags) {
+  if (imodfilename.empty()) {
     ModLastError = MODERR_OTHER;
     return false;
   }
