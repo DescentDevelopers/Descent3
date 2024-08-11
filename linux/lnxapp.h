@@ -19,10 +19,6 @@
 #ifndef LNXAPP_H
 #define LNXAPP_H
 
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
-
 // if no-display/input specifier is given, it will use defaults
 #define APPFLAG_USESERVICE 0x00000100     // console (run no output/input)
 #define APPFLAG_USESVGA 0x00000200        // console (use svgalib for input/output. NOTE: not used in code)

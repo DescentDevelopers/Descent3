@@ -91,26 +91,20 @@
  *
  * $NoKeywords: $
  */
-#include "module.h"
-#include "pstypes.h"
-#include "pserror.h"
+
+#include <cstdio>
+
 #include "ddio.h"
+#include "module.h"
+#include "pserror.h"
 
 #if defined(POSIX)
 #include <dlfcn.h>
+#include "linux_fix.h"
 
 static bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *filename, char *new_filename);
 #endif
 
-#include "module.h"
-#include "pstypes.h"
-#include "pserror.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
 #if defined(WIN32) // INSTEAD OF MAKING MODULE HAVE DEPENDENCIES, PUT THE 2 DDIO FUNCTIONS I NEED HERE
 // Split a pathname into its component parts
 static void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {

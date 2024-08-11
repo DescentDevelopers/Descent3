@@ -133,6 +133,10 @@
 
 #include "application.h"
 
+#if defined(POSIX)
+#include "linux_fix.h"
+#endif
+
 // The name of this product
 #ifdef DEMO
 #define PRODUCT_NAME "Descent 3 Demo"

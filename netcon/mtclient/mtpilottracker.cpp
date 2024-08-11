@@ -111,10 +111,13 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "pstypes.h"
 #include "networking.h"
 #include "mt_net.h"
 #include "byteswap.h"
+
+#if defined(POSIX)
+#include "linux_fix.h"
+#endif
 
 #define LOGIN_LEN 33
 #define REAL_NAME_LEN 66

@@ -73,8 +73,9 @@
 #endif
 
 #include "ddio.h"
-#include "pserror.h"
+#include "linux_fix.h"
 #include "mem.h"
+#include "pserror.h"
 
 #define _MAX_DIR 256
 

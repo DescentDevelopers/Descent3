@@ -19,6 +19,7 @@
 #ifndef __LINUX_FIX_H_
 #define __LINUX_FIX_H_
 
+#include <cstring>
 #include <sys/stat.h>
 
 #define LOKI_VERSION ""

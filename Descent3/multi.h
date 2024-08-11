@@ -498,10 +498,6 @@
 #include "object_external.h"
 #include "player_external.h"
 
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
-
 #include "multi_external.h" //defines and structs are in here
 
 extern bool Multi_bail_ui_menu;

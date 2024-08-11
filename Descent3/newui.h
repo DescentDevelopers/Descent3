@@ -187,10 +187,6 @@
 #ifndef NEWUI_H
 #define NEWUI_H
 
-#if defined(POSIX)
-#include "linux_fix.h" //fix some of the stricmp's
-#endif
-
 #include "newui_core.h"
 
 // flags for creating a newui window
