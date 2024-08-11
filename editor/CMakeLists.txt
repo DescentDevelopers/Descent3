@@ -576,8 +576,13 @@ target_link_libraries(Descent3Editor PRIVATE
   fix grtext manage mem misc model module stream_audio
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
+target_link_options(Descent3Editor PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
 
 add_dependencies(Descent3Editor get_git_hash)
 
 # FIXME: enable installation again when the editor is stable/usable
 # install(TARGETS Descent3Editor RUNTIME)
+# if(MSVC)
+#   install(FILES $<TARGET_PDB_FILE:Descent3Editor> DESTINATION ${CMAKE_INSTALL_BINDIR})
+# endif()
+

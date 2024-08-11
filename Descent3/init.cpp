@@ -1059,7 +1059,7 @@ void PreInitD3Systems() {
   debugging = true;
 #endif
 
-  error_Init(debugging, false, PRODUCT_NAME);
+  error_Init(debugging, PRODUCT_NAME);
 
   if (FindArg("-lowmem"))
     Mem_low_memory_mode = true;
