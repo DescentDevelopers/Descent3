@@ -17,9 +17,6 @@ target_link_libraries(Parallax_Online PRIVATE
   ui
   $<$<PLATFORM_ID:Windows>:ws2_32>
 )
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set_target_properties(Parallax_Online PROPERTIES SUFFIX ".dylib")
-endif()
 
 add_custom_target(Parallax_Online_Hog
   COMMAND $<TARGET_FILE:HogMaker>

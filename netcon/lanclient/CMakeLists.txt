@@ -11,9 +11,6 @@ target_link_libraries(Direct_TCP_IP PRIVATE
   ui
   $<$<PLATFORM_ID:Windows>:ws2_32>
 )
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set_target_properties(Direct_TCP_IP PROPERTIES SUFFIX ".dylib")
-endif()
 
 add_custom_target(Direct_TCP_IP_Hog
   COMMAND $<TARGET_FILE:HogMaker>
