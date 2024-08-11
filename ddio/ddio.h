@@ -346,7 +346,8 @@ void ddio_GetRootFromPath(const char *srcPath, char *root_path);
 int ddio_GetFileSysRoots(char **roots, int max_roots);
 
 /**
- * Retrieve root names (i.e. drive letters in Windows)
+ * Retrieve root names (i.e. drive letters in Windows).
+ * On Unix systems always returns list with only one ("/") element.
  * @return list of discovered names
  */
 std::vector<std::filesystem::path> ddio_GetSysRoots();
