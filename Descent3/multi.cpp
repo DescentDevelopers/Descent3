@@ -1642,7 +1642,10 @@
  *
  */
 
-#include "pstypes.h"
+#include <algorithm>
+#include <cstring>
+
+#include "chrono_timer.h"
 #include "pserror.h"
 #include "player.h"
 #include "game.h"
@@ -1667,24 +1670,15 @@
 #include "fireball.h"
 #include "Mission.h"
 #include "LoadLevel.h"
-#include "gamecinematics.h"
 #include "init.h"
-
 #include "sounds.h"
 #include "weapon.h"
 #include "stringtable.h"
-
 #include "dedicated_server.h"
 #include "demofile.h"
-#include "args.h"
-
-#include "ui.h"
-#include "newui.h"
 #include "multi_dll_mgr.h"
-#include "BOA.h"
 #include "attach.h"
 #include "mission_download.h"
-// #include "gamespy.h"
 #include "multi_world_state.h"
 #include "ObjScript.h"
 #include "audiotaunts.h"
@@ -1695,24 +1689,13 @@
 #include "spew.h"
 #include "physics.h"
 #include "SmallViews.h"
-#include "demofile.h"
 #include "debuggraph.h"
 #include "levelgoal.h"
 #include "osiris_share.h"
 #include "cockpit.h"
-#include "hud.h"
-
-#include <string.h>
-#include <memory.h>
-#include <stdlib.h>
-
 #include "psrand.h"
 
-#include "../md5/md5.h"
 void MultiProcessShipChecksum(MD5 *md5, int ship_index);
-
-
-#include <algorithm>
 
 player_pos_suppress Player_pos_fix[MAX_PLAYERS];
 
@@ -1866,7 +1849,7 @@ void BailOnMultiplayer(const char *message) {
     ShowProgressScreen(message);
 
   MultiLeaveGame();
-  Sleep(2000);
+  D3::ChronoTimer::SleepMS(2000);
 }
 
 // Adds the trunctuated position data to an outgoing packet
@@ -3537,7 +3520,7 @@ void MultiSendConnectBail() {
   if (wait_to_send) {
     for (int t = 0; t < 10; t++) {
       nw_DoNetworkIdle();
-      Sleep(100);
+      D3::ChronoTimer::SleepMS(100);
     }
   }
 
@@ -3555,7 +3538,7 @@ void MultiDoConnectBail() {
     return;
 
   ShowProgressScreen(TXT_MULTI_SERVERCHANGEA, TXT_MULTI_SERVERCHANGEB);
-  Sleep(3000);
+  D3::ChronoTimer::SleepMS(3000);
   MultiLeaveGame();
   SetFunctionMode(MENU_MODE);
 }
@@ -3633,7 +3616,7 @@ void MultiSendLevelEnded(int success, int next_level) {
   // Do this so it gets sent off now.
   for (int t = 0; t < 10; t++) {
     nw_DoNetworkIdle();
-    Sleep(100);
+    D3::ChronoTimer::SleepMS(100);
   }
 }
 
@@ -3717,7 +3700,7 @@ void MultiDoServerQuit(uint8_t *data) {
   }
   mprintf(0, "Server quitting!\n");
   MultiLeaveGame();
-  Sleep(2000);
+  D3::ChronoTimer::SleepMS(2000);
 }
 
 void MultiDoDisconnect(uint8_t *data) {
@@ -3762,7 +3745,7 @@ void MultiDoServerRejectedChecksum(uint8_t *data) {
   SKIP_HEADER(data, &count);
   ShowProgressScreen(TXT_MLTLEVELNOMATCH);
   MultiLeaveGame();
-  Sleep(2000);
+  D3::ChronoTimer::SleepMS(2000);
 }
 
 // Lets us know if the server says its ok to join

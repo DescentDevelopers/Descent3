@@ -253,22 +253,18 @@
  *
  */
 
+#include "chrono_timer.h"
 #include "multi.h"
 #include "multi_server.h"
 #include "player.h"
 #include "game.h"
 #include "ddio.h"
 #include "Mission.h"
-// #include "gametrack.h"
 #include "stringtable.h"
 #include "pilot.h"
 #include "ship.h"
 #include "args.h"
-
 #include "ui.h"
-#include "newui.h"
-#include "multi_dll_mgr.h"
-
 #include "LoadLevel.h"
 // #define USE_DIRECTPLAY
 
@@ -375,10 +371,10 @@ int TryToJoinServer(network_address *addr) {
         char str[255];
         snprintf(str, sizeof(str), "%s", TXT(Join_response_strings[Ok_to_join]));
         ShowProgressScreen(str);
-        Sleep(2000);
+        D3::ChronoTimer::SleepMS(2000);
       } else {
         ShowProgressScreen(TXT_MLTNORESPONSE);
-        Sleep(2000);
+        D3::ChronoTimer::SleepMS(2000);
       }
       return 0;
     } else
@@ -643,11 +639,11 @@ int MultiPollForLevelInfo() {
   if (!Got_level_info) {
     ShowProgressScreen(TXT_MLTNOLEVELINFO);
     MultiLeaveGame();
-    Sleep(2000);
+    D3::ChronoTimer::SleepMS(2000);
   } else if (Got_level_info < 0) {
     ShowProgressScreen(TXT(Join_response_strings[-Got_level_info]));
     MultiLeaveGame();
-    Sleep(2000);
+    D3::ChronoTimer::SleepMS(2000);
   } else {
     Got_level_info = 0;
     return 1;
@@ -864,7 +860,7 @@ void MultiCloseGame() {
   }
 #endif
 
-  Sleep(1000); // Sleep for one second
+  D3::ChronoTimer::SleepMS(1000); // Sleep for one second
 
   if (Netgame.local_role == LR_SERVER) {
     int i;
@@ -880,7 +876,7 @@ void MultiCloseGame() {
 
     for (i = 0; i < 100; i++) {
       nw_DoNetworkIdle();
-      Sleep(10);
+      D3::ChronoTimer::SleepMS(10);
     }
 
     NetPlayers[Player_num].flags &= ~NPF_CONNECTED;

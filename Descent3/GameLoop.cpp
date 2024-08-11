@@ -798,9 +798,10 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
+
+#include "chrono_timer.h"
 #include "gameloop.h"
 #include "game.h"
 #include "render.h"
@@ -814,56 +815,39 @@
 #include "player.h"
 #include "damage.h"
 #include "ship.h"
-#include "objinit.h"
 #include "gameevent.h"
 #include "gametexture.h"
 #include "AIMain.h"
-#include "ddvid.h"
 #include "ddio.h"
 #include "hud.h"
 #include "terrain.h"
 #include "BOA.h"
 #include "lighting.h"
 #include "findintersection.h"
-#include "soar.h"
-#include "multi.h"
-#include "hud.h"
 #include "bsp.h"
-#include "gauges.h"
 #include "SmallViews.h"
 #include "newui.h"
-#include "Inventory.h"
 #include "physics.h"
-#include "Controller.h"
 #include "controls.h"
 #include "gamesequence.h"
 #include "cockpit.h"
-#include "help.h"
-#include "game.h"
 #include "aipath.h"
 #include "game2dll.h"
 #include "Mission.h"
 #include "object_lighting.h"
-#include "fireball.h"
 #include "weather.h"
 #include "stringtable.h"
-#include "streamaudio.h"
 #include "voice.h"
 #include "soundload.h"
 #include "sounds.h"
 #include "ambient.h"
-#include "ship.h"
-#include "config.h"
 #include "matcen.h"
 #include "dedicated_server.h"
-#include "D3ForceFeedback.h"
 #include "levelgoal.h"
 #include "demofile.h"
 #include "pilot.h"
 #include "rtperformance.h"
-#include "demofile.h"
 #include "d3music.h"
-// #include "gamespy.h"
 #include "osiris_dll.h"
 #include "aiambient.h"
 #include "marker.h"
@@ -871,7 +855,6 @@
 #include "postrender.h"
 #include "debuggraph.h"
 #include "gamesave.h"
-#include "psrand.h"
 #include "spew.h"
 #include "grtext.h"
 #include "gamefont.h"
@@ -3041,7 +3024,7 @@ void GameFrame(void) {
     Cinematic_Frame();
 
   } else {
-    Sleep(3);
+    D3::ChronoTimer::SleepMS(3);
   }
 
   // do music always.
@@ -3089,7 +3072,7 @@ void GameFrame(void) {
     if ((current_timer - last_timer) < Min_allowed_frametime) {
       sleeptime = (uint32_t)Min_allowed_frametime - (current_timer - last_timer);
       // mprintf(0,"Sleeping for %d ms\n",sleeptime);
-      Sleep(sleeptime);
+      D3::ChronoTimer::SleepMS(sleeptime);
     }
 
     static int graph_id = -2;

@@ -131,24 +131,8 @@
 #include "inetgetfile.h"
 #include "Chttpget.h"
 
-#ifndef WIN32
+#include "chrono_timer.h"
 #include "mem.h"
-#else
-#define mem_malloc(a) malloc(a)
-#define mem_free(a) free(a)
-#endif
-
-#if defined(POSIX)
-
-#include "SDL_thread.h"
-
-inline void Sleep(int millis) {
-  struct timeval tv;
-  tv.tv_sec = 0;
-  tv.tv_usec = millis * 1000;
-  select(0, NULL, NULL, NULL, &tv);
-}
-#endif
 
 #define NW_AGHBN_CANCEL 1
 #define NW_AGHBN_LOOKUP 2
@@ -185,7 +169,7 @@ void ChttpGet::AbortGet() {
 #endif
   m_Aborting = true;
   while (!m_Aborted)
-    Sleep(50); // Wait for the thread to end
+    D3::ChronoTimer::SleepMS(50); // Wait for the thread to end
 #ifdef WIN32
   OutputDebugString("Aborted....\n");
 #endif

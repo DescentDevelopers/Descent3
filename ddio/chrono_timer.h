@@ -41,6 +41,9 @@ public:
 
   /// Get time in microseconds after class initialization (i.e. application start)
   static int64_t GetTimeUS();
+
+  /// Sleep for delay milliseconds
+  static void SleepMS(int delay);
 };
 
 }

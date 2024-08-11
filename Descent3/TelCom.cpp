@@ -492,9 +492,10 @@
  * $NoKeywords: $
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
+#include <cstdlib>
+#include <cstring>
+
+#include "chrono_timer.h"
 #include "mono.h"
 #include "renderer.h"
 #include "render.h"
@@ -2557,7 +2558,7 @@ void TelComHandleAllEvents(tTelComInfo *tcs) {
   volatile float next_time = last_frame_time + (1 / TELCOM_FRAMERATE_CAP);
 
   if (curr_time < next_time) {
-    Sleep((next_time - curr_time) * 1000.0f);
+    D3::ChronoTimer::SleepMS((int)((next_time - curr_time) * 1000.0f));
   }
   if (last_frame_time == 0) {
     frame_time = 0.1f;

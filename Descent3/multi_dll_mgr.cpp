@@ -276,13 +276,14 @@
  *
  * $NoKeywords: $
  */
+
+#include "chrono_timer.h"
 #include "ui.h"
 #include "newui.h"
 #include "game.h"
 #include "gamefont.h"
 #include "multi.h"
 #include "multi_client.h"
-#include "manage.h"
 #include "Mission.h"
 #include "pilot.h"
 #include "pstypes.h"
@@ -298,8 +299,6 @@
 #include "multi_server.h"
 #include "multi_ui.h"
 #include "ship.h"
-#include "soundload.h"
-#include "spew.h"
 #include "DllWrappers.h"
 #include "appdatabase.h"
 #include "module.h"
@@ -815,7 +814,7 @@ int PollUI(void) {
   // Limit this to a fixed framerate
   if (UI_LastPoll) {
     if ((timer_GetTime() - UI_LastPoll) < MIN_FRAMETIME)
-      Sleep((timer_GetTime() - UI_LastPoll) * 1000);
+      D3::ChronoTimer::SleepMS((timer_GetTime() - UI_LastPoll) * 1000);
   }
 
   UI_LastPoll = timer_GetTime();

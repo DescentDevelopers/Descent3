@@ -25,7 +25,6 @@
 
 #define HGLOBAL void *
 
-void Sleep(int millis);
 char *strupr(char *string);
 
 #define _stat stat
