@@ -1117,9 +1117,6 @@ void PreInitD3Systems() {
 #endif
 }
 
-/*
-        Save game variables to the registry
-*/
 void SaveGameSettings() {
   char tempbuffer[TEMPBUFFERSIZE];
   int tempint;
