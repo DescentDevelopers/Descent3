@@ -141,21 +141,18 @@ bool ddio_DeleteLockFile(const std::filesystem::path &dir) {
   return true;
 }
 
-int ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
+void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func) {
   if (!std::filesystem::is_directory(search_path)) {
-    return 0;
+    return;
   }
-  int n = 0;
   const std::filesystem::directory_iterator end;
   for (std::filesystem::directory_iterator iter{search_path}; iter != end; iter++) {
     const std::string filename = iter->path().filename().string();
     if (std::filesystem::is_regular_file(*iter)) {
       if (std::regex_match(filename, regex)) {
         func(iter->path());
-        n++;
       }
     }
   }
-  return n;
 }

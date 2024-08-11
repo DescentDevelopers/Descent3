@@ -367,7 +367,7 @@ void ddio_MakePath(char *newPath, const char *absolutePathHeader, const char *su
  * @param func function callback
  * @return number of processed files
  */
-int ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
+void ddio_DoForeachFile(const std::filesystem::path &search_path, const std::regex &regex,
                        const std::function<void(std::filesystem::path)> &func);
 
 //	given a path (with no filename), it will return the parent path

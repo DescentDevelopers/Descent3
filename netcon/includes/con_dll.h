@@ -702,7 +702,7 @@ ShowNetgameInfo_fp DLLShowNetgameInfo;
 typedef int (*CheckGetD3M_fp)(char *d3m);
 CheckGetD3M_fp DLLCheckGetD3M;
 
-typedef int (*ddio_DoForeachFile_fp)(const std::filesystem::path &search_path, const std::regex &regex,
+typedef void (*ddio_DoForeachFile_fp)(const std::filesystem::path &search_path, const std::regex &regex,
 const std::function<void(std::filesystem::path)> &func);
 ddio_DoForeachFile_fp DLLddio_DoForeachFile;
 
