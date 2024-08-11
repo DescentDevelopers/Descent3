@@ -635,12 +635,13 @@ void Osiris_InitModuleLoader(void) {
 //		Generates a checksum of the game's structures, to give to the modules
 //	so they can use to compare to the time when they were compiled, to see
 //	if they are compatible.
-uint32_t Osiris_CreateGameChecksum(void) {
+uint32_t Osiris_CreateGameChecksum() {
   uint32_t value = 0xe1e1b0b0;
+  tOSIRISModuleInit tmp;
 
   value += sizeof(object);
   value += sizeof(player) * 2;
-  value += sizeof(tOSIRISModuleInit) * 3;
+  value += tmp.serial_version * 3;
   value += sizeof(tOSIRISEventInfo) * 5;
   value += sizeof(tOSIRISTIMER) * 7;
   value += sizeof(tOSIRISSCRIPTID) * 11;
