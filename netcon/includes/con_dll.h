@@ -270,13 +270,9 @@
 #include <regex>
 #include <string>
 
+#include "crossplat.h"
 #include "ship.h"
 #include "pstypes.h"
-
-#if defined(POSIX)
-#include <cstring>
-#include "linux_fix.h"
-#endif
 
 // Uncomment out this line of code to build the demo version of the multiplayer connection dlls
 // #define DEMO	1

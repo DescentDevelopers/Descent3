@@ -50,9 +50,7 @@
 #ifndef __BRIEFPARSE_H_
 #define __BRIEFPARSE_H_
 
-#if defined(POSIX)
-#include "linux_fix.h" //for stricmp
-#endif
+#include "crossplat.h" //for stricmp
 
 #include "TelComEfxStructs.h"
 #include "grdefs.h"

@@ -99,9 +99,9 @@
 
 #if defined(POSIX)
 #include <dlfcn.h>
-#include "linux_fix.h"
 #endif
 
+#include "crossplat.h"
 #include "module.h"
 #include "pserror.h"
 

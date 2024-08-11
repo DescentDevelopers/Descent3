@@ -69,7 +69,6 @@
  */
 
 #include <cstdlib>
-#include <cctype>
 #if defined(POSIX)
 #include <termios.h>
 #else
@@ -94,14 +93,6 @@ bool oeLnxApplication::first_time = true;
 bool con_Create(int flags);
 void con_Destroy();
 void con_Defer();
-
-char *strupr(char *string) {
-  while (string && *string) {
-    *string = toupper(*string);
-    string++;
-  }
-  return string;
-}
 
 static uint32_t LinuxAppFlags = 0;
 // static Display *LinuxAppDisplay=NULL;

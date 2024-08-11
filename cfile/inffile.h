@@ -30,7 +30,7 @@
 #include <filesystem>
 
 #include "cfile.h"
-#include "pstypes.h"
+#include "crossplat.h"
 #include "psclass.h"
 
 enum InfFileError {

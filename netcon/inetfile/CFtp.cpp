@@ -70,9 +70,9 @@
 typedef int socklen_t;
 #endif
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 #if defined(POSIX)
 // sorry, I'm lazy, I guess we could copy the defines
@@ -82,6 +82,7 @@ typedef int socklen_t;
 #endif
 
 #include "CFtp.h"
+#include "crossplat.h"
 
 // MTS: only used in this file?
 #if defined(POSIX)

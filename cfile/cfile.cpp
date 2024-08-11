@@ -22,21 +22,13 @@
 #include <cstring>
 #include <cstdarg>
 #include <cerrno>
-#include <cctype>
 #include <filesystem>
 #include <map>
 #include <memory>
 #include <vector>
 
-#if !defined(POSIX)
-// Non-Linux Build Includes
-#include <io.h>
-#else
-// Linux Build Includes
-#include "linux_fix.h"
-#endif
-
 #include "byteswap.h"
+#include "crossplat.h"
 #include "pserror.h"
 #include "ddio.h"
 #include "psglob.h"

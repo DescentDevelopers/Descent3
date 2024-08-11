@@ -26,10 +26,10 @@
 #if defined(POSIX)
 #include <sys/time.h>
 #include <unistd.h>
-#include "linux_fix.h"
 #endif
 
 #include "chat_api.h"
+#include "crossplat.h"
 #include "grdefs.h"
 #include "mtstrings.h"
 #include "networking.h"

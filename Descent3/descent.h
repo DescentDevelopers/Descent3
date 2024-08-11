@@ -132,10 +132,7 @@
 #include <filesystem>
 
 #include "application.h"
-
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
+#include "crossplat.h"
 
 // The name of this product
 #ifdef DEMO

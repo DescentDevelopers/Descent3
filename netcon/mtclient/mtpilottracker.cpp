@@ -114,10 +114,7 @@
 #include "networking.h"
 #include "mt_net.h"
 #include "byteswap.h"
-
-#if defined(POSIX)
-#include "linux_fix.h"
-#endif
+#include "crossplat.h"
 
 #define LOGIN_LEN 33
 #define REAL_NAME_LEN 66

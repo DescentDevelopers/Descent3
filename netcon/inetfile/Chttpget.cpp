@@ -124,14 +124,15 @@
 #include <process.h>
 #endif
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 #include "inetgetfile.h"
 #include "Chttpget.h"
 
 #include "chrono_timer.h"
+#include "crossplat.h"
 #include "mem.h"
 
 #define NW_AGHBN_CANCEL 1

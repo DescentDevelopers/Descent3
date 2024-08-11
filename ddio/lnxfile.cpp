@@ -73,7 +73,7 @@
 #endif
 
 #include "ddio.h"
-#include "linux_fix.h"
+#include "crossplat.h"
 #include "mem.h"
 #include "pserror.h"
 
