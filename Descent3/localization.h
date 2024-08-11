@@ -97,6 +97,6 @@ void DestroyMessageMap(std::map<std::string, std::string> &map);
  * @param map
  * @return return message by name, NO_MESSAGE_STRING if there no such name
  */
-const char *GetMessage(const std::string &name, std::map<std::string, std::string> &map);
+const char *GetMessageMap(const std::string &name, std::map<std::string, std::string> &map);
 
 #endif

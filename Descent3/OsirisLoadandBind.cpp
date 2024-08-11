@@ -3978,5 +3978,5 @@ void Osiris_CreateModuleInitStruct(tOSIRISModuleInit *mi) {
   mi->fp[122] = (int *)osipf_PathValue;
   mi->fp[123] = (int *)CreateMessageMap;
   mi->fp[124] = (int *)DestroyMessageMap;
-  mi->fp[125] = (int *)GetMessage;
+  mi->fp[125] = (int *)GetMessageMap;
 }
