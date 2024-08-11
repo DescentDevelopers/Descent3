@@ -92,186 +92,70 @@
  * $NoKeywords: $
  */
 
-#include <cstdio>
+#include <algorithm>
+#include <filesystem>
+
+#if defined(POSIX)
+#include <dlfcn.h>
+#include "linux_fix.h"
+#endif
 
 #include "ddio.h"
 #include "module.h"
 #include "pserror.h"
 
-#if defined(POSIX)
-#include <dlfcn.h>
-#include "linux_fix.h"
-
-static bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *filename, char *new_filename);
-#endif
-
-#if defined(WIN32) // INSTEAD OF MAKING MODULE HAVE DEPENDENCIES, PUT THE 2 DDIO FUNCTIONS I NEED HERE
-// Split a pathname into its component parts
-static void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
-  char drivename[_MAX_DRIVE], dirname[_MAX_DIR];
-  _splitpath(srcPath, drivename, dirname, filename, ext);
-  if (path)
-    sprintf(path, "%s%s", drivename, dirname);
-}
-// Constructs a path in the local file system's syntax
-// 	newPath: stores the constructed path
-//  absolutePathHeader: absolute path on which the sub directories will be appended
-//						(specified in local file system syntax)
-//  takes a variable number of subdirectories which will be concatenated on to the path
-//		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-static void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
-  const char delimiter = '\\';
-  va_list args;
-  char *currentDir = NULL;
-  int pathLength = 0;
-
-  assert(newPath);
-  assert(absolutePathHeader);
-  assert(subDir);
-
-  if (newPath != absolutePathHeader) {
-    strcpy(newPath, absolutePathHeader);
+/**
+ * Returns fixed case file name to actual case on disk for case-sensitive filesystems (Linux).
+ * This is actually copy of cf_FindRealFileNameCaseInsensitive() from CFILE.
+ * @param fname the fixed case name to map to reality
+ * @param directory optional directory to search within (default - current path)
+ * @return filename with actual case name or empty path if there no mapping in filesystem
+ * @note This function returns only filename without directory part, i.e.
+ * mod_FindRealFileNameCaseInsensitive("test/test.txt") will return only "test.txt" on success.
+ */
+std::filesystem::path mod_FindRealFileNameCaseInsensitive(const std::filesystem::path &fname,
+                                                          const std::filesystem::path &directory = ".") {
+  // Dumb check, maybe there already all ok?
+  if (exists((directory / fname))) {
+    return fname.filename();
   }
-  // Add the first sub directory
-  pathLength = strlen(newPath);
-  if (newPath[pathLength - 1] != delimiter) {
-    newPath[pathLength] = delimiter; // add the delimiter
-    newPath[pathLength + 1] = 0;     // terminate the string
-  }
-  strcat(newPath, subDir);
 
-  // Add the additional subdirectories
-  va_start(args, subDir);
-  while ((currentDir = va_arg(args, char *)) != NULL) {
-    pathLength = strlen(newPath);
-    if (newPath[pathLength - 1] != delimiter) {
-      newPath[pathLength] = delimiter; // add the delimiter
-      newPath[pathLength + 1] = 0;     // terminate the string
-    }
-    strcat(newPath, currentDir);
+  std::filesystem::path result, search_path, search_file;
+
+  search_path = directory / fname.parent_path();
+  search_file = fname.filename();
+
+  // If directory does not exist, nothing to search.
+  if (!std::filesystem::is_directory(search_path) || search_file.empty()) {
+    return {};
   }
-  va_end(args);
-}
-#elif defined(POSIX)
-// Split a pathname into its component parts
-static void dd_SplitPath(const char *srcPath, char *path, char *filename, char *ext) {
-  int pathStart = -1;
-  int pathEnd = -1;
-  int fileStart = -1;
-  int fileEnd = -1;
-  int extStart = -1;
-  int extEnd = -1;
-  int totalLen = strlen(srcPath);
-  // Check for an extension
-  ///////////////////////////////////////
-  int t = totalLen - 1;
-  while ((srcPath[t] != '.') && (srcPath[t] != '/') && (t >= 0))
-    t--;
-  // see if we are at an extension
-  if ((t >= 0) && (srcPath[t] == '.')) {
-    // we have an extension
-    extStart = t;
-    extEnd = totalLen - 1;
-    if (ext) {
-      strncpy(ext, &(srcPath[extStart]), extEnd - extStart + 1);
-      ext[extEnd - extStart + 1] = '\0';
-    }
+
+  // Search component in search_path
+  auto const &it = std::filesystem::directory_iterator(search_path);
+
+  auto found = std::find_if(it, end(it), [&search_file, &search_path, &result](const auto& dir_entry) {
+    return stricmp(dir_entry.path().filename().u8string().c_str(), search_file.u8string().c_str()) == 0;
+  });
+
+  if (found != end(it)) {
+    // Match, append to result
+    result = found->path();
+    search_path = result;
   } else {
-    // no extension
-    if (ext)
-      ext[0] = '\0';
+    // Component not found, mission failed
+    return {};
   }
 
-  // Check for file name
-  ////////////////////////////////////
-  int temp = (extStart != -1) ? (extStart) : (totalLen - 1);
-  while ((srcPath[temp] != '/') && (temp >= 0))
-    temp--;
-  if (temp < 0)
-    temp = 0;
-  if (srcPath[temp] == '/') {
-    // we have a file
-    fileStart = temp + 1;
-    if (extStart != -1)
-      fileEnd = extStart - 1;
-    else
-      fileEnd = totalLen - 1;
-    if (filename) {
-      strncpy(filename, &(srcPath[fileStart]), fileEnd - fileStart + 1);
-      filename[fileEnd - fileStart + 1] = '\0';
-    }
-    pathStart = 0;
-    pathEnd = fileStart - 2;
-    // Copy the rest into the path name
-    if (path) {
-      strncpy(path, &(srcPath[pathStart]), pathEnd - pathStart + 1);
-      path[pathEnd - pathStart + 1] = 0;
-    }
-  } else {
-    // only file, no path
-    fileStart = 0;
-    if (extStart != -1)
-      fileEnd = extStart - 1;
-    else
-      fileEnd = totalLen - 1;
-    if (filename) {
-      strncpy(filename, &(srcPath[fileStart]), fileEnd - fileStart + 1);
-      filename[fileEnd - fileStart + 1] = 0;
-    }
-
-    // Only file no path
-    if (path) {
-      path[0] = 0;
-    }
-  }
+  return result.filename();
 }
-// Constructs a path in the local file system's syntax
-// 	newPath: stores the constructed path
-//  absolutePathHeader: absolute path on which the sub directories will be appended
-//						(specified in local file system syntax)
-//  takes a variable number of subdirectories which will be concatenated on to the path
-//		the last argument in the list of sub dirs *MUST* be NULL to terminate the list
-static void dd_MakePath(char *newPath, const char *absolutePathHeader, const char *subDir, ...) {
-  const char delimiter = '/';
-  va_list args;
-  char *currentDir = NULL;
-  int pathLength = 0;
 
-  ASSERT(newPath);
-  ASSERT(absolutePathHeader);
-  ASSERT(subDir);
-
-  if (newPath != absolutePathHeader) {
-    strcpy(newPath, absolutePathHeader);
-  }
-  // Add the first sub directory
-  pathLength = strlen(newPath);
-  if (newPath[pathLength - 1] != delimiter) {
-    newPath[pathLength] = delimiter; // add the delimiter
-    newPath[pathLength + 1] = 0;     // terminate the string
-  }
-  strcat(newPath, subDir);
-
-  // Add the additional subdirectories
-  va_start(args, subDir);
-  while ((currentDir = va_arg(args, char *)) != NULL) {
-    pathLength = strlen(newPath);
-    if (newPath[pathLength - 1] != delimiter) {
-      newPath[pathLength] = delimiter; // add the delimiter
-      newPath[pathLength + 1] = 0;     // terminate the string
-    }
-    strcat(newPath, currentDir);
-  }
-  va_end(args);
-}
-#endif
 int ModLastError = MODERR_NOERROR;
 //	Returns the real name of the module.  If a given file has an extension, it will
 //	just return that filename.  If the given file has no given extension, the
 //	system specific extension is concatted and returned.
 void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
   char pathname[_MAX_PATH], filename[_MAX_FNAME], extension[_MAX_EXT];
-  dd_SplitPath(modfilename, pathname, filename, extension);
+  ddio_SplitPath(modfilename, pathname, filename, extension);
   if (*extension == '\0')
 #if defined(WIN32)
     strcat(filename, ".dll");
@@ -303,7 +187,7 @@ void mod_GetRealModuleName(const char *modfilename, char *realmodfilename) {
 #endif
   }
   if (*pathname != '\0')
-    dd_MakePath(realmodfilename, pathname, filename, NULL);
+    ddio_MakePath(realmodfilename, pathname, filename, NULL);
   else
     strcpy(realmodfilename, filename);
 }
@@ -355,23 +239,25 @@ bool mod_LoadModule(module *handle, const char *imodfilename, int flags) {
   if (!handle->handle) {
     // ok we couldn't find the given name...try other ways
     char dir[_MAX_PATH], fname[_MAX_PATH], nname[_MAX_PATH], ext[64];
-    dd_SplitPath(modfilename, dir, fname, ext);
+    ddio_SplitPath(modfilename, dir, fname, ext);
     strcat(fname, ext);
 
-    if (!mod_FindRealFileNameCaseInsenstive(dir, fname, nname)) {
+    std::filesystem::path new_filename = mod_FindRealFileNameCaseInsensitive(dir, fname);
+
+    if (new_filename.empty()) {
       mprintf(0, "Module Load Err: %s\n", dlerror());
       ModLastError = MODERR_MODNOTFOUND;
       return false;
-    } else {
-      // ok we have a different filename
-      dd_MakePath(modfilename, dir, nname, NULL);
-      mprintf(0, "MOD: Attempting to open %s instead of %s\n", modfilename, fname);
-      handle->handle = dlopen(modfilename, f);
-      if (!handle->handle) {
-        mprintf(0, "Module Load Err: %s\n", dlerror());
-        ModLastError = MODERR_MODNOTFOUND;
-        return false;
-      }
+    }
+
+    // ok we have a different filename
+    ddio_MakePath(modfilename, dir, nname, NULL);
+    mprintf(0, "MOD: Attempting to open %s instead of %s\n", modfilename, fname);
+    handle->handle = dlopen(modfilename, f);
+    if (!handle->handle) {
+      mprintf(0, "Module Load Err: %s\n", dlerror());
+      ModLastError = MODERR_MODNOTFOUND;
+      return false;
     }
   }
 #endif
@@ -478,224 +364,3 @@ int mod_GetLastError(void) {
   ModLastError = MODERR_NOERROR;
   return ret;
 }
-
-#if defined(POSIX)
-#include <assert.h>
-#include <stdarg.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <utime.h>
-#include <glob.h>
-#include <string.h>
-#include <errno.h>
-#include <ctype.h>
-
-void dd_GetWorkingDir(char *path, int len);
-bool dd_SetWorkingDir(const char *path);
-
-//	retrieve the current working folder where file operation will occur.
-void dd_GetWorkingDir(char *path, int len) { getcwd(path, len); }
-
-bool dd_SetWorkingDir(const char *path) { return (chdir(path)) ? false : true; }
-
-// These functions allow one to find a file
-static int globerrfn(const char *path, int err) {
-  mprintf(0, "Error accessing %s: %s .... \n", path, strerror(err));
-  return 0;
-}
-
-class CModFindFiles {
-public:
-  CModFindFiles() { globindex = -1; }
-
-  bool Start(const char *wildcard, char *namebuf);
-  bool Next(char *namebuf);
-  void Close(void);
-
-private:
-  int globindex;
-  glob_t ffres;
-};
-
-bool CModFindFiles::Start(const char *wildcard, char *namebuf) {
-  ASSERT(wildcard);
-  ASSERT(namebuf);
-
-  if (globindex != -1)
-    Close();
-
-  int rc, flags;
-  flags = GLOB_MARK;
-  rc = glob(wildcard, flags, globerrfn, &ffres);
-  if (rc == GLOB_NOSPACE) {
-    mprintf(0, "Out of space during glob\n");
-    globindex = -1;
-    return false;
-  }
-  if (!ffres.gl_pathc) {
-    globindex = -1;
-    return false;
-  }
-
-  globindex = 0;
-  char ext[256];
-  dd_SplitPath(ffres.gl_pathv[0], NULL, namebuf, ext);
-  strcat(namebuf, ext);
-  return true;
-}
-
-bool CModFindFiles::Next(char *namebuf) {
-  ASSERT(namebuf);
-  if (globindex == -1)
-    return false;
-  globindex++;
-  if (globindex >= ffres.gl_pathc)
-    return false;
-
-  char ext[256];
-  dd_SplitPath(ffres.gl_pathv[globindex], NULL, namebuf, ext);
-  strcat(namebuf, ext);
-  return true;
-}
-
-void CModFindFiles::Close(void) {
-  if (globindex == -1)
-    return;
-  globindex = -1;
-  globfree(&ffres);
-}
-
-bool mod_FindRealFileNameCaseInsenstive(const char *directory, const char *fname, char *new_filename) {
-  bool use_dir = false;
-  char dir_to_use[_MAX_PATH];
-  char file_to_use[_MAX_PATH];
-
-  char *real_dir, *real_file;
-
-  if (directory) {
-    // there is a directory for this path
-    use_dir = true;
-    real_dir = (char *)directory;
-    real_file = (char *)fname;
-  } else {
-    // there may be a directory in the path (*sigh*)
-    char t_ext[256];
-    char t_dir[_MAX_PATH];
-    char t_filename[_MAX_PATH];
-
-    dd_SplitPath(fname, t_dir, t_filename, t_ext);
-    if (strlen(t_dir) > 0) {
-      use_dir = true;
-      strcpy(dir_to_use, t_dir);
-      real_dir = (char *)dir_to_use;
-      strcpy(file_to_use, t_filename);
-      strcat(file_to_use, t_ext);
-      real_file = (char *)file_to_use;
-
-      mprintf(1, "MOD: Found directory \"%s\" in filename, new filename is \"%s\"\n", real_dir, real_file);
-    } else {
-      use_dir = false;
-      real_dir = NULL;
-      real_file = (char *)fname;
-    }
-  }
-
-  // build up a list of filenames in the current directory that begin with the lowercase and
-  // upper case first letter of the filename
-
-  // do the case of the first letter to start
-  int case_val;
-  char wildcard_pattern[_MAX_PATH];
-  int iterations = 1;
-  bool found_match = false;
-
-  if ((real_file[0] >= 'a' && real_file[0] <= 'z') || (real_file[0] >= 'A' && real_file[0] <= 'Z')) {
-    // alpha first letter...we need to do 2 iterations
-    iterations = 2;
-  }
-
-  for (case_val = 0; case_val < iterations; case_val++) {
-    if (case_val) {
-      // do the opposite case of the first letter
-      char first_letter;
-      first_letter = real_file[0];
-      if (first_letter >= 'a' && first_letter <= 'z') {
-        // we need to uppercase the letter
-        first_letter = toupper(first_letter);
-      } else {
-        // we need to lowercase the letter
-        first_letter = tolower(first_letter);
-      }
-
-      // create a wildcard patter full of ? replacing letters (except the first one)
-      char *wptr = wildcard_pattern;
-      char *fptr = &real_file[1];
-      *wptr = first_letter;
-      wptr++;
-      while (*fptr) {
-        if (isalpha(*fptr)) {
-          *wptr = '?';
-        } else {
-          *wptr = *fptr;
-        }
-
-        fptr++;
-        wptr++;
-      }
-      *wptr = '\0';
-    } else {
-      // use the case of the first letter
-      // create a wildcard patter full of ? replacing letters (except the first one)
-      char *wptr = wildcard_pattern;
-      char *fptr = &real_file[1];
-      *wptr = real_file[0];
-      wptr++;
-      while (*fptr) {
-        if (isalpha(*fptr)) {
-          *wptr = '?';
-        } else {
-          *wptr = *fptr;
-        }
-
-        fptr++;
-        wptr++;
-      }
-      *wptr = '\0';
-    }
-
-    // now tack on a directory if we are to use a directory
-    char *wpattern;
-    char fullpath[_MAX_PATH];
-    if (use_dir) {
-      dd_MakePath(fullpath, real_dir, wildcard_pattern, NULL);
-      wpattern = fullpath;
-    } else {
-      wpattern = wildcard_pattern;
-    }
-
-    // ok, we have our wildcard pattern, get all the files that match it
-    // and search them looking for a match (case insensitive)
-    char namebuffer[_MAX_PATH];
-    bool gotfile;
-    CModFindFiles ff;
-    for (gotfile = ff.Start(wpattern, namebuffer); gotfile; gotfile = ff.Next(namebuffer)) {
-      if (!stricmp(namebuffer, real_file)) {
-        // we found a match!
-        found_match = true;
-        break;
-      }
-    }
-    ff.Close();
-
-    if (found_match) {
-      strcpy(new_filename, namebuffer);
-      mprintf(1, "MOD: Using \"%s\" instead of \"%s\"\n", new_filename, real_file);
-      break;
-    }
-  }
-
-  return found_match;
-}
-#endif
