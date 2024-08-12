@@ -1,3 +1,9 @@
+set(HEADERS
+  chrono_timer.h
+  ddio.h
+  ddio_common.h
+  ddio_lnx.h
+  ddio_win.h)
 set(CPPS
   chrono_timer.cpp
   ddio.cpp
@@ -17,7 +23,7 @@ set(CPPS
     winfile.cpp
   >
 )
-add_library(ddio STATIC ${CPPS})
+add_library(ddio STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ddio PRIVATE
   SDL2::SDL2
   ddebug

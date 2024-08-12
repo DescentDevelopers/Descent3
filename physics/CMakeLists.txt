@@ -1,3 +1,7 @@
+set(HEADERS
+  collide.h
+  findintersection.h
+  physics.h)
 set(CPPS
   collide.cpp
   findintersection.cpp
@@ -5,7 +9,7 @@ set(CPPS
   physics.cpp
 )
 
-add_library(physics STATIC ${CPPS})
+add_library(physics STATIC ${HEADERS} ${CPPS})
 target_link_libraries(physics PRIVATE
   ddio
   mem

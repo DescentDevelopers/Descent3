@@ -1,10 +1,14 @@
+set(HEADERS
+  cfile.h
+  hogfile.h
+  inffile.h)
 set(CPPS
   cfile.cpp
   hogfile.cpp
   inffile.cpp
 )
 
-add_library(cfile STATIC ${CPPS})
+add_library(cfile STATIC ${HEADERS} ${CPPS})
 target_link_libraries(cfile PRIVATE
   ddio
   mem

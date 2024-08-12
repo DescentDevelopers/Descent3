@@ -1,8 +1,7 @@
-set(CPPS
-  mem.cpp
-)
+set(HEADERS mem.h)
+set(CPPS mem.cpp)
 
-add_library(mem STATIC ${CPPS})
+add_library(mem STATIC ${HEADERS} ${CPPS})
 target_compile_definitions(mem PUBLIC
   $<$<BOOL:${ENABLE_MEM_RTL}>:MEM_USE_RTL>
 )

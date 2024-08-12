@@ -1,3 +1,7 @@
+set(HEADERS
+  debug.h
+  debugbreak.h
+  mono.h)
 set(CPPS
   debug.cpp
   $<$<PLATFORM_ID:Darwin,Linux>:
@@ -10,7 +14,7 @@ set(CPPS
   >
 )
 
-add_library(ddebug STATIC ${CPPS})
+add_library(ddebug STATIC ${HEADERS} ${CPPS})
 add_dependencies(ddebug get_git_hash)
 target_include_directories(ddebug PUBLIC
   $<BUILD_INTERFACE:
