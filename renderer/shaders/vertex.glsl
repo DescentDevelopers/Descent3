@@ -1,4 +1,4 @@
-#version 150 core
+// version must be prepended to this file
 
 /*
 * Descent 3
