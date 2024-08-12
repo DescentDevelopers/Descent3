@@ -68,9 +68,12 @@
  */
 #ifndef MMITEM_H
 #define MMITEM_H
+
+#include "cinematics.h"
+#include "gamefont.h"
 #include "newui.h"
 #include "psclass.h"
-#include "gamefont.h"
+
 #if ((!defined(OEM)) && (!defined(DEMO)))
 #define MOVIE_MENU
 #endif
@@ -176,7 +179,7 @@ protected:
   virtual void OnSelect();
 };
 //	Main Menu Interface Object
-struct tCinematic;
+
 class mmInterface : public UIWindow {
   int m_nmenu_items;                 // number of menu items available.
   mmItem m_menuitems[N_MMENU_ITEMS]; // main menu items

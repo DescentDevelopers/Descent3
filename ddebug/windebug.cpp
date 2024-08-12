@@ -325,8 +325,7 @@ void dump_text_to_clipboard(char *text) { DumpTextToClipboard(text); }
 ///////////////////////////////////////////////////////////////////////////////
 
 #pragma comment(lib, "DbgHelp.lib")
-
-long __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data) {
+long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data) {
   static bool BeenHere = false;
   if (BeenHere) // Going recursive! That must mean this routine crashed!
     return EXCEPTION_CONTINUE_SEARCH;

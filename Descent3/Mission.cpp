@@ -1635,20 +1635,15 @@ bool DoMissionBriefing(int level) {
   return ret;
 }
 extern bool FirstGame;
-bool Skip_next_movie = false;
+
 //	---------------------------------------------------------------------------
 //	 play movie
 void DoMissionMovie(const char *movie) {
-  char temppath[_MAX_PATH];
   if (PROGRAM(windowed)) {
     mprintf(0, "Skipping movie...can't do in windowed mode!\n");
     return;
   }
-  // Don't play this movie the first time through. This is a horrible hack.
-  if (Skip_next_movie) {
-    Skip_next_movie = false;
-    return;
-  }
+
 #ifdef D3_FAST
   return;
 #endif
@@ -1657,8 +1652,8 @@ void DoMissionMovie(const char *movie) {
     ddio_MakePath(mpath, LocalD3Dir, "movies", movie, NULL);
     PlayMovie(mpath);
   }
-  // PlayMovie(movie);
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 //	Script Management for Missions and Levels
 ///////////////////////////////////////////////////////////////////////////////

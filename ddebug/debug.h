@@ -180,10 +180,11 @@ void ddio_InternalKeyClose();
 #else
 #define debug_break()
 #endif
+
 #if defined(WIN32)
-// We forward declare PEXCEPTION_POINTERS so that the function
-// prototype doesn't needlessly require windows.h.
-typedef struct _EXCEPTION_POINTERS EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
-long __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data);
+
+#include <windows.h>
+
+long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data);
 #endif
 #endif
