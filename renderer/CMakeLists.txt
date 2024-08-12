@@ -3,6 +3,8 @@ cmake_path(SET SHADERS_H NORMALIZE ${GENERATED_HEADERS}/shaders.h)
 set(SHADERS
   shaders/fragment.glsl
   shaders/vertex.glsl
+  shaders/version_300_es.glsl
+  shaders/version_150_core.glsl
 )
 add_custom_command(
   OUTPUT ${SHADERS_H}
