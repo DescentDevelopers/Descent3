@@ -1,4 +1,4 @@
-#version 150 core
+// version must be prepended to this file
 
 /*
 * Descent 3
@@ -17,6 +17,8 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+precision highp float;
 
 in vec4 vertex_color;
 in vec2 vertex_uv0;
@@ -50,9 +52,9 @@ void main()
         * max(texture(u_texture0, vertex_uv0), vec4(float(!bool((u_texture_enable >> 0) & 1))))
         * max(texture(u_texture1, vertex_uv1), vec4(float(!bool((u_texture_enable >> 1) & 1))));
 
-    float fog_factor = clamp((u_fog_end - length(vertex_modelview_pos)) * branchless_invert_or_zero(u_fog_end - u_fog_start), 0, 1);
+    float fog_factor = clamp((u_fog_end - length(vertex_modelview_pos)) * branchless_invert_or_zero(u_fog_end - u_fog_start), 0.0, 1.0);
     // out_color is unchanged when fog_factor is 1 (ie, fog distance == u_fog_start). thus, to disable,
     // fog_factor must also be 1. invert u_fog_enable (so that it is 1 when disabled) and take the max.
     fog_factor = max(fog_factor, float(!u_fog_enable));
-    out_color = out_color * fog_factor + (1 - fog_factor) * u_fog_color;
+    out_color = out_color * fog_factor + (1.0 - fog_factor) * u_fog_color;
 }
