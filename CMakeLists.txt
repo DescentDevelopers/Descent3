@@ -253,3 +253,17 @@ add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)
+
+# Packaging stuff
+set(CPACK_SOURCE_GENERATOR "TXZ")
+set(CPACK_SOURCE_IGNORE_FILES
+  ".git/"
+  ".github/"
+  ".idea"
+  build[s]/
+  cmake-build-*
+  ".*~$"
+)
+set(CPACK_VERBATIM_VARIABLES YES)
+include(CPack)
+
