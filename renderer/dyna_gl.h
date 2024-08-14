@@ -39,7 +39,7 @@
 #endif
 
 inline void CheckError() {
-#if defined(_DEBUG)
+#if defined(FATAL_GL_ERRORS)
   static auto _dglGetError = reinterpret_cast<GLenum (*)()>(SDL_GL_GetProcAddress("glGetError"));
   auto err = _dglGetError();
   switch (err) {
