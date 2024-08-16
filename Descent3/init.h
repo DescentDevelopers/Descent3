@@ -98,4 +98,9 @@ void RestartD3();
 
 void InitMessage(const char *c, float progress = -1);
 
+/**
+ * Save game variables to the registry
+ */
+void SaveGameSettings();
+
 #endif

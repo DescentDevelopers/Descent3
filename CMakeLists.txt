@@ -5,20 +5,40 @@ if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "default build type")
 endif()
 
-project(Descent3
-  LANGUAGES C CXX
-  VERSION 1.5.0
-)
-
-option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
+option(FORCE_COLORED_OUTPUT "Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with Ninja)." OFF)
 option(FORCE_PORTABLE_INSTALL "Install all files into local directory defined by CMAKE_INSTALL_PREFIX" ON)
 option(ENABLE_LOGGER "Enable logging to the terminal" OFF)
 option(ENABLE_MEM_RTL "Enable Real-time library memory management functions (disable to verbose memory allocations)" ON)
 option(BUILD_TESTING "Enable testing. Requires GTest." OFF)
+set(USE_VCPKG "DEFAULT" CACHE STRING "Use vcpkg for dependency management. DEFAULT defers to existence of $VCPKG_ROOT environment variable.")
+set_property(CACHE USE_VCPKG PROPERTY STRINGS "DEFAULT" "ON" "OFF")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   option(BUILD_EDITOR "Build internal editor" OFF)
 endif()
+
+if(USE_VCPKG)
+  if(DEFINED ENV{VCPKG_ROOT})
+    if (CMAKE_TOOLCHAIN_FILE)
+      cmake_path(ABSOLUTE_PATH CMAKE_TOOLCHAIN_FILE NORMALIZE OUTPUT_VARIABLE VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+    endif()
+
+    set(VCPKG_TOOLCHAIN_FILE "scripts/buildsystems/vcpkg.cmake")
+    cmake_path(ABSOLUTE_PATH VCPKG_TOOLCHAIN_FILE BASE_DIRECTORY $ENV{VCPKG_ROOT} NORMALIZE OUTPUT_VARIABLE CMAKE_TOOLCHAIN_FILE)
+
+    if(CMAKE_TOOLCHAIN_FILE STREQUAL VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+      # prevent endless recursion
+      unset(VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+    endif()
+  elseif(NOT USE_VCPKG STREQUAL "DEFAULT")
+    message(WARNING "USE_VCPKG=${USE_VCPKG} but ENV{VCPKG_ROOT} not set; will use system-provided libraries. Did you forget to set VCPKG_ROOT in your environment?")
+  endif()
+endif()
+
+project(Descent3
+  LANGUAGES C CXX
+  VERSION 1.5.0
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -103,7 +123,7 @@ add_custom_command(
 )
 
 install(
-  FILES LICENSE README.md THIRD_PARTY.md
+  FILES CHANGELOG.md USAGE.md README.md BUILD.md LICENSE THIRD_PARTY.md
   DESTINATION ${CMAKE_INSTALL_DOCDIR}
 )
 
@@ -233,3 +253,17 @@ add_subdirectory(tools)
 add_subdirectory(netcon)
 add_subdirectory(netgames)
 add_subdirectory(scripts)
+
+# Packaging stuff
+set(CPACK_SOURCE_GENERATOR "TXZ")
+set(CPACK_SOURCE_IGNORE_FILES
+  ".git/"
+  ".github/"
+  ".idea"
+  build[s]/
+  cmake-build-*
+  ".*~$"
+)
+set(CPACK_VERBATIM_VARIABLES YES)
+include(CPack)
+

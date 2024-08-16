@@ -1,3 +1,9 @@
+set(HEADERS
+  UIlib.h
+  ui.h
+  uidraw.h
+  uires.h
+  uisys.h)
 set(CPPS
   UIButton.cpp
   UICombo.cpp
@@ -16,7 +22,7 @@ set(CPPS
   UIWindow.cpp
 )
 
-add_library(ui STATIC ${CPPS})
+add_library(ui STATIC ${HEADERS} ${CPPS})
 target_link_libraries(ui PRIVATE
   ddio
   grtext

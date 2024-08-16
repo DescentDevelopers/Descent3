@@ -1,5 +1,11 @@
 set(CMAKE_FOLDER "scripts")
 
+set(HEADERS
+  AIGame3_External.h
+  linux_lib.h
+  osiris_common.h
+  osiris_import.h
+  osiris_vector.h)
 set(CPPS
   $<$<PLATFORM_ID:Darwin,Linux>:
     linux_lib.cpp
@@ -69,7 +75,7 @@ set(SCRIPTS
 #)
 
 foreach(SCRIPT ${SCRIPTS})
-  add_library(${SCRIPT} MODULE ${CPPS} "${SCRIPT}.cpp")
+  add_library(${SCRIPT} MODULE ${CPPS} ${HEADERS} "${SCRIPT}.cpp")
   target_link_libraries(${SCRIPT}
     fix
     misc

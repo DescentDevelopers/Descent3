@@ -1,4 +1,6 @@
-set(HEADERS coop.h)
+set(HEADERS
+  coop.h
+  coopstr.h)
 set(CPPS coop.cpp)
 
 set(NETGAME_MODULE coop)

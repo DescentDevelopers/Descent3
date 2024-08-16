@@ -1,8 +1,8 @@
-set(HEADERS iff.h)
+set(HEADERS
+  NewBitmap.h
+  iff.h)
 set(CPPS
   NewBitmap.cpp
-  NewBitmap.h
-
   bitmain.cpp
   bumpmap.cpp
   iff.cpp

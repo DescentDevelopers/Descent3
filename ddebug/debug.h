@@ -152,7 +152,7 @@ constexpr const int OSMBOX_OKCANCEL = 5;
 extern bool Debug_break;
 
 // if we are running under a debugger, then pass true
-bool Debug_Init(bool debugger, bool mono_debug);
+bool Debug_Init(bool debugger);
 // Does a messagebox with a stack dump
 // Messagebox shows topstring, then stack dump, then bottomstring
 // Return types are the same as the Windows return values
@@ -180,10 +180,11 @@ void ddio_InternalKeyClose();
 #else
 #define debug_break()
 #endif
+
 #if defined(WIN32)
-// We forward declare PEXCEPTION_POINTERS so that the function
-// prototype doesn't needlessly require windows.h.
-typedef struct _EXCEPTION_POINTERS EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
-int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message);
+
+#include <windows.h>
+
+long WINAPI RecordExceptionInfo(PEXCEPTION_POINTERS data);
 #endif
 #endif

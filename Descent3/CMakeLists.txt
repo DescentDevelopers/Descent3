@@ -1,7 +1,28 @@
 set(HEADERS
-  aiambient.h
   AIGoal.h
   AIMain.h
+  BOA.h
+  Briefing.h
+  BriefingParse.h
+  ConfigItem.h
+  CtlCfgElem.h
+  D3ForceFeedback.h
+  DeathInfo.h
+  DllWrappers.h
+  Inventory.h
+  LoadLevel.h
+  Mission.h
+  NewPyroGauges.h
+  ObjScript.h
+  PilotPicsAPI.h
+  SmallViews.h
+  TelCom.h
+  TelComAutoMap.h
+  TelComCargo.h
+  TelComEffects.h
+  TelComEfxStructs.h
+  TelComGoals.h
+  aiambient.h
   aipath.h
   aistruct.h
   aistruct_external.h
@@ -11,31 +32,25 @@ set(HEADERS
   attach.h
   audiotaunts.h
   bnode.h
-  BOA.h
-  Briefing.h
-  BriefingParse.h
   bsp.h
   buddymenu.h
   cinematics.h
   cockpit.h
   config.h
-  ConfigItem.h
   controls.h
   credits.h
-  CtlCfgElem.h
   ctlconfig.h
   ctlconfigtxt.h
-  D3ForceFeedback.h
+  d3movie.h
+  d3music.h
   d3serial.h
   damage.h
   damage_external.h
-  DeathInfo.h
   deathinfo_external.h
   debuggraph.h
   descent.h
   difficulty.h
   difficulty_external.h
-  DllWrappers.h
   door.h
   doorway.h
   fireball.h
@@ -56,23 +71,19 @@ set(HEADERS
   hotspotmap.h
   hud.h
   init.h
-  Inventory.h
   levelgoal.h
   levelgoal_external.h
   lighting.h
   lightmap_info.h
   list.h
-  LoadLevel.h
   localization.h
   marker.h
   matcen.h
   matcen_external.h
   menu.h
-  Mission.h
   mission_download.h
   mmItem.h
   multi.h
-  multisafe.h
   multi_client.h
   multi_dll_mgr.h
   multi_external.h
@@ -80,7 +91,7 @@ set(HEADERS
   multi_server.h
   multi_ui.h
   multi_world_state.h
-  NewPyroGauges.h
+  multisafe.h
   newui.h
   newui_core.h
   object.h
@@ -88,12 +99,10 @@ set(HEADERS
   object_lighting.h
   objinfo.h
   objinit.h
-  ObjScript.h
   osiris_dll.h
   osiris_predefs.h
   osiris_share.h
   pilot.h
-  PilotPicsAPI.h
   pilot_class.h
   player.h
   player_external.h
@@ -113,7 +122,6 @@ set(HEADERS
   screens.h
   ship.h
   slew.h
-  SmallViews.h
   soar.h
   soar_helpers.h
   sounds.h
@@ -122,12 +130,6 @@ set(HEADERS
   splinter.h
   stringtable.h
   subtitles.h
-  TelCom.h
-  TelComAutoMap.h
-  TelComCargo.h
-  TelComEffects.h
-  TelComEfxStructs.h
-  TelComGoals.h
   terrain.h
   trigger.h
   vclip.h
@@ -313,8 +315,12 @@ target_link_libraries(Descent3 PRIVATE
   music networking physics renderer rtperformance sndlib ui unzip vecmat md5
   ${PLATFORM_LIBS})
 target_include_directories(Descent3 PRIVATE ${PROJECT_BINARY_DIR}/lib)
+target_link_options(Descent3 PRIVATE $<$<PLATFORM_ID:Windows>:/DEBUG:FULL>)
 add_dependencies(Descent3 get_git_hash Direct_TCP_IP_Hog HogFull NetgamesDir Parallax_Online_Hog)
 install(TARGETS Descent3 RUNTIME BUNDLE DESTINATION .)
+if(MSVC)
+  install(FILES $<TARGET_PDB_FILE:Descent3> DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

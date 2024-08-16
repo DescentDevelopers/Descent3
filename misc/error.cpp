@@ -77,8 +77,6 @@
 
 #define MAX_MSG_LEN 2000
 
-void Default_dbgbrk_callback();
-
 //	Debug break chain handlers
 void (*DebugBreak_callback_stop)() = NULL;
 void (*DebugBreak_callback_resume)() = NULL;
@@ -97,8 +95,8 @@ void error_Spew();
 //////////////////////////////////////////////////////////////////////////////
 
 //	initializes error handler.
-bool error_Init(bool debugger, bool mono_debug, const char *app_title) {
-  Debug_Init(debugger, mono_debug);
+bool error_Init(bool debugger, const char *app_title) {
+  Debug_Init(debugger);
 
   Error_initialized = true;
   Exit_message[0] = 0;
@@ -113,8 +111,6 @@ bool error_Init(bool debugger, bool mono_debug, const char *app_title) {
 
   return true;
 }
-
-int no_debug_dialog = 0;
 
 //	exits the application and prints out a standard error message
 void Error(const char *fmt, ...) {
@@ -132,19 +128,16 @@ void Error(const char *fmt, ...) {
   mprintf(0, "%s\n", Exit_message);
 
 #ifdef _DEBUG
-  int answer;
+  int answer = IDOK;
 
   if (DebugBreak_callback_stop)
     (*DebugBreak_callback_stop)();
 
   if (Debug_break)
     answer = Debug_ErrorBox(OSMBOX_ABORTRETRYIGNORE, Exit_title_str, Exit_message, "Press RETRY to debug.");
-  else if (!no_debug_dialog)
+  else
     answer = Debug_ErrorBox(OSMBOX_OKCANCEL, Exit_title_str, Exit_message,
                             "Press OK to exit, CANCEL to ignore this error and continue.");
-
-  if (no_debug_dialog)
-    answer = IDOK;
 
   switch (answer) {
   case IDRETRY:
@@ -225,7 +218,7 @@ void AssertionFailed(const char *expstr, const char *file, int line) {
 
 //	error message output function
 void error_Spew() {
-  if (Exit_message[0] && !no_debug_dialog)
+  if (Exit_message[0])
     Debug_MessageBox(OSMBOX_OK, Exit_title_str, Exit_message);
 }
 

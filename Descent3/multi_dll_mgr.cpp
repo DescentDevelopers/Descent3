@@ -605,6 +605,8 @@ int LoadMultiDLL(const char *name) {
 // Make the dll filename
 #if defined(WIN32)
   snprintf(dll_name, sizeof(dll_name), "%s.dll", name);
+#elif defined(MACOSX)
+  snprintf(dll_name, sizeof(dll_name), "%s.dylib", name);
 #else
   snprintf(dll_name, sizeof(dll_name), "%s.so", name);
 #endif

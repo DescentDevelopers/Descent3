@@ -1059,7 +1059,7 @@ void PreInitD3Systems() {
   debugging = true;
 #endif
 
-  error_Init(debugging, false, PRODUCT_NAME);
+  error_Init(debugging, PRODUCT_NAME);
 
   if (FindArg("-lowmem"))
     Mem_low_memory_mode = true;
@@ -1117,9 +1117,6 @@ void PreInitD3Systems() {
 #endif
 }
 
-/*
-        Save game variables to the registry
-*/
 void SaveGameSettings() {
   char tempbuffer[TEMPBUFFERSIZE];
   int tempint;

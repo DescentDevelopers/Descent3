@@ -248,7 +248,7 @@ BOOL InetGetFile::IsFileReceived() {
 }
 
 BOOL InetGetFile::IsFileError() {
-  int state;
+  int state = FTP_STATE_INTERNAL_ERROR;
   if (m_HardError)
     return true;
   if (m_bUseHTTP) {
@@ -278,7 +278,7 @@ BOOL InetGetFile::IsFileError() {
 }
 
 int InetGetFile::GetErrorCode() {
-  int state;
+  int state = FTP_STATE_INTERNAL_ERROR;
   if (m_HardError)
     return m_HardError;
   if (m_bUseHTTP) {

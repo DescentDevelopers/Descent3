@@ -658,12 +658,12 @@
 #include "menu.h"
 #include "mmItem.h"
 #include "game.h"
-#include "gamesequence.h"
 #include "Mission.h"
 #include "multi_ui.h"
 #include "ctlconfig.h"
 #include "config.h"
 #include "gamesave.h"
+#include "gamesequence.h"
 #include "demofile.h"
 #include "pilot.h"
 #include "LoadLevel.h"
@@ -671,6 +671,8 @@
 #include "mem.h"
 #include "args.h"
 #include "cinematics.h"
+#include "multi_dll_mgr.h"
+#include "newui_core.h"
 
 #ifdef _WIN32
 #define USE_DIRECTPLAY
@@ -681,9 +683,6 @@
 #else
 bool Directplay_lobby_launched_game = false;
 #endif
-#include "multi_dll_mgr.h"
-#include "d3music.h"
-#include "newui_core.h"
 
 #define IDV_QUIT 0xff
 //	Menu Item Defines
@@ -702,8 +701,7 @@ bool MenuLoadLevel(void);
 #endif
 // for command line joining of games
 bool Auto_connected = false;
-// externed from init.cpp
-extern void SaveGameSettings();
+
 //	runs command line options.
 bool ProcessCommandLine();
 // new game selection
@@ -715,7 +713,6 @@ extern bool Demo_looping;
 bool FirstGame = false;
 
 int MainMenu() {
-  extern void ShowStaticScreen(char *bitmap_filename, bool timed = false, float delay_time = 0.0f);
   mmInterface main_menu;
   bool exit_game = false;
   bool exit_menu = false;
@@ -1127,15 +1124,16 @@ static inline int generate_mission_listbox(newuiListBox *lb, int n_maxfiles, cha
   }
   return c;
 }
-extern bool Skip_next_movie;
+
 #define OEM_TRAINING_FILE "training.mn3"
 #define OEM_MISSION_FILE "d3oem.mn3"
+
 bool MenuNewGame() {
   newuiTiledWindow menu;
   newuiSheet *select_sheet;
   newuiListBox *msn_lb;
-  char **filelist = NULL;
-  int n_missions, i, res; //,k
+  char **filelist = nullptr;
+  int n_missions, i, res;
   bool found = false;
   bool do_menu = true, load_mission = false, retval = true;
 #ifdef DEMO
@@ -1150,17 +1148,9 @@ bool MenuNewGame() {
     return false;
   }
 #else
-#ifdef RELEASE
   if ((!FindArg("-mission")) && (!FirstGame) && (-1 == Current_pilot.find_mission_data(TRAINING_MISSION_NAME))) {
 
     FirstGame = true;
-
-    char moviepath[_MAX_PATH];
-    ddio_MakePath(moviepath, LocalD3Dir, "movies", "level1.mve", nullptr);
-    if (cfexist(moviepath)) {
-      PlayMovie(moviepath);
-    }
-    Skip_next_movie = true;
 
     if (LoadMission("training.mn3")) {
       CurrentPilotUpdateMissionStatus(true);
@@ -1190,7 +1180,7 @@ bool MenuNewGame() {
       return false;
     }
   }
-#endif
+
   // create menu.
   menu.Create(TXT_MENUNEWGAME, 0, 0, 448, 384);
 
@@ -1333,7 +1323,7 @@ redo_newgame_menu:
           goto redo_newgame_menu;
         } else {
           Current_mission.cur_level = start_level;
-          // pull out the ship permssions and use them
+          // pull out the ship permissions and use them
           Players[0].ship_permissions = GetPilotShipPermissions(&Current_pilot, Current_mission.name);
         }
       }
