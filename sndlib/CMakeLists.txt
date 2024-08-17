@@ -1,15 +1,11 @@
 set(HEADERS
-  auddev.h
   ddsndgeometry.h
-  ds3dlib.h
-  ds3dlib_internal.h
   hlsoundlib.h
   mixer.h
   sdlsound.h
   sndrender.h
   soundload.h
-  ssl_lib.h
-  vmanpset.h)
+  ssl_lib.h)
 set(CPPS
   hlsoundlib.cpp
   sndrender.cpp

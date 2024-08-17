@@ -813,7 +813,6 @@
 #include "gr.h"
 #include "init.h"
 #include "mono.h"
-#include "ds3dlib.h"
 #include "ddio.h"
 #include "descent.h"
 #include "bitmap.h"
