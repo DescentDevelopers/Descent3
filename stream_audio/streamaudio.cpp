@@ -914,7 +914,7 @@ void AudioStream::UpdateData() {
 #pragma optimize("", on)
 ///////////////////////////////////////////////////////////////////////////////
 //	decoder
-int ADecodeFileRead(void *data, void *buf, unsigned qty) {
+int ADecodeFileRead(void *data, void *buf, uint32_t qty) {
   AudioStream *stream = (AudioStream *)data;
   int iqty = (int)qty;
 
